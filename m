@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezEry-0002SO-7Z
+ id 1ezEry-0002Rm-AU
  for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:04 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 04/13] ath10k: Add HTC services for WCN3990
-Date: Fri, 23 Mar 2018 10:33:35 +0530
-Message-Id: <1521781424-24972-5-git-send-email-govinds@codeaurora.org>
-In-Reply-To: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
-References: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH v2 00/13] ***Set4: Add support of WCN3990 bus layer support ***
+Date: Fri, 23 Mar 2018 10:33:31 +0530
+Message-Id: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +23,65 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-WCN3990 target uses 3 Copy engine(CE1/CE9/CE10) in RX path
-and CE 11 for pktlog.
-Add data path HTC ep services and PKTLOG services for WCN3990.
+This change adds support for integrated wcn3990 chipset on
+MSM platforms. WCN3990 is 2x2 802.11ac chipset where wlan
+subsystem is interfaced over system interconnect.
+Wlan fw runs in Q6 DSP. WCN3990 chipset uses 12 copy engine
+for host to target and target to host communication. It has
+extra 2 copy engine in rx data path and packet log capability
+is exposed via new HTC service over dedicated copy engine.
+Each CE has dedicated interrupt of rx path and tx completion.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htc.c | 6 ++++++
- drivers/net/wireless/ath/ath10k/htc.h | 4 ++++
- 2 files changed, 10 insertions(+)
+    [CE0] :host->target control and raw streams
+    [CE1] :target->host HTT
+    [CE2] :target->host WMI
+    [CE3] :host->target WMI
+    [CE4] :host->target HTT
+    [CE5] :reserved
+    [CE6] :Target autonomous HIF_memcpy
+    [CE7] :reserved
+    [CE8] :reserved
+    [CE9] :target->host HTT
+    [CE10] :target->host HTT
+    [CE11] :target -> host PKTLOG
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 492dc5b..8902720 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -542,8 +542,14 @@ static const char *htc_service_name(enum ath10k_htc_svc_id id)
- 		return "NMI Data";
- 	case ATH10K_HTC_SVC_ID_HTT_DATA_MSG:
- 		return "HTT Data";
-+	case ATH10K_HTC_SVC_ID_HTT_DATA2_MSG:
-+		return "HTT Data";
-+	case ATH10K_HTC_SVC_ID_HTT_DATA3_MSG:
-+		return "HTT Data";
- 	case ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS:
- 		return "RAW";
-+	case ATH10K_HTC_SVC_ID_HTT_LOG_MSG:
-+		return "PKTLOG";
- 	}
- 
- 	return "Unknown";
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index a2f8814..3487759 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -248,6 +248,7 @@ enum ath10k_htc_svc_gid {
- 	ATH10K_HTC_SVC_GRP_WMI = 1,
- 	ATH10K_HTC_SVC_GRP_NMI = 2,
- 	ATH10K_HTC_SVC_GRP_HTT = 3,
-+	ATH10K_LOG_SERVICE_GROUP = 6,
- 
- 	ATH10K_HTC_SVC_GRP_TEST = 254,
- 	ATH10K_HTC_SVC_GRP_LAST = 255,
-@@ -273,6 +274,9 @@ enum ath10k_htc_svc_id {
- 
- 	ATH10K_HTC_SVC_ID_HTT_DATA_MSG	= SVC(ATH10K_HTC_SVC_GRP_HTT, 0),
- 
-+	ATH10K_HTC_SVC_ID_HTT_DATA2_MSG = SVC(ATH10K_HTC_SVC_GRP_HTT, 1),
-+	ATH10K_HTC_SVC_ID_HTT_DATA3_MSG = SVC(ATH10K_HTC_SVC_GRP_HTT, 2),
-+	ATH10K_HTC_SVC_ID_HTT_LOG_MSG = SVC(ATH10K_LOG_SERVICE_GROUP, 0),
- 	/* raw stream service (i.e. flash, tcmd, calibration apps) */
- 	ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS = SVC(ATH10K_HTC_SVC_GRP_TEST, 0),
- };
+Changes in V2:
+    Rebased the set on top of https://patchwork.kernel.org/patch/10298657/.
+    Removed qcom,<supply>-config and minor clean up in dt binding documentation.
+
+Govind Singh (11):
+  ath10k: platform driver for WCN3990 SNOC WLAN module
+  ath10k: add resource init and deinit for WCN3990
+  ath10k: Add hif start/stop methods for wcn3990 snoc layer
+  ath10k: Add HTC services for WCN3990
+  ath10k: Map HTC services to tx/rx pipes for wcn3990
+  ath10k: Add hif power-up/power-down methods
+  ath10k: Add hif tx methods for wcn3990
+  ath10k: Add hif rx methods for wcn3990
+  ath10k: Modify hif tx paddr to dma_addr_t type
+  ath10k: Vote for hardware resources for WCN3990
+  dt: bindings: add bindings for wcn3990 wifi block
+
+Rakesh Pillai (2):
+  ath10k: Add support to get target info from hif ops
+  ath10k: Check all CE for data if irq summary is not retained
+
+ .../bindings/net/wireless/qcom,ath10k.txt          |   31 +
+ drivers/net/wireless/ath/ath10k/Kconfig            |    8 +
+ drivers/net/wireless/ath/ath10k/Makefile           |    3 +
+ drivers/net/wireless/ath/ath10k/ce.h               |   10 +-
+ drivers/net/wireless/ath/ath10k/core.c             |   21 +
+ drivers/net/wireless/ath/ath10k/hif.h              |   15 +-
+ drivers/net/wireless/ath/ath10k/htc.c              |    6 +
+ drivers/net/wireless/ath/ath10k/htc.h              |    4 +
+ drivers/net/wireless/ath/ath10k/hw.h               |    3 +
+ drivers/net/wireless/ath/ath10k/pci.c              |    8 +-
+ drivers/net/wireless/ath/ath10k/snoc.c             | 1411 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.h             |   95 ++
+ 12 files changed, 1607 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/snoc.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/snoc.h
+
 -- 
 1.9.1
 
