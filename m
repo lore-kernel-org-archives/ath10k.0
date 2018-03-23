@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezEsA-0002Uk-VQ
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:20 +0000
+ id 1ezEsA-0002Vu-VT
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:27 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 09/13] ath10k: Modify hif tx paddr to dma_addr_t type
-Date: Fri, 23 Mar 2018 10:33:40 +0530
-Message-Id: <1521781424-24972-10-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH v2 10/13] ath10k: Add support to get target info from hif ops
+Date: Fri, 23 Mar 2018 10:33:41 +0530
+Message-Id: <1521781424-24972-11-git-send-email-govinds@codeaurora.org>
 In-Reply-To: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 References: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -23,57 +23,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Change type of hif sg tx paddr to dma_addr_t for
-supporting target having addressing mode greater than
-32 bit.
+From: Rakesh Pillai <pillair@codeaurora.org>
 
+wcn3990 does not use bmi.
+Add support to get target info from hif ops.
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/hif.h | 2 +-
- drivers/net/wireless/ath/ath10k/pci.c | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |  8 ++++++++
+ drivers/net/wireless/ath/ath10k/hif.h  | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.c | 10 ++++++++++
+ 3 files changed, 31 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 830b7fe..61443f5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2468,6 +2468,14 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		ar->hw->wiphy->hw_version = target_info.version;
+ 		break;
+ 	case ATH10K_BUS_SNOC:
++		memset(&target_info, 0, sizeof(target_info));
++		ret = ath10k_hif_get_target_info(ar, &target_info);
++		if (ret) {
++			ath10k_err(ar, "could not get target info (%d)\n", ret);
++			goto err_power_down;
++		}
++		ar->target_version = target_info.version;
++		ar->hw->wiphy->hw_version = target_info.version;
+ 		break;
+ 	default:
+ 		ath10k_err(ar, "incorrect hif bus type: %d\n", ar->hif.bus);
 diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 6da4e33..7abb13c 100644
+index 7abb13c..1a59ea0 100644
 --- a/drivers/net/wireless/ath/ath10k/hif.h
 +++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -26,7 +26,7 @@ struct ath10k_hif_sg_item {
- 	u16 transfer_id;
- 	void *transfer_context; /* NULL = tx completion callback not called */
- 	void *vaddr; /* for debugging mostly */
--	u32 paddr;
-+	dma_addr_t paddr;
- 	u16 len;
+@@ -20,6 +20,7 @@
+ 
+ #include <linux/kernel.h>
+ #include "core.h"
++#include "bmi.h"
+ #include "debug.h"
+ 
+ struct ath10k_hif_sg_item {
+@@ -93,6 +94,9 @@ struct ath10k_hif_ops {
+ 	/* fetch calibration data from target eeprom */
+ 	int (*fetch_cal_eeprom)(struct ath10k *ar, void **data,
+ 				size_t *data_len);
++
++	int (*get_target_info)(struct ath10k *ar,
++			       struct bmi_target_info *target_info);
  };
  
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 808f3d6..e7c544b 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1379,8 +1379,8 @@ int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+@@ -218,4 +222,13 @@ static inline int ath10k_hif_fetch_cal_eeprom(struct ath10k *ar,
+ 	return ar->hif.ops->fetch_cal_eeprom(ar, data, data_len);
+ }
  
- 	for (i = 0; i < n_items - 1; i++) {
- 		ath10k_dbg(ar, ATH10K_DBG_PCI,
--			   "pci tx item %d paddr 0x%08x len %d n_items %d\n",
--			   i, items[i].paddr, items[i].len, n_items);
-+			   "pci tx item %d paddr %pad len %d n_items %d\n",
-+			   i, &items[i].paddr, items[i].len, n_items);
- 		ath10k_dbg_dump(ar, ATH10K_DBG_PCI_DUMP, NULL, "pci tx data: ",
- 				items[i].vaddr, items[i].len);
++static inline int ath10k_hif_get_target_info(struct ath10k *ar,
++					     struct bmi_target_info *tgt_info)
++{
++	if (!ar->hif.ops->get_target_info)
++		return -EOPNOTSUPP;
++
++	return ar->hif.ops->get_target_info(ar, tgt_info);
++}
++
+ #endif /* _HIF_H_ */
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 6d9ccce..1ef0d3b 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -528,6 +528,15 @@ static int ath10k_snoc_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ 	return err;
+ }
  
-@@ -1397,8 +1397,8 @@ int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 	/* `i` is equal to `n_items -1` after for() */
++static int ath10k_snoc_hif_get_target_info(struct ath10k *ar,
++					   struct bmi_target_info *target_info)
++{
++	target_info->version = ATH10K_HW_WCN3990;
++	target_info->type = ATH10K_HW_WCN3990;
++
++	return 0;
++}
++
+ static u16 ath10k_snoc_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
+ {
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+@@ -787,6 +796,7 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar)
+ 	.tx_sg			= ath10k_snoc_hif_tx_sg,
+ 	.send_complete_check	= ath10k_snoc_hif_send_complete_check,
+ 	.get_free_queue_number	= ath10k_snoc_hif_get_free_queue_number,
++	.get_target_info	= ath10k_snoc_hif_get_target_info,
+ };
  
- 	ath10k_dbg(ar, ATH10K_DBG_PCI,
--		   "pci tx item %d paddr 0x%08x len %d n_items %d\n",
--		   i, items[i].paddr, items[i].len, n_items);
-+		   "pci tx item %d paddr %pad len %d n_items %d\n",
-+		   i, &items[i].paddr, items[i].len, n_items);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_PCI_DUMP, NULL, "pci tx data: ",
- 			items[i].vaddr, items[i].len);
- 
+ static const struct ath10k_bus_ops ath10k_snoc_bus_ops = {
 -- 
 1.9.1
 
