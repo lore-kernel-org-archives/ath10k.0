@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail114-240.sinamail.sina.com.cn ([218.30.114.240])
- by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezDHy-0000Mu-Bz
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 03:22:49 +0000
-From: "gary" <guohuizou2000@sina.com>
-References: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
- <18864c97-63f9-3bfe-190c-24fda424c882@candelatech.com>
-In-Reply-To: <18864c97-63f9-3bfe-190c-24fda424c882@candelatech.com>
-Subject: RE: [ath10k throughput] low throughput in multi-user mode
-Date: Fri, 23 Mar 2018 11:21:53 +0800
-Message-ID: <073801d3c256$1793e220$46bba660$@sina.com>
-MIME-Version: 1.0
-Content-Language: zh-cn
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ezEry-0002SO-7Z
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:04 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH v2 04/13] ath10k: Add HTC services for WCN3990
+Date: Fri, 23 Mar 2018 10:33:35 +0530
+Message-Id: <1521781424-24972-5-git-send-email-govinds@codeaurora.org>
+In-Reply-To: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
+References: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +17,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-CkhpIEJlbiwKClRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4KTXkgd2lyZWxlc3MgZHJpdmVyIGlz
-IGNvbXBhdC13aXJlbGVzc18yMDE3LTEwLTYsIGFuZCBrZXJuZWwgaXMgNC45LjU4LgoKVGhlIHRl
-c3QgcmVzdWx0IHdpdGggeW91ciBmaXJtd2FyZToKR2V0IHRocm91Z2hwdXQgMS4xM0dicHMgd2l0
-aCAxNiB1c2Vycy4KQW5kIGdldCBhbG1vc3QgMCB3aXRoIDMyIHVzZXJzLgoKQnkgbXkgb2JzZXJ2
-YXRpb24sIGluIG9uZSB0cnksIGF0aDEwa19odHRfcnhfdHhfbW9kZV9zd2l0Y2hfaW5kIGlzIGlu
-dm9rZWQKb25seSB0d2ljZS4KQXMgYSByZXN1bHQsIHRoZSBhdGgxMGsgZHJpdmVyIGNhbid0IGdl
-dCB0aGUgbGF0ZXN0IG51bV9wdXNoX2FsbG93ZWQoYWx3YXlzCnplcm8pLgoKRG8geW91IGhhdmUg
-YW55IGlkZWEgb2YgaXQ/CgotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQpGcm9tOiBhdGgxMGsg
-W21haWx0bzphdGgxMGstYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnXSBPbiBCZWhhbGYgT2Yg
-QmVuCkdyZWVhcgpTZW50OiAyMDE4xOoz1MIyMsjVIDA6MzEKVG86IGdhcnk7IGxpbnV4LXdpcmVs
-ZXNzQHZnZXIua2VybmVsLm9yZzsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKU3ViamVjdDog
-UmU6IFthdGgxMGsgdGhyb3VnaHB1dF0gbG93IHRocm91Z2hwdXQgaW4gbXVsdGktdXNlciBtb2Rl
-CgoKT24gMDMvMjAvMjAxOCAwNjo0NCBQTSwgZ2FyeSB3cm90ZToKPgo+IEhpIGFsbCwKPiBJIGhh
-dmUgcnVuIHRoZSB0aHJvdWdocHV0IHRlc3Qgb24gdmVyaXdhdmUuKGZyb20gRXRoZXJuZXQgdG8g
-d2lyZWxlc3MpIAo+IE15IEFQIHN1cG9ydHMgNCo0LCAxMWFjLCBtdS1taW1vLix3aXJlbGVzcyBj
-aGlwIGlzIFFDQTk5ODQuCj4gQXQgZmlyc3QsIHRoZSB0aHJvdWdocHV0IGlzIGFib3V0IDgwTWJw
-cyBvbmx5IHdpdGggMTYgdXNlcnMsIHNvIEkgCj4gZm9yY2UgdG8gcmV0dXJuIHRydWUgaW4gZnVu
-Y3Rpb24gYXRoMTBrX21hY190eF9jYW5fcHVzaCgpLgo+IEFzIGEgcmVzdWx0LCB3aGVuIHRoZSB1
-c2VyIG51bWJlciBpcyAxfjE2LCB0aGUgdWRwIHRocm91Z2hwdXQgaXMgYWJvdXQgCj4gMS4yR2Jw
-cyB+MS40R2Jwcy4KPiBCdXQgd2hlbiB0aGUgdXNlciBudW1iZXIgaXMgMzIsIHRoZSB1ZHAgdGhy
-b3VnaHB1dCBpcyBvbmx5IDUyME1icHMuCj4KPiBTbyBJIHRyeSB0byBzdWJzdGl0dXRlIGF0aDEw
-ay1maXJtd2FyZS4KPiBXaXRoIGZpcm13YXJlIDEwLjQtMy40LTAwODIgYW5kIGFib3ZlLCB0aGUg
-dGhyb3VnaHB1dCBpcyBhcm91bmQgNTIwTWJwcy4KPiBCdXQgd2l0aCBmaXJtd2FyZSAxMC40LTMu
-NC0wMDcyLCB0aGUgdGhyb3VnaHB1dCBnZXRzIDEuMUdicHMuCj4KPiBEbyBJIG1pc3Mgc29tZXRo
-aW5nIGluIGNvbmZpZ3VyYXRpb24/Cj4gQW55IGNvbW1lbnQgaXMgYXBwcmVjaWF0ZWQuCgpXaGF0
-IGtlcm5lbCB2ZXJzaW9uIChvciBiYWNrcG9ydHMsIGlmIHlvdSBhcmUgdXNpbmcgdGhhdD8pIGFy
-ZSB5b3UgdXNpbmc/CgpBbmQsIEknZCBiZSBjdXJpb3VzIGhvdyB0aGUgbGF0ZXN0IGF0aDEway1D
-VCAoYmV0YSkgZmlybXdhcmUgY29tcGFyZXMgaWYgeW91CmhhdmUgdGltZSB0byB0cnkgdGhhdDoK
-Cmh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tL2F0aDEway0xMC40LnBocAoKQXQgbGVhc3QgaW4g
-dXBsb2FkIHRlc3RpbmcsIHdlIGdldCBiZXR0ZXIgdGhyb3VnaHB1dCB3aXRoIGxvdHMgb2Ygdmly
-dHVhbApzdGF0aW9ucyBpZiB3ZSB0dW5lIHRoZSBudW1iZXIgb2YgdHggZGVzY3JpcHRvcnMgdG8g
-YmUgbGFyZ2VyIGFzIHRoYXQgd2lsbApnZW5lcmF0ZSBsYXJnZXIgQU1QRFVzIG9uIGFpci4KCllv
-dSBtaWdodCBhbHNvIGNoZWNrIHlvdXIgcmF0ZS1jdHJsIGxvZ2ljIHRvIG1ha2Ugc3VyZSBhbGwg
-b2YgeW91ciBzdGF0aW9ucwphcmUgdXNpbmcgaGlnaGVyIE1DUyByYXRlcy4KClRoYW5rcywKQmVu
-CgotLQpCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9s
-b2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsKCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+WCN3990 target uses 3 Copy engine(CE1/CE9/CE10) in RX path
+and CE 11 for pktlog.
+Add data path HTC ep services and PKTLOG services for WCN3990.
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 6 ++++++
+ drivers/net/wireless/ath/ath10k/htc.h | 4 ++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 492dc5b..8902720 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -542,8 +542,14 @@ static const char *htc_service_name(enum ath10k_htc_svc_id id)
+ 		return "NMI Data";
+ 	case ATH10K_HTC_SVC_ID_HTT_DATA_MSG:
+ 		return "HTT Data";
++	case ATH10K_HTC_SVC_ID_HTT_DATA2_MSG:
++		return "HTT Data";
++	case ATH10K_HTC_SVC_ID_HTT_DATA3_MSG:
++		return "HTT Data";
+ 	case ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS:
+ 		return "RAW";
++	case ATH10K_HTC_SVC_ID_HTT_LOG_MSG:
++		return "PKTLOG";
+ 	}
+ 
+ 	return "Unknown";
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index a2f8814..3487759 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -248,6 +248,7 @@ enum ath10k_htc_svc_gid {
+ 	ATH10K_HTC_SVC_GRP_WMI = 1,
+ 	ATH10K_HTC_SVC_GRP_NMI = 2,
+ 	ATH10K_HTC_SVC_GRP_HTT = 3,
++	ATH10K_LOG_SERVICE_GROUP = 6,
+ 
+ 	ATH10K_HTC_SVC_GRP_TEST = 254,
+ 	ATH10K_HTC_SVC_GRP_LAST = 255,
+@@ -273,6 +274,9 @@ enum ath10k_htc_svc_id {
+ 
+ 	ATH10K_HTC_SVC_ID_HTT_DATA_MSG	= SVC(ATH10K_HTC_SVC_GRP_HTT, 0),
+ 
++	ATH10K_HTC_SVC_ID_HTT_DATA2_MSG = SVC(ATH10K_HTC_SVC_GRP_HTT, 1),
++	ATH10K_HTC_SVC_ID_HTT_DATA3_MSG = SVC(ATH10K_HTC_SVC_GRP_HTT, 2),
++	ATH10K_HTC_SVC_ID_HTT_LOG_MSG = SVC(ATH10K_LOG_SERVICE_GROUP, 0),
+ 	/* raw stream service (i.e. flash, tcmd, calibration apps) */
+ 	ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS = SVC(ATH10K_HTC_SVC_GRP_TEST, 0),
+ };
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
