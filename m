@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezEry-0002Rm-AU
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:04 +0000
+ id 1ezEry-0002SF-Au
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:06 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 00/13] ***Set4: Add support of WCN3990 bus layer support ***
-Date: Fri, 23 Mar 2018 10:33:31 +0530
-Message-Id: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH v2 03/13] ath10k: Add hif start/stop methods for wcn3990 snoc
+ layer
+Date: Fri, 23 Mar 2018 10:33:34 +0530
+Message-Id: <1521781424-24972-4-git-send-email-govinds@codeaurora.org>
+In-Reply-To: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
+References: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +26,223 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-This change adds support for integrated wcn3990 chipset on
-MSM platforms. WCN3990 is 2x2 802.11ac chipset where wlan
-subsystem is interfaced over system interconnect.
-Wlan fw runs in Q6 DSP. WCN3990 chipset uses 12 copy engine
-for host to target and target to host communication. It has
-extra 2 copy engine in rx data path and packet log capability
-is exposed via new HTC service over dedicated copy engine.
-Each CE has dedicated interrupt of rx path and tx completion.
+Add hif start/stop callback for allocating/freeing buffers
+on tx/rx pipe and enabling/disabling the tx/rx pipe
+interrupts.
 
-    [CE0] :host->target control and raw streams
-    [CE1] :target->host HTT
-    [CE2] :target->host WMI
-    [CE3] :host->target WMI
-    [CE4] :host->target HTT
-    [CE5] :reserved
-    [CE6] :Target autonomous HIF_memcpy
-    [CE7] :reserved
-    [CE8] :reserved
-    [CE9] :target->host HTT
-    [CE10] :target->host HTT
-    [CE11] :target -> host PKTLOG
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 189 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 187 insertions(+), 2 deletions(-)
 
-Changes in V2:
-    Rebased the set on top of https://patchwork.kernel.org/patch/10298657/.
-    Removed qcom,<supply>-config and minor clean up in dt binding documentation.
-
-Govind Singh (11):
-  ath10k: platform driver for WCN3990 SNOC WLAN module
-  ath10k: add resource init and deinit for WCN3990
-  ath10k: Add hif start/stop methods for wcn3990 snoc layer
-  ath10k: Add HTC services for WCN3990
-  ath10k: Map HTC services to tx/rx pipes for wcn3990
-  ath10k: Add hif power-up/power-down methods
-  ath10k: Add hif tx methods for wcn3990
-  ath10k: Add hif rx methods for wcn3990
-  ath10k: Modify hif tx paddr to dma_addr_t type
-  ath10k: Vote for hardware resources for WCN3990
-  dt: bindings: add bindings for wcn3990 wifi block
-
-Rakesh Pillai (2):
-  ath10k: Add support to get target info from hif ops
-  ath10k: Check all CE for data if irq summary is not retained
-
- .../bindings/net/wireless/qcom,ath10k.txt          |   31 +
- drivers/net/wireless/ath/ath10k/Kconfig            |    8 +
- drivers/net/wireless/ath/ath10k/Makefile           |    3 +
- drivers/net/wireless/ath/ath10k/ce.h               |   10 +-
- drivers/net/wireless/ath/ath10k/core.c             |   21 +
- drivers/net/wireless/ath/ath10k/hif.h              |   15 +-
- drivers/net/wireless/ath/ath10k/htc.c              |    6 +
- drivers/net/wireless/ath/ath10k/htc.h              |    4 +
- drivers/net/wireless/ath/ath10k/hw.h               |    3 +
- drivers/net/wireless/ath/ath10k/pci.c              |    8 +-
- drivers/net/wireless/ath/ath10k/snoc.c             | 1411 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.h             |   95 ++
- 12 files changed, 1607 insertions(+), 8 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/snoc.c
- create mode 100644 drivers/net/wireless/ath/ath10k/snoc.h
-
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 575355c..dcd8bb7 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -25,6 +25,7 @@
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #define  WCN3990_CE_ATTR_FLAGS 0
++#define ATH10K_SNOC_RX_POST_RETRY_MS 50
+ 
+ static char *const ce_name[] = {
+ 	"WLAN_CE_0",
+@@ -170,9 +171,193 @@ u32 ath10k_snoc_read32(struct ath10k *ar, u32 offset)
+ 	return val;
+ }
+ 
++static int __ath10k_snoc_rx_post_buf(struct ath10k_snoc_pipe *pipe)
++{
++	struct ath10k_ce_pipe *ce_pipe = pipe->ce_hdl;
++	struct ath10k *ar = pipe->hif_ce_state;
++	struct ath10k_ce *ce = ath10k_ce_priv(ar);
++	struct sk_buff *skb;
++	dma_addr_t paddr;
++	int ret;
++
++	skb = dev_alloc_skb(pipe->buf_sz);
++	if (!skb)
++		return -ENOMEM;
++
++	WARN_ONCE((unsigned long)skb->data & 3, "unaligned skb");
++
++	paddr = dma_map_single(ar->dev, skb->data,
++			       skb->len + skb_tailroom(skb),
++			       DMA_FROM_DEVICE);
++	if (unlikely(dma_mapping_error(ar->dev, paddr))) {
++		ath10k_warn(ar, "failed to dma map snoc rx buf\n");
++		dev_kfree_skb_any(skb);
++		return -EIO;
++	}
++
++	ATH10K_SKB_RXCB(skb)->paddr = paddr;
++
++	spin_lock_bh(&ce->ce_lock);
++	ret = ce_pipe->ops->ce_rx_post_buf(ce_pipe, skb, paddr);
++	spin_unlock_bh(&ce->ce_lock);
++	if (ret) {
++		dma_unmap_single(ar->dev, paddr, skb->len + skb_tailroom(skb),
++				 DMA_FROM_DEVICE);
++		dev_kfree_skb_any(skb);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void ath10k_snoc_rx_post_pipe(struct ath10k_snoc_pipe *pipe)
++{
++	struct ath10k *ar = pipe->hif_ce_state;
++	struct ath10k_ce *ce = ath10k_ce_priv(ar);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	struct ath10k_ce_pipe *ce_pipe = pipe->ce_hdl;
++	int ret, num;
++
++	if (pipe->buf_sz == 0)
++		return;
++
++	if (!ce_pipe->dest_ring)
++		return;
++
++	spin_lock_bh(&ce->ce_lock);
++	num = __ath10k_ce_rx_num_free_bufs(ce_pipe);
++	spin_unlock_bh(&ce->ce_lock);
++	while (num--) {
++		ret = __ath10k_snoc_rx_post_buf(pipe);
++		if (ret) {
++			if (ret == -ENOSPC)
++				break;
++			ath10k_warn(ar, "failed to post rx buf: %d\n", ret);
++			mod_timer(&ar_snoc->rx_post_retry, jiffies +
++				  ATH10K_SNOC_RX_POST_RETRY_MS);
++			break;
++		}
++	}
++}
++
++static void ath10k_snoc_rx_post(struct ath10k *ar)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	int i;
++
++	for (i = 0; i < CE_COUNT; i++)
++		ath10k_snoc_rx_post_pipe(&ar_snoc->pipe_info[i]);
++}
++
++static inline void ath10k_snoc_irq_disable(struct ath10k *ar)
++{
++	ath10k_ce_disable_interrupts(ar);
++}
++
++static inline void ath10k_snoc_irq_enable(struct ath10k *ar)
++{
++	ath10k_ce_enable_interrupts(ar);
++}
++
++static void ath10k_snoc_rx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
++{
++	struct ath10k_ce_pipe *ce_pipe;
++	struct ath10k_ce_ring *ce_ring;
++	struct sk_buff *skb;
++	struct ath10k *ar;
++	int i;
++
++	ar = snoc_pipe->hif_ce_state;
++	ce_pipe = snoc_pipe->ce_hdl;
++	ce_ring = ce_pipe->dest_ring;
++
++	if (!ce_ring)
++		return;
++
++	if (!snoc_pipe->buf_sz)
++		return;
++
++	for (i = 0; i < ce_ring->nentries; i++) {
++		skb = ce_ring->per_transfer_context[i];
++		if (!skb)
++			continue;
++
++		ce_ring->per_transfer_context[i] = NULL;
++
++		dma_unmap_single(ar->dev, ATH10K_SKB_RXCB(skb)->paddr,
++				 skb->len + skb_tailroom(skb),
++				 DMA_FROM_DEVICE);
++		dev_kfree_skb_any(skb);
++	}
++}
++
++static void ath10k_snoc_tx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
++{
++	struct ath10k_ce_pipe *ce_pipe;
++	struct ath10k_ce_ring *ce_ring;
++	struct ath10k_snoc *ar_snoc;
++	struct sk_buff *skb;
++	struct ath10k *ar;
++	int i;
++
++	ar = snoc_pipe->hif_ce_state;
++	ar_snoc = ath10k_snoc_priv(ar);
++	ce_pipe = snoc_pipe->ce_hdl;
++	ce_ring = ce_pipe->src_ring;
++
++	if (!ce_ring)
++		return;
++
++	if (!snoc_pipe->buf_sz)
++		return;
++
++	for (i = 0; i < ce_ring->nentries; i++) {
++		skb = ce_ring->per_transfer_context[i];
++		if (!skb)
++			continue;
++
++		ce_ring->per_transfer_context[i] = NULL;
++
++		ath10k_htc_tx_completion_handler(ar, skb);
++	}
++}
++
++static void ath10k_snoc_buffer_cleanup(struct ath10k *ar)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	struct ath10k_snoc_pipe *pipe_info;
++	int pipe_num;
++
++	del_timer_sync(&ar_snoc->rx_post_retry);
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
++		pipe_info = &ar_snoc->pipe_info[pipe_num];
++		ath10k_snoc_rx_pipe_cleanup(pipe_info);
++		ath10k_snoc_tx_pipe_cleanup(pipe_info);
++	}
++}
++
++static void ath10k_snoc_hif_stop(struct ath10k *ar)
++{
++	ath10k_snoc_irq_disable(ar);
++	ath10k_snoc_buffer_cleanup(ar);
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif stop\n");
++}
++
++static int ath10k_snoc_hif_start(struct ath10k *ar)
++{
++	ath10k_snoc_irq_enable(ar);
++	ath10k_snoc_rx_post(ar);
++
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
++
++	return 0;
++}
++
+ static const struct ath10k_hif_ops ath10k_snoc_hif_ops = {
+-	.read32			= ath10k_snoc_read32,
+-	.write32		= ath10k_snoc_write32,
++	.read32		= ath10k_snoc_read32,
++	.write32	= ath10k_snoc_write32,
++	.start		= ath10k_snoc_hif_start,
++	.stop		= ath10k_snoc_hif_stop,
+ };
+ 
+ static const struct ath10k_bus_ops ath10k_snoc_bus_ops = {
 -- 
 1.9.1
 
