@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezLHm-0001qx-Ln
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 11:55:09 +0000
+ id 1ezMxD-0000nb-PA
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 13:42:01 +0000
 MIME-Version: 1.0
-Date: Fri, 23 Mar 2018 17:24:55 +0530
-From: govinds@codeaurora.org
-Subject: Re: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN module
-In-Reply-To: <87lgf0cn24.fsf@kamboji.qca.qualcomm.com>
-References: <1518684458-5338-1-git-send-email-govinds@codeaurora.org>
- <87371kqfda.fsf@kamboji.qca.qualcomm.com>
- <d396df1b09da4dd7aa14d6af2c2b2b18@aphydexm01b.ap.qualcomm.com>
- <87tvttl6kp.fsf@kamboji.qca.qualcomm.com>
- <fb2c04383f024ab8b2c62dd5a4ad20ac@SOC-EX01V.e01.socionext.com>
- <87lgf0cn24.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <eccd10c7db468515fe255b75f102e301@codeaurora.org>
+Date: Fri, 23 Mar 2018 19:11:48 +0530
+From: akolli@codeaurora.org
+Subject: Re: [PATCH] ath10k: Implement get_expected_throughput callback
+In-Reply-To: <2667699.TbZPxW0hJB@bentobox>
+References: <1521790620-12267-1-git-send-email-akolli@codeaurora.org>
+ <2667699.TbZPxW0hJB@bentobox>
+Message-ID: <5434de1a4bcdf7341fdeb766e7638760@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +19,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: yamada.masahiro@socionext.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Johannes Berg <johannes.berg@intel.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Antonio Quartulli <a@unstable.cc>, ath10k@lists.infradead.org, Tamizh chelvam <tamizhr@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
 
-On 2018-03-10 14:41, Kalle Valo wrote:
-> <yamada.masahiro@socionext.com> writes:
-> 
->>> >> Kbuild bot found an odd problem with this patch:
->>> >>
->>> >>  include/linux/dynamic_debug.h:77:14: error: 'KBUILD_MODNAME'
->>> >>  undeclared (first use in this function); did you mean
->>> 'KBUILD_BASENAME'?
->>> >>
->>> >> Full report:
->>> >>
->>> >>
->>> http://lists.infradead.org/pipermail/ath10k/2018-February/010907.html
->>> >>
->>> >> Any ideas? Is this is some unrelated issue or what? This patch is not
->>> >> even touching hif.h or ce.c.
->>> >
->>> > I didn't encountered this issue as in my defconfig only
->>> > CONFIG_ATH10K_SNOC was defined. This problem is coming when we define
->>> > CONFIG_ATH10K_SNOC and CONFIG_ATH10K_PCI simultaneously in defconfig
->>> > and this is known issue when multiple modules share objects(in this
->>> > case ce.o). I saw similar reported problem and found
->>> > https://patchwork.kernel.org/patch/10060825/.
->>> >
->>> > After picking the below change issue is not seen.
->>> 
->>> Let's ask the kbuild maintainer. Masahiro, any chances of getting 
->>> this
->>> patch applied anytime soon:
->>> 
->>> kbuild: define KBUILD_MODNAME even if multiple modules share objects
->>> 
->>> https://patchwork.kernel.org/patch/10060825/
->>> 
->>> In ath10k we would need it as otherwise we are not able to link ce.o
->>> both to ath10k_pci.ko and ath10k_snoc.ko. What do you think?
->>> 
->>> Full discussion and the ath10k patch here:
->>> 
->>> https://patchwork.kernel.org/patch/10220657/
->>> 
->> 
->> I plan to submit v2, but even if the undefined KBUILD_MODNAME is 
->> fixed,
->> I expect another problem from this patch.
->> 
->> If both CONFIG_ATH10K_PCI and CONFIG_ATH10_SNOC are 'y'
->> two instances of ce.o would be linked into vmliux,
->> then causes multiple definition error.
-> 
-> Oh, I didn't realise this. Thanks for pointing it out. Govind is 
-> looking
-> at other ways to fix this.
-
-https://patchwork.kernel.org/patch/10298659/ is raised to address this 
-problem.
-
-Thanks,
-Govind
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgU3ZlbiwKClRoYW5rcyBmb3IgdGhlIHJldmlldy4KCk9uIDIwMTgtMDMtMjMgMTM6MzksIFN2
+ZW4gRWNrZWxtYW5uIHdyb3RlOgo+IE9uIEZyZWl0YWcsIDIzLiBNw6RyeiAyMDE4IDEzOjA3OjAw
+IENFVCBBbmlsa3VtYXIgS29sbGkgd3JvdGU6Cj4gWy4uLl0KPj4gK3N0YXRpYyB1MzIgYXRoMTBr
+X2dldF9leHBlY3RlZF90aHJvdWdocHV0KHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0
+YSAqc3RhKQo+PiArewo+PiArICAgICAgIHN0cnVjdCBhdGgxMGtfc3RhICphcnN0YSA9IChzdHJ1
+Y3QgYXRoMTBrX3N0YSAqKXN0YS0+ZHJ2X3ByaXY7Cj4+ICsgICAgICAgdTMyIHR4X2JpdHJhdGU7
+Cj4+ICsKPj4gKyAgICAgICB0eF9iaXRyYXRlID0gY2ZnODAyMTFfY2FsY3VsYXRlX2JpdHJhdGUo
+JmFyc3RhLT50eHJhdGUpOwo+PiArICAgICAgIGV3bWFfc3RhX3R4cmF0ZV9hZGQoJmFyc3RhLT5h
+dmVfc3RhX3R4cmF0ZSwgdHhfYml0cmF0ZSk7Cj4+ICsKPj4gKyAgICAgICByZXR1cm4gZXdtYV9z
+dGFfdHhyYXRlX3JlYWQoJmFyc3RhLT5hdmVfc3RhX3R4cmF0ZSk7Cj4+ICB9Cj4gCj4gQW50b25p
+byBhbmQgRmVsaXgsIHBsZWFzZSBjb3JyZWN0IG1lIHdoZW4gdGhpcyBzdGF0ZW1lbnQgaXMgaW5j
+b3JyZWN0Lgo+IAo+IFRoZSBleHBlY3RlZF90aHJvdWdocHV0IGFzIGluaXRpYWxseSBpbXBsZW1l
+bnRlZCBmb3IgbWluc3RyZWwoX2h0KSBpcyAKPiBub3QKPiBhYm91dCB0aGUgcmF3IHBoeXNpY2Fs
+IGJpdHJhdGUgYnV0IGFib3V0IHRoZSB0aHJvdWdocHV0IHdoaWNoIGlzIAo+IGV4cGVjdGVkIGZv
+cgo+IHRoaW5ncyBydW5uaW5nIG9uIHRvcCBvZiB0aGUgd2lmaSBsaW5rLiBTZWUKPiBodHRwczov
+L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5n
+aXQvY29tbWl0Lz9pZD1jY2E2NzRkNDdlNTk2NjU2MzBmMzAwNTI5MWI2MWJiODgzMDE1ZmM1Cj4g
+Zm9yIG1vcmUgZGV0YWlscwo+IAo+IHdoZW4gSSBpbnRlcnByZXQgeW91ciBjaGFuZ2UgY29ycmVj
+dGx5IHRoZW4geW91ciBpdCBkb2Vzbid0IGdldCB0aGUKPiBpbmZvcm1hdGlvbiBhYm91dCBwYWNr
+ZXQgbG9zcyBvciBhZ2dyZWdhdGlvbiBhbmQgZG9lc24ndCBkbyBhbnl0aGluZyAKPiBjb252ZXJ0
+Cj4gZnJvbSByYXcgcGh5c2ljYWwgcmF0ZSB0byBzb21ldGhpbmcgdGhlIHVzZXIgY291bGQgZ2V0
+IHNlZS4gSXQgd2lsbCAKPiBqdXN0Cj4gb3ZlcmVzdGltYXRlIHRoZSB0aHJvdWdocHV0IGZvciBh
+dGgxMGsgbGlua3MgYW5kIHRodXMgZ2l2ZSB3cm9uZyAKPiBpbmZvcm1hdGlvbgo+IHRvIHJvdXRp
+bmcgYWxnb3JpdGhtcy4gVGhpcyBjb3VsZCBmb3IgZXhhbXBsZSBjYXVzZSB0aGVtIHRvIHByZWZl
+ciAKPiBsaW5rcyBvdmVyCj4gYXRoMTBrIGJhc2VkIGh3IHdoZW4gbXQ3NiB3b3VsZCBhY3R1YWxs
+eSBwcm92aWRlIGEgc2lnbmlmaWNhbnQgYmV0dGVyCj4gdGhyb3VnaHB1dC4KPiAKPiBCZXNpZGUg
+dGhhdCAtIHdoeSBpcyB0aGUgYXZlX3N0YV90eHJhdGUgb25seSBmaWxsZWQgd2hlbiB3aXRoIG5l
+dyAKPiBpbmZvcm1hdGlvbgo+IHdoZW4gc29tZW9uZSByZXF1ZXN0cyB0aGUgY3VycmVudCBleHBl
+Y3RlZF90aHJvdWdocHV0IHZpYQo+IGdldF9leHBlY3RlZF90aHJvdWdocHV0LiBJIHdvdWxkIGhh
+dmUgZXhwZWN0ZWQgdGhhdCBpdCBpcyBmaWxsZWQgCj4gZXZlcnl0aW1lIHlvdQo+IGdldCBuZXcg
+aW5mb3JtYXRpb24gYWJvdXQgdGhlIGN1cnJlbnQgcmF0ZSBmcm9tIHRoZSBmaXJtd2FyZQo+IChh
+dGgxMGtfc3RhX3N0YXRpc3RpY3MpLgo+IApZZXMuIGlkZWFsbHkgaXQgc2hvdWxkIGJlIGRvaW5n
+IHRoZSByYXRlIGF2Zy4gb2YgYWxsIHRoZSBzZW50IHBhY2tldHMuCgo+PiBAQCAtNzY4Niw2ICs3
+Njg2LDIyIEBAIHN0YXRpYyB2b2lkIGF0aDEwa19zdGFfc3RhdGlzdGljcyhzdHJ1Y3QgCj4+IGll
+ZWU4MDIxMV9odyAqaHcsCj4+ICAgICAgICAgfQo+PiAgICAgICAgIHNpbmZvLT50eHJhdGUuZmxh
+Z3MgPSBhcnN0YS0+dHhyYXRlLmZsYWdzOwo+PiAgICAgICAgIHNpbmZvLT5maWxsZWQgfD0gMVVM
+TCA8PCBOTDgwMjExX1NUQV9JTkZPX1RYX0JJVFJBVEU7Cj4+ICsKPj4gKyAgICAgICBzaW5mby0+
+ZXhwZWN0ZWRfdGhyb3VnaHB1dCA9Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Cj4+IGV3bWFfc3RhX3R4cmF0ZV9yZWFkKCZhcnN0YS0+YXZlX3N0YV90eHJhdGUpOwo+PiArICAg
+ICAgIHNpbmZvLT5maWxsZWQgfD0gQklUKE5MODAyMTFfU1RBX0lORk9fRVhQRUNURURfVEhST1VH
+SFBVVCk7Cj4+ICt9Cj4gCj4gVGhpcyBicmluZ3MgbWUgZGlyZWN0bHkgdG8gdGhlIG5leHQgcG9p
+bnQuIFdoeSBhcmUgeW91IGNoYW5naW5nIHRoZXNlIAo+IHZhbHVlcwo+IGhlcmU/IElzbid0IHN0
+YV9zZXRfc2luZm8gaXMgZXhwZWN0ZWQgdG8gZG8gdGhhdD8gVGhpcyBpcyBhdCBsZWFzdCB3aGF0
+IAo+IHdlCj4gZXhwZWN0IGhvdyBpdCB3b3JrcyB3aGVuIHdlIGNhbGwgY2ZnODAyMTFfZ2V0X3N0
+YXRpb24oKSBpbiBiYXRtYW4tYWR2Lgo+IAoKWWVzLiBUaGlzIGxvb2tzIHJlZHVuZGFudCwgSSB3
+aWxsIHJlbW92ZSB0aGlzIGxpbmUsCiAgc2luZm8tPmZpbGxlZCB8PSBCSVQoTkw4MDIxMV9TVEFf
+SU5GT19FWFBFQ1RFRF9USFJPVUdIUFVUKTsKCkkgd2lsbCBtYWtlIHRoZXNlIGNoYW5nZXMgYW5k
+IHNlbmQgdjIuCgpUaGFua3MsCkFuaWwuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
