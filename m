@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezMxD-0000nb-PA
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 13:42:01 +0000
-MIME-Version: 1.0
-Date: Fri, 23 Mar 2018 19:11:48 +0530
-From: akolli@codeaurora.org
+ id 1ezMzj-0001Vm-Bi
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 13:44:58 +0000
+Message-ID: <1521812659.28252.0.camel@sipsolutions.net>
 Subject: Re: [PATCH] ath10k: Implement get_expected_throughput callback
-In-Reply-To: <2667699.TbZPxW0hJB@bentobox>
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 23 Mar 2018 14:44:19 +0100
+In-Reply-To: <5434de1a4bcdf7341fdeb766e7638760@codeaurora.org>
+ (sfid-20180323_144153_352630_7377CAE0)
 References: <1521790620-12267-1-git-send-email-akolli@codeaurora.org>
  <2667699.TbZPxW0hJB@bentobox>
-Message-ID: <5434de1a4bcdf7341fdeb766e7638760@codeaurora.org>
+ <5434de1a4bcdf7341fdeb766e7638760@codeaurora.org>
+ (sfid-20180323_144153_352630_7377CAE0)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,62 +23,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+To: akolli@codeaurora.org, Sven Eckelmann <sven.eckelmann@openmesh.com>
 Cc: Johannes Berg <johannes.berg@intel.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Antonio Quartulli <a@unstable.cc>, ath10k@lists.infradead.org, Tamizh chelvam <tamizhr@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
 
-SGkgU3ZlbiwKClRoYW5rcyBmb3IgdGhlIHJldmlldy4KCk9uIDIwMTgtMDMtMjMgMTM6MzksIFN2
-ZW4gRWNrZWxtYW5uIHdyb3RlOgo+IE9uIEZyZWl0YWcsIDIzLiBNw6RyeiAyMDE4IDEzOjA3OjAw
-IENFVCBBbmlsa3VtYXIgS29sbGkgd3JvdGU6Cj4gWy4uLl0KPj4gK3N0YXRpYyB1MzIgYXRoMTBr
-X2dldF9leHBlY3RlZF90aHJvdWdocHV0KHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+PiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0
-YSAqc3RhKQo+PiArewo+PiArICAgICAgIHN0cnVjdCBhdGgxMGtfc3RhICphcnN0YSA9IChzdHJ1
-Y3QgYXRoMTBrX3N0YSAqKXN0YS0+ZHJ2X3ByaXY7Cj4+ICsgICAgICAgdTMyIHR4X2JpdHJhdGU7
-Cj4+ICsKPj4gKyAgICAgICB0eF9iaXRyYXRlID0gY2ZnODAyMTFfY2FsY3VsYXRlX2JpdHJhdGUo
-JmFyc3RhLT50eHJhdGUpOwo+PiArICAgICAgIGV3bWFfc3RhX3R4cmF0ZV9hZGQoJmFyc3RhLT5h
-dmVfc3RhX3R4cmF0ZSwgdHhfYml0cmF0ZSk7Cj4+ICsKPj4gKyAgICAgICByZXR1cm4gZXdtYV9z
-dGFfdHhyYXRlX3JlYWQoJmFyc3RhLT5hdmVfc3RhX3R4cmF0ZSk7Cj4+ICB9Cj4gCj4gQW50b25p
-byBhbmQgRmVsaXgsIHBsZWFzZSBjb3JyZWN0IG1lIHdoZW4gdGhpcyBzdGF0ZW1lbnQgaXMgaW5j
-b3JyZWN0Lgo+IAo+IFRoZSBleHBlY3RlZF90aHJvdWdocHV0IGFzIGluaXRpYWxseSBpbXBsZW1l
-bnRlZCBmb3IgbWluc3RyZWwoX2h0KSBpcyAKPiBub3QKPiBhYm91dCB0aGUgcmF3IHBoeXNpY2Fs
-IGJpdHJhdGUgYnV0IGFib3V0IHRoZSB0aHJvdWdocHV0IHdoaWNoIGlzIAo+IGV4cGVjdGVkIGZv
-cgo+IHRoaW5ncyBydW5uaW5nIG9uIHRvcCBvZiB0aGUgd2lmaSBsaW5rLiBTZWUKPiBodHRwczov
-L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5n
-aXQvY29tbWl0Lz9pZD1jY2E2NzRkNDdlNTk2NjU2MzBmMzAwNTI5MWI2MWJiODgzMDE1ZmM1Cj4g
-Zm9yIG1vcmUgZGV0YWlscwo+IAo+IHdoZW4gSSBpbnRlcnByZXQgeW91ciBjaGFuZ2UgY29ycmVj
-dGx5IHRoZW4geW91ciBpdCBkb2Vzbid0IGdldCB0aGUKPiBpbmZvcm1hdGlvbiBhYm91dCBwYWNr
-ZXQgbG9zcyBvciBhZ2dyZWdhdGlvbiBhbmQgZG9lc24ndCBkbyBhbnl0aGluZyAKPiBjb252ZXJ0
-Cj4gZnJvbSByYXcgcGh5c2ljYWwgcmF0ZSB0byBzb21ldGhpbmcgdGhlIHVzZXIgY291bGQgZ2V0
-IHNlZS4gSXQgd2lsbCAKPiBqdXN0Cj4gb3ZlcmVzdGltYXRlIHRoZSB0aHJvdWdocHV0IGZvciBh
-dGgxMGsgbGlua3MgYW5kIHRodXMgZ2l2ZSB3cm9uZyAKPiBpbmZvcm1hdGlvbgo+IHRvIHJvdXRp
-bmcgYWxnb3JpdGhtcy4gVGhpcyBjb3VsZCBmb3IgZXhhbXBsZSBjYXVzZSB0aGVtIHRvIHByZWZl
-ciAKPiBsaW5rcyBvdmVyCj4gYXRoMTBrIGJhc2VkIGh3IHdoZW4gbXQ3NiB3b3VsZCBhY3R1YWxs
-eSBwcm92aWRlIGEgc2lnbmlmaWNhbnQgYmV0dGVyCj4gdGhyb3VnaHB1dC4KPiAKPiBCZXNpZGUg
-dGhhdCAtIHdoeSBpcyB0aGUgYXZlX3N0YV90eHJhdGUgb25seSBmaWxsZWQgd2hlbiB3aXRoIG5l
-dyAKPiBpbmZvcm1hdGlvbgo+IHdoZW4gc29tZW9uZSByZXF1ZXN0cyB0aGUgY3VycmVudCBleHBl
-Y3RlZF90aHJvdWdocHV0IHZpYQo+IGdldF9leHBlY3RlZF90aHJvdWdocHV0LiBJIHdvdWxkIGhh
-dmUgZXhwZWN0ZWQgdGhhdCBpdCBpcyBmaWxsZWQgCj4gZXZlcnl0aW1lIHlvdQo+IGdldCBuZXcg
-aW5mb3JtYXRpb24gYWJvdXQgdGhlIGN1cnJlbnQgcmF0ZSBmcm9tIHRoZSBmaXJtd2FyZQo+IChh
-dGgxMGtfc3RhX3N0YXRpc3RpY3MpLgo+IApZZXMuIGlkZWFsbHkgaXQgc2hvdWxkIGJlIGRvaW5n
-IHRoZSByYXRlIGF2Zy4gb2YgYWxsIHRoZSBzZW50IHBhY2tldHMuCgo+PiBAQCAtNzY4Niw2ICs3
-Njg2LDIyIEBAIHN0YXRpYyB2b2lkIGF0aDEwa19zdGFfc3RhdGlzdGljcyhzdHJ1Y3QgCj4+IGll
-ZWU4MDIxMV9odyAqaHcsCj4+ICAgICAgICAgfQo+PiAgICAgICAgIHNpbmZvLT50eHJhdGUuZmxh
-Z3MgPSBhcnN0YS0+dHhyYXRlLmZsYWdzOwo+PiAgICAgICAgIHNpbmZvLT5maWxsZWQgfD0gMVVM
-TCA8PCBOTDgwMjExX1NUQV9JTkZPX1RYX0JJVFJBVEU7Cj4+ICsKPj4gKyAgICAgICBzaW5mby0+
-ZXhwZWN0ZWRfdGhyb3VnaHB1dCA9Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Cj4+IGV3bWFfc3RhX3R4cmF0ZV9yZWFkKCZhcnN0YS0+YXZlX3N0YV90eHJhdGUpOwo+PiArICAg
-ICAgIHNpbmZvLT5maWxsZWQgfD0gQklUKE5MODAyMTFfU1RBX0lORk9fRVhQRUNURURfVEhST1VH
-SFBVVCk7Cj4+ICt9Cj4gCj4gVGhpcyBicmluZ3MgbWUgZGlyZWN0bHkgdG8gdGhlIG5leHQgcG9p
-bnQuIFdoeSBhcmUgeW91IGNoYW5naW5nIHRoZXNlIAo+IHZhbHVlcwo+IGhlcmU/IElzbid0IHN0
-YV9zZXRfc2luZm8gaXMgZXhwZWN0ZWQgdG8gZG8gdGhhdD8gVGhpcyBpcyBhdCBsZWFzdCB3aGF0
-IAo+IHdlCj4gZXhwZWN0IGhvdyBpdCB3b3JrcyB3aGVuIHdlIGNhbGwgY2ZnODAyMTFfZ2V0X3N0
-YXRpb24oKSBpbiBiYXRtYW4tYWR2Lgo+IAoKWWVzLiBUaGlzIGxvb2tzIHJlZHVuZGFudCwgSSB3
-aWxsIHJlbW92ZSB0aGlzIGxpbmUsCiAgc2luZm8tPmZpbGxlZCB8PSBCSVQoTkw4MDIxMV9TVEFf
-SU5GT19FWFBFQ1RFRF9USFJPVUdIUFVUKTsKCkkgd2lsbCBtYWtlIHRoZXNlIGNoYW5nZXMgYW5k
-IHNlbmQgdjIuCgpUaGFua3MsCkFuaWwuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+On Fri, 2018-03-23 at 19:11 +0530, akolli@codeaurora.org wrote:
+> 
+> > > +
+> > > +       sinfo->expected_throughput =
+> > > +                               
+> > > ewma_sta_txrate_read(&arsta->ave_sta_txrate);
+> > > +       sinfo->filled |=
+> > > BIT(NL80211_STA_INFO_EXPECTED_THROUGHPUT);
+> > > +}
+
+> Yes. This looks redundant, I will remove this line,
+>   sinfo->filled |= BIT(NL80211_STA_INFO_EXPECTED_THROUGHPUT);
+
+You don't need any of the changes here in ath10k_sta_statistics().
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
