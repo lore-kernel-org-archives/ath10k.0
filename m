@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezNNW-0004cF-Rk
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 14:09:12 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ezPCq-0006hV-QK
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 16:06:18 +0000
+Subject: Re: [ath10k throughput] low throughput in multi-user mode
+References: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
+ <18864c97-63f9-3bfe-190c-24fda424c882@candelatech.com>
+ <073801d3c256$1793e220$46bba660$@sina.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <9ccc3efc-3f29-a68b-fffd-6060d2e569cf@candelatech.com>
+Date: Fri, 23 Mar 2018 09:06:00 -0700
 MIME-Version: 1.0
-Date: Fri, 23 Mar 2018 19:38:59 +0530
-From: akolli@codeaurora.org
-Subject: Re: [PATCH] ath10k: Implement get_expected_throughput callback
-In-Reply-To: <1521812659.28252.0.camel@sipsolutions.net>
-References: <1521790620-12267-1-git-send-email-akolli@codeaurora.org>
- <2667699.TbZPxW0hJB@bentobox>
- <5434de1a4bcdf7341fdeb766e7638760@codeaurora.org>
- (sfid-20180323_144153_352630_7377CAE0)
- <1521812659.28252.0.camel@sipsolutions.net>
-Message-ID: <13b463416aedef1cee5641a8f89f9705@codeaurora.org>
+In-Reply-To: <073801d3c256$1793e220$46bba660$@sina.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +20,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Johannes Berg <johannes.berg@intel.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Antonio Quartulli <a@unstable.cc>, ath10k@lists.infradead.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, Tamizh chelvam <tamizhr@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
+To: gary <guohuizou2000@sina.com>, ath10k@lists.infradead.org
 
-
-On 2018-03-23 19:14, Johannes Berg wrote:
-> On Fri, 2018-03-23 at 19:11 +0530, akolli@codeaurora.org wrote:
->> 
->> > > +
->> > > +       sinfo->expected_throughput =
->> > > +
->> > > ewma_sta_txrate_read(&arsta->ave_sta_txrate);
->> > > +       sinfo->filled |=
->> > > BIT(NL80211_STA_INFO_EXPECTED_THROUGHPUT);
->> > > +}
-> 
->> Yes. This looks redundant, I will remove this line,
->>   sinfo->filled |= BIT(NL80211_STA_INFO_EXPECTED_THROUGHPUT);
-> 
-> You don't need any of the changes here in ath10k_sta_statistics().
-
-Hi Jaohannes,
-
-Yes. I removed this in ath10k driver and sent a v2 patch.
-
-Thanks,
-Anil.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDMvMjIvMjAxOCAwODoyMSBQTSwgZ2FyeSB3cm90ZToKPgo+IEhpIEJlbiwKPgo+IFRoYW5r
+IHlvdSBmb3IgeW91ciByZXBseS4KPiBNeSB3aXJlbGVzcyBkcml2ZXIgaXMgY29tcGF0LXdpcmVs
+ZXNzXzIwMTctMTAtNiwgYW5kIGtlcm5lbCBpcyA0LjkuNTguCj4KPiBUaGUgdGVzdCByZXN1bHQg
+d2l0aCB5b3VyIGZpcm13YXJlOgo+IEdldCB0aHJvdWdocHV0IDEuMTNHYnBzIHdpdGggMTYgdXNl
+cnMuCj4gQW5kIGdldCBhbG1vc3QgMCB3aXRoIDMyIHVzZXJzLgoKQ2FuIHlvdSB0cnkgYW4gb2xk
+ZXIga2VybmVsIHcvb3V0IGJhY2twb3J0cywgbWF5YmUgbXkgNC4xMyBvciA0LjksIG9yCnNvbWUg
+c3RvY2sga2VybmVsIHRoYXQgaXMgYSBiaXQgb2xkZXI/CgpodHRwczovL2dpdGh1Yi5jb20vZ3Jl
+ZWFyYi9saW51eC1jdC00LjkKClRoYW5rcywKQmVuCgo+Cj4gQnkgbXkgb2JzZXJ2YXRpb24sIGlu
+IG9uZSB0cnksIGF0aDEwa19odHRfcnhfdHhfbW9kZV9zd2l0Y2hfaW5kIGlzIGludm9rZWQKPiBv
+bmx5IHR3aWNlLgo+IEFzIGEgcmVzdWx0LCB0aGUgYXRoMTBrIGRyaXZlciBjYW4ndCBnZXQgdGhl
+IGxhdGVzdCBudW1fcHVzaF9hbGxvd2VkKGFsd2F5cwo+IHplcm8pLgo+Cj4gRG8geW91IGhhdmUg
+YW55IGlkZWEgb2YgaXQ/Cj4KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IGF0
+aDEwayBbbWFpbHRvOmF0aDEway1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmddIE9uIEJlaGFs
+ZiBPZiBCZW4KPiBHcmVlYXIKPiBTZW50OiAyMDE4xOoz1MIyMsjVIDA6MzEKPiBUbzogZ2FyeTsg
+bGludXgtd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnOyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+Zwo+IFN1YmplY3Q6IFJlOiBbYXRoMTBrIHRocm91Z2hwdXRdIGxvdyB0aHJvdWdocHV0IGluIG11
+bHRpLXVzZXIgbW9kZQo+Cj4KPiBPbiAwMy8yMC8yMDE4IDA2OjQ0IFBNLCBnYXJ5IHdyb3RlOgo+
+Pgo+PiBIaSBhbGwsCj4+IEkgaGF2ZSBydW4gdGhlIHRocm91Z2hwdXQgdGVzdCBvbiB2ZXJpd2F2
+ZS4oZnJvbSBFdGhlcm5ldCB0byB3aXJlbGVzcykKPj4gTXkgQVAgc3Vwb3J0cyA0KjQsIDExYWMs
+IG11LW1pbW8uLHdpcmVsZXNzIGNoaXAgaXMgUUNBOTk4NC4KPj4gQXQgZmlyc3QsIHRoZSB0aHJv
+dWdocHV0IGlzIGFib3V0IDgwTWJwcyBvbmx5IHdpdGggMTYgdXNlcnMsIHNvIEkKPj4gZm9yY2Ug
+dG8gcmV0dXJuIHRydWUgaW4gZnVuY3Rpb24gYXRoMTBrX21hY190eF9jYW5fcHVzaCgpLgo+PiBB
+cyBhIHJlc3VsdCwgd2hlbiB0aGUgdXNlciBudW1iZXIgaXMgMX4xNiwgdGhlIHVkcCB0aHJvdWdo
+cHV0IGlzIGFib3V0Cj4+IDEuMkdicHMgfjEuNEdicHMuCj4+IEJ1dCB3aGVuIHRoZSB1c2VyIG51
+bWJlciBpcyAzMiwgdGhlIHVkcCB0aHJvdWdocHV0IGlzIG9ubHkgNTIwTWJwcy4KPj4KPj4gU28g
+SSB0cnkgdG8gc3Vic3RpdHV0ZSBhdGgxMGstZmlybXdhcmUuCj4+IFdpdGggZmlybXdhcmUgMTAu
+NC0zLjQtMDA4MiBhbmQgYWJvdmUsIHRoZSB0aHJvdWdocHV0IGlzIGFyb3VuZCA1MjBNYnBzLgo+
+PiBCdXQgd2l0aCBmaXJtd2FyZSAxMC40LTMuNC0wMDcyLCB0aGUgdGhyb3VnaHB1dCBnZXRzIDEu
+MUdicHMuCj4+Cj4+IERvIEkgbWlzcyBzb21ldGhpbmcgaW4gY29uZmlndXJhdGlvbj8KPj4gQW55
+IGNvbW1lbnQgaXMgYXBwcmVjaWF0ZWQuCj4KPiBXaGF0IGtlcm5lbCB2ZXJzaW9uIChvciBiYWNr
+cG9ydHMsIGlmIHlvdSBhcmUgdXNpbmcgdGhhdD8pIGFyZSB5b3UgdXNpbmc/Cj4KPiBBbmQsIEkn
+ZCBiZSBjdXJpb3VzIGhvdyB0aGUgbGF0ZXN0IGF0aDEway1DVCAoYmV0YSkgZmlybXdhcmUgY29t
+cGFyZXMgaWYgeW91Cj4gaGF2ZSB0aW1lIHRvIHRyeSB0aGF0Ogo+Cj4gaHR0cDovL3d3dy5jYW5k
+ZWxhdGVjaC5jb20vYXRoMTBrLTEwLjQucGhwCj4KPiBBdCBsZWFzdCBpbiB1cGxvYWQgdGVzdGlu
+Zywgd2UgZ2V0IGJldHRlciB0aHJvdWdocHV0IHdpdGggbG90cyBvZiB2aXJ0dWFsCj4gc3RhdGlv
+bnMgaWYgd2UgdHVuZSB0aGUgbnVtYmVyIG9mIHR4IGRlc2NyaXB0b3JzIHRvIGJlIGxhcmdlciBh
+cyB0aGF0IHdpbGwKPiBnZW5lcmF0ZSBsYXJnZXIgQU1QRFVzIG9uIGFpci4KPgo+IFlvdSBtaWdo
+dCBhbHNvIGNoZWNrIHlvdXIgcmF0ZS1jdHJsIGxvZ2ljIHRvIG1ha2Ugc3VyZSBhbGwgb2YgeW91
+ciBzdGF0aW9ucwo+IGFyZSB1c2luZyBoaWdoZXIgTUNTIHJhdGVzLgo+Cj4gVGhhbmtzLAo+IEJl
+bgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxh
+IFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCj4KPgo+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxp
+bmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPgo+Cj4KPgo+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+
+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPgoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
+bGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0
+ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
