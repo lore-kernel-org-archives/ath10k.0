@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0Mea-0007Ab-7h
- for ath10k@lists.infradead.org; Mon, 26 Mar 2018 07:34:53 +0000
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Subject: [PATCH] ath10k: Suppress "Unknown eventid: 36925" warnings
-Date: Mon, 26 Mar 2018 13:04:01 +0530
-Message-Id: <1522049641-19521-1-git-send-email-murugana@codeaurora.org>
+ id 1f0MhP-0001el-Uz
+ for ath10k@lists.infradead.org; Mon, 26 Mar 2018 07:37:49 +0000
+Received: by mail-lf0-x244.google.com with SMTP id z143-v6so26637224lff.3
+ for <ath10k@lists.infradead.org>; Mon, 26 Mar 2018 00:37:37 -0700 (PDT)
+Date: Mon, 26 Mar 2018 09:37:25 +0200
+From: Marcus Folkesson <marcus.folkesson@gmail.com>
+Subject: Re: [PATCH 10/12] ath10k: add bdf/cal indication support
+Message-ID: <20180326073725.GA3689@gmail.com>
+References: <1522042886-26343-1-git-send-email-govinds@codeaurora.org>
+MIME-Version: 1.0
+In-Reply-To: <1522042886-26343-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,51 +20,205 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3874329217514167129=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Sathishkumar Muruganandam <murugana@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
-FW has Smart Logging feature enabled by default for detecting failures
-and processing FATAL_CONDITION_EVENTID (36925 - 0x903D) back to host.
 
-Since ath10k doesn't implement the Smart Logging and FATAL CONDITION
-EVENT processing yet, suppressing the unknown event ID warning by moving
-this under ATH10K_DBG_WMI.
+--===============3874329217514167129==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
 
-Simulated the same issue by having associated STA powered off when
-ping flood was running from AP backbone. This triggerd STA KICKOUT
-in AP followed by FATAL CONDITION event 36925.
 
-Issue was reproduced and verified in below DUT
-------------------------------------------------
-AP mode of OpenWRT QCA9984 running 6.0.8 with FW ver 10.4-3.5.3-00053
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Govind,
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 58dc2189ba49..ace181403739 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5531,6 +5531,7 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
- 	case WMI_10_4_PEER_RATECODE_LIST_EVENTID:
- 	case WMI_10_4_WDS_PEER_EVENTID:
-+	case WMI_10_4_DEBUG_FATAL_CONDITION_EVENTID:
- 		ath10k_dbg(ar, ATH10K_DBG_WMI,
- 			   "received event id %d not implemented\n", id);
- 		break;
--- 
-2.7.4
+On Mon, Mar 26, 2018 at 11:11:26AM +0530, Govind Singh wrote:
+> Add support for bdf download and cold boot
+> calibration trigger qmi message support.
+>=20
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/qmi.c | 195 ++++++++++++++++++++++++++++=
+++++++
+>  drivers/net/wireless/ath/ath10k/qmi.h |  10 ++
+>  2 files changed, 205 insertions(+)
+>=20
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless=
+/ath/ath10k/qmi.c
+> index a33681d..f23d0fe 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/soc/qcom/qmi.h>
+>  #include <linux/qcom_scm.h>
+>  #include <linux/of.h>
+> +#include <linux/firmware.h>
+>  #include "qmi.h"
+>  #include "qmi_svc_v01.h"
+> =20
+> @@ -270,6 +271,179 @@ static int ath10k_qmi_msa_ready_send_sync_msg(struc=
+t ath10k_qmi *qmi)
+>  	return ret;
+>  }
+> =20
+> +int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
+> +{
+> +	struct wlfw_bdf_download_resp_msg_v01 *resp;
+> +	struct wlfw_bdf_download_req_msg_v01 *req;
+> +	const struct firmware *fw_entry;
+> +	unsigned int remaining;
+> +	struct qmi_txn txn;
+> +	const u8 *temp;
+> +	int ret;
+> +
+> +	req =3D kzalloc(sizeof(*req), GFP_KERNEL);
+> +	if (!req)
+> +		return -ENOMEM;
+> +
+> +	resp =3D kzalloc(sizeof(*resp), GFP_KERNEL);
+> +	if (!resp) {
+> +		kfree(req);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	ret =3D request_firmware(&fw_entry, BDF_FILE_NAME, &qmi->pdev->dev);
+> +	if (ret < 0) {
+> +		pr_err("fail to load bdf: %s\n", BDF_FILE_NAME);
 
+Do we want to use the dev_* family print functions instead?
+
+For example:
+dev_err(&qmi->pdev->dev,"fail to load bdf: %s\n", BDF_FILE_NAME);
+
+
+> +		goto err_req_fw;
+> +	}
+> +
+> +	temp =3D fw_entry->data;
+> +	remaining =3D fw_entry->size;
+> +
+> +	pr_debug("downloading bdf: %s, size: %u\n",
+> +		 BDF_FILE_NAME, remaining);
+> +
+> +	while (remaining) {
+> +		req->valid =3D 1;
+> +		req->file_id_valid =3D 1;
+> +		req->file_id =3D 0;
+> +		req->total_size_valid =3D 1;
+> +		req->total_size =3D fw_entry->size;
+> +		req->seg_id_valid =3D 1;
+> +		req->data_valid =3D 1;
+> +		req->end_valid =3D 1;
+> +
+> +		if (remaining > QMI_WLFW_MAX_DATA_SIZE_V01) {
+> +			req->data_len =3D QMI_WLFW_MAX_DATA_SIZE_V01;
+> +		} else {
+> +			req->data_len =3D remaining;
+> +			req->end =3D 1;
+> +		}
+> +
+> +		memcpy(req->data, temp, req->data_len);
+> +
+> +		ret =3D qmi_txn_init(&qmi->qmi_hdl, &txn,
+> +				   wlfw_bdf_download_resp_msg_v01_ei,
+> +				   resp);
+> +		if (ret < 0) {
+> +			pr_err("fail to init txn for bdf download %d\n", ret);
+> +			goto out;
+> +		}
+> +
+> +		ret =3D
+> +		qmi_send_request(&qmi->qmi_hdl, NULL, &txn,
+> +				 QMI_WLFW_BDF_DOWNLOAD_REQ_V01,
+> +				 WLFW_BDF_DOWNLOAD_REQ_MSG_V01_MAX_MSG_LEN,
+> +				 wlfw_bdf_download_req_msg_v01_ei, req);
+> +		if (ret < 0) {
+> +			qmi_txn_cancel(&txn);
+> +			goto err_send;
+> +		}
+> +
+> +		ret =3D qmi_txn_wait(&txn, WLFW_TIMEOUT * HZ);
+> +
+> +		if (ret < 0)
+> +			goto err_send;
+> +
+> +		if (resp->resp.result !=3D QMI_RESULT_SUCCESS_V01) {
+> +			pr_err("bdf download failed, res:%d, err:%d\n",
+> +			       resp->resp.result, resp->resp.error);
+> +			ret =3D resp->resp.result;
+> +			goto err_send;
+> +		}
+> +
+> +		remaining -=3D req->data_len;
+> +		temp +=3D req->data_len;
+> +		req->seg_id++;
+> +	}
+> +
+> +	pr_debug("bdf download request completed\n");
+> +
+> +	kfree(resp);
+> +	kfree(req);
+
+release_firmware(fw_entry);
+
+I think we need to release firmware before return?
+
+> +	return 0;
+> +
+> +err_send:
+> +	release_firmware(fw_entry);
+> +
+> +err_req_fw:
+> +	kfree(req);
+> +	kfree(resp);
+> +
+> +out:
+> +	return ret;
+> +}
+
+Best regards
+Marcus Folkesson
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAlq4ozAACgkQiIBOb1ld
+UjJTnRAAz9p9dZeHVGHVW9r8babfEbzCXxn0tE7G9cklHDhIKZzbGqlcy4ojYMz5
+ZaTKaErEIe39vy/QYPU6YfhB+nJG5kCzezQ1L34fBabP/yElSWb9OHsWuALH9atY
+i4ZAA/svKOwRAlUxfMVuJVWCOf7aQHBMjSnTk5rvQQUMWxbtYQDC1C8Z7K9esKK2
+V6x3Fwi3k+G4zoaXKDJBoEfcOpZsONUHQjkbVHh6zTR9EqLy0I7bsEhPnoGxkiMS
+nR87E1RZVug6grgiFsDF5kwrhVQkzgiP098u/BYmpm+06w74uqxpazIfNrKaqizX
+OybwnUElyldUV1/NbcBjvAqjRnAdW+zUf4ePOyPMdjBu00FaV/MKAYu27g3+fqtB
+U9NtJALsuUuQV3U8Xg/lYEd0WEqnKj1IwYshj5e9+i178UemvyB1S+MLVIQCSAlh
+G+DQTCzR3H0umKfhcQyQPizM6klwGwYoi9vmbpvuXn4mvX+yLHeqimo+mOni/fIH
+RWHitUlZU2opV1VRx4fwX8sYTIaxkFNnGHSv9UurS4FdiLsV+mbkMepShWJu76Jn
+slE2vbaR97PGWtPk/O2i0Jk3QocekN6NhWMQBpSSkCCYFA7n1i2HntxaD4/3OGns
+cMlTWaaavRk4sWZ7N5XtJ7Py7Gy/AGXx8o2EXwnGdtJ0aXvCFS4=
+=Pzxb
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
+
+
+--===============3874329217514167129==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3874329217514167129==--
