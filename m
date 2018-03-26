@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0Toq-0004k4-59
- for ath10k@lists.infradead.org; Mon, 26 Mar 2018 15:13:57 +0000
+ id 1f0Tq1-0004z2-PH
+ for ath10k@lists.infradead.org; Mon, 26 Mar 2018 15:15:14 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: fix use-after-free in ath10k_wmi_cmd_send_nowait
+Subject: Re: ath10k: Fix kernel panic while using worker
+ (ath10k_sta_rc_update_wk)
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1520232242-24132-1-git-send-email-cjhuang@codeaurora.org>
-References: <1520232242-24132-1-git-send-email-cjhuang@codeaurora.org>
-Message-Id: <20180326151345.D8479607DD@smtp.codeaurora.org>
-Date: Mon, 26 Mar 2018 15:13:45 +0000 (UTC)
+In-Reply-To: <1520854780-11823-1-git-send-email-periyasa@codeaurora.org>
+References: <1520854780-11823-1-git-send-email-periyasa@codeaurora.org>
+Message-Id: <20180326151459.7FA78603AF@smtp.codeaurora.org>
+Date: Mon, 26 Mar 2018 15:14:59 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +23,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
+To: Karthikeyan Periyasamy <periyasa@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Carl Huang <cjhuang@codeaurora.org> wrote:
+Karthikeyan Periyasamy <periyasa@codeaurora.org> wrote:
 
-> The skb may be freed in tx completion context before
-> trace_ath10k_wmi_cmd is called. This can be easily captured when
-> KASAN(Kernel Address Sanitizer) is enabled. The fix is to move
-> trace_ath10k_wmi_cmd before the send operation. As the ret has no
-> meaning in trace_ath10k_wmi_cmd then, so remove this parameter too.
+> When attempt to run worker (ath10k_sta_rc_update_wk) after the station object
+> (ieee80211_sta) delete will trigger the kernel panic.
 > 
-> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-> Tested-by: Brian Norris <briannorris@chromium.org>
-> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> This problem arise in AP + Mesh configuration, Where the current node AP VAP
+> and neighbor node mesh VAP MAC address are same. When the current mesh node
+> try to establish the mesh link with neighbor node, driver peer creation for
+> the neighbor mesh node fails due to duplication MAC address. Already the AP
+> VAP created with same MAC address.
+> 
+> It is caused by the following scenario steps.
+> 
+> Steps:
+> 1. In above condition, ath10k driver sta_state callback (ath10k_sta_state)
+>    fails to do the state change for a station from IEEE80211_STA_NOTEXIST
+>    to IEEE80211_STA_NONE due to peer creation fails. Sta_state callback is
+>    called from ieee80211_add_station() to handle the new station
+>    (neighbor mesh node) request from the wpa_supplicant.
+> 2. Concurrently ath10k receive the sta_rc_update callback notification from
+>    the mesh_neighbour_update() to handle the beacon frames of the above
+>    neighbor mesh node. since its atomic callback, ath10k driver queue the
+>    work (ath10k_sta_rc_update_wk) to handle rc update.
+> 3. Due to driver sta_state callback fails (step 1), mac80211 free the station
+>    object.
+> 4. When the worker (ath10k_sta_rc_update_wk) scheduled to run, it will access
+>    the station object which is already deleted. so it will trigger kernel
+>    panic.
+> 
+> Added the peer exist check in sta_rc_update callback before queue the work.
+> 
+> Kernel Panic log:
+> 
+> Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> pgd = c0204000
+> [00000000] *pgd=00000000
+> Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+> CPU: 1 PID: 1833 Comm: kworker/u4:2 Not tainted 3.14.77 #1
+> task: dcef0000 ti: d72b6000 task.ti: d72b6000
+> PC is at pwq_activate_delayed_work+0x10/0x40
+> LR is at pwq_activate_delayed_work+0xc/0x40
+> pc : [<c023f988>]    lr : [<c023f984>]    psr: 40000193
+> sp : d72b7f18  ip : 0000007a  fp : d72b6000
+> r10: 00000000  r9 : dd404414  r8 : d8c31998
+> r7 : d72b6038  r6 : 00000004  r5 : d4907ec8  r4 : dcee1300
+> r3 : ffffffe0  r2 : 00000000  r1 : 00000001  r0 : 00000000
+> Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+> Control: 10c5787d  Table: 595bc06a  DAC: 00000015
+> ...
+> Process kworker/u4:2 (pid: 1833, stack limit = 0xd72b6238)
+> Stack: (0xd72b7f18 to 0xd72b8000)
+> 7f00:                                                       00000001 dcee1300
+> 7f20: 00000001 c02410dc d8c31980 dd404400 dd404400 c0242790 d8c31980 00000089
+> 7f40: 00000000 d93e1340 00000000 d8c31980 c0242568 00000000 00000000 00000000
+> 7f60: 00000000 c02474dc 00000000 00000000 000000f8 d8c31980 00000000 00000000
+> 7f80: d72b7f80 d72b7f80 00000000 00000000 d72b7f90 d72b7f90 d72b7fac d93e1340
+> 7fa0: c0247404 00000000 00000000 c0208d20 00000000 00000000 00000000 00000000
+> 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+> [<c023f988>] (pwq_activate_delayed_work) from [<c02410dc>] (pwq_dec_nr_in_flight+0x58/0xc4)
+> [<c02410dc>] (pwq_dec_nr_in_flight) from [<c0242790>] (worker_thread+0x228/0x360)
+> [<c0242790>] (worker_thread) from [<c02474dc>] (kthread+0xd8/0xec)
+> [<c02474dc>] (kthread) from [<c0208d20>] (ret_from_fork+0x14/0x34)
+> Code: e92d4038 e1a05000 ebffffbc[69210.619376] SMP: failed to stop secondary CPUs
+> Rebooting in 3 seconds..
+> 
+> Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-9ef0f58ed7b4 ath10k: fix use-after-free in ath10k_wmi_cmd_send_nowait
+8b2d93dd2261 ath10k: Fix kernel panic while using worker (ath10k_sta_rc_update_wk)
 
 -- 
-https://patchwork.kernel.org/patch/10258179/
+https://patchwork.kernel.org/patch/10276043/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
