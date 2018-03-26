@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0Kr3-0003eB-Ur
- for ath10k@lists.infradead.org; Mon, 26 Mar 2018 05:39:39 +0000
+ id 1f0KrF-0003kZ-Sh
+ for ath10k@lists.infradead.org; Mon, 26 Mar 2018 05:39:51 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 03/12] ath10k: Add ath10k QMI client driver
-Date: Mon, 26 Mar 2018 11:09:21 +0530
-Message-Id: <1522042761-25716-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH 04/12] ath10k: add support to start and stop qmi service
+Date: Mon, 26 Mar 2018 11:09:33 +0530
+Message-Id: <1522042773-25775-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,204 +23,240 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Add QMI client driver for Q6 integrated WLAN connectivity
-subsystem. This module is responsible for communicating WLAN
-control messages to FW over QUALCOMM MSM Interface (QMI).
+Add support to start qmi service to configure the wlan
+firmware component and register event notifier to communicate
+with the WLAN firmware over qmi communication interface.
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/Kconfig  |   2 +-
- drivers/net/wireless/ath/ath10k/Makefile |   4 +
- drivers/net/wireless/ath/ath10k/qmi.c    | 121 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/qmi.h    |  24 ++++++
- 4 files changed, 150 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
- create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
+ drivers/net/wireless/ath/ath10k/qmi.c | 155 ++++++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/qmi.h |  13 +++
+ 2 files changed, 160 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index 84f071a..9978ad5e 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -42,7 +42,7 @@ config ATH10K_USB
- 
- config ATH10K_SNOC
-         tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
--        depends on ATH10K && ARCH_QCOM
-+        depends on ATH10K && ARCH_QCOM && QCOM_QMI_HELPERS
-         ---help---
-           This module adds support for integrated WCN3990 chip connected
-           to system NOC(SNOC). Currently work in progress and will not
-diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
-index 44d60a6..1730d1d 100644
---- a/drivers/net/wireless/ath/ath10k/Makefile
-+++ b/drivers/net/wireless/ath/ath10k/Makefile
-@@ -38,5 +38,9 @@ ath10k_usb-y += usb.o
- obj-$(CONFIG_ATH10K_SNOC) += ath10k_snoc.o
- ath10k_snoc-y += snoc.o
- 
-+obj-$(CONFIG_ATH10K_SNOC) += ath10k_qmi.o
-+ath10k_qmi-y += qmi.o \
-+		qmi_svc_v01.o
-+
- # for tracing framework to find trace.h
- CFLAGS_trace.o := -I$(src)
 diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-new file mode 100644
-index 0000000..2235182
---- /dev/null
+index 2235182..3a7fcc6 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
 +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -0,0 +1,121 @@
-+/*
-+ * Copyright (c) 2018 The Linux Foundation. All rights reserved.
-+ *
-+ * Permission to use, copy, modify, and/or distribute this software for any
-+ * purpose with or without fee is hereby granted, provided that the above
-+ * copyright notice and this permission notice appear in all copies.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/debugfs.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/qrtr.h>
-+#include <linux/net.h>
-+#include <linux/completion.h>
-+#include <linux/idr.h>
-+#include <linux/string.h>
-+#include <net/sock.h>
-+#include <linux/soc/qcom/qmi.h>
-+#include "qmi.h"
-+#include "qmi_svc_v01.h"
-+
-+static struct ath10k_qmi *qmi;
-+
-+static int ath10k_qmi_new_server(struct qmi_handle *qmi_hdl,
-+				 struct qmi_service *service)
+@@ -31,15 +31,115 @@
+ 
+ static struct ath10k_qmi *qmi;
+ 
++static int ath10k_qmi_event_fw_ready_ind(struct ath10k_qmi *qmi)
 +{
++	pr_debug("fw ready event received\n");
++	spin_lock(&qmi->event_lock);
++	qmi->fw_ready = true;
++	spin_unlock(&qmi->event_lock);
++
 +	return 0;
 +}
 +
-+static void ath10k_qmi_del_server(struct qmi_handle *qmi_hdl,
-+				  struct qmi_service *service)
++static void ath10k_qmi_fw_ready_ind(struct qmi_handle *qmi_hdl,
++				    struct sockaddr_qrtr *sq,
++				    struct qmi_txn *txn, const void *data)
 +{
++	struct ath10k_qmi *qmi = container_of(qmi_hdl, struct ath10k_qmi, qmi_hdl);
++
++	ath10k_qmi_event_fw_ready_ind(qmi);
 +}
 +
-+static struct qmi_ops ath10k_qmi_ops = {
-+	.new_server = ath10k_qmi_new_server,
-+	.del_server = ath10k_qmi_del_server,
++static void ath10k_qmi_msa_ready_ind(struct qmi_handle *qmi_hdl,
++				     struct sockaddr_qrtr *sq,
++				     struct qmi_txn *txn, const void *data)
++{
++	struct ath10k_qmi *qmi = container_of(qmi_hdl, struct ath10k_qmi, qmi_hdl);
++
++	qmi->msa_ready = true;
++}
++
++static struct qmi_msg_handler qmi_msg_handler[] = {
++	{
++		.type = QMI_INDICATION,
++		.msg_id = QMI_WLFW_FW_READY_IND_V01,
++		.ei = wlfw_fw_ready_ind_msg_v01_ei,
++		.decoded_size = sizeof(struct wlfw_fw_ready_ind_msg_v01),
++		.fn = ath10k_qmi_fw_ready_ind,
++	},
++	{
++		.type = QMI_INDICATION,
++		.msg_id = QMI_WLFW_MSA_READY_IND_V01,
++		.ei = wlfw_msa_ready_ind_msg_v01_ei,
++		.decoded_size = sizeof(struct wlfw_msa_ready_ind_msg_v01),
++		.fn = ath10k_qmi_msa_ready_ind,
++	},
++	{}
 +};
 +
-+static int ath10k_qmi_probe(struct platform_device *pdev)
++static int ath10k_qmi_connect_to_fw_server(struct ath10k_qmi *qmi)
++{
++	struct qmi_handle *qmi_hdl = &qmi->qmi_hdl;
++	int ret;
++
++	ret = kernel_connect(qmi_hdl->sock, (struct sockaddr *)&qmi->sq,
++			     sizeof(qmi->sq), 0);
++	if (ret) {
++		pr_err("fail to connect to remote service port\n");
++		return ret;
++	}
++
++	pr_info("wlan qmi service connected\n");
++
++	return 0;
++}
++
++static void ath10k_qmi_event_server_arrive(struct work_struct *work)
++{
++	struct ath10k_qmi *qmi = container_of(work, struct ath10k_qmi,
++					      work_svc_arrive);
++	int ret;
++
++	ret = ath10k_qmi_connect_to_fw_server(qmi);
++	if (ret)
++		return;
++
++	pr_debug("qmi server arrive\n");
++}
++
++static void ath10k_qmi_event_server_exit(struct work_struct *work)
++{
++	struct ath10k_qmi *qmi = container_of(work, struct ath10k_qmi,
++					      work_svc_exit);
++
++	spin_lock(&qmi->event_lock);
++	qmi->fw_ready = false;
++	spin_unlock(&qmi->event_lock);
++	pr_info("wlan fw service disconnected\n");
++}
++
+ static int ath10k_qmi_new_server(struct qmi_handle *qmi_hdl,
+ 				 struct qmi_service *service)
+ {
++	struct ath10k_qmi *qmi = container_of(qmi_hdl, struct ath10k_qmi, qmi_hdl);
++	struct sockaddr_qrtr *sq = &qmi->sq;
++
++	sq->sq_family = AF_QIPCRTR;
++	sq->sq_node = service->node;
++	sq->sq_port = service->port;
++
++	queue_work(qmi->event_wq, &qmi->work_svc_arrive);
++
+ 	return 0;
+ }
+ 
+ static void ath10k_qmi_del_server(struct qmi_handle *qmi_hdl,
+ 				  struct qmi_service *service)
+ {
++	struct ath10k_qmi *qmi =
++		container_of(qmi_hdl, struct ath10k_qmi, qmi_hdl);
++
++	queue_work(qmi->event_wq, &qmi->work_svc_exit);
+ }
+ 
+ static struct qmi_ops ath10k_qmi_ops = {
+@@ -47,6 +147,51 @@ static void ath10k_qmi_del_server(struct qmi_handle *qmi_hdl,
+ 	.del_server = ath10k_qmi_del_server,
+ };
+ 
++static int ath10k_alloc_qmi_resources(struct ath10k_qmi *qmi)
 +{
 +	int ret;
 +
-+	qmi = devm_kzalloc(&pdev->dev, sizeof(*qmi),
-+			   GFP_KERNEL);
-+	if (!qmi)
-+		return -ENOMEM;
-+
-+	qmi->pdev = pdev;
-+	platform_set_drvdata(pdev, qmi);
 +	ret = qmi_handle_init(&qmi->qmi_hdl,
 +			      WLFW_BDF_DOWNLOAD_REQ_MSG_V01_MAX_MSG_LEN,
-+			      &ath10k_qmi_ops, NULL);
-+	if (ret < 0)
++			      &ath10k_qmi_ops, qmi_msg_handler);
++	if (ret)
 +		goto err;
++
++	qmi->event_wq = alloc_workqueue("qmi_driver_event",
++					WQ_UNBOUND, 1);
++	if (!qmi->event_wq) {
++		pr_err("workqueue alloc failed\n");
++		ret = -EFAULT;
++		goto err_qmi_service;
++	}
++
++	spin_lock_init(&qmi->event_lock);
++	INIT_WORK(&qmi->work_svc_arrive, ath10k_qmi_event_server_arrive);
++	INIT_WORK(&qmi->work_svc_exit, ath10k_qmi_event_server_exit);
 +
 +	ret = qmi_add_lookup(&qmi->qmi_hdl, WLFW_SERVICE_ID_V01,
 +			     WLFW_SERVICE_VERS_V01, 0);
-+	if (ret < 0)
-+		goto err;
-+
-+	pr_debug("qmi client driver probed successfully\n");
++	if (ret)
++		goto err_qmi_service;
 +
 +	return 0;
++
++err_qmi_service:
++	qmi_handle_release(&qmi->qmi_hdl);
 +
 +err:
 +	return ret;
 +}
 +
-+static int ath10k_qmi_remove(struct platform_device *pdev)
++static void ath10k_remove_qmi_resources(struct ath10k_qmi *qmi)
 +{
-+	struct ath10k_qmi *qmi = platform_get_drvdata(pdev);
-+
++	cancel_work_sync(&qmi->work_svc_arrive);
++	cancel_work_sync(&qmi->work_svc_exit);
++	destroy_workqueue(qmi->event_wq);
 +	qmi_handle_release(&qmi->qmi_hdl);
-+
-+	return 0;
++	qmi = NULL;
 +}
 +
-+static const struct of_device_id ath10k_qmi_dt_match[] = {
-+	{.compatible = "qcom,ath10k-qmi"},
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(of, ath10k_qmi_dt_match);
-+
-+static struct platform_driver ath10k_qmi_clinet = {
-+	.probe  = ath10k_qmi_probe,
-+	.remove = ath10k_qmi_remove,
-+	.driver = {
-+		.name = "ath10k QMI client",
-+		.owner = THIS_MODULE,
-+		.of_match_table = ath10k_qmi_dt_match,
-+	},
-+};
-+
-+static int __init ath10k_qmi_init(void)
-+{
-+	return platform_driver_register(&ath10k_qmi_clinet);
-+}
-+
-+static void __exit ath10k_qmi_exit(void)
-+{
-+	platform_driver_unregister(&ath10k_qmi_clinet);
-+}
-+
-+module_init(ath10k_qmi_init);
-+module_exit(ath10k_qmi_exit);
-+
-+MODULE_AUTHOR("Qualcomm");
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_DESCRIPTION("ath10k QMI client driver");
+ static int ath10k_qmi_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+@@ -58,14 +203,8 @@ static int ath10k_qmi_probe(struct platform_device *pdev)
+ 
+ 	qmi->pdev = pdev;
+ 	platform_set_drvdata(pdev, qmi);
+-	ret = qmi_handle_init(&qmi->qmi_hdl,
+-			      WLFW_BDF_DOWNLOAD_REQ_MSG_V01_MAX_MSG_LEN,
+-			      &ath10k_qmi_ops, NULL);
+-	if (ret < 0)
+-		goto err;
+ 
+-	ret = qmi_add_lookup(&qmi->qmi_hdl, WLFW_SERVICE_ID_V01,
+-			     WLFW_SERVICE_VERS_V01, 0);
++	ret = ath10k_alloc_qmi_resources(qmi);
+ 	if (ret < 0)
+ 		goto err;
+ 
+@@ -81,7 +220,7 @@ static int ath10k_qmi_remove(struct platform_device *pdev)
+ {
+ 	struct ath10k_qmi *qmi = platform_get_drvdata(pdev);
+ 
+-	qmi_handle_release(&qmi->qmi_hdl);
++	ath10k_remove_qmi_resources(qmi);
+ 
+ 	return 0;
+ }
 diff --git a/drivers/net/wireless/ath/ath10k/qmi.h b/drivers/net/wireless/ath/ath10k/qmi.h
-new file mode 100644
-index 0000000..ad256ef
---- /dev/null
+index ad256ef..7697d24 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.h
 +++ b/drivers/net/wireless/ath/ath10k/qmi.h
-@@ -0,0 +1,24 @@
-+/*
-+ * Copyright (c) 2018 The Linux Foundation. All rights reserved.
-+ *
-+ * Permission to use, copy, modify, and/or distribute this software for any
-+ * purpose with or without fee is hereby granted, provided that the above
-+ * copyright notice and this permission notice appear in all copies.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-+ */
-+#ifndef _QMI_H_
-+#define _QMI_H_
-+
-+struct ath10k_qmi {
-+	struct platform_device *pdev;
-+	struct qmi_handle qmi_hdl;
-+	struct sockaddr_qrtr sq;
+@@ -16,9 +16,22 @@
+ #ifndef _QMI_H_
+ #define _QMI_H_
+ 
++enum ath10k_qmi_driver_event_type {
++	ATH10K_QMI_EVENT_SERVER_ARRIVE,
++	ATH10K_QMI_EVENT_SERVER_EXIT,
++	ATH10K_QMI_EVENT_FW_READY_IND,
++	ATH10K_QMI_EVENT_MAX,
 +};
-+#endif /* _QMI_H_ */
++
+ struct ath10k_qmi {
+ 	struct platform_device *pdev;
+ 	struct qmi_handle qmi_hdl;
+ 	struct sockaddr_qrtr sq;
++	bool fw_ready;
++	bool msa_ready;
++	struct work_struct work_svc_arrive;
++	struct work_struct work_svc_exit;
++	struct workqueue_struct *event_wq;
++	spinlock_t event_lock; /* spinlock for fw ready status*/
+ };
+ #endif /* _QMI_H_ */
 -- 
 1.9.1
 
