@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0Tq1-0004z2-PH
- for ath10k@lists.infradead.org; Mon, 26 Mar 2018 15:15:14 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: Fix kernel panic while using worker
- (ath10k_sta_rc_update_wk)
+ id 1f0UNJ-0003CN-SF
+ for ath10k@lists.infradead.org; Mon, 26 Mar 2018 15:49:35 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1520854780-11823-1-git-send-email-periyasa@codeaurora.org>
-References: <1520854780-11823-1-git-send-email-periyasa@codeaurora.org>
-Message-Id: <20180326151459.7FA78603AF@smtp.codeaurora.org>
-Date: Mon, 26 Mar 2018 15:14:59 +0000 (UTC)
+Subject: Re: [PATCHv2] ath10k: fix kernel panic while reading tpc_stats
+References: <1521739904-17927-1-git-send-email-tamizhr@codeaurora.org>
+Date: Mon, 26 Mar 2018 18:49:19 +0300
+In-Reply-To: <1521739904-17927-1-git-send-email-tamizhr@codeaurora.org>
+ (Tamizh chelvam's message of "Thu, 22 Mar 2018 23:01:44 +0530")
+Message-ID: <87d0zqrg5c.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +23,92 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+To: Tamizh chelvam <tamizhr@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Karthikeyan Periyasamy <periyasa@codeaurora.org> wrote:
+Tamizh chelvam <tamizhr@codeaurora.org> writes:
 
-> When attempt to run worker (ath10k_sta_rc_update_wk) after the station object
-> (ieee80211_sta) delete will trigger the kernel panic.
-> 
-> This problem arise in AP + Mesh configuration, Where the current node AP VAP
-> and neighbor node mesh VAP MAC address are same. When the current mesh node
-> try to establish the mesh link with neighbor node, driver peer creation for
-> the neighbor mesh node fails due to duplication MAC address. Already the AP
-> VAP created with same MAC address.
-> 
-> It is caused by the following scenario steps.
-> 
-> Steps:
-> 1. In above condition, ath10k driver sta_state callback (ath10k_sta_state)
->    fails to do the state change for a station from IEEE80211_STA_NOTEXIST
->    to IEEE80211_STA_NONE due to peer creation fails. Sta_state callback is
->    called from ieee80211_add_station() to handle the new station
->    (neighbor mesh node) request from the wpa_supplicant.
-> 2. Concurrently ath10k receive the sta_rc_update callback notification from
->    the mesh_neighbour_update() to handle the beacon frames of the above
->    neighbor mesh node. since its atomic callback, ath10k driver queue the
->    work (ath10k_sta_rc_update_wk) to handle rc update.
-> 3. Due to driver sta_state callback fails (step 1), mac80211 free the station
->    object.
-> 4. When the worker (ath10k_sta_rc_update_wk) scheduled to run, it will access
->    the station object which is already deleted. so it will trigger kernel
->    panic.
-> 
-> Added the peer exist check in sta_rc_update callback before queue the work.
-> 
-> Kernel Panic log:
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000
-> pgd = c0204000
-> [00000000] *pgd=00000000
-> Internal error: Oops: 17 [#1] PREEMPT SMP ARM
-> CPU: 1 PID: 1833 Comm: kworker/u4:2 Not tainted 3.14.77 #1
-> task: dcef0000 ti: d72b6000 task.ti: d72b6000
-> PC is at pwq_activate_delayed_work+0x10/0x40
-> LR is at pwq_activate_delayed_work+0xc/0x40
-> pc : [<c023f988>]    lr : [<c023f984>]    psr: 40000193
-> sp : d72b7f18  ip : 0000007a  fp : d72b6000
-> r10: 00000000  r9 : dd404414  r8 : d8c31998
-> r7 : d72b6038  r6 : 00000004  r5 : d4907ec8  r4 : dcee1300
-> r3 : ffffffe0  r2 : 00000000  r1 : 00000001  r0 : 00000000
-> Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-> Control: 10c5787d  Table: 595bc06a  DAC: 00000015
-> ...
-> Process kworker/u4:2 (pid: 1833, stack limit = 0xd72b6238)
-> Stack: (0xd72b7f18 to 0xd72b8000)
-> 7f00:                                                       00000001 dcee1300
-> 7f20: 00000001 c02410dc d8c31980 dd404400 dd404400 c0242790 d8c31980 00000089
-> 7f40: 00000000 d93e1340 00000000 d8c31980 c0242568 00000000 00000000 00000000
-> 7f60: 00000000 c02474dc 00000000 00000000 000000f8 d8c31980 00000000 00000000
-> 7f80: d72b7f80 d72b7f80 00000000 00000000 d72b7f90 d72b7f90 d72b7fac d93e1340
-> 7fa0: c0247404 00000000 00000000 c0208d20 00000000 00000000 00000000 00000000
-> 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-> [<c023f988>] (pwq_activate_delayed_work) from [<c02410dc>] (pwq_dec_nr_in_flight+0x58/0xc4)
-> [<c02410dc>] (pwq_dec_nr_in_flight) from [<c0242790>] (worker_thread+0x228/0x360)
-> [<c0242790>] (worker_thread) from [<c02474dc>] (kthread+0xd8/0xec)
-> [<c02474dc>] (kthread) from [<c0208d20>] (ret_from_fork+0x14/0x34)
-> Code: e92d4038 e1a05000 ebffffbc[69210.619376] SMP: failed to stop secondary CPUs
-> Rebooting in 3 seconds..
-> 
-> Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> When attempt to read tpc_stats for the chipsets which support
+> more than 3 tx chain will trigger kernel panic(kernel stack is corrupted)
+> due to writing values on rate_code array out of range.
+> This patch changes the array size depends on the WMI_TPC_TX_N_CHAIN and
+> added check to avoid write values on the array if the num tx chain
+> get in tpc config event is greater than WMI_TPC_TX_N_CHAIN.
+>
+> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00057
+>
+> Kernel panic log :
+>
+> [  323.510944] Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: bf90c654
+> [  323.510944]
+> [  323.524390] CPU: 0 PID: 1908 Comm: cat Not tainted 3.14.77 #31
+> [  323.530224] [<c021db48>] (unwind_backtrace) from [<c021ac08>] (show_stack+0x10/0x14)
+> [  323.537941] [<c021ac08>] (show_stack) from [<c03c53c0>] (dump_stack+0x80/0xa0)
+> [  323.545146] [<c03c53c0>] (dump_stack) from [<c022e4ac>] (panic+0x84/0x1e4)
+> [  323.552000] [<c022e4ac>] (panic) from [<c022e61c>] (__stack_chk_fail+0x10/0x14)
+> [  323.559350] [<c022e61c>] (__stack_chk_fail) from [<bf90c654>] (ath10k_wmi_event_pdev_tpc_config+0x424/0x438 [ath10k_core])
+> [  323.570471] [<bf90c654>] (ath10k_wmi_event_pdev_tpc_config [ath10k_core]) from [<bf90d800>] (ath10k_wmi_10_4_op_rx+0x2f0/0x39c [ath10k_core])
+> [  323.583047] [<bf90d800>] (ath10k_wmi_10_4_op_rx [ath10k_core]) from [<bf8fcc18>] (ath10k_htc_rx_completion_handler+0x170/0x1a0 [ath10k_core])
+> [  323.595702] [<bf8fcc18>] (ath10k_htc_rx_completion_handler [ath10k_core]) from [<bf961f44>] (ath10k_pci_hif_send_complete_check+0x1f0/0x220 [ath10k_pci])
+> [  323.609421] [<bf961f44>] (ath10k_pci_hif_send_complete_check [ath10k_pci]) from [<bf96562c>] (ath10k_ce_per_engine_service+0x74/0xc4 [ath10k_pci])
+> [  323.622490] [<bf96562c>] (ath10k_ce_per_engine_service [ath10k_pci]) from [<bf9656f0>] (ath10k_ce_per_engine_service_any+0x74/0x80 [ath10k_pci])
+> [  323.635423] [<bf9656f0>] (ath10k_ce_per_engine_service_any [ath10k_pci]) from [<bf96365c>] (ath10k_pci_napi_poll+0x44/0xe8 [ath10k_pci])
+> [  323.647665] [<bf96365c>] (ath10k_pci_napi_poll [ath10k_pci]) from [<c0599994>] (net_rx_action+0xac/0x160)
+> [  323.657208] [<c0599994>] (net_rx_action) from [<c02324a4>] (__do_softirq+0x104/0x294)
+> [  323.665017] [<c02324a4>] (__do_softirq) from [<c0232920>] (irq_exit+0x9c/0x11c)
+> [  323.672314] [<c0232920>] (irq_exit) from [<c0217fc0>] (handle_IRQ+0x6c/0x90)
+> [  323.679341] [<c0217fc0>] (handle_IRQ) from [<c02084e0>] (gic_handle_irq+0x3c/0x60)
+> [  323.686893] [<c02084e0>] (gic_handle_irq) from [<c02095c0>] (__irq_svc+0x40/0x70)
+> [  323.694349] Exception stack(0xdd489c58 to 0xdd489ca0)
+> [  323.699384] 9c40:                                                       00000000 a0000013
+> [  323.707547] 9c60: 00000000 dc4bce40 60000013 ddc1d800 dd488000 00000990 00000000 c085c800
+> [  323.715707] 9c80: 00000000 dd489d44 0000092d dd489ca0 c026e664 c026e668 60000013 ffffffff
+> [  323.723877] [<c02095c0>] (__irq_svc) from [<c026e668>] (rcu_note_context_switch+0x170/0x184)
+> [  323.732298] [<c026e668>] (rcu_note_context_switch) from [<c020e928>] (__schedule+0x50/0x4d4)
+> [  323.740716] [<c020e928>] (__schedule) from [<c020e490>] (schedule_timeout+0x148/0x178)
+> [  323.748611] [<c020e490>] (schedule_timeout) from [<c020f804>] (wait_for_common+0x114/0x154)
+> [  323.756972] [<c020f804>] (wait_for_common) from [<bf8f6ef0>] (ath10k_tpc_stats_open+0xc8/0x340 [ath10k_core])
+> [  323.766873] [<bf8f6ef0>] (ath10k_tpc_stats_open [ath10k_core]) from [<c02bb598>] (do_dentry_open+0x1ac/0x274)
+> [  323.776741] [<c02bb598>] (do_dentry_open) from [<c02c838c>] (do_last+0x8c0/0xb08)
+> [  323.784201] [<c02c838c>] (do_last) from [<c02c87e4>] (path_openat+0x210/0x598)
+> [  323.791408] [<c02c87e4>] (path_openat) from [<c02c9d1c>] (do_filp_open+0x2c/0x78)
+> [  323.798873] [<c02c9d1c>] (do_filp_open) from [<c02bc85c>] (do_sys_open+0x114/0x1b4)
+> [  323.806509] [<c02bc85c>] (do_sys_open) from [<c0208c80>] (ret_fast_syscall+0x0/0x44)
+> [  323.814241] CPU1: stopping
+> [  323.816927] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 3.14.77 #31
+> [  323.823008] [<c021db48>] (unwind_backtrace) from [<c021ac08>] (show_stack+0x10/0x14)
+> [  323.830731] [<c021ac08>] (show_stack) from [<c03c53c0>] (dump_stack+0x80/0xa0)
+> [  323.837934] [<c03c53c0>] (dump_stack) from [<c021cfac>] (handle_IPI+0xb8/0x140)
+> [  323.845224] [<c021cfac>] (handle_IPI) from [<c02084fc>] (gic_handle_irq+0x58/0x60)
+> [  323.852774] [<c02084fc>] (gic_handle_irq) from [<c02095c0>] (__irq_svc+0x40/0x70)
+> [  323.860233] Exception stack(0xdd499fa0 to 0xdd499fe8)
+> [  323.865273] 9fa0: ffffffed 00000000 1d3c9000 00000000 dd498000 dd498030 10c0387d c08b62c8
+> [  323.873432] 9fc0: 4220406a 512f04d0 00000000 00000000 00000001 dd499fe8 c021838c c0218390
+> [  323.881588] 9fe0: 60000013 ffffffff
+> [  323.885070] [<c02095c0>] (__irq_svc) from [<c0218390>] (arch_cpu_idle+0x30/0x50)
+> [  323.892454] [<c0218390>] (arch_cpu_idle) from [<c026500c>] (cpu_startup_entry+0xa4/0x108)
+> [  323.900690] [<c026500c>] (cpu_startup_entry) from [<422085a4>] (0x422085a4)
+>
+> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+In v1 kbuild reported this warning:
 
-8b2d93dd2261 ath10k: Fix kernel panic while using worker (ath10k_sta_rc_update_wk)
+drivers/net/wireless/ath/ath10k/wmi.c:4465:14: error: 'struct ath10k' has no member named 'debug'
+
+Did you fix it?
+
+> @@ -4455,6 +4461,8 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
+>  		   __le32_to_cpu(ev->twice_max_rd_power) / 2,
+>  		   __le32_to_cpu(ev->num_tx_chain),
+>  		   __le32_to_cpu(ev->rate_max));
+> +exit:
+> +	complete(&ar->debug.tpc_complete);
+>  }
+
+And why do you need this anyway? The commit log doesn't explain that.
 
 -- 
-https://patchwork.kernel.org/patch/10276043/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
