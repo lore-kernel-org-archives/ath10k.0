@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0Kp8-0003Nb-9N
- for ath10k@lists.infradead.org; Mon, 26 Mar 2018 05:37:39 +0000
+ id 1f0Kql-0003YP-6d
+ for ath10k@lists.infradead.org; Mon, 26 Mar 2018 05:39:20 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3 00/12] *** Add support for wifi QMI client driver ***
-Date: Mon, 26 Mar 2018 11:07:16 +0530
-Message-Id: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
-MIME-Version: 1.0
+Subject: [PATCH 02/12] dt: bindings: add bindings for ath10k qmi client
+Date: Mon, 26 Mar 2018 11:09:08 +0530
+Message-Id: <1522042748-25677-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,65 +15,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-QWRkIFFNSSBjbGllbnQgZHJpdmVyIGZvciBRNiBpbnRlZ3JhdGVkIFdMQU4gY29ubmVjdGl2aXR5
-IHN1YnN5c3RlbS4KVGhpcyBtb2R1bGUgaXMgcmVzcG9uc2libGUgZm9yIGNvbW11bmljYXRpbmcg
-V0xBTiBjb250cm9sIG1lc3NhZ2VzIHRvIEZXCm92ZXIgUU1JIGludGVyZmFjZS4KCuKAnFFVQUxD
-T01NIE1lc3NhZ2luZyBJbnRlcmZhY2XigJ0oUU1JKSBwcm92aWRlcyB0aGUgY29udHJvbCBpbnRl
-cmZhY2UgYmV0d2Vlbgpjb21wb25lbnRzIHJ1bm5pbmcgYi93IHJlbW90ZSBwcm9jZXNzb3JzIHdp
-dGggdW5kZXJseWluZyB0cmFuc3BvcnQgbGF5ZXIKYmFzZWQgb24gaW50ZWdyYXRlZCBjaGlwc2V0
-KHNoYXJlZCBtZW1vcnkpIG9yIGRpc2NyZXRlIGNoaXBzZXQoUENJL1VTQi9TRElPL1VBUlQpLgoK
-UU1JIGNsaWVudCBkcml2ZXIgaW1wbGVtZW50YXRpb24gaXMgYmFzZWQgb24gcW1pIGZybWV3b3Jr
-IGh0dHBzOi8vbHduLm5ldC9BcnRpY2xlcy83Mjk5MjQvLgoKQmVsb3cgaXMgdGhlIHNlcXVlbmNl
-IG9mIHFtaSBoYW5kc2hha2UuCgogICAgICAgUU1JIENMSUVOVChBUFBTKSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgUU1JIFNFUlZFUihGVyBpbiBRNikKCiAgICAgICAg
-ICAgICAgICAgICAgICAgICA8LS0tLS0td2xhbiBzZXJ2aWNlIGRpc2NvdmVyZC0tLS0KCiAgICAg
-ICAgICAgICAgICAgICAgICAgLS0tLS1jb25uZWN0IHRvIHdsYW0gcW1pIHNlcnZpY2UtLS0tLT4K
-CiAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0td2xhbiBpbmZvIHJlcXVlc3QtLS0t
-LT4KCiAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLXdsYW4gaW5mbyByZXNwLS0t
-LS0tLS0tLS0tCgogICAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJl
-cS0tLS0tLS0tPgoKICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJl
-c3AtLS0tLS0tLS0tLS0KCiAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLW1zYSByZWFk
-eSByZXEtLS0tLS0tLT4KCiAgICAgICAgICAgICAgICAgICAgIDwtLS0tLS0tLS0tLS1tc2EgcmVh
-ZHkgcmVzcC0tLS0tLS0tLS0tLQoKICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLW1z
-YSByZWFkeSBpbmRpY2F0aW9uLS0tLS0tLQoKICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0t
-LS0tY2FwYWJpbGl0eSByZXEtLS0tLS0tPgoKICAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0t
-LS0tY2FwYWJpbGl0eSByZXNwLS0tLS0tLS0tLS0tCgogICAgICAgICAgICAgICAgICAgIC0tLS0t
-LS0tLS0tLXFtaSBiZGYgcmVxLS0tLS0tLS0tPgoKICAgICAgICAgICAgICAgICAgICAgPC0tLS0t
-LS0tLS0tLXFtaSBiZGYgcmVzcC0tLS0tLS0tLS0tLQoKICAgICAgICAgICAgICAgICAgICAgIC0t
-LS0tLS0tLS0tLXFtaSBjYWwgdHJpZ2dlci0tLS0tLS0+CgogICAgICAgICAgICAgICAgICA8LS0t
-LS0tLS0tLS0tIFFNSSBGVyByZWFkeSBpbmRpY2F0aW9uLS0tLS0tLQoKR292aW5kIFNpbmdoICgx
-Mik6CiAgYXRoMTBrOiBBZGQgcW1pIHNlcnZpY2UgZm9yIHdsYW4gcW1pIGNsaWVudAogIGR0OiBi
-aW5kaW5nczogYWRkIGJpbmRpbmdzIGZvciBhdGgxMGsgcW1pIGNsaWVudAogIGF0aDEwazogQWRk
-IFdDTjM5OTAgUU1JIGNsaWVudCBkcml2ZXIKICBhdGgxMGs6IGFkZCBzdXBwb3J0IHRvIHN0YXJ0
-IGFuZCBzdG9wIHFtaSBzZXJ2aWNlCiAgYXRoMTBrOiBBZGQgc3VwcG9ydCBvZiBRTUkgaW5kaWNh
-dGlvbiBtZXNzYWdlCiAgZmlybXdhcmU6IHFjb206IHNjbTogQWRkIFdMQU4gVk1JRCBmb3IgUXVh
-bGNvbW0gU0NNIGludGVyZmFjZQogIGF0aDEwazogQWRkIE1TQSBoYW5kc2hha2UgUU1JIG1ncyBz
-dXBwb3J0CiAgYXRoMTBrOiBBZGQgUU1JIENBUCByZXF1ZXN0IHN1cHBvcnQKICBhdGgxMGs6IEFk
-ZCBRTUkgSE9TVCBDQVAgcmVxdWVzdCBzdXBwb3J0CiAgYXRoMTBrOiBhZGQgYmRmL2NhbCBpbmRp
-Y2F0aW9uIHN1cHBvcnQKICBhdGgxMGs6IEFkZCB3bGFuIG1vZGUgb24vb2ZmIHFtaSBtZXNzYWdl
-CiAgYXRoMTBrOiBBZGQgcW1pIHdsYW4gZW5hYmxlL2Rpc2FibGUgc3VwcG9ydCBmb3IgV0NOMzk5
-MAoKIC4uLi9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNvbSxhdGgxMGsudHh0ICAgICAgICAgIHwg
-ICAgOCArCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL01ha2VmaWxlICAgICAgICAg
-ICB8ICAgIDQgKwogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9xbWkuYyAgICAgICAg
-ICAgICAgfCAxMTg4ICsrKysrKysrKysKIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-cW1pLmggICAgICAgICAgICAgIHwgIDEwMiArCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL3FtaV9zdmNfdjAxLmMgICAgICB8IDIzMjMgKysrKysrKysrKysrKysrKysrKysKIGRyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcW1pX3N2Y192MDEuaCAgICAgIHwgIDY4NSArKysr
-KysKIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc25vYy5jICAgICAgICAgICAgIHwg
-IDE3OSArLQogaW5jbHVkZS9saW51eC9xY29tX3NjbS5oICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgICA0ICstCiA4IGZpbGVzIGNoYW5nZWQsIDQ0OTEgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
-dGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL3FtaS5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9xbWkuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvcW1pX3N2Y192MDEuYwogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvcW1pX3N2Y192MDEuaAoKLS0gCjEuOS4xCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Add device tree binding documentation details for ath10k
+qmi client for SDM845/APQ8098 SoC into "qcom,ath10k.txt".
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 34e4f98..8076ae3 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -5,6 +5,7 @@ Required properties:
+ 	* "qcom,ath10k"
+ 	* "qcom,ipq4019-wifi"
+ 	* "qcom,wcn3990-wifi"
++	* "qcom,ath10k-qmi"
+ 
+ PCI based devices uses compatible string "qcom,ath10k" and takes calibration
+ data along with board specific data via "qcom,ath10k-calibration-data".
+@@ -21,6 +22,8 @@ can be provided per device.
+ 
+ SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
+ 
++- qcom,wlan-msa-memory: MSA memory size
++
+ Optional properties:
+ - reg: Address and length of the register set for the device.
+ - reg-names: Must include the list of following reg names,
+@@ -150,3 +153,8 @@ qcom,wifi@18000000 {
+ 			   <0 141 0 /* CE11 */ >;
+ 		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+ };
++
++qcom,ath10k-qmi {
++	compatible = "qcom,ath10k-qmi";
++	qcom,wlan-msa-memory = <0x100000>;
++};
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
