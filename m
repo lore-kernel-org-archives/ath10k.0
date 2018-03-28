@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0vGI-0002ZU-QV
- for ath10k@lists.infradead.org; Tue, 27 Mar 2018 20:32:08 +0000
-Received: by mail-lf0-x242.google.com with SMTP id o102-v6so272314lfg.8
- for <ath10k@lists.infradead.org>; Tue, 27 Mar 2018 13:31:56 -0700 (PDT)
-From: Marcus Folkesson <marcus.folkesson@gmail.com>
-Subject: [PATCH] ath10k: sdio: fix memory leak for probe allocations
-Date: Tue, 27 Mar 2018 22:31:44 +0200
-Message-Id: <20180327203144.8998-1-marcus.folkesson@gmail.com>
+ id 1f14JY-0008HS-4q
+ for ath10k@lists.infradead.org; Wed, 28 Mar 2018 06:12:05 +0000
+MIME-Version: 1.0
+Date: Wed, 28 Mar 2018 11:41:51 +0530
+From: akolli@codeaurora.org
+Subject: Re: [PATCH v2] ath10k: Implement get_expected_throughput callback
+In-Reply-To: <2322769.sx4MhzsvNg@bentobox>
+References: <1521814034-17880-1-git-send-email-akolli@codeaurora.org>
+ <2322769.sx4MhzsvNg@bentobox>
+Message-ID: <7428dc3685e146dca147805b6a1bc5d2@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,93 +19,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Marcus Folkesson <marcus.folkesson@gmail.com>, linux-wireless@vger.kernel.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Marek Lindner <mareklindner@neomailbox.ch>, Johannes Berg <johannes.berg@intel.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Antonio Quartulli <a@unstable.cc>, ath10k@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
 
-These allocations are not freed upon release.
-When on it; go for managed resources instead.
-
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 07e183f8e57a..005934b8522c 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1967,7 +1967,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	ar_sdio = ath10k_sdio_priv(ar);
- 
- 	ar_sdio->irq_data.irq_proc_reg =
--		kzalloc(sizeof(struct ath10k_sdio_irq_proc_regs),
-+		devm_kzalloc(ar->dev, sizeof(struct ath10k_sdio_irq_proc_regs),
- 			GFP_KERNEL);
- 	if (!ar_sdio->irq_data.irq_proc_reg) {
- 		ret = -ENOMEM;
-@@ -1975,17 +1975,17 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	}
- 
- 	ar_sdio->irq_data.irq_en_reg =
--		kzalloc(sizeof(struct ath10k_sdio_irq_enable_regs),
-+		devm_kzalloc(ar->dev, sizeof(struct ath10k_sdio_irq_enable_regs),
- 			GFP_KERNEL);
- 	if (!ar_sdio->irq_data.irq_en_reg) {
- 		ret = -ENOMEM;
--		goto err_free_proc_reg;
-+		goto err_core_destroy;
- 	}
- 
--	ar_sdio->bmi_buf = kzalloc(BMI_MAX_CMDBUF_SIZE, GFP_KERNEL);
-+	ar_sdio->bmi_buf = devm_kzalloc(ar->dev, BMI_MAX_CMDBUF_SIZE, GFP_KERNEL);
- 	if (!ar_sdio->bmi_buf) {
- 		ret = -ENOMEM;
--		goto err_free_en_reg;
-+		goto err_core_destroy;
- 	}
- 
- 	ar_sdio->func = func;
-@@ -2005,7 +2005,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	ar_sdio->workqueue = create_singlethread_workqueue("ath10k_sdio_wq");
- 	if (!ar_sdio->workqueue) {
- 		ret = -ENOMEM;
--		goto err_free_bmi_buf;
-+		goto err_core_destroy;
- 	}
- 
- 	for (i = 0; i < ATH10K_SDIO_BUS_REQUEST_MAX_NUM; i++)
-@@ -2021,7 +2021,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		ret = -ENODEV;
- 		ath10k_err(ar, "unsupported device id %u (0x%x)\n",
- 			   dev_id_base, id->device);
--		goto err_free_bmi_buf;
-+		goto err_core_destroy;
- 	}
- 
- 	ar->id.vendor = id->vendor;
-@@ -2050,12 +2050,6 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 
- err_free_wq:
- 	destroy_workqueue(ar_sdio->workqueue);
--err_free_bmi_buf:
--	kfree(ar_sdio->bmi_buf);
--err_free_en_reg:
--	kfree(ar_sdio->irq_data.irq_en_reg);
--err_free_proc_reg:
--	kfree(ar_sdio->irq_data.irq_proc_reg);
- err_core_destroy:
- 	ath10k_core_destroy(ar);
- 
--- 
-2.16.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0wMy0yNiAxMjo1MiwgU3ZlbiBFY2tlbG1hbm4gd3JvdGU6Cj4gT24gRnJlaXRhZywg
+MjMuIE3DpHJ6IDIwMTggMTk6Mzc6MTQgQ0VTVCBBbmlsa3VtYXIgS29sbGkgd3JvdGU6Cj4+ICtz
+dGF0aWMgdTMyIGF0aDEwa19nZXRfZXhwZWN0ZWRfdGhyb3VnaHB1dChzdHJ1Y3QgaWVlZTgwMjEx
+X2h3ICpodywKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ry
+dWN0IGllZWU4MDIxMV9zdGEgKnN0YSkKPj4gK3sKPj4gKyAgICAgICBzdHJ1Y3QgYXRoMTBrX3N0
+YSAqYXJzdGEgPSAoc3RydWN0IGF0aDEwa19zdGEgKilzdGEtPmRydl9wcml2Owo+PiArCj4+ICsg
+ICAgICAgcmV0dXJuIGV3bWFfc3RhX3R4cmF0ZV9yZWFkKCZhcnN0YS0+YXZlX3N0YV90eHJhdGUp
+Owo+PiArfQo+IAo+IE9uIEZyZWl0YWcsIDIzLiBNw6RyeiAyMDE4IDE5OjExOjQ4IENFU1QgYWtv
+bGxpQGNvZGVhdXJvcmEub3JnIHdyb3RlOgo+PiA+IEFudG9uaW8gYW5kIEZlbGl4LCBwbGVhc2Ug
+Y29ycmVjdCBtZSB3aGVuIHRoaXMgc3RhdGVtZW50IGlzIGluY29ycmVjdC4KPj4gPgo+PiA+IFRo
+ZSBleHBlY3RlZF90aHJvdWdocHV0IGFzIGluaXRpYWxseSBpbXBsZW1lbnRlZCBmb3IgbWluc3Ry
+ZWwoX2h0KSBpcwo+PiA+IG5vdAo+PiA+IGFib3V0IHRoZSByYXcgcGh5c2ljYWwgYml0cmF0ZSBi
+dXQgYWJvdXQgdGhlIHRocm91Z2hwdXQgd2hpY2ggaXMKPj4gPiBleHBlY3RlZCBmb3IKPj4gPiB0
+aGluZ3MgcnVubmluZyBvbiB0b3Agb2YgdGhlIHdpZmkgbGluay4gU2VlCj4+ID4gaHR0cHM6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
+L2NvbW1pdC8/aWQ9Y2NhNjc0ZDQ3ZTU5NjY1NjMwZjMwMDUyOTFiNjFiYjg4MzAxNWZjNQo+PiA+
+IGZvciBtb3JlIGRldGFpbHMKPj4gPgo+PiA+IHdoZW4gSSBpbnRlcnByZXQgeW91ciBjaGFuZ2Ug
+Y29ycmVjdGx5IHRoZW4geW91ciBpdCBkb2Vzbid0IGdldCB0aGUKPj4gPiBpbmZvcm1hdGlvbiBh
+Ym91dCBwYWNrZXQgbG9zcyBvciBhZ2dyZWdhdGlvbiBhbmQgZG9lc24ndCBkbyBhbnl0aGluZwo+
+PiA+IGNvbnZlcnQKPj4gPiBmcm9tIHJhdyBwaHlzaWNhbCByYXRlIHRvIHNvbWV0aGluZyB0aGUg
+dXNlciBjb3VsZCBnZXQgc2VlLiBJdCB3aWxsCj4+ID4ganVzdAo+PiA+IG92ZXJlc3RpbWF0ZSB0
+aGUgdGhyb3VnaHB1dCBmb3IgYXRoMTBrIGxpbmtzIGFuZCB0aHVzIGdpdmUgd3JvbmcKPj4gPiBp
+bmZvcm1hdGlvbgo+PiA+IHRvIHJvdXRpbmcgYWxnb3JpdGhtcy4gVGhpcyBjb3VsZCBmb3IgZXhh
+bXBsZSBjYXVzZSB0aGVtIHRvIHByZWZlcgo+PiA+IGxpbmtzIG92ZXIKPj4gPiBhdGgxMGsgYmFz
+ZWQgaHcgd2hlbiBtdDc2IHdvdWxkIGFjdHVhbGx5IHByb3ZpZGUgYSBzaWduaWZpY2FudCBiZXR0
+ZXIKPj4gPiB0aHJvdWdocHV0Lgo+PiA+Cj4+ID4gQmVzaWRlIHRoYXQgLSB3aHkgaXMgdGhlIGF2
+ZV9zdGFfdHhyYXRlIG9ubHkgZmlsbGVkIHdoZW4gd2l0aCBuZXcKPj4gPiBpbmZvcm1hdGlvbgo+
+PiA+IHdoZW4gc29tZW9uZSByZXF1ZXN0cyB0aGUgY3VycmVudCBleHBlY3RlZF90aHJvdWdocHV0
+IHZpYQo+PiA+IGdldF9leHBlY3RlZF90aHJvdWdocHV0LiBJIHdvdWxkIGhhdmUgZXhwZWN0ZWQg
+dGhhdCBpdCBpcyBmaWxsZWQKPj4gPiBldmVyeXRpbWUgeW91Cj4+ID4gZ2V0IG5ldyBpbmZvcm1h
+dGlvbiBhYm91dCB0aGUgY3VycmVudCByYXRlIGZyb20gdGhlIGZpcm13YXJlCj4+ID4gKGF0aDEw
+a19zdGFfc3RhdGlzdGljcykuCj4+ID4KPj4gWWVzLiBpZGVhbGx5IGl0IHNob3VsZCBiZSBkb2lu
+ZyB0aGUgcmF0ZSBhdmcuIG9mIGFsbCB0aGUgc2VudCBwYWNrZXRzLgo+IAo+IE5vLCBub3QgdGhl
+IFBIWSByYXRlIGF2ZXJhZ2UgLSBidXQgdGhlICJ0aHJvdWdocHV0IGF2ZyIuIEFuZCB0aGUgCj4g
+ImlkZWFsbHkiCj4gaGVyZSBzb3VuZHMgYSBsaXR0bGUgYml0IGxpa2UgaW4gIk91ciBtZWRpY2Fs
+IGRvY3RvciB3b3VsZCBpZGVhbGx5IG5vdAo+IGRlY2FwaXRhdGUgZWFjaCBwYXRpZW50IGJ1dCB3
+ZSBoYXZlIGF0IGxlYXN0IGFuIE1EIi4KPiAKClRoZSByYXRlIGF2ZXJhZ2UgYW5kIHRocm91Z2hw
+dXQgYXJlIHJlbGF0aXZlLiBubz8KCi0gQW5pbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
