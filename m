@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f14JY-0008HS-4q
- for ath10k@lists.infradead.org; Wed, 28 Mar 2018 06:12:05 +0000
+ id 1f14V4-0003ej-Ko
+ for ath10k@lists.infradead.org; Wed, 28 Mar 2018 06:24:00 +0000
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add GL.iNet GL-B1300 specific BDFs
+References: <CAEYLdSij6gAAmG2+MQmfGD-m4tOi3O-h0HNmQutwrdQb_iG3Gg@mail.gmail.com>
+ <2037513.gUX94vxXhd@bentobox>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <b0320000-ac88-0992-c4c8-e41a137a3249@dd-wrt.com>
+Date: Wed, 28 Mar 2018 08:23:43 +0200
 MIME-Version: 1.0
-Date: Wed, 28 Mar 2018 11:41:51 +0530
-From: akolli@codeaurora.org
-Subject: Re: [PATCH v2] ath10k: Implement get_expected_throughput callback
-In-Reply-To: <2322769.sx4MhzsvNg@bentobox>
-References: <1521814034-17880-1-git-send-email-akolli@codeaurora.org>
- <2322769.sx4MhzsvNg@bentobox>
-Message-ID: <7428dc3685e146dca147805b6a1bc5d2@codeaurora.org>
+In-Reply-To: <2037513.gUX94vxXhd@bentobox>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +20,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Marek Lindner <mareklindner@neomailbox.ch>, Johannes Berg <johannes.berg@intel.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Antonio Quartulli <a@unstable.cc>, ath10k@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
+To: ath10k@lists.infradead.org
 
-T24gMjAxOC0wMy0yNiAxMjo1MiwgU3ZlbiBFY2tlbG1hbm4gd3JvdGU6Cj4gT24gRnJlaXRhZywg
-MjMuIE3DpHJ6IDIwMTggMTk6Mzc6MTQgQ0VTVCBBbmlsa3VtYXIgS29sbGkgd3JvdGU6Cj4+ICtz
-dGF0aWMgdTMyIGF0aDEwa19nZXRfZXhwZWN0ZWRfdGhyb3VnaHB1dChzdHJ1Y3QgaWVlZTgwMjEx
-X2h3ICpodywKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ry
-dWN0IGllZWU4MDIxMV9zdGEgKnN0YSkKPj4gK3sKPj4gKyAgICAgICBzdHJ1Y3QgYXRoMTBrX3N0
-YSAqYXJzdGEgPSAoc3RydWN0IGF0aDEwa19zdGEgKilzdGEtPmRydl9wcml2Owo+PiArCj4+ICsg
-ICAgICAgcmV0dXJuIGV3bWFfc3RhX3R4cmF0ZV9yZWFkKCZhcnN0YS0+YXZlX3N0YV90eHJhdGUp
-Owo+PiArfQo+IAo+IE9uIEZyZWl0YWcsIDIzLiBNw6RyeiAyMDE4IDE5OjExOjQ4IENFU1QgYWtv
-bGxpQGNvZGVhdXJvcmEub3JnIHdyb3RlOgo+PiA+IEFudG9uaW8gYW5kIEZlbGl4LCBwbGVhc2Ug
-Y29ycmVjdCBtZSB3aGVuIHRoaXMgc3RhdGVtZW50IGlzIGluY29ycmVjdC4KPj4gPgo+PiA+IFRo
-ZSBleHBlY3RlZF90aHJvdWdocHV0IGFzIGluaXRpYWxseSBpbXBsZW1lbnRlZCBmb3IgbWluc3Ry
-ZWwoX2h0KSBpcwo+PiA+IG5vdAo+PiA+IGFib3V0IHRoZSByYXcgcGh5c2ljYWwgYml0cmF0ZSBi
-dXQgYWJvdXQgdGhlIHRocm91Z2hwdXQgd2hpY2ggaXMKPj4gPiBleHBlY3RlZCBmb3IKPj4gPiB0
-aGluZ3MgcnVubmluZyBvbiB0b3Agb2YgdGhlIHdpZmkgbGluay4gU2VlCj4+ID4gaHR0cHM6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
-L2NvbW1pdC8/aWQ9Y2NhNjc0ZDQ3ZTU5NjY1NjMwZjMwMDUyOTFiNjFiYjg4MzAxNWZjNQo+PiA+
-IGZvciBtb3JlIGRldGFpbHMKPj4gPgo+PiA+IHdoZW4gSSBpbnRlcnByZXQgeW91ciBjaGFuZ2Ug
-Y29ycmVjdGx5IHRoZW4geW91ciBpdCBkb2Vzbid0IGdldCB0aGUKPj4gPiBpbmZvcm1hdGlvbiBh
-Ym91dCBwYWNrZXQgbG9zcyBvciBhZ2dyZWdhdGlvbiBhbmQgZG9lc24ndCBkbyBhbnl0aGluZwo+
-PiA+IGNvbnZlcnQKPj4gPiBmcm9tIHJhdyBwaHlzaWNhbCByYXRlIHRvIHNvbWV0aGluZyB0aGUg
-dXNlciBjb3VsZCBnZXQgc2VlLiBJdCB3aWxsCj4+ID4ganVzdAo+PiA+IG92ZXJlc3RpbWF0ZSB0
-aGUgdGhyb3VnaHB1dCBmb3IgYXRoMTBrIGxpbmtzIGFuZCB0aHVzIGdpdmUgd3JvbmcKPj4gPiBp
-bmZvcm1hdGlvbgo+PiA+IHRvIHJvdXRpbmcgYWxnb3JpdGhtcy4gVGhpcyBjb3VsZCBmb3IgZXhh
-bXBsZSBjYXVzZSB0aGVtIHRvIHByZWZlcgo+PiA+IGxpbmtzIG92ZXIKPj4gPiBhdGgxMGsgYmFz
-ZWQgaHcgd2hlbiBtdDc2IHdvdWxkIGFjdHVhbGx5IHByb3ZpZGUgYSBzaWduaWZpY2FudCBiZXR0
-ZXIKPj4gPiB0aHJvdWdocHV0Lgo+PiA+Cj4+ID4gQmVzaWRlIHRoYXQgLSB3aHkgaXMgdGhlIGF2
-ZV9zdGFfdHhyYXRlIG9ubHkgZmlsbGVkIHdoZW4gd2l0aCBuZXcKPj4gPiBpbmZvcm1hdGlvbgo+
-PiA+IHdoZW4gc29tZW9uZSByZXF1ZXN0cyB0aGUgY3VycmVudCBleHBlY3RlZF90aHJvdWdocHV0
-IHZpYQo+PiA+IGdldF9leHBlY3RlZF90aHJvdWdocHV0LiBJIHdvdWxkIGhhdmUgZXhwZWN0ZWQg
-dGhhdCBpdCBpcyBmaWxsZWQKPj4gPiBldmVyeXRpbWUgeW91Cj4+ID4gZ2V0IG5ldyBpbmZvcm1h
-dGlvbiBhYm91dCB0aGUgY3VycmVudCByYXRlIGZyb20gdGhlIGZpcm13YXJlCj4+ID4gKGF0aDEw
-a19zdGFfc3RhdGlzdGljcykuCj4+ID4KPj4gWWVzLiBpZGVhbGx5IGl0IHNob3VsZCBiZSBkb2lu
-ZyB0aGUgcmF0ZSBhdmcuIG9mIGFsbCB0aGUgc2VudCBwYWNrZXRzLgo+IAo+IE5vLCBub3QgdGhl
-IFBIWSByYXRlIGF2ZXJhZ2UgLSBidXQgdGhlICJ0aHJvdWdocHV0IGF2ZyIuIEFuZCB0aGUgCj4g
-ImlkZWFsbHkiCj4gaGVyZSBzb3VuZHMgYSBsaXR0bGUgYml0IGxpa2UgaW4gIk91ciBtZWRpY2Fs
-IGRvY3RvciB3b3VsZCBpZGVhbGx5IG5vdAo+IGRlY2FwaXRhdGUgZWFjaCBwYXRpZW50IGJ1dCB3
-ZSBoYXZlIGF0IGxlYXN0IGFuIE1EIi4KPiAKClRoZSByYXRlIGF2ZXJhZ2UgYW5kIHRocm91Z2hw
-dXQgYXJlIHJlbGF0aXZlLiBubz8KCi0gQW5pbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+correct me if i'm wrong. but isnt the board data stored in flash memory =
+
+on these devices like on every other router i know using ath10k chipsets?
+this all sounds a little bit curious for me
+
+Sebastian
+
+Am 27.03.2018 um 09:19 schrieb Sven Eckelmann:
+> On Dienstag, 27. M=E4rz 2018 14:48:05 CEST Dongming Han wrote:
+>> I think the ART data is made based on BDF. Maybe the antCtrlCommon logic
+>> and target power parameter is passed to driver by ART but not BDF?
+>> That way we're all happier no need to mantain these change. Please advis=
+e.
+> The antCtrlCommon is part of biModalHeader and this one is taken from the=
+ BDF
+> and not from the pre-cal data (ART). Same is true for the target power li=
+mits.
+>
+> I am only aware of following things which are taken from the pre-cal data
+> (ART):
+>
+> * mac
+> * hal_cal version info
+> * custData
+> * regDmn
+> * txrxMask
+> * calFreqPier*
+> * calPierData*
+> * rxGainCalTbl
+> * param_for_tuning_caps*
+>
+> Of course, also the bmi ids are taken from the ART before you load the co=
+rrect
+> BDF from the board-2.bin (otherwise, the chip would not know what it actu=
+ally
+> is).
+>
+> Kind regards,
+> 	Sven
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+
+-- =
+
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
