@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1CtC-0002q1-Kz
- for ath10k@lists.infradead.org; Wed, 28 Mar 2018 15:21:28 +0000
+ id 1f1DCJ-0003NI-B0
+ for ath10k@lists.infradead.org; Wed, 28 Mar 2018 15:41:12 +0000
 MIME-Version: 1.0
-Subject: Re: [07/12] ath10k: Add MSA handshake QMI mgs support
+Subject: Re: [v7,3/5] ath10k: Enable TDLS peer inactivity detection
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1522042832-25975-1-git-send-email-govinds@codeaurora.org>
-References: <1522042832-25975-1-git-send-email-govinds@codeaurora.org>
-Message-Id: <20180328152116.522806081A@smtp.codeaurora.org>
-Date: Wed, 28 Mar 2018 15:21:16 +0000 (UTC)
+In-Reply-To: <1508835074-3384-4-git-send-email-yintang@qti.qualcomm.com>
+References: <1508835074-3384-4-git-send-email-yintang@qti.qualcomm.com>
+Message-Id: <20180328154100.B431D60710@smtp.codeaurora.org>
+Date: Wed, 28 Mar 2018 15:41:00 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
+To: yintang@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+yintang@qti.qualcomm.com wrote:
 
-> HOST allocates 2mb of region for modem and WCN3990
-> secure access and provides the address and access
-> control to target for secure access.
-> Add MSA handshake request/response messages.
+> Enable TDLS peer inactivity detetion feature.
+> QCA6174 firmware(version: WLAN.RM.4.4) support TDLS link inactivity detecting.
+> Set related parameters in TDLS WMI command to enable this feature.
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-This added a new ath10k-check warning:
+This patch added new ath10k-check warnings:
 
-drivers/net/wireless/ath/ath10k/qmi.c:433: void function return statements are not generally useful
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:460:48: warning: incorrect type in argument 2 (different base types)
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:460:48:    expected unsigned int [unsigned] [usertype] vdev_id
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:460:48:    got restricted __le32 const [usertype] vdev_id
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:448:19: warning: restricted __le32 degrades to integer
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:448:19: warning: restricted __le32 degrades to integer
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:429:6: warning: symbol 'ath10k_wmi_event_tdls_peer' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/wmi-tlv.h:1767: Please don't use multiple blank lines
+
+I fixed those in the pending branch.
 
 -- 
-https://patchwork.kernel.org/patch/10307183/
+https://patchwork.kernel.org/patch/10023743/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
