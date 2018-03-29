@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1TTG-0003z3-47
- for ath10k@lists.infradead.org; Thu, 29 Mar 2018 09:03:47 +0000
+ id 1f1TZL-0006BL-Jz
+ for ath10k@lists.infradead.org; Thu, 29 Mar 2018 09:10:05 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix recent bandwidth conversion bug
+Subject: Re: ath10k: fix vdev stats for 10.4 firmware
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1520684438-9233-1-git-send-email-akolli@codeaurora.org>
-References: <1520684438-9233-1-git-send-email-akolli@codeaurora.org>
-Message-Id: <20180329090335.C459560C66@smtp.codeaurora.org>
-Date: Thu, 29 Mar 2018 09:03:35 +0000 (UTC)
+In-Reply-To: <1521227710-3155-1-git-send-email-rmanohar@codeaurora.org>
+References: <1521227710-3155-1-git-send-email-rmanohar@codeaurora.org>
+Message-Id: <20180329090953.4D7A760C54@smtp.codeaurora.org>
+Date: Thu, 29 Mar 2018 09:09:53 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@codeaurora.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-akolli@codeaurora.org wrote:
+Rajkumar Manoharan <rmanohar@codeaurora.org> wrote:
 
-> The commit "cfg80211: make RATE_INFO_BW_20 the default" changed
-> the index of RATE_INFO_BW_20, but the updates to ath10k missed
-> the special bandwidth calculation case in
-> ath10k_update_per_peer_tx_stats().
+> Currently vdev stats displayed in fw_stats are applicable
+> only for TLV based firmware and fix it for 10.4 firmware
+> as of now. The vdev stats in 10.4 firmware is split into two
+> parts (vdev_stats, vdev_stats_extended). The actual stats
+> are captured only in extended vdev stats. In order to enable
+> vdev stats, appropriate feature bit will be set on extended
+> resource config. As FTM related counters are available only on
+> newer 10.4 based firmware, these counters will be displayed
+> only on valid data.
 > 
-> This will fix below warning,
-> 
->  WARNING: CPU: 0 PID: 609 at net/wireless/util.c:1254
->  cfg80211_calculate_bitrate+0x174/0x220
->  invalid rate bw=1, mcs=9, nss=2
-> 
->  (unwind_backtrace) from
->  (cfg80211_calculate_bitrate+0x174/0x220)
->  (cfg80211_calculate_bitrate) from
->  (nl80211_put_sta_rate+0x44/0x1dc)from
->  (nl80211_put_sta_rate) from
->  (nl80211_send_station+0x388/0xaf0)
->  (nl80211_get_station+0xa8/0xec)
->  [ end trace da8257d6a850e91a ]
-> 
-> Fixes: 842be75c77cb ("cfg80211: make RATE_INFO_BW_20 the default")
-> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
-> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-91493e8e10f0 ath10k: fix recent bandwidth conversion bug
+1b3fdb50f881 ath10k: fix vdev stats for 10.4 firmware
 
 -- 
-https://patchwork.kernel.org/patch/10273445/
+https://patchwork.kernel.org/patch/10289879/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
