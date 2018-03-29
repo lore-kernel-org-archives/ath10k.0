@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1TIW-0006hw-CB
- for ath10k@lists.infradead.org; Thu, 29 Mar 2018 08:52:41 +0000
+ id 1f1TJq-0006tz-Ah
+ for ath10k@lists.infradead.org; Thu, 29 Mar 2018 08:54:03 +0000
 MIME-Version: 1.0
-Subject: Re: [1/2] ath10k: enable QCA6174/QCA9377 to read the chip temperature
+Subject: Re: ath10k: Suppress "Unknown eventid: 36925" warnings
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
-References: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
-Message-Id: <20180329085230.1DBF8602FC@smtp.codeaurora.org>
-Date: Thu, 29 Mar 2018 08:52:30 +0000 (UTC)
+In-Reply-To: <1522049641-19521-1-git-send-email-murugana@codeaurora.org>
+References: <1522049641-19521-1-git-send-email-murugana@codeaurora.org>
+Message-Id: <20180329085352.0C0D060C55@smtp.codeaurora.org>
+Date: Thu, 29 Mar 2018 08:53:52 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ryanhsu@codeaurora.org
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-ryanhsu@codeaurora.org wrote:
+Sathishkumar Muruganandam <murugana@codeaurora.org> wrote:
 
-> The firmware of QCA6174/QCA9377 already support the feature, just enable
-> it to be able to handle the get_temperature command and process the event.
+> FW has Smart Logging feature enabled by default for detecting failures
+> and processing FATAL_CONDITION_EVENTID (36925 - 0x903D) back to host.
 > 
-> You can read the temperature by using the hwmon interface,
+> Since ath10k doesn't implement the Smart Logging and FATAL CONDITION
+> EVENT processing yet, suppressing the unknown event ID warning by moving
+> this under ATH10K_DBG_WMI.
 > 
-> cat /sys/class/ieee80211/phy*/device/hwmon/hwmon2/temp1_input
+> Simulated the same issue by having associated STA powered off when
+> ping flood was running from AP backbone. This triggerd STA KICKOUT
+> in AP followed by FATAL CONDITION event 36925.
 > 
-> Verified with the following hardware and software combination,
-> QCA6174, only firmware-4.bin doesn't support this, otherwise all support.
-> QCA9377, all the firmwares upstreamed support this command
+> Issue was reproduced and verified in below DUT
+> ------------------------------------------------
+> AP mode of OpenWRT QCA9984 running 6.0.8 with FW ver 10.4-3.5.3-00053
 > 
-> Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-e98199a8c27f ath10k: enable QCA6174/QCA9377 to read the chip temperature
-e3814bec380f ath10k: add FW API 6 firmware image for QCA9377
+606204bb863f ath10k: suppress "Unknown eventid: 36925" warnings
 
 -- 
-https://patchwork.kernel.org/patch/10286439/
+https://patchwork.kernel.org/patch/10307269/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
