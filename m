@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1TQk-0003Bt-1i
- for ath10k@lists.infradead.org; Thu, 29 Mar 2018 09:01:13 +0000
+ id 1f1TSA-0003WY-Kn
+ for ath10k@lists.infradead.org; Thu, 29 Mar 2018 09:02:41 +0000
 MIME-Version: 1.0
-Subject: Re: [v7,2/5] ath10k: Enable TDLS peer buffer STA feature
+Subject: Re: ath10k: Advertize beacon_int_min_gcd
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1508835074-3384-3-git-send-email-yintang@qti.qualcomm.com>
-References: <1508835074-3384-3-git-send-email-yintang@qti.qualcomm.com>
-Message-Id: <20180329090059.5594060C64@smtp.codeaurora.org>
-Date: Thu, 29 Mar 2018 09:00:59 +0000 (UTC)
+In-Reply-To: <1520428356-2762-1-git-send-email-akolli@codeaurora.org>
+References: <1520428356-2762-1-git-send-email-akolli@codeaurora.org>
+Message-Id: <20180329090228.572B060C64@smtp.codeaurora.org>
+Date: Thu, 29 Mar 2018 09:02:28 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: yintang@qti.qualcomm.com
+To: akolli@codeaurora.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-yintang@qti.qualcomm.com wrote:
+akolli@codeaurora.org wrote:
 
-> Enable TDLS peer buffer STA feature.
-> QCA6174 firmware(version: WLAN.RM.4.4) support TDLS peer buffer STA,
-> it reports this capability through wmi service map in wmi service ready
-> event. Set related parameter in TDLS WMI command to enable this feature.
+> This patch fixes regression caused by 0c317a02ca98
+> ("cfg80211: support virtual interfaces with different beacon intervals"),
+> with this change cfg80211 expects the driver to advertize
+> 'beacon_int_min_gcd' to support different beacon intervals in multivap
+> scenario. This support is added for, QCA988X/QCA99X0/QCA9984/QCA4019.
 > 
-> Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
+> Verifed AP + mesh bring up on QCA9984 with beacon interval 100msec and
+> 1000msec respectively.
+> Frimware: firmware-5.bin_10.4-3.5.3-00053
+> 
+> Fixes: 0c317a02ca98 ("cfg80211: support virtual interfaces with different beacon intervals")
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-4 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-802ca335496e ath10k: enable TDLS peer buffer STA feature
-4c9f8d114660 ath10k: enable TDLS peer inactivity detection
-c3816c9ee12c ath10k: avoid to set WEP key for TDLS peer
-9cdd00575029 ath10k: fix TDLS peer TX data failure issue on encryped AP
+8ebee73b574a ath10k: advertize beacon_int_min_gcd
 
 -- 
-https://patchwork.kernel.org/patch/10023753/
+https://patchwork.kernel.org/patch/10263995/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
