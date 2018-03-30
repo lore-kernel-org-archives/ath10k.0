@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1auD-0000ox-3L
- for ath10k@lists.infradead.org; Thu, 29 Mar 2018 17:00:06 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ath10k: fix spelling mistake: "tiggers" -> "triggers"
-Date: Thu, 29 Mar 2018 17:59:49 +0100
-Message-Id: <20180329165949.29155-1-colin.king@canonical.com>
-MIME-Version: 1.0
+ id 1f1kUe-0006iD-Oi
+ for ath10k@lists.infradead.org; Fri, 30 Mar 2018 03:14:22 +0000
+From: Carl Huang <cjhuang@codeaurora.org>
+Subject: [PATCH 2/2] ath10k: support MAC address randomization in scan
+Date: Fri, 30 Mar 2018 11:14:00 +0800
+Message-Id: <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
+In-Reply-To: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
+References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +17,273 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The ath10k reports the random_mac_addr capability to upper layer
+based on the service bit firmware reported. Driver sets the
+spoofed flag in scan_ctrl_flag to firmware if upper layer has
+enabled this feature in scan request.
 
-Trivial fix to spelling mistake in message text
+Test with QCA6174 hw3.0 and firmware-6.bin_WLAN.RM.4.4.1-00102-QCARMSWP-1,
+but QCA9377 is also affected.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c     | 17 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 22 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 25 +++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 11 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  5 +++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  9 +++++++++
+ 6 files changed, 89 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebb3f1b..c5cd5e5 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5699,6 +5699,12 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
+ 		arg.scan_ctrl_flags |= WMI_SCAN_FLAG_PASSIVE;
+ 	}
+ 
++	if (req->flags & NL80211_SCAN_FLAG_RANDOM_ADDR) {
++		arg.scan_ctrl_flags |=  WMI_SCAN_ADD_SPOOFED_MAC_IN_PROBE_REQ;
++		ether_addr_copy(arg.mac_addr.addr, req->mac_addr);
++		ether_addr_copy(arg.mac_mask.addr, req->mac_addr_mask);
++	}
++
+ 	if (req->n_channels) {
+ 		arg.n_channels = req->n_channels;
+ 		for (i = 0; i < arg.n_channels; i++)
+@@ -8397,6 +8403,17 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		goto err_dfs_detector_exit;
+ 	}
+ 
++	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
++		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
++		if (ret) {
++			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
++			goto err_dfs_detector_exit;
++		}
++
++		ar->hw->wiphy->features |=
++			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
++	}
++
+ 	ar->hw->wiphy->cipher_suites = cipher_suites;
+ 
+ 	/* QCA988x and QCA6174 family chips do not support CCMP-256, GCMP-128
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 86d083d..cf17d91 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -118,6 +118,8 @@ struct wmi_ops {
+ 					 u32 value);
+ 	struct sk_buff *(*gen_scan_chan_list)(struct ath10k *ar,
+ 					      const struct wmi_scan_chan_list_arg *arg);
++	struct sk_buff *(*gen_scan_prob_req_oui)(struct ath10k *ar,
++					 u32 prob_req_oui);
+ 	struct sk_buff *(*gen_beacon_dma)(struct ath10k *ar, u32 vdev_id,
+ 					  const void *bcn, size_t bcn_len,
+ 					  u32 bcn_paddr, bool dtim_zero,
+@@ -892,6 +894,26 @@ ath10k_wmi_scan_chan_list(struct ath10k *ar,
+ }
+ 
+ static inline int
++ath10k_wmi_scan_prob_req_oui(struct ath10k *ar, const u8 mac_addr[ETH_ALEN])
++{
++	struct sk_buff *skb;
++	u32 prob_req_oui;
++
++	prob_req_oui = (((u32)mac_addr[0]) << 16) |
++		       (((u32)mac_addr[1]) << 8) | mac_addr[2];
++
++	if (!ar->wmi.ops->gen_scan_prob_req_oui)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_scan_prob_req_oui(ar, prob_req_oui);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send(ar, skb,
++			ar->wmi.cmd->scan_prob_req_oui_cmdid);
++}
++
++static inline int
+ ath10k_wmi_peer_assoc(struct ath10k *ar,
+ 		      const struct wmi_peer_assoc_complete_arg *arg)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index cb0d130..20e3fd4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1573,6 +1573,8 @@ ath10k_wmi_tlv_op_gen_start_scan(struct ath10k *ar,
+ 	cmd->num_bssids = __cpu_to_le32(arg->n_bssids);
+ 	cmd->ie_len = __cpu_to_le32(arg->ie_len);
+ 	cmd->num_probes = __cpu_to_le32(3);
++	ether_addr_copy(cmd->mac_addr.addr, arg->mac_addr.addr);
++	ether_addr_copy(cmd->mac_mask.addr, arg->mac_mask.addr);
+ 
+ 	/* FIXME: There are some scan flag inconsistencies across firmwares,
+ 	 * e.g. WMI-TLV inverts the logic behind the following flag.
+@@ -2420,6 +2422,27 @@ ath10k_wmi_tlv_op_gen_scan_chan_list(struct ath10k *ar,
+ }
+ 
+ static struct sk_buff *
++ath10k_wmi_tlv_op_gen_scan_prob_req_oui(struct ath10k *ar, u32 prob_req_oui)
++{
++	struct wmi_scan_prob_req_oui_cmd *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*tlv) + sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	tlv = (void *)skb->data;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_SCAN_PROB_REQ_OUI_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->prob_req_oui = __cpu_to_le32(prob_req_oui);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv scan prob req oui\n");
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_beacon_dma(struct ath10k *ar, u32 vdev_id,
+ 				 const void *bcn, size_t bcn_len,
+ 				 u32 bcn_paddr, bool dtim_zero,
+@@ -3366,6 +3389,7 @@ static struct wmi_cmd_map wmi_tlv_cmd_map = {
+ 	.stop_scan_cmdid = WMI_TLV_STOP_SCAN_CMDID,
+ 	.scan_chan_list_cmdid = WMI_TLV_SCAN_CHAN_LIST_CMDID,
+ 	.scan_sch_prio_tbl_cmdid = WMI_TLV_SCAN_SCH_PRIO_TBL_CMDID,
++	.scan_prob_req_oui_cmdid = WMI_TLV_SCAN_PROB_REQ_OUI_CMDID,
+ 	.pdev_set_regdomain_cmdid = WMI_TLV_PDEV_SET_REGDOMAIN_CMDID,
+ 	.pdev_set_channel_cmdid = WMI_TLV_PDEV_SET_CHANNEL_CMDID,
+ 	.pdev_set_param_cmdid = WMI_TLV_PDEV_SET_PARAM_CMDID,
+@@ -3734,6 +3758,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_set_sta_ps = ath10k_wmi_tlv_op_gen_set_sta_ps,
+ 	.gen_set_ap_ps = ath10k_wmi_tlv_op_gen_set_ap_ps,
+ 	.gen_scan_chan_list = ath10k_wmi_tlv_op_gen_scan_chan_list,
++	.gen_scan_prob_req_oui = ath10k_wmi_tlv_op_gen_scan_prob_req_oui,
+ 	.gen_beacon_dma = ath10k_wmi_tlv_op_gen_beacon_dma,
+ 	.gen_pdev_set_wmm = ath10k_wmi_tlv_op_gen_pdev_set_wmm,
+ 	.gen_request_stats = ath10k_wmi_tlv_op_gen_request_stats,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 2889225..e8ec1c3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1695,6 +1695,15 @@ struct wmi_tlv_scan_chan_list_cmd {
+ 	__le32 num_scan_chans;
+ } __packed;
+ 
++struct wmi_scan_prob_req_oui_cmd {
++/* OUI to be used in Probe Request frame when random MAC address is
++ * requested part of scan parameters. This is applied to both FW internal
++ * scans and host initiated scans. Host can request for random MAC address
++ * with WMI_SCAN_ADD_SPOOFED_MAC_IN_PROBE_REQ flag.
++ */
++	__le32 prob_req_oui;
++}  __packed;
++
+ struct wmi_tlv_start_scan_cmd {
+ 	struct wmi_start_scan_common common;
+ 	__le32 burst_duration_ms;
+@@ -1703,6 +1712,8 @@ struct wmi_tlv_start_scan_cmd {
+ 	__le32 num_ssids;
+ 	__le32 ie_len;
+ 	__le32 num_probes;
++	struct wmi_mac_addr mac_addr;
++	struct wmi_mac_addr mac_mask;
+ } __packed;
+ 
+ struct wmi_tlv_vdev_start_cmd {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 9649bb752bbd..2f991f79a90f 100644
+index 4aca166..04b5606 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -7719,7 +7719,7 @@ ath10k_wmi_fw_pdev_tx_stats_fill(const struct ath10k_fw_stats_pdev *pdev,
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "HW rate", pdev->data_rc);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
--			 "Sched self tiggers", pdev->self_triggers);
-+			 "Sched self triggers", pdev->self_triggers);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "Dropped due to SW retries",
- 			 pdev->sw_retry_failure);
+@@ -41,6 +41,7 @@ static struct wmi_cmd_map wmi_cmd_map = {
+ 	.stop_scan_cmdid = WMI_STOP_SCAN_CMDID,
+ 	.scan_chan_list_cmdid = WMI_SCAN_CHAN_LIST_CMDID,
+ 	.scan_sch_prio_tbl_cmdid = WMI_SCAN_SCH_PRIO_TBL_CMDID,
++	.scan_prob_req_oui_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_set_regdomain_cmdid = WMI_PDEV_SET_REGDOMAIN_CMDID,
+ 	.pdev_set_channel_cmdid = WMI_PDEV_SET_CHANNEL_CMDID,
+ 	.pdev_set_param_cmdid = WMI_PDEV_SET_PARAM_CMDID,
+@@ -205,6 +206,7 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
+ 	.stop_scan_cmdid = WMI_10X_STOP_SCAN_CMDID,
+ 	.scan_chan_list_cmdid = WMI_10X_SCAN_CHAN_LIST_CMDID,
+ 	.scan_sch_prio_tbl_cmdid = WMI_CMD_UNSUPPORTED,
++	.scan_prob_req_oui_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_set_regdomain_cmdid = WMI_10X_PDEV_SET_REGDOMAIN_CMDID,
+ 	.pdev_set_channel_cmdid = WMI_10X_PDEV_SET_CHANNEL_CMDID,
+ 	.pdev_set_param_cmdid = WMI_10X_PDEV_SET_PARAM_CMDID,
+@@ -371,6 +373,7 @@ static struct wmi_cmd_map wmi_10_2_4_cmd_map = {
+ 	.stop_scan_cmdid = WMI_10_2_STOP_SCAN_CMDID,
+ 	.scan_chan_list_cmdid = WMI_10_2_SCAN_CHAN_LIST_CMDID,
+ 	.scan_sch_prio_tbl_cmdid = WMI_CMD_UNSUPPORTED,
++	.scan_prob_req_oui_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_set_regdomain_cmdid = WMI_10_2_PDEV_SET_REGDOMAIN_CMDID,
+ 	.pdev_set_channel_cmdid = WMI_10_2_PDEV_SET_CHANNEL_CMDID,
+ 	.pdev_set_param_cmdid = WMI_10_2_PDEV_SET_PARAM_CMDID,
+@@ -537,6 +540,7 @@ static struct wmi_cmd_map wmi_10_4_cmd_map = {
+ 	.stop_scan_cmdid = WMI_10_4_STOP_SCAN_CMDID,
+ 	.scan_chan_list_cmdid = WMI_10_4_SCAN_CHAN_LIST_CMDID,
+ 	.scan_sch_prio_tbl_cmdid = WMI_10_4_SCAN_SCH_PRIO_TBL_CMDID,
++	.scan_prob_req_oui_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_set_regdomain_cmdid = WMI_10_4_PDEV_SET_REGDOMAIN_CMDID,
+ 	.pdev_set_channel_cmdid = WMI_10_4_PDEV_SET_CHANNEL_CMDID,
+ 	.pdev_set_param_cmdid = WMI_10_4_PDEV_SET_PARAM_CMDID,
+@@ -1334,6 +1338,7 @@ static struct wmi_cmd_map wmi_10_2_cmd_map = {
+ 	.stop_scan_cmdid = WMI_10_2_STOP_SCAN_CMDID,
+ 	.scan_chan_list_cmdid = WMI_10_2_SCAN_CHAN_LIST_CMDID,
+ 	.scan_sch_prio_tbl_cmdid = WMI_CMD_UNSUPPORTED,
++	.scan_prob_req_oui_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_set_regdomain_cmdid = WMI_10_2_PDEV_SET_REGDOMAIN_CMDID,
+ 	.pdev_set_channel_cmdid = WMI_10_2_PDEV_SET_CHANNEL_CMDID,
+ 	.pdev_set_param_cmdid = WMI_10_2_PDEV_SET_PARAM_CMDID,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 6919618..3dd8f76 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -767,6 +767,7 @@ struct wmi_cmd_map {
+ 	u32 stop_scan_cmdid;
+ 	u32 scan_chan_list_cmdid;
+ 	u32 scan_sch_prio_tbl_cmdid;
++	u32 scan_prob_req_oui_cmdid;
+ 	u32 pdev_set_regdomain_cmdid;
+ 	u32 pdev_set_channel_cmdid;
+ 	u32 pdev_set_param_cmdid;
+@@ -3144,6 +3145,8 @@ struct wmi_start_scan_arg {
+ 	u16 channels[64];
+ 	struct wmi_ssid_arg ssids[WLAN_SCAN_PARAMS_MAX_SSID];
+ 	struct wmi_bssid_arg bssids[WLAN_SCAN_PARAMS_MAX_BSSID];
++	struct wmi_mac_addr mac_addr;
++	struct wmi_mac_addr mac_mask;
+ };
+ 
+ /* scan control flags */
+@@ -3167,6 +3170,12 @@ struct wmi_start_scan_arg {
+  */
+ #define WMI_SCAN_CONTINUE_ON_ERROR 0x80
+ 
++/* Use random MAC address for TA for Probe Request frame and add
++ * OUI specified by WMI_SCAN_PROB_REQ_OUI_CMDID to the Probe Request frame.
++ * if OUI is not set by WMI_SCAN_PROB_REQ_OUI_CMDID then the flag is ignored.
++ */
++#define WMI_SCAN_ADD_SPOOFED_MAC_IN_PROBE_REQ   0x1000
++
+ /* WMI_SCAN_CLASS_MASK must be the same value as IEEE80211_SCAN_CLASS_MASK */
+ #define WMI_SCAN_CLASS_MASK 0xFF000000
+ 
 -- 
-2.15.1
+2.7.4
 
 
 _______________________________________________
