@@ -1,12 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1kYv-0001aN-D2
- for ath10k@lists.infradead.org; Fri, 30 Mar 2018 03:19:06 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: Convert wow pattern from 802.3 to 802.11
-Date: Fri, 30 Mar 2018 11:18:19 +0800
-Message-Id: <1522379899-31969-1-git-send-email-wgong@codeaurora.org>
+Received: from mx.socionext.com ([202.248.49.38])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f3Xf2-0002nL-QH
+ for ath10k@lists.infradead.org; Wed, 04 Apr 2018 01:56:31 +0000
+From: <yamada.masahiro@socionext.com>
+Subject: RE: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN module
+Date: Wed, 4 Apr 2018 01:56:12 +0000
+Message-ID: <cef0a8eddfdc499e8bb34898eb5ed29d@SOC-EX01V.e01.socionext.com>
+References: <1518684458-5338-1-git-send-email-govinds@codeaurora.org>
+ <87371kqfda.fsf@kamboji.qca.qualcomm.com>
+ <d396df1b09da4dd7aa14d6af2c2b2b18@aphydexm01b.ap.qualcomm.com>
+ <87tvttl6kp.fsf@kamboji.qca.qualcomm.com>
+ <fb2c04383f024ab8b2c62dd5a4ad20ac@SOC-EX01V.e01.socionext.com>
+ <87lgf0cn24.fsf@kamboji.qca.qualcomm.com>
+ <eccd10c7db468515fe255b75f102e301@codeaurora.org>
+In-Reply-To: <eccd10c7db468515fe255b75f102e301@codeaurora.org>
+Content-Language: ja-JP
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,232 +25,141 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: govinds@codeaurora.org, kvalo@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-When trying to set wow wakeup patterns it fails with this command:
+Hi.
 
-iw phyxx wowlan enable patterns offset xx+ IP address xx.xx.xx.xx
+> -----Original Message-----
+> From: govinds@codeaurora.org [mailto:govinds@codeaurora.org]
+> Sent: Friday, March 23, 2018 8:55 PM
+> To: Kalle Valo <kvalo@codeaurora.org>
+> Cc: Yamada, Masahiro/山田 真弘 <yamada.masahiro@socionext.com>;
+> linux-wireless@vger.kernel.org; ath10k@lists.infradead.org
+> Subject: Re: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN
+> module
+> 
+> On 2018-03-10 14:41, Kalle Valo wrote:
+> > <yamada.masahiro@socionext.com> writes:
+> >
+> >>> >> Kbuild bot found an odd problem with this patch:
+> >>> >>
+> >>> >>  include/linux/dynamic_debug.h:77:14: error: 'KBUILD_MODNAME'
+> >>> >>  undeclared (first use in this function); did you mean
+> >>> 'KBUILD_BASENAME'?
+> >>> >>
+> >>> >> Full report:
+> >>> >>
+> >>> >>
+> >>>
+> http://lists.infradead.org/pipermail/ath10k/2018-February/010907.html
+> >>> >>
+> >>> >> Any ideas? Is this is some unrelated issue or what? This patch is
+> not
+> >>> >> even touching hif.h or ce.c.
+> >>> >
+> >>> > I didn't encountered this issue as in my defconfig only
+> >>> > CONFIG_ATH10K_SNOC was defined. This problem is coming when we define
+> >>> > CONFIG_ATH10K_SNOC and CONFIG_ATH10K_PCI simultaneously in defconfig
+> >>> > and this is known issue when multiple modules share objects(in this
+> >>> > case ce.o). I saw similar reported problem and found
+> >>> > https://patchwork.kernel.org/patch/10060825/.
+> >>> >
+> >>> > After picking the below change issue is not seen.
+> >>>
+> >>> Let's ask the kbuild maintainer. Masahiro, any chances of getting
+> >>> this
+> >>> patch applied anytime soon:
+> >>>
+> >>> kbuild: define KBUILD_MODNAME even if multiple modules share objects
+> >>>
+> >>> https://patchwork.kernel.org/patch/10060825/
+> >>>
+> >>> In ath10k we would need it as otherwise we are not able to link ce.o
+> >>> both to ath10k_pci.ko and ath10k_snoc.ko. What do you think?
+> >>>
+> >>> Full discussion and the ath10k patch here:
+> >>>
+> >>> https://patchwork.kernel.org/patch/10220657/
+> >>>
+> >>
+> >> I plan to submit v2, but even if the undefined KBUILD_MODNAME is
+> >> fixed,
+> >> I expect another problem from this patch.
+> >>
+> >> If both CONFIG_ATH10K_PCI and CONFIG_ATH10_SNOC are 'y'
+> >> two instances of ce.o would be linked into vmliux,
+> >> then causes multiple definition error.
+> >
+> > Oh, I didn't realise this. Thanks for pointing it out. Govind is
+> > looking
+> > at other ways to fix this.
+> 
+> https://patchwork.kernel.org/patch/10298659/ is raised to address this
+> problem.
+> 
 
-The reason is that the wow pattern from upper layer is in 802.3 format
-for this case, it need to convert it to 802.11 format. The input
-offset parameter is used for 802.3, but the actual offset firmware
-need depends on rx_decap_mode, so that it needs to be recalculated.
-Pattern of 802.3 packet is not same with 802.11 packet. If the
-rx_decap_mode is ATH10K_HW_TXRX_NATIVE_WIFI, then firmware will
-receive data packet with 802.11 format from hardware.
 
-Convert graph:
------------------------------------------------------------------------
-802.3  |dest mac(6B)|src mac(6B)|type(2B)|     body...    |
-             |__         |_______    |_____________  |___________
-                |                |                 |             |
-802.11 |4B|dest mac(6B)| 6B |src mac(6B)|  8B  |type(2B)|  body...  |
------------------------------------------------------------------------
 
-Tested with QCA6174 hw3.0 with firmware
-WLAN.RM.4.4.1-00099-QCARMSWPZ-1, but this will also affect QCA9377.
-This has always failed, so it's not a regression with new firmware
-releases.
+> CE layer is shared between pci and snoc target and results
+> in duplicate object inclusion if both modules are compiled
+> together statically and undefined KBUILD_MODNAME if
+> compiled as module.
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi.h |   4 ++
- drivers/net/wireless/ath/ath10k/wow.c | 128 ++++++++++++++++++++++++++++++++--
- 2 files changed, 126 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index c7b30ed..389f9c7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6724,6 +6724,10 @@ struct wmi_wow_ev_arg {
- #define WOW_MIN_PATTERN_SIZE	1
- #define WOW_MAX_PATTERN_SIZE	148
- #define WOW_MAX_PKT_OFFSET	128
-+#define WOW_HDR_LEN	(sizeof(struct ieee80211_hdr_3addr) + \
-+	sizeof(struct rfc1042_hdr))
-+#define WOW_MAX_REDUCE	(WOW_HDR_LEN - sizeof(struct ethhdr) - \
-+	offsetof(struct ieee80211_hdr_3addr, addr1))
- 
- enum wmi_tdls_state {
- 	WMI_TDLS_DISABLE,
-diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
-index c4cbccb..9b56a41 100644
---- a/drivers/net/wireless/ath/ath10k/wow.c
-+++ b/drivers/net/wireless/ath/ath10k/wow.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2015-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -76,6 +77,98 @@ static int ath10k_wow_cleanup(struct ath10k *ar)
- 	return 0;
- }
- 
-+static void ath10k_wow_convert_8023_to_80211
-+					(struct cfg80211_pkt_pattern *new,
-+					const struct cfg80211_pkt_pattern *old)
-+{
-+	u8 hdr_8023_pattern[ETH_HLEN] = {};
-+	u8 hdr_8023_bit_mask[ETH_HLEN] = {};
-+	u8 hdr_80211_pattern[WOW_HDR_LEN] = {};
-+	u8 hdr_80211_bit_mask[WOW_HDR_LEN] = {};
-+
-+	int total_len = old->pkt_offset + old->pattern_len;
-+	int hdr_80211_end_offset;
-+
-+	struct ieee80211_hdr_3addr *new_hdr_pattern =
-+		(struct ieee80211_hdr_3addr *)hdr_80211_pattern;
-+	struct ieee80211_hdr_3addr *new_hdr_mask =
-+		(struct ieee80211_hdr_3addr *)hdr_80211_bit_mask;
-+	struct ethhdr *old_hdr_pattern = (struct ethhdr *)hdr_8023_pattern;
-+	struct ethhdr *old_hdr_mask = (struct ethhdr *)hdr_8023_bit_mask;
-+	int hdr_len = sizeof(*new_hdr_pattern);
-+
-+	struct rfc1042_hdr *new_rfc_pattern =
-+		(struct rfc1042_hdr *)(hdr_80211_pattern + hdr_len);
-+	struct rfc1042_hdr *new_rfc_mask =
-+		(struct rfc1042_hdr *)(hdr_80211_bit_mask + hdr_len);
-+	int rfc_len = sizeof(*new_rfc_pattern);
-+
-+	memcpy(hdr_8023_pattern + old->pkt_offset,
-+	       old->pattern, ETH_HLEN - old->pkt_offset);
-+	memcpy(hdr_8023_bit_mask + old->pkt_offset,
-+	       old->mask, ETH_HLEN - old->pkt_offset);
-+
-+	/* Copy destination address */
-+	memcpy(new_hdr_pattern->addr1, old_hdr_pattern->h_dest, ETH_ALEN);
-+	memcpy(new_hdr_mask->addr1, old_hdr_mask->h_dest, ETH_ALEN);
-+
-+	/* Copy source address */
-+	memcpy(new_hdr_pattern->addr3, old_hdr_pattern->h_source, ETH_ALEN);
-+	memcpy(new_hdr_mask->addr3, old_hdr_mask->h_source, ETH_ALEN);
-+
-+	/* Copy logic link type */
-+	memcpy(&new_rfc_pattern->snap_type,
-+	       &old_hdr_pattern->h_proto,
-+	       sizeof(old_hdr_pattern->h_proto));
-+	memcpy(&new_rfc_mask->snap_type,
-+	       &old_hdr_mask->h_proto,
-+	       sizeof(old_hdr_mask->h_proto));
-+
-+	/* Caculate new pkt_offset */
-+	if (old->pkt_offset < ETH_ALEN)
-+		new->pkt_offset = old->pkt_offset +
-+			offsetof(struct ieee80211_hdr_3addr, addr1);
-+	else if (old->pkt_offset < offsetof(struct ethhdr, h_proto))
-+		new->pkt_offset = old->pkt_offset +
-+			offsetof(struct ieee80211_hdr_3addr, addr3) -
-+			offsetof(struct ethhdr, h_source);
-+	else
-+		new->pkt_offset = old->pkt_offset + hdr_len + rfc_len - ETH_HLEN;
-+
-+	/* Caculate new hdr end offset */
-+	if (total_len > ETH_HLEN)
-+		hdr_80211_end_offset = hdr_len + rfc_len;
-+	else if (total_len > offsetof(struct ethhdr, h_proto))
-+		hdr_80211_end_offset = hdr_len + rfc_len + total_len - ETH_HLEN;
-+	else if (total_len > ETH_ALEN)
-+		hdr_80211_end_offset = total_len - ETH_ALEN +
-+			offsetof(struct ieee80211_hdr_3addr, addr3);
-+	else
-+		hdr_80211_end_offset = total_len +
-+			offsetof(struct ieee80211_hdr_3addr, addr1);
-+
-+	new->pattern_len = hdr_80211_end_offset - new->pkt_offset;
-+
-+	memcpy((u8 *)new->pattern,
-+	       hdr_80211_pattern + new->pkt_offset,
-+	       new->pattern_len);
-+	memcpy((u8 *)new->mask,
-+	       hdr_80211_bit_mask + new->pkt_offset,
-+	       new->pattern_len);
-+
-+	if (total_len > ETH_HLEN) {
-+		/* Copy frame body */
-+		memcpy((u8 *)new->pattern + new->pattern_len,
-+		       (void *)old->pattern + ETH_HLEN - old->pkt_offset,
-+		       total_len - ETH_HLEN);
-+		memcpy((u8 *)new->mask + new->pattern_len,
-+		       (void *)old->mask + ETH_HLEN - old->pkt_offset,
-+		       total_len - ETH_HLEN);
-+
-+		new->pattern_len += total_len - ETH_HLEN;
-+	}
-+}
-+
- static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
- 				      struct cfg80211_wowlan *wowlan)
- {
-@@ -116,22 +209,39 @@ static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
- 
- 	for (i = 0; i < wowlan->n_patterns; i++) {
- 		u8 bitmask[WOW_MAX_PATTERN_SIZE] = {};
-+		u8 ath_pattern[WOW_MAX_PATTERN_SIZE] = {};
-+		u8 ath_bitmask[WOW_MAX_PATTERN_SIZE] = {};
-+		struct cfg80211_pkt_pattern new_pattern = {};
-+		struct cfg80211_pkt_pattern old_pattern = patterns[i];
- 		int j;
--
-+		new_pattern.pattern = ath_pattern;
-+		new_pattern.mask = ath_bitmask;
- 		if (patterns[i].pattern_len > WOW_MAX_PATTERN_SIZE)
- 			continue;
--
- 		/* convert bytemask to bitmask */
- 		for (j = 0; j < patterns[i].pattern_len; j++)
- 			if (patterns[i].mask[j / 8] & BIT(j % 8))
- 				bitmask[j] = 0xff;
-+		old_pattern.mask = bitmask;
-+		new_pattern = old_pattern;
-+
-+		if (ar->wmi.rx_decap_mode == ATH10K_HW_TXRX_NATIVE_WIFI) {
-+			if (patterns[i].pkt_offset < ETH_HLEN)
-+				ath10k_wow_convert_8023_to_80211(&new_pattern,
-+								 &old_pattern);
-+			else
-+				new_pattern.pkt_offset += WOW_HDR_LEN - ETH_HLEN;
-+		}
-+
-+		if (WARN_ON(new_pattern.pattern_len > WOW_MAX_PATTERN_SIZE))
-+			return -EINVAL;
- 
- 		ret = ath10k_wmi_wow_add_pattern(ar, arvif->vdev_id,
- 						 pattern_id,
--						 patterns[i].pattern,
--						 bitmask,
--						 patterns[i].pattern_len,
--						 patterns[i].pkt_offset);
-+						 new_pattern.pattern,
-+						 new_pattern.mask,
-+						 new_pattern.pattern_len,
-+						 new_pattern.pkt_offset);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to add pattern %i to vdev %i: %d\n",
- 				    pattern_id,
-@@ -345,6 +455,12 @@ int ath10k_wow_init(struct ath10k *ar)
- 		return -EINVAL;
- 
- 	ar->wow.wowlan_support = ath10k_wowlan_support;
-+
-+	if (ar->wmi.rx_decap_mode == ATH10K_HW_TXRX_NATIVE_WIFI) {
-+		ar->wow.wowlan_support.pattern_max_len -= WOW_MAX_REDUCE;
-+		ar->wow.wowlan_support.max_pkt_offset -= WOW_MAX_REDUCE;
-+	}
-+
- 	ar->wow.wowlan_support.n_patterns = ar->wow.max_num_patterns;
- 	ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
- 
--- 
-2.7.4
+If you rebase your development on v4.17-rc1,
+this statement is no longer true.
 
+
+> Fix this by building ce layer in ath10k core module by
+> adding ce object inclusion with ATH10K_CE boolean CONFIG.
+
+
+
+
+Today, the solution landed in Linus' tree.
+
+[1] Solution for missing KBUILD_MODNAME definition
+
+commit aeacb019b61c4ea7689085574bd03d2c0810f119
+Author: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Mon Mar 19 18:01:24 2018 +0900
+
+    kbuild: define KBUILD_MODNAME even if multiple modules share objects
+
+
+
+[2] Solution for multiple definition error when both are built-in
+
+commit f98fe47ce51dee6d97dd91bbeccdde23f043c754
+Author: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Mon Mar 19 20:26:08 2018 +0900
+
+    kbuild: link $(real-obj-y) instead of $(obj-y) into built-in.a
+
+
+
+
+[3] Examples for Makefile cleanups
+
+
+commit f605005a50fc1443a14b4e8c9c1727881f8f96ae
+Author: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Mon Mar 19 20:26:10 2018 +0900
+
+    net: liquidio: clean up Makefile for simpler composite object handling
+
+
+
+commit dc35da16a2e23db04822f0129cd5b28b7b0e72b4
+Author: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Mon Mar 19 20:26:09 2018 +0900
+
+    lib: zstd: clean up Makefile for simpler composite object handling
 
 _______________________________________________
 ath10k mailing list
