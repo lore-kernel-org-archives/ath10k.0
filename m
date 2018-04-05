@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f467m-0000yD-V9
- for ath10k@lists.infradead.org; Thu, 05 Apr 2018 14:44:29 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
+ id 1f49DW-0000cX-8P
+ for ath10k@lists.infradead.org; Thu, 05 Apr 2018 18:02:37 +0000
 Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
  various chipsets
 References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
-Date: Thu, 05 Apr 2018 17:44:05 +0300
-In-Reply-To: <20180226084406.2093-1-s.gottschall@dd-wrt.com> (s. gottschall's
- message of "Mon, 26 Feb 2018 09:44:06 +0100")
-Message-ID: <871sftemru.fsf@kamboji.qca.qualcomm.com>
+ <871sftemru.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <c4a1313a-73d2-a028-4fca-09f6fb6e56bd@dd-wrt.com>
+Date: Thu, 5 Apr 2018 20:01:47 +0200
 MIME-Version: 1.0
+In-Reply-To: <871sftemru.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,232 +21,319 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: s.gottschall@dd-wrt.com
+To: Kalle Valo <kvalo@codeaurora.org>
 Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-s.gottschall@dd-wrt.com writes:
-
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984
-> based chipsets with on chipset connected led's using WMI Firmware API.
-> The LED device will get available named as "ath10k-phyX" at sysfs and
-> can be controlled with various triggers. adds also debugfs interface
-> for gpio control.
->
-> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-
-[...]
-
-> @@ -1034,7 +1068,7 @@ ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
->  	if (IS_ERR(skb))
->  		return PTR_ERR(skb);
->  
-> -	return ath10k_wmi_cmd_send(ar, skb,
-> +	return ath10k_wmi_cmd_send_nowait(ar, skb,
->  				   ar->wmi.cmd->pdev_get_temperature_cmdid);
->  }
-
-This looks odd, I don't think it belongs to this patch.
-
-Also you made a some sort of record, your patch had 181 checkpatch
-warnings! Do you use Word as your editor or what? :) But please do check
-your editor settings and read the coding style documents.
-
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle
-
-I'll send v13.
-
-Here are the warnings from ath10k-check:
-
-drivers/net/wireless/ath/ath10k/gpio.c:19: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/gpio.c:30: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/gpio.c:36: Prefer 'unsigned int' to bare use of 'unsigned'
-drivers/net/wireless/ath/ath10k/gpio.c:38: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:39: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:39: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:45: Prefer 'unsigned int' to bare use of 'unsigned'
-drivers/net/wireless/ath/ath10k/gpio.c:46: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/gpio.c:48: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:50: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:58: Prefer 'unsigned int' to bare use of 'unsigned'
-drivers/net/wireless/ath/ath10k/gpio.c:60: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:66: Prefer 'unsigned int' to bare use of 'unsigned'
-drivers/net/wireless/ath/ath10k/gpio.c:68: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:74: Prefer 'unsigned int' to bare use of 'unsigned'
-drivers/net/wireless/ath/ath10k/gpio.c:75: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/gpio.c:77: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:86: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:86: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/gpio.c:86: Blank lines aren't necessary after an open brace '{'
-drivers/net/wireless/ath/ath10k/gpio.c:88: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:88: braces {} are not necessary for single statement blocks
-drivers/net/wireless/ath/ath10k/gpio.c:113: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:114: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:114: braces {} are not necessary for single statement blocks
-drivers/net/wireless/ath/ath10k/gpio.c:121: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:130: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/gpio.c:132: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/gpio.c:134: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:136: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:145: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:146: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:159: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:160: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:166: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:169: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:170: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:178: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/gpio.c:181: Prefer kzalloc(sizeof(*gpio)...) over kzalloc(sizeof(struct ath10k_gpiocontrol)...)
-drivers/net/wireless/ath/ath10k/gpio.c:182: braces {} are not necessary for single statement blocks
-drivers/net/wireless/ath/ath10k/gpio.c:192: trailing whitespace
-drivers/net/wireless/ath/ath10k/gpio.c:194: line over 90 characters
-drivers/net/wireless/ath/ath10k/gpio.c:196: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.h:865: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.h:865: line over 90 characters
-drivers/net/wireless/ath/ath10k/core.h:871: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.h:890: Blank lines aren't necessary after an open brace '{'
-drivers/net/wireless/ath/ath10k/core.h:891: Blank lines aren't necessary before a close brace '}'
-drivers/net/wireless/ath/ath10k/core.h:892: Please use a blank line after function/struct/union/enum declarations
-drivers/net/wireless/ath/ath10k/core.h:894: Blank lines aren't necessary after an open brace '{'
-drivers/net/wireless/ath/ath10k/core.h:895: Blank lines aren't necessary before a close brace '}'
-drivers/net/wireless/ath/ath10k/core.h:896: Please use a blank line after function/struct/union/enum declarations
-drivers/net/wireless/ath/ath10k/core.h:905: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.h:907: Blank lines aren't necessary after an open brace '{'
-drivers/net/wireless/ath/ath10k/core.h:908: Blank lines aren't necessary before a close brace '}'
-drivers/net/wireless/ath/ath10k/core.c:29: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/core.c:74: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:105: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:136: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:282: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:318: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:359: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:2396: trailing whitespace
-drivers/net/wireless/ath/ath10k/core.c:2396: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/core.c:2403: trailing whitespace
-drivers/net/wireless/ath/ath10k/debug.c:1089: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/debug.c:1092: trailing whitespace
-drivers/net/wireless/ath/ath10k/debug.c:1095: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/debug.c:1098: line over 90 characters
-drivers/net/wireless/ath/ath10k/debug.c:1103: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/debug.c:1105: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/debug.c:1109: trailing whitespace
-drivers/net/wireless/ath/ath10k/debug.c:1113: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/debug.c:1130: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/debug.c:1133: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/debug.c:1149: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/debug.c:1152: trailing whitespace
-drivers/net/wireless/ath/ath10k/debug.c:1155: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/debug.c:1163: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/debug.c:1165: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/debug.c:1169: trailing whitespace
-drivers/net/wireless/ath/ath10k/debug.c:1173: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/debug.c:1188: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/debug.c:1191: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/debug.c:1375: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/wmi-ops.h:211: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/wmi-ops.h:986: trailing whitespace
-drivers/net/wireless/ath/ath10k/wmi-ops.h:986: Please use a blank line after function/struct/union/enum declarations
-drivers/net/wireless/ath/ath10k/wmi-ops.h:987: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi-ops.h:1001: trailing whitespace
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3340: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3342: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3343: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3344: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3345: trailing whitespace
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3345: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3346: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3348: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3349: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3350: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3353: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3354: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3355: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3356: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3358: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3359: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3360: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3361: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3362: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3364: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3365: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3367: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3367: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3368: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3374: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3375: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3376: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3377: trailing whitespace
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3377: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3378: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3380: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3381: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3382: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3385: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3386: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3387: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3388: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3390: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3391: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3392: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3394: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3395: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3397: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3397: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3398: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3401: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/mac.c:4622: trailing whitespace
-drivers/net/wireless/ath/ath10k/mac.c:4623: line over 90 characters
-drivers/net/wireless/ath/ath10k/mac.c:4625: trailing whitespace
-drivers/net/wireless/ath/ath10k/mac.c:4626: trailing whitespace
-drivers/net/wireless/ath/ath10k/wmi.h:2934: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2935: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2936: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2940: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2941: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2942: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2943: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2944: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2945: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2950: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2951: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2952: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2953: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2958: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2959: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2964: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:2967: Please don't use multiple blank lines
-drivers/net/wireless/ath/ath10k/wmi.c:6957: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi.c:6959: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6960: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6962: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6963: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6965: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6966: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6967: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6968: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6969: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6971: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi.c:6971: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6972: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6978: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6979: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6981: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6982: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6984: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6985: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6986: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6987: line over 90 characters
-drivers/net/wireless/ath/ath10k/wmi.c:6987: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:6988: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.c:8583: trailing whitespace
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMDUuMDQuMjAxOCB1bSAxNjo0NCBzY2hyaWViIEthbGxlIFZhbG86Cj4gcy5nb3R0c2NoYWxs
+QGRkLXdydC5jb20gd3JpdGVzOgo+Cj4+IEFkZHMgTEVEIGFuZCBHUElPIENvbnRyb2wgc3VwcG9y
+dCBmb3IgOTg4eCwgOTg4NywgOTg4OCwgOTl4MCwgOTk4NAo+PiBiYXNlZCBjaGlwc2V0cyB3aXRo
+IG9uIGNoaXBzZXQgY29ubmVjdGVkIGxlZCdzIHVzaW5nIFdNSSBGaXJtd2FyZSBBUEkuCj4+IFRo
+ZSBMRUQgZGV2aWNlIHdpbGwgZ2V0IGF2YWlsYWJsZSBuYW1lZCBhcyAiYXRoMTBrLXBoeVgiIGF0
+IHN5c2ZzIGFuZAo+PiBjYW4gYmUgY29udHJvbGxlZCB3aXRoIHZhcmlvdXMgdHJpZ2dlcnMuIGFk
+ZHMgYWxzbyBkZWJ1Z2ZzIGludGVyZmFjZQo+PiBmb3IgZ3BpbyBjb250cm9sLgo+Pgo+PiBTaWdu
+ZWQtb2ZmLWJ5OiBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+
+Cj4gWy4uLl0KPgo+PiBAQCAtMTAzNCw3ICsxMDY4LDcgQEAgYXRoMTBrX3dtaV9wZGV2X2dldF90
+ZW1wZXJhdHVyZShzdHJ1Y3QgYXRoMTBrICphcikKPj4gwqDCoMKgwqDCoCBpZiAoSVNfRVJSKHNr
+YikpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gUFRSX0VSUihza2IpOwo+PiDCoCAtwqDC
+oMKgIHJldHVybiBhdGgxMGtfd21pX2NtZF9zZW5kKGFyLCBza2IsCj4+ICvCoMKgwqAgcmV0dXJu
+IGF0aDEwa193bWlfY21kX3NlbmRfbm93YWl0KGFyLCBza2IsCj4+IGFyLT53bWkuY21kLT5wZGV2
+X2dldF90ZW1wZXJhdHVyZV9jbWRpZCk7Cj4+IMKgIH0KPiBUaGlzIGxvb2tzIG9kZCwgSSBkb24n
+dCB0aGluayBpdCBiZWxvbmdzIHRvIHRoaXMgcGF0Y2guCnRoYXRzIHRydWUuIGJ1dCBkdWUgdGhl
+IG5hdHVyZSBvZiB0aGlzIGZ1bmN0aW9uIGkgZm91bmQgaXQgYmV0dGVyIHRvIHVzZSAKbm93YWl0
+IGhlcmUuIGJldHRlciBpZiBpIHNwbGl0IGl0IHVwPwo+Cj4gQWxzbyB5b3UgbWFkZSBhIHNvbWUg
+c29ydCBvZiByZWNvcmQsIHlvdXIgcGF0Y2ggaGFkIDE4MSBjaGVja3BhdGNoCj4gd2FybmluZ3Mh
+IERvIHlvdSB1c2UgV29yZCBhcyB5b3VyIGVkaXRvciBvciB3aGF0PyBCdXQgcGxlYXNlIGRvIGNo
+ZWNrCj4geW91ciBlZGl0b3Igc2V0dGluZ3MgYW5kIHJlYWQgdGhlIGNvZGluZyBzdHlsZSBkb2N1
+bWVudHMuCm5vPyBpIHVzZSBtaWRuaWdodCBjb21tYW5kZXIgZm9yIGFsbCBvZiBteSBjb2RlIHNp
+bmNlIG1vcmUgdGhhbiAyMCB5ZWFycwphbmQgaXRzIHRoZSBmaXJzdCB0aW1lIHRoYXQgaSBzZWUg
+c3VjaCB3YXJuaW5ncy4gaXMgdGhlcmUgYW55IHNwZWNpYWwgCmNvZGluZyBydWxlIGZvciBhdGgx
+MGsgd2hpY2ggZGlmZmVycyBmcm9tIHRoZSBrZXJuZWwgcnVsZXM/CmFuZCB3aGVyZSBpcyBhdGgx
+MGstY2hlY2sgbG9jYXRlZD8KPgo+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2Vu
+L3VzZXJzL2RyaXZlcnMvYXRoMTBrL2NvZGluZ3N0eWxlCj4KPiBJJ2xsIHNlbmQgdjEzLgo+Cj4g
+SGVyZSBhcmUgdGhlIHdhcm5pbmdzIGZyb20gYXRoMTBrLWNoZWNrOgo+Cj4gZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTk6IFBsZWFzZSBkb24ndCB1c2UgbXVsdGlwbGUg
+Cj4gYmxhbmsgbGluZXMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8uYzoz
+MDogUGxlYXNlIGRvbid0IHVzZSBtdWx0aXBsZSAKPiBibGFuayBsaW5lcwo+IGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjM2OiBQcmVmZXIgJ3Vuc2lnbmVkIGludCcgdG8g
+Cj4gYmFyZSB1c2Ugb2YgJ3Vuc2lnbmVkJwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvZ3Bpby5jOjM4OiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjM5OiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjM5OiBNaXNzaW5nIGEgYmxhbmsgbGlu
+ZSBhZnRlciAKPiBkZWNsYXJhdGlvbnMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2dwaW8uYzo0NTogUHJlZmVyICd1bnNpZ25lZCBpbnQnIHRvIAo+IGJhcmUgdXNlIG9mICd1bnNp
+Z25lZCcKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8uYzo0NjogQWxpZ25t
+ZW50IHNob3VsZCBtYXRjaCBvcGVuIAo+IHBhcmVudGhlc2lzCj4gZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway9ncGlvLmM6NDg6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6NTA6IGxpbmUgb3ZlciA5MCBjaGFyYWN0
+ZXJzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6NTg6IFByZWZlciAn
+dW5zaWduZWQgaW50JyB0byAKPiBiYXJlIHVzZSBvZiAndW5zaWduZWQnCj4gZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6NjA6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6NjY6IFByZWZlciAndW5zaWdu
+ZWQgaW50JyB0byAKPiBiYXJlIHVzZSBvZiAndW5zaWduZWQnCj4gZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway9ncGlvLmM6Njg6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6NzQ6IFByZWZlciAndW5zaWduZWQgaW50
+JyB0byAKPiBiYXJlIHVzZSBvZiAndW5zaWduZWQnCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway9ncGlvLmM6NzU6IEFsaWdubWVudCBzaG91bGQgbWF0Y2ggb3BlbiAKPiBwYXJlbnRo
+ZXNpcwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjc3OiBsaW5lIG92
+ZXIgOTAgY2hhcmFjdGVycwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5j
+Ojg2OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9ncGlvLmM6ODY6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUK
+PiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8uYzo4NjogQmxhbmsgbGluZXMg
+YXJlbid0IAo+IG5lY2Vzc2FyeSBhZnRlciBhbiBvcGVuIGJyYWNlICd7Jwo+IGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjg4OiBNaXNzaW5nIGEgYmxhbmsgbGluZSBhZnRl
+ciAKPiBkZWNsYXJhdGlvbnMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8u
+Yzo4ODogYnJhY2VzIHt9IGFyZSBub3QgbmVjZXNzYXJ5IAo+IGZvciBzaW5nbGUgc3RhdGVtZW50
+IGJsb2Nrcwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjExMzogdHJh
+aWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5j
+OjExNDogTWlzc2luZyBhIGJsYW5rIGxpbmUgYWZ0ZXIgCj4gZGVjbGFyYXRpb25zCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTE0OiBicmFjZXMge30gYXJlIG5vdCAK
+PiBuZWNlc3NhcnkgZm9yIHNpbmdsZSBzdGF0ZW1lbnQgYmxvY2tzCj4gZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTIxOiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjEzMDogUGxlYXNlIGRvbid0IHVz
+ZSBtdWx0aXBsZSAKPiBibGFuayBsaW5lcwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvZ3Bpby5jOjEzMjogQWxpZ25tZW50IHNob3VsZCBtYXRjaCAKPiBvcGVuIHBhcmVudGhlc2lz
+Cj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTM0OiBsaW5lIG92ZXIg
+OTAgY2hhcmFjdGVycwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjEz
+NjogTWlzc2luZyBhIGJsYW5rIGxpbmUgYWZ0ZXIgCj4gZGVjbGFyYXRpb25zCj4gZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTQ1OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTQ2OiBNaXNzaW5nIGEgYmxh
+bmsgbGluZSBhZnRlciAKPiBkZWNsYXJhdGlvbnMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2dwaW8uYzoxNTk6IHRyYWlsaW5nIHdoaXRlc3BhY2UKPiBkcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL2dwaW8uYzoxNjA6IE1pc3NpbmcgYSBibGFuayBsaW5lIGFmdGVyIAo+
+IGRlY2xhcmF0aW9ucwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jOjE2
+NjogdHJhaWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+Z3Bpby5jOjE2OTogdHJhaWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvZ3Bpby5jOjE3MDogbGluZSBvdmVyIDkwIGNoYXJhY3RlcnMKPiBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8uYzoxNzg6IE1pc3NpbmcgYSBibGFuayBsaW5lIGFm
+dGVyIAo+IGRlY2xhcmF0aW9ucwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bp
+by5jOjE4MTogUHJlZmVyIAo+IGt6YWxsb2Moc2l6ZW9mKCpncGlvKS4uLikgb3ZlciBremFsbG9j
+KHNpemVvZihzdHJ1Y3QgCj4gYXRoMTBrX2dwaW9jb250cm9sKS4uLikKPiBkcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8uYzoxODI6IGJyYWNlcyB7fSBhcmUgbm90IAo+IG5lY2Vz
+c2FyeSBmb3Igc2luZ2xlIHN0YXRlbWVudCBibG9ja3MKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2dwaW8uYzoxOTI6IHRyYWlsaW5nIHdoaXRlc3BhY2UKPiBkcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2dwaW8uYzoxOTQ6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmM6MTk2OiB0cmFpbGluZyB3aGl0
+ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmg6ODY1OiB0cmFp
+bGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmg6
+ODY1OiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvY29yZS5oOjg3MTogdHJhaWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvY29yZS5oOjg5MDogQmxhbmsgbGluZXMgYXJlbid0IAo+IG5lY2Vzc2Fy
+eSBhZnRlciBhbiBvcGVuIGJyYWNlICd7Jwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvY29yZS5oOjg5MTogQmxhbmsgbGluZXMgYXJlbid0IAo+IG5lY2Vzc2FyeSBiZWZvcmUgYSBj
+bG9zZSBicmFjZSAnfScKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaDo4
+OTI6IFBsZWFzZSB1c2UgYSBibGFuayBsaW5lIAo+IGFmdGVyIGZ1bmN0aW9uL3N0cnVjdC91bmlv
+bi9lbnVtIGRlY2xhcmF0aW9ucwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29y
+ZS5oOjg5NDogQmxhbmsgbGluZXMgYXJlbid0IAo+IG5lY2Vzc2FyeSBhZnRlciBhbiBvcGVuIGJy
+YWNlICd7Jwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oOjg5NTogQmxh
+bmsgbGluZXMgYXJlbid0IAo+IG5lY2Vzc2FyeSBiZWZvcmUgYSBjbG9zZSBicmFjZSAnfScKPiBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaDo4OTY6IFBsZWFzZSB1c2UgYSBi
+bGFuayBsaW5lIAo+IGFmdGVyIGZ1bmN0aW9uL3N0cnVjdC91bmlvbi9lbnVtIGRlY2xhcmF0aW9u
+cwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oOjkwNTogdHJhaWxpbmcg
+d2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oOjkwNzog
+QmxhbmsgbGluZXMgYXJlbid0IAo+IG5lY2Vzc2FyeSBhZnRlciBhbiBvcGVuIGJyYWNlICd7Jwo+
+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oOjkwODogQmxhbmsgbGluZXMg
+YXJlbid0IAo+IG5lY2Vzc2FyeSBiZWZvcmUgYSBjbG9zZSBicmFjZSAnfScKPiBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYzoyOTogUGxlYXNlIGRvbid0IHVzZSBtdWx0aXBs
+ZSAKPiBibGFuayBsaW5lcwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5j
+Ojc0OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9jb3JlLmM6MTA1OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9jb3JlLmM6MTM2OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmM6MjgyOiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmM6MzE4OiB0cmFpbGluZyB3aGl0ZXNw
+YWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmM6MzU5OiB0cmFpbGlu
+ZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmM6MjM5
+NjogdHJhaWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+Y29yZS5jOjIzOTY6IFBsZWFzZSBkb24ndCB1c2UgbXVsdGlwbGUgCj4gYmxhbmsgbGluZXMKPiBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYzoyNDAzOiB0cmFpbGluZyB3aGl0
+ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jOjEwODk6IEFs
+aWdubWVudCBzaG91bGQgbWF0Y2ggCj4gb3BlbiBwYXJlbnRoZXNpcwo+IGRyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYzoxMDkyOiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jOjEwOTU6IE1pc3NpbmcgYSBibGFu
+ayBsaW5lIAo+IGFmdGVyIGRlY2xhcmF0aW9ucwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvZGVidWcuYzoxMDk4OiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYzoxMTAzOiBQbGVhc2UgZG9uJ3QgdXNlIAo+IG11
+bHRpcGxlIGJsYW5rIGxpbmVzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1
+Zy5jOjExMDU6IEFsaWdubWVudCBzaG91bGQgbWF0Y2ggCj4gb3BlbiBwYXJlbnRoZXNpcwo+IGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYzoxMTA5OiB0cmFpbGluZyB3aGl0
+ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jOjExMTM6IE1p
+c3NpbmcgYSBibGFuayBsaW5lIAo+IGFmdGVyIGRlY2xhcmF0aW9ucwo+IGRyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYzoxMTMwOiBQbGVhc2UgZG9uJ3QgdXNlIAo+IG11bHRp
+cGxlIGJsYW5rIGxpbmVzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5j
+OjExMzM6IFBsZWFzZSBkb24ndCB1c2UgCj4gbXVsdGlwbGUgYmxhbmsgbGluZXMKPiBkcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmM6MTE0OTogQWxpZ25tZW50IHNob3VsZCBt
+YXRjaCAKPiBvcGVuIHBhcmVudGhlc2lzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9kZWJ1Zy5jOjExNTI6IHRyYWlsaW5nIHdoaXRlc3BhY2UKPiBkcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL2RlYnVnLmM6MTE1NTogTWlzc2luZyBhIGJsYW5rIGxpbmUgCj4gYWZ0ZXIg
+ZGVjbGFyYXRpb25zCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jOjEx
+NjM6IFBsZWFzZSBkb24ndCB1c2UgCj4gbXVsdGlwbGUgYmxhbmsgbGluZXMKPiBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmM6MTE2NTogQWxpZ25tZW50IHNob3VsZCBtYXRj
+aCAKPiBvcGVuIHBhcmVudGhlc2lzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9k
+ZWJ1Zy5jOjExNjk6IHRyYWlsaW5nIHdoaXRlc3BhY2UKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2RlYnVnLmM6MTE3MzogTWlzc2luZyBhIGJsYW5rIGxpbmUgCj4gYWZ0ZXIgZGVj
+bGFyYXRpb25zCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jOjExODg6
+IFBsZWFzZSBkb24ndCB1c2UgCj4gbXVsdGlwbGUgYmxhbmsgbGluZXMKPiBkcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmM6MTE5MTogUGxlYXNlIGRvbid0IHVzZSAKPiBtdWx0
+aXBsZSBibGFuayBsaW5lcwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcu
+YzoxMzc1OiBQbGVhc2UgZG9uJ3QgdXNlIAo+IG11bHRpcGxlIGJsYW5rIGxpbmVzCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktb3BzLmg6MjExOiBQbGVhc2UgZG9uJ3QgdXNl
+IAo+IG11bHRpcGxlIGJsYW5rIGxpbmVzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay93bWktb3BzLmg6OTg2OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway93bWktb3BzLmg6OTg2OiBQbGVhc2UgdXNlIGEgYmxhbmsgbGluZSAKPiBh
+ZnRlciBmdW5jdGlvbi9zdHJ1Y3QvdW5pb24vZW51bSBkZWNsYXJhdGlvbnMKPiBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS1vcHMuaDo5ODc6IGxpbmUgb3ZlciA5MCBjaGFyYWN0
+ZXJzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktb3BzLmg6MTAwMTogdHJh
+aWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRs
+di5jOjMzNDA6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway93bWktdGx2LmM6MzM0MjogcGxlYXNlLCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0
+YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5j
+OjMzNDM6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYzozMzQ0OiBwbGVhc2UsIG5vIHNw
+YWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway93bWktdGx2LmM6MzM0NTogdHJhaWxpbmcgd2hpdGVzcGFjZQo+IGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzNDU6IHBsZWFzZSwgbm8gc3BhY2VzIGF0
+IAo+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L3dtaS10bHYuYzozMzQ2OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBs
+aW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM0ODogcGxl
+YXNlLCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzNDk6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+
+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dt
+aS10bHYuYzozMzUwOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5l
+Cj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM1MzogcGxlYXNl
+LCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzNTQ6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRo
+ZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10
+bHYuYzozMzU1OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM1NjogcGxlYXNlLCBu
+byBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzNTg6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRoZSBz
+dGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYu
+YzozMzU5OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4gZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM2MDogcGxlYXNlLCBubyBz
+cGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvd21pLXRsdi5jOjMzNjE6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRoZSBzdGFy
+dCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYzoz
+MzYyOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM2NDogcGxlYXNlLCBubyBzcGFj
+ZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvd21pLXRsdi5jOjMzNjU6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRoZSBzdGFydCBv
+ZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYzozMzY3
+OiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvd21pLXRsdi5jOjMzNjc6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRoZSBzdGFydCBvZiBh
+IGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYzozMzY4OiBw
+bGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM3NDogcGxlYXNlLCBubyBzcGFjZXMgYXQg
+Cj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+d21pLXRsdi5jOjMzNzU6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+IHRoZSBzdGFydCBvZiBhIGxp
+bmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYzozMzc2OiBwbGVh
+c2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM3NzogdHJhaWxpbmcgd2hpdGVzcGFjZQo+IGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzNzc6IHBsZWFzZSwgbm8g
+c3BhY2VzIGF0IAo+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL3dtaS10bHYuYzozMzc4OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3Rh
+cnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6
+MzM4MDogcGxlYXNlLCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzODE6IHBsZWFzZSwgbm8gc3Bh
+Y2VzIGF0IAo+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3dtaS10bHYuYzozMzgyOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQg
+b2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM4
+NTogcGxlYXNlLCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzODY6IHBsZWFzZSwgbm8gc3BhY2Vz
+IGF0IAo+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3dtaS10bHYuYzozMzg3OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2Yg
+YSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM4ODog
+cGxlYXNlLCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzOTA6IHBsZWFzZSwgbm8gc3BhY2VzIGF0
+IAo+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L3dtaS10bHYuYzozMzkxOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBs
+aW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM5MjogcGxl
+YXNlLCBubyBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jOjMzOTQ6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IAo+
+IHRoZSBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dt
+aS10bHYuYzozMzk1OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5l
+Cj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM5NzogbGluZSBv
+dmVyIDkwIGNoYXJhY3RlcnMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10
+bHYuYzozMzk3OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCAKPiB0aGUgc3RhcnQgb2YgYSBsaW5lCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmM6MzM5ODogcGxlYXNlLCBu
+byBzcGFjZXMgYXQgCj4gdGhlIHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvd21pLXRsdi5jOjM0MDE6IFBsZWFzZSBkb24ndCB1c2UgCj4gbXVsdGlwbGUg
+YmxhbmsgbGluZXMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jOjQ2MjI6
+IHRyYWlsaW5nIHdoaXRlc3BhY2UKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
+Yy5jOjQ2MjM6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9tYWMuYzo0NjI1OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYzo0NjI2OiB0cmFpbGluZyB3aGl0ZXNwYWNlCj4gZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTM0OiBwbGVhc2UsIG5vIHNwYWNl
+cyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway93bWkuaDoyOTM1OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBs
+aW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTM2OiBwbGVhc2Us
+IG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway93bWkuaDoyOTQwOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3Rh
+cnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTQx
+OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTQyOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0
+aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
+bWkuaDoyOTQzOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTQ0OiBwbGVhc2UsIG5vIHNw
+YWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway93bWkuaDoyOTQ1OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2Yg
+YSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTUwOiBwbGVh
+c2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTUxOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4g
+c3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoy
+OTUyOiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTUzOiBwbGVhc2UsIG5vIHNwYWNlcyBh
+dCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay93bWkuaDoyOTU4OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5l
+Cj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTU5OiBwbGVhc2UsIG5v
+IHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway93bWkuaDoyOTY0OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQg
+b2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaDoyOTY3OiBQ
+bGVhc2UgZG9uJ3QgdXNlIG11bHRpcGxlIAo+IGJsYW5rIGxpbmVzCj4gZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway93bWkuYzo2OTU3OiBsaW5lIG92ZXIgOTAgY2hhcmFjdGVycwo+IGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk1OTogcGxlYXNlLCBubyBzcGFj
+ZXMgYXQgdGhlIAo+IHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvd21pLmM6Njk2MDogcGxlYXNlLCBubyBzcGFjZXMgYXQgdGhlIAo+IHN0YXJ0IG9mIGEg
+bGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk2MjogcGxlYXNl
+LCBubyBzcGFjZXMgYXQgdGhlIAo+IHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk2MzogcGxlYXNlLCBubyBzcGFjZXMgYXQgdGhlIAo+IHN0
+YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk2
+NTogcGxlYXNlLCBubyBzcGFjZXMgYXQgdGhlIAo+IHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk2NjogcGxlYXNlLCBubyBzcGFjZXMgYXQg
+dGhlIAo+IHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+d21pLmM6Njk2NzogcGxlYXNlLCBubyBzcGFjZXMgYXQgdGhlIAo+IHN0YXJ0IG9mIGEgbGluZQo+
+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk2ODogcGxlYXNlLCBubyBz
+cGFjZXMgYXQgdGhlIAo+IHN0YXJ0IG9mIGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvd21pLmM6Njk2OTogcGxlYXNlLCBubyBzcGFjZXMgYXQgdGhlIAo+IHN0YXJ0IG9m
+IGEgbGluZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6Njk3MTogbGlu
+ZSBvdmVyIDkwIGNoYXJhY3RlcnMKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dt
+aS5jOjY5NzE6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUKPiBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjY5NzI6IHBsZWFzZSwgbm8gc3Bh
+Y2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3dtaS5jOjY5Nzg6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBh
+IGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjY5Nzk6IHBsZWFz
+ZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL3dtaS5jOjY5ODE6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBz
+dGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjY5
+ODI6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjY5ODQ6IHBsZWFzZSwgbm8gc3BhY2VzIGF0
+IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L3dtaS5jOjY5ODU6IHBsZWFzZSwgbm8gc3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUK
+PiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjY5ODY6IHBsZWFzZSwgbm8g
+c3BhY2VzIGF0IHRoZSAKPiBzdGFydCBvZiBhIGxpbmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL3dtaS5jOjY5ODc6IGxpbmUgb3ZlciA5MCBjaGFyYWN0ZXJzCj4gZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYzo2OTg3OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0
+aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
+bWkuYzo2OTg4OiBwbGVhc2UsIG5vIHNwYWNlcyBhdCB0aGUgCj4gc3RhcnQgb2YgYSBsaW5lCj4g
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYzo4NTgzOiB0cmFpbGluZyB3aGl0
+ZXNwYWNlCj4KCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0
+aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNp
+dHo6wqAgU3R1YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0
+OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0
+ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20K
+ZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4
+OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
