@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx.socionext.com ([202.248.49.38])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3Xf2-0002nL-QH
- for ath10k@lists.infradead.org; Wed, 04 Apr 2018 01:56:31 +0000
-From: <yamada.masahiro@socionext.com>
-Subject: RE: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN module
-Date: Wed, 4 Apr 2018 01:56:12 +0000
-Message-ID: <cef0a8eddfdc499e8bb34898eb5ed29d@SOC-EX01V.e01.socionext.com>
-References: <1518684458-5338-1-git-send-email-govinds@codeaurora.org>
- <87371kqfda.fsf@kamboji.qca.qualcomm.com>
- <d396df1b09da4dd7aa14d6af2c2b2b18@aphydexm01b.ap.qualcomm.com>
- <87tvttl6kp.fsf@kamboji.qca.qualcomm.com>
- <fb2c04383f024ab8b2c62dd5a4ad20ac@SOC-EX01V.e01.socionext.com>
- <87lgf0cn24.fsf@kamboji.qca.qualcomm.com>
- <eccd10c7db468515fe255b75f102e301@codeaurora.org>
-In-Reply-To: <eccd10c7db468515fe255b75f102e301@codeaurora.org>
-Content-Language: ja-JP
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f467m-0000yD-V9
+ for ath10k@lists.infradead.org; Thu, 05 Apr 2018 14:44:29 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
+ various chipsets
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+Date: Thu, 05 Apr 2018 17:44:05 +0300
+In-Reply-To: <20180226084406.2093-1-s.gottschall@dd-wrt.com> (s. gottschall's
+ message of "Mon, 26 Feb 2018 09:44:06 +0100")
+Message-ID: <871sftemru.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,141 +20,230 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: govinds@codeaurora.org, kvalo@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: s.gottschall@dd-wrt.com
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi.
+s.gottschall@dd-wrt.com writes:
 
-> -----Original Message-----
-> From: govinds@codeaurora.org [mailto:govinds@codeaurora.org]
-> Sent: Friday, March 23, 2018 8:55 PM
-> To: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Yamada, Masahiro/山田 真弘 <yamada.masahiro@socionext.com>;
-> linux-wireless@vger.kernel.org; ath10k@lists.infradead.org
-> Subject: Re: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN
-> module
-> 
-> On 2018-03-10 14:41, Kalle Valo wrote:
-> > <yamada.masahiro@socionext.com> writes:
-> >
-> >>> >> Kbuild bot found an odd problem with this patch:
-> >>> >>
-> >>> >>  include/linux/dynamic_debug.h:77:14: error: 'KBUILD_MODNAME'
-> >>> >>  undeclared (first use in this function); did you mean
-> >>> 'KBUILD_BASENAME'?
-> >>> >>
-> >>> >> Full report:
-> >>> >>
-> >>> >>
-> >>>
-> http://lists.infradead.org/pipermail/ath10k/2018-February/010907.html
-> >>> >>
-> >>> >> Any ideas? Is this is some unrelated issue or what? This patch is
-> not
-> >>> >> even touching hif.h or ce.c.
-> >>> >
-> >>> > I didn't encountered this issue as in my defconfig only
-> >>> > CONFIG_ATH10K_SNOC was defined. This problem is coming when we define
-> >>> > CONFIG_ATH10K_SNOC and CONFIG_ATH10K_PCI simultaneously in defconfig
-> >>> > and this is known issue when multiple modules share objects(in this
-> >>> > case ce.o). I saw similar reported problem and found
-> >>> > https://patchwork.kernel.org/patch/10060825/.
-> >>> >
-> >>> > After picking the below change issue is not seen.
-> >>>
-> >>> Let's ask the kbuild maintainer. Masahiro, any chances of getting
-> >>> this
-> >>> patch applied anytime soon:
-> >>>
-> >>> kbuild: define KBUILD_MODNAME even if multiple modules share objects
-> >>>
-> >>> https://patchwork.kernel.org/patch/10060825/
-> >>>
-> >>> In ath10k we would need it as otherwise we are not able to link ce.o
-> >>> both to ath10k_pci.ko and ath10k_snoc.ko. What do you think?
-> >>>
-> >>> Full discussion and the ath10k patch here:
-> >>>
-> >>> https://patchwork.kernel.org/patch/10220657/
-> >>>
-> >>
-> >> I plan to submit v2, but even if the undefined KBUILD_MODNAME is
-> >> fixed,
-> >> I expect another problem from this patch.
-> >>
-> >> If both CONFIG_ATH10K_PCI and CONFIG_ATH10_SNOC are 'y'
-> >> two instances of ce.o would be linked into vmliux,
-> >> then causes multiple definition error.
-> >
-> > Oh, I didn't realise this. Thanks for pointing it out. Govind is
-> > looking
-> > at other ways to fix this.
-> 
-> https://patchwork.kernel.org/patch/10298659/ is raised to address this
-> problem.
-> 
+> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984
+> based chipsets with on chipset connected led's using WMI Firmware API.
+> The LED device will get available named as "ath10k-phyX" at sysfs and
+> can be controlled with various triggers. adds also debugfs interface
+> for gpio control.
+>
+> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
+[...]
 
+> @@ -1034,7 +1068,7 @@ ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
+>  	if (IS_ERR(skb))
+>  		return PTR_ERR(skb);
+>  
+> -	return ath10k_wmi_cmd_send(ar, skb,
+> +	return ath10k_wmi_cmd_send_nowait(ar, skb,
+>  				   ar->wmi.cmd->pdev_get_temperature_cmdid);
+>  }
 
-> CE layer is shared between pci and snoc target and results
-> in duplicate object inclusion if both modules are compiled
-> together statically and undefined KBUILD_MODNAME if
-> compiled as module.
+This looks odd, I don't think it belongs to this patch.
 
+Also you made a some sort of record, your patch had 181 checkpatch
+warnings! Do you use Word as your editor or what? :) But please do check
+your editor settings and read the coding style documents.
 
-If you rebase your development on v4.17-rc1,
-this statement is no longer true.
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle
 
+I'll send v13.
 
-> Fix this by building ce layer in ath10k core module by
-> adding ce object inclusion with ATH10K_CE boolean CONFIG.
+Here are the warnings from ath10k-check:
 
+drivers/net/wireless/ath/ath10k/gpio.c:19: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/gpio.c:30: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/gpio.c:36: Prefer 'unsigned int' to bare use of 'unsigned'
+drivers/net/wireless/ath/ath10k/gpio.c:38: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:39: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:39: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:45: Prefer 'unsigned int' to bare use of 'unsigned'
+drivers/net/wireless/ath/ath10k/gpio.c:46: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/gpio.c:48: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:50: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:58: Prefer 'unsigned int' to bare use of 'unsigned'
+drivers/net/wireless/ath/ath10k/gpio.c:60: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:66: Prefer 'unsigned int' to bare use of 'unsigned'
+drivers/net/wireless/ath/ath10k/gpio.c:68: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:74: Prefer 'unsigned int' to bare use of 'unsigned'
+drivers/net/wireless/ath/ath10k/gpio.c:75: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/gpio.c:77: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:86: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:86: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/gpio.c:86: Blank lines aren't necessary after an open brace '{'
+drivers/net/wireless/ath/ath10k/gpio.c:88: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:88: braces {} are not necessary for single statement blocks
+drivers/net/wireless/ath/ath10k/gpio.c:113: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:114: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:114: braces {} are not necessary for single statement blocks
+drivers/net/wireless/ath/ath10k/gpio.c:121: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:130: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/gpio.c:132: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/gpio.c:134: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:136: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:145: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:146: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:159: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:160: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:166: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:169: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:170: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:178: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/gpio.c:181: Prefer kzalloc(sizeof(*gpio)...) over kzalloc(sizeof(struct ath10k_gpiocontrol)...)
+drivers/net/wireless/ath/ath10k/gpio.c:182: braces {} are not necessary for single statement blocks
+drivers/net/wireless/ath/ath10k/gpio.c:192: trailing whitespace
+drivers/net/wireless/ath/ath10k/gpio.c:194: line over 90 characters
+drivers/net/wireless/ath/ath10k/gpio.c:196: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.h:865: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.h:865: line over 90 characters
+drivers/net/wireless/ath/ath10k/core.h:871: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.h:890: Blank lines aren't necessary after an open brace '{'
+drivers/net/wireless/ath/ath10k/core.h:891: Blank lines aren't necessary before a close brace '}'
+drivers/net/wireless/ath/ath10k/core.h:892: Please use a blank line after function/struct/union/enum declarations
+drivers/net/wireless/ath/ath10k/core.h:894: Blank lines aren't necessary after an open brace '{'
+drivers/net/wireless/ath/ath10k/core.h:895: Blank lines aren't necessary before a close brace '}'
+drivers/net/wireless/ath/ath10k/core.h:896: Please use a blank line after function/struct/union/enum declarations
+drivers/net/wireless/ath/ath10k/core.h:905: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.h:907: Blank lines aren't necessary after an open brace '{'
+drivers/net/wireless/ath/ath10k/core.h:908: Blank lines aren't necessary before a close brace '}'
+drivers/net/wireless/ath/ath10k/core.c:29: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/core.c:74: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:105: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:136: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:282: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:318: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:359: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:2396: trailing whitespace
+drivers/net/wireless/ath/ath10k/core.c:2396: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/core.c:2403: trailing whitespace
+drivers/net/wireless/ath/ath10k/debug.c:1089: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/debug.c:1092: trailing whitespace
+drivers/net/wireless/ath/ath10k/debug.c:1095: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/debug.c:1098: line over 90 characters
+drivers/net/wireless/ath/ath10k/debug.c:1103: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/debug.c:1105: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/debug.c:1109: trailing whitespace
+drivers/net/wireless/ath/ath10k/debug.c:1113: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/debug.c:1130: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/debug.c:1133: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/debug.c:1149: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/debug.c:1152: trailing whitespace
+drivers/net/wireless/ath/ath10k/debug.c:1155: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/debug.c:1163: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/debug.c:1165: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/debug.c:1169: trailing whitespace
+drivers/net/wireless/ath/ath10k/debug.c:1173: Missing a blank line after declarations
+drivers/net/wireless/ath/ath10k/debug.c:1188: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/debug.c:1191: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/debug.c:1375: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/wmi-ops.h:211: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/wmi-ops.h:986: trailing whitespace
+drivers/net/wireless/ath/ath10k/wmi-ops.h:986: Please use a blank line after function/struct/union/enum declarations
+drivers/net/wireless/ath/ath10k/wmi-ops.h:987: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi-ops.h:1001: trailing whitespace
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3340: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3342: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3343: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3344: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3345: trailing whitespace
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3345: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3346: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3348: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3349: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3350: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3353: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3354: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3355: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3356: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3358: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3359: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3360: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3361: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3362: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3364: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3365: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3367: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3367: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3368: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3374: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3375: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3376: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3377: trailing whitespace
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3377: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3378: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3380: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3381: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3382: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3385: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3386: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3387: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3388: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3390: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3391: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3392: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3394: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3395: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3397: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3397: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3398: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3401: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/mac.c:4622: trailing whitespace
+drivers/net/wireless/ath/ath10k/mac.c:4623: line over 90 characters
+drivers/net/wireless/ath/ath10k/mac.c:4625: trailing whitespace
+drivers/net/wireless/ath/ath10k/mac.c:4626: trailing whitespace
+drivers/net/wireless/ath/ath10k/wmi.h:2934: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2935: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2936: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2940: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2941: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2942: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2943: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2944: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2945: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2950: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2951: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2952: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2953: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2958: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2959: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2964: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.h:2967: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/wmi.c:6957: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi.c:6959: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6960: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6962: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6963: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6965: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6966: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6967: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6968: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6969: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6971: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi.c:6971: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6972: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6978: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6979: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6981: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6982: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6984: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6985: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6986: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6987: line over 90 characters
+drivers/net/wireless/ath/ath10k/wmi.c:6987: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:6988: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/wmi.c:8583: trailing whitespace
 
-
-
-Today, the solution landed in Linus' tree.
-
-[1] Solution for missing KBUILD_MODNAME definition
-
-commit aeacb019b61c4ea7689085574bd03d2c0810f119
-Author: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Mon Mar 19 18:01:24 2018 +0900
-
-    kbuild: define KBUILD_MODNAME even if multiple modules share objects
-
-
-
-[2] Solution for multiple definition error when both are built-in
-
-commit f98fe47ce51dee6d97dd91bbeccdde23f043c754
-Author: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Mon Mar 19 20:26:08 2018 +0900
-
-    kbuild: link $(real-obj-y) instead of $(obj-y) into built-in.a
-
-
-
-
-[3] Examples for Makefile cleanups
-
-
-commit f605005a50fc1443a14b4e8c9c1727881f8f96ae
-Author: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Mon Mar 19 20:26:10 2018 +0900
-
-    net: liquidio: clean up Makefile for simpler composite object handling
-
-
-
-commit dc35da16a2e23db04822f0129cd5b28b7b0e72b4
-Author: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Mon Mar 19 20:26:09 2018 +0900
-
-    lib: zstd: clean up Makefile for simpler composite object handling
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
