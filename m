@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f4MNW-0007va-7l
- for ath10k@lists.infradead.org; Fri, 06 Apr 2018 08:05:48 +0000
+ id 1f4MPZ-0008NL-EG
+ for ath10k@lists.infradead.org; Fri, 06 Apr 2018 08:07:54 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
  various chipsets
 References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
  <871sftemru.fsf@kamboji.qca.qualcomm.com>
  <c4a1313a-73d2-a028-4fca-09f6fb6e56bd@dd-wrt.com>
-Date: Fri, 06 Apr 2018 11:05:30 +0300
-In-Reply-To: <c4a1313a-73d2-a028-4fca-09f6fb6e56bd@dd-wrt.com> (Sebastian
- Gottschall's message of "Thu, 5 Apr 2018 20:01:47 +0200")
-Message-ID: <87lge0sqt1.fsf@codeaurora.org>
+ <de9c007f-26e3-a511-e944-91e90aac7787@dd-wrt.com>
+Date: Fri, 06 Apr 2018 11:07:39 +0300
+In-Reply-To: <de9c007f-26e3-a511-e944-91e90aac7787@dd-wrt.com> (Sebastian
+ Gottschall's message of "Thu, 5 Apr 2018 22:00:43 +0200")
+Message-ID: <87h8oosqpg.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,47 +23,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-U2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cml0ZXM6Cgo+
-IEFtIDA1LjA0LjIwMTggdW0gMTY6NDQgc2NocmllYiBLYWxsZSBWYWxvOgo+PiBzLmdvdHRzY2hh
-bGxAZGQtd3J0LmNvbSB3cml0ZXM6Cj4+Cj4+PiBBZGRzIExFRCBhbmQgR1BJTyBDb250cm9sIHN1
-cHBvcnQgZm9yIDk4OHgsIDk4ODcsIDk4ODgsIDk5eDAsIDk5ODQKPj4+IGJhc2VkIGNoaXBzZXRz
-IHdpdGggb24gY2hpcHNldCBjb25uZWN0ZWQgbGVkJ3MgdXNpbmcgV01JIEZpcm13YXJlIEFQSS4K
-Pj4+IFRoZSBMRUQgZGV2aWNlIHdpbGwgZ2V0IGF2YWlsYWJsZSBuYW1lZCBhcyAiYXRoMTBrLXBo
-eVgiIGF0IHN5c2ZzIGFuZAo+Pj4gY2FuIGJlIGNvbnRyb2xsZWQgd2l0aCB2YXJpb3VzIHRyaWdn
-ZXJzLiBhZGRzIGFsc28gZGVidWdmcyBpbnRlcmZhY2UKPj4+IGZvciBncGlvIGNvbnRyb2wuCj4+
-Pgo+Pj4gU2lnbmVkLW9mZi1ieTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFsbEBk
-ZC13cnQuY29tPgo+PiBbLi4uXQo+Pgo+Pj4gQEAgLTEwMzQsNyArMTA2OCw3IEBAIGF0aDEwa193
-bWlfcGRldl9nZXRfdGVtcGVyYXR1cmUoc3RydWN0IGF0aDEwayAqYXIpCj4+PiDCoMKgwqDCoMKg
-IGlmIChJU19FUlIoc2tiKSkKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gUFRSX0VSUihz
-a2IpOwo+Pj4gwqAgLcKgwqDCoCByZXR1cm4gYXRoMTBrX3dtaV9jbWRfc2VuZChhciwgc2tiLAo+
-Pj4gK8KgwqDCoCByZXR1cm4gYXRoMTBrX3dtaV9jbWRfc2VuZF9ub3dhaXQoYXIsIHNrYiwKPj4+
-IGFyLT53bWkuY21kLT5wZGV2X2dldF90ZW1wZXJhdHVyZV9jbWRpZCk7Cj4+PiDCoCB9Cj4+IFRo
-aXMgbG9va3Mgb2RkLCBJIGRvbid0IHRoaW5rIGl0IGJlbG9uZ3MgdG8gdGhpcyBwYXRjaC4KPgo+
-IHRoYXRzIHRydWUuIGJ1dCBkdWUgdGhlIG5hdHVyZSBvZiB0aGlzIGZ1bmN0aW9uIGkgZm91bmQg
-aXQgYmV0dGVyIHRvCj4gdXNlIG5vd2FpdCBoZXJlLiBiZXR0ZXIgaWYgaSBzcGxpdCBpdCB1cD8K
-ClllcywgdGhpcyBzaG91bGQgYmUgZG9uZSBpbiBhIHNlcGFyYXRlIHBhdGNoIHdpdGggYSBwcm9w
-ZXIgY29tbWl0IGxvZwpleHBsYWluaW5nIHdoeSBpdCdzIG5lZWRlZC4KCj4+IEFsc28geW91IG1h
-ZGUgYSBzb21lIHNvcnQgb2YgcmVjb3JkLCB5b3VyIHBhdGNoIGhhZCAxODEgY2hlY2twYXRjaAo+
-PiB3YXJuaW5ncyEgRG8geW91IHVzZSBXb3JkIGFzIHlvdXIgZWRpdG9yIG9yIHdoYXQ/IEJ1dCBw
-bGVhc2UgZG8gY2hlY2sKPj4geW91ciBlZGl0b3Igc2V0dGluZ3MgYW5kIHJlYWQgdGhlIGNvZGlu
-ZyBzdHlsZSBkb2N1bWVudHMuCj4KPiBubz8gaSB1c2UgbWlkbmlnaHQgY29tbWFuZGVyIGZvciBh
-bGwgb2YgbXkgY29kZSBzaW5jZSBtb3JlIHRoYW4gMjAgeWVhcnMKPiBhbmQgaXRzIHRoZSBmaXJz
-dCB0aW1lIHRoYXQgaSBzZWUgc3VjaCB3YXJuaW5ncy4gaXMgdGhlcmUgYW55IHNwZWNpYWwKPiBj
-b2RpbmcgcnVsZSBmb3IgYXRoMTBrIHdoaWNoIGRpZmZlcnMgZnJvbSB0aGUga2VybmVsIHJ1bGVz
-PwoKWW91IGdvdCBldmVuIHRoZSBpbmRlbnRhdGlvbiB3cm9uZyBpbiBtdWx0aXBsZSBmdW5jdGlv
-bnMgYW5kIGluZGVudGF0aW9uCnJ1bGVzIGhhdmUgYmVlbiB0aGUgc2FtZSBhcyBsb25nIGFzIEkg
-cmVtZW1iZXIuIEFuZCBjaGVja3BhdGNoIGhhcyBiZWVuCmFyb3VuZCBhIGxvbmcgdGltZSBhbHJl
-YWR5LCB0aGF0IHNob3VsZCBub3QgYmUgbmV3IHRvIGFueW9uZSBzdWJtaXR0aW5nCnBhdGNoZXMu
-Cgo+IGFuZCB3aGVyZSBpcyBhdGgxMGstY2hlY2sgbG9jYXRlZD8KCkNoZWNrIHRoZSBsaW5rIEkg
-cHJvdmlkZWQ6Cgo+PiBodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9k
-cml2ZXJzL2F0aDEway9jb2RpbmdzdHlsZQoKLS0gCkthbGxlIFZhbG8KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+
+> i have some comments about your check warnings.
+> some of them are bogus. for instance they advise to use "unsigned int"
+> instead of "unsigned". this might be better, but
+> the original kernel header uses "unsigned" as api definition. so i
+> decided to use the same declarations here.
+
+Sure, but using "unsigned int" won't create any harm either.
+
+> for the rest like whitespaces i will make a new version and remove them
+
+You missed my comment in my earlier mail that I'll send the next
+version. I have already fixed all the warnings so let me submit it. I'll
+do also some other changes.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
