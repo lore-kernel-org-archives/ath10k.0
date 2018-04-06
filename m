@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f4MR5-0000DO-6X
- for ath10k@lists.infradead.org; Fri, 06 Apr 2018 08:09:29 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
+ id 1f4MSZ-0001nq-58
+ for ath10k@lists.infradead.org; Fri, 06 Apr 2018 08:11:01 +0000
 Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
  various chipsets
 References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
  <871sftemru.fsf@kamboji.qca.qualcomm.com>
  <c4a1313a-73d2-a028-4fca-09f6fb6e56bd@dd-wrt.com>
  <de9c007f-26e3-a511-e944-91e90aac7787@dd-wrt.com>
- <1d917688-9f59-39ad-46a6-527d9e3dec03@dd-wrt.com>
-Date: Fri, 06 Apr 2018 11:09:12 +0300
-In-Reply-To: <1d917688-9f59-39ad-46a6-527d9e3dec03@dd-wrt.com> (Sebastian
- Gottschall's message of "Thu, 5 Apr 2018 22:27:18 +0200")
-Message-ID: <87d0zcsqmv.fsf@codeaurora.org>
+ <87h8oosqpg.fsf@codeaurora.org>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <0d1827fa-497d-7cf2-5372-74c2d1f459b2@dd-wrt.com>
+Date: Fri, 6 Apr 2018 10:10:42 +0200
 MIME-Version: 1.0
+In-Reply-To: <87h8oosqpg.fsf@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +24,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-KGFkZGluZyBiYWNrIHRoZSBsaXN0cywgcGxlYXNlIGRvbid0IHRvcCBwb3N0IGFuZCB0cmltIHlv
-dXIgcXVvdGVzKQoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29t
-PiB3cml0ZXM6Cgo+IG9rYXkuIGF0aDEway1jaGVjayBpcyBidWdneSBhbmQgZG9lc250IHdvcmsu
-IHNvIGl0IGRvZXNudCBoZWxwIG11Y2gKPiB3aXRoIGNvZGUgc3R5bGVzCj4KPiByb290QHNlZy1k
-ZXNrdG9wOi94ZnMvYXRoMTBrL2F0aC5ncGlvIyAuL2F0aDEway1jaGVjawo+IGdsb2JhbDogJ2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvS2NvbmZpZycgaXMgbm90IGEgc291cmNlIGZp
-bGUuCj4gVHJhY2ViYWNrIChtb3N0IHJlY2VudCBjYWxsIGxhc3QpOgo+IMKgIEZpbGUgIi4vYXRo
-MTBrLWNoZWNrIiwgbGluZSA0NjEsIGluIDxtb2R1bGU+Cj4gwqDCoMKgIG1haW4oKQo+IMKgIEZp
-bGUgIi4vYXRoMTBrLWNoZWNrIiwgbGluZSA0NTUsIGluIG1haW4KPiDCoMKgwqAgcmV0ID0gcnVu
-X2NoZWNrcGF0Y2goYXJncykKPiDCoCBGaWxlICIuL2F0aDEway1jaGVjayIsIGxpbmUgMjc1LCBp
-biBydW5fY2hlY2twYXRjaAo+IMKgwqDCoCBvdXRwdXQgPSBzdWJwcm9jZXNzLmNoZWNrX291dHB1
-dChjbWQsIHNoZWxsPVRydWUpCj4gwqAgRmlsZSAiL3Vzci9saWIvcHl0aG9uMi43L3N1YnByb2Nl
-c3MucHkiLCBsaW5lIDIxOSwgaW4gY2hlY2tfb3V0cHV0Cj4gwqDCoMKgIHJhaXNlIENhbGxlZFBy
-b2Nlc3NFcnJvcihyZXRjb2RlLCBjbWQsIG91dHB1dD1vdXRwdXQpCj4gc3VicHJvY2Vzcy5DYWxs
-ZWRQcm9jZXNzRXJyb3I6IENvbW1hbmQgJ2dsb2JhbCAtZiAKPiBkcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL0tjb25maWcnIHJldHVybmVkIG5vbi16ZXJvIGV4aXQgc3RhdHVzIDEKCllv
-dSBhcmUgbWlzc2luZyBndGFncywgc2VlICdhdGgxMGstY2hlY2sgLS1oZWxwJyBmb3IgaG93IHRv
-IGluc3RhbGw6CgpSZXF1aXJlbWVudHMgKGFsbCBhdmFpbGFibGUgaW4gJFBBVEgpOgoKKiBnY2MK
-KiBzcGFyc2UKKiBjaGVja3BhdGNoLnBsCiogZ3RhZ3MgKGZyb20gcGFja2FnZSBnbG9iYWwpCgot
-LSAKS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+QW0gMDYuMDQuMjAxOCB1bSAxMDowNyBzY2hyaWViIEthbGxlIFZhbG86Cj4gU2ViYXN0aWFuIEdv
+dHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cml0ZXM6Cj4KPj4gaSBoYXZlIHNv
+bWUgY29tbWVudHMgYWJvdXQgeW91ciBjaGVjayB3YXJuaW5ncy4KPj4gc29tZSBvZiB0aGVtIGFy
+ZSBib2d1cy4gZm9yIGluc3RhbmNlIHRoZXkgYWR2aXNlIHRvIHVzZSAidW5zaWduZWQgaW50Igo+
+PiBpbnN0ZWFkIG9mICJ1bnNpZ25lZCIuIHRoaXMgbWlnaHQgYmUgYmV0dGVyLCBidXQKPj4gdGhl
+IG9yaWdpbmFsIGtlcm5lbCBoZWFkZXIgdXNlcyAidW5zaWduZWQiIGFzIGFwaSBkZWZpbml0aW9u
+LiBzbyBpCj4+IGRlY2lkZWQgdG8gdXNlIHRoZSBzYW1lIGRlY2xhcmF0aW9ucyBoZXJlLgo+IFN1
+cmUsIGJ1dCB1c2luZyAidW5zaWduZWQgaW50IiB3b24ndCBjcmVhdGUgYW55IGhhcm0gZWl0aGVy
+Lgo+Cj4+IGZvciB0aGUgcmVzdCBsaWtlIHdoaXRlc3BhY2VzIGkgd2lsbCBtYWtlIGEgbmV3IHZl
+cnNpb24gYW5kIHJlbW92ZSB0aGVtCj4gWW91IG1pc3NlZCBteSBjb21tZW50IGluIG15IGVhcmxp
+ZXIgbWFpbCB0aGF0IEknbGwgc2VuZCB0aGUgbmV4dAo+IHZlcnNpb24uIEkgaGF2ZSBhbHJlYWR5
+IGZpeGVkIGFsbCB0aGUgd2FybmluZ3Mgc28gbGV0IG1lIHN1Ym1pdCBpdC4gSSdsbAo+IGRvIGFs
+c28gc29tZSBvdGhlciBjaGFuZ2VzLgoKb2ggb2theS4gdGhhbmsgeW91LiB0aGVuIGZvcmdldCBh
+bGwgdGhlIHJlc3QuIGkgd2lsbCB0YWtlIGNhcmUgb2YgdGhlc2UgCmlzc3VlcyB3aXRoIHRoZSBu
+ZXh0IHBhdGNoIGkgc3VibWl0Cgo+CgotLSAKTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJl
+Z2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERE
+LVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVn
+aXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRz
+ZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3
+LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEt
+NTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
