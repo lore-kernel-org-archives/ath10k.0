@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.15.18])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f55a0-0007nJ-Bm
- for ath10k@lists.infradead.org; Sun, 08 Apr 2018 08:21:42 +0000
-Date: Sun, 8 Apr 2018 10:21:21 +0200
-From: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+ id 1f5Z3H-0005Gg-0i
+ for ath10k@lists.infradead.org; Mon, 09 Apr 2018 15:49:52 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
  various chipsets
-Message-ID: <20180408102121.63d010bd@mir>
-In-Reply-To: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
 References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
+ <a249fc31-18bf-96a1-27ee-deea05d2d0ff@dd-wrt.com>
+Date: Mon, 09 Apr 2018 18:49:35 +0300
+In-Reply-To: <a249fc31-18bf-96a1-27ee-deea05d2d0ff@dd-wrt.com> (Sebastian
+ Gottschall's message of "Fri, 6 Apr 2018 20:31:16 +0200")
+Message-ID: <87k1tgbcs0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,44 +25,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-On 2018-04-06, Kalle Valo wrote:
-> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-> 
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based
-> chipsets with on chipset connected led's using WMI Firmware API.  The LED
-> device will get available named as "ath10k-phyX" at sysfs and can be controlled
-> with various triggers.  adds also debugfs interface for gpio control.
-> 
-> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
-> [kvalo: major reorg and cleanup]
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> you removed the call to leds_start from certain locations but you seem
+> to have ignored the comment i wrote above the function call.
 
-Tested-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+IIRC I moved the comment to ath10k_leds_start().
 
-[...]
+> there is a reason why i reinitialize the gpio output state in these
+> locations. the firmware for 9984 and 99xx resets the gpio registers
+> at certain points. this will lead to a non working led code.
 
-I've been able to test v13 of this patch, including the changes regarding 
-removing ath10k_leds_start() and moving the ath10k_wmi_gpio_config() call
-into ath10k_leds_set_brightness_blocking() as raised by Sebastian 
-Gottschall, on a ZyXEL NBG6817 (using two QCA9984 wlan cards and firmware 
-10.4-3.5.3-00053) running OpenWrt/ master r6644-eda27d7557 (ipq8065, 
-kernel 4.9.92 with backports wt-2017-11-01-0-gfe248fc2c180/ 
-v4.14-rc2-1-31-g86cf0e5d).
+What are the certain points exactly? I tried to be careful that from
+firmware's point of view the functionality is the same, even if I moved
+the call to a different location. Did you test the patch? Is it broken
+now?
 
-/sys/class/leds/ath10k-phy0/ and /sys/class/leds/ath10k-phy1/ are
-registered correctly and the white wlan LEDs connected to the ath10k 
-GPIOs are now working as designed (controlled via phy0tpt/ phy1tpt).
+> so you must set the gpio output to high again and this is the reason
+> why the function is called "reset_led_pin" and not led_start because
+> it doesnt start the led in any way.
 
-Thanks a lot to everyone involved!
+The naming refers to phases of ath10k initialisation which are:
 
-Regards
-	Stefan Lippers-Hollmann
+create() - destroy()
+register() - unregister()
+start() - stop()
+
+So the naming doesn't mean that every ath10k_foo_start() has to start
+something, it just describes the phase of driver initialisation it's
+called in.
+
+> it just resets the output state there is only one work around you may
+> do. you set the gpio out register to high on every led trigger, but
+> this is what i wanted to avoid to save cpu time since a wmi call is
+> more expensive than just a register write.
+
+Is this really so frequently called that we need to think about CPU
+time? How often are we expecting the LED state to change?
+
+But I'm not really following you, from firmware point of view the
+functionality should be the same as with your patch. 
+
+> so if you want to follow this up. remove ath10k_leds_start
+> and insert
+>
+> ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0,
+> 			       WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE);
+>
+> in ath10k_leds_set_brightness_blocking
+
+Calling ath10k_wmi_gpio_config() every time sounds like quite odd to me
+and your patch didn't do that either. Are you sure this is really
+needed?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
