@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5Z3H-0005Gg-0i
- for ath10k@lists.infradead.org; Mon, 09 Apr 2018 15:49:52 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
- various chipsets
-References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
- <a249fc31-18bf-96a1-27ee-deea05d2d0ff@dd-wrt.com>
-Date: Mon, 09 Apr 2018 18:49:35 +0300
-In-Reply-To: <a249fc31-18bf-96a1-27ee-deea05d2d0ff@dd-wrt.com> (Sebastian
- Gottschall's message of "Fri, 6 Apr 2018 20:31:16 +0200")
-Message-ID: <87k1tgbcs0.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1f5nrU-0006fA-LB
+ for ath10k@lists.infradead.org; Tue, 10 Apr 2018 07:38:42 +0000
+From: zhichen@codeaurora.org
+Subject: [PATCH] ath10k: fixed scan crash
+Date: Tue, 10 Apr 2018 15:39:53 +0800
+Message-Id: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +15,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Zhi Chen <zhichen@codeaurora.org>, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org
 
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+From: Zhi Chen <zhichen@codeaurora.org>
 
-> you removed the call to leds_start from certain locations but you seem
-> to have ignored the comment i wrote above the function call.
+Length of WMI scan message was not calculated correctly. The allocated
+buffer was smaller than what we expected. So WMI message corrupted
+skb_info, which is at the end of skb->data. This fix takes TLV header
+into account even if the element is zero-length.
+Crash log:
+  [49.629986] Unhandled kernel unaligned access[#1]:
+  [49.634932] CPU: 0 PID: 1176 Comm: logd Not tainted 4.4.60 #180
+  [49.641040] task: 83051460 ti: 8329c000 task.ti: 8329c000
+  [49.646608] $ 0   : 00000000 00000001 80984a80 00000000
+  [49.652038] $ 4   : 45259e89 8046d484 8046df30 8024ba70
+  [49.657468] $ 8   : 00000000 804cc4c0 00000001 20306320
+  [49.662898] $12   : 33322037 000110f2 00000000 31203930
+  [49.668327] $16   : 82792b40 80984a80 00000001 804207fc
+  [49.673757] $20   : 00000000 0000012c 00000040 80470000
+  [49.679186] $24   : 00000000 8024af7c
+  [49.684617] $28   : 8329c000 8329db88 00000001 802c58d0
+  [49.690046] Hi    : 00000000
+  [49.693022] Lo    : 453c0000
+  [49.696013] epc   : 800efae4 put_page+0x0/0x58
+  [49.700615] ra    : 802c58d0 skb_release_data+0x148/0x1d4
+  [49.706184] Status: 1000fc03 KERNEL EXL IE
+  [49.710531] Cause : 00800010 (ExcCode 04)
+  [49.714669] BadVA : 45259e89
+  [49.717644] PrId  : 00019374 (MIPS 24Kc)
 
-IIRC I moved the comment to ath10k_leds_start().
+Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> there is a reason why i reinitialize the gpio output state in these
-> locations. the firmware for 9984 and 99xx resets the gpio registers
-> at certain points. this will lead to a non working led code.
-
-What are the certain points exactly? I tried to be careful that from
-firmware's point of view the functionality is the same, even if I moved
-the call to a different location. Did you test the patch? Is it broken
-now?
-
-> so you must set the gpio output to high again and this is the reason
-> why the function is called "reset_led_pin" and not led_start because
-> it doesnt start the led in any way.
-
-The naming refers to phases of ath10k initialisation which are:
-
-create() - destroy()
-register() - unregister()
-start() - stop()
-
-So the naming doesn't mean that every ath10k_foo_start() has to start
-something, it just describes the phase of driver initialisation it's
-called in.
-
-> it just resets the output state there is only one work around you may
-> do. you set the gpio out register to high on every led trigger, but
-> this is what i wanted to avoid to save cpu time since a wmi call is
-> more expensive than just a register write.
-
-Is this really so frequently called that we need to think about CPU
-time? How often are we expecting the LED state to change?
-
-But I'm not really following you, from firmware point of view the
-functionality should be the same as with your patch. 
-
-> so if you want to follow this up. remove ath10k_leds_start
-> and insert
->
-> ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0,
-> 			       WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE);
->
-> in ath10k_leds_set_brightness_blocking
-
-Calling ath10k_wmi_gpio_config() every time sounds like quite odd to me
-and your patch didn't do that either. Are you sure this is really
-needed?
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index ae77a00..25efbb5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1515,10 +1515,10 @@ ath10k_wmi_tlv_op_gen_start_scan(struct ath10k *ar,
+ 	bssid_len = arg->n_bssids * sizeof(struct wmi_mac_addr);
+ 	ie_len = roundup(arg->ie_len, 4);
+ 	len = (sizeof(*tlv) + sizeof(*cmd)) +
+-	      (arg->n_channels ? sizeof(*tlv) + chan_len : 0) +
+-	      (arg->n_ssids ? sizeof(*tlv) + ssid_len : 0) +
+-	      (arg->n_bssids ? sizeof(*tlv) + bssid_len : 0) +
+-	      (arg->ie_len ? sizeof(*tlv) + ie_len : 0);
++	      sizeof(*tlv) + chan_len +
++	      sizeof(*tlv) + ssid_len +
++	      sizeof(*tlv) + bssid_len +
++	      sizeof(*tlv) + ie_len;
+ 
+ 	skb = ath10k_wmi_alloc_skb(ar, len);
+ 	if (!skb)
 -- 
-Kalle Valo
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
