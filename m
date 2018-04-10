@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5nrU-0006fA-LB
+ id 1f5nrU-0006iu-TX
  for ath10k@lists.infradead.org; Tue, 10 Apr 2018 07:38:42 +0000
 From: zhichen@codeaurora.org
-Subject: [PATCH] ath10k: fixed scan crash
-Date: Tue, 10 Apr 2018 15:39:53 +0800
-Message-Id: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
+Subject: [PATCH] ath10k: fix tlv 5ghz channel missing issue
+Date: Tue, 10 Apr 2018 15:39:54 +0800
+Message-Id: <1523345994-28800-2-git-send-email-zhichen@codeaurora.org>
+In-Reply-To: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
+References: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +27,27 @@ Cc: Zhi Chen <zhichen@codeaurora.org>, kvalo@qca.qualcomm.com, linux-wireless@vg
 
 From: Zhi Chen <zhichen@codeaurora.org>
 
-Length of WMI scan message was not calculated correctly. The allocated
-buffer was smaller than what we expected. So WMI message corrupted
-skb_info, which is at the end of skb->data. This fix takes TLV header
-into account even if the element is zero-length.
-Crash log:
-  [49.629986] Unhandled kernel unaligned access[#1]:
-  [49.634932] CPU: 0 PID: 1176 Comm: logd Not tainted 4.4.60 #180
-  [49.641040] task: 83051460 ti: 8329c000 task.ti: 8329c000
-  [49.646608] $ 0   : 00000000 00000001 80984a80 00000000
-  [49.652038] $ 4   : 45259e89 8046d484 8046df30 8024ba70
-  [49.657468] $ 8   : 00000000 804cc4c0 00000001 20306320
-  [49.662898] $12   : 33322037 000110f2 00000000 31203930
-  [49.668327] $16   : 82792b40 80984a80 00000001 804207fc
-  [49.673757] $20   : 00000000 0000012c 00000040 80470000
-  [49.679186] $24   : 00000000 8024af7c
-  [49.684617] $28   : 8329c000 8329db88 00000001 802c58d0
-  [49.690046] Hi    : 00000000
-  [49.693022] Lo    : 453c0000
-  [49.696013] epc   : 800efae4 put_page+0x0/0x58
-  [49.700615] ra    : 802c58d0 skb_release_data+0x148/0x1d4
-  [49.706184] Status: 1000fc03 KERNEL EXL IE
-  [49.710531] Cause : 00800010 (ExcCode 04)
-  [49.714669] BadVA : 45259e89
-  [49.717644] PrId  : 00019374 (MIPS 24Kc)
+The 5ghz channel parameters of TLV target wasn't passed to host, it caused
+host can only use lower channels from 36 to 64.
 
 Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index ae77a00..25efbb5 100644
+index 25efbb5..b8985ce 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1515,10 +1515,10 @@ ath10k_wmi_tlv_op_gen_start_scan(struct ath10k *ar,
- 	bssid_len = arg->n_bssids * sizeof(struct wmi_mac_addr);
- 	ie_len = roundup(arg->ie_len, 4);
- 	len = (sizeof(*tlv) + sizeof(*cmd)) +
--	      (arg->n_channels ? sizeof(*tlv) + chan_len : 0) +
--	      (arg->n_ssids ? sizeof(*tlv) + ssid_len : 0) +
--	      (arg->n_bssids ? sizeof(*tlv) + bssid_len : 0) +
--	      (arg->ie_len ? sizeof(*tlv) + ie_len : 0);
-+	      sizeof(*tlv) + chan_len +
-+	      sizeof(*tlv) + ssid_len +
-+	      sizeof(*tlv) + bssid_len +
-+	      sizeof(*tlv) + ie_len;
- 
- 	skb = ath10k_wmi_alloc_skb(ar, len);
- 	if (!skb)
+@@ -1010,6 +1010,8 @@ static int ath10k_wmi_tlv_op_pull_svc_rdy_ev(struct ath10k *ar,
+ 	arg->phy_capab = ev->phy_capability;
+ 	arg->num_rf_chains = ev->num_rf_chains;
+ 	arg->eeprom_rd = reg->eeprom_rd;
++	arg->low_5ghz_chan = reg->low_5ghz_chan;
++	arg->high_5ghz_chan = reg->high_5ghz_chan;
+ 	arg->num_mem_reqs = ev->num_mem_reqs;
+ 	arg->service_map = svc_bmap;
+ 	arg->service_map_len = ath10k_wmi_tlv_len(svc_bmap);
 -- 
 2.1.4
 
