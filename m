@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5nrU-0006iu-TX
- for ath10k@lists.infradead.org; Tue, 10 Apr 2018 07:38:42 +0000
-From: zhichen@codeaurora.org
-Subject: [PATCH] ath10k: fix tlv 5ghz channel missing issue
-Date: Tue, 10 Apr 2018 15:39:54 +0800
-Message-Id: <1523345994-28800-2-git-send-email-zhichen@codeaurora.org>
-In-Reply-To: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
-References: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
+ id 1f5qah-0006et-NP
+ for ath10k@lists.infradead.org; Tue, 10 Apr 2018 10:33:37 +0000
+Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
+ various chipsets
+References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
+ <a249fc31-18bf-96a1-27ee-deea05d2d0ff@dd-wrt.com>
+ <87k1tgbcs0.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <faaec345-4f7f-631b-9603-3de0305c58a1@dd-wrt.com>
+Date: Tue, 10 Apr 2018 12:33:09 +0200
+MIME-Version: 1.0
+In-Reply-To: <87k1tgbcs0.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,42 +22,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Zhi Chen <zhichen@codeaurora.org>, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Zhi Chen <zhichen@codeaurora.org>
-
-The 5ghz channel parameters of TLV target wasn't passed to host, it caused
-host can only use lower channels from 36 to 64.
-
-Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 25efbb5..b8985ce 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1010,6 +1010,8 @@ static int ath10k_wmi_tlv_op_pull_svc_rdy_ev(struct ath10k *ar,
- 	arg->phy_capab = ev->phy_capability;
- 	arg->num_rf_chains = ev->num_rf_chains;
- 	arg->eeprom_rd = reg->eeprom_rd;
-+	arg->low_5ghz_chan = reg->low_5ghz_chan;
-+	arg->high_5ghz_chan = reg->high_5ghz_chan;
- 	arg->num_mem_reqs = ev->num_mem_reqs;
- 	arg->service_map = svc_bmap;
- 	arg->service_map_len = ath10k_wmi_tlv_len(svc_bmap);
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMDkuMDQuMjAxOCB1bSAxNzo0OSBzY2hyaWViIEthbGxlIFZhbG86Cj4gU2ViYXN0aWFuIEdv
+dHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cml0ZXM6Cj4KPj4geW91IHJlbW92
+ZWQgdGhlIGNhbGwgdG8gbGVkc19zdGFydCBmcm9tIGNlcnRhaW4gbG9jYXRpb25zIGJ1dCB5b3Ug
+c2VlbQo+PiB0byBoYXZlIGlnbm9yZWQgdGhlIGNvbW1lbnQgaSB3cm90ZSBhYm92ZSB0aGUgZnVu
+Y3Rpb24gY2FsbC4KPiBJSVJDIEkgbW92ZWQgdGhlIGNvbW1lbnQgdG8gYXRoMTBrX2xlZHNfc3Rh
+cnQoKS4KPgo+PiB0aGVyZSBpcyBhIHJlYXNvbiB3aHkgaSByZWluaXRpYWxpemUgdGhlIGdwaW8g
+b3V0cHV0IHN0YXRlIGluIHRoZXNlCj4+IGxvY2F0aW9ucy4gdGhlIGZpcm13YXJlIGZvciA5OTg0
+IGFuZCA5OXh4IHJlc2V0cyB0aGUgZ3BpbyByZWdpc3RlcnMKPj4gYXQgY2VydGFpbiBwb2ludHMu
+IHRoaXMgd2lsbCBsZWFkIHRvIGEgbm9uIHdvcmtpbmcgbGVkIGNvZGUuCj4gV2hhdCBhcmUgdGhl
+IGNlcnRhaW4gcG9pbnRzIGV4YWN0bHk/IEkgdHJpZWQgdG8gYmUgY2FyZWZ1bCB0aGF0IGZyb20K
+PiBmaXJtd2FyZSdzIHBvaW50IG9mIHZpZXcgdGhlIGZ1bmN0aW9uYWxpdHkgaXMgdGhlIHNhbWUs
+IGV2ZW4gaWYgSSBtb3ZlZAo+IHRoZSBjYWxsIHRvIGEgZGlmZmVyZW50IGxvY2F0aW9uLiBEaWQg
+eW91IHRlc3QgdGhlIHBhdGNoPyBJcyBpdCBicm9rZW4KPiBub3c/CmkgcmV2aWV3ZWQgdGhlIGZp
+cm13YXJlIGNvZGUgYXMgd2VsbCwgYnV0IGhhdmVudCBmb3VuZCB0aGUgcmVhc29uLiBjYW4gCmJl
+IGNvcmUvY2hpcHNldCBzcGVjaWZpYyBhbmQgbm90IGZpcm13YXJlIHNvZnR3YXJlIHJlbGF0ZWQu
+CmkganVzdCBjYW4gc2F5IGl0IGRvZXNudCBoYXBwZW4gb24gOTg4eCwganVzdCBuZXdlciBjaGlw
+c2V0cyBhcmUgYWZmZWN0ZWQKPiBUaGUgbmFtaW5nIHJlZmVycyB0byBwaGFzZXMgb2YgYXRoMTBr
+IGluaXRpYWxpc2F0aW9uIHdoaWNoIGFyZToKPgo+IGNyZWF0ZSgpIC0gZGVzdHJveSgpCj4gcmVn
+aXN0ZXIoKSAtIHVucmVnaXN0ZXIoKQo+IHN0YXJ0KCkgLSBzdG9wKCkKPgo+IFNvIHRoZSBuYW1p
+bmcgZG9lc24ndCBtZWFuIHRoYXQgZXZlcnkgYXRoMTBrX2Zvb19zdGFydCgpIGhhcyB0byBzdGFy
+dAo+IHNvbWV0aGluZywgaXQganVzdCBkZXNjcmliZXMgdGhlIHBoYXNlIG9mIGRyaXZlciBpbml0
+aWFsaXNhdGlvbiBpdCdzCj4gY2FsbGVkIGluLgp5ZXMsIGJ1dCBpdHMgbm90IGEgaW5pdGlhbGlz
+YXRpb24gdG9vLiBpdHMganVzdCBhIGdwaW8gcGluIHJlc2V0LiB0aGUgCmluaXRpYWxpc2F0aW9u
+IGlzCnRoZSB0cmlnZ2VyIGNvZGUgaXRzZWxmIGZyb20gbXkgcG9pbnQgb2Ygdmlldwo+IElzIHRo
+aXMgcmVhbGx5IHNvIGZyZXF1ZW50bHkgY2FsbGVkIHRoYXQgd2UgbmVlZCB0byB0aGluayBhYm91
+dCBDUFUKPiB0aW1lPyBIb3cgb2Z0ZW4gYXJlIHdlIGV4cGVjdGluZyB0aGUgTEVEIHN0YXRlIHRv
+IGNoYW5nZT8KPgo+IEJ1dCBJJ20gbm90IHJlYWxseSBmb2xsb3dpbmcgeW91LCBmcm9tIGZpcm13
+YXJlIHBvaW50IG9mIHZpZXcgdGhlCj4gZnVuY3Rpb25hbGl0eSBzaG91bGQgYmUgdGhlIHNhbWUg
+YXMgd2l0aCB5b3VyIHBhdGNoLgphIHR5cGljYWwgdHB0IHRyaWdnZXIgYXMgdXNlZCBpbiBvcGVu
+d3J0IGZvciBpbnN0YW5jZSBtYXkgdHJpZ2dlciBpdCAKc2V2ZXJhbCB0aW1lcyBwZXIgc2Vjb25k
+LgppIG1lYW4gaXQgbWlnaHQgYmUgcmVhbGx5IGp1c3QgYSBtaWNybyBlZmZlY3QsIGJ1dCBpIGp1
+c3Qgc2F2ZSBjcHUgdGltZSAKd2hlcmVldmVyIGkgY2FuIHNpbmNlIGknbSBmb2N1c2VkIGluCmVt
+YmVkZGVkIGRldmVsb3BtZW50Cj4KPj4gc28gaWYgeW91IHdhbnQgdG8gZm9sbG93IHRoaXMgdXAu
+IHJlbW92ZSBhdGgxMGtfbGVkc19zdGFydAo+PiBhbmQgaW5zZXJ0Cj4+Cj4+IGF0aDEwa193bWlf
+Z3Bpb19jb25maWcoYXIsIGFyLT5od19wYXJhbXMubGVkX3BpbiwgMCwKPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFdNSV9HUElPX1BVTExfTk9ORSwgV01JX0dQSU9fSU5U
+VFlQRV9ESVNBQkxFKTsKPj4KPj4gaW4gYXRoMTBrX2xlZHNfc2V0X2JyaWdodG5lc3NfYmxvY2tp
+bmcKPiBDYWxsaW5nIGF0aDEwa193bWlfZ3Bpb19jb25maWcoKSBldmVyeSB0aW1lIHNvdW5kcyBs
+aWtlIHF1aXRlIG9kZCB0byBtZQo+IGFuZCB5b3VyIHBhdGNoIGRpZG4ndCBkbyB0aGF0IGVpdGhl
+ci4gQXJlIHlvdSBzdXJlIHRoaXMgaXMgcmVhbGx5Cj4gbmVlZGVkPwp5ZXMuIGkgdGVzdGVkIHRo
+aXMuIHlvdSBtdXN0IHNldCB0aGUgZ3BpbyB0byBvdXRwdXQgYmVmb3JlIHNldHRpbmcgaXQgdG8g
+CmFueSB2YWx1ZSwgaW4gY2FzZSB0aGUgb3V0cHV0IHN0YXRlIHdhcyByZXNldHRlZCBiYWNrIHRv
+IGlucHV0IG9yIGFueSAKb3RoZXIgZGVmYXVsdCB2YWx1ZS4gKHdoaWNoIGl0IGRvZXMgb24gOTk4
+NCBhdCBjZXJ0YWluIGV2ZW50cykKaSB0ZXN0ZWQgdGhpcyBvbiBhIG5ldGdlYXIgcjc4MDAgd2hp
+Y2ggaXMgaXBxODA2NCBiYXNlZCB3aXRoIDIgOTk4NCAKY2hpcHNldHMuCmJ1dCBpIGNhbm5vdCBy
+ZXByb2R1Y2UgdGhpcyBvbiBtaXBzIHJvdXRlcnMgd2l0aCA5ODh4IGNoaXBzZXRzLgoKYnV0IGFz
+IHlvdSBzYXkuIGl0cyBvZGQgdG8gY2FsbCBpdCBldmVyeSB0aW1lLiBzbyBpIGp1c3QgY2FsbCBp
+dCB3aXRoIAp0aGUgcmVzZXQgbWV0aG9kIHdoZW4gbmVjY2Vzc2FyeS4gaW4gb3VyIGNhc2UsIHdo
+ZW4gaW50ZXJmYWNlIG9wZXJhdGlvbiAKc3RhcnRzLgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdy
+w7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5F
+VCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6wqAgU3R1YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUg
+QmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3
+MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVs
+ZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRl
+bC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
