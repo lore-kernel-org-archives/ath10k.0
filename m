@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5uGa-0004y0-4A
- for ath10k@lists.infradead.org; Tue, 10 Apr 2018 14:29:01 +0000
+ id 1f5uIq-0006b8-TY
+ for ath10k@lists.infradead.org; Tue, 10 Apr 2018 14:31:24 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: avoid possible string overflow
+Subject: Re: ath10k: sdio: fix memory leak for probe allocations
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180328220635.3704458-1-arnd@arndb.de>
-References: <20180328220635.3704458-1-arnd@arndb.de>
-Message-Id: <20180410142849.C867360C55@smtp.codeaurora.org>
-Date: Tue, 10 Apr 2018 14:28:49 +0000 (UTC)
+In-Reply-To: <20180327203144.8998-1-marcus.folkesson@gmail.com>
+References: <20180327203144.8998-1-marcus.folkesson@gmail.com>
+Message-Id: <20180410143110.882DF60AE0@smtp.codeaurora.org>
+Date: Tue, 10 Apr 2018 14:31:10 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>, Johannes Berg <johannes.berg@intel.com>, netdev@vger.kernel.org, Anilkumar Kolli <akolli@codeaurora.org>, Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+To: Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Arnd Bergmann <arnd@arndb.de> wrote:
+Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
 
-> The way that 'strncat' is used here raised a warning in gcc-8:
+> These allocations are not freed upon release.
+> When on it; go for managed resources instead.
 > 
-> drivers/net/wireless/ath/ath10k/wmi.c: In function 'ath10k_wmi_tpc_stats_final_disp_tables':
-> drivers/net/wireless/ath/ath10k/wmi.c:4649:4: error: 'strncat' output truncated before terminating nul copying as many bytes from a string as its length [-Werror=stringop-truncation]
-> 
-> Effectively, this is simply a strcat() but the use of strncat() suggests
-> some form of overflow check. Regardless of whether this might actually
-> overflow, using strlcat() instead of strncat() avoids the warning and
-> makes the code more robust.
-> 
-> Fixes: bc64d05220f3 ("ath10k: debugfs support to get final TPC stats for 10.4 variants")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> [kvalo: fix two checkpatch warnings]
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-6707ba0105a2 ath10k: avoid possible string overflow
+ec2c64e20257 ath10k: sdio: fix memory leak for probe allocations
 
 -- 
-https://patchwork.kernel.org/patch/10314201/
+https://patchwork.kernel.org/patch/10311597/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
