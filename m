@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5uIq-0006b8-TY
- for ath10k@lists.infradead.org; Tue, 10 Apr 2018 14:31:24 +0000
+ id 1f5uJq-0006uy-FG
+ for ath10k@lists.infradead.org; Tue, 10 Apr 2018 14:32:23 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: sdio: fix memory leak for probe allocations
+Subject: Re: ath10k: fix spelling mistake: "tiggers" -> "triggers"
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180327203144.8998-1-marcus.folkesson@gmail.com>
-References: <20180327203144.8998-1-marcus.folkesson@gmail.com>
-Message-Id: <20180410143110.882DF60AE0@smtp.codeaurora.org>
-Date: Tue, 10 Apr 2018 14:31:10 +0000 (UTC)
+In-Reply-To: <20180329165949.29155-1-colin.king@canonical.com>
+References: <20180329165949.29155-1-colin.king@canonical.com>
+Message-Id: <20180410143212.2F2166081C@smtp.codeaurora.org>
+Date: Tue, 10 Apr 2018 14:32:12 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
-Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
+Colin Ian King <colin.king@canonical.com> wrote:
 
-> These allocations are not freed upon release.
-> When on it; go for managed resources instead.
+> Trivial fix to spelling mistake in message text
 > 
-> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
-> [kvalo: fix two checkpatch warnings]
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-ec2c64e20257 ath10k: sdio: fix memory leak for probe allocations
+6ce36faeac35 ath10k: fix spelling mistake: "tiggers" -> "triggers"
 
 -- 
-https://patchwork.kernel.org/patch/10311597/
+https://patchwork.kernel.org/patch/10315725/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
