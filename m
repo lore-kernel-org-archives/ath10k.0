@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5uBf-0002fi-Ty
- for ath10k@lists.infradead.org; Tue, 10 Apr 2018 14:23:57 +0000
+ id 1f5uBs-0002lZ-Hw
+ for ath10k@lists.infradead.org; Tue, 10 Apr 2018 14:24:10 +0000
 From: pillair@codeaurora.org
-Subject: [PATCH 1/4] ath10k: Add hw params for shadow register support
-Date: Tue, 10 Apr 2018 19:53:29 +0530
-Message-Id: <1523370212-8778-2-git-send-email-pillair@codeaurora.org>
+Subject: [PATCH 4/4] ath10k: Enable sta idle power save
+Date: Tue, 10 Apr 2018 19:53:32 +0530
+Message-Id: <1523370212-8778-5-git-send-email-pillair@codeaurora.org>
 In-Reply-To: <1523370212-8778-1-git-send-email-pillair@codeaurora.org>
 References: <1523370212-8778-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -23,150 +23,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-From: Rakesh Pillai <pillair@codeaurora.org>
+From: Govind Singh <govinds@codeaurora.org>
 
-wcn3990 supports shadow register for ce write.
+Enable sta power save in fw for the targets that
+supports idle power save. The idle ps enable command
+will be ignored by the firmware which does not support
+this feature.
 
-Add a hw param for shadow register support.
-
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
 Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 13 +++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  4 ++++
- 2 files changed, 17 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 610bb32ec9f4..7e451b76c8a4 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -120,6 +120,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -150,6 +151,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -179,6 +181,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -208,6 +211,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -237,6 +241,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -269,6 +274,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -304,6 +310,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -344,6 +351,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -383,6 +391,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -412,6 +421,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -443,6 +453,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -479,6 +490,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.per_ce_irq = false,
-+		.shadow_reg_support = false,
- 	},
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
-@@ -500,6 +512,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = true,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL_DUAL_MAC,
- 		.per_ce_irq = true,
-+		.shadow_reg_support = true,
- 	},
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7e02ca02b28e..1d9222af1bb2 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4679,6 +4679,13 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		}
+ 	}
  
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 57dad208ef16..cf18adda9f20 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018 The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -571,6 +572,9 @@ struct ath10k_hw_params {
- 
- 	/* target supporting per ce IRQ */
- 	bool per_ce_irq;
++	param = ar->wmi.pdev_param->idle_ps_config;
++	ret = ath10k_wmi_pdev_set_param(ar, param, 1);
++	if (ret && ret != -EOPNOTSUPP) {
++		ath10k_warn(ar, "failed to enable idle_ps_config: %d\n", ret);
++		goto err_core_stop;
++	}
 +
-+	/* target supporting shadow register for ce write */
-+	bool shadow_reg_support;
- };
+ 	__ath10k_set_antenna(ar, ar->cfg_tx_chainmask, ar->cfg_rx_chainmask);
  
- struct htt_rx_desc;
+ 	/*
 -- 
 2.14.1
 
