@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6HW1-0006H4-IJ
- for ath10k@lists.infradead.org; Wed, 11 Apr 2018 15:18:31 +0000
-Received: by mail-wr0-x229.google.com with SMTP id s12so2157433wrc.8
- for <ath10k@lists.infradead.org>; Wed, 11 Apr 2018 08:18:17 -0700 (PDT)
+Received: from mail-pl0-x243.google.com ([2607:f8b0:400e:c01::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6OvX-0003Qk-1A
+ for ath10k@lists.infradead.org; Wed, 11 Apr 2018 23:13:23 +0000
+Received: by mail-pl0-x243.google.com with SMTP id t20-v6so2494802ply.9
+ for <ath10k@lists.infradead.org>; Wed, 11 Apr 2018 16:13:08 -0700 (PDT)
+Date: Wed, 11 Apr 2018 16:13:05 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: Convert wow pattern from 802.3 to 802.11
+Message-ID: <20180411231304.GA121875@rodete-desktop-imager.corp.google.com>
+References: <1522379899-31969-1-git-send-email-wgong@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
-References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
-From: Tim Harvey <tharvey@gateworks.com>
-Date: Wed, 11 Apr 2018 08:18:15 -0700
-Message-ID: <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>
-Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
- NIC.
+Content-Disposition: inline
+In-Reply-To: <1522379899-31969-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +25,245 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, Mar 21, 2018 at 2:59 PM, Ben Greear <greearb@candelatech.com> wrote:
-> Hello,
->
-> It seems the upstream board-2.bin file for 9984 does not yet include support
-> for WLE1216V5-20
-> (or possibly it does and OpenWRT grabs the wrong one?).
->
-> I'm attaching the board file for this NIC and for another one which
-> I have not yet tested.  I received these from Compex and have
-> tested the bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin file on the
-> WLE1216V5-20
->
-> Please add these into the official board-2.bin for 9984.
->
+Hi,
 
-Kalle,
+On Fri, Mar 30, 2018 at 11:18:19AM +0800, Wen Gong wrote:
+> When trying to set wow wakeup patterns it fails with this command:
+> 
+> iw phyxx wowlan enable patterns offset xx+ IP address xx.xx.xx.xx
+> 
+> The reason is that the wow pattern from upper layer is in 802.3 format
+> for this case, it need to convert it to 802.11 format. The input
+> offset parameter is used for 802.3, but the actual offset firmware
+> need depends on rx_decap_mode, so that it needs to be recalculated.
+> Pattern of 802.3 packet is not same with 802.11 packet. If the
+> rx_decap_mode is ATH10K_HW_TXRX_NATIVE_WIFI, then firmware will
+> receive data packet with 802.11 format from hardware.
+> 
+> Convert graph:
+> -----------------------------------------------------------------------
+> 802.3  |dest mac(6B)|src mac(6B)|type(2B)|     body...    |
+>              |__         |_______    |_____________  |___________
+>                 |                |                 |             |
+> 802.11 |4B|dest mac(6B)| 6B |src mac(6B)|  8B  |type(2B)|  body...  |
+> -----------------------------------------------------------------------
 
-Any progress on this? I believe your the one that has to update the
-board-2.bin at https://github.com/kvalo/ath10k-firmware/commits/master/QCA9984/hw1.0.
+It feels like this could go into the code comments? Or at least some
+short version of it. (But hey, text is cheap, and who doesn't love ASCII
+art?)
 
-It's not clear what the process is for getting new board id's
-supported in the board.bin files.
+> 
+> Tested with QCA6174 hw3.0 with firmware
+> WLAN.RM.4.4.1-00099-QCARMSWPZ-1, but this will also affect QCA9377.
+> This has always failed, so it's not a regression with new firmware
+> releases.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi.h |   4 ++
+>  drivers/net/wireless/ath/ath10k/wow.c | 128 ++++++++++++++++++++++++++++++++--
+>  2 files changed, 126 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+> index c7b30ed..389f9c7 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.h
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
+> @@ -6724,6 +6724,10 @@ struct wmi_wow_ev_arg {
+>  #define WOW_MIN_PATTERN_SIZE	1
+>  #define WOW_MAX_PATTERN_SIZE	148
+>  #define WOW_MAX_PKT_OFFSET	128
+> +#define WOW_HDR_LEN	(sizeof(struct ieee80211_hdr_3addr) + \
+> +	sizeof(struct rfc1042_hdr))
+> +#define WOW_MAX_REDUCE	(WOW_HDR_LEN - sizeof(struct ethhdr) - \
+> +	offsetof(struct ieee80211_hdr_3addr, addr1))
+>  
+>  enum wmi_tdls_state {
+>  	WMI_TDLS_DISABLE,
+> diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
+> index c4cbccb..9b56a41 100644
+> --- a/drivers/net/wireless/ath/ath10k/wow.c
+> +++ b/drivers/net/wireless/ath/ath10k/wow.c
+> @@ -1,5 +1,6 @@
+>  /*
+>   * Copyright (c) 2015-2017 Qualcomm Atheros, Inc.
+> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+>   *
+>   * Permission to use, copy, modify, and/or distribute this software for any
+>   * purpose with or without fee is hereby granted, provided that the above
+> @@ -76,6 +77,98 @@ static int ath10k_wow_cleanup(struct ath10k *ar)
+>  	return 0;
+>  }
+>  
+> +static void ath10k_wow_convert_8023_to_80211
+> +					(struct cfg80211_pkt_pattern *new,
+> +					const struct cfg80211_pkt_pattern *old)
+> +{
+> +	u8 hdr_8023_pattern[ETH_HLEN] = {};
+> +	u8 hdr_8023_bit_mask[ETH_HLEN] = {};
+> +	u8 hdr_80211_pattern[WOW_HDR_LEN] = {};
+> +	u8 hdr_80211_bit_mask[WOW_HDR_LEN] = {};
+> +
+> +	int total_len = old->pkt_offset + old->pattern_len;
+> +	int hdr_80211_end_offset;
+> +
+> +	struct ieee80211_hdr_3addr *new_hdr_pattern =
+> +		(struct ieee80211_hdr_3addr *)hdr_80211_pattern;
+> +	struct ieee80211_hdr_3addr *new_hdr_mask =
+> +		(struct ieee80211_hdr_3addr *)hdr_80211_bit_mask;
+> +	struct ethhdr *old_hdr_pattern = (struct ethhdr *)hdr_8023_pattern;
+> +	struct ethhdr *old_hdr_mask = (struct ethhdr *)hdr_8023_bit_mask;
+> +	int hdr_len = sizeof(*new_hdr_pattern);
+> +
+> +	struct rfc1042_hdr *new_rfc_pattern =
+> +		(struct rfc1042_hdr *)(hdr_80211_pattern + hdr_len);
+> +	struct rfc1042_hdr *new_rfc_mask =
+> +		(struct rfc1042_hdr *)(hdr_80211_bit_mask + hdr_len);
+> +	int rfc_len = sizeof(*new_rfc_pattern);
+> +
+> +	memcpy(hdr_8023_pattern + old->pkt_offset,
+> +	       old->pattern, ETH_HLEN - old->pkt_offset);
+> +	memcpy(hdr_8023_bit_mask + old->pkt_offset,
+> +	       old->mask, ETH_HLEN - old->pkt_offset);
+> +
+> +	/* Copy destination address */
+> +	memcpy(new_hdr_pattern->addr1, old_hdr_pattern->h_dest, ETH_ALEN);
+> +	memcpy(new_hdr_mask->addr1, old_hdr_mask->h_dest, ETH_ALEN);
+> +
+> +	/* Copy source address */
+> +	memcpy(new_hdr_pattern->addr3, old_hdr_pattern->h_source, ETH_ALEN);
+> +	memcpy(new_hdr_mask->addr3, old_hdr_mask->h_source, ETH_ALEN);
+> +
+> +	/* Copy logic link type */
+> +	memcpy(&new_rfc_pattern->snap_type,
+> +	       &old_hdr_pattern->h_proto,
+> +	       sizeof(old_hdr_pattern->h_proto));
+> +	memcpy(&new_rfc_mask->snap_type,
+> +	       &old_hdr_mask->h_proto,
+> +	       sizeof(old_hdr_mask->h_proto));
+> +
+> +	/* Caculate new pkt_offset */
+> +	if (old->pkt_offset < ETH_ALEN)
+> +		new->pkt_offset = old->pkt_offset +
+> +			offsetof(struct ieee80211_hdr_3addr, addr1);
+> +	else if (old->pkt_offset < offsetof(struct ethhdr, h_proto))
+> +		new->pkt_offset = old->pkt_offset +
+> +			offsetof(struct ieee80211_hdr_3addr, addr3) -
+> +			offsetof(struct ethhdr, h_source);
+> +	else
+> +		new->pkt_offset = old->pkt_offset + hdr_len + rfc_len - ETH_HLEN;
+> +
+> +	/* Caculate new hdr end offset */
+> +	if (total_len > ETH_HLEN)
+> +		hdr_80211_end_offset = hdr_len + rfc_len;
+> +	else if (total_len > offsetof(struct ethhdr, h_proto))
+> +		hdr_80211_end_offset = hdr_len + rfc_len + total_len - ETH_HLEN;
+> +	else if (total_len > ETH_ALEN)
+> +		hdr_80211_end_offset = total_len - ETH_ALEN +
+> +			offsetof(struct ieee80211_hdr_3addr, addr3);
+> +	else
+> +		hdr_80211_end_offset = total_len +
+> +			offsetof(struct ieee80211_hdr_3addr, addr1);
+> +
+> +	new->pattern_len = hdr_80211_end_offset - new->pkt_offset;
+> +
+> +	memcpy((u8 *)new->pattern,
+> +	       hdr_80211_pattern + new->pkt_offset,
+> +	       new->pattern_len);
+> +	memcpy((u8 *)new->mask,
+> +	       hdr_80211_bit_mask + new->pkt_offset,
+> +	       new->pattern_len);
+> +
+> +	if (total_len > ETH_HLEN) {
+> +		/* Copy frame body */
+> +		memcpy((u8 *)new->pattern + new->pattern_len,
+> +		       (void *)old->pattern + ETH_HLEN - old->pkt_offset,
+> +		       total_len - ETH_HLEN);
+> +		memcpy((u8 *)new->mask + new->pattern_len,
+> +		       (void *)old->mask + ETH_HLEN - old->pkt_offset,
+> +		       total_len - ETH_HLEN);
+> +
+> +		new->pattern_len += total_len - ETH_HLEN;
+> +	}
+> +}
+> +
+>  static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
+>  				      struct cfg80211_wowlan *wowlan)
+>  {
+> @@ -116,22 +209,39 @@ static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
+>  
+>  	for (i = 0; i < wowlan->n_patterns; i++) {
+>  		u8 bitmask[WOW_MAX_PATTERN_SIZE] = {};
+> +		u8 ath_pattern[WOW_MAX_PATTERN_SIZE] = {};
+> +		u8 ath_bitmask[WOW_MAX_PATTERN_SIZE] = {};
 
-Regards,
+So now we've got 3 * 148 = 444 bytes on the stack just for this? Seems
+like it's getting a little large for kernel code, but maybe not too bad.
+I guess we can go with this until somebody runs into a real problem...
 
-Tim
+Otherwise, seems to work for me:
+
+Tested-by: Brian Norris <briannorris@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+
+> +		struct cfg80211_pkt_pattern new_pattern = {};
+> +		struct cfg80211_pkt_pattern old_pattern = patterns[i];
+>  		int j;
+> -
+> +		new_pattern.pattern = ath_pattern;
+> +		new_pattern.mask = ath_bitmask;
+>  		if (patterns[i].pattern_len > WOW_MAX_PATTERN_SIZE)
+>  			continue;
+> -
+>  		/* convert bytemask to bitmask */
+>  		for (j = 0; j < patterns[i].pattern_len; j++)
+>  			if (patterns[i].mask[j / 8] & BIT(j % 8))
+>  				bitmask[j] = 0xff;
+> +		old_pattern.mask = bitmask;
+> +		new_pattern = old_pattern;
+> +
+> +		if (ar->wmi.rx_decap_mode == ATH10K_HW_TXRX_NATIVE_WIFI) {
+> +			if (patterns[i].pkt_offset < ETH_HLEN)
+> +				ath10k_wow_convert_8023_to_80211(&new_pattern,
+> +								 &old_pattern);
+> +			else
+> +				new_pattern.pkt_offset += WOW_HDR_LEN - ETH_HLEN;
+> +		}
+> +
+> +		if (WARN_ON(new_pattern.pattern_len > WOW_MAX_PATTERN_SIZE))
+> +			return -EINVAL;
+>  
+>  		ret = ath10k_wmi_wow_add_pattern(ar, arvif->vdev_id,
+>  						 pattern_id,
+> -						 patterns[i].pattern,
+> -						 bitmask,
+> -						 patterns[i].pattern_len,
+> -						 patterns[i].pkt_offset);
+> +						 new_pattern.pattern,
+> +						 new_pattern.mask,
+> +						 new_pattern.pattern_len,
+> +						 new_pattern.pkt_offset);
+>  		if (ret) {
+>  			ath10k_warn(ar, "failed to add pattern %i to vdev %i: %d\n",
+>  				    pattern_id,
+> @@ -345,6 +455,12 @@ int ath10k_wow_init(struct ath10k *ar)
+>  		return -EINVAL;
+>  
+>  	ar->wow.wowlan_support = ath10k_wowlan_support;
+> +
+> +	if (ar->wmi.rx_decap_mode == ATH10K_HW_TXRX_NATIVE_WIFI) {
+> +		ar->wow.wowlan_support.pattern_max_len -= WOW_MAX_REDUCE;
+> +		ar->wow.wowlan_support.max_pkt_offset -= WOW_MAX_REDUCE;
+> +	}
+> +
+>  	ar->wow.wowlan_support.n_patterns = ar->wow.max_num_patterns;
+>  	ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
+>  
+> -- 
+> 2.7.4
+> 
 
 _______________________________________________
 ath10k mailing list
