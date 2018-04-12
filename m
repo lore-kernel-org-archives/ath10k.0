@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6Tmm-0005rm-0r
- for ath10k@lists.infradead.org; Thu, 12 Apr 2018 04:24:37 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v2] ath10k: Convert wow pattern from 802.3 to 802.11
-Date: Thu, 12 Apr 2018 12:24:17 +0800
-Message-Id: <1523507057-20650-1-git-send-email-wgong@codeaurora.org>
+ id 1f6WeR-0006FL-MX
+ for ath10k@lists.infradead.org; Thu, 12 Apr 2018 07:28:13 +0000
+Received: by mail-qt0-x232.google.com with SMTP id s48so5130843qtb.10
+ for <ath10k@lists.infradead.org>; Thu, 12 Apr 2018 00:28:00 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
+ NIC.
+Date: Thu, 12 Apr 2018 09:27:55 +0200
+Message-ID: <2080980.pDnGlZTBzu@bentobox>
+In-Reply-To: <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>
+References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
+ <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,241 +22,136 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5674442245498433809=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: Christian Lamparter <chunkeey@googlemail.com>, Tim Harvey <tharvey@gateworks.com>, Chris Blake <chrisrblake93@gmail.com>, Ben Greear <greearb@candelatech.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
 
-When trying to set wow wakeup patterns it fails with this command:
+--===============5674442245498433809==
+Content-Type: multipart/signed; boundary="nextPart3801807.kgBBa08rLl"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-iw phyxx wowlan enable patterns offset xx+ IP address xx.xx.xx.xx
+--nextPart3801807.kgBBa08rLl
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-The reason is that the wow pattern from upper layer is in 802.3 format
-for this case, it need to convert it to 802.11 format. The input
-offset parameter is used for 802.3, but the actual offset firmware
-need depends on rx_decap_mode, so that it needs to be recalculated.
-Pattern of 802.3 packet is not same with 802.11 packet. If the
-rx_decap_mode is ATH10K_HW_TXRX_NATIVE_WIFI, then firmware will
-receive data packet with 802.11 format from hardware.
+On Mittwoch, 11. April 2018 08:18:15 CEST Tim Harvey wrote:
+> It's not clear what the process is for getting new board id's
+> supported in the board.bin files.
 
-Tested with QCA6174 hw3.0 with firmware
-WLAN.RM.4.4.1-00099-QCARMSWPZ-1, but this will also affect QCA9377.
-This has always failed, so it's not a regression with new firmware
-releases.
+The reaction of QCA when asking for new IDs was mostly "please go away, we 
+will not talk to you about it". But with the help of Kalle Valo, a new 
+mechanism called "qcom,ath10k-calibration-variant" was added (for embedded 
+boards which include QCA 11ac wave2 radios). There are a couple of mails 
+about it on this list - a general overview about BDFs, variant strings and 
+why we need them can be found at 
+http://lists.infradead.org/pipermail/ath10k/2018-March/011066.html.
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
+But it looks like you really got the IDs 30+31 (maybe because you are selling 
+the, as separate PCIe modules?). Then I would guess that you can still use the 
+same process as we use for the accesspoint specific BDFs (just without the 
+variant= part).
 
-V2: 
--Move the convert graph from commit message to code.
+The description of the general upstreaming process can be found at 
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles - but it 
+seems like Kalle Valo doesn't have much time for it at the moment for it (or
+there might be other problems which we don't see from our perspective - for 
+example legal departments).
 
- drivers/net/wireless/ath/ath10k/wmi.h |   4 +
- drivers/net/wireless/ath/ath10k/wow.c | 139 ++++++++++++++++++++++++++++++++--
- 2 files changed, 137 insertions(+), 6 deletions(-)
+Maybe you or Ben Greear can enhance the submission for the BDFs to better 
+answer the questions from the "Submitting board files" guide. 
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index c7b30ed..389f9c7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6724,6 +6724,10 @@ struct wmi_wow_ev_arg {
- #define WOW_MIN_PATTERN_SIZE	1
- #define WOW_MAX_PATTERN_SIZE	148
- #define WOW_MAX_PKT_OFFSET	128
-+#define WOW_HDR_LEN	(sizeof(struct ieee80211_hdr_3addr) + \
-+	sizeof(struct rfc1042_hdr))
-+#define WOW_MAX_REDUCE	(WOW_HDR_LEN - sizeof(struct ethhdr) - \
-+	offsetof(struct ieee80211_hdr_3addr, addr1))
- 
- enum wmi_tdls_state {
- 	WMI_TDLS_DISABLE,
-diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
-index c4cbccb..60eeaae 100644
---- a/drivers/net/wireless/ath/ath10k/wow.c
-+++ b/drivers/net/wireless/ath/ath10k/wow.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2015-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -76,6 +77,109 @@ static int ath10k_wow_cleanup(struct ath10k *ar)
- 	return 0;
- }
- 
-+/**
-+ * Convert a 802.3 format to a 802.11 format.
-+ *         +------------+-----------+--------+----------------+
-+ * 802.3:  |dest mac(6B)|src mac(6B)|type(2B)|     body...    |
-+ *         +------------+-----------+--------+----------------+
-+ *                |__         |_______    |____________  |________
-+ *                   |                |                |          |
-+ *         +--+------------+----+-----------+---------------+-----------+
-+ * 802.11: |4B|dest mac(6B)| 6B |src mac(6B)|  8B  |type(2B)|  body...  |
-+ *         +--+------------+----+-----------+---------------+-----------+
-+ */
-+static void ath10k_wow_convert_8023_to_80211
-+					(struct cfg80211_pkt_pattern *new,
-+					const struct cfg80211_pkt_pattern *old)
-+{
-+	u8 hdr_8023_pattern[ETH_HLEN] = {};
-+	u8 hdr_8023_bit_mask[ETH_HLEN] = {};
-+	u8 hdr_80211_pattern[WOW_HDR_LEN] = {};
-+	u8 hdr_80211_bit_mask[WOW_HDR_LEN] = {};
-+
-+	int total_len = old->pkt_offset + old->pattern_len;
-+	int hdr_80211_end_offset;
-+
-+	struct ieee80211_hdr_3addr *new_hdr_pattern =
-+		(struct ieee80211_hdr_3addr *)hdr_80211_pattern;
-+	struct ieee80211_hdr_3addr *new_hdr_mask =
-+		(struct ieee80211_hdr_3addr *)hdr_80211_bit_mask;
-+	struct ethhdr *old_hdr_pattern = (struct ethhdr *)hdr_8023_pattern;
-+	struct ethhdr *old_hdr_mask = (struct ethhdr *)hdr_8023_bit_mask;
-+	int hdr_len = sizeof(*new_hdr_pattern);
-+
-+	struct rfc1042_hdr *new_rfc_pattern =
-+		(struct rfc1042_hdr *)(hdr_80211_pattern + hdr_len);
-+	struct rfc1042_hdr *new_rfc_mask =
-+		(struct rfc1042_hdr *)(hdr_80211_bit_mask + hdr_len);
-+	int rfc_len = sizeof(*new_rfc_pattern);
-+
-+	memcpy(hdr_8023_pattern + old->pkt_offset,
-+	       old->pattern, ETH_HLEN - old->pkt_offset);
-+	memcpy(hdr_8023_bit_mask + old->pkt_offset,
-+	       old->mask, ETH_HLEN - old->pkt_offset);
-+
-+	/* Copy destination address */
-+	memcpy(new_hdr_pattern->addr1, old_hdr_pattern->h_dest, ETH_ALEN);
-+	memcpy(new_hdr_mask->addr1, old_hdr_mask->h_dest, ETH_ALEN);
-+
-+	/* Copy source address */
-+	memcpy(new_hdr_pattern->addr3, old_hdr_pattern->h_source, ETH_ALEN);
-+	memcpy(new_hdr_mask->addr3, old_hdr_mask->h_source, ETH_ALEN);
-+
-+	/* Copy logic link type */
-+	memcpy(&new_rfc_pattern->snap_type,
-+	       &old_hdr_pattern->h_proto,
-+	       sizeof(old_hdr_pattern->h_proto));
-+	memcpy(&new_rfc_mask->snap_type,
-+	       &old_hdr_mask->h_proto,
-+	       sizeof(old_hdr_mask->h_proto));
-+
-+	/* Caculate new pkt_offset */
-+	if (old->pkt_offset < ETH_ALEN)
-+		new->pkt_offset = old->pkt_offset +
-+			offsetof(struct ieee80211_hdr_3addr, addr1);
-+	else if (old->pkt_offset < offsetof(struct ethhdr, h_proto))
-+		new->pkt_offset = old->pkt_offset +
-+			offsetof(struct ieee80211_hdr_3addr, addr3) -
-+			offsetof(struct ethhdr, h_source);
-+	else
-+		new->pkt_offset = old->pkt_offset + hdr_len + rfc_len - ETH_HLEN;
-+
-+	/* Caculate new hdr end offset */
-+	if (total_len > ETH_HLEN)
-+		hdr_80211_end_offset = hdr_len + rfc_len;
-+	else if (total_len > offsetof(struct ethhdr, h_proto))
-+		hdr_80211_end_offset = hdr_len + rfc_len + total_len - ETH_HLEN;
-+	else if (total_len > ETH_ALEN)
-+		hdr_80211_end_offset = total_len - ETH_ALEN +
-+			offsetof(struct ieee80211_hdr_3addr, addr3);
-+	else
-+		hdr_80211_end_offset = total_len +
-+			offsetof(struct ieee80211_hdr_3addr, addr1);
-+
-+	new->pattern_len = hdr_80211_end_offset - new->pkt_offset;
-+
-+	memcpy((u8 *)new->pattern,
-+	       hdr_80211_pattern + new->pkt_offset,
-+	       new->pattern_len);
-+	memcpy((u8 *)new->mask,
-+	       hdr_80211_bit_mask + new->pkt_offset,
-+	       new->pattern_len);
-+
-+	if (total_len > ETH_HLEN) {
-+		/* Copy frame body */
-+		memcpy((u8 *)new->pattern + new->pattern_len,
-+		       (void *)old->pattern + ETH_HLEN - old->pkt_offset,
-+		       total_len - ETH_HLEN);
-+		memcpy((u8 *)new->mask + new->pattern_len,
-+		       (void *)old->mask + ETH_HLEN - old->pkt_offset,
-+		       total_len - ETH_HLEN);
-+
-+		new->pattern_len += total_len - ETH_HLEN;
-+	}
-+}
-+
- static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
- 				      struct cfg80211_wowlan *wowlan)
- {
-@@ -116,22 +220,39 @@ static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
- 
- 	for (i = 0; i < wowlan->n_patterns; i++) {
- 		u8 bitmask[WOW_MAX_PATTERN_SIZE] = {};
-+		u8 ath_pattern[WOW_MAX_PATTERN_SIZE] = {};
-+		u8 ath_bitmask[WOW_MAX_PATTERN_SIZE] = {};
-+		struct cfg80211_pkt_pattern new_pattern = {};
-+		struct cfg80211_pkt_pattern old_pattern = patterns[i];
- 		int j;
--
-+		new_pattern.pattern = ath_pattern;
-+		new_pattern.mask = ath_bitmask;
- 		if (patterns[i].pattern_len > WOW_MAX_PATTERN_SIZE)
- 			continue;
--
- 		/* convert bytemask to bitmask */
- 		for (j = 0; j < patterns[i].pattern_len; j++)
- 			if (patterns[i].mask[j / 8] & BIT(j % 8))
- 				bitmask[j] = 0xff;
-+		old_pattern.mask = bitmask;
-+		new_pattern = old_pattern;
-+
-+		if (ar->wmi.rx_decap_mode == ATH10K_HW_TXRX_NATIVE_WIFI) {
-+			if (patterns[i].pkt_offset < ETH_HLEN)
-+				ath10k_wow_convert_8023_to_80211(&new_pattern,
-+								 &old_pattern);
-+			else
-+				new_pattern.pkt_offset += WOW_HDR_LEN - ETH_HLEN;
-+		}
-+
-+		if (WARN_ON(new_pattern.pattern_len > WOW_MAX_PATTERN_SIZE))
-+			return -EINVAL;
- 
- 		ret = ath10k_wmi_wow_add_pattern(ar, arvif->vdev_id,
- 						 pattern_id,
--						 patterns[i].pattern,
--						 bitmask,
--						 patterns[i].pattern_len,
--						 patterns[i].pkt_offset);
-+						 new_pattern.pattern,
-+						 new_pattern.mask,
-+						 new_pattern.pattern_len,
-+						 new_pattern.pkt_offset);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to add pattern %i to vdev %i: %d\n",
- 				    pattern_id,
-@@ -345,6 +466,12 @@ int ath10k_wow_init(struct ath10k *ar)
- 		return -EINVAL;
- 
- 	ar->wow.wowlan_support = ath10k_wowlan_support;
-+
-+	if (ar->wmi.rx_decap_mode == ATH10K_HW_TXRX_NATIVE_WIFI) {
-+		ar->wow.wowlan_support.pattern_max_len -= WOW_MAX_REDUCE;
-+		ar->wow.wowlan_support.max_pkt_offset -= WOW_MAX_REDUCE;
-+	}
-+
- 	ar->wow.wowlan_support.n_patterns = ar->wow.max_num_patterns;
- 	ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
- 
--- 
-2.7.4
 
+Examples for such submission
+============================
+
+* OpenMesh A42
+
+  - applied
+  - http://lists.infradead.org/pipermail/ath10k/2017-November/010470.html
+  - http://lists.infradead.org/pipermail/ath10k/2017-December/010543.html
+
+* Asus RT-AC58U
+
+  - not yet accepted
+  - submitted before the guide was published
+  - http://lists.infradead.org/pipermail/ath10k/2017-March/009454.html
+
+* Netgear EX6100v2/EX6150v2
+
+  - not yet accepted
+  - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
+
+* 8devices Jalapeno
+
+  - not yet accepted
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
+
+* GL.iNet GL-B1300
+
+  - not yet accepted
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/011058.html
+
+* OpenMesh A62
+
+  - not yet accepted
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/011081.html
+
+
+
+Still waiting for send BDFs to upstream
+=======================================
+
+* Meraki MR33
+
+  - Chris Blake?
+  - https://github.com/openwrt/openwrt/blob/master/package/firmware/ipq-wifi/board-meraki_mr33.bin
+
+* Fritzbox 4040
+
+  - Christian Lamparter?
+  - https://github.com/openwrt/openwrt/blob/master/package/firmware/ipq-wifi/board-avm_fritzbox-4040.bin
+
+* maybe more which I missed
+
+
+Kind regards,
+	Sven
+--nextPart3801807.kgBBa08rLl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlrPCnsACgkQXYcKB8Em
+e0YUrA/7BT/K2OFZDL2LIWa+Y4CcueAz9+Amaiuaz4ktwvKrj2FHNsnCibP2PtV7
+IBsRuve+/pWwjFq5sFKCn6auEbRRqBzAZlKKxK5vFLAc3G2PYlFloWO3vvs0Fi+B
+eZePxQRIpCQ8tBo+sYvu/Sx4hRU7YRwfhoFm+m9oMwl53OqdlKl5qJkKWdgrsLlj
+kKgRlk+ADtP2oehdHzk2jKBjo23HWKdKa/jc4gULO1j4FsK1yCMvMeIdYeKYfr14
+aM/6SfhY7MlmIUr6jfoiKoq0/MeFUP1hfaSPwWo2BZih+Cqzw8NMaexsyB1b/F5H
+NzEpilZvmyluFPP1bNPCN6C7D120toeNjJiJqDF32lXZUjav/2aDzkF6XvQeEmuK
+e9Y7xest9xvQI75jHsR14qnVc2WX/37W0f9nadYWL72eNkrUcODiIwtHyRgN7Ngf
+GFCwfWGWnICTVcsYyBQHnkOWCkb4N0Eyuk0gCXhN1bIvitZi53dnQSj8xZvaxVHO
+RM3Y8wc7fbp5qgTUpLV4Oc4XXi95sAsO5/g/TggjCqXzaTTJpFloyuzGRrflOi8o
+nWl3u4kPVr+sVjn1XasE1WKVKMaOsJizhoHA94NrQQ9yjffKlnIrH3Ls0CBmzT3D
+HBVzY9JSnRl6TQs0hmP2lIseBXJzmYoMK5qbHeb7HucFg/m06RQ=
+=Z2f+
+-----END PGP SIGNATURE-----
+
+--nextPart3801807.kgBBa08rLl--
+
+
+
+--===============5674442245498433809==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5674442245498433809==--
