@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6b8N-00057J-Mi
- for ath10k@lists.infradead.org; Thu, 12 Apr 2018 12:15:25 +0000
-From: mpubbise@qti.qualcomm.com
+ id 1f6bAm-0005lH-Km
+ for ath10k@lists.infradead.org; Thu, 12 Apr 2018 12:17:53 +0000
+From: mpubbise@codeaurora.org
 Subject: [PATCH] ath10k: correct target assert problem due to CE5 stuck
-Date: Thu, 12 Apr 2018 17:44:59 +0530
-Message-Id: <1523535299-29282-1-git-send-email-mpubbise@qti.qualcomm.com>
+Date: Thu, 12 Apr 2018 17:46:50 +0530
+Message-Id: <1523535410-29333-1-git-send-email-mpubbise@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
