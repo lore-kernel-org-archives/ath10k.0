@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6bAm-0005lH-Km
- for ath10k@lists.infradead.org; Thu, 12 Apr 2018 12:17:53 +0000
-From: mpubbise@codeaurora.org
-Subject: [PATCH] ath10k: correct target assert problem due to CE5 stuck
-Date: Thu, 12 Apr 2018 17:46:50 +0530
-Message-Id: <1523535410-29333-1-git-send-email-mpubbise@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6f8s-0000Xn-Hh
+ for ath10k@lists.infradead.org; Thu, 12 Apr 2018 16:32:12 +0000
+Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
+ NIC.
+References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
+ <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>
+ <2080980.pDnGlZTBzu@bentobox>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <0fb4c68f-ad37-9346-30b9-d57516848a55@candelatech.com>
+Date: Thu, 12 Apr 2018 09:31:54 -0700
+MIME-Version: 1.0
+In-Reply-To: <2080980.pDnGlZTBzu@bentobox>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,47 +21,117 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Manikanta Pubbisetty <mpubbise@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
+Cc: Christian Lamparter <chunkeey@googlemail.com>, Tim Harvey <tharvey@gateworks.com>, Chris Blake <chrisrblake93@gmail.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
 
-From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+On 04/12/2018 12:27 AM, Sven Eckelmann wrote:
+> On Mittwoch, 11. April 2018 08:18:15 CEST Tim Harvey wrote:
+>> It's not clear what the process is for getting new board id's
+>> supported in the board.bin files.
+>
+> The reaction of QCA when asking for new IDs was mostly "please go away, we
+> will not talk to you about it". But with the help of Kalle Valo, a new
+> mechanism called "qcom,ath10k-calibration-variant" was added (for embedded
+> boards which include QCA 11ac wave2 radios). There are a couple of mails
+> about it on this list - a general overview about BDFs, variant strings and
+> why we need them can be found at
+> http://lists.infradead.org/pipermail/ath10k/2018-March/011066.html.
+>
+> But it looks like you really got the IDs 30+31 (maybe because you are selling
+> the, as separate PCIe modules?). Then I would guess that you can still use the
+> same process as we use for the accesspoint specific BDFs (just without the
+> variant= part).
 
-Correct a minor bug in the commit 0628467f97b5 ("ath10k: fix
-copy engine 5 destination ring stuck") which introduced a change to fix
-firmware assert that happens when ring indices of copy engine 5 are stuck
-for a specific duration, problem with this fix is that it did not use
-ring arithmatic. As a result,firmware asserts did not go away entirely
-athough the frequency of occurrence has reduced. Using ring arithmatic
-to fix the issue.
+These are Compex NICs, and they do have their own IDs.  These are general
+purpose NICs that fit into most any system, so it would be good if the board
+files were in the upstream board-2.bin file.
 
-Tested on QCA9984(fw version-10.4-3.4-00082).
+> The description of the general upstreaming process can be found at
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles - but it
+> seems like Kalle Valo doesn't have much time for it at the moment for it (or
+> there might be other problems which we don't see from our perspective - for
+> example legal departments).
+>
+> Maybe you or Ben Greear can enhance the submission for the BDFs to better
+> answer the questions from the "Submitting board files" guide.
 
-Fixes: 0628467f97b5 ("ath10k: fix copy engine 5 destination ring stuck)
-Signed-off-by: Manikanta Pubbisetty <mpubbise@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/ce.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Considering all of the not-accepted below, maybe we should just build
+our own board file(s) for OpenWRT and let upstream catch up when someone
+has time to deal with it?
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index b9def7b..6efa69e 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -615,7 +615,7 @@ void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries)
- 	/* Prevent CE ring stuck issue that will occur when ring is full.
- 	 * Make sure that write index is 1 less than read index.
- 	 */
--	if ((cur_write_idx + nentries)  == dest_ring->sw_index)
-+	if (((cur_write_idx + nentries) & nentries_mask) == dest_ring->sw_index)
- 		nentries -= 1;
- 
- 	write_index = CE_RING_IDX_ADD(nentries_mask, write_index, nentries);
+For platform specific files, maybe better to just ignore the board-2.bin
+entirely and use the specific board.bin file for that platform?
+
+Thanks,
+Ben
+
+>
+>
+> Examples for such submission
+> ============================
+>
+> * OpenMesh A42
+>
+>   - applied
+>   - http://lists.infradead.org/pipermail/ath10k/2017-November/010470.html
+>   - http://lists.infradead.org/pipermail/ath10k/2017-December/010543.html
+>
+> * Asus RT-AC58U
+>
+>   - not yet accepted
+>   - submitted before the guide was published
+>   - http://lists.infradead.org/pipermail/ath10k/2017-March/009454.html
+>
+> * Netgear EX6100v2/EX6150v2
+>
+>   - not yet accepted
+>   - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
+>
+> * 8devices Jalapeno
+>
+>   - not yet accepted
+>   - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
+>
+> * GL.iNet GL-B1300
+>
+>   - not yet accepted
+>   - http://lists.infradead.org/pipermail/ath10k/2018-March/011058.html
+>
+> * OpenMesh A62
+>
+>   - not yet accepted
+>   - http://lists.infradead.org/pipermail/ath10k/2018-March/011081.html
+>
+>
+>
+> Still waiting for send BDFs to upstream
+> =======================================
+>
+> * Meraki MR33
+>
+>   - Chris Blake?
+>   - https://github.com/openwrt/openwrt/blob/master/package/firmware/ipq-wifi/board-meraki_mr33.bin
+>
+> * Fritzbox 4040
+>
+>   - Christian Lamparter?
+>   - https://github.com/openwrt/openwrt/blob/master/package/firmware/ipq-wifi/board-avm_fritzbox-4040.bin
+>
+> * maybe more which I missed
+>
+>
+> Kind regards,
+> 	Sven
+>
+
+
 -- 
-2.7.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
