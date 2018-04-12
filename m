@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6f8s-0000Xn-Hh
- for ath10k@lists.infradead.org; Thu, 12 Apr 2018 16:32:12 +0000
-Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
- NIC.
-References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
- <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>
- <2080980.pDnGlZTBzu@bentobox>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <0fb4c68f-ad37-9346-30b9-d57516848a55@candelatech.com>
-Date: Thu, 12 Apr 2018 09:31:54 -0700
+Received: from mail-pl0-x243.google.com ([2607:f8b0:400e:c01::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6jKE-0000tN-Cv
+ for ath10k@lists.infradead.org; Thu, 12 Apr 2018 21:00:11 +0000
+Received: by mail-pl0-x243.google.com with SMTP id t20-v6so4723647ply.9
+ for <ath10k@lists.infradead.org>; Thu, 12 Apr 2018 13:59:59 -0700 (PDT)
+Date: Thu, 12 Apr 2018 13:59:56 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
+Message-ID: <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
+References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
+ <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <2080980.pDnGlZTBzu@bentobox>
+Content-Disposition: inline
+In-Reply-To: <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,118 +22,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
-Cc: Christian Lamparter <chunkeey@googlemail.com>, Tim Harvey <tharvey@gateworks.com>, Chris Blake <chrisrblake93@gmail.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+To: Carl Huang <cjhuang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 04/12/2018 12:27 AM, Sven Eckelmann wrote:
-> On Mittwoch, 11. April 2018 08:18:15 CEST Tim Harvey wrote:
->> It's not clear what the process is for getting new board id's
->> supported in the board.bin files.
->
-> The reaction of QCA when asking for new IDs was mostly "please go away, we
-> will not talk to you about it". But with the help of Kalle Valo, a new
-> mechanism called "qcom,ath10k-calibration-variant" was added (for embedded
-> boards which include QCA 11ac wave2 radios). There are a couple of mails
-> about it on this list - a general overview about BDFs, variant strings and
-> why we need them can be found at
-> http://lists.infradead.org/pipermail/ath10k/2018-March/011066.html.
->
-> But it looks like you really got the IDs 30+31 (maybe because you are selling
-> the, as separate PCIe modules?). Then I would guess that you can still use the
-> same process as we use for the accesspoint specific BDFs (just without the
-> variant= part).
+Hi Carl,
 
-These are Compex NICs, and they do have their own IDs.  These are general
-purpose NICs that fit into most any system, so it would be good if the board
-files were in the upstream board-2.bin file.
+On Fri, Mar 30, 2018 at 11:14:00AM +0800, Carl Huang wrote:
+> The ath10k reports the random_mac_addr capability to upper layer
+> based on the service bit firmware reported. Driver sets the
+> spoofed flag in scan_ctrl_flag to firmware if upper layer has
+> enabled this feature in scan request.
+> 
+> Test with QCA6174 hw3.0 and firmware-6.bin_WLAN.RM.4.4.1-00102-QCARMSWP-1,
+> but QCA9377 is also affected.
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c     | 17 +++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/wmi-ops.h | 22 ++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 25 +++++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/wmi-tlv.h | 11 +++++++++++
+>  drivers/net/wireless/ath/ath10k/wmi.c     |  5 +++++
+>  drivers/net/wireless/ath/ath10k/wmi.h     |  9 +++++++++
+>  6 files changed, 89 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index ebb3f1b..c5cd5e5 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5699,6 +5699,12 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
+>  		arg.scan_ctrl_flags |= WMI_SCAN_FLAG_PASSIVE;
+>  	}
+>  
+> +	if (req->flags & NL80211_SCAN_FLAG_RANDOM_ADDR) {
+> +		arg.scan_ctrl_flags |=  WMI_SCAN_ADD_SPOOFED_MAC_IN_PROBE_REQ;
+> +		ether_addr_copy(arg.mac_addr.addr, req->mac_addr);
+> +		ether_addr_copy(arg.mac_mask.addr, req->mac_addr_mask);
+> +	}
+> +
+>  	if (req->n_channels) {
+>  		arg.n_channels = req->n_channels;
+>  		for (i = 0; i < arg.n_channels; i++)
+> @@ -8397,6 +8403,17 @@ int ath10k_mac_register(struct ath10k *ar)
+>  		goto err_dfs_detector_exit;
+>  	}
+>  
+> +	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
+> +		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
+> +		if (ret) {
+> +			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
+> +			goto err_dfs_detector_exit;
+> +		}
+> +
+> +		ar->hw->wiphy->features |=
+> +			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
 
-> The description of the general upstreaming process can be found at
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles - but it
-> seems like Kalle Valo doesn't have much time for it at the moment for it (or
-> there might be other problems which we don't see from our perspective - for
-> example legal departments).
->
-> Maybe you or Ben Greear can enhance the submission for the BDFs to better
-> answer the questions from the "Submitting board files" guide.
+Do you support NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR too?
 
-Considering all of the not-accepted below, maybe we should just build
-our own board file(s) for OpenWRT and let upstream catch up when someone
-has time to deal with it?
-
-For platform specific files, maybe better to just ignore the board-2.bin
-entirely and use the specific board.bin file for that platform?
-
-Thanks,
-Ben
-
->
->
-> Examples for such submission
-> ============================
->
-> * OpenMesh A42
->
->   - applied
->   - http://lists.infradead.org/pipermail/ath10k/2017-November/010470.html
->   - http://lists.infradead.org/pipermail/ath10k/2017-December/010543.html
->
-> * Asus RT-AC58U
->
->   - not yet accepted
->   - submitted before the guide was published
->   - http://lists.infradead.org/pipermail/ath10k/2017-March/009454.html
->
-> * Netgear EX6100v2/EX6150v2
->
->   - not yet accepted
->   - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
->
-> * 8devices Jalapeno
->
->   - not yet accepted
->   - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
->
-> * GL.iNet GL-B1300
->
->   - not yet accepted
->   - http://lists.infradead.org/pipermail/ath10k/2018-March/011058.html
->
-> * OpenMesh A62
->
->   - not yet accepted
->   - http://lists.infradead.org/pipermail/ath10k/2018-March/011081.html
->
->
->
-> Still waiting for send BDFs to upstream
-> =======================================
->
-> * Meraki MR33
->
->   - Chris Blake?
->   - https://github.com/openwrt/openwrt/blob/master/package/firmware/ipq-wifi/board-meraki_mr33.bin
->
-> * Fritzbox 4040
->
->   - Christian Lamparter?
->   - https://github.com/openwrt/openwrt/blob/master/package/firmware/ipq-wifi/board-avm_fritzbox-4040.bin
->
-> * maybe more which I missed
->
->
-> Kind regards,
-> 	Sven
->
+> +	}
+> +
 
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Brian
 
 _______________________________________________
 ath10k mailing list
