@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6saW-0000Nb-Tf
- for ath10k@lists.infradead.org; Fri, 13 Apr 2018 06:53:38 +0000
-MIME-Version: 1.0
-Date: Fri, 13 Apr 2018 14:53:25 +0800
-From: cjhuang@codeaurora.org
-Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
-In-Reply-To: <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
-References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
- <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
- <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
-Message-ID: <e16557d0891352ae0b83902faee97023@codeaurora.org>
+ id 1f6tQ7-0004z6-RV
+ for ath10k@lists.infradead.org; Fri, 13 Apr 2018 07:46:57 +0000
+From: mkenna@codeaurora.org
+Subject: [PATCH] ath10k: Fix a typo in ath10k_wmi_set_wmm_param()
+Date: Fri, 13 Apr 2018 13:18:12 +0530
+Message-Id: <1523605692-1838-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,80 +15,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On 2018-04-13 04:59, Brian Norris wrote:
-> Hi Carl,
-> 
-> On Fri, Mar 30, 2018 at 11:14:00AM +0800, Carl Huang wrote:
->> The ath10k reports the random_mac_addr capability to upper layer
->> based on the service bit firmware reported. Driver sets the
->> spoofed flag in scan_ctrl_flag to firmware if upper layer has
->> enabled this feature in scan request.
->> 
->> Test with QCA6174 hw3.0 and 
->> firmware-6.bin_WLAN.RM.4.4.1-00102-QCARMSWP-1,
->> but QCA9377 is also affected.
->> 
->> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/mac.c     | 17 +++++++++++++++++
->>  drivers/net/wireless/ath/ath10k/wmi-ops.h | 22 ++++++++++++++++++++++
->>  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 25 
->> +++++++++++++++++++++++++
->>  drivers/net/wireless/ath/ath10k/wmi-tlv.h | 11 +++++++++++
->>  drivers/net/wireless/ath/ath10k/wmi.c     |  5 +++++
->>  drivers/net/wireless/ath/ath10k/wmi.h     |  9 +++++++++
->>  6 files changed, 89 insertions(+)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c 
->> b/drivers/net/wireless/ath/ath10k/mac.c
->> index ebb3f1b..c5cd5e5 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -5699,6 +5699,12 @@ static int ath10k_hw_scan(struct ieee80211_hw 
->> *hw,
->>  		arg.scan_ctrl_flags |= WMI_SCAN_FLAG_PASSIVE;
->>  	}
->> 
->> +	if (req->flags & NL80211_SCAN_FLAG_RANDOM_ADDR) {
->> +		arg.scan_ctrl_flags |=  WMI_SCAN_ADD_SPOOFED_MAC_IN_PROBE_REQ;
->> +		ether_addr_copy(arg.mac_addr.addr, req->mac_addr);
->> +		ether_addr_copy(arg.mac_mask.addr, req->mac_addr_mask);
->> +	}
->> +
->>  	if (req->n_channels) {
->>  		arg.n_channels = req->n_channels;
->>  		for (i = 0; i < arg.n_channels; i++)
->> @@ -8397,6 +8403,17 @@ int ath10k_mac_register(struct ath10k *ar)
->>  		goto err_dfs_detector_exit;
->>  	}
->> 
->> +	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
->> +		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
->> +		if (ret) {
->> +			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
->> +			goto err_dfs_detector_exit;
->> +		}
->> +
->> +		ar->hw->wiphy->features |=
->> +			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
-> 
-> Do you support NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR too?
+From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 
-I'll add this flag too.
+Fix a typo in the function ath10k_wmi_set_wmm_param().
 
-> 
->> +	}
->> +
-> 
-> 
-> Brian
+Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index c5e1ca5..727c965 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -7648,7 +7648,7 @@ void ath10k_wmi_set_wmm_param(struct wmi_wmm_params *params,
+ 	cmd->param = __cpu_to_le32(param);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "wmi pdev get tcp config param:%d\n", param);
++		   "wmi pdev get tpc config param %d\n", param);
+ 	return skb;
+ }
+ 
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
