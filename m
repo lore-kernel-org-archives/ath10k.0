@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6tQ7-0004z6-RV
- for ath10k@lists.infradead.org; Fri, 13 Apr 2018 07:46:57 +0000
+ id 1f6tQM-00050W-6F
+ for ath10k@lists.infradead.org; Fri, 13 Apr 2018 07:47:11 +0000
 From: mkenna@codeaurora.org
 Subject: [PATCH] ath10k: Fix a typo in ath10k_wmi_set_wmm_param()
-Date: Fri, 13 Apr 2018 13:18:12 +0530
-Message-Id: <1523605692-1838-1-git-send-email-mkenna@codeaurora.org>
+Date: Fri, 13 Apr 2018 13:18:31 +0530
+Message-Id: <1523605711-1874-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
