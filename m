@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6ztn-00084Q-8m
- for ath10k@lists.infradead.org; Fri, 13 Apr 2018 14:42:00 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: search all IEs for variant before falling back
-References: <d121031bd5eacf212f7ddf49c0440218714f1ae6.1519231419.git.tommyhebb@gmail.com>
- <87y3jcp0kz.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 13 Apr 2018 17:41:45 +0300
-In-Reply-To: <87y3jcp0kz.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Thu, 01 Mar 2018 12:11:24 +0200")
-Message-ID: <87a7u7qic6.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f70gb-0003Lw-EF
+ for ath10k@lists.infradead.org; Fri, 13 Apr 2018 15:32:27 +0000
+Subject: Re: Interest in getting ath10k-ct firmware support upstream?
+References: <dda6f5f1-9e40-d7f4-07de-92633a4fdfbe@candelatech.com>
+ <87po33qlgh.fsf@kamboji.qca.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <f902dc36-4014-4996-1522-0f1333a2473f@candelatech.com>
+Date: Fri, 13 Apr 2018 08:32:05 -0700
 MIME-Version: 1.0
+In-Reply-To: <87po33qlgh.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +19,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Thomas Hebb <tommyhebb@gmail.com>
-Cc: linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@codeaurora.org> writes:
 
-> Thomas Hebb <tommyhebb@gmail.com> writes:
+
+On 04/13/2018 06:34 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 >
->> commit f2593cb1b291 ("ath10k: Search SMBIOS for OEM board file
->> extension") added a feature to ath10k that allows Board Data File
->> (BDF) conflicts between multiple devices that use the same device IDs
->> but have different calibration requirements to be resolved by allowing
->> a "variant" string to be stored in SMBIOS [and later device tree, added
->> by commit d06f26c5c8a4 ("ath10k: search DT for qcom,ath10k-calibration-
->> variant")] that gets appended to the ID stored in board-2.bin.
+>> I'm in the midst of porting my out-of-tree ath10k patches forward to
+>> the 4.16 kernel.
 >>
->> This original patch had a regression, however. Namely that devices with
->> a variant present in SMBIOS that didn't need custom BDFs could no longer
->> find the default BDF, which has no variant appended. The patch was
->> reverted and re-applied with a fix for this issue in commit 1657b8f84ed9
->> ("search SMBIOS for OEM board file extension").
+>> In case you are interested in allowing support for ath10k-ct firmware
+>> in the upstream kernel, now would be a good time for me to work on
+>> this.
 >>
->> But the fix to fall back to a default BDF introduced another issue: the
->> driver currently parses IEs in board-2.bin one by one, and for each one
->> it first checks to see if it matches the ID with the variant appended.
->> If it doesn't, it checks to see if it matches the "fallback" ID with no
->> variant. If a matching BDF is found at any point during this search, the
->> search is terminated and that BDF is used. The issue is that it's very
->> possible (and is currently the case for board-2.bin files present in the
->> ath10k-firmware repository) for the default BDF to occur in an earlier
->> IE than the variant-specific BDF. In this case, the current code will
->> happily choose the default BDF even though a better-matching BDF is
->> present later in the file.
->>
->> This patch fixes the issue by first searching the entire file for the ID
->> with variant, and searching for the fallback ID only if that search
->> fails. It also includes some code cleanup in the area, as
->> ath10k_core_fetch_board_data_api_n() no longer does its own string
->> mangling to remove the variant from an ID, instead leaving that job to a
->> new flag passed to ath10k_core_create_board_name().
->>
->> I've tested this patch on a QCA4019 and verified that the driver behaves
->> correctly for 1) both fallback and variant BDFs present, 2) only fallback
->> BDF present, and 3) no matching BDFs present.
->>
->> Fixes: 1657b8f84ed9 ("ath10k: search SMBIOS for OEM board file extension")
->> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+>> Please let me know if you are interested.
 >
-> BTW, you forgot to CC linux-wireless so I don't see this in patchwork.
+> I don't really know what is needed for your firmware so difficult to
+> really comment. And ath10k really does not support any specific firmware
+> branch per se, it uses more finegrained feature based detection anyway.
 >
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
+> But as we are adding SDIO, USB and SNOC busses to ath10k, which is quite
+> a enourmous task itself, and trying to support even a different firmware
+> sounds really difficult.
 
-I submitted v2 so that I see it in patchwork:
+I have lots of mostly small tweaks, enabled by feature flags specific to my
+firmware.  Adding my changes will increase the code size a bit, but I don't think
+it will add much fundamental complexity.
 
-https://patchwork.kernel.org/patch/10340241/
+If you will accept feature flags upstream for my firmware and will make an
+effort to review patches in a timely manner, I will work on a patch series
+and send it for review.
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
