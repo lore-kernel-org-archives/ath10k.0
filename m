@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from alexa-out-ams-02.qualcomm.com ([185.23.61.163])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6tSy-0005kU-9h
- for ath10k@lists.infradead.org; Fri, 13 Apr 2018 07:49:53 +0000
+ id 1f6wLA-0005f6-Ir
+ for ath10k@lists.infradead.org; Fri, 13 Apr 2018 10:54:02 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
+ NIC.
+Date: Fri, 13 Apr 2018 10:53:42 +0000
+Message-ID: <87vacvs7gq.fsf@kamboji.qca.qualcomm.com>
+References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
+ <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>
+In-Reply-To: <CAJ+vNU1MSa3iR7dAW6M+TiKutzyYSeT3p4H0J8L_W3mTTEtyzQ@mail.gmail.com>	(Tim
+ Harvey's message of "Wed, 11 Apr 2018 08:18:15 -0700")
+Content-Language: en-US
 MIME-Version: 1.0
-Date: Fri, 13 Apr 2018 13:19:41 +0530
-From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fix a typo in ath10k_wmi_set_wmm_param()
-In-Reply-To: <1523605711-1874-1-git-send-email-mkenna@codeaurora.org>
-References: <1523605711-1874-1-git-send-email-mkenna@codeaurora.org>
-Message-ID: <6d423aeaf1011dc25e5caa57d11d2d1b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +22,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-Hi All,
+Tim Harvey <tharvey@gateworks.com> writes:
 
-Sorry for the inconvenience. Please ignore this duplicate patch.
-Please use the previous patch.
+> On Wed, Mar 21, 2018 at 2:59 PM, Ben Greear <greearb@candelatech.com> wrote:
+>> Hello,
+>>
+>> It seems the upstream board-2.bin file for 9984 does not yet include support
+>> for WLE1216V5-20
+>> (or possibly it does and OpenWRT grabs the wrong one?).
+>>
+>> I'm attaching the board file for this NIC and for another one which
+>> I have not yet tested.  I received these from Compex and have
+>> tested the bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin file on the
+>> WLE1216V5-20
+>>
+>> Please add these into the official board-2.bin for 9984.
+>>
+>
+> Kalle,
+>
+> Any progress on this? I believe your the one that has to update the
+> board-2.bin at
+> https://github.com/kvalo/ath10k-firmware/commits/master/QCA9984/hw1.0.
 
+This is on my queue but I don't update board files that often, due to
+lack of time. But I'll try to get to this request in the next few days.
 
-On 2018-04-13 1:18 pm, mkenna@codeaurora.org wrote:
-> From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-> 
-> Fix a typo in the function ath10k_wmi_set_wmm_param().
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/wmi.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c
-> b/drivers/net/wireless/ath/ath10k/wmi.c
-> index c5e1ca5..727c965 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -7648,7 +7648,7 @@ void ath10k_wmi_set_wmm_param(struct
-> wmi_wmm_params *params,
->  	cmd->param = __cpu_to_le32(param);
-> 
->  	ath10k_dbg(ar, ATH10K_DBG_WMI,
-> -		   "wmi pdev get tcp config param:%d\n", param);
-> +		   "wmi pdev get tpc config param %d\n", param);
->  	return skb;
->  }
+> It's not clear what the process is for getting new board id's
+> supported in the board.bin files.
+
+I think Sven already provided the link to the wiki page.
 
 -- 
-Regards,
-Maha
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
