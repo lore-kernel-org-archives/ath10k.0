@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f7ggO-00017h-LF
+ id 1f7ggP-00017w-G0
  for ath10k@lists.infradead.org; Sun, 15 Apr 2018 12:23:02 +0000
-Received: by mail-lf0-x242.google.com with SMTP id j68-v6so18227840lfg.13
- for <ath10k@lists.infradead.org>; Sun, 15 Apr 2018 05:22:50 -0700 (PDT)
+Received: by mail-lf0-x244.google.com with SMTP id i18-v6so3215681lfc.7
+ for <ath10k@lists.infradead.org>; Sun, 15 Apr 2018 05:22:51 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 1/2] ath10k: add inlined wrappers for htt tx ops
-Date: Sun, 15 Apr 2018 14:22:27 +0200
-Message-Id: <20180415122228.12565-2-erik.stromdahl@gmail.com>
+Subject: [PATCH 2/2] ath10k: add inlined wrappers for htt rx ops
+Date: Sun, 15 Apr 2018 14:22:28 +0200
+Message-Id: <20180415122228.12565-3-erik.stromdahl@gmail.com>
 In-Reply-To: <20180415122228.12565-1-erik.stromdahl@gmail.com>
 References: <20180415122228.12565-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,158 +27,120 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-These wrappers makes the HTT ops align better with the HIF ops
-(where similar wrappers are used).
-
-It also makes it easier for a target to have unsupported ops
-(by letting the corresponding function pointer be NULL).
+Added for the same reason as the TX wrappers.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.c    |  4 +-
- drivers/net/wireless/ath/ath10k/htt.h    | 51 ++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_tx.c | 12 +++---
- drivers/net/wireless/ath/ath10k/mac.c    |  2 +-
- 4 files changed, 60 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    | 37 ++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 14 ++++-----
+ 2 files changed, 44 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 625198dea18b..21a67f82f037 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -257,11 +257,11 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
- 		return status;
- 	}
- 
--	status = htt->tx_ops->htt_send_frag_desc_bank_cfg(htt);
-+	status = ath10k_htt_send_frag_desc_bank_cfg(htt);
- 	if (status)
- 		return status;
- 
--	status = htt->tx_ops->htt_send_rx_ring_cfg(htt);
-+	status = ath10k_htt_send_rx_ring_cfg(htt);
- 	if (status) {
- 		ath10k_warn(ar, "failed to setup rx ring: %d\n",
- 			    status);
 diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 8cc2a8b278e4..c76f6daafe70 100644
+index c76f6daafe70..3fa1be7749b2 100644
 --- a/drivers/net/wireless/ath/ath10k/htt.h
 +++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1848,6 +1848,57 @@ struct ath10k_htt_tx_ops {
- 	void (*htt_free_txbuff)(struct ath10k_htt *htt);
+@@ -1908,6 +1908,43 @@ struct ath10k_htt_rx_ops {
+ 	void (*htt_reset_paddrs_ring)(struct ath10k_htt *htt, int idx);
  };
  
-+static inline int ath10k_htt_send_rx_ring_cfg(struct ath10k_htt *htt)
++static inline size_t ath10k_htt_get_rx_ring_size(struct ath10k_htt *htt)
 +{
-+	if (!htt->tx_ops->htt_send_rx_ring_cfg)
-+		return -EOPNOTSUPP;
++	if (!htt->rx_ops->htt_get_rx_ring_size)
++		return 0;
 +
-+	return htt->tx_ops->htt_send_rx_ring_cfg(htt);
++	return htt->rx_ops->htt_get_rx_ring_size(htt);
 +}
 +
-+static inline int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt)
++static inline void ath10k_htt_config_paddrs_ring(struct ath10k_htt *htt,
++						 void *vaddr)
 +{
-+	if (!htt->tx_ops->htt_send_frag_desc_bank_cfg)
-+		return -EOPNOTSUPP;
-+
-+	return htt->tx_ops->htt_send_frag_desc_bank_cfg(htt);
++	if (htt->rx_ops->htt_config_paddrs_ring)
++		htt->rx_ops->htt_config_paddrs_ring(htt, vaddr);
 +}
 +
-+static inline int ath10k_htt_alloc_frag_desc(struct ath10k_htt *htt)
++static inline void ath10k_htt_set_paddrs_ring(struct ath10k_htt *htt,
++					      dma_addr_t paddr,
++					      int idx)
 +{
-+	if (!htt->tx_ops->htt_alloc_frag_desc)
-+		return -EOPNOTSUPP;
-+
-+	return htt->tx_ops->htt_alloc_frag_desc(htt);
++	if (htt->rx_ops->htt_set_paddrs_ring)
++		htt->rx_ops->htt_set_paddrs_ring(htt, paddr, idx);
 +}
 +
-+static inline void ath10k_htt_free_frag_desc(struct ath10k_htt *htt)
++static inline void *ath10k_htt_get_vaddr_ring(struct ath10k_htt *htt)
 +{
-+	if (htt->tx_ops->htt_free_frag_desc)
-+		htt->tx_ops->htt_free_frag_desc(htt);
++	if (!htt->rx_ops->htt_get_vaddr_ring)
++		return NULL;
++
++	return htt->rx_ops->htt_get_vaddr_ring(htt);
 +}
 +
-+static inline int ath10k_htt_tx(struct ath10k_htt *htt,
-+				enum ath10k_hw_txrx_mode txmode,
-+				struct sk_buff *msdu)
++static inline void ath10k_htt_reset_paddrs_ring(struct ath10k_htt *htt, int idx)
 +{
-+	return htt->tx_ops->htt_tx(htt, txmode, msdu);
++	if (htt->rx_ops->htt_reset_paddrs_ring)
++		htt->rx_ops->htt_reset_paddrs_ring(htt, idx);
 +}
 +
-+static inline int ath10k_htt_alloc_txbuff(struct ath10k_htt *htt)
-+{
-+	if (!htt->tx_ops->htt_alloc_txbuff)
-+		return -EOPNOTSUPP;
-+
-+	return htt->tx_ops->htt_alloc_txbuff(htt);
-+}
-+
-+static inline void ath10k_htt_free_txbuff(struct ath10k_htt *htt)
-+{
-+	if (htt->tx_ops->htt_free_txbuff)
-+		htt->tx_ops->htt_free_txbuff(htt);
-+}
-+
- struct ath10k_htt_rx_ops {
- 	size_t (*htt_get_rx_ring_size)(struct ath10k_htt *htt);
- 	void (*htt_config_paddrs_ring)(struct ath10k_htt *htt, void *vaddr);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index d334b7be1fea..a086958c39b6 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -443,13 +443,13 @@ static int ath10k_htt_tx_alloc_buf(struct ath10k_htt *htt)
- 	struct ath10k *ar = htt->ar;
- 	int ret;
+ #define RX_HTT_HDR_STATUS_LEN 64
  
--	ret = htt->tx_ops->htt_alloc_txbuff(htt);
-+	ret = ath10k_htt_alloc_txbuff(htt);
- 	if (ret) {
- 		ath10k_err(ar, "failed to alloc cont tx buffer: %d\n", ret);
- 		return ret;
- 	}
+ /* This structure layout is programmed via rx ring setup
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 5e02e26158f6..5e8a84fa5422 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -181,7 +181,7 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
+ 		rxcb = ATH10K_SKB_RXCB(skb);
+ 		rxcb->paddr = paddr;
+ 		htt->rx_ring.netbufs_ring[idx] = skb;
+-		htt->rx_ops->htt_set_paddrs_ring(htt, paddr, idx);
++		ath10k_htt_set_paddrs_ring(htt, paddr, idx);
+ 		htt->rx_ring.fill_cnt++;
  
--	ret = htt->tx_ops->htt_alloc_frag_desc(htt);
-+	ret = ath10k_htt_alloc_frag_desc(htt);
- 	if (ret) {
- 		ath10k_err(ar, "failed to alloc cont frag desc: %d\n", ret);
- 		goto free_txbuf;
-@@ -473,10 +473,10 @@ static int ath10k_htt_tx_alloc_buf(struct ath10k_htt *htt)
- 	ath10k_htt_tx_free_txq(htt);
+ 		if (htt->rx_ring.in_ord_rx) {
+@@ -286,8 +286,8 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+ 	ath10k_htt_rx_ring_free(htt);
  
- free_frag_desc:
--	htt->tx_ops->htt_free_frag_desc(htt);
-+	ath10k_htt_free_frag_desc(htt);
+ 	dma_free_coherent(htt->ar->dev,
+-			  htt->rx_ops->htt_get_rx_ring_size(htt),
+-			  htt->rx_ops->htt_get_vaddr_ring(htt),
++			  ath10k_htt_get_rx_ring_size(htt),
++			  ath10k_htt_get_vaddr_ring(htt),
+ 			  htt->rx_ring.base_paddr);
  
- free_txbuf:
--	htt->tx_ops->htt_free_txbuff(htt);
-+	ath10k_htt_free_txbuff(htt);
+ 	dma_free_coherent(htt->ar->dev,
+@@ -314,7 +314,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+ 	idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+ 	msdu = htt->rx_ring.netbufs_ring[idx];
+ 	htt->rx_ring.netbufs_ring[idx] = NULL;
+-	htt->rx_ops->htt_reset_paddrs_ring(htt, idx);
++	ath10k_htt_reset_paddrs_ring(htt, idx);
  
- 	return ret;
- }
-@@ -530,9 +530,9 @@ void ath10k_htt_tx_destroy(struct ath10k_htt *htt)
- 	if (!htt->tx_mem_allocated)
- 		return;
+ 	idx++;
+ 	idx &= htt->rx_ring.size_mask;
+@@ -586,13 +586,13 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	if (!htt->rx_ring.netbufs_ring)
+ 		goto err_netbuf;
  
--	htt->tx_ops->htt_free_txbuff(htt);
-+	ath10k_htt_free_txbuff(htt);
- 	ath10k_htt_tx_free_txq(htt);
--	htt->tx_ops->htt_free_frag_desc(htt);
-+	ath10k_htt_free_frag_desc(htt);
- 	ath10k_htt_tx_free_txdone_fifo(htt);
- 	htt->tx_mem_allocated = false;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bf05a3689558..fc3320f94f45 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3598,7 +3598,7 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
+-	size = htt->rx_ops->htt_get_rx_ring_size(htt);
++	size = ath10k_htt_get_rx_ring_size(htt);
  
- 	switch (txpath) {
- 	case ATH10K_MAC_TX_HTT:
--		ret = htt->tx_ops->htt_tx(htt, txmode, skb);
-+		ret = ath10k_htt_tx(htt, txmode, skb);
- 		break;
- 	case ATH10K_MAC_TX_HTT_MGMT:
- 		ret = ath10k_htt_mgmt_tx(htt, skb);
+ 	vaddr_ring = dma_alloc_coherent(htt->ar->dev, size, &paddr, GFP_KERNEL);
+ 	if (!vaddr_ring)
+ 		goto err_dma_ring;
+ 
+-	htt->rx_ops->htt_config_paddrs_ring(htt, vaddr_ring);
++	ath10k_htt_config_paddrs_ring(htt, vaddr_ring);
+ 	htt->rx_ring.base_paddr = paddr;
+ 
+ 	vaddr = dma_alloc_coherent(htt->ar->dev,
+@@ -626,7 +626,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 
+ err_dma_idx:
+ 	dma_free_coherent(htt->ar->dev,
+-			  htt->rx_ops->htt_get_rx_ring_size(htt),
++			  ath10k_htt_get_rx_ring_size(htt),
+ 			  vaddr_ring,
+ 			  htt->rx_ring.base_paddr);
+ err_dma_ring:
 -- 
 2.17.0
 
