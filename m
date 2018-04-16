@@ -1,23 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f82Nh-0001Fm-4z
- for ath10k@lists.infradead.org; Mon, 16 Apr 2018 11:33:10 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
-References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
- <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
- <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
- <e16557d0891352ae0b83902faee97023@codeaurora.org>
- <877epbs5v7.fsf@kamboji.qca.qualcomm.com>
- <5AD11D7C.1030603@broadcom.com>
- <242be71eb87140c9560163c4000255b2@codeaurora.org>
-Date: Mon, 16 Apr 2018 14:32:47 +0300
-In-Reply-To: <242be71eb87140c9560163c4000255b2@codeaurora.org>
- (cjhuang@codeaurora.org's message of "Mon, 16 Apr 2018 13:16:10
- +0800")
-Message-ID: <8736zvqtcw.fsf@kamboji.qca.qualcomm.com>
+ id 1f840G-0003UD-Md
+ for ath10k@lists.infradead.org; Mon, 16 Apr 2018 13:17:06 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: Enable hw checksum for wcn3990
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1522993544-15279-1-git-send-email-pillair@codeaurora.org>
+References: <1522993544-15279-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20180416131652.CF47560863@smtp.codeaurora.org>
+Date: Mon, 16 Apr 2018 13:16:52 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: cjhuang@codeaurora.org
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-cjhuang@codeaurora.org writes:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> On 2018-04-14 05:13, Arend van Spriel wrote:
->> On 4/13/2018 1:28 PM, Kalle Valo wrote:
->>> cjhuang@codeaurora.org writes:
->>>
->>>>>> +	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
->>>>>> +		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
->>>>>> +		if (ret) {
->>>>>> +			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
->>>>>> +			goto err_dfs_detector_exit;
->>>>>> +		}
->>>>>> +
->>>>>> +		ar->hw->wiphy->features |=
->>>>>> +			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
->>>>>
->>>>> Do you support NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR too?
->>>>
->>>> I'll add this flag too.
->>>
->>> Are you going to send v2 or what's the plan?
->>
->> Maybe a stupid question, but does ath10k support scheduled scan?
+> By default ath10k driver enables the support for HW_CHECKSUM
+> (NETIF_F_HW_CSUM). Since the TCP/UDP checksum calculation is not enabled
+> in the wcn3990 firmware the checksum is incorrect in the TCP/UDP packets
+> and all patckets are dropped. But due note that wcn3990 support in
+> ath10k is still incomplete so this isn't a critical fix (yet).
+> 
+> Enable hw checksum calculations in wcn3990 hardware by
+> setting the proper flags in msdu descriptor tso flags.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-AFAICS ath10k does not support it (sched_scan_start() op).
+Introduces a new sparse warning:
 
-> The reason is AVL test case needs this flag to enable random mac
-> address scan. Maybe Brian Can explain why this flag is necessary.
+potku:~/ath10k/src/ath$ ath10k-check 
+drivers/net/wireless/ath/ath10k/htt_tx.c:1480:47: warning: invalid assignment: |=
+drivers/net/wireless/ath/ath10k/htt_tx.c:1480:47:    left side has type restricted __le32
+drivers/net/wireless/ath/ath10k/htt_tx.c:1480:47:    right side has type unsigned long
 
-If ath10k does not support scheduled scan what's the point? Shouldn't
-the test case then be it fixed instead of making hacks in ath10k?
+Patch set to Changes Requested.
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10325669/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
