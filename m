@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f84NJ-0005SE-RQ
- for ath10k@lists.infradead.org; Mon, 16 Apr 2018 13:40:55 +0000
+ id 1f84PA-0005fT-Ug
+ for ath10k@lists.infradead.org; Mon, 16 Apr 2018 13:42:50 +0000
 MIME-Version: 1.0
-Subject: Re: [1/2] ath10k: Add WMI_SERVICE_AVAILABLE_EVENT support
+Subject: Re: [2/2] ath10k: support MAC address randomization in scan
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1522379640-6442-2-git-send-email-cjhuang@codeaurora.org>
-References: <1522379640-6442-2-git-send-email-cjhuang@codeaurora.org>
-Message-Id: <20180416134043.64F1C607E1@smtp.codeaurora.org>
-Date: Mon, 16 Apr 2018 13:40:43 +0000 (UTC)
+In-Reply-To: <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
+References: <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
+Message-Id: <20180416134238.A11C3607E1@smtp.codeaurora.org>
+Date: Mon, 16 Apr 2018 13:42:38 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +27,25 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Carl Huang <cjhuang@codeaurora.org> wrote:
 
-> Add WMI_SERVICE_AVAILABLE_EVENT to extend WMI_SERVICE_READY_EVENT,
-> the 128bit service map in WMI_SERVICE_READY_EVENT is not enough
-> for firmware to notice new WLAN service to host driver. Hereby,
-> for thoese new WLAN service, firmware will notice host driver by
-> WMI_SERVICE_AVAILABLE_EVENT.
+> The ath10k reports the random_mac_addr capability to upper layer
+> based on the service bit firmware reported. Driver sets the
+> spoofed flag in scan_ctrl_flag to firmware if upper layer has
+> enabled this feature in scan request.
 > 
-> Signed-off-by: Alan Liu <alanliu@codeaurora.org>
+> Test with QCA6174 hw3.0 and firmware-6.bin_WLAN.RM.4.4.1-00102-QCARMSWP-1,
+> but QCA9377 is also affected.
+> 
 > Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-This added a new sparse warning, I fixed it in the pending branch:
+This added a new checkpatch warning:
 
-drivers/net/wireless/ath/ath10k/wmi.c:5283:35: warning: incorrect type in argument 4 (different base types)
-drivers/net/wireless/ath/ath10k/wmi.c:5283:35:    expected unsigned long [unsigned] [usertype] len
-drivers/net/wireless/ath/ath10k/wmi.c:5283:35:    got restricted __le32 [addressable] [usertype] service_map_ext_len
+drivers/net/wireless/ath/ath10k/wmi-ops.h:123: Alignment should match open parenthesis
+
+I fixed it in the pending branch.
 
 -- 
-https://patchwork.kernel.org/patch/10316767/
+https://patchwork.kernel.org/patch/10316769/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
