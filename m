@@ -1,19 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f7xf3-0005O2-7A
- for ath10k@lists.infradead.org; Mon, 16 Apr 2018 06:30:46 +0000
+ id 1f82Nh-0001Fm-4z
+ for ath10k@lists.infradead.org; Mon, 16 Apr 2018 11:33:10 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
+References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
+ <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
+ <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
+ <e16557d0891352ae0b83902faee97023@codeaurora.org>
+ <877epbs5v7.fsf@kamboji.qca.qualcomm.com>
+ <5AD11D7C.1030603@broadcom.com>
+ <242be71eb87140c9560163c4000255b2@codeaurora.org>
+Date: Mon, 16 Apr 2018 14:32:47 +0300
+In-Reply-To: <242be71eb87140c9560163c4000255b2@codeaurora.org>
+ (cjhuang@codeaurora.org's message of "Mon, 16 Apr 2018 13:16:10
+ +0800")
+Message-ID: <8736zvqtcw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Mon, 16 Apr 2018 12:00:32 +0530
-From: akolli@codeaurora.org
-Subject: Re: [PATCH v2] ath10k: Implement get_expected_throughput callback
-In-Reply-To: <f028b45d-8a2d-97f6-5eb9-fdb071a51e4d@bowerswilkins.com>
-References: <1521814034-17880-1-git-send-email-akolli@codeaurora.org>
- <2322769.sx4MhzsvNg@bentobox>
- <7428dc3685e146dca147805b6a1bc5d2@codeaurora.org>
- <1580002.5HauTVtcdp@bentobox> <87lgdrqkst.fsf@kamboji.qca.qualcomm.com>
- <f028b45d-8a2d-97f6-5eb9-fdb071a51e4d@bowerswilkins.com>
-Message-ID: <a42e9e3f2988c21d2b60af3d99489b62@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +26,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>
-Cc: Marek Lindner <mareklindner@neomailbox.ch>, Johannes Berg <johannes.berg@intel.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Antonio Quartulli <a@unstable.cc>, ath10k@lists.infradead.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, Kalle Valo <kvalo@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
+To: cjhuang@codeaurora.org
+Cc: Arend van Spriel <arend.vanspriel@broadcom.com>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-04-14 01:54, Peter Oh wrote:
-> On 04/13/2018 06:48 AM, Kalle Valo wrote:
->> Sven Eckelmann <sven.eckelmann@openmesh.com> writes:
->> 
->>> But of course, I cannot say much about how the rate control from QCA 
->>> works and
->>> in which form these information are already available.
->>> 
->>> If you want to know the average PHY rate then wouldn't it be better 
->>> to report
->>> the rates to one of the upper layers and let them to the averaging? 
->>> Similar to
->>> what there already is for NL80211_STA_INFO_CHAIN_SIGNAL
->>> (NL80211_STA_INFO_CHAIN_SIGNAL_AVG) just for 
->>> NL80211_STA_INFO_TX_BITRATE/
->>> NL80211_STA_INFO_RX_BITRATE. Not sure whether this makes sense or 
->>> whether
->>> someone has an use-case for it.
->> Sounds like a good idea, but I don't see it preventing to apply this
->> patch. We can always change the implementation later as this is just
->> communication between ath10k and mac80211, right?
->> 
-> I agree with Sven on the usage or expectation of
-> get_expected_throughput cabllback.
-> It's not really ab expected throughput implementation.
-> However I'm with Kalle about approving this patch as Sven also
-> mentioned "here sounds a little bit like in "Our medical doctor would
-> ideally not decapitate each patient but we have at least an MD"".
-> I could improve it once merged since there are more members in
-> ath10k_per_peer_tx_stats useful such as succ_bytes, failed_bytes,
-> duration, and etc.
+cjhuang@codeaurora.org writes:
 
-On each packet sent successfully, driver has the success_bytes details.
-Throughput calculation can be done using these bytes and tx rate 
-(tx_rate * bytes),
-send this average value to mac80211. is this you are thinking of?
+> On 2018-04-14 05:13, Arend van Spriel wrote:
+>> On 4/13/2018 1:28 PM, Kalle Valo wrote:
+>>> cjhuang@codeaurora.org writes:
+>>>
+>>>>>> +	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
+>>>>>> +		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
+>>>>>> +		if (ret) {
+>>>>>> +			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
+>>>>>> +			goto err_dfs_detector_exit;
+>>>>>> +		}
+>>>>>> +
+>>>>>> +		ar->hw->wiphy->features |=
+>>>>>> +			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
+>>>>>
+>>>>> Do you support NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR too?
+>>>>
+>>>> I'll add this flag too.
+>>>
+>>> Are you going to send v2 or what's the plan?
+>>
+>> Maybe a stupid question, but does ath10k support scheduled scan?
 
-Thanks,
-Anil.
+AFAICS ath10k does not support it (sched_scan_start() op).
+
+> The reason is AVL test case needs this flag to enable random mac
+> address scan. Maybe Brian Can explain why this flag is necessary.
+
+If ath10k does not support scheduled scan what's the point? Shouldn't
+the test case then be it fixed instead of making hacks in ath10k?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
