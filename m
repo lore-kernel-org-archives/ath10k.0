@@ -1,24 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yb0-x241.google.com ([2607:f8b0:4002:c09::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8Lsh-0003ya-TL
- for ath10k@lists.infradead.org; Tue, 17 Apr 2018 08:22:30 +0000
-Received: by mail-yb0-x241.google.com with SMTP id t8-v6so8051226ybo.9
- for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 01:22:17 -0700 (PDT)
-Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
-References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
- <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
- <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
- <e16557d0891352ae0b83902faee97023@codeaurora.org>
- <877epbs5v7.fsf@kamboji.qca.qualcomm.com> <5AD11D7C.1030603@broadcom.com>
- <242be71eb87140c9560163c4000255b2@codeaurora.org>
- <8736zvqtcw.fsf@kamboji.qca.qualcomm.com>
- <20180417002854.GA186697@rodete-desktop-imager.corp.google.com>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5AD5AEB5.1040808@broadcom.com>
-Date: Tue, 17 Apr 2018 10:22:13 +0200
-MIME-Version: 1.0
-In-Reply-To: <20180417002854.GA186697@rodete-desktop-imager.corp.google.com>
+ id 1f8Mr7-0002YT-WA
+ for ath10k@lists.infradead.org; Tue, 17 Apr 2018 09:24:55 +0000
+From: pillair@codeaurora.org
+Subject: [PATCH v2] ath10k: Enable hw checksum for wcn3990
+Date: Tue, 17 Apr 2018 14:54:26 +0530
+Message-Id: <1523957066-12585-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +15,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>, Kalle Valo <kvalo@codeaurora.org>
-Cc: cjhuang@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On 4/17/2018 2:28 AM, Brian Norris wrote:
-> Hi,
->
-> On Mon, Apr 16, 2018 at 02:32:47PM +0300, Kalle Valo wrote:
->> cjhuang@codeaurora.org writes:
->>> On 2018-04-14 05:13, Arend van Spriel wrote:
->>>> On 4/13/2018 1:28 PM, Kalle Valo wrote:
->>>>> cjhuang@codeaurora.org writes:
->>>>>
->>>>>>>> +	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
->>>>>>>> +		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
->>>>>>>> +		if (ret) {
->>>>>>>> +			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
->>>>>>>> +			goto err_dfs_detector_exit;
->>>>>>>> +		}
->>>>>>>> +
->>>>>>>> +		ar->hw->wiphy->features |=
->>>>>>>> +			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
->>>>>>>
->>>>>>> Do you support NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR too?
->>>>>>
->>>>>> I'll add this flag too.
->>>>>
->>>>> Are you going to send v2 or what's the plan?
->>>>
->>>> Maybe a stupid question, but does ath10k support scheduled scan?
->
-> Not a stupid question. Sorry for not asking that first.
->
->> AFAICS ath10k does not support it (sched_scan_start() op).
->
-> Right, that seems to be the case.
->
->>> The reason is AVL test case needs this flag to enable random mac
->>> address scan. Maybe Brian Can explain why this flag is necessary.
->
-> I never actually claimed you *needed* this flag; I just wondered how you
-> claimed to pass our test when you did not support this flag, since our
-> network manager currently checks for both
-> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR and
-> NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR before enabling MAC
-> randomization in scans. But that's no matter to worry about here.
->
->> If ath10k does not support scheduled scan what's the point? Shouldn't
->> the test case then be it fixed instead of making hacks in ath10k?
->
-> Indeed. We're trying to work that out right now.
->
-> It looks like the status quo for looking for SCHED_SCAN support is to
-> check if NL80211_CMD_START_SCHED_SCAN shows up in the command support
-> list. (IOW, that's what wpa_supplicant does.) We'll probably need to
-> imitate that.
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-I believe checking command support is not really recommended. Instead, 
-you better check NL80211_ATTR_SCHED_SCAN_MAX_REQS being non-zero (since 
-kernel 4.12 that is).
+By default ath10k driver enables the support for HW_CHECKSUM
+(NETIF_F_HW_CSUM). Since the TCP/UDP checksum calculation is not enabled
+in the wcn3990 firmware the checksum is incorrect in the TCP/UDP packets
+and all patckets are dropped. But due note that wcn3990 support in
+ath10k is still incomplete so this isn't a critical fix (yet).
 
-Regards,
-Arend
+Enable hw checksum calculations in wcn3990 hardware by
+setting the proper flags in msdu descriptor tso flags.
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt.h    | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  7 +++++--
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 8cc2a8b..11f52df 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -127,6 +127,19 @@ struct htt_msdu_ext_desc_64 {
+ 				 | HTT_MSDU_EXT_DESC_FLAG_TCP_IPV4_CSUM_ENABLE \
+ 				 | HTT_MSDU_EXT_DESC_FLAG_TCP_IPV6_CSUM_ENABLE)
+ 
++#define HTT_MSDU_EXT_DESC_FLAG_IPV4_CSUM_ENABLE_64		BIT(16)
++#define HTT_MSDU_EXT_DESC_FLAG_UDP_IPV4_CSUM_ENABLE_64		BIT(17)
++#define HTT_MSDU_EXT_DESC_FLAG_UDP_IPV6_CSUM_ENABLE_64		BIT(18)
++#define HTT_MSDU_EXT_DESC_FLAG_TCP_IPV4_CSUM_ENABLE_64		BIT(19)
++#define HTT_MSDU_EXT_DESC_FLAG_TCP_IPV6_CSUM_ENABLE_64		BIT(20)
++#define HTT_MSDU_EXT_DESC_FLAG_PARTIAL_CSUM_ENABLE_64		BIT(21)
++
++#define HTT_MSDU_CHECKSUM_ENABLE_64  (HTT_MSDU_EXT_DESC_FLAG_IPV4_CSUM_ENABLE_64 \
++				     | HTT_MSDU_EXT_DESC_FLAG_UDP_IPV4_CSUM_ENABLE_64 \
++				     | HTT_MSDU_EXT_DESC_FLAG_UDP_IPV6_CSUM_ENABLE_64 \
++				     | HTT_MSDU_EXT_DESC_FLAG_TCP_IPV4_CSUM_ENABLE_64 \
++				     | HTT_MSDU_EXT_DESC_FLAG_TCP_IPV6_CSUM_ENABLE_64)
++
+ enum htt_data_tx_desc_flags0 {
+ 	HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT = 1 << 0,
+ 	HTT_DATA_TX_DESC_FLAGS0_NO_AGGR         = 1 << 1,
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index d334b7b..ad49d06 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1475,8 +1475,11 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
+ 	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
+ 		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
+ 		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
+-		if (ar->hw_params.continuous_frag_desc)
+-			ext_desc->flags |= HTT_MSDU_CHECKSUM_ENABLE;
++		if (ar->hw_params.continuous_frag_desc) {
++			memset(ext_desc->tso_flag, 0, sizeof(ext_desc->tso_flag));
++			ext_desc->tso_flag[3] |=
++				__cpu_to_le32(HTT_MSDU_CHECKSUM_ENABLE_64);
++		}
+ 	}
+ 
+ 	/* Prevent firmware from sending up tx inspection requests. There's
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
