@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.bugwerft.de ([46.23.86.59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8JEI-0007IB-Io
- for ath10k@lists.infradead.org; Tue, 17 Apr 2018 05:32:36 +0000
-Subject: Re: [ath6kl:pending 83/84]
- drivers/net/wireless/ath/wcn36xx/smd.c:634:22: error: 'vif_priv' undeclared;
- did you mean 'bio_prio'?
-References: <201804170947.uUoZ4uiy%fengguang.wu@intel.com>
-From: Daniel Mack <daniel@zonque.org>
-Message-ID: <f1a50225-2740-4a79-cb32-a576a89586d9@zonque.org>
-Date: Tue, 17 Apr 2018 07:32:20 +0200
+Received: from mail-wr0-x22b.google.com ([2a00:1450:400c:c0c::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f8KBF-0007av-J8
+ for ath10k@lists.infradead.org; Tue, 17 Apr 2018 06:33:31 +0000
+Received: by mail-wr0-x22b.google.com with SMTP id z73so32107136wrb.0
+ for <ath10k@lists.infradead.org>; Mon, 16 Apr 2018 23:33:19 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: [PATCH] ath10k:add support for multicast rate control
+Date: Tue, 17 Apr 2018 08:33:12 +0200
+Message-ID: <8422067.oV49EfR4qE@bentobox>
+In-Reply-To: <fe1af65b1042bc3c2b551dcbe7d53f3c@codeaurora.org>
+References: <fe1af65b1042bc3c2b551dcbe7d53f3c@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <201804170947.uUoZ4uiy%fengguang.wu@intel.com>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,113 +20,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6928806707037224415=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
+To: pradeepc@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tuesday, April 17, 2018 03:35 AM, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   bbb4ad4a1c141a8a4c2464d09cb4254640d824b1
-> commit: 93d35c09471642344afafa4e848662d93459cb2b [83/84] wcn36xx: send bss_type in scan requests
-> config: arm-allmodconfig (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (Debian 7.2.0-11) 7.2.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout 93d35c09471642344afafa4e848662d93459cb2b
->         # save the attached .config to linux build tree
->         make.cross ARCH=arm 
+--===============6928806707037224415==
+Content-Type: multipart/signed; boundary="nextPart4779734.HQabqmaVvQ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart4779734.HQabqmaVvQ
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Montag, 16. April 2018 22:10:50 CEST pradeepc@codeaurora.org wrote:
+[...]
+> > I see two major problems here without checking the actual 
+> > implementation
+> > details:
+> > 
+> > * hw_value is incorrect for a couple of devices. Some devices use a 
+> > different
+> >   mapping when they receive rates inforamtion (hw_value) then the ones 
+> > you use
+> >   for the mcast/bcast/beacon rate setting. I've handled in my POC patch 
+> > like
+[...]
+> Isn't this already fixed in https://patchwork.kernel.org/patch/9150145/ 
+> ?
+
+No, this is exactly the patch which causes the problem for you. The parameter 
+for these settings stayed the same but this patch changes the order in 
+ieee80211_rate to make it easier for the driver to parse the (reordered) rx 
+status information for CCK rates (maybe also tx - not sure about that right 
+now).
+
+> > * bcast + mcast (+ mgmt) have to be set separately
 > 
-> Note: the ath6kl/pending HEAD bbb4ad4a1c141a8a4c2464d09cb4254640d824b1 builds fine.
->       It only hurts bisectibility.
-> 
-> All errors (new ones prefixed by >>):
-> 
->    drivers/net/wireless/ath/wcn36xx/smd.c: In function 'wcn36xx_smd_start_hw_scan':
->>> drivers/net/wireless/ath/wcn36xx/smd.c:634:22: error: 'vif_priv' undeclared (first use in this function); did you mean 'bio_prio'?
+> Can you please let me know why this would be necessary?
+> Although I see minstrel rate control is currently seems using the 
+> mcast_rate
+> setting to set MGMT/BCAST/MCAST rates, will this not be misleading to 
+> user
+> passed value with 'iw set mcast_rate' for MGMT traffic as well?
 
-Ah, there's a hunk in 5/5 that should be in 4/5. That kills
-bisectability. I'll reorder and resend.
+What about broadcast? MGMT was only mentioned here because it is the third 
+item which can be manipulated the same way. But yes, it would be good to get 
+the mgmt rates in sync with the non-hw-rate-control drivers.
+
+Kind regards,
+	Sven
+--nextPart4779734.HQabqmaVvQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlrVlSgACgkQXYcKB8Em
+e0YLWBAAmfnmrJgumArkUs0UCtPepXD7kU8lvjkyKxCFWPduV7h2RnGlg7ewQB8l
+x64Q622sOMj5q3AEEQ92aMpBygiD7WmqOKdc8vT2ppEKqAUELzXmWu/SzgtZkzDU
+rxfi2rrPu1WxH/gyg4Gf8NvFf/w4585SMNwA0U/PLQsgSqqA6H2a45ZAWdGp9ZXe
+Ttq2dVklkWzlyVDqYaRcACsM0Jl1ZiQpg7xIgeN2L6cTBkW0+LjlB1cDf0LBEJLY
+CLPSR3Eddgdt4aoZ3QMly7VAXN5Nevc3EFKtiGPqG3k/EXYgk+UdZyPrDl+bDGJX
+nvhvKWChyld/WaKioBaQ/MDjxwfXDElG3wMszCFB/HdbdR4D12ggAWI1M/kkBvXU
+eYJLP3bn/BfKjm6xSzOy3wu5l5kZigWzehkIQKPGS9g+0yg/0UmDPfr4F8U+ZaAb
+V84L4G6dVIYEU1Bf7Z0jEieIwl9dxeOZYdyHiruwlydqsf6UY8PLHUsXLt3RHgVn
+1rsyVXBdqtS3dgqfPUon2FSzgVrdvTNErbKnJ1ypoISNrqkp1i454j8dweZzzIZl
+t3bMsQIu464DOk8onxE7zlevkQpHfQwBWYiEe94XLCa5FNynL4fjP6NIihby4oay
+rEqjbam4YeqzOnf1IDFfOA870zY4QbMWH0MbjjN2pBkMtL6C9z8=
+=2FLg
+-----END PGP SIGNATURE-----
+
+--nextPart4779734.HQabqmaVvQ--
 
 
-Thanks,
-Daniel
 
-
-
-
->      msg_body.bss_type = vif_priv->bss_type;
->                          ^~~~~~~~
->                          bio_prio
->    drivers/net/wireless/ath/wcn36xx/smd.c:634:22: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> vim +634 drivers/net/wireless/ath/wcn36xx/smd.c
-> 
->    619	
->    620	int wcn36xx_smd_start_hw_scan(struct wcn36xx *wcn, struct ieee80211_vif *vif,
->    621				      struct cfg80211_scan_request *req)
->    622	{
->    623		struct wcn36xx_hal_start_scan_offload_req_msg msg_body;
->    624		int ret, i;
->    625	
->    626		mutex_lock(&wcn->hal_mutex);
->    627		INIT_HAL_MSG(msg_body, WCN36XX_HAL_START_SCAN_OFFLOAD_REQ);
->    628	
->    629		msg_body.scan_type = WCN36XX_HAL_SCAN_TYPE_ACTIVE;
->    630		msg_body.min_ch_time = 30;
->    631		msg_body.max_ch_time = 100;
->    632		msg_body.scan_hidden = 1;
->    633		memcpy(msg_body.mac, vif->addr, ETH_ALEN);
->  > 634		msg_body.bss_type = vif_priv->bss_type;
->    635		msg_body.p2p_search = vif->p2p;
->    636	
->    637		msg_body.num_ssid = min_t(u8, req->n_ssids, ARRAY_SIZE(msg_body.ssids));
->    638		for (i = 0; i < msg_body.num_ssid; i++) {
->    639			msg_body.ssids[i].length = min_t(u8, req->ssids[i].ssid_len,
->    640							sizeof(msg_body.ssids[i].ssid));
->    641			memcpy(msg_body.ssids[i].ssid, req->ssids[i].ssid,
->    642			       msg_body.ssids[i].length);
->    643		}
->    644	
->    645		msg_body.num_channel = min_t(u8, req->n_channels,
->    646					     sizeof(msg_body.channels));
->    647		for (i = 0; i < msg_body.num_channel; i++)
->    648			msg_body.channels[i] = req->channels[i]->hw_value;
->    649	
->    650		PREPARE_HAL_BUF(wcn->hal_buf, msg_body);
->    651	
->    652		wcn36xx_dbg(WCN36XX_DBG_HAL,
->    653			    "hal start hw-scan (channels: %u; ssids: %u; p2p: %s)\n",
->    654			    msg_body.num_channel, msg_body.num_ssid,
->    655			    msg_body.p2p_search ? "yes" : "no");
->    656	
->    657		ret = wcn36xx_smd_send_and_wait(wcn, msg_body.header.len);
->    658		if (ret) {
->    659			wcn36xx_err("Sending hal_start_scan_offload failed\n");
->    660			goto out;
->    661		}
->    662		ret = wcn36xx_smd_rsp_status_check(wcn->hal_buf, wcn->hal_rsp_len);
->    663		if (ret) {
->    664			wcn36xx_err("hal_start_scan_offload response failed err=%d\n",
->    665				    ret);
->    666			goto out;
->    667		}
->    668	out:
->    669		mutex_unlock(&wcn->hal_mutex);
->    670		return ret;
->    671	}
->    672	
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-> 
-
+--===============6928806707037224415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============6928806707037224415==--
