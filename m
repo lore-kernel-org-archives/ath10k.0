@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8O0C-000861-0o
- for ath10k@lists.infradead.org; Tue, 17 Apr 2018 10:38:21 +0000
-Received: by mail-wr0-x234.google.com with SMTP id s18so34076652wrg.9
- for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 03:38:09 -0700 (PDT)
-From: Christian Lamparter <chunkeey@gmail.com>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add FRITZ!Box 4040 specific BDFs
-Date: Tue, 17 Apr 2018 12:38:05 +0200
-Message-ID: <1732844.fSHK0DcULO@debian64>
-In-Reply-To: <10659485.WSGLUWTQ6L@bentobox>
-References: <10659485.WSGLUWTQ6L@bentobox>
-MIME-Version: 1.0
+ id 1f8PON-0001TP-LC
+ for ath10k@lists.infradead.org; Tue, 17 Apr 2018 12:07:30 +0000
+From: pillair@codeaurora.org
+Subject: [PATCH v2 1/4] ath10k: Add hw params for shadow register support
+Date: Tue, 17 Apr 2018 17:36:58 +0530
+Message-Id: <1523966821-21903-2-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,77 +17,166 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On Tuesday, 17. April 2018 10:15:42 CEST Sven Eckelmann wrote:
-> The support for this device was added a while ago to OpenWrt. This AP requires 
-> two special BDFs to get the Wi-Fi PHYs working (correctly). The  bmi-board-
-> id='s would clash with one of the the IPQ401X AP-DK boards because QCA doesn't 
-> provide special IDs for customers and seems to use the AP-DK board-ids in the 
-> wifi firmware to change its behavior.
-> 
-> Now to the questions from the wiki page [1]:
-> 
-> * description for what hardware this is:
-> 
->   - it is a QCA401x based board (most likely on qcom-ipq4019-ap.dk01.1)
->   - one QCA40xx radio is used as 2.4GHz radio
->   - one QCA40xx radio is used as 5GHz radio
-> 
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
-> 
->   - Christian didn't include this info in the OpenWrt commit (maybe he can add
->     it here)
->   - most likely taken from stock firmware image
-Yes, the files are coming from the stock firmware image. The firmware image:
-FRITZ.Box_4040.en-de-es-it-fr-pl.155.06.83.image can be found here [0].
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-In order to extract board data files:
- 0. Download FRITZ.Box_4040.en-de-es-it-fr-pl.155.06.83.image
- 1. tar xf FRITZ.Box_4040.en-de-es-it-fr-pl.155.06.83.image
- 2. binwalk -e ./var/tmp/kernel.image
+wcn3990 supports shadow register for ce write.
 
-The boarddata_0.bin and boarddata_1.bin are located in:
- ./_kernel.image.extracted/squashfs-root/lib/firmware/IPQ4019/hw.1
+Add a hw param for shadow register support.
 
-eb866d036149fe4ba35f3f9d0d97e51969b1f1dbac6ea962daf9012ffa75427a  boarddata_0.bin
-f3dc3c2f10037722006e9e7e5173a7468649e9a554f564323f9580f4a8bba10a  boarddata_1.bin
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 14 ++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  4 ++++
+ 2 files changed, 18 insertions(+)
 
-The boarddata_0.bin file matches the
-"bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=AVM-FRITZBox-4040" 
-file Sven attached (see checksums down below). And the boarddata_1.bin 
-file matches the 
-"bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=AVM-FRITZBox-4040" file
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 64479acd9dc5..5a9d222acfe6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -90,6 +90,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+@@ -120,6 +121,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -150,6 +152,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -179,6 +182,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -208,6 +212,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -237,6 +242,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -269,6 +275,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -304,6 +311,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -344,6 +352,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -383,6 +392,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -412,6 +422,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -443,6 +454,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -479,6 +491,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.per_ce_irq = false,
++		.shadow_reg_support = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -500,6 +513,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.target_64bit = true,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL_DUAL_MAC,
+ 		.per_ce_irq = true,
++		.shadow_reg_support = true,
+ 	},
+ };
  
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
-> 
->   - QCA4019 hw1.0
-> 
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=AVM-FRITZBox-4040
->       sha256sum:
->       eb866d036149fe4ba35f3f9d0d97e51969b1f1dbac6ea962daf9012ffa75427a
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=AVM-FRITZBox-4040
->       sha256sum:
->       f3dc3c2f10037722006e9e7e5173a7468649e9a554f564323f9580f4a8bba10a
-> 
-> * attach the actual board file (board.bin)
-> 
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
-> 
-> Kind regards,
->         Sven
-> 
-> [1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
-
-[0] <http://ftp.avm.de/fritzbox/fritzbox-4040/deutschland/fritz.os/FRITZ.Box_4040.en-de-es-it-fr-pl.155.06.83.image>
-
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 3041eba61e54..74faee5a2578 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018 The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -571,6 +572,9 @@ struct ath10k_hw_params {
+ 
+ 	/* target supporting per ce IRQ */
+ 	bool per_ce_irq;
++
++	/* target supporting shadow register for ce write */
++	bool shadow_reg_support;
+ };
+ 
+ struct htt_rx_desc;
+-- 
+2.14.1
 
 
 _______________________________________________
