@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-vk0-x230.google.com ([2607:f8b0:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8PRd-0003bs-Gy
- for ath10k@lists.infradead.org; Tue, 17 Apr 2018 12:10:50 +0000
+ id 1f8S9h-0000T9-Tw
+ for ath10k@lists.infradead.org; Tue, 17 Apr 2018 15:04:30 +0000
+Received: by mail-vk0-x230.google.com with SMTP id b16so12014607vka.5
+ for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 08:04:15 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 17 Apr 2018 17:40:34 +0530
-From: pillair@codeaurora.org
-Subject: Re: [PATCH 3/4] ath10k: Enable SRRI/DRRI support on ddr for WCN3990
-In-Reply-To: <87y3hnp9hj.fsf@kamboji.qca.qualcomm.com>
-References: <1523370212-8778-1-git-send-email-pillair@codeaurora.org>
- <1523370212-8778-4-git-send-email-pillair@codeaurora.org>
- <87y3hnp9hj.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <6965b5c5716369967813b87705ec2c42@codeaurora.org>
+In-Reply-To: <1756157.Q00gyP1f8V@bentobox>
+References: <1756157.Q00gyP1f8V@bentobox>
+From: Chris Blake <chrisrblake93@gmail.com>
+Date: Tue, 17 Apr 2018 10:04:13 -0500
+Message-ID: <CALpBJjp_Bf_0HdGpBDvGqqPW7j=Gq5rmftoJhhhOYkdQuV9R2w@mail.gmail.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Meraki MR33 specific BDFs
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,68 +20,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org, Christian Lamparter <chunkeey@gmail.com>
 
-Hi Kalle,
+On Tue, Apr 17, 2018 at 3:15 AM, Sven Eckelmann
+<sven.eckelmann@openmesh.com> wrote:
+> Hi,
+>
+> The support for this device was added a while ago to OpenWrt. This AP requires
+> two special BDFs to get the Wi-Fi PHYs working (correctly). The  bmi-board-
+> id='s would clash with one of the the IPQ401X AP-DK boards because QCA doesn't
+> provide special IDs for customers and seems to use the AP-DK board-ids in the
+> wifi firmware to change its behavior.
+>
+> Now to the questions from the wiki page [1]:
+>
+> * description for what hardware this is:
+>
+>   - it is a IPQ4029 based board
+>   - one QCA40xx radio is used as 2.4GHz radio
+>   - one QCA40xx radio is used as 5GHz radio
+>
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
+>
+>   - Chris didn't include this info in the OpenWrt commit (maybe he can add it
+>     here)
+>   - most likely taken from stock firmware image
+>
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>
+>   - QCA4019 hw1.0
+>
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Meraki-MR33
+>       sha256sum:
+>       44e8e733d5fc9bd747520d492c776a6fa4cd7effed69098aeb6f9d437785ebad
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Meraki-MR33
+>       sha256sum:
+>       e816565130fae895cfa0c1760cfb47703f1bc5f24ce87922f86e94d4e2b6ccd2
+>
+> * attach the actual board file (board.bin)
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
+>
+> Kind regards,
+>         Sven
+>
+> [1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
 
-The checkpatch warning has been addressed in v2 for this patchset.
+Hello,
+For the Meraki MR33, the board file was pulled out of the factory
+firmware image with assistance from Christian Lamparter, who I have
+CCd to this thread.
 
-Thanks,
-Rakesh Pillai.
-
-On 2018-04-16 18:57, Kalle Valo wrote:
-> pillair@codeaurora.org writes:
-> 
->> From: Govind Singh <govinds@codeaurora.org>
->> 
->> SRRI/DRRI are not mapped in the HW Shadow block and can lead
->> to un-clocked access if common subsystem in the target is
->> powered down due to idle mode.
->> 
->> To mitigate this problem SRRI/DRRI can be read from
->> DDR instead of doing an actual hardware read.
->> Host allocates non cached memory on ddr and configures
->> the physical address of this memory to the CE hardware.
->> The hardware updates the RRI on this particular location.
->> Read SRRI/DRRI from DDR location instead of
->> direct target read.
->> 
->> Enable retention restore on ddr using hw params to enable
->> in specific targets.
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> 
-> [...]
-> 
->> +	for (i = 0; i < CE_COUNT; i++) {
->> +		ctrl1_regs = ar->hw_ce_regs->ctrl1_regs->addr;
->> +		ce_base_addr = ath10k_ce_base_address(ar, i);
->> +		ath10k_ce_write32(ar, ce_base_addr + ctrl1_regs,
->> +				  ath10k_ce_read32(ar,
->> +				  ce_base_addr + ctrl1_regs) |
->> +				  ar->hw_ce_regs->upd->mask);
->> +	}
-> 
-> This gives a checkpatch warning:
-> 
-> drivers/net/wireless/ath/ath10k/ce.c:1917: Alignment should match open
-> parenthesis
-> 
-> You could fix that, and make the code a lot more readable, with
-> something like this:
-> 
-> tmp = ath10k_ce_read32(ar, ce_base_addr + ctrl1_regs);
-> tmp |= ar->hw_ce_regs->upd->mask;
-> ath10k_ce_write32(ar, ce_base_addr + ctrl1_regs, tmp);
-> 
-> Usually it's a good practise avoid making clever tricks, simple code is
-> a lot easier to read.
+Regards,
+Chris Blake
 
 _______________________________________________
 ath10k mailing list
