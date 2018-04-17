@@ -1,17 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x230.google.com ([2607:f8b0:400c:c05::230])
+Received: from mail-pl0-x242.google.com ([2607:f8b0:400e:c01::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8S9h-0000T9-Tw
- for ath10k@lists.infradead.org; Tue, 17 Apr 2018 15:04:30 +0000
-Received: by mail-vk0-x230.google.com with SMTP id b16so12014607vka.5
- for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 08:04:15 -0700 (PDT)
+ id 1f8T8k-0005iL-Gl
+ for ath10k@lists.infradead.org; Tue, 17 Apr 2018 16:07:31 +0000
+Received: by mail-pl0-x242.google.com with SMTP id 59-v6so12227379plc.13
+ for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 09:07:20 -0700 (PDT)
+Date: Tue, 17 Apr 2018 09:07:17 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
+Message-ID: <20180417160715.GA255263@rodete-desktop-imager.corp.google.com>
+References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
+ <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
+ <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
+ <e16557d0891352ae0b83902faee97023@codeaurora.org>
+ <877epbs5v7.fsf@kamboji.qca.qualcomm.com>
+ <5AD11D7C.1030603@broadcom.com>
+ <242be71eb87140c9560163c4000255b2@codeaurora.org>
+ <8736zvqtcw.fsf@kamboji.qca.qualcomm.com>
+ <20180417002854.GA186697@rodete-desktop-imager.corp.google.com>
+ <5AD5AEB5.1040808@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <1756157.Q00gyP1f8V@bentobox>
-References: <1756157.Q00gyP1f8V@bentobox>
-From: Chris Blake <chrisrblake93@gmail.com>
-Date: Tue, 17 Apr 2018 10:04:13 -0500
-Message-ID: <CALpBJjp_Bf_0HdGpBDvGqqPW7j=Gq5rmftoJhhhOYkdQuV9R2w@mail.gmail.com>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Meraki MR33 specific BDFs
+Content-Disposition: inline
+In-Reply-To: <5AD5AEB5.1040808@broadcom.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +34,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org, Christian Lamparter <chunkeey@gmail.com>
+To: Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc: cjhuang@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Tue, Apr 17, 2018 at 3:15 AM, Sven Eckelmann
-<sven.eckelmann@openmesh.com> wrote:
-> Hi,
->
-> The support for this device was added a while ago to OpenWrt. This AP requires
-> two special BDFs to get the Wi-Fi PHYs working (correctly). The  bmi-board-
-> id='s would clash with one of the the IPQ401X AP-DK boards because QCA doesn't
-> provide special IDs for customers and seems to use the AP-DK board-ids in the
-> wifi firmware to change its behavior.
->
-> Now to the questions from the wiki page [1]:
->
-> * description for what hardware this is:
->
->   - it is a IPQ4029 based board
->   - one QCA40xx radio is used as 2.4GHz radio
->   - one QCA40xx radio is used as 5GHz radio
->
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
->
->   - Chris didn't include this info in the OpenWrt commit (maybe he can add it
->     here)
->   - most likely taken from stock firmware image
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->
->   - QCA4019 hw1.0
->
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Meraki-MR33
->       sha256sum:
->       44e8e733d5fc9bd747520d492c776a6fa4cd7effed69098aeb6f9d437785ebad
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Meraki-MR33
->       sha256sum:
->       e816565130fae895cfa0c1760cfb47703f1bc5f24ce87922f86e94d4e2b6ccd2
->
-> * attach the actual board file (board.bin)
->
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
->
-> Kind regards,
->         Sven
->
-> [1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
+On Tue, Apr 17, 2018 at 10:22:13AM +0200, Arend van Spriel wrote:
+> On 4/17/2018 2:28 AM, Brian Norris wrote:
+> > It looks like the status quo for looking for SCHED_SCAN support is to
+> > check if NL80211_CMD_START_SCHED_SCAN shows up in the command support
+> > list. (IOW, that's what wpa_supplicant does.) We'll probably need to
+> > imitate that.
+> 
+> I believe checking command support is not really recommended. Instead, you
+> better check NL80211_ATTR_SCHED_SCAN_MAX_REQS being non-zero (since kernel
+> 4.12 that is).
 
-Hello,
-For the Meraki MR33, the board file was pulled out of the factory
-firmware image with assistance from Christian Lamparter, who I have
-CCd to this thread.
+Why not? Command support checking is what wpa_supplicant is doing.
 
-Regards,
-Chris Blake
+I noticed NL80211_ATTR_SCHED_SCAN_MAX_REQS, but unfortunately, we have
+to support older kernels. It looks like randomization was added in
+v3.19, and as you point out, that's only available in v4.12.
+
+I welcome other alternatives if you have them to offer.
+
+Brian
 
 _______________________________________________
 ath10k mailing list
