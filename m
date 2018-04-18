@@ -1,36 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8Z3N-0005Im-6T
- for ath10k@lists.infradead.org; Tue, 17 Apr 2018 22:26:22 +0000
-Received: by mail-wr0-x243.google.com with SMTP id u4so8208832wrg.10
- for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 15:26:10 -0700 (PDT)
-Received: from mail-wr0-f170.google.com (mail-wr0-f170.google.com.
- [209.85.128.170])
- by smtp.gmail.com with ESMTPSA id i6sm29493edk.23.2018.04.17.15.26.07
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 17 Apr 2018 15:26:08 -0700 (PDT)
-Received: by mail-wr0-f170.google.com with SMTP id u11so39589100wri.12
- for <ath10k@lists.infradead.org>; Tue, 17 Apr 2018 15:26:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5AD66BD9.4000706@broadcom.com>
-References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
- <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
- <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
- <e16557d0891352ae0b83902faee97023@codeaurora.org>
- <877epbs5v7.fsf@kamboji.qca.qualcomm.com>
- <5AD11D7C.1030603@broadcom.com>
- <242be71eb87140c9560163c4000255b2@codeaurora.org>
- <8736zvqtcw.fsf@kamboji.qca.qualcomm.com>
- <20180417002854.GA186697@rodete-desktop-imager.corp.google.com>
- <5AD5AEB5.1040808@broadcom.com>
- <20180417160715.GA255263@rodete-desktop-imager.corp.google.com>
- <5AD66BD9.4000706@broadcom.com>
-From: Brian Norris <briannorris@chromium.org>
-Date: Tue, 17 Apr 2018 15:26:06 -0700
-Message-ID: <CA+ASDXOoxMyTq2CVnUwvN1LBWj1Y9wpsRPKuM0tVzA80sDYG-w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f8cEN-0001pJ-2o
+ for ath10k@lists.infradead.org; Wed, 18 Apr 2018 01:49:56 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 2/3] mac80211:  Add support for ethtool gstats2 API.
+Date: Tue, 17 Apr 2018 18:49:35 -0700
+Message-Id: <1524016176-3881-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
+References: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -39,43 +17,124 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: cjhuang@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: netdev@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tue, Apr 17, 2018 at 2:49 PM, Arend van Spriel
-<arend.vanspriel@broadcom.com> wrote:
-> On 4/17/2018 6:07 PM, Brian Norris wrote:
->> On Tue, Apr 17, 2018 at 10:22:13AM +0200, Arend van Spriel wrote:
->>> I believe checking command support is not really recommended. Instead, you
->>> better check NL80211_ATTR_SCHED_SCAN_MAX_REQS being non-zero (since kernel
->>> 4.12 that is).
->>
->>
->> Why not? Command support checking is what wpa_supplicant is doing.
->
->
-> That's not really a good argument. A couple (or more) years ago wpa_supplicant was not doing nl80211 but wext and some other using driver private ioctls, but that did not make it the best approach.
+From: Ben Greear <greearb@candelatech.com>
 
-I see what you're saying (though your comparison doesn't seem that
-fair either; private ioctls are nothing like a well-defined nl80211
-support list), and I'm totally good on looking at the new flag
-eventually. But you still haven't answered my question ("why not?").
-Is there a problem with the "supported commands" list?
+This enables users to request fewer stats to be refreshed
+in cases where firmware does not need to be probed.
 
-> The START_SCHED_SCAN command is indeed still provided to user-space:
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ include/net/mac80211.h    |  6 ++++++
+ net/mac80211/driver-ops.h |  9 +++++++--
+ net/mac80211/ethtool.c    | 18 +++++++++++++-----
+ 3 files changed, 26 insertions(+), 7 deletions(-)
 
-And as I see it, it probably needs to be for essentially forever. Or
-at least a significant amount of time after wpa_supplicant stops
-relying on it. (Hint: it's still using it today, with no reference to
-NL80211_ATTR_SCHED_SCAN_MAX_REQS.) There's a reason the kernel has ABI
-guarantees. I suspect you only get a chance to rewrite the world (WEXT
--> nl80211) a few times in the life of kernel ABIs.
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index d2279b2..4854f33 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -3361,6 +3361,8 @@ enum ieee80211_reconfig_type {
+  *
+  * @get_et_stats:  Ethtool API to get a set of u64 stats.
+  *
++ * @get_et_stats2:  Ethtool API to get a set of u64 stats, with flags.
++ *
+  * @get_et_strings:  Ethtool API to get a set of strings to describe stats
+  *	and perhaps other supported types of ethtool data-sets.
+  *
+@@ -3692,6 +3694,10 @@ struct ieee80211_ops {
+ 	void	(*get_et_stats)(struct ieee80211_hw *hw,
+ 				struct ieee80211_vif *vif,
+ 				struct ethtool_stats *stats, u64 *data);
++	void	(*get_et_stats2)(struct ieee80211_hw *hw,
++				 struct ieee80211_vif *vif,
++				 struct ethtool_stats *stats, u64 *data,
++				 u32 flags);
+ 	void	(*get_et_strings)(struct ieee80211_hw *hw,
+ 				  struct ieee80211_vif *vif,
+ 				  u32 sset, u8 *data);
+diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
+index 4d82fe7..519d2db 100644
+--- a/net/mac80211/driver-ops.h
++++ b/net/mac80211/driver-ops.h
+@@ -58,10 +58,15 @@ static inline void drv_get_et_strings(struct ieee80211_sub_if_data *sdata,
+ 
+ static inline void drv_get_et_stats(struct ieee80211_sub_if_data *sdata,
+ 				    struct ethtool_stats *stats,
+-				    u64 *data)
++				    u64 *data, u32 flags)
+ {
+ 	struct ieee80211_local *local = sdata->local;
+-	if (local->ops->get_et_stats) {
++	if (local->ops->get_et_stats2) {
++		trace_drv_get_et_stats(local);
++		local->ops->get_et_stats2(&local->hw, &sdata->vif, stats, data,
++					  flags);
++		trace_drv_return_void(local);
++	} else if (local->ops->get_et_stats) {
+ 		trace_drv_get_et_stats(local);
+ 		local->ops->get_et_stats(&local->hw, &sdata->vif, stats, data);
+ 		trace_drv_return_void(local);
+diff --git a/net/mac80211/ethtool.c b/net/mac80211/ethtool.c
+index 9cc986d..b67520e 100644
+--- a/net/mac80211/ethtool.c
++++ b/net/mac80211/ethtool.c
+@@ -61,9 +61,9 @@ static int ieee80211_get_sset_count(struct net_device *dev, int sset)
+ 	return rv;
+ }
+ 
+-static void ieee80211_get_stats(struct net_device *dev,
+-				struct ethtool_stats *stats,
+-				u64 *data)
++static void ieee80211_get_stats2(struct net_device *dev,
++				 struct ethtool_stats *stats,
++				 u64 *data, u32 flags)
+ {
+ 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+ 	struct ieee80211_chanctx_conf *chanctx_conf;
+@@ -199,7 +199,14 @@ static void ieee80211_get_stats(struct net_device *dev,
+ 	if (WARN_ON(i != STA_STATS_LEN))
+ 		return;
+ 
+-	drv_get_et_stats(sdata, stats, &(data[STA_STATS_LEN]));
++	drv_get_et_stats(sdata, stats, &data[STA_STATS_LEN], flags);
++}
++
++static void ieee80211_get_stats(struct net_device *dev,
++				struct ethtool_stats *stats,
++				u64 *data)
++{
++	ieee80211_get_stats2(dev, stats, data, 0);
+ }
+ 
+ static void ieee80211_get_strings(struct net_device *dev, u32 sset, u8 *data)
+@@ -211,7 +218,7 @@ static void ieee80211_get_strings(struct net_device *dev, u32 sset, u8 *data)
+ 		sz_sta_stats = sizeof(ieee80211_gstrings_sta_stats);
+ 		memcpy(data, ieee80211_gstrings_sta_stats, sz_sta_stats);
+ 	}
+-	drv_get_et_strings(sdata, sset, &(data[sz_sta_stats]));
++	drv_get_et_strings(sdata, sset, &data[sz_sta_stats]);
+ }
+ 
+ static int ieee80211_get_regs_len(struct net_device *dev)
+@@ -238,5 +245,6 @@ const struct ethtool_ops ieee80211_ethtool_ops = {
+ 	.set_ringparam = ieee80211_set_ringparam,
+ 	.get_strings = ieee80211_get_strings,
+ 	.get_ethtool_stats = ieee80211_get_stats,
++	.get_ethtool_stats2 = ieee80211_get_stats2,
+ 	.get_sset_count = ieee80211_get_sset_count,
+ };
+-- 
+2.4.11
 
-Brian
 
 _______________________________________________
 ath10k mailing list
