@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8oK6-0006qO-Oj
- for ath10k@lists.infradead.org; Wed, 18 Apr 2018 14:44:41 +0000
-Received: by mail-wr0-x229.google.com with SMTP id v24-v6so5562306wra.8
- for <ath10k@lists.infradead.org>; Wed, 18 Apr 2018 07:44:28 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
-References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
- <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
- <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
- <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
- <87604oodt4.fsf@kamboji.qca.qualcomm.com>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5AD759C7.2070104@broadcom.com>
-Date: Wed, 18 Apr 2018 16:44:23 +0200
+ id 1f8qAD-0004HA-4j
+ for ath10k@lists.infradead.org; Wed, 18 Apr 2018 16:42:34 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
+ NIC.
+References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
+Date: Wed, 18 Apr 2018 19:42:18 +0300
+In-Reply-To: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com> (Ben
+ Greear's message of "Wed, 21 Mar 2018 14:59:33 -0700")
+Message-ID: <87vacompp1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87604oodt4.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +20,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, govinds@codeaurora.org
-Cc: pillair@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 4/18/2018 3:16 PM, Kalle Valo wrote:
-> (fixing top posting)
+Ben Greear <greearb@candelatech.com> writes:
+
+> It seems the upstream board-2.bin file for 9984 does not yet include
+> support for WLE1216V5-20 (or possibly it does and OpenWRT grabs the
+> wrong one?).
 >
-> govinds@codeaurora.org writes:
+> I'm attaching the board file for this NIC and for another one which I
+> have not yet tested. I received these from Compex and have tested the
+> bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin file on the
+> WLE1216V5-20
 >
->> On 2018-04-18 12:36, Sebastian Gottschall wrote:
->>> from my point of view powersave should be optional and not forced.
->>>
->>> consider :
->>> iw dev <devname> set power_save on/off
->>>
->>> so there is already a config option made for that purpose,
->>
->> Thanks Sebastian for your review. Agree this should not be forced with
->> in driver.
->>
->> I will check if i can set the idle ps at the end of
->> ath10k_mac_vif_setup_ps by checking arvif->ps.
->> I will update the patch accordingly.
->
-> So what power save is this exactly? I assumed it's some bus level power
-> save (turning of clocks etc) but is it actually 802.11 power save?
+> Please add these into the official board-2.bin for 9984.
 
-I also suspected bus level power save and I would say runtime-pm 
-framework should be considered for that.
+Are these the actual board names I should use:
 
-Regards,
-Arend
+bus=pci,bmi-chip-id=0,bmi-board-id=31
+bus=pci,bmi-chip-id=0,bmi-board-id=30
 
+In the attached filenames you have the -compex suffix but I don't think
+I should use those:
 
+[2. application/x-macbinary; bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin]...
+[3. application/x-macbinary; bus=pci,bmi-chip-id=0,bmi-board-id=30-compex.bin]...
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
