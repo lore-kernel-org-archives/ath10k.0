@@ -1,12 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8cEN-0001pE-2o
- for ath10k@lists.infradead.org; Wed, 18 Apr 2018 01:49:58 +0000
-From: greearb@candelatech.com
-Subject: [PATCH 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
-Date: Tue, 17 Apr 2018 18:49:34 -0700
-Message-Id: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
+Received: from mx3-rdu2.redhat.com ([66.187.233.73] helo=mx1.redhat.com)
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f8cx5-0000vo-J1
+ for ath10k@lists.infradead.org; Wed, 18 Apr 2018 02:36:09 +0000
+Message-ID: <c4f3d20e8c16c8bf8721f0a50fb809781b30b3f7.camel@redhat.com>
+Subject: Re: [PATCH 2/2] ath10k: support MAC address randomization in scan
+From: Dan Williams <dcbw@redhat.com>
+Date: Tue, 17 Apr 2018 21:35:36 -0500
+In-Reply-To: <CA+ASDXOoxMyTq2CVnUwvN1LBWj1Y9wpsRPKuM0tVzA80sDYG-w@mail.gmail.com>
+References: <1522379640-6442-1-git-send-email-cjhuang@codeaurora.org>
+ <1522379640-6442-3-git-send-email-cjhuang@codeaurora.org>
+ <20180412205954.GA34456@rodete-desktop-imager.corp.google.com>
+ <e16557d0891352ae0b83902faee97023@codeaurora.org>
+ <877epbs5v7.fsf@kamboji.qca.qualcomm.com> <5AD11D7C.1030603@broadcom.com>
+ <242be71eb87140c9560163c4000255b2@codeaurora.org>
+ <8736zvqtcw.fsf@kamboji.qca.qualcomm.com>
+ <20180417002854.GA186697@rodete-desktop-imager.corp.google.com>
+ <5AD5AEB5.1040808@broadcom.com>
+ <20180417160715.GA255263@rodete-desktop-imager.corp.google.com>
+ <5AD66BD9.4000706@broadcom.com>
+ <CA+ASDXOoxMyTq2CVnUwvN1LBWj1Y9wpsRPKuM0tVzA80sDYG-w@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,172 +29,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: netdev@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>, Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc: cjhuang@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Ben Greear <greearb@candelatech.com>
+On Tue, 2018-04-17 at 15:26 -0700, Brian Norris wrote:
+> On Tue, Apr 17, 2018 at 2:49 PM, Arend van Spriel
+> <arend.vanspriel@broadcom.com> wrote:
+> > On 4/17/2018 6:07 PM, Brian Norris wrote:
+> > > On Tue, Apr 17, 2018 at 10:22:13AM +0200, Arend van Spriel wrote:
+> > > > I believe checking command support is not really recommended.
+> > > > Instead, you
+> > > > better check NL80211_ATTR_SCHED_SCAN_MAX_REQS being non-zero
+> > > > (since kernel
+> > > > 4.12 that is).
+> > > 
+> > > 
+> > > Why not? Command support checking is what wpa_supplicant is
+> > > doing.
+> > 
+> > 
+> > That's not really a good argument. A couple (or more) years ago
+> > wpa_supplicant was not doing nl80211 but wext and some other using
+> > driver private ioctls, but that did not make it the best approach.
+> 
+> I see what you're saying (though your comparison doesn't seem that
+> fair either; private ioctls are nothing like a well-defined nl80211
+> support list), and I'm totally good on looking at the new flag
+> eventually. But you still haven't answered my question ("why not?").
+> Is there a problem with the "supported commands" list?
+> 
+> > The START_SCHED_SCAN command is indeed still provided to user-
+> > space:
+> 
+> And as I see it, it probably needs to be for essentially forever. Or
+> at least a significant amount of time after wpa_supplicant stops
+> relying on it. (Hint: it's still using it today, with no reference to
+> NL80211_ATTR_SCHED_SCAN_MAX_REQS.) There's a reason the kernel has
+> ABI
+> guarantees. I suspect you only get a chance to rewrite the world
+> (WEXT
+> -> nl80211) a few times in the life of kernel ABIs.
 
-This is similar to ETHTOOL_GSTATS, but it allows you to specify
-flags.  These flags can be used by the driver to decrease the
-amount of stats refreshed.  In particular, this helps with ath10k
-since getting the firmware stats can be slow.
+It sometimes feels like wpa_supplicant gets treated as a static entity
+that can never be changed.  In fact, send a patch to Jouni implementing
+the best practice, with a fallback to preserve compat for old kernels,
+and I'm sure he'd entertain it.  Just because the supplicant does
+something a certain way, doesn't mean it's the *best* way, but it too
+evolves.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- include/linux/ethtool.h      | 12 ++++++++++++
- include/uapi/linux/ethtool.h | 10 ++++++++++
- net/core/ethtool.c           | 40 +++++++++++++++++++++++++++++++++++-----
- 3 files changed, 57 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index ebe4181..a4aa11f 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -243,6 +243,15 @@ bool ethtool_convert_link_mode_to_legacy_u32(u32 *legacy_u32,
-  * @get_ethtool_stats: Return extended statistics about the device.
-  *	This is only useful if the device maintains statistics not
-  *	included in &struct rtnl_link_stats64.
-+ * @get_ethtool_stats2: Return extended statistics about the device.
-+ *	This is only useful if the device maintains statistics not
-+ *	included in &struct rtnl_link_stats64.
-+ *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
-+ *      0x1 (ETHTOOL_GS2_SKIP_FW) means skip firmware stats.
-+ *      Other flags are reserved for now.
-+ *      Same number of stats will be returned, but some of them might
-+ *      not be as accurate/refreshed.  This is to allow not querying
-+ *      firmware or other expensive-to-read stats, for instance.
-  * @begin: Function to be called before any other operation.  Returns a
-  *	negative error code or zero.
-  * @complete: Function to be called after any other operation except
-@@ -355,6 +364,9 @@ struct ethtool_ops {
- 	int	(*set_phys_id)(struct net_device *, enum ethtool_phys_id_state);
- 	void	(*get_ethtool_stats)(struct net_device *,
- 				     struct ethtool_stats *, u64 *);
-+	void	(*get_ethtool_stats2)(struct net_device *dev,
-+				      struct ethtool_stats *gstats, u64 *data,
-+				      u32 flags);
- 	int	(*begin)(struct net_device *);
- 	void	(*complete)(struct net_device *);
- 	u32	(*get_priv_flags)(struct net_device *);
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index 4ca65b5..1c74f3e 100644
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -1396,11 +1396,21 @@ enum ethtool_fec_config_bits {
- #define ETHTOOL_PHY_STUNABLE	0x0000004f /* Set PHY tunable configuration */
- #define ETHTOOL_GFECPARAM	0x00000050 /* Get FEC settings */
- #define ETHTOOL_SFECPARAM	0x00000051 /* Set FEC settings */
-+#define ETHTOOL_GSTATS2		0x00000052 /* get NIC-specific statistics
-+					    * with ability to specify flags.
-+					    * See ETHTOOL_GS2* below.
-+					    */
- 
- /* compatibility with older code */
- #define SPARC_ETH_GSET		ETHTOOL_GSET
- #define SPARC_ETH_SSET		ETHTOOL_SSET
- 
-+/* GSTATS2 flags */
-+#define ETHTOOL_GS2_SKIP_NONE (0)    /* default is to update all stats */
-+#define ETHTOOL_GS2_SKIP_FW   (1<<0) /* Skip reading stats that probe firmware,
-+				      * and thus are slow/expensive.
-+				      */
-+
- /* Link mode bit indices */
- enum ethtool_link_mode_bit_indices {
- 	ETHTOOL_LINK_MODE_10baseT_Half_BIT	= 0,
-diff --git a/net/core/ethtool.c b/net/core/ethtool.c
-index 03416e6..6ec3413 100644
---- a/net/core/ethtool.c
-+++ b/net/core/ethtool.c
-@@ -1952,16 +1952,14 @@ static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
- 	return rc;
- }
- 
--static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
-+static int _ethtool_get_stats(struct net_device *dev, void __user *useraddr,
-+			      u32 flags)
- {
- 	struct ethtool_stats stats;
- 	const struct ethtool_ops *ops = dev->ethtool_ops;
- 	u64 *data;
- 	int ret, n_stats;
- 
--	if (!ops->get_ethtool_stats || !ops->get_sset_count)
--		return -EOPNOTSUPP;
--
- 	n_stats = ops->get_sset_count(dev, ETH_SS_STATS);
- 	if (n_stats < 0)
- 		return n_stats;
-@@ -1976,7 +1974,10 @@ static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
- 	if (n_stats && !data)
- 		return -ENOMEM;
- 
--	ops->get_ethtool_stats(dev, &stats, data);
-+	if (flags != ETHTOOL_GS2_SKIP_NONE)
-+		ops->get_ethtool_stats2(dev, &stats, data, flags);
-+	else
-+		ops->get_ethtool_stats(dev, &stats, data);
- 
- 	ret = -EFAULT;
- 	if (copy_to_user(useraddr, &stats, sizeof(stats)))
-@@ -1991,6 +1992,31 @@ static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
- 	return ret;
- }
- 
-+static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
-+{
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+
-+	if (!ops->get_ethtool_stats || !ops->get_sset_count)
-+		return -EOPNOTSUPP;
-+	return _ethtool_get_stats(dev, useraddr, ETHTOOL_GS2_SKIP_NONE);
-+}
-+
-+static int ethtool_get_stats2(struct net_device *dev, void __user *useraddr)
-+{
-+	struct ethtool_stats stats;
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+	u32 flags = 0;
-+
-+	if (!ops->get_ethtool_stats2 || !ops->get_sset_count)
-+		return -EOPNOTSUPP;
-+
-+	if (copy_from_user(&stats, useraddr, sizeof(stats)))
-+		return -EFAULT;
-+
-+	flags = stats.n_stats;
-+	return _ethtool_get_stats(dev, useraddr, flags);
-+}
-+
- static int ethtool_get_phy_stats(struct net_device *dev, void __user *useraddr)
- {
- 	struct ethtool_stats stats;
-@@ -2632,6 +2658,7 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
- 	case ETHTOOL_GSSET_INFO:
- 	case ETHTOOL_GSTRINGS:
- 	case ETHTOOL_GSTATS:
-+	case ETHTOOL_GSTATS2:
- 	case ETHTOOL_GPHYSTATS:
- 	case ETHTOOL_GTSO:
- 	case ETHTOOL_GPERMADDR:
-@@ -2742,6 +2769,9 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
- 	case ETHTOOL_GSTATS:
- 		rc = ethtool_get_stats(dev, useraddr);
- 		break;
-+	case ETHTOOL_GSTATS2:
-+		rc = ethtool_get_stats2(dev, useraddr);
-+		break;
- 	case ETHTOOL_GPERMADDR:
- 		rc = ethtool_get_perm_addr(dev, useraddr);
- 		break;
--- 
-2.4.11
-
+Dan
 
 _______________________________________________
 ath10k mailing list
