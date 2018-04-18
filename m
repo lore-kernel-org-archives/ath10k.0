@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8ubj-0004Ez-9I
- for ath10k@lists.infradead.org; Wed, 18 Apr 2018 21:27:16 +0000
-Message-ID: <1524086817.3024.9.camel@sipsolutions.net>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f8uzX-00057o-VI
+ for ath10k@lists.infradead.org; Wed, 18 Apr 2018 21:51:53 +0000
 Subject: Re: [PATCH 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 18 Apr 2018 23:26:57 +0200
-In-Reply-To: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
- (sfid-20180418_034951_095176_E2F46A6C)
 References: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
- (sfid-20180418_034951_095176_E2F46A6C)
-Mime-Version: 1.0
+ <1524086817.3024.9.camel@sipsolutions.net>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <f43d7ee4-7f27-b145-125e-32dbc31a27f1@candelatech.com>
+Date: Wed, 18 Apr 2018 14:51:36 -0700
+MIME-Version: 1.0
+In-Reply-To: <1524086817.3024.9.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +19,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com, netdev@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, netdev@vger.kernel.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tue, 2018-04-17 at 18:49 -0700, greearb@candelatech.com wrote:
-> 
-> + * @get_ethtool_stats2: Return extended statistics about the device.
-> + *	This is only useful if the device maintains statistics not
-> + *	included in &struct rtnl_link_stats64.
-> + *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
-> + *      0x1 (ETHTOOL_GS2_SKIP_FW) means skip firmware stats.
-> + *      Other flags are reserved for now.
+On 04/18/2018 02:26 PM, Johannes Berg wrote:
+> On Tue, 2018-04-17 at 18:49 -0700, greearb@candelatech.com wrote:
+>>
+>> + * @get_ethtool_stats2: Return extended statistics about the device.
+>> + *	This is only useful if the device maintains statistics not
+>> + *	included in &struct rtnl_link_stats64.
+>> + *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
+>> + *      0x1 (ETHTOOL_GS2_SKIP_FW) means skip firmware stats.
+>> + *      Other flags are reserved for now.
+>
+> It'd be pretty hard to know which flags are firmware stats?
 
-It'd be pretty hard to know which flags are firmware stats?
+Yes, it is, but ethtool stats are difficult to understand in a generic
+manner anyway, so someone using them is already likely aware of low-level
+details of the driver(s) they are using.
 
-Anyway, there's no way I'm going to take this patch, so you need to
-float it on netdev first (best CC us here) and get it applied there
-before we can do anything on the wifi side.
+In my case, I have lots of virtual stations (or APs), and I want stats
+for them as well as for the 'radio', so I would probe the first vdev with
+flags of 'skip-none' to get all stats, including radio (firmware) stats.
 
-johannes
+And then the rest I would just probe the non-firmware stats.
+
+To be honest, I was slightly amused that anyone expressed interest in
+this patch originally, but maybe other people have similar use case
+and/or drivers with slow-to-acquire stats.
+
+> Anyway, there's no way I'm going to take this patch, so you need to
+> float it on netdev first (best CC us here) and get it applied there
+> before we can do anything on the wifi side.
+
+I posted the patches to netdev, ath10k and linux-wireless.  If I had only
+posted them individually to different lists I figure I'd be hearing about how
+the netdev patch is useless because it has no driver support, etc.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
