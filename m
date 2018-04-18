@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8qJd-0000Oi-Bu
- for ath10k@lists.infradead.org; Wed, 18 Apr 2018 16:52:19 +0000
-Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
- NIC.
-References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
- <87vacompp1.fsf@kamboji.qca.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <3cf55d70-0f63-6aeb-ec6a-3b52f4871d60@candelatech.com>
-Date: Wed, 18 Apr 2018 09:52:01 -0700
+Received: from alexa-out-ams-01.qualcomm.com ([185.23.61.162])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f8qNx-0002Ln-Re
+ for ath10k@lists.infradead.org; Wed, 18 Apr 2018 16:56:47 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Meraki MR33 specific BDFs
+Date: Wed, 18 Apr 2018 16:56:23 +0000
+Message-ID: <87o9igmp1l.fsf@kamboji.qca.qualcomm.com>
+References: <1756157.Q00gyP1f8V@bentobox>
+In-Reply-To: <1756157.Q00gyP1f8V@bentobox> (Sven Eckelmann's message of "Tue, 
+ 17 Apr 2018 10:15:29 +0200")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <87vacompp1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +20,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Chris Blake <chrisrblake93@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 04/18/2018 09:42 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
->
->> It seems the upstream board-2.bin file for 9984 does not yet include
->> support for WLE1216V5-20 (or possibly it does and OpenWRT grabs the
->> wrong one?).
->>
->> I'm attaching the board file for this NIC and for another one which I
->> have not yet tested. I received these from Compex and have tested the
->> bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin file on the
->> WLE1216V5-20
->>
->> Please add these into the official board-2.bin for 9984.
->
-> Are these the actual board names I should use:
->
-> bus=pci,bmi-chip-id=0,bmi-board-id=31
-> bus=pci,bmi-chip-id=0,bmi-board-id=30
+Sven Eckelmann <sven.eckelmann@openmesh.com> writes:
 
-Yes, I think so.  If you want to send me the bin file your tools create
-before you commit, I will be happy to load it on my system with the compex
-NIC and make sure it works as expected.
-
-Thanks,
-Ben
-
+> The support for this device was added a while ago to OpenWrt. This AP requires 
+> two special BDFs to get the Wi-Fi PHYs working (correctly). The  bmi-board-
+> id='s would clash with one of the the IPQ401X AP-DK boards because QCA doesn't 
+> provide special IDs for customers and seems to use the AP-DK board-ids in the 
+> wifi firmware to change its behavior.
 >
-> In the attached filenames you have the -compex suffix but I don't think
-> I should use those:
+> Now to the questions from the wiki page [1]:
 >
-> [2. application/x-macbinary; bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin]...
-> [3. application/x-macbinary; bus=pci,bmi-chip-id=0,bmi-board-id=30-compex.bin]...
+> * description for what hardware this is:
 >
+>   - it is a IPQ4029 based board
+>   - one QCA40xx radio is used as 2.4GHz radio
+>   - one QCA40xx radio is used as 5GHz radio
+>
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
+>
+>   - Chris didn't include this info in the OpenWrt commit (maybe he can add it
+>     here)
+>   - most likely taken from stock firmware image
+>
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>
+>   - QCA4019 hw1.0
+>
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Meraki-MR33
+>       sha256sum:
+>       44e8e733d5fc9bd747520d492c776a6fa4cd7effed69098aeb6f9d437785ebad
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Meraki-MR33
+>       sha256sum:
+>       e816565130fae895cfa0c1760cfb47703f1bc5f24ce87922f86e94d4e2b6ccd2
+>
+> * attach the actual board file (board.bin)
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
 
+I added these now, please check that I did it correctly. It's very easy
+for me to make a mistake.
+
+https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
