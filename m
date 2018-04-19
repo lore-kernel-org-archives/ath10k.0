@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f96X1-0002J3-5f
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 10:11:13 +0000
+ id 1f96YL-0002VH-EH
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 10:12:34 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
- NIC.
-References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
- <87fu3rms5k.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 19 Apr 2018 13:10:53 +0300
-In-Reply-To: <87fu3rms5k.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Thu, 19 Apr 2018 10:01:29 +0000")
-Message-ID: <878t9jmrpu.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0/QCA9888 hw2.0: Add OpenMesh A62
+ specific BDFs
+References: <3706510.gbe5VexPLA@bentobox>
+Date: Thu, 19 Apr 2018 13:12:19 +0300
+In-Reply-To: <3706510.gbe5VexPLA@bentobox> (Sven Eckelmann's message of "Thu, 
+ 29 Mar 2018 12:11:02 +0200")
+Message-ID: <874lk7mrng.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,30 +24,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Sven Eckelmann <sven.eckelmann@openmesh.com> writes:
 
-> Ben Greear <greearb@candelatech.com> writes:
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 >
->> It seems the upstream board-2.bin file for 9984 does not yet include
->> support for WLE1216V5-20
->> (or possibly it does and OpenWRT grabs the wrong one?).
->>
->> I'm attaching the board file for this NIC and for another one which
->> I have not yet tested.  I received these from Compex and have
->> tested the bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin file on the WLE1216V5-20
->>
->> Please add these into the official board-2.bin for 9984.
+>   - QCA4019 hw1.0
 >
-> Added, but please check carefully that I didn't do any mistakes.
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=OM-A62
+>       sha256sum:
+>       df5dc5a55506e2a58dcb0b8542f40226d3bfd530a6fc0bc90c728ab18a57144c
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=OM-A62
+>       sha256sum:
+>       96c3d044fe26522c75313c210ace6f85d5bdcdbce3350214d92467501a01fb88
 >
-> https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
+>   - QCA9888 hw2.0
+>
+>     + bus=pci,bmi-chip-id=0,bmi-board-id=16,variant=OM-A62
+>       sha256sum:
+>       c85b23763e748abeb7e8c42e243dab1fc58d1bff94111e4058bdf31ddb14cefa
 
-That's obviously the wrong commit, this is the correct one:
+BTW, in the future md5sum would be more useful as ath10k-bdencoder
+--info prints that. I added that to the wiki as well:
 
-https://github.com/kvalo/ath10k-firmware/commit/b1dd338046a385743c483a47e8eef276adaba0c0
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
 
 -- 
 Kalle Valo
