@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x233.google.com ([2a00:1450:400c:c0c::233])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9CQC-0004cF-60
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 16:28:34 +0000
-Received: by mail-wr0-x233.google.com with SMTP id o15-v6so15661774wro.11
- for <ath10k@lists.infradead.org>; Thu, 19 Apr 2018 09:28:21 -0700 (PDT)
-From: Christian Lamparter <chunkeey@gmail.com>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0/QCA9888 hw2.0: Add OpenMesh A62
- specific BDFs
-Date: Thu, 19 Apr 2018 18:28:18 +0200
-Message-ID: <2999410.7elPOruJhZ@debian64>
-In-Reply-To: <4212302.P7lZVe8mpY@bentobox>
-References: <3706510.gbe5VexPLA@bentobox>
- <87muxzl10g.fsf@kamboji.qca.qualcomm.com> <4212302.P7lZVe8mpY@bentobox>
+ id 1f9CYC-0001ry-Qw
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 16:37:18 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+ <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
+ <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
+ <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
+ <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+ <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
+Date: Thu, 19 Apr 2018 19:36:33 +0300
+In-Reply-To: <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
+ (govinds@codeaurora.org's message of "Thu, 19 Apr 2018 10:02:47
+ +0530")
+Message-ID: <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,47 +29,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Robert Marko <robimarko@gmail.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>
+To: govinds@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, arend.vanspriel@broadcom.com, pillair@codeaurora.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
 
-On Donnerstag, 19. April 2018 16:47:22 CEST Sven Eckelmann wrote:
-> On Donnerstag, 19. April 2018 14:33:04 CEST Kalle Valo wrote:
-> > >> Unfortunately, this is wrong. Please check the mail again. The 
-> > >> bus=pci,bmi-chip-id=0,bmi-board-id=16,variant=OM-A62 BDF is for the QCA9888 
-> > >> hw2.0 board-2.bin and not the QCA4019 hw1.0.
-> > >
-> > > Thanks for noticing, I'll fix that. But please separate different hw to
-> > > different mails, this way I can process them one hw version at the time.
-> > 
-> > Fixed now, please double check:
-> > 
-> > https://github.com/kvalo/ath10k-firmware/commit/a315471a5f4c9890e2ed1bdb008b7aae5c885ae0
-> > 
-> > https://github.com/kvalo/ath10k-firmware/commit/c3604f7d3ff61d1905aac644c721372f3c2a9663
-> 
-> 
-> Ok, will use md5sum and split my submission based on the wifi hw.
-> 
-> The board-2.bin's look fine now.
-> 
-> pending
-> =======
-> 
-> * Asus RT-AC58U
-> 
->   - submitted before the guide was published
->   - http://lists.infradead.org/pipermail/ath10k/2017-March/009454.html
-I made a v2 back in 2018 January.
+govinds@codeaurora.org writes:
 
-http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html
+> On 2018-04-18 18:46, Kalle Valo wrote:
+>> (fixing top posting)
+>>
+>> govinds@codeaurora.org writes:
+>>
+>>> On 2018-04-18 12:36, Sebastian Gottschall wrote:
+>>>> from my point of view powersave should be optional and not forced.
+>>>>
+>>>> consider :
+>>>> iw dev <devname> set power_save on/off
+>>>>
+>>>> so there is already a config option made for that purpose,
+>>>
+>>> Thanks Sebastian for your review. Agree this should not be forced with
+>>> in driver.
+>>>
+>>> I will check if i can set the idle ps at the end of
+>>> ath10k_mac_vif_setup_ps by checking arvif->ps.
+>>> I will update the patch accordingly.
+>>
+>> So what power save is this exactly? I assumed it's some bus level power
+>> save (turning of clocks etc) but is it actually 802.11 power save?
+>
+> Yes this is WIFI chip set level power-save(based on idleness) and not
+> related to protocol power save. FW will turn off/scale down the
+> resources(clock/rails) based on opportunity(when ever idle mode is
+> detected). This power save is mostly done in disconnected state. I am
+> not really sure when framework/user-space triggers power-save
+> config(iw dev <devname> set power_save on/off). Then doing this from
+> user-space will be unnecessarily toggling this config or may not be
+> setting at disconnected state.
 
-This was necessary since ASUS updated the board file.
+I think that 'set power_save' commands affects struct
+ieee80211_bss_conf::ps parameter and I don't think it should be used in
+this case. We already have ath10k_config_ps() for 802.11 level of power
+saving.
 
-Regards,
-Christian
+Arend again proposed runtime-pm with which I'm not very familiar. But
+why would we want to disable this? Doesn't it make sense to have this
+feature always enabled to save power? wcn3990 is a chip for a mobile
+device anyway.
 
-
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
