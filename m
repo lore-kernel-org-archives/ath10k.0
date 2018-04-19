@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
- helo=sipsolutions.net)
+Received: from mail-wr0-x231.google.com ([2a00:1450:400c:c0c::231])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f93DT-0004z8-0V
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 06:38:48 +0000
-Message-ID: <1524119910.3024.12.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 19 Apr 2018 08:38:30 +0200
-In-Reply-To: <f43d7ee4-7f27-b145-125e-32dbc31a27f1@candelatech.com>
-References: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
- <1524086817.3024.9.camel@sipsolutions.net>
- <f43d7ee4-7f27-b145-125e-32dbc31a27f1@candelatech.com>
-Mime-Version: 1.0
+ id 1f93FM-0006Pl-Br
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 06:40:46 +0000
+Received: by mail-wr0-x231.google.com with SMTP id u11-v6so10775249wri.12
+ for <ath10k@lists.infradead.org>; Wed, 18 Apr 2018 23:40:33 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Meraki MR33 specific BDFs
+Date: Thu, 19 Apr 2018 08:40:30 +0200
+Message-ID: <11559907.k6pzjtUMWa@bentobox>
+In-Reply-To: <87o9igmp1l.fsf@kamboji.qca.qualcomm.com>
+References: <1756157.Q00gyP1f8V@bentobox>
+ <87o9igmp1l.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +21,114 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8350855830483755565=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, netdev@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Chris Blake <chrisrblake93@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Wed, 2018-04-18 at 14:51 -0700, Ben Greear wrote:
+--===============8350855830483755565==
+Content-Type: multipart/signed; boundary="nextPart2000662.J9xSOKTJ66"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-> > It'd be pretty hard to know which flags are firmware stats?
+--nextPart2000662.J9xSOKTJ66
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Mittwoch, 18. April 2018 16:56:23 CEST Kalle Valo wrote:
+[...]
+> I added these now, please check that I did it correctly. It's very easy
+> for me to make a mistake.
 > 
-> Yes, it is, but ethtool stats are difficult to understand in a generic
-> manner anyway, so someone using them is already likely aware of low-level
-> details of the driver(s) they are using.
+> https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
 
-Right. Come to think of it though,
+Thanks, this looks exactly like requested. The change looks good and I will 
+prepare the OpenWrt change.
 
-> + * @get_ethtool_stats2: Return extended statistics about the device.
-> + *     This is only useful if the device maintains statistics not
-> + *     included in &struct rtnl_link_stats64.
-> + *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
-> + *      0x1 (ETHTOOL_GS2_SKIP_FW) means skip firmware stats.
-> + *      Other flags are reserved for now.
-> + *      Same number of stats will be returned, but some of them might
-> + *      not be as accurate/refreshed.  This is to allow not querying
-> + *      firmware or other expensive-to-read stats, for instance.
+pending
+=======
 
-"skip" vs. "don't refresh" is a bit ambiguous - I'd argue better to
-either really skip and not return the non-refreshed ones (also helps
-with the identifying), or rename the flag.
+* Asus RT-AC58U
 
-Also, wrt. the rest of the patch, I'd argue that it'd be worthwhile to
-write the spatch and just add the flags argument to "get_ethtool_stats"
-instead of adding a separate method - internally to the kernel it's not
-that hard to change.
+  - submitted before the guide was published
+  - http://lists.infradead.org/pipermail/ath10k/2017-March/009454.html
 
-> I posted the patches to netdev, ath10k and linux-wireless.  If I had only
-> posted them individually to different lists I figure I'd be hearing about how
-> the netdev patch is useless because it has no driver support, etc.
+* Netgear EX6100v2/EX6150v2
 
-Sure. I missed netdev, perhaps because it was in To, or more likely
-because I was too sleepy. Sorry for the noise.
+  - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
 
-johannes
+* 8devices Jalapeno
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
+
+* Compex WLE1216V5-20 + Compex ?
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/010998.html
+
+* GL.iNet GL-B1300
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/011058.html
+
+* OpenMesh A62
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/011081.html
+
+* AVM FRITZ!Box 4040
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-April/011178.html
+
+
+
+accepted
+========
+
+* OpenMesh A42
+
+  - http://lists.infradead.org/pipermail/ath10k/2017-November/010470.html
+  - http://lists.infradead.org/pipermail/ath10k/2017-December/010543.html
+  - https://github.com/kvalo/ath10k-firmware/commit/5cd2bacd8e22217335e539b416d0cb8d59f8e312
+
+* Meraki MR33
+  - http://lists.infradead.org/pipermail/ath10k/2018-April/011179.html
+  - https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
+
+
+Kind regards,
+	Sven
+--nextPart2000662.J9xSOKTJ66
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlrYOd4ACgkQXYcKB8Em
+e0ZHUg//XgRBUANE+AxCnmzfbg5oiRsBhbD7P2LXZq4ks+RXqYH5K3GSpevMVMUX
+++CSAHNpatSQ7qyq3FDRSFPGwvpbbg5WjHVtK/Bih+dR0aGpJHkeZzEMY3j2RTYh
+4nmcRYrDiBVw56U/ppMQ9LyaFhE/XYGDmonhIVrslhBP0IuZsjYqHkBcaFJXAD1a
+baDrRx97fN8byVevUI5ZduTIiFPhhM4fqyvpq3M22ZBd5z1J2icMmFilcbcMhJky
+v9PYRMgcH4CeeoDYlLXy0DjpREA+8FRnEfiIOF08J19MryhFq8aUQQ78if0jLep+
+t4yWGG1YPRrkPaVyF/S8lJ8nNXGRbgoKyNH4rNt0mAqFlwHGulympoOBG2t9uXmd
+WUMA45TilXCmCVk5yi+qg6+fbgVJSnTlZ7E6Al5WqFmktg9L+U8r8dVAqTsvVfEa
+W5AvjY1W5UifN5PHF+oVpR9E4hlq3pjUrnm5F7Ko5a1nSEHP1xMd5UPBwFQ6VnnN
+5WzW6qR0LY5jI58ZLR9UDnJnvbN6UIdfFI9M9oFvTze8yGq9jaeudWdHmHle8HF+
+j5PaWMuG+bUePqq2gNTiYw7lXuKHcS+Deh0Vu7208g6eA6Y2fBGFY8PQllGzlxL/
+BOfJZQ+Qa5/N76A5Zphyiu2NgPpXgrEKyYR6+u55peTnRru7/iw=
+=HjKA
+-----END PGP SIGNATURE-----
+
+--nextPart2000662.J9xSOKTJ66--
+
+
+
+--===============8350855830483755565==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============8350855830483755565==--
