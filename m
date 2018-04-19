@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
- helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9BSt-0008DP-Am
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 15:27:17 +0000
-Message-ID: <1524151617.3024.25.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 19 Apr 2018 17:26:57 +0200
-In-Reply-To: <173c5f98-36bc-2e52-1e64-3a5f89008d46@candelatech.com>
-References: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
- <1524086817.3024.9.camel@sipsolutions.net>
- <f43d7ee4-7f27-b145-125e-32dbc31a27f1@candelatech.com>
- <1524119910.3024.12.camel@sipsolutions.net>
- <173c5f98-36bc-2e52-1e64-3a5f89008d46@candelatech.com>
-Mime-Version: 1.0
+ id 1f9Bnf-0000fV-55
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 15:49:07 +0000
+MIME-Version: 1.0
+Subject: Re: [PATCHv3] ath10k: Add tx ack signal support for management frames
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1522316915-27518-1-git-send-email-vnaralas@codeaurora.org>
+References: <1522316915-27518-1-git-send-email-vnaralas@codeaurora.org>
+Message-Id: <20180419154831.5584E60AE0@smtp.codeaurora.org>
+Date: Thu, 19 Apr 2018 15:48:31 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, netdev@vger.kernel.org
+To: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, 2018-04-19 at 08:25 -0700, Ben Greear wrote:
+Venkateswara Naralasetty <vnaralas@codeaurora.org> wrote:
+
+> This patch add support to get RSSI from acknowledgment
+> frames for transmitted management frames.
 > 
-> In order to efficiently parse lots of stats over and over again, I probe
-> the stat names once on startup, map them to the variable I am trying to use
-> (since different drivers may have different names for the same basic stat),
-> and then I store the stat index.
+> hardware_used: QCA4019, QCA9984.
+> firmware version: 10.4-3.5.3-00052.
 > 
-> On subsequent stat reads, I just grab stats and go right to the index to
-> store the stat.
-> 
-> If the stats indexes change, that will complicate my logic quite a bit.
+> Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-That's a good point.
+Patch applied to ath-next branch of ath.git, thanks.
 
-> Maybe the flag could be called:  ETHTOOL_GS2_NO_REFRESH_FW ?
+235b9c427661 ath10k: Add tx ack signal support for management frames
 
-Sounds more to the point to me, yeah.
+-- 
+https://patchwork.kernel.org/patch/10314823/
 
-> > 
-> > Also, wrt. the rest of the patch, I'd argue that it'd be worthwhile to
-> > write the spatch and just add the flags argument to "get_ethtool_stats"
-> > instead of adding a separate method - internally to the kernel it's not
-> > that hard to change.
-> 
-> Maybe this could be in followup patches?  It's going to touch a lot of files,
-> and might be hell to get merged all at once, and I've never used spatch, so
-> just maybe someone else will volunteer that part :)
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-I guess you'll have to ask davem. :)
-
-johannes
 
 _______________________________________________
 ath10k mailing list
