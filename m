@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9Bu9-0002Bl-LR
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 15:55:28 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f9CGx-000653-4s
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 16:19:07 +0000
 MIME-Version: 1.0
-Subject: Re: [v2,01/13] ath10k: platform driver for WCN3990 SNOC WLAN module
+Subject: Re: [v2] ath10k: search all IEs for variant before falling back
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1521781424-24972-2-git-send-email-govinds@codeaurora.org>
-References: <1521781424-24972-2-git-send-email-govinds@codeaurora.org>
-Message-Id: <20180419155512.1E3E160A06@smtp.codeaurora.org>
-Date: Thu, 19 Apr 2018 15:55:12 +0000 (UTC)
+In-Reply-To: <1523630426-28577-1-git-send-email-kvalo@codeaurora.org>
+References: <1523630426-28577-1-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20180419161848.B8F416022B@smtp.codeaurora.org>
+Date: Thu, 19 Apr 2018 16:18:48 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +22,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Thomas Hebb <tommyhebb@gmail.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> WCN3990 is integrated 802.11ac chipset with SNOC
-> bus interface. Add snoc layer driver registration
-> and associated ops.
+> commit f2593cb1b291 ("ath10k: Search SMBIOS for OEM board file
+> extension") added a feature to ath10k that allows Board Data File
+> (BDF) conflicts between multiple devices that use the same device IDs
+> but have different calibration requirements to be resolved by allowing
+> a "variant" string to be stored in SMBIOS [and later device tree, added
+> by commit d06f26c5c8a4 ("ath10k: search DT for qcom,ath10k-calibration-
+> variant")] that gets appended to the ID stored in board-2.bin.
 > 
-> WCN3990 support is not yet complete as cold-boot
-> handshake is done using qmi(Qualcomm-MSM-Interface)
-> and qmi client support will be added once qmi framework
-> is available.
+> This original patch had a regression, however. Namely that devices with
+> a variant present in SMBIOS that didn't need custom BDFs could no longer
+> find the default BDF, which has no variant appended. The patch was
+> reverted and re-applied with a fix for this issue in commit 1657b8f84ed9
+> ("search SMBIOS for OEM board file extension").
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> But the fix to fall back to a default BDF introduced another issue: the
+> driver currently parses IEs in board-2.bin one by one, and for each one
+> it first checks to see if it matches the ID with the variant appended.
+> If it doesn't, it checks to see if it matches the "fallback" ID with no
+> variant. If a matching BDF is found at any point during this search, the
+> search is terminated and that BDF is used. The issue is that it's very
+> possible (and is currently the case for board-2.bin files present in the
+> ath10k-firmware repository) for the default BDF to occur in an earlier
+> IE than the variant-specific BDF. In this case, the current code will
+> happily choose the default BDF even though a better-matching BDF is
+> present later in the file.
+> 
+> This patch fixes the issue by first searching the entire file for the ID
+> with variant, and searching for the fallback ID only if that search
+> fails. It also includes some code cleanup in the area, as
+> ath10k_core_fetch_board_data_api_n() no longer does its own string
+> mangling to remove the variant from an ID, instead leaving that job to a
+> new flag passed to ath10k_core_create_board_name().
+> 
+> I've tested this patch on a QCA4019 and verified that the driver behaves
+> correctly for 1) both fallback and variant BDFs present, 2) only fallback
+> BDF present, and 3) no matching BDFs present.
+> 
+> Fixes: 1657b8f84ed9 ("ath10k: search SMBIOS for OEM board file extension")
+> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-13 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-17f5559e0da5 ath10k: platform driver for WCN3990 SNOC WLAN module
-c963a683e701 ath10k: add resource init and deinit for WCN3990
-a6e149a9ff03 ath10k: add hif start/stop methods for wcn3990 snoc layer
-b8c27e862118 ath10k: add HTC services for WCN3990
-84efe7f6ebc5 ath10k: map HTC services to tx/rx pipes for wcn3990
-0fa4fbe9b8cf ath10k: add hif power-up/power-down methods
-d390509bdf50 ath10k: add hif tx methods for wcn3990
-d915105231ca ath10k: add hif rx methods for wcn3990
-546d407c905b ath10k: modify hif tx paddr to dma_addr_t type
-140d1214ef55 ath10k: add support to get target info from hif ops
-ea66b12e63ac ath10k: check all CE for data if irq summary is not retained
-a6a793f98786 ath10k: vote for hardware resources for WCN3990
-ae316c4cbba2 dt: bindings: add bindings for wcn3990 wifi block
+c8489668065a ath10k: search all IEs for variant before falling back
 
 -- 
-https://patchwork.kernel.org/patch/10302661/
+https://patchwork.kernel.org/patch/10340241/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
