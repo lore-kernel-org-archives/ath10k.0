@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-ams-01.qualcomm.com ([185.23.61.162])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9BDw-0007l0-K0
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 15:11:52 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0/QCA9888 hw2.0: Add OpenMesh A62
- specific BDFs
-Date: Thu, 19 Apr 2018 15:11:21 +0000
-Message-ID: <87zi1zjko7.fsf@kamboji.qca.qualcomm.com>
-References: <3706510.gbe5VexPLA@bentobox>
- <87r2nbl1k8.fsf@kamboji.qca.qualcomm.com>
- <87muxzl10g.fsf@kamboji.qca.qualcomm.com>	<4212302.P7lZVe8mpY@bentobox>
-In-Reply-To: <4212302.P7lZVe8mpY@bentobox> (Sven Eckelmann's message of "Thu, 
- 19 Apr 2018 16:47:22 +0200")
-Content-Language: en-US
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f9BRj-00083n-2r
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 15:26:05 +0000
+Subject: Re: [PATCH 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
+References: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
+ <1524086817.3024.9.camel@sipsolutions.net>
+ <f43d7ee4-7f27-b145-125e-32dbc31a27f1@candelatech.com>
+ <1524119910.3024.12.camel@sipsolutions.net>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <173c5f98-36bc-2e52-1e64-3a5f89008d46@candelatech.com>
+Date: Thu, 19 Apr 2018 08:25:41 -0700
 MIME-Version: 1.0
+In-Reply-To: <1524119910.3024.12.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +21,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Robert Marko <robimarko@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>, netdev@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sven Eckelmann <sven.eckelmann@openmesh.com> writes:
 
-> On Donnerstag, 19. April 2018 14:33:04 CEST Kalle Valo wrote:
->> >> Unfortunately, this is wrong. Please check the mail again. The 
->> >> bus=pci,bmi-chip-id=0,bmi-board-id=16,variant=OM-A62 BDF is for the QCA9888 
->> >> hw2.0 board-2.bin and not the QCA4019 hw1.0.
->> >
->> > Thanks for noticing, I'll fix that. But please separate different hw to
->> > different mails, this way I can process them one hw version at the time.
->> 
->> Fixed now, please double check:
->> 
->> https://github.com/kvalo/ath10k-firmware/commit/a315471a5f4c9890e2ed1bdb008b7aae5c885ae0
->> 
->> https://github.com/kvalo/ath10k-firmware/commit/c3604f7d3ff61d1905aac644c721372f3c2a9663
->
->
-> Ok, will use md5sum and split my submission based on the wifi hw.
 
-BTW, I also updated the documentation about this:
+On 04/18/2018 11:38 PM, Johannes Berg wrote:
+> On Wed, 2018-04-18 at 14:51 -0700, Ben Greear wrote:
+>
+>>> It'd be pretty hard to know which flags are firmware stats?
+>>
+>> Yes, it is, but ethtool stats are difficult to understand in a generic
+>> manner anyway, so someone using them is already likely aware of low-level
+>> details of the driver(s) they are using.
+>
+> Right. Come to think of it though,
+>
+>> + * @get_ethtool_stats2: Return extended statistics about the device.
+>> + *     This is only useful if the device maintains statistics not
+>> + *     included in &struct rtnl_link_stats64.
+>> + *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
+>> + *      0x1 (ETHTOOL_GS2_SKIP_FW) means skip firmware stats.
+>> + *      Other flags are reserved for now.
+>> + *      Same number of stats will be returned, but some of them might
+>> + *      not be as accurate/refreshed.  This is to allow not querying
+>> + *      firmware or other expensive-to-read stats, for instance.
+>
+> "skip" vs. "don't refresh" is a bit ambiguous - I'd argue better to
+> either really skip and not return the non-refreshed ones (also helps
+> with the identifying), or rename the flag.
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
+In order to efficiently parse lots of stats over and over again, I probe
+the stat names once on startup, map them to the variable I am trying to use
+(since different drivers may have different names for the same basic stat),
+and then I store the stat index.
 
-> The board-2.bin's look fine now.
+On subsequent stat reads, I just grab stats and go right to the index to
+store the stat.
 
-Great, thanks for testing.
+If the stats indexes change, that will complicate my logic quite a bit.
 
-> pending
-> =======
->
-> * Asus RT-AC58U
->
->   - submitted before the guide was published
->   - http://lists.infradead.org/pipermail/ath10k/2017-March/009454.html
->
-> * Netgear EX6100v2/EX6150v2
->
->   - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
->
-> * 8devices Jalapeno
->
->   - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
+Maybe the flag could be called:  ETHTOOL_GS2_NO_REFRESH_FW ?
 
-Thanks for the list, it was really helpful. I think I have now added all
-pending board files, but please let me know if I missed anything.
+>
+> Also, wrt. the rest of the patch, I'd argue that it'd be worthwhile to
+> write the spatch and just add the flags argument to "get_ethtool_stats"
+> instead of adding a separate method - internally to the kernel it's not
+> that hard to change.
+
+Maybe this could be in followup patches?  It's going to touch a lot of files,
+and might be hell to get merged all at once, and I've never used spatch, so
+just maybe someone else will volunteer that part :)
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
