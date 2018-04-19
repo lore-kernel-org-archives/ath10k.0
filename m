@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9E8F-0002k6-G2
+ id 1f9E8F-0002jj-G3
  for ath10k@lists.infradead.org; Thu, 19 Apr 2018 18:18:10 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 2/3] mac80211:  Add support for ethtool gstats2 API.
-Date: Thu, 19 Apr 2018 11:17:42 -0700
-Message-Id: <1524161863-30860-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1524161863-30860-1-git-send-email-greearb@candelatech.com>
-References: <1524161863-30860-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
+Date: Thu, 19 Apr 2018 11:17:41 -0700
+Message-Id: <1524161863-30860-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,114 +25,164 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k
 
 From: Ben Greear <greearb@candelatech.com>
 
-This enables users to request fewer stats to be refreshed
-in cases where firmware does not need to be probed.
+This is similar to ETHTOOL_GSTATS, but it allows you to specify
+flags.  These flags can be used by the driver to decrease the
+amount of stats refreshed.  In particular, this helps with ath10k
+since getting the firmware stats can be slow.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
 
-v2:  No changes.
+v2:  Change flag names to ETHTOOL_GS_NO_REFRESH_FW,
+     ETHTOOL_GS2_REFRESH_ALL.
 
- include/net/mac80211.h    |  6 ++++++
- net/mac80211/driver-ops.h |  9 +++++++--
- net/mac80211/ethtool.c    | 18 +++++++++++++-----
- 3 files changed, 26 insertions(+), 7 deletions(-)
+ include/linux/ethtool.h      | 12 ++++++++++++
+ include/uapi/linux/ethtool.h | 11 +++++++++++
+ net/core/ethtool.c           | 40 +++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 58 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index d2279b2..4854f33 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -3361,6 +3361,8 @@ enum ieee80211_reconfig_type {
-  *
-  * @get_et_stats:  Ethtool API to get a set of u64 stats.
-  *
-+ * @get_et_stats2:  Ethtool API to get a set of u64 stats, with flags.
-+ *
-  * @get_et_strings:  Ethtool API to get a set of strings to describe stats
-  *	and perhaps other supported types of ethtool data-sets.
-  *
-@@ -3692,6 +3694,10 @@ struct ieee80211_ops {
- 	void	(*get_et_stats)(struct ieee80211_hw *hw,
- 				struct ieee80211_vif *vif,
- 				struct ethtool_stats *stats, u64 *data);
-+	void	(*get_et_stats2)(struct ieee80211_hw *hw,
-+				 struct ieee80211_vif *vif,
-+				 struct ethtool_stats *stats, u64 *data,
-+				 u32 flags);
- 	void	(*get_et_strings)(struct ieee80211_hw *hw,
- 				  struct ieee80211_vif *vif,
- 				  u32 sset, u8 *data);
-diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
-index 4d82fe7..519d2db 100644
---- a/net/mac80211/driver-ops.h
-+++ b/net/mac80211/driver-ops.h
-@@ -58,10 +58,15 @@ static inline void drv_get_et_strings(struct ieee80211_sub_if_data *sdata,
+diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
+index ebe4181..c90bc6f6 100644
+--- a/include/linux/ethtool.h
++++ b/include/linux/ethtool.h
+@@ -243,6 +243,15 @@ bool ethtool_convert_link_mode_to_legacy_u32(u32 *legacy_u32,
+  * @get_ethtool_stats: Return extended statistics about the device.
+  *	This is only useful if the device maintains statistics not
+  *	included in &struct rtnl_link_stats64.
++ * @get_ethtool_stats2: Return extended statistics about the device.
++ *	This is only useful if the device maintains statistics not
++ *	included in &struct rtnl_link_stats64.
++ *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
++ *      0x1 (ETHTOOL_GS2_NO_REFRESH_FW) means skip refreshing firmware stats.
++ *      Other flags are reserved for now.
++ *      Same number of stats will be returned, but some of them might
++ *      not be as accurate/refreshed.  This is to allow not querying
++ *      firmware or other expensive-to-read stats, for instance.
+  * @begin: Function to be called before any other operation.  Returns a
+  *	negative error code or zero.
+  * @complete: Function to be called after any other operation except
+@@ -355,6 +364,9 @@ struct ethtool_ops {
+ 	int	(*set_phys_id)(struct net_device *, enum ethtool_phys_id_state);
+ 	void	(*get_ethtool_stats)(struct net_device *,
+ 				     struct ethtool_stats *, u64 *);
++	void	(*get_ethtool_stats2)(struct net_device *dev,
++				      struct ethtool_stats *gstats, u64 *data,
++				      u32 flags);
+ 	int	(*begin)(struct net_device *);
+ 	void	(*complete)(struct net_device *);
+ 	u32	(*get_priv_flags)(struct net_device *);
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index 4ca65b5..75c753d 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -1396,11 +1396,22 @@ enum ethtool_fec_config_bits {
+ #define ETHTOOL_PHY_STUNABLE	0x0000004f /* Set PHY tunable configuration */
+ #define ETHTOOL_GFECPARAM	0x00000050 /* Get FEC settings */
+ #define ETHTOOL_SFECPARAM	0x00000051 /* Set FEC settings */
++#define ETHTOOL_GSTATS2		0x00000052 /* get NIC-specific statistics
++					    * with ability to specify flags.
++					    * See ETHTOOL_GS2* below.
++					    */
  
- static inline void drv_get_et_stats(struct ieee80211_sub_if_data *sdata,
- 				    struct ethtool_stats *stats,
--				    u64 *data)
-+				    u64 *data, u32 flags)
- {
- 	struct ieee80211_local *local = sdata->local;
--	if (local->ops->get_et_stats) {
-+	if (local->ops->get_et_stats2) {
-+		trace_drv_get_et_stats(local);
-+		local->ops->get_et_stats2(&local->hw, &sdata->vif, stats, data,
-+					  flags);
-+		trace_drv_return_void(local);
-+	} else if (local->ops->get_et_stats) {
- 		trace_drv_get_et_stats(local);
- 		local->ops->get_et_stats(&local->hw, &sdata->vif, stats, data);
- 		trace_drv_return_void(local);
-diff --git a/net/mac80211/ethtool.c b/net/mac80211/ethtool.c
-index 9cc986d..b67520e 100644
---- a/net/mac80211/ethtool.c
-+++ b/net/mac80211/ethtool.c
-@@ -61,9 +61,9 @@ static int ieee80211_get_sset_count(struct net_device *dev, int sset)
- 	return rv;
+ /* compatibility with older code */
+ #define SPARC_ETH_GSET		ETHTOOL_GSET
+ #define SPARC_ETH_SSET		ETHTOOL_SSET
+ 
++/* GSTATS2 flags */
++#define ETHTOOL_GS2_REFRESH_ALL     (0)    /* default is to update all stats */
++#define ETHTOOL_GS2_NO_REFRESH_FW   (1<<0) /* Skip refreshing stats that probe
++					    * firmware, and thus are
++					    * slow/expensive.
++					    */
++
+ /* Link mode bit indices */
+ enum ethtool_link_mode_bit_indices {
+ 	ETHTOOL_LINK_MODE_10baseT_Half_BIT	= 0,
+diff --git a/net/core/ethtool.c b/net/core/ethtool.c
+index 03416e6..dd16f15 100644
+--- a/net/core/ethtool.c
++++ b/net/core/ethtool.c
+@@ -1952,16 +1952,14 @@ static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
+ 	return rc;
  }
  
--static void ieee80211_get_stats(struct net_device *dev,
--				struct ethtool_stats *stats,
--				u64 *data)
-+static void ieee80211_get_stats2(struct net_device *dev,
-+				 struct ethtool_stats *stats,
-+				 u64 *data, u32 flags)
+-static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
++static int _ethtool_get_stats(struct net_device *dev, void __user *useraddr,
++			      u32 flags)
  {
- 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
- 	struct ieee80211_chanctx_conf *chanctx_conf;
-@@ -199,7 +199,14 @@ static void ieee80211_get_stats(struct net_device *dev,
- 	if (WARN_ON(i != STA_STATS_LEN))
- 		return;
+ 	struct ethtool_stats stats;
+ 	const struct ethtool_ops *ops = dev->ethtool_ops;
+ 	u64 *data;
+ 	int ret, n_stats;
  
--	drv_get_et_stats(sdata, stats, &(data[STA_STATS_LEN]));
-+	drv_get_et_stats(sdata, stats, &data[STA_STATS_LEN], flags);
+-	if (!ops->get_ethtool_stats || !ops->get_sset_count)
+-		return -EOPNOTSUPP;
+-
+ 	n_stats = ops->get_sset_count(dev, ETH_SS_STATS);
+ 	if (n_stats < 0)
+ 		return n_stats;
+@@ -1976,7 +1974,10 @@ static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
+ 	if (n_stats && !data)
+ 		return -ENOMEM;
+ 
+-	ops->get_ethtool_stats(dev, &stats, data);
++	if (flags != ETHTOOL_GS2_REFRESH_ALL)
++		ops->get_ethtool_stats2(dev, &stats, data, flags);
++	else
++		ops->get_ethtool_stats(dev, &stats, data);
+ 
+ 	ret = -EFAULT;
+ 	if (copy_to_user(useraddr, &stats, sizeof(stats)))
+@@ -1991,6 +1992,31 @@ static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
+ 	return ret;
+ }
+ 
++static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
++{
++	const struct ethtool_ops *ops = dev->ethtool_ops;
++
++	if (!ops->get_ethtool_stats || !ops->get_sset_count)
++		return -EOPNOTSUPP;
++	return _ethtool_get_stats(dev, useraddr, ETHTOOL_GS2_REFRESH_ALL);
 +}
 +
-+static void ieee80211_get_stats(struct net_device *dev,
-+				struct ethtool_stats *stats,
-+				u64 *data)
++static int ethtool_get_stats2(struct net_device *dev, void __user *useraddr)
 +{
-+	ieee80211_get_stats2(dev, stats, data, 0);
- }
- 
- static void ieee80211_get_strings(struct net_device *dev, u32 sset, u8 *data)
-@@ -211,7 +218,7 @@ static void ieee80211_get_strings(struct net_device *dev, u32 sset, u8 *data)
- 		sz_sta_stats = sizeof(ieee80211_gstrings_sta_stats);
- 		memcpy(data, ieee80211_gstrings_sta_stats, sz_sta_stats);
- 	}
--	drv_get_et_strings(sdata, sset, &(data[sz_sta_stats]));
-+	drv_get_et_strings(sdata, sset, &data[sz_sta_stats]);
- }
- 
- static int ieee80211_get_regs_len(struct net_device *dev)
-@@ -238,5 +245,6 @@ const struct ethtool_ops ieee80211_ethtool_ops = {
- 	.set_ringparam = ieee80211_set_ringparam,
- 	.get_strings = ieee80211_get_strings,
- 	.get_ethtool_stats = ieee80211_get_stats,
-+	.get_ethtool_stats2 = ieee80211_get_stats2,
- 	.get_sset_count = ieee80211_get_sset_count,
- };
++	struct ethtool_stats stats;
++	const struct ethtool_ops *ops = dev->ethtool_ops;
++	u32 flags = 0;
++
++	if (!ops->get_ethtool_stats2 || !ops->get_sset_count)
++		return -EOPNOTSUPP;
++
++	if (copy_from_user(&stats, useraddr, sizeof(stats)))
++		return -EFAULT;
++
++	flags = stats.n_stats;
++	return _ethtool_get_stats(dev, useraddr, flags);
++}
++
+ static int ethtool_get_phy_stats(struct net_device *dev, void __user *useraddr)
+ {
+ 	struct ethtool_stats stats;
+@@ -2632,6 +2658,7 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
+ 	case ETHTOOL_GSSET_INFO:
+ 	case ETHTOOL_GSTRINGS:
+ 	case ETHTOOL_GSTATS:
++	case ETHTOOL_GSTATS2:
+ 	case ETHTOOL_GPHYSTATS:
+ 	case ETHTOOL_GTSO:
+ 	case ETHTOOL_GPERMADDR:
+@@ -2742,6 +2769,9 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
+ 	case ETHTOOL_GSTATS:
+ 		rc = ethtool_get_stats(dev, useraddr);
+ 		break;
++	case ETHTOOL_GSTATS2:
++		rc = ethtool_get_stats2(dev, useraddr);
++		break;
+ 	case ETHTOOL_GPERMADDR:
+ 		rc = ethtool_get_perm_addr(dev, useraddr);
+ 		break;
 -- 
 2.4.11
 
