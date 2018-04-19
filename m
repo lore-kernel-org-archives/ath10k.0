@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8uzX-00057o-VI
- for ath10k@lists.infradead.org; Wed, 18 Apr 2018 21:51:53 +0000
-Subject: Re: [PATCH 1/3] ethtool: Support ETHTOOL_GSTATS2 command.
-References: <1524016176-3881-1-git-send-email-greearb@candelatech.com>
- <1524086817.3024.9.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <f43d7ee4-7f27-b145-125e-32dbc31a27f1@candelatech.com>
-Date: Wed, 18 Apr 2018 14:51:36 -0700
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f91Fi-0001na-QG
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 04:33:00 +0000
 MIME-Version: 1.0
-In-Reply-To: <1524086817.3024.9.camel@sipsolutions.net>
+Date: Thu, 19 Apr 2018 10:02:47 +0530
+From: govinds@codeaurora.org
+Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+In-Reply-To: <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+ <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
+ <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
+ <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
+ <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +26,46 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, netdev@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: pillair@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-On 04/18/2018 02:26 PM, Johannes Berg wrote:
-> On Tue, 2018-04-17 at 18:49 -0700, greearb@candelatech.com wrote:
->>
->> + * @get_ethtool_stats2: Return extended statistics about the device.
->> + *	This is only useful if the device maintains statistics not
->> + *	included in &struct rtnl_link_stats64.
->> + *      Takes a flags argument:  0 means all (same as get_ethtool_stats),
->> + *      0x1 (ETHTOOL_GS2_SKIP_FW) means skip firmware stats.
->> + *      Other flags are reserved for now.
->
-> It'd be pretty hard to know which flags are firmware stats?
+On 2018-04-18 18:46, Kalle Valo wrote:
+> (fixing top posting)
+> 
+> govinds@codeaurora.org writes:
+> 
+>> On 2018-04-18 12:36, Sebastian Gottschall wrote:
+>>> from my point of view powersave should be optional and not forced.
+>>> 
+>>> consider :
+>>> iw dev <devname> set power_save on/off
+>>> 
+>>> so there is already a config option made for that purpose,
+>> 
+>> Thanks Sebastian for your review. Agree this should not be forced with
+>> in driver.
+>> 
+>> I will check if i can set the idle ps at the end of
+>> ath10k_mac_vif_setup_ps by checking arvif->ps.
+>> I will update the patch accordingly.
+> 
+> So what power save is this exactly? I assumed it's some bus level power
+> save (turning of clocks etc) but is it actually 802.11 power save?
 
-Yes, it is, but ethtool stats are difficult to understand in a generic
-manner anyway, so someone using them is already likely aware of low-level
-details of the driver(s) they are using.
+Yes this is WIFI chip set level power-save(based on idleness) and not 
+related to protocol power save.
+FW will turn off/scale down the resources(clock/rails) based on 
+opportunity(when ever idle mode is detected).
+This power save is mostly done in disconnected state. I am not really 
+sure when framework/user-space
+triggers power-save config(iw dev <devname> set power_save on/off).
+Then doing this from user-space will be unnecessarily toggling this 
+config or may not be setting at disconnected state.
 
-In my case, I have lots of virtual stations (or APs), and I want stats
-for them as well as for the 'radio', so I would probe the first vdev with
-flags of 'skip-none' to get all stats, including radio (firmware) stats.
+May be you can suggest better here.
 
-And then the rest I would just probe the non-firmware stats.
-
-To be honest, I was slightly amused that anyone expressed interest in
-this patch originally, but maybe other people have similar use case
-and/or drivers with slow-to-acquire stats.
-
-> Anyway, there's no way I'm going to take this patch, so you need to
-> float it on netdev first (best CC us here) and get it applied there
-> before we can do anything on the wifi side.
-
-I posted the patches to netdev, ath10k and linux-wireless.  If I had only
-posted them individually to different lists I figure I'd be hearing about how
-the netdev patch is useless because it has no driver support, etc.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
