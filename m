@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9CGx-000653-4s
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 16:19:07 +0000
+ id 1f9CIv-0007WE-TC
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 16:21:03 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: search all IEs for variant before falling back
+Subject: Re: [1/2] ath10k: add inlined wrappers for htt tx ops
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1523630426-28577-1-git-send-email-kvalo@codeaurora.org>
-References: <1523630426-28577-1-git-send-email-kvalo@codeaurora.org>
-Message-Id: <20180419161848.B8F416022B@smtp.codeaurora.org>
-Date: Thu, 19 Apr 2018 16:18:48 +0000 (UTC)
+In-Reply-To: <20180415122228.12565-2-erik.stromdahl@gmail.com>
+References: <20180415122228.12565-2-erik.stromdahl@gmail.com>
+Message-Id: <20180419162051.850186022B@smtp.codeaurora.org>
+Date: Thu, 19 Apr 2018 16:20:51 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +22,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Thomas Hebb <tommyhebb@gmail.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
 
-> commit f2593cb1b291 ("ath10k: Search SMBIOS for OEM board file
-> extension") added a feature to ath10k that allows Board Data File
-> (BDF) conflicts between multiple devices that use the same device IDs
-> but have different calibration requirements to be resolved by allowing
-> a "variant" string to be stored in SMBIOS [and later device tree, added
-> by commit d06f26c5c8a4 ("ath10k: search DT for qcom,ath10k-calibration-
-> variant")] that gets appended to the ID stored in board-2.bin.
+> These wrappers makes the HTT ops align better with the HIF ops
+> (where similar wrappers are used).
 > 
-> This original patch had a regression, however. Namely that devices with
-> a variant present in SMBIOS that didn't need custom BDFs could no longer
-> find the default BDF, which has no variant appended. The patch was
-> reverted and re-applied with a fix for this issue in commit 1657b8f84ed9
-> ("search SMBIOS for OEM board file extension").
+> It also makes it easier for a target to have unsupported ops
+> (by letting the corresponding function pointer be NULL).
 > 
-> But the fix to fall back to a default BDF introduced another issue: the
-> driver currently parses IEs in board-2.bin one by one, and for each one
-> it first checks to see if it matches the ID with the variant appended.
-> If it doesn't, it checks to see if it matches the "fallback" ID with no
-> variant. If a matching BDF is found at any point during this search, the
-> search is terminated and that BDF is used. The issue is that it's very
-> possible (and is currently the case for board-2.bin files present in the
-> ath10k-firmware repository) for the default BDF to occur in an earlier
-> IE than the variant-specific BDF. In this case, the current code will
-> happily choose the default BDF even though a better-matching BDF is
-> present later in the file.
-> 
-> This patch fixes the issue by first searching the entire file for the ID
-> with variant, and searching for the fallback ID only if that search
-> fails. It also includes some code cleanup in the area, as
-> ath10k_core_fetch_board_data_api_n() no longer does its own string
-> mangling to remove the variant from an ID, instead leaving that job to a
-> new flag passed to ath10k_core_create_board_name().
-> 
-> I've tested this patch on a QCA4019 and verified that the driver behaves
-> correctly for 1) both fallback and variant BDFs present, 2) only fallback
-> BDF present, and 3) no matching BDFs present.
-> 
-> Fixes: 1657b8f84ed9 ("ath10k: search SMBIOS for OEM board file extension")
-> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-c8489668065a ath10k: search all IEs for variant before falling back
+5df6e1313044 ath10k: add inlined wrappers for htt tx ops
+9a5511d5f24f ath10k: add inlined wrappers for htt rx ops
 
 -- 
-https://patchwork.kernel.org/patch/10340241/
+https://patchwork.kernel.org/patch/10341545/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
