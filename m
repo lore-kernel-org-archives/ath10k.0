@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9CvE-000557-9t
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 17:00:37 +0000
-Received: by mail-wr0-x22a.google.com with SMTP id s18-v6so15902558wrg.9
- for <ath10k@lists.infradead.org>; Thu, 19 Apr 2018 10:00:25 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f9DRg-0000Xh-5u
+ for ath10k@lists.infradead.org; Thu, 19 Apr 2018 17:34:09 +0000
+Subject: Re: Please add new board files for WLE1216V5-20 and another Compex
+ NIC.
+References: <044ffe4d-4c50-4aeb-392c-aea9a813ebb4@candelatech.com>
+ <87fu3rms5k.fsf@kamboji.qca.qualcomm.com>
+ <878t9jmrpu.fsf@kamboji.qca.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <f37e12e3-b56c-2848-7c82-1630151812ff@candelatech.com>
+Date: Thu, 19 Apr 2018 10:33:52 -0700
 MIME-Version: 1.0
-In-Reply-To: <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
-References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
- <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
- <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
- <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
- <87604oodt4.fsf@kamboji.qca.qualcomm.com>
- <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
- <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 19 Apr 2018 10:00:22 -0700
-Message-ID: <CAJ-Vmoky1JkQ5ZFc_zmvRdtRkVwVftLgqZehvfn6e8bH8TqKCg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+In-Reply-To: <878t9jmrpu.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>, govinds@codeaurora.org, linux-wireless@vger.kernel.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, pillair@codeaurora.org, ath10k@lists.infradead.org
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hi,
+On 04/19/2018 03:10 AM, Kalle Valo wrote:
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>
+>> Ben Greear <greearb@candelatech.com> writes:
+>>
+>>> It seems the upstream board-2.bin file for 9984 does not yet include
+>>> support for WLE1216V5-20
+>>> (or possibly it does and OpenWRT grabs the wrong one?).
+>>>
+>>> I'm attaching the board file for this NIC and for another one which
+>>> I have not yet tested.  I received these from Compex and have
+>>> tested the bus=pci,bmi-chip-id=0,bmi-board-id=31-compex.bin file on the WLE1216V5-20
+>>>
+>>> Please add these into the official board-2.bin for 9984.
+>>
+>> Added, but please check carefully that I didn't do any mistakes.
+>>
+>> https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
+>
+> That's obviously the wrong commit, this is the correct one:
+>
+> https://github.com/kvalo/ath10k-firmware/commit/b1dd338046a385743c483a47e8eef276adaba0c0
+>
 
-My 2c here.
+It appears to be working with WLE1216V5-20.
 
-As much as I like power save stuff, I've been bitten enough times by
-these wifi chips kinda implementing
-mostly-ok-but-not-that-particular-time power savings stuff and so have
-had to make it configurable chip by chip.
+Thanks,
+Ben
 
-A good example is active state power management in various runtime and
-idle modes on different chips, how it intersects with things like
-bluetooth, btcoex, is the bios buggy, etc, etc.
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-So I'd at least like a way to control that feature as a module load
-and/or debugfs entry to aide users trying to figure out why chips
-disappear or behave erratically. I'm ok with it being turned on but
-I'm not ok with a debugging step being "oh yeah, so just go comment
-this out and recompile", especially if people are debugging on an
-embedded target where it's not easily self hosted or easy to rebuild
-things.
-
-
-
-
--adrian
 
 _______________________________________________
 ath10k mailing list
