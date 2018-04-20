@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9Q77-0004Vd-P8
- for ath10k@lists.infradead.org; Fri, 20 Apr 2018 07:05:47 +0000
-Received: by mail-qk0-x22f.google.com with SMTP id p186so5269180qkd.1
- for <ath10k@lists.infradead.org>; Fri, 20 Apr 2018 00:05:34 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0/QCA9888 hw2.0: Add OpenMesh A62
- specific BDFs
-Date: Fri, 20 Apr 2018 09:05:30 +0200
-Message-ID: <2127563.6Z1DauZ1yk@bentobox>
-In-Reply-To: <87zi1zjko7.fsf@kamboji.qca.qualcomm.com>
-References: <3706510.gbe5VexPLA@bentobox> <4212302.P7lZVe8mpY@bentobox>
- <87zi1zjko7.fsf@kamboji.qca.qualcomm.com>
+ id 1f9QMf-0002v3-SG
+ for ath10k@lists.infradead.org; Fri, 20 Apr 2018 07:22:15 +0000
+Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+ <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
+ <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
+ <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
+ <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+ <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
+ <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
+Date: Fri, 20 Apr 2018 09:21:33 +0200
 MIME-Version: 1.0
+In-Reply-To: <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,124 +25,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5524681400144283251=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Robert Marko <robimarko@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>, govinds@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, arend.vanspriel@broadcom.com, pillair@codeaurora.org, ath10k@lists.infradead.org
 
---===============5524681400144283251==
-Content-Type: multipart/signed; boundary="nextPart25417009.XMM0EqTsnt"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart25417009.XMM0EqTsnt
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Donnerstag, 19. April 2018 15:11:21 CEST Kalle Valo wrote:
-> Thanks for the list, it was really helpful. I think I have now added all
-> pending board files, but please let me know if I missed anything.
-
-Sorry about missing the Asus RT-AC58U BDF update.
-
-
-I went through added files and at least the ones submitted by me look fine 
-(and I couldn't find anything problematic in the other ones). Thanks for
-going through all submissions and integrating them.
-
-pending
-=======
-
-* Asus RT-AC58U
-
-  - waiting for v2 of the BDFs to be integrated
-  - http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html
-  - v1 files: https://github.com/kvalo/ath10k-firmware/commit/a47bcf1e58c4d8914af0951a80fd8861368b700d
-
-
-accepted
-========
-
-* OpenMesh A42
-
-  - http://lists.infradead.org/pipermail/ath10k/2017-November/010470.html
-  - http://lists.infradead.org/pipermail/ath10k/2017-December/010543.html
-  - https://github.com/kvalo/ath10k-firmware/commit/5cd2bacd8e22217335e539b416d0cb8d59f8e312
-
-* Meraki MR33
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-April/011179.html
-  - https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
-
-* Compex WLE1216V5-20 + Compex ?
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-March/010998.html
-  - https://github.com/kvalo/ath10k-firmware/commit/b1dd338046a385743c483a47e8eef276adaba0c0
-
-* AVM FRITZ!Box 4040
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-April/011178.html
-  - https://github.com/kvalo/ath10k-firmware/commit/81a745e6a529565438ee4aea357a8a59e9564848
-
-* OpenMesh A62
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-March/011081.html
-  - https://github.com/kvalo/ath10k-firmware/commit/a262aac7cfe5ae5833378b4f1b0634f873a4df4d
-  - https://github.com/kvalo/ath10k-firmware/commit/a315471a5f4c9890e2ed1bdb008b7aae5c885ae0
-  - https://github.com/kvalo/ath10k-firmware/commit/c3604f7d3ff61d1905aac644c721372f3c2a9663
-
-* GL.iNet GL-B1300
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-March/011058.html
-  - https://github.com/kvalo/ath10k-firmware/commit/c3604f7d3ff61d1905aac644c721372f3c2a9663
-
-* 8devices Jalapeno
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
-  - https://github.com/kvalo/ath10k-firmware/commit/71e50312b54cc972657a7b08c470088447cb9676
-
-* Netgear EX6100v2/EX6150v2
-
-  - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
-  - https://github.com/kvalo/ath10k-firmware/commit/dfe4b7de42e1c40dfd03526ffe7955089c4eef63
-
-
-Kind regards,
-	Sven
---nextPart25417009.XMM0EqTsnt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlrZkToACgkQXYcKB8Em
-e0Y7/A//X4arpVsh4u55ohY+iodozy1A4QKmSExCCf0pTeAtFnF0ijW4H2dOGyiL
-CkLouRb2rOrwjw1JmEenL4wWmCaZmaBTSTWXUsqWMixpSDX+pFaOgrizOzIhUYDD
-231WT2ofrEAciMO10qJhJiWr8/BzD3b/ln92Cbnw1K+s9ORf7nCxWTi8pLr1cNex
-BiWFAjgkSm3YGZfTff9v1v7kLtSswFzHLDqRfpxpSDXS8kLhQOHHBT5oweLBFnGu
-N8Of6tG63jyjN9/hObY5gcRwXudqS8PWJoQZbEDNwTZfZsCMYL19qA906ci3IGGA
-ev0MZc8S+00eFaYOKpDVRUv5l60iFibyhzSv9c4BE0RyT7BwChsL9WyTjPYMe+Xk
-A7HEPNQu5GFMCVfpSXmd2vKbPLpeIdbclWSFpD7QuMO/CYNeWPbmgyq/WtnAe15A
-bgtqoXChFpQiFw1AqX76+UNFvdGBg5g/Ep3P5dkGHUnb4/HqvvudQDH05Iy+0k80
-P2Tg/OReuM6FgaAzydhXPgHUj5hMfHCmzk3huIPzdtDzB+jo0QNhs0LtzqUbMvhO
-l15JZuNs42QN1dkbwqyUR7F2X1cLY8bBMMbo2GwJUGwiCkAsXfqHni5Ua+vBzYoU
-NYqObJzF1QellJnuElceMlf/bg6lbDHHE0fUmkOo3YF8wc4cECs=
-=mVGq
------END PGP SIGNATURE-----
-
---nextPart25417009.XMM0EqTsnt--
-
-
-
---===============5524681400144283251==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5524681400144283251==--
+Cj4+IFllcyB0aGlzIGlzIFdJRkkgY2hpcCBzZXQgbGV2ZWwgcG93ZXItc2F2ZShiYXNlZCBvbiBp
+ZGxlbmVzcykgYW5kIG5vdAo+PiByZWxhdGVkIHRvIHByb3RvY29sIHBvd2VyIHNhdmUuIEZXIHdp
+bGwgdHVybiBvZmYvc2NhbGUgZG93biB0aGUKPj4gcmVzb3VyY2VzKGNsb2NrL3JhaWxzKSBiYXNl
+ZCBvbiBvcHBvcnR1bml0eSh3aGVuIGV2ZXIgaWRsZSBtb2RlIGlzCj4+IGRldGVjdGVkKS4gVGhp
+cyBwb3dlciBzYXZlIGlzIG1vc3RseSBkb25lIGluIGRpc2Nvbm5lY3RlZCBzdGF0ZS4gSSBhbQo+
+PiBub3QgcmVhbGx5IHN1cmUgd2hlbiBmcmFtZXdvcmsvdXNlci1zcGFjZSB0cmlnZ2VycyBwb3dl
+ci1zYXZlCj4+IGNvbmZpZyhpdyBkZXYgPGRldm5hbWU+IHNldCBwb3dlcl9zYXZlIG9uL29mZiku
+IFRoZW4gZG9pbmcgdGhpcyBmcm9tCj4+IHVzZXItc3BhY2Ugd2lsbCBiZSB1bm5lY2Vzc2FyaWx5
+IHRvZ2dsaW5nIHRoaXMgY29uZmlnIG9yIG1heSBub3QgYmUKPj4gc2V0dGluZyBhdCBkaXNjb25u
+ZWN0ZWQgc3RhdGUuCj4gSSB0aGluayB0aGF0ICdzZXQgcG93ZXJfc2F2ZScgY29tbWFuZHMgYWZm
+ZWN0cyBzdHJ1Y3QKPiBpZWVlODAyMTFfYnNzX2NvbmY6OnBzIHBhcmFtZXRlciBhbmQgSSBkb24n
+dCB0aGluayBpdCBzaG91bGQgYmUgdXNlZCBpbgo+IHRoaXMgY2FzZS4gV2UgYWxyZWFkeSBoYXZl
+IGF0aDEwa19jb25maWdfcHMoKSBmb3IgODAyLjExIGxldmVsIG9mIHBvd2VyCj4gc2F2aW5nLgo+
+Cj4gQXJlbmQgYWdhaW4gcHJvcG9zZWQgcnVudGltZS1wbSB3aXRoIHdoaWNoIEknbSBub3QgdmVy
+eSBmYW1pbGlhci4gQnV0Cj4gd2h5IHdvdWxkIHdlIHdhbnQgdG8gZGlzYWJsZSB0aGlzPyBEb2Vz
+bid0IGl0IG1ha2Ugc2Vuc2UgdG8gaGF2ZSB0aGlzCj4gZmVhdHVyZSBhbHdheXMgZW5hYmxlZCB0
+byBzYXZlIHBvd2VyPyB3Y24zOTkwIGlzIGEgY2hpcCBmb3IgYSBtb2JpbGUKPiBkZXZpY2UgYW55
+d2F5LgppdCBtaWdodCBiZSBtYWRlIGZvciBtb2JpbGUgZGV2aWNlcyBidXQgd2hvIGtub3dzIGhv
+dyBpdCBpcyB1c2VkIGJ5IHRoZSAKbWFya2V0LgoKU2ViYXN0aWFuCj4KCi0tIApNaXQgZnJldW5k
+bGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5l
+d01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFh
+LCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwg
+SFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlh
+biBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdy
+dC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
