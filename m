@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9E8F-0002kK-G2
- for ath10k@lists.infradead.org; Thu, 19 Apr 2018 18:18:11 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2 3/3] ath10k:  Support ethtool gstats2 API.
-Date: Thu, 19 Apr 2018 11:17:43 -0700
-Message-Id: <1524161863-30860-3-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1524161863-30860-1-git-send-email-greearb@candelatech.com>
-References: <1524161863-30860-1-git-send-email-greearb@candelatech.com>
+Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f9Q77-0004Vd-P8
+ for ath10k@lists.infradead.org; Fri, 20 Apr 2018 07:05:47 +0000
+Received: by mail-qk0-x22f.google.com with SMTP id p186so5269180qkd.1
+ for <ath10k@lists.infradead.org>; Fri, 20 Apr 2018 00:05:34 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0/QCA9888 hw2.0: Add OpenMesh A62
+ specific BDFs
+Date: Fri, 20 Apr 2018 09:05:30 +0200
+Message-ID: <2127563.6Z1DauZ1yk@bentobox>
+In-Reply-To: <87zi1zjko7.fsf@kamboji.qca.qualcomm.com>
+References: <3706510.gbe5VexPLA@bentobox> <4212302.P7lZVe8mpY@bentobox>
+ <87zi1zjko7.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,120 +22,124 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5524681400144283251=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: netdev@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Robert Marko <robimarko@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Ben Greear <greearb@candelatech.com>
+--===============5524681400144283251==
+Content-Type: multipart/signed; boundary="nextPart25417009.XMM0EqTsnt"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Skip a firmware stats update when calling
-code indicates the stats refresh is not needed.
+--nextPart25417009.XMM0EqTsnt
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
+On Donnerstag, 19. April 2018 15:11:21 CEST Kalle Valo wrote:
+> Thanks for the list, it was really helpful. I think I have now added all
+> pending board files, but please let me know if I missed anything.
 
-v2:  Convert to new flag name, attempt to fix build
-   when there is not DEBUGFS enabled for ath10k.
+Sorry about missing the Asus RT-AC58U BDF update.
 
- drivers/net/wireless/ath/ath10k/debug.c | 18 +++++++++++++++---
- drivers/net/wireless/ath/ath10k/debug.h |  5 +++++
- drivers/net/wireless/ath/ath10k/mac.c   |  1 +
- 3 files changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index bac832c..235cd04 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1159,9 +1159,10 @@ int ath10k_debug_get_et_sset_count(struct ieee80211_hw *hw,
- 	return 0;
- }
- 
--void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
--			       struct ieee80211_vif *vif,
--			       struct ethtool_stats *stats, u64 *data)
-+void ath10k_debug_get_et_stats2(struct ieee80211_hw *hw,
-+				struct ieee80211_vif *vif,
-+				struct ethtool_stats *stats, u64 *data,
-+				u32 flags)
- {
- 	struct ath10k *ar = hw->priv;
- 	static const struct ath10k_fw_stats_pdev zero_stats = {};
-@@ -1170,6 +1171,9 @@ void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-+	if (flags & ETHTOOL_GS2_NO_REFRESH_FW)
-+		goto skip_query_fw_stats;
-+
- 	if (ar->state == ATH10K_STATE_ON) {
- 		ret = ath10k_debug_fw_stats_request(ar);
- 		if (ret) {
-@@ -1180,6 +1184,7 @@ void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 		}
- 	}
- 
-+skip_query_fw_stats:
- 	pdev_stats = list_first_entry_or_null(&ar->debug.fw_stats.pdevs,
- 					      struct ath10k_fw_stats_pdev,
- 					      list);
-@@ -1244,6 +1249,13 @@ void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 	WARN_ON(i != ATH10K_SSTATS_LEN);
- }
- 
-+void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
-+			       struct ieee80211_vif *vif,
-+			       struct ethtool_stats *stats, u64 *data)
-+{
-+	ath10k_debug_get_et_stats2(hw, vif, stats, data, 0);
-+}
-+
- static const struct file_operations fops_fw_dbglog = {
- 	.read = ath10k_read_fw_dbglog,
- 	.write = ath10k_write_fw_dbglog,
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 0afca5c..e953dd0 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -117,6 +117,10 @@ int ath10k_debug_get_et_sset_count(struct ieee80211_hw *hw,
- void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 			       struct ieee80211_vif *vif,
- 			       struct ethtool_stats *stats, u64 *data);
-+void ath10k_debug_get_et_stats2(struct ieee80211_hw *hw,
-+				struct ieee80211_vif *vif,
-+				struct ethtool_stats *stats, u64 *data,
-+				u32 level);
- 
- static inline u64 ath10k_debug_get_fw_dbglog_mask(struct ath10k *ar)
- {
-@@ -195,6 +199,7 @@ static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
- #define ath10k_debug_get_et_strings NULL
- #define ath10k_debug_get_et_sset_count NULL
- #define ath10k_debug_get_et_stats NULL
-+#define ath10k_debug_get_et_stats2 NULL
- 
- #endif /* CONFIG_ATH10K_DEBUGFS */
- #ifdef CONFIG_MAC80211_DEBUGFS
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bf05a36..27b793c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7734,6 +7734,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.ampdu_action			= ath10k_ampdu_action,
- 	.get_et_sset_count		= ath10k_debug_get_et_sset_count,
- 	.get_et_stats			= ath10k_debug_get_et_stats,
-+	.get_et_stats2			= ath10k_debug_get_et_stats2,
- 	.get_et_strings			= ath10k_debug_get_et_strings,
- 	.add_chanctx			= ath10k_mac_op_add_chanctx,
- 	.remove_chanctx			= ath10k_mac_op_remove_chanctx,
--- 
-2.4.11
+I went through added files and at least the ones submitted by me look fine 
+(and I couldn't find anything problematic in the other ones). Thanks for
+going through all submissions and integrating them.
 
+pending
+=======
+
+* Asus RT-AC58U
+
+  - waiting for v2 of the BDFs to be integrated
+  - http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html
+  - v1 files: https://github.com/kvalo/ath10k-firmware/commit/a47bcf1e58c4d8914af0951a80fd8861368b700d
+
+
+accepted
+========
+
+* OpenMesh A42
+
+  - http://lists.infradead.org/pipermail/ath10k/2017-November/010470.html
+  - http://lists.infradead.org/pipermail/ath10k/2017-December/010543.html
+  - https://github.com/kvalo/ath10k-firmware/commit/5cd2bacd8e22217335e539b416d0cb8d59f8e312
+
+* Meraki MR33
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-April/011179.html
+  - https://github.com/kvalo/ath10k-firmware/commit/66be3a48d9cf17ace8413cf478a5954483393af4
+
+* Compex WLE1216V5-20 + Compex ?
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/010998.html
+  - https://github.com/kvalo/ath10k-firmware/commit/b1dd338046a385743c483a47e8eef276adaba0c0
+
+* AVM FRITZ!Box 4040
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-April/011178.html
+  - https://github.com/kvalo/ath10k-firmware/commit/81a745e6a529565438ee4aea357a8a59e9564848
+
+* OpenMesh A62
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/011081.html
+  - https://github.com/kvalo/ath10k-firmware/commit/a262aac7cfe5ae5833378b4f1b0634f873a4df4d
+  - https://github.com/kvalo/ath10k-firmware/commit/a315471a5f4c9890e2ed1bdb008b7aae5c885ae0
+  - https://github.com/kvalo/ath10k-firmware/commit/c3604f7d3ff61d1905aac644c721372f3c2a9663
+
+* GL.iNet GL-B1300
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/011058.html
+  - https://github.com/kvalo/ath10k-firmware/commit/c3604f7d3ff61d1905aac644c721372f3c2a9663
+
+* 8devices Jalapeno
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-March/010916.html
+  - https://github.com/kvalo/ath10k-firmware/commit/71e50312b54cc972657a7b08c470088447cb9676
+
+* Netgear EX6100v2/EX6150v2
+
+  - http://lists.infradead.org/pipermail/ath10k/2018-February/010845.html
+  - https://github.com/kvalo/ath10k-firmware/commit/dfe4b7de42e1c40dfd03526ffe7955089c4eef63
+
+
+Kind regards,
+	Sven
+--nextPart25417009.XMM0EqTsnt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlrZkToACgkQXYcKB8Em
+e0Y7/A//X4arpVsh4u55ohY+iodozy1A4QKmSExCCf0pTeAtFnF0ijW4H2dOGyiL
+CkLouRb2rOrwjw1JmEenL4wWmCaZmaBTSTWXUsqWMixpSDX+pFaOgrizOzIhUYDD
+231WT2ofrEAciMO10qJhJiWr8/BzD3b/ln92Cbnw1K+s9ORf7nCxWTi8pLr1cNex
+BiWFAjgkSm3YGZfTff9v1v7kLtSswFzHLDqRfpxpSDXS8kLhQOHHBT5oweLBFnGu
+N8Of6tG63jyjN9/hObY5gcRwXudqS8PWJoQZbEDNwTZfZsCMYL19qA906ci3IGGA
+ev0MZc8S+00eFaYOKpDVRUv5l60iFibyhzSv9c4BE0RyT7BwChsL9WyTjPYMe+Xk
+A7HEPNQu5GFMCVfpSXmd2vKbPLpeIdbclWSFpD7QuMO/CYNeWPbmgyq/WtnAe15A
+bgtqoXChFpQiFw1AqX76+UNFvdGBg5g/Ep3P5dkGHUnb4/HqvvudQDH05Iy+0k80
+P2Tg/OReuM6FgaAzydhXPgHUj5hMfHCmzk3huIPzdtDzB+jo0QNhs0LtzqUbMvhO
+l15JZuNs42QN1dkbwqyUR7F2X1cLY8bBMMbo2GwJUGwiCkAsXfqHni5Ua+vBzYoU
+NYqObJzF1QellJnuElceMlf/bg6lbDHHE0fUmkOo3YF8wc4cECs=
+=mVGq
+-----END PGP SIGNATURE-----
+
+--nextPart25417009.XMM0EqTsnt--
+
+
+
+--===============5524681400144283251==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5524681400144283251==--
