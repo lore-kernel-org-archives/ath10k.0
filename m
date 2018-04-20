@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ch3vs01.rockwellcollins.com ([205.175.226.27])
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9Y90-0001xP-Cx
- for ath10k@lists.infradead.org; Fri, 20 Apr 2018 15:40:17 +0000
-From: Jared Bents <jared.bents@rockwellcollins.com>
-Subject: [PATCH v1 1/1] ath10k: convert kmemdup to dma_alloc_coherent
-Date: Fri, 20 Apr 2018 10:39:53 -0500
-Message-Id: <1524238793-24481-1-git-send-email-jared.bents@rockwellcollins.com>
+ id 1f9c35-0002ja-1M
+ for ath10k@lists.infradead.org; Fri, 20 Apr 2018 19:50:25 +0000
+Received: by mail-wr0-x241.google.com with SMTP id q3-v6so15764779wrj.6
+ for <ath10k@lists.infradead.org>; Fri, 20 Apr 2018 12:50:12 -0700 (PDT)
+From: Christian Lamparter <chunkeey@gmail.com>
+Subject: Re: [PATCH 2/2] ath10k: search DT for qcom, ath10k-calibration-variant
+Date: Fri, 20 Apr 2018 21:50:09 +0200
+Message-ID: <2491530.mcAxvBYO6X@debian64>
+In-Reply-To: <878t9jkzx7.fsf@kamboji.qca.qualcomm.com>
+References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
+ <3853747.Q0JJmSnsYM@debian64> <878t9jkzx7.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,93 +21,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Jared Bents <jared.bents@rockwellcollins.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Adrian Chadd <adrian@freebsd.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Aeolus Yang <aeolus@qti.qualcomm.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>, ext.waldemar.rymarkiewicz@tieto.com
 
-Update to convert the use of kmemdup to dma_alloc_coherent as
-dma_alloc_coherent will consider DMA region limits such as
-those seen with CONFIG_FSL_PCI && CONFIG_ZONE_DMA32 whereas
-kmemdup does not take those limitations into account.
+On Donnerstag, 19. April 2018 16:56:36 CEST Kalle Valo wrote:
+> [...]
+> I have added them now, please check:
+> 
+> https://github.com/kvalo/ath10k-firmware/commit/a47bcf1e58c4d8914af0951a80fd8861368b700d
+Yes, The RT-AC58U is now working much better. 
 
-Signed-off-by: Jared Bents <jared.bents@rockwellcollins.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 36 ++++++++++-------------------------
- 1 file changed, 10 insertions(+), 26 deletions(-)
+The updated RT-AC58U board-data is here:
+<http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html>
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 3c4c800..8637bfe 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1372,28 +1372,16 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
- 	if (resp && resp_len && *resp_len == 0)
- 		return -EINVAL;
- 
--	treq = kmemdup(req, req_len, GFP_KERNEL);
--	if (!treq)
--		return -ENOMEM;
--
--	req_paddr = dma_map_single(ar->dev, treq, req_len, DMA_TO_DEVICE);
--	ret = dma_mapping_error(ar->dev, req_paddr);
--	if (ret) {
-+	treq = dma_alloc_coherent(ar->dev, req_len, &req_paddr, GFP_KERNEL);
-+	if (!treq) {
- 		ret = -EIO;
- 		goto err_dma;
- 	}
-+	memcpy(treq, req, req_len);
- 
- 	if (resp && resp_len) {
--		tresp = kzalloc(*resp_len, GFP_KERNEL);
-+		tresp = dma_alloc_coherent(ar->dev, *resp_len, &resp_paddr, GFP_KERNEL);
- 		if (!tresp) {
--			ret = -ENOMEM;
--			goto err_req;
--		}
--
--		resp_paddr = dma_map_single(ar->dev, tresp, *resp_len,
--					    DMA_FROM_DEVICE);
--		ret = dma_mapping_error(ar->dev, resp_paddr);
--		if (ret) {
- 			ret = EIO;
- 			goto err_req;
- 		}
-@@ -1422,23 +1410,19 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
- 	}
- 
- err_resp:
-+	if (ret == 0 && resp_len) {
-+		*resp_len = min(*resp_len, xfer.resp_len);
-+		memcpy(resp, tresp, xfer.resp_len);
-+	}
- 	if (resp) {
- 		u32 unused_buffer;
- 
- 		ath10k_ce_revoke_recv_next(ce_rx, NULL, &unused_buffer);
--		dma_unmap_single(ar->dev, resp_paddr,
--				 *resp_len, DMA_FROM_DEVICE);
-+		dma_free_coherent(ar->dev, *resp_len, tresp, resp_paddr);
- 	}
- err_req:
--	dma_unmap_single(ar->dev, req_paddr, req_len, DMA_TO_DEVICE);
--
--	if (ret == 0 && resp_len) {
--		*resp_len = min(*resp_len, xfer.resp_len);
--		memcpy(resp, tresp, xfer.resp_len);
--	}
-+	dma_free_coherent(ar->dev, req_len, treq, req_paddr);
- err_dma:
--	kfree(treq);
--	kfree(tresp);
- 
- 	return ret;
- }
--- 
-1.9.1
+Regards
+Christian
+
 
 
 _______________________________________________
