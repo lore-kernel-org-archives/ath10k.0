@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAhpE-0004xX-J1
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:38 +0000
-Received: by mail-io0-x242.google.com with SMTP id e78-v6so7430077iod.0
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:26 -0700 (PDT)
+ id 1fAhpC-0004xC-Fr
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:36 +0000
+Received: by mail-io0-x244.google.com with SMTP id f3-v6so19966235iob.13
+ for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:23 -0700 (PDT)
 From: Andres Rodriguez <andresx7@gmail.com>
-Subject: [PATCH 8/9] ath10k: use request_firmware_nowarn to load firmware
-Date: Mon, 23 Apr 2018 16:12:04 -0400
-Message-Id: <20180423201205.20533-9-andresx7@gmail.com>
+Subject: [PATCH 6/9] firmware: print firmware name on fallback path
+Date: Mon, 23 Apr 2018 16:12:02 -0400
+Message-Id: <20180423201205.20533-7-andresx7@gmail.com>
 In-Reply-To: <20180423201205.20533-1-andresx7@gmail.com>
 References: <20180423201205.20533-1-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,28 +27,32 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org
 Cc: arend.vanspriel@broadcom.com, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, andresx7@gmail.com, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-This reduces the unnecessary spew when trying to load optional firmware:
-"Direct firmware load for ... failed with error -2"
+Previously, one could assume the firmware name from the preceding
+message: "Direct firmware load for {name} failed with error %d".
+
+However, with the new firmware_request_nowarn() entrypoint, the message
+outlined above will not always be printed.
+
+Therefore, we add the firmware name to the fallback path spew in order
+to associate it with the appropriate request.
 
 Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ drivers/base/firmware_loader/fallback.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f3ec13b80b20..9a225b7ad2d7 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -652,7 +652,7 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
- 		dir = ".";
+diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+index e75928458489..1a47ddc70c31 100644
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -669,6 +669,6 @@ int fw_sysfs_fallback(struct firmware *fw, const char *name,
+ 	if (!fw_run_sysfs_fallback(opt_flags))
+ 		return ret;
  
- 	snprintf(filename, sizeof(filename), "%s/%s", dir, file);
--	ret = request_firmware(&fw, filename, ar->dev);
-+	ret = request_firmware_nowarn(&fw, filename, ar->dev);
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot fw request '%s': %d\n",
- 		   filename, ret);
- 
+-	dev_warn(device, "Falling back to user helper\n");
++	dev_warn(device, "Falling back to user helper for %s\n", name);
+ 	return fw_load_from_user_helper(fw, name, device, opt_flags);
+ }
 -- 
 2.14.1
 
