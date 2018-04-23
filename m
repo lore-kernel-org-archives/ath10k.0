@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22d.google.com ([2a00:1450:400c:c0c::22d])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAhKH-0000RX-8t
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 19:40:39 +0000
-Received: by mail-wr0-x22d.google.com with SMTP id z73-v6so44425397wrb.0
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 12:40:26 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CACD9L=C0j3DPpZWFTNnmZ765XC2ZgRDoDZ=5iamMCzyYWVMUFA@mail.gmail.com>
-References: <CACD9L=BXEQRQVWGP5iMvSNOP7nHz68W62+q6xEZkeb2vZ13DKQ@mail.gmail.com>
- <CAJ-Vmom3c9QBtxPCP7B3WBfUSETRc5J+dFVB1Vf9AKDEhnLDzg@mail.gmail.com>
- <CACD9L=CUW2j6SsQmOMu=ER5SjZxhqF=zY8GTksRT-JTsb==kGw@mail.gmail.com>
- <CAJ-VmonSMWqe_9is8eq-6QYahH_AsX5gPq3MKQaxd6azZc49Lw@mail.gmail.com>
- <CACD9L=C0j3DPpZWFTNnmZ765XC2ZgRDoDZ=5iamMCzyYWVMUFA@mail.gmail.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 23 Apr 2018 12:40:22 -0700
-Message-ID: <CAJ-Vmo=+2mVUHzQa7rrgfE9ARpedyBS17urUGjwLLoGgy2WSiw@mail.gmail.com>
-Subject: Re: failed to run otp: -22
+ id 1fAhp4-0004kZ-Fe
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:30 +0000
+Received: by mail-io0-x242.google.com with SMTP id r9-v6so3933409iod.6
+ for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:14 -0700 (PDT)
+From: Andres Rodriguez <andresx7@gmail.com>
+Subject: [PATCH 0/9] Loading optional firmware v4
+Date: Mon, 23 Apr 2018 16:11:56 -0400
+Message-Id: <20180423201205.20533-1-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,124 +17,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arvid Picciani <aep@exys.org>
-Cc: ath10k@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: arend.vanspriel@broadcom.com, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, andresx7@gmail.com, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-hi!
+Hey Everyone,
 
-So, OTP is "one time programmable" (ie, fuse-blown) memory in the NIC
-itself. It's one place you can put calibration data.
+This is a trimmed down version of v3 that contains the changes for which we
+have agreement. Changes that raised concern are being shifted to a followup
+series, mainly changes to the async firmware API.
 
-For TP-Link AP units then yes, it's in NOR flash and not OTP. So
-chances are you've overwritten it.
+Inline feedback I received in these patches has also been addressed, thanks
+everyone that chimed in.
 
+I'll be following up with some proposals for the async API. Hopefully we can
+end up with something that is not "the least bad" option.
 
+This series can be found in the for-luis-v4 branch of:
+https://github.com/lostgoat/linux.git
 
--adrian
+Andres Rodriguez (9):
+  firmware: some documentation fixes
+  firmware: wrap FW_OPT_* into an enum
+  firmware: add kernel-doc for enum fw_opt
+  firmware: use () to terminate kernel-doc function names
+  firmware: add function to load firmware without warnings v5
+  firmware: print firmware name on fallback path
+  firmware: use rename fw_sysfs_fallback to use the firmware_ prefix
+  ath10k: use request_firmware_nowarn to load firmware
+  ath10k: re-enable the firmware fallback mechanism for testmode
 
-On 23 April 2018 at 12:17, Arvid Picciani <aep@exys.org> wrote:
-> Ah, i did ask tp-link if the otp should be on the chip or on flash.
-> They didn't answer the question, instead they said i probably
-> overwrote the ART partition (didnt do that), which made me think the
-> OTP is on flash for ath10k as well.
-> So, it should be on the chip itself?
->
-> This is a tplink archer c7 v5.0.
->
->
-> this is a tplink-
->
-> On Mon, Apr 23, 2018 at 9:12 PM, Adrian Chadd <adrian@freebsd.org> wrote:
->> hi!
->>
->> It should be in OTP on the QCA9880 chip. Which board is this?
->>
->>
->>
->> -adiran
->>
->>
->> On 23 April 2018 at 12:11, Arvid Picciani <aep@exys.org> wrote:
->>> thanks for the response. That sounds bad.
->>> Does ath10k load the calibration stuff different than ath9k? Ath9k works
->>> just fine on the same board.
->>> Do 9k and 10k usually share the same partition for that info or should i go
->>> hunting for something completely else?
->>> Any more reading material that might help me find out how to load that
->>> correctly?
->>>
->>> /b/
->>>
->>> On Mon, Apr 23, 2018 at 9:07 PM, Adrian Chadd <adrian@freebsd.org> wrote:
->>>>
->>>> Hi,
->>>>
->>>> That's designed for debugging. It means you'll have an invalid MAC
->>>> address and no calibration information so your NIC won't work very
->>>> well.
->>>>
->>>> The reason why needs to be figured out!
->>>>
->>>>
->>>>
->>>> -adrian
->>>>
->>>>
->>>> On 23 April 2018 at 09:56, Arvid Picciani <aep@exys.org> wrote:
->>>> > Hi,
->>>> >
->>>> > Is it ok to run a QCA9880 with skip_otp=1?
->>>> > It's working fine with skip_ota, but just want to confirm this is safe.
->>>> >
->>>> > without skip_otp, mine isn't coming up because of "failed to run otp:
->>>> > -22"
->>>> >
->>>> > [    9.287905] PCI: Enabling device 0000:00:00.0 (0000 -> 0002)
->>>> > [    9.293912] ath10k_pci 0000:00:00.0: pci irq legacy oper_irq_mode 1
->>>> > irq_mode 0 reset_mode 0
->>>> > [    9.568820] ath10k_pci 0000:00:00.0: Direct firmware load for
->>>> > ath10k/pre-cal-pci-0000:00:00.0.bin failed with error -2
->>>> > [    9.579896] ath10k_pci 0000:00:00.0: Falling back to user helper
->>>> > [    9.737064] firmware ath10k!pre-cal-pci-0000:00:00.0.bin:
->>>> > firmware_loading_store: map pages failed
->>>> > [    9.746618] ath10k_pci 0000:00:00.0: Direct firmware load for
->>>> > ath10k/cal-pci-0000:00:00.0.bin failed with error -2
->>>> > [    9.757342] ath10k_pci 0000:00:00.0: Falling back to user helper
->>>> > [    9.909261] firmware ath10k!cal-pci-0000:00:00.0.bin:
->>>> > firmware_loading_store: map pages failed
->>>> > [    9.918500] ath10k_pci 0000:00:00.0: Direct firmware load for
->>>> > ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
->>>> > [    9.929582] ath10k_pci 0000:00:00.0: Falling back to user helper
->>>> > [   10.059370] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
->>>> > firmware_loading_store: map pages failed
->>>> > [   10.073667] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
->>>> > 0x4100016c chip_id 0x043202ff sub 0000:0000
->>>> > [   10.083242] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1
->>>> > tracing 0 dfs 1 testmode 1
->>>> > [   10.096229] ath10k_pci 0000:00:00.0: firmware ver 10.2.4-1.0-00033
->>>> > api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 c41417d0
->>>> > [   10.189809] ath10k_pci 0000:00:00.0: Direct firmware load for
->>>> > ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
->>>> > [   10.200640] ath10k_pci 0000:00:00.0: Falling back to user helper
->>>> > [   10.271745] firmware ath10k!QCA988X!hw2.0!board-2.bin:
->>>> > firmware_loading_store: map pages failed
->>>> > [   10.299633] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A
->>>> > crc32 bebc7c08
->>>> > [   10.437761] ath10k_pci 0000:00:00.0: otp calibration failed: 2
->>>> > [   10.443792] ath10k_pci 0000:00:00.0: failed to run otp: -22
->>>> > [   10.449551] ath10k_pci 0000:00:00.0: could not init core (-22)
->>>> > [   10.455680] ath10k_pci 0000:00:00.0: could not probe fw (-22)
->>>> >
->>>> > _______________________________________________
->>>> > ath10k mailing list
->>>> > ath10k@lists.infradead.org
->>>> > http://lists.infradead.org/mailman/listinfo/ath10k
->>>
->>>
+ .../driver-api/firmware/request_firmware.rst       | 21 +++++----
+ drivers/base/firmware_loader/fallback.c            | 30 ++++++------
+ drivers/base/firmware_loader/fallback.h            | 12 +++--
+ drivers/base/firmware_loader/firmware.h            | 38 +++++++++++----
+ drivers/base/firmware_loader/main.c                | 54 ++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/core.c             |  2 +-
+ drivers/net/wireless/ath/ath10k/testmode.c         |  2 +-
+ include/linux/firmware.h                           |  2 +
+ 8 files changed, 108 insertions(+), 53 deletions(-)
+
+-- 
+2.14.1
+
 
 _______________________________________________
 ath10k mailing list
