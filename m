@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot0-x235.google.com ([2607:f8b0:4003:c0f::235])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAgxe-00089f-7P
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 19:17:16 +0000
-Received: by mail-ot0-x235.google.com with SMTP id p2-v6so18489125otf.3
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 12:17:03 -0700 (PDT)
+ id 1fAgyo-0008Ur-1v
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 19:18:28 +0000
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <63f12b0c-02e9-0ad2-28a0-d0bbc858e76a@dd-wrt.com>
+Date: Mon, 23 Apr 2018 21:18:17 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmonSMWqe_9is8eq-6QYahH_AsX5gPq3MKQaxd6azZc49Lw@mail.gmail.com>
-References: <CACD9L=BXEQRQVWGP5iMvSNOP7nHz68W62+q6xEZkeb2vZ13DKQ@mail.gmail.com>
- <CAJ-Vmom3c9QBtxPCP7B3WBfUSETRc5J+dFVB1Vf9AKDEhnLDzg@mail.gmail.com>
- <CACD9L=CUW2j6SsQmOMu=ER5SjZxhqF=zY8GTksRT-JTsb==kGw@mail.gmail.com>
- <CAJ-VmonSMWqe_9is8eq-6QYahH_AsX5gPq3MKQaxd6azZc49Lw@mail.gmail.com>
-From: Arvid Picciani <aep@exys.org>
-Date: Mon, 23 Apr 2018 21:17:02 +0200
-Message-ID: <CACD9L=C0j3DPpZWFTNnmZ765XC2ZgRDoDZ=5iamMCzyYWVMUFA@mail.gmail.com>
-Subject: Re: failed to run otp: -22
+In-Reply-To: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,113 +19,156 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: ath10k@lists.infradead.org
+To: Manikanta Pubbisetty <mpubbise@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Ah, i did ask tp-link if the otp should be on the chip or on flash.
-They didn't answer the question, instead they said i probably
-overwrote the ART partition (didnt do that), which made me think the
-OTP is on flash for ath10k as well.
-So, it should be on the chip itself?
-
-This is a tplink archer c7 v5.0.
-
-
-this is a tplink-
-
-On Mon, Apr 23, 2018 at 9:12 PM, Adrian Chadd <adrian@freebsd.org> wrote:
-> hi!
->
-> It should be in OTP on the QCA9880 chip. Which board is this?
->
->
->
-> -adiran
->
->
-> On 23 April 2018 at 12:11, Arvid Picciani <aep@exys.org> wrote:
->> thanks for the response. That sounds bad.
->> Does ath10k load the calibration stuff different than ath9k? Ath9k works
->> just fine on the same board.
->> Do 9k and 10k usually share the same partition for that info or should i go
->> hunting for something completely else?
->> Any more reading material that might help me find out how to load that
->> correctly?
->>
->> /b/
->>
->> On Mon, Apr 23, 2018 at 9:07 PM, Adrian Chadd <adrian@freebsd.org> wrote:
->>>
->>> Hi,
->>>
->>> That's designed for debugging. It means you'll have an invalid MAC
->>> address and no calibration information so your NIC won't work very
->>> well.
->>>
->>> The reason why needs to be figured out!
->>>
->>>
->>>
->>> -adrian
->>>
->>>
->>> On 23 April 2018 at 09:56, Arvid Picciani <aep@exys.org> wrote:
->>> > Hi,
->>> >
->>> > Is it ok to run a QCA9880 with skip_otp=1?
->>> > It's working fine with skip_ota, but just want to confirm this is safe.
->>> >
->>> > without skip_otp, mine isn't coming up because of "failed to run otp:
->>> > -22"
->>> >
->>> > [    9.287905] PCI: Enabling device 0000:00:00.0 (0000 -> 0002)
->>> > [    9.293912] ath10k_pci 0000:00:00.0: pci irq legacy oper_irq_mode 1
->>> > irq_mode 0 reset_mode 0
->>> > [    9.568820] ath10k_pci 0000:00:00.0: Direct firmware load for
->>> > ath10k/pre-cal-pci-0000:00:00.0.bin failed with error -2
->>> > [    9.579896] ath10k_pci 0000:00:00.0: Falling back to user helper
->>> > [    9.737064] firmware ath10k!pre-cal-pci-0000:00:00.0.bin:
->>> > firmware_loading_store: map pages failed
->>> > [    9.746618] ath10k_pci 0000:00:00.0: Direct firmware load for
->>> > ath10k/cal-pci-0000:00:00.0.bin failed with error -2
->>> > [    9.757342] ath10k_pci 0000:00:00.0: Falling back to user helper
->>> > [    9.909261] firmware ath10k!cal-pci-0000:00:00.0.bin:
->>> > firmware_loading_store: map pages failed
->>> > [    9.918500] ath10k_pci 0000:00:00.0: Direct firmware load for
->>> > ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
->>> > [    9.929582] ath10k_pci 0000:00:00.0: Falling back to user helper
->>> > [   10.059370] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
->>> > firmware_loading_store: map pages failed
->>> > [   10.073667] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
->>> > 0x4100016c chip_id 0x043202ff sub 0000:0000
->>> > [   10.083242] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1
->>> > tracing 0 dfs 1 testmode 1
->>> > [   10.096229] ath10k_pci 0000:00:00.0: firmware ver 10.2.4-1.0-00033
->>> > api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 c41417d0
->>> > [   10.189809] ath10k_pci 0000:00:00.0: Direct firmware load for
->>> > ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
->>> > [   10.200640] ath10k_pci 0000:00:00.0: Falling back to user helper
->>> > [   10.271745] firmware ath10k!QCA988X!hw2.0!board-2.bin:
->>> > firmware_loading_store: map pages failed
->>> > [   10.299633] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A
->>> > crc32 bebc7c08
->>> > [   10.437761] ath10k_pci 0000:00:00.0: otp calibration failed: 2
->>> > [   10.443792] ath10k_pci 0000:00:00.0: failed to run otp: -22
->>> > [   10.449551] ath10k_pci 0000:00:00.0: could not init core (-22)
->>> > [   10.455680] ath10k_pci 0000:00:00.0: could not probe fw (-22)
->>> >
->>> > _______________________________________________
->>> > ath10k mailing list
->>> > ath10k@lists.infradead.org
->>> > http://lists.infradead.org/mailman/listinfo/ath10k
->>
->>
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+dGhpcyBwYXRjaCBtYWtlcyBubyBzZW5zZSBhdCBzb21lIHBvaW50cy4gQVBfVkxBTiBtdXN0IGJl
+IGVuYWJsZWQgYWx3YXlzIAooaXQgaXMgZW5hYmxlZCBieSBtYWM4MDIxMSBieSBkZWZhdWx0LCBi
+dXQgaXMgbm93IGRpc2FibGVkIGluIHZlcnkgCmxhdGVzdCBnaXQgdmVyc2lvbiBmb3IgZHJpdmVy
+cyB3aGljaCBhbm5vdW5jZSBzd19jcnlwdG8gc3VwcG9ydCkKaWYgaXRzIGRpc2FibGVkIHdkcyBh
+cCAvIHdkcyBzdGEgb3BlcmF0aW9uIHdpbGwgbm90IHdvcmsgYW55bW9yZSBzaW5jZSAKbWFjODAy
+MTEgdXNlcyBBUF9WTEFOIGZvciB0aGUgbG9jYWwgd2RzIHN0YSBpbnRlcmZhY2VzCgpTZWJhc3Rp
+YW4KCgpBbSAyMC4wNC4yMDE4IHVtIDE1OjU3IHNjaHJpZWIgTWFuaWthbnRhIFB1YmJpc2V0dHk6
+Cj4gTXV0bGljYXN0L2Jyb2FkY2FzdCB0cmFmZmljIGRlc3RpbmVkIGZvciBhIHBhcnRpY3VsYXIg
+dmxhbiBncm91cCB3aWxsCj4gYWx3YXlzIGJlIGVuY3J5cHRlZCBpbiBzb2Z0d2FyZS4gVG8gZW5h
+YmxlIGR5bmFtaWMgVkxBTnMsIGl0IHJlcXVpcmVzCj4gZHJpdmVyIHN1cHBvcnQgZm9yIHNlbmRp
+bmcgc29mdHdhcmUgZW5jcnlwdGVkIHBhY2tldHMuCj4KPiBJbiBhdGgxMGssIHNlbmRpbmcgc3cg
+ZW5jcnlwdGVkIGZyYW1lcyBpcyBhbGxvd2VkIG9ubHkgd2hlbiB3ZSBpbnNtb2QKPiB0aGUgZHJp
+dmVyIHdpdGggY3J5cHRtb2RlIHBhcmFtIHNldCB0byAxLCB0aGlzIGNvbmZpZ3VyYXRpb24gZGlz
+YWJsZXMKPiBoYXJkd2FyZSBjcnlwdG8gYW5kIGVuYWJsZXMgUkFXIG1vZGUgaW1wbGljaXRseS4g
+U2luY2UsIGVuYWJsaW5nIHJhdwo+IG1vZGUgaGFzIHBlcmZvcm1hbmNlIGltcGFjdCwgdGhpcyBj
+YW5ub3QgYmUgY29uc2lkZXJlZCBhcyBhbiBpZGVhbAo+IHNvbHV0aW9uIGZvciBzdXBwb3J0aW5n
+IFZMQU5zIGluIHRoZSBkcml2ZXIuCj4KPiBBcyBhbiBhbHRlcm5hdGl2ZSB0YWtlLCBpbiB0aGlz
+IGFwcHJvYWNoLCBjcnlwdG9ncmFwaGljIGtleXMgZm9yCj4gdW5pY2FzdCB0cmFmZmljKHBlciBw
+ZWVyIFBUS3MpIGFuZCBrZXlzIGZvciBub24tdmxhbiBncm91cCB0cmFmZmljCj4gd2lsbCBiZSBj
+b25maWd1cmVkIGluIGhhcmR3YXJlLCBhbGxvd2luZyBoYXJkd2FyZSBlbmNyeXB0aW9uIGZvciB1
+bmljYXN0Cj4gYW5kIG5vbi12bGFuIGdyb3VwIHRyYWZmaWMuIE9ubHkgdmxhbiBncm91cCB0cmFm
+ZmljIHdpbGwgYmUgZW5jcnlwdGVkIGluCj4gc29mdHdhcmUgYW5kIHB1c2hlZCB0byB0aGUgdGFy
+Z2V0IHdpdGggZW5jYXAgbW9kZSBzZXQgdG8gUkFXIGluIHRoZSBUWAo+IGRlc2NyaXB0b3JzLgo+
+Cj4gTm90IGFsbCBmaXJtd2FyZXMgY2FuIHN1cHBvcnQgdGhpcyB0eXBlIG9mIGtleSBjb25maWd1
+cmF0aW9uKGhhdmluZyBmZXcKPiBrZXlzIGluc3RhbGxlZCBpbiBoYXJkd2FyZSBhbmQgZmV3IG9u
+bHkgaW4gc29mdHdhcmUpOyBmb3IgdGhpcyBwdXJwb3NlIGEKPiBuZXcgV01JIHNlcnZpY2UgZmxh
+ZyAiV01JX1NFUlZJQ0VfUEVSX1BBQ0tFVF9TV19FTkNSWVBUIiBpcyBpbnRyb2R1Y2VkIHRvCj4g
+YWR2ZXJ0aXNlIHRoaXMgc3VwcG9ydC4KPgo+IEFsc28sIGFkZGluZyB0aGUgbG9naWMgcmVxdWly
+ZWQgdG8gc2VuZCBzdyBlbmNyeXB0ZWQgZnJhbWVzIGluIHJhdyBtb2RlLgo+Cj4gVGVzdGVkIHRo
+aXMgY2hhbmdlIG9uIFFDQTk5ODQoZmlybXdhcmUgdmVyc2lvbiAxMC40LTMuNS4zLTAwMDU3KS4K
+Pgo+IFNpZ25lZC1vZmYtYnk6IE1hbmlrYW50YSBQdWJiaXNldHR5IDxtcHViYmlzZUBjb2RlYXVy
+b3JhLm9yZz4KPiAtLS0KPiAgIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5o
+IHwgIDEgKwo+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyAgfCAyNiAr
+KysrKysrKysrKysrKysrKysrKysrKystLQo+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway93bWkuaCAgfCAyMSArKysrKysrKysrKysrKysrKysrKysKPiAgIDMgZmlsZXMgY2hhbmdl
+ZCwgNDYgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvY29yZS5oCj4gaW5kZXggZTRhYzhmMi4uMTA1NDM4ZCAxMDA2NDQKPiAtLS0g
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+ICsrKyBiL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4gQEAgLTEyMiw2ICsxMjIsNyBAQCBlbnVt
+IGF0aDEwa19za2JfZmxhZ3Mgewo+ICAgCUFUSDEwS19TS0JfRl9ERUxJVkVSX0NBQiA9IEJJVCgy
+KSwKPiAgIAlBVEgxMEtfU0tCX0ZfTUdNVCA9IEJJVCgzKSwKPiAgIAlBVEgxMEtfU0tCX0ZfUU9T
+ID0gQklUKDQpLAo+ICsJQVRIMTBLX1NLQl9GX1JBV19UWCA9IEJJVCg1KSwKPiAgIH07Cj4gICAK
+PiAgIHN0cnVjdCBhdGgxMGtfc2tiX2NiIHsKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+bWFjLmMKPiBpbmRleCBmYzMzMjBmLi42OTRjMGFhIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL21hYy5jCj4gQEAgLTMzNjIsNiArMzM2Miw3IEBAIGF0aDEwa19tYWNfdHhfaF9n
+ZXRfdHhtb2RlKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgCQkJICAgc3RydWN0IHNrX2J1ZmYgKnNr
+YikKPiAgIHsKPiAgIAljb25zdCBzdHJ1Y3QgaWVlZTgwMjExX2hkciAqaGRyID0gKHZvaWQgKilz
+a2ItPmRhdGE7Cj4gKwljb25zdCBzdHJ1Y3QgYXRoMTBrX3NrYl9jYiAqc2tiX2NiID0gQVRIMTBL
+X1NLQl9DQihza2IpOwo+ICAgCV9fbGUxNiBmYyA9IGhkci0+ZnJhbWVfY29udHJvbDsKPiAgIAo+
+ICAgCWlmICghdmlmIHx8IHZpZi0+dHlwZSA9PSBOTDgwMjExX0lGVFlQRV9NT05JVE9SKQo+IEBA
+IC0zNDAzLDcgKzM0MDQsOCBAQCBhdGgxMGtfbWFjX3R4X2hfZ2V0X3R4bW9kZShzdHJ1Y3QgYXRo
+MTBrICphciwKPiAgIAlpZiAoaWVlZTgwMjExX2lzX2RhdGFfcHJlc2VudChmYykgJiYgc3RhICYm
+IHN0YS0+dGRscykKPiAgIAkJcmV0dXJuIEFUSDEwS19IV19UWFJYX0VUSEVSTkVUOwo+ICAgCj4g
+LQlpZiAodGVzdF9iaXQoQVRIMTBLX0ZMQUdfUkFXX01PREUsICZhci0+ZGV2X2ZsYWdzKSkKPiAr
+CWlmICh0ZXN0X2JpdChBVEgxMEtfRkxBR19SQVdfTU9ERSwgJmFyLT5kZXZfZmxhZ3MpIHx8Cj4g
+KwkgICAgc2tiX2NiLT5mbGFncyAmIEFUSDEwS19TS0JfRl9SQVdfVFgpCj4gICAJCXJldHVybiBB
+VEgxMEtfSFdfVFhSWF9SQVc7Cj4gICAKPiAgIAlyZXR1cm4gQVRIMTBLX0hXX1RYUlhfTkFUSVZF
+X1dJRkk7Cj4gQEAgLTM1MTMsNiArMzUxNSw5IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfdHhf
+aF9maWxsX2NiKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgewo+ICAgCXN0cnVjdCBpZWVlODAyMTFf
+aGRyICpoZHIgPSAodm9pZCAqKXNrYi0+ZGF0YTsKPiAgIAlzdHJ1Y3QgYXRoMTBrX3NrYl9jYiAq
+Y2IgPSBBVEgxMEtfU0tCX0NCKHNrYik7Cj4gKwljb25zdCBzdHJ1Y3QgaWVlZTgwMjExX3R4X2lu
+Zm8gKmluZm8gPSBJRUVFODAyMTFfU0tCX0NCKHNrYik7Cj4gKwlib29sIGlzX2RhdGEgPSBpZWVl
+ODAyMTFfaXNfZGF0YShoZHItPmZyYW1lX2NvbnRyb2wpIHx8Cj4gKwkJCWllZWU4MDIxMV9pc19k
+YXRhX3FvcyhoZHItPmZyYW1lX2NvbnRyb2wpOwo+ICAgCj4gICAJY2ItPmZsYWdzID0gMDsKPiAg
+IAlpZiAoIWF0aDEwa190eF9oX3VzZV9od2NyeXB0byh2aWYsIHNrYikpCj4gQEAgLTM1MjQsNiAr
+MzUyOSwxNiBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfbWFjX3R4X2hfZmlsbF9jYihzdHJ1Y3QgYXRo
+MTBrICphciwKPiAgIAlpZiAoaWVlZTgwMjExX2lzX2RhdGFfcW9zKGhkci0+ZnJhbWVfY29udHJv
+bCkpCj4gICAJCWNiLT5mbGFncyB8PSBBVEgxMEtfU0tCX0ZfUU9TOwo+ICAgCj4gKwkvKiBEYXRh
+IGZyYW1lcyBlbmNyeXB0ZWQgaW4gc29mdHdhcmUgd2lsbCBiZSBwb3N0ZWQgdG8gZmlybXdhcmUK
+PiArCSAqIHdpdGggdHggZW5jYXAgbW9kZSBzZXQgdG8gUkFXLiBPbmUgc3VjaCBjYXNlIHdvdWxk
+IGJlIHRoZQo+ICsJICogbXVsdGljYXN0IHRyYWZmaWMgZ2VuZXJhdGVkIGZvciBhIFZMQU4gZ3Jv
+dXAuCj4gKwkgKi8KPiArCWlmIChpc19kYXRhICYmIGllZWU4MDIxMV9oYXNfcHJvdGVjdGVkKGhk
+ci0+ZnJhbWVfY29udHJvbCkgJiYKPiArCSAgICAhaW5mby0+Y29udHJvbC5od19rZXkpIHsKPiAr
+CQljYi0+ZmxhZ3MgfD0gQVRIMTBLX1NLQl9GX05PX0hXQ1JZUFQ7Cj4gKwkJY2ItPmZsYWdzIHw9
+IEFUSDEwS19TS0JfRl9SQVdfVFg7Cj4gKwl9Cj4gKwo+ICAgCWNiLT52aWYgPSB2aWY7Cj4gICAJ
+Y2ItPnR4cSA9IHR4cTsKPiAgIH0KPiBAQCAtMzYzMiw2ICszNjQ3LDcgQEAgc3RhdGljIGludCBh
+dGgxMGtfbWFjX3R4KHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgewo+ICAgCXN0cnVjdCBpZWVlODAy
+MTFfaHcgKmh3ID0gYXItPmh3Owo+ICAgCXN0cnVjdCBpZWVlODAyMTFfdHhfaW5mbyAqaW5mbyA9
+IElFRUU4MDIxMV9TS0JfQ0Ioc2tiKTsKPiArCWNvbnN0IHN0cnVjdCBhdGgxMGtfc2tiX2NiICpz
+a2JfY2IgPSBBVEgxMEtfU0tCX0NCKHNrYik7Cj4gICAJaW50IHJldDsKPiAgIAo+ICAgCS8qIFdl
+IHNob3VsZCBkaXNhYmxlIENDSyBSQVRFIGR1ZSB0byBQMlAgKi8KPiBAQCAtMzY0OSw3ICszNjY1
+LDggQEAgc3RhdGljIGludCBhdGgxMGtfbWFjX3R4KHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgCQlh
+dGgxMGtfdHhfaF84MDIzKHNrYik7Cj4gICAJCWJyZWFrOwo+ICAgCWNhc2UgQVRIMTBLX0hXX1RY
+UlhfUkFXOgo+IC0JCWlmICghdGVzdF9iaXQoQVRIMTBLX0ZMQUdfUkFXX01PREUsICZhci0+ZGV2
+X2ZsYWdzKSkgewo+ICsJCWlmICghdGVzdF9iaXQoQVRIMTBLX0ZMQUdfUkFXX01PREUsICZhci0+
+ZGV2X2ZsYWdzKSAmJgo+ICsJCSAgICAhKHNrYl9jYi0+ZmxhZ3MgJiBBVEgxMEtfU0tCX0ZfUkFX
+X1RYKSkgewo+ICAgCQkJV0FSTl9PTl9PTkNFKDEpOwo+ICAgCQkJaWVlZTgwMjExX2ZyZWVfdHhz
+a2IoaHcsIHNrYik7Cj4gICAJCQlyZXR1cm4gLUVOT1RTVVBQOwo+IEBAIC04NDU1LDYgKzg0NzIs
+MTEgQEAgaW50IGF0aDEwa19tYWNfcmVnaXN0ZXIoc3RydWN0IGF0aDEwayAqYXIpCj4gICAJCWdv
+dG8gZXJyX2Rmc19kZXRlY3Rvcl9leGl0Owo+ICAgCX0KPiAgIAo+ICsJaWYgKHRlc3RfYml0KFdN
+SV9TRVJWSUNFX1BFUl9QQUNLRVRfU1dfRU5DUllQVCwgYXItPndtaS5zdmNfbWFwKSkgewo+ICsJ
+CWFyLT5ody0+d2lwaHktPmludGVyZmFjZV9tb2RlcyB8PSBCSVQoTkw4MDIxMV9JRlRZUEVfQVBf
+VkxBTik7Cj4gKwkJYXItPmh3LT53aXBoeS0+c29mdHdhcmVfaWZ0eXBlcyB8PSBCSVQoTkw4MDIx
+MV9JRlRZUEVfQVBfVkxBTik7Cj4gKwl9Cj4gKwo+ICAgCWlmICghYXRoX2lzX3dvcmxkX3JlZ2Qo
+JmFyLT5hdGhfY29tbW9uLnJlZ3VsYXRvcnkpKSB7Cj4gICAJCXJldCA9IHJlZ3VsYXRvcnlfaGlu
+dChhci0+aHctPndpcGh5LAo+ICAgCQkJCSAgICAgIGFyLT5hdGhfY29tbW9uLnJlZ3VsYXRvcnku
+YWxwaGEyKTsKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
+bWkuaCBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgKPiBpbmRleCAzY2Mx
+MjlkLi5lMzU5YjZhZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3dtaS5oCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAo+
+IEBAIC0yMDIsNiArMjAyLDEwIEBAIGVudW0gd21pX3NlcnZpY2Ugewo+ICAgCVdNSV9TRVJWSUNF
+X0hPU1RfREZTX0NIRUNLX1NVUFBPUlQsCj4gICAJV01JX1NFUlZJQ0VfVFBDX1NUQVRTX0ZJTkFM
+LAo+ICAgCVdNSV9TRVJWSUNFX1JFU0VUX0NISVAsCj4gKwlXTUlfU0VSVklDRV9DRlJfQ0FQVFVS
+RV9TVVBQT1JULAo+ICsJV01JX1NFUlZJQ0VfVFhfREFUQV9BQ0tfUlNTSSwKPiArCVdNSV9TRVJW
+SUNFX0NGUl9DQVBUVVJFX0lORF9NU0dfVFlQRV8xLAo+ICsJV01JX1NFUlZJQ0VfUEVSX1BBQ0tF
+VF9TV19FTkNSWVBULAo+ICAgCj4gICAJLyoga2VlcCBsYXN0ICovCj4gICAJV01JX1NFUlZJQ0Vf
+TUFYLAo+IEBAIC0zNDksNiArMzUzLDEwIEBAIGVudW0gd21pXzEwXzRfc2VydmljZSB7Cj4gICAJ
+V01JXzEwXzRfU0VSVklDRV9IVFRfTUdNVF9UWF9DT01QX1ZBTElEX0ZMQUdTLAo+ICAgCVdNSV8x
+MF80X1NFUlZJQ0VfSE9TVF9ERlNfQ0hFQ0tfU1VQUE9SVCwKPiAgIAlXTUlfMTBfNF9TRVJWSUNF
+X1RQQ19TVEFUU19GSU5BTCwKPiArCVdNSV8xMF80X1NFUlZJQ0VfQ0ZSX0NBUFRVUkVfU1VQUE9S
+VCwKPiArCVdNSV8xMF80X1NFUlZJQ0VfVFhfREFUQV9BQ0tfUlNTSSwKPiArCVdNSV8xMF80X1NF
+UlZJQ0VfQ0ZSX0NBUFRVUkVfSU5EX01TR19UWVBFXzEsCj4gKwlXTUlfMTBfNF9TRVJWSUNFX1BF
+Ul9QQUNLRVRfU1dfRU5DUllQVCwKPiAgIH07Cj4gICAKPiAgIHN0YXRpYyBpbmxpbmUgY2hhciAq
+d21pX3NlcnZpY2VfbmFtZShpbnQgc2VydmljZV9pZCkKPiBAQCAtNDYxLDYgKzQ2OSwxMSBAQCBz
+dGF0aWMgaW5saW5lIGNoYXIgKndtaV9zZXJ2aWNlX25hbWUoaW50IHNlcnZpY2VfaWQpCj4gICAJ
+U1ZDU1RSKFdNSV9TRVJWSUNFX0hUVF9NR01UX1RYX0NPTVBfVkFMSURfRkxBR1MpOwo+ICAgCVNW
+Q1NUUihXTUlfU0VSVklDRV9IT1NUX0RGU19DSEVDS19TVVBQT1JUKTsKPiAgIAlTVkNTVFIoV01J
+X1NFUlZJQ0VfVFBDX1NUQVRTX0ZJTkFMKTsKPiArCVNWQ1NUUihXTUlfU0VSVklDRV9DRlJfQ0FQ
+VFVSRV9TVVBQT1JUKTsKPiArCVNWQ1NUUihXTUlfU0VSVklDRV9UWF9EQVRBX0FDS19SU1NJKTsK
+PiArCVNWQ1NUUihXTUlfU0VSVklDRV9DRlJfQ0FQVFVSRV9JTkRfTVNHX1RZUEVfMSk7Cj4gKwlT
+VkNTVFIoV01JX1NFUlZJQ0VfUEVSX1BBQ0tFVF9TV19FTkNSWVBUKTsKPiArCj4gICAJZGVmYXVs
+dDoKPiAgIAkJcmV0dXJuIE5VTEw7Cj4gICAJfQo+IEBAIC03NjksNiArNzgyLDE0IEBAIHN0YXRp
+YyBpbmxpbmUgdm9pZCB3bWlfMTBfNF9zdmNfbWFwKGNvbnN0IF9fbGUzMiAqaW4sIHVuc2lnbmVk
+IGxvbmcgKm91dCwKPiAgIAkgICAgICAgV01JX1NFUlZJQ0VfSE9TVF9ERlNfQ0hFQ0tfU1VQUE9S
+VCwgbGVuKTsKPiAgIAlTVkNNQVAoV01JXzEwXzRfU0VSVklDRV9UUENfU1RBVFNfRklOQUwsCj4g
+ICAJICAgICAgIFdNSV9TRVJWSUNFX1RQQ19TVEFUU19GSU5BTCwgbGVuKTsKPiArCVNWQ01BUChX
+TUlfMTBfNF9TRVJWSUNFX0NGUl9DQVBUVVJFX1NVUFBPUlQsCj4gKwkgICAgICAgV01JX1NFUlZJ
+Q0VfQ0ZSX0NBUFRVUkVfU1VQUE9SVCwgbGVuKTsKPiArCVNWQ01BUChXTUlfMTBfNF9TRVJWSUNF
+X1RYX0RBVEFfQUNLX1JTU0ksCj4gKwkgICAgICAgV01JX1NFUlZJQ0VfVFhfREFUQV9BQ0tfUlNT
+SSwgbGVuKTsKPiArCVNWQ01BUChXTUlfMTBfNF9TRVJWSUNFX0NGUl9DQVBUVVJFX0lORF9NU0df
+VFlQRV8xLAo+ICsJICAgICAgIFdNSV9TRVJWSUNFX0NGUl9DQVBUVVJFX0lORF9NU0dfVFlQRV8x
+LCBsZW4pOwo+ICsJU1ZDTUFQKFdNSV8xMF80X1NFUlZJQ0VfUEVSX1BBQ0tFVF9TV19FTkNSWVBU
+LAo+ICsJICAgICAgIFdNSV9TRVJWSUNFX1BFUl9QQUNLRVRfU1dfRU5DUllQVCwgbGVuKTsKPiAg
+IH0KPiAgIAo+ICAgI3VuZGVmIFNWQ01BUAoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
+IC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJI
+IC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVp
+bQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2No
+w6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6
+Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5
+NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
