@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
+Received: from ch3vs04.rockwellcollins.com ([205.175.226.52])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAelI-0006XB-T0
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 16:56:22 +0000
-Received: by mail-oi0-x236.google.com with SMTP id n65-v6so14940649oig.6
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 09:56:10 -0700 (PDT)
+ id 1fAg6K-0000z3-IO
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 18:22:10 +0000
+Received: by mail-yw0-f199.google.com with SMTP id v132-v6so667033ywa.4
+ for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 11:21:55 -0700 (PDT)
 MIME-Version: 1.0
-From: Arvid Picciani <aep@exys.org>
-Date: Mon, 23 Apr 2018 18:56:08 +0200
-Message-ID: <CACD9L=BXEQRQVWGP5iMvSNOP7nHz68W62+q6xEZkeb2vZ13DKQ@mail.gmail.com>
-Subject: failed to run otp: -22
+In-Reply-To: <87in8lf314.fsf@kamboji.qca.qualcomm.com>
+References: <1524238793-24481-1-git-send-email-jared.bents@rockwellcollins.com>
+ <87in8lf314.fsf@kamboji.qca.qualcomm.com>
+From: Jared Bents <jared.bents@rockwellcollins.com>
+Date: Mon, 23 Apr 2018 13:21:54 -0500
+Message-ID: <CAM=7fbeOBLMteeCxSVHzkwx5-MTiiHpudvHpiu5ydF=c33T1Fw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ath10k: convert kmemdup to dma_alloc_coherent
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +25,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Hi Kalle,
 
-Is it ok to run a QCA9880 with skip_otp=1?
-It's working fine with skip_ota, but just want to confirm this is safe.
+On Sat, Apr 21, 2018 at 2:10 AM, Kalle Valo <kvalo@codeaurora.org> wrote:
+> Jared Bents <jared.bents@rockwellcollins.com> writes:
+>
+>> Update to convert the use of kmemdup to dma_alloc_coherent as
+>> dma_alloc_coherent will consider DMA region limits such as
+>> those seen with CONFIG_FSL_PCI && CONFIG_ZONE_DMA32 whereas
+>> kmemdup does not take those limitations into account.
+>>
+>> Signed-off-by: Jared Bents <jared.bents@rockwellcollins.com>
+>
+> Does this fix a real bug or is it just a theoretical issue you noticed
+> while looking at the code? If this fixes a real bug please give a
+> description of it.
 
-without skip_otp, mine isn't coming up because of "failed to run otp: -22"
+It fixes a real bug that I have experienced.  My processor is a qoriq
+T1042 powerpc and I am running the fsl-sdk-v2.0-1703 kernel (mainline
+v4.1.35-rt41).  In 32 bit, the ath10k and ath9k work without issue.
+After migrating to 64 bit, we experienced dma mapping errors with both
+devices.  This patch is the only one that applies to a driver, the
+rest of the updates performed to fix the dma mapping issues deal with
+the sk_buffs are handled in skbuff, mac80211, and netlink.  We worked
+with NXP to resolve the issue and I believe they will be handling the
+ones that don't apply to the ath10k driver through their process.  If
+we don't see them after a while, we will be sending them to the kernel
+as well.
 
-[    9.287905] PCI: Enabling device 0000:00:00.0 (0000 -> 0002)
-[    9.293912] ath10k_pci 0000:00:00.0: pci irq legacy oper_irq_mode 1
-irq_mode 0 reset_mode 0
-[    9.568820] ath10k_pci 0000:00:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0000:00:00.0.bin failed with error -2
-[    9.579896] ath10k_pci 0000:00:00.0: Falling back to user helper
-[    9.737064] firmware ath10k!pre-cal-pci-0000:00:00.0.bin:
-firmware_loading_store: map pages failed
-[    9.746618] ath10k_pci 0000:00:00.0: Direct firmware load for
-ath10k/cal-pci-0000:00:00.0.bin failed with error -2
-[    9.757342] ath10k_pci 0000:00:00.0: Falling back to user helper
-[    9.909261] firmware ath10k!cal-pci-0000:00:00.0.bin:
-firmware_loading_store: map pages failed
-[    9.918500] ath10k_pci 0000:00:00.0: Direct firmware load for
-ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
-[    9.929582] ath10k_pci 0000:00:00.0: Falling back to user helper
-[   10.059370] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
-firmware_loading_store: map pages failed
-[   10.073667] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
-0x4100016c chip_id 0x043202ff sub 0000:0000
-[   10.083242] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1
-tracing 0 dfs 1 testmode 1
-[   10.096229] ath10k_pci 0000:00:00.0: firmware ver 10.2.4-1.0-00033
-api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 c41417d0
-[   10.189809] ath10k_pci 0000:00:00.0: Direct firmware load for
-ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
-[   10.200640] ath10k_pci 0000:00:00.0: Falling back to user helper
-[   10.271745] firmware ath10k!QCA988X!hw2.0!board-2.bin:
-firmware_loading_store: map pages failed
-[   10.299633] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A
-crc32 bebc7c08
-[   10.437761] ath10k_pci 0000:00:00.0: otp calibration failed: 2
-[   10.443792] ath10k_pci 0000:00:00.0: failed to run otp: -22
-[   10.449551] ath10k_pci 0000:00:00.0: could not init core (-22)
-[   10.455680] ath10k_pci 0000:00:00.0: could not probe fw (-22)
+Here is the output from the dma mapping problem:
+
+ath10k_pci 0000:01:00.0: unable to get target info from device
+ath10k_pci 0000:01:00.0: could not get target info (-5)
+ath10k_pci 0000:01:00.0: could not probe fw (-5)
+>
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#guidelines
+>
+> --
+> Kalle Valo
+
+Jared Bents
 
 _______________________________________________
 ath10k mailing list
