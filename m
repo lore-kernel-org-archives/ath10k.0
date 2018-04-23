@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAhp4-0004kZ-Fe
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:30 +0000
-Received: by mail-io0-x242.google.com with SMTP id r9-v6so3933409iod.6
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:14 -0700 (PDT)
+ id 1fAhp5-0004lL-5L
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:33 +0000
+Received: by mail-io0-x243.google.com with SMTP id o7-v6so18160008iob.8
+ for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:16 -0700 (PDT)
 From: Andres Rodriguez <andresx7@gmail.com>
-Subject: [PATCH 0/9] Loading optional firmware v4
-Date: Mon, 23 Apr 2018 16:11:56 -0400
-Message-Id: <20180423201205.20533-1-andresx7@gmail.com>
+Subject: [PATCH 1/9] firmware: some documentation fixes
+Date: Mon, 23 Apr 2018 16:11:57 -0400
+Message-Id: <20180423201205.20533-2-andresx7@gmail.com>
+In-Reply-To: <20180423201205.20533-1-andresx7@gmail.com>
+References: <20180423201205.20533-1-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +27,97 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org
 Cc: arend.vanspriel@broadcom.com, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, andresx7@gmail.com, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-Hey Everyone,
+Including:
+ - Fixup outdated kernel-doc paths
+ - Slightly too short title underline
+ - Some typos
 
-This is a trimmed down version of v3 that contains the changes for which we
-have agreement. Changes that raised concern are being shifted to a followup
-series, mainly changes to the async firmware API.
+Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
+---
+ Documentation/driver-api/firmware/request_firmware.rst | 16 ++++++++--------
+ drivers/base/firmware_loader/fallback.c                |  4 ++--
+ drivers/base/firmware_loader/fallback.h                |  2 +-
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-Inline feedback I received in these patches has also been addressed, thanks
-everyone that chimed in.
-
-I'll be following up with some proposals for the async API. Hopefully we can
-end up with something that is not "the least bad" option.
-
-This series can be found in the for-luis-v4 branch of:
-https://github.com/lostgoat/linux.git
-
-Andres Rodriguez (9):
-  firmware: some documentation fixes
-  firmware: wrap FW_OPT_* into an enum
-  firmware: add kernel-doc for enum fw_opt
-  firmware: use () to terminate kernel-doc function names
-  firmware: add function to load firmware without warnings v5
-  firmware: print firmware name on fallback path
-  firmware: use rename fw_sysfs_fallback to use the firmware_ prefix
-  ath10k: use request_firmware_nowarn to load firmware
-  ath10k: re-enable the firmware fallback mechanism for testmode
-
- .../driver-api/firmware/request_firmware.rst       | 21 +++++----
- drivers/base/firmware_loader/fallback.c            | 30 ++++++------
- drivers/base/firmware_loader/fallback.h            | 12 +++--
- drivers/base/firmware_loader/firmware.h            | 38 +++++++++++----
- drivers/base/firmware_loader/main.c                | 54 ++++++++++++++++------
- drivers/net/wireless/ath/ath10k/core.c             |  2 +-
- drivers/net/wireless/ath/ath10k/testmode.c         |  2 +-
- include/linux/firmware.h                           |  2 +
- 8 files changed, 108 insertions(+), 53 deletions(-)
-
+diff --git a/Documentation/driver-api/firmware/request_firmware.rst b/Documentation/driver-api/firmware/request_firmware.rst
+index 9305bf4db38e..7632f8807472 100644
+--- a/Documentation/driver-api/firmware/request_firmware.rst
++++ b/Documentation/driver-api/firmware/request_firmware.rst
+@@ -17,17 +17,17 @@ an error is returned.
+ 
+ firmware_request
+ ----------------
+-.. kernel-doc:: drivers/base/firmware_class.c
++.. kernel-doc:: drivers/base/firmware_loader/main.c
+    :functions: firmware_request
+ 
+ firmware_request_direct
+ -----------------------
+-.. kernel-doc:: drivers/base/firmware_class.c
++.. kernel-doc:: drivers/base/firmware_loader/main.c
+    :functions: firmware_request_direct
+ 
+ firmware_request_into_buf
+ -------------------------
+-.. kernel-doc:: drivers/base/firmware_class.c
++.. kernel-doc:: drivers/base/firmware_loader/main.c
+    :functions: firmware_request_into_buf
+ 
+ Asynchronous firmware requests
+@@ -41,7 +41,7 @@ in atomic contexts.
+ 
+ firmware_request_nowait
+ -----------------------
+-.. kernel-doc:: drivers/base/firmware_class.c
++.. kernel-doc:: drivers/base/firmware_loader/main.c
+    :functions: firmware_request_nowait
+ 
+ Special optimizations on reboot
+@@ -50,12 +50,12 @@ Special optimizations on reboot
+ Some devices have an optimization in place to enable the firmware to be
+ retained during system reboot. When such optimizations are used the driver
+ author must ensure the firmware is still available on resume from suspend,
+-this can be done with firmware_request_cache() insted of requesting for the
+-firmare to be loaded.
++this can be done with firmware_request_cache() instead of requesting for the
++firmware to be loaded.
+ 
+ firmware_request_cache()
+------------------------
+-.. kernel-doc:: drivers/base/firmware_class.c
++------------------------
++.. kernel-doc:: drivers/base/firmware_loader/main.c
+    :functions: firmware_request_cache
+ 
+ request firmware API expected driver use
+diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+index 71f529de5243..da97fc26119c 100644
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -536,8 +536,8 @@ fw_create_instance(struct firmware *firmware, const char *fw_name,
+ }
+ 
+ /**
+- * fw_load_sysfs_fallback - load a firmware via the syfs fallback mechanism
+- * @fw_sysfs: firmware syfs information for the firmware to load
++ * fw_load_sysfs_fallback - load a firmware via the sysfs fallback mechanism
++ * @fw_sysfs: firmware sysfs information for the firmware to load
+  * @opt_flags: flags of options, FW_OPT_*
+  * @timeout: timeout to wait for the load
+  *
+diff --git a/drivers/base/firmware_loader/fallback.h b/drivers/base/firmware_loader/fallback.h
+index dfebc644ed35..f8255670a663 100644
+--- a/drivers/base/firmware_loader/fallback.h
++++ b/drivers/base/firmware_loader/fallback.h
+@@ -6,7 +6,7 @@
+ #include <linux/device.h>
+ 
+ /**
+- * struct firmware_fallback_config - firmware fallback configuratioon settings
++ * struct firmware_fallback_config - firmware fallback configuration settings
+  *
+  * Helps describe and fine tune the fallback mechanism.
+  *
 -- 
 2.14.1
 
