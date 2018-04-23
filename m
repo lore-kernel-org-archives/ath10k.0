@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAdjZ-0007gq-RO
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 15:50:31 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+ id 1fAe9h-00021g-SN
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 16:17:43 +0000
+Subject: 9984 with 10.4.3.5.3-0057 crashes
 References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
  <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
  <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
@@ -13,12 +13,12 @@ References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
  <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
  <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
  <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
- <5AD9A1DF.6060007@broadcom.com>
-Date: Mon, 23 Apr 2018 18:50:12 +0300
-In-Reply-To: <5AD9A1DF.6060007@broadcom.com> (Arend van Spriel's message of
- "Fri, 20 Apr 2018 10:16:31 +0200")
-Message-ID: <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
+ <5AD9A1DF.6060007@broadcom.com> <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <dafff879-3630-9596-bcb6-eaf07289318d@dd-wrt.com>
+Date: Mon, 23 Apr 2018 18:17:09 +0200
 MIME-Version: 1.0
+In-Reply-To: <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +27,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: linux-wireless@vger.kernel.org, govinds@codeaurora.org, pillair@codeaurora.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org
 
-Arend van Spriel <arend.vanspriel@broadcom.com> writes:
-
-> On 4/20/2018 9:21 AM, Sebastian Gottschall wrote:
->>
->>>> Yes this is WIFI chip set level power-save(based on idleness) and not
->>>> related to protocol power save. FW will turn off/scale down the
->>>> resources(clock/rails) based on opportunity(when ever idle mode is
->>>> detected). This power save is mostly done in disconnected state. I am
->>>> not really sure when framework/user-space triggers power-save
->>>> config(iw dev <devname> set power_save on/off). Then doing this from
->>>> user-space will be unnecessarily toggling this config or may not be
->>>> setting at disconnected state.
->>> I think that 'set power_save' commands affects struct
->>> ieee80211_bss_conf::ps parameter and I don't think it should be used in
->>> this case. We already have ath10k_config_ps() for 802.11 level of power
->>> saving.
->>>
->>> Arend again proposed runtime-pm with which I'm not very familiar. But
->>> why would we want to disable this? Doesn't it make sense to have this
->>> feature always enabled to save power? wcn3990 is a chip for a mobile
->>> device anyway.
->>
->> it might be made for mobile devices but who knows how it is used by the
->> market.
-
-Sure, and this does parameter prevent that. You can still connect
-wcn3990 to any power source you want, but the driver is just optimised
-power consumption in focus.
-
-> Reading the explanation above it does not make sense to use
-> runtime-pm. That would only come into play if the host driver would
-> actually control the resources being turned off/scaled down.
-
-Exactly.
-
-> So this is purely reducing power-consumption of the chip. However, it
-> would be good to know the consequences in terms of responsiveness to
-> firmware commands for instance when requesting a scan operation.
-> Another thing to consider is to provide user-space with possibility to
-> change this configuration (maybe through debugfs?).
-
-Adrian was also commenting something similar about adding a debugfs
-interface but I don't really see the point right now while we are adding
-initial wcn3990 support. If someone wants to run measurements with and
-without this parameter it's very easy to edit it out from the sources.
-Later on we can consider making it dynamic if there's really the need
-for that, but I'm very skeptic that anyone would even need that.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+anVzdCBmb3IgeW91ciBub3RpY2UuIDEwLjQuMy41LjMtMDA1NyBvbiA5OTg0IHdoaWNoIHdhcyBq
+dXN0IHJlbGVhc2VkIApjcmFzaGVzIGluIHZodDE2MCBvcGVyYXRpb24gbW9kZSBpbW1lZGlhdGx5
+IGFmdGVyIGZpcnN0IHN0YXRpb24gYXNzb2NpYXRlcwpsYXN0IGtub3duIHdvcmtpbmcgc3RhYmxl
+IGZ3IHNvIGZhciBpcyAxMC40LTMuNC0wMDEwNC4gdGhlIHdob2xlIAoxMC40LjMuNS4zIHNlcmll
+cyBzZWVtIHRvIGJlIHNlcmlvdXNseSBicm9rZW4gb3IgdGhlIGFwaSBoYXMgYmVlbiAKY2hhbmdl
+ZCBpbiBhIHdheQp3aGljaCBpcyB1bnN1cHBvcnRlZCBieSBhdGgxMGsgKHdoaWNoIGkgdGhpbmsg
+aXMgdGhlIGNhdXNlIG9mIHRoZSBwcm9ibGVtKQppdCB3b3VsZCBiZSBnb29kIHRvIGtub3cgd2hh
+dCBoYXMgYmVlbiBjaGFuZ2VkLgoKW8KgwqAgNTQuMTcwMjQyXSBhdGgxMGtfcGNpIDAwMDE6MDM6
+MDAuMDogZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQgbi9hKQpbwqDCoCA1NC4xNzYzMzddIGF0aDEw
+a19wY2kgMDAwMTowMzowMC4wOiBxY2E5OTg0L3FjYTk5OTQgaHcxLjAgdGFyZ2V0IAoweDAxMDAw
+MDAwIGNoaXBfaWQgMHgwMDAwMDAwMCBzdWIgMTY4YzpjYWZlClvCoMKgIDU0LjE4NjIzN10gYXRo
+MTBrX3BjaSAwMDAxOjAzOjAwLjA6IGtjb25maWcgZGVidWcgMSBkZWJ1Z2ZzIDEgCnRyYWNpbmcg
+MCBkZnMgMCB0ZXN0bW9kZSAwClvCoMKgIDU0LjE5NTI2NF0gYXRoMTBrX3BjaSAwMDAxOjAzOjAw
+LjA6IGZpcm13YXJlIHZlciAxMC40LTMuNS4zLTAwMDU3IAphcGkgNSBmZWF0dXJlcyAKbm8tcDJw
+LG1mcCxwZWVyLWZsb3ctY3RybCxidGNvZXgtcGFyYW0sYWxsb3dzLW1lc2gtYmNhc3Qsbm8tcHMg
+Y3JjMzIgCmYxMGZkNGQzClvCoMKgIDU0LjIwOTUyMV0gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6
+IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQSAKY3JjMzIgMzFhYjJmZDEKW8KgwqAgNTQuMjE2
+ODIzXSBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogaHR0LXZlciAyLjIgd21pLW9wIDYgaHR0LW9w
+IDQgCmNhbCBvdHAgbWF4LXN0YSA1MTIgcmF3IDAgaHdjcnlwdG8gMQpbwqDCoCA1NC4yMjgyMjNd
+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBmaXJtd2FyZSByZWdpc3RlciBkdW1wOgpbwqDCoCA1
+NC4yMzM4NzldIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDBdOiAweDAwMDAwMDBBIDB4MDAw
+MDE1QjMgCjB4MEEwMDE0RjkgMHgwMDk3NUIzMQpbwqDCoCA1NC4yNDE3NzhdIGF0aDEwa19wY2kg
+MDAwMTowMzowMC4wOiBbMDRdOiAweDBBMDAxNEY5IDB4MDAwNjBCMzAgCjB4MDAwMDAwMUQgMHgw
+MDQ0NjFGMApbwqDCoCA1NC4yNDk2ODVdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDhdOiAw
+eDAwNDJFOTgwIDB4MDA0NUUwMjggCjB4MDAwRUU2Q0MgMHgwMDAwMDAwMQpbwqDCoCA1NC4yNTc1
+OTFdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMTJdOiAweDAwMDAwMDA5IDB4MDAwMDAwMDAg
+CjB4MDA5NzNBQkMgMHgwMDk3M0FEMgpbwqDCoCA1NC4yNjU0OThdIGF0aDEwa19wY2kgMDAwMTow
+MzowMC4wOiBbMTZdOiAweDAwOTczQUIwIDB4MDA5QzM3OEMgCjB4MDA5NjA2Q0EgMHgwMDAwMDAw
+MApbwqDCoCA1NC4yNzM0MDZdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMjBdOiAweDQwOUM5
+NjA5IDB4MDA0MDY3M0MgCjB4MDA0MDAwMDAgMHgwMDAwMDAwRQpbwqDCoCA1NC4yODEzMDRdIGF0
+aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMjRdOiAweDgwOTgwNUJGIDB4MDA0MDY3OUMgCjB4MDAw
+MDAwOTUgMHhDMDlDOTYwOQpbwqDCoCA1NC4yODkyMTBdIGF0aDEwa19wY2kgMDAwMTowMzowMC4w
+OiBbMjhdOiAweDgwOUNCQ0M1IDB4MDA0MDY4QkMgCjB4MDAwMDAwMDAgMHgwMDAwOTAyNgpbwqDC
+oCA1NC4yOTcxMTVdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMzJdOiAweDgwOUI3MzAzIDB4
+MDA0MDY4RUMgCjB4MDAwRUU2Q0MgMHgwMDQyQjk4OApbwqDCoCA1NC4zMDUwMjVdIGF0aDEwa19w
+Y2kgMDAwMTowMzowMC4wOiBbMzZdOiAweDgwOUIzQTQ2IDB4MDA0MDY5MkMgCjB4MDAwMDAwMDIg
+MHgwMDQyQjk4OApbwqDCoCA1NC4zMTI5MzVdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbNDBd
+OiAweDgwOUIzMTIzIDB4MDA0MDY5NUMgCjB4MDA0MDY5ODAgMHgwMDQyM0I3QwpbwqDCoCA1NC4z
+MjA4MzRdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbNDRdOiAweDgwOTZFRTBFIDB4MDA0MDY5
+N0MgCjB4MDAwRUU2QzAgMHgwMDAwMDAwMQpbwqDCoCA1NC4zMjg3NDBdIGF0aDEwa19wY2kgMDAw
+MTowMzowMC4wOiBbNDhdOiAweDgwOTZGODgzIDB4MDA0MDZBMkMgCjB4MDA0MkQ1NzAgMHgwMDQy
+NDFBNApbwqDCoCA1NC4zMzY2NDZdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbNTJdOiAweDgw
+OTYzQTI2IDB4MDA0MDZBNEMgCjB4MDA0MkQ1NzAgMHgwMDQwNTUyOApbwqDCoCA1NC4zNDQ1NTJd
+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbNTZdOiAweDgwOTYwRTgwIDB4MDA0MDZBOUMgCjB4
+MDAwMDAwMEQgMHgwMDQwMDAwMApbwqDCoCA1NC4zNTI0NThdIGF0aDEwa19wY2kgMDAwMTowMzow
+MC4wOiBDb3B5IEVuZ2luZSByZWdpc3RlciBkdW1wOgpbwqDCoCA1NC4zNTgzNzFdIGF0aDEwa19w
+Y2kgMDAwMTowMzowMC4wOiBbMDBdOiAweDAwMDRhMDAwwqAgMTXCoCAxNSAzwqDCoCAzClvCoMKg
+IDU0LjM2NDgwOV0gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFswMV06IDB4MDAwNGE0MDDCoCAy
+M8KgIDIzIDkwwqAgOTEKW8KgwqAgNTQuMzcxMjQwXSBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDog
+WzAyXTogMHgwMDA0YTgwMMKgwqAgMMKgwqAgMCA2M8KgwqAgMApbwqDCoCA1NC4zNzc2NzldIGF0
+aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDNdOiAweDAwMDRhYzAwwqAgMTLCoCAxMiAxM8KgIDEy
+ClvCoMKgIDU0LjM4NDExOF0gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFswNF06IDB4MDAwNGIw
+MDDCoCAxOcKgIDE5IDU5wqAgMTkKW8KgwqAgNTQuMzkwNTQ4XSBhdGgxMGtfcGNpIDAwMDE6MDM6
+MDAuMDogWzA1XTogMHgwMDA0YjQwMMKgIDI0wqAgMjQgNTXCoCA1NgpbwqDCoCA1NC4zOTY5ODZd
+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDZdOiAweDAwMDRiODAwwqAgMjPCoCAyMyAyM8Kg
+IDIzClvCoMKgIDU0LjQwMzQyNV0gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFswN106IDB4MDAw
+NGJjMDDCoMKgIDHCoMKgIDEgMcKgwqAgMQpbwqDCoCA1NC40MDk4NTddIGF0aDEwa19wY2kgMDAw
+MTowMzowMC4wOiBbMDhdOiAweDAwMDRjMDAwwqDCoCAwwqDCoCAwIDEyN8KgwqAgMApbwqDCoCA1
+NC40MTYyOTVdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDldOiAweDAwMDRjNDAwwqDCoCAx
+wqDCoCAxIDHCoMKgIDEKW8KgwqAgNTQuNDIyNzM2XSBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDog
+WzEwXTogMHgwMDA0YzgwMMKgwqAgMMKgwqAgMCAwwqDCoCAwClvCoMKgIDU0LjQyOTE3MV0gYXRo
+MTBrX3BjaSAwMDAxOjAzOjAwLjA6IFsxMV06IDB4MDAwNGNjMDDCoMKgIDDCoMKgIDAgMMKgwqAg
+MApbwqDCoCA1Ny4xOTE5NzddIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBmYWlsZWQgdG8gc2V0
+dXAgcGVlciBTTVBTIGZvciAKdmRldiAwOiAtMTEKW8KgwqAgNTcuMTk5MTg3XSBhdGgxMGtfcGNp
+IDAwMDE6MDM6MDAuMDogZmFpbGVkIHRvIGFzc29jaWF0ZSBzdGF0aW9uIAoxNDo5MTo4MjpiOTox
+NjpkNCBmb3IgdmRldiAwOiAtMTEKW8KgwqAgNjAuMjMxOTc2XSBhdGgxMGtfcGNpIDAwMDE6MDM6
+MDAuMDogZmFpbGVkIHRvIGRlbGV0ZSBwZWVyIAoxNDo5MTo4MjpiOToxNjpkNCBmb3IgdmRldiAw
+OiAtMTEKW8KgwqAgNjAuMjQwNDQxXSBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogZm91bmQgc3Rh
+IHBlZXIgMTQ6OTE6ODI6Yjk6MTY6ZDQgCihwdHIgZWRlOTgyMDAgaWQgMykgZW50cnkgb24gdmRl
+diAwIGFmdGVyIGl0IHdhcyBzdXBwb3NlZGx5IHJlbW92ZWQKW8KgwqAgNjAuMjUyOTg5XSBhdGgx
+MGtfcGNpIDAwMDE6MDM6MDAuMDogZmFpbGVkIHRvIHJlYWQgdGVtcGVyYXR1cmUgLTExCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
