@@ -1,25 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x231.google.com ([2a00:1450:400c:c0c::231])
+Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAeWm-0000II-6z
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 16:41:24 +0000
-Received: by mail-wr0-x231.google.com with SMTP id s18-v6so43075384wrg.9
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 09:41:09 -0700 (PDT)
+ id 1fAelI-0006XB-T0
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 16:56:22 +0000
+Received: by mail-oi0-x236.google.com with SMTP id n65-v6so14940649oig.6
+ for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 09:56:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
-References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
- <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
- <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
- <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
- <87604oodt4.fsf@kamboji.qca.qualcomm.com>
- <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
- <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
- <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
- <5AD9A1DF.6060007@broadcom.com> <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 23 Apr 2018 09:41:06 -0700
-Message-ID: <CAJ-Vmoky_ErN447XxvUw4fcHZPptzbBpfLU1eXSCbevhAayy8A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+From: Arvid Picciani <aep@exys.org>
+Date: Mon, 23 Apr 2018 18:56:08 +0200
+Message-ID: <CACD9L=BXEQRQVWGP5iMvSNOP7nHz68W62+q6xEZkeb2vZ13DKQ@mail.gmail.com>
+Subject: failed to run otp: -22
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +22,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>, govinds@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, pillair@codeaurora.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: ath10k@lists.infradead.org
 
-On 23 April 2018 at 08:50, Kalle Valo <kvalo@codeaurora.org> wrote:
+Hi,
 
->
-> Adrian was also commenting something similar about adding a debugfs
-> interface but I don't really see the point right now while we are adding
-> initial wcn3990 support. If someone wants to run measurements with and
-> without this parameter it's very easy to edit it out from the sources.
-> Later on we can consider making it dynamic if there's really the need
-> for that, but I'm very skeptic that anyone would even need that.
+Is it ok to run a QCA9880 with skip_otp=1?
+It's working fine with skip_ota, but just want to confirm this is safe.
 
-Hi!
+without skip_otp, mine isn't coming up because of "failed to run otp: -22"
 
-We have at ${WORK}, because we've found various devices (atheros and
-qualcomm and QCA and otherwise) have this nasty habit of trying to
-guess when a good time to clock-gate down is, but we're busy doing low
-latency audio/video.
-
-10, 20ms may not be a lot of latency for bulk data but that's a half
-to one of a video frame in my world. :-)
-
-
-
--adrian
+[    9.287905] PCI: Enabling device 0000:00:00.0 (0000 -> 0002)
+[    9.293912] ath10k_pci 0000:00:00.0: pci irq legacy oper_irq_mode 1
+irq_mode 0 reset_mode 0
+[    9.568820] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/pre-cal-pci-0000:00:00.0.bin failed with error -2
+[    9.579896] ath10k_pci 0000:00:00.0: Falling back to user helper
+[    9.737064] firmware ath10k!pre-cal-pci-0000:00:00.0.bin:
+firmware_loading_store: map pages failed
+[    9.746618] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/cal-pci-0000:00:00.0.bin failed with error -2
+[    9.757342] ath10k_pci 0000:00:00.0: Falling back to user helper
+[    9.909261] firmware ath10k!cal-pci-0000:00:00.0.bin:
+firmware_loading_store: map pages failed
+[    9.918500] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
+[    9.929582] ath10k_pci 0000:00:00.0: Falling back to user helper
+[   10.059370] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
+firmware_loading_store: map pages failed
+[   10.073667] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
+0x4100016c chip_id 0x043202ff sub 0000:0000
+[   10.083242] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1
+tracing 0 dfs 1 testmode 1
+[   10.096229] ath10k_pci 0000:00:00.0: firmware ver 10.2.4-1.0-00033
+api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 c41417d0
+[   10.189809] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+[   10.200640] ath10k_pci 0000:00:00.0: Falling back to user helper
+[   10.271745] firmware ath10k!QCA988X!hw2.0!board-2.bin:
+firmware_loading_store: map pages failed
+[   10.299633] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A
+crc32 bebc7c08
+[   10.437761] ath10k_pci 0000:00:00.0: otp calibration failed: 2
+[   10.443792] ath10k_pci 0000:00:00.0: failed to run otp: -22
+[   10.449551] ath10k_pci 0000:00:00.0: could not init core (-22)
+[   10.455680] ath10k_pci 0000:00:00.0: could not probe fw (-22)
 
 _______________________________________________
 ath10k mailing list
