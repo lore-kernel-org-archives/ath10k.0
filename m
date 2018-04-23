@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAhp6-0004nv-Fq
- for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:36 +0000
-Received: by mail-it0-x243.google.com with SMTP id f6-v6so12635546ita.2
- for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:20 -0700 (PDT)
+ id 1fAhp6-0004lj-Fu
+ for ath10k@lists.infradead.org; Mon, 23 Apr 2018 20:12:37 +0000
+Received: by mail-it0-x243.google.com with SMTP id h143-v6so12617973ita.4
+ for <ath10k@lists.infradead.org>; Mon, 23 Apr 2018 13:12:17 -0700 (PDT)
 From: Andres Rodriguez <andresx7@gmail.com>
-Subject: [PATCH 4/9] firmware: use () to terminate kernel-doc function names
-Date: Mon, 23 Apr 2018 16:12:00 -0400
-Message-Id: <20180423201205.20533-5-andresx7@gmail.com>
+Subject: [PATCH 2/9] firmware: wrap FW_OPT_* into an enum
+Date: Mon, 23 Apr 2018 16:11:58 -0400
+Message-Id: <20180423201205.20533-3-andresx7@gmail.com>
 In-Reply-To: <20180423201205.20533-1-andresx7@gmail.com>
 References: <20180423201205.20533-1-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,158 +27,180 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org
 Cc: arend.vanspriel@broadcom.com, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, andresx7@gmail.com, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-The kernel-doc spec dictates a function name ends in ().
+This should let us associate enum kdoc to these values.
+
+v2: use BIT() macro
 
 Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
 ---
- drivers/base/firmware_loader/fallback.c |  8 ++++----
- drivers/base/firmware_loader/main.c     | 22 +++++++++++-----------
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ drivers/base/firmware_loader/fallback.c | 12 ++++++------
+ drivers/base/firmware_loader/fallback.h |  6 ++++--
+ drivers/base/firmware_loader/firmware.h | 18 ++++++++++--------
+ drivers/base/firmware_loader/main.c     |  6 +++---
+ 4 files changed, 23 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-index ecc49a619298..e75928458489 100644
+index da97fc26119c..ecc49a619298 100644
 --- a/drivers/base/firmware_loader/fallback.c
 +++ b/drivers/base/firmware_loader/fallback.c
-@@ -124,7 +124,7 @@ static ssize_t timeout_show(struct class *class, struct class_attribute *attr,
+@@ -511,7 +511,7 @@ static const struct attribute_group *fw_dev_attr_groups[] = {
+ 
+ static struct fw_sysfs *
+ fw_create_instance(struct firmware *firmware, const char *fw_name,
+-		   struct device *device, unsigned int opt_flags)
++		   struct device *device, enum fw_opt opt_flags)
+ {
+ 	struct fw_sysfs *fw_sysfs;
+ 	struct device *f_dev;
+@@ -544,7 +544,7 @@ fw_create_instance(struct firmware *firmware, const char *fw_name,
+  * In charge of constructing a sysfs fallback interface for firmware loading.
+  **/
+ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs,
+-				  unsigned int opt_flags, long timeout)
++				  enum fw_opt opt_flags, long timeout)
+ {
+ 	int retval = 0;
+ 	struct device *f_dev = &fw_sysfs->dev;
+@@ -598,7 +598,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs,
+ 
+ static int fw_load_from_user_helper(struct firmware *firmware,
+ 				    const char *name, struct device *device,
+-				    unsigned int opt_flags)
++				    enum fw_opt opt_flags)
+ {
+ 	struct fw_sysfs *fw_sysfs;
+ 	long timeout;
+@@ -639,7 +639,7 @@ static int fw_load_from_user_helper(struct firmware *firmware,
+ 	return ret;
  }
  
- /**
-- * firmware_timeout_store - set number of seconds to wait for firmware
-+ * firmware_timeout_store() - set number of seconds to wait for firmware
-  * @class: device class pointer
-  * @attr: device attribute pointer
-  * @buf: buffer to scan for timeout value
-@@ -238,7 +238,7 @@ static int map_fw_priv_pages(struct fw_priv *fw_priv)
+-static bool fw_force_sysfs_fallback(unsigned int opt_flags)
++static bool fw_force_sysfs_fallback(enum fw_opt opt_flags)
+ {
+ 	if (fw_fallback_config.force_sysfs_fallback)
+ 		return true;
+@@ -648,7 +648,7 @@ static bool fw_force_sysfs_fallback(unsigned int opt_flags)
+ 	return true;
  }
  
+-static bool fw_run_sysfs_fallback(unsigned int opt_flags)
++static bool fw_run_sysfs_fallback(enum fw_opt opt_flags)
+ {
+ 	if (fw_fallback_config.ignore_sysfs_fallback) {
+ 		pr_info_once("Ignoring firmware sysfs fallback due to sysctl knob\n");
+@@ -663,7 +663,7 @@ static bool fw_run_sysfs_fallback(unsigned int opt_flags)
+ 
+ int fw_sysfs_fallback(struct firmware *fw, const char *name,
+ 		      struct device *device,
+-		      unsigned int opt_flags,
++		      enum fw_opt opt_flags,
+ 		      int ret)
+ {
+ 	if (!fw_run_sysfs_fallback(opt_flags))
+diff --git a/drivers/base/firmware_loader/fallback.h b/drivers/base/firmware_loader/fallback.h
+index f8255670a663..a3b73a09db6c 100644
+--- a/drivers/base/firmware_loader/fallback.h
++++ b/drivers/base/firmware_loader/fallback.h
+@@ -5,6 +5,8 @@
+ #include <linux/firmware.h>
+ #include <linux/device.h>
+ 
++#include "firmware.h"
++
  /**
-- * firmware_loading_store - set value in the 'loading' control file
-+ * firmware_loading_store() - set value in the 'loading' control file
-  * @dev: device pointer
-  * @attr: device attribute pointer
-  * @buf: buffer to scan for loading control value
-@@ -430,7 +430,7 @@ static int fw_realloc_pages(struct fw_sysfs *fw_sysfs, int min_size)
+  * struct firmware_fallback_config - firmware fallback configuration settings
+  *
+@@ -31,7 +33,7 @@ struct firmware_fallback_config {
+ #ifdef CONFIG_FW_LOADER_USER_HELPER
+ int fw_sysfs_fallback(struct firmware *fw, const char *name,
+ 		      struct device *device,
+-		      unsigned int opt_flags,
++		      enum fw_opt opt_flags,
+ 		      int ret);
+ void kill_pending_fw_fallback_reqs(bool only_kill_custom);
+ 
+@@ -43,7 +45,7 @@ void unregister_sysfs_loader(void);
+ #else /* CONFIG_FW_LOADER_USER_HELPER */
+ static inline int fw_sysfs_fallback(struct firmware *fw, const char *name,
+ 				    struct device *device,
+-				    unsigned int opt_flags,
++				    enum fw_opt opt_flags,
+ 				    int ret)
+ {
+ 	/* Keep carrying over the same error */
+diff --git a/drivers/base/firmware_loader/firmware.h b/drivers/base/firmware_loader/firmware.h
+index d11d37db370b..b252bfa82295 100644
+--- a/drivers/base/firmware_loader/firmware.h
++++ b/drivers/base/firmware_loader/firmware.h
+@@ -2,6 +2,7 @@
+ #ifndef __FIRMWARE_LOADER_H
+ #define __FIRMWARE_LOADER_H
+ 
++#include <linux/bitops.h>
+ #include <linux/firmware.h>
+ #include <linux/types.h>
+ #include <linux/kref.h>
+@@ -10,13 +11,14 @@
+ 
+ #include <generated/utsrelease.h>
+ 
+-/* firmware behavior options */
+-#define FW_OPT_UEVENT			(1U << 0)
+-#define FW_OPT_NOWAIT			(1U << 1)
+-#define FW_OPT_USERHELPER		(1U << 2)
+-#define FW_OPT_NO_WARN			(1U << 3)
+-#define FW_OPT_NOCACHE			(1U << 4)
+-#define FW_OPT_NOFALLBACK		(1U << 5)
++enum fw_opt {
++	FW_OPT_UEVENT =         BIT(0),
++	FW_OPT_NOWAIT =         BIT(1),
++	FW_OPT_USERHELPER =     BIT(2),
++	FW_OPT_NO_WARN =        BIT(3),
++	FW_OPT_NOCACHE =        BIT(4),
++	FW_OPT_NOFALLBACK =     BIT(5),
++};
+ 
+ enum fw_status {
+ 	FW_STATUS_UNKNOWN,
+@@ -110,6 +112,6 @@ static inline void fw_state_done(struct fw_priv *fw_priv)
  }
  
- /**
-- * firmware_data_write - write method for firmware
-+ * firmware_data_write() - write method for firmware
-  * @filp: open sysfs file
-  * @kobj: kobject for the device
-  * @bin_attr: bin_attr structure
-@@ -536,7 +536,7 @@ fw_create_instance(struct firmware *firmware, const char *fw_name,
- }
+ int assign_fw(struct firmware *fw, struct device *device,
+-	      unsigned int opt_flags);
++	      enum fw_opt opt_flags);
  
- /**
-- * fw_load_sysfs_fallback - load a firmware via the sysfs fallback mechanism
-+ * fw_load_sysfs_fallback() - load a firmware via the sysfs fallback mechanism
-  * @fw_sysfs: firmware sysfs information for the firmware to load
-  * @opt_flags: flags of options, FW_OPT_*
-  * @timeout: timeout to wait for the load
+ #endif /* __FIRMWARE_LOADER_H */
 diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-index 5baadad3012d..d028cd3257f7 100644
+index 5812148694b6..5baadad3012d 100644
 --- a/drivers/base/firmware_loader/main.c
 +++ b/drivers/base/firmware_loader/main.c
-@@ -597,7 +597,7 @@ _firmware_request(const struct firmware **firmware_p, const char *name,
- }
+@@ -443,7 +443,7 @@ static int fw_add_devm_name(struct device *dev, const char *name)
+ #endif
  
- /**
-- * firmware_request: - send firmware request and wait for it
-+ * firmware_request() - send firmware request and wait for it
-  * @firmware_p: pointer to firmware image
-  * @name: name of firmware file
-  * @device: device for which firmware is being loaded
-@@ -632,7 +632,7 @@ firmware_request(const struct firmware **firmware_p, const char *name,
- EXPORT_SYMBOL(firmware_request);
+ int assign_fw(struct firmware *fw, struct device *device,
+-	      unsigned int opt_flags)
++	      enum fw_opt opt_flags)
+ {
+ 	struct fw_priv *fw_priv = fw->priv;
+ 	int ret;
+@@ -558,7 +558,7 @@ static void fw_abort_batch_reqs(struct firmware *fw)
+ static int
+ _firmware_request(const struct firmware **firmware_p, const char *name,
+ 		  struct device *device, void *buf, size_t size,
+-		  unsigned int opt_flags)
++		  enum fw_opt opt_flags)
+ {
+ 	struct firmware *fw = NULL;
+ 	int ret;
+@@ -734,7 +734,7 @@ struct firmware_work {
+ 	struct device *device;
+ 	void *context;
+ 	void (*cont)(const struct firmware *fw, void *context);
+-	unsigned int opt_flags;
++	enum fw_opt opt_flags;
+ };
  
- /**
-- * firmware_request_direct: - load firmware directly without usermode helper
-+ * firmware_request_direct() - load firmware directly without usermode helper
-  * @firmware_p: pointer to firmware image
-  * @name: name of firmware file
-  * @device: device for which firmware is being loaded
-@@ -657,7 +657,7 @@ int firmware_request_direct(const struct firmware **firmware_p,
- EXPORT_SYMBOL_GPL(firmware_request_direct);
- 
- /**
-- * firmware_request_cache: - cache firmware for suspend so resume can use it
-+ * firmware_request_cache() - cache firmware for suspend so resume can use it
-  * @name: name of firmware file
-  * @device: device for which firmware should be cached for
-  *
-@@ -681,7 +681,7 @@ int firmware_request_cache(struct device *device, const char *name)
- EXPORT_SYMBOL_GPL(firmware_request_cache);
- 
- /**
-- * firmware_request_into_buf - load firmware into a previously allocated buffer
-+ * firmware_request_into_buf() - load firmware into a previously allocated buffer
-  * @firmware_p: pointer to firmware image
-  * @name: name of firmware file
-  * @device: device for which firmware is being loaded and DMA region allocated
-@@ -713,7 +713,7 @@ firmware_request_into_buf(const struct firmware **firmware_p, const char *name,
- EXPORT_SYMBOL(firmware_request_into_buf);
- 
- /**
-- * firmware_release: - release the resource associated with a firmware image
-+ * firmware_release() - release the resource associated with a firmware image
-  * @fw: firmware resource to release
-  **/
- void firmware_release(const struct firmware *fw)
-@@ -755,7 +755,7 @@ static void firmware_request_work_func(struct work_struct *work)
- }
- 
- /**
-- * firmware_request_nowait - asynchronous version of firmware_request
-+ * firmware_request_nowait() - asynchronous version of firmware_request
-  * @module: module requesting the firmware
-  * @uevent: sends uevent to copy the firmware image if this flag
-  *	is non-zero else the firmware copy must be done manually.
-@@ -824,7 +824,7 @@ EXPORT_SYMBOL(firmware_request_nowait);
- static ASYNC_DOMAIN_EXCLUSIVE(fw_cache_domain);
- 
- /**
-- * cache_firmware - cache one firmware image in kernel memory space
-+ * cache_firmware() - cache one firmware image in kernel memory space
-  * @fw_name: the firmware image name
-  *
-  * Cache firmware in kernel memory so that drivers can use it when
-@@ -866,7 +866,7 @@ static struct fw_priv *lookup_fw_priv(const char *fw_name)
- }
- 
- /**
-- * uncache_firmware - remove one cached firmware image
-+ * uncache_firmware() - remove one cached firmware image
-  * @fw_name: the firmware image name
-  *
-  * Uncache one firmware image which has been cached successfully
-@@ -1042,7 +1042,7 @@ static void __device_uncache_fw_images(void)
- }
- 
- /**
-- * device_cache_fw_images - cache devices' firmware
-+ * device_cache_fw_images() - cache devices' firmware
-  *
-  * If one device called firmware_request or its nowait version
-  * successfully before, the firmware names are recored into the
-@@ -1075,7 +1075,7 @@ static void device_cache_fw_images(void)
- }
- 
- /**
-- * device_uncache_fw_images - uncache devices' firmware
-+ * device_uncache_fw_images() - uncache devices' firmware
-  *
-  * uncache all firmwares which have been cached successfully
-  * by device_uncache_fw_images earlier
-@@ -1092,7 +1092,7 @@ static void device_uncache_fw_images_work(struct work_struct *work)
- }
- 
- /**
-- * device_uncache_fw_images_delay - uncache devices firmwares
-+ * device_uncache_fw_images_delay() - uncache devices firmwares
-  * @delay: number of milliseconds to delay uncache device firmwares
-  *
-  * uncache all devices's firmwares which has been cached successfully
+ static void firmware_request_work_func(struct work_struct *work)
 -- 
 2.14.1
 
