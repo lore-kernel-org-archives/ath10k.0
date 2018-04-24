@@ -1,17 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAqWY-0005lp-E1
- for ath10k@lists.infradead.org; Tue, 24 Apr 2018 05:29:55 +0000
+ id 1fAqbn-0008TI-36
+ for ath10k@lists.infradead.org; Tue, 24 Apr 2018 05:35:20 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 9/9] ath10k: re-enable the firmware fallback mechanism for
- testmode
-References: <20180423201205.20533-1-andresx7@gmail.com>
- <20180423201205.20533-10-andresx7@gmail.com>
-Date: Tue, 24 Apr 2018 08:29:38 +0300
-In-Reply-To: <20180423201205.20533-10-andresx7@gmail.com> (Andres Rodriguez's
- message of "Mon, 23 Apr 2018 16:12:05 -0400")
-Message-ID: <87fu3lcgu5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 4/4] ath10k: Enable sta idle power save
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+ <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
+ <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
+ <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
+ <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+ <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
+ <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
+ <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
+ <5AD9A1DF.6060007@broadcom.com>
+ <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-Vmoky_ErN447XxvUw4fcHZPptzbBpfLU1eXSCbevhAayy8A@mail.gmail.com>
+Date: Tue, 24 Apr 2018 08:35:03 +0300
+In-Reply-To: <CAJ-Vmoky_ErN447XxvUw4fcHZPptzbBpfLU1eXSCbevhAayy8A@mail.gmail.com>
+ (Adrian Chadd's message of "Mon, 23 Apr 2018 09:41:06 -0700")
+Message-ID: <87bme9cgl4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,23 +33,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andres Rodriguez <andresx7@gmail.com>
-Cc: arend.vanspriel@broadcom.com, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, alexdeucher@gmail.com, christian.koenig@amd.com
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Arend van Spriel <arend.vanspriel@broadcom.com>, govinds@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, pillair@codeaurora.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Andres Rodriguez <andresx7@gmail.com> writes:
+Adrian Chadd <adrian@freebsd.org> writes:
 
-> The ath10k testmode uses request_firmware_direct() in order to avoid
-> producing firmware load warnings. Disabling the fallback mechanism was a
-> side effect of disabling warnings.
+> On 23 April 2018 at 08:50, Kalle Valo <kvalo@codeaurora.org> wrote:
 >
-> We now have a new API that allows us to avoid warnings while keeping the
-> fallback mechanism enabled. So use that instead.
+>>
+>> Adrian was also commenting something similar about adding a debugfs
+>> interface but I don't really see the point right now while we are adding
+>> initial wcn3990 support. If someone wants to run measurements with and
+>> without this parameter it's very easy to edit it out from the sources.
+>> Later on we can consider making it dynamic if there's really the need
+>> for that, but I'm very skeptic that anyone would even need that.
 >
-> Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
+> Hi!
+>
+> We have at ${WORK}, because we've found various devices (atheros and
+> qualcomm and QCA and otherwise) have this nasty habit of trying to
+> guess when a good time to clock-gate down is, but we're busy doing low
+> latency audio/video.
+>
+> 10, 20ms may not be a lot of latency for bulk data but that's a half
+> to one of a video frame in my world. :-)
 
-Thanks!
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
+Sure, I get that. But we should discuss making a setting like this
+dynamic once we have a test case and numbers showing that it's needed,
+otherwise it's just unnecessary cruft.
 
 -- 
 Kalle Valo
