@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAr1g-000216-16
- for ath10k@lists.infradead.org; Tue, 24 Apr 2018 06:02:06 +0000
+ id 1fAr4r-000345-SX
+ for ath10k@lists.infradead.org; Tue, 24 Apr 2018 06:05:24 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: Enable hw checksum for wcn3990
+Subject: Re: [v2,1/4] ath10k: Add hw params for shadow register support
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1523957066-12585-1-git-send-email-pillair@codeaurora.org>
-References: <1523957066-12585-1-git-send-email-pillair@codeaurora.org>
-Message-Id: <20180424060153.AF4EB6070B@smtp.codeaurora.org>
-Date: Tue, 24 Apr 2018 06:01:53 +0000 (UTC)
+In-Reply-To: <1523966821-21903-2-git-send-email-pillair@codeaurora.org>
+References: <1523966821-21903-2-git-send-email-pillair@codeaurora.org>
+Message-Id: <20180424060511.4B88D6070B@smtp.codeaurora.org>
+Date: Tue, 24 Apr 2018 06:05:11 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +27,22 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> By default ath10k driver enables the support for HW_CHECKSUM
-> (NETIF_F_HW_CSUM). Since the TCP/UDP checksum calculation is not enabled
-> in the wcn3990 firmware the checksum is incorrect in the TCP/UDP packets
-> and all patckets are dropped. But due note that wcn3990 support in
-> ath10k is still incomplete so this isn't a critical fix (yet).
+> wcn3990 supports shadow register for ce write.
 > 
-> Enable hw checksum calculations in wcn3990 hardware by
-> setting the proper flags in msdu descriptor tso flags.
+> Add a hw param for shadow register support.
 > 
 > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+4 patches applied to ath-next branch of ath.git, thanks.
 
-20529b33aa12 ath10k: enable hw checksum for wcn3990
+b2e40d7ab8e2 ath10k: add hw params for shadow register support
+b7ba83f7c414 ath10k: add support for shadow register for WNC3990
+4945af5b264f ath10k: enable SRRI/DRRI support on ddr for WCN3990
+d5cded16fdc0 ath10k: enable sta idle power save
 
 -- 
-https://patchwork.kernel.org/patch/10344621/
+https://patchwork.kernel.org/patch/10344857/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
