@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAu5l-0005ah-OV
- for ath10k@lists.infradead.org; Tue, 24 Apr 2018 09:18:47 +0000
+ id 1fAucY-0001Tg-Ja
+ for ath10k@lists.infradead.org; Tue, 24 Apr 2018 09:52:34 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH] ath10k: add dynamic vlan support
 References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
  <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
  <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
-From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Message-ID: <12cd1e72-fd27-9111-808e-0295c53f5d6b@codeaurora.org>
-Date: Tue, 24 Apr 2018 14:48:10 +0530
+Date: Tue, 24 Apr 2018 12:52:05 +0300
+In-Reply-To: <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com> (Sebastian
+ Gottschall's message of "Tue, 24 Apr 2018 11:09:10 +0200")
+Message-ID: <874lk1orsq.fsf@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +21,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Manikanta Pubbisetty <mpubbise@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-WWVzIFNlYmFzdGlhbiwgWW91ciBwb2ludCBpcyB2YWxpZC4gVGhpcyB3b3VsZCBicmVhayB0aGUg
-NC1hZGRyIApvcGVyYXRpb24gb24gb3RoZXIgYXRoMTBrIGRldmljZXMgd2hpY2ggZG9lcyBub3Qg
-c3VwcG9ydCB0aGUgbmV3IFdNSSAKc2VydmljZS4KCkkgaGF2ZSBhbm90aGVyIGFwcHJvYWNoIHRv
-IHNvbHZlIHRoaXMgcHJvYmxlbSwgSSB3aWxsIGNvbWUgd2l0aCBhIHNtYWxsIApwYXRjaCBhbmQg
-c2VlIHdoYXQgam9oYW5uZXMgaGFzIHRvIHNheSBvbiB0aGF0IGFwcHJvYWNoLgoKTWFuaWthbnRh
-CgpPbiA0LzI0LzIwMTggMjozOSBQTSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwgd3JvdGU6Cj4gY29u
-c2lkZXIgbXkgY29tbWVudCByZWdhcmRpbmcgdmxhbl9hcC4KPiB0aGlzIHBhdGNoIHdpbGwgYnJl
-YWsgd2RzIGFwIC8gd2RzIHN0YSBzdXBwb3J0IHdpdGggbGF0ZXN0IG1hYzgwMjExIAo+IChzZWUg
-YWxzbyBteSBwb3N0IG9uIHRoZSB3aXJlbGVzcyBtYWlsaW5nIGxpc3QgYWJvdXQgdGhlIGJyZWFr
-aW5nIAo+IHBhdGNoIGluIG1hYzgwMjExKQo+IHNvIEFQX1ZMQU4gbXVzdCBiZSBtYXNrZWQgYWx3
-YXlzIGZvciBhbGwgY2hpcHNldHMuIG90aGVyd2lzZSB3ZHMgCj4gYnJlYWtzIGFuZCB0aGlzIGlz
-IG5vdCBqdXN0IGEgZ3Vlc3MuIGkgdGVzdGVkIGl0IHllc3RlcmRheSB1c2luZyB0aGlzIAo+IHBh
-dGNoIGFuZCBmb3VuZAo+IHRoZSBjYXVzZSBvZiB0aGUgaXNzdWUKPgo+IHRoZSBmb2xsb3dpbmcg
-bGluZXMKPgo+IMKgICvCoMKgwqAgaWYgKHRlc3RfYml0KFdNSV9TRVJWSUNFX1BFUl9QQUNLRVRf
-U1dfRU5DUllQVCwgCj4gYXItPndtaS5zdmNfbWFwKSkgewo+ICvCoMKgwqDCoMKgwqDCoCBhci0+
-aHctPndpcGh5LT5pbnRlcmZhY2VfbW9kZXMgfD0gQklUKE5MODAyMTFfSUZUWVBFX0FQX1ZMQU4p
-Owo+ICvCoMKgwqDCoMKgwqDCoCBhci0+aHctPndpcGh5LT5zb2Z0d2FyZV9pZnR5cGVzIHw9IEJJ
-VChOTDgwMjExX0lGVFlQRV9BUF9WTEFOKTsKPiArwqDCoMKgIH0KPgo+Cj4gbXVzdCBiZSBqdXN0
-Cj4KPiArwqDCoMKgwqDCoMKgwqAgYXItPmh3LT53aXBoeS0+aW50ZXJmYWNlX21vZGVzIHw9IEJJ
-VChOTDgwMjExX0lGVFlQRV9BUF9WTEFOKTsKPiArwqDCoMKgwqDCoMKgwqAgYXItPmh3LT53aXBo
-eS0+c29mdHdhcmVfaWZ0eXBlcyB8PSBCSVQoTkw4MDIxMV9JRlRZUEVfQVBfVkxBTik7Cj4KPiBl
-dmVydGhpbmcgZWxzZSB3aWxsIGNhdXNlIGEgcmVncmVzc2lvbgo+Cj4gQW0gMjQuMDQuMjAxOCB1
-bSAxMDowOSBzY2hyaWViIEthbGxlIFZhbG86Cj4+IE1hbmlrYW50YSBQdWJiaXNldHR5IDxtcHVi
-YmlzZUBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+Pgo+Pj4gTXV0bGljYXN0L2Jyb2FkY2FzdCB0
-cmFmZmljIGRlc3RpbmVkIGZvciBhIHBhcnRpY3VsYXIgdmxhbiBncm91cCB3aWxsCj4+PiBhbHdh
-eXMgYmUgZW5jcnlwdGVkIGluIHNvZnR3YXJlLiBUbyBlbmFibGUgZHluYW1pYyBWTEFOcywgaXQg
-cmVxdWlyZXMKPj4+IGRyaXZlciBzdXBwb3J0IGZvciBzZW5kaW5nIHNvZnR3YXJlIGVuY3J5cHRl
-ZCBwYWNrZXRzLgo+Pj4KPj4+IEluIGF0aDEwaywgc2VuZGluZyBzdyBlbmNyeXB0ZWQgZnJhbWVz
-IGlzIGFsbG93ZWQgb25seSB3aGVuIHdlIGluc21vZAo+Pj4gdGhlIGRyaXZlciB3aXRoIGNyeXB0
-bW9kZSBwYXJhbSBzZXQgdG8gMSwgdGhpcyBjb25maWd1cmF0aW9uIGRpc2FibGVzCj4+PiBoYXJk
-d2FyZSBjcnlwdG8gYW5kIGVuYWJsZXMgUkFXIG1vZGUgaW1wbGljaXRseS4gU2luY2UsIGVuYWJs
-aW5nIHJhdwo+Pj4gbW9kZSBoYXMgcGVyZm9ybWFuY2UgaW1wYWN0LCB0aGlzIGNhbm5vdCBiZSBj
-b25zaWRlcmVkIGFzIGFuIGlkZWFsCj4+PiBzb2x1dGlvbiBmb3Igc3VwcG9ydGluZyBWTEFOcyBp
-biB0aGUgZHJpdmVyLgo+Pj4KPj4+IEFzIGFuIGFsdGVybmF0aXZlIHRha2UsIGluIHRoaXMgYXBw
-cm9hY2gsIGNyeXB0b2dyYXBoaWMga2V5cyBmb3IKPj4+IHVuaWNhc3QgdHJhZmZpYyhwZXIgcGVl
-ciBQVEtzKSBhbmQga2V5cyBmb3Igbm9uLXZsYW4gZ3JvdXAgdHJhZmZpYwo+Pj4gd2lsbCBiZSBj
-b25maWd1cmVkIGluIGhhcmR3YXJlLCBhbGxvd2luZyBoYXJkd2FyZSBlbmNyeXB0aW9uIGZvciAK
-Pj4+IHVuaWNhc3QKPj4+IGFuZCBub24tdmxhbiBncm91cCB0cmFmZmljLiBPbmx5IHZsYW4gZ3Jv
-dXAgdHJhZmZpYyB3aWxsIGJlIAo+Pj4gZW5jcnlwdGVkIGluCj4+PiBzb2Z0d2FyZSBhbmQgcHVz
-aGVkIHRvIHRoZSB0YXJnZXQgd2l0aCBlbmNhcCBtb2RlIHNldCB0byBSQVcgaW4gdGhlIFRYCj4+
-PiBkZXNjcmlwdG9ycy4KPj4+Cj4+PiBOb3QgYWxsIGZpcm13YXJlcyBjYW4gc3VwcG9ydCB0aGlz
-IHR5cGUgb2Yga2V5IGNvbmZpZ3VyYXRpb24oaGF2aW5nIGZldwo+Pj4ga2V5cyBpbnN0YWxsZWQg
-aW4gaGFyZHdhcmUgYW5kIGZldyBvbmx5IGluIHNvZnR3YXJlKTsgZm9yIHRoaXMgCj4+PiBwdXJw
-b3NlIGEKPj4+IG5ldyBXTUkgc2VydmljZSBmbGFnICJXTUlfU0VSVklDRV9QRVJfUEFDS0VUX1NX
-X0VOQ1JZUFQiIGlzIAo+Pj4gaW50cm9kdWNlZCB0bwo+Pj4gYWR2ZXJ0aXNlIHRoaXMgc3VwcG9y
-dC4KPj4+Cj4+PiBBbHNvLCBhZGRpbmcgdGhlIGxvZ2ljIHJlcXVpcmVkIHRvIHNlbmQgc3cgZW5j
-cnlwdGVkIGZyYW1lcyBpbiByYXcgCj4+PiBtb2RlLgo+Pj4KPj4+IFRlc3RlZCB0aGlzIGNoYW5n
-ZSBvbiBRQ0E5OTg0KGZpcm13YXJlIHZlcnNpb24gMTAuNC0zLjUuMy0wMDA1NykuCj4+Pgo+Pj4g
-U2lnbmVkLW9mZi1ieTogTWFuaWthbnRhIFB1YmJpc2V0dHkgPG1wdWJiaXNlQGNvZGVhdXJvcmEu
-b3JnPgo+PiBZb3VyIG5hbWUgaW4gcGF0Y2h3b3JrIGlzIHdyb25nIGFuZCBoZW5jZSBteSBzY3Jp
-cHQgdXNlcyB0aGUgd3JvbmcKPj4gbmFtZS4gUGxlYXNlIGZpeCBpdCBieSByZWdpc3RlcmluZyB0
-byBwYXRjaHdvcmtbMV0gd2hlcmUgaXQncyBwb3NzaWJsZQo+PiB0byBjaGFuZ2UgeW91ciBuYW1l
-IGR1cmluZyByZWdpc3RyYXRpb24sIGJ1dCBvbmx5IG9uZSB0aW1lLiBJZiB0aGF0Cj4+IGRvZXNu
-J3Qgd29yayB0aGVuIHNlbmQgYSByZXF1ZXN0IHRvIGhlbHBkZXNrQGtlcm5lbC5vcmcgYW5kIHRo
-ZSBhZG1pbnMKPj4gY2FuIGZpeCBpdC4KPj4KPj4gWzFdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5l
-bC5vcmcvcmVnaXN0ZXIvCj4+Cj4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+
+> consider my comment regarding vlan_ap.
+
+I am considering comment, I just go one issue at a time and haven't had
+a time to look at your comment. But PLEASE do not top post, it's very
+annoying and creates a mess in patchwork.
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#do_not_top_post_and_edit_your_quotes
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
