@@ -1,15 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAr4r-000345-SX
- for ath10k@lists.infradead.org; Tue, 24 Apr 2018 06:05:24 +0000
+ id 1fAr7m-00040n-66
+ for ath10k@lists.infradead.org; Tue, 24 Apr 2018 06:08:24 +0000
+Subject: Re: 9984 with 10.4.3.5.3-0057 crashes
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+ <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
+ <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
+ <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
+ <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+ <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
+ <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
+ <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
+ <5AD9A1DF.6060007@broadcom.com> <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
+ <dafff879-3630-9596-bcb6-eaf07289318d@dd-wrt.com>
+ <87k1sxcgyh.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <a58d42c2-84ca-1c17-8591-b20bfd91660c@dd-wrt.com>
+Date: Tue, 24 Apr 2018 08:08:07 +0200
 MIME-Version: 1.0
-Subject: Re: [v2,1/4] ath10k: Add hw params for shadow register support
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1523966821-21903-2-git-send-email-pillair@codeaurora.org>
-References: <1523966821-21903-2-git-send-email-pillair@codeaurora.org>
-Message-Id: <20180424060511.4B88D6070B@smtp.codeaurora.org>
-Date: Tue, 24 Apr 2018 06:05:11 +0000 (UTC)
+In-Reply-To: <87k1sxcgyh.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +29,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
-
-> wcn3990 supports shadow register for ce write.
-> 
-> Add a hw param for shadow register support.
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-4 patches applied to ath-next branch of ath.git, thanks.
-
-b2e40d7ab8e2 ath10k: add hw params for shadow register support
-b7ba83f7c414 ath10k: add support for shadow register for WNC3990
-4945af5b264f ath10k: enable SRRI/DRRI support on ddr for WCN3990
-d5cded16fdc0 ath10k: enable sta idle power save
-
--- 
-https://patchwork.kernel.org/patch/10344857/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjQuMDQuMjAxOCB1bSAwNzoyNyBzY2hyaWViIEthbGxlIFZhbG86Cj4gU2ViYXN0aWFuIEdv
+dHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cml0ZXM6Cj4KPj4ganVzdCBmb3Ig
+eW91ciBub3RpY2UuIDEwLjQuMy41LjMtMDA1NyBvbiA5OTg0IHdoaWNoIHdhcyBqdXN0IHJlbGVh
+c2VkCj4+IGNyYXNoZXMgaW4gdmh0MTYwIG9wZXJhdGlvbiBtb2RlIGltbWVkaWF0bHkgYWZ0ZXIg
+Zmlyc3Qgc3RhdGlvbgo+PiBhc3NvY2lhdGVzCj4+IGxhc3Qga25vd24gd29ya2luZyBzdGFibGUg
+Zncgc28gZmFyIGlzIDEwLjQtMy40LTAwMTA0LiB0aGUgd2hvbGUKPj4gMTAuNC4zLjUuMyBzZXJp
+ZXMgc2VlbSB0byBiZSBzZXJpb3VzbHkgYnJva2VuIG9yIHRoZSBhcGkgaGFzIGJlZW4KPj4gY2hh
+bmdlZCBpbiBhIHdheQo+PiB3aGljaCBpcyB1bnN1cHBvcnRlZCBieSBhdGgxMGsgKHdoaWNoIGkg
+dGhpbmsgaXMgdGhlIGNhdXNlIG9mIHRoZSAKPj4gcHJvYmxlbSkKPj4gaXQgd291bGQgYmUgZ29v
+ZCB0byBrbm93IHdoYXQgaGFzIGJlZW4gY2hhbmdlZC4KPiBBdCBsZWFzdCBJIHdhcyBub3QgaW5m
+b3JtZWQgYW55IGNoYW5nZXMgaW4gdGhlIGZpcm13YXJlIGludGVyZmFjZS4gV2hhdAo+IHZlcnNp
+b24gb2YgYXRoMTBrIGFyZSB5b3UgdXNpbmc/IERvIHlvdSBoYXZlIGFueSBjdXN0b20gcGF0Y2hl
+cyBvbgo+IGF0aDEwaz8KaSdtIHVzaW5nIGxhdGVzdCBnaXQgdmVyc2lvbiBmb3IgdGVzdGluZyBo
+ZXJlCmJ1dCB0aGVyZSBpcyBvbmUgcmVsZXZhbnQgcGF0Y2ggcmVxdWlyZWQgZm9yIG1vcmUgcmVj
+ZW50IGZpcm13YXJlcyBsaWtlIAozLjQgc2VyaWVzIChzZWUgYmVsb3cpCmkgcG9zdGVkIGFscmVh
+ZHkgYSBsb25nIHRpbWUgYWdvLCB0aGF0IHZodDE2MCB3aWxsIG5vdCB3b3JrIGFueW1vcmUgCndp
+dGhvdXQgdGhhdCBwYXRjaCBpbiBuZXdlciBmaXJtd2FyZXMgc2luY2UKcWNhIGNoYW5nZWQgdGhl
+IGFwaSBmb3IgY2hhbm5lbCBtYXBwaW5nIGluIHZodDE2MC4gKGkgdG9vayB0aGlzIAppbmZvcm1h
+dGlvbiBmcm9tIHRoZSBwcm9wZXJ0aWVyeSBxY2EgZHJpdmVyIHNvdXJjZWNvZGVzKQpzZWUgb3Vy
+IGRpc2N1c3Npb24gb24gMi5mZWIgMjAxNyBhYm91dCB0aGF0IHJlcXVpcmVkIGNoYW5nZS4gaXQg
+c2VlbXMgCnRoYXQgeW91IGxvc3QgdGhlIHBhdGggb24gdGhhdCBpc3N1ZS4KYXMgZmFyIGFzIGkg
+a25vdyB0aGlzIGNoYW5nZSB3YXMgcmVxdWlyZWQgYmVjYXVzZSBvZiBjb21wYXRpYmxpdHkgaXNz
+dWVzIAp3aXRoIHZodDgwIGNsaWVudHMgZnJvbSBzb21lIG90aGVyIHZlbmRvcnMuCmkgaGF2ZSBz
+ZWVuIHNpbWlsYXIgY2hhbmdlcyBpbiBob3N0YXBkIGZvciBtd2x3aWZpIGRyaXZlcgoKLS0tIHdt
+aS5jLm9sZMKgwqAgMjAxOC0wMi0xNiAxMToyNToxMy4wMjMxMTcxMjMgKzAxMDAKKysrIHdtaS5j
+wqDCoMKgwqDCoMKgIDIwMTgtMDQtMjQgMDc6NDc6MTIuNjQyMzk1MDAyICswMjAwCkBAIC0xNjYx
+LDEzICsxNjYxLDE4IEBAIHZvaWQgYXRoMTBrX3dtaV9wdXRfd21pX2NoYW5uZWwoc3RydWN0IHcK
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmbGFncyB8PSBXTUlfQ0hBTl9GTEFHX0hU
+NDBfUExVUzsKIMKgwqDCoMKgwqDCoMKgIGlmIChhcmctPmNoYW5fcmFkYXIpCiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgZmxhZ3MgfD0gV01JX0NIQU5fRkxBR19ERlM7Ci0KK8KgwqDC
+oMKgwqDCoCBjaC0+YmFuZF9jZW50ZXJfZnJlcTIgPSAwOwogwqDCoMKgwqDCoMKgwqAgY2gtPm1o
+eiA9IF9fY3B1X3RvX2xlMzIoYXJnLT5mcmVxKTsKIMKgwqDCoMKgwqDCoMKgIGNoLT5iYW5kX2Nl
+bnRlcl9mcmVxMSA9IF9fY3B1X3RvX2xlMzIoYXJnLT5iYW5kX2NlbnRlcl9mcmVxMSk7CiDCoMKg
+wqDCoMKgwqDCoCBpZiAoYXJnLT5tb2RlID09IE1PREVfMTFBQ19WSFQ4MF84MCkKIMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjaC0+YmFuZF9jZW50ZXJfZnJlcTIgPSAKX19jcHVfdG9f
+bGUzMihhcmctPmJhbmRfY2VudGVyX2ZyZXEyKTsKLcKgwqDCoMKgwqDCoCBlbHNlCi3CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNoLT5iYW5kX2NlbnRlcl9mcmVxMiA9IDA7CivCoMKgwqDC
+oMKgwqAgaWYgKGFyZy0+bW9kZSA9PSBNT0RFXzExQUNfVkhUMTYwKcKgIHsKK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgaWYgKGFyZy0+ZnJlcSA8IGFyZy0+YmFuZF9jZW50ZXJfZnJlcTEp
+CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjaC0+YmFuZF9j
+ZW50ZXJfZnJlcTEgPSAKX19jcHVfdG9fbGUzMihhcmctPmJhbmRfY2VudGVyX2ZyZXExIC0gNDAp
+OworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbHNlCivCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjaC0+YmFuZF9jZW50ZXJfZnJlcTEgPSAKX19jcHVf
+dG9fbGUzMihhcmctPmJhbmRfY2VudGVyX2ZyZXExICsgNDApOworwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBjaC0+YmFuZF9jZW50ZXJfZnJlcTIgPSAKX19jcHVfdG9fbGUzMihhcmctPmJh
+bmRfY2VudGVyX2ZyZXExKTsKK8KgwqDCoMKgwqDCoCB9CiDCoMKgwqDCoMKgwqDCoCBjaC0+bWlu
+X3Bvd2VyID0gYXJnLT5taW5fcG93ZXI7CiDCoMKgwqDCoMKgwqDCoCBjaC0+bWF4X3Bvd2VyID0g
+YXJnLT5tYXhfcG93ZXI7CiDCoMKgwqDCoMKgwqDCoCBjaC0+cmVnX3Bvd2VyID0gYXJnLT5tYXhf
+cmVnX3Bvd2VyOwoKPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpT
+ZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmly
+bWVuc2l0ejrCoCBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3Rlcmdl
+cmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVy
+OiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0
+LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAg
+LyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
