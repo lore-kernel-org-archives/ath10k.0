@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAut2-0003OQ-EJ
- for ath10k@lists.infradead.org; Tue, 24 Apr 2018 10:09:40 +0000
-Received: by mail-oi0-x241.google.com with SMTP id 126-v6so17122877oig.0
- for <ath10k@lists.infradead.org>; Tue, 24 Apr 2018 03:09:13 -0700 (PDT)
+ id 1fBHDJ-0000uz-BB
+ for ath10k@lists.infradead.org; Wed, 25 Apr 2018 09:59:50 +0000
 MIME-Version: 1.0
-In-Reply-To: <2287275.ke1ujnQGTK@debian64>
-References: <CACD9L=BXEQRQVWGP5iMvSNOP7nHz68W62+q6xEZkeb2vZ13DKQ@mail.gmail.com>
- <CAJ-Vmo=+2mVUHzQa7rrgfE9ARpedyBS17urUGjwLLoGgy2WSiw@mail.gmail.com>
- <CACD9L=A9WZdeKpexptW1N1jLgfn0AmCLj0PQJQdFO1KyBnvZXw@mail.gmail.com>
- <2287275.ke1ujnQGTK@debian64>
-From: Arvid Picciani <aep@exys.org>
-Date: Tue, 24 Apr 2018 12:09:12 +0200
-Message-ID: <CACD9L=ArS9T6YJK+UdfmT65r1b+0swa5R4C4QvHZ4A+ufaYHdw@mail.gmail.com>
-Subject: Re: failed to run otp: -22
+Date: Wed, 25 Apr 2018 15:29:37 +0530
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
+In-Reply-To: <87zi1tav6h.fsf@kamboji.qca.qualcomm.com>
+References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
+ <87zi1tav6h.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <6b57525f3edc2b7d06b7662efc5d7e5f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +19,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-yes, found it :) ath10k coming up now. thanks!
+On 2018-04-24 13:32, Kalle Valo wrote:
+> Anilkumar Kolli <akolli@codeaurora.org> writes:
+> 
+>> Mesh path metric needs txrate information from ieee80211_tx_status()
+>> call but in ath10k there is no mechanism to report tx rate information
+>> via ieee80211_tx_status(), the rate is only accessible via
+>> sta_statiscs() op.
+>> 
+>> Per peer stats has tx rate info available, this patch stores per peer
+>> last tx rate and updates the tx rate info structures in tx 
+>> completition.
+>> The rate updated in ieee80211_tx_status() is not exactly for the last
+>> transmitted frame instead the rate is from one of the previous frames.
+>> 
+>> Per peer txrate information is updated through per peer statistics
+>> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+>> 
+>> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
+>> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
+>> 
+>> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> 
+> BTW, your name in patchwork is "akolli@codeaurora.org" but it should be
+> "Anilkumar Kolli" and that's why my script uses the wrong name. Please
+> fix it by registering to patchwork as it's possible to change your name
+> during registration, but only one time. If that doesn't work then send 
+> a
+> request to helpdesk@kernel.org and the admins will fix it.
 
-On Mon, Apr 23, 2018 at 11:27 PM, Christian Lamparter
-<chunkeey@gmail.com> wrote:
-> On Montag, 23. April 2018 22:31:22 CEST Arvid Picciani wrote:
->> from where does ath10k know where to look for it? all i know about is
->> ath79_register_wmac  in arch init. That points to a partition called
->> "wifi" which makes ath9k work, but not ath10k.
->
-> It's this file:
-> <https://github.com/openwrt/openwrt/blob/master/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata#L136>
->
-> Or
->
-> /etc/hotplug.d/firmware/11-ath10k-caldata
-> on your device. (Thing is, the partition should be called "art"?!
-> and there needs to be a handle for your archer-c7-v5.)
->
->
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+I registered and updated name in the patchwork website.
+Do I need to resend the patch ?
+
+
+Thanks
+Anil.
 
 _______________________________________________
 ath10k mailing list
