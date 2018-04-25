@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.linuxfoundation.org ([140.211.169.12])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBNP1-0000tm-By
- for ath10k@lists.infradead.org; Wed, 25 Apr 2018 16:36:20 +0000
-Date: Wed, 25 Apr 2018 18:35:59 +0200
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fBNPc-0002wU-CM
+ for ath10k@lists.infradead.org; Wed, 25 Apr 2018 16:36:57 +0000
+Date: Wed, 25 Apr 2018 18:36:31 +0200
 From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/2] usb: typec: fix formatting errors that cause build
- breakage
-Message-ID: <20180425163559.GA30492@kroah.com>
+Subject: Re: [PATCH 1/2] firmware: some documentation fixes
+Message-ID: <20180425163631.GB30492@kroah.com>
 References: <20180425152617.GA5058@kroah.com>
  <20180425162540.11574-1-andresx7@gmail.com>
- <20180425162540.11574-2-andresx7@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20180425162540.11574-2-andresx7@gmail.com>
+In-Reply-To: <20180425162540.11574-1-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +27,26 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Andres Rodriguez <andresx7@gmail.com>
 Cc: arend.vanspriel@broadcom.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-On Wed, Apr 25, 2018 at 12:25:40PM -0400, Andres Rodriguez wrote:
-> The ASCII art illustration should be marked as a preformatted text
-> block. Otherwise the build will fail when attempting to parse it.
+On Wed, Apr 25, 2018 at 12:25:39PM -0400, Andres Rodriguez wrote:
+> Including:
+>  - Fixup outdated kernel-doc paths
+>  - Slightly too short title underline
+>  - Some typos
 > 
-> Fixes: bdecb33af34f ( "usb: typec: API for controlling USB ..." )
 > Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
 > ---
->  Documentation/driver-api/usb/typec.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Hey Greg,
+> 
+> Here is the patch rebased on gregkh/driver-core-linus as requested.
+> 
+> Note that there is a patch by Hans de Goede <hdegoede@redhat.com> that contains
+> some of the path fixes as well.
+> 
+> I also included an extra patch to fix the htmldocs build. I think we are in time
+> to squash the fix into the offending commit.
 
-This is already in my usb tree and will go to Linus in a day or so.
+We can't "squash" commits as our trees are not rebasable :)
 
 thanks,
 
