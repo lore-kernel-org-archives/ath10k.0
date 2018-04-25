@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBMJW-0001eG-KV
- for ath10k@lists.infradead.org; Wed, 25 Apr 2018 15:26:35 +0000
-Date: Wed, 25 Apr 2018 17:26:17 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/9] firmware: some documentation fixes
-Message-ID: <20180425152617.GA5058@kroah.com>
-References: <20180423201205.20533-1-andresx7@gmail.com>
- <20180423201205.20533-2-andresx7@gmail.com>
- <20180425152526.GA4921@kroah.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20180425152526.GA4921@kroah.com>
+ id 1fBNF0-0004Iu-N6
+ for ath10k@lists.infradead.org; Wed, 25 Apr 2018 16:26:00 +0000
+Received: by mail-io0-x242.google.com with SMTP id r22-v6so18435410ioc.12
+ for <ath10k@lists.infradead.org>; Wed, 25 Apr 2018 09:25:48 -0700 (PDT)
+From: Andres Rodriguez <andresx7@gmail.com>
+Subject: [PATCH 1/2] firmware: some documentation fixes
+Date: Wed, 25 Apr 2018 12:25:39 -0400
+Message-Id: <20180425162540.11574-1-andresx7@gmail.com>
+In-Reply-To: <20180425152617.GA5058@kroah.com>
+References: <20180425152617.GA5058@kroah.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +19,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andres Rodriguez <andresx7@gmail.com>
-Cc: arend.vanspriel@broadcom.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
+To: linux-kernel@vger.kernel.org
+Cc: arend.vanspriel@broadcom.com, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, andresx7@gmail.com, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-On Wed, Apr 25, 2018 at 05:25:26PM +0200, Greg KH wrote:
-> On Mon, Apr 23, 2018 at 04:11:57PM -0400, Andres Rodriguez wrote:
-> > Including:
-> >  - Fixup outdated kernel-doc paths
-> >  - Slightly too short title underline
-> >  - Some typos
-> > 
-> > Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
-> > ---
-> >  Documentation/driver-api/firmware/request_firmware.rst | 16 ++++++++--------
-> >  drivers/base/firmware_loader/fallback.c                |  4 ++--
-> >  drivers/base/firmware_loader/fallback.h                |  2 +-
-> >  3 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> This fails to apply to my driver-core-next branch.  Can you please
-> rebase it and resend?
+Including:
+ - Fixup outdated kernel-doc paths
+ - Slightly too short title underline
+ - Some typos
 
-Oops, I meant the driver-core-linus branch, which is where "fixes" would
-go at the moment.
+Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
+---
 
-thanks,
+Hey Greg,
 
-greg k-h
+Here is the patch rebased on gregkh/driver-core-linus as requested.
+
+Note that there is a patch by Hans de Goede <hdegoede@redhat.com> that contains
+some of the path fixes as well.
+
+I also included an extra patch to fix the htmldocs build. I think we are in time
+to squash the fix into the offending commit.
+
+Regards,
+Andres
+
+ Documentation/driver-api/firmware/request_firmware.rst | 6 +++---
+ drivers/base/firmware_loader/fallback.c                | 4 ++--
+ drivers/base/firmware_loader/fallback.h                | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/driver-api/firmware/request_firmware.rst b/Documentation/driver-api/firmware/request_firmware.rst
+index 20f21ed427a5..d5ec95a7195b 100644
+--- a/Documentation/driver-api/firmware/request_firmware.rst
++++ b/Documentation/driver-api/firmware/request_firmware.rst
+@@ -50,11 +50,11 @@ Special optimizations on reboot
+ Some devices have an optimization in place to enable the firmware to be
+ retained during system reboot. When such optimizations are used the driver
+ author must ensure the firmware is still available on resume from suspend,
+-this can be done with firmware_request_cache() insted of requesting for the
+-firmare to be loaded.
++this can be done with firmware_request_cache() instead of requesting for the
++firmware to be loaded.
+ 
+ firmware_request_cache()
+------------------------
++------------------------
+ .. kernel-doc:: drivers/base/firmware_loader/main.c
+    :functions: firmware_request_cache
+ 
+diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+index 31b5015b59fe..358354148dec 100644
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -537,8 +537,8 @@ fw_create_instance(struct firmware *firmware, const char *fw_name,
+ }
+ 
+ /**
+- * fw_load_sysfs_fallback - load a firmware via the syfs fallback mechanism
+- * @fw_sysfs: firmware syfs information for the firmware to load
++ * fw_load_sysfs_fallback - load a firmware via the sysfs fallback mechanism
++ * @fw_sysfs: firmware sysfs information for the firmware to load
+  * @opt_flags: flags of options, FW_OPT_*
+  * @timeout: timeout to wait for the load
+  *
+diff --git a/drivers/base/firmware_loader/fallback.h b/drivers/base/firmware_loader/fallback.h
+index dfebc644ed35..f8255670a663 100644
+--- a/drivers/base/firmware_loader/fallback.h
++++ b/drivers/base/firmware_loader/fallback.h
+@@ -6,7 +6,7 @@
+ #include <linux/device.h>
+ 
+ /**
+- * struct firmware_fallback_config - firmware fallback configuratioon settings
++ * struct firmware_fallback_config - firmware fallback configuration settings
+  *
+  * Helps describe and fine tune the fallback mechanism.
+  *
+-- 
+2.14.1
+
 
 _______________________________________________
 ath10k mailing list
