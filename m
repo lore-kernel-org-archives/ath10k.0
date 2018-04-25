@@ -1,28 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBMGl-00080J-Mb
- for ath10k@lists.infradead.org; Wed, 25 Apr 2018 15:23:50 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: 9984 with 10.4.3.5.3-0057 crashes
-References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
- <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
- <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
- <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
- <87604oodt4.fsf@kamboji.qca.qualcomm.com>
- <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
- <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
- <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
- <5AD9A1DF.6060007@broadcom.com>
- <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
- <dafff879-3630-9596-bcb6-eaf07289318d@dd-wrt.com>
- <87k1sxcgyh.fsf@kamboji.qca.qualcomm.com>
- <a58d42c2-84ca-1c17-8591-b20bfd91660c@dd-wrt.com>
-Date: Wed, 25 Apr 2018 18:23:28 +0300
-In-Reply-To: <a58d42c2-84ca-1c17-8591-b20bfd91660c@dd-wrt.com> (Sebastian
- Gottschall's message of "Tue, 24 Apr 2018 08:08:07 +0200")
-Message-ID: <87a7tr8g3z.fsf@kamboji.qca.qualcomm.com>
+ id 1fBMIj-0001Ik-C1
+ for ath10k@lists.infradead.org; Wed, 25 Apr 2018 15:25:46 +0000
+Date: Wed, 25 Apr 2018 17:25:26 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/9] firmware: some documentation fixes
+Message-ID: <20180425152526.GA4921@kroah.com>
+References: <20180423201205.20533-1-andresx7@gmail.com>
+ <20180423201205.20533-2-andresx7@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20180423201205.20533-2-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,43 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: ath10k@lists.infradead.org
+To: Andres Rodriguez <andresx7@gmail.com>
+Cc: arend.vanspriel@broadcom.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+On Mon, Apr 23, 2018 at 04:11:57PM -0400, Andres Rodriguez wrote:
+> Including:
+>  - Fixup outdated kernel-doc paths
+>  - Slightly too short title underline
+>  - Some typos
+> 
+> Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
+> ---
+>  Documentation/driver-api/firmware/request_firmware.rst | 16 ++++++++--------
+>  drivers/base/firmware_loader/fallback.c                |  4 ++--
+>  drivers/base/firmware_loader/fallback.h                |  2 +-
+>  3 files changed, 11 insertions(+), 11 deletions(-)
 
-> Am 24.04.2018 um 07:27 schrieb Kalle Valo:
->> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>
->>> just for your notice. 10.4.3.5.3-0057 on 9984 which was just released
->>> crashes in vht160 operation mode immediatly after first station
->>> associates
->>> last known working stable fw so far is 10.4-3.4-00104. the whole
->>> 10.4.3.5.3 series seem to be seriously broken or the api has been
->>> changed in a way
->>> which is unsupported by ath10k (which i think is the cause of the
->>> problem)
->>> it would be good to know what has been changed.
->>
->> At least I was not informed any changes in the firmware interface. What
->> version of ath10k are you using? Do you have any custom patches on
->> ath10k?
->
-> i'm using latest git version for testing here but there is one
-> relevant patch required for more recent firmwares like 3.4 series (see
-> below) i posted already a long time ago, that vht160 will not work
-> anymore without that patch in newer firmwares since qca changed the api
-> for channel mapping in vht160.
+This fails to apply to my driver-core-next branch.  Can you please
+rebase it and resend?
 
-I don't remember what happened to that patch, but please resubmit it
-with a proper commit log and S-o-b line.
+thanks,
 
-I was told that the firmware crash is an assert triggered by host not
-populating the parameter 'peer_bw_rxnss_override' in
-WMI_PEER_ASSOC_CMDID which is needed for 160/80+80 operation.
-
--- 
-Kalle Valo
+greg k-h
 
 _______________________________________________
 ath10k mailing list
