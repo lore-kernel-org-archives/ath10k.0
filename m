@@ -2,13 +2,13 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBd0k-0003oF-DQ
- for ath10k@lists.infradead.org; Thu, 26 Apr 2018 09:16:20 +0000
+ id 1fBdDA-0001Wd-9f
+ for ath10k@lists.infradead.org; Thu, 26 Apr 2018 09:29:10 +0000
 From: s.gottschall@dd-wrt.com
-Subject: [PATCH v1] ath10k: fix crash in recent 3.5.3 9984 firmware due wrong
+Subject: [PATCH v2] ath10k: fix crash in recent 3.5.3 9984 firmware due wrong
  handling of peer_bw_rxnss_override parameter
-Date: Thu, 26 Apr 2018 11:15:59 +0200
-Message-Id: <20180426091559.21346-1-s.gottschall@dd-wrt.com>
+Date: Thu, 26 Apr 2018 11:28:48 +0200
+Message-Id: <20180426092848.23069-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,14 +35,16 @@ if this peer information is not available, we initialize the parameter by minimu
 to the QCA sourcecodes.
 
 Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+
+v2: remove debug messages
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 39 +++++++++++++++++++++--------------
+ drivers/net/wireless/ath/ath10k/mac.c | 36 +++++++++++++++++++----------------
  drivers/net/wireless/ath/ath10k/wmi.c |  4 +---
- drivers/net/wireless/ath/ath10k/wmi.h | 14 ++++++++++++-
- 3 files changed, 37 insertions(+), 20 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.h | 14 +++++++++++++-
+ 3 files changed, 34 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5be6386ede8f..758e1d77eed4 100644
+index 5be6386ede8f..df79af89ee71 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
 @@ -2505,8 +2505,9 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
@@ -56,7 +58,7 @@ index 5be6386ede8f..758e1d77eed4 100644
  
  	/* Calculate peer NSS capability from VHT capabilities if STA
  	 * supports VHT.
-@@ -2529,22 +2530,28 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+@@ -2529,22 +2530,25 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
  	arg->peer_vht_rates.tx_mcs_set = ath10k_peer_assoc_h_vht_limit(
  		__le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map), vht_mcs_mask);
  
@@ -64,7 +66,6 @@ index 5be6386ede8f..758e1d77eed4 100644
 -		   sta->addr, arg->peer_max_mpdu, arg->peer_flags);
 +	if (arg->peer_num_spatial_streams && (arg->peer_phymode == MODE_11AC_VHT160 || arg->peer_phymode == MODE_11AC_VHT80_80)) {
 +		arg->peer_bw_rxnss_override = BW_NSS_FWCONF_160(arg->peer_num_spatial_streams);
-+		printk(KERN_INFO "vht160, set rxnss to %X from peer %X\n", arg->peer_bw_rxnss_override, arg->peer_num_spatial_streams );
 +	}
  
 -	if (arg->peer_vht_rates.rx_max_rate &&
@@ -81,7 +82,6 @@ index 5be6386ede8f..758e1d77eed4 100644
 -		}
 +	if (arg->peer_num_spatial_streams && arg->peer_phymode == MODE_11AC_VHT80_80) {
 +		arg->peer_bw_rxnss_override |= BW_NSS_FWCONF_80_80(arg->peer_num_spatial_streams);
-+		printk(KERN_INFO "vht8080, set rxnss to %X from peer %X\n", arg->peer_bw_rxnss_override, arg->peer_num_spatial_streams );
  	}
 +
 +	/* In very exceptional  conditions it is observed  that
@@ -91,7 +91,6 @@ index 5be6386ede8f..758e1d77eed4 100644
 +	 */
 +	if (!arg->peer_num_spatial_streams && (arg->peer_phymode == MODE_11AC_VHT80_80 || arg->peer_phymode == MODE_11AC_VHT160)) {
 +		arg->peer_bw_rxnss_override = BW_NSS_FWCONF_MAP_ENABLE;
-+		printk(KERN_INFO "vht8080, set rxnss to WAR %X\n", arg->peer_bw_rxnss_override);
 +	}
 +
 +	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x\n",
@@ -99,7 +98,7 @@ index 5be6386ede8f..758e1d77eed4 100644
  }
  
  static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
-@@ -2696,9 +2703,9 @@ static int ath10k_peer_assoc_prepare(struct ath10k *ar,
+@@ -2696,9 +2700,9 @@ static int ath10k_peer_assoc_prepare(struct ath10k *ar,
  	ath10k_peer_assoc_h_crypto(ar, vif, sta, arg);
  	ath10k_peer_assoc_h_rates(ar, vif, sta, arg);
  	ath10k_peer_assoc_h_ht(ar, vif, sta, arg);
