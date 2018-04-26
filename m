@@ -1,15 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x233.google.com ([2607:f8b0:400c:c05::233])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBSH6-0002Ib-Cz
- for ath10k@lists.infradead.org; Wed, 25 Apr 2018 21:48:30 +0000
-Received: by mail-vk0-x233.google.com with SMTP id v134so14792429vkd.10
- for <ath10k@lists.infradead.org>; Wed, 25 Apr 2018 14:48:16 -0700 (PDT)
+ id 1fBaJS-000127-QK
+ for ath10k@lists.infradead.org; Thu, 26 Apr 2018 06:23:30 +0000
+Subject: Re: 9984 with 10.4.3.5.3-0057 crashes
+References: <1523966821-21903-1-git-send-email-pillair@codeaurora.org>
+ <1523966821-21903-5-git-send-email-pillair@codeaurora.org>
+ <946e582c-2438-872b-eec8-25d9dcb994d9@dd-wrt.com>
+ <7a06a34a5fcb97e07a8d79b4d689e781@codeaurora.org>
+ <87604oodt4.fsf@kamboji.qca.qualcomm.com>
+ <a7dd1b94951725c61034f5be6744b725@codeaurora.org>
+ <8736zrjgq6.fsf@kamboji.qca.qualcomm.com>
+ <c48c1bae-04c9-55d0-fdb9-d9ae8f7cb843@dd-wrt.com>
+ <5AD9A1DF.6060007@broadcom.com> <87wowxdirv.fsf@kamboji.qca.qualcomm.com>
+ <dafff879-3630-9596-bcb6-eaf07289318d@dd-wrt.com>
+ <87k1sxcgyh.fsf@kamboji.qca.qualcomm.com>
+ <a58d42c2-84ca-1c17-8591-b20bfd91660c@dd-wrt.com>
+ <87a7tr8g3z.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <e1ed94a4-e9db-3cc3-81db-e21290bfcd97@dd-wrt.com>
+Date: Thu, 26 Apr 2018 08:23:01 +0200
 MIME-Version: 1.0
-From: "ojab //" <ojab@ojab.ru>
-Date: Wed, 25 Apr 2018 21:48:15 +0000
-Message-ID: <CAKzrAgRkSCQvRKm8kL4Kc220--umjsA407Br1XeA6j045KSBFA@mail.gmail.com>
-Subject: ath10k load fails with `swiotlb buffer is full (sz: 1172264 bytes)`
+In-Reply-To: <87a7tr8g3z.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +31,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Oh hai!
-
-I've changed motherboard and after that ath10k load fails with
-
-[    5.677180] ath10k_pci 0000:03:00.0: swiotlb buffer is full (sz:
-1172264 bytes)
-[    5.677471] ath10k_pci 0000:03:00.0: swiotlb: coherent allocation
-failed, size=1172264
-[    5.677745] CPU: 4 PID: 137 Comm: kworker/u16:6 Not tainted 4.16.4-ojab #19
-[    5.677964] Workqueue: ath10k_aux_wq
-ath10k_wmi_event_service_ready_work [ath10k_core]
-[    5.678238] Call Trace:
-[    5.678403]  dump_stack+0x67/0x93
-[    5.678575]  swiotlb_alloc_coherent+0x1da/0x1f0
-[    5.678763]  ath10k_wmi_event_service_ready_work+0x3b0/0x670 [ath10k_core]
-[    5.678978]  process_one_work+0x1d3/0x3c0
-[    5.679158]  worker_thread+0x2e/0x400
-[    5.679333]  ? trace_event_raw_event_workqueue_execute_start+0x100/0x100
-[    5.679544]  kthread+0x113/0x130
-[    5.679713]  ? kthread_create_worker+0x80/0x80
-[    5.679897]  ret_from_fork+0x27/0x50
-
-vanilla kernel 4.16.4, cards are WLE1216V5-23 & WLE1216V2-20 (both
-QCA9884-based, fails with the same symptoms), motherboard is asus
-A320M-K with iommu disabled.
-
-How can I get it working?
-
-//wbr ojab
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjUuMDQuMjAxOCB1bSAxNzoyMyBzY2hyaWViIEthbGxlIFZhbG86Cj4gU2ViYXN0aWFuIEdv
+dHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cml0ZXM6Cj4KPj4gQW0gMjQuMDQu
+MjAxOCB1bSAwNzoyNyBzY2hyaWViIEthbGxlIFZhbG86Cj4+PiBTZWJhc3RpYW4gR290dHNjaGFs
+bCA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+IHdyaXRlczoKPj4+Cj4+Pj4ganVzdCBmb3IgeW91
+ciBub3RpY2UuIDEwLjQuMy41LjMtMDA1NyBvbiA5OTg0IHdoaWNoIHdhcyBqdXN0IHJlbGVhc2Vk
+Cj4+Pj4gY3Jhc2hlcyBpbiB2aHQxNjAgb3BlcmF0aW9uIG1vZGUgaW1tZWRpYXRseSBhZnRlciBm
+aXJzdCBzdGF0aW9uCj4+Pj4gYXNzb2NpYXRlcwo+Pj4+IGxhc3Qga25vd24gd29ya2luZyBzdGFi
+bGUgZncgc28gZmFyIGlzIDEwLjQtMy40LTAwMTA0LiB0aGUgd2hvbGUKPj4+PiAxMC40LjMuNS4z
+IHNlcmllcyBzZWVtIHRvIGJlIHNlcmlvdXNseSBicm9rZW4gb3IgdGhlIGFwaSBoYXMgYmVlbgo+
+Pj4+IGNoYW5nZWQgaW4gYSB3YXkKPj4+PiB3aGljaCBpcyB1bnN1cHBvcnRlZCBieSBhdGgxMGsg
+KHdoaWNoIGkgdGhpbmsgaXMgdGhlIGNhdXNlIG9mIHRoZQo+Pj4+IHByb2JsZW0pCj4+Pj4gaXQg
+d291bGQgYmUgZ29vZCB0byBrbm93IHdoYXQgaGFzIGJlZW4gY2hhbmdlZC4KPj4+IEF0IGxlYXN0
+IEkgd2FzIG5vdCBpbmZvcm1lZCBhbnkgY2hhbmdlcyBpbiB0aGUgZmlybXdhcmUgaW50ZXJmYWNl
+LiBXaGF0Cj4+PiB2ZXJzaW9uIG9mIGF0aDEwayBhcmUgeW91IHVzaW5nPyBEbyB5b3UgaGF2ZSBh
+bnkgY3VzdG9tIHBhdGNoZXMgb24KPj4+IGF0aDEwaz8KPj4gaSdtIHVzaW5nIGxhdGVzdCBnaXQg
+dmVyc2lvbiBmb3IgdGVzdGluZyBoZXJlIGJ1dCB0aGVyZSBpcyBvbmUKPj4gcmVsZXZhbnQgcGF0
+Y2ggcmVxdWlyZWQgZm9yIG1vcmUgcmVjZW50IGZpcm13YXJlcyBsaWtlIDMuNCBzZXJpZXMgKHNl
+ZQo+PiBiZWxvdykgaSBwb3N0ZWQgYWxyZWFkeSBhIGxvbmcgdGltZSBhZ28sIHRoYXQgdmh0MTYw
+IHdpbGwgbm90IHdvcmsKPj4gYW55bW9yZSB3aXRob3V0IHRoYXQgcGF0Y2ggaW4gbmV3ZXIgZmly
+bXdhcmVzIHNpbmNlIHFjYSBjaGFuZ2VkIHRoZSBhcGkKPj4gZm9yIGNoYW5uZWwgbWFwcGluZyBp
+biB2aHQxNjAuCj4gSSBkb24ndCByZW1lbWJlciB3aGF0IGhhcHBlbmVkIHRvIHRoYXQgcGF0Y2gs
+IGJ1dCBwbGVhc2UgcmVzdWJtaXQgaXQKPiB3aXRoIGEgcHJvcGVyIGNvbW1pdCBsb2cgYW5kIFMt
+by1iIGxpbmUuCndpbGwgZG8gYXNhcC4KPgo+IEkgd2FzIHRvbGQgdGhhdCB0aGUgZmlybXdhcmUg
+Y3Jhc2ggaXMgYW4gYXNzZXJ0IHRyaWdnZXJlZCBieSBob3N0IG5vdAo+IHBvcHVsYXRpbmcgdGhl
+IHBhcmFtZXRlciAncGVlcl9id19yeG5zc19vdmVycmlkZScgaW4KPiBXTUlfUEVFUl9BU1NPQ19D
+TURJRCB3aGljaCBpcyBuZWVkZWQgZm9yIDE2MC84MCs4MCBvcGVyYXRpb24uCnBlZXJfYndfcnhu
+c3Nfb3ZlcnJpZGUgaXMgY2FsY3VsYXRlZCBieSB0YWtpbmcgcGVlcnMgcnhfbWF4X3JhdGUKaWYg
+aXRzIDE1NjAgcGVlcl9id19yeG5zc19vdmVycmlkZSB3aWxsIGJlIDIKaWYgaXRzIDc4MCBwZWVy
+X2J3X3J4bnNzX292ZXJyaWRlIHdpbGwgYmUgMQoKc28gZm9yIG1lIHRoaXMgYWxsIGxvb2tzIHdy
+b25nLiBkaWUgcGFyYW1ldGVyIGZvciB2aHQxNjAgbG9va3MgZ3Vlc3NlZCAKYmFzZWQgb24gdGhl
+IHJ4IHJhdGUgYW5kIG1heSByZXN1bHQgaW4gd3JvbmcgdmFsdWVzLgpzaW5jZSB0aGUgcGVlciBp
+cyBhbHNvIHN1cHBseWluZyB0aGUgYmFuZHdpZHRoIGl0c2VsZiwgd2UgZG9udCBuZWVkIHRvIApn
+dWVzcyB2aHQxNjAgb3BlcmF0aW9uLgppIHdpbGwgdHJ5IHRvIGZpeCB0aGlzIGFuZCB3aWxsIHBv
+c3QgYSBmaXggb25jZSBpdHMgc29sdmVkCgpTZWJhc3RpYW4KPgoKLS0gCk1pdCBmcmV1bmRsaWNo
+ZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVk
+aWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0
+NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIg
+MjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNj
+aGVlbGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNv
+bQpUZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
