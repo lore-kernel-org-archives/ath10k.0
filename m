@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBdRp-0008II-KX
- for ath10k@lists.infradead.org; Thu, 26 Apr 2018 09:44:21 +0000
-From: s.gottschall@dd-wrt.com
-Subject: [PATCH v1] ath10k: fix band_center_freq handling for VHT160 in recent
- firmwares
-Date: Thu, 26 Apr 2018 11:43:57 +0200
-Message-Id: <20180426094357.24358-1-s.gottschall@dd-wrt.com>
+ id 1fBg8q-00053e-IP
+ for ath10k@lists.infradead.org; Thu, 26 Apr 2018 12:36:54 +0000
+Received: by mail-lf0-x241.google.com with SMTP id j193-v6so7475775lfg.6
+ for <ath10k@lists.infradead.org>; Thu, 26 Apr 2018 05:36:41 -0700 (PDT)
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: [PATCH] ath10k: sdio: jump to correct label in error handling path
+Date: Thu, 26 Apr 2018 14:35:02 +0200
+Message-Id: <20180426123502.23962-1-niklas.cassel@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, kvalo@codeaurora.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Jump to the correct label in error handling path.
+At this point of execution create_singlethread_workqueue() has succeeded,
+so it should be properly destroyed.
 
-starting with firmware 10.4.3.4.x series QCA changed the handling of the channel property band_center_freq1 and band_center_freq2 in vht160 operation mode
-likelly for backward compatiblity with vht80 only capable clients.
-this patch adjusts the handling to get vht160 to work again with official qca firmwares newer than 3.3
-consider that this patch will not work with older firmwares anymore. to avoid undefined behaviour this we disable vht160 capability for outdated firmwares
+Jump label was renamed in commit ec2c64e20257 ("ath10k: sdio: fix memory
+leak for probe allocations").
+However, the bug was originally introduced in commit d96db25d2025
+("ath10k: add initial SDIO support").
+
+Fixes: d96db25d2025 ("ath10k: add initial SDIO support")
+Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |  7 -------
- drivers/net/wireless/ath/ath10k/wmi.c | 11 ++++++++---
- 2 files changed, 8 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5be6386ede8f..d1239d40ac19 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4449,13 +4449,6 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- 		vht_cap.cap |= val;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 2d04c54a4153..d612ce8c9cff 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2011,7 +2011,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		ret = -ENODEV;
+ 		ath10k_err(ar, "unsupported device id %u (0x%x)\n",
+ 			   dev_id_base, id->device);
+-		goto err_core_destroy;
++		goto err_free_wq;
  	}
  
--	/* Currently the firmware seems to be buggy, don't enable 80+80
--	 * mode until that's resolved.
--	 */
--	if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SHORT_GI_160) &&
--	    (ar->vht_cap_info & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) == 0)
--		vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
--
- 	mcs_map = 0;
- 	for (i = 0; i < 8; i++) {
- 		if ((i < ar->num_rf_chains) && (ar->cfg_tx_chainmask & BIT(i)))
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 2c36256a441d..d78b8857a513 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1671,13 +1671,18 @@ void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
- 		flags |= WMI_CHAN_FLAG_HT40_PLUS;
- 	if (arg->chan_radar)
- 		flags |= WMI_CHAN_FLAG_DFS;
--
-+	ch->band_center_freq2 = 0;
- 	ch->mhz = __cpu_to_le32(arg->freq);
- 	ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1);
- 	if (arg->mode == MODE_11AC_VHT80_80)
- 		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq2);
--	else
--		ch->band_center_freq2 = 0;
-+	if (arg->mode == MODE_11AC_VHT160)  {
-+		if (arg->freq < arg->band_center_freq1)
-+			ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1 - 40);
-+		else
-+			ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1 + 40);		
-+		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq1);
-+	}
- 	ch->min_power = arg->min_power;
- 	ch->max_power = arg->max_power;
- 	ch->reg_power = arg->max_reg_power;
+ 	ar->id.vendor = id->vendor;
 -- 
-2.14.1
+2.14.3
 
 
 _______________________________________________
