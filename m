@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fC73L-0000cd-NL
- for ath10k@lists.infradead.org; Fri, 27 Apr 2018 17:21:05 +0000
-Subject: Re: ath10k driver firmware crash when bring up qca 9984 wireless car d
-References: <1524732398.3848.kc@mail2000.com.tw>
- <f88bee98-2358-4f6f-19b6-4114c9dcb4f4@candelatech.com>
- <1524809543.9200.kc@mail2000.com.tw>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <fcac72f1-34d5-3167-780a-ddf67debe964@candelatech.com>
-Date: Fri, 27 Apr 2018 10:20:41 -0700
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fC8WP-0002zt-4l
+ for ath10k@lists.infradead.org; Fri, 27 Apr 2018 18:55:33 +0000
+Subject: Re: [PATCH v2] ath10k: fix crash in recent 3.5.3 9984 firmware due
+ wrong handling of peer_bw_rxnss_override parameter
+References: <20180426092848.23069-1-s.gottschall@dd-wrt.com>
+ <f288f18c-684d-2ff9-5739-648e8e716653@candelatech.com>
+ <db214e94-1052-d6fa-744a-7c8ebcc84aee@dd-wrt.com>
+ <96d512b3-3261-c6cf-e0eb-a9f5fe91f3b8@candelatech.com>
+ <8263a720-07a2-dc5d-f8fc-2153574cbafc@dd-wrt.com>
+ <96f0393e-6bab-d397-d2b6-4538da7fc275@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <f410c1d7-6b19-032d-7f03-6cb1d52f6956@dd-wrt.com>
+Date: Fri, 27 Apr 2018 20:54:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <1524809543.9200.kc@mail2000.com.tw>
+In-Reply-To: <96f0393e-6bab-d397-d2b6-4538da7fc275@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,73 +25,214 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KC <kc@mail2000.com.tw>
-Cc: KC Chen <KC1120@gmail.com>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: kvalo@codeaurora.org
 
-I think it might be something like a null-pointer exception, but those do not
-create a clean backtrace.  If you wanted to use my ath10k-ct driver, it can sometimes
-gather additional info for these types of crashes that lets me know more about it.
+Am 27.04.2018 um 18:07 schrieb Ben Greear:
+> On 04/26/2018 09:40 PM, Sebastian Gottschall wrote:
+>> Am 26.04.2018 um 22:35 schrieb Ben Greear:
+>>> On 04/26/2018 01:21 PM, Sebastian Gottschall wrote:
+>>>> Am 26.04.2018 um 17:30 schrieb Ben Greear:
+>>>>> On 04/26/2018 02:28 AM, s.gottschall@dd-wrt.com wrote:
+>>>>>> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>>>>>>
+>>>>>> current handling of peer_bw_rxnss_override parameter is based on =
 
-But, if your problem is with backporting a driver anyway, maybe that is not
-so much help.
+>>>>>> guessing the VHT160/8080 capability by rx rate. this is wrong and =
 
-If you could move forward to at least the 4.9 kernel, then likely you will have
-better luck with the 9984.
+>>>>>> may lead
+>>>>>> to a non initialized peer_bw_rxnss_override parameter which is =
 
-Thanks,
-Ben
+>>>>>> required since VHT160 operation mode only supports 2x2 chainmasks =
 
-On 04/26/2018 11:12 PM, KC wrote:
-> Hi Ben,
+>>>>>> in addition the original code
+>>>>>> initialized the parameter with wrong masked values.
+>>>>>> This patch uses the peer phymode and peer nss information for =
+
+>>>>>> correct initialisation of the peer_bw_rxnss_override parameter.
+>>>>>> if this peer information is not available, we initialize the =
+
+>>>>>> parameter by minimum nss which is suggested by QCA as temporary =
+
+>>>>>> workaround according
+>>>>>> to the QCA sourcecodes.
+>>>>>>
+>>>>>> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>>>>>>
+>>>>>> v2: remove debug messages
+>>>>>> ---
+>>>>>> =A0drivers/net/wireless/ath/ath10k/mac.c | 36 =
+
+>>>>>> +++++++++++++++++++----------------
+>>>>>> =A0drivers/net/wireless/ath/ath10k/wmi.c |=A0 4 +---
+>>>>>> =A0drivers/net/wireless/ath/ath10k/wmi.h | 14 +++++++++++++-
+>>>>>> =A03 files changed, 34 insertions(+), 20 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c =
+
+>>>>>> b/drivers/net/wireless/ath/ath10k/mac.c
+>>>>>> index 5be6386ede8f..df79af89ee71 100644
+>>>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>>>>> @@ -2505,8 +2505,9 @@ static void ath10k_peer_assoc_h_vht(struct =
+
+>>>>>> ath10k *ar,
+>>>>>> =A0=A0=A0=A0 if (sta->bandwidth =3D=3D IEEE80211_STA_RX_BW_80)
+>>>>>> =A0=A0=A0=A0=A0=A0=A0=A0 arg->peer_flags |=3D ar->wmi.peer_flags->bw=
+80;
+>>>>>>
+>>>>>> -=A0=A0=A0 if (sta->bandwidth =3D=3D IEEE80211_STA_RX_BW_160)
+>>>>>> +=A0=A0=A0 if (sta->bandwidth =3D=3D IEEE80211_STA_RX_BW_160) {
+>>>>>> =A0=A0=A0=A0=A0=A0=A0=A0 arg->peer_flags |=3D ar->wmi.peer_flags->bw=
+160;
+>>>>>> +=A0=A0=A0 }
+>>>>>>
+>>>>>> =A0=A0=A0=A0 /* Calculate peer NSS capability from VHT capabilities =
+if STA
+>>>>>> =A0=A0=A0=A0=A0 * supports VHT.
+>>>>>> @@ -2529,22 +2530,25 @@ static void =
+
+>>>>>> ath10k_peer_assoc_h_vht(struct ath10k *ar,
+>>>>>> =A0=A0=A0=A0 arg->peer_vht_rates.tx_mcs_set =3D ath10k_peer_assoc_h_=
+vht_limit(
+>>>>>> =A0=A0=A0=A0=A0=A0=A0=A0 __le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map),=
+ vht_mcs_mask);
+>>>>>>
+>>>>>> -=A0=A0=A0 ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu=
+ %d =
+
+>>>>>> flags 0x%x\n",
+>>>>>> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sta->addr, arg->peer_max_mpdu, arg->=
+peer_flags);
+>>>>>> +=A0=A0=A0 if (arg->peer_num_spatial_streams && (arg->peer_phymode =
+=3D=3D =
+
+>>>>>> MODE_11AC_VHT160 || arg->peer_phymode =3D=3D MODE_11AC_VHT80_80)) {
+>>>>>> +=A0=A0=A0=A0=A0=A0=A0 arg->peer_bw_rxnss_override =3D =
+
+>>>>>> BW_NSS_FWCONF_160(arg->peer_num_spatial_streams);
+>>>>>> +=A0=A0=A0 }
+>>>>>
+>>>>> So, an 80Mhz peer could be 4x4 and could connect to a VHT-160 AP. =
+
+>>>>> From what I can tell,
+>>>>> the VHT-160 AP can talk 4x4 @ 80Mhz to the peer in this case, but =
+
+>>>>> if peer is VHT-160,
+>>>>> then of course it can only talk at 2x2.
+>>>>>
+>>>>> So, I don't think you can just look at the =
+
+>>>>> peer_num_spatial_streams here.
+>>>> no? rxnss_override is only taked if peer phymode is vht160 or =
+
+>>>> vht80_80. vht80 is not considered in that code PEER phy_mode, not =
+
+>>>> HOST phy_mode
+>>>> this parameter is a assoc per peer parameter as far as i can say here.
+>>>> consider that the firmware will accept anything except 0 for =
+
+>>>> peer_bw_rxnss_override in vht160 operation mode
+>>>> if a peer is 80 mhz, the code will be skipped here.
+>>>
+>>> From what I can tell, this feature is supposed to configure the =
+
+>>> rate-ctrl in the firmware to know that
+>>> it can only send 1x1 or 2x2 when sending at 160Mhz, but that it can =
+
+>>> send at higher NSS if it sends
+>>> at 80Mhz or lower.
+>> right. but thats exactly what it should does in case that a peer is =
+
+>> connecting with vht160 / 80_80
+>> and the peer itself does also send his own nss capabilities which is =
+
+>> used if available. if not ,it uses the fallback.
+>>>
+>>> If a 2x2 peer connects to the AP, will it have =
+
+>>> peer_num_spatial_streams set to 2?
+>> yes. i had some debug code in my initial early versions. the peer =
+
+>> does transmit his own nss capabilities.
+>>> If so,
+>>> then your code will configure the peer_bw_rxnss_override to indicate =
+
+>>> it can send at 160Mhz
+>>> 2x2 as well, right?=A0 And if so, then that is incorrect.
+>> no. since nss_override is only set if peer phymode is 160 mhz as well
 >
-> Thank you for your time.
+> The peer can run at 2x2 80Mhz and 1x1 160Mhz at the same time, so it =
+
+> can advertise
+> 2x2 nss and phy-mode of 160Mhz when associating to the 160Mhz AP, but =
+
+> the peer can only do 1x1 at 160Mhz.=A0 There
+> is no standard way I know of for the peer to tell you specifically =
+
+> that it can only do
+> 1x1 at 160Mhz and also 2x2 at 80Mhz in this case.
+per specification the peer is able to provide max nss to the ap. the =
+
+rx_nss property is calculated
+from the mcs rateset provided by the peer by mac80211. this is mcs set =
+
+provided on on assoc is mandatory.
+so there is a way the peer can tell you what it supports and this is =
+
+what is used.
+if a peer does not provide the mcs rateset (which i have seen for a =
+
+single marvell client)
+the fallback mechanism will still work, but just with 1x1. the problem =
+
+is anything else will crash the firmware.
+we have to deal with that.
+
+That is why this rxnns_override exists, to hack around this problem.
+
+i dont think so, because its not just a hack. without providing that =
+
+parameter the firmware will crash.
+so its a always required parameter and not just a hack. for sure the =
+
+firmware can handle it by itself, just someone
+at qca should start to work on it.
+but again. my implementation is correct from the information i have out =
+
+of the qca propertiery wireless driver sources
 >
-> I have been try ath10k-ct firmware and the attachments are the crash dump and pci info.
->
-> If you require any further information, let me know.
->
-> Thanks,
-> KC
->
-> -----Original message-----
-> From:Ben Greear <greearb@candelatech.com>
-> To:KC <kc@mail2000.com.tw>,ath10k <ath10k@lists.infradead.org>
-> Cc:KC Chen <KC1120@gmail.com>
-> Date:Thu, 26 Apr 2018 23:03:09
-> Subject:Re: ath10k driver firmware crash when bring up qca 9984 wireless car d
->
-> On 04/26/2018 01:46 AM, KC wrote:
->> Hi
->>
->> I'm porting ath10k drivers for Linux 4.2.8.
->>
->> Try to bring up QCA9984 wireless PCI-e card.
->>
->> I have problem with running ath10k driver, firmware load then the kernel message will show the firmware crashed during boot.
->>
->> The attachment is the error log.
->>
->> I also tried firmware ver 10.4-3.2, 10.4-3.3 and 10.4-3.5.3 without success: same symptoms an same faults.
->>
->> I can provide more information (logs) to help to figure out: where the problem is?
->
-> You can try my ath10k-ct firmware, send me crash dump if it crashes and I might can
-> decode it and tell you why.
->
-> http://www.candelatech.com/ath10k-10.4.php
+> Your patch is going to break in this case as far as I can tell.
+no it isnt. my tests with various different clients from different =
+
+vendors shows that its working. with 2x2 and 1x1.
+its all well detected by the code and configured as expected
+consider that this patch fixes a CRASH. accept that. it wont break. it =
+
+repairs.
 >
 > Thanks,
 > Ben
 >
+>
 
+-- =
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
 
 
 _______________________________________________
