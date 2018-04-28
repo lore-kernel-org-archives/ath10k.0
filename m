@@ -2,8 +2,8 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCDfW-0002S2-8o
- for ath10k@lists.infradead.org; Sat, 28 Apr 2018 00:24:53 +0000
+ id 1fCDqP-0006mI-Bb
+ for ath10k@lists.infradead.org; Sat, 28 Apr 2018 00:36:07 +0000
 Subject: Re: [PATCH v2] ath10k: fix crash in recent 3.5.3 9984 firmware due
  wrong handling of peer_bw_rxnss_override parameter
 References: <20180426092848.23069-1-s.gottschall@dd-wrt.com>
@@ -15,8 +15,8 @@ References: <20180426092848.23069-1-s.gottschall@dd-wrt.com>
  <f410c1d7-6b19-032d-7f03-6cb1d52f6956@dd-wrt.com>
  <ebaf2806-a63b-5611-41f4-817b1f471fd1@candelatech.com>
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <c1d664dc-ea8a-e9f9-e9e1-2833cbf20fbf@dd-wrt.com>
-Date: Sat, 28 Apr 2018 02:24:33 +0200
+Message-ID: <e7036e06-9f4d-05bc-ea77-e0a6876f3394@dd-wrt.com>
+Date: Sat, 28 Apr 2018 02:35:51 +0200
 MIME-Version: 1.0
 In-Reply-To: <ebaf2806-a63b-5611-41f4-817b1f471fd1@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -34,195 +34,14 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
 Cc: kvalo@codeaurora.org
 
-Am 27.04.2018 um 23:57 schrieb Ben Greear:
-> On 04/27/2018 11:54 AM, Sebastian Gottschall wrote:
->> Am 27.04.2018 um 18:07 schrieb Ben Greear:
->>> On 04/26/2018 09:40 PM, Sebastian Gottschall wrote:
->>>> Am 26.04.2018 um 22:35 schrieb Ben Greear:
->>>>> On 04/26/2018 01:21 PM, Sebastian Gottschall wrote:
->>>>>> Am 26.04.2018 um 17:30 schrieb Ben Greear:
->>>>>>> On 04/26/2018 02:28 AM, s.gottschall@dd-wrt.com wrote:
->>>>>>>> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->>>>>>>>
->>>>>>>> current handling of peer_bw_rxnss_override parameter is based =
 
->>>>>>>> on guessing the VHT160/8080 capability by rx rate. this is =
-
->>>>>>>> wrong and may lead
->>>>>>>> to a non initialized peer_bw_rxnss_override parameter which is =
-
->>>>>>>> required since VHT160 operation mode only supports 2x2 =
-
->>>>>>>> chainmasks in addition the original
->>>>>>>> code
->>>>>>>> initialized the parameter with wrong masked values.
->>>>>>>> This patch uses the peer phymode and peer nss information for =
-
->>>>>>>> correct initialisation of the peer_bw_rxnss_override parameter.
->>>>>>>> if this peer information is not available, we initialize the =
-
->>>>>>>> parameter by minimum nss which is suggested by QCA as temporary =
-
->>>>>>>> workaround according
->>>>>>>> to the QCA sourcecodes.
->>>>>>>>
->>>>>>>> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->>>>>>>>
->>>>>>>> v2: remove debug messages
->>>>>>>> ---
->>>>>>>> =A0drivers/net/wireless/ath/ath10k/mac.c | 36 =
-
->>>>>>>> +++++++++++++++++++----------------
->>>>>>>> =A0drivers/net/wireless/ath/ath10k/wmi.c |=A0 4 +---
->>>>>>>> =A0drivers/net/wireless/ath/ath10k/wmi.h | 14 +++++++++++++-
->>>>>>>> =A03 files changed, 34 insertions(+), 20 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c =
-
->>>>>>>> b/drivers/net/wireless/ath/ath10k/mac.c
->>>>>>>> index 5be6386ede8f..df79af89ee71 100644
->>>>>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
->>>>>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>>>>>>> @@ -2505,8 +2505,9 @@ static void =
-
->>>>>>>> ath10k_peer_assoc_h_vht(struct ath10k *ar,
->>>>>>>> =A0=A0=A0=A0 if (sta->bandwidth =3D=3D IEEE80211_STA_RX_BW_80)
->>>>>>>> =A0=A0=A0=A0=A0=A0=A0=A0 arg->peer_flags |=3D ar->wmi.peer_flags->=
-bw80;
->>>>>>>>
->>>>>>>> -=A0=A0=A0 if (sta->bandwidth =3D=3D IEEE80211_STA_RX_BW_160)
->>>>>>>> +=A0=A0=A0 if (sta->bandwidth =3D=3D IEEE80211_STA_RX_BW_160) {
->>>>>>>> =A0=A0=A0=A0=A0=A0=A0=A0 arg->peer_flags |=3D ar->wmi.peer_flags->=
-bw160;
->>>>>>>> +=A0=A0=A0 }
->>>>>>>>
->>>>>>>> =A0=A0=A0=A0 /* Calculate peer NSS capability from VHT capabilitie=
-s if STA
->>>>>>>> =A0=A0=A0=A0=A0 * supports VHT.
->>>>>>>> @@ -2529,22 +2530,25 @@ static void =
-
->>>>>>>> ath10k_peer_assoc_h_vht(struct ath10k *ar,
->>>>>>>> =A0=A0=A0=A0 arg->peer_vht_rates.tx_mcs_set =3D =
-
->>>>>>>> ath10k_peer_assoc_h_vht_limit(
->>>>>>>> __le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map), vht_mcs_mask);
->>>>>>>>
->>>>>>>> -=A0=A0=A0 ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mp=
-du =
-
->>>>>>>> %d flags 0x%x\n",
->>>>>>>> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sta->addr, arg->peer_max_mpdu, arg=
-->peer_flags);
->>>>>>>> +=A0=A0=A0 if (arg->peer_num_spatial_streams && (arg->peer_phymode=
- =3D=3D =
-
->>>>>>>> MODE_11AC_VHT160 || arg->peer_phymode =3D=3D MODE_11AC_VHT80_80)) {
->>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 arg->peer_bw_rxnss_override =3D =
-
->>>>>>>> BW_NSS_FWCONF_160(arg->peer_num_spatial_streams);
->>>>>>>> +=A0=A0=A0 }
->>>>>>>
->>>>>>> So, an 80Mhz peer could be 4x4 and could connect to a VHT-160 =
-
->>>>>>> AP. From what I can tell,
->>>>>>> the VHT-160 AP can talk 4x4 @ 80Mhz to the peer in this case, =
-
->>>>>>> but if peer is VHT-160,
->>>>>>> then of course it can only talk at 2x2.
->>>>>>>
->>>>>>> So, I don't think you can just look at the =
-
->>>>>>> peer_num_spatial_streams here.
->>>>>> no? rxnss_override is only taked if peer phymode is vht160 or =
-
->>>>>> vht80_80. vht80 is not considered in that code PEER phy_mode, not =
-
->>>>>> HOST phy_mode
->>>>>> this parameter is a assoc per peer parameter as far as i can say =
-
->>>>>> here.
->>>>>> consider that the firmware will accept anything except 0 for =
-
->>>>>> peer_bw_rxnss_override in vht160 operation mode
->>>>>> if a peer is 80 mhz, the code will be skipped here.
->>>>>
->>>>> From what I can tell, this feature is supposed to configure the =
-
->>>>> rate-ctrl in the firmware to know that
->>>>> it can only send 1x1 or 2x2 when sending at 160Mhz, but that it =
-
->>>>> can send at higher NSS if it sends
->>>>> at 80Mhz or lower.
->>>> right. but thats exactly what it should does in case that a peer is =
-
->>>> connecting with vht160 / 80_80
->>>> and the peer itself does also send his own nss capabilities which =
-
->>>> is used if available. if not ,it uses the fallback.
->>>>>
->>>>> If a 2x2 peer connects to the AP, will it have =
-
->>>>> peer_num_spatial_streams set to 2?
->>>> yes. i had some debug code in my initial early versions. the peer =
-
->>>> does transmit his own nss capabilities.
->>>>> If so,
->>>>> then your code will configure the peer_bw_rxnss_override to =
-
->>>>> indicate it can send at 160Mhz
->>>>> 2x2 as well, right?=A0 And if so, then that is incorrect.
->>>> no. since nss_override is only set if peer phymode is 160 mhz as well
->>>
->>> The peer can run at 2x2 80Mhz and 1x1 160Mhz at the same time, so it =
-
->>> can advertise
->>> 2x2 nss and phy-mode of 160Mhz when associating to the 160Mhz AP, =
-
->>> but the peer can only do 1x1 at 160Mhz.=A0 There
->>> is no standard way I know of for the peer to tell you specifically =
-
->>> that it can only do
->>> 1x1 at 160Mhz and also 2x2 at 80Mhz in this case.
->> per specification the peer is able to provide max nss to the ap. the =
-
->> rx_nss property is calculated
->> from the mcs rateset provided by the peer by mac80211. this is mcs =
-
->> set provided on on assoc is mandatory.
->> so there is a way the peer can tell you what it supports and this is =
-
->> what is used.
->> if a peer does not provide the mcs rateset (which i have seen for a =
-
->> single marvell client)
->> the fallback mechanism will still work, but just with 1x1. the =
-
->> problem is anything else will crash the firmware.
->> we have to deal with that.
->>
->> That is why this rxnns_override exists, to hack around this problem.
->>
->> i dont think so, because its not just a hack. without providing that =
-
->> parameter the firmware will crash.
->> so its a always required parameter and not just a hack. for sure the =
-
->> firmware can handle it by itself, just someone
->> at qca should start to work on it.
->> but again. my implementation is correct from the information i have =
-
->> out of the qca propertiery wireless driver sources
->>>
->>> Your patch is going to break in this case as far as I can tell.
->> no it isnt. my tests with various different clients from different =
-
->> vendors shows that its working. with 2x2 and 1x1.
->> its all well detected by the code and configured as expected
->> consider that this patch fixes a CRASH. accept that. it wont break. =
-
->> it repairs.
->
 > I did some testing with the patch below.
+i mean you tested your own patch here but i dont see results for mine.
+i tested my patch in the same way, just not on firmware side
+but i logged the values for rxnss_override and the looked correct all =
+
+the time
+
 >
 > The CHAIMASK_ERR is a debug log from FW that I added to help make sure =
 
@@ -301,28 +120,6 @@ du =
 
 > inline for discussion,
 > probably white-space damaged by email client:
-i will review this tomorrow and check if all the weired math is okay. =
-
-the rx_max_rate is no good idea
-from what i see. the marvell client i tested has the problem that it has =
-
-the mcs rate set so i can calculcate the max nss
-value, but rx_max_rate is empty. that would result in 1x1, even if it =
-
-can do 2x2.
-in your code peer_num_spatial_streams is also always zero
-since peer_num_spatial_streams must be set before with min(sta->rx_nss, =
-
-max_nss)
-maybe the solution could be to combine both methods. so if rx_max_rate =
-
-is set, we use your way and if not we
-try to use nss_max. or we calculate nssvht160_max based on the mcs =
-
-rateset, which is also a solution since the rateset should not contain =
-
-any 3x3 or 4x4 values
-for vht160 rates
 >
 >
 > diff --git a/drivers/net/wireless/ath/ath10k/mac.c =
