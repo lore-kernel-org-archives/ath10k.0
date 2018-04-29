@@ -2,19 +2,13 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCsEX-0006Bq-HP
- for ath10k@lists.infradead.org; Sun, 29 Apr 2018 19:43:44 +0000
-Subject: Re: [PATCH v4] ath10k: fix crash in recent 3.5.3 9984 firmware due
- wrong handling of peer_bw_rxnss_override parameter
-References: <20180428004752.16659-1-s.gottschall@dd-wrt.com>
- <b9039c6f-17bd-2d30-79ec-4b70dc76ad75@candelatech.com>
- <fa914b1a-3529-f179-d7a0-b2aec54b1c8f@dd-wrt.com>
- <e1e5da2a-cd36-f460-f986-eccdabad8b73@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <e8d6f7d3-23cc-e491-c65d-5dfb28a2e8fd@dd-wrt.com>
-Date: Sun, 29 Apr 2018 21:43:17 +0200
-MIME-Version: 1.0
-In-Reply-To: <e1e5da2a-cd36-f460-f986-eccdabad8b73@candelatech.com>
+ id 1fCsKt-0008GS-89
+ for ath10k@lists.infradead.org; Sun, 29 Apr 2018 19:50:17 +0000
+From: s.gottschall@dd-wrt.com
+Subject: [PATCH v5] ath10k: fix crash in recent 3.5.3 9984 firmware due wrong
+ handling of peer_bw_rxnss_override parameter
+Date: Sun, 29 Apr 2018 21:49:57 +0200
+Message-Id: <20180429194957.3144-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,223 +17,151 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: kvalo@codeaurora.org
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, kvalo@codeaurora.org
 
-btw 4019 doesnt support vht160 in ath10k see vht160_mcs_rx_highest in =
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-core params
-if it does support vht160, ath10k must be adjusted here
+current handling of peer_bw_rxnss_override parameter is based on guessing the VHT160/8080 capability by rx rate. this is wrong and may lead
+to a non initialized peer_bw_rxnss_override parameter which is required since VHT160 operation mode only supports 2x2 chainmasks in addition the original code
+initialized the parameter with wrong masked values.
+This patch uses the peer phymode and peer nss information for correct initialisation of the peer_bw_rxnss_override parameter.
+if this peer information is not available, we initialize the parameter by minimum nss which is suggested by QCA as temporary workaround according
+to the QCA sourcecodes.
 
-Am 28.04.2018 um 17:37 schrieb Ben Greear:
->
->
-> On 04/28/2018 08:26 AM, Sebastian Gottschall wrote:
->> Am 28.04.2018 um 17:01 schrieb Ben Greear:
->>>
->>>
->>> On 04/27/2018 05:47 PM, s.gottschall@dd-wrt.com wrote:
->>>> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->>>>
->>>> current handling of peer_bw_rxnss_override parameter is based on =
+Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
->>>> guessing the VHT160/8080 capability by rx rate. this is wrong and =
+v2: remove debug messages
+v3: apply some cosmetics, update documentation
+v4: fix compile warning and truncate nss to maximum of 2x2 since current chipsets only support 2x2 at vht160
+v5: handle maximum nss for chipsets supportig vht160 with 1x1 only
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 48 ++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/wmi.c |  7 +---
+ drivers/net/wireless/ath/ath10k/wmi.h | 14 +++++++-
+ 3 files changed, 47 insertions(+), 22 deletions(-)
 
->>>> may lead
->>>> to a non initialized peer_bw_rxnss_override parameter which is =
-
->>>> required since VHT160 operation mode only supports 2x2 chainmasks =
-
->>>> in addition the original code
->>>> initialized the parameter with wrong masked values.
->>>> This patch uses the peer phymode and peer nss information for =
-
->>>> correct initialisation of the peer_bw_rxnss_override parameter.
->>>> if this peer information is not available, we initialize the =
-
->>>> parameter by minimum nss which is suggested by QCA as temporary =
-
->>>> workaround according
->>>> to the QCA sourcecodes.
->>>>
->>>> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->>>>
->>>> v2: remove debug messages
->>>> v3: apply some cosmetics, update documentation
->>>> v4: fix compile warning and truncate nss to maximum of 2x2 since =
-
->>>> current chipsets only support 2x2 at vht160
->>>> ---
->>>> =A0drivers/net/wireless/ath/ath10k/mac.c | 44 =
-
->>>> ++++++++++++++++++---------
->>>> =A0drivers/net/wireless/ath/ath10k/wmi.c |=A0 7 +----
->>>> =A0drivers/net/wireless/ath/ath10k/wmi.h | 14 ++++++++-
->>>> =A03 files changed, 43 insertions(+), 22 deletions(-)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c =
-
->>>> b/drivers/net/wireless/ath/ath10k/mac.c
->>>> index 5be6386ede8f..de8a099c9f5a 100644
->>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
->>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>>> @@ -2528,23 +2528,37 @@ static void ath10k_peer_assoc_h_vht(struct =
-
->>>> ath10k *ar,
->>>> =A0=A0=A0=A0=A0=A0=A0=A0 __le16_to_cpu(vht_cap->vht_mcs.tx_highest);
->>>> =A0=A0=A0=A0 arg->peer_vht_rates.tx_mcs_set =3D ath10k_peer_assoc_h_vh=
-t_limit(
->>>> =A0=A0=A0=A0=A0=A0=A0=A0 __le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map), v=
-ht_mcs_mask);
->>>> +=A0=A0=A0 arg->peer_bw_rxnss_override =3D 0;
->>>> +
->>>> +=A0=A0=A0 if (arg->peer_num_spatial_streams) {
->>>
->>> Check for the 80+80 or 160 instead of num-spatial-streams, if if =
-
->>> something has
->>> nss =3D=3D 0, then act like it is 1 instead since it is obviously =
-
->>> configured incorrect.
->> this check is bellow. see the switch statement for the VHT160, 80_80 =
-
->> case.
->> if nss 0, it must fail here since we cannot handle nss =3D 0, in that =
-
->> case just bit 31 is masked
->>
->>>
->>>> +=A0=A0=A0=A0=A0=A0=A0 int nss160 =3D arg->peer_num_spatial_streams;
->>>
->>> I think this line should be:
->>> =A0=A0=A0=A0=A0=A0=A0 int nss160 =3D arg->peer_num_spatial_streams / 2;
->> no. makes no sense. 2 would get 1 and 1 turns to zero. makes no sense
->> read the macro BW_NSS_FWCONF_160 first. it already does nss160-1
->> this would lead to -1 if spatial_streams is 1
->
-> Well, nss160 should be the number of streams we can use at 160 Mhz.=A0 =
-
-> The macro
-> can convert to zero-based api that the firmware wants.=A0 A 9984 will =
-
-> have nss =3D=3D 4,
-> but you want nss160 to be 2.=A0 A 4019 will have nss =3D=3D 2, but nss160 =
-
-> should be 1.
->
->
->>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (nss160 =3D=3D 0) { ns=
-s160 =3D 1; } /* deal with =
-
->>> mis-configured nss */
->> no
->> if peer_num_spatial_stream is 0 (so nss160 too), the code is not =
-
->> triggered. but another code. same as above
->
-> If NSS was 1, and you do 1/2, you get zero.
->
->>
->> if (!arg->peer_num_spatial_streams && (arg->peer_phymode =3D=3D =
-
->> MODE_11AC_VHT80_80 || arg->peer_phymode =3D=3D MODE_11AC_VHT160)) {
->> =A0=A0=A0=A0=A0=A0 arg->peer_bw_rxnss_override =3D BW_NSS_FWCONF_MAP_ENA=
-BLE;
->> =A0}
->>>
->>> If you have a 4019 client, it will have =
-
->>> arg->peer_num_spatial_streams =3D=3D 2, but
->>> it can only do 1x1 at 160Mhz.
->> peer_num_spatial_streams is calculated from mcs rate set. so why =
-
->> should 4019 announce 2x2 if it just can to 1x1.
->> have you checked the mcs set at assoc management frame?
->
-> You are confused about nss vs the 160nss.=A0 They are different.=A0 I do =
-
-> not know how to explain
-> this better.=A0 Dig through the firmware source and look at how they are =
-
-> used.=A0 Basically, if
-> rate-ctrl decides 80Mhz is best, it can send at the normal 80Mhz NSS =
-
-> (so, 4 for 9984, 2 for 4019),
-> but if rate-ctrl uses 160, it uses the different nss max (2 for 9984, =
-
-> one for 4019).
->
->>>
->>>
->>>> +=A0=A0=A0=A0=A0=A0=A0 /* truncate vht160 nss value to 2x2 since all k=
-nown =
-
->>>> chipsets do not support more than 2x2 in vht160 modes */
->>>> +=A0=A0=A0=A0=A0=A0=A0 if (nss160 > 2)
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 nss160 =3D 2;
->>>> +=A0=A0=A0=A0=A0=A0=A0 /* in case if peer is connected with vht160 or =
-vht80+80, =
-
->>>> we need to properly adjust rxnss parameters */
->>>> +=A0=A0=A0=A0=A0=A0=A0 switch(arg->peer_phymode) {
->>>> +=A0=A0=A0=A0=A0=A0=A0 case MODE_11AC_VHT80_80:
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 arg->peer_bw_rxnss_override =3D =
-
->>>> BW_NSS_FWCONF_80_80(nss160);
->>>> +=A0=A0=A0=A0=A0=A0=A0 /* fall through */
->>>> +=A0=A0=A0=A0=A0=A0=A0 case MODE_11AC_VHT160:
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 arg->peer_bw_rxnss_override |=3D BW=
-_NSS_FWCONF_160(nss160);
->>>
->>> From looking at firmware, it will just ignore the bits it does not =
-
->>> need, so you do not need
->>> to special case adding the 80_80 fields, you can do more like my =
-
->>> patch and just always add
->>> those bits.
->> i'm following the reference code. in case 80_80 only is configure =
-
->> vht160 nd 80_80 must be masked. for everything else vht160 only must =
-
->> be masked.
->> thats the meaning. there are 2 override masks. independend for vht160 =
-
->> and 80_80. for sure i can do always both, but the reference code does =
-
->> not
->> and who knows what else changed in the firmware. consider that the =
-
->> crash bug first occured on 3.5.3. your CT codebase is older as far as =
-
->> i know
->
-> I looked at both my code and the most recent QCA FW code.=A0 You can =
-
-> leave the exra
-> complexity in the code if you wish, it at least does not break anything.
->
-> Thanks,
-> Ben
->
-
--- =
-
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5be6386ede8f..a95a32102ef3 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2528,23 +2528,41 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+ 		__le16_to_cpu(vht_cap->vht_mcs.tx_highest);
+ 	arg->peer_vht_rates.tx_mcs_set = ath10k_peer_assoc_h_vht_limit(
+ 		__le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map), vht_mcs_mask);
++	arg->peer_bw_rxnss_override = 0;
++
++	if (arg->peer_num_spatial_streams && ar->hw_params.vht160_mcs_rx_highest) {
++		int nss160 = arg->peer_num_spatial_streams;
++		/* truncate vht160 nss value to 2x2 since all known chipsets do not support more than 2x2 in vht160 modes */
++		if (nss160 > 2) {
++			if (ar->hw_params.vht160_mcs_rx_highest == 1560)
++				nss160 = 2;
++			else
++				nss160 = 1;
++		}
++		/* in case if peer is connected with vht160 or vht80+80, we need to properly adjust rxnss parameters */
++		switch(arg->peer_phymode) {
++		case MODE_11AC_VHT80_80:
++			arg->peer_bw_rxnss_override = BW_NSS_FWCONF_80_80(nss160);
++		/* fall through */
++		case MODE_11AC_VHT160:
++			arg->peer_bw_rxnss_override |= BW_NSS_FWCONF_160(nss160);
++		break;
++		default:
++		break;
++		}
++	}
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x\n",
+-		   sta->addr, arg->peer_max_mpdu, arg->peer_flags);
++	/* in case peer has no nss properties for some reasons, we set local nss to minimum (1x1) to avoid a 
++	 * firmware assert / crash. this applies only to VHT160 or VHT80+80 and is a WAR for clients breaking
++	 * the spec.
++	 */
+ 
+-	if (arg->peer_vht_rates.rx_max_rate &&
+-	    (sta->vht_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK)) {
+-		switch (arg->peer_vht_rates.rx_max_rate) {
+-		case 1560:
+-			/* Must be 2x2 at 160Mhz is all it can do. */
+-			arg->peer_bw_rxnss_override = 2;
+-			break;
+-		case 780:
+-			/* Can only do 1x1 at 160Mhz (Long Guard Interval) */
+-			arg->peer_bw_rxnss_override = 1;
+-			break;
+-		}
++	if (!(arg->peer_num_spatial_streams || !ar->hw_params.vht160_mcs_rx_highest) && (arg->peer_phymode == MODE_11AC_VHT80_80 || arg->peer_phymode == MODE_11AC_VHT160)) {
++		arg->peer_bw_rxnss_override = BW_NSS_FWCONF_MAP_ENABLE;
+ 	}
++
++	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x\n",
++		   sta->addr, arg->peer_max_mpdu, arg->peer_flags);
+ }
+ 
+ static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
+@@ -2696,9 +2714,9 @@ static int ath10k_peer_assoc_prepare(struct ath10k *ar,
+ 	ath10k_peer_assoc_h_crypto(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_rates(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_ht(ar, vif, sta, arg);
++	ath10k_peer_assoc_h_phymode(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_vht(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_qos(ar, vif, sta, arg);
+-	ath10k_peer_assoc_h_phymode(ar, vif, sta, arg);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 2c36256a441d..3797dca317ff 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -7211,12 +7211,7 @@ ath10k_wmi_peer_assoc_fill_10_4(struct ath10k *ar, void *buf,
+ 	struct wmi_10_4_peer_assoc_complete_cmd *cmd = buf;
+ 
+ 	ath10k_wmi_peer_assoc_fill_10_2(ar, buf, arg);
+-	if (arg->peer_bw_rxnss_override)
+-		cmd->peer_bw_rxnss_override =
+-			__cpu_to_le32((arg->peer_bw_rxnss_override - 1) |
+-				      BIT(PEER_BW_RXNSS_OVERRIDE_OFFSET));
+-	else
+-		cmd->peer_bw_rxnss_override = 0;
++	cmd->peer_bw_rxnss_override = __cpu_to_le32(arg->peer_bw_rxnss_override);
+ }
+ 
+ static int
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 46ae19bb2c92..1fe0aa5523a6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6380,7 +6380,19 @@ struct wmi_10_2_peer_assoc_complete_cmd {
+ 	__le32 info0; /* WMI_PEER_ASSOC_INFO0_ */
+ } __packed;
+ 
+-#define PEER_BW_RXNSS_OVERRIDE_OFFSET  31
++#define BW_NSS_FWCONF_MAP_ENABLE             (1 << 31)
++#define BW_NSS_FWCONF_MAP_160MHZ_S           (0)
++#define BW_NSS_FWCONF_MAP_160MHZ_M           (0x00000007)
++#define BW_NSS_FWCONF_MAP_80_80MHZ_S         (3)
++#define BW_NSS_FWCONF_MAP_80_80MHZ_M         (0x00000038)
++#define BW_NSS_FWCONF_MAP_M                  (0x0000003F)
++
++#define GET_BW_NSS_FWCONF_160(x)             ((((x) & BW_NSS_FWCONF_MAP_160MHZ_M) >> BW_NSS_FWCONF_MAP_160MHZ_S) + 1)
++#define GET_BW_NSS_FWCONF_80_80(x)           ((((x) & BW_NSS_FWCONF_MAP_80_80MHZ_M) >> BW_NSS_FWCONF_MAP_80_80MHZ_S) + 1)
++
++/* Values defined to set 160 MHz Bandwidth NSS Mapping into FW*/
++#define BW_NSS_FWCONF_160(x)          (BW_NSS_FWCONF_MAP_ENABLE | (((x - 1) << BW_NSS_FWCONF_MAP_160MHZ_S) & BW_NSS_FWCONF_MAP_160MHZ_M))
++#define BW_NSS_FWCONF_80_80(x)        (BW_NSS_FWCONF_MAP_ENABLE | (((x - 1) << BW_NSS_FWCONF_MAP_80_80MHZ_S) & BW_NSS_FWCONF_MAP_80_80MHZ_M))
+ 
+ struct wmi_10_4_peer_assoc_complete_cmd {
+ 	struct wmi_10_2_peer_assoc_complete_cmd cmd;
+-- 
+2.17.0
 
 
 _______________________________________________
