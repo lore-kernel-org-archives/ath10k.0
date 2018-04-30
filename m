@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD2Ho-0003ri-6U
- for ath10k@lists.infradead.org; Mon, 30 Apr 2018 06:27:46 +0000
-From: Sriram R <srirrama@codeaurora.org>
-Subject: [PATCH 2/2 - linux-stable-4.4] ath10k: rebuild crypto header in rx
- data frames
-Date: Mon, 30 Apr 2018 11:56:27 +0530
-Message-Id: <1525069587-19281-3-git-send-email-srirrama@codeaurora.org>
-In-Reply-To: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
-References: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fDBDt-0004mP-IZ
+ for ath10k@lists.infradead.org; Mon, 30 Apr 2018 16:00:23 +0000
+Subject: Re: ath10k driver firmware crash when bring up qca 9984 wireless card
+References: <1524732398.3848.kc@mail2000.com.tw>
+ <f88bee98-2358-4f6f-19b6-4114c9dcb4f4@candelatech.com>
+ <1524809543.9200.kc@mail2000.com.tw>
+ <fcac72f1-34d5-3167-780a-ddf67debe964@candelatech.com>
+ <1525057041.30100.kc@mail2000.com.tw>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <188053d9-bdd0-15af-e78f-725c37a7e952@candelatech.com>
+Date: Mon, 30 Apr 2018 09:00:01 -0700
+MIME-Version: 1.0
+In-Reply-To: <1525057041.30100.kc@mail2000.com.tw>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,284 +22,124 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: stable@vger.kernel.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
+To: KC <kc@mail2000.com.tw>
+Cc: KC Chen <KC1120@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-Rx data frames notified through HTT_T2H_MSG_TYPE_RX_IND and
-HTT_T2H_MSG_TYPE_RX_FRAG_IND expect PN/TSC check to be done
-on host (mac80211) rather than firmware. Rebuild cipher header
-in every received data frames (that are notified through those
-HTT interfaces) from the rx_hdr_status tlv available in the
-rx descriptor of the first msdu. Skip setting RX_FLAG_IV_STRIPPED
-flag for the packets which requires mac80211 PN/TSC check support
-and set appropriate RX_FLAG for stripped crypto tail. Hw QCA988X,
-and QCA99X0 currently need the rebuilding of cipher header to
-perform PN/TSC check for replay attack.
+On 04/29/2018 07:57 PM, KC wrote:
+>
+> Hi Ben
+>
+> Thanks for your time.
+>
+> If I want to try ath10k-ct-driver, where I can get stable version?
+>
+> There has information about pci-e layout.
+> The device has two PCI-e slots. one is the original pci-e slot of main board and the other one is the output of pci-e switch.
+>
+> case 1:one is the original pci-e slot of main board
+> case 2:one is the output from pci-e switch.
+>
+> We can get QCA9884 pci-e information (VID and IID) form /sys/bus/pci/device in case 1 and case 2
+>
+> ath10k driver always work in case 1 and always get the firmware crash message in case 2.
+>
+> Does ath10k driver have any limits about pci-e layout?
 
-[Upstream Commit : 7eccb738fce57cbe53ed903ccf43f9ab257b15b3]
+The most likely way for it to work is to use one of our kernels,
+the 4.13 being the most stable and well tested at this point.
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
-Signed-off-by: Sriram R <srirrama@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 98 ++++++++++++++++++++++++++------
- 1 file changed, 82 insertions(+), 16 deletions(-)
+The 4.16 should be OK too, but it is less tested.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 8d20ecc..d26cb37 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1076,7 +1076,21 @@ static void ath10k_htt_rx_h_undecap_raw(struct ath10k *ar,
- 	hdr = (void *)msdu->data;
- 
- 	/* Tail */
--	skb_trim(msdu, msdu->len - ath10k_htt_rx_crypto_tail_len(ar, enctype));
-+	if (status->flag & RX_FLAG_IV_STRIPPED) {
-+		skb_trim(msdu, msdu->len -
-+			 ath10k_htt_rx_crypto_tail_len(ar, enctype));
-+	} else {
-+		/* MIC */
-+		if ((status->flag & RX_FLAG_MIC_STRIPPED) &&
-+		    enctype == HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2)
-+			skb_trim(msdu, msdu->len - 8);
-+
-+		/* ICV */
-+		if (status->flag & RX_FLAG_ICV_STRIPPED &&
-+		    enctype != HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2)
-+			skb_trim(msdu, msdu->len -
-+				 ath10k_htt_rx_crypto_tail_len(ar, enctype));
-+	}
- 
- 	/* MMIC */
- 	if (!ieee80211_has_morefrags(hdr->frame_control) &&
-@@ -1095,12 +1109,14 @@ static void ath10k_htt_rx_h_undecap_raw(struct ath10k *ar,
- static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
- 					  struct sk_buff *msdu,
- 					  struct ieee80211_rx_status *status,
--					  const u8 first_hdr[64])
-+					  const u8 first_hdr[64],
-+					  enum htt_rx_mpdu_encrypt_type enctype)
- {
- 	struct ieee80211_hdr *hdr;
- 	size_t hdr_len;
- 	u8 da[ETH_ALEN];
- 	u8 sa[ETH_ALEN];
-+	int bytes_aligned = ar->hw_params.decap_align_bytes;
- 
- 	/* Delivered decapped frame:
- 	 * [nwifi 802.11 header] <-- replaced with 802.11 hdr
-@@ -1123,6 +1139,14 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
- 	/* push original 802.11 header */
- 	hdr = (struct ieee80211_hdr *)first_hdr;
- 	hdr_len = ieee80211_hdrlen(hdr->frame_control);
-+
-+	if (!(status->flag & RX_FLAG_IV_STRIPPED)) {
-+		memcpy(skb_push(msdu,
-+				ath10k_htt_rx_crypto_param_len(ar, enctype)),
-+		       (void *)hdr + round_up(hdr_len, bytes_aligned),
-+			ath10k_htt_rx_crypto_param_len(ar, enctype));
-+	}
-+
- 	memcpy(skb_push(msdu, hdr_len), hdr, hdr_len);
- 
- 	/* original 802.11 header has a different DA and in
-@@ -1180,6 +1204,7 @@ static void ath10k_htt_rx_h_undecap_eth(struct ath10k *ar,
- 	void *rfc1042;
- 	u8 da[ETH_ALEN];
- 	u8 sa[ETH_ALEN];
-+	int bytes_aligned = ar->hw_params.decap_align_bytes;
- 
- 	/* Delivered decapped frame:
- 	 * [eth header] <-- replaced with 802.11 hdr & rfc1042/llc
-@@ -1203,6 +1228,14 @@ static void ath10k_htt_rx_h_undecap_eth(struct ath10k *ar,
- 	/* push original 802.11 header */
- 	hdr = (struct ieee80211_hdr *)first_hdr;
- 	hdr_len = ieee80211_hdrlen(hdr->frame_control);
-+
-+	if (!(status->flag & RX_FLAG_IV_STRIPPED)) {
-+		memcpy(skb_push(msdu,
-+				ath10k_htt_rx_crypto_param_len(ar, enctype)),
-+		       (void *)hdr + round_up(hdr_len, bytes_aligned),
-+			ath10k_htt_rx_crypto_param_len(ar, enctype));
-+	}
-+
- 	memcpy(skb_push(msdu, hdr_len), hdr, hdr_len);
- 
- 	/* original 802.11 header has a different DA and in
-@@ -1216,10 +1249,12 @@ static void ath10k_htt_rx_h_undecap_eth(struct ath10k *ar,
- static void ath10k_htt_rx_h_undecap_snap(struct ath10k *ar,
- 					 struct sk_buff *msdu,
- 					 struct ieee80211_rx_status *status,
--					 const u8 first_hdr[64])
-+					 const u8 first_hdr[64],
-+					 enum htt_rx_mpdu_encrypt_type enctype)
- {
- 	struct ieee80211_hdr *hdr;
- 	size_t hdr_len;
-+	int bytes_aligned = ar->hw_params.decap_align_bytes;
- 
- 	/* Delivered decapped frame:
- 	 * [amsdu header] <-- replaced with 802.11 hdr
-@@ -1231,6 +1266,14 @@ static void ath10k_htt_rx_h_undecap_snap(struct ath10k *ar,
- 
- 	hdr = (struct ieee80211_hdr *)first_hdr;
- 	hdr_len = ieee80211_hdrlen(hdr->frame_control);
-+
-+	if (!(status->flag & RX_FLAG_IV_STRIPPED)) {
-+		memcpy(skb_push(msdu,
-+				ath10k_htt_rx_crypto_param_len(ar, enctype)),
-+		       (void *)hdr + round_up(hdr_len, bytes_aligned),
-+			ath10k_htt_rx_crypto_param_len(ar, enctype));
-+	}
-+
- 	memcpy(skb_push(msdu, hdr_len), hdr, hdr_len);
- }
- 
-@@ -1265,13 +1308,15 @@ static void ath10k_htt_rx_h_undecap(struct ath10k *ar,
- 					    is_decrypted);
- 		break;
- 	case RX_MSDU_DECAP_NATIVE_WIFI:
--		ath10k_htt_rx_h_undecap_nwifi(ar, msdu, status, first_hdr);
-+		ath10k_htt_rx_h_undecap_nwifi(ar, msdu, status, first_hdr,
-+					      enctype);
- 		break;
- 	case RX_MSDU_DECAP_ETHERNET2_DIX:
- 		ath10k_htt_rx_h_undecap_eth(ar, msdu, status, first_hdr, enctype);
- 		break;
- 	case RX_MSDU_DECAP_8023_SNAP_LLC:
--		ath10k_htt_rx_h_undecap_snap(ar, msdu, status, first_hdr);
-+		ath10k_htt_rx_h_undecap_snap(ar, msdu, status, first_hdr,
-+					     enctype);
- 		break;
- 	}
- }
-@@ -1314,7 +1359,8 @@ static void ath10k_htt_rx_h_csum_offload(struct sk_buff *msdu)
- 
- static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 				 struct sk_buff_head *amsdu,
--				 struct ieee80211_rx_status *status)
-+				 struct ieee80211_rx_status *status,
-+				 bool fill_crypt_header)
- {
- 	struct sk_buff *first;
- 	struct sk_buff *last;
-@@ -1324,7 +1370,6 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 	enum htt_rx_mpdu_encrypt_type enctype;
- 	u8 first_hdr[64];
- 	u8 *qos;
--	size_t hdr_len;
- 	bool has_fcs_err;
- 	bool has_crypto_err;
- 	bool has_tkip_err;
-@@ -1345,15 +1390,17 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 	 * decapped header. It'll be used for undecapping of each MSDU.
- 	 */
- 	hdr = (void *)rxd->rx_hdr_status;
--	hdr_len = ieee80211_hdrlen(hdr->frame_control);
--	memcpy(first_hdr, hdr, hdr_len);
-+	memcpy(first_hdr, hdr, RX_HTT_HDR_STATUS_LEN);
- 
- 	/* Each A-MSDU subframe will use the original header as the base and be
- 	 * reported as a separate MSDU so strip the A-MSDU bit from QoS Ctl.
- 	 */
- 	hdr = (void *)first_hdr;
--	qos = ieee80211_get_qos_ctl(hdr);
--	qos[0] &= ~IEEE80211_QOS_CTL_A_MSDU_PRESENT;
-+
-+	if (ieee80211_is_data_qos(hdr->frame_control)) {
-+		qos = ieee80211_get_qos_ctl(hdr);
-+		qos[0] &= ~IEEE80211_QOS_CTL_A_MSDU_PRESENT;
-+	}
- 
- 	/* Some attention flags are valid only in the last MSDU. */
- 	last = skb_peek_tail(amsdu);
-@@ -1387,11 +1434,17 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 	if (has_tkip_err)
- 		status->flag |= RX_FLAG_MMIC_ERROR;
- 
--	if (is_decrypted)
-+	if (is_decrypted) {
- 		status->flag |= RX_FLAG_DECRYPTED |
--				RX_FLAG_IV_STRIPPED |
- 				RX_FLAG_MMIC_STRIPPED;
- 
-+		if (fill_crypt_header)
-+			status->flag |= RX_FLAG_MIC_STRIPPED |
-+					RX_FLAG_ICV_STRIPPED;
-+		else
-+			status->flag |= RX_FLAG_IV_STRIPPED;
-+	}
-+
- 	skb_queue_walk(amsdu, msdu) {
- 		ath10k_htt_rx_h_csum_offload(msdu);
- 		ath10k_htt_rx_h_undecap(ar, msdu, status, first_hdr, enctype,
-@@ -1404,6 +1457,9 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 		if (!is_decrypted)
- 			continue;
- 
-+		if (fill_crypt_header)
-+			continue;
-+
- 		hdr = (void *)msdu->data;
- 		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_FCTL_PROTECTED);
- 	}
-@@ -1414,6 +1470,9 @@ static void ath10k_htt_rx_h_deliver(struct ath10k *ar,
- 				    struct ieee80211_rx_status *status)
- {
- 	struct sk_buff *msdu;
-+	struct sk_buff *first_subframe;
-+
-+	first_subframe = skb_peek(amsdu);
- 
- 	while ((msdu = __skb_dequeue(amsdu))) {
- 		/* Setup per-MSDU flags */
-@@ -1422,6 +1481,13 @@ static void ath10k_htt_rx_h_deliver(struct ath10k *ar,
- 		else
- 			status->flag |= RX_FLAG_AMSDU_MORE;
- 
-+		if (msdu == first_subframe) {
-+			first_subframe = NULL;
-+			status->flag &= ~RX_FLAG_ALLOW_SAME_PN;
-+		} else {
-+			status->flag |= RX_FLAG_ALLOW_SAME_PN;
-+		}
-+
- 		ath10k_process_rx(ar, status, msdu);
- 	}
- }
-@@ -1607,7 +1673,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 		ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
- 		ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
- 		ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
--		ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
-+		ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status, true);
- 		ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
- 	}
- 
-@@ -1653,7 +1719,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 
- 	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
- 	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
--	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
-+	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status, true);
- 	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
- 
- 	if (fw_desc_len > 0) {
-@@ -1952,7 +2018,7 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 			 */
- 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
- 			ath10k_htt_rx_h_filter(ar, &amsdu, status);
--			ath10k_htt_rx_h_mpdu(ar, &amsdu, status);
-+			ath10k_htt_rx_h_mpdu(ar, &amsdu, status, false);
- 			ath10k_htt_rx_h_deliver(ar, &amsdu, status);
- 			break;
- 		case -EAGAIN:
+https://github.com/greearb?tab=repositories
+
+Or, you can try using our stand-alone driver, but it does not work on
+all kernels...typically just 4.9, 4.13 and 4.16 or similar.
+
+https://github.com/greearb/ath10k-ct
+
+I don't know of any particular issues with pcie, but I guess there must be some
+issue in your case.
+
+Thanks,
+Ben
+
+>
+> Thanks,
+> KC
+>
+> -----Original message-----
+> From:Ben Greear <greearb@candelatech.com>
+> To:KC <kc@mail2000.com.tw>
+> Cc:KC Chen <KC1120@gmail.com>,ath10k <ath10k@lists.infradead.org>
+> Date:Sat, 28 Apr 2018 01:20:41
+> Subject:Re: ath10k driver firmware crash when bring up qca 9984 wireless car d
+>
+> I think it might be something like a null-pointer exception, but those do not
+> create a clean backtrace.  If you wanted to use my ath10k-ct driver, it can sometimes
+> gather additional info for these types of crashes that lets me know more about it.
+>
+> But, if your problem is with backporting a driver anyway, maybe that is not
+> so much help.
+>
+> If you could move forward to at least the 4.9 kernel, then likely you will have
+> better luck with the 9984.
+>
+> Thanks,
+> Ben
+>
+> On 04/26/2018 11:12 PM, KC wrote:
+>> Hi Ben,
+>>
+>> Thank you for your time.
+>>
+>> I have been try ath10k-ct firmware and the attachments are the crash dump and pci info.
+>>
+>> If you require any further information, let me know.
+>>
+>> Thanks,
+>> KC
+>>
+>> -----Original message-----
+>> From:Ben Greear <greearb@candelatech.com>
+>> To:KC <kc@mail2000.com.tw>,ath10k <ath10k@lists.infradead.org>
+>> Cc:KC Chen <KC1120@gmail.com>
+>> Date:Thu, 26 Apr 2018 23:03:09
+>> Subject:Re: ath10k driver firmware crash when bring up qca 9984 wireless car d
+>>
+>> On 04/26/2018 01:46 AM, KC wrote:
+>>> Hi
+>>>
+>>> I'm porting ath10k drivers for Linux 4.2.8.
+>>>
+>>> Try to bring up QCA9984 wireless PCI-e card.
+>>>
+>>> I have problem with running ath10k driver, firmware load then the kernel message will show the firmware crashed during boot.
+>>>
+>>> The attachment is the error log.
+>>>
+>>> I also tried firmware ver 10.4-3.2, 10.4-3.3 and 10.4-3.5.3 without success: same symptoms an same faults.
+>>>
+>>> I can provide more information (logs) to help to figure out: where the problem is?
+>>
+>> You can try my ath10k-ct firmware, send me crash dump if it crashes and I might can
+>> decode it and tell you why.
+>>
+>> http://www.candelatech.com/ath10k-10.4.php
+>>
+>> Thanks,
+>> Ben
+>>
+>
+>
+
+
 -- 
-2.7.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
