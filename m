@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCsKt-0008GS-89
- for ath10k@lists.infradead.org; Sun, 29 Apr 2018 19:50:17 +0000
-From: s.gottschall@dd-wrt.com
-Subject: [PATCH v5] ath10k: fix crash in recent 3.5.3 9984 firmware due wrong
- handling of peer_bw_rxnss_override parameter
-Date: Sun, 29 Apr 2018 21:49:57 +0200
-Message-Id: <20180429194957.3144-1-s.gottschall@dd-wrt.com>
+Received: from p7.mail2000.com.tw ([220.130.127.163])
+ by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fCz0b-0005Da-Nx
+ for ath10k@lists.infradead.org; Mon, 30 Apr 2018 02:57:47 +0000
+From: "KC" <kc@mail2000.com.tw>
+Subject: Re: ath10k driver firmware crash when bring up qca 9984 wireless card
+Message-ID: <1525057041.30100.kc@mail2000.com.tw>
+In-Reply-To: <fcac72f1-34d5-3167-780a-ddf67debe964@candelatech.com>
+References: <1524732398.3848.kc@mail2000.com.tw>
+ <f88bee98-2358-4f6f-19b6-4114c9dcb4f4@candelatech.com>
+ <1524809543.9200.kc@mail2000.com.tw>
+ <fcac72f1-34d5-3167-780a-ddf67debe964@candelatech.com>
+Date: Mon, 30 Apr 2018 10:57:21 +0800 (CST)
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,151 +21,103 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Reply-To: KC <kc@mail2000.com.tw>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, kvalo@codeaurora.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: KC Chen <KC1120@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-current handling of peer_bw_rxnss_override parameter is based on guessing the VHT160/8080 capability by rx rate. this is wrong and may lead
-to a non initialized peer_bw_rxnss_override parameter which is required since VHT160 operation mode only supports 2x2 chainmasks in addition the original code
-initialized the parameter with wrong masked values.
-This patch uses the peer phymode and peer nss information for correct initialisation of the peer_bw_rxnss_override parameter.
-if this peer information is not available, we initialize the parameter by minimum nss which is suggested by QCA as temporary workaround according
-to the QCA sourcecodes.
+Hi Ben
 
-Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Thanks for your time. 
 
-v2: remove debug messages
-v3: apply some cosmetics, update documentation
-v4: fix compile warning and truncate nss to maximum of 2x2 since current chipsets only support 2x2 at vht160
-v5: handle maximum nss for chipsets supportig vht160 with 1x1 only
----
- drivers/net/wireless/ath/ath10k/mac.c | 48 ++++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/wmi.c |  7 +---
- drivers/net/wireless/ath/ath10k/wmi.h | 14 +++++++-
- 3 files changed, 47 insertions(+), 22 deletions(-)
+If I want to try ath10k-ct-driver, where I can get stable version?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5be6386ede8f..a95a32102ef3 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2528,23 +2528,41 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
- 		__le16_to_cpu(vht_cap->vht_mcs.tx_highest);
- 	arg->peer_vht_rates.tx_mcs_set = ath10k_peer_assoc_h_vht_limit(
- 		__le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map), vht_mcs_mask);
-+	arg->peer_bw_rxnss_override = 0;
-+
-+	if (arg->peer_num_spatial_streams && ar->hw_params.vht160_mcs_rx_highest) {
-+		int nss160 = arg->peer_num_spatial_streams;
-+		/* truncate vht160 nss value to 2x2 since all known chipsets do not support more than 2x2 in vht160 modes */
-+		if (nss160 > 2) {
-+			if (ar->hw_params.vht160_mcs_rx_highest == 1560)
-+				nss160 = 2;
-+			else
-+				nss160 = 1;
-+		}
-+		/* in case if peer is connected with vht160 or vht80+80, we need to properly adjust rxnss parameters */
-+		switch(arg->peer_phymode) {
-+		case MODE_11AC_VHT80_80:
-+			arg->peer_bw_rxnss_override = BW_NSS_FWCONF_80_80(nss160);
-+		/* fall through */
-+		case MODE_11AC_VHT160:
-+			arg->peer_bw_rxnss_override |= BW_NSS_FWCONF_160(nss160);
-+		break;
-+		default:
-+		break;
-+		}
-+	}
- 
--	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x\n",
--		   sta->addr, arg->peer_max_mpdu, arg->peer_flags);
-+	/* in case peer has no nss properties for some reasons, we set local nss to minimum (1x1) to avoid a 
-+	 * firmware assert / crash. this applies only to VHT160 or VHT80+80 and is a WAR for clients breaking
-+	 * the spec.
-+	 */
- 
--	if (arg->peer_vht_rates.rx_max_rate &&
--	    (sta->vht_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK)) {
--		switch (arg->peer_vht_rates.rx_max_rate) {
--		case 1560:
--			/* Must be 2x2 at 160Mhz is all it can do. */
--			arg->peer_bw_rxnss_override = 2;
--			break;
--		case 780:
--			/* Can only do 1x1 at 160Mhz (Long Guard Interval) */
--			arg->peer_bw_rxnss_override = 1;
--			break;
--		}
-+	if (!(arg->peer_num_spatial_streams || !ar->hw_params.vht160_mcs_rx_highest) && (arg->peer_phymode == MODE_11AC_VHT80_80 || arg->peer_phymode == MODE_11AC_VHT160)) {
-+		arg->peer_bw_rxnss_override = BW_NSS_FWCONF_MAP_ENABLE;
- 	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x\n",
-+		   sta->addr, arg->peer_max_mpdu, arg->peer_flags);
- }
- 
- static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
-@@ -2696,9 +2714,9 @@ static int ath10k_peer_assoc_prepare(struct ath10k *ar,
- 	ath10k_peer_assoc_h_crypto(ar, vif, sta, arg);
- 	ath10k_peer_assoc_h_rates(ar, vif, sta, arg);
- 	ath10k_peer_assoc_h_ht(ar, vif, sta, arg);
-+	ath10k_peer_assoc_h_phymode(ar, vif, sta, arg);
- 	ath10k_peer_assoc_h_vht(ar, vif, sta, arg);
- 	ath10k_peer_assoc_h_qos(ar, vif, sta, arg);
--	ath10k_peer_assoc_h_phymode(ar, vif, sta, arg);
- 
- 	return 0;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 2c36256a441d..3797dca317ff 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -7211,12 +7211,7 @@ ath10k_wmi_peer_assoc_fill_10_4(struct ath10k *ar, void *buf,
- 	struct wmi_10_4_peer_assoc_complete_cmd *cmd = buf;
- 
- 	ath10k_wmi_peer_assoc_fill_10_2(ar, buf, arg);
--	if (arg->peer_bw_rxnss_override)
--		cmd->peer_bw_rxnss_override =
--			__cpu_to_le32((arg->peer_bw_rxnss_override - 1) |
--				      BIT(PEER_BW_RXNSS_OVERRIDE_OFFSET));
--	else
--		cmd->peer_bw_rxnss_override = 0;
-+	cmd->peer_bw_rxnss_override = __cpu_to_le32(arg->peer_bw_rxnss_override);
- }
- 
- static int
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 46ae19bb2c92..1fe0aa5523a6 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6380,7 +6380,19 @@ struct wmi_10_2_peer_assoc_complete_cmd {
- 	__le32 info0; /* WMI_PEER_ASSOC_INFO0_ */
- } __packed;
- 
--#define PEER_BW_RXNSS_OVERRIDE_OFFSET  31
-+#define BW_NSS_FWCONF_MAP_ENABLE             (1 << 31)
-+#define BW_NSS_FWCONF_MAP_160MHZ_S           (0)
-+#define BW_NSS_FWCONF_MAP_160MHZ_M           (0x00000007)
-+#define BW_NSS_FWCONF_MAP_80_80MHZ_S         (3)
-+#define BW_NSS_FWCONF_MAP_80_80MHZ_M         (0x00000038)
-+#define BW_NSS_FWCONF_MAP_M                  (0x0000003F)
-+
-+#define GET_BW_NSS_FWCONF_160(x)             ((((x) & BW_NSS_FWCONF_MAP_160MHZ_M) >> BW_NSS_FWCONF_MAP_160MHZ_S) + 1)
-+#define GET_BW_NSS_FWCONF_80_80(x)           ((((x) & BW_NSS_FWCONF_MAP_80_80MHZ_M) >> BW_NSS_FWCONF_MAP_80_80MHZ_S) + 1)
-+
-+/* Values defined to set 160 MHz Bandwidth NSS Mapping into FW*/
-+#define BW_NSS_FWCONF_160(x)          (BW_NSS_FWCONF_MAP_ENABLE | (((x - 1) << BW_NSS_FWCONF_MAP_160MHZ_S) & BW_NSS_FWCONF_MAP_160MHZ_M))
-+#define BW_NSS_FWCONF_80_80(x)        (BW_NSS_FWCONF_MAP_ENABLE | (((x - 1) << BW_NSS_FWCONF_MAP_80_80MHZ_S) & BW_NSS_FWCONF_MAP_80_80MHZ_M))
- 
- struct wmi_10_4_peer_assoc_complete_cmd {
- 	struct wmi_10_2_peer_assoc_complete_cmd cmd;
+There has information about pci-e layout.
+The device has two PCI-e slots. one is the original pci-e slot of main board and the other one is the output of pci-e switch. 
+
+case 1:one is the original pci-e slot of main board
+case 2:one is the output from pci-e switch.
+
+We can get QCA9884 pci-e information (VID and IID) form /sys/bus/pci/device in case 1 and case 2 
+
+ath10k driver always work in case 1 and always get the firmware crash message in case 2. 
+
+Does ath10k driver have any limits about pci-e layout?
+
+Thanks,
+KC
+
+-----Original message-----
+From:Ben Greear <greearb@candelatech.com>
+To:KC <kc@mail2000.com.tw>
+Cc:KC Chen <KC1120@gmail.com>,ath10k <ath10k@lists.infradead.org>
+Date:Sat, 28 Apr 2018 01:20:41
+Subject:Re: ath10k driver firmware crash when bring up qca 9984 wireless car d
+
+I think it might be something like a null-pointer exception, but those do not
+create a clean backtrace.  If you wanted to use my ath10k-ct driver, it can sometimes
+gather additional info for these types of crashes that lets me know more about it.
+
+But, if your problem is with backporting a driver anyway, maybe that is not
+so much help.
+
+If you could move forward to at least the 4.9 kernel, then likely you will have
+better luck with the 9984.
+
+Thanks,
+Ben
+
+On 04/26/2018 11:12 PM, KC wrote:
+> Hi Ben,
+>
+> Thank you for your time.
+>
+> I have been try ath10k-ct firmware and the attachments are the crash dump and pci info.
+>
+> If you require any further information, let me know.
+>
+> Thanks,
+> KC
+>
+> -----Original message-----
+> From:Ben Greear <greearb@candelatech.com>
+> To:KC <kc@mail2000.com.tw>,ath10k <ath10k@lists.infradead.org>
+> Cc:KC Chen <KC1120@gmail.com>
+> Date:Thu, 26 Apr 2018 23:03:09
+> Subject:Re: ath10k driver firmware crash when bring up qca 9984 wireless car d
+>
+> On 04/26/2018 01:46 AM, KC wrote:
+>> Hi
+>>
+>> I'm porting ath10k drivers for Linux 4.2.8.
+>>
+>> Try to bring up QCA9984 wireless PCI-e card.
+>>
+>> I have problem with running ath10k driver, firmware load then the kernel message will show the firmware crashed during boot.
+>>
+>> The attachment is the error log.
+>>
+>> I also tried firmware ver 10.4-3.2, 10.4-3.3 and 10.4-3.5.3 without success: same symptoms an same faults.
+>>
+>> I can provide more information (logs) to help to figure out: where the problem is?
+>
+> You can try my ath10k-ct firmware, send me crash dump if it crashes and I might can
+> decode it and tell you why.
+>
+> http://www.candelatech.com/ath10k-10.4.php
+>
+> Thanks,
+> Ben
+>
+
+
 -- 
-2.17.0
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
