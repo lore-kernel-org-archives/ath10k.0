@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD2Ha-0003n0-U0
- for ath10k@lists.infradead.org; Mon, 30 Apr 2018 06:27:32 +0000
+ id 1fD2Ho-0003ny-6Q
+ for ath10k@lists.infradead.org; Mon, 30 Apr 2018 06:27:45 +0000
 From: Sriram R <srirrama@codeaurora.org>
-Subject: [PATCH 0/2 linux-stable-4.4] ath10k: rebuild crypto header in rx data
- frames 
-Date: Mon, 30 Apr 2018 11:56:25 +0530
-Message-Id: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
+Subject: [PATCH 1/2 linux-stable-4.4] ath10k: Add new hw param to identify
+ alignment for different chipsets
+Date: Mon, 30 Apr 2018 11:56:26 +0530
+Message-Id: <1525069587-19281-2-git-send-email-srirrama@codeaurora.org>
+In-Reply-To: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
+References: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +24,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: stable@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
+Cc: Vasanthkumar Thiagarajan <vthiagar@codeaurora.org>, linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
 
-ath10k has a replay detection issue which was fixed in v4.14 and we would
-like to get this security fix also to linux-stable-4.4.But for that it
-depends on 3 mac80211 patches so the below mac80211 commits needs to be
-picked first in the same order and then apply this patchset.
+Chipset QCA99X0 doesnot have rx_hdr_status padded to
+align in 4-byte boundary.Hence define a new hw_params
+field to handle different alignment behaviour between
+different chipsets.
 
-f980ebc058c2 : mac80211: allow not sending MIC up from driver for HW crypto
-f631a77ba920 : mac80211: allow same PN for AMSDU sub-frames  
-cef0acd4d7d4 : mac80211: Add RX flag to indicate ICV stripped
+[Upstream commit : 2f38c3c01de945234d23dd163e3528ccb413066d]
 
-These patches should be applied in that order(commit f980ebc058c2 first)
-and they should apply cleanly with 3-way merge.
+Signed-off-by: Vasanthkumar Thiagarajan <vthiagar@codeaurora.org>
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 8 ++++++++
+ drivers/net/wireless/ath/ath10k/core.h | 4 ++++
+ 2 files changed, 12 insertions(+)
 
-Sriram R (2):
-  ath10k: Add new hw param to identify alignment for different chipsets
-  ath10k: rebuild crypto header in rx data frames
-
- drivers/net/wireless/ath/ath10k/core.c    |   8 +++
- drivers/net/wireless/ath/ath10k/core.h    |   4 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 108 +++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/rx_desc.h |   3 +
- 4 files changed, 107 insertions(+), 16 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index ee638cb..0c23768 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -67,6 +67,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA988X_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -85,6 +86,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -103,6 +105,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -121,6 +124,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -140,6 +144,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -159,6 +164,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 1,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -177,6 +183,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9377_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -195,6 +202,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9377_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+ 		},
++		.decap_align_bytes = 4,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 858d75f..e4e3b41 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -670,6 +670,10 @@ struct ath10k {
+ 			size_t board_size;
+ 			size_t board_ext_size;
+ 		} fw;
++
++		/* Number of bytes used for alignment in rx_hdr_status */
++		int decap_align_bytes;
++
+ 	} hw_params;
+ 
+ 	const struct firmware *board;
 -- 
 2.7.4
 
