@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve1eur01on060a.outbound.protection.outlook.com
- ([2a01:111:f400:fe1f::60a]
- helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDEpH-0001GH-U0
- for ath10k@lists.infradead.org; Mon, 30 Apr 2018 19:51:09 +0000
-Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
-References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
- <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
-Date: Mon, 30 Apr 2018 12:50:40 -0700
-MIME-Version: 1.0
-In-Reply-To: <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+ id 1fDGO3-0000L2-I1
+ for ath10k@lists.infradead.org; Mon, 30 Apr 2018 21:31:19 +0000
+From: s.gottschall@dd-wrt.com
+Subject: [PATCH v7] ath10k: fix crash in recent 3.5.3 9984 firmware due wrong
+ handling of peer_bw_rxnss_override parameter
+Date: Mon, 30 Apr 2018 23:30:46 +0200
+Message-Id: <20180430213046.8393-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,106 +17,150 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, kvalo@codeaurora.org
 
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
+current handling of peer_bw_rxnss_override parameter is based on guessing the VHT160/8080 capability by rx rate. this is wrong and may lead
+to a non initialized peer_bw_rxnss_override parameter which is required since VHT160 operation mode only supports 2x2 chainmasks in addition the original code
+initialized the parameter with wrong masked values.
+This patch uses the peer phymode and peer nss information for correct initialisation of the peer_bw_rxnss_override parameter.
+if this peer information is not available, we initialize the parameter by minimum nss which is suggested by QCA as temporary workaround according
+to the QCA sourcecodes.
 
-On 04/30/2018 10:45 AM, Sriram R wrote:
-> In the 10.4-3.6 firmware branch there's a new DFS Host confirmation
-> feature which is advertised using WMI_SERVICE_HOST_DFS_CHECK_SUPPORT flag.
->
-> This new features enables the ath10k host to send information to the
-> firmware on the specifications of detected radar type. This allows the
-> firmware to validate if the host's radar pattern detector unit is
-> operational and check if the radar information shared by host matches
-> the radar pulses sent as phy error events from firmware. If the check
-> fails the firmware won't allow use of DFS channels on AP mode when using
-> FCC regulatory region.
-What's the main reason you introduce this feature?
-What are you trying to solve with this change?
-> +#define ATH10K_WMI_DFS_CONF_TIMEOUT_HZ (HZ / 2)
->   
-> +static void ath10k_radar_confirmation_work(struct work_struct *work)
-> +{
-> +	struct ath10k *ar = container_of(work, struct ath10k,
-> +					 radar_confirmation_work);
-> +	struct ath10k_radar_found_info radar_info;
-> +	int ret, time_left;
-> +
-> +	reinit_completion(&ar->wmi.radar_confirm);
-> +
-> +	spin_lock_bh(&ar->data_lock);
-> +	memcpy(&radar_info, &ar->last_radar_info, sizeof(radar_info));
-> +	spin_unlock_bh(&ar->data_lock);
-> +
-> +	ret = ath10k_wmi_report_radar_found(ar, &radar_info);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to send radar found %d\n", ret);
-> +		goto wait_complete;
-> +	}
-> +
-> +	time_left = wait_for_completion_timeout(&ar->wmi.radar_confirm,
-> +						ATH10K_WMI_DFS_CONF_TIMEOUT_HZ);
-It looks wrong to me in terms of timeout value.
-Typical channel closing time in FCC domain is 200ms (excluding control 
-signals), but you're waiting for 500ms for response from FW.
-> @@ -3765,25 +3834,46 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
->   
->   	ATH10K_DFS_STAT_INC(ar, pulses_detected);
->   
-> -	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, NULL)) {
-> +	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, &rs)) {
->   		ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
->   			   "dfs no pulse pattern detected, yet\n");
->   		return;
->   	}
->   
-> -radar_detected:
-> -	ath10k_dbg(ar, ATH10K_DBG_REGULATORY, "dfs radar detected\n");
-> -	ATH10K_DFS_STAT_INC(ar, radar_detected);
-> +	if ((test_bit(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT, ar->wmi.svc_map)) &&
-> +	    ar->dfs_detector->region == NL80211_DFS_FCC) {
-I feel risky that host drivers have no way to control this new feature 
-and totally rely on FW feature mask. We should have a host drivers' 
-feature mask such as module param and set it false (don't use) by 
-default until it proves safe to use.
-> +static void
-> +ath10k_wmi_event_dfs_status_check(struct ath10k *ar, struct sk_buff *skb)
-> +{
-> +	struct wmi_dfs_status_ev_arg status_arg = {};
-> +	int ret;
-> +
-> +	ret = ath10k_wmi_pull_dfs_status(ar, skb, &status_arg);
-> +
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to parse dfs status event: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
-> +		   "dfs status event received from fw: %d\n",
-> +		   status_arg.status);
-> +
-> +	/* Even in case of radar detection failure we follow the same
-> +	 * behaviour as if radar is detected i.e to switch to a different
-> +	 * channel.
-> +	 */
-> +	if (status_arg.status == WMI_HW_RADAR_DETECTED ||
-> +	    status_arg.status == WMI_RADAR_DETECTION_FAIL)
-> +		ath10k_radar_detected(ar);
-> +	complete(&ar->wmi.radar_confirm);
-> +}
-What is typical average duration from 
-wait_for_completion_timeout(&ar->wmi.radar_confirm) to this completion 
-called ?
+Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Thanks,
-Peter
+v2: remove debug messages
+v3: apply some cosmetics, update documentation
+v4: fix compile warning and truncate nss to maximum of 2x2 since current chipsets only support 2x2 at vht160
+v5: handle maximum nss for chipsets supportig vht160 with 1x1 only
+v7: use more simple code variant and take care about hw/sw chainmask configuration
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 40 +++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/wmi.c |  7 +----
+ drivers/net/wireless/ath/ath10k/wmi.h | 14 +++++++++-
+ 3 files changed, 36 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5be6386ede8f..0483ebf15e23 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2468,7 +2468,7 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+ 	const u16 *vht_mcs_mask;
+ 	u8 ampdu_factor;
+ 	u8 max_nss, vht_mcs;
+-	int i;
++	int i, nss160;
+ 
+ 	if (WARN_ON(ath10k_mac_vif_chan(vif, &def)))
+ 		return;
+@@ -2528,23 +2528,27 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+ 		__le16_to_cpu(vht_cap->vht_mcs.tx_highest);
+ 	arg->peer_vht_rates.tx_mcs_set = ath10k_peer_assoc_h_vht_limit(
+ 		__le16_to_cpu(vht_cap->vht_mcs.tx_mcs_map), vht_mcs_mask);
+-
+-	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x\n",
+-		   sta->addr, arg->peer_max_mpdu, arg->peer_flags);
+-
+-	if (arg->peer_vht_rates.rx_max_rate &&
+-	    (sta->vht_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK)) {
+-		switch (arg->peer_vht_rates.rx_max_rate) {
+-		case 1560:
+-			/* Must be 2x2 at 160Mhz is all it can do. */
+-			arg->peer_bw_rxnss_override = 2;
+-			break;
+-		case 780:
+-			/* Can only do 1x1 at 160Mhz (Long Guard Interval) */
+-			arg->peer_bw_rxnss_override = 1;
+-			break;
+-		}
++	arg->peer_bw_rxnss_override = 0;
++	nss160 = 1; /* 1x1 default config for VHT160 */
++
++	/* only 4x4 configuration do support 2x2 for VHT160, everything else must use 1x1 */
++	if (ar->cfg_rx_chainmask == 15)
++		nss160 = arg->peer_num_spatial_streams <= 2 ? arg->peer_num_spatial_streams : 2;
++
++	/* in case if peer is connected with vht160 or vht80+80, we need to properly adjust rxnss parameters otherwise firmware will raise a assert */
++	switch(arg->peer_phymode) {
++	case MODE_11AC_VHT80_80:
++		arg->peer_bw_rxnss_override = BW_NSS_FWCONF_80_80(nss160);
++	/* fall through */
++	case MODE_11AC_VHT160:
++		arg->peer_bw_rxnss_override |= BW_NSS_FWCONF_160(nss160);
++	break;
++	default:
++	break;
+ 	}
++
++	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vht peer %pM max_mpdu %d flags 0x%x peer_bw_rxnss_override 0x%x\n",
++		   sta->addr, arg->peer_max_mpdu, arg->peer_flags, arg->peer_bw_rxnss_override);
+ }
+ 
+ static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
+@@ -2696,9 +2700,9 @@ static int ath10k_peer_assoc_prepare(struct ath10k *ar,
+ 	ath10k_peer_assoc_h_crypto(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_rates(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_ht(ar, vif, sta, arg);
++	ath10k_peer_assoc_h_phymode(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_vht(ar, vif, sta, arg);
+ 	ath10k_peer_assoc_h_qos(ar, vif, sta, arg);
+-	ath10k_peer_assoc_h_phymode(ar, vif, sta, arg);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 2c36256a441d..3797dca317ff 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -7211,12 +7211,7 @@ ath10k_wmi_peer_assoc_fill_10_4(struct ath10k *ar, void *buf,
+ 	struct wmi_10_4_peer_assoc_complete_cmd *cmd = buf;
+ 
+ 	ath10k_wmi_peer_assoc_fill_10_2(ar, buf, arg);
+-	if (arg->peer_bw_rxnss_override)
+-		cmd->peer_bw_rxnss_override =
+-			__cpu_to_le32((arg->peer_bw_rxnss_override - 1) |
+-				      BIT(PEER_BW_RXNSS_OVERRIDE_OFFSET));
+-	else
+-		cmd->peer_bw_rxnss_override = 0;
++	cmd->peer_bw_rxnss_override = __cpu_to_le32(arg->peer_bw_rxnss_override);
+ }
+ 
+ static int
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 46ae19bb2c92..1fe0aa5523a6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6380,7 +6380,19 @@ struct wmi_10_2_peer_assoc_complete_cmd {
+ 	__le32 info0; /* WMI_PEER_ASSOC_INFO0_ */
+ } __packed;
+ 
+-#define PEER_BW_RXNSS_OVERRIDE_OFFSET  31
++#define BW_NSS_FWCONF_MAP_ENABLE             (1 << 31)
++#define BW_NSS_FWCONF_MAP_160MHZ_S           (0)
++#define BW_NSS_FWCONF_MAP_160MHZ_M           (0x00000007)
++#define BW_NSS_FWCONF_MAP_80_80MHZ_S         (3)
++#define BW_NSS_FWCONF_MAP_80_80MHZ_M         (0x00000038)
++#define BW_NSS_FWCONF_MAP_M                  (0x0000003F)
++
++#define GET_BW_NSS_FWCONF_160(x)             ((((x) & BW_NSS_FWCONF_MAP_160MHZ_M) >> BW_NSS_FWCONF_MAP_160MHZ_S) + 1)
++#define GET_BW_NSS_FWCONF_80_80(x)           ((((x) & BW_NSS_FWCONF_MAP_80_80MHZ_M) >> BW_NSS_FWCONF_MAP_80_80MHZ_S) + 1)
++
++/* Values defined to set 160 MHz Bandwidth NSS Mapping into FW*/
++#define BW_NSS_FWCONF_160(x)          (BW_NSS_FWCONF_MAP_ENABLE | (((x - 1) << BW_NSS_FWCONF_MAP_160MHZ_S) & BW_NSS_FWCONF_MAP_160MHZ_M))
++#define BW_NSS_FWCONF_80_80(x)        (BW_NSS_FWCONF_MAP_ENABLE | (((x - 1) << BW_NSS_FWCONF_MAP_80_80MHZ_S) & BW_NSS_FWCONF_MAP_80_80MHZ_M))
+ 
+ struct wmi_10_4_peer_assoc_complete_cmd {
+ 	struct wmi_10_2_peer_assoc_complete_cmd cmd;
+-- 
+2.17.0
+
 
 _______________________________________________
 ath10k mailing list
