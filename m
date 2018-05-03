@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from out2-smtp.messagingengine.com ([66.111.4.26])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDyqV-0001JK-He
- for ath10k@lists.infradead.org; Wed, 02 May 2018 20:59:28 +0000
-Date: Wed, 2 May 2018 13:59:00 -0700
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH 0/2 linux-stable-4.4] ath10k: rebuild crypto header in rx
- data frames
-Message-ID: <20180502205900.GB18099@kroah.com>
-References: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1525069587-19281-1-git-send-email-srirrama@codeaurora.org>
+ id 1fE7JF-0001Yh-8A
+ for ath10k@lists.infradead.org; Thu, 03 May 2018 06:01:43 +0000
+From: Yu Wang <yyuwang@codeaurora.org>
+Subject: [PATCH] ath10k: add quiet mode support for QCA6174/QCA9377
+Date: Thu,  3 May 2018 14:01:25 +0800
+Message-Id: <1525327285-15392-2-git-send-email-yyuwang@codeaurora.org>
+In-Reply-To: <1525327285-15392-1-git-send-email-yyuwang@codeaurora.org>
+References: <1525327285-15392-1-git-send-email-yyuwang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +17,121 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sriram R <srirrama@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, stable@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Mon, Apr 30, 2018 at 11:56:25AM +0530, Sriram R wrote:
-> ath10k has a replay detection issue which was fixed in v4.14 and we would
-> like to get this security fix also to linux-stable-4.4.But for that it
-> depends on 3 mac80211 patches so the below mac80211 commits needs to be
-> picked first in the same order and then apply this patchset.
-> 
-> f980ebc058c2 : mac80211: allow not sending MIC up from driver for HW crypto
-> f631a77ba920 : mac80211: allow same PN for AMSDU sub-frames  
-> cef0acd4d7d4 : mac80211: Add RX flag to indicate ICV stripped
-> 
-> These patches should be applied in that order(commit f980ebc058c2 first)
-> and they should apply cleanly with 3-way merge.
+To enable thermal throttling for QCA6174 and QCA9377,
+implement gen_pdev_set_quiet_mode for them.
+With this change, quiet period for QCA6174/QCA9377 can
+be also set/get via debugfs.
+Usage:
+To set quiet period:
+ echo <period> > /sys/kernel/debug/ieee80211/phyX/ath10k/quiet_period
+To get the current quiet period:
+ cat /sys/kernel/debug/ieee80211/phyX/ath10k/quiet_period
 
-Ok, let's try this again, now queued up :)
+This change has been verified with
+QCA6174 hw3.2(fw: WLAN_RM.4.4.1-00102-QCARMSWP-1).
 
-greg k-h
+Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 33 ++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 16 +++++++++++++++
+ 2 files changed, 48 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 01f4eb2..2e34a1f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3136,6 +3136,37 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ }
+ 
+ static struct sk_buff *
++ath10k_wmi_tlv_op_gen_pdev_set_quiet_mode(struct ath10k *ar, u32 period,
++					  u32 duration, u32 next_offset,
++					  u32 enabled)
++{
++	struct wmi_tlv_set_quiet_cmd *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*tlv) + sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	tlv = (void *)skb->data;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_PDEV_SET_QUIET_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++
++	/* vdev_id is not in use, set to 0 */
++	cmd->vdev_id = __cpu_to_le32(0);
++	cmd->period = __cpu_to_le32(period);
++	cmd->duration = __cpu_to_le32(duration);
++	cmd->next_start = __cpu_to_le32(next_offset);
++	cmd->enabled = __cpu_to_le32(enabled);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi tlv quiet param: period %u duration %u enabled %d\n",
++		   period, duration, enabled);
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_wow_enable(struct ath10k *ar)
+ {
+ 	struct wmi_tlv_wow_enable_cmd *cmd;
+@@ -3854,7 +3885,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
+ 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
+-	/* .gen_pdev_set_quiet_mode not implemented */
++	.gen_pdev_set_quiet_mode = ath10k_wmi_tlv_op_gen_pdev_set_quiet_mode,
+ 	.gen_pdev_get_temperature = ath10k_wmi_tlv_op_gen_pdev_get_temperature,
+ 	/* .gen_addba_clear_resp not implemented */
+ 	/* .gen_addba_send not implemented */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 954c50b..3e1e340 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -1952,6 +1953,21 @@ struct wmi_tlv_wow_add_del_event_cmd {
+ 	__le32 event_bitmap;
+ } __packed;
+ 
++/* Command to set/unset chip in quiet mode */
++struct wmi_tlv_set_quiet_cmd {
++	__le32 vdev_id;
++
++	/* in TUs */
++	__le32 period;
++
++	/* in TUs */
++	__le32 duration;
++
++	/* offset in TUs */
++	__le32 next_start;
++	__le32 enabled;
++} __packed;
++
+ struct wmi_tlv_wow_enable_cmd {
+ 	__le32 enable;
+ } __packed;
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
