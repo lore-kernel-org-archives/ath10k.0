@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fENs7-0008P7-Pe
- for ath10k@lists.infradead.org; Thu, 03 May 2018 23:42:49 +0000
-Date: Thu, 3 May 2018 23:42:35 +0000
+ id 1fENtc-0000C2-Vf
+ for ath10k@lists.infradead.org; Thu, 03 May 2018 23:44:23 +0000
+Date: Thu, 3 May 2018 23:44:09 +0000
 From: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Subject: Re: [PATCH 6/9] firmware: print firmware name on fallback path
-Message-ID: <20180503234235.GX27853@wotan.suse.de>
+Subject: Re: [PATCH 7/9] firmware: use rename fw_sysfs_fallback to use the
+ firmware_ prefix
+Message-ID: <20180503234409.GY27853@wotan.suse.de>
 References: <20180423201205.20533-1-andresx7@gmail.com>
- <20180423201205.20533-7-andresx7@gmail.com>
+ <20180423201205.20533-8-andresx7@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20180423201205.20533-7-andresx7@gmail.com>
+In-Reply-To: <20180423201205.20533-8-andresx7@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +26,103 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Andres Rodriguez <andresx7@gmail.com>
-Cc: arend.vanspriel@broadcom.com, Kees Cook <keescook@chromium.org>, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, alexdeucher@gmail.com, Mimi Zohar <zohar@linux.vnet.ibm.com>, christian.koenig@amd.com, kvalo@codeaurora.org
+Cc: arend.vanspriel@broadcom.com, Kees Cook <keescook@chromium.org>, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, mcgrof@kernel.org, alexdeucher@gmail.com, christian.koenig@amd.com, kvalo@codeaurora.org
 
-On Mon, Apr 23, 2018 at 04:12:02PM -0400, Andres Rodriguez wrote:
-> Previously, one could assume the firmware name from the preceding
-> message: "Direct firmware load for {name} failed with error %d".
-> 
-> However, with the new firmware_request_nowarn() entrypoint, the message
-> outlined above will not always be printed.
-
-I though the whole point was to not print an error message. What if
-we want later to disable this error message? This would prove a bit
-pointless.
-
-Let's discuss the exact semantics desired here. Why would only the
-fallback be desirable here?
-
-Andres, Kalle?
-
-After we address this I'll address resubmitting this lat patch
-along with the last one. For now I'll skip it.
-
-  Luis
-
-> Therefore, we add the firmware name to the fallback path spew in order
-> to associate it with the appropriate request.
+On Mon, Apr 23, 2018 at 04:12:03PM -0400, Andres Rodriguez wrote:
+> Use the correct prefix for symbols exported by firmware_loader(). This
+> is done since firmware_sysfs_fallback() is now exposed through
+> kernel-doc.
 > 
 > Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
 > ---
->  drivers/base/firmware_loader/fallback.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/base/firmware_loader/fallback.c | 8 ++++----
+>  drivers/base/firmware_loader/fallback.h | 4 ++--
+>  drivers/base/firmware_loader/firmware.h | 6 +++---
+>  drivers/base/firmware_loader/main.c     | 2 +-
+>  4 files changed, 10 insertions(+), 10 deletions(-)
 > 
 > diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-> index e75928458489..1a47ddc70c31 100644
+> index 1a47ddc70c31..fc186b5bccce 100644
 > --- a/drivers/base/firmware_loader/fallback.c
 > +++ b/drivers/base/firmware_loader/fallback.c
-> @@ -669,6 +669,6 @@ int fw_sysfs_fallback(struct firmware *fw, const char *name,
+> @@ -661,10 +661,10 @@ static bool fw_run_sysfs_fallback(enum fw_opt opt_flags)
+>  	return fw_force_sysfs_fallback(opt_flags);
+>  }
+>  
+> -int fw_sysfs_fallback(struct firmware *fw, const char *name,
+> -		      struct device *device,
+> -		      enum fw_opt opt_flags,
+> -		      int ret)
+> +int firmware_sysfs_fallback(struct firmware *fw, const char *name,
+> +			    struct device *device,
+> +			    enum fw_opt opt_flags,
+> +			    int ret)
+
+Since we may get more than one fallback later I'll usee the firmware_fallback_sysfs() here.
+I'll do this change and resubmit myself.
+
+>  {
 >  	if (!fw_run_sysfs_fallback(opt_flags))
 >  		return ret;
+> diff --git a/drivers/base/firmware_loader/fallback.h b/drivers/base/firmware_loader/fallback.h
+> index a3b73a09db6c..8cfaa3299bb7 100644
+> --- a/drivers/base/firmware_loader/fallback.h
+> +++ b/drivers/base/firmware_loader/fallback.h
+> @@ -31,7 +31,7 @@ struct firmware_fallback_config {
+>  };
 >  
-> -	dev_warn(device, "Falling back to user helper\n");
-> +	dev_warn(device, "Falling back to user helper for %s\n", name);
->  	return fw_load_from_user_helper(fw, name, device, opt_flags);
->  }
+>  #ifdef CONFIG_FW_LOADER_USER_HELPER
+> -int fw_sysfs_fallback(struct firmware *fw, const char *name,
+> +int firmware_sysfs_fallback(struct firmware *fw, const char *name,
+>  		      struct device *device,
+>  		      enum fw_opt opt_flags,
+>  		      int ret);
+> @@ -43,7 +43,7 @@ void fw_fallback_set_default_timeout(void);
+>  int register_sysfs_loader(void);
+>  void unregister_sysfs_loader(void);
+>  #else /* CONFIG_FW_LOADER_USER_HELPER */
+> -static inline int fw_sysfs_fallback(struct firmware *fw, const char *name,
+> +static inline int firmware_sysfs_fallback(struct firmware *fw, const char *name,
+>  				    struct device *device,
+>  				    enum fw_opt opt_flags,
+>  				    int ret)
+> diff --git a/drivers/base/firmware_loader/firmware.h b/drivers/base/firmware_loader/firmware.h
+> index a405d400a925..59836d50c5bd 100644
+> --- a/drivers/base/firmware_loader/firmware.h
+> +++ b/drivers/base/firmware_loader/firmware.h
+> @@ -15,12 +15,12 @@
+>   * enum fw_opt - options to control firmware loading behaviour
+>   *
+>   * @FW_OPT_UEVENT: Enables the fallback mechanism to send a kobject uevent
+> - *                  when the firmware is not found. Userspace is in charge
+> - *                  to load the firmware using the sysfs loading facility.
+> + *                 when the firmware is not found. Userspace is in charge
+> + *                 to load the firmware using the sysfs loading facility.
+
+This change was really not part of this patch, so I'll merge it in with the
+other patch.
+
+>   * @FW_OPT_NOWAIT: Used to describe the firmware request is asynchronous.
+>   * @FW_OPT_USERHELPER: Enable the fallback mechanism, in case the direct
+>   *                     filesystem lookup fails at finding the firmware.
+> - *                     For details refer to fw_sysfs_fallback().
+> + *                     For details refer to firmware_sysfs_fallback().
+>   * @FW_OPT_NO_WARN: Quiet, avoid printing warning messages.
+>   * @FW_OPT_NOCACHE: Disables firmware caching. Firmware caching is used to
+>   *                  cache the firmware upon suspend, so that upon resume
+> diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+> index 58aaadf81e12..f009566acd35 100644
+> --- a/drivers/base/firmware_loader/main.c
+> +++ b/drivers/base/firmware_loader/main.c
+> @@ -581,7 +581,7 @@ _firmware_request(const struct firmware **firmware_p, const char *name,
+>  			dev_warn(device,
+>  				 "Direct firmware load for %s failed with error %d\n",
+>  				 name, ret);
+> -		ret = fw_sysfs_fallback(fw, name, device, opt_flags, ret);
+> +		ret = firmware_sysfs_fallback(fw, name, device, opt_flags, ret);
+>  	} else
+>  		ret = assign_fw(fw, device, opt_flags);
+>  
 > -- 
 > 2.14.1
 > 
