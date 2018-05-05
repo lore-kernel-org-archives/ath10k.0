@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEUYL-0000xJ-U3
- for ath10k@lists.infradead.org; Fri, 04 May 2018 06:50:51 +0000
+ id 1fEnOH-0003Xx-BY
+ for ath10k@lists.infradead.org; Sat, 05 May 2018 02:57:43 +0000
+Received: by mail-io0-x242.google.com with SMTP id a10-v6so27791758ioc.9
+ for <ath10k@lists.infradead.org>; Fri, 04 May 2018 19:57:30 -0700 (PDT)
+Subject: Re: [PATCH 6/9] firmware: print firmware name on fallback path
+References: <20180423201205.20533-1-andresx7@gmail.com>
+ <20180423201205.20533-7-andresx7@gmail.com>
+ <20180503234235.GX27853@wotan.suse.de>
+From: Andres Rodriguez <andresx7@gmail.com>
+Message-ID: <e79fe68b-7dc5-b65a-e483-287c91d67bc2@gmail.com>
+Date: Fri, 4 May 2018 22:57:26 -0400
 MIME-Version: 1.0
-Date: Fri, 04 May 2018 12:20:38 +0530
-From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Subject: Re: [PATCH] ath10k: add dynamic vlan support
-In-Reply-To: <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
-References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
- <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
- <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
-Message-ID: <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+In-Reply-To: <20180503234235.GX27853@wotan.suse.de>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,122 +23,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: "Luis R. Rodriguez" <mcgrof@kernel.org>
+Cc: arend.vanspriel@broadcom.com, Kees Cook <keescook@chromium.org>, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, andresx7@gmail.com, alexdeucher@gmail.com, Mimi Zohar <zohar@linux.vnet.ibm.com>, christian.koenig@amd.com, kvalo@codeaurora.org
 
-Sm9oYW5uZXMsCgpJdCBzZWVtcyBsaWtlIGNvbW1pdCBkYjNiZGNiOWMzZmYgKCJtYWM4MDIxMTog
-YWxsb3cgQVBfVkxBTiBvcGVyYXRpb24gb24gCmNyeXB0byBjb250cm9sbGVkIGRldmljZXMiKSBo
-YXMgYnJva2VuIDQtYWRkciBvcGVyYXRpb24gb24gY3J5cHRvIApjb250cm9sbGVkIGRldmljZXMg
-YXMgcmVwb3J0ZWQgYnkgc2ViYXN0aWFuLgpUaGUgY29tbWl0IHdhcyBtYWlubHkgZm9jdXNlZCBp
-biBhZGRyZXNzaW5nIHRoZSBwcm9ibGVtIGluIHN1cHBvcnRpbmcgClZMQU5zIG9uIGNyeXB0byBj
-b250cm9sbGVkIGRldmljZXMgYnV0IHNpbmNlIDQtYWRkciBtb2RlIGlzIGFsc28gCmRlcGVuZGVu
-dCBvbiBBUF9WTEFOIGludGVyZmFjZSwgdGhpcyBjb21taXQgYnJlYWtzIHRoZSA0LWFkZHIgQVAg
-bW9kZS4KCkkgaGF2ZSBjb3VwbGUgb2YgaWRlYXMgb24gaG93IHRvIGFkZHJlc3MgdGhlIHByb2Js
-ZW0sCgoxKSBBZGQgYSBuZXcgaHdfZmxhZyBhbmQgYmFzZWQgb24gdGhlIGhhcmR3YXJlIGZsYWcs
-IGFsbG93L2Rpc2FsbG93IHRoZSAKY3JlYXRpb24gb2YgQVBfVkxBTiBpbnRlcmZhY2UuCgpkaWZm
-IC0tZ2l0IGEvaW5jbHVkZS9uZXQvbWFjODAyMTEuaCBiL2luY2x1ZGUvbmV0L21hYzgwMjExLmgK
-aW5kZXggZDIyNzliMi4uMzAxZDljMzggMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbmV0L21hYzgwMjEx
-LmgKKysrIGIvaW5jbHVkZS9uZXQvbWFjODAyMTEuaApAQCAtMjA4NCw2ICsyMDg0LDExIEBAIHN0
-cnVjdCBpZWVlODAyMTFfdHhxIHsKICAgKiBASUVFRTgwMjExX0hXX0RPRVNOVF9TVVBQT1JUX1FP
-U19ORFA6IFRoZSBkcml2ZXIgKG9yIGZpcm13YXJlKSAKZG9lc24ndAogICAqICAgICBzdXBwb3J0
-IFFvUyBORFAgZm9yIEFQIHByb2JpbmcgLSB0aGF0J3MgbW9zdCBsaWtlbHkgYSBkcml2ZXIgCmJ1
-Zy4KICAgKgorICogQElFRUU4MDIxMV9IV19TVVBQT1JUU19TV19FTkNSWVBUOiBEZXZpY2UgaXMg
-Y2FwYWJsZSBvZiB0cmFuc21pdHRpbmcKKyAqICAgICBmcmFtZXMgZW5jcnlwdGVkIGluIHNvZnR3
-YXJlLCBvbmx5IHZhbGlkIHdoZW4gU1dfQ1JZUFRPX0NPTlRST0wKKyAqICAgICBpcyBlbmFibGVk
-LiBCYXNlZCBvbiB0aGlzIGZsYWcsIG1hYzgwMjExIGNhbiBhbGxvdy9kaXNhbGxvdyBWTEFOCisg
-KiAgICAgb3BlcmF0aW9ucyBpbiB0aGUgQlNTLgorICoKICAgKiBATlVNX0lFRUU4MDIxMV9IV19G
-TEFHUzogbnVtYmVyIG9mIGhhcmR3YXJlIGZsYWdzLCB1c2VkIGZvciBzaXppbmcgCmFycmF5cwog
-ICAqLwogIGVudW0gaWVlZTgwMjExX2h3X2ZsYWdzIHsKQEAgLTIxMjksNiArMjEzNCw3IEBAIGVu
-dW0gaWVlZTgwMjExX2h3X2ZsYWdzIHsKICAgICAgICAgSUVFRTgwMjExX0hXX1NVUFBPUlRTX1RE
-TFNfQlVGRkVSX1NUQSwKICAgICAgICAgSUVFRTgwMjExX0hXX0RFQVVUSF9ORUVEX01HRF9UWF9Q
-UkVQLAogICAgICAgICBJRUVFODAyMTFfSFdfRE9FU05UX1NVUFBPUlRfUU9TX05EUCwKKyAgICAg
-ICBJRUVFODAyMTFfSFdfU1VQUE9SVFNfU1dfRU5DUllQVCwKCiAgICAgICAgIC8qIGtlZXAgbGFz
-dCwgb2J2aW91c2x5ICovCiAgICAgICAgIE5VTV9JRUVFODAyMTFfSFdfRkxBR1MKZGlmZiAtLWdp
-dCBhL25ldC9tYWM4MDIxMS9pZmFjZS5jIGIvbmV0L21hYzgwMjExL2lmYWNlLmMKaW5kZXggNTU1
-ZTM4OS4uYzgyNWQyNyAxMDA2NDQKLS0tIGEvbmV0L21hYzgwMjExL2lmYWNlLmMKKysrIGIvbmV0
-L21hYzgwMjExL2lmYWNlLmMKQEAgLTE3MzYsNiArMTczNiwxMSBAQCBpbnQgaWVlZTgwMjExX2lm
-X2FkZChzdHJ1Y3QgaWVlZTgwMjExX2xvY2FsIAoqbG9jYWwsIGNvbnN0IGNoYXIgKm5hbWUsCgog
-ICAgICAgICBBU1NFUlRfUlROTCgpOwoKKyAgICAgICBpZiAoKHR5cGUgPT0gTkw4MDIxMV9JRlRZ
-UEVfQVBfVkxBTikgJiYgIXBhcmFtcy0+dXNlXzRhZGRyICYmCisgICAgICAgICAgIGllZWU4MDIx
-MV9od19jaGVjayhsb2NhbC0+aHcsIFNXX0NSWVBUT19DT05UUk9MKSAmJgorICAgICAgICAgICAh
-aWVlZTgwMjExX2h3X2NoZWNrKGxvY2FsLT5odywgU1VQUE9SVFNfU1dfRU5DUllQVCkpCisgICAg
-ICAgICAgICAgIHJldHVybiAtRU9QTk9UU1VQUDsKKwogICAgICAgICBpZiAodHlwZSA9PSBOTDgw
-MjExX0lGVFlQRV9QMlBfREVWSUNFIHx8IHR5cGUgPT0gCk5MODAyMTFfSUZUWVBFX05BTikgewog
-ICAgICAgICAgICAgICAgIHN0cnVjdCB3aXJlbGVzc19kZXYgKndkZXY7CgoyKSBBbGxvdyBtYWM4
-MDIxMSB0byBjYWxsIHNldF9rZXkgZm9yIEdUS3Mgb24gQVBfVkxBTiBpbnRlcmZhY2VzIGZvciAK
-Y3J5cHRvIGNvbnRyb2xsZWQgZGV2aWNlcywgbGV0IHRoZSBkcml2ZXIgZGVjaWRlIHdoZXRoZXIg
-dG8gcmV0dXJuICcxJyAKb3Igc29tZSBlcnJvciBjb2RlIGJhc2VkIG9uIHRoZWlyIHN1cHBvcnQg
-Zm9yIHRyYW5zbWl0dGluZyBzdyBlbmNyeXB0ZWQgCmZyYW1lcy4gSSBhbSBsaXR0bGUgc2tlcHRp
-Y2FsIHdpdGggdGhpcyBhcHByb2FjaCBhcyBkcml2ZXJzIGFyZSB0b3RhbGx5IAp1bmF3YXJlIG9m
-IEFQX1ZMQU4gaW50ZXJmYWNlcy4KCmRpZmYgLS1naXQgYS9uZXQvbWFjODAyMTEva2V5LmMgYi9u
-ZXQvbWFjODAyMTEva2V5LmMKaW5kZXggZWUwZDBjYy4uMGZmNTU5NyAxMDA2NDQKLS0tIGEvbmV0
-L21hYzgwMjExL2tleS5jCisrKyBiL25ldC9tYWM4MDIxMS9rZXkuYwpAQCAtMTY3LDcgKzE2Nyw4
-IEBAIHN0YXRpYyBpbnQgaWVlZTgwMjExX2tleV9lbmFibGVfaHdfYWNjZWwoc3RydWN0IAppZWVl
-ODAyMTFfa2V5ICprZXkpCiAgICAgICAgICAgICAgICAgICogVGhlIGRyaXZlciBkb2Vzbid0IGtu
-b3cgYW55dGhpbmcgYWJvdXQgVkxBTiAKaW50ZXJmYWNlcy4KICAgICAgICAgICAgICAgICAgKiBI
-ZW5jZSwgZG9uJ3Qgc2VuZCBHVEtzIGZvciBWTEFOIGludGVyZmFjZXMgdG8gdGhlIApkcml2ZXIu
-CiAgICAgICAgICAgICAgICAgICovCi0gICAgICAgICAgICAgICBpZiAoIShrZXktPmNvbmYuZmxh
-Z3MgJiBJRUVFODAyMTFfS0VZX0ZMQUdfUEFJUldJU0UpKQorICAgICAgICAgICAgICAgaWYgKCgh
-KGtleS0+Y29uZi5mbGFncyAmIElFRUU4MDIxMV9LRVlfRkxBR19QQUlSV0lTRSkgJiYKKyAgICAg
-ICAgICAgICAgICAgICAhaWVlZTgwMjExX2h3X2NoZWNrKCZrZXktPmxvY2FsLT5odywgClNXX0NS
-WVBUT19DT05UUk9MKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIG91dF91bnN1cHBv
-cnRlZDsKICAgICAgICAgfQoKUGxlYXNlIGxldCBtZSBrbm93IHdoaWNoIGlzIHRoZSBiZXR0ZXIg
-d2F5IHRvIGRlYWwgdGhlIHByb2JsZW0uCgpUaGFua3MsCk1hbmlrYW50YQoKCk9uIDIwMTgtMDQt
-MjQgMTQ6MzksIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgo+IGNvbnNpZGVyIG15IGNvbW1l
-bnQgcmVnYXJkaW5nIHZsYW5fYXAuCj4gdGhpcyBwYXRjaCB3aWxsIGJyZWFrIHdkcyBhcCAvIHdk
-cyBzdGEgc3VwcG9ydCB3aXRoIGxhdGVzdCBtYWM4MDIxMQo+IChzZWUgYWxzbyBteSBwb3N0IG9u
-IHRoZSB3aXJlbGVzcyBtYWlsaW5nIGxpc3QgYWJvdXQgdGhlIGJyZWFraW5nCj4gcGF0Y2ggaW4g
-bWFjODAyMTEpCj4gc28gQVBfVkxBTiBtdXN0IGJlIG1hc2tlZCBhbHdheXMgZm9yIGFsbCBjaGlw
-c2V0cy4gb3RoZXJ3aXNlIHdkcwo+IGJyZWFrcyBhbmQgdGhpcyBpcyBub3QganVzdCBhIGd1ZXNz
-LiBpIHRlc3RlZCBpdCB5ZXN0ZXJkYXkgdXNpbmcgdGhpcwo+IHBhdGNoIGFuZCBmb3VuZAo+IHRo
-ZSBjYXVzZSBvZiB0aGUgaXNzdWUKPiAKPiB0aGUgZm9sbG93aW5nIGxpbmVzCj4gCj4gwqAgK8Kg
-wqDCoCBpZiAodGVzdF9iaXQoV01JX1NFUlZJQ0VfUEVSX1BBQ0tFVF9TV19FTkNSWVBULCAKPiBh
-ci0+d21pLnN2Y19tYXApKSB7Cj4gK8KgwqDCoMKgwqDCoMKgIGFyLT5ody0+d2lwaHktPmludGVy
-ZmFjZV9tb2RlcyB8PSBCSVQoTkw4MDIxMV9JRlRZUEVfQVBfVkxBTik7Cj4gK8KgwqDCoMKgwqDC
-oMKgIGFyLT5ody0+d2lwaHktPnNvZnR3YXJlX2lmdHlwZXMgfD0gCj4gQklUKE5MODAyMTFfSUZU
-WVBFX0FQX1ZMQU4pOwo+ICvCoMKgwqAgfQo+IAo+IAo+IG11c3QgYmUganVzdAo+IAo+ICvCoMKg
-wqDCoMKgwqDCoCBhci0+aHctPndpcGh5LT5pbnRlcmZhY2VfbW9kZXMgfD0gQklUKE5MODAyMTFf
-SUZUWVBFX0FQX1ZMQU4pOwo+ICvCoMKgwqDCoMKgwqDCoCBhci0+aHctPndpcGh5LT5zb2Z0d2Fy
-ZV9pZnR5cGVzIHw9IAo+IEJJVChOTDgwMjExX0lGVFlQRV9BUF9WTEFOKTsKPiAKPiBldmVydGhp
-bmcgZWxzZSB3aWxsIGNhdXNlIGEgcmVncmVzc2lvbgo+IAo+IEFtIDI0LjA0LjIwMTggdW0gMTA6
-MDkgc2NocmllYiBLYWxsZSBWYWxvOgo+PiBNYW5pa2FudGEgUHViYmlzZXR0eSA8bXB1YmJpc2VA
-Y29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4gCj4+PiBNdXRsaWNhc3QvYnJvYWRjYXN0IHRyYWZm
-aWMgZGVzdGluZWQgZm9yIGEgcGFydGljdWxhciB2bGFuIGdyb3VwIHdpbGwKPj4+IGFsd2F5cyBi
-ZSBlbmNyeXB0ZWQgaW4gc29mdHdhcmUuIFRvIGVuYWJsZSBkeW5hbWljIFZMQU5zLCBpdCByZXF1
-aXJlcwo+Pj4gZHJpdmVyIHN1cHBvcnQgZm9yIHNlbmRpbmcgc29mdHdhcmUgZW5jcnlwdGVkIHBh
-Y2tldHMuCj4+PiAKPj4+IEluIGF0aDEwaywgc2VuZGluZyBzdyBlbmNyeXB0ZWQgZnJhbWVzIGlz
-IGFsbG93ZWQgb25seSB3aGVuIHdlIGluc21vZAo+Pj4gdGhlIGRyaXZlciB3aXRoIGNyeXB0bW9k
-ZSBwYXJhbSBzZXQgdG8gMSwgdGhpcyBjb25maWd1cmF0aW9uIGRpc2FibGVzCj4+PiBoYXJkd2Fy
-ZSBjcnlwdG8gYW5kIGVuYWJsZXMgUkFXIG1vZGUgaW1wbGljaXRseS4gU2luY2UsIGVuYWJsaW5n
-IHJhdwo+Pj4gbW9kZSBoYXMgcGVyZm9ybWFuY2UgaW1wYWN0LCB0aGlzIGNhbm5vdCBiZSBjb25z
-aWRlcmVkIGFzIGFuIGlkZWFsCj4+PiBzb2x1dGlvbiBmb3Igc3VwcG9ydGluZyBWTEFOcyBpbiB0
-aGUgZHJpdmVyLgo+Pj4gCj4+PiBBcyBhbiBhbHRlcm5hdGl2ZSB0YWtlLCBpbiB0aGlzIGFwcHJv
-YWNoLCBjcnlwdG9ncmFwaGljIGtleXMgZm9yCj4+PiB1bmljYXN0IHRyYWZmaWMocGVyIHBlZXIg
-UFRLcykgYW5kIGtleXMgZm9yIG5vbi12bGFuIGdyb3VwIHRyYWZmaWMKPj4+IHdpbGwgYmUgY29u
-ZmlndXJlZCBpbiBoYXJkd2FyZSwgYWxsb3dpbmcgaGFyZHdhcmUgZW5jcnlwdGlvbiBmb3IgCj4+
-PiB1bmljYXN0Cj4+PiBhbmQgbm9uLXZsYW4gZ3JvdXAgdHJhZmZpYy4gT25seSB2bGFuIGdyb3Vw
-IHRyYWZmaWMgd2lsbCBiZSBlbmNyeXB0ZWQgCj4+PiBpbgo+Pj4gc29mdHdhcmUgYW5kIHB1c2hl
-ZCB0byB0aGUgdGFyZ2V0IHdpdGggZW5jYXAgbW9kZSBzZXQgdG8gUkFXIGluIHRoZSAKPj4+IFRY
-Cj4+PiBkZXNjcmlwdG9ycy4KPj4+IAo+Pj4gTm90IGFsbCBmaXJtd2FyZXMgY2FuIHN1cHBvcnQg
-dGhpcyB0eXBlIG9mIGtleSBjb25maWd1cmF0aW9uKGhhdmluZyAKPj4+IGZldwo+Pj4ga2V5cyBp
-bnN0YWxsZWQgaW4gaGFyZHdhcmUgYW5kIGZldyBvbmx5IGluIHNvZnR3YXJlKTsgZm9yIHRoaXMg
-Cj4+PiBwdXJwb3NlIGEKPj4+IG5ldyBXTUkgc2VydmljZSBmbGFnICJXTUlfU0VSVklDRV9QRVJf
-UEFDS0VUX1NXX0VOQ1JZUFQiIGlzIAo+Pj4gaW50cm9kdWNlZCB0bwo+Pj4gYWR2ZXJ0aXNlIHRo
-aXMgc3VwcG9ydC4KPj4+IAo+Pj4gQWxzbywgYWRkaW5nIHRoZSBsb2dpYyByZXF1aXJlZCB0byBz
-ZW5kIHN3IGVuY3J5cHRlZCBmcmFtZXMgaW4gcmF3IAo+Pj4gbW9kZS4KPj4+IAo+Pj4gVGVzdGVk
-IHRoaXMgY2hhbmdlIG9uIFFDQTk5ODQoZmlybXdhcmUgdmVyc2lvbiAxMC40LTMuNS4zLTAwMDU3
-KS4KPj4+IAo+Pj4gU2lnbmVkLW9mZi1ieTogTWFuaWthbnRhIFB1YmJpc2V0dHkgPG1wdWJiaXNl
-QGNvZGVhdXJvcmEub3JnPgo+PiBZb3VyIG5hbWUgaW4gcGF0Y2h3b3JrIGlzIHdyb25nIGFuZCBo
-ZW5jZSBteSBzY3JpcHQgdXNlcyB0aGUgd3JvbmcKPj4gbmFtZS4gUGxlYXNlIGZpeCBpdCBieSBy
-ZWdpc3RlcmluZyB0byBwYXRjaHdvcmtbMV0gd2hlcmUgaXQncyBwb3NzaWJsZQo+PiB0byBjaGFu
-Z2UgeW91ciBuYW1lIGR1cmluZyByZWdpc3RyYXRpb24sIGJ1dCBvbmx5IG9uZSB0aW1lLiBJZiB0
-aGF0Cj4+IGRvZXNuJ3Qgd29yayB0aGVuIHNlbmQgYSByZXF1ZXN0IHRvIGhlbHBkZXNrQGtlcm5l
-bC5vcmcgYW5kIHRoZSBhZG1pbnMKPj4gY2FuIGZpeCBpdC4KPj4gCj4+IFsxXSBodHRwczovL3Bh
-dGNod29yay5rZXJuZWwub3JnL3JlZ2lzdGVyLwo+PiAKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+
+
+On 2018-05-03 07:42 PM, Luis R. Rodriguez wrote:
+> On Mon, Apr 23, 2018 at 04:12:02PM -0400, Andres Rodriguez wrote:
+>> Previously, one could assume the firmware name from the preceding
+>> message: "Direct firmware load for {name} failed with error %d".
+>>
+>> However, with the new firmware_request_nowarn() entrypoint, the message
+>> outlined above will not always be printed.
+> 
+> I though the whole point was to not print an error message. What if
+> we want later to disable this error message? This would prove a bit
+> pointless.
+> 
+> Let's discuss the exact semantics desired here. Why would only the
+> fallback be desirable here?
+> 
+> Andres, Kalle?
+> 
+> After we address this I'll address resubmitting this lat patch
+> along with the last one. For now I'll skip it.
+
+You are correct. I initially thought it would be useful to know that the 
+usermode fallback was being triggered. And for that message to be useful 
+we would need a fw name.
+
+But now that you point it out, this behaviour is inconsistent with the 
+_nowarn() definition. We shouldn't have a message in the first place.
+
+So it might be better to instead have:
+
+if (!(opt_flags & FW_OPT_NO_WARN) )
+     dev_warn(device, "Falling back to user helper\n");
+
+No need to add the firmware name, cause we either:
+     a) FW_OPT_NO_WARN is set and no messages are printed, or
+     b) FW_OPT_NO_WARN is not set and we get both messages.
+
+Yay, nay?
+
+Regards,
+Andres
+
+> 
+>    Luis
+> 
+>> Therefore, we add the firmware name to the fallback path spew in order
+>> to associate it with the appropriate request.
+>>
+>> Signed-off-by: Andres Rodriguez <andresx7@gmail.com>
+>> ---
+>>   drivers/base/firmware_loader/fallback.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+>> index e75928458489..1a47ddc70c31 100644
+>> --- a/drivers/base/firmware_loader/fallback.c
+>> +++ b/drivers/base/firmware_loader/fallback.c
+>> @@ -669,6 +669,6 @@ int fw_sysfs_fallback(struct firmware *fw, const char *name,
+>>   	if (!fw_run_sysfs_fallback(opt_flags))
+>>   		return ret;
+>>   
+>> -	dev_warn(device, "Falling back to user helper\n");
+>> +	dev_warn(device, "Falling back to user helper for %s\n", name);
+>>   	return fw_load_from_user_helper(fw, name, device, opt_flags);
+>>   }
+>> -- 
+>> 2.14.1
+>>
+>>
+> 
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
