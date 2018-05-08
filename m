@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFqNT-0006CP-DI
- for ath10k@lists.infradead.org; Tue, 08 May 2018 00:21:13 +0000
-Date: Tue, 8 May 2018 00:20:55 +0000
-From: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Subject: Re: [PATCH 6/9] firmware: print firmware name on fallback path
-Message-ID: <20180508002055.GY27853@wotan.suse.de>
-References: <20180423201205.20533-1-andresx7@gmail.com>
- <20180423201205.20533-7-andresx7@gmail.com>
- <20180503234235.GX27853@wotan.suse.de>
- <e79fe68b-7dc5-b65a-e483-287c91d67bc2@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e79fe68b-7dc5-b65a-e483-287c91d67bc2@gmail.com>
+ id 1fFrX4-0007wN-Il
+ for ath10k@lists.infradead.org; Tue, 08 May 2018 01:35:12 +0000
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Subject: [PATCH v2] ath10k: support for multicast rate control
+Date: Mon,  7 May 2018 18:34:51 -0700
+Message-Id: <1525743291-4306-1-git-send-email-pradeepc@codeaurora.org>
+In-Reply-To: <cebad8674a69761e32a1a882de9a1259657c65d4>
+References: <cebad8674a69761e32a1a882de9a1259657c65d4>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +17,127 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andres Rodriguez <andresx7@gmail.com>
-Cc: arend.vanspriel@broadcom.com, Kees Cook <keescook@chromium.org>, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, "Luis R. Rodriguez" <mcgrof@kernel.org>, alexdeucher@gmail.com, Mimi Zohar <zohar@linux.vnet.ibm.com>, christian.koenig@amd.com, kvalo@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On Fri, May 04, 2018 at 10:57:26PM -0400, Andres Rodriguez wrote:
-> On 2018-05-03 07:42 PM, Luis R. Rodriguez wrote:
-> > On Mon, Apr 23, 2018 at 04:12:02PM -0400, Andres Rodriguez wrote:
-> > > Previously, one could assume the firmware name from the preceding
-> > > message: "Direct firmware load for {name} failed with error %d".
-> > > 
-> > > However, with the new firmware_request_nowarn() entrypoint, the message
-> > > outlined above will not always be printed.
-> > 
-> > I though the whole point was to not print an error message. What if
-> > we want later to disable this error message? This would prove a bit
-> > pointless.
-> > 
-> > Let's discuss the exact semantics desired here. Why would only the
-> > fallback be desirable here?
-> > 
-> > Andres, Kalle?
-> > 
-> > After we address this I'll address resubmitting this lat patch
-> > along with the last one. For now I'll skip it.
-> 
-> You are correct. I initially thought it would be useful to know that the
-> usermode fallback was being triggered. And for that message to be useful we
-> would need a fw name.
-> 
-> But now that you point it out, this behaviour is inconsistent with the
-> _nowarn() definition. We shouldn't have a message in the first place.
-> 
-> So it might be better to instead have:
-> 
-> if (!(opt_flags & FW_OPT_NO_WARN) )
->     dev_warn(device, "Falling back to user helper\n");
-> 
-> No need to add the firmware name, cause we either:
->     a) FW_OPT_NO_WARN is set and no messages are printed, or
->     b) FW_OPT_NO_WARN is not set and we get both messages.
-> 
-> Yay, nay?
+Issues wmi command to firmwre when multicast rate change is received
+with the new BSS_CHANGED_MCAST_RATE flag.
+Also fixes the incorrect fixed_rate setting for CCK rates which got
+introduced with addition of ath10k_rates_rev2 enum.
 
-I welcome such a new warning but not for any of the reasons stated.
+Tested on QCA9984 with firmware ver 10.4-3.6-00104
 
-It make sense if FW_OPT_NO_WARN is not set and only because the fallback
-mechanism can fail for a slew of different firmware files, and just getting
-informed a failure with a fallback occurred does not tell us for which file it
-failed for.
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+---
+v2:
+ - fixed the CCK rates setting for mcast_rate and fixed_rate paths.
+ - set broadcast rate along with multicast rate setting.
 
-I'll add such a patch to my queue and send it off soon prior to your own
-new API nowarn call.
+ drivers/net/wireless/ath/ath10k/mac.c | 54 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 4 deletions(-)
 
-  Luis
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3d7119a..70a0563 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -101,6 +101,8 @@
+ #define ath10k_g_rates_rev2 (ath10k_rates_rev2 + 0)
+ #define ath10k_g_rates_rev2_size (ARRAY_SIZE(ath10k_rates_rev2))
+ 
++#define ath10k_wmi_legacy_rates ath10k_rates
++
+ static bool ath10k_mac_bitrate_is_cck(int bitrate)
+ {
+ 	switch (bitrate) {
+@@ -5426,8 +5428,12 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ {
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
+-	int ret = 0;
++	struct cfg80211_chan_def def;
+ 	u32 vdev_param, pdev_param, slottime, preamble;
++	u16 bitrate, hw_value;
++	u8 rate;
++	int rateidx, ret = 0;
++	enum nl80211_band band;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -5595,6 +5601,44 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
++	if (changed & BSS_CHANGED_MCAST_RATE &&
++	    !WARN_ON(ath10k_mac_vif_chan(arvif->vif, &def))) {
++		band = def.chan->band;
++		rateidx = vif->bss_conf.mcast_rate[band] - 1;
++
++		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
++			rateidx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
++
++		bitrate = ath10k_wmi_legacy_rates[rateidx].bitrate;
++		hw_value = ath10k_wmi_legacy_rates[rateidx].hw_value;
++		if (ath10k_mac_bitrate_is_cck(bitrate))
++			preamble = WMI_RATE_PREAMBLE_CCK;
++		else
++			preamble = WMI_RATE_PREAMBLE_OFDM;
++
++		rate = ATH10K_HW_RATECODE(hw_value, 0, preamble);
++
++		ath10k_dbg(ar, ATH10K_DBG_MAC,
++			   "mac vdev %d mcast_rate %x\n",
++			   arvif->vdev_id, rate);
++
++		vdev_param = ar->wmi.vdev_param->mcast_data_rate;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
++						vdev_param, rate);
++		if (ret)
++			ath10k_warn(ar,
++				    "failed to set mcast rate on vdev %i: %d\n",
++				    arvif->vdev_id,  ret);
++
++		vdev_param = ar->wmi.vdev_param->bcast_data_rate;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
++						vdev_param, rate);
++		if (ret)
++			ath10k_warn(ar,
++				    "failed to set bcast rate on vdev %i: %d\n",
++				    arvif->vdev_id,  ret);
++	}
++
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+@@ -6895,7 +6939,6 @@ ath10k_mac_bitrate_mask_get_single_rate(
+ 					const struct cfg80211_bitrate_mask *mask,
+ 					u8 *rate, u8 *nss)
+ {
+-	struct ieee80211_supported_band *sband = &ar->mac.sbands[band];
+ 	int rate_idx;
+ 	int i;
+ 	u16 bitrate;
+@@ -6905,8 +6948,11 @@ ath10k_mac_bitrate_mask_get_single_rate(
+ 	if (hweight32(mask->control[band].legacy) == 1) {
+ 		rate_idx = ffs(mask->control[band].legacy) - 1;
+ 
+-		hw_rate = sband->bitrates[rate_idx].hw_value;
+-		bitrate = sband->bitrates[rate_idx].bitrate;
++		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
++			rate_idx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
++
++		hw_rate = ath10k_wmi_legacy_rates[rate_idx].hw_value;
++		bitrate = ath10k_wmi_legacy_rates[rate_idx].bitrate;
+ 
+ 		if (ath10k_mac_bitrate_is_cck(bitrate))
+ 			preamble = WMI_RATE_PREAMBLE_CCK;
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
