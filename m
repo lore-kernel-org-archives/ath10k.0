@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG1R1-0003Vj-3l
- for ath10k@lists.infradead.org; Tue, 08 May 2018 12:09:36 +0000
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH] ath10k: add fw crash dump support for QCA9888 and QCA99X0
-Date: Tue,  8 May 2018 17:41:36 +0530
-Message-Id: <1525781496-14776-1-git-send-email-akolli@codeaurora.org>
+ id 1fG4GN-0001dY-R5
+ for ath10k@lists.infradead.org; Tue, 08 May 2018 15:10:54 +0000
+MIME-Version: 1.0
+Subject: Re: [PATCHv2,3/3] ath10k: average ack rssi support for data frames
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
+References: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
+Message-Id: <20180508151035.C8C2C605FD@smtp.codeaurora.org>
+Date: Tue,  8 May 2018 15:10:35 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,142 +18,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-This patch adds crash dump support for QCA9888 and QCA99X0
+Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
 
-Tested On: QCA9888, Firmware Version: 10.4-3.5.3-00053
-Tested on QCA99X0, Firmware Version: 10.4.1.00030-1
+> Average ack rssi value is weighted average of ack rssi for
+> no of msdu's has been sent.
+> This feature is enabled by the host driver if firmware is capable.
+> After receiving event from host, firmware allocates the necessary
+> memory to store the ack_rssi for data packets during the init time.
+> 
+> After each successful transmission, If tx completion status is OK
+> and 24th bit is set in HTT message header then host will fetch the
+> ack_rssi else host can ignore the ack_rssi field.
+> 
+> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 
-Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/coredump.c |   98 ++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+A note to myself that this depends on:
 
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index f90cec0ebb1c..e0eb2eb1a66d 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -701,6 +701,89 @@
- 	},
- };
- 
-+static const struct ath10k_mem_region qca99X0_hw20_mem_regions[] = {
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_DRAM,
-+		.start = 0x400000,
-+		.len = 0x60000,
-+		.name = "DRAM",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_REG,
-+		.start = 0x98000,
-+		.len = 0x50000,
-+		.name = "IRAM",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_IOSRAM,
-+		.start = 0xC0000,
-+		.len = 0x40000,
-+		.name = "SRAM",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_IOREG,
-+		.start = 0x30000,
-+		.len = 0x7000,
-+		.name = "APB REG 1",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_IOREG,
-+		.start = 0x3f000,
-+		.len = 0x3000,
-+		.name = "APB REG 2",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_IOREG,
-+		.start = 0x43000,
-+		.len = 0x3000,
-+		.name = "WIFI REG",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_IOREG,
-+		.start = 0x4A000,
-+		.len = 0x5000,
-+		.name = "CE REG",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+	{
-+		.type = ATH10K_MEM_REGION_TYPE_IOREG,
-+		.start = 0x80000,
-+		.len = 0x6000,
-+		.name = "SOC REG",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+};
-+
- static const struct ath10k_mem_region qca9984_hw10_mem_regions[] = {
- 	{
- 		.type = ATH10K_MEM_REGION_TYPE_DRAM,
-@@ -848,6 +931,21 @@
- 			.size = ARRAY_SIZE(qca9984_hw10_mem_regions),
- 		},
- 	},
-+	{
-+		.hw_id = QCA9888_HW_2_0_DEV_VERSION,
-+		.region_table = {
-+			.regions = qca9984_hw10_mem_regions,
-+			.size = ARRAY_SIZE(qca9984_hw10_mem_regions),
-+		},
-+	},
-+	{
-+		.hw_id = QCA99X0_HW_2_0_DEV_VERSION,
-+		.region_table = {
-+			.regions = qca99X0_hw20_mem_regions,
-+			.size = ARRAY_SIZE(qca99X0_hw20_mem_regions),
-+		},
-+	},
-+
- };
- 
- static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
+cc60dbbfed8f mac80211: average ack rssi support for data frames
+
+Currently in mac80211-next.
+
 -- 
-1.7.9.5
+https://patchwork.kernel.org/patch/10343153/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
