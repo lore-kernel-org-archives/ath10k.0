@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGJz3-0006lT-DC
- for ath10k@lists.infradead.org; Wed, 09 May 2018 07:57:58 +0000
-Received: by mail-lf0-x244.google.com with SMTP id t129-v6so10315199lff.3
- for <ath10k@lists.infradead.org>; Wed, 09 May 2018 00:57:47 -0700 (PDT)
-From: Marcus Folkesson <marcus.folkesson@gmail.com>
-Subject: [PATCH] ath10k: hw: make consistent usage of ATH10K_FW_DIR in paths
-Date: Wed,  9 May 2018 09:56:33 +0200
-Message-Id: <20180509075633.3030-1-marcus.folkesson@gmail.com>
+ id 1fGLTn-0002gQ-UT
+ for ath10k@lists.infradead.org; Wed, 09 May 2018 09:33:51 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH v2] ath10k: Replace bit shifts with the BIT() macro for rx
+ desc bits
+Date: Wed,  9 May 2018 15:03:21 +0530
+Message-Id: <20180509093321.15269-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +22,234 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Marcus Folkesson <marcus.folkesson@gmail.com>, linux-wireless@vger.kernel.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+Use the BIT() macro from 'linux/bitops.h' to define the rx desc
+bit flags to have consistency with new definitions.
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/hw.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 136 +++++++++++-----------
+ 1 file changed, 69 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index b8bdabe73073..23467e9fefeb 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -85,11 +85,11 @@ enum qca9377_chip_id_rev {
- 	QCA9377_HW_1_1_CHIP_ID_REV = 0x1,
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 545deb6d7af1..ea4075d456fa 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -18,39 +18,41 @@
+ #ifndef _RX_DESC_H_
+ #define _RX_DESC_H_
+ 
++#include <linux/bitops.h>
++
+ enum rx_attention_flags {
+-	RX_ATTENTION_FLAGS_FIRST_MPDU          = 1 << 0,
+-	RX_ATTENTION_FLAGS_LAST_MPDU           = 1 << 1,
+-	RX_ATTENTION_FLAGS_MCAST_BCAST         = 1 << 2,
+-	RX_ATTENTION_FLAGS_PEER_IDX_INVALID    = 1 << 3,
+-	RX_ATTENTION_FLAGS_PEER_IDX_TIMEOUT    = 1 << 4,
+-	RX_ATTENTION_FLAGS_POWER_MGMT          = 1 << 5,
+-	RX_ATTENTION_FLAGS_NON_QOS             = 1 << 6,
+-	RX_ATTENTION_FLAGS_NULL_DATA           = 1 << 7,
+-	RX_ATTENTION_FLAGS_MGMT_TYPE           = 1 << 8,
+-	RX_ATTENTION_FLAGS_CTRL_TYPE           = 1 << 9,
+-	RX_ATTENTION_FLAGS_MORE_DATA           = 1 << 10,
+-	RX_ATTENTION_FLAGS_EOSP                = 1 << 11,
+-	RX_ATTENTION_FLAGS_U_APSD_TRIGGER      = 1 << 12,
+-	RX_ATTENTION_FLAGS_FRAGMENT            = 1 << 13,
+-	RX_ATTENTION_FLAGS_ORDER               = 1 << 14,
+-	RX_ATTENTION_FLAGS_CLASSIFICATION      = 1 << 15,
+-	RX_ATTENTION_FLAGS_OVERFLOW_ERR        = 1 << 16,
+-	RX_ATTENTION_FLAGS_MSDU_LENGTH_ERR     = 1 << 17,
+-	RX_ATTENTION_FLAGS_TCP_UDP_CHKSUM_FAIL = 1 << 18,
+-	RX_ATTENTION_FLAGS_IP_CHKSUM_FAIL      = 1 << 19,
+-	RX_ATTENTION_FLAGS_SA_IDX_INVALID      = 1 << 20,
+-	RX_ATTENTION_FLAGS_DA_IDX_INVALID      = 1 << 21,
+-	RX_ATTENTION_FLAGS_SA_IDX_TIMEOUT      = 1 << 22,
+-	RX_ATTENTION_FLAGS_DA_IDX_TIMEOUT      = 1 << 23,
+-	RX_ATTENTION_FLAGS_ENCRYPT_REQUIRED    = 1 << 24,
+-	RX_ATTENTION_FLAGS_DIRECTED            = 1 << 25,
+-	RX_ATTENTION_FLAGS_BUFFER_FRAGMENT     = 1 << 26,
+-	RX_ATTENTION_FLAGS_MPDU_LENGTH_ERR     = 1 << 27,
+-	RX_ATTENTION_FLAGS_TKIP_MIC_ERR        = 1 << 28,
+-	RX_ATTENTION_FLAGS_DECRYPT_ERR         = 1 << 29,
+-	RX_ATTENTION_FLAGS_FCS_ERR             = 1 << 30,
+-	RX_ATTENTION_FLAGS_MSDU_DONE           = 1 << 31,
++	RX_ATTENTION_FLAGS_FIRST_MPDU          = BIT(0),
++	RX_ATTENTION_FLAGS_LAST_MPDU           = BIT(1),
++	RX_ATTENTION_FLAGS_MCAST_BCAST         = BIT(2),
++	RX_ATTENTION_FLAGS_PEER_IDX_INVALID    = BIT(3),
++	RX_ATTENTION_FLAGS_PEER_IDX_TIMEOUT    = BIT(4),
++	RX_ATTENTION_FLAGS_POWER_MGMT          = BIT(5),
++	RX_ATTENTION_FLAGS_NON_QOS             = BIT(6),
++	RX_ATTENTION_FLAGS_NULL_DATA           = BIT(7),
++	RX_ATTENTION_FLAGS_MGMT_TYPE           = BIT(8),
++	RX_ATTENTION_FLAGS_CTRL_TYPE           = BIT(9),
++	RX_ATTENTION_FLAGS_MORE_DATA           = BIT(10),
++	RX_ATTENTION_FLAGS_EOSP                = BIT(11),
++	RX_ATTENTION_FLAGS_U_APSD_TRIGGER      = BIT(12),
++	RX_ATTENTION_FLAGS_FRAGMENT            = BIT(13),
++	RX_ATTENTION_FLAGS_ORDER               = BIT(14),
++	RX_ATTENTION_FLAGS_CLASSIFICATION      = BIT(15),
++	RX_ATTENTION_FLAGS_OVERFLOW_ERR        = BIT(16),
++	RX_ATTENTION_FLAGS_MSDU_LENGTH_ERR     = BIT(17),
++	RX_ATTENTION_FLAGS_TCP_UDP_CHKSUM_FAIL = BIT(18),
++	RX_ATTENTION_FLAGS_IP_CHKSUM_FAIL      = BIT(19),
++	RX_ATTENTION_FLAGS_SA_IDX_INVALID      = BIT(20),
++	RX_ATTENTION_FLAGS_DA_IDX_INVALID      = BIT(21),
++	RX_ATTENTION_FLAGS_SA_IDX_TIMEOUT      = BIT(22),
++	RX_ATTENTION_FLAGS_DA_IDX_TIMEOUT      = BIT(23),
++	RX_ATTENTION_FLAGS_ENCRYPT_REQUIRED    = BIT(24),
++	RX_ATTENTION_FLAGS_DIRECTED            = BIT(25),
++	RX_ATTENTION_FLAGS_BUFFER_FRAGMENT     = BIT(26),
++	RX_ATTENTION_FLAGS_MPDU_LENGTH_ERR     = BIT(27),
++	RX_ATTENTION_FLAGS_TKIP_MIC_ERR        = BIT(28),
++	RX_ATTENTION_FLAGS_DECRYPT_ERR         = BIT(29),
++	RX_ATTENTION_FLAGS_FCS_ERR             = BIT(30),
++	RX_ATTENTION_FLAGS_MSDU_DONE           = BIT(31),
  };
  
--#define QCA6174_HW_2_1_FW_DIR		"ath10k/QCA6174/hw2.1"
-+#define QCA6174_HW_2_1_FW_DIR		ATH10K_FW_DIR "/QCA6174/hw2.1"
- #define QCA6174_HW_2_1_BOARD_DATA_FILE	"board.bin"
- #define QCA6174_HW_2_1_PATCH_LOAD_ADDR	0x1234
+ struct rx_attention {
+@@ -254,15 +256,15 @@ enum htt_rx_mpdu_encrypt_type {
+ #define RX_MPDU_START_INFO0_SEQ_NUM_LSB       16
+ #define RX_MPDU_START_INFO0_ENCRYPT_TYPE_MASK 0xf0000000
+ #define RX_MPDU_START_INFO0_ENCRYPT_TYPE_LSB  28
+-#define RX_MPDU_START_INFO0_FROM_DS           (1 << 11)
+-#define RX_MPDU_START_INFO0_TO_DS             (1 << 12)
+-#define RX_MPDU_START_INFO0_ENCRYPTED         (1 << 13)
+-#define RX_MPDU_START_INFO0_RETRY             (1 << 14)
+-#define RX_MPDU_START_INFO0_TXBF_H_INFO       (1 << 15)
++#define RX_MPDU_START_INFO0_FROM_DS           BIT(11)
++#define RX_MPDU_START_INFO0_TO_DS             BIT(12)
++#define RX_MPDU_START_INFO0_ENCRYPTED         BIT(13)
++#define RX_MPDU_START_INFO0_RETRY             BIT(14)
++#define RX_MPDU_START_INFO0_TXBF_H_INFO       BIT(15)
  
--#define QCA6174_HW_3_0_FW_DIR		"ath10k/QCA6174/hw3.0"
-+#define QCA6174_HW_3_0_FW_DIR		ATH10K_FW_DIR "/QCA6174/hw3.0"
- #define QCA6174_HW_3_0_BOARD_DATA_FILE	"board.bin"
- #define QCA6174_HW_3_0_PATCH_LOAD_ADDR	0x1234
+ #define RX_MPDU_START_INFO1_TID_MASK 0xf0000000
+ #define RX_MPDU_START_INFO1_TID_LSB  28
+-#define RX_MPDU_START_INFO1_DIRECTED (1 << 16)
++#define RX_MPDU_START_INFO1_DIRECTED BIT(16)
+ 
+ struct rx_mpdu_start {
+ 	__le32 info0;
+@@ -357,13 +359,13 @@ struct rx_mpdu_start {
+ #define RX_MPDU_END_INFO0_RESERVED_0_LSB      0
+ #define RX_MPDU_END_INFO0_POST_DELIM_CNT_MASK 0x0fff0000
+ #define RX_MPDU_END_INFO0_POST_DELIM_CNT_LSB  16
+-#define RX_MPDU_END_INFO0_OVERFLOW_ERR        (1 << 13)
+-#define RX_MPDU_END_INFO0_LAST_MPDU           (1 << 14)
+-#define RX_MPDU_END_INFO0_POST_DELIM_ERR      (1 << 15)
+-#define RX_MPDU_END_INFO0_MPDU_LENGTH_ERR     (1 << 28)
+-#define RX_MPDU_END_INFO0_TKIP_MIC_ERR        (1 << 29)
+-#define RX_MPDU_END_INFO0_DECRYPT_ERR         (1 << 30)
+-#define RX_MPDU_END_INFO0_FCS_ERR             (1 << 31)
++#define RX_MPDU_END_INFO0_OVERFLOW_ERR        BIT(13)
++#define RX_MPDU_END_INFO0_LAST_MPDU           BIT(14)
++#define RX_MPDU_END_INFO0_POST_DELIM_ERR      BIT(15)
++#define RX_MPDU_END_INFO0_MPDU_LENGTH_ERR     BIT(28)
++#define RX_MPDU_END_INFO0_TKIP_MIC_ERR        BIT(29)
++#define RX_MPDU_END_INFO0_DECRYPT_ERR         BIT(30)
++#define RX_MPDU_END_INFO0_FCS_ERR             BIT(31)
+ 
+ struct rx_mpdu_end {
+ 	__le32 info0;
+@@ -422,12 +424,12 @@ struct rx_mpdu_end {
+ #define RX_MSDU_START_INFO1_DECAP_FORMAT_LSB    8
+ #define RX_MSDU_START_INFO1_SA_IDX_MASK         0x07ff0000
+ #define RX_MSDU_START_INFO1_SA_IDX_LSB          16
+-#define RX_MSDU_START_INFO1_IPV4_PROTO          (1 << 10)
+-#define RX_MSDU_START_INFO1_IPV6_PROTO          (1 << 11)
+-#define RX_MSDU_START_INFO1_TCP_PROTO           (1 << 12)
+-#define RX_MSDU_START_INFO1_UDP_PROTO           (1 << 13)
+-#define RX_MSDU_START_INFO1_IP_FRAG             (1 << 14)
+-#define RX_MSDU_START_INFO1_TCP_ONLY_ACK        (1 << 15)
++#define RX_MSDU_START_INFO1_IPV4_PROTO          BIT(10)
++#define RX_MSDU_START_INFO1_IPV6_PROTO          BIT(11)
++#define RX_MSDU_START_INFO1_TCP_PROTO           BIT(12)
++#define RX_MSDU_START_INFO1_UDP_PROTO           BIT(13)
++#define RX_MSDU_START_INFO1_IP_FRAG             BIT(14)
++#define RX_MSDU_START_INFO1_TCP_ONLY_ACK        BIT(15)
+ 
+ #define RX_MSDU_START_INFO2_DA_IDX_MASK         0x000007ff
+ #define RX_MSDU_START_INFO2_DA_IDX_LSB          0
+@@ -568,10 +570,10 @@ struct rx_msdu_start {
+ 
+ #define RX_MSDU_END_INFO0_REPORTED_MPDU_LENGTH_MASK 0x00003fff
+ #define RX_MSDU_END_INFO0_REPORTED_MPDU_LENGTH_LSB  0
+-#define RX_MSDU_END_INFO0_FIRST_MSDU                (1 << 14)
+-#define RX_MSDU_END_INFO0_LAST_MSDU                 (1 << 15)
+-#define RX_MSDU_END_INFO0_PRE_DELIM_ERR             (1 << 30)
+-#define RX_MSDU_END_INFO0_RESERVED_3B               (1 << 31)
++#define RX_MSDU_END_INFO0_FIRST_MSDU                BIT(14)
++#define RX_MSDU_END_INFO0_LAST_MSDU                 BIT(15)
++#define RX_MSDU_END_INFO0_PRE_DELIM_ERR             BIT(30)
++#define RX_MSDU_END_INFO0_RESERVED_3B               BIT(31)
+ 
+ struct rx_msdu_end_common {
+ 	__le16 ip_hdr_cksum;
+@@ -691,7 +693,7 @@ struct rx_msdu_end {
+ #define HTT_RX_PPDU_START_PREAMBLE_VHT           0x0C
+ #define HTT_RX_PPDU_START_PREAMBLE_VHT_WITH_TXBF 0x0D
+ 
+-#define RX_PPDU_START_INFO0_IS_GREENFIELD (1 << 0)
++#define RX_PPDU_START_INFO0_IS_GREENFIELD BIT(0)
+ 
+ #define RX_PPDU_START_INFO1_L_SIG_RATE_MASK    0x0000000f
+ #define RX_PPDU_START_INFO1_L_SIG_RATE_LSB     0
+@@ -701,15 +703,15 @@ struct rx_msdu_end {
+ #define RX_PPDU_START_INFO1_L_SIG_TAIL_LSB     18
+ #define RX_PPDU_START_INFO1_PREAMBLE_TYPE_MASK 0xff000000
+ #define RX_PPDU_START_INFO1_PREAMBLE_TYPE_LSB  24
+-#define RX_PPDU_START_INFO1_L_SIG_RATE_SELECT  (1 << 4)
+-#define RX_PPDU_START_INFO1_L_SIG_PARITY       (1 << 17)
++#define RX_PPDU_START_INFO1_L_SIG_RATE_SELECT  BIT(4)
++#define RX_PPDU_START_INFO1_L_SIG_PARITY       BIT(17)
+ 
+ #define RX_PPDU_START_INFO2_HT_SIG_VHT_SIG_A_1_MASK 0x00ffffff
+ #define RX_PPDU_START_INFO2_HT_SIG_VHT_SIG_A_1_LSB  0
+ 
+ #define RX_PPDU_START_INFO3_HT_SIG_VHT_SIG_A_2_MASK 0x00ffffff
+ #define RX_PPDU_START_INFO3_HT_SIG_VHT_SIG_A_2_LSB  0
+-#define RX_PPDU_START_INFO3_TXBF_H_INFO             (1 << 24)
++#define RX_PPDU_START_INFO3_TXBF_H_INFO             BIT(24)
+ 
+ #define RX_PPDU_START_INFO4_VHT_SIG_B_MASK 0x1fffffff
+ #define RX_PPDU_START_INFO4_VHT_SIG_B_LSB  0
+@@ -898,14 +900,14 @@ struct rx_ppdu_start {
+  *		Reserved: HW should fill with 0, FW should ignore.
+  */
+ 
+-#define RX_PPDU_END_FLAGS_PHY_ERR             (1 << 0)
+-#define RX_PPDU_END_FLAGS_RX_LOCATION         (1 << 1)
+-#define RX_PPDU_END_FLAGS_TXBF_H_INFO         (1 << 2)
++#define RX_PPDU_END_FLAGS_PHY_ERR             BIT(0)
++#define RX_PPDU_END_FLAGS_RX_LOCATION         BIT(1)
++#define RX_PPDU_END_FLAGS_TXBF_H_INFO         BIT(2)
+ 
+ #define RX_PPDU_END_INFO0_RX_ANTENNA_MASK     0x00ffffff
+ #define RX_PPDU_END_INFO0_RX_ANTENNA_LSB      0
+-#define RX_PPDU_END_INFO0_FLAGS_TX_HT_VHT_ACK (1 << 24)
+-#define RX_PPDU_END_INFO0_BB_CAPTURED_CHANNEL (1 << 25)
++#define RX_PPDU_END_INFO0_FLAGS_TX_HT_VHT_ACK BIT(24)
++#define RX_PPDU_END_INFO0_BB_CAPTURED_CHANNEL BIT(25)
+ 
+ #define RX_PPDU_END_INFO1_PEER_IDX_MASK       0x1ffc
+ #define RX_PPDU_END_INFO1_PEER_IDX_LSB        2
+@@ -1265,9 +1267,9 @@ struct rx_ppdu_end {
+  *		to 0.
+  */
+ 
+-#define FW_RX_DESC_INFO0_DISCARD  (1 << 0)
+-#define FW_RX_DESC_INFO0_FORWARD  (1 << 1)
+-#define FW_RX_DESC_INFO0_INSPECT  (1 << 5)
++#define FW_RX_DESC_INFO0_DISCARD  BIT(0)
++#define FW_RX_DESC_INFO0_FORWARD  BIT(1)
++#define FW_RX_DESC_INFO0_INSPECT  BIT(5)
+ #define FW_RX_DESC_INFO0_EXT_MASK 0xC0
+ #define FW_RX_DESC_INFO0_EXT_LSB  6
  
 -- 
-2.16.2
+2.17.0
 
 
 _______________________________________________
