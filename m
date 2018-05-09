@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGMbF-0004bX-S8
- for ath10k@lists.infradead.org; Wed, 09 May 2018 10:45:35 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGQ8j-0006JF-GL
+ for ath10k@lists.infradead.org; Wed, 09 May 2018 14:32:23 +0000
+Subject: Re: [PATCH v2] ath10k: support for multicast rate control
+References: <1525743291-4306-1-git-send-email-pradeepc@codeaurora.org>
+ <17746151.BaBsPhhV2q@bentobox>
+ <28391873-c8f4-4ca0-7bdd-ef4b2b1eccab@dd-wrt.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <63c78277-183e-b10e-7355-154683375711@candelatech.com>
+Date: Wed, 9 May 2018 07:31:57 -0700
 MIME-Version: 1.0
-Date: Wed, 09 May 2018 16:15:22 +0530
-From: Sriram R <srirrama@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
-In-Reply-To: <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
-References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
- <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
- <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
-Message-ID: <9e87e920e215bbadbcbd86e58ccccbc3@codeaurora.org>
+In-Reply-To: <28391873-c8f4-4ca0-7bdd-ef4b2b1eccab@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +24,51 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Sven Eckelmann <sven@narfation.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-05-01 01:20, Peter Oh wrote:
-> On 04/30/2018 10:45 AM, Sriram R wrote:
->> In the 10.4-3.6 firmware branch there's a new DFS Host confirmation
->> feature which is advertised using WMI_SERVICE_HOST_DFS_CHECK_SUPPORT 
->> flag.
->> 
->> This new features enables the ath10k host to send information to the
->> firmware on the specifications of detected radar type. This allows the
->> firmware to validate if the host's radar pattern detector unit is
->> operational and check if the radar information shared by host matches
->> the radar pulses sent as phy error events from firmware. If the check
->> fails the firmware won't allow use of DFS channels on AP mode when 
->> using
->> FCC regulatory region.
-> What's the main reason you introduce this feature?
-> What are you trying to solve with this change?
->> +#define ATH10K_WMI_DFS_CONF_TIMEOUT_HZ (HZ / 2)
->>   +static void ath10k_radar_confirmation_work(struct work_struct 
->> *work)
->> +{
->> +	struct ath10k *ar = container_of(work, struct ath10k,
->> +					 radar_confirmation_work);
->> +	struct ath10k_radar_found_info radar_info;
->> +	int ret, time_left;
->> +
->> +	reinit_completion(&ar->wmi.radar_confirm);
->> +
->> +	spin_lock_bh(&ar->data_lock);
->> +	memcpy(&radar_info, &ar->last_radar_info, sizeof(radar_info));
->> +	spin_unlock_bh(&ar->data_lock);
->> +
->> +	ret = ath10k_wmi_report_radar_found(ar, &radar_info);
->> +	if (ret) {
->> +		ath10k_warn(ar, "failed to send radar found %d\n", ret);
->> +		goto wait_complete;
->> +	}
->> +
->> +	time_left = wait_for_completion_timeout(&ar->wmi.radar_confirm,
->> +						ATH10K_WMI_DFS_CONF_TIMEOUT_HZ);
-> It looks wrong to me in terms of timeout value.
-> Typical channel closing time in FCC domain is 200ms (excluding control
-> signals), but you're waiting for 500ms for response from FW.
-Right Peter, We haven't hit this limit during our testing. On an average 
-we
-received completion event within few milliseconds ,say less than 
-10-15ms. I'll correct
-this timeout in my next patch revision.
->> @@ -3765,25 +3834,46 @@ static void ath10k_dfs_radar_report(struct 
->> ath10k *ar,
->>     	ATH10K_DFS_STAT_INC(ar, pulses_detected);
->>   -	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, NULL)) {
->> +	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, &rs)) {
->>   		ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
->>   			   "dfs no pulse pattern detected, yet\n");
->>   		return;
->>   	}
->>   -radar_detected:
->> -	ath10k_dbg(ar, ATH10K_DBG_REGULATORY, "dfs radar detected\n");
->> -	ATH10K_DFS_STAT_INC(ar, radar_detected);
->> +	if ((test_bit(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT, ar->wmi.svc_map)) 
->> &&
->> +	    ar->dfs_detector->region == NL80211_DFS_FCC) {
-> I feel risky that host drivers have no way to control this new feature
-> and totally rely on FW feature mask. We should have a host drivers'
-> feature mask such as module param and set it false (don't use) by
-> default until it proves safe to use.
->> +static void
->> +ath10k_wmi_event_dfs_status_check(struct ath10k *ar, struct sk_buff 
->> *skb)
->> +{
->> +	struct wmi_dfs_status_ev_arg status_arg = {};
->> +	int ret;
->> +
->> +	ret = ath10k_wmi_pull_dfs_status(ar, skb, &status_arg);
->> +
->> +	if (ret) {
->> +		ath10k_warn(ar, "failed to parse dfs status event: %d\n", ret);
->> +		return;
->> +	}
->> +
->> +	ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
->> +		   "dfs status event received from fw: %d\n",
->> +		   status_arg.status);
->> +
->> +	/* Even in case of radar detection failure we follow the same
->> +	 * behaviour as if radar is detected i.e to switch to a different
->> +	 * channel.
->> +	 */
->> +	if (status_arg.status == WMI_HW_RADAR_DETECTED ||
->> +	    status_arg.status == WMI_RADAR_DETECTION_FAIL)
->> +		ath10k_radar_detected(ar);
->> +	complete(&ar->wmi.radar_confirm);
->> +}
-> What is typical average duration from
-> wait_for_completion_timeout(&ar->wmi.radar_confirm) to this completion
-> called ?
-We didn't see this taking more than 20ms to reach this completion.
-As mentioned above I'll change the timeout value in the next patch.
+
+
+On 05/08/2018 11:57 PM, Sebastian Gottschall wrote:
+>
+>
+> Am 09.05.2018 um 08:15 schrieb Sven Eckelmann:
+>> On Montag, 7. Mai 2018 18:34:51 CEST Pradeep Kumar Chitrapu wrote:
+>>> Issues wmi command to firmwre when multicast rate change is received
+>>> with the new BSS_CHANGED_MCAST_RATE flag.
+>>> Also fixes the incorrect fixed_rate setting for CCK rates which got
+>>> introduced with addition of ath10k_rates_rev2 enum.
+>>>
+>>> Tested on QCA9984 with firmware ver 10.4-3.6-00104
+>>> Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+>>> ---
+>>> v2:
+>>>   - fixed the CCK rates setting for mcast_rate and fixed_rate paths.
+>>>   - set broadcast rate along with multicast rate setting.
+>> These things are only modified in ath10k_bss_info_changed and not saved/
+>> restored. What happens when the HW needs to be reset (there are are couple of
+>> firmware crashes which can be seen in the wild and are handled by ath10k)? I
+>> would guess that not all of them automatically cause an .bss_info_changed.
+
+Yes, that sounds like a good idea to me.
+
+> i have never seen a card properly recovering after a firmware crash, all firmware crashes i have seen
+> are caused by bugs in firmware handling or the firmware itself. so if it recovers it crashes immediatly again
+> ending in a endless crashloop since the cause for the crash hasnt been fixed. they are often triggered by extern clients for instance which still remain in the field.
+> i think firmware crashes should not be hidden by recovering. this would also force users to report problems more frequently, than they do
+> since they dont even take notice of such problems
+
+We see recovery work often.  If you see repeatable crashes, post them
+to the list.
+
+Do you know of any particular external clients that cause these crashes?
 
 Thanks,
-Sriram.R
-> 
-> Thanks,
-> Peter
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
