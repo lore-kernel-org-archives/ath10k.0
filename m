@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGLW7-00013U-PD
- for ath10k@lists.infradead.org; Wed, 09 May 2018 09:36:13 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGMbF-0004bX-S8
+ for ath10k@lists.infradead.org; Wed, 09 May 2018 10:45:35 +0000
 MIME-Version: 1.0
-Date: Wed, 09 May 2018 15:05:57 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Replace bit shifts with the BIT() macro for rx
- desc bits
-In-Reply-To: <20180509074042.GA768@gmail.com>
-References: <20180509044804.13751-1-govinds@codeaurora.org>
- <20180509074042.GA768@gmail.com>
-Message-ID: <57eb66a936cb541e81cb9ba4f48df61b@codeaurora.org>
+Date: Wed, 09 May 2018 16:15:22 +0530
+From: Sriram R <srirrama@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
+In-Reply-To: <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
+References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
+ <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+ <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
+Message-ID: <9e87e920e215bbadbcbd86e58ccccbc3@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +24,113 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marcus Folkesson <marcus.folkesson@gmail.com>
+To: Peter Oh <peter.oh@bowerswilkins.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-05-09 13:10, Marcus Folkesson wrote:
-> Hello Govind,
-> 
-> On Wed, May 09, 2018 at 10:18:04AM +0530, Govind Singh wrote:
->> Use the BIT() macro from 'linux/bitops.h' to define the rx desc
->> bit flags to have consistency with new definitions.
+On 2018-05-01 01:20, Peter Oh wrote:
+> On 04/30/2018 10:45 AM, Sriram R wrote:
+>> In the 10.4-3.6 firmware branch there's a new DFS Host confirmation
+>> feature which is advertised using WMI_SERVICE_HOST_DFS_CHECK_SUPPORT 
+>> flag.
 >> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/rx_desc.h | 134 
->> +++++++++++-----------
->>  1 file changed, 67 insertions(+), 67 deletions(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h 
->> b/drivers/net/wireless/ath/ath10k/rx_desc.h
->> index 545deb6d7af1..b3d7c6e7ac90 100644
->> --- a/drivers/net/wireless/ath/ath10k/rx_desc.h
->> +++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-> 
-> Looks good, but please include linux/bitops.h as well.
-> 
-> From the documentation [1]:
-> 
-> If you use a facility then #include the file that defines/declares
->  that facility.  Don't depend on other header files pulling in ones
->  that you use.
-> 
+>> This new features enables the ath10k host to send information to the
+>> firmware on the specifications of detected radar type. This allows the
+>> firmware to validate if the host's radar pattern detector unit is
+>> operational and check if the radar information shared by host matches
+>> the radar pulses sent as phy error events from firmware. If the check
+>> fails the firmware won't allow use of DFS channels on AP mode when 
+>> using
+>> FCC regulatory region.
+> What's the main reason you introduce this feature?
+> What are you trying to solve with this change?
+>> +#define ATH10K_WMI_DFS_CONF_TIMEOUT_HZ (HZ / 2)
+>>   +static void ath10k_radar_confirmation_work(struct work_struct 
+>> *work)
+>> +{
+>> +	struct ath10k *ar = container_of(work, struct ath10k,
+>> +					 radar_confirmation_work);
+>> +	struct ath10k_radar_found_info radar_info;
+>> +	int ret, time_left;
+>> +
+>> +	reinit_completion(&ar->wmi.radar_confirm);
+>> +
+>> +	spin_lock_bh(&ar->data_lock);
+>> +	memcpy(&radar_info, &ar->last_radar_info, sizeof(radar_info));
+>> +	spin_unlock_bh(&ar->data_lock);
+>> +
+>> +	ret = ath10k_wmi_report_radar_found(ar, &radar_info);
+>> +	if (ret) {
+>> +		ath10k_warn(ar, "failed to send radar found %d\n", ret);
+>> +		goto wait_complete;
+>> +	}
+>> +
+>> +	time_left = wait_for_completion_timeout(&ar->wmi.radar_confirm,
+>> +						ATH10K_WMI_DFS_CONF_TIMEOUT_HZ);
+> It looks wrong to me in terms of timeout value.
+> Typical channel closing time in FCC domain is 200ms (excluding control
+> signals), but you're waiting for 500ms for response from FW.
+Right Peter, We haven't hit this limit during our testing. On an average 
+we
+received completion event within few milliseconds ,say less than 
+10-15ms. I'll correct
+this timeout in my next patch revision.
+>> @@ -3765,25 +3834,46 @@ static void ath10k_dfs_radar_report(struct 
+>> ath10k *ar,
+>>     	ATH10K_DFS_STAT_INC(ar, pulses_detected);
+>>   -	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, NULL)) {
+>> +	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, &rs)) {
+>>   		ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
+>>   			   "dfs no pulse pattern detected, yet\n");
+>>   		return;
+>>   	}
+>>   -radar_detected:
+>> -	ath10k_dbg(ar, ATH10K_DBG_REGULATORY, "dfs radar detected\n");
+>> -	ATH10K_DFS_STAT_INC(ar, radar_detected);
+>> +	if ((test_bit(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT, ar->wmi.svc_map)) 
+>> &&
+>> +	    ar->dfs_detector->region == NL80211_DFS_FCC) {
+> I feel risky that host drivers have no way to control this new feature
+> and totally rely on FW feature mask. We should have a host drivers'
+> feature mask such as module param and set it false (don't use) by
+> default until it proves safe to use.
+>> +static void
+>> +ath10k_wmi_event_dfs_status_check(struct ath10k *ar, struct sk_buff 
+>> *skb)
+>> +{
+>> +	struct wmi_dfs_status_ev_arg status_arg = {};
+>> +	int ret;
+>> +
+>> +	ret = ath10k_wmi_pull_dfs_status(ar, skb, &status_arg);
+>> +
+>> +	if (ret) {
+>> +		ath10k_warn(ar, "failed to parse dfs status event: %d\n", ret);
+>> +		return;
+>> +	}
+>> +
+>> +	ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
+>> +		   "dfs status event received from fw: %d\n",
+>> +		   status_arg.status);
+>> +
+>> +	/* Even in case of radar detection failure we follow the same
+>> +	 * behaviour as if radar is detected i.e to switch to a different
+>> +	 * channel.
+>> +	 */
+>> +	if (status_arg.status == WMI_HW_RADAR_DETECTED ||
+>> +	    status_arg.status == WMI_RADAR_DETECTION_FAIL)
+>> +		ath10k_radar_detected(ar);
+>> +	complete(&ar->wmi.radar_confirm);
+>> +}
+> What is typical average duration from
+> wait_for_completion_timeout(&ar->wmi.radar_confirm) to this completion
+> called ?
+We didn't see this taking more than 20ms to reach this completion.
+As mentioned above I'll change the timeout value in the next patch.
 
-Thanks, addressed the comment in v2 patchset.
-
+Thanks,
+Sriram.R
 > 
-> [1] Documentation/process/submit-checklist.rst
-> 
-> 
-> Best regards
-> Marcus Folkesson
+> Thanks,
+> Peter
 
 _______________________________________________
 ath10k mailing list
