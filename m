@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGGJP-0006D9-1Y
- for ath10k@lists.infradead.org; Wed, 09 May 2018 04:02:44 +0000
-MIME-Version: 1.0
-Date: Wed, 09 May 2018 09:32:32 +0530
+ id 1fGH1b-00067N-39
+ for ath10k@lists.infradead.org; Wed, 09 May 2018 04:48:25 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH v3 00/12] *** Add support for wifi QMI client driver ***
-In-Reply-To: <20180508173710.GL2259@tuxbook-pro>
-References: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
- <20180508173710.GL2259@tuxbook-pro>
-Message-ID: <e0a9a4fd755f04a7e7068544ebc95890@codeaurora.org>
+Subject: [PATCH] ath10k: Replace bit shifts with the BIT() macro for rx desc
+ bits
+Date: Wed,  9 May 2018 10:18:04 +0530
+Message-Id: <20180509044804.13751-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,69 +16,240 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-T24gMjAxOC0wNS0wOCAyMzowNywgQmpvcm4gQW5kZXJzc29uIHdyb3RlOgo+IE9uIFN1biAyNSBN
-YXIgMjI6MzcgUERUIDIwMTgsIEdvdmluZCBTaW5naCB3cm90ZToKPiAKPj4gQWRkIFFNSSBjbGll
-bnQgZHJpdmVyIGZvciBRNiBpbnRlZ3JhdGVkIFdMQU4gY29ubmVjdGl2aXR5IHN1YnN5c3RlbS4K
-Pj4gVGhpcyBtb2R1bGUgaXMgcmVzcG9uc2libGUgZm9yIGNvbW11bmljYXRpbmcgV0xBTiBjb250
-cm9sIG1lc3NhZ2VzIHRvIAo+PiBGVwo+PiBvdmVyIFFNSSBpbnRlcmZhY2UuCj4+IAo+PiDigJxR
-VUFMQ09NTSBNZXNzYWdpbmcgSW50ZXJmYWNl4oCdKFFNSSkgcHJvdmlkZXMgdGhlIGNvbnRyb2wg
-aW50ZXJmYWNlIAo+PiBiZXR3ZWVuCj4+IGNvbXBvbmVudHMgcnVubmluZyBiL3cgcmVtb3RlIHBy
-b2Nlc3NvcnMgd2l0aCB1bmRlcmx5aW5nIHRyYW5zcG9ydCAKPj4gbGF5ZXIKPj4gYmFzZWQgb24g
-aW50ZWdyYXRlZCBjaGlwc2V0KHNoYXJlZCBtZW1vcnkpIG9yIGRpc2NyZXRlIAo+PiBjaGlwc2V0
-KFBDSS9VU0IvU0RJTy9VQVJUKS4KPj4gCj4+IFFNSSBjbGllbnQgZHJpdmVyIGltcGxlbWVudGF0
-aW9uIGlzIGJhc2VkIG9uIHFtaSBmcm1ld29yayAKPj4gaHR0cHM6Ly9sd24ubmV0L0FydGljbGVz
-LzcyOTkyNC8uCj4+IAo+PiBCZWxvdyBpcyB0aGUgc2VxdWVuY2Ugb2YgcW1pIGhhbmRzaGFrZS4K
-Pj4gCj4+ICAgICAgICBRTUkgQ0xJRU5UKEFQUFMpICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBRTUkgCj4+IFNFUlZFUihGVyBpbiBRNikKPj4gCj4+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICA8LS0tLS0td2xhbiBzZXJ2aWNlIGRpc2NvdmVyZC0tLS0KPj4gCj4+ICAg
-ICAgICAgICAgICAgICAgICAgICAgLS0tLS1jb25uZWN0IHRvIHdsYW0gcW1pIHNlcnZpY2UtLS0t
-LT4KPj4gCj4+ICAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0td2xhbiBpbmZvIHJl
-cXVlc3QtLS0tLT4KPj4gCj4+ICAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLXds
-YW4gaW5mbyByZXNwLS0tLS0tLS0tLS0tCj4+IAo+PiAgICAgICAgICAgICAgICAgICAgICAgIC0t
-LS0tLS0tLS0tLW1zYSBpbmZvIHJlcS0tLS0tLS0tPgo+PiAKPj4gICAgICAgICAgICAgICAgICAg
-ICAgPC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJlc3AtLS0tLS0tLS0tLS0KPj4gCj4+ICAgICAgICAg
-ICAgICAgICAgICAgIC0tLS0tLS0tLS0tLW1zYSByZWFkeSByZXEtLS0tLS0tLT4KPj4gCj4+ICAg
-ICAgICAgICAgICAgICAgICAgIDwtLS0tLS0tLS0tLS1tc2EgcmVhZHkgcmVzcC0tLS0tLS0tLS0t
-LQo+PiAKPj4gICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLW1zYSByZWFkeSBpbmRp
-Y2F0aW9uLS0tLS0tLQo+PiAKPj4gICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tY2Fw
-YWJpbGl0eSByZXEtLS0tLS0tPgo+PiAKPj4gICAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0t
-LS0tY2FwYWJpbGl0eSByZXNwLS0tLS0tLS0tLS0tCj4+IAo+PiAgICAgICAgICAgICAgICAgICAg
-IC0tLS0tLS0tLS0tLXFtaSBiZGYgcmVxLS0tLS0tLS0tPgo+PiAKPj4gICAgICAgICAgICAgICAg
-ICAgICAgPC0tLS0tLS0tLS0tLXFtaSBiZGYgcmVzcC0tLS0tLS0tLS0tLQo+PiAKPj4gICAgICAg
-ICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLXFtaSBjYWwgdHJpZ2dlci0tLS0tLS0+Cj4+IAo+
-PiAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0tLS0tIFFNSSBGVyByZWFkeSBpbmRpY2F0aW9u
-LS0tLS0tLQo+IAo+IERvZXMgdGhlIHJlc3BvbnNpYmlsaXR5IG9mIHRoZSBkcml2ZXIgZW5kcyBo
-ZXJlPyBJIG1lYW4gaXMgdGhpcyBhIAo+IGRyaXZlcgo+IGZvciBzZXR0aW5nIHVwIHRoZSBmaXJt
-d2FyZSBhbmQgdGhlbiB0aGVyZSdzIHNvbWV0aGluZyBlbHNlIGRvaW5nIHRoZQo+IGFjdHVhbCB3
-aWZpIG9wZXJhdGlvbiwgb3IgZG9lcyBpdCBzaW1wbHkgaGFuZCBvdmVyIGV4ZWN1dGlvbiB0byB0
-aGUKPiBjb21tb24gYXRoMTBrIGxvZ2ljIGF0IHRoaXMgcG9pbnQ/Cj4gCgogRnJvbSB3bGFuIHFt
-aSBjbGllbnQgcG9pbnQgb2YgdmlldyBvbmNlIHdsYW4gcW1pIHNlcnZpY2UgaXMgZGlzY292ZXJl
-ZCwgCml0IGNvbm5lY3RzIHRvIHRoZSBzZXJ2aWNlIGFuZApkb2VzIHRoZSBhYm92ZSBoYW5kc2hh
-a2VzIGFuZCBsYXRlciBpdCBoYW5kb3ZlciB0aGUgZXhlY3V0aW9uIHRvIGNvbW1vbiAKYXRoMTBr
-IGxvZ2ljLgpUaGVzZSBoYW5kc2hha2VzIHdpbGwgYmUgZG9uZSBhcyBwYXJ0IG9mIHBkIHJlc3Rh
-cnQgYXMgd2VsbC4KCj4+IAo+PiBHb3ZpbmQgU2luZ2ggKDEyKToKPj4gICBhdGgxMGs6IEFkZCBx
-bWkgc2VydmljZSBmb3Igd2xhbiBxbWkgY2xpZW50Cj4+ICAgZHQ6IGJpbmRpbmdzOiBhZGQgYmlu
-ZGluZ3MgZm9yIGF0aDEwayBxbWkgY2xpZW50Cj4+ICAgYXRoMTBrOiBBZGQgV0NOMzk5MCBRTUkg
-Y2xpZW50IGRyaXZlcgo+PiAgIGF0aDEwazogYWRkIHN1cHBvcnQgdG8gc3RhcnQgYW5kIHN0b3Ag
-cW1pIHNlcnZpY2UKPj4gICBhdGgxMGs6IEFkZCBzdXBwb3J0IG9mIFFNSSBpbmRpY2F0aW9uIG1l
-c3NhZ2UKPj4gICBmaXJtd2FyZTogcWNvbTogc2NtOiBBZGQgV0xBTiBWTUlEIGZvciBRdWFsY29t
-bSBTQ00gaW50ZXJmYWNlCj4+ICAgYXRoMTBrOiBBZGQgTVNBIGhhbmRzaGFrZSBRTUkgbWdzIHN1
-cHBvcnQKPj4gICBhdGgxMGs6IEFkZCBRTUkgQ0FQIHJlcXVlc3Qgc3VwcG9ydAo+PiAgIGF0aDEw
-azogQWRkIFFNSSBIT1NUIENBUCByZXF1ZXN0IHN1cHBvcnQKPj4gICBhdGgxMGs6IGFkZCBiZGYv
-Y2FsIGluZGljYXRpb24gc3VwcG9ydAo+PiAgIGF0aDEwazogQWRkIHdsYW4gbW9kZSBvbi9vZmYg
-cW1pIG1lc3NhZ2UKPj4gICBhdGgxMGs6IEFkZCBxbWkgd2xhbiBlbmFibGUvZGlzYWJsZSBzdXBw
-b3J0IGZvciBXQ04zOTkwCj4gCj4gSSdtIG1pc3NpbmcgdGhpcyBsYXN0IHBhdGNoIGluIG15IG1h
-aWxib3gsIGFuZCBpdCB3b3VsZCBiZSBuaWNlIGlmIGFsbAo+IHRoZSBwYXRjaGVzIHdoZXJlIGlu
-LXJlcGx5LXRvIHRoZSBjb3ZlciBsZXR0ZXIsIHRvIG1ha2UgdGhlbSBlYXNpZXIgdG8KPiBmaW5k
-Lgo+IAo+IFJlZ2FyZHMsCj4gQmpvcm4KClN1cmUsIEkgd2lsbCB0YWtlIGNhcmUgdGhpcyB3aGls
-ZSBzdWJtaXR0aW5nIG5leHQgdmVyc2lvbiBvZiB0aGlzIHBhdGNoIApzZXJpZXMuCgpCUiwKR292
-aW5kCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Use the BIT() macro from 'linux/bitops.h' to define the rx desc
+bit flags to have consistency with new definitions.
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 134 +++++++++++-----------
+ 1 file changed, 67 insertions(+), 67 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 545deb6d7af1..b3d7c6e7ac90 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -19,38 +19,38 @@
+ #define _RX_DESC_H_
+ 
+ enum rx_attention_flags {
+-	RX_ATTENTION_FLAGS_FIRST_MPDU          = 1 << 0,
+-	RX_ATTENTION_FLAGS_LAST_MPDU           = 1 << 1,
+-	RX_ATTENTION_FLAGS_MCAST_BCAST         = 1 << 2,
+-	RX_ATTENTION_FLAGS_PEER_IDX_INVALID    = 1 << 3,
+-	RX_ATTENTION_FLAGS_PEER_IDX_TIMEOUT    = 1 << 4,
+-	RX_ATTENTION_FLAGS_POWER_MGMT          = 1 << 5,
+-	RX_ATTENTION_FLAGS_NON_QOS             = 1 << 6,
+-	RX_ATTENTION_FLAGS_NULL_DATA           = 1 << 7,
+-	RX_ATTENTION_FLAGS_MGMT_TYPE           = 1 << 8,
+-	RX_ATTENTION_FLAGS_CTRL_TYPE           = 1 << 9,
+-	RX_ATTENTION_FLAGS_MORE_DATA           = 1 << 10,
+-	RX_ATTENTION_FLAGS_EOSP                = 1 << 11,
+-	RX_ATTENTION_FLAGS_U_APSD_TRIGGER      = 1 << 12,
+-	RX_ATTENTION_FLAGS_FRAGMENT            = 1 << 13,
+-	RX_ATTENTION_FLAGS_ORDER               = 1 << 14,
+-	RX_ATTENTION_FLAGS_CLASSIFICATION      = 1 << 15,
+-	RX_ATTENTION_FLAGS_OVERFLOW_ERR        = 1 << 16,
+-	RX_ATTENTION_FLAGS_MSDU_LENGTH_ERR     = 1 << 17,
+-	RX_ATTENTION_FLAGS_TCP_UDP_CHKSUM_FAIL = 1 << 18,
+-	RX_ATTENTION_FLAGS_IP_CHKSUM_FAIL      = 1 << 19,
+-	RX_ATTENTION_FLAGS_SA_IDX_INVALID      = 1 << 20,
+-	RX_ATTENTION_FLAGS_DA_IDX_INVALID      = 1 << 21,
+-	RX_ATTENTION_FLAGS_SA_IDX_TIMEOUT      = 1 << 22,
+-	RX_ATTENTION_FLAGS_DA_IDX_TIMEOUT      = 1 << 23,
+-	RX_ATTENTION_FLAGS_ENCRYPT_REQUIRED    = 1 << 24,
+-	RX_ATTENTION_FLAGS_DIRECTED            = 1 << 25,
+-	RX_ATTENTION_FLAGS_BUFFER_FRAGMENT     = 1 << 26,
+-	RX_ATTENTION_FLAGS_MPDU_LENGTH_ERR     = 1 << 27,
+-	RX_ATTENTION_FLAGS_TKIP_MIC_ERR        = 1 << 28,
+-	RX_ATTENTION_FLAGS_DECRYPT_ERR         = 1 << 29,
+-	RX_ATTENTION_FLAGS_FCS_ERR             = 1 << 30,
+-	RX_ATTENTION_FLAGS_MSDU_DONE           = 1 << 31,
++	RX_ATTENTION_FLAGS_FIRST_MPDU          = BIT(0),
++	RX_ATTENTION_FLAGS_LAST_MPDU           = BIT(1),
++	RX_ATTENTION_FLAGS_MCAST_BCAST         = BIT(2),
++	RX_ATTENTION_FLAGS_PEER_IDX_INVALID    = BIT(3),
++	RX_ATTENTION_FLAGS_PEER_IDX_TIMEOUT    = BIT(4),
++	RX_ATTENTION_FLAGS_POWER_MGMT          = BIT(5),
++	RX_ATTENTION_FLAGS_NON_QOS             = BIT(6),
++	RX_ATTENTION_FLAGS_NULL_DATA           = BIT(7),
++	RX_ATTENTION_FLAGS_MGMT_TYPE           = BIT(8),
++	RX_ATTENTION_FLAGS_CTRL_TYPE           = BIT(9),
++	RX_ATTENTION_FLAGS_MORE_DATA           = BIT(10),
++	RX_ATTENTION_FLAGS_EOSP                = BIT(11),
++	RX_ATTENTION_FLAGS_U_APSD_TRIGGER      = BIT(12),
++	RX_ATTENTION_FLAGS_FRAGMENT            = BIT(13),
++	RX_ATTENTION_FLAGS_ORDER               = BIT(14),
++	RX_ATTENTION_FLAGS_CLASSIFICATION      = BIT(15),
++	RX_ATTENTION_FLAGS_OVERFLOW_ERR        = BIT(16),
++	RX_ATTENTION_FLAGS_MSDU_LENGTH_ERR     = BIT(17),
++	RX_ATTENTION_FLAGS_TCP_UDP_CHKSUM_FAIL = BIT(18),
++	RX_ATTENTION_FLAGS_IP_CHKSUM_FAIL      = BIT(19),
++	RX_ATTENTION_FLAGS_SA_IDX_INVALID      = BIT(20),
++	RX_ATTENTION_FLAGS_DA_IDX_INVALID      = BIT(21),
++	RX_ATTENTION_FLAGS_SA_IDX_TIMEOUT      = BIT(22),
++	RX_ATTENTION_FLAGS_DA_IDX_TIMEOUT      = BIT(23),
++	RX_ATTENTION_FLAGS_ENCRYPT_REQUIRED    = BIT(24),
++	RX_ATTENTION_FLAGS_DIRECTED            = BIT(25),
++	RX_ATTENTION_FLAGS_BUFFER_FRAGMENT     = BIT(26),
++	RX_ATTENTION_FLAGS_MPDU_LENGTH_ERR     = BIT(27),
++	RX_ATTENTION_FLAGS_TKIP_MIC_ERR        = BIT(28),
++	RX_ATTENTION_FLAGS_DECRYPT_ERR         = BIT(29),
++	RX_ATTENTION_FLAGS_FCS_ERR             = BIT(30),
++	RX_ATTENTION_FLAGS_MSDU_DONE           = BIT(31),
+ };
+ 
+ struct rx_attention {
+@@ -254,15 +254,15 @@ enum htt_rx_mpdu_encrypt_type {
+ #define RX_MPDU_START_INFO0_SEQ_NUM_LSB       16
+ #define RX_MPDU_START_INFO0_ENCRYPT_TYPE_MASK 0xf0000000
+ #define RX_MPDU_START_INFO0_ENCRYPT_TYPE_LSB  28
+-#define RX_MPDU_START_INFO0_FROM_DS           (1 << 11)
+-#define RX_MPDU_START_INFO0_TO_DS             (1 << 12)
+-#define RX_MPDU_START_INFO0_ENCRYPTED         (1 << 13)
+-#define RX_MPDU_START_INFO0_RETRY             (1 << 14)
+-#define RX_MPDU_START_INFO0_TXBF_H_INFO       (1 << 15)
++#define RX_MPDU_START_INFO0_FROM_DS           BIT(11)
++#define RX_MPDU_START_INFO0_TO_DS             BIT(12)
++#define RX_MPDU_START_INFO0_ENCRYPTED         BIT(13)
++#define RX_MPDU_START_INFO0_RETRY             BIT(14)
++#define RX_MPDU_START_INFO0_TXBF_H_INFO       BIT(15)
+ 
+ #define RX_MPDU_START_INFO1_TID_MASK 0xf0000000
+ #define RX_MPDU_START_INFO1_TID_LSB  28
+-#define RX_MPDU_START_INFO1_DIRECTED (1 << 16)
++#define RX_MPDU_START_INFO1_DIRECTED BIT(16)
+ 
+ struct rx_mpdu_start {
+ 	__le32 info0;
+@@ -357,13 +357,13 @@ struct rx_mpdu_start {
+ #define RX_MPDU_END_INFO0_RESERVED_0_LSB      0
+ #define RX_MPDU_END_INFO0_POST_DELIM_CNT_MASK 0x0fff0000
+ #define RX_MPDU_END_INFO0_POST_DELIM_CNT_LSB  16
+-#define RX_MPDU_END_INFO0_OVERFLOW_ERR        (1 << 13)
+-#define RX_MPDU_END_INFO0_LAST_MPDU           (1 << 14)
+-#define RX_MPDU_END_INFO0_POST_DELIM_ERR      (1 << 15)
+-#define RX_MPDU_END_INFO0_MPDU_LENGTH_ERR     (1 << 28)
+-#define RX_MPDU_END_INFO0_TKIP_MIC_ERR        (1 << 29)
+-#define RX_MPDU_END_INFO0_DECRYPT_ERR         (1 << 30)
+-#define RX_MPDU_END_INFO0_FCS_ERR             (1 << 31)
++#define RX_MPDU_END_INFO0_OVERFLOW_ERR        BIT(13)
++#define RX_MPDU_END_INFO0_LAST_MPDU           BIT(14)
++#define RX_MPDU_END_INFO0_POST_DELIM_ERR      BIT(15)
++#define RX_MPDU_END_INFO0_MPDU_LENGTH_ERR     BIT(28)
++#define RX_MPDU_END_INFO0_TKIP_MIC_ERR        BIT(29)
++#define RX_MPDU_END_INFO0_DECRYPT_ERR         BIT(30)
++#define RX_MPDU_END_INFO0_FCS_ERR             BIT(31)
+ 
+ struct rx_mpdu_end {
+ 	__le32 info0;
+@@ -422,12 +422,12 @@ struct rx_mpdu_end {
+ #define RX_MSDU_START_INFO1_DECAP_FORMAT_LSB    8
+ #define RX_MSDU_START_INFO1_SA_IDX_MASK         0x07ff0000
+ #define RX_MSDU_START_INFO1_SA_IDX_LSB          16
+-#define RX_MSDU_START_INFO1_IPV4_PROTO          (1 << 10)
+-#define RX_MSDU_START_INFO1_IPV6_PROTO          (1 << 11)
+-#define RX_MSDU_START_INFO1_TCP_PROTO           (1 << 12)
+-#define RX_MSDU_START_INFO1_UDP_PROTO           (1 << 13)
+-#define RX_MSDU_START_INFO1_IP_FRAG             (1 << 14)
+-#define RX_MSDU_START_INFO1_TCP_ONLY_ACK        (1 << 15)
++#define RX_MSDU_START_INFO1_IPV4_PROTO          BIT(10)
++#define RX_MSDU_START_INFO1_IPV6_PROTO          BIT(11)
++#define RX_MSDU_START_INFO1_TCP_PROTO           BIT(12)
++#define RX_MSDU_START_INFO1_UDP_PROTO           BIT(13)
++#define RX_MSDU_START_INFO1_IP_FRAG             BIT(14)
++#define RX_MSDU_START_INFO1_TCP_ONLY_ACK        BIT(15)
+ 
+ #define RX_MSDU_START_INFO2_DA_IDX_MASK         0x000007ff
+ #define RX_MSDU_START_INFO2_DA_IDX_LSB          0
+@@ -568,10 +568,10 @@ struct rx_msdu_start {
+ 
+ #define RX_MSDU_END_INFO0_REPORTED_MPDU_LENGTH_MASK 0x00003fff
+ #define RX_MSDU_END_INFO0_REPORTED_MPDU_LENGTH_LSB  0
+-#define RX_MSDU_END_INFO0_FIRST_MSDU                (1 << 14)
+-#define RX_MSDU_END_INFO0_LAST_MSDU                 (1 << 15)
+-#define RX_MSDU_END_INFO0_PRE_DELIM_ERR             (1 << 30)
+-#define RX_MSDU_END_INFO0_RESERVED_3B               (1 << 31)
++#define RX_MSDU_END_INFO0_FIRST_MSDU                BIT(14)
++#define RX_MSDU_END_INFO0_LAST_MSDU                 BIT(15)
++#define RX_MSDU_END_INFO0_PRE_DELIM_ERR             BIT(30)
++#define RX_MSDU_END_INFO0_RESERVED_3B               BIT(31)
+ 
+ struct rx_msdu_end_common {
+ 	__le16 ip_hdr_cksum;
+@@ -691,7 +691,7 @@ struct rx_msdu_end {
+ #define HTT_RX_PPDU_START_PREAMBLE_VHT           0x0C
+ #define HTT_RX_PPDU_START_PREAMBLE_VHT_WITH_TXBF 0x0D
+ 
+-#define RX_PPDU_START_INFO0_IS_GREENFIELD (1 << 0)
++#define RX_PPDU_START_INFO0_IS_GREENFIELD BIT(0)
+ 
+ #define RX_PPDU_START_INFO1_L_SIG_RATE_MASK    0x0000000f
+ #define RX_PPDU_START_INFO1_L_SIG_RATE_LSB     0
+@@ -701,15 +701,15 @@ struct rx_msdu_end {
+ #define RX_PPDU_START_INFO1_L_SIG_TAIL_LSB     18
+ #define RX_PPDU_START_INFO1_PREAMBLE_TYPE_MASK 0xff000000
+ #define RX_PPDU_START_INFO1_PREAMBLE_TYPE_LSB  24
+-#define RX_PPDU_START_INFO1_L_SIG_RATE_SELECT  (1 << 4)
+-#define RX_PPDU_START_INFO1_L_SIG_PARITY       (1 << 17)
++#define RX_PPDU_START_INFO1_L_SIG_RATE_SELECT  BIT(4)
++#define RX_PPDU_START_INFO1_L_SIG_PARITY       BIT(17)
+ 
+ #define RX_PPDU_START_INFO2_HT_SIG_VHT_SIG_A_1_MASK 0x00ffffff
+ #define RX_PPDU_START_INFO2_HT_SIG_VHT_SIG_A_1_LSB  0
+ 
+ #define RX_PPDU_START_INFO3_HT_SIG_VHT_SIG_A_2_MASK 0x00ffffff
+ #define RX_PPDU_START_INFO3_HT_SIG_VHT_SIG_A_2_LSB  0
+-#define RX_PPDU_START_INFO3_TXBF_H_INFO             (1 << 24)
++#define RX_PPDU_START_INFO3_TXBF_H_INFO             BIT(24)
+ 
+ #define RX_PPDU_START_INFO4_VHT_SIG_B_MASK 0x1fffffff
+ #define RX_PPDU_START_INFO4_VHT_SIG_B_LSB  0
+@@ -898,14 +898,14 @@ struct rx_ppdu_start {
+  *		Reserved: HW should fill with 0, FW should ignore.
+  */
+ 
+-#define RX_PPDU_END_FLAGS_PHY_ERR             (1 << 0)
+-#define RX_PPDU_END_FLAGS_RX_LOCATION         (1 << 1)
+-#define RX_PPDU_END_FLAGS_TXBF_H_INFO         (1 << 2)
++#define RX_PPDU_END_FLAGS_PHY_ERR             BIT(0)
++#define RX_PPDU_END_FLAGS_RX_LOCATION         BIT(1)
++#define RX_PPDU_END_FLAGS_TXBF_H_INFO         BIT(2)
+ 
+ #define RX_PPDU_END_INFO0_RX_ANTENNA_MASK     0x00ffffff
+ #define RX_PPDU_END_INFO0_RX_ANTENNA_LSB      0
+-#define RX_PPDU_END_INFO0_FLAGS_TX_HT_VHT_ACK (1 << 24)
+-#define RX_PPDU_END_INFO0_BB_CAPTURED_CHANNEL (1 << 25)
++#define RX_PPDU_END_INFO0_FLAGS_TX_HT_VHT_ACK BIT(24)
++#define RX_PPDU_END_INFO0_BB_CAPTURED_CHANNEL BIT(25)
+ 
+ #define RX_PPDU_END_INFO1_PEER_IDX_MASK       0x1ffc
+ #define RX_PPDU_END_INFO1_PEER_IDX_LSB        2
+@@ -1265,9 +1265,9 @@ struct rx_ppdu_end {
+  *		to 0.
+  */
+ 
+-#define FW_RX_DESC_INFO0_DISCARD  (1 << 0)
+-#define FW_RX_DESC_INFO0_FORWARD  (1 << 1)
+-#define FW_RX_DESC_INFO0_INSPECT  (1 << 5)
++#define FW_RX_DESC_INFO0_DISCARD  BIT(0)
++#define FW_RX_DESC_INFO0_FORWARD  BIT(1)
++#define FW_RX_DESC_INFO0_INSPECT  BIT(5)
+ #define FW_RX_DESC_INFO0_EXT_MASK 0xC0
+ #define FW_RX_DESC_INFO0_EXT_LSB  6
+ 
+-- 
+2.17.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
