@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGG7V-0000kQ-LY
- for ath10k@lists.infradead.org; Wed, 09 May 2018 03:50:36 +0000
+ id 1fGGJP-0006D9-1Y
+ for ath10k@lists.infradead.org; Wed, 09 May 2018 04:02:44 +0000
 MIME-Version: 1.0
-Date: Wed, 09 May 2018 09:20:14 +0530
+Date: Wed, 09 May 2018 09:32:32 +0530
 From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH 06/12] firmware: qcom: scm: Add WLAN VMID for Qualcomm SCM
- interface
-In-Reply-To: <20180507204236.GI2259@tuxbook-pro>
-References: <1522042819-25916-1-git-send-email-govinds@codeaurora.org>
- <20180507204236.GI2259@tuxbook-pro>
-Message-ID: <55ee4bf22e6557a37cbd46691816bef5@codeaurora.org>
+Subject: Re: [PATCH v3 00/12] *** Add support for wifi QMI client driver ***
+In-Reply-To: <20180508173710.GL2259@tuxbook-pro>
+References: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
+ <20180508173710.GL2259@tuxbook-pro>
+Message-ID: <e0a9a4fd755f04a7e7068544ebc95890@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,70 +19,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Andy Gross <andy.gross@linaro.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-05-08 02:12, Bjorn Andersson wrote:
-> On Sun 25 Mar 22:40 PDT 2018, Govind Singh wrote:
-> 
->> Add WLAN related VMID's to support wlan driver to set up
->> the remote's permissions call via TrustZone.
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> 
-> Please use ./scripts/get_maintainer.pl for each patch to get a hint
-> about whom to send your patches to.
-> 
-> While I think it's okay that Kalle picks it through his tree Andy 
-> should
-> give his ack first.
-> 
-> 
-> Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
-> Regards,
-> Bjorn
-> 
-
-Thanks Bjorn for the review.
-I will take care this point while sending the next version of the qmi 
-patch set.
-
->> ---
->>  include/linux/qcom_scm.h | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->> 
->> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
->> index b401b96..da63d84 100644
->> --- a/include/linux/qcom_scm.h
->> +++ b/include/linux/qcom_scm.h
->> @@ -1,4 +1,4 @@
->> -/* Copyright (c) 2010-2015, The Linux Foundation. All rights 
->> reserved.
->> +/* Copyright (c) 2010-2015, 2018, The Linux Foundation. All rights 
->> reserved.
->>   * Copyright (C) 2015 Linaro Ltd.
->>   *
->>   * This program is free software; you can redistribute it and/or 
->> modify
->> @@ -33,6 +33,8 @@ struct qcom_scm_vmperm {
->> 
->>  #define QCOM_SCM_VMID_HLOS       0x3
->>  #define QCOM_SCM_VMID_MSS_MSA    0xF
->> +#define QCOM_SCM_VMID_WLAN       0x18
->> +#define QCOM_SCM_VMID_WLAN_CE    0x19
->>  #define QCOM_SCM_PERM_READ       0x4
->>  #define QCOM_SCM_PERM_WRITE      0x2
->>  #define QCOM_SCM_PERM_EXEC       0x1
->> --
->> 1.9.1
->> 
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0wNS0wOCAyMzowNywgQmpvcm4gQW5kZXJzc29uIHdyb3RlOgo+IE9uIFN1biAyNSBN
+YXIgMjI6MzcgUERUIDIwMTgsIEdvdmluZCBTaW5naCB3cm90ZToKPiAKPj4gQWRkIFFNSSBjbGll
+bnQgZHJpdmVyIGZvciBRNiBpbnRlZ3JhdGVkIFdMQU4gY29ubmVjdGl2aXR5IHN1YnN5c3RlbS4K
+Pj4gVGhpcyBtb2R1bGUgaXMgcmVzcG9uc2libGUgZm9yIGNvbW11bmljYXRpbmcgV0xBTiBjb250
+cm9sIG1lc3NhZ2VzIHRvIAo+PiBGVwo+PiBvdmVyIFFNSSBpbnRlcmZhY2UuCj4+IAo+PiDigJxR
+VUFMQ09NTSBNZXNzYWdpbmcgSW50ZXJmYWNl4oCdKFFNSSkgcHJvdmlkZXMgdGhlIGNvbnRyb2wg
+aW50ZXJmYWNlIAo+PiBiZXR3ZWVuCj4+IGNvbXBvbmVudHMgcnVubmluZyBiL3cgcmVtb3RlIHBy
+b2Nlc3NvcnMgd2l0aCB1bmRlcmx5aW5nIHRyYW5zcG9ydCAKPj4gbGF5ZXIKPj4gYmFzZWQgb24g
+aW50ZWdyYXRlZCBjaGlwc2V0KHNoYXJlZCBtZW1vcnkpIG9yIGRpc2NyZXRlIAo+PiBjaGlwc2V0
+KFBDSS9VU0IvU0RJTy9VQVJUKS4KPj4gCj4+IFFNSSBjbGllbnQgZHJpdmVyIGltcGxlbWVudGF0
+aW9uIGlzIGJhc2VkIG9uIHFtaSBmcm1ld29yayAKPj4gaHR0cHM6Ly9sd24ubmV0L0FydGljbGVz
+LzcyOTkyNC8uCj4+IAo+PiBCZWxvdyBpcyB0aGUgc2VxdWVuY2Ugb2YgcW1pIGhhbmRzaGFrZS4K
+Pj4gCj4+ICAgICAgICBRTUkgQ0xJRU5UKEFQUFMpICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBRTUkgCj4+IFNFUlZFUihGVyBpbiBRNikKPj4gCj4+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICA8LS0tLS0td2xhbiBzZXJ2aWNlIGRpc2NvdmVyZC0tLS0KPj4gCj4+ICAg
+ICAgICAgICAgICAgICAgICAgICAgLS0tLS1jb25uZWN0IHRvIHdsYW0gcW1pIHNlcnZpY2UtLS0t
+LT4KPj4gCj4+ICAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0td2xhbiBpbmZvIHJl
+cXVlc3QtLS0tLT4KPj4gCj4+ICAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLXds
+YW4gaW5mbyByZXNwLS0tLS0tLS0tLS0tCj4+IAo+PiAgICAgICAgICAgICAgICAgICAgICAgIC0t
+LS0tLS0tLS0tLW1zYSBpbmZvIHJlcS0tLS0tLS0tPgo+PiAKPj4gICAgICAgICAgICAgICAgICAg
+ICAgPC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJlc3AtLS0tLS0tLS0tLS0KPj4gCj4+ICAgICAgICAg
+ICAgICAgICAgICAgIC0tLS0tLS0tLS0tLW1zYSByZWFkeSByZXEtLS0tLS0tLT4KPj4gCj4+ICAg
+ICAgICAgICAgICAgICAgICAgIDwtLS0tLS0tLS0tLS1tc2EgcmVhZHkgcmVzcC0tLS0tLS0tLS0t
+LQo+PiAKPj4gICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLW1zYSByZWFkeSBpbmRp
+Y2F0aW9uLS0tLS0tLQo+PiAKPj4gICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tY2Fw
+YWJpbGl0eSByZXEtLS0tLS0tPgo+PiAKPj4gICAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0t
+LS0tY2FwYWJpbGl0eSByZXNwLS0tLS0tLS0tLS0tCj4+IAo+PiAgICAgICAgICAgICAgICAgICAg
+IC0tLS0tLS0tLS0tLXFtaSBiZGYgcmVxLS0tLS0tLS0tPgo+PiAKPj4gICAgICAgICAgICAgICAg
+ICAgICAgPC0tLS0tLS0tLS0tLXFtaSBiZGYgcmVzcC0tLS0tLS0tLS0tLQo+PiAKPj4gICAgICAg
+ICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLXFtaSBjYWwgdHJpZ2dlci0tLS0tLS0+Cj4+IAo+
+PiAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0tLS0tIFFNSSBGVyByZWFkeSBpbmRpY2F0aW9u
+LS0tLS0tLQo+IAo+IERvZXMgdGhlIHJlc3BvbnNpYmlsaXR5IG9mIHRoZSBkcml2ZXIgZW5kcyBo
+ZXJlPyBJIG1lYW4gaXMgdGhpcyBhIAo+IGRyaXZlcgo+IGZvciBzZXR0aW5nIHVwIHRoZSBmaXJt
+d2FyZSBhbmQgdGhlbiB0aGVyZSdzIHNvbWV0aGluZyBlbHNlIGRvaW5nIHRoZQo+IGFjdHVhbCB3
+aWZpIG9wZXJhdGlvbiwgb3IgZG9lcyBpdCBzaW1wbHkgaGFuZCBvdmVyIGV4ZWN1dGlvbiB0byB0
+aGUKPiBjb21tb24gYXRoMTBrIGxvZ2ljIGF0IHRoaXMgcG9pbnQ/Cj4gCgogRnJvbSB3bGFuIHFt
+aSBjbGllbnQgcG9pbnQgb2YgdmlldyBvbmNlIHdsYW4gcW1pIHNlcnZpY2UgaXMgZGlzY292ZXJl
+ZCwgCml0IGNvbm5lY3RzIHRvIHRoZSBzZXJ2aWNlIGFuZApkb2VzIHRoZSBhYm92ZSBoYW5kc2hh
+a2VzIGFuZCBsYXRlciBpdCBoYW5kb3ZlciB0aGUgZXhlY3V0aW9uIHRvIGNvbW1vbiAKYXRoMTBr
+IGxvZ2ljLgpUaGVzZSBoYW5kc2hha2VzIHdpbGwgYmUgZG9uZSBhcyBwYXJ0IG9mIHBkIHJlc3Rh
+cnQgYXMgd2VsbC4KCj4+IAo+PiBHb3ZpbmQgU2luZ2ggKDEyKToKPj4gICBhdGgxMGs6IEFkZCBx
+bWkgc2VydmljZSBmb3Igd2xhbiBxbWkgY2xpZW50Cj4+ICAgZHQ6IGJpbmRpbmdzOiBhZGQgYmlu
+ZGluZ3MgZm9yIGF0aDEwayBxbWkgY2xpZW50Cj4+ICAgYXRoMTBrOiBBZGQgV0NOMzk5MCBRTUkg
+Y2xpZW50IGRyaXZlcgo+PiAgIGF0aDEwazogYWRkIHN1cHBvcnQgdG8gc3RhcnQgYW5kIHN0b3Ag
+cW1pIHNlcnZpY2UKPj4gICBhdGgxMGs6IEFkZCBzdXBwb3J0IG9mIFFNSSBpbmRpY2F0aW9uIG1l
+c3NhZ2UKPj4gICBmaXJtd2FyZTogcWNvbTogc2NtOiBBZGQgV0xBTiBWTUlEIGZvciBRdWFsY29t
+bSBTQ00gaW50ZXJmYWNlCj4+ICAgYXRoMTBrOiBBZGQgTVNBIGhhbmRzaGFrZSBRTUkgbWdzIHN1
+cHBvcnQKPj4gICBhdGgxMGs6IEFkZCBRTUkgQ0FQIHJlcXVlc3Qgc3VwcG9ydAo+PiAgIGF0aDEw
+azogQWRkIFFNSSBIT1NUIENBUCByZXF1ZXN0IHN1cHBvcnQKPj4gICBhdGgxMGs6IGFkZCBiZGYv
+Y2FsIGluZGljYXRpb24gc3VwcG9ydAo+PiAgIGF0aDEwazogQWRkIHdsYW4gbW9kZSBvbi9vZmYg
+cW1pIG1lc3NhZ2UKPj4gICBhdGgxMGs6IEFkZCBxbWkgd2xhbiBlbmFibGUvZGlzYWJsZSBzdXBw
+b3J0IGZvciBXQ04zOTkwCj4gCj4gSSdtIG1pc3NpbmcgdGhpcyBsYXN0IHBhdGNoIGluIG15IG1h
+aWxib3gsIGFuZCBpdCB3b3VsZCBiZSBuaWNlIGlmIGFsbAo+IHRoZSBwYXRjaGVzIHdoZXJlIGlu
+LXJlcGx5LXRvIHRoZSBjb3ZlciBsZXR0ZXIsIHRvIG1ha2UgdGhlbSBlYXNpZXIgdG8KPiBmaW5k
+Lgo+IAo+IFJlZ2FyZHMsCj4gQmpvcm4KClN1cmUsIEkgd2lsbCB0YWtlIGNhcmUgdGhpcyB3aGls
+ZSBzdWJtaXR0aW5nIG5leHQgdmVyc2lvbiBvZiB0aGlzIHBhdGNoIApzZXJpZXMuCgpCUiwKR292
+aW5kCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
