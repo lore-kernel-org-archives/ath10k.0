@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHBT4-0004iL-J2
- for ath10k@lists.infradead.org; Fri, 11 May 2018 17:04:34 +0000
-Received: by mail-pl0-x244.google.com with SMTP id c19-v6so3625951pls.6
- for <ath10k@lists.infradead.org>; Fri, 11 May 2018 10:04:19 -0700 (PDT)
-Date: Fri, 11 May 2018 10:05:40 -0700
+ id 1fHBYF-0000Fm-Lw
+ for ath10k@lists.infradead.org; Fri, 11 May 2018 17:10:12 +0000
+Received: by mail-pg0-x241.google.com with SMTP id x145-v6so2684379pgx.11
+ for <ath10k@lists.infradead.org>; Fri, 11 May 2018 10:09:41 -0700 (PDT)
+Date: Fri, 11 May 2018 10:11:01 -0700
 From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 01/12] ath10k: Add qmi service for wlan qmi client
-Message-ID: <20180511170540.GM2259@tuxbook-pro>
-References: <1522042736-25618-1-git-send-email-govinds@codeaurora.org>
+Subject: Re: [PATCH 02/12] dt: bindings: add bindings for ath10k qmi client
+Message-ID: <20180511171101.GN2259@tuxbook-pro>
+References: <1522042748-25677-1-git-send-email-govinds@codeaurora.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1522042736-25618-1-git-send-email-govinds@codeaurora.org>
+In-Reply-To: <1522042748-25677-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,127 +28,47 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Govind Singh <govinds@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Sun 25 Mar 22:38 PDT 2018, Govind Singh wrote:
+On Sun 25 Mar 22:39 PDT 2018, Govind Singh wrote:
 
-> WLAN qmi server running in Q6 dsp exposes host
-> to target cold boot qmi handshake.
-> Add WLAN QMI service helpers for WLAN serivice.
+> Add device tree binding documentation details for ath10k
+> qmi client for SDM845/APQ8098 SoC into "qcom,ath10k.txt".
 > 
 > Signed-off-by: Govind Singh <govinds@codeaurora.org>
 > ---
->  drivers/net/wireless/ath/ath10k/qmi_svc_v01.c | 2323 +++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/qmi_svc_v01.h |  685 ++++++++
->  2 files changed, 3008 insertions(+)
->  create mode 100644 drivers/net/wireless/ath/ath10k/qmi_svc_v01.c
->  create mode 100644 drivers/net/wireless/ath/ath10k/qmi_svc_v01.h
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi_svc_v01.c b/drivers/net/wireless/ath/ath10k/qmi_svc_v01.c
-
-This is not the one and only "QMI service version 1", so perhaps name
-the file qmi_wlfw_v01.c or something like that?
-
-> new file mode 100644
-> index 0000000..5857c0c
-> --- /dev/null
-> +++ b/drivers/net/wireless/ath/ath10k/qmi_svc_v01.c
-> @@ -0,0 +1,2323 @@
-> +/*
-> + * Copyright (c) 2018 The Linux Foundation. All rights reserved.
-> + *
-> + * Permission to use, copy, modify, and/or distribute this software for any
-> + * purpose with or without fee is hereby granted, provided that the above
-> + * copyright notice and this permission notice appear in all copies.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-> + */
-
-Please use SPDX license header.
-
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index 34e4f98..8076ae3 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -5,6 +5,7 @@ Required properties:
+>  	* "qcom,ath10k"
+>  	* "qcom,ipq4019-wifi"
+>  	* "qcom,wcn3990-wifi"
+> +	* "qcom,ath10k-qmi"
+>  
+>  PCI based devices uses compatible string "qcom,ath10k" and takes calibration
+>  data along with board specific data via "qcom,ath10k-calibration-data".
+> @@ -21,6 +22,8 @@ can be provided per device.
+>  
+>  SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
+>  
+> +- qcom,wlan-msa-memory: MSA memory size
 > +
-> +#include <linux/completion.h>
-> +#include <linux/types.h>
-> +#include <linux/mutex.h>
-> +#include <linux/idr.h>
-> +#include <linux/soc/qcom/qmi.h>
-> +#include "qmi_svc_v01.h"
-
-At least completion, mutex and idr are unused.
-
+>  Optional properties:
+>  - reg: Address and length of the register set for the device.
+>  - reg-names: Must include the list of following reg names,
+> @@ -150,3 +153,8 @@ qcom,wifi@18000000 {
+>  			   <0 141 0 /* CE11 */ >;
+>  		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+>  };
 > +
-> +static struct qmi_elem_info wlfw_ce_tgt_pipe_cfg_s_v01_ei[] = {
-> +	{
-> +		.data_type      = QMI_UNSIGNED_4_BYTE,
-> +		.elem_len       = 1,
-> +		.elem_size      = sizeof(u32),
-> +		.array_type     = NO_ARRAY,
-> +		.tlv_type       = 0,
-> +		.offset         = offsetof(struct wlfw_ce_tgt_pipe_cfg_s_v01,
-> +					   pipe_num),
-> +	},
-[..]
-> +	{
-> +		.data_type      = QMI_EOTI,
-> +		.array_type     = NO_ARRAY,
-> +		.tlv_type       = QMI_COMMON_TLV_TYPE,
-> +	},
+> +qcom,ath10k-qmi {
+> +	compatible = "qcom,ath10k-qmi";
+> +	qcom,wlan-msa-memory = <0x100000>;
 
-I changed the value of QMI_EOTI so this last entry would better be
-written as {}. But I presume this requires your code generator to
-change.
-
-> +};
-[..]
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi_svc_v01.h b/drivers/net/wireless/ath/ath10k/qmi_svc_v01.h
-> new file mode 100644
-> index 0000000..5e00bfe
-> --- /dev/null
-> +++ b/drivers/net/wireless/ath/ath10k/qmi_svc_v01.h
-> @@ -0,0 +1,685 @@
-> +/*
-> + * Copyright (c) 2018 The Linux Foundation. All rights reserved.
-> + *
-> + * Permission to use, copy, modify, and/or distribute this software for any
-> + * purpose with or without fee is hereby granted, provided that the above
-> + * copyright notice and this permission notice appear in all copies.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-> + */
-
-SPDX license header please.
-
-[..]
-> +struct wlfw_bdf_download_req_msg_v01 {
-> +	u8 valid;
-> +	u8 file_id_valid;
-> +	enum wlfw_cal_temp_id_enum_v01 file_id;
-
-I would prefer that we replace these enums with a fixed size data type,
-and remove the INT_MIN/INT_MAX hack that tricks the compiler into giving
-the enum a particular size.
-
-> +	u8 total_size_valid;
-> +	u32 total_size;
-> +	u8 seg_id_valid;
-> +	u32 seg_id;
-> +	u8 data_valid;
-> +	u32 data_len;
-> +	u8 data[QMI_WLFW_MAX_DATA_SIZE_V01];
-> +	u8 end_valid;
-> +	u8 end;
-> +	u8 bdf_type_valid;
-> +	u8 bdf_type;
+Is this a complete example for what's needed to get working WiFi?
 > +};
 
 Regards,
