@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHDHc-0001Do-7O
- for ath10k@lists.infradead.org; Fri, 11 May 2018 19:00:50 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id F01A840A5ED
- for <ath10k@lists.infradead.org>; Fri, 11 May 2018 12:00:32 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: rmmod ath10k_pci hangs on stock wireless-testing kernel
-Message-ID: <64658aac-1c71-d4cd-29ec-521ce269224b@candelatech.com>
-Date: Fri, 11 May 2018 12:00:32 -0700
+Received: from mail-pl0-x243.google.com ([2607:f8b0:400e:c01::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fHDOH-0004wJ-UU
+ for ath10k@lists.infradead.org; Fri, 11 May 2018 19:07:43 +0000
+Received: by mail-pl0-x243.google.com with SMTP id c11-v6so3794036plr.5
+ for <ath10k@lists.infradead.org>; Fri, 11 May 2018 12:07:31 -0700 (PDT)
+Date: Fri, 11 May 2018 12:08:52 -0700
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH 10/12] ath10k: add bdf/cal indication support
+Message-ID: <20180511190852.GU2259@tuxbook-pro>
+References: <1522042886-26343-1-git-send-email-govinds@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1522042886-26343-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,75 +21,199 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-I'm doing a bit of testing on stock kernels for once.  I was using a
-10.1 firmware that was constantly crashing, and then I tried to rmmod ath10k_pci.
+On Sun 25 Mar 22:41 PDT 2018, Govind Singh wrote:
 
-rmmod hangs.  Here is the stack trace from /proc/[foo]/stack
-for rmmod.
+> Add support for bdf download and cold boot
+> calibration trigger qmi message support.
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/qmi.c | 195 ++++++++++++++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/qmi.h |  10 ++
+>  2 files changed, 205 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index a33681d..f23d0fe 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/soc/qcom/qmi.h>
+>  #include <linux/qcom_scm.h>
+>  #include <linux/of.h>
+> +#include <linux/firmware.h>
+>  #include "qmi.h"
+>  #include "qmi_svc_v01.h"
+>  
+> @@ -270,6 +271,179 @@ static int ath10k_qmi_msa_ready_send_sync_msg(struct ath10k_qmi *qmi)
+>  	return ret;
+>  }
+>  
+> +int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
+> +{
+> +	struct wlfw_bdf_download_resp_msg_v01 *resp;
 
-Regardless of how the FW crashes, rmmod should not hang.
+4 bytes, use stack.
 
-[root@lf0313-6477 ~]# cat rmmod_hang.txt
-[<0>] msleep+0x30/0x40
-[<0>] ath10k_pci_hif_stop+0x6a/0xc0 [ath10k_pci]
-[<0>] ath10k_core_stop+0x48/0x80 [ath10k_core]
-[<0>] ath10k_halt+0x117/0x1b0 [ath10k_core]
-[<0>] ath10k_stop+0x31/0x70 [ath10k_core]
-[<0>] drv_stop+0x53/0x2c0 [mac80211]
-[<0>] ieee80211_do_stop+0x4ce/0x850 [mac80211]
-[<0>] ieee80211_stop+0x11/0x20 [mac80211]
-[<0>] __dev_close_many+0x97/0xf0
-[<0>] dev_close_many+0x78/0x120
-[<0>] dev_close.part.91+0x2f/0x50
-[<0>] cfg80211_shutdown_all_interfaces+0x3e/0xc0 [cfg80211]
-[<0>] ieee80211_remove_interfaces+0x3d/0x1c0 [mac80211]
-[<0>] ieee80211_unregister_hw+0x41/0x130 [mac80211]
-[<0>] ath10k_mac_unregister+0x10/0x60 [ath10k_core]
-[<0>] ath10k_core_unregister+0x35/0x90 [ath10k_core]
-[<0>] ath10k_pci_remove+0x29/0x70 [ath10k_pci]
-[<0>] pci_device_remove+0x31/0xb0
-[<0>] device_release_driver_internal+0x15b/0x230
-[<0>] driver_detach+0x35/0x70
-[<0>] bus_remove_driver+0x53/0xd0
-[<0>] pci_unregister_driver+0x1e/0x80
-[<0>] ath10k_pci_exit+0xc/0x214 [ath10k_pci]
-[<0>] __x64_sys_delete_module+0x14d/0x250
-[<0>] do_syscall_64+0x55/0x1a0
-[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[<0>] 0xffffffffffffffff
+> +	struct wlfw_bdf_download_req_msg_v01 *req;
 
+And this is approx 7kB, so that makes sense to allocate on the heap.
 
-(gdb) l *(ath10k_pci_hif_stop+0x6a)
-0x332a is in ath10k_pci_hif_stop (/home/greearb/git/linux.wireless-testing/arch/x86/include/asm/bitops.h:328).
-323	}
-324	
-325	static __always_inline bool constant_test_bit(long nr, const volatile unsigned long *addr)
-326	{
-327		return ((1UL << (nr & (BITS_PER_LONG-1))) &
-328			(addr[nr >> _BITOPS_LONG_SHIFT])) != 0;
-329	}
-330	
-331	static __always_inline bool variable_test_bit(long nr, volatile const unsigned long *addr)
-332	{
-(gdb)
+> +	const struct firmware *fw_entry;
+> +	unsigned int remaining;
+> +	struct qmi_txn txn;
+> +	const u8 *temp;
+> +	int ret;
+> +
+> +	req = kzalloc(sizeof(*req), GFP_KERNEL);
+> +	if (!req)
+> +		return -ENOMEM;
+> +
+> +	resp = kzalloc(sizeof(*resp), GFP_KERNEL);
+> +	if (!resp) {
+> +		kfree(req);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	ret = request_firmware(&fw_entry, BDF_FILE_NAME, &qmi->pdev->dev);
+> +	if (ret < 0) {
+> +		pr_err("fail to load bdf: %s\n", BDF_FILE_NAME);
+> +		goto err_req_fw;
+> +	}
+> +
+> +	temp = fw_entry->data;
+> +	remaining = fw_entry->size;
+> +
+> +	pr_debug("downloading bdf: %s, size: %u\n",
+> +		 BDF_FILE_NAME, remaining);
+> +
+> +	while (remaining) {
+> +		req->valid = 1;
+> +		req->file_id_valid = 1;
+> +		req->file_id = 0;
+> +		req->total_size_valid = 1;
+> +		req->total_size = fw_entry->size;
+> +		req->seg_id_valid = 1;
+> +		req->data_valid = 1;
+> +		req->end_valid = 1;
+> +
+> +		if (remaining > QMI_WLFW_MAX_DATA_SIZE_V01) {
+> +			req->data_len = QMI_WLFW_MAX_DATA_SIZE_V01;
+> +		} else {
+> +			req->data_len = remaining;
+> +			req->end = 1;
+> +		}
+> +
+> +		memcpy(req->data, temp, req->data_len);
+> +
+> +		ret = qmi_txn_init(&qmi->qmi_hdl, &txn,
+> +				   wlfw_bdf_download_resp_msg_v01_ei,
+> +				   resp);
+> +		if (ret < 0) {
+> +			pr_err("fail to init txn for bdf download %d\n", ret);
+> +			goto out;
+> +		}
+> +
+> +		ret =
 
+Don't indent wrapped lines like that.
 
-I wouldn't be surprised if this was NAPI related hang similar to what has been reported
-before, probably exacerbated by the firmware crashing.
+> +		qmi_send_request(&qmi->qmi_hdl, NULL, &txn,
+> +				 QMI_WLFW_BDF_DOWNLOAD_REQ_V01,
+> +				 WLFW_BDF_DOWNLOAD_REQ_MSG_V01_MAX_MSG_LEN,
+> +				 wlfw_bdf_download_req_msg_v01_ei, req);
+> +		if (ret < 0) {
+> +			qmi_txn_cancel(&txn);
+> +			goto err_send;
+> +		}
+> +
+> +		ret = qmi_txn_wait(&txn, WLFW_TIMEOUT * HZ);
+> +
+> +		if (ret < 0)
+> +			goto err_send;
+> +
+> +		if (resp->resp.result != QMI_RESULT_SUCCESS_V01) {
+> +			pr_err("bdf download failed, res:%d, err:%d\n",
+> +			       resp->resp.result, resp->resp.error);
+> +			ret = resp->resp.result;
+> +			goto err_send;
+> +		}
+> +
+> +		remaining -= req->data_len;
+> +		temp += req->data_len;
+> +		req->seg_id++;
+> +	}
+> +
+> +	pr_debug("bdf download request completed\n");
 
-Thanks,
-Ben
+You're leaking fw_entry, consider merging the two exit paths.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+> +
+> +	kfree(resp);
+> +	kfree(req);
+> +	return 0;
+> +
+> +err_send:
+> +	release_firmware(fw_entry);
+> +
+> +err_req_fw:
+> +	kfree(req);
+> +	kfree(resp);
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +int ath10k_qmi_send_cal_report_req(struct ath10k_qmi *qmi)
+> +{
+> +	struct wlfw_cal_report_resp_msg_v01 *resp;
 
+4 bytes
+
+> +	struct wlfw_cal_report_req_msg_v01 *req;
+
+26 bytes, use the stack for both
+
+> +	struct qmi_txn txn;
+> +	int i, j = 0;
+> +	int ret;
+> +
+[..]
+>  static struct qmi_msg_handler qmi_msg_handler[] = {
+> @@ -599,6 +774,24 @@ static void ath10k_qmi_event_server_exit(struct work_struct *work)
+>  	pr_info("wlan fw service disconnected\n");
+>  }
+>  
+> +static void ath10k_qmi_event_msa_ready(struct work_struct *work)
+> +{
+> +	struct ath10k_qmi *qmi = container_of(work, struct ath10k_qmi,
+> +					      work_msa_ready);
+> +	int ret;
+> +
+> +	ret = ath10k_qmi_bdf_dnld_send_sync(qmi);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = ath10k_qmi_send_cal_report_req(qmi);
+> +	if (ret)
+> +		goto out;
+> +
+> +out:
+> +	return;
+
+If this is your exit then just use return instead of goto above.
+
+> +}
+> +
+
+Regards,
+Bjorn
 
 _______________________________________________
 ath10k mailing list
