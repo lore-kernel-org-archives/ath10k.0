@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHDBR-0005yx-Vi
- for ath10k@lists.infradead.org; Fri, 11 May 2018 18:54:27 +0000
-Received: by mail-pf0-x241.google.com with SMTP id c10-v6so3120272pfi.12
- for <ath10k@lists.infradead.org>; Fri, 11 May 2018 11:54:15 -0700 (PDT)
-Date: Fri, 11 May 2018 11:55:36 -0700
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 09/12] ath10k: Add QMI HOST CAP request support
-Message-ID: <20180511185536.GT2259@tuxbook-pro>
-References: <1522042866-26304-1-git-send-email-govinds@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fHDHc-0001Do-7O
+ for ath10k@lists.infradead.org; Fri, 11 May 2018 19:00:50 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id F01A840A5ED
+ for <ath10k@lists.infradead.org>; Fri, 11 May 2018 12:00:32 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: rmmod ath10k_pci hangs on stock wireless-testing kernel
+Message-ID: <64658aac-1c71-d4cd-29ec-521ce269224b@candelatech.com>
+Date: Fri, 11 May 2018 12:00:32 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1522042866-26304-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,74 +21,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On Sun 25 Mar 22:41 PDT 2018, Govind Singh wrote:
+I'm doing a bit of testing on stock kernels for once.  I was using a
+10.1 firmware that was constantly crashing, and then I tried to rmmod ath10k_pci.
 
-> Add support for host capablity request
-> qmi message for wcn3990 target.
-> 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/qmi.c | 65 +++++++++++++++++++++++++++++++++++
->  1 file changed, 65 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-> index 65a43af..a33681d 100644
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -357,6 +357,67 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
->  	return ret;
->  }
->  
-> +static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
-> +{
-> +	struct wlfw_host_cap_resp_msg_v01 *resp;
+rmmod hangs.  Here is the stack trace from /proc/[foo]/stack
+for rmmod.
 
-This is 4 bytes,
+Regardless of how the FW crashes, rmmod should not hang.
 
-> +	struct wlfw_host_cap_req_msg_v01 *req;
+[root@lf0313-6477 ~]# cat rmmod_hang.txt
+[<0>] msleep+0x30/0x40
+[<0>] ath10k_pci_hif_stop+0x6a/0xc0 [ath10k_pci]
+[<0>] ath10k_core_stop+0x48/0x80 [ath10k_core]
+[<0>] ath10k_halt+0x117/0x1b0 [ath10k_core]
+[<0>] ath10k_stop+0x31/0x70 [ath10k_core]
+[<0>] drv_stop+0x53/0x2c0 [mac80211]
+[<0>] ieee80211_do_stop+0x4ce/0x850 [mac80211]
+[<0>] ieee80211_stop+0x11/0x20 [mac80211]
+[<0>] __dev_close_many+0x97/0xf0
+[<0>] dev_close_many+0x78/0x120
+[<0>] dev_close.part.91+0x2f/0x50
+[<0>] cfg80211_shutdown_all_interfaces+0x3e/0xc0 [cfg80211]
+[<0>] ieee80211_remove_interfaces+0x3d/0x1c0 [mac80211]
+[<0>] ieee80211_unregister_hw+0x41/0x130 [mac80211]
+[<0>] ath10k_mac_unregister+0x10/0x60 [ath10k_core]
+[<0>] ath10k_core_unregister+0x35/0x90 [ath10k_core]
+[<0>] ath10k_pci_remove+0x29/0x70 [ath10k_pci]
+[<0>] pci_device_remove+0x31/0xb0
+[<0>] device_release_driver_internal+0x15b/0x230
+[<0>] driver_detach+0x35/0x70
+[<0>] bus_remove_driver+0x53/0xd0
+[<0>] pci_unregister_driver+0x1e/0x80
+[<0>] ath10k_pci_exit+0xc/0x214 [ath10k_pci]
+[<0>] __x64_sys_delete_module+0x14d/0x250
+[<0>] do_syscall_64+0x55/0x1a0
+[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[<0>] 0xffffffffffffffff
 
-and this is 2 bytes, use the stack.
 
-> +	struct qmi_txn txn;
-> +	int ret;
-> +
-> +	req = kzalloc(sizeof(*req), GFP_KERNEL);
-> +	if (!req)
-> +		return -ENOMEM;
-> +
-> +	resp = kzalloc(sizeof(*resp), GFP_KERNEL);
-> +	if (!resp) {
-> +		kfree(req);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	req->daemon_support_valid = 1;
-> +	req->daemon_support = 0;
-> +
-> +	pr_debug("daemon_support is %d\n", req->daemon_support);
+(gdb) l *(ath10k_pci_hif_stop+0x6a)
+0x332a is in ath10k_pci_hif_stop (/home/greearb/git/linux.wireless-testing/arch/x86/include/asm/bitops.h:328).
+323	}
+324	
+325	static __always_inline bool constant_test_bit(long nr, const volatile unsigned long *addr)
+326	{
+327		return ((1UL << (nr & (BITS_PER_LONG-1))) &
+328			(addr[nr >> _BITOPS_LONG_SHIFT])) != 0;
+329	}
+330	
+331	static __always_inline bool variable_test_bit(long nr, volatile const unsigned long *addr)
+332	{
+(gdb)
 
-This print seems unnecessary.
 
-> +
-> +	ret = qmi_txn_init(&qmi->qmi_hdl, &txn,
-> +			   wlfw_host_cap_resp_msg_v01_ei, resp);
-> +	if (ret < 0) {
-> +		pr_err("Fail to init txn for Capability resp %d\n", ret);
+I wouldn't be surprised if this was NAPI related hang similar to what has been reported
+before, probably exacerbated by the firmware crashing.
 
-Same comments the rest of the function as given on previous patches.
+Thanks,
+Ben
 
-> +		goto out;
-> +	}
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-Regards,
-Bjorn
 
 _______________________________________________
 ath10k mailing list
