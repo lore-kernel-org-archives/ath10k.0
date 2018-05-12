@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHPVi-0005Wz-5Z
- for ath10k@lists.infradead.org; Sat, 12 May 2018 08:04:11 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 6/9] firmware: print firmware name on fallback path
-References: <20180423201205.20533-1-andresx7@gmail.com>
- <20180423201205.20533-7-andresx7@gmail.com>
- <20180503234235.GX27853@wotan.suse.de>
-Date: Sat, 12 May 2018 11:03:52 +0300
-In-Reply-To: <20180503234235.GX27853@wotan.suse.de> (Luis R. Rodriguez's
- message of "Thu, 3 May 2018 23:42:35 +0000")
-Message-ID: <8736yxb8rb.fsf@codeaurora.org>
+ id 1fHQPj-0006Zw-Dv
+ for ath10k@lists.infradead.org; Sat, 12 May 2018 09:02:04 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: add quiet mode support for QCA6174/QCA9377
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1525327285-15392-2-git-send-email-yyuwang@codeaurora.org>
+References: <1525327285-15392-2-git-send-email-yyuwang@codeaurora.org>
+Message-Id: <20180512090152.DBF4C6079C@smtp.codeaurora.org>
+Date: Sat, 12 May 2018 09:01:52 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +22,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Cc: arend.vanspriel@broadcom.com, Kees Cook <keescook@chromium.org>, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, hdegoede@redhat.com, Andres Rodriguez <andresx7@gmail.com>, alexdeucher@gmail.com, Mimi Zohar <zohar@linux.vnet.ibm.com>, christian.koenig@amd.com
+To: Yu Wang <yyuwang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-(sorry for the delay, this got buried in my inbox)
+Yu Wang <yyuwang@codeaurora.org> wrote:
 
-"Luis R. Rodriguez" <mcgrof@kernel.org> writes:
+> To enable thermal throttling for QCA6174 and QCA9377,
+> implement gen_pdev_set_quiet_mode for them.
+> With this change, quiet period for QCA6174/QCA9377 can
+> be also set/get via debugfs.
+> Usage:
+> To set quiet period:
+>  echo <period> > /sys/kernel/debug/ieee80211/phyX/ath10k/quiet_period
+> To get the current quiet period:
+>  cat /sys/kernel/debug/ieee80211/phyX/ath10k/quiet_period
+> 
+> This change has been verified with
+> QCA6174 hw3.2(fw: WLAN_RM.4.4.1-00102-QCARMSWP-1).
+> 
+> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-> On Mon, Apr 23, 2018 at 04:12:02PM -0400, Andres Rodriguez wrote:
->> Previously, one could assume the firmware name from the preceding
->> message: "Direct firmware load for {name} failed with error %d".
->> 
->> However, with the new firmware_request_nowarn() entrypoint, the message
->> outlined above will not always be printed.
->
-> I though the whole point was to not print an error message. What if
-> we want later to disable this error message? This would prove a bit
-> pointless.
->
-> Let's discuss the exact semantics desired here. Why would only the
-> fallback be desirable here?
->
-> Andres, Kalle?
+Patch applied to ath-next branch of ath.git, thanks.
 
-So from ath10k point of view we do not want to have any messages printed
-when calling firmware_request_nowarn(). The warnings get users really
-confused when ath10k is checking if an optional firmware file is
-available or not.
+cfb353c0dc05 ath10k: add quiet mode support for QCA6174/QCA9377
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10377083/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
