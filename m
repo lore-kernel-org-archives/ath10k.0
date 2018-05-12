@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHQnN-0001Ks-Kw
- for ath10k@lists.infradead.org; Sat, 12 May 2018 09:26:31 +0000
-MIME-Version: 1.0
-Subject: Re: [v2] ath10k: Replace bit shifts with the BIT() macro for rx desc
- bits
+ id 1fHRHi-0000YN-2X
+ for ath10k@lists.infradead.org; Sat, 12 May 2018 09:57:51 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180509093321.15269-1-govinds@codeaurora.org>
-References: <20180509093321.15269-1-govinds@codeaurora.org>
-Message-Id: <20180512092619.01F9F607E1@smtp.codeaurora.org>
-Date: Sat, 12 May 2018 09:26:18 +0000 (UTC)
+Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
+References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
+ <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+Date: Sat, 12 May 2018 12:57:35 +0300
+In-Reply-To: <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+ (Sriram R.'s message of "Mon, 30 Apr 2018 23:15:39 +0530")
+Message-ID: <87a7t5urg0.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +24,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
+To: Sriram R <srirrama@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Sriram R <srirrama@codeaurora.org> writes:
 
-> Use the BIT() macro from 'linux/bitops.h' to define the rx desc
-> bit flags to have consistency with new definitions.
-> 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> In the 10.4-3.6 firmware branch there's a new DFS Host confirmation
+> feature which is advertised using WMI_SERVICE_HOST_DFS_CHECK_SUPPORT flag.
+>
+> This new features enables the ath10k host to send information to the
+> firmware on the specifications of detected radar type. This allows the
+> firmware to validate if the host's radar pattern detector unit is
+> operational and check if the radar information shared by host matches
+> the radar pulses sent as phy error events from firmware. If the check
+> fails the firmware won't allow use of DFS channels on AP mode when using
+> FCC regulatory region.
+>
+> Supported Chipsets : QCA9984/QCA9888/QCA4019
+> Firmware Version : 10.4-3.6-00104
+>
+> Signed-off-by: Sriram R <srirrama@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+This introduces a new checkpatch warning:
 
-c3f7f31efe39 ath10k: replace bit shifts with the BIT() macro for rx desc bits
+drivers/net/wireless/ath/ath10k/wmi.c:3753: Please use a blank line after function/struct/union/enum declarations
 
 -- 
-https://patchwork.kernel.org/patch/10388887/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
