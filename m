@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHQkM-0007gc-Cr
- for ath10k@lists.infradead.org; Sat, 12 May 2018 09:23:23 +0000
+ id 1fHQm1-0007rF-Jr
+ for ath10k@lists.infradead.org; Sat, 12 May 2018 09:25:07 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: remove variables which set but not used
+Subject: Re: ath10k: hw: make consistent usage of ATH10K_FW_DIR in paths
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180507093948.GA7905@blackstone>
-References: <20180507093948.GA7905@blackstone>
-Message-Id: <20180512092311.A8ABD60618@smtp.codeaurora.org>
-Date: Sat, 12 May 2018 09:23:11 +0000 (UTC)
+In-Reply-To: <20180509075633.3030-1-marcus.folkesson@gmail.com>
+References: <20180509075633.3030-1-marcus.folkesson@gmail.com>
+Message-Id: <20180512092455.34E256079C@smtp.codeaurora.org>
+Date: Sat, 12 May 2018 09:24:55 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kenneth Lu <kuohsianglu@gmail.com>
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kenneth Lu <kuohsianglu@gmail.com> wrote:
+Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
 
-> Variable buf_len and num_vdev_stats are being assigned but never read.
-> These are redundant and can be remove.
+> For some reason not all entries used ATH10K_FW_DIR so fix that. No functional
+> changes.
 > 
-> Signed-off-by: Kenneth Lu <kuohsianglu@gmail.com>
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-3e2740cda224 ath10k: remove variables which set but not used
+0be928850dac ath10k: hw: make consistent usage of ATH10K_FW_DIR in paths
 
 -- 
-https://patchwork.kernel.org/patch/10383773/
+https://patchwork.kernel.org/patch/10388585/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
