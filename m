@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIDNS-00026N-Mn
- for ath10k@lists.infradead.org; Mon, 14 May 2018 13:18:59 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 01/12] ath10k: Add qmi service for wlan qmi client
-References: <1522042736-25618-1-git-send-email-govinds@codeaurora.org>
- <20180511170540.GM2259@tuxbook-pro>
-Date: Mon, 14 May 2018 16:18:42 +0300
-In-Reply-To: <20180511170540.GM2259@tuxbook-pro> (Bjorn Andersson's message of
- "Fri, 11 May 2018 10:05:40 -0700")
-Message-ID: <87tvras7d9.fsf@kamboji.qca.qualcomm.com>
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIDXW-0007Oh-Bn
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 13:29:30 +0000
 MIME-Version: 1.0
+Date: Mon, 14 May 2018 18:59:10 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH 04/12] ath10k: add support to start and stop qmi service
+In-Reply-To: <20180511174355.GP2259@tuxbook-pro>
+References: <1522042773-25775-1-git-send-email-govinds@codeaurora.org>
+ <20180511174355.GP2259@tuxbook-pro>
+Message-ID: <c7c6baca45339958d0db94656805d099@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +19,268 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bjorn Andersson <bjorn.andersson@linaro.org> writes:
+On 2018-05-11 23:13, Bjorn Andersson wrote:
+> On Sun 25 Mar 22:39 PDT 2018, Govind Singh wrote:
+> 
+>> Add support to start qmi service to configure the wlan
+>> firmware component and register event notifier to communicate
+>> with the WLAN firmware over qmi communication interface.
+>> 
+>> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/qmi.c | 155 
+>> ++++++++++++++++++++++++++++++++--
+>>  drivers/net/wireless/ath/ath10k/qmi.h |  13 +++
+>>  2 files changed, 160 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c 
+>> b/drivers/net/wireless/ath/ath10k/qmi.c
+>> index 2235182..3a7fcc6 100644
+>> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+>> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+>> @@ -31,15 +31,115 @@
+>> 
+>>  static struct ath10k_qmi *qmi;
+>> 
+>> +static int ath10k_qmi_event_fw_ready_ind(struct ath10k_qmi *qmi)
+>> +{
+>> +	pr_debug("fw ready event received\n");
+> 
+> Please use dev_dbg.
+> 
 
->> new file mode 100644
->> index 0000000..5857c0c
->> --- /dev/null
->> +++ b/drivers/net/wireless/ath/ath10k/qmi_svc_v01.c
->> @@ -0,0 +1,2323 @@
->> +/*
->> + * Copyright (c) 2018 The Linux Foundation. All rights reserved.
->> + *
->> + * Permission to use, copy, modify, and/or distribute this software for any
->> + * purpose with or without fee is hereby granted, provided that the above
->> + * copyright notice and this permission notice appear in all copies.
->> + *
->> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
->> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
->> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
->> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
->> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
->> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
->> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
->> + */
->
-> Please use SPDX license header.
+I have migrated from pr_ to dev_ logging for the whole set, will share 
+in next version.
 
-As ath10k does not use SPDX yet so for consistency I would like to use
-the old style license text still and later switch the whole ath10k to
-use SPDX in one go.
+>> +	spin_lock(&qmi->event_lock);
+>> +	qmi->fw_ready = true;
+>> +	spin_unlock(&qmi->event_lock);
+> 
+> I see no reason for not just putting this code in
+> ath10k_qmi_fw_ready_ind().
+> 
+>> +
+> 
+> fw_ready isn't used for anything, what purpose does this code have?
+> 
 
--- 
-Kalle Valo
+fw_ready will be used in later set of changes for qmi client debugfs and
+for synchronization.I will decouple this and add as bit mask in 
+appropriate change.
+
+
+>> +	return 0;
+>> +}
+>> +
+>> +static void ath10k_qmi_fw_ready_ind(struct qmi_handle *qmi_hdl,
+>> +				    struct sockaddr_qrtr *sq,
+>> +				    struct qmi_txn *txn, const void *data)
+>> +{
+>> +	struct ath10k_qmi *qmi = container_of(qmi_hdl, struct ath10k_qmi, 
+>> qmi_hdl);
+>> +
+>> +	ath10k_qmi_event_fw_ready_ind(qmi);
+>> +}
+>> +
+>> +static void ath10k_qmi_msa_ready_ind(struct qmi_handle *qmi_hdl,
+>> +				     struct sockaddr_qrtr *sq,
+>> +				     struct qmi_txn *txn, const void *data)
+>> +{
+>> +	struct ath10k_qmi *qmi = container_of(qmi_hdl, struct ath10k_qmi, 
+>> qmi_hdl);
+>> +
+>> +	qmi->msa_ready = true;
+> 
+> msa_ready is not only unused in this patch, it's unused after all 11
+> patches. Can you drop it?
+> 
+
+Sure, will remove in next version.
+
+
+>> +static void ath10k_qmi_event_server_arrive(struct work_struct *work)
+>> +{
+>> +	struct ath10k_qmi *qmi = container_of(work, struct ath10k_qmi,
+>> +					      work_svc_arrive);
+>> +	int ret;
+>> +
+>> +	ret = ath10k_qmi_connect_to_fw_server(qmi);
+>> +	if (ret)
+>> +		return;
+>> +
+>> +	pr_debug("qmi server arrive\n");
+>> +}
+>> +
+
+>>  static int ath10k_qmi_new_server(struct qmi_handle *qmi_hdl,
+>>  				 struct qmi_service *service)
+>>  {
+>> +	struct ath10k_qmi *qmi = container_of(qmi_hdl, struct ath10k_qmi, 
+>> qmi_hdl);
+>> +	struct sockaddr_qrtr *sq = &qmi->sq;
+>> +
+>> +	sq->sq_family = AF_QIPCRTR;
+>> +	sq->sq_node = service->node;
+>> +	sq->sq_port = service->port;
+>> +
+>> +	queue_work(qmi->event_wq, &qmi->work_svc_arrive);
+> 
+> This is being called in a sleepable context and kernel_connect() will
+> not block, so I see no reason for queue work here to invoke
+> ath10k_qmi_event_server_arrive() just to call
+> ath10k_qmi_connect_to_fw_server().
+> 
+> Just put the kernel_connect() call here.
+> 
+> 
+
+In this change it just calls ath10k_qmi_connect_to_fw_server, but most 
+of the handshaking is done in server arrive callback.
+Successive changes adds the request/response of each handshake.
+Is it ok to block new_server callback till all client handshaking gets 
+completed. I thought it might block other client
+notification overlapped on the same time slot(ex: IPA). Do you see any 
+concern here or should be ok.
+I have not profiled yet, i will share the approx time it can take.
+
+> This gives the added benefit that you don't need to use qmi->sq as a 
+> way
+> to pass parameters to ath10k_qmi_connect_to_fw_server().
+> 
+>> +
+>>  	return 0;
+>>  }
+>> 
+>>  static void ath10k_qmi_del_server(struct qmi_handle *qmi_hdl,
+>>  				  struct qmi_service *service)
+>>  {
+>> +	struct ath10k_qmi *qmi =
+>> +		container_of(qmi_hdl, struct ath10k_qmi, qmi_hdl);
+>> +
+>> +	queue_work(qmi->event_wq, &qmi->work_svc_exit);
+> 
+> I see no reason to queue work to set a boolean to false, just inline 
+> the
+> code here.
+> 
+
+sure, this i can remove.
+
+>> 
+>>  static struct qmi_ops ath10k_qmi_ops = {
+>> @@ -47,6 +147,51 @@ static void ath10k_qmi_del_server(struct 
+>> qmi_handle *qmi_hdl,
+>>  	.del_server = ath10k_qmi_del_server,
+>>  };
+>> 
+>> +static int ath10k_alloc_qmi_resources(struct ath10k_qmi *qmi)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = qmi_handle_init(&qmi->qmi_hdl,
+>> +			      WLFW_BDF_DOWNLOAD_REQ_MSG_V01_MAX_MSG_LEN,
+>> +			      &ath10k_qmi_ops, qmi_msg_handler);
+>> +	if (ret)
+>> +		goto err;
+>> +
+>> +	qmi->event_wq = alloc_workqueue("qmi_driver_event",
+>> +					WQ_UNBOUND, 1);
+>> +	if (!qmi->event_wq) {
+>> +		pr_err("workqueue alloc failed\n");
+>> +		ret = -EFAULT;
+>> +		goto err_qmi_service;
+>> +	}
+>> +
+>> +	spin_lock_init(&qmi->event_lock);
+> 
+> All calls from the qmi helpers are done from a single context, so
+> there's no reason to use this lock.
+> 
+>> +	INIT_WORK(&qmi->work_svc_arrive, ath10k_qmi_event_server_arrive);
+>> +	INIT_WORK(&qmi->work_svc_exit, ath10k_qmi_event_server_exit);
+>> +
+>> +	ret = qmi_add_lookup(&qmi->qmi_hdl, WLFW_SERVICE_ID_V01,
+>> +			     WLFW_SERVICE_VERS_V01, 0);
+>> +	if (ret)
+>> +		goto err_qmi_service;
+>> +
+>> +	return 0;
+>> +
+>> +err_qmi_service:
+>> +	qmi_handle_release(&qmi->qmi_hdl);
+>> +
+>> +err:
+>> +	return ret;
+>> +}
+>> +
+>> +static void ath10k_remove_qmi_resources(struct ath10k_qmi *qmi)
+>> +{
+>> +	cancel_work_sync(&qmi->work_svc_arrive);
+>> +	cancel_work_sync(&qmi->work_svc_exit);
+>> +	destroy_workqueue(qmi->event_wq);
+>> +	qmi_handle_release(&qmi->qmi_hdl);
+>> +	qmi = NULL;
+>> +}
+>> +
+>>  static int ath10k_qmi_probe(struct platform_device *pdev)
+>>  {
+>>  	int ret;
+>> @@ -58,14 +203,8 @@ static int ath10k_qmi_probe(struct platform_device 
+>> *pdev)
+>> 
+>>  	qmi->pdev = pdev;
+>>  	platform_set_drvdata(pdev, qmi);
+>> -	ret = qmi_handle_init(&qmi->qmi_hdl,
+>> -			      WLFW_BDF_DOWNLOAD_REQ_MSG_V01_MAX_MSG_LEN,
+>> -			      &ath10k_qmi_ops, NULL);
+>> -	if (ret < 0)
+>> -		goto err;
+>> 
+>> -	ret = qmi_add_lookup(&qmi->qmi_hdl, WLFW_SERVICE_ID_V01,
+>> -			     WLFW_SERVICE_VERS_V01, 0);
+> 
+> Please plan ahead, there's no reason for adding this here in patch 3 
+> and
+> then just move it in patch 4. That said, with the removal of the queues
+> I don't see a good reason to create a helper for this.
+> 
+
+Sure, will do in next version.
+
+>> +	ret = ath10k_alloc_qmi_resources(qmi);
+>>  	if (ret < 0)
+>>  		goto err;
+>> 
+>> @@ -81,7 +220,7 @@ static int ath10k_qmi_remove(struct platform_device 
+>> *pdev)
+>>  {
+>>  	struct ath10k_qmi *qmi = platform_get_drvdata(pdev);
+>> 
+>> -	qmi_handle_release(&qmi->qmi_hdl);
+>> +	ath10k_remove_qmi_resources(qmi);
+> 
+> Just inline ath10k_remove_qmi_resources() here, so one doesn't have to
+> jump around to figure out what's actually going on.
+> 
+
+Sure, will do in next version.
+
+  	return 0;
+
+> 
+> Regards,
+> Bjorn
+>> 
+
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
