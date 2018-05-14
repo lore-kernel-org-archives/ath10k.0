@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIDge-0002Jd-SK
- for ath10k@lists.infradead.org; Mon, 14 May 2018 13:38:50 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIEop-0008Av-H6
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 14:51:21 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v3 00/12] *** Add support for wifi QMI client driver ***
-References: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
-Date: Mon, 14 May 2018 16:38:33 +0300
-In-Reply-To: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
- (Govind Singh's message of "Mon, 26 Mar 2018 11:07:16 +0530")
-Message-ID: <87po1ys6g6.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath: Add support to get the detected radar
+ specifications
+References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
+ <1525110339-25326-2-git-send-email-srirrama@codeaurora.org>
+ <cf60f81c-9466-ac52-e902-413fe3163490@bowerswilkins.com>
+Date: Mon, 14 May 2018 17:51:04 +0300
+In-Reply-To: <cf60f81c-9466-ac52-e902-413fe3163490@bowerswilkins.com> (Peter
+ Oh's message of "Mon, 30 Apr 2018 12:01:45 -0700")
+Message-ID: <871sees33b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,56 +22,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
 
-R292aW5kIFNpbmdoIDxnb3ZpbmRzQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+IEFkZCBRTUkg
-Y2xpZW50IGRyaXZlciBmb3IgUTYgaW50ZWdyYXRlZCBXTEFOIGNvbm5lY3Rpdml0eSBzdWJzeXN0
-ZW0uCj4gVGhpcyBtb2R1bGUgaXMgcmVzcG9uc2libGUgZm9yIGNvbW11bmljYXRpbmcgV0xBTiBj
-b250cm9sIG1lc3NhZ2VzIHRvIEZXCj4gb3ZlciBRTUkgaW50ZXJmYWNlLgo+Cj4g4oCcUVVBTENP
-TU0gTWVzc2FnaW5nIEludGVyZmFjZeKAnShRTUkpIHByb3ZpZGVzIHRoZSBjb250cm9sIGludGVy
-ZmFjZSBiZXR3ZWVuCj4gY29tcG9uZW50cyBydW5uaW5nIGIvdyByZW1vdGUgcHJvY2Vzc29ycyB3
-aXRoIHVuZGVybHlpbmcgdHJhbnNwb3J0IGxheWVyCj4gYmFzZWQgb24gaW50ZWdyYXRlZCBjaGlw
-c2V0KHNoYXJlZCBtZW1vcnkpIG9yIGRpc2NyZXRlIGNoaXBzZXQoUENJL1VTQi9TRElPL1VBUlQp
-Lgo+Cj4gUU1JIGNsaWVudCBkcml2ZXIgaW1wbGVtZW50YXRpb24gaXMgYmFzZWQgb24gcW1pIGZy
-bWV3b3JrIGh0dHBzOi8vbHduLm5ldC9BcnRpY2xlcy83Mjk5MjQvLgo+Cj4gQmVsb3cgaXMgdGhl
-IHNlcXVlbmNlIG9mIHFtaSBoYW5kc2hha2UuCj4KPiAgICAgICAgUU1JIENMSUVOVChBUFBTKSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUU1JIFNFUlZFUihGVyBpbiBR
-NikKPgo+ICAgICAgICAgICAgICAgICAgICAgICAgICA8LS0tLS0td2xhbiBzZXJ2aWNlIGRpc2Nv
-dmVyZC0tLS0KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgLS0tLS1jb25uZWN0IHRvIHdsYW0g
-cW1pIHNlcnZpY2UtLS0tLT4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0t
-d2xhbiBpbmZvIHJlcXVlc3QtLS0tLT4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0t
-LS0tLS0tLXdsYW4gaW5mbyByZXNwLS0tLS0tLS0tLS0tCj4KPiAgICAgICAgICAgICAgICAgICAg
-ICAgIC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJlcS0tLS0tLS0tPgo+Cj4gICAgICAgICAgICAgICAg
-ICAgICAgPC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJlc3AtLS0tLS0tLS0tLS0KPgo+ICAgICAgICAg
-ICAgICAgICAgICAgIC0tLS0tLS0tLS0tLW1zYSByZWFkeSByZXEtLS0tLS0tLT4KPgo+ICAgICAg
-ICAgICAgICAgICAgICAgIDwtLS0tLS0tLS0tLS1tc2EgcmVhZHkgcmVzcC0tLS0tLS0tLS0tLQo+
-Cj4gICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLW1zYSByZWFkeSBpbmRpY2F0aW9u
-LS0tLS0tLQo+Cj4gICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tY2FwYWJpbGl0eSBy
-ZXEtLS0tLS0tPgo+Cj4gICAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0tLS0tY2FwYWJpbGl0
-eSByZXNwLS0tLS0tLS0tLS0tCj4KPiAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLXFt
-aSBiZGYgcmVxLS0tLS0tLS0tPgo+Cj4gICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0t
-LXFtaSBiZGYgcmVzcC0tLS0tLS0tLS0tLQo+Cj4gICAgICAgICAgICAgICAgICAgICAgIC0tLS0t
-LS0tLS0tLXFtaSBjYWwgdHJpZ2dlci0tLS0tLS0+Cj4KPiAgICAgICAgICAgICAgICAgICA8LS0t
-LS0tLS0tLS0tIFFNSSBGVyByZWFkeSBpbmRpY2F0aW9uLS0tLS0tLQo+Cj4gR292aW5kIFNpbmdo
-ICgxMik6Cj4gICBhdGgxMGs6IEFkZCBxbWkgc2VydmljZSBmb3Igd2xhbiBxbWkgY2xpZW50Cj4g
-ICBkdDogYmluZGluZ3M6IGFkZCBiaW5kaW5ncyBmb3IgYXRoMTBrIHFtaSBjbGllbnQKPiAgIGF0
-aDEwazogQWRkIFdDTjM5OTAgUU1JIGNsaWVudCBkcml2ZXIKPiAgIGF0aDEwazogYWRkIHN1cHBv
-cnQgdG8gc3RhcnQgYW5kIHN0b3AgcW1pIHNlcnZpY2UKPiAgIGF0aDEwazogQWRkIHN1cHBvcnQg
-b2YgUU1JIGluZGljYXRpb24gbWVzc2FnZQo+ICAgZmlybXdhcmU6IHFjb206IHNjbTogQWRkIFdM
-QU4gVk1JRCBmb3IgUXVhbGNvbW0gU0NNIGludGVyZmFjZQo+ICAgYXRoMTBrOiBBZGQgTVNBIGhh
-bmRzaGFrZSBRTUkgbWdzIHN1cHBvcnQKPiAgIGF0aDEwazogQWRkIFFNSSBDQVAgcmVxdWVzdCBz
-dXBwb3J0Cj4gICBhdGgxMGs6IEFkZCBRTUkgSE9TVCBDQVAgcmVxdWVzdCBzdXBwb3J0Cj4gICBh
-dGgxMGs6IGFkZCBiZGYvY2FsIGluZGljYXRpb24gc3VwcG9ydAo+ICAgYXRoMTBrOiBBZGQgd2xh
-biBtb2RlIG9uL29mZiBxbWkgbWVzc2FnZQo+ICAgYXRoMTBrOiBBZGQgcW1pIHdsYW4gZW5hYmxl
-L2Rpc2FibGUgc3VwcG9ydCBmb3IgV0NOMzk5MAoKQlRXLCBJIG5vdGljZWQgdGhhdCB5b3UgaGFk
-IHYzIG9ubHkgaW4gdGhlIGNvdmVyIGxldHRlciBidXQgdGhlIHZlcnNpb24KbnVtYmVyIHNob3Vs
-ZCBiZSBpbiBldmVyeSBwYXRjaCBwYXJ0IG9mIHRoZSBzZXQ6CgpodHRwczovL3BhdGNod29yay5r
-ZXJuZWwub3JnL3BhdGNoLzEwMzA3MTYxLwoKLS0gCkthbGxlIFZhbG8KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+Peter Oh <peter.oh@bowerswilkins.com> writes:
+
+> On 04/30/2018 10:45 AM, Sriram R wrote:
+>> This enables ath10k/ath9k drivers to collect the specifications of the
+>> radar type once it is detected by the dfs pattern detector unit.
+>> Usage of the collected info is specific to driver implementation.
+>> For example, collected radar info could be used by the host driver
+>> to send to co-processors for additional processing/validation.
+>
+> What kind of additional processing/validation does it do?
+> Please give us more details for that.
+
+This is handled in patch 2.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
