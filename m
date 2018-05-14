@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIFm8-00080i-SO
- for ath10k@lists.infradead.org; Mon, 14 May 2018 15:52:43 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2 2/3] ath10k: Don't try un-supported idle_ps_config command.
-Date: Mon, 14 May 2018 08:52:16 -0700
-Message-Id: <1526313137-23899-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1526313137-23899-1-git-send-email-greearb@candelatech.com>
-References: <1526313137-23899-1-git-send-email-greearb@candelatech.com>
+Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIHvB-0008IA-FJ
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 18:10:07 +0000
+Received: by mail-oi0-x22b.google.com with SMTP id k17-v6so11560640oih.5
+ for <ath10k@lists.infradead.org>; Mon, 14 May 2018 11:09:53 -0700 (PDT)
+MIME-Version: 1.0
+From: Patrick Doyle <wpdster@gmail.com>
+Date: Mon, 14 May 2018 14:09:21 -0400
+Message-ID: <CAF_dkJCoAxVNK7sg5iGE7cSqZq9nyf=v2e9HkhQx=K2Sv9NOCg@mail.gmail.com>
+Subject: Support for QCA9377
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,62 +18,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Ben Greear <greearb@candelatech.com>
 
-From: Ben Greear <greearb@candelatech.com>
+Hello All,
+Where can I look to learn about support for the QCA9377.  I would like
+to evaluate this module with an SDIO interface to an embedded
+(Atmel/Microchip) processor running a 4.9.x kernel.  I found
+https://patchwork.kernel.org/patch/9979563/, along with 10 other
+patches submitted by Silex in September of 2017, but it appears that
+nothing was ever done with that... or was it?
 
-The warning the the logs does not give user a clue as to what
-command is failing, so it is worth it to check for un-supported
-command before trying the call.
 
-And add return-code to survey error message.
+Basically, I'm asking for some clues as to where I could start, if I
+wanted to use an open source driver with the QCA9377.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Thank you.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3d7119a..1185d0c2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4680,10 +4680,13 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	}
- 
- 	param = ar->wmi.pdev_param->idle_ps_config;
--	ret = ath10k_wmi_pdev_set_param(ar, param, 1);
--	if (ret && ret != -EOPNOTSUPP) {
--		ath10k_warn(ar, "failed to enable idle_ps_config: %d\n", ret);
--		goto err_core_stop;
-+	if (param != WMI_PDEV_PARAM_UNSUPPORTED) {
-+		ret = ath10k_wmi_pdev_set_param(ar, param, 1);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to enable idle_ps_config: %d\n",
-+				    ret);
-+			goto err_core_stop;
-+		}
- 	}
- 
- 	__ath10k_set_antenna(ar, ar->cfg_tx_chainmask, ar->cfg_rx_chainmask);
-@@ -6770,7 +6773,8 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
- 
- 	ret = ath10k_wmi_pdev_bss_chan_info_request(ar, type);
- 	if (ret) {
--		ath10k_warn(ar, "failed to send pdev bss chan info request\n");
-+		ath10k_warn(ar, "failed to send pdev bss chan info request: %d\n",
-+			    ret);
- 		return;
- 	}
- 
--- 
-2.4.11
-
+--wpd
 
 _______________________________________________
 ath10k mailing list
