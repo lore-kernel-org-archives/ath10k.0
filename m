@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIHvB-0008IA-FJ
- for ath10k@lists.infradead.org; Mon, 14 May 2018 18:10:07 +0000
-Received: by mail-oi0-x22b.google.com with SMTP id k17-v6so11560640oih.5
- for <ath10k@lists.infradead.org>; Mon, 14 May 2018 11:09:53 -0700 (PDT)
+ id 1fIHvZ-0000S2-BB
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 18:10:31 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
+References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
+ <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+ <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
+ <87d0ye2t75.fsf@kamboji.qca.qualcomm.com>
+ <4c3ae0c5-0b26-3be9-ccad-ea71b325d5ad@bowerswilkins.com>
+Date: Mon, 14 May 2018 21:10:12 +0300
+Message-ID: <87lgcmqfaz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-From: Patrick Doyle <wpdster@gmail.com>
-Date: Mon, 14 May 2018 14:09:21 -0400
-Message-ID: <CAF_dkJCoAxVNK7sg5iGE7cSqZq9nyf=v2e9HkhQx=K2Sv9NOCg@mail.gmail.com>
-Subject: Support for QCA9377
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +25,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
 
-Hello All,
-Where can I look to learn about support for the QCA9377.  I would like
-to evaluate this module with an SDIO interface to an embedded
-(Atmel/Microchip) processor running a 4.9.x kernel.  I found
-https://patchwork.kernel.org/patch/9979563/, along with 10 other
-patches submitted by Silex in September of 2017, but it appears that
-nothing was ever done with that... or was it?
+Peter Oh <peter.oh@bowerswilkins.com> writes:
 
+> On 05/02/2018 04:27 AM, Kalle Valo wrote:
+>> Peter Oh <peter.oh@bowerswilkins.com> writes:
+>>
+>>> On 04/30/2018 10:45 AM, Sriram R wrote:
+>>>> In the 10.4-3.6 firmware branch there's a new DFS Host confirmation
+>>>> feature which is advertised using WMI_SERVICE_HOST_DFS_CHECK_SUPPORT flag.
+>>>>
+>>>> This new features enables the ath10k host to send information to the
+>>>> firmware on the specifications of detected radar type. This allows the
+>>>> firmware to validate if the host's radar pattern detector unit is
+>>>> operational and check if the radar information shared by host matches
+>>>> the radar pulses sent as phy error events from firmware. If the check
+>>>> fails the firmware won't allow use of DFS channels on AP mode when using
+>>>> FCC regulatory region.
+>>> What's the main reason you introduce this feature?
+>>> What are you trying to solve with this change?
+>> Otherwise one cannot use DFS channels on FCC regions with a firmware
+>> from 10.4-3.6 branch.
+>
+> It's a big change and none of us knows until I asked and you answered.
 
-Basically, I'm asking for some clues as to where I could start, if I
-wanted to use an open source driver with the QCA9377.
+I was hoping that would be clear from the commit log but I guess Sriram
+could include my sentence above to enhance it?
 
-Thank you.
+>>>> @@ -3765,25 +3834,46 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
+>>>>      	ATH10K_DFS_STAT_INC(ar, pulses_detected);
+>>>>    -	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, NULL))
+>>>> {
+>>>> +	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe, &rs)) {
+>>>>    		ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
+>>>>    			   "dfs no pulse pattern detected, yet\n");
+>>>>    		return;
+>>>>    	}
+>>>>    -radar_detected:
+>>>> -	ath10k_dbg(ar, ATH10K_DBG_REGULATORY, "dfs radar detected\n");
+>>>> -	ATH10K_DFS_STAT_INC(ar, radar_detected);
+>>>> +	if ((test_bit(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT, ar->wmi.svc_map)) &&
+>>>> +	    ar->dfs_detector->region == NL80211_DFS_FCC) {
+>>>
+>>> I feel risky that host drivers have no way to control this new feature
+>>> and totally rely on FW feature mask. We should have a host drivers'
+>>> feature mask such as module param and set it false (don't use) by
+>>> default until it proves safe to use.
+>>
+>> This is for regulatory enforcement so it's not possible to disable the
+>> feature from host.
+>
+> Which regulatory enforcement are you talking to? Are you talking about
+> such "prevent users from changing regulatory domain" or "don't provide
+> a manner to change regulatory domain or channel list" ? If not, can
+> you share the section of document?
 
---wpd
+Sorry, I don't have any references about that.
+
+> In addition to that, How do you make sure if FW side DFS radar
+> detection algorithm has no defects and it always categorizes phy
+> errors to correct radar type? I'm asking it, because it's known that
+> DFS detector in ath module does sometimes detect radar patterns as
+> wrong radar type in both of ath10k and ath9k. I couldn't think FW side
+> detector has no such defects at all. It's like blind patch to open
+> source community, since no one can review the implementation in FW
+> even though no one can guarantee its level of integrity.
+
+It's not about replacing the DFS detector in ath.ko, it's about adding
+extra checks in firmware for regulatory compliance. So at least in
+theory DFS detection should still work same as before, just with an
+extra roundtrip via firmware.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
