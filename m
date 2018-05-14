@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIEop-0008Av-H6
- for ath10k@lists.infradead.org; Mon, 14 May 2018 14:51:21 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 1/2] ath: Add support to get the detected radar
- specifications
-References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
- <1525110339-25326-2-git-send-email-srirrama@codeaurora.org>
- <cf60f81c-9466-ac52-e902-413fe3163490@bowerswilkins.com>
-Date: Mon, 14 May 2018 17:51:04 +0300
-In-Reply-To: <cf60f81c-9466-ac52-e902-413fe3163490@bowerswilkins.com> (Peter
- Oh's message of "Mon, 30 Apr 2018 12:01:45 -0700")
-Message-ID: <871sees33b.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIFm8-00080K-SP
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 15:52:38 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2 1/3] ath10k: Add ath10k-ct firmware feature flags and
+ descriptions.
+Date: Mon, 14 May 2018 08:52:15 -0700
+Message-Id: <1526313137-23899-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +16,137 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>
-Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Ben Greear <greearb@candelatech.com>
 
-Peter Oh <peter.oh@bowerswilkins.com> writes:
+From: Ben Greear <greearb@candelatech.com>
 
-> On 04/30/2018 10:45 AM, Sriram R wrote:
->> This enables ath10k/ath9k drivers to collect the specifications of the
->> radar type once it is detected by the dfs pattern detector unit.
->> Usage of the collected info is specific to driver implementation.
->> For example, collected radar info could be used by the host driver
->> to send to co-processors for additional processing/validation.
->
-> What kind of additional processing/validation does it do?
-> Please give us more details for that.
+These feature flags are used by ath10k-ct firmware.  Add these
+so we can use them in future patches and so there are no warnings
+about feature flags on loading ath10k-ct firmware.
 
-This is handled in patch 2.
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+v2:  Fix warings typo in description.
 
+ drivers/net/wireless/ath/ath10k/core.c | 17 +++++++++
+ drivers/net/wireless/ath/ath10k/core.h | 67 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 84 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4cf54a7..f2f8f61 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -552,6 +552,23 @@ static const char *const ath10k_core_fw_feature_str[] = {
+ 	[ATH10K_FW_FEATURE_NO_PS] = "no-ps",
+ 	[ATH10K_FW_FEATURE_MGMT_TX_BY_REF] = "mgmt-tx-by-reference",
+ 	[ATH10K_FW_FEATURE_NON_BMI] = "non-bmi",
++	[ATH10K_FW_FEATURE_WMI_10X_CT] = "wmi-10.x-CT",
++	[ATH10K_FW_FEATURE_CT_RXSWCRYPT] = "rxswcrypt-CT",
++	[ATH10K_FW_FEATURE_HAS_TXSTATUS_NOACK] = "txstatus-noack",
++	[ATH10K_FW_FEATURE_CT_RATEMASK] = "ratemask-CT",
++	[ATH10K_FW_FEATURE_HAS_SAFE_BURST] = "safe-burst",
++	[ATH10K_FW_FEATURE_REGDUMP_CT] = "regdump-CT",
++	[ATH10K_FW_FEATURE_TXRATE_CT] = "txrate-CT",
++	[ATH10K_FW_FEATURE_FLUSH_ALL_CT] = "flush-all-CT",
++	[ATH10K_FW_FEATURE_PINGPONG_READ_CT] = "pingpong-CT",
++	[ATH10K_FW_FEATURE_SKIP_CH_RES_CT] = "ch-regs-CT",
++	[ATH10K_FW_FEATURE_NOP_CT] = "nop-CT",
++	[ATH10K_FW_FEATURE_HTT_MGT_CT] = "htt-mgt-CT",
++	[ATH10K_FW_FEATURE_SET_SPECIAL_CT] = "set-special-CT",
++	[ATH10K_FW_FEATURE_NO_BMISS_CT] = "no-bmiss-CT",
++	[ATH10K_FW_FEATURE_HAS_GET_TEMP_CT] = "get-temp-CT",
++	[ATH10K_FW_FEATURE_HAS_TX_RC_CT] = "tx-rc-CT",
++	[ATH10K_FW_FEATURE_CUST_STATS_CT] = "cust-stats-CT",
+ };
+ 
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index e4ac8f2..c1342c5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -711,6 +711,73 @@ enum ath10k_fw_features {
+ 	/* Firmware load is done externally, not by bmi */
+ 	ATH10K_FW_FEATURE_NON_BMI = 19,
+ 
++	/* tx-status has the noack bits (CT firmware version 14 and higher ) */
++	ATH10K_FW_FEATURE_HAS_TXSTATUS_NOACK = 30,
++
++	/* Firmware from Candela Technologies, enables more VIFs, etc */
++	ATH10K_FW_FEATURE_WMI_10X_CT = 31,
++
++	/* Firmware from Candela Technologies with rx-software-crypt.
++	 * Required for multiple stations connected to same AP when using
++	 * encryption (ie, commercial version of CT firmware)
++	 */
++	ATH10K_FW_FEATURE_CT_RXSWCRYPT = 32,
++
++	/* Firmware supports extended wmi_common_peer_assoc_complete_cmd that
++	 * contains an array of rate-disable masks.  This allows the host to
++	 * have better control over what rates the firmware will use.  CT
++	 * Firmware only (v15 and higher)
++	 */
++	ATH10K_FW_FEATURE_CT_RATEMASK = 33,
++
++	/* Versions of firmware before approximately 10.2.4.72 would corrupt
++	 * txop fields during burst.  Since this is fixed now, add a flag to
++	 * denote this.
++	 */
++	ATH10K_FW_FEATURE_HAS_SAFE_BURST = 34,
++
++	/* Register-dump is supported. */
++	ATH10K_FW_FEATURE_REGDUMP_CT = 35,
++
++	/* TX-Rate is reported. */
++	ATH10K_FW_FEATURE_TXRATE_CT = 36,
++
++	/* Firmware can flush all peers. */
++	ATH10K_FW_FEATURE_FLUSH_ALL_CT = 37,
++
++	/* Firmware can read memory with ping-pong protocol. */
++	ATH10K_FW_FEATURE_PINGPONG_READ_CT = 38,
++
++	/* Firmware can skip channel reservation. */
++	ATH10K_FW_FEATURE_SKIP_CH_RES_CT = 39,
++
++	/* Firmware supports NOP keep-alive message. */
++	ATH10K_FW_FEATURE_NOP_CT = 40,
++
++	/* Firmware supports CT HTT MGT feature. */
++	ATH10K_FW_FEATURE_HTT_MGT_CT = 41,
++
++	/* Set-special cmd-id is supported. */
++	ATH10K_FW_FEATURE_SET_SPECIAL_CT = 42,
++
++	/* SW Beacon Miss is disabled in this kernel, so you have to
++	 * let mac80211 manage the connection.
++	 */
++	ATH10K_FW_FEATURE_NO_BMISS_CT = 43,
++
++	/* 10.1 firmware that supports getting temperature.  Stock
++	 * 10.1 cannot.
++	 */
++	ATH10K_FW_FEATURE_HAS_GET_TEMP_CT = 44,
++
++	/* Can peer-id be over-ridden to provide rix + retries for raw pkts?
++	 *  CT only option.
++	 */
++	ATH10K_FW_FEATURE_HAS_TX_RC_CT = 45,
++
++	/* Do we support requesting custom stats */
++	ATH10K_FW_FEATURE_CUST_STATS_CT = 46,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
 -- 
-Kalle Valo
+2.4.11
+
 
 _______________________________________________
 ath10k mailing list
