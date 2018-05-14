@@ -1,24 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from up.icubehost.com ([185.62.36.194])
+Received: from mail-db5eur01on0054.outbound.protection.outlook.com
+ ([104.47.2.54] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIJnO-00084S-2D
- for ath10k@lists.infradead.org; Mon, 14 May 2018 20:10:12 +0000
-Received: from mail-ua0-f175.google.com ([209.85.217.175]:41629)
- by up.icubehost.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
- (Exim 4.90_1) (envelope-from <gangadharan@silex-india.com>)
- id 1fIJn7-0004ow-Mr
- for ath10k@lists.infradead.org; Tue, 15 May 2018 01:39:56 +0530
-Received: by mail-ua0-f175.google.com with SMTP id a3-v6so9251132uad.8
- for <ath10k@lists.infradead.org>; Mon, 14 May 2018 13:09:55 -0700 (PDT)
+ id 1fIKW8-000611-HC
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 20:56:26 +0000
+Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
+References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
+ <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+ <0c224b54-dd10-576f-944f-2d20d1cb2c46@bowerswilkins.com>
+ <87d0ye2t75.fsf@kamboji.qca.qualcomm.com>
+ <4c3ae0c5-0b26-3be9-ccad-ea71b325d5ad@bowerswilkins.com>
+ <87lgcmqfaz.fsf@kamboji.qca.qualcomm.com>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <e491e3fe-fc45-570f-a27c-ddaf376a1d25@bowerswilkins.com>
+Date: Mon, 14 May 2018 13:55:56 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAF_dkJCkH9bUW+++HX2c66XU=RNNGaT5s__PMzqFnrh1Kt=i2g@mail.gmail.com>
-References: <CAF_dkJCoAxVNK7sg5iGE7cSqZq9nyf=v2e9HkhQx=K2Sv9NOCg@mail.gmail.com>
- <CAB6Vn2PcbSqc5fH719KX+7+q1ksf=CMvujdk=Z1QAj7Vs1d-3A@mail.gmail.com>
- <CAF_dkJCkH9bUW+++HX2c66XU=RNNGaT5s__PMzqFnrh1Kt=i2g@mail.gmail.com>
-From: Gangadharan Vemula <gangadharan@silex-india.com>
-Date: Mon, 14 May 2018 13:09:33 -0700
-Message-ID: <CAB6Vn2PBQ7YKyAhP6ta8-2CkA+dWyiTSFJoDmS-QD708xmtvGQ@mail.gmail.com>
-Subject: Re: Support for QCA9377
+In-Reply-To: <87lgcmqfaz.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +24,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Patrick Doyle <wpdster@gmail.com>
-Cc: Alagu Sankar <alagusankar@silex-india.com>, kvalo@codeaurora.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
 
-On Mon, May 14, 2018 at 12:50 PM, Patrick Doyle <wpdster@gmail.com> wrote:
-> On Mon, May 14, 2018 at 3:28 PM, Gangadharan Vemula
-> <gangadharan@silex-india.com> wrote:
->> Hi,
->>
->> Silex patch-set was applied to master-pending branch of ath.git. Now,
->> it is in the process of getting into mainline, Mr. Kvalo is working on
->> it.
-> Thank you.  I will check that out.
+
+>> Which regulatory enforcement are you talking to? Are you talking about
+>> such "prevent users from changing regulatory domain" or "don't provide
+>> a manner to change regulatory domain or channel list" ? If not, can
+>> you share the section of document?
+> Sorry, I don't have any references about that.
 >
+This question is for "what the patch is trying to solve" and "to comply 
+FCC regulatory rule" is not the right answer. It should be answered by 
+"FCC regulatory rule section xx.xx.xx".
+So we all can double check if this patch addresses "the root cause of 
+the requirement" and "if it's the best approach or not"
 
-Removed from master-pending branch and new branch has been created for
-ath10k-sdio-usb,
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/log/?h=ath10k-pending-sdio-usb
-
-I hope this is the base-branch for ath10k-sdio-usb. But, we (silex)
-didn't verify anything on this branch yet.
-
-Not sure, whether Mr.Kvalo is using this (ath10k-pending-sdio-usb)
-branch for testing.
-
->
->> Need to apply [RFC,v3] from Mr. Erik Stromdahl.
->>
->> Patches:
->>
->> https://patchwork.kernel.org/project/ath10k/list/?submitter=164941
->
-> I notice that there is now an [RFC,v4] set of patches from Mr.
-> Stromdhal and that they include many/some/all? of the patches from the
-> [RFC,v3] patch set.  Would it be more appropriate to apply those on
-> top of the master-pending branch?
->
-> --wpd
-
-Thanks !
-
-Best Regards,
-
-Gangadharan Vemula,
-
-silex technology India Pvt. Ltd.
+Thanks,
+Peter
 
 _______________________________________________
 ath10k mailing list
