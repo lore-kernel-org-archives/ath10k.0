@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIDxX-0005mh-FD
- for ath10k@lists.infradead.org; Mon, 14 May 2018 13:56:17 +0000
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIDge-0002Jd-SK
+ for ath10k@lists.infradead.org; Mon, 14 May 2018 13:38:50 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v3 00/12] *** Add support for wifi QMI client driver ***
+References: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
+Date: Mon, 14 May 2018 16:38:33 +0300
+In-Reply-To: <1522042636-25516-1-git-send-email-govinds@codeaurora.org>
+ (Govind Singh's message of "Mon, 26 Mar 2018 11:07:16 +0530")
+Message-ID: <87po1ys6g6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Mon, 14 May 2018 19:26:03 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH 07/12] ath10k: Add MSA handshake QMI mgs support
-In-Reply-To: <20180511184331.GR2259@tuxbook-pro>
-References: <1522042832-25975-1-git-send-email-govinds@codeaurora.org>
- <20180511184331.GR2259@tuxbook-pro>
-Message-ID: <d5d978dd4c0845f98ca49fae68a62a2f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,467 +19,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
-Hi Bjorn,
-Thanks for the review.
-
-
-On 2018-05-12 00:13, Bjorn Andersson wrote:
-> On Sun 25 Mar 22:40 PDT 2018, Govind Singh wrote:
-> 
->> HOST allocates 2mb of region for modem and WCN3990
->> secure access and provides the address and access
->> control to target for secure access.
->> Add MSA handshake request/response messages.
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/qmi.c | 288 
->> +++++++++++++++++++++++++++++++++-
->>  drivers/net/wireless/ath/ath10k/qmi.h |  14 ++
->>  2 files changed, 300 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c 
->> b/drivers/net/wireless/ath/ath10k/qmi.c
->> index bc80b8f..763b812 100644
->> --- a/drivers/net/wireless/ath/ath10k/qmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
->> @@ -26,6 +26,8 @@
->>  #include <linux/string.h>
->>  #include <net/sock.h>
->>  #include <linux/soc/qcom/qmi.h>
->> +#include <linux/qcom_scm.h>
->> +#include <linux/of.h>
->>  #include "qmi.h"
->>  #include "qmi_svc_v01.h"
->> 
->> @@ -35,6 +37,240 @@
->>  static struct ath10k_qmi *qmi;
->> 
->>  static int
->> +ath10k_qmi_map_msa_permissions(struct ath10k_msa_mem_region_info 
->> *mem_region)
->> +{
->> +	struct qcom_scm_vmperm dst_perms[3];
->> +	unsigned int src_perms;
->> +	phys_addr_t addr;
->> +	u32 perm_count;
->> +	u32 size;
->> +	int ret;
->> +
->> +	addr = mem_region->reg_addr;
->> +	size = mem_region->size;
-> 
-> Skip the local variables.
-> 
-
-Sure, will do in next version.
-
->> +
->> +	src_perms = BIT(QCOM_SCM_VMID_HLOS);
->> +
->> +	dst_perms[0].vmid = QCOM_SCM_VMID_MSS_MSA;
->> +	dst_perms[0].perm = QCOM_SCM_PERM_RW;
->> +	dst_perms[1].vmid = QCOM_SCM_VMID_WLAN;
->> +	dst_perms[1].perm = QCOM_SCM_PERM_RW;
->> +
->> +	if (!mem_region->secure_flag) {
-> 
-> So with secure_flag equal to 0 we give less subsystems access to the
-> data? Is this logic inverted?
-> 
-
-Yes with secure flag mean less privileges i,e: Copy engine hardware
-can not access the region.
-
->> +		dst_perms[2].vmid = QCOM_SCM_VMID_WLAN_CE;
->> +		dst_perms[2].perm = QCOM_SCM_PERM_RW;
->> +		perm_count = 3;
->> +	} else {
->> +		dst_perms[2].vmid = 0;
->> +		dst_perms[2].perm = 0;
->> +		perm_count = 2;
-> 
-> If you set perm_count to 2 you don't need to clear vmid and perm of
-> dst_perms[2].
-> 
-
-ok, will remove.
-
->> +	}
->> +
->> +	ret = qcom_scm_assign_mem(addr, size, &src_perms,
->> +				  dst_perms, perm_count);
->> +	if (ret < 0)
->> +		pr_err("msa map permission failed=%d\n", ret);
-> 
-> Use dev_err()
-> 
->> +
->> +	return ret;
->> +}
->> +
->> +static int
->> +ath10k_qmi_unmap_msa_permissions(struct ath10k_msa_mem_region_info 
->> *mem_region)
->> +{
->> +	struct qcom_scm_vmperm dst_perms;
->> +	unsigned int src_perms;
->> +	phys_addr_t addr;
->> +	u32 size;
->> +	int ret;
->> +
->> +	addr = mem_region->reg_addr;
->> +	size = mem_region->size;
-> 
-> Skip the local variables.
-> 
-
-Sure, will do in next version.
-
->> +
->> +	src_perms = BIT(QCOM_SCM_VMID_MSS_MSA) | BIT(QCOM_SCM_VMID_WLAN);
->> +
->> +	if (!mem_region->secure_flag)
->> +		src_perms |= BIT(QCOM_SCM_VMID_WLAN_CE);
->> +
->> +	dst_perms.vmid = QCOM_SCM_VMID_HLOS;
->> +	dst_perms.perm = QCOM_SCM_PERM_RW;
->> +
->> +	ret = qcom_scm_assign_mem(addr, size, &src_perms, &dst_perms, 1);
->> +	if (ret < 0)
->> +		pr_err("msa unmap permission failed=%d\n", ret);
->> +
->> +	return ret;
->> +}
->> +
-
->> +static int
->> +	ath10k_qmi_msa_mem_info_send_sync_msg(struct ath10k_qmi *qmi)
->> +{
->> +	struct wlfw_msa_info_resp_msg_v01 *resp;
-> 
-> This is 40 bytes,
-> 
-Sure, will do in next version for all instances.
-
->> +	struct wlfw_msa_info_req_msg_v01 *req;
-> 
-> This is 6 bytes.
-> 
-> So just put them on the stack and skip the memory management.
-> 
-
-Sure, will do in next version.
-
->> +	struct qmi_txn txn;
->> +	int ret;
->> +	int i;
->> +
->> +	req = kzalloc(sizeof(*req), GFP_KERNEL);
->> +	if (!req)
->> +		return -ENOMEM;
->> +
->> +	resp = kzalloc(sizeof(*resp), GFP_KERNEL);
->> +	if (!resp) {
->> +		kfree(req);
->> +		return -ENOMEM;
->> +	}
->> +
->> +	req->msa_addr = qmi->msa_pa;
->> +	req->size = qmi->msa_mem_size;
->> +
->> +	ret = qmi_txn_init(&qmi->qmi_hdl, &txn,
->> +			   wlfw_msa_info_resp_msg_v01_ei, resp);
->> +	if (ret < 0) {
->> +		pr_err("fail to init txn for MSA mem info resp %d\n",
->> +		       ret);
-> 
-> Unless we have 2 billion outstanding transactions "ret" is going to be
-> ENOMEM here, in which case there is already a printout telling you 
-> about
-> the problem.
-> 
-
-Sure, will remove this redundant logging.
-
->> +		goto out;
->> +	}
->> +
->> +	ret = qmi_send_request(&qmi->qmi_hdl, NULL, &txn,
->> +			       QMI_WLFW_MSA_INFO_REQ_V01,
->> +			       WLFW_MSA_INFO_REQ_MSG_V01_MAX_MSG_LEN,
->> +			       wlfw_msa_info_req_msg_v01_ei, req);
->> +	if (ret < 0) {
->> +		qmi_txn_cancel(&txn);
->> +		pr_err("fail to send MSA mem info req %d\n", ret);
-> 
-> Use dev_err().
-> 
->> +		goto out;
->> +	}
->> +
->> +	ret = qmi_txn_wait(&txn, WLFW_TIMEOUT * HZ);
-> 
-> The timeout is in jiffies, but I doubt you intended to the timeout to 
-> be
-> 500 seconds either.
-> 
-
-yes, its pretty high. I will reduce this.
-
->> +	if (ret < 0)
->> +		goto out;
->> +
->> +	if (resp->resp.result != QMI_RESULT_SUCCESS_V01) {
->> +		pr_err("MSA mem info request rejected, result:%d error:%d\n",
->> +		       resp->resp.result, resp->resp.error);
->> +		ret = -resp->resp.result;
-> 
-> Future readers will expect this to be a errno, in particular as most
-> other exit paths return errnos.
-> 
->> +		goto out;
->> +	}
->> +
->> +	pr_debug("receive mem_region_info_len: %d\n",
->> +		 resp->mem_region_info_len);
->> +
->> +	if (resp->mem_region_info_len > QMI_WLFW_MAX_NUM_MEMORY_REGIONS_V01) 
->> {
->> +		pr_err("invalid memory region length received: %d\n",
->> +		       resp->mem_region_info_len);
->> +		ret = -EINVAL;
->> +		goto out;
->> +	}
->> +
->> +	qmi->nr_mem_region = resp->mem_region_info_len;
->> +	for (i = 0; i < resp->mem_region_info_len; i++) {
->> +		qmi->mem_region[i].reg_addr =
->> +			resp->mem_region_info[i].region_addr;
-> 
-> With the use of a local variable you should be able to avoid the line
-> breaks here.
-> 
-
-Sure, will do in next version.
-
-
->> +
->> +	ret = qmi_send_request(&qmi->qmi_hdl, NULL, &txn,
->> +			       QMI_WLFW_MSA_READY_REQ_V01,
->> +			       WLFW_MSA_READY_REQ_MSG_V01_MAX_MSG_LEN,
->> +			       wlfw_msa_ready_req_msg_v01_ei, req);
->> +	if (ret < 0) {
->> +		qmi_txn_cancel(&txn);
->> +		pr_err("fail to send MSA mem ready req %d\n", ret);
->> +		goto out;
->> +	}
->> +
->> +	ret = qmi_txn_wait(&txn, WLFW_TIMEOUT * HZ);
-> 
-> As above.
-> 
->> +	if (ret < 0)
->> +		goto out;
->> +
->> +	if (resp->resp.result != QMI_RESULT_SUCCESS_V01) {
->> +		pr_err("qmi MSA mem ready request rejected, result:%d error:%d\n",
->> +		       resp->resp.result, resp->resp.error);
-> 
-> Clean up the print statement, there's no reason to print
-> resp->resp.result, it is 1. And use dev_err().
-> 
->> +		ret = -resp->resp.result;
-> 
-> This will be interpreted by future readers as an errno.
-> 
->> +	}
->> +
->> +	pr_debug("MSA mem ready request completed\n");
-> 
-> dev_dbg().
-> 
->> +	kfree(resp);
->> +	kfree(req);
->> +	return 0;
->> +
->> +out:
->> +	kfree(resp);
->> +	kfree(req);
->> +	return ret;
->> +}
->> +
->> +static int
->>  ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
->>  {
->>  	struct wlfw_ind_register_resp_msg_v01 *resp;
->> @@ -173,7 +409,27 @@ static void ath10k_qmi_event_server_arrive(struct 
->> work_struct *work)
->>  	if (ret)
->>  		return;
->> 
->> -	ath10k_qmi_ind_register_send_sync_msg(qmi);
->> +	ret = ath10k_qmi_ind_register_send_sync_msg(qmi);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = ath10k_qmi_msa_mem_info_send_sync_msg(qmi);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = ath10k_qmi_setup_msa_permissions(qmi);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = ath10k_qmi_msa_ready_send_sync_msg(qmi);
->> +	if (ret)
->> +		goto err_setup_msa;
->> +
->> +	return;
->> +
->> +err_setup_msa:
->> +	ath10k_qmi_remove_msa_permissions(qmi);
->> +	return;
->>  }
->> 
->>  static void ath10k_qmi_event_server_exit(struct work_struct *work)
->> @@ -252,6 +508,34 @@ static int ath10k_alloc_qmi_resources(struct 
->> ath10k_qmi *qmi)
->>  	return ret;
->>  }
->> 
->> +static int ath10k_qmi_setup_msa_resources(struct device *dev,
->> +					  struct ath10k_qmi *qmi)
->> +{
->> +	int ret;
->> +
->> +	ret = of_property_read_u32(dev->of_node, "qcom,wlan-msa-memory",
->> +				   &qmi->msa_mem_size);
->> +
->> +	if (ret || qmi->msa_mem_size == 0) {
->> +		pr_err("fail to get MSA memory size: %u, ret: %d\n",
->> +		       qmi->msa_mem_size, ret);
-> 
-> Use dev_err() and drop the msa_mem_size and ret from the printout, it
-> doesn't add any value.
-> 
->> +		return -ENOMEM;
->> +	}
->> +
->> +	qmi->msa_va = dmam_alloc_coherent(dev, qmi->msa_mem_size,
->> +					  &qmi->msa_pa, GFP_KERNEL);
-> 
-> The third parameter is supposed to be a dma_addr_t, not a phys_addr_t.
-> But it looks like you can just change the type.
-> 
->> +	if (!qmi->msa_va) {
->> +		pr_err("dma alloc failed for MSA\n");
->> +		return -ENOMEM;
->> +	}
->> +
->> +	pr_debug("MSA pa: %pa, MSA va: 0x%p\n",
->> +		 &qmi->msa_pa,
->> +		 qmi->msa_va);
-> 
-> dev_dbg() and the appropriate types are %pad and %pK.
-> 
->> +
->> +	return 0;
->> +}
->> +
->>  static void ath10k_remove_qmi_resources(struct ath10k_qmi *qmi)
->>  {
->>  	cancel_work_sync(&qmi->work_svc_arrive);
->> @@ -272,7 +556,7 @@ static int ath10k_qmi_probe(struct platform_device 
->> *pdev)
->> 
->>  	qmi->pdev = pdev;
->>  	platform_set_drvdata(pdev, qmi);
->> -
-> 
-> This newline was a nice divider between the "chunks" of statements, 
-> like
-> paragraphs in a book...
-> 
->> +	ath10k_qmi_setup_msa_resources(&pdev->dev, qmi);
->>  	ret = ath10k_alloc_qmi_resources(qmi);
->>  	if (ret < 0)
->>  		goto err;
->> diff --git a/drivers/net/wireless/ath/ath10k/qmi.h 
->> b/drivers/net/wireless/ath/ath10k/qmi.h
->> index 7697d24..47af020 100644
->> --- a/drivers/net/wireless/ath/ath10k/qmi.h
->> +++ b/drivers/net/wireless/ath/ath10k/qmi.h
->> @@ -16,6 +16,8 @@
->>  #ifndef _QMI_H_
->>  #define _QMI_H_
->> 
->> +#define MAX_NUM_MEMORY_REGIONS			2
->> +
->>  enum ath10k_qmi_driver_event_type {
->>  	ATH10K_QMI_EVENT_SERVER_ARRIVE,
->>  	ATH10K_QMI_EVENT_SERVER_EXIT,
->> @@ -23,6 +25,12 @@ enum ath10k_qmi_driver_event_type {
->>  	ATH10K_QMI_EVENT_MAX,
->>  };
->> 
->> +struct ath10k_msa_mem_region_info {
-> 
-> Afaict this struct is only used in qmi.c, so move it there.
-> 
->> +	u64 reg_addr;
-> 
-> This is your driver-local copy of the data being received in a
-> wlfw_msa_info_resp_msg_v01, use kernel native types instead.
-> 
-> I.e. make this phys_addr_t,
-> 
-
-Sure, will do in next version.
-
->> +	u32 size;
-> 
-> this is a size_t
-> 
->> +	u8 secure_flag;
-> 
-> And based on how you use this, just make it bool secure (and invert the
-> logic?)
-> 
-
-Sure, will do in next version.
-
->> +};
->> +
->>  struct ath10k_qmi {
->>  	struct platform_device *pdev;
->>  	struct qmi_handle qmi_hdl;
->> @@ -33,5 +41,11 @@ struct ath10k_qmi {
->>  	struct work_struct work_svc_exit;
->>  	struct workqueue_struct *event_wq;
->>  	spinlock_t event_lock; /* spinlock for fw ready status*/
->> +	u32 nr_mem_region;
->> +	struct ath10k_msa_mem_region_info
->> +		mem_region[MAX_NUM_MEMORY_REGIONS];
->> +	phys_addr_t msa_pa;
->> +	u32 msa_mem_size;
->> +	void *msa_va;
->>  };
-> 
-> Regards,
-> Bjorn
-
-BR,
-Govind
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+R292aW5kIFNpbmdoIDxnb3ZpbmRzQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+IEFkZCBRTUkg
+Y2xpZW50IGRyaXZlciBmb3IgUTYgaW50ZWdyYXRlZCBXTEFOIGNvbm5lY3Rpdml0eSBzdWJzeXN0
+ZW0uCj4gVGhpcyBtb2R1bGUgaXMgcmVzcG9uc2libGUgZm9yIGNvbW11bmljYXRpbmcgV0xBTiBj
+b250cm9sIG1lc3NhZ2VzIHRvIEZXCj4gb3ZlciBRTUkgaW50ZXJmYWNlLgo+Cj4g4oCcUVVBTENP
+TU0gTWVzc2FnaW5nIEludGVyZmFjZeKAnShRTUkpIHByb3ZpZGVzIHRoZSBjb250cm9sIGludGVy
+ZmFjZSBiZXR3ZWVuCj4gY29tcG9uZW50cyBydW5uaW5nIGIvdyByZW1vdGUgcHJvY2Vzc29ycyB3
+aXRoIHVuZGVybHlpbmcgdHJhbnNwb3J0IGxheWVyCj4gYmFzZWQgb24gaW50ZWdyYXRlZCBjaGlw
+c2V0KHNoYXJlZCBtZW1vcnkpIG9yIGRpc2NyZXRlIGNoaXBzZXQoUENJL1VTQi9TRElPL1VBUlQp
+Lgo+Cj4gUU1JIGNsaWVudCBkcml2ZXIgaW1wbGVtZW50YXRpb24gaXMgYmFzZWQgb24gcW1pIGZy
+bWV3b3JrIGh0dHBzOi8vbHduLm5ldC9BcnRpY2xlcy83Mjk5MjQvLgo+Cj4gQmVsb3cgaXMgdGhl
+IHNlcXVlbmNlIG9mIHFtaSBoYW5kc2hha2UuCj4KPiAgICAgICAgUU1JIENMSUVOVChBUFBTKSAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUU1JIFNFUlZFUihGVyBpbiBR
+NikKPgo+ICAgICAgICAgICAgICAgICAgICAgICAgICA8LS0tLS0td2xhbiBzZXJ2aWNlIGRpc2Nv
+dmVyZC0tLS0KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgLS0tLS1jb25uZWN0IHRvIHdsYW0g
+cW1pIHNlcnZpY2UtLS0tLT4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0t
+d2xhbiBpbmZvIHJlcXVlc3QtLS0tLT4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0t
+LS0tLS0tLXdsYW4gaW5mbyByZXNwLS0tLS0tLS0tLS0tCj4KPiAgICAgICAgICAgICAgICAgICAg
+ICAgIC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJlcS0tLS0tLS0tPgo+Cj4gICAgICAgICAgICAgICAg
+ICAgICAgPC0tLS0tLS0tLS0tLW1zYSBpbmZvIHJlc3AtLS0tLS0tLS0tLS0KPgo+ICAgICAgICAg
+ICAgICAgICAgICAgIC0tLS0tLS0tLS0tLW1zYSByZWFkeSByZXEtLS0tLS0tLT4KPgo+ICAgICAg
+ICAgICAgICAgICAgICAgIDwtLS0tLS0tLS0tLS1tc2EgcmVhZHkgcmVzcC0tLS0tLS0tLS0tLQo+
+Cj4gICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLW1zYSByZWFkeSBpbmRpY2F0aW9u
+LS0tLS0tLQo+Cj4gICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tY2FwYWJpbGl0eSBy
+ZXEtLS0tLS0tPgo+Cj4gICAgICAgICAgICAgICAgICAgICA8LS0tLS0tLS0tLS0tY2FwYWJpbGl0
+eSByZXNwLS0tLS0tLS0tLS0tCj4KPiAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLXFt
+aSBiZGYgcmVxLS0tLS0tLS0tPgo+Cj4gICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0t
+LXFtaSBiZGYgcmVzcC0tLS0tLS0tLS0tLQo+Cj4gICAgICAgICAgICAgICAgICAgICAgIC0tLS0t
+LS0tLS0tLXFtaSBjYWwgdHJpZ2dlci0tLS0tLS0+Cj4KPiAgICAgICAgICAgICAgICAgICA8LS0t
+LS0tLS0tLS0tIFFNSSBGVyByZWFkeSBpbmRpY2F0aW9uLS0tLS0tLQo+Cj4gR292aW5kIFNpbmdo
+ICgxMik6Cj4gICBhdGgxMGs6IEFkZCBxbWkgc2VydmljZSBmb3Igd2xhbiBxbWkgY2xpZW50Cj4g
+ICBkdDogYmluZGluZ3M6IGFkZCBiaW5kaW5ncyBmb3IgYXRoMTBrIHFtaSBjbGllbnQKPiAgIGF0
+aDEwazogQWRkIFdDTjM5OTAgUU1JIGNsaWVudCBkcml2ZXIKPiAgIGF0aDEwazogYWRkIHN1cHBv
+cnQgdG8gc3RhcnQgYW5kIHN0b3AgcW1pIHNlcnZpY2UKPiAgIGF0aDEwazogQWRkIHN1cHBvcnQg
+b2YgUU1JIGluZGljYXRpb24gbWVzc2FnZQo+ICAgZmlybXdhcmU6IHFjb206IHNjbTogQWRkIFdM
+QU4gVk1JRCBmb3IgUXVhbGNvbW0gU0NNIGludGVyZmFjZQo+ICAgYXRoMTBrOiBBZGQgTVNBIGhh
+bmRzaGFrZSBRTUkgbWdzIHN1cHBvcnQKPiAgIGF0aDEwazogQWRkIFFNSSBDQVAgcmVxdWVzdCBz
+dXBwb3J0Cj4gICBhdGgxMGs6IEFkZCBRTUkgSE9TVCBDQVAgcmVxdWVzdCBzdXBwb3J0Cj4gICBh
+dGgxMGs6IGFkZCBiZGYvY2FsIGluZGljYXRpb24gc3VwcG9ydAo+ICAgYXRoMTBrOiBBZGQgd2xh
+biBtb2RlIG9uL29mZiBxbWkgbWVzc2FnZQo+ICAgYXRoMTBrOiBBZGQgcW1pIHdsYW4gZW5hYmxl
+L2Rpc2FibGUgc3VwcG9ydCBmb3IgV0NOMzk5MAoKQlRXLCBJIG5vdGljZWQgdGhhdCB5b3UgaGFk
+IHYzIG9ubHkgaW4gdGhlIGNvdmVyIGxldHRlciBidXQgdGhlIHZlcnNpb24KbnVtYmVyIHNob3Vs
+ZCBiZSBpbiBldmVyeSBwYXRjaCBwYXJ0IG9mIHRoZSBzZXQ6CgpodHRwczovL3BhdGNod29yay5r
+ZXJuZWwub3JnL3BhdGNoLzEwMzA3MTYxLwoKLS0gCkthbGxlIFZhbG8KCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
