@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIaME-0004yM-HR
- for ath10k@lists.infradead.org; Tue, 15 May 2018 13:51:32 +0000
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIaic-0001NZ-Aa
+ for ath10k@lists.infradead.org; Tue, 15 May 2018 14:14:29 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Subject: Re: ath10k wake_tx_queue issues
-References: <20180515134516.GA30397@localhost.localdomain>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <b6d37f6a-561e-058c-0145-407fb30e34e9@candelatech.com>
-Date: Tue, 15 May 2018 06:50:46 -0700
-MIME-Version: 1.0
 In-Reply-To: <20180515134516.GA30397@localhost.localdomain>
+References: <20180515134516.GA30397@localhost.localdomain>
+Date: Tue, 15 May 2018 16:13:48 +0200
+Message-ID: <87d0xx0zxf.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +18,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>, johannes@sipsolutions.net, kvalo@qca.qualcomm.com, erik.stromdahl@gmail.com, toke@toke.dk
+To: Niklas Cassel <niklas.cassel@linaro.org>, johannes@sipsolutions.net, kvalo@qca.qualcomm.com, erik.stromdahl@gmail.com, Felix Fietkau <nbd@nbd.name>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+[ Adding Felix ]
 
-On 05/15/2018 06:45 AM, Niklas Cassel wrote:
+
+Niklas Cassel <niklas.cassel@linaro.org> writes:
+
 > Hello mac80211 and ath10k people
 >
 > Using ath10k, TX stops working when running iperf
-
-What kernel and firmware and ath10k hardware are you using?
-
-Does the same thing happen on older kernels?  I had some issues
-with ath9k having some sort of tx-hang, but my test case was
-using 200 virtual stations to transmit, and others could not reproduce
-it, so I am not sure I saw the same issue as you did.
-
-Thanks,
-Ben
-
 >
 > [  3]  0.0- 1.0 sec  2.00 MBytes  16.8 Mbits/sec
 > [  3]  1.0- 2.0 sec  3.12 MBytes  26.2 Mbits/sec
@@ -234,24 +226,21 @@ Ben
 > in the ieee80211_txq that needs to be sent, to allow more data to be written to
 > the socket. But obviously the callback never comes.
 > Or how else is this supposed to work?
->
->
-> Note that setting ops->wake_tx_queue = NULL; works around the problem
-> (i.e. let mac80211 use ath10k's tx callback instead of wake_tx_queue callback).
-> But then there might still be a bug for other drivers to stumble upon.
->
-> However, since the only wireless drivers using wake_tx_queue are: ath9k, ath10k,
-> and mt76, perhaps it is not such a bad idea to use the tx callback instead of
-> the wake_tx_queue callback.
->
->
-> Kind regards,
-> Niklas
->
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+The driver should reschedule itself before/after calling
+ieee80211_wake_queue. mt76 does this; I'm not actually sure if ath9k
+does the right thing either, I'm not too familiar with that part of the
+code. There's no direct call to reschedule that I can see, but there may
+be another reason why this is not needed for ath9k. I'm sure Felix
+knows?
+
+> However, since the only wireless drivers using wake_tx_queue are:
+> ath9k, ath10k, and mt76, perhaps it is not such a bad idea to use the
+> tx callback instead of the wake_tx_queue callback.
+
+On the contrary, we want more drivers to move to wake_tx_queue :)
+
+-Toke
 
 _______________________________________________
 ath10k mailing list
