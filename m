@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([52.28.52.200])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIsdm-0008EJ-VX
- for ath10k@lists.infradead.org; Wed, 16 May 2018 09:22:37 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: ath10k wake_tx_queue issues
-In-Reply-To: <20180515203102.GA20469@localhost.localdomain>
-References: <20180515134516.GA30397@localhost.localdomain>
- <87d0xx0zxf.fsf@toke.dk> <20180515203102.GA20469@localhost.localdomain>
-Date: Wed, 16 May 2018 11:22:11 +0200
-Message-ID: <87tvr8ymyk.fsf@toke.dk>
+ id 1fItNp-00055I-1u
+ for ath10k@lists.infradead.org; Wed, 16 May 2018 10:10:13 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: DFS Host Confirmation
+References: <1525110339-25326-1-git-send-email-srirrama@codeaurora.org>
+ <1525110339-25326-3-git-send-email-srirrama@codeaurora.org>
+ <CAJ-VmonSEuh7Ou=K9Gu-gZ5ikpX9H=nzXe9NssNu1vw8fEk3hg@mail.gmail.com>
+ <87h8naqel1.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-VmomNrjdEZ+UCH5rmth=2yE9utfM3FUTEy2a0zpq0r44Zig@mail.gmail.com>
+ <87y3gla4re.fsf@codeaurora.org>
+ <a148127a-322a-8e48-cea4-bd9a8aa7c2ed@bowerswilkins.com>
+Date: Wed, 16 May 2018 13:09:51 +0300
+In-Reply-To: <a148127a-322a-8e48-cea4-bd9a8aa7c2ed@bowerswilkins.com> (Peter
+ Oh's message of "Tue, 15 May 2018 11:59:45 -0700")
+Message-ID: <87wow3lxn4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,55 +29,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: erik.stromdahl@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@qca.qualcomm.com, johannes@sipsolutions.net, Felix Fietkau <nbd@nbd.name>
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, linux-wireless@vger.kernel.org, srirrama@codeaurora.org, ath10k@lists.infradead.org
 
-Niklas Cassel <niklas.cassel@linaro.org> writes:
-> [ .. snip .. ]
->> > Sure, the regular way ath10k_mac_op_wake_tx_queue is called is via
->> > ieee80211_subif_start_xmit => __ieee80211_subif_start_xmit => ieee80211_xmit_fast
->> > => ieee80211_queue_skb => drv_wake_tx_queue.
->> >
->> > But I was expecting the call to ieee80211_wake_queue to somehow trigger a call
->> > to ath10k_mac_op_wake_tx_queue, since there is still data in the send buffer/
->> > in the ieee80211_txq that needs to be sent, to allow more data to be written to
->> > the socket. But obviously the callback never comes.
->> > Or how else is this supposed to work?
->> 
->> The driver should reschedule itself before/after calling
->> ieee80211_wake_queue. mt76 does this; I'm not actually sure if ath9k
->> does the right thing either, I'm not too familiar with that part of the
->> code. There's no direct call to reschedule that I can see, but there may
->> be another reason why this is not needed for ath9k. I'm sure Felix
->> knows?
+Peter Oh <peter.oh@bowerswilkins.com> writes:
+
+>> Sure, every software change can cause regressions. But the thing is that
+>> this isn't an optional, ath10k has to have this to be able to continue
+>> using DFS channels.
 >
-> Hello Toke
->
-> Unfortunately, it doesn't look like mt76 uses any ieee80211_* function
-> to reschedule.
+> Kalle, you said you don't know which exact FCC requirement this is for
+> in another email thread. Then how come you're sure this is not an
+> optional 
 
-It doesn't need to; it just reschedules itself.
+To me this is a mandatory ath10k feature because if the host driver does
+not have this DFS channels won't work anymore.
 
-Basically, the wake_tx_queue() callback is just a way for mac80211 to
-notify the driver that new packets are available and that it should
-start its scheduling function. But in this case it is the driver that is
-restarting the queues, so it already knows that. And so it can just call
-its internal scheduling function. This is what mt76 does in
-mt76_dma_tx_cleanup() with the call to mt76_txq_schedule() before
-calling ieee80211_wake_queue().
+> and this approach is right one?
 
-I think that what ath10k should be doing is calling
-ath10k_mac_tx_push_pending() when it restarts the queues.
+That's something you need to ask the firmware team who designed and
+implemented this.
 
-> I just came across a ieee80211_schedule_txq() function in e937b8da5a59
-> ("mac80211: Add TXQ scheduling API"). However, this commit was
-> reverted. Any plans on resubmitting this?
+This discussion is going circles, it would be a lot easier if you could
+clearly say your point. But if your point is just "I don't like this"
+then there's not much, if any, I can do about that.
 
-Yeah, I have a revised version lying around waiting for Felix to review
-it. But that wouldn't help this bug; it's just an API change, it doesn't
-change behaviour...
-
--Toke
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
