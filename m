@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from 3.mo5.mail-out.ovh.net ([46.105.40.108])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIpPT-00007D-Tl
- for ath10k@lists.infradead.org; Wed, 16 May 2018 05:55:55 +0000
-Received: from player746.ha.ovh.net (unknown [10.109.105.61])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id B8ECB1ACC4C
- for <ath10k@lists.infradead.org>; Wed, 16 May 2018 07:55:12 +0200 (CEST)
+ id 1fIsYL-0004eO-H6
+ for ath10k@lists.infradead.org; Wed, 16 May 2018 09:17:00 +0000
+Received: by mail-lf0-x244.google.com with SMTP id w202-v6so4485408lff.12
+ for <ath10k@lists.infradead.org>; Wed, 16 May 2018 02:16:46 -0700 (PDT)
+Date: Wed, 16 May 2018 11:16:41 +0200
+From: Niklas Cassel <niklas.cassel@linaro.org>
 Subject: Re: ath10k wake_tx_queue issues
+Message-ID: <20180516091641.GA16894@localhost.localdomain>
 References: <20180515134516.GA30397@localhost.localdomain>
- <87d0xx0zxf.fsf@toke.dk> <20180515203102.GA20469@localhost.localdomain>
-From: Alexander Wetzel <alexander@wetzel-home.de>
-Message-ID: <668a5f16-52b2-0a43-49d2-236f892fc1f1@wetzel-home.de>
-Date: Wed, 16 May 2018 07:54:54 +0200
+ <87d0xx0zxf.fsf@toke.dk>
+ <20180515203102.GA20469@localhost.localdomain>
+ <668a5f16-52b2-0a43-49d2-236f892fc1f1@wetzel-home.de>
 MIME-Version: 1.0
-In-Reply-To: <20180515203102.GA20469@localhost.localdomain>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <668a5f16-52b2-0a43-49d2-236f892fc1f1@wetzel-home.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,340 +24,456 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: alexander@wetzel-home.de
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>
-Cc: erik.stromdahl@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@qca.qualcomm.com, johannes@sipsolutions.net, Felix Fietkau <nbd@nbd.name>
+To: Alexander Wetzel <alexander@wetzel-home.de>
+Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>, erik.stromdahl@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@qca.qualcomm.com, johannes@sipsolutions.net, Felix Fietkau <nbd@nbd.name>
 
-SGVsbG8sCgpUaGlzIHNvdW5kcyBleGFjdGx5IGxpa2UgdGhlIGlzc3VlIEkganVzdCBzdWJtaXR0
-ZWQgYSBwYXRjaCBmb3IuCkNhbiB5b3UgdGVzdCBodHRwczovL3BhdGNod29yay5rZXJuZWwub3Jn
-L3BhdGNoLzEwMzk5NjEzLyBpZiB0aGF0IHNvbHZlcwp0aGUgaXNzdWU/CgoKCkFtIDE1LjA1LjIw
-MTggdW0gMjI6MzEgc2NocmllYiBOaWtsYXMgQ2Fzc2VsOgo+IE9uIFR1ZSwgTWF5IDE1LCAyMDE4
-IGF0IDA0OjEzOjQ4UE0gKzAyMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4g
-WyBBZGRpbmcgRmVsaXggXQo+Pgo+Pgo+PiBOaWtsYXMgQ2Fzc2VsIDxuaWtsYXMuY2Fzc2VsQGxp
-bmFyby5vcmc+IHdyaXRlczoKPj4KPj4+IEhlbGxvIG1hYzgwMjExIGFuZCBhdGgxMGsgcGVvcGxl
-Cj4+Pgo+Pj4gVXNpbmcgYXRoMTBrLCBUWCBzdG9wcyB3b3JraW5nIHdoZW4gcnVubmluZyBpcGVy
-Zgo+Pj4KPj4+IFsgIDNdICAwLjAtIDEuMCBzZWMgIDIuMDAgTUJ5dGVzICAxNi44IE1iaXRzL3Nl
-Ywo+Pj4gWyAgM10gIDEuMC0gMi4wIHNlYyAgMy4xMiBNQnl0ZXMgIDI2LjIgTWJpdHMvc2VjCj4+
-PiBbICAzXSAgMi4wLSAzLjAgc2VjICAzLjI1IE1CeXRlcyAgMjcuMyBNYml0cy9zZWMKPj4+IFsg
-IDNdICAzLjAtIDQuMCBzZWMgICA2NTUgS0J5dGVzICA1LjM2IE1iaXRzL3NlYwo+Pj4gWyAgM10g
-IDQuMC0gNS4wIHNlYyAgMC4wMCBCeXRlcyAgMC4wMCBiaXRzL3NlYwo+Pj4gWyAgM10gIDUuMC0g
-Ni4wIHNlYyAgMC4wMCBCeXRlcyAgMC4wMCBiaXRzL3NlYwo+Pj4gWyAgM10gIDYuMC0gNy4wIHNl
-YyAgMC4wMCBCeXRlcyAgMC4wMCBiaXRzL3NlYwo+Pj4gWyAgM10gIDcuMC0gOC4wIHNlYyAgMC4w
-MCBCeXRlcyAgMC4wMCBiaXRzL3NlYwo+Pj4gWyAgM10gIDguMC0gOS4wIHNlYyAgMC4wMCBCeXRl
-cyAgMC4wMCBiaXRzL3NlYwo+Pj4gWyAgM10gIDkuMC0xMC4wIHNlYyAgMC4wMCBCeXRlcyAgMC4w
-MCBiaXRzL3NlYwo+Pj4gWyAgM10gIDAuMC0xMC4zIHNlYyAgOS4wMSBNQnl0ZXMgIDcuMzIgTWJp
-dHMvc2VjCj4+Pgo+Pj4gVGhlIHByb2JsZW0gY2FuIGJlIHJlcHJvZHVjZWQgd2l0aG91dCBzcGVj
-aWZ5aW5nIGEgc2VuZCBidWZmZXIgc2l6ZSwKPj4+IGhvd2V2ZXIsIHNwZWNpZnlpbmcgYSBzbWFs
-bCBzZW5kIGJ1ZmZlciBoZWxwcyB0byByZXByb2R1Y2UgdGhlIHByb2JsZW0gZmFzdGVyLgo+Pj4K
-Pj4+IFdoYXQgaGFwcGVucyBpcyB0aGF0IGlwZXJmIGdldHMgLUVBR0FJTiBvbiB3cml0ZSgpLgo+
-Pj4gSXQgY29udGludWVzIHRvIGdldCAtRUFHQUlOLCBldmVuIGlmIGlwZXJmIHJ1bnMgZm9yIGUu
-Zy4gMzAwIHNlY29uZHMuCj4+PiBUaGUgcmVhc29uIHdoeSB3ZSBnZXQgLUVBR0FJTiBpcyBiZWNh
-dXNlIHRoZSBzZW5kIHNvY2tldCBidWZmZXIgaXMgZnVsbAo+Pj4gKGlwZXJmIHVzZXMgbm9uLWJs
-b2NraW5nIEkvTykuCj4+Pgo+Pj4gVGhlIHByb2JsZW0gaXMgdGhhdCB0aGUgbWFjODAyMTEgd2Fr
-ZV90eF9xdWV1ZSBjYWxsYmFjayBuZXZlciBjb21lcy4KPj4+Cj4+PiBJIGd1ZXNzIHRoZSBiZXN0
-IHdheSB0byBkZXNjcmliZSB0aGlzIGlzIHRvIHNob3cgbXkgZnRyYWNlIGJ1ZmZlcjoKPj4+Cj4+
-PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczQgICAgNzQuNzExNzQ0OiBhdGgxMGtf
-aHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA2MAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAg
-ICBbMDAyXSAubnMzICAgIDc0LjcxMTc2MTogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0
-eHE6IGZyYW1lX2NudDogMSBieXRlX2NudDogMTUzNCBmX3R4cTogZnJhbWVfY250OiAxIGJ5dGVf
-Y250OiAxNTM0IG51bV9wZW46IDYwIHF1ZXVlOiAwCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAg
-IFswMDJdIC5uczQgICAgNzQuNzExNzY1OiBhdGgxMGtfaHR0X3R4X2luY19wZW5kaW5nOiBudW1f
-cGVuOiA2MQo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnM0ICAgIDc0LjcxMTc4
-MTogYXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZzogbnVtX3BlbjogNjIKPj4+ICAgICAga3NvZnRp
-cnFkLzItMjEgICAgWzAwMl0gLm5zNCAgICA3NC43MTE3ODc6IGF0aDEwa19odHRfdHhfZGVjX3Bl
-bmRpbmc6IG51bV9wZW46IDYxCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczMg
-ICAgNzQuNzExODAzOiBhdGgxMGtfbWFjX29wX3dha2VfdHhfcXVldWU6IHR4cTogZnJhbWVfY250
-OiAxIGJ5dGVfY250OiAxNTM0IGZfdHhxOiBmcmFtZV9jbnQ6IDEgYnl0ZV9jbnQ6IDE1MzQgbnVt
-X3BlbjogNjEgcXVldWU6IDAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gLm5zNCAg
-ICA3NC43MTE4MDc6IGF0aDEwa19odHRfdHhfaW5jX3BlbmRpbmc6IG51bV9wZW46IDYyCj4+PiAg
-ICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczQgICAgNzQuNzExODIzOiBhdGgxMGtfaHR0
-X3R4X2luY19wZW5kaW5nOiBudW1fcGVuOiA2Mwo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBb
-MDAyXSAubnM0ICAgIDc0LjcxMTgyOTogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3Bl
-bjogNjIKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gLm5zMyAgICA3NC43MTE4NDU6
-IGF0aDEwa19tYWNfb3Bfd2FrZV90eF9xdWV1ZTogdHhxOiBmcmFtZV9jbnQ6IDEgYnl0ZV9jbnQ6
-IDE1MzQgZl90eHE6IGZyYW1lX2NudDogMSBieXRlX2NudDogMTUzNCBudW1fcGVuOiA2MiBxdWV1
-ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnM0ICAgIDc0LjcxMTg0OTog
-YXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZzogbnVtX3BlbjogNjMKPj4+ICAgICAga3NvZnRpcnFk
-LzItMjEgICAgWzAwMl0gLm5zNCAgICA3NC43MTE4NjU6IGF0aDEwa19odHRfdHhfaW5jX3BlbmRp
-bmc6IG51bV9wZW46IDY0Cj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAg
-NzQuNzExODcwOiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjAsIHJlYXNvbjowCj4+PiAgICAgIGtz
-b2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzExODc0OiBzdG9wX3F1ZXVlOiBwaHkw
-IHF1ZXVlOjEsIHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUg
-ICAgNzQuNzExODc3OiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjIsIHJlYXNvbjowCj4+PiAgICAg
-IGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzExODgwOiBzdG9wX3F1ZXVlOiBw
-aHkwIHF1ZXVlOjMsIHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRu
-czUgICAgNzQuNzExODgyOiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjQsIHJlYXNvbjowCj4+PiAg
-ICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzExODg1OiBzdG9wX3F1ZXVl
-OiBwaHkwIHF1ZXVlOjUsIHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJd
-IGRuczUgICAgNzQuNzExODg3OiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjYsIHJlYXNvbjowCj4+
-PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzExODkwOiBzdG9wX3F1
-ZXVlOiBwaHkwIHF1ZXVlOjcsIHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFsw
-MDJdIGRuczUgICAgNzQuNzExODkyOiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjgsIHJlYXNvbjow
-Cj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzExODk1OiBzdG9w
-X3F1ZXVlOiBwaHkwIHF1ZXVlOjksIHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAg
-IFswMDJdIGRuczUgICAgNzQuNzExODk4OiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjEwLCByZWFz
-b246MAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSBkbnM1ICAgIDc0LjcxMTkwMDog
-c3RvcF9xdWV1ZTogcGh5MCBxdWV1ZToxMSwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzIt
-MjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5MDM6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6MTIs
-IHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzEx
-OTA1OiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjEzLCByZWFzb246MAo+Pj4gICAgICBrc29mdGly
-cWQvMi0yMSAgICBbMDAyXSBkbnM1ICAgIDc0LjcxMTkwODogc3RvcF9xdWV1ZTogcGh5MCBxdWV1
-ZToxNCwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3
-NC43MTE5MTA6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6MTUsIHJlYXNvbjowCj4+PiAgICAgIGtz
-b2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczQgICAgNzQuNzExOTE3OiBhdGgxMGtfaHR0X3R4X2Rl
-Y19wZW5kaW5nOiBudW1fcGVuOiA2Mwo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSBk
-bnM1ICAgIDc0LjcxMTkyMjogd2FrZV9xdWV1ZTogcGh5MCBxdWV1ZTowLCByZWFzb246MAo+Pj4g
-ICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSBkbnM1ICAgIDc0LjcxMTkyOTogd2FrZV9xdWV1
-ZTogcGh5MCBxdWV1ZToxNSwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAw
-Ml0gLm5zMyAgICA3NC43MTE5NDg6IGF0aDEwa19tYWNfb3Bfd2FrZV90eF9xdWV1ZTogdHhxOiBm
-cmFtZV9jbnQ6IDEgYnl0ZV9jbnQ6IDE1MzQgZl90eHE6IGZyYW1lX2NudDogMSBieXRlX2NudDog
-MTUzNCBudW1fcGVuOiA2MyBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAy
-XSAubnM0ICAgIDc0LjcxMTk1MjogYXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZzogbnVtX3Blbjog
-NjQKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5NTY6IHN0
-b3BfcXVldWU6IHBoeTAgcXVldWU6MCwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEg
-ICAgWzAwMl0gZG5zNSAgICA3NC43MTE5NTk6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6MSwgcmVh
-c29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5NjI6
-IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6MiwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzIt
-MjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5NjQ6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6Mywg
-cmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5
-Njc6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6NCwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFk
-LzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5Njk6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6
-NSwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43
-MTE5NzI6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6NiwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRp
-cnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5NzQ6IHN0b3BfcXVldWU6IHBoeTAgcXVl
-dWU6NywgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3
-NC43MTE5Nzc6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6OCwgcmVhc29uOjAKPj4+ICAgICAga3Nv
-ZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5ODA6IHN0b3BfcXVldWU6IHBoeTAg
-cXVldWU6OSwgcmVhc29uOjAKPj4+ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAg
-ICA3NC43MTE5ODI6IHN0b3BfcXVldWU6IHBoeTAgcXVldWU6MTAsIHJlYXNvbjowCj4+PiAgICAg
-IGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIGRuczUgICAgNzQuNzExOTg1OiBzdG9wX3F1ZXVlOiBw
-aHkwIHF1ZXVlOjExLCByZWFzb246MAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSBk
-bnM1ICAgIDc0LjcxMTk4Nzogc3RvcF9xdWV1ZTogcGh5MCBxdWV1ZToxMiwgcmVhc29uOjAKPj4+
-ICAgICAga3NvZnRpcnFkLzItMjEgICAgWzAwMl0gZG5zNSAgICA3NC43MTE5OTA6IHN0b3BfcXVl
-dWU6IHBoeTAgcXVldWU6MTMsIHJlYXNvbjowCj4+PiAgICAgIGtzb2Z0aXJxZC8yLTIxICAgIFsw
-MDJdIGRuczUgICAgNzQuNzExOTkyOiBzdG9wX3F1ZXVlOiBwaHkwIHF1ZXVlOjE0LCByZWFzb246
-MAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSBkbnM1ICAgIDc0LjcxMTk5NTogc3Rv
-cF9xdWV1ZTogcGh5MCBxdWV1ZToxNSwgcmVhc29uOjAKPj4+Cj4+PiAoc2luY2Ugd2UganVzdCBj
-YWxsZWQgaWVlZTgwMjExX3N0b3BfcXVldWVzKCksIEkgd291bGRuJ3QgZXhwZWN0IHRvIHNlZQo+
-Pj4gd2FrZV90eF9xdWV1ZSBiZWluZyBjYWxsZWQgZGlyZWN0bHkgYWZ0ZXIpCj4+Pgo+Pj4gICAg
-ICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjAyNDogYXRoMTBrX21hY19v
-cF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMSBieXRlX2NudDogMTUzNCBmX3R4cTog
-ZnJhbWVfY250OiAxIGJ5dGVfY250OiAxNTM0IG51bV9wZW46IDY0IHF1ZXVlOiAwCj4+PiAgICAg
-IGtzb2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczMgICAgNzQuNzEyMDQwOiBhdGgxMGtfbWFjX29w
-X3dha2VfdHhfcXVldWU6IHR4cTogZnJhbWVfY250OiAyIGJ5dGVfY250OiAzMDY4IGZfdHhxOiBm
-cmFtZV9jbnQ6IDIgYnl0ZV9jbnQ6IDMwNjggbnVtX3BlbjogNjQgcXVldWU6IDAKPj4+ICAgICAg
-a3NvZnRpcnFkLzItMjEgICAgWzAwMl0gLm5zMyAgICA3NC43MTIwNTU6IGF0aDEwa19tYWNfb3Bf
-d2FrZV90eF9xdWV1ZTogdHhxOiBmcmFtZV9jbnQ6IDMgYnl0ZV9jbnQ6IDQ2MDIgZl90eHE6IGZy
-YW1lX2NudDogMyBieXRlX2NudDogNDYwMiBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBr
-c29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjA2OTogYXRoMTBrX21hY19vcF93
-YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogNCBieXRlX2NudDogNjEzNiBmX3R4cTogZnJh
-bWVfY250OiA0IGJ5dGVfY250OiA2MTM2IG51bV9wZW46IDY0IHF1ZXVlOiAwCj4+PiAgICAgIGtz
-b2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczMgICAgNzQuNzEyMDg0OiBhdGgxMGtfbWFjX29wX3dh
-a2VfdHhfcXVldWU6IHR4cTogZnJhbWVfY250OiA1IGJ5dGVfY250OiA3NjcwIGZfdHhxOiBmcmFt
-ZV9jbnQ6IDUgYnl0ZV9jbnQ6IDc2NzAgbnVtX3BlbjogNjQgcXVldWU6IDAKPj4+ICAgICAga3Nv
-ZnRpcnFkLzItMjEgICAgWzAwMl0gLm5zMyAgICA3NC43MTIwOTk6IGF0aDEwa19tYWNfb3Bfd2Fr
-ZV90eF9xdWV1ZTogdHhxOiBmcmFtZV9jbnQ6IDYgYnl0ZV9jbnQ6IDkyMDQgZl90eHE6IGZyYW1l
-X2NudDogNiBieXRlX2NudDogOTIwNCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29m
-dGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjExMzogYXRoMTBrX21hY19vcF93YWtl
-X3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogNyBieXRlX2NudDogMTA3MzggZl90eHE6IGZyYW1l
-X2NudDogNyBieXRlX2NudDogMTA3MzggbnVtX3BlbjogNjQgcXVldWU6IDAKPj4+ICAgICAga3Nv
-ZnRpcnFkLzItMjEgICAgWzAwMl0gLm5zMyAgICA3NC43MTIxMjg6IGF0aDEwa19tYWNfb3Bfd2Fr
-ZV90eF9xdWV1ZTogdHhxOiBmcmFtZV9jbnQ6IDggYnl0ZV9jbnQ6IDEyMjcyIGZfdHhxOiBmcmFt
-ZV9jbnQ6IDggYnl0ZV9jbnQ6IDEyMjcyIG51bV9wZW46IDY0IHF1ZXVlOiAwCj4+PiAgICAgIGtz
-b2Z0aXJxZC8yLTIxICAgIFswMDJdIC5uczMgICAgNzQuNzEyMTQyOiBhdGgxMGtfbWFjX29wX3dh
-a2VfdHhfcXVldWU6IHR4cTogZnJhbWVfY250OiA5IGJ5dGVfY250OiAxMzgwNiBmX3R4cTogZnJh
-bWVfY250OiA5IGJ5dGVfY250OiAxMzgwNiBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBr
-c29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjE1NzogYXRoMTBrX21hY19vcF93
-YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTAgYnl0ZV9jbnQ6IDE1MzQwIGZfdHhxOiBm
-cmFtZV9jbnQ6IDEwIGJ5dGVfY250OiAxNTM0MCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAg
-ICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjE3MTogYXRoMTBrX21hY19v
-cF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTEgYnl0ZV9jbnQ6IDE2ODc0IGZfdHhx
-OiBmcmFtZV9jbnQ6IDExIGJ5dGVfY250OiAxNjg3NCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4g
-ICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjE4NjogYXRoMTBrX21h
-Y19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTIgYnl0ZV9jbnQ6IDE4NDA4IGZf
-dHhxOiBmcmFtZV9jbnQ6IDEyIGJ5dGVfY250OiAxODQwOCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+
-Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjIwMDogYXRoMTBr
-X21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTMgYnl0ZV9jbnQ6IDE5OTQy
-IGZfdHhxOiBmcmFtZV9jbnQ6IDEzIGJ5dGVfY250OiAxOTk0MiBudW1fcGVuOiA2NCBxdWV1ZTog
-MAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjIxNTogYXRo
-MTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTQgYnl0ZV9jbnQ6IDIx
-NDc2IGZfdHhxOiBmcmFtZV9jbnQ6IDE0IGJ5dGVfY250OiAyMTQ3NiBudW1fcGVuOiA2NCBxdWV1
-ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjIyOTog
-YXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTUgYnl0ZV9jbnQ6
-IDIzMDEwIGZfdHhxOiBmcmFtZV9jbnQ6IDE1IGJ5dGVfY250OiAyMzAxMCBudW1fcGVuOiA2NCBx
-dWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0LjcxMjI0
-NDogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTYgYnl0ZV9j
-bnQ6IDI0NTQ0IGZfdHhxOiBmcmFtZV9jbnQ6IDE2IGJ5dGVfY250OiAyNDU0NCBudW1fcGVuOiA2
-NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0Ljcx
-MjI1ODogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTcgYnl0
-ZV9jbnQ6IDI2MDc4IGZfdHhxOiBmcmFtZV9jbnQ6IDE3IGJ5dGVfY250OiAyNjA3OCBudW1fcGVu
-OiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAgIDc0
-LjcxMjI3MzogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDogMTgg
-Ynl0ZV9jbnQ6IDI3NjEyIGZfdHhxOiBmcmFtZV9jbnQ6IDE4IGJ5dGVfY250OiAyNzYxMiBudW1f
-cGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMzICAg
-IDc0LjcxMjI4NzogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2NudDog
-MTkgYnl0ZV9jbnQ6IDI5MTQ2IGZfdHhxOiBmcmFtZV9jbnQ6IDE5IGJ5dGVfY250OiAyOTE0NiBu
-dW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAubnMz
-ICAgIDc0LjcxMjMwMjogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1lX2Nu
-dDogMjAgYnl0ZV9jbnQ6IDMwNjgwIGZfdHhxOiBmcmFtZV9jbnQ6IDIwIGJ5dGVfY250OiAzMDY4
-MCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAyXSAu
-bnMzICAgIDc0LjcxMjMxNjogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZyYW1l
-X2NudDogMjEgYnl0ZV9jbnQ6IDMyMjE0IGZfdHhxOiBmcmFtZV9jbnQ6IDIxIGJ5dGVfY250OiAz
-MjIxNCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBbMDAy
-XSAubnMzICAgIDc0LjcxMjMzMDogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6IGZy
-YW1lX2NudDogMjIgYnl0ZV9jbnQ6IDMzNzQ4IGZfdHhxOiBmcmFtZV9jbnQ6IDIyIGJ5dGVfY250
-OiAzMzc0OCBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAgICBb
-MDAyXSAubnMzICAgIDc0LjcxMjM0NTogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0eHE6
-IGZyYW1lX2NudDogMjMgYnl0ZV9jbnQ6IDM1MjgyIGZfdHhxOiBmcmFtZV9jbnQ6IDIzIGJ5dGVf
-Y250OiAzNTI4MiBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICAgICBrc29mdGlycWQvMi0yMSAg
-ICBbMDAyXSAubnMzICAgIDc0LjcxMjM1OTogYXRoMTBrX21hY19vcF93YWtlX3R4X3F1ZXVlOiB0
-eHE6IGZyYW1lX2NudDogMjQgYnl0ZV9jbnQ6IDM2ODE2IGZfdHhxOiBmcmFtZV9jbnQ6IDI0IGJ5
-dGVfY250OiAzNjgxNiBudW1fcGVuOiA2NCBxdWV1ZTogMAo+Pj4gICBrc2Rpb2lycWQvbW1jMi0x
-MzkgICBbMDAyXSAuLi4xICAgIDc0LjcxMjQxMTogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzog
-bnVtX3BlbjogNjMKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gZC4uMiAgICA3NC43
-MTI0MTc6IHdha2VfcXVldWU6IHBoeTAgcXVldWU6MCwgcmVhc29uOjAKPj4+ICAga3NkaW9pcnFk
-L21tYzItMTM5ICAgWzAwMl0gZC4uMiAgICA3NC43MTI0MjQ6IHdha2VfcXVldWU6IHBoeTAgcXVl
-dWU6MTUsIHJlYXNvbjowCj4+Pgo+Pj4gaGVyZSB3ZSBqdXN0IGNhbGxlZCBpZWVlODAyMTFfd2Fr
-ZV9xdWV1ZSgpLCBob3dldmVyLCB3YWtlX3R4X3F1ZXVlIGNhbGxiYWNrCj4+PiAoYXRoMTBrX21h
-Y19vcF93YWtlX3R4X3F1ZXVlKSBpcyBuZXZlciBzZWVuIGFnYWluLi4uCj4+Pgo+Pj4gICBrc2Rp
-b2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxMjQ1NDogYXRoMTBrX2h0dF90eF9k
-ZWNfcGVuZGluZzogbnVtX3BlbjogNjIKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0g
-Li4uMSAgICA3NC43MTI0Njg6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDYx
-Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE4MDc4OiBhdGgx
-MGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA2MAo+Pj4gICBrc2Rpb2lycWQvbW1jMi0x
-MzkgICBbMDAyXSAuLi4xICAgIDc0LjcxODEwMzogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzog
-bnVtX3BlbjogNTkKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43
-MTgxMTY6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDU4Cj4+PiAgIGtzZGlv
-aXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE4MTMxOiBhdGgxMGtfaHR0X3R4X2Rl
-Y19wZW5kaW5nOiBudW1fcGVuOiA1Nwo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAu
-Li4xICAgIDc0LjcxODE0MzogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogNTYK
-Pj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTgxNTU6IGF0aDEw
-a19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDU1Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEz
-OSAgIFswMDJdIC4uLjEgICAgNzQuNzE4MjUwOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBu
-dW1fcGVuOiA1NAo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0Ljcx
-ODI3MzogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogNTMKPj4+ICAga3NkaW9p
-cnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTgyODY6IGF0aDEwa19odHRfdHhfZGVj
-X3BlbmRpbmc6IG51bV9wZW46IDUyCj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4u
-LjEgICAgNzQuNzE4Mjk4OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA1MQo+
-Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxODMxMDogYXRoMTBr
-X2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogNTAKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5
-ICAgWzAwMl0gLi4uMSAgICA3NC43MTgzMjI6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51
-bV9wZW46IDQ5Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE4
-MzM0OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA0OAo+Pj4gICBrc2Rpb2ly
-cWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxODM0NjogYXRoMTBrX2h0dF90eF9kZWNf
-cGVuZGluZzogbnVtX3BlbjogNDcKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4u
-MSAgICA3NC43MTg2MjI6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDQ2Cj4+
-PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE4NjQ3OiBhdGgxMGtf
-aHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA0NQo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkg
-ICBbMDAyXSAuLi4xICAgIDc0LjcxODY2MDogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVt
-X3BlbjogNDQKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTkw
-NTA6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDQzCj4+PiAgIGtzZGlvaXJx
-ZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE5MTU0OiBhdGgxMGtfaHR0X3R4X2RlY19w
-ZW5kaW5nOiBudW1fcGVuOiA0Mgo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4x
-ICAgIDc0LjcxOTI1NTogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogNDEKPj4+
-ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTkyNzg6IGF0aDEwa19o
-dHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDQwCj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAg
-IFswMDJdIC4uLjEgICAgNzQuNzE5MzcxOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1f
-cGVuOiAzOQo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxOTM5
-NDogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogMzgKPj4+ICAga3NkaW9pcnFk
-L21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTk0OTM6IGF0aDEwa19odHRfdHhfZGVjX3Bl
-bmRpbmc6IG51bV9wZW46IDM3Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEg
-ICAgNzQuNzE5NTE2OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAzNgo+Pj4g
-ICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxOTUyOTogYXRoMTBrX2h0
-dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogMzUKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAg
-WzAwMl0gLi4uMSAgICA3NC43MTk1NDE6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9w
-ZW46IDM0Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE5NTU0
-OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAzMwo+Pj4gICBrc2Rpb2lycWQv
-bW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxOTU2NjogYXRoMTBrX2h0dF90eF9kZWNfcGVu
-ZGluZzogbnVtX3BlbjogMzIKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAg
-ICA3NC43MTk2NTg6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDMxCj4+PiAg
-IGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE5NjgxOiBhdGgxMGtfaHR0
-X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAzMAo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBb
-MDAyXSAuLi4xICAgIDc0LjcxOTY5NDogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3Bl
-bjogMjkKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTk3MDg6
-IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDI4Cj4+PiAgIGtzZGlvaXJxZC9t
-bWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzE5ODAzOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5k
-aW5nOiBudW1fcGVuOiAyNwo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAg
-IDc0LjcxOTgyNjogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogMjYKPj4+ICAg
-a3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTk4Mzk6IGF0aDEwa19odHRf
-dHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDI1Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFsw
-MDJdIC4uLjEgICAgNzQuNzE5ODUxOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVu
-OiAyNAo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxOTg2NDog
-YXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogMjMKPj4+ICAga3NkaW9pcnFkL21t
-YzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MTk5NTY6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRp
-bmc6IG51bV9wZW46IDIyCj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAg
-NzQuNzE5OTc4OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAyMQo+Pj4gICBr
-c2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcxOTk5MjogYXRoMTBrX2h0dF90
-eF9kZWNfcGVuZGluZzogbnVtX3BlbjogMjAKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAw
-Ml0gLi4uMSAgICA3NC43MjAwMDQ6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46
-IDE5Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwMDk2OiBh
-dGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAxOAo+Pj4gICBrc2Rpb2lycWQvbW1j
-Mi0xMzkgICBbMDAyXSAuLi4xICAgIDc0LjcyMDEzNzogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGlu
-ZzogbnVtX3BlbjogMTcKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3
-NC43MjAxNTA6IGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDE2Cj4+PiAgIGtz
-ZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwMTYzOiBhdGgxMGtfaHR0X3R4
-X2RlY19wZW5kaW5nOiBudW1fcGVuOiAxNQo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAy
-XSAuLi4xICAgIDc0LjcyMDI1NjogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3Blbjog
-MTQKPj4+ICAga3NkaW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MjAyNzk6IGF0
-aDEwa19odHRfdHhfZGVjX3BlbmRpbmc6IG51bV9wZW46IDEzCj4+PiAgIGtzZGlvaXJxZC9tbWMy
-LTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwMjkyOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5n
-OiBudW1fcGVuOiAxMgo+Pj4gICBrc2Rpb2lycWQvbW1jMi0xMzkgICBbMDAyXSAuLi4xICAgIDc0
-LjcyMDMwNDogYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZzogbnVtX3BlbjogMTEKPj4+ICAga3Nk
-aW9pcnFkL21tYzItMTM5ICAgWzAwMl0gLi4uMSAgICA3NC43MjAzMTY6IGF0aDEwa19odHRfdHhf
-ZGVjX3BlbmRpbmc6IG51bV9wZW46IDEwCj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJd
-IC4uLjEgICAgNzQuNzIwMzk2OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA5
-Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwNTAzOiBhdGgx
-MGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA4Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEz
-OSAgIFswMDJdIC4uLjEgICAgNzQuNzIwNTI3OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBu
-dW1fcGVuOiA3Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIw
-NTQwOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA2Cj4+PiAgIGtzZGlvaXJx
-ZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwNTUyOiBhdGgxMGtfaHR0X3R4X2RlY19w
-ZW5kaW5nOiBudW1fcGVuOiA1Cj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEg
-ICAgNzQuNzIwNjQ1OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiA0Cj4+PiAg
-IGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwNjY4OiBhdGgxMGtfaHR0
-X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAzCj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFsw
-MDJdIC4uLjEgICAgNzQuNzIwNjgxOiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVu
-OiAyCj4+PiAgIGtzZGlvaXJxZC9tbWMyLTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwNjk0OiBh
-dGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nOiBudW1fcGVuOiAxCj4+PiAgIGtzZGlvaXJxZC9tbWMy
-LTEzOSAgIFswMDJdIC4uLjEgICAgNzQuNzIwNzA5OiBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5n
-OiBudW1fcGVuOiAwCj4+Pgo+Pj4gYXRoMTBrIGp1c3QgZmluaXNoZWQgdHJhbnNtaXNzaW9uIG9m
-IHBlbmRpbmcgZnJhbWVzLgo+Pj4KPj4+IEhhbGYgYSBzZWNvbmQgbGF0ZXIsIHRoZSBzZW5kIGJ1
-ZmZlciBpcyBmdWxsLCBhbmQgd2Ugc3RhcnQgc2VlaW5nIGVycm9ycwo+Pj4gaW4gaXBlcmYuCj4+
-Pgo+Pj4gICAgICAgICAgICBpcGVyZi0xODEgICBbMDAxXSAuLi4uICAgIDc1LjE5MTYwNjogdGNw
-X3NlbmRtc2dfbG9ja2VkOiBlcnI6IC0xMQo+Pj4gICAgICAgICAgICBpcGVyZi0xODEgICBbMDAx
-XSAuLi4uICAgIDc1LjcwMTUxMTogdGNwX3NlbmRtc2dfbG9ja2VkOiBlcnI6IC0xMQo+Pj4gICAg
-ICAgICAgICBpcGVyZi0xODEgICBbMDAxXSAuLi4uICAgIDc2LjIxMTY0ODogdGNwX3NlbmRtc2df
-bG9ja2VkOiBlcnI6IC0xMQo+Pj4KPj4+Cj4+Pgo+Pj4gU3VyZSwgdGhlIHJlZ3VsYXIgd2F5IGF0
-aDEwa19tYWNfb3Bfd2FrZV90eF9xdWV1ZSBpcyBjYWxsZWQgaXMgdmlhCj4+PiBpZWVlODAyMTFf
-c3ViaWZfc3RhcnRfeG1pdCA9PiBfX2llZWU4MDIxMV9zdWJpZl9zdGFydF94bWl0ID0+IGllZWU4
-MDIxMV94bWl0X2Zhc3QKPj4+ID0+IGllZWU4MDIxMV9xdWV1ZV9za2IgPT4gZHJ2X3dha2VfdHhf
-cXVldWUuCj4+Pgo+Pj4gQnV0IEkgd2FzIGV4cGVjdGluZyB0aGUgY2FsbCB0byBpZWVlODAyMTFf
-d2FrZV9xdWV1ZSB0byBzb21laG93IHRyaWdnZXIgYSBjYWxsCj4+PiB0byBhdGgxMGtfbWFjX29w
-X3dha2VfdHhfcXVldWUsIHNpbmNlIHRoZXJlIGlzIHN0aWxsIGRhdGEgaW4gdGhlIHNlbmQgYnVm
-ZmVyLwo+Pj4gaW4gdGhlIGllZWU4MDIxMV90eHEgdGhhdCBuZWVkcyB0byBiZSBzZW50LCB0byBh
-bGxvdyBtb3JlIGRhdGEgdG8gYmUgd3JpdHRlbiB0bwo+Pj4gdGhlIHNvY2tldC4gQnV0IG9idmlv
-dXNseSB0aGUgY2FsbGJhY2sgbmV2ZXIgY29tZXMuCj4+PiBPciBob3cgZWxzZSBpcyB0aGlzIHN1
-cHBvc2VkIHRvIHdvcms/Cj4+Cj4+IFRoZSBkcml2ZXIgc2hvdWxkIHJlc2NoZWR1bGUgaXRzZWxm
-IGJlZm9yZS9hZnRlciBjYWxsaW5nCj4+IGllZWU4MDIxMV93YWtlX3F1ZXVlLiBtdDc2IGRvZXMg
-dGhpczsgSSdtIG5vdCBhY3R1YWxseSBzdXJlIGlmIGF0aDlrCj4+IGRvZXMgdGhlIHJpZ2h0IHRo
-aW5nIGVpdGhlciwgSSdtIG5vdCB0b28gZmFtaWxpYXIgd2l0aCB0aGF0IHBhcnQgb2YgdGhlCj4+
-IGNvZGUuIFRoZXJlJ3Mgbm8gZGlyZWN0IGNhbGwgdG8gcmVzY2hlZHVsZSB0aGF0IEkgY2FuIHNl
-ZSwgYnV0IHRoZXJlIG1heQo+PiBiZSBhbm90aGVyIHJlYXNvbiB3aHkgdGhpcyBpcyBub3QgbmVl
-ZGVkIGZvciBhdGg5ay4gSSdtIHN1cmUgRmVsaXgKPj4ga25vd3M/Cj4gCj4gSGVsbG8gVG9rZQo+
-IAo+IFVuZm9ydHVuYXRlbHksIGl0IGRvZXNuJ3QgbG9vayBsaWtlIG10NzYgdXNlcyBhbnkgaWVl
-ZTgwMjExXyogZnVuY3Rpb24gdG8KPiByZXNjaGVkdWxlLgo+IAo+IEkganVzdCBjYW1lIGFjcm9z
-cyBhIGllZWU4MDIxMV9zY2hlZHVsZV90eHEoKSBmdW5jdGlvbiBpbgo+IGU5MzdiOGRhNWE1OSAo
-Im1hYzgwMjExOiBBZGQgVFhRIHNjaGVkdWxpbmcgQVBJIikuCj4gSG93ZXZlciwgdGhpcyBjb21t
-aXQgd2FzIHJldmVydGVkLiBBbnkgcGxhbnMgb24gcmVzdWJtaXR0aW5nIHRoaXM/Cj4gCj4gUmVn
-YXJkcywKPiBOaWtsYXMKPiAKPj4KPj4+IEhvd2V2ZXIsIHNpbmNlIHRoZSBvbmx5IHdpcmVsZXNz
-IGRyaXZlcnMgdXNpbmcgd2FrZV90eF9xdWV1ZSBhcmU6Cj4+PiBhdGg5aywgYXRoMTBrLCBhbmQg
-bXQ3NiwgcGVyaGFwcyBpdCBpcyBub3Qgc3VjaCBhIGJhZCBpZGVhIHRvIHVzZSB0aGUKPj4+IHR4
-IGNhbGxiYWNrIGluc3RlYWQgb2YgdGhlIHdha2VfdHhfcXVldWUgY2FsbGJhY2suCj4+Cj4+IE9u
-IHRoZSBjb250cmFyeSwgd2Ugd2FudCBtb3JlIGRyaXZlcnMgdG8gbW92ZSB0byB3YWtlX3R4X3F1
-ZXVlIDopCj4+Cj4+IC1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Wed, May 16, 2018 at 07:54:54AM +0200, Alexander Wetzel wrote:
+> Hello,
+> =
+
+> This sounds exactly like the issue I just submitted a patch for.
+> Can you test https://patchwork.kernel.org/patch/10399613/ if that solves
+> the issue?
+
+Hello Alexander,
+
+
+I just tried you fix, and unfortunately it doesn't solve my problem.
+
+
+Regards,
+Niklas
+
+> =
+
+> =
+
+> =
+
+> Am 15.05.2018 um 22:31 schrieb Niklas Cassel:
+> > On Tue, May 15, 2018 at 04:13:48PM +0200, Toke H=F8iland-J=F8rgensen wr=
+ote:
+> >> [ Adding Felix ]
+> >>
+> >>
+> >> Niklas Cassel <niklas.cassel@linaro.org> writes:
+> >>
+> >>> Hello mac80211 and ath10k people
+> >>>
+> >>> Using ath10k, TX stops working when running iperf
+> >>>
+> >>> [  3]  0.0- 1.0 sec  2.00 MBytes  16.8 Mbits/sec
+> >>> [  3]  1.0- 2.0 sec  3.12 MBytes  26.2 Mbits/sec
+> >>> [  3]  2.0- 3.0 sec  3.25 MBytes  27.3 Mbits/sec
+> >>> [  3]  3.0- 4.0 sec   655 KBytes  5.36 Mbits/sec
+> >>> [  3]  4.0- 5.0 sec  0.00 Bytes  0.00 bits/sec
+> >>> [  3]  5.0- 6.0 sec  0.00 Bytes  0.00 bits/sec
+> >>> [  3]  6.0- 7.0 sec  0.00 Bytes  0.00 bits/sec
+> >>> [  3]  7.0- 8.0 sec  0.00 Bytes  0.00 bits/sec
+> >>> [  3]  8.0- 9.0 sec  0.00 Bytes  0.00 bits/sec
+> >>> [  3]  9.0-10.0 sec  0.00 Bytes  0.00 bits/sec
+> >>> [  3]  0.0-10.3 sec  9.01 MBytes  7.32 Mbits/sec
+> >>>
+> >>> The problem can be reproduced without specifying a send buffer size,
+> >>> however, specifying a small send buffer helps to reproduce the proble=
+m faster.
+> >>>
+> >>> What happens is that iperf gets -EAGAIN on write().
+> >>> It continues to get -EAGAIN, even if iperf runs for e.g. 300 seconds.
+> >>> The reason why we get -EAGAIN is because the send socket buffer is fu=
+ll
+> >>> (iperf uses non-blocking I/O).
+> >>>
+> >>> The problem is that the mac80211 wake_tx_queue callback never comes.
+> >>>
+> >>> I guess the best way to describe this is to show my ftrace buffer:
+> >>>
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711744: ath10k_htt_tx_dec_pen=
+ding: num_pen: 60
+> >>>      ksoftirqd/2-21    [002] .ns3    74.711761: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534=
+ num_pen: 60 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711765: ath10k_htt_tx_inc_pen=
+ding: num_pen: 61
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711781: ath10k_htt_tx_inc_pen=
+ding: num_pen: 62
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711787: ath10k_htt_tx_dec_pen=
+ding: num_pen: 61
+> >>>      ksoftirqd/2-21    [002] .ns3    74.711803: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534=
+ num_pen: 61 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711807: ath10k_htt_tx_inc_pen=
+ding: num_pen: 62
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711823: ath10k_htt_tx_inc_pen=
+ding: num_pen: 63
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711829: ath10k_htt_tx_dec_pen=
+ding: num_pen: 62
+> >>>      ksoftirqd/2-21    [002] .ns3    74.711845: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534=
+ num_pen: 62 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711849: ath10k_htt_tx_inc_pen=
+ding: num_pen: 63
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711865: ath10k_htt_tx_inc_pen=
+ding: num_pen: 64
+> >>>      ksoftirqd/2-21    [002] dns5    74.711870: stop_queue: phy0 queu=
+e:0, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711874: stop_queue: phy0 queu=
+e:1, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711877: stop_queue: phy0 queu=
+e:2, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711880: stop_queue: phy0 queu=
+e:3, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711882: stop_queue: phy0 queu=
+e:4, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711885: stop_queue: phy0 queu=
+e:5, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711887: stop_queue: phy0 queu=
+e:6, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711890: stop_queue: phy0 queu=
+e:7, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711892: stop_queue: phy0 queu=
+e:8, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711895: stop_queue: phy0 queu=
+e:9, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711898: stop_queue: phy0 queu=
+e:10, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711900: stop_queue: phy0 queu=
+e:11, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711903: stop_queue: phy0 queu=
+e:12, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711905: stop_queue: phy0 queu=
+e:13, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711908: stop_queue: phy0 queu=
+e:14, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711910: stop_queue: phy0 queu=
+e:15, reason:0
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711917: ath10k_htt_tx_dec_pen=
+ding: num_pen: 63
+> >>>      ksoftirqd/2-21    [002] dns5    74.711922: wake_queue: phy0 queu=
+e:0, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711929: wake_queue: phy0 queu=
+e:15, reason:0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.711948: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534=
+ num_pen: 63 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns4    74.711952: ath10k_htt_tx_inc_pen=
+ding: num_pen: 64
+> >>>      ksoftirqd/2-21    [002] dns5    74.711956: stop_queue: phy0 queu=
+e:0, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711959: stop_queue: phy0 queu=
+e:1, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711962: stop_queue: phy0 queu=
+e:2, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711964: stop_queue: phy0 queu=
+e:3, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711967: stop_queue: phy0 queu=
+e:4, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711969: stop_queue: phy0 queu=
+e:5, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711972: stop_queue: phy0 queu=
+e:6, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711974: stop_queue: phy0 queu=
+e:7, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711977: stop_queue: phy0 queu=
+e:8, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711980: stop_queue: phy0 queu=
+e:9, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711982: stop_queue: phy0 queu=
+e:10, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711985: stop_queue: phy0 queu=
+e:11, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711987: stop_queue: phy0 queu=
+e:12, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711990: stop_queue: phy0 queu=
+e:13, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711992: stop_queue: phy0 queu=
+e:14, reason:0
+> >>>      ksoftirqd/2-21    [002] dns5    74.711995: stop_queue: phy0 queu=
+e:15, reason:0
+> >>>
+> >>> (since we just called ieee80211_stop_queues(), I wouldn't expect to s=
+ee
+> >>> wake_tx_queue being called directly after)
+> >>>
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712024: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534=
+ num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712040: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 2 byte_cnt: 3068 f_txq: frame_cnt: 2 byte_cnt: 3068=
+ num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712055: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 3 byte_cnt: 4602 f_txq: frame_cnt: 3 byte_cnt: 4602=
+ num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712069: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 4 byte_cnt: 6136 f_txq: frame_cnt: 4 byte_cnt: 6136=
+ num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712084: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 5 byte_cnt: 7670 f_txq: frame_cnt: 5 byte_cnt: 7670=
+ num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712099: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 6 byte_cnt: 9204 f_txq: frame_cnt: 6 byte_cnt: 9204=
+ num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712113: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 7 byte_cnt: 10738 f_txq: frame_cnt: 7 byte_cnt: 107=
+38 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712128: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 8 byte_cnt: 12272 f_txq: frame_cnt: 8 byte_cnt: 122=
+72 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712142: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 9 byte_cnt: 13806 f_txq: frame_cnt: 9 byte_cnt: 138=
+06 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712157: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 10 byte_cnt: 15340 f_txq: frame_cnt: 10 byte_cnt: 1=
+5340 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712171: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 11 byte_cnt: 16874 f_txq: frame_cnt: 11 byte_cnt: 1=
+6874 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712186: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 12 byte_cnt: 18408 f_txq: frame_cnt: 12 byte_cnt: 1=
+8408 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712200: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 13 byte_cnt: 19942 f_txq: frame_cnt: 13 byte_cnt: 1=
+9942 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712215: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 14 byte_cnt: 21476 f_txq: frame_cnt: 14 byte_cnt: 2=
+1476 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712229: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 15 byte_cnt: 23010 f_txq: frame_cnt: 15 byte_cnt: 2=
+3010 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712244: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 16 byte_cnt: 24544 f_txq: frame_cnt: 16 byte_cnt: 2=
+4544 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712258: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 17 byte_cnt: 26078 f_txq: frame_cnt: 17 byte_cnt: 2=
+6078 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712273: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 18 byte_cnt: 27612 f_txq: frame_cnt: 18 byte_cnt: 2=
+7612 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712287: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 19 byte_cnt: 29146 f_txq: frame_cnt: 19 byte_cnt: 2=
+9146 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712302: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 20 byte_cnt: 30680 f_txq: frame_cnt: 20 byte_cnt: 3=
+0680 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712316: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 21 byte_cnt: 32214 f_txq: frame_cnt: 21 byte_cnt: 3=
+2214 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712330: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 22 byte_cnt: 33748 f_txq: frame_cnt: 22 byte_cnt: 3=
+3748 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712345: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 23 byte_cnt: 35282 f_txq: frame_cnt: 23 byte_cnt: 3=
+5282 num_pen: 64 queue: 0
+> >>>      ksoftirqd/2-21    [002] .ns3    74.712359: ath10k_mac_op_wake_tx=
+_queue: txq: frame_cnt: 24 byte_cnt: 36816 f_txq: frame_cnt: 24 byte_cnt: 3=
+6816 num_pen: 64 queue: 0
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.712411: ath10k_htt_tx_dec_pen=
+ding: num_pen: 63
+> >>>   ksdioirqd/mmc2-139   [002] d..2    74.712417: wake_queue: phy0 queu=
+e:0, reason:0
+> >>>   ksdioirqd/mmc2-139   [002] d..2    74.712424: wake_queue: phy0 queu=
+e:15, reason:0
+> >>>
+> >>> here we just called ieee80211_wake_queue(), however, wake_tx_queue ca=
+llback
+> >>> (ath10k_mac_op_wake_tx_queue) is never seen again...
+> >>>
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.712454: ath10k_htt_tx_dec_pen=
+ding: num_pen: 62
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.712468: ath10k_htt_tx_dec_pen=
+ding: num_pen: 61
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718078: ath10k_htt_tx_dec_pen=
+ding: num_pen: 60
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718103: ath10k_htt_tx_dec_pen=
+ding: num_pen: 59
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718116: ath10k_htt_tx_dec_pen=
+ding: num_pen: 58
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718131: ath10k_htt_tx_dec_pen=
+ding: num_pen: 57
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718143: ath10k_htt_tx_dec_pen=
+ding: num_pen: 56
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718155: ath10k_htt_tx_dec_pen=
+ding: num_pen: 55
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718250: ath10k_htt_tx_dec_pen=
+ding: num_pen: 54
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718273: ath10k_htt_tx_dec_pen=
+ding: num_pen: 53
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718286: ath10k_htt_tx_dec_pen=
+ding: num_pen: 52
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718298: ath10k_htt_tx_dec_pen=
+ding: num_pen: 51
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718310: ath10k_htt_tx_dec_pen=
+ding: num_pen: 50
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718322: ath10k_htt_tx_dec_pen=
+ding: num_pen: 49
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718334: ath10k_htt_tx_dec_pen=
+ding: num_pen: 48
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718346: ath10k_htt_tx_dec_pen=
+ding: num_pen: 47
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718622: ath10k_htt_tx_dec_pen=
+ding: num_pen: 46
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718647: ath10k_htt_tx_dec_pen=
+ding: num_pen: 45
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.718660: ath10k_htt_tx_dec_pen=
+ding: num_pen: 44
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719050: ath10k_htt_tx_dec_pen=
+ding: num_pen: 43
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719154: ath10k_htt_tx_dec_pen=
+ding: num_pen: 42
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719255: ath10k_htt_tx_dec_pen=
+ding: num_pen: 41
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719278: ath10k_htt_tx_dec_pen=
+ding: num_pen: 40
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719371: ath10k_htt_tx_dec_pen=
+ding: num_pen: 39
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719394: ath10k_htt_tx_dec_pen=
+ding: num_pen: 38
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719493: ath10k_htt_tx_dec_pen=
+ding: num_pen: 37
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719516: ath10k_htt_tx_dec_pen=
+ding: num_pen: 36
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719529: ath10k_htt_tx_dec_pen=
+ding: num_pen: 35
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719541: ath10k_htt_tx_dec_pen=
+ding: num_pen: 34
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719554: ath10k_htt_tx_dec_pen=
+ding: num_pen: 33
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719566: ath10k_htt_tx_dec_pen=
+ding: num_pen: 32
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719658: ath10k_htt_tx_dec_pen=
+ding: num_pen: 31
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719681: ath10k_htt_tx_dec_pen=
+ding: num_pen: 30
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719694: ath10k_htt_tx_dec_pen=
+ding: num_pen: 29
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719708: ath10k_htt_tx_dec_pen=
+ding: num_pen: 28
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719803: ath10k_htt_tx_dec_pen=
+ding: num_pen: 27
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719826: ath10k_htt_tx_dec_pen=
+ding: num_pen: 26
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719839: ath10k_htt_tx_dec_pen=
+ding: num_pen: 25
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719851: ath10k_htt_tx_dec_pen=
+ding: num_pen: 24
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719864: ath10k_htt_tx_dec_pen=
+ding: num_pen: 23
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719956: ath10k_htt_tx_dec_pen=
+ding: num_pen: 22
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719978: ath10k_htt_tx_dec_pen=
+ding: num_pen: 21
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.719992: ath10k_htt_tx_dec_pen=
+ding: num_pen: 20
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720004: ath10k_htt_tx_dec_pen=
+ding: num_pen: 19
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720096: ath10k_htt_tx_dec_pen=
+ding: num_pen: 18
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720137: ath10k_htt_tx_dec_pen=
+ding: num_pen: 17
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720150: ath10k_htt_tx_dec_pen=
+ding: num_pen: 16
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720163: ath10k_htt_tx_dec_pen=
+ding: num_pen: 15
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720256: ath10k_htt_tx_dec_pen=
+ding: num_pen: 14
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720279: ath10k_htt_tx_dec_pen=
+ding: num_pen: 13
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720292: ath10k_htt_tx_dec_pen=
+ding: num_pen: 12
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720304: ath10k_htt_tx_dec_pen=
+ding: num_pen: 11
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720316: ath10k_htt_tx_dec_pen=
+ding: num_pen: 10
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720396: ath10k_htt_tx_dec_pen=
+ding: num_pen: 9
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720503: ath10k_htt_tx_dec_pen=
+ding: num_pen: 8
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720527: ath10k_htt_tx_dec_pen=
+ding: num_pen: 7
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720540: ath10k_htt_tx_dec_pen=
+ding: num_pen: 6
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720552: ath10k_htt_tx_dec_pen=
+ding: num_pen: 5
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720645: ath10k_htt_tx_dec_pen=
+ding: num_pen: 4
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720668: ath10k_htt_tx_dec_pen=
+ding: num_pen: 3
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720681: ath10k_htt_tx_dec_pen=
+ding: num_pen: 2
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720694: ath10k_htt_tx_dec_pen=
+ding: num_pen: 1
+> >>>   ksdioirqd/mmc2-139   [002] ...1    74.720709: ath10k_htt_tx_dec_pen=
+ding: num_pen: 0
+> >>>
+> >>> ath10k just finished transmission of pending frames.
+> >>>
+> >>> Half a second later, the send buffer is full, and we start seeing err=
+ors
+> >>> in iperf.
+> >>>
+> >>>            iperf-181   [001] ....    75.191606: tcp_sendmsg_locked: e=
+rr: -11
+> >>>            iperf-181   [001] ....    75.701511: tcp_sendmsg_locked: e=
+rr: -11
+> >>>            iperf-181   [001] ....    76.211648: tcp_sendmsg_locked: e=
+rr: -11
+> >>>
+> >>>
+> >>>
+> >>> Sure, the regular way ath10k_mac_op_wake_tx_queue is called is via
+> >>> ieee80211_subif_start_xmit =3D> __ieee80211_subif_start_xmit =3D> iee=
+e80211_xmit_fast
+> >>> =3D> ieee80211_queue_skb =3D> drv_wake_tx_queue.
+> >>>
+> >>> But I was expecting the call to ieee80211_wake_queue to somehow trigg=
+er a call
+> >>> to ath10k_mac_op_wake_tx_queue, since there is still data in the send=
+ buffer/
+> >>> in the ieee80211_txq that needs to be sent, to allow more data to be =
+written to
+> >>> the socket. But obviously the callback never comes.
+> >>> Or how else is this supposed to work?
+> >>
+> >> The driver should reschedule itself before/after calling
+> >> ieee80211_wake_queue. mt76 does this; I'm not actually sure if ath9k
+> >> does the right thing either, I'm not too familiar with that part of the
+> >> code. There's no direct call to reschedule that I can see, but there m=
+ay
+> >> be another reason why this is not needed for ath9k. I'm sure Felix
+> >> knows?
+> > =
+
+> > Hello Toke
+> > =
+
+> > Unfortunately, it doesn't look like mt76 uses any ieee80211_* function =
+to
+> > reschedule.
+> > =
+
+> > I just came across a ieee80211_schedule_txq() function in
+> > e937b8da5a59 ("mac80211: Add TXQ scheduling API").
+> > However, this commit was reverted. Any plans on resubmitting this?
+> > =
+
+> > Regards,
+> > Niklas
+> > =
+
+> >>
+> >>> However, since the only wireless drivers using wake_tx_queue are:
+> >>> ath9k, ath10k, and mt76, perhaps it is not such a bad idea to use the
+> >>> tx callback instead of the wake_tx_queue callback.
+> >>
+> >> On the contrary, we want more drivers to move to wake_tx_queue :)
+> >>
+> >> -Toke
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
