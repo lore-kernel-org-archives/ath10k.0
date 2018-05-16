@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wsip-70-167-11-34.sd.sd.cox.net ([70.167.11.34])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIyQL-0008HJ-DX
- for ath10k@lists.infradead.org; Wed, 16 May 2018 15:33:08 +0000
-Subject: Re: Support for QCA9377
-References: <CAF_dkJCoAxVNK7sg5iGE7cSqZq9nyf=v2e9HkhQx=K2Sv9NOCg@mail.gmail.com>
- <CAB6Vn2PcbSqc5fH719KX+7+q1ksf=CMvujdk=Z1QAj7Vs1d-3A@mail.gmail.com>
- <CAF_dkJCkH9bUW+++HX2c66XU=RNNGaT5s__PMzqFnrh1Kt=i2g@mail.gmail.com>
- <CAB6Vn2PBQ7YKyAhP6ta8-2CkA+dWyiTSFJoDmS-QD708xmtvGQ@mail.gmail.com>
- <16996c44-c9c0-2353-91a7-198acbcbf209@roadrunner.com>
- <87in7omc5x.fsf@kamboji.qca.qualcomm.com>
-From: Jay Foster <jayf0ster@roadrunner.com>
-Message-ID: <8572a5dc-b148-9b85-d196-c94d554cc264@roadrunner.com>
-Date: Wed, 16 May 2018 08:27:51 -0700
+ id 1fJ0Eu-0006VL-RU
+ for ath10k@lists.infradead.org; Wed, 16 May 2018 17:29:37 +0000
+Received: by mail-wm0-x243.google.com with SMTP id a8-v6so3300248wmg.5
+ for <ath10k@lists.infradead.org>; Wed, 16 May 2018 10:29:12 -0700 (PDT)
+Subject: Re: ath10k wake_tx_queue issues
+References: <20180515134516.GA30397@localhost.localdomain>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <6b81aa2e-09a3-ae48-7626-8ceb33a2a6b5@gmail.com>
+Date: Wed, 16 May 2018 19:28:21 +0200
 MIME-Version: 1.0
-In-Reply-To: <87in7omc5x.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <20180515134516.GA30397@localhost.localdomain>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,96 +21,159 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: jayfoster@ieee.org
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: jayfoster@ieee.org, ath10k@lists.infradead.org
+To: Niklas Cassel <niklas.cassel@linaro.org>, johannes@sipsolutions.net, kvalo@qca.qualcomm.com, toke@toke.dk
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gNS8xNS8yMDE4IDk6NTYgUE0sIEthbGxlIFZhbG8gd3JvdGU6Cj4gSmF5IEZvc3RlciA8amF5
-ZjBzdGVyQHJvYWRydW5uZXIuY29tPiB3cml0ZXM6Cj4KPj4gSSB0b28gaGF2ZSBiZWVuLCBvZmYg
-YW5kIG9uLCBsb29raW5nIGZvciBhbiBhdGgxMGsgZHJpdmVyIHNvbHV0aW9uIGZvcgo+PiBhIFNw
-YXJrTEFOIFdVQlEtMTU5QUNOIFVTQiBXaS1GaSBhZGFwdGVyLCBzbyBJIGhhdmUgYmVlbiBrZWVw
-aW5nIGFuCj4+IGV5ZSBvbiB0aGlzIG1haWxpbmcgbGlzdC7CoCBJIGp1c3QgdHJpZWQgdGhlIGxh
-dGVzdAo+PiBhdGgxMGstcGVuZGluZy1zZGlvLXVzYiBicmFuY2ggKGF0aDEway1wZW5kaW5nLXNk
-aW8tdXNiLTIwMTgwNDIxMDkxMAo+PiB0YWcpLCBzaW5jZSBJIGNvdWxkIHNlZSB0aGF0IHN1cHBv
-cnQgZm9yIHRoZSBTcGFya0xBTiBVU0IgMENGMzo5Mzc4Cj4+IGRldmljZSB3YXMganVzdCBhZGRl
-ZC7CoCBUaGUgZHJpdmVyIHJlZmVycyB0byB0aGlzIGFzIHRoZSBTcGFya0xBTgo+PiBXUEVRLTE2
-MEFDTiBkZXZpY2UsIGJ1dCBpdCBoYXMgdGhlIHNhbWUgVVNCIHZlbmRvci9wcm9kdWN0IElEIGFz
-IG15Cj4+IFdVQlEtMTU5QUNOLsKgIFRoZXkgYm90aCB1c2UgdGhlIFFDQTkzNzcgY2hpcC4KPj4K
-Pj4gSSBnb3QgYSBkcml2ZXIgdG8gYnVpbGQgd2l0aCB0aGUgNC45IGtlcm5lbCBhbmQgd2hlbiBp
-dCBib290cywgaXQKPj4gcmVjb2duaXplcyBteSBXaS1GaSBhZGFwdGVyLsKgIE5vdywgSSBhbSB0
-cnlpbmcgdG8gc29ydCBvdXQgd2hhdCB0byBkbwo+PiBhYm91dCBmaXJtd2FyZS7CoCBJIGRvd25s
-b2FkZWQgdGhlIGJvYXJkLTIuYmluLCBib2FyZC5iaW4sCj4+IGZpcm13YXJlLTUuYmluIGZpbGVz
-IGZyb20KPj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
-ZmlybXdhcmUvbGludXgtZmlybXdhcmUuZ2l0L3RyZWUvYXRoMTBrL1FDQTkzNzcvaHcxLjAuCj4+
-IEkgdXNlZCB0aGUgYXRoMTBrLWZ3ZW5jb2RlciBhcHBsaWNhdGlvbiBmcm9tIHRoZSBxY2Etc3dp
-c3MtYXJteS1rbmlmZQo+PiB0b29scyB0byBhbHNvIGJ1aWxkIGEgZmlybXdhcmUgZmlsZSwgYnV0
-IEkgYW0gbm90IGNsZWFyIG9uIHdoYXQgZmlsZXMKPj4gSSBzaG91bGQgYmUgdXNpbmcuwqAgU3Bh
-cmtMQU4gcHJvdmlkZWQsIHdpdGggdGhlIHFjYWNsZC0yLjAgd2xhbgo+PiBkcml2ZXIsIHRoZSBm
-b2xsb3dpbmcgZmlsZXM6Cj4+IGF0aHNldHVwLmJpbiwgYXRod2xhbi5iaW4sIGNmZy5kYXQsIGZh
-a2Vib2FyLmJpbiwgb3RwLmJpbiwgYW5kCj4+IHFjb21fY2ZnLmluaS7CoCBJIHVzZWQgdGhlIGNv
-bW1hbmQ6Cj4+Cj4+IHFjYS1zd2lzcy1hcm15LWtuaWZlL3Rvb2xzL3NjcmlwdHMvYXRoMTBrL2F0
-aDEway1md2VuY29kZXIgLS1jcmVhdGUKPj4gLS1vdHAgLi4vLi4vLi4vb3RwLmJpbiAtLWZpcm13
-YXJlIC4uLy4uLy4uL2F0aHdsYW4uYmluCj4+IC0tc2V0LXdtaS1vcC12ZXJzaW9uPXRsdiAtLXNl
-dC1odHQtb3AtdmVyc2lvbj10bHYgLS1zZXQtZnctYXBpPTYKPj4gLS1mZWF0dXJlcz1pZ25vcmUt
-b3RwLXJlc3VsdAo+Pgo+PiB0byBjcmVhdGUgbXkgZmlybXdhcmUtdXNiLTYuYmluIGFuZCB1c2Vk
-IHRoZSBmYWtlYm9hci5iaW4gZm9yIG15Cj4+IGJvYXJkLXVzYi5iaW4gZmlsZXMuwqAgSG93ZXZl
-ciwgd2hlbiB0aGUgZHJpdmVyIGxvYWRzLCBpdCBpcyBsb29raW5nCj4+IGZvciBhIGZpbGUgY2Fs
-bGVkIGF0aDEway9jYWwtdXNiLTEtMS4yLmJpbi7CoCBXaGVyZSBkbyBJIGdldCB0aGF0Cj4+IGZp
-bGU/Cj4gWW91IGNhbiBpZ25vcmUgdGhhdCB3YXJuaW5nLiBjYWwtKi5iaW4gYXJlIG9wdGlvbmFs
-IGZpbGVzIGNvbnRhaW5pbmcgdGhlCj4gY2FsaWJyYXRpb24gZGF0YSwgaW4gY2FzZSB5b3UgZG9u
-J3QgaGF2ZSB0aGUgY2FsaWJyYXRpb24gZGF0YSBpbiBPVFAuCj4gQnV0IG15IGd1ZXNzIGlzIHRo
-YXQgaW4geW91ciBkZXZpY2UgeW91IGhhdmUgdGhlIGNhbGlicmF0aW9uIGRhdGEgaW4gT1RQCj4g
-c28geW91IGRvbid0IG5lZWQgY2FsLSouYmluLgo+Cj4gSG9wZWZ1bGx5IGluIDQuMTggdGhhdCB3
-YXJuaW5nIHdpbGwgYmUgYXdheSBhbmQgdXNlcnMgd29uJ3QgZ2V0IGNvbmZ1c2VkIGFueW1vcmUu
-Cj4KPj4gIMKgIEkgdHJpZWQgdXNpbmcgdGhlIGF0aHNldHVwLmJpbiBmaWxlIGZvciB0aGlzLCBi
-dXQgSSBkbyBub3QKPj4gdGhpbmsgdGhhdCB3b3Jrcy7CoCBUaGUgZHJpdmVyIHJlcG9ydHM6Cj4+
-Cj4+IC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTkzNzcvaHcxLjAjIHVzYiAxLTEuMjogcWNhOTM3
-NyBodzEuMSBTcGFya0xBTgo+PiBXUEVRLTE2MEFDTiB0YXJnZXQgMHgwNTAyMDAwMSBjaGlwX2lk
-IDB4MDAwMDAwMDAgc3ViIDAwMDA6MDAwMAo+PiB1c2IgMS0xLjI6IGtjb25maWcgZGVidWcgMSBk
-ZWJ1Z2ZzIDAgdHJhY2luZyAwIGRmcyAwIHRlc3Rtb2RlIDEKPj4gdXNiIDEtMS4yOiBmaXJtd2Fy
-ZSB2ZXLCoCBhcGkgNiBmZWF0dXJlcyBpZ25vcmUtb3RwIGNyYzMyIGU4OTg1ZjY3Cj4+IHVzYiAx
-LTEuMjogZm91bmQgaW52YWxpZCBib2FyZCBtYWdpYwo+PiB1c2IgMS0xLjI6IGJvYXJkX2ZpbGUg
-YXBpIDEgYm1pX2lkIE4vQSBjcmMzMiA1OGExMzllOQo+PiB1c2IgMS0xLjI6IGludmFsaWQgaHdf
-cGFyYW1zLm5fY2lwaGVyX3N1aXRlcyAwCj4+Cj4+IFdoYXQgZG9lcyBpbnZhbGlkIGJvYXJkIG1h
-Z2ljIG1lYW4/Cj4gVGhpcyBsb2cgbWVhbnMgdGhhdCBhdGgxMGsgZmlyc3QgdHJpZWQgdG8gbG9h
-ZCBib2FyZC0yLmJpbiBidXQgaXQgd2FzCj4gY29ycnVwdGVkIGZvciBzb21lIHJlYXNvbi4gVGhl
-biBpdCBmb3VuZCBhbmQgdXNlZCBib2FyZC5iaW4gaW5zdGVhZC4KSXQgc2VlbXMgb2RkIHRoYXQg
-dGhlIGJvYXJkLTIuYmluIGZpbGUgSSBkb3dubG9hZGVkIGZyb20gCmh0dHBzOi8vZ2l0Lmtlcm5l
-bC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Zpcm13YXJlL2xpbnV4LWZpcm13YXJlLmdp
-dC90cmVlL2F0aDEway9RQ0E5Mzc3L2h3MS4wIAppcyBzb21laG93IGNvcnJ1cHRlZC7CoCBEb2Vz
-IHRoZSBtZXNzYWdlIG1lYW4gdGhhdCB0aGUgYm9hcmQtMi5iaW4gZmlsZSAKaXRzZWxmIGlzIGJh
-ZCBvciB0aGF0IGl0IGlzIG5vdCBhcHByb3ByaWF0ZS91c2VmdWwgZm9yIG15IHBhcnRpY3VsYXIg
-CldpLUZpIGRldmljZT8KCldoZW4geW91IHNheSB0aGF0IHRoZSBkcml2ZXIgdGhlbiB1c2VkIGJv
-YXJkLmJpbiBpbnN0ZWFkLCBJIHRoaW5rIGluIG15IApjYXNlIHRoaXMgaXMgYm9hcmQtdXNiLmJp
-biAodGhlIHNhbWUgYXMgbXkgZmFrZWJvYXIuYmluIGZpbGUgZnJvbSAKU3BhcmtMQU4pLCBzaW5j
-ZSBteSBkZXZpY2UgaXMgYSBVU0IgZGV2aWNlLsKgIEkgYW0ganVzdCB0cnlpbmcgdG8gYmUgCmNs
-ZWFyIG9uIG15IHVuZGVyc3RhbmRpbmcuCgo+Cj4+IFRoZSBXaS1GaSBVU0IgYWRhcHRlciBtYXkg
-YmUgaW5zdGFsbGVkIGluIGFueSBudW1iZXIgb2YgZGlmZmVyZW50IFVTQgo+PiBsb2NhdGlvbnMs
-IHNvIHdoeSBpcyB0aGUgVVNCIGxvY2F0aW9uICgxLTEuMikgcGFydCBvZiBvbmUgb2YgdGhlCj4+
-IGZpbGVuYW1lcz8KPiBCZWNhdXNlIHRoZXJlIG5lZWRzIHRvIGJlIHNvbWUgd2F5IHRvIGlkZW50
-aWZ5IG11bHRpcGxlIGRldmljZXMgb24gdGhlCj4gc2FtZSBob3N0LiBCdXQgY2FsLSouYmluIGlz
-IG1haW5seSBtZWFudCBmb3IgQVAgZGV2aWNlcyB3aGVyZSB0aGUKPiBkZXZpY2VzIGhhdmUgYSBm
-aXhlZCBzbG90IGluIHRoZSBQQ0kgYnVzIGFuZCB0aGUgY2FsaWJyYXRpb24gZGF0YSBpcwo+IHN0
-b3JlZCBpbiBob3N0J3MgZmlsZXN5c3RlbSAoY2hlY2sgb3BlbndydCB0byBzZWUgaG93IGl0J3Mg
-dXNlZCkuCj4KSSBkaWQgbWFuYWdlIHRvIGdldCBhIHN1Y2Nlc3NmdWwgV2ktRmkgU1RBIG1vZGUg
-Y29ubmVjdGlvbiB3aXRoIHRoaXMgCmRyaXZlci7CoCBPbmUgaXNzdWUgdGhhdCBJIGRvbid0IHVu
-ZGVyc3RhbmQgaXMgd2hlbiB0aGUgZHJpdmVyIGF0dGVtcHRzIAp0byBsb2FkIGEgRlcgZmlsZSB0
-aGF0IGlzIG5vdCBwcmVzZW50LCBpdCBmYWlscyB3aXRoIGVycm9yIC0yIGFuZCB0aGVuIApyZXBv
-cnRzLCAiRmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyIi7CoCBIb3dldmVyLCB0aGlzICd1c2Vy
-IGhlbHBlcicgCmRvZXMgbm90IGV4aXN0L3dvcmsgZWl0aGVyLCBidXQgdGhlIGRyaXZlciB3YWl0
-cyBxdWl0ZSBhIHdoaWxlIHdhaXRpbmcgCmZvciBpdCAoYWJvdXQgaGFsZiBhIG1pbnV0ZSBvciBz
-bykuwqAgVGhpcyBjYXVzZXMgYSBkZWxheSBsb2FkaW5nIHRoZSAKZHJpdmVyIChhYm91dCBoYWxm
-IGEgbWludXRlIGZvciBlYWNoIG1pc3NpbmcgZmlsZSkuwqAgU28sIGV2ZW4gdGhvdWdoIHRoZSAK
-Y2FsIGZpbGVzIGFyZSBvcHRpb25hbCwgaWYgdGhleSBhcmUgbm90IHRoZXJlLCBpdCBzaWduaWZp
-Y2FudGx5IGRlbGF5cyAKbG9hZGluZyBvZiB0aGUgZHJpdmVyLsKgIEkgbmVlZCB0byBlbGltaW5h
-dGUgdGhpcyBkZWxheS7CoCBGb3Igbm93LCBJIApwYXRjaGVkIHRoZSBkcml2ZXIgdG8gbm90IGF0
-dGVtcHQgdG8gbG9hZCB0aGUgcHJlLWNhbC11c2ItPGJ1cz4uYmluIG9yIAp0aGUgY2FsLXVzYi08
-YnVzPi5iaW4gZmlsZXMgKHRoYXQgZG8gbm90IGV4aXN0IGZvciBteSBhZGFwdGVyKSwgYnV0IAp0
-aGVyZSBtdXN0IGJlIGEgYmV0dGVyIHdheSB0byBhdm9pZCB0aGlzIGRlbGF5LgoKVGhhbmtzIHZl
-cnkgbXVjaCBmb3IgeW91ciBoZWxwLgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hello Niklas
+
+Quick question:
+Are you using my patch: "ath10k: add htt_tx num_pending window"?
+
+I assume (from your logs below) that you are not...
+
+See more comments below.
+
+<snip>
+> 
+> I guess the best way to describe this is to show my ftrace buffer:
+> 
+>       ksoftirqd/2-21    [002] .ns4    74.711744: ath10k_htt_tx_dec_pending: num_pen: 60
+>       ksoftirqd/2-21    [002] .ns3    74.711761: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534 num_pen: 60 queue: 0
+>       ksoftirqd/2-21    [002] .ns4    74.711765: ath10k_htt_tx_inc_pending: num_pen: 61
+>       ksoftirqd/2-21    [002] .ns4    74.711781: ath10k_htt_tx_inc_pending: num_pen: 62
+>       ksoftirqd/2-21    [002] .ns4    74.711787: ath10k_htt_tx_dec_pending: num_pen: 61
+>       ksoftirqd/2-21    [002] .ns3    74.711803: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534 num_pen: 61 queue: 0
+>       ksoftirqd/2-21    [002] .ns4    74.711807: ath10k_htt_tx_inc_pending: num_pen: 62
+>       ksoftirqd/2-21    [002] .ns4    74.711823: ath10k_htt_tx_inc_pending: num_pen: 63
+>       ksoftirqd/2-21    [002] .ns4    74.711829: ath10k_htt_tx_dec_pending: num_pen: 62
+>       ksoftirqd/2-21    [002] .ns3    74.711845: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534 num_pen: 62 queue: 0
+>       ksoftirqd/2-21    [002] .ns4    74.711849: ath10k_htt_tx_inc_pending: num_pen: 63
+>       ksoftirqd/2-21    [002] .ns4    74.711865: ath10k_htt_tx_inc_pending: num_pen: 64
+For high latency devices, when the num_pending counter reaches this point (64),
+ath10k calls ieee80211_stop_queues (from ath10k_htt_tx_inc_pending -> ath10k_mac_tx_lock).
+This will stop all per-TID queues (16 in total).
+
+>       ksoftirqd/2-21    [002] dns5    74.711870: stop_queue: phy0 queue:0, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711874: stop_queue: phy0 queue:1, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711877: stop_queue: phy0 queue:2, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711880: stop_queue: phy0 queue:3, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711882: stop_queue: phy0 queue:4, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711885: stop_queue: phy0 queue:5, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711887: stop_queue: phy0 queue:6, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711890: stop_queue: phy0 queue:7, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711892: stop_queue: phy0 queue:8, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711895: stop_queue: phy0 queue:9, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711898: stop_queue: phy0 queue:10, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711900: stop_queue: phy0 queue:11, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711903: stop_queue: phy0 queue:12, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711905: stop_queue: phy0 queue:13, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711908: stop_queue: phy0 queue:14, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711910: stop_queue: phy0 queue:15, reason:0
+>       ksoftirqd/2-21    [002] .ns4    74.711917: ath10k_htt_tx_dec_pending: num_pen: 63
+At this point, the driver have received a TX_COMPL_IND (since num_pending has been decremented to 63).
+Without the patch I mentioned above, the logic is that the TX queues will be re-enabled immediately.
+This is achieved by calling ieee80211_stop_queues.
+
+>       ksoftirqd/2-21    [002] dns5    74.711922: wake_queue: phy0 queue:0, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711929: wake_queue: phy0 queue:15, reason:0
+2 queues have been enabled here. I don't know why not all queues have been re-enabled.
+Perhaps it is due to that mac80211 immediately gets more data on one of the just re-enabled queues,
+resulting in...
+>       ksoftirqd/2-21    [002] .ns3    74.711948: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534 num_pen: 63 queue: 0
+...the the wake_tx_queue op beeing invoked again ...
+>       ksoftirqd/2-21    [002] .ns4    74.711952: ath10k_htt_tx_inc_pending: num_pen: 64
+... and the num_pending counter beeing incremented as a result of this.
+This results in all queues beeing ...
+>       ksoftirqd/2-21    [002] dns5    74.711956: stop_queue: phy0 queue:0, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711959: stop_queue: phy0 queue:1, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711962: stop_queue: phy0 queue:2, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711964: stop_queue: phy0 queue:3, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711967: stop_queue: phy0 queue:4, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711969: stop_queue: phy0 queue:5, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711972: stop_queue: phy0 queue:6, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711974: stop_queue: phy0 queue:7, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711977: stop_queue: phy0 queue:8, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711980: stop_queue: phy0 queue:9, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711982: stop_queue: phy0 queue:10, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711985: stop_queue: phy0 queue:11, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711987: stop_queue: phy0 queue:12, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711990: stop_queue: phy0 queue:13, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711992: stop_queue: phy0 queue:14, reason:0
+>       ksoftirqd/2-21    [002] dns5    74.711995: stop_queue: phy0 queue:15, reason:0
+... stopped again (since we reached the upper limit of 64).
+> 
+> (since we just called ieee80211_stop_queues(), I wouldn't expect to see
+> wake_tx_queue being called directly after)
+> 
+Below looks really odd indeed.
+If ath10k_mac_op_wake_tx_queue is beeing called several times with num_pending == 64,
+those calls will fail (nothing will be transmitted).
+
+>       ksoftirqd/2-21    [002] .ns3    74.712024: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 1 byte_cnt: 1534 f_txq: frame_cnt: 1 byte_cnt: 1534 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712040: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 2 byte_cnt: 3068 f_txq: frame_cnt: 2 byte_cnt: 3068 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712055: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 3 byte_cnt: 4602 f_txq: frame_cnt: 3 byte_cnt: 4602 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712069: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 4 byte_cnt: 6136 f_txq: frame_cnt: 4 byte_cnt: 6136 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712084: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 5 byte_cnt: 7670 f_txq: frame_cnt: 5 byte_cnt: 7670 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712099: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 6 byte_cnt: 9204 f_txq: frame_cnt: 6 byte_cnt: 9204 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712113: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 7 byte_cnt: 10738 f_txq: frame_cnt: 7 byte_cnt: 10738 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712128: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 8 byte_cnt: 12272 f_txq: frame_cnt: 8 byte_cnt: 12272 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712142: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 9 byte_cnt: 13806 f_txq: frame_cnt: 9 byte_cnt: 13806 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712157: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 10 byte_cnt: 15340 f_txq: frame_cnt: 10 byte_cnt: 15340 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712171: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 11 byte_cnt: 16874 f_txq: frame_cnt: 11 byte_cnt: 16874 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712186: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 12 byte_cnt: 18408 f_txq: frame_cnt: 12 byte_cnt: 18408 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712200: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 13 byte_cnt: 19942 f_txq: frame_cnt: 13 byte_cnt: 19942 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712215: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 14 byte_cnt: 21476 f_txq: frame_cnt: 14 byte_cnt: 21476 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712229: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 15 byte_cnt: 23010 f_txq: frame_cnt: 15 byte_cnt: 23010 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712244: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 16 byte_cnt: 24544 f_txq: frame_cnt: 16 byte_cnt: 24544 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712258: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 17 byte_cnt: 26078 f_txq: frame_cnt: 17 byte_cnt: 26078 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712273: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 18 byte_cnt: 27612 f_txq: frame_cnt: 18 byte_cnt: 27612 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712287: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 19 byte_cnt: 29146 f_txq: frame_cnt: 19 byte_cnt: 29146 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712302: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 20 byte_cnt: 30680 f_txq: frame_cnt: 20 byte_cnt: 30680 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712316: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 21 byte_cnt: 32214 f_txq: frame_cnt: 21 byte_cnt: 32214 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712330: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 22 byte_cnt: 33748 f_txq: frame_cnt: 22 byte_cnt: 33748 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712345: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 23 byte_cnt: 35282 f_txq: frame_cnt: 23 byte_cnt: 35282 num_pen: 64 queue: 0
+>       ksoftirqd/2-21    [002] .ns3    74.712359: ath10k_mac_op_wake_tx_queue: txq: frame_cnt: 24 byte_cnt: 36816 f_txq: frame_cnt: 24 byte_cnt: 36816 num_pen: 64 queue: 0
+>    ksdioirqd/mmc2-139   [002] ...1    74.712411: ath10k_htt_tx_dec_pending: num_pen: 63
+Here we get another TX_COMP_IND resulting in a re-enable of the queues.
+>    ksdioirqd/mmc2-139   [002] d..2    74.712417: wake_queue: phy0 queue:0, reason:0
+>    ksdioirqd/mmc2-139   [002] d..2    74.712424: wake_queue: phy0 queue:15, reason:0
+> 
+> here we just called ieee80211_wake_queue(), however, wake_tx_queue callback
+> (ath10k_mac_op_wake_tx_queue) is never seen again...
+> 
+Below we get TX_COMP_IND's for all outstanding TX messages:
+>    ksdioirqd/mmc2-139   [002] ...1    74.712454: ath10k_htt_tx_dec_pending: num_pen: 62
+>    ksdioirqd/mmc2-139   [002] ...1    74.712468: ath10k_htt_tx_dec_pending: num_pen: 61
+>    ksdioirqd/mmc2-139   [002] ...1    74.718078: ath10k_htt_tx_dec_pending: num_pen: 60
+>    ksdioirqd/mmc2-139   [002] ...1    74.718103: ath10k_htt_tx_dec_pending: num_pen: 59
+>    ksdioirqd/mmc2-139   [002] ...1    74.718116: ath10k_htt_tx_dec_pending: num_pen: 58
+>    ksdioirqd/mmc2-139   [002] ...1    74.718131: ath10k_htt_tx_dec_pending: num_pen: 57
+...
+<snip>
+> 
+> ath10k just finished transmission of pending frames.
+> 
+It would be interesting to see what happens if the max_num_pending value was incremented.
+
+It is defined by TARGET_TLV_NUM_MSDU_DESC_HL in hw.h
+
+I have tried a value of 105 (used in more recent version of qcacld) and it seems to work fine.
+When combined with the patch I mentioned above, it will create a num_pending window,
+that potentially can mitigate this problem.
+
+Another thing you could try to tweak is the HTC_HOST_MAX_MSG_PER_TX_BUNDLE constant (only present in my patch).
+If you set it to a high enough value (let's say 24 in your case, since you have 24 wake_tx_queue
+invocations after the queues have been stopped), ath10k will be able to handle those extra frames
+(at least 24 of them), since the queues will be stopped before the maximum num_pending limit is reached.
+
+--
+Erik
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
