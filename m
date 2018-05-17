@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJSIe-0006Zz-Ic
- for ath10k@lists.infradead.org; Thu, 17 May 2018 23:27:09 +0000
-Received: by mail-wm0-x243.google.com with SMTP id o78-v6so11973653wmg.0
- for <ath10k@lists.infradead.org>; Thu, 17 May 2018 16:26:57 -0700 (PDT)
+ id 1fJScI-0003uc-6H
+ for ath10k@lists.infradead.org; Thu, 17 May 2018 23:47:27 +0000
+Received: by mail-lf0-x241.google.com with SMTP id i11-v6so5987079lfb.7
+ for <ath10k@lists.infradead.org>; Thu, 17 May 2018 16:47:15 -0700 (PDT)
+Date: Fri, 18 May 2018 01:47:11 +0200
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: ath10k wake_tx_queue issues
+Message-ID: <20180517234711.GA13270@localhost.localdomain>
+References: <20180515134516.GA30397@localhost.localdomain>
+ <6b81aa2e-09a3-ae48-7626-8ceb33a2a6b5@gmail.com>
 MIME-Version: 1.0
-References: <20180517231512.13085-1-niklas.cassel@linaro.org>
-In-Reply-To: <20180517231512.13085-1-niklas.cassel@linaro.org>
-From: Adrian Chadd <adrian.chadd@gmail.com>
-Date: Thu, 17 May 2018 15:26:25 -0700
-Message-ID: <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
+Content-Disposition: inline
+In-Reply-To: <6b81aa2e-09a3-ae48-7626-8ceb33a2a6b5@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +26,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: niklas.cassel@linaro.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: johannes@sipsolutions.net, toke@toke.dk, linux-wireless@vger.kernel.org, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
 
-On Thu, 17 May 2018 at 16:16, Niklas Cassel <niklas.cassel@linaro.org>
-wrote:
+On Wed, May 16, 2018 at 07:28:21PM +0200, Erik Stromdahl wrote:
+> Hello Niklas
+> 
+> Quick question:
+> Are you using my patch: "ath10k: add htt_tx num_pending window"?
 
-> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c
-b/drivers/net/wireless/ath/ath10k/txrx.c
-> index cda164f6e9f6..1d3b2d2c3fee 100644
-> --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> @@ -95,6 +95,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
->                  wake_up(&htt->empty_tx_wq);
->          spin_unlock_bh(&htt->tx_lock);
+Nope, but I definitely think that your patch should be merged,
+since the current code can lock/unlock/lock a lot of times for
+no good reason.
 
-> +       if (htt->num_pending_tx <= 3 && !list_empty(&ar->txqs))
-> +               ath10k_mac_tx_push_pending(ar);
-> +
+(I actually tried it, but I could still reproduce the bug with it.)
 
-Just sanity checking - what's protecting htt->num_pending_tx? or is it
-serialised some other way?
+> 
+> I assume (from your logs below) that you are not...
+> 
 
->          dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+Thanks a lot for you suggestions Erik!
 
->          ath10k_report_offchan_tx(htt->ar, msdu);
-> --
-> 2.17.0
+Increasing max_num_pending might be a good idea (perhaps we will
+get better thoughput in the SDIO case).
+
+However, increasing either max_num_pending or
+HTC_HOST_MAX_MSG_PER_TX_BUNDLE would probably just move the problem,
+since it would still be possible for us to get hit by the same problem
+again in the future.
+
+I actually took Toke's suggestion and cooked up a patch:
+https://marc.info/?l=linux-kernel&m=152659902128543&w=2
+
+
+Kind regards,
+Niklas
+
+
 
 _______________________________________________
 ath10k mailing list
