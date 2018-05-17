@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJS8j-0003fl-ST
- for ath10k@lists.infradead.org; Thu, 17 May 2018 23:16:55 +0000
-Received: by mail-lf0-x241.google.com with SMTP id i11-v6so5914183lfb.7
- for <ath10k@lists.infradead.org>; Thu, 17 May 2018 16:16:41 -0700 (PDT)
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: [PATCH] ath10k: transmit queued frames after waking queues
-Date: Fri, 18 May 2018 01:15:12 +0200
-Message-Id: <20180517231512.13085-1-niklas.cassel@linaro.org>
+ id 1fJSIe-0006Zz-Ic
+ for ath10k@lists.infradead.org; Thu, 17 May 2018 23:27:09 +0000
+Received: by mail-wm0-x243.google.com with SMTP id o78-v6so11973653wmg.0
+ for <ath10k@lists.infradead.org>; Thu, 17 May 2018 16:26:57 -0700 (PDT)
 MIME-Version: 1.0
+References: <20180517231512.13085-1-niklas.cassel@linaro.org>
+In-Reply-To: <20180517231512.13085-1-niklas.cassel@linaro.org>
+From: Adrian Chadd <adrian.chadd@gmail.com>
+Date: Thu, 17 May 2018 15:26:25 -0700
+Message-ID: <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,56 +20,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
-Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: niklas.cassel@linaro.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
 
-VGhlIGZvbGxvd2luZyBwcm9ibGVtIHdhcyBvYnNlcnZlZCB3aGVuIHJ1bm5pbmcgaXBlcmY6Cgpb
-ICAzXSAgMC4wLSAxLjAgc2VjICAyLjAwIE1CeXRlcyAgMTYuOCBNYml0cy9zZWMKWyAgM10gIDEu
-MC0gMi4wIHNlYyAgMy4xMiBNQnl0ZXMgIDI2LjIgTWJpdHMvc2VjClsgIDNdICAyLjAtIDMuMCBz
-ZWMgIDMuMjUgTUJ5dGVzICAyNy4zIE1iaXRzL3NlYwpbICAzXSAgMy4wLSA0LjAgc2VjICAgNjU1
-IEtCeXRlcyAgNS4zNiBNYml0cy9zZWMKWyAgM10gIDQuMC0gNS4wIHNlYyAgMC4wMCBCeXRlcyAg
-MC4wMCBiaXRzL3NlYwpbICAzXSAgNS4wLSA2LjAgc2VjICAwLjAwIEJ5dGVzICAwLjAwIGJpdHMv
-c2VjClsgIDNdICA2LjAtIDcuMCBzZWMgIDAuMDAgQnl0ZXMgIDAuMDAgYml0cy9zZWMKWyAgM10g
-IDcuMC0gOC4wIHNlYyAgMC4wMCBCeXRlcyAgMC4wMCBiaXRzL3NlYwpbICAzXSAgOC4wLSA5LjAg
-c2VjICAwLjAwIEJ5dGVzICAwLjAwIGJpdHMvc2VjClsgIDNdICA5LjAtMTAuMCBzZWMgIDAuMDAg
-Qnl0ZXMgIDAuMDAgYml0cy9zZWMKWyAgM10gIDAuMC0xMC4zIHNlYyAgOS4wMSBNQnl0ZXMgIDcu
-MzIgTWJpdHMvc2VjCgpUaGVyZSBhcmUgZnJhbWVzIGluIHRoZSBpZWVlODAyMTFfdHhxIGFuZCB0
-aGVyZSBhcmUgZnJhbWVzIHRoYXQgaGF2ZQpiZWVuIHJlbW92ZWQgZnJvbSBmcm9tIHRoaXMgcXVl
-dWUsIGJ1dCBoYXZlbid0IHlldCBiZWVuIHNlbnQgb24gdGhlIHdpcmUKKG51bV9wZW5kaW5nX3R4
-KS4KCldoZW4gbnVtX3BlbmRpbmdfdHggcmVhY2hlcyBtYXhfbnVtX3BlbmRpbmdfdHgsIHdlIHdp
-bGwgc3RvcCB0aGUgcXVldWVzCmJ5IGNhbGxpbmcgaWVlZTgwMjExX3N0b3BfcXVldWVzKCkuCgpB
-cyBmcmFtZXMgdGhhdCBoYXZlIHByZXZpb3VzbHkgYmVlbiBzZW50IGZvciB0cmFuc21pc3Npb24K
-KG51bV9wZW5kaW5nX3R4KSBhcmUgY29tcGxldGVkLCB3ZSB3aWxsIGRlY3JlYXNlIG51bV9wZW5k
-aW5nX3R4IGFuZCB3YWtlCnRoZSBxdWV1ZXMgYnkgY2FsbGluZyBpZWVlODAyMTFfd2FrZV9xdWV1
-ZSgpLiBpZWVlODAyMTFfd2FrZV9xdWV1ZSgpCmRvZXMgbm90IGNhbGwgd2FrZV90eF9xdWV1ZSwg
-c28gd2UgbWlnaHQgc3RpbGwgaGF2ZSBmcmFtZXMgaW4gdGhlCnF1ZXVlIGF0IHRoaXMgcG9pbnQu
-CgpXaGlsZSB0aGUgcXVldWVzIHdlcmUgc3RvcHBlZCwgdGhlIHNvY2tldCBidWZmZXIgbWlnaHQg
-aGF2ZSBmaWxsZWQgdXAsCmFuZCBpbiBvcmRlciBmb3IgdXNlciBzcGFjZSB0byB3cml0ZSBtb3Jl
-LCB3ZSBuZWVkIHRvIGZyZWUgdGhlIGZyYW1lcwppbiB0aGUgcXVldWUsIHNpbmNlIHRoZXkgYXJl
-IGFjY291bnRlZCB0byB0aGUgc29ja2V0LiBJbiBvcmRlciB0byBmcmVlCnRoZW0sIHdlIGZpcnN0
-IG5lZWQgdG8gdHJhbnNtaXQgdGhlbS4KCkluIG9yZGVyIHRvIGF2b2lkIHRyeWluZyB0byBmbHVz
-aCB0aGUgcXVldWUgZXZlcnkgdGltZSB3ZSBmcmVlIGEgZnJhbWUsCm9ubHkgZG8gdGhpcyB3aGVu
-IHRoZXJlIGFyZSAzIG9yIGxlc3MgZnJhbWVzIHBlbmRpbmcsIGFuZCB3aGlsZSB3ZQphY3R1YWxs
-eSBoYXZlIGZyYW1lcyBpbiB0aGUgcXVldWUuIFRoaXMgbG9naWMgd2FzIGNvcGllZCBmcm9tCm10
-NzZfdHhxX3NjaGVkdWxlIChtdDc2KSwgb25lIG9mIGZldyBvdGhlciBkcml2ZXJzIHRoYXQgYXJl
-IGFjdHVhbGx5CnVzaW5nIHdha2VfdHhfcXVldWUuCgpTdWdnZXN0ZWQtYnk6IFRva2UgSMO4aWxh
-bmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tlLmRrPgpTaWduZWQtb2ZmLWJ5OiBOaWtsYXMgQ2Fzc2Vs
-IDxuaWtsYXMuY2Fzc2VsQGxpbmFyby5vcmc+Ci0tLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway90eHJ4LmMgfCAzICsrKwogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQoK
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jIGIvZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90eHJ4LmMKaW5kZXggY2RhMTY0ZjZlOWY2Li4x
-ZDNiMmQyYzNmZWUgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-dHhyeC5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jCkBAIC05
-NSw2ICs5NSw5IEBAIGludCBhdGgxMGtfdHhyeF90eF91bnJlZihzdHJ1Y3QgYXRoMTBrX2h0dCAq
-aHR0LAogCQl3YWtlX3VwKCZodHQtPmVtcHR5X3R4X3dxKTsKIAlzcGluX3VubG9ja19iaCgmaHR0
-LT50eF9sb2NrKTsKIAorCWlmIChodHQtPm51bV9wZW5kaW5nX3R4IDw9IDMgJiYgIWxpc3RfZW1w
-dHkoJmFyLT50eHFzKSkKKwkJYXRoMTBrX21hY190eF9wdXNoX3BlbmRpbmcoYXIpOworCiAJZG1h
-X3VubWFwX3NpbmdsZShkZXYsIHNrYl9jYi0+cGFkZHIsIG1zZHUtPmxlbiwgRE1BX1RPX0RFVklD
-RSk7CiAKIAlhdGgxMGtfcmVwb3J0X29mZmNoYW5fdHgoaHR0LT5hciwgbXNkdSk7Ci0tIAoyLjE3
-LjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Thu, 17 May 2018 at 16:16, Niklas Cassel <niklas.cassel@linaro.org>
+wrote:
+
+> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c
+b/drivers/net/wireless/ath/ath10k/txrx.c
+> index cda164f6e9f6..1d3b2d2c3fee 100644
+> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+> @@ -95,6 +95,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>                  wake_up(&htt->empty_tx_wq);
+>          spin_unlock_bh(&htt->tx_lock);
+
+> +       if (htt->num_pending_tx <= 3 && !list_empty(&ar->txqs))
+> +               ath10k_mac_tx_push_pending(ar);
+> +
+
+Just sanity checking - what's protecting htt->num_pending_tx? or is it
+serialised some other way?
+
+>          dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+
+>          ath10k_report_offchan_tx(htt->ar, msdu);
+> --
+> 2.17.0
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
