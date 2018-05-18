@@ -2,17 +2,19 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJcox-000764-DB
- for ath10k@lists.infradead.org; Fri, 18 May 2018 10:43:12 +0000
+ id 1fJd0S-0000I5-HP
+ for ath10k@lists.infradead.org; Fri, 18 May 2018 10:53:06 +0000
 Subject: Re: [PATCH] ath10k: add dynamic vlan support
 References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
- <63f12b0c-02e9-0ad2-28a0-d0bbc858e76a@dd-wrt.com>
- <1526637184.3805.14.camel@sipsolutions.net>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <89904253-7a31-6182-d976-264b78fc3a10@dd-wrt.com>
-Date: Fri, 18 May 2018 12:40:55 +0200
+Message-ID: <d2dfdfb4-72d6-00e7-3952-bb38ef88ea5f@dd-wrt.com>
+Date: Fri, 18 May 2018 12:52:53 +0200
 MIME-Version: 1.0
-In-Reply-To: <1526637184.3805.14.camel@sipsolutions.net>
+In-Reply-To: <1526637270.3805.15.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +23,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Manikanta Pubbisetty <mpubbise@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, nbd@nbd.name
 
-
-
-Am 18.05.2018 um 11:53 schrieb Johannes Berg:
-> On Mon, 2018-04-23 at 21:18 +0200, Sebastian Gottschall wrote:
->> this patch makes no sense at some points. AP_VLAN must be enabled always
->> (it is enabled by mac80211 by default, but is now disabled in very
->> latest git version for drivers which announce sw_crypto support)
->> if its disabled wds ap / wds sta operation will not work anymore since
->> mac80211 uses AP_VLAN for the local wds sta interfaces
-> You'd do you well to learn the correct terminology used in Linux if you
-> try to communicate with us...
->
-> What you say there makes no sense, WDS is a separate mode. Maybe you
-> mean 4-addr mode?
-yes 4-addr mode which is common known as WDS mode. (terminology used by 
-all sorts of vendors)
-
-Sebastian
->
-> johannes
->
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CkFtIDE4LjA1LjIwMTggdW0gMTE6NTQgc2NocmllYiBKb2hhbm5lcyBCZXJnOgo+IE9uIEZyaSwg
+MjAxOC0wNS0wNCBhdCAxMjoyMCArMDUzMCwgTWFuaWthbnRhIFB1YmJpc2V0dHkgd3JvdGU6Cj4+
+IEpvaGFubmVzLAo+Pgo+PiBJdCBzZWVtcyBsaWtlIGNvbW1pdCBkYjNiZGNiOWMzZmYgKCJtYWM4
+MDIxMTogYWxsb3cgQVBfVkxBTiBvcGVyYXRpb24gb24KPj4gY3J5cHRvIGNvbnRyb2xsZWQgZGV2
+aWNlcyIpIGhhcyBicm9rZW4gNC1hZGRyIG9wZXJhdGlvbiBvbiBjcnlwdG8KPj4gY29udHJvbGxl
+ZCBkZXZpY2VzIGFzIHJlcG9ydGVkIGJ5IHNlYmFzdGlhbi4KPj4gVGhlIGNvbW1pdCB3YXMgbWFp
+bmx5IGZvY3VzZWQgaW4gYWRkcmVzc2luZyB0aGUgcHJvYmxlbSBpbiBzdXBwb3J0aW5nCj4+IFZM
+QU5zIG9uIGNyeXB0byBjb250cm9sbGVkIGRldmljZXMgYnV0IHNpbmNlIDQtYWRkciBtb2RlIGlz
+IGFsc28KPj4gZGVwZW5kZW50IG9uIEFQX1ZMQU4gaW50ZXJmYWNlLCB0aGlzIGNvbW1pdCBicmVh
+a3MgdGhlIDQtYWRkciBBUCBtb2RlLgo+IE9rLgo+Cj4gRG8geW91IGtub3cgd2h5IGl0IGFjdHVh
+bGx5IGJyb2tlIGl0PyBJIG1lYW4sIHdlIHNob3VsZCd2ZSB0dXJuZWQgb2ZmCj4gdGhlIHN0cmlj
+dCByZXF1aXJlbWVudCBmb3Igc3cgY3J5cHRvIGNvbnRyb2wgb25seSBmb3IgdGhlIEdUSywgYW5k
+IHRoYXQKPiBzaG91bGRuJ3QgbWF0dGVyIHNvIG11Y2g/Cj4KPj4gSSBoYXZlIGNvdXBsZSBvZiBp
+ZGVhcyBvbiBob3cgdG8gYWRkcmVzcyB0aGUgcHJvYmxlbSwKPj4KPj4gMSkgQWRkIGEgbmV3IGh3
+X2ZsYWcgYW5kIGJhc2VkIG9uIHRoZSBoYXJkd2FyZSBmbGFnLCBhbGxvdy9kaXNhbGxvdyB0aGUK
+Pj4gY3JlYXRpb24gb2YgQVBfVkxBTiBpbnRlcmZhY2UuCj4+Cj4+ICsgKiBASUVFRTgwMjExX0hX
+X1NVUFBPUlRTX1NXX0VOQ1JZUFQ6IERldmljZSBpcyBjYXBhYmxlIG9mIHRyYW5zbWl0dGluZwo+
+PiArICogICAgIGZyYW1lcyBlbmNyeXB0ZWQgaW4gc29mdHdhcmUsIG9ubHkgdmFsaWQgd2hlbiBT
+V19DUllQVE9fQ09OVFJPTAo+PiArICogICAgIGlzIGVuYWJsZWQuIEJhc2VkIG9uIHRoaXMgZmxh
+ZywgbWFjODAyMTEgY2FuIGFsbG93L2Rpc2FsbG93IFZMQU4KPj4gKyAqICAgICBvcGVyYXRpb25z
+IGluIHRoZSBCU1MuCj4gQmFzZWQgb24gdGhlIG5hbWUgYW5kIGluaXRpYWwgZGVzY3JpcHRpb24s
+IHRoaXMgc291bmRzIGVxdWl2YWxlbnQgdG8KPiBqdXN0IHR1cm5pbmcgb2ZmIFNXX0NSWVBUT19D
+T05UUk9MLiBJIHRoaW5rIHRoYXQncyBub3QgdGhlIGludGVudCwgYnV0Cj4gd291bGQgbmVlZCBz
+b21lIHJlbmFtaW5nLgo+Cj4+IDIpIEFsbG93IG1hYzgwMjExIHRvIGNhbGwgc2V0X2tleSBmb3Ig
+R1RLcyBvbiBBUF9WTEFOIGludGVyZmFjZXMgZm9yCj4+IGNyeXB0byBjb250cm9sbGVkIGRldmlj
+ZXMsIGxldCB0aGUgZHJpdmVyIGRlY2lkZSB3aGV0aGVyIHRvIHJldHVybiAnMScKPj4gb3Igc29t
+ZSBlcnJvciBjb2RlIGJhc2VkIG9uIHRoZWlyIHN1cHBvcnQgZm9yIHRyYW5zbWl0dGluZyBzdyBl
+bmNyeXB0ZWQKPj4gZnJhbWVzLiBJIGFtIGxpdHRsZSBza2VwdGljYWwgd2l0aCB0aGlzIGFwcHJv
+YWNoIGFzIGRyaXZlcnMgYXJlIHRvdGFsbHkKPj4gdW5hd2FyZSBvZiBBUF9WTEFOIGludGVyZmFj
+ZXMuCj4gTm8sIHRoYXQgd29uJ3Qgd29yay4KPgo+IEknbSB1bnN1cmUgaG93IDQtYWRkciBWTEFO
+IGNhbiB3b3JrIHdpdGggYXRoMTBrIGVpdGhlciB3YXk/Cj4KPiBNYXliZSBpdCBqdXN0IGRvZXNu
+J3Qgbm9ybWFsbHkgbmVlZCBhIEdUSywgc28gbm90aGluZyBicm9rZSBiZWZvcmUsIGJ1dAo+IHlv
+dXIgb3RoZXIgcGF0Y2ggY2hhbmdlZCB0aGluZ3MgdG8gcmVtb3ZlIFZMQU4gYW5kIHRoZW4gb2Yg
+Y291cnNlIGl0J3MKPiBubyBsb25nZXIgYXZhaWxhYmxlPwo+Cj4gQnV0IHRoZW4gSSBkb24ndCB1
+bmRlcnN0YW5kIHRoZSBjb21wbGFpbnQgdGhhdAo+Cj4gU28gbWF5YmUgdGhlIHNvbHV0aW9uIHNo
+b3VsZCBiZSB0byBhZGQgYSBzZXBhcmF0ZSBmbGFnIGZvciB3aGV0aGVyIG9yCj4gbm90IDQtYWRk
+ciBWTEFOIGlzIHN1cHBvcnRlZD8KPgo+IGpvaGFubmVzCgpsZXQgbWUgZXhwbGFpbi4gdGhlIHZs
+YW4gbW9kZSBpcyB1c2VkIHRvIGNyZWF0ZSBsb2NhbCBpbnRlcmZhY2VzIGluIAo0YWRkciBtb2Rl
+CgpsaWtlIHdsYW4wLnN0YTAsIHdsYW4wLnN0YTEgcGVyIHBlZXIuIHRoaXMgaXMgcmVxdWlyZWQg
+dG8gcHV0IHRoZXNlIApwZWVycyBpbnRvIHRoZSBsb2NhbCBsaW51eCBicmlkZ2Ugc2luY2UgdGhl
+IGxvY2FsIGFwIGludGVyZmFjZSBjYW5ub3QKCmhhbmRsZSB0aGUgYnJpZGdpbmcgY2FwYWJpbGl0
+aWVzIGxpa2UgY29ycmVjdCBmb3J3YXJkaW5nLCBzdHAgb3IgZXZlbiAKZmlsdGVyaW5nLiB0aGlz
+IGlzIGEgbG9uZyB0ZXJtIGJlaGF2aW91ciBzaW5jZSB0aGUgYmVnaW5uaW5nIG9mIGF0aDlrLgoK
+c28gdGhlIGFwX3ZsYW4gZmVhdHVyZSBpcyB1c2VkIHRvIHBhc3MgdGhlIGZyYW1lcyBwZXIgcGVl
+ciBpbiBhIAppbmRlcGVuZW5lZCB3YXkuIHlvdSBtYXkgYXNrIGZlbGl4IGZpZXRrYXUsIHNpbmNl
+IGhlIGRldmVsb3BlZCBpdCAKb3JpZ2luYWxseSBpbiBtYWR3aWZpCgphbmQgbGF0ZXIgaW4gbWFj
+ODAyMTEgLyBhdGg5ay4gc28gYXBfdmxhbiBjYXBhYmlsaXR5IGlzIGEgcmVxdWlyZWRtZW50IApm
+b3IgYWxsIDRhZGRyIGNhcGFibGUgd2lyZWxlc3MgZHJpdmVycy4KCgpleGFtcGxlIG9mIGEgNGFk
+ZHIgY2FwYWJsZSBhcCBpbiBhdGgxMGsgd2l0aCAyIGNvbm5lY3RlZCA0YWRkciBzdGF0aW9ucwoK
+cm9vdEBhcHJlaXRoYWxsZTp+IyBicmN0bCBzaG93CmJyaWRnZSBuYW1lwqDCoMKgwqAgYnJpZGdl
+IGlkwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTVFAgZW5hYmxlZMKgwqDCoMKgIGludGVy
+ZmFjZXMKYnIwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDgwMDAuZGNlZjA5ZTRjZTA3wqDCoMKg
+wqDCoMKgIG5vwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYXRoMAogwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYXRoMC4xCiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhdGgwLjIKIMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGF0aDAuc3Rh
+MQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+YXRoMC5zdGE0CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBhdGgxCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBhdGgxLjIKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGV0aDAKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGV0aDEKCj4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
