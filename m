@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from cvsmtppost006.wmail.worksmobile.com ([125.209.239.224])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJScI-0003uc-6H
- for ath10k@lists.infradead.org; Thu, 17 May 2018 23:47:27 +0000
-Received: by mail-lf0-x241.google.com with SMTP id i11-v6so5987079lfb.7
- for <ath10k@lists.infradead.org>; Thu, 17 May 2018 16:47:15 -0700 (PDT)
-Date: Fri, 18 May 2018 01:47:11 +0200
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: ath10k wake_tx_queue issues
-Message-ID: <20180517234711.GA13270@localhost.localdomain>
-References: <20180515134516.GA30397@localhost.localdomain>
- <6b81aa2e-09a3-ae48-7626-8ceb33a2a6b5@gmail.com>
+ id 1fJZYX-0006hq-0F
+ for ath10k@lists.infradead.org; Fri, 18 May 2018 07:12:09 +0000
+Received: from cvsendbo05.wmail ([10.112.74.147])
+ by cvsmtppost006.wmail.worksmobile.com with ESMTP id oqD89a9rT4C9odXEFUFFzw
+ for <ath10k@lists.infradead.org>; Fri, 18 May 2018 07:11:41 -0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6b81aa2e-09a3-ae48-7626-8ceb33a2a6b5@gmail.com>
+Message-ID: <5887e6d2494a98ee19be76661d89b7a7@cvweb025.wmail.nhnsystem.com>
+Date: Fri, 18 May 2018 16:11:41 +0900
+From: =?utf-8?B?S3dhbmcgTWluIEtpbQ==?=<gwondori@nimbus.kr>
+Subject: =?utf-8?B?SG93IHRvIGNvbmZpZ3VyZSB3ZHMgd2l0aCBhdGgxMGs/?=
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +19,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: johannes@sipsolutions.net, toke@toke.dk, linux-wireless@vger.kernel.org, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On Wed, May 16, 2018 at 07:28:21PM +0200, Erik Stromdahl wrote:
-> Hello Niklas
-> 
-> Quick question:
-> Are you using my patch: "ath10k: add htt_tx num_pending window"?
-
-Nope, but I definitely think that your patch should be merged,
-since the current code can lock/unlock/lock a lot of times for
-no good reason.
-
-(I actually tried it, but I could still reproduce the bug with it.)
-
-> 
-> I assume (from your logs below) that you are not...
-> 
-
-Thanks a lot for you suggestions Erik!
-
-Increasing max_num_pending might be a good idea (perhaps we will
-get better thoughput in the SDIO case).
-
-However, increasing either max_num_pending or
-HTC_HOST_MAX_MSG_PER_TX_BUNDLE would probably just move the problem,
-since it would still be possible for us to get hit by the same problem
-again in the future.
-
-I actually took Toke's suggestion and cooked up a patch:
-https://marc.info/?l=linux-kernel&m=152659902128543&w=2
-
-
-Kind regards,
-Niklas
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBoYXZlIHR3byBBUCBkZXZpY2VzIGFuZCBvbmUgTVBjaWUgY2FyZCAoV0xFOTAwVlgtN0FBKSBm
+b3IgZWFjaCBkZXZpY2UuCkFuZCBJIHdhbnQgdG8gaW1wbGVtZW50IHdkcyBieSBjcmVhdGluZyBp
+bnRlcmZhY2UgKHdsYW4wLCBzdGEwKSBvbiBlYWNoIG9mIHR3byBBUCBkZXZpY2VzLgoKRmlyc3Qs
+IEkgYXBwbGllZCB0aGUgcGF0Y2goaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC83
+NjczOTYxLykgdG8gdGhlIGF0aDEwayBtb2R1bGUgYW5kIGNyZWF0ZWQgYW4gaW50ZXJmYWNlKHN0
+YTApIGZvciB0aGUgc3RhdGlvbiB1c2luZyAiaXciLgooIml3IGRldiB3bGFuMCBpbnRlcmZhY2Ug
+YWRkIHN0YTAgdHlwZSBtYW5hZ2VkIGFkZHIgMTI6MzQ6NTY6Nzg6YWI6Y2QiLCBUaGUgbWFjIGFk
+ZHJlc3Mgb2Ygd2xhbjAgaXMgMDQ6RjA6MjE6MkM6NkI6OTguKQoKTGlrZXdpc2UsIEkgdXNlZCAi
+aXciIHRvIHNldCB1cCA0YWRkciBmb3IgZWFjaCBpbnRlcmZhY2UgYW5kIGJyY3RsIHRvIGFkZCBp
+bnRlcmZhY2UgKHdsYW4wLCBzdGEwKSB0byBicjAuCgpGaW5hbGx5LCBJIHJhbiBob3N0YXBkIHVz
+aW5nIHdsYW4wLCBhbmQgSSBhbHNvIHN1Y2NlZWRlZCBpbiBydW5uaW5nIHdwYV9zdXBwbGljYW50
+IHVzaW5nIHN0YTAuCgpIb3dldmVyLCBob3N0YXBkIHdvcmtzIHdlbGwsIGJ1dCB3cGFfc3VwcGxp
+Y2FudCBoYXMgbm90IGJlZW4gYWJsZSB0byBjb25uZWN0IHRvIHRoZSBuZXh0IGRldmljZS4KCkF0
+IHRoaXMgdGltZSwgSSBzYXcgdGhlIGZvbGxvd2luZyBtZXNzYWdlIGluIHRoZSBsb2cgb2Ygd3Bh
+X3N1cHBsaWNhbnQ6ICJzdGEwOiBubDgwMjExOiBNTE1FIGNvbW1hbmQgZmFpbGVkIChhdXRoKTog
+cmV0PS0yMiAoSW52YWxpZCBhcmd1bWVudCkiCgpNeSBob3N0YXBkIGFuZCB3cGFfc3VwcGxpY2Fu
+dCBjb25maWd1cmF0aW9ucyBhcmUgYXMgZm9sbG93czoKCiNjYXQgL2V0Yy9ob3N0YXBkLmNvbmYK
+Y3RybF9pbnRlcmZhY2U9L3Zhci9ydW4vaG9zdGFwZAppbnRlcmZhY2U9d2xhbjAKYnJpZGdlPWJy
+MApkcml2ZXI9bmw4MDIxMQpodF9jYXBhYj1bSFQ0MCtdCmNoYW5uZWw9NTIKc3NpZD13ZHN0ZXN0
+XzExCmh3X21vZGU9YQppZWVlODAyMTFuPTEKaWVlZTgwMjExYWM9MQp2aHRfb3Blcl9jaHdpZHRo
+PTAKaWVlZTgwMjExZD0xCmNvdW50cnlfY29kZT1VUwppZWVlODAyMTFoPTEKY2hhbmxpc3Q9NTIg
+NjAgMTAwIDEwOCAxMTYgMTI2IDEzMgptYXhfbnVtX3N0YT0zMgptYWNhZGRyX2FjbD0wCndwYT0z
+CndwYV9rZXlfbWdtdD1XUEEtUFNLCndwYV9wYXNzcGhyYXNlPXh4eHh4eHh4CndwYV9ncm91cF9y
+ZWtleT02MAphcF9tYXhfaW5hY3Rpdml0eT02MAp3cGFfZ21rX3Jla2V5PTg2NDAwCndwYV9wYWly
+d2lzZT1US0lQIENDTVAKd2RzX3N0YT0xCgoKI2NhdCAvZXRjL3dwYV9zdXBwbGljYW50LmNvbmYK
+Y3RybF9pbnRlcmZhY2U9L3Zhci9ydW4vd3BhX3N1cHBsaWNhbnQKY3RybF9pbnRlcmZhY2VfZ3Jv
+dXA9MAplYXBvbF92ZXJzaW9uPTEKYXBfc2Nhbj0xCmZhc3RfcmVhdXRoPTEKbmV0d29yaz17CiAg
+ICAgc2Nhbl9zc2lkPTEKIyAgIHNzaWQ9Indkc3Rlc3RfMTEiCiAgICAgYnNzaWQ9MDQ6ZjA6MjE6
+MmM6NmI6OWMgICAgIyBuZXh0IGFwIGRldmljZSBtYWMgYWRkcgogICAgIHBzaz0ieHh4eHh4eHgi
+CiAgICAgcHJpb3JpdHk9NQp9CgoKSGVyZSBhcmUgc29tZSBxdWVzdGlvbnMuCjEuIElzIGl0IGNv
+cnJlY3QgdG8gY29uZmlndXJlIHdkcyBhcyBhYm92ZT8KCgoyLiBJZiBub3QsIHdoaWNoIHBhcnQg
+aXMgd3Jvbmc/CgoKQmVsb3cgaXMgdGhlIHZlcnNpb24gb2YgdGhlIGtlcm5lbCBJIGFtIHVzaW5n
+LCB0aGUgdmVyc2lvbiBvZiBiYWNrcG9ydCwgYW5kIHRoZSB2ZXJzaW9uIG9mICJob3N0YXBkIC8g
+d3BhX3N1cHBsaWNhbnQiOgoKS2VybmVsOiAzLjIuNTgKYmFja3BvcnQ6IDQuNC4yLTEKYXRoMTBr
+IGZpcm13YXJlOiAxMC4yLjQuNjMtMgpob3N0YXBkOiAyLjQKd3BhX3N1cHBsaWNhbnQ6IDIuNgoK
+LS0tLQoKS2ltIEt3YW5nIE1pbgoKCk1vYmlsZcKgKzgyIDAxMC01NTIxLTYzOTMgCk1haWzCoGd3
+b25kb3JpQG5pbWJ1cy5rciAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
