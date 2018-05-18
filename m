@@ -1,24 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJbXG-0004ZK-5Y
- for ath10k@lists.infradead.org; Fri, 18 May 2018 09:18:52 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Support for QCA9377
-References: <CAF_dkJCoAxVNK7sg5iGE7cSqZq9nyf=v2e9HkhQx=K2Sv9NOCg@mail.gmail.com>
- <CAB6Vn2PcbSqc5fH719KX+7+q1ksf=CMvujdk=Z1QAj7Vs1d-3A@mail.gmail.com>
- <CAF_dkJCkH9bUW+++HX2c66XU=RNNGaT5s__PMzqFnrh1Kt=i2g@mail.gmail.com>
- <CAB6Vn2PBQ7YKyAhP6ta8-2CkA+dWyiTSFJoDmS-QD708xmtvGQ@mail.gmail.com>
- <16996c44-c9c0-2353-91a7-198acbcbf209@roadrunner.com>
- <87in7omc5x.fsf@kamboji.qca.qualcomm.com>
- <8572a5dc-b148-9b85-d196-c94d554cc264@roadrunner.com>
- <87po1vjw0y.fsf@kamboji.qca.qualcomm.com>
- <cf92e6b8-56db-8d62-55cc-cc0ab8d91e64@roadrunner.com>
-Date: Fri, 18 May 2018 12:18:34 +0300
-In-Reply-To: <cf92e6b8-56db-8d62-55cc-cc0ab8d91e64@roadrunner.com> (Jay
- Foster's message of "Wed, 16 May 2018 13:00:47 -0700")
-Message-ID: <87o9hdiaol.fsf@codeaurora.org>
-MIME-Version: 1.0
+ id 1fJc4g-00031L-7n
+ for ath10k@lists.infradead.org; Fri, 18 May 2018 09:53:26 +0000
+Message-ID: <1526637184.3805.14.camel@sipsolutions.net>
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 18 May 2018 11:53:04 +0200
+In-Reply-To: <63f12b0c-02e9-0ad2-28a0-d0bbc858e76a@dd-wrt.com>
+ (sfid-20180423_211819_362504_0693E2C4)
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <63f12b0c-02e9-0ad2-28a0-d0bbc858e76a@dd-wrt.com>
+ (sfid-20180423_211819_362504_0693E2C4)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +22,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jay Foster <jayf0ster@roadrunner.com>
-Cc: jayfoster@ieee.org, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Manikanta Pubbisetty <mpubbise@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-SmF5IEZvc3RlciA8amF5ZjBzdGVyQHJvYWRydW5uZXIuY29tPiB3cml0ZXM6Cgo+Pj4gSSBkaWQg
-bWFuYWdlIHRvIGdldCBhIHN1Y2Nlc3NmdWwgV2ktRmkgU1RBIG1vZGUgY29ubmVjdGlvbiB3aXRo
-IHRoaXMKPj4+IGRyaXZlci7CoCBPbmUgaXNzdWUgdGhhdCBJIGRvbid0IHVuZGVyc3RhbmQgaXMg
-d2hlbiB0aGUgZHJpdmVyIGF0dGVtcHRzCj4+PiB0byBsb2FkIGEgRlcgZmlsZSB0aGF0IGlzIG5v
-dCBwcmVzZW50LCBpdCBmYWlscyB3aXRoIGVycm9yIC0yIGFuZCB0aGVuCj4+PiByZXBvcnRzLCAi
-RmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyIi7CoCBIb3dldmVyLCB0aGlzICd1c2VyIGhlbHBl
-cicKPj4+IGRvZXMgbm90IGV4aXN0L3dvcmsgZWl0aGVyLCBidXQgdGhlIGRyaXZlciB3YWl0cyBx
-dWl0ZSBhIHdoaWxlIHdhaXRpbmcKPj4+IGZvciBpdCAoYWJvdXQgaGFsZiBhIG1pbnV0ZSBvciBz
-bykuwqAgVGhpcyBjYXVzZXMgYSBkZWxheSBsb2FkaW5nIHRoZQo+Pj4gZHJpdmVyIChhYm91dCBo
-YWxmIGEgbWludXRlIGZvciBlYWNoIG1pc3NpbmcgZmlsZSkuwqAgU28sIGV2ZW4gdGhvdWdoCj4+
-PiB0aGUgY2FsIGZpbGVzIGFyZSBvcHRpb25hbCwgaWYgdGhleSBhcmUgbm90IHRoZXJlLCBpdCBz
-aWduaWZpY2FudGx5Cj4+PiBkZWxheXMgbG9hZGluZyBvZiB0aGUgZHJpdmVyLsKgIEkgbmVlZCB0
-byBlbGltaW5hdGUgdGhpcyBkZWxheS7CoCBGb3IKPj4+IG5vdywgSSBwYXRjaGVkIHRoZSBkcml2
-ZXIgdG8gbm90IGF0dGVtcHQgdG8gbG9hZCB0aGUKPj4+IHByZS1jYWwtdXNiLTxidXM+LmJpbiBv
-ciB0aGUgY2FsLXVzYi08YnVzPi5iaW4gZmlsZXMgKHRoYXQgZG8gbm90Cj4+PiBleGlzdCBmb3Ig
-bXkgYWRhcHRlciksIGJ1dCB0aGVyZSBtdXN0IGJlIGEgYmV0dGVyIHdheSB0byBhdm9pZCB0aGlz
-Cj4+PiBkZWxheS4KPj4gWWVhaCwgdGhhdCBkZWxheSBpcyBhIGNvbW1vbiBwcm9ibGVtIGFuZCBu
-b3QgYXRoMTBrIHJlbGF0ZWQuIElJUkMKPj4gdGhlcmUncyBhIEtjb25maWcgb3B0aW9uIHdoaWNo
-IHlvdSBjYW4gZGlzYWJsZSB0byBhdm9pZCB0aGUgZGVsYXksIG1heWJlCj4+IGl0IHdhcyBDT05G
-SUdfRldfTE9BREVSX1VTRVJfSEVMUEVSX0ZBTExCQUNLPyBOb3Qgc3VyZSB0aG91Z2gsIEdvb2ds
-ZQo+PiBzaG91bGQgYmUgYWJsZSB0byBoZWxwIHdpdGggdGhhdC4KPj4KPiBUaGFua3MuwqAgU2Vs
-ZWN0aW5nIENPTkZJR19GV19MT0FERVJfVVNFUl9IRUxQRVJfRkFMTEJBQ0s9biBkaWQgdGhlIHRy
-aWNrLgoKR29vZCB0aGF0IHlvdSBnb3QgaXQgd29ya2luZy4KCj4gT3RoZXIgaXNzdWVzIHRoYXQg
-SSBoYXZlIG9ic2VydmVkIChwcm9iYWJseSBGVyByZWxhdGVkKToKPiAxKSBJbiBTVEEgbW9kZSwg
-SSBvYnNlcnZlIHNldmVyYWwgbWVzc2FnZXMgZnJvbSB0aGUgZHJpdmVyICJyZWNlaXZlZAo+IHR4
-IGNvbXBsZXRpb24gZm9yIGludmFsaWQgbXNkdV9pZDogMCIuwqAgQSBHb29nbGUgc2VhcmNoIGxl
-ZCBtZSB0bwo+IGh0dHBzOi8vZ2l0aHViLmNvbS9lcnN0cm9tL2xpbnV4LWF0aC9pc3N1ZXMvMSwg
-YnV0IEkgZGlkIG5vdCBmaW5kIGEKPiByZXNvbHV0aW9uLgoKWWVhaCwgSSB0aGluayBoYXZlIHNl
-ZW4gdGhlIHNhbWUgd2hpbGUgSSB3YXMgdGVzdGluZyBVU0IgcGF0Y2hlcy4KCj4gMikgSWYgSSBy
-ZWJvb3QsIGl0IGFwcGVhcnMgdGhhdCB0aGUgVVNCIFdpLUZpIGFkYXB0ZXIgaXMgbGVmdCBpbiBh
-Cj4gYnJva2VuIHN0YXRlLCBzbyB0aGUgZGV2aWNlIGZhaWxzIHRvIGVudW1lcmF0ZSBhbmQgdGhl
-IGRyaXZlciB3b24ndAo+IGxvYWQuwqAgQSBwb3dlciBjeWNsZSBpcyByZXF1aXJlZC4KClRoYXQn
-cyBub3QgZ29vZC4gV2Ugc2hvdWxkIGZpbmQgYSB3YXkgdG8gcmVzZXQgdGhlIFVTQiBkZXZpY2Us
-IGRvZXMKYW55b25lIGtub3cgaG93PwoKPiAzKSBBUCBtb2RlIGRvZXMgbm90IHdvcmsuwqAgVGhl
-IGRyaXZlciByZXBvcnRzOgo+IHVzYiAxLTEuMjogRmFpbGVkIHRvIHN1Ym1pdCB1c2IgY29udHJv
-bCBtZXNzYWdlOiAtMTEwCj4gdXNiIDEtMS4yOiB1bmFibGUgdG8gc2VuZCB0aGUgYm1pIGRhdGEg
-dG8gdGhlIGRldmljZTogLTExMAo+IHVzYiAxLTEuMjogdW5hYmxlIHRvIHdyaXRlIHRvIHRoZSBk
-ZXZpY2UgKC0xMTApCj4gdXNiIDEtMS4yOiBzZXR0aW5ncyBIVEMgdmVyc2lvbiBmYWlsZWQKPiB1
-c2IgMS0xLjI6IENvdWxkIG5vdCBpbml0IGNvcmU6IC0yMgo+IEF0IHRoaXMgcG9pbnQsIHRoZSBk
-ZXZpY2UgaXMgc3R1ZmZlZCBhZ2FpbiwgYW5kIHJlcXVpcmVzIGEgcG93ZXIgY3ljbGUuCgpPaywg
-c28gd2UgbmVlZCB0byBkaXNhYmxlIEFQIG1vZGUgc3VwcG9ydCBmb3IgVVNCIGRldmljZXMgZnJv
-bSBhdGgxMGssCmF0IGxlYXN0IHRlbXBvcmFyaWx5IGJlZm9yZSB3ZSBmaW5kIGEgc29sdXRpb24g
-Zm9yIGl0LgoKLS0gCkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Mon, 2018-04-23 at 21:18 +0200, Sebastian Gottschall wrote:
+> this patch makes no sense at some points. AP_VLAN must be enabled always 
+> (it is enabled by mac80211 by default, but is now disabled in very 
+> latest git version for drivers which announce sw_crypto support)
+> if its disabled wds ap / wds sta operation will not work anymore since 
+> mac80211 uses AP_VLAN for the local wds sta interfaces
+
+You'd do you well to learn the correct terminology used in Linux if you
+try to communicate with us...
+
+What you say there makes no sense, WDS is a separate mode. Maybe you
+mean 4-addr mode?
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
