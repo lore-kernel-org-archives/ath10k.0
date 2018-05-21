@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKeX6-0006sF-TH
- for ath10k@lists.infradead.org; Mon, 21 May 2018 06:43:02 +0000
-Subject: Re: [PATCH] ath10k: add dynamic vlan support
-References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
- <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
- <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
- <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
- <1526637270.3805.15.camel@sipsolutions.net>
-From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Message-ID: <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
-Date: Mon, 21 May 2018 12:12:40 +0530
+ id 1fKrYS-0008EV-SP
+ for ath10k@lists.infradead.org; Mon, 21 May 2018 20:37:18 +0000
+Received: by mail-lf0-x242.google.com with SMTP id w202-v6so25773945lff.12
+ for <ath10k@lists.infradead.org>; Mon, 21 May 2018 13:37:05 -0700 (PDT)
+Date: Mon, 21 May 2018 22:37:01 +0200
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
+Message-ID: <20180521203701.GA7619@localhost.localdomain>
+References: <20180517231512.13085-1-niklas.cassel@linaro.org>
+ <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1526637270.3805.15.camel@sipsolutions.net>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,81 +22,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Adrian Chadd <adrian.chadd@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
 
+On Thu, May 17, 2018 at 03:26:25PM -0700, Adrian Chadd wrote:
+> On Thu, 17 May 2018 at 16:16, Niklas Cassel <niklas.cassel@linaro.org>
+> wrote:
+> 
+> > diff --git a/drivers/net/wireless/ath/ath10k/txrx.c
+> b/drivers/net/wireless/ath/ath10k/txrx.c
+> > index cda164f6e9f6..1d3b2d2c3fee 100644
+> > --- a/drivers/net/wireless/ath/ath10k/txrx.c
+> > +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+> > @@ -95,6 +95,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+> >                  wake_up(&htt->empty_tx_wq);
+> >          spin_unlock_bh(&htt->tx_lock);
+> 
+> > +       if (htt->num_pending_tx <= 3 && !list_empty(&ar->txqs))
+> > +               ath10k_mac_tx_push_pending(ar);
+> > +
+> 
+> Just sanity checking - what's protecting htt->num_pending_tx? or is it
+> serialised some other way?
 
+Hello Adrian,
 
-> Do you know why it actually broke it? I mean, we should've turned off
-> the strict requirement for sw crypto control only for the GTK, and that
-> shouldn't matter so much?
+I did not take the htt->tx_lock lock for this since it should not be
+needed.
 
-With the change db3bdcb9c3ff, AP/VLAN support is advertised by the 
-driver conditionally; the primary reason for doing this is to support 
-VLAN operations on sw crypto controlled devices.
-AP also creates AP/VLAN devices for supporting 4-addr clients and since 
-the driver now advertises AP/VLAN support conditionally, the 4-addr 
-operation which has no relation to the VLANs(Per VLAN GTKs) was broken 
-on some ath10k devices.
+There are however some compiler optimizations that you have to look out
+for:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/memory-barriers.txt?h=v4.17-rc6#n1547
 
->> I have couple of ideas on how to address the problem,
->>
->> 1) Add a new hw_flag and based on the hardware flag, allow/disallow the
->> creation of AP_VLAN interface.
->>
->> + * @IEEE80211_HW_SUPPORTS_SW_ENCRYPT: Device is capable of transmitting
->> + *     frames encrypted in software, only valid when SW_CRYPTO_CONTROL
->> + *     is enabled. Based on this flag, mac80211 can allow/disallow VLAN
->> + *     operations in the BSS.
-> Based on the name and initial description, this sounds equivalent to
-> just turning off SW_CRYPTO_CONTROL. I think that's not the intent, but
-> would need some renaming.
+I can't see that any of the examples applies, but let's add READ_ONCE(),
+to make sure that the compiler doesn't try to optimize this.
 
-I can rename it to something which is very specific to VLAN support on 
-sw crypto controlled devices if that is okay.
+Will send a V2 for this.
 
->> 2) Allow mac80211 to call set_key for GTKs on AP_VLAN interfaces for
->> crypto controlled devices, let the driver decide whether to return '1'
->> or some error code based on their support for transmitting sw encrypted
->> frames. I am little skeptical with this approach as drivers are totally
->> unaware of AP_VLAN interfaces.
-> No, that won't work.
->
-> I'm unsure how 4-addr VLAN can work with ath10k either way?
-> Maybe it just doesn't normally need a GTK, so nothing broke before, but
-> your other patch changed things to remove VLAN and then of course it's
-> no longer available?
->
-> But then I don't understand the complaint that
->
-> So maybe the solution should be to add a separate flag for whether or
-> not 4-addr VLAN is supported?
+Regards,
+Niklas
 
-IIUC, the combination of 4-addr and VLAN doesn't work even without this
-change db3bdcb9c3ff (" mac80211: allow AP_VLAN operation on crypto
-controlled devices ").
-
-AP/VLAN devices are used separately to either support 4-addr operation
-or VLAN (separating the clients into VLAN groups each having unique GTK),
-I believe both are mutually exclusive.
-
-One reason why the combination of 4-addr+VLAN doesn't work could be that
-a single AP/VLAN interface can cater to several wireless clients but to
-support 4-addr operation every client device should have an exclusive
-AP/VLAN interface.
-
-It is possible where few clients in a specific VLAN group can use 4-addr
-mode and few might not, if this is the case then AP has to create
-individual AP/VLAN device for each 4-addr client and since these clients
-belong to specific VLAN group, all of these clients should be tied
-to AP/VLAN device created for VLAN operation(Created for maintaining
-unique GTKs). I am not sure if the current stack supports this complex
-combination, I could not make it work in my testing though.
-
+> 
+> >          dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+> 
+> >          ath10k_report_offchan_tx(htt->ar, msdu);
+> > --
+> > 2.17.0
 
 _______________________________________________
 ath10k mailing list
