@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKrYS-0008EV-SP
- for ath10k@lists.infradead.org; Mon, 21 May 2018 20:37:18 +0000
-Received: by mail-lf0-x242.google.com with SMTP id w202-v6so25773945lff.12
- for <ath10k@lists.infradead.org>; Mon, 21 May 2018 13:37:05 -0700 (PDT)
-Date: Mon, 21 May 2018 22:37:01 +0200
+ id 1fKrfK-0001cy-63
+ for ath10k@lists.infradead.org; Mon, 21 May 2018 20:44:23 +0000
+Received: by mail-lf0-x244.google.com with SMTP id u9-v6so8673371lfc.0
+ for <ath10k@lists.infradead.org>; Mon, 21 May 2018 13:44:09 -0700 (PDT)
 From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
-Message-ID: <20180521203701.GA7619@localhost.localdomain>
-References: <20180517231512.13085-1-niklas.cassel@linaro.org>
- <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
+Subject: [PATCH v2] ath10k: transmit queued frames after waking queues
+Date: Mon, 21 May 2018 22:43:59 +0200
+Message-Id: <20180521204359.23884-1-niklas.cassel@linaro.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +18,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian.chadd@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
+Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, May 17, 2018 at 03:26:25PM -0700, Adrian Chadd wrote:
-> On Thu, 17 May 2018 at 16:16, Niklas Cassel <niklas.cassel@linaro.org>
-> wrote:
-> 
-> > diff --git a/drivers/net/wireless/ath/ath10k/txrx.c
-> b/drivers/net/wireless/ath/ath10k/txrx.c
-> > index cda164f6e9f6..1d3b2d2c3fee 100644
-> > --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> > +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> > @@ -95,6 +95,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
-> >                  wake_up(&htt->empty_tx_wq);
-> >          spin_unlock_bh(&htt->tx_lock);
-> 
-> > +       if (htt->num_pending_tx <= 3 && !list_empty(&ar->txqs))
-> > +               ath10k_mac_tx_push_pending(ar);
-> > +
-> 
-> Just sanity checking - what's protecting htt->num_pending_tx? or is it
-> serialised some other way?
-
-Hello Adrian,
-
-I did not take the htt->tx_lock lock for this since it should not be
-needed.
-
-There are however some compiler optimizations that you have to look out
-for:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/memory-barriers.txt?h=v4.17-rc6#n1547
-
-I can't see that any of the examples applies, but let's add READ_ONCE(),
-to make sure that the compiler doesn't try to optimize this.
-
-Will send a V2 for this.
-
-Regards,
-Niklas
-
-> 
-> >          dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
-> 
-> >          ath10k_report_offchan_tx(htt->ar, msdu);
-> > --
-> > 2.17.0
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhlIGZvbGxvd2luZyBwcm9ibGVtIHdhcyBvYnNlcnZlZCB3aGVuIHJ1bm5pbmcgaXBlcmY6Cgpb
+ICAzXSAgMC4wLSAxLjAgc2VjICAyLjAwIE1CeXRlcyAgMTYuOCBNYml0cy9zZWMKWyAgM10gIDEu
+MC0gMi4wIHNlYyAgMy4xMiBNQnl0ZXMgIDI2LjIgTWJpdHMvc2VjClsgIDNdICAyLjAtIDMuMCBz
+ZWMgIDMuMjUgTUJ5dGVzICAyNy4zIE1iaXRzL3NlYwpbICAzXSAgMy4wLSA0LjAgc2VjICAgNjU1
+IEtCeXRlcyAgNS4zNiBNYml0cy9zZWMKWyAgM10gIDQuMC0gNS4wIHNlYyAgMC4wMCBCeXRlcyAg
+MC4wMCBiaXRzL3NlYwpbICAzXSAgNS4wLSA2LjAgc2VjICAwLjAwIEJ5dGVzICAwLjAwIGJpdHMv
+c2VjClsgIDNdICA2LjAtIDcuMCBzZWMgIDAuMDAgQnl0ZXMgIDAuMDAgYml0cy9zZWMKWyAgM10g
+IDcuMC0gOC4wIHNlYyAgMC4wMCBCeXRlcyAgMC4wMCBiaXRzL3NlYwpbICAzXSAgOC4wLSA5LjAg
+c2VjICAwLjAwIEJ5dGVzICAwLjAwIGJpdHMvc2VjClsgIDNdICA5LjAtMTAuMCBzZWMgIDAuMDAg
+Qnl0ZXMgIDAuMDAgYml0cy9zZWMKWyAgM10gIDAuMC0xMC4zIHNlYyAgOS4wMSBNQnl0ZXMgIDcu
+MzIgTWJpdHMvc2VjCgpUaGVyZSBhcmUgZnJhbWVzIGluIHRoZSBpZWVlODAyMTFfdHhxIGFuZCB0
+aGVyZSBhcmUgZnJhbWVzIHRoYXQgaGF2ZQpiZWVuIHJlbW92ZWQgZnJvbSBmcm9tIHRoaXMgcXVl
+dWUsIGJ1dCBoYXZlbid0IHlldCBiZWVuIHNlbnQgb24gdGhlIHdpcmUKKG51bV9wZW5kaW5nX3R4
+KS4KCldoZW4gbnVtX3BlbmRpbmdfdHggcmVhY2hlcyBtYXhfbnVtX3BlbmRpbmdfdHgsIHdlIHdp
+bGwgc3RvcCB0aGUgcXVldWVzCmJ5IGNhbGxpbmcgaWVlZTgwMjExX3N0b3BfcXVldWVzKCkuCgpB
+cyBmcmFtZXMgdGhhdCBoYXZlIHByZXZpb3VzbHkgYmVlbiBzZW50IGZvciB0cmFuc21pc3Npb24K
+KG51bV9wZW5kaW5nX3R4KSBhcmUgY29tcGxldGVkLCB3ZSB3aWxsIGRlY3JlYXNlIG51bV9wZW5k
+aW5nX3R4IGFuZCB3YWtlCnRoZSBxdWV1ZXMgYnkgY2FsbGluZyBpZWVlODAyMTFfd2FrZV9xdWV1
+ZSgpLiBpZWVlODAyMTFfd2FrZV9xdWV1ZSgpCmRvZXMgbm90IGNhbGwgd2FrZV90eF9xdWV1ZSwg
+c28gd2UgbWlnaHQgc3RpbGwgaGF2ZSBmcmFtZXMgaW4gdGhlCnF1ZXVlIGF0IHRoaXMgcG9pbnQu
+CgpXaGlsZSB0aGUgcXVldWVzIHdlcmUgc3RvcHBlZCwgdGhlIHNvY2tldCBidWZmZXIgbWlnaHQg
+aGF2ZSBmaWxsZWQgdXAsCmFuZCBpbiBvcmRlciBmb3IgdXNlciBzcGFjZSB0byB3cml0ZSBtb3Jl
+LCB3ZSBuZWVkIHRvIGZyZWUgdGhlIGZyYW1lcwppbiB0aGUgcXVldWUsIHNpbmNlIHRoZXkgYXJl
+IGFjY291bnRlZCB0byB0aGUgc29ja2V0LiBJbiBvcmRlciB0byBmcmVlCnRoZW0sIHdlIGZpcnN0
+IG5lZWQgdG8gdHJhbnNtaXQgdGhlbS4KCkluIG9yZGVyIHRvIGF2b2lkIHRyeWluZyB0byBmbHVz
+aCB0aGUgcXVldWUgZXZlcnkgdGltZSB3ZSBmcmVlIGEgZnJhbWUsCm9ubHkgZG8gdGhpcyB3aGVu
+IHRoZXJlIGFyZSAzIG9yIGxlc3MgZnJhbWVzIHBlbmRpbmcsIGFuZCB3aGlsZSB3ZQphY3R1YWxs
+eSBoYXZlIGZyYW1lcyBpbiB0aGUgcXVldWUuIFRoaXMgbG9naWMgd2FzIGNvcGllZCBmcm9tCm10
+NzZfdHhxX3NjaGVkdWxlIChtdDc2KSwgb25lIG9mIGZldyBvdGhlciBkcml2ZXJzIHRoYXQgYXJl
+IGFjdHVhbGx5CnVzaW5nIHdha2VfdHhfcXVldWUuCgpTdWdnZXN0ZWQtYnk6IFRva2UgSMO4aWxh
+bmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tlLmRrPgpTaWduZWQtb2ZmLWJ5OiBOaWtsYXMgQ2Fzc2Vs
+IDxuaWtsYXMuY2Fzc2VsQGxpbmFyby5vcmc+Ci0tLQpDaGFuZ2VzIHNpbmNlIFYxOiB1c2UgUkVB
+RF9PTkNFKCkgdG8gZGlzYWxsb3cgdGhlIGNvbXBpbGVyCm9wdGltaXppbmcgdGhpbmdzIGluIHVu
+ZGVzaXJhYmxlIHdheXMuCgogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90eHJ4LmMg
+fCAzICsrKwogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jIGIvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway90eHJ4LmMKaW5kZXggY2RhMTY0ZjZlOWY2Li4yNjRjZjBiZDVjMDAgMTAw
+NjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jCisrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jCkBAIC05NSw2ICs5NSw5IEBAIGlu
+dCBhdGgxMGtfdHhyeF90eF91bnJlZihzdHJ1Y3QgYXRoMTBrX2h0dCAqaHR0LAogCQl3YWtlX3Vw
+KCZodHQtPmVtcHR5X3R4X3dxKTsKIAlzcGluX3VubG9ja19iaCgmaHR0LT50eF9sb2NrKTsKIAor
+CWlmIChSRUFEX09OQ0UoaHR0LT5udW1fcGVuZGluZ190eCkgPD0gMyAmJiAhbGlzdF9lbXB0eSgm
+YXItPnR4cXMpKQorCQlhdGgxMGtfbWFjX3R4X3B1c2hfcGVuZGluZyhhcik7CisKIAlkbWFfdW5t
+YXBfc2luZ2xlKGRldiwgc2tiX2NiLT5wYWRkciwgbXNkdS0+bGVuLCBETUFfVE9fREVWSUNFKTsK
+IAogCWF0aDEwa19yZXBvcnRfb2ZmY2hhbl90eChodHQtPmFyLCBtc2R1KTsKLS0gCjIuMTcuMAoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
