@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKty1-0002xQ-SI
- for ath10k@lists.infradead.org; Mon, 21 May 2018 23:11:51 +0000
+Received: from mail.nic.cz ([217.31.204.67])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fL6pp-00022C-Gn
+ for ath10k@lists.infradead.org; Tue, 22 May 2018 12:56:16 +0000
+Date: Tue, 22 May 2018 14:55:40 +0200
+From: Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Subject: qca6174 SDIO status?
+Message-ID: <20180522145540.0de2dc2d@dellmb.labs.office.nic.cz>
 MIME-Version: 1.0
-Date: Mon, 21 May 2018 16:11:38 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: transmit queued frames after waking queues
-In-Reply-To: <20180521204359.23884-1-niklas.cassel@linaro.org>
-References: <20180521204359.23884-1-niklas.cassel@linaro.org>
-Message-ID: <8195be7603a8cd659d25a9c3d898b891@codeaurora.org>
+Content-Type: multipart/mixed; boundary="MP_/RM7mqq_loogr0QqdD/MDH/4"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,40 +17,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
+To: Adam Porter <porter.adam@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-T24gMjAxOC0wNS0yMSAxMzo0MywgTmlrbGFzIENhc3NlbCB3cm90ZToKPiBUaGUgZm9sbG93aW5n
-IHByb2JsZW0gd2FzIG9ic2VydmVkIHdoZW4gcnVubmluZyBpcGVyZjoKWy4uLl0KPiAKPiBJbiBv
-cmRlciB0byBhdm9pZCB0cnlpbmcgdG8gZmx1c2ggdGhlIHF1ZXVlIGV2ZXJ5IHRpbWUgd2UgZnJl
-ZSBhIGZyYW1lLAo+IG9ubHkgZG8gdGhpcyB3aGVuIHRoZXJlIGFyZSAzIG9yIGxlc3MgZnJhbWVz
-IHBlbmRpbmcsIGFuZCB3aGlsZSB3ZQo+IGFjdHVhbGx5IGhhdmUgZnJhbWVzIGluIHRoZSBxdWV1
-ZS4gVGhpcyBsb2dpYyB3YXMgY29waWVkIGZyb20KPiBtdDc2X3R4cV9zY2hlZHVsZSAobXQ3Niks
-IG9uZSBvZiBmZXcgb3RoZXIgZHJpdmVycyB0aGF0IGFyZSBhY3R1YWxseQo+IHVzaW5nIHdha2Vf
-dHhfcXVldWUuCj4gCj4gU3VnZ2VzdGVkLWJ5OiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRv
-a2VAdG9rZS5kaz4KPiBTaWduZWQtb2ZmLWJ5OiBOaWtsYXMgQ2Fzc2VsIDxuaWtsYXMuY2Fzc2Vs
-QGxpbmFyby5vcmc+Cj4gLS0tCj4gQ2hhbmdlcyBzaW5jZSBWMTogdXNlIFJFQURfT05DRSgpIHRv
-IGRpc2FsbG93IHRoZSBjb21waWxlcgo+IG9wdGltaXppbmcgdGhpbmdzIGluIHVuZGVzaXJhYmxl
-IHdheXMuCj4gCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jIHwgMyAr
-KysKPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYwo+IGIvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway90eHJ4LmMKPiBpbmRleCBjZGExNjRmNmU5ZjYuLjI2NGNmMGJkNWMw
-MCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYwo+
-ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jCj4gQEAgLTk1LDYg
-Kzk1LDkgQEAgaW50IGF0aDEwa190eHJ4X3R4X3VucmVmKHN0cnVjdCBhdGgxMGtfaHR0ICpodHQs
-Cj4gIAkJd2FrZV91cCgmaHR0LT5lbXB0eV90eF93cSk7Cj4gIAlzcGluX3VubG9ja19iaCgmaHR0
-LT50eF9sb2NrKTsKPiAKPiArCWlmIChSRUFEX09OQ0UoaHR0LT5udW1fcGVuZGluZ190eCkgPD0g
-MyAmJiAhbGlzdF9lbXB0eSgmYXItPnR4cXMpKQo+ICsJCWF0aDEwa19tYWNfdHhfcHVzaF9wZW5k
-aW5nKGFyKTsKPiArCk5pa2xhcywKClNvcnJ5IGZvciB0aGUgbGF0ZSByZXNwb25zZS4gYXRoMTBr
-X21hY190eF9wdXNoX3BlbmRpbmcgaXMgYWxyZWFkeSAKY2FsbGVkCmF0IHRoZSBlbmQgb2YgTkFQ
-SSBoYW5kbGVyLiBJc24ndCB0aGF0IGVub3VnaCB0byBwcm9jZXNzIHBlbmRpbmcgZnJhbWVzPwoK
-RWFybGllciB3ZSBvYnNlcnZlZCBwZXJmb3JtYW5jZSBpc3N1ZXMgaW4gY2FsbGluZyBwdXNoX3Bl
-bmRpbmcgZnJvbSBlYWNoCnR4IGNvbXBsZXRpb24uIElNSE8gdGhpcyBjaGFuZ2UgbWF5IGludHJv
-ZHVjZSB0aGUgc2FtZSBwcm9ibGVtIGFnYWluLgoKLVJhamt1bWFyCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+--MP_/RM7mqq_loogr0QqdD/MDH/4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hello Adam,
+
+have you solved the "crashing after few days" problem with ath10k on
+QCA6174 via SDIO?
+
+I am currently trying the ath10k-pending-sdio-usb, but it seems there
+are some problems with the firmware, see attachment.
+
+Please let me know if you have any idea what might be the problem and
+also if you have succeeded with this module on ath10k. Thanks.
+
+Marek 
+--MP_/RM7mqq_loogr0QqdD/MDH/4
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=qca6174_ath10k.txt
+
+[   10.971251] ath10k_sdio mmc0:0001:1: WARNING: ath10k SDIO support is experimental
+[   11.002943] ath10k_sdio mmc0:0001:1: Direct firmware load for ath10k/pre-cal-sdio-mmc0:0001:1.bin failed with error -2
+[   11.013986] ath10k_sdio mmc0:0001:1: Direct firmware load for ath10k/cal-sdio-mmc0:0001:1.bin failed with error -2
+[   11.024820] ath10k_sdio mmc0:0001:1: Direct firmware load for ath10k/QCA6174/hw3.0/firmware-sdio-6.bin failed with error -2
+[   11.068860] ath10k_sdio mmc0:0001:1: qca6174 hw3.2 sdio target 0x05030000 chip_id 0x00000000 sub 0000:0000
+[   11.078900] ath10k_sdio mmc0:0001:1: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+[   11.088954] ath10k_sdio mmc0:0001:1: firmware ver  api 5 features ignore-otp crc32 44e248cf
+[   11.247593] ath10k_sdio mmc0:0001:1: Direct firmware load for ath10k/QCA6174/hw3.0/board-2.bin failed with error -2
+[   11.265478] ath10k_sdio mmc0:0001:1: board_file api 1 bmi_id N/A crc32 062aa547
+[   14.908163] ath10k_sdio mmc0:0001:1: failed to ping firmware: -110
+[   14.916183] ath10k_sdio mmc0:0001:1: failed to reset rx filter: -110
+[   14.922792] ath10k_sdio mmc0:0001:1: could not init core (-110)
+[   14.928903] ath10k_sdio mmc0:0001:1: could not probe fw (-110)
+
+--MP_/RM7mqq_loogr0QqdD/MDH/4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--MP_/RM7mqq_loogr0QqdD/MDH/4--
