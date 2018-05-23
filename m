@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLY8u-0001sX-3N
- for ath10k@lists.infradead.org; Wed, 23 May 2018 18:05:48 +0000
-MIME-Version: 1.0
-Date: Wed, 23 May 2018 11:05:32 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: transmit queued frames after waking queues
-In-Reply-To: <c131da6e-6479-3a40-fbd3-9c61d6690ba8@gmail.com>
-References: <20180521204359.23884-1-niklas.cassel@linaro.org>
- <8195be7603a8cd659d25a9c3d898b891@codeaurora.org>
- <20180522211521.GA26123@localhost.localdomain>
- <c131da6e-6479-3a40-fbd3-9c61d6690ba8@gmail.com>
-Message-ID: <ddcd48cc8b1a77c489214a4f63c54b1a@codeaurora.org>
+ id 1fLc2l-0003LG-44
+ for ath10k@lists.infradead.org; Wed, 23 May 2018 22:15:40 +0000
+Received: by mail-wr0-x244.google.com with SMTP id i14-v6so29211508wre.2
+ for <ath10k@lists.infradead.org>; Wed, 23 May 2018 15:15:27 -0700 (PDT)
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: [PATCH v3] ath10k: transmit queued frames after processing rx packets
+Date: Thu, 24 May 2018 00:15:08 +0200
+Message-Id: <20180523221508.26391-1-niklas.cassel@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +17,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Niklas Cassel <niklas.cassel@linaro.org>, "David S. Miller" <davem@davemloft.net>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
+Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-05-23 09:25, Erik Stromdahl wrote:
-> On 05/22/2018 11:15 PM, Niklas Cassel wrote:
-> 
-[...]
->> 
->> Perhaps it would be possible to call ath10k_mac_tx_push_pending()
->> from the equivalent to ath10k_htt_txrx_compl_task(),
->> but from SDIO's point of view.
-> An equivalent for SDIO would most likely be 
-> *ath10k_htt_htc_t2h_msg_handler*
-> or any of the other functions called from this function.
-> 
-> *ath10k_txrx_tx_unref* is actually called from 
-> *ath10k_htt_htc_t2h_msg_handler*,
-> so that function could be viewed as an equivalent.
-> 
-> If the call should be added in the bus driver (sdio.c) it should most 
-> likely be
-> placed in *ath10k_sdio_mbox_rx_process_packets*
-> 
-> 		if (!pkt->trailer_only) {
-> 			ep->ep_ops.ep_rx_complete(ar_sdio->ar, pkt->skb);
-> 			ath10k_mac_tx_push_pending(ar_sdio->ar);
-> 		} else {
-> 			kfree_skb(pkt->skb)
-> 		}
-> 
-> The above call would of course result in lot's of calls to
-> *ath10k_mac_tx_push_pending*
-> Adding a htt_num_pending check here wouldn't look nice.
-> 
-> The HL RX path differs from the LL path in that the t2h_msg_handler 
-> returns
-> false indicating that it has consumed the skb.
-> 
-> This is because it is the HL RX indication handler that delivers the 
-> skb's
-> to mac80211.
-> 
-I also dont prefer to call *_push_pending for every HTC packets. Similar 
-to
-LL approach, call ath10k_mac_tx_push_pending after processing all 
-pending
-rx messages like calling from ath10k_sdio_mbox_rxmsg_pending_handler.
+When running iperf on ath10k SDIO, TX can stop working:
 
+iperf -c 192.168.1.1 -i 1 -t 20 -w 10K
+[  3]  0.0- 1.0 sec  2.00 MBytes  16.8 Mbits/sec
+[  3]  1.0- 2.0 sec  3.12 MBytes  26.2 Mbits/sec
+[  3]  2.0- 3.0 sec  3.25 MBytes  27.3 Mbits/sec
+[  3]  3.0- 4.0 sec   655 KBytes  5.36 Mbits/sec
+[  3]  4.0- 5.0 sec  0.00 Bytes  0.00 bits/sec
+[  3]  5.0- 6.0 sec  0.00 Bytes  0.00 bits/sec
+[  3]  6.0- 7.0 sec  0.00 Bytes  0.00 bits/sec
+[  3]  7.0- 8.0 sec  0.00 Bytes  0.00 bits/sec
+[  3]  8.0- 9.0 sec  0.00 Bytes  0.00 bits/sec
+[  3]  9.0-10.0 sec  0.00 Bytes  0.00 bits/sec
+[  3]  0.0-10.3 sec  9.01 MBytes  7.32 Mbits/sec
+
+There are frames in the ieee80211_txq and there are frames that have
+been removed from from this queue, but haven't yet been sent on the wire
+(num_pending_tx).
+
+When num_pending_tx reaches max_num_pending_tx, we will stop the queues
+by calling ieee80211_stop_queues().
+
+As frames that have previously been sent for transmission
+(num_pending_tx) are completed, we will decrease num_pending_tx and wake
+the queues by calling ieee80211_wake_queue(). ieee80211_wake_queue()
+does not call wake_tx_queue, so we might still have frames in the
+queue at this point.
+
+While the queues were stopped, the socket buffer might have filled up,
+and in order for user space to write more, we need to free the frames
+in the queue, since they are accounted to the socket. In order to free
+them, we first need to transmit them.
+
+This problem cannot be reproduced on low-latency devices, e.g. pci,
+since they call ath10k_mac_tx_push_pending() from
+ath10k_htt_txrx_compl_task(). ath10k_htt_txrx_compl_task() is not called
+on high-latency devices.
+Fix the problem by calling ath10k_mac_tx_push_pending(), after
+processing rx packets, just like for low-latency devices, also in the
+SDIO case. Since we are calling ath10k_mac_tx_push_pending() directly,
+we also need to export it.
+
+Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+---
+Changes since V2:
+Moved ath10k_mac_tx_push_pending() call to ath10k_sdio_irq_handler().
+
+ drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+ drivers/net/wireless/ath/ath10k/sdio.c | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 487a7a7380fd..bfcd9705ed54 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4038,6 +4038,7 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
+ 	rcu_read_unlock();
+ 	spin_unlock_bh(&ar->txqs_lock);
+ }
++EXPORT_SYMBOL(ath10k_mac_tx_push_pending);
+ 
+ /************/
+ /* Scanning */
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index d612ce8c9cff..2856c75f9011 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -807,6 +807,8 @@ static int 
-ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
-                 ath10k_warn(ar, "failed to get pending recv messages: 
-%d\n",
-                             ret);
-
-+       ath10k_mac_tx_push_pending(ar);
+@@ -30,6 +30,7 @@
+ #include "debug.h"
+ #include "hif.h"
+ #include "htc.h"
++#include "mac.h"
+ #include "targaddrs.h"
+ #include "trace.h"
+ #include "sdio.h"
+@@ -1342,6 +1343,8 @@ static void ath10k_sdio_irq_handler(struct sdio_func *func)
+ 			break;
+ 	} while (time_before(jiffies, timeout) && !done);
+ 
++	ath10k_mac_tx_push_pending(ar);
 +
-         return ret;
-  }
+ 	sdio_claim_host(ar_sdio->func);
+ 
+ 	if (ret && ret != -ECANCELED)
+-- 
+2.17.0
 
-> Another solution could be to add an *else-statement* as a part of the
-> *if (release)*
-> in *ath10k_htt_htc_t2h_msg_handler*, where
-> *ath10k_mac_tx_push_pending* could be called.
-> 
-> Something like this perhaps:
-> 
-> 	/* Free the indication buffer */
-> 	if (release)
-> 		dev_kfree_skb_any(skb);
-> 	else if (!ar->htt.num_pending_tx)
-> 		ath10k_mac_tx_push_pending(ar);
-> 
-> I think I prefer your original patch though.
->> 
-
-Better to do changes as HL specific path instead in common path.
-The above change will impact QCA6174 based devices.
-
--Rajkumar
 
 _______________________________________________
 ath10k mailing list
