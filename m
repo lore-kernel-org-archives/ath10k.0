@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLFaL-0001iq-Gn
- for ath10k@lists.infradead.org; Tue, 22 May 2018 22:16:51 +0000
-MIME-Version: 1.0
-Date: Tue, 22 May 2018 15:16:37 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: transmit queued frames after waking queues
-In-Reply-To: <20180522211521.GA26123@localhost.localdomain>
-References: <20180521204359.23884-1-niklas.cassel@linaro.org>
- <8195be7603a8cd659d25a9c3d898b891@codeaurora.org>
- <20180522211521.GA26123@localhost.localdomain>
-Message-ID: <a57b21c3e2f23ef2b7e6a6ffbabe111b@codeaurora.org>
+ id 1fLQPi-0007rj-FJ
+ for ath10k@lists.infradead.org; Wed, 23 May 2018 09:50:36 +0000
+Message-ID: <1527069018.3759.15.camel@sipsolutions.net>
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 23 May 2018 11:50:18 +0200
+In-Reply-To: <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
+ <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,72 +24,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, erik.stromdahl@gmail.com, Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
+To: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On 2018-05-22 14:15, Niklas Cassel wrote:
-> On Mon, May 21, 2018 at 04:11:38PM -0700, Rajkumar Manoharan wrote:
->> On 2018-05-21 13:43, Niklas Cassel wrote:
->> > The following problem was observed when running iperf:
-[...]
->> 
->> Sorry for the late response. ath10k_mac_tx_push_pending is already 
->> called
->> at the end of NAPI handler. Isn't that enough to process pending 
->> frames?
+On Mon, 2018-05-21 at 12:12 +0530, Manikanta Pubbisetty wrote:
+> > Do you know why it actually broke it? I mean, we should've turned off
+> > the strict requirement for sw crypto control only for the GTK, and that
+> > shouldn't matter so much?
 > 
-> This is true for e.g. ATH10K_BUS_PCI and ATH10K_BUS_SNOC,
-> but not for e.g. ATH10K_BUS_SDIO and ATH10K_BUS_USB.
-> 
-> While there is some SDIO code merged in Kalle's tree already,
-> this problem was found when merging
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/?h=ath10k-pending-sdio-usb
-> with Kalle's ath-next branch.
-> 
->> 
->> Earlier we observed performance issues in calling push_pending from 
->> each
->> tx completion. IMHO this change may introduce the same problem again.
-> 
-> I prefer functional TX over performance issues,
-> but I agree that it is unfortunate that SDIO doesn't use
-> ath10k_htt_txrx_compl_task().
-> Erik, is there a reason for this?
-> 
-Thanks for details. Now I see your problem. In case of low latency 
-devices (PCI/SNOC/AHB),
-all CE rings interrupts are serviced first and later consolidated data 
-processing done
-from ath10k_htt_txrx_compl_task and then ath10k_mac_tx_push_pending is 
-called from NAPI Poll.
+> With the change db3bdcb9c3ff, AP/VLAN support is advertised by the 
+> driver conditionally; the primary reason for doing this is to support 
+> VLAN operations on sw crypto controlled devices.
 
-In case of high latency devices (USB/SDIO), each endpoints are serviced 
-and all tx/rx jobs
-are completed from the same context. Hence no need of consolidated 
-processing.
+Right, or, well *not* supporting it.
 
-> Perhaps it would be possible to call ath10k_mac_tx_push_pending()
-> from the equivalent to ath10k_htt_txrx_compl_task(),
-> but from SDIO's point of view.
-> 
-> Another solution might be to change so that we only call
-> ath10k_mac_tx_push_pending() from ath10k_txrx_tx_unref()
-> if (htt->num_pending_tx == 0). That should decrease the number
-> of calls to ath10k_mac_tx_push_pending(), while still avoiding
-> a "TX deadlock" scenario for SDIO.
-> 
-This issue is specific to HL devices. But your change is common which 
-will impact LL devices.
-I would prefer to call ath10k_mac_tx_push_pending after processing all 
-received mbox/urb messages.
-Export ath10k_mac_tx_push_pending API and call it from USB/SDIO irq 
-handler. Any thoughts?
+> AP also creates AP/VLAN devices for supporting 4-addr clients and since 
+> the driver now advertises AP/VLAN support conditionally, the 4-addr 
+> operation which has no relation to the VLANs(Per VLAN GTKs) was broken 
+> on some ath10k devices.
 
--Rajkumar
+Right. Like I said, splitting those two capabilities somehow would be
+best.
+
+> > > + * @IEEE80211_HW_SUPPORTS_SW_ENCRYPT: Device is capable of transmitting
+> > > + *     frames encrypted in software, only valid when SW_CRYPTO_CONTROL
+> > > + *     is enabled. Based on this flag, mac80211 can allow/disallow VLAN
+> > > + *     operations in the BSS.
+> > 
+> > Based on the name and initial description, this sounds equivalent to
+> > just turning off SW_CRYPTO_CONTROL. I think that's not the intent, but
+> > would need some renaming.
+> 
+> I can rename it to something which is very specific to VLAN support on 
+> sw crypto controlled devices if that is okay.
+
+I don't think that makes sense. If we split the capability of AP_VLAN
+and AP_VLAN_FOR_4ADDR at the "root", then we don't need to play with all
+these things. Yes, this is slightly awkward for userspace, and perhaps
+with the interface combination checks, but I'd like you to look at that.
+
+johannes
 
 _______________________________________________
 ath10k mailing list
