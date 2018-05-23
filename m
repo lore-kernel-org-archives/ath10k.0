@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLRLx-0003Wp-ES
- for ath10k@lists.infradead.org; Wed, 23 May 2018 10:50:46 +0000
-Subject: Re: [PATCH] ath10k: add dynamic vlan support
-References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
- <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
- <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
- <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
- <1526637270.3805.15.camel@sipsolutions.net>
- <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
- <1527069018.3759.15.camel@sipsolutions.net>
- <988f350d-a6eb-1733-4a2f-43a87053e96a@codeaurora.org>
- <1527071997.3759.18.camel@sipsolutions.net>
-From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Message-ID: <fd9be7f7-aa2d-918c-c7e4-191f78879072@codeaurora.org>
-Date: Wed, 23 May 2018 16:20:27 +0530
+ id 1fLWbM-0000y1-P1
+ for ath10k@lists.infradead.org; Wed, 23 May 2018 16:27:02 +0000
+Received: by mail-wr0-x241.google.com with SMTP id 94-v6so27571267wrf.5
+ for <ath10k@lists.infradead.org>; Wed, 23 May 2018 09:26:49 -0700 (PDT)
+Subject: Re: [PATCH v2] ath10k: transmit queued frames after waking queues
+References: <20180521204359.23884-1-niklas.cassel@linaro.org>
+ <8195be7603a8cd659d25a9c3d898b891@codeaurora.org>
+ <20180522211521.GA26123@localhost.localdomain>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <c131da6e-6479-3a40-fbd3-9c61d6690ba8@gmail.com>
+Date: Wed, 23 May 2018 18:25:49 +0200
 MIME-Version: 1.0
-In-Reply-To: <1527071997.3759.18.camel@sipsolutions.net>
+In-Reply-To: <20180522211521.GA26123@localhost.localdomain>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,43 +27,89 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Niklas Cassel <niklas.cassel@linaro.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
 
 
 
-On 5/23/2018 4:09 PM, Johannes Berg wrote:
-> On Wed, 2018-05-23 at 16:09 +0530, Manikanta Pubbisetty wrote:
->>>>>> + * @IEEE80211_HW_SUPPORTS_SW_ENCRYPT: Device is capable of transmitting
->>>>>> + *     frames encrypted in software, only valid when SW_CRYPTO_CONTROL
->>>>>> + *     is enabled. Based on this flag, mac80211 can allow/disallow VLAN
->>>>>> + *     operations in the BSS.
->>>>> Based on the name and initial description, this sounds equivalent to
->>>>> just turning off SW_CRYPTO_CONTROL. I think that's not the intent, but
->>>>> would need some renaming.
->>>> I can rename it to something which is very specific to VLAN support on
->>>> sw crypto controlled devices if that is okay.
->>> I don't think that makes sense. If we split the capability of AP_VLAN
->>> and AP_VLAN_FOR_4ADDR at the "root", then we don't need to play with all
->>> these things. Yes, this is slightly awkward for userspace, and perhaps
->>> with the interface combination checks, but I'd like you to look at that.
->>>
->> Makes sense, I had this thought to split the VLAN and 4-addr
->> functionality, but since we need to fiddle with userspace, I refrained.
->> Anyways, I will check all the possibilities of splitting these
->> functionalities.
-> I'm not sure we really have to - it's likely that wpa_s/hostapd don't
-> check the capabilities?
->
-> johannes
+On 05/22/2018 11:15 PM, Niklas Cassel wrote:
 
-IIUC, hostapd will just invoke a NL command to create the AP/VLAN 
-interface, the capabilities are checked mostly in cfg80211.
-If we are planning to split the functionality, possibly something like 
-having two separate IF-TYPES(one for VLAN and one for 4-addr) instead of 
-one(which is the case now),
-we should probably change the relevant areas in hostapd as well, not 
-really sure of the complexity of the work involved in userspace though.
+<snip>
+>>
+>> Earlier we observed performance issues in calling push_pending from each
+>> tx completion. IMHO this change may introduce the same problem again.
+> 
+> I prefer functional TX over performance issues,
+> but I agree that it is unfortunate that SDIO doesn't use
+> ath10k_htt_txrx_compl_task().
+> Erik, is there a reason for this?
+The reason is that the SDIO code has been derived mainly from qcacld and ath6kl
+and they don't implement napi.
+
+ath10k_htt_txrx_compl_task is currently only called from the napi poll function,
+and the sdio bus driver doesn't have such a function.
+
+> 
+> Perhaps it would be possible to call ath10k_mac_tx_push_pending()
+> from the equivalent to ath10k_htt_txrx_compl_task(),
+> but from SDIO's point of view.
+An equivalent for SDIO would most likely be *ath10k_htt_htc_t2h_msg_handler*
+or any of the other functions called from this function.
+
+*ath10k_txrx_tx_unref* is actually called from *ath10k_htt_htc_t2h_msg_handler*,
+so that function could be viewed as an equivalent.
+
+If the call should be added in the bus driver (sdio.c) it should most likely be
+placed in *ath10k_sdio_mbox_rx_process_packets*
+
+		if (!pkt->trailer_only) {
+			ep->ep_ops.ep_rx_complete(ar_sdio->ar, pkt->skb);
+			ath10k_mac_tx_push_pending(ar_sdio->ar);
+		} else {
+			kfree_skb(pkt->skb)
+		}
+
+The above call would of course result in lot's of calls to *ath10k_mac_tx_push_pending*
+Adding a htt_num_pending check here wouldn't look nice.
+
+The HL RX path differs from the LL path in that the t2h_msg_handler returns
+false indicating that it has consumed the skb.
+
+This is because it is the HL RX indication handler that delivers the skb's
+to mac80211.
+
+Another solution could be to add an *else-statement* as a part of the *if (release)*
+in *ath10k_htt_htc_t2h_msg_handler*, where *ath10k_mac_tx_push_pending* could be called.
+
+Something like this perhaps:
+
+	/* Free the indication buffer */
+	if (release)
+		dev_kfree_skb_any(skb);
+	else if (!ar->htt.num_pending_tx)
+		ath10k_mac_tx_push_pending(ar);
+
+I think I prefer your original patch though.
+> 
+> Another solution might be to change so that we only call
+> ath10k_mac_tx_push_pending() from ath10k_txrx_tx_unref()
+> if (htt->num_pending_tx == 0). That should decrease the number
+> of calls to ath10k_mac_tx_push_pending(), while still avoiding
+> a "TX deadlock" scenario for SDIO.
+Just out of curiosity, where did the limit of 3 come from?
+If it works with a limit of 0, I think it should be used instead.
+
+Another intersting thing that I stumbled upon when looking into the
+code (while writing this email) is the *wake_up(&htt->empty_tx_wq);*
+
+For some reason I have considered it not to be applicable for HL devices.
+
+The queue is waited for in the flush op (*ath10k_flush*).
+I am unsure what it is used for, but I don't think it affects the TX
+deadlock scenario.
+
+--
+Erik
 
 _______________________________________________
 ath10k mailing list
