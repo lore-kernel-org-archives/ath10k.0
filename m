@@ -1,21 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLcVA-0000Ao-GM
- for ath10k@lists.infradead.org; Wed, 23 May 2018 22:45:01 +0000
-Received: by mail-wm0-x244.google.com with SMTP id n10-v6so13332852wmc.1
- for <ath10k@lists.infradead.org>; Wed, 23 May 2018 15:44:49 -0700 (PDT)
-Date: Thu, 24 May 2018 00:44:45 +0200
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH v2] ath10k: transmit queued frames after waking queues
-Message-ID: <20180523224445.GB26565@localhost.localdomain>
-References: <20180521204359.23884-1-niklas.cassel@linaro.org>
- <8195be7603a8cd659d25a9c3d898b891@codeaurora.org>
- <20180522211521.GA26123@localhost.localdomain>
- <c131da6e-6479-3a40-fbd3-9c61d6690ba8@gmail.com>
+ id 1fLi4J-00028L-I1
+ for ath10k@lists.infradead.org; Thu, 24 May 2018 04:41:41 +0000
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
+ <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+ <1527069018.3759.15.camel@sipsolutions.net>
+ <988f350d-a6eb-1733-4a2f-43a87053e96a@codeaurora.org>
+ <1527071997.3759.18.camel@sipsolutions.net>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <b94186ea-e76e-1940-365b-4ca72abad77f@dd-wrt.com>
+Date: Thu, 24 May 2018 06:41:20 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c131da6e-6479-3a40-fbd3-9c61d6690ba8@gmail.com>
+In-Reply-To: <1527071997.3759.18.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +27,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Wed, May 23, 2018 at 06:25:49PM +0200, Erik Stromdahl wrote:
-> 
-> 
-> On 05/22/2018 11:15 PM, Niklas Cassel wrote:
-> 
-> <snip>
-> > > 
-> > > Earlier we observed performance issues in calling push_pending from each
-> > > tx completion. IMHO this change may introduce the same problem again.
-> > 
-> > I prefer functional TX over performance issues,
-> > but I agree that it is unfortunate that SDIO doesn't use
-> > ath10k_htt_txrx_compl_task().
-> > Erik, is there a reason for this?
-> The reason is that the SDIO code has been derived mainly from qcacld and ath6kl
-> and they don't implement napi.
-> 
-> ath10k_htt_txrx_compl_task is currently only called from the napi poll function,
-> and the sdio bus driver doesn't have such a function.
-
-Ok, thanks for the explanation. Perhaps we can change the SDIO code so that it
-uses NAPI in the future.
-
-<snip>
-
-> > Another solution might be to change so that we only call
-> > ath10k_mac_tx_push_pending() from ath10k_txrx_tx_unref()
-> > if (htt->num_pending_tx == 0). That should decrease the number
-> > of calls to ath10k_mac_tx_push_pending(), while still avoiding
-> > a "TX deadlock" scenario for SDIO.
-> Just out of curiosity, where did the limit of 3 come from?
-> If it works with a limit of 0, I think it should be used instead.
-
-It came from mt76_txq_schedule():
-
-if (hwq->swq_queued >= 4 || list_empty(&hwq->swq))
-	break;
-
-len = mt76_txq_schedule_list(dev, hwq);
-
-Since this used a break, I simply inverted the logic,
-and called ath10k_mac_tx_push_pending() rather than
-mt76_txq_schedule_list().
-
-However, I've submitted a V4 now that mimics the behavior
-in ath10k_htt_txrx_compl_task() instead, so now I call
-ath10k_mac_tx_push_pending() regardless of num_pending_tx.
-
-In most cases, ath10k_mac_tx_push_pending() will not dequeue
-any frames, since the ar->txqs list will be empty, so this
-shouldn't be so bad after all.
-
-> 
-> Another intersting thing that I stumbled upon when looking into the
-> code (while writing this email) is the *wake_up(&htt->empty_tx_wq);*
-> 
-> For some reason I have considered it not to be applicable for HL devices.
-> 
-> The queue is waited for in the flush op (*ath10k_flush*).
-> I am unsure what it is used for, but I don't think it affects the TX
-> deadlock scenario.
-
-It seems to be called by mac80211 in certain scenarios, but like you said,
-it doesn't help with this problem.
-
-
-Regards,
-Niklas
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpBbSAyMy4wNS4yMDE4IHVtIDEyOjM5IHNjaHJpZWIgSm9oYW5uZXMgQmVyZzoKPiBPbiBXZWQs
+IDIwMTgtMDUtMjMgYXQgMTY6MDkgKzA1MzAsIE1hbmlrYW50YSBQdWJiaXNldHR5IHdyb3RlOgo+
+Pj4+Pj4gKyAqIEBJRUVFODAyMTFfSFdfU1VQUE9SVFNfU1dfRU5DUllQVDogRGV2aWNlIGlzIGNh
+cGFibGUgb2YgdHJhbnNtaXR0aW5nCj4+Pj4+PiArICogICAgIGZyYW1lcyBlbmNyeXB0ZWQgaW4g
+c29mdHdhcmUsIG9ubHkgdmFsaWQgd2hlbiBTV19DUllQVE9fQ09OVFJPTAo+Pj4+Pj4gKyAqICAg
+ICBpcyBlbmFibGVkLiBCYXNlZCBvbiB0aGlzIGZsYWcsIG1hYzgwMjExIGNhbiBhbGxvdy9kaXNh
+bGxvdyBWTEFOCj4+Pj4+PiArICogICAgIG9wZXJhdGlvbnMgaW4gdGhlIEJTUy4KPj4+Pj4gQmFz
+ZWQgb24gdGhlIG5hbWUgYW5kIGluaXRpYWwgZGVzY3JpcHRpb24sIHRoaXMgc291bmRzIGVxdWl2
+YWxlbnQgdG8KPj4+Pj4ganVzdCB0dXJuaW5nIG9mZiBTV19DUllQVE9fQ09OVFJPTC4gSSB0aGlu
+ayB0aGF0J3Mgbm90IHRoZSBpbnRlbnQsIGJ1dAo+Pj4+PiB3b3VsZCBuZWVkIHNvbWUgcmVuYW1p
+bmcuCj4+Pj4gSSBjYW4gcmVuYW1lIGl0IHRvIHNvbWV0aGluZyB3aGljaCBpcyB2ZXJ5IHNwZWNp
+ZmljIHRvIFZMQU4gc3VwcG9ydCBvbgo+Pj4+IHN3IGNyeXB0byBjb250cm9sbGVkIGRldmljZXMg
+aWYgdGhhdCBpcyBva2F5Lgo+Pj4gSSBkb24ndCB0aGluayB0aGF0IG1ha2VzIHNlbnNlLiBJZiB3
+ZSBzcGxpdCB0aGUgY2FwYWJpbGl0eSBvZiBBUF9WTEFOCj4+PiBhbmQgQVBfVkxBTl9GT1JfNEFE
+RFIgYXQgdGhlICJyb290IiwgdGhlbiB3ZSBkb24ndCBuZWVkIHRvIHBsYXkgd2l0aCBhbGwKPj4+
+IHRoZXNlIHRoaW5ncy4gWWVzLCB0aGlzIGlzIHNsaWdodGx5IGF3a3dhcmQgZm9yIHVzZXJzcGFj
+ZSwgYW5kIHBlcmhhcHMKPj4+IHdpdGggdGhlIGludGVyZmFjZSBjb21iaW5hdGlvbiBjaGVja3Ms
+IGJ1dCBJJ2QgbGlrZSB5b3UgdG8gbG9vayBhdCB0aGF0Lgo+Pj4KPj4gTWFrZXMgc2Vuc2UsIEkg
+aGFkIHRoaXMgdGhvdWdodCB0byBzcGxpdCB0aGUgVkxBTiBhbmQgNC1hZGRyCj4+IGZ1bmN0aW9u
+YWxpdHksIGJ1dCBzaW5jZSB3ZSBuZWVkIHRvIGZpZGRsZSB3aXRoIHVzZXJzcGFjZSwgSSByZWZy
+YWluZWQuCj4+IEFueXdheXMsIEkgd2lsbCBjaGVjayBhbGwgdGhlIHBvc3NpYmlsaXRpZXMgb2Yg
+c3BsaXR0aW5nIHRoZXNlCj4+IGZ1bmN0aW9uYWxpdGllcy4KPiBJJ20gbm90IHN1cmUgd2UgcmVh
+bGx5IGhhdmUgdG8gLSBpdCdzIGxpa2VseSB0aGF0IHdwYV9zL2hvc3RhcGQgZG9uJ3QKPiBjaGVj
+ayB0aGUgY2FwYWJpbGl0aWVzPwptbWggbm90IHN1cmUuIGl0IG1pZ2h0IG5vdCBjaGVjayB0aGUg
+Y2FwYWJpbGl0aXksIGJ1dCBpdCBzZXRzIHRoZSAKaW50ZXJmYWNlIHR5cGUgdG8gSUZUWVBFX0FQ
+X1ZMQU4KZm9yIHdkcyBzdGEgaW50ZXJmYWNlcy4gdGhhdCBtaWdodCBjb2xsaWRlCgpzZWUgdGhl
+IGZvbGxvd2luZyBzbmlwcGV0IHRha2VuIGZyb20gaG9zdGFwZCBjb2RlCgpzdGF0aWMgaW50IGk4
+MDJfc2V0X3dkc19zdGEodm9pZCAqcHJpdiwgY29uc3QgdTggKmFkZHIsIGludCBhaWQsIGludCB2
+YWwsCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgY29uc3QgY2hhciAqYnJpZGdlX2lmbmFtZSwgY2hhciAqaWZuYW1lX3dkcykKewogwqDCoMKg
+wqDCoMKgwqAgc3RydWN0IGk4MDJfYnNzICpic3MgPSBwcml2OwogwqDCoMKgwqDCoMKgwqAgc3Ry
+dWN0IHdwYV9kcml2ZXJfbmw4MDIxMV9kYXRhICpkcnYgPSBic3MtPmRydjsKIMKgwqDCoMKgwqDC
+oMKgIGNoYXIgbmFtZVtJRk5BTVNJWiArIDFdOwoKIMKgwqDCoMKgwqDCoMKgIG9zX3NucHJpbnRm
+KG5hbWUsIHNpemVvZihuYW1lKSwgIiVzLnN0YSVkIiwgYnNzLT5pZm5hbWUsIGFpZCk7CiDCoMKg
+wqDCoMKgwqDCoCBpZiAoaWZuYW1lX3dkcykKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBvc19zdHJsY3B5KGlmbmFtZV93ZHMsIG5hbWUsIElGTkFNU0laICsgMSk7CgogwqDCoMKgwqDC
+oMKgwqAgd3BhX3ByaW50ZihNU0dfREVCVUcsICJubDgwMjExOiBTZXQgV0RTIFNUQSBhZGRyPSIg
+TUFDU1RSCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIiBhaWQ9JWQgdmFs
+PSVkIG5hbWU9JXMiLCBNQUMyU1RSKGFkZHIpLCBhaWQsIHZhbCwgCm5hbWUpOwogwqDCoMKgwqDC
+oMKgwqAgaWYgKHZhbCkgewogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghaWZf
+bmFtZXRvaW5kZXgobmFtZSkpIHsKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgaWYgKG5sODAyMTFfY3JlYXRlX2lmYWNlKGRydiwgbmFtZSwKTkw4MDIxMV9J
+RlRZUEVfQVBfVkxBTiwKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBi
+c3MtPmFkZHIsIDEsIE5VTEwsIApOVUxMLCAwKSA8CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMCkKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAtMTsKIMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGJyaWRnZV9pZm5h
+bWUgJiYKbGludXhfYnJfYWRkX2lmKGRydi0+Z2xvYmFsLT5pb2N0bF9zb2NrLAogwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJpZGdlX2lmbmFtZSwgbmFtZSkgPCAwKQogwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0
+dXJuIC0xOwogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KIMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBpZiAobGludXhfc2V0X2lmYWNlX2ZsYWdzKGRydi0+Z2xvYmFsLT5p
+b2N0bF9zb2NrLCAKbmFtZSwgMSkpIHsKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgd3BhX3ByaW50ZihNU0dfRVJST1IsICJubDgwMjExOiBGYWlsZWQgdG8g
+c2V0IApXRFMgU1RBICIKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJpbnRlcmZhY2UgJXMgdXAiLCBuYW1lKTsKIMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmV0dXJuIGk4MDJfc2V0X3N0YV92bGFuKHByaXYsIGFkZHIsIG5hbWUsIDApOwogwqDC
+oMKgwqDCoMKgwqAgfSBlbHNlIHsKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAo
+YnJpZGdlX2lmbmFtZSkKbGludXhfYnJfZGVsX2lmKGRydi0+Z2xvYmFsLT5pb2N0bF9zb2NrLCBi
+cmlkZ2VfaWZuYW1lLAogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG5hbWUpOwoKIMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBpODAyX3NldF9zdGFfdmxhbihwcml2LCBhZGRyLCBic3MtPmlm
+bmFtZSwgMCk7CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbmw4MDIxMV9yZW1vdmVf
+aWZhY2UoZHJ2LCBpZl9uYW1ldG9pbmRleChuYW1lKSk7CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuIDA7CiDCoMKgwqDCoMKgwqDCoCB9Cn0KCgo+Cj4gam9oYW5uZXMKPgoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
