@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
+Received: from gateway22.websitewelcome.com ([192.185.46.131])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLsVr-0005jB-CJ
- for ath10k@lists.infradead.org; Thu, 24 May 2018 15:50:51 +0000
-Received: by mail-it0-x243.google.com with SMTP id p3-v6so2998598itc.0
- for <ath10k@lists.infradead.org>; Thu, 24 May 2018 08:50:36 -0700 (PDT)
-Date: Thu, 24 May 2018 11:50:34 -0400
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
-Message-ID: <20180524155034.xse7cfm5figfktuj@localhost>
-References: <20180517231512.13085-1-niklas.cassel@linaro.org>
- <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
- <20180521203701.GA7619@localhost.localdomain>
+ id 1fLzD8-0000qO-8q
+ for ath10k@lists.infradead.org; Thu, 24 May 2018 22:59:56 +0000
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+ by gateway22.websitewelcome.com (Postfix) with ESMTP id 835ADB571
+ for <ath10k@lists.infradead.org>; Thu, 24 May 2018 17:59:30 -0500 (CDT)
+Date: Thu, 24 May 2018 17:59:28 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ath10k: htt_tx: mark expected switch fall-throughs
+Message-ID: <20180524225928.GA19570@embeddedor.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20180521203701.GA7619@localhost.localdomain>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +24,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: Adrian Chadd <adrian.chadd@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 
-On Mon, May 21, 2018 at 10:37:01PM +0200, Niklas Cassel wrote:
-> On Thu, May 17, 2018 at 03:26:25PM -0700, Adrian Chadd wrote:
-> > On Thu, 17 May 2018 at 16:16, Niklas Cassel <niklas.cassel@linaro.org>
-> > wrote:
-> > 
-> > > diff --git a/drivers/net/wireless/ath/ath10k/txrx.c
-> > b/drivers/net/wireless/ath/ath10k/txrx.c
-> > > index cda164f6e9f6..1d3b2d2c3fee 100644
-> > > --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> > > +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> > > @@ -95,6 +95,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
-> > >                  wake_up(&htt->empty_tx_wq);
-> > >          spin_unlock_bh(&htt->tx_lock);
-> > 
-> > > +       if (htt->num_pending_tx <= 3 && !list_empty(&ar->txqs))
-> > > +               ath10k_mac_tx_push_pending(ar);
-> > > +
-> > 
-> > Just sanity checking - what's protecting htt->num_pending_tx? or is it
-> > serialised some other way?
-[...]
-> I can't see that any of the examples applies, but let's add READ_ONCE(),
-> to make sure that the compiler doesn't try to optimize this.
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-Couldn't you just move the num_pending_tx read inside tx_lock which is 2 lines
-above?  I think all the other manipulations are protected by tx_lock.
+Notice that in this particular case, I replaced "pass through" with
+a proper "fall through" comment, which is what GCC is expecting
+to find.
 
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 5d8b97a..89157c5 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1202,7 +1202,7 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+ 	case ATH10K_HW_TXRX_RAW:
+ 	case ATH10K_HW_TXRX_NATIVE_WIFI:
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
+-		/* pass through */
++		/* fall through */
+ 	case ATH10K_HW_TXRX_ETHERNET:
+ 		if (ar->hw_params.continuous_frag_desc) {
+ 			ext_desc_t = htt->frag_desc.vaddr_desc_32;
+@@ -1404,7 +1404,7 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
+ 	case ATH10K_HW_TXRX_RAW:
+ 	case ATH10K_HW_TXRX_NATIVE_WIFI:
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
+-		/* pass through */
++		/* fall through */
+ 	case ATH10K_HW_TXRX_ETHERNET:
+ 		if (ar->hw_params.continuous_frag_desc) {
+ 			ext_desc_t = htt->frag_desc.vaddr_desc_64;
 -- 
-Bob Copeland %% https://bobcopeland.com/
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
