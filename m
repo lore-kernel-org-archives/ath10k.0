@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMBy3-0001fV-8f
- for ath10k@lists.infradead.org; Fri, 25 May 2018 12:37:18 +0000
-Received: by mail-wr0-x242.google.com with SMTP id i12-v6so8994871wrc.4
- for <ath10k@lists.infradead.org>; Fri, 25 May 2018 05:37:00 -0700 (PDT)
-Date: Fri, 25 May 2018 14:36:56 +0200
-From: Niklas Cassel <niklas.cassel@linaro.org>
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMCB2-0006Y7-QY
+ for ath10k@lists.infradead.org; Fri, 25 May 2018 12:50:38 +0000
+Received: by mail-io0-x244.google.com with SMTP id e20-v6so6256418iof.4
+ for <ath10k@lists.infradead.org>; Fri, 25 May 2018 05:50:25 -0700 (PDT)
+Date: Fri, 25 May 2018 08:50:23 -0400
+From: Bob Copeland <me@bobcopeland.com>
 Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
-Message-ID: <20180525123656.GB8780@localhost.localdomain>
+Message-ID: <20180525125023.alc42lkgehc6iodg@localhost>
 References: <20180517231512.13085-1-niklas.cassel@linaro.org>
  <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
  <20180521203701.GA7619@localhost.localdomain>
  <20180524155034.xse7cfm5figfktuj@localhost>
+ <20180525123656.GB8780@localhost.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20180524155034.xse7cfm5figfktuj@localhost>
+In-Reply-To: <20180525123656.GB8780@localhost.localdomain>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +29,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
+To: Niklas Cassel <niklas.cassel@linaro.org>
 Cc: Adrian Chadd <adrian.chadd@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
 
-On Thu, May 24, 2018 at 11:50:34AM -0400, Bob Copeland wrote:
-> On Mon, May 21, 2018 at 10:37:01PM +0200, Niklas Cassel wrote:
-> > On Thu, May 17, 2018 at 03:26:25PM -0700, Adrian Chadd wrote:
-> > > On Thu, 17 May 2018 at 16:16, Niklas Cassel <niklas.cassel@linaro.org>
-> > > wrote:
-> > > 
-> > > > diff --git a/drivers/net/wireless/ath/ath10k/txrx.c
-> > > b/drivers/net/wireless/ath/ath10k/txrx.c
-> > > > index cda164f6e9f6..1d3b2d2c3fee 100644
-> > > > --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> > > > +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> > > > @@ -95,6 +95,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
-> > > >                  wake_up(&htt->empty_tx_wq);
-> > > >          spin_unlock_bh(&htt->tx_lock);
-> > > 
-> > > > +       if (htt->num_pending_tx <= 3 && !list_empty(&ar->txqs))
-> > > > +               ath10k_mac_tx_push_pending(ar);
-> > > > +
-> > > 
-> > > Just sanity checking - what's protecting htt->num_pending_tx? or is it
-> > > serialised some other way?
-> [...]
-> > I can't see that any of the examples applies, but let's add READ_ONCE(),
-> > to make sure that the compiler doesn't try to optimize this.
+On Fri, May 25, 2018 at 02:36:56PM +0200, Niklas Cassel wrote:
+> A spin lock does have the advantage of ordering: memory operations issued
+> before the spin_unlock_bh() will be completed before the spin_unlock_bh()
+> operation has completed.
 > 
-> Couldn't you just move the num_pending_tx read inside tx_lock which is 2 lines
-> above?  I think all the other manipulations are protected by tx_lock.
+> However, ath10k_htt_tx_dec_pending() was called earlier in the same function,
+> which decreases htt->num_pending_tx, so that write will be completed before
+> our read. That is the only ordering we care about here (if we should call
+> ath10k_mac_tx_push_pending() or not).
 
-Hello Bob,
+Sure.  I also understand that reading inside a lock and operating on the
+value outside the lock isn't really the definition of synchronization
+(doesn't really matter in this case though).
 
-There is both a V2 and V3 of this patchset, V3 moves this to a sdio.c and
-calls ath10k_mac_tx_push_pending() unconditionally.
+I was just suggesting that the implicit memory barrier in the spin unlock
+that we are already paying for would be sufficient here too, and it matches
+the semantic of "tx fields under tx_lock."  On the other hand, maybe it's
+just me, but I tend to look askance at just-in-case READ_ONCEs sprinkled
+about.
 
-
-But to answer your question,
-it shouldn't matter if the read is done while holding the lock or not.
-
-Sure, the compiler could do things so that the code path is always or never
-executed, but that is why I added READ_ONCE() in V2.
-
-A spin lock does have the advantage of ordering: memory operations issued
-before the spin_unlock_bh() will be completed before the spin_unlock_bh()
-operation has completed.
-
-However, ath10k_htt_tx_dec_pending() was called earlier in the same function,
-which decreases htt->num_pending_tx, so that write will be completed before
-our read. That is the only ordering we care about here (if we should call
-ath10k_mac_tx_push_pending() or not).
-
-
-Kind regards,
-Niklas
+-- 
+Bob Copeland %% https://bobcopeland.com/
 
 _______________________________________________
 ath10k mailing list
