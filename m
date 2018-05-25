@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway22.websitewelcome.com ([192.185.46.131])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLzD8-0000qO-8q
- for ath10k@lists.infradead.org; Thu, 24 May 2018 22:59:56 +0000
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway22.websitewelcome.com (Postfix) with ESMTP id 835ADB571
- for <ath10k@lists.infradead.org>; Thu, 24 May 2018 17:59:30 -0500 (CDT)
-Date: Thu, 24 May 2018 17:59:28 -0500
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ath10k: htt_tx: mark expected switch fall-throughs
-Message-ID: <20180524225928.GA19570@embeddedor.com>
+ id 1fM9KQ-0005dx-E5
+ for ath10k@lists.infradead.org; Fri, 25 May 2018 09:48:08 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+Subject: Re: ath10k: add fw crash dump support for QCA9888 and QCA99X0
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1525781496-14776-1-git-send-email-akolli@codeaurora.org>
+References: <1525781496-14776-1-git-send-email-akolli@codeaurora.org>
+Message-Id: <20180525094755.7342360618@smtp.codeaurora.org>
+Date: Fri, 25 May 2018 09:47:55 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Anilkumar Kolli <akolli@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+Anilkumar Kolli <akolli@codeaurora.org> wrote:
 
-Notice that in this particular case, I replaced "pass through" with
-a proper "fall through" comment, which is what GCC is expecting
-to find.
+> This patch adds firmware crash memory dump support for QCA9888 and QCA99X0.
+> 
+> Tested on:
+> 
+> QCA9888 firmware 10.4-3.5.3-00053
+> QCA99X0 firmware 10.4.1.00030-1
+> 
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/net/wireless/ath/ath10k/htt_tx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch applied to ath-next branch of ath.git, thanks.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 5d8b97a..89157c5 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -1202,7 +1202,7 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
- 	case ATH10K_HW_TXRX_RAW:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
--		/* pass through */
-+		/* fall through */
- 	case ATH10K_HW_TXRX_ETHERNET:
- 		if (ar->hw_params.continuous_frag_desc) {
- 			ext_desc_t = htt->frag_desc.vaddr_desc_32;
-@@ -1404,7 +1404,7 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
- 	case ATH10K_HW_TXRX_RAW:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
--		/* pass through */
-+		/* fall through */
- 	case ATH10K_HW_TXRX_ETHERNET:
- 		if (ar->hw_params.continuous_frag_desc) {
- 			ext_desc_t = htt->frag_desc.vaddr_desc_64;
+46dbf98c69f4 ath10k: add memory dump support for QCA9888 and QCA99X0
+
 -- 
-2.7.4
+https://patchwork.kernel.org/patch/10386041/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
