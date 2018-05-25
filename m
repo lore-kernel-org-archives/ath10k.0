@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMDal-00070i-T9
- for ath10k@lists.infradead.org; Fri, 25 May 2018 14:21:17 +0000
-Received: by mail-wr0-x242.google.com with SMTP id w3-v6so9539317wrl.12
- for <ath10k@lists.infradead.org>; Fri, 25 May 2018 07:21:05 -0700 (PDT)
-Date: Fri, 25 May 2018 16:21:01 +0200
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH] ath10k: transmit queued frames after waking queues
-Message-ID: <20180525142101.GA14422@localhost.localdomain>
-References: <20180517231512.13085-1-niklas.cassel@linaro.org>
- <CAJ-Vmon1ybhWs_8Nv=w62pmhSizDdDeYCgK8_HTTwPZ=EEC46g@mail.gmail.com>
- <20180521203701.GA7619@localhost.localdomain>
- <20180524155034.xse7cfm5figfktuj@localhost>
- <20180525123656.GB8780@localhost.localdomain>
- <20180525125023.alc42lkgehc6iodg@localhost>
+ id 1fMDxc-0000aq-Ph
+ for ath10k@lists.infradead.org; Fri, 25 May 2018 14:44:54 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v1] ath10k: fix band_center_freq handling for VHT160 in
+ recent firmwares
+References: <20180426094357.24358-1-s.gottschall@dd-wrt.com>
+ <19b8766e-d474-31d3-ff38-993498ee670d@candelatech.com>
+ <da5c7c56-9a41-99f0-28be-3a2c8e9fabbf@dd-wrt.com>
+Date: Fri, 25 May 2018 17:44:34 +0300
+In-Reply-To: <da5c7c56-9a41-99f0-28be-3a2c8e9fabbf@dd-wrt.com> (Sebastian
+ Gottschall's message of "Thu, 26 Apr 2018 17:12:11 +0200")
+Message-ID: <87wovr94ml.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20180525125023.alc42lkgehc6iodg@localhost>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,46 +26,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: Adrian Chadd <adrian.chadd@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Miller <davem@davemloft.net>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, May 25, 2018 at 08:50:23AM -0400, Bob Copeland wrote:
-> On Fri, May 25, 2018 at 02:36:56PM +0200, Niklas Cassel wrote:
-> > A spin lock does have the advantage of ordering: memory operations issued
-> > before the spin_unlock_bh() will be completed before the spin_unlock_bh()
-> > operation has completed.
-> > 
-> > However, ath10k_htt_tx_dec_pending() was called earlier in the same function,
-> > which decreases htt->num_pending_tx, so that write will be completed before
-> > our read. That is the only ordering we care about here (if we should call
-> > ath10k_mac_tx_push_pending() or not).
-> 
-> Sure.  I also understand that reading inside a lock and operating on the
-> value outside the lock isn't really the definition of synchronization
-> (doesn't really matter in this case though).
-> 
-> I was just suggesting that the implicit memory barrier in the spin unlock
-> that we are already paying for would be sufficient here too, and it matches
-> the semantic of "tx fields under tx_lock."  On the other hand, maybe it's
-> just me, but I tend to look askance at just-in-case READ_ONCEs sprinkled
-> about.
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-I agree, because of the implicit memory barrier from spin_unlock_bh(),
-READ_ONCE shouldn't really be needed in this case.
+> Am 26.04.2018 um 15:44 schrieb Ben Greear:
+>>
+>>
+>> On 04/26/2018 02:43 AM, s.gottschall@dd-wrt.com wrote:
+>>> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>>>
+>>> starting with firmware 10.4.3.4.x series QCA changed the handling
+>>> of the channel property band_center_freq1 and band_center_freq2 in
+>>> vht160 operation mode
+>>> likelly for backward compatiblity with vht80 only capable clients.
+>>> this patch adjusts the handling to get vht160 to work again with
+>>> official qca firmwares newer than 3.3
+>>> consider that this patch will not work with older firmwares
+>>> anymore. to avoid undefined behaviour this we disable vht160
+>>> capability for outdated firmwares
+>>
+>> We should be able to use a feature-flag or otherwise determine if
+>> the firmware needs the old or new
+>> API and make the driver able to handle both.
+>
+> the new firmware must be used as is and it works. the old firmware can
+> be detected on the missing vht cap flag.
+> but thats not my task. i can only use feature flags if they are
+> included within the qca firmwares. but they arent
+> the old pre 3.3 firmwares should be treated as obsolete. they are more
+> than 2 years old and do not announce vht160 capability
+> even if it works with some ignorance, but on the other side the it has
+> backward incompatiblies with older vht80 only clients.
+> this is why the new way was introduced
 
-I think that it's a good thing to be critical of all "just-in-case" things,
-however, it's not always that obvious if you actually need READ_ONCE or not.
+I was told ath10k could check for WMI_SERVICE_EXTENDED_NSS_SUPPORT flag.
+Can someone test and verify that?
 
-E.g. you might need to use it even when you are holding a spin_lock.
-
-Some people recommend to use it for all concurrent non-read-only shared memory
-accesses: https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
-
-Is there a better guideline somewhere..?
-
-
-Kind regards,
-Niklas
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
