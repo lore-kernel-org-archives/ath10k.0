@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN32Z-0005ma-9N
- for ath10k@lists.infradead.org; Sun, 27 May 2018 21:17:25 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ath10k: fix memory leak of tpc_stats
-Date: Sun, 27 May 2018 22:17:02 +0100
-Message-Id: <20180527211702.23778-1-colin.king@canonical.com>
+ id 1fN472-0007PN-KT
+ for ath10k@lists.infradead.org; Sun, 27 May 2018 22:26:06 +0000
+Subject: Re: [PATCH v1] ath10k: fix band_center_freq handling for VHT160 in
+ recent firmwares
+References: <20180426094357.24358-1-s.gottschall@dd-wrt.com>
+ <19b8766e-d474-31d3-ff38-993498ee670d@candelatech.com>
+ <da5c7c56-9a41-99f0-28be-3a2c8e9fabbf@dd-wrt.com>
+ <87wovr94ml.fsf@kamboji.qca.qualcomm.com>
+ <71d17554-7727-cdfa-4a0d-5e1170dc32b7@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <43553b5b-9e06-2a6a-098e-9223a7aeeac6@dd-wrt.com>
+Date: Mon, 28 May 2018 00:25:47 +0200
 MIME-Version: 1.0
+In-Reply-To: <71d17554-7727-cdfa-4a0d-5e1170dc32b7@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,56 +24,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S . Miller" <davem@davemloft.net>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Currently tpc_stats is allocated and is leaked on the return
-path if num_tx_chain is greater than WMI_TPC_TX_N_CHAIN. Avoid
-this leak by performing the check on num_tx_chain before the
-allocation of tpc_stats.
 
-Detected by CoverityScan, CID#1469422 ("Resource Leak")
-Fixes: 4b190675ad06 ("ath10k: fix kernel panic while reading tpc_stats")
+Am 25.05.2018 um 16:52 schrieb Ben Greear:
+> On 05/25/2018 07:44 AM, Kalle Valo wrote:
+>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+>>
+>>> Am 26.04.2018 um 15:44 schrieb Ben Greear:
+>>>>
+>>>>
+>>>> On 04/26/2018 02:43 AM, s.gottschall@dd-wrt.com wrote:
+>>>>> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>>>>>
+>>>>> starting with firmware 10.4.3.4.x series QCA changed the handling
+>>>>> of the channel property band_center_freq1 and band_center_freq2 in
+>>>>> vht160 operation mode
+>>>>> likelly for backward compatiblity with vht80 only capable clients.
+>>>>> this patch adjusts the handling to get vht160 to work again with
+>>>>> official qca firmwares newer than 3.3
+>>>>> consider that this patch will not work with older firmwares
+>>>>> anymore. to avoid undefined behaviour this we disable vht160
+>>>>> capability for outdated firmwares
+>>>>
+>>>> We should be able to use a feature-flag or otherwise determine if
+>>>> the firmware needs the old or new
+>>>> API and make the driver able to handle both.
+>>>
+>>> the new firmware must be used as is and it works. the old firmware can
+>>> be detected on the missing vht cap flag.
+>>> but thats not my task. i can only use feature flags if they are
+>>> included within the qca firmwares. but they arent
+>>> the old pre 3.3 firmwares should be treated as obsolete. they are more
+>>> than 2 years old and do not announce vht160 capability
+>>> even if it works with some ignorance, but on the other side the it has
+>>> backward incompatiblies with older vht80 only clients.
+>>> this is why the new way was introduced
+>>
+>> I was told ath10k could check for WMI_SERVICE_EXTENDED_NSS_SUPPORT flag.
+>> Can someone test and verify that?
+>>
+>
+> I do see that my firmware source based on older upstream QCA FW does =
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> not advertise
+> that flag, and newer QCA firmware does, so it would appear that test =
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 46fb96ee5852..694f46fa9e14 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4470,10 +4470,6 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
- 
- 	ev = (struct wmi_pdev_tpc_config_event *)skb->data;
- 
--	tpc_stats = kzalloc(sizeof(*tpc_stats), GFP_ATOMIC);
--	if (!tpc_stats)
--		return;
--
- 	num_tx_chain = __le32_to_cpu(ev->num_tx_chain);
- 
- 	if (num_tx_chain > WMI_TPC_TX_N_CHAIN) {
-@@ -4482,6 +4478,10 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	}
- 
-+	tpc_stats = kzalloc(sizeof(*tpc_stats), GFP_ATOMIC);
-+	if (!tpc_stats)
-+		return;
-+
- 	ath10k_wmi_tpc_config_get_rate_code(rate_code, pream_table,
- 					    num_tx_chain);
- 
--- 
-2.17.0
+> might
+> work.
+but your sourcebase is new enough that this new handling is required.=A0 =
+
+if i remember correct this handling is required starting with 10.4-3.4 =
+
+source base
+if a 3.4 original firmware is not providing that flag, it cannot be used =
+
+for correct handling and yours is 3.4 based
+>
+> Thanks,
+> Ben
+>
 
 
 _______________________________________________
