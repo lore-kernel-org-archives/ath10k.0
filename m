@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNcqo-0000Rs-CR
- for ath10k@lists.infradead.org; Tue, 29 May 2018 11:31:39 +0000
-From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
-Subject: [PATCH] ath10k: fix spectral scan for QCA9984 and QCA9888 chipsets
-Date: Tue, 29 May 2018 17:01:13 +0530
-Message-Id: <1527593473-15976-1-git-send-email-periyasa@codeaurora.org>
+ id 1fNdnX-0006Fi-Bp
+ for ath10k@lists.infradead.org; Tue, 29 May 2018 12:32:20 +0000
+Received: by mail-wm0-x242.google.com with SMTP id f8-v6so40174821wmc.4
+ for <ath10k@lists.infradead.org>; Tue, 29 May 2018 05:32:08 -0700 (PDT)
+Message-ID: <bc31b06dc4093b8613fbde6a13f16bd7e8c31e82.camel@gmail.com>
+Subject: Re: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
+From: Timur =?ISO-8859-1?Q?Krist=F3f?= <timur.kristof@gmail.com>
+Date: Tue, 29 May 2018 15:32:05 +0300
+In-Reply-To: <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
+References: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
+ <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,179 +21,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org, ryanhsu@codeaurora.org
 
-The spectral scan has been always broken on QCA9984 and QCA9888.
+On Tue, 2018-05-29 at 13:21 +0300, Kalle Valo wrote:
+> > So it seems that either the driver or the firmware can't cope with
+> > it
+> > when the AP changes the bandwidth.
+> > Here is the Fedora bug report:
+> > https://bugzilla.redhat.com/show_bug.cgi?id=1577106
+> > 
+> > Is there anything that can be done to improve the stability of
+> > ath10k on this system?
+> > I see there is a lot going on in the upstream repo, but not sure
+> > which
+> > branch to try: ath-next or qca?
+> 
+> I think this patch should fix the firmware crash:
+> 
+> ath10k: Update the phymode along with bandwidth change request
+> 
+> https://patchwork.kernel.org/patch/10183453/
+> 
+> Unfortunately it didn't apply to my tree so I had to drop it. Few
+> days
+> ago I was talking with Ryan and he said he is planning to send v2,
+> but
+> I'm sure he don't mind if someone else can send the v2 either. The
+> faster we can apply the patch, and get it to stable releases, the
+> better
+> as we seems to be a very common issue.
 
-Introduce a hardware parameter 'spectral_bin_offset' to resolve this issue for
-QCA9984 and QCA9888 chipsets. For other chipsets, the hardware parameter
-'spectral_bin_offset' is zero so that existing behaviour is retained as it is.
+I don't have much experience with this, but will take a look and let
+you know how that goes.
 
-In QCA9984 and QCA9888 chipsets, hardware param value 'spectral_bin_discard'
-is 12 bytes. This 12 bytes is derived as the sum of segment index (4 bytes),
-extra bins before the actual data (4 bytes) and extra bins after the actual
-data (4 bytes). Always discarding (12 bytes) happens at end of the samples and
-incorrect samples got dumped, so that user can find incorrect arrangement
-samples in spectral scan dump.
+> But there also seems to be another bug related to firmware restart,
+> it
+> shouldn't crash the kernel! Does the kernel crash also when crashing
+> the
+> kernel using simulate_fw_crash debugfs file?
 
-To fix this issue, we have to discard first 8 bytes and last 4 bytes in every
-samples, so totally 12 bytes are discarded. In every sample we need to consider
-the offset while taking the actual spectral data. For QCA9984, QCA9888 the
-offset is 8 bytes (segment index + extra bins before actual data).
+Yes, tried it just now. The driver can survive 2 simulated hard
+crashes. After the 3rd hard crash, it reproduces the same issue that I
+described in the bugreport: Wifi stops working. I can turn it off. When
+I turn it on again, the whole system hangs completely.
 
-Hardware tested: QCA9984 and QCA9888
-Firmware tested: 10.4-3.5.3-00053
+You would expect that a single driver crash should not affect the whole
+system like this, but it does.
 
-Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c     | 13 +++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h       |  3 +++
- drivers/net/wireless/ath/ath10k/spectral.c |  2 +-
- 3 files changed, 17 insertions(+), 1 deletion(-)
+Is there a chance this is already fixed upstream? In general, which of
+your branches should I try to use with this device?
+ath-next or ath-qca?
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 4cf54a7..25ecf74 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -82,6 +82,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -113,6 +114,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -145,6 +147,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -176,6 +179,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -207,6 +211,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -238,6 +243,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -272,6 +278,7 @@
- 		.target_cpu_freq = 176000000,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -309,6 +316,7 @@
- 		.hw_ops = &qca99x0_ops,
- 		.decap_align_bytes = 1,
- 		.spectral_bin_discard = 4,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 11,
-@@ -347,6 +355,7 @@
- 		.hw_ops = &qca99x0_ops,
- 		.decap_align_bytes = 1,
- 		.spectral_bin_discard = 12,
-+		.spectral_bin_offset = 8,
- 
- 		/* Can do only 2x2 VHT160 or 80+80. 1560Mbps is 4x4 80Mhz
- 		 * or 2x2 160Mhz, long-guard-interval.
-@@ -388,6 +397,7 @@
- 		.hw_ops = &qca99x0_ops,
- 		.decap_align_bytes = 1,
- 		.spectral_bin_discard = 12,
-+		.spectral_bin_offset = 8,
- 
- 		/* Can do only 1x1 VHT160 or 80+80. 780Mbps is 2x2 80Mhz or
- 		 * 1x1 160Mhz, long-guard-interval.
-@@ -423,6 +433,7 @@
- 		.hw_ops = &qca988x_ops,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -456,6 +467,7 @@
- 		.target_cpu_freq = 176000000,
- 		.decap_align_bytes = 4,
- 		.spectral_bin_discard = 0,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-@@ -494,6 +506,7 @@
- 		.hw_ops = &qca99x0_ops,
- 		.decap_align_bytes = 1,
- 		.spectral_bin_discard = 4,
-+		.spectral_bin_offset = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 11,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 23467e9..a274bd8 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -586,6 +586,9 @@ struct ath10k_hw_params {
- 
- 	/* target supporting retention restore on ddr */
- 	bool rri_on_ddr;
-+
-+	/* Number of bytes to be the offset for each FFT sample */
-+	int spectral_bin_offset;
- };
- 
- struct htt_rx_desc;
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
-index af6995d..653b6d0 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.c
-+++ b/drivers/net/wireless/ath/ath10k/spectral.c
-@@ -145,7 +145,7 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
- 	fft_sample->noise = __cpu_to_be16(phyerr->nf_chains[chain_idx]);
- 
- 	bins = (u8 *)fftr;
--	bins += sizeof(*fftr);
-+	bins += sizeof(*fftr) + ar->hw_params.spectral_bin_offset;
- 
- 	fft_sample->tsf = __cpu_to_be64(tsf);
- 
--- 
-1.9.1
+Thanks & best regards,
+Timur
 
 
 _______________________________________________
