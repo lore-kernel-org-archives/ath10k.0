@@ -1,23 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNPOK-0006wf-LO
- for ath10k@lists.infradead.org; Mon, 28 May 2018 21:09:22 +0000
-Subject: Re: [PATCH v1] ath10k: fix band_center_freq handling for VHT160 in
- recent firmwares
-References: <20180426094357.24358-1-s.gottschall@dd-wrt.com>
- <19b8766e-d474-31d3-ff38-993498ee670d@candelatech.com>
- <da5c7c56-9a41-99f0-28be-3a2c8e9fabbf@dd-wrt.com>
- <87wovr94ml.fsf@kamboji.qca.qualcomm.com>
- <71d17554-7727-cdfa-4a0d-5e1170dc32b7@candelatech.com>
- <43553b5b-9e06-2a6a-098e-9223a7aeeac6@dd-wrt.com>
- <62644a80-7125-4978-a6ca-c3aabc005c99@candelatech.com>
- <c368e4a9-5079-ba1b-8639-81f7672e2743@dd-wrt.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <cabe807c-7029-e8db-db3e-51c06bb693c9@candelatech.com>
-Date: Mon, 28 May 2018 14:08:57 -0700
-MIME-Version: 1.0
-In-Reply-To: <c368e4a9-5079-ba1b-8639-81f7672e2743@dd-wrt.com>
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fNaMo-0000Ko-Ga
+ for ath10k@lists.infradead.org; Tue, 29 May 2018 08:52:32 +0000
+Received: by mail-wm0-x231.google.com with SMTP id t11-v6so38264078wmt.0
+ for <ath10k@lists.infradead.org>; Tue, 29 May 2018 01:52:18 -0700 (PDT)
+Received: from timur-xps ([2001:998:2a:dead:69d9:6ca4:e858:1e60])
+ by smtp.gmail.com with ESMTPSA id f14-v6sm550893ljj.15.2018.05.29.01.52.15
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Tue, 29 May 2018 01:52:16 -0700 (PDT)
+Message-ID: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
+Subject: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
+From: Timur =?ISO-8859-1?Q?Krist=F3f?= <timur.kristof@gmail.com>
+Date: Tue, 29 May 2018 11:52:15 +0300
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,88 +23,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
+Hi,
 
+I'm experiencing a lot of ath10k driver crashes on both 4.16 (as
+shipped in Fedora) and 4.17 (tried rc5 and rc6) using a Dell XPS 13
+9370 with a QCA6174.
 
-On 05/28/2018 10:54 AM, Sebastian Gottschall wrote:
->
->
-> Am 28.05.2018 um 16:43 schrieb Ben Greear:
->>
->>
->> On 05/27/2018 03:25 PM, Sebastian Gottschall wrote:
->>>
->>>
->>> Am 25.05.2018 um 16:52 schrieb Ben Greear:
->>>> On 05/25/2018 07:44 AM, Kalle Valo wrote:
->>>>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>>>>
->>>>>> Am 26.04.2018 um 15:44 schrieb Ben Greear:
->>>>>>>
->>>>>>>
->>>>>>> On 04/26/2018 02:43 AM, s.gottschall@dd-wrt.com wrote:
->>>>>>>> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->>>>>>>>
->>>>>>>> starting with firmware 10.4.3.4.x series QCA changed the handling
->>>>>>>> of the channel property band_center_freq1 and band_center_freq2 in
->>>>>>>> vht160 operation mode
->>>>>>>> likelly for backward compatiblity with vht80 only capable clients.
->>>>>>>> this patch adjusts the handling to get vht160 to work again with
->>>>>>>> official qca firmwares newer than 3.3
->>>>>>>> consider that this patch will not work with older firmwares
->>>>>>>> anymore. to avoid undefined behaviour this we disable vht160
->>>>>>>> capability for outdated firmwares
->>>>>>>
->>>>>>> We should be able to use a feature-flag or otherwise determine if
->>>>>>> the firmware needs the old or new
->>>>>>> API and make the driver able to handle both.
->>>>>>
->>>>>> the new firmware must be used as is and it works. the old firmware can
->>>>>> be detected on the missing vht cap flag.
->>>>>> but thats not my task. i can only use feature flags if they are
->>>>>> included within the qca firmwares. but they arent
->>>>>> the old pre 3.3 firmwares should be treated as obsolete. they are more
->>>>>> than 2 years old and do not announce vht160 capability
->>>>>> even if it works with some ignorance, but on the other side the it has
->>>>>> backward incompatiblies with older vht80 only clients.
->>>>>> this is why the new way was introduced
->>>>>
->>>>> I was told ath10k could check for WMI_SERVICE_EXTENDED_NSS_SUPPORT flag.
->>>>> Can someone test and verify that?
->>>>>
->>>>
->>>> I do see that my firmware source based on older upstream QCA FW does not advertise
->>>> that flag, and newer QCA firmware does, so it would appear that test might
->>>> work.
->>> but your sourcebase is new enough that this new handling is required.  if i remember correct this handling is required starting with 10.4-3.4 source base
->>> if a 3.4 original firmware is not providing that flag, it cannot be used for correct handling and yours is 3.4 based
->>
->> With my current driver and my current (older) firmware source, 160Mhz works fine.
->>
->> I think my driver changes related to 160Mhz are upstream, so probably stock driver
->> works with my firmware at 160Mhz as well.
->>
->> If you change the driver, then it will likely break older firmware.  So, just change
->> the driver behaviour if the WMI_SERVICE_EXTENDED_NSS_SUPPORT is enabled.
-> only pre 3.4 which isnt important. but without my change everything from 3.4 upwards wont work anymore. so my change fixes vht160 for firmwares released within the last 2 years.
-> WMI_SERVICE_EXTENDED_NSS_SUPPORT condition cannot work since you explained that your driver base which is 3.4 doesnt provide this flag but 3.4 stock does require this change
+With 4.16 the driver crash always results in the whole system hanging.
+With 4.17 it does not always hang the system completely, but it still
+happends. I also tried to upgrade the firmware which also reduces the
+frequency of the crashes but does not eliminate them completely.
 
-I'll let you and Kalle work this out then.  I can fix my driver to work whatever
-you do, and if I can ever get patches upstream, then I'll deal with it then.
+The common pattern I see in dmesg is this:
+[30372.900832] wlp2s0: AP 64:7c:34:3f:c3:b0 changed bandwidth, new config is 2437 MHz, width 2 (2447/0 MHz)
 
-Thanks,
-Ben
+Searching a bit in kernel sources, this message is printed by this line:
+https://github.com/torvalds/linux/blob/master/net/mac80211/mlme.c#L364
+And width 2 seems to correspond to NL80211_CHAN_WIDTH_40 here:
+https://github.com/torvalds/linux/blob/master/include/uapi/linux/nl80211.h#L3880
 
+So it seems that either the driver or the firmware can't cope with it when the AP changes the bandwidth.
+Here is the Fedora bug report:
+https://bugzilla.redhat.com/show_bug.cgi?id=1577106
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Is there anything that can be done to improve the stability of ath10k on this system?
+I see there is a lot going on in the upstream repo, but not sure which branch to try: ath-next or qca?
+
+Best regards,
+Tim
+
+ps. I'm not on the mailing list, please add me to CC when you reply. Thanks.
 
 _______________________________________________
 ath10k mailing list
