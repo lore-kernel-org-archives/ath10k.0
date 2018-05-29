@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNdnX-0006Fi-Bp
- for ath10k@lists.infradead.org; Tue, 29 May 2018 12:32:20 +0000
-Received: by mail-wm0-x242.google.com with SMTP id f8-v6so40174821wmc.4
- for <ath10k@lists.infradead.org>; Tue, 29 May 2018 05:32:08 -0700 (PDT)
-Message-ID: <bc31b06dc4093b8613fbde6a13f16bd7e8c31e82.camel@gmail.com>
+ id 1fNehN-0004s3-78
+ for ath10k@lists.infradead.org; Tue, 29 May 2018 13:30:07 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
-From: Timur =?ISO-8859-1?Q?Krist=F3f?= <timur.kristof@gmail.com>
-Date: Tue, 29 May 2018 15:32:05 +0300
-In-Reply-To: <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
 References: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
  <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
-Mime-Version: 1.0
+ <bc31b06dc4093b8613fbde6a13f16bd7e8c31e82.camel@gmail.com>
+Date: Tue, 29 May 2018 16:29:46 +0300
+In-Reply-To: <bc31b06dc4093b8613fbde6a13f16bd7e8c31e82.camel@gmail.com>
+ ("Timur \=\?utf-8\?Q\?Krist\=C3\=B3f\=22's\?\= message of "Tue,
+ 29 May 2018 15:32:05 +0300")
+Message-ID: <87fu2a4mk5.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
+To: Timur =?utf-8?Q?Krist=C3=B3f?= <timur.kristof@gmail.com>
 Cc: ath10k@lists.infradead.org, ryanhsu@codeaurora.org
 
-On Tue, 2018-05-29 at 13:21 +0300, Kalle Valo wrote:
-> > So it seems that either the driver or the firmware can't cope with
-> > it
-> > when the AP changes the bandwidth.
-> > Here is the Fedora bug report:
-> > https://bugzilla.redhat.com/show_bug.cgi?id=1577106
-> > 
-> > Is there anything that can be done to improve the stability of
-> > ath10k on this system?
-> > I see there is a lot going on in the upstream repo, but not sure
-> > which
-> > branch to try: ath-next or qca?
-> 
-> I think this patch should fix the firmware crash:
-> 
-> ath10k: Update the phymode along with bandwidth change request
-> 
-> https://patchwork.kernel.org/patch/10183453/
-> 
-> Unfortunately it didn't apply to my tree so I had to drop it. Few
-> days
-> ago I was talking with Ryan and he said he is planning to send v2,
-> but
-> I'm sure he don't mind if someone else can send the v2 either. The
-> faster we can apply the patch, and get it to stable releases, the
-> better
-> as we seems to be a very common issue.
-
-I don't have much experience with this, but will take a look and let
-you know how that goes.
-
-> But there also seems to be another bug related to firmware restart,
-> it
-> shouldn't crash the kernel! Does the kernel crash also when crashing
-> the
-> kernel using simulate_fw_crash debugfs file?
-
-Yes, tried it just now. The driver can survive 2 simulated hard
-crashes. After the 3rd hard crash, it reproduces the same issue that I
-described in the bugreport: Wifi stops working. I can turn it off. When
-I turn it on again, the whole system hangs completely.
-
-You would expect that a single driver crash should not affect the whole
-system like this, but it does.
-
-Is there a chance this is already fixed upstream? In general, which of
-your branches should I try to use with this device?
-ath-next or ath-qca?
-
-Thanks & best regards,
-Timur
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGltdXIgS3Jpc3TDs2YgPHRpbXVyLmtyaXN0b2ZAZ21haWwuY29tPiB3cml0ZXM6Cgo+IE9uIFR1
+ZSwgMjAxOC0wNS0yOSBhdCAxMzoyMSArMDMwMCwgS2FsbGUgVmFsbyB3cm90ZToKPj4gPiBTbyBp
+dCBzZWVtcyB0aGF0IGVpdGhlciB0aGUgZHJpdmVyIG9yIHRoZSBmaXJtd2FyZSBjYW4ndCBjb3Bl
+IHdpdGgKPj4gPiBpdAo+PiA+IHdoZW4gdGhlIEFQIGNoYW5nZXMgdGhlIGJhbmR3aWR0aC4KPj4g
+PiBIZXJlIGlzIHRoZSBGZWRvcmEgYnVnIHJlcG9ydDoKPj4gPiBodHRwczovL2J1Z3ppbGxhLnJl
+ZGhhdC5jb20vc2hvd19idWcuY2dpP2lkPTE1NzcxMDYKPj4gPiAKPj4gPiBJcyB0aGVyZSBhbnl0
+aGluZyB0aGF0IGNhbiBiZSBkb25lIHRvIGltcHJvdmUgdGhlIHN0YWJpbGl0eSBvZgo+PiA+IGF0
+aDEwayBvbiB0aGlzIHN5c3RlbT8KPj4gPiBJIHNlZSB0aGVyZSBpcyBhIGxvdCBnb2luZyBvbiBp
+biB0aGUgdXBzdHJlYW0gcmVwbywgYnV0IG5vdCBzdXJlCj4+ID4gd2hpY2gKPj4gPiBicmFuY2gg
+dG8gdHJ5OiBhdGgtbmV4dCBvciBxY2E/Cj4+IAo+PiBJIHRoaW5rIHRoaXMgcGF0Y2ggc2hvdWxk
+IGZpeCB0aGUgZmlybXdhcmUgY3Jhc2g6Cj4+IAo+PiBhdGgxMGs6IFVwZGF0ZSB0aGUgcGh5bW9k
+ZSBhbG9uZyB3aXRoIGJhbmR3aWR0aCBjaGFuZ2UgcmVxdWVzdAo+PiAKPj4gaHR0cHM6Ly9wYXRj
+aHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDE4MzQ1My8KPj4gCj4+IFVuZm9ydHVuYXRlbHkgaXQg
+ZGlkbid0IGFwcGx5IHRvIG15IHRyZWUgc28gSSBoYWQgdG8gZHJvcCBpdC4gRmV3Cj4+IGRheXMg
+YWdvIEkgd2FzIHRhbGtpbmcgd2l0aCBSeWFuIGFuZCBoZSBzYWlkIGhlIGlzIHBsYW5uaW5nIHRv
+IHNlbmQKPj4gdjIsIGJ1dCBJJ20gc3VyZSBoZSBkb24ndCBtaW5kIGlmIHNvbWVvbmUgZWxzZSBj
+YW4gc2VuZCB0aGUgdjIKPj4gZWl0aGVyLiBUaGUgZmFzdGVyIHdlIGNhbiBhcHBseSB0aGUgcGF0
+Y2gsIGFuZCBnZXQgaXQgdG8gc3RhYmxlCj4+IHJlbGVhc2VzLCB0aGUgYmV0dGVyIGFzIHdlIHNl
+ZW1zIHRvIGJlIGEgdmVyeSBjb21tb24gaXNzdWUuCj4KPiBJIGRvbid0IGhhdmUgbXVjaCBleHBl
+cmllbmNlIHdpdGggdGhpcywgYnV0IHdpbGwgdGFrZSBhIGxvb2sgYW5kIGxldAo+IHlvdSBrbm93
+IGhvdyB0aGF0IGdvZXMuCgpPaywgbGV0IG1lIGtub3cgaG93IGl0IGdvZXMuIFNvbWUgaW5mbyBh
+bmQgcG9pbnRlcnMgaGVyZToKCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3Vz
+ZXJzL2RyaXZlcnMvYXRoMTBrL3N1Ym1pdHRpbmdwYXRjaGVzCgo+PiBCdXQgdGhlcmUgYWxzbyBz
+ZWVtcyB0byBiZSBhbm90aGVyIGJ1ZyByZWxhdGVkIHRvIGZpcm13YXJlIHJlc3RhcnQsCj4+IGl0
+Cj4+IHNob3VsZG4ndCBjcmFzaCB0aGUga2VybmVsISBEb2VzIHRoZSBrZXJuZWwgY3Jhc2ggYWxz
+byB3aGVuIGNyYXNoaW5nCj4+IHRoZQo+PiBrZXJuZWwgdXNpbmcgc2ltdWxhdGVfZndfY3Jhc2gg
+ZGVidWdmcyBmaWxlPwo+Cj4gWWVzLCB0cmllZCBpdCBqdXN0IG5vdy4gVGhlIGRyaXZlciBjYW4g
+c3Vydml2ZSAyIHNpbXVsYXRlZCBoYXJkCj4gY3Jhc2hlcy4gQWZ0ZXIgdGhlIDNyZCBoYXJkIGNy
+YXNoLCBpdCByZXByb2R1Y2VzIHRoZSBzYW1lIGlzc3VlIHRoYXQgSQo+IGRlc2NyaWJlZCBpbiB0
+aGUgYnVncmVwb3J0OiBXaWZpIHN0b3BzIHdvcmtpbmcuIEkgY2FuIHR1cm4gaXQgb2ZmLiBXaGVu
+Cj4gSSB0dXJuIGl0IG9uIGFnYWluLCB0aGUgd2hvbGUgc3lzdGVtIGhhbmdzIGNvbXBsZXRlbHku
+Cj4KPiBZb3Ugd291bGQgZXhwZWN0IHRoYXQgYSBzaW5nbGUgZHJpdmVyIGNyYXNoIHNob3VsZCBu
+b3QgYWZmZWN0IHRoZSB3aG9sZQo+IHN5c3RlbSBsaWtlIHRoaXMsIGJ1dCBpdCBkb2VzLgoKWWVh
+aCwgaXQgZGVmaW5pdGVseSBzaG91bGQgbm90IGNyYXNoIGxpa2UgdGhhdC4gSSB3b25kZXIgd2hh
+dCBoYXMgYnJva2VuCml0LgoKPiBJcyB0aGVyZSBhIGNoYW5jZSB0aGlzIGlzIGFscmVhZHkgZml4
+ZWQgdXBzdHJlYW0/IEluIGdlbmVyYWwsIHdoaWNoIG9mCj4geW91ciBicmFuY2hlcyBzaG91bGQg
+SSB0cnkgdG8gdXNlIHdpdGggdGhpcyBkZXZpY2U/IGF0aC1uZXh0IG9yCj4gYXRoLXFjYT8KCkkg
+ZG91YnQgbmVpdGhlciBvZiB0aGUgYnVncyAodGhlIGZpcm13YXJlIGNyYXNoIGFuZCB0aGUga2Vy
+bmVsIGhhbmcpIGFyZQpmaXhlZCwgYXQgbGVhc3QgSSBkb24ndCByZWNhbGwgc2VlaW5nIGFueSBm
+aXhlcy4gQnV0IGlmIHlvdSBoYXZlIHRpbWUgdG8KdGVzdCwgdXNlIHRoZSBtYXN0ZXIgYnJhbmNo
+IG9mIG15IGF0aC5naXQgdHJlZSBmb3IgYW55IHRlc3RpbmcuCgpodHRwczovL3dpcmVsZXNzLndp
+a2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEway9zb3VyY2VzCgotLSAKS2FsbGUg
+VmFsbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
