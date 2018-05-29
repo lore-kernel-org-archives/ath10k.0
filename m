@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNblR-0001Oq-8f
- for ath10k@lists.infradead.org; Tue, 29 May 2018 10:22:10 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
-References: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
-Date: Tue, 29 May 2018 13:21:44 +0300
-In-Reply-To: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
- ("Timur \=\?utf-8\?Q\?Krist\=C3\=B3f\=22's\?\= message of "Tue,
- 29 May 2018 11:52:15 +0300")
-Message-ID: <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1fNcqo-0000Rs-CR
+ for ath10k@lists.infradead.org; Tue, 29 May 2018 11:31:39 +0000
+From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Subject: [PATCH] ath10k: fix spectral scan for QCA9984 and QCA9888 chipsets
+Date: Tue, 29 May 2018 17:01:13 +0530
+Message-Id: <1527593473-15976-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +15,182 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Timur =?utf-8?Q?Krist=C3=B3f?= <timur.kristof@gmail.com>
-Cc: ath10k@lists.infradead.org, ryanhsu@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
 
-KyByeWFuCgpUaW11ciBLcmlzdMOzZiA8dGltdXIua3Jpc3RvZkBnbWFpbC5jb20+IHdyaXRlczoK
-Cj4gSSdtIGV4cGVyaWVuY2luZyBhIGxvdCBvZiBhdGgxMGsgZHJpdmVyIGNyYXNoZXMgb24gYm90
-aCA0LjE2IChhcwo+IHNoaXBwZWQgaW4gRmVkb3JhKSBhbmQgNC4xNyAodHJpZWQgcmM1IGFuZCBy
-YzYpIHVzaW5nIGEgRGVsbCBYUFMgMTMKPiA5MzcwIHdpdGggYSBRQ0E2MTc0Lgo+Cj4gV2l0aCA0
-LjE2IHRoZSBkcml2ZXIgY3Jhc2ggYWx3YXlzIHJlc3VsdHMgaW4gdGhlIHdob2xlIHN5c3RlbSBo
-YW5naW5nLgo+IFdpdGggNC4xNyBpdCBkb2VzIG5vdCBhbHdheXMgaGFuZyB0aGUgc3lzdGVtIGNv
-bXBsZXRlbHksIGJ1dCBpdCBzdGlsbAo+IGhhcHBlbmRzLiBJIGFsc28gdHJpZWQgdG8gdXBncmFk
-ZSB0aGUgZmlybXdhcmUgd2hpY2ggYWxzbyByZWR1Y2VzIHRoZQo+IGZyZXF1ZW5jeSBvZiB0aGUg
-Y3Jhc2hlcyBidXQgZG9lcyBub3QgZWxpbWluYXRlIHRoZW0gY29tcGxldGVseS4KPgo+IFRoZSBj
-b21tb24gcGF0dGVybiBJIHNlZSBpbiBkbWVzZyBpcyB0aGlzOgo+IFszMDM3Mi45MDA4MzJdIHds
-cDJzMDogQVAgNjQ6N2M6MzQ6M2Y6YzM6YjAgY2hhbmdlZCBiYW5kd2lkdGgsIG5ldwo+IGNvbmZp
-ZyBpcyAyNDM3IE1Ieiwgd2lkdGggMiAoMjQ0Ny8wIE1IeikKPgo+IFNlYXJjaGluZyBhIGJpdCBp
-biBrZXJuZWwgc291cmNlcywgdGhpcyBtZXNzYWdlIGlzIHByaW50ZWQgYnkgdGhpcyBsaW5lOgo+
-IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL21hc3Rlci9uZXQvbWFjODAy
-MTEvbWxtZS5jI0wzNjQKPiBBbmQgd2lkdGggMiBzZWVtcyB0byBjb3JyZXNwb25kIHRvIE5MODAy
-MTFfQ0hBTl9XSURUSF80MCBoZXJlOgo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51
-eC9ibG9iL21hc3Rlci9pbmNsdWRlL3VhcGkvbGludXgvbmw4MDIxMS5oI0wzODgwCj4KPiBTbyBp
-dCBzZWVtcyB0aGF0IGVpdGhlciB0aGUgZHJpdmVyIG9yIHRoZSBmaXJtd2FyZSBjYW4ndCBjb3Bl
-IHdpdGggaXQKPiB3aGVuIHRoZSBBUCBjaGFuZ2VzIHRoZSBiYW5kd2lkdGguCj4gSGVyZSBpcyB0
-aGUgRmVkb3JhIGJ1ZyByZXBvcnQ6Cj4gaHR0cHM6Ly9idWd6aWxsYS5yZWRoYXQuY29tL3Nob3df
-YnVnLmNnaT9pZD0xNTc3MTA2Cj4KPiBJcyB0aGVyZSBhbnl0aGluZyB0aGF0IGNhbiBiZSBkb25l
-IHRvIGltcHJvdmUgdGhlIHN0YWJpbGl0eSBvZiBhdGgxMGsgb24gdGhpcyBzeXN0ZW0/Cj4gSSBz
-ZWUgdGhlcmUgaXMgYSBsb3QgZ29pbmcgb24gaW4gdGhlIHVwc3RyZWFtIHJlcG8sIGJ1dCBub3Qg
-c3VyZSB3aGljaAo+IGJyYW5jaCB0byB0cnk6IGF0aC1uZXh0IG9yIHFjYT8KCkkgdGhpbmsgdGhp
-cyBwYXRjaCBzaG91bGQgZml4IHRoZSBmaXJtd2FyZSBjcmFzaDoKCmF0aDEwazogVXBkYXRlIHRo
-ZSBwaHltb2RlIGFsb25nIHdpdGggYmFuZHdpZHRoIGNoYW5nZSByZXF1ZXN0CgpodHRwczovL3Bh
-dGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEwMTgzNDUzLwoKVW5mb3J0dW5hdGVseSBpdCBkaWRu
-J3QgYXBwbHkgdG8gbXkgdHJlZSBzbyBJIGhhZCB0byBkcm9wIGl0LiBGZXcgZGF5cwphZ28gSSB3
-YXMgdGFsa2luZyB3aXRoIFJ5YW4gYW5kIGhlIHNhaWQgaGUgaXMgcGxhbm5pbmcgdG8gc2VuZCB2
-MiwgYnV0CkknbSBzdXJlIGhlIGRvbid0IG1pbmQgaWYgc29tZW9uZSBlbHNlIGNhbiBzZW5kIHRo
-ZSB2MiBlaXRoZXIuIFRoZQpmYXN0ZXIgd2UgY2FuIGFwcGx5IHRoZSBwYXRjaCwgYW5kIGdldCBp
-dCB0byBzdGFibGUgcmVsZWFzZXMsIHRoZSBiZXR0ZXIKYXMgd2Ugc2VlbXMgdG8gYmUgYSB2ZXJ5
-IGNvbW1vbiBpc3N1ZS4KCkJ1dCB0aGVyZSBhbHNvIHNlZW1zIHRvIGJlIGFub3RoZXIgYnVnIHJl
-bGF0ZWQgdG8gZmlybXdhcmUgcmVzdGFydCwgaXQKc2hvdWxkbid0IGNyYXNoIHRoZSBrZXJuZWwh
-IERvZXMgdGhlIGtlcm5lbCBjcmFzaCBhbHNvIHdoZW4gY3Jhc2hpbmcgdGhlCmtlcm5lbCB1c2lu
-ZyBzaW11bGF0ZV9md19jcmFzaCBkZWJ1Z2ZzIGZpbGU/CgotLSAKS2FsbGUgVmFsbwoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+The spectral scan has been always broken on QCA9984 and QCA9888.
+
+Introduce a hardware parameter 'spectral_bin_offset' to resolve this issue for
+QCA9984 and QCA9888 chipsets. For other chipsets, the hardware parameter
+'spectral_bin_offset' is zero so that existing behaviour is retained as it is.
+
+In QCA9984 and QCA9888 chipsets, hardware param value 'spectral_bin_discard'
+is 12 bytes. This 12 bytes is derived as the sum of segment index (4 bytes),
+extra bins before the actual data (4 bytes) and extra bins after the actual
+data (4 bytes). Always discarding (12 bytes) happens at end of the samples and
+incorrect samples got dumped, so that user can find incorrect arrangement
+samples in spectral scan dump.
+
+To fix this issue, we have to discard first 8 bytes and last 4 bytes in every
+samples, so totally 12 bytes are discarded. In every sample we need to consider
+the offset while taking the actual spectral data. For QCA9984, QCA9888 the
+offset is 8 bytes (segment index + extra bins before actual data).
+
+Hardware tested: QCA9984 and QCA9888
+Firmware tested: 10.4-3.5.3-00053
+
+Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c     | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h       |  3 +++
+ drivers/net/wireless/ath/ath10k/spectral.c |  2 +-
+ 3 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4cf54a7..25ecf74 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -82,6 +82,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -113,6 +114,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -145,6 +147,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -176,6 +179,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -207,6 +211,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -238,6 +243,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -272,6 +278,7 @@
+ 		.target_cpu_freq = 176000000,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -309,6 +316,7 @@
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
+ 		.spectral_bin_discard = 4,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 11,
+@@ -347,6 +355,7 @@
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
+ 		.spectral_bin_discard = 12,
++		.spectral_bin_offset = 8,
+ 
+ 		/* Can do only 2x2 VHT160 or 80+80. 1560Mbps is 4x4 80Mhz
+ 		 * or 2x2 160Mhz, long-guard-interval.
+@@ -388,6 +397,7 @@
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
+ 		.spectral_bin_discard = 12,
++		.spectral_bin_offset = 8,
+ 
+ 		/* Can do only 1x1 VHT160 or 80+80. 780Mbps is 2x2 80Mhz or
+ 		 * 1x1 160Mhz, long-guard-interval.
+@@ -423,6 +433,7 @@
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -456,6 +467,7 @@
+ 		.target_cpu_freq = 176000000,
+ 		.decap_align_bytes = 4,
+ 		.spectral_bin_discard = 0,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 8,
+@@ -494,6 +506,7 @@
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
+ 		.spectral_bin_discard = 4,
++		.spectral_bin_offset = 0,
+ 		.vht160_mcs_rx_highest = 0,
+ 		.vht160_mcs_tx_highest = 0,
+ 		.n_cipher_suites = 11,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 23467e9..a274bd8 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -586,6 +586,9 @@ struct ath10k_hw_params {
+ 
+ 	/* target supporting retention restore on ddr */
+ 	bool rri_on_ddr;
++
++	/* Number of bytes to be the offset for each FFT sample */
++	int spectral_bin_offset;
+ };
+ 
+ struct htt_rx_desc;
+diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+index af6995d..653b6d0 100644
+--- a/drivers/net/wireless/ath/ath10k/spectral.c
++++ b/drivers/net/wireless/ath/ath10k/spectral.c
+@@ -145,7 +145,7 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
+ 	fft_sample->noise = __cpu_to_be16(phyerr->nf_chains[chain_idx]);
+ 
+ 	bins = (u8 *)fftr;
+-	bins += sizeof(*fftr);
++	bins += sizeof(*fftr) + ar->hw_params.spectral_bin_offset;
+ 
+ 	fft_sample->tsf = __cpu_to_be64(tsf);
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
