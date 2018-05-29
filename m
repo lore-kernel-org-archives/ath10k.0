@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNaMo-0000Ko-Ga
- for ath10k@lists.infradead.org; Tue, 29 May 2018 08:52:32 +0000
-Received: by mail-wm0-x231.google.com with SMTP id t11-v6so38264078wmt.0
- for <ath10k@lists.infradead.org>; Tue, 29 May 2018 01:52:18 -0700 (PDT)
-Received: from timur-xps ([2001:998:2a:dead:69d9:6ca4:e858:1e60])
- by smtp.gmail.com with ESMTPSA id f14-v6sm550893ljj.15.2018.05.29.01.52.15
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 29 May 2018 01:52:16 -0700 (PDT)
-Message-ID: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
-Subject: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
-From: Timur =?ISO-8859-1?Q?Krist=F3f?= <timur.kristof@gmail.com>
-Date: Tue, 29 May 2018 11:52:15 +0300
-Mime-Version: 1.0
+ id 1fNblR-0001Oq-8f
+ for ath10k@lists.infradead.org; Tue, 29 May 2018 10:22:10 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
+References: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
+Date: Tue, 29 May 2018 13:21:44 +0300
+In-Reply-To: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
+ ("Timur \=\?utf-8\?Q\?Krist\=C3\=B3f\=22's\?\= message of "Tue,
+ 29 May 2018 11:52:15 +0300")
+Message-ID: <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Timur =?utf-8?Q?Krist=C3=B3f?= <timur.kristof@gmail.com>
+Cc: ath10k@lists.infradead.org, ryanhsu@codeaurora.org
 
-Hi,
-
-I'm experiencing a lot of ath10k driver crashes on both 4.16 (as
-shipped in Fedora) and 4.17 (tried rc5 and rc6) using a Dell XPS 13
-9370 with a QCA6174.
-
-With 4.16 the driver crash always results in the whole system hanging.
-With 4.17 it does not always hang the system completely, but it still
-happends. I also tried to upgrade the firmware which also reduces the
-frequency of the crashes but does not eliminate them completely.
-
-The common pattern I see in dmesg is this:
-[30372.900832] wlp2s0: AP 64:7c:34:3f:c3:b0 changed bandwidth, new config is 2437 MHz, width 2 (2447/0 MHz)
-
-Searching a bit in kernel sources, this message is printed by this line:
-https://github.com/torvalds/linux/blob/master/net/mac80211/mlme.c#L364
-And width 2 seems to correspond to NL80211_CHAN_WIDTH_40 here:
-https://github.com/torvalds/linux/blob/master/include/uapi/linux/nl80211.h#L3880
-
-So it seems that either the driver or the firmware can't cope with it when the AP changes the bandwidth.
-Here is the Fedora bug report:
-https://bugzilla.redhat.com/show_bug.cgi?id=1577106
-
-Is there anything that can be done to improve the stability of ath10k on this system?
-I see there is a lot going on in the upstream repo, but not sure which branch to try: ath-next or qca?
-
-Best regards,
-Tim
-
-ps. I'm not on the mailing list, please add me to CC when you reply. Thanks.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+KyByeWFuCgpUaW11ciBLcmlzdMOzZiA8dGltdXIua3Jpc3RvZkBnbWFpbC5jb20+IHdyaXRlczoK
+Cj4gSSdtIGV4cGVyaWVuY2luZyBhIGxvdCBvZiBhdGgxMGsgZHJpdmVyIGNyYXNoZXMgb24gYm90
+aCA0LjE2IChhcwo+IHNoaXBwZWQgaW4gRmVkb3JhKSBhbmQgNC4xNyAodHJpZWQgcmM1IGFuZCBy
+YzYpIHVzaW5nIGEgRGVsbCBYUFMgMTMKPiA5MzcwIHdpdGggYSBRQ0E2MTc0Lgo+Cj4gV2l0aCA0
+LjE2IHRoZSBkcml2ZXIgY3Jhc2ggYWx3YXlzIHJlc3VsdHMgaW4gdGhlIHdob2xlIHN5c3RlbSBo
+YW5naW5nLgo+IFdpdGggNC4xNyBpdCBkb2VzIG5vdCBhbHdheXMgaGFuZyB0aGUgc3lzdGVtIGNv
+bXBsZXRlbHksIGJ1dCBpdCBzdGlsbAo+IGhhcHBlbmRzLiBJIGFsc28gdHJpZWQgdG8gdXBncmFk
+ZSB0aGUgZmlybXdhcmUgd2hpY2ggYWxzbyByZWR1Y2VzIHRoZQo+IGZyZXF1ZW5jeSBvZiB0aGUg
+Y3Jhc2hlcyBidXQgZG9lcyBub3QgZWxpbWluYXRlIHRoZW0gY29tcGxldGVseS4KPgo+IFRoZSBj
+b21tb24gcGF0dGVybiBJIHNlZSBpbiBkbWVzZyBpcyB0aGlzOgo+IFszMDM3Mi45MDA4MzJdIHds
+cDJzMDogQVAgNjQ6N2M6MzQ6M2Y6YzM6YjAgY2hhbmdlZCBiYW5kd2lkdGgsIG5ldwo+IGNvbmZp
+ZyBpcyAyNDM3IE1Ieiwgd2lkdGggMiAoMjQ0Ny8wIE1IeikKPgo+IFNlYXJjaGluZyBhIGJpdCBp
+biBrZXJuZWwgc291cmNlcywgdGhpcyBtZXNzYWdlIGlzIHByaW50ZWQgYnkgdGhpcyBsaW5lOgo+
+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL21hc3Rlci9uZXQvbWFjODAy
+MTEvbWxtZS5jI0wzNjQKPiBBbmQgd2lkdGggMiBzZWVtcyB0byBjb3JyZXNwb25kIHRvIE5MODAy
+MTFfQ0hBTl9XSURUSF80MCBoZXJlOgo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51
+eC9ibG9iL21hc3Rlci9pbmNsdWRlL3VhcGkvbGludXgvbmw4MDIxMS5oI0wzODgwCj4KPiBTbyBp
+dCBzZWVtcyB0aGF0IGVpdGhlciB0aGUgZHJpdmVyIG9yIHRoZSBmaXJtd2FyZSBjYW4ndCBjb3Bl
+IHdpdGggaXQKPiB3aGVuIHRoZSBBUCBjaGFuZ2VzIHRoZSBiYW5kd2lkdGguCj4gSGVyZSBpcyB0
+aGUgRmVkb3JhIGJ1ZyByZXBvcnQ6Cj4gaHR0cHM6Ly9idWd6aWxsYS5yZWRoYXQuY29tL3Nob3df
+YnVnLmNnaT9pZD0xNTc3MTA2Cj4KPiBJcyB0aGVyZSBhbnl0aGluZyB0aGF0IGNhbiBiZSBkb25l
+IHRvIGltcHJvdmUgdGhlIHN0YWJpbGl0eSBvZiBhdGgxMGsgb24gdGhpcyBzeXN0ZW0/Cj4gSSBz
+ZWUgdGhlcmUgaXMgYSBsb3QgZ29pbmcgb24gaW4gdGhlIHVwc3RyZWFtIHJlcG8sIGJ1dCBub3Qg
+c3VyZSB3aGljaAo+IGJyYW5jaCB0byB0cnk6IGF0aC1uZXh0IG9yIHFjYT8KCkkgdGhpbmsgdGhp
+cyBwYXRjaCBzaG91bGQgZml4IHRoZSBmaXJtd2FyZSBjcmFzaDoKCmF0aDEwazogVXBkYXRlIHRo
+ZSBwaHltb2RlIGFsb25nIHdpdGggYmFuZHdpZHRoIGNoYW5nZSByZXF1ZXN0CgpodHRwczovL3Bh
+dGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEwMTgzNDUzLwoKVW5mb3J0dW5hdGVseSBpdCBkaWRu
+J3QgYXBwbHkgdG8gbXkgdHJlZSBzbyBJIGhhZCB0byBkcm9wIGl0LiBGZXcgZGF5cwphZ28gSSB3
+YXMgdGFsa2luZyB3aXRoIFJ5YW4gYW5kIGhlIHNhaWQgaGUgaXMgcGxhbm5pbmcgdG8gc2VuZCB2
+MiwgYnV0CkknbSBzdXJlIGhlIGRvbid0IG1pbmQgaWYgc29tZW9uZSBlbHNlIGNhbiBzZW5kIHRo
+ZSB2MiBlaXRoZXIuIFRoZQpmYXN0ZXIgd2UgY2FuIGFwcGx5IHRoZSBwYXRjaCwgYW5kIGdldCBp
+dCB0byBzdGFibGUgcmVsZWFzZXMsIHRoZSBiZXR0ZXIKYXMgd2Ugc2VlbXMgdG8gYmUgYSB2ZXJ5
+IGNvbW1vbiBpc3N1ZS4KCkJ1dCB0aGVyZSBhbHNvIHNlZW1zIHRvIGJlIGFub3RoZXIgYnVnIHJl
+bGF0ZWQgdG8gZmlybXdhcmUgcmVzdGFydCwgaXQKc2hvdWxkbid0IGNyYXNoIHRoZSBrZXJuZWwh
+IERvZXMgdGhlIGtlcm5lbCBjcmFzaCBhbHNvIHdoZW4gY3Jhc2hpbmcgdGhlCmtlcm5lbCB1c2lu
+ZyBzaW11bGF0ZV9md19jcmFzaCBkZWJ1Z2ZzIGZpbGU/CgotLSAKS2FsbGUgVmFsbwoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
