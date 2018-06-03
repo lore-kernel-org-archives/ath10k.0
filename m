@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPXe0-0006VS-Sf
+ id 1fPXe0-0006Un-Sc
  for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:22 +0000
-Received: by mail-lf0-x242.google.com with SMTP id n3-v6so21785710lfe.12
- for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:12 -0700 (PDT)
+Received: by mail-lf0-x242.google.com with SMTP id t134-v6so21772368lff.6
+ for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:10 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v5 03/12] ath10k: add bus type check in ath10k_init_hw_params
-Date: Sun,  3 Jun 2018 20:20:20 +0200
-Message-Id: <20180603182029.8914-4-erik.stromdahl@gmail.com>
-In-Reply-To: <20180603182029.8914-1-erik.stromdahl@gmail.com>
-References: <20180603182029.8914-1-erik.stromdahl@gmail.com>
+Subject: [RFC v5 00/12] ath10k high latency
+Date: Sun,  3 Jun 2018 20:20:17 +0200
+Message-Id: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,184 +25,68 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The bus type is used together with the other hw parameters
-to find a matching entry in ath10k_hw_params_list for the device.
+Changes since v4:
 
-This is necessary since HL devices can have the same dev_id and
-target_version as a corresponding LL device (same chipset) and
-yet use a totally different configuration.
+I have tried to reduce the number of patches to a
+minimum for getting high latency up and running.
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 16 +++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h |  8 --------
- drivers/net/wireless/ath/ath10k/hw.h   |  9 +++++++++
- 3 files changed, 24 insertions(+), 9 deletions(-)
+The hw_params items for the two QCA9377 based devices
+included in the previous patchset (one Linksys USB and
+one SDIO device) have been skipped, and thus there is
+no board-2.bin support.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index ebc8ea7cfd40..a146c83d6ff9 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -65,6 +65,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.dev_id = QCA988X_2_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca988x hw2.0",
- 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -128,6 +129,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
- 		.dev_id = QCA9887_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9887 hw1.0",
- 		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -160,6 +162,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
- 		.dev_id = QCA6164_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6164 hw2.1",
- 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -191,6 +194,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
- 		.dev_id = QCA6174_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6174 hw2.1",
- 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -222,6 +226,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
- 		.dev_id = QCA6174_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6174 hw3.0",
- 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -253,6 +258,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
- 		.dev_id = QCA6174_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6174 hw3.2",
- 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -287,6 +293,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
- 		.dev_id = QCA99X0_2_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca99x0 hw2.0",
- 		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -324,6 +331,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
- 		.dev_id = QCA9984_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9984/qca9994 hw1.0",
- 		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -366,6 +374,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
- 		.dev_id = QCA9888_2_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9888 hw2.0",
- 		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -407,6 +416,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
- 		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9377 hw1.0",
- 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -438,6 +448,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
- 		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9377 hw1.1",
- 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -471,6 +482,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
-+		.bus = ATH10K_BUS_AHB,
- 		.name = "qca4019 hw1.0",
- 		.patch_load_addr = QCA4019_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -509,6 +521,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "wcn3990 hw1.0",
- 		.continuous_frag_desc = true,
- 		.tx_chain_mask = 0x7,
-@@ -1871,7 +1884,8 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
- 		hw_params = &ath10k_hw_params_list[i];
- 
--		if (hw_params->id == ar->target_version &&
-+		if (hw_params->bus == ar->hif.bus &&
-+		    hw_params->id == ar->target_version &&
- 		    hw_params->dev_id == ar->dev_id)
- 			break;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index f3e94531bbee..d0c7b821a13e 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -91,14 +91,6 @@
- 
- struct ath10k;
- 
--enum ath10k_bus {
--	ATH10K_BUS_PCI,
--	ATH10K_BUS_AHB,
--	ATH10K_BUS_SDIO,
--	ATH10K_BUS_USB,
--	ATH10K_BUS_SNOC,
--};
--
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- {
- 	switch (bus) {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 23467e9fefeb..53a7778c63a9 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -21,6 +21,14 @@
- 
- #include "targaddrs.h"
- 
-+enum ath10k_bus {
-+	ATH10K_BUS_PCI,
-+	ATH10K_BUS_AHB,
-+	ATH10K_BUS_SDIO,
-+	ATH10K_BUS_USB,
-+	ATH10K_BUS_SNOC,
-+};
-+
- #define ATH10K_FW_DIR			"ath10k"
- 
- #define QCA988X_2_0_DEVICE_ID_UBNT   (0x11ac)
-@@ -501,6 +509,7 @@ struct ath10k_hw_clk_params {
- struct ath10k_hw_params {
- 	u32 id;
- 	u16 dev_id;
-+	enum ath10k_bus bus;
- 	const char *name;
- 	u32 patch_load_addr;
- 	int uart_pin;
+I have planned to submit them in separate patches later
+(together with board-2.bin support).
+
+USB might be even more broken due to a lot of ugly
+special cases beeing removed.
+
+The main issue with USB right now is that there are no
+TX_COMPL_IND's from fw.
+
+The special cases for handling this have been removed.
+If needed, they could be added back in a future patch.
+
+The rename of the *is_high_latency* boolean to ATH10K_HTT_MODE
+ended up in a rename to ATH10K_DEV_TYPE instead,
+ since this is not only related to HTT.
+
+The start_once patch was removed as well.
+SDIO seems to work well without it.
+If needed by USB, we can add it in a future patch.
+
+Erik Stromdahl (12):
+  ath10k: add struct ath10k_bus_params
+  ath10k: add device type enum to ath10k_bus_params
+  ath10k: add bus type check in ath10k_init_hw_params
+  ath10k: use hw_params.num_peers for num_tids in TLV init
+  ath10k: add per target config of max_num_peers
+  ath10k: DMA related fixes for high latency devices
+  ath10k: add HTT TX HL ops
+  ath10k: add HTT RX HL ops
+  ath10k: htt: RX ring config HL support
+  ath10k: htt: High latency TX support
+  ath10k: htt: High latency RX support
+  ath10k: wmi: disable softirq's while calling ieee80211_rx
+
+ drivers/net/wireless/ath/ath10k/ahb.c     |   9 +-
+ drivers/net/wireless/ath/ath10k/core.c    |  39 ++++--
+ drivers/net/wireless/ath/ath10k/core.h    |  22 +--
+ drivers/net/wireless/ath/ath10k/htc.c     |  19 ++-
+ drivers/net/wireless/ath/ath10k/htt.h     |  47 +++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c  | 135 ++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c  | 155 +++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/hw.h      |   9 ++
+ drivers/net/wireless/ath/ath10k/pci.c     |  13 +-
+ drivers/net/wireless/ath/ath10k/rx_desc.h |  15 +++
+ drivers/net/wireless/ath/ath10k/sdio.c    |   8 +-
+ drivers/net/wireless/ath/ath10k/snoc.c    |   5 +-
+ drivers/net/wireless/ath/ath10k/txrx.c    |   3 +-
+ drivers/net/wireless/ath/ath10k/usb.c     |   7 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |   5 +-
+ drivers/net/wireless/ath/ath10k/wmi.c     |   3 +-
+ 16 files changed, 444 insertions(+), 50 deletions(-)
+
 -- 
 2.17.0
 
