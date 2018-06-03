@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPXe1-0006WY-8j
- for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:24 +0000
-Received: by mail-lf0-x242.google.com with SMTP id d24-v6so21804032lfa.8
- for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:21 -0700 (PDT)
+ id 1fPXe2-0006Vw-1O
+ for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:25 +0000
+Received: by mail-lf0-x241.google.com with SMTP id n15-v6so4484120lfn.10
+ for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:16 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v5 12/12] ath10k: wmi: disable softirq's while calling
- ieee80211_rx
-Date: Sun,  3 Jun 2018 20:20:29 +0200
-Message-Id: <20180603182029.8914-13-erik.stromdahl@gmail.com>
+Subject: [RFC v5 07/12] ath10k: add HTT TX HL ops
+Date: Sun,  3 Jun 2018 20:20:24 +0200
+Message-Id: <20180603182029.8914-8-erik.stromdahl@gmail.com>
 In-Reply-To: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 References: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,42 +27,36 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This is done in order not to trig the below warning in
-ieee80211_rx_napi:
-
-WARN_ON_ONCE(softirq_count() == 0);
-
-ieee80211_rx_napi requires that softirq's are disabled during
-execution.
-
-The High latency bus drivers (SDIO and USB) sometimes call the wmi
-ep_rx_complete callback from non softirq context, resulting in a trigger
-of the above warning.
-
-Calling ieee80211_rx_ni with softirq's already disabled (e.g., from
-softirq context) should be safe as the local_bh_disable and
-local_bh_enable functions (called from ieee80211_rx_ni) are fully
-reentrant.
+Initial HTT TX ops for high latency devices.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index f97ab795cf2e..c3237a6d77a2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2423,7 +2423,8 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 		   status->freq, status->band, status->signal,
- 		   status->rate_idx);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 79a8eca46e88..7c7e434fcde5 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1568,11 +1568,17 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
+ 	.htt_free_txbuff = ath10k_htt_tx_free_cont_txbuf_64,
+ };
  
--	ieee80211_rx(ar->hw, skb);
-+	ieee80211_rx_ni(ar->hw, skb);
++static const struct ath10k_htt_tx_ops htt_tx_ops_hl = {
++	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_32,
++};
 +
- 	return 0;
- }
+ void ath10k_htt_set_tx_ops(struct ath10k_htt *htt)
+ {
+ 	struct ath10k *ar = htt->ar;
  
+-	if (ar->hw_params.target_64bit)
++	if (ar->dev_type == ATH10K_DEV_TYPE_HL)
++		htt->tx_ops = &htt_tx_ops_hl;
++	else if (ar->hw_params.target_64bit)
+ 		htt->tx_ops = &htt_tx_ops_64;
+ 	else
+ 		htt->tx_ops = &htt_tx_ops_32;
 -- 
 2.17.0
 
