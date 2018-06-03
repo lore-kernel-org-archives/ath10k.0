@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPXe2-0006WR-9Z
+ id 1fPXe2-0006VG-9c
  for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:32 +0000
-Received: by mail-lf0-x243.google.com with SMTP id n15-v6so4484193lfn.10
- for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:19 -0700 (PDT)
+Received: by mail-lf0-x243.google.com with SMTP id i83-v6so9617431lfh.5
+ for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:11 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v5 10/12] ath10k: htt: High latency TX support
-Date: Sun,  3 Jun 2018 20:20:27 +0200
-Message-Id: <20180603182029.8914-11-erik.stromdahl@gmail.com>
+Subject: [RFC v5 02/12] ath10k: add device type enum to ath10k_bus_params
+Date: Sun,  3 Jun 2018 20:20:19 +0200
+Message-Id: <20180603182029.8914-3-erik.stromdahl@gmail.com>
 In-Reply-To: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 References: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,131 +27,124 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Add HTT TX function for HL interfaces.
-Intended for SDIO and USB.
+Add dev_type parameter to struct ath10k_bus_params.
+
+The dev type specifies if the device is a high latency device (usb and
+sdio) or low latency device (pci, ahb and snoc)
+
+The setup of high latency chips is sometimes different than
+for chips using low latency interfaces.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 92 ++++++++++++++++++++++++
- 1 file changed, 92 insertions(+)
+ drivers/net/wireless/ath/ath10k/ahb.c  | 1 +
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
+ drivers/net/wireless/ath/ath10k/pci.c  | 1 +
+ drivers/net/wireless/ath/ath10k/sdio.c | 1 +
+ drivers/net/wireless/ath/ath10k/snoc.c | 1 +
+ drivers/net/wireless/ath/ath10k/usb.c  | 1 +
+ 7 files changed, 13 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 740e8740844e..87f7b221b6a8 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -495,6 +495,9 @@ int ath10k_htt_tx_start(struct ath10k_htt *htt)
- 	if (htt->tx_mem_allocated)
- 		return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index 5e272e940efd..bb3928003b72 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -811,6 +811,7 @@ static int ath10k_ahb_probe(struct platform_device *pdev)
  
-+	if (ar->dev_type == ATH10K_DEV_TYPE_HL)
-+		return 0;
-+
- 	ret = ath10k_htt_tx_alloc_buf(htt);
- 	if (ret)
- 		goto free_idr_pending_tx;
-@@ -1188,6 +1191,94 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	return res;
- }
+ 	ath10k_pci_ce_deinit(ar);
  
-+#define HTT_TX_HL_NEEDED_HEADROOM \
-+	(unsigned int)(sizeof(struct htt_cmd_hdr) + \
-+	sizeof(struct htt_data_tx_desc) + \
-+	sizeof(struct ath10k_htc_hdr))
-+
-+static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
-+			    struct sk_buff *msdu)
-+{
-+	struct ath10k *ar = htt->ar;
-+	int res, data_len;
-+	struct htt_cmd_hdr *cmd_hdr;
-+	struct htt_data_tx_desc *tx_desc;
-+	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
-+	struct sk_buff *tmp_skb;
-+	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
-+	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
-+	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
-+	u8 flags0 = 0;
-+	u16 flags1 = 0;
-+
-+	data_len = msdu->len;
-+
-+	switch (txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		/* fall through */
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		flags0 |= SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
-+		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
-+			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		break;
-+	}
-+
-+	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
-+
-+	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
-+	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
-+	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
-+	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-+		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
-+		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
-+	}
-+
-+	/* Prepend the HTT header and TX desc struct to the data message
-+	 * and realloc the skb if it does not have enough headroom.
-+	 */
-+	if (skb_headroom(msdu) < HTT_TX_HL_NEEDED_HEADROOM) {
-+		tmp_skb = msdu;
-+
-+		ath10k_dbg(htt->ar, ATH10K_DBG_HTT,
-+			   "Not enough headroom in skb. Current headroom: %u, needed: %u. Reallocating...\n",
-+			   skb_headroom(msdu), HTT_TX_HL_NEEDED_HEADROOM);
-+		msdu = skb_realloc_headroom(msdu, HTT_TX_HL_NEEDED_HEADROOM);
-+		kfree_skb(tmp_skb);
-+		if (!msdu) {
-+			ath10k_warn(htt->ar, "htt hl tx: Unable to realloc skb!\n");
-+			res = -ENOMEM;
-+			goto out;
-+		}
-+	}
-+
-+	skb_push(msdu, sizeof(*cmd_hdr));
-+	skb_push(msdu, sizeof(*tx_desc));
-+	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
-+	tx_desc = (struct htt_data_tx_desc *)(msdu->data + sizeof(*cmd_hdr));
-+
-+	cmd_hdr->msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
-+	tx_desc->flags0 = flags0;
-+	tx_desc->flags1 = __cpu_to_le16(flags1);
-+	tx_desc->len = __cpu_to_le16(data_len);
-+	tx_desc->id = 0;
-+	tx_desc->frags_paddr = 0; /* always zero */
-+	/* Initialize peer_id to INVALID_PEER because this is NOT
-+	 * Reinjection path
-+	 */
-+	tx_desc->peerid = __cpu_to_le32(HTT_INVALID_PEERID);
-+
-+	res = ath10k_htc_send(&htt->ar->htc, htt->eid, msdu);
-+
-+out:
-+	return res;
-+}
-+
- static int ath10k_htt_tx_32(struct ath10k_htt *htt,
- 			    enum ath10k_hw_txrx_mode txmode,
- 			    struct sk_buff *msdu)
-@@ -1622,6 +1713,7 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
- static const struct ath10k_htt_tx_ops htt_tx_ops_hl = {
- 	.htt_send_rx_ring_cfg = ath10k_htt_send_rx_ring_cfg_hl,
- 	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_32,
-+	.htt_tx = ath10k_htt_tx_hl,
++	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
+ 	bus_params.chip_id = ath10k_ahb_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+ 	if (bus_params.chip_id == 0xffffffff) {
+ 		ath10k_err(ar, "failed to get chip id\n");
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index eee6e39e4e99..ebc8ea7cfd40 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2706,6 +2706,7 @@ int ath10k_core_register(struct ath10k *ar,
+ 			 const struct ath10k_bus_params *bus_params)
+ {
+ 	ar->chip_id = bus_params->chip_id;
++	ar->dev_type = bus_params->dev_type;
+ 	queue_work(ar->workqueue, &ar->register_work);
+ 
+ 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 6dd68df104e4..f3e94531bbee 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -874,8 +874,14 @@ struct ath10k_per_peer_tx_stats {
+ 	u32	reserved2;
  };
  
- void ath10k_htt_set_tx_ops(struct ath10k_htt *htt)
++enum ath10k_dev_type {
++	ATH10K_DEV_TYPE_LL,
++	ATH10K_DEV_TYPE_HL,
++};
++
+ struct ath10k_bus_params {
+ 	u32 chip_id;
++	enum ath10k_dev_type dev_type;
+ };
+ 
+ struct ath10k {
+@@ -888,6 +894,7 @@ struct ath10k {
+ 	enum ath10k_hw_rev hw_rev;
+ 	u16 dev_id;
+ 	u32 chip_id;
++	enum ath10k_dev_type dev_type;
+ 	u32 target_version;
+ 	u8 fw_version_major;
+ 	u32 fw_version_minor;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 7b5b93f48ba2..05674e6d439a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3618,6 +3618,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_free_irq;
+ 	}
+ 
++	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
+ 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+ 	if (bus_params.chip_id == 0xffffffff) {
+ 		ath10k_err(ar, "failed to get chip id\n");
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index be61d868edcf..4b4fd0e3b009 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2026,6 +2026,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		goto err_free_wq;
+ 	}
+ 
++	bus_params.dev_type = ATH10K_DEV_TYPE_HL;
+ 	/* TODO: don't know yet how to get chip_id with SDIO */
+ 	bus_params.chip_id = 0;
+ 	ret = ath10k_core_register(ar, &bus_params);
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 46d2a7a21efb..01a5f075f349 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1341,6 +1341,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 		goto err_free_irq;
+ 	}
+ 
++	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
+ 	bus_params.chip_id = drv_data->hw_rev;
+ 	ret = ath10k_core_register(ar, &bus_params);
+ 	if (ret) {
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index 275e00bafcb1..f731d35ee76d 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1016,6 +1016,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 	ar->id.vendor = vendor_id;
+ 	ar->id.device = product_id;
+ 
++	bus_params.dev_type = ATH10K_DEV_TYPE_HL;
+ 	/* TODO: don't know yet how to get chip_id with USB */
+ 	bus_params.chip_id = 0;
+ 	ret = ath10k_core_register(ar, &bus_params);
 -- 
 2.17.0
 
