@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPXe5-0006VX-0M
- for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:43 +0000
-Received: by mail-lf0-x244.google.com with SMTP id j13-v6so17336471lfb.13
- for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:14 -0700 (PDT)
+ id 1fPXe5-0006Vv-0g
+ for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:45 +0000
+Received: by mail-lf0-x244.google.com with SMTP id v135-v6so21788271lfa.9
+ for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:15 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v5 05/12] ath10k: add per target config of max_num_peers
-Date: Sun,  3 Jun 2018 20:20:22 +0200
-Message-Id: <20180603182029.8914-6-erik.stromdahl@gmail.com>
+Subject: [RFC v5 06/12] ath10k: DMA related fixes for high latency devices
+Date: Sun,  3 Jun 2018 20:20:23 +0200
+Message-Id: <20180603182029.8914-7-erik.stromdahl@gmail.com>
 In-Reply-To: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 References: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,88 +27,89 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This patch makes sure the value of max_num_peers matches
-num_peers in hw_params (if set to a non zero value).
-
-hw_params->num_peers is used in the TLV WMI init command.
-If ar->max_num_peers is not set to the same value, there is a risk
-that the user creates more peers than the maximum number of peers
-supported by the device.
+Several DMA related functions (such as the dma_map_xxx functions)
+are not used with high latency devices and don't need to be invoked
+in this case.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c    | 19 ++++++++++++-------
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  3 ++-
+ drivers/net/wireless/ath/ath10k/txrx.c   |  3 ++-
+ 3 files changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a146c83d6ff9..8244e9184760 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1986,6 +1986,7 @@ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
- static int ath10k_core_init_firmware_features(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 8902720b4e49..b47e0547f767 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -53,7 +53,8 @@ static inline void ath10k_htc_restore_tx_skb(struct ath10k_htc *htc,
  {
- 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
-+	int max_num_peers;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
  
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, fw_file->fw_features) &&
- 	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, fw_file->fw_features)) {
-@@ -2065,7 +2066,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+-	dma_unmap_single(htc->ar->dev, skb_cb->paddr, skb->len, DMA_TO_DEVICE);
++	if (htc->ar->dev_type != ATH10K_DEV_TYPE_HL)
++		dma_unmap_single(htc->ar->dev, skb_cb->paddr, skb->len, DMA_TO_DEVICE);
+ 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
+ }
  
- 	switch (fw_file->wmi_op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
--		ar->max_num_peers = TARGET_NUM_PEERS;
-+		max_num_peers = TARGET_NUM_PEERS;
- 		ar->max_num_stations = TARGET_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_NUM_VDEVS;
- 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
-@@ -2077,10 +2078,10 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_10_2:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
- 		if (ath10k_peer_stats_enabled(ar)) {
--			ar->max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
-+			max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
- 			ar->max_num_stations = TARGET_10X_TX_STATS_NUM_STATIONS;
- 		} else {
--			ar->max_num_peers = TARGET_10X_NUM_PEERS;
-+			max_num_peers = TARGET_10X_NUM_PEERS;
- 			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
- 		}
- 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
-@@ -2089,7 +2090,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_TLV:
--		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
-+		max_num_peers = TARGET_TLV_NUM_PEERS;
- 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
- 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
-@@ -2100,7 +2101,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
--		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
-+		max_num_peers = TARGET_10_4_NUM_PEERS;
- 		ar->max_num_stations = TARGET_10_4_NUM_STATIONS;
- 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
- 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
-@@ -2119,10 +2120,16 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
-+	default:
- 		WARN_ON(1);
- 		return -EINVAL;
+@@ -137,11 +138,14 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ 	ath10k_htc_prepare_tx_skb(ep, skb);
+ 
+ 	skb_cb->eid = eid;
+-	skb_cb->paddr = dma_map_single(dev, skb->data, skb->len, DMA_TO_DEVICE);
+-	ret = dma_mapping_error(dev, skb_cb->paddr);
+-	if (ret) {
+-		ret = -EIO;
+-		goto err_credits;
++	if (ar->dev_type != ATH10K_DEV_TYPE_HL) {
++		skb_cb->paddr = dma_map_single(dev, skb->data, skb->len,
++					       DMA_TO_DEVICE);
++		ret = dma_mapping_error(dev, skb_cb->paddr);
++		if (ret) {
++			ret = -EIO;
++			goto err_credits;
++		}
  	}
  
-+	if (ar->hw_params.num_peers)
-+		ar->max_num_peers = ar->hw_params.num_peers;
-+	else
-+		ar->max_num_peers = max_num_peers;
-+
- 	/* Backwards compatibility for firmwares without
- 	 * ATH10K_FW_IE_HTT_OP_VERSION.
- 	 */
+ 	sg_item.transfer_id = ep->eid;
+@@ -157,7 +161,8 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ 	return 0;
+ 
+ err_unmap:
+-	dma_unmap_single(dev, skb_cb->paddr, skb->len, DMA_TO_DEVICE);
++	if (ar->dev_type != ATH10K_DEV_TYPE_HL)
++		dma_unmap_single(dev, skb_cb->paddr, skb->len, DMA_TO_DEVICE);
+ err_credits:
+ 	if (ep->tx_credit_flow_enabled) {
+ 		spin_lock_bh(&htc->tx_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 5d8b97a0ccaa..79a8eca46e88 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1125,7 +1125,8 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	return 0;
+ 
+ err_unmap_msdu:
+-	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
++	if (ar->dev_type != ATH10K_DEV_TYPE_HL)
++		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+ err_free_txdesc:
+ 	dev_kfree_skb_any(txdesc);
+ err_free_msdu_id:
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index cda164f6e9f6..23606b6972d0 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -95,7 +95,8 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
+-	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
++	if (ar->dev_type != ATH10K_DEV_TYPE_HL)
++		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+ 
+ 	ath10k_report_offchan_tx(htt->ar, msdu);
+ 
 -- 
 2.17.0
 
