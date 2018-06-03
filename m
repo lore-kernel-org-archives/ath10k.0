@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPXe0-0006Un-Sc
- for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:22 +0000
-Received: by mail-lf0-x242.google.com with SMTP id t134-v6so21772368lff.6
- for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:10 -0700 (PDT)
+ id 1fPXe1-0006WY-8j
+ for ath10k@lists.infradead.org; Sun, 03 Jun 2018 18:22:24 +0000
+Received: by mail-lf0-x242.google.com with SMTP id d24-v6so21804032lfa.8
+ for <ath10k@lists.infradead.org>; Sun, 03 Jun 2018 11:22:21 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v5 00/12] ath10k high latency
-Date: Sun,  3 Jun 2018 20:20:17 +0200
-Message-Id: <20180603182029.8914-1-erik.stromdahl@gmail.com>
+Subject: [RFC v5 12/12] ath10k: wmi: disable softirq's while calling
+ ieee80211_rx
+Date: Sun,  3 Jun 2018 20:20:29 +0200
+Message-Id: <20180603182029.8914-13-erik.stromdahl@gmail.com>
+In-Reply-To: <20180603182029.8914-1-erik.stromdahl@gmail.com>
+References: <20180603182029.8914-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +28,42 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Changes since v4:
+This is done in order not to trig the below warning in
+ieee80211_rx_napi:
 
-I have tried to reduce the number of patches to a
-minimum for getting high latency up and running.
+WARN_ON_ONCE(softirq_count() == 0);
 
-The hw_params items for the two QCA9377 based devices
-included in the previous patchset (one Linksys USB and
-one SDIO device) have been skipped, and thus there is
-no board-2.bin support.
+ieee80211_rx_napi requires that softirq's are disabled during
+execution.
 
-I have planned to submit them in separate patches later
-(together with board-2.bin support).
+The High latency bus drivers (SDIO and USB) sometimes call the wmi
+ep_rx_complete callback from non softirq context, resulting in a trigger
+of the above warning.
 
-USB might be even more broken due to a lot of ugly
-special cases beeing removed.
+Calling ieee80211_rx_ni with softirq's already disabled (e.g., from
+softirq context) should be safe as the local_bh_disable and
+local_bh_enable functions (called from ieee80211_rx_ni) are fully
+reentrant.
 
-The main issue with USB right now is that there are no
-TX_COMPL_IND's from fw.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The special cases for handling this have been removed.
-If needed, they could be added back in a future patch.
-
-The rename of the *is_high_latency* boolean to ATH10K_HTT_MODE
-ended up in a rename to ATH10K_DEV_TYPE instead,
- since this is not only related to HTT.
-
-The start_once patch was removed as well.
-SDIO seems to work well without it.
-If needed by USB, we can add it in a future patch.
-
-Erik Stromdahl (12):
-  ath10k: add struct ath10k_bus_params
-  ath10k: add device type enum to ath10k_bus_params
-  ath10k: add bus type check in ath10k_init_hw_params
-  ath10k: use hw_params.num_peers for num_tids in TLV init
-  ath10k: add per target config of max_num_peers
-  ath10k: DMA related fixes for high latency devices
-  ath10k: add HTT TX HL ops
-  ath10k: add HTT RX HL ops
-  ath10k: htt: RX ring config HL support
-  ath10k: htt: High latency TX support
-  ath10k: htt: High latency RX support
-  ath10k: wmi: disable softirq's while calling ieee80211_rx
-
- drivers/net/wireless/ath/ath10k/ahb.c     |   9 +-
- drivers/net/wireless/ath/ath10k/core.c    |  39 ++++--
- drivers/net/wireless/ath/ath10k/core.h    |  22 +--
- drivers/net/wireless/ath/ath10k/htc.c     |  19 ++-
- drivers/net/wireless/ath/ath10k/htt.h     |  47 +++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 135 ++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/htt_tx.c  | 155 +++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/hw.h      |   9 ++
- drivers/net/wireless/ath/ath10k/pci.c     |  13 +-
- drivers/net/wireless/ath/ath10k/rx_desc.h |  15 +++
- drivers/net/wireless/ath/ath10k/sdio.c    |   8 +-
- drivers/net/wireless/ath/ath10k/snoc.c    |   5 +-
- drivers/net/wireless/ath/ath10k/txrx.c    |   3 +-
- drivers/net/wireless/ath/ath10k/usb.c     |   7 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |   5 +-
- drivers/net/wireless/ath/ath10k/wmi.c     |   3 +-
- 16 files changed, 444 insertions(+), 50 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index f97ab795cf2e..c3237a6d77a2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2423,7 +2423,8 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		   status->freq, status->band, status->signal,
+ 		   status->rate_idx);
+ 
+-	ieee80211_rx(ar->hw, skb);
++	ieee80211_rx_ni(ar->hw, skb);
++
+ 	return 0;
+ }
+ 
 -- 
 2.17.0
 
