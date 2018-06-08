@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRGBH-0006n9-U2
- for ath10k@lists.infradead.org; Fri, 08 Jun 2018 12:07:50 +0000
+ id 1fRGCi-00074E-Q1
+ for ath10k@lists.infradead.org; Fri, 08 Jun 2018 12:09:18 +0000
 MIME-Version: 1.0
-Date: Fri, 08 Jun 2018 17:37:34 +0530
+Date: Fri, 08 Jun 2018 17:39:05 +0530
 From: Govind Singh <govinds@codeaurora.org>
 Subject: Re: [PATCH v2 6/6] ath10k: Add QMI message handshake for wcn3990
  client
 In-Reply-To: <20180605232459.GA200893@rodete-desktop-imager.corp.google.com>
 References: <20180605123732.1993-1-govinds@codeaurora.org>
  <20180605232459.GA200893@rodete-desktop-imager.corp.google.com>
-Message-ID: <58fef573e31a72a2189569b547ad372c@codeaurora.org>
+Message-ID: <5e14916b2711b5d2c7fec81b344ca94b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -120,13 +120,15 @@ Thanks, i will fix this in next patchset.
 > revision?
 > 
 
-Yes msa size can be
+Yes msa size can be kept in drv pvt data.
 
 static const struct ath10k_snoc_drv_priv drv_priv = {
 .hw_rev = ATH10K_HW_WCN3990,
 .dma_mask = DMA_BIT_MASK(37),
 
 };
+
+I will fix this in next patch set.
 
 >> +
 >> +		if (ret || qmi->msa_mem_size == 0) {
@@ -150,6 +152,9 @@ static const struct ath10k_snoc_drv_priv drv_priv = {
 >> +}
 > 
 > Brian
+
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
