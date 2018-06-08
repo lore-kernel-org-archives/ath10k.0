@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQxVz-0005ou-Ru
- for ath10k@lists.infradead.org; Thu, 07 Jun 2018 16:11:57 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Protect ath10k_htt_rx_ring_free with rx_ring.lock
-Date: Thu,  7 Jun 2018 09:11:37 -0700
-Message-Id: <1528387897-6781-1-git-send-email-greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fRGBH-0006n9-U2
+ for ath10k@lists.infradead.org; Fri, 08 Jun 2018 12:07:50 +0000
+MIME-Version: 1.0
+Date: Fri, 08 Jun 2018 17:37:34 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH v2 6/6] ath10k: Add QMI message handshake for wcn3990
+ client
+In-Reply-To: <20180605232459.GA200893@rodete-desktop-imager.corp.google.com>
+References: <20180605123732.1993-1-govinds@codeaurora.org>
+ <20180605232459.GA200893@rodete-desktop-imager.corp.google.com>
+Message-ID: <58fef573e31a72a2189569b547ad372c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,58 +20,136 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, kvalo@codeaurora.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: andy.gross@linaro.org, david.brown@linaro.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
-From: Ben Greear <greearb@candelatech.com>
+On 2018-06-06 04:55, Brian Norris wrote:
+> Hi,
+> 
+> On Tue, Jun 05, 2018 at 06:07:32PM +0530, Govind Singh wrote:
+>> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
+>> subsystem. This layer is responsible for communicating qmi control
+>> messages to wifi fw QMI service using QMI messaging protocol.
+>> 
+>> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
+>> between components running between application processor and remote
+>> processors with underlying transport layer based on integrated
+>> chipset(shared memory) or discrete chipset(PCI/USB/SDIO/UART).
+>> 
+>> With this patch-set basic functionality(STA/SAP) can be tested
+>> with WCN3990 chipset. The changes are verified with the firmware
+>> WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1 and SDM845 MTP device.
+>> 
+>> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/Kconfig  |   13 +-
+>>  drivers/net/wireless/ath/ath10k/Makefile |    4 +-
+>>  drivers/net/wireless/ath/ath10k/core.c   |    6 +-
+>>  drivers/net/wireless/ath/ath10k/core.h   |    2 +
+>>  drivers/net/wireless/ath/ath10k/qmi.c    | 1030 
+>> ++++++++++++++++++++++
+>>  drivers/net/wireless/ath/ath10k/qmi.h    |  136 +++
+>>  drivers/net/wireless/ath/ath10k/snoc.c   |  209 ++++-
+>>  drivers/net/wireless/ath/ath10k/snoc.h   |    3 +
+>>  8 files changed, 1387 insertions(+), 16 deletions(-)
+>>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
+>>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
+>> 
+> 
+> ...
+> 
+>> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c 
+>> b/drivers/net/wireless/ath/ath10k/qmi.c
+>> new file mode 100644
+>> index 000000000000..6cbc04c849b5
+>> --- /dev/null
+>> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+>> @@ -0,0 +1,1030 @@
+> 
+> ...
+> 
+>> +static int ath10k_qmi_setup_msa_resources(struct ath10k_qmi *qmi)
+>> +{
+>> +	struct ath10k *ar = qmi->ar;
+>> +	struct device *dev = ar->dev;
+>> +	struct device_node *np;
+>> +	const __be32 *addrp;
+>> +	u64 prop_size = 0;
+>> +	int ret;
+>> +
+>> +	np = of_parse_phandle(dev->of_node, "msa-fixed-region", 0);
+>> +	if (np) {
+>> +		addrp = of_get_address(np, 0, &prop_size, NULL);
+>> +		if (!addrp) {
+>> +			ath10k_err(ar, "failed to get msa fixed addresses\n");
+>> +			return -EINVAL;
+>> +		}
+>> +
+>> +		qmi->msa_pa = of_translate_address(np, addrp);
+>> +		if (qmi->msa_pa == OF_BAD_ADDR) {
+>> +			ath10k_err(ar, "failed to translate fixed msa pa\n");
+>> +			return -EINVAL;
+>> +		}
+>> +
+>> +		qmi->msa_va = memremap(qmi->msa_pa, (unsigned long)prop_size,
+>> +				       MEMREMAP_WT);
+> 
+> You're leaking this mapping? Either call memunmap() in the release
+> function, or else use the devm_* version.
+> 
 
-While debugging driver crashes related to a buggy firmware
-crashing under load, I noticed that ath10k_htt_rx_ring_free
-could be called without being under lock.  I'm not sure if this
-is the root cause of the crash or not, but it seems prudent to
-protect it.
+Thanks, i will fix this in next patchset.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+>> +		if (!qmi->msa_va) {
+>> +			ath10k_err(ar, "fixed msa ioremap failed: phy addr: %pa\n",
+>> +				   &qmi->msa_pa);
+>> +			return -EINVAL;
+>> +		}
+>> +		qmi->msa_mem_size = prop_size;
+>> +	} else {
+>> +		ret = of_property_read_u32(dev->of_node, "msa-size",
+>> +					   &qmi->msa_mem_size);
+> 
+> If you're not going to use a reserved MSA region (the other branch of
+> the if/else), do you really need a fixed size in the device tree? Is it
+> safe to just assume some given size, e.g., by virtue of the HW 
+> revision?
+> 
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d74901d..963ddc1 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -266,11 +266,12 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar)
- 	spin_lock_bh(&htt->rx_ring.lock);
- 	ret = ath10k_htt_rx_ring_fill_n(htt, (htt->rx_ring.fill_level -
- 					      htt->rx_ring.fill_cnt));
--	spin_unlock_bh(&htt->rx_ring.lock);
- 
- 	if (ret)
- 		ath10k_htt_rx_ring_free(htt);
- 
-+	spin_unlock_bh(&htt->rx_ring.lock);
-+
- 	return ret;
- }
- 
-@@ -282,7 +283,9 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
- 	skb_queue_purge(&htt->rx_in_ord_compl_q);
- 	skb_queue_purge(&htt->tx_fetch_ind_q);
- 
-+	spin_lock_bh(&htt->rx_ring.lock);
- 	ath10k_htt_rx_ring_free(htt);
-+	spin_unlock_bh(&htt->rx_ring.lock);
- 
- 	dma_free_coherent(htt->ar->dev,
- 			  htt->rx_ops->htt_get_rx_ring_size(htt),
--- 
-2.4.11
+Yes msa size can be
 
+static const struct ath10k_snoc_drv_priv drv_priv = {
+.hw_rev = ATH10K_HW_WCN3990,
+.dma_mask = DMA_BIT_MASK(37),
+
+};
+
+>> +
+>> +		if (ret || qmi->msa_mem_size == 0) {
+>> +			ath10k_err(ar, "failed to get msa memory size node\n");
+>> +			return -ENOMEM;
+>> +		}
+>> +
+>> +		qmi->msa_va = dmam_alloc_coherent(dev, qmi->msa_mem_size,
+>> +						  &qmi->msa_pa, GFP_KERNEL);
+>> +		if (!qmi->msa_va) {
+>> +			ath10k_err(ar, "dma alloc failed for msa region\n");
+>> +			return -ENOMEM;
+>> +		}
+>> +	}
+>> +
+>> +	ath10k_dbg(ar, ATH10K_DBG_QMI, "msa pa: %pad , msa va: 0x%p\n",
+>> +		   &qmi->msa_pa,
+>> +		   qmi->msa_va);
+>> +
+>> +	return 0;
+>> +}
+> 
+> Brian
 
 _______________________________________________
 ath10k mailing list
