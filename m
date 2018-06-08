@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRMDP-0005kk-33
- for ath10k@lists.infradead.org; Fri, 08 Jun 2018 18:34:24 +0000
+ id 1fRMIK-0007cb-8r
+ for ath10k@lists.infradead.org; Fri, 08 Jun 2018 18:39:29 +0000
+Subject: Re: Frequent ath10k crashes with QCA6174 on kernels 4.16 and 4.17
+References: <c92e04d5b80af2a640ab97efce32d987ffb27ffe.camel@gmail.com>
+ <87po1e69tz.fsf@kamboji.qca.qualcomm.com>
+ <bc31b06dc4093b8613fbde6a13f16bd7e8c31e82.camel@gmail.com>
+ <87fu2a4mk5.fsf@kamboji.qca.qualcomm.com>
+ <8691304d5e1a0a99f41ebfa4aec6ba192b13e46a.camel@gmail.com>
+ <ecd19f9f5ef727547986b8c4dbf47c3e083c684b.camel@gmail.com>
 From: Ryan Hsu <ryanhsu@codeaurora.org>
-Subject: [PATCH v2] ath10k: Update the phymode along with bandwidth change
- request
-Date: Fri,  8 Jun 2018 11:32:39 -0700
-Message-Id: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
+Message-ID: <89a29eb6-996e-1c8e-b332-c14fdf241b79@codeaurora.org>
+Date: Fri, 8 Jun 2018 11:37:44 -0700
+MIME-Version: 1.0
+In-Reply-To: <ecd19f9f5ef727547986b8c4dbf47c3e083c684b.camel@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,115 +23,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: timur.kristof@gmail.com
+To: =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org, ryanhsu@codeaurora.org
 
-In the case of Station connects to AP with narrower bandwidth at beginning.
-And later the AP changes the bandwidth to winder bandwidth, the AP will
-beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
-
-Since the supported BANDWIDTH will be limited by the PHYMODE, so while
-Station receives the bandwidth change request, it will also need to
-reconfigure the PHYMODE setting to firmware instead of just configuring
-the BANDWIDTH info, otherwise it'll trigger a firmware crash with
-non-support bandwidth.
-
-The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
-below scenario.
----
-AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
-disconnect from AP xxx for new auth to yyy
-RX ReassocResp from xxx (capab=0x1111 status=0 aid=102)
-associated
-
-....
-
-AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
-AP xxx changed bandwidth, new config is 5200 MHz, width 3 (5210/0 MHz)
-
-....
-
-firmware register dump:
-[00]: 0x05030000 0x000015B3 0x00987291 0x00955B31
-[04]: 0x00987291 0x00060730 0x00000004 0x00000001
-[08]: 0x004089F0 0x00955A00 0x000A0B00 0x00400000
-[12]: 0x00000009 0x00000000 0x00952CD0 0x00952CE6
-[16]: 0x00952CC4 0x0098E25F 0x00000000 0x0091080D
-[20]: 0x40987291 0x0040E7A8 0x00000000 0x0041EE3C
-[24]: 0x809ABF05 0x0040E808 0x00000000 0xC0987291
-[28]: 0x809A650C 0x0040E948 0x0041FE40 0x004345C4
-[32]: 0x809A5C63 0x0040E988 0x0040E9AC 0x0042D1A8
-[36]: 0x8091D252 0x0040E9A8 0x00000002 0x00000001
-[40]: 0x809FDA9D 0x0040EA58 0x0043D554 0x0042D554
-[44]: 0x809F8B22 0x0040EA78 0x0043D554 0x00000001
-[48]: 0x80911210 0x0040EAC8 0x00000010 0x004041D0
-[52]: 0x80911154 0x0040EB28 0x00400000 0x00000000
-[56]: 0x8091122D 0x0040EB48 0x00000000 0x00400600
---
-
-Reported-by: Rouven Czerwinski <rouven@czerwinskis.de>
-Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h |  1 +
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e9c2fb3..836e0a4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6058,8 +6058,19 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 			   ath10k_mac_max_vht_nss(vht_mcs_mask)));
- 
- 	if (changed & IEEE80211_RC_BW_CHANGED) {
--		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d\n",
--			   sta->addr, bw);
-+		enum wmi_phy_mode mode;
-+
-+		mode = chan_to_phymode(&def);
-+		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d phymode %d\n",
-+				sta->addr, bw, mode);
-+
-+		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+				WMI_PEER_PHYMODE, mode);
-+		if (err) {
-+			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
-+					sta->addr, mode, err);
-+			goto exit;
-+		}
- 
- 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
- 						WMI_PEER_CHAN_WIDTH, bw);
-@@ -6100,6 +6111,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 				    sta->addr);
- 	}
- 
-+exit:
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index b48db54..d68afb6 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6144,6 +6144,7 @@ enum wmi_peer_param {
- 	WMI_PEER_NSS        = 0x5,
- 	WMI_PEER_USE_4ADDR  = 0x6,
- 	WMI_PEER_DEBUG      = 0xa,
-+	WMI_PEER_PHYMODE    = 0xd,
- 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
- };
- 
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDUvMzAvMjAxOCAxMjoxNSBBTSwgVGltdXIgS3Jpc3TDs2Ygd3JvdGU6Cgo+IE9uIFR1ZSwg
+MjAxOC0wNS0yOSBhdCAyMjozNiArMDMwMCwgVGltdXIgS3Jpc3TDs2Ygd3JvdGU6Cj4+Cj4+IFRo
+YW5rcyEKPj4gSXQgZG9lcyBub3QgYXBwbHkgdG8gNC4xNy1yYzYgYXMtaXMsIGVpdGhlciwgYnV0
+IGl0IHNlZW1zIGZpeGFibGUgYXQKPj4gdGhlIGZpcnN0IGdsYW5jZS4KPj4KPiBCYXNpY2FsbHks
+IHRoZSBhdXRob3IgZm9yZ290IHRvIGRlZmluZSBXTUlfUEVFUl9QSFlNT0RFIGJ1dCBzb21lCj4g
+c2VhcmNoaW5nIGZvdW5kIGFub3RoZXIgUUNBIGRyaXZlciB3aGVyZSBpdCBpcyAweGQgc28gSSBk
+ZWNpZGVkIHRvIGdvCj4gd2l0aCB0aGF0LiBUaGUgb3RoZXIgZXJyb3Igd2FzIHRyaXZpYWwuCj4K
+PiBJIGZpeGVkIHRoZSBwYXRjaCBhbmQgYXBwbGllZCBsb2NhbGx5IG9uIHRvcCBvZiA0LjE3LXJj
+Ny4gQ3VycmVudGx5Cj4gcnVubmluZyBpdCB0byB0ZXN0IGlmIGl0IHJlYWxseSBtaXRpZ2F0ZXMg
+dGhlIGlzc3VlLiBXaWxsIHJlcG9ydCBiYWNrCj4gd2hlbiBJIGhhdmUgcmVzdWx0cywgYW5kIHN1
+Ym1pdCB0aGUgcGF0Y2ggaWYgSSdtIHNhdGlzZmllZC4KPgpTb3JyeSwgSSd2ZSBiZWVuIGRyYWdn
+ZWQgYnkgc29tZXRoaW5nIGVsc2UgYW5kIGRpZG4ndCB1cGRhdGUgdGhpcyBwcm9tcHRseS4KSSBq
+dXN0IHNlbnQgdGhlIHYyIGluY2x1ZGluZyB0aGUgbWlzc2luZyBXTUlfUEVFUl9QSFlNT0RFLgoK
+Q2FuIHlvdSBwaWNrIHVwIHRoZSB2MiBhbmQgc2VlIGlmIHRoYXQgaGVscCB5b3VyIGlzc3VlPwoK
+aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDQ1NDk2Ny8KCi0tIApSeWFuIEhz
+dQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
