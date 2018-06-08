@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRGCi-00074E-Q1
- for ath10k@lists.infradead.org; Fri, 08 Jun 2018 12:09:18 +0000
-MIME-Version: 1.0
-Date: Fri, 08 Jun 2018 17:39:05 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH v2 6/6] ath10k: Add QMI message handshake for wcn3990
- client
-In-Reply-To: <20180605232459.GA200893@rodete-desktop-imager.corp.google.com>
-References: <20180605123732.1993-1-govinds@codeaurora.org>
- <20180605232459.GA200893@rodete-desktop-imager.corp.google.com>
-Message-ID: <5e14916b2711b5d2c7fec81b344ca94b@codeaurora.org>
+ id 1fRMDP-0005kk-33
+ for ath10k@lists.infradead.org; Fri, 08 Jun 2018 18:34:24 +0000
+From: Ryan Hsu <ryanhsu@codeaurora.org>
+Subject: [PATCH v2] ath10k: Update the phymode along with bandwidth change
+ request
+Date: Fri,  8 Jun 2018 11:32:39 -0700
+Message-Id: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,141 +16,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: andy.gross@linaro.org, david.brown@linaro.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: timur.kristof@gmail.com
 
-On 2018-06-06 04:55, Brian Norris wrote:
-> Hi,
-> 
-> On Tue, Jun 05, 2018 at 06:07:32PM +0530, Govind Singh wrote:
->> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
->> subsystem. This layer is responsible for communicating qmi control
->> messages to wifi fw QMI service using QMI messaging protocol.
->> 
->> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
->> between components running between application processor and remote
->> processors with underlying transport layer based on integrated
->> chipset(shared memory) or discrete chipset(PCI/USB/SDIO/UART).
->> 
->> With this patch-set basic functionality(STA/SAP) can be tested
->> with WCN3990 chipset. The changes are verified with the firmware
->> WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1 and SDM845 MTP device.
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/Kconfig  |   13 +-
->>  drivers/net/wireless/ath/ath10k/Makefile |    4 +-
->>  drivers/net/wireless/ath/ath10k/core.c   |    6 +-
->>  drivers/net/wireless/ath/ath10k/core.h   |    2 +
->>  drivers/net/wireless/ath/ath10k/qmi.c    | 1030 
->> ++++++++++++++++++++++
->>  drivers/net/wireless/ath/ath10k/qmi.h    |  136 +++
->>  drivers/net/wireless/ath/ath10k/snoc.c   |  209 ++++-
->>  drivers/net/wireless/ath/ath10k/snoc.h   |    3 +
->>  8 files changed, 1387 insertions(+), 16 deletions(-)
->>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
->>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
->> 
-> 
-> ...
-> 
->> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c 
->> b/drivers/net/wireless/ath/ath10k/qmi.c
->> new file mode 100644
->> index 000000000000..6cbc04c849b5
->> --- /dev/null
->> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
->> @@ -0,0 +1,1030 @@
-> 
-> ...
-> 
->> +static int ath10k_qmi_setup_msa_resources(struct ath10k_qmi *qmi)
->> +{
->> +	struct ath10k *ar = qmi->ar;
->> +	struct device *dev = ar->dev;
->> +	struct device_node *np;
->> +	const __be32 *addrp;
->> +	u64 prop_size = 0;
->> +	int ret;
->> +
->> +	np = of_parse_phandle(dev->of_node, "msa-fixed-region", 0);
->> +	if (np) {
->> +		addrp = of_get_address(np, 0, &prop_size, NULL);
->> +		if (!addrp) {
->> +			ath10k_err(ar, "failed to get msa fixed addresses\n");
->> +			return -EINVAL;
->> +		}
->> +
->> +		qmi->msa_pa = of_translate_address(np, addrp);
->> +		if (qmi->msa_pa == OF_BAD_ADDR) {
->> +			ath10k_err(ar, "failed to translate fixed msa pa\n");
->> +			return -EINVAL;
->> +		}
->> +
->> +		qmi->msa_va = memremap(qmi->msa_pa, (unsigned long)prop_size,
->> +				       MEMREMAP_WT);
-> 
-> You're leaking this mapping? Either call memunmap() in the release
-> function, or else use the devm_* version.
-> 
+In the case of Station connects to AP with narrower bandwidth at beginning.
+And later the AP changes the bandwidth to winder bandwidth, the AP will
+beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
 
-Thanks, i will fix this in next patchset.
+Since the supported BANDWIDTH will be limited by the PHYMODE, so while
+Station receives the bandwidth change request, it will also need to
+reconfigure the PHYMODE setting to firmware instead of just configuring
+the BANDWIDTH info, otherwise it'll trigger a firmware crash with
+non-support bandwidth.
 
->> +		if (!qmi->msa_va) {
->> +			ath10k_err(ar, "fixed msa ioremap failed: phy addr: %pa\n",
->> +				   &qmi->msa_pa);
->> +			return -EINVAL;
->> +		}
->> +		qmi->msa_mem_size = prop_size;
->> +	} else {
->> +		ret = of_property_read_u32(dev->of_node, "msa-size",
->> +					   &qmi->msa_mem_size);
-> 
-> If you're not going to use a reserved MSA region (the other branch of
-> the if/else), do you really need a fixed size in the device tree? Is it
-> safe to just assume some given size, e.g., by virtue of the HW 
-> revision?
-> 
+The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
+below scenario.
+---
+AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
+disconnect from AP xxx for new auth to yyy
+RX ReassocResp from xxx (capab=0x1111 status=0 aid=102)
+associated
 
-Yes msa size can be kept in drv pvt data.
+....
 
-static const struct ath10k_snoc_drv_priv drv_priv = {
-.hw_rev = ATH10K_HW_WCN3990,
-.dma_mask = DMA_BIT_MASK(37),
+AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
+AP xxx changed bandwidth, new config is 5200 MHz, width 3 (5210/0 MHz)
 
-};
+....
 
-I will fix this in next patch set.
+firmware register dump:
+[00]: 0x05030000 0x000015B3 0x00987291 0x00955B31
+[04]: 0x00987291 0x00060730 0x00000004 0x00000001
+[08]: 0x004089F0 0x00955A00 0x000A0B00 0x00400000
+[12]: 0x00000009 0x00000000 0x00952CD0 0x00952CE6
+[16]: 0x00952CC4 0x0098E25F 0x00000000 0x0091080D
+[20]: 0x40987291 0x0040E7A8 0x00000000 0x0041EE3C
+[24]: 0x809ABF05 0x0040E808 0x00000000 0xC0987291
+[28]: 0x809A650C 0x0040E948 0x0041FE40 0x004345C4
+[32]: 0x809A5C63 0x0040E988 0x0040E9AC 0x0042D1A8
+[36]: 0x8091D252 0x0040E9A8 0x00000002 0x00000001
+[40]: 0x809FDA9D 0x0040EA58 0x0043D554 0x0042D554
+[44]: 0x809F8B22 0x0040EA78 0x0043D554 0x00000001
+[48]: 0x80911210 0x0040EAC8 0x00000010 0x004041D0
+[52]: 0x80911154 0x0040EB28 0x00400000 0x00000000
+[56]: 0x8091122D 0x0040EB48 0x00000000 0x00400600
+--
 
->> +
->> +		if (ret || qmi->msa_mem_size == 0) {
->> +			ath10k_err(ar, "failed to get msa memory size node\n");
->> +			return -ENOMEM;
->> +		}
->> +
->> +		qmi->msa_va = dmam_alloc_coherent(dev, qmi->msa_mem_size,
->> +						  &qmi->msa_pa, GFP_KERNEL);
->> +		if (!qmi->msa_va) {
->> +			ath10k_err(ar, "dma alloc failed for msa region\n");
->> +			return -ENOMEM;
->> +		}
->> +	}
->> +
->> +	ath10k_dbg(ar, ATH10K_DBG_QMI, "msa pa: %pad , msa va: 0x%p\n",
->> +		   &qmi->msa_pa,
->> +		   qmi->msa_va);
->> +
->> +	return 0;
->> +}
-> 
-> Brian
+Reported-by: Rouven Czerwinski <rouven@czerwinskis.de>
+Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h |  1 +
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-BR,
-Govind
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e9c2fb3..836e0a4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6058,8 +6058,19 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 			   ath10k_mac_max_vht_nss(vht_mcs_mask)));
+ 
+ 	if (changed & IEEE80211_RC_BW_CHANGED) {
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d\n",
+-			   sta->addr, bw);
++		enum wmi_phy_mode mode;
++
++		mode = chan_to_phymode(&def);
++		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d phymode %d\n",
++				sta->addr, bw, mode);
++
++		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++				WMI_PEER_PHYMODE, mode);
++		if (err) {
++			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
++					sta->addr, mode, err);
++			goto exit;
++		}
+ 
+ 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
+ 						WMI_PEER_CHAN_WIDTH, bw);
+@@ -6100,6 +6111,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 				    sta->addr);
+ 	}
+ 
++exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index b48db54..d68afb6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6144,6 +6144,7 @@ enum wmi_peer_param {
+ 	WMI_PEER_NSS        = 0x5,
+ 	WMI_PEER_USE_4ADDR  = 0x6,
+ 	WMI_PEER_DEBUG      = 0xa,
++	WMI_PEER_PHYMODE    = 0xd,
+ 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
+ };
+ 
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
