@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSPKa-0004lD-QE
- for ath10k@lists.infradead.org; Mon, 11 Jun 2018 16:06:10 +0000
-Received: by mail-wm0-x242.google.com with SMTP id e16-v6so15618946wmd.0
- for <ath10k@lists.infradead.org>; Mon, 11 Jun 2018 09:05:58 -0700 (PDT)
-Message-ID: <944989ec907b98716f252524cf55e41807965253.camel@gmail.com>
-Subject: Re: [PATCH v2] ath10k: Update the phymode along with bandwidth
- change request
-From: Timur =?ISO-8859-1?Q?Krist=F3f?= <timur.kristof@gmail.com>
-Date: Mon, 11 Jun 2018 18:05:53 +0200
-In-Reply-To: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
-References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
-Mime-Version: 1.0
+Received: from mail.worldmail3.us ([108.170.31.66])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fSPp9-0008Gg-6V
+ for ath10k@lists.infradead.org; Mon, 11 Jun 2018 16:37:44 +0000
+From: "=?utf-8?Q?Information=20Update?=" <info@worldmail3.us> 
+Date: Mon, 11 Jun 2018 09:22:01 -0700
+Subject: =?utf-8?Q?Important=20Notification?=
+MIME-Version: 1.0
+Message-ID: <MAIL.WORLDMAIL3.US05a97893aae644e787c5eddfb174e96b@mail.worldmail3.us>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,140 +16,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: mrwest@o2loto.co.uk
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@codeaurora.org>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: Kalle Valo <kvalo@codeaurora.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, 2018-06-08 at 11:32 -0700, Ryan Hsu wrote:
-> In the case of Station connects to AP with narrower bandwidth at
-> beginning.
-> And later the AP changes the bandwidth to winder bandwidth, the AP
-> will
-> beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40-
-> >VHT80.
-> 
-> Since the supported BANDWIDTH will be limited by the PHYMODE, so
-> while
-> Station receives the bandwidth change request, it will also need to
-> reconfigure the PHYMODE setting to firmware instead of just
-> configuring
-> the BANDWIDTH info, otherwise it'll trigger a firmware crash with
-> non-support bandwidth.
-> 
-> The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174
-> with
-> below scenario.
-> ---
-> AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0
-> MHz)
-> disconnect from AP xxx for new auth to yyy
-> RX ReassocResp from xxx (capab=0x1111 status=0 aid=102)
-> associated
-> 
-> ....
-> 
-> AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0
-> MHz)
-> AP xxx changed bandwidth, new config is 5200 MHz, width 3 (5210/0
-> MHz)
-> 
-> ....
-> 
-> firmware register dump:
-> [00]: 0x05030000 0x000015B3 0x00987291 0x00955B31
-> [04]: 0x00987291 0x00060730 0x00000004 0x00000001
-> [08]: 0x004089F0 0x00955A00 0x000A0B00 0x00400000
-> [12]: 0x00000009 0x00000000 0x00952CD0 0x00952CE6
-> [16]: 0x00952CC4 0x0098E25F 0x00000000 0x0091080D
-> [20]: 0x40987291 0x0040E7A8 0x00000000 0x0041EE3C
-> [24]: 0x809ABF05 0x0040E808 0x00000000 0xC0987291
-> [28]: 0x809A650C 0x0040E948 0x0041FE40 0x004345C4
-> [32]: 0x809A5C63 0x0040E988 0x0040E9AC 0x0042D1A8
-> [36]: 0x8091D252 0x0040E9A8 0x00000002 0x00000001
-> [40]: 0x809FDA9D 0x0040EA58 0x0043D554 0x0042D554
-> [44]: 0x809F8B22 0x0040EA78 0x0043D554 0x00000001
-> [48]: 0x80911210 0x0040EAC8 0x00000010 0x004041D0
-> [52]: 0x80911154 0x0040EB28 0x00400000 0x00000000
-> [56]: 0x8091122D 0x0040EB48 0x00000000 0x00400600
-> --
-> 
-> Reported-by: Rouven Czerwinski <rouven@czerwinskis.de>
-> Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++--
->  drivers/net/wireless/ath/ath10k/wmi.h |  1 +
->  2 files changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
-> b/drivers/net/wireless/ath/ath10k/mac.c
-> index e9c2fb3..836e0a4 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -6058,8 +6058,19 @@ static void ath10k_sta_rc_update_wk(struct
-> work_struct *wk)
->  			   ath10k_mac_max_vht_nss(vht_mcs_mask)));
->  
->  	if (changed & IEEE80211_RC_BW_CHANGED) {
-> -		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM
-> peer bw %d\n",
-> -			   sta->addr, bw);
-> +		enum wmi_phy_mode mode;
-> +
-> +		mode = chan_to_phymode(&def);
-> +		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM
-> peer bw %d phymode %d\n",
-> +				sta->addr, bw, mode);
-> +
-> +		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id,
-> sta->addr,
-> +				WMI_PEER_PHYMODE, mode);
-> +		if (err) {
-> +			ath10k_warn(ar, "failed to update STA %pM
-> peer phymode %d: %d\n",
-> +					sta->addr, mode, err);
-> +			goto exit;
-> +		}
->  
->  		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id,
-> sta->addr,
->  						WMI_PEER_CHAN_WIDTH,
-> bw);
-> @@ -6100,6 +6111,7 @@ static void ath10k_sta_rc_update_wk(struct
-> work_struct *wk)
->  				    sta->addr);
->  	}
->  
-> +exit:
->  	mutex_unlock(&ar->conf_mutex);
->  }
->  
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h
-> b/drivers/net/wireless/ath/ath10k/wmi.h
-> index b48db54..d68afb6 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -6144,6 +6144,7 @@ enum wmi_peer_param {
->  	WMI_PEER_NSS        = 0x5,
->  	WMI_PEER_USE_4ADDR  = 0x6,
->  	WMI_PEER_DEBUG      = 0xa,
-> +	WMI_PEER_PHYMODE    = 0xd,
->  	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS
-> workaround */
->  };
->  
+Dear Recipent ,
 
+This email address has won Three Million Pounds on the o2 mobile sweepstakes.Please Contact Payment Cordinator Mat on email :  mrwest@o2loto.co.uk for explanation and payment processing .
 
-Hi,
+Yours Faithfully 
 
-I can confirm that this patch works on my machine, and prevents the
-crash previously caused by changing the bandwidth. Can it be accepted,
-or is there anything I can help with, to get it accepted?
+Debbie Spence 
 
-Thanks,
-Tim
+Cordinator O2 Mobile Promotional Sweepstakes.
+
 
 
 _______________________________________________
