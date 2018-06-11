@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSRQ5-0001YA-23
- for ath10k@lists.infradead.org; Mon, 11 Jun 2018 18:20:13 +0000
-Received: by mail-pf0-x241.google.com with SMTP id y8-v6so1598994pfm.10
- for <ath10k@lists.infradead.org>; Mon, 11 Jun 2018 11:19:45 -0700 (PDT)
+ id 1fSSbi-0004PL-BX
+ for ath10k@lists.infradead.org; Mon, 11 Jun 2018 19:36:04 +0000
+Received: by mail-pf0-x244.google.com with SMTP id a12-v6so10775724pfi.3
+ for <ath10k@lists.infradead.org>; Mon, 11 Jun 2018 12:35:50 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH] ath10k: use crash_dump enum instead of magic numbers
-Date: Mon, 11 Jun 2018 11:19:35 -0700
-Message-Id: <20180611181935.155032-1-briannorris@chromium.org>
+Subject: [PATCH] ath10k: snoc: use module_platform_driver() macro
+Date: Mon, 11 Jun 2018 12:35:40 -0700
+Message-Id: <20180611193540.190255-1-briannorris@chromium.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +23,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Brian Norris <briannorris@chromium.org>, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-The comments are telling you what the enum could tell you instead.
+ath10k_snoc_init()/ath10k_snoc_exit() don't add much value;
+module_platform_driver() can remove the boilerplate.
 
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 4cf54a7ef09a..eae46a04f503 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -41,10 +41,8 @@ static bool uart_print;
- static bool skip_otp;
- static bool rawmode;
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index a3a7042fe13a..ee74e0060504 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1388,25 +1388,7 @@ static struct platform_driver ath10k_snoc_driver = {
+ 			.of_match_table = ath10k_snoc_dt_match,
+ 		},
+ };
+-
+-static int __init ath10k_snoc_init(void)
+-{
+-	int ret;
+-
+-	ret = platform_driver_register(&ath10k_snoc_driver);
+-	if (ret)
+-		pr_err("failed to register ath10k snoc driver: %d\n",
+-		       ret);
+-
+-	return ret;
+-}
+-module_init(ath10k_snoc_init);
+-
+-static void __exit ath10k_snoc_exit(void)
+-{
+-	platform_driver_unregister(&ath10k_snoc_driver);
+-}
+-module_exit(ath10k_snoc_exit);
++module_platform_driver(ath10k_snoc_driver);
  
--/* Enable ATH10K_FW_CRASH_DUMP_REGISTERS and ATH10K_FW_CRASH_DUMP_CE_DATA
-- * by default.
-- */
--unsigned long ath10k_coredump_mask = 0x3;
-+unsigned long ath10k_coredump_mask = BIT(ATH10K_FW_CRASH_DUMP_REGISTERS) |
-+				     BIT(ATH10K_FW_CRASH_DUMP_CE_DATA);
- 
- /* FIXME: most of these should be readonly */
- module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
+ MODULE_AUTHOR("Qualcomm");
+ MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.18.0.rc1.242.g61856ae69a-goog
 
