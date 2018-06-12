@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSU4u-00071E-0D
- for ath10k@lists.infradead.org; Mon, 11 Jun 2018 21:10:48 +0000
-Received: by mail-pf0-x241.google.com with SMTP id q1-v6so10879404pff.13
- for <ath10k@lists.infradead.org>; Mon, 11 Jun 2018 14:10:05 -0700 (PDT)
-From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 4/4] ath10k: snoc: sort include files
-Date: Mon, 11 Jun 2018 14:09:46 -0700
-Message-Id: <20180611210946.241341-4-briannorris@chromium.org>
-In-Reply-To: <20180611210946.241341-1-briannorris@chromium.org>
+ id 1fShNa-0002wx-9G
+ for ath10k@lists.infradead.org; Tue, 12 Jun 2018 11:22:27 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 1/4] ath10k: snoc: use correct bus-specific pointer in RX
+ retry
 References: <20180611210946.241341-1-briannorris@chromium.org>
+Date: Tue, 12 Jun 2018 14:22:08 +0300
+In-Reply-To: <20180611210946.241341-1-briannorris@chromium.org> (Brian
+ Norris's message of "Mon, 11 Jun 2018 14:09:43 -0700")
+Message-ID: <87wov4ckrj.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Brian Norris <briannorris@chromium.org>, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Sort these alphabetically, with local includes in a separate section.
+Brian Norris <briannorris@chromium.org> writes:
 
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+> We're 'ath10k_snoc', not 'ath10k_pci'. This probably means we're
+> accessing junk data in ath10k_snoc_rx_replenish_retry(), unless
+> 'ath10k_snoc' and 'ath10k_pci' happen to have very similar struct
+> layouts.
+>
+> Noticed by inspection.
+>
+> Fixes: d915105231ca ("ath10k: add hif rx methods for wcn3990")
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+> It's possible this would be a for-4.18 target, since the buggy patch is
+> in the -rc1 merge. But this driver is not fully operational yet. Also,
+> I'm sending some companion refactorings to help avoid this bug. They
+> probably aren't 4.18 material.
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 61967c2966e6..c88677e0a21c 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -14,18 +14,19 @@
-  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-  */
- 
--#include <linux/module.h>
-+#include <linux/clk.h>
- #include <linux/kernel.h>
--#include "debug.h"
--#include "hif.h"
--#include "htc.h"
--#include "ce.h"
--#include "snoc.h"
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
--#include <linux/clk.h>
-+
-+#include "ce.h"
-+#include "debug.h"
-+#include "hif.h"
-+#include "htc.h"
-+#include "snoc.h"
- 
- #define ATH10K_SNOC_RX_POST_RETRY_MS 50
- #define CE_POLL_PIPE 4
+Yeah, in theory this should go to 4.18 but, like you said, snoc support
+does not even work on 4.18 so there would be no benefit. Actually just
+more work while we add final pieces of wcn3990 support to ath10k. So
+I'll queue these to 4.19.
+
+> Let me know if I should do anything differently.
+
+This is very good as is, thanks.
+
 -- 
-2.18.0.rc1.242.g61856ae69a-goog
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
