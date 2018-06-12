@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fShNa-0002wx-9G
- for ath10k@lists.infradead.org; Tue, 12 Jun 2018 11:22:27 +0000
+ id 1fShQB-0003Qk-Hv
+ for ath10k@lists.infradead.org; Tue, 12 Jun 2018 11:25:10 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 1/4] ath10k: snoc: use correct bus-specific pointer in RX
- retry
-References: <20180611210946.241341-1-briannorris@chromium.org>
-Date: Tue, 12 Jun 2018 14:22:08 +0300
-In-Reply-To: <20180611210946.241341-1-briannorris@chromium.org> (Brian
- Norris's message of "Mon, 11 Jun 2018 14:09:43 -0700")
-Message-ID: <87wov4ckrj.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: snoc: use module_platform_driver() macro
+References: <20180611193540.190255-1-briannorris@chromium.org>
+Date: Tue, 12 Jun 2018 14:24:51 +0300
+In-Reply-To: <20180611193540.190255-1-briannorris@chromium.org> (Brian
+ Norris's message of "Mon, 11 Jun 2018 12:35:40 -0700")
+Message-ID: <87sh5sckn0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,29 +28,47 @@ Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux
 
 Brian Norris <briannorris@chromium.org> writes:
 
-> We're 'ath10k_snoc', not 'ath10k_pci'. This probably means we're
-> accessing junk data in ath10k_snoc_rx_replenish_retry(), unless
-> 'ath10k_snoc' and 'ath10k_pci' happen to have very similar struct
-> layouts.
+> ath10k_snoc_init()/ath10k_snoc_exit() don't add much value;
+> module_platform_driver() can remove the boilerplate.
 >
-> Noticed by inspection.
->
-> Fixes: d915105231ca ("ath10k: add hif rx methods for wcn3990")
 > Signed-off-by: Brian Norris <briannorris@chromium.org>
 > ---
-> It's possible this would be a for-4.18 target, since the buggy patch is
-> in the -rc1 merge. But this driver is not fully operational yet. Also,
-> I'm sending some companion refactorings to help avoid this bug. They
-> probably aren't 4.18 material.
+>  drivers/net/wireless/ath/ath10k/snoc.c | 20 +-------------------
+>  1 file changed, 1 insertion(+), 19 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index a3a7042fe13a..ee74e0060504 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1388,25 +1388,7 @@ static struct platform_driver ath10k_snoc_driver = {
+>  			.of_match_table = ath10k_snoc_dt_match,
+>  		},
+>  };
+> -
+> -static int __init ath10k_snoc_init(void)
+> -{
+> -	int ret;
+> -
+> -	ret = platform_driver_register(&ath10k_snoc_driver);
+> -	if (ret)
+> -		pr_err("failed to register ath10k snoc driver: %d\n",
+> -		       ret);
+> -
+> -	return ret;
+> -}
+> -module_init(ath10k_snoc_init);
+> -
+> -static void __exit ath10k_snoc_exit(void)
+> -{
+> -	platform_driver_unregister(&ath10k_snoc_driver);
+> -}
+> -module_exit(ath10k_snoc_exit);
+> +module_platform_driver(ath10k_snoc_driver);
 
-Yeah, in theory this should go to 4.18 but, like you said, snoc support
-does not even work on 4.18 so there would be no benefit. Actually just
-more work while we add final pieces of wcn3990 support to ath10k. So
-I'll queue these to 4.19.
+Yeah, makes sense. And I also checked that this shouldn't conflict with
+Govind's qmi patch:
 
-> Let me know if I should do anything differently.
-
-This is very good as is, thanks.
+https://patchwork.kernel.org/patch/10448183/
 
 -- 
 Kalle Valo
