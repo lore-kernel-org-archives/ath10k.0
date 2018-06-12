@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fShQB-0003Qk-Hv
- for ath10k@lists.infradead.org; Tue, 12 Jun 2018 11:25:10 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: snoc: use module_platform_driver() macro
-References: <20180611193540.190255-1-briannorris@chromium.org>
-Date: Tue, 12 Jun 2018 14:24:51 +0300
-In-Reply-To: <20180611193540.190255-1-briannorris@chromium.org> (Brian
- Norris's message of "Mon, 11 Jun 2018 12:35:40 -0700")
-Message-ID: <87sh5sckn0.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1fSheO-0006U9-DS
+ for ath10k@lists.infradead.org; Tue, 12 Jun 2018 11:39:49 +0000
+Received: by mail-lf0-x241.google.com with SMTP id t134-v6so35494868lff.6
+ for <ath10k@lists.infradead.org>; Tue, 12 Jun 2018 04:39:37 -0700 (PDT)
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: [PATCH 1/2] ath10k: do not mix spaces and tabs in Kconfig
+Date: Tue, 12 Jun 2018 13:39:05 +0200
+Message-Id: <20180612113907.15043-1-niklas.cassel@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +17,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Brian Norris <briannorris@chromium.org> writes:
+Do not mix spaces and tabs in Kconfig.
 
-> ath10k_snoc_init()/ath10k_snoc_exit() don't add much value;
-> module_platform_driver() can remove the boilerplate.
->
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
->  drivers/net/wireless/ath/ath10k/snoc.c | 20 +-------------------
->  1 file changed, 1 insertion(+), 19 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index a3a7042fe13a..ee74e0060504 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -1388,25 +1388,7 @@ static struct platform_driver ath10k_snoc_driver = {
->  			.of_match_table = ath10k_snoc_dt_match,
->  		},
->  };
-> -
-> -static int __init ath10k_snoc_init(void)
-> -{
-> -	int ret;
-> -
-> -	ret = platform_driver_register(&ath10k_snoc_driver);
-> -	if (ret)
-> -		pr_err("failed to register ath10k snoc driver: %d\n",
-> -		       ret);
-> -
-> -	return ret;
-> -}
-> -module_init(ath10k_snoc_init);
-> -
-> -static void __exit ath10k_snoc_exit(void)
-> -{
-> -	platform_driver_unregister(&ath10k_snoc_driver);
-> -}
-> -module_exit(ath10k_snoc_exit);
-> +module_platform_driver(ath10k_snoc_driver);
+Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+---
+ drivers/net/wireless/ath/ath10k/Kconfig | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-Yeah, makes sense. And I also checked that this shouldn't conflict with
-Govind's qmi patch:
-
-https://patchwork.kernel.org/patch/10448183/
-
+diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+index 84f071ac0d84..54ff5930126c 100644
+--- a/drivers/net/wireless/ath/ath10k/Kconfig
++++ b/drivers/net/wireless/ath/ath10k/Kconfig
+@@ -1,15 +1,15 @@
+ config ATH10K
+-        tristate "Atheros 802.11ac wireless cards support"
+-        depends on MAC80211 && HAS_DMA
++	tristate "Atheros 802.11ac wireless cards support"
++	depends on MAC80211 && HAS_DMA
+ 	select ATH_COMMON
+ 	select CRC32
+ 	select WANT_DEV_COREDUMP
+ 	select ATH10K_CE
+-        ---help---
+-          This module adds support for wireless adapters based on
+-          Atheros IEEE 802.11ac family of chipsets.
++	---help---
++	  This module adds support for wireless adapters based on
++	  Atheros IEEE 802.11ac family of chipsets.
+ 
+-          If you choose to build a module, it'll be called ath10k.
++	  If you choose to build a module, it'll be called ath10k.
+ 
+ config ATH10K_CE
+ 	bool
+@@ -41,12 +41,12 @@ config ATH10K_USB
+ 	  work in progress and will not fully work.
+ 
+ config ATH10K_SNOC
+-        tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+-        depends on ATH10K && ARCH_QCOM
+-        ---help---
+-          This module adds support for integrated WCN3990 chip connected
+-          to system NOC(SNOC). Currently work in progress and will not
+-          fully work.
++	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
++	depends on ATH10K && ARCH_QCOM
++	---help---
++	  This module adds support for integrated WCN3990 chip connected
++	  to system NOC(SNOC). Currently work in progress and will not
++	  fully work.
+ 
+ config ATH10K_DEBUG
+ 	bool "Atheros ath10k debugging"
 -- 
-Kalle Valo
+2.17.1
+
 
 _______________________________________________
 ath10k mailing list
