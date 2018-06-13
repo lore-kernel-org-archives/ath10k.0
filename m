@@ -1,15 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fT4JK-0000s7-9X
- for ath10k@lists.infradead.org; Wed, 13 Jun 2018 11:51:36 +0000
+ id 1fT5pB-0002o4-Uu
+ for ath10k@lists.infradead.org; Wed, 13 Jun 2018 13:28:35 +0000
+Received: by mail-lf0-x243.google.com with SMTP id n15-v6so3936497lfn.10
+ for <ath10k@lists.infradead.org>; Wed, 13 Jun 2018 06:28:23 -0700 (PDT)
+Date: Wed, 13 Jun 2018 15:28:19 +0200
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: FW: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
+Message-ID: <20180613132819.GA12603@centauri.ideon.se>
+References: <20180612113907.15043-1-niklas.cassel@linaro.org>
+ <20180612113907.15043-2-niklas.cassel@linaro.org>
+ <7058492257914633b55fcd423e4c0b59@aphydexm01b.ap.qualcomm.com>
+ <47cf8ec1b11d727ea928a307a431d4a2@codeaurora.org>
+ <20180612124403.GA26986@centauri.lan>
 MIME-Version: 1.0
-Subject: Re: ath10k: fix memory leak of tpc_stats
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180527211702.23778-1-colin.king@canonical.com>
-References: <20180527211702.23778-1-colin.king@canonical.com>
-Message-Id: <20180613115123.D67D36074D@smtp.codeaurora.org>
-Date: Wed, 13 Jun 2018 11:51:23 +0000 (UTC)
+Content-Disposition: inline
+In-Reply-To: <20180612124403.GA26986@centauri.lan>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +29,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
+To: Govind Singh <govinds@codeaurora.org>, bjorn.andersson@linaro.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net, kvalo@codeaurora.org
 
-Colin Ian King <colin.king@canonical.com> wrote:
-
-> Currently tpc_stats is allocated and is leaked on the return
-> path if num_tx_chain is greater than WMI_TPC_TX_N_CHAIN. Avoid
-> this leak by performing the check on num_tx_chain before the
-> allocation of tpc_stats.
+On Tue, Jun 12, 2018 at 02:44:03PM +0200, Niklas Cassel wrote:
+> On Tue, Jun 12, 2018 at 06:02:48PM +0530, Govind Singh wrote:
+> > On 2018-06-12 17:45, Govind Singh wrote:
+> > > -----Original Message-----
+> > > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Niklas
+> > > Cassel
+> > > Sent: Tuesday, June 12, 2018 5:09 PM
+> > > To: Kalle Valo <kvalo@codeaurora.org>; David S. Miller
+> > > <davem@davemloft.net>
+> > > Cc: Niklas Cassel <niklas.cassel@linaro.org>; netdev@vger.kernel.org;
+> > > linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > > ath10k@lists.infradead.org
+> > > Subject: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
+> > > 
+> > > ATH10K_SNOC builds just fine with COMPILE_TEST, so make that possible.
+> > > 
+> > > Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+> > > ---
+> > >  drivers/net/wireless/ath/ath10k/Kconfig | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/net/wireless/ath/ath10k/Kconfig
+> > > b/drivers/net/wireless/ath/ath10k/Kconfig
+> > > index 54ff5930126c..6572a43590a8 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/Kconfig
+> > > +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+> > > @@ -42,7 +42,8 @@ config ATH10K_USB
+> > > 
+> > >  config ATH10K_SNOC
+> > >  	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+> > > -	depends on ATH10K && ARCH_QCOM
+> > > +	depends on ATH10K
+> > > +	depends on ARCH_QCOM || COMPILE_TEST
+> > >  	---help---
+> > >  	  This module adds support for integrated WCN3990 chip connected
+> > >  	  to system NOC(SNOC). Currently work in progress and will not
+> > 
+> > Thanks Niklas for enabling COMPILE_TEST. With QMI set of
+> > changes(https://patchwork.kernel.org/patch/10448183/), we need to enable
+> > COMPILE_TEST for
+> > QCOM_SCM/QMI_HELPERS which seems broken today. Are you planning to fix the
+> > same.
 > 
-> Detected by CoverityScan, CID#1469422 ("Resource Leak")
-> Fixes: 4b190675ad06 ("ath10k: fix kernel panic while reading tpc_stats")
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+This patch is good as is.
 
-260e629bbf44 ath10k: fix memory leak of tpc_stats
+However, Govind's QMI patch set together with this patch
+resulted in build errors.
 
--- 
-https://patchwork.kernel.org/patch/10429553/
+FTR, these are fixed by:
+https://marc.info/?l=linux-kernel&m=152880985402356
+https://marc.info/?l=linux-kernel&m=152889452326350
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
+Regards,
+Niklas
 
 _______________________________________________
 ath10k mailing list
