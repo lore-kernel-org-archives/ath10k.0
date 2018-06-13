@@ -1,12 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSzZu-0006FE-Kg
- for ath10k@lists.infradead.org; Wed, 13 Jun 2018 06:48:23 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: Handle resource init failure case
-Date: Wed, 13 Jun 2018 12:18:06 +0530
-Message-Id: <20180613064806.32286-1-govinds@codeaurora.org>
+ id 1fT1RR-0005lA-Fn
+ for ath10k@lists.infradead.org; Wed, 13 Jun 2018 08:47:47 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: FW: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
+References: <20180612113907.15043-1-niklas.cassel@linaro.org>
+ <20180612113907.15043-2-niklas.cassel@linaro.org>
+ <7058492257914633b55fcd423e4c0b59@aphydexm01b.ap.qualcomm.com>
+ <47cf8ec1b11d727ea928a307a431d4a2@codeaurora.org>
+ <20180612124403.GA26986@centauri.lan>
+Date: Wed, 13 Jun 2018 11:47:29 +0300
+In-Reply-To: <20180612124403.GA26986@centauri.lan> (Niklas Cassel's message of
+ "Tue, 12 Jun 2018 14:44:03 +0200")
+Message-ID: <87a7rzax9a.fsf@purkki.adurom.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,45 +23,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: Govind Singh <govinds@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, davem@davemloft.net
 
-Return type of resource init method is not assigned.
-Handle resource init failures for graceful exit.
+Niklas Cassel <niklas.cassel@linaro.org> writes:
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Tue, Jun 12, 2018 at 06:02:48PM +0530, Govind Singh wrote:
+>> On 2018-06-12 17:45, Govind Singh wrote:
+>> > -----Original Message-----
+>> > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Niklas
+>> > Cassel
+>> > Sent: Tuesday, June 12, 2018 5:09 PM
+>> > To: Kalle Valo <kvalo@codeaurora.org>; David S. Miller
+>> > <davem@davemloft.net>
+>> > Cc: Niklas Cassel <niklas.cassel@linaro.org>; netdev@vger.kernel.org;
+>> > linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> > ath10k@lists.infradead.org
+>> > Subject: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
+>> > 
+>> > ATH10K_SNOC builds just fine with COMPILE_TEST, so make that possible.
+>> > 
+>> > Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+>> > ---
+>> >  drivers/net/wireless/ath/ath10k/Kconfig | 3 ++-
+>> >  1 file changed, 2 insertions(+), 1 deletion(-)
+>> > 
+>> > diff --git a/drivers/net/wireless/ath/ath10k/Kconfig
+>> > b/drivers/net/wireless/ath/ath10k/Kconfig
+>> > index 54ff5930126c..6572a43590a8 100644
+>> > --- a/drivers/net/wireless/ath/ath10k/Kconfig
+>> > +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+>> > @@ -42,7 +42,8 @@ config ATH10K_USB
+>> > 
+>> >  config ATH10K_SNOC
+>> >  	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+>> > -	depends on ATH10K && ARCH_QCOM
+>> > +	depends on ATH10K
+>> > +	depends on ARCH_QCOM || COMPILE_TEST
+>> >  	---help---
+>> >  	  This module adds support for integrated WCN3990 chip connected
+>> >  	  to system NOC(SNOC). Currently work in progress and will not
+>> 
+>> Thanks Niklas for enabling COMPILE_TEST. With QMI set of
+>> changes(https://patchwork.kernel.org/patch/10448183/), we need to enable
+>> COMPILE_TEST for
+>> QCOM_SCM/QMI_HELPERS which seems broken today. Are you planning to fix the
+>> same.
+>
+>
+> Argh..
+>
+> qcom_scm seems fine, it is just missing a single definition in the
+> #else clause of include/linux/qcom_scm.h.
+>
+> +++ b/include/linux/qcom_scm.h
+> @@ -89,6 +89,10 @@ static inline int qcom_scm_pas_mem_setup(u32 peripheral, phys_addr_t addr,                                     
+>  static inline int
+>  qcom_scm_pas_auth_and_reset(u32 peripheral) { return -ENODEV; }
+>  static inline int qcom_scm_pas_shutdown(u32 peripheral) { return -ENODEV; }                                                      
+> +static inline int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,                                                       
+> +                                     unsigned int *src,
+> +                                     struct qcom_scm_vmperm *newvm,                                                              
+> +                                     int dest_cnt) { return -ENODEV; }                                                           
+>  static inline void qcom_scm_cpu_power_down(u32 flags) {}
+>  static inline u32 qcom_scm_get_version(void) { return 0; }
+>
+>
+>
+> include/linux/soc/qcom/qmi.h on the other hand doesn't have any
+> dummy defintions at all.
+> I think that it makes sense to be able to compile test
+> the QMI helpers also on other archs..
+>
+> Bjorn, any opinion?
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index aa8a9b36250e..a0504b8e003c 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1500,13 +1500,13 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 	ar_snoc->ce.bus_ops = &ath10k_snoc_bus_ops;
- 	ar->ce_priv = &ar_snoc->ce;
- 
--	ath10k_snoc_resource_init(ar);
-+	ret = ath10k_snoc_resource_init(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to initialize resource: %d\n", ret);
- 		goto err_core_destroy;
- 	}
- 
--	ath10k_snoc_setup_resource(ar);
-+	ret = ath10k_snoc_setup_resource(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to setup resource: %d\n", ret);
- 		goto err_core_destroy;
+Please don't drop ath10k list, adding it back.
+
 -- 
-2.17.0
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
