@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fT2Vp-00054A-K1
- for ath10k@lists.infradead.org; Wed, 13 Jun 2018 09:56:23 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
-References: <20180612113907.15043-2-niklas.cassel@linaro.org>
- <201806122228.8vAQXcD6%fengguang.wu@intel.com>
-Date: Wed, 13 Jun 2018 12:56:02 +0300
-In-Reply-To: <201806122228.8vAQXcD6%fengguang.wu@intel.com> (kbuild test
- robot's message of "Tue, 12 Jun 2018 22:50:37 +0800")
-Message-ID: <87h8m7au31.fsf@kamboji.qca.qualcomm.com>
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fT49G-0002YY-Rr
+ for ath10k@lists.infradead.org; Wed, 13 Jun 2018 11:41:12 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: htt_tx: mark expected switch fall-throughs
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20180524225928.GA19570@embeddedor.com>
+References: <20180524225928.GA19570@embeddedor.com>
+Message-Id: <20180613114059.DAC95601D2@smtp.codeaurora.org>
+Date: Wed, 13 Jun 2018 11:40:59 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, kbuild-all@01.org, Niklas Cassel <niklas.cassel@linaro.org>, "David S. Miller" <davem@davemloft.net>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>
 
-kbuild test robot <lkp@intel.com> writes:
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
 
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on ath6kl/ath-next]
-> [also build test WARNING on next-20180612]
-> [cannot apply to v4.17]
-> [if your patch is applied to the wrong git tree, please drop us a note
-> to help improve the system]
->
-> url:
-> https://github.com/0day-ci/linux/commits/Niklas-Cassel/ath10k-do-not-mix-spaces-and-tabs-in-Kconfig/20180612-194241
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-> reproduce:
->         # apt-get install sparse
->         make ARCH=x86_64 allmodconfig
->         make C=1 CF=-D__CHECK_ENDIAN__
->
->
-> sparse warnings: (new ones prefixed by >>)
->
->>> drivers/net/wireless/ath/ath10k/snoc.c:823:5: sparse: symbol
->>> 'ath10k_snoc_get_ce_id_from_irq' was not declared. Should it be
->>> static?
->>> drivers/net/wireless/ath/ath10k/snoc.c:871:6: sparse: symbol
->>> 'ath10k_snoc_init_napi' was not declared. Should it be static?
->
-> Please review and possibly fold the followup patch.
+> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+> where we are expecting to fall through.
+> 
+> Notice that in this particular case, I replaced "pass through" with
+> a proper "fall through" comment, which is what GCC is expecting
+> to find.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-There's already a patch pending to fix these:
+Patch applied to ath-next branch of ath.git, thanks.
 
-ath10k: make some functions static
-
-https://patchwork.kernel.org/patch/10440159/
+f1d270ae10ff ath10k: htt_tx: mark expected switch fall-throughs
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10425691/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
