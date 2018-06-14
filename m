@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTTwX-0006ac-6X
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:13:46 +0000
+ id 1fTTxB-0006ua-Sp
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:14:27 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: use crash_dump enum instead of magic numbers
+Subject: Re: ath10k: snoc: use module_platform_driver() macro
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180611181935.155032-1-briannorris@chromium.org>
-References: <20180611181935.155032-1-briannorris@chromium.org>
-Message-Id: <20180614151334.DD1E160795@smtp.codeaurora.org>
-Date: Thu, 14 Jun 2018 15:13:34 +0000 (UTC)
+In-Reply-To: <20180611193540.190255-1-briannorris@chromium.org>
+References: <20180611193540.190255-1-briannorris@chromium.org>
+Message-Id: <20180614151415.9374C60795@smtp.codeaurora.org>
+Date: Thu, 14 Jun 2018 15:14:15 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +23,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Brian Norris <briannorris@chromium.org>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
 Brian Norris <briannorris@chromium.org> wrote:
 
-> The comments are telling you what the enum could tell you instead.
+> ath10k_snoc_init()/ath10k_snoc_exit() don't add much value;
+> module_platform_driver() can remove the boilerplate.
 > 
 > Signed-off-by: Brian Norris <briannorris@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-7f8f72d8511a ath10k: use crash_dump enum instead of magic numbers
+0644fef97451 ath10k: snoc: use module_platform_driver() macro
 
 -- 
-https://patchwork.kernel.org/patch/10458637/
+https://patchwork.kernel.org/patch/10458705/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
