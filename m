@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTTxB-0006ua-Sp
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:14:27 +0000
+ id 1fTTzd-0000xH-4w
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:16:59 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: snoc: use module_platform_driver() macro
+Subject: Re: [1/4] ath10k: snoc: use correct bus-specific pointer in RX retry
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180611193540.190255-1-briannorris@chromium.org>
-References: <20180611193540.190255-1-briannorris@chromium.org>
-Message-Id: <20180614151415.9374C60795@smtp.codeaurora.org>
-Date: Thu, 14 Jun 2018 15:14:15 +0000 (UTC)
+In-Reply-To: <20180611210946.241341-1-briannorris@chromium.org>
+References: <20180611210946.241341-1-briannorris@chromium.org>
+Message-Id: <20180614151646.CDAF0602D7@smtp.codeaurora.org>
+Date: Thu, 14 Jun 2018 15:16:46 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +27,26 @@ Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux
 
 Brian Norris <briannorris@chromium.org> wrote:
 
-> ath10k_snoc_init()/ath10k_snoc_exit() don't add much value;
-> module_platform_driver() can remove the boilerplate.
+> We're 'ath10k_snoc', not 'ath10k_pci'. This probably means we're
+> accessing junk data in ath10k_snoc_rx_replenish_retry(), unless
+> 'ath10k_snoc' and 'ath10k_pci' happen to have very similar struct
+> layouts.
 > 
+> Noticed by inspection.
+> 
+> Fixes: d915105231ca ("ath10k: add hif rx methods for wcn3990")
 > Signed-off-by: Brian Norris <briannorris@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+4 patches applied to ath-next branch of ath.git, thanks.
 
-0644fef97451 ath10k: snoc: use module_platform_driver() macro
+426a0f0b5a2f ath10k: snoc: use correct bus-specific pointer in RX retry
+8ac5fe8e3d11 ath10k: snoc: stop including pci.h
+13e6cc0bd4ef ath10k: snoc: drop unused WCN3990_CE_ATTR_FLAGS
+c9f3e7fa8bcb ath10k: snoc: sort include files
 
 -- 
-https://patchwork.kernel.org/patch/10458705/
+https://patchwork.kernel.org/patch/10458863/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
