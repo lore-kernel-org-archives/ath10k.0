@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTTWk-0007es-9q
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 14:47:07 +0000
+ id 1fTTs9-0004Mv-AX
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:09:14 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: support for multicast rate control
+Subject: Re: ath10k: Support use of channel 173
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1525743291-4306-1-git-send-email-pradeepc@codeaurora.org>
-References: <1525743291-4306-1-git-send-email-pradeepc@codeaurora.org>
-Message-Id: <20180614144655.97E25600D0@smtp.codeaurora.org>
-Date: Thu, 14 Jun 2018 14:46:55 +0000 (UTC)
+In-Reply-To: <1514940661-13590-1-git-send-email-greearb@candelatech.com>
+References: <1514940661-13590-1-git-send-email-greearb@candelatech.com>
+Message-Id: <20180614150902.DF8A260116@smtp.codeaurora.org>
+Date: Thu, 14 Jun 2018 15:09:02 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+To: Ben Greear <greearb@candelatech.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Pradeep Kumar Chitrapu <pradeepc@codeaurora.org> wrote:
+Ben Greear <greearb@candelatech.com> wrote:
 
-> Issues wmi command to firmwre when multicast rate change is received
-> with the new BSS_CHANGED_MCAST_RATE flag.
-> Also fixes the incorrect fixed_rate setting for CCK rates which got
-> introduced with addition of ath10k_rates_rev2 enum.
+> The India regulatory domain allows CH 173, so add that to the
+> available channel list.  I verified basic connectivity between
+> a 9880 and 9984 NIC.
 > 
-> Tested on QCA9984 with firmware ver 10.4-3.6-00104
-> 
-> Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-ath10k-check found some whitespace issues:
+Patch applied to ath-next branch of ath.git, thanks.
 
-drivers/net/wireless/ath/ath10k/mac.c:6110: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/mac.c:6113: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/mac.c:6116: Alignment should match open parenthesis
-
-I fixed those in the pending branch.
+38441fb6fcbb ath10k: support use of channel 173
 
 -- 
-https://patchwork.kernel.org/patch/10385043/
+https://patchwork.kernel.org/patch/10141515/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
