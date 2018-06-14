@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTO2y-0003P6-Qw
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 08:56:02 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fTOED-0007UR-Di
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 09:07:38 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH net-next] ath10k: make some functions static
-References: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com>
-Date: Thu, 14 Jun 2018 11:55:44 +0300
-In-Reply-To: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com> (Wei
- Yongjun's message of "Thu, 31 May 2018 02:33:14 +0000")
-Message-ID: <87lgbhagrz.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Update the phymode along with bandwidth change
+ request
+References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
+Date: Thu, 14 Jun 2018 12:07:22 +0300
+In-Reply-To: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org> (Ryan
+ Hsu's message of "Fri, 8 Jun 2018 11:32:39 -0700")
+Message-ID: <87h8m5ag8l.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,33 +24,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: kernel-janitors@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ryan Hsu <ryanhsu@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, timur.kristof@gmail.com
 
-Wei Yongjun <weiyongjun1@huawei.com> writes:
+Ryan Hsu <ryanhsu@codeaurora.org> writes:
 
-> Fixes the following sparse warnings:
+> In the case of Station connects to AP with narrower bandwidth at beginning.
+> And later the AP changes the bandwidth to winder bandwidth, the AP will
+> beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
 >
-> drivers/net/wireless/ath/ath10k/snoc.c:823:5: warning:
->  symbol 'ath10k_snoc_get_ce_id_from_irq' was not declared. Should it be static?
-> drivers/net/wireless/ath/ath10k/snoc.c:871:6: warning:
->  symbol 'ath10k_snoc_init_napi' was not declared. Should it be static?
+> Since the supported BANDWIDTH will be limited by the PHYMODE, so while
+> Station receives the bandwidth change request, it will also need to
+> reconfigure the PHYMODE setting to firmware instead of just configuring
+> the BANDWIDTH info, otherwise it'll trigger a firmware crash with
+> non-support bandwidth.
 >
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
+> below scenario.
+> ---
 
-Your name in patchwork is wrong[1] and hence my script uses the wrong
-name. Please fix it by registering to patchwork[2] where it's possible
-to change your name during registration, but only one time. If that
-doesn't work then send a request to helpdesk@kernel.org and the admins
-can fix it.
+BTW, I don't recommend using "---" or similar delimeters in the actual
+commit log. Git uses that string as a separator between the commit log
+and actual patch and that broke my patchwork script. I fixed the commit
+log manually in the pending branch, and added Timur's Tested-by, please
+check (I hope I got UTF-8 correct!):
 
-But no need to resend this patch, I can fix your name manually this
-time.
-
-[1] "weiyongjun (A)" in https://patchwork.kernel.org/patch/10440159/
-
-[2] https://patchwork.kernel.org/register/
-
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=5aee6aeda5dae74e1c79256fc1df2e7599038fa7
 
 -- 
 Kalle Valo
