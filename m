@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fT5pB-0002o4-Uu
- for ath10k@lists.infradead.org; Wed, 13 Jun 2018 13:28:35 +0000
-Received: by mail-lf0-x243.google.com with SMTP id n15-v6so3936497lfn.10
- for <ath10k@lists.infradead.org>; Wed, 13 Jun 2018 06:28:23 -0700 (PDT)
-Date: Wed, 13 Jun 2018 15:28:19 +0200
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: FW: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
-Message-ID: <20180613132819.GA12603@centauri.ideon.se>
-References: <20180612113907.15043-1-niklas.cassel@linaro.org>
- <20180612113907.15043-2-niklas.cassel@linaro.org>
- <7058492257914633b55fcd423e4c0b59@aphydexm01b.ap.qualcomm.com>
- <47cf8ec1b11d727ea928a307a431d4a2@codeaurora.org>
- <20180612124403.GA26986@centauri.lan>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fTO2y-0003P6-Qw
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 08:56:02 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH net-next] ath10k: make some functions static
+References: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com>
+Date: Thu, 14 Jun 2018 11:55:44 +0300
+In-Reply-To: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com> (Wei
+ Yongjun's message of "Thu, 31 May 2018 02:33:14 +0000")
+Message-ID: <87lgbhagrz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20180612124403.GA26986@centauri.lan>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,66 +23,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>, bjorn.andersson@linaro.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net, kvalo@codeaurora.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: kernel-janitors@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tue, Jun 12, 2018 at 02:44:03PM +0200, Niklas Cassel wrote:
-> On Tue, Jun 12, 2018 at 06:02:48PM +0530, Govind Singh wrote:
-> > On 2018-06-12 17:45, Govind Singh wrote:
-> > > -----Original Message-----
-> > > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Niklas
-> > > Cassel
-> > > Sent: Tuesday, June 12, 2018 5:09 PM
-> > > To: Kalle Valo <kvalo@codeaurora.org>; David S. Miller
-> > > <davem@davemloft.net>
-> > > Cc: Niklas Cassel <niklas.cassel@linaro.org>; netdev@vger.kernel.org;
-> > > linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > > ath10k@lists.infradead.org
-> > > Subject: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
-> > > 
-> > > ATH10K_SNOC builds just fine with COMPILE_TEST, so make that possible.
-> > > 
-> > > Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
-> > > ---
-> > >  drivers/net/wireless/ath/ath10k/Kconfig | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/net/wireless/ath/ath10k/Kconfig
-> > > b/drivers/net/wireless/ath/ath10k/Kconfig
-> > > index 54ff5930126c..6572a43590a8 100644
-> > > --- a/drivers/net/wireless/ath/ath10k/Kconfig
-> > > +++ b/drivers/net/wireless/ath/ath10k/Kconfig
-> > > @@ -42,7 +42,8 @@ config ATH10K_USB
-> > > 
-> > >  config ATH10K_SNOC
-> > >  	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
-> > > -	depends on ATH10K && ARCH_QCOM
-> > > +	depends on ATH10K
-> > > +	depends on ARCH_QCOM || COMPILE_TEST
-> > >  	---help---
-> > >  	  This module adds support for integrated WCN3990 chip connected
-> > >  	  to system NOC(SNOC). Currently work in progress and will not
-> > 
-> > Thanks Niklas for enabling COMPILE_TEST. With QMI set of
-> > changes(https://patchwork.kernel.org/patch/10448183/), we need to enable
-> > COMPILE_TEST for
-> > QCOM_SCM/QMI_HELPERS which seems broken today. Are you planning to fix the
-> > same.
-> 
-> 
+Wei Yongjun <weiyongjun1@huawei.com> writes:
 
-This patch is good as is.
+> Fixes the following sparse warnings:
+>
+> drivers/net/wireless/ath/ath10k/snoc.c:823:5: warning:
+>  symbol 'ath10k_snoc_get_ce_id_from_irq' was not declared. Should it be static?
+> drivers/net/wireless/ath/ath10k/snoc.c:871:6: warning:
+>  symbol 'ath10k_snoc_init_napi' was not declared. Should it be static?
+>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-However, Govind's QMI patch set together with this patch
-resulted in build errors.
+Your name in patchwork is wrong[1] and hence my script uses the wrong
+name. Please fix it by registering to patchwork[2] where it's possible
+to change your name during registration, but only one time. If that
+doesn't work then send a request to helpdesk@kernel.org and the admins
+can fix it.
 
-FTR, these are fixed by:
-https://marc.info/?l=linux-kernel&m=152880985402356
-https://marc.info/?l=linux-kernel&m=152889452326350
+But no need to resend this patch, I can fix your name manually this
+time.
+
+[1] "weiyongjun (A)" in https://patchwork.kernel.org/patch/10440159/
+
+[2] https://patchwork.kernel.org/register/
 
 
-Regards,
-Niklas
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
