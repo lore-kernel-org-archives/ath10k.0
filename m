@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTTtC-0004qN-UM
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:10:20 +0000
+ id 1fTTu9-0005ys-QA
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 15:11:19 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix spectral scan for QCA9984 and QCA9888 chipsets
+Subject: Re: [net-next] ath10k: make some functions static
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1527593473-15976-1-git-send-email-periyasa@codeaurora.org>
-References: <1527593473-15976-1-git-send-email-periyasa@codeaurora.org>
-Message-Id: <20180614151008.7E6BD6074D@smtp.codeaurora.org>
-Date: Thu, 14 Jun 2018 15:10:08 +0000 (UTC)
+In-Reply-To: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com>
+References: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com>
+Message-Id: <20180614151107.7DA24606DB@smtp.codeaurora.org>
+Date: Thu, 14 Jun 2018 15:11:07 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +22,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Karthikeyan Periyasamy <periyasa@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "weiyongjun (A)" <weiyongjun1@huawei.com>
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
-Karthikeyan Periyasamy <periyasa@codeaurora.org> wrote:
+"weiyongjun \(A\)" <weiyongjun1@huawei.com> wrote:
 
-> The spectral scan has been always broken on QCA9984 and QCA9888.
+> Fixes the following sparse warnings:
 > 
-> Introduce a hardware parameter 'spectral_bin_offset' to resolve this issue for
-> QCA9984 and QCA9888 chipsets. For other chipsets, the hardware parameter
-> 'spectral_bin_offset' is zero so that existing behaviour is retained as it is.
+> drivers/net/wireless/ath/ath10k/snoc.c:823:5: warning:
+>  symbol 'ath10k_snoc_get_ce_id_from_irq' was not declared. Should it be static?
+> drivers/net/wireless/ath/ath10k/snoc.c:871:6: warning:
+>  symbol 'ath10k_snoc_init_napi' was not declared. Should it be static?
 > 
-> In QCA9984 and QCA9888 chipsets, hardware param value 'spectral_bin_discard'
-> is 12 bytes. This 12 bytes is derived as the sum of segment index (4 bytes),
-> extra bins before the actual data (4 bytes) and extra bins after the actual
-> data (4 bytes). Always discarding (12 bytes) happens at end of the samples and
-> incorrect samples got dumped, so that user can find incorrect arrangement
-> samples in spectral scan dump.
-> 
-> To fix this issue, we have to discard first 8 bytes and last 4 bytes in every
-> samples, so totally 12 bytes are discarded. In every sample we need to consider
-> the offset while taking the actual spectral data. For QCA9984, QCA9888 the
-> offset is 8 bytes (segment index + extra bins before actual data).
-> 
-> Hardware tested: QCA9984 and QCA9888
-> Firmware tested: 10.4-3.5.3-00053
-> 
-> Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-2e9bcd0d7324 ath10k: fix spectral scan for QCA9984 and QCA9888 chipsets
+6ee0e175a33d ath10k: make some functions static
 
 -- 
-https://patchwork.kernel.org/patch/10435029/
+https://patchwork.kernel.org/patch/10440159/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
