@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTOED-0007UR-Di
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 09:07:38 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: Update the phymode along with bandwidth change
- request
-References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
-Date: Thu, 14 Jun 2018 12:07:22 +0300
-In-Reply-To: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org> (Ryan
- Hsu's message of "Fri, 8 Jun 2018 11:32:39 -0700")
-Message-ID: <87h8m5ag8l.fsf@kamboji.qca.qualcomm.com>
+ id 1fTOJM-0001Or-9d
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 09:13:12 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: Protect ath10k_htt_rx_ring_free with rx_ring.lock
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1528387897-6781-1-git-send-email-greearb@candelatech.com>
+References: <1528387897-6781-1-git-send-email-greearb@candelatech.com>
+Message-Id: <20180614091245.8CD6E602B8@smtp.codeaurora.org>
+Date: Thu, 14 Jun 2018 09:12:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, timur.kristof@gmail.com
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ryan Hsu <ryanhsu@codeaurora.org> writes:
+Ben Greear <greearb@candelatech.com> wrote:
 
-> In the case of Station connects to AP with narrower bandwidth at beginning.
-> And later the AP changes the bandwidth to winder bandwidth, the AP will
-> beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
->
-> Since the supported BANDWIDTH will be limited by the PHYMODE, so while
-> Station receives the bandwidth change request, it will also need to
-> reconfigure the PHYMODE setting to firmware instead of just configuring
-> the BANDWIDTH info, otherwise it'll trigger a firmware crash with
-> non-support bandwidth.
->
-> The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
-> below scenario.
-> ---
+> From: Ben Greear <greearb@candelatech.com>
+> 
+> While debugging driver crashes related to a buggy firmware
+> crashing under load, I noticed that ath10k_htt_rx_ring_free
+> could be called without being under lock.  I'm not sure if this
+> is the root cause of the crash or not, but it seems prudent to
+> protect it.
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-BTW, I don't recommend using "---" or similar delimeters in the actual
-commit log. Git uses that string as a separator between the commit log
-and actual patch and that broke my patchwork script. I fixed the commit
-log manually in the pending branch, and added Timur's Tested-by, please
-check (I hope I got UTF-8 correct!):
+Failed to apply, please use ath.git master branch as the baseline. Also
+document the tested hardware and firmware versions in the commit log.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=5aee6aeda5dae74e1c79256fc1df2e7599038fa7
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
+
+error: patch failed: drivers/net/wireless/ath/ath10k/htt_rx.c:282
+error: drivers/net/wireless/ath/ath10k/htt_rx.c: patch does not apply
+stg import: Diff does not apply cleanly
+
+Patch set to Changes Requested.
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10453105/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
