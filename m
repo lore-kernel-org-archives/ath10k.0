@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp2120.oracle.com ([141.146.126.78])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTTAB-0003GO-Cq
- for ath10k@lists.infradead.org; Thu, 14 Jun 2018 14:23:48 +0000
-Date: Thu, 14 Jun 2018 17:23:18 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH net-next] ath10k: make some functions static
-Message-ID: <20180614142318.u2rzekx5uzyxmcmi@mwanda>
-References: <1527733994-149212-1-git-send-email-weiyongjun1@huawei.com>
- <87lgbhagrz.fsf@kamboji.qca.qualcomm.com>
- <20180614135515.i47fj4bn47ntn6wb@mwanda>
- <87vaal8n9j.fsf@kamboji.qca.qualcomm.com>
+ id 1fTTWk-0007es-9q
+ for ath10k@lists.infradead.org; Thu, 14 Jun 2018 14:47:07 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87vaal8n9j.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [v2] ath10k: support for multicast rate control
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1525743291-4306-1-git-send-email-pradeepc@codeaurora.org>
+References: <1525743291-4306-1-git-send-email-pradeepc@codeaurora.org>
+Message-Id: <20180614144655.97E25600D0@smtp.codeaurora.org>
+Date: Thu, 14 Jun 2018 14:46:55 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +22,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, Wei Yongjun <weiyongjun1@huawei.com>, ath10k@lists.infradead.org
+To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ah...  Thanks for the explanation.  I was really confused how it got the
-name wrong.
+Pradeep Kumar Chitrapu <pradeepc@codeaurora.org> wrote:
 
-regards,
-dan carpenter
+> Issues wmi command to firmwre when multicast rate change is received
+> with the new BSS_CHANGED_MCAST_RATE flag.
+> Also fixes the incorrect fixed_rate setting for CCK rates which got
+> introduced with addition of ath10k_rates_rev2 enum.
+> 
+> Tested on QCA9984 with firmware ver 10.4-3.6-00104
+> 
+> Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+ath10k-check found some whitespace issues:
+
+drivers/net/wireless/ath/ath10k/mac.c:6110: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/mac.c:6113: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/mac.c:6116: Alignment should match open parenthesis
+
+I fixed those in the pending branch.
+
+-- 
+https://patchwork.kernel.org/patch/10385043/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
