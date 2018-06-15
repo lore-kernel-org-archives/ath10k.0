@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTcRT-0003Y2-JT
- for ath10k@lists.infradead.org; Fri, 15 Jun 2018 00:18:17 +0000
-Subject: Re: [PATCH v2] ath10k: Update the phymode along with bandwidth change
- request
-References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
- <87h8m5ag8l.fsf@kamboji.qca.qualcomm.com>
-From: Ryan Hsu <ryanhsu@codeaurora.org>
-Message-ID: <4735b5f6-702c-d26e-a9d8-24f4c0e66a82@codeaurora.org>
-Date: Thu, 14 Jun 2018 17:16:19 -0700
-MIME-Version: 1.0
-In-Reply-To: <87h8m5ag8l.fsf@kamboji.qca.qualcomm.com>
+ id 1fTnT7-0003Bb-2a
+ for ath10k@lists.infradead.org; Fri, 15 Jun 2018 12:04:42 +0000
+Received: by mail-lf0-x243.google.com with SMTP id q11-v6so14274567lfc.7
+ for <ath10k@lists.infradead.org>; Fri, 15 Jun 2018 05:04:29 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [PATCH] ath10k: fix bug in masking of TID value
+Date: Fri, 15 Jun 2018 14:01:53 +0200
+Message-Id: <20180615120153.4677-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +17,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, timur.kristof@gmail.com
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-On 06/14/2018 02:07 AM, Kalle Valo wrote:
+Although the TID mask is 0xf, the modulus operation does still not
+produce identical results as the bitwise and operator.
 
-> BTW, I don't recommend using "---" or similar delimeters in the actual
-> commit log. Git uses that string as a separator between the commit log
-> and actual patch and that broke my patchwork script. I fixed the commit
-> log manually in the pending branch, and added Timur's Tested-by, please
-> check (I hope I got UTF-8 correct!):
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=5aee6aeda5dae74e1c79256fc1df2e7599038fa7
->
+If the TID is 15, the modulus operation will "convert" it to 0, whereas
+the bitwise and will keep it as 15.
 
-Thanks Kalle, patch looks good to me, will avoid use "---".
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 89157c5b5e5f..be5b52aaffa6 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1056,7 +1056,7 @@ static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
+ 	if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
+ 		return HTT_DATA_TX_EXT_TID_MGMT;
+ 	else if (cb->flags & ATH10K_SKB_F_QOS)
+-		return skb->priority % IEEE80211_QOS_CTL_TID_MASK;
++		return skb->priority & IEEE80211_QOS_CTL_TID_MASK;
+ 	else
+ 		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+ }
 -- 
-Ryan Hsu
+2.17.0
 
 
 _______________________________________________
