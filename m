@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTuWv-0004ai-CV
- for ath10k@lists.infradead.org; Fri, 15 Jun 2018 19:37:06 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [ath6kl:pending 109/109]
- drivers/net/wireless/ath/ath10k/snoc.h:22:10: fatal error: qmi.h: No such
- file or directory
-References: <201806160045.dJL4pspo%fengguang.wu@intel.com>
-Date: Fri, 15 Jun 2018 22:36:48 +0300
-In-Reply-To: <201806160045.dJL4pspo%fengguang.wu@intel.com> (kbuild test
- robot's message of "Sat, 16 Jun 2018 00:08:48 +0800")
-Message-ID: <87sh5nhmen.fsf@codeaurora.org>
+ id 1fTuYR-0004lz-H8
+ for ath10k@lists.infradead.org; Fri, 15 Jun 2018 19:38:40 +0000
+Received: by mail-lf0-x241.google.com with SMTP id t2-v6so9810470lfd.6
+ for <ath10k@lists.infradead.org>; Fri, 15 Jun 2018 12:38:29 -0700 (PDT)
+Subject: Re: [PATCH] ath10k: fix bug in masking of TID value
+References: <20180615120153.4677-1-erik.stromdahl@gmail.com>
+ <878t7g6wbg.fsf@kamboji.qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <56e67584-366a-0a1a-916d-f75a54ae1d32@gmail.com>
+Date: Fri, 15 Jun 2018 21:38:25 +0200
 MIME-Version: 1.0
+In-Reply-To: <878t7g6wbg.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +22,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>
-Cc: Govind Singh <govinds@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-kbuild test robot <lkp@intel.com> writes:
+Hi Kalle,
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   59ff1228bc7ecec5ed2558e0e6d33423da443180
-> commit: 59ff1228bc7ecec5ed2558e0e6d33423da443180 [109/109] ath10k: Add QMI message handshake for wcn3990 client
-> config: arm-allmodconfig (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (Debian 7.2.0-11) 7.2.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout 59ff1228bc7ecec5ed2558e0e6d33423da443180
->         # save the attached .config to linux build tree
->         GCC_VERSION=7.2.0 make.cross ARCH=arm 
->
-> All errors (new ones prefixed by >>):
->
->>> make[6]: *** No rule to make target 'drivers/net/wireless/ath/ath10k/qmi.o', needed by 'drivers/net/wireless/ath/ath10k/ath10k_snoc.o'.
->    make[6]: *** [drivers/net/wireless/ath/ath10k/snoc.o] Error 1
->    make[6]: Target '__build' not remade because of errors.
-> --
->    In file included from drivers/net/wireless/ath/ath10k/snoc.c:29:0:
->>> drivers/net/wireless/ath/ath10k/snoc.h:22:10: fatal error: qmi.h: No such file or directory
->     #include "qmi.h"
->              ^~~~~~~
->    compilation terminated.
->
-> vim +22 drivers/net/wireless/ath/ath10k/snoc.h
->
->     19	
->     20	#include "hw.h"
->     21	#include "ce.h"
->   > 22	#include "qmi.h"
->     23	
+On 06/15/2018 02:58 PM, Kalle Valo wrote:
+> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+> 
+>> Although the TID mask is 0xf, the modulus operation does still not
+>> produce identical results as the bitwise and operator.
+>>
+>> If the TID is 15, the modulus operation will "convert" it to 0, whereas
+>> the bitwise and will keep it as 15.
+>>
+>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/htt_tx.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> index 89157c5b5e5f..be5b52aaffa6 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> @@ -1056,7 +1056,7 @@ static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
+>>   	if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
+>>   		return HTT_DATA_TX_EXT_TID_MGMT;
+>>   	else if (cb->flags & ATH10K_SKB_F_QOS)
+>> -		return skb->priority % IEEE80211_QOS_CTL_TID_MASK;
+>> +		return skb->priority & IEEE80211_QOS_CTL_TID_MASK;
+> 
+> I guess you just found this during code review? If yes, I'll add that to
+> the commit log.
+> 
+Correct, I kind of stumbled upon it while working with TX bundling for SDIO.
 
-This was my bad. While fixing some conflicts manually I forgot to add
-qmi.c and qmi.h to the commit. I fixed that now in the pending branch
-and hopefully it builds this time.
-
--- 
-Kalle Valo
+--
+Erik
 
 _______________________________________________
 ath10k mailing list
