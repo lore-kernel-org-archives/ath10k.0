@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVPOF-0003up-Gj
- for ath10k@lists.infradead.org; Tue, 19 Jun 2018 22:46:21 +0000
-Received: by mail-lf0-x241.google.com with SMTP id a13-v6so1916426lfk.12
- for <ath10k@lists.infradead.org>; Tue, 19 Jun 2018 15:46:09 -0700 (PDT)
-Date: Wed, 20 Jun 2018 00:46:05 +0200
+ id 1fVPOX-0003y5-VD
+ for ath10k@lists.infradead.org; Tue, 19 Jun 2018 22:46:39 +0000
+Received: by mail-lf0-x243.google.com with SMTP id d24-v6so1934360lfa.8
+ for <ath10k@lists.infradead.org>; Tue, 19 Jun 2018 15:46:27 -0700 (PDT)
+Date: Wed, 20 Jun 2018 00:46:23 +0200
 From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH v2 2/6] ath10k: Add support to create boardname for
- non-bmi target
-Message-ID: <20180619224605.GB1635@centauri.lan>
-References: <20180605123448.32331-1-govinds@codeaurora.org>
+Subject: Re: [PATCH v2 4/6] ath10k: Add debug mask for QMI layer
+Message-ID: <20180619224623.GC1635@centauri.lan>
+References: <20180605123651.1589-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20180605123448.32331-1-govinds@codeaurora.org>
+In-Reply-To: <20180605123651.1589-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +26,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, Rakesh Pillai <pillair@codeaurora.org>, andy.gross@linaro.org
+Cc: andy.gross@linaro.org, david.brown@linaro.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 
-On Tue, Jun 05, 2018 at 06:04:48PM +0530, Govind Singh wrote:
-> From: Rakesh Pillai <pillair@codeaurora.org>
+On Tue, Jun 05, 2018 at 06:06:51PM +0530, Govind Singh wrote:
+> Add debug mask to control debug info of ath10k qmi
+> messaging layer.
 > 
-> Add support to create the boardname for non-bmi targets
-> like WCN3990, which uses qmi for bdf download. This
-> boardname is used to parse the board data from board-2.bin.
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > Signed-off-by: Govind Singh <govinds@codeaurora.org>
 > ---
->  drivers/net/wireless/ath/ath10k/core.c | 14 ++++++++++++++
->  drivers/net/wireless/ath/ath10k/core.h |  2 ++
->  2 files changed, 16 insertions(+)
+>  drivers/net/wireless/ath/ath10k/debug.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 4cf54a7ef09a..8a592019cc4d 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -1429,6 +1429,20 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
->  		goto out;
->  	}
+> diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+> index 0afca5c106b6..a2f84fdb9131 100644
+> --- a/drivers/net/wireless/ath/ath10k/debug.h
+> +++ b/drivers/net/wireless/ath/ath10k/debug.h
+> @@ -44,6 +44,7 @@ enum ath10k_debug_mask {
+>  	ATH10K_DBG_USB		= 0x00040000,
+>  	ATH10K_DBG_USB_BULK	= 0x00080000,
+>  	ATH10K_DBG_SNOC		= 0x00100000,
+> +	ATH10K_DBG_QMI		= 0x00200000,
+>  	ATH10K_DBG_ANY		= 0xffffffff,
+>  };
 >  
-> +	if (ar->id.qmi_ids_valid) {
-> +		if (ar->id.qmi_board_id > 0x99)
-> +			scnprintf(name, name_len,
-> +				  "bus=%s,qmi-board-id=%03x",
-> +				  ath10k_bus_str(ar->hif.bus),
-> +				  ar->id.qmi_board_id);
-> +		else
-> +			scnprintf(name, name_len,
-> +				  "bus=%s,qmi-board-id=b%02x",
-> +				  ath10k_bus_str(ar->hif.bus),
-> +				  ar->id.qmi_board_id);
-> +		goto out;
-> +	}
-> +
->  	scnprintf(name, name_len,
->  		  "bus=%s,vendor=%04x,device=%04x,subsystem-vendor=%04x,subsystem-device=%04x%s",
->  		  ath10k_bus_str(ar->hif.bus),
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 951dbdd1c9eb..0a2e4a5c3612 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -940,7 +940,9 @@ struct ath10k {
->  		u32 subsystem_device;
->  
->  		bool bmi_ids_valid;
-> +		bool qmi_ids_valid;
->  		u8 bmi_board_id;
-> +		u8 qmi_board_id;
->  		u8 bmi_chip_id;
->  
->  		char bdf_ext[ATH10K_SMBIOS_BDF_EXT_STR_LENGTH];
 > -- 
 > 2.17.0
 > 
