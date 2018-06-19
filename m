@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV7jA-0002Hs-Lf
- for ath10k@lists.infradead.org; Tue, 19 Jun 2018 03:54:46 +0000
+ id 1fV7uL-0007Cb-Bn
+ for ath10k@lists.infradead.org; Tue, 19 Jun 2018 04:06:19 +0000
 MIME-Version: 1.0
-Date: Tue, 19 Jun 2018 09:24:30 +0530
+Date: Tue, 19 Jun 2018 09:36:05 +0530
 From: Govind Singh <govinds@codeaurora.org>
 Subject: Re: [PATCH v2 0/6]  *** Add support for wifi QMI client driver ***
 In-Reply-To: <20180619021742.GA17220@rodete-desktop-imager.corp.google.com>
 References: <20180605123304.31969-1-govinds@codeaurora.org>
  <20180619021742.GA17220@rodete-desktop-imager.corp.google.com>
-Message-ID: <b0922cebf095db4471adcfb18b750cc5@codeaurora.org>
+Message-ID: <974e34efd334d921e49d08df879c1b97@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,6 +26,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Brian Norris <briannorris@chromium.org>
 Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org
 
+Hi Brian,
+
 On 2018-06-19 07:47, Brian Norris wrote:
 > Hi Govind,
 > 
@@ -33,7 +35,8 @@ On 2018-06-19 07:47, Brian Norris wrote:
 > What's up with that?
 > 
 
-Earlier was typo, it was first version.
+Earlier was typo(v3), it was first version.
+Pls ignore the same.
 
 > On Tue, Jun 05, 2018 at 06:03:04PM +0530, Govind Singh wrote:
 >> Add QMI client driver for Q6 integrated WLAN connectivity subsystem.
@@ -58,7 +61,7 @@ Earlier was typo, it was first version.
 
 Agree, As of now there is no road-map to support qmi on discrete 
 chip-set on ath10k tree.
-Probably if required in future we can use some generic callback and 
+Probably if required in future, we can use some generic callback and 
 opaque structures to
 make it independent to integrated/discrete chip set.
 
@@ -125,11 +128,12 @@ Sequence of user PD loading is given below as per current design of
 Modem Q6 fw.
 
 1) Remote proc PIL driver loads the modem fw/ROOT PD.
-2) As part of ROOT pd boot-up it queries to a daemon in apps 
-processor(pd_mapper)
-to determine how many usre pd's are getting supported in the remote 
-processor(Q6).
-3)
+2) As part of ROOT pd boot-up it queries to a daemon(pd_mapper) running 
+in apps processor to determine how many
+user pd's are getting supported in the remote processor(Q6).
+3) once supported pd info in known to Q6, tftp client in Q6 establishes 
+the connection with
+tftp server in Q6 for user pd loading.
 
 > Is this correct? If not, please correct me. But if it is:
 > 
@@ -143,6 +147,10 @@ processor(Q6).
 >    I can't review and aren't really even mentioned?
 > 
 
+As described above.
+There are no open source implementation available for tftp server as of 
+now and this is
+work in progress.
 
 > I hope I'm sorely wrong on this. But if I'm not, I don't see why this
 > driver should be merged at all. Linux drivers should be self-sufficient
@@ -157,6 +165,12 @@ processor(Q6).
 > 
 > Brian
 > 
+
+I understand your concern, currently Q6 ROOT PD infrastructure does not 
+support the same.
+This can be documented once opensource implementation of tftp server 
+daemon is available.
+
 > [1] It's an unfortunate fact of life that Wifi (and in this case,
 > modem+Wifi) processors will run proprietary firmware, but it's not
 > accepted that Linux relies on proprietary user space.
@@ -210,6 +224,9 @@ processor(Q6).
 >> --
 >> 2.17.0
 >> 
+
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
