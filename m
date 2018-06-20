@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVYhR-0000hc-Eh
- for ath10k@lists.infradead.org; Wed, 20 Jun 2018 08:42:46 +0000
-Received: by mail-lf0-x242.google.com with SMTP id n24-v6so3707714lfh.3
- for <ath10k@lists.infradead.org>; Wed, 20 Jun 2018 01:42:34 -0700 (PDT)
+ id 1fVYhR-0000hZ-Fp
+ for ath10k@lists.infradead.org; Wed, 20 Jun 2018 08:42:47 +0000
+Received: by mail-lf0-x242.google.com with SMTP id q11-v6so3685195lfc.7
+ for <ath10k@lists.infradead.org>; Wed, 20 Jun 2018 01:42:32 -0700 (PDT)
 From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: [PATCH 2/3] ath10k: sdio: allocate correct size for RECV_1MORE_BLOCK
- rx packets
-Date: Wed, 20 Jun 2018 10:42:21 +0200
-Message-Id: <20180620084222.3521-3-niklas.cassel@linaro.org>
-In-Reply-To: <20180620084222.3521-1-niklas.cassel@linaro.org>
-References: <20180620084222.3521-1-niklas.cassel@linaro.org>
+Subject: [PATCH 0/3] ath10k: sdio: essential sdio fixes
+Date: Wed, 20 Jun 2018 10:42:19 +0200
+Message-Id: <20180620084222.3521-1-niklas.cassel@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +22,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
-Cc: alagusankar@silex-india.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Niklas Cassel <niklas.cassel@linaro.org>
+To: ath10k@lists.infradead.org
+Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, alagusankar@silex-india.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Without this, when receiving a packet that has this flag set
-from firmware, we will read invalid trailer data from the packet,
-which will be shown as various errors, e.g. "sdio mbox lookahead
-is zero" or "invalid rx packet" or "payload length x exceeds max
-htc length".
+These fixes were originally embedded in a patch
+"ath10k_sdio: virtual scatter gather for receive"
+posted by Alagu Sankar <alagusankar@silex-india.com>
+https://patchwork.kernel.org/patch/9979579/
 
-Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
----
+However, while that patch implements scatter gather
+(without using the proper sg types), it also
+includes several other random fixes, including
+but not limited to checkpatch.pl fixes.
+
+This patch series is an attempt to extract
+the most essential fixes included in that commit.
+
+Each fix is now an individual commit, as upstream
+requires that each logical change is self contained.
+
+All of these fixes are essential to get working
+sdio support for ath10k.
+
+Other patches are needed to get working sdio support,
+including the high-latency patch series from Erik Stromdahl.
+
+
+Niklas Cassel (3):
+  ath10k: sdio: use same endpoint id for all packets in a bundle
+  ath10k: sdio: allocate correct size for RECV_1MORE_BLOCK rx packets
+  ath10k: sdio: set skb len for all rx packets
+
  drivers/net/wireless/ath/ath10k/htc.h  | 1 +
- drivers/net/wireless/ath/ath10k/sdio.c | 3 +++
- 2 files changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/sdio.c | 9 ++++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 34877597dd6a..cf1068dc3254 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -58,6 +58,7 @@ enum ath10k_htc_tx_flags {
- };
- 
- enum ath10k_htc_rx_flags {
-+	ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK = 0x01,
- 	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02,
- 	ATH10K_HTC_FLAG_BUNDLE_MASK     = 0xF0
- };
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index d46523b0472c..0c57d6aaa437 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -603,6 +603,9 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 		 * ATH10K_HTC_FLAG_BUNDLE_MASK flag set, all bundled
- 		 * packet skb's have been allocated in the previous step.
- 		 */
-+		if (htc_hdr->flags & ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK)
-+			full_len += ATH10K_HIF_MBOX_BLOCK_SIZE;
-+
- 		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[i],
- 						    act_len,
- 						    full_len,
 -- 
 2.17.1
 
