@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVyfY-0006sR-L0
- for ath10k@lists.infradead.org; Thu, 21 Jun 2018 12:26:34 +0000
-Received: by mail-it0-x242.google.com with SMTP id a195-v6so4364036itd.3
- for <ath10k@lists.infradead.org>; Thu, 21 Jun 2018 05:26:21 -0700 (PDT)
-From: Bob Copeland <me@bobcopeland.com>
-Subject: [PATCH] ath10k: use locked skb_dequeue for rx completions
-Date: Thu, 21 Jun 2018 08:25:48 -0400
-Message-Id: <20180621122548.23863-1-me@bobcopeland.com>
+ id 1fX0vP-0007kh-Ma
+ for ath10k@lists.infradead.org; Sun, 24 Jun 2018 09:03:13 +0000
+Received: by mail-ed1-x534.google.com with SMTP id b12-v6so3506499edt.8
+ for <ath10k@lists.infradead.org>; Sun, 24 Jun 2018 02:03:00 -0700 (PDT)
+MIME-Version: 1.0
+From: sdnlabs Janakaraj <wsuprabhu@gmail.com>
+Date: Sun, 24 Jun 2018 05:02:38 -0400
+Message-ID: <CAPWex-CT6dCcBttJguyceR0Xr7iogRc04ga3nvh_pMP9FQKm+A@mail.gmail.com>
+Subject: ath10k mesh mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,151 +18,290 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Bob Copeland <bobcopeland@fb.com>, Bob Copeland <me@bobcopeland.com>, kernel-team@fb.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-In our environment we are occasionally seeing the following stack trace
-in ath10k:
+Hi,
 
-Unable to handle kernel paging request at virtual address 0000a800
-pgd = c0204000
-[0000a800] *pgd=00000000
-Internal error: Oops: 17 [#1] SMP ARM
-Modules linked in: dwc3 dwc3_of_simple phy_qcom_dwc3 nf_nat xt_connmark
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.9.31 #2
-Hardware name: Generic DT based system
-task: c09f4f40 task.stack: c09ee000
-PC is at kfree_skb_list+0x1c/0x2c
-LR is at skb_release_data+0x6c/0x108
-pc : [<c065dcc4>]    lr : [<c065da5c>]    psr: 200f0113
-sp : c09efb68  ip : c09efb80  fp : c09efb7c
-r10: 00000000  r9 : 00000000  r8 : 043fddd1
-r7 : bf15d160  r6 : 00000000  r5 : d4ca2f00  r4 : ca7c6480
-r3 : 000000a0  r2 : 01000000  r1 : c0a57470  r0 : 0000a800
-Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-Control: 10c5787d  Table: 56e6006a  DAC: 00000051
-Process swapper/0 (pid: 0, stack limit = 0xc09ee210)
-Stack: (0xc09efb68 to 0xc09f0000)
-fb60:                   ca7c6480 d4ca2f00 c09efb9c c09efb80 c065da5c c065dcb4
-fb80: d4ca2f00 00000000 dcbf8400 bf15d160 c09efbb4 c09efba0 c065db28 c065d9fc
-fba0: d4ca2f00 00000000 c09efbcc c09efbb8 c065db48 c065db04 d4ca2f00 00000000
-fbc0: c09efbe4 c09efbd0 c065ddd0 c065db38 d4ca2f00 00000000 c09efc64 c09efbe8
-fbe0: bf09bd00 c065dd10 00000003 7fffffff c09efc24 dcbfc9c0 01200000 00000000
-fc00: 00000000 00000000 ddb7e440 c09e9440 c09efc48 1d195000 c09efc7c c09efc28
-fc20: c027bb68 c028aa00 ddb7e4f8 bf13231c ddb7e454 0004091f bf154571 d4ca2f00
-fc40: dcbf8d00 ca7c5df6 bf154538 01200000 00000000 bf154538 c09efd1c c09efc68
-fc60: bf132458 bf09bbbc ca7c5dec 00000041 bf154538 bf154539 000007bf bf154545
-fc80: bf154538 bf154538 bf154538 bf154538 bf154538 00000000 00000000 000016c1
-fca0: 00000001 c09efcb0 01200000 00000000 00000000 00000000 00000000 00000001
-fcc0: bf154539 00000041 00000000 00000007 00000000 000000d0 ffffffff 3160ffff
-fce0: 9ad93e97 3e973160 7bf09ad9 0004091f d4ca2f00 c09efdb0 dcbf94e8 00000000
-fd00: dcbf8d00 01200000 00000000 dcbf8d00 c09efd44 c09efd20 bf132544 bf132130
-fd20: dcbf8d00 00000000 d4ca2f00 c09efdb0 00000001 d4ca2f00 c09efdec c09efd48
-fd40: bf133630 bf1324d0 ca7c5cc0 000007c0 c09efd88 c09efd70 c0764230 c02277d8
-fd60: 200f0113 ffffffff dcbf94c8 bf000000 dcbf93b0 dcbf8d00 00000040 dcbf945c
-fd80: dcbf94e8 00000000 c09efdcc 00000000 c09efd90 c09efd90 00000000 00000024
-fda0: dcbf8d00 00000000 00000005 dcbf8d00 c09efdb0 c09efdb0 00000000 00000040
-fdc0: c09efdec dcbf8d00 dcbfc9c0 c09ed140 00000040 00000000 00000100 00000040
-fde0: c09efe14 c09efdf0 bf1739b4 bf132840 dcbfc9c0 ddb82140 c09ed140 1d195000
-fe00: 00000001 00000100 c09efe64 c09efe18 c067136c bf173958 ddb7fac8 c09f0d00
-fe20: 001df678 0000012c c09efe28 c09efe28 c09efe30 c09efe30 c0a7fb28 ffffe000
-fe40: c09f008c 00000003 00000008 c0a598c0 00000100 c09f0080 c09efeb4 c09efe68
-fe60: c02096e0 c0671278 c0494584 00000080 dd5c3300 c09f0d00 00000004 001df677
-fe80: 0000000a 00200100 dd5c3300 00000000 00000000 c09eaa70 00000060 dd410800
-fea0: c09ee000 00000000 c09efecc c09efeb8 c0227944 c02094c4 00000000 00000000
-fec0: c09efef4 c09efed0 c0268b64 c02278ac de802000 c09f1b1c c09eff20 c0a16cc0
-fee0: de803000 c09ee000 c09eff1c c09efef8 c020947c c0268ae0 c02103dc 600f0013
-ff00: ffffffff c09eff54 ffffe000 c09ee000 c09eff7c c09eff20 c021448c c0209424
-ff20: 00000001 00000000 00000000 c021ddc0 00000000 00000000 c09f1024 00000001
-ff40: ffffe000 c09f1078 00000000 c09eff7c c09eff80 c09eff70 c02103ec c02103dc
-ff60: 600f0013 ffffffff 00000051 00000000 c09eff8c c09eff80 c0763cc4 c02103bc
-ff80: c09effa4 c09eff90 c025f0e4 c0763c98 c0a59040 c09f1000 c09effb4 c09effa8
-ffa0: c075efe0 c025efd4 c09efff4 c09effb8 c097dcac c075ef7c ffffffff ffffffff
-ffc0: 00000000 c097d6c4 00000000 c09c1a28 c0a59294 c09f101c c09c1a24 c09f61c0
-ffe0: 4220406a 512f04d0 00000000 c09efff8 4220807c c097d95c 00000000 00000000
-[<c065dcc4>] (kfree_skb_list) from [<c065da5c>] (skb_release_data+0x6c/0x108)
-[<c065da5c>] (skb_release_data) from [<c065db28>] (skb_release_all+0x30/0x34)
-[<c065db28>] (skb_release_all) from [<c065db48>] (__kfree_skb+0x1c/0x9c)
-[<c065db48>] (__kfree_skb) from [<c065ddd0>] (consume_skb+0xcc/0xd8)
-[<c065ddd0>] (consume_skb) from [<bf09bd00>] (ieee80211_rx_napi+0x150/0x82c [mac80211])
-[<bf09bd00>] (ieee80211_rx_napi [mac80211]) from [<bf132458>] (ath10k_htt_t2h_msg_handler+0x15e8/0x19c4 [ath10k_core])
-[<bf132458>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf132544>] (ath10k_htt_t2h_msg_handler+0x16d4/0x19c4 [ath10k_core])
-[<bf132544>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf133630>] (ath10k_htt_txrx_compl_task+0xdfc/0x12cc [ath10k_core])
-[<bf133630>] (ath10k_htt_txrx_compl_task [ath10k_core]) from [<bf1739b4>] (ath10k_pci_napi_poll+0x68/0xf4 [ath10k_pci])
-[<bf1739b4>] (ath10k_pci_napi_poll [ath10k_pci]) from [<c067136c>] (net_rx_action+0x100/0x33c)
-[<c067136c>] (net_rx_action) from [<c02096e0>] (__do_softirq+0x228/0x31c)
-[<c02096e0>] (__do_softirq) from [<c0227944>] (irq_exit+0xa4/0x114)
+I am using Compex WLE900VX RF card on Ubuntu 16.04 single board computer.
 
-The trace points to a corrupt skb inside kfree_skb(), seemingly because
-one of the shared skb queues is getting corrupted.  Most of the skb queues
-ath10k uses are local to a single call stack, but three are shared among
-multiple codepaths:
+I want to create two mesh networks on the same Phy card. I have done
+the same on ath9k on a different hardware and have not faced any
+issues.
 
- - rx_msdus_q,
- - rx_in_ord_compl_q, and
- - tx_fetch_ind_q
+With ath10k, I am not able to fireup my 2nd mesh and syslog reported
+stack trace.
 
-Of the three, the first two are manipulated using the unlocked skb_queue
-functions without any additional lock protecting them.  Use the locked
-variants of skb_queue_* functions to protect these manipulations.
 
-Signed-off-by: Bob Copeland <bobcopeland@fb.com>
----
-I may have misunderstood the locking regime here, so please let me know
-if so.  This seems to have fixed the crash, but I don't know a reproducer
-other than "wait a while and see."
+Below are the commands that I used:
 
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+# 1st Mesh Network
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index c72d8af122a2..86accfb8eb88 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1089,7 +1089,7 @@ static void ath10k_htt_rx_h_queue_msdu(struct ath10k *ar,
- 	status = IEEE80211_SKB_RXCB(skb);
- 	*status = *rx_status;
- 
--	__skb_queue_tail(&ar->htt.rx_msdus_q, skb);
-+	skb_queue_tail(&ar->htt.rx_msdus_q, skb);
- }
- 
- static void ath10k_process_rx(struct ath10k *ar, struct sk_buff *skb)
-@@ -2810,7 +2810,7 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND: {
--		__skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
-+		skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
- 		return false;
- 	}
- 	case HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND:
-@@ -2874,7 +2874,7 @@ static int ath10k_htt_rx_deliver_msdu(struct ath10k *ar, int quota, int budget)
- 		if (skb_queue_empty(&ar->htt.rx_msdus_q))
- 			break;
- 
--		skb = __skb_dequeue(&ar->htt.rx_msdus_q);
-+		skb = skb_dequeue(&ar->htt.rx_msdus_q);
- 		if (!skb)
- 			break;
- 		ath10k_process_rx(ar, skb);
-@@ -2905,7 +2905,7 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
- 		goto exit;
- 	}
- 
--	while ((skb = __skb_dequeue(&htt->rx_in_ord_compl_q))) {
-+	while ((skb = skb_dequeue(&htt->rx_in_ord_compl_q))) {
- 		spin_lock_bh(&htt->rx_ring.lock);
- 		ret = ath10k_htt_rx_in_ord_ind(ar, skb);
- 		spin_unlock_bh(&htt->rx_ring.lock);
--- 
-2.11.0
+iw dev mesh0 del
+iw phy phy0 interface add mesh0 type mp
+ifconfig mesh0 hw ether $MAC_ADDRESS
+ip link set mesh0 up
+iwconfig mesh0 txpower 15
+iw dev mesh0 mesh join testmesh
 
+# 2nd Mesh Network
+
+iw dev mesh1 del
+iw phy phy0 interface add mesh1 type mp
+ifconfig mesh1 hw ether $MAC_ADDRESS1
+ip link set mesh1 up
+iwconfig mesh1 txpower 15
+iw dev mesh0 mesh join testmesh1
+
+Below is the syslog file traces which happens when I enter the last command
+iw dev mesh0 mesh join testmesh1
+
+
+Jun 24 08:35:33 testnode wpa_supplicant[670]: nl80211:
+send_and_recv->nl_recvmsgs failed: -33
+Jun 24 08:35:33 testnode rsyslogd-2007: action 'action 9' suspended,
+next retry is Sun Jun 24 08:36:03 2018 [v8.16.0 try
+http://www.rsyslog.com/e/2007 ]
+Jun 24 08:35:48 testnode kernel: [  573.186363] device ofmesh entered
+promiscuous mode
+Jun 24 08:35:48 testnode NetworkManager[416]: <info>
+[1529829348.9150] (ofmesh): using nl80211 for WiFi device control
+Jun 24 08:35:49 testnode NetworkManager[416]: <info>
+[1529829348.9997] devices added (path:
+/sys/devices/soc0/soc/1ffc000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/0000:05:00.0/net/ofmesh,
+iface: ofmesh)
+Jun 24 08:35:49 testnode NetworkManager[416]: <info>
+[1529829348.9999] device added (path:
+/sys/devices/soc0/soc/1ffc000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/0000:05:00.0/net/ofmesh,
+iface: ofmesh): no ifupdown configuration found.
+Jun 24 08:36:05 testnode kernel: [  589.429219] IPv6:
+ADDRCONF(NETDEV_UP): ofmesh: link is not ready
+Jun 24 08:36:05 testnode rsyslogd-2007: action 'action 9' suspended,
+next retry is Sun Jun 24 08:36:35 2018 [v8.16.0 try
+http://www.rsyslog.com/e/2007 ]
+Jun 24 08:36:20 testnode systemd[1]: Started Session 4 of user admin.
+Jun 24 08:36:36 testnode rsyslogd-2007: action 'action 9' suspended,
+next retry is Sun Jun 24 08:37:06 2018 [v8.16.0 try
+http://www.rsyslog.com/e/2007 ]
+Jun 24 08:36:54 testnode kernel: [  638.381252] ------------[ cut here
+]------------
+Jun 24 08:36:54 testnode kernel: [  638.381688] WARNING: CPU: 0 PID:
+1247 at /build/linux-hwe-edge-AFUOgj/linux-hwe-edge-4.11.0/net/mac80211/ieee80211_i.h:1010
+ieee80211_mesh_process_chnswitch+0x1dc/0x258 [mac80211]
+Jun 24 08:36:54 testnode kernel: [  638.381694] Modules linked in:
+xt_tcpudp iptable_mangle xt_mark ip_tables x_tables dw_hdmi_ahb_audio
+imx_ipuv3_crtc caam_jr openvswitch nf_conntrack_ipv6 arc4 nf_nat_ipv6
+nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_defrag_ipv6 nf_nat
+nf_conntrack libcrc32c snd_soc_fsl_asoc_card snd_ac97_codec
+nvmem_imx_ocotp pfuze100_regulator bridge egalax_ts rtc_ds1672 stp llc
+ci_hdrc_imx at24 nvmem_core ci_hdrc gpio_pca953x usbmisc_imx caam ulpi
+imx_ipu_v3 imx_sdma ath10k_pci ath10k_core ath anatop_regulator
+mac80211 snd_soc_fsl_asrc dw_hdmi_imx sky2 etnaviv dw_hdmi imx_ldb
+coda imx_vdoa v4l2_mem2mem v4l2_common videobuf2_vmalloc imxdrm
+videobuf2_dma_contig drm_kms_helper videobuf2_memops videobuf2_v4l2
+spi_imx spi_bitbang videobuf2_core videodev flexcan pwm_imx media
+can_dev drm fb_sys_fops imx_thermal syscopyarea
+Jun 24 08:36:54 testnode kernel: [  638.381908]  sysfillrect gpmi_nand
+sysimgblt pwm_bl pps_gpio uio_pdrv_genirq uio leds_gpio cfg80211
+deflate aes_arm_bs crypto_simd cryptd aes_arm twofish_generic
+twofish_common camellia_generic serpent_generic blowfish_generic
+blowfish_common cast5_generic cast_common des_generic cmac xcbc rmd160
+af_key xfrm_algo autofs4
+Jun 24 08:36:54 testnode kernel: [  638.382005] CPU: 0 PID: 1247 Comm:
+kworker/u8:1 Not tainted 4.11.0-14-generic #20~16.04.1-Ubuntu
+Jun 24 08:36:54 testnode kernel: [  638.382010] Hardware name:
+Freescale i.MX6 Quad/DualLite (Device Tree)
+Jun 24 08:36:54 testnode kernel: [  638.382348] Workqueue: phy0
+ieee80211_iface_work [mac80211]
+Jun 24 08:36:54 testnode kernel: [  638.382381] [<c0314ae0>]
+(unwind_backtrace) from [<c030e774>] (show_stack+0x20/0x24)
+Jun 24 08:36:54 testnode kernel: [  638.382400] [<c030e774>]
+(show_stack) from [<c0729a80>] (dump_stack+0x90/0xa4)
+Jun 24 08:36:54 testnode kernel: [  638.382421] [<c0729a80>]
+(dump_stack) from [<c0352990>] (__warn+0xf8/0x110)
+Jun 24 08:36:54 testnode kernel: [  638.382437] [<c0352990>] (__warn)
+from [<c0352ac0>] (warn_slowpath_null+0x30/0x38)
+Jun 24 08:36:54 testnode kernel: [  638.382774] [<c0352ac0>]
+(warn_slowpath_null) from [<bf6b0480>]
+(ieee80211_mesh_process_chnswitch+0x1dc/0x258 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.383445] [<bf6b0480>]
+(ieee80211_mesh_process_chnswitch [mac80211]) from [<bf6b0c84>]
+(ieee80211_mesh_rx_bcn_presp+0x184/0x1b4 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.384092] [<bf6b0c84>]
+(ieee80211_mesh_rx_bcn_presp [mac80211]) from [<bf6b2188>]
+(ieee80211_mesh_rx_queued_mgmt+0xd0/0x124 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.384734] [<bf6b2188>]
+(ieee80211_mesh_rx_queued_mgmt [mac80211]) from [<bf660de4>]
+(ieee80211_iface_work+0x3e4/0x420 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.385068] [<bf660de4>]
+(ieee80211_iface_work [mac80211]) from [<c036fd6c>]
+(process_one_work+0x15c/0x530)
+Jun 24 08:36:54 testnode kernel: [  638.385085] [<c036fd6c>]
+(process_one_work) from [<c03701a0>] (worker_thread+0x60/0x5bc)
+Jun 24 08:36:54 testnode kernel: [  638.385101] [<c03701a0>]
+(worker_thread) from [<c0376768>] (kthread+0x144/0x174)Jun 24 08:35:33
+testnode wpa_supplicant[670]: nl80211: send_and_recv->nl_recvmsgs
+failed: -33
+Jun 24 08:35:33 testnode rsyslogd-2007: action 'action 9' suspended,
+next retry is Sun Jun 24 08:36:03 2018 [v8.16.0 try
+http://www.rsyslog.com/e/2007 ]
+Jun 24 08:35:48 testnode kernel: [  573.186363] device ofmesh entered
+promiscuous mode
+Jun 24 08:35:48 testnode NetworkManager[416]: <info>
+[1529829348.9150] (ofmesh): using nl80211 for WiFi device control
+Jun 24 08:35:49 testnode NetworkManager[416]: <info>
+[1529829348.9997] devices added (path:
+/sys/devices/soc0/soc/1ffc000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/0000:05:00.0/net/ofmesh,
+iface: ofmesh)
+Jun 24 08:35:49 testnode NetworkManager[416]: <info>
+[1529829348.9999] device added (path:
+/sys/devices/soc0/soc/1ffc000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/0000:05:00.0/net/ofmesh,
+iface: ofmesh): no ifupdown configuration found.
+Jun 24 08:36:05 testnode kernel: [  589.429219] IPv6:
+ADDRCONF(NETDEV_UP): ofmesh: link is not ready
+Jun 24 08:36:05 testnode rsyslogd-2007: action 'action 9' suspended,
+next retry is Sun Jun 24 08:36:35 2018 [v8.16.0 try
+http://www.rsyslog.com/e/2007 ]
+Jun 24 08:36:20 testnode systemd[1]: Started Session 4 of user admin.
+Jun 24 08:36:36 testnode rsyslogd-2007: action 'action 9' suspended,
+next retry is Sun Jun 24 08:37:06 2018 [v8.16.0 try
+http://www.rsyslog.com/e/2007 ]
+Jun 24 08:36:54 testnode kernel: [  638.381252] ------------[ cut here
+]------------
+Jun 24 08:36:54 testnode kernel: [  638.381688] WARNING: CPU: 0 PID:
+1247 at /build/linux-hwe-edge-AFUOgj/linux-hwe-edge-4.11.0/net/mac80211/ieee80211_i.h:1010
+ieee80211_mesh_process_chnswitch+0x1dc/0x258 [mac80211]
+Jun 24 08:36:54 testnode kernel: [  638.381694] Modules linked in:
+xt_tcpudp iptable_mangle xt_mark ip_tables x_tables dw_hdmi_ahb_audio
+imx_ipuv3_crtc caam_jr openvswitch nf_conntrack_ipv6 arc4 nf_nat_ipv6
+nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_defrag_ipv6 nf_nat
+nf_conntrack libcrc32c snd_soc_fsl_asoc_card snd_ac97_codec
+nvmem_imx_ocotp pfuze100_regulator bridge egalax_ts rtc_ds1672 stp llc
+ci_hdrc_imx at24 nvmem_core ci_hdrc gpio_pca953x usbmisc_imx caam ulpi
+imx_ipu_v3 imx_sdma ath10k_pci ath10k_core ath anatop_regulator
+mac80211 snd_soc_fsl_asrc dw_hdmi_imx sky2 etnaviv dw_hdmi imx_ldb
+coda imx_vdoa v4l2_mem2mem v4l2_common videobuf2_vmalloc imxdrm
+videobuf2_dma_contig drm_kms_helper videobuf2_memops videobuf2_v4l2
+spi_imx spi_bitbang videobuf2_core videodev flexcan pwm_imx media
+can_dev drm fb_sys_fops imx_thermal syscopyarea
+Jun 24 08:36:54 testnode kernel: [  638.381908]  sysfillrect gpmi_nand
+sysimgblt pwm_bl pps_gpio uio_pdrv_genirq uio leds_gpio cfg80211
+deflate aes_arm_bs crypto_simd cryptd aes_arm twofish_generic
+twofish_common camellia_generic serpent_generic blowfish_generic
+blowfish_common cast5_generic cast_common des_generic cmac xcbc rmd160
+af_key xfrm_algo autofs4
+Jun 24 08:36:54 testnode kernel: [  638.382005] CPU: 0 PID: 1247 Comm:
+kworker/u8:1 Not tainted 4.11.0-14-generic #20~16.04.1-Ubuntu
+Jun 24 08:36:54 testnode kernel: [  638.382010] Hardware name:
+Freescale i.MX6 Quad/DualLite (Device Tree)
+Jun 24 08:36:54 testnode kernel: [  638.382348] Workqueue: phy0
+ieee80211_iface_work [mac80211]
+Jun 24 08:36:54 testnode kernel: [  638.382381] [<c0314ae0>]
+(unwind_backtrace) from [<c030e774>] (show_stack+0x20/0x24)
+Jun 24 08:36:54 testnode kernel: [  638.382400] [<c030e774>]
+(show_stack) from [<c0729a80>] (dump_stack+0x90/0xa4)
+Jun 24 08:36:54 testnode kernel: [  638.382421] [<c0729a80>]
+(dump_stack) from [<c0352990>] (__warn+0xf8/0x110)
+Jun 24 08:36:54 testnode kernel: [  638.382437] [<c0352990>] (__warn)
+from [<c0352ac0>] (warn_slowpath_null+0x30/0x38)
+Jun 24 08:36:54 testnode kernel: [  638.382774] [<c0352ac0>]
+(warn_slowpath_null) from [<bf6b0480>]
+(ieee80211_mesh_process_chnswitch+0x1dc/0x258 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.383445] [<bf6b0480>]
+(ieee80211_mesh_process_chnswitch [mac80211]) from [<bf6b0c84>]
+(ieee80211_mesh_rx_bcn_presp+0x184/0x1b4 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.384092] [<bf6b0c84>]
+(ieee80211_mesh_rx_bcn_presp [mac80211]) from [<bf6b2188>]
+(ieee80211_mesh_rx_queued_mgmt+0xd0/0x124 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.384734] [<bf6b2188>]
+(ieee80211_mesh_rx_queued_mgmt [mac80211]) from [<bf660de4>]
+(ieee80211_iface_work+0x3e4/0x420 [mac80211])
+Jun 24 08:36:54 testnode kernel: [  638.385068] [<bf660de4>]
+(ieee80211_iface_work [mac80211]) from [<c036fd6c>]
+(process_one_work+0x15c/0x530)
+Jun 24 08:36:54 testnode kernel: [  638.385085] [<c036fd6c>]
+(process_one_work) from [<c03701a0>] (worker_thread+0x60/0x5bc)
+Jun 24 08:36:54 testnode kernel: [  638.385101] [<c03701a0>]
+(worker_thread) from [<c0376768>] (kthread+0x144/0x174)
+Jun 24 08:36:54 testnode kernel: [  638.385117] [<c0376768>] (kthread)
+from [<c0309718>] (ret_from_fork+0x14/0x3c)
+Jun 24 08:36:54 testnode kernel: [  638.385192] ---[ end trace
+8a2584b386693b84 ]---
+Jun 24 08:36:57 testnode kernel: [  641.453269] ------------[ cut here
+]------------
+
+Jun 24 08:36:54 testnode kernel: [  638.385117] [<c0376768>] (kthread)
+from [<c0309718>] (ret_from_fork+0x14/0x3c)
+Jun 24 08:36:54 testnode kernel: [  638.385192] ---[ end trace
+8a2584b386693b84 ]---
+Jun 24 08:36:57 testnode kernel: [  641.453269] ------------[ cut here
+]------------
+
+Jun 24 08:37:02 testnode kernel: [  646.573235] ------------[ cut here
+]------------
+Jun 24 08:37:02 testnode kernel: [  646.573653] WARNING: CPU: 0 PID:
+1247 at /build/linux-hwe-edge-AFUOgj/linux-hwe-edge-4.11.0/net/mac80211/ieee80211_i.h:1010
+ieee80211_mesh_process_chnswitch+0x1dc/0x258 [mac80211]
+Jun 24 08:37:02 testnode kernel: [  646.573658] Modules linked in:
+xt_tcpudp iptable_mangle xt_mark ip_tables x_tables dw_hdmi_ahb_audio
+imx_ipuv3_crtc caam_jr openvswitch nf_conntrack_ipv6 arc4 nf_nat_ipv6
+nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_defrag_ipv6 nf_nat
+nf_conntrack libcrc32c snd_soc_fsl_asoc_card snd_ac97_codec
+nvmem_imx_ocotp pfuze100_regulator bridge egalax_ts rtc_ds1672 stp llc
+ci_hdrc_imx at24 nvmem_core ci_hdrc gpio_pca953x usbmisc_imx caam ulpi
+imx_ipu_v3 imx_sdma ath10k_pci ath10k_core ath anatop_regulator
+mac80211 snd_soc_fsl_asrc dw_hdmi_imx sky2 etnaviv dw_hdmi imx_ldb
+coda imx_vdoa v4l2_mem2mem v4l2_common videobuf2_vmalloc imxdrm
+videobuf2_dma_contig drm_kms_helper videobuf2_memops videobuf2_v4l2
+spi_imx spi_bitbang videobuf2_core videodev flexcan pwm_imx media
+can_dev drm fb_sys_fops imx_thermal syscopyarea
+Jun 24 08:37:02 testnode kernel: [  646.573866]  sysfillrect gpmi_nand
+sysimgblt pwm_bl pps_gpio uio_pdrv_genirq uio leds_gpio cfg80211
+deflate aes_arm_bs crypto_simd cryptd aes_arm twofish_generic
+twofish_common camellia_generic serpent_generic blowfish_generic
+blowfish_common cast5_generic cast_common des_generic cmac xcbc rmd160
+af_key xfrm_algo autofs4
+Jun 24 08:37:02 testnode kernel: [  646.573962] CPU: 0 PID: 1247 Comm:
+kworker/u8:1 Tainted: G        W       4.11.0-14-generic
+#20~16.04.1-Ubuntu
+Jun 24 08:37:02 testnode kernel: [  646.573967] Hardware name:
+Freescale i.MX6 Quad/DualLite (Device Tree)
+Jun 24 08:37:02 testnode kernel: [  646.574307] Workqueue: phy0
+ieee80211_iface_work [mac80211]
+Jun 24 08:37:02 testnode kernel: [  646.574341] [<c0314ae0>]
+(unwind_backtrace) from [<c030e774>] (show_stack+0x20/0x24)
+Jun 24 08:37:02 testnode kernel: [  646.574358] [<c030e774>]
+(show_stack) from [<c0729a80>] (dump_stack+0x90/0xa4)
+Jun 24 08:37:02 testnode kernel: [  646.574380] [<c0729a80>]
+(dump_stack) from [<c0352990>] (__warn+0xf8/0x110)
+Jun 24 08:37:02 testnode kernel: [  646.574395] [<c0352990>] (__warn)
+from [<c0352ac0>] (warn_slowpath_null+0x30/0x38)
+Jun 24 08:37:02 testnode kernel: [  646.574730] [<c0352ac0>]
+(warn_slowpath_null) from [<bf6b0480>]
+(ieee80211_mesh_process_chnswitch+0x1dc/0x258 [mac80211])
+Jun 24 08:37:02 testnode kernel: [  646.575375] [<bf6b0480>]
+(ieee80211_mesh_process_chnswitch [mac80211]) from [<bf6b0c84>]
+(ieee80211_mesh_rx_bcn_presp+0x184/0x1b4 [mac80211])
+Jun 24 08:37:02 testnode kernel: [  646.576023] [<bf6b0c84>]
+(ieee80211_mesh_rx_bcn_presp [mac80211]) from [<bf6b2188>]
+(ieee80211_mesh_rx_queued_mgmt+0xd0/0x124 [mac80211])
+Jun 24 08:37:02 testnode kernel: [  646.576664] [<bf6b2188>]
+(ieee80211_mesh_rx_queued_mgmt [mac80211]) from [<bf660de4>]
+(ieee80211_iface_work+0x3e4/0x420 [mac80211])
+Jun 24 08:37:02 testnode kernel: [  646.576996] [<bf660de4>]
+(ieee80211_iface_work [mac80211]) from [<c036fd6c>]
+(process_one_work+0x15c/0x530)
+Jun 24 08:37:02 testnode kernel: [  646.577014] [<c036fd6c>]
+(process_one_work) from [<c03701a0>] (worker_thread+0x60/0x5bc)
+Jun 24 08:37:02 testnode kernel: [  646.577029] [<c03701a0>]
+(worker_thread) from [<c0376768>] (kthread+0x144/0x174)
+Jun 24 08:37:02 testnode kernel: [  646.577046] [<c0376768>] (kthread)
+from [<c0309718>] (ret_from_fork+0x14/0x3c)
+Jun 24 08:37:02 testnode kernel: [  646.577170] ---[ end trace
+8a2584b386693b8a ]---
 
 _______________________________________________
 ath10k mailing list
