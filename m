@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x229.google.com ([2607:f8b0:400d:c0d::229])
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]
+ helo=alexa-out-blr.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYQhU-0002Yf-Md
- for ath10k@lists.infradead.org; Thu, 28 Jun 2018 06:46:42 +0000
-Received: by mail-qt0-x229.google.com with SMTP id c5-v6so3837349qth.5
- for <ath10k@lists.infradead.org>; Wed, 27 Jun 2018 23:46:29 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: 160 mhz crash
-Date: Thu, 28 Jun 2018 08:46:21 +0200
-Message-ID: <1788770.Stodcpyumm@bentobox>
-In-Reply-To: <4e8058c7-6443-5b4c-3077-dd0325159854@dd-wrt.com>
-References: <CA+_ehUzDW8Y9OYYPCijxxGmpp+UZFWySzj0FcQcQDncMu51kjQ@mail.gmail.com>
- <4e8058c7-6443-5b4c-3077-dd0325159854@dd-wrt.com>
-MIME-Version: 1.0
+ id 1fYTCf-0006mM-FS
+ for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:27:03 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH 1/2] ath10k: Disable bundle mgmt tx completion event support
+Date: Thu, 28 Jun 2018 14:48:56 +0530
+Message-Id: <1530177537-18487-2-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1530177537-18487-1-git-send-email-pillair@codeaurora.org>
+References: <1530177537-18487-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +18,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5564471651006755599=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
---===============5564471651006755599==
-Content-Type: multipart/signed; boundary="nextPart6542457.LM2XNQaJRj"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
 
---nextPart6542457.LM2XNQaJRj
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+The tx completion of multiple mgmt frames can be bundled
+in a single event and sent by the firmware to host, if this
+capability is not disabled explicitly by the host. If the host
+cannot handle the bundled mgmt tx completion, this capability
+support needs to be disabled in the wmi init cmd, sent to the firmware.
 
-On Samstag, 16. Juni 2018 10:11:27 CEST Sebastian Gottschall wrote:
-> 
-> this is normal. i already posted a patch on this mailinglist to resolve 
-> this issue, but
-> 
-> but it hasnt found its way to the main source yes.
+Add the host capability indication flag in the wmi ready command,
+to let firmware know the features supported by the host driver.
+This field is ignored if it is not supported by firmware.
 
-Problem seems to be that the patch [1] has obvious style problems and open 
-questions.
+Set the host capability indication flag(i.e. host_capab) to zero,
+for disabling the support of bundle mgmt tx completion. This will
+indicate the firmware to send completion event for every mgmt tx
+completion, instead of bundling them together and sending in a single
+event.
 
-Kind regards,
-	Sven
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 
-[1] https://patchwork.kernel.org/patch/10372949/
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 5 +++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 5 +++++
+ 2 files changed, 10 insertions(+)
 
---nextPart6542457.LM2XNQaJRj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 8c49a26..21eb3a5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1584,6 +1584,11 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	cfg->keep_alive_pattern_size = __cpu_to_le32(0);
+ 	cfg->max_tdls_concurrent_sleep_sta = __cpu_to_le32(1);
+ 	cfg->max_tdls_concurrent_buffer_sta = __cpu_to_le32(1);
++	cfg->wmi_send_separate = __cpu_to_le32(0);
++	cfg->num_ocb_vdevs = __cpu_to_le32(0);
++	cfg->num_ocb_channels = __cpu_to_le32(0);
++	cfg->num_ocb_schedules = __cpu_to_le32(0);
++	cfg->host_capab = __cpu_to_le32(0);
+ 
+ 	ath10k_wmi_put_host_mem_chunks(ar, chunks);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 3e1e340..1cb93d0 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1670,6 +1670,11 @@ struct wmi_tlv_resource_config {
+ 	__le32 keep_alive_pattern_size;
+ 	__le32 max_tdls_concurrent_sleep_sta;
+ 	__le32 max_tdls_concurrent_buffer_sta;
++	__le32 wmi_send_separate;
++	__le32 num_ocb_vdevs;
++	__le32 num_ocb_channels;
++	__le32 num_ocb_schedules;
++	__le32 host_capab;
+ } __packed;
+ 
+ struct wmi_tlv_init_cmd {
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAls0hD0ACgkQXYcKB8Em
-e0ZUzQ//aeo7LfhJRQ4ziNUYSNPEN/hOwhrEq3I9yV43tSPDGHvruTBuVQJasSPu
-moeR7r75XVp9/jpmYDi2OncDAT5xSFyrfb/2SkMnIY1jwjWrL7pvL0J4yJmwBdSP
-FIM6huz7pXuZ5eVSsxtSm3ZzVnpASyO4X4k7m/ec4Q1rEJGcqG6ILS7oT1QMt1fV
-j2SdgX2Bmba+IRndv+4thXTyw+zfmGVWzGwBJPxB4PG87vioszhrGZTh06BaCrQX
-AUx7V+2KNXSUZOGvn+N0nqM1h5uY2JxoGxctM7X/XpEJhqDXPIA4COgP6SpZjjsS
-uBH5pC0e8W23eC9yFRSl8kth+1ulUBl9YsKcJEImPd3Q8ngncg9P4q6TwytNbQZ+
-66hlweg3Osq6l/IbZAdHH0TFzybq1M+ILNHY987qoiaMHzR3KlCAYQXNDWBkB+bW
-cIjt3o7WWq2pCXwMZ4stJ4IUpfsOabpk6WqZMstw4dwVA7MTgcx4zwvEabtrE19/
-NrfjkiG17ZANEjH26fwKHWZIlOvGzLlmrdLVM3QrxDWRq/mt2IY9GN0Gko2PqQq9
-7QRuInnD8VDskkGFdYwF4mB9snxjzn26HzplEe21o+qQ2XnNKRRfq3oFwEzcpN06
-QhZwYgJTXLmtWr6RjLCHED8oOrllEr1AcRJLRO8XMRPkvFMjJwE=
-=sDwg
------END PGP SIGNATURE-----
-
---nextPart6542457.LM2XNQaJRj--
-
-
-
---===============5564471651006755599==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5564471651006755599==--
