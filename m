@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt0-x229.google.com ([2607:f8b0:400d:c0d::229])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYCgu-0001J2-A7
- for ath10k@lists.infradead.org; Wed, 27 Jun 2018 15:49:09 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ZyXEL WRE6606 specific BDFs
-References: <ab6baeb5-3f07-78a0-e62e-4b4154b8c82d@darmstadt.ccc.de>
-Date: Wed, 27 Jun 2018 18:48:53 +0300
-In-Reply-To: <ab6baeb5-3f07-78a0-e62e-4b4154b8c82d@darmstadt.ccc.de>
- (skorpy@darmstadt.ccc.de's message of "Tue, 19 Jun 2018 22:06:32
- +0200")
-Message-ID: <87vaa4s00q.fsf@kamboji.qca.qualcomm.com>
+ id 1fYQhU-0002Yf-Md
+ for ath10k@lists.infradead.org; Thu, 28 Jun 2018 06:46:42 +0000
+Received: by mail-qt0-x229.google.com with SMTP id c5-v6so3837349qth.5
+ for <ath10k@lists.infradead.org>; Wed, 27 Jun 2018 23:46:29 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: 160 mhz crash
+Date: Thu, 28 Jun 2018 08:46:21 +0200
+Message-ID: <1788770.Stodcpyumm@bentobox>
+In-Reply-To: <4e8058c7-6443-5b4c-3077-dd0325159854@dd-wrt.com>
+References: <CA+_ehUzDW8Y9OYYPCijxxGmpp+UZFWySzj0FcQcQDncMu51kjQ@mail.gmail.com>
+ <4e8058c7-6443-5b4c-3077-dd0325159854@dd-wrt.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,65 +21,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5564471651006755599=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Skorpy <skorpy@darmstadt.ccc.de>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Ansuel Smith <ansuelsmth@gmail.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Skorpy <skorpy@darmstadt.ccc.de> writes:
+--===============5564471651006755599==
+Content-Type: multipart/signed; boundary="nextPart6542457.LM2XNQaJRj"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-> Hi,
->
-> This is a set of board.bin files for the ZyXEL WRE6606 Router [0],
-> which I wish to be added to the ath10k-firmware repository.
->
->
-> As per the current "Submitting board files" guidelines [1]:
->
-> * description for what hardware this is:
->
->   - it is a IPQ4018 based board [0]
->   - one QCA40xx radio is used as 2.4GHz radio
->   - one QCA40xx radio is used as 5GHz radio
->
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
->
->   - All files were extracted from official vendor firmware which was
-> on the device from the factory
->   - Boardfiles also included in the vendor firmware image of the NBG6617
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->   - qca4019 hw1.0
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=24,variant=ZyXEL-WRE6606
->
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=25,variant=ZyXEL-WRE6606
->
-> * sha256sum of each new board file to add
->    - bus=ahb,bmi-chip-id=0,bmi-board-id=24,variant=ZyXEL-WRE6606
->      has sha256sum:
-> 1aeae4981217b63883e20ecbab6380aff404985485bf1e881fb0fc874f2a0883
->
->    - bus=ahb,bmi-chip-id=0,bmi-board-id=25,variant=ZyXEL-WRE6606
->      has sha256sum:
-> 469e81fd2593cba442c0d810ce92309bb92eaa42bbddbbbf4ec051fabd345ecf
->
-> * attach the actual board file (board.bin)
->
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
->
-> Kind regards,
-> Magnus
+--nextPart6542457.LM2XNQaJRj
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Please resubmit using your full name.
+On Samstag, 16. Juni 2018 10:11:27 CEST Sebastian Gottschall wrote:
+> 
+> this is normal. i already posted a patch on this mailinglist to resolve 
+> this issue, but
+> 
+> but it hasnt found its way to the main source yes.
 
--- 
-Kalle Valo
+Problem seems to be that the patch [1] has obvious style problems and open 
+questions.
+
+Kind regards,
+	Sven
+
+[1] https://patchwork.kernel.org/patch/10372949/
+
+--nextPart6542457.LM2XNQaJRj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAls0hD0ACgkQXYcKB8Em
+e0ZUzQ//aeo7LfhJRQ4ziNUYSNPEN/hOwhrEq3I9yV43tSPDGHvruTBuVQJasSPu
+moeR7r75XVp9/jpmYDi2OncDAT5xSFyrfb/2SkMnIY1jwjWrL7pvL0J4yJmwBdSP
+FIM6huz7pXuZ5eVSsxtSm3ZzVnpASyO4X4k7m/ec4Q1rEJGcqG6ILS7oT1QMt1fV
+j2SdgX2Bmba+IRndv+4thXTyw+zfmGVWzGwBJPxB4PG87vioszhrGZTh06BaCrQX
+AUx7V+2KNXSUZOGvn+N0nqM1h5uY2JxoGxctM7X/XpEJhqDXPIA4COgP6SpZjjsS
+uBH5pC0e8W23eC9yFRSl8kth+1ulUBl9YsKcJEImPd3Q8ngncg9P4q6TwytNbQZ+
+66hlweg3Osq6l/IbZAdHH0TFzybq1M+ILNHY987qoiaMHzR3KlCAYQXNDWBkB+bW
+cIjt3o7WWq2pCXwMZ4stJ4IUpfsOabpk6WqZMstw4dwVA7MTgcx4zwvEabtrE19/
+NrfjkiG17ZANEjH26fwKHWZIlOvGzLlmrdLVM3QrxDWRq/mt2IY9GN0Gko2PqQq9
+7QRuInnD8VDskkGFdYwF4mB9snxjzn26HzplEe21o+qQ2XnNKRRfq3oFwEzcpN06
+QhZwYgJTXLmtWr6RjLCHED8oOrllEr1AcRJLRO8XMRPkvFMjJwE=
+=sDwg
+-----END PGP SIGNATURE-----
+
+--nextPart6542457.LM2XNQaJRj--
+
+
+
+--===============5564471651006755599==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5564471651006755599==--
