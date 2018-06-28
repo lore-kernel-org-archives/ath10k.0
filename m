@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYTDm-0007IW-W8
- for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:28:12 +0000
+ id 1fYTL3-0003eL-DM
+ for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:35:43 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: Update the phymode along with bandwidth change
- request
+Subject: Re: ath10k: fixed scan crash
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
-References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
-Message-Id: <20180628092800.53BD660B22@smtp.codeaurora.org>
-Date: Thu, 28 Jun 2018 09:28:00 +0000 (UTC)
+In-Reply-To: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
+References: <1523345994-28800-1-git-send-email-zhichen@codeaurora.org>
+Message-Id: <20180628093530.F41DA60B10@smtp.codeaurora.org>
+Date: Thu, 28 Jun 2018 09:35:30 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +18,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, timur.kristof@gmail.com
+To: zhichen@codeaurora.org
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-UnlhbiBIc3UgPHJ5YW5oc3VAY29kZWF1cm9yYS5vcmc+IHdyb3RlOgoKPiBJbiB0aGUgY2FzZSBv
-ZiBTdGF0aW9uIGNvbm5lY3RzIHRvIEFQIHdpdGggbmFycm93ZXIgYmFuZHdpZHRoIGF0IGJlZ2lu
-bmluZy4KPiBBbmQgbGF0ZXIgdGhlIEFQIGNoYW5nZXMgdGhlIGJhbmR3aWR0aCB0byB3aW5kZXIg
-YmFuZHdpZHRoLCB0aGUgQVAgd2lsbAo+IGJlYWNvbiB3aXRoIHdpZGVyIGJhbmR3aWR0aCBJRSwg
-ZWcgVkhUMjAtPlZIVDQwLT5WSFQ4MCBvciBWSFQ0MC0+VkhUODAuCj4gCj4gU2luY2UgdGhlIHN1
-cHBvcnRlZCBCQU5EV0lEVEggd2lsbCBiZSBsaW1pdGVkIGJ5IHRoZSBQSFlNT0RFLCBzbyB3aGls
-ZQo+IFN0YXRpb24gcmVjZWl2ZXMgdGhlIGJhbmR3aWR0aCBjaGFuZ2UgcmVxdWVzdCwgaXQgd2ls
-bCBhbHNvIG5lZWQgdG8KPiByZWNvbmZpZ3VyZSB0aGUgUEhZTU9ERSBzZXR0aW5nIHRvIGZpcm13
-YXJlIGluc3RlYWQgb2YganVzdCBjb25maWd1cmluZwo+IHRoZSBCQU5EV0lEVEggaW5mbywgb3Ro
-ZXJ3aXNlIGl0J2xsIHRyaWdnZXIgYSBmaXJtd2FyZSBjcmFzaCB3aXRoCj4gbm9uLXN1cHBvcnQg
-YmFuZHdpZHRoLgo+IAo+IFRoZSBpc3N1ZSB3YXMgb2JzZXJ2ZWQgaW4gV0xBTi5STS40LjQuMS0w
-MDA1MS1RQ0FSTVNXUC0xLCBRQ0E2MTc0IHdpdGgKPiBiZWxvdyBzY2VuYXJpbzoKPiAKPiBBUCB4
-eHggY2hhbmdlZCBiYW5kd2lkdGgsIG5ldyBjb25maWcgaXMgNTIwMCBNSHosIHdpZHRoIDIgKDUx
-OTAvMCBNSHopCj4gZGlzY29ubmVjdCBmcm9tIEFQIHh4eCBmb3IgbmV3IGF1dGggdG8geXl5Cj4g
-UlggUmVhc3NvY1Jlc3AgZnJvbSB4eHggKGNhcGFiPTB4MTExMSBzdGF0dXM9MCBhaWQ9MTAyKQo+
-IGFzc29jaWF0ZWQKPiAKPiAuLi4uCj4gCj4gQVAgeHh4IGNoYW5nZWQgYmFuZHdpZHRoLCBuZXcg
-Y29uZmlnIGlzIDUyMDAgTUh6LCB3aWR0aCAyICg1MTkwLzAgTUh6KQo+IEFQIHh4eCBjaGFuZ2Vk
-IGJhbmR3aWR0aCwgbmV3IGNvbmZpZyBpcyA1MjAwIE1Ieiwgd2lkdGggMyAoNTIxMC8wIE1IeikK
-PiAKPiAuLi4uCj4gCj4gZmlybXdhcmUgcmVnaXN0ZXIgZHVtcDoKPiBbMDBdOiAweDA1MDMwMDAw
-IDB4MDAwMDE1QjMgMHgwMDk4NzI5MSAweDAwOTU1QjMxCj4gWzA0XTogMHgwMDk4NzI5MSAweDAw
-MDYwNzMwIDB4MDAwMDAwMDQgMHgwMDAwMDAwMQo+IFswOF06IDB4MDA0MDg5RjAgMHgwMDk1NUEw
-MCAweDAwMEEwQjAwIDB4MDA0MDAwMDAKPiBbMTJdOiAweDAwMDAwMDA5IDB4MDAwMDAwMDAgMHgw
-MDk1MkNEMCAweDAwOTUyQ0U2Cj4gWzE2XTogMHgwMDk1MkNDNCAweDAwOThFMjVGIDB4MDAwMDAw
-MDAgMHgwMDkxMDgwRAo+IFsyMF06IDB4NDA5ODcyOTEgMHgwMDQwRTdBOCAweDAwMDAwMDAwIDB4
-MDA0MUVFM0MKPiBbMjRdOiAweDgwOUFCRjA1IDB4MDA0MEU4MDggMHgwMDAwMDAwMCAweEMwOTg3
-MjkxCj4gWzI4XTogMHg4MDlBNjUwQyAweDAwNDBFOTQ4IDB4MDA0MUZFNDAgMHgwMDQzNDVDNAo+
-IFszMl06IDB4ODA5QTVDNjMgMHgwMDQwRTk4OCAweDAwNDBFOUFDIDB4MDA0MkQxQTgKPiBbMzZd
-OiAweDgwOTFEMjUyIDB4MDA0MEU5QTggMHgwMDAwMDAwMiAweDAwMDAwMDAxCj4gWzQwXTogMHg4
-MDlGREE5RCAweDAwNDBFQTU4IDB4MDA0M0Q1NTQgMHgwMDQyRDU1NAo+IFs0NF06IDB4ODA5RjhC
-MjIgMHgwMDQwRUE3OCAweDAwNDNENTU0IDB4MDAwMDAwMDEKPiBbNDhdOiAweDgwOTExMjEwIDB4
-MDA0MEVBQzggMHgwMDAwMDAxMCAweDAwNDA0MUQwCj4gWzUyXTogMHg4MDkxMTE1NCAweDAwNDBF
-QjI4IDB4MDA0MDAwMDAgMHgwMDAwMDAwMAo+IFs1Nl06IDB4ODA5MTEyMkQgMHgwMDQwRUI0OCAw
-eDAwMDAwMDAwIDB4MDA0MDA2MDAKPiAKPiBSZXBvcnRlZC1ieTogUm91dmVuIEN6ZXJ3aW5za2kg
-PHJvdXZlbkBjemVyd2luc2tpcy5kZT4KPiBUZXN0ZWQtYnk6IFRpbXVyIEtyaXN0w7NmIDx0aW11
-ci5rcmlzdG9mQGdtYWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBSeWFuIEhzdSA8cnlhbmhzdUBj
-b2RlYXVyb3JhLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVy
-b3JhLm9yZz4KClBhdGNoIGFwcGxpZWQgdG8gYXRoLWN1cnJlbnQgYnJhbmNoIG9mIGF0aC5naXQs
-IHRoYW5rcy4KCjkxOTFmYzJhNDMxYiBhdGgxMGs6IHVwZGF0ZSB0aGUgcGh5bW9kZSBhbG9uZyB3
-aXRoIGJhbmR3aWR0aCBjaGFuZ2UgcmVxdWVzdAoKLS0gCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5l
-bC5vcmcvcGF0Y2gvMTA0NTQ5NjUvCgpodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9l
-bi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGluZ3BhdGNoZXMKCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+zhichen@codeaurora.org wrote:
+
+> Length of WMI scan message was not calculated correctly. The allocated
+> buffer was smaller than what we expected. So WMI message corrupted
+> skb_info, which is at the end of skb->data. This fix takes TLV header
+> into account even if the element is zero-length.
+> 
+> Crash log:
+>   [49.629986] Unhandled kernel unaligned access[#1]:
+>   [49.634932] CPU: 0 PID: 1176 Comm: logd Not tainted 4.4.60 #180
+>   [49.641040] task: 83051460 ti: 8329c000 task.ti: 8329c000
+>   [49.646608] $ 0   : 00000000 00000001 80984a80 00000000
+>   [49.652038] $ 4   : 45259e89 8046d484 8046df30 8024ba70
+>   [49.657468] $ 8   : 00000000 804cc4c0 00000001 20306320
+>   [49.662898] $12   : 33322037 000110f2 00000000 31203930
+>   [49.668327] $16   : 82792b40 80984a80 00000001 804207fc
+>   [49.673757] $20   : 00000000 0000012c 00000040 80470000
+>   [49.679186] $24   : 00000000 8024af7c
+>   [49.684617] $28   : 8329c000 8329db88 00000001 802c58d0
+>   [49.690046] Hi    : 00000000
+>   [49.693022] Lo    : 453c0000
+>   [49.696013] epc   : 800efae4 put_page+0x0/0x58
+>   [49.700615] ra    : 802c58d0 skb_release_data+0x148/0x1d4
+>   [49.706184] Status: 1000fc03 KERNEL EXL IE
+>   [49.710531] Cause : 00800010 (ExcCode 04)
+>   [49.714669] BadVA : 45259e89
+>   [49.717644] PrId  : 00019374 (MIPS 24Kc)
+> 
+> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+c82919888064 ath10k: fix scan crash due to incorrect length calculation
+
+-- 
+https://patchwork.kernel.org/patch/10332445/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
