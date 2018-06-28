@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYTZU-0000sX-Ff
- for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:50:37 +0000
+ id 1fYTeC-00048q-4n
+ for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:55:29 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: Protect ath10k_htt_rx_ring_free with rx_ring.lock
+Subject: Re: ath10k: fix bug in masking of TID value
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1529006895-5105-1-git-send-email-greearb@candelatech.com>
-References: <1529006895-5105-1-git-send-email-greearb@candelatech.com>
-Message-Id: <20180628095026.1669360791@smtp.codeaurora.org>
-Date: Thu, 28 Jun 2018 09:50:26 +0000 (UTC)
+In-Reply-To: <20180615120153.4677-1-erik.stromdahl@gmail.com>
+References: <20180615120153.4677-1-erik.stromdahl@gmail.com>
+Message-Id: <20180628095517.D403960B10@smtp.codeaurora.org>
+Date: Thu, 28 Jun 2018 09:55:17 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +22,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> wrote:
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
 
-> While debugging driver crashes related to a buggy firmware
-> crashing under load, I noticed that ath10k_htt_rx_ring_free
-> could be called without being under lock.  I'm not sure if this
-> is the root cause of the crash or not, but it seems prudent to
-> protect it.
+> Although the TID mask is 0xf, the modulus operation does still not
+> produce identical results as the bitwise and operator. If the TID is 15, the
+> modulus operation will "convert" it to 0, whereas the bitwise and will keep it
+> as 15.
 > 
-> Originally tested on 4.16+ kernel with ath10k-ct 10.4 firmware
-> running on 9984 NIC.
+> This was found during code review.
 > 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-168f75f11fe6 ath10k: protect ath10k_htt_rx_ring_free with rx_ring.lock
+d1a566bec588 ath10k: fix bug in masking of TID value
 
 -- 
-https://patchwork.kernel.org/patch/10465229/
+https://patchwork.kernel.org/patch/10466271/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
