@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYTfW-0004ax-2v
- for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:56:52 +0000
-Subject: Re: 160 mhz crash
-References: <CA+_ehUzDW8Y9OYYPCijxxGmpp+UZFWySzj0FcQcQDncMu51kjQ@mail.gmail.com>
- <4e8058c7-6443-5b4c-3077-dd0325159854@dd-wrt.com>
- <1788770.Stodcpyumm@bentobox>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <63afefbf-3ec2-786a-7ad1-e5e545da0617@dd-wrt.com>
-Date: Thu, 28 Jun 2018 11:56:39 +0200
+ id 1fYThU-0005TH-R1
+ for ath10k@lists.infradead.org; Thu, 28 Jun 2018 09:59:15 +0000
 MIME-Version: 1.0
-In-Reply-To: <1788770.Stodcpyumm@bentobox>
+Subject: Re: [1/2] ath10k: rename HTC_HOST_MAX_MSG_PER_BUNDLE define
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20180615120423.4963-1-erik.stromdahl@gmail.com>
+References: <20180615120423.4963-1-erik.stromdahl@gmail.com>
+Message-Id: <20180628095842.7FEC560B1E@smtp.codeaurora.org>
+Date: Thu, 28 Jun 2018 09:58:42 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +18,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-btw. openwrt imported my patches recently, but with some openwrt 
-specific modifications
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
 
+> This define is only used for RX bundling so it is more descriptive if
+> RX is added to the define-name.
+> 
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Am 28.06.2018 um 08:46 schrieb Sven Eckelmann:
-> On Samstag, 16. Juni 2018 10:11:27 CEST Sebastian Gottschall wrote:
->> this is normal. i already posted a patch on this mailinglist to resolve
->> this issue, but
->>
->> but it hasnt found its way to the main source yes.
-> Problem seems to be that the patch [1] has obvious style problems and open
-> questions.
->
-> Kind regards,
-> 	Sven
->
-> [1] https://patchwork.kernel.org/patch/10372949/
+2 patches applied to ath-next branch of ath.git, thanks.
+
+ab687de9535c ath10k: rename HTC_HOST_MAX_MSG_PER_BUNDLE define
+e4568eac0464 ath10k: replace hardcoded constant with define
+
+-- 
+https://patchwork.kernel.org/patch/10466281/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
