@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYttA-0000S9-Ai
- for ath10k@lists.infradead.org; Fri, 29 Jun 2018 13:56:49 +0000
-Received: by mail-lf0-x244.google.com with SMTP id y200-v6so1280293lfd.7
- for <ath10k@lists.infradead.org>; Fri, 29 Jun 2018 06:56:29 -0700 (PDT)
-Date: Fri, 29 Jun 2018 15:56:25 +0200
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH 1/3] ath10k: sdio: use same endpoint id for all packets
- in a bundle
-Message-ID: <20180629135625.GA19076@centauri.lan>
-References: <20180620084222.3521-1-niklas.cassel@linaro.org>
- <20180620084222.3521-2-niklas.cassel@linaro.org>
- <87zhzdersm.fsf@codeaurora.org> <87vaa1erlj.fsf@codeaurora.org>
- <20180629131141.GA26446@centauri.lan>
- <87r2kpem4o.fsf@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87r2kpem4o.fsf@codeaurora.org>
+ id 1fZGMp-0005CM-I9
+ for ath10k@lists.infradead.org; Sat, 30 Jun 2018 13:56:49 +0000
+Received: by mail-wm0-x243.google.com with SMTP id p11-v6so4585702wmc.4
+ for <ath10k@lists.infradead.org>; Sat, 30 Jun 2018 06:56:36 -0700 (PDT)
+Message-ID: <45265cf5224d8d5e12e2eddc8968a879008657e5.camel@gmail.com>
+Subject: Re: [v2] ath10k: Update the phymode along with bandwidth change
+ request
+From: Timur =?ISO-8859-1?Q?Krist=F3f?= <timur.kristof@gmail.com>
+Date: Sat, 30 Jun 2018 15:56:33 +0200
+In-Reply-To: <20180628092800.6517B608C8@smtp.codeaurora.org>
+References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
+ <20180628092800.6517B608C8@smtp.codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +22,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: alagusankar@silex-india.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Kalle Valo <kvalo@codeaurora.org>, Ryan Hsu <ryanhsu@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, Jun 29, 2018 at 04:51:51PM +0300, Kalle Valo wrote:
-> Niklas Cassel <niklas.cassel@linaro.org> writes:
-> 
-> > On Fri, Jun 29, 2018 at 02:53:44PM +0300, Kalle Valo wrote:
-> >> Kalle Valo <kvalo@codeaurora.org> writes:
-> >> 
-> >> > Niklas Cassel <niklas.cassel@linaro.org> writes:
-> >> >
-> >> >> All packets in a bundle should use the same endpoint id as the
-> >> >> first lookahead.
-> >> >>
-> >> >> This matches how things are done is ath6kl, however,
-> >> >> this patch can theoretically handle several bundles
-> >> >> in ath10k_sdio_mbox_rx_process_packets().
-> >> >>
-> >> >> Without this patch we get lots of errors about invalid endpoint id:
-> >> >>
-> >> >> ath10k_sdio mmc2:0001:1: invalid endpoint in look-ahead: 224
-> >> >> ath10k_sdio mmc2:0001:1: failed to get pending recv messages: -12
-> >> >> ath10k_sdio mmc2:0001:1: failed to process pending SDIO interrupts: -12
-> >> >>
-> >> >> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-> >> >> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
-> >> >
-> >> > You have Alagu's s-o-b first so that implies Alagu is the author. So
-> >> > should I add From header for Alagu and add you (Niklas) as
-> >> > Co-Developed-by? Or vice versa?
-> >
-> > Hello Kalle,
-> >
-> > It is not always obvious how the combination of git-author
-> > and Co-Developed-by should be:
-> > http://lkml.iu.edu/hypermail/linux/kernel/1801.2/00988.html
-> 
-> Yeah, that's true.
-> 
-> > Alagu deserves most credit, since I have simply taken parts
-> > of a very big patch and split it into smaller pieces.
-> > I tried to do the right thing by having his Signed-off-by first.
-> >
-> > Let's go with your suggestion and add a From: header with
-> > Alagu's email, and a Co-Developed-by tag with my email.
-> > (Note that both Signed-off-bys are still needed according to
-> > submitting-patches.rst)
-> 
-> Ok.
-> 
-> > Do you want me to resend the patches with these two lines
-> > added, or can you fix them up manually?
-> 
-> No need, I did that already in the pending branch. Please check:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=6b23bd067990df1cc1e9a4c28327393a7a3ba718
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=bf83a5c572e0737e59e026c989b190b4e52d2ef4
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=218f924d80b76520a4e60eead5e89f3ebd2e86c1
-
-Hello Kalle
-
-It looks good :)
-
-Regards,
-Niklas
-
-> 
-> -- 
-> Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVGh1LCAyMDE4LTA2LTI4IGF0IDA5OjI4ICswMDAwLCBLYWxsZSBWYWxvIHdyb3RlOgo+IFJ5
+YW4gSHN1IDxyeWFuaHN1QGNvZGVhdXJvcmEub3JnPiB3cm90ZToKPiAKPiA+IEluIHRoZSBjYXNl
+IG9mIFN0YXRpb24gY29ubmVjdHMgdG8gQVAgd2l0aCBuYXJyb3dlciBiYW5kd2lkdGggYXQKPiA+
+IGJlZ2lubmluZy4KPiA+IEFuZCBsYXRlciB0aGUgQVAgY2hhbmdlcyB0aGUgYmFuZHdpZHRoIHRv
+IHdpbmRlciBiYW5kd2lkdGgsIHRoZSBBUAo+ID4gd2lsbAo+ID4gYmVhY29uIHdpdGggd2lkZXIg
+YmFuZHdpZHRoIElFLCBlZyBWSFQyMC0+VkhUNDAtPlZIVDgwIG9yIFZIVDQwLQo+ID4gPlZIVDgw
+Lgo+ID4gCj4gPiBTaW5jZSB0aGUgc3VwcG9ydGVkIEJBTkRXSURUSCB3aWxsIGJlIGxpbWl0ZWQg
+YnkgdGhlIFBIWU1PREUsIHNvCj4gPiB3aGlsZQo+ID4gU3RhdGlvbiByZWNlaXZlcyB0aGUgYmFu
+ZHdpZHRoIGNoYW5nZSByZXF1ZXN0LCBpdCB3aWxsIGFsc28gbmVlZCB0bwo+ID4gcmVjb25maWd1
+cmUgdGhlIFBIWU1PREUgc2V0dGluZyB0byBmaXJtd2FyZSBpbnN0ZWFkIG9mIGp1c3QKPiA+IGNv
+bmZpZ3VyaW5nCj4gPiB0aGUgQkFORFdJRFRIIGluZm8sIG90aGVyd2lzZSBpdCdsbCB0cmlnZ2Vy
+IGEgZmlybXdhcmUgY3Jhc2ggd2l0aAo+ID4gbm9uLXN1cHBvcnQgYmFuZHdpZHRoLgo+ID4gCj4g
+PiBUaGUgaXNzdWUgd2FzIG9ic2VydmVkIGluIFdMQU4uUk0uNC40LjEtMDAwNTEtUUNBUk1TV1At
+MSwgUUNBNjE3NAo+ID4gd2l0aAo+ID4gYmVsb3cgc2NlbmFyaW86Cj4gPiAKPiA+IEFQIHh4eCBj
+aGFuZ2VkIGJhbmR3aWR0aCwgbmV3IGNvbmZpZyBpcyA1MjAwIE1Ieiwgd2lkdGggMiAoNTE5MC8w
+Cj4gPiBNSHopCj4gPiBkaXNjb25uZWN0IGZyb20gQVAgeHh4IGZvciBuZXcgYXV0aCB0byB5eXkK
+PiA+IFJYIFJlYXNzb2NSZXNwIGZyb20geHh4IChjYXBhYj0weDExMTEgc3RhdHVzPTAgYWlkPTEw
+MikKPiA+IGFzc29jaWF0ZWQKPiA+IAo+ID4gLi4uLgo+ID4gCj4gPiBBUCB4eHggY2hhbmdlZCBi
+YW5kd2lkdGgsIG5ldyBjb25maWcgaXMgNTIwMCBNSHosIHdpZHRoIDIgKDUxOTAvMAo+ID4gTUh6
+KQo+ID4gQVAgeHh4IGNoYW5nZWQgYmFuZHdpZHRoLCBuZXcgY29uZmlnIGlzIDUyMDAgTUh6LCB3
+aWR0aCAzICg1MjEwLzAKPiA+IE1IeikKPiA+IAo+ID4gLi4uLgo+ID4gCj4gPiBmaXJtd2FyZSBy
+ZWdpc3RlciBkdW1wOgo+ID4gWzAwXTogMHgwNTAzMDAwMCAweDAwMDAxNUIzIDB4MDA5ODcyOTEg
+MHgwMDk1NUIzMQo+ID4gWzA0XTogMHgwMDk4NzI5MSAweDAwMDYwNzMwIDB4MDAwMDAwMDQgMHgw
+MDAwMDAwMQo+ID4gWzA4XTogMHgwMDQwODlGMCAweDAwOTU1QTAwIDB4MDAwQTBCMDAgMHgwMDQw
+MDAwMAo+ID4gWzEyXTogMHgwMDAwMDAwOSAweDAwMDAwMDAwIDB4MDA5NTJDRDAgMHgwMDk1MkNF
+Ngo+ID4gWzE2XTogMHgwMDk1MkNDNCAweDAwOThFMjVGIDB4MDAwMDAwMDAgMHgwMDkxMDgwRAo+
+ID4gWzIwXTogMHg0MDk4NzI5MSAweDAwNDBFN0E4IDB4MDAwMDAwMDAgMHgwMDQxRUUzQwo+ID4g
+WzI0XTogMHg4MDlBQkYwNSAweDAwNDBFODA4IDB4MDAwMDAwMDAgMHhDMDk4NzI5MQo+ID4gWzI4
+XTogMHg4MDlBNjUwQyAweDAwNDBFOTQ4IDB4MDA0MUZFNDAgMHgwMDQzNDVDNAo+ID4gWzMyXTog
+MHg4MDlBNUM2MyAweDAwNDBFOTg4IDB4MDA0MEU5QUMgMHgwMDQyRDFBOAo+ID4gWzM2XTogMHg4
+MDkxRDI1MiAweDAwNDBFOUE4IDB4MDAwMDAwMDIgMHgwMDAwMDAwMQo+ID4gWzQwXTogMHg4MDlG
+REE5RCAweDAwNDBFQTU4IDB4MDA0M0Q1NTQgMHgwMDQyRDU1NAo+ID4gWzQ0XTogMHg4MDlGOEIy
+MiAweDAwNDBFQTc4IDB4MDA0M0Q1NTQgMHgwMDAwMDAwMQo+ID4gWzQ4XTogMHg4MDkxMTIxMCAw
+eDAwNDBFQUM4IDB4MDAwMDAwMTAgMHgwMDQwNDFEMAo+ID4gWzUyXTogMHg4MDkxMTE1NCAweDAw
+NDBFQjI4IDB4MDA0MDAwMDAgMHgwMDAwMDAwMAo+ID4gWzU2XTogMHg4MDkxMTIyRCAweDAwNDBF
+QjQ4IDB4MDAwMDAwMDAgMHgwMDQwMDYwMAo+ID4gCj4gPiBSZXBvcnRlZC1ieTogUm91dmVuIEN6
+ZXJ3aW5za2kgPHJvdXZlbkBjemVyd2luc2tpcy5kZT4KPiA+IFRlc3RlZC1ieTogVGltdXIgS3Jp
+c3TDs2YgPHRpbXVyLmtyaXN0b2ZAZ21haWwuY29tPgo+ID4gU2lnbmVkLW9mZi1ieTogUnlhbiBI
+c3UgPHJ5YW5oc3VAY29kZWF1cm9yYS5vcmc+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxv
+IDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz4KPiAKPiBQYXRjaCBhcHBsaWVkIHRvIGF0aC1jdXJyZW50
+IGJyYW5jaCBvZiBhdGguZ2l0LCB0aGFua3MuCj4gCj4gOTE5MWZjMmE0MzFiIGF0aDEwazogdXBk
+YXRlIHRoZSBwaHltb2RlIGFsb25nIHdpdGggYmFuZHdpZHRoIGNoYW5nZQo+IHJlcXVlc3QKClRo
+YW5rIHlvdSBLYWxsZS4KRG9lcyB0aGlzIG1lYW4gdGhhdCB0aGUgcGF0Y2ggd2lsbCBnZXQgaW50
+byBrZXJuZWwgNC4xOD8KCkJlc3QgcmVnYXJkcywKVGltCgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
