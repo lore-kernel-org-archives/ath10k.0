@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZJjj-0001Yb-J8
- for ath10k@lists.infradead.org; Sat, 30 Jun 2018 17:32:41 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [v2] ath10k: Update the phymode along with bandwidth change
- request
-References: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
- <20180628092800.6517B608C8@smtp.codeaurora.org>
- <45265cf5224d8d5e12e2eddc8968a879008657e5.camel@gmail.com>
-Date: Sat, 30 Jun 2018 20:32:22 +0300
-In-Reply-To: <45265cf5224d8d5e12e2eddc8968a879008657e5.camel@gmail.com>
- ("Timur \=\?utf-8\?Q\?Krist\=C3\=B3f\=22's\?\= message of "Sat,
- 30 Jun 2018 15:56:33 +0200")
-Message-ID: <87lgawdvtl.fsf@codeaurora.org>
+ id 1fZzjm-0004X5-KX
+ for ath10k@lists.infradead.org; Mon, 02 Jul 2018 14:23:32 +0000
 MIME-Version: 1.0
+Subject: Re: [1/3] ath10k: sdio: use same endpoint id for all packets in a
+ bundle
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20180620084222.3521-2-niklas.cassel@linaro.org>
+References: <20180620084222.3521-2-niklas.cassel@linaro.org>
+Message-Id: <20180702142319.C057C60B1E@smtp.codeaurora.org>
+Date: Mon,  2 Jul 2018 14:23:19 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +19,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Timur =?utf-8?Q?Krist=C3=B3f?= <timur.kristof@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Ryan Hsu <ryanhsu@codeaurora.org>
+To: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: alagusankar@silex-india.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
 
-VGltdXIgS3Jpc3TDs2YgPHRpbXVyLmtyaXN0b2ZAZ21haWwuY29tPiB3cml0ZXM6Cgo+IE9uIFRo
-dSwgMjAxOC0wNi0yOCBhdCAwOToyOCArMDAwMCwgS2FsbGUgVmFsbyB3cm90ZToKPj4gUnlhbiBI
-c3UgPHJ5YW5oc3VAY29kZWF1cm9yYS5vcmc+IHdyb3RlOgo+PiAKPj4gPiBJbiB0aGUgY2FzZSBv
-ZiBTdGF0aW9uIGNvbm5lY3RzIHRvIEFQIHdpdGggbmFycm93ZXIgYmFuZHdpZHRoIGF0Cj4+ID4g
-YmVnaW5uaW5nLgo+PiA+IEFuZCBsYXRlciB0aGUgQVAgY2hhbmdlcyB0aGUgYmFuZHdpZHRoIHRv
-IHdpbmRlciBiYW5kd2lkdGgsIHRoZSBBUAo+PiA+IHdpbGwKPj4gPiBiZWFjb24gd2l0aCB3aWRl
-ciBiYW5kd2lkdGggSUUsIGVnIFZIVDIwLT5WSFQ0MC0+VkhUODAgb3IgVkhUNDAtCj4+ID4gPlZI
-VDgwLgo+PiA+IAo+PiA+IFNpbmNlIHRoZSBzdXBwb3J0ZWQgQkFORFdJRFRIIHdpbGwgYmUgbGlt
-aXRlZCBieSB0aGUgUEhZTU9ERSwgc28KPj4gPiB3aGlsZQo+PiA+IFN0YXRpb24gcmVjZWl2ZXMg
-dGhlIGJhbmR3aWR0aCBjaGFuZ2UgcmVxdWVzdCwgaXQgd2lsbCBhbHNvIG5lZWQgdG8KPj4gPiBy
-ZWNvbmZpZ3VyZSB0aGUgUEhZTU9ERSBzZXR0aW5nIHRvIGZpcm13YXJlIGluc3RlYWQgb2YganVz
-dAo+PiA+IGNvbmZpZ3VyaW5nCj4+ID4gdGhlIEJBTkRXSURUSCBpbmZvLCBvdGhlcndpc2UgaXQn
-bGwgdHJpZ2dlciBhIGZpcm13YXJlIGNyYXNoIHdpdGgKPj4gPiBub24tc3VwcG9ydCBiYW5kd2lk
-dGguCj4+ID4gCj4+ID4gVGhlIGlzc3VlIHdhcyBvYnNlcnZlZCBpbiBXTEFOLlJNLjQuNC4xLTAw
-MDUxLVFDQVJNU1dQLTEsIFFDQTYxNzQKPj4gPiB3aXRoCj4+ID4gYmVsb3cgc2NlbmFyaW86Cj4+
-ID4gCj4+ID4gQVAgeHh4IGNoYW5nZWQgYmFuZHdpZHRoLCBuZXcgY29uZmlnIGlzIDUyMDAgTUh6
-LCB3aWR0aCAyICg1MTkwLzAKPj4gPiBNSHopCj4+ID4gZGlzY29ubmVjdCBmcm9tIEFQIHh4eCBm
-b3IgbmV3IGF1dGggdG8geXl5Cj4+ID4gUlggUmVhc3NvY1Jlc3AgZnJvbSB4eHggKGNhcGFiPTB4
-MTExMSBzdGF0dXM9MCBhaWQ9MTAyKQo+PiA+IGFzc29jaWF0ZWQKPj4gPiAKPj4gPiAuLi4uCj4+
-ID4gCj4+ID4gQVAgeHh4IGNoYW5nZWQgYmFuZHdpZHRoLCBuZXcgY29uZmlnIGlzIDUyMDAgTUh6
-LCB3aWR0aCAyICg1MTkwLzAKPj4gPiBNSHopCj4+ID4gQVAgeHh4IGNoYW5nZWQgYmFuZHdpZHRo
-LCBuZXcgY29uZmlnIGlzIDUyMDAgTUh6LCB3aWR0aCAzICg1MjEwLzAKPj4gPiBNSHopCj4+ID4g
-Cj4+ID4gLi4uLgo+PiA+IAo+PiA+IGZpcm13YXJlIHJlZ2lzdGVyIGR1bXA6Cj4+ID4gWzAwXTog
-MHgwNTAzMDAwMCAweDAwMDAxNUIzIDB4MDA5ODcyOTEgMHgwMDk1NUIzMQo+PiA+IFswNF06IDB4
-MDA5ODcyOTEgMHgwMDA2MDczMCAweDAwMDAwMDA0IDB4MDAwMDAwMDEKPj4gPiBbMDhdOiAweDAw
-NDA4OUYwIDB4MDA5NTVBMDAgMHgwMDBBMEIwMCAweDAwNDAwMDAwCj4+ID4gWzEyXTogMHgwMDAw
-MDAwOSAweDAwMDAwMDAwIDB4MDA5NTJDRDAgMHgwMDk1MkNFNgo+PiA+IFsxNl06IDB4MDA5NTJD
-QzQgMHgwMDk4RTI1RiAweDAwMDAwMDAwIDB4MDA5MTA4MEQKPj4gPiBbMjBdOiAweDQwOTg3Mjkx
-IDB4MDA0MEU3QTggMHgwMDAwMDAwMCAweDAwNDFFRTNDCj4+ID4gWzI0XTogMHg4MDlBQkYwNSAw
-eDAwNDBFODA4IDB4MDAwMDAwMDAgMHhDMDk4NzI5MQo+PiA+IFsyOF06IDB4ODA5QTY1MEMgMHgw
-MDQwRTk0OCAweDAwNDFGRTQwIDB4MDA0MzQ1QzQKPj4gPiBbMzJdOiAweDgwOUE1QzYzIDB4MDA0
-MEU5ODggMHgwMDQwRTlBQyAweDAwNDJEMUE4Cj4+ID4gWzM2XTogMHg4MDkxRDI1MiAweDAwNDBF
-OUE4IDB4MDAwMDAwMDIgMHgwMDAwMDAwMQo+PiA+IFs0MF06IDB4ODA5RkRBOUQgMHgwMDQwRUE1
-OCAweDAwNDNENTU0IDB4MDA0MkQ1NTQKPj4gPiBbNDRdOiAweDgwOUY4QjIyIDB4MDA0MEVBNzgg
-MHgwMDQzRDU1NCAweDAwMDAwMDAxCj4+ID4gWzQ4XTogMHg4MDkxMTIxMCAweDAwNDBFQUM4IDB4
-MDAwMDAwMTAgMHgwMDQwNDFEMAo+PiA+IFs1Ml06IDB4ODA5MTExNTQgMHgwMDQwRUIyOCAweDAw
-NDAwMDAwIDB4MDAwMDAwMDAKPj4gPiBbNTZdOiAweDgwOTExMjJEIDB4MDA0MEVCNDggMHgwMDAw
-MDAwMCAweDAwNDAwNjAwCj4+ID4gCj4+ID4gUmVwb3J0ZWQtYnk6IFJvdXZlbiBDemVyd2luc2tp
-IDxyb3V2ZW5AY3plcndpbnNraXMuZGU+Cj4+ID4gVGVzdGVkLWJ5OiBUaW11ciBLcmlzdMOzZiA8
-dGltdXIua3Jpc3RvZkBnbWFpbC5jb20+Cj4+ID4gU2lnbmVkLW9mZi1ieTogUnlhbiBIc3UgPHJ5
-YW5oc3VAY29kZWF1cm9yYS5vcmc+Cj4+ID4gU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3Zh
-bG9AY29kZWF1cm9yYS5vcmc+Cj4+IAo+PiBQYXRjaCBhcHBsaWVkIHRvIGF0aC1jdXJyZW50IGJy
-YW5jaCBvZiBhdGguZ2l0LCB0aGFua3MuCj4+IAo+PiA5MTkxZmMyYTQzMWIgYXRoMTBrOiB1cGRh
-dGUgdGhlIHBoeW1vZGUgYWxvbmcgd2l0aCBiYW5kd2lkdGggY2hhbmdlCj4+IHJlcXVlc3QKPgo+
-IFRoYW5rIHlvdSBLYWxsZS4KPiBEb2VzIHRoaXMgbWVhbiB0aGF0IHRoZSBwYXRjaCB3aWxsIGdl
-dCBpbnRvIGtlcm5lbCA0LjE4PwoKWWVzLCBpZiBhbGwgZ29lcyB3ZWxsLiBCdXQgaXQgbWlnaHQg
-dGFrZSBhIHdlZWsgb3IgdHdvIGJlZm9yZSBpdCByZWFjaGVzCkxpbnVzJyB0cmVlIGFzIEkgc3Vi
-bWl0IHBhdGNoZXMgdG8gbmV0IHRyZWUuCgotLSAKS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Niklas Cassel <niklas.cassel@linaro.org> wrote:
+
+> All packets in a bundle should use the same endpoint id as the
+> first lookahead.
+> 
+> This matches how things are done is ath6kl, however,
+> this patch can theoretically handle several bundles
+> in ath10k_sdio_mbox_rx_process_packets().
+> 
+> Without this patch we get lots of errors about invalid endpoint id:
+> 
+> ath10k_sdio mmc2:0001:1: invalid endpoint in look-ahead: 224
+> ath10k_sdio mmc2:0001:1: failed to get pending recv messages: -12
+> ath10k_sdio mmc2:0001:1: failed to process pending SDIO interrupts: -12
+> 
+> Co-Developed-by: Niklas Cassel <niklas.cassel@linaro.org>
+> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+3 patches applied to ath-next branch of ath.git, thanks.
+
+679e1f07c862 ath10k: sdio: use same endpoint id for all packets in a bundle
+d1d061b1395a ath10k: sdio: allocate correct size for RECV_1MORE_BLOCK rx packets
+8530b4e7b22b ath10k: sdio: set skb len for all rx packets
+
+-- 
+https://patchwork.kernel.org/patch/10476637/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
