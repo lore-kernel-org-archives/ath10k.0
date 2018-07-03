@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faNRw-0002HF-7l
- for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:42:42 +0000
+ id 1faNVI-0004YW-R5
+ for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:46:10 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 3/6] dt: bindings: add bindings for msa memory region
-References: <20180605123616.528-1-govinds@codeaurora.org>
- <20180605231814.GB194157@rodete-desktop-imager.corp.google.com>
-Date: Tue, 03 Jul 2018 18:42:24 +0300
-In-Reply-To: <20180605231814.GB194157@rodete-desktop-imager.corp.google.com>
- (Brian Norris's message of "Tue, 5 Jun 2018 16:18:16 -0700")
-Message-ID: <87o9fonx5r.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 5/6] firmware: qcom: scm: Add WLAN VMID for Qualcomm
+ SCM interface
+References: <20180605123709.1882-1-govinds@codeaurora.org>
+Date: Tue, 03 Jul 2018 18:45:52 +0300
+In-Reply-To: <20180605123709.1882-1-govinds@codeaurora.org> (Govind Singh's
+ message of "Tue, 5 Jun 2018 18:07:09 +0530")
+Message-ID: <87k1qcnwzz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,55 +24,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: devicetree@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, Rob Herring <robh+dt@kernel.org>, andy.gross@linaro.org
+To: andy.gross@linaro.org
+Cc: david.brown@linaro.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
-Brian Norris <briannorris@chromium.org> writes:
+Govind Singh <govinds@codeaurora.org> writes:
 
-> + Rob
+> Add WLAN related VMID's to support wlan driver to set up
+> the remote's permissions call via TrustZone.
 >
-> On Tue, Jun 05, 2018 at 06:06:16PM +0530, Govind Singh wrote:
->> Add device tree binding documentation details of msa
->> memory region for ath10k qmi client for SDM845/APQ8098
->> SoC into "qcom,ath10k.txt".
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt          | 4 ++++
->>  1 file changed, 4 insertions(+)
->> 
->> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> index 7fd4e8ce4149..0efc47f4ba34 100644
->> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> @@ -56,6 +56,8 @@ Optional properties:
->>  				     the length can vary between hw versions.
->>  - <supply-name>-supply: handle to the regulator device tree node
->>  			   optional "supply-name" is "vdd-0.8-cx-mx".
->> +- msa-fixed-region: phandle, specifier to children of reserved MSA memory.
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  include/linux/qcom_scm.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> As in reserved-memory/reserved-memory.txt? Might refer to that doc here.
-> Or is this some other kind of reserved memory?
->
-> If the former, it's normally called just "memory-region", although
-> that does seem somewhat non-descriptive...
->
->> +- msa-size: MSA memory size for fw internal use.
->
-> Do you really need both of these? It seems like your code uses one or
-> the other, not both. In which case, this is not a very good description,
-> because it sounds like they would go together.
->
-> Also, if you're not using standard/generic properties (e.g., the
-> aforementioned "memory-region" binding), you typically should use a
-> vendor prefix, like "qcom,msa-size".
+> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
+> index b401b962afff..da63d84e1e91 100644
+> --- a/include/linux/qcom_scm.h
+> +++ b/include/linux/qcom_scm.h
+> @@ -1,4 +1,4 @@
+> -/* Copyright (c) 2010-2015, The Linux Foundation. All rights reserved.
+> +/* Copyright (c) 2010-2015, 2018, The Linux Foundation. All rights reserved.
+>   * Copyright (C) 2015 Linaro Ltd.
+>   *
+>   * This program is free software; you can redistribute it and/or modify
+> @@ -33,6 +33,8 @@ struct qcom_scm_vmperm {
+>  
+>  #define QCOM_SCM_VMID_HLOS       0x3
+>  #define QCOM_SCM_VMID_MSS_MSA    0xF
+> +#define QCOM_SCM_VMID_WLAN       0x18
+> +#define QCOM_SCM_VMID_WLAN_CE    0x19
 
-Devicetree folks, any comments? I would like to apply this via my
-ath.git tree but need help with the review.
+Andy, it would be easiest if I can apply this directly to my ath.git
+tree. Can I get your ack for this?
 
-Full patch here:
-
-https://patchwork.kernel.org/patch/10448169/
+BTW, I didn't find include/linux/qcom_scm.h from MAINTAINERS file. It
+would be good to add that.
 
 -- 
 Kalle Valo
