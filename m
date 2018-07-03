@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faNQ5-0001ek-Ld
- for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:40:52 +0000
+ id 1faNRw-0002HF-7l
+ for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:42:42 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 2/6] ath10k: Add support to create boardname for
- non-bmi target
-References: <20180605123448.32331-1-govinds@codeaurora.org>
-Date: Tue, 03 Jul 2018 18:40:30 +0300
-In-Reply-To: <20180605123448.32331-1-govinds@codeaurora.org> (Govind Singh's
- message of "Tue, 5 Jun 2018 18:04:48 +0530")
-Message-ID: <87sh50nx8x.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 3/6] dt: bindings: add bindings for msa memory region
+References: <20180605123616.528-1-govinds@codeaurora.org>
+ <20180605231814.GB194157@rodete-desktop-imager.corp.google.com>
+Date: Tue, 03 Jul 2018 18:42:24 +0300
+In-Reply-To: <20180605231814.GB194157@rodete-desktop-imager.corp.google.com>
+ (Brian Norris's message of "Tue, 5 Jun 2018 16:18:16 -0700")
+Message-ID: <87o9fonx5r.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,49 +24,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, Rakesh Pillai <pillair@codeaurora.org>, andy.gross@linaro.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: devicetree@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, Rob Herring <robh+dt@kernel.org>, andy.gross@linaro.org
 
-Govind Singh <govinds@codeaurora.org> writes:
+Brian Norris <briannorris@chromium.org> writes:
 
-> From: Rakesh Pillai <pillair@codeaurora.org>
+> + Rob
 >
-> Add support to create the boardname for non-bmi targets
-> like WCN3990, which uses qmi for bdf download. This
-> boardname is used to parse the board data from board-2.bin.
+> On Tue, Jun 05, 2018 at 06:06:16PM +0530, Govind Singh wrote:
+>> Add device tree binding documentation details of msa
+>> memory region for ath10k qmi client for SDM845/APQ8098
+>> SoC into "qcom,ath10k.txt".
+>> 
+>> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt          | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> index 7fd4e8ce4149..0efc47f4ba34 100644
+>> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> @@ -56,6 +56,8 @@ Optional properties:
+>>  				     the length can vary between hw versions.
+>>  - <supply-name>-supply: handle to the regulator device tree node
+>>  			   optional "supply-name" is "vdd-0.8-cx-mx".
+>> +- msa-fixed-region: phandle, specifier to children of reserved MSA memory.
 >
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 14 ++++++++++++++
->  drivers/net/wireless/ath/ath10k/core.h |  2 ++
->  2 files changed, 16 insertions(+)
+> As in reserved-memory/reserved-memory.txt? Might refer to that doc here.
+> Or is this some other kind of reserved memory?
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 4cf54a7ef09a..8a592019cc4d 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -1429,6 +1429,20 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
->  		goto out;
->  	}
->  
-> +	if (ar->id.qmi_ids_valid) {
-> +		if (ar->id.qmi_board_id > 0x99)
-> +			scnprintf(name, name_len,
-> +				  "bus=%s,qmi-board-id=%03x",
-> +				  ath10k_bus_str(ar->hif.bus),
-> +				  ar->id.qmi_board_id);
-> +		else
-> +			scnprintf(name, name_len,
-> +				  "bus=%s,qmi-board-id=b%02x",
-> +				  ath10k_bus_str(ar->hif.bus),
-> +				  ar->id.qmi_board_id);
-> +		goto out;
-> +	}
+> If the former, it's normally called just "memory-region", although
+> that does seem somewhat non-descriptive...
+>
+>> +- msa-size: MSA memory size for fw internal use.
+>
+> Do you really need both of these? It seems like your code uses one or
+> the other, not both. In which case, this is not a very good description,
+> because it sounds like they would go together.
+>
+> Also, if you're not using standard/generic properties (e.g., the
+> aforementioned "memory-region" binding), you typically should use a
+> vendor prefix, like "qcom,msa-size".
 
-Why not just use %d? What benefit would hexadecimal format bring?
+Devicetree folks, any comments? I would like to apply this via my
+ath.git tree but need help with the review.
 
-And why %02 and %03? I don't see the need for that.
+Full patch here:
+
+https://patchwork.kernel.org/patch/10448169/
 
 -- 
 Kalle Valo
