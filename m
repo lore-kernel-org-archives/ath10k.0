@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faMrh-00036J-OZ
- for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:05:15 +0000
+ id 1faN25-0002Kc-FI
+ for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:16:00 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 1/6] ath10k: Add qmi service helpers for wcn3990 qmi
+Subject: Re: [PATCH v2 6/6] ath10k: Add QMI message handshake for wcn3990
  client
-References: <20180605123340.32108-1-govinds@codeaurora.org>
- <20180619224533.GA1635@centauri.lan>
-Date: Tue, 03 Jul 2018 18:04:57 +0300
-In-Reply-To: <20180619224533.GA1635@centauri.lan> (Niklas Cassel's message of
- "Wed, 20 Jun 2018 00:45:34 +0200")
-Message-ID: <87601wpdgm.fsf@kamboji.qca.qualcomm.com>
+References: <20180605123732.1993-1-govinds@codeaurora.org>
+ <20180619225158.GE1635@centauri.lan>
+Date: Tue, 03 Jul 2018 18:15:42 +0300
+In-Reply-To: <20180619225158.GE1635@centauri.lan> (Niklas Cassel's message of
+ "Wed, 20 Jun 2018 00:51:58 +0200")
+Message-ID: <871sckpcyp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,99 +30,134 @@ Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10
 
 Niklas Cassel <niklas.cassel@linaro.org> writes:
 
-> On Tue, Jun 05, 2018 at 06:03:40PM +0530, Govind Singh wrote:
->> WLAN qmi server running in Q6 exposes host to target
->> cold boot qmi handshakes. Add WLAN QMI service helpers
->> for ath10k wcn3990 qmi client.
+> On Tue, Jun 05, 2018 at 06:07:32PM +0530, Govind Singh wrote:
+>> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
+>> subsystem. This layer is responsible for communicating qmi control
+>> messages to wifi fw QMI service using QMI messaging protocol.
+>> 
+>> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
+>> between components running between application processor and remote
+>> processors with underlying transport layer based on integrated
+>> chipset(shared memory) or discrete chipset(PCI/USB/SDIO/UART).
+>> 
+>> With this patch-set basic functionality(STA/SAP) can be tested
+>> with WCN3990 chipset. The changes are verified with the firmware
+>> WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1 and SDM845 MTP device.
 >> 
 >> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  .../net/wireless/ath/ath10k/qmi_wlfw_v01.c    | 2072 +++++++++++++++++
->>  .../net/wireless/ath/ath10k/qmi_wlfw_v01.h    |  677 ++++++
->>  2 files changed, 2749 insertions(+)
->>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
->>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
->> b/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
->> new file mode 100644
->> index 000000000000..ba79c2e4aed6
->> --- /dev/null
->> +++ b/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
->> @@ -0,0 +1,2072 @@
+
+[...]
+
+>> --- a/drivers/net/wireless/ath/ath10k/Kconfig
+>> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+>> @@ -41,12 +41,13 @@ config ATH10K_USB
+>>  	  work in progress and will not fully work.
+>>  
+>>  config ATH10K_SNOC
+>> -        tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+>> -        depends on ATH10K && ARCH_QCOM
+>> -        ---help---
+>> -          This module adds support for integrated WCN3990 chip connected
+>> -          to system NOC(SNOC). Currently work in progress and will not
+>> -          fully work.
+>> +	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+>> +	depends on ATH10K && ARCH_QCOM
+>> +	select QCOM_QMI_HELPERS
+>> +	---help---
+>> +	This module adds support for integrated WCN3990 chip connected
+>> +	to system NOC(SNOC). Currently work in progress and will not
+>> +	fully work.
 >
 > Hello Govind,
 >
-> Please run checkpatch on this patch (and all other patches in the series).
-
-As not all checkpatch warnings make sense I wrote a wrapper called ath10k-check
-which disables the warnings we don't care about. I always run that on
-patches on my pending branch.
-
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
-
-> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-> #32: FILE: drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c:1:
-> +/*
+> Please do clean ups in separate commits.
+> That way is would be easier to see that the only
+> functional change here is that you added
+> select QCOM_QMI_HELPERS.
 >
-> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-> #2110: FILE: drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h:1:
-> +/*
+> (Also help text should normally be indented by two extra spaces.)
 >
-> If I'm not mistaken you are using the ISC license, and
-> the proper SPDX-License-Identifier tag would then be:
+> I've sent a fix for the mixed tabs/spaces when I tried to
+> add COMPILE_TEST for this, and Kalle has already picked it up
+> in his master branch:
+> https://marc.info/?l=linux-wireless&m=152880359200364
 >
-> /* SPDX-License-Identifier: ISC */
+> So in your next version of this series, this can be reduced to simply
+> select QCOM_QMI_HELPERS.
 
-I would prefer to switch ath10k to SPDX in one go, but I cannot do that
-yet as ISC is not in LICENSES directory yet. So please ignore that
-warning for now.
+BTW, I actually already did this on the pending branch:
 
->> +/*
->> + * Copyright (c) 2018 The Linux Foundation. All rights reserved.
->> + *
->> + * Permission to use, copy, modify, and/or distribute this software for any
->> + * purpose with or without fee is hereby granted, provided that the above
->> + * copyright notice and this permission notice appear in all copies.
->> + *
->> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
->> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
->> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
->> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
->> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
->> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
->> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
->> + */
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=0caef5beefb85e6a5aa2a4b60d78253bbe453d7c
+
+> There are some checkpatch warnings on this patch:
+>
+> drivers/net/wireless/ath/ath10k/qmi.c and
+> drivers/net/wireless/ath/ath10k/qmi.h
+> is missing SPDX-License-Identifier tag.
+>
+> Several lines in drivers/net/wireless/ath/ath10k/qmi.c
+> and one line in drivers/net/wireless/ath/ath10k/snoc.c
+> is over 80 characters.
+
+Yeah, but these can be ignored.
+
+> This patch is quite big, I think that it makes sense to split your patch in two.
+> One that adds the ath10k_qmi_* functions, and a follow up patch
+> that actually adds the function calls to snoc.c
+
+Yeah, it's big but IMHO not too big. And splitting it up makes
+functinonal review harder, that's why I prefer it like this.
+
+>> +int ath10k_qmi_wlan_enable(struct ath10k *ar,
+>> +			   struct ath10k_qmi_wlan_enable_cfg *config,
+>> +			   enum ath10k_qmi_driver_mode mode,
+>> +			   const char *version)
+>> +{
+>> +	int ret;
 >> +
->> +#include <linux/soc/qcom/qmi.h>
->> +#include <linux/types.h>
->> +#include "qmi_wlfw_v01.h"
+>> +	ath10k_dbg(ar, ATH10K_DBG_QMI, "mode: %d, config: %p:\n",
+>> +		   mode, config);
 >> +
->> +static struct qmi_elem_info wlfw_ce_tgt_pipe_cfg_s_v01_ei[] = {
->> +	{
->> +		.data_type      = QMI_UNSIGNED_4_BYTE,
->> +		.elem_len       = 1,
->> +		.elem_size      = sizeof(u32),
->> +		.array_type     = NO_ARRAY,
->> +		.tlv_type       = 0,
->> +		.offset         = offsetof(struct wlfw_ce_tgt_pipe_cfg_s_v01,
->> +					   pipe_num),
->> +	},
+>> +	ret = ath10k_qmi_cfg_send_sync_msg(ar, config, version);
+>> +	if (ret) {
+>> +		ath10k_err(ar, "wlan qmi config send failed\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = ath10k_qmi_mode_send_sync_msg(ar, mode);
 >
-> There's a lot of lines that are over 80 characters.
+> Sparse tells me that you are mixing enum types.
+> If this is really what you want, do an explicit cast.
 >
-> WARNING: line over 80 characters
-> #580: FILE: drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c:549:
-> +               .offset         = offsetof(struct wlfw_ind_register_resp_msg_v01,
->
-> WARNING: line over 80 characters
-> #2402: FILE: drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h:293:
-> +       struct wlfw_shadow_reg_cfg_s_v01 shadow_reg[QMI_WLFW_MAX_NUM_SHADOW_REG_V01];
->
-> Perhaps all these spaces to keep the same alignment isn't needed.
+> drivers/net/wireless/ath/ath10k//qmi.c:504:49: warning: mixing different enum types
+> drivers/net/wireless/ath/ath10k//qmi.c:504:49:     int enum ath10k_qmi_driver_mode  versus
+> drivers/net/wireless/ath/ath10k//qmi.c:504:49:     int enum wlfw_driver_mode_enum_v01 
 
-In ath10k-check the max line length is 90 chars, in some cases it just
-did not make sense to keep the 80 char limit.
+Good catch, that can cause subtle bugs. If you really want this, I
+prefer having a separate helper function with a switch statement making
+the conversion. This way it's super clear what's happening.
+
+>> +int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+>> +{
+>> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>> +	int ret;
+>> +
+>> +	switch (type) {
+>> +	case ATH10K_QMI_EVENT_FW_READY_IND:
+>> +		ret = ath10k_core_register(ar,
+>> +					   ar_snoc->target_info.soc_version);
+>> +		if (ret) {
+>> +			ath10k_err(ar, "Failed to register driver core: %d\n",
+>> +				   ret);
+>> +		}
+>> +		break;
+>> +	case ATH10K_QMI_EVENT_FW_DOWN_IND:
+>> +		break;
+>
+> Perhaps this switch statement should have a default label?
+
+Good idea. And add a warning so that we know there was an unknown event
+which should be added to ath10k.
 
 -- 
 Kalle Valo
