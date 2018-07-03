@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faN25-0002Kc-FI
- for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:16:00 +0000
+ id 1faNJO-0005T5-J5
+ for ath10k@lists.infradead.org; Tue, 03 Jul 2018 15:33:53 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 6/6] ath10k: Add QMI message handshake for wcn3990
- client
-References: <20180605123732.1993-1-govinds@codeaurora.org>
- <20180619225158.GE1635@centauri.lan>
-Date: Tue, 03 Jul 2018 18:15:42 +0300
-In-Reply-To: <20180619225158.GE1635@centauri.lan> (Niklas Cassel's message of
- "Wed, 20 Jun 2018 00:51:58 +0200")
-Message-ID: <871sckpcyp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/6]  *** Add support for wifi QMI client driver ***
+References: <20180605123304.31969-1-govinds@codeaurora.org>
+ <20180619021742.GA17220@rodete-desktop-imager.corp.google.com>
+Date: Tue, 03 Jul 2018 18:33:34 +0300
+In-Reply-To: <20180619021742.GA17220@rodete-desktop-imager.corp.google.com>
+ (Brian Norris's message of "Mon, 18 Jun 2018 19:17:44 -0700")
+Message-ID: <87woucnxkh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,139 +24,107 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org
 
-Niklas Cassel <niklas.cassel@linaro.org> writes:
+Brian Norris <briannorris@chromium.org> writes:
 
-> On Tue, Jun 05, 2018 at 06:07:32PM +0530, Govind Singh wrote:
->> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
->> subsystem. This layer is responsible for communicating qmi control
->> messages to wifi fw QMI service using QMI messaging protocol.
+> On Tue, Jun 05, 2018 at 06:03:04PM +0530, Govind Singh wrote:
+>> Add QMI client driver for Q6 integrated WLAN connectivity subsystem.
+>> This module is responsible for communicating WLAN control messages to FW
+>> over QMI interface.
 >> 
->> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
->> between components running between application processor and remote
->> processors with underlying transport layer based on integrated
->> chipset(shared memory) or discrete chipset(PCI/USB/SDIO/UART).
+>> QUALCOMM MSM Interface(QMI) provides the control interface between
+>> components running b/w remote processors with underlying transport layer
+>> based on integrated chipset(shared memory) or discrete chipset(PCI/USB/SDIO/UART).
+>
+> So this seems to imply QMI would work with transports that are not
+> integrated. Except, your code is directly calling SNOC (one of your
+> integrated chipset interfaces) code from the QMI driver. Correct? I
+> suppose that's OK for now, but it's a little misleading. If you actually
+> intend this to support multiple transports, then you might instead want
+> a callback interface for this.
+
+Sure. But do we even know that the QMI interfaces are even compatible?
+AFAIK QMI is just an RPC protocol, so there's no guarantee about
+interface stability. So I don't see the need to support other interfaces
+until we know exactly what we need to implement.
+
+>> QMI client driver implementation is based on qmi frmework https://lwn.net/Articles/729924/.
 >> 
->> With this patch-set basic functionality(STA/SAP) can be tested
->> with WCN3990 chipset. The changes are verified with the firmware
->> WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1 and SDM845 MTP device.
+>> Below is the sequence of qmi handshake.
 >> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-
-[...]
-
->> --- a/drivers/net/wireless/ath/ath10k/Kconfig
->> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
->> @@ -41,12 +41,13 @@ config ATH10K_USB
->>  	  work in progress and will not fully work.
->>  
->>  config ATH10K_SNOC
->> -        tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
->> -        depends on ATH10K && ARCH_QCOM
->> -        ---help---
->> -          This module adds support for integrated WCN3990 chip connected
->> -          to system NOC(SNOC). Currently work in progress and will not
->> -          fully work.
->> +	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
->> +	depends on ATH10K && ARCH_QCOM
->> +	select QCOM_QMI_HELPERS
->> +	---help---
->> +	This module adds support for integrated WCN3990 chip connected
->> +	to system NOC(SNOC). Currently work in progress and will not
->> +	fully work.
+>>        QMI CLIENT(APPS)                                         QMI SERVER(FW in Q6)
+>> 
+>>                          <------wlan service discoverd----
+>> 
+>>                        -----connect to wlam qmi service----->
+>> 
+>>                        ------------wlan info request----->
+>> 
+>>                        <------------wlan info resp------------
+>> 
+>>                        ------------msa info req-------->
+>> 
+>>                      <------------msa info resp------------
+>> 
+>>                      ------------msa ready req-------->
+>> 
+>>                      <------------msa ready resp------------
+>> 
+>>                      <------------msa ready indication-------
+>> 
+>>                      ------------capability req------->
+>> 
+>>                     <------------capability resp------------
+>> 
+>>                     ------------qmi bdf req--------->
+>> 
+>>                      <------------qmi bdf resp------------
+>> 
+>>                       ------------qmi cal trigger------->
+>> 
+>>                   <------------ QMI FW ready indication-------
 >
-> Hello Govind,
+> Let's see if I'm interpreting this right:
 >
-> Please do clean ups in separate commits.
-> That way is would be easier to see that the only
-> functional change here is that you added
-> select QCOM_QMI_HELPERS.
+>  * The above process is just initiating a handshake with the QMI
+>    service and doesn't actually do any loading of firmware on its own;
+>    it just hands things off to the SNOC client driver (and ath10k core)
+>    once the firmware is magically ready (??)
+>  * The ATH10K_FW_FEATURE_NON_BMI flag you added previously basically
+>    provides a way for a driver (and now we see which driver; it's this
+>    QMI / SNOC driver) to completely sidestep the typicaly in-kernel
+>    firmware load implementation; in fact, the kernel only reads the
+>    WLAN firmware just to parse some feature flags, not to actually
+>    program it to the device
+>  * Some yet-unmentioned proprietary app is involved to handle
+>    sideloading the actual firmware from user space
 >
-> (Also help text should normally be indented by two extra spaces.)
+> Is this correct? If not, please correct me. But if it is:
 >
-> I've sent a fix for the mixed tabs/spaces when I tried to
-> add COMPILE_TEST for this, and Kalle has already picked it up
-> in his master branch:
-> https://marc.info/?l=linux-wireless&m=152880359200364
+>  * When does the user space app actually load the WLAN firmware? I'm not
+>    sure I can place it in the above diagram.
+>  * Is there any open source implementation of this? How am I supposed to
+>    actually use this driver, if it relies on proprietary components that
+>    I can't review and aren't really even mentioned?
 >
-> So in your next version of this series, this can be reduced to simply
-> select QCOM_QMI_HELPERS.
+> I hope I'm sorely wrong on this. But if I'm not, I don't see why this
+> driver should be merged at all. Linux drivers should be self-sufficient
+> wherever possible, and I don't see a good reason why this driver can't
+> manage actually loading the WLAN firmware on its own, similar to how the
+> BMI component of the ath10k driver loads firmware for other ath10k
+> transports. But even more importantly: I believe this driver is hiding
+> the fact that it relies on undocumented proprietary components to run on
+> the CPU [1] just to make use of it at all.
 
-BTW, I actually already did this on the pending branch:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=0caef5beefb85e6a5aa2a4b60d78253bbe453d7c
-
-> There are some checkpatch warnings on this patch:
->
-> drivers/net/wireless/ath/ath10k/qmi.c and
-> drivers/net/wireless/ath/ath10k/qmi.h
-> is missing SPDX-License-Identifier tag.
->
-> Several lines in drivers/net/wireless/ath/ath10k/qmi.c
-> and one line in drivers/net/wireless/ath/ath10k/snoc.c
-> is over 80 characters.
-
-Yeah, but these can be ignored.
-
-> This patch is quite big, I think that it makes sense to split your patch in two.
-> One that adds the ath10k_qmi_* functions, and a follow up patch
-> that actually adds the function calls to snoc.c
-
-Yeah, it's big but IMHO not too big. And splitting it up makes
-functinonal review harder, that's why I prefer it like this.
-
->> +int ath10k_qmi_wlan_enable(struct ath10k *ar,
->> +			   struct ath10k_qmi_wlan_enable_cfg *config,
->> +			   enum ath10k_qmi_driver_mode mode,
->> +			   const char *version)
->> +{
->> +	int ret;
->> +
->> +	ath10k_dbg(ar, ATH10K_DBG_QMI, "mode: %d, config: %p:\n",
->> +		   mode, config);
->> +
->> +	ret = ath10k_qmi_cfg_send_sync_msg(ar, config, version);
->> +	if (ret) {
->> +		ath10k_err(ar, "wlan qmi config send failed\n");
->> +		return ret;
->> +	}
->> +
->> +	ret = ath10k_qmi_mode_send_sync_msg(ar, mode);
->
-> Sparse tells me that you are mixing enum types.
-> If this is really what you want, do an explicit cast.
->
-> drivers/net/wireless/ath/ath10k//qmi.c:504:49: warning: mixing different enum types
-> drivers/net/wireless/ath/ath10k//qmi.c:504:49:     int enum ath10k_qmi_driver_mode  versus
-> drivers/net/wireless/ath/ath10k//qmi.c:504:49:     int enum wlfw_driver_mode_enum_v01 
-
-Good catch, that can cause subtle bugs. If you really want this, I
-prefer having a separate helper function with a switch statement making
-the conversion. This way it's super clear what's happening.
-
->> +int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
->> +{
->> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
->> +	int ret;
->> +
->> +	switch (type) {
->> +	case ATH10K_QMI_EVENT_FW_READY_IND:
->> +		ret = ath10k_core_register(ar,
->> +					   ar_snoc->target_info.soc_version);
->> +		if (ret) {
->> +			ath10k_err(ar, "Failed to register driver core: %d\n",
->> +				   ret);
->> +		}
->> +		break;
->> +	case ATH10K_QMI_EVENT_FW_DOWN_IND:
->> +		break;
->
-> Perhaps this switch statement should have a default label?
-
-Good idea. And add a warning so that we know there was an unknown event
-which should be added to ath10k.
+First of all, thanks for bringing this up! I was aware of the need of
+user space tools to download the firmware to Q6 but I assumed they were
+Open Source, which to my surprise they were not. An upstream driver
+definitely needs to have open user space components so that anyone can
+use it, and hence I cannot apply these until that's solved. Luckily
+Bjorn has been working on that and he has done good progress on those,
+though I think there were some issues still.
 
 -- 
 Kalle Valo
