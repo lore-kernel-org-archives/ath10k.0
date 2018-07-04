@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faeV5-0004FB-Df
- for ath10k@lists.infradead.org; Wed, 04 Jul 2018 09:55:41 +0000
-From: s.gottschall@dd-wrt.com
-Subject: [PATCH v2] ath10k: fix band_center_freq handling for VHT160 in recent
- firmwares
-Date: Wed,  4 Jul 2018 11:54:44 +0200
-Message-Id: <20180704095444.662-1-s.gottschall@dd-wrt.com>
+ id 1faeZH-000785-Ov
+ for ath10k@lists.infradead.org; Wed, 04 Jul 2018 09:59:25 +0000
+MIME-Version: 1.0
+Subject: Re: [2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20180612113907.15043-2-niklas.cassel@linaro.org>
+References: <20180612113907.15043-2-niklas.cassel@linaro.org>
+Message-Id: <20180704095913.772C9606AC@smtp.codeaurora.org>
+Date: Wed,  4 Jul 2018 09:59:13 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,75 +18,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, kvalo@codeaurora.org
+To: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
 
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Niklas Cassel <niklas.cassel@linaro.org> wrote:
 
-Starting with firmware 10.4.3.4.x series QCA changed the handling of the channel property band_center_freq1 and band_center_freq2 in vht160 operation mode
-likelly for backward compatibility with vht80 only capable clients.
-This patch adjusts the handling to get vht160 to work again with official QCA firmwares newer than 3.3
-consider that this patch will not work with older firmwares anymore. to avoid undefined behaviour we disable vht160 capability for outdated firmwares
+> ATH10K_SNOC builds just fine with COMPILE_TEST, so make that possible.
+> 
+> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
 
-Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Note to myself, I see these dependencies in linux-next (but not in Linus' tree yet):
 
-v2: fix trailing whitespace issue and fix some typos within the commit note
----
- drivers/net/wireless/ath/ath10k/mac.c |  7 -------
- drivers/net/wireless/ath/ath10k/wmi.c | 11 ++++++++---
- 2 files changed, 8 insertions(+), 10 deletions(-)
+67cd0eec5b62 rpmsg: smd: Add missing include of sizes.h
+376e1f304fc7 firmware: qcom: scm: add a dummy qcom_scm_assign_mem()
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 95243b48a179..46885b915eb7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4442,13 +4442,6 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- 		vht_cap.cap |= val;
- 	}
- 
--	/* Currently the firmware seems to be buggy, don't enable 80+80
--	 * mode until that's resolved.
--	 */
--	if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SHORT_GI_160) &&
--	    (ar->vht_cap_info & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) == 0)
--		vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
--
- 	mcs_map = 0;
- 	for (i = 0; i < 8; i++) {
- 		if ((i < ar->num_rf_chains) && (ar->cfg_tx_chainmask & BIT(i)))
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 877249ac6fd4..e2adf34effb3 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1677,13 +1677,18 @@ void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
- 		flags |= WMI_CHAN_FLAG_HT40_PLUS;
- 	if (arg->chan_radar)
- 		flags |= WMI_CHAN_FLAG_DFS;
--
-+	ch->band_center_freq2 = 0;
- 	ch->mhz = __cpu_to_le32(arg->freq);
- 	ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1);
- 	if (arg->mode == MODE_11AC_VHT80_80)
- 		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq2);
--	else
--		ch->band_center_freq2 = 0;
-+	if (arg->mode == MODE_11AC_VHT160)  {
-+		if (arg->freq < arg->band_center_freq1)
-+			ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1 - 40);
-+		else
-+			ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1 + 40);
-+		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq1);
-+	}
- 	ch->min_power = arg->min_power;
- 	ch->max_power = arg->max_power;
- 	ch->reg_power = arg->max_reg_power;
+These I don't see in linux-next yet:
+
+  soc: qcom: smem: Add missing include of sizes.h
+  soc: qcom: smp2p: Add select IRQ_DOMAIN
+  soc: qcom: smsm: Add select IRQ_DOMAIN
+  soc: qcom: Remove depends on ARCH_QCOM
+
 -- 
-2.17.1
+https://patchwork.kernel.org/patch/10460103/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
