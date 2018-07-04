@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fafbH-0007Fr-DZ
- for ath10k@lists.infradead.org; Wed, 04 Jul 2018 11:05:33 +0000
+ id 1fafib-0001LV-NG
+ for ath10k@lists.infradead.org; Wed, 04 Jul 2018 11:13:07 +0000
+Received: by mail-wm0-x244.google.com with SMTP id i139-v6so5375124wmf.4
+ for <ath10k@lists.infradead.org>; Wed, 04 Jul 2018 04:12:52 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
 Subject: Re: [PATCH v8] ath10k: fix crash in recent 3.5.3 9984 firmware due
  wrong handling of peer_bw_rxnss_override parameter
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Date: Wed, 04 Jul 2018 13:12:47 +0200
+Message-ID: <4756311.uatpdkZPGZ@bentobox>
+In-Reply-To: <0cff058a-3c4b-6617-a034-3df706ba3a32@dd-wrt.com>
 References: <20180704092953.32572-1-s.gottschall@dd-wrt.com>
  <5630152.jDWN9V3RzB@bentobox>
  <0cff058a-3c4b-6617-a034-3df706ba3a32@dd-wrt.com>
-Message-ID: <72adf98f-94bc-27c7-4156-84072ba6aa28@dd-wrt.com>
-Date: Wed, 4 Jul 2018 13:05:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <0cff058a-3c4b-6617-a034-3df706ba3a32@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,105 +23,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============3523066309986548320=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org
 
-the values within the patch are named
+--===============3523066309986548320==
+Content-Type: multipart/signed; boundary="nextPart4613126.Xrykp8NhWn"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-#define BW_NSS_FWCONF_MAP_ENABLE=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 BIT(31)
-#define BW_NSS_FWCONF_MAP_160MHZ_S=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (0)
-#define BW_NSS_FWCONF_MAP_160MHZ_M=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (0x0000000=
-7)
-#define BW_NSS_FWCONF_MAP_80_80MHZ_S=A0=A0=A0=A0=A0=A0=A0=A0 (3)
-#define BW_NSS_FWCONF_MAP_80_80MHZ_M=A0=A0=A0=A0=A0=A0=A0=A0 (0x00000038)
-#define BW_NSS_FWCONF_MAP_M=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 (0x0000003F)
+--nextPart4613126.Xrykp8NhWn
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-
-so your comment doesnt seem to belong to the patch. maybe the openwrt =
-
-guys renamed some values in the patch. my one is based on my original =
-
-sources
-
-
-Am 04.07.2018 um 12:48 schrieb Sebastian Gottschall:
->
->
-> Am 04.07.2018 um 12:40 schrieb Sven Eckelmann:
->> On Mittwoch, 4. Juli 2018 11:29:53 CEST s.gottschall@dd-wrt.com wrote:
->>> +/* Values defined to set 160 MHz Bandwidth NSS Mapping into FW*/
->>> +#define BW_NSS_FWCONF_160(x) (BW_NSS_FWCONF_MAP_ENABLE | \
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (((x - 1) << =
-
->>> BW_NSS_FWCONF_MAP_160MHZ_S) \
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 & BW_NSS_FWCONF_MAP_160MHZ_M))
->>> +#define BW_NSS_FWCONF_80_80(x) (BW_NSS_FWCONF_MAP_ENABLE | \
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (((x - 1) << =
-
->>> BW_NSS_FWCONF_MAP_80_80MHZ_S) \
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 & =
-
->>> BW_NSS_FWCONF_MAP_80_80MHZ_M))
->> Please check the shift and mask macros in core.h
->>
->>
->> #define BW_NSS_FWCONF_MAP_160MHZ_LSB=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0
->> #define BW_NSS_FWCONF_MAP_160MHZ_MASK=A0=A0=A0=A0=A0=A0=A0=A0=A0 0x00000=
-007
->> #define BW_NSS_FWCONF_MAP_80_80MHZ_LSB=A0=A0=A0=A0=A0=A0=A0=A0 3
->> #define BW_NSS_FWCONF_MAP_80_80MHZ_MASK=A0=A0=A0=A0=A0=A0=A0 0x00000038
->> #define BW_NSS_FWCONF_MAP_MASK=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0 0x0000003F
->>
->> #define GET_BW_NSS_FWCONF_160(x)=A0=A0=A0=A0 (MS((x), =
-
->> BW_NSS_FWCONF_MAP_160MHZ) + 1)
->> #define GET_BW_NSS_FWCONF_80_80(x)=A0=A0 (MS((x), =
-
->> BW_NSS_FWCONF_MAP_80_80MHZ_M) + 1)
->>
->> /* Values defined to set 160 MHz Bandwidth NSS Mapping into FW*/
->> #define BW_NSS_FWCONF_160(x)=A0=A0=A0=A0=A0=A0=A0=A0 (BW_NSS_FWCONF_MAP_=
-ENABLE | \
->> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (SM((x) - 1, =
-
->> BW_NSS_FWCONF_MAP_160MHZ))
->> #define BW_NSS_FWCONF_80_80(x)=A0=A0=A0=A0=A0=A0 (BW_NSS_FWCONF_MAP_ENAB=
-LE | \
->> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (SM((x) - 1, =
-
->> BW_NSS_FWCONF_MAP_80_80MHZ))
->>
->> (these snippets were not yet tested and most likely need further =
-
->> adjustments)
->>
->>
->> Kind regards,
->> =A0=A0=A0=A0Sven
-> can you explain your request? the macros are unchanged and just =
-
-> reformated for maximum line length restriction. the values have been =
-
+On Mittwoch, 4. Juli 2018 12:48:06 CEST Sebastian Gottschall wrote:
+[...]
+> can you explain your request? the macros are unchanged and just 
+> reformated for maximum line length restriction. the values have been 
 > taken from QCA's wmi header
->
-> Sebastian
->
->
 
+You use long shift and mask statements in your patch. But you didn't use the 
+macros which are there to shorten them. So please check the macros SM and MS 
+from core.h and adjust your code accordingly. The code which I've pasted does 
+this (with an unintentionally added a copy and paste error).
+
+Kind regards,
+	Sven
+--nextPart4613126.Xrykp8NhWn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAls8q68ACgkQXYcKB8Em
+e0bf/g//fxPfMA/832a0efxxrOMpj4CKzfuYK7nE0hNB8BmwxptLxbf+IHO2IuYB
+QX4+dPcSf/kJcjPCtg7tv0FaV+BOfQdPfl+O52qclTaiL2IjzNXEyB0pLcXAwk8u
+FtLUj9XSI0+vxhrqJTM2RR7ce1BqZp0cFH39zjxFeJhklE7qGBd0CxvllcWBdl0h
+oOBTFPIcXsp5W2MZ/6U+K/8yHXLgdOVw2A5MUVy+2wvVJgIegfBm7/17jhMZWBUQ
+yO0TBvBTT/CgoEGrSL8wtYHiT0t2c8bX30hKyZ6Ryn7HDB6z1nTLAMSEGqbAXEXj
+3+hQUCtEY0mF4nuXpUQyUpGISrXMtRiH10AuBpsxyUZ+fxxUVWXX9KKrbZtl2XD+
++at1p/YIcR7HfAB/hVrR1RUQa+FJ2yqUpp5EHSjWNFuEICOfKDyTnV/8hKgnDU0g
+/qOQq2Saaqvq+wzqQ6kOX8gFa/bLcSSMlhDIyiSlCua3eaYdja/Ogjq2RCtS73BY
+sdccmOHzhEfC/2FgZZNRTeuUm/JB2MOxU7VPSBiZzftjqu69QwM8N/fzS1DwyVoj
+yl2Y3W8QCJCnBirc5rEhOitgM9vzXB70805dq6AmOowCLbhPUPcdndYyAfdA/wof
+0iPB68l11/8ufvUCNnzh7pYwM57KM89+1KW7A05/DOZWXHjuM1Q=
+=jIJr
+-----END PGP SIGNATURE-----
+
+--nextPart4613126.Xrykp8NhWn--
+
+
+
+--===============3523066309986548320==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3523066309986548320==--
