@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-he1eur04on0606.outbound.protection.outlook.com
- ([2a01:111:f400:fe0d::606]
- helo=EUR04-HE1-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbMgl-0004vZ-Cn
- for ath10k@lists.infradead.org; Fri, 06 Jul 2018 09:06:16 +0000
-From: Arthur Watt <arthur.watt@virtuosys.com>
-Subject: QCA988X firmware crash in AP mode
-Date: Fri, 6 Jul 2018 09:05:49 +0000
-Message-ID: <VI1PR07MB0926DCCFCA0D3A510C03E651FF470@VI1PR07MB0926.eurprd07.prod.outlook.com>
-Content-Language: en-US
+ id 1fbNDs-000058-Ue
+ for ath10k@lists.infradead.org; Fri, 06 Jul 2018 09:40:18 +0000
 MIME-Version: 1.0
+Date: Fri, 06 Jul 2018 15:10:02 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH v2 6/6] ath10k: Add QMI message handshake for wcn3990
+ client
+In-Reply-To: <20180619225158.GE1635@centauri.lan>
+References: <20180605123732.1993-1-govinds@codeaurora.org>
+ <20180619225158.GE1635@centauri.lan>
+Message-ID: <f4a54780bb16ea957e010e6bcd371689@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,111 +20,170 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: andy.gross@linaro.org, david.brown@linaro.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
-Hello All
+Hi Niklas,
+Thanks for the review.
+I have addressed most of the comments in v3 version.
 
-I am testing =A0Compex WLE600VX PCIe modules on a Cavium Octeon TX CN8030 b=
-oard.
-The WLE600VX uses the QCA9882 chipset.
-We are running Linux kernel version 4.14 with Ubuntu 16.04.
-The firmware version running is 10.2.4.70.9-2.
-There are 4 APs configured on each QCA988X device.
-During testing we saw occasional firmware crashes.
-Is it possible for someone to decode the firmware crash and give me a clue =
-to the source of this problem please?
-We have also tried moving to the latest version of linux-wireless and we st=
-ill see the problem.
+On 2018-06-20 04:21, Niklas Cassel wrote:
+> On Tue, Jun 05, 2018 at 06:07:32PM +0530, Govind Singh wrote:
+>> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
+>> subsystem. This layer is responsible for communicating qmi control
+>> messages to wifi fw QMI service using QMI messaging protocol.
+>> 
+>>  config ATH10K_SNOC
+>> -        tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+>> -        depends on ATH10K && ARCH_QCOM
+>> -        ---help---
+>> -          This module adds support for integrated WCN3990 chip 
+>> connected
+>> -          to system NOC(SNOC). Currently work in progress and will 
+>> not
+>> -          fully work.
+>> +	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
+>> +	depends on ATH10K && ARCH_QCOM
+>> +	select QCOM_QMI_HELPERS
+>> +	---help---
+>> +	This module adds support for integrated WCN3990 chip connected
+>> +	to system NOC(SNOC). Currently work in progress and will not
+>> +	fully work.
+> 
+> Hello Govind,
+> 
+> Please do clean ups in separate commits.
+> That way is would be easier to see that the only
+> functional change here is that you added
+> select QCOM_QMI_HELPERS.
+> 
+> (Also help text should normally be indented by two extra spaces.)
+> 
+> I've sent a fix for the mixed tabs/spaces when I tried to
+> add COMPILE_TEST for this, and Kalle has already picked it up
+> in his master branch:
+> https://marc.info/?l=linux-wireless&m=152880359200364
+> 
+> So in your next version of this series, this can be reduced to simply
+> select QCOM_QMI_HELPERS.
+> 
+
+Addressed the same in v3 version.
 
 
-Thank you
-Arthur
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/debugfs.h>
+>> +#include <linux/device.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/net.h>
+>> +#include <linux/completion.h>
+>> +#include <linux/idr.h>
+>> +#include <linux/string.h>
+>> +#include <net/sock.h>
+>> +#include <linux/qcom_scm.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_address.h>
+>> +#include "debug.h"
+>> +#include "snoc.h"
+>> +#include "qmi_wlfw_v01.h"
+> 
+> Sorting these headers by name improves readability.
+> 
+
+Fixed in v3 version.
 
 
-[=A0 134.795044] ath10k_pci 0003:90:00.0: wmi pdev get temperature
-[=A0 134.795369] ath10k_pci 0003:90:00.0: wmi pdev get temperature
-[=A0 134.820036] ath10k_pci 0002:58:00.0: wmi pdev get temperature
-[=A0 134.820326] ath10k_pci 0002:58:00.0: wmi pdev get temperature
-[=A0 140.184526] ath10k_pci 0003:90:00.0: wmi pdev get temperature
-[=A0 140.184611] ath10k_pci 0003:90:00.0: firmware crashed! (guid fc795a23-=
-0dbb-4c51-96cd-67f434b013bc)
-[=A0 140.194192] ath10k_pci 0003:90:00.0: qca988x hw2.0 target 0x4100016c c=
-hip_id 0x043222ff sub 0000:0000
-[=A0 140.194213] ath10k_pci 0003:90:00.0: kconfig debug 1 debugfs 1 tracing=
- 0 dfs 1 testmode 0
-[=A0 140.195304] ath10k_pci 0003:90:00.0: firmware ver 10.2.4.70.9-2 api 5 =
-features no-p2p,raw-mode crc32 b8d50af5
-[=A0 140.195321] ath10k_pci 0003:90:00.0: board_file api 1 bmi_id N/A crc32=
- bebc7c08
-[=A0 140.195328] ath10k_pci 0003:90:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal=
- otp max-sta 128 raw 0 hwcrypto 1
-[=A0 140.197426] ath10k_pci 0003:90:00.0: firmware register dump:
-[=A0 140.203204] ath10k_pci 0003:90:00.0: [00]: 0x4100016C 0x000015B3 0x009=
-BFADE 0x00955B31
-[=A0 140.211409] ath10k_pci 0003:90:00.0: [04]: 0x009BFADE 0x00060130 0x000=
-00010 0x00409418
-[=A0 140.219505] ath10k_pci 0003:90:00.0: [08]: 0x00000000 0x00400000 0x004=
-16E0C 0x00411F38
-[=A0 140.227625] ath10k_pci 0003:90:00.0: [12]: 0x00000009 0xFFFFFFFF 0x009=
-58360 0x0095836B
-[=A0 140.235741] ath10k_pci 0003:90:00.0: [16]: 0x00958080 0x0094085D 0x000=
-00000 0x00000000
-[=A0 140.243802] ath10k_pci 0003:90:00.0: [20]: 0x409BFADE 0x0040ADA4 0x009=
-BFAA8 0x00417ACC
-[=A0 140.251958] ath10k_pci 0003:90:00.0: [24]: 0x809486FA 0x0040AE04 0x004=
-12A44 0xC09BFADE
-[=A0 140.260064] ath10k_pci 0003:90:00.0: [28]: 0x80948E2C 0x0040AEA4 0x004=
-1F448 0x0041258C
-[=A0 140.268143] ath10k_pci 0003:90:00.0: [32]: 0x809BEF99 0x0040AEC4 0x004=
-1F448 0x00000001
-[=A0 140.276172] ath10k_pci 0003:90:00.0: [36]: 0x80940F18 0x0040AF14 0x000=
-00010 0x00403AC0
-[=A0 140.284230] ath10k_pci 0003:90:00.0: [40]: 0x80940EEA 0x0040AF44 0x004=
-00000 0x00000000
-[=A0 140.292324] ath10k_pci 0003:90:00.0: [44]: 0x80940F31 0x0040AF64 0x004=
-01C10 0x00400600
-[=A0 140.300404] ath10k_pci 0003:90:00.0: [48]: 0x40940024 0x0040AF84 0x004=
-068E8 0x004068E8
-[=A0 140.308421] ath10k_pci 0003:90:00.0: [52]: 0x00000000 0x0040AFA4 0x009=
-BB001 0x00040020
-[=A0 140.316411] ath10k_pci 0003:90:00.0: [56]: 0x00000000 0x00000000 0x000=
-00000 0x00000000
-[=A0 140.324401] ath10k_pci 0003:90:00.0: Copy Engine register dump:
-[=A0 140.330416] ath10k_pci 0003:90:00.0: [00]: 0x00057400=A0 11=A0 11=A0=
-=A0 3=A0=A0 3
-[=A0 140.337080] ath10k_pci 0003:90:00.0: [01]: 0x00057800=A0=A0 9=A0=A0 9 =
-364 365
-[=A0 140.343543] ath10k_pci 0003:90:00.0: [02]: 0x00057c00=A0=A0 1=A0=A0 1=
-=A0 64=A0 65
-[=A0 140.350043] ath10k_pci 0003:90:00.0: [03]: 0x00058000=A0=A0 8=A0=A0 8=
-=A0=A0 8=A0=A0 8
-[=A0 140.356625] ath10k_pci 0003:90:00.0: [04]: 0x00058400=A0 75=A0 75 115=
-=A0 75
-[=A0 140.363151] ath10k_pci 0003:90:00.0: [05]: 0x00058800=A0 13=A0 13 460 =
-461
-[=A0 140.369640] ath10k_pci 0003:90:00.0: [06]: 0x00058c00=A0=A0 5=A0=A0 5=
-=A0=A0 5=A0=A0 5
-[=A0 140.376120] ath10k_pci 0003:90:00.0: [07]: 0x00059000=A0=A0 0=A0=A0 0=
-=A0=A0 0=A0=A0 0
-[=A0 140.412169] ath10k_pci 0003:90:00.0: wmi disable pktlog
-[=A0 140.412189] ath10k_pci 0003:90:00.0: boot hif stop
-[=A0 140.412193] ath10k_pci 0003:90:00.0: boot warm reset
+> 
+> Sparse tells me that 'ath10k_qmi_bdf_dnld_send_sync' can be static.
+> 
 
-After the crash the software automatically attempts to recover the device b=
-ut this always fails.
+Fixed in v3 version for all occurrence.
 
-[=A0 145.039204] ath10k_pci 0003:90:00.0: boot target indicator 2
-[=A0 145.039222] ath10k_pci 0003:90:00.0: boot target initialised
-[=A0 145.039226] ath10k_pci 0003:90:00.0: boot warm reset complete
-[=A0 145.042580] ath10k_pci 0003:90:00.0: Could not init core: -11
-[=A0 145.057666] ath10k_pci 0003:90:00.0: boot hif power down
-[=A0 145.057687] Hardware became unavailable during restart.
-[=A0 145.057773] ------------[ cut here ]------------
 
+
+>> +
+>> +	ret = ath10k_core_fetch_board_file(qmi->ar);
+>> +
+>> +	return ret;
+> 
+> You can simply return ath10k_core_fetch_board_file() here,
+> that way you don't need the variable ret.
+> 
+
+Fixed in v3 version.
+
+>> +	if (qmi->fw_ready) {
+>> +		ath10k_snoc_fw_indication(ar, ATH10K_QMI_EVENT_FW_READY_IND);
+>> +		return;
+>> +	}
+> 
+> if fw_ready, send event and return. Nothing in else clause?
+> This might be correct, I'm just asking.
+
+Yes as we discussed this is to handle reload case.
+If server state is already fw ready, we skip further handshakes as those 
+are not required.
+
+>> +}
+>> +
+>> +static int
+>> +ath10k_qmi_driver_event_post(struct ath10k_qmi *qmi,
+>> +			     enum ath10k_qmi_driver_event_type type,
+>> +			     void *data)
+>> +{
+>> +	struct ath10k_qmi_driver_event *event;
+>> +	int ret = 0;
+>> +
+>> +	event = kzalloc(sizeof(*event), GFP_ATOMIC);
+>> +	if (!event)
+>> +		return -ENOMEM;
+>> +
+>> +	event->type = type;
+>> +	event->data = data;
+>> +
+>> +	spin_lock(&qmi->event_lock);
+>> +	list_add_tail(&event->list, &qmi->event_list);
+>> +	spin_unlock(&qmi->event_lock);
+>> +
+>> +	queue_work(qmi->event_wq, &qmi->event_work);
+>> +
+>> +	return ret;
+> 
+> You can simply return 0 here,
+> that way you don't need the variable ret.
+> 
+
+Addressed the same in v3 version.
+
+>> +	ret = qmi_add_lookup(&qmi->qmi_hdl, WLFW_SERVICE_ID_V01,
+>> +			     WLFW_SERVICE_VERS_V01, 0);
+>> +	if (ret)
+>> +		goto err_release_qmi_handle;
+> 
+> When you goto err_release_qmi_handle, you will not destroy the 
+> workqueue.
+> 
+
+Addressed the same in v3 version.
+
+> 
+> warning: comparison is always false due to limited range of data type
+> [-Wtype-limits]
+> if (qmi->msa_pa == OF_BAD_ADDR) {
+>                    ^~
+> 
+
+Addressed the same in v3 version.
+
+
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
