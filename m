@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbMbt-00018K-AK
- for ath10k@lists.infradead.org; Fri, 06 Jul 2018 09:01:04 +0000
+ id 1fbMY0-00063P-Vs
+ for ath10k@lists.infradead.org; Fri, 06 Jul 2018 08:57:06 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3 3/6] dt: bindings: add bindings for msa memory region
-Date: Fri,  6 Jul 2018 14:30:43 +0530
-Message-Id: <20180706090043.28363-1-govinds@codeaurora.org>
+Subject: [PATCH v3 2/6] ath10k: Add support to create boardname for non-bmi
+ target
+Date: Fri,  6 Jul 2018 14:26:19 +0530
+Message-Id: <20180706085622.27945-3-govinds@codeaurora.org>
+In-Reply-To: <20180706085622.27945-1-govinds@codeaurora.org>
+References: <20180706085622.27945-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +23,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: devicetree@vger.kernel.org, bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org, niklas.cassel@linaro.org, ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org, niklas.cassel@linaro.org, ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Add device tree binding documentation details of msa
-memory region for ath10k qmi client for SDM845/APQ8098
-SoC into "qcom,ath10k.txt".
+From: Rakesh Pillai <pillair@codeaurora.org>
 
+Add support to create the boardname for non-bmi targets
+like WCN3990, which uses qmi for bdf download. This
+boardname is used to parse the board data from board-2.bin.
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- .../bindings/net/wireless/qcom,ath10k.txt           | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 8 ++++++++
+ drivers/net/wireless/ath/ath10k/core.h | 2 ++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 7fd4e8ce4149..87489054aea5 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -57,6 +57,16 @@ Optional properties:
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" is "vdd-0.8-cx-mx".
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 85c58ebbfb26..840e301b6a6e 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1440,6 +1440,14 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+ 		goto out;
+ 	}
  
-+= SUBNODES:
-+wcn3990-wifi node may contain one subnode, named "msa" representing
-+the fixed msa memory regions used by the wifi firmware running in Q6.
-+This sub-node must contain:
++	if (ar->id.qmi_ids_valid) {
++		scnprintf(name, name_len,
++			  "bus=%s,qmi-board-id=%x",
++			  ath10k_bus_str(ar->hif.bus),
++			  ar->id.qmi_board_id);
++		goto out;
++	}
 +
-+- memory-region:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: reference to the reserved-memory for the region
-+
- Example (to supply the calibration data alone):
+ 	scnprintf(name, name_len,
+ 		  "bus=%s,vendor=%04x,device=%04x,subsystem-vendor=%04x,subsystem-device=%04x%s",
+ 		  ath10k_bus_str(ar->hif.bus),
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 427ee5752bb0..20f03f3a7080 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -941,7 +941,9 @@ struct ath10k {
+ 		u32 subsystem_device;
  
- In this example, the node is defined as child node of the PCI controller.
-@@ -149,4 +159,7 @@ wifi@18000000 {
- 			   <0 140 0 /* CE10 */ >,
- 			   <0 141 0 /* CE11 */ >;
- 		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-+		msa {
-+			memory-region = <&wifi_msa_mem>;
-+		};
- };
+ 		bool bmi_ids_valid;
++		bool qmi_ids_valid;
+ 		u8 bmi_board_id;
++		u8 qmi_board_id;
+ 		u8 bmi_chip_id;
+ 
+ 		char bdf_ext[ATH10K_SMBIOS_BDF_EXT_STR_LENGTH];
 -- 
 2.17.0
 
