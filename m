@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcmW1-0006Wx-E5
- for ath10k@lists.infradead.org; Tue, 10 Jul 2018 06:52:50 +0000
-Received: by mail-wr1-x435.google.com with SMTP id h10-v6so13313500wre.6
- for <ath10k@lists.infradead.org>; Mon, 09 Jul 2018 23:52:38 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: ath10k: tpc_stats(_final) odd twicepowers and 160Mhz not supported
-Date: Tue, 10 Jul 2018 08:52:35 +0200
-Message-ID: <5396695.eZ3m4tuIpz@bentobox>
-In-Reply-To: <2557834.d2DaqBHz1S@bentobox>
-References: <2557834.d2DaqBHz1S@bentobox>
-MIME-Version: 1.0
+ id 1fcmpu-0006P4-5e
+ for ath10k@lists.infradead.org; Tue, 10 Jul 2018 07:13:23 +0000
+From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Subject: [RFCv2 0/2] ath10k: Add QCA vendor command/attr support to filter
+ neighbor BSS frames
+Date: Tue, 10 Jul 2018 12:42:57 +0530
+Message-Id: <1531206779-26517-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,69 +16,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3086948997263767721=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Cc: ath10k@lists.infradead.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
 
---===============3086948997263767721==
-Content-Type: multipart/signed; boundary="nextPart1967198.8xTxnFP6Wi"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Allow AP to receive neighbor BSSs frames and user-space can get the
+statistics of the stations associated with neighbor BSSs.
 
---nextPart1967198.8xTxnFP6Wi
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-space can use QCA_NL80211_VENDOR_SUBCMD_BSS_FILTER command to configure
+RX filter to receive frames from stations that are active on the operating
+channel, but not associated with the local device (e.g., STAs associated with
+neighbor APs). Filtering is done based on a list of BSSIDs and STA MAC addresses
+added by the user. This command is also used to fetch statistics of unassociated
+stations. The attributes used with this command are defined in enum
+qca_wlan_vendor_attr_bss_filter.
 
-On Donnerstag, 28. Juni 2018 12:05:18 CEST Sven Eckelmann wrote:
-> Hi,
-> 
-> I have some small question regarding the debugging functionality introduced by 
-> commit bc64d05220f3 ("ath10k: debugfs support to get final TPC stats for 10.4 
-> variants") [1] and commit 295426669cd6 ("ath10k: implement debugfs interface 
-> for Transmit Power Control stats") [2]. Goal of this is to find out whether 
-> the VHT160 MHz CTLs are correctly applied.
-[...]
+User can add/delete the filter by specifying the BSSID/STA MAC address in
+QCA_WLAN_VENDOR_ATTR_BSS_FILTER_MAC_ADDR, filter type as BSSID/STA in
+QCA_WLAN_VENDOR_ATTR_BSS_FILTER_TYPE and add/delete action in
+QCA_WLAN_VENDOR_ATTR_BSS_FILTER_ACTION using the QCA vendor command
+QCA_NL80211_VENDOR_SUBCMD_BSS_FILTER.
 
-ping?
+User can get the statistics of an unassociated station by specifying the MAC
+address in QCA_WLAN_VENDOR_ATTR_BSS_FILTER_MAC_ADDR, station type in
+QCA_WLAN_VENDOR_ATTR_BSS_FILTER_TYPE, GET action in
+QCA_WLAN_VENDOR_ATTR_BSS_FILTER_ACTION using the QCA vendor command
+QCA_NL80211_VENDOR_SUBCMD_BSS_FILTER. User can also get the statistics of all
+unassociated stations by specifying the Broadcast MAC address (ff:ff:ff:ff:ff:ff)
+in QCA_WLAN_VENDOR_ATTR_BSS_FILTER_MAC_ADDR with above procedure. In response,
+ath10k driver specify statistics information nested in
+QCA_WLAN_VENDOR_ATTR_BSS_FILTER_STA_STATS.
 
-Kind regards,
-	Sven
+NOTE: Tested with debug firmware
 
---nextPart1967198.8xTxnFP6Wi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+v2:
+ * Solved kbuild test warning
 
------BEGIN PGP SIGNATURE-----
+Karthikeyan Periyasamy (2):
+  ath10k: add wmi interface for vdev_set_neighbor_rx_param
+  ath10k: Add QCA vendor command/attr support to filter neighbor BSS
+    frames
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAltEV7MACgkQXYcKB8Em
-e0a6/g//YbStHZ/5ZCIthDJ2EJTy2w266bvh9ToYhRWvkg9KdoKlGBjCfB1jbqVo
-nWyy8eD4nQK4M45rJdmLeT/76yAN3drZIBUwaCZhl7I9Ljf+xS3V+kJUrCvYyd9O
-FHPrLQO2UxkckYiNJilTes8orsy6ssB9IwiWZFVPHyrOd/hUkaGFc0jwHWT59e0j
-9ylHWpdn90ougVtRTciktnOMfsINLvTeAubRaTXZPMns+kLTr0GhOjlZUxBmSEKq
-7nyi9pxNEQZcAMiMcgLVCtZobiQT9JXk2M1CFrmXlqsQZekOWttHPTQqK+qShdZ1
-oUOLKqarTcSt6OHQOyRRr7in0ZX6vMjrLlxsIGhSr9kBMg6K3/X+Xaxo0QuT7+tk
-BhnmAOnB1TpPowp2Hr77oHiLBgUGBu5HtOKsDKoHUok9RyhXhdKpc9A3fx9qsq7C
-C2DbDZ7ieOl0K7x1WohqWtBqUtZC84a7192sSq38pxWscbCpiFUwg344MsUQcaNF
-HkIfOK2OOktkyzhwqnrKe+BovlcaZCMWg8HcRXGvmP+dUG7KsrwEhlmv2oxAb2fi
-6/SrsBYZ15UgmZbDnSvI9IITwVifL3SYW4Px0gTrZ7NY4p92WUgjyEaTfEb0/zfj
-u4/sDIoSG8kukJIA8KSAhSkmlFFudyEwW+FGVAN4JPcfafzx6So=
-=e/6a
------END PGP SIGNATURE-----
+ drivers/net/wireless/ath/ath10k/Makefile  |   3 +-
+ drivers/net/wireless/ath/ath10k/core.h    |   3 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |   5 +
+ drivers/net/wireless/ath/ath10k/mac.c     |  15 +-
+ drivers/net/wireless/ath/ath10k/vendor.c  | 770 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/vendor.h  | 289 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  28 +-
+ drivers/net/wireless/ath/ath10k/wmi.c     |  33 ++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  76 +++
+ 9 files changed, 1219 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/vendor.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/vendor.h
 
---nextPart1967198.8xTxnFP6Wi--
+-- 
+1.9.1
 
-
-
---===============3086948997263767721==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3086948997263767721==--
