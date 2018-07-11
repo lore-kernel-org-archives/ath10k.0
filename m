@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-oi0-f66.google.com ([209.85.218.66])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fd7GE-0000gE-VY
- for ath10k@lists.infradead.org; Wed, 11 Jul 2018 05:01:56 +0000
+ id 1fdH1g-0006hp-4E
+ for ath10k@lists.infradead.org; Wed, 11 Jul 2018 15:29:34 +0000
+Received: by mail-oi0-f66.google.com with SMTP id l10-v6so3278863oii.0
+ for <ath10k@lists.infradead.org>; Wed, 11 Jul 2018 08:27:21 -0700 (PDT)
+Date: Wed, 11 Jul 2018 09:27:18 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 3/6] dt: bindings: add bindings for msa memory region
+Message-ID: <20180711152718.GA18470@rob-hp-laptop>
+References: <20180706090043.28363-1-govinds@codeaurora.org>
 MIME-Version: 1.0
-Date: Wed, 11 Jul 2018 10:31:43 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH v3 0/6] *** Add support for wifi QMI client handshakes ***
-In-Reply-To: <20180711022425.GI2050@tuxbook-pro>
-References: <20180706085622.27945-1-govinds@codeaurora.org>
- <20180711012638.GA100410@ban.mtv.corp.google.com>
- <20180711022425.GI2050@tuxbook-pro>
-Message-ID: <0b1441507d2bb18ae267af65e13d98ec@codeaurora.org>
+Content-Disposition: inline
+In-Reply-To: <20180706090043.28363-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +21,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: niklas.cassel@linaro.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, david.brown@linaro.org, andy.gross@linaro.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: devicetree@vger.kernel.org, niklas.cassel@linaro.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org
 
-On 2018-07-11 07:54, Bjorn Andersson wrote:
-> On Tue 10 Jul 18:26 PDT 2018, Brian Norris wrote:
+On Fri, Jul 06, 2018 at 02:30:43PM +0530, Govind Singh wrote:
+> Add device tree binding documentation details of msa
+> memory region for ath10k qmi client for SDM845/APQ8098
+> SoC into "qcom,ath10k.txt".
 > 
->> Hi,
->> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  .../bindings/net/wireless/qcom,ath10k.txt           | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> Hi Brian,
-> 
->> On Fri, Jul 06, 2018 at 02:26:17PM +0530, Govind Singh wrote:
-> [..]
->> > https://github.com/andersson/tqftpserv
->> 
->> FWIW, as of today, the tqftpserv implementation is missing a few 
->> headers
->> (so it doesn't even build),
-> 
-> Sorry about that, had those lingering in my repository. I've pushed a
-> fix for this.
-> 
->> and once I hack things such that it can
->> build, it still doesn't work for me (whereas the closed source version
->> does). I see some BYE and DEL_CLIENT messages, but no read requests.
-> 
-> I interpret this description as you're not seeing any prints at, beyond
-> the "[TQFTP] got bye" and "[TQFTP] got del_client"?
-> 
-> That would imply that the remote side doesn't even attempt to
-> communicate with tqftpserv.
-> 
-> Are you running pd-mapper (either proprietary or my version), is it
-> complaining about anything?
-> 
-> Can you run qrtr-lookup on the device after booting the modem? So that
-> we see that the tqftpserv is registered properly and that the modem is
-> in an appropriate state?
-> 
-> Regards,
-> Bjorn
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index 7fd4e8ce4149..87489054aea5 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -57,6 +57,16 @@ Optional properties:
+>  - <supply-name>-supply: handle to the regulator device tree node
+>  			   optional "supply-name" is "vdd-0.8-cx-mx".
+>  
+> += SUBNODES:
+> +wcn3990-wifi node may contain one subnode, named "msa" representing
+> +the fixed msa memory regions used by the wifi firmware running in Q6.
+> +This sub-node must contain:
 
-For me below sequence is working. PD mapper is bypassed in the modem 
-binary that Brian is using, hence that
-may not be required at this moment.
+Why do you need a sub-node? Just add memory-region property.
 
-
-qrtr-cfg 1
-qrtr-ns
-
-
-mkdir -p /dev/block/bootdevice/by-name/
-ln -s /dev/sda4 /dev/block/bootdevice/by-name/modemst1
-ln -s /dev/sda5 /dev/block/bootdevice/by-name/modemst2
-ln -s /dev/sda6 /dev/block/bootdevice/by-name/fsc
-ln -s /dev/sda7 /dev/block/bootdevice/by-name/fsg
-
-ln -s /var/log/ /readwrite
-ln -s /lib/firmware/wlanmdsp.mbn /readonly/firmware/image/wlanmdsp.mbn
-
-rmt_storage &
-tqftpserv &
-
-
-Thanks,
-Govind
+> +
+> +- memory-region:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: reference to the reserved-memory for the region
+> +
+>  Example (to supply the calibration data alone):
+>  
+>  In this example, the node is defined as child node of the PCI controller.
+> @@ -149,4 +159,7 @@ wifi@18000000 {
+>  			   <0 140 0 /* CE10 */ >,
+>  			   <0 141 0 /* CE11 */ >;
+>  		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+> +		msa {
+> +			memory-region = <&wifi_msa_mem>;
+> +		};
+>  };
+> -- 
+> 2.17.0
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 _______________________________________________
 ath10k mailing list
