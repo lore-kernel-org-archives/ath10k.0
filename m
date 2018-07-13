@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from santino-notr.mail.tiscali.it ([213.205.33.215]
- helo=smtp.tiscali.it)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdiiC-0000j7-74
- for ath10k@lists.infradead.org; Thu, 12 Jul 2018 21:01:17 +0000
-From: "M.T." <masnia@tiscali.it>
-Subject: Received unexpected tx_fetch_ind event: in push mode
-Message-ID: <58dafc9c-8153-63d4-cf64-652fcd5fc5e5@tiscali.it>
-Date: Thu, 12 Jul 2018 23:00:59 +0200
-MIME-Version: 1.0
-Content-Language: it-IT
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fe1YU-0000eO-1g
+ for ath10k@lists.infradead.org; Fri, 13 Jul 2018 17:08:31 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  fix vdev-start timeout on error
+Date: Fri, 13 Jul 2018 10:08:03 -0700
+Message-Id: <1531501683-32299-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,75 +15,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-15"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@codeaurora.org
+Cc: Ben Greear <greearb@candelatech.com>
 
-Hi,
-I recently installed OpenWrt 18.06 snapshot (r7106) with =
+From: Ben Greear <greearb@candelatech.com>
 
-firmware-5.bin_10.4-3.5.3-00057 on AVM Fritz! Box 4040 and after a few =
+The vdev-start-response message should cause the
+completion to fire, even in the error case.  Otherwise,
+the user still gets no useful information and everything
+is blocked until the timeout period.
 
-days I saw that in the kernel=A0 log there were these warnings:
+Add some warning text to print out the invalid status
+code to aid debugging.
 
-[96438.552358] ath10k_ahb a000000.wifi: Invalid peer id 14 peer stats buffer
-[131439.527370] ath10k_ahb a000000.wifi: received unexpected =
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-tx_fetch_ind event: in push mode
-[131439.527709] ath10k_ahb a000000.wifi: received unexpected =
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index a60de71..ec4cd1e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3443,12 +3443,18 @@ void ath10k_wmi_event_vdev_start_resp(struct ath10k *ar, struct sk_buff *skb)
+ 	ret = ath10k_wmi_pull_vdev_start(ar, skb, &arg);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to parse vdev start event: %d\n", ret);
+-		return;
++		goto out;
+ 	}
+ 
+-	if (WARN_ON(__le32_to_cpu(arg.status)))
+-		return;
++	if (WARN_ON_ONCE(__le32_to_cpu(arg.status))) {
++		ath10k_warn(ar, "vdev-start-response reports status error: %d\n",
++			    __le32_to_cpu(arg.status));
++		/* Setup is done one way or another though, so we should still
++		 * do the completion, so don't return here.
++		 */
++	}
+ 
++out:
+ 	complete(&ar->vdev_setup_done);
+ }
+ 
+-- 
+2.4.11
 
-tx_fetch_ind event: in push mode
-[132036.188659] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-[132036.188709] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-[132036.195871] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-[132036.204113] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-[194619.298165] ath10k_ahb a000000.wifi: Invalid peer id 21 peer stats =
-
-buffer
-[214540.478860] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-[302691.452861] ath10k_ahb a000000.wifi: Invalid peer id 38 peer stats =
-
-buffer
-[302750.503109] ath10k_ahb a000000.wifi: Invalid peer id 37 peer stats =
-
-buffer
-[395035.371422] ath10k_ahb a000000.wifi: Invalid peer id 45 peer stats =
-
-buffer
-[649571.634993] ath10k_ahb a000000.wifi: Invalid peer id 89 peer stats =
-
-buffer
-[837906.946895] ath10k_ahb a000000.wifi: Invalid peer id 115 peer stats =
-
-buffer
-[895769.805975] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-[896666.298360] ath10k_ahb a000000.wifi: received unexpected =
-
-tx_fetch_ind event: in push mode
-
-The wireless configuration is AP with default options, I have only =
-
-activated WPA2 AES security, 8 clients connected to 2.4 GHz and 3 =
-
-connected to 5 GHz.
-
-Is there anything I can do?
-
-Thanks
 
 _______________________________________________
 ath10k mailing list
