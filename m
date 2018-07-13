@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fe23v-0006Il-KF
- for ath10k@lists.infradead.org; Fri, 13 Jul 2018 17:41:01 +0000
-Subject: Re: [PATCH] ath10k: fix vdev-start timeout on error
-References: <1531501683-32299-1-git-send-email-greearb@candelatech.com>
- <CABvG-CUdxFE8NiFfUKyeApm9dXqNWtGUWUBV1q8Fn3WF7zUnuQ@mail.gmail.com>
- <4f4470db-d044-ef1c-4cc9-aab6bbc812f4@candelatech.com>
- <CABvG-CUnHfxgUYVe4EVQRGbVSD4Nj9cWkYRJFBaACCurWqEUeA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <78726366-ac9e-41c6-ce51-b378ac3408ec@candelatech.com>
-Date: Fri, 13 Jul 2018 10:40:43 -0700
-MIME-Version: 1.0
-In-Reply-To: <CABvG-CUnHfxgUYVe4EVQRGbVSD4Nj9cWkYRJFBaACCurWqEUeA@mail.gmail.com>
+ id 1fe4OR-0007EI-5Q
+ for ath10k@lists.infradead.org; Fri, 13 Jul 2018 20:10:21 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2] ath10k:  fix vdev-start timeout on error
+Date: Fri, 13 Jul 2018 13:09:56 -0700
+Message-Id: <1531512596-31355-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +15,127 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Micha=c5=82_Kazior?= <kazikcz@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, kvalo@codeaurora.org, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@codeaurora.org
+Cc: Ben Greear <greearb@candelatech.com>
 
-T24gMDcvMTMvMjAxOCAxMDozNyBBTSwgTWljaGHFgiBLYXppb3Igd3JvdGU6Cj4gT24gMTMgSnVs
-eSAyMDE4IGF0IDE5OjIxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3Jv
-dGU6Cj4+IE9uIDA3LzEzLzIwMTggMTA6MTcgQU0sIE1pY2hhxYIgS2F6aW9yIHdyb3RlOgo+Pj4K
-Pj4+IE9uIDEzIEp1bHkgMjAxOCBhdCAxOTowOCwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4g
-d3JvdGU6Cj4+Pj4KPj4+PiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4KPj4+Pgo+Pj4+IFRoZSB2ZGV2LXN0YXJ0LXJlc3BvbnNlIG1lc3NhZ2Ugc2hvdWxkIGNhdXNl
-IHRoZQo+Pj4+IGNvbXBsZXRpb24gdG8gZmlyZSwgZXZlbiBpbiB0aGUgZXJyb3IgY2FzZS4gIE90
-aGVyd2lzZSwKPj4+PiB0aGUgdXNlciBzdGlsbCBnZXRzIG5vIHVzZWZ1bCBpbmZvcm1hdGlvbiBh
-bmQgZXZlcnl0aGluZwo+Pj4+IGlzIGJsb2NrZWQgdW50aWwgdGhlIHRpbWVvdXQgcGVyaW9kLgo+
-Pj4+Cj4+Pj4gQWRkIHNvbWUgd2FybmluZyB0ZXh0IHRvIHByaW50IG91dCB0aGUgaW52YWxpZCBz
-dGF0dXMKPj4+PiBjb2RlIHRvIGFpZCBkZWJ1Z2dpbmcuCj4+Pj4KPj4+PiBTaWduZWQtb2ZmLWJ5
-OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+PiAtLS0KPj4+PiAgZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyB8IDEyICsrKysrKysrKy0tLQo+Pj4+
-ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Pj4+Cj4+
-Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4+
-PiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4+PiBpbmRleCBhNjBk
-ZTcxLi5lYzRjZDFlIDEwMDY0NAo+Pj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvd21pLmMKPj4+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dt
-aS5jCj4+Pj4gQEAgLTM0NDMsMTIgKzM0NDMsMTggQEAgdm9pZCBhdGgxMGtfd21pX2V2ZW50X3Zk
-ZXZfc3RhcnRfcmVzcChzdHJ1Y3QKPj4+PiBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2ti
-KQo+Pj4+ICAgICAgICAgcmV0ID0gYXRoMTBrX3dtaV9wdWxsX3ZkZXZfc3RhcnQoYXIsIHNrYiwg
-JmFyZyk7Cj4+Pj4gICAgICAgICBpZiAocmV0KSB7Cj4+Pj4gICAgICAgICAgICAgICAgIGF0aDEw
-a193YXJuKGFyLCAiZmFpbGVkIHRvIHBhcnNlIHZkZXYgc3RhcnQgZXZlbnQ6ICVkXG4iLAo+Pj4+
-IHJldCk7Cj4+Pj4gLSAgICAgICAgICAgICAgIHJldHVybjsKPj4+PiArICAgICAgICAgICAgICAg
-Z290byBvdXQ7Cj4+Pj4gICAgICAgICB9Cj4+Pj4KPj4+PiAtICAgICAgIGlmIChXQVJOX09OKF9f
-bGUzMl90b19jcHUoYXJnLnN0YXR1cykpKQo+Pj4+IC0gICAgICAgICAgICAgICByZXR1cm47Cj4+
-Pj4gKyAgICAgICBpZiAoV0FSTl9PTl9PTkNFKF9fbGUzMl90b19jcHUoYXJnLnN0YXR1cykpKSB7
-Cj4+Pj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKGFyLCAidmRldi1zdGFydC1yZXNwb25z
-ZSByZXBvcnRzIHN0YXR1cwo+Pj4+IGVycm9yOiAlZFxuIiwKPj4+PiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgX19sZTMyX3RvX2NwdShhcmcuc3RhdHVzKSk7Cj4+Pj4gKyAgICAgICAgICAg
-ICAgIC8qIFNldHVwIGlzIGRvbmUgb25lIHdheSBvciBhbm90aGVyIHRob3VnaCwgc28gd2Ugc2hv
-dWxkCj4+Pj4gc3RpbGwKPj4+PiArICAgICAgICAgICAgICAgICogZG8gdGhlIGNvbXBsZXRpb24s
-IHNvIGRvbid0IHJldHVybiBoZXJlLgo+Pj4+ICsgICAgICAgICAgICAgICAgKi8KPj4+PiArICAg
-ICAgIH0KPj4+Pgo+Pj4+ICtvdXQ6Cj4+Pj4gICAgICAgICBjb21wbGV0ZSgmYXItPnZkZXZfc2V0
-dXBfZG9uZSk7Cj4+Pgo+Pj4KPj4+IFdpdGggdGhpcyB0aGUgd2FpdGVyIGNhbiBubyBsb25nZXIg
-dGVsbCBpZiB2ZGV2X3N0YXJ0IHN1Y2NlZWRlZCBvcgo+Pj4gbm90LiBJdCdsbCBhbHdheXMgdGhp
-bmsgaXQgc3VjY2VlZGVkIGV2ZW4gaWYgYXJnLnN0YXR1cyBvciBwYXJzaW5nCj4+PiBmYWlsZWQu
-IFdhaXRlciBpbnN0ZWFkIG9mIGVycm9yaW5nIG91dCB3aWxsIGNvbnRpbnVlIHRvIHBsYXkgb3V0
-IGhhcHB5Cj4+PiBzY2VuYXJpbyBhbmQgbWF5IGVuZCB1cCBjcmFzaGluZyBmaXJtd2FyZS4KPj4+
-Cj4+PiBOb3Qgc3RhbGxpbmcgaXMgbmljZSwgYnV0IEknZCBhcmd1ZSB0aGUgc3RhdHVzIHNob3Vs
-ZCBiZSBwcm9wYWdhdGVkCj4+PiBiYWNrIHRvIHRoZSB3YWl0ZXIgc28gaXQgY2FuIGVycm9yLWNo
-ZWNrLgo+Pgo+Pgo+PiBTbywgbWF5YmUgc2V0IGFyLT5sYXN0X3dtaV9lcnJvciA9IF9fbGUzMl90
-b19jcHUoYXJnLnN0YXR1cykgYmVmb3JlIGNhbGxpbmcKPj4gdGhlIGNvbXBsZXRlIGFuZCBjaGFu
-Z2UgdGhlIGNvZGUgdGhhdCB3YWl0cyBmb3IgdmRldl9zZXR1cF9kb25lIHRvIGNoZWNrCj4+IHRo
-YXQKPj4gZXJyb3IgY29kZT8KPj4KPj4gT3IsIG1heWJlIHdlIG5lZWQgYW4gZXJyb3IgY29kZSBz
-cGVjaWZpYyB0byB0aGlzIGNhbGwsCj4+IGFyLT5sYXN0X3dtaV92ZGV2X3N0YXJ0X3N0YXR1cz8K
-Pgo+IFRvdWdoIGNhbGwuIEkgY2FuJ3QgZmluZCBhbnkgY29tcGVsbGluZyBhcmd1bWVudCB0byBw
-cmVmZXIgb25lIG92ZXIKPiB0aGUgb3RoZXIuIE1heWJlIGxhc3Rfd21pX2Vycm9yIGlzIGEgYml0
-IHRvbyBnZW5lcmljPwoKSSB3YXMgdGhpbmtpbmcgc29tZSBhY3Rpb25zIG1pZ2h0IHJlcXVpcmUg
-bXVsdGlwbGUgd21pIGNhbGxzLCBhbmQgc28KZWFjaCBvbmUgd2UgdHJhY2sgd291bGQgbmVlZCBp
-dHMgb3duIHZhcmlhYmxlLgoKSSdsbCBpbXBsZW1lbnQgaXQgd2l0aCBhIG1vcmUgc3BlY2lmaWMg
-ZXJyb3IgY29kZSBhbmQgcG9zdCBhIG5ldyBwYXRjaC4KClRoYW5rcywKQmVuCgotLSAKQmVuIEdy
-ZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAg
-aHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+From: Ben Greear <greearb@candelatech.com>
+
+The vdev-start-response message should cause the
+completion to fire, even in the error case.  Otherwise,
+the user still gets no useful information and everything
+is blocked until the timeout period.
+
+Add some warning text to print out the invalid status
+code to aid debugging, and propagate failure code.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+
+v2:  Propagate failure code
+
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi.c  | 19 ++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/wmi.h  |  8 +++++++-
+ 4 files changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index e3ec4d4..df232a4 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1112,6 +1112,7 @@ struct ath10k {
+ 
+ 	struct completion install_key_done;
+ 
++	int last_wmi_vdev_start_status;
+ 	struct completion vdev_setup_done;
+ 
+ 	struct workqueue_struct *workqueue;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 85b8398..c90c8bb 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1054,7 +1054,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+ 	if (time_left == 0)
+ 		return -ETIMEDOUT;
+ 
+-	return 0;
++	return ar->last_wmi_vdev_start_status;
+ }
+ 
+ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index a60de71..6aaa439 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3437,18 +3437,31 @@ void ath10k_wmi_event_vdev_start_resp(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_vdev_start_ev_arg arg = {};
+ 	int ret;
++	u32 status;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_VDEV_START_RESP_EVENTID\n");
+ 
++	ar->last_wmi_vdev_start_status = 0;
++
+ 	ret = ath10k_wmi_pull_vdev_start(ar, skb, &arg);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to parse vdev start event: %d\n", ret);
+-		return;
++		ar->last_wmi_vdev_start_status = ret;
++		goto out;
+ 	}
+ 
+-	if (WARN_ON(__le32_to_cpu(arg.status)))
+-		return;
++	status = __le32_to_cpu(arg.status);
++	if (WARN_ON_ONCE(status)) {
++		ath10k_warn(ar, "vdev-start-response reports status error: %d (%s)\n",
++			    status, (status == WMI_VDEV_START_CHAN_INVALID) ?
++			    "chan-invalid" : "unknown");
++		/* Setup is done one way or another though, so we should still
++		 * do the completion, so don't return here.
++		 */
++		ar->last_wmi_vdev_start_status = -EINVAL;
++	}
+ 
++out:
+ 	complete(&ar->vdev_setup_done);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 9ba9625..95ff280 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6778,11 +6778,17 @@ struct wmi_ch_info_ev_arg {
+ 	__le32 rx_frame_count;
+ };
+ 
++/* From 10.4 firmware, not sure all have the same values. */
++enum wmi_vdev_start_status {
++        WMI_VDEV_START_OK = 0,
++        WMI_VDEV_START_CHAN_INVALID,
++};
++
+ struct wmi_vdev_start_ev_arg {
+ 	__le32 vdev_id;
+ 	__le32 req_id;
+ 	__le32 resp_type; /* %WMI_VDEV_RESP_ */
+-	__le32 status;
++	__le32 status; /* See wmi_vdev_start_status enum above */
+ };
+ 
+ struct wmi_peer_kick_ev_arg {
+-- 
+2.4.11
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
