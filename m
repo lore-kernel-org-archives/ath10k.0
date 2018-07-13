@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x242.google.com ([2607:f8b0:400d:c0d::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fe1hQ-0004og-AK
- for ath10k@lists.infradead.org; Fri, 13 Jul 2018 17:17:45 +0000
-Received: by mail-qt0-x242.google.com with SMTP id b15-v6so27699901qtp.11
- for <ath10k@lists.infradead.org>; Fri, 13 Jul 2018 10:17:33 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1531501683-32299-1-git-send-email-greearb@candelatech.com>
-References: <1531501683-32299-1-git-send-email-greearb@candelatech.com>
-From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
-Date: Fri, 13 Jul 2018 19:17:32 +0200
-Message-ID: <CABvG-CUdxFE8NiFfUKyeApm9dXqNWtGUWUBV1q8Fn3WF7zUnuQ@mail.gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fe1kv-0006GQ-Bp
+ for ath10k@lists.infradead.org; Fri, 13 Jul 2018 17:21:22 +0000
 Subject: Re: [PATCH] ath10k: fix vdev-start timeout on error
+References: <1531501683-32299-1-git-send-email-greearb@candelatech.com>
+ <CABvG-CUdxFE8NiFfUKyeApm9dXqNWtGUWUBV1q8Fn3WF7zUnuQ@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <4f4470db-d044-ef1c-4cc9-aab6bbc812f4@candelatech.com>
+Date: Fri, 13 Jul 2018 10:21:04 -0700
+MIME-Version: 1.0
+In-Reply-To: <CABvG-CUdxFE8NiFfUKyeApm9dXqNWtGUWUBV1q8Fn3WF7zUnuQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +19,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: =?UTF-8?Q?Micha=c5=82_Kazior?= <kazikcz@gmail.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, kvalo@codeaurora.org, ath10k@lists.infradead.org
 
-On 13 July 2018 at 19:08,  <greearb@candelatech.com> wrote:
-> From: Ben Greear <greearb@candelatech.com>
->
-> The vdev-start-response message should cause the
-> completion to fire, even in the error case.  Otherwise,
-> the user still gets no useful information and everything
-> is blocked until the timeout period.
->
-> Add some warning text to print out the invalid status
-> code to aid debugging.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/wmi.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index a60de71..ec4cd1e 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -3443,12 +3443,18 @@ void ath10k_wmi_event_vdev_start_resp(struct ath10k *ar, struct sk_buff *skb)
->         ret = ath10k_wmi_pull_vdev_start(ar, skb, &arg);
->         if (ret) {
->                 ath10k_warn(ar, "failed to parse vdev start event: %d\n", ret);
-> -               return;
-> +               goto out;
->         }
->
-> -       if (WARN_ON(__le32_to_cpu(arg.status)))
-> -               return;
-> +       if (WARN_ON_ONCE(__le32_to_cpu(arg.status))) {
-> +               ath10k_warn(ar, "vdev-start-response reports status error: %d\n",
-> +                           __le32_to_cpu(arg.status));
-> +               /* Setup is done one way or another though, so we should still
-> +                * do the completion, so don't return here.
-> +                */
-> +       }
->
-> +out:
->         complete(&ar->vdev_setup_done);
-
-With this the waiter can no longer tell if vdev_start succeeded or
-not. It'll always think it succeeded even if arg.status or parsing
-failed. Waiter instead of erroring out will continue to play out happy
-scenario and may end up crashing firmware.
-
-Not stalling is nice, but I'd argue the status should be propagated
-back to the waiter so it can error-check.
-
-
-Michal
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDcvMTMvMjAxOCAxMDoxNyBBTSwgTWljaGHFgiBLYXppb3Igd3JvdGU6Cj4gT24gMTMgSnVs
+eSAyMDE4IGF0IDE5OjA4LCAgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4gRnJv
+bTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4+Cj4+IFRoZSB2ZGV2LXN0
+YXJ0LXJlc3BvbnNlIG1lc3NhZ2Ugc2hvdWxkIGNhdXNlIHRoZQo+PiBjb21wbGV0aW9uIHRvIGZp
+cmUsIGV2ZW4gaW4gdGhlIGVycm9yIGNhc2UuICBPdGhlcndpc2UsCj4+IHRoZSB1c2VyIHN0aWxs
+IGdldHMgbm8gdXNlZnVsIGluZm9ybWF0aW9uIGFuZCBldmVyeXRoaW5nCj4+IGlzIGJsb2NrZWQg
+dW50aWwgdGhlIHRpbWVvdXQgcGVyaW9kLgo+Pgo+PiBBZGQgc29tZSB3YXJuaW5nIHRleHQgdG8g
+cHJpbnQgb3V0IHRoZSBpbnZhbGlkIHN0YXR1cwo+PiBjb2RlIHRvIGFpZCBkZWJ1Z2dpbmcuCj4+
+Cj4+IFNpZ25lZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+
+PiAtLS0KPj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMgfCAxMiArKysr
+KysrKystLS0KPj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
+KC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dt
+aS5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+PiBpbmRleCBhNjBk
+ZTcxLi5lYzRjZDFlIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3dtaS5jCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMK
+Pj4gQEAgLTM0NDMsMTIgKzM0NDMsMTggQEAgdm9pZCBhdGgxMGtfd21pX2V2ZW50X3ZkZXZfc3Rh
+cnRfcmVzcChzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikKPj4gICAgICAg
+ICByZXQgPSBhdGgxMGtfd21pX3B1bGxfdmRldl9zdGFydChhciwgc2tiLCAmYXJnKTsKPj4gICAg
+ICAgICBpZiAocmV0KSB7Cj4+ICAgICAgICAgICAgICAgICBhdGgxMGtfd2FybihhciwgImZhaWxl
+ZCB0byBwYXJzZSB2ZGV2IHN0YXJ0IGV2ZW50OiAlZFxuIiwgcmV0KTsKPj4gLSAgICAgICAgICAg
+ICAgIHJldHVybjsKPj4gKyAgICAgICAgICAgICAgIGdvdG8gb3V0Owo+PiAgICAgICAgIH0KPj4K
+Pj4gLSAgICAgICBpZiAoV0FSTl9PTihfX2xlMzJfdG9fY3B1KGFyZy5zdGF0dXMpKSkKPj4gLSAg
+ICAgICAgICAgICAgIHJldHVybjsKPj4gKyAgICAgICBpZiAoV0FSTl9PTl9PTkNFKF9fbGUzMl90
+b19jcHUoYXJnLnN0YXR1cykpKSB7Cj4+ICsgICAgICAgICAgICAgICBhdGgxMGtfd2Fybihhciwg
+InZkZXYtc3RhcnQtcmVzcG9uc2UgcmVwb3J0cyBzdGF0dXMgZXJyb3I6ICVkXG4iLAo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgX19sZTMyX3RvX2NwdShhcmcuc3RhdHVzKSk7Cj4+ICsg
+ICAgICAgICAgICAgICAvKiBTZXR1cCBpcyBkb25lIG9uZSB3YXkgb3IgYW5vdGhlciB0aG91Z2gs
+IHNvIHdlIHNob3VsZCBzdGlsbAo+PiArICAgICAgICAgICAgICAgICogZG8gdGhlIGNvbXBsZXRp
+b24sIHNvIGRvbid0IHJldHVybiBoZXJlLgo+PiArICAgICAgICAgICAgICAgICovCj4+ICsgICAg
+ICAgfQo+Pgo+PiArb3V0Ogo+PiAgICAgICAgIGNvbXBsZXRlKCZhci0+dmRldl9zZXR1cF9kb25l
+KTsKPgo+IFdpdGggdGhpcyB0aGUgd2FpdGVyIGNhbiBubyBsb25nZXIgdGVsbCBpZiB2ZGV2X3N0
+YXJ0IHN1Y2NlZWRlZCBvcgo+IG5vdC4gSXQnbGwgYWx3YXlzIHRoaW5rIGl0IHN1Y2NlZWRlZCBl
+dmVuIGlmIGFyZy5zdGF0dXMgb3IgcGFyc2luZwo+IGZhaWxlZC4gV2FpdGVyIGluc3RlYWQgb2Yg
+ZXJyb3Jpbmcgb3V0IHdpbGwgY29udGludWUgdG8gcGxheSBvdXQgaGFwcHkKPiBzY2VuYXJpbyBh
+bmQgbWF5IGVuZCB1cCBjcmFzaGluZyBmaXJtd2FyZS4KPgo+IE5vdCBzdGFsbGluZyBpcyBuaWNl
+LCBidXQgSSdkIGFyZ3VlIHRoZSBzdGF0dXMgc2hvdWxkIGJlIHByb3BhZ2F0ZWQKPiBiYWNrIHRv
+IHRoZSB3YWl0ZXIgc28gaXQgY2FuIGVycm9yLWNoZWNrLgoKU28sIG1heWJlIHNldCBhci0+bGFz
+dF93bWlfZXJyb3IgPSBfX2xlMzJfdG9fY3B1KGFyZy5zdGF0dXMpIGJlZm9yZSBjYWxsaW5nCnRo
+ZSBjb21wbGV0ZSBhbmQgY2hhbmdlIHRoZSBjb2RlIHRoYXQgd2FpdHMgZm9yIHZkZXZfc2V0dXBf
+ZG9uZSB0byBjaGVjayB0aGF0CmVycm9yIGNvZGU/CgpPciwgbWF5YmUgd2UgbmVlZCBhbiBlcnJv
+ciBjb2RlIHNwZWNpZmljIHRvIHRoaXMgY2FsbCwgYXItPmxhc3Rfd21pX3ZkZXZfc3RhcnRfc3Rh
+dHVzPwoKVGhhbmtzLApCZW4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
+b20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20K
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
