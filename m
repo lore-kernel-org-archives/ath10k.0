@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fe4OR-0007EI-5Q
- for ath10k@lists.infradead.org; Fri, 13 Jul 2018 20:10:21 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2] ath10k:  fix vdev-start timeout on error
-Date: Fri, 13 Jul 2018 13:09:56 -0700
-Message-Id: <1531512596-31355-1-git-send-email-greearb@candelatech.com>
+Received: from www.osadl.org ([62.245.132.105])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1feOa2-0001qe-G9
+ for ath10k@lists.infradead.org; Sat, 14 Jul 2018 17:43:40 +0000
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH] ath10k: htt_tx: move lock into id_get function
+Date: Sat, 14 Jul 2018 19:38:20 +0200
+Message-Id: <1531589900-29220-1-git-send-email-hofrat@osadl.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,119 +20,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@codeaurora.org
-Cc: Ben Greear <greearb@candelatech.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>, "David S. Miller" <davem@davemloft.net>
 
-From: Ben Greear <greearb@candelatech.com>
+ This is only code refactoring as all call sites of 
+ath10k_htt_tx_alloc_msdu_id() take the same lock it can be moved into the
+id_get function and the assertion dropped.
 
-The vdev-start-response message should cause the
-completion to fire, even in the error case.  Otherwise,
-the user still gets no useful information and everything
-is blocked until the timeout period.
-
-Add some warning text to print out the invalid status
-code to aid debugging, and propagate failure code.
-
-Signed-off-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 ---
+Found during code review
 
-v2:  Propagate failure code
+Patch was compile tested with: x86_64_defconfig + CONFIG_ATH10K=y
+(with a number of sparse warnings "expression using sizeof(void)")
 
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/mac.c  |  2 +-
- drivers/net/wireless/ath/ath10k/wmi.c  | 19 ++++++++++++++++---
- drivers/net/wireless/ath/ath10k/wmi.h  |  8 +++++++-
- 4 files changed, 25 insertions(+), 5 deletions(-)
+Patch is against 4.18-rc4 (localversion-next is next-20180713)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index e3ec4d4..df232a4 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1112,6 +1112,7 @@ struct ath10k {
- 
- 	struct completion install_key_done;
- 
-+	int last_wmi_vdev_start_status;
- 	struct completion vdev_setup_done;
- 
- 	struct workqueue_struct *workqueue;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 85b8398..c90c8bb 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1054,7 +1054,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
- 	if (time_left == 0)
- 		return -ETIMEDOUT;
- 
--	return 0;
-+	return ar->last_wmi_vdev_start_status;
- }
- 
- static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a60de71..6aaa439 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3437,18 +3437,31 @@ void ath10k_wmi_event_vdev_start_resp(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_vdev_start_ev_arg arg = {};
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 89157c5..8a2aa2d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -208,10 +208,10 @@ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb)
+ 	struct ath10k *ar = htt->ar;
  	int ret;
-+	u32 status;
  
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_VDEV_START_RESP_EVENTID\n");
+-	lockdep_assert_held(&htt->tx_lock);
+-
++	spin_lock_bh(&htt->tx_lock);
+ 	ret = idr_alloc(&htt->pending_tx, skb, 0,
+ 			htt->max_num_pending_tx, GFP_ATOMIC);
++	spin_unlock_bh(&htt->tx_lock);
  
-+	ar->last_wmi_vdev_start_status = 0;
-+
- 	ret = ath10k_wmi_pull_vdev_start(ar, skb, &arg);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to parse vdev start event: %d\n", ret);
--		return;
-+		ar->last_wmi_vdev_start_status = ret;
-+		goto out;
- 	}
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx alloc msdu_id %d\n", ret);
  
--	if (WARN_ON(__le32_to_cpu(arg.status)))
--		return;
-+	status = __le32_to_cpu(arg.status);
-+	if (WARN_ON_ONCE(status)) {
-+		ath10k_warn(ar, "vdev-start-response reports status error: %d (%s)\n",
-+			    status, (status == WMI_VDEV_START_CHAN_INVALID) ?
-+			    "chan-invalid" : "unknown");
-+		/* Setup is done one way or another though, so we should still
-+		 * do the completion, so don't return here.
-+		 */
-+		ar->last_wmi_vdev_start_status = -EINVAL;
-+	}
+@@ -1077,9 +1077,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	len += sizeof(cmd->hdr);
+ 	len += sizeof(cmd->mgmt_tx);
  
-+out:
- 	complete(&ar->vdev_setup_done);
- }
+-	spin_lock_bh(&htt->tx_lock);
+ 	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
+-	spin_unlock_bh(&htt->tx_lock);
+ 	if (res < 0)
+ 		goto err;
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 9ba9625..95ff280 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6778,11 +6778,17 @@ struct wmi_ch_info_ev_arg {
- 	__le32 rx_frame_count;
- };
+@@ -1161,9 +1159,7 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+ 	struct htt_msdu_ext_desc *ext_desc = NULL;
+ 	struct htt_msdu_ext_desc *ext_desc_t = NULL;
  
-+/* From 10.4 firmware, not sure all have the same values. */
-+enum wmi_vdev_start_status {
-+        WMI_VDEV_START_OK = 0,
-+        WMI_VDEV_START_CHAN_INVALID,
-+};
-+
- struct wmi_vdev_start_ev_arg {
- 	__le32 vdev_id;
- 	__le32 req_id;
- 	__le32 resp_type; /* %WMI_VDEV_RESP_ */
--	__le32 status;
-+	__le32 status; /* See wmi_vdev_start_status enum above */
- };
+-	spin_lock_bh(&htt->tx_lock);
+ 	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
+-	spin_unlock_bh(&htt->tx_lock);
+ 	if (res < 0)
+ 		goto err;
  
- struct wmi_peer_kick_ev_arg {
+@@ -1363,9 +1359,7 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
+ 	struct htt_msdu_ext_desc_64 *ext_desc = NULL;
+ 	struct htt_msdu_ext_desc_64 *ext_desc_t = NULL;
+ 
+-	spin_lock_bh(&htt->tx_lock);
+ 	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
+-	spin_unlock_bh(&htt->tx_lock);
+ 	if (res < 0)
+ 		goto err;
+ 
 -- 
-2.4.11
+2.1.4
 
 
 _______________________________________________
