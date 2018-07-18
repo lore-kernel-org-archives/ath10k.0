@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffRaL-0006lA-DO
- for ath10k@lists.infradead.org; Tue, 17 Jul 2018 15:08:19 +0000
-Subject: Re: Setting tx retry count in ath10k
-References: <b0f67dd7-dea9-508e-7ad9-f6db3ac88b90@candelatech.com>
- <e9b42b3d-2d03-ca69-5532-fbae08fdec5d@uni-rostock.de>
- <8b9713fe-7573-f009-d002-13df73315898@televic.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <9dd76e58-b514-26f2-2fe9-0c9a7f798054@candelatech.com>
-Date: Tue, 17 Jul 2018 08:07:55 -0700
-MIME-Version: 1.0
-In-Reply-To: <8b9713fe-7573-f009-d002-13df73315898@televic.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffmbI-0002Qg-7w
+ for ath10k@lists.infradead.org; Wed, 18 Jul 2018 13:34:41 +0000
+From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Subject: [PATCH] ath10k: add debugfs file warm_hw_reset
+Date: Wed, 18 Jul 2018 19:04:20 +0530
+Message-Id: <1531920860-3236-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +15,164 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: SEDE <s.deronne@televic.com>, Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org
 
-CgpPbiAwNy8xNy8yMDE4IDEyOjU2IEFNLCBTRURFIHdyb3RlOgo+IEhpLAo+Cj4gSW4gdGhlIHN0
-YW5kYXJkLCA3IGlzIHRoZSBkZWZhdWx0IGZvciB0aGUgc2hvcnQgcmV0cnkgY291bnQsIDQgaXMg
-d2VsbCB0aGUgZGVmYXVsdCBmb3IgbG9uZyByZXRyeSBjb3VudC4KPgo+IEluIGF0aDEwaywgdGhl
-cmUgaXMgYWxzbyBub25fYWdnX3N3X3JldHJ5X3RoIHRvIGNvbnRyb2wgdGhpcywgd2lsbCB0aGlz
-IHN0aWxsIGJlIHVzZWQ/Cj4gT3Igd2hhdCBpcyB0aGUgZGlmZmVyZW5jZSB3aXRoIHJjX251bV9y
-ZXRyaWVzPwo+Cj4gS2luZCByZWdhcmRzLAo+IFPDqWJhc3RpZW4uCgpUaGUgYXRoMTBrIGZpcm13
-YXJlIGhhcyBubyBpZGVhIG9mIGxvbmcgdnMgc2hvcnQgcmV0cmllcywgc28gSSBqdXN0IHVzZWQg
-dGhlCmxvbmcgc2V0dGluZy4KCkkgd2lsbCBpbnZlc3RpZ2F0ZSB0aGF0IG5vbl9hZ2dfc3dfcmV0
-cnlfdGggYXMgd2VsbCwgYW5kIEkgZGlkIG5vdGljZSBteSB3YXZlLTEKZmlybXdhcmUgKGF0IGxl
-YXN0KSB1c2VzIDE1IHJldHJpZXMgZm9yIHNlbGYtZ2VuZXJhdGVkIGZyYW1lcy4gIEJ1dCwgaW4g
-bXkgY2FzZSwKdGhvc2Ugc2VsZi1nZW4gZnJhbWVzIGFyZSBub3QgbXVjaCB1c2VkIGFueXdheSBz
-aW5jZSBJIGRpc2FibGUgZmlybXdhcmUga2VlcC1hbGl2ZS4KCkFuZCwgSSBuZWVkIHRvIHNlZSBo
-b3cgdGhlIG1hYzgwMjExIHN0YWNrIGhhbmRsZXMgaXRzIG93biByZXRyaWVzIHdoZW4gd29ya2lu
-Zwp3aXRoIGF0aDEway4KClRoYW5rcywKQmVuCgo+Cj4KPiBPbiAyMDE4LTA3LTE3IDA5OjM5LCBC
-ZW5qYW1pbiBCZWljaGxlciB3cm90ZToKPj4gSGksCj4+Cj4+IEFtIDE3LjA3LjIwMTggdW0gMDI6
-Mzcgc2NocmllYiBCZW4gR3JlZWFyOgo+Pj4gSSBzcGVudCBhIGJpdCBvZiB0aW1lIGxvb2tpbmcg
-aW50byBzZXR0aW5nIHRoZSB0eCByZXRyeSBjb3VudCBpbgo+Pj4gYXRoMTBrICh3YXZlLTEgZmly
-bXdhcmUpLiAgVGhlIGZpcm13YXJlIGhhcyBzdXBwb3J0IGZvciBzZXR0aW5nIHRoaXMgYXMKPj4+
-IGEgdmRldiBwYXJhbWV0ZXIsIGFuZCBpdCBkZWZhdWx0cyB0byAnMicsIGF0IGxlYXN0IGluIG15
-IHdhdmUtMSBmaXJtd2FyZS4KPj4+Cj4+PiBJIGVuYWJsZWQgcHJvcGFnYXRpbmcgdGhlIHNldHRp
-bmcgZnJvbSBtYWM4MDIxMSwgaWU6Cj4+PiBpdyBwaHkgd2lwaHkwIHNldCByZXRyeSBzaG9ydCAy
-IGxvbmcgMgo+Pj4KPj4+IEFuZCB3aGlsZSBkZWJ1Z2dpbmcgdGhpcywgSSBub3RpY2VkIHRoYXQg
-bWFjODAyMTEgaGFzIGEgZGVmYXVsdCBvZgo+Pj4gNCwgYnV0IHRoZSBhdGgxMGsgZmlybXdhcmUg
-aGFzIGEgZGVmYXVsdCBvZiAyLiAgTm93LCBJIGFtIG5vdCBzdXJlCj4+PiBpZiBJIHNob3VsZCBl
-bmFibGUgc2V0dGluZyB0aGUgcmV0cnkgY291bnQgc2luY2UgaXQgd2lsbCBjaGFuZ2UKPj4+IHRo
-ZSBiZWhhdmlvdXIgZXZlbiBpZiB1c2VycyBkb24ndCBzZXQgYW55dGhpbmcuCj4+Pgo+PiBNYXli
-ZSBJJ20gd3JvbmcsIGJ1dCBJIGhhdmUgaW4gbWluZCwgdGhhdCA3IHJldHJpZXMgaXMgdGhlIGRl
-ZmF1bHQKPj4gc2V0dGluZyBvZiBtYWM4MDIxMS4gQWx0aG91Z2ggMiBvciBldmVuIDQgc2VlbXMg
-dG8gYmUgcHJldHR5IGxvdyBmb3IgdGhlCj4+IG92ZXJhbGwgcmV0cnkgY291bnQsIHNvIG1heWJl
-IHRoZSB2YWx1ZXMgYXJlIHNvbWVob3cgY2hhbmdlZCBpbiB0aGUKPj4gZmlybXdhcmU/IEZyb20g
-b3VyIGV4cGVyaW1lbnRzIHdlIGtub3cgKGF0IGxlYXN0IGZvciA4MDIuMTFuKSB5b3UgbmVlZAo+
-PiBmb3Igbm9ybWFsIG9wZXJhdGlvbiBhIHJldHJ5IGNvdW50IG9mIHNvbWV0aGluZyBiZXR3ZWVu
-IDUgLSA5LCBidXQKPj4gc29tZXRpbWVzIGFsc28gMTIgb3IgMTUgaXMgYmVuZWZpY2lhbC4KPj4K
-Pj4gV2UgdXNlIGZvciBvdXIgZXhwZXJpbWVudGFsIHNldHVwIG1haW5seSBhdGg5ayBjYXJkcyBh
-bmQgcnQyOHh4IG5pY3MsCj4+IGFuZCB3aXRoIHRoZW0geW91IG5lZWQgZGVmaW5pdGVseSBtb3Jl
-IHJldHJpZXMuCj4+Cj4+IE5vbmV0aGVsZXNzLCBJIGRvbid0IHRoaW5rIHRoZSBjaGFuZ2UgZnJv
-bSAyIHRvIDQgZG9lcyByZWFsbHkgYWZmZWN0IHRoZQo+PiBiZWhhdmlvciBpbiBhIG5lZ2F0aXZl
-IHdheSAoaWYgaXQgd29ya3MgYXMgZXhwZWN0ZWQpLgo+Pgo+Pj4gQW55IG9waW5pb25zIG9uIHRo
-aXM/Cj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gQmVuCj4+Pgo+CgotLSAKQmVuIEdyZWVhciA8Z3JlZWFy
-YkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5j
-YW5kZWxhdGVjaC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Debugfs support to do hardware warm reset with WMI command
+WMI_PDEV_PARAM_PDEV_RESET for 10.4 and 10.2.4(if wmi
+service is enabled in the firmware for backward compatibility).
+
+This change is purely for debugging purpose when hardware hangs/mutes.
+
+This hardware reset won't affect the connectivity but there will be small
+pause in data traffic. Here we are doing BB/MAC level reset and hence
+whenever the BB/MAC watchdog is triggered, it does a hardware_chip_reset.
+So the target will be in the active state.
+
+Below command used to warm reset the hardware.
+echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/warm_hw_reset
+
+Tested in QCA988X with firmware ver 10.2.4.70.45
+Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00011
+
+Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/debug.c | 49 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi.h   | 16 ++++++++++-
+ 3 files changed, 65 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 4926722..0baaad9 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2297,6 +2297,52 @@ static ssize_t ath10k_tpc_stats_final_read(struct file *file,
+ 	.llseek = default_llseek,
+ };
+ 
++static ssize_t ath10k_write_warm_hw_reset(struct file *file,
++					  const char __user *user_buf,
++					  size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	int ret;
++	bool val;
++
++	if (kstrtobool_from_user(user_buf, count, &val))
++		return -EFAULT;
++
++	if (!val)
++		return -EINVAL;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON) {
++		ret = -ENETDOWN;
++		goto exit;
++	}
++
++	if (!(test_bit(WMI_SERVICE_RESET_CHIP, ar->wmi.svc_map)))
++		ath10k_warn(ar, "wmi service for reset chip is not available\n");
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pdev_reset,
++					WMI_RST_MODE_WARM_RESET);
++
++	if (ret) {
++		ath10k_warn(ar, "failed to enable warm hw reset: %d\n", ret);
++		goto exit;
++	}
++
++	ret = count;
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++static const struct file_operations fops_warm_hw_reset = {
++	.write = ath10k_write_warm_hw_reset,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ int ath10k_debug_create(struct ath10k *ar)
+ {
+ 	ar->debug.cal_data = vzalloc(ATH10K_DEBUG_CAL_DATA_LEN);
+@@ -2425,6 +2471,9 @@ int ath10k_debug_register(struct ath10k *ar)
+ 				    ar->debug.debugfs_phy, ar,
+ 				    &fops_tpc_stats_final);
+ 
++	debugfs_create_file("warm_hw_reset", 0600, ar->debug.debugfs_phy, ar,
++			    &fops_warm_hw_reset);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 877249a..2fb972e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1333,7 +1333,7 @@
+ 	.enable_per_tid_ampdu = WMI_PDEV_PARAM_UNSUPPORTED,
+ 	.cca_threshold = WMI_PDEV_PARAM_UNSUPPORTED,
+ 	.rts_fixed_rate = WMI_PDEV_PARAM_UNSUPPORTED,
+-	.pdev_reset = WMI_PDEV_PARAM_UNSUPPORTED,
++	.pdev_reset = WMI_10X_PDEV_PARAM_PDEV_RESET,
+ 	.wapi_mbssid_offset = WMI_PDEV_PARAM_UNSUPPORTED,
+ 	.arp_srcaddr = WMI_PDEV_PARAM_UNSUPPORTED,
+ 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index d68afb6..e24d869 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -462,6 +462,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS);
+ 	SVCSTR(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_TPC_STATS_FINAL);
++	SVCSTR(WMI_SERVICE_RESET_CHIP);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -3934,7 +3935,11 @@ enum wmi_10x_pdev_param {
+ 	WMI_10X_PDEV_PARAM_REMOVE_MCAST2UCAST_BUFFER,
+ 	WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE,
+ 	WMI_10X_PDEV_PARAM_RTS_FIXED_RATE,
+-	WMI_10X_PDEV_PARAM_CAL_PERIOD
++	WMI_10X_PDEV_PARAM_CAL_PERIOD,
++	WMI_10X_PDEV_PARAM_ATF_STRICT_SCH,
++	WMI_10X_PDEV_PARAM_ATF_SCHED_DURATION,
++	WMI_10X_PDEV_PARAM_SET_PROMISC_MODE_CMDID,
++	WMI_10X_PDEV_PARAM_PDEV_RESET
+ };
+ 
+ enum wmi_10_4_pdev_param {
+@@ -6501,6 +6506,15 @@ struct wmi_force_fw_hang_cmd {
+ 	__le32 delay_ms;
+ } __packed;
+ 
++enum wmi_pdev_reset_mode_type {
++	WMI_RST_MODE_TX_FLUSH = 1,
++	WMI_RST_MODE_WARM_RESET,
++	WMI_RST_MODE_COLD_RESET,
++	WMI_RST_MODE_WARM_RESET_RESTORE_CAL,
++	WMI_RST_MODE_COLD_RESET_RESTORE_CAL,
++	WMI_RST_MODE_MAX,
++};
++
+ enum ath10k_dbglog_level {
+ 	ATH10K_DBGLOG_LEVEL_VERBOSE = 0,
+ 	ATH10K_DBGLOG_LEVEL_INFO = 1,
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
