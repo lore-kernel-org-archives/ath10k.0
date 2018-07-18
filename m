@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffosU-000734-WB
- for ath10k@lists.infradead.org; Wed, 18 Jul 2018 16:00:36 +0000
+Received: from mail.toke.dk ([52.28.52.200])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffpNM-0000q7-BI
+ for ath10k@lists.infradead.org; Wed, 18 Jul 2018 16:32:30 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Subject: Re: Setting tx retry count in ath10k
+In-Reply-To: <ea2ff457-e84e-8395-148d-8d90a749a40d@candelatech.com>
 References: <b0f67dd7-dea9-508e-7ad9-f6db3ac88b90@candelatech.com>
  <e9b42b3d-2d03-ca69-5532-fbae08fdec5d@uni-rostock.de>
  <8b9713fe-7573-f009-d002-13df73315898@televic.com>
  <9dd76e58-b514-26f2-2fe9-0c9a7f798054@candelatech.com>
  <AM4PR0101MB2305917B39A84BBE13FDFAD1E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <ea2ff457-e84e-8395-148d-8d90a749a40d@candelatech.com>
-Date: Wed, 18 Jul 2018 09:00:19 -0700
+ <ea2ff457-e84e-8395-148d-8d90a749a40d@candelatech.com>
+Date: Wed, 18 Jul 2018 18:21:58 +0200
+Message-ID: <877els5xax.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <AM4PR0101MB2305917B39A84BBE13FDFAD1E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,76 +23,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jean-Pierre TOSONI <jp.tosoni@acksys.fr>, SEDE <s.deronne@televic.com>, Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Ben Greear <greearb@candelatech.com>, Jean-Pierre TOSONI <jp.tosoni@acksys.fr>, SEDE <s.deronne@televic.com>, Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-T24gMDcvMTgvMjAxOCAwODo1MCBBTSwgSmVhbi1QaWVycmUgVE9TT05JIHdyb3RlOgo+IEhpLAo+
-Cj4gV2UgbWFkZSByZXRyaWVzIGNvbmZpZ3VyYWJsZSBpbiBvdXIgbWFjODAyMTErYXRoOWsgc3lz
-dGVtLCBhbmQgd2UgZW5kZWQgd2l0aCAzIGNvdW50czoKPiAxKSBzaG9ydCByZXRyeSBjb3VudCwg
-ZGVmYXVsdHMgdG8gNAo+IDIpIGxvbmcgcmV0cnlzIGNvdW50LCBkZWZhdXRzIHRvIDcKPiAzKSBz
-b2Z0d2FyZSByZXRyeSBjb3VudCwgZGVmYXVsdHMgdG8gMzAKPiBUaGlzIGxhc3Qgb25lIGlzIHVz
-ZWQgc2VwYXJhdGVseSBmb3IgZWFjaCBmcmFtZSBpbiBhbiBhZ2dyZWdhdGVkIGZyYW1lLCBzaW5j
-ZSB0aGV5IGNhbiBiZSBzZXBhcmF0ZWx5IGFja25vd2xlZGdlZC4KCkRpZCB5b3UgaGF2ZSB0byBj
-aGFuZ2UgY29kZSBmb3IgIzMsIGFuZCBpZiBzbywgY2FuIHlvdSBzaGFyZSB0aGUgcGF0Y2g/CgpJ
-IHdvbmRlciBhbHNvIGlmIHJldHJpZXMgc2hvdWxkIGJlIGRpZmZlcmVudCBmb3IgZGlmZmVyZW50
-IHR5cGVzIG9mIGRhdGEuICBGb3IgaW5zdGFuY2UsCmlmIHNvbWVvbmUgaXMgdXNpbmcgVURQLCBt
-YXliZSB0aGV5IGRvbid0IGNhcmUgc28gbXVjaCBhYm91dCBsb3N0IHBhY2tldHMgYW5kIHdvdWxk
-CnByZWZlciBhIGxvd2VyIHJldHJ5IGNvdW50LiAgT3IsIG1heWJlIElQIHR5cGUtb2Ytc2Vydmlj
-ZSBjb3VsZCBiZSB0YWtlbiBpbnRvIGFjY291bnQKYW5kIHJldHJ5IGZyYW1lcyBkaWZmZXJlbnQg
-YW1vdW50cyBiYXNlZCBvbiBUb1M/CgpUaGFua3MsCkJlbgoKPgo+IFJlZ2FyZHMsCj4gSmVhbi1Q
-aWVycmUKPgo+PiAtLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0KPj4gRGUgOiBsaW51eC13aXJl
-bGVzcy1vd25lckB2Z2VyLmtlcm5lbC5vcmcgW21haWx0bzpsaW51eC13aXJlbGVzcy1vd25lckB2
-Z2VyLmtlcm5lbC5vcmddIERlIGxhIHBhcnQgZGUKPj4gQmVuIEdyZWVhcgo+PiBFbnZvecOpIDog
-bWFyZGkgMTcganVpbGxldCAyMDE4IDE3OjA4Cj4+IMOAIDogU0VERTsgQmVuamFtaW4gQmVpY2hs
-ZXI7IGF0aDEwazsgbGludXgtd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnCj4+IE9iamV0IDogUmU6
-IFNldHRpbmcgdHggcmV0cnkgY291bnQgaW4gYXRoMTBrCj4+Cj4+Cj4+Cj4+IE9uIDA3LzE3LzIw
-MTggMTI6NTYgQU0sIFNFREUgd3JvdGU6Cj4+PiBIaSwKPj4+Cj4+PiBJbiB0aGUgc3RhbmRhcmQs
-IDcgaXMgdGhlIGRlZmF1bHQgZm9yIHRoZSBzaG9ydCByZXRyeSBjb3VudCwgNCBpcyB3ZWxsIHRo
-ZSBkZWZhdWx0IGZvciBsb25nIHJldHJ5Cj4+IGNvdW50Lgo+Pj4KPj4+IEluIGF0aDEwaywgdGhl
-cmUgaXMgYWxzbyBub25fYWdnX3N3X3JldHJ5X3RoIHRvIGNvbnRyb2wgdGhpcywgd2lsbCB0aGlz
-IHN0aWxsIGJlIHVzZWQ/Cj4+PiBPciB3aGF0IGlzIHRoZSBkaWZmZXJlbmNlIHdpdGggcmNfbnVt
-X3JldHJpZXM/Cj4+Pgo+Pj4gS2luZCByZWdhcmRzLAo+Pj4gU8OpYmFzdGllbi4KPj4KPj4gVGhl
-IGF0aDEwayBmaXJtd2FyZSBoYXMgbm8gaWRlYSBvZiBsb25nIHZzIHNob3J0IHJldHJpZXMsIHNv
-IEkganVzdCB1c2VkIHRoZQo+PiBsb25nIHNldHRpbmcuCj4+Cj4+IEkgd2lsbCBpbnZlc3RpZ2F0
-ZSB0aGF0IG5vbl9hZ2dfc3dfcmV0cnlfdGggYXMgd2VsbCwgYW5kIEkgZGlkIG5vdGljZSBteSB3
-YXZlLTEKPj4gZmlybXdhcmUgKGF0IGxlYXN0KSB1c2VzIDE1IHJldHJpZXMgZm9yIHNlbGYtZ2Vu
-ZXJhdGVkIGZyYW1lcy4gIEJ1dCwgaW4gbXkgY2FzZSwKPj4gdGhvc2Ugc2VsZi1nZW4gZnJhbWVz
-IGFyZSBub3QgbXVjaCB1c2VkIGFueXdheSBzaW5jZSBJIGRpc2FibGUgZmlybXdhcmUga2VlcC1h
-bGl2ZS4KPj4KPj4gQW5kLCBJIG5lZWQgdG8gc2VlIGhvdyB0aGUgbWFjODAyMTEgc3RhY2sgaGFu
-ZGxlcyBpdHMgb3duIHJldHJpZXMgd2hlbiB3b3JraW5nCj4+IHdpdGggYXRoMTBrLgo+Pgo+PiBU
-aGFua3MsCj4+IEJlbgo+Pgo+Pj4KPj4+Cj4+PiBPbiAyMDE4LTA3LTE3IDA5OjM5LCBCZW5qYW1p
-biBCZWljaGxlciB3cm90ZToKPj4+PiBIaSwKPj4+Pgo+Pj4+IEFtIDE3LjA3LjIwMTggdW0gMDI6
-Mzcgc2NocmllYiBCZW4gR3JlZWFyOgo+Pj4+PiBJIHNwZW50IGEgYml0IG9mIHRpbWUgbG9va2lu
-ZyBpbnRvIHNldHRpbmcgdGhlIHR4IHJldHJ5IGNvdW50IGluCj4+Pj4+IGF0aDEwayAod2F2ZS0x
-IGZpcm13YXJlKS4gIFRoZSBmaXJtd2FyZSBoYXMgc3VwcG9ydCBmb3Igc2V0dGluZyB0aGlzIGFz
-Cj4+Pj4+IGEgdmRldiBwYXJhbWV0ZXIsIGFuZCBpdCBkZWZhdWx0cyB0byAnMicsIGF0IGxlYXN0
-IGluIG15IHdhdmUtMSBmaXJtd2FyZS4KPj4+Pj4KPj4+Pj4gSSBlbmFibGVkIHByb3BhZ2F0aW5n
-IHRoZSBzZXR0aW5nIGZyb20gbWFjODAyMTEsIGllOgo+Pj4+PiBpdyBwaHkgd2lwaHkwIHNldCBy
-ZXRyeSBzaG9ydCAyIGxvbmcgMgo+Pj4+Pgo+Pj4+PiBBbmQgd2hpbGUgZGVidWdnaW5nIHRoaXMs
-IEkgbm90aWNlZCB0aGF0IG1hYzgwMjExIGhhcyBhIGRlZmF1bHQgb2YKPj4+Pj4gNCwgYnV0IHRo
-ZSBhdGgxMGsgZmlybXdhcmUgaGFzIGEgZGVmYXVsdCBvZiAyLiAgTm93LCBJIGFtIG5vdCBzdXJl
-Cj4+Pj4+IGlmIEkgc2hvdWxkIGVuYWJsZSBzZXR0aW5nIHRoZSByZXRyeSBjb3VudCBzaW5jZSBp
-dCB3aWxsIGNoYW5nZQo+Pj4+PiB0aGUgYmVoYXZpb3VyIGV2ZW4gaWYgdXNlcnMgZG9uJ3Qgc2V0
-IGFueXRoaW5nLgo+Pj4+Pgo+Pj4+IE1heWJlIEknbSB3cm9uZywgYnV0IEkgaGF2ZSBpbiBtaW5k
-LCB0aGF0IDcgcmV0cmllcyBpcyB0aGUgZGVmYXVsdAo+Pj4+IHNldHRpbmcgb2YgbWFjODAyMTEu
-IEFsdGhvdWdoIDIgb3IgZXZlbiA0IHNlZW1zIHRvIGJlIHByZXR0eSBsb3cgZm9yIHRoZQo+Pj4+
-IG92ZXJhbGwgcmV0cnkgY291bnQsIHNvIG1heWJlIHRoZSB2YWx1ZXMgYXJlIHNvbWVob3cgY2hh
-bmdlZCBpbiB0aGUKPj4+PiBmaXJtd2FyZT8gRnJvbSBvdXIgZXhwZXJpbWVudHMgd2Uga25vdyAo
-YXQgbGVhc3QgZm9yIDgwMi4xMW4pIHlvdSBuZWVkCj4+Pj4gZm9yIG5vcm1hbCBvcGVyYXRpb24g
-YSByZXRyeSBjb3VudCBvZiBzb21ldGhpbmcgYmV0d2VlbiA1IC0gOSwgYnV0Cj4+Pj4gc29tZXRp
-bWVzIGFsc28gMTIgb3IgMTUgaXMgYmVuZWZpY2lhbC4KPj4+Pgo+Pj4+IFdlIHVzZSBmb3Igb3Vy
-IGV4cGVyaW1lbnRhbCBzZXR1cCBtYWlubHkgYXRoOWsgY2FyZHMgYW5kIHJ0Mjh4eCBuaWNzLAo+
-Pj4+IGFuZCB3aXRoIHRoZW0geW91IG5lZWQgZGVmaW5pdGVseSBtb3JlIHJldHJpZXMuCj4+Pj4K
-Pj4+PiBOb25ldGhlbGVzcywgSSBkb24ndCB0aGluayB0aGUgY2hhbmdlIGZyb20gMiB0byA0IGRv
-ZXMgcmVhbGx5IGFmZmVjdCB0aGUKPj4+PiBiZWhhdmlvciBpbiBhIG5lZ2F0aXZlIHdheSAoaWYg
-aXQgd29ya3MgYXMgZXhwZWN0ZWQpLgo+Pj4+Cj4+Pj4+IEFueSBvcGluaW9ucyBvbiB0aGlzPwo+
-Pj4+Pgo+Pj4+PiBUaGFua3MsCj4+Pj4+IEJlbgo+Pj4+Pgo+Pj4KPj4KPj4gLS0KPj4gQmVuIEdy
-ZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4+IENhbmRlbGEgVGVjaG5vbG9naWVzIElu
-YyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBj
-YW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5k
-ZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Ben Greear <greearb@candelatech.com> writes:
+
+> On 07/18/2018 08:50 AM, Jean-Pierre TOSONI wrote:
+>> Hi,
+>>
+>> We made retries configurable in our mac80211+ath9k system, and we ended with 3 counts:
+>> 1) short retry count, defaults to 4
+>> 2) long retrys count, defauts to 7
+>> 3) software retry count, defaults to 30
+>> This last one is used separately for each frame in an aggregated frame, since they can be separately acknowledged.
+>
+> Did you have to change code for #3, and if so, can you share the patch?
+>
+> I wonder also if retries should be different for different types of
+> data. For instance, if someone is using UDP, maybe they don't care so
+> much about lost packets and would prefer a lower retry count. Or,
+> maybe IP type-of-service could be taken into account and retry frames
+> different amounts based on ToS?
+
+For general internet traffic, a retry count of 30 is way too high; that
+is up to 120 ms of HOL blocking latency. Better to just drop the packet
+at that point.
+
+Ideally, the retry count should be dynamically calculated in units of
+time (which would depend on the rate and aggregate size), and also take
+queueing time into account. I've been meaning to experiment with this
+for minstrel and ath9k, but haven't gotten around to it...
+
+-Toke
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
