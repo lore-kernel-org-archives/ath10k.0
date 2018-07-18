@@ -1,12 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-eopbgr50115.outbound.protection.outlook.com
+ ([40.107.5.115] helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffmbI-0002Qg-7w
- for ath10k@lists.infradead.org; Wed, 18 Jul 2018 13:34:41 +0000
-From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Subject: [PATCH] ath10k: add debugfs file warm_hw_reset
-Date: Wed, 18 Jul 2018 19:04:20 +0530
-Message-Id: <1531920860-3236-1-git-send-email-mkenna@codeaurora.org>
+ id 1ffojQ-0001xa-7X
+ for ath10k@lists.infradead.org; Wed, 18 Jul 2018 15:51:14 +0000
+From: Jean-Pierre TOSONI <jp.tosoni@acksys.fr>
+Subject: RE: Setting tx retry count in ath10k
+Date: Wed, 18 Jul 2018 15:50:56 +0000
+Message-ID: <AM4PR0101MB2305917B39A84BBE13FDFAD1E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
+References: <b0f67dd7-dea9-508e-7ad9-f6db3ac88b90@candelatech.com>
+ <e9b42b3d-2d03-ca69-5532-fbae08fdec5d@uni-rostock.de>
+ <8b9713fe-7573-f009-d002-13df73315898@televic.com>
+ <9dd76e58-b514-26f2-2fe9-0c9a7f798054@candelatech.com>
+In-Reply-To: <9dd76e58-b514-26f2-2fe9-0c9a7f798054@candelatech.com>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,164 +23,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>, SEDE <s.deronne@televic.com>, Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Debugfs support to do hardware warm reset with WMI command
-WMI_PDEV_PARAM_PDEV_RESET for 10.4 and 10.2.4(if wmi
-service is enabled in the firmware for backward compatibility).
-
-This change is purely for debugging purpose when hardware hangs/mutes.
-
-This hardware reset won't affect the connectivity but there will be small
-pause in data traffic. Here we are doing BB/MAC level reset and hence
-whenever the BB/MAC watchdog is triggered, it does a hardware_chip_reset.
-So the target will be in the active state.
-
-Below command used to warm reset the hardware.
-echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/warm_hw_reset
-
-Tested in QCA988X with firmware ver 10.2.4.70.45
-Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00011
-
-Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/debug.c | 49 +++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
- drivers/net/wireless/ath/ath10k/wmi.h   | 16 ++++++++++-
- 3 files changed, 65 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 4926722..0baaad9 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2297,6 +2297,52 @@ static ssize_t ath10k_tpc_stats_final_read(struct file *file,
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_write_warm_hw_reset(struct file *file,
-+					  const char __user *user_buf,
-+					  size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	int ret;
-+	bool val;
-+
-+	if (kstrtobool_from_user(user_buf, count, &val))
-+		return -EFAULT;
-+
-+	if (!val)
-+		return -EINVAL;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (ar->state != ATH10K_STATE_ON) {
-+		ret = -ENETDOWN;
-+		goto exit;
-+	}
-+
-+	if (!(test_bit(WMI_SERVICE_RESET_CHIP, ar->wmi.svc_map)))
-+		ath10k_warn(ar, "wmi service for reset chip is not available\n");
-+
-+	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pdev_reset,
-+					WMI_RST_MODE_WARM_RESET);
-+
-+	if (ret) {
-+		ath10k_warn(ar, "failed to enable warm hw reset: %d\n", ret);
-+		goto exit;
-+	}
-+
-+	ret = count;
-+
-+exit:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
-+
-+static const struct file_operations fops_warm_hw_reset = {
-+	.write = ath10k_write_warm_hw_reset,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
- {
- 	ar->debug.cal_data = vzalloc(ATH10K_DEBUG_CAL_DATA_LEN);
-@@ -2425,6 +2471,9 @@ int ath10k_debug_register(struct ath10k *ar)
- 				    ar->debug.debugfs_phy, ar,
- 				    &fops_tpc_stats_final);
- 
-+	debugfs_create_file("warm_hw_reset", 0600, ar->debug.debugfs_phy, ar,
-+			    &fops_warm_hw_reset);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 877249a..2fb972e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1333,7 +1333,7 @@
- 	.enable_per_tid_ampdu = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.cca_threshold = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.rts_fixed_rate = WMI_PDEV_PARAM_UNSUPPORTED,
--	.pdev_reset = WMI_PDEV_PARAM_UNSUPPORTED,
-+	.pdev_reset = WMI_10X_PDEV_PARAM_PDEV_RESET,
- 	.wapi_mbssid_offset = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_srcaddr = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index d68afb6..e24d869 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -462,6 +462,7 @@ static inline char *wmi_service_name(int service_id)
- 	SVCSTR(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS);
- 	SVCSTR(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT);
- 	SVCSTR(WMI_SERVICE_TPC_STATS_FINAL);
-+	SVCSTR(WMI_SERVICE_RESET_CHIP);
- 	default:
- 		return NULL;
- 	}
-@@ -3934,7 +3935,11 @@ enum wmi_10x_pdev_param {
- 	WMI_10X_PDEV_PARAM_REMOVE_MCAST2UCAST_BUFFER,
- 	WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE,
- 	WMI_10X_PDEV_PARAM_RTS_FIXED_RATE,
--	WMI_10X_PDEV_PARAM_CAL_PERIOD
-+	WMI_10X_PDEV_PARAM_CAL_PERIOD,
-+	WMI_10X_PDEV_PARAM_ATF_STRICT_SCH,
-+	WMI_10X_PDEV_PARAM_ATF_SCHED_DURATION,
-+	WMI_10X_PDEV_PARAM_SET_PROMISC_MODE_CMDID,
-+	WMI_10X_PDEV_PARAM_PDEV_RESET
- };
- 
- enum wmi_10_4_pdev_param {
-@@ -6501,6 +6506,15 @@ struct wmi_force_fw_hang_cmd {
- 	__le32 delay_ms;
- } __packed;
- 
-+enum wmi_pdev_reset_mode_type {
-+	WMI_RST_MODE_TX_FLUSH = 1,
-+	WMI_RST_MODE_WARM_RESET,
-+	WMI_RST_MODE_COLD_RESET,
-+	WMI_RST_MODE_WARM_RESET_RESTORE_CAL,
-+	WMI_RST_MODE_COLD_RESET_RESTORE_CAL,
-+	WMI_RST_MODE_MAX,
-+};
-+
- enum ath10k_dbglog_level {
- 	ATH10K_DBGLOG_LEVEL_VERBOSE = 0,
- 	ATH10K_DBGLOG_LEVEL_INFO = 1,
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksDQoNCldlIG1hZGUgcmV0cmllcyBjb25maWd1cmFibGUgaW4gb3VyIG1hYzgwMjExK2F0aDlr
+IHN5c3RlbSwgYW5kIHdlIGVuZGVkIHdpdGggMyBjb3VudHM6DQoxKSBzaG9ydCByZXRyeSBjb3Vu
+dCwgZGVmYXVsdHMgdG8gNA0KMikgbG9uZyByZXRyeXMgY291bnQsIGRlZmF1dHMgdG8gNw0KMykg
+c29mdHdhcmUgcmV0cnkgY291bnQsIGRlZmF1bHRzIHRvIDMwDQpUaGlzIGxhc3Qgb25lIGlzIHVz
+ZWQgc2VwYXJhdGVseSBmb3IgZWFjaCBmcmFtZSBpbiBhbiBhZ2dyZWdhdGVkIGZyYW1lLCBzaW5j
+ZSB0aGV5IGNhbiBiZSBzZXBhcmF0ZWx5IGFja25vd2xlZGdlZC4NCg0KUmVnYXJkcywNCkplYW4t
+UGllcnJlDQoNCj4gLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQo+IERlwqA6IGxpbnV4LXdp
+cmVsZXNzLW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOmxpbnV4LXdpcmVsZXNzLW93bmVy
+QHZnZXIua2VybmVsLm9yZ10gRGUgbGEgcGFydCBkZQ0KPiBCZW4gR3JlZWFyDQo+IEVudm95w6nC
+oDogbWFyZGkgMTcganVpbGxldCAyMDE4IDE3OjA4DQo+IMOAwqA6IFNFREU7IEJlbmphbWluIEJl
+aWNobGVyOyBhdGgxMGs7IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9yZw0KPiBPYmpldMKg
+OiBSZTogU2V0dGluZyB0eCByZXRyeSBjb3VudCBpbiBhdGgxMGsNCj4gDQo+IA0KPiANCj4gT24g
+MDcvMTcvMjAxOCAxMjo1NiBBTSwgU0VERSB3cm90ZToNCj4gPiBIaSwNCj4gPg0KPiA+IEluIHRo
+ZSBzdGFuZGFyZCwgNyBpcyB0aGUgZGVmYXVsdCBmb3IgdGhlIHNob3J0IHJldHJ5IGNvdW50LCA0
+IGlzIHdlbGwgdGhlIGRlZmF1bHQgZm9yIGxvbmcgcmV0cnkNCj4gY291bnQuDQo+ID4NCj4gPiBJ
+biBhdGgxMGssIHRoZXJlIGlzIGFsc28gbm9uX2FnZ19zd19yZXRyeV90aCB0byBjb250cm9sIHRo
+aXMsIHdpbGwgdGhpcyBzdGlsbCBiZSB1c2VkPw0KPiA+IE9yIHdoYXQgaXMgdGhlIGRpZmZlcmVu
+Y2Ugd2l0aCByY19udW1fcmV0cmllcz8NCj4gPg0KPiA+IEtpbmQgcmVnYXJkcywNCj4gPiBTw6li
+YXN0aWVuLg0KPiANCj4gVGhlIGF0aDEwayBmaXJtd2FyZSBoYXMgbm8gaWRlYSBvZiBsb25nIHZz
+IHNob3J0IHJldHJpZXMsIHNvIEkganVzdCB1c2VkIHRoZQ0KPiBsb25nIHNldHRpbmcuDQo+IA0K
+PiBJIHdpbGwgaW52ZXN0aWdhdGUgdGhhdCBub25fYWdnX3N3X3JldHJ5X3RoIGFzIHdlbGwsIGFu
+ZCBJIGRpZCBub3RpY2UgbXkgd2F2ZS0xDQo+IGZpcm13YXJlIChhdCBsZWFzdCkgdXNlcyAxNSBy
+ZXRyaWVzIGZvciBzZWxmLWdlbmVyYXRlZCBmcmFtZXMuICBCdXQsIGluIG15IGNhc2UsDQo+IHRo
+b3NlIHNlbGYtZ2VuIGZyYW1lcyBhcmUgbm90IG11Y2ggdXNlZCBhbnl3YXkgc2luY2UgSSBkaXNh
+YmxlIGZpcm13YXJlIGtlZXAtYWxpdmUuDQo+IA0KPiBBbmQsIEkgbmVlZCB0byBzZWUgaG93IHRo
+ZSBtYWM4MDIxMSBzdGFjayBoYW5kbGVzIGl0cyBvd24gcmV0cmllcyB3aGVuIHdvcmtpbmcNCj4g
+d2l0aCBhdGgxMGsuDQo+IA0KPiBUaGFua3MsDQo+IEJlbg0KPiANCj4gPg0KPiA+DQo+ID4gT24g
+MjAxOC0wNy0xNyAwOTozOSwgQmVuamFtaW4gQmVpY2hsZXIgd3JvdGU6DQo+ID4+IEhpLA0KPiA+
+Pg0KPiA+PiBBbSAxNy4wNy4yMDE4IHVtIDAyOjM3IHNjaHJpZWIgQmVuIEdyZWVhcjoNCj4gPj4+
+IEkgc3BlbnQgYSBiaXQgb2YgdGltZSBsb29raW5nIGludG8gc2V0dGluZyB0aGUgdHggcmV0cnkg
+Y291bnQgaW4NCj4gPj4+IGF0aDEwayAod2F2ZS0xIGZpcm13YXJlKS4gIFRoZSBmaXJtd2FyZSBo
+YXMgc3VwcG9ydCBmb3Igc2V0dGluZyB0aGlzIGFzDQo+ID4+PiBhIHZkZXYgcGFyYW1ldGVyLCBh
+bmQgaXQgZGVmYXVsdHMgdG8gJzInLCBhdCBsZWFzdCBpbiBteSB3YXZlLTEgZmlybXdhcmUuDQo+
+ID4+Pg0KPiA+Pj4gSSBlbmFibGVkIHByb3BhZ2F0aW5nIHRoZSBzZXR0aW5nIGZyb20gbWFjODAy
+MTEsIGllOg0KPiA+Pj4gaXcgcGh5IHdpcGh5MCBzZXQgcmV0cnkgc2hvcnQgMiBsb25nIDINCj4g
+Pj4+DQo+ID4+PiBBbmQgd2hpbGUgZGVidWdnaW5nIHRoaXMsIEkgbm90aWNlZCB0aGF0IG1hYzgw
+MjExIGhhcyBhIGRlZmF1bHQgb2YNCj4gPj4+IDQsIGJ1dCB0aGUgYXRoMTBrIGZpcm13YXJlIGhh
+cyBhIGRlZmF1bHQgb2YgMi4gIE5vdywgSSBhbSBub3Qgc3VyZQ0KPiA+Pj4gaWYgSSBzaG91bGQg
+ZW5hYmxlIHNldHRpbmcgdGhlIHJldHJ5IGNvdW50IHNpbmNlIGl0IHdpbGwgY2hhbmdlDQo+ID4+
+PiB0aGUgYmVoYXZpb3VyIGV2ZW4gaWYgdXNlcnMgZG9uJ3Qgc2V0IGFueXRoaW5nLg0KPiA+Pj4N
+Cj4gPj4gTWF5YmUgSSdtIHdyb25nLCBidXQgSSBoYXZlIGluIG1pbmQsIHRoYXQgNyByZXRyaWVz
+IGlzIHRoZSBkZWZhdWx0DQo+ID4+IHNldHRpbmcgb2YgbWFjODAyMTEuIEFsdGhvdWdoIDIgb3Ig
+ZXZlbiA0IHNlZW1zIHRvIGJlIHByZXR0eSBsb3cgZm9yIHRoZQ0KPiA+PiBvdmVyYWxsIHJldHJ5
+IGNvdW50LCBzbyBtYXliZSB0aGUgdmFsdWVzIGFyZSBzb21laG93IGNoYW5nZWQgaW4gdGhlDQo+
+ID4+IGZpcm13YXJlPyBGcm9tIG91ciBleHBlcmltZW50cyB3ZSBrbm93IChhdCBsZWFzdCBmb3Ig
+ODAyLjExbikgeW91IG5lZWQNCj4gPj4gZm9yIG5vcm1hbCBvcGVyYXRpb24gYSByZXRyeSBjb3Vu
+dCBvZiBzb21ldGhpbmcgYmV0d2VlbiA1IC0gOSwgYnV0DQo+ID4+IHNvbWV0aW1lcyBhbHNvIDEy
+IG9yIDE1IGlzIGJlbmVmaWNpYWwuDQo+ID4+DQo+ID4+IFdlIHVzZSBmb3Igb3VyIGV4cGVyaW1l
+bnRhbCBzZXR1cCBtYWlubHkgYXRoOWsgY2FyZHMgYW5kIHJ0Mjh4eCBuaWNzLA0KPiA+PiBhbmQg
+d2l0aCB0aGVtIHlvdSBuZWVkIGRlZmluaXRlbHkgbW9yZSByZXRyaWVzLg0KPiA+Pg0KPiA+PiBO
+b25ldGhlbGVzcywgSSBkb24ndCB0aGluayB0aGUgY2hhbmdlIGZyb20gMiB0byA0IGRvZXMgcmVh
+bGx5IGFmZmVjdCB0aGUNCj4gPj4gYmVoYXZpb3IgaW4gYSBuZWdhdGl2ZSB3YXkgKGlmIGl0IHdv
+cmtzIGFzIGV4cGVjdGVkKS4NCj4gPj4NCj4gPj4+IEFueSBvcGluaW9ucyBvbiB0aGlzPw0KPiA+
+Pj4NCj4gPj4+IFRoYW5rcywNCj4gPj4+IEJlbg0KPiA+Pj4NCj4gPg0KPiANCj4gLS0NCj4gQmVu
+IEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+DQo+IENhbmRlbGEgVGVjaG5vbG9naWVz
+IEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20NCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
