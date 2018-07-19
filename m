@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg9Ig-00039E-KU
- for ath10k@lists.infradead.org; Thu, 19 Jul 2018 13:49:00 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: Setting tx retry count in ath10k
-In-Reply-To: <c594f50b-a318-fbe2-847b-b76726eb1472@uni-rostock.de>
-References: <b0f67dd7-dea9-508e-7ad9-f6db3ac88b90@candelatech.com>
- <e9b42b3d-2d03-ca69-5532-fbae08fdec5d@uni-rostock.de>
- <8b9713fe-7573-f009-d002-13df73315898@televic.com>
- <9dd76e58-b514-26f2-2fe9-0c9a7f798054@candelatech.com>
- <AM4PR0101MB2305917B39A84BBE13FDFAD1E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
- <ea2ff457-e84e-8395-148d-8d90a749a40d@candelatech.com>
- <877els5xax.fsf@toke.dk>
- <AM4PR0101MB230575D91CEE21630A723466E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
- <c594f50b-a318-fbe2-847b-b76726eb1472@uni-rostock.de>
-Date: Thu, 19 Jul 2018 15:48:31 +0200
-Message-ID: <87zhyn2v68.fsf@toke.dk>
+ id 1fgD5G-0000lf-2g
+ for ath10k@lists.infradead.org; Thu, 19 Jul 2018 17:51:23 +0000
+Received: by mail-lf1-x141.google.com with SMTP id j8-v6so114682lfb.4
+ for <ath10k@lists.infradead.org>; Thu, 19 Jul 2018 10:51:10 -0700 (PDT)
+Date: Thu, 19 Jul 2018 19:51:05 +0200
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: [PATCH v3 0/6] *** Add support for wifi QMI client handshakes ***
+Message-ID: <20180719175105.GA2633@centauri.lan>
+References: <20180706085622.27945-1-govinds@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20180706085622.27945-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +25,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, Jean-Pierre TOSONI <jp.tosoni@acksys.fr>, Ben Greear <greearb@candelatech.com>, SEDE <s.deronne@televic.com>, ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: andy.gross@linaro.org, david.brown@linaro.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org
 
-Benjamin Beichler <Benjamin.Beichler@uni-rostock.de> writes:
+On Fri, Jul 06, 2018 at 02:26:17PM +0530, Govind Singh wrote:
+> Add QMI client handshakes for Q6 integrated WLAN connectivity subsystem.
+> This module is responsible for communicating WLAN control messages to FW
+> over QMI interface. This patch series enables the qmi handshakes required for
+> WCN3990 chipset.
 
->>> For general internet traffic, a retry count of 30 is way too high; that
->>> is up to 120 ms of HOL blocking latency. Better to just drop the packet
->>> at that point.
->>>
->>> Ideally, the retry count should be dynamically calculated in units of
->>> time (which would depend on the rate and aggregate size), and also take
->>> queueing time into account. I've been meaning to experiment with this
->>> for minstrel and ath9k, but haven't gotten around to it...
-> We have running current research on this topic but focused on the
-> effects in 802.11s mesh networks. With multiple(forwarding) wireless
-> links, the retry limit have a bigger impact as only in managed mode
-> setups, since every forwarding step is doing repeated transmissions.
-> But I also totally agree, that the retry count needs to be considered
-> in the bufferbloat/airtime queuing stuff, which Toke proposed.
+(cut)
 
-Ah, cool. Looking forward to seeing your results. And yeah, it's
-probably even worse in meshes...
+Hello Govind,
 
-> Nonetheless, since this ambiguities are known, wouldn't it be nice to
-> clean up all this patches to enable at least ath9k and ath10k to do
-> the right thing, or do anybody can tell why they weren't included the
-> first time ?
+I ran make W=1, sparse, and checkpatch on your new iteration of patches.
+(I didn't do a full manual review this time, since I did that last time.)
 
-No objection from me, certainly! :)
+Building with warnings and checkpatch looks good,
+but sparse reports the two following warnings:
 
--Toke
+  CHECK   drivers/net/wireless/ath/ath10k//qmi.c
+drivers/net/wireless/ath/ath10k//qmi.c:935:29: warning: incorrect type in assignment (different address spaces)
+drivers/net/wireless/ath/ath10k//qmi.c:935:29:    expected void *msa_va
+drivers/net/wireless/ath/ath10k//qmi.c:935:29:    got void [noderef] <asn:2>*
+
+and
+
+drivers/net/wireless/ath/ath10k//snoc.c:76:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:76:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:76:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:77:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:77:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:77:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:77:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:77:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:77:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:78:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:78:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:78:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:78:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:78:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:78:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:79:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:79:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:79:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:79:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:79:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:79:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:80:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:80:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:80:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:80:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:80:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:80:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:81:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:81:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:81:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:81:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:81:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:81:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:82:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:82:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:82:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:82:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:82:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:82:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:83:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:83:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:83:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:83:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:83:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:83:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:84:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:84:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:84:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:84:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:84:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:84:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:85:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:85:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:85:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:85:22: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:85:22:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:85:22:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:86:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:86:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:86:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:86:23: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:86:23:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:86:23:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:87:19: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:87:19:    expected restricted __le16 [usertype] ce_id
+drivers/net/wireless/ath/ath10k//snoc.c:87:19:    got int
+drivers/net/wireless/ath/ath10k//snoc.c:87:23: warning: incorrect type in initializer (different base types)
+drivers/net/wireless/ath/ath10k//snoc.c:87:23:    expected restricted __le16 [usertype] reg_offset
+drivers/net/wireless/ath/ath10k//snoc.c:87:23:    got int
+
+
+Kind regards,
+Niklas
 
 _______________________________________________
 ath10k mailing list
