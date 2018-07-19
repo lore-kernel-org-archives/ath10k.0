@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg8xK-0000yq-15
- for ath10k@lists.infradead.org; Thu, 19 Jul 2018 13:26:55 +0000
+ id 1fg8xX-00010D-F8
+ for ath10k@lists.infradead.org; Thu, 19 Jul 2018 13:27:09 +0000
 From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH v2 1/3] cfg80211: Extend avg ack rssi support for mgmt frames
-Date: Thu, 19 Jul 2018 18:56:27 +0530
-Message-Id: <1532006789-32454-2-git-send-email-bpothuno@codeaurora.org>
+Subject: [PATCH v2 2/3] mac80211: Extend avg ack rssi support for mgmt frames
+Date: Thu, 19 Jul 2018 18:56:28 +0530
+Message-Id: <1532006789-32454-3-git-send-email-bpothuno@codeaurora.org>
 In-Reply-To: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
 References: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,56 +25,54 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Defining APIs to update avg ack rssi irrespective of data or
-mgmt tx ack packet; this patch keeps the original behavior
-intact without breaking the existing API.
+Used defined API to make common average ack rssi
+support irrespective of data or mamagement tx ack packet.
 
 Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 ---
 v2: Addressed Johannes comments
     Modified subject and commit log
 
- include/uapi/linux/nl80211.h | 7 +++++++
- net/wireless/nl80211.c       | 7 ++++---
- 2 files changed, 11 insertions(+), 3 deletions(-)
+ net/mac80211/sta_info.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index f82ce3c..06f23db 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -52,6 +52,13 @@
- #define NL80211_MULTICAST_GROUP_NAN		"nan"
- #define NL80211_MULTICAST_GROUP_TESTMODE	"testmode"
+diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
+index aa8fe77..1364f0b 100644
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -2317,19 +2317,19 @@ void sta_set_sinfo(struct sta_info *sta, struct station_info *sinfo,
+ 		sinfo->expected_throughput = thr;
+ 	}
  
-+/*
-+ * These APIs are defined to maintain average ack signal for both data and
-+ * mgmt tx ack packets
-+ */
-+#define NL80211_STA_INFO_ACK_SIGNAL_AVG NL80211_STA_INFO_DATA_ACK_SIGNAL_AVG
-+#define NL80211_EXT_FEATURE_ACK_SIGNAL_SUPPORT NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT
-+
- /**
-  * DOC: Station handling
-  *
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 0ccce33..a0ad39e 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -4723,10 +4723,11 @@ static int nl80211_send_station(struct sk_buff *msg, u32 cmd, u32 portid,
- 	PUT_SINFO_U64(RX_DROP_MISC, rx_dropped_misc);
- 	PUT_SINFO_U64(BEACON_RX, rx_beacon);
- 	PUT_SINFO(BEACON_SIGNAL_AVG, rx_beacon_signal_avg, u8);
--	PUT_SINFO(ACK_SIGNAL, ack_signal, u8);
- 	if (wiphy_ext_feature_isset(&rdev->wiphy,
--				    NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT))
--		PUT_SINFO(DATA_ACK_SIGNAL_AVG, avg_ack_signal, s8);
-+	    NL80211_EXT_FEATURE_ACK_SIGNAL_SUPPORT)) {
-+		PUT_SINFO(ACK_SIGNAL, ack_signal, u8);
-+		PUT_SINFO(ACK_SIGNAL_AVG, avg_ack_signal, s8);
-+	}
+-	if (!(sinfo->filled & BIT_ULL(NL80211_STA_INFO_ACK_SIGNAL)) &&
+-	    sta->status_stats.ack_signal_filled) {
+-		sinfo->ack_signal = sta->status_stats.last_ack_signal;
+-		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_ACK_SIGNAL);
+-	}
+-
+-	if (ieee80211_hw_check(&sta->local->hw, REPORTS_TX_ACK_STATUS) &&
+-	    !(sinfo->filled & BIT_ULL(NL80211_STA_INFO_DATA_ACK_SIGNAL_AVG))) {
+-		sinfo->avg_ack_signal =
+-			-(s8)ewma_avg_signal_read(
+-				&sta->status_stats.avg_ack_signal);
+-		sinfo->filled |=
+-			BIT_ULL(NL80211_STA_INFO_DATA_ACK_SIGNAL_AVG);
++	if (ieee80211_hw_check(&sta->local->hw, REPORTS_TX_ACK_STATUS)) {
++		if (sta->status_stats.ack_signal_filled &&
++		    (!(sinfo->filled & BIT_ULL(NL80211_STA_INFO_ACK_SIGNAL)) ||
++		    !(sinfo->filled & BIT_ULL(NL80211_STA_INFO_ACK_SIGNAL_AVG)))) {
++			sinfo->ack_signal =
++				sta->status_stats.last_ack_signal;
++			sinfo->filled |=
++				BIT_ULL(NL80211_STA_INFO_ACK_SIGNAL);
++			sinfo->avg_ack_signal =
++				-(s8)ewma_avg_signal_read(&sta->status_stats.avg_ack_signal);
++			sinfo->filled |=
++				BIT_ULL(NL80211_STA_INFO_ACK_SIGNAL_AVG);
++		}
+ 	}
+ }
  
- #undef PUT_SINFO
- #undef PUT_SINFO_U64
 -- 
 2.7.4
 
