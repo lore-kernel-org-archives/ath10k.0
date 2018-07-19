@@ -1,14 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg8xX-00017f-FA
- for ath10k@lists.infradead.org; Thu, 19 Jul 2018 13:27:09 +0000
-From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH v2 3/3] ath10k: management tx ack rssi capability check
-Date: Thu, 19 Jul 2018 18:56:29 +0530
-Message-Id: <1532006789-32454-4-git-send-email-bpothuno@codeaurora.org>
-In-Reply-To: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
-References: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
+ id 1fg9Ig-00039E-KU
+ for ath10k@lists.infradead.org; Thu, 19 Jul 2018 13:49:00 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: Setting tx retry count in ath10k
+In-Reply-To: <c594f50b-a318-fbe2-847b-b76726eb1472@uni-rostock.de>
+References: <b0f67dd7-dea9-508e-7ad9-f6db3ac88b90@candelatech.com>
+ <e9b42b3d-2d03-ca69-5532-fbae08fdec5d@uni-rostock.de>
+ <8b9713fe-7573-f009-d002-13df73315898@televic.com>
+ <9dd76e58-b514-26f2-2fe9-0c9a7f798054@candelatech.com>
+ <AM4PR0101MB2305917B39A84BBE13FDFAD1E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
+ <ea2ff457-e84e-8395-148d-8d90a749a40d@candelatech.com>
+ <877els5xax.fsf@toke.dk>
+ <AM4PR0101MB230575D91CEE21630A723466E4530@AM4PR0101MB2305.eurprd01.prod.exchangelabs.com>
+ <c594f50b-a318-fbe2-847b-b76726eb1472@uni-rostock.de>
+Date: Thu, 19 Jul 2018 15:48:31 +0200
+Message-ID: <87zhyn2v68.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,48 +26,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net, ath10k@lists.infradead.org
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, Jean-Pierre TOSONI <jp.tosoni@acksys.fr>, Ben Greear <greearb@candelatech.com>, SEDE <s.deronne@televic.com>, ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Adding WMI service check for management tx ack rssi support; this is
-done to maintain common avg ack signal in user level for both data
-and management tx ack packet.
+Benjamin Beichler <Benjamin.Beichler@uni-rostock.de> writes:
 
-Tested on QCA4019(fw version-10.4-3.2.1-00063).
+>>> For general internet traffic, a retry count of 30 is way too high; that
+>>> is up to 120 ms of HOL blocking latency. Better to just drop the packet
+>>> at that point.
+>>>
+>>> Ideally, the retry count should be dynamically calculated in units of
+>>> time (which would depend on the rate and aggregate size), and also take
+>>> queueing time into account. I've been meaning to experiment with this
+>>> for minstrel and ath9k, but haven't gotten around to it...
+> We have running current research on this topic but focused on the
+> effects in 802.11s mesh networks. With multiple(forwarding) wireless
+> links, the retry limit have a bigger impact as only in managed mode
+> setups, since every forwarding step is doing repeated transmissions.
+> But I also totally agree, that the retry count needs to be considered
+> in the bufferbloat/airtime queuing stuff, which Toke proposed.
 
-Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
----
-Note: This patch depends on following patch
-      https://patchwork.kernel.org/patch/10343153/
- 
- drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Ah, cool. Looking forward to seeing your results. And yeah, it's
+probably even worse in meshes...
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1ebd9c63..70d8489 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8410,9 +8410,10 @@ int ath10k_mac_register(struct ath10k *ar)
- 	wiphy_ext_feature_set(ar->hw->wiphy,
- 			      NL80211_EXT_FEATURE_SET_SCAN_DWELL);
- 
--	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map))
-+	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map) ||
-+	    test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, ar->wmi.svc_map))
- 		wiphy_ext_feature_set(ar->hw->wiphy,
--				NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT);
-+			NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT);
- 
- 	/*
- 	 * on LL hardware queues are managed entirely by the FW
--- 
-2.7.4
+> Nonetheless, since this ambiguities are known, wouldn't it be nice to
+> clean up all this patches to enable at least ath9k and ath10k to do
+> the right thing, or do anybody can tell why they weren't included the
+> first time ?
 
+No objection from me, certainly! :)
+
+-Toke
 
 _______________________________________________
 ath10k mailing list
