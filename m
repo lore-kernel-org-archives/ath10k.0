@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fha3E-0006g1-Os
+ id 1fha3E-0006es-Ne
  for ath10k@lists.infradead.org; Mon, 23 Jul 2018 12:34:58 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v4 3/6] dt: bindings: add bindings for msa memory region
-Date: Mon, 23 Jul 2018 18:04:25 +0530
-Message-Id: <20180723123428.12993-4-govinds@codeaurora.org>
-In-Reply-To: <20180723123428.12993-1-govinds@codeaurora.org>
-References: <20180723123428.12993-1-govinds@codeaurora.org>
+Subject: [PATCH v4 0/6] *** Add support for wifi QMI client handshakes ***
+Date: Mon, 23 Jul 2018 18:04:22 +0530
+Message-Id: <20180723123428.12993-1-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +23,114 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: niklas.cassel@linaro.org, bjorn.andersson@linaro.org, david.brown@linaro.org, andy.gross@linaro.org, robh@kernel.org, devicetree@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Add device tree binding documentation details of msa
-memory region for ath10k qmi client for SDM845/APQ8098
-SoC into "qcom,ath10k.txt".
+Add QMI client handshakes for Q6 integrated WLAN connectivity subsystem.
+This module is responsible for communicating WLAN control messages to FW
+over QMI interface. This patch series enables the qmi handshakes required for
+WCN3990 chipset.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt        | 6 ++++++
- 1 file changed, 6 insertions(+)
+QUALCOMM MSM Interface(QMI) provides the control interface between
+components running b/w remote processors with underlying transport layer
+based on integrated chipset(shared memory) or discrete chipset(PCI/USB/SDIO/UART).
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 7fd4e8ce4149..2196d1ab3c8c 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -56,6 +56,11 @@ Optional properties:
- 				     the length can vary between hw versions.
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" is "vdd-0.8-cx-mx".
-+- memory-region:
-+	Usage: optional
-+	Value type: <phandle>
-+	Definition: reference to the reserved-memory for the msa region
-+		    used by the wifi firmware running in Q6.
- 
- Example (to supply the calibration data alone):
- 
-@@ -149,4 +154,5 @@ wifi@18000000 {
- 			   <0 140 0 /* CE10 */ >,
- 			   <0 141 0 /* CE11 */ >;
- 		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-+		memory-region = <&wifi_msa_mem>;
- };
+QMI client driver implementation is based on qmi framework https://lwn.net/Articles/729924/.
+
+Below is the sequence of qmi handshake.
+
+       QMI CLIENT(APPS)                                         QMI SERVER(FW in Q6)
+
+                         <------wlan service discoverd----
+
+                       -----connect to wlam qmi service----->
+
+                       ------------wlan info request----->
+
+                       <------------wlan info resp------------
+
+                       ------------msa info req-------->
+
+                     <------------msa info resp------------
+
+                     ------------msa ready req-------->
+
+                     <------------msa ready resp------------
+
+                     <------------msa ready indication-------
+
+                     ------------capability req------->
+
+                    <------------capability resp------------
+
+                    ------------qmi bdf req--------->
+
+                     <------------qmi bdf resp------------
+
+                      ------------qmi cal trigger------->
+
+                  <------------ QMI FW ready indication-------
+
+WLAN fw is running in modem Q6 dsp as user PD(protection domain).
+Sequence of user PD loading is as following.
+
+1) Remote proc PIL driver loads the modem fw/ROOT PD.
+2) As part of ROOT pd boot-up it queries to a daemon(pd_mapper) running in apps
+processor to determine how many usre pd's to be loaded by the remote processor(Q6).
+3) Once user pd info is known to remote processor it loads the user pd via tftp
+protocol.
+
+https://github.com/andersson/pd-mapper
+https://github.com/andersson/tqftpserv
+
+
+Changes since V3:
+	Removed msa memory child node and used only memory-region property.
+	Fixed sparse warning reported in v3 change.
+	Changed qmi board id data type to u32 to align with fw defined value.
+
+Changes since V2:
+	Addressed review comments from v2 version.
+	Removed msa-size from dt binding and added reference to reserved-memory/reserved-memory.txt.
+
+Changes since V1:
+	Removed qmi client driver and integrated qmi client handshakes in snoc platform driver.
+	Addressed comments on v1 version.
+	Switched to ath10k bdf download infra(board-2.bin)
+	Added MSA fixed region support to support unload use-case.
+	Unified logging.
+
+Testing:
+	Tested all qmi handshakes, driver load/unload and STA/SAP sanity testing.
+	Tested HW: SDM845(WCN3990)
+	Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1
+
+Govind Singh (5):
+  ath10k: Add qmi service helpers for wcn3990 qmi client
+  dt: bindings: add bindings for msa memory region
+  firmware: qcom: scm: Add WLAN VMID for Qualcomm SCM interface
+  ath10k: Add debug mask for QMI layer
+  ath10k: Add QMI message handshake for wcn3990 client
+
+Rakesh Pillai (1):
+  ath10k: Add support to create boardname for non-bmi target
+
+ .../bindings/net/wireless/qcom,ath10k.txt     |    6 +
+ drivers/net/wireless/ath/ath10k/Kconfig       |    1 +
+ drivers/net/wireless/ath/ath10k/Makefile      |    4 +-
+ drivers/net/wireless/ath/ath10k/core.c        |   14 +-
+ drivers/net/wireless/ath/ath10k/core.h        |    4 +
+ drivers/net/wireless/ath/ath10k/debug.h       |    1 +
+ drivers/net/wireless/ath/ath10k/qmi.c         | 1019 ++++++++
+ drivers/net/wireless/ath/ath10k/qmi.h         |  129 +
+ .../net/wireless/ath/ath10k/qmi_wlfw_v01.c    | 2072 +++++++++++++++++
+ .../net/wireless/ath/ath10k/qmi_wlfw_v01.h    |  677 ++++++
+ drivers/net/wireless/ath/ath10k/snoc.c        |  262 ++-
+ drivers/net/wireless/ath/ath10k/snoc.h        |    4 +
+ include/linux/qcom_scm.h                      |    4 +-
+ 13 files changed, 4186 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
+ create mode 100644 drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h
+
 -- 
 2.17.0
 
