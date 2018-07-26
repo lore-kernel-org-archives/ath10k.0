@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from narfation.org ([79.140.41.39] helo=v3-1039.vlinux.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fignS-0005Nu-85
- for ath10k@lists.infradead.org; Thu, 26 Jul 2018 13:59:15 +0000
-Received: by mail-wm0-x243.google.com with SMTP id f21-v6so2080845wmc.5
- for <ath10k@lists.infradead.org>; Thu, 26 Jul 2018 06:59:03 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH] ath10k: Prevent active scans on potential unusable
+ id 1figwJ-0001b6-7Q
+ for ath10k@lists.infradead.org; Thu, 26 Jul 2018 14:08:25 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: [PATCH RESENT] ath10k: Prevent active scans on potential unusable
  channels
-Date: Thu, 26 Jul 2018 15:59:00 +0200
-Message-ID: <17418645.RrWdIiVe0m@bentobox>
-In-Reply-To: <87r2jqt8h7.fsf@kamboji.qca.qualcomm.com>
-References: <20180710094448.13201-1-sven.eckelmann@openmesh.com>
- <87r2jqt8h7.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Date: Thu, 26 Jul 2018 15:59:48 +0200
+Message-Id: <20180726135948.29160-1-sven@narfation.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +16,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6052432036205718007=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, Simon Wunderlich <simon.wunderlich@openmesh.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, Simon Wunderlich <simon.wunderlich@openmesh.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>
 
---===============6052432036205718007==
-Content-Type: multipart/signed; boundary="nextPart1648784.yBHtZBPXxC"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
 
---nextPart1648784.yBHtZBPXxC
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+The QCA4019 hw1.0 firmware 10.4-3.2.1-00050 and 10.4-3.5.3-00053 (and most
+likely all other) seem to ignore the WMI_CHAN_FLAG_DFS flag during the
+scan. This results in transmission (probe requests) on channels which are
+not "available" for transmissions.
 
-On Donnerstag, 26. Juli 2018 16:47:00 CEST Kalle Valo wrote:
-[...]
-> > Fixes: e8a50f8ba44b ("ath10k: introduce DFS implementation")
-> > Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
-> 
-> You didn't CC linux-wireless so I don't see this in patchwork. Can you
-> resend, please?
+Since the firmware is closed source and nothing can be done from our side
+to fix the problem in it, the driver has to work around this problem. The
+WMI_CHAN_FLAG_PASSIVE seems to be interpreted by the firmware to not
+scan actively on a channel unless an AP was detected on it. Simple probe
+requests will then be transmitted by the STA on the channel.
 
-In that case, you should maybe think about stopping the ath10k patchwork: 
-https://patchwork.kernel.org/patch/10516691/
+ath10k must therefore also use this flag when it queues a radar channel for
+scanning. This should reduce the chance of an active scan when the channel
+might be "unusable" for transmissions.
 
-Kind regards,
-	Sven
---nextPart1648784.yBHtZBPXxC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Fixes: e8a50f8ba44b ("ath10k: introduce DFS implementation")
+Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+---
+Cc: Simon Wunderlich <simon.wunderlich@openmesh.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>
+---
 
------BEGIN PGP SIGNATURE-----
+ drivers/net/wireless/ath/ath10k/mac.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAltZ06QACgkQXYcKB8Em
-e0Z3VQ/+L1ZHVmLQNE4V9/cRMXcV2uefVboTwa/H09JGSg3Mrg1o4bNY6729L/90
-NN2KhOSc/rmVwRcM3+XyDrZRHIc1jJntyFJsn42En9nw3dF2+QRyblOrsnX0lCMK
-fWqZabRFE/Ysq8Mer2oHA+0SUQf22SlR4B7nuASy/LJ8p0LGN+QrxCGoGd6TnyWF
-RNNbbyTXb4XWsgWugcOn88TQqIexABNRJ4PI/oBGKtc5g9EpgD0HuVnLEcSAPfBm
-aWG3rN0n+8TFPvSuJpvEVD+sglYeqLKWJvVR1LqOP2k3k8ZqB7tBI+/WQl+1NNf8
-O1s3UaiUNbAgUrhMaNwjit+P2c53dkAyZ/bHkTZs2aSJXVjsScCiIh56doR8f5lq
-fXKu4WLrS2h6snNfgqD3HtEjJOeO504p6fL7IcK+slxhxHWHkUtU1+B6o38sCsha
-2H6BB7Q4e87GmJexxtxNbNGCE4a60AiGyI47UfsoAANG5vOfNtQIDkjJAO6AzZgo
-f3kfIwz9LZLNLgqiRhMAxujhphXbl/G87IUhhv7aMIan11W60JBjd682kjj8ImQL
-AJfIGYLUgHJtFpATNBNwtS9hn96ewMfN3KaSxiiw+4MHPLbPm945SgwratDTWnyK
-KXNSk1k20MNzEG3R1+xxsGa0dxuOyX7T500Dd323DBjdblqhiaQ=
-=+iuN
------END PGP SIGNATURE-----
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 95243b48a179..76e9c6eaa051 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3085,6 +3085,13 @@ static int ath10k_update_channel_list(struct ath10k *ar)
+ 			passive = channel->flags & IEEE80211_CHAN_NO_IR;
+ 			ch->passive = passive;
+ 
++			/* the firmware is ignoring the "radar" flag of the
++			 * channel and is scanning actively using Probe Requests
++			 * on "Radar detection"/DFS channels which are not
++			 * marked as "available"
++			 */
++			ch->passive |= ch->chan_radar;
++
+ 			ch->freq = channel->center_freq;
+ 			ch->band_center_freq1 = channel->center_freq;
+ 			ch->min_power = 0;
+-- 
+2.11.0
 
---nextPart1648784.yBHtZBPXxC--
-
-
-
---===============6052432036205718007==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============6052432036205718007==--
