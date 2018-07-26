@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fidmV-0000UY-Ju
- for ath10k@lists.infradead.org; Thu, 26 Jul 2018 10:46:05 +0000
-Received: by mail-qt0-x244.google.com with SMTP id y19-v6so1028944qto.5
- for <ath10k@lists.infradead.org>; Thu, 26 Jul 2018 03:45:52 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: ath10k: 160MHz/80+80 radar detect with Wave2 cards
-Date: Thu, 26 Jul 2018 12:45:47 +0200
-Message-ID: <4178610.dnsFcfIAIc@bentobox>
+ id 1fieis-0001G3-VI
+ for ath10k@lists.infradead.org; Thu, 26 Jul 2018 11:46:29 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi chips
+In-Reply-To: <1532589677-16428-3-git-send-email-wgong@codeaurora.org>
+References: <1532589677-16428-1-git-send-email-wgong@codeaurora.org>
+ <1532589677-16428-3-git-send-email-wgong@codeaurora.org>
+Date: Thu, 26 Jul 2018 13:45:43 +0200
+Message-ID: <87zhye1aqg.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,82 +19,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1766413615751079195=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: daniel.bailey@openmesh.com, simon.wunderlich@openmesh.com
+To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
+Cc: linux-wireless@vger.kernel.org
 
---===============1766413615751079195==
-Content-Type: multipart/signed; boundary="nextPart3462181.vz1O5Gvmfl"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Wen Gong <wgong@codeaurora.org> writes:
 
---nextPart3462181.vz1O5Gvmfl
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+> Upstream kernel has an interface to help adjust sk_pacing_shift to help
+> improve TCP UL throughput.
+> The sk_pacing_shift is 8 in mac80211, this is based on test with 11N
+> WiFi chips with ath9k. For QCA6174/QCA9377 PCI 11AC chips, the 11AC
+> VHT80 TCP UL throughput testing result shows 6 is the optimal.
+> Overwrite the sk_pacing_shift to 6 in ath10k driver.
 
-Hi,
+When I tested this, a pacing shift of 8 was quite close to optimal as
+well for ath10k. Why are you getting different results?
 
-as we know, some wave2 cards support 160MHz (with some limitations). This also 
-requires support for radar detection with 160MHz/80+80 or otherwise cfg80211 
-will reject this setting. I would like to propose following change but I am 
-unsure whether it actually works correctly on this hardware (QCA9888).
+> Tested with QCA6174 PCI with firmware
+> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
+> It's not a regression with new firmware releases.
+>
+> There have 2 test result of different settings:
+>
+> ARM CPU based device with QCA6174A PCI with different
+> sk_pacing_shift:
+>
+>  sk_pacing_shift  throughput(Mbps)             CPU utilization
+>          6            500(-P5)      ~75% idle, Focus on CPU1: ~14%idle
+>          7            454(-P5)      ~80% idle, Focus on CPU1: ~4%idle
+>          8               288        ~90% idle, Focus on CPU1: ~35%idle
+>          9              ~200        ~92% idle, Focus on CPU1: ~50%idle
 
-    diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-    index 2bea5e8..3b43759 100644
-    --- a/drivers/net/wireless/ath/ath10k/mac.c
-    +++ b/drivers/net/wireless/ath/ath10k/mac.c
-    @@ -7951,7 +7951,9 @@ static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
-     		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
-     					BIT(NL80211_CHAN_WIDTH_20) |
-     					BIT(NL80211_CHAN_WIDTH_40) |
-    -					BIT(NL80211_CHAN_WIDTH_80),
-    +					BIT(NL80211_CHAN_WIDTH_80) |
-    +					BIT(NL80211_CHAN_WIDTH_80P80) |
-    +					BIT(NL80211_CHAN_WIDTH_160)
-     #endif
-     	},
-     };
+Your tests do not include latency values; please try running a test that
+also measures latency. The tcp_nup test in Flent (https://flent.org)
+will do that, for instance. Also, is this a single TCP flow?
 
-Does anyone know whether radar detection is supported for these channel 
-widths?
-
-Kind regards,
-	Sven
---nextPart3462181.vz1O5Gvmfl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAltZplsACgkQXYcKB8Em
-e0Za8hAAjY/++pljUm+JjTRJYaP/vkaij9NAN4Gw8rL3dEuU8VwZ6i1GdQbw5DZH
-+4qJFdMgcCnEiF5fy+lccAz0F/h4rVpBIM0JeNfP3MO1i4/bciI0LQDHSj07g8VH
-pIXVKLx7yJCxoROwq3PaPH0fMHqi3lT3XMtNtjWm/00mcz0zQKRXpBNWmfH4OpaU
-jpEzTtQ7m62VLc/NfOPNonU9II7YHfuJI2dMxtU0R08ML4sO0YQQOLfeOuQIca85
-Mwp8getoVTN5JfiE6DogUxJDWxZsnEt2DApMSg8p+015vjk0swEIr/0vFn7qcSi0
-WWPl/pQynRrG+iahSh11BMNwiwffPXsl0DGTQ81wIKiZ6ur8b3QeJbeq3qf53Bzr
-IQvpTlMoi0ddncYMSNliGHKZV3EIHZahPzSW9VZmhVifiOcyx5y8+vYq26L0GkC8
-SLvw+LEEb5pYeDKHSTiaw5jctydIN3RMhNKDzzx3NZjgEbr1ZWhb0ddl4CQxOSMv
-cmcqo+GRB0CzGtBObaWy0ic96P/MrH15iA1fxeMaDB2TA/6ABUi37DD+2+qJaEHn
-v85bV/a2spbj16B888NMSAItauE5b8l2B9zdkNwXXsFaly9tH5l2FT7RW19zZNfI
-7M3jFaYzT8Fahu2v/gPB1At4dsTcZLTxk/Hy3n2H0pvCGRmaVJ4=
-=tR7z
------END PGP SIGNATURE-----
-
---nextPart3462181.vz1O5Gvmfl--
-
-
-
---===============1766413615751079195==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-Toke
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============1766413615751079195==--
