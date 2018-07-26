@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fifv7-0000YR-HC
- for ath10k@lists.infradead.org; Thu, 26 Jul 2018 13:03:06 +0000
-Received: by mail-qt0-x235.google.com with SMTP id b15-v6so1398166qtp.11
- for <ath10k@lists.infradead.org>; Thu, 26 Jul 2018 06:02:54 -0700 (PDT)
+ id 1fifw8-0000kI-1d
+ for ath10k@lists.infradead.org; Thu, 26 Jul 2018 13:04:14 +0000
+Received: by mail-wm0-x234.google.com with SMTP id o11-v6so1888362wmh.2
+ for <ath10k@lists.infradead.org>; Thu, 26 Jul 2018 06:03:57 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: ath10k: tpc_stats(_final) odd twicepowers and 160Mhz not supported
+Date: Thu, 26 Jul 2018 15:03:54 +0200
+Message-ID: <1555379.7kbm3L4fcB@bentobox>
+In-Reply-To: <5396695.eZ3m4tuIpz@bentobox>
+References: <2557834.d2DaqBHz1S@bentobox> <5396695.eZ3m4tuIpz@bentobox>
 MIME-Version: 1.0
-In-Reply-To: <87zhye1aqg.fsf@toke.dk>
-References: <1532589677-16428-1-git-send-email-wgong@codeaurora.org>
- <1532589677-16428-3-git-send-email-wgong@codeaurora.org>
- <87zhye1aqg.fsf@toke.dk>
-From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
-Date: Thu, 26 Jul 2018 15:02:53 +0200
-Message-ID: <CABvG-CVwRyeD5=0HqTyNQPVOV1iPtAT_GJQSmSH4=DdDca6dYw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi chips
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +20,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2613002719912287050=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: ath10k@lists.infradead.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-T24gMjYgSnVseSAyMDE4IGF0IDEzOjQ1LCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VA
-dG9rZS5kaz4gd3JvdGU6Cj4gV2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6
-Cj4KPj4gVXBzdHJlYW0ga2VybmVsIGhhcyBhbiBpbnRlcmZhY2UgdG8gaGVscCBhZGp1c3Qgc2tf
-cGFjaW5nX3NoaWZ0IHRvIGhlbHAKPj4gaW1wcm92ZSBUQ1AgVUwgdGhyb3VnaHB1dC4KPj4gVGhl
-IHNrX3BhY2luZ19zaGlmdCBpcyA4IGluIG1hYzgwMjExLCB0aGlzIGlzIGJhc2VkIG9uIHRlc3Qg
-d2l0aCAxMU4KPj4gV2lGaSBjaGlwcyB3aXRoIGF0aDlrLiBGb3IgUUNBNjE3NC9RQ0E5Mzc3IFBD
-SSAxMUFDIGNoaXBzLCB0aGUgMTFBQwo+PiBWSFQ4MCBUQ1AgVUwgdGhyb3VnaHB1dCB0ZXN0aW5n
-IHJlc3VsdCBzaG93cyA2IGlzIHRoZSBvcHRpbWFsLgo+PiBPdmVyd3JpdGUgdGhlIHNrX3BhY2lu
-Z19zaGlmdCB0byA2IGluIGF0aDEwayBkcml2ZXIuCj4KPiBXaGVuIEkgdGVzdGVkIHRoaXMsIGEg
-cGFjaW5nIHNoaWZ0IG9mIDggd2FzIHF1aXRlIGNsb3NlIHRvIG9wdGltYWwgYXMKPiB3ZWxsIGZv
-ciBhdGgxMGsuIFdoeSBhcmUgeW91IGdldHRpbmcgZGlmZmVyZW50IHJlc3VsdHM/Cj4KPj4gVGVz
-dGVkIHdpdGggUUNBNjE3NCBQQ0kgd2l0aCBmaXJtd2FyZQo+PiBXTEFOLlJNLjQuNC4xLTAwMTA5
-LVFDQVJNU1dQWi0xLCBidXQgdGhpcyB3aWxsIGFsc28gYWZmZWN0IFFDQTkzNzcgUENJLgo+PiBJ
-dCdzIG5vdCBhIHJlZ3Jlc3Npb24gd2l0aCBuZXcgZmlybXdhcmUgcmVsZWFzZXMuCj4+Cj4+IFRo
-ZXJlIGhhdmUgMiB0ZXN0IHJlc3VsdCBvZiBkaWZmZXJlbnQgc2V0dGluZ3M6Cj4+Cj4+IEFSTSBD
-UFUgYmFzZWQgZGV2aWNlIHdpdGggUUNBNjE3NEEgUENJIHdpdGggZGlmZmVyZW50Cj4+IHNrX3Bh
-Y2luZ19zaGlmdDoKCkRpZmZlcmVudCBmaXJtd2FyZSByZWxlYXNlcyBoYXZlIGRpZmZlcmVudCB0
-eCBidWZmZXJpbmcKY2hhcmFjdGVyaXN0aWNzLiBJbiBzb21lIDEwLjIgZmlybXdhcmUgcnVubmlu
-ZyBvbiBRQ0E5ODg4IHlvdSBjYW4gaGF2ZQp1cCB0byA1bXMgb2YgZGVsYXllZCBhZ2dyZWdhdGlv
-bi4gSWRlYWxseSBza19wYWNpbmdfc2hpZnQgc2hvdWxkIGJlCmFkanVzdGVkIHBlciBmaXJtd2Fy
-ZSByZWxlYXNlLiBNYXliZSB0aGlzIHNob3VsZCBiZWNvbWUgcGFydCBvZiB0aGUKYXRoMTBrIGZp
-cm13YXJlIHdyYXBwaW5nICJmdyBmZWF0dXJlcyIgc3R1ZmY/CgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+--===============2613002719912287050==
+Content-Type: multipart/signed; boundary="nextPart1862546.doUUUh9gg4"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart1862546.doUUUh9gg4
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Dienstag, 10. Juli 2018 08:52:35 CEST Sven Eckelmann wrote:
+> On Donnerstag, 28. Juni 2018 12:05:18 CEST Sven Eckelmann wrote:
+> > Hi,
+> > 
+> > I have some small question regarding the debugging functionality introduced by 
+> > commit bc64d05220f3 ("ath10k: debugfs support to get final TPC stats for 10.4 
+> > variants") [1] and commit 295426669cd6 ("ath10k: implement debugfs interface 
+> > for Transmit Power Control stats") [2]. Goal of this is to find out whether 
+> > the VHT160 MHz CTLs are correctly applied.
+> [...]
+> 
+> ping?
+
+ping?
+
+Kind regards,
+	Sven
+--nextPart1862546.doUUUh9gg4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAltZxroACgkQXYcKB8Em
+e0ZinQ/9FMHE3MvZdftOs+MU3o+x6zfcn6gcch7gMPRARRblXxFyiITGxp9KH7BV
+LAzEQYgkgmEkp8iEWz1/2mRURsP4gYQ1VKZsD9ZIu94b4eitKv0p3J2pQhC8aX7p
+lUwqICu96lF12/9i69cVq7tQzGFChQGkj2kDJqsOz37PL4HaSSbG0MDpaMCPgE4H
+UfHtd1c24KOc76XBEC9OF5Bfa7+Sl0O6W3CXruEgbTiVZ2sayR5m3acIo18lFOMy
+jS4ylAVN2vizj33ujlUcODGSvZ2zFQ1wei95RQkwQVWbHAf8nCmDezPiDrdujyxc
+jqRMhvsnLpSJRCHk+Ywzw1B4YhZb3tYOKZpTCnVgK62zpO64VTkNOg8GvJ7bhHKk
+uf1Ou41tz1M98ULz6HBUrYrOxkz1CYZs/2jT+KGcTdhldKH0ccJgCWb5SzlFCp5u
+a4mVdS5r81pCuCVGTON6fl5KEZdWr3GzWBPkdpChM3nN4j1Ad2QzMoKUsOm2Jrv8
+2WUXr19kJcqXTLWEuERwtq/DIl88wUGPPFn73WrcUsfe7pliCdKnVWNqcu3osEx5
+gPIh4J372woNH/7fd67Km73CQGZsFAdftbjw3/ItXBMoOldHcJ+NxtOxvpo9PsZJ
+uDYnfgrMRr2ev2+P2JSyGRQsRL7aWJl+KZDdnGo+g+t/qrah8Ck=
+=LDWy
+-----END PGP SIGNATURE-----
+
+--nextPart1862546.doUUUh9gg4--
+
+
+
+--===============2613002719912287050==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============2613002719912287050==--
