@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiaW5-0002C0-IP
+ id 1fiaW5-0002C9-IQ
  for ath10k@lists.infradead.org; Thu, 26 Jul 2018 07:16:55 +0000
 From: Wen Gong <wgong@qti-qualcomm.corp-partner.google.com>
-Subject: [PATCH 1/2] mac80211: Save sk_pacing_shift to ieee80211_hw
-Date: Thu, 26 Jul 2018 15:16:32 +0800
-Message-Id: <1532589393-16182-2-git-send-email-wgong@qti-qualcomm.corp-partner.google.com>
+Subject: [PATCH 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi chips
+Date: Thu, 26 Jul 2018 15:16:33 +0800
+Message-Id: <1532589393-16182-3-git-send-email-wgong@qti-qualcomm.corp-partner.google.com>
 In-Reply-To: <1532589393-16182-1-git-send-email-wgong@qti-qualcomm.corp-partner.google.com>
 References: <1532589393-16182-1-git-send-email-wgong@qti-qualcomm.corp-partner.google.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,55 +27,58 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Wen Gong <wgong@codeaurora.org>
 
-Add the skb_pacing_shirt adjustment, but this change make it
-configurable for other driver. If no other driver set it, then
-mac8011 will use the default value.
+Upstream kernel has an interface to help adjust sk_pacing_shift to help
+improve TCP UL throughput.
+The sk_pacing_shift is 8 in mac80211, this is based on test with 11N
+WiFi chips with ath9k. For QCA6174/QCA9377 PCI 11AC chips, the 11AC
+VHT80 TCP UL throughput testing result shows 6 is the optimal.
+Overwrite the sk_pacing_shift to 6 in ath10k driver.
+
+Tested with QCA6174 PCI with firmware
+WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
+It's not a regression with new firmware releases.
+
+There have 2 test result of different settings:
+
+ARM CPU based device with QCA6174A PCI with different
+sk_pacing_shift:
+
+ sk_pacing_shift  throughput(Mbps)             CPU utilization
+         6            500(-P5)      ~75% idle, Focus on CPU1: ~14%idle
+         7            454(-P5)      ~80% idle, Focus on CPU1: ~4%idle
+         8               288        ~90% idle, Focus on CPU1: ~35%idle
+         9              ~200        ~92% idle, Focus on CPU1: ~50%idle
+
+5G TCP UL VTH80 on X86 platform with QCA6174A PCI with sk_packing_shift
+set to 6:
+
+  tcp_limit_output_bytes            throughput(Mbps)
+ default(262144)+1 Stream                 336
+ default(262144)+2 Streams                558
+ default(262144)+3 Streams                584
+ default(262144)+4 Streams                602
+ default(262144)+5 Streams                598
+ changed(2621440)+1 Stream                598
+ changed(2621440)+2 Streams               601
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- include/net/mac80211.h | 1 +
- net/mac80211/main.c    | 2 ++
- net/mac80211/tx.c      | 2 +-
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 851a5e1..f600d08 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -2279,6 +2279,7 @@ struct ieee80211_hw {
- 	u8 n_cipher_schemes;
- 	const struct ieee80211_cipher_scheme *cipher_schemes;
- 	u8 max_nan_de_entries;
-+	u8 tx_sk_pacing_shift;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f31ae3b..40d24c1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8348,6 +8348,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ar->hw->wiphy->max_scan_ssids = WLAN_SCAN_PARAMS_MAX_SSID;
+ 	ar->hw->wiphy->max_scan_ie_len = WLAN_SCAN_PARAMS_MAX_IE_LEN;
  
- static inline bool _ieee80211_hw_check(struct ieee80211_hw *hw,
-diff --git a/net/mac80211/main.c b/net/mac80211/main.c
-index fb73451..72dce49 100644
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -584,6 +584,8 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
- 	local->ops = ops;
- 	local->use_chanctx = use_chanctx;
- 
-+	local->hw.tx_sk_pacing_shift = 8;
++	ar->hw->tx_sk_pacing_shift = 6;
 +
- 	/* set up some defaults */
- 	local->hw.queues = 1;
- 	local->hw.max_rates = 1;
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index 44b5dfe..a2d61b9 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -3596,7 +3596,7 @@ void __ieee80211_subif_start_xmit(struct sk_buff *skb,
- 		 * second, so 8 is ~4ms of queued data. Only affects local TCP
- 		 * sockets.
- 		 */
--		sk_pacing_shift_update(skb->sk, 8);
-+		sk_pacing_shift_update(skb->sk, sdata->local->hw.tx_sk_pacing_shift);
- 
- 		fast_tx = rcu_dereference(sta->fast_tx);
- 
+ 	ar->hw->vif_data_size = sizeof(struct ath10k_vif);
+ 	ar->hw->sta_data_size = sizeof(struct ath10k_sta);
+ 	ar->hw->txq_data_size = sizeof(struct ath10k_txq);
 -- 
 1.9.1
 
