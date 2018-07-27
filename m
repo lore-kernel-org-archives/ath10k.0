@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiz3f-0001C9-UZ
- for ath10k@lists.infradead.org; Fri, 27 Jul 2018 09:29:13 +0000
+ id 1fiz4x-00031W-KE
+ for ath10k@lists.infradead.org; Fri, 27 Jul 2018 09:30:33 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 1/2] mac80211: Save sk_pacing_shift to ieee80211_hw
+References: <1532589677-16428-2-git-send-email-wgong@codeaurora.org>
+ <201807262252.r7bjxM51%fengguang.wu@intel.com>
+ <c687d997be0c8e85a5e1e6f09a969dba@codeaurora.org>
+Date: Fri, 27 Jul 2018 12:30:17 +0300
+In-Reply-To: <c687d997be0c8e85a5e1e6f09a969dba@codeaurora.org> (Wen Gong's
+ message of "Fri, 27 Jul 2018 16:35:42 +0800")
+Message-ID: <87k1phf2l2.fsf@purkki.adurom.net>
 MIME-Version: 1.0
-Date: Fri, 27 Jul 2018 17:29:00 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi chips
-In-Reply-To: <87zhye1aqg.fsf@toke.dk>
-References: <1532589677-16428-1-git-send-email-wgong@codeaurora.org>
- <1532589677-16428-3-git-send-email-wgong@codeaurora.org>
- <87zhye1aqg.fsf@toke.dk>
-Message-ID: <e5f8de75e2464393e8664d8bf913a827@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +21,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, kbuild test robot <lkp@intel.com>, ath10k@lists.infradead.org, kbuild-all@01.org
 
-T24gMjAxOC0wNy0yNiAxOTo0NSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IFdl
-biBHb25nIDx3Z29uZ0Bjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+IAo+PiBVcHN0cmVhbSBrZXJu
-ZWwgaGFzIGFuIGludGVyZmFjZSB0byBoZWxwIGFkanVzdCBza19wYWNpbmdfc2hpZnQgdG8gCj4+
-IGhlbHAKPj4gaW1wcm92ZSBUQ1AgVUwgdGhyb3VnaHB1dC4KPj4gVGhlIHNrX3BhY2luZ19zaGlm
-dCBpcyA4IGluIG1hYzgwMjExLCB0aGlzIGlzIGJhc2VkIG9uIHRlc3Qgd2l0aCAxMU4KPj4gV2lG
-aSBjaGlwcyB3aXRoIGF0aDlrLiBGb3IgUUNBNjE3NC9RQ0E5Mzc3IFBDSSAxMUFDIGNoaXBzLCB0
-aGUgMTFBQwo+PiBWSFQ4MCBUQ1AgVUwgdGhyb3VnaHB1dCB0ZXN0aW5nIHJlc3VsdCBzaG93cyA2
-IGlzIHRoZSBvcHRpbWFsLgo+PiBPdmVyd3JpdGUgdGhlIHNrX3BhY2luZ19zaGlmdCB0byA2IGlu
-IGF0aDEwayBkcml2ZXIuCj4gCj4gV2hlbiBJIHRlc3RlZCB0aGlzLCBhIHBhY2luZyBzaGlmdCBv
-ZiA4IHdhcyBxdWl0ZSBjbG9zZSB0byBvcHRpbWFsIGFzCj4gd2VsbCBmb3IgYXRoMTBrLiBXaHkg
-YXJlIHlvdSBnZXR0aW5nIGRpZmZlcmVudCByZXN1bHRzPwoKdGhlIGRlZmF1bHQgdmFsdWUgaXMg
-c3RpbGwgOCBpbiB0aGUgcGF0Y2g6Cmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gv
-MTA1NDUzNjEvCgpJbiBteSB0ZXN0LCBwYWNpbmcgc2hpZnQgNiBpcyBiZXR0ZXIgdGhhbiA4LgpU
-aGUgdGVzdCBpcyBmb3IgYXRoMTBrLzExQUMgV2lGaSBjaGlwcy4KVGVzdCByZXN1bHQgaXMgc2hv
-dyBpbiB0aGUgY29tbWl0IGxvZ3MgYmVmb3JlLgo+IAo+PiBUZXN0ZWQgd2l0aCBRQ0E2MTc0IFBD
-SSB3aXRoIGZpcm13YXJlCj4+IFdMQU4uUk0uNC40LjEtMDAxMDktUUNBUk1TV1BaLTEsIGJ1dCB0
-aGlzIHdpbGwgYWxzbyBhZmZlY3QgUUNBOTM3NyAKPj4gUENJLgo+PiBJdCdzIG5vdCBhIHJlZ3Jl
-c3Npb24gd2l0aCBuZXcgZmlybXdhcmUgcmVsZWFzZXMuCj4+IAo+PiBUaGVyZSBoYXZlIDIgdGVz
-dCByZXN1bHQgb2YgZGlmZmVyZW50IHNldHRpbmdzOgo+PiAKPj4gQVJNIENQVSBiYXNlZCBkZXZp
-Y2Ugd2l0aCBRQ0E2MTc0QSBQQ0kgd2l0aCBkaWZmZXJlbnQKPj4gc2tfcGFjaW5nX3NoaWZ0Ogo+
-PiAKPj4gIHNrX3BhY2luZ19zaGlmdCAgdGhyb3VnaHB1dChNYnBzKSAgICAgICAgICAgICBDUFUg
-dXRpbGl6YXRpb24KPj4gICAgICAgICAgNiAgICAgICAgICAgIDUwMCgtUDUpICAgICAgfjc1JSBp
-ZGxlLCBGb2N1cyBvbiBDUFUxOiB+MTQlaWRsZQo+PiAgICAgICAgICA3ICAgICAgICAgICAgNDU0
-KC1QNSkgICAgICB+ODAlIGlkbGUsIEZvY3VzIG9uIENQVTE6IH40JWlkbGUKPj4gICAgICAgICAg
-OCAgICAgICAgICAgICAgIDI4OCAgICAgICAgfjkwJSBpZGxlLCBGb2N1cyBvbiBDUFUxOiB+MzUl
-aWRsZQo+PiAgICAgICAgICA5ICAgICAgICAgICAgICB+MjAwICAgICAgICB+OTIlIGlkbGUsIEZv
-Y3VzIG9uIENQVTE6IH41MCVpZGxlCj4gCj4gWW91ciB0ZXN0cyBkbyBub3QgaW5jbHVkZSBsYXRl
-bmN5IHZhbHVlczsgcGxlYXNlIHRyeSBydW5uaW5nIGEgdGVzdCAKPiB0aGF0Cj4gYWxzbyBtZWFz
-dXJlcyBsYXRlbmN5LiBUaGUgdGNwX251cCB0ZXN0IGluIEZsZW50IChodHRwczovL2ZsZW50Lm9y
-ZykKPiB3aWxsIGRvIHRoYXQsIGZvciBpbnN0YW5jZS4gQWxzbywgaXMgdGhpcyBhIHNpbmdsZSBU
-Q1AgZmxvdz8KPiAKCkl0IGlzIG5vdCBhIHNpbmdsZSBUQ1AgZmxvdywgaXQgaXMgNTAwTWJwcyB3
-aXRoIDUgZmxvd3MuCgpiZWxvdyBpcyByZXN1bHQgc2hvdyBpbiBjb21taXQgbG9nIGJlZm9yZToK
-NUcgVENQIFVMIFZUSDgwIG9uIFg4NiBwbGF0Zm9ybSB3aXRoIFFDQTYxNzRBIFBDSSB3aXRoIHNr
-X3BhY2tpbmdfc2hpZnQKc2V0IHRvIDY6CgogICB0Y3BfbGltaXRfb3V0cHV0X2J5dGVzICAgICAg
-ICAgICAgdGhyb3VnaHB1dChNYnBzKQogIGRlZmF1bHQoMjYyMTQ0KSsxIFN0cmVhbSAgICAgICAg
-ICAgICAgICAgMzM2CiAgZGVmYXVsdCgyNjIxNDQpKzIgU3RyZWFtcyAgICAgICAgICAgICAgICA1
-NTgKICBkZWZhdWx0KDI2MjE0NCkrMyBTdHJlYW1zICAgICAgICAgICAgICAgIDU4NAogIGRlZmF1
-bHQoMjYyMTQ0KSs0IFN0cmVhbXMgICAgICAgICAgICAgICAgNjAyCiAgZGVmYXVsdCgyNjIxNDQp
-KzUgU3RyZWFtcyAgICAgICAgICAgICAgICA1OTgKICBjaGFuZ2VkKDI2MjE0NDApKzEgU3RyZWFt
-ICAgICAgICAgICAgICAgIDU5OAogIGNoYW5nZWQoMjYyMTQ0MCkrMiBTdHJlYW1zICAgICAgICAg
-ICAgICAgNjAxCgo+IC1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Wen Gong <wgong@codeaurora.org> writes:
+
+> Thanks,
+> I will add description of tx_sk_pacing_shift as below and sent next
+> patch.
+> *
+> * @tx_sk_pacing_shift: The TCP stack allow more than a single ms of data
+> *     to be queued in the stack. The value is a bit-shift of 1 second,
+> e.g. 8
+> *     is ~4ms of queued data. It only affects local TCP sockets.
+> */
+
+Please don't top post:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#do_not_top_post_and_edit_your_quotes
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
