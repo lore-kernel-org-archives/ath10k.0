@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fj8Hx-0003OI-EJ
- for ath10k@lists.infradead.org; Fri, 27 Jul 2018 19:20:35 +0000
-Subject: Re: [RFC] ath10k: Support configuring firmware tx-retry counter.
-References: <1531788539-17937-1-git-send-email-greearb@candelatech.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <f110a28e-37b4-ae5f-92f0-51c35ea2d62d@candelatech.com>
-Date: Fri, 27 Jul 2018 12:20:17 -0700
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fj90Z-0004AX-DN
+ for ath10k@lists.infradead.org; Fri, 27 Jul 2018 20:06:42 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi chips
+In-Reply-To: <e5f8de75e2464393e8664d8bf913a827@codeaurora.org>
+References: <1532589677-16428-1-git-send-email-wgong@codeaurora.org>
+ <1532589677-16428-3-git-send-email-wgong@codeaurora.org>
+ <87zhye1aqg.fsf@toke.dk> <e5f8de75e2464393e8664d8bf913a827@codeaurora.org>
+Date: Fri, 27 Jul 2018 22:06:01 +0200
+Message-ID: <87h8kk1m1i.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <1531788539-17937-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,138 +20,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 07/16/2018 05:48 PM, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
->
-> Firmware already supports this, so just enable the path
-> to configure the vdev parameter.
->
-> One potential issue:  The firmware (10.1 at least) defaults to 2,
-> and the mac80211 stack defaults to 4.  So applying this patch would
-> change the firmware behaviour regardless of user settings.
->
-> I verified this tweaked the proper firmware setting when I
-> ran this command:
-
-So, please don't apply this.  At least wave-1 10.1 firmware is going to
-crash and/or corrupt its rate-ctrl memory, because it has some logic that
-is just full of bugs when there can be more than 2 retries.
-
-I plan to fix this in my firmware, but I doubt upstream FW is fixed
-or will be fixed (a quick code inspection of 10.2 fw src makes me think
-the problem exists there as well).
-
-Thanks,
-Ben
-
->
-> iw phy wiphy0 set retry short 2 long 2
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 31 +++++++++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/wmi.c |  2 +-
->  drivers/net/wireless/ath/ath10k/wmi.h |  2 ++
->  3 files changed, 34 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index c90c8bb..b458e5b 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -2027,6 +2027,16 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
->  	return 0;
->  }
->
-> +static int ath10k_mac_vif_config_retry_limit(struct ath10k_vif *arvif, int limit)
-> +{
-> +	struct ath10k *ar = arvif->ar;
-> +	int vdev_param = ar->wmi.vdev_param->rc_num_retries;
-> +
-> +	lockdep_assert_held(&arvif->ar->conf_mutex);
-> +
-> +	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param, limit);
-> +}
-> +
->  static int ath10k_mac_vif_disable_keepalive(struct ath10k_vif *arvif)
->  {
->  	struct ath10k *ar = arvif->ar;
-> @@ -5516,6 +5526,24 @@ static int ath10k_config_ps(struct ath10k *ar)
->  	return ret;
->  }
->
-> +static int ath10k_config_retry_limit(struct ath10k *ar, int limit)
-> +{
-> +	struct ath10k_vif *arvif;
-> +	int ret = 0;
-> +
-> +	lockdep_assert_held(&ar->conf_mutex);
-> +
-> +	list_for_each_entry(arvif, &ar->arvifs, list) {
-> +		ret = ath10k_mac_vif_config_retry_limit(arvif, limit);
-> +		if (ret) {
-> +			ath10k_warn(ar, "failed to setup retry-limit: %d\n", ret);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int ath10k_mac_txpower_setup(struct ath10k *ar, int txpower)
->  {
->  	int ret;
-> @@ -5592,6 +5620,9 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
->  			ath10k_warn(ar, "failed to recalc monitor: %d\n", ret);
->  	}
->
-> +	if (changed & IEEE80211_CONF_CHANGE_RETRY_LIMITS)
-> +		ret = ath10k_config_retry_limit(ar, conf->long_frame_max_tx_count);
-> +
->  	mutex_unlock(&ar->conf_mutex);
->  	return ret;
->  }
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index 6aaa439..816883d 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -874,7 +874,7 @@ static struct wmi_vdev_param_map wmi_10x_vdev_param_map = {
->  	.tx_encap_type = WMI_VDEV_PARAM_UNSUPPORTED,
->  	.ap_detect_out_of_sync_sleeping_sta_time_secs =
->  		WMI_10X_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
-> -	.rc_num_retries = WMI_VDEV_PARAM_UNSUPPORTED,
-> +	.rc_num_retries = WMI_10X_VDEV_PARAM_RC_NUM_RETRIES,
->  	.cabq_maxdur = WMI_VDEV_PARAM_UNSUPPORTED,
->  	.mfptest_set = WMI_VDEV_PARAM_UNSUPPORTED,
->  	.rts_fixed_rate = WMI_VDEV_PARAM_UNSUPPORTED,
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-> index 95ff280..b01778e 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -5369,6 +5369,8 @@ enum wmi_10x_vdev_param {
->  	WMI_10X_VDEV_PARAM_MCAST2UCAST_SET,
->  	/* Enable/Disable RTS-CTS */
->  	WMI_10X_VDEV_PARAM_ENABLE_RTSCTS,
-> +	/** Total number of HW retries */
-> +	WMI_10X_VDEV_PARAM_RC_NUM_RETRIES,
->
->  	WMI_10X_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
->
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+V2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+IE9uIDIwMTgtMDctMjYg
+MTk6NDUsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gV2VuIEdvbmcgPHdnb25n
+QGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+IAo+Pj4gVXBzdHJlYW0ga2VybmVsIGhhcyBhbiBp
+bnRlcmZhY2UgdG8gaGVscCBhZGp1c3Qgc2tfcGFjaW5nX3NoaWZ0IHRvIAo+Pj4gaGVscAo+Pj4g
+aW1wcm92ZSBUQ1AgVUwgdGhyb3VnaHB1dC4KPj4+IFRoZSBza19wYWNpbmdfc2hpZnQgaXMgOCBp
+biBtYWM4MDIxMSwgdGhpcyBpcyBiYXNlZCBvbiB0ZXN0IHdpdGggMTFOCj4+PiBXaUZpIGNoaXBz
+IHdpdGggYXRoOWsuIEZvciBRQ0E2MTc0L1FDQTkzNzcgUENJIDExQUMgY2hpcHMsIHRoZSAxMUFD
+Cj4+PiBWSFQ4MCBUQ1AgVUwgdGhyb3VnaHB1dCB0ZXN0aW5nIHJlc3VsdCBzaG93cyA2IGlzIHRo
+ZSBvcHRpbWFsLgo+Pj4gT3ZlcndyaXRlIHRoZSBza19wYWNpbmdfc2hpZnQgdG8gNiBpbiBhdGgx
+MGsgZHJpdmVyLgo+PiAKPj4gV2hlbiBJIHRlc3RlZCB0aGlzLCBhIHBhY2luZyBzaGlmdCBvZiA4
+IHdhcyBxdWl0ZSBjbG9zZSB0byBvcHRpbWFsIGFzCj4+IHdlbGwgZm9yIGF0aDEway4gV2h5IGFy
+ZSB5b3UgZ2V0dGluZyBkaWZmZXJlbnQgcmVzdWx0cz8KPgo+IHRoZSBkZWZhdWx0IHZhbHVlIGlz
+IHN0aWxsIDggaW4gdGhlIHBhdGNoOgo+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0
+Y2gvMTA1NDUzNjEvCj4KPiBJbiBteSB0ZXN0LCBwYWNpbmcgc2hpZnQgNiBpcyBiZXR0ZXIgdGhh
+biA4Lgo+IFRoZSB0ZXN0IGlzIGZvciBhdGgxMGsvMTFBQyBXaUZpIGNoaXBzLgo+IFRlc3QgcmVz
+dWx0IGlzIHNob3cgaW4gdGhlIGNvbW1pdCBsb2dzIGJlZm9yZS4KPj4gCj4+PiBUZXN0ZWQgd2l0
+aCBRQ0E2MTc0IFBDSSB3aXRoIGZpcm13YXJlCj4+PiBXTEFOLlJNLjQuNC4xLTAwMTA5LVFDQVJN
+U1dQWi0xLCBidXQgdGhpcyB3aWxsIGFsc28gYWZmZWN0IFFDQTkzNzcgCj4+PiBQQ0kuCj4+PiBJ
+dCdzIG5vdCBhIHJlZ3Jlc3Npb24gd2l0aCBuZXcgZmlybXdhcmUgcmVsZWFzZXMuCj4+PiAKPj4+
+IFRoZXJlIGhhdmUgMiB0ZXN0IHJlc3VsdCBvZiBkaWZmZXJlbnQgc2V0dGluZ3M6Cj4+PiAKPj4+
+IEFSTSBDUFUgYmFzZWQgZGV2aWNlIHdpdGggUUNBNjE3NEEgUENJIHdpdGggZGlmZmVyZW50Cj4+
+PiBza19wYWNpbmdfc2hpZnQ6Cj4+PiAKPj4+ICBza19wYWNpbmdfc2hpZnQgIHRocm91Z2hwdXQo
+TWJwcykgICAgICAgICAgICAgQ1BVIHV0aWxpemF0aW9uCj4+PiAgICAgICAgICA2ICAgICAgICAg
+ICAgNTAwKC1QNSkgICAgICB+NzUlIGlkbGUsIEZvY3VzIG9uIENQVTE6IH4xNCVpZGxlCj4+PiAg
+ICAgICAgICA3ICAgICAgICAgICAgNDU0KC1QNSkgICAgICB+ODAlIGlkbGUsIEZvY3VzIG9uIENQ
+VTE6IH40JWlkbGUKPj4+ICAgICAgICAgIDggICAgICAgICAgICAgICAyODggICAgICAgIH45MCUg
+aWRsZSwgRm9jdXMgb24gQ1BVMTogfjM1JWlkbGUKPj4+ICAgICAgICAgIDkgICAgICAgICAgICAg
+IH4yMDAgICAgICAgIH45MiUgaWRsZSwgRm9jdXMgb24gQ1BVMTogfjUwJWlkbGUKPj4gCj4+IFlv
+dXIgdGVzdHMgZG8gbm90IGluY2x1ZGUgbGF0ZW5jeSB2YWx1ZXM7IHBsZWFzZSB0cnkgcnVubmlu
+ZyBhIHRlc3QgCj4+IHRoYXQKPj4gYWxzbyBtZWFzdXJlcyBsYXRlbmN5LiBUaGUgdGNwX251cCB0
+ZXN0IGluIEZsZW50IChodHRwczovL2ZsZW50Lm9yZykKPj4gd2lsbCBkbyB0aGF0LCBmb3IgaW5z
+dGFuY2UuIEFsc28sIGlzIHRoaXMgYSBzaW5nbGUgVENQIGZsb3c/Cj4+IAo+Cj4gSXQgaXMgbm90
+IGEgc2luZ2xlIFRDUCBmbG93LCBpdCBpcyA1MDBNYnBzIHdpdGggNSBmbG93cy4KPgo+IGJlbG93
+IGlzIHJlc3VsdCBzaG93IGluIGNvbW1pdCBsb2cgYmVmb3JlOgo+IDVHIFRDUCBVTCBWVEg4MCBv
+biBYODYgcGxhdGZvcm0gd2l0aCBRQ0E2MTc0QSBQQ0kgd2l0aCBza19wYWNraW5nX3NoaWZ0Cj4g
+c2V0IHRvIDY6Cj4KPiAgICB0Y3BfbGltaXRfb3V0cHV0X2J5dGVzICAgICAgICAgICAgdGhyb3Vn
+aHB1dChNYnBzKQo+ICAgZGVmYXVsdCgyNjIxNDQpKzEgU3RyZWFtICAgICAgICAgICAgICAgICAz
+MzYKPiAgIGRlZmF1bHQoMjYyMTQ0KSsyIFN0cmVhbXMgICAgICAgICAgICAgICAgNTU4Cj4gICBk
+ZWZhdWx0KDI2MjE0NCkrMyBTdHJlYW1zICAgICAgICAgICAgICAgIDU4NAo+ICAgZGVmYXVsdCgy
+NjIxNDQpKzQgU3RyZWFtcyAgICAgICAgICAgICAgICA2MDIKPiAgIGRlZmF1bHQoMjYyMTQ0KSs1
+IFN0cmVhbXMgICAgICAgICAgICAgICAgNTk4Cj4gICBjaGFuZ2VkKDI2MjE0NDApKzEgU3RyZWFt
+ICAgICAgICAgICAgICAgIDU5OAo+ICAgY2hhbmdlZCgyNjIxNDQwKSsyIFN0cmVhbXMgICAgICAg
+ICAgICAgICA2MDEKClRoaXMgaXMgdXNlbGVzcyB3aXRob3V0IGxhdGVuY3kgbnVtYmVycy4gVGhl
+IHdob2xlIHBvaW50IG9mCnNrX3BhY2luZ19zaGlmdCBpcyB0byBjb250cm9sIHRoZSB0cmFkZW9m
+ZiBiZXR3ZWVuIGxhdGVuY3kgYW5kCnRocm91Z2hwdXQuIFlvdSdyZSBvbmx5IHNob3dpbmcgdGhl
+IHRocm91Z2hwdXQsIHNvIGl0J3MgaW1wb3NzaWJsZSB0bwpqdWRnZSBpZiBzZXR0aW5nIHRoZSBw
+YWNpbmcgc2hpZnQgdG8gNiBpcyByaWdodCAoYW5kIGZyb20geW91ciByZXN1bHRzIEkKc3VzcGVj
+dCB0aGUgc3dlZXQgc3BvdCBpcyBhY3R1YWxseSA3KS4KCi1Ub2tlCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
