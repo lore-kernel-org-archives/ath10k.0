@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkDLD-0006l6-9j
- for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:56:24 +0000
-Received: by mail-ed1-x541.google.com with SMTP id h4-v6so4553545edi.6
- for <ath10k@lists.infradead.org>; Mon, 30 Jul 2018 11:56:13 -0700 (PDT)
-Subject: Re: [PATCH] ath10k: Limit available channels via DT
- ieee80211-freq-limit
-References: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
- <5B5F5EF2.2050100@broadcom.com>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5B5F5F4A.3000302@broadcom.com>
-Date: Mon, 30 Jul 2018 20:56:10 +0200
+ id 1fkDLl-0006tp-LV
+ for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:56:58 +0000
+Subject: [PATCH] ath10k: fix parenthesis alignment
+From: Kalle Valo <kvalo@codeaurora.org>
+Date: Mon, 30 Jul 2018 21:56:43 +0300
+Message-ID: <153297700266.4874.12439168003972242663.stgit@potku.adurom.net>
 MIME-Version: 1.0
-In-Reply-To: <5B5F5EF2.2050100@broadcom.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +16,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-T24gNy8zMC8yMDE4IDg6NTQgUE0sIEFyZW5kIHZhbiBTcHJpZWwgd3JvdGU6Cj4gKyBSYWZhxYIK
-Pgo+IE9uIDcvMzAvMjAxOCA1OjM5IFBNLCBTdmVuIEVja2VsbWFubiB3cm90ZToKPj4gVHJpLWJh
-bmQgZGV2aWNlcyAoMXggMi40R0h6ICsgMnggNUdIeikgb2Z0ZW4gaW5jb3Jwb3JhdGUgc3BlY2lh
-bAo+PiBmaWx0ZXJzIGluCj4+IHRoZSBSWCBhbmQgVFggcGF0aC4gVGhlc2UgZmlsdGVyZWQgY2hh
-bm5lbCBjYW4gaW4gdGhlb3J5IHN0aWxsIGJlIHVzZWQgYnkKPj4gdGhlIGhhcmR3YXJlIGJ1dCB0
-aGUgc2lnbmFsIHN0cmVuZ3RoIGlzIHJlZHVjZWQgc28gbXVjaCB0aGF0IGl0IG1ha2VzIG5vCj4+
-IHNlbnNlLgo+Pgo+PiBUaGVyZSBpcyBhbHJlYWR5IGEgRFQgcHJvcGVydHkgdG8gbGltaXQgdGhl
-IGF2YWlsYWJsZSBjaGFubmVscyBidXQgYXRoMTBrCj4+IGhhcyB0byBtYW51YWxseSBjYWxsIHRo
-aXMgZnVuY3Rpb25hbGl0eSB0byBsaW1pdCB0aGUgY3VycnJlbnRseSBzZXQgd2lwaHkKPj4gY2hh
-bm5lbHMgZnVydGhlci4KPgo+IFdvbmRlcmluZyB3aGV0aGVyIHdlIGNhbiBjYWxsIGl0IGluIHdp
-cGh5X3JlZ2lzdGVyKCkgbGlrZSBiZWxvdy4gTm90Cj4gc3VyZSB3aHkgd2UgZGlkIG5vdCBleHBs
-b3JlIHRoYXQgd2l0aCB0aGUgaW50cm9kdWN0aW9uIG9mIGl0IGJ5IFJhZmHFgi4KPiBNYXliZSBo
-ZSByZW1lbWJlcnMuIEkgZGlkIG5vdCBmaW5kIHNvbWV0aGluZyBpbiB0aGF0IGRpcmVjdGlvbiBp
-bgo+IHBhdGNod29yaywgYnV0IG1heSBoYXZlIG1pc3NlZCBpdC4gSSBrbm93IG10NzYgZHJvcHMg
-dGhlIGJhbmQgcmVmZXJlbmNlCj4gaWYgaXQgZW5kcyB1cCB3aXRoIGFsbCBjaGFubmVscyBkaXNh
-YmxlZC4gTWF5YmUgdGhhdCB3YXMgdGhlIHJlYXNvbi4KClNvcnJ5IGZvciBzZW5kaW5nIHRoaXMg
-dHdpY2UuIE15IHdpZmkgY29ubmVjdGlvbiB3YXMgcXVpcmt5LgoKR3IuIEF2UwoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+These were recently introduced and found by checkpatch:
+
+drivers/net/wireless/ath/ath10k/mac.c:6118: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/mac.c:6121: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/mac.c:6124: Alignment should match open parenthesis
+
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f068e2b9eacc..b6830fa16e99 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6107,13 +6107,13 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 
+ 		mode = chan_to_phymode(&def);
+ 		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d phymode %d\n",
+-				sta->addr, bw, mode);
++			   sta->addr, bw, mode);
+ 
+ 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
+-				WMI_PEER_PHYMODE, mode);
++						WMI_PEER_PHYMODE, mode);
+ 		if (err) {
+ 			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
+-					sta->addr, mode, err);
++				    sta->addr, mode, err);
+ 			goto exit;
+ 		}
+ 
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
