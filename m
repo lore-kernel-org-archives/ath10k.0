@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkDFZ-0004qJ-4z
- for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:50:34 +0000
-Received: by mail-ed1-x541.google.com with SMTP id o8-v6so4543565edt.13
- for <ath10k@lists.infradead.org>; Mon, 30 Jul 2018 11:50:19 -0700 (PDT)
+ id 1fkDJn-0005JV-WF
+ for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:54:57 +0000
+Received: by mail-ed1-x541.google.com with SMTP id k15-v6so4574009edr.3
+ for <ath10k@lists.infradead.org>; Mon, 30 Jul 2018 11:54:45 -0700 (PDT)
 Subject: Re: [PATCH] ath10k: Limit available channels via DT
  ieee80211-freq-limit
 References: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
 From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5B5F5DE8.9060101@broadcom.com>
-Date: Mon, 30 Jul 2018 20:50:16 +0200
+Message-ID: <5B5F5EF2.2050100@broadcom.com>
+Date: Mon, 30 Jul 2018 20:54:42 +0200
 MIME-Version: 1.0
 In-Reply-To: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
