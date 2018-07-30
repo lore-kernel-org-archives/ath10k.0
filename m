@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fj90Z-0004AX-DN
- for ath10k@lists.infradead.org; Fri, 27 Jul 2018 20:06:42 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi chips
-In-Reply-To: <e5f8de75e2464393e8664d8bf913a827@codeaurora.org>
-References: <1532589677-16428-1-git-send-email-wgong@codeaurora.org>
- <1532589677-16428-3-git-send-email-wgong@codeaurora.org>
- <87zhye1aqg.fsf@toke.dk> <e5f8de75e2464393e8664d8bf913a827@codeaurora.org>
-Date: Fri, 27 Jul 2018 22:06:01 +0200
-Message-ID: <87h8kk1m1i.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1fk1Or-00072Y-Qk
+ for ath10k@lists.infradead.org; Mon, 30 Jul 2018 06:11:23 +0000
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: [PATCH] ath10k: fix kernel panic by moving pci flush after
+ napi_disable
+Date: Mon, 30 Jul 2018 11:40:51 +0530
+Message-Id: <1532931051-20118-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +16,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-V2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+IE9uIDIwMTgtMDctMjYg
-MTk6NDUsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gV2VuIEdvbmcgPHdnb25n
-QGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+IAo+Pj4gVXBzdHJlYW0ga2VybmVsIGhhcyBhbiBp
-bnRlcmZhY2UgdG8gaGVscCBhZGp1c3Qgc2tfcGFjaW5nX3NoaWZ0IHRvIAo+Pj4gaGVscAo+Pj4g
-aW1wcm92ZSBUQ1AgVUwgdGhyb3VnaHB1dC4KPj4+IFRoZSBza19wYWNpbmdfc2hpZnQgaXMgOCBp
-biBtYWM4MDIxMSwgdGhpcyBpcyBiYXNlZCBvbiB0ZXN0IHdpdGggMTFOCj4+PiBXaUZpIGNoaXBz
-IHdpdGggYXRoOWsuIEZvciBRQ0E2MTc0L1FDQTkzNzcgUENJIDExQUMgY2hpcHMsIHRoZSAxMUFD
-Cj4+PiBWSFQ4MCBUQ1AgVUwgdGhyb3VnaHB1dCB0ZXN0aW5nIHJlc3VsdCBzaG93cyA2IGlzIHRo
-ZSBvcHRpbWFsLgo+Pj4gT3ZlcndyaXRlIHRoZSBza19wYWNpbmdfc2hpZnQgdG8gNiBpbiBhdGgx
-MGsgZHJpdmVyLgo+PiAKPj4gV2hlbiBJIHRlc3RlZCB0aGlzLCBhIHBhY2luZyBzaGlmdCBvZiA4
-IHdhcyBxdWl0ZSBjbG9zZSB0byBvcHRpbWFsIGFzCj4+IHdlbGwgZm9yIGF0aDEway4gV2h5IGFy
-ZSB5b3UgZ2V0dGluZyBkaWZmZXJlbnQgcmVzdWx0cz8KPgo+IHRoZSBkZWZhdWx0IHZhbHVlIGlz
-IHN0aWxsIDggaW4gdGhlIHBhdGNoOgo+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0
-Y2gvMTA1NDUzNjEvCj4KPiBJbiBteSB0ZXN0LCBwYWNpbmcgc2hpZnQgNiBpcyBiZXR0ZXIgdGhh
-biA4Lgo+IFRoZSB0ZXN0IGlzIGZvciBhdGgxMGsvMTFBQyBXaUZpIGNoaXBzLgo+IFRlc3QgcmVz
-dWx0IGlzIHNob3cgaW4gdGhlIGNvbW1pdCBsb2dzIGJlZm9yZS4KPj4gCj4+PiBUZXN0ZWQgd2l0
-aCBRQ0E2MTc0IFBDSSB3aXRoIGZpcm13YXJlCj4+PiBXTEFOLlJNLjQuNC4xLTAwMTA5LVFDQVJN
-U1dQWi0xLCBidXQgdGhpcyB3aWxsIGFsc28gYWZmZWN0IFFDQTkzNzcgCj4+PiBQQ0kuCj4+PiBJ
-dCdzIG5vdCBhIHJlZ3Jlc3Npb24gd2l0aCBuZXcgZmlybXdhcmUgcmVsZWFzZXMuCj4+PiAKPj4+
-IFRoZXJlIGhhdmUgMiB0ZXN0IHJlc3VsdCBvZiBkaWZmZXJlbnQgc2V0dGluZ3M6Cj4+PiAKPj4+
-IEFSTSBDUFUgYmFzZWQgZGV2aWNlIHdpdGggUUNBNjE3NEEgUENJIHdpdGggZGlmZmVyZW50Cj4+
-PiBza19wYWNpbmdfc2hpZnQ6Cj4+PiAKPj4+ICBza19wYWNpbmdfc2hpZnQgIHRocm91Z2hwdXQo
-TWJwcykgICAgICAgICAgICAgQ1BVIHV0aWxpemF0aW9uCj4+PiAgICAgICAgICA2ICAgICAgICAg
-ICAgNTAwKC1QNSkgICAgICB+NzUlIGlkbGUsIEZvY3VzIG9uIENQVTE6IH4xNCVpZGxlCj4+PiAg
-ICAgICAgICA3ICAgICAgICAgICAgNDU0KC1QNSkgICAgICB+ODAlIGlkbGUsIEZvY3VzIG9uIENQ
-VTE6IH40JWlkbGUKPj4+ICAgICAgICAgIDggICAgICAgICAgICAgICAyODggICAgICAgIH45MCUg
-aWRsZSwgRm9jdXMgb24gQ1BVMTogfjM1JWlkbGUKPj4+ICAgICAgICAgIDkgICAgICAgICAgICAg
-IH4yMDAgICAgICAgIH45MiUgaWRsZSwgRm9jdXMgb24gQ1BVMTogfjUwJWlkbGUKPj4gCj4+IFlv
-dXIgdGVzdHMgZG8gbm90IGluY2x1ZGUgbGF0ZW5jeSB2YWx1ZXM7IHBsZWFzZSB0cnkgcnVubmlu
-ZyBhIHRlc3QgCj4+IHRoYXQKPj4gYWxzbyBtZWFzdXJlcyBsYXRlbmN5LiBUaGUgdGNwX251cCB0
-ZXN0IGluIEZsZW50IChodHRwczovL2ZsZW50Lm9yZykKPj4gd2lsbCBkbyB0aGF0LCBmb3IgaW5z
-dGFuY2UuIEFsc28sIGlzIHRoaXMgYSBzaW5nbGUgVENQIGZsb3c/Cj4+IAo+Cj4gSXQgaXMgbm90
-IGEgc2luZ2xlIFRDUCBmbG93LCBpdCBpcyA1MDBNYnBzIHdpdGggNSBmbG93cy4KPgo+IGJlbG93
-IGlzIHJlc3VsdCBzaG93IGluIGNvbW1pdCBsb2cgYmVmb3JlOgo+IDVHIFRDUCBVTCBWVEg4MCBv
-biBYODYgcGxhdGZvcm0gd2l0aCBRQ0E2MTc0QSBQQ0kgd2l0aCBza19wYWNraW5nX3NoaWZ0Cj4g
-c2V0IHRvIDY6Cj4KPiAgICB0Y3BfbGltaXRfb3V0cHV0X2J5dGVzICAgICAgICAgICAgdGhyb3Vn
-aHB1dChNYnBzKQo+ICAgZGVmYXVsdCgyNjIxNDQpKzEgU3RyZWFtICAgICAgICAgICAgICAgICAz
-MzYKPiAgIGRlZmF1bHQoMjYyMTQ0KSsyIFN0cmVhbXMgICAgICAgICAgICAgICAgNTU4Cj4gICBk
-ZWZhdWx0KDI2MjE0NCkrMyBTdHJlYW1zICAgICAgICAgICAgICAgIDU4NAo+ICAgZGVmYXVsdCgy
-NjIxNDQpKzQgU3RyZWFtcyAgICAgICAgICAgICAgICA2MDIKPiAgIGRlZmF1bHQoMjYyMTQ0KSs1
-IFN0cmVhbXMgICAgICAgICAgICAgICAgNTk4Cj4gICBjaGFuZ2VkKDI2MjE0NDApKzEgU3RyZWFt
-ICAgICAgICAgICAgICAgIDU5OAo+ICAgY2hhbmdlZCgyNjIxNDQwKSsyIFN0cmVhbXMgICAgICAg
-ICAgICAgICA2MDEKClRoaXMgaXMgdXNlbGVzcyB3aXRob3V0IGxhdGVuY3kgbnVtYmVycy4gVGhl
-IHdob2xlIHBvaW50IG9mCnNrX3BhY2luZ19zaGlmdCBpcyB0byBjb250cm9sIHRoZSB0cmFkZW9m
-ZiBiZXR3ZWVuIGxhdGVuY3kgYW5kCnRocm91Z2hwdXQuIFlvdSdyZSBvbmx5IHNob3dpbmcgdGhl
-IHRocm91Z2hwdXQsIHNvIGl0J3MgaW1wb3NzaWJsZSB0bwpqdWRnZSBpZiBzZXR0aW5nIHRoZSBw
-YWNpbmcgc2hpZnQgdG8gNiBpcyByaWdodCAoYW5kIGZyb20geW91ciByZXN1bHRzIEkKc3VzcGVj
-dCB0aGUgc3dlZXQgc3BvdCBpcyBhY3R1YWxseSA3KS4KCi1Ub2tlCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+When continuously running wifi up/down sequence, the napi poll
+can be scheduled after the CE buffers being freed by ath10k_pci_flush
+
+Steps:
+  In a certain condition, during wifi down below scenario might occur.
+
+ath10k_stop->ath10k_hif_stop->napi_schedule->ath10k_pci_flush->napi_poll(napi_synchronize).
+
+In the above scenario, CE buffer entries will be freed up and become NULL in
+ath10k_pci_flush. And the napi_poll has been invoked after the flush process
+and it will try to get the skb from the CE buffer entry and perform some action on that.
+Since the CE buffer already cleaned by pci flush this action will create NULL
+pointer dereference and trigger below kernel panic.
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000005c
+PC is at ath10k_pci_htt_rx_cb+0x64/0x3ec [ath10k_pci]
+ath10k_pci_htt_rx_cb [ath10k_pci]
+ath10k_ce_per_engine_service+0x74/0xc4 [ath10k_pci]
+ath10k_ce_per_engine_service [ath10k_pci]
+ath10k_ce_per_engine_service_any+0x74/0x80 [ath10k_pci]
+ath10k_ce_per_engine_service_any [ath10k_pci]
+ath10k_pci_napi_poll+0x48/0xec [ath10k_pci]
+ath10k_pci_napi_poll [ath10k_pci]
+net_rx_action+0xac/0x160
+net_rx_action
+__do_softirq+0xdc/0x208
+__do_softirq
+irq_exit+0x84/0xe0
+irq_exit
+__handle_domain_irq+0x80/0xa0
+__handle_domain_irq
+gic_handle_irq+0x38/0x5c
+gic_handle_irq
+__irq_usr+0x44/0x60
+
+Tested on QCA4019 and firmware version 10.4.3.2.1.1-00010
+
+Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/ahb.c | 4 ++--
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index fa39fff..e244dc5 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -660,10 +660,10 @@ static void ath10k_ahb_hif_stop(struct ath10k *ar)
+ 	ath10k_ahb_irq_disable(ar);
+ 	synchronize_irq(ar_ahb->irq);
+ 
+-	ath10k_pci_flush(ar);
+-
+ 	napi_synchronize(&ar->napi);
+ 	napi_disable(&ar->napi);
++
++	ath10k_pci_flush(ar);
+ }
+ 
+ static int ath10k_ahb_hif_power_up(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index af2cf55..97fa5c7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2068,9 +2068,9 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 
+ 	ath10k_pci_irq_disable(ar);
+ 	ath10k_pci_irq_sync(ar);
+-	ath10k_pci_flush(ar);
+ 	napi_synchronize(&ar->napi);
+ 	napi_disable(&ar->napi);
++	ath10k_pci_flush(ar);
+ 
+ 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
+ 	WARN_ON(ar_pci->ps_wake_refcount > 0);
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
