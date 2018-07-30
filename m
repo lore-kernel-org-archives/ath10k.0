@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkCSu-0002Gi-49
- for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:00:17 +0000
+ id 1fkDFZ-0004qJ-4z
+ for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:50:34 +0000
+Received: by mail-ed1-x541.google.com with SMTP id o8-v6so4543565edt.13
+ for <ath10k@lists.infradead.org>; Mon, 30 Jul 2018 11:50:19 -0700 (PDT)
+Subject: Re: [PATCH] ath10k: Limit available channels via DT
+ ieee80211-freq-limit
+References: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <5B5F5DE8.9060101@broadcom.com>
+Date: Mon, 30 Jul 2018 20:50:16 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add debugfs file warm_hw_reset
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1531920860-3236-1-git-send-email-mkenna@codeaurora.org>
-References: <1531920860-3236-1-git-send-email-mkenna@codeaurora.org>
-Message-Id: <20180730180005.C6FE360769@smtp.codeaurora.org>
-Date: Mon, 30 Jul 2018 18:00:05 +0000 (UTC)
+In-Reply-To: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,46 +21,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, linux-wireless@vger.kernel.org
 
-Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
-
-> Debugfs support to do hardware warm reset with WMI command
-> WMI_PDEV_PARAM_PDEV_RESET for 10.4 and 10.2.4(if wmi
-> service is enabled in the firmware for backward compatibility).
-> 
-> This change is purely for debugging purpose when hardware hangs/mutes.
-> 
-> This hardware reset won't affect the connectivity but there will be small
-> pause in data traffic. Here we are doing BB/MAC level reset and hence
-> whenever the BB/MAC watchdog is triggered, it does a hardware_chip_reset.
-> So the target will be in the active state.
-> 
-> Below command used to warm reset the hardware.
-> echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/warm_hw_reset
-> 
-> Tested in QCA988X with firmware ver 10.2.4.70.45
-> Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00011
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-db251d7df457 ath10k: add debugfs file warm_hw_reset
-
--- 
-https://patchwork.kernel.org/patch/10532465/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+KyBSYWZhxYIKCk9uIDcvMzAvMjAxOCA1OjM5IFBNLCBTdmVuIEVja2VsbWFubiB3cm90ZToKPiBU
+cmktYmFuZCBkZXZpY2VzICgxeCAyLjRHSHogKyAyeCA1R0h6KSBvZnRlbiBpbmNvcnBvcmF0ZSBz
+cGVjaWFsIGZpbHRlcnMgaW4KPiB0aGUgUlggYW5kIFRYIHBhdGguIFRoZXNlIGZpbHRlcmVkIGNo
+YW5uZWwgY2FuIGluIHRoZW9yeSBzdGlsbCBiZSB1c2VkIGJ5Cj4gdGhlIGhhcmR3YXJlIGJ1dCB0
+aGUgc2lnbmFsIHN0cmVuZ3RoIGlzIHJlZHVjZWQgc28gbXVjaCB0aGF0IGl0IG1ha2VzIG5vCj4g
+c2Vuc2UuCj4KPiBUaGVyZSBpcyBhbHJlYWR5IGEgRFQgcHJvcGVydHkgdG8gbGltaXQgdGhlIGF2
+YWlsYWJsZSBjaGFubmVscyBidXQgYXRoMTBrCj4gaGFzIHRvIG1hbnVhbGx5IGNhbGwgdGhpcyBm
+dW5jdGlvbmFsaXR5IHRvIGxpbWl0IHRoZSBjdXJycmVudGx5IHNldCB3aXBoeQo+IGNoYW5uZWxz
+IGZ1cnRoZXIuCgpXb25kZXJpbmcgd2hldGhlciB3ZSBjYW4gY2FsbCBpdCBpbiB3aXBoeV9yZWdp
+c3RlcigpIGxpa2UgYmVsb3cuIE5vdCAKc3VyZSB3aHkgd2UgZGlkIG5vdCBleHBsb3JlIHRoYXQg
+d2l0aCB0aGUgaW50cm9kdWN0aW9uIG9mIGl0IGJ5IFJhZmHFgi4gCk1heWJlIGhlIHJlbWVtYmVy
+cy4gSSBkaWQgbm90IGZpbmQgc29tZXRoaW5nIGluIHRoYXQgZGlyZWN0aW9uIGluIApwYXRjaHdv
+cmssIGJ1dCBtYXkgaGF2ZSBtaXNzZWQgaXQuIEkga25vdyBtdDc2IGRyb3BzIHRoZSBiYW5kIHJl
+ZmVyZW5jZSAKaWYgaXQgZW5kcyB1cCB3aXRoIGFsbCBjaGFubmVscyBkaXNhYmxlZC4gTWF5YmUg
+dGhhdCB3YXMgdGhlIHJlYXNvbi4KClJlZ2FyZHMsCkFyZW5kCi0tLQpkaWZmIC0tZ2l0IGEvbmV0
+L3dpcmVsZXNzL2NvcmUuYyBiL25ldC93aXJlbGVzcy9jb3JlLmMKaW5kZXggYTg4NTUxZi4uMmUw
+MGNiMSAxMDA2NDQKLS0tIGEvbmV0L3dpcmVsZXNzL2NvcmUuYworKysgYi9uZXQvd2lyZWxlc3Mv
+Y29yZS5jCkBAIC03NDIsNiArNzQyLDggQEAgaW50IHdpcGh5X3JlZ2lzdGVyKHN0cnVjdCB3aXBo
+eSAqd2lwaHkpCglpZiAocmVzKQoJCXJldHVybiByZXM7CgorCXdpcGh5X3JlYWRfb2ZfZnJlcV9s
+aW1pdHMod2lwaHkpOworCgkvKiBzYW5pdHkgY2hlY2sgc3VwcG9ydGVkIGJhbmRzL2NoYW5uZWxz
+ICovCglmb3IgKGJhbmQgPSAwOyBiYW5kIDwgTlVNX05MODAyMTFfQkFORFM7IGJhbmQrKykgewoJ
+CXUxNiB0eXBlcyA9IDA7CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
