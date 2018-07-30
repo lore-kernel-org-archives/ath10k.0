@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkCS0-0001e7-8Q
- for ath10k@lists.infradead.org; Mon, 30 Jul 2018 17:59:21 +0000
+ id 1fkCSu-0002Gi-49
+ for ath10k@lists.infradead.org; Mon, 30 Jul 2018 18:00:17 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: htt_tx: move lock into id_get function
+Subject: Re: [PATCH] ath10k: add debugfs file warm_hw_reset
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1531589900-29220-1-git-send-email-hofrat@osadl.org>
-References: <1531589900-29220-1-git-send-email-hofrat@osadl.org>
-Message-Id: <20180730175909.BF88360500@smtp.codeaurora.org>
-Date: Mon, 30 Jul 2018 17:59:09 +0000 (UTC)
+In-Reply-To: <1531920860-3236-1-git-send-email-mkenna@codeaurora.org>
+References: <1531920860-3236-1-git-send-email-mkenna@codeaurora.org>
+Message-Id: <20180730180005.C6FE360769@smtp.codeaurora.org>
+Date: Mon, 30 Jul 2018 18:00:05 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Nicholas Mc Guire <hofrat@osadl.org> wrote:
+Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
 
-> This is only code refactoring as all call sites of
-> ath10k_htt_tx_alloc_msdu_id() take the same lock it can be moved into the
-> id_get function and the assertion dropped.
+> Debugfs support to do hardware warm reset with WMI command
+> WMI_PDEV_PARAM_PDEV_RESET for 10.4 and 10.2.4(if wmi
+> service is enabled in the firmware for backward compatibility).
 > 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> This change is purely for debugging purpose when hardware hangs/mutes.
+> 
+> This hardware reset won't affect the connectivity but there will be small
+> pause in data traffic. Here we are doing BB/MAC level reset and hence
+> whenever the BB/MAC watchdog is triggered, it does a hardware_chip_reset.
+> So the target will be in the active state.
+> 
+> Below command used to warm reset the hardware.
+> echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/warm_hw_reset
+> 
+> Tested in QCA988X with firmware ver 10.2.4.70.45
+> Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00011
+> 
+> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-e82f57c8b970 ath10k: htt_tx: move lock into id_get function
+db251d7df457 ath10k: add debugfs file warm_hw_reset
 
 -- 
-https://patchwork.kernel.org/patch/10524837/
+https://patchwork.kernel.org/patch/10532465/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
