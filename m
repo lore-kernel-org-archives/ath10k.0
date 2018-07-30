@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fk1Or-00072Y-Qk
- for ath10k@lists.infradead.org; Mon, 30 Jul 2018 06:11:23 +0000
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCH] ath10k: fix kernel panic by moving pci flush after
- napi_disable
-Date: Mon, 30 Jul 2018 11:40:51 +0530
-Message-Id: <1532931051-20118-1-git-send-email-tamizhr@codeaurora.org>
+ id 1fkAHY-0004Hb-1C
+ for ath10k@lists.infradead.org; Mon, 30 Jul 2018 15:40:25 +0000
+Received: by mail-wr1-x441.google.com with SMTP id q10-v6so13392844wrd.4
+ for <ath10k@lists.infradead.org>; Mon, 30 Jul 2018 08:40:13 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: [PATCH] ath10k: Limit available channels via DT ieee80211-freq-limit
+Date: Mon, 30 Jul 2018 17:39:33 +0200
+Message-Id: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,85 +23,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, Sven Eckelmann <sven.eckelmann@openmesh.com>
 
-When continuously running wifi up/down sequence, the napi poll
-can be scheduled after the CE buffers being freed by ath10k_pci_flush
+Tri-band devices (1x 2.4GHz + 2x 5GHz) often incorporate special filters in
+the RX and TX path. These filtered channel can in theory still be used by
+the hardware but the signal strength is reduced so much that it makes no
+sense.
 
-Steps:
-  In a certain condition, during wifi down below scenario might occur.
+There is already a DT property to limit the available channels but ath10k
+has to manually call this functionality to limit the currrently set wiphy
+channels further.
 
-ath10k_stop->ath10k_hif_stop->napi_schedule->ath10k_pci_flush->napi_poll(napi_synchronize).
-
-In the above scenario, CE buffer entries will be freed up and become NULL in
-ath10k_pci_flush. And the napi_poll has been invoked after the flush process
-and it will try to get the skb from the CE buffer entry and perform some action on that.
-Since the CE buffer already cleaned by pci flush this action will create NULL
-pointer dereference and trigger below kernel panic.
-
-Unable to handle kernel NULL pointer dereference at virtual address 0000005c
-PC is at ath10k_pci_htt_rx_cb+0x64/0x3ec [ath10k_pci]
-ath10k_pci_htt_rx_cb [ath10k_pci]
-ath10k_ce_per_engine_service+0x74/0xc4 [ath10k_pci]
-ath10k_ce_per_engine_service [ath10k_pci]
-ath10k_ce_per_engine_service_any+0x74/0x80 [ath10k_pci]
-ath10k_ce_per_engine_service_any [ath10k_pci]
-ath10k_pci_napi_poll+0x48/0xec [ath10k_pci]
-ath10k_pci_napi_poll [ath10k_pci]
-net_rx_action+0xac/0x160
-net_rx_action
-__do_softirq+0xdc/0x208
-__do_softirq
-irq_exit+0x84/0xe0
-irq_exit
-__handle_domain_irq+0x80/0xa0
-__handle_domain_irq
-gic_handle_irq+0x38/0x5c
-gic_handle_irq
-__irq_usr+0x44/0x60
-
-Tested on QCA4019 and firmware version 10.4.3.2.1.1-00010
-
-Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c | 4 ++--
- drivers/net/wireless/ath/ath10k/pci.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index fa39fff..e244dc5 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -660,10 +660,10 @@ static void ath10k_ahb_hif_stop(struct ath10k *ar)
- 	ath10k_ahb_irq_disable(ar);
- 	synchronize_irq(ar_ahb->irq);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 95243b48a179..8ed37ffd320f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -18,6 +18,7 @@
  
--	ath10k_pci_flush(ar);
--
- 	napi_synchronize(&ar->napi);
- 	napi_disable(&ar->napi);
-+
-+	ath10k_pci_flush(ar);
- }
+ #include "mac.h"
  
- static int ath10k_ahb_hif_power_up(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index af2cf55..97fa5c7 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2068,9 +2068,9 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
++#include <net/cfg80211.h>
+ #include <net/mac80211.h>
+ #include <linux/etherdevice.h>
+ #include <linux/acpi.h>
+@@ -8306,6 +8307,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->hw->wiphy->bands[NL80211_BAND_5GHZ] = band;
+ 	}
  
- 	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_irq_sync(ar);
--	ath10k_pci_flush(ar);
- 	napi_synchronize(&ar->napi);
- 	napi_disable(&ar->napi);
-+	ath10k_pci_flush(ar);
++	wiphy_read_of_freq_limits(ar->hw->wiphy);
+ 	ath10k_mac_setup_ht_vht_cap(ar);
  
- 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
- 	WARN_ON(ar_pci->ps_wake_refcount > 0);
+ 	ar->hw->wiphy->interface_modes =
 -- 
-1.9.1
+2.11.0
 
 
 _______________________________________________
