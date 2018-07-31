@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkTV1-0005b3-Rw
- for ath10k@lists.infradead.org; Tue, 31 Jul 2018 12:11:37 +0000
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Subject: [PATCHv2] ath10k : Fix channel survey dump
-Date: Tue, 31 Jul 2018 17:41:17 +0530
-Message-Id: <1533039077-1532-1-git-send-email-vnaralas@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fkYb7-0008EY-WF
+ for ath10k@lists.infradead.org; Tue, 31 Jul 2018 17:38:15 +0000
+Subject: Re: [PATCHv2] ath10k : Fix channel survey dump
+References: <1533039077-1532-1-git-send-email-vnaralas@codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <3dd6d368-e54e-d8ba-d538-c48617a575b9@candelatech.com>
+Date: Tue, 31 Jul 2018 10:37:58 -0700
+MIME-Version: 1.0
+In-Reply-To: <1533039077-1532-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,62 +18,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Venkateswara Naralasetty <vnaralas@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Channel active/busy time are showing incorrect(less than previous or
-sometimes zero) for successive survey dump command.
+On 07/31/2018 05:11 AM, Venkateswara Naralasetty wrote:
+> Channel active/busy time are showing incorrect(less than previous or
+> sometimes zero) for successive survey dump command.
+>
+> example:
+> Survey data from wlan0
+> 	frequency:                      5180 MHz [in use]
+> 	channel active time:            54995 ms
+> 	channel busy time:              432 ms
+> 	channel receive time:           0 ms
+> 	channel transmit time:          59 ms
+> Survey data from wlan0
+> 	frequency:                      5180 MHz [in use]
+> 	channel active time:            32592 ms
+> 	channel busy time:              254 ms
+> 	channel receive time:           0 ms
+> 	channel transmit time:          0 ms
+>
+> This patch fix this issue by assigning 'wmi_bss_survey_req_type'
+> as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
+> FW and send survey data to driver upon the driver request. Wrap around
+> is taken care by FW.
+>
+> hardware used : QCA9984
+> firmware ver  : ver 10.4-3.5.3-00057
 
-example:
-Survey data from wlan0
-	frequency:                      5180 MHz [in use]
-	channel active time:            54995 ms
-	channel busy time:              432 ms
-	channel receive time:           0 ms
-	channel transmit time:          59 ms
-Survey data from wlan0
-	frequency:                      5180 MHz [in use]
-	channel active time:            32592 ms
-	channel busy time:              254 ms
-	channel receive time:           0 ms
-	channel transmit time:          0 ms
+Have you tested this on other firmwares?  I am pretty sure that at least
+some of them, probably 10.2, will have issues.
 
-This patch fix this issue by assigning 'wmi_bss_survey_req_type'
-as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
-FW and send survey data to driver upon the driver request. Wrap around
-is taken care by FW.
+Maybe you could make this change specific to certain firmware that
+is known to work with the change?
 
-hardware used : QCA9984
-firmware ver  : ver 10.4-3.5.3-00057
+Thanks,
+Ben
 
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
----
-v2:
- * updated commit log.
+>
+> Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+> ---
+> v2:
+>  * updated commit log.
+>
+>  drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index f068e2b..db93ab1 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -6837,7 +6837,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
+>  				  struct ieee80211_channel *channel)
+>  {
+>  	int ret;
+> -	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
+> +	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+>
+>  	lockdep_assert_held(&ar->conf_mutex);
+>
+>
 
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index f068e2b..db93ab1 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6837,7 +6837,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
- 				  struct ieee80211_channel *channel)
- {
- 	int ret;
--	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
-+	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
 -- 
-2.7.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
