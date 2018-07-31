@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkYb7-0008EY-WF
- for ath10k@lists.infradead.org; Tue, 31 Jul 2018 17:38:15 +0000
-Subject: Re: [PATCHv2] ath10k : Fix channel survey dump
-References: <1533039077-1532-1-git-send-email-vnaralas@codeaurora.org>
+ id 1fkd4B-0008Fs-Jt
+ for ath10k@lists.infradead.org; Tue, 31 Jul 2018 22:24:33 +0000
+Subject: Re: [PATCH] ath10k: fix kernel panic by moving pci flush after
+ napi_disable
+References: <1532931051-20118-1-git-send-email-tamizhr@codeaurora.org>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <3dd6d368-e54e-d8ba-d538-c48617a575b9@candelatech.com>
-Date: Tue, 31 Jul 2018 10:37:58 -0700
+Message-ID: <ef5defff-0687-4b47-4880-a88dd5e99e86@candelatech.com>
+Date: Tue, 31 Jul 2018 15:24:10 -0700
 MIME-Version: 1.0
-In-Reply-To: <1533039077-1532-1-git-send-email-vnaralas@codeaurora.org>
+In-Reply-To: <1532931051-20118-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +23,52 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Venkateswara Naralasetty <vnaralas@codeaurora.org>, ath10k@lists.infradead.org
+To: Tamizh chelvam <tamizhr@codeaurora.org>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-On 07/31/2018 05:11 AM, Venkateswara Naralasetty wrote:
-> Channel active/busy time are showing incorrect(less than previous or
-> sometimes zero) for successive survey dump command.
+On 07/29/2018 11:10 PM, Tamizh chelvam wrote:
+> When continuously running wifi up/down sequence, the napi poll
+> can be scheduled after the CE buffers being freed by ath10k_pci_flush
 >
-> example:
-> Survey data from wlan0
-> 	frequency:                      5180 MHz [in use]
-> 	channel active time:            54995 ms
-> 	channel busy time:              432 ms
-> 	channel receive time:           0 ms
-> 	channel transmit time:          59 ms
-> Survey data from wlan0
-> 	frequency:                      5180 MHz [in use]
-> 	channel active time:            32592 ms
-> 	channel busy time:              254 ms
-> 	channel receive time:           0 ms
-> 	channel transmit time:          0 ms
+> Steps:
+>   In a certain condition, during wifi down below scenario might occur.
 >
-> This patch fix this issue by assigning 'wmi_bss_survey_req_type'
-> as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
-> FW and send survey data to driver upon the driver request. Wrap around
-> is taken care by FW.
+> ath10k_stop->ath10k_hif_stop->napi_schedule->ath10k_pci_flush->napi_poll(napi_synchronize).
 >
-> hardware used : QCA9984
-> firmware ver  : ver 10.4-3.5.3-00057
+> In the above scenario, CE buffer entries will be freed up and become NULL in
+> ath10k_pci_flush. And the napi_poll has been invoked after the flush process
+> and it will try to get the skb from the CE buffer entry and perform some action on that.
+> Since the CE buffer already cleaned by pci flush this action will create NULL
+> pointer dereference and trigger below kernel panic.
+>
+> Unable to handle kernel NULL pointer dereference at virtual address 0000005c
+> PC is at ath10k_pci_htt_rx_cb+0x64/0x3ec [ath10k_pci]
+> ath10k_pci_htt_rx_cb [ath10k_pci]
+> ath10k_ce_per_engine_service+0x74/0xc4 [ath10k_pci]
+> ath10k_ce_per_engine_service [ath10k_pci]
+> ath10k_ce_per_engine_service_any+0x74/0x80 [ath10k_pci]
+> ath10k_ce_per_engine_service_any [ath10k_pci]
+> ath10k_pci_napi_poll+0x48/0xec [ath10k_pci]
+> ath10k_pci_napi_poll [ath10k_pci]
+> net_rx_action+0xac/0x160
+> net_rx_action
+> __do_softirq+0xdc/0x208
+> __do_softirq
+> irq_exit+0x84/0xe0
+> irq_exit
+> __handle_domain_irq+0x80/0xa0
+> __handle_domain_irq
+> gic_handle_irq+0x38/0x5c
+> gic_handle_irq
+> __irq_usr+0x44/0x60
+>
+> Tested on QCA4019 and firmware version 10.4.3.2.1.1-00010
 
-Have you tested this on other firmwares?  I am pretty sure that at least
-some of them, probably 10.2, will have issues.
-
-Maybe you could make this change specific to certain firmware that
-is known to work with the change?
+I have been testing this for two days while bisecting buggy 10.4 9984 firmware.  I still see
+crashes, but it is certainly no worse.  So, this patch seems OK to me.
 
 Thanks,
 Ben
-
->
-> Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-> ---
-> v2:
->  * updated commit log.
->
->  drivers/net/wireless/ath/ath10k/mac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index f068e2b..db93ab1 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -6837,7 +6837,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
->  				  struct ieee80211_channel *channel)
->  {
->  	int ret;
-> -	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
-> +	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
->
->  	lockdep_assert_held(&ar->conf_mutex);
->
->
 
 
 -- 
