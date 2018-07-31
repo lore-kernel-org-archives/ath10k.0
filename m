@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkPOS-0002hw-1u
- for ath10k@lists.infradead.org; Tue, 31 Jul 2018 07:48:33 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH RESENT] ath10k: Prevent active scans on potential unusable
- channels
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180726135948.29160-1-sven@narfation.org>
-References: <20180726135948.29160-1-sven@narfation.org>
-Message-Id: <20180731074821.BB9C1602D7@smtp.codeaurora.org>
-Date: Tue, 31 Jul 2018 07:48:21 +0000 (UTC)
+ id 1fkTV1-0005b3-Rw
+ for ath10k@lists.infradead.org; Tue, 31 Jul 2018 12:11:37 +0000
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Subject: [PATCHv2] ath10k : Fix channel survey dump
+Date: Tue, 31 Jul 2018 17:41:17 +0530
+Message-Id: <1533039077-1532-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +15,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@narfation.org>
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, Simon Wunderlich <simon.wunderlich@openmesh.com>, ath10k@lists.infradead.org, Sven Eckelmann <sven.eckelmann@openmesh.com>
+To: ath10k@lists.infradead.org
+Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Sven Eckelmann <sven@narfation.org> wrote:
+Channel active/busy time are showing incorrect(less than previous or
+sometimes zero) for successive survey dump command.
 
-> The QCA4019 hw1.0 firmware 10.4-3.2.1-00050 and 10.4-3.5.3-00053 (and most
-> likely all other) seem to ignore the WMI_CHAN_FLAG_DFS flag during the
-> scan. This results in transmission (probe requests) on channels which are
-> not "available" for transmissions.
-> 
-> Since the firmware is closed source and nothing can be done from our side
-> to fix the problem in it, the driver has to work around this problem. The
-> WMI_CHAN_FLAG_PASSIVE seems to be interpreted by the firmware to not
-> scan actively on a channel unless an AP was detected on it. Simple probe
-> requests will then be transmitted by the STA on the channel.
-> 
-> ath10k must therefore also use this flag when it queues a radar channel for
-> scanning. This should reduce the chance of an active scan when the channel
-> might be "unusable" for transmissions.
-> 
-> Fixes: e8a50f8ba44b ("ath10k: introduce DFS implementation")
-> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+example:
+Survey data from wlan0
+	frequency:                      5180 MHz [in use]
+	channel active time:            54995 ms
+	channel busy time:              432 ms
+	channel receive time:           0 ms
+	channel transmit time:          59 ms
+Survey data from wlan0
+	frequency:                      5180 MHz [in use]
+	channel active time:            32592 ms
+	channel busy time:              254 ms
+	channel receive time:           0 ms
+	channel transmit time:          0 ms
 
-Patch applied to ath-next branch of ath.git, thanks.
+This patch fix this issue by assigning 'wmi_bss_survey_req_type'
+as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
+FW and send survey data to driver upon the driver request. Wrap around
+is taken care by FW.
 
-3f2591115838 ath10k: prevent active scans on potential unusable channels
+hardware used : QCA9984
+firmware ver  : ver 10.4-3.5.3-00057
 
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+---
+v2:
+ * updated commit log.
+
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f068e2b..db93ab1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6837,7 +6837,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
+ 				  struct ieee80211_channel *channel)
+ {
+ 	int ret;
+-	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
++	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
 -- 
-https://patchwork.kernel.org/patch/10545939/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.7.4
 
 
 _______________________________________________
