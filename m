@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flXWI-0005ms-Hl
- for ath10k@lists.infradead.org; Fri, 03 Aug 2018 10:41:20 +0000
-From: "K.T.VIJAYAKUMAAR" <vijay.bvb@samsung.com>
-Subject: [PATCH 1/1] ath10k: avoid possible memory access violation
-Date: Fri, 03 Aug 2018 16:10:05 +0530
-Message-id: <1533292805-9709-1-git-send-email-vijay.bvb@samsung.com>
-References: <CGME20180803104058epcas1p1d5cdd51e2774d72679aaf15358cb3d00@epcas1p1.samsung.com>
+ id 1fmfJT-00084U-2R
+ for ath10k@lists.infradead.org; Mon, 06 Aug 2018 13:12:44 +0000
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: [PATCH 0/4] Add support to dump tx stats histogram
+Date: Mon,  6 Aug 2018 18:43:39 +0530
+Message-Id: <1533561223-342-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +20,159 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: vijay.bvb@samsung.com, cpgs@samsung.com
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-array "ctl_power_table" access index "pream" is initialized with -1 and
-is raised as a static analysis tool issue.
-[drivers\net\wireless\ath\ath10k\wmi.c:4719] ->
-[drivers\net\wireless\ath\ath10k\wmi.c:4730]: (error) Array index -1 is
-out of bounds.
+This patch series adds support to dump per station tx stats histogram.
 
-Since the "pream" index for accessing ctl_power_table array is initialized
-with -1, there is a chance of memory access violation for the cases below.
-1) wmi_pdev_tpc_final_table_event change frequency is between 2483 and 5180
-2) pream_idx is out of the enumeration ranges of wmi_tpc_pream_2ghz,
-wmi_tpc_pream_5ghz
+These stats can be enabled through ath10k/enable_extd_tx_stats debugfs entry,
+enabling this may impact in cpu usage and throughput.
 
-Signed-off-by: K.T.VIJAYAKUMAAR <vijay.bvb@samsung.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ath10k/enable_extd_tx_stats is disabled by default.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 877249a..23502cd 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4721,6 +4721,13 @@ ath10k_wmi_tpc_final_get_rate(struct ath10k *ar,
- 		}
- 	}
- 
-+	if (pream == -1) {
-+		ath10k_warn(ar, "unknown wmi tpc final: pream_idx[%u], chan_freq[%u]\n",
-+			    pream_idx, __le32_to_cpu(ev->chan_freq));
-+		tpc = 0;
-+		goto out;
-+	}
-+
- 	if (pream == 4)
- 		tpc = min_t(u8, ev->rates_array[rate_idx],
- 			    ev->max_reg_allow_pow[ch]);
+Tx histogram has Per station tx stats which includes,
+ - pkts/bytes transmitted at all possible rates(mcs/nss/bw/gi).
+ - ACK fails count
+ - ampdu bytes/pkts transmitted at all possible rates(mcs/nss/bw/gi).
+ - BA fails count
+ - tx duration
+
+Tested on QCA9984/QCA4019/QCA988x
+Firmware: 10.4-3.5.3-00057
+	  10.2.4-1.0-00037
+
+Example output format:
+# cat /sys/kernel/debug/ieee80211/phy0/netdev\:wlan0/stations/8c\:
+fd\:f0\:0a\:8c\:14/tx_stats
+
+succ_pkts
+ VHT MCS packets
+  0 0 0 0 0 138 26 18 23 38747 
+ HT MCS packets
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW packets (20,40,80,160 MHz)
+  41 337 38574 0
+ NSS packets (1x1,2x2,3x3,4x4)
+  38952 0 0 0
+ GI packets (LGI,SGI)
+  38 38914
+ legacy rate packets (1,2 ... Mbps)
+  0 0 0 0 68 0 0 0 0 0 0 0 
+succ_bytes
+ VHT MCS bytes
+  0 0 0 0 0 16407 3288 2360 2703 4651892 
+ HT MCS bytes
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW bytes (20,40,80,160 MHz)
+  5163 40962 4630525 0
+ NSS bytes (1x1,2x2,3x3,4x4)
+  4676650 0 0 0
+ GI bytes (LGI,SGI)
+  4471 4672179
+ legacy rate bytes (1,2 ... Mbps)
+  0 0 0 0 3270 0 0 0 0 0 0 0 
+ampdu_pkts
+ VHT MCS packets
+  0 0 0 8 20 7872 34 21 33 39730 
+ HT MCS packets
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW packets (20,40,80,160 MHz)
+  72 567 47079 0
+ NSS packets (1x1,2x2,3x3,4x4)
+  40035 7683 0 0
+ GI packets (LGI,SGI)
+  7698 40020
+ legacy rate packets (1,2 ... Mbps)
+  0 0 0 0 0 0 0 0 0 0 0 0 
+
+ampdu_bytes
+ VHT MCS bytes
+  0 0 0 896 2579 941417 4222 2666 3857 4774284 
+ HT MCS bytes
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW bytes (20,40,80,160 MHz)
+  9262 70052 5650607 0
+ NSS bytes (1x1,2x2,3x3,4x4)
+  4811265 918656 0 0
+ GI bytes (LGI,SGI)
+  920650 4809271
+ legacy rate bytes (1,2 ... Mbps)
+  0 0 0 0 0 0 0 0 0 0 0 0 
+fail_pkts
+ VHT MCS packets
+  0 0 0 0 0 0 0 0 0 0 
+ HT MCS packets
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW packets (20,40,80,160 MHz)
+  0 0 0 0
+ NSS packets (1x1,2x2,3x3,4x4)
+  0 0 0 0
+ GI packets (LGI,SGI)
+  0 0
+ legacy rate packets (1,2 ... Mbps)
+  0 0 0 0 0 0 0 0 0 0 0 0 
+fail_bytes
+ VHT MCS bytes
+  0 0 0 0 0 0 0 0 0 0 
+ HT MCS bytes
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW bytes (20,40,80,160 MHz)
+  0 0 0 0
+ NSS bytes (1x1,2x2,3x3,4x4)
+  0 0 0 0
+ GI bytes (LGI,SGI)
+  0 0
+ legacy rate bytes (1,2 ... Mbps)
+  0 0 0 0 0 0 0 0 0 0 0 0 
+retry_pkts
+ VHT MCS packets
+  0 0 0 8 20 7734 8 3 10 983 
+ HT MCS packets
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW packets (20,40,80,160 MHz)
+  31 230 8505 0
+ NSS packets (1x1,2x2,3x3,4x4)
+  1083 7683 0 0
+ GI packets (LGI,SGI)
+  7660 1106
+ legacy rate packets (1,2 ... Mbps)
+  0 0 0 0 0 0 0 0 0 0 0 0 
+retry_bytes
+ VHT MCS bytes
+  0 0 0 896 2579 925010 934 306 1154 122392 
+ HT MCS bytes
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ BW bytes (20,40,80,160 MHz)
+  4099 29090 1020082 0
+ NSS bytes (1x1,2x2,3x3,4x4)
+  134615 918656 0 0
+ GI bytes (LGI,SGI)
+  916179 137092
+ legacy rate bytes (1,2 ... Mbps)
+  0 0 0 0 0 0 0 0 0 0 0 0 
+TX duration
+ 6639098 usecs
+BA fails
+ 8610
+ack fails
+ 0
+
+Anilkumar Kolli (4):
+  ath10k: get the legacy rate index to update the txrate
+  ath10k: add debugfs entry to enable extended tx stats
+  ath10k: add extended per sta tx statistics
+  ath10k: add debugfs support to dump per sta tx stats
+
+ drivers/net/wireless/ath/ath10k/core.h        |   32 ++++++
+ drivers/net/wireless/ath/ath10k/debug.c       |   62 +++++++++++-
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |  100 +++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c      |  133 ++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/mac.c         |    7 ++
+ drivers/net/wireless/ath/ath10k/wmi.h         |   13 ++-
+ 6 files changed, 328 insertions(+), 19 deletions(-)
+
 -- 
-2.7.4
+1.7.9.5
 
 
 _______________________________________________
