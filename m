@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmfJT-00085K-1i
- for ath10k@lists.infradead.org; Mon, 06 Aug 2018 13:12:44 +0000
+ id 1fmfJj-00088o-9B
+ for ath10k@lists.infradead.org; Mon, 06 Aug 2018 13:13:00 +0000
 From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH 1/4] ath10k: get the legacy rate index to update the txrate
- table
-Date: Mon,  6 Aug 2018 18:43:40 +0530
-Message-Id: <1533561223-342-2-git-send-email-akolli@codeaurora.org>
+Subject: [PATCH 2/4] ath10k: add debugfs entry to enable extended tx stats
+Date: Mon,  6 Aug 2018 18:43:41 +0530
+Message-Id: <1533561223-342-3-git-send-email-akolli@codeaurora.org>
 In-Reply-To: <1533561223-342-1-git-send-email-akolli@codeaurora.org>
 References: <1533561223-342-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -26,73 +25,111 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Get the legacy rate index to update the pkts/bytes counter 
-against each possible tx rate.
+This patch adds debugfs entry to enable/disable extended
+tx statistics. Extended tx statistics are from peer stats
+feature.
 
 Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |   24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h  |    1 +
+ drivers/net/wireless/ath/ath10k/debug.c |   62 ++++++++++++++++++++++++++++++-
+ 2 files changed, 62 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 4d1cd90d6d27..01eb4a7f4a69 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2488,7 +2488,7 @@ void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		dev_kfree_skb_any(skb);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 9feea02e7d37..b5f6940bb102 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -607,6 +607,7 @@ struct ath10k_debug {
+ 	u32 reg_addr;
+ 	u32 nf_cal_period;
+ 	void *cal_data;
++	u32 enable_extd_tx_stats;
+ };
  
--static inline bool is_valid_legacy_rate(u8 rate)
-+static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- {
- 	static const u8 legacy_rates[] = {1, 2, 5, 11, 6, 9, 12,
- 					  18, 24, 36, 48, 54};
-@@ -2496,10 +2496,11 @@ static inline bool is_valid_legacy_rate(u8 rate)
+ enum ath10k_state {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 0baaad90b8d1..ada29a4cc9c8 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2042,6 +2042,61 @@ static ssize_t ath10k_read_btcoex(struct file *file, char __user *ubuf,
+ 	.open = simple_open
+ };
  
- 	for (i = 0; i < ARRAY_SIZE(legacy_rates); i++) {
- 		if (rate == legacy_rates[i])
--			return true;
-+			return i;
- 	}
++static ssize_t ath10k_write_enable_extd_tx_stats(struct file *file,
++						 const char __user *ubuf,
++						 size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	u32 filter;
++	int ret;
++
++	if (kstrtouint_from_user(ubuf, count, 0, &filter))
++		return -EINVAL;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON) {
++		ar->debug.enable_extd_tx_stats = filter;
++		ret = count;
++		goto out;
++	}
++
++	if (filter == ar->debug.enable_extd_tx_stats) {
++		ret = count;
++		goto out;
++	}
++
++	ar->debug.enable_extd_tx_stats = filter;
++	ret = count;
++
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++static ssize_t ath10k_read_enable_extd_tx_stats(struct file *file,
++						char __user *ubuf,
++						size_t count, loff_t *ppos)
++
++{
++	char buf[32];
++	struct ath10k *ar = file->private_data;
++	int len = 0;
++
++	mutex_lock(&ar->conf_mutex);
++	len = scnprintf(buf, sizeof(buf) - len, "%08x\n",
++			ar->debug.enable_extd_tx_stats);
++	mutex_unlock(&ar->conf_mutex);
++
++	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
++}
++
++static const struct file_operations fops_enable_extd_tx_stats = {
++	.read = ath10k_read_enable_extd_tx_stats,
++	.write = ath10k_write_enable_extd_tx_stats,
++	.open = simple_open
++};
++
+ static ssize_t ath10k_write_peer_stats(struct file *file,
+ 				       const char __user *ubuf,
+ 				       size_t count, loff_t *ppos)
+@@ -2454,10 +2509,15 @@ int ath10k_debug_register(struct ath10k *ar)
+ 		debugfs_create_file("btcoex", 0644, ar->debug.debugfs_phy, ar,
+ 				    &fops_btcoex);
  
--	return false;
-+	ath10k_warn(ar, "Invalid legacy rate %hhd peer stats", rate);
-+	return -EINVAL;
- }
+-	if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map))
++	if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map)) {
+ 		debugfs_create_file("peer_stats", 0644, ar->debug.debugfs_phy, ar,
+ 				    &fops_peer_stats);
  
- static void
-@@ -2508,7 +2509,7 @@ static inline bool is_valid_legacy_rate(u8 rate)
- 				struct ath10k_per_peer_tx_stats *peer_stats)
- {
- 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
--	u8 rate = 0, sgi;
-+	u8 rate = 0, rate_idx = 0, sgi;
- 	struct rate_info txrate;
++		debugfs_create_file("enable_extd_tx_stats", 0644,
++				    ar->debug.debugfs_phy, ar,
++				    &fops_enable_extd_tx_stats);
++	}
++
+ 	debugfs_create_file("fw_checksums", 0400, ar->debug.debugfs_phy, ar,
+ 			    &fops_fw_checksums);
  
- 	lockdep_assert_held(&ar->data_lock);
-@@ -2536,17 +2537,12 @@ static inline bool is_valid_legacy_rate(u8 rate)
- 	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
- 	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
- 		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
--
--		if (!is_valid_legacy_rate(rate)) {
--			ath10k_warn(ar, "Invalid legacy rate %hhd peer stats",
--				    rate);
--			return;
--		}
--
- 		/* This is hacky, FW sends CCK rate 5.5Mbps as 6 */
--		rate *= 10;
--		if (rate == 60 && txrate.flags == WMI_RATE_PREAMBLE_CCK)
--			rate = rate - 5;
-+		if (rate == 6 && txrate.flags == WMI_RATE_PREAMBLE_CCK)
-+			rate = 5;
-+		rate_idx = ath10k_get_legacy_rate_idx(ar, rate);
-+		if (rate_idx < 0)
-+			return;
- 		arsta->txrate.legacy = rate;
- 	} else if (txrate.flags == WMI_RATE_PREAMBLE_HT) {
- 		arsta->txrate.flags = RATE_INFO_FLAGS_MCS;
 -- 
 1.7.9.5
 
