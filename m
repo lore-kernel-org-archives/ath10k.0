@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197])
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmgoy-0003ZW-M4
- for ath10k@lists.infradead.org; Mon, 06 Aug 2018 14:49:22 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Skip resetting rx filter for WCN3990
-Date: Mon,  6 Aug 2018 20:18:08 +0530
-Message-Id: <1533566888-22221-1-git-send-email-pillair@codeaurora.org>
+ id 1fmrQA-00062P-RV
+ for ath10k@lists.infradead.org; Tue, 07 Aug 2018 02:08:35 +0000
+Received: by mail-pf1-x442.google.com with SMTP id l9-v6so7738265pff.9
+ for <ath10k@lists.infradead.org>; Mon, 06 Aug 2018 19:08:19 -0700 (PDT)
+Date: Mon, 6 Aug 2018 19:08:14 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: ath10k: antenna bitmask support?
+Message-ID: <20180807020813.GA185137@ban.mtv.corp.google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,177 +19,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>
 
-WCN3990 has the MAC_PCU_ADDR1 configured properly
-and hence it will not send spurious ack frames
-during boot up.
+Hi all,
 
-Hence the reset_rx_filter workaround is not needed
-for WCN3990. Add a hw_param to indicate if hardware rx
-filter reset is needed and skip the reset_rx_filter for
-WCN3990.
+I'm looking at ancient changes like this:
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+commit 5572a95b4b5768187652a346356e39e7542ca6e0
+Author: Ben Greear <greearb@candelatech.com>
+Date:   Mon Nov 24 16:22:10 2014 +0200
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 17 ++++++++++++++++-
- drivers/net/wireless/ath/ath10k/hw.h   |  5 +++++
- 2 files changed, 21 insertions(+), 1 deletion(-)
+    ath10k: apply chainmask settings to vdev on creation
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dfaf7e3..b3ebb37 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -91,6 +91,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
-@@ -124,6 +125,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -157,6 +159,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -189,6 +192,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -221,6 +225,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -253,6 +258,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -288,6 +294,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -326,6 +333,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -369,6 +377,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -411,6 +420,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -443,6 +453,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -477,6 +488,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -516,6 +528,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = false,
- 		.shadow_reg_support = false,
- 		.rri_on_ddr = false,
-+		.hw_filter_reset_required = true,
- 	},
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
-@@ -539,6 +552,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.per_ce_irq = true,
- 		.shadow_reg_support = true,
- 		.rri_on_ddr = true,
-+		.hw_filter_reset_required = false,
- 	},
- };
+since I see that some firmwares seem to crash a lot if you apply certain
+chainmask settings (e.g., 0x2).
+
+Is it really expected that you can set gaps in the chainmask or not? I
+ask because I've been trying to use this for doing some antenna
+configuration verification (e.g., disable all but one antenna and see
+what happens), and this works as expected on APs I have running IPQ8064
+(QCA988X?), but it crashes the firmware on IPQ4019.
+
+I similarly wonder about this opinionated statement in
+ath10k_check_chain_mask():
+
+        /* It is not clear that allowing gaps in chainmask
+         * is helpful.  Probably it will not do what user
+         * is hoping for, so warn in that case.
+         */
+
+It seems like we should reject unexpected values (-EINVAL) if they're
+really not supported. But then, I've found differences depending on the
+chipset it would seem, so I guess I'd have to figure out which chipsets
+(or firmwares?) support which features...
+
+On a related note, if we *do* support "gaps" in these bitmasks, wouldn't
+that mean we're handling 0x6, 0xa, etc., incorrectly in
+get_nss_from_chainmask()? My prototype patch (untested so far) would be:
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 836e0a47b94a..3b557d3dc036 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -19,6 +19,7 @@
+ #include "mac.h"
  
-@@ -2414,7 +2428,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	 * possible to implicitly make it correct by creating a dummy vdev and
- 	 * then deleting it.
- 	 */
--	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
-+	if (ar->hw_params.hw_filter_reset_required &&
-+	    mode == ATH10K_FIRMWARE_MODE_NORMAL) {
- 		status = ath10k_core_reset_rx_filter(ar);
- 		if (status) {
- 			ath10k_err(ar,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index a274bd8..7a8da75 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -589,6 +589,11 @@ struct ath10k_hw_params {
+ #include <net/mac80211.h>
++#include <linux/bitops.h>
+ #include <linux/etherdevice.h>
+ #include <linux/acpi.h>
  
- 	/* Number of bytes to be the offset for each FFT sample */
- 	int spectral_bin_offset;
-+
-+	/* targets which require hw filter reset during boot up,
-+	 * to avoid it sending spurious acks.
-+	 */
-+	bool hw_filter_reset_required;
- };
+@@ -4905,13 +4906,7 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
  
- struct htt_rx_desc;
--- 
-2.7.4
-
+ static u32 get_nss_from_chainmask(u16 chain_mask)
+ {
+-	if ((chain_mask & 0xf) == 0xf)
+-		return 4;
+-	else if ((chain_mask & 0x7) == 0x7)
+-		return 3;
+-	else if ((chain_mask & 0x3) == 0x3)
+-		return 2;
+-	return 1;
++	return max_t(u32, hweight16(chain_mask & 0xf), 1);
+ }
+ 
+ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
 
 _______________________________________________
 ath10k mailing list
