@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([52.28.52.200])
+Received: from mail-he1eur01on0063.outbound.protection.outlook.com
+ ([104.47.0.63] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnLwl-0003Dg-Ow
- for ath10k@lists.infradead.org; Wed, 08 Aug 2018 10:44:09 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
-In-Reply-To: <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
-Date: Wed, 08 Aug 2018 12:43:39 +0200
-Message-ID: <87sh3pdtpg.fsf@toke.dk>
+ id 1fnRla-0001xK-3e
+ for ath10k@lists.infradead.org; Wed, 08 Aug 2018 16:56:59 +0000
+From: Arthur Watt <arthur.watt@virtuosys.com>
+Subject: ath10k kernel requirements (coherent_pool etc)
+Date: Wed, 8 Aug 2018 16:56:43 +0000
+Message-ID: <VI1PR07MB0926AC2FF08DF458053DD9F7FF260@VI1PR07MB0926.eurprd07.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,54 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Wen Gong <wgong@codeaurora.org> writes:
+Good afternoon.
 
-> Upstream kernel has an interface to help adjust sk_pacing_shift to help
-> improve TCP UL throughput.
-> The sk_pacing_shift is 8 in mac80211, this is based on test with 11N
-> WiFi chips with ath9k. For QCA6174/QCA9377 PCI 11AC chips, the 11AC
-> VHT80 TCP UL throughput testing result shows 6 is the optimal.
-> Overwrite the sk_pacing_shift to 6 in ath10k driver for QCA6174/9377 PCI.
->
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-> It's not a regression with new firmware releases.
->
-> There have 2 test result of different settings:
->
-> ARM CPU based device with QCA6174A PCI with different
-> sk_pacing_shift:
->
->  sk_pacing_shift  throughput(Mbps)             CPU utilization
->          6            500(-P5)      ~75% idle, Focus on CPU1: ~14%idle
->          7            454(-P5)      ~80% idle, Focus on CPU1: ~4%idle
->          8               288        ~90% idle, Focus on CPU1: ~35%idle
->          9              ~200        ~92% idle, Focus on CPU1: ~50%idle
->
-> 5G TCP UL VTH80 on X86 platform with QCA6174A PCI with sk_packing_shift
-> set to 6:
->
->   tcp_limit_output_bytes            throughput(Mbps)
->  default(262144)+1 Stream                 336
->  default(262144)+2 Streams                558
->  default(262144)+3 Streams                584
->  default(262144)+4 Streams                602
->  default(262144)+5 Streams                598
->  changed(2621440)+1 Stream                598
->  changed(2621440)+2 Streams               601
+We have been testing 3 x ath10k devices on a 4.14 based Linux kernel with a Cavium processor.
+Up to this point we have been seeing some unexplained crashes from the ath10k devices (firmware crashes due to corrupt HTC messages is the most common).
+We have tried various module and firmware versions (including wireless-latest) and all seem to show the same errors.
 
-You still haven't provided any latency numbers for these tests, which
-makes it impossible to verify that setting sk_pacing_shift to 6 is the
-right tradeoff.
+Is it possible that there is an inherent memory corrupt problem with the ath10k driver/firmware, since other list members don't seem to be shouting about this we started investigating the kernel configuration and not the driver/firmware?
 
-As I said before, from your numbers I suspect the right setting is
-actually 7, which would be 10-20ms less latency under load; way more
-important than ~50 Mbps...
+This morning I made a kernel parameter change
+       coherent_pool=256M
+Since making this change the number of faults seem to  have reduced.
 
--Toke
+Does anyone know if there are any Linux kernel configuration parameters needed in order for multiple ath10k devices to behave reliably.
+In particular do I need a coherent_pool configured and what page size is the optimum for ath10k operation?
+Our ath10k devices are QCA9984 and QCA988X.
+
+Thank you
+Arthur
+
+
 
 _______________________________________________
 ath10k mailing list
