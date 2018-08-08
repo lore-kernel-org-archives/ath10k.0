@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-he1eur01on0063.outbound.protection.outlook.com
- ([104.47.0.63] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr50057.outbound.protection.outlook.com ([40.107.5.57]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnRla-0001xK-3e
- for ath10k@lists.infradead.org; Wed, 08 Aug 2018 16:56:59 +0000
-From: Arthur Watt <arthur.watt@virtuosys.com>
-Subject: ath10k kernel requirements (coherent_pool etc)
-Date: Wed, 8 Aug 2018 16:56:43 +0000
-Message-ID: <VI1PR07MB0926AC2FF08DF458053DD9F7FF260@VI1PR07MB0926.eurprd07.prod.outlook.com>
-Content-Language: en-US
+ id 1fnThs-0000xj-PW
+ for ath10k@lists.infradead.org; Wed, 08 Aug 2018 19:01:18 +0000
+Subject: Re: [PATCH v2 0/2] Change sk_pacing_shift in ieee80211_hw for best tx
+ throughput
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
+Date: Wed, 8 Aug 2018 12:00:46 -0700
 MIME-Version: 1.0
+In-Reply-To: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +20,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
+Cc: linux-wireless@vger.kernel.org
 
-Good afternoon.
 
-We have been testing 3 x ath10k devices on a 4.14 based Linux kernel with a Cavium processor.
-Up to this point we have been seeing some unexplained crashes from the ath10k devices (firmware crashes due to corrupt HTC messages is the most common).
-We have tried various module and firmware versions (including wireless-latest) and all seem to show the same errors.
 
-Is it possible that there is an inherent memory corrupt problem with the ath10k driver/firmware, since other list members don't seem to be shouting about this we started investigating the kernel configuration and not the driver/firmware?
+On 08/08/2018 03:40 AM, Wen Gong wrote:
+> Add a field for ath10k to adjust the sk_pacing_shift, mac80211 set
+> the default value to 8, and ath10k will change it to 6. Then mac80211
+> will use the changed value 6 as sk_pacing_shift since 6 is the best
+> value for tx throughput by test result.
+I don't think you can convince people with the numbers unless you 
+provide latency along with the numbers and also measurement result on 
+different chipsets as Michal addressed (QCA4019, QCA9984, etc.) From 
+users view point, I also agree on Toke that we cannot scarify latency 
+for the small throughput improvement.
 
-This morning I made a kernel parameter change
-       coherent_pool=256M
-Since making this change the number of faults seem to  have reduced.
-
-Does anyone know if there are any Linux kernel configuration parameters needed in order for multiple ath10k devices to behave reliably.
-In particular do I need a coherent_pool configured and what page size is the optimum for ath10k operation?
-Our ath10k devices are QCA9984 and QCA988X.
-
-Thank you
-Arthur
-
+Thanks,
+Peter
 
 
 _______________________________________________
