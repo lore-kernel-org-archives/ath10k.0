@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bn3nam01on0137.outbound.protection.outlook.com
- ([104.47.33.137] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr60046.outbound.protection.outlook.com ([40.107.6.46]
+ helo=EUR04-DB3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnjbv-0007gS-Qw
- for ath10k@lists.infradead.org; Thu, 09 Aug 2018 12:00:14 +0000
-From: "Shu, Nick" <Nick.Shu@spirent.com>
-Subject: RE: Backporting issues, please help
-Date: Thu, 9 Aug 2018 11:59:57 +0000
-Message-ID: <DM5PR1001MB21069E43C521D68122C3F7C09D250@DM5PR1001MB2106.namprd10.prod.outlook.com>
-References: <DM5PR1001MB21063EB20C5E272D700AB65B9D200@DM5PR1001MB2106.namprd10.prod.outlook.com>
- <87k1oz3k7w.fsf@kamboji.qca.qualcomm.com>
- <d8b39785-04da-57c8-157a-93f31847a731@dd-wrt.com>
-In-Reply-To: <d8b39785-04da-57c8-157a-93f31847a731@dd-wrt.com>
-Content-Language: en-US
+ id 1fnpxS-0004aE-Si
+ for ath10k@lists.infradead.org; Thu, 09 Aug 2018 18:46:52 +0000
+Subject: Re: [PATCHv2] ath10k : Fix channel survey dump
+References: <d586156d3861a6cf0f479ff12ddd6544@codeaurora.org>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <619039a5-3b30-b49d-dc85-9ccfa4403251@bowerswilkins.com>
+Date: Thu, 9 Aug 2018 11:46:26 -0700
 MIME-Version: 1.0
+In-Reply-To: <d586156d3861a6cf0f479ff12ddd6544@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +19,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@codeaurora.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-
-Thank you all for the reply, I'll try openwrt to see how it works.
-Nick
-
------Original Message-----
-From: Sebastian Gottschall [mailto:s.gottschall@dd-wrt.com] 
-Sent: Thursday, August 09, 2018 5:35 AM
-To: Kalle Valo; Shu, Nick
-Cc: ath10k@lists.infradead.org
-Subject: Re: Backporting issues, please help
+To: Venkateswara Naralasetty <vnaralas@codeaurora.org>, Jasmine Strong <jas@eero.com>
+Cc: linux-wireless-owner@vger.kernel.org, Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
 
 
-Am 09.08.2018 um 12:30 schrieb Kalle Valo:
-> "Shu, Nick" <Nick.Shu@spirent.com> writes:
->
->> I'm trying to backport ath10k driver from 4.9 kernel into 4.8 kernel currently using .
->> In my 4.8 kernel, I built the backporting environment by using tag "v4.14-rc4-1".
->> When I used that Python script to generate backport tree, got an error:
+
+On 08/08/2018 11:35 PM, Venkateswara Naralasetty wrote:
+> On 2018-08-01 00:03, Jasmine Strong wrote:
+>> On Tue, Jul 31, 2018 at 10:38 AM Ben Greear <greearb@candelatech.com>
+>> wrote:
 >>
->> ./gentree.py --verbose --clean --git-revision master --copy-list copy-list.ath ../linux-4.9 ../backports-output
->> Get original source files from git ...
->> Traceback (most recent call last):
->>    File "./gentree.py", line 1107, in <module>
->>      ret = _main()
->>    File "./gentree.py", line 724, in _main
->>      logwrite=logwrite)
->>    File "./gentree.py", line 862, in process
->>      disable_list = add_automatic_backports(args)
->>    File "./gentree.py", line 276, in add_automatic_backports
->>      automatic_backport_mangle_c_file(f)), 'r'):
->> IOError: [Errno 2] No such file or directory: '../ct49-backports-output/compat/lib-refcount.c'
-> I haven't used backprorts for years but I don't think you can use latest
-> backports on older kernels (eg backports tag v4.14-rc4-1 on v4.9
-> kernel). So if you use v4.14-rc4-1 tag you can only use v4.14 kernel
-> source to generate the backports package.
+>>> On 07/31/2018 05:11 AM, Venkateswara Naralasetty wrote:
+>>>> Channel active/busy time are showing incorrect(less than previous
+>>> or
+>>>> sometimes zero) for successive survey dump command.
+>>>>
+>>>> example:
+>>>> Survey data from wlan0
+>>>> frequency:                      5180 MHz [in use]
+>>>> channel active time:            54995 ms
+>>>> channel busy time:              432 ms
+>>>> channel receive time:           0 ms
+>>>> channel transmit time:          59 ms
+>>>> Survey data from wlan0
+>>>> frequency:                      5180 MHz [in use]
+>>>> channel active time:            32592 ms
+>>>> channel busy time:              254 ms
+>>>> channel receive time:           0 ms
+>>>> channel transmit time:          0 ms
+>>>>
+>>>> This patch fix this issue by assigning 'wmi_bss_survey_req_type'
+>>>> as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
+>>>> FW and send survey data to driver upon the driver request. Wrap
+>>> around
+>>>> is taken care by FW.
+>>>>
+>>>> hardware used : QCA9984
+>>>> firmware ver  : ver 10.4-3.5.3-00057
+>>>
+>>> Have you tested this on other firmwares?  I am pretty sure that at
+>>> least
+>>> some of them, probably 10.2, will have issues.
+>>>
+>>> Maybe you could make this change specific to certain firmware that
+>>> is known to work with the change?
+>>
+>> There are bigger problems with it than that;  even with firmwares that
+>> behave correctly,
+>> this changes the behavior that a lot of upper-layer software depends
+>> upon, and will likely
+>> make anything that actually uses the channel survey data misbehave.
+>>
+>> It is therefore a breaking change for any device that actually
+>> implements ACS.
+>>
+>> -J.
 >
-> But backports list can help you better:
->
-> https://backports.wiki.kernel.org/index.php/Mailing_list
->
-> Ah, but I see from the archives that you asked there already.
+> In ath9k driver also survey data being accumulated in driver and send 
+> survey data to user space is accumulated one. same thing we are 
+> implementing in FW(with WMI request type WMI_BSS_SURVEY_REQ_TYPE_READ) 
+> instead of doing it in driver.
+It seems you're changing the behavior, not fixing a bug.
+WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR is handled differently from 
+WMI_BSS_SURVEY_REQ_TYPE_READ and as Jasmine addressed, userspace apps 
+that's counting on WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR behavior will be 
+broken their functions with your change.
+This means this patch will break backward compatibility.
 
-you can also use the backports tree from openwrt. as far as i know the 
-official backports tree is broken on many points so you need to manually 
-edit alot of things
-to get it to work. backports tree provided by openwrt did already take 
-care of it
-i once did my own backports version and it was alot of work of manually 
-editing to get all to work
+Thanks,
+Peter
 
->
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
