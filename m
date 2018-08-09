@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnhJR-0007tF-3u
- for ath10k@lists.infradead.org; Thu, 09 Aug 2018 09:32:58 +0000
-Received: by mail-ed1-x543.google.com with SMTP id x5-v6so2576131edr.0
- for <ath10k@lists.infradead.org>; Thu, 09 Aug 2018 02:32:46 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Change sk_pacing_shift in ieee80211_hw for best tx
- throughput
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5B6C0A3C.3020908@broadcom.com>
-Date: Thu, 9 Aug 2018 11:32:44 +0200
+ id 1fnhSh-0002i3-1D
+ for ath10k@lists.infradead.org; Thu, 09 Aug 2018 09:42:33 +0000
+Subject: Re: ath10k kernel requirements (coherent_pool etc)
+References: <VI1PR07MB0926AC2FF08DF458053DD9F7FF260@VI1PR07MB0926.eurprd07.prod.outlook.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <fffe3456-7d17-dd6a-9db8-422bf9a708e1@dd-wrt.com>
+Date: Thu, 9 Aug 2018 11:42:16 +0200
 MIME-Version: 1.0
-In-Reply-To: <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
+In-Reply-To: <VI1PR07MB0926AC2FF08DF458053DD9F7FF260@VI1PR07MB0926.eurprd07.prod.outlook.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>, Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
 
-On 8/8/2018 9:00 PM, Peter Oh wrote:
->
->
-> On 08/08/2018 03:40 AM, Wen Gong wrote:
->> Add a field for ath10k to adjust the sk_pacing_shift, mac80211 set
->> the default value to 8, and ath10k will change it to 6. Then mac80211
->> will use the changed value 6 as sk_pacing_shift since 6 is the best
->> value for tx throughput by test result.
-> I don't think you can convince people with the numbers unless you
-> provide latency along with the numbers and also measurement result on
-> different chipsets as Michal addressed (QCA4019, QCA9984, etc.) From
-> users view point, I also agree on Toke that we cannot scarify latency
-> for the small throughput improvement.
-
-Yeah. The wireless industry (admittedly that is me too :-p ) has been 
-focused on just throughput long enough. All the preaching about 
-bufferbloat from Dave and others is (just) starting to sink in here and 
-there.
-
-Now as for the value of the sk_pacing_shift I think we agree it depends 
-on the specific device so in that sense the api makes sense, but I think 
-there are a lot of variables so I was wondering if we could introduce a 
-sysctl parameter for it. Does that make sense?
-
-Regards,
-Arend
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CkFtIDA4LjA4LjIwMTggdW0gMTg6NTYgc2NocmllYiBBcnRodXIgV2F0dDoKPiBHb29kIGFmdGVy
+bm9vbi4KPgo+IFdlIGhhdmUgYmVlbiB0ZXN0aW5nIDMgeCBhdGgxMGsgZGV2aWNlcyBvbiBhIDQu
+MTQgYmFzZWQgTGludXgga2VybmVsIHdpdGggYSBDYXZpdW0gcHJvY2Vzc29yLgo+IFVwIHRvIHRo
+aXMgcG9pbnQgd2UgaGF2ZSBiZWVuIHNlZWluZyBzb21lIHVuZXhwbGFpbmVkIGNyYXNoZXMgZnJv
+bSB0aGUgYXRoMTBrIGRldmljZXMgKGZpcm13YXJlIGNyYXNoZXMgZHVlIHRvIGNvcnJ1cHQgSFRD
+IG1lc3NhZ2VzIGlzIHRoZSBtb3N0IGNvbW1vbikuCj4gV2UgaGF2ZSB0cmllZCB2YXJpb3VzIG1v
+ZHVsZSBhbmQgZmlybXdhcmUgdmVyc2lvbnMgKGluY2x1ZGluZyB3aXJlbGVzcy1sYXRlc3QpIGFu
+ZCBhbGwgc2VlbSB0byBzaG93IHRoZSBzYW1lIGVycm9ycy4KPgo+IElzIGl0IHBvc3NpYmxlIHRo
+YXQgdGhlcmUgaXMgYW4gaW5oZXJlbnQgbWVtb3J5IGNvcnJ1cHQgcHJvYmxlbSB3aXRoIHRoZSBh
+dGgxMGsgZHJpdmVyL2Zpcm13YXJlLCBzaW5jZSBvdGhlciBsaXN0IG1lbWJlcnMgZG9uJ3Qgc2Vl
+bSB0byBiZSBzaG91dGluZyBhYm91dCB0aGlzIHdlIHN0YXJ0ZWQgaW52ZXN0aWdhdGluZyB0aGUg
+a2VybmVsIGNvbmZpZ3VyYXRpb24gYW5kIG5vdCB0aGUgZHJpdmVyL2Zpcm13YXJlPwo+Cj4gVGhp
+cyBtb3JuaW5nIEkgbWFkZSBhIGtlcm5lbCBwYXJhbWV0ZXIgY2hhbmdlCj4gICAgICAgICBjb2hl
+cmVudF9wb29sPTI1Nk0KPiBTaW5jZSBtYWtpbmcgdGhpcyBjaGFuZ2UgdGhlIG51bWJlciBvZiBm
+YXVsdHMgc2VlbSB0byAgaGF2ZSByZWR1Y2VkLgo+Cj4gRG9lcyBhbnlvbmUga25vdyBpZiB0aGVy
+ZSBhcmUgYW55IExpbnV4IGtlcm5lbCBjb25maWd1cmF0aW9uIHBhcmFtZXRlcnMgbmVlZGVkIGlu
+IG9yZGVyIGZvciBtdWx0aXBsZSBhdGgxMGsgZGV2aWNlcyB0byBiZWhhdmUgcmVsaWFibHkuCj4g
+SW4gcGFydGljdWxhciBkbyBJIG5lZWQgYSBjb2hlcmVudF9wb29sIGNvbmZpZ3VyZWQgYW5kIHdo
+YXQgcGFnZSBzaXplIGlzIHRoZSBvcHRpbXVtIGZvciBhdGgxMGsgb3BlcmF0aW9uPwo+IE91ciBh
+dGgxMGsgZGV2aWNlcyBhcmUgUUNBOTk4NCBhbmQgUUNBOTg4WC4KCmkgb25seSBjYW4gc2F5IHRo
+YXQgaSBydW4gbXVsdGlwbGUgUUNBOTg4WCBjYXJkcyBvbiBYNjQgYW5kIG9uIEFSTSAKY29ydGV4
+IEE5IGRldmljZXPCoCBhbmQgaSBhbHNvIHJ1biBkdWFsIFFDQTk5ODQgY29uZmlndXJhdGlvbnMg
+b24gSVBRODA2NCAKYXJtIGNwdXMgd2l0aCBubyBpc3N1ZXMuCgp3b3VsZCBiZSBnb29kIHRvIHNl
+ZSBzb21lIGVycm9ybG9ncy4gaXQgY2FuIGJlIHJlbGF0ZWQgdG8gc29tZSBkbWEgCm1lbW9yeSBh
+ZGRyZXNzL3NwYWNlIHByb2JsZW1zIHdoaWNoIGFyZSBjcHUgc3BlY2lmaWMKCgpTZWJhc3RpYW4K
+Cj4KPiBUaGFuayB5b3UKPiBBcnRodXIKPgo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
