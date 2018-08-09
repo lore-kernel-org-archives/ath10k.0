@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr50057.outbound.protection.outlook.com ([40.107.5.57]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnThs-0000xj-PW
- for ath10k@lists.infradead.org; Wed, 08 Aug 2018 19:01:18 +0000
-Subject: Re: [PATCH v2 0/2] Change sk_pacing_shift in ieee80211_hw for best tx
- throughput
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
-Date: Wed, 8 Aug 2018 12:00:46 -0700
+ id 1fneXn-0001LI-Bf
+ for ath10k@lists.infradead.org; Thu, 09 Aug 2018 06:35:36 +0000
 MIME-Version: 1.0
-In-Reply-To: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+Date: Thu, 09 Aug 2018 12:05:23 +0530
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Subject: Re: [PATCHv2] ath10k : Fix channel survey dump
+Message-ID: <d586156d3861a6cf0f479ff12ddd6544@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +20,66 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org
+To: Jasmine Strong <jas@eero.com>
+Cc: linux-wireless-owner@vger.kernel.org, Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
 
+On 2018-08-01 00:03, Jasmine Strong wrote:
+> On Tue, Jul 31, 2018 at 10:38 AM Ben Greear <greearb@candelatech.com>
+> wrote:
+> 
+>> On 07/31/2018 05:11 AM, Venkateswara Naralasetty wrote:
+>>> Channel active/busy time are showing incorrect(less than previous
+>> or
+>>> sometimes zero) for successive survey dump command.
+>>> 
+>>> example:
+>>> Survey data from wlan0
+>>> frequency:                      5180 MHz [in use]
+>>> channel active time:            54995 ms
+>>> channel busy time:              432 ms
+>>> channel receive time:           0 ms
+>>> channel transmit time:          59 ms
+>>> Survey data from wlan0
+>>> frequency:                      5180 MHz [in use]
+>>> channel active time:            32592 ms
+>>> channel busy time:              254 ms
+>>> channel receive time:           0 ms
+>>> channel transmit time:          0 ms
+>>> 
+>>> This patch fix this issue by assigning 'wmi_bss_survey_req_type'
+>>> as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
+>>> FW and send survey data to driver upon the driver request. Wrap
+>> around
+>>> is taken care by FW.
+>>> 
+>>> hardware used : QCA9984
+>>> firmware ver  : ver 10.4-3.5.3-00057
+>> 
+>> Have you tested this on other firmwares?  I am pretty sure that at
+>> least
+>> some of them, probably 10.2, will have issues.
+>> 
+>> Maybe you could make this change specific to certain firmware that
+>> is known to work with the change?
+> 
+> There are bigger problems with it than that;  even with firmwares that
+> behave correctly,
+> this changes the behavior that a lot of upper-layer software depends
+> upon, and will likely
+> make anything that actually uses the channel survey data misbehave.
+> 
+> It is therefore a breaking change for any device that actually
+> implements ACS.
+> 
+> -J.
 
-
-On 08/08/2018 03:40 AM, Wen Gong wrote:
-> Add a field for ath10k to adjust the sk_pacing_shift, mac80211 set
-> the default value to 8, and ath10k will change it to 6. Then mac80211
-> will use the changed value 6 as sk_pacing_shift since 6 is the best
-> value for tx throughput by test result.
-I don't think you can convince people with the numbers unless you 
-provide latency along with the numbers and also measurement result on 
-different chipsets as Michal addressed (QCA4019, QCA9984, etc.) From 
-users view point, I also agree on Toke that we cannot scarify latency 
-for the small throughput improvement.
+In ath9k driver also survey data being accumulated in driver and send 
+survey data to user space is accumulated one. same thing we are 
+implementing in FW(with WMI request type WMI_BSS_SURVEY_REQ_TYPE_READ) 
+instead of doing it in driver.
 
 Thanks,
-Peter
-
+Venkatesh.
 
 _______________________________________________
 ath10k mailing list
