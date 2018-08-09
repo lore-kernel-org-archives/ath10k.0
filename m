@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+Received: from mail-bn3nam01on0137.outbound.protection.outlook.com
+ ([104.47.33.137] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnijz-0001Z1-Ap
- for ath10k@lists.infradead.org; Thu, 09 Aug 2018 11:04:32 +0000
-Received: by mail-qt0-x244.google.com with SMTP id y5-v6so5942364qti.12
- for <ath10k@lists.infradead.org>; Thu, 09 Aug 2018 04:04:15 -0700 (PDT)
+ id 1fnjbv-0007gS-Qw
+ for ath10k@lists.infradead.org; Thu, 09 Aug 2018 12:00:14 +0000
+From: "Shu, Nick" <Nick.Shu@spirent.com>
+Subject: RE: Backporting issues, please help
+Date: Thu, 9 Aug 2018 11:59:57 +0000
+Message-ID: <DM5PR1001MB21069E43C521D68122C3F7C09D250@DM5PR1001MB2106.namprd10.prod.outlook.com>
+References: <DM5PR1001MB21063EB20C5E272D700AB65B9D200@DM5PR1001MB2106.namprd10.prod.outlook.com>
+ <87k1oz3k7w.fsf@kamboji.qca.qualcomm.com>
+ <d8b39785-04da-57c8-157a-93f31847a731@dd-wrt.com>
+In-Reply-To: <d8b39785-04da-57c8-157a-93f31847a731@dd-wrt.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <VI1PR07MB0926AC2FF08DF458053DD9F7FF260@VI1PR07MB0926.eurprd07.prod.outlook.com>
-References: <VI1PR07MB0926AC2FF08DF458053DD9F7FF260@VI1PR07MB0926.eurprd07.prod.outlook.com>
-From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
-Date: Thu, 9 Aug 2018 13:04:14 +0200
-Message-ID: <CABvG-CUjs3cV3zPkNfHCrkfmgaF75OYfp11-ZocxdJstMfnGCg@mail.gmail.com>
-Subject: Re: ath10k kernel requirements (coherent_pool etc)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +22,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arthur Watt <arthur.watt@virtuosys.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@codeaurora.org>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gOCBBdWd1c3QgMjAxOCBhdCAxODo1NiwgQXJ0aHVyIFdhdHQgPGFydGh1ci53YXR0QHZpcnR1
-b3N5cy5jb20+IHdyb3RlOgo+IEdvb2QgYWZ0ZXJub29uLgo+Cj4gV2UgaGF2ZSBiZWVuIHRlc3Rp
-bmcgMyB4IGF0aDEwayBkZXZpY2VzIG9uIGEgNC4xNCBiYXNlZCBMaW51eCBrZXJuZWwgd2l0aCBh
-IENhdml1bSBwcm9jZXNzb3IuCj4gVXAgdG8gdGhpcyBwb2ludCB3ZSBoYXZlIGJlZW4gc2VlaW5n
-IHNvbWUgdW5leHBsYWluZWQgY3Jhc2hlcyBmcm9tIHRoZSBhdGgxMGsgZGV2aWNlcyAoZmlybXdh
-cmUgY3Jhc2hlcyBkdWUgdG8gY29ycnVwdCBIVEMgbWVzc2FnZXMgaXMgdGhlIG1vc3QgY29tbW9u
-KS4KPiBXZSBoYXZlIHRyaWVkIHZhcmlvdXMgbW9kdWxlIGFuZCBmaXJtd2FyZSB2ZXJzaW9ucyAo
-aW5jbHVkaW5nIHdpcmVsZXNzLWxhdGVzdCkgYW5kIGFsbCBzZWVtIHRvIHNob3cgdGhlIHNhbWUg
-ZXJyb3JzLgo+Cj4gSXMgaXQgcG9zc2libGUgdGhhdCB0aGVyZSBpcyBhbiBpbmhlcmVudCBtZW1v
-cnkgY29ycnVwdCBwcm9ibGVtIHdpdGggdGhlIGF0aDEwayBkcml2ZXIvZmlybXdhcmUsIHNpbmNl
-IG90aGVyIGxpc3QgbWVtYmVycyBkb24ndCBzZWVtIHRvIGJlIHNob3V0aW5nIGFib3V0IHRoaXMg
-d2Ugc3RhcnRlZCBpbnZlc3RpZ2F0aW5nIHRoZSBrZXJuZWwgY29uZmlndXJhdGlvbiBhbmQgbm90
-IHRoZSBkcml2ZXIvZmlybXdhcmU/Cj4KPiBUaGlzIG1vcm5pbmcgSSBtYWRlIGEga2VybmVsIHBh
-cmFtZXRlciBjaGFuZ2UKPiAgICAgICAgY29oZXJlbnRfcG9vbD0yNTZNCj4gU2luY2UgbWFraW5n
-IHRoaXMgY2hhbmdlIHRoZSBudW1iZXIgb2YgZmF1bHRzIHNlZW0gdG8gIGhhdmUgcmVkdWNlZC4K
-Pgo+IERvZXMgYW55b25lIGtub3cgaWYgdGhlcmUgYXJlIGFueSBMaW51eCBrZXJuZWwgY29uZmln
-dXJhdGlvbiBwYXJhbWV0ZXJzIG5lZWRlZCBpbiBvcmRlciBmb3IgbXVsdGlwbGUgYXRoMTBrIGRl
-dmljZXMgdG8gYmVoYXZlIHJlbGlhYmx5Lgo+IEluIHBhcnRpY3VsYXIgZG8gSSBuZWVkIGEgY29o
-ZXJlbnRfcG9vbCBjb25maWd1cmVkIGFuZCB3aGF0IHBhZ2Ugc2l6ZSBpcyB0aGUgb3B0aW11bSBm
-b3IgYXRoMTBrIG9wZXJhdGlvbj8KPiBPdXIgYXRoMTBrIGRldmljZXMgYXJlIFFDQTk5ODQgYW5k
-IFFDQTk4OFguCgpJIHJlY2FsbCB3ZSBoYWQgc29tZSB3ZWlyZCBpc3N1ZXMgd2l0aCBtdWx0aXBs
-ZSBkZXZpY2VzIGF0IHNvbWUgc3RhZ2UsCndpdGggcWNhNjF4NCBhbmQgcWNhOTg4eCBvbiB0aGUg
-c2FtZSBzeXN0ZW0uIEkgY2FuJ3QgcmVtZW1iZXIgYW55bW9yZQp3aGF0IGl0IHdhcyBleGFjdGx5
-IGJ1dCBpdCBzaG91bGQgYmUgc29tZXdoZXJlIGluIGdpdCBsb2cuIEkgYWxzbwpwZXJzb25hbGx5
-IGhhZCBpc3N1ZXMgd2l0aCBrdm0gcGNpLXBhc3N0aHJvdWdoIHdoZXJlIGludGVycnVwdHMgd2Vy
-ZQpzb21laG93IGxvc3QgZHVyaW5nIGZpcm13YXJlIHVwbG9hZC4gQ29ycnVwdGVkIGh0YyBtZXNz
-YWdlcyBtYXkKc3VnZ2VzdCBpbmNvbXBsZXRlIHRyYW5zZmVycyBhbmQvb3IgaW50ZXJydXB0cyBi
-ZWluZyBwcm9wYWdhdGVkCm91dC1vZi1vcmRlciB3aXRoIHJlZ2FyZCB0byBvdGhlciB0cmFuc2Zl
-cnMuCgpJcyBhdGgxMGsgc3RhcnRpbmcgdXAgd2l0aCBtc2kgaW50ZXJydXB0cyBvciBsZWdhY3k/
-IElmIGl0J3MgbXNpIHRyeQpmb3JjaW5nIGxlZ2FjeS4gSWYgaXQncyBsZWdhY3kgbWlnaHQgYmUg
-d29ydGggY2hlY2tpbmcgaWYgeW91IGNhbiBnZXQKbXNpIHJ1bm5pbmcuCgpPciBtYXliZSBjb2hl
-cmVudCBtZW1vcnkgbWFwcGluZyBtYW5hZ2VtZW50IGlzIGJ1Z2dlZCBmb3IgeW91cgpwbGF0Zm9y
-bSBpbiB0aGUga2VybmVsIChpLmUuIGFyY2hpdGVjdHVyYWwgYnVnKSBvciB1LWJvb3QuIFRoZSBj
-cHUgaXMKNjQgYml0LCByaWdodD8gV2hhdCBpcyB0aGUgZG1hIG1hc2sgdGhhdCBnZXRzIHVzZWQ/
-IE1heWJlIGl0J3MgdG9vCndpZGUgYW5kIHBjaSBjb250cm9sbGVyIChvbiBlaXRoZXIgaG9zdCwg
-b3IgcWNhIGNoaXAgc2lkZSkgZ2V0cwpjb25mdXNlZC4gT3IgbWF5YmUgYWxpZ25tZW50IGlzIHdy
-b25nLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Thank you all for the reply, I'll try openwrt to see how it works.
+Nick
+
+-----Original Message-----
+From: Sebastian Gottschall [mailto:s.gottschall@dd-wrt.com] 
+Sent: Thursday, August 09, 2018 5:35 AM
+To: Kalle Valo; Shu, Nick
+Cc: ath10k@lists.infradead.org
+Subject: Re: Backporting issues, please help
+
+
+Am 09.08.2018 um 12:30 schrieb Kalle Valo:
+> "Shu, Nick" <Nick.Shu@spirent.com> writes:
+>
+>> I'm trying to backport ath10k driver from 4.9 kernel into 4.8 kernel currently using .
+>> In my 4.8 kernel, I built the backporting environment by using tag "v4.14-rc4-1".
+>> When I used that Python script to generate backport tree, got an error:
+>>
+>> ./gentree.py --verbose --clean --git-revision master --copy-list copy-list.ath ../linux-4.9 ../backports-output
+>> Get original source files from git ...
+>> Traceback (most recent call last):
+>>    File "./gentree.py", line 1107, in <module>
+>>      ret = _main()
+>>    File "./gentree.py", line 724, in _main
+>>      logwrite=logwrite)
+>>    File "./gentree.py", line 862, in process
+>>      disable_list = add_automatic_backports(args)
+>>    File "./gentree.py", line 276, in add_automatic_backports
+>>      automatic_backport_mangle_c_file(f)), 'r'):
+>> IOError: [Errno 2] No such file or directory: '../ct49-backports-output/compat/lib-refcount.c'
+> I haven't used backprorts for years but I don't think you can use latest
+> backports on older kernels (eg backports tag v4.14-rc4-1 on v4.9
+> kernel). So if you use v4.14-rc4-1 tag you can only use v4.14 kernel
+> source to generate the backports package.
+>
+> But backports list can help you better:
+>
+> https://backports.wiki.kernel.org/index.php/Mailing_list
+>
+> Ah, but I see from the archives that you asked there already.
+
+you can also use the backports tree from openwrt. as far as i know the 
+official backports tree is broken on many points so you need to manually 
+edit alot of things
+to get it to work. backports tree provided by openwrt did already take 
+care of it
+i once did my own backports version and it was alot of work of manually 
+editing to get all to work
+
+>
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
