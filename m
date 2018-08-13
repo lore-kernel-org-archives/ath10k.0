@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpHaq-0002J3-OL
- for ath10k@lists.infradead.org; Mon, 13 Aug 2018 18:29:30 +0000
-Received: by mail-wr1-x444.google.com with SMTP id h9-v6so15115714wro.3
- for <ath10k@lists.infradead.org>; Mon, 13 Aug 2018 11:29:18 -0700 (PDT)
-Subject: Re: [PATCH] ath10k: retrieve MAC address from firmware if provided
-References: <20180810233948.144792-1-briannorris@chromium.org>
- <5B6F2A47.7070502@broadcom.com>
- <CA+ASDXOeybJAsWJtVBdLdQ=6xThJja5MaEoa3dERKZ-shkbDkg@mail.gmail.com>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5B71CDFB.60408@broadcom.com>
-Date: Mon, 13 Aug 2018 20:29:15 +0200
+ id 1fpJ74-0004aj-1M
+ for ath10k@lists.infradead.org; Mon, 13 Aug 2018 20:06:51 +0000
+Received: by mail-pg1-x543.google.com with SMTP id k3-v6so8017220pgq.5
+ for <ath10k@lists.infradead.org>; Mon, 13 Aug 2018 13:06:39 -0700 (PDT)
+Date: Mon, 13 Aug 2018 13:06:35 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH v4 6/6] ath10k: Add QMI message handshake for wcn3990
+ client
+Message-ID: <20180813200633.GA38014@ban.mtv.corp.google.com>
+References: <20180723123428.12993-1-govinds@codeaurora.org>
+ <20180723123428.12993-7-govinds@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CA+ASDXOeybJAsWJtVBdLdQ=6xThJja5MaEoa3dERKZ-shkbDkg@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20180723123428.12993-7-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +23,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, govinds@codeaurora.org, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: devicetree@vger.kernel.org, robh@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, niklas.cassel@linaro.org, andy.gross@linaro.org
 
-On 8/13/2018 7:14 PM, Brian Norris wrote:
-> On Sat, Aug 11, 2018 at 11:26 AM Arend van Spriel
-> <arend.vanspriel@broadcom.com> wrote:
->>
->> On 8/11/2018 1:39 AM, Brian Norris wrote:
->>> Devices may provide their own MAC address via system firmware (e.g.,
->>
->> You got me confused by using just "firmware" in the subject.
->
-> Yeah...I started by writing this patch with device tree specifically
-> (of_get_mac_address()), and then later found that there were generic
-> "device" helpers for this, which can assist with other sorts of
-> firmware nodes. It was easier to put a name on a device tree patch
-> than on a "device" patch. I suppose "system firmware" might be a
-> better description?
->
->>> device tree), especially in the case where the device doesn't have a
->>> useful EEPROM on which to store its MAC address (e.g., for integrated
->>> Wifi).
->>>
->>> Use the generic device helper to retrieve the MAC address, and (if
->>> present) honor it above the MAC address advertised by the card.
->>
->> But this put me back on track ;-)
->
-> Let me know if you have a better way to clarify. I can resend with a
-> slightly modified subject (s/firmware/system firmware/), or let Kalle
-> do it, if that's the only thing to change.
+Hi Govind,
 
-"system firmware" substitution works for me.
+On Mon, Jul 23, 2018 at 06:04:28PM +0530, Govind Singh wrote:
+> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
+> subsystem. This layer is responsible for communicating qmi control
+> messages to wifi fw QMI service using QMI messaging protocol.
+> 
+> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
+> between components running between remote processors with underlying
+> transport layer based on integrated chipset(shared memory) or
+> discrete chipset(PCI/USB/SDIO/UART).
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/Kconfig  |    1 +
+>  drivers/net/wireless/ath/ath10k/Makefile |    4 +-
+>  drivers/net/wireless/ath/ath10k/core.c   |    6 +-
+>  drivers/net/wireless/ath/ath10k/core.h   |    2 +
+>  drivers/net/wireless/ath/ath10k/qmi.c    | 1019 ++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/qmi.h    |  129 +++
+>  drivers/net/wireless/ath/ath10k/snoc.c   |  262 +++++-
+>  drivers/net/wireless/ath/ath10k/snoc.h   |    4 +
+>  8 files changed, 1417 insertions(+), 10 deletions(-)
+>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
+>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
+> 
 
-Regards,
-Arend
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> new file mode 100644
+> index 000000000000..d91499a7354c
+> --- /dev/null
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -0,0 +1,1019 @@
 
+...
+
+> +int ath10k_qmi_deinit(struct ath10k *ar)
+> +{
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> +	struct ath10k_qmi *qmi = ar_snoc->qmi;
+> +
+> +	cancel_work_sync(&qmi->event_work);
+> +	destroy_workqueue(qmi->event_wq);
+
+I believe this is incorrect ordering. You should not be destroying the
+work queue that handles QMI event responses before you release the QMI
+handle. As it stands, this means you segfault during 'rmmod'.
+
+> +	qmi_handle_release(&qmi->qmi_hdl);
+
+I think this should be:
+
+	qmi_handle_release(&qmi->qmi_hdl);
+	cancel_work_sync(&qmi->event_work);
+	destroy_workqueue(qmi->event_wq);
+
+> +	qmi = NULL;
+
+This assignment is pointless, as 'qmi' is a local variable. Maybe you
+meant to clear the struct member, as a precaution? So this would be:
+
+	ar_snoc->qmi = NULL;
+
+Brian
+
+> +
+> +	return 0;
+> +} 
 
 _______________________________________________
 ath10k mailing list
