@@ -1,22 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-f195.google.com ([209.85.216.195])
+Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1foZTB-00062L-9k
- for ath10k@lists.infradead.org; Sat, 11 Aug 2018 19:22:41 +0000
-Received: by mail-qt0-f195.google.com with SMTP id d4-v6so13660068qtn.13
- for <ath10k@lists.infradead.org>; Sat, 11 Aug 2018 12:22:17 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Change sk_pacing_shift in ieee80211_hw for best tx
- throughput
+ id 1fp5Xx-0001Cr-5c
+ for ath10k@lists.infradead.org; Mon, 13 Aug 2018 05:37:43 +0000
+From: Wen Gong <wgong@qti.qualcomm.com>
+Subject: RE: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+Date: Mon, 13 Aug 2018 05:37:25 +0000
+Message-ID: <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
 References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
- <5B6C0A3C.3020908@broadcom.com> <87k1oye4ty.fsf@toke.dk>
- <5B6DE758.8040605@broadcom.com>
- <93ff2bad-5b11-0edd-16cd-a2a7c54701b8@candelatech.com>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5B6F3729.4040807@broadcom.com>
-Date: Sat, 11 Aug 2018 21:21:13 +0200
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+In-Reply-To: <87mutue4y8.fsf@toke.dk>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <93ff2bad-5b11-0edd-16cd-a2a7c54701b8@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,115 +24,149 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>, Peter Oh <peter.oh@bowerswilkins.com>, Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>
+To: =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-+ Eric
-
-On 8/10/2018 9:52 PM, Ben Greear wrote:
-> On 08/10/2018 12:28 PM, Arend van Spriel wrote:
->> On 8/10/2018 3:20 PM, Toke H=F8iland-J=F8rgensen wrote:
->>> Arend van Spriel <arend.vanspriel@broadcom.com> writes:
->>>
->>>> On 8/8/2018 9:00 PM, Peter Oh wrote:
->>>>>
->>>>>
->>>>> On 08/08/2018 03:40 AM, Wen Gong wrote:
->>>>>> Add a field for ath10k to adjust the sk_pacing_shift, mac80211 set
->>>>>> the default value to 8, and ath10k will change it to 6. Then mac80211
->>>>>> will use the changed value 6 as sk_pacing_shift since 6 is the best
->>>>>> value for tx throughput by test result.
->>>>> I don't think you can convince people with the numbers unless you
->>>>> provide latency along with the numbers and also measurement result on
->>>>> different chipsets as Michal addressed (QCA4019, QCA9984, etc.) From
->>>>> users view point, I also agree on Toke that we cannot scarify latency
->>>>> for the small throughput improvement.
->>>>
->>>> Yeah. The wireless industry (admittedly that is me too :-p ) has been
->>>> focused on just throughput long enough.
->>>
->>> Tell me about it ;)
->>>
->>>> All the preaching about bufferbloat from Dave and others is (just)
->>>> starting to sink in here and there.
->>>
->>> Yeah, I've noticed; this is good!
->>>
->>>> Now as for the value of the sk_pacing_shift I think we agree it
->>>> depends on the specific device so in that sense the api makes sense,
->>>> but I think there are a lot of variables so I was wondering if we
->>>> could introduce a sysctl parameter for it. Does that make sense?
->>>
->>> I'm not sure a sysctl parameter would make sense; for one thing, it
->>> would be global for the host, while different network interfaces will
->>> probably need different values. And for another, I don't think it's
->>> something a user can reasonably be expected to set correctly, and I
->>> think it *is* actually possible to pick a value that works well at the
->>> driver level.
->>
->> I not sure either. Do you think a user could come up with something
->> like this (found here [1]):
->>
->> sysctl -w net.core.rmem_max=3D8388608
->> sysctl -w net.core.wmem_max=3D8388608
->> sysctl -w net.core.rmem_default=3D65536
->> sysctl -w net.core.wmem_default=3D65536
->> sysctl -w net.ipv4.tcp_rmem=3D'4096 87380 8388608'
->> sysctl -w net.ipv4.tcp_wmem=3D'4096 65536 8388608'
->> sysctl -w net.ipv4.tcp_mem=3D'8388608 8388608 8388608'
->> sysctl -w net.ipv4.route.flush=3D1
->>
->> Now the page listing this config claims this is for use "on Linux 2.4+
->> for high-bandwidth applications". Beats me if it still is correct in
->> 4.17.
->>
->> Anyway, sysctl is nice for parameterizing code that is built-in the
->> kernel so you don't need to rebuild it. mac80211 tends to be a module
->> in most distros so
->> maybe sysctl is not a good fit. So lets agree on that.
->>
->> Picking a value at driver level may be possible, but a driver tends to
->> support a number of different devices. So how do you see the picking
->> work. Some static
->> table with entries for the different devices?
->
-> Some users are not going to care about latency, and for others, latency m=
-ay
-> be absolutely important and they don't care about bandwidth.
->
-> So, it should be tunable.  sysctl can support per network-device settings,
-> right?  Or, probably could use ethtool API to set a per-netdev value as
-> well.
-> That might be nice for other network devices as well, not just wifi.
-
-I was under the impression that the parameters are all global, but your =
-
-statement made me look. I came across some references here [2] so I =
-
-checked the kernel sources under net/ and found net/ipv4/devinet.c [3]. =
-
-So that confirms it supports per-netdev settings.
-
-The sk_pacing_shift is actually a socket setting although I did not find =
-
-a user-space api to change it. For instance it is not a socket option. =
-
-There might be a good reason for not exposing it to user-space (added Eric).
-
-Regards,
-Arend
-
-[2] =
-
-https://askubuntu.com/questions/316492/disabling-ipv6-on-a-single-interface
-[3] https://elixir.bootlin.com/linux/latest/source/net/ipv4/devinet.c#L2309
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBUb2tlIEjDuGlsYW5kLUrDuHJn
+ZW5zZW4gPHRva2VAdG9rZS5kaz4NCj4gU2VudDogRnJpZGF5LCBBdWd1c3QgMTAsIDIwMTggOTox
+OCBQTQ0KPiBUbzogV2VuIEdvbmcgPHdnb25nQHF0aS5xdWFsY29tbS5jb20+OyBXZW4gR29uZw0K
+PiA8d2dvbmdAY29kZWF1cm9yYS5vcmc+OyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4g
+am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldA0KPiBDYzogbGludXgtd2lyZWxlc3NAdmdlci5rZXJu
+ZWwub3JnDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggdjIgMi8yXSBhdGgxMGs6IFNldCBza19wYWNp
+bmdfc2hpZnQgdG8gNiBmb3IgMTFBQyBXaUZpDQo+IGNoaXBzDQo+IA0KPiBXZW4gR29uZyA8d2dv
+bmdAcXRpLnF1YWxjb21tLmNvbT4gd3JpdGVzOg0KPiANCj4gPj4NCj4gPiBIaSBUb2tlLA0KPiA+
+IENvdWxkIHlvdSBnaXZlIHRoZSBjb21tYW5kIGxpbmUgZm9yIHRoZSBsYXRlbmN5IHRlc3Q/DQo+
+ID4gaHR0cHM6Ly9mbGVudC5vcmcvaW50cm8uaHRtbCNxdWljay1zdGFydA0KPiA+IEkgdXNlZCB0
+aGUgY29tbWFuZCBidXQgdGVzdCBmYWlsZWQ6DQo+ID4gZmxlbnQgdGNwX2Rvd25sb2FkIC1wIDEg
+LWwgNjAgLUggMTkyLjE2OC4xLjUgLXQNCj4gPiB0ZXh0LXRvLWJlLWluY2x1ZGVkLWluLXBsb3Qg
+LW8gZmlsZTEucG5nIGVycm9yIGxvYWRpbmcgcGxvdHRlcjogdW5hYmxlIHRvIGZpbmQNCj4gcGxv
+dCBjb25maWd1cmF0aW9uICIxIg0KPiANCj4gVHJ5IHNvbWV0aGluZyBsaWtlOg0KPiANCj4gDQo+
+IGZsZW50IC1IIDE5Mi4xNjguMS41IC10ICJza19wYWNpbmdfc2hpZnQgNyIgdGNwX251cCAtLXRl
+c3QtcGFyYW1ldGVyDQo+IHVwbG9hZF9zdHJlYW1zPTENCj4gDQo+IA0KPiBUaGlzIHdpbGwgbm90
+ZSB0aGUgdmFsdWUgb2Ygc2tfcGFjaW5nX3NoaWZ0IHlvdSBhcmUgdGVzdGluZyBpbiB0aGUgZGF0
+YSBmaWxlIChzbw0KPiBjaGFuZ2UgdGhhdCBhcyBhcHByb3ByaWF0ZSksIGFuZCB5b3UgY2FuIHZh
+cnkgdGhlIG51bWJlciBvZiBUQ1Agc3RyZWFtcyBieQ0KPiBjaGFuZ2luZyB0aGUgdXBsb2FkX3N0
+cmVhbXMgcGFyYW1ldGVyLg0KPiANCj4gTm90ZSB0aGF0IGluIHRoaXMgY2FzZSBJJ20gYXNzdW1p
+bmcgeW91IGFyZSBydW5uaW5nIEZsZW50IG9uIHRoZSBkZXZpY2Ugd2l0aA0KPiB0aGUga2VybmVs
+IHlvdSBhcmUgdHJ5aW5nIHRvIHRlc3QsIHNvIHlvdSB3YW50IGEgVENQIHRyYW5zZmVyIGdvaW5n
+DQo+ICpmcm9tKiB0aGUgZGV2aWNlLiBJZiBub3QsIGNoYW5nZSAidGNwX251cCIgdG8gInRjcF9u
+ZG93biIgYW5kDQo+ICJ1cGxvYWRfc3RyZWFtcyIgdG8gImRvd25sb2FkX3N0cmVhbXMiLiBVcGxv
+YWQgaXMgbmV0cGVyZiBUQ1BfU1RSRUFNDQo+IHRlc3QsIGFuZCBkb3dubG9hZCBpcyBUQ1BfTUFF
+UlRTLg0KPiANCj4gV2hlbiBydW5uaW5nIHRoZSBhYm92ZSBjb21tYW5kIHlvdSdsbCBnZXQgYSBz
+dW1tYXJ5IG91dHB1dCBvbiB0aGUNCj4gdGVybWluYWwgdGhhdCB5b3UgY2FuIHBhc3RlIG9uIHRo
+ZSBsaXN0OyBhbmQgYWxzbyBhIGRhdGEgZmlsZSB0byBwbG90IHRoaW5ncyBmb3JtLg0KPiBGb3Ig
+aW5zdGFuY2UsIHlvdSBjYW4gZG8gc29tZXRoaW5nIGxpa2UgJ2ZsZW50IC1wIHBpbmdfY2RmICou
+ZmxlbnQuZ3onIHRvIGdldCBhDQo+IENERiBwbG90IG9mIGFsbCB5b3VyIHRlc3QgcmVzdWx0cyBh
+ZnRlcndhcmRzLiBZb3UgYXJlIGFsc28gdmVyeSB3ZWxjb21lIHRvDQo+IHNlbmQgbWUgdGhlIC5m
+bGVudC5neiBkYXRhIGZpbGVzIGFuZCBJJ2xsIHRha2UgYSBsb29rIHRvIG1ha2Ugc3VyZSBldmVy
+eXRoaW5nDQo+IGxvb2tzIHJlYXNvbmFibGUgOikNCj4gDQo+IC1Ub2tlDQoNCkhpIFRva2UsDQoN
+CkkgaGF2ZSB0ZXN0ZWQgd2l0aCB5b3VyIG1ldGhvZCBmb3Igc2hpZnQgNi84LzEwLzcgYWxsIHR3
+aWNlIHRpbWUgaW4gb3BlbiBhaXIgZW52aXJvbm1lbnQuDQpTaGlmdCA2Og0Kd2dvbmdAd2dvbmct
+TGF0aXR1ZGUtRTU0NDAtMTp+L2ZsZW50JCBmbGVudCAtSCAxOTIuMTY4LjEuNyAtdCAic2tfcGFj
+aW5nX3NoaWZ0NiIgdGNwX251cCAtLXRlc3QtcGFyYW1ldGVyIHVwbG9hZF9zdHJlYW1zPTENClN0
+YXJ0ZWQgRmxlbnQgMS4yLjIgdXNpbmcgUHl0aG9uIDIuNy4xMi4NClN0YXJ0aW5nIHRjcF9udXAg
+dGVzdC4gRXhwZWN0ZWQgcnVuIHRpbWU6IDcwIHNlY29uZHMuDQpEYXRhIGZpbGUgd3JpdHRlbiB0
+byAuL3RjcF9udXAtMjAxOC0wOC0xM1QxMTA0MTQuNjk5NTEyLnNrX3BhY2luZ19zaGlmdDYuZmxl
+bnQuZ3ouDQpTdW1tYXJ5IG9mIHRjcF9udXAgdGVzdCBydW4gJ3NrX3BhY2luZ19zaGlmdDYnIChh
+dCAyMDE4LTA4LTEzIDAzOjA0OjE0LjY5OTUxMik6DQoNCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGF2ZyAgICAgICBtZWRpYW4gICAgICAgICAgIyBkYXRhIHB0cw0KIFBpbmcgKG1zKSBJQ01Q
+IDogICAgICAgICA5LjkxICAgICAgICAgNC45OSBtcyAgICAgICAgICAgICAgMzUwDQogVENQIHVw
+bG9hZCBhdmcgOiAgICAgICAyNDIuNDggICAgICAgMjYyLjQzIE1iaXRzL3MgICAgICAgICAzMDEN
+CiBUQ1AgdXBsb2FkIHN1bSA6ICAgICAgIDI0Mi40OCAgICAgICAyNjIuNDMgTWJpdHMvcyAgICAg
+ICAgIDMwMQ0KIFRDUCB1cGxvYWQ6OjEgIDogICAgICAgMjQyLjQ4ICAgICAgIDI2My4zNCBNYml0
+cy9zICAgICAgICAgMjcxDQp3Z29uZ0B3Z29uZy1MYXRpdHVkZS1FNTQ0MC0xOn4vZmxlbnQkIGZs
+ZW50IC1IIDE5Mi4xNjguMS43IC10ICJza19wYWNpbmdfc2hpZnQ2IiB0Y3BfbnVwIC0tdGVzdC1w
+YXJhbWV0ZXIgdXBsb2FkX3N0cmVhbXM9MQ0KU3RhcnRlZCBGbGVudCAxLjIuMiB1c2luZyBQeXRo
+b24gMi43LjEyLg0KU3RhcnRpbmcgdGNwX251cCB0ZXN0LiBFeHBlY3RlZCBydW4gdGltZTogNzAg
+c2Vjb25kcy4NCkRhdGEgZmlsZSB3cml0dGVuIHRvIC4vdGNwX251cC0yMDE4LTA4LTEzVDExMzMx
+Ny4wNzQwNzcuc2tfcGFjaW5nX3NoaWZ0Ni5mbGVudC5nei4NClN1bW1hcnkgb2YgdGNwX251cCB0
+ZXN0IHJ1biAnc2tfcGFjaW5nX3NoaWZ0NicgKGF0IDIwMTgtMDgtMTMgMDM6MzM6MTcuMDc0MDc3
+KToNCg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgYXZnICAgICAgIG1lZGlhbiAgICAgICAg
+ICAjIGRhdGEgcHRzDQogUGluZyAobXMpIElDTVAgOiAgICAgICAgIDcuNzUgICAgICAgICA1LjMw
+IG1zICAgICAgICAgICAgICAzNTANCiBUQ1AgdXBsb2FkIGF2ZyA6ICAgICAgIDIzOS4xNyAgICAg
+ICAyNTAuODQgTWJpdHMvcyAgICAgICAgIDMwMQ0KIFRDUCB1cGxvYWQgc3VtIDogICAgICAgMjM5
+LjE3ICAgICAgIDI1MC44NCBNYml0cy9zICAgICAgICAgMzAxDQogVENQIHVwbG9hZDo6MSAgOiAg
+ICAgICAyMzkuMTcgICAgICAgMjU1LjAzIE1iaXRzL3MgICAgICAgICAyNjYNCg0KU2hpZnQgODoN
+Cndnb25nQHdnb25nLUxhdGl0dWRlLUU1NDQwLTE6fi9mbGVudCQgZmxlbnQgLUggMTkyLjE2OC4x
+LjcgLXQgInNrX3BhY2luZ19zaGlmdDgiIHRjcF9udXAgLS10ZXN0LXBhcmFtZXRlciB1cGxvYWRf
+c3RyZWFtcz0xDQpTdGFydGVkIEZsZW50IDEuMi4yIHVzaW5nIFB5dGhvbiAyLjcuMTIuDQpTdGFy
+dGluZyB0Y3BfbnVwIHRlc3QuIEV4cGVjdGVkIHJ1biB0aW1lOiA3MCBzZWNvbmRzLg0KRGF0YSBm
+aWxlIHdyaXR0ZW4gdG8gLi90Y3BfbnVwLTIwMTgtMDgtMTNUMTIxNDMzLjE4Nzc4MS5za19wYWNp
+bmdfc2hpZnQ4LmZsZW50Lmd6Lg0KU3VtbWFyeSBvZiB0Y3BfbnVwIHRlc3QgcnVuICdza19wYWNp
+bmdfc2hpZnQ4JyAoYXQgMjAxOC0wOC0xMyAwNDoxNDozMy4xODc3ODEpOg0KDQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICBhdmcgICAgICAgbWVkaWFuICAgICAgICAgICMgZGF0YSBwdHMNCiBQ
+aW5nIChtcykgSUNNUCA6ICAgICAgICAxNy4xMiAgICAgICAgIDcuMDcgbXMgICAgICAgICAgICAg
+IDM1MA0KIFRDUCB1cGxvYWQgYXZnIDogICAgICAgMTgwLjA1ICAgICAgIDE4NS44MiBNYml0cy9z
+ICAgICAgICAgMzAxDQogVENQIHVwbG9hZCBzdW0gOiAgICAgICAxODAuMDUgICAgICAgMTg1Ljgy
+IE1iaXRzL3MgICAgICAgICAzMDENCiBUQ1AgdXBsb2FkOjoxICA6ICAgICAgIDE4MC4wNSAgICAg
+ICAxODkuNDEgTWJpdHMvcyAgICAgICAgIDI1Mw0Kd2dvbmdAd2dvbmctTGF0aXR1ZGUtRTU0NDAt
+MTp+L2ZsZW50JCBmbGVudCAtSCAxOTIuMTY4LjEuNyAtdCAic2tfcGFjaW5nX3NoaWZ0OCIgdGNw
+X251cCAtLXRlc3QtcGFyYW1ldGVyIHVwbG9hZF9zdHJlYW1zPTENClN0YXJ0ZWQgRmxlbnQgMS4y
+LjIgdXNpbmcgUHl0aG9uIDIuNy4xMi4NClN0YXJ0aW5nIHRjcF9udXAgdGVzdC4gRXhwZWN0ZWQg
+cnVuIHRpbWU6IDcwIHNlY29uZHMuDQpEYXRhIGZpbGUgd3JpdHRlbiB0byAuL3RjcF9udXAtMjAx
+OC0wOC0xM1QxMjE2MDIuMzgyNTc1LnNrX3BhY2luZ19zaGlmdDguZmxlbnQuZ3ouDQpTdW1tYXJ5
+IG9mIHRjcF9udXAgdGVzdCBydW4gJ3NrX3BhY2luZ19zaGlmdDgnIChhdCAyMDE4LTA4LTEzIDA0
+OjE2OjAyLjM4MjU3NSk6DQoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgIGF2ZyAgICAgICBt
+ZWRpYW4gICAgICAgICAgIyBkYXRhIHB0cw0KIFBpbmcgKG1zKSBJQ01QIDogICAgICAgIDEzLjkw
+ICAgICAgICAgNS44OSBtcyAgICAgICAgICAgICAgMzUwDQogVENQIHVwbG9hZCBhdmcgOiAgICAg
+ICAyMDcuNTYgICAgICAgMjI4LjE2IE1iaXRzL3MgICAgICAgICAzMDENCiBUQ1AgdXBsb2FkIHN1
+bSA6ICAgICAgIDIwNy41NiAgICAgICAyMjguMTYgTWJpdHMvcyAgICAgICAgIDMwMQ0KIFRDUCB1
+cGxvYWQ6OjEgIDogICAgICAgMjA3LjU2ICAgICAgIDIyOC4xMSBNYml0cy9zICAgICAgICAgMjU5
+DQoNClNoaWZ0IDEwOg0Kd2dvbmdAd2dvbmctTGF0aXR1ZGUtRTU0NDAtMTp+L2ZsZW50JCBmbGVu
+dCAtSCAxOTIuMTY4LjEuNyAtdCAic2tfcGFjaW5nX3NoaWZ0MTAiIHRjcF9udXAgLS10ZXN0LXBh
+cmFtZXRlciB1cGxvYWRfc3RyZWFtcz0xDQpTdGFydGVkIEZsZW50IDEuMi4yIHVzaW5nIFB5dGhv
+biAyLjcuMTIuDQpTdGFydGluZyB0Y3BfbnVwIHRlc3QuIEV4cGVjdGVkIHJ1biB0aW1lOiA3MCBz
+ZWNvbmRzLg0KRGF0YSBmaWxlIHdyaXR0ZW4gdG8gLi90Y3BfbnVwLTIwMTgtMDgtMTNUMTIxODQ0
+LjQ5MzQ5OC5za19wYWNpbmdfc2hpZnQxMC5mbGVudC5nei4NClN1bW1hcnkgb2YgdGNwX251cCB0
+ZXN0IHJ1biAnc2tfcGFjaW5nX3NoaWZ0MTAnIChhdCAyMDE4LTA4LTEzIDA0OjE4OjQ0LjQ5MzQ5
+OCk6DQoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgIGF2ZyAgICAgICBtZWRpYW4gICAgICAg
+ICAgIyBkYXRhIHB0cw0KIFBpbmcgKG1zKSBJQ01QIDogICAgICAgIDE1LjExICAgICAgICAgNy40
+MSBtcyAgICAgICAgICAgICAgMzUwDQogVENQIHVwbG9hZCBhdmcgOiAgICAgICAxNjIuMzggICAg
+ICAgMTY0LjEwIE1iaXRzL3MgICAgICAgICAzMDENCiBUQ1AgdXBsb2FkIHN1bSA6ICAgICAgIDE2
+Mi4zOCAgICAgICAxNjQuMTAgTWJpdHMvcyAgICAgICAgIDMwMQ0KIFRDUCB1cGxvYWQ6OjEgIDog
+ICAgICAgMTYyLjM4ICAgICAgIDE2NS40NyBNYml0cy9zICAgICAgICAgMjUyDQp3Z29uZ0B3Z29u
+Zy1MYXRpdHVkZS1FNTQ0MC0xOn4vZmxlbnQkIGZsZW50IC1IIDE5Mi4xNjguMS43IC10ICJza19w
+YWNpbmdfc2hpZnQxMCIgdGNwX251cCAtLXRlc3QtcGFyYW1ldGVyIHVwbG9hZF9zdHJlYW1zPTEN
+ClN0YXJ0ZWQgRmxlbnQgMS4yLjIgdXNpbmcgUHl0aG9uIDIuNy4xMi4NClN0YXJ0aW5nIHRjcF9u
+dXAgdGVzdC4gRXhwZWN0ZWQgcnVuIHRpbWU6IDcwIHNlY29uZHMuDQpEYXRhIGZpbGUgd3JpdHRl
+biB0byAuL3RjcF9udXAtMjAxOC0wOC0xM1QxMjIxMDguMzQ3MTYzLnNrX3BhY2luZ19zaGlmdDEw
+LmZsZW50Lmd6Lg0KU3VtbWFyeSBvZiB0Y3BfbnVwIHRlc3QgcnVuICdza19wYWNpbmdfc2hpZnQx
+MCcgKGF0IDIwMTgtMDgtMTMgMDQ6MjE6MDguMzQ3MTYzKToNCg0KICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgYXZnICAgICAgIG1lZGlhbiAgICAgICAgICAjIGRhdGEgcHRzDQogUGluZyAobXMp
+IElDTVAgOiAgICAgICAgMTMuNjkgICAgICAgICA3LjQ4IG1zICAgICAgICAgICAgICAzNTANCiBU
+Q1AgdXBsb2FkIGF2ZyA6ICAgICAgIDE3MS4xMSAgICAgICAxNzAuNTIgTWJpdHMvcyAgICAgICAg
+IDMwMQ0KIFRDUCB1cGxvYWQgc3VtIDogICAgICAgMTcxLjExICAgICAgIDE3MC41MiBNYml0cy9z
+ICAgICAgICAgMzAxDQogVENQIHVwbG9hZDo6MSAgOiAgICAgICAxNzEuMTEgICAgICAgMTcxLjM2
+IE1iaXRzL3MgICAgICAgICAyNTgNCg0KU2hpZnQgNzoNCndnb25nQHdnb25nLUxhdGl0dWRlLUU1
+NDQwLTE6fi9mbGVudCQgZmxlbnQgLUggMTkyLjE2OC4xLjcgLXQgInNrX3BhY2luZ19zaGlmdDci
+IHRjcF9udXAgLS10ZXN0LXBhcmFtZXRlciB1cGxvYWRfc3RyZWFtcz0xDQpTdGFydGVkIEZsZW50
+IDEuMi4yIHVzaW5nIFB5dGhvbiAyLjcuMTIuDQpTdGFydGluZyB0Y3BfbnVwIHRlc3QuIEV4cGVj
+dGVkIHJ1biB0aW1lOiA3MCBzZWNvbmRzLg0KRGF0YSBmaWxlIHdyaXR0ZW4gdG8gLi90Y3BfbnVw
+LTIwMTgtMDgtMTNUMTIyOTQ4LjAyMDk3NC5za19wYWNpbmdfc2hpZnQ3LmZsZW50Lmd6Lg0KU3Vt
+bWFyeSBvZiB0Y3BfbnVwIHRlc3QgcnVuICdza19wYWNpbmdfc2hpZnQ3JyAoYXQgMjAxOC0wOC0x
+MyAwNDoyOTo0OC4wMjA5NzQpOg0KDQogICAgICAgICAgICAgICAgICAgICAgICAgICBhdmcgICAg
+ICAgbWVkaWFuICAgICAgICAgICMgZGF0YSBwdHMNCiBQaW5nIChtcykgSUNNUCA6ICAgICAgICAx
+NC4xMiAgICAgICAgIDYuNjEgbXMgICAgICAgICAgICAgIDM1MA0KIFRDUCB1cGxvYWQgYXZnIDog
+ICAgICAgMTg4LjE5ICAgICAgIDE4OC4wNCBNYml0cy9zICAgICAgICAgMzAxDQogVENQIHVwbG9h
+ZCBzdW0gOiAgICAgICAxODguMTkgICAgICAgMTg4LjA0IE1iaXRzL3MgICAgICAgICAzMDENCiBU
+Q1AgdXBsb2FkOjoxICA6ICAgICAgIDE4OC4xOSAgICAgICAxOTAuODggTWJpdHMvcyAgICAgICAg
+IDI1OA0Kd2dvbmdAd2dvbmctTGF0aXR1ZGUtRTU0NDAtMTp+L2ZsZW50JCBmbGVudCAtSCAxOTIu
+MTY4LjEuNyAtdCAic2tfcGFjaW5nX3NoaWZ0NyIgdGNwX251cCAtLXRlc3QtcGFyYW1ldGVyIHVw
+bG9hZF9zdHJlYW1zPTENClN0YXJ0ZWQgRmxlbnQgMS4yLjIgdXNpbmcgUHl0aG9uIDIuNy4xMi4N
+ClN0YXJ0aW5nIHRjcF9udXAgdGVzdC4gRXhwZWN0ZWQgcnVuIHRpbWU6IDcwIHNlY29uZHMuDQpE
+YXRhIGZpbGUgd3JpdHRlbiB0byAuL3RjcF9udXAtMjAxOC0wOC0xM1QxMjMxMjkuNTI2NTE0LnNr
+X3BhY2luZ19zaGlmdDcuZmxlbnQuZ3ouDQpTdW1tYXJ5IG9mIHRjcF9udXAgdGVzdCBydW4gJ3Nr
+X3BhY2luZ19zaGlmdDcnIChhdCAyMDE4LTA4LTEzIDA0OjMxOjI5LjUyNjUxNCk6DQoNCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGF2ZyAgICAgICBtZWRpYW4gICAgICAgICAgIyBkYXRhIHB0
+cw0KIFBpbmcgKG1zKSBJQ01QIDogICAgICAgIDEwLjMxICAgICAgICAgNi4zMiBtcyAgICAgICAg
+ICAgICAgMzUwDQogVENQIHVwbG9hZCBhdmcgOiAgICAgICAyMTIuNzAgICAgICAgMjMzLjY5IE1i
+aXRzL3MgICAgICAgICAzMDENCiBUQ1AgdXBsb2FkIHN1bSA6ICAgICAgIDIxMi43MCAgICAgICAy
+MzMuNjkgTWJpdHMvcyAgICAgICAgIDMwMQ0KIFRDUCB1cGxvYWQ6OjEgIDogICAgICAgMjEyLjcw
+ICAgICAgIDIzNy42NSBNYml0cy9zICAgICAgICAgMjYyDQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
