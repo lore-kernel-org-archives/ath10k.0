@@ -1,21 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpAre-0003At-WD
- for ath10k@lists.infradead.org; Mon, 13 Aug 2018 11:18:24 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: RE: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
-In-Reply-To: <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
- <87sh3pdtpg.fsf@toke.dk>
- <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
- <87mutue4y8.fsf@toke.dk>
- <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
-Date: Mon, 13 Aug 2018 13:18:04 +0200
-Message-ID: <87600eecr7.fsf@toke.dk>
+ id 1fpGQx-00022Q-OW
+ for ath10k@lists.infradead.org; Mon, 13 Aug 2018 17:15:13 +0000
+Received: by mail-lj1-x242.google.com with SMTP id j19-v6so13172726ljc.7
+ for <ath10k@lists.infradead.org>; Mon, 13 Aug 2018 10:15:00 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com.
+ [209.85.208.176])
+ by smtp.gmail.com with ESMTPSA id j64-v6sm3425850lfe.56.2018.08.13.10.14.56
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 13 Aug 2018 10:14:58 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id l15-v6so13160838lji.6
+ for <ath10k@lists.infradead.org>; Mon, 13 Aug 2018 10:14:56 -0700 (PDT)
 MIME-Version: 1.0
+References: <20180810233948.144792-1-briannorris@chromium.org>
+ <5B6F2A47.7070502@broadcom.com>
+In-Reply-To: <5B6F2A47.7070502@broadcom.com>
+From: Brian Norris <briannorris@chromium.org>
+Date: Mon, 13 Aug 2018 10:14:44 -0700
+Message-ID: <CA+ASDXOeybJAsWJtVBdLdQ=6xThJja5MaEoa3dERKZ-shkbDkg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: retrieve MAC address from firmware if provided
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +33,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@qti.qualcomm.com>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, govinds@codeaurora.org, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
 
-Wen Gong <wgong@qti.qualcomm.com> writes:
-
-> Hi Toke,
+On Sat, Aug 11, 2018 at 11:26 AM Arend van Spriel
+<arend.vanspriel@broadcom.com> wrote:
 >
-> I have tested with your method for shift 6/8/10/7 all twice time in
-> open air environment.
+> On 8/11/2018 1:39 AM, Brian Norris wrote:
+> > Devices may provide their own MAC address via system firmware (e.g.,
+>
+> You got me confused by using just "firmware" in the subject.
 
-Great, thanks!
+Yeah...I started by writing this patch with device tree specifically
+(of_get_mac_address()), and then later found that there were generic
+"device" helpers for this, which can assist with other sorts of
+firmware nodes. It was easier to put a name on a device tree patch
+than on a "device" patch. I suppose "system firmware" might be a
+better description?
 
-> Shift 6:
-> wgong@wgong-Latitude-E5440-1:~/flent$ flent -H 192.168.1.7 -t
-> "sk_pacing_shift6" tcp_nup --test-parameter upload_streams=1
+> > device tree), especially in the case where the device doesn't have a
+> > useful EEPROM on which to store its MAC address (e.g., for integrated
+> > Wifi).
+> >
+> > Use the generic device helper to retrieve the MAC address, and (if
+> > present) honor it above the MAC address advertised by the card.
+>
+> But this put me back on track ;-)
 
-Just to be sure: You are running this on your laptop? And that laptop
-has the ath10k and the modified kernel you are testing? Is 192.168.1.7
-the AP or another device?
+Let me know if you have a better way to clarify. I can resend with a
+slightly modified subject (s/firmware/system firmware/), or let Kalle
+do it, if that's the only thing to change.
 
-I'd like to see what happens when the link is fully saturated my
-multiple streams as well. Could you repeat the tests with
-upload_streams=5, please? And if you could share the .flent.gz files
-(upload them somewhere, or email me off-list), that would be useful as
-well :)
-
-Thanks,
-
--Toke
+Brian
 
 _______________________________________________
 ath10k mailing list
