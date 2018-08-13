@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtpbgau2.qq.com ([54.206.34.216])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fp6D6-00071L-CU
- for ath10k@lists.infradead.org; Mon, 13 Aug 2018 06:20:14 +0000
-From: "=?utf-8?B?THVvIENob25nanVu?=" <luochongjun@gl-inet.com>
-Subject: QCA9887 enable  adaptive-cca
-Mime-Version: 1.0
-Date: Mon, 13 Aug 2018 14:19:37 +0800
-Message-ID: <tencent_2B132A5718204B7D23A56911@qq.com>
+ id 1fpAre-0003At-WD
+ for ath10k@lists.infradead.org; Mon, 13 Aug 2018 11:18:24 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: RE: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+In-Reply-To: <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+Date: Mon, 13 Aug 2018 13:18:04 +0200
+Message-ID: <87600eecr7.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +28,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?B?YXRoMTBr?= <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@qti.qualcomm.com>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-I found that QCA9887 does not have firmware supporting adaptive-cca functionality.
-The log information of the firmware is as follows:
-___
-[   33.181470] ath10k_pci 0000:00:00.0: qca9887 hw1.0 target 0x4100016d chip_id 0x004000ff sub 0000:0000
-[   33.191040] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-[   33.203814] ath10k_pci 0000:00:00.0: firmware ver 10.2.4-1.0-00033 api 5 features no-p2p,ignore-otp,skip-clock-init,mfp,allows-mesh-bcast crc32 c232a0c3
-[   33.282624] ath10k_pci 0000:00:00.0: Direct firmware load for ath10k/QCA9887/hw1.0/board-2.bin failed with error -2
-[   33.293441] ath10k_pci 0000:00:00.0: Falling back to user helper
-[   33.467321] firmware ath10k!QCA9887!hw1.0!board-2.bin: firmware_loading_store: map pages failed
-[   33.487054] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A crc32 546cca0d
-[   34.582873] ath10k_pci 0000:00:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal file max-sta 128 raw 0 hwcrypto 1
-[   34.718163] ath: EEPROM regdomain: 0x0
-[   34.718169] ath: EEPROM indicates default country code should be used
-[   34.718172] ath: doing EEPROM country->regdmn map search
-[   34.718183] ath: country maps to regdmn code: 0x3a
-[   34.718187] ath: Country alpha2 being used: US
-[   34.718190] ath: Regpair used: 0x3a
-__
-Is there any firmware supporting adaptive-cca function?
+Wen Gong <wgong@qti.qualcomm.com> writes:
 
+> Hi Toke,
+>
+> I have tested with your method for shift 6/8/10/7 all twice time in
+> open air environment.
+
+Great, thanks!
+
+> Shift 6:
+> wgong@wgong-Latitude-E5440-1:~/flent$ flent -H 192.168.1.7 -t
+> "sk_pacing_shift6" tcp_nup --test-parameter upload_streams=1
+
+Just to be sure: You are running this on your laptop? And that laptop
+has the ath10k and the modified kernel you are testing? Is 192.168.1.7
+the AP or another device?
+
+I'd like to see what happens when the link is fully saturated my
+multiple streams as well. Could you repeat the tests with
+upload_streams=5, please? And if you could share the .flent.gz files
+(upload them somewhere, or email me off-list), that would be useful as
+well :)
 
 Thanks,
-Luo
+
+-Toke
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
