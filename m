@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpXIc-0006T9-TQ
- for ath10k@lists.infradead.org; Tue, 14 Aug 2018 11:15:44 +0000
+ id 1fpYp6-0002s1-7W
+ for ath10k@lists.infradead.org; Tue, 14 Aug 2018 12:53:21 +0000
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
+ <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+ <1527069018.3759.15.camel@sipsolutions.net>
+From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Message-ID: <eede64cf-ecf3-6697-a338-b7eb4c9bcd27@codeaurora.org>
+Date: Tue, 14 Aug 2018 18:23:05 +0530
 MIME-Version: 1.0
-Date: Tue, 14 Aug 2018 16:45:31 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH v4 6/6] ath10k: Add QMI message handshake for wcn3990
- client
-In-Reply-To: <20180813200633.GA38014@ban.mtv.corp.google.com>
-References: <20180723123428.12993-1-govinds@codeaurora.org>
- <20180723123428.12993-7-govinds@codeaurora.org>
- <20180813200633.GA38014@ban.mtv.corp.google.com>
-Message-ID: <7658c6c9d8981424cf60a01b3bd5e47d@codeaurora.org>
+In-Reply-To: <1527069018.3759.15.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,92 +29,66 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: devicetree@vger.kernel.org, robh@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, niklas.cassel@linaro.org, andy.gross@linaro.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Thanks Brian for the review.
 
-On 2018-08-14 01:36, Brian Norris wrote:
-> Hi Govind,
-> 
-> On Mon, Jul 23, 2018 at 06:04:28PM +0530, Govind Singh wrote:
->> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
->> subsystem. This layer is responsible for communicating qmi control
->> messages to wifi fw QMI service using QMI messaging protocol.
->> 
->> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
->> between components running between remote processors with underlying
->> transport layer based on integrated chipset(shared memory) or
->> discrete chipset(PCI/USB/SDIO/UART).
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/Kconfig  |    1 +
->>  drivers/net/wireless/ath/ath10k/Makefile |    4 +-
->>  drivers/net/wireless/ath/ath10k/core.c   |    6 +-
->>  drivers/net/wireless/ath/ath10k/core.h   |    2 +
->>  drivers/net/wireless/ath/ath10k/qmi.c    | 1019 
->> ++++++++++++++++++++++
->>  drivers/net/wireless/ath/ath10k/qmi.h    |  129 +++
->>  drivers/net/wireless/ath/ath10k/snoc.c   |  262 +++++-
->>  drivers/net/wireless/ath/ath10k/snoc.h   |    4 +
->>  8 files changed, 1417 insertions(+), 10 deletions(-)
->>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
->>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
->> 
-> 
->> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c 
->> b/drivers/net/wireless/ath/ath10k/qmi.c
->> new file mode 100644
->> index 000000000000..d91499a7354c
->> --- /dev/null
->> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
->> @@ -0,0 +1,1019 @@
-> 
-> ...
-> 
->> +int ath10k_qmi_deinit(struct ath10k *ar)
->> +{
->> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
->> +	struct ath10k_qmi *qmi = ar_snoc->qmi;
->> +
->> +	cancel_work_sync(&qmi->event_work);
->> +	destroy_workqueue(qmi->event_wq);
-> 
-> I believe this is incorrect ordering. You should not be destroying the
-> work queue that handles QMI event responses before you release the QMI
-> handle. As it stands, this means you segfault during 'rmmod'.
-> 
 
-Yes, correct. I will correct this in v5 as this is still not merged in 
-ath10k-next.
+On 5/23/2018 3:20 PM, Johannes Berg wrote:
+> On Mon, 2018-05-21 at 12:12 +0530, Manikanta Pubbisetty wrote:
+>>> Do you know why it actually broke it? I mean, we should've turned off
+>>> the strict requirement for sw crypto control only for the GTK, and that
+>>> shouldn't matter so much?
+>> With the change db3bdcb9c3ff, AP/VLAN support is advertised by the
+>> driver conditionally; the primary reason for doing this is to support
+>> VLAN operations on sw crypto controlled devices.
+> Right, or, well *not* supporting it.
+>
+>> AP also creates AP/VLAN devices for supporting 4-addr clients and since
+>> the driver now advertises AP/VLAN support conditionally, the 4-addr
+>> operation which has no relation to the VLANs(Per VLAN GTKs) was broken
+>> on some ath10k devices.
+> Right. Like I said, splitting those two capabilities somehow would be
+> best.
+>
+>>>> + * @IEEE80211_HW_SUPPORTS_SW_ENCRYPT: Device is capable of transmitting
+>>>> + *     frames encrypted in software, only valid when SW_CRYPTO_CONTROL
+>>>> + *     is enabled. Based on this flag, mac80211 can allow/disallow VLAN
+>>>> + *     operations in the BSS.
+>>> Based on the name and initial description, this sounds equivalent to
+>>> just turning off SW_CRYPTO_CONTROL. I think that's not the intent, but
+>>> would need some renaming.
+>> I can rename it to something which is very specific to VLAN support on
+>> sw crypto controlled devices if that is okay.
+> I don't think that makes sense. If we split the capability of AP_VLAN
+> and AP_VLAN_FOR_4ADDR at the "root", then we don't need to play with all
+> these things. Yes, this is slightly awkward for userspace, and perhaps
+> with the interface combination checks, but I'd like you to look at that.
 
->> +	qmi_handle_release(&qmi->qmi_hdl);
-> 
-> I think this should be:
-> 
-> 	qmi_handle_release(&qmi->qmi_hdl);
-> 	cancel_work_sync(&qmi->event_work);
-> 	destroy_workqueue(qmi->event_wq);
-> 
->> +	qmi = NULL;
-> 
-> This assignment is pointless, as 'qmi' is a local variable. Maybe you
-> meant to clear the struct member, as a precaution? So this would be:
-> 
-> 	ar_snoc->qmi = NULL;
-> 
+Hi Johannes,
 
-Yes, i will correct this in v5.
+I was working on splitting the 4-addr functionality from AP/VLAN iftype; 
+I have introduced a new iftype NL80211_IFTYPE_AP_4ADDR and moved the 
+4-addr handling from AP/VLAN to this new iftype. But this approach 
+breaks the backward compatibility with older userspace applications. 
+Since I am completely moving the 4-addr handling to the new type, older 
+applications which do not understand this new type will simply fail and 
+4-addr mode will be completely broken.
 
-> Brian
-> 
->> +
->> +	return 0;
->> +}
+Currently, whenever a 4-addr client attempts a connection, hostapd just 
+creates a AP/VLAN interface and moves the 4-addr client to the AP/VLAN 
+iface; there are no other checks. I had no other option other than going 
+with a new iftype for 4-addr handling.
+
+Is there a way we can maintain backward compatibility with this 
+approach? Retaining the 4-addr handling in AP/VLAN and duplicating the 
+same functionality to the new iftype seems will work but I am not sure 
+if this is the right approach.
 
 Thanks,
-Govind
+Manikanta
+
+
 
 _______________________________________________
 ath10k mailing list
