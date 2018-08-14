@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpSJ5-0002Uf-S3
- for ath10k@lists.infradead.org; Tue, 14 Aug 2018 05:55:53 +0000
-From: Wen Gong <wgong@qti.qualcomm.com>
-Subject: RE: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
-Date: Tue, 14 Aug 2018 05:55:31 +0000
-Message-ID: <68d91488f58f4a449908fc7eeebb8b34@aptaiexm02f.ap.qualcomm.com>
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
- <87sh3pdtpg.fsf@toke.dk>
- <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
- <87mutue4y8.fsf@toke.dk>
- <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
- <87600eecr7.fsf@toke.dk>
-In-Reply-To: <87600eecr7.fsf@toke.dk>
-Content-Language: en-US
+ id 1fpXIc-0006T9-TQ
+ for ath10k@lists.infradead.org; Tue, 14 Aug 2018 11:15:44 +0000
 MIME-Version: 1.0
+Date: Tue, 14 Aug 2018 16:45:31 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH v4 6/6] ath10k: Add QMI message handshake for wcn3990
+ client
+In-Reply-To: <20180813200633.GA38014@ban.mtv.corp.google.com>
+References: <20180723123428.12993-1-govinds@codeaurora.org>
+ <20180723123428.12993-7-govinds@codeaurora.org>
+ <20180813200633.GA38014@ban.mtv.corp.google.com>
+Message-ID: <7658c6c9d8981424cf60a01b3bd5e47d@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,221 +21,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: devicetree@vger.kernel.org, robh@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, david.brown@linaro.org, niklas.cassel@linaro.org, andy.gross@linaro.org
 
-> -----Original Message-----
-> From: Toke H=F8iland-J=F8rgensen <toke@toke.dk>
-> Sent: Monday, August 13, 2018 7:18 PM
-> To: Wen Gong <wgong@qti.qualcomm.com>; Wen Gong
-> <wgong@codeaurora.org>; ath10k@lists.infradead.org;
-> johannes@sipsolutions.net
-> Cc: linux-wireless@vger.kernel.org
-> Subject: RE: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
-> chips
-> =
+Thanks Brian for the review.
 
-> Wen Gong <wgong@qti.qualcomm.com> writes:
-> =
+On 2018-08-14 01:36, Brian Norris wrote:
+> Hi Govind,
+> 
+> On Mon, Jul 23, 2018 at 06:04:28PM +0530, Govind Singh wrote:
+>> Add WCN3990 QMI client handshakes for Q6 integrated WLAN connectivity
+>> subsystem. This layer is responsible for communicating qmi control
+>> messages to wifi fw QMI service using QMI messaging protocol.
+>> 
+>> Qualcomm MSM Interface(QMI) is a messaging format used to communicate
+>> between components running between remote processors with underlying
+>> transport layer based on integrated chipset(shared memory) or
+>> discrete chipset(PCI/USB/SDIO/UART).
+>> 
+>> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/Kconfig  |    1 +
+>>  drivers/net/wireless/ath/ath10k/Makefile |    4 +-
+>>  drivers/net/wireless/ath/ath10k/core.c   |    6 +-
+>>  drivers/net/wireless/ath/ath10k/core.h   |    2 +
+>>  drivers/net/wireless/ath/ath10k/qmi.c    | 1019 
+>> ++++++++++++++++++++++
+>>  drivers/net/wireless/ath/ath10k/qmi.h    |  129 +++
+>>  drivers/net/wireless/ath/ath10k/snoc.c   |  262 +++++-
+>>  drivers/net/wireless/ath/ath10k/snoc.h   |    4 +
+>>  8 files changed, 1417 insertions(+), 10 deletions(-)
+>>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.c
+>>  create mode 100644 drivers/net/wireless/ath/ath10k/qmi.h
+>> 
+> 
+>> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c 
+>> b/drivers/net/wireless/ath/ath10k/qmi.c
+>> new file mode 100644
+>> index 000000000000..d91499a7354c
+>> --- /dev/null
+>> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+>> @@ -0,0 +1,1019 @@
+> 
+> ...
+> 
+>> +int ath10k_qmi_deinit(struct ath10k *ar)
+>> +{
+>> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>> +	struct ath10k_qmi *qmi = ar_snoc->qmi;
+>> +
+>> +	cancel_work_sync(&qmi->event_work);
+>> +	destroy_workqueue(qmi->event_wq);
+> 
+> I believe this is incorrect ordering. You should not be destroying the
+> work queue that handles QMI event responses before you release the QMI
+> handle. As it stands, this means you segfault during 'rmmod'.
+> 
 
-> > Hi Toke,
-> >
-> > I have tested with your method for shift 6/8/10/7 all twice time in
-> > open air environment.
-> =
+Yes, correct. I will correct this in v5 as this is still not merged in 
+ath10k-next.
 
-> Great, thanks!
-> =
+>> +	qmi_handle_release(&qmi->qmi_hdl);
+> 
+> I think this should be:
+> 
+> 	qmi_handle_release(&qmi->qmi_hdl);
+> 	cancel_work_sync(&qmi->event_work);
+> 	destroy_workqueue(qmi->event_wq);
+> 
+>> +	qmi = NULL;
+> 
+> This assignment is pointless, as 'qmi' is a local variable. Maybe you
+> meant to clear the struct member, as a precaution? So this would be:
+> 
+> 	ar_snoc->qmi = NULL;
+> 
 
-> > Shift 6:
-> > wgong@wgong-Latitude-E5440-1:~/flent$ flent -H 192.168.1.7 -t
-> > "sk_pacing_shift6" tcp_nup --test-parameter upload_streams=3D1
-> =
+Yes, i will correct this in v5.
 
-> Just to be sure: You are running this on your laptop? And that laptop has=
- the
-> ath10k and the modified kernel you are testing? Is 192.168.1.7 the AP or
-> another device?
-Hi Toke,
-Yes, I run on my laptop(Dell LATITUDE E5440 + QCA6174 PCI wireless card) in=
- open air environment,
-Kernel is 4.18.0-rc2-wt-ath+ #2 SMP which is built myself.
-The mac80211.ko/ath10k is built with the 2 patches.
-192.168.1.7 is another device(PC installed with 4.4.0-116-generic #140~14.0=
-4.1-Ubuntu)
-> =
+> Brian
+> 
+>> +
+>> +	return 0;
+>> +}
 
-> I'd like to see what happens when the link is fully saturated my multiple
-> streams as well. Could you repeat the tests with upload_streams=3D5, plea=
-se?
-> And if you could share the .flent.gz files (upload them somewhere, or ema=
-il
-> me off-list), that would be useful as well :)
-
-Test result with upload_streams=3D5:
-
-sk_pacing_shift6:
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift6" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T105332.356811.sk_pacing_shift6.fl=
-ent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift6' (at 2018-08-14 02:53:32.3568=
-11):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        20.46        13.85 ms              350
- TCP upload avg :        66.30        68.71 Mbits/s         301
- TCP upload sum :       331.49       343.55 Mbits/s         301
- TCP upload::1  :        60.80        64.65 Mbits/s         202
- TCP upload::2  :        77.72        82.89 Mbits/s         211
- TCP upload::3  :        60.52        56.09 Mbits/s         202
- TCP upload::4  :        67.39        73.56 Mbits/s         204
- TCP upload::5  :        65.06        71.97 Mbits/s         201
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift6" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T105554.583603.sk_pacing_shift6.fl=
-ent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift6' (at 2018-08-14 02:55:54.5836=
-03):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        20.86        13.80 ms              350
- TCP upload avg :        75.88        83.17 Mbits/s         301
- TCP upload sum :       379.42       415.84 Mbits/s         301
- TCP upload::1  :        82.07        90.73 Mbits/s         225
- TCP upload::2  :        74.08        78.29 Mbits/s         204
- TCP upload::3  :        70.44        75.65 Mbits/s         217
- TCP upload::4  :        82.70        92.86 Mbits/s         223
- TCP upload::5  :        70.13        76.87 Mbits/s         210
-
-sk_pacing_shift7:
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift7" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T105759.169367.sk_pacing_shift7.fl=
-ent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift7' (at 2018-08-14 02:57:59.1693=
-67):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        24.66        15.55 ms              350
- TCP upload avg :        65.33        72.83 Mbits/s         301
- TCP upload sum :       326.67       363.10 Mbits/s         301
- TCP upload::1  :        77.60        92.93 Mbits/s         214
- TCP upload::2  :        67.22        75.95 Mbits/s         213
- TCP upload::3  :        65.81        74.54 Mbits/s         205
- TCP upload::4  :        63.06        70.37 Mbits/s         207
- TCP upload::5  :        52.98        55.78 Mbits/s         198
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift7" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T105923.620572.sk_pacing_shift7.fl=
-ent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift7' (at 2018-08-14 02:59:23.6205=
-72):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        25.03        14.25 ms              350
- TCP upload avg :        74.35        85.64 Mbits/s         297
- TCP upload sum :       371.77       428.19 Mbits/s         297
- TCP upload::1  :        74.12        82.55 Mbits/s         216
- TCP upload::2  :        67.78        71.87 Mbits/s         208
- TCP upload::3  :        82.40        94.72 Mbits/s         210
- TCP upload::4  :        70.77        82.43 Mbits/s         206
- TCP upload::5  :        76.70        88.62 Mbits/s         210
-
-sk_pacing_shift8:
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift8" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T110334.670845.sk_pacing_shift8.fl=
-ent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift8' (at 2018-08-14 03:03:34.6708=
-45):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        25.03        19.50 ms              350
- TCP upload avg :        58.11        59.70 Mbits/s         301
- TCP upload sum :       290.53       298.51 Mbits/s         301
- TCP upload::1  :        51.37        51.74 Mbits/s         197
- TCP upload::2  :        42.02        43.66 Mbits/s         192
- TCP upload::3  :        61.17        62.33 Mbits/s         200
- TCP upload::4  :        66.11        70.31 Mbits/s         198
- TCP upload::5  :        69.86        76.31 Mbits/s         202
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift8" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T110557.587769.sk_pacing_shift8.fl=
-ent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift8' (at 2018-08-14 03:05:57.5877=
-69):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        21.50        13.05 ms              350
- TCP upload avg :        61.59        62.00 Mbits/s         301
- TCP upload sum :       307.93       310.01 Mbits/s         301
- TCP upload::1  :        69.70        76.22 Mbits/s         210
- TCP upload::2  :        68.51        74.88 Mbits/s         207
- TCP upload::3  :        71.06        77.57 Mbits/s         200
- TCP upload::4  :        47.08        51.42 Mbits/s         196
- TCP upload::5  :        51.58        51.98 Mbits/s         203
-
-sk_pacing_shift10:
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift10" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T110814.434543.sk_pacing_shift10.f=
-lent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift10' (at 2018-08-14 03:08:14.434=
-543):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        31.57        19.35 ms              350
- TCP upload avg :        56.61        62.61 Mbits/s         301
- TCP upload sum :       283.07       313.07 Mbits/s         301
- TCP upload::1  :        39.39        42.96 Mbits/s         187
- TCP upload::2  :        62.20        72.39 Mbits/s         193
- TCP upload::3  :        61.72        74.31 Mbits/s         191
- TCP upload::4  :        61.86        73.74 Mbits/s         190
- TCP upload::5  :        57.90        65.11 Mbits/s         193
-wgong@wgong-Latitude-E5440-1:~/flent/5stream$ flent -H 192.168.1.7 -t "sk_p=
-acing_shift10" tcp_nup --test-parameter upload_streams=3D5
-Started Flent 1.2.2 using Python 2.7.12.
-Starting tcp_nup test. Expected run time: 70 seconds.
-Data file written to ./tcp_nup-2018-08-14T110931.986159.sk_pacing_shift10.f=
-lent.gz.
-Summary of tcp_nup test run 'sk_pacing_shift10' (at 2018-08-14 03:09:31.986=
-159):
-
-                           avg       median          # data pts
- Ping (ms) ICMP :        19.23        13.20 ms              350
- TCP upload avg :        76.36        81.37 Mbits/s         301
- TCP upload sum :       381.80       406.85 Mbits/s         301
- TCP upload::1  :        64.95        67.91 Mbits/s         212
- TCP upload::2  :        82.16        92.35 Mbits/s         215
- TCP upload::3  :        67.51        70.18 Mbits/s         213
- TCP upload::4  :        77.42        82.11 Mbits/s         232
- TCP upload::5  :        89.76        99.96 Mbits/s         226
-
-> =
-
-> Thanks,
-> =
-
-> -Toke
+Thanks,
+Govind
 
 _______________________________________________
 ath10k mailing list
