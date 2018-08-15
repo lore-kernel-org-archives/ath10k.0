@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpjhs-0008PS-Gl
- for ath10k@lists.infradead.org; Wed, 15 Aug 2018 00:30:37 +0000
+ id 1fpjht-0008PS-Rn
+ for ath10k@lists.infradead.org; Wed, 15 Aug 2018 00:30:39 +0000
 From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Subject: [PATCH 0/3] Add support for ftm responder configuration
-Date: Tue, 14 Aug 2018 17:30:15 -0700
-Message-Id: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
+Subject: [PATCH 1/3] nl80211: add support to configure FTM responder
+ functionality
+Date: Tue, 14 Aug 2018 17:30:16 -0700
+Message-Id: <1534293018-4930-2-git-send-email-pradeepc@codeaurora.org>
+In-Reply-To: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
+References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +26,133 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Currently ftm_responder parameter in hostapd.conf is only used for fine
-timing measurement (FTM) capability advertisement and actual control of
-the functionality is with low-level device/driver. This leads to confusion
-to the user when the capability advertisement is different from actual FTM
-responder functionality.
+Allow userspace to enable or disable fine timing measurement
+responder functionality in AP mode. This can be done at AP start.
 
-For example, FTM responder capability advertisement is set to 'disabled',
-which would imply that AP must not respond to FTM requests, but user sees
-AP still responding to FTM requests, as the functionality is enabled in
-the driver.
+A new EXT_FEATURE flag is introduced for drivers to advertise
+the capability.
 
-The patch set allows userspace to configure FTM responder functionality
-with the addition of new Netlink attribute NL80211_ATTR_FTM_RESPONDER
-and also adds extended feature flag for the drivers to advertise the
-support. Sending '0' to disable FTM responder would imply AP does not
-respond to FTM requests and sending '1' to enable FTM responder would
-imply that AP responds to all FTM requests.
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+---
+ include/net/cfg80211.h       |  2 ++
+ include/uapi/linux/nl80211.h | 20 ++++++++++++++++++++
+ net/wireless/nl80211.c       | 19 +++++++++++++++++++
+ 3 files changed, 41 insertions(+)
 
-Pradeep Kumar Chitrapu (3):
-  nl80211: add support to configure FTM responder functionality
-  mac80211: Add support to notify ftm responder configuration to the
-    driver
-  ath10k: Add support to configure ftm responder role
-
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/mac.c  | 29 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c  |  4 ++++
- drivers/net/wireless/ath/ath10k/wmi.h  | 10 ++++++++++
- include/net/cfg80211.h                 |  2 ++
- include/net/mac80211.h                 |  4 ++++
- include/uapi/linux/nl80211.h           | 20 ++++++++++++++++++++
- net/mac80211/cfg.c                     |  4 ++++
- net/mac80211/util.c                    |  3 +++
- net/wireless/nl80211.c                 | 19 +++++++++++++++++++
- 10 files changed, 96 insertions(+)
-
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 9a850973e09a..beb383a41657 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -851,6 +851,7 @@ struct cfg80211_bitrate_mask {
+  * @vht_cap: VHT capabilities (or %NULL if VHT isn't enabled)
+  * @ht_required: stations must support HT
+  * @vht_required: stations must support VHT
++ * @ftm_responder: enable or disable FTM responder functionality
+  */
+ struct cfg80211_ap_settings {
+ 	struct cfg80211_chan_def chandef;
+@@ -875,6 +876,7 @@ struct cfg80211_ap_settings {
+ 	const struct ieee80211_ht_cap *ht_cap;
+ 	const struct ieee80211_vht_cap *vht_cap;
+ 	bool ht_required, vht_required;
++	int ftm_responder;
+ };
+ 
+ /**
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index 7acc16f34942..0a64034343c7 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -2241,6 +2241,11 @@ enum nl80211_commands {
+  *	association request when used with NL80211_CMD_NEW_STATION). Can be set
+  *	only if %NL80211_STA_FLAG_WME is set.
+  *
++ * @NL80211_ATTR_FTM_RESPONDER: attribute which user-space can include in
++ *	%NL80211_CMD_START_AP to enable(1) or disable(0) fine timing measurement
++ *	(FTM) responder functionality.  If not set, it means don't care and
++ *	the device will decide what to use.
++ *
+  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+  * @NL80211_ATTR_MAX: highest attribute number currently defined
+  * @__NL80211_ATTR_AFTER_LAST: internal use
+@@ -2682,6 +2687,8 @@ enum nl80211_attrs {
+ 
+ 	NL80211_ATTR_HE_CAPABILITY,
+ 
++	NL80211_ATTR_FTM_RESPONDER,
++
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+ 	__NL80211_ATTR_AFTER_LAST,
+@@ -5223,6 +5230,8 @@ enum nl80211_feature_flags {
+  * @NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT: Driver/device can omit all data
+  *	except for supported rates from the probe request content if requested
+  *	by the %NL80211_SCAN_FLAG_MIN_PREQ_CONTENT flag.
++ * @NL80211_EXT_FEATURE_SET_FTM_RESPONDER: Driver supports enabling and
++ *	disabling fine timing measurement responder role.
+  *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+@@ -5259,6 +5268,7 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_TXQS,
+ 	NL80211_EXT_FEATURE_SCAN_RANDOM_SN,
+ 	NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT,
++	NL80211_EXT_FEATURE_SET_FTM_RESPONDER,
+ 
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
+@@ -5798,4 +5808,14 @@ enum nl80211_external_auth_action {
+ 	NL80211_EXTERNAL_AUTH_ABORT,
+ };
+ 
++/**
++ * enum nl80211_ftm_responder_state - fine timing measurement responder state
++ * @NL80211_FTM_RESP_DISABLED: FTM responder is disabled
++ * @NL80211_FTM_RESP_ENABLED: FTM responder is enabled
++ */
++enum nl80211_ftm_responder_state {
++	NL80211_FTM_RESP_DISABLED,
++	NL80211_FTM_RESP_ENABLED,
++};
++
+ #endif /* __LINUX_NL80211_H */
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 5fb9b7dd9831..dfdc1cb07add 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -430,6 +430,7 @@ enum nl80211_multicast_groups {
+ 	[NL80211_ATTR_TXQ_QUANTUM] = { .type = NLA_U32 },
+ 	[NL80211_ATTR_HE_CAPABILITY] = { .type = NLA_BINARY,
+ 					 .len = NL80211_HE_MAX_CAPABILITY_LEN },
++	[NL80211_ATTR_FTM_RESPONDER] = { .type = NLA_U32},
+ };
+ 
+ /* policy for the key attributes */
+@@ -4339,6 +4340,24 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
+ 			return PTR_ERR(params.acl);
+ 	}
+ 
++	params.ftm_responder = -1;
++	if (info->attrs[NL80211_ATTR_FTM_RESPONDER]) {
++		if (!wiphy_ext_feature_isset(
++			    &rdev->wiphy,
++			    NL80211_EXT_FEATURE_SET_FTM_RESPONDER)) {
++			GENL_SET_ERR_MSG(info,
++					 "FTM Responder config not supported\n");
++			return -EOPNOTSUPP;
++		}
++
++		params.ftm_responder =
++			nla_get_u32(info->attrs[NL80211_ATTR_FTM_RESPONDER]);
++
++		if (params.ftm_responder != NL80211_FTM_RESP_DISABLED &&
++		    params.ftm_responder != NL80211_FTM_RESP_ENABLED)
++			return -EINVAL;
++	}
++
+ 	nl80211_calculate_ap_params(&params);
+ 
+ 	wdev_lock(wdev);
 -- 
 1.9.1
 
