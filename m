@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
- helo=sipsolutions.net)
+Received: from mail-it0-f67.google.com ([209.85.214.67])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpudf-0000Om-GA
- for ath10k@lists.infradead.org; Wed, 15 Aug 2018 12:11:00 +0000
-Message-ID: <1534334984.3547.40.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/3] mac80211: Add support to notify ftm responder
- configuration to the driver
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 15 Aug 2018 14:09:44 +0200
-In-Reply-To: <1534293018-4930-3-git-send-email-pradeepc@codeaurora.org>
-References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
- <1534293018-4930-3-git-send-email-pradeepc@codeaurora.org>
-Mime-Version: 1.0
+ id 1fpyHU-0005A9-Ce
+ for ath10k@lists.infradead.org; Wed, 15 Aug 2018 16:04:21 +0000
+Received: by mail-it0-f67.google.com with SMTP id d10-v6so2367359itj.5
+ for <ath10k@lists.infradead.org>; Wed, 15 Aug 2018 09:04:10 -0700 (PDT)
+Date: Wed, 15 Aug 2018 10:04:07 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 3/6] dt: bindings: add bindings for msa memory region
+Message-ID: <20180815160407.GA12553@rob-hp-laptop>
+References: <20180815092637.11455-1-govinds@codeaurora.org>
+ <20180815092637.11455-4-govinds@codeaurora.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20180815092637.11455-4-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +26,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: devicetree@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, andy.gross@linaro.org, niklas.cassel@linaro.org
 
-On Tue, 2018-08-14 at 17:30 -0700, Pradeep Kumar Chitrapu wrote:
-> New bss param ftm_responder is used to notify the driver to
-> enable or disable fine timing request (FTM) responder role in AP mode.
+On Wed, Aug 15, 2018 at 02:56:34PM +0530, Govind Singh wrote:
+> Add device tree binding documentation details of msa
+> memory region for ath10k qmi client for SDM845/APQ8098
+> SoC into "qcom,ath10k.txt".
 > 
-> + * @BSS_CHANGED_FTM_RESPONDER: fime timing reasurement request responder
-> + *	functionality changed for this BSS (AP mode).
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt        | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-You don't really need this since it can only be configured the first
-time you start the AP.
+Please add acks/reviewed-bys when posting new versions.
 
-johannes
-
+Rob
 
 _______________________________________________
 ath10k mailing list
