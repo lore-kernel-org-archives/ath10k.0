@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpjht-0008PS-Rn
- for ath10k@lists.infradead.org; Wed, 15 Aug 2018 00:30:39 +0000
+ id 1fpji4-0008Qd-0I
+ for ath10k@lists.infradead.org; Wed, 15 Aug 2018 00:30:49 +0000
 From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Subject: [PATCH 1/3] nl80211: add support to configure FTM responder
- functionality
-Date: Tue, 14 Aug 2018 17:30:16 -0700
-Message-Id: <1534293018-4930-2-git-send-email-pradeepc@codeaurora.org>
+Subject: [PATCH 2/3] mac80211: Add support to notify ftm responder
+ configuration to the driver
+Date: Tue, 14 Aug 2018 17:30:17 -0700
+Message-Id: <1534293018-4930-3-git-send-email-pradeepc@codeaurora.org>
 In-Reply-To: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
 References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -26,133 +26,74 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Allow userspace to enable or disable fine timing measurement
-responder functionality in AP mode. This can be done at AP start.
-
-A new EXT_FEATURE flag is introduced for drivers to advertise
-the capability.
+New bss param ftm_responder is used to notify the driver to
+enable or disable fine timing request (FTM) responder role in AP mode.
 
 Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
 ---
- include/net/cfg80211.h       |  2 ++
- include/uapi/linux/nl80211.h | 20 ++++++++++++++++++++
- net/wireless/nl80211.c       | 19 +++++++++++++++++++
- 3 files changed, 41 insertions(+)
+ include/net/mac80211.h | 4 ++++
+ net/mac80211/cfg.c     | 4 ++++
+ net/mac80211/util.c    | 3 +++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 9a850973e09a..beb383a41657 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -851,6 +851,7 @@ struct cfg80211_bitrate_mask {
-  * @vht_cap: VHT capabilities (or %NULL if VHT isn't enabled)
-  * @ht_required: stations must support HT
-  * @vht_required: stations must support VHT
-+ * @ftm_responder: enable or disable FTM responder functionality
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 5790f55c241d..6593c611655b 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -308,6 +308,8 @@ struct ieee80211_vif_chanctx_switch {
+  * @BSS_CHANGED_KEEP_ALIVE: keep alive options (idle period or protected
+  *	keep alive) changed.
+  * @BSS_CHANGED_MCAST_RATE: Multicast Rate setting changed for this interface
++ * @BSS_CHANGED_FTM_RESPONDER: fime timing reasurement request responder
++ *	functionality changed for this BSS (AP mode).
+  *
   */
- struct cfg80211_ap_settings {
- 	struct cfg80211_chan_def chandef;
-@@ -875,6 +876,7 @@ struct cfg80211_ap_settings {
- 	const struct ieee80211_ht_cap *ht_cap;
- 	const struct ieee80211_vht_cap *vht_cap;
- 	bool ht_required, vht_required;
+ enum ieee80211_bss_change {
+@@ -337,6 +339,7 @@ enum ieee80211_bss_change {
+ 	BSS_CHANGED_MU_GROUPS		= 1<<23,
+ 	BSS_CHANGED_KEEP_ALIVE		= 1<<24,
+ 	BSS_CHANGED_MCAST_RATE		= 1<<25,
++	BSS_CHANGED_FTM_RESPONDER	= 1<<26,
+ 
+ 	/* when adding here, make sure to change ieee80211_reconfig */
+ };
+@@ -611,6 +614,7 @@ struct ieee80211_bss_conf {
+ 	bool allow_p2p_go_ps;
+ 	u16 max_idle_period;
+ 	bool protected_keep_alive;
 +	int ftm_responder;
  };
  
  /**
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 7acc16f34942..0a64034343c7 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -2241,6 +2241,11 @@ enum nl80211_commands {
-  *	association request when used with NL80211_CMD_NEW_STATION). Can be set
-  *	only if %NL80211_STA_FLAG_WME is set.
-  *
-+ * @NL80211_ATTR_FTM_RESPONDER: attribute which user-space can include in
-+ *	%NL80211_CMD_START_AP to enable(1) or disable(0) fine timing measurement
-+ *	(FTM) responder functionality.  If not set, it means don't care and
-+ *	the device will decide what to use.
-+ *
-  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
-  * @NL80211_ATTR_MAX: highest attribute number currently defined
-  * @__NL80211_ATTR_AFTER_LAST: internal use
-@@ -2682,6 +2687,8 @@ enum nl80211_attrs {
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index d25da0e66da1..75e314b826fb 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -964,6 +964,10 @@ static int ieee80211_start_ap(struct wiphy *wiphy, struct net_device *dev,
+ 		sdata->vif.bss_conf.p2p_noa_attr.oppps_ctwindow |=
+ 					IEEE80211_P2P_OPPPS_ENABLE_BIT;
  
- 	NL80211_ATTR_HE_CAPABILITY,
- 
-+	NL80211_ATTR_FTM_RESPONDER,
++	sdata->vif.bss_conf.ftm_responder = params->ftm_responder;
++	if (params->ftm_responder >= 0)
++		changed |= BSS_CHANGED_FTM_RESPONDER;
 +
- 	/* add attributes here, update the policy in nl80211.c */
+ 	err = ieee80211_assign_beacon(sdata, &params->beacon, NULL);
+ 	if (err < 0) {
+ 		ieee80211_vif_release_channel(sdata);
+diff --git a/net/mac80211/util.c b/net/mac80211/util.c
+index 88efda7c9f8a..835fcf01fabc 100644
+--- a/net/mac80211/util.c
++++ b/net/mac80211/util.c
+@@ -2076,6 +2076,9 @@ int ieee80211_reconfig(struct ieee80211_local *local)
+ 		case NL80211_IFTYPE_AP:
+ 			changed |= BSS_CHANGED_SSID | BSS_CHANGED_P2P_PS;
  
- 	__NL80211_ATTR_AFTER_LAST,
-@@ -5223,6 +5230,8 @@ enum nl80211_feature_flags {
-  * @NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT: Driver/device can omit all data
-  *	except for supported rates from the probe request content if requested
-  *	by the %NL80211_SCAN_FLAG_MIN_PREQ_CONTENT flag.
-+ * @NL80211_EXT_FEATURE_SET_FTM_RESPONDER: Driver supports enabling and
-+ *	disabling fine timing measurement responder role.
-  *
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-@@ -5259,6 +5268,7 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_TXQS,
- 	NL80211_EXT_FEATURE_SCAN_RANDOM_SN,
- 	NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT,
-+	NL80211_EXT_FEATURE_SET_FTM_RESPONDER,
- 
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
-@@ -5798,4 +5808,14 @@ enum nl80211_external_auth_action {
- 	NL80211_EXTERNAL_AUTH_ABORT,
- };
- 
-+/**
-+ * enum nl80211_ftm_responder_state - fine timing measurement responder state
-+ * @NL80211_FTM_RESP_DISABLED: FTM responder is disabled
-+ * @NL80211_FTM_RESP_ENABLED: FTM responder is enabled
-+ */
-+enum nl80211_ftm_responder_state {
-+	NL80211_FTM_RESP_DISABLED,
-+	NL80211_FTM_RESP_ENABLED,
-+};
++			if (sdata->vif.bss_conf.ftm_responder >= 0)
++				changed |= BSS_CHANGED_FTM_RESPONDER;
 +
- #endif /* __LINUX_NL80211_H */
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 5fb9b7dd9831..dfdc1cb07add 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -430,6 +430,7 @@ enum nl80211_multicast_groups {
- 	[NL80211_ATTR_TXQ_QUANTUM] = { .type = NLA_U32 },
- 	[NL80211_ATTR_HE_CAPABILITY] = { .type = NLA_BINARY,
- 					 .len = NL80211_HE_MAX_CAPABILITY_LEN },
-+	[NL80211_ATTR_FTM_RESPONDER] = { .type = NLA_U32},
- };
+ 			if (sdata->vif.type == NL80211_IFTYPE_AP) {
+ 				changed |= BSS_CHANGED_AP_PROBE_RESP;
  
- /* policy for the key attributes */
-@@ -4339,6 +4340,24 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
- 			return PTR_ERR(params.acl);
- 	}
- 
-+	params.ftm_responder = -1;
-+	if (info->attrs[NL80211_ATTR_FTM_RESPONDER]) {
-+		if (!wiphy_ext_feature_isset(
-+			    &rdev->wiphy,
-+			    NL80211_EXT_FEATURE_SET_FTM_RESPONDER)) {
-+			GENL_SET_ERR_MSG(info,
-+					 "FTM Responder config not supported\n");
-+			return -EOPNOTSUPP;
-+		}
-+
-+		params.ftm_responder =
-+			nla_get_u32(info->attrs[NL80211_ATTR_FTM_RESPONDER]);
-+
-+		if (params.ftm_responder != NL80211_FTM_RESP_DISABLED &&
-+		    params.ftm_responder != NL80211_FTM_RESP_ENABLED)
-+			return -EINVAL;
-+	}
-+
- 	nl80211_calculate_ap_params(&params);
- 
- 	wdev_lock(wdev);
 -- 
 1.9.1
 
