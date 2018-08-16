@@ -2,18 +2,16 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fqDMz-0001Ax-Dp
- for ath10k@lists.infradead.org; Thu, 16 Aug 2018 08:11:04 +0000
-Message-ID: <1534406982.3547.55.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/3] nl80211: add support to configure FTM responder
- functionality
+ id 1fqDPf-0001O7-VI
+ for ath10k@lists.infradead.org; Thu, 16 Aug 2018 08:13:49 +0000
+Message-ID: <1534407150.3547.58.camel@sipsolutions.net>
+Subject: Re: [PATCH 0/3] Add support for ftm responder configuration
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 16 Aug 2018 10:09:42 +0200
-In-Reply-To: <15c381ce743aedca37f3eea67975f841@codeaurora.org>
+Date: Thu, 16 Aug 2018 10:12:30 +0200
+In-Reply-To: <4aaa3a6185dbd116ba5c1a2ce76b691f@codeaurora.org>
 References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
- <1534293018-4930-2-git-send-email-pradeepc@codeaurora.org>
- <1534334948.3547.39.camel@sipsolutions.net>
- <15c381ce743aedca37f3eea67975f841@codeaurora.org>
+ <1534323867.3547.30.camel@sipsolutions.net>
+ <4aaa3a6185dbd116ba5c1a2ce76b691f@codeaurora.org>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,17 +28,43 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: pradeepc@codeaurora.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, 2018-08-15 at 18:48 -0700, pradeepc@codeaurora.org wrote:
-> 
-> Using FLAG attribute may create uncertainty to userspace especially when 
-> flag attribute
-> is not set and the driver supports capability, instead of 
-> assuming/relying on the default
-> behavior of driver/firmware.
+On Wed, 2018-08-15 at 18:50 -0700, pradeepc@codeaurora.org wrote:
 
-I don't think there should be any enabling it by default in firmware,
-and as such I think that's just a (separate) driver bug - I'm not
-convinced we should build the API with driver bugs in mind.
+> > All you describe above is really a driver bug - it shouldn't have
+> > enabled it to start with?
+> 
+> Sure.. But isn't it justifiable for drivers/firmware choosing to enable
+> ftm responder by default when there is no way for userspace to specify 
+> this parameter?
+
+No? FTM needs higher-level configuration/advertisement, so how could the
+driver/firmware enable it when it's not supposed to be?
+
+I really do think this is a driver bug.
+
+Nothing stopped you from submitting these patches months/years ago when
+the capability was first added to the firmware, after all.
+
+> > This makes sense anyway. Funny you should post this within hours of me
+> > doing the same, basically.
+> 
+> Sorry, I missed your patches before posting mine :)
+
+No worries.
+
+> > 
+> > I have no objection to your approach, though I guess it'd be nice if 
+> > you
+> > could take a look at the statistics I have exposed and see if those
+> > makes sense or if additional ones are desirable for you, and then we 
+> > can combine the work that way, i.e. have your configuration and our stats?
+> 
+> I looked at the patch you posted and this makes sense. I will try to 
+> align ath10k driver changes with your approach.
+
+I tend to actually like your patch better for configuration - no new
+command, though it is, I think, lacking configuration of the necessary
+elements (where do you take the LCI/Civic location from?).
 
 johannes
 
