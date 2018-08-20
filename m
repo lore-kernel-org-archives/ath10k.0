@@ -1,22 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.toke.dk ([52.28.52.200])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frgZ8-0007qp-CU
- for ath10k@lists.infradead.org; Mon, 20 Aug 2018 09:33:39 +0000
-Message-ID: <1534757602.6287.4.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/3] Add support for ftm responder configuration
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 20 Aug 2018 11:33:22 +0200
-In-Reply-To: <cd1e8ef5693b81c6b5d25eae36a44fd3@codeaurora.org>
- (sfid-20180818_095014_905997_2F2749FC)
-References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
- <1534323867.3547.30.camel@sipsolutions.net>
- <4aaa3a6185dbd116ba5c1a2ce76b691f@codeaurora.org>
- <1534407150.3547.58.camel@sipsolutions.net>
- <cd1e8ef5693b81c6b5d25eae36a44fd3@codeaurora.org>
- (sfid-20180818_095014_905997_2F2749FC)
-Mime-Version: 1.0
+ id 1frjaA-0001Xp-VY
+ for ath10k@lists.infradead.org; Mon, 20 Aug 2018 12:46:57 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH v2 0/2] Change sk_pacing_shift in ieee80211_hw for best tx
+ throughput
+In-Reply-To: <5B6F3729.4040807@broadcom.com>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
+ <5B6C0A3C.3020908@broadcom.com> <87k1oye4ty.fsf@toke.dk>
+ <5B6DE758.8040605@broadcom.com>
+ <93ff2bad-5b11-0edd-16cd-a2a7c54701b8@candelatech.com>
+ <5B6F3729.4040807@broadcom.com>
+Date: Mon, 20 Aug 2018 14:46:31 +0200
+Message-ID: <87tvnp9peg.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +24,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Arend van Spriel <arend.vanspriel@broadcom.com>, Ben Greear <greearb@candelatech.com>, Peter Oh <peter.oh@bowerswilkins.com>, Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
+Cc: linux-wireless@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>
 
-On Sat, 2018-08-18 at 00:50 -0700, Pradeep Kumar Chitrapu wrote:
-> > 
-> I will change the attribute to FLAG type, also add support for LCI/CIVIC 
-> params and repost the patch.
-
-Looking at Android (for unrelated reasons), I see that they have a
-separate "enable FTM responder" command:
-
-https://android.googlesource.com/platform/hardware/interfaces/+/master/wifi/1.0/IWifiRttController.hal#158
-
-Is that something you've seen/worked with? If so, how does it match your
-current approach where FTM responder has to be enabled from the start?
-
-Or perhaps this API is independent of AP and starts its own AP? But it
-doesn't have any setup for the SSID etc., only the channel, so not clear
-how that'd work?
-
-johannes
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QXJlbmQgdmFuIFNwcmllbCA8YXJlbmQudmFuc3ByaWVsQGJyb2FkY29tLmNvbT4gd3JpdGVzOgoK
+PiArIEVyaWMKPgo+IE9uIDgvMTAvMjAxOCA5OjUyIFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+PiBP
+biAwOC8xMC8yMDE4IDEyOjI4IFBNLCBBcmVuZCB2YW4gU3ByaWVsIHdyb3RlOgo+Pj4gT24gOC8x
+MC8yMDE4IDM6MjAgUE0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+PiBBcmVu
+ZCB2YW4gU3ByaWVsIDxhcmVuZC52YW5zcHJpZWxAYnJvYWRjb20uY29tPiB3cml0ZXM6Cj4+Pj4K
+Pj4+Pj4gT24gOC84LzIwMTggOTowMCBQTSwgUGV0ZXIgT2ggd3JvdGU6Cj4+Pj4+Pgo+Pj4+Pj4K
+Pj4+Pj4+IE9uIDA4LzA4LzIwMTggMDM6NDAgQU0sIFdlbiBHb25nIHdyb3RlOgo+Pj4+Pj4+IEFk
+ZCBhIGZpZWxkIGZvciBhdGgxMGsgdG8gYWRqdXN0IHRoZSBza19wYWNpbmdfc2hpZnQsIG1hYzgw
+MjExIHNldAo+Pj4+Pj4+IHRoZSBkZWZhdWx0IHZhbHVlIHRvIDgsIGFuZCBhdGgxMGsgd2lsbCBj
+aGFuZ2UgaXQgdG8gNi4gVGhlbiBtYWM4MDIxMQo+Pj4+Pj4+IHdpbGwgdXNlIHRoZSBjaGFuZ2Vk
+IHZhbHVlIDYgYXMgc2tfcGFjaW5nX3NoaWZ0IHNpbmNlIDYgaXMgdGhlIGJlc3QKPj4+Pj4+PiB2
+YWx1ZSBmb3IgdHggdGhyb3VnaHB1dCBieSB0ZXN0IHJlc3VsdC4KPj4+Pj4+IEkgZG9uJ3QgdGhp
+bmsgeW91IGNhbiBjb252aW5jZSBwZW9wbGUgd2l0aCB0aGUgbnVtYmVycyB1bmxlc3MgeW91Cj4+
+Pj4+PiBwcm92aWRlIGxhdGVuY3kgYWxvbmcgd2l0aCB0aGUgbnVtYmVycyBhbmQgYWxzbyBtZWFz
+dXJlbWVudCByZXN1bHQgb24KPj4+Pj4+IGRpZmZlcmVudCBjaGlwc2V0cyBhcyBNaWNoYWwgYWRk
+cmVzc2VkIChRQ0E0MDE5LCBRQ0E5OTg0LCBldGMuKSBGcm9tCj4+Pj4+PiB1c2VycyB2aWV3IHBv
+aW50LCBJIGFsc28gYWdyZWUgb24gVG9rZSB0aGF0IHdlIGNhbm5vdCBzY2FyaWZ5IGxhdGVuY3kK
+Pj4+Pj4+IGZvciB0aGUgc21hbGwgdGhyb3VnaHB1dCBpbXByb3ZlbWVudC4KPj4+Pj4KPj4+Pj4g
+WWVhaC4gVGhlIHdpcmVsZXNzIGluZHVzdHJ5IChhZG1pdHRlZGx5IHRoYXQgaXMgbWUgdG9vIDot
+cCApIGhhcyBiZWVuCj4+Pj4+IGZvY3VzZWQgb24ganVzdCB0aHJvdWdocHV0IGxvbmcgZW5vdWdo
+Lgo+Pj4+Cj4+Pj4gVGVsbCBtZSBhYm91dCBpdCA7KQo+Pj4+Cj4+Pj4+IEFsbCB0aGUgcHJlYWNo
+aW5nIGFib3V0IGJ1ZmZlcmJsb2F0IGZyb20gRGF2ZSBhbmQgb3RoZXJzIGlzIChqdXN0KQo+Pj4+
+PiBzdGFydGluZyB0byBzaW5rIGluIGhlcmUgYW5kIHRoZXJlLgo+Pj4+Cj4+Pj4gWWVhaCwgSSd2
+ZSBub3RpY2VkOyB0aGlzIGlzIGdvb2QhCj4+Pj4KPj4+Pj4gTm93IGFzIGZvciB0aGUgdmFsdWUg
+b2YgdGhlIHNrX3BhY2luZ19zaGlmdCBJIHRoaW5rIHdlIGFncmVlIGl0Cj4+Pj4+IGRlcGVuZHMg
+b24gdGhlIHNwZWNpZmljIGRldmljZSBzbyBpbiB0aGF0IHNlbnNlIHRoZSBhcGkgbWFrZXMgc2Vu
+c2UsCj4+Pj4+IGJ1dCBJIHRoaW5rIHRoZXJlIGFyZSBhIGxvdCBvZiB2YXJpYWJsZXMgc28gSSB3
+YXMgd29uZGVyaW5nIGlmIHdlCj4+Pj4+IGNvdWxkIGludHJvZHVjZSBhIHN5c2N0bCBwYXJhbWV0
+ZXIgZm9yIGl0LiBEb2VzIHRoYXQgbWFrZSBzZW5zZT8KPj4+Pgo+Pj4+IEknbSBub3Qgc3VyZSBh
+IHN5c2N0bCBwYXJhbWV0ZXIgd291bGQgbWFrZSBzZW5zZTsgZm9yIG9uZSB0aGluZywgaXQKPj4+
+PiB3b3VsZCBiZSBnbG9iYWwgZm9yIHRoZSBob3N0LCB3aGlsZSBkaWZmZXJlbnQgbmV0d29yayBp
+bnRlcmZhY2VzIHdpbGwKPj4+PiBwcm9iYWJseSBuZWVkIGRpZmZlcmVudCB2YWx1ZXMuIEFuZCBm
+b3IgYW5vdGhlciwgSSBkb24ndCB0aGluayBpdCdzCj4+Pj4gc29tZXRoaW5nIGEgdXNlciBjYW4g
+cmVhc29uYWJseSBiZSBleHBlY3RlZCB0byBzZXQgY29ycmVjdGx5LCBhbmQgSQo+Pj4+IHRoaW5r
+IGl0ICppcyogYWN0dWFsbHkgcG9zc2libGUgdG8gcGljayBhIHZhbHVlIHRoYXQgd29ya3Mgd2Vs
+bCBhdCB0aGUKPj4+PiBkcml2ZXIgbGV2ZWwuCj4+Pgo+Pj4gSSBub3Qgc3VyZSBlaXRoZXIuIERv
+IHlvdSB0aGluayBhIHVzZXIgY291bGQgY29tZSB1cCB3aXRoIHNvbWV0aGluZwo+Pj4gbGlrZSB0
+aGlzIChmb3VuZCBoZXJlIFsxXSk6Cj4+Pgo+Pj4gc3lzY3RsIC13IG5ldC5jb3JlLnJtZW1fbWF4
+PTgzODg2MDgKPj4+IHN5c2N0bCAtdyBuZXQuY29yZS53bWVtX21heD04Mzg4NjA4Cj4+PiBzeXNj
+dGwgLXcgbmV0LmNvcmUucm1lbV9kZWZhdWx0PTY1NTM2Cj4+PiBzeXNjdGwgLXcgbmV0LmNvcmUu
+d21lbV9kZWZhdWx0PTY1NTM2Cj4+PiBzeXNjdGwgLXcgbmV0LmlwdjQudGNwX3JtZW09JzQwOTYg
+ODczODAgODM4ODYwOCcKPj4+IHN5c2N0bCAtdyBuZXQuaXB2NC50Y3Bfd21lbT0nNDA5NiA2NTUz
+NiA4Mzg4NjA4Jwo+Pj4gc3lzY3RsIC13IG5ldC5pcHY0LnRjcF9tZW09JzgzODg2MDggODM4ODYw
+OCA4Mzg4NjA4Jwo+Pj4gc3lzY3RsIC13IG5ldC5pcHY0LnJvdXRlLmZsdXNoPTEKPj4+Cj4+PiBO
+b3cgdGhlIHBhZ2UgbGlzdGluZyB0aGlzIGNvbmZpZyBjbGFpbXMgdGhpcyBpcyBmb3IgdXNlICJv
+biBMaW51eCAyLjQrCj4+PiBmb3IgaGlnaC1iYW5kd2lkdGggYXBwbGljYXRpb25zIi4gQmVhdHMg
+bWUgaWYgaXQgc3RpbGwgaXMgY29ycmVjdCBpbgo+Pj4gNC4xNy4KPj4+Cj4+PiBBbnl3YXksIHN5
+c2N0bCBpcyBuaWNlIGZvciBwYXJhbWV0ZXJpemluZyBjb2RlIHRoYXQgaXMgYnVpbHQtaW4gdGhl
+Cj4+PiBrZXJuZWwgc28geW91IGRvbid0IG5lZWQgdG8gcmVidWlsZCBpdC4gbWFjODAyMTEgdGVu
+ZHMgdG8gYmUgYSBtb2R1bGUKPj4+IGluIG1vc3QgZGlzdHJvcyBzbwo+Pj4gbWF5YmUgc3lzY3Rs
+IGlzIG5vdCBhIGdvb2QgZml0LiBTbyBsZXRzIGFncmVlIG9uIHRoYXQuCj4+Pgo+Pj4gUGlja2lu
+ZyBhIHZhbHVlIGF0IGRyaXZlciBsZXZlbCBtYXkgYmUgcG9zc2libGUsIGJ1dCBhIGRyaXZlciB0
+ZW5kcyB0bwo+Pj4gc3VwcG9ydCBhIG51bWJlciBvZiBkaWZmZXJlbnQgZGV2aWNlcy4gU28gaG93
+IGRvIHlvdSBzZWUgdGhlIHBpY2tpbmcKPj4+IHdvcmsuIFNvbWUgc3RhdGljCj4+PiB0YWJsZSB3
+aXRoIGVudHJpZXMgZm9yIHRoZSBkaWZmZXJlbnQgZGV2aWNlcz8KPj4KPj4gU29tZSB1c2VycyBh
+cmUgbm90IGdvaW5nIHRvIGNhcmUgYWJvdXQgbGF0ZW5jeSwgYW5kIGZvciBvdGhlcnMsIGxhdGVu
+Y3kgbWF5Cj4+IGJlIGFic29sdXRlbHkgaW1wb3J0YW50IGFuZCB0aGV5IGRvbid0IGNhcmUgYWJv
+dXQgYmFuZHdpZHRoLgo+Pgo+PiBTbywgaXQgc2hvdWxkIGJlIHR1bmFibGUuICBzeXNjdGwgY2Fu
+IHN1cHBvcnQgcGVyIG5ldHdvcmstZGV2aWNlIHNldHRpbmdzLAo+PiByaWdodD8gIE9yLCBwcm9i
+YWJseSBjb3VsZCB1c2UgZXRodG9vbCBBUEkgdG8gc2V0IGEgcGVyLW5ldGRldiB2YWx1ZSBhcwo+
+PiB3ZWxsLgo+PiBUaGF0IG1pZ2h0IGJlIG5pY2UgZm9yIG90aGVyIG5ldHdvcmsgZGV2aWNlcyBh
+cyB3ZWxsLCBub3QganVzdCB3aWZpLgo+Cj4gSSB3YXMgdW5kZXIgdGhlIGltcHJlc3Npb24gdGhh
+dCB0aGUgcGFyYW1ldGVycyBhcmUgYWxsIGdsb2JhbCwgYnV0IHlvdXIgCj4gc3RhdGVtZW50IG1h
+ZGUgbWUgbG9vay4gSSBjYW1lIGFjcm9zcyBzb21lIHJlZmVyZW5jZXMgaGVyZSBbMl0gc28gSSAK
+PiBjaGVja2VkIHRoZSBrZXJuZWwgc291cmNlcyB1bmRlciBuZXQvIGFuZCBmb3VuZCBuZXQvaXB2
+NC9kZXZpbmV0LmMgWzNdLiAKPiBTbyB0aGF0IGNvbmZpcm1zIGl0IHN1cHBvcnRzIHBlci1uZXRk
+ZXYgc2V0dGluZ3MuCgpZZWFoLCBJIHRoaW5rIHRoYXQgKmlmKiB0aGlzIGlzIHRvIGJlIG1hZGUg
+Y29uZmlndXJhYmxlLCBhIHBlci1uZXRkZXYKc3lzY3RsIHdvdWxkIGJlIHRoZSB3YXkgdG8gZ28s
+IHdpdGggdGhlIGRyaXZlciBiZWluZyBhYmxlIHRvIHNldCB0aGUKZGVmYXVsdC4KCkhvd2V2ZXIs
+IHRoZSByZWFzb24gSSB0aGluayBpdCBtYXkgbm90IGJlIHdvcnRoIGl0IHRvIGV4cG9zZSB0aGlz
+IGFzIGEKc2V0dGluZyBpcyB0aGF0IGl0IGlzIHZlcnkgbXVjaCBhIGNhc2Ugb2YgZGltaW5pc2hp
+bmcgcmV0dXJucy4gT25jZSB0aGUKYnVmZmVyIHNpemUgaXMgbGFyZ2UgZW5vdWdoIHRoYXQgZnVs
+bCBhZ2dyZWdhdGVzIGNhbiBiZSBidWlsdCwKaW5jcmVhc2luZyBpdCBmdXJ0aGVyIGp1c3QgYWRk
+cyBsYXRlbmN5IHdpdGggdmVyeSBsaXR0bGUgZWZmZWN0IG9uCnRocm91Z2hwdXQuIFdoaWNoIG1l
+YW5zIHRoYXQgZmlkZGxpbmcgd2l0aCB0aGUgcGFyYW1ldGVyIGlzIG5vdCBnb2luZyB0bwpoYXZl
+IGEgbG90IG9mIGVmZmVjdCwgc28gaXQgaXMgbm90IHZlcnkgdXNlZnVsIHRvIGV4cG9zZSwgd2hp
+Y2ggbWFrZXMgaXQKbm90IHdvcnRoIHRoZSBhZGRlZCBjb25maWd1cmF0aW9uIGNvbXBsZXhpdHku
+Li4KCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
