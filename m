@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frltn-000444-25
- for ath10k@lists.infradead.org; Mon, 20 Aug 2018 15:15:20 +0000
-Subject: Re: [PATCH v2 0/2] Change sk_pacing_shift in ieee80211_hw for best tx
- throughput
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <4dbcc269-1f2b-b165-fe9e-8704fd77d1c5@bowerswilkins.com>
- <5B6C0A3C.3020908@broadcom.com> <87k1oye4ty.fsf@toke.dk>
- <5B6DE758.8040605@broadcom.com>
- <93ff2bad-5b11-0edd-16cd-a2a7c54701b8@candelatech.com>
- <5B6F3729.4040807@broadcom.com> <87tvnp9peg.fsf@toke.dk>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <de770e69-1d97-6c8a-15b0-2a8007665f38@candelatech.com>
-Date: Mon, 20 Aug 2018 08:14:51 -0700
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1frzmq-0006Qi-1E
+ for ath10k@lists.infradead.org; Tue, 21 Aug 2018 06:05:05 +0000
 MIME-Version: 1.0
-In-Reply-To: <87tvnp9peg.fsf@toke.dk>
+Date: Tue, 21 Aug 2018 11:34:52 +0530
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
+In-Reply-To: <87y3hb8jtp.fsf@kamboji.qca.qualcomm.com>
+References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
+ <87zi1tav6h.fsf@kamboji.qca.qualcomm.com>
+ <6b57525f3edc2b7d06b7662efc5d7e5f@codeaurora.org>
+ <87y3hb8jtp.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <dbab2233f2fe01136ef827328deac61f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,100 +21,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>, Arend van Spriel <arend.vanspriel@broadcom.com>, Peter Oh <peter.oh@bowerswilkins.com>, Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-CgpPbiAwOC8yMC8yMDE4IDA1OjQ2IEFNLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6
-Cj4gQXJlbmQgdmFuIFNwcmllbCA8YXJlbmQudmFuc3ByaWVsQGJyb2FkY29tLmNvbT4gd3JpdGVz
-Ogo+Cj4+ICsgRXJpYwo+Pgo+PiBPbiA4LzEwLzIwMTggOTo1MiBQTSwgQmVuIEdyZWVhciB3cm90
-ZToKPj4+IE9uIDA4LzEwLzIwMTggMTI6MjggUE0sIEFyZW5kIHZhbiBTcHJpZWwgd3JvdGU6Cj4+
-Pj4gT24gOC8xMC8yMDE4IDM6MjAgUE0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToK
-Pj4+Pj4gQXJlbmQgdmFuIFNwcmllbCA8YXJlbmQudmFuc3ByaWVsQGJyb2FkY29tLmNvbT4gd3Jp
-dGVzOgo+Pj4+Pgo+Pj4+Pj4gT24gOC84LzIwMTggOTowMCBQTSwgUGV0ZXIgT2ggd3JvdGU6Cj4+
-Pj4+Pj4KPj4+Pj4+Pgo+Pj4+Pj4+IE9uIDA4LzA4LzIwMTggMDM6NDAgQU0sIFdlbiBHb25nIHdy
-b3RlOgo+Pj4+Pj4+PiBBZGQgYSBmaWVsZCBmb3IgYXRoMTBrIHRvIGFkanVzdCB0aGUgc2tfcGFj
-aW5nX3NoaWZ0LCBtYWM4MDIxMSBzZXQKPj4+Pj4+Pj4gdGhlIGRlZmF1bHQgdmFsdWUgdG8gOCwg
-YW5kIGF0aDEwayB3aWxsIGNoYW5nZSBpdCB0byA2LiBUaGVuIG1hYzgwMjExCj4+Pj4+Pj4+IHdp
-bGwgdXNlIHRoZSBjaGFuZ2VkIHZhbHVlIDYgYXMgc2tfcGFjaW5nX3NoaWZ0IHNpbmNlIDYgaXMg
-dGhlIGJlc3QKPj4+Pj4+Pj4gdmFsdWUgZm9yIHR4IHRocm91Z2hwdXQgYnkgdGVzdCByZXN1bHQu
-Cj4+Pj4+Pj4gSSBkb24ndCB0aGluayB5b3UgY2FuIGNvbnZpbmNlIHBlb3BsZSB3aXRoIHRoZSBu
-dW1iZXJzIHVubGVzcyB5b3UKPj4+Pj4+PiBwcm92aWRlIGxhdGVuY3kgYWxvbmcgd2l0aCB0aGUg
-bnVtYmVycyBhbmQgYWxzbyBtZWFzdXJlbWVudCByZXN1bHQgb24KPj4+Pj4+PiBkaWZmZXJlbnQg
-Y2hpcHNldHMgYXMgTWljaGFsIGFkZHJlc3NlZCAoUUNBNDAxOSwgUUNBOTk4NCwgZXRjLikgRnJv
-bQo+Pj4+Pj4+IHVzZXJzIHZpZXcgcG9pbnQsIEkgYWxzbyBhZ3JlZSBvbiBUb2tlIHRoYXQgd2Ug
-Y2Fubm90IHNjYXJpZnkgbGF0ZW5jeQo+Pj4+Pj4+IGZvciB0aGUgc21hbGwgdGhyb3VnaHB1dCBp
-bXByb3ZlbWVudC4KPj4+Pj4+Cj4+Pj4+PiBZZWFoLiBUaGUgd2lyZWxlc3MgaW5kdXN0cnkgKGFk
-bWl0dGVkbHkgdGhhdCBpcyBtZSB0b28gOi1wICkgaGFzIGJlZW4KPj4+Pj4+IGZvY3VzZWQgb24g
-anVzdCB0aHJvdWdocHV0IGxvbmcgZW5vdWdoLgo+Pj4+Pgo+Pj4+PiBUZWxsIG1lIGFib3V0IGl0
-IDspCj4+Pj4+Cj4+Pj4+PiBBbGwgdGhlIHByZWFjaGluZyBhYm91dCBidWZmZXJibG9hdCBmcm9t
-IERhdmUgYW5kIG90aGVycyBpcyAoanVzdCkKPj4+Pj4+IHN0YXJ0aW5nIHRvIHNpbmsgaW4gaGVy
-ZSBhbmQgdGhlcmUuCj4+Pj4+Cj4+Pj4+IFllYWgsIEkndmUgbm90aWNlZDsgdGhpcyBpcyBnb29k
-IQo+Pj4+Pgo+Pj4+Pj4gTm93IGFzIGZvciB0aGUgdmFsdWUgb2YgdGhlIHNrX3BhY2luZ19zaGlm
-dCBJIHRoaW5rIHdlIGFncmVlIGl0Cj4+Pj4+PiBkZXBlbmRzIG9uIHRoZSBzcGVjaWZpYyBkZXZp
-Y2Ugc28gaW4gdGhhdCBzZW5zZSB0aGUgYXBpIG1ha2VzIHNlbnNlLAo+Pj4+Pj4gYnV0IEkgdGhp
-bmsgdGhlcmUgYXJlIGEgbG90IG9mIHZhcmlhYmxlcyBzbyBJIHdhcyB3b25kZXJpbmcgaWYgd2UK
-Pj4+Pj4+IGNvdWxkIGludHJvZHVjZSBhIHN5c2N0bCBwYXJhbWV0ZXIgZm9yIGl0LiBEb2VzIHRo
-YXQgbWFrZSBzZW5zZT8KPj4+Pj4KPj4+Pj4gSSdtIG5vdCBzdXJlIGEgc3lzY3RsIHBhcmFtZXRl
-ciB3b3VsZCBtYWtlIHNlbnNlOyBmb3Igb25lIHRoaW5nLCBpdAo+Pj4+PiB3b3VsZCBiZSBnbG9i
-YWwgZm9yIHRoZSBob3N0LCB3aGlsZSBkaWZmZXJlbnQgbmV0d29yayBpbnRlcmZhY2VzIHdpbGwK
-Pj4+Pj4gcHJvYmFibHkgbmVlZCBkaWZmZXJlbnQgdmFsdWVzLiBBbmQgZm9yIGFub3RoZXIsIEkg
-ZG9uJ3QgdGhpbmsgaXQncwo+Pj4+PiBzb21ldGhpbmcgYSB1c2VyIGNhbiByZWFzb25hYmx5IGJl
-IGV4cGVjdGVkIHRvIHNldCBjb3JyZWN0bHksIGFuZCBJCj4+Pj4+IHRoaW5rIGl0ICppcyogYWN0
-dWFsbHkgcG9zc2libGUgdG8gcGljayBhIHZhbHVlIHRoYXQgd29ya3Mgd2VsbCBhdCB0aGUKPj4+
-Pj4gZHJpdmVyIGxldmVsLgo+Pj4+Cj4+Pj4gSSBub3Qgc3VyZSBlaXRoZXIuIERvIHlvdSB0aGlu
-ayBhIHVzZXIgY291bGQgY29tZSB1cCB3aXRoIHNvbWV0aGluZwo+Pj4+IGxpa2UgdGhpcyAoZm91
-bmQgaGVyZSBbMV0pOgo+Pj4+Cj4+Pj4gc3lzY3RsIC13IG5ldC5jb3JlLnJtZW1fbWF4PTgzODg2
-MDgKPj4+PiBzeXNjdGwgLXcgbmV0LmNvcmUud21lbV9tYXg9ODM4ODYwOAo+Pj4+IHN5c2N0bCAt
-dyBuZXQuY29yZS5ybWVtX2RlZmF1bHQ9NjU1MzYKPj4+PiBzeXNjdGwgLXcgbmV0LmNvcmUud21l
-bV9kZWZhdWx0PTY1NTM2Cj4+Pj4gc3lzY3RsIC13IG5ldC5pcHY0LnRjcF9ybWVtPSc0MDk2IDg3
-MzgwIDgzODg2MDgnCj4+Pj4gc3lzY3RsIC13IG5ldC5pcHY0LnRjcF93bWVtPSc0MDk2IDY1NTM2
-IDgzODg2MDgnCj4+Pj4gc3lzY3RsIC13IG5ldC5pcHY0LnRjcF9tZW09JzgzODg2MDggODM4ODYw
-OCA4Mzg4NjA4Jwo+Pj4+IHN5c2N0bCAtdyBuZXQuaXB2NC5yb3V0ZS5mbHVzaD0xCj4+Pj4KPj4+
-PiBOb3cgdGhlIHBhZ2UgbGlzdGluZyB0aGlzIGNvbmZpZyBjbGFpbXMgdGhpcyBpcyBmb3IgdXNl
-ICJvbiBMaW51eCAyLjQrCj4+Pj4gZm9yIGhpZ2gtYmFuZHdpZHRoIGFwcGxpY2F0aW9ucyIuIEJl
-YXRzIG1lIGlmIGl0IHN0aWxsIGlzIGNvcnJlY3QgaW4KPj4+PiA0LjE3Lgo+Pj4+Cj4+Pj4gQW55
-d2F5LCBzeXNjdGwgaXMgbmljZSBmb3IgcGFyYW1ldGVyaXppbmcgY29kZSB0aGF0IGlzIGJ1aWx0
-LWluIHRoZQo+Pj4+IGtlcm5lbCBzbyB5b3UgZG9uJ3QgbmVlZCB0byByZWJ1aWxkIGl0LiBtYWM4
-MDIxMSB0ZW5kcyB0byBiZSBhIG1vZHVsZQo+Pj4+IGluIG1vc3QgZGlzdHJvcyBzbwo+Pj4+IG1h
-eWJlIHN5c2N0bCBpcyBub3QgYSBnb29kIGZpdC4gU28gbGV0cyBhZ3JlZSBvbiB0aGF0Lgo+Pj4+
-Cj4+Pj4gUGlja2luZyBhIHZhbHVlIGF0IGRyaXZlciBsZXZlbCBtYXkgYmUgcG9zc2libGUsIGJ1
-dCBhIGRyaXZlciB0ZW5kcyB0bwo+Pj4+IHN1cHBvcnQgYSBudW1iZXIgb2YgZGlmZmVyZW50IGRl
-dmljZXMuIFNvIGhvdyBkbyB5b3Ugc2VlIHRoZSBwaWNraW5nCj4+Pj4gd29yay4gU29tZSBzdGF0
-aWMKPj4+PiB0YWJsZSB3aXRoIGVudHJpZXMgZm9yIHRoZSBkaWZmZXJlbnQgZGV2aWNlcz8KPj4+
-Cj4+PiBTb21lIHVzZXJzIGFyZSBub3QgZ29pbmcgdG8gY2FyZSBhYm91dCBsYXRlbmN5LCBhbmQg
-Zm9yIG90aGVycywgbGF0ZW5jeSBtYXkKPj4+IGJlIGFic29sdXRlbHkgaW1wb3J0YW50IGFuZCB0
-aGV5IGRvbid0IGNhcmUgYWJvdXQgYmFuZHdpZHRoLgo+Pj4KPj4+IFNvLCBpdCBzaG91bGQgYmUg
-dHVuYWJsZS4gIHN5c2N0bCBjYW4gc3VwcG9ydCBwZXIgbmV0d29yay1kZXZpY2Ugc2V0dGluZ3Ms
-Cj4+PiByaWdodD8gIE9yLCBwcm9iYWJseSBjb3VsZCB1c2UgZXRodG9vbCBBUEkgdG8gc2V0IGEg
-cGVyLW5ldGRldiB2YWx1ZSBhcwo+Pj4gd2VsbC4KPj4+IFRoYXQgbWlnaHQgYmUgbmljZSBmb3Ig
-b3RoZXIgbmV0d29yayBkZXZpY2VzIGFzIHdlbGwsIG5vdCBqdXN0IHdpZmkuCj4+Cj4+IEkgd2Fz
-IHVuZGVyIHRoZSBpbXByZXNzaW9uIHRoYXQgdGhlIHBhcmFtZXRlcnMgYXJlIGFsbCBnbG9iYWws
-IGJ1dCB5b3VyCj4+IHN0YXRlbWVudCBtYWRlIG1lIGxvb2suIEkgY2FtZSBhY3Jvc3Mgc29tZSBy
-ZWZlcmVuY2VzIGhlcmUgWzJdIHNvIEkKPj4gY2hlY2tlZCB0aGUga2VybmVsIHNvdXJjZXMgdW5k
-ZXIgbmV0LyBhbmQgZm91bmQgbmV0L2lwdjQvZGV2aW5ldC5jIFszXS4KPj4gU28gdGhhdCBjb25m
-aXJtcyBpdCBzdXBwb3J0cyBwZXItbmV0ZGV2IHNldHRpbmdzLgo+Cj4gWWVhaCwgSSB0aGluayB0
-aGF0ICppZiogdGhpcyBpcyB0byBiZSBtYWRlIGNvbmZpZ3VyYWJsZSwgYSBwZXItbmV0ZGV2Cj4g
-c3lzY3RsIHdvdWxkIGJlIHRoZSB3YXkgdG8gZ28sIHdpdGggdGhlIGRyaXZlciBiZWluZyBhYmxl
-IHRvIHNldCB0aGUKPiBkZWZhdWx0Lgo+Cj4gSG93ZXZlciwgdGhlIHJlYXNvbiBJIHRoaW5rIGl0
-IG1heSBub3QgYmUgd29ydGggaXQgdG8gZXhwb3NlIHRoaXMgYXMgYQo+IHNldHRpbmcgaXMgdGhh
-dCBpdCBpcyB2ZXJ5IG11Y2ggYSBjYXNlIG9mIGRpbWluaXNoaW5nIHJldHVybnMuIE9uY2UgdGhl
-Cj4gYnVmZmVyIHNpemUgaXMgbGFyZ2UgZW5vdWdoIHRoYXQgZnVsbCBhZ2dyZWdhdGVzIGNhbiBi
-ZSBidWlsdCwKPiBpbmNyZWFzaW5nIGl0IGZ1cnRoZXIganVzdCBhZGRzIGxhdGVuY3kgd2l0aCB2
-ZXJ5IGxpdHRsZSBlZmZlY3Qgb24KPiB0aHJvdWdocHV0LiBXaGljaCBtZWFucyB0aGF0IGZpZGRs
-aW5nIHdpdGggdGhlIHBhcmFtZXRlciBpcyBub3QgZ29pbmcgdG8KPiBoYXZlIGEgbG90IG9mIGVm
-ZmVjdCwgc28gaXQgaXMgbm90IHZlcnkgdXNlZnVsIHRvIGV4cG9zZSwgd2hpY2ggbWFrZXMgaXQK
-PiBub3Qgd29ydGggdGhlIGFkZGVkIGNvbmZpZ3VyYXRpb24gY29tcGxleGl0eS4uLgoKSWYgaXQg
-d2VyZSBlYXN5LCBpdCB3b3VsZCBhbHJlYWR5IGJlIGNvcnJlY3QuICBJIHRoaW5rIGFkZGluZyB0
-dW5pbmcga25vYgphbmQgc29tZSBkb2N1bWVudGF0aW9uIHdpbGwgYWxsb3cgdXNlcnMgdG8gbW9y
-ZSBlYXNpbHkgdHJ5IGRpZmZlcmVudCB0aGluZ3MKYW5kIHVzZSB3aGF0IGlzIGJlc3QgZm9yIHRo
-ZW0gKGFuZCBsZXQgdGhlIGNvbW11bml0eSBhdCBsYXJnZSBrbm93IHdoYXQgd29ya3MKc28gbWF5
-YmUgdGhlIGRlZmF1bHRzIGNhbiBiZSB0d2Vha2VkIG92ZXIgdGltZSkuCgpUaGFua3MsCkJlbgoK
-LS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xv
-Z2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+On 2018-04-25 19:33, Kalle Valo wrote:
+> Anilkumar Kolli <akolli@codeaurora.org> writes:
+> 
+>> On 2018-04-24 13:32, Kalle Valo wrote:
+>>> Anilkumar Kolli <akolli@codeaurora.org> writes:
+>>> 
+>>>> Mesh path metric needs txrate information from ieee80211_tx_status()
+>>>> call but in ath10k there is no mechanism to report tx rate 
+>>>> information
+>>>> via ieee80211_tx_status(), the rate is only accessible via
+>>>> sta_statiscs() op.
+>>>> 
+>>>> Per peer stats has tx rate info available, this patch stores per 
+>>>> peer
+>>>> last tx rate and updates the tx rate info structures in tx
+>>>> completition.
+>>>> The rate updated in ieee80211_tx_status() is not exactly for the 
+>>>> last
+>>>> transmitted frame instead the rate is from one of the previous 
+>>>> frames.
+>>>> 
+>>>> Per peer txrate information is updated through per peer statistics
+>>>> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+>>>> 
+>>>> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
+>>>> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
+>>>> 
+>>>> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+>>> 
+>>> BTW, your name in patchwork is "akolli@codeaurora.org" but it should 
+>>> be
+>>> "Anilkumar Kolli" and that's why my script uses the wrong name. 
+>>> Please
+>>> fix it by registering to patchwork as it's possible to change your 
+>>> name
+>>> during registration, but only one time. If that doesn't work then
+>>> send a
+>>> request to helpdesk@kernel.org and the admins will fix it.
+>> 
+>> I registered and updated name in the patchwork website.
+> 
+> It seems that your name still is "akolli@codeaurora.org" in the
+> Submitter field:
+> 
+> https://patchwork.kernel.org/patch/10353959/
+> 
+> An example how it should look like:
+> 
+> https://patchwork.kernel.org/patch/10359823/
+> 
+> I think you need to contact helpdesk now and ask them to fix it.
+> 
+>> Do I need to resend the patch ?
+> 
+> No need to resend because of this.
+
+Hi Kalle,
+
+Do you have any comments on this RFC. Shall I submit as a patch ?
+
+Thanks
+Anil.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
