@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs1Ms-0008Oe-MQ
- for ath10k@lists.infradead.org; Tue, 21 Aug 2018 07:46:24 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
-References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
- <87zi1tav6h.fsf@kamboji.qca.qualcomm.com>
- <6b57525f3edc2b7d06b7662efc5d7e5f@codeaurora.org>
- <87y3hb8jtp.fsf@kamboji.qca.qualcomm.com>
- <dbab2233f2fe01136ef827328deac61f@codeaurora.org>
-Date: Tue, 21 Aug 2018 10:46:07 +0300
-In-Reply-To: <dbab2233f2fe01136ef827328deac61f@codeaurora.org> (Anilkumar
- Kolli's message of "Tue, 21 Aug 2018 11:34:52 +0530")
-Message-ID: <87k1okqi0w.fsf@kamboji.qca.qualcomm.com>
+ id 1fsBSX-0002tB-IX
+ for ath10k@lists.infradead.org; Tue, 21 Aug 2018 18:32:55 +0000
 MIME-Version: 1.0
+Date: Tue, 21 Aug 2018 11:32:42 -0700
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Subject: Re: [PATCH 0/3] Add support for ftm responder configuration
+In-Reply-To: <1534757602.6287.4.camel@sipsolutions.net>
+References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
+ <1534323867.3547.30.camel@sipsolutions.net>
+ <4aaa3a6185dbd116ba5c1a2ce76b691f@codeaurora.org>
+ <1534407150.3547.58.camel@sipsolutions.net>
+ <cd1e8ef5693b81c6b5d25eae36a44fd3@codeaurora.org>
+ (sfid-20180818_095014_905997_2F2749FC)
+ <1534757602.6287.4.camel@sipsolutions.net>
+Message-ID: <dbd347a3434c05f48931559818dac8a1@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +24,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anilkumar Kolli <akolli@codeaurora.org>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Anilkumar Kolli <akolli@codeaurora.org> writes:
+On 2018-08-20 02:33, Johannes Berg wrote:
+> On Sat, 2018-08-18 at 00:50 -0700, Pradeep Kumar Chitrapu wrote:
+>> >
+>> I will change the attribute to FLAG type, also add support for 
+>> LCI/CIVIC
+>> params and repost the patch.
+> 
+> Looking at Android (for unrelated reasons), I see that they have a
+> separate "enable FTM responder" command:
+> 
+> https://android.googlesource.com/platform/hardware/interfaces/+/master/wifi/1.0/IWifiRttController.hal#158
+> 
+> Is that something you've seen/worked with? If so, how does it match 
+> your
+> current approach where FTM responder has to be enabled from the start?
+> 
+> Or perhaps this API is independent of AP and starts its own AP? But it
+> doesn't have any setup for the SSID etc., only the channel, so not 
+> clear
+> how that'd work?
+> 
+> johannes
 
-> On 2018-04-25 19:33, Kalle Valo wrote:
->> Anilkumar Kolli <akolli@codeaurora.org> writes:
->>
->>> On 2018-04-24 13:32, Kalle Valo wrote:
->>>> Anilkumar Kolli <akolli@codeaurora.org> writes:
->>>>
->>>>> Mesh path metric needs txrate information from ieee80211_tx_status()
->>>>> call but in ath10k there is no mechanism to report tx rate
->>>>> information
->>>>> via ieee80211_tx_status(), the rate is only accessible via
->>>>> sta_statiscs() op.
->>>>>
->>>>> Per peer stats has tx rate info available, this patch stores per
->>>>> peer
->>>>> last tx rate and updates the tx rate info structures in tx
->>>>> completition.
->>>>> The rate updated in ieee80211_tx_status() is not exactly for the
->>>>> last
->>>>> transmitted frame instead the rate is from one of the previous
->>>>> frames.
->>>>>
->>>>> Per peer txrate information is updated through per peer statistics
->>>>> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
->>>>>
->>>>> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
->>>>> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
->>>>>
->>>>> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
->>>>
->>>> BTW, your name in patchwork is "akolli@codeaurora.org" but it
->>>> should be
->>>> "Anilkumar Kolli" and that's why my script uses the wrong name.
->>>> Please
->>>> fix it by registering to patchwork as it's possible to change your
->>>> name
->>>> during registration, but only one time. If that doesn't work then
->>>> send a
->>>> request to helpdesk@kernel.org and the admins will fix it.
->>>
->>> I registered and updated name in the patchwork website.
->>
->> It seems that your name still is "akolli@codeaurora.org" in the
->> Submitter field:
->>
->> https://patchwork.kernel.org/patch/10353959/
->>
->> An example how it should look like:
->>
->> https://patchwork.kernel.org/patch/10359823/
->>
->> I think you need to contact helpdesk now and ask them to fix it.
->>
->>> Do I need to resend the patch ?
->>
->> No need to resend because of this.
->
-> Hi Kalle,
->
-> Do you have any comments on this RFC. Shall I submit as a patch ?
+I wasn't aware of this android api. However, looking at the api, the 
+assumption is that bss is started by a different
+api and the 'enableResponder' api is used for enabling rtt for a given 
+duration.
 
-I have some questions about it but I haven't had a chance to look at in
-detail yet, hopefully later this week.
+The reason we have added enabling ftm responder through start ap is that 
+this can reflect beacon IE change in the
+configuration in the same place. In case of the separate command, 
+enabling responder will not update the beacon,
+however, the application must issue the new command, whenever its 
+updating beacon template.
+Please let me know your thoughts/suggestions.
 
--- 
-Kalle Valo
+Pradeep
+
+
+
 
 _______________________________________________
 ath10k mailing list
