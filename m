@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from gateway31.websitewelcome.com ([192.185.143.51])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fsXmW-0007Hb-OO
- for ath10k@lists.infradead.org; Wed, 22 Aug 2018 18:23:02 +0000
+ id 1ft0fO-0006AO-9H
+ for ath10k@lists.infradead.org; Fri, 24 Aug 2018 01:13:35 +0000
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+ by gateway31.websitewelcome.com (Postfix) with ESMTP id BDC7F2EF6F
+ for <ath10k@lists.infradead.org>; Thu, 23 Aug 2018 20:13:22 -0500 (CDT)
+Date: Thu, 23 Aug 2018 20:12:47 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ath10k: use struct_size() in kzalloc()
+Message-ID: <20180824011247.GA25648@embeddedor.com>
 MIME-Version: 1.0
-Date: Wed, 22 Aug 2018 11:22:49 -0700
-From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Subject: Re: [PATCH 0/3] Add support for ftm responder configuration
-In-Reply-To: <1534922856.25523.60.camel@sipsolutions.net>
-References: <7999c366492a4523456227fb49329bf2@codeaurora.org>
- <1534922856.25523.60.camel@sipsolutions.net>
-Message-ID: <4fb78fad97704c8b3b1433085355180c@codeaurora.org>
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +20,95 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+Cc: Kees Cook <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-08-22 00:27, Johannes Berg wrote:
-> On Tue, 2018-08-21 at 15:08 -0700, Pradeep Kumar Chitrapu wrote:
-> 
->> > Right. However, I guess we could allow updating/changing this setting
->> > on
->> > the fly through () which already allows changing
->> > other
->> > non-beacon parameters (like the probe or assoc response templates), and
->> > then we can use your approach. Basically changing "SET_BEACON" to be a
->> > bit like "CHANGE_AP".
->> 
->> Agree. ( ftm_responder param will have to be added in
->> cfg80211_beacon_data
->> instead of cfg80211_ap_settings)
-> 
-> Right. I'm not even sure that all devices can disable it though, so we
-> may be in a bind here? I think ours (Intel) can't, for example, disable
-> FTM responder without disabling the AP (at least momentarily)...
-> 
-> Should we just ignore that? Or perhaps add a separate capability for 
-> it?
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-Yes, even we behave the same. In that case, we can go ahead now with the
-capability to only enable FTM responder. If the driver wants to support
-disabling option in future, at which point, the new capability can be 
-added.
+struct foo {
+	int stuff;
+        void *entry[];
+};
 
-However, changes to nl80211_set_beacon to support enabling FTM responder
-may still be needed along with start_ap, assuming that ap start will be 
-issued
-by different android api than enableResponder api.
+instance = kzalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 
-Please let me know your suggestion.
+Instead of leaving these open-coded and prone to type mistakes, we can
+now use the new struct_size() helper:
 
-> 
-> Maybe there's even hardware that cannot change the elements (LCI/Civic
-> location) on the fly?
-> 
-> johannes
+instance = kzalloc(struct_size(instance, entry, count), GFP_KERNEL);
+
+This issue was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 18c709c..d0381aa 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1416,10 +1416,8 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
+ 
+ 	nentries = roundup_pow_of_two(nentries);
+ 
+-	src_ring = kzalloc(sizeof(*src_ring) +
+-			   (nentries *
+-			    sizeof(*src_ring->per_transfer_context)),
+-			   GFP_KERNEL);
++	src_ring = kzalloc(struct_size(src_ring, per_transfer_context,
++				       nentries), GFP_KERNEL);
+ 	if (src_ring == NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1476,10 +1474,8 @@ ath10k_ce_alloc_src_ring_64(struct ath10k *ar, unsigned int ce_id,
+ 
+ 	nentries = roundup_pow_of_two(nentries);
+ 
+-	src_ring = kzalloc(sizeof(*src_ring) +
+-			   (nentries *
+-			    sizeof(*src_ring->per_transfer_context)),
+-			   GFP_KERNEL);
++	src_ring = kzalloc(struct_size(src_ring, per_transfer_context,
++				       nentries), GFP_KERNEL);
+ 	if (!src_ring)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1534,10 +1530,8 @@ ath10k_ce_alloc_dest_ring(struct ath10k *ar, unsigned int ce_id,
+ 
+ 	nentries = roundup_pow_of_two(attr->dest_nentries);
+ 
+-	dest_ring = kzalloc(sizeof(*dest_ring) +
+-			    (nentries *
+-			     sizeof(*dest_ring->per_transfer_context)),
+-			    GFP_KERNEL);
++	dest_ring = kzalloc(struct_size(dest_ring, per_transfer_context,
++					nentries), GFP_KERNEL);
+ 	if (dest_ring == NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1580,10 +1574,8 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
+ 
+ 	nentries = roundup_pow_of_two(attr->dest_nentries);
+ 
+-	dest_ring = kzalloc(sizeof(*dest_ring) +
+-			    (nentries *
+-			     sizeof(*dest_ring->per_transfer_context)),
+-			    GFP_KERNEL);
++	dest_ring = kzalloc(struct_size(dest_ring, per_transfer_context,
++					nentries), GFP_KERNEL);
+ 	if (!dest_ring)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
