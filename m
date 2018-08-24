@@ -1,25 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yb0-x244.google.com ([2607:f8b0:4002:c09::244])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ft2KT-0002o1-Cz
- for ath10k@lists.infradead.org; Fri, 24 Aug 2018 03:00:06 +0000
-Received: by mail-yb0-x244.google.com with SMTP id f145-v6so2997655ybg.4
- for <ath10k@lists.infradead.org>; Thu, 23 Aug 2018 19:59:55 -0700 (PDT)
-Received: from mail-yb0-f170.google.com (mail-yb0-f170.google.com.
- [209.85.213.170])
- by smtp.gmail.com with ESMTPSA id q127-v6sm2502531ywq.83.2018.08.23.19.59.52
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 23 Aug 2018 19:59:53 -0700 (PDT)
-Received: by mail-yb0-f170.google.com with SMTP id f4-v6so2994923ybp.7
- for <ath10k@lists.infradead.org>; Thu, 23 Aug 2018 19:59:52 -0700 (PDT)
+ id 1ft4zM-0000vB-SX
+ for ath10k@lists.infradead.org; Fri, 24 Aug 2018 05:50:30 +0000
 MIME-Version: 1.0
-In-Reply-To: <20180824011247.GA25648@embeddedor.com>
-References: <20180824011247.GA25648@embeddedor.com>
-From: Kees Cook <keescook@chromium.org>
-Date: Thu, 23 Aug 2018 19:59:51 -0700
-Message-ID: <CAGXu5j+TkaLoXaGi0mc4-xZSnDdM=z=J9n-h5GOaoOTM5MgBLQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: use struct_size() in kzalloc()
+Date: Fri, 24 Aug 2018 11:20:17 +0530
+From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+In-Reply-To: <1534408023.3547.64.camel@sipsolutions.net>
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
+ <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+ <1527069018.3759.15.camel@sipsolutions.net>
+ <eede64cf-ecf3-6697-a338-b7eb4c9bcd27@codeaurora.org>
+ <1534408023.3547.64.camel@sipsolutions.net>
+Message-ID: <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,108 +26,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Thu, Aug 23, 2018 at 6:12 PM, Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
-> One of the more common cases of allocation size calculations is finding
-> the size of a structure that has a zero-sized array at the end, along
-> with memory for some number of elements for that array. For example:
->
-> struct foo {
->         int stuff;
->         void *entry[];
-> };
->
-> instance = kzalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
->
-> Instead of leaving these open-coded and prone to type mistakes, we can
-> now use the new struct_size() helper:
->
-> instance = kzalloc(struct_size(instance, entry, count), GFP_KERNEL);
->
-> This issue was detected with the help of Coccinelle.
->
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+On 2018-08-16 13:57, Johannes Berg wrote:
+> On Tue, 2018-08-14 at 18:23 +0530, Manikanta Pubbisetty wrote:
+> 
+>> > I don't think that makes sense. If we split the capability of AP_VLAN
+>> > and AP_VLAN_FOR_4ADDR at the "root", then we don't need to play with all
+>> > these things. Yes, this is slightly awkward for userspace, and perhaps
+>> > with the interface combination checks, but I'd like you to look at that.
+> 
+>> I was working on splitting the 4-addr functionality from AP/VLAN 
+>> iftype;
+>> I have introduced a new iftype NL80211_IFTYPE_AP_4ADDR and moved the
+>> 4-addr handling from AP/VLAN to this new iftype. But this approach
+>> breaks the backward compatibility with older userspace applications.
+> 
+> Yeah ...
+> 
+> I'm confused and no longer sure what I was thinking, nor even what 
+> we're
+> trying to achieve here...
+> 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I had introduced a change db3bdcb9c3ff (" mac80211: allow AP_VLAN 
+operation on crypto controlled devices ") for supporting VLAN 
+functionality on ath10k devices; this commit has broken 4 addr support 
+on ath10k devices as I was advertising the AP/VLAN support 
+conditionally. Since 4 addr operation is tied to AP/VLAN support, with 
+this change, only the chips which support VLAN functionality can support 
+4 addr operation but other ath10k chips don't.
 
--Kees
+ From what I can understand from our previous discussions, we had to 
+separate the 4addr support from the AP/VLAN iftype but doing so could 
+lead to backward compatibility issues. I have the code which separates 
+the 4addr functionality from AP/VLAN but the bigger problem is the 
+backward compatibility.
 
-> ---
->  drivers/net/wireless/ath/ath10k/ce.c | 24 ++++++++----------------
->  1 file changed, 8 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-> index 18c709c..d0381aa 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.c
-> +++ b/drivers/net/wireless/ath/ath10k/ce.c
-> @@ -1416,10 +1416,8 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
->
->         nentries = roundup_pow_of_two(nentries);
->
-> -       src_ring = kzalloc(sizeof(*src_ring) +
-> -                          (nentries *
-> -                           sizeof(*src_ring->per_transfer_context)),
-> -                          GFP_KERNEL);
-> +       src_ring = kzalloc(struct_size(src_ring, per_transfer_context,
-> +                                      nentries), GFP_KERNEL);
->         if (src_ring == NULL)
->                 return ERR_PTR(-ENOMEM);
->
-> @@ -1476,10 +1474,8 @@ ath10k_ce_alloc_src_ring_64(struct ath10k *ar, unsigned int ce_id,
->
->         nentries = roundup_pow_of_two(nentries);
->
-> -       src_ring = kzalloc(sizeof(*src_ring) +
-> -                          (nentries *
-> -                           sizeof(*src_ring->per_transfer_context)),
-> -                          GFP_KERNEL);
-> +       src_ring = kzalloc(struct_size(src_ring, per_transfer_context,
-> +                                      nentries), GFP_KERNEL);
->         if (!src_ring)
->                 return ERR_PTR(-ENOMEM);
->
-> @@ -1534,10 +1530,8 @@ ath10k_ce_alloc_dest_ring(struct ath10k *ar, unsigned int ce_id,
->
->         nentries = roundup_pow_of_two(attr->dest_nentries);
->
-> -       dest_ring = kzalloc(sizeof(*dest_ring) +
-> -                           (nentries *
-> -                            sizeof(*dest_ring->per_transfer_context)),
-> -                           GFP_KERNEL);
-> +       dest_ring = kzalloc(struct_size(dest_ring, per_transfer_context,
-> +                                       nentries), GFP_KERNEL);
->         if (dest_ring == NULL)
->                 return ERR_PTR(-ENOMEM);
->
-> @@ -1580,10 +1574,8 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
->
->         nentries = roundup_pow_of_two(attr->dest_nentries);
->
-> -       dest_ring = kzalloc(sizeof(*dest_ring) +
-> -                           (nentries *
-> -                            sizeof(*dest_ring->per_transfer_context)),
-> -                           GFP_KERNEL);
-> +       dest_ring = kzalloc(struct_size(dest_ring, per_transfer_context,
-> +                                       nentries), GFP_KERNEL);
->         if (!dest_ring)
->                 return ERR_PTR(-ENOMEM);
->
-> --
-> 2.7.4
->
+I am hoping that now I have set the context correctly :)
 
+>> Since I am completely moving the 4-addr handling to the new type, 
+>> older
+>> applications which do not understand this new type will simply fail 
+>> and
+>> 4-addr mode will be completely broken.
+>> 
+>> Currently, whenever a 4-addr client attempts a connection, hostapd 
+>> just
+>> creates a AP/VLAN interface and moves the 4-addr client to the AP/VLAN
+>> iface; there are no other checks. I had no other option other than 
+>> going
+>> with a new iftype for 4-addr handling.
+>> 
+>> Is there a way we can maintain backward compatibility with this
+>> approach? Retaining the 4-addr handling in AP/VLAN and duplicating the
+>> same functionality to the new iftype seems will work but I am not sure
+>> if this is the right approach.
+> 
+> I think we have to keep the 4-addr handling in AP_VLAN iftype either
+> way, to not break existing hostapd. We could introduce a separate
+> AP_VLAN_NO_4ADDR and then require updating hostapd to get non-4addr
+> VLAN, but that also seems awkward.
+> 
+> Since hostapd doesn't currently check anything...
+> 
+> Ok, no, I'm confused now. If we just clear WIPHY_FLAG_4ADDR_AP, don't 
+> we
+> get what we want? 4-addr AP_VLAN interfaces would no longer be 
+> permitted
+> to be created?
 
+As I explained above, the agenda is to provide the driver (in this case, 
+ath10k) a better control for advertising the device capabilities; only 
+few ath10k chips can support VLAN functionality but all of them can 
+support 4 addr operation.
 
--- 
-Kees Cook
-Pixel Security
+Manikanta
 
 _______________________________________________
 ath10k mailing list
