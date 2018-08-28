@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuf3U-0007B1-AQ
- for ath10k@lists.infradead.org; Tue, 28 Aug 2018 14:33:17 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: retrieve MAC address from firmware if provided
-References: <20180810233948.144792-1-briannorris@chromium.org>
- <5B6F2A47.7070502@broadcom.com>
- <CA+ASDXOeybJAsWJtVBdLdQ=6xThJja5MaEoa3dERKZ-shkbDkg@mail.gmail.com>
- <5B71CDFB.60408@broadcom.com>
-Date: Tue, 28 Aug 2018 17:33:01 +0300
-In-Reply-To: <5B71CDFB.60408@broadcom.com> (Arend van Spriel's message of
- "Mon, 13 Aug 2018 20:29:15 +0200")
-Message-ID: <878t4qftnm.fsf@kamboji.qca.qualcomm.com>
+ id 1fufO3-0000Ks-FJ
+ for ath10k@lists.infradead.org; Tue, 28 Aug 2018 14:54:54 +0000
+Date: Tue, 28 Aug 2018 22:53:27 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 2/2] ath10k: Enable pktlog for WCN3990 target
+Message-ID: <201808282240.fECpwB7y%fengguang.wu@intel.com>
+References: <20180828043642.14890-3-govinds@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20180828043642.14890-3-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +23,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: govinds@codeaurora.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
 
-Arend van Spriel <arend.vanspriel@broadcom.com> writes:
+Hi Govind,
 
-> On 8/13/2018 7:14 PM, Brian Norris wrote:
->> On Sat, Aug 11, 2018 at 11:26 AM Arend van Spriel
->> <arend.vanspriel@broadcom.com> wrote:
->>>
->>> On 8/11/2018 1:39 AM, Brian Norris wrote:
->>>> Devices may provide their own MAC address via system firmware (e.g.,
->>>
->>> You got me confused by using just "firmware" in the subject.
->>
->> Yeah...I started by writing this patch with device tree specifically
->> (of_get_mac_address()), and then later found that there were generic
->> "device" helpers for this, which can assist with other sorts of
->> firmware nodes. It was easier to put a name on a device tree patch
->> than on a "device" patch. I suppose "system firmware" might be a
->> better description?
->>
->>>> device tree), especially in the case where the device doesn't have a
->>>> useful EEPROM on which to store its MAC address (e.g., for integrated
->>>> Wifi).
->>>>
->>>> Use the generic device helper to retrieve the MAC address, and (if
->>>> present) honor it above the MAC address advertised by the card.
->>>
->>> But this put me back on track ;-)
->>
->> Let me know if you have a better way to clarify. I can resend with a
->> slightly modified subject (s/firmware/system firmware/), or let Kalle
->> do it, if that's the only thing to change.
->
-> "system firmware" substitution works for me.
+Thank you for the patch! Perhaps something to improve:
 
-What about:
+[auto build test WARNING on ath6kl/ath-next]
+[also build test WARNING on v4.19-rc1 next-20180828]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-ath10k: retrieve MAC address from Device Tree if provided
+url:    https://github.com/0day-ci/linux/commits/Govind-Singh/ath10k-Enable-pktlog-for-WCN3990-chipset/20180828-154302
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
 
-Because from ath10k point of view we use Device Tree functions and don't
-care if it's delivered by pidgeons or by system firmware :)
 
-I can change this before I commit.
+sparse warnings: (new ones prefixed by >>)
 
--- 
-Kalle Valo
+   drivers/net/wireless/ath/ath10k/htc.c:498:25: sparse: expression using sizeof(void)
+   drivers/net/wireless/ath/ath10k/htc.c:657:25: sparse: expression using sizeof(void)
+>> drivers/net/wireless/ath/ath10k/htc.c:875:6: sparse: symbol 'ath10k_htc_pktlog_svc_supported' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 _______________________________________________
 ath10k mailing list
