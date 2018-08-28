@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fueHK-0007ku-O6
- for ath10k@lists.infradead.org; Tue, 28 Aug 2018 13:43:32 +0000
+ id 1fueOn-0004YM-Ez
+ for ath10k@lists.infradead.org; Tue, 28 Aug 2018 13:51:15 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: use struct_size() in kzalloc()
+Subject: Re: [PATCH] ath10k: Limit available channels via DT
+ ieee80211-freq-limit
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180824011247.GA25648@embeddedor.com>
-References: <20180824011247.GA25648@embeddedor.com>
-Message-Id: <20180828134320.7450D602AE@smtp.codeaurora.org>
-Date: Tue, 28 Aug 2018 13:43:20 +0000 (UTC)
+In-Reply-To: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
+References: <20180730153933.3771-1-sven.eckelmann@openmesh.com>
+Message-Id: <20180828135103.0C74660388@smtp.codeaurora.org>
+Date: Tue, 28 Aug 2018 13:51:02 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
+Sven Eckelmann <sven.eckelmann@openmesh.com> wrote:
 
-> One of the more common cases of allocation size calculations is finding
-> the size of a structure that has a zero-sized array at the end, along
-> with memory for some number of elements for that array. For example:
+> Tri-band devices (1x 2.4GHz + 2x 5GHz) often incorporate special filters in
+> the RX and TX path. These filtered channel can in theory still be used by
+> the hardware but the signal strength is reduced so much that it makes no
+> sense.
 > 
-> struct foo {
-> 	int stuff;
->         void *entry[];
-> };
+> There is already a DT property to limit the available channels but ath10k
+> has to manually call this functionality to limit the currrently set wiphy
+> channels further.
 > 
-> instance = kzalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
-> 
-> Instead of leaving these open-coded and prone to type mistakes, we can
-> now use the new struct_size() helper:
-> 
-> instance = kzalloc(struct_size(instance, entry, count), GFP_KERNEL);
-> 
-> This issue was detected with the help of Coccinelle.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-06ae8dc00433 ath10k: use struct_size() in kzalloc()
+34d5629d2ca8 ath10k: limit available channels via DT ieee80211-freq-limit
 
 -- 
-https://patchwork.kernel.org/patch/10574741/
+https://patchwork.kernel.org/patch/10549245/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
