@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuVkY-00070G-RF
- for ath10k@lists.infradead.org; Tue, 28 Aug 2018 04:37:10 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Enable pktlog for WCN3990 target
-Date: Tue, 28 Aug 2018 10:06:42 +0530
-Message-Id: <20180828043642.14890-3-govinds@codeaurora.org>
-In-Reply-To: <20180828043642.14890-1-govinds@codeaurora.org>
-References: <20180828043642.14890-1-govinds@codeaurora.org>
+ id 1fuYju-0001Dj-7x
+ for ath10k@lists.infradead.org; Tue, 28 Aug 2018 07:48:39 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: Add waiting htt tx complete before wow enable
+Date: Tue, 28 Aug 2018 15:47:23 +0800
+Message-Id: <1535442443-22152-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,173 +21,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
 
-WCN3990 target uses separate htc service for pktlog.
-Add pktlog service request and support for pktlog
-rx path handling.
+If there have some tx packets pending in firmware, and then system
+enter suspend, firmware will fail for wow enable. This will trigger
+mac80211 to stop ath10k and download firmware again, then it is
+non-wow suspend.
 
-Testing:
-    Tested on WCN3990 and QCA6174 HW.
-    Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1,
-               WLAN.RM.4.4.1-00109-QCARMSWPZ-1
+After add the waiting htt tx complete, then firmware will have some
+time window to send or flush the pending tx packets.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Tested with QCA6174 PCI with firmware
+WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
+It's not a regression with new firmware releases.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htc.c  | 63 +++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath10k/snoc.c | 13 +++++-
- 3 files changed, 74 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 22 +++++++++++++---------
+ drivers/net/wireless/ath/ath10k/mac.h |  1 +
+ drivers/net/wireless/ath/ath10k/wow.c |  2 ++
+ 3 files changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 8902720b4e49..ff91061cb3a9 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -803,8 +803,11 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 						ep->service_id,
- 						&ep->ul_pipe_id,
- 						&ep->dl_pipe_id);
--	if (status)
-+	if (status) {
-+		ath10k_warn(ar, "unsupported HTC service id: %d\n",
-+			    ep->service_id);
- 		return status;
-+	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot htc service '%s' ul pipe %d dl pipe %d eid %d ready\n",
-@@ -838,6 +841,56 @@ struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size)
- 	return skb;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 95243b4..4cd33c9 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6717,23 +6717,17 @@ static int ath10k_mac_op_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
+ 	return -EOPNOTSUPP;
  }
  
-+static void ath10k_htc_pktlog_process_rx(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	trace_ath10k_htt_pktlog(ar, skb->data, skb->len);
-+	dev_kfree_skb_any(skb);
-+}
-+
-+static int ath10k_htc_pktlog_connect(struct ath10k *ar)
-+{
-+	struct ath10k_htc_svc_conn_resp conn_resp;
-+	struct ath10k_htc_svc_conn_req conn_req;
-+	int status;
-+
-+	memset(&conn_req, 0, sizeof(conn_req));
-+	memset(&conn_resp, 0, sizeof(conn_resp));
-+
-+	conn_req.ep_ops.ep_tx_complete = NULL;
-+	conn_req.ep_ops.ep_rx_complete = ath10k_htc_pktlog_process_rx;
-+	conn_req.ep_ops.ep_tx_credits = NULL;
-+
-+	/* connect to control service */
-+	conn_req.service_id = ATH10K_HTC_SVC_ID_HTT_LOG_MSG;
-+	status = ath10k_htc_connect_service(&ar->htc, &conn_req, &conn_resp);
-+	if (status) {
-+		ath10k_warn(ar, "failed to connect to PKTLOG service: %d\n",
-+			    status);
-+		return status;
-+	}
-+
-+	return 0;
-+}
-+
-+bool ath10k_htc_pktlog_svc_supported(struct ath10k *ar)
-+{
-+	u8 ul_pipe_id;
-+	u8 dl_pipe_id;
-+	int status;
-+
-+	status = ath10k_hif_map_service_to_pipe(ar, ATH10K_HTC_SVC_ID_HTT_LOG_MSG,
-+						&ul_pipe_id,
-+						&dl_pipe_id);
-+	if (status) {
-+		ath10k_warn(ar, "unsupported HTC service id: %d\n",
-+			    ATH10K_HTC_SVC_ID_HTT_LOG_MSG);
-+
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- int ath10k_htc_start(struct ath10k_htc *htc)
+-static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+-			 u32 queues, bool drop)
++void ath10k_mac_wait_tx_complete(struct ath10k *ar)
  {
- 	struct ath10k *ar = htc->ar;
-@@ -871,6 +924,14 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- 		return status;
- 	}
+-	struct ath10k *ar = hw->priv;
+ 	bool skip;
+ 	long time_left;
  
-+	if (ath10k_htc_pktlog_svc_supported(ar)) {
-+		status = ath10k_htc_pktlog_connect(ar);
-+		if (status) {
-+			ath10k_err(ar, "failed to connect to pktlog: %d\n", status);
-+			return status;
-+		}
-+	}
-+
- 	return 0;
- }
+ 	/* mac80211 doesn't care if we really xmit queued frames or not
+ 	 * we'll collect those frames either way if we stop/delete vdevs
+ 	 */
+-	if (drop)
+-		return;
+-
+-	mutex_lock(&ar->conf_mutex);
  
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 62fb16a4fa63..8816bcbaebad 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1839,7 +1839,7 @@ int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar, u16 service_id,
- 		}
- 	}
+ 	if (ar->state == ATH10K_STATE_WEDGED)
+-		goto skip;
++		return;
  
--	if (WARN_ON(!ul_set || !dl_set))
-+	if (!ul_set || !dl_set)
- 		return -ENOENT;
- 
- 	return 0;
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index e9a6b3dc0c11..5a9c8faaed0e 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -62,6 +62,7 @@ static void ath10k_snoc_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_snoc_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_snoc_htt_rx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_snoc_htt_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
-+static void ath10k_snoc_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state);
- 
- static const struct ath10k_snoc_drv_priv drv_priv = {
- 	.hw_rev = ATH10K_HW_WCN3990,
-@@ -237,7 +238,7 @@ static struct ce_attr host_ce_config_wlan[] = {
- 		.src_nentries = 0,
- 		.src_sz_max = 2048,
- 		.dest_nentries = 512,
--		.recv_cb = ath10k_snoc_htt_htc_rx_cb,
-+		.recv_cb = ath10k_snoc_pktlog_rx_cb,
- 	},
- };
- 
-@@ -624,6 +625,14 @@ static void ath10k_snoc_htt_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
- 	ath10k_snoc_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
- }
- 
-+/* Called by lower (CE) layer when data is received from the Target.
-+ * WCN3990 firmware uses separate CE(CE11) to transfer pktlog data.
-+ */
-+static void ath10k_snoc_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state)
-+{
-+	ath10k_snoc_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
+ 	time_left = wait_event_timeout(ar->htt.empty_tx_wq, ({
+ 			bool empty;
+@@ -6752,8 +6746,18 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 	if (time_left == 0 || skip)
+ 		ath10k_warn(ar, "failed to flush transmit queue (skip %i ar-state %i): %ld\n",
+ 			    skip, ar->state, time_left);
 +}
+ 
+-skip:
++static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			 u32 queues, bool drop)
++{
++	struct ath10k *ar = hw->priv;
 +
- static void ath10k_snoc_htt_rx_deliver(struct ath10k *ar, struct sk_buff *skb)
- {
- 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
-@@ -804,7 +813,7 @@ static int ath10k_snoc_hif_map_service_to_pipe(struct ath10k *ar,
- 		}
++	if (drop)
++		return;
++
++	mutex_lock(&ar->conf_mutex);
++	ath10k_mac_wait_tx_complete(ar);
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 81f8d6c..570493d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -82,6 +82,7 @@ struct ieee80211_txq *ath10k_mac_txq_lookup(struct ath10k *ar,
+ 					    u16 peer_id,
+ 					    u8 tid);
+ int ath10k_mac_ext_resource_config(struct ath10k *ar, u32 val);
++void ath10k_mac_wait_tx_complete(struct ath10k *ar);
+ 
+ static inline void ath10k_tx_h_seq_no(struct ieee80211_vif *vif,
+ 				      struct sk_buff *skb)
+diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
+index a6b179f..af444df 100644
+--- a/drivers/net/wireless/ath/ath10k/wow.c
++++ b/drivers/net/wireless/ath/ath10k/wow.c
+@@ -374,6 +374,8 @@ int ath10k_wow_op_suspend(struct ieee80211_hw *hw,
+ 		goto cleanup;
  	}
  
--	if (WARN_ON(!ul_set || !dl_set))
-+	if (!ul_set || !dl_set)
- 		return -ENOENT;
- 
- 	return 0;
++	ath10k_mac_wait_tx_complete(ar);
++
+ 	ret = ath10k_wow_enable(ar);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to start wow: %d\n", ret);
 -- 
-2.17.0
+1.9.1
 
 
 _______________________________________________
