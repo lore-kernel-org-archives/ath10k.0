@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fueGQ-0007Nq-L9
- for ath10k@lists.infradead.org; Tue, 28 Aug 2018 13:42:36 +0000
+ id 1fueHK-0007ku-O6
+ for ath10k@lists.infradead.org; Tue, 28 Aug 2018 13:43:32 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: schedule hardware restart if WMI command times out
+Subject: Re: [PATCH] ath10k: use struct_size() in kzalloc()
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180822073952.30922-1-martin@strongswan.org>
-References: <20180822073952.30922-1-martin@strongswan.org>
-Message-Id: <20180828134224.4BBD16044E@smtp.codeaurora.org>
-Date: Tue, 28 Aug 2018 13:42:24 +0000 (UTC)
+In-Reply-To: <20180824011247.GA25648@embeddedor.com>
+References: <20180824011247.GA25648@embeddedor.com>
+Message-Id: <20180828134320.7450D602AE@smtp.codeaurora.org>
+Date: Tue, 28 Aug 2018 13:43:20 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Martin Willi <martin@strongswan.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
 
-Martin Willi <martin@strongswan.org> wrote:
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
 
-> When running in AP mode, ath10k sometimes suffers from TX credit
-> starvation. The issue is hard to reproduce and shows up once in a
-> few days, but has been repeatedly seen with QCA9882 and a large
-> range of firmwares, including 10.2.4.70.67.
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
 > 
-> Once the module is in this state, TX credits are never replenished,
-> which results in "SWBA overrun" errors, as no beacons can be sent.
-> Even worse, WMI commands run in a timeout while holding the conf
-> mutex for three seconds each, making any further operations slow
-> and the whole system unresponsive.
+> struct foo {
+> 	int stuff;
+>         void *entry[];
+> };
 > 
-> The firmware/driver never recovers from that state automatically,
-> and triggering TX flush or warm restarts won't work over WMI. So
-> issue a hardware restart if a WMI command times out due to missing
-> TX credits. This implies a connectivity outage of about 1.4s in AP
-> mode, but brings back the interface and the whole system to a usable
-> state. WMI command timeouts have not been seen in absent of this
-> specific issue, so taking such drastic actions seems legitimate.
+> instance = kzalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 > 
-> Signed-off-by: Martin Willi <martin@strongswan.org>
+> Instead of leaving these open-coded and prone to type mistakes, we can
+> now use the new struct_size() helper:
+> 
+> instance = kzalloc(struct_size(instance, entry, count), GFP_KERNEL);
+> 
+> This issue was detected with the help of Coccinelle.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-a9911937e7d3 ath10k: schedule hardware restart if WMI command times out
+06ae8dc00433 ath10k: use struct_size() in kzalloc()
 
 -- 
-https://patchwork.kernel.org/patch/10572645/
+https://patchwork.kernel.org/patch/10574741/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
