@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fubgC-0001Hr-Bo
- for ath10k@lists.infradead.org; Tue, 28 Aug 2018 10:57:02 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Add waiting htt tx complete before wow enable
-References: <1535442443-22152-1-git-send-email-wgong@codeaurora.org>
-Date: Tue, 28 Aug 2018 13:56:45 +0300
-In-Reply-To: <1535442443-22152-1-git-send-email-wgong@codeaurora.org> (Wen
- Gong's message of "Tue, 28 Aug 2018 15:47:23 +0800")
-Message-ID: <87lg8qg3o2.fsf@kamboji.qca.qualcomm.com>
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fueA3-0000VZ-Gq
+ for ath10k@lists.infradead.org; Tue, 28 Aug 2018 13:36:00 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH 3/4] ath10k: add extended per sta tx statistics support
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1533561223-342-4-git-send-email-akolli@codeaurora.org>
+References: <1533561223-342-4-git-send-email-akolli@codeaurora.org>
+Message-Id: <20180828133516.D401C60541@smtp.codeaurora.org>
+Date: Tue, 28 Aug 2018 13:35:16 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +22,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Anilkumar Kolli <akolli@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> writes:
+Anilkumar Kolli <akolli@codeaurora.org> wrote:
 
-> If there have some tx packets pending in firmware, and then system
+> This patch adds per station tx statistics support.
+> 
+> Per station tx stats include
+>  - pkts/bytes transmitted at all possible rates(mcs/nss/bw/gi).
+>  - ACK fails count
+>  - ampdu bytes/pkts transmitted at all possible rates(mcs/nss/bw/gi).
+>  - BA fails count
+> 
+> Tested on QCA9984/QCA4019/QCA988x
+> Firmware: 10.4-3.5.3-00057
+> 	  10.2.4-1.0-00037
+> 
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-s/have/are/ but I can fix that.
+kbuild bot found a new warning:
 
-> enter suspend, firmware will fail for wow enable. This will trigger
-> mac80211 to stop ath10k and download firmware again, then it is
-> non-wow suspend.
->
-> After add the waiting htt tx complete, then firmware will have some
-> time window to send or flush the pending tx packets.
->
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-> It's not a regression with new firmware releases.
->
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+   drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_sta_state':
+>> drivers/net/wireless/ath/ath10k/mac.c:6335:9: error: 'struct ath10k' has no member named 'debug'
+      if (ar->debug.enable_extd_tx_stats)
+            ^~
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10557073/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
