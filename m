@@ -1,9 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fuo8b-0002aM-E2
+ for ath10k@lists.infradead.org; Wed, 29 Aug 2018 00:15:11 +0000
+Received: by mail-pl1-x642.google.com with SMTP id f6-v6so1466150plo.1
+ for <ath10k@lists.infradead.org>; Tue, 28 Aug 2018 17:14:58 -0700 (PDT)
+Date: Tue, 28 Aug 2018 17:14:54 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: retrieve MAC address from firmware if provided
+Message-ID: <20180829001453.GA173345@ban.mtv.corp.google.com>
+References: <20180810233948.144792-1-briannorris@chromium.org>
+ <5B6F2A47.7070502@broadcom.com>
+ <CA+ASDXOeybJAsWJtVBdLdQ=6xThJja5MaEoa3dERKZ-shkbDkg@mail.gmail.com>
+ <5B71CDFB.60408@broadcom.com>
+ <878t4qftnm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Tue, 28 Aug 2018 21:47:48 +0530
-Message-ID: <CABPxzYK=jmERyvryoy274gtDEBft-BUMjOBsDhjVd+xQu-tQLg@mail.gmail.com>
-Subject: ath10k: adding wlan to bridge causes WPA2-PSK to fail
+Content-Disposition: inline
+In-Reply-To: <878t4qftnm.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,90 +29,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Hostap@lists.infradead.org" <hostap@lists.infradead.org>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Arend van Spriel <arend.vanspriel@broadcom.com>, govinds@codeaurora.org, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
 
-Hi,
+On Tue, Aug 28, 2018 at 05:33:01PM +0300, Kalle Valo wrote:
+> Arend van Spriel <arend.vanspriel@broadcom.com> writes:
+> 
+> > On 8/13/2018 7:14 PM, Brian Norris wrote:
+> >> On Sat, Aug 11, 2018 at 11:26 AM Arend van Spriel
+> >> <arend.vanspriel@broadcom.com> wrote:
+> >>>
+> >>> On 8/11/2018 1:39 AM, Brian Norris wrote:
+> >>>> Devices may provide their own MAC address via system firmware (e.g.,
+> >>>
+> >>> You got me confused by using just "firmware" in the subject.
+> >>
+> >> Yeah...I started by writing this patch with device tree specifically
+> >> (of_get_mac_address()), and then later found that there were generic
+> >> "device" helpers for this, which can assist with other sorts of
+> >> firmware nodes. It was easier to put a name on a device tree patch
+> >> than on a "device" patch. I suppose "system firmware" might be a
+> >> better description?
+> >>
+> >>>> device tree), especially in the case where the device doesn't have a
+> >>>> useful EEPROM on which to store its MAC address (e.g., for integrated
+> >>>> Wifi).
+> >>>>
+> >>>> Use the generic device helper to retrieve the MAC address, and (if
+> >>>> present) honor it above the MAC address advertised by the card.
+> >>>
+> >>> But this put me back on track ;-)
+> >>
+> >> Let me know if you have a better way to clarify. I can resend with a
+> >> slightly modified subject (s/firmware/system firmware/), or let Kalle
+> >> do it, if that's the only thing to change.
+> >
+> > "system firmware" substitution works for me.
+> 
+> What about:
+> 
+> ath10k: retrieve MAC address from Device Tree if provided
+> 
+> Because from ath10k point of view we use Device Tree functions and don't
+> care if it's delivered by pidgeons or by system firmware :)
 
-I am trying to connect ath10k interface to Linux bridge after enabling
-of 4addr mode in WPA2-PSK mode, but EAPOL handshake fails, M1 is
-not received by the wpa_supplicant.
+I don't care too much, but note that Device Tree is a loaded term,
+usually referring specifically to a method of describing system hardware
+via the Flattened Device Tree format. If I were specifically targeting
+Device Tree, I'd use helpers like of_get_mac_address() instead. (The
+'of_*' prefix is a relic of OpenFirmware, an early firmware
+implementation that used the Device Tree format.)
 
-ath10k_pci: QCA6174
-=================
-pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1028:0310
-kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
-firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features
-wowlan,ignore-otp crc32 fd869beb
-board_file api 2 bmi_id N/A crc32 20d869c3
-Unknown eventid: 118809
-Unknown eventid: 90118
-htt-ver 3.47 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-============
-Kernel: 4.18.0-rc8: wireless-drivers-next:
-209b43759d65b2cc99ce7757249aacc82b03c4e2
-============
-wpa_supp: b3f24b06e30411e1d4af06945b43eb4db0ac3394
-  .config has #CONFIG_NO_LINUX_PACKET_SOCKET_WAR=y
-and default L2 packet (linux packet socket)
+If you're trying to say "device tree" to refer to "the Linux device
+hierarchy", then that's also a fair description.
 
-wpa_supplicant verbose logs:
+But that's all starting to mince words. Device Tree (with or without
+capitalization) is fine with me.
 
-wlp3s0: State: ASSOCIATING -> ASSOCIATED
-nl80211: Set wlp3s0 operstate 0->0 (DORMANT)
-netlink: Operstate: ifindex=3 linkmode=-1 (no change), operstate=5
-(IF_OPER_DORMANT)
-<<Snip..............>>
-EAPOL: External notification - portEnabled=0
-EAPOL: External notification - portValid=0
-EAPOL: External notification - EAP success=0
-EAPOL: External notification - portEnabled=1
-EAPOL: SUPP_PAE entering state CONNECTING
-EAPOL: enable timer tick
-EAPOL: SUPP_BE entering state IDLE
-wlp3s0: Setting authentication timeout: 10 sec 0 usec
-wlp3s0: Cancelling scan request
-<<Snip..............>>
-RTM_NEWLINK: ifi_index=3 ifname=wlp3s0 wext ifi_family=0
-ifi_flags=0x11003 ([UP][LOWER_UP])
-RTM_NEWLINK: ifi_index=3 ifname=wlp3s0 wext ifi_family=0
-ifi_flags=0x11003 ([UP][LOWER_UP])
-RTM_NEWLINK: ifi_index=3 ifname=wlp3s0 master=12 operstate=5
-ifi_family=7 ifi_flags=0x11003 ([UP][LOWER_UP])
-nl80211: Add ifindex 12 for bridge br0
-nl80211: Add own interface ifindex 12 (ifidx_reason 3)
-nl80211: ifindex 12 already in the list
-RTM_NEWLINK: ifi_index=3 ifname=wlp3s0 operstate=5 linkmode=1
-master=12 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
-<<Snip..............>>
-EAPOL: SUPP_PAE entering state CONNECTING
-EAPOL: enable timer tick
-EAPOL: txStart
-WPA: drop TX EAPOL in non-IEEE 802.1X mode (type=1 len=0)
-RTM_NEWLINK: ifi_index=3 ifname=wlp3s0 master=12 operstate=2
-ifi_family=7 ifi_flags=0x1003 ([UP])
-nl80211: Add ifindex 12 for bridge br0
-nl80211: Add own interface ifindex 12 (ifidx_reason 3)
-nl80211: ifindex 12 already in the list
-RTM_NEWLINK: ifi_index=3 ifname=wlp3s0 operstate=2 linkmode=1
-master=12 ifi_family=0 ifi_flags=0x1003 ([UP])
-nl80211: Event message available
-nl80211: Ignored event (cmd=20) for foreign interface (ifindex 3 wdev 0x0)
-nl80211: Drv Event 20 (NL80211_CMD_DEL_STATION) received for wlp3s0
-nl80211: Delete station 08:02:8e:8c:9c:50
-nl80211: Event message available
-nl80211: Ignored event (cmd=40) for foreign interface (ifindex 3 wdev 0x0)
-nl80211: Drv Event 40 (NL80211_CMD_DISASSOCIATE) received for wlp3s0
-nl80211: MLME event 40 (NL80211_CMD_DISASSOCIATE) on
-wlp3s0(9c:30:5b:7b:18:65) A1=9c:30:5b:7b:18:65 A2=08:02:8e:8c:9c:50
-nl80211: MLME event frame - hexdump(len=26): a0 00 3c 00 9c 30 5b 7b
-18 65 08 02 8e 8c 9c 50 08 02 8e 8c 9c 50 00 00 02 00
-nl80211: Disassociate event
-wlp3s0: Event DISASSOC (1) received
-wlp3s0: Disassociation notification
-wlp3s0:  * reason 2
-wlp3s0:  * address 08:02:8e:8c:9c:50
-Disassociation frame IE(s) - hexdump(len=0): [NULL]
+Thanks,
+Brian
+
+> I can change this before I commit.
+> 
+> -- 
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
