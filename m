@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuwEl-00076K-ON
- for ath10k@lists.infradead.org; Wed, 29 Aug 2018 08:54:04 +0000
-Message-ID: <1535532825.5215.21.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 0/3] cfg80211/mac80211/ath10k: Extend avg ack rssi
- support for mgmt frames
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 29 Aug 2018 10:53:45 +0200
-In-Reply-To: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
- (sfid-20180719_152645_207189_85424FA8)
-References: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
- (sfid-20180719_152645_207189_85424FA8)
-Mime-Version: 1.0
+ id 1fvCii-0006X1-SD
+ for ath10k@lists.infradead.org; Thu, 30 Aug 2018 02:30:06 +0000
+From: Carl Huang <cjhuang@codeaurora.org>
+Subject: [PATCH 0/3] ath10k: download firmware via diag ce for qca6174 and
+ qca9377
+Date: Thu, 30 Aug 2018 10:29:39 +0800
+Message-Id: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +16,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@codeaurora.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-I've sort of applied patches 1/2 squashed together, but with some changes.
+Downloading firmware via diag ce can greatly reduce the downloading
+time to ~40ms from ~500ms for a 700k bytes firmware.
 
-I hope those are OK - otherwise send me another patch on top please.
+Carl Huang (3):
+  ath10k: optimize pci diag mem read & write operations
+  ath10k: support to access target space below 1M for qca6174 and
+    qca9377
+  ath10k: download firmware via diag Copy Engine for QCA6174 and
+    QCA9377.
 
-johannes
+ drivers/net/wireless/ath/ath10k/bmi.c  |  23 ++++
+ drivers/net/wireless/ath/ath10k/bmi.h  |  31 ++++++
+ drivers/net/wireless/ath/ath10k/core.c |  36 +++++--
+ drivers/net/wireless/ath/ath10k/hw.c   | 185 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  19 ++++
+ drivers/net/wireless/ath/ath10k/pci.c  |  59 +++++++----
+ drivers/net/wireless/ath/ath10k/pci.h  |   3 +-
+ 7 files changed, 329 insertions(+), 27 deletions(-)
+
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
