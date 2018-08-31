@@ -1,26 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr60054.outbound.protection.outlook.com ([40.107.6.54]
- helo=EUR04-DB3-obe.outbound.protection.outlook.com)
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fvWJm-0007A5-Q1
- for ath10k@lists.infradead.org; Thu, 30 Aug 2018 23:25:40 +0000
-Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
- <87sh3pdtpg.fsf@toke.dk>
- <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
- <87mutue4y8.fsf@toke.dk>
- <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
- <87600eecr7.fsf@toke.dk>
- <68d91488f58f4a449908fc7eeebb8b34@aptaiexm02f.ap.qualcomm.com>
- <87tvntb53x.fsf@toke.dk>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <ae8d9891-b827-7ca5-1375-0280d8f5c194@bowerswilkins.com>
-Date: Thu, 30 Aug 2018 16:25:11 -0700
-MIME-Version: 1.0
-In-Reply-To: <87tvntb53x.fsf@toke.dk>
-Content-Language: en-US
+ id 1fvXxj-0001E7-FN
+ for ath10k@lists.infradead.org; Fri, 31 Aug 2018 01:11:00 +0000
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Subject: [PATCH 0/3] support ftm responder configuration/statistics
+Date: Thu, 30 Aug 2018 18:10:20 -0700
+Message-Id: <1535677820-32588-1-git-send-email-pradeepc@codeaurora.org>
+In-Reply-To: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
+References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +17,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>, Wen Gong <wgong@qti.qualcomm.com>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>, ath10k@lists.infradead.org
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>
 
-SGkgVG9rZSwKCgpPbiAwOC8xNy8yMDE4IDA0OjMyIEFNLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
-ZW4gd3JvdGU6Cj4KPj4+PiBTaGlmdCA2Ogo+Pj4+IHdnb25nQHdnb25nLUxhdGl0dWRlLUU1NDQw
-LTE6fi9mbGVudCQgZmxlbnQgLUggMTkyLjE2OC4xLjcgLXQKPj4+PiAic2tfcGFjaW5nX3NoaWZ0
-NiIgdGNwX251cCAtLXRlc3QtcGFyYW1ldGVyIHVwbG9hZF9zdHJlYW1zPTEKPj4+CkRvZXMgZmxl
-bnQgaGF2ZSBvcHRpb25zIHRvIHNldCBUT1Mgb3IgUW9TIHF1ZXVlIGZvciBUQ1Agb3IgVURQIHRl
-c3Q/CklmIEkgYWRkICItLXRlc3QtcGFyYW1ldGUgYnVyc3RfdG9zPTB4ZTAiLCB3aWxsIGl0IHVz
-ZSBjb3JyZXNwb25kaW5nIAptYWM4MDIxMSBRb1MgcXVldWU/CmZsZW50IC1IIHh4eHggLXQgInh4
-eHgiIHRjcF9udXAgLS10ZXN0LXBhcmFtZXRlciB1cGxvYWRfc3RyZWFtcz0xIAotLXRlc3QtcGFy
-YW1ldGUgYnVyc3RfdG9zPTB4ZTAKClRoYW5rcywKUGV0ZXIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+Currently ftm_responder parameter in hostapd.conf is only used for fine
+timing measurement (FTM) capability advertisement and actual control of
+the functionality is with low-level device/driver. This leads to confusion
+to the user when the capability advertisement is different from actual FTM
+responder functionality.
+
+For example, FTM responder capability advertisement is set to 'enabled',
+but the functionality is disabled or not supported by the driver.
+
+The patch set allows userspace to enable FTM responder functionality
+with the addition of new Netlink flag attribute NL80211_ATTR_FTM_RESPONDER
+with configurable lci/civic ocation parameters. Also extended feature flag
+is added for the drivers to advertise the support. Setting the flag to
+enable FTM responder would imply that AP responds to all FTM requests.
+Default is considered to be disabled.
+
+Johannes Berg, Pradeep Kumar Chitrapu (1):
+  cfg80211: support FTM responder configuration/statistics
+
+David Spinadel, Johannes Berg, Pradeep Kumar Chitrapu (1):
+  mac80211: support FTM responder configuration/statistics
+
+Pradeep Kumar Chitrapu (1):
+  ath10k: Add support to configure ftm responder role
+
+ drivers/net/wireless/ath/ath10k/core.h |   1 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  29 +++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |   4 ++
+ drivers/net/wireless/ath/ath10k/wmi.h  |  10 +++
+ include/net/cfg80211.h                 |  66 +++++++++++++++++++
+ include/net/mac80211.h                 |  12 ++++
+ include/uapi/linux/nl80211.h           |  71 ++++++++++++++++++++
+ net/mac80211/cfg.c                     |  74 +++++++++++++++++++++
+ net/mac80211/driver-ops.h              |  16 +++++
+ net/mac80211/trace.h                   |  23 +++++++
+ net/mac80211/util.c                    |   3 +
+ net/wireless/nl80211.c                 | 115 +++++++++++++++++++++++++++++++--
+ net/wireless/rdev-ops.h                |  15 +++++
+ net/wireless/trace.h                   |  44 +++++++++++++
+ 14 files changed, 478 insertions(+), 5 deletions(-)
+
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
