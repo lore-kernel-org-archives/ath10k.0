@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x244.google.com ([2607:f8b0:400c:c05::244])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fviA3-0007TG-8D
- for ath10k@lists.infradead.org; Fri, 31 Aug 2018 12:04:26 +0000
-Received: by mail-vk0-x244.google.com with SMTP id j14-v6so5370212vke.8
- for <ath10k@lists.infradead.org>; Fri, 31 Aug 2018 05:04:12 -0700 (PDT)
+ id 1fviYs-0000Tu-DP
+ for ath10k@lists.infradead.org; Fri, 31 Aug 2018 12:30:04 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
+References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
+Date: Fri, 31 Aug 2018 15:29:47 +0300
+In-Reply-To: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
+ (Anilkumar Kolli's message of "Sat, 21 Apr 2018 11:53:06 +0530")
+Message-ID: <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-From: Enrique Giraldo <hgiraldos@gmail.com>
-Date: Fri, 31 Aug 2018 14:04:00 +0200
-Message-ID: <CAEbaMQLxrRYqjiNYpUP-D41Mi+5j4WSTtW37C+WNSdFJrHnbOA@mail.gmail.com>
-Subject: ath10k: uses too much memory in heavy traffic download tests.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,81 +19,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Anilkumar Kolli <akolli@codeaurora.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgen?= =?utf-8?Q?sen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SSBoYXZlIGRldGVjdGVkIHRoYXQgYXRoMTBrIHdpdGggc3Ryb25nIGlwZXJmIHRlc3RzIChib3Ro
-IFRDUCBhbmQgVURQLApJbiBVRFAgaXQncyBtdWNoIGVhc2llciB0byBtYWtlIGl0IGhhcHBlbiwg
-ZHVlIGxhY2sgb2YgY29uZ2VzdGlvbgpjb250cm9sKSwgdGhlIGtlcm5lbCBydW5zIG91dCBvZiBt
-ZW1vcnkgYW5kIHN0YXJ0cyB0byBsYXVuY2ggT09NCktpbGxlci4KClRoZSBzY2VuYXJpbyBpbiB3
-aGljaCB0aGlzIHByb2JsZW0gaXMgcmVwbGljYXRlZCBpcyBhcyBmb2xsb3dzOgoyMCBzdGF0aW9u
-cyBhbmQgYW4gYXRoMTBrIHJhZGlvIHBlcmZvcm1pbmcgYSBkb3dubG9hZCB0ZXN0IG9mIDUgTWJw
-cwpwZXIgc3RhdGlvbi4gQVAgLS0tLSg1TWJwcykgLeKGkiBjbGllbnQKVGhlIHRlc3Qgc3RhcnRz
-IHdpdGggYXJvdW5kIDYwMDAwIEtCIG9mIE1lbUZyZWUgYW5kIE1lbUF2YWlsYWJsZS4KCkkgaGF2
-ZSBhbHNvIGJlZW4gYWJsZSB0byBzZWUgd2hhdCBoYXBwZW5zIHdpdGggZGlmZmVyZW50IHJhZGlv
-cywgYQo5ODg4IGFuZCBhIDk4ODAuCgpUaGUgT09NIHRyYWNlOgoKTW9uIEp1bCAzMCAyMzoyMDox
-MSAyMDE4IGtlcm4ud2FybiBrZXJuZWw6IFsyNTM2NS42NDkwMzhdIG9ic2VydmVyCmludm9rZWQg
-b29tLWtpbGxlcjoKZ2ZwX21hc2s9MHgyNzAwMGMwKEdGUF9LRVJORUxfQUNDT1VOVHxfX0dGUF9O
-T1RSQUNLKSwgbm9kZW1hc2s9MCwKb3JkZXI9MSwgb29tX3Njb3JlX2Fkaj0wCk1vbiBKdWwgMzAg
-MjM6MjA6MTEgMjAxOCBrZXJuLmRlYnVnIGtlcm5lbDogWzI1MzY1LjY0OTA0OF0gQ1BVOiAxIFBJ
-RDoKMjg3MyBDb21tOiBvYnNlcnZlciBOb3QgdGFpbnRlZCA0LjkuMTcgIzAKTW9uIEp1bCAzMCAy
-MzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MDUwXSBDYWxsIFRyYWNl
-OgpNb24gSnVsIDMwIDIzOjIwOjExIDIwMTgga2Vybi5kZWJ1ZyBrZXJuZWw6IFsyNTM2NS42NDkw
-NTldIFtjMjQ0MWQwMF0KW2MwM2QxNzk4XSBkdW1wX3N0YWNrKzB4ODQvMHhiMCAodW5yZWxpYWJs
-ZSkKTW9uIEp1bCAzMCAyMzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5
-MDc1XSBbYzI0NDFkMTBdCltjMDNjZmFlMF0gZHVtcF9oZWFkZXIuaXNyYS40KzB4NTQvMHgxODAK
-TW9uIEp1bCAzMCAyMzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MDgy
-XSBbYzI0NDFkNTBdCltjMDA5N2FlY10gb29tX2tpbGxfcHJvY2VzcysweDg4LzB4M2YwCk1vbiBK
-dWwgMzAgMjM6MjA6MTEgMjAxOCBrZXJuLmRlYnVnIGtlcm5lbDogWzI1MzY1LjY0OTA4N10gW2My
-NDQxZDkwXQpbYzAwOTgzNTBdIG91dF9vZl9tZW1vcnkrMHgzN2MvMHgzYjAKTW9uIEp1bCAzMCAy
-MzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MDk0XSBbYzI0NDFkYzBd
-CltjMDA5YmJmMF0gX19hbGxvY19wYWdlc19ub2RlbWFzaysweDkwNC8weDljYwpNb24gSnVsIDMw
-IDIzOjIwOjExIDIwMTgga2Vybi5kZWJ1ZyBrZXJuZWw6IFsyNTM2NS42NDkxMDVdIFtjMjQ0MWU3
-MF0KW2MwMDFkMDljXSBjb3B5X3Byb2Nlc3MuaXNyYS42LnBhcnQuNysweGRjLzB4MTNjMApNb24g
-SnVsIDMwIDIzOjIwOjExIDIwMTgga2Vybi5kZWJ1ZyBrZXJuZWw6IFsyNTM2NS42NDkxMTFdIFtj
-MjQ0MWYwMF0KW2MwMDFlNGVjXSBfZG9fZm9yaysweGM0LzB4MjgwCk1vbiBKdWwgMzAgMjM6MjA6
-MTEgMjAxOCBrZXJuLmRlYnVnIGtlcm5lbDogWzI1MzY1LjY0OTEyMF0gW2MyNDQxZjQwXQpbYzAw
-MGNmZjhdIHJldF9mcm9tX3N5c2NhbGwrMHgwLzB4M2MKTW9uIEp1bCAzMCAyMzoyMDoxMSAyMDE4
-IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MTI2XSAtLS0KaW50ZXJydXB0OiBjMDAgYXQg
-MHhmZDQxOTQ4Ck1vbiBKdWwgMzAgMjM6MjA6MTEgMjAxOCBrZXJuLmRlYnVnIGtlcm5lbDogWzI1
-MzY1LjY0OTEyNl0gTFIgPSAweGZlMWUxMDAKTW9uIEp1bCAzMCAyMzoyMDoxMSAyMDE4IGtlcm4u
-ZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MTc4XSBNZW0tSW5mbzoKTW9uIEp1bCAzMCAyMzoyMDox
-MSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MTkyXQphY3RpdmVfYW5vbjo1NTg2
-IGluYWN0aXZlX2Fub246Njk2IGlzb2xhdGVkX2Fub246MApNb24gSnVsIDMwIDIzOjIwOjExIDIw
-MTgga2Vybi5kZWJ1ZyBrZXJuZWw6IFsyNTM2NS42NDkxOTJdCmFjdGl2ZV9maWxlOjE1IGluYWN0
-aXZlX2ZpbGU6MjQgaXNvbGF0ZWRfZmlsZTowCk1vbiBKdWwgMzAgMjM6MjA6MTEgMjAxOCBrZXJu
-LmRlYnVnIGtlcm5lbDogWzI1MzY1LjY0OTE5Ml0KdW5ldmljdGFibGU6MTkwOTggZGlydHk6MCB3
-cml0ZWJhY2s6MCB1bnN0YWJsZTowCk1vbiBKdWwgMzAgMjM6MjA6MTEgMjAxOCBrZXJuLmRlYnVn
-IGtlcm5lbDogWzI1MzY1LjY0OTE5Ml0Kc2xhYl9yZWNsYWltYWJsZTo4NDAgc2xhYl91bnJlY2xh
-aW1hYmxlOjIzOTgKTW9uIEp1bCAzMCAyMzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBb
-MjUzNjUuNjQ5MTkyXSBtYXBwZWQ6MjQ4MwpzaG1lbTo3ODYgcGFnZXRhYmxlczoyMDggYm91bmNl
-OjAKTW9uIEp1bCAzMCAyMzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5
-MTkyXSBmcmVlOjYyODkKZnJlZV9wY3A6NTEgZnJlZV9jbWE6MApNb24gSnVsIDMwIDIzOjIwOjEx
-IDIwMTgga2Vybi5kZWJ1ZyBrZXJuZWw6IFsyNTM2NS42NDkyMDNdIE5vZGUgMAphY3RpdmVfYW5v
-bjoyMjM0NGtCIGluYWN0aXZlX2Fub246Mjc4NGtCIGFjdGl2ZV9maWxlOjYwa0IKaW5hY3RpdmVf
-ZmlsZTo5NmtCIHVuZXZpY3RhYmxlOjc2Mzkya0IgaXNvbGF0ZWQoYW5vbik6MGtCCmlzb2xhdGVk
-KGZpbGUpOjBrQiBtYXBwZWQ6OTkzMmtCIGRpcnR5OjBrQiB3cml0ZWJhY2s6MGtCIHNobWVtOjMx
-NDRrQgp3cml0ZWJhY2tfdG1wOjBrQiB1bnN0YWJsZTowa0IgcGFnZXNfc2Nhbm5lZDowIGFsbF91
-bnJlY2xhaW1hYmxlPyBubwpNb24gSnVsIDMwIDIzOjIwOjExIDIwMTgga2Vybi5kZWJ1ZyBrZXJu
-ZWw6IFsyNTM2NS42NDkyMTZdIERNQQpmcmVlOjI1MTU2a0IgbWluOjE2Mzg0a0IgbG93OjIwNDgw
-a0IgaGlnaDoyNDU3NmtCIGFjdGl2ZV9hbm9uOjIyMzQ0a0IKaW5hY3RpdmVfYW5vbjoyNzg0a0Ig
-YWN0aXZlX2ZpbGU6NjBrQiBpbmFjdGl2ZV9maWxlOjk2a0IKdW5ldmljdGFibGU6NzYzOTJrQiB3
-cml0ZXBlbmRpbmc6MGtCIHByZXNlbnQ6MjYyMTQ0a0IgbWFuYWdlZDoyMDA4NTZrQgptbG9ja2Vk
-OjBrQiBzbGFiX3JlY2xhaW1hYmxlOjMzNjBrQiBzbGFiX3VucmVjbGFpbWFibGU6OTU5MmtCCmtl
-cm5lbF9zdGFjazoxMDAwa0IgcGFnZXRhYmxlczo4MzJrQiBib3VuY2U6MGtCIGZyZWVfcGNwOjIw
-NGtCCmxvY2FsX3BjcDo4NGtCIGZyZWVfY21hOjBrQgpNb24gSnVsIDMwIDIzOjIwOjExIDIwMTgg
-a2Vybi5lbWVyZyBrZXJuZWw6IGxvd21lbV9yZXNlcnZlW106IDAgMCAwIDAKTW9uIEp1bCAzMCAy
-MzoyMDoxMSAyMDE4IGtlcm4uZGVidWcga2VybmVsOiBbMjUzNjUuNjQ5MjI0XSBETUE6CjMzMyo0
-a0IgKFVNRUgpIDE2MCo4a0IgKFVNRSkgODkqMTZrQiAoVU1FSCkgNjAqMzJrQiAoVU1FSCkgMzAq
-NjRrQgooVU1FSCkgMTkqMTI4a0IgKFVNRUgpIDEwKjI1NmtCIChVTUVIKSA2KjUxMmtCIChNRUgp
-IDEqMTAyNGtCIChFKQoyKjIwNDhrQiAoVUUpIDEqNDA5NmtCIChNKSAwKjgxOTJrQiAwKjE2Mzg0
-a0IgPSAyNTE1NmtCCgpJIGhhdmUgdHJpZWQgdG8gc29sdmUgaXQgYnkgcmVkdWNpbmcgdGhlIHNp
-emUgb2YgdGhlIE1TRFVzIHRvIDQwMCAoaW4KaHcuaCkgb3IgZXZlbiBzbWFsbGVyIHZhbHVlcyBh
-bmQgaXQga2VlcHMgaGFwcGVuaW5nLgotI2RlZmluZSBUQVJHRVRfMTBYX05VTV9NU0RVX0RFU0Mg
-KDEwMjQgKyA0MDApCisjZGVmaW5lIFRBUkdFVF8xMFhfTlVNX01TRFVfREVTQyA0MDAKCkFueSBp
-ZGVhcz8KCnRoYW5rcywgRUcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Anilkumar Kolli <akolli@codeaurora.org> writes:
+
+> Mesh path metric needs txrate information from ieee80211_tx_status()
+> call but in ath10k there is no mechanism to report tx rate information
+> via ieee80211_tx_status(), the rate is only accessible via
+> sta_statiscs() op.
+>
+> Per peer stats has tx rate info available, this patch stores per peer
+> last tx rate and updates the tx rate info structures in tx completition.
+> The rate updated in ieee80211_tx_status() is not exactly for the last
+> transmitted frame instead the rate is from one of the previous frames.
+>
+> Per peer txrate information is updated through per peer statistics
+> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+>
+> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
+> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
+>
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+
+This is a patch from last March, full patch here:
+
+https://patchwork.kernel.org/patch/10267693/
+
+> @@ -119,6 +122,18 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>  			info->flags &= ~IEEE80211_TX_STAT_ACK;
+>  	}
+>  
+> +	if (sta) {
+> +		spin_lock_bh(&ar->data_lock);
+> +		arsta = (struct ath10k_sta *)sta->drv_priv;
+> +		info->status.rates[0].idx =
+> +			arsta->tx_info.status.rates[0].idx;
+> +		info->status.rates[0].count =
+> +			arsta->tx_info.status.rates[0].count;
+> +		info->status.rates[0].flags =
+<> +			arsta->tx_info.status.rates[0].flags;
+> +		spin_unlock_bh(&ar->data_lock);
+> +	}
+> +
+>  	ieee80211_tx_status(htt->ar->hw, msdu);
+>  	/* we do not own the msdu anymore */
+
+"is not exactly" is IMHO an understatement. What it means that with this
+patch ath10k reports the rate information from another frame instead of
+the current skb, because the firmware provides the rate information "out
+of band". A simple example to clarify:
+
+   Let's say ath10k transmits frames A, B and C. Then ath10k calls
+   ieee80211_tx_status() for frame C the rate information could be for
+   frame A, or it could be the other around for frame A status the rate
+   information is from frame C.
+
+In other words, there's no guarantee from what frame the rate
+information is from.
+
+Too me this feels like a bad idea but I'm not familiar enough with
+mac80211 to really comment on this. What kind of implications does this
+have for Mesh or ATF, for example? Adding Johannes and Toke to hear
+about their opinion about this.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
