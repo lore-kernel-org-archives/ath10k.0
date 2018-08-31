@@ -1,15 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([52.28.52.200])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fvkKA-0001nW-JH
- for ath10k@lists.infradead.org; Fri, 31 Aug 2018 14:23:02 +0000
+ id 1fvlTy-0005rA-O2
+ for ath10k@lists.infradead.org; Fri, 31 Aug 2018 15:37:12 +0000
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
-In-Reply-To: <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com>
-References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
- <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 31 Aug 2018 16:22:35 +0200
-Message-ID: <87zhx21uqc.fsf@toke.dk>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+In-Reply-To: <ae8d9891-b827-7ca5-1375-0280d8f5c194@bowerswilkins.com>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <87600eecr7.fsf@toke.dk>
+ <68d91488f58f4a449908fc7eeebb8b34@aptaiexm02f.ap.qualcomm.com>
+ <87tvntb53x.fsf@toke.dk>
+ <ae8d9891-b827-7ca5-1375-0280d8f5c194@bowerswilkins.com>
+Date: Fri, 31 Aug 2018 17:36:55 +0200
+Message-ID: <87wos61rag.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,84 +28,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Anilkumar Kolli <akolli@codeaurora.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Peter Oh <peter.oh@bowerswilkins.com>, Wen Gong <wgong@qti.qualcomm.com>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Kalle Valo <kvalo@codeaurora.org> writes:
-
-> Anilkumar Kolli <akolli@codeaurora.org> writes:
->
->> Mesh path metric needs txrate information from ieee80211_tx_status()
->> call but in ath10k there is no mechanism to report tx rate information
->> via ieee80211_tx_status(), the rate is only accessible via
->> sta_statiscs() op.
->>
->> Per peer stats has tx rate info available, this patch stores per peer
->> last tx rate and updates the tx rate info structures in tx completition.
->> The rate updated in ieee80211_tx_status() is not exactly for the last
->> transmitted frame instead the rate is from one of the previous frames.
->>
->> Per peer txrate information is updated through per peer statistics
->> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
->>
->> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
->> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
->>
->> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
->
-> This is a patch from last March, full patch here:
->
-> https://patchwork.kernel.org/patch/10267693/
->
->> @@ -119,6 +122,18 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
->>  			info->flags &= ~IEEE80211_TX_STAT_ACK;
->>  	}
->>  
->> +	if (sta) {
->> +		spin_lock_bh(&ar->data_lock);
->> +		arsta = (struct ath10k_sta *)sta->drv_priv;
->> +		info->status.rates[0].idx =
->> +			arsta->tx_info.status.rates[0].idx;
->> +		info->status.rates[0].count =
->> +			arsta->tx_info.status.rates[0].count;
->> +		info->status.rates[0].flags =
-> <> +			arsta->tx_info.status.rates[0].flags;
->> +		spin_unlock_bh(&ar->data_lock);
->> +	}
->> +
->>  	ieee80211_tx_status(htt->ar->hw, msdu);
->>  	/* we do not own the msdu anymore */
->
-> "is not exactly" is IMHO an understatement. What it means that with this
-> patch ath10k reports the rate information from another frame instead of
-> the current skb, because the firmware provides the rate information "out
-> of band". A simple example to clarify:
->
->    Let's say ath10k transmits frames A, B and C. Then ath10k calls
->    ieee80211_tx_status() for frame C the rate information could be for
->    frame A, or it could be the other around for frame A status the rate
->    information is from frame C.
->
-> In other words, there's no guarantee from what frame the rate
-> information is from.
->
-> Too me this feels like a bad idea but I'm not familiar enough with
-> mac80211 to really comment on this. What kind of implications does this
-> have for Mesh or ATF, for example? Adding Johannes and Toke to hear
-> about their opinion about this.
-
-I was under the impression that the values gathered (at least for
-airtime) would be cumulative values? If it's just the airtime of a
-single random frame, which is what I understand from your example, it's
-not going to be terribly useful to provide ATF at least...
-
--Toke
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UGV0ZXIgT2ggPHBldGVyLm9oQGJvd2Vyc3dpbGtpbnMuY29tPiB3cml0ZXM6Cgo+IEhpIFRva2Us
+Cj4KPgo+IE9uIDA4LzE3LzIwMTggMDQ6MzIgQU0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
+cm90ZToKPj4KPj4+Pj4gU2hpZnQgNjoKPj4+Pj4gd2dvbmdAd2dvbmctTGF0aXR1ZGUtRTU0NDAt
+MTp+L2ZsZW50JCBmbGVudCAtSCAxOTIuMTY4LjEuNyAtdAo+Pj4+PiAic2tfcGFjaW5nX3NoaWZ0
+NiIgdGNwX251cCAtLXRlc3QtcGFyYW1ldGVyIHVwbG9hZF9zdHJlYW1zPTEKPj4+Pgo+IERvZXMg
+ZmxlbnQgaGF2ZSBvcHRpb25zIHRvIHNldCBUT1Mgb3IgUW9TIHF1ZXVlIGZvciBUQ1Agb3IgVURQ
+IHRlc3Q/Cj4gSWYgSSBhZGQgIi0tdGVzdC1wYXJhbWV0ZSBidXJzdF90b3M9MHhlMCIsIHdpbGwg
+aXQgdXNlIGNvcnJlc3BvbmRpbmcgCj4gbWFjODAyMTEgUW9TIHF1ZXVlPwoKWWVzLCBmb3Igc29t
+ZSB0ZXN0czoKCi0gVGhlIFJSVUwgdGVzdCB3aWxsIHJ1biBmb3VyIFRDUCBmbG93cyBpbiBlYWNo
+IGRpcmVjdGlvbiwgb25lIG1hcmtlZCBmb3IKICBlYWNoIDgwMi4xMSBRb1MgcXVldWUuCgotIEZv
+ciB0aGUgcnR0X2ZhaXIqIHRlc3RzIHlvdSBjYW4gc2V0IHRoZW0gd2l0aCBhIHRlc3QgcGFyYW1l
+dGVyOgotLXRlc3QtcGFyYW1ldGVyIG1hcmtpbmdzPUJFLENTMSB0byBzZXQgZmxvd3MgMSBhbmQg
+MiB0byBCRSBhbmQgQ1MxCnJlc3BlY3RpdmVseS4gWW91IGNhbiB1c2UgdGhlIHJ0dF9mYWlyX3Zh
+ciogdGVzdHMgdG8gZ2V0IGEgdmFyaWFibGUKbnVtYmVyIG9mIGZsb3dzICh0aGUgc2FtZSBob3N0
+IGNhbiBiZSBzcGVjaWZpZWQgbXVsdGlwbGUgdGltZXMgYnkgaGF2aW5nCmRpZmZlcmVudCBob3N0
+bmFtZXMgcmVzb2x2ZSB0byB0aGUgc2FtZSBJUCkuCgotVG9rZQoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
