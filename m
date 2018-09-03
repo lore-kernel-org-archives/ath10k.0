@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x234.google.com ([2607:f8b0:400d:c0d::234])
+Received: from mail-qt0-x22b.google.com ([2607:f8b0:400d:c0d::22b])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwqIs-0002i1-PO
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 14:58:12 +0000
-Received: by mail-qt0-x234.google.com with SMTP id r37-v6so883830qtc.0
- for <ath10k@lists.infradead.org>; Mon, 03 Sep 2018 07:57:59 -0700 (PDT)
+ id 1fwqtC-00005n-2T
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 15:35:45 +0000
+Received: by mail-qt0-x22b.google.com with SMTP id x7-v6so975315qtk.5
+ for <ath10k@lists.infradead.org>; Mon, 03 Sep 2018 08:35:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
  <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
@@ -15,10 +15,11 @@ References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
  <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
  <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
  <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
-In-Reply-To: <878t4i1z74.fsf@toke.dk>
+ <CAA93jw6MQD70XatAmjG-OwVa_Rn5Ey-5Ni22iTCPARaH+KjnJA@mail.gmail.com>
+In-Reply-To: <CAA93jw6MQD70XatAmjG-OwVa_Rn5Ey-5Ni22iTCPARaH+KjnJA@mail.gmail.com>
 From: Dave Taht <dave.taht@gmail.com>
-Date: Mon, 3 Sep 2018 07:57:45 -0700
-Message-ID: <CAA93jw6MQD70XatAmjG-OwVa_Rn5Ey-5Ni22iTCPARaH+KjnJA@mail.gmail.com>
+Date: Mon, 3 Sep 2018 08:35:18 -0700
+Message-ID: <CAA93jw6G6-zX7ZcVR_REp9ir-Ns2VjEXWe_1Da1uRvkE+KRYZw@mail.gmail.com>
 Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
  chips
 List-Id: <ath10k.lists.infradead.org>
@@ -36,77 +37,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>
 Cc: wgong@qti.qualcomm.com, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, grundler@google.com, wgong@codeaurora.org, Johannes Berg <johannes@sipsolutions.net>
 
-I have not been on this thread (I have had to shut down my wifi lab
-and am not planning on doing any more wifi work in the future). But
-for what it's worth:
+While I'm being overly vague and general...
 
-* tcp_pacing_shift affects the performance of the tcp stack only. I
-think 16ms is an outrageous amount, and I'm thinking we actually have
-a problem on the other side of the link in getting acks out as I
-write. That said,
-I don't care all that much compared to the bad old days (
-http://blog.cerowrt.org/tags/wifi ) and 16ms
-is far better than the seconds it used to be.
+* Doing some form of ack compression (whether in the tcp stack or in
+mac80211) seems useful. It's really
+hard to fill 4Mbytes one way and the needed number of acks the other.
+I'd also pointed out (on some thread on the make-wifi-fast list that I
+can't find right now) that drivers had a tendency to eat an entire
+txop for that first single ack and ping pong between empty and full on
+a one way tcp benchmark.
 
-That said, I'd rather appreciate a test on HT20 with the same chipset
-at a lower rate. The hope was that
-we'd achieve flat latency at every rate (see
-http://blog.cerowrt.org/post/real_results/ for some lovely pics)
+* Similarly grabbing air during the contention window. If the sender
+is grabbing 3x as much air as the reciever
 
-Flent can sample minstrel stats but I think we're SOL on the ath10k.
+(A1 A2 A3 B1 A4 B2)
 
-* The irtt test can measure one way delays pretty accurately so you
-can see if the other side is actually the source of this issue.
+* I know of one org that upped the codel target value for 802.11ac
+with decent results but I can't talk about it...
+(sort of why I asked for a cap). My problem with decreasing the pacing
+shift is that it makes for less interleaving (I think! have to look),
+where increasing the target compensates for more jittery networks.
+('course my overall theme of my prior post was to reduce jittery
+networks with less buffering and smaller txops overall)
 
-* Not clear to me if the AP is also running the fq_codel for wifi
-code? That, um, er, helps an AP enormously....
+* Is this a two device test? or a test through an AP?
 
-* Having an aircap and regular capture of what's going on during these
-tests would be useful. Flent is a great test driver, but a tcpdump
-taken during a flent test tells the truth via tcptrace and xplot.org.
-We can inspect cwnd, rwnd, and look at drops. (actually I usually turn
-ECN on so I can see when the codel algorithm is kicking in). Being
-able to zoom in on the early ramp would be helpful. Etc.
+Looking over this thread, I see a suggestion is to expose the pacing
+rate via a sysctl. I don't think there's
+any one answer, either, but I'm not sure this is the right variable to
+expose. Perhaps a tunable for
+latency that might (one day) look at multiple variables and decide?
 
-I'll take a look at them if you'll supply them.
-
-* At some point the ath10k driver also gained NAPI support. (?) I
-don't think NAPI is a good fit for wifi. Delays in TCP RX processing
-lead to less throughput.
-
-* The firmware is perpetually trying to do more stuff with less
-interrupts. Me, I dreamed of a register you could poll for "when will
-the air be clear", and a "tx has one ms left to go, give me some more
-data" interrupt. The fact we still have a minimum of ~12ms of
-uncontrolled buffering bugs me. If we could just hold off submittal
-until just before it was needed, we could cut it in half (and further,
-by 10s of ms, when the media is contended).
-
-* My general recomendation for contended APs was that they advertise a
-reduced TXOP as the number of active stations go up. (this also
-applies to the VI/VO queues). Never got around to algorizing it... I
-gave up on my links and, disable VO/VI/BK entirely and just tell
-hostapd to advertise 2ms. Yep, kills conventional measures of
-throughput. Cuts inter-station service time by 2/3s though, and *that*
-you can notice and measure with PLT benchmarks and overall feel.
-
-This implies increasing the pacing shift to suit the advertised size
-of the txop, not decreasing it - and I have no idea how to get that
-from one place to another. Same goes for stuff destined for the VI/VO
-queues.
-
-* (also it would be good to see in the capture what the beacon says)
-
-* Powersave has always been a problem...
-
-* Cubic is a terrible tcp for wifi. BBR, however, is possibly worse...
-or better. It would be educational to try running BBR on this link at
-either shift setting. (seriously!) TCP is not TCP is not TCP....
-
-Lastly... tcp_pacing_shift does not affect the number of other packets
-that can get into a given txop given the other buffering - it's one in
-the hardware, one ready to go, one being formed, try setting
-pacing_shift to to 4 to see what happens....
+Getting this more right is really a job for an algorithm of
+minstrel-like complexity.
 
 _______________________________________________
 ath10k mailing list
