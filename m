@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwhYp-00042I-V2
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 05:38:05 +0000
-MIME-Version: 1.0
-Date: Mon, 03 Sep 2018 11:07:51 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
-In-Reply-To: <87zhx21uqc.fsf@toke.dk>
-References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
- <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com> <87zhx21uqc.fsf@toke.dk>
-Message-ID: <ebb12dc92de318b8d88eb607d9182ead@codeaurora.org>
+ id 1fwlBR-0007it-O0
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 09:30:11 +0000
+Message-ID: <1535966988.3437.24.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/3] cfg80211: support FTM responder
+ configuration/statistics
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 03 Sep 2018 11:29:48 +0200
+In-Reply-To: <1535745418-31336-2-git-send-email-pradeepc@codeaurora.org>
+References: <1535745418-31336-1-git-send-email-pradeepc@codeaurora.org>
+ <1535745418-31336-2-git-send-email-pradeepc@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,81 +21,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>
 
-T24gMjAxOC0wOC0zMSAxOTo1MiwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEth
-bGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IEFuaWxrdW1hciBL
-b2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+IAo+Pj4gTWVzaCBwYXRoIG1l
-dHJpYyBuZWVkcyB0eHJhdGUgaW5mb3JtYXRpb24gZnJvbSBpZWVlODAyMTFfdHhfc3RhdHVzKCkK
-Pj4+IGNhbGwgYnV0IGluIGF0aDEwayB0aGVyZSBpcyBubyBtZWNoYW5pc20gdG8gcmVwb3J0IHR4
-IHJhdGUgCj4+PiBpbmZvcm1hdGlvbgo+Pj4gdmlhIGllZWU4MDIxMV90eF9zdGF0dXMoKSwgdGhl
-IHJhdGUgaXMgb25seSBhY2Nlc3NpYmxlIHZpYQo+Pj4gc3RhX3N0YXRpc2NzKCkgb3AuCj4+PiAK
-Pj4+IFBlciBwZWVyIHN0YXRzIGhhcyB0eCByYXRlIGluZm8gYXZhaWxhYmxlLCB0aGlzIHBhdGNo
-IHN0b3JlcyBwZXIgcGVlcgo+Pj4gbGFzdCB0eCByYXRlIGFuZCB1cGRhdGVzIHRoZSB0eCByYXRl
-IGluZm8gc3RydWN0dXJlcyBpbiB0eCAKPj4+IGNvbXBsZXRpdGlvbi4KPj4+IFRoZSByYXRlIHVw
-ZGF0ZWQgaW4gaWVlZTgwMjExX3R4X3N0YXR1cygpIGlzIG5vdCBleGFjdGx5IGZvciB0aGUgbGFz
-dAo+Pj4gdHJhbnNtaXR0ZWQgZnJhbWUgaW5zdGVhZCB0aGUgcmF0ZSBpcyBmcm9tIG9uZSBvZiB0
-aGUgcHJldmlvdXMgCj4+PiBmcmFtZXMuCj4+PiAKPj4+IFBlciBwZWVyIHR4cmF0ZSBpbmZvcm1h
-dGlvbiBpcyB1cGRhdGVkIHRocm91Z2ggcGVyIHBlZXIgc3RhdGlzdGljcwo+Pj4gYW5kIGlzIGF2
-YWlsYWJsZSBmb3IgUUNBOTg4OC9RQ0E5OTg0L1FDQTQwMTkvUUNBOTk4WCBvbmx5Cj4+PiAKPj4+
-IFRlc3RlZCBvbiBRQ0E5OTg0IHdpdGggZmlybXdhcmUtNS5iaW5fMTAuNC0zLjUuMy0wMDA1Mwo+
-Pj4gVGVzdGVkIG9uIFFDQTk5OFggd2l0aCBmaXJtd2FyZS01LmJpbl8xMC4yLjQtMS4wLTAwMDM2
-Cj4+PiAKPj4+IFNpZ25lZC1vZmYtYnk6IEFuaWxrdW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJv
-cmEub3JnPgo+PiAKPj4gVGhpcyBpcyBhIHBhdGNoIGZyb20gbGFzdCBNYXJjaCwgZnVsbCBwYXRj
-aCBoZXJlOgo+PiAKPj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDI2NzY5
-My8KPj4gCj4+PiBAQCAtMTE5LDYgKzEyMiwxOCBAQCBpbnQgYXRoMTBrX3R4cnhfdHhfdW5yZWYo
-c3RydWN0IGF0aDEwa19odHQgKmh0dCwKPj4+ICAJCQlpbmZvLT5mbGFncyAmPSB+SUVFRTgwMjEx
-X1RYX1NUQVRfQUNLOwo+Pj4gIAl9Cj4+PiAKPj4+ICsJaWYgKHN0YSkgewo+Pj4gKwkJc3Bpbl9s
-b2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsKPj4+ICsJCWFyc3RhID0gKHN0cnVjdCBhdGgxMGtfc3Rh
-ICopc3RhLT5kcnZfcHJpdjsKPj4+ICsJCWluZm8tPnN0YXR1cy5yYXRlc1swXS5pZHggPQo+Pj4g
-KwkJCWFyc3RhLT50eF9pbmZvLnN0YXR1cy5yYXRlc1swXS5pZHg7Cj4+PiArCQlpbmZvLT5zdGF0
-dXMucmF0ZXNbMF0uY291bnQgPQo+Pj4gKwkJCWFyc3RhLT50eF9pbmZvLnN0YXR1cy5yYXRlc1sw
-XS5jb3VudDsKPj4+ICsJCWluZm8tPnN0YXR1cy5yYXRlc1swXS5mbGFncyA9Cj4+IDw+ICsJCQlh
-cnN0YS0+dHhfaW5mby5zdGF0dXMucmF0ZXNbMF0uZmxhZ3M7Cj4+PiArCQlzcGluX3VubG9ja19i
-aCgmYXItPmRhdGFfbG9jayk7Cj4+PiArCX0KPj4+ICsKPj4+ICAJaWVlZTgwMjExX3R4X3N0YXR1
-cyhodHQtPmFyLT5odywgbXNkdSk7Cj4+PiAgCS8qIHdlIGRvIG5vdCBvd24gdGhlIG1zZHUgYW55
-bW9yZSAqLwo+PiAKPj4gImlzIG5vdCBleGFjdGx5IiBpcyBJTUhPIGFuIHVuZGVyc3RhdGVtZW50
-LiBXaGF0IGl0IG1lYW5zIHRoYXQgd2l0aCAKPj4gdGhpcwo+PiBwYXRjaCBhdGgxMGsgcmVwb3J0
-cyB0aGUgcmF0ZSBpbmZvcm1hdGlvbiBmcm9tIGFub3RoZXIgZnJhbWUgaW5zdGVhZCAKPj4gb2YK
-Pj4gdGhlIGN1cnJlbnQgc2tiLCBiZWNhdXNlIHRoZSBmaXJtd2FyZSBwcm92aWRlcyB0aGUgcmF0
-ZSBpbmZvcm1hdGlvbiAKPj4gIm91dAo+PiBvZiBiYW5kIi4gQSBzaW1wbGUgZXhhbXBsZSB0byBj
-bGFyaWZ5Ogo+PiAKPj4gICAgTGV0J3Mgc2F5IGF0aDEwayB0cmFuc21pdHMgZnJhbWVzIEEsIEIg
-YW5kIEMuIFRoZW4gYXRoMTBrIGNhbGxzCj4+ICAgIGllZWU4MDIxMV90eF9zdGF0dXMoKSBmb3Ig
-ZnJhbWUgQyB0aGUgcmF0ZSBpbmZvcm1hdGlvbiBjb3VsZCBiZSBmb3IKPj4gICAgZnJhbWUgQSwg
-b3IgaXQgY291bGQgYmUgdGhlIG90aGVyIGFyb3VuZCBmb3IgZnJhbWUgQSBzdGF0dXMgdGhlIAo+
-PiByYXRlCj4+ICAgIGluZm9ybWF0aW9uIGlzIGZyb20gZnJhbWUgQy4KPj4gCj4+IEluIG90aGVy
-IHdvcmRzLCB0aGVyZSdzIG5vIGd1YXJhbnRlZSBmcm9tIHdoYXQgZnJhbWUgdGhlIHJhdGUKPj4g
-aW5mb3JtYXRpb24gaXMgZnJvbS4KPj4gCj4+IFRvbyBtZSB0aGlzIGZlZWxzIGxpa2UgYSBiYWQg
-aWRlYSBidXQgSSdtIG5vdCBmYW1pbGlhciBlbm91Z2ggd2l0aAo+PiBtYWM4MDIxMSB0byByZWFs
-bHkgY29tbWVudCBvbiB0aGlzLiBXaGF0IGtpbmQgb2YgaW1wbGljYXRpb25zIGRvZXMgCj4+IHRo
-aXMKPj4gaGF2ZSBmb3IgTWVzaCBvciBBVEYsIGZvciBleGFtcGxlPyBBZGRpbmcgSm9oYW5uZXMg
-YW5kIFRva2UgdG8gaGVhcgo+PiBhYm91dCB0aGVpciBvcGluaW9uIGFib3V0IHRoaXMuCj4gCj4g
-SSB3YXMgdW5kZXIgdGhlIGltcHJlc3Npb24gdGhhdCB0aGUgdmFsdWVzIGdhdGhlcmVkIChhdCBs
-ZWFzdCBmb3IKPiBhaXJ0aW1lKSB3b3VsZCBiZSBjdW11bGF0aXZlIHZhbHVlcz8gSWYgaXQncyBq
-dXN0IHRoZSBhaXJ0aW1lIG9mIGEKPiBzaW5nbGUgcmFuZG9tIGZyYW1lLCB3aGljaCBpcyB3aGF0
-IEkgdW5kZXJzdGFuZCBmcm9tIHlvdXIgZXhhbXBsZSwgaXQncwo+IG5vdCBnb2luZyB0byBiZSB0
-ZXJyaWJseSB1c2VmdWwgdG8gcHJvdmlkZSBBVEYgYXQgbGVhc3QuLi4KPiAKPiAtVG9rZQoKVGhl
-IGRlc2lnbjoKV2hlbmV2ZXIgcmFkaW8gdHJhbnNtaXRzIHBhY2tldCwgZmlybXdhcmUgd2lsbCBy
-ZWNvcmQgbnVtYmVycyBvZiBieXRlcyAKc2VudCwgTVNEVeKAmXMgc2VudCwgVFggZHVyYXRpb24s
-IEFNUERVIGluZm9ybWF0aW9uLCBBQ0sgZmFpbCwgQkEgZmFpbCwgClJhdGUgYXQgd2hpY2ggcGFj
-a2V0IGlzIHNlbnQuIFRoaXMgaXMgcmVjb3JkZWQgZm9yIDQgZnJhbWVzIHNlbnQgb24gdGhhdCAK
-cGVlci4gT25jZSA0IGZyYW1lcyBhcmUgc2VudCBmb3IgdGhhdCBwZWVyLCBUWCBwYWNrZXQgZXZl
-bnQgaXMgc2VudCB0byAKYXRoMTBrIGRyaXZlciB3aXRoIHRoZSByZWNvcmRlZCB2YWx1ZXMuIFRo
-ZXNlIHJhdGUgdmFsdWVzIGFyZSB1cGRhdGVkIHRvIAptYWM4MDIxMSB1c2luZyBpZWVlODAyMTFf
-dHhfc3RhdHVzKCkuCgpBZ3JlZWQgbWFjODAyMTEgaXMgbm90IGdldHRpbmcgdGhlIHR4IHJhdGUg
-dmFsdWUgZm9yIHRoZSBsYXN0IHBhY2tldCAKc2VudCBvbiB0aGUgYWlyLCBidXQgdGhpcyB3aWxs
-IGJlIGRlbGl2ZXJlZCB0byBtYWM4MDIxMSBhdCBhIGxhdGVyIHRpbWUgCmZvciBlYWNoIHRyYW5z
-bWl0dGVkIHBhY2tldC4KCkV4YW1wbGU6CkZpcm13YXJlIFRYIGZvciBwZWVyIDEgLT4gcGt0MSAt
-PiBwa3QyIC0+IHBrdDMgLT4gcGt0NCAtPiBwa3Q1IC0+IHBrdDYgCi0+IHBrdDcgLT4gcGt0OCAt
-PiBwa3Q5IC0+IHBrdDEwCkRyaXZlciB1cGRhdGVzICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAtPiAKaWVlZTgwMjExX3R4X3N0YXR1cygpICAgICAgICAtPmllZWU4MDIx
-MV90eF9zdGF0dXMoKQoKT24gZWFjaCA0dGggcGFja2V0IHNlbnQgaW4gYWlyLCBkcml2ZXIgd2ls
-bCB1cGRhdGUgdGhlIHR4IHJhdGUuCgoKVGhhbmtzCkFuaWwuCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+
+> +struct cfg80211_ftm_responder_params {
+> +	u8 *lci;
+> +	u8 *civic;
+
+These should be const
+
+> +	[NL80211_ATTR_FTM_RESPONDER] = { .type = NLA_FLAG},
+
+missing a space, but didn't we also say it should be NLA_U8 or so
+(allowing the values 0/1) in order to allow later updating this to be
+changed on the fly to enable/disable while the AP is already operating,
+through the "change beacon" command?
+
+> @@ -4378,7 +4406,7 @@ static int nl80211_set_beacon(struct sk_buff *skb, struct genl_info *info)
+>  	if (!wdev->beacon_interval)
+>  		return -EINVAL;
+>  
+> -	err = nl80211_parse_beacon(info->attrs, &params);
+> +	err = nl80211_parse_beacon(rdev, info->attrs, &params);
+
+In fact you sort of parse it here, but it would get disabled when the
+attribute isn't always included by userspace, which is a bit annoying.
+
+So better make the API to the driver be s8 also, indicating -1 for no
+change, and use u8 (0/1) for the userspace API to enable here having "no
+changes"?
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
