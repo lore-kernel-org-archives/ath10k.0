@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwsAe-0007pr-Gb
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 16:57:50 +0000
+ id 1fwsCK-0008Iy-HE
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 16:59:34 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add waiting htt tx complete before wow enable
+Subject: Re: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1535442443-22152-1-git-send-email-wgong@codeaurora.org>
-References: <1535442443-22152-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20180903165737.A667460B1A@smtp.codeaurora.org>
-Date: Mon,  3 Sep 2018 16:57:34 +0000 (UTC)
+In-Reply-To: <20180612113907.15043-2-niklas.cassel@linaro.org>
+References: <20180612113907.15043-2-niklas.cassel@linaro.org>
+Message-Id: <20180903165922.1E09F607F7@smtp.codeaurora.org>
+Date: Mon,  3 Sep 2018 16:59:22 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Niklas Cassel <niklas.cassel@linaro.org> wrote:
 
-> If there are some tx packets pending in firmware, and then system
-> enters suspend, firmware will fail for wow enable. This will trigger
-> mac80211 to stop ath10k and download firmware again, then it is
-> non-wow suspend.
+> ATH10K_SNOC builds just fine with COMPILE_TEST, so make that possible.
 > 
-> After add the waiting htt tx complete, then firmware will have some
-> time window to send or flush the pending tx packets.
-> 
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-> It's not a regression with new firmware releases.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-828853ac5826 ath10k: add waiting htt tx complete before wow enable
+f1908735f141 ath10k: allow ATH10K_SNOC with COMPILE_TEST
 
 -- 
-https://patchwork.kernel.org/patch/10578009/
+https://patchwork.kernel.org/patch/10460103/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
