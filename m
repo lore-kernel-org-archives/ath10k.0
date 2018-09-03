@@ -2,16 +2,16 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwlBR-0007it-O0
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 09:30:11 +0000
-Message-ID: <1535966988.3437.24.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 1/3] cfg80211: support FTM responder
+ id 1fwlFE-0001K0-Mh
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 09:34:15 +0000
+Message-ID: <1535967225.3437.27.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 2/3] mac80211: support FTM responder
  configuration/statistics
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 03 Sep 2018 11:29:48 +0200
-In-Reply-To: <1535745418-31336-2-git-send-email-pradeepc@codeaurora.org>
+Date: Mon, 03 Sep 2018 11:33:45 +0200
+In-Reply-To: <1535745418-31336-3-git-send-email-pradeepc@codeaurora.org>
 References: <1535745418-31336-1-git-send-email-pradeepc@codeaurora.org>
- <1535745418-31336-2-git-send-email-pradeepc@codeaurora.org>
+ <1535745418-31336-3-git-send-email-pradeepc@codeaurora.org>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,33 +28,27 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>
 
+On Fri, 2018-08-31 at 12:56 -0700, Pradeep Kumar Chitrapu wrote:
+> 
+> + * @ftm_responder: whether to enable fine timing measurement FTM functionality
 
-> +struct cfg80211_ftm_responder_params {
-> +	u8 *lci;
-> +	u8 *civic;
+missing "responder" somewhere there :)
 
-These should be const
+> + * @ftmr_params: configurable lci/civic parameter when enabling FTM responder.
 
-> +	[NL80211_ATTR_FTM_RESPONDER] = { .type = NLA_FLAG},
+Perhaps the *existence* of ftmr_params could indicate that it's enabled?
 
-missing a space, but didn't we also say it should be NLA_U8 or so
-(allowing the values 0/1) in order to allow later updating this to be
-changed on the fly to enable/disable while the AP is already operating,
-through the "change beacon" command?
-
-> @@ -4378,7 +4406,7 @@ static int nl80211_set_beacon(struct sk_buff *skb, struct genl_info *info)
->  	if (!wdev->beacon_interval)
->  		return -EINVAL;
+> @@ -865,6 +899,20 @@ static int ieee80211_assign_beacon(struct ieee80211_sub_if_data *sdata,
+>  	if (err == 0)
+>  		changed |= BSS_CHANGED_AP_PROBE_RESP;
 >  
-> -	err = nl80211_parse_beacon(info->attrs, &params);
-> +	err = nl80211_parse_beacon(rdev, info->attrs, &params);
+> +	if (params->ftm_responder) {
 
-In fact you sort of parse it here, but it would get disabled when the
-attribute isn't always included by userspace, which is a bit annoying.
-
-So better make the API to the driver be s8 also, indicating -1 for no
-change, and use u8 (0/1) for the userspace API to enable here having "no
-changes"?
+Here you immediately have the problem I talked about in the earlier
+patch ... yes, we don't have drivers that allow disabling it (so should
+probably reject that now), but without it you can *enable* it on the
+fly, but you cannot *disable*, in fact we assume saying "disable" means
+"no change" which is rather confusing.
 
 johannes
 
