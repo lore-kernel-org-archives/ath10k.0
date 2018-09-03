@@ -1,12 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([52.28.52.200])
+Received: from mail-qt0-x234.google.com ([2607:f8b0:400d:c0d::234])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwp0n-0004FM-FX
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 13:35:27 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
-In-Reply-To: <1535975240.3437.61.camel@sipsolutions.net>
+ id 1fwqIs-0002i1-PO
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 14:58:12 +0000
+Received: by mail-qt0-x234.google.com with SMTP id r37-v6so883830qtc.0
+ for <ath10k@lists.infradead.org>; Mon, 03 Sep 2018 07:57:59 -0700 (PDT)
+MIME-Version: 1.0
 References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
  <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
  <87sh3pdtpg.fsf@toke.dk>
@@ -15,10 +14,13 @@ References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
  <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
  <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
  <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
- <1535975240.3437.61.camel@sipsolutions.net>
-Date: Mon, 03 Sep 2018 15:35:11 +0200
-Message-ID: <878t4i1z74.fsf@toke.dk>
-MIME-Version: 1.0
+ <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
+In-Reply-To: <878t4i1z74.fsf@toke.dk>
+From: Dave Taht <dave.taht@gmail.com>
+Date: Mon, 3 Sep 2018 07:57:45 -0700
+Message-ID: <CAA93jw6MQD70XatAmjG-OwVa_Rn5Ey-5Ni22iTCPARaH+KjnJA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,66 +29,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Grant Grundler <grundler@google.com>, wgong@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, wgong@codeaurora.org
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>
+Cc: wgong@qti.qualcomm.com, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, grundler@google.com, wgong@codeaurora.org, Johannes Berg <johannes@sipsolutions.net>
 
-Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBN
-b24sIDIwMTgtMDktMDMgYXQgMTM6MTEgKzAyMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
-cm90ZToKPgo+PiA+IDYgdnMuIDgsIEkgdGhpbms/IEJ1dCBJIGRpZG4ndCBmb2xsb3cgdGhlIGZ1
-bGwgZGlzY3Vzc2lvbi4KPgo+IEVyciwgSSBqdXN0IHJlYWxpemVkIHRoYXQgSSB3YXMgY29tcGxl
-dGVseSB3cm9uZyAtIHRoZSBkZWZhdWx0LCBvZgo+IGNvdXJzZSwgaXMgMTAuIFNvIHNtYWxsZXIg
-dmFsdWVzIG1lYW4gbW9yZSBidWZmZXJpbmcuCj4KPiBNb3N0IG9mIG15IGFyZ3VtZW50YXRpb24g
-d2FzIHRodXMgdXR0ZXIgZ2FyYmFnZSA6LSkKCldlbGwsIEkgZ290IHRoZSBnaXN0LCBldmVuIGlm
-IHRoZSBzaWduIGJpdCB3YXMgd3JvbmcgOykKCj4+ID4gSSBhbHNvIHRoaW5rIHRoYXQgd2Ugc2hv
-dWxkbid0IG5lY2Vzc2FyaWx5IHJlc3RyaWN0IHRoaXMgdG8gImZvciB0aGUKPj4gPiBhdGgxMGsi
-LiBJcyB0aGVyZSBhbnkgcmVhc29uIHRvIHRoaW5rIHRoYXQgdGhpcyB3b3VsZCBiZSBkaWZmZXJl
-bnQgZm9yCj4+ID4gZGlmZmVyZW50IGNoaXBzPwo+PiAKPj4gTm8sIEkgYWxzbyB0aGluayBpdCBz
-aG91bGQgYmUgcG9zc2libGUgdG8gc2VsZWN0IGEgdmFsdWUgdGhhdCB3aWxsIHdvcmsKPj4gZm9y
-IGFsbCBkcml2ZXJzLiBUaGVyZSdzIGEgc3Ryb25nIGRpbWluaXNoaW5nIHJldHVybnMgZWZmZWN0
-IGhlcmUgYWZ0ZXIKPj4gYSBjZXJ0YWluIHBvaW50LCBhbmQgSSBiZWxpZXZlIHdlIHNob3VsZCBz
-dHJvbmdseSBwdXNoIGJhY2sgYWdhaW5zdCBqdXN0Cj4+IGFkZGluZyBtb3JlIGJ1ZmZlcmluZyB0
-byBjaGFzZSAoc2luZ2xlLWZsb3cpIHRocm91Z2hwdXQgbnVtYmVyczsgYW5kIEknbQo+PiBub3Qg
-Y29udmluY2VkIHRoYXQgaGF2aW5nIGRpZmZlcmVudCB2YWx1ZXMgZm9yIGRpZmZlcmVudCBkcml2
-ZXJzIGlzCj4+IHdvcnRoIHRoZSBjb21wbGV4aXR5Lgo+Cj4gSSB0aGluayBJIGNhbiBzZWUgc29t
-ZSBwb2ludCBpbiBpdCBpZiB0aGUgZHJpdmVyIHJlcXVpcmVzIHNvbWUKPiBidWZmZXJpbmcgZm9y
-IHNvbWUgc3BlY2lmaWMgcmVhc29uPyBCdXQgeW91J2QgaGF2ZSB0byBiZSBhYmxlIHRvIHN0YXRl
-Cj4gdGhhdCByZWFzb24sIEkgZ3Vlc3MsIEkgY291bGQgaW1hZ2luZSBoYXZpbmcgYSBmaXJtd2Fy
-ZSBsaW1pdGF0aW9uIHRvCj4gbmVlZCB0byBidWlsZCB0d28gYWdncmVnYXRlcywgb3Igc29tZXRo
-aW5nIGFyb3VuZCBNVS1NSU1PLCBldGMuCgpSaWdodCwgSSdtIG5vdCBydWxpbmcgb3V0IHRoYXQg
-dGhlcmUgY2FuIGJlIGxlZ2l0aW1hdGUgcmVhc29ucyB0byBhZGQKZXh0cmEgYnVmZmVyaW5nOyBi
-dXQgYSBsb3Qgb2YgdGltZXMgaXQncyBqdXN0IHVzZWQgdG8gcGFwZXIgb3ZlciBvdGhlcgppc3N1
-ZXMsIHNvIGEgZ29vZCBleHBsYW5hdGlvbiBpcyBkZWZpbml0ZWx5IG5lZWRlZC4uLgoKPj4gQXMg
-ZmFyIGFzIHRoZSBhY3R1YWwgdmFsdWUsIEkgKnRoaW5rKiBpdCBtYXkgYmUgdGhhdCB0aGUgZGVm
-YXVsdCBzaGlmdAo+PiBzaG91bGQgYmUgNyAoOCBtcykgcmF0aGVyIHRoYW4gOCAoNCBtcykgYXMg
-aXQgY3VycmVudGx5IGlzLiBHb2luZyBiYWNrCj4+IGFuZCBsb29raW5nIGF0IG15IGRhdGEgZnJv
-bSB3aGVuIEkgc3VibWl0dGVkIHRoZSBvcmlnaW5hbCBwYXRjaCwgaXQKPj4gbG9va3MgbGlrZSB0
-aGUgcG9pbnQgb2YgZGltaW5pc2hpbmcgcmV0dXJucyBpcyBzb21ld2hlcmUgYmV0d2VlbiB0aG9z
-ZQo+PiB0d28gd2l0aCBhdGg5ayAod2hlcmUgSSBkaWQgbW9zdCBvZiBteSB0ZXN0aW5nKSwgYW5k
-IGl0IHNlZW1zIHJlYXNvbmFibGUKPj4gdGhhdCBpdCBjb3VsZCBiZSBzbGlnaHRseSBoaWdoZXIg
-KGkuZS4sIG1vcmUgYnVmZmVyaW5nKSBmb3IgYXRoMTBrLgo+Cj4gR3JhbnQncyBkYXRhIHNob3dz
-IGEgc2lnbmlmaWNhbnQgZGlmZmVyZW5jZSBiZXR3ZWVuIDYgYW5kIDcgZm9yIGJvdGgKPiBsYXRl
-bmN5IGFuZCB0aHJvdWdocHV0Ogo+Cj4gICogbWVkaWFuIHRwdAo+ICAgIC0gfjI0MSB2cyB+MjAx
-IChib3RoIDEgYW5kIDUgc3RyZWFtcykKPiAgKiBtZWRpYW4gbGF0ZW5jeQo+ICAgIC0gNy41IHZz
-IDYgKDEgc3RyZWFtKQo+ICAgIC0gMTcuMyB2cy4gMTYuNiAoNSBzdHJlYW1zKQo+Cj4gQSAyMCUg
-dGhyb3VnaHB1dCBpbXByb3ZlbWVudCBhdCA8PSAxLjVtcyBsYXRlbmN5IGNvc3Qgc2VlbXMgbGlr
-ZSBhCj4gcHJldHR5IHJlYXNvbmFibGUgdHJhZGUtb2ZmPwoKWWVhaCwgb24gaXQncyBmYWNlLiBX
-aGF0IEknbSBib3RoZXJlZCBhYm91dCBpcyB0aGF0IGl0IGlzIHRoZSBleGFjdApvcHBvc2l0ZSBy
-ZXN1bHRzIHRoYXQgSSBnb3QgZnJvbSBteSBhdGgxMGsgdGVzdHMgKHRoZXJlLCB0aHJvdWdocHV0
-Cipkcm9wcGVkKiBhbmQgbGF0ZW5jeSBkb3VibGVkIHdoZW4gZ29pbmcgdG8gZnJvbSA0IHRvIDE2
-IG1zIG9mCmJ1ZmZlcmluZykuIEFuZCwgd2VsbCwgR3JhbnQncyBkYXRhIGlzIGZyb20gYSBzaW5n
-bGUgdGVzdCBpbiBhIG5vaXN5CmVudmlyb25tZW50IHdoZXJlIHRoZSB0aW1lc2VyaWVzIGdyYXBo
-IHNob3dzIHRoYXQgdGhyb3VnaHB1dCBpcyBhbGwgb3Zlcgp0aGUgcGxhY2UgZm9yIHRoZSBkdXJh
-dGlvbiBvZiB0aGUgdGVzdDsgc28gaXQncyBoYXJkIHRvIGRyYXcgc29saWQKY29uY2x1c2lvbnMg
-ZnJvbSAoZm9yIGluc3RhbmNlLCBmb3IgdGhlIDUtc3RyZWFtIHRlc3QsIHRoZSBhdmVyYWdlCnRo
-cm91Z2hwdXQgZm9yIDYgaXMgMzMxIGFuZCAzNzkgTWJwcyBmb3IgdGhlIHR3byByZXBldGl0aW9u
-cywgYW5kIGZvciA3Cml0J3MgMzI2IGFuZCAzNzEgTWJwcykgLiBVbmZvcnR1bmF0ZWx5IEkgZG9u
-J3QgaGF2ZSB0aGUgc2FtZSBoYXJkd2FyZQp1c2VkIGluIHRoaXMgdGVzdCwgc28gSSBjYW4ndCBn
-byB2ZXJpZnkgaXQgbXlzZWxmOyBzbyB0aGUgb25seSB0aGluZyBJCmNhbiBkbyBpcyBncnVtYmxl
-IGFib3V0IGl0IGhlcmUuLi4gOikKCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+I have not been on this thread (I have had to shut down my wifi lab
+and am not planning on doing any more wifi work in the future). But
+for what it's worth:
+
+* tcp_pacing_shift affects the performance of the tcp stack only. I
+think 16ms is an outrageous amount, and I'm thinking we actually have
+a problem on the other side of the link in getting acks out as I
+write. That said,
+I don't care all that much compared to the bad old days (
+http://blog.cerowrt.org/tags/wifi ) and 16ms
+is far better than the seconds it used to be.
+
+That said, I'd rather appreciate a test on HT20 with the same chipset
+at a lower rate. The hope was that
+we'd achieve flat latency at every rate (see
+http://blog.cerowrt.org/post/real_results/ for some lovely pics)
+
+Flent can sample minstrel stats but I think we're SOL on the ath10k.
+
+* The irtt test can measure one way delays pretty accurately so you
+can see if the other side is actually the source of this issue.
+
+* Not clear to me if the AP is also running the fq_codel for wifi
+code? That, um, er, helps an AP enormously....
+
+* Having an aircap and regular capture of what's going on during these
+tests would be useful. Flent is a great test driver, but a tcpdump
+taken during a flent test tells the truth via tcptrace and xplot.org.
+We can inspect cwnd, rwnd, and look at drops. (actually I usually turn
+ECN on so I can see when the codel algorithm is kicking in). Being
+able to zoom in on the early ramp would be helpful. Etc.
+
+I'll take a look at them if you'll supply them.
+
+* At some point the ath10k driver also gained NAPI support. (?) I
+don't think NAPI is a good fit for wifi. Delays in TCP RX processing
+lead to less throughput.
+
+* The firmware is perpetually trying to do more stuff with less
+interrupts. Me, I dreamed of a register you could poll for "when will
+the air be clear", and a "tx has one ms left to go, give me some more
+data" interrupt. The fact we still have a minimum of ~12ms of
+uncontrolled buffering bugs me. If we could just hold off submittal
+until just before it was needed, we could cut it in half (and further,
+by 10s of ms, when the media is contended).
+
+* My general recomendation for contended APs was that they advertise a
+reduced TXOP as the number of active stations go up. (this also
+applies to the VI/VO queues). Never got around to algorizing it... I
+gave up on my links and, disable VO/VI/BK entirely and just tell
+hostapd to advertise 2ms. Yep, kills conventional measures of
+throughput. Cuts inter-station service time by 2/3s though, and *that*
+you can notice and measure with PLT benchmarks and overall feel.
+
+This implies increasing the pacing shift to suit the advertised size
+of the txop, not decreasing it - and I have no idea how to get that
+from one place to another. Same goes for stuff destined for the VI/VO
+queues.
+
+* (also it would be good to see in the capture what the beacon says)
+
+* Powersave has always been a problem...
+
+* Cubic is a terrible tcp for wifi. BBR, however, is possibly worse...
+or better. It would be educational to try running BBR on this link at
+either shift setting. (seriously!) TCP is not TCP is not TCP....
+
+Lastly... tcp_pacing_shift does not affect the number of other packets
+that can get into a given txop given the other buffering - it's one in
+the hardware, one ready to go, one being formed, try setting
+pacing_shift to to 4 to see what happens....
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
