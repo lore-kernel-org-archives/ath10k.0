@@ -2,15 +2,23 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwlwj-00085i-FG
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 10:19:10 +0000
-Message-ID: <1535969922.3437.37.camel@sipsolutions.net>
-Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
+ id 1fwmGi-0000PJ-Lk
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 10:39:42 +0000
+Message-ID: <1535971161.3437.49.camel@sipsolutions.net>
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 03 Sep 2018 12:18:42 +0200
-In-Reply-To: <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com>
-References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
- <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 03 Sep 2018 12:39:21 +0200
+In-Reply-To: <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
+ <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+ <1527069018.3759.15.camel@sipsolutions.net>
+ <eede64cf-ecf3-6697-a338-b7eb4c9bcd27@codeaurora.org>
+ <1534408023.3547.64.camel@sipsolutions.net>
+ <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,25 +32,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Anilkumar Kolli <akolli@codeaurora.org>
-Cc: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Fri, 2018-08-31 at 15:29 +0300, Kalle Valo wrote:
+Hi,
 
-> Too me this feels like a bad idea but I'm not familiar enough with
-> mac80211 to really comment on this. What kind of implications does this
-> have for Mesh or ATF, for example? Adding Johannes and Toke to hear
-> about their opinion about this.
+Sorry ... this got delayed again.
 
-The biggest implication is probably radiotap. Beyond that, it's using
-this to report the "last rate" to nl80211, but that's not all super
-useful anyway.
+> I had introduced a change db3bdcb9c3ff (" mac80211: allow AP_VLAN 
+> operation on crypto controlled devices ") for supporting VLAN 
+> functionality on ath10k devices; this commit has broken 4 addr support 
+> on ath10k devices as I was advertising the AP/VLAN support 
+> conditionally. Since 4 addr operation is tied to AP/VLAN support, with 
+> this change, only the chips which support VLAN functionality can support 
+> 4 addr operation but other ath10k chips don't.
 
-The retry count is also affected, and since you report "somewhat
-liberally" that would lead to erroneous statistics.
+Right.
 
-I'd recommend against doing this and disentangling the necessary code in
-mac80211, e.g. with ieee80211_tx_status_ext() or adding similar APIs.
+>  From what I can understand from our previous discussions, we had to 
+> separate the 4addr support from the AP/VLAN iftype but doing so could 
+> lead to backward compatibility issues. I have the code which separates 
+> the 4addr functionality from AP/VLAN but the bigger problem is the 
+> backward compatibility.
+
+Ok.
+
+> I am hoping that now I have set the context correctly :)
+
+Thanks!
+
+> > I think we have to keep the 4-addr handling in AP_VLAN iftype either
+> > way, to not break existing hostapd. We could introduce a separate
+> > AP_VLAN_NO_4ADDR and then require updating hostapd to get non-4addr
+> > VLAN, but that also seems awkward.
+> > 
+> > Since hostapd doesn't currently check anything...
+> > 
+> > Ok, no, I'm confused now. If we just clear WIPHY_FLAG_4ADDR_AP, don't 
+> > we
+> > get what we want? 4-addr AP_VLAN interfaces would no longer be 
+> > permitted
+> > to be created?
+> 
+> As I explained above, the agenda is to provide the driver (in this case, 
+> ath10k) a better control for advertising the device capabilities; only 
+> few ath10k chips can support VLAN functionality but all of them can 
+> support 4 addr operation.
+
+So the problematic part isn't actually the *4-addr* (fake) VLAN, the
+problematic part is the actual AP_VLAN - I suppose because that uses a
+separate GTK.
+
+
+So I guess the only, mostly backward compatible way to really separate
+the two would be to
+
+1) move WIPHY_FLAG_4ADDR_{AP,STATION} to be nl80211 ext feature flags,
+   I guess the STATION always should've been since there's nothing that
+   indicates support for it today in the API
+
+along with one of:
+
+2a) Add a new AP_VLAN ext feature flag that indicates the AP_VLAN is not
+    only supported for 4-addr
+
+2b) Allow creating an AP_VLAN interface in 4-addr mode in 
+    nl80211_new_interface() even when AP_VLAN is not in the supported
+    interface combinations, if (and only if) WIPHY_FLAG_4ADDR_AP is set
+    (or rather the new extended feature flag after doing 1). Update the
+    language in the documentation somewhere indicating this.
+
+
+Hostapd clearly deals with both 2a and 2b since it never bothers to
+check the combinations. As a result, I prefer 2b rather than 2a since it
+doesn't add any weird combinations to the API that would be impossible.
 
 johannes
 
