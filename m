@@ -1,25 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwmGi-0000PJ-Lk
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 10:39:42 +0000
-Message-ID: <1535971161.3437.49.camel@sipsolutions.net>
-Subject: Re: [PATCH] ath10k: add dynamic vlan support
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 03 Sep 2018 12:39:21 +0200
-In-Reply-To: <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
-References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
- <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
- <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
- <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
- <1526637270.3805.15.camel@sipsolutions.net>
- <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
- <1527069018.3759.15.camel@sipsolutions.net>
- <eede64cf-ecf3-6697-a338-b7eb4c9bcd27@codeaurora.org>
- <1534408023.3547.64.camel@sipsolutions.net>
- <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
-Mime-Version: 1.0
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fwlxR-0007B9-PV
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 10:19:46 +0000
+MIME-Version: 1.0
+Date: Mon, 03 Sep 2018 15:49:32 +0530
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
+In-Reply-To: <87r2ia28ii.fsf@toke.dk>
+References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
+ <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com> <87zhx21uqc.fsf@toke.dk>
+ <ebb12dc92de318b8d88eb607d9182ead@codeaurora.org> <87r2ia28ii.fsf@toke.dk>
+Message-ID: <01897c3dab4aa7c2371ef6791487413b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,88 +20,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: linux-wireless-owner@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Hi,
-
-Sorry ... this got delayed again.
-
-> I had introduced a change db3bdcb9c3ff (" mac80211: allow AP_VLAN 
-> operation on crypto controlled devices ") for supporting VLAN 
-> functionality on ath10k devices; this commit has broken 4 addr support 
-> on ath10k devices as I was advertising the AP/VLAN support 
-> conditionally. Since 4 addr operation is tied to AP/VLAN support, with 
-> this change, only the chips which support VLAN functionality can support 
-> 4 addr operation but other ath10k chips don't.
-
-Right.
-
->  From what I can understand from our previous discussions, we had to 
-> separate the 4addr support from the AP/VLAN iftype but doing so could 
-> lead to backward compatibility issues. I have the code which separates 
-> the 4addr functionality from AP/VLAN but the bigger problem is the 
-> backward compatibility.
-
-Ok.
-
-> I am hoping that now I have set the context correctly :)
-
-Thanks!
-
-> > I think we have to keep the 4-addr handling in AP_VLAN iftype either
-> > way, to not break existing hostapd. We could introduce a separate
-> > AP_VLAN_NO_4ADDR and then require updating hostapd to get non-4addr
-> > VLAN, but that also seems awkward.
-> > 
-> > Since hostapd doesn't currently check anything...
-> > 
-> > Ok, no, I'm confused now. If we just clear WIPHY_FLAG_4ADDR_AP, don't 
-> > we
-> > get what we want? 4-addr AP_VLAN interfaces would no longer be 
-> > permitted
-> > to be created?
-> 
-> As I explained above, the agenda is to provide the driver (in this case, 
-> ath10k) a better control for advertising the device capabilities; only 
-> few ath10k chips can support VLAN functionality but all of them can 
-> support 4 addr operation.
-
-So the problematic part isn't actually the *4-addr* (fake) VLAN, the
-problematic part is the actual AP_VLAN - I suppose because that uses a
-separate GTK.
-
-
-So I guess the only, mostly backward compatible way to really separate
-the two would be to
-
-1) move WIPHY_FLAG_4ADDR_{AP,STATION} to be nl80211 ext feature flags,
-   I guess the STATION always should've been since there's nothing that
-   indicates support for it today in the API
-
-along with one of:
-
-2a) Add a new AP_VLAN ext feature flag that indicates the AP_VLAN is not
-    only supported for 4-addr
-
-2b) Allow creating an AP_VLAN interface in 4-addr mode in 
-    nl80211_new_interface() even when AP_VLAN is not in the supported
-    interface combinations, if (and only if) WIPHY_FLAG_4ADDR_AP is set
-    (or rather the new extended feature flag after doing 1). Update the
-    language in the documentation somewhere indicating this.
-
-
-Hostapd clearly deals with both 2a and 2b since it never bothers to
-check the combinations. As a result, I prefer 2b rather than 2a since it
-doesn't add any weird combinations to the API that would be impossible.
-
-johannes
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0wOS0wMyAxNTo0MywgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEFu
+aWxrdW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IE9uIDIw
+MTgtMDgtMzEgMTk6NTIsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+IEthbGxl
+IFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+PiAKPj4+PiBBbmlsa3VtYXIg
+S29sbGkgPGFrb2xsaUBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+Pj4+IAo+Pj4+PiBNZXNoIHBh
+dGggbWV0cmljIG5lZWRzIHR4cmF0ZSBpbmZvcm1hdGlvbiBmcm9tIAo+Pj4+PiBpZWVlODAyMTFf
+dHhfc3RhdHVzKCkKPj4+Pj4gY2FsbCBidXQgaW4gYXRoMTBrIHRoZXJlIGlzIG5vIG1lY2hhbmlz
+bSB0byByZXBvcnQgdHggcmF0ZQo+Pj4+PiBpbmZvcm1hdGlvbgo+Pj4+PiB2aWEgaWVlZTgwMjEx
+X3R4X3N0YXR1cygpLCB0aGUgcmF0ZSBpcyBvbmx5IGFjY2Vzc2libGUgdmlhCj4+Pj4+IHN0YV9z
+dGF0aXNjcygpIG9wLgo+Pj4+PiAKPj4+Pj4gUGVyIHBlZXIgc3RhdHMgaGFzIHR4IHJhdGUgaW5m
+byBhdmFpbGFibGUsIHRoaXMgcGF0Y2ggc3RvcmVzIHBlciAKPj4+Pj4gcGVlcgo+Pj4+PiBsYXN0
+IHR4IHJhdGUgYW5kIHVwZGF0ZXMgdGhlIHR4IHJhdGUgaW5mbyBzdHJ1Y3R1cmVzIGluIHR4Cj4+
+Pj4+IGNvbXBsZXRpdGlvbi4KPj4+Pj4gVGhlIHJhdGUgdXBkYXRlZCBpbiBpZWVlODAyMTFfdHhf
+c3RhdHVzKCkgaXMgbm90IGV4YWN0bHkgZm9yIHRoZSAKPj4+Pj4gbGFzdAo+Pj4+PiB0cmFuc21p
+dHRlZCBmcmFtZSBpbnN0ZWFkIHRoZSByYXRlIGlzIGZyb20gb25lIG9mIHRoZSBwcmV2aW91cwo+
+Pj4+PiBmcmFtZXMuCj4+Pj4+IAo+Pj4+PiBQZXIgcGVlciB0eHJhdGUgaW5mb3JtYXRpb24gaXMg
+dXBkYXRlZCB0aHJvdWdoIHBlciBwZWVyIHN0YXRpc3RpY3MKPj4+Pj4gYW5kIGlzIGF2YWlsYWJs
+ZSBmb3IgUUNBOTg4OC9RQ0E5OTg0L1FDQTQwMTkvUUNBOTk4WCBvbmx5Cj4+Pj4+IAo+Pj4+PiBU
+ZXN0ZWQgb24gUUNBOTk4NCB3aXRoIGZpcm13YXJlLTUuYmluXzEwLjQtMy41LjMtMDAwNTMKPj4+
+Pj4gVGVzdGVkIG9uIFFDQTk5OFggd2l0aCBmaXJtd2FyZS01LmJpbl8xMC4yLjQtMS4wLTAwMDM2
+Cj4+Pj4+IAo+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBBbmlsa3VtYXIgS29sbGkgPGFrb2xsaUBjb2Rl
+YXVyb3JhLm9yZz4KPj4+PiAKPj4+PiBUaGlzIGlzIGEgcGF0Y2ggZnJvbSBsYXN0IE1hcmNoLCBm
+dWxsIHBhdGNoIGhlcmU6Cj4+Pj4gCj4+Pj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9w
+YXRjaC8xMDI2NzY5My8KPj4+PiAKPj4+Pj4gQEAgLTExOSw2ICsxMjIsMTggQEAgaW50IGF0aDEw
+a190eHJ4X3R4X3VucmVmKHN0cnVjdCBhdGgxMGtfaHR0IAo+Pj4+PiAqaHR0LAo+Pj4+PiAgCQkJ
+aW5mby0+ZmxhZ3MgJj0gfklFRUU4MDIxMV9UWF9TVEFUX0FDSzsKPj4+Pj4gIAl9Cj4+Pj4+IAo+
+Pj4+PiArCWlmIChzdGEpIHsKPj4+Pj4gKwkJc3Bpbl9sb2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsK
+Pj4+Pj4gKwkJYXJzdGEgPSAoc3RydWN0IGF0aDEwa19zdGEgKilzdGEtPmRydl9wcml2Owo+Pj4+
+PiArCQlpbmZvLT5zdGF0dXMucmF0ZXNbMF0uaWR4ID0KPj4+Pj4gKwkJCWFyc3RhLT50eF9pbmZv
+LnN0YXR1cy5yYXRlc1swXS5pZHg7Cj4+Pj4+ICsJCWluZm8tPnN0YXR1cy5yYXRlc1swXS5jb3Vu
+dCA9Cj4+Pj4+ICsJCQlhcnN0YS0+dHhfaW5mby5zdGF0dXMucmF0ZXNbMF0uY291bnQ7Cj4+Pj4+
+ICsJCWluZm8tPnN0YXR1cy5yYXRlc1swXS5mbGFncyA9Cj4+Pj4gPD4gKwkJCWFyc3RhLT50eF9p
+bmZvLnN0YXR1cy5yYXRlc1swXS5mbGFnczsKPj4+Pj4gKwkJc3Bpbl91bmxvY2tfYmgoJmFyLT5k
+YXRhX2xvY2spOwo+Pj4+PiArCX0KPj4+Pj4gKwo+Pj4+PiAgCWllZWU4MDIxMV90eF9zdGF0dXMo
+aHR0LT5hci0+aHcsIG1zZHUpOwo+Pj4+PiAgCS8qIHdlIGRvIG5vdCBvd24gdGhlIG1zZHUgYW55
+bW9yZSAqLwo+Pj4+IAo+Pj4+ICJpcyBub3QgZXhhY3RseSIgaXMgSU1ITyBhbiB1bmRlcnN0YXRl
+bWVudC4gV2hhdCBpdCBtZWFucyB0aGF0IHdpdGgKPj4+PiB0aGlzCj4+Pj4gcGF0Y2ggYXRoMTBr
+IHJlcG9ydHMgdGhlIHJhdGUgaW5mb3JtYXRpb24gZnJvbSBhbm90aGVyIGZyYW1lIGluc3RlYWQK
+Pj4+PiBvZgo+Pj4+IHRoZSBjdXJyZW50IHNrYiwgYmVjYXVzZSB0aGUgZmlybXdhcmUgcHJvdmlk
+ZXMgdGhlIHJhdGUgaW5mb3JtYXRpb24KPj4+PiAib3V0Cj4+Pj4gb2YgYmFuZCIuIEEgc2ltcGxl
+IGV4YW1wbGUgdG8gY2xhcmlmeToKPj4+PiAKPj4+PiAgICBMZXQncyBzYXkgYXRoMTBrIHRyYW5z
+bWl0cyBmcmFtZXMgQSwgQiBhbmQgQy4gVGhlbiBhdGgxMGsgY2FsbHMKPj4+PiAgICBpZWVlODAy
+MTFfdHhfc3RhdHVzKCkgZm9yIGZyYW1lIEMgdGhlIHJhdGUgaW5mb3JtYXRpb24gY291bGQgYmUg
+Cj4+Pj4gZm9yCj4+Pj4gICAgZnJhbWUgQSwgb3IgaXQgY291bGQgYmUgdGhlIG90aGVyIGFyb3Vu
+ZCBmb3IgZnJhbWUgQSBzdGF0dXMgdGhlCj4+Pj4gcmF0ZQo+Pj4+ICAgIGluZm9ybWF0aW9uIGlz
+IGZyb20gZnJhbWUgQy4KPj4+PiAKPj4+PiBJbiBvdGhlciB3b3JkcywgdGhlcmUncyBubyBndWFy
+YW50ZWUgZnJvbSB3aGF0IGZyYW1lIHRoZSByYXRlCj4+Pj4gaW5mb3JtYXRpb24gaXMgZnJvbS4K
+Pj4+PiAKPj4+PiBUb28gbWUgdGhpcyBmZWVscyBsaWtlIGEgYmFkIGlkZWEgYnV0IEknbSBub3Qg
+ZmFtaWxpYXIgZW5vdWdoIHdpdGgKPj4+PiBtYWM4MDIxMSB0byByZWFsbHkgY29tbWVudCBvbiB0
+aGlzLiBXaGF0IGtpbmQgb2YgaW1wbGljYXRpb25zIGRvZXMKPj4+PiB0aGlzCj4+Pj4gaGF2ZSBm
+b3IgTWVzaCBvciBBVEYsIGZvciBleGFtcGxlPyBBZGRpbmcgSm9oYW5uZXMgYW5kIFRva2UgdG8g
+aGVhcgo+Pj4+IGFib3V0IHRoZWlyIG9waW5pb24gYWJvdXQgdGhpcy4KPj4+IAo+Pj4gSSB3YXMg
+dW5kZXIgdGhlIGltcHJlc3Npb24gdGhhdCB0aGUgdmFsdWVzIGdhdGhlcmVkIChhdCBsZWFzdCBm
+b3IKPj4+IGFpcnRpbWUpIHdvdWxkIGJlIGN1bXVsYXRpdmUgdmFsdWVzPyBJZiBpdCdzIGp1c3Qg
+dGhlIGFpcnRpbWUgb2YgYQo+Pj4gc2luZ2xlIHJhbmRvbSBmcmFtZSwgd2hpY2ggaXMgd2hhdCBJ
+IHVuZGVyc3RhbmQgZnJvbSB5b3VyIGV4YW1wbGUsIAo+Pj4gaXQncwo+Pj4gbm90IGdvaW5nIHRv
+IGJlIHRlcnJpYmx5IHVzZWZ1bCB0byBwcm92aWRlIEFURiBhdCBsZWFzdC4uLgo+Pj4gCj4+PiAt
+VG9rZQo+PiAKPj4gVGhlIGRlc2lnbjoKPj4gV2hlbmV2ZXIgcmFkaW8gdHJhbnNtaXRzIHBhY2tl
+dCwgZmlybXdhcmUgd2lsbCByZWNvcmQgbnVtYmVycyBvZiBieXRlcwo+PiBzZW50LCBNU0RV4oCZ
+cyBzZW50LCBUWCBkdXJhdGlvbiwgQU1QRFUgaW5mb3JtYXRpb24sIEFDSyBmYWlsLCBCQSBmYWls
+LAo+PiBSYXRlIGF0IHdoaWNoIHBhY2tldCBpcyBzZW50LiBUaGlzIGlzIHJlY29yZGVkIGZvciA0
+IGZyYW1lcyBzZW50IG9uIAo+PiB0aGF0Cj4+IHBlZXIuIE9uY2UgNCBmcmFtZXMgYXJlIHNlbnQg
+Zm9yIHRoYXQgcGVlciwgVFggcGFja2V0IGV2ZW50IGlzIHNlbnQgdG8KPj4gYXRoMTBrIGRyaXZl
+ciB3aXRoIHRoZSByZWNvcmRlZCB2YWx1ZXMuIFRoZXNlIHJhdGUgdmFsdWVzIGFyZSB1cGRhdGVk
+IAo+PiB0bwo+PiBtYWM4MDIxMSB1c2luZyBpZWVlODAyMTFfdHhfc3RhdHVzKCkuCj4gCj4gU28g
+dGhlIHZhbHVlcyByZXBvcnRlZCBhcmUgdGhlIHN1bXMgZm9yIGFsbCBmb3VyIHBhY2tldHM/IEJ1
+dCB0aGUgCj4gbGF0ZXN0Cj4gdmFsdWUgZm9yIHJhdGUgaW5mb3JtYXRpb24/Cj4gCj4gLVRva2UK
+ClR4IHJhdGUgaXMgdXBkYXRlZCBmb3IgdGhlIDR0aCBwYWNrZXQuCgpUaGFua3MKQW5pbC4KCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
