@@ -1,17 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwlxR-0007B9-PV
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 10:19:46 +0000
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fwmla-0006Gu-66
+ for ath10k@lists.infradead.org; Mon, 03 Sep 2018 11:11:36 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+In-Reply-To: <1535967508.3437.31.camel@sipsolutions.net>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
+ <1535967508.3437.31.camel@sipsolutions.net>
+Date: Mon, 03 Sep 2018 13:11:21 +0200
+Message-ID: <87in3m25uu.fsf@toke.dk>
 MIME-Version: 1.0
-Date: Mon, 03 Sep 2018 15:49:32 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
-In-Reply-To: <87r2ia28ii.fsf@toke.dk>
-References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
- <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com> <87zhx21uqc.fsf@toke.dk>
- <ebb12dc92de318b8d88eb607d9182ead@codeaurora.org> <87r2ia28ii.fsf@toke.dk>
-Message-ID: <01897c3dab4aa7c2371ef6791487413b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,81 +26,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless-owner@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Johannes Berg <johannes@sipsolutions.net>, Grant Grundler <grundler@google.com>, wgong@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-T24gMjAxOC0wOS0wMyAxNTo0MywgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEFu
-aWxrdW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IE9uIDIw
-MTgtMDgtMzEgMTk6NTIsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+IEthbGxl
-IFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+PiAKPj4+PiBBbmlsa3VtYXIg
-S29sbGkgPGFrb2xsaUBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+Pj4+IAo+Pj4+PiBNZXNoIHBh
-dGggbWV0cmljIG5lZWRzIHR4cmF0ZSBpbmZvcm1hdGlvbiBmcm9tIAo+Pj4+PiBpZWVlODAyMTFf
-dHhfc3RhdHVzKCkKPj4+Pj4gY2FsbCBidXQgaW4gYXRoMTBrIHRoZXJlIGlzIG5vIG1lY2hhbmlz
-bSB0byByZXBvcnQgdHggcmF0ZQo+Pj4+PiBpbmZvcm1hdGlvbgo+Pj4+PiB2aWEgaWVlZTgwMjEx
-X3R4X3N0YXR1cygpLCB0aGUgcmF0ZSBpcyBvbmx5IGFjY2Vzc2libGUgdmlhCj4+Pj4+IHN0YV9z
-dGF0aXNjcygpIG9wLgo+Pj4+PiAKPj4+Pj4gUGVyIHBlZXIgc3RhdHMgaGFzIHR4IHJhdGUgaW5m
-byBhdmFpbGFibGUsIHRoaXMgcGF0Y2ggc3RvcmVzIHBlciAKPj4+Pj4gcGVlcgo+Pj4+PiBsYXN0
-IHR4IHJhdGUgYW5kIHVwZGF0ZXMgdGhlIHR4IHJhdGUgaW5mbyBzdHJ1Y3R1cmVzIGluIHR4Cj4+
-Pj4+IGNvbXBsZXRpdGlvbi4KPj4+Pj4gVGhlIHJhdGUgdXBkYXRlZCBpbiBpZWVlODAyMTFfdHhf
-c3RhdHVzKCkgaXMgbm90IGV4YWN0bHkgZm9yIHRoZSAKPj4+Pj4gbGFzdAo+Pj4+PiB0cmFuc21p
-dHRlZCBmcmFtZSBpbnN0ZWFkIHRoZSByYXRlIGlzIGZyb20gb25lIG9mIHRoZSBwcmV2aW91cwo+
-Pj4+PiBmcmFtZXMuCj4+Pj4+IAo+Pj4+PiBQZXIgcGVlciB0eHJhdGUgaW5mb3JtYXRpb24gaXMg
-dXBkYXRlZCB0aHJvdWdoIHBlciBwZWVyIHN0YXRpc3RpY3MKPj4+Pj4gYW5kIGlzIGF2YWlsYWJs
-ZSBmb3IgUUNBOTg4OC9RQ0E5OTg0L1FDQTQwMTkvUUNBOTk4WCBvbmx5Cj4+Pj4+IAo+Pj4+PiBU
-ZXN0ZWQgb24gUUNBOTk4NCB3aXRoIGZpcm13YXJlLTUuYmluXzEwLjQtMy41LjMtMDAwNTMKPj4+
-Pj4gVGVzdGVkIG9uIFFDQTk5OFggd2l0aCBmaXJtd2FyZS01LmJpbl8xMC4yLjQtMS4wLTAwMDM2
-Cj4+Pj4+IAo+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBBbmlsa3VtYXIgS29sbGkgPGFrb2xsaUBjb2Rl
-YXVyb3JhLm9yZz4KPj4+PiAKPj4+PiBUaGlzIGlzIGEgcGF0Y2ggZnJvbSBsYXN0IE1hcmNoLCBm
-dWxsIHBhdGNoIGhlcmU6Cj4+Pj4gCj4+Pj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9w
-YXRjaC8xMDI2NzY5My8KPj4+PiAKPj4+Pj4gQEAgLTExOSw2ICsxMjIsMTggQEAgaW50IGF0aDEw
-a190eHJ4X3R4X3VucmVmKHN0cnVjdCBhdGgxMGtfaHR0IAo+Pj4+PiAqaHR0LAo+Pj4+PiAgCQkJ
-aW5mby0+ZmxhZ3MgJj0gfklFRUU4MDIxMV9UWF9TVEFUX0FDSzsKPj4+Pj4gIAl9Cj4+Pj4+IAo+
-Pj4+PiArCWlmIChzdGEpIHsKPj4+Pj4gKwkJc3Bpbl9sb2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsK
-Pj4+Pj4gKwkJYXJzdGEgPSAoc3RydWN0IGF0aDEwa19zdGEgKilzdGEtPmRydl9wcml2Owo+Pj4+
-PiArCQlpbmZvLT5zdGF0dXMucmF0ZXNbMF0uaWR4ID0KPj4+Pj4gKwkJCWFyc3RhLT50eF9pbmZv
-LnN0YXR1cy5yYXRlc1swXS5pZHg7Cj4+Pj4+ICsJCWluZm8tPnN0YXR1cy5yYXRlc1swXS5jb3Vu
-dCA9Cj4+Pj4+ICsJCQlhcnN0YS0+dHhfaW5mby5zdGF0dXMucmF0ZXNbMF0uY291bnQ7Cj4+Pj4+
-ICsJCWluZm8tPnN0YXR1cy5yYXRlc1swXS5mbGFncyA9Cj4+Pj4gPD4gKwkJCWFyc3RhLT50eF9p
-bmZvLnN0YXR1cy5yYXRlc1swXS5mbGFnczsKPj4+Pj4gKwkJc3Bpbl91bmxvY2tfYmgoJmFyLT5k
-YXRhX2xvY2spOwo+Pj4+PiArCX0KPj4+Pj4gKwo+Pj4+PiAgCWllZWU4MDIxMV90eF9zdGF0dXMo
-aHR0LT5hci0+aHcsIG1zZHUpOwo+Pj4+PiAgCS8qIHdlIGRvIG5vdCBvd24gdGhlIG1zZHUgYW55
-bW9yZSAqLwo+Pj4+IAo+Pj4+ICJpcyBub3QgZXhhY3RseSIgaXMgSU1ITyBhbiB1bmRlcnN0YXRl
-bWVudC4gV2hhdCBpdCBtZWFucyB0aGF0IHdpdGgKPj4+PiB0aGlzCj4+Pj4gcGF0Y2ggYXRoMTBr
-IHJlcG9ydHMgdGhlIHJhdGUgaW5mb3JtYXRpb24gZnJvbSBhbm90aGVyIGZyYW1lIGluc3RlYWQK
-Pj4+PiBvZgo+Pj4+IHRoZSBjdXJyZW50IHNrYiwgYmVjYXVzZSB0aGUgZmlybXdhcmUgcHJvdmlk
-ZXMgdGhlIHJhdGUgaW5mb3JtYXRpb24KPj4+PiAib3V0Cj4+Pj4gb2YgYmFuZCIuIEEgc2ltcGxl
-IGV4YW1wbGUgdG8gY2xhcmlmeToKPj4+PiAKPj4+PiAgICBMZXQncyBzYXkgYXRoMTBrIHRyYW5z
-bWl0cyBmcmFtZXMgQSwgQiBhbmQgQy4gVGhlbiBhdGgxMGsgY2FsbHMKPj4+PiAgICBpZWVlODAy
-MTFfdHhfc3RhdHVzKCkgZm9yIGZyYW1lIEMgdGhlIHJhdGUgaW5mb3JtYXRpb24gY291bGQgYmUg
-Cj4+Pj4gZm9yCj4+Pj4gICAgZnJhbWUgQSwgb3IgaXQgY291bGQgYmUgdGhlIG90aGVyIGFyb3Vu
-ZCBmb3IgZnJhbWUgQSBzdGF0dXMgdGhlCj4+Pj4gcmF0ZQo+Pj4+ICAgIGluZm9ybWF0aW9uIGlz
-IGZyb20gZnJhbWUgQy4KPj4+PiAKPj4+PiBJbiBvdGhlciB3b3JkcywgdGhlcmUncyBubyBndWFy
-YW50ZWUgZnJvbSB3aGF0IGZyYW1lIHRoZSByYXRlCj4+Pj4gaW5mb3JtYXRpb24gaXMgZnJvbS4K
-Pj4+PiAKPj4+PiBUb28gbWUgdGhpcyBmZWVscyBsaWtlIGEgYmFkIGlkZWEgYnV0IEknbSBub3Qg
-ZmFtaWxpYXIgZW5vdWdoIHdpdGgKPj4+PiBtYWM4MDIxMSB0byByZWFsbHkgY29tbWVudCBvbiB0
-aGlzLiBXaGF0IGtpbmQgb2YgaW1wbGljYXRpb25zIGRvZXMKPj4+PiB0aGlzCj4+Pj4gaGF2ZSBm
-b3IgTWVzaCBvciBBVEYsIGZvciBleGFtcGxlPyBBZGRpbmcgSm9oYW5uZXMgYW5kIFRva2UgdG8g
-aGVhcgo+Pj4+IGFib3V0IHRoZWlyIG9waW5pb24gYWJvdXQgdGhpcy4KPj4+IAo+Pj4gSSB3YXMg
-dW5kZXIgdGhlIGltcHJlc3Npb24gdGhhdCB0aGUgdmFsdWVzIGdhdGhlcmVkIChhdCBsZWFzdCBm
-b3IKPj4+IGFpcnRpbWUpIHdvdWxkIGJlIGN1bXVsYXRpdmUgdmFsdWVzPyBJZiBpdCdzIGp1c3Qg
-dGhlIGFpcnRpbWUgb2YgYQo+Pj4gc2luZ2xlIHJhbmRvbSBmcmFtZSwgd2hpY2ggaXMgd2hhdCBJ
-IHVuZGVyc3RhbmQgZnJvbSB5b3VyIGV4YW1wbGUsIAo+Pj4gaXQncwo+Pj4gbm90IGdvaW5nIHRv
-IGJlIHRlcnJpYmx5IHVzZWZ1bCB0byBwcm92aWRlIEFURiBhdCBsZWFzdC4uLgo+Pj4gCj4+PiAt
-VG9rZQo+PiAKPj4gVGhlIGRlc2lnbjoKPj4gV2hlbmV2ZXIgcmFkaW8gdHJhbnNtaXRzIHBhY2tl
-dCwgZmlybXdhcmUgd2lsbCByZWNvcmQgbnVtYmVycyBvZiBieXRlcwo+PiBzZW50LCBNU0RV4oCZ
-cyBzZW50LCBUWCBkdXJhdGlvbiwgQU1QRFUgaW5mb3JtYXRpb24sIEFDSyBmYWlsLCBCQSBmYWls
-LAo+PiBSYXRlIGF0IHdoaWNoIHBhY2tldCBpcyBzZW50LiBUaGlzIGlzIHJlY29yZGVkIGZvciA0
-IGZyYW1lcyBzZW50IG9uIAo+PiB0aGF0Cj4+IHBlZXIuIE9uY2UgNCBmcmFtZXMgYXJlIHNlbnQg
-Zm9yIHRoYXQgcGVlciwgVFggcGFja2V0IGV2ZW50IGlzIHNlbnQgdG8KPj4gYXRoMTBrIGRyaXZl
-ciB3aXRoIHRoZSByZWNvcmRlZCB2YWx1ZXMuIFRoZXNlIHJhdGUgdmFsdWVzIGFyZSB1cGRhdGVk
-IAo+PiB0bwo+PiBtYWM4MDIxMSB1c2luZyBpZWVlODAyMTFfdHhfc3RhdHVzKCkuCj4gCj4gU28g
-dGhlIHZhbHVlcyByZXBvcnRlZCBhcmUgdGhlIHN1bXMgZm9yIGFsbCBmb3VyIHBhY2tldHM/IEJ1
-dCB0aGUgCj4gbGF0ZXN0Cj4gdmFsdWUgZm9yIHJhdGUgaW5mb3JtYXRpb24/Cj4gCj4gLVRva2UK
-ClR4IHJhdGUgaXMgdXBkYXRlZCBmb3IgdGhlIDR0aCBwYWNrZXQuCgpUaGFua3MKQW5pbC4KCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Johannes Berg <johannes@sipsolutions.net> writes:
+
+> On Thu, 2018-08-30 at 16:32 -0700, Grant Grundler wrote:
+>> On Sun, Aug 12, 2018 at 10:37 PM Wen Gong <wgong@qti.qualcomm.com> wrote:
+>> ...
+>> > I have tested with your method for shift 6/8/10/7 all twice time in open air environment.
+>> 
+>> I've attached the graphed data which Wen provided me and I made one
+>> "cleanup": the median and average "ICMP" are computed only using
+>> values where flent has an "antagonist" load running.  The first 28 and
+>> last 26 seconds of the test are "idle" - it makes no sense to include
+>> the latency of those. This drops about 1/7th of the data points.
+>> 
+>> My observations:
+>> o the delta between average and median is evidence this is not
+>> particularly reliable data (but expected result for "open air" wifi
+>> testing in a corp environment).
+>> o sk_pacing_shift=8 and/or =7 appears to have suffered from
+>> significant open air interference - I've attached a graph of the raw
+>> data.
+>> o I'm comfortable asserting throughput is higher and latency is lower
+>> for sk_pacing_shift=6 (vs 7) at the cost of additional CPU
+>> utilization.
+>> 
+>> My questions:
+>> 1) Is the current conversation just quibbling about 6 vs 7 for the
+>> ath10k default?
+>
+> 6 vs. 8, I think? But I didn't follow the full discussion.
+>
+> I also think that we shouldn't necessarily restrict this to "for the
+> ath10k". Is there any reason to think that this would be different for
+> different chips?
+
+No, I also think it should be possible to select a value that will work
+for all drivers. There's a strong diminishing returns effect here after
+a certain point, and I believe we should strongly push back against just
+adding more buffering to chase (single-flow) throughput numbers; and I'm
+not convinced that having different values for different drivers is
+worth the complexity.
+
+As far as I'm concerned, just showing an increase in maximum throughput
+under ideal conditions (as this initial patch submission did) is not
+sufficient argument for adding more buffering. At a minimum, the
+evaluation should also include:
+
+- Impact on latency and throughput for competing flows in the same test.
+- Impact on latency for the TCP flow itself.
+- A full evaluation at low rates and in scenarios with more than one
+  client.
+
+As far as the actual value, I *think* it may be that the default shift
+should be 7 (8 ms) rather than 8 (4 ms) as it currently is. Going back
+and looking at my data from when I submitted the original patch, it
+looks like the point of diminishing returns is somewhere between those
+two with ath9k (where I did most of my testing), and it seems reasonable
+that it could be slightly higher (i.e., more buffering) for ath10k.
+
+-Toke
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
