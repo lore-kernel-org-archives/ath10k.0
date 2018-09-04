@@ -1,15 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxIWm-0006Tx-1x
- for ath10k@lists.infradead.org; Tue, 04 Sep 2018 21:06:25 +0000
-Date: Wed, 5 Sep 2018 05:05:54 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending 23/35] drivers/net/wireless/ath/ath10k/hw.c:1029:16:
- sparse: restricted __le32 degrades to integer
-Message-ID: <201809050552.HsZAUOW5%fengguang.wu@intel.com>
+ id 1fxKyr-000398-Ni
+ for ath10k@lists.infradead.org; Tue, 04 Sep 2018 23:43:35 +0000
+Received: by mail-it0-x244.google.com with SMTP id f14-v6so7490838ita.4
+ for <ath10k@lists.infradead.org>; Tue, 04 Sep 2018 16:43:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
+ <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
+ <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
+In-Reply-To: <878t4i1z74.fsf@toke.dk>
+From: Grant Grundler <grundler@google.com>
+Date: Tue, 4 Sep 2018 16:43:04 -0700
+Message-ID: <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,143 +29,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
+To: toke@toke.dk
+Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-head:   e7a96db0fc087f728af01fc0dea2ae4e90055d09
-commit: 99df4b90a16df886e27c21a921f9be8abeec8b12 [23/35] ath10k: download firmware via diag Copy Engine for QCA6174 and QCA9377.
-reproduce:
-        # apt-get install sparse
-        git checkout 99df4b90a16df886e27c21a921f9be8abeec8b12
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
-
-
-sparse warnings: (new ones prefixed by >>)
-
-   drivers/net/wireless/ath/ath10k/hw.c:679:20: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath10k/hw.c:686:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath10k/hw.c:692:23: sparse: expression using sizeof(void)
->> drivers/net/wireless/ath/ath10k/hw.c:1029:16: sparse: restricted __le32 degrades to integer
->> drivers/net/wireless/ath/ath10k/hw.c:1047:27: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] base_addr @@    got ed int [unsigned] [usertype] base_addr @@
-   drivers/net/wireless/ath/ath10k/hw.c:1047:27:    expected unsigned int [unsigned] [usertype] base_addr
-   drivers/net/wireless/ath/ath10k/hw.c:1047:27:    got restricted __le32 [usertype] addr
->> drivers/net/wireless/ath/ath10k/hw.c:1048:26: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] base_len @@    got ed int [unsigned] [usertype] base_len @@
-   drivers/net/wireless/ath/ath10k/hw.c:1048:26:    expected unsigned int [unsigned] [usertype] base_len
-   drivers/net/wireless/ath/ath10k/hw.c:1048:26:    got restricted __le32 [usertype] length
-
-vim +1029 drivers/net/wireless/ath/ath10k/hw.c
-
-  1007	
-  1008	int ath10k_hw_diag_fast_download(struct ath10k *ar,
-  1009					 u32 address,
-  1010					 const void *buffer,
-  1011					 u32 length)
-  1012	{
-  1013		const u8 *buf = buffer;
-  1014		bool sgmt_end = false;
-  1015		u32 base_addr = 0;
-  1016		u32 base_len = 0;
-  1017		u32 left = 0;
-  1018		struct bmi_segmented_file_header *hdr;
-  1019		struct bmi_segmented_metadata *metadata;
-  1020		int ret = 0;
-  1021	
-  1022		if (length < sizeof(*hdr))
-  1023			return -EINVAL;
-  1024	
-  1025		/* check firmware header. If it has no correct magic number
-  1026		 * or it's compressed, returns error.
-  1027		 */
-  1028		hdr = (struct bmi_segmented_file_header *)buf;
-> 1029		if (hdr->magic_num != BMI_SGMTFILE_MAGIC_NUM) {
-  1030			ath10k_dbg(ar, ATH10K_DBG_BOOT,
-  1031				   "Not a supported firmware, magic_num:0x%x\n",
-  1032				   hdr->magic_num);
-  1033			return -EINVAL;
-  1034		}
-  1035	
-  1036		if (hdr->file_flags != 0) {
-  1037			ath10k_dbg(ar, ATH10K_DBG_BOOT,
-  1038				   "Not a supported firmware, file_flags:0x%x\n",
-  1039				   hdr->file_flags);
-  1040			return -EINVAL;
-  1041		}
-  1042	
-  1043		metadata = (struct bmi_segmented_metadata *)hdr->data;
-  1044		left = length - sizeof(*hdr);
-  1045	
-  1046		while (left > 0) {
-> 1047			base_addr = metadata->addr;
-> 1048			base_len = metadata->length;
-  1049			buf = metadata->data;
-  1050			left -= sizeof(*metadata);
-  1051	
-  1052			switch (base_len) {
-  1053			case BMI_SGMTFILE_BEGINADDR:
-  1054				/* base_addr is the start address to run */
-  1055				ret = ath10k_bmi_set_start(ar, base_addr);
-  1056				base_len = 0;
-  1057				break;
-  1058			case BMI_SGMTFILE_DONE:
-  1059				/* no more segment */
-  1060				base_len = 0;
-  1061				sgmt_end = true;
-  1062				ret = 0;
-  1063				break;
-  1064			case BMI_SGMTFILE_BDDATA:
-  1065			case BMI_SGMTFILE_EXEC:
-  1066				ath10k_warn(ar,
-  1067					    "firmware has unsupported segment:%d\n",
-  1068					    base_len);
-  1069				ret = -EINVAL;
-  1070				break;
-  1071			default:
-  1072				if (base_len > left) {
-  1073					/* sanity check */
-  1074					ath10k_warn(ar,
-  1075						    "firmware has invalid segment length, %d > %d\n",
-  1076						    base_len, left);
-  1077					ret = -EINVAL;
-  1078					break;
-  1079				}
-  1080	
-  1081				ret = ath10k_hw_diag_segment_download(ar,
-  1082								      buf,
-  1083								      base_addr,
-  1084								      base_len);
-  1085	
-  1086				if (ret)
-  1087					ath10k_warn(ar,
-  1088						    "failed to download firmware via diag interface:%d\n",
-  1089						    ret);
-  1090				break;
-  1091			}
-  1092	
-  1093			if (ret || sgmt_end)
-  1094				break;
-  1095	
-  1096			metadata = (struct bmi_segmented_metadata *)(buf + base_len);
-  1097			left -= base_len;
-  1098		}
-  1099	
-  1100		if (ret == 0)
-  1101			ath10k_dbg(ar, ATH10K_DBG_BOOT,
-  1102				   "boot firmware fast diag download successfully.\n");
-  1103		return ret;
-  1104	}
-  1105	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCBTZXAgMywgMjAxOCBhdCA2OjM1IEFNIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8
+dG9rZUB0b2tlLmRrPiB3cm90ZToKPgo+IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0
+aW9ucy5uZXQ+IHdyaXRlczoKLi4uLgo+ID4gR3JhbnQncyBkYXRhIHNob3dzIGEgc2lnbmlmaWNh
+bnQgZGlmZmVyZW5jZSBiZXR3ZWVuIDYgYW5kIDcgZm9yIGJvdGgKPiA+IGxhdGVuY3kgYW5kIHRo
+cm91Z2hwdXQ6CgpNaW5vciBuaXQ6IHRoaXMgaXMgd2dvbmcncyBkYXRhIG1vcmUgdGhvdWdodGZ1
+bGx5IHByb2Nlc3NlZC4KCj4gPgo+ID4gICogbWVkaWFuIHRwdAo+ID4gICAgLSB+MjQxIHZzIH4y
+MDEgKGJvdGggMSBhbmQgNSBzdHJlYW1zKQo+ID4gICogbWVkaWFuIGxhdGVuY3kKPiA+ICAgIC0g
+Ny41IHZzIDYgKDEgc3RyZWFtKQo+ID4gICAgLSAxNy4zIHZzLiAxNi42ICg1IHN0cmVhbXMpCj4g
+Pgo+ID4gQSAyMCUgdGhyb3VnaHB1dCBpbXByb3ZlbWVudCBhdCA8PSAxLjVtcyBsYXRlbmN5IGNv
+c3Qgc2VlbXMgbGlrZSBhCj4gPiBwcmV0dHkgcmVhc29uYWJsZSB0cmFkZS1vZmY/Cj4KPiBZZWFo
+LCBvbiBpdCdzIGZhY2UuIFdoYXQgSSdtIGJvdGhlcmVkIGFib3V0IGlzIHRoYXQgaXQgaXMgdGhl
+IGV4YWN0Cj4gb3Bwb3NpdGUgcmVzdWx0cyB0aGF0IEkgZ290IGZyb20gbXkgYXRoMTBrIHRlc3Rz
+ICh0aGVyZSwgdGhyb3VnaHB1dAo+ICpkcm9wcGVkKiBhbmQgbGF0ZW5jeSBkb3VibGVkIHdoZW4g
+Z29pbmcgdG8gZnJvbSA0IHRvIDE2IG1zIG9mCj4gYnVmZmVyaW5nKS4KCkhybSwgeWVhaC4uLnRo
+YXQgd291bGQgYm90aGVyIG1lIHRvby4gSSB0aGluayBldmVuIGlmIHdlIGRvbid0CnVuZGVyc3Rh
+bmQgd2h5L2hvdyB0aGF0IGhhcHBlbmVkLCBhdCBzb21lIGxldmVsIHdlIG5lZWQgdG8gYWxsb3cK
+c3Vic3lzdGVtcyBvciBkcml2ZXJzIHRvIGFkanVzdCBza19wYWNpbmdfc2hpZnQgdmFsdWUuIENo
+YW5naW5nCnNrX3BhY2luZ19zaGlmdCBjbGVhcmx5IGhhcyBhbiBlZmZlY3QgdGhhdCBjYW4gYmUg
+b3B0aW1pemVkLgoKSWYgc21hbGxlciB2YWx1ZXMgb2Ygc2tfcGFjaW5nX3NoaWZ0IGlzIGluY3Jl
+YXNpbmcgdGhlIGludGVydmFsIChhbmQKYWxsb3dzIG1vcmUgYnVmZmVyaW5nKSwgSSdtIHdvbmRl
+cmluZyB3aHkgQ1BVIHV0aWxpemF0aW9uIGdldHMgaGlnaGVyLgpNb3JlIGJ1ZmZlcmluZyBpcyB1
+c3VhbGx5IG1vcmUgZWZmaWNpZW50LiA6LwoKd2dvbmc6IGNhbiB5b3UgY29uZmlybSAoYSkgSSd2
+ZSBlbnRlcmVkIHRoZSBkYXRhIGNvcnJlY3RseSBpbiB0aGUKc3ByZWFkc2hlZXQgYW5kIChiKSB5
+b3UndmUgbGFiZWxlZCB0aGUgZGF0YSBzZXRzIGNvcnJlY3RseSB3aGVuIHlvdQpnZW5lcmF0ZWQg
+dGhlIGRhdGE/CklmIGVpdGhlciBvZiB1cyBtYWRlIGEgbWlzdGFrZSwgaXQgd291bGQgYmUgZ29v
+ZCB0byBrbm93LiA6KQoKSSdtIGdvaW5nIHRvIHNwZWN1bGF0ZSB0aGF0ICJvdGhlciBwcm9jZXNz
+aW5nIiAoZS5nLiBkZXZpY2UgbGV2ZWwKaW50ZXJydXB0IG1pdGlnYXRpb24gb3IgcG9zc2libHkg
+Q1BVIHNjaGVkdWxpbmcgYmVoYXZpb3JzIHdoaWNoCmhhbmRsZXMgVFgvUlggY29tcGxldGlvbikg
+Y291bGQgY2F1c2UgYSAiYmF0aHR1YiIgZWZmZWN0IHNpbWlsYXIgdG8KdGhlIHBlcmZvcm1hbmNl
+IGdyYXBocyB0aGF0IG9yaWdpbmFsbHkgZ290IE5BUEkgYWNjZXB0ZWQgaW50byB0aGUKa2VybmVs
+IH4xNSB5ZWFycyBhZ28uICBTbyB0aGUgIm9wdGltYWwiIHZhbHVlIGNvdWxkIGJlIGRpZmZlcmVu
+dCBmb3IKZGlmZmVyZW50IGFyY2hpdGVjdHVyZXMgYW5kIGRpZmZlcmVudCBJTyBkZXZpY2VzICh3
+aGljaCBoYXZlIGRpZmZlcmVudAptYXggbGluayByYXRlcyBhbmQgZGlmZmVyZW50IGhvc3QgYnVz
+IGludGVyY29ubmVjdHMpLiBCdXQgaG9uZXN0bHksIEkKZG9uJ3QgdW5kZXJzdGFuZCBhbGwgdGhl
+IGRldGFpbHMgb2Ygc2tfcGFjaW5nX3NoaWZ0IHZhbHVlIG5lYXJseSBhcwp3ZWxsIGFzIGp1c3Qg
+YWJvdXQgYW55b25lIGVsc2UgcmVhZGluZyB0aGlzIHRocmVhZC4KCj4gQW5kLCB3ZWxsLCBHcmFu
+dCdzIGRhdGEgaXMgZnJvbSBhIHNpbmdsZSB0ZXN0IGluIGEgbm9pc3kKPiBlbnZpcm9ubWVudCB3
+aGVyZSB0aGUgdGltZSBzZXJpZXMgZ3JhcGggc2hvd3MgdGhhdCB0aHJvdWdocHV0IGlzIGFsbCBv
+dmVyCj4gdGhlIHBsYWNlIGZvciB0aGUgZHVyYXRpb24gb2YgdGhlIHRlc3Q7IHNvIGl0J3MgaGFy
+ZCB0byBkcmF3IHNvbGlkCj4gY29uY2x1c2lvbnMgZnJvbSAoZm9yIGluc3RhbmNlLCBmb3IgdGhl
+IDUtc3RyZWFtIHRlc3QsIHRoZSBhdmVyYWdlCj4gdGhyb3VnaHB1dCBmb3IgNiBpcyAzMzEgYW5k
+IDM3OSBNYnBzIGZvciB0aGUgdHdvIHJlcGV0aXRpb25zLCBhbmQgZm9yIDcKPiBpdCdzIDMyNiBh
+bmQgMzcxIE1icHMpIC4gVW5mb3J0dW5hdGVseSBJIGRvbid0IGhhdmUgdGhlIHNhbWUgaGFyZHdh
+cmUKPiB1c2VkIGluIHRoaXMgdGVzdCwgc28gSSBjYW4ndCBnbyB2ZXJpZnkgaXQgbXlzZWxmOyBz
+byB0aGUgb25seSB0aGluZyBJCj4gY2FuIGRvIGlzIGdydW1ibGUgYWJvdXQgaXQgaGVyZS4uLiA6
+KQoKSXQncyBhIGZhaXIgY29tcGxhaW50IGFuZCBJIGFncmVlIHdpdGggaXQuICBNeSBjb3VudGVy
+IGFyZ3VtZW50IGlzIHRoZQpvcHBvc2l0ZSBpcyB0cnVlIHRvbzogbW9zdCBpZGVhbCBiZW5jaG1h
+cmtzIGRvbid0IG1lYXN1cmUgd2hhdCBtb3N0CnVzZXJzIHNlZS4gV2hpbGUgdGhlIGRhdGEgd2dv
+bmcgcHJvdmlkZWQgYXJlIHdheSBtb3JlIG5vaXN5IHRoYW4gSQpsaWtlLCBteSBvdmVyYWxsICJj
+b25maWRlbmNlIiBpbiB0aGUgImNvbmNsdXNpb24iIEkgb2ZmZXJlZCBpcyBzdGlsbApwb3NpdGl2
+ZS4KCmNoZWVycywKZ3JhbnQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
