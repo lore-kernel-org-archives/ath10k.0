@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwsCK-0008Iy-HE
- for ath10k@lists.infradead.org; Mon, 03 Sep 2018 16:59:34 +0000
+ id 1fx3Sj-0003Wy-Cy
+ for ath10k@lists.infradead.org; Tue, 04 Sep 2018 05:01:15 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k: allow ATH10K_SNOC with COMPILE_TEST
+Subject: Re: [PATCH 2/2] ath10k: Support extended board data download for
+ dual-band QCA9984
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180612113907.15043-2-niklas.cassel@linaro.org>
-References: <20180612113907.15043-2-niklas.cassel@linaro.org>
-Message-Id: <20180903165922.1E09F607F7@smtp.codeaurora.org>
-Date: Mon,  3 Sep 2018 16:59:22 +0000 (UTC)
+In-Reply-To: <20180824141221.3661-2-murugana@codeaurora.org>
+References: <20180824141221.3661-2-murugana@codeaurora.org>
+Message-Id: <20180904050102.B6B0460708@smtp.codeaurora.org>
+Date: Tue,  4 Sep 2018 05:01:02 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +23,100 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Niklas Cassel <niklas.cassel@linaro.org> wrote:
+Sathishkumar Muruganandam <murugana@codeaurora.org> wrote:
 
-> ATH10K_SNOC builds just fine with COMPILE_TEST, so make that possible.
+> To support dual-band variant of QCA9984, new extended board data (eBDF)
+> is introduced since existing board data ran out of space.
 > 
-> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+> Below is the brief implementation & design detail,
+> ----------------------------------------------------
+> 
+> 1. New OTP changes to inform eBDF support in existing OTP download to
+> fetch board ID and chip ID. This is backward compatible and older
+> card sends 0 by default for eBDF support bit (bit 18 of OTP response) we
+> check in ath10k driver.
+> 
+> 2. If eBDF is supported, then we need to fetch eBDF ID which is bundled
+> in downloaded board data. So again OTP is executed for knowing the eBDF ID.
+> This is done once we set 'board_data_initialized' bit. If eBDF ID
+> returned is zero, we continue booting with previous board data downloaded.
+> 
+> 3. Based on the eBDF ID fetched, ath10k driver tries to download the
+> extended board data to a new offset ahead of already downloaded board
+> data address.
+> 
+> 4. A new BD IE type, ATH10K_BD_IE_BOARD_EXT is added to differentiate in
+> bundling eBDF separately in board-2.bin and also to parse through
+> board bundle for eBDF download in ath10k boot.
+> 
+> 5. If eBDF is not present in the board-2.bin bundle or when board ID is
+> zero, we do a fallback boot to "eboard.bin" in the same QCA9984/hw1.0 dir.
+> This is same as done to existing "board.bin" if board ID is not present
+> in board-2.bin bundle.
+> 
+> Current design is that eBDF size will be 2KB and eBDF ID will be
+> byte value.
+> 
+> Tested the above changes with dual-band variant of QCA9984 card. OTP
+> update needed for the test will be part of next FW release 10.4-3.6-xxxx.
+> 
+> Below are the logs with ath10k BOOT debugs enabled.
+> 
+> First OTP response :
+> ---------------------
+> ..
+> boot upload otp to 0x1234 len 9478 for board id
+> boot get otp board id result 0x00040400 board_id 1 chip_id 0 ext_bid_support 1
+> ..
+> 
+> Second OTP response :
+> ---------------------
+> ..
+> boot upload otp to 0x1234 len 9478 for ext board id
+> boot get otp ext board id result 0x00000005 ext_board_id 5
+> boot using eboard name 'bus=pci,bmi-chip-id=0,bmi-eboard-id=5'
+> ..
+> 
+> Extended board data download:
+> ------------------------------
+> ..
+> board name
+> 00000000: 62 75 73 3d 70 63 69 2c 62 6d 69 2d 63 68 69 70  bus=pci,bmi-chip
+> 00000010: 2d 69 64 3d 30 2c 62 6d 69 2d 65 62 6f 61 72 64  -id=0,bmi-eboard
+> 00000020: 2d 69 64 3d 35                                   -id=5
+> boot found match for name 'bus=pci,bmi-chip-id=0,bmi-eboard-id=5'
+> boot found eboard data for 'bus=pci,bmi-chip-id=0,bmi-eboard-id=5'
+> using board api 2
+> boot writing ext board data to addr 0xc3000
+> ..
+> 
+> Fallback Extended board data download from "eboard.bin":
+> ---------------------------------------------------------
+> ..
+> board name
+> 00000000: 62 75 73 3d 70 63 69 2c 62 6d 69 2d 63 68 69 70  bus=pci,bmi-chip
+> 00000010: 2d 69 64 3d 30 2c 62 6d 69 2d 62 6f 61 72 64 2d  -id=0,bmi-board-
+> 00000020: 69 64 3d 31 30                                   id=10
+> failed to fetch board data for bus=pci,bmi-chip-id=0,bmi-eboard-id=5 from ath10k/QCA9984/hw1.0/board-2.bin
+> boot fw request 'ath10k/QCA9984/hw1.0/eboard.bin': 0
+> using board api 1
+> boot writing ext board data to addr 0xc3000
+> ..
+> 
+> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+This introduced a new checkpatch warning:
 
-f1908735f141 ath10k: allow ATH10K_SNOC with COMPILE_TEST
+drivers/net/wireless/ath/ath10k/core.c:1059: line over 90 characters
+
+I fixed this in the pending branch.
 
 -- 
-https://patchwork.kernel.org/patch/10460103/
+https://patchwork.kernel.org/patch/10575361/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
