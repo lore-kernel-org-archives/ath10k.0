@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx76H-0005jy-6v
- for ath10k@lists.infradead.org; Tue, 04 Sep 2018 08:54:18 +0000
+ id 1fx7R1-0000um-MZ
+ for ath10k@lists.infradead.org; Tue, 04 Sep 2018 09:15:48 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
+References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
+Date: Tue, 04 Sep 2018 12:15:28 +0300
+In-Reply-To: <1534402113-14337-1-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Thu, 16 Aug 2018 14:48:33 +0800")
+Message-ID: <877ek18vyn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 04 Sep 2018 14:24:06 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [PATCH 4/4] ath10k: add debugfs support to dump per sta tx stats
-In-Reply-To: <20180828133640.7D55E6044E@smtp.codeaurora.org>
-References: <1533561223-342-5-git-send-email-akolli@codeaurora.org>
- <20180828133640.7D55E6044E@smtp.codeaurora.org>
-Message-ID: <a6754e61eee013bd38dc9ba5463e2275@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +19,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-08-28 19:06, Kalle Valo wrote:
-> Anilkumar Kolli <akolli@codeaurora.org> wrote:
-> 
->> This patch adds 'tx_stats' in per station debugfs entry.
->> 
->> Use this command to dump tx_stats:
->> cat /sys/kernel/debug/ieee80211/phy0/netdev\:wlan0/
->>     stations/<MACADDR>/tx_stats
->> 
->> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> 
-> kbuild bot found new warnings:
-> 
->    drivers/net/wireless/ath/ath10k/debugfs_sta.c: In function
-> 'ath10k_dbg_sta_dump_tx_stats':
->>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:714:1: warning: the 
->>> frame size of 1088 bytes is larger than 1024 bytes 
->>> [-Wframe-larger-than=]
->     }
->     ^
-> 
->    drivers/net/wireless/ath/ath10k/debugfs_sta.c: In function
-> 'ath10k_sta_add_debugfs':
->>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:737:41: error: 'struct 
->>> ath10k' has no member named 'debug'
->      if (ath10k_peer_stats_enabled(ar) && 
-> ar->debug.enable_extd_tx_stats)
->                                             ^~
+Wen Gong <wgong@codeaurora.org> writes:
 
-Please drop this patch series, I sent V2 addressing these issues.
+> For WoWLAN support, it expect to support wake up based on discovery of
+> one or more known SSIDs. This is the WIPHY_WOWLAN_NET_DETECT feature,
+> which shows up as an NL80211 feature flag.
+>
+> With an upgrade iw, this shows up in 'iw phy' as:
+> WoWLAN support:
+> * wake up on network detection, up to 16 match sets
+> And it can use command:
+> "iw phy0 wowlan enable net-detect interval 5000 delay 30 freqs 2412
+> matches ssid foo" to configure the parameters of net detect.
+>
+> Firmware will do scan by the configured parameters after suspend and
+> wakeup if it found matched SSIDs. Tested with QCA6174 hw3.0 with
+> firmware WLAN.RM.4.4.1-00110-QCARMSWPZ-1.
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 
-Thanks
-Anil.
+[...]
+
+> +/* Request FW to start PNO operation */
+> +static struct sk_buff *ath10k_wmi_tlv_op_gen_config_pno_start
+> +				(struct ath10k *ar,
+> +				u32 vdev_id,
+> +				struct wmi_pno_scan_req *pno)
+> +{
+> +	struct wmi_tlv_wow_nlo_config_cmd *cmd;
+> +	struct wmi_tlv *tlv;
+> +	struct sk_buff *skb;
+> +	struct nlo_configured_parameters *nlo_list;
+> +	u32 *channel_list;
+
+[...]
+
+> +	channel_list = (u32 *)ptr;
+> +	for (i = 0; i < cmd->num_of_channels; i++)
+> +		channel_list[i] = pno->a_networks[0].channels[i];
+
+channel_list does not look endian safe to me, I'll change this to use
+__le32.
+
+> +enum wmi_nlo_cipher_algorithm {
+> +	WMI_NLO_CIPHER_ALGO_NONE           = 0x00,
+> +	WMI_NLO_CIPHER_ALGO_WEP40          = 0x01,
+> +	WMI_NLO_CIPHER_ALGO_TKIP           = 0x02,
+> +	WMI_NLO_CIPHER_ALGO_CCMP           = 0x04,
+> +	WMI_NLO_CIPHER_ALGO_WEP104         = 0x05,
+> +	WMI_NLO_CIPHER_ALGO_BIP            = 0x06,
+> +	WMI_NLO_CIPHER_ALGO_WPA_USE_GROUP  = 0x100,
+> +	WMI_NLO_CIPHER_ALGO_RSN_USE_GROUP  = 0x100,
+
+Two defines with the same value 0x100, is this really correct?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
