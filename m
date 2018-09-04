@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx3fX-0008Ay-3i
- for ath10k@lists.infradead.org; Tue, 04 Sep 2018 05:14:28 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k:  fix vdev-start timeout on error
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1531512596-31355-1-git-send-email-greearb@candelatech.com>
-References: <1531512596-31355-1-git-send-email-greearb@candelatech.com>
-Message-Id: <20180904051416.AC5AD6034F@smtp.codeaurora.org>
-Date: Tue,  4 Sep 2018 05:14:16 +0000 (UTC)
+ id 1fx53d-0008Lu-FP
+ for ath10k@lists.infradead.org; Tue, 04 Sep 2018 06:43:27 +0000
+From: akolli@codeaurora.org
+Subject: [PATCHv2 1/4] ath10k: get the legacy rate index to update the txrate
+ table
+Date: Tue,  4 Sep 2018 12:15:13 +0530
+Message-Id: <1536043516-12462-2-git-send-email-akolli@codeaurora.org>
+In-Reply-To: <1536043516-12462-1-git-send-email-akolli@codeaurora.org>
+References: <1536043516-12462-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,39 +18,85 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
 
-greearb@candelatech.com wrote:
+From: Anilkumar Kolli <akolli@codeaurora.org>
 
-> The vdev-start-response message should cause the
-> completion to fire, even in the error case.  Otherwise,
-> the user still gets no useful information and everything
-> is blocked until the timeout period.
-> 
-> Add some warning text to print out the invalid status
-> code to aid debugging, and propagate failure code.
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Get the legacy rate index to update the pkts/bytes counter
+against each possible tx rate.
 
-This had few checkpatch warnings:
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-drivers/net/wireless/ath/ath10k/wmi.h:6647: code indent should use tabs where possible
-drivers/net/wireless/ath/ath10k/wmi.h:6647: please, no spaces at the start of a line
-drivers/net/wireless/ath/ath10k/wmi.h:6648: code indent should use tabs where possible
-drivers/net/wireless/ath/ath10k/wmi.h:6648: please, no spaces at the start of a line
-
-I fixed those in the pending branch.
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 4d1cd90d6d27..01eb4a7f4a69 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2488,7 +2488,7 @@ void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		dev_kfree_skb_any(skb);
+ }
+ 
+-static inline bool is_valid_legacy_rate(u8 rate)
++static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
+ {
+ 	static const u8 legacy_rates[] = {1, 2, 5, 11, 6, 9, 12,
+ 					  18, 24, 36, 48, 54};
+@@ -2496,10 +2496,11 @@ static inline bool is_valid_legacy_rate(u8 rate)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(legacy_rates); i++) {
+ 		if (rate == legacy_rates[i])
+-			return true;
++			return i;
+ 	}
+ 
+-	return false;
++	ath10k_warn(ar, "Invalid legacy rate %hhd peer stats", rate);
++	return -EINVAL;
+ }
+ 
+ static void
+@@ -2508,7 +2509,7 @@ static inline bool is_valid_legacy_rate(u8 rate)
+ 				struct ath10k_per_peer_tx_stats *peer_stats)
+ {
+ 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+-	u8 rate = 0, sgi;
++	u8 rate = 0, rate_idx = 0, sgi;
+ 	struct rate_info txrate;
+ 
+ 	lockdep_assert_held(&ar->data_lock);
+@@ -2536,17 +2537,12 @@ static inline bool is_valid_legacy_rate(u8 rate)
+ 	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
+ 	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
+ 		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
+-
+-		if (!is_valid_legacy_rate(rate)) {
+-			ath10k_warn(ar, "Invalid legacy rate %hhd peer stats",
+-				    rate);
+-			return;
+-		}
+-
+ 		/* This is hacky, FW sends CCK rate 5.5Mbps as 6 */
+-		rate *= 10;
+-		if (rate == 60 && txrate.flags == WMI_RATE_PREAMBLE_CCK)
+-			rate = rate - 5;
++		if (rate == 6 && txrate.flags == WMI_RATE_PREAMBLE_CCK)
++			rate = 5;
++		rate_idx = ath10k_get_legacy_rate_idx(ar, rate);
++		if (rate_idx < 0)
++			return;
+ 		arsta->txrate.legacy = rate;
+ 	} else if (txrate.flags == WMI_RATE_PREAMBLE_HT) {
+ 		arsta->txrate.flags = RATE_INFO_FLAGS_MCS;
 -- 
-https://patchwork.kernel.org/patch/10524087/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+1.7.9.5
 
 
 _______________________________________________
