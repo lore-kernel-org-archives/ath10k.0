@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx53d-0008LS-Dq
- for ath10k@lists.infradead.org; Tue, 04 Sep 2018 06:43:27 +0000
+ id 1fx53v-0008P8-S4
+ for ath10k@lists.infradead.org; Tue, 04 Sep 2018 06:43:45 +0000
 From: akolli@codeaurora.org
-Subject: [PATCHv2 0/4] Add support to dump tx stats histogram
-Date: Tue,  4 Sep 2018 12:15:12 +0530
-Message-Id: <1536043516-12462-1-git-send-email-akolli@codeaurora.org>
+Subject: [PATCHv2 2/4] ath10k: add debugfs entry to enable extended tx stats
+Date: Tue,  4 Sep 2018 12:15:14 +0530
+Message-Id: <1536043516-12462-3-git-send-email-akolli@codeaurora.org>
+In-Reply-To: <1536043516-12462-1-git-send-email-akolli@codeaurora.org>
+References: <1536043516-12462-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,156 +27,142 @@ Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
 
 From: Anilkumar Kolli <akolli@codeaurora.org>
 
-This patch series adds support to dump per station tx stats histogram.
+This patch adds debugfs entry to enable/disable extended
+tx statistics. Extended tx statistics are from peer stats
+feature.
 
-These stats can be enabled through ath10k/enable_extd_tx_stats debugfs entry,
-enabling this may impact in cpu usage and throughput.
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+---
+V2:
+  - fix kbuild error: 'struct ath10k' has no member named 'debug'
 
-ath10k/enable_extd_tx_stats is disabled by default.
+ drivers/net/wireless/ath/ath10k/core.h  |    1 +
+ drivers/net/wireless/ath/ath10k/debug.c |   62 ++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/debug.h |    9 +++++
+ 3 files changed, 71 insertions(+), 1 deletion(-)
 
-Tx histogram has Per station tx stats which includes,
- - pkts/bytes transmitted at all possible rates(mcs/nss/bw/gi).
- - ACK fails count
- - ampdu bytes/pkts transmitted at all possible rates(mcs/nss/bw/gi).
- - BA fails count
- - tx duration
-
-Tested on QCA9984/QCA4019/QCA988x
-Firmware: 10.4-3.5.3-00057
-	  10.2.4-1.0-00037
-
-Example output format:
-# cat /sys/kernel/debug/ieee80211/phy0/netdev\:wlan0/stations/8c\:
-fd\:f0\:0a\:8c\:14/tx_stats
-
-succ_pkts
- VHT MCS packets
-  0 0 0 0 0 138 26 18 23 38747 
- HT MCS packets
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW packets (20,40,80,160 MHz)
-  41 337 38574 0
- NSS packets (1x1,2x2,3x3,4x4)
-  38952 0 0 0
- GI packets (LGI,SGI)
-  38 38914
- legacy rate packets (1,2 ... Mbps)
-  0 0 0 0 68 0 0 0 0 0 0 0 
-succ_bytes
- VHT MCS bytes
-  0 0 0 0 0 16407 3288 2360 2703 4651892 
- HT MCS bytes
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW bytes (20,40,80,160 MHz)
-  5163 40962 4630525 0
- NSS bytes (1x1,2x2,3x3,4x4)
-  4676650 0 0 0
- GI bytes (LGI,SGI)
-  4471 4672179
- legacy rate bytes (1,2 ... Mbps)
-  0 0 0 0 3270 0 0 0 0 0 0 0 
-ampdu_pkts
- VHT MCS packets
-  0 0 0 8 20 7872 34 21 33 39730 
- HT MCS packets
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW packets (20,40,80,160 MHz)
-  72 567 47079 0
- NSS packets (1x1,2x2,3x3,4x4)
-  40035 7683 0 0
- GI packets (LGI,SGI)
-  7698 40020
- legacy rate packets (1,2 ... Mbps)
-  0 0 0 0 0 0 0 0 0 0 0 0 
-
-ampdu_bytes
- VHT MCS bytes
-  0 0 0 896 2579 941417 4222 2666 3857 4774284 
- HT MCS bytes
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW bytes (20,40,80,160 MHz)
-  9262 70052 5650607 0
- NSS bytes (1x1,2x2,3x3,4x4)
-  4811265 918656 0 0
- GI bytes (LGI,SGI)
-  920650 4809271
- legacy rate bytes (1,2 ... Mbps)
-  0 0 0 0 0 0 0 0 0 0 0 0 
-fail_pkts
- VHT MCS packets
-  0 0 0 0 0 0 0 0 0 0 
- HT MCS packets
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW packets (20,40,80,160 MHz)
-  0 0 0 0
- NSS packets (1x1,2x2,3x3,4x4)
-  0 0 0 0
- GI packets (LGI,SGI)
-  0 0
- legacy rate packets (1,2 ... Mbps)
-  0 0 0 0 0 0 0 0 0 0 0 0 
-fail_bytes
- VHT MCS bytes
-  0 0 0 0 0 0 0 0 0 0 
- HT MCS bytes
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW bytes (20,40,80,160 MHz)
-  0 0 0 0
- NSS bytes (1x1,2x2,3x3,4x4)
-  0 0 0 0
- GI bytes (LGI,SGI)
-  0 0
- legacy rate bytes (1,2 ... Mbps)
-  0 0 0 0 0 0 0 0 0 0 0 0 
-retry_pkts
- VHT MCS packets
-  0 0 0 8 20 7734 8 3 10 983 
- HT MCS packets
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW packets (20,40,80,160 MHz)
-  31 230 8505 0
- NSS packets (1x1,2x2,3x3,4x4)
-  1083 7683 0 0
- GI packets (LGI,SGI)
-  7660 1106
- legacy rate packets (1,2 ... Mbps)
-  0 0 0 0 0 0 0 0 0 0 0 0 
-retry_bytes
- VHT MCS bytes
-  0 0 0 896 2579 925010 934 306 1154 122392 
- HT MCS bytes
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
- BW bytes (20,40,80,160 MHz)
-  4099 29090 1020082 0
- NSS bytes (1x1,2x2,3x3,4x4)
-  134615 918656 0 0
- GI bytes (LGI,SGI)
-  916179 137092
- legacy rate bytes (1,2 ... Mbps)
-  0 0 0 0 0 0 0 0 0 0 0 0 
-TX duration
- 6639098 usecs
-BA fails
- 8610
-ack fails
- 0
-
-
-Anilkumar Kolli (4):
-  ath10k: get the legacy rate index to update the txrate table
-  ath10k: add debugfs entry to enable extended tx stats
-  ath10k: add extended per sta tx statistics support
-  ath10k: add debugfs support to dump per sta tx stats
-
- drivers/net/wireless/ath/ath10k/core.h        |   32 ++++++
- drivers/net/wireless/ath/ath10k/debug.c       |   62 +++++++++++-
- drivers/net/wireless/ath/ath10k/debug.h       |    9 ++
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |  101 +++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c      |  133 ++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/mac.c         |   10 ++
- drivers/net/wireless/ath/ath10k/wmi.h         |   13 ++-
- 7 files changed, 341 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 9feea02e7d37..b5f6940bb102 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -607,6 +607,7 @@ struct ath10k_debug {
+ 	u32 reg_addr;
+ 	u32 nf_cal_period;
+ 	void *cal_data;
++	u32 enable_extd_tx_stats;
+ };
+ 
+ enum ath10k_state {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 0baaad90b8d1..ada29a4cc9c8 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2042,6 +2042,61 @@ static ssize_t ath10k_read_btcoex(struct file *file, char __user *ubuf,
+ 	.open = simple_open
+ };
+ 
++static ssize_t ath10k_write_enable_extd_tx_stats(struct file *file,
++						 const char __user *ubuf,
++						 size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	u32 filter;
++	int ret;
++
++	if (kstrtouint_from_user(ubuf, count, 0, &filter))
++		return -EINVAL;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON) {
++		ar->debug.enable_extd_tx_stats = filter;
++		ret = count;
++		goto out;
++	}
++
++	if (filter == ar->debug.enable_extd_tx_stats) {
++		ret = count;
++		goto out;
++	}
++
++	ar->debug.enable_extd_tx_stats = filter;
++	ret = count;
++
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++static ssize_t ath10k_read_enable_extd_tx_stats(struct file *file,
++						char __user *ubuf,
++						size_t count, loff_t *ppos)
++
++{
++	char buf[32];
++	struct ath10k *ar = file->private_data;
++	int len = 0;
++
++	mutex_lock(&ar->conf_mutex);
++	len = scnprintf(buf, sizeof(buf) - len, "%08x\n",
++			ar->debug.enable_extd_tx_stats);
++	mutex_unlock(&ar->conf_mutex);
++
++	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
++}
++
++static const struct file_operations fops_enable_extd_tx_stats = {
++	.read = ath10k_read_enable_extd_tx_stats,
++	.write = ath10k_write_enable_extd_tx_stats,
++	.open = simple_open
++};
++
+ static ssize_t ath10k_write_peer_stats(struct file *file,
+ 				       const char __user *ubuf,
+ 				       size_t count, loff_t *ppos)
+@@ -2454,10 +2509,15 @@ int ath10k_debug_register(struct ath10k *ar)
+ 		debugfs_create_file("btcoex", 0644, ar->debug.debugfs_phy, ar,
+ 				    &fops_btcoex);
+ 
+-	if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map))
++	if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map)) {
+ 		debugfs_create_file("peer_stats", 0644, ar->debug.debugfs_phy, ar,
+ 				    &fops_peer_stats);
+ 
++		debugfs_create_file("enable_extd_tx_stats", 0644,
++				    ar->debug.debugfs_phy, ar,
++				    &fops_enable_extd_tx_stats);
++	}
++
+ 	debugfs_create_file("fw_checksums", 0400, ar->debug.debugfs_phy, ar,
+ 			    &fops_fw_checksums);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 0afca5c106b6..3a6191cff2f9 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -128,6 +128,10 @@ static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
+ 	return ar->debug.fw_dbglog_level;
+ }
+ 
++static inline int ath10k_debug_is_extd_tx_stats_enabled(struct ath10k *ar)
++{
++	return ar->debug.enable_extd_tx_stats;
++}
+ #else
+ 
+ static inline int ath10k_debug_start(struct ath10k *ar)
+@@ -190,6 +194,11 @@ static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static inline int ath10k_debug_is_extd_tx_stats_enabled(struct ath10k *ar)
++{
++	return 0;
++}
++
+ #define ATH10K_DFS_STAT_INC(ar, c) do { } while (0)
+ 
+ #define ath10k_debug_get_et_strings NULL
 -- 
 1.7.9.5
 
