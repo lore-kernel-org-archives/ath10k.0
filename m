@@ -1,18 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxQRP-0002Rx-7n
- for ath10k@lists.infradead.org; Wed, 05 Sep 2018 05:33:24 +0000
+ id 1fxQuz-0003jU-Eq
+ for ath10k@lists.infradead.org; Wed, 05 Sep 2018 06:03:59 +0000
+Subject: Re: [PATCH] ath10k: add dynamic vlan support
+References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
+ <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
+ <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
+ <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
+ <1526637270.3805.15.camel@sipsolutions.net>
+ <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
+ <1527069018.3759.15.camel@sipsolutions.net>
+ <eede64cf-ecf3-6697-a338-b7eb4c9bcd27@codeaurora.org>
+ <1534408023.3547.64.camel@sipsolutions.net>
+ <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
+ <1535971161.3437.49.camel@sipsolutions.net>
+From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Message-ID: <039bcb8e-f216-b739-29e5-dcffaa95009a@codeaurora.org>
+Date: Wed, 5 Sep 2018 11:33:41 +0530
 MIME-Version: 1.0
-Date: Wed, 05 Sep 2018 13:33:12 +0800
-From: Carl Huang <cjhuang@codeaurora.org>
-Subject: Re: [PATCH 3/3] ath10k: download firmware via diag Copy Engine for
- QCA6174 and QCA9377.
-In-Reply-To: <87musw7dh2.fsf@kamboji.qca.qualcomm.com>
-References: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
- <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
- <87musw7dh2.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <a122a1ac5f4255ab704b1d6763754fe4@codeaurora.org>
+In-Reply-To: <1535971161.3437.49.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +33,82 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On 2018-09-05 12:52, Kalle Valo wrote:
-> Carl Huang <cjhuang@codeaurora.org> writes:
-> 
->> Downloading firmware via BMI protocol takes too long time. For 
->> example,
->> a ~700K bytes firmware takes about 500ms to download via BMI protocol.
->> This is too long especially in suspend and resume scenario where 
->> firmware
->> is re-downloaded unless WoWLAN is enabled. Downloading firmware via 
->> diag CE
->> can reduce the time to ~40ms for a ~700K bytes firmware binary.
->> 
->> Ath10k driver parses the firmware to segments and downloads the 
->> segments
->> to the specified address directly. If the firmware is compressed or 
->> has
->> unsupported segments, ath10k driver will try BMI download again.
->> 
->> It's tested with QCA6174 hw3.2 and
->> firmware-6.bin_WLAN.RM.4.4.1-00111-QCARMSWP-1. QCA9377 is also 
->> affected.
->> 
->> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-> 
-> There were new warnings:
-> 
-> drivers/net/wireless/ath/ath10k/hw.c:1029:16: warning: restricted
-> __le32 degrades to integer
-> drivers/net/wireless/ath/ath10k/hw.c:1047:27: warning: incorrect type
-> in assignment (different base types)
-> drivers/net/wireless/ath/ath10k/hw.c:1047:27:    expected unsigned int
-> [unsigned] [usertype] base_addr
-> drivers/net/wireless/ath/ath10k/hw.c:1047:27:    got restricted __le32
-> [usertype] addr
-> drivers/net/wireless/ath/ath10k/hw.c:1048:26: warning: incorrect type
-> in assignment (different base types)
-> drivers/net/wireless/ath/ath10k/hw.c:1048:26:    expected unsigned int
-> [unsigned] [usertype] base_len
-> drivers/net/wireless/ath/ath10k/hw.c:1048:26:    got restricted __le32
-> [usertype] length
-> 
-> I fixed those in the pending branch, please review:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=f6f6f597654693ab122ecd950b56343489b91e59
+On 9/3/2018 4:09 PM, Johannes Berg wrote:
 
-Kalle,
+> Hi,
+>
+> Sorry ... this got delayed again.
+>
+>> I had introduced a change db3bdcb9c3ff (" mac80211: allow AP_VLAN
+>> operation on crypto controlled devices ") for supporting VLAN
+>> functionality on ath10k devices; this commit has broken 4 addr support
+>> on ath10k devices as I was advertising the AP/VLAN support
+>> conditionally. Since 4 addr operation is tied to AP/VLAN support, with
+>> this change, only the chips which support VLAN functionality can support
+>> 4 addr operation but other ath10k chips don't.
+> Right.
+>
+>>   From what I can understand from our previous discussions, we had to
+>> separate the 4addr support from the AP/VLAN iftype but doing so could
+>> lead to backward compatibility issues. I have the code which separates
+>> the 4addr functionality from AP/VLAN but the bigger problem is the
+>> backward compatibility.
+> Ok.
+>
+>> I am hoping that now I have set the context correctly :)
+> Thanks!
+>
+>>> I think we have to keep the 4-addr handling in AP_VLAN iftype either
+>>> way, to not break existing hostapd. We could introduce a separate
+>>> AP_VLAN_NO_4ADDR and then require updating hostapd to get non-4addr
+>>> VLAN, but that also seems awkward.
+>>>
+>>> Since hostapd doesn't currently check anything...
+>>>
+>>> Ok, no, I'm confused now. If we just clear WIPHY_FLAG_4ADDR_AP, don't
+>>> we
+>>> get what we want? 4-addr AP_VLAN interfaces would no longer be
+>>> permitted
+>>> to be created?
+>> As I explained above, the agenda is to provide the driver (in this case,
+>> ath10k) a better control for advertising the device capabilities; only
+>> few ath10k chips can support VLAN functionality but all of them can
+>> support 4 addr operation.
+> So the problematic part isn't actually the *4-addr* (fake) VLAN, the
+> problematic part is the actual AP_VLAN - I suppose because that uses a
+> separate GTK.
+>
+>
+> So I guess the only, mostly backward compatible way to really separate
+> the two would be to
+>
+> 1) move WIPHY_FLAG_4ADDR_{AP,STATION} to be nl80211 ext feature flags,
+>     I guess the STATION always should've been since there's nothing that
+>     indicates support for it today in the API
+>
+> along with one of:
+>
+> 2a) Add a new AP_VLAN ext feature flag that indicates the AP_VLAN is not
+>      only supported for 4-addr
+>
+> 2b) Allow creating an AP_VLAN interface in 4-addr mode in
+>      nl80211_new_interface() even when AP_VLAN is not in the supported
+>      interface combinations, if (and only if) WIPHY_FLAG_4ADDR_AP is set
+>      (or rather the new extended feature flag after doing 1). Update the
+>      language in the documentation somewhere indicating this.
+>
+>
+> Hostapd clearly deals with both 2a and 2b since it never bothers to
+> check the combinations. As a result, I prefer 2b rather than 2a since it
+> doesn't add any weird combinations to the API that would be impossible.
 
-Thank you for fixing the warnings. I don't see any issues with this 
-warning fix.
-
+Sure Johannes!!
 
 Thanks,
-Carl
+Manikanta
 
 _______________________________________________
 ath10k mailing list
