@@ -1,26 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxQuz-0003jU-Eq
- for ath10k@lists.infradead.org; Wed, 05 Sep 2018 06:03:59 +0000
-Subject: Re: [PATCH] ath10k: add dynamic vlan support
-References: <1524232653-22573-1-git-send-email-mpubbise@codeaurora.org>
- <87r2n5auvq.fsf@kamboji.qca.qualcomm.com>
- <aa04534d-9677-f42e-a239-b230093ef2f5@dd-wrt.com>
- <f8d6d13943ccac22f363d7d4f53d645c@codeaurora.org>
- <1526637270.3805.15.camel@sipsolutions.net>
- <59ff8201-fc1b-8579-d5a9-f4b08621f5ec@codeaurora.org>
- <1527069018.3759.15.camel@sipsolutions.net>
- <eede64cf-ecf3-6697-a338-b7eb4c9bcd27@codeaurora.org>
- <1534408023.3547.64.camel@sipsolutions.net>
- <80f8e88e5161f2731e67e1c0e1d7225c@codeaurora.org>
- <1535971161.3437.49.camel@sipsolutions.net>
-From: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Message-ID: <039bcb8e-f216-b739-29e5-dcffaa95009a@codeaurora.org>
-Date: Wed, 5 Sep 2018 11:33:41 +0530
+ id 1fxS9p-0006Rf-B4
+ for ath10k@lists.infradead.org; Wed, 05 Sep 2018 07:23:23 +0000
 MIME-Version: 1.0
-In-Reply-To: <1535971161.3437.49.camel@sipsolutions.net>
-Content-Language: en-US
+Date: Wed, 05 Sep 2018 15:23:09 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+In-Reply-To: <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
+ <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
+ <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
+ <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+Message-ID: <d107bcfcff90bac041596dc61fd6a666@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,88 +28,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Grant Grundler <grundler@google.com>
+Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, toke@toke.dk, wgong@qti.qualcomm.com, ath10k@lists.infradead.org
 
-On 9/3/2018 4:09 PM, Johannes Berg wrote:
-
-> Hi,
->
-> Sorry ... this got delayed again.
->
->> I had introduced a change db3bdcb9c3ff (" mac80211: allow AP_VLAN
->> operation on crypto controlled devices ") for supporting VLAN
->> functionality on ath10k devices; this commit has broken 4 addr support
->> on ath10k devices as I was advertising the AP/VLAN support
->> conditionally. Since 4 addr operation is tied to AP/VLAN support, with
->> this change, only the chips which support VLAN functionality can support
->> 4 addr operation but other ath10k chips don't.
-> Right.
->
->>   From what I can understand from our previous discussions, we had to
->> separate the 4addr support from the AP/VLAN iftype but doing so could
->> lead to backward compatibility issues. I have the code which separates
->> the 4addr functionality from AP/VLAN but the bigger problem is the
->> backward compatibility.
-> Ok.
->
->> I am hoping that now I have set the context correctly :)
-> Thanks!
->
->>> I think we have to keep the 4-addr handling in AP_VLAN iftype either
->>> way, to not break existing hostapd. We could introduce a separate
->>> AP_VLAN_NO_4ADDR and then require updating hostapd to get non-4addr
->>> VLAN, but that also seems awkward.
->>>
->>> Since hostapd doesn't currently check anything...
->>>
->>> Ok, no, I'm confused now. If we just clear WIPHY_FLAG_4ADDR_AP, don't
->>> we
->>> get what we want? 4-addr AP_VLAN interfaces would no longer be
->>> permitted
->>> to be created?
->> As I explained above, the agenda is to provide the driver (in this case,
->> ath10k) a better control for advertising the device capabilities; only
->> few ath10k chips can support VLAN functionality but all of them can
->> support 4 addr operation.
-> So the problematic part isn't actually the *4-addr* (fake) VLAN, the
-> problematic part is the actual AP_VLAN - I suppose because that uses a
-> separate GTK.
->
->
-> So I guess the only, mostly backward compatible way to really separate
-> the two would be to
->
-> 1) move WIPHY_FLAG_4ADDR_{AP,STATION} to be nl80211 ext feature flags,
->     I guess the STATION always should've been since there's nothing that
->     indicates support for it today in the API
->
-> along with one of:
->
-> 2a) Add a new AP_VLAN ext feature flag that indicates the AP_VLAN is not
->      only supported for 4-addr
->
-> 2b) Allow creating an AP_VLAN interface in 4-addr mode in
->      nl80211_new_interface() even when AP_VLAN is not in the supported
->      interface combinations, if (and only if) WIPHY_FLAG_4ADDR_AP is set
->      (or rather the new extended feature flag after doing 1). Update the
->      language in the documentation somewhere indicating this.
->
->
-> Hostapd clearly deals with both 2a and 2b since it never bothers to
-> check the combinations. As a result, I prefer 2b rather than 2a since it
-> doesn't add any weird combinations to the API that would be impossible.
-
-Sure Johannes!!
-
-Thanks,
-Manikanta
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0wOS0wNSAwNzo0MywgR3JhbnQgR3J1bmRsZXIgd3JvdGU6Cj4gT24gTW9uLCBTZXAg
+MywgMjAxOCBhdCA2OjM1IEFNIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tlLmRr
+PiAKPiB3cm90ZToKPj4gCj4+IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0aW9ucy5u
+ZXQ+IHdyaXRlczoKPiAuLi4uCj4+ID4gR3JhbnQncyBkYXRhIHNob3dzIGEgc2lnbmlmaWNhbnQg
+ZGlmZmVyZW5jZSBiZXR3ZWVuIDYgYW5kIDcgZm9yIGJvdGgKPj4gPiBsYXRlbmN5IGFuZCB0aHJv
+dWdocHV0Ogo+IAo+IE1pbm9yIG5pdDogdGhpcyBpcyB3Z29uZydzIGRhdGEgbW9yZSB0aG91Z2h0
+ZnVsbHkgcHJvY2Vzc2VkLgoKPiAKPiB3Z29uZzogY2FuIHlvdSBjb25maXJtIChhKSBJJ3ZlIGVu
+dGVyZWQgdGhlIGRhdGEgY29ycmVjdGx5IGluIHRoZQo+IHNwcmVhZHNoZWV0IGFuZCAoYikgeW91
+J3ZlIGxhYmVsZWQgdGhlIGRhdGEgc2V0cyBjb3JyZWN0bHkgd2hlbiB5b3UKPiBnZW5lcmF0ZWQg
+dGhlIGRhdGE/Cj4gSWYgZWl0aGVyIG9mIHVzIG1hZGUgYSBtaXN0YWtlLCBpdCB3b3VsZCBiZSBn
+b29kIHRvIGtub3cuIDopCj4gCnllcywgdGhlIGRhdGEgaXMgdGhlIHRlc3QgcmVzdWx0IGZyb20g
+ZmxlbnQgdG9vbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
