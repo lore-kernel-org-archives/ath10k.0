@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxPma-0002Uh-8b
- for ath10k@lists.infradead.org; Wed, 05 Sep 2018 04:51:13 +0000
+ id 1fxPnz-0002g4-GF
+ for ath10k@lists.infradead.org; Wed, 05 Sep 2018 04:52:41 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCHv2 3/3] ath10k: average ack rssi support for data frames
-References: <1523890122-23952-1-git-send-email-bpothuno@codeaurora.org>
- <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
-Date: Wed, 05 Sep 2018 07:50:25 +0300
-In-Reply-To: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
- (Balaji Pothunoori's message of "Mon, 16 Apr 2018 20:18:42 +0530")
-Message-ID: <87r2i87dke.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: download firmware via diag Copy Engine for
+ QCA6174 and QCA9377.
+References: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
+ <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
+Date: Wed, 05 Sep 2018 07:52:25 +0300
+In-Reply-To: <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org> (Carl
+ Huang's message of "Thu, 30 Aug 2018 10:29:42 +0800")
+Message-ID: <87musw7dh2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,32 +25,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@codeaurora.org>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Carl Huang <cjhuang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Balaji Pothunoori <bpothuno@codeaurora.org> writes:
+Carl Huang <cjhuang@codeaurora.org> writes:
 
-> Average ack rssi value is weighted average of ack rssi for
-> no of msdu's has been sent.
-> This feature is enabled by the host driver if firmware is capable.
-> After receiving event from host, firmware allocates the necessary
-> memory to store the ack_rssi for data packets during the init time.
+> Downloading firmware via BMI protocol takes too long time. For example,
+> a ~700K bytes firmware takes about 500ms to download via BMI protocol.
+> This is too long especially in suspend and resume scenario where firmware
+> is re-downloaded unless WoWLAN is enabled. Downloading firmware via diag CE
+> can reduce the time to ~40ms for a ~700K bytes firmware binary.
 >
-> After each successful transmission, If tx completion status is OK
-> and 24th bit is set in HTT message header then host will fetch the
-> ack_rssi else host can ignore the ack_rssi field.
+> Ath10k driver parses the firmware to segments and downloads the segments
+> to the specified address directly. If the firmware is compressed or has
+> unsupported segments, ath10k driver will try BMI download again.
 >
-> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+> It's tested with QCA6174 hw3.2 and
+> firmware-6.bin_WLAN.RM.4.4.1-00111-QCARMSWP-1. QCA9377 is also affected.
+>
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
 
-There were two new warnings:
+There were new warnings:
 
-drivers/net/wireless/ath/ath10k/htt_rx.c:1928: line over 90 characters
-drivers/net/wireless/ath/ath10k/mac.c:8511: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/hw.c:1029:16: warning: restricted __le32 degrades to integer
+drivers/net/wireless/ath/ath10k/hw.c:1047:27: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/hw.c:1047:27:    expected unsigned int [unsigned] [usertype] base_addr
+drivers/net/wireless/ath/ath10k/hw.c:1047:27:    got restricted __le32 [usertype] addr
+drivers/net/wireless/ath/ath10k/hw.c:1048:26: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/hw.c:1048:26:    expected unsigned int [unsigned] [usertype] base_len
+drivers/net/wireless/ath/ath10k/hw.c:1048:26:    got restricted __le32 [usertype] length
 
-I fixed those in the pending branch. The first one I solved by adding a
-temporary variable 'msdus'. Please review:
+I fixed those in the pending branch, please review:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=e4ac90b9c915a3b86eeef60509a6d2bb85d3507d
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=f6f6f597654693ab122ecd950b56343489b91e59
 
 -- 
 Kalle Valo
