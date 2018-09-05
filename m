@@ -1,26 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxKyr-000398-Ni
- for ath10k@lists.infradead.org; Tue, 04 Sep 2018 23:43:35 +0000
-Received: by mail-it0-x244.google.com with SMTP id f14-v6so7490838ita.4
- for <ath10k@lists.infradead.org>; Tue, 04 Sep 2018 16:43:18 -0700 (PDT)
+ id 1fxNul-0004rt-Ac
+ for ath10k@lists.infradead.org; Wed, 05 Sep 2018 02:51:32 +0000
 MIME-Version: 1.0
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
- <87sh3pdtpg.fsf@toke.dk>
- <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
- <87mutue4y8.fsf@toke.dk>
- <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
- <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
- <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
- <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
-In-Reply-To: <878t4i1z74.fsf@toke.dk>
-From: Grant Grundler <grundler@google.com>
-Date: Tue, 4 Sep 2018 16:43:04 -0700
-Message-ID: <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
+Date: Wed, 05 Sep 2018 10:51:19 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
+In-Reply-To: <87zhwx7ajo.fsf@kamboji.qca.qualcomm.com>
+References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
+ <877ek18vyn.fsf@kamboji.qca.qualcomm.com>
+ <b6d8ada015e04738b6b3cee95e485e14@aptaiexm02f.ap.qualcomm.com>
+ <87zhwx7ajo.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <92bec84a762be7589b13274fb30dd649@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,63 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: toke@toke.dk
-Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, wgong@codeaurora.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, Wen Gong <wgong@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gTW9uLCBTZXAgMywgMjAxOCBhdCA2OjM1IEFNIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8
-dG9rZUB0b2tlLmRrPiB3cm90ZToKPgo+IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0
-aW9ucy5uZXQ+IHdyaXRlczoKLi4uLgo+ID4gR3JhbnQncyBkYXRhIHNob3dzIGEgc2lnbmlmaWNh
-bnQgZGlmZmVyZW5jZSBiZXR3ZWVuIDYgYW5kIDcgZm9yIGJvdGgKPiA+IGxhdGVuY3kgYW5kIHRo
-cm91Z2hwdXQ6CgpNaW5vciBuaXQ6IHRoaXMgaXMgd2dvbmcncyBkYXRhIG1vcmUgdGhvdWdodGZ1
-bGx5IHByb2Nlc3NlZC4KCj4gPgo+ID4gICogbWVkaWFuIHRwdAo+ID4gICAgLSB+MjQxIHZzIH4y
-MDEgKGJvdGggMSBhbmQgNSBzdHJlYW1zKQo+ID4gICogbWVkaWFuIGxhdGVuY3kKPiA+ICAgIC0g
-Ny41IHZzIDYgKDEgc3RyZWFtKQo+ID4gICAgLSAxNy4zIHZzLiAxNi42ICg1IHN0cmVhbXMpCj4g
-Pgo+ID4gQSAyMCUgdGhyb3VnaHB1dCBpbXByb3ZlbWVudCBhdCA8PSAxLjVtcyBsYXRlbmN5IGNv
-c3Qgc2VlbXMgbGlrZSBhCj4gPiBwcmV0dHkgcmVhc29uYWJsZSB0cmFkZS1vZmY/Cj4KPiBZZWFo
-LCBvbiBpdCdzIGZhY2UuIFdoYXQgSSdtIGJvdGhlcmVkIGFib3V0IGlzIHRoYXQgaXQgaXMgdGhl
-IGV4YWN0Cj4gb3Bwb3NpdGUgcmVzdWx0cyB0aGF0IEkgZ290IGZyb20gbXkgYXRoMTBrIHRlc3Rz
-ICh0aGVyZSwgdGhyb3VnaHB1dAo+ICpkcm9wcGVkKiBhbmQgbGF0ZW5jeSBkb3VibGVkIHdoZW4g
-Z29pbmcgdG8gZnJvbSA0IHRvIDE2IG1zIG9mCj4gYnVmZmVyaW5nKS4KCkhybSwgeWVhaC4uLnRo
-YXQgd291bGQgYm90aGVyIG1lIHRvby4gSSB0aGluayBldmVuIGlmIHdlIGRvbid0CnVuZGVyc3Rh
-bmQgd2h5L2hvdyB0aGF0IGhhcHBlbmVkLCBhdCBzb21lIGxldmVsIHdlIG5lZWQgdG8gYWxsb3cK
-c3Vic3lzdGVtcyBvciBkcml2ZXJzIHRvIGFkanVzdCBza19wYWNpbmdfc2hpZnQgdmFsdWUuIENo
-YW5naW5nCnNrX3BhY2luZ19zaGlmdCBjbGVhcmx5IGhhcyBhbiBlZmZlY3QgdGhhdCBjYW4gYmUg
-b3B0aW1pemVkLgoKSWYgc21hbGxlciB2YWx1ZXMgb2Ygc2tfcGFjaW5nX3NoaWZ0IGlzIGluY3Jl
-YXNpbmcgdGhlIGludGVydmFsIChhbmQKYWxsb3dzIG1vcmUgYnVmZmVyaW5nKSwgSSdtIHdvbmRl
-cmluZyB3aHkgQ1BVIHV0aWxpemF0aW9uIGdldHMgaGlnaGVyLgpNb3JlIGJ1ZmZlcmluZyBpcyB1
-c3VhbGx5IG1vcmUgZWZmaWNpZW50LiA6LwoKd2dvbmc6IGNhbiB5b3UgY29uZmlybSAoYSkgSSd2
-ZSBlbnRlcmVkIHRoZSBkYXRhIGNvcnJlY3RseSBpbiB0aGUKc3ByZWFkc2hlZXQgYW5kIChiKSB5
-b3UndmUgbGFiZWxlZCB0aGUgZGF0YSBzZXRzIGNvcnJlY3RseSB3aGVuIHlvdQpnZW5lcmF0ZWQg
-dGhlIGRhdGE/CklmIGVpdGhlciBvZiB1cyBtYWRlIGEgbWlzdGFrZSwgaXQgd291bGQgYmUgZ29v
-ZCB0byBrbm93LiA6KQoKSSdtIGdvaW5nIHRvIHNwZWN1bGF0ZSB0aGF0ICJvdGhlciBwcm9jZXNz
-aW5nIiAoZS5nLiBkZXZpY2UgbGV2ZWwKaW50ZXJydXB0IG1pdGlnYXRpb24gb3IgcG9zc2libHkg
-Q1BVIHNjaGVkdWxpbmcgYmVoYXZpb3JzIHdoaWNoCmhhbmRsZXMgVFgvUlggY29tcGxldGlvbikg
-Y291bGQgY2F1c2UgYSAiYmF0aHR1YiIgZWZmZWN0IHNpbWlsYXIgdG8KdGhlIHBlcmZvcm1hbmNl
-IGdyYXBocyB0aGF0IG9yaWdpbmFsbHkgZ290IE5BUEkgYWNjZXB0ZWQgaW50byB0aGUKa2VybmVs
-IH4xNSB5ZWFycyBhZ28uICBTbyB0aGUgIm9wdGltYWwiIHZhbHVlIGNvdWxkIGJlIGRpZmZlcmVu
-dCBmb3IKZGlmZmVyZW50IGFyY2hpdGVjdHVyZXMgYW5kIGRpZmZlcmVudCBJTyBkZXZpY2VzICh3
-aGljaCBoYXZlIGRpZmZlcmVudAptYXggbGluayByYXRlcyBhbmQgZGlmZmVyZW50IGhvc3QgYnVz
-IGludGVyY29ubmVjdHMpLiBCdXQgaG9uZXN0bHksIEkKZG9uJ3QgdW5kZXJzdGFuZCBhbGwgdGhl
-IGRldGFpbHMgb2Ygc2tfcGFjaW5nX3NoaWZ0IHZhbHVlIG5lYXJseSBhcwp3ZWxsIGFzIGp1c3Qg
-YWJvdXQgYW55b25lIGVsc2UgcmVhZGluZyB0aGlzIHRocmVhZC4KCj4gQW5kLCB3ZWxsLCBHcmFu
-dCdzIGRhdGEgaXMgZnJvbSBhIHNpbmdsZSB0ZXN0IGluIGEgbm9pc3kKPiBlbnZpcm9ubWVudCB3
-aGVyZSB0aGUgdGltZSBzZXJpZXMgZ3JhcGggc2hvd3MgdGhhdCB0aHJvdWdocHV0IGlzIGFsbCBv
-dmVyCj4gdGhlIHBsYWNlIGZvciB0aGUgZHVyYXRpb24gb2YgdGhlIHRlc3Q7IHNvIGl0J3MgaGFy
-ZCB0byBkcmF3IHNvbGlkCj4gY29uY2x1c2lvbnMgZnJvbSAoZm9yIGluc3RhbmNlLCBmb3IgdGhl
-IDUtc3RyZWFtIHRlc3QsIHRoZSBhdmVyYWdlCj4gdGhyb3VnaHB1dCBmb3IgNiBpcyAzMzEgYW5k
-IDM3OSBNYnBzIGZvciB0aGUgdHdvIHJlcGV0aXRpb25zLCBhbmQgZm9yIDcKPiBpdCdzIDMyNiBh
-bmQgMzcxIE1icHMpIC4gVW5mb3J0dW5hdGVseSBJIGRvbid0IGhhdmUgdGhlIHNhbWUgaGFyZHdh
-cmUKPiB1c2VkIGluIHRoaXMgdGVzdCwgc28gSSBjYW4ndCBnbyB2ZXJpZnkgaXQgbXlzZWxmOyBz
-byB0aGUgb25seSB0aGluZyBJCj4gY2FuIGRvIGlzIGdydW1ibGUgYWJvdXQgaXQgaGVyZS4uLiA6
-KQoKSXQncyBhIGZhaXIgY29tcGxhaW50IGFuZCBJIGFncmVlIHdpdGggaXQuICBNeSBjb3VudGVy
-IGFyZ3VtZW50IGlzIHRoZQpvcHBvc2l0ZSBpcyB0cnVlIHRvbzogbW9zdCBpZGVhbCBiZW5jaG1h
-cmtzIGRvbid0IG1lYXN1cmUgd2hhdCBtb3N0CnVzZXJzIHNlZS4gV2hpbGUgdGhlIGRhdGEgd2dv
-bmcgcHJvdmlkZWQgYXJlIHdheSBtb3JlIG5vaXN5IHRoYW4gSQpsaWtlLCBteSBvdmVyYWxsICJj
-b25maWRlbmNlIiBpbiB0aGUgImNvbmNsdXNpb24iIEkgb2ZmZXJlZCBpcyBzdGlsbApwb3NpdGl2
-ZS4KCmNoZWVycywKZ3JhbnQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On 2018-09-04 19:43, Kalle Valo wrote:
+> Wen Gong <wgong@qti.qualcomm.com> writes:
+> 
+>>> > +enum wmi_nlo_cipher_algorithm {
+>>> > +	WMI_NLO_CIPHER_ALGO_NONE           = 0x00,
+>>> > +	WMI_NLO_CIPHER_ALGO_WEP40          = 0x01,
+>>> > +	WMI_NLO_CIPHER_ALGO_TKIP           = 0x02,
+>>> > +	WMI_NLO_CIPHER_ALGO_CCMP           = 0x04,
+>>> > +	WMI_NLO_CIPHER_ALGO_WEP104         = 0x05,
+>>> > +	WMI_NLO_CIPHER_ALGO_BIP            = 0x06,
+>>> > +	WMI_NLO_CIPHER_ALGO_WPA_USE_GROUP  = 0x100,
+>>> > +	WMI_NLO_CIPHER_ALGO_RSN_USE_GROUP  = 0x100,
+>>> 
+>>> Two defines with the same value 0x100, is this really correct?
+>> 
+>> Yes, it is an interface between host driver /firmware.
+> 
+> Yeah, I know it's an interface between the host driver and the firmware
+> but it does not make any sense and is just confusing. Either of them
+> should be dropped.
+yes, either of them can be dropped.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
