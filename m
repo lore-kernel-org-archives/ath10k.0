@@ -1,17 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxoRN-00011J-5H
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 07:10:58 +0000
+ id 1fxrNT-0001ov-DN
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 10:19:09 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+In-Reply-To: <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
+ <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
+ <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
+ <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+Date: Thu, 06 Sep 2018 12:18:45 +0200
+Message-ID: <871sa7ylmi.fsf@toke.dk>
 MIME-Version: 1.0
-Date: Thu, 06 Sep 2018 12:40:45 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [RFC v2] ath10k: report tx rate using ieee80211_tx_status()
-In-Reply-To: <1535969922.3437.37.camel@sipsolutions.net>
-References: <1524291786-30850-1-git-send-email-akolli@codeaurora.org>
- <87k1o6d8hw.fsf@kamboji.qca.qualcomm.com>
- <1535969922.3437.37.camel@sipsolutions.net>
-Message-ID: <57c9d018e6c8bddc50871c88bddee3b7@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,89 +28,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rge?= =?UTF-8?Q?nsen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Grant Grundler <grundler@google.com>
+Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-On 2018-09-03 15:48, Johannes Berg wrote:
-> On Fri, 2018-08-31 at 15:29 +0300, Kalle Valo wrote:
-> 
->> Too me this feels like a bad idea but I'm not familiar enough with
->> mac80211 to really comment on this. What kind of implications does 
->> this
->> have for Mesh or ATF, for example? Adding Johannes and Toke to hear
->> about their opinion about this.
-> 
-> The biggest implication is probably radiotap. Beyond that, it's using
-> this to report the "last rate" to nl80211, but that's not all super
-> useful anyway.
-> 
-> The retry count is also affected, and since you report "somewhat
-> liberally" that would lead to erroneous statistics.
-> 
-> I'd recommend against doing this and disentangling the necessary code 
-> in
-> mac80211, e.g. with ieee80211_tx_status_ext() or adding similar APIs.
-> 
-> johannes
+Grant Grundler <grundler@google.com> writes:
 
-Thanks for the review.
+>> And, well, Grant's data is from a single test in a noisy
+>> environment where the time series graph shows that throughput is all over
+>> the place for the duration of the test; so it's hard to draw solid
+>> conclusions from (for instance, for the 5-stream test, the average
+>> throughput for 6 is 331 and 379 Mbps for the two repetitions, and for 7
+>> it's 326 and 371 Mbps) . Unfortunately I don't have the same hardware
+>> used in this test, so I can't go verify it myself; so the only thing I
+>> can do is grumble about it here... :)
+>
+> It's a fair complaint and I agree with it. My counter argument is the
+> opposite is true too: most ideal benchmarks don't measure what most
+> users see. While the data wgong provided are way more noisy than I
+> like, my overall "confidence" in the "conclusion" I offered is still
+> positive.
 
-Is this okay to implement a new API to update the tx rate alone?
+Right. I guess I would just prefer a slightly more comprehensive
+evaluation to base a 4x increase in buffer size on...
 
-Code snippet:
-  /**
-  * ieee80211_tx_status_rate_upd - transmit rate update callback
-  *
-  * This function can be used in drivers that does not have provision
-  * in updating the tx rate in data path.
-  *
-  * @hw: the hardware the frame was transmitted by
-  * @status: tx status information
-  * @pubsta: the station to update the tx rate for.
-  */
-void ieee80211_tx_status_rate_upd(struct ieee80211_hw *hw,
-				  struct ieee80211_sta *pubsta,
-				  struct ieee80211_tx_info *info);
-
-
-Source:
-void ieee80211_tx_status_rate_upd(struct ieee80211_hw *hw,
-				  struct ieee80211_sta *pubsta,
-				  struct ieee80211_tx_info *info)
-{
-	struct ieee80211_local *local = hw_to_local(hw);
-	struct ieee80211_supported_band *sband;
-	int retry_count;
-	int rates_idx;
-	struct ieee80211_tx_status status = {
-		.skb = NULL,
-		.info = info,
-	};
-
-	ieee80211_tx_get_rates(hw, info, &retry_count);
-	sband = hw->wiphy->bands[info->band];
-
-	if (pubsta) {
-		struct sta_info *sta;
-
-		sta = container_of(pubsta, struct sta_info, sta);
-		status.sta = &sta->sta;
-		rate_control_tx_status(local, sband, &status);
-		if (ieee80211_hw_check(&local->hw, HAS_RATE_CONTROL) &&
-		    (rates_idx != -1))
-			sta->tx_stats.last_rate = info->status.rates[rates_idx];
-	}
-
-}
-EXPORT_SYMBOL(ieee80211_tx_status_rate_upd);
-
-
-Thanks
-Anil.
+-Toke
 
 _______________________________________________
 ath10k mailing list
