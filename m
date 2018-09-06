@@ -2,14 +2,18 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxnry-0003kM-CN
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 06:34:24 +0000
-Message-ID: <1536215640.4015.0.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 0/3] support ftm responder configuration/statistics
+ id 1fxnx4-0005Va-R7
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 06:39:39 +0000
+Message-ID: <1536215959.4015.1.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 2/3] mac80211: support FTM responder
+ configuration/statistics
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 06 Sep 2018 08:34:00 +0200
-In-Reply-To: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
-References: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
+Date: Thu, 06 Sep 2018 08:39:19 +0200
+In-Reply-To: <f6cb4548de9c5ca228124df1301d2aa0@codeaurora.org>
+References: <1535745418-31336-1-git-send-email-pradeepc@codeaurora.org>
+ <1535745418-31336-3-git-send-email-pradeepc@codeaurora.org>
+ <1535967225.3437.27.camel@sipsolutions.net>
+ <f6cb4548de9c5ca228124df1301d2aa0@codeaurora.org>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,31 +27,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, david.spinadel@intel.com
+To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>, ath10k@lists.infradead.org
 
-On Wed, 2018-09-05 at 18:01 -0700, Pradeep Kumar Chitrapu wrote:
-> Currently ftm_responder parameter in hostapd.conf is only used for fine
-> timing measurement (FTM) capability advertisement and actual control of
-> the functionality is with low-level device/driver. This leads to confusion
-> to the user when the capability advertisement is different from actual FTM
-> responder functionality.
-> 
-> For example, FTM responder capability advertisement is set to 'enabled',
-> but the functionality is disabled or not supported by the driver.
-> 
-> The patch set allows userspace to enable FTM responder functionality
-> with the addition of new Netlink flag attribute NL80211_ATTR_FTM_RESPONDER
-> with configurable lci/civic ocation parameters. Also extended feature flag
-> is added for the drivers to advertise the support. Setting the flag to
-> enable FTM responder would imply that AP responds to all FTM requests.
-> Default is considered to be disabled.
-> 
-> changes in V3:
->  - fixed the ambiguous ftm responder disable case to be not supported
 
-For reasons unknown to me, this patchset made it neither to the list
-nor, consequently, patchwork. Please resend.
+> > Perhaps the *existence* of ftmr_params could indicate that it's 
+> > enabled?
+> 
+> My understanding is these are only optional parameters. So, I have kept 
+> ftm_responder separate from params.
+
+Yes, they're only optional. I was just thinking that even an "empty" set
+of parameters could indicate enablement, but I guess we can even avoid
+the memory allocation, so perhaps it's better this way. Anyway it's only
+an internal API so can change as needed.
 
 johannes
 
