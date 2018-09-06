@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxuLH-0002dA-SI
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 13:29:25 +0000
+ id 1fxw0K-0004Vw-Fg
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 15:15:34 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v3 0/3] support ftm responder configuration/statistics
+References: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
+ <1536215640.4015.0.camel@sipsolutions.net>
+Date: Thu, 06 Sep 2018 18:15:17 +0300
+In-Reply-To: <1536215640.4015.0.camel@sipsolutions.net> (Johannes Berg's
+ message of "Thu, 06 Sep 2018 08:34:00 +0200")
+Message-ID: <877ejy7j3u.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Thu, 06 Sep 2018 18:58:52 +0530
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fix tx status flag setting for management frames
-In-Reply-To: <1536240014-10349-1-git-send-email-pillair@codeaurora.org>
-References: <1536240014-10349-1-git-send-email-pillair@codeaurora.org>
-Message-ID: <5432a9bbdf2b9461435d8a8e7cc74542@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,59 +20,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, david.spinadel@intel.com, ath10k@lists.infradead.org
 
-Hi All,
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-Please ignore this patchset. I have added the Tested HW/FW info and sent 
-the v2 version for this patchset.
+> On Wed, 2018-09-05 at 18:01 -0700, Pradeep Kumar Chitrapu wrote:
+>> Currently ftm_responder parameter in hostapd.conf is only used for fine
+>> timing measurement (FTM) capability advertisement and actual control of
+>> the functionality is with low-level device/driver. This leads to confusion
+>> to the user when the capability advertisement is different from actual FTM
+>> responder functionality.
+>> 
+>> For example, FTM responder capability advertisement is set to 'enabled',
+>> but the functionality is disabled or not supported by the driver.
+>> 
+>> The patch set allows userspace to enable FTM responder functionality
+>> with the addition of new Netlink flag attribute NL80211_ATTR_FTM_RESPONDER
+>> with configurable lci/civic ocation parameters. Also extended feature flag
+>> is added for the drivers to advertise the support. Setting the flag to
+>> enable FTM responder would imply that AP responds to all FTM requests.
+>> Default is considered to be disabled.
+>> 
+>> changes in V3:
+>>  - fixed the ambiguous ftm responder disable case to be not supported
+>
+> For reasons unknown to me, this patchset made it neither to the list
+> nor, consequently, patchwork. Please resend.
 
-Thanks,
-Rakesh Pillai.
+Actually patch 3 made it:
 
-On 2018-09-06 18:50, Rakesh Pillai wrote:
-> The tx_status for management frames is being filled
-> incorrectly in the flags of skb_cb. This incorrect
-> flag setting causes the upper layers to consider that
-> the particular frame was not transmitted properly,
-> leading to improper behavior.
-> 
-> Set the IEEE80211_TX_STAT_ACK flag in the info flags
-> of skb_cb, to indicate the successful transmission of
-> the management frame.
-> 
-> Fixes: dc405152bb64d4ae01c9ac669de25b2d1fb6fc2d
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/wmi.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c
-> b/drivers/net/wireless/ath/ath10k/wmi.c
-> index fd612d2..1dced0d 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2336,7 +2336,12 @@ static int wmi_process_mgmt_tx_comp(struct
-> ath10k *ar, u32 desc_id,
->  	dma_unmap_single(ar->dev, pkt_addr->paddr,
->  			 msdu->len, DMA_FROM_DEVICE);
->  	info = IEEE80211_SKB_CB(msdu);
-> -	info->flags |= status;
-> +
-> +	if (status)
-> +		info->flags &= ~IEEE80211_TX_STAT_ACK;
-> +	else
-> +		info->flags |= IEEE80211_TX_STAT_ACK;
-> +
->  	ieee80211_tx_status_irqsafe(ar->hw, msdu);
-> 
->  	ret = 0;
+https://patchwork.kernel.org/patch/10590115/
+
+But it didn't get the rest as it says "Untitled series #15763".
+Patchwork was timing out for me quite heavily so in that way I'm not
+surprised that patches are getting lost :(
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
