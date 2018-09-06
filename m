@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxw0K-0004Vw-Fg
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 15:15:34 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v3 0/3] support ftm responder configuration/statistics
-References: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
- <1536215640.4015.0.camel@sipsolutions.net>
-Date: Thu, 06 Sep 2018 18:15:17 +0300
-In-Reply-To: <1536215640.4015.0.camel@sipsolutions.net> (Johannes Berg's
- message of "Thu, 06 Sep 2018 08:34:00 +0200")
-Message-ID: <877ejy7j3u.fsf@kamboji.qca.qualcomm.com>
+ id 1fxwcT-0002hg-6o
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 15:55:02 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/2] ath10k: Support extended board data download for
+ dual-band QCA9984
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20180824141221.3661-1-murugana@codeaurora.org>
+References: <20180824141221.3661-1-murugana@codeaurora.org>
+Message-Id: <20180906155446.08C5E60881@smtp.codeaurora.org>
+Date: Thu,  6 Sep 2018 15:54:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +23,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, david.spinadel@intel.com, ath10k@lists.infradead.org
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Johannes Berg <johannes@sipsolutions.net> writes:
+Sathishkumar Muruganandam <murugana@codeaurora.org> wrote:
 
-> On Wed, 2018-09-05 at 18:01 -0700, Pradeep Kumar Chitrapu wrote:
->> Currently ftm_responder parameter in hostapd.conf is only used for fine
->> timing measurement (FTM) capability advertisement and actual control of
->> the functionality is with low-level device/driver. This leads to confusion
->> to the user when the capability advertisement is different from actual FTM
->> responder functionality.
->> 
->> For example, FTM responder capability advertisement is set to 'enabled',
->> but the functionality is disabled or not supported by the driver.
->> 
->> The patch set allows userspace to enable FTM responder functionality
->> with the addition of new Netlink flag attribute NL80211_ATTR_FTM_RESPONDER
->> with configurable lci/civic ocation parameters. Also extended feature flag
->> is added for the drivers to advertise the support. Setting the flag to
->> enable FTM responder would imply that AP responds to all FTM requests.
->> Default is considered to be disabled.
->> 
->> changes in V3:
->>  - fixed the ambiguous ftm responder disable case to be not supported
->
-> For reasons unknown to me, this patchset made it neither to the list
-> nor, consequently, patchwork. Please resend.
+> Just moving functions down in the file, no functional changes.
+> 
+> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Actually patch 3 made it:
+2 patches applied to ath-next branch of ath.git, thanks.
 
-https://patchwork.kernel.org/patch/10590115/
-
-But it didn't get the rest as it says "Untitled series #15763".
-Patchwork was timing out for me quite heavily so in that way I'm not
-surprised that patches are getting lost :(
+5849ed48d226 ath10k: refactoring needed for extended board data download
+31324d17976e ath10k: support extended board data download for dual-band QCA9984
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10575359/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
