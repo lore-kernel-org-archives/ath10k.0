@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxjtL-0004qL-AT
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 02:19:35 +0000
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] ath10k: snoc: remove set but not used variable 'ar_snoc'
-Date: Thu, 6 Sep 2018 02:29:25 +0000
-Message-ID: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
-MIME-Version: 1.0
+ id 1fxnry-0003kM-CN
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 06:34:24 +0000
+Message-ID: <1536215640.4015.0.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 0/3] support ftm responder configuration/statistics
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 06 Sep 2018 08:34:00 +0200
+In-Reply-To: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
+References: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, Yue Haibing <yuehaibing@huawei.com>, ath10k@lists.infradead.org
+To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, david.spinadel@intel.com
 
-From: Yue Haibing <yuehaibing@huawei.com>
+On Wed, 2018-09-05 at 18:01 -0700, Pradeep Kumar Chitrapu wrote:
+> Currently ftm_responder parameter in hostapd.conf is only used for fine
+> timing measurement (FTM) capability advertisement and actual control of
+> the functionality is with low-level device/driver. This leads to confusion
+> to the user when the capability advertisement is different from actual FTM
+> responder functionality.
+> 
+> For example, FTM responder capability advertisement is set to 'enabled',
+> but the functionality is disabled or not supported by the driver.
+> 
+> The patch set allows userspace to enable FTM responder functionality
+> with the addition of new Netlink flag attribute NL80211_ATTR_FTM_RESPONDER
+> with configurable lci/civic ocation parameters. Also extended feature flag
+> is added for the drivers to advertise the support. Setting the flag to
+> enable FTM responder would imply that AP responds to all FTM requests.
+> Default is considered to be disabled.
+> 
+> changes in V3:
+>  - fixed the ambiguous ftm responder disable case to be not supported
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+For reasons unknown to me, this patchset made it neither to the list
+nor, consequently, patchwork. Please resend.
 
-drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_tx_pipe_cleanup':
-drivers/net/wireless/ath/ath10k/snoc.c:681:22: warning:
- variable 'ar_snoc' set but not used [-Wunused-but-set-variable]
-
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index fa1843a..2d6ae00 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -678,13 +678,11 @@ static void ath10k_snoc_tx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
- {
- 	struct ath10k_ce_pipe *ce_pipe;
- 	struct ath10k_ce_ring *ce_ring;
--	struct ath10k_snoc *ar_snoc;
- 	struct sk_buff *skb;
- 	struct ath10k *ar;
- 	int i;
- 
- 	ar = snoc_pipe->hif_ce_state;
--	ar_snoc = ath10k_snoc_priv(ar);
- 	ce_pipe = snoc_pipe->ce_hdl;
- 	ce_ring = ce_pipe->src_ring;
-
+johannes
 
 _______________________________________________
 ath10k mailing list
