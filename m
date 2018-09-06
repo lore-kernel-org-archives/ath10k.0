@@ -1,25 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxrNT-0001ov-DN
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 10:19:09 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
- chips
-In-Reply-To: <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
-References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
- <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
- <87sh3pdtpg.fsf@toke.dk>
- <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
- <87mutue4y8.fsf@toke.dk>
- <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
- <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
- <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
- <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
- <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
-Date: Thu, 06 Sep 2018 12:18:45 +0200
-Message-ID: <871sa7ylmi.fsf@toke.dk>
+ id 1fxrTr-0005uy-95
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 10:25:59 +0000
 MIME-Version: 1.0
+Date: Thu, 06 Sep 2018 15:55:30 +0530
+From: Balaji Pothunoori <bpothuno@codeaurora.org>
+Subject: Re: [PATCH v2 3/3] ath10k: management tx ack rssi capability check
+In-Reply-To: <1535532794.5215.20.camel@sipsolutions.net>
+References: <1532006789-32454-1-git-send-email-bpothuno@codeaurora.org>
+ <1532006789-32454-4-git-send-email-bpothuno@codeaurora.org>
+ (sfid-20180719_152706_974046_A35360D2)
+ <1535532794.5215.20.camel@sipsolutions.net>
+Message-ID: <d1446d6996ed97412dff5897d713a06b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +21,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Grant Grundler <grundler@google.com>
-Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, wgong@codeaurora.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Grant Grundler <grundler@google.com> writes:
+On 2018-08-29 14:23, Johannes Berg wrote:
+> On Thu, 2018-07-19 at 18:56 +0530, Balaji Pothunoori wrote:
+>> 
+>> 
+>> -	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map))
+>> +	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map) ||
+>> +	    test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, 
+>> ar->wmi.svc_map))
+>>  		wiphy_ext_feature_set(ar->hw->wiphy,
+>> -				NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT);
+>> +			NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT);
+> 
+> You should use the new name, and fix indentation.
+> 
+> johannes
 
->> And, well, Grant's data is from a single test in a noisy
->> environment where the time series graph shows that throughput is all over
->> the place for the duration of the test; so it's hard to draw solid
->> conclusions from (for instance, for the 5-stream test, the average
->> throughput for 6 is 331 and 379 Mbps for the two repetitions, and for 7
->> it's 326 and 371 Mbps) . Unfortunately I don't have the same hardware
->> used in this test, so I can't go verify it myself; so the only thing I
->> can do is grumble about it here... :)
->
-> It's a fair complaint and I agree with it. My counter argument is the
-> opposite is true too: most ideal benchmarks don't measure what most
-> users see. While the data wgong provided are way more noisy than I
-> like, my overall "confidence" in the "conclusion" I offered is still
-> positive.
-
-Right. I guess I would just prefer a slightly more comprehensive
-evaluation to base a 4x increase in buffer size on...
-
--Toke
+Sure, i will send updated v3 patch.
 
 _______________________________________________
 ath10k mailing list
