@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxwn5-0008HX-Q9
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 16:05:57 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCHv2 3/3] ath10k: average ack rssi support for data frames
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
-References: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
-Message-Id: <20180906160545.60C63607B5@smtp.codeaurora.org>
-Date: Thu,  6 Sep 2018 16:05:45 +0000 (UTC)
+ id 1fxwqA-0000W1-Uk
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 16:09:08 +0000
+Message-ID: <1536250124.4015.10.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 0/3] support ftm responder configuration/statistics
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 06 Sep 2018 18:08:44 +0200
+In-Reply-To: <877ejy7j3u.fsf@kamboji.qca.qualcomm.com>
+References: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
+ <1536215640.4015.0.camel@sipsolutions.net>
+ <877ejy7j3u.fsf@kamboji.qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@codeaurora.org>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, david.spinadel@intel.com, ath10k@lists.infradead.org
 
-Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
-
-> Average ack rssi value is weighted average of ack rssi for
-> no of msdu's has been sent.
-> This feature is enabled by the host driver if firmware is capable.
-> After receiving event from host, firmware allocates the necessary
-> memory to store the ack_rssi for data packets during the init time.
+On Thu, 2018-09-06 at 18:15 +0300, Kalle Valo wrote:
 > 
-> After each successful transmission, If tx completion status is OK
-> and 24th bit is set in HTT message header then host will fetch the
-> ack_rssi else host can ignore the ack_rssi field.
+> Actually patch 3 made it:
 > 
-> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> https://patchwork.kernel.org/patch/10590115/
+> 
+> But it didn't get the rest as it says "Untitled series #15763".
+> Patchwork was timing out for me quite heavily so in that way I'm not
+> surprised that patches are getting lost :(
 
-Patch applied to ath-next branch of ath.git, thanks.
+No, it's not patchwork - I didn't get the patches (except for #3) via
+the list either.
 
-c7fd8d237e2e ath10k: average ack rssi support for data frames
-
--- 
-https://patchwork.kernel.org/patch/10343153/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+johannes
 
 _______________________________________________
 ath10k mailing list
