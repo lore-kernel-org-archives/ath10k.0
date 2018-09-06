@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxwm4-0006h0-PB
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 16:04:54 +0000
+ id 1fxwn5-0008HX-Q9
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 16:05:57 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] ath10k: avoid possible memory access violation
+Subject: Re: [PATCHv2 3/3] ath10k: average ack rssi support for data frames
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1533292805-9709-1-git-send-email-vijay.bvb@samsung.com>
-References: <1533292805-9709-1-git-send-email-vijay.bvb@samsung.com>
-Message-Id: <20180906160442.77CA6607F7@smtp.codeaurora.org>
-Date: Thu,  6 Sep 2018 16:04:42 +0000 (UTC)
+In-Reply-To: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
+References: <1523890122-23952-4-git-send-email-bpothuno@codeaurora.org>
+Message-Id: <20180906160545.60C63607B5@smtp.codeaurora.org>
+Date: Thu,  6 Sep 2018 16:05:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "K.T.VIJAYAKUMAAR" <vijay.bvb@samsung.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, cpgs@samsung.com, davem@davemloft.net
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"K.T.VIJAYAKUMAAR" <vijay.bvb@samsung.com> wrote:
+Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
 
-> array "ctl_power_table" access index "pream" is initialized with -1 and
-> is raised as a static analysis tool issue.
-> [drivers\net\wireless\ath\ath10k\wmi.c:4719] ->
-> [drivers\net\wireless\ath\ath10k\wmi.c:4730]: (error) Array index -1 is
-> out of bounds.
+> Average ack rssi value is weighted average of ack rssi for
+> no of msdu's has been sent.
+> This feature is enabled by the host driver if firmware is capable.
+> After receiving event from host, firmware allocates the necessary
+> memory to store the ack_rssi for data packets during the init time.
 > 
-> Since the "pream" index for accessing ctl_power_table array is initialized
-> with -1, there is a chance of memory access violation for the cases below.
-> 1) wmi_pdev_tpc_final_table_event change frequency is between 2483 and 5180
-> 2) pream_idx is out of the enumeration ranges of wmi_tpc_pream_2ghz,
-> wmi_tpc_pream_5ghz
+> After each successful transmission, If tx completion status is OK
+> and 24th bit is set in HTT message header then host will fetch the
+> ack_rssi else host can ignore the ack_rssi field.
 > 
-> Signed-off-by: K.T.VIJAYAKUMAAR <vijay.bvb@samsung.com>
-> [kvalo@codeaurora.org: clean up the warning message]
+> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-97c69a70dc2c ath10k: avoid possible memory access violation
+c7fd8d237e2e ath10k: average ack rssi support for data frames
 
 -- 
-https://patchwork.kernel.org/patch/10554929/
+https://patchwork.kernel.org/patch/10343153/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
