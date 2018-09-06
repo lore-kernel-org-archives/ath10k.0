@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxwxP-0004qb-QW
- for ath10k@lists.infradead.org; Thu, 06 Sep 2018 16:16:42 +0000
-MIME-Version: 1.0
-Subject: Re: [RFC v5 01/12] ath10k: add struct ath10k_bus_params
+ id 1fxwzQ-0005gN-M5
+ for ath10k@lists.infradead.org; Thu, 06 Sep 2018 16:18:52 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180603182029.8914-2-erik.stromdahl@gmail.com>
-References: <20180603182029.8914-2-erik.stromdahl@gmail.com>
-Message-Id: <20180906161624.92F80605A5@smtp.codeaurora.org>
-Date: Thu,  6 Sep 2018 16:16:24 +0000 (UTC)
+Subject: Re: [PATCH v3 0/3] support ftm responder configuration/statistics
+References: <1536195700-1351-1-git-send-email-pradeepc@codeaurora.org>
+ <1536215640.4015.0.camel@sipsolutions.net>
+ <877ejy7j3u.fsf@kamboji.qca.qualcomm.com>
+ <1536250124.4015.10.camel@sipsolutions.net>
+Date: Thu, 06 Sep 2018 19:18:24 +0300
+In-Reply-To: <1536250124.4015.10.camel@sipsolutions.net> (Johannes Berg's
+ message of "Thu, 06 Sep 2018 18:08:44 +0200")
+Message-ID: <87y3ce61m7.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +26,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, david.spinadel@intel.com, ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-> This struct is used as argument to ath10k_core_register in order to
-> make it easier to add more bus parameters in the future.
-> 
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> On Thu, 2018-09-06 at 18:15 +0300, Kalle Valo wrote:
+>> 
+>> Actually patch 3 made it:
+>> 
+>> https://patchwork.kernel.org/patch/10590115/
+>> 
+>> But it didn't get the rest as it says "Untitled series #15763".
+>> Patchwork was timing out for me quite heavily so in that way I'm not
+>> surprised that patches are getting lost :(
+>
+> No, it's not patchwork - I didn't get the patches (except for #3) via
+> the list either.
 
-12 patches applied to ath-next branch of ath.git, thanks.
-
-c0d8d565787c ath10k: add struct ath10k_bus_params
-7c2dd6154fc2 ath10k: add device type enum to ath10k_bus_params
-367c899f622c ath10k: add bus type check in ath10k_init_hw_params
-9faaa14387fb ath10k: use hw_params.num_peers for num_tids in TLV init
-4875e0b52085 ath10k: add per target config of max_num_peers
-e66d5361127a ath10k: DMA related fixes for high latency devices
-852d1bf86a5b ath10k: add HTT TX HL ops
-d4e7f553eec3 ath10k: add HTT RX HL ops
-4daacc950d4d ath10k: htt: RX ring config HL support
-a2097d6444c3 ath10k: htt: High latency TX support
-f88d49345040 ath10k: htt: High latency RX support
-37f62c0d5822 ath10k: wmi: disable softirq's while calling ieee80211_rx
+Ah, missed that as the ath10k list did get all the patches. But very
+good that patchwork was not to blame here.
 
 -- 
-https://patchwork.kernel.org/patch/10445507/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
