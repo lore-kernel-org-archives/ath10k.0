@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzNKU-0001nH-3X
- for ath10k@lists.infradead.org; Mon, 10 Sep 2018 14:38:19 +0000
-Received: by mail-pf1-x432.google.com with SMTP id i26-v6so10571845pfo.12
- for <ath10k@lists.infradead.org>; Mon, 10 Sep 2018 07:38:05 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fzOR6-0008Ar-Li
+ for ath10k@lists.infradead.org; Mon, 10 Sep 2018 15:49:14 +0000
+Subject: Re: [PATCH] ath10k: Add support for configuring management packet rate
+References: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <9fde2907-d95a-1953-53ce-e773aca17866@candelatech.com>
+Date: Mon, 10 Sep 2018 08:48:54 -0700
 MIME-Version: 1.0
-From: Fraser Cadger <frasercadger@gmail.com>
-Date: Mon, 10 Sep 2018 15:37:53 +0100
-Message-ID: <CAKc-1SD6VF8-2O=Od+iDjc2wbB3-rSuXy9J63S8xx2w4GHfi3Q@mail.gmail.com>
-Subject: Multiple simultaneous channels on QCA9882
+In-Reply-To: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +18,118 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Hi,
+On 09/09/2018 10:39 PM, Sriram R wrote:
+> By default the firmware uses 1Mbps and 6Mbps rate for management packets
+> in 2G and 5G bands respectively. But when the user selects different
+> basic rates from the userspace, we need to send the management
+> packets at the lowest basic rate selected by the user.
+>
+> This change makes use of WMI_VDEV_PARAM_MGMT_RATE param for configuring the
+> management packets rate to the firmware.
 
-I am using a device based on the Atheros QCA9882 chipset.
+At least some users like to be able to set the mgt rate to higher rates,
+and have been using a debugfs api in my driver patches to do this for some
+time.
 
-I would like to make use of the simultaneous dual-band functionality
-that the device provides. The goal is to have to interfaces with one
-acting as
-an Access Point (wlan0) and the other acting as a client of another AP
-(wlan1). Ideally, both of these interfaces should be operating on
-different channels.
+Maybe you would like to add support for something like this as well?
 
-As I have understood it, Atheros/Qualcomm market the QCA9882 as being
-capable of both dual-band and concurrent operation:
-https://www.qualcomm.com/news/releases/2012/02/23/qualcomm-atheros-launches-80211ac-product-ecosystem-provide-end-end-gigabit
+Thanks,
+Ben
 
-I am using v4.1 of the Linux kernel.
+>
+> Chipsets Tested : QCA988X, QCA9887, QCA9984
+> FW Tested 	: 10.2.4-1.0-41, 10.4-3.6.104
+>
+> Signed-off-by: Sriram R <srirrama@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 45 +++++++++++++++++++++++++++++++++--
+>  1 file changed, 43 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 496772d..0b2ca9e 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -157,6 +157,22 @@ u8 ath10k_mac_bitrate_to_idx(const struct ieee80211_supported_band *sband,
+>  	return 0;
+>  }
+>
+> +static int ath10k_mac_get_rate_hw_value(int bitrate)
+> +{
+> +	int i;
+> +	u8 hw_value_prefix = 0;
+> +
+> +	if (ath10k_mac_bitrate_is_cck(bitrate))
+> +		hw_value_prefix = WMI_RATE_PREAMBLE_CCK << 6;
+> +
+> +	for (i = 0; i < sizeof(ath10k_rates); i++) {
+> +		if (ath10k_rates[i].bitrate == bitrate)
+> +			return hw_value_prefix | ath10k_rates[i].hw_value;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+>  static int ath10k_mac_get_max_vht_mcs_map(u16 mcs_map, int nss)
+>  {
+>  	switch ((mcs_map >> (2 * nss)) & 0x3) {
+> @@ -5452,9 +5468,10 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+>  	struct cfg80211_chan_def def;
+>  	u32 vdev_param, pdev_param, slottime, preamble;
+>  	u16 bitrate, hw_value;
+> -	u8 rate;
+> -	int rateidx, ret = 0;
+> +	u8 rate, basic_rate_idx;
+> +	int rateidx, ret = 0, hw_rate_code;
+>  	enum nl80211_band band;
+> +	const struct ieee80211_supported_band *sband;
+>
+>  	mutex_lock(&ar->conf_mutex);
+>
+> @@ -5660,6 +5677,30 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+>  				    arvif->vdev_id,  ret);
+>  	}
+>
+> +	if (changed & BSS_CHANGED_BASIC_RATES) {
+> +		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
+> +			mutex_unlock(&ar->conf_mutex);
+> +			return;
+> +		}
+> +
+> +	sband = ar->hw->wiphy->bands[def.chan->band];
+> +	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
+> +	bitrate = sband->bitrates[basic_rate_idx].bitrate;
+> +
+> +	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
+> +	if (hw_rate_code < 0) {
+> +		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
+> +		mutex_unlock(&ar->conf_mutex);
+> +		return;
+> +	}
+> +
+> +	vdev_param = ar->wmi.vdev_param->mgmt_rate;
+> +	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+> +					hw_rate_code);
+> +	if (ret)
+> +		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
+> +	}
+> +
+>  	mutex_unlock(&ar->conf_mutex);
+>  }
+>
+>
 
-Having experienced some difficulties using hostapd and wpa_supplicant,
-I checked the device capabilities using iw. If I am interpreting the
-output below correctly, it is only possible to use 1 channel on both
-interfaces:
 
-valid interface combinations:
-                 * #{ managed, P2P-client } <= 36, #{ P2P-GO } <= 3,
-#{ AP } <= 7, #{ IBSS } <= 1,
-                   total <= 36, #channels <= 1, STA/AP BI must match
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-
-As I understand it, #channels <=1 indicates that only 1 channel may be
-used at a particular time by all interfaces.
-
-I am wondering if this is a limitation of the driver, or if there has
-been a misunderstanding in the capabilities of the hardware.
-
-Does anyone have experience with this?
-
-Regards,
-
-Fraser
 
 _______________________________________________
 ath10k mailing list
