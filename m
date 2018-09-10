@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ua1-x929.google.com ([2607:f8b0:4864:20::929])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyjaI-0007SN-5W
- for ath10k@lists.infradead.org; Sat, 08 Sep 2018 20:11:59 +0000
-Received: by mail-ua1-x929.google.com with SMTP id y10-v6so14475224uao.4
- for <ath10k@lists.infradead.org>; Sat, 08 Sep 2018 13:11:44 -0700 (PDT)
-MIME-Version: 1.0
-From: Nikolay Martynov <mar.kolya@gmail.com>
-Date: Sat, 8 Sep 2018 16:11:31 -0400
-Message-ID: <CALGY4ft2u2QufAcWLygNzRp8+=XvSz1FD+-f8Jr4A3qhuwU6JQ@mail.gmail.com>
-Subject: QCA988X firmware version and performance
+ id 1fzEvZ-000642-Bd
+ for ath10k@lists.infradead.org; Mon, 10 Sep 2018 05:40:03 +0000
+From: Sriram R <srirrama@codeaurora.org>
+Subject: [PATCH] ath10k: Add support for configuring management packet rate
+Date: Mon, 10 Sep 2018 11:09:40 +0530
+Message-Id: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,50 +15,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, kavitam@cdot.in
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>
 
-Hi.
+By default the firmware uses 1Mbps and 6Mbps rate for management packets
+in 2G and 5G bands respectively. But when the user selects different
+basic rates from the userspace, we need to send the management
+packets at the lowest basic rate selected by the user.
 
-  I've got some observation about firmware version and speed that I
-would like to share.
-  I have tp-link archer c5 with 'ath10k_pci 0000:01:00.0: qca988x
-hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000' running
-Openwrt.
+This change makes use of WMI_VDEV_PARAM_MGMT_RATE param for configuring the
+management packets rate to the firmware.
 
-  When I use firmware version 10.2.4.70.61-2 I get modulation speeds
-about twice as large as with other firmware versions. I've also tried
-10.2.4.70.66 and firmware-5.bin_10.2.4-1.0-00033 and one that was
-Openwrt/Lede stock before that - all show performance noticeably worse
-than 10.2.4.70.61-2.
-  In fact if my laptop stands on my desk (some distance away from AP)
-and I use 10.2.4.70.61-2 I get stable 2 spacial stream reception, if I
-use other versions mentioned above I usually get one 1 special stream
-as shown by 'iw' command on a client.
-  I've also perfomed some speed measurements with iperf:
-* with latest firmware I get 30MB/s and iw on a client shows signal
-strength of -72dBm
-* with 10.2.4.70.61-2I get 53MB/s and iw on a client shows signal
-strength of -63dBm
-All with laptop (client) unmoved.
-  So it looks like downgrading firmware gains 30+% performance.
+Chipsets Tested : QCA988X, QCA9887, QCA9984
+FW Tested 	: 10.2.4-1.0-41, 10.4-3.6.104
 
-  I've already tried to raise this question ~8 months ago but didn't
-get any reply.
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 45 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 43 insertions(+), 2 deletions(-)
 
-  It seems like this is a bug in newer versions of firmware and it
-would be really nice if that bug could be fixed.
-  Is there any way I can help with that? Maybe someone could provide
-me with better channel to ask these questions?
-
-  Please let me know if I can provide any more information.
-  Thanks!
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 496772d..0b2ca9e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -157,6 +157,22 @@ u8 ath10k_mac_bitrate_to_idx(const struct ieee80211_supported_band *sband,
+ 	return 0;
+ }
+ 
++static int ath10k_mac_get_rate_hw_value(int bitrate)
++{
++	int i;
++	u8 hw_value_prefix = 0;
++
++	if (ath10k_mac_bitrate_is_cck(bitrate))
++		hw_value_prefix = WMI_RATE_PREAMBLE_CCK << 6;
++
++	for (i = 0; i < sizeof(ath10k_rates); i++) {
++		if (ath10k_rates[i].bitrate == bitrate)
++			return hw_value_prefix | ath10k_rates[i].hw_value;
++	}
++
++	return -EINVAL;
++}
++
+ static int ath10k_mac_get_max_vht_mcs_map(u16 mcs_map, int nss)
+ {
+ 	switch ((mcs_map >> (2 * nss)) & 0x3) {
+@@ -5452,9 +5468,10 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	struct cfg80211_chan_def def;
+ 	u32 vdev_param, pdev_param, slottime, preamble;
+ 	u16 bitrate, hw_value;
+-	u8 rate;
+-	int rateidx, ret = 0;
++	u8 rate, basic_rate_idx;
++	int rateidx, ret = 0, hw_rate_code;
+ 	enum nl80211_band band;
++	const struct ieee80211_supported_band *sband;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -5660,6 +5677,30 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 				    arvif->vdev_id,  ret);
+ 	}
+ 
++	if (changed & BSS_CHANGED_BASIC_RATES) {
++		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
++			mutex_unlock(&ar->conf_mutex);
++			return;
++		}
++
++	sband = ar->hw->wiphy->bands[def.chan->band];
++	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
++	bitrate = sband->bitrates[basic_rate_idx].bitrate;
++
++	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
++	if (hw_rate_code < 0) {
++		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
++		mutex_unlock(&ar->conf_mutex);
++		return;
++	}
++
++	vdev_param = ar->wmi.vdev_param->mgmt_rate;
++	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++					hw_rate_code);
++	if (ret)
++		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
++	}
++
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
 -- 
-Martynov Nikolay.
-Email: mar.kolya@gmail.com
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
