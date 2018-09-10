@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzFcw-0006ML-Qx
- for ath10k@lists.infradead.org; Mon, 10 Sep 2018 06:24:52 +0000
-From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH v3] ath10k: management tx ack rssi capability check
-Date: Mon, 10 Sep 2018 11:54:30 +0530
-Message-Id: <1536560670-4292-1-git-send-email-bpothuno@codeaurora.org>
+ id 1fzNKU-0001nH-3X
+ for ath10k@lists.infradead.org; Mon, 10 Sep 2018 14:38:19 +0000
+Received: by mail-pf1-x432.google.com with SMTP id i26-v6so10571845pfo.12
+ for <ath10k@lists.infradead.org>; Mon, 10 Sep 2018 07:38:05 -0700 (PDT)
+MIME-Version: 1.0
+From: Fraser Cadger <frasercadger@gmail.com>
+Date: Mon, 10 Sep 2018 15:37:53 +0100
+Message-ID: <CAKc-1SD6VF8-2O=Od+iDjc2wbB3-rSuXy9J63S8xx2w4GHfi3Q@mail.gmail.com>
+Subject: Multiple simultaneous channels on QCA9882
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,50 +18,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Adding WMI service check for management tx ack rssi support; this is
-done to maintain common avg ack signal in user level for both data
-and management tx ack packet.
+Hi,
 
-Tested on QCA4019(fw version-10.4-3.2.1-00063).
+I am using a device based on the Atheros QCA9882 chipset.
 
-Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
----
-v3:
- modified ack rssi support check to newly added command.
- cfg80211/mac80211 changes are already merged hence
- modified ath10k patch alone.
+I would like to make use of the simultaneous dual-band functionality
+that the device provides. The goal is to have to interfaces with one
+acting as
+an Access Point (wlan0) and the other acting as a client of another AP
+(wlan1). Ideally, both of these interfaces should be operating on
+different channels.
 
- drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+As I have understood it, Atheros/Qualcomm market the QCA9882 as being
+capable of both dual-band and concurrent operation:
+https://www.qualcomm.com/news/releases/2012/02/23/qualcomm-atheros-launches-80211ac-product-ecosystem-provide-end-end-gigabit
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 97548f9..84c6ecd 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8479,9 +8479,10 @@ int ath10k_mac_register(struct ath10k *ar)
- 	wiphy_ext_feature_set(ar->hw->wiphy,
- 			      NL80211_EXT_FEATURE_SET_SCAN_DWELL);
- 
--	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map))
-+	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map) ||
-+	    test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, ar->wmi.svc_map))
- 		wiphy_ext_feature_set(ar->hw->wiphy,
--				      NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT);
-+				      NL80211_EXT_FEATURE_ACK_SIGNAL_SUPPORT);
- 
- 	/*
- 	 * on LL hardware queues are managed entirely by the FW
--- 
-2.7.4
+I am using v4.1 of the Linux kernel.
 
+Having experienced some difficulties using hostapd and wpa_supplicant,
+I checked the device capabilities using iw. If I am interpreting the
+output below correctly, it is only possible to use 1 channel on both
+interfaces:
+
+valid interface combinations:
+                 * #{ managed, P2P-client } <= 36, #{ P2P-GO } <= 3,
+#{ AP } <= 7, #{ IBSS } <= 1,
+                   total <= 36, #channels <= 1, STA/AP BI must match
+
+
+As I understand it, #channels <=1 indicates that only 1 channel may be
+used at a particular time by all interfaces.
+
+I am wondering if this is a limitation of the driver, or if there has
+been a misunderstanding in the capabilities of the hardware.
+
+Does anyone have experience with this?
+
+Regards,
+
+Fraser
 
 _______________________________________________
 ath10k mailing list
