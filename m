@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g0Iby-0000YM-A6
- for ath10k@lists.infradead.org; Thu, 13 Sep 2018 03:48:11 +0000
-Received: by mail-pg1-x533.google.com with SMTP id r1-v6so2072586pgp.11
- for <ath10k@lists.infradead.org>; Wed, 12 Sep 2018 20:47:59 -0700 (PDT)
+ id 1g0SHL-0006LF-Q7
+ for ath10k@lists.infradead.org; Thu, 13 Sep 2018 14:07:34 +0000
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] ath10k: Remove duplicated includes
+Date: Thu, 13 Sep 2018 22:01:21 +0800
+Message-ID: <20180913140121.23152-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-References: <CAML_o3a5HXR9wjZVCeGgd1-6CaWRF_xFCmbuyCiVY0MpGr-b6A@mail.gmail.com>
-In-Reply-To: <CAML_o3a5HXR9wjZVCeGgd1-6CaWRF_xFCmbuyCiVY0MpGr-b6A@mail.gmail.com>
-From: Ian Campbell <ian.campbell.aus@gmail.com>
-Date: Thu, 13 Sep 2018 04:47:41 +0100
-Message-ID: <CAML_o3ZjcHSN84HVXGrMN86hfv2aczTiZeN6K+39Vjh71hym8g@mail.gmail.com>
-Subject: Fwd: QCA9377 not scanning wireless networks
-Content-Type: multipart/mixed; boundary="000000000000a05a3d0575b89274"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,145 +16,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, kvalo@codeaurora.org
+Cc: netdev@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net
 
---000000000000a05a3d0575b89274
-Content-Type: text/plain; charset="UTF-8"
+remove duplicated include from ath10k driver.
 
-Hi guys,
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/wireless/ath/ath10k/htt.h     | 1 -
+ drivers/net/wireless/ath/ath10k/mac.c     | 1 -
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 1 -
+ 3 files changed, 3 deletions(-)
 
-I have been plugging away at this for months.  Doesn't work for live
-CD's of ubuntu 16.04-5, suse-linux 15 leaf, and doesn't work for
-lubuntu 18.04 as this wireless-info attached.
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 5d3ff80..eaf3a00 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -29,7 +29,6 @@
+ #include "htc.h"
+ #include "hw.h"
+ #include "rx_desc.h"
+-#include "hw.h"
+ 
+ enum htt_dbg_stats_type {
+ 	HTT_DBG_STATS_WAL_PDEV_TXRX = 1 << 0,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 496772d..e37ea39 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -30,7 +30,6 @@
+ #include "htt.h"
+ #include "txrx.h"
+ #include "testmode.h"
+-#include "wmi.h"
+ #include "wmi-tlv.h"
+ #include "wmi-ops.h"
+ #include "wow.h"
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index cdc1e64..6c6656d6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -19,7 +19,6 @@
+ #include "debug.h"
+ #include "mac.h"
+ #include "hw.h"
+-#include "mac.h"
+ #include "wmi.h"
+ #include "wmi-ops.h"
+ #include "wmi-tlv.h"
+-- 
+2.7.0
 
-Any pointers?
 
-Ian
-
---000000000000a05a3d0575b89274
-Content-Type: application/gzip; name="wireless-info.tar.gz"
-Content-Disposition: attachment; filename="wireless-info.tar.gz"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jm011okh0>
-X-Attachment-Id: f_jm011okh0
-
-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
-AwB4AAA=
---000000000000a05a3d0575b89274
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---000000000000a05a3d0575b89274--
