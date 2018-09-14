@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g0SsN-0004Yg-NC
- for ath10k@lists.infradead.org; Thu, 13 Sep 2018 14:45:49 +0000
-Received: by mail-lf1-x142.google.com with SMTP id z11-v6so5021792lff.9
- for <ath10k@lists.infradead.org>; Thu, 13 Sep 2018 07:45:36 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 2/2] ath10k: remove num_peers in hw_params for most targets
-Date: Thu, 13 Sep 2018 16:45:06 +0200
-Message-Id: <20180913144506.8272-2-erik.stromdahl@gmail.com>
-In-Reply-To: <20180913144506.8272-1-erik.stromdahl@gmail.com>
-References: <20180913144506.8272-1-erik.stromdahl@gmail.com>
+ id 1g0ggo-0000CM-B3
+ for ath10k@lists.infradead.org; Fri, 14 Sep 2018 05:30:49 +0000
+Date: Fri, 14 Sep 2018 07:18:31 +0200 (CEST)
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: [ath6kl:pending 11/35]
+ drivers/net/wireless/ath/ath10k/htt_rx.c:2544:6-14:
+ WARNING: Unsigned expression compared with zero: rate_idx < 0 (fwd)
+Message-ID: <alpine.DEB.2.21.1809140717440.2440@hadrien>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,178 +18,106 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: Anilkumar Kolli <akolli@codeaurora.org>
+Cc: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org
 
-From commit "ath10k: add per target config of max_num_peers",
-the num_peers value in struct ath10k_hw_params is used to override
-the value obtained from the WMI op version in the firmware file.
+rate_idx on line 2544 will not be less than 0.
 
-Currently, only high latency devices (USB and SDIO) need to use this
-value, since the value obtained from the WMI op version is not
-applicable for these devices.
+julia
 
-Many devices in ath10k_hw_params_list have the wrong value set.
+---------- Forwarded message ----------
+Date: Fri, 14 Sep 2018 13:15:09 +0800
+From: kbuild test robot <lkp@intel.com>
+To: kbuild@01.org
+Cc: Julia Lawall <julia.lawall@lip6.fr>
+Subject: [ath6kl:pending 11/35]
+    drivers/net/wireless/ath/ath10k/htt_rx.c:2544:6-14: WARNING: Unsigned
+    expression compared with zero: rate_idx < 0
 
-An example of this is the QCA9880 hw2.0 chipset that had (before this
-patch) num_peers set to TARGET_TLV_NUM_PEERS although the firmware
-uses WMI version ATH10K_FW_WMI_OP_VERSION_10_2_4.
+CC: kbuild-all@01.org
+CC: ath10k@lists.infradead.org
+TO: Anilkumar Kolli <akolli@codeaurora.org>
+CC: Kalle Valo <kvalo@codeaurora.org>
 
-Using the wrong value for the QCA9880 chip results in a fw crash:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+head:   958d7cecb5b17019c865b0ecaf55d409a16768ab
+commit: 0189dbd71cbd18386c7395e41c5816ae541f3e8a [11/35] ath10k: get the legacy rate index to update the txrate table
+:::::: branch date: 8 days ago
+:::::: commit date: 8 days ago
 
-ath10k_pci 0000:01:00.0: firmware crashed! (guid ddf39880-3e64-4edf-b4e4-979d31724503)
-ath10k_pci 0000:01:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 0
-ath10k_pci 0000:01:00.0: firmware ver 10.2.4-1.0-00037 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 a4a52adb
-ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-ath10k_pci 0000:01:00.0: htt-ver 0.0 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
-ath10k_pci 0000:01:00.0: firmware register dump:
-ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3 0x009B54B7 0x00955B31
-ath10k_pci 0000:01:00.0: [04]: 0x009B54B7 0x00060530 0x00000011 0x00400000
-ath10k_pci 0000:01:00.0: [08]: 0x000001B8 0x00000007 0x00443138 0x00955A00
-ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000000 0x009B548E 0x009B54AB
-ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094078E 0x00000000 0x00000000
-ath10k_pci 0000:01:00.0: [20]: 0x409B54B7 0x0040AC64 0x00400000 0x00000087
-ath10k_pci 0000:01:00.0: [24]: 0x809A3831 0x0040ACC4 0x000001B1 0xC09B54B7
-ath10k_pci 0000:01:00.0: [28]: 0x809A2F08 0x0040AD04 0x00410410 0x00000001
-ath10k_pci 0000:01:00.0: [32]: 0x80988856 0x0040AD24 0x00410410 0x00000001
-ath10k_pci 0000:01:00.0: [36]: 0x8098AF64 0x0040AD44 0x00410410 0x00000001
-ath10k_pci 0000:01:00.0: [40]: 0x809B5DEC 0x0040AD84 0x00410410 0x00410FF4
-ath10k_pci 0000:01:00.0: [44]: 0x809B1F20 0x0040ADA4 0x00400000 0x00416C54
-ath10k_pci 0000:01:00.0: [48]: 0x809C0295 0x0040ADE4 0x0040AE08 0x00411DC8
-ath10k_pci 0000:01:00.0: [52]: 0x809486FA 0x0040AE04 0x00000001 0x00000000
-ath10k_pci 0000:01:00.0: [56]: 0x80948E2C 0x0040AEA4 0x0041F290 0x004123D4
-ath10k_pci 0000:01:00.0: Copy Engine register dump:
-ath10k_pci 0000:01:00.0: [00]: 0x00057400  10  10   3   3
-ath10k_pci 0000:01:00.0: [01]: 0x00057800   3   3   8   9
-ath10k_pci 0000:01:00.0: [02]: 0x00057c00   2   2   1   2
-ath10k_pci 0000:01:00.0: [03]: 0x00058000   1   1   2   1
-ath10k_pci 0000:01:00.0: [04]: 0x00058400   0   0  40   0
-ath10k_pci 0000:01:00.0: [05]: 0x00058800   1   1   0   1
-ath10k_pci 0000:01:00.0: [06]: 0x00058c00   0   0   0   0
-ath10k_pci 0000:01:00.0: [07]: 0x00059000   0   0   0   0
+>> drivers/net/wireless/ath/ath10k/htt_rx.c:2544:6-14: WARNING: Unsigned expression compared with zero: rate_idx < 0
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+# https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=0189dbd71cbd18386c7395e41c5816ae541f3e8a
+git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+git remote update ath6kl
+git checkout 0189dbd71cbd18386c7395e41c5816ae541f3e8a
+vim +2544 drivers/net/wireless/ath/ath10k/htt_rx.c
+
+cec17c38 Anilkumar Kolli          2016-11-23  2505
+cec17c38 Anilkumar Kolli          2016-11-23  2506  static void
+cec17c38 Anilkumar Kolli          2016-11-23  2507  ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+cec17c38 Anilkumar Kolli          2016-11-23  2508  				struct ieee80211_sta *sta,
+cec17c38 Anilkumar Kolli          2016-11-23  2509  				struct ath10k_per_peer_tx_stats *peer_stats)
+cec17c38 Anilkumar Kolli          2016-11-23  2510  {
+cec17c38 Anilkumar Kolli          2016-11-23  2511  	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+0189dbd7 Anilkumar Kolli          2018-09-04  2512  	u8 rate = 0, rate_idx = 0, sgi;
+cec17c38 Anilkumar Kolli          2016-11-23  2513  	struct rate_info txrate;
+cec17c38 Anilkumar Kolli          2016-11-23  2514
+cec17c38 Anilkumar Kolli          2016-11-23  2515  	lockdep_assert_held(&ar->data_lock);
+cec17c38 Anilkumar Kolli          2016-11-23  2516
+cec17c38 Anilkumar Kolli          2016-11-23  2517  	txrate.flags = ATH10K_HW_PREAMBLE(peer_stats->ratecode);
+cec17c38 Anilkumar Kolli          2016-11-23  2518  	txrate.bw = ATH10K_HW_BW(peer_stats->flags);
+cec17c38 Anilkumar Kolli          2016-11-23  2519  	txrate.nss = ATH10K_HW_NSS(peer_stats->ratecode);
+cec17c38 Anilkumar Kolli          2016-11-23  2520  	txrate.mcs = ATH10K_HW_MCS_RATE(peer_stats->ratecode);
+cec17c38 Anilkumar Kolli          2016-11-23  2521  	sgi = ATH10K_HW_GI(peer_stats->flags);
+cec17c38 Anilkumar Kolli          2016-11-23  2522
+c1dd8016 Sven Eckelmann           2017-05-19  2523  	if (txrate.flags == WMI_RATE_PREAMBLE_VHT && txrate.mcs > 9) {
+c1dd8016 Sven Eckelmann           2017-05-19  2524  		ath10k_warn(ar, "Invalid VHT mcs %hhd peer stats",  txrate.mcs);
+c1dd8016 Sven Eckelmann           2017-05-19  2525  		return;
+c1dd8016 Sven Eckelmann           2017-05-19  2526  	}
+c1dd8016 Sven Eckelmann           2017-05-19  2527
+c1dd8016 Sven Eckelmann           2017-05-19  2528  	if (txrate.flags == WMI_RATE_PREAMBLE_HT &&
+c1dd8016 Sven Eckelmann           2017-05-19  2529  	    (txrate.mcs > 7 || txrate.nss < 1)) {
+c1dd8016 Sven Eckelmann           2017-05-19  2530  		ath10k_warn(ar, "Invalid HT mcs %hhd nss %hhd peer stats",
+c1dd8016 Sven Eckelmann           2017-05-19  2531  			    txrate.mcs, txrate.nss);
+cec17c38 Anilkumar Kolli          2016-11-23  2532  		return;
+cec17c38 Anilkumar Kolli          2016-11-23  2533  	}
+cec17c38 Anilkumar Kolli          2016-11-23  2534
+0f8a2b77 Mohammed Shafi Shajakhan 2017-01-13  2535  	memset(&arsta->txrate, 0, sizeof(arsta->txrate));
+0f8a2b77 Mohammed Shafi Shajakhan 2017-01-13  2536
+cec17c38 Anilkumar Kolli          2016-11-23  2537  	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
+cec17c38 Anilkumar Kolli          2016-11-23  2538  	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
+cec17c38 Anilkumar Kolli          2016-11-23  2539  		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
+cec17c38 Anilkumar Kolli          2016-11-23  2540  		/* This is hacky, FW sends CCK rate 5.5Mbps as 6 */
+0189dbd7 Anilkumar Kolli          2018-09-04  2541  		if (rate == 6 && txrate.flags == WMI_RATE_PREAMBLE_CCK)
+0189dbd7 Anilkumar Kolli          2018-09-04  2542  			rate = 5;
+0189dbd7 Anilkumar Kolli          2018-09-04  2543  		rate_idx = ath10k_get_legacy_rate_idx(ar, rate);
+0189dbd7 Anilkumar Kolli          2018-09-04 @2544  		if (rate_idx < 0)
+0189dbd7 Anilkumar Kolli          2018-09-04  2545  			return;
+cd591027 Mohammed Shafi Shajakhan 2017-01-12  2546  		arsta->txrate.legacy = rate;
+cec17c38 Anilkumar Kolli          2016-11-23  2547  	} else if (txrate.flags == WMI_RATE_PREAMBLE_HT) {
+cec17c38 Anilkumar Kolli          2016-11-23  2548  		arsta->txrate.flags = RATE_INFO_FLAGS_MCS;
+c1dd8016 Sven Eckelmann           2017-05-19  2549  		arsta->txrate.mcs = txrate.mcs + 8 * (txrate.nss - 1);
+cec17c38 Anilkumar Kolli          2016-11-23  2550  	} else {
+cec17c38 Anilkumar Kolli          2016-11-23  2551  		arsta->txrate.flags = RATE_INFO_FLAGS_VHT_MCS;
+cec17c38 Anilkumar Kolli          2016-11-23  2552  		arsta->txrate.mcs = txrate.mcs;
+cec17c38 Anilkumar Kolli          2016-11-23  2553  	}
+cec17c38 Anilkumar Kolli          2016-11-23  2554
+cec17c38 Anilkumar Kolli          2016-11-23  2555  	if (sgi)
+cec17c38 Anilkumar Kolli          2016-11-23  2556  		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
+cec17c38 Anilkumar Kolli          2016-11-23  2557
+cec17c38 Anilkumar Kolli          2016-11-23  2558  	arsta->txrate.nss = txrate.nss;
+91493e8e Christian Lamparter      2018-03-28  2559  	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
+cec17c38 Anilkumar Kolli          2016-11-23  2560  }
+cec17c38 Anilkumar Kolli          2016-11-23  2561
+
 ---
- drivers/net/wireless/ath/ath10k/core.c | 13 -------------
- 1 file changed, 13 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 039ddafdb3b9..11ce6c886d7c 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -86,7 +86,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -120,7 +119,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -156,7 +154,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -191,7 +188,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -226,7 +222,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -261,7 +256,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -299,7 +293,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -340,7 +333,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 11,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -388,7 +380,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 1560,
- 		.vht160_mcs_tx_highest = 1560,
- 		.n_cipher_suites = 11,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -433,7 +424,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 780,
- 		.vht160_mcs_tx_highest = 780,
- 		.n_cipher_suites = 11,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -468,7 +458,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -505,7 +494,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
-@@ -599,7 +587,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 11,
--		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 		.target_64bit = false,
--- 
-2.18.0
-
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 _______________________________________________
 ath10k mailing list
