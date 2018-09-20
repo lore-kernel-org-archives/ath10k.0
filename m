@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2r8v-0007J2-1G
+ id 1g2r8v-0007Is-0d
  for ath10k@lists.infradead.org; Thu, 20 Sep 2018 05:04:48 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Disable napi before resource cleanup to avoid
- "use after free"
-Date: Thu, 20 Sep 2018 10:34:26 +0530
-Message-Id: <20180920050426.4113-2-govinds@codeaurora.org>
-In-Reply-To: <20180920050426.4113-1-govinds@codeaurora.org>
-References: <20180920050426.4113-1-govinds@codeaurora.org>
+Subject: [PATCH 1/2] ath10k: Move napi_enable to hif_start for consistent
+ pairing
+Date: Thu, 20 Sep 2018 10:34:25 +0530
+Message-Id: <20180920050426.4113-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,10 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-CE buffers are cleaned up prior to napi disable and this is causing
-NULL pointer dereference due to "use after free".
+There is unbalanced napi_{enable,disable}() behavior as they
+are being called from hif_snoc_{power_up/stop).
 
-Disable napi before resource cleanup to avoid "use after free".
+The fix is to call napi_enable() from ath10k_snoc_hif_start()
+so that it matches with napi_disable() being called from
+ath10k_snoc_hif_stop().
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
@@ -37,20 +37,25 @@ Signed-off-by: Govind Singh <govinds@codeaurora.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index dd043b858c8e..6da951eea345 100644
+index ed52a6308f76..dd043b858c8e 100644
 --- a/drivers/net/wireless/ath/ath10k/snoc.c
 +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -911,9 +911,9 @@ static void ath10k_snoc_buffer_cleanup(struct ath10k *ar)
- static void ath10k_snoc_hif_stop(struct ath10k *ar)
- {
- 	ath10k_snoc_irq_disable(ar);
--	ath10k_snoc_buffer_cleanup(ar);
- 	napi_synchronize(&ar->napi);
- 	napi_disable(&ar->napi);
-+	ath10k_snoc_buffer_cleanup(ar);
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif stop\n");
- }
+@@ -919,6 +919,7 @@ static void ath10k_snoc_hif_stop(struct ath10k *ar)
  
+ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ {
++	napi_enable(&ar->napi);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
+ 
+@@ -1017,7 +1018,6 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar)
+ 		goto err_wlan_enable;
+ 	}
+ 
+-	napi_enable(&ar->napi);
+ 	return 0;
+ 
+ err_wlan_enable:
 -- 
 2.18.0
 
