@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.toke.dk ([52.28.52.200])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2xfy-0006Rw-UW
- for ath10k@lists.infradead.org; Thu, 20 Sep 2018 12:03:24 +0000
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [RFCv3 2/2] ath10k: report tx rate using ieee80211_tx_rate_update()
-Date: Thu, 20 Sep 2018 17:35:16 +0530
-Message-Id: <1537445116-10780-3-git-send-email-akolli@codeaurora.org>
-In-Reply-To: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
+ id 1g31XQ-0001Tl-Tl
+ for ath10k@lists.infradead.org; Thu, 20 Sep 2018 16:10:59 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [RFCv3 1/2] mac80211: implement ieee80211_tx_rate_update to
+ update rate
+In-Reply-To: <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
 References: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
+ <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
+Date: Thu, 20 Sep 2018 18:10:24 +0200
+Message-ID: <87va706tfz.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,170 +20,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Anilkumar Kolli <akolli@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Mesh path metric needs tx rate information from ieee80211_tx_status()
-call but in ath10k there is no mechanism to report tx rate information
-via ieee80211_tx_status(), the tx rate is only accessible via
-sta_statiscs() op.
+Anilkumar Kolli <akolli@codeaurora.org> writes:
 
-Per peer tx stats has tx rate info available, Tx rate is available
-to ath10k driver after every 4 PPDU sent in the air. For each PPDU,
-ath10k driver updates rate informattion to mac80211 using
-ieee80211_tx_rate_update().
+> Current mac80211 has provision to update tx status through
+> ieee80211_tx_status() and ieee80211_tx_status_ext(). But
+> drivers like ath10k updates the tx status from the skb except
+> txrate, txrate will be updated from a different path, peer stats.
+>
+> Using ieee80211_tx_status_ext() in two different paths
+>   - (one for the stats, one for the tx rate) will duplicate the stats.
+>
+> To avoid this stats duplication, ieee80211_tx_rate_update() is implemented.
+>
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> ---
+> V3:
+>   - Added new API in mac80211 to update tx rate(Johannes)
+>
+>  include/net/mac80211.h |   14 ++++++++++++++
+>  net/mac80211/status.c  |   24 ++++++++++++++++++++++++
+>  2 files changed, 38 insertions(+)
+>
+> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+> index 8c26d2d36cbe..042186a21770 100644
+> --- a/include/net/mac80211.h
+> +++ b/include/net/mac80211.h
+> @@ -4331,6 +4331,20 @@ void ieee80211_sta_set_expected_throughput(struct ieee80211_sta *pubsta,
+>  					   u32 thr);
+>  
+>  /**
+> + * ieee80211_tx_rate_update - transmit rate update callback
+> + *
+> + * This function can be used in drivers that does not have provision
+> + * in updating the tx rate in data path.
+> + *
+> + * @hw: the hardware the frame was transmitted by
+> + * @status: tx status information
+> + * @pubsta: the station to update the tx rate for.
+> + */
+> +void ieee80211_tx_rate_update(struct ieee80211_hw *hw,
+> +			      struct ieee80211_sta *pubsta,
+> +			      struct ieee80211_tx_info *info);
+> +
+> +/**
+>   * ieee80211_tx_status - transmit status callback
+>   *
+>   * Call this function for all transmitted frames after they have been
+> diff --git a/net/mac80211/status.c b/net/mac80211/status.c
+> index 9a6d7208bf4f..232297ddaa02 100644
+> --- a/net/mac80211/status.c
+> +++ b/net/mac80211/status.c
+> @@ -988,6 +988,30 @@ void ieee80211_tx_status_ext(struct ieee80211_hw *hw,
+>  }
+>  EXPORT_SYMBOL(ieee80211_tx_status_ext);
+>  
+> +void ieee80211_tx_rate_update(struct ieee80211_hw *hw,
+> +			      struct ieee80211_sta *pubsta,
+> +			      struct ieee80211_tx_info *info)
+> +{
+> +	struct ieee80211_local *local = hw_to_local(hw);
+> +	struct ieee80211_supported_band *sband;
+> +	struct sta_info *sta;
+> +	struct ieee80211_tx_status status;
+> +
+> +	sband = hw->wiphy->bands[info->band];
+> +
+> +	if (pubsta) {
 
-Per peer txrate information is updated through per peer statistics
-and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+The function does nothing if pubsta is NULL; wouldn't it make more sense
+to just mandate that it isn't NULL rather than have this check?
 
-Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
-Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
-
-Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
----
-V3:
-  - added new API to update tx rate alone.
-  - Tx rate is updated for each PPDUs sent
-
- drivers/net/wireless/ath/ath10k/core.h   |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   66 ++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
- 3 files changed, 64 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index f6e5c29f74e7..abeed6cdc4ae 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -493,6 +493,7 @@ struct ath10k_sta {
- 	u32 smps;
- 	u16 peer_id;
- 	struct rate_info txrate;
-+	struct ieee80211_tx_info tx_info;
- 
- 	struct work_struct update_wk;
- 	u64 rx_duration;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index f2405258a6d3..355c39a0486c 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2753,8 +2753,11 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 				struct ath10k_per_peer_tx_stats *peer_stats)
- {
- 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
--	u8 rate = 0, rate_idx = 0, sgi;
-+	struct ieee80211_chanctx_conf *conf = NULL;
- 	struct rate_info txrate;
-+	u8 rate = 0, sgi;
-+	int rate_idx = 0;
-+	bool skip_auto_rate;
- 
- 	lockdep_assert_held(&ar->data_lock);
- 
-@@ -2763,6 +2766,13 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 	txrate.nss = ATH10K_HW_NSS(peer_stats->ratecode);
- 	txrate.mcs = ATH10K_HW_MCS_RATE(peer_stats->ratecode);
- 	sgi = ATH10K_HW_GI(peer_stats->flags);
-+	skip_auto_rate = ATH10K_FW_SKIPPED_RATE_CTRL(peer_stats->flags);
-+
-+	/* Firmware's rate control skips broadcast/management frames,
-+	 * if host has configure fixed rates and in some other special cases.
-+	 */
-+	if (skip_auto_rate)
-+		return;
- 
- 	if (txrate.flags == WMI_RATE_PREAMBLE_VHT && txrate.mcs > 9) {
- 		ath10k_warn(ar, "Invalid VHT mcs %hhd peer stats",  txrate.mcs);
-@@ -2777,7 +2787,7 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 	}
- 
- 	memset(&arsta->txrate, 0, sizeof(arsta->txrate));
--
-+	memset(&arsta->tx_info.status, 0, sizeof(arsta->tx_info.status));
- 	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
- 	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
- 		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
-@@ -2796,11 +2806,59 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 		arsta->txrate.mcs = txrate.mcs;
- 	}
- 
--	if (sgi)
--		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-+	switch (txrate.flags) {
-+	case WMI_RATE_PREAMBLE_OFDM:
-+		if (arsta->arvif && arsta->arvif->vif)
-+			conf = rcu_dereference(arsta->arvif->vif->chanctx_conf);
-+		if (conf && conf->def.chan->band == NL80211_BAND_5GHZ)
-+			arsta->tx_info.status.rates[0].idx = rate_idx - 4;
-+		break;
-+	case WMI_RATE_PREAMBLE_CCK:
-+		arsta->tx_info.status.rates[0].idx = rate_idx;
-+		if (sgi)
-+			arsta->tx_info.status.rates[0].flags |=
-+				(IEEE80211_TX_RC_USE_SHORT_PREAMBLE |
-+				 IEEE80211_TX_RC_SHORT_GI);
-+		break;
-+	case WMI_RATE_PREAMBLE_HT:
-+		arsta->tx_info.status.rates[0].idx =
-+				txrate.mcs + ((txrate.nss - 1) * 8);
-+		if (sgi)
-+			arsta->tx_info.status.rates[0].flags |=
-+					IEEE80211_TX_RC_SHORT_GI;
-+		arsta->tx_info.status.rates[0].flags |= IEEE80211_TX_RC_MCS;
-+		break;
-+	case WMI_RATE_PREAMBLE_VHT:
-+		ieee80211_rate_set_vht(&arsta->tx_info.status.rates[0],
-+				       txrate.mcs, txrate.nss);
-+		if (sgi)
-+			arsta->tx_info.status.rates[0].flags |=
-+						IEEE80211_TX_RC_SHORT_GI;
-+		arsta->tx_info.status.rates[0].flags |= IEEE80211_TX_RC_VHT_MCS;
-+		break;
-+	}
- 
- 	arsta->txrate.nss = txrate.nss;
- 	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
-+	if (sgi)
-+		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-+
-+	switch (arsta->txrate.bw) {
-+	case RATE_INFO_BW_40:
-+		arsta->tx_info.status.rates[0].flags |=
-+				IEEE80211_TX_RC_40_MHZ_WIDTH;
-+		break;
-+	case RATE_INFO_BW_80:
-+		arsta->tx_info.status.rates[0].flags |=
-+				IEEE80211_TX_RC_80_MHZ_WIDTH;
-+		break;
-+	}
-+
-+	if (peer_stats->succ_pkts) {
-+		arsta->tx_info.flags = IEEE80211_TX_STAT_ACK;
-+		arsta->tx_info.status.rates[0].count = 1;
-+		ieee80211_tx_rate_update(ar->hw, sta, &arsta->tx_info);
-+	}
- 
- 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
- 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 15622943a885..f6799f3939bd 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4968,6 +4968,7 @@ enum wmi_rate_preamble {
- 	(((preamble) << 6) | ((nss) << 4) | (rate))
- #define ATH10K_HW_AMPDU(flags)		((flags) & 0x1)
- #define ATH10K_HW_BA_FAIL(flags)	(((flags) >> 1) & 0x3)
-+#define ATH10K_FW_SKIPPED_RATE_CTRL(flags)	(((flags) >> 6) & 0x1)
- 
- #define ATH10K_VHT_MCS_NUM	10
- #define ATH10K_BW_NUM		4
--- 
-1.7.9.5
-
+-Toke
 
 _______________________________________________
 ath10k mailing list
