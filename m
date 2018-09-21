@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3SDL-0003zl-SE
- for ath10k@lists.infradead.org; Fri, 21 Sep 2018 20:39:50 +0000
-Received: by mail-pf1-x443.google.com with SMTP id u24-v6so6451033pfn.13
- for <ath10k@lists.infradead.org>; Fri, 21 Sep 2018 13:39:36 -0700 (PDT)
-Date: Fri, 21 Sep 2018 13:39:32 -0700
+ id 1g3SGX-0005U5-2P
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 20:43:06 +0000
+Received: by mail-pl1-x643.google.com with SMTP id g2-v6so6448518plo.2
+ for <ath10k@lists.infradead.org>; Fri, 21 Sep 2018 13:42:55 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH 3/3] ath10k: download firmware via diag Copy Engine for
- QCA6174 and QCA9377.
-Message-ID: <20180921203931.GA236988@ban.mtv.corp.google.com>
-References: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
- <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
+Subject: [PATCH] ath10k: add missing sanity check on diag download
+Date: Fri, 21 Sep 2018 13:42:41 -0700
+Message-Id: <20180921204241.34316-1-briannorris@chromium.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,124 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Brian Norris <briannorris@chromium.org>, Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+ath10k_hw_diag_fast_download() generally has good boundary checking, but
+it misses verifying that the next metadata header actually fits in the
+remaining buffer space. Add such a check.
 
-On Thu, Aug 30, 2018 at 10:29:42AM +0800, Carl Huang wrote:
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-> index 677535b..25ee1c6 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.c
-> +++ b/drivers/net/wireless/ath/ath10k/hw.c
-...
-> +int ath10k_hw_diag_fast_download(struct ath10k *ar,
-> +				 u32 address,
-> +				 const void *buffer,
-> +				 u32 length)
-> +{
-> +	const u8 *buf = buffer;
-> +	bool sgmt_end = false;
-> +	u32 base_addr = 0;
-> +	u32 base_len = 0;
-> +	u32 left = 0;
-> +	struct bmi_segmented_file_header *hdr;
-> +	struct bmi_segmented_metadata *metadata;
-> +	int ret = 0;
-> +
-> +	if (length < sizeof(*hdr))
-> +		return -EINVAL;
-> +
-> +	/* check firmware header. If it has no correct magic number
-> +	 * or it's compressed, returns error.
-> +	 */
-> +	hdr = (struct bmi_segmented_file_header *)buf;
-> +	if (hdr->magic_num != BMI_SGMTFILE_MAGIC_NUM) {
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> +			   "Not a supported firmware, magic_num:0x%x\n",
-> +			   hdr->magic_num);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (hdr->file_flags != 0) {
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> +			   "Not a supported firmware, file_flags:0x%x\n",
-> +			   hdr->file_flags);
-> +		return -EINVAL;
-> +	}
-> +
-> +	metadata = (struct bmi_segmented_metadata *)hdr->data;
-> +	left = length - sizeof(*hdr);
-> +
-> +	while (left > 0) {
-> +		base_addr = metadata->addr;
-> +		base_len = metadata->length;
-> +		buf = metadata->data;
-> +		left -= sizeof(*metadata);
+Fixes: 39501ea64116 ("ath10k: download firmware via diag Copy Engine for QCA6174 and QCA9377.")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+ drivers/net/wireless/ath/ath10k/hw.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-You need to ensure 'left >= sizeof(*metadata)' before this block. I can
-send a patch.
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index 2c2870e3e84d..af8ae8117c62 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -1044,6 +1044,12 @@ int ath10k_hw_diag_fast_download(struct ath10k *ar,
+ 	left = length - sizeof(*hdr);
+ 
+ 	while (left > 0) {
++		if (left < sizeof(*metadata)) {
++			ath10k_warn(ar, "firmware segment is truncated: %d\n",
++				    left);
++			ret = -EINVAL;
++			break;
++		}
+ 		base_addr = __le32_to_cpu(metadata->addr);
+ 		base_len = __le32_to_cpu(metadata->length);
+ 		buf = metadata->data;
+-- 
+2.19.0.444.g18242da7ef-goog
 
-Brian
-
-> +
-> +		switch (base_len) {
-> +		case BMI_SGMTFILE_BEGINADDR:
-> +			/* base_addr is the start address to run */
-> +			ret = ath10k_bmi_set_start(ar, base_addr);
-> +			base_len = 0;
-> +			break;
-> +		case BMI_SGMTFILE_DONE:
-> +			/* no more segment */
-> +			base_len = 0;
-> +			sgmt_end = true;
-> +			ret = 0;
-> +			break;
-> +		case BMI_SGMTFILE_BDDATA:
-> +		case BMI_SGMTFILE_EXEC:
-> +			ath10k_warn(ar,
-> +				    "firmware has unsupported segment:%d\n",
-> +				    base_len);
-> +			ret = -EINVAL;
-> +			break;
-> +		default:
-> +			if (base_len > left) {
-> +				/* sanity check */
-> +				ath10k_warn(ar,
-> +					    "firmware has invalid segment length, %d > %d\n",
-> +					    base_len, left);
-> +				ret = -EINVAL;
-> +				break;
-> +			}
-> +
-> +			ret = ath10k_hw_diag_segment_download(ar,
-> +							      buf,
-> +							      base_addr,
-> +							      base_len);
-> +
-> +			if (ret)
-> +				ath10k_warn(ar,
-> +					    "failed to download firmware via diag interface:%d\n",
-> +					    ret);
-> +			break;
-> +		}
-> +
-> +		if (ret || sgmt_end)
-> +			break;
-> +
-> +		metadata = (struct bmi_segmented_metadata *)(buf + base_len);
-> +		left -= base_len;
-> +	}
-> +
-> +	if (ret == 0)
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> +			   "boot firmware fast diag download successfully.\n");
-> +	return ret;
-> +}
-> +
->  const struct ath10k_hw_ops qca988x_ops = {
->  	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
->  };
 
 _______________________________________________
 ath10k mailing list
