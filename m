@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3HRf-0003pa-7z
- for ath10k@lists.infradead.org; Fri, 21 Sep 2018 09:09:57 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 4/4] dts: arm64/sdm845: Enable iommu for WCN3990 wifi module
- device node
-Date: Fri, 21 Sep 2018 14:39:07 +0530
-Message-Id: <20180921090907.25937-5-govinds@codeaurora.org>
-In-Reply-To: <20180921090907.25937-1-govinds@codeaurora.org>
-References: <20180921090907.25937-1-govinds@codeaurora.org>
+ id 1g3KRh-0000Pj-T5
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 12:22:09 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [RFCv3 1/2] mac80211: implement ieee80211_tx_rate_update to
+ update rate
+In-Reply-To: <29efd8dc90c7ea75f6cd0d7e3787b463@codeaurora.org>
+References: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
+ <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
+ <87va706tfz.fsf@toke.dk> <29efd8dc90c7ea75f6cd0d7e3787b463@codeaurora.org>
+Date: Fri, 21 Sep 2018 14:21:50 +0200
+Message-ID: <87worfhwgx.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,38 +21,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, devicetree@vger.kernel.org
-Cc: Govind Singh <govinds@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org
+To: Anilkumar Kolli <akolli@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-WCN3990 wifi module can optionally make use of the IOMMU.
-Add phandle to the iommu and stream id of wifi iommu block.
-
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index b0b107641e74..5f5848cb1699 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1224,6 +1224,7 @@
- 				<0 423 0 /* CE9 */ >,
- 				<0 424 0 /* CE10 */ >,
- 				<0 425 0 /* CE11 */ >;
-+			iommus = <&apps_smmu 0x0040 0x1>;
- 		};
- 	};
- };
--- 
-2.17.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW5pbGt1bWFyIEtvbGxpIDxha29sbGlAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKCj4gT24gMjAx
+OC0wOS0yMCAyMTo0MCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+PiBBbmlsa3Vt
+YXIgS29sbGkgPGFrb2xsaUBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+PiAKPj4+IEN1cnJlbnQg
+bWFjODAyMTEgaGFzIHByb3Zpc2lvbiB0byB1cGRhdGUgdHggc3RhdHVzIHRocm91Z2gKPj4+IGll
+ZWU4MDIxMV90eF9zdGF0dXMoKSBhbmQgaWVlZTgwMjExX3R4X3N0YXR1c19leHQoKS4gQnV0Cj4+
+PiBkcml2ZXJzIGxpa2UgYXRoMTBrIHVwZGF0ZXMgdGhlIHR4IHN0YXR1cyBmcm9tIHRoZSBza2Ig
+ZXhjZXB0Cj4+PiB0eHJhdGUsIHR4cmF0ZSB3aWxsIGJlIHVwZGF0ZWQgZnJvbSBhIGRpZmZlcmVu
+dCBwYXRoLCBwZWVyIHN0YXRzLgo+Pj4gCj4+PiBVc2luZyBpZWVlODAyMTFfdHhfc3RhdHVzX2V4
+dCgpIGluIHR3byBkaWZmZXJlbnQgcGF0aHMKPj4+ICAgLSAob25lIGZvciB0aGUgc3RhdHMsIG9u
+ZSBmb3IgdGhlIHR4IHJhdGUpIHdpbGwgZHVwbGljYXRlIHRoZSBzdGF0cy4KPj4+IAo+Pj4gVG8g
+YXZvaWQgdGhpcyBzdGF0cyBkdXBsaWNhdGlvbiwgaWVlZTgwMjExX3R4X3JhdGVfdXBkYXRlKCkg
+aXMgCj4+PiBpbXBsZW1lbnRlZC4KPj4+IAo+Pj4gU2lnbmVkLW9mZi1ieTogQW5pbGt1bWFyIEtv
+bGxpIDxha29sbGlAY29kZWF1cm9yYS5vcmc+Cj4+PiAtLS0KPj4+IFYzOgo+Pj4gICAtIEFkZGVk
+IG5ldyBBUEkgaW4gbWFjODAyMTEgdG8gdXBkYXRlIHR4IHJhdGUoSm9oYW5uZXMpCj4+PiAKPj4+
+ICBpbmNsdWRlL25ldC9tYWM4MDIxMS5oIHwgICAxNCArKysrKysrKysrKysrKwo+Pj4gIG5ldC9t
+YWM4MDIxMS9zdGF0dXMuYyAgfCAgIDI0ICsrKysrKysrKysrKysrKysrKysrKysrKwo+Pj4gIDIg
+ZmlsZXMgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygrKQo+Pj4gCj4+PiBkaWZmIC0tZ2l0IGEvaW5j
+bHVkZS9uZXQvbWFjODAyMTEuaCBiL2luY2x1ZGUvbmV0L21hYzgwMjExLmgKPj4+IGluZGV4IDhj
+MjZkMmQzNmNiZS4uMDQyMTg2YTIxNzcwIDEwMDY0NAo+Pj4gLS0tIGEvaW5jbHVkZS9uZXQvbWFj
+ODAyMTEuaAo+Pj4gKysrIGIvaW5jbHVkZS9uZXQvbWFjODAyMTEuaAo+Pj4gQEAgLTQzMzEsNiAr
+NDMzMSwyMCBAQCB2b2lkIAo+Pj4gaWVlZTgwMjExX3N0YV9zZXRfZXhwZWN0ZWRfdGhyb3VnaHB1
+dChzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqcHVic3RhLAo+Pj4gIAkJCQkJICAgdTMyIHRocik7Cj4+
+PiAKPj4+ICAvKioKPj4+ICsgKiBpZWVlODAyMTFfdHhfcmF0ZV91cGRhdGUgLSB0cmFuc21pdCBy
+YXRlIHVwZGF0ZSBjYWxsYmFjawo+Pj4gKyAqCj4+PiArICogVGhpcyBmdW5jdGlvbiBjYW4gYmUg
+dXNlZCBpbiBkcml2ZXJzIHRoYXQgZG9lcyBub3QgaGF2ZSBwcm92aXNpb24KPj4+ICsgKiBpbiB1
+cGRhdGluZyB0aGUgdHggcmF0ZSBpbiBkYXRhIHBhdGguCj4+PiArICoKPj4+ICsgKiBAaHc6IHRo
+ZSBoYXJkd2FyZSB0aGUgZnJhbWUgd2FzIHRyYW5zbWl0dGVkIGJ5Cj4+PiArICogQHN0YXR1czog
+dHggc3RhdHVzIGluZm9ybWF0aW9uCj4+PiArICogQHB1YnN0YTogdGhlIHN0YXRpb24gdG8gdXBk
+YXRlIHRoZSB0eCByYXRlIGZvci4KPj4+ICsgKi8KPj4+ICt2b2lkIGllZWU4MDIxMV90eF9yYXRl
+X3VwZGF0ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPj4+ICsJCQkgICAgICBzdHJ1Y3QgaWVl
+ZTgwMjExX3N0YSAqcHVic3RhLAo+Pj4gKwkJCSAgICAgIHN0cnVjdCBpZWVlODAyMTFfdHhfaW5m
+byAqaW5mbyk7Cj4+PiArCj4+PiArLyoqCj4+PiAgICogaWVlZTgwMjExX3R4X3N0YXR1cyAtIHRy
+YW5zbWl0IHN0YXR1cyBjYWxsYmFjawo+Pj4gICAqCj4+PiAgICogQ2FsbCB0aGlzIGZ1bmN0aW9u
+IGZvciBhbGwgdHJhbnNtaXR0ZWQgZnJhbWVzIGFmdGVyIHRoZXkgaGF2ZSBiZWVuCj4+PiBkaWZm
+IC0tZ2l0IGEvbmV0L21hYzgwMjExL3N0YXR1cy5jIGIvbmV0L21hYzgwMjExL3N0YXR1cy5jCj4+
+PiBpbmRleCA5YTZkNzIwOGJmNGYuLjIzMjI5N2RkYWEwMiAxMDA2NDQKPj4+IC0tLSBhL25ldC9t
+YWM4MDIxMS9zdGF0dXMuYwo+Pj4gKysrIGIvbmV0L21hYzgwMjExL3N0YXR1cy5jCj4+PiBAQCAt
+OTg4LDYgKzk4OCwzMCBAQCB2b2lkIGllZWU4MDIxMV90eF9zdGF0dXNfZXh0KHN0cnVjdCBpZWVl
+ODAyMTFfaHcgCj4+PiAqaHcsCj4+PiAgfQo+Pj4gIEVYUE9SVF9TWU1CT0woaWVlZTgwMjExX3R4
+X3N0YXR1c19leHQpOwo+Pj4gCj4+PiArdm9pZCBpZWVlODAyMTFfdHhfcmF0ZV91cGRhdGUoc3Ry
+dWN0IGllZWU4MDIxMV9odyAqaHcsCj4+PiArCQkJICAgICAgc3RydWN0IGllZWU4MDIxMV9zdGEg
+KnB1YnN0YSwKPj4+ICsJCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3R4X2luZm8gKmluZm8pCj4+
+PiArewo+Pj4gKwlzdHJ1Y3QgaWVlZTgwMjExX2xvY2FsICpsb2NhbCA9IGh3X3RvX2xvY2FsKGh3
+KTsKPj4+ICsJc3RydWN0IGllZWU4MDIxMV9zdXBwb3J0ZWRfYmFuZCAqc2JhbmQ7Cj4+PiArCXN0
+cnVjdCBzdGFfaW5mbyAqc3RhOwo+Pj4gKwlzdHJ1Y3QgaWVlZTgwMjExX3R4X3N0YXR1cyBzdGF0
+dXM7Cj4+PiArCj4+PiArCXNiYW5kID0gaHctPndpcGh5LT5iYW5kc1tpbmZvLT5iYW5kXTsKPj4+
+ICsKPj4+ICsJaWYgKHB1YnN0YSkgewo+PiAKPj4gVGhlIGZ1bmN0aW9uIGRvZXMgbm90aGluZyBp
+ZiBwdWJzdGEgaXMgTlVMTDsgd291bGRuJ3QgaXQgbWFrZSBtb3JlIAo+PiBzZW5zZQo+PiB0byBq
+dXN0IG1hbmRhdGUgdGhhdCBpdCBpc24ndCBOVUxMIHJhdGhlciB0aGFuIGhhdmUgdGhpcyBjaGVj
+az8KPj4gCj4KPiBBVEgxMEsgZHJpdmVyIGFsd2F5cyBjYWxscyB0aGlzIGZ1bmN0aW9uIHdpdGgg
+YSB2YWxpZCBTVEEgW25vdCBOVUxMXS4KClllYWgsIHNvIHdoeSB0aGUgY2hlY2sgZm9yIG5vbi1O
+VUxMPyA6KQoKLVRva2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
