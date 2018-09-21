@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3HRS-0003nD-6Y
- for ath10k@lists.infradead.org; Fri, 21 Sep 2018 09:09:42 +0000
+ id 1g3HRf-0003pa-7z
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 09:09:57 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 0/4] Enable ath10k wcn3990 wifi driver support on sdm845
-Date: Fri, 21 Sep 2018 14:39:03 +0530
-Message-Id: <20180921090907.25937-1-govinds@codeaurora.org>
+Subject: [PATCH 4/4] dts: arm64/sdm845: Enable iommu for WCN3990 wifi module
+ device node
+Date: Fri, 21 Sep 2018 14:39:07 +0530
+Message-Id: <20180921090907.25937-5-govinds@codeaurora.org>
+In-Reply-To: <20180921090907.25937-1-govinds@codeaurora.org>
+References: <20180921090907.25937-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +26,26 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, devicetree@vger.kernel.org
 Cc: Govind Singh <govinds@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org
 
-This series enables ath10k wifi driver support for WCN3990 target
-on sdm845 SOC. This series also updates the missing dt binding documentation
-and adds optional iommu property.
+WCN3990 wifi module can optionally make use of the IOMMU.
+Add phandle to the iommu and stream id of wifi iommu block.
 
-sdm845 dtsi changes in this series are based on top of
-https://patchwork.kernel.org/cover/10573121/ change.
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Govind Singh (4):
-  dt: bindings: add missing dt properties for WCN3990 wifi node
-  dts: arm64/sdm845: Add WCN3990 WLAN module device node
-  dt: bindings: add bindings for wifi iommu node
-  dts: arm64/sdm845: Enable iommu for WCN3990 wifi module device node
-
- .../bindings/net/wireless/qcom,ath10k.txt     | 27 ++++++++++++++-----
- arch/arm64/boot/dts/qcom/sdm845-mtp.dts       |  7 +++++
- arch/arm64/boot/dts/qcom/sdm845.dtsi          | 26 ++++++++++++++++++
- 3 files changed, 53 insertions(+), 7 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index b0b107641e74..5f5848cb1699 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -1224,6 +1224,7 @@
+ 				<0 423 0 /* CE9 */ >,
+ 				<0 424 0 /* CE10 */ >,
+ 				<0 425 0 /* CE11 */ >;
++			iommus = <&apps_smmu 0x0040 0x1>;
+ 		};
+ 	};
+ };
 -- 
 2.17.0
 
