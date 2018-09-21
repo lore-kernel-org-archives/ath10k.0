@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3HRS-0003o0-6E
+ id 1g3HRS-0003nD-6Y
  for ath10k@lists.infradead.org; Fri, 21 Sep 2018 09:09:42 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 3/4] dt: bindings: add bindings for wifi iommu node
-Date: Fri, 21 Sep 2018 14:39:06 +0530
-Message-Id: <20180921090907.25937-4-govinds@codeaurora.org>
-In-Reply-To: <20180921090907.25937-1-govinds@codeaurora.org>
-References: <20180921090907.25937-1-govinds@codeaurora.org>
+Subject: [PATCH 0/4] Enable ath10k wcn3990 wifi driver support on sdm845
+Date: Fri, 21 Sep 2018 14:39:03 +0530
+Message-Id: <20180921090907.25937-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,36 +23,24 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, devicetree@vger.kernel.org
 Cc: Govind Singh <govinds@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org
 
-WCN3990 wifi module can optionally make use of the IOMMU.
-Add binding documentation for phandle to the IOMMU and
-the stream id of wifi iommu block.
+This series enables ath10k wifi driver support for WCN3990 target
+on sdm845 SOC. This series also updates the missing dt binding documentation
+and adds optional iommu property.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt         | 5 +++++
- 1 file changed, 5 insertions(+)
+sdm845 dtsi changes in this series are based on top of
+https://patchwork.kernel.org/cover/10573121/ change.
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 22dea7d83ee8..07e58008c665 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -59,6 +59,10 @@ Optional properties:
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" are "vdd-0.8-cx-mx",
- 			   "vdd-1.8-xo", "vdd-1.3-rfa" and "vdd-3.3-ch0".
-+- iommus:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: A list of phandle and IOMMU specifier pairs.
- 
- Example (to supply the calibration data alone):
- 
-@@ -157,4 +161,5 @@ wifi@18000000 {
- 		vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
- 		vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
- 		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
-+		iommus = <&apps_smmu 0x0040 0x1>;
- };
+Govind Singh (4):
+  dt: bindings: add missing dt properties for WCN3990 wifi node
+  dts: arm64/sdm845: Add WCN3990 WLAN module device node
+  dt: bindings: add bindings for wifi iommu node
+  dts: arm64/sdm845: Enable iommu for WCN3990 wifi module device node
+
+ .../bindings/net/wireless/qcom,ath10k.txt     | 27 ++++++++++++++-----
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts       |  7 +++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 26 ++++++++++++++++++
+ 3 files changed, 53 insertions(+), 7 deletions(-)
+
 -- 
 2.17.0
 
