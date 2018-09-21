@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3DgJ-0002DM-1x
- for ath10k@lists.infradead.org; Fri, 21 Sep 2018 05:08:44 +0000
+ id 1g3HRS-0003nh-0n
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 09:09:39 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH 2/4] dts: arm64/sdm845: Add WCN3990 WLAN module device node
+Date: Fri, 21 Sep 2018 14:39:05 +0530
+Message-Id: <20180921090907.25937-3-govinds@codeaurora.org>
+In-Reply-To: <20180921090907.25937-1-govinds@codeaurora.org>
+References: <20180921090907.25937-1-govinds@codeaurora.org>
 MIME-Version: 1.0
-Date: Fri, 21 Sep 2018 10:38:31 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [RFCv3 1/2] mac80211: implement ieee80211_tx_rate_update to
- update rate
-In-Reply-To: <87va706tfz.fsf@toke.dk>
-References: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
- <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
- <87va706tfz.fsf@toke.dk>
-Message-ID: <29efd8dc90c7ea75f6cd0d7e3787b463@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +18,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, devicetree@vger.kernel.org
+Cc: Govind Singh <govinds@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org
 
-T24gMjAxOC0wOS0yMCAyMTo0MCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEFu
-aWxrdW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IEN1cnJl
-bnQgbWFjODAyMTEgaGFzIHByb3Zpc2lvbiB0byB1cGRhdGUgdHggc3RhdHVzIHRocm91Z2gKPj4g
-aWVlZTgwMjExX3R4X3N0YXR1cygpIGFuZCBpZWVlODAyMTFfdHhfc3RhdHVzX2V4dCgpLiBCdXQK
-Pj4gZHJpdmVycyBsaWtlIGF0aDEwayB1cGRhdGVzIHRoZSB0eCBzdGF0dXMgZnJvbSB0aGUgc2ti
-IGV4Y2VwdAo+PiB0eHJhdGUsIHR4cmF0ZSB3aWxsIGJlIHVwZGF0ZWQgZnJvbSBhIGRpZmZlcmVu
-dCBwYXRoLCBwZWVyIHN0YXRzLgo+PiAKPj4gVXNpbmcgaWVlZTgwMjExX3R4X3N0YXR1c19leHQo
-KSBpbiB0d28gZGlmZmVyZW50IHBhdGhzCj4+ICAgLSAob25lIGZvciB0aGUgc3RhdHMsIG9uZSBm
-b3IgdGhlIHR4IHJhdGUpIHdpbGwgZHVwbGljYXRlIHRoZSBzdGF0cy4KPj4gCj4+IFRvIGF2b2lk
-IHRoaXMgc3RhdHMgZHVwbGljYXRpb24sIGllZWU4MDIxMV90eF9yYXRlX3VwZGF0ZSgpIGlzIAo+
-PiBpbXBsZW1lbnRlZC4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IEFuaWxrdW1hciBLb2xsaSA8YWtv
-bGxpQGNvZGVhdXJvcmEub3JnPgo+PiAtLS0KPj4gVjM6Cj4+ICAgLSBBZGRlZCBuZXcgQVBJIGlu
-IG1hYzgwMjExIHRvIHVwZGF0ZSB0eCByYXRlKEpvaGFubmVzKQo+PiAKPj4gIGluY2x1ZGUvbmV0
-L21hYzgwMjExLmggfCAgIDE0ICsrKysrKysrKysrKysrCj4+ICBuZXQvbWFjODAyMTEvc3RhdHVz
-LmMgIHwgICAyNCArKysrKysrKysrKysrKysrKysrKysrKysKPj4gIDIgZmlsZXMgY2hhbmdlZCwg
-MzggaW5zZXJ0aW9ucygrKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbmV0L21hYzgwMjEx
-LmggYi9pbmNsdWRlL25ldC9tYWM4MDIxMS5oCj4+IGluZGV4IDhjMjZkMmQzNmNiZS4uMDQyMTg2
-YTIxNzcwIDEwMDY0NAo+PiAtLS0gYS9pbmNsdWRlL25ldC9tYWM4MDIxMS5oCj4+ICsrKyBiL2lu
-Y2x1ZGUvbmV0L21hYzgwMjExLmgKPj4gQEAgLTQzMzEsNiArNDMzMSwyMCBAQCB2b2lkIAo+PiBp
-ZWVlODAyMTFfc3RhX3NldF9leHBlY3RlZF90aHJvdWdocHV0KHN0cnVjdCBpZWVlODAyMTFfc3Rh
-ICpwdWJzdGEsCj4+ICAJCQkJCSAgIHUzMiB0aHIpOwo+PiAKPj4gIC8qKgo+PiArICogaWVlZTgw
-MjExX3R4X3JhdGVfdXBkYXRlIC0gdHJhbnNtaXQgcmF0ZSB1cGRhdGUgY2FsbGJhY2sKPj4gKyAq
-Cj4+ICsgKiBUaGlzIGZ1bmN0aW9uIGNhbiBiZSB1c2VkIGluIGRyaXZlcnMgdGhhdCBkb2VzIG5v
-dCBoYXZlIHByb3Zpc2lvbgo+PiArICogaW4gdXBkYXRpbmcgdGhlIHR4IHJhdGUgaW4gZGF0YSBw
-YXRoLgo+PiArICoKPj4gKyAqIEBodzogdGhlIGhhcmR3YXJlIHRoZSBmcmFtZSB3YXMgdHJhbnNt
-aXR0ZWQgYnkKPj4gKyAqIEBzdGF0dXM6IHR4IHN0YXR1cyBpbmZvcm1hdGlvbgo+PiArICogQHB1
-YnN0YTogdGhlIHN0YXRpb24gdG8gdXBkYXRlIHRoZSB0eCByYXRlIGZvci4KPj4gKyAqLwo+PiAr
-dm9pZCBpZWVlODAyMTFfdHhfcmF0ZV91cGRhdGUoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4+
-ICsJCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqcHVic3RhLAo+PiArCQkJICAgICAgc3Ry
-dWN0IGllZWU4MDIxMV90eF9pbmZvICppbmZvKTsKPj4gKwo+PiArLyoqCj4+ICAgKiBpZWVlODAy
-MTFfdHhfc3RhdHVzIC0gdHJhbnNtaXQgc3RhdHVzIGNhbGxiYWNrCj4+ICAgKgo+PiAgICogQ2Fs
-bCB0aGlzIGZ1bmN0aW9uIGZvciBhbGwgdHJhbnNtaXR0ZWQgZnJhbWVzIGFmdGVyIHRoZXkgaGF2
-ZSBiZWVuCj4+IGRpZmYgLS1naXQgYS9uZXQvbWFjODAyMTEvc3RhdHVzLmMgYi9uZXQvbWFjODAy
-MTEvc3RhdHVzLmMKPj4gaW5kZXggOWE2ZDcyMDhiZjRmLi4yMzIyOTdkZGFhMDIgMTAwNjQ0Cj4+
-IC0tLSBhL25ldC9tYWM4MDIxMS9zdGF0dXMuYwo+PiArKysgYi9uZXQvbWFjODAyMTEvc3RhdHVz
-LmMKPj4gQEAgLTk4OCw2ICs5ODgsMzAgQEAgdm9pZCBpZWVlODAyMTFfdHhfc3RhdHVzX2V4dChz
-dHJ1Y3QgaWVlZTgwMjExX2h3IAo+PiAqaHcsCj4+ICB9Cj4+ICBFWFBPUlRfU1lNQk9MKGllZWU4
-MDIxMV90eF9zdGF0dXNfZXh0KTsKPj4gCj4+ICt2b2lkIGllZWU4MDIxMV90eF9yYXRlX3VwZGF0
-ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPj4gKwkJCSAgICAgIHN0cnVjdCBpZWVlODAyMTFf
-c3RhICpwdWJzdGEsCj4+ICsJCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3R4X2luZm8gKmluZm8p
-Cj4+ICt7Cj4+ICsJc3RydWN0IGllZWU4MDIxMV9sb2NhbCAqbG9jYWwgPSBod190b19sb2NhbCho
-dyk7Cj4+ICsJc3RydWN0IGllZWU4MDIxMV9zdXBwb3J0ZWRfYmFuZCAqc2JhbmQ7Cj4+ICsJc3Ry
-dWN0IHN0YV9pbmZvICpzdGE7Cj4+ICsJc3RydWN0IGllZWU4MDIxMV90eF9zdGF0dXMgc3RhdHVz
-Owo+PiArCj4+ICsJc2JhbmQgPSBody0+d2lwaHktPmJhbmRzW2luZm8tPmJhbmRdOwo+PiArCj4+
-ICsJaWYgKHB1YnN0YSkgewo+IAo+IFRoZSBmdW5jdGlvbiBkb2VzIG5vdGhpbmcgaWYgcHVic3Rh
-IGlzIE5VTEw7IHdvdWxkbid0IGl0IG1ha2UgbW9yZSAKPiBzZW5zZQo+IHRvIGp1c3QgbWFuZGF0
-ZSB0aGF0IGl0IGlzbid0IE5VTEwgcmF0aGVyIHRoYW4gaGF2ZSB0aGlzIGNoZWNrPwo+IAoKQVRI
-MTBLIGRyaXZlciBhbHdheXMgY2FsbHMgdGhpcyBmdW5jdGlvbiB3aXRoIGEgdmFsaWQgU1RBIFtu
-b3QgTlVMTF0uCgpUaGFua3MKQW5pbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Add device node for the ath10k SNOC platform driver probe
+and add resources required for WCN3990 on SDM845 soc.
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts |  7 +++++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi    | 25 +++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+index eedfaf8922e2..4de57f7df93c 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+@@ -440,3 +440,10 @@
+ 		bias-pull-up;
+ 	};
+ };
++
++&wifi {
++	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
++	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
++	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
++	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
++};
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index e080072cdfdb..b0b107641e74 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -86,6 +86,11 @@
+ 			reg = <0 0x86200000 0 0x2d00000>;
+ 			no-map;
+ 		};
++
++		wlan_msa_mem: reserved-memory@96700000 {
++			no-map;
++			reg = <0 0x96700000 0 0x100000>;
++		};
+ 	};
+ 
+ 	cpus {
+@@ -1200,5 +1205,25 @@
+ 				status = "disabled";
+ 			};
+ 		};
++
++		qcom,wifi {
++			compatible = "qcom,wcn3990-wifi";
++			reg = <0x18800000 0x800000>;
++			reg-names = "membase";
++			memory-region = <&wlan_msa_mem>;
++			interrupts =
++				<0 413 0 /* CE0 */ >,
++				<0 414 0 /* CE1 */ >,
++				<0 415 0 /* CE2 */ >,
++				<0 416 0 /* CE3 */ >,
++				<0 417 0 /* CE4 */ >,
++				<0 418 0 /* CE5 */ >,
++				<0 420 0 /* CE6 */ >,
++				<0 421 0 /* CE7 */ >,
++				<0 422 0 /* CE8 */ >,
++				<0 423 0 /* CE9 */ >,
++				<0 424 0 /* CE10 */ >,
++				<0 425 0 /* CE11 */ >;
++		};
+ 	};
+ };
+-- 
+2.17.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
