@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g39L3-0005sU-BD
- for ath10k@lists.infradead.org; Fri, 21 Sep 2018 00:30:33 +0000
-From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Subject: [PATCH v5 2/3] mac80211: support FTM responder
- configuration/statistics
-Date: Thu, 20 Sep 2018 17:30:10 -0700
-Message-Id: <1537489811-5752-3-git-send-email-pradeepc@codeaurora.org>
-In-Reply-To: <1537489811-5752-1-git-send-email-pradeepc@codeaurora.org>
-References: <1537489811-5752-1-git-send-email-pradeepc@codeaurora.org>
+ id 1g3DgJ-0002DM-1x
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 05:08:44 +0000
+MIME-Version: 1.0
+Date: Fri, 21 Sep 2018 10:38:31 +0530
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: Re: [RFCv3 1/2] mac80211: implement ieee80211_tx_rate_update to
+ update rate
+In-Reply-To: <87va706tfz.fsf@toke.dk>
+References: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
+ <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
+ <87va706tfz.fsf@toke.dk>
+Message-ID: <29efd8dc90c7ea75f6cd0d7e3787b463@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,301 +21,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, ath10k@lists.infradead.org
-Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>, Johannes Berg <johannes.berg@intel.com>
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-New bss param ftm_responder is used to notify the driver to
-enable fine timing request (FTM) responder role in AP mode.
-
-Plumb the new cfg80211 API for FTM responder statistics through to
-the driver API in mac80211.
-
-Signed-off-by: David Spinadel <david.spinadel@intel.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
----
-v5:
- - renamed 'civic' param to 'civicloc'
-
-v4:
- - no changes
-
-v3:
- - fixed ftm responder disabled case to be not supported.
- - changed ftm_responder param from bool to s8.
-
- include/net/mac80211.h    | 13 ++++++++
- net/mac80211/cfg.c        | 84 +++++++++++++++++++++++++++++++++++++++++++++++
- net/mac80211/driver-ops.h | 16 +++++++++
- net/mac80211/trace.h      | 23 +++++++++++++
- net/mac80211/util.c       |  3 ++
- 5 files changed, 139 insertions(+)
-
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 8c26d2d36cbe..5425d65128c8 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -309,6 +309,8 @@ struct ieee80211_vif_chanctx_switch {
-  * @BSS_CHANGED_KEEP_ALIVE: keep alive options (idle period or protected
-  *	keep alive) changed.
-  * @BSS_CHANGED_MCAST_RATE: Multicast Rate setting changed for this interface
-+ * @BSS_CHANGED_FTM_RESPONDER: fime timing reasurement request responder
-+ *	functionality changed for this BSS (AP mode).
-  *
-  */
- enum ieee80211_bss_change {
-@@ -338,6 +340,7 @@ enum ieee80211_bss_change {
- 	BSS_CHANGED_MU_GROUPS		= 1<<23,
- 	BSS_CHANGED_KEEP_ALIVE		= 1<<24,
- 	BSS_CHANGED_MCAST_RATE		= 1<<25,
-+	BSS_CHANGED_FTM_RESPONDER	= 1<<26,
- 
- 	/* when adding here, make sure to change ieee80211_reconfig */
- };
-@@ -562,6 +565,9 @@ struct ieee80211_mu_group_data {
-  * @protected_keep_alive: if set, indicates that the station should send an RSN
-  *	protected frame to the AP to reset the idle timer at the AP for the
-  *	station.
-+ * @ftm_responder: whether to enable or disable fine timing measurement FTM
-+ *	responder functionality.
-+ * @ftmr_params: configurable lci/civic parameter when enabling FTM responder.
-  */
- struct ieee80211_bss_conf {
- 	const u8 *bssid;
-@@ -612,6 +618,8 @@ struct ieee80211_bss_conf {
- 	bool allow_p2p_go_ps;
- 	u16 max_idle_period;
- 	bool protected_keep_alive;
-+	s8 ftm_responder;
-+	struct cfg80211_ftm_responder_params *ftmr_params;
- };
- 
- /**
-@@ -3580,6 +3588,8 @@ enum ieee80211_reconfig_type {
-  * @del_nan_func: Remove a NAN function. The driver must call
-  *	ieee80211_nan_func_terminated() with
-  *	NL80211_NAN_FUNC_TERM_REASON_USER_REQUEST reason code upon removal.
-+ * @get_ftm_responder_stats: Retrieve FTM responder statistics, if available.
-+ *	Statistics should be cumulative, currently no way to reset is provided.
-  */
- struct ieee80211_ops {
- 	void (*tx)(struct ieee80211_hw *hw,
-@@ -3862,6 +3872,9 @@ struct ieee80211_ops {
- 	void (*del_nan_func)(struct ieee80211_hw *hw,
- 			    struct ieee80211_vif *vif,
- 			    u8 instance_id);
-+	int (*get_ftm_responder_stats)(struct ieee80211_hw *hw,
-+				       struct ieee80211_vif *vif,
-+				       struct cfg80211_ftm_responder_stats *ftm_stats);
- };
- 
- /**
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 504627e2117f..5f1d7a76678a 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -790,6 +790,48 @@ static int ieee80211_set_probe_resp(struct ieee80211_sub_if_data *sdata,
- 	return 0;
- }
- 
-+static int ieee80211_set_ftm_responder_params(
-+				struct ieee80211_sub_if_data *sdata,
-+				const u8 *lci, size_t lci_len,
-+				const u8 *civicloc, size_t civicloc_len)
-+{
-+	struct cfg80211_ftm_responder_params *new, *old;
-+	struct ieee80211_bss_conf *bss_conf;
-+	u8 *pos;
-+	int len;
-+
-+	if ((!lci || !lci_len) && (!civicloc || !civicloc_len))
-+		return 1;
-+
-+	bss_conf = &sdata->vif.bss_conf;
-+	old = bss_conf->ftmr_params;
-+	len = lci_len + civicloc_len;
-+
-+	new = kzalloc(sizeof(*new) + len, GFP_KERNEL);
-+	if (!new)
-+		return -ENOMEM;
-+
-+	pos = (u8 *)(new + 1);
-+	if (lci_len) {
-+		new->lci_len = lci_len;
-+		new->lci = pos;
-+		memcpy(pos, lci, lci_len);
-+		pos += lci_len;
-+	}
-+
-+	if (civicloc_len) {
-+		new->civicloc_len = civicloc_len;
-+		new->civicloc = pos;
-+		memcpy(pos, civicloc, civicloc_len);
-+		pos += civicloc_len;
-+	}
-+
-+	bss_conf->ftmr_params = new;
-+	kfree(old);
-+
-+	return 0;
-+}
-+
- static int ieee80211_assign_beacon(struct ieee80211_sub_if_data *sdata,
- 				   struct cfg80211_beacon_data *params,
- 				   const struct ieee80211_csa_settings *csa)
-@@ -863,6 +905,22 @@ static int ieee80211_assign_beacon(struct ieee80211_sub_if_data *sdata,
- 	if (err == 0)
- 		changed |= BSS_CHANGED_AP_PROBE_RESP;
- 
-+	if (params->ftm_responder != -1) {
-+		sdata->vif.bss_conf.ftm_responder = params->ftm_responder;
-+		err = ieee80211_set_ftm_responder_params(sdata,
-+							 params->lci,
-+							 params->lci_len,
-+							 params->civicloc,
-+							 params->civicloc_len);
-+
-+		if (err < 0)
-+			return err;
-+
-+		changed |= BSS_CHANGED_FTM_RESPONDER;
-+	} else {
-+		sdata->vif.bss_conf.ftm_responder = -1;
-+	}
-+
- 	rcu_assign_pointer(sdata->u.ap.beacon, new);
- 
- 	if (old)
-@@ -2875,6 +2933,20 @@ static int ieee80211_start_radar_detection(struct wiphy *wiphy,
- 		memcpy(pos, beacon->probe_resp, beacon->probe_resp_len);
- 		pos += beacon->probe_resp_len;
- 	}
-+	if (beacon->ftm_responder)
-+		new_beacon->ftm_responder = beacon->ftm_responder;
-+	if (beacon->lci) {
-+		new_beacon->lci_len = beacon->lci_len;
-+		new_beacon->lci = pos;
-+		memcpy(pos, beacon->lci, beacon->lci_len);
-+		pos += beacon->lci_len;
-+	}
-+	if (beacon->civicloc) {
-+		new_beacon->civicloc_len = beacon->civicloc_len;
-+		new_beacon->civicloc = pos;
-+		memcpy(pos, beacon->civicloc, beacon->civicloc_len);
-+		pos += beacon->civicloc_len;
-+	}
- 
- 	return new_beacon;
- }
-@@ -3765,6 +3837,17 @@ static int ieee80211_get_txq_stats(struct wiphy *wiphy,
- 	return ret;
- }
- 
-+static int
-+ieee80211_get_ftm_responder_stats(struct wiphy *wiphy,
-+				  struct net_device *dev,
-+				  struct cfg80211_ftm_responder_stats *ftm_stats)
-+{
-+	struct ieee80211_local *local = wiphy_priv(wiphy);
-+	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
-+
-+	return drv_get_ftm_responder_stats(local, sdata, ftm_stats);
-+}
-+
- const struct cfg80211_ops mac80211_config_ops = {
- 	.add_virtual_intf = ieee80211_add_iface,
- 	.del_virtual_intf = ieee80211_del_iface,
-@@ -3859,4 +3942,5 @@ static int ieee80211_get_txq_stats(struct wiphy *wiphy,
- 	.set_multicast_to_unicast = ieee80211_set_multicast_to_unicast,
- 	.tx_control_port = ieee80211_tx_control_port,
- 	.get_txq_stats = ieee80211_get_txq_stats,
-+	.get_ftm_responder_stats = ieee80211_get_ftm_responder_stats,
- };
-diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
-index 8f6998091d26..16878f7310ab 100644
---- a/net/mac80211/driver-ops.h
-+++ b/net/mac80211/driver-ops.h
-@@ -1173,6 +1173,22 @@ static inline void drv_wake_tx_queue(struct ieee80211_local *local,
- 	local->ops->wake_tx_queue(&local->hw, &txq->txq);
- }
- 
-+static inline int
-+drv_get_ftm_responder_stats(struct ieee80211_local *local,
-+			    struct ieee80211_sub_if_data *sdata,
-+			    struct cfg80211_ftm_responder_stats *ftm_stats)
-+{
-+	u32 ret = -EOPNOTSUPP;
-+
-+	if (local->ops->get_ftm_responder_stats)
-+		ret = local->ops->get_ftm_responder_stats(&local->hw,
-+							 &sdata->vif,
-+							 ftm_stats);
-+	trace_drv_get_ftm_responder_stats(local, sdata, ftm_stats);
-+
-+	return ret;
-+}
-+
- static inline int drv_start_nan(struct ieee80211_local *local,
- 				struct ieee80211_sub_if_data *sdata,
- 				struct cfg80211_nan_conf *conf)
-diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
-index 0ab69a1964f8..588c51a67c89 100644
---- a/net/mac80211/trace.h
-+++ b/net/mac80211/trace.h
-@@ -2600,6 +2600,29 @@ struct trace_switch_entry {
- 	)
- );
- 
-+TRACE_EVENT(drv_get_ftm_responder_stats,
-+	TP_PROTO(struct ieee80211_local *local,
-+		 struct ieee80211_sub_if_data *sdata,
-+		 struct cfg80211_ftm_responder_stats *ftm_stats),
-+
-+	TP_ARGS(local, sdata, ftm_stats),
-+
-+	TP_STRUCT__entry(
-+		LOCAL_ENTRY
-+		VIF_ENTRY
-+	),
-+
-+	TP_fast_assign(
-+		LOCAL_ASSIGN;
-+		VIF_ASSIGN;
-+	),
-+
-+	TP_printk(
-+		LOCAL_PR_FMT VIF_PR_FMT,
-+		LOCAL_PR_ARG, VIF_PR_ARG
-+	)
-+);
-+
- #endif /* !__MAC80211_DRIVER_TRACE || TRACE_HEADER_MULTI_READ */
- 
- #undef TRACE_INCLUDE_PATH
-diff --git a/net/mac80211/util.c b/net/mac80211/util.c
-index 36a3c2ada515..e89f82c0b22f 100644
---- a/net/mac80211/util.c
-+++ b/net/mac80211/util.c
-@@ -2175,6 +2175,9 @@ int ieee80211_reconfig(struct ieee80211_local *local)
- 		case NL80211_IFTYPE_AP:
- 			changed |= BSS_CHANGED_SSID | BSS_CHANGED_P2P_PS;
- 
-+			if (sdata->vif.bss_conf.ftm_responder != -1)
-+				changed |= BSS_CHANGED_FTM_RESPONDER;
-+
- 			if (sdata->vif.type == NL80211_IFTYPE_AP) {
- 				changed |= BSS_CHANGED_AP_PROBE_RESP;
- 
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0wOS0yMCAyMTo0MCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEFu
+aWxrdW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IEN1cnJl
+bnQgbWFjODAyMTEgaGFzIHByb3Zpc2lvbiB0byB1cGRhdGUgdHggc3RhdHVzIHRocm91Z2gKPj4g
+aWVlZTgwMjExX3R4X3N0YXR1cygpIGFuZCBpZWVlODAyMTFfdHhfc3RhdHVzX2V4dCgpLiBCdXQK
+Pj4gZHJpdmVycyBsaWtlIGF0aDEwayB1cGRhdGVzIHRoZSB0eCBzdGF0dXMgZnJvbSB0aGUgc2ti
+IGV4Y2VwdAo+PiB0eHJhdGUsIHR4cmF0ZSB3aWxsIGJlIHVwZGF0ZWQgZnJvbSBhIGRpZmZlcmVu
+dCBwYXRoLCBwZWVyIHN0YXRzLgo+PiAKPj4gVXNpbmcgaWVlZTgwMjExX3R4X3N0YXR1c19leHQo
+KSBpbiB0d28gZGlmZmVyZW50IHBhdGhzCj4+ICAgLSAob25lIGZvciB0aGUgc3RhdHMsIG9uZSBm
+b3IgdGhlIHR4IHJhdGUpIHdpbGwgZHVwbGljYXRlIHRoZSBzdGF0cy4KPj4gCj4+IFRvIGF2b2lk
+IHRoaXMgc3RhdHMgZHVwbGljYXRpb24sIGllZWU4MDIxMV90eF9yYXRlX3VwZGF0ZSgpIGlzIAo+
+PiBpbXBsZW1lbnRlZC4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IEFuaWxrdW1hciBLb2xsaSA8YWtv
+bGxpQGNvZGVhdXJvcmEub3JnPgo+PiAtLS0KPj4gVjM6Cj4+ICAgLSBBZGRlZCBuZXcgQVBJIGlu
+IG1hYzgwMjExIHRvIHVwZGF0ZSB0eCByYXRlKEpvaGFubmVzKQo+PiAKPj4gIGluY2x1ZGUvbmV0
+L21hYzgwMjExLmggfCAgIDE0ICsrKysrKysrKysrKysrCj4+ICBuZXQvbWFjODAyMTEvc3RhdHVz
+LmMgIHwgICAyNCArKysrKysrKysrKysrKysrKysrKysrKysKPj4gIDIgZmlsZXMgY2hhbmdlZCwg
+MzggaW5zZXJ0aW9ucygrKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbmV0L21hYzgwMjEx
+LmggYi9pbmNsdWRlL25ldC9tYWM4MDIxMS5oCj4+IGluZGV4IDhjMjZkMmQzNmNiZS4uMDQyMTg2
+YTIxNzcwIDEwMDY0NAo+PiAtLS0gYS9pbmNsdWRlL25ldC9tYWM4MDIxMS5oCj4+ICsrKyBiL2lu
+Y2x1ZGUvbmV0L21hYzgwMjExLmgKPj4gQEAgLTQzMzEsNiArNDMzMSwyMCBAQCB2b2lkIAo+PiBp
+ZWVlODAyMTFfc3RhX3NldF9leHBlY3RlZF90aHJvdWdocHV0KHN0cnVjdCBpZWVlODAyMTFfc3Rh
+ICpwdWJzdGEsCj4+ICAJCQkJCSAgIHUzMiB0aHIpOwo+PiAKPj4gIC8qKgo+PiArICogaWVlZTgw
+MjExX3R4X3JhdGVfdXBkYXRlIC0gdHJhbnNtaXQgcmF0ZSB1cGRhdGUgY2FsbGJhY2sKPj4gKyAq
+Cj4+ICsgKiBUaGlzIGZ1bmN0aW9uIGNhbiBiZSB1c2VkIGluIGRyaXZlcnMgdGhhdCBkb2VzIG5v
+dCBoYXZlIHByb3Zpc2lvbgo+PiArICogaW4gdXBkYXRpbmcgdGhlIHR4IHJhdGUgaW4gZGF0YSBw
+YXRoLgo+PiArICoKPj4gKyAqIEBodzogdGhlIGhhcmR3YXJlIHRoZSBmcmFtZSB3YXMgdHJhbnNt
+aXR0ZWQgYnkKPj4gKyAqIEBzdGF0dXM6IHR4IHN0YXR1cyBpbmZvcm1hdGlvbgo+PiArICogQHB1
+YnN0YTogdGhlIHN0YXRpb24gdG8gdXBkYXRlIHRoZSB0eCByYXRlIGZvci4KPj4gKyAqLwo+PiAr
+dm9pZCBpZWVlODAyMTFfdHhfcmF0ZV91cGRhdGUoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4+
+ICsJCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqcHVic3RhLAo+PiArCQkJICAgICAgc3Ry
+dWN0IGllZWU4MDIxMV90eF9pbmZvICppbmZvKTsKPj4gKwo+PiArLyoqCj4+ICAgKiBpZWVlODAy
+MTFfdHhfc3RhdHVzIC0gdHJhbnNtaXQgc3RhdHVzIGNhbGxiYWNrCj4+ICAgKgo+PiAgICogQ2Fs
+bCB0aGlzIGZ1bmN0aW9uIGZvciBhbGwgdHJhbnNtaXR0ZWQgZnJhbWVzIGFmdGVyIHRoZXkgaGF2
+ZSBiZWVuCj4+IGRpZmYgLS1naXQgYS9uZXQvbWFjODAyMTEvc3RhdHVzLmMgYi9uZXQvbWFjODAy
+MTEvc3RhdHVzLmMKPj4gaW5kZXggOWE2ZDcyMDhiZjRmLi4yMzIyOTdkZGFhMDIgMTAwNjQ0Cj4+
+IC0tLSBhL25ldC9tYWM4MDIxMS9zdGF0dXMuYwo+PiArKysgYi9uZXQvbWFjODAyMTEvc3RhdHVz
+LmMKPj4gQEAgLTk4OCw2ICs5ODgsMzAgQEAgdm9pZCBpZWVlODAyMTFfdHhfc3RhdHVzX2V4dChz
+dHJ1Y3QgaWVlZTgwMjExX2h3IAo+PiAqaHcsCj4+ICB9Cj4+ICBFWFBPUlRfU1lNQk9MKGllZWU4
+MDIxMV90eF9zdGF0dXNfZXh0KTsKPj4gCj4+ICt2b2lkIGllZWU4MDIxMV90eF9yYXRlX3VwZGF0
+ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPj4gKwkJCSAgICAgIHN0cnVjdCBpZWVlODAyMTFf
+c3RhICpwdWJzdGEsCj4+ICsJCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3R4X2luZm8gKmluZm8p
+Cj4+ICt7Cj4+ICsJc3RydWN0IGllZWU4MDIxMV9sb2NhbCAqbG9jYWwgPSBod190b19sb2NhbCho
+dyk7Cj4+ICsJc3RydWN0IGllZWU4MDIxMV9zdXBwb3J0ZWRfYmFuZCAqc2JhbmQ7Cj4+ICsJc3Ry
+dWN0IHN0YV9pbmZvICpzdGE7Cj4+ICsJc3RydWN0IGllZWU4MDIxMV90eF9zdGF0dXMgc3RhdHVz
+Owo+PiArCj4+ICsJc2JhbmQgPSBody0+d2lwaHktPmJhbmRzW2luZm8tPmJhbmRdOwo+PiArCj4+
+ICsJaWYgKHB1YnN0YSkgewo+IAo+IFRoZSBmdW5jdGlvbiBkb2VzIG5vdGhpbmcgaWYgcHVic3Rh
+IGlzIE5VTEw7IHdvdWxkbid0IGl0IG1ha2UgbW9yZSAKPiBzZW5zZQo+IHRvIGp1c3QgbWFuZGF0
+ZSB0aGF0IGl0IGlzbid0IE5VTEwgcmF0aGVyIHRoYW4gaGF2ZSB0aGlzIGNoZWNrPwo+IAoKQVRI
+MTBLIGRyaXZlciBhbHdheXMgY2FsbHMgdGhpcyBmdW5jdGlvbiB3aXRoIGEgdmFsaWQgU1RBIFtu
+b3QgTlVMTF0uCgpUaGFua3MKQW5pbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
