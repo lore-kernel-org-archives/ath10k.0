@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3Rku-0001pS-Jo
- for ath10k@lists.infradead.org; Fri, 21 Sep 2018 20:11:49 +0000
-Received: by mail-pg1-x544.google.com with SMTP id y4-v6so6524027pgp.9
- for <ath10k@lists.infradead.org>; Fri, 21 Sep 2018 13:10:13 -0700 (PDT)
-Date: Fri, 21 Sep 2018 13:10:09 -0700
+ id 1g3SDL-0003zl-SE
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 20:39:50 +0000
+Received: by mail-pf1-x443.google.com with SMTP id u24-v6so6451033pfn.13
+ for <ath10k@lists.infradead.org>; Fri, 21 Sep 2018 13:39:36 -0700 (PDT)
+Date: Fri, 21 Sep 2018 13:39:32 -0700
 From: Brian Norris <briannorris@chromium.org>
 Subject: Re: [PATCH 3/3] ath10k: download firmware via diag Copy Engine for
  QCA6174 and QCA9377.
-Message-ID: <20180921201008.GA233689@ban.mtv.corp.google.com>
+Message-ID: <20180921203931.GA236988@ban.mtv.corp.google.com>
 References: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
  <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
 MIME-Version: 1.0
@@ -32,59 +32,119 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Hi,
 
-I see this patch is already merged, but some small comments. Might be
-worth a follow-up patch eventually.
-
 On Thu, Aug 30, 2018 at 10:29:42AM +0800, Carl Huang wrote:
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index c40cd12..78a0515 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+> index 677535b..25ee1c6 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.c
+> +++ b/drivers/net/wireless/ath/ath10k/hw.c
 ...
-
-> @@ -1135,14 +1149,24 @@ static int ath10k_download_fw(struct ath10k *ar)
->  		   "boot uploading firmware image %pK len %d\n",
->  		   data, data_len);
->  
-> -	ret = ath10k_bmi_fast_download(ar, address, data, data_len);
-> -	if (ret) {
-> -		ath10k_err(ar, "failed to download firmware: %d\n",
-> -			   ret);
-> -		return ret;
-> +	/* Check if device supports to download firmware via
-> +	 * diag copy engine. Downloading firmware via diag CE
-> +	 * greatly reduces the time to download firmware.
-> +	 */
-> +	if (ar->hw_params.fw_diag_ce_download) {
-> +		ret = ath10k_hw_diag_fast_download(ar, address,
-> +						   data, data_len);
-> +		if (ret == 0)
-> +			/* firmware upload via diag ce was successful */
-> +			return 0;
+> +int ath10k_hw_diag_fast_download(struct ath10k *ar,
+> +				 u32 address,
+> +				 const void *buffer,
+> +				 u32 length)
+> +{
+> +	const u8 *buf = buffer;
+> +	bool sgmt_end = false;
+> +	u32 base_addr = 0;
+> +	u32 base_len = 0;
+> +	u32 left = 0;
+> +	struct bmi_segmented_file_header *hdr;
+> +	struct bmi_segmented_metadata *metadata;
+> +	int ret = 0;
 > +
-> +		ath10k_warn(ar,
-> +			    "failed to upload firmware via diag ce, trying BMI: %d",
+> +	if (length < sizeof(*hdr))
+> +		return -EINVAL;
+> +
+> +	/* check firmware header. If it has no correct magic number
+> +	 * or it's compressed, returns error.
+> +	 */
+> +	hdr = (struct bmi_segmented_file_header *)buf;
+> +	if (hdr->magic_num != BMI_SGMTFILE_MAGIC_NUM) {
+> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
+> +			   "Not a supported firmware, magic_num:0x%x\n",
+> +			   hdr->magic_num);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (hdr->file_flags != 0) {
+> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
+> +			   "Not a supported firmware, file_flags:0x%x\n",
+> +			   hdr->file_flags);
+> +		return -EINVAL;
+> +	}
+> +
+> +	metadata = (struct bmi_segmented_metadata *)hdr->data;
+> +	left = length - sizeof(*hdr);
+> +
+> +	while (left > 0) {
+> +		base_addr = metadata->addr;
+> +		base_len = metadata->length;
+> +		buf = metadata->data;
+> +		left -= sizeof(*metadata);
 
-I believe ath10k_*() logging is still supposed to have '\n' newlines at
-the end. But then, the omission occurs all over the place, and it seems
-printk() still tends to give you newlines anyway. Seems like we should
-still be consistent though.
-
-> +			    ret);
->  	}
->  
-> -	return ret;
-> +	return ath10k_bmi_fast_download(ar, address,
-> +					data, data_len);
-
-You no longer have an error message for BMI failures here (you used to).
-
->  }
->  
->  static void ath10k_core_free_board_files(struct ath10k *ar)
+You need to ensure 'left >= sizeof(*metadata)' before this block. I can
+send a patch.
 
 Brian
+
+> +
+> +		switch (base_len) {
+> +		case BMI_SGMTFILE_BEGINADDR:
+> +			/* base_addr is the start address to run */
+> +			ret = ath10k_bmi_set_start(ar, base_addr);
+> +			base_len = 0;
+> +			break;
+> +		case BMI_SGMTFILE_DONE:
+> +			/* no more segment */
+> +			base_len = 0;
+> +			sgmt_end = true;
+> +			ret = 0;
+> +			break;
+> +		case BMI_SGMTFILE_BDDATA:
+> +		case BMI_SGMTFILE_EXEC:
+> +			ath10k_warn(ar,
+> +				    "firmware has unsupported segment:%d\n",
+> +				    base_len);
+> +			ret = -EINVAL;
+> +			break;
+> +		default:
+> +			if (base_len > left) {
+> +				/* sanity check */
+> +				ath10k_warn(ar,
+> +					    "firmware has invalid segment length, %d > %d\n",
+> +					    base_len, left);
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+> +			ret = ath10k_hw_diag_segment_download(ar,
+> +							      buf,
+> +							      base_addr,
+> +							      base_len);
+> +
+> +			if (ret)
+> +				ath10k_warn(ar,
+> +					    "failed to download firmware via diag interface:%d\n",
+> +					    ret);
+> +			break;
+> +		}
+> +
+> +		if (ret || sgmt_end)
+> +			break;
+> +
+> +		metadata = (struct bmi_segmented_metadata *)(buf + base_len);
+> +		left -= base_len;
+> +	}
+> +
+> +	if (ret == 0)
+> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
+> +			   "boot firmware fast diag download successfully.\n");
+> +	return ret;
+> +}
+> +
+>  const struct ath10k_hw_ops qca988x_ops = {
+>  	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
+>  };
 
 _______________________________________________
 ath10k mailing list
