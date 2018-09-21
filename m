@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([52.28.52.200])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g31XQ-0001Tl-Tl
- for ath10k@lists.infradead.org; Thu, 20 Sep 2018 16:10:59 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [RFCv3 1/2] mac80211: implement ieee80211_tx_rate_update to
- update rate
-In-Reply-To: <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
-References: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
- <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
-Date: Thu, 20 Sep 2018 18:10:24 +0200
-Message-ID: <87va706tfz.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1g39L3-0005sS-BC
+ for ath10k@lists.infradead.org; Fri, 21 Sep 2018 00:30:30 +0000
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Subject: [PATCH v5 0/3] support ftm responder configuration/statistics
+Date: Thu, 20 Sep 2018 17:30:08 -0700
+Message-Id: <1537489811-5752-1-git-send-email-pradeepc@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,84 +15,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anilkumar Kolli <akolli@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, ath10k@lists.infradead.org
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>, Johannes Berg <johannes.berg@intel.com>
 
-Anilkumar Kolli <akolli@codeaurora.org> writes:
+Currently ftm_responder parameter in hostapd.conf is only used for fine
+timing measurement (FTM) capability advertisement and actual control of
+the functionality is with low-level device/driver. This leads to confusion
+to the user when the capability advertisement is different from actual FTM
+responder functionality.
 
-> Current mac80211 has provision to update tx status through
-> ieee80211_tx_status() and ieee80211_tx_status_ext(). But
-> drivers like ath10k updates the tx status from the skb except
-> txrate, txrate will be updated from a different path, peer stats.
->
-> Using ieee80211_tx_status_ext() in two different paths
->   - (one for the stats, one for the tx rate) will duplicate the stats.
->
-> To avoid this stats duplication, ieee80211_tx_rate_update() is implemented.
->
-> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
-> ---
-> V3:
->   - Added new API in mac80211 to update tx rate(Johannes)
->
->  include/net/mac80211.h |   14 ++++++++++++++
->  net/mac80211/status.c  |   24 ++++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
->
-> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-> index 8c26d2d36cbe..042186a21770 100644
-> --- a/include/net/mac80211.h
-> +++ b/include/net/mac80211.h
-> @@ -4331,6 +4331,20 @@ void ieee80211_sta_set_expected_throughput(struct ieee80211_sta *pubsta,
->  					   u32 thr);
->  
->  /**
-> + * ieee80211_tx_rate_update - transmit rate update callback
-> + *
-> + * This function can be used in drivers that does not have provision
-> + * in updating the tx rate in data path.
-> + *
-> + * @hw: the hardware the frame was transmitted by
-> + * @status: tx status information
-> + * @pubsta: the station to update the tx rate for.
-> + */
-> +void ieee80211_tx_rate_update(struct ieee80211_hw *hw,
-> +			      struct ieee80211_sta *pubsta,
-> +			      struct ieee80211_tx_info *info);
-> +
-> +/**
->   * ieee80211_tx_status - transmit status callback
->   *
->   * Call this function for all transmitted frames after they have been
-> diff --git a/net/mac80211/status.c b/net/mac80211/status.c
-> index 9a6d7208bf4f..232297ddaa02 100644
-> --- a/net/mac80211/status.c
-> +++ b/net/mac80211/status.c
-> @@ -988,6 +988,30 @@ void ieee80211_tx_status_ext(struct ieee80211_hw *hw,
->  }
->  EXPORT_SYMBOL(ieee80211_tx_status_ext);
->  
-> +void ieee80211_tx_rate_update(struct ieee80211_hw *hw,
-> +			      struct ieee80211_sta *pubsta,
-> +			      struct ieee80211_tx_info *info)
-> +{
-> +	struct ieee80211_local *local = hw_to_local(hw);
-> +	struct ieee80211_supported_band *sband;
-> +	struct sta_info *sta;
-> +	struct ieee80211_tx_status status;
-> +
-> +	sband = hw->wiphy->bands[info->band];
-> +
-> +	if (pubsta) {
+For example, FTM responder capability advertisement is set to 'enabled',
+but the functionality is disabled or not supported by the driver.
 
-The function does nothing if pubsta is NULL; wouldn't it make more sense
-to just mandate that it isn't NULL rather than have this check?
+The patch set allows userspace to enable FTM responder functionality
+with the addition of new Netlink flag attribute NL80211_ATTR_FTM_RESPONDER
+with configurable lci/civic ocation parameters. Also extended feature flag
+is added for the drivers to advertise the support. Setting the flag to
+enable FTM responder would imply that AP responds to all FTM requests.
+Default is considered to be disabled.
 
--Toke
+changes in V5:
+ - changed NL80211_ATTR_FTM_RESPONDER to nested attribute
+ - renamed 'civic' parameter to 'civicloc'.
+
+changes in V4:
+ - no changes. Rebased and resending as v4 as v3 patches were dropped
+   for unknown reason
+
+changes in V3:
+ - fixed the ambiguous ftm responder disable case to be not supported
+
+changes in V2:
+ - updated version number
+ - rebased patches
+
+Johannes Berg, Pradeep Kumar Chitrapu (1):
+  cfg80211: support FTM responder configuration/statistics
+
+David Spinadel, Johannes Berg, Pradeep Kumar Chitrapu (1):
+  mac80211: support FTM responder configuration/statistics
+
+Pradeep Kumar Chitrapu (1):
+  ath10k: Add support to configure ftm responder role
+
+ drivers/net/wireless/ath/ath10k/core.h |   1 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  28 +++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |   4 +
+ drivers/net/wireless/ath/ath10k/wmi.h  |  10 +++
+ include/net/cfg80211.h                 |  66 ++++++++++++++++
+ include/net/mac80211.h                 |  13 ++++
+ include/uapi/linux/nl80211.h           |  90 ++++++++++++++++++++++
+ net/mac80211/cfg.c                     |  84 +++++++++++++++++++++
+ net/mac80211/driver-ops.h              |  16 ++++
+ net/mac80211/trace.h                   |  23 ++++++
+ net/mac80211/util.c                    |   3 +
+ net/wireless/nl80211.c                 | 134 +++++++++++++++++++++++++++++++--
+ net/wireless/rdev-ops.h                |  15 ++++
+ net/wireless/trace.h                   |  44 +++++++++++
+ 14 files changed, 526 insertions(+), 5 deletions(-)
+
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
