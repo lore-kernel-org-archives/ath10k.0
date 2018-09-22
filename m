@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3WB5-0001ny-La
- for ath10k@lists.infradead.org; Sat, 22 Sep 2018 00:53:45 +0000
-Received: by mail-pl1-x642.google.com with SMTP id g2-v6so6646166plo.2
- for <ath10k@lists.infradead.org>; Fri, 21 Sep 2018 17:53:31 -0700 (PDT)
-Date: Fri, 21 Sep 2018 17:53:27 -0700
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH 3/3] ath10k: download firmware via diag Copy Engine for
- QCA6174 and QCA9377.
-Message-ID: <20180922005325.GA47003@ban.mtv.corp.google.com>
-References: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
- <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
+ id 1g3hBV-0002IJ-05
+ for ath10k@lists.infradead.org; Sat, 22 Sep 2018 12:38:54 +0000
+Date: Sat, 22 Sep 2018 15:38:28 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [ath6kl:pending 39/55] drivers/net/wireless/ath/ath10k/mac.c:169
+ ath10k_mac_get_rate_hw_value() error: buffer overflow 'ath10k_rates' 12 <=
+ 143
+Message-ID: <20180922123828.7ajnxyhvkyajntv7@mwanda>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,112 +23,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: kbuild@01.org, Sriram R <srirrama@codeaurora.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
 
-Hi again!
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+head:   2305dc3c6b1d66a7bef752439919d61478e02893
+commit: 0c737c78082055ff589f6683e93b45f079c5d64e [39/55] ath10k: Add support for configuring management packet rate
 
-One last (?) comment:
+New smatch warnings:
+drivers/net/wireless/ath/ath10k/mac.c:169 ath10k_mac_get_rate_hw_value() error: buffer overflow 'ath10k_rates' 12 <= 143
 
-On Thu, Aug 30, 2018 at 10:29:42AM +0800, Carl Huang wrote:
+Old smatch warnings:
+drivers/net/wireless/ath/ath10k/mac.c:170 ath10k_mac_get_rate_hw_value() error: buffer overflow 'ath10k_rates' 12 <= 143
 
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-> index 677535b..25ee1c6 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.c
-> +++ b/drivers/net/wireless/ath/ath10k/hw.c
+# https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=0c737c78082055ff589f6683e93b45f079c5d64e
+git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+git remote update ath6kl
+git checkout 0c737c78082055ff589f6683e93b45f079c5d64e
+vim +/ath10k_rates +169 drivers/net/wireless/ath/ath10k/mac.c
 
-> @@ -918,6 +919,190 @@ static int ath10k_hw_qca6174_enable_pll_clock(struct ath10k *ar)
+01cebe1c Michal Kazior 2015-03-30  159  
+0c737c78 Sriram R      2018-09-10  160  static int ath10k_mac_get_rate_hw_value(int bitrate)
+0c737c78 Sriram R      2018-09-10  161  {
+0c737c78 Sriram R      2018-09-10  162  	int i;
+0c737c78 Sriram R      2018-09-10  163  	u8 hw_value_prefix = 0;
+0c737c78 Sriram R      2018-09-10  164  
+0c737c78 Sriram R      2018-09-10  165  	if (ath10k_mac_bitrate_is_cck(bitrate))
+0c737c78 Sriram R      2018-09-10  166  		hw_value_prefix = WMI_RATE_PREAMBLE_CCK << 6;
+0c737c78 Sriram R      2018-09-10  167  
+0c737c78 Sriram R      2018-09-10  168  	for (i = 0; i < sizeof(ath10k_rates); i++) {
+                                                                ^^^^^^^^^^^^^^^^^^^^
+This should be ARRAY_SIZE(ath10k_rates) instead of sizeof().
 
-> +static int ath10k_hw_diag_segment_download(struct ath10k *ar,
-> +					   const void *buffer,
-> +					   u32 address,
-> +					   u32 length)
-> +{
-> +	if (address >= DRAM_BASE_ADDRESS + REGION_ACCESS_SIZE_LIMIT)
-> +		/* Needs to change MSB for memory write */
-> +		return ath10k_hw_diag_segment_msb_download(ar, buffer,
-> +							   address, length);
-> +	else
-> +		return ath10k_hif_diag_write(ar, address, buffer, length);
-> +}
-> +
-> +int ath10k_hw_diag_fast_download(struct ath10k *ar,
-> +				 u32 address,
-> +				 const void *buffer,
-> +				 u32 length)
-> +{
-> +	const u8 *buf = buffer;
-> +	bool sgmt_end = false;
-> +	u32 base_addr = 0;
-> +	u32 base_len = 0;
-> +	u32 left = 0;
-> +	struct bmi_segmented_file_header *hdr;
-> +	struct bmi_segmented_metadata *metadata;
-> +	int ret = 0;
-> +
-> +	if (length < sizeof(*hdr))
-> +		return -EINVAL;
-> +
-> +	/* check firmware header. If it has no correct magic number
-> +	 * or it's compressed, returns error.
-> +	 */
-> +	hdr = (struct bmi_segmented_file_header *)buf;
-> +	if (hdr->magic_num != BMI_SGMTFILE_MAGIC_NUM) {
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> +			   "Not a supported firmware, magic_num:0x%x\n",
-> +			   hdr->magic_num);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (hdr->file_flags != 0) {
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> +			   "Not a supported firmware, file_flags:0x%x\n",
-> +			   hdr->file_flags);
-> +		return -EINVAL;
-> +	}
-> +
-> +	metadata = (struct bmi_segmented_metadata *)hdr->data;
-> +	left = length - sizeof(*hdr);
-> +
-> +	while (left > 0) {
-> +		base_addr = metadata->addr;
-> +		base_len = metadata->length;
-> +		buf = metadata->data;
-> +		left -= sizeof(*metadata);
-> +
-> +		switch (base_len) {
-...
-> +		default:
-> +			if (base_len > left) {
-> +				/* sanity check */
-> +				ath10k_warn(ar,
-> +					    "firmware has invalid segment length, %d > %d\n",
-> +					    base_len, left);
-> +				ret = -EINVAL;
-> +				break;
-> +			}
-> +
-> +			ret = ath10k_hw_diag_segment_download(ar,
-> +							      buf,
-> +							      base_addr,
-> +							      base_len);
+0c737c78 Sriram R      2018-09-10 @169  		if (ath10k_rates[i].bitrate == bitrate)
+0c737c78 Sriram R      2018-09-10  170  			return hw_value_prefix | ath10k_rates[i].hw_value;
+0c737c78 Sriram R      2018-09-10  171  	}
+0c737c78 Sriram R      2018-09-10  172  
+0c737c78 Sriram R      2018-09-10  173  	return -EINVAL;
+0c737c78 Sriram R      2018-09-10  174  }
+0c737c78 Sriram R      2018-09-10  175  
 
-This 'base_len' is determined by the firmware blob and in common cases
-is over 500K. The PCI implementation currently tries to
-dma_alloc_coherent() a bounce buffer for this. Many systems can't
-acquire that large of contiguous DMA memory reliably, so this is isn't
-very effective. Can we improve the strategy here? Do you lose a lot of
-speed if you do this in smaller (a few pages?) chunks instead?
-
-Brian
-
-> +
-> +			if (ret)
-> +				ath10k_warn(ar,
-> +					    "failed to download firmware via diag interface:%d\n",
-> +					    ret);
-> +			break;
-...
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 _______________________________________________
 ath10k mailing list
