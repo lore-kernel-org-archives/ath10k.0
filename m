@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ot1-f67.google.com ([209.85.210.67])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4ghr-0004Of-B1
- for ath10k@lists.infradead.org; Tue, 25 Sep 2018 06:20:26 +0000
+ id 1g4lT6-00013B-KH
+ for ath10k@lists.infradead.org; Tue, 25 Sep 2018 11:25:45 +0000
+Received: by mail-ot1-f67.google.com with SMTP id c12-v6so23984288otl.6
+ for <ath10k@lists.infradead.org>; Tue, 25 Sep 2018 04:24:59 -0700 (PDT)
+Message-ID: <5baa1b0a.1c69fb81.c0b19.4038@mx.google.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/4] dt: bindings: add missing dt properties for WCN3990
+ wifi node
+References: <20180921090907.25937-1-govinds@codeaurora.org>
+ <20180921090907.25937-2-govinds@codeaurora.org>
 MIME-Version: 1.0
-Date: Tue, 25 Sep 2018 14:19:51 +0800
-From: Carl Huang <cjhuang@codeaurora.org>
-Subject: Re: [PATCH 3/3] ath10k: download firmware via diag Copy Engine for
- QCA6174 and QCA9377.
-In-Reply-To: <20180922005325.GA47003@ban.mtv.corp.google.com>
-References: <1535596182-18038-1-git-send-email-cjhuang@codeaurora.org>
- <1535596182-18038-4-git-send-email-cjhuang@codeaurora.org>
- <20180922005325.GA47003@ban.mtv.corp.google.com>
-Message-ID: <acb99321ba1ca4360295e8f9188df4dd@codeaurora.org>
+Content-Disposition: inline
+In-Reply-To: <20180921090907.25937-2-govinds@codeaurora.org>
+Date: Mon, 24 Sep 2018 15:51:55 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,123 +23,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: andy.gross@linaro.org, devicetree@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-09-22 08:53, Brian Norris wrote:
-> Hi again!
+On Fri, Sep 21, 2018 at 02:39:04PM +0530, Govind Singh wrote:
+> Add missing optional properties in WCN3990 wifi node.
 > 
-> One last (?) comment:
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  .../bindings/net/wireless/qcom,ath10k.txt     | 22 +++++++++++++------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
 > 
-> On Thu, Aug 30, 2018 at 10:29:42AM +0800, Carl Huang wrote:
-> 
->> diff --git a/drivers/net/wireless/ath/ath10k/hw.c 
->> b/drivers/net/wireless/ath/ath10k/hw.c
->> index 677535b..25ee1c6 100644
->> --- a/drivers/net/wireless/ath/ath10k/hw.c
->> +++ b/drivers/net/wireless/ath/ath10k/hw.c
-> 
->> @@ -918,6 +919,190 @@ static int 
->> ath10k_hw_qca6174_enable_pll_clock(struct ath10k *ar)
-> 
->> +static int ath10k_hw_diag_segment_download(struct ath10k *ar,
->> +					   const void *buffer,
->> +					   u32 address,
->> +					   u32 length)
->> +{
->> +	if (address >= DRAM_BASE_ADDRESS + REGION_ACCESS_SIZE_LIMIT)
->> +		/* Needs to change MSB for memory write */
->> +		return ath10k_hw_diag_segment_msb_download(ar, buffer,
->> +							   address, length);
->> +	else
->> +		return ath10k_hif_diag_write(ar, address, buffer, length);
->> +}
->> +
->> +int ath10k_hw_diag_fast_download(struct ath10k *ar,
->> +				 u32 address,
->> +				 const void *buffer,
->> +				 u32 length)
->> +{
->> +	const u8 *buf = buffer;
->> +	bool sgmt_end = false;
->> +	u32 base_addr = 0;
->> +	u32 base_len = 0;
->> +	u32 left = 0;
->> +	struct bmi_segmented_file_header *hdr;
->> +	struct bmi_segmented_metadata *metadata;
->> +	int ret = 0;
->> +
->> +	if (length < sizeof(*hdr))
->> +		return -EINVAL;
->> +
->> +	/* check firmware header. If it has no correct magic number
->> +	 * or it's compressed, returns error.
->> +	 */
->> +	hdr = (struct bmi_segmented_file_header *)buf;
->> +	if (hdr->magic_num != BMI_SGMTFILE_MAGIC_NUM) {
->> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
->> +			   "Not a supported firmware, magic_num:0x%x\n",
->> +			   hdr->magic_num);
->> +		return -EINVAL;
->> +	}
->> +
->> +	if (hdr->file_flags != 0) {
->> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
->> +			   "Not a supported firmware, file_flags:0x%x\n",
->> +			   hdr->file_flags);
->> +		return -EINVAL;
->> +	}
->> +
->> +	metadata = (struct bmi_segmented_metadata *)hdr->data;
->> +	left = length - sizeof(*hdr);
->> +
->> +	while (left > 0) {
->> +		base_addr = metadata->addr;
->> +		base_len = metadata->length;
->> +		buf = metadata->data;
->> +		left -= sizeof(*metadata);
->> +
->> +		switch (base_len) {
-> ...
->> +		default:
->> +			if (base_len > left) {
->> +				/* sanity check */
->> +				ath10k_warn(ar,
->> +					    "firmware has invalid segment length, %d > %d\n",
->> +					    base_len, left);
->> +				ret = -EINVAL;
->> +				break;
->> +			}
->> +
->> +			ret = ath10k_hw_diag_segment_download(ar,
->> +							      buf,
->> +							      base_addr,
->> +							      base_len);
-> 
-> This 'base_len' is determined by the firmware blob and in common cases
-> is over 500K. The PCI implementation currently tries to
-> dma_alloc_coherent() a bounce buffer for this. Many systems can't
-> acquire that large of contiguous DMA memory reliably, so this is isn't
-> very effective. Can we improve the strategy here? Do you lose a lot of
-> speed if you do this in smaller (a few pages?) chunks instead?
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index 7fd4e8ce4149..22dea7d83ee8 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -37,12 +37,14 @@ Optional properties:
+>  - clocks: List of clock specifiers, must contain an entry for each required
+>            entry in clock-names.
+>  - clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
+> -               "wifi_wcss_rtc".
+> -- interrupts: List of interrupt lines. Must contain an entry
+> -	      for each entry in the interrupt-names property.
+> +               "wifi_wcss_rtc", "cxo_ref_clk_pin", "smmu_aggre2_noc_clk".
+> +- interrupts: List of interrupt lines. Must contain interrupt-names property
+> +	      per entry for "qcom,ath10k", "qcom,ipq4019-wifi" compatible
+> +	      targets.
+
+It would be clearer to list how many interrupts for each set of 
+compatibles.
+
+>  - interrupt-names: Must include the entries for MSI interrupt
+>  		   names ("msi0" to "msi15") and legacy interrupt
+> -		   name ("legacy"),
+> +		   name ("legacy") for "qcom,ath10k", "qcom,ipq4019-wifi"
+> +		   compatible targets.
+
+So no legacy interrupt for wcn3990?
+
+>  - qcom,msi_addr: MSI interrupt address.
+>  - qcom,msi_base: Base value to add before writing MSI data into
+>  		MSI address register.
+> @@ -55,7 +57,8 @@ Optional properties:
+>  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
+>  				     the length can vary between hw versions.
+>  - <supply-name>-supply: handle to the regulator device tree node
+> -			   optional "supply-name" is "vdd-0.8-cx-mx".
+> +			   optional "supply-name" are "vdd-0.8-cx-mx",
+> +			   "vdd-1.8-xo", "vdd-1.3-rfa" and "vdd-3.3-ch0".
+>  
+>  Example (to supply the calibration data alone):
+>  
+> @@ -133,8 +136,10 @@ wifi@18000000 {
+>  		compatible = "qcom,wcn3990-wifi";
+>  		reg = <0x18800000 0x800000>;
+>  		reg-names = "membase";
+> -		clocks = <&clock_gcc clk_aggre2_noc_clk>;
+> -		clock-names = "smmu_aggre2_noc_clk"
+> +		clocks = <&clock_gcc clk_aggre2_noc_clk>,
+> +			 <&clock_gcc clk_rf_clk2_pin>;
+> +		clock-names = "smmu_aggre2_noc_clk",
+> +			      "cxo_ref_clk_pin";
+
+The binding now says there should be 5 clocks...
+
+>  		interrupts =
+>  			   <0 130 0 /* CE0 */ >,
+>  			   <0 131 0 /* CE1 */ >,
+> @@ -149,4 +154,7 @@ wifi@18000000 {
+>  			   <0 140 0 /* CE10 */ >,
+>  			   <0 141 0 /* CE11 */ >;
+>  		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+> +		vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+> +		vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+> +		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+>  };
+> -- 
+> 2.17.0
 > 
 
-It's a sound complaint. I'll submit a patch for it.
-
-
-> Brian
-> 
->> +
->> +			if (ret)
->> +				ath10k_warn(ar,
->> +					    "failed to download firmware via diag interface:%d\n",
->> +					    ret);
->> +			break;
-> ...
 
 _______________________________________________
 ath10k mailing list
