@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4Okb-00066h-IX
- for ath10k@lists.infradead.org; Mon, 24 Sep 2018 11:10:04 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [ath6kl:pending 39/55] drivers/net/wireless/ath/ath10k/mac.c:169
- ath10k_mac_get_rate_hw_value() error: buffer overflow 'ath10k_rates' 12 <=
- 143
-References: <20180922123828.7ajnxyhvkyajntv7@mwanda>
-Date: Mon, 24 Sep 2018 14:09:46 +0300
-In-Reply-To: <20180922123828.7ajnxyhvkyajntv7@mwanda> (Dan Carpenter's message
- of "Sat, 22 Sep 2018 15:38:28 +0300")
-Message-ID: <87h8if40ed.fsf@codeaurora.org>
+ id 1g4UPJ-0000fY-5d
+ for ath10k@lists.infradead.org; Mon, 24 Sep 2018 17:12:28 +0000
+Received: by mail-pf1-x444.google.com with SMTP id p12-v6so9298855pfh.2
+ for <ath10k@lists.infradead.org>; Mon, 24 Sep 2018 10:11:54 -0700 (PDT)
+Date: Mon, 24 Sep 2018 10:11:49 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH 2/4] dts: arm64/sdm845: Add WCN3990 WLAN module device node
+Message-ID: <20180924171147.GA87119@ban.mtv.corp.google.com>
+References: <20180921090907.25937-1-govinds@codeaurora.org>
+ <20180921090907.25937-3-govinds@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20180921090907.25937-3-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +26,102 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: kbuild@01.org, Sriram R <srirrama@codeaurora.org>, ath10k@lists.infradead.org, kbuild-all@01.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: andy.gross@linaro.org, devicetree@vger.kernel.org, robh+dt@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+Hi,
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   2305dc3c6b1d66a7bef752439919d61478e02893
-> commit: 0c737c78082055ff589f6683e93b45f079c5d64e [39/55] ath10k: Add
-> support for configuring management packet rate
->
-> New smatch warnings:
-> drivers/net/wireless/ath/ath10k/mac.c:169
-> ath10k_mac_get_rate_hw_value() error: buffer overflow 'ath10k_rates'
-> 12 <= 143
->
-> Old smatch warnings:
-> drivers/net/wireless/ath/ath10k/mac.c:170
-> ath10k_mac_get_rate_hw_value() error: buffer overflow 'ath10k_rates'
-> 12 <= 143
->
-> #
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=0c737c78082055ff589f6683e93b45f079c5d64e
-> git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-> git remote update ath6kl
-> git checkout 0c737c78082055ff589f6683e93b45f079c5d64e
-> vim +/ath10k_rates +169 drivers/net/wireless/ath/ath10k/mac.c
->
-> 01cebe1c Michal Kazior 2015-03-30  159  
-> 0c737c78 Sriram R      2018-09-10  160  static int ath10k_mac_get_rate_hw_value(int bitrate)
-> 0c737c78 Sriram R      2018-09-10  161  {
-> 0c737c78 Sriram R      2018-09-10  162  	int i;
-> 0c737c78 Sriram R      2018-09-10  163  	u8 hw_value_prefix = 0;
-> 0c737c78 Sriram R      2018-09-10  164  
-> 0c737c78 Sriram R      2018-09-10  165  	if (ath10k_mac_bitrate_is_cck(bitrate))
-> 0c737c78 Sriram R 2018-09-10 166 hw_value_prefix =
-> WMI_RATE_PREAMBLE_CCK << 6;
-> 0c737c78 Sriram R      2018-09-10  167  
-> 0c737c78 Sriram R      2018-09-10  168  	for (i = 0; i < sizeof(ath10k_rates); i++) {
->                                                                 ^^^^^^^^^^^^^^^^^^^^
-> This should be ARRAY_SIZE(ath10k_rates) instead of sizeof().
+On Fri, Sep 21, 2018 at 02:39:05PM +0530, Govind Singh wrote:
+> Add device node for the ath10k SNOC platform driver probe
+> and add resources required for WCN3990 on SDM845 soc.
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845-mtp.dts |  7 +++++++
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi    | 25 +++++++++++++++++++++++++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> index eedfaf8922e2..4de57f7df93c 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> @@ -440,3 +440,10 @@
+>  		bias-pull-up;
+>  	};
+>  };
+> +
+> +&wifi {
 
-Makes sense. Can someone submit a patch, please?
+As the bots have already told you, you missed adding a 'wifi' label to
+sdm845.dtsi, so this reference doesn't compile.
 
--- 
-Kalle Valo
+> +	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+> +	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+> +	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+> +	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index e080072cdfdb..b0b107641e74 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -86,6 +86,11 @@
+>  			reg = <0 0x86200000 0 0x2d00000>;
+>  			no-map;
+>  		};
+> +
+> +		wlan_msa_mem: reserved-memory@96700000 {
+> +			no-map;
+> +			reg = <0 0x96700000 0 0x100000>;
+> +		};
+>  	};
+>  
+>  	cpus {
+> @@ -1200,5 +1205,25 @@
+>  				status = "disabled";
+>  			};
+>  		};
+> +
+> +		qcom,wifi {
+
+That's not a legit node name. Nodes should (a) have a generic name and
+(b) include a unit address when the node contains a 'reg' property. [1]
+
+So, how about 'wifi@18800000'? (And include the 'wifi:' label, since you
+want to refer to it in other files.)
+
+Also, this seems like the kind of device that should remain 'status =
+"disabled"' in the top-level DTSI, and be overridden with 'status =
+"okay"' in the child DTS.
+
+Brian
+
+[1] See:
+https://elinux.org/Device_Tree_Usage#Node_Names
+https://elinux.org/images/c/cf/Power_ePAPR_APPROVED_v1.1.pdf
+
+> +			compatible = "qcom,wcn3990-wifi";
+> +			reg = <0x18800000 0x800000>;
+> +			reg-names = "membase";
+> +			memory-region = <&wlan_msa_mem>;
+> +			interrupts =
+> +				<0 413 0 /* CE0 */ >,
+> +				<0 414 0 /* CE1 */ >,
+> +				<0 415 0 /* CE2 */ >,
+> +				<0 416 0 /* CE3 */ >,
+> +				<0 417 0 /* CE4 */ >,
+> +				<0 418 0 /* CE5 */ >,
+> +				<0 420 0 /* CE6 */ >,
+> +				<0 421 0 /* CE7 */ >,
+> +				<0 422 0 /* CE8 */ >,
+> +				<0 423 0 /* CE9 */ >,
+> +				<0 424 0 /* CE10 */ >,
+> +				<0 425 0 /* CE11 */ >;
+> +		};
+>  	};
+>  };
+> -- 
+> 2.17.0
+> 
 
 _______________________________________________
 ath10k mailing list
