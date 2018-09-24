@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4KOU-0007nC-KF
- for ath10k@lists.infradead.org; Mon, 24 Sep 2018 06:30:56 +0000
-MIME-Version: 1.0
-Date: Mon, 24 Sep 2018 12:00:43 +0530
+ id 1g4Kxt-0004kC-Nm
+ for ath10k@lists.infradead.org; Mon, 24 Sep 2018 07:07:31 +0000
 From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [RFCv3 1/2] mac80211: implement ieee80211_tx_rate_update to
- update rate
-In-Reply-To: <87worfhwgx.fsf@toke.dk>
-References: <1537445116-10780-1-git-send-email-akolli@codeaurora.org>
- <1537445116-10780-2-git-send-email-akolli@codeaurora.org>
- <87va706tfz.fsf@toke.dk> <29efd8dc90c7ea75f6cd0d7e3787b463@codeaurora.org>
- <87worfhwgx.fsf@toke.dk>
-Message-ID: <39746e839c1ad5011f2948540140ee0d@codeaurora.org>
+Subject: [RFC v4 0/2]  ath10k: Add support to update tx rate to mac80211
+Date: Mon, 24 Sep 2018 12:39:58 +0530
+Message-Id: <1537773000-2587-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +15,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
 
-T24gMjAxOC0wOS0yMSAxNzo1MSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEFu
-aWxrdW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IE9uIDIw
-MTgtMDktMjAgMjE6NDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+IEFuaWxr
-dW1hciBLb2xsaSA8YWtvbGxpQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+PiAKPj4+PiBDdXJy
-ZW50IG1hYzgwMjExIGhhcyBwcm92aXNpb24gdG8gdXBkYXRlIHR4IHN0YXR1cyB0aHJvdWdoCj4+
-Pj4gaWVlZTgwMjExX3R4X3N0YXR1cygpIGFuZCBpZWVlODAyMTFfdHhfc3RhdHVzX2V4dCgpLiBC
-dXQKPj4+PiBkcml2ZXJzIGxpa2UgYXRoMTBrIHVwZGF0ZXMgdGhlIHR4IHN0YXR1cyBmcm9tIHRo
-ZSBza2IgZXhjZXB0Cj4+Pj4gdHhyYXRlLCB0eHJhdGUgd2lsbCBiZSB1cGRhdGVkIGZyb20gYSBk
-aWZmZXJlbnQgcGF0aCwgcGVlciBzdGF0cy4KPj4+PiAKPj4+PiBVc2luZyBpZWVlODAyMTFfdHhf
-c3RhdHVzX2V4dCgpIGluIHR3byBkaWZmZXJlbnQgcGF0aHMKPj4+PiAgIC0gKG9uZSBmb3IgdGhl
-IHN0YXRzLCBvbmUgZm9yIHRoZSB0eCByYXRlKSB3aWxsIGR1cGxpY2F0ZSB0aGUgCj4+Pj4gc3Rh
-dHMuCj4+Pj4gCj4+Pj4gVG8gYXZvaWQgdGhpcyBzdGF0cyBkdXBsaWNhdGlvbiwgaWVlZTgwMjEx
-X3R4X3JhdGVfdXBkYXRlKCkgaXMKPj4+PiBpbXBsZW1lbnRlZC4KPj4+PiAKPj4+PiBTaWduZWQt
-b2ZmLWJ5OiBBbmlsa3VtYXIgS29sbGkgPGFrb2xsaUBjb2RlYXVyb3JhLm9yZz4KPj4+PiAtLS0K
-Pj4+PiBWMzoKPj4+PiAgIC0gQWRkZWQgbmV3IEFQSSBpbiBtYWM4MDIxMSB0byB1cGRhdGUgdHgg
-cmF0ZShKb2hhbm5lcykKPj4+PiAKPj4+PiAgaW5jbHVkZS9uZXQvbWFjODAyMTEuaCB8ICAgMTQg
-KysrKysrKysrKysrKysKPj4+PiAgbmV0L21hYzgwMjExL3N0YXR1cy5jICB8ICAgMjQgKysrKysr
-KysrKysrKysrKysrKysrKysrCj4+Pj4gIDIgZmlsZXMgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygr
-KQo+Pj4+IAo+Pj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL25ldC9tYWM4MDIxMS5oIGIvaW5jbHVk
-ZS9uZXQvbWFjODAyMTEuaAo+Pj4+IGluZGV4IDhjMjZkMmQzNmNiZS4uMDQyMTg2YTIxNzcwIDEw
-MDY0NAo+Pj4+IC0tLSBhL2luY2x1ZGUvbmV0L21hYzgwMjExLmgKPj4+PiArKysgYi9pbmNsdWRl
-L25ldC9tYWM4MDIxMS5oCj4+Pj4gQEAgLTQzMzEsNiArNDMzMSwyMCBAQCB2b2lkCj4+Pj4gaWVl
-ZTgwMjExX3N0YV9zZXRfZXhwZWN0ZWRfdGhyb3VnaHB1dChzdHJ1Y3QgaWVlZTgwMjExX3N0YSAq
-cHVic3RhLAo+Pj4+ICAJCQkJCSAgIHUzMiB0aHIpOwo+Pj4+IAo+Pj4+ICAvKioKPj4+PiArICog
-aWVlZTgwMjExX3R4X3JhdGVfdXBkYXRlIC0gdHJhbnNtaXQgcmF0ZSB1cGRhdGUgY2FsbGJhY2sK
-Pj4+PiArICoKPj4+PiArICogVGhpcyBmdW5jdGlvbiBjYW4gYmUgdXNlZCBpbiBkcml2ZXJzIHRo
-YXQgZG9lcyBub3QgaGF2ZSAKPj4+PiBwcm92aXNpb24KPj4+PiArICogaW4gdXBkYXRpbmcgdGhl
-IHR4IHJhdGUgaW4gZGF0YSBwYXRoLgo+Pj4+ICsgKgo+Pj4+ICsgKiBAaHc6IHRoZSBoYXJkd2Fy
-ZSB0aGUgZnJhbWUgd2FzIHRyYW5zbWl0dGVkIGJ5Cj4+Pj4gKyAqIEBzdGF0dXM6IHR4IHN0YXR1
-cyBpbmZvcm1hdGlvbgo+Pj4+ICsgKiBAcHVic3RhOiB0aGUgc3RhdGlvbiB0byB1cGRhdGUgdGhl
-IHR4IHJhdGUgZm9yLgo+Pj4+ICsgKi8KPj4+PiArdm9pZCBpZWVlODAyMTFfdHhfcmF0ZV91cGRh
-dGUoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4+Pj4gKwkJCSAgICAgIHN0cnVjdCBpZWVlODAy
-MTFfc3RhICpwdWJzdGEsCj4+Pj4gKwkJCSAgICAgIHN0cnVjdCBpZWVlODAyMTFfdHhfaW5mbyAq
-aW5mbyk7Cj4+Pj4gKwo+Pj4+ICsvKioKPj4+PiAgICogaWVlZTgwMjExX3R4X3N0YXR1cyAtIHRy
-YW5zbWl0IHN0YXR1cyBjYWxsYmFjawo+Pj4+ICAgKgo+Pj4+ICAgKiBDYWxsIHRoaXMgZnVuY3Rp
-b24gZm9yIGFsbCB0cmFuc21pdHRlZCBmcmFtZXMgYWZ0ZXIgdGhleSBoYXZlIAo+Pj4+IGJlZW4K
-Pj4+PiBkaWZmIC0tZ2l0IGEvbmV0L21hYzgwMjExL3N0YXR1cy5jIGIvbmV0L21hYzgwMjExL3N0
-YXR1cy5jCj4+Pj4gaW5kZXggOWE2ZDcyMDhiZjRmLi4yMzIyOTdkZGFhMDIgMTAwNjQ0Cj4+Pj4g
-LS0tIGEvbmV0L21hYzgwMjExL3N0YXR1cy5jCj4+Pj4gKysrIGIvbmV0L21hYzgwMjExL3N0YXR1
-cy5jCj4+Pj4gQEAgLTk4OCw2ICs5ODgsMzAgQEAgdm9pZCBpZWVlODAyMTFfdHhfc3RhdHVzX2V4
-dChzdHJ1Y3QgCj4+Pj4gaWVlZTgwMjExX2h3Cj4+Pj4gKmh3LAo+Pj4+ICB9Cj4+Pj4gIEVYUE9S
-VF9TWU1CT0woaWVlZTgwMjExX3R4X3N0YXR1c19leHQpOwo+Pj4+IAo+Pj4+ICt2b2lkIGllZWU4
-MDIxMV90eF9yYXRlX3VwZGF0ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPj4+PiArCQkJICAg
-ICAgc3RydWN0IGllZWU4MDIxMV9zdGEgKnB1YnN0YSwKPj4+PiArCQkJICAgICAgc3RydWN0IGll
-ZWU4MDIxMV90eF9pbmZvICppbmZvKQo+Pj4+ICt7Cj4+Pj4gKwlzdHJ1Y3QgaWVlZTgwMjExX2xv
-Y2FsICpsb2NhbCA9IGh3X3RvX2xvY2FsKGh3KTsKPj4+PiArCXN0cnVjdCBpZWVlODAyMTFfc3Vw
-cG9ydGVkX2JhbmQgKnNiYW5kOwo+Pj4+ICsJc3RydWN0IHN0YV9pbmZvICpzdGE7Cj4+Pj4gKwlz
-dHJ1Y3QgaWVlZTgwMjExX3R4X3N0YXR1cyBzdGF0dXM7Cj4+Pj4gKwo+Pj4+ICsJc2JhbmQgPSBo
-dy0+d2lwaHktPmJhbmRzW2luZm8tPmJhbmRdOwo+Pj4+ICsKPj4+PiArCWlmIChwdWJzdGEpIHsK
-Pj4+IAo+Pj4gVGhlIGZ1bmN0aW9uIGRvZXMgbm90aGluZyBpZiBwdWJzdGEgaXMgTlVMTDsgd291
-bGRuJ3QgaXQgbWFrZSBtb3JlCj4+PiBzZW5zZQo+Pj4gdG8ganVzdCBtYW5kYXRlIHRoYXQgaXQg
-aXNuJ3QgTlVMTCByYXRoZXIgdGhhbiBoYXZlIHRoaXMgY2hlY2s/Cj4+PiAKPj4gCj4+IEFUSDEw
-SyBkcml2ZXIgYWx3YXlzIGNhbGxzIHRoaXMgZnVuY3Rpb24gd2l0aCBhIHZhbGlkIFNUQSBbbm90
-IE5VTExdLgo+IAo+IFllYWgsIHNvIHdoeSB0aGUgY2hlY2sgZm9yIG5vbi1OVUxMPyA6KQo+IAoK
-QWdyZWVkIHdlIGNhbiByZW1vdmUgdGhpcyBjaGVjayBzaW5jZSBhdGgxMGsgZHJpdmVyIGNhbGxz
-IAppZWVlODAyMTFfdHhfcmF0ZV91cGRhdGUoKQp3aXRoIGEgdmFsaWQgU1RBLiBUaGlzIGFkZHMg
-YSBzYW5pdHkgY2hlY2sgdG8gYXZvaWQgTlVMTCBkZXJlZmVyZW5jZSBvbiAKcHVic3RhLgoKSSB3
-aWxsIHVwZGF0ZSB0aGUgY29tbWVudHMgb24gaWVlZTgwMjExX3R4X3JhdGVfdXBkYXRlKCkgYW5k
-IHNlbmQgUkZDdjQuCgpUaGFua3MKQW5pbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+Tx rate was updated to nl80211/user using sta_statistics callback.
+This rate can not be used for mac80211 mesh and ATF.
+
+This patch adds support to update tx rate to mac80211
+
+Anilkumar Kolli (2):
+  mac80211: implement ieee80211_tx_rate_update to update rate
+  ath10k: report tx rate using ieee80211_tx_rate_update()
+
+ drivers/net/wireless/ath/ath10k/core.h   |    1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   66 ++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
+ include/net/mac80211.h                   |   15 +++++++
+ net/mac80211/status.c                    |   22 ++++++++++
+ 5 files changed, 101 insertions(+), 4 deletions(-)
+
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
