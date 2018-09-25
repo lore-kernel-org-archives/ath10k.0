@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4UPJ-0000fY-5d
- for ath10k@lists.infradead.org; Mon, 24 Sep 2018 17:12:28 +0000
-Received: by mail-pf1-x444.google.com with SMTP id p12-v6so9298855pfh.2
- for <ath10k@lists.infradead.org>; Mon, 24 Sep 2018 10:11:54 -0700 (PDT)
-Date: Mon, 24 Sep 2018 10:11:49 -0700
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH 2/4] dts: arm64/sdm845: Add WCN3990 WLAN module device node
-Message-ID: <20180924171147.GA87119@ban.mtv.corp.google.com>
-References: <20180921090907.25937-1-govinds@codeaurora.org>
- <20180921090907.25937-3-govinds@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20180921090907.25937-3-govinds@codeaurora.org>
+ id 1g4g4J-0006hl-TG
+ for ath10k@lists.infradead.org; Tue, 25 Sep 2018 05:39:34 +0000
+From: Sriram R <srirrama@codeaurora.org>
+Subject: [PATCH v2] ath10k: Add support for configuring management packet rate
+Date: Tue, 25 Sep 2018 11:08:18 +0530
+Message-Id: <1537853898-3793-1-git-send-email-srirrama@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,106 +15,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: andy.gross@linaro.org, devicetree@vger.kernel.org, robh+dt@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>
 
-Hi,
+By default the firmware uses 1Mbps and 6Mbps rate for management packets
+in 2G and 5G bands respectively. But when the user selects different
+basic rates from the userspace, we need to send the management
+packets at the lowest basic rate selected by the user.
 
-On Fri, Sep 21, 2018 at 02:39:05PM +0530, Govind Singh wrote:
-> Add device node for the ath10k SNOC platform driver probe
-> and add resources required for WCN3990 on SDM845 soc.
-> 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845-mtp.dts |  7 +++++++
->  arch/arm64/boot/dts/qcom/sdm845.dtsi    | 25 +++++++++++++++++++++++++
->  2 files changed, 32 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> index eedfaf8922e2..4de57f7df93c 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> @@ -440,3 +440,10 @@
->  		bias-pull-up;
->  	};
->  };
-> +
-> +&wifi {
+This change makes use of WMI_VDEV_PARAM_MGMT_RATE param for configuring the
+management packets rate to the firmware.
 
-As the bots have already told you, you missed adding a 'wifi' label to
-sdm845.dtsi, so this reference doesn't compile.
+Chipsets Tested : QCA988X, QCA9887, QCA9984
+FW Tested 	: 10.2.4-1.0-41, 10.4-3.6.104
 
-> +	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
-> +	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
-> +	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
-> +	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index e080072cdfdb..b0b107641e74 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -86,6 +86,11 @@
->  			reg = <0 0x86200000 0 0x2d00000>;
->  			no-map;
->  		};
-> +
-> +		wlan_msa_mem: reserved-memory@96700000 {
-> +			no-map;
-> +			reg = <0 0x96700000 0 0x100000>;
-> +		};
->  	};
->  
->  	cpus {
-> @@ -1200,5 +1205,25 @@
->  				status = "disabled";
->  			};
->  		};
-> +
-> +		qcom,wifi {
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
+---
+ v2:
+     * Correction to ath10k_rates array indexing.
+     * Usage of appropriate indent.
 
-That's not a legit node name. Nodes should (a) have a generic name and
-(b) include a unit address when the node contains a 'reg' property. [1]
+ drivers/net/wireless/ath/ath10k/mac.c | 45 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 43 insertions(+), 2 deletions(-)
 
-So, how about 'wifi@18800000'? (And include the 'wifi:' label, since you
-want to refer to it in other files.)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 97548f9..c0cde94 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -157,6 +157,22 @@ u8 ath10k_mac_bitrate_to_idx(const struct ieee80211_supported_band *sband,
+ 	return 0;
+ }
+ 
++static int ath10k_mac_get_rate_hw_value(int bitrate)
++{
++	int i;
++	u8 hw_value_prefix = 0;
++
++	if (ath10k_mac_bitrate_is_cck(bitrate))
++		hw_value_prefix = WMI_RATE_PREAMBLE_CCK << 6;
++
++	for (i = 0; i < ARRAY_SIZE(ath10k_rates); i++) {
++		if (ath10k_rates[i].bitrate == bitrate)
++			return hw_value_prefix | ath10k_rates[i].hw_value;
++	}
++
++	return -EINVAL;
++}
++
+ static int ath10k_mac_get_max_vht_mcs_map(u16 mcs_map, int nss)
+ {
+ 	switch ((mcs_map >> (2 * nss)) & 0x3) {
+@@ -5452,9 +5468,10 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	struct cfg80211_chan_def def;
+ 	u32 vdev_param, pdev_param, slottime, preamble;
+ 	u16 bitrate, hw_value;
+-	u8 rate;
+-	int rateidx, ret = 0;
++	u8 rate, basic_rate_idx;
++	int rateidx, ret = 0, hw_rate_code;
+ 	enum nl80211_band band;
++	const struct ieee80211_supported_band *sband;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -5660,6 +5677,30 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 				    arvif->vdev_id,  ret);
+ 	}
+ 
++	if (changed & BSS_CHANGED_BASIC_RATES) {
++		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
++			mutex_unlock(&ar->conf_mutex);
++			return;
++		}
++
++		sband = ar->hw->wiphy->bands[def.chan->band];
++		basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
++		bitrate = sband->bitrates[basic_rate_idx].bitrate;
++
++		hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
++		if (hw_rate_code < 0) {
++			ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
++			mutex_unlock(&ar->conf_mutex);
++			return;
++		}
++
++		vdev_param = ar->wmi.vdev_param->mgmt_rate;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++						hw_rate_code);
++		if (ret)
++			ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
++	}
++
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+-- 
+2.7.4
 
-Also, this seems like the kind of device that should remain 'status =
-"disabled"' in the top-level DTSI, and be overridden with 'status =
-"okay"' in the child DTS.
-
-Brian
-
-[1] See:
-https://elinux.org/Device_Tree_Usage#Node_Names
-https://elinux.org/images/c/cf/Power_ePAPR_APPROVED_v1.1.pdf
-
-> +			compatible = "qcom,wcn3990-wifi";
-> +			reg = <0x18800000 0x800000>;
-> +			reg-names = "membase";
-> +			memory-region = <&wlan_msa_mem>;
-> +			interrupts =
-> +				<0 413 0 /* CE0 */ >,
-> +				<0 414 0 /* CE1 */ >,
-> +				<0 415 0 /* CE2 */ >,
-> +				<0 416 0 /* CE3 */ >,
-> +				<0 417 0 /* CE4 */ >,
-> +				<0 418 0 /* CE5 */ >,
-> +				<0 420 0 /* CE6 */ >,
-> +				<0 421 0 /* CE7 */ >,
-> +				<0 422 0 /* CE8 */ >,
-> +				<0 423 0 /* CE9 */ >,
-> +				<0 424 0 /* CE10 */ >,
-> +				<0 425 0 /* CE11 */ >;
-> +		};
->  	};
->  };
-> -- 
-> 2.17.0
-> 
 
 _______________________________________________
 ath10k mailing list
