@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5KNN-0007u3-93
- for ath10k@lists.infradead.org; Thu, 27 Sep 2018 00:41:54 +0000
+ id 1g5KNN-0007uK-9A
+ for ath10k@lists.infradead.org; Thu, 27 Sep 2018 00:41:56 +0000
 From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: [RFC 1/2] ath10k: migrate to mac80211 txq scheduling
-Date: Wed, 26 Sep 2018 17:41:13 -0700
-Message-Id: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
-MIME-Version: 1.0
+Subject: [RFC 2/2] ath10k: reporting estimated tx airtime for fairness
+Date: Wed, 26 Sep 2018 17:41:14 -0700
+Message-Id: <1538008874-11692-2-git-send-email-rmanohar@codeaurora.org>
+In-Reply-To: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
+References: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,148 +17,192 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: Kan Yan <kyan@google.com>, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-YXRoMTBrIG1haW50YWlucyBjb21tb24gdHhxcyBsaXN0IGZvciBhbGwgc3RhdGlvbnMuIFRoaXMg
-dHhxCm1hbmFnZW1lbnQgY2FuIGJlIHJlbW92ZWQgYnkgbWlncmF0aW5nIHRvIG1hYzgwMjExIHR4
-cSBBUElzCmFuZCBsZXQgbWFjODAyMTEgaGFuZGxlIHR4cXMgcmVvcmRlcmluZyBiYXNlZCBvbiBy
-ZXBvcnRlZCBhaXJ0aW1lLgpCeSBkb2luZyB0aGlzLCB0eHEgZmFpcm5lc3MgbWFpbnRhaW5lZCBp
-biBhdGgxMGsgaS5lIHByb2Nlc3NpbmcKTiBmcmFtZXMgcGVyIHR4cSBpcyByZW1vdmVkLiBCeSBh
-ZGFwdGluZyB0byBtYWM4MDIxMSBBUElzLAphdGgxMGsgd2lsbCBzdXBwb3J0IG1hYzgwMjExIGJh
-c2VkIGFpcnRpbWUgZmFpcm5lc3MgYWxnb3JpdGhtLgoKU2lnbmVkLW9mZi1ieTogVG9rZSBIw7hp
-bGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+ClNpZ25lZC1vZmYtYnk6IFJhamt1bWFyIE1h
-bm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+Ci0tLQogZHJpdmVycy9uZXQvd2lyZWxl
-c3MvYXRoL2F0aDEway9jb3JlLmMgICB8ICAyIC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvY29yZS5oICAgfCAgMyAtLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9o
-dGMuaCAgICB8ICAxIC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMg
-fCAgOCArKysKIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMgICAgfCA4NyAr
-KysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogNSBmaWxlcyBjaGFuZ2VkLCAzMyBpbnNl
-cnRpb25zKCspLCA2OCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2NvcmUuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-Y29yZS5jCmluZGV4IGNmM2M0N2I4Y2IyZC4uMDY4NGY4N2FiYzliIDEwMDY0NAotLS0gYS9kcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYworKysgYi9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2NvcmUuYwpAQCAtMzA2OCw5ICszMDY4LDcgQEAgc3RydWN0IGF0aDEw
-ayAqYXRoMTBrX2NvcmVfY3JlYXRlKHNpemVfdCBwcml2X3NpemUsIHN0cnVjdCBkZXZpY2UgKmRl
-diwKIAogCW11dGV4X2luaXQoJmFyLT5jb25mX211dGV4KTsKIAlzcGluX2xvY2tfaW5pdCgmYXIt
-PmRhdGFfbG9jayk7Ci0Jc3Bpbl9sb2NrX2luaXQoJmFyLT50eHFzX2xvY2spOwogCi0JSU5JVF9M
-SVNUX0hFQUQoJmFyLT50eHFzKTsKIAlJTklUX0xJU1RfSEVBRCgmYXItPnBlZXJzKTsKIAlpbml0
-X3dhaXRxdWV1ZV9oZWFkKCZhci0+cGVlcl9tYXBwaW5nX3dxKTsKIAlpbml0X3dhaXRxdWV1ZV9o
-ZWFkKCZhci0+aHR0LmVtcHR5X3R4X3dxKTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvY29yZS5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9j
-b3JlLmgKaW5kZXggZjZlNWMyOWY3NGU3Li5kM2UyMGFhZjgwMjMgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvY29yZS5oCkBAIC0xMDU0LDEwICsxMDU0LDcgQEAgc3RydWN0IGF0aDEw
-ayB7CiAKIAkvKiBwcm90ZWN0cyBzaGFyZWQgc3RydWN0dXJlIGRhdGEgKi8KIAlzcGlubG9ja190
-IGRhdGFfbG9jazsKLQkvKiBwcm90ZWN0czogYXItPnR4cXMsIGFydHhxLT5saXN0ICovCi0Jc3Bp
-bmxvY2tfdCB0eHFzX2xvY2s7CiAKLQlzdHJ1Y3QgbGlzdF9oZWFkIHR4cXM7CiAJc3RydWN0IGxp
-c3RfaGVhZCBhcnZpZnM7CiAJc3RydWN0IGxpc3RfaGVhZCBwZWVyczsKIAlzdHJ1Y3QgYXRoMTBr
-X3BlZXIgKnBlZXJfbWFwW0FUSDEwS19NQVhfTlVNX1BFRVJfSURTXTsKZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmggYi9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2h0Yy5oCmluZGV4IDUxZmRhNmMyM2Y2OS4uY2IzMGFkZDdkZDMzIDEwMDY0
-NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0Yy5oCisrKyBiL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmgKQEAgLTUxLDcgKzUxLDYgQEAKICAqLwog
-CiAjZGVmaW5lIEhUQ19IT1NUX01BWF9NU0dfUEVSX1JYX0JVTkRMRSAgICAgICAgOAotI2RlZmlu
-ZSBIVENfSE9TVF9NQVhfTVNHX1BFUl9UWF9CVU5ETEUgICAgICAgIDE2CiAKIGVudW0gYXRoMTBr
-X2h0Y190eF9mbGFncyB7CiAJQVRIMTBLX0hUQ19GTEFHX05FRURfQ1JFRElUX1VQREFURSA9IDB4
-MDEsCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5j
-IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwppbmRleCBmMjQwNTI1
-OGE2ZDMuLmYyYWFhMmY3YTAyMiAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9odHRfcnguYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0
-dF9yeC5jCkBAIC0yMzc5LDYgKzIzNzksNyBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfaHR0X3J4X3R4
-X2ZldGNoX2luZChzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikKIAl1OCB0
-aWQ7CiAJaW50IHJldDsKIAlpbnQgaTsKKwlib29sIG1heV90eDsKIAogCWF0aDEwa19kYmcoYXIs
-IEFUSDEwS19EQkdfSFRULCAiaHR0IHJ4IHR4IGZldGNoIGluZFxuIik7CiAKQEAgLTI0NTEsOCAr
-MjQ1MiwxMyBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfaHR0X3J4X3R4X2ZldGNoX2luZChzdHJ1Y3Qg
-YXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikKIAkJbnVtX21zZHVzID0gMDsKIAkJbnVt
-X2J5dGVzID0gMDsKIAorCQlpZWVlODAyMTFfdHhxX3NjaGVkdWxlX3N0YXJ0KGh3LCB0eHEtPmFj
-KTsKKwkJbWF5X3R4ID0gaWVlZTgwMjExX3R4cV9tYXlfdHJhbnNtaXQoaHcsIHR4cSk7CiAJCXdo
-aWxlIChudW1fbXNkdXMgPCBtYXhfbnVtX21zZHVzICYmCiAJCSAgICAgICBudW1fYnl0ZXMgPCBt
-YXhfbnVtX2J5dGVzKSB7CisJCQlpZiAoIW1heV90eCkKKwkJCQlicmVhazsKKwogCQkJcmV0ID0g
-YXRoMTBrX21hY190eF9wdXNoX3R4cShodywgdHhxKTsKIAkJCWlmIChyZXQgPCAwKQogCQkJCWJy
-ZWFrOwpAQCAtMjQ2MCw2ICsyNDY2LDggQEAgc3RhdGljIHZvaWQgYXRoMTBrX2h0dF9yeF90eF9m
-ZXRjaF9pbmQoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IpCiAJCQludW1f
-bXNkdXMrKzsKIAkJCW51bV9ieXRlcyArPSByZXQ7CiAJCX0KKwkJaWVlZTgwMjExX3JldHVybl90
-eHEoaHcsIHR4cSk7CisJCWllZWU4MDIxMV90eHFfc2NoZWR1bGVfZW5kKGh3LCB0eHEtPmFjKTsK
-IAogCQlyZWNvcmQtPm51bV9tc2R1cyA9IGNwdV90b19sZTE2KG51bV9tc2R1cyk7CiAJCXJlY29y
-ZC0+bnVtX2J5dGVzID0gY3B1X3RvX2xlMzIobnVtX2J5dGVzKTsKZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9h
-dGgvYXRoMTBrL21hYy5jCmluZGV4IDk3NTQ4Zjk2YTJmNy4uZDQ2NDhiMjJhZDY0IDEwMDY0NAot
-LS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCisrKyBiL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKQEAgLTM4NzQsNyArMzg3NCw2IEBAIHN0YXRp
-YyB2b2lkIGF0aDEwa19tYWNfdHhxX2luaXQoc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkKIAog
-c3RhdGljIHZvaWQgYXRoMTBrX21hY190eHFfdW5yZWYoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVj
-dCBpZWVlODAyMTFfdHhxICp0eHEpCiB7Ci0Jc3RydWN0IGF0aDEwa190eHEgKmFydHhxOwogCXN0
-cnVjdCBhdGgxMGtfc2tiX2NiICpjYjsKIAlzdHJ1Y3Qgc2tfYnVmZiAqbXNkdTsKIAlpbnQgbXNk
-dV9pZDsKQEAgLTM4ODIsMTIgKzM4ODEsNiBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfbWFjX3R4cV91
-bnJlZihzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkKIAlpZiAo
-IXR4cSkKIAkJcmV0dXJuOwogCi0JYXJ0eHEgPSAodm9pZCAqKXR4cS0+ZHJ2X3ByaXY7Ci0Jc3Bp
-bl9sb2NrX2JoKCZhci0+dHhxc19sb2NrKTsKLQlpZiAoIWxpc3RfZW1wdHkoJmFydHhxLT5saXN0
-KSkKLQkJbGlzdF9kZWxfaW5pdCgmYXJ0eHEtPmxpc3QpOwotCXNwaW5fdW5sb2NrX2JoKCZhci0+
-dHhxc19sb2NrKTsKLQogCXNwaW5fbG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsKIAlpZHJfZm9y
-X2VhY2hfZW50cnkoJmFyLT5odHQucGVuZGluZ190eCwgbXNkdSwgbXNkdV9pZCkgewogCQljYiA9
-IEFUSDEwS19TS0JfQ0IobXNkdSk7CkBAIC0zOTI3LDcgKzM5MjAsNiBAQCBzdGF0aWMgYm9vbCBh
-dGgxMGtfbWFjX3R4X2Nhbl9wdXNoKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAogCXN0cnVjdCBh
-dGgxMGtfdHhxICphcnR4cSA9ICh2b2lkICopdHhxLT5kcnZfcHJpdjsKIAogCS8qIE5vIG5lZWQg
-dG8gZ2V0IGxvY2tzICovCi0KIAlpZiAoYXItPmh0dC50eF9xX3N0YXRlLm1vZGUgPT0gSFRUX1RY
-X01PREVfU1dJVENIX1BVU0gpCiAJCXJldHVybiB0cnVlOwogCkBAIC00MDE0LDQ4ICs0MDA2LDQ0
-IEBAIGludCBhdGgxMGtfbWFjX3R4X3B1c2hfdHhxKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAog
-CXJldHVybiBza2JfbGVuOwogfQogCi12b2lkIGF0aDEwa19tYWNfdHhfcHVzaF9wZW5kaW5nKHN0
-cnVjdCBhdGgxMGsgKmFyKQorc3RhdGljIGludCBhdGgxMGtfbWFjX3NjaGVkdWxlX3R4cShzdHJ1
-Y3QgaWVlZTgwMjExX2h3ICpodywgdTMyIGFjKQogewotCXN0cnVjdCBpZWVlODAyMTFfaHcgKmh3
-ID0gYXItPmh3OwogCXN0cnVjdCBpZWVlODAyMTFfdHhxICp0eHE7Ci0Jc3RydWN0IGF0aDEwa190
-eHEgKmFydHhxOwotCXN0cnVjdCBhdGgxMGtfdHhxICpsYXN0OwotCWludCByZXQ7Ci0JaW50IG1h
-eDsKLQotCWlmIChhci0+aHR0Lm51bV9wZW5kaW5nX3R4ID49IChhci0+aHR0Lm1heF9udW1fcGVu
-ZGluZ190eCAvIDIpKQotCQlyZXR1cm47Ci0KLQlzcGluX2xvY2tfYmgoJmFyLT50eHFzX2xvY2sp
-OwotCXJjdV9yZWFkX2xvY2soKTsKLQotCWxhc3QgPSBsaXN0X2xhc3RfZW50cnkoJmFyLT50eHFz
-LCBzdHJ1Y3QgYXRoMTBrX3R4cSwgbGlzdCk7Ci0Jd2hpbGUgKCFsaXN0X2VtcHR5KCZhci0+dHhx
-cykpIHsKLQkJYXJ0eHEgPSBsaXN0X2ZpcnN0X2VudHJ5KCZhci0+dHhxcywgc3RydWN0IGF0aDEw
-a190eHEsIGxpc3QpOwotCQl0eHEgPSBjb250YWluZXJfb2YoKHZvaWQgKilhcnR4cSwgc3RydWN0
-IGllZWU4MDIxMV90eHEsCi0JCQkJICAgZHJ2X3ByaXYpOworCWludCByZXQgPSAwOwogCi0JCS8q
-IFByZXZlbnQgYWdncmVzc2l2ZSBzdGEvdGlkIHRha2luZyBvdmVyIHR4IHF1ZXVlICovCi0JCW1h
-eCA9IEhUQ19IT1NUX01BWF9NU0dfUEVSX1RYX0JVTkRMRTsKLQkJcmV0ID0gMDsKLQkJd2hpbGUg
-KGF0aDEwa19tYWNfdHhfY2FuX3B1c2goaHcsIHR4cSkgJiYgbWF4LS0pIHsKKwlpZWVlODAyMTFf
-dHhxX3NjaGVkdWxlX3N0YXJ0KGh3LCBhYyk7CisJd2hpbGUgKCh0eHEgPSBpZWVlODAyMTFfbmV4
-dF90eHEoaHcsIGFjKSkpIHsKKwkJd2hpbGUgKGF0aDEwa19tYWNfdHhfY2FuX3B1c2goaHcsIHR4
-cSkpIHsKIAkJCXJldCA9IGF0aDEwa19tYWNfdHhfcHVzaF90eHEoaHcsIHR4cSk7CiAJCQlpZiAo
-cmV0IDwgMCkKIAkJCQlicmVhazsKIAkJfQorCQlpZWVlODAyMTFfcmV0dXJuX3R4cShodywgdHhx
-KTsKKwkJYXRoMTBrX2h0dF90eF90eHFfdXBkYXRlKGh3LCB0eHEpOworCQlpZiAocmV0ID09IC1F
-QlVTWSkKKwkJCWJyZWFrOworCX0KKwlpZWVlODAyMTFfdHhxX3NjaGVkdWxlX2VuZChodywgYWMp
-OworCisJcmV0dXJuIHJldDsKK30KKwordm9pZCBhdGgxMGtfbWFjX3R4X3B1c2hfcGVuZGluZyhz
-dHJ1Y3QgYXRoMTBrICphcikKK3sKKwlzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodyA9IGFyLT5odzsK
-Kwl1MzIgYWM7CiAKLQkJbGlzdF9kZWxfaW5pdCgmYXJ0eHEtPmxpc3QpOwotCQlpZiAocmV0ICE9
-IC1FTk9FTlQpCi0JCQlsaXN0X2FkZF90YWlsKCZhcnR4cS0+bGlzdCwgJmFyLT50eHFzKTsKKwlp
-ZiAoYXItPmh0dC5udW1fcGVuZGluZ190eCA+PSAoYXItPmh0dC5tYXhfbnVtX3BlbmRpbmdfdHgg
-LyAyKSkKKwkJcmV0dXJuOwogCi0JCWF0aDEwa19odHRfdHhfdHhxX3VwZGF0ZShodywgdHhxKTsK
-KwlyY3VfcmVhZF9sb2NrKCk7CiAKLQkJaWYgKGFydHhxID09IGxhc3QgfHwgKHJldCA8IDAgJiYg
-cmV0ICE9IC1FTk9FTlQpKQorCWZvciAoYWMgPSAwOyBhYyA8IElFRUU4MDIxMV9OVU1fQUNTOyBh
-YysrKSB7CisJCWlmIChhdGgxMGtfbWFjX3NjaGVkdWxlX3R4cShodywgYWMpID09IC1FQlVTWSkK
-IAkJCWJyZWFrOwogCX0KIAogCXJjdV9yZWFkX3VubG9jaygpOwotCXNwaW5fdW5sb2NrX2JoKCZh
-ci0+dHhxc19sb2NrKTsKIH0KIEVYUE9SVF9TWU1CT0woYXRoMTBrX21hY190eF9wdXNoX3BlbmRp
-bmcpOwogCkBAIC00MjkzLDMyICs0MjgxLDcgQEAgc3RhdGljIHZvaWQgYXRoMTBrX21hY19vcF90
-eChzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKIHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfb3Bfd2Fr
-ZV90eF9xdWV1ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKIAkJCQkJc3RydWN0IGllZWU4MDIx
-MV90eHEgKnR4cSkKIHsKLQlzdHJ1Y3QgYXRoMTBrICphciA9IGh3LT5wcml2OwotCXN0cnVjdCBh
-dGgxMGtfdHhxICphcnR4cSA9ICh2b2lkICopdHhxLT5kcnZfcHJpdjsKLQlzdHJ1Y3QgaWVlZTgw
-MjExX3R4cSAqZl90eHE7Ci0Jc3RydWN0IGF0aDEwa190eHEgKmZfYXJ0eHE7Ci0JaW50IHJldCA9
-IDA7Ci0JaW50IG1heCA9IEhUQ19IT1NUX01BWF9NU0dfUEVSX1RYX0JVTkRMRTsKLQotCXNwaW5f
-bG9ja19iaCgmYXItPnR4cXNfbG9jayk7Ci0JaWYgKGxpc3RfZW1wdHkoJmFydHhxLT5saXN0KSkK
-LQkJbGlzdF9hZGRfdGFpbCgmYXJ0eHEtPmxpc3QsICZhci0+dHhxcyk7Ci0KLQlmX2FydHhxID0g
-bGlzdF9maXJzdF9lbnRyeSgmYXItPnR4cXMsIHN0cnVjdCBhdGgxMGtfdHhxLCBsaXN0KTsKLQlm
-X3R4cSA9IGNvbnRhaW5lcl9vZigodm9pZCAqKWZfYXJ0eHEsIHN0cnVjdCBpZWVlODAyMTFfdHhx
-LCBkcnZfcHJpdik7Ci0JbGlzdF9kZWxfaW5pdCgmZl9hcnR4cS0+bGlzdCk7Ci0KLQl3aGlsZSAo
-YXRoMTBrX21hY190eF9jYW5fcHVzaChodywgZl90eHEpICYmIG1heC0tKSB7Ci0JCXJldCA9IGF0
-aDEwa19tYWNfdHhfcHVzaF90eHEoaHcsIGZfdHhxKTsKLQkJaWYgKHJldCA8IDApCi0JCQlicmVh
-azsKLQl9Ci0JaWYgKHJldCAhPSAtRU5PRU5UKQotCQlsaXN0X2FkZF90YWlsKCZmX2FydHhxLT5s
-aXN0LCAmYXItPnR4cXMpOwotCXNwaW5fdW5sb2NrX2JoKCZhci0+dHhxc19sb2NrKTsKLQotCWF0
-aDEwa19odHRfdHhfdHhxX3VwZGF0ZShodywgZl90eHEpOwotCWF0aDEwa19odHRfdHhfdHhxX3Vw
-ZGF0ZShodywgdHhxKTsKKwlhdGgxMGtfbWFjX3NjaGVkdWxlX3R4cShodywgdHhxLT5hYyk7CiB9
-CiAKIC8qIE11c3Qgbm90IGJlIGNhbGxlZCB3aXRoIGNvbmZfbXV0ZXggaGVsZCBhcyB3b3JrZXJz
-IGNhbiB1c2UgdGhhdCBhbHNvLiAqLwotLSAKMS45LjEKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+Transmit airtime will be estimated from last tx rate used.
+Firmware report tx rate by peer stats. Airtime is computed
+on tx path and the same will be reported to mac80211 upon
+tx completion.
+
+Signed-off-by: Kan Yan <kyan@google.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.h   |  2 ++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c    | 58 ++++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/txrx.c   |  4 +++
+ 4 files changed, 62 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index d3e20aaf8023..4bfc370bf659 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -123,6 +123,7 @@ struct ath10k_skb_cb {
+ 	u8 flags;
+ 	u8 eid;
+ 	u16 msdu_id;
++	u16 airtime_est;
+ 	struct ieee80211_vif *vif;
+ 	struct ieee80211_txq *txq;
+ } __packed;
+@@ -493,6 +494,7 @@ struct ath10k_sta {
+ 	u32 smps;
+ 	u16 peer_id;
+ 	struct rate_info txrate;
++	u32 last_tx_bitrate;
+ 
+ 	struct work_struct update_wk;
+ 	u64 rx_duration;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index f2aaa2f7a022..f1de9fc09d9f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2809,6 +2809,7 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
+ 
+ 	arsta->txrate.nss = txrate.nss;
+ 	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
++	arsta->last_tx_bitrate = cfg80211_calculate_bitrate(&arsta->txrate);
+ 
+ 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
+ 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d4648b22ad64..a694dae6f024 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3528,7 +3528,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
+ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
+ 				    struct ieee80211_vif *vif,
+ 				    struct ieee80211_txq *txq,
+-				    struct sk_buff *skb)
++				    struct sk_buff *skb, u16 airtime)
+ {
+ 	struct ieee80211_hdr *hdr = (void *)skb->data;
+ 	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
+@@ -3545,6 +3545,7 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
+ 
+ 	cb->vif = vif;
+ 	cb->txq = txq;
++	cb->airtime_est = airtime;
+ }
+ 
+ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
+@@ -3932,6 +3933,50 @@ static bool ath10k_mac_tx_can_push(struct ieee80211_hw *hw,
+ 	return false;
+ }
+ 
++/* Return estimated airtime in microsecond, which is calculated using last
++ * reported TX rate. This is just a rough estimation because host driver has no
++ * knowledge of the actual transmit rate, retries or aggregation. If actual
++ * airtime can be reported by firmware, then delta between estimated and actual
++ * airtime can be adjusted from deficit.
++ */
++#define IEEE80211_ATF_OVERHEAD		100	/* IFS + some slot time */
++#define IEEE80211_ATF_OVERHEAD_IFS	16	/* IFS only */
++static u16 ath10k_mac_update_airtime(struct ath10k *ar,
++				     struct ieee80211_txq *txq,
++				     struct sk_buff *skb)
++{
++	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
++	struct ath10k_sta *arsta;
++	u32 pktlen;
++	u16 airtime = 0;
++
++	if (!txq || !txq->sta || !ieee80211_is_data(hdr->frame_control))
++		return airtime;
++
++	spin_lock_bh(&ar->data_lock);
++	arsta = (struct ath10k_sta *)txq->sta->drv_priv;
++
++	pktlen = skb->len + 38; /* Assume MAC header 30, SNAP 8 for most case */
++	if (arsta->last_tx_bitrate) {
++		/* airtime in us, last_tx_bitrate in 100kbps */
++		airtime = (pktlen * 8 * (1000 / 100))
++				/ arsta->last_tx_bitrate;
++		/* overhead for media access time and IFS */
++		airtime += IEEE80211_ATF_OVERHEAD_IFS;
++	} else {
++		/* This is mostly for throttle excessive BC/MC frames, and the
++		 * airtime/rate doesn't need be exact. Airtime of BC/MC frames
++		 * in 2G get some discount, which helps prevent very low rate
++		 * frames from being blocked for too long.
++		 */
++		airtime = (pktlen * 8 * (1000 / 100)) / 60; /* 6M */
++		airtime += IEEE80211_ATF_OVERHEAD;
++	}
++	spin_unlock_bh(&ar->data_lock);
++
++	return airtime;
++}
++
+ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 			   struct ieee80211_txq *txq)
+ {
+@@ -3947,6 +3992,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	size_t skb_len;
+ 	bool is_mgmt, is_presp;
+ 	int ret;
++	u16 airtime;
+ 
+ 	spin_lock_bh(&ar->htt.tx_lock);
+ 	ret = ath10k_htt_tx_inc_pending(htt);
+@@ -3964,7 +4010,8 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 		return -ENOENT;
+ 	}
+ 
+-	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb);
++	airtime = ath10k_mac_update_airtime(ar, txq, skb);
++	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb, airtime);
+ 
+ 	skb_len = skb->len;
+ 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+@@ -4230,8 +4277,10 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 	bool is_mgmt;
+ 	bool is_presp;
+ 	int ret;
++	u16 airtime;
+ 
+-	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb);
++	airtime = ath10k_mac_update_airtime(ar, txq, skb);
++	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb, airtime);
+ 
+ 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+ 	txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
+@@ -8446,6 +8495,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		wiphy_ext_feature_set(ar->hw->wiphy,
+ 				      NL80211_EXT_FEATURE_DATA_ACK_SIGNAL_SUPPORT);
+ 
++	if (ath10k_peer_stats_enabled(ar))
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_AIRTIME_FAIRNESS);
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 23606b6972d0..8e7c416cd330 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -95,6 +95,10 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
++	if (txq && txq->sta)
++		ieee80211_sta_register_airtime(txq->sta, txq->tid,
++					       skb_cb->airtime_est, 0);
++
+ 	if (ar->dev_type != ATH10K_DEV_TYPE_HL)
+ 		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
