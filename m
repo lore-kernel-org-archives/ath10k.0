@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g61Xf-000708-A3
- for ath10k@lists.infradead.org; Fri, 28 Sep 2018 22:47:25 +0000
-MIME-Version: 1.0
-Date: Fri, 28 Sep 2018 15:47:07 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g61ov-00089y-0x
+ for ath10k@lists.infradead.org; Fri, 28 Sep 2018 23:05:14 +0000
 Subject: Re: [RFC 2/2] ath10k: reporting estimated tx airtime for fairness
-In-Reply-To: <25469b4a-219d-f941-15ad-a1c95308dd69@candelatech.com>
 References: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
  <1538008874-11692-2-git-send-email-rmanohar@codeaurora.org>
  <87lg7lfxtw.fsf@toke.dk> <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
  <25469b4a-219d-f941-15ad-a1c95308dd69@candelatech.com>
-Message-ID: <df1c4f9bde7682646c901305d1c0ab5d@codeaurora.org>
+ <df1c4f9bde7682646c901305d1c0ab5d@codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <4678c2a6-93ab-5688-1907-73ceb74999c4@candelatech.com>
+Date: Fri, 28 Sep 2018 16:04:56 -0700
+MIME-Version: 1.0
+In-Reply-To: <df1c4f9bde7682646c901305d1c0ab5d@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +26,41 @@ Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kan Yan <kyan@google.com>, linux-wireless-owner@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: Kan Yan <kyan@google.com>, linux-wireless-owner@vger.kernel.org, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjAxOC0wOS0yOCAxMjo1NywgQmVuIEdyZWVhciB3cm90ZToKPiBPbiAwOS8yOC8yMDE4IDEy
-OjQ3IFBNLCBSYWprdW1hciBNYW5vaGFyYW4gd3JvdGU6Cj4+IE9uIDIwMTgtMDktMjggMDg6MjUs
-IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gCj4+PiBTbyB0aGlzIGp1c3QgdXNl
-cyB0aGUgY2FsY3VsYXRlZCBhaXJ0aW1lIGJhc2VkIG9uIHJhdGUgYW5kIHNpemU/IAo+Pj4gV2Fz
-bid0Cj4+PiB0aGVyZSBzdXBwb3NlZCB0byBiZSBhbiBhaXJ0aW1lIHVzYWdlIHZhbHVlIHJlcG9y
-dGVkIGJ5IHRoZSBmaXJtd2FyZT8gCj4+PiA6KQo+Pj4gCj4+IEZpcm13YXJlIGludGVyZmFjZSBj
-aGFuZ2VzIGFyZSBpbiBwcm9ncmVzcy4gQWlydGltZSBmb3Igc3RhL3RpZCB3aWxsIAo+PiBiZSBy
-ZXBvcnRlZCB2aWEKPj4gaHR0IHR4LWNvbXBsIGFuZCByeCBpbmQgbWVzc2FnZXMuIE1lYW50aW1l
-IEkgdGhvdWdodCBpdCB3b3VsZCBiZSAKPj4gdXNlZnVsIHRvIHVzZSBLYW4ncyBjaGFuZ2VzCj4+
-IGZvciBBVEYgdmFsaWRhdGlvbiBpbiBhdGgxMGsgdXNpbmcgZXhpc3RpbmcgZmlybXdhcmUuIDop
-Cj4gCj4gTWF5YmUgeW91IGNhbiBnZXQgdGhlIGZpcm13YXJlIGd1eXMgdG8gcmVwb3J0IHRoZSB0
-eCByYXRlIGluIHRoZSAKPiB0eC1jb21wbGV0aW9uCj4gKGxpa2UgSSBoYXZlIGJlZW4gZG9pbmcg
-Zm9yIHllYXJzIGluIG15IGF0aDEway1jdCBmaXJtd2FyZSk/ICBUaGVuIGxldCAKPiB0aGUgaG9z
-dAo+IGRvIHRoZSBhaXItdGltZSBjYWxjdWxhdGluZz8KPiAKPiBJJ2xsIGdpdmUgdGhlbSBmaXJt
-d2FyZSBwYXRjaGVzIGlmIHRoZSB3YW50IDopCj4gCkJlbiwKCkFzIHlvdSBrbm93LCBpdCBuZWVk
-cyBjbGVhbnVwIGluIGZpcm13YXJlIHRvIGZyZWUgdXAgc3BhY2UgZm9yIG5ldyAKaW50ZXJmYWNl
-CmNoYW5nZXMuIE1vc3Qgb2YgdGltZSB3ZSB0cnkgdG8gbGV2ZXJhZ2UgcnN2ZC91bnVzZWQgc2xv
-dHMuIEkgYW0gYXdhcmUgCm9mIHRoYXQKeW91IGRpZCBhIGxvdCBvZiBjbGVhbiB1cCBpbiBDVCBm
-aXJtd2FyZSB3aGljaCBpcyBxdWl0ZSBoYXJkIGluIG9mZmljaWFsCmZpcm13YXJlIGFzIGl0IGFs
-c28gaGFzIHRvIHN1cHBvcnQgcHJvcC4gcmVsZWFzZXMuIEthbGxlIGNhbiBhbnN3ZXIgbXVjaCAK
-YmV0dGVyLgoKLVJhamt1bWFyCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+T24gMDkvMjgvMjAxOCAwMzo0NyBQTSwgUmFqa3VtYXIgTWFub2hhcmFuIHdyb3RlOgo+IE9uIDIw
+MTgtMDktMjggMTI6NTcsIEJlbiBHcmVlYXIgd3JvdGU6Cj4+IE9uIDA5LzI4LzIwMTggMTI6NDcg
+UE0sIFJhamt1bWFyIE1hbm9oYXJhbiB3cm90ZToKPj4+IE9uIDIwMTgtMDktMjggMDg6MjUsIFRv
+a2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+Cj4+Pj4gU28gdGhpcyBqdXN0IHVzZXMg
+dGhlIGNhbGN1bGF0ZWQgYWlydGltZSBiYXNlZCBvbiByYXRlIGFuZCBzaXplPyBXYXNuJ3QKPj4+
+PiB0aGVyZSBzdXBwb3NlZCB0byBiZSBhbiBhaXJ0aW1lIHVzYWdlIHZhbHVlIHJlcG9ydGVkIGJ5
+IHRoZSBmaXJtd2FyZT8gOikKPj4+Pgo+Pj4gRmlybXdhcmUgaW50ZXJmYWNlIGNoYW5nZXMgYXJl
+IGluIHByb2dyZXNzLiBBaXJ0aW1lIGZvciBzdGEvdGlkIHdpbGwgYmUgcmVwb3J0ZWQgdmlhCj4+
+PiBodHQgdHgtY29tcGwgYW5kIHJ4IGluZCBtZXNzYWdlcy4gTWVhbnRpbWUgSSB0aG91Z2h0IGl0
+IHdvdWxkIGJlIHVzZWZ1bCB0byB1c2UgS2FuJ3MgY2hhbmdlcwo+Pj4gZm9yIEFURiB2YWxpZGF0
+aW9uIGluIGF0aDEwayB1c2luZyBleGlzdGluZyBmaXJtd2FyZS4gOikKPj4KPj4gTWF5YmUgeW91
+IGNhbiBnZXQgdGhlIGZpcm13YXJlIGd1eXMgdG8gcmVwb3J0IHRoZSB0eCByYXRlIGluIHRoZSB0
+eC1jb21wbGV0aW9uCj4+IChsaWtlIEkgaGF2ZSBiZWVuIGRvaW5nIGZvciB5ZWFycyBpbiBteSBh
+dGgxMGstY3QgZmlybXdhcmUpPyAgVGhlbiBsZXQgdGhlIGhvc3QKPj4gZG8gdGhlIGFpci10aW1l
+IGNhbGN1bGF0aW5nPwo+Pgo+PiBJJ2xsIGdpdmUgdGhlbSBmaXJtd2FyZSBwYXRjaGVzIGlmIHRo
+ZSB3YW50IDopCj4+Cj4gQmVuLAo+Cj4gQXMgeW91IGtub3csIGl0IG5lZWRzIGNsZWFudXAgaW4g
+ZmlybXdhcmUgdG8gZnJlZSB1cCBzcGFjZSBmb3IgbmV3IGludGVyZmFjZQo+IGNoYW5nZXMuIE1v
+c3Qgb2YgdGltZSB3ZSB0cnkgdG8gbGV2ZXJhZ2UgcnN2ZC91bnVzZWQgc2xvdHMuIEkgYW0gYXdh
+cmUgb2YgdGhhdAo+IHlvdSBkaWQgYSBsb3Qgb2YgY2xlYW4gdXAgaW4gQ1QgZmlybXdhcmUgd2hp
+Y2ggaXMgcXVpdGUgaGFyZCBpbiBvZmZpY2lhbAo+IGZpcm13YXJlIGFzIGl0IGFsc28gaGFzIHRv
+IHN1cHBvcnQgcHJvcC4gcmVsZWFzZXMuIEthbGxlIGNhbiBhbnN3ZXIgbXVjaCBiZXR0ZXIuCgpU
+aGVyZSBhcmUgaGFyZCB3YXlzIHRvIGdldCBtb3JlIHNwYWNlIGluIHRoZSBmaXJtd2FyZSwgYnV0
+IHRoZXJlIGFyZSBhbHNvIHNvbWUKZWFzaWVyIG9uZXMgKHVuLXVzZWQgbWVtYmVycyBpbiBzdHJ1
+Y3RzLCBiZXR0ZXIgbmF0dXJhbCBwYWNraW5nLCBhbmQgc3VjaCkuCgpJZiB0aGVyZSB3YXMgYSBR
+Q0EgZmlybXdhcmUgZW5naW5lZXIgdGhhdCBjb3VsZCBwcm9tcHRseSBkaXNjdXNzIHRoZXNlIHRo
+aW5ncwp3aXRoIG1lIGFuZCBhcHBseSBwYXRjaGVzLCBJIGNhbiBmZWVkIHRoZW0gcGF0Y2hlcy4K
+CkFuZCwgdGhlIDEwLjQgZmlybXdhcmUgYWxyZWFkeSBoYXMgc29tZSBleHRyYSBzcGFjZSBpbiBp
+dHMgdHggZGVzY3JpcHRvciB0aGF0CmNhbiBiZSB1c2VkIHRvIHJlcG9ydCB0eC1zdGF0dXMgd2l0
+aG91dCBtdWNoIGFkZGl0aW9uYWwgY29kZSBvciBSQU0uICBUaGUgd2F2ZS0xIHN0dWZmCm5lZWRz
+IHNvbWUgbW9yZSBzZXJpb3VzIGhhY2tpbmcgYW5kIGRvZXMgY29uc3VtZSBtb3JlIG1lbW9yeS4K
+ClRoYW5rcywKQmVuCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNh
+bmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
