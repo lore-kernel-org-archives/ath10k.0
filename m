@@ -1,20 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr20088.outbound.protection.outlook.com ([40.107.2.88]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5yGg-0001ZH-Mk
- for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:17:40 +0000
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Subject: Re: [RFC v4 2/2] ath10k: report tx rate using
- ieee80211_tx_rate_update()
-Date: Fri, 28 Sep 2018 19:17:22 +0000
-Message-ID: <1024b679-3748-681d-e0d4-badbc4987704@bowerswilkins.com>
-References: <1537773000-2587-1-git-send-email-akolli@codeaurora.org>
- <1537773000-2587-3-git-send-email-akolli@codeaurora.org>
- <caada2d5-2e0e-8a5a-cab9-5078654ab5a4@bowerswilkins.com>
-In-Reply-To: <caada2d5-2e0e-8a5a-cab9-5078654ab5a4@bowerswilkins.com>
-Content-Language: en-US
-Content-ID: <DFB9023582C9A74C813A42EF816FC6FB@eurprd04.prod.outlook.com>
+ id 1g5yRj-00061o-2A
+ for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:29:05 +0000
+Received: from smtp1.mailbox.org (unknown [IPv6:2001:67c:2050:105:465:1:1:0])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mx1.mailbox.org (Postfix) with ESMTPS id 4EB824974A
+ for <ath10k@lists.infradead.org>; Fri, 28 Sep 2018 21:28:49 +0200 (CEST)
+Received: from smtp1.mailbox.org ([80.241.60.240])
+ by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172])
+ (amavisd-new, port 10030)
+ with ESMTP id 14t4v-EzfVts for <ath10k@lists.infradead.org>;
+ Fri, 28 Sep 2018 21:28:48 +0200 (CEST)
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Update board-2.bin files in linux-firmware
+Message-ID: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+Date: Fri, 28 Sep 2018 21:28:44 +0200
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,40 +26,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9126863824080454936=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anilkumar Kolli <akolli@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============9126863824080454936==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh
+Content-Type: multipart/mixed; boundary="uVHzyzXSOVfPMaqORjTWexngvEbqBTdae";
+ protected-headers="v1"
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ath10k@lists.infradead.org
+Message-ID: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+Subject: Update board-2.bin files in linux-firmware
+
+--uVHzyzXSOVfPMaqORjTWexngvEbqBTdae
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+the ath10k-firmware repository already contains updated board-2.bin
+files with support for more devices. Please also update the board-2.bin
+files shipped in the linux-firmware repository as they are normally
+taken by distributions.
+
+Hauke
 
 
+--uVHzyzXSOVfPMaqORjTWexngvEbqBTdae--
 
-On 09/28/2018 12:10 PM, Peter Oh wrote:
->
-> On 09/24/2018 12:10 AM, Anilkumar Kolli wrote:
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> index f2405258a6d3..355c39a0486c 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -2753,8 +2753,11 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
->>    				struct ath10k_per_peer_tx_stats *peer_stats)
->>    {
->>    	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
->> -	u8 rate = 0, rate_idx = 0, sgi;
->> +	struct ieee80211_chanctx_conf *conf = NULL;
->>    	struct rate_info txrate;
->> +	u8 rate = 0, sgi;
->> +	int rate_idx = 0;
-> type mismatch. ath10k_accumulate_per_peer_tx_stats() take u8 rate_idx,
-> but you're passing int.
-It looks like you better change return type of 
-ath10k_get_legacy_rate_idx() from int to u8 by using u8 i; instead of 
-int i inside of ath10k_get_legacy_rate_idx() and keep using rate_idx as 
-u8 here.
+--GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Peter
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEyz0/uAcd+JwXmwtD8bdnhZyy68cFAluugO8ACgkQ8bdnhZyy
+68dXeQf/RKiI9tc5vEz8xgTJnuJV7F22k71ELm1E+s2rOwCCOtEVnlLO1i4B3oQU
+UPNkMzqIg1oVpazS/SNRqIKWIUvv+YXEQEZkS3ZS72NwK4OoeydNwzeIeQyJTZrt
+YbQ/RZI8hmJWwLivhYMgc0uEI12euK4fqWnsdIZBuK3TmF/b+7HiQWt99H1+3S7f
+xIM9Cx/IZcNOGUpskHTXCRpBDZItl9vu87HlhDkrwdsdh5V5iYWXIR9Z8arw0yoH
+FU2LAbKYdiwhd0SKOI2MhCUNxc/Qvj0aeL1HThlk+qPU+vNaZwpsfCYC5bYfDp4e
+LT6YEW5Wl7iX1Jmn6X43yVvUoOLv5w==
+=ruvH
+-----END PGP SIGNATURE-----
+
+--GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh--
+
+
+--===============9126863824080454936==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============9126863824080454936==--
