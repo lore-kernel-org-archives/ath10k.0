@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.mailbox.org ([80.241.60.212])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5yRj-00061o-2A
- for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:29:05 +0000
-Received: from smtp1.mailbox.org (unknown [IPv6:2001:67c:2050:105:465:1:1:0])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mx1.mailbox.org (Postfix) with ESMTPS id 4EB824974A
- for <ath10k@lists.infradead.org>; Fri, 28 Sep 2018 21:28:49 +0200 (CEST)
-Received: from smtp1.mailbox.org ([80.241.60.240])
- by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172])
- (amavisd-new, port 10030)
- with ESMTP id 14t4v-EzfVts for <ath10k@lists.infradead.org>;
- Fri, 28 Sep 2018 21:28:48 +0200 (CEST)
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Update board-2.bin files in linux-firmware
-Message-ID: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
-Date: Fri, 28 Sep 2018 21:28:44 +0200
+ id 1g5yjQ-0004uw-PT
+ for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:47:21 +0000
 MIME-Version: 1.0
+Date: Fri, 28 Sep 2018 12:47:08 -0700
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [RFC 2/2] ath10k: reporting estimated tx airtime for fairness
+In-Reply-To: <87lg7lfxtw.fsf@toke.dk>
+References: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
+ <1538008874-11692-2-git-send-email-rmanohar@codeaurora.org>
+ <87lg7lfxtw.fsf@toke.dk>
+Message-ID: <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +20,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9126863824080454936=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: Kan Yan <kyan@google.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============9126863824080454936==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh
-Content-Type: multipart/mixed; boundary="uVHzyzXSOVfPMaqORjTWexngvEbqBTdae";
- protected-headers="v1"
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: ath10k@lists.infradead.org
-Message-ID: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
-Subject: Update board-2.bin files in linux-firmware
-
---uVHzyzXSOVfPMaqORjTWexngvEbqBTdae
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-the ath10k-firmware repository already contains updated board-2.bin
-files with support for more devices. Please also update the board-2.bin
-files shipped in the linux-firmware repository as they are normally
-taken by distributions.
-
-Hauke
-
-
---uVHzyzXSOVfPMaqORjTWexngvEbqBTdae--
-
---GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEyz0/uAcd+JwXmwtD8bdnhZyy68cFAluugO8ACgkQ8bdnhZyy
-68dXeQf/RKiI9tc5vEz8xgTJnuJV7F22k71ELm1E+s2rOwCCOtEVnlLO1i4B3oQU
-UPNkMzqIg1oVpazS/SNRqIKWIUvv+YXEQEZkS3ZS72NwK4OoeydNwzeIeQyJTZrt
-YbQ/RZI8hmJWwLivhYMgc0uEI12euK4fqWnsdIZBuK3TmF/b+7HiQWt99H1+3S7f
-xIM9Cx/IZcNOGUpskHTXCRpBDZItl9vu87HlhDkrwdsdh5V5iYWXIR9Z8arw0yoH
-FU2LAbKYdiwhd0SKOI2MhCUNxc/Qvj0aeL1HThlk+qPU+vNaZwpsfCYC5bYfDp4e
-LT6YEW5Wl7iX1Jmn6X43yVvUoOLv5w==
-=ruvH
------END PGP SIGNATURE-----
-
---GPv5qHZEIku52HHAMlKTBzwEuHVy3q1lh--
-
-
---===============9126863824080454936==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============9126863824080454936==--
+T24gMjAxOC0wOS0yOCAwODoyNSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgoKPiBT
+byB0aGlzIGp1c3QgdXNlcyB0aGUgY2FsY3VsYXRlZCBhaXJ0aW1lIGJhc2VkIG9uIHJhdGUgYW5k
+IHNpemU/IFdhc24ndAo+IHRoZXJlIHN1cHBvc2VkIHRvIGJlIGFuIGFpcnRpbWUgdXNhZ2UgdmFs
+dWUgcmVwb3J0ZWQgYnkgdGhlIGZpcm13YXJlPyAKPiA6KQo+IApGaXJtd2FyZSBpbnRlcmZhY2Ug
+Y2hhbmdlcyBhcmUgaW4gcHJvZ3Jlc3MuIEFpcnRpbWUgZm9yIHN0YS90aWQgd2lsbCBiZSAKcmVw
+b3J0ZWQgdmlhCmh0dCB0eC1jb21wbCBhbmQgcnggaW5kIG1lc3NhZ2VzLiBNZWFudGltZSBJIHRo
+b3VnaHQgaXQgd291bGQgYmUgdXNlZnVsIAp0byB1c2UgS2FuJ3MgY2hhbmdlcwpmb3IgQVRGIHZh
+bGlkYXRpb24gaW4gYXRoMTBrIHVzaW5nIGV4aXN0aW5nIGZpcm13YXJlLiA6KQoKLVJhamt1bWFy
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
