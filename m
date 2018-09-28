@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5yjQ-0004uw-PT
- for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:47:21 +0000
-MIME-Version: 1.0
-Date: Fri, 28 Sep 2018 12:47:08 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5ytH-0007yu-O6
+ for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:57:33 +0000
 Subject: Re: [RFC 2/2] ath10k: reporting estimated tx airtime for fairness
-In-Reply-To: <87lg7lfxtw.fsf@toke.dk>
 References: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
  <1538008874-11692-2-git-send-email-rmanohar@codeaurora.org>
- <87lg7lfxtw.fsf@toke.dk>
-Message-ID: <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
+ <87lg7lfxtw.fsf@toke.dk> <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <25469b4a-219d-f941-15ad-a1c95308dd69@candelatech.com>
+Date: Fri, 28 Sep 2018 12:57:13 -0700
+MIME-Version: 1.0
+In-Reply-To: <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +24,24 @@ Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>
 Cc: Kan Yan <kyan@google.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjAxOC0wOS0yOCAwODoyNSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgoKPiBT
-byB0aGlzIGp1c3QgdXNlcyB0aGUgY2FsY3VsYXRlZCBhaXJ0aW1lIGJhc2VkIG9uIHJhdGUgYW5k
-IHNpemU/IFdhc24ndAo+IHRoZXJlIHN1cHBvc2VkIHRvIGJlIGFuIGFpcnRpbWUgdXNhZ2UgdmFs
-dWUgcmVwb3J0ZWQgYnkgdGhlIGZpcm13YXJlPyAKPiA6KQo+IApGaXJtd2FyZSBpbnRlcmZhY2Ug
-Y2hhbmdlcyBhcmUgaW4gcHJvZ3Jlc3MuIEFpcnRpbWUgZm9yIHN0YS90aWQgd2lsbCBiZSAKcmVw
-b3J0ZWQgdmlhCmh0dCB0eC1jb21wbCBhbmQgcnggaW5kIG1lc3NhZ2VzLiBNZWFudGltZSBJIHRo
-b3VnaHQgaXQgd291bGQgYmUgdXNlZnVsIAp0byB1c2UgS2FuJ3MgY2hhbmdlcwpmb3IgQVRGIHZh
-bGlkYXRpb24gaW4gYXRoMTBrIHVzaW5nIGV4aXN0aW5nIGZpcm13YXJlLiA6KQoKLVJhamt1bWFy
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+T24gMDkvMjgvMjAxOCAxMjo0NyBQTSwgUmFqa3VtYXIgTWFub2hhcmFuIHdyb3RlOgo+IE9uIDIw
+MTgtMDktMjggMDg6MjUsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPgo+PiBTbyB0
+aGlzIGp1c3QgdXNlcyB0aGUgY2FsY3VsYXRlZCBhaXJ0aW1lIGJhc2VkIG9uIHJhdGUgYW5kIHNp
+emU/IFdhc24ndAo+PiB0aGVyZSBzdXBwb3NlZCB0byBiZSBhbiBhaXJ0aW1lIHVzYWdlIHZhbHVl
+IHJlcG9ydGVkIGJ5IHRoZSBmaXJtd2FyZT8gOikKPj4KPiBGaXJtd2FyZSBpbnRlcmZhY2UgY2hh
+bmdlcyBhcmUgaW4gcHJvZ3Jlc3MuIEFpcnRpbWUgZm9yIHN0YS90aWQgd2lsbCBiZSByZXBvcnRl
+ZCB2aWEKPiBodHQgdHgtY29tcGwgYW5kIHJ4IGluZCBtZXNzYWdlcy4gTWVhbnRpbWUgSSB0aG91
+Z2h0IGl0IHdvdWxkIGJlIHVzZWZ1bCB0byB1c2UgS2FuJ3MgY2hhbmdlcwo+IGZvciBBVEYgdmFs
+aWRhdGlvbiBpbiBhdGgxMGsgdXNpbmcgZXhpc3RpbmcgZmlybXdhcmUuIDopCgpNYXliZSB5b3Ug
+Y2FuIGdldCB0aGUgZmlybXdhcmUgZ3V5cyB0byByZXBvcnQgdGhlIHR4IHJhdGUgaW4gdGhlIHR4
+LWNvbXBsZXRpb24KKGxpa2UgSSBoYXZlIGJlZW4gZG9pbmcgZm9yIHllYXJzIGluIG15IGF0aDEw
+ay1jdCBmaXJtd2FyZSk/ICBUaGVuIGxldCB0aGUgaG9zdApkbyB0aGUgYWlyLXRpbWUgY2FsY3Vs
+YXRpbmc/CgpJJ2xsIGdpdmUgdGhlbSBmaXJtd2FyZSBwYXRjaGVzIGlmIHRoZSB3YW50IDopCgpU
+aGFua3MsCkJlbgoKPgo+IC1SYWprdW1hcgo+CgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
+ZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVs
+YXRlY2guY29tCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
