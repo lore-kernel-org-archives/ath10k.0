@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5ytH-0007yu-O6
- for ath10k@lists.infradead.org; Fri, 28 Sep 2018 19:57:33 +0000
-Subject: Re: [RFC 2/2] ath10k: reporting estimated tx airtime for fairness
-References: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
- <1538008874-11692-2-git-send-email-rmanohar@codeaurora.org>
- <87lg7lfxtw.fsf@toke.dk> <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <25469b4a-219d-f941-15ad-a1c95308dd69@candelatech.com>
-Date: Fri, 28 Sep 2018 12:57:13 -0700
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5z0i-00029W-EV
+ for ath10k@lists.infradead.org; Fri, 28 Sep 2018 20:05:14 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id z4-v6so6213071wrb.1
+ for <ath10k@lists.infradead.org>; Fri, 28 Sep 2018 13:04:58 -0700 (PDT)
+From: Christian Lamparter <chunkeey@gmail.com>
+Subject: Re: Update board-2.bin files in linux-firmware
+Date: Fri, 28 Sep 2018 22:04:54 +0200
+Message-ID: <2297652.AArlnWO5DQ@debian64>
+In-Reply-To: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
 MIME-Version: 1.0
-In-Reply-To: <34bac7851e6c9d3194cef87bd952c388@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +20,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@codeaurora.org>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>
-Cc: Kan Yan <kyan@google.com>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, Skorpy <skorpy@darmstadt.ccc.de>
 
-T24gMDkvMjgvMjAxOCAxMjo0NyBQTSwgUmFqa3VtYXIgTWFub2hhcmFuIHdyb3RlOgo+IE9uIDIw
-MTgtMDktMjggMDg6MjUsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPgo+PiBTbyB0
-aGlzIGp1c3QgdXNlcyB0aGUgY2FsY3VsYXRlZCBhaXJ0aW1lIGJhc2VkIG9uIHJhdGUgYW5kIHNp
-emU/IFdhc24ndAo+PiB0aGVyZSBzdXBwb3NlZCB0byBiZSBhbiBhaXJ0aW1lIHVzYWdlIHZhbHVl
-IHJlcG9ydGVkIGJ5IHRoZSBmaXJtd2FyZT8gOikKPj4KPiBGaXJtd2FyZSBpbnRlcmZhY2UgY2hh
-bmdlcyBhcmUgaW4gcHJvZ3Jlc3MuIEFpcnRpbWUgZm9yIHN0YS90aWQgd2lsbCBiZSByZXBvcnRl
-ZCB2aWEKPiBodHQgdHgtY29tcGwgYW5kIHJ4IGluZCBtZXNzYWdlcy4gTWVhbnRpbWUgSSB0aG91
-Z2h0IGl0IHdvdWxkIGJlIHVzZWZ1bCB0byB1c2UgS2FuJ3MgY2hhbmdlcwo+IGZvciBBVEYgdmFs
-aWRhdGlvbiBpbiBhdGgxMGsgdXNpbmcgZXhpc3RpbmcgZmlybXdhcmUuIDopCgpNYXliZSB5b3Ug
-Y2FuIGdldCB0aGUgZmlybXdhcmUgZ3V5cyB0byByZXBvcnQgdGhlIHR4IHJhdGUgaW4gdGhlIHR4
-LWNvbXBsZXRpb24KKGxpa2UgSSBoYXZlIGJlZW4gZG9pbmcgZm9yIHllYXJzIGluIG15IGF0aDEw
-ay1jdCBmaXJtd2FyZSk/ICBUaGVuIGxldCB0aGUgaG9zdApkbyB0aGUgYWlyLXRpbWUgY2FsY3Vs
-YXRpbmc/CgpJJ2xsIGdpdmUgdGhlbSBmaXJtd2FyZSBwYXRjaGVzIGlmIHRoZSB3YW50IDopCgpU
-aGFua3MsCkJlbgoKPgo+IC1SYWprdW1hcgo+CgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
-ZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVs
-YXRlY2guY29tCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hello,
+
+On Friday, September 28, 2018 9:28:44 PM CEST Hauke Mehrtens wrote:
+> the ath10k-firmware repository already contains updated board-2.bin
+> files with support for more devices. Please also update the board-2.bin
+> files shipped in the linux-firmware repository as they are normally
+> taken by distributions.
+
+At this opportunity, I would kindly like to remind the maintainer that there
+are currently more pending boardfiles. It would be great if they all could be
+included in the next update as well:
+
+pending
+=======
+
+ * Netgear WAC510
+ - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09186.html (IPQ4019)
+
+ * Netgear Orbi PRO SRK60
+ - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09078.html (IPQ4019) 
+ - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09079.html (QCA9984)
+
+ * ZyXEL WRE6606:
+ - https://www.mail-archive.com/ath10k@lists.infradead.org/msg08776.html (IPQ4019)
+
+ * ZyXEL NBG6617:
+ - http://lists.infradead.org/pipermail/ath10k/2018-May/011377.html (IPQ4019)
+
+And there is an update for the ASUS' RT-AC58U
+ - http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html (IPQ4019)
+
+Kind regards,
+Christian
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
