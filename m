@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5z0i-00029W-EV
- for ath10k@lists.infradead.org; Fri, 28 Sep 2018 20:05:14 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id z4-v6so6213071wrb.1
- for <ath10k@lists.infradead.org>; Fri, 28 Sep 2018 13:04:58 -0700 (PDT)
-From: Christian Lamparter <chunkeey@gmail.com>
-Subject: Re: Update board-2.bin files in linux-firmware
-Date: Fri, 28 Sep 2018 22:04:54 +0200
-Message-ID: <2297652.AArlnWO5DQ@debian64>
-In-Reply-To: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
-References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+ id 1g61Eg-0001W5-IP
+ for ath10k@lists.infradead.org; Fri, 28 Sep 2018 22:27:54 +0000
 MIME-Version: 1.0
+Date: Fri, 28 Sep 2018 15:27:35 -0700
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [RFC 1/2] ath10k: migrate to mac80211 txq scheduling
+In-Reply-To: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
+References: <1538008874-11692-1-git-send-email-rmanohar@codeaurora.org>
+Message-ID: <2548421a777c2223b5b31459222fe1e1@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +18,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, Skorpy <skorpy@darmstadt.ccc.de>
+Cc: linux-wireless-owner@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rg?= =?UTF-8?Q?ensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org
 
-Hello,
+On 2018-09-26 17:41, Rajkumar Manoharan wrote:
+> @@ -4293,32 +4281,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw 
+> *hw,
+>  static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
+>  					struct ieee80211_txq *txq)
+>  {
+> -	struct ath10k *ar = hw->priv;
+> -	struct ath10k_txq *artxq = (void *)txq->drv_priv;
+> -	struct ieee80211_txq *f_txq;
+> -	struct ath10k_txq *f_artxq;
+> -	int ret = 0;
+> -	int max = HTC_HOST_MAX_MSG_PER_TX_BUNDLE;
+> -
+> -	spin_lock_bh(&ar->txqs_lock);
+> -	if (list_empty(&artxq->list))
+> -		list_add_tail(&artxq->list, &ar->txqs);
+> -
+> -	f_artxq = list_first_entry(&ar->txqs, struct ath10k_txq, list);
+> -	f_txq = container_of((void *)f_artxq, struct ieee80211_txq, 
+> drv_priv);
+> -	list_del_init(&f_artxq->list);
+> -
+> -	while (ath10k_mac_tx_can_push(hw, f_txq) && max--) {
+> -		ret = ath10k_mac_tx_push_txq(hw, f_txq);
+> -		if (ret < 0)
+> -			break;
+> -	}
+> -	if (ret != -ENOENT)
+> -		list_add_tail(&f_artxq->list, &ar->txqs);
+> -	spin_unlock_bh(&ar->txqs_lock);
+> -
+> -	ath10k_htt_tx_txq_update(hw, f_txq);
+> -	ath10k_htt_tx_txq_update(hw, txq);
+> +	ath10k_mac_schedule_txq(hw, txq->ac);
+>  }
+> 
+With below change I were able to fix the performance impact in 
+multiclient scenario.
+Will fold them in next version.
 
-On Friday, September 28, 2018 9:28:44 PM CEST Hauke Mehrtens wrote:
-> the ath10k-firmware repository already contains updated board-2.bin
-> files with support for more devices. Please also update the board-2.bin
-> files shipped in the linux-firmware repository as they are normally
-> taken by distributions.
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c 
+b/drivers/net/wireless/ath/ath10k/mac.c
+index 6da64412cc14..965aaa731f04 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4473,7 +4473,26 @@ static void ath10k_mac_op_tx(struct ieee80211_hw 
+*hw,
+  static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
+                                         struct ieee80211_txq *txq)
+  {
+-       ath10k_mac_schedule_txq(hw, txq->ac);
++       u8 ac = txq->ac;
++       int ret = 0;
++
++       ieee80211_txq_schedule_start(hw, ac);
++       txq = ieee80211_next_txq(hw, ac);
++       ieee80211_txq_schedule_end(hw, ac);
++       if (!txq)
++               return;
++
++       while (ath10k_mac_tx_can_push(hw, txq)) {
++               ret = ath10k_mac_tx_push_txq(hw, txq);
++               if (ret < 0)
++                       break;
++       }
++       if (ret == -EBUSY) {
++               ieee80211_txq_schedule_start(hw, ac);
++               ieee80211_return_txq(hw, txq);
++               ieee80211_txq_schedule_end(hw, ac);
++       }
++       ath10k_htt_tx_txq_update(hw, txq);
+  }
 
-At this opportunity, I would kindly like to remind the maintainer that there
-are currently more pending boardfiles. It would be great if they all could be
-included in the next update as well:
-
-pending
-=======
-
- * Netgear WAC510
- - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09186.html (IPQ4019)
-
- * Netgear Orbi PRO SRK60
- - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09078.html (IPQ4019) 
- - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09079.html (QCA9984)
-
- * ZyXEL WRE6606:
- - https://www.mail-archive.com/ath10k@lists.infradead.org/msg08776.html (IPQ4019)
-
- * ZyXEL NBG6617:
- - http://lists.infradead.org/pipermail/ath10k/2018-May/011377.html (IPQ4019)
-
-And there is an update for the ASUS' RT-AC58U
- - http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html (IPQ4019)
-
-Kind regards,
-Christian
-
-
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
