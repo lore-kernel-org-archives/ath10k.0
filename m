@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6yh4-00033R-Lj
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:57:04 +0000
+ id 1g6yi0-00039U-Ko
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:58:02 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add support for configuring management packet rate
+Subject: Re: [PATCH] ath10k: Remove duplicated includes
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
-References: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
-Message-Id: <20181001135652.6511660A98@smtp.codeaurora.org>
-Date: Mon,  1 Oct 2018 13:56:52 +0000 (UTC)
+In-Reply-To: <20180913140121.23152-1-yuehaibing@huawei.com>
+References: <20180913140121.23152-1-yuehaibing@huawei.com>
+Message-Id: <20181001135750.5E3C16079B@smtp.codeaurora.org>
+Date: Mon,  1 Oct 2018 13:57:50 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sriram R <srirrama@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net
 
-Sriram R <srirrama@codeaurora.org> wrote:
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-> By default the firmware uses 1Mbps and 6Mbps rate for management packets
-> in 2G and 5G bands respectively. But when the user selects different
-> basic rates from the userspace, we need to send the management
-> packets at the lowest basic rate selected by the user.
+> remove duplicated include from ath10k driver.
 > 
-> This change makes use of WMI_VDEV_PARAM_MGMT_RATE param for configuring the
-> management packets rate to the firmware.
-> 
-> Chipsets Tested : QCA988X, QCA9887, QCA9984
-> FW Tested 	: 10.2.4-1.0-41, 10.4-3.6.104
-> 
-> Signed-off-by: Sriram R <srirrama@codeaurora.org>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-f279294e9ee2 ath10k: add support for configuring management packet rate
+4be3b05e7a83 ath10k: remove duplicated includes
 
 -- 
-https://patchwork.kernel.org/patch/10593571/
+https://patchwork.kernel.org/patch/10599605/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
