@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6vET-0002Ii-1I
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 10:15:18 +0000
-Message-ID: <1538388895.3126.26.camel@sipsolutions.net>
-Subject: Re: [PATCH v5 2/3] mac80211: support FTM responder
- configuration/statistics
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 01 Oct 2018 12:14:55 +0200
-In-Reply-To: <1537489811-5752-3-git-send-email-pradeepc@codeaurora.org>
-References: <1537489811-5752-1-git-send-email-pradeepc@codeaurora.org>
- <1537489811-5752-3-git-send-email-pradeepc@codeaurora.org>
-Mime-Version: 1.0
+ id 1g6wLo-0003vd-6W
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 11:26:57 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH v2 0/4] Enable ath10k wcn3990 wifi driver support on sdm845
+Date: Mon,  1 Oct 2018 16:56:32 +0530
+Message-Id: <20181001112636.31715-1-govinds@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +20,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>
+To: robh+dt@kernel.org, devicetree@vger.kernel.org, andy.gross@linaro.org, briannorris@chromium.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, 2018-09-20 at 17:30 -0700, Pradeep Kumar Chitrapu wrote:
-> New bss param ftm_responder is used to notify the driver to
-> enable fine timing request (FTM) responder role in AP mode.
-> 
-> Plumb the new cfg80211 API for FTM responder statistics through to
-> the driver API in mac80211.
+This series enables ath10k wifi driver support for WCN3990 target
+on sdm845 SOC. This series also updates the missing dt binding documentation
+and adds optional iommu property.
 
-This patch also doesn't apply right now, please rebase & add the struct
-as previously pointed out. That also affects the driver, perhaps, so
-please resend that as well.
+sdm845 dtsi changes in this series are based on top of
+https://patchwork.kernel.org/cover/10573121/ change.
 
-> +	if (params->ftm_responder != -1) {
-> +		sdata->vif.bss_conf.ftm_responder = params->ftm_responder;
-> +		err = ieee80211_set_ftm_responder_params(sdata,
-> +							 params->lci,
-> +							 params->lci_len,
-> +							 params->civicloc,
-> +							 params->civicloc_len);
-> +
-> +		if (err < 0)
-> +			return err;
-> +
-> +		changed |= BSS_CHANGED_FTM_RESPONDER;
-> +	} else {
-> +		sdata->vif.bss_conf.ftm_responder = -1;
-> +	}
+Changes since v1:
+	Listed no of interrupts/clocks for each set of compatible.
+	Added missing 'wifi' label to sdm845.dtsi.
 
-This seems wrong - you should remove the else branch entirely, afaict?
+Govind Singh (4):
+  dt: bindings: add missing dt properties for WCN3990 wifi node
+  dts: arm64/sdm845: Add WCN3990 WLAN module device node
+  dt: bindings: add bindings for wifi iommu node
+  dts: arm64/sdm845: Enable iommu for WCN3990 wifi module device node
 
-I think you may also be missing some freeing of the ftm_responder_params
-in the end if it didn't get disabled again, but the interface is
-removed?
+ .../bindings/net/wireless/qcom,ath10k.txt     | 34 +++++++++++++++----
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts       |  7 ++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 27 +++++++++++++++
+ 3 files changed, 61 insertions(+), 7 deletions(-)
 
-johannes
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
 
 _______________________________________________
 ath10k mailing list
