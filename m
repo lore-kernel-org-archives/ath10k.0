@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6yg2-0002vw-M0
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:56:00 +0000
+ id 1g6yh4-00033R-Lj
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:57:04 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k: add default value for num_peers in WMI TLV
- init
+Subject: Re: [PATCH] ath10k: Add support for configuring management packet rate
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180913144506.8272-1-erik.stromdahl@gmail.com>
-References: <20180913144506.8272-1-erik.stromdahl@gmail.com>
-Message-Id: <20181001135548.6441860376@smtp.codeaurora.org>
-Date: Mon,  1 Oct 2018 13:55:48 +0000 (UTC)
+In-Reply-To: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
+References: <1536557980-11895-1-git-send-email-srirrama@codeaurora.org>
+Message-Id: <20181001135652.6511660A98@smtp.codeaurora.org>
+Date: Mon,  1 Oct 2018 13:56:52 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +22,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sriram R <srirrama@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+Sriram R <srirrama@codeaurora.org> wrote:
 
-> The hw_params value will only be used if it was explicitly set in the
-> global hw_params array.
+> By default the firmware uses 1Mbps and 6Mbps rate for management packets
+> in 2G and 5G bands respectively. But when the user selects different
+> basic rates from the userspace, we need to send the management
+> packets at the lowest basic rate selected by the user.
 > 
-> This makes it possible to have the num_peers member unset.
+> This change makes use of WMI_VDEV_PARAM_MGMT_RATE param for configuring the
+> management packets rate to the firmware.
 > 
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Chipsets Tested : QCA988X, QCA9887, QCA9984
+> FW Tested 	: 10.2.4-1.0-41, 10.4-3.6.104
+> 
+> Signed-off-by: Sriram R <srirrama@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-8e8374db3424 ath10k: add default value for num_peers in WMI TLV init
-08fafd646d63 ath10k: remove num_peers in hw_params for most targets
+f279294e9ee2 ath10k: add support for configuring management packet rate
 
 -- 
-https://patchwork.kernel.org/patch/10599685/
+https://patchwork.kernel.org/patch/10593571/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
