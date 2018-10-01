@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6wM0-0003xX-1U
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 11:27:15 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 4/4] dts: arm64/sdm845: Enable iommu for WCN3990 wifi
- module device node
-Date: Mon,  1 Oct 2018 16:56:36 +0530
-Message-Id: <20181001112636.31715-5-govinds@codeaurora.org>
-In-Reply-To: <20181001112636.31715-1-govinds@codeaurora.org>
-References: <20181001112636.31715-1-govinds@codeaurora.org>
+ id 1g6yJm-0008Jh-QG
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:33:00 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 3/3] ath10k: Add support to configure ftm responder role
+References: <1534293018-4930-1-git-send-email-pradeepc@codeaurora.org>
+ <1534293018-4930-4-git-send-email-pradeepc@codeaurora.org>
+ <36962f12-84ff-d1a9-8273-a8e3444db108@dd-wrt.com>
+Date: Mon, 01 Oct 2018 16:32:44 +0300
+In-Reply-To: <36962f12-84ff-d1a9-8273-a8e3444db108@dd-wrt.com> (Sebastian
+ Gottschall's message of "Wed, 15 Aug 2018 12:16:50 +0200")
+Message-ID: <871s99lrlv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,33 +25,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: robh+dt@kernel.org, devicetree@vger.kernel.org, andy.gross@linaro.org, briannorris@chromium.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-WCN3990 wifi module can optionally make use of the IOMMU.
-Add phandle to the iommu and stream id of wifi iommu block.
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+> Am 15.08.2018 um 02:30 schrieb Pradeep Kumar Chitrapu:
+>>   +	if (test_bit(WMI_SERVICE_RTT, ar->wmi.svc_map))
+>> +		wiphy_ext_feature_set(ar->hw->wiphy,
+>> +				      NL80211_EXT_FEATURE_SET_FTM_RESPONDER);
+>> +
+>
+> not sure if this is accurate. even if WMI_SERVICE_RTT is set, the
+> firmware may not support this feature. this feature doesnt seem to be
+> implemented in current firmware releases
+> i checked the firmware sourcecode i have from 3.4 series and it doesnt
+> support this feature
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 36c716cf3a0c..f02da46542cc 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1225,6 +1225,7 @@
- 				<0 423 0 /* CE9 */ >,
- 				<0 424 0 /* CE10 */ >,
- 				<0 425 0 /* CE11 */ >;
-+			iommus = <&apps_smmu 0x0040 0x1>;
- 		};
- 	};
- };
+Pradeep, did you check this? It's really bad if ath10k enables the
+feature even if the firmware doesn't support this.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
