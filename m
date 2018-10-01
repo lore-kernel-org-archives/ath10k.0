@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6yi0-00039U-Ko
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:58:02 +0000
+ id 1g6ynw-0006bC-Qo
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 14:04:21 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Remove duplicated includes
+Subject: Re: [PATCHv2] ath10k: Advertize beacon_int_min_gcd as 100 while bring
+ up multi vaps
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180913140121.23152-1-yuehaibing@huawei.com>
-References: <20180913140121.23152-1-yuehaibing@huawei.com>
-Message-Id: <20181001135750.5E3C16079B@smtp.codeaurora.org>
-Date: Mon,  1 Oct 2018 13:57:50 +0000 (UTC)
+In-Reply-To: <1537272446-22329-1-git-send-email-mkenna@codeaurora.org>
+References: <1537272446-22329-1-git-send-email-mkenna@codeaurora.org>
+Message-Id: <20181001140358.3B7BD60C89@smtp.codeaurora.org>
+Date: Mon,  1 Oct 2018 14:03:58 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-YueHaibing <yuehaibing@huawei.com> wrote:
+Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
 
-> remove duplicated include from ath10k driver.
+> With the latest firmware design, the beacon interval should be
+> greater than 100 to bring the multiple vaps.
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Set beacon_int_min_gcd to 100, when the wmi service
+> WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT is enabled
+> in the firmware. If not, beacon_int_min_gcd will be set
+> to the default value 1.
+> 
+> Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00015
+> Tested in QCA9888 with firmware ver 10.4-3.5.1-0005
+> 
+> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-4be3b05e7a83 ath10k: remove duplicated includes
+4600563f9319 ath10k: advertize beacon_int_min_gcd as 100 while bring up multi vaps
 
 -- 
-https://patchwork.kernel.org/patch/10599605/
+https://patchwork.kernel.org/patch/10604255/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
