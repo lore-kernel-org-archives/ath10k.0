@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6ymh-0003wP-CE
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 14:02:54 +0000
+ id 1g6yee-0003aO-0U
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 13:54:33 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add debugfs support to get power save state
- change of STA
+Subject: Re: [PATCH] ath10k: utilize random MAC address if none is provided
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1537252467-17353-1-git-send-email-mkenna@codeaurora.org>
-References: <1537252467-17353-1-git-send-email-mkenna@codeaurora.org>
-Message-Id: <20181001140239.E15456079B@smtp.codeaurora.org>
-Date: Mon,  1 Oct 2018 14:02:39 +0000 (UTC)
+In-Reply-To: <20180907172157.203785-1-briannorris@chromium.org>
+References: <20180907172157.203785-1-briannorris@chromium.org>
+Message-Id: <20181001135418.4042860AD8@smtp.codeaurora.org>
+Date: Mon,  1 Oct 2018 13:54:18 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
-Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
+Brian Norris <briannorris@chromium.org> wrote:
 
-> This patch helps to get the power save state change of each peer
-> connected to the AP. With WMI_10_4_PEER_STA_PS_STATECHG_EVENTID
-> event, ps state of each peer is reported to user space via
-> debugfs.
+> Since commit 9d5804662ce1 ("ath10k: retrieve MAC address from system
+> firmware if provided"), we support pulling our MAC address from system
+> firmware. Along with this, we should admit that it's possible for system
+> firmware to be screwed up as well, omitting the MAC address there.
 > 
-> Use the below command to get the ps state of each sta:
-> cat /sys/kernel/debug/ieee80211/phyX/netdev::wlanX/stations/
-> XX:XX:XX:XX:XX:XX/peer_ps_state
+> Provide a fallback, such that we choose a randomly-generated MAC
+> address, with the local assignment bit set.
 > 
-> If STA is in power save state, we get the peer_ps_state value as 1.
-> if STA is not in power save state, we get the peer_ps_state value as 0.
-> If ps_state event is disabled, we get the peer_ps_state value as 2.
+> This is not a preferred mode of operation and really should only serve
+> the purpose of keeping the system chugging along while someone figures
+> out what's wrong with the system. Grepping through other wireless
+> drivers shows very similar fallback logic though, so why not?
 > 
-> We can enable/disable the ps_state events using the debugfs flag
-> "ps_state_enable"
+>   git grep eth_random_addr drivers/net/wireless/
 > 
-> echo Y > /sys/kernel/debug/ieee80211/phyX/ath10k/ps_state_enable
-> 
-> Y = 1 to enable and Y = 0 to disable
-> 
-> Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00011
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-d70c0d463f9d ath10k: add debugfs support to get power save state change of STA
+234e4307cf7f ath10k: utilize random MAC address if none is provided
 
 -- 
-https://patchwork.kernel.org/patch/10603779/
+https://patchwork.kernel.org/patch/10592411/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
