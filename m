@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6DIM-0000hu-OS
- for ath10k@lists.infradead.org; Sat, 29 Sep 2018 11:20:25 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Update board-2.bin files in linux-firmware
-References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
- <2297652.AArlnWO5DQ@debian64>
-Date: Sat, 29 Sep 2018 14:19:54 +0300
-In-Reply-To: <2297652.AArlnWO5DQ@debian64> (Christian Lamparter's message of
- "Fri, 28 Sep 2018 22:04:54 +0200")
-Message-ID: <87ftxspn39.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1g6vCb-0001yq-A4
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 10:13:23 +0000
+Message-ID: <1538388776.3126.24.camel@sipsolutions.net>
+Subject: Re: [PATCH v5 1/3] cfg80211: support FTM responder
+ configuration/statistics
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 01 Oct 2018 12:12:56 +0200
+In-Reply-To: <1537489811-5752-2-git-send-email-pradeepc@codeaurora.org>
+References: <1537489811-5752-1-git-send-email-pradeepc@codeaurora.org>
+ <1537489811-5752-2-git-send-email-pradeepc@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, ath10k@lists.infradead.org, Skorpy <skorpy@darmstadt.ccc.de>
+To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>
 
-Christian Lamparter <chunkeey@gmail.com> writes:
+On Thu, 2018-09-20 at 17:30 -0700, Pradeep Kumar Chitrapu wrote:
+> Allow userspace to enable fine timing measurement responder
+> functionality with configurable lci/civic parameters in AP mode.
+> This can be done at AP start or changing beacon parameters.
+> 
+> A new EXT_FEATURE flag is introduced for drivers to advertise
+> the capability.
+> 
+> Also nl80211 API support for retrieving statistics is added.
 
-> On Friday, September 28, 2018 9:28:44 PM CEST Hauke Mehrtens wrote:
->> the ath10k-firmware repository already contains updated board-2.bin
->> files with support for more devices. Please also update the board-2.bin
->> files shipped in the linux-firmware repository as they are normally
->> taken by distributions.
+I applied this, but with some changes. Notably,
 
-Linux-firmware update is on my todo list, I'm trying to do that next
-week but no promises.
+>  /**
+> + * cfg80211_ftm_responder_params - FTM responder parameters
 
-> At this opportunity, I would kindly like to remind the maintainer that there
-> are currently more pending boardfiles. It would be great if they all could be
-> included in the next update as well:
+I removed this struct, since it's no longer needed.
 
-Yeah, these have been on my queue. Thanks for the list, I'll include
-them before the update.
+You do use it in mac80211, but since cfg80211 doesn't use it you should
+declare it as ieee80211_ftm_respodner_params and use it in mac80211
+only, I think.
 
--- 
-Kalle Valo
+johannes
 
 _______________________________________________
 ath10k mailing list
