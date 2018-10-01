@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6ynw-0006bC-Qo
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 14:04:21 +0000
+ id 1g6yp3-00074v-8X
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 14:06:15 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCHv2] ath10k: Advertize beacon_int_min_gcd as 100 while bring
- up multi vaps
+Subject: Re: [PATCH 1/2] ath10k: Move napi_enable to hif_start for consistent
+ pairing
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1537272446-22329-1-git-send-email-mkenna@codeaurora.org>
-References: <1537272446-22329-1-git-send-email-mkenna@codeaurora.org>
-Message-Id: <20181001140358.3B7BD60C89@smtp.codeaurora.org>
-Date: Mon,  1 Oct 2018 14:03:58 +0000 (UTC)
+In-Reply-To: <20180920050426.4113-1-govinds@codeaurora.org>
+References: <20180920050426.4113-1-govinds@codeaurora.org>
+Message-Id: <20181001140505.9C4BA60C81@smtp.codeaurora.org>
+Date: Mon,  1 Oct 2018 14:05:05 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+To: Govind Singh <govinds@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
+Govind Singh <govinds@codeaurora.org> wrote:
 
-> With the latest firmware design, the beacon interval should be
-> greater than 100 to bring the multiple vaps.
+> There is unbalanced napi_{enable,disable}() behavior as they
+> are being called from hif_snoc_{power_up/stop).
 > 
-> Set beacon_int_min_gcd to 100, when the wmi service
-> WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT is enabled
-> in the firmware. If not, beacon_int_min_gcd will be set
-> to the default value 1.
+> The fix is to call napi_enable() from ath10k_snoc_hif_start()
+> so that it matches with napi_disable() being called from
+> ath10k_snoc_hif_stop().
 > 
-> Tested in QCA4019 with firmware ver 10.4-3.2.1.1-00015
-> Tested in QCA9888 with firmware ver 10.4-3.5.1-0005
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-4600563f9319 ath10k: advertize beacon_int_min_gcd as 100 while bring up multi vaps
+752ed2a229c6 ath10k: move napi_enable to hif_start for consistent pairing
+393b9b0f830e ath10k: disable napi before resource cleanup to avoid "use after free"
 
 -- 
-https://patchwork.kernel.org/patch/10604255/
+https://patchwork.kernel.org/patch/10606859/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
