@@ -2,16 +2,16 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6vCb-0001yq-A4
- for ath10k@lists.infradead.org; Mon, 01 Oct 2018 10:13:23 +0000
-Message-ID: <1538388776.3126.24.camel@sipsolutions.net>
-Subject: Re: [PATCH v5 1/3] cfg80211: support FTM responder
+ id 1g6vET-0002Ii-1I
+ for ath10k@lists.infradead.org; Mon, 01 Oct 2018 10:15:18 +0000
+Message-ID: <1538388895.3126.26.camel@sipsolutions.net>
+Subject: Re: [PATCH v5 2/3] mac80211: support FTM responder
  configuration/statistics
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 01 Oct 2018 12:12:56 +0200
-In-Reply-To: <1537489811-5752-2-git-send-email-pradeepc@codeaurora.org>
+Date: Mon, 01 Oct 2018 12:14:55 +0200
+In-Reply-To: <1537489811-5752-3-git-send-email-pradeepc@codeaurora.org>
 References: <1537489811-5752-1-git-send-email-pradeepc@codeaurora.org>
- <1537489811-5752-2-git-send-email-pradeepc@codeaurora.org>
+ <1537489811-5752-3-git-send-email-pradeepc@codeaurora.org>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,25 +29,37 @@ To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, David Spinadel <david.spinadel@intel.com>
 
 On Thu, 2018-09-20 at 17:30 -0700, Pradeep Kumar Chitrapu wrote:
-> Allow userspace to enable fine timing measurement responder
-> functionality with configurable lci/civic parameters in AP mode.
-> This can be done at AP start or changing beacon parameters.
+> New bss param ftm_responder is used to notify the driver to
+> enable fine timing request (FTM) responder role in AP mode.
 > 
-> A new EXT_FEATURE flag is introduced for drivers to advertise
-> the capability.
-> 
-> Also nl80211 API support for retrieving statistics is added.
+> Plumb the new cfg80211 API for FTM responder statistics through to
+> the driver API in mac80211.
 
-I applied this, but with some changes. Notably,
+This patch also doesn't apply right now, please rebase & add the struct
+as previously pointed out. That also affects the driver, perhaps, so
+please resend that as well.
 
->  /**
-> + * cfg80211_ftm_responder_params - FTM responder parameters
+> +	if (params->ftm_responder != -1) {
+> +		sdata->vif.bss_conf.ftm_responder = params->ftm_responder;
+> +		err = ieee80211_set_ftm_responder_params(sdata,
+> +							 params->lci,
+> +							 params->lci_len,
+> +							 params->civicloc,
+> +							 params->civicloc_len);
+> +
+> +		if (err < 0)
+> +			return err;
+> +
+> +		changed |= BSS_CHANGED_FTM_RESPONDER;
+> +	} else {
+> +		sdata->vif.bss_conf.ftm_responder = -1;
+> +	}
 
-I removed this struct, since it's no longer needed.
+This seems wrong - you should remove the else branch entirely, afaict?
 
-You do use it in mac80211, but since cfg80211 doesn't use it you should
-declare it as ieee80211_ftm_respodner_params and use it in mac80211
-only, I think.
+I think you may also be missing some freeing of the ftm_responder_params
+in the end if it didn't get disabled again, but the interface is
+removed?
 
 johannes
 
