@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-cys01nam02on060f.outbound.protection.outlook.com
- ([2a01:111:f400:fe45::60f]
- helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7O37-0001aV-Vw
- for ath10k@lists.infradead.org; Tue, 02 Oct 2018 17:02:25 +0000
-From: Adam Cottrel <adam.cottrel@veea.com>
-Subject: Re: ath10k kernel requirements (coherent_pool etc)
-Date: Tue, 2 Oct 2018 17:01:16 +0000
-Message-ID: <DM6PR04MB40592D8987BA7559D144C622F2E80@DM6PR04MB4059.namprd04.prod.outlook.com>
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1g7P1D-0005SS-RS
+ for ath10k@lists.infradead.org; Tue, 02 Oct 2018 18:03:37 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] ath10k: Set probe request oui during driver start
+Date: Tue,  2 Oct 2018 23:33:13 +0530
+Message-Id: <1538503393-17543-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +15,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Hi,
+Currently the wmi command for setting probe request
+oui, needed for mac randomization, is sent during
+the mac register. At this time, during the driver
+init the wmi has already been detached. This can
+cause unexpected behavior since the firmware is
+already down and the wmi has been detached.
 
-I would like to pick up this thread as I have been doing a lot of work with the ATH10K firmware, and we are still no clearer on a workable solution on the Linux 4.14.4 kernel.
+Send the wmi command for setting probe request
+oui during the driver start. This will make sure
+that the firmware is started and wmi is initialized
+before we send this command.
 
-We see the firmware crash when the kernel memory starts to get fragmented - we are using a dd copy operation to simulate the clean cache becoming full. We can help to mitigate (but not stop) the crashes by forcing a cache clear (e.g. drop cache) at regular intervals, or by forcing kswapd to run more often by using the highest watermark_scale_factor (10%).
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 
-The ATH10K driver can be made to crash with legacy or MSI interrupts, and occurs with or without SMP active. Furthermore, if I enable or disable IOMMU the fault symptoms do not change - this effectively replaces the DMA ops with SWIO vs the hard IOMMU on the Arm 64-bit core.
+Fixes: 60e1d0fb290197fe505dff6e4e3b7e4d258dbf60
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-There appear to be two types of crash - one where we seem to get an assertion in the QCA9984/QCA988X device, and an immediate crash notification via the NAPI callbacks.
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 97548f9..5e2f14b 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4682,6 +4682,14 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto err_core_stop;
+ 	}
+ 
++	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
++		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
++		if (ret) {
++			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
++			goto err_core_stop;
++		}
++	}
++
+ 	if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
+ 		ret = ath10k_wmi_adaptive_qcs(ar, true);
+ 		if (ret) {
+@@ -8565,12 +8573,6 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	}
+ 
+ 	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
+-		ret = ath10k_wmi_scan_prob_req_oui(ar, ar->mac_addr);
+-		if (ret) {
+-			ath10k_err(ar, "failed to set prob req oui: %i\n", ret);
+-			goto err_dfs_detector_exit;
+-		}
+-
+ 		ar->hw->wiphy->features |=
+ 			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
+ 	}
+-- 
+2.7.4
 
-The second type is more mysterious, as the firmware just hangs there after completing one of the many receive hand-shakes, and then is eventually picked up by the firmware as a crash.
-
-To start, it is not clear what can make a remote device fail - can anyone help explain what might be causing the QCA988x and QCA9984 to fail in the first place?
-Best,
-Adam
 
 _______________________________________________
 ath10k mailing list
