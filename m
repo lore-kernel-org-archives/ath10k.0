@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7P1p-0005Yo-Ak
- for ath10k@lists.infradead.org; Tue, 02 Oct 2018 18:04:21 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Enable bundle tx compl for management frames in
- WCN3990
-Date: Tue,  2 Oct 2018 23:33:41 +0530
-Message-Id: <1538503421-17607-3-git-send-email-pillair@codeaurora.org>
-In-Reply-To: <1538503421-17607-1-git-send-email-pillair@codeaurora.org>
-References: <1538503421-17607-1-git-send-email-pillair@codeaurora.org>
+ id 1g7Xck-0005Op-00
+ for ath10k@lists.infradead.org; Wed, 03 Oct 2018 03:14:55 +0000
+From: Sriram R <srirrama@codeaurora.org>
+Subject: [PATCH] ath10k: Fix possible out of bound access of ath10k_rates array
+Date: Wed,  3 Oct 2018 08:43:50 +0530
+Message-Id: <1538536430-6555-1-git-send-email-srirrama@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +21,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Sriram R <srirrama@codeaurora.org>
 
-WCN3990 sends tx completion of multiple management
-frames bundled together in a single event, if the
-host driver exposes the support to handle this
-bundled tx completion event. This reduces the number
-of WMI events which are sent to the host driver by
-the target.
+While using 'ath10k_mac_get_rate_hw_value()' to obtain the hw value
+from the passed bitrate, there is a chance of out of bound array access
+when wrong bitrate is passed. This is fixed by comparing the bitrates
+within the correct size of the ath10k_rates array.
 
-Set the BUNDLE_TX_COMPL flag in the host capability
-flags when host sends the wmi init command, to indicate
-the host capability to handle bundled tx completion for
-management frames.
+Fixes commit f279294e9ee2 ("ath10k: add support for configuring management
+packet rate")
+(Also correction made to some indents used in the above commit)
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index f7d4f01..df8f673 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1685,7 +1685,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->num_ocb_vdevs = __cpu_to_le32(0);
- 	cfg->num_ocb_channels = __cpu_to_le32(0);
- 	cfg->num_ocb_schedules = __cpu_to_le32(0);
--	cfg->host_capab = __cpu_to_le32(0);
-+	cfg->host_capab = __cpu_to_le32(WMI_TLV_FLAG_MGMT_BUNDLE_TX_COMPL);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3933dd9..1f1c1c7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -164,7 +164,7 @@ static int ath10k_mac_get_rate_hw_value(int bitrate)
+ 	if (ath10k_mac_bitrate_is_cck(bitrate))
+ 		hw_value_prefix = WMI_RATE_PREAMBLE_CCK << 6;
  
- 	ath10k_wmi_put_host_mem_chunks(ar, chunks);
+-	for (i = 0; i < sizeof(ath10k_rates); i++) {
++	for (i = 0; i < ARRAY_SIZE(ath10k_rates); i++) {
+ 		if (ath10k_rates[i].bitrate == bitrate)
+ 			return hw_value_prefix | ath10k_rates[i].hw_value;
+ 	}
+@@ -5682,22 +5682,22 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 			return;
+ 		}
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index c575921..8014fc8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1580,6 +1580,8 @@ struct ath10k_mgmt_tx_pkt_addr {
- 	dma_addr_t paddr;
- };
+-	sband = ar->hw->wiphy->bands[def.chan->band];
+-	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
+-	bitrate = sband->bitrates[basic_rate_idx].bitrate;
++		sband = ar->hw->wiphy->bands[def.chan->band];
++		basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
++		bitrate = sband->bitrates[basic_rate_idx].bitrate;
  
-+#define WMI_TLV_FLAG_MGMT_BUNDLE_TX_COMPL	BIT(9)
-+
- struct wmi_tlv_mgmt_tx_compl_ev {
- 	__le32 desc_id;
- 	__le32 status;
+-	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
+-	if (hw_rate_code < 0) {
+-		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
+-		mutex_unlock(&ar->conf_mutex);
+-		return;
+-	}
++		hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
++		if (hw_rate_code < 0) {
++			ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
++			mutex_unlock(&ar->conf_mutex);
++			return;
++		}
+ 
+-	vdev_param = ar->wmi.vdev_param->mgmt_rate;
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+-					hw_rate_code);
+-	if (ret)
+-		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
++		vdev_param = ar->wmi.vdev_param->mgmt_rate;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++						hw_rate_code);
++		if (ret)
++			ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
+ 	}
+ 
+ 	mutex_unlock(&ar->conf_mutex);
 -- 
 2.7.4
 
