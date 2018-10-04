@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g824u-0003CJ-Jk
- for ath10k@lists.infradead.org; Thu, 04 Oct 2018 11:46:04 +0000
-From: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Add support to configure BB timing over wmi
-Date: Thu,  4 Oct 2018 17:12:44 +0530
-Message-Id: <1538653364-1239-3-git-send-email-bperumal@codeaurora.org>
-In-Reply-To: <1538653364-1239-1-git-send-email-bperumal@codeaurora.org>
-References: <1538653364-1239-1-git-send-email-bperumal@codeaurora.org>
+ id 1g83ND-0003Db-BL
+ for ath10k@lists.infradead.org; Thu, 04 Oct 2018 13:09:23 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] ath10k: Add support for WCN3990 firmware crash recovery
+Date: Thu,  4 Oct 2018 18:38:32 +0530
+Message-Id: <1538658512-31867-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,267 +21,200 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, bperumal@codeaurora.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-Add wmi configuration cmd to configure base band(BB) power amplifier(PA)
-off timing values in hardware. The default PA off timings were fine tuned
-to make proper DFS radar detection in QCA reference design. If ODM uses
-different PA in their design, then the same default PA off timing values
-cannot be used, it requires different settling time to detect radar pulses
-very sooner and avoid radar detection problems. In that case it provides
-provision to select proper PA off timing values based on the PA hardware used.
-The PA component is part of FEM hardware and new device tree entry
-"ext-fem-name" is used to indentify the FEM hardware. And this wmi configuration
-cmd is enabled via wmi service flag "WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT".
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-Other way is to apply these values through calibration data, but recalibration
-of all boards out there might not be feasible.
+Whenever the WCN3990 firmware becomes unavailable,
+the host driver receives a FW down indication, post
+which all the direct hardware register access should
+be avoided, in order to prevent improper behavior in
+the host driver.
 
-This change tested on firmware ver 10.2.4-1.0-00042 in QCA988X chipset.
+Set the crash_flush flag when the host driver receives
+a FW_DOWN_IND via qmi, in order to stop the untimely
+hardware register access. Also handle the case, where
+we need to do core register only for the first FW_READY
+indication, which is when we initialize the host driver.
+All the subsequent FW_READY indication will be received
+in subsystem recovery case and we only need to do the
+restart work. The state of driver is maintained using
+flags to distinguish between first and subsequent FW_READY
+indication received.
 
-Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     | 47 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 20 +++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c     | 23 +++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 26 +++++++++++++++++
- 4 files changed, 116 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c |  3 +++
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/snoc.c | 39 +++++++++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/snoc.h |  7 ++++++
+ 4 files changed, 47 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3933dd9..a242c6b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -22,6 +22,7 @@
- #include <net/mac80211.h>
- #include <linux/etherdevice.h>
- #include <linux/acpi.h>
-+#include <linux/of.h>
- 
- #include "hif.h"
- #include "core.h"
-@@ -4637,11 +4638,44 @@ static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
- 	return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 9aa72da..9d0b351 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2184,6 +2184,8 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	if (ret)
+ 		ath10k_warn(ar, "failed to send firmware crash dump via devcoredump: %d",
+ 			    ret);
++
++	complete(&ar->driver_recovery);
  }
  
-+static int __ath10k_fetch_bb_timing_dt(struct ath10k *ar,
-+				       struct wmi_bb_timing_cfg_arg *bb_timing)
-+{
-+	struct device_node *node;
-+	const char *fem_name;
-+	int ret;
-+
-+	node = ar->dev->of_node;
-+	if (!node)
-+		return -ENOENT;
-+
-+	ret = of_property_read_string_index(node, "ext-fem-name", 0, &fem_name);
-+	if (ret)
-+		return -ENOENT;
-+
-+	/*
-+	 * If external Front End module used in hardware, then default base band timing
-+	 * parameter cannot be used since they were fine tuned for reference hardware,
-+	 * so choosing different value suitable for that external FEM.
-+	 */
-+	if (!strcmp("microsemi-lx5586", fem_name)) {
-+		bb_timing->bb_tx_timing = 0x00;
-+		bb_timing->bb_xpa_timing = 0x0101;
-+	} else {
-+		return -ENOENT;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot bb_tx_timing 0x%x bb_xpa_timing 0x%x\n",
-+		   bb_timing->bb_tx_timing, bb_timing->bb_xpa_timing);
-+	return 0;
-+}
-+
- static int ath10k_start(struct ieee80211_hw *hw)
+ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
+@@ -3047,6 +3049,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 	init_completion(&ar->scan.completed);
+ 	init_completion(&ar->scan.on_channel);
+ 	init_completion(&ar->target_suspend);
++	init_completion(&ar->driver_recovery);
+ 	init_completion(&ar->wow.wakeup_completed);
+ 
+ 	init_completion(&ar->install_key_done);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index f66b46b..1376fc5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -962,6 +962,7 @@ struct ath10k {
+ 	} hif;
+ 
+ 	struct completion target_suspend;
++	struct completion driver_recovery;
+ 
+ 	const struct ath10k_hw_regs *regs;
+ 	const struct ath10k_hw_ce_regs *hw_ce_regs;
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index bdffc4e..178840a 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -918,7 +918,9 @@ static void ath10k_snoc_buffer_cleanup(struct ath10k *ar)
+ 
+ static void ath10k_snoc_hif_stop(struct ath10k *ar)
  {
- 	struct ath10k *ar = hw->priv;
- 	u32 param;
- 	int ret = 0;
-+	struct wmi_bb_timing_cfg_arg bb_timing = {0};
+-	ath10k_snoc_irq_disable(ar);
++	if (!test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
++		ath10k_snoc_irq_disable(ar);
++
+ 	napi_synchronize(&ar->napi);
+ 	napi_disable(&ar->napi);
+ 	ath10k_snoc_buffer_cleanup(ar);
+@@ -927,10 +929,14 @@ static void ath10k_snoc_hif_stop(struct ath10k *ar)
  
- 	/*
- 	 * This makes sense only when restarting hw. It is harmless to call
-@@ -4788,6 +4822,19 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		clear_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
- 	}
+ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ {
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++
+ 	napi_enable(&ar->napi);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
  
-+	if (test_bit(WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT, ar->wmi.svc_map)) {
-+		ret = __ath10k_fetch_bb_timing_dt(ar, &bb_timing);
-+		if (!ret) {
-+			ret = ath10k_wmi_pdev_bb_timing(ar, &bb_timing);
-+			if (ret) {
-+				ath10k_warn(ar,
-+					    "failed to set bb timings: %d\n",
-+					    ret);
-+				goto err_core_stop;
-+			}
-+		}
++	clear_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags);
++
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
+ 
+ 	return 0;
+@@ -994,7 +1000,8 @@ static int ath10k_snoc_wlan_enable(struct ath10k *ar)
+ 
+ static void ath10k_snoc_wlan_disable(struct ath10k *ar)
+ {
+-	ath10k_qmi_wlan_disable(ar);
++	if (!test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
++		ath10k_qmi_wlan_disable(ar);
+ }
+ 
+ static void ath10k_snoc_hif_power_down(struct ath10k *ar)
+@@ -1091,6 +1098,11 @@ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
+ 	struct ath10k *ar = container_of(ctx, struct ath10k, napi);
+ 	int done = 0;
+ 
++	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
++		napi_complete(ctx);
++		return done;
 +	}
 +
- 	ar->num_started_vdevs = 0;
- 	ath10k_regd_update(ar);
+ 	ath10k_ce_per_engine_service_any(ar);
+ 	done = ath10k_htt_txrx_compl_task(ar, budget);
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 7fd63bb..7c7ee24 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -216,6 +216,9 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_echo)(struct ath10k *ar, u32 value);
- 	struct sk_buff *(*gen_pdev_get_tpc_table_cmdid)(struct ath10k *ar,
- 							u32 param);
-+	struct sk_buff *(*gen_bb_timing)
-+			(struct ath10k *ar,
-+			 const struct wmi_bb_timing_cfg_arg *arg);
+@@ -1187,17 +1199,29 @@ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+ 	struct ath10k_bus_params bus_params;
+ 	int ret;
  
++	if (test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
++		return 0;
++
+ 	bus_params.chip_id = ar_snoc->target_info.soc_version;
+ 
+ 	switch (type) {
+ 	case ATH10K_QMI_EVENT_FW_READY_IND:
++		if (test_bit(ATH10K_SNOC_FLAG_REGISTERED, &ar_snoc->flags)) {
++			queue_work(ar->workqueue, &ar->restart_work);
++			break;
++		}
++
+ 		ret = ath10k_core_register(ar, &bus_params);
+ 		if (ret) {
+-			ath10k_err(ar, "failed to register driver core: %d\n",
++			ath10k_err(ar, "Failed to register driver core: %d\n",
+ 				   ret);
++			return ret;
+ 		}
++		set_bit(ATH10K_SNOC_FLAG_REGISTERED, &ar_snoc->flags);
+ 		break;
+ 	case ATH10K_QMI_EVENT_FW_DOWN_IND:
++		set_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags);
++		set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
+ 		break;
+ 	default:
+ 		ath10k_err(ar, "invalid fw indication: %llx\n", type);
+@@ -1631,8 +1655,17 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ static int ath10k_snoc_remove(struct platform_device *pdev)
+ {
+ 	struct ath10k *ar = platform_get_drvdata(pdev);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
++
++	reinit_completion(&ar->driver_recovery);
++
++	if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
++		wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
++
++	set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++
+ 	ath10k_core_unregister(ar);
+ 	ath10k_hw_power_off(ar);
+ 	ath10k_snoc_free_irq(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index e1d2d66..3a44e30 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -70,6 +70,12 @@ struct ath10k_wcn3990_clk_info {
+ 	bool required;
  };
  
-@@ -1555,4 +1558,21 @@ struct wmi_ops {
- 				   ar->wmi.cmd->radar_found_cmdid);
- }
- 
-+static inline int
-+ath10k_wmi_pdev_bb_timing(struct ath10k *ar,
-+			  const struct wmi_bb_timing_cfg_arg *arg)
-+{
-+	struct sk_buff *skb;
-+
-+	if (!ar->wmi.ops->gen_bb_timing)
-+		return -EOPNOTSUPP;
-+
-+	skb = ar->wmi.ops->gen_bb_timing(ar, arg);
-+
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	return ath10k_wmi_cmd_send(ar, skb,
-+				   ar->wmi.cmd->set_bb_timing_cmdid);
-+}
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 25e8fa7..7410362 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -539,6 +539,7 @@
- 		WMI_10_2_PDEV_BSS_CHAN_INFO_REQUEST_CMDID,
- 	.pdev_get_tpc_table_cmdid = WMI_CMD_UNSUPPORTED,
- 	.radar_found_cmdid = WMI_CMD_UNSUPPORTED,
-+	.set_bb_timing_cmdid = WMI_10_2_PDEV_SET_BB_TIMING_CONFIG_CMDID,
- };
- 
- /* 10.4 WMI cmd track */
-@@ -8785,6 +8786,27 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	return 0;
- }
- 
-+static struct sk_buff *
-+ath10k_wmi_10_2_4_op_gen_bb_timing(struct ath10k *ar,
-+				   const struct wmi_bb_timing_cfg_arg *arg)
-+{
-+	struct wmi_pdev_bb_timing_cfg_cmd *cmd;
-+	struct sk_buff *skb;
-+
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	cmd = (struct wmi_pdev_bb_timing_cfg_cmd *)skb->data;
-+	cmd->bb_tx_timing = __cpu_to_le32(arg->bb_tx_timing);
-+	cmd->bb_xpa_timing = __cpu_to_le32(arg->bb_xpa_timing);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi pdev bb_tx_timing 0x%x bb_xpa_timing 0x%x\n",
-+		   arg->bb_tx_timing, arg->bb_xpa_timing);
-+	return skb;
-+}
-+
- static const struct wmi_ops wmi_ops = {
- 	.rx = ath10k_wmi_op_rx,
- 	.map_svc = wmi_main_svc_map,
-@@ -9058,6 +9080,7 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	.gen_pdev_enable_adaptive_cca =
- 		ath10k_wmi_op_gen_pdev_enable_adaptive_cca,
- 	.get_vdev_subtype = ath10k_wmi_10_2_4_op_get_vdev_subtype,
-+	.gen_bb_timing = ath10k_wmi_10_2_4_op_gen_bb_timing,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index f67c527..048305c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -205,6 +205,7 @@ enum wmi_service {
- 	WMI_SERVICE_SPOOF_MAC_SUPPORT,
- 	WMI_SERVICE_TX_DATA_ACK_RSSI,
- 	WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
-+	WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT,
- 
- 	/* keep last */
- 	WMI_SERVICE_MAX,
-@@ -244,6 +245,9 @@ enum wmi_10x_service {
- 	WMI_10X_SERVICE_PEER_STATS,
- 	WMI_10X_SERVICE_RESET_CHIP,
- 	WMI_10X_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
-+	WMI_10X_SERVICE_VDEV_BCN_RATE_CONTROL,
-+	WMI_10X_SERVICE_PER_PACKET_SW_ENCRYPT,
-+	WMI_10X_SERVICE_BB_TIMING_CONFIG_SUPPORT,
- };
- 
- enum wmi_main_service {
-@@ -568,6 +572,8 @@ static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_RESET_CHIP, len);
- 	SVCMAP(WMI_10X_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
- 	       WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, len);
-+	SVCMAP(WMI_10X_SERVICE_BB_TIMING_CONFIG_SUPPORT,
-+	       WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT, len);
- }
- 
- static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
-@@ -986,6 +992,7 @@ struct wmi_cmd_map {
- 	u32 pdev_wds_entry_list_cmdid;
- 	u32 tdls_set_offchan_mode_cmdid;
- 	u32 radar_found_cmdid;
-+	u32 set_bb_timing_cmdid;
- };
- 
- /*
-@@ -1601,6 +1608,8 @@ enum wmi_10_2_cmd_id {
- 	WMI_10_2_SET_LTEU_CONFIG_CMDID,
- 	WMI_10_2_SET_CCA_PARAMS,
- 	WMI_10_2_PDEV_BSS_CHAN_INFO_REQUEST_CMDID,
-+	WMI_10_2_FWTEST_CMDID,
-+	WMI_10_2_PDEV_SET_BB_TIMING_CONFIG_CMDID,
- 	WMI_10_2_PDEV_UTF_CMDID = WMI_10_2_END_CMDID - 1,
- };
- 
-@@ -7083,6 +7092,23 @@ struct wmi_pdev_chan_info_req_cmd {
- 	__le32 reserved;
- } __packed;
- 
-+/* bb timing register configurations */
-+struct wmi_bb_timing_cfg_arg {
-+	/* Tx_end to pa off timing */
-+	u32 bb_tx_timing;
-+
-+	/* Tx_end to external pa off timing */
-+	u32 bb_xpa_timing;
++enum ath10k_snoc_flags {
++	ATH10K_SNOC_FLAG_REGISTERED,
++	ATH10K_SNOC_FLAG_UNREGISTERING,
++	ATH10K_SNOC_FLAG_RECOVERY,
 +};
 +
-+struct wmi_pdev_bb_timing_cfg_cmd {
-+	/* Tx_end to pa off timing */
-+	__le32 bb_tx_timing;
-+
-+	/* Tx_end to external pa off timing */
-+	__le32 bb_xpa_timing;
-+} __packed;
-+
- struct ath10k;
- struct ath10k_vif;
- struct ath10k_fw_stats_pdev;
+ struct ath10k_snoc {
+ 	struct platform_device *dev;
+ 	struct ath10k *ar;
+@@ -84,6 +90,7 @@ struct ath10k_snoc {
+ 	struct ath10k_wcn3990_vreg_info *vreg;
+ 	struct ath10k_wcn3990_clk_info *clk;
+ 	struct ath10k_qmi *qmi;
++	unsigned long int flags;
+ };
+ 
+ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
 -- 
-1.9.1
+2.7.4
 
 
 _______________________________________________
