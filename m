@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway31.websitewelcome.com ([192.185.143.5])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8VHq-0001NZ-Eq
- for ath10k@lists.infradead.org; Fri, 05 Oct 2018 18:57:19 +0000
-Received: from cm15.websitewelcome.com (cm15.websitewelcome.com [100.42.49.9])
- by gateway31.websitewelcome.com (Postfix) with ESMTP id 847DD3F6B9
- for <ath10k@lists.infradead.org>; Fri,  5 Oct 2018 13:57:06 -0500 (CDT)
-Date: Fri, 5 Oct 2018 20:56:23 +0200
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ath10k: remove unnecessary comparison of unsigned integer
- with < 0
-Message-ID: <20181005185623.GA14405@embeddedor.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8VUG-00052Q-O7
+ for ath10k@lists.infradead.org; Fri, 05 Oct 2018 19:10:10 +0000
+Subject: Re: [PATCH] ath10k: htt_rx: Fix signedness bug in
+ ath10k_update_per_peer_tx_stats
+References: <20181005184245.GA11700@embeddedor.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <3a55bec6-d20d-f500-e741-b228a86b7117@candelatech.com>
+Date: Fri, 5 Oct 2018 12:09:50 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <20181005184245.GA11700@embeddedor.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +19,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-There is no need to compare *ps_state_enable* with < 0 because
-such variable is of type u8 (8 bits, unsigned), making it
-impossible to hold a negative value.
+On 10/05/2018 11:42 AM, Gustavo A. R. Silva wrote:
+> Currently, the error handling for the call to function
+> ath10k_get_legacy_rate_idx() doesn't work because
+> *rate_idx* is of type u8 (8 bits, unsigned), which
+> makes it impossible for it to hold a value less
+> than 0.
+>
+> Fix this by changing the type of variable *rate_idx*
+> to s8 (8 bits, signed).
 
-Fix this by removing such comparison.
+There are more than 127 rates, are you sure this is doing
+what you want?
 
-Addresses-Coverity-ID: 1473921 ("Unsigned compared against 0")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/net/wireless/ath/ath10k/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Ben
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 2c0cb67..15964b3 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2421,7 +2421,7 @@ static ssize_t ath10k_write_ps_state_enable(struct file *file,
- 	if (kstrtou8_from_user(user_buf, count, 0, &ps_state_enable))
- 		return -EINVAL;
- 
--	if (ps_state_enable > 1 || ps_state_enable < 0)
-+	if (ps_state_enable > 1)
- 		return -EINVAL;
- 
- 	mutex_lock(&ar->conf_mutex);
+>
+> Addresses-Coverity-ID: 1473914 ("Unsigned compared against 0")
+> Fixes: 0189dbd71cbd ("ath10k: get the legacy rate index to update the txrate table")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/htt_rx.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+> index f240525..edd0e74 100644
+> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+> @@ -2753,7 +2753,8 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+>  				struct ath10k_per_peer_tx_stats *peer_stats)
+>  {
+>  	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+> -	u8 rate = 0, rate_idx = 0, sgi;
+> +	u8 rate = 0, sgi;
+> +	s8 rate_idx = 0;
+>  	struct rate_info txrate;
+>
+>  	lockdep_assert_held(&ar->data_lock);
+>
+
+
 -- 
-2.7.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
