@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8kr9-0002qn-DI
- for ath10k@lists.infradead.org; Sat, 06 Oct 2018 11:34:48 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [RFC v5 01/12] ath10k: add struct ath10k_bus_params
-References: <20180603182029.8914-2-erik.stromdahl@gmail.com>
- <20180906161624.B4751606FA@smtp.codeaurora.org>
- <9de4aaff-a26c-cac3-bc73-069834820a14@gmail.com>
-Date: Sat, 06 Oct 2018 14:34:32 +0300
-In-Reply-To: <9de4aaff-a26c-cac3-bc73-069834820a14@gmail.com> (Erik
- Stromdahl's message of "Thu, 6 Sep 2018 20:22:08 +0200")
-Message-ID: <87ftxjgvg7.fsf@kamboji.qca.qualcomm.com>
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g9PBM-0006Sh-98
+ for ath10k@lists.infradead.org; Mon, 08 Oct 2018 06:38:22 +0000
 MIME-Version: 1.0
+Date: Mon, 08 Oct 2018 12:08:06 +0530
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: Re: [PATCH] ath10k: htt_rx: Fix signedness bug in
+ ath10k_update_per_peer_tx_stats
+In-Reply-To: <fcc51fdd-fc31-9d2c-2e68-4ceecbb86129@embeddedor.com>
+References: <20181005184245.GA11700@embeddedor.com>
+ <3a55bec6-d20d-f500-e741-b228a86b7117@candelatech.com>
+ <dd75a8aa-b87c-e325-cc1d-a0efe3664a32@embeddedor.com>
+ <fcc51fdd-fc31-9d2c-2e68-4ceecbb86129@embeddedor.com>
+Message-ID: <af44d03892b3d51df391760af7af0382@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +22,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-
-> On 9/6/18 6:16 PM, Kalle Valo wrote:
->> Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
->>
->>> This struct is used as argument to ath10k_core_register in order to
->>> make it easier to add more bus parameters in the future.
->>>
->>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
->>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->>
->> 12 patches applied to ath-next branch of ath.git, thanks.
->>
->> c0d8d565787c ath10k: add struct ath10k_bus_params
->> 7c2dd6154fc2 ath10k: add device type enum to ath10k_bus_params
->> 367c899f622c ath10k: add bus type check in ath10k_init_hw_params
->> 9faaa14387fb ath10k: use hw_params.num_peers for num_tids in TLV init
->> 4875e0b52085 ath10k: add per target config of max_num_peers
->> e66d5361127a ath10k: DMA related fixes for high latency devices
->> 852d1bf86a5b ath10k: add HTT TX HL ops
->> d4e7f553eec3 ath10k: add HTT RX HL ops
->> 4daacc950d4d ath10k: htt: RX ring config HL support
->> a2097d6444c3 ath10k: htt: High latency TX support
->> f88d49345040 ath10k: htt: High latency RX support
->> 37f62c0d5822 ath10k: wmi: disable softirq's while calling ieee80211_rx
->>
->
-> I am afraid that one of the patches in this series causes a regression
-> for PCI devices :(
->
-> The patch is:
->
-> 4875e0b52085 ath10k: add per target config of max_num_peers
->
-> With this patch I got an error during driver load.
-> Reverting the patch solved the problem.
->
-> I discovered this yesterday when I was setting up a test AP with an
-> ath10k pcie device.
-> I thought it would be a good idea to use my own tree just to make sure
-> it works with PCI, and apparently it didn't work.
-> I did some bisecting and the patch mentioned above turned out to be the culprit.
-> I have not looked into why it fails yet (I think it is related to a
-> bad num_peers value in the ath10k_hw_params_list array),
-> I just noticed that reverting the patch solved the problem
->
-> I was actually planning on submitting a v6 series with this patch
-> removed, but you were faster.
-
-Yeah, sorry about this. I noticed you marked the patchset as RFC but as
-they looked so good I decided to take them anyway :)
-
-But thanks for the quick fixes which I have applied and I think
-everything is good now, right?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0xMC0wNiAwMDo0NSwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToKPiBPbiAxMC81
+LzE4IDk6MTQgUE0sIEd1c3Rhdm8gQS4gUi4gU2lsdmEgd3JvdGU6Cj4+IAo+PiAKPj4gT24gMTAv
+NS8xOCA5OjA5IFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4gT24gMTAvMDUvMjAxOCAxMTo0MiBB
+TSwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToKPj4+PiBDdXJyZW50bHksIHRoZSBlcnJvciBo
+YW5kbGluZyBmb3IgdGhlIGNhbGwgdG8gZnVuY3Rpb24KPj4+PiBhdGgxMGtfZ2V0X2xlZ2FjeV9y
+YXRlX2lkeCgpIGRvZXNuJ3Qgd29yayBiZWNhdXNlCj4+Pj4gKnJhdGVfaWR4KiBpcyBvZiB0eXBl
+IHU4ICg4IGJpdHMsIHVuc2lnbmVkKSwgd2hpY2gKPj4+PiBtYWtlcyBpdCBpbXBvc3NpYmxlIGZv
+ciBpdCB0byBob2xkIGEgdmFsdWUgbGVzcwo+Pj4+IHRoYW4gMC4KPj4+PiAKPj4+PiBGaXggdGhp
+cyBieSBjaGFuZ2luZyB0aGUgdHlwZSBvZiB2YXJpYWJsZSAqcmF0ZV9pZHgqCj4+Pj4gdG8gczgg
+KDggYml0cywgc2lnbmVkKS4KPj4+IAo+Pj4gVGhlcmUgYXJlIG1vcmUgdGhhbiAxMjcgcmF0ZXMs
+IGFyZSB5b3Ugc3VyZSB0aGlzIGlzIGRvaW5nCj4+PiB3aGF0IHlvdSB3YW50Pwo+Pj4gCj4+IAo+
+PiBCYXNlZCBvbiB0aGUgZm9sbG93aW5nIGZ1bmN0aW9uLCByYXRlX2lkeCBjYW4gb25seSBob2xk
+IHZhbHVlcyBmcm9tIDAgCj4+IHRvIDExCj4+IAo+IAo+IC4uLiBhbmQgb2YgY291cnNlIC1FSU5W
+QUwgdG9vCj4gCj4+IHN0YXRpYyBpbmxpbmUgaW50IGF0aDEwa19nZXRfbGVnYWN5X3JhdGVfaWR4
+KHN0cnVjdCBhdGgxMGsgKmFyLCB1OCAKPj4gcmF0ZSkKPj4gewo+PiAgICAgICAgIHN0YXRpYyBj
+b25zdCB1OCBsZWdhY3lfcmF0ZXNbXSA9IHsxLCAyLCA1LCAxMSwgNiwgOSwgMTIsCj4+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDE4LCAyNCwgMzYsIDQ4LCA1NH07
+Cj4+ICAgICAgICAgaW50IGk7Cj4+IAo+PiAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBBUlJBWV9T
+SVpFKGxlZ2FjeV9yYXRlcyk7IGkrKykgewo+PiAgICAgICAgICAgICAgICAgaWYgKHJhdGUgPT0g
+bGVnYWN5X3JhdGVzW2ldKQo+PiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gaTsKPj4g
+ICAgICAgICB9Cj4+IAo+PiAgICAgICAgIGF0aDEwa193YXJuKGFyLCAiSW52YWxpZCBsZWdhY3kg
+cmF0ZSAlaGhkIHBlZXIgc3RhdHMiLCByYXRlKTsKPj4gICAgICAgICByZXR1cm4gLUVJTlZBTDsK
+Pj4gfQo+PiAKPj4gVGhhbmtzCj4+IC0tCj4+IEd1c3Rhdm8KPj4gCj4+PiBUaGFua3MsCj4+PiBC
+ZW4KPj4+IAo+Pj4+IAo+Pj4+IEFkZHJlc3Nlcy1Db3Zlcml0eS1JRDogMTQ3MzkxNCAoIlVuc2ln
+bmVkIGNvbXBhcmVkIGFnYWluc3QgMCIpCj4+Pj4gRml4ZXM6IDAxODlkYmQ3MWNiZCAoImF0aDEw
+azogZ2V0IHRoZSBsZWdhY3kgcmF0ZSBpbmRleCB0byB1cGRhdGUgCj4+Pj4gdGhlIHR4cmF0ZSB0
+YWJsZSIpCj4+Pj4gU2lnbmVkLW9mZi1ieTogR3VzdGF2byBBLiBSLiBTaWx2YSA8Z3VzdGF2b0Bl
+bWJlZGRlZG9yLmNvbT4KPj4+PiAtLS0KPj4+PiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvaHR0X3J4LmMgfCAzICsrLQo+Pj4+IMKgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
+cygrKSwgMSBkZWxldGlvbigtKQo+Pj4+IAo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jIAo+Pj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9odHRfcnguYwo+Pj4+IGluZGV4IGYyNDA1MjUuLmVkZDBlNzQgMTAwNjQ0Cj4+
+Pj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwo+Pj4+ICsr
+KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMKPj4+PiBAQCAtMjc1
+Myw3ICsyNzUzLDggQEAgYXRoMTBrX3VwZGF0ZV9wZXJfcGVlcl90eF9zdGF0cyhzdHJ1Y3QgYXRo
+MTBrIAo+Pj4+ICphciwKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1
+Y3QgYXRoMTBrX3Blcl9wZWVyX3R4X3N0YXRzICpwZWVyX3N0YXRzKQo+Pj4+IMKgewo+Pj4+IMKg
+wqDCoMKgIHN0cnVjdCBhdGgxMGtfc3RhICphcnN0YSA9IChzdHJ1Y3QgYXRoMTBrX3N0YSAqKXN0
+YS0+ZHJ2X3ByaXY7Cj4+Pj4gLcKgwqDCoCB1OCByYXRlID0gMCwgcmF0ZV9pZHggPSAwLCBzZ2k7
+Cj4+Pj4gK8KgwqDCoCB1OCByYXRlID0gMCwgc2dpOwo+Pj4+ICvCoMKgwqAgczggcmF0ZV9pZHgg
+PSAwOwo+Pj4+IMKgwqDCoMKgIHN0cnVjdCByYXRlX2luZm8gdHhyYXRlOwo+Pj4+IAo+Pj4+IMKg
+wqDCoMKgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJmFyLT5kYXRhX2xvY2spOwo+Pj4+IAo+Pj4gCj4+
+PiAKCkkgaGF2ZSBzZW50IGEgcGF0Y2ggdG8gYWRkcmVzcyB0aGlzLApodHRwczovL3BhdGNod29y
+ay5rZXJuZWwub3JnL3BhdGNoLzEwNjExOTQzLwoKVGhhbmtzCkFuaWwuCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
