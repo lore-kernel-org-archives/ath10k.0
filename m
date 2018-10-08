@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9PBM-0006Sh-98
- for ath10k@lists.infradead.org; Mon, 08 Oct 2018 06:38:22 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g9QnA-00034m-T1
+ for ath10k@lists.infradead.org; Mon, 08 Oct 2018 08:21:35 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: Asus RT-AC58U boardfile (was Re: [PATCH 2/2] ath10k: search DT
+ for qcom, ath10k-calibration-variant)
+References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
+ <3853747.Q0JJmSnsYM@debian64>
+ <87bmj9tup8.fsf@kamboji.qca.qualcomm.com>
+ <5423847.QPV7e8Q2Ao@debian64>
+Date: Mon, 08 Oct 2018 11:21:13 +0300
+In-Reply-To: <5423847.QPV7e8Q2Ao@debian64> (Christian Lamparter's message of
+ "Mon, 29 Jan 2018 21:09:50 +0100")
+Message-ID: <87in2cetmu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Mon, 08 Oct 2018 12:08:06 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [PATCH] ath10k: htt_rx: Fix signedness bug in
- ath10k_update_per_peer_tx_stats
-In-Reply-To: <fcc51fdd-fc31-9d2c-2e68-4ceecbb86129@embeddedor.com>
-References: <20181005184245.GA11700@embeddedor.com>
- <3a55bec6-d20d-f500-e741-b228a86b7117@candelatech.com>
- <dd75a8aa-b87c-e325-cc1d-a0efe3664a32@embeddedor.com>
- <fcc51fdd-fc31-9d2c-2e68-4ceecbb86129@embeddedor.com>
-Message-ID: <af44d03892b3d51df391760af7af0382@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +23,112 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sven Eckelmann <sven.eckelmann@openmesh.com>
 
-T24gMjAxOC0xMC0wNiAwMDo0NSwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToKPiBPbiAxMC81
-LzE4IDk6MTQgUE0sIEd1c3Rhdm8gQS4gUi4gU2lsdmEgd3JvdGU6Cj4+IAo+PiAKPj4gT24gMTAv
-NS8xOCA5OjA5IFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4gT24gMTAvMDUvMjAxOCAxMTo0MiBB
-TSwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToKPj4+PiBDdXJyZW50bHksIHRoZSBlcnJvciBo
-YW5kbGluZyBmb3IgdGhlIGNhbGwgdG8gZnVuY3Rpb24KPj4+PiBhdGgxMGtfZ2V0X2xlZ2FjeV9y
-YXRlX2lkeCgpIGRvZXNuJ3Qgd29yayBiZWNhdXNlCj4+Pj4gKnJhdGVfaWR4KiBpcyBvZiB0eXBl
-IHU4ICg4IGJpdHMsIHVuc2lnbmVkKSwgd2hpY2gKPj4+PiBtYWtlcyBpdCBpbXBvc3NpYmxlIGZv
-ciBpdCB0byBob2xkIGEgdmFsdWUgbGVzcwo+Pj4+IHRoYW4gMC4KPj4+PiAKPj4+PiBGaXggdGhp
-cyBieSBjaGFuZ2luZyB0aGUgdHlwZSBvZiB2YXJpYWJsZSAqcmF0ZV9pZHgqCj4+Pj4gdG8gczgg
-KDggYml0cywgc2lnbmVkKS4KPj4+IAo+Pj4gVGhlcmUgYXJlIG1vcmUgdGhhbiAxMjcgcmF0ZXMs
-IGFyZSB5b3Ugc3VyZSB0aGlzIGlzIGRvaW5nCj4+PiB3aGF0IHlvdSB3YW50Pwo+Pj4gCj4+IAo+
-PiBCYXNlZCBvbiB0aGUgZm9sbG93aW5nIGZ1bmN0aW9uLCByYXRlX2lkeCBjYW4gb25seSBob2xk
-IHZhbHVlcyBmcm9tIDAgCj4+IHRvIDExCj4+IAo+IAo+IC4uLiBhbmQgb2YgY291cnNlIC1FSU5W
-QUwgdG9vCj4gCj4+IHN0YXRpYyBpbmxpbmUgaW50IGF0aDEwa19nZXRfbGVnYWN5X3JhdGVfaWR4
-KHN0cnVjdCBhdGgxMGsgKmFyLCB1OCAKPj4gcmF0ZSkKPj4gewo+PiAgICAgICAgIHN0YXRpYyBj
-b25zdCB1OCBsZWdhY3lfcmF0ZXNbXSA9IHsxLCAyLCA1LCAxMSwgNiwgOSwgMTIsCj4+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDE4LCAyNCwgMzYsIDQ4LCA1NH07
-Cj4+ICAgICAgICAgaW50IGk7Cj4+IAo+PiAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBBUlJBWV9T
-SVpFKGxlZ2FjeV9yYXRlcyk7IGkrKykgewo+PiAgICAgICAgICAgICAgICAgaWYgKHJhdGUgPT0g
-bGVnYWN5X3JhdGVzW2ldKQo+PiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gaTsKPj4g
-ICAgICAgICB9Cj4+IAo+PiAgICAgICAgIGF0aDEwa193YXJuKGFyLCAiSW52YWxpZCBsZWdhY3kg
-cmF0ZSAlaGhkIHBlZXIgc3RhdHMiLCByYXRlKTsKPj4gICAgICAgICByZXR1cm4gLUVJTlZBTDsK
-Pj4gfQo+PiAKPj4gVGhhbmtzCj4+IC0tCj4+IEd1c3Rhdm8KPj4gCj4+PiBUaGFua3MsCj4+PiBC
-ZW4KPj4+IAo+Pj4+IAo+Pj4+IEFkZHJlc3Nlcy1Db3Zlcml0eS1JRDogMTQ3MzkxNCAoIlVuc2ln
-bmVkIGNvbXBhcmVkIGFnYWluc3QgMCIpCj4+Pj4gRml4ZXM6IDAxODlkYmQ3MWNiZCAoImF0aDEw
-azogZ2V0IHRoZSBsZWdhY3kgcmF0ZSBpbmRleCB0byB1cGRhdGUgCj4+Pj4gdGhlIHR4cmF0ZSB0
-YWJsZSIpCj4+Pj4gU2lnbmVkLW9mZi1ieTogR3VzdGF2byBBLiBSLiBTaWx2YSA8Z3VzdGF2b0Bl
-bWJlZGRlZG9yLmNvbT4KPj4+PiAtLS0KPj4+PiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvaHR0X3J4LmMgfCAzICsrLQo+Pj4+IMKgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
-cygrKSwgMSBkZWxldGlvbigtKQo+Pj4+IAo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jIAo+Pj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9odHRfcnguYwo+Pj4+IGluZGV4IGYyNDA1MjUuLmVkZDBlNzQgMTAwNjQ0Cj4+
-Pj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwo+Pj4+ICsr
-KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMKPj4+PiBAQCAtMjc1
-Myw3ICsyNzUzLDggQEAgYXRoMTBrX3VwZGF0ZV9wZXJfcGVlcl90eF9zdGF0cyhzdHJ1Y3QgYXRo
-MTBrIAo+Pj4+ICphciwKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1
-Y3QgYXRoMTBrX3Blcl9wZWVyX3R4X3N0YXRzICpwZWVyX3N0YXRzKQo+Pj4+IMKgewo+Pj4+IMKg
-wqDCoMKgIHN0cnVjdCBhdGgxMGtfc3RhICphcnN0YSA9IChzdHJ1Y3QgYXRoMTBrX3N0YSAqKXN0
-YS0+ZHJ2X3ByaXY7Cj4+Pj4gLcKgwqDCoCB1OCByYXRlID0gMCwgcmF0ZV9pZHggPSAwLCBzZ2k7
-Cj4+Pj4gK8KgwqDCoCB1OCByYXRlID0gMCwgc2dpOwo+Pj4+ICvCoMKgwqAgczggcmF0ZV9pZHgg
-PSAwOwo+Pj4+IMKgwqDCoMKgIHN0cnVjdCByYXRlX2luZm8gdHhyYXRlOwo+Pj4+IAo+Pj4+IMKg
-wqDCoMKgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJmFyLT5kYXRhX2xvY2spOwo+Pj4+IAo+Pj4gCj4+
-PiAKCkkgaGF2ZSBzZW50IGEgcGF0Y2ggdG8gYWRkcmVzcyB0aGlzLApodHRwczovL3BhdGNod29y
-ay5rZXJuZWwub3JnL3BhdGNoLzEwNjExOTQzLwoKVGhhbmtzCkFuaWwuCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+Christian Lamparter <chunkeey@gmail.com> writes:
+
+> Sven's boarddata for the OpenMesh A42 has been accepted. \o/
+> So let's try to get the board data for the RT-AC58U merged.
+>
+> On Friday, December 8, 2017 10:50:12 AM CET Kalle Valo wrote:
+>> > I've attached the necessary bmi-board-id=16 and bmi-board-id=17 board 
+>> > files to this mail as well. So, all that needs to be done is to add
+>> > them to the board-2.bin on your codeaurora / ath10k-firmware project.
+>> >
+>> > Kalle: Can you please update the board-2.bin for the IPQ40XX on your
+>> > ath10k-firmware project on github?
+>
+> Since some time has passed since the original submission, I just stick to
+> answering the questions in the the guide from:
+> <https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles>
+>
+>> description for what hardware this is
+> The hardware is the ASUS RT-AC58U [0]. It has a IPQ4018 SoC which
+> hosts two ath10k wifis. <https://www.asus.com/Networking/RT-AC58U/>
+> It's based on the qcom-ipq4019-ap.dk01.1-c2. machid: 0x8010100 .
+> the 5GHz and 2.4GHz radio components were drastically changed and
+> as a result, the device's wifis don't work very well with the reference
+> board-2.bin values. The 5GHz wifi suffers the most, the max throughput
+> tops out at 6 Mbps, even in the best possible "lab conditions".
+>
+>> origin of the board file (did you create it yourself or where you downloaded)
+>
+> These files are available in ASUS's GPL Source Code release.
+>
+> The source code can be downloaded from this site:
+> <https://www.asus.com/Networking/RT-AC58U/HelpDesk_Download/>
+> Just select "Driver & Tools" in the right frame and "Others"
+> in the "Please select OS". It's the second tab called "Source Code":
+>
+> |Version 3.0.0.4.380.8119
+> |2017/10/30  522.32 MBytes
+> |GPL of ASUS RT-AC58U for firmware 3.0.0.4.380.8119
+> (Note: If you press "Show all", it will list two older releases as well.
+> The boarddata files I sent you back then came from the original 
+> GPL_RT-AC58U_3.0.0.4.380.6516-g6772678 release. But the boarddata_*.bin
+> files have been updated since. So I'm attaching the new ones this time.)
+>
+> The zip file contains one big GPL_RT-AC58U_3.0.0.4.380.8119-gdb642b4.tgz
+> which in turn contain these these two files.
+> asuswrt/release/src/router/qca-wifi-fw.ipq40xx/RT-AC58U/boarddata_0.bin
+> asuswrt/release/src/router/qca-wifi-fw.ipq40xx/RT-AC58U/boarddata_1.bin
+>
+> I took the liberty of renaming the files to:
+>
+> boarddata_0 -> bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ASUS-RT-AC58U.bin
+> boarddata_1 -> bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ASUS-RT-AC58U.bin
+>
+>> ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>
+> Following OpenMesh A42 example of "VENDOR-DEVICE", I choose to go with:
+> "ASUS-RT-AC58U" as the variant string:
+>
+> full board name (ATH10K_BD_IE_BOARD_NAME):
+> bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ASUS-RT-AC58U
+> bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ASUS-RT-AC58U
+>
+>     {
+>         "data": "bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ASUS-RT-AC58U.bin", 
+>         "names": [
+>             "bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ASUS-RT-AC58U"
+>         ]
+>     }, 
+>     {
+>         "data": "bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ASUS-RT-AC58U.bin", 
+>         "names": [
+>             "bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ASUS-RT-AC58U"
+>         ]
+>     },   
+>
+>     (if this is appended at the end of board-2.json, please remove the
+>      last comma)
+>
+>> attach the actual board file (board.bin)
+> attached.
+>
+> just in case. These are the sha256sum:
+> d9eb177737983ed320027d50711fd17fadc8057ff0a99d1d455342ef7a7bb1af  \
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ASUS-RT-AC58U.bin
+>
+> 24969cd91553fd915c51a8fe51c7b7e0e273679e1349b47d0a6c5ef4b4bb4a1b  \
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ASUS-RT-AC58U.bin
+>
+> I also verified that the ASUS' firmware for the RT-AC58U 
+> (FW_RT_AC58U_30043808119.ZIP) uses the very same files.
+
+Added, thanks. But please do double check that I didn't do any mistakes.
+
+https://github.com/kvalo/ath10k-firmware/commit/4b89c2b7efef0ba663339c1a42c673e97c7562bd
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
