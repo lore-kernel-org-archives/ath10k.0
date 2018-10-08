@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9SAs-000836-8e
- for ath10k@lists.infradead.org; Mon, 08 Oct 2018 09:50:19 +0000
-From: Carl Huang <cjhuang@codeaurora.org>
-Subject: [PATCH] ath10k: allocate small size dma memory in
- ath10k_pci_diag_write_mem
-Date: Mon,  8 Oct 2018 17:49:42 +0800
-Message-Id: <1538992182-3717-1-git-send-email-cjhuang@codeaurora.org>
+ id 1g9Ulv-0005B6-E3
+ for ath10k@lists.infradead.org; Mon, 08 Oct 2018 12:36:33 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ZyXEL NBG6617 specific BDFs
+References: <8339818.cMSNGYG2iH@debian64>
+Date: Mon, 08 Oct 2018 15:36:12 +0300
+In-Reply-To: <8339818.cMSNGYG2iH@debian64> (Christian Lamparter's message of
+ "Wed, 02 May 2018 15:11:57 +0200")
+Message-ID: <87efd0ehtv.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,104 +19,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-ath10k_pci_diag_write_mem may allocate big size of the dma memory
-based on the parameter nbytes. Take firmware diag download as
-example, the biggest size is about 500K. In some systems, the
-allocation is likely to fail because it can't acquire such a large
-contiguous dma memory.
+Christian Lamparter <chunkeey@gmail.com> writes:
 
-The fix is to allocate a small size dma memory. In the loop,
-driver copies the data to the allocated dma memory and writes to
-the destination until all the data is written.
+> Hi, 
+>
+> This is a set of board.bin files for the ZyXEL NBG6617 Router [0],
+> which I wish to be added to the ath10k-firmware repository.
+>
+> As per the current "Submitting board files" guidelines [1]:
+>
+> * description for what hardware this is:
+>
+>   - it is a IPQ4018 based board [0]
+>   - one QCA40xx radio is used as 2.4GHz radio
+>   - one QCA40xx radio is used as 5GHz radio
+>
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
+>
+>   - All files were extracted from latest official vendor firmware
+>     V1.00(ABCT.6)CO [1]
+>     (Path /lib/firmware/IPQ4019/hw.1/boardData_IC/)
+>
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k) 
+>   - QCA4019 hw1.0
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ZyXEL-NBG6617
+>
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ZyXEL-NBG6617
+>
+> * md5sum of each new board file to add
+>    - bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ZyXEL-NBG6617
+>      has md5sum: 774dc40c3490572a34721a05ce0f0a55
+>
+>    - bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ZyXEL-NBG6617
+>      has md5sum: ed05754d83b5001f441e1ec8383c099f
+>
+> * attach the actual board file (board.bin)
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
 
-Tested with QCA6174 PCI with
-firmware-6.bin_WLAN.RM.4.4.1-00119-QCARMSWP-1, this also affects
-QCA9377 PCI.
+Added, thanks. But please do double check my changes.
 
-Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/pci.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+https://github.com/kvalo/ath10k-firmware/commit/cb57d2d6b0aff8dacf1606074cd78bacbcf0d0ea
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 873dbb6..1872671 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1071,7 +1071,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
- 	int ret = 0;
- 	u32 *buf;
--	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
-+	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
- 	struct ath10k_ce_pipe *ce_diag;
- 	void *data_buf = NULL;
- 	u32 ce_data;	/* Host buffer address in CE space */
-@@ -1088,9 +1088,10 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	 *   1) 4-byte alignment
- 	 *   2) Buffer in DMA-able space
- 	 */
--	orig_nbytes = nbytes;
-+	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
-+
- 	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
--						       orig_nbytes,
-+						       alloc_nbytes,
- 						       &ce_data_base,
- 						       GFP_ATOMIC);
- 	if (!data_buf) {
-@@ -1098,9 +1099,6 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 		goto done;
- 	}
- 
--	/* Copy caller's data to allocated DMA buf */
--	memcpy(data_buf, data, orig_nbytes);
--
- 	/*
- 	 * The address supplied by the caller is in the
- 	 * Target CPU virtual address space.
-@@ -1113,12 +1111,15 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	 */
- 	address = ath10k_pci_targ_cpu_to_ce_addr(ar, address);
- 
--	remaining_bytes = orig_nbytes;
-+	remaining_bytes = nbytes;
- 	ce_data = ce_data_base;
- 	while (remaining_bytes) {
- 		/* FIXME: check cast */
- 		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
- 
-+		/* Copy caller's data to allocated DMA buf */
-+		memcpy(data_buf, data, nbytes);
-+
- 		/* Set up to receive directly into Target(!) address */
- 		ret = ce_diag->ops->ce_rx_post_buf(ce_diag, &address, address);
- 		if (ret != 0)
-@@ -1171,12 +1172,12 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 
- 		remaining_bytes -= nbytes;
- 		address += nbytes;
--		ce_data += nbytes;
-+		data += nbytes;
- 	}
- 
- done:
- 	if (data_buf) {
--		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
-+		dma_free_coherent(ar->dev, alloc_nbytes, data_buf,
- 				  ce_data_base);
- 	}
- 
 -- 
-2.7.4
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
