@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9RRc-0002uD-A8
- for ath10k@lists.infradead.org; Mon, 08 Oct 2018 09:03:17 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: Add peer flush in ath10k_flush for STATION
-Date: Mon,  8 Oct 2018 17:02:43 +0800
-Message-Id: <1538989363-12386-1-git-send-email-wgong@codeaurora.org>
+ id 1g9SAs-000836-8e
+ for ath10k@lists.infradead.org; Mon, 08 Oct 2018 09:50:19 +0000
+From: Carl Huang <cjhuang@codeaurora.org>
+Subject: [PATCH] ath10k: allocate small size dma memory in
+ ath10k_pci_diag_write_mem
+Date: Mon,  8 Oct 2018 17:49:42 +0800
+Message-Id: <1538992182-3717-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +24,95 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-In the noisy environment, if there are packets in the queue and can't
-send out, the suspend timing will be more than 5 seconds due to the wait,
-flush the queue to optimize the suspend timing, and let the upper layer to
-retry the packets after resume.
+ath10k_pci_diag_write_mem may allocate big size of the dma memory
+based on the parameter nbytes. Take firmware diag download as
+example, the biggest size is about 500K. In some systems, the
+allocation is likely to fail because it can't acquire such a large
+contiguous dma memory.
 
-Tested with QCA6174 PCI with firmware
-WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-It's not a regression with new firmware releases.
+The fix is to allocate a small size dma memory. In the loop,
+driver copies the data to the allocated dma memory and writes to
+the destination until all the data is written.
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
- drivers/net/wireless/ath/ath10k/mac.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+Tested with QCA6174 PCI with
+firmware-6.bin_WLAN.RM.4.4.1-00119-QCARMSWP-1, this also affects
+QCA9377 PCI.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 97548f9..8df3cec 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6814,9 +6814,20 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			 u32 queues, bool drop)
- {
- 	struct ath10k *ar = hw->priv;
--
--	if (drop)
-+	struct ath10k_vif *arvif;
-+	u32 bitmap;
+Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 873dbb6..1872671 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1071,7 +1071,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 	int ret = 0;
+ 	u32 *buf;
+-	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
++	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
+ 	struct ath10k_ce_pipe *ce_diag;
+ 	void *data_buf = NULL;
+ 	u32 ce_data;	/* Host buffer address in CE space */
+@@ -1088,9 +1088,10 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 	 *   1) 4-byte alignment
+ 	 *   2) Buffer in DMA-able space
+ 	 */
+-	orig_nbytes = nbytes;
++	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
 +
-+	if (drop) {
-+		if (vif->type == NL80211_IFTYPE_STATION) {
-+			bitmap = ~(1 << WMI_MGMT_TID);
-+			list_for_each_entry(arvif, &ar->arvifs, list) {
-+				if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
-+					ath10k_wmi_peer_flush(ar, arvif->vdev_id,
-+							      arvif->bssid, bitmap);
-+			}
-+		}
- 		return;
-+	}
+ 	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
+-						       orig_nbytes,
++						       alloc_nbytes,
+ 						       &ce_data_base,
+ 						       GFP_ATOMIC);
+ 	if (!data_buf) {
+@@ -1098,9 +1099,6 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 		goto done;
+ 	}
  
- 	mutex_lock(&ar->conf_mutex);
- 	ath10k_mac_wait_tx_complete(ar);
+-	/* Copy caller's data to allocated DMA buf */
+-	memcpy(data_buf, data, orig_nbytes);
+-
+ 	/*
+ 	 * The address supplied by the caller is in the
+ 	 * Target CPU virtual address space.
+@@ -1113,12 +1111,15 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 	 */
+ 	address = ath10k_pci_targ_cpu_to_ce_addr(ar, address);
+ 
+-	remaining_bytes = orig_nbytes;
++	remaining_bytes = nbytes;
+ 	ce_data = ce_data_base;
+ 	while (remaining_bytes) {
+ 		/* FIXME: check cast */
+ 		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
+ 
++		/* Copy caller's data to allocated DMA buf */
++		memcpy(data_buf, data, nbytes);
++
+ 		/* Set up to receive directly into Target(!) address */
+ 		ret = ce_diag->ops->ce_rx_post_buf(ce_diag, &address, address);
+ 		if (ret != 0)
+@@ -1171,12 +1172,12 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 
+ 		remaining_bytes -= nbytes;
+ 		address += nbytes;
+-		ce_data += nbytes;
++		data += nbytes;
+ 	}
+ 
+ done:
+ 	if (data_buf) {
+-		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
++		dma_free_coherent(ar->dev, alloc_nbytes, data_buf,
+ 				  ce_data_base);
+ 	}
+ 
 -- 
-1.9.1
+2.7.4
 
 
 _______________________________________________
