@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9V9d-0001Jm-Ep
- for ath10k@lists.infradead.org; Mon, 08 Oct 2018 13:01:11 +0000
+ id 1g9VDi-0001yj-QT
+ for ath10k@lists.infradead.org; Mon, 08 Oct 2018 13:05:12 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA9984 hw1.0: Add Netgear Orbi Pro SRK60
- specific BDFs
-References: <CAOX2RU5j9hsvZP4J_x3t0_L03budt_GLUN4FdtrM+7sKZ-wuXg@mail.gmail.com>
-Date: Mon, 08 Oct 2018 16:00:42 +0300
-In-Reply-To: <CAOX2RU5j9hsvZP4J_x3t0_L03budt_GLUN4FdtrM+7sKZ-wuXg@mail.gmail.com>
- (Robert Marko's message of "Sun, 2 Sep 2018 13:25:04 +0200")
-Message-ID: <87woqsd24l.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Update board-2.bin files in linux-firmware
+References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+ <2297652.AArlnWO5DQ@debian64>
+Date: Mon, 08 Oct 2018 16:04:56 +0300
+In-Reply-To: <2297652.AArlnWO5DQ@debian64> (Christian Lamparter's message of
+ "Fri, 28 Sep 2018 22:04:54 +0200")
+Message-ID: <87sh1gd1xj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,49 +24,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Robert Marko <robimarko@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, ath10k@lists.infradead.org, Skorpy <skorpy@darmstadt.ccc.de>
 
-Robert Marko <robimarko@gmail.com> writes:
+Christian Lamparter <chunkeey@gmail.com> writes:
 
-> I am currently working on the Netgear Orbi Pro SRK60 support for
-> OpenWrt. This
-> AP requires three special BDFs to get the Wi-Fi PHYs working (correctly). The
-> bmi-board-id='s would clash with one of the the IPQ401X AP-DK boards because
-> QCA doesn't provide special IDs for customers and seems to use the AP-DK
-> board-ids in the wifi firmware to change its behavior.
+> Hello,
 >
-> Now to the questions from the wiki page [1]:
+> On Friday, September 28, 2018 9:28:44 PM CEST Hauke Mehrtens wrote:
+>> the ath10k-firmware repository already contains updated board-2.bin
+>> files with support for more devices. Please also update the board-2.bin
+>> files shipped in the linux-firmware repository as they are normally
+>> taken by distributions.
 >
-> * description for what hardware this is:
+> At this opportunity, I would kindly like to remind the maintainer that there
+> are currently more pending boardfiles. It would be great if they all could be
+> included in the next update as well:
 >
->   - it is a QCA4019 based module (based on qcom-ipq4019-ap.dk04.1-c1)
->   - one QCA4019 radio is used as 2.4GHz radio
->   - one QCA4019 radio is used as 5GHz radio
->   - an additional QCA9984 5GHz radio is attached via PCI
+> pending
+> =======
 >
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
+>  * Netgear WAC510
+>  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09186.html (IPQ4019)
 >
->   - it was pulled from the factory firmware image
->   - it is based on latest 2.1.4.16 firmware
+>  * Netgear Orbi PRO SRK60
+>  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09078.html (IPQ4019) 
+>  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09079.html (QCA9984)
 >
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>  * ZyXEL WRE6606:
+>  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg08776.html (IPQ4019)
 >
->   - QCA9984 hw1.0
+>  * ZyXEL NBG6617:
+>  - http://lists.infradead.org/pipermail/ath10k/2018-May/011377.html (IPQ4019)
 >
->   + bus=pci,bmi-chip-id=0,bmi-board-id=6,variant=Netgear-Orbi-Pro-SRK60
->      md5sum:
->      1725321919ee4dac521db1b3253c8f8d
->
-> * attach the actual board file (board.bin)
->
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
+> And there is an update for the ASUS' RT-AC58U
+>  - http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html (IPQ4019)
 
-Added, thanks. Please double check my changes:
-
-https://github.com/kvalo/ath10k-firmware/commit/b4cf08bbce8c3b9ef9a5a7248a800e40beed5b2d
+Thanks for the list, this was helpful. I should have now added all of
+these, but the exception ZyXEL WRE6606 for which I couldn't find the
+actual board files.
 
 -- 
 Kalle Valo
