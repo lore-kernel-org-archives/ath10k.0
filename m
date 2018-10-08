@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9Ulv-0005B6-E3
- for ath10k@lists.infradead.org; Mon, 08 Oct 2018 12:36:33 +0000
+ id 1g9Uq0-0006jB-V0
+ for ath10k@lists.infradead.org; Mon, 08 Oct 2018 12:40:42 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ZyXEL NBG6617 specific BDFs
-References: <8339818.cMSNGYG2iH@debian64>
-Date: Mon, 08 Oct 2018 15:36:12 +0300
-In-Reply-To: <8339818.cMSNGYG2iH@debian64> (Christian Lamparter's message of
- "Wed, 02 May 2018 15:11:57 +0200")
-Message-ID: <87efd0ehtv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ZyXEL WRE6606 specific BDFs
+References: <ab6baeb5-3f07-78a0-e62e-4b4154b8c82d@darmstadt.ccc.de>
+ <f3c6b7e4-4e02-e341-03b0-e5fe4b7c4b8d@darmstadt.ccc.de>
+Date: Mon, 08 Oct 2018 15:40:26 +0300
+In-Reply-To: <f3c6b7e4-4e02-e341-03b0-e5fe4b7c4b8d@darmstadt.ccc.de>
+ (skorpy@darmstadt.ccc.de's message of "Thu, 28 Jun 2018 20:45:59
+ +0200")
+Message-ID: <87a7noehmt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,61 +21,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@gmail.com>
+To: Skorpy <skorpy@darmstadt.ccc.de>
 Cc: ath10k@lists.infradead.org
 
-Christian Lamparter <chunkeey@gmail.com> writes:
-
-> Hi, 
->
-> This is a set of board.bin files for the ZyXEL NBG6617 Router [0],
-> which I wish to be added to the ath10k-firmware repository.
->
-> As per the current "Submitting board files" guidelines [1]:
->
-> * description for what hardware this is:
->
->   - it is a IPQ4018 based board [0]
->   - one QCA40xx radio is used as 2.4GHz radio
->   - one QCA40xx radio is used as 5GHz radio
->
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
->
->   - All files were extracted from latest official vendor firmware
->     V1.00(ABCT.6)CO [1]
->     (Path /lib/firmware/IPQ4019/hw.1/boardData_IC/)
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k) 
->   - QCA4019 hw1.0
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ZyXEL-NBG6617
->
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ZyXEL-NBG6617
->
-> * md5sum of each new board file to add
->    - bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=ZyXEL-NBG6617
->      has md5sum: 774dc40c3490572a34721a05ce0f0a55
->
->    - bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=ZyXEL-NBG6617
->      has md5sum: ed05754d83b5001f441e1ec8383c099f
->
-> * attach the actual board file (board.bin)
->
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
-
-Added, thanks. But please do double check my changes.
-
-https://github.com/kvalo/ath10k-firmware/commit/cb57d2d6b0aff8dacf1606074cd78bacbcf0d0ea
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+U2tvcnB5IDxza29ycHlAZGFybXN0YWR0LmNjYy5kZT4gd3JpdGVzOgoKPiBUaGlzIGlzIGEgc2V0
+IG9mIGJvYXJkLmJpbiBmaWxlcyBmb3IgdGhlIFp5WEVMIFdSRTY2MDYgUm91dGVyIFswXSwKPiB3
+aGljaCBJIHdpc2ggdG8gYmUgYWRkZWQgdG8gdGhlIGF0aDEway1maXJtd2FyZSByZXBvc2l0b3J5
+Lgo+Cj4KPiBBcyBwZXIgdGhlIGN1cnJlbnQgIlN1Ym1pdHRpbmcgYm9hcmQgZmlsZXMiIGd1aWRl
+bGluZXMgWzFdOgo+Cj4gKiBkZXNjcmlwdGlvbiBmb3Igd2hhdCBoYXJkd2FyZSB0aGlzIGlzOgo+
+Cj4gICAgLSBpdCBpcyBhIElQUTQwMTggYmFzZWQgYm9hcmQgWzBdCj4gICAgLSBvbmUgUUNBNDB4
+eCByYWRpbyBpcyB1c2VkIGFzIDIuNEdIeiByYWRpbwo+ICAgIC0gb25lIFFDQTQweHggcmFkaW8g
+aXMgdXNlZCBhcyA1R0h6IHJhZGlvCj4KPiAqIG9yaWdpbiBvZiB0aGUgYm9hcmQgZmlsZSAoZGlk
+IHlvdSBjcmVhdGUgaXQgeW91cnNlbGYgb3Igd2hlcmUgeW91Cj4gICAgZG93bmxvYWRlZCkKPgo+
+ICAgIC0gQWxsIGZpbGVzIHdlcmUgZXh0cmFjdGVkIGZyb20gb2ZmaWNpYWwgdmVuZG9yIGZpcm13
+YXJlIHdoaWNoIHdhcyBvbgo+IHRoZSBkZXZpY2UgZnJvbSB0aGUgZmFjdG9yeQo+ICAgIC0gQm9h
+cmRmaWxlcyBhbHNvIGluY2x1ZGVkIGluIHRoZSB2ZW5kb3IgZmlybXdhcmUgaW1hZ2Ugb2YgdGhl
+IE5CRzY2MTcKPgo+ICogaWRzIHRvIGJlIHVzZWQgd2l0aCB0aGUgYm9hcmQgZmlsZSAoQVRIMTBL
+X0JEX0lFX0JPQVJEX05BTUUgaW4gYXRoMTBrKQo+ICAgIC0gcWNhNDAxOSBodzEuMAo+ICAgICAg
+KyBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTI0LHZhcmlhbnQ9WnlYRUwtV1JF
+NjYwNgo+Cj4gICAgICArIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MjUsdmFy
+aWFudD1aeVhFTC1XUkU2NjA2Cj4KPiAqIHNoYTI1NnN1bSBvZiBlYWNoIG5ldyBib2FyZCBmaWxl
+IHRvIGFkZAo+ICAgICAtIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MjQsdmFy
+aWFudD1aeVhFTC1XUkU2NjA2Cj4gICAgICAgaGFzIHNoYTI1NnN1bToKPiAxYWVhZTQ5ODEyMTdi
+NjM4ODNlMjBlY2JhYjYzODBhZmY0MDQ5ODU0ODViZjFlODgxZmIwZmM4NzRmMmEwODgzCj4KPiAg
+ICAgLSBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTI1LHZhcmlhbnQ9WnlYRUwt
+V1JFNjYwNgo+ICAgICAgIGhhcyBzaGEyNTZzdW06Cj4gNDY5ZTgxZmQyNTkzY2JhNDQyYzBkODEw
+Y2U5MjMwOWJiOTJlYWE0MmJiZGRiYmJmNGVjMDUxZmFiZDM0NWVjZgo+Cj4gKiBhdHRhY2ggdGhl
+IGFjdHVhbCBib2FyZCBmaWxlIChib2FyZC5iaW4pCj4KPiAgICAtIFRoZSBuYW1lIG9mIHRoZSBm
+aWxlcyBhcmUgZXF1YWwgdG8gdGhlIGlkIHN0cmluZyBpbiB0aGUgYm9hcmQtMi5iaW4KPiAgICAg
+IChtaW51cyB0aGUgIi5iaW4iKQo+Cj4gS2luZCByZWdhcmRzLAo+IE1hZ251cyBGcsO8aGxpbmcK
+Pgo+IFswXSA8aHR0cHM6Ly93aWtpZGV2aS5jb20vd2lraS9aeVhFTF9XUkU2NjA2Pgo+Cj4gWzFd
+IDxodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEw
+ay9ib2FyZGZpbGVzPgoKSSBkb24ndCBzZWUgYW55IGJvYXJkIGZpbGVzLCBkaWQgeW91IGZvcmdl
+dCB0byBhdHRhY2ggdGhlbSBvciBpcyBpdCBhCnByb2JsZW0gb24gbXkgZW5kPwoKLS0gCkthbGxl
+IFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
