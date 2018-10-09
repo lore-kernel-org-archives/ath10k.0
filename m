@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9la4-0000Sg-8X
- for ath10k@lists.infradead.org; Tue, 09 Oct 2018 06:33:24 +0000
-Received: by mail-pl1-x644.google.com with SMTP id b5-v6so303501plr.5
- for <ath10k@lists.infradead.org>; Mon, 08 Oct 2018 23:33:10 -0700 (PDT)
-Date: Mon, 8 Oct 2018 23:33:06 -0700
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v5 3/6] dt: bindings: add bindings for msa memory region
-Message-ID: <20181009063306.GD8498@tuxbook-pro>
-References: <20180815092637.11455-1-govinds@codeaurora.org>
- <20180815092637.11455-4-govinds@codeaurora.org>
+ id 1g9vq5-0000DJ-82
+ for ath10k@lists.infradead.org; Tue, 09 Oct 2018 17:30:34 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 206-v6so2701701wmb.5
+ for <ath10k@lists.infradead.org>; Tue, 09 Oct 2018 10:30:22 -0700 (PDT)
+From: Christian Lamparter <chunkeey@gmail.com>
+Subject: Re: Update board-2.bin files in linux-firmware
+Date: Tue, 09 Oct 2018 19:30:18 +0200
+Message-ID: <2515195.qVqrclqyAa@debian64>
+In-Reply-To: <87sh1gd1xj.fsf@kamboji.qca.qualcomm.com>
+References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+ <2297652.AArlnWO5DQ@debian64> <87sh1gd1xj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20180815092637.11455-4-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +21,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: devicetree@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, andy.gross@linaro.org, niklas.cassel@linaro.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, ath10k@lists.infradead.org, Skorpy <skorpy@darmstadt.ccc.de>
 
-On Wed 15 Aug 02:26 PDT 2018, Govind Singh wrote:
+On Monday, October 8, 2018 3:04:56 PM CEST Kalle Valo wrote:
+> Christian Lamparter <chunkeey@gmail.com> writes:
+> =
 
-> Add device tree binding documentation details of msa
-> memory region for ath10k qmi client for SDM845/APQ8098
-> SoC into "qcom,ath10k.txt".
-> 
+> > Hello,
+> >
+> > On Friday, September 28, 2018 9:28:44 PM CEST Hauke Mehrtens wrote:
+> >> the ath10k-firmware repository already contains updated board-2.bin
+> >> files with support for more devices. Please also update the board-2.bin
+> >> files shipped in the linux-firmware repository as they are normally
+> >> taken by distributions.
+> >
+> > At this opportunity, I would kindly like to remind the maintainer that =
+there
+> > are currently more pending boardfiles. It would be great if they all co=
+uld be
+> > included in the next update as well:
+> >
+> > pending
+> > =3D=3D=3D=3D=3D=3D=3D
+> >
+> >  * Netgear WAC510
+> >  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09186.htm=
+l (IPQ4019)
+> >
+> >  * Netgear Orbi PRO SRK60
+> >  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09078.htm=
+l (IPQ4019) =
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg09079.htm=
+l (QCA9984)
+> >
+> >  * ZyXEL WRE6606:
+> >  - https://www.mail-archive.com/ath10k@lists.infradead.org/msg08776.htm=
+l (IPQ4019)
+> >
+> >  * ZyXEL NBG6617:
+> >  - http://lists.infradead.org/pipermail/ath10k/2018-May/011377.html (IP=
+Q4019)
+> >
+> > And there is an update for the ASUS' RT-AC58U
+> >  - http://lists.infradead.org/pipermail/ath10k/2018-January/010770.html=
+ (IPQ4019)
+> =
 
-Regards,
-Bjorn
+> Thanks for the list, this was helpful. I should have now added all of
+> these, but the exception ZyXEL WRE6606 for which I couldn't find the
+> actual board files.
+You are right. The two ZyXEL WRE6606 board.bin files were attached to
+first post in the "Add ZyXEL WRE6606 specific BDFs" thread:
+<https://www.mail-archive.com/ath10k@lists.infradead.org/msg08741.html>
 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> ---
->  .../devicetree/bindings/net/wireless/qcom,ath10k.txt        | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index 7fd4e8ce4149..2196d1ab3c8c 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -56,6 +56,11 @@ Optional properties:
->  				     the length can vary between hw versions.
->  - <supply-name>-supply: handle to the regulator device tree node
->  			   optional "supply-name" is "vdd-0.8-cx-mx".
-> +- memory-region:
-> +	Usage: optional
-> +	Value type: <phandle>
-> +	Definition: reference to the reserved-memory for the msa region
-> +		    used by the wifi firmware running in Q6.
->  
->  Example (to supply the calibration data alone):
->  
-> @@ -149,4 +154,5 @@ wifi@18000000 {
->  			   <0 140 0 /* CE10 */ >,
->  			   <0 141 0 /* CE11 */ >;
->  		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-> +		memory-region = <&wifi_msa_mem>;
->  };
-> -- 
-> 2.17.0
-> 
+But sadly not to the response by Magnus Fr=FChling that I linked to.
+How do you want to handle this? Can you take the board bins from:
+<https://www.mail-archive.com/ath10k@lists.infradead.org/msg08741.html>
+Or do you prefere a new mail in this case, since the boardfile =
+
+guidelines has changed?
+
+Kind Regards,
+Christian
+
+
 
 _______________________________________________
 ath10k mailing list
