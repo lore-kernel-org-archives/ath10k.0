@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAD0y-0004q1-R6
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:50:57 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Update board-2.bin files in linux-firmware
-References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
- <2297652.AArlnWO5DQ@debian64>
- <87sh1gd1xj.fsf@kamboji.qca.qualcomm.com>
- <2515195.qVqrclqyAa@debian64>
-Date: Wed, 10 Oct 2018 14:50:38 +0300
-In-Reply-To: <2515195.qVqrclqyAa@debian64> (Christian Lamparter's message of
- "Tue, 09 Oct 2018 19:30:18 +0200")
-Message-ID: <87sh1evx4h.fsf@codeaurora.org>
-MIME-Version: 1.0
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAD3O-0000dW-D2
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:53:28 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH v3 3/3] dt: bindings: add bindings for wifi iommu node
+Date: Wed, 10 Oct 2018 17:22:56 +0530
+Message-Id: <1539172376-19269-4-git-send-email-govinds@codeaurora.org>
+In-Reply-To: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
+References: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +17,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, ath10k@lists.infradead.org, Skorpy <skorpy@darmstadt.ccc.de>
+To: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, linux-soc@vger.kernel.org
+Cc: Govind Singh <govinds@codeaurora.org>
 
-Q2hyaXN0aWFuIExhbXBhcnRlciA8Y2h1bmtlZXlAZ21haWwuY29tPiB3cml0ZXM6Cgo+IE9uIE1v
-bmRheSwgT2N0b2JlciA4LCAyMDE4IDM6MDQ6NTYgUE0gQ0VTVCBLYWxsZSBWYWxvIHdyb3RlOgo+
-PiBDaHJpc3RpYW4gTGFtcGFydGVyIDxjaHVua2VleUBnbWFpbC5jb20+IHdyaXRlczoKPj4gCj4+
-ID4gSGVsbG8sCj4+ID4KPj4gPiBPbiBGcmlkYXksIFNlcHRlbWJlciAyOCwgMjAxOCA5OjI4OjQ0
-IFBNIENFU1QgSGF1a2UgTWVocnRlbnMgd3JvdGU6Cj4+ID4+IHRoZSBhdGgxMGstZmlybXdhcmUg
-cmVwb3NpdG9yeSBhbHJlYWR5IGNvbnRhaW5zIHVwZGF0ZWQgYm9hcmQtMi5iaW4KPj4gPj4gZmls
-ZXMgd2l0aCBzdXBwb3J0IGZvciBtb3JlIGRldmljZXMuIFBsZWFzZSBhbHNvIHVwZGF0ZSB0aGUg
-Ym9hcmQtMi5iaW4KPj4gPj4gZmlsZXMgc2hpcHBlZCBpbiB0aGUgbGludXgtZmlybXdhcmUgcmVw
-b3NpdG9yeSBhcyB0aGV5IGFyZSBub3JtYWxseQo+PiA+PiB0YWtlbiBieSBkaXN0cmlidXRpb25z
-Lgo+PiA+Cj4+ID4gQXQgdGhpcyBvcHBvcnR1bml0eSwgSSB3b3VsZCBraW5kbHkgbGlrZSB0byBy
-ZW1pbmQgdGhlIG1haW50YWluZXIgdGhhdCB0aGVyZQo+PiA+IGFyZSBjdXJyZW50bHkgbW9yZSBw
-ZW5kaW5nIGJvYXJkZmlsZXMuIEl0IHdvdWxkIGJlIGdyZWF0IGlmIHRoZXkgYWxsIGNvdWxkIGJl
-Cj4+ID4gaW5jbHVkZWQgaW4gdGhlIG5leHQgdXBkYXRlIGFzIHdlbGw6Cj4+ID4KPj4gPiBwZW5k
-aW5nCj4+ID4gPT09PT09PQo+PiA+Cj4+ID4gICogTmV0Z2VhciBXQUM1MTAKPj4gPiAgLSBodHRw
-czovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzA5
-MTg2Lmh0bWwgKElQUTQwMTkpCj4+ID4KPj4gPiAgKiBOZXRnZWFyIE9yYmkgUFJPIFNSSzYwCj4+
-ID4gIC0gaHR0cHM6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9hdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tc2cwOTA3OC5odG1sIChJUFE0MDE5KSAKPj4gPiAgLSBodHRwczovL3d3dy5tYWlsLWFy
-Y2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzA5MDc5Lmh0bWwgKFFDQTk5
-ODQpCj4+ID4KPj4gPiAgKiBaeVhFTCBXUkU2NjA2Ogo+PiA+ICAtIGh0dHBzOi8vd3d3Lm1haWwt
-YXJjaGl2ZS5jb20vYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcvbXNnMDg3NzYuaHRtbCAoSVBR
-NDAxOSkKPj4gPgo+PiA+ICAqIFp5WEVMIE5CRzY2MTc6Cj4+ID4gIC0gaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE4LU1heS8wMTEzNzcuaHRtbCAoSVBRNDAx
-OSkKPj4gPgo+PiA+IEFuZCB0aGVyZSBpcyBhbiB1cGRhdGUgZm9yIHRoZSBBU1VTJyBSVC1BQzU4
-VQo+PiA+ICAtIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAx
-OC1KYW51YXJ5LzAxMDc3MC5odG1sIChJUFE0MDE5KQo+PiAKPj4gVGhhbmtzIGZvciB0aGUgbGlz
-dCwgdGhpcyB3YXMgaGVscGZ1bC4gSSBzaG91bGQgaGF2ZSBub3cgYWRkZWQgYWxsIG9mCj4+IHRo
-ZXNlLCBidXQgdGhlIGV4Y2VwdGlvbiBaeVhFTCBXUkU2NjA2IGZvciB3aGljaCBJIGNvdWxkbid0
-IGZpbmQgdGhlCj4+IGFjdHVhbCBib2FyZCBmaWxlcy4KPiBZb3UgYXJlIHJpZ2h0LiBUaGUgdHdv
-IFp5WEVMIFdSRTY2MDYgYm9hcmQuYmluIGZpbGVzIHdlcmUgYXR0YWNoZWQgdG8KPiBmaXJzdCBw
-b3N0IGluIHRoZSAiQWRkIFp5WEVMIFdSRTY2MDYgc3BlY2lmaWMgQkRGcyIgdGhyZWFkOgo+IDxo
-dHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21z
-ZzA4NzQxLmh0bWw+CgpBaCwgSSBtaXNzZWQgdGhhdC4KCj4gQnV0IHNhZGx5IG5vdCB0byB0aGUg
-cmVzcG9uc2UgYnkgTWFnbnVzIEZyw7xobGluZyB0aGF0IEkgbGlua2VkIHRvLgo+IEhvdyBkbyB5
-b3Ugd2FudCB0byBoYW5kbGUgdGhpcz8gQ2FuIHlvdSB0YWtlIHRoZSBib2FyZCBiaW5zIGZyb206
-Cj4gPGh0dHBzOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcvbXNnMDg3NDEuaHRtbD4KClllYWgsIEkgY2FuIHRha2UgaXQgZnJvbSB0aGUgZmlyc3QgbWFp
-bC4gVGhhbmtzIGFnYWluIGZvciB0aGUgaGVscCwgdmVyeQptdWNoIGFwcHJlY2lhdGVkLgoKLS0g
-CkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+WCN3990 wifi module can optionally make use of the IOMMU.
+Add binding documentation for phandle to the IOMMU and
+the stream id of wifi iommu block.
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index f831bb1..3118d99 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -65,6 +65,10 @@ Optional properties:
+ - <supply-name>-supply: handle to the regulator device tree node
+ 			   optional "supply-name" are "vdd-0.8-cx-mx",
+ 			   "vdd-1.8-xo", "vdd-1.3-rfa" and "vdd-3.3-ch0".
++- iommus:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: A list of phandle and IOMMU specifier pairs.
+ 
+ Example (to supply the calibration data alone):
+ 
+@@ -163,4 +167,5 @@ wifi@18000000 {
+ 		vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+ 		vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+ 		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
++		iommus = <&apps_smmu 0x0040 0x1>;
+ };
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
