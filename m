@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAD3O-0000cN-Cr
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:53:27 +0000
+ id 1gAD3O-0000dK-El
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:53:30 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3 0/3] Enable ath10k wcn3990 wifi driver support on sdm845
-Date: Wed, 10 Oct 2018 17:22:53 +0530
-Message-Id: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH v3 2/3] dts: arm64/sdm845: Add WCN3990 WLAN module device node
+Date: Wed, 10 Oct 2018 17:22:55 +0530
+Message-Id: <1539172376-19269-3-git-send-email-govinds@codeaurora.org>
+In-Reply-To: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
+References: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +25,77 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, linux-soc@vger.kernel.org
 Cc: Govind Singh <govinds@codeaurora.org>
 
-This series enables ath10k wifi driver support for WCN3990 target
-on sdm845 SOC. This series also updates the missing dt binding documentation
-and adds optional iommu property.
+Add device node for the ath10k SNOC platform driver probe
+and add resources required for WCN3990 on SDM845 soc.
 
-Changes since v2:
-    dropped [v2,4/4] dts: arm64/sdm845: Enable iommu for WCN3990 wifi module
-    device node patch from the series as dependent patch is not yet merged.
-    Enabled status flag from sdm845-mtp.dts.
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts |  8 ++++++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi    | 26 ++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-Changes since v1:
-    Listed no of interrupts/clocks for each set of compatible.
-    Added missing 'wifi' label to sdm845.dtsi.
-
-Govind Singh (3):
-  dt: bindings: add missing dt properties for WCN3990 wifi node
-  dts: arm64/sdm845: Add WCN3990 WLAN module device node
-  dt: bindings: add bindings for wifi iommu node
-
- .../bindings/net/wireless/qcom,ath10k.txt          | 33 +++++++++++++++++-----
- arch/arm64/boot/dts/qcom/sdm845-mtp.dts            |  8 ++++++
- arch/arm64/boot/dts/qcom/sdm845.dtsi               | 26 +++++++++++++++++
- 3 files changed, 60 insertions(+), 7 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+index eedfaf8..b89b8dd 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+@@ -417,6 +417,14 @@
+ 	vdda-pll-supply = <&vdda_usb2_ss_core>;
+ };
+ 
++&wifi {
++	status = "okay";
++	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
++	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
++	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
++	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
++};
++
+ /* PINCTRL - additions to nodes defined in sdm845.dtsi */
+ 
+ &qup_i2c10_default {
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index b72bdb0..a09f7df 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -87,6 +87,11 @@
+ 			reg = <0 0x86200000 0 0x2d00000>;
+ 			no-map;
+ 		};
++
++		wlan_msa_mem: reserved-memory@96700000 {
++			no-map;
++			reg = <0 0x96700000 0 0x100000>;
++		};
+ 	};
+ 
+ 	cpus {
+@@ -1403,5 +1408,26 @@
+ 				status = "disabled";
+ 			};
+ 		};
++
++		wifi: wifi@18800000 {
++			compatible = "qcom,wcn3990-wifi";
++			status = "disabled";
++			reg = <0x18800000 0x800000>;
++			reg-names = "membase";
++			memory-region = <&wlan_msa_mem>;
++			interrupts =
++				<0 413 0 /* CE0 */ >,
++				<0 414 0 /* CE1 */ >,
++				<0 415 0 /* CE2 */ >,
++				<0 416 0 /* CE3 */ >,
++				<0 417 0 /* CE4 */ >,
++				<0 418 0 /* CE5 */ >,
++				<0 420 0 /* CE6 */ >,
++				<0 421 0 /* CE7 */ >,
++				<0 422 0 /* CE8 */ >,
++				<0 423 0 /* CE9 */ >,
++				<0 424 0 /* CE10 */ >,
++				<0 425 0 /* CE11 */ >;
++		};
+ 	};
+ };
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
