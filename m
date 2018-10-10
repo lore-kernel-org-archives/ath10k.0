@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAEGh-0001fG-80
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 13:11:16 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PULL] ath10k firmware 2018-10-10
-Date: Wed, 10 Oct 2018 16:10:59 +0300
-Message-ID: <87ftxevtek.fsf@codeaurora.org>
+ id 1gAGMX-00073j-S1
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 15:25:30 +0000
+Received: by mail-qt1-x834.google.com with SMTP id d8-v6so6069685qtk.13
+ for <ath10k@lists.infradead.org>; Wed, 10 Oct 2018 08:25:14 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: ath10k: tpc_stats(_final) odd twicepowers and 160Mhz not supported
+Date: Wed, 10 Oct 2018 17:25:09 +0200
+Message-ID: <2105594.XRlnIHHpuj@bentobox>
+In-Reply-To: <1555379.7kbm3L4fcB@bentobox>
+References: <2557834.d2DaqBHz1S@bentobox> <5396695.eZ3m4tuIpz@bentobox>
+ <1555379.7kbm3L4fcB@bentobox>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,63 +21,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5145411594941851806=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-firmware@kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: ath10k@lists.infradead.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-Hi linux-firmware maintainers,
+--===============5145411594941851806==
+Content-Type: multipart/signed; boundary="nextPart384799160.oLZQJtMuyW"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-here are ath10k firmware updates which have been accumulating the last 6
-months or so. Please let me know if there are any problems.
+--nextPart384799160.oLZQJtMuyW
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Kalle
+On Donnerstag, 26. Juli 2018 15:03:54 CEST Sven Eckelmann wrote:
+> On Dienstag, 10. Juli 2018 08:52:35 CEST Sven Eckelmann wrote:
+> > On Donnerstag, 28. Juni 2018 12:05:18 CEST Sven Eckelmann wrote:
+> > > Hi,
+> > > 
+> > > I have some small question regarding the debugging functionality introduced by 
+> > > commit bc64d05220f3 ("ath10k: debugfs support to get final TPC stats for 10.4 
+> > > variants") [1] and commit 295426669cd6 ("ath10k: implement debugfs interface 
+> > > for Transmit Power Control stats") [2]. Goal of this is to find out whether 
+> > > the VHT160 MHz CTLs are correctly applied.
+> > [...]
+> > 
+> > ping?
+> 
+> ping?
 
-The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
+Ping? I think we can already declaring you MIA.
 
-  Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
+Kind regards,
+	Sven
+--nextPart384799160.oLZQJtMuyW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-are available in the git repository at:
+-----BEGIN PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20181010
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlu+GdUACgkQXYcKB8Em
+e0YSpQ//YM8r26/xPFiCBtNMGu5uxsopt9lHX+gdpjvrJFmmNw1WKsduVxSBNZo+
+lSw8dB0riJCRvpDFq9IL+Bh0oFc9bpCXeLdjZMfFT4qv6R72ZLHWZgMOBG6PMwzl
+ymBLtKh8eLA2NcORhEHNDJ88H8t27Ubg6c0VfMkMFviFtqqS4hhA701toXbLN3/U
++m4U/NLcKiU0iHxEMA/JRmhIoDMB0IP4IwGDCmTSMfIVdmfywdAz6VCjvIl4X3pC
+olY9r4x1bEK+ra3KmKyNnRgXPHz547jKlijLkNOF0ipNoRgHR2KuMBNmc/3BZgXl
+EiEz/hQL3cMh/Inshb0O6Z2GIMBi4vhiLOLHvOpGTuDtXEwmt9rPOwZ1erMnIjnH
+KfATfQ0jLl++EGURQg+SwzqbM/maMxlKzSl6Db56KGVV/3MO+LujdFBY7Uu6EUca
+Si3M7VxsN3hWMAjB7zOg1zpOe+nN5EIOKs80X9KzvuXsT0VM6CTUPvm5t75aUNSb
+i7SzMDuEtM+Xb2cA5baEEmRox4vD8+k8R7V9jlSRqhqNX3jvXxeaE4WUdB6tfu4e
+N9RB8U6fbqLJyCqp5ivCZUTNzPrakFj8+6FCxF2z4Az2lKXfA/kPTzxeBRZy5MTd
+2vxzTigmrPxluLb+lgmeSUYVe0f2s+fjjIePwR/bZuKDslHWRm8=
+=gTam
+-----END PGP SIGNATURE-----
 
-for you to fetch changes up to eaceb79a5a27ef37f85d1a5585b209361330b4bb:
+--nextPart384799160.oLZQJtMuyW--
 
-  ath10k: QCA9984 hw1.0: update board-2.bin (2018-10-10 15:14:05 +0300)
 
-----------------------------------------------------------------
-Kalle Valo (10):
-      ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.6-00140
-      ath10k: QCA4019 hw1.0: update board-2.bin
-      ath10k: QCA6174 hw3.0: update firmware-6.bin to RM.4.4.1.c2-00057-QCARMSWP-1
-      ath10k: QCA9377 hw1.0: add firmware-6.bin to WLAN.TF.2.1-00021-QCARMSWP-1
-      ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00041
-      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.6-00140
-      ath10k: QCA9888 hw2.0: update board-2.bin
-      ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00041
-      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.6.0.1-00003
-      ath10k: QCA9984 hw1.0: update board-2.bin
 
- WHENCE                                            |   15 +-
- ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 133452 -> 449316 bytes
- ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 568636 -> 583344 bytes
- ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 730788 -> 731276 bytes
- ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt |  502 +-------
- ath10k/QCA9377/hw1.0/firmware-6.bin               |  Bin 0 -> 751436 bytes
- ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt | 1352 +++++++++++++++++++++
- ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 237584 -> 237660 bytes
- ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 72788 -> 84928 bytes
- ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 659708 -> 675492 bytes
- ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248108 -> 248200 bytes
- ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 121264 -> 171916 bytes
- ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 647380 -> 662084 bytes
- 13 files changed, 1423 insertions(+), 446 deletions(-)
- create mode 100644 ath10k/QCA9377/hw1.0/firmware-6.bin
- create mode 100644 ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt
+--===============5145411594941851806==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5145411594941851806==--
