@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gA3IA-00023P-Cj
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 01:28:04 +0000
-Received: by mail-pf1-x444.google.com with SMTP id k19-v6so1765365pfi.1
- for <ath10k@lists.infradead.org>; Tue, 09 Oct 2018 18:27:51 -0700 (PDT)
-Date: Tue, 9 Oct 2018 18:27:47 -0700
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH] ath10k: allocate small size dma memory in
- ath10k_pci_diag_write_mem
-Message-ID: <20181010012745.GA31172@ban.mtv.corp.google.com>
-References: <1538992182-3717-1-git-send-email-cjhuang@codeaurora.org>
+ id 1gAC4K-0001T7-AQ
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 10:50:21 +0000
+Date: Wed, 10 Oct 2018 13:49:59 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ath10k: add support for configuring management packet
+ rate
+Message-ID: <20181010104959.GA16248@mwanda>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1538992182-3717-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,118 +22,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: srirrama@codeaurora.org
+Cc: ath10k@lists.infradead.org
 
-Hi Carl,
+Hello Sriram R,
 
-On Mon, Oct 08, 2018 at 05:49:42PM +0800, Carl Huang wrote:
-> ath10k_pci_diag_write_mem may allocate big size of the dma memory
-> based on the parameter nbytes. Take firmware diag download as
-> example, the biggest size is about 500K. In some systems, the
-> allocation is likely to fail because it can't acquire such a large
-> contiguous dma memory.
-> 
-> The fix is to allocate a small size dma memory. In the loop,
-> driver copies the data to the allocated dma memory and writes to
-> the destination until all the data is written.
-> 
-> Tested with QCA6174 PCI with
-> firmware-6.bin_WLAN.RM.4.4.1-00119-QCARMSWP-1, this also affects
-> QCA9377 PCI.
-> 
-> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+The patch f279294e9ee2: "ath10k: add support for configuring
+management packet rate" from Sep 10, 2018, leads to the following
+static checker warning:
 
-Thanks for the patch! With one small comment, I think this otherwise
-looks good, so feel free to add my:
+	drivers/net/wireless/ath/ath10k/mac.c:168 ath10k_mac_get_rate_hw_value()
+	error: buffer overflow 'ath10k_rates' 12 <= 143
 
-Reviewed-by: Brian Norris <briannorris@chomium.org>
+drivers/net/wireless/ath/ath10k/mac.c
+   159  static int ath10k_mac_get_rate_hw_value(int bitrate)
+   160  {
+   161          int i;
+   162          u8 hw_value_prefix = 0;
+   163  
+   164          if (ath10k_mac_bitrate_is_cck(bitrate))
+   165                  hw_value_prefix = WMI_RATE_PREAMBLE_CCK << 6;
+   166  
+   167          for (i = 0; i < sizeof(ath10k_rates); i++) {
+                                ^^^^^^^^^^^^^^^^^^^^
+Should be ARRAY_SIZE() instead of sizeof().
 
-> ---
->  drivers/net/wireless/ath/ath10k/pci.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-> index 873dbb6..1872671 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -1071,7 +1071,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
->  	struct ath10k_ce *ce = ath10k_ce_priv(ar);
->  	int ret = 0;
->  	u32 *buf;
-> -	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
-> +	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
->  	struct ath10k_ce_pipe *ce_diag;
->  	void *data_buf = NULL;
->  	u32 ce_data;	/* Host buffer address in CE space */
+   168                  if (ath10k_rates[i].bitrate == bitrate)
+   169                          return hw_value_prefix | ath10k_rates[i].hw_value;
+   170          }
+   171  
+   172          return -EINVAL;
+   173  }
+   174  
 
-^^ I don't think this is needed any more.
-
-> @@ -1088,9 +1088,10 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
->  	 *   1) 4-byte alignment
->  	 *   2) Buffer in DMA-able space
->  	 */
-> -	orig_nbytes = nbytes;
-> +	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
-> +
->  	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
-> -						       orig_nbytes,
-> +						       alloc_nbytes,
->  						       &ce_data_base,
->  						       GFP_ATOMIC);
->  	if (!data_buf) {
-> @@ -1098,9 +1099,6 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
->  		goto done;
->  	}
->  
-> -	/* Copy caller's data to allocated DMA buf */
-> -	memcpy(data_buf, data, orig_nbytes);
-> -
->  	/*
->  	 * The address supplied by the caller is in the
->  	 * Target CPU virtual address space.
-> @@ -1113,12 +1111,15 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
->  	 */
->  	address = ath10k_pci_targ_cpu_to_ce_addr(ar, address);
->  
-> -	remaining_bytes = orig_nbytes;
-> +	remaining_bytes = nbytes;
->  	ce_data = ce_data_base;
-
-Because you no longer need to increment 'ce_data', you can just pass
-'ce_data_base' to ath10k_ce_send_nolock() now.
-
-Regards,
-Brian
-
->  	while (remaining_bytes) {
->  		/* FIXME: check cast */
->  		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
->  
-> +		/* Copy caller's data to allocated DMA buf */
-> +		memcpy(data_buf, data, nbytes);
-> +
->  		/* Set up to receive directly into Target(!) address */
->  		ret = ce_diag->ops->ce_rx_post_buf(ce_diag, &address, address);
->  		if (ret != 0)
-> @@ -1171,12 +1172,12 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
->  
->  		remaining_bytes -= nbytes;
->  		address += nbytes;
-> -		ce_data += nbytes;
-> +		data += nbytes;
->  	}
->  
->  done:
->  	if (data_buf) {
-> -		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
-> +		dma_free_coherent(ar->dev, alloc_nbytes, data_buf,
->  				  ce_data_base);
->  	}
->  
-> -- 
-> 2.7.4
-> 
+regards,
+dan carpenter
 
 _______________________________________________
 ath10k mailing list
