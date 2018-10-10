@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAD3O-0000cZ-D1
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:53:30 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3 1/3] dt: bindings: add missing dt properties for WCN3990
- wifi node
-Date: Wed, 10 Oct 2018 17:22:54 +0530
-Message-Id: <1539172376-19269-2-git-send-email-govinds@codeaurora.org>
-In-Reply-To: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
-References: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
+ id 1gADH0-0006jR-QW
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 12:07:32 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ZyXEL WRE6606 specific BDFs
+References: <ab6baeb5-3f07-78a0-e62e-4b4154b8c82d@darmstadt.ccc.de>
+ <f3c6b7e4-4e02-e341-03b0-e5fe4b7c4b8d@darmstadt.ccc.de>
+ <87a7noehmt.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 10 Oct 2018 15:07:16 +0300
+In-Reply-To: <87a7noehmt.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Mon, 08 Oct 2018 15:40:26 +0300")
+Message-ID: <87lg76vwcr.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,87 +21,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, robh+dt@kernel.org, andy.gross@linaro.org, linux-soc@vger.kernel.org
-Cc: Govind Singh <govinds@codeaurora.org>
+To: Skorpy <skorpy@darmstadt.ccc.de>
+Cc: ath10k@lists.infradead.org
 
-Add missing optional properties in WCN3990 wifi node.
-
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- .../bindings/net/wireless/qcom,ath10k.txt          | 28 ++++++++++++++++------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 7fd4e8c..f831bb1 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -37,12 +37,20 @@ Optional properties:
- - clocks: List of clock specifiers, must contain an entry for each required
-           entry in clock-names.
- - clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
--               "wifi_wcss_rtc".
--- interrupts: List of interrupt lines. Must contain an entry
--	      for each entry in the interrupt-names property.
-+	       "wifi_wcss_rtc" for "qcom,ipq4019-wifi" compatible target and
-+	       "cxo_ref_clk_pin", "smmu_aggre2_noc_clk" for "qcom,wcn3990-wifi"
-+	       compatible target.
-+- interrupts: reference to the list of 17 interrupt no's for "qcom,ipq4019-wifi"
-+	      compatible target.
-+	      reference to the list of 12 interrupt no's for "qcom,wcn3990-wifi"
-+	      compatible target.
-+	      Must contain interrupt-names property per entry for
-+	      "qcom,ath10k", "qcom,ipq4019-wifi" compatible targets.
-+
- - interrupt-names: Must include the entries for MSI interrupt
- 		   names ("msi0" to "msi15") and legacy interrupt
--		   name ("legacy"),
-+		   name ("legacy") for "qcom,ath10k", "qcom,ipq4019-wifi"
-+		   compatible targets.
- - qcom,msi_addr: MSI interrupt address.
- - qcom,msi_base: Base value to add before writing MSI data into
- 		MSI address register.
-@@ -55,7 +63,8 @@ Optional properties:
- - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
- 				     the length can vary between hw versions.
- - <supply-name>-supply: handle to the regulator device tree node
--			   optional "supply-name" is "vdd-0.8-cx-mx".
-+			   optional "supply-name" are "vdd-0.8-cx-mx",
-+			   "vdd-1.8-xo", "vdd-1.3-rfa" and "vdd-3.3-ch0".
- 
- Example (to supply the calibration data alone):
- 
-@@ -133,8 +142,10 @@ wifi@18000000 {
- 		compatible = "qcom,wcn3990-wifi";
- 		reg = <0x18800000 0x800000>;
- 		reg-names = "membase";
--		clocks = <&clock_gcc clk_aggre2_noc_clk>;
--		clock-names = "smmu_aggre2_noc_clk"
-+		clocks = <&clock_gcc clk_aggre2_noc_clk>,
-+			 <&clock_gcc clk_rf_clk2_pin>;
-+		clock-names = "smmu_aggre2_noc_clk",
-+			      "cxo_ref_clk_pin";
- 		interrupts =
- 			   <0 130 0 /* CE0 */ >,
- 			   <0 131 0 /* CE1 */ >,
-@@ -149,4 +160,7 @@ wifi@18000000 {
- 			   <0 140 0 /* CE10 */ >,
- 			   <0 141 0 /* CE11 */ >;
- 		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-+		vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
-+		vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
-+		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
- };
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+S2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKCj4gU2tvcnB5IDxza29y
+cHlAZGFybXN0YWR0LmNjYy5kZT4gd3JpdGVzOgo+Cj4+IFRoaXMgaXMgYSBzZXQgb2YgYm9hcmQu
+YmluIGZpbGVzIGZvciB0aGUgWnlYRUwgV1JFNjYwNiBSb3V0ZXIgWzBdLAo+PiB3aGljaCBJIHdp
+c2ggdG8gYmUgYWRkZWQgdG8gdGhlIGF0aDEway1maXJtd2FyZSByZXBvc2l0b3J5Lgo+Pgo+Pgo+
+PiBBcyBwZXIgdGhlIGN1cnJlbnQgIlN1Ym1pdHRpbmcgYm9hcmQgZmlsZXMiIGd1aWRlbGluZXMg
+WzFdOgo+Pgo+PiAqIGRlc2NyaXB0aW9uIGZvciB3aGF0IGhhcmR3YXJlIHRoaXMgaXM6Cj4+Cj4+
+ICAgIC0gaXQgaXMgYSBJUFE0MDE4IGJhc2VkIGJvYXJkIFswXQo+PiAgICAtIG9uZSBRQ0E0MHh4
+IHJhZGlvIGlzIHVzZWQgYXMgMi40R0h6IHJhZGlvCj4+ICAgIC0gb25lIFFDQTQweHggcmFkaW8g
+aXMgdXNlZCBhcyA1R0h6IHJhZGlvCj4+Cj4+ICogb3JpZ2luIG9mIHRoZSBib2FyZCBmaWxlIChk
+aWQgeW91IGNyZWF0ZSBpdCB5b3Vyc2VsZiBvciB3aGVyZSB5b3UKPj4gICAgZG93bmxvYWRlZCkK
+Pj4KPj4gICAgLSBBbGwgZmlsZXMgd2VyZSBleHRyYWN0ZWQgZnJvbSBvZmZpY2lhbCB2ZW5kb3Ig
+ZmlybXdhcmUgd2hpY2ggd2FzIG9uCj4+IHRoZSBkZXZpY2UgZnJvbSB0aGUgZmFjdG9yeQo+PiAg
+ICAtIEJvYXJkZmlsZXMgYWxzbyBpbmNsdWRlZCBpbiB0aGUgdmVuZG9yIGZpcm13YXJlIGltYWdl
+IG9mIHRoZSBOQkc2NjE3Cj4+Cj4+ICogaWRzIHRvIGJlIHVzZWQgd2l0aCB0aGUgYm9hcmQgZmls
+ZSAoQVRIMTBLX0JEX0lFX0JPQVJEX05BTUUgaW4gYXRoMTBrKQo+PiAgICAtIHFjYTQwMTkgaHcx
+LjAKPj4gICAgICArIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MjQsdmFyaWFu
+dD1aeVhFTC1XUkU2NjA2Cj4+Cj4+ICAgICAgKyBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJv
+YXJkLWlkPTI1LHZhcmlhbnQ9WnlYRUwtV1JFNjYwNgo+Pgo+PiAqIHNoYTI1NnN1bSBvZiBlYWNo
+IG5ldyBib2FyZCBmaWxlIHRvIGFkZAo+PiAgICAgLSBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1p
+LWJvYXJkLWlkPTI0LHZhcmlhbnQ9WnlYRUwtV1JFNjYwNgo+PiAgICAgICBoYXMgc2hhMjU2c3Vt
+Ogo+PiAxYWVhZTQ5ODEyMTdiNjM4ODNlMjBlY2JhYjYzODBhZmY0MDQ5ODU0ODViZjFlODgxZmIw
+ZmM4NzRmMmEwODgzCj4+Cj4+ICAgICAtIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQt
+aWQ9MjUsdmFyaWFudD1aeVhFTC1XUkU2NjA2Cj4+ICAgICAgIGhhcyBzaGEyNTZzdW06Cj4+IDQ2
+OWU4MWZkMjU5M2NiYTQ0MmMwZDgxMGNlOTIzMDliYjkyZWFhNDJiYmRkYmJiZjRlYzA1MWZhYmQz
+NDVlY2YKPj4KPj4gKiBhdHRhY2ggdGhlIGFjdHVhbCBib2FyZCBmaWxlIChib2FyZC5iaW4pCj4+
+Cj4+ICAgIC0gVGhlIG5hbWUgb2YgdGhlIGZpbGVzIGFyZSBlcXVhbCB0byB0aGUgaWQgc3RyaW5n
+IGluIHRoZSBib2FyZC0yLmJpbgo+PiAgICAgIChtaW51cyB0aGUgIi5iaW4iKQo+Pgo+PiBLaW5k
+IHJlZ2FyZHMsCj4+IE1hZ251cyBGcsO8aGxpbmcKPj4KPj4gWzBdIDxodHRwczovL3dpa2lkZXZp
+LmNvbS93aWtpL1p5WEVMX1dSRTY2MDY+Cj4+Cj4+IFsxXSA8aHR0cHM6Ly93aXJlbGVzcy53aWtp
+Lmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVycy9hdGgxMGsvYm9hcmRmaWxlcz4KPgo+IEkgZG9u
+J3Qgc2VlIGFueSBib2FyZCBmaWxlcywgZGlkIHlvdSBmb3JnZXQgdG8gYXR0YWNoIHRoZW0gb3Ig
+aXMgaXQgYQo+IHByb2JsZW0gb24gbXkgZW5kPwoKQ2hyaXN0aWFuIHBvaW50ZWQgb3V0IGluIGFu
+b3RoZXIgdGhyZWFkIHRoYXQgdGhlIGJpbmFyaWVzIHdlcmUgYXR0YWNoZWQKaW4gdGhlIGZpcnN0
+IGVtYWlsIHNvIEkgdG9vayB0aGVtIGZyb20gdGhlcmUuIEFkZGVkIG5vdywgcGxlYXNlIGRvdWJs
+ZQpjaGVjayBteSBjaGFuZ2VzOgoKaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJt
+d2FyZS9jb21taXQvZDM2NmI4MGQ0MTMwOTUzMWMwYzk4YjI2NjI1ZjIzZTMxOGYzM2UzMQoKLS0g
+CkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
