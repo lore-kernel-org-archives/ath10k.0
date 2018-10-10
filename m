@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAClQ-00082O-4Y
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:34:53 +0000
-From: Carl Huang <cjhuang@codeaurora.org>
-Subject: [PATCH V2] ath10k: allocate small size dma memory in
- ath10k_pci_diag_write_mem
-Date: Wed, 10 Oct 2018 19:34:29 +0800
-Message-Id: <1539171269-23944-1-git-send-email-cjhuang@codeaurora.org>
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAD0y-0004q1-R6
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 11:50:57 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: Update board-2.bin files in linux-firmware
+References: <9f53fa8a-89cf-2736-7832-5e4707e25c75@hauke-m.de>
+ <2297652.AArlnWO5DQ@debian64>
+ <87sh1gd1xj.fsf@kamboji.qca.qualcomm.com>
+ <2515195.qVqrclqyAa@debian64>
+Date: Wed, 10 Oct 2018 14:50:38 +0300
+In-Reply-To: <2515195.qVqrclqyAa@debian64> (Christian Lamparter's message of
+ "Tue, 09 Oct 2018 19:30:18 +0200")
+Message-ID: <87sh1evx4h.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,122 +22,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, Robert Marko <robimarko@gmail.com>, ath10k@lists.infradead.org, Skorpy <skorpy@darmstadt.ccc.de>
 
-ath10k_pci_diag_write_mem may allocate big size of the dma memory
-based on the parameter nbytes. Take firmware diag download as
-example, the biggest size is about 500K. In some systems, the
-allocation is likely to fail because it can't acquire such a large
-contiguous dma memory.
-
-The fix is to allocate a small size dma memory. In the loop,
-driver copies the data to the allocated dma memory and writes to
-the destination until all the data is written.
-
-Tested with QCA6174 PCI with
-firmware-6.bin_WLAN.RM.4.4.1-00119-QCARMSWP-1, this also affects
-QCA9377 PCI.
-
-Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-Reviewed-by: Brian Norris <briannorris@chomium.org>
----
-V2:
-  *addressed Brian's comment. Removed ce_data variable.
-
- drivers/net/wireless/ath/ath10k/pci.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 873dbb6..a269077 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1071,10 +1071,9 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
- 	int ret = 0;
- 	u32 *buf;
--	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
-+	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
- 	struct ath10k_ce_pipe *ce_diag;
- 	void *data_buf = NULL;
--	u32 ce_data;	/* Host buffer address in CE space */
- 	dma_addr_t ce_data_base = 0;
- 	int i;
- 
-@@ -1088,9 +1087,10 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	 *   1) 4-byte alignment
- 	 *   2) Buffer in DMA-able space
- 	 */
--	orig_nbytes = nbytes;
-+	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
-+
- 	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
--						       orig_nbytes,
-+						       alloc_nbytes,
- 						       &ce_data_base,
- 						       GFP_ATOMIC);
- 	if (!data_buf) {
-@@ -1098,9 +1098,6 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 		goto done;
- 	}
- 
--	/* Copy caller's data to allocated DMA buf */
--	memcpy(data_buf, data, orig_nbytes);
--
- 	/*
- 	 * The address supplied by the caller is in the
- 	 * Target CPU virtual address space.
-@@ -1113,12 +1110,14 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	 */
- 	address = ath10k_pci_targ_cpu_to_ce_addr(ar, address);
- 
--	remaining_bytes = orig_nbytes;
--	ce_data = ce_data_base;
-+	remaining_bytes = nbytes;
- 	while (remaining_bytes) {
- 		/* FIXME: check cast */
- 		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
- 
-+		/* Copy caller's data to allocated DMA buf */
-+		memcpy(data_buf, data, nbytes);
-+
- 		/* Set up to receive directly into Target(!) address */
- 		ret = ce_diag->ops->ce_rx_post_buf(ce_diag, &address, address);
- 		if (ret != 0)
-@@ -1128,7 +1127,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 		 * Request CE to send caller-supplied data that
- 		 * was copied to bounce buffer to Target(!) address.
- 		 */
--		ret = ath10k_ce_send_nolock(ce_diag, NULL, (u32)ce_data,
-+		ret = ath10k_ce_send_nolock(ce_diag, NULL, (u32)ce_data_base,
- 					    nbytes, 0, 0);
- 		if (ret != 0)
- 			goto done;
-@@ -1171,12 +1170,12 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 
- 		remaining_bytes -= nbytes;
- 		address += nbytes;
--		ce_data += nbytes;
-+		data += nbytes;
- 	}
- 
- done:
- 	if (data_buf) {
--		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
-+		dma_free_coherent(ar->dev, alloc_nbytes, data_buf,
- 				  ce_data_base);
- 	}
- 
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Q2hyaXN0aWFuIExhbXBhcnRlciA8Y2h1bmtlZXlAZ21haWwuY29tPiB3cml0ZXM6Cgo+IE9uIE1v
+bmRheSwgT2N0b2JlciA4LCAyMDE4IDM6MDQ6NTYgUE0gQ0VTVCBLYWxsZSBWYWxvIHdyb3RlOgo+
+PiBDaHJpc3RpYW4gTGFtcGFydGVyIDxjaHVua2VleUBnbWFpbC5jb20+IHdyaXRlczoKPj4gCj4+
+ID4gSGVsbG8sCj4+ID4KPj4gPiBPbiBGcmlkYXksIFNlcHRlbWJlciAyOCwgMjAxOCA5OjI4OjQ0
+IFBNIENFU1QgSGF1a2UgTWVocnRlbnMgd3JvdGU6Cj4+ID4+IHRoZSBhdGgxMGstZmlybXdhcmUg
+cmVwb3NpdG9yeSBhbHJlYWR5IGNvbnRhaW5zIHVwZGF0ZWQgYm9hcmQtMi5iaW4KPj4gPj4gZmls
+ZXMgd2l0aCBzdXBwb3J0IGZvciBtb3JlIGRldmljZXMuIFBsZWFzZSBhbHNvIHVwZGF0ZSB0aGUg
+Ym9hcmQtMi5iaW4KPj4gPj4gZmlsZXMgc2hpcHBlZCBpbiB0aGUgbGludXgtZmlybXdhcmUgcmVw
+b3NpdG9yeSBhcyB0aGV5IGFyZSBub3JtYWxseQo+PiA+PiB0YWtlbiBieSBkaXN0cmlidXRpb25z
+Lgo+PiA+Cj4+ID4gQXQgdGhpcyBvcHBvcnR1bml0eSwgSSB3b3VsZCBraW5kbHkgbGlrZSB0byBy
+ZW1pbmQgdGhlIG1haW50YWluZXIgdGhhdCB0aGVyZQo+PiA+IGFyZSBjdXJyZW50bHkgbW9yZSBw
+ZW5kaW5nIGJvYXJkZmlsZXMuIEl0IHdvdWxkIGJlIGdyZWF0IGlmIHRoZXkgYWxsIGNvdWxkIGJl
+Cj4+ID4gaW5jbHVkZWQgaW4gdGhlIG5leHQgdXBkYXRlIGFzIHdlbGw6Cj4+ID4KPj4gPiBwZW5k
+aW5nCj4+ID4gPT09PT09PQo+PiA+Cj4+ID4gICogTmV0Z2VhciBXQUM1MTAKPj4gPiAgLSBodHRw
+czovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzA5
+MTg2Lmh0bWwgKElQUTQwMTkpCj4+ID4KPj4gPiAgKiBOZXRnZWFyIE9yYmkgUFJPIFNSSzYwCj4+
+ID4gIC0gaHR0cHM6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9hdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tc2cwOTA3OC5odG1sIChJUFE0MDE5KSAKPj4gPiAgLSBodHRwczovL3d3dy5tYWlsLWFy
+Y2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzA5MDc5Lmh0bWwgKFFDQTk5
+ODQpCj4+ID4KPj4gPiAgKiBaeVhFTCBXUkU2NjA2Ogo+PiA+ICAtIGh0dHBzOi8vd3d3Lm1haWwt
+YXJjaGl2ZS5jb20vYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcvbXNnMDg3NzYuaHRtbCAoSVBR
+NDAxOSkKPj4gPgo+PiA+ICAqIFp5WEVMIE5CRzY2MTc6Cj4+ID4gIC0gaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE4LU1heS8wMTEzNzcuaHRtbCAoSVBRNDAx
+OSkKPj4gPgo+PiA+IEFuZCB0aGVyZSBpcyBhbiB1cGRhdGUgZm9yIHRoZSBBU1VTJyBSVC1BQzU4
+VQo+PiA+ICAtIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAx
+OC1KYW51YXJ5LzAxMDc3MC5odG1sIChJUFE0MDE5KQo+PiAKPj4gVGhhbmtzIGZvciB0aGUgbGlz
+dCwgdGhpcyB3YXMgaGVscGZ1bC4gSSBzaG91bGQgaGF2ZSBub3cgYWRkZWQgYWxsIG9mCj4+IHRo
+ZXNlLCBidXQgdGhlIGV4Y2VwdGlvbiBaeVhFTCBXUkU2NjA2IGZvciB3aGljaCBJIGNvdWxkbid0
+IGZpbmQgdGhlCj4+IGFjdHVhbCBib2FyZCBmaWxlcy4KPiBZb3UgYXJlIHJpZ2h0LiBUaGUgdHdv
+IFp5WEVMIFdSRTY2MDYgYm9hcmQuYmluIGZpbGVzIHdlcmUgYXR0YWNoZWQgdG8KPiBmaXJzdCBw
+b3N0IGluIHRoZSAiQWRkIFp5WEVMIFdSRTY2MDYgc3BlY2lmaWMgQkRGcyIgdGhyZWFkOgo+IDxo
+dHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21z
+ZzA4NzQxLmh0bWw+CgpBaCwgSSBtaXNzZWQgdGhhdC4KCj4gQnV0IHNhZGx5IG5vdCB0byB0aGUg
+cmVzcG9uc2UgYnkgTWFnbnVzIEZyw7xobGluZyB0aGF0IEkgbGlua2VkIHRvLgo+IEhvdyBkbyB5
+b3Ugd2FudCB0byBoYW5kbGUgdGhpcz8gQ2FuIHlvdSB0YWtlIHRoZSBib2FyZCBiaW5zIGZyb206
+Cj4gPGh0dHBzOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcvbXNnMDg3NDEuaHRtbD4KClllYWgsIEkgY2FuIHRha2UgaXQgZnJvbSB0aGUgZmlyc3QgbWFp
+bC4gVGhhbmtzIGFnYWluIGZvciB0aGUgaGVscCwgdmVyeQptdWNoIGFwcHJlY2lhdGVkLgoKLS0g
+CkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
