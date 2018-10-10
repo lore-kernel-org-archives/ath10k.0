@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gADH0-0006jR-QW
- for ath10k@lists.infradead.org; Wed, 10 Oct 2018 12:07:32 +0000
+ id 1gAEGh-0001fG-80
+ for ath10k@lists.infradead.org; Wed, 10 Oct 2018 13:11:16 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ZyXEL WRE6606 specific BDFs
-References: <ab6baeb5-3f07-78a0-e62e-4b4154b8c82d@darmstadt.ccc.de>
- <f3c6b7e4-4e02-e341-03b0-e5fe4b7c4b8d@darmstadt.ccc.de>
- <87a7noehmt.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 10 Oct 2018 15:07:16 +0300
-In-Reply-To: <87a7noehmt.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Mon, 08 Oct 2018 15:40:26 +0300")
-Message-ID: <87lg76vwcr.fsf@codeaurora.org>
+Subject: [PULL] ath10k firmware 2018-10-10
+Date: Wed, 10 Oct 2018 16:10:59 +0300
+Message-ID: <87ftxevtek.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,49 +16,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Skorpy <skorpy@darmstadt.ccc.de>
-Cc: ath10k@lists.infradead.org
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-S2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKCj4gU2tvcnB5IDxza29y
-cHlAZGFybXN0YWR0LmNjYy5kZT4gd3JpdGVzOgo+Cj4+IFRoaXMgaXMgYSBzZXQgb2YgYm9hcmQu
-YmluIGZpbGVzIGZvciB0aGUgWnlYRUwgV1JFNjYwNiBSb3V0ZXIgWzBdLAo+PiB3aGljaCBJIHdp
-c2ggdG8gYmUgYWRkZWQgdG8gdGhlIGF0aDEway1maXJtd2FyZSByZXBvc2l0b3J5Lgo+Pgo+Pgo+
-PiBBcyBwZXIgdGhlIGN1cnJlbnQgIlN1Ym1pdHRpbmcgYm9hcmQgZmlsZXMiIGd1aWRlbGluZXMg
-WzFdOgo+Pgo+PiAqIGRlc2NyaXB0aW9uIGZvciB3aGF0IGhhcmR3YXJlIHRoaXMgaXM6Cj4+Cj4+
-ICAgIC0gaXQgaXMgYSBJUFE0MDE4IGJhc2VkIGJvYXJkIFswXQo+PiAgICAtIG9uZSBRQ0E0MHh4
-IHJhZGlvIGlzIHVzZWQgYXMgMi40R0h6IHJhZGlvCj4+ICAgIC0gb25lIFFDQTQweHggcmFkaW8g
-aXMgdXNlZCBhcyA1R0h6IHJhZGlvCj4+Cj4+ICogb3JpZ2luIG9mIHRoZSBib2FyZCBmaWxlIChk
-aWQgeW91IGNyZWF0ZSBpdCB5b3Vyc2VsZiBvciB3aGVyZSB5b3UKPj4gICAgZG93bmxvYWRlZCkK
-Pj4KPj4gICAgLSBBbGwgZmlsZXMgd2VyZSBleHRyYWN0ZWQgZnJvbSBvZmZpY2lhbCB2ZW5kb3Ig
-ZmlybXdhcmUgd2hpY2ggd2FzIG9uCj4+IHRoZSBkZXZpY2UgZnJvbSB0aGUgZmFjdG9yeQo+PiAg
-ICAtIEJvYXJkZmlsZXMgYWxzbyBpbmNsdWRlZCBpbiB0aGUgdmVuZG9yIGZpcm13YXJlIGltYWdl
-IG9mIHRoZSBOQkc2NjE3Cj4+Cj4+ICogaWRzIHRvIGJlIHVzZWQgd2l0aCB0aGUgYm9hcmQgZmls
-ZSAoQVRIMTBLX0JEX0lFX0JPQVJEX05BTUUgaW4gYXRoMTBrKQo+PiAgICAtIHFjYTQwMTkgaHcx
-LjAKPj4gICAgICArIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MjQsdmFyaWFu
-dD1aeVhFTC1XUkU2NjA2Cj4+Cj4+ICAgICAgKyBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJv
-YXJkLWlkPTI1LHZhcmlhbnQ9WnlYRUwtV1JFNjYwNgo+Pgo+PiAqIHNoYTI1NnN1bSBvZiBlYWNo
-IG5ldyBib2FyZCBmaWxlIHRvIGFkZAo+PiAgICAgLSBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1p
-LWJvYXJkLWlkPTI0LHZhcmlhbnQ9WnlYRUwtV1JFNjYwNgo+PiAgICAgICBoYXMgc2hhMjU2c3Vt
-Ogo+PiAxYWVhZTQ5ODEyMTdiNjM4ODNlMjBlY2JhYjYzODBhZmY0MDQ5ODU0ODViZjFlODgxZmIw
-ZmM4NzRmMmEwODgzCj4+Cj4+ICAgICAtIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQt
-aWQ9MjUsdmFyaWFudD1aeVhFTC1XUkU2NjA2Cj4+ICAgICAgIGhhcyBzaGEyNTZzdW06Cj4+IDQ2
-OWU4MWZkMjU5M2NiYTQ0MmMwZDgxMGNlOTIzMDliYjkyZWFhNDJiYmRkYmJiZjRlYzA1MWZhYmQz
-NDVlY2YKPj4KPj4gKiBhdHRhY2ggdGhlIGFjdHVhbCBib2FyZCBmaWxlIChib2FyZC5iaW4pCj4+
-Cj4+ICAgIC0gVGhlIG5hbWUgb2YgdGhlIGZpbGVzIGFyZSBlcXVhbCB0byB0aGUgaWQgc3RyaW5n
-IGluIHRoZSBib2FyZC0yLmJpbgo+PiAgICAgIChtaW51cyB0aGUgIi5iaW4iKQo+Pgo+PiBLaW5k
-IHJlZ2FyZHMsCj4+IE1hZ251cyBGcsO8aGxpbmcKPj4KPj4gWzBdIDxodHRwczovL3dpa2lkZXZp
-LmNvbS93aWtpL1p5WEVMX1dSRTY2MDY+Cj4+Cj4+IFsxXSA8aHR0cHM6Ly93aXJlbGVzcy53aWtp
-Lmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVycy9hdGgxMGsvYm9hcmRmaWxlcz4KPgo+IEkgZG9u
-J3Qgc2VlIGFueSBib2FyZCBmaWxlcywgZGlkIHlvdSBmb3JnZXQgdG8gYXR0YWNoIHRoZW0gb3Ig
-aXMgaXQgYQo+IHByb2JsZW0gb24gbXkgZW5kPwoKQ2hyaXN0aWFuIHBvaW50ZWQgb3V0IGluIGFu
-b3RoZXIgdGhyZWFkIHRoYXQgdGhlIGJpbmFyaWVzIHdlcmUgYXR0YWNoZWQKaW4gdGhlIGZpcnN0
-IGVtYWlsIHNvIEkgdG9vayB0aGVtIGZyb20gdGhlcmUuIEFkZGVkIG5vdywgcGxlYXNlIGRvdWJs
-ZQpjaGVjayBteSBjaGFuZ2VzOgoKaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJt
-d2FyZS9jb21taXQvZDM2NmI4MGQ0MTMwOTUzMWMwYzk4YjI2NjI1ZjIzZTMxOGYzM2UzMQoKLS0g
-CkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi linux-firmware maintainers,
+
+here are ath10k firmware updates which have been accumulating the last 6
+months or so. Please let me know if there are any problems.
+
+Kalle
+
+The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
+
+  Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20181010
+
+for you to fetch changes up to eaceb79a5a27ef37f85d1a5585b209361330b4bb:
+
+  ath10k: QCA9984 hw1.0: update board-2.bin (2018-10-10 15:14:05 +0300)
+
+----------------------------------------------------------------
+Kalle Valo (10):
+      ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.6-00140
+      ath10k: QCA4019 hw1.0: update board-2.bin
+      ath10k: QCA6174 hw3.0: update firmware-6.bin to RM.4.4.1.c2-00057-QCARMSWP-1
+      ath10k: QCA9377 hw1.0: add firmware-6.bin to WLAN.TF.2.1-00021-QCARMSWP-1
+      ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00041
+      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.6-00140
+      ath10k: QCA9888 hw2.0: update board-2.bin
+      ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00041
+      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.6.0.1-00003
+      ath10k: QCA9984 hw1.0: update board-2.bin
+
+ WHENCE                                            |   15 +-
+ ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 133452 -> 449316 bytes
+ ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 568636 -> 583344 bytes
+ ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 730788 -> 731276 bytes
+ ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt |  502 +-------
+ ath10k/QCA9377/hw1.0/firmware-6.bin               |  Bin 0 -> 751436 bytes
+ ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt | 1352 +++++++++++++++++++++
+ ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 237584 -> 237660 bytes
+ ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 72788 -> 84928 bytes
+ ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 659708 -> 675492 bytes
+ ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248108 -> 248200 bytes
+ ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 121264 -> 171916 bytes
+ ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 647380 -> 662084 bytes
+ 13 files changed, 1423 insertions(+), 446 deletions(-)
+ create mode 100644 ath10k/QCA9377/hw1.0/firmware-6.bin
+ create mode 100644 ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
