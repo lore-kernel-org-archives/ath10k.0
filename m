@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAaI1-0000b7-5g
+ id 1gAaI1-0000bd-79
  for ath10k@lists.infradead.org; Thu, 11 Oct 2018 12:42:06 +0000
 From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH 0/2] ath10k: Add support to update tx rate to mac80211
-Date: Thu, 11 Oct 2018 18:15:02 +0530
-Message-Id: <1539261904-9016-1-git-send-email-akolli@codeaurora.org>
+Subject: [PATCH 1/2] mac80211: implement ieee80211_tx_rate_update to update
+ rate
+Date: Thu, 11 Oct 2018 18:15:03 +0530
+Message-Id: <1539261904-9016-2-git-send-email-akolli@codeaurora.org>
+In-Reply-To: <1539261904-9016-1-git-send-email-akolli@codeaurora.org>
+References: <1539261904-9016-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +26,81 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Tx rate was updated to nl80211/user using sta_statistics callback.
-This rate can not be used for mac80211 mesh and ATF.
+Current mac80211 has provision to update tx status through
+ieee80211_tx_status() and ieee80211_tx_status_ext(). But
+drivers like ath10k updates the tx status from the skb except
+txrate, txrate will be updated from a different path, peer stats.
 
-This patch adds support to update tx rate to mac80211
+Using ieee80211_tx_status_ext() in two different paths
+  - (one for the stats, one for the tx rate) will duplicate the stats.
 
-Anilkumar Kolli (2):
-  mac80211: implement ieee80211_tx_rate_update to update rate
-  ath10k: report tx rate using ieee80211_tx_rate_update()
+To avoid this stats duplication, ieee80211_tx_rate_update() is implemented.
 
- drivers/net/wireless/ath/ath10k/core.h   |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   70 +++++++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
- include/net/mac80211.h                   |   15 +++++++
- net/mac80211/status.c                    |   22 ++++++++++
- 5 files changed, 103 insertions(+), 6 deletions(-)
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+---
+ include/net/mac80211.h |   15 +++++++++++++++
+ net/mac80211/status.c  |   22 ++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index c4fadbafbf21..86a6b1117a16 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -4352,6 +4352,21 @@ void ieee80211_sta_set_expected_throughput(struct ieee80211_sta *pubsta,
+ 					   u32 thr);
+ 
+ /**
++ * ieee80211_tx_rate_update - transmit rate update callback
++ *
++ * Drivers should call this functions with a non-NULL pub sta
++ * This function can be used in drivers that does not have provision
++ * in updating the tx rate in data path.
++ *
++ * @hw: the hardware the frame was transmitted by
++ * @pubsta: the station to update the tx rate for.
++ * @info: tx status information
++ */
++void ieee80211_tx_rate_update(struct ieee80211_hw *hw,
++			      struct ieee80211_sta *pubsta,
++			      struct ieee80211_tx_info *info);
++
++/**
+  * ieee80211_tx_status - transmit status callback
+  *
+  * Call this function for all transmitted frames after they have been
+diff --git a/net/mac80211/status.c b/net/mac80211/status.c
+index 91d7c0cd1882..6272fe1b351d 100644
+--- a/net/mac80211/status.c
++++ b/net/mac80211/status.c
+@@ -987,6 +987,28 @@ void ieee80211_tx_status_ext(struct ieee80211_hw *hw,
+ }
+ EXPORT_SYMBOL(ieee80211_tx_status_ext);
+ 
++void ieee80211_tx_rate_update(struct ieee80211_hw *hw,
++			      struct ieee80211_sta *pubsta,
++			      struct ieee80211_tx_info *info)
++{
++	struct ieee80211_local *local = hw_to_local(hw);
++	struct ieee80211_supported_band *sband;
++	struct sta_info *sta;
++	struct ieee80211_tx_status status;
++
++	sband = hw->wiphy->bands[info->band];
++
++	sta = container_of(pubsta, struct sta_info, sta);
++	status.skb = NULL;
++	status.info = info;
++	status.sta = pubsta;
++
++	rate_control_tx_status(local, sband, &status);
++	if (ieee80211_hw_check(&local->hw, HAS_RATE_CONTROL))
++		sta->tx_stats.last_rate = info->status.rates[0];
++}
++EXPORT_SYMBOL(ieee80211_tx_rate_update);
++
+ void ieee80211_report_low_ack(struct ieee80211_sta *pubsta, u32 num_packets)
+ {
+ 	struct sta_info *sta = container_of(pubsta, struct sta_info, sta);
 -- 
 1.7.9.5
 
