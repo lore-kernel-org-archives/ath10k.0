@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr680054.outbound.protection.outlook.com
- ([40.107.68.54] helo=NAM04-BN3-obe.outbound.protection.outlook.com)
+Received: from out3-smtp.messagingengine.com ([66.111.4.27])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAbSm-0005jM-Qx
- for ath10k@lists.infradead.org; Thu, 11 Oct 2018 13:57:18 +0000
-From: Adam Cottrel <adam.cottrel@veea.com>
-Subject: ATH10K dropping RX DMA
-Date: Thu, 11 Oct 2018 13:57:04 +0000
-Message-ID: <DM6PR04MB4059CEF55F55AD6FBAC45CA8F2E10@DM6PR04MB4059.namprd04.prod.outlook.com>
-Content-Language: en-US
+ id 1gAbjd-0004kH-3l
+ for ath10k@lists.infradead.org; Thu, 11 Oct 2018 14:14:42 +0000
+Date: Thu, 11 Oct 2018 16:14:22 +0200
+From: Greg KH <greg@kroah.com>
+Subject: Re: [for -stable] commit "c82919888064 ath10k: fix scan crash due to
+ incorrect length calculation"
+Message-ID: <20181011141422.GD9507@kroah.com>
+References: <20180906213620.GA72542@ban.mtv.corp.google.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20180906213620.GA72542@ban.mtv.corp.google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Zhi Chen <zhichen@codeaurora.org>, stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
 
-SGksDQoNCkkgYW0gdXNpbmcgdGhlIGxhdGVzdCBBVEgxMEsgbW9kdWxlLCBhbmQgd2hlbiBwdXQg
-dW5kZXIgbWVtb3J5IHByZXNzdXJlIEkgaGF2ZSBzZWVuIHRoYXQgdGhlIHJlY2VpdmVyIGNhbiBl
-aXRoZXIgbWlzcyBvciByZWNlaXZlIGNvcnJ1cHRlZCBkYXRhIG92ZXIgRE1BLg0KDQpXaGVuIHRo
-aXMgZmF1bHQgaGFzIG9jY3VycmVkLCBJIHNlZSB0aGVzZSBtZXNzYWdlcyB3aXRoaW4gdGhlIGRl
-YnVnIGxvZ3M6LQ0K4p6iIHJ4IHJpbmcgYmVjYW1lIGNvcnJ1cHRlZDogLTUNCuKeoiBJbnZhbGlk
-IGVuZHBvaW50IGlkOiA/P8KgwqDCoMKgwqDCoCA8LSByYW5kb20gZW5kcG9pbnQgSUQNCg0KRnVy
-dGhlcm1vcmUsIGlmIEkgY2xlYXIgdGhlIG1lbW9yeSBiZWZvcmUgdGhlIGRtYV9hbGxvY18qIGZ1
-bmN0aW9uLCB0aGVuIEkgY2FuIHNlZSB0aGF0IHRoZSBBdGhlcm9zIHRhcmdldCBpcyBuZXZlciB3
-cml0aW5nIHRvIHRoZXNlIG1lbW9yeSBsb2NhdGlvbnMuDQpIb3dldmVyLCBJIGNhbiBhbHNvIHNl
-ZSB0aGF0IHRoZSB0YXJnZXQgaXMgY29udGludWluZyB0byBzZW5kIG5ldyBwYWNrZXRzIGJlY2F1
-c2UgaWYgSSBwb2xsIHRoZSByZW1vdGUgcmluZyBwb2ludGVycyBJIGNhbiBzZWUgdGhleSBhcmUg
-aW5jcmVtZW50aW5nIG5vcm1hbGx5Lg0KT2Z0ZW4gdGhlc2UgbWVzc2FnZXMgYXJlIHNlZW4gcHJp
-b3IgdG8gYSB0YXJnZXQgY3Jhc2gsIGJ1dCBJIGJlbGlldmUgdGhhdCB0aGVzZSByZWNlaXZlIGVy
-cm9ycyBvY2N1ciBiZWZvcmUgdGhlIGNyYXNoIOKAkyBub3QgYWZ0ZXIuDQoNCkRvZXMgYW55b25l
-IGVsc2Ugc2VlIHRoZXNlIGRpYWdub3N0aWMgbWVzc2FnZXMgYXBwZWFyIGluIHRoZWlyIGxvZ3M/
-DQpDYW4gYW55b25lIGV4cGxhaW4gd2h5IHRoaXMgbWlnaHQgYmUgaGFwcGVuaW5nIHVuZGVyIG1l
-bW9yeSBwcmVzc3VyZT8NCg0KQW55b25lPw0KDQpCZXN0LA0KQWRhbQ0KDQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+On Thu, Sep 06, 2018 at 02:36:22PM -0700, Brian Norris wrote:
+> Hi Greg / stable maintainer(s),
+> 
+> IIUC, this commit is a good candidate for -stable. I just hit the bug on
+> 4.14, because of new vendor firmware that noticed the mismatched length
+> (an internal "assert"), but it seems like this is equally problematic
+> from the kernel side for as long as this code existed [1]:
+> 
+> commit c8291988806407e02a01b4b15b4504eafbcc04e0
+> Author: Zhi Chen <zhichen@codeaurora.org>
+> Date:   Mon Jun 18 17:00:39 2018 +0300
+> 
+>     ath10k: fix scan crash due to incorrect length calculation
+> 
+> Thanks,
+> Brian
+> 
+> [1] I guess that would be:
+> 
+> Fixes: ca996ec56608 ("ath10k: implement wmi-tlv backend")
+> 
+> which was in v4.0.
+
+Thanks, now queued up.
+
+greg k-h
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
