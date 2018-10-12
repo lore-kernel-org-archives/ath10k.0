@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAu4v-0006n8-TC
+ id 1gAu4v-0006nW-TD
  for ath10k@lists.infradead.org; Fri, 12 Oct 2018 09:49:58 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 0/3] Add support for suspend/resume and WOW for WCN3990
- chipset
-Date: Fri, 12 Oct 2018 15:19:35 +0530
-Message-Id: <20181012094938.14734-1-govinds@codeaurora.org>
+Subject: [PATCH v2 2/3] ath10k: Disable interface pause wow config for
+ integrated chipset
+Date: Fri, 12 Oct 2018 15:19:37 +0530
+Message-Id: <20181012094938.14734-3-govinds@codeaurora.org>
+In-Reply-To: <20181012094938.14734-1-govinds@codeaurora.org>
+References: <20181012094938.14734-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,24 +26,56 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-This series adds support for driver suspend/resume and wake over wlan support
-for WCN3990 chipset. CE2 is configured as wakeup source before driver suspend
-and FW can wake up application processor on Magic packet/Deauth/AP lost.
+wow pause iface config controls the PCI D0/D3-WOW cases for pcie
+bus state. Firmware does not expects WOW_IFACE_PAUSE_ENABLED config
+for bus/link that cannot be suspended ex:snoc and does not trigger
+common subsystem shutdown.
+Disable interface pause wow config for integrated chipset(WCN3990)
+for correct WOW configuration in the firmware.
 
-change since v1:
-  Log enhancement in "ath10k: Enable bus layer suspend/resume for WCN3990" patch.
+Testing:
+    Tested on WCN3990 HW.
+    Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1.
 
-Govind Singh (3):
-  ath10k: Enable bus layer suspend/resume for WCN3990
-  ath10k: Disable interface pause wow config for integrated chipset
-  ath10k: Request credit report if flow control enabled on ep
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 ++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
- drivers/net/wireless/ath/ath10k/htc.c     |  3 +-
- drivers/net/wireless/ath/ath10k/snoc.c    | 45 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 +
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  7 ++++
- 4 files changed, 56 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 8c49a26fc571..1e608ef6499c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3185,6 +3185,8 @@ ath10k_wmi_tlv_op_gen_wow_enable(struct ath10k *ar)
+ 	cmd = (void *)tlv->value;
+ 
+ 	cmd->enable = __cpu_to_le32(1);
++	if (ar->hif.bus == ATH10K_BUS_SNOC)
++		cmd->pause_iface_config = WOW_IFACE_PAUSE_DISABLED;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv wow enable\n");
+ 	return skb;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 3e1e340cd834..a8bdb5614b9b 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1968,8 +1968,15 @@ struct wmi_tlv_set_quiet_cmd {
+ 	__le32 enabled;
+ } __packed;
+ 
++enum wmi_tlv_wow_interface_cfg {
++	WOW_IFACE_PAUSE_ENABLED,
++	WOW_IFACE_PAUSE_DISABLED
++};
++
+ struct wmi_tlv_wow_enable_cmd {
+ 	__le32 enable;
++	__le32 pause_iface_config;
++	__le32 flags;
+ } __packed;
+ 
+ struct wmi_tlv_wow_host_wakeup_ind {
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
