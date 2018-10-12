@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAzVU-00043F-R9
- for ath10k@lists.infradead.org; Fri, 12 Oct 2018 15:37:42 +0000
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAzkv-0003Bx-6J
+ for ath10k@lists.infradead.org; Fri, 12 Oct 2018 15:53:41 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
-References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
- <877ek18vyn.fsf@kamboji.qca.qualcomm.com>
- <b6d8ada015e04738b6b3cee95e485e14@aptaiexm02f.ap.qualcomm.com>
- <87zhwx7ajo.fsf@kamboji.qca.qualcomm.com>
- <92bec84a762be7589b13274fb30dd649@codeaurora.org>
-Date: Fri, 12 Oct 2018 18:37:26 +0300
-In-Reply-To: <92bec84a762be7589b13274fb30dd649@codeaurora.org> (Wen Gong's
- message of "Wed, 05 Sep 2018 10:51:19 +0800")
-Message-ID: <87r2gv2n2h.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fill the channel survey results for WCN3990
+ correctly
+References: <1538564267-19863-1-git-send-email-pillair@codeaurora.org>
+ <20181012143434.3F49060A98@smtp.codeaurora.org>
+Date: Fri, 12 Oct 2018 18:53:19 +0300
+In-Reply-To: <20181012143434.3F49060A98@smtp.codeaurora.org> (Kalle Valo's
+ message of "Fri, 12 Oct 2018 14:34:34 +0000 (UTC)")
+Message-ID: <87murj2mc0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,35 +25,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: Wen Gong <wgong@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-Wen Gong <wgong@codeaurora.org> writes:
+Kalle Valo <kvalo@codeaurora.org> writes:
 
-> On 2018-09-04 19:43, Kalle Valo wrote:
->> Wen Gong <wgong@qti.qualcomm.com> writes:
->>
->>>> > +enum wmi_nlo_cipher_algorithm {
->>>> > +	WMI_NLO_CIPHER_ALGO_NONE           = 0x00,
->>>> > +	WMI_NLO_CIPHER_ALGO_WEP40          = 0x01,
->>>> > +	WMI_NLO_CIPHER_ALGO_TKIP           = 0x02,
->>>> > +	WMI_NLO_CIPHER_ALGO_CCMP           = 0x04,
->>>> > +	WMI_NLO_CIPHER_ALGO_WEP104         = 0x05,
->>>> > +	WMI_NLO_CIPHER_ALGO_BIP            = 0x06,
->>>> > +	WMI_NLO_CIPHER_ALGO_WPA_USE_GROUP  = 0x100,
->>>> > +	WMI_NLO_CIPHER_ALGO_RSN_USE_GROUP  = 0x100,
->>>>
->>>> Two defines with the same value 0x100, is this really correct?
->>>
->>> Yes, it is an interface between host driver /firmware.
->>
->> Yeah, I know it's an interface between the host driver and the firmware
->> but it does not make any sense and is just confusing. Either of them
->> should be dropped.
+> Rakesh Pillai <pillair@codeaurora.org> wrote:
 >
-> yes, either of them can be dropped.
+>> The host driver currently expects the channel info event to be
+>> received in pairs for all the channels, i.e. the first
+>> chan_info event for a particular channel will not have the
+>> COMPLETE flag set and the second chan_info event for the
+>> same channel will have the COMPLETE flag set.
+>> 
+>> The HL2.0 firmware sends only one channel info event per channel
+>> which is scanned without the COMPLETE flag set. After sending the
+>> chan_info_event for all the channels, the HL2.0 firmware sends a
+>> chan_info_event with COMPLETE flag set to indicate the completion
+>> of the channel info event.
+>> 
+>> The firmware does not indicate this behavior with any service bitmap
+>> and hence a new firmware feature flag is used to handle the modified
+>> parsing of the channel info events, in the host driver, for the
+>> firmware which sends single channel info event per scanned channel.
+>> 
+>> Tested HW: WCN3990
+>> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+>> 
+>> Co-developed-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+>> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+>> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>
+> Kbuild bot reported some errors:
+>
+>>> ERROR: "__udivdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
+>>> ERROR: "__divdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
+>
+> Need to investigate those if they are valid or problem with the bot.
 
-Ok, I dropped WMI_NLO_CIPHER_ALGO_WPA_USE_GROUP in the pending branch.
+Arnd explained the problem in the other thread:
+
+  "I think the problem is that 'clock_freq' is a 'u64', which means we
+   can't use a normal 32-bit division. It looks like it cannot actually
+   go beyond the range of a u32, so changing the type should be
+   sufficient."
+
+Please investigate that and submit v2.
 
 -- 
 Kalle Valo
