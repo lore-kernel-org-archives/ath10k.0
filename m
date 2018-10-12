@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAyQU-00009F-Uo
- for ath10k@lists.infradead.org; Fri, 12 Oct 2018 14:28:40 +0000
+ id 1gAyUf-00028n-Ev
+ for ath10k@lists.infradead.org; Fri, 12 Oct 2018 14:32:47 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [ath6kl:master-pending 3/3]
- drivers/net/wireless/ath/ath10k/qmi.c:734:44: error: not enough arguments for
- function ath10k_core_fetch_board_file
-References: <201810112257.Hgqd4vtm%fengguang.wu@intel.com>
-Date: Fri, 12 Oct 2018 17:28:12 +0300
-In-Reply-To: <201810112257.Hgqd4vtm%fengguang.wu@intel.com> (kbuild test
- robot's message of "Thu, 11 Oct 2018 22:31:59 +0800")
-Message-ID: <87tvlr44ub.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [ath6kl:pending 10/15] ERROR: "__udivdi3"
+ [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
+References: <201810090804.eQbqAwdi%fengguang.wu@intel.com>
+Date: Fri, 12 Oct 2018 17:32:29 +0300
+In-Reply-To: <201810090804.eQbqAwdi%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Tue, 9 Oct 2018 08:21:06 +0800")
+Message-ID: <87pnwf44n6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,63 +25,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kbuild test robot <lkp@intel.com>
-Cc: kbuild-all@01.org, ath10k@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, kbuild-all@01.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
+
++ linux-wireless, arnd
 
 kbuild test robot <lkp@intel.com> writes:
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-> head:   0867465f6a7f45f857c8289a61a7f847829d3654
-> commit: 0867465f6a7f45f857c8289a61a7f847829d3654 [3/3] Merge branch 'pending' into master-pending
-> config: x86_64-allmodconfig (attached as .config)
-> compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+> head:   70aa9eaba2a46b3d53caf03060576a7615182814
+> commit: 108924d7a14299b2bcced255feb14bfdde7cb9d4 [10/15] ath10k: Fill
+> the channel survey results for WCN3990 correctly
+> config: parisc-allmodconfig (attached as .config)
+> compiler: hppa-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
 > reproduce:
->         git checkout 0867465f6a7f45f857c8289a61a7f847829d3654
+>         wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout 108924d7a14299b2bcced255feb14bfdde7cb9d4
 >         # save the attached .config to linux build tree
->         make ARCH=x86_64 
+>         GCC_VERSION=7.2.0 make.cross ARCH=parisc 
 >
-> All error/warnings (new ones prefixed by >>):
+> All errors (new ones prefixed by >>):
 >
->>> drivers/net/wireless/ath/ath10k/qmi.c:734:44: error: not enough arguments for function ath10k_core_fetch_board_file
->    drivers/net/wireless/ath/ath10k/qmi.c: In function 'ath10k_qmi_fetch_board_file':
->    drivers/net/wireless/ath/ath10k/qmi.c:734:9: error: too few arguments to function 'ath10k_core_fetch_board_file'
->      return ath10k_core_fetch_board_file(qmi->ar);
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    In file included from drivers/net/wireless/ath/ath10k/trace.h:21:0,
->                     from drivers/net/wireless/ath/ath10k/debug.h:23,
->                     from drivers/net/wireless/ath/ath10k/qmi.c:31:
->    drivers/net/wireless/ath/ath10k/core.h:1224:5: note: declared here
->     int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type);
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath10k/qmi.c:735:1: warning: control reaches end of non-void function [-Wreturn-type]
->     }
->     ^
-> --
->>> drivers/net/wireless/ath/ath10k/snoc.c:1191:17: error: undefined identifier 'bus_params'
->    drivers/net/wireless/ath/ath10k/snoc.c:1192:17: error: undefined identifier 'bus_params'
->>> drivers/net/wireless/ath/ath10k/snoc.c:1192:38: error: undefined identifier 'drv_data'
->    drivers/net/wireless/ath/ath10k/snoc.c:1193:49: error: undefined identifier 'bus_params'
->>> drivers/net/wireless/ath/ath10k/snoc.c:1192:46: warning: unknown expression (8 46)
->    drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_fw_indication':
->    drivers/net/wireless/ath/ath10k/snoc.c:1191:3: error: 'bus_params' undeclared (first use in this function); did you mean 'key_params'?
->       bus_params.dev_type = ATH10K_DEV_TYPE_LL;
->       ^~~~~~~~~~
->       key_params
->    drivers/net/wireless/ath/ath10k/snoc.c:1191:3: note: each undeclared identifier is reported only once for each function it appears in
->    drivers/net/wireless/ath/ath10k/snoc.c:1192:24: error: 'drv_data' undeclared (first use in this function); did you mean 'irq_data'?
->       bus_params.chip_id = drv_data->hw_rev;
->                            ^~~~~~~~
->                            irq_data
->    drivers/net/wireless/ath/ath10k/snoc.c:1186:22: warning: unused variable 'ar_snoc' [-Wunused-variable]
->      struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
->                          ^~~~~~~
->    drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_probe':
->    drivers/net/wireless/ath/ath10k/snoc.c:1536:27: warning: unused variable 'bus_params' [-Wunused-variable]
->      struct ath10k_bus_params bus_params;
->                               ^~~~~~~~~~
+>>> ERROR: "__udivdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
+>>> ERROR: "__divdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
 
-These errors are my mistakes. I introduced these when solving some
-conflicts and not having COMPILE_TEST enabled so I didn't compile check
-snoc.c. These should be fixed now in the pending branch.
+I'm not sure what this is about. The corresponding patch is here:
+
+https://patchwork.kernel.org/patch/10624567/
+
+I see some division in the patch but I can't immeaditely see what's
+wrong. So is this a problem in the bot, in parisc architecture or with
+the patch? Anyone have any good ideas? Arnd?
 
 -- 
 Kalle Valo
