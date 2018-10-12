@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAyJM-0006gb-Pp
- for ath10k@lists.infradead.org; Fri, 12 Oct 2018 14:21:06 +0000
+ id 1gAyQU-00009F-Uo
+ for ath10k@lists.infradead.org; Fri, 12 Oct 2018 14:28:40 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 1/2] ath10k: Handle bundled tx completion for managenent
- frames
-References: <1538503421-17607-1-git-send-email-pillair@codeaurora.org>
- <1538503421-17607-2-git-send-email-pillair@codeaurora.org>
-Date: Fri, 12 Oct 2018 17:20:49 +0300
-In-Reply-To: <1538503421-17607-2-git-send-email-pillair@codeaurora.org>
- (Rakesh Pillai's message of "Tue, 2 Oct 2018 23:33:40 +0530")
-Message-ID: <87y3b3456m.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [ath6kl:master-pending 3/3]
+ drivers/net/wireless/ath/ath10k/qmi.c:734:44: error: not enough arguments for
+ function ath10k_core_fetch_board_file
+References: <201810112257.Hgqd4vtm%fengguang.wu@intel.com>
+Date: Fri, 12 Oct 2018 17:28:12 +0300
+In-Reply-To: <201810112257.Hgqd4vtm%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Thu, 11 Oct 2018 22:31:59 +0800")
+Message-ID: <87tvlr44ub.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,90 +25,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: kbuild test robot <lkp@intel.com>
+Cc: kbuild-all@01.org, ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> writes:
+kbuild test robot <lkp@intel.com> writes:
 
-> WCN3990 supports sending tx completion for multiple
-> management frames bundled together in a single event.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+> head:   0867465f6a7f45f857c8289a61a7f847829d3654
+> commit: 0867465f6a7f45f857c8289a61a7f847829d3654 [3/3] Merge branch 'pending' into master-pending
+> config: x86_64-allmodconfig (attached as .config)
+> compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
+> reproduce:
+>         git checkout 0867465f6a7f45f857c8289a61a7f847829d3654
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
 >
-> Add support to handle the bundled tx completion
-> event for WCN3990.
+> All error/warnings (new ones prefixed by >>):
 >
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+>>> drivers/net/wireless/ath/ath10k/qmi.c:734:44: error: not enough arguments for function ath10k_core_fetch_board_file
+>    drivers/net/wireless/ath/ath10k/qmi.c: In function 'ath10k_qmi_fetch_board_file':
+>    drivers/net/wireless/ath/ath10k/qmi.c:734:9: error: too few arguments to function 'ath10k_core_fetch_board_file'
+>      return ath10k_core_fetch_board_file(qmi->ar);
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    In file included from drivers/net/wireless/ath/ath10k/trace.h:21:0,
+>                     from drivers/net/wireless/ath/ath10k/debug.h:23,
+>                     from drivers/net/wireless/ath/ath10k/qmi.c:31:
+>    drivers/net/wireless/ath/ath10k/core.h:1224:5: note: declared here
+>     int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type);
+>         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath10k/qmi.c:735:1: warning: control reaches end of non-void function [-Wreturn-type]
+>     }
+>     ^
+> --
+>>> drivers/net/wireless/ath/ath10k/snoc.c:1191:17: error: undefined identifier 'bus_params'
+>    drivers/net/wireless/ath/ath10k/snoc.c:1192:17: error: undefined identifier 'bus_params'
+>>> drivers/net/wireless/ath/ath10k/snoc.c:1192:38: error: undefined identifier 'drv_data'
+>    drivers/net/wireless/ath/ath10k/snoc.c:1193:49: error: undefined identifier 'bus_params'
+>>> drivers/net/wireless/ath/ath10k/snoc.c:1192:46: warning: unknown expression (8 46)
+>    drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_fw_indication':
+>    drivers/net/wireless/ath/ath10k/snoc.c:1191:3: error: 'bus_params' undeclared (first use in this function); did you mean 'key_params'?
+>       bus_params.dev_type = ATH10K_DEV_TYPE_LL;
+>       ^~~~~~~~~~
+>       key_params
+>    drivers/net/wireless/ath/ath10k/snoc.c:1191:3: note: each undeclared identifier is reported only once for each function it appears in
+>    drivers/net/wireless/ath/ath10k/snoc.c:1192:24: error: 'drv_data' undeclared (first use in this function); did you mean 'irq_data'?
+>       bus_params.chip_id = drv_data->hw_rev;
+>                            ^~~~~~~~
+>                            irq_data
+>    drivers/net/wireless/ath/ath10k/snoc.c:1186:22: warning: unused variable 'ar_snoc' [-Wunused-variable]
+>      struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>                          ^~~~~~~
+>    drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_probe':
+>    drivers/net/wireless/ath/ath10k/snoc.c:1536:27: warning: unused variable 'bus_params' [-Wunused-variable]
+>      struct ath10k_bus_params bus_params;
+>                               ^~~~~~~~~~
 
-[...]
-
-> +static int ath10k_wmi_tlv_op_pull_mgmt_tx_bundle_compl_ev(
-> +				struct ath10k *ar, struct sk_buff *skb,
-> +				struct wmi_tlv_mgmt_tx_bundle_compl_ev_arg *arg)
-> +{
-> +	struct wmi_tlv_tx_bundle_compl_parse bundle_tx_compl = { };
-> +	int ret;
-> +
-> +	ret = ath10k_wmi_tlv_iter(ar, skb->data, skb->len,
-> +				  ath10k_wmi_tlv_mgmt_tx_bundle_compl_parse,
-> +				  &bundle_tx_compl);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (!bundle_tx_compl.num_reports || !bundle_tx_compl.desc_ids ||
-> +	    !bundle_tx_compl.status)
-> +		return -EPROTO;
-> +
-> +	arg->num_reports = __le32_to_cpu(*bundle_tx_compl.num_reports);
-
-This causes a new warning:
-
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:744:26: warning: incorrect type in assignment (different base types)
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:744:26:    expected restricted __le32 [usertype] num_reports
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:744:26:    got unsigned int [unsigned] [usertype] <noident>
-
-> +	arg->desc_ids = (__le32 *)bundle_tx_compl.desc_ids;
-> +	arg->status = (__le32 *)bundle_tx_compl.status;
-
-And these casts look really fishy, casting away const? Avoid casts as
-much as possible, only in very expectional cases they are ok to use.
-
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2378,6 +2378,32 @@ int ath10k_wmi_event_mgmt_tx_compl(struct ath10k *ar, struct sk_buff *skb)
->  	return 0;
->  }
->  
-> +int ath10k_wmi_event_mgmt_tx_bundle_compl(struct ath10k *ar, struct sk_buff *skb)
-> +{
-> +	struct wmi_tlv_mgmt_tx_bundle_compl_ev_arg arg;
-> +	u32 *desc_ids, *status;
-> +	u32 num_reports;
-> +	int i, ret;
-> +
-> +	ret = ath10k_wmi_pull_mgmt_tx_bundle_compl(ar, skb, &arg);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to parse bundle mgmt compl event: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	num_reports = __le32_to_cpu(arg.num_reports);
-> +	desc_ids = (u32 *)arg.desc_ids;
-> +	status = (u32 *)arg.status;
-
-These casts look fishy as well.
-
-> +	for (i = 0; i < num_reports; i++)
-> +		wmi_process_mgmt_tx_comp(ar, __le32_to_cpu(desc_ids[i]),
-> +					 __le32_to_cpu(status[i]));
-
-This has a warning:
-
-drivers/net/wireless/ath/ath10k/wmi.c:2399:46: warning: cast to restricted __le32
-drivers/net/wireless/ath/ath10k/wmi.c:2400:42: warning: cast to restricted __le32
+These errors are my mistakes. I introduced these when solving some
+conflicts and not having COMPILE_TEST enabled so I didn't compile check
+snoc.c. These should be fixed now in the pending branch.
 
 -- 
 Kalle Valo
