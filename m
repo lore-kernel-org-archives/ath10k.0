@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAyWa-0002hb-Gz
- for ath10k@lists.infradead.org; Fri, 12 Oct 2018 14:34:46 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fill the channel survey results for WCN3990
- correctly
+ id 1gAyYk-0004Cp-F9
+ for ath10k@lists.infradead.org; Fri, 12 Oct 2018 14:37:00 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1538564267-19863-1-git-send-email-pillair@codeaurora.org>
-References: <1538564267-19863-1-git-send-email-pillair@codeaurora.org>
-Message-Id: <20181012143434.3F49060A98@smtp.codeaurora.org>
-Date: Fri, 12 Oct 2018 14:34:34 +0000 (UTC)
+Subject: Re: [ath6kl:pending 15/15]
+ drivers/net/wireless/ath/ath10k/wmi.c:2407:46: warning: cast to restricted
+ __le32
+References: <201810082133.J7pQIpGP%fengguang.wu@intel.com>
+Date: Fri, 12 Oct 2018 17:36:44 +0300
+In-Reply-To: <201810082133.J7pQIpGP%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Mon, 8 Oct 2018 21:49:35 +0800")
+Message-ID: <87lg7344g3.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +25,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
+To: kbuild test robot <lkp@intel.com>
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+kbuild test robot <lkp@intel.com> writes:
 
-> The host driver currently expects the channel info event to be
-> received in pairs for all the channels, i.e. the first
-> chan_info event for a particular channel will not have the
-> COMPLETE flag set and the second chan_info event for the
-> same channel will have the COMPLETE flag set.
-> 
-> The HL2.0 firmware sends only one channel info event per channel
-> which is scanned without the COMPLETE flag set. After sending the
-> chan_info_event for all the channels, the HL2.0 firmware sends a
-> chan_info_event with COMPLETE flag set to indicate the completion
-> of the channel info event.
-> 
-> The firmware does not indicate this behavior with any service bitmap
-> and hence a new firmware feature flag is used to handle the modified
-> parsing of the channel info events, in the host driver, for the
-> firmware which sends single channel info event per scanned channel.
-> 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-> 
-> Co-developed-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
-> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+> head:   70aa9eaba2a46b3d53caf03060576a7615182814
+> commit: 70aa9eaba2a46b3d53caf03060576a7615182814 [15/15] ath10k:
+> management tx ack rssi capability check
+> config: x86_64-allmodconfig (attached as .config)
+> compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
+> reproduce:
+>         git checkout 70aa9eaba2a46b3d53caf03060576a7615182814
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+>
+> All warnings (new ones prefixed by >>):
+>
+>>> drivers/net/wireless/ath/ath10k/wmi.c:2407:46: warning: cast to restricted __le32
+>    drivers/net/wireless/ath/ath10k/wmi.c:2408:42: warning: cast to restricted __le32
+> --
+>>> drivers/net/wireless/ath/ath10k/wmi-tlv.c:744:26: warning:
+>>> incorrect type in assignment (different base types)
+>    drivers/net/wireless/ath/ath10k/wmi-tlv.c:744:26: expected
+> restricted __le32 [usertype] num_reports
+>    drivers/net/wireless/ath/ath10k/wmi-tlv.c:744:26: got unsigned int
+> [unsigned] [usertype] <noident>
 
-Kbuild bot reported some errors:
+The warnings seem to be valid but it was not caused by patch "ath10k:
+management tx ack rssi capability check". Instead they were added by:
 
->> ERROR: "__udivdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
->> ERROR: "__divdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
+[1/2] ath10k: Handle bundled tx completion for managenent frames
 
-Need to investigate those if they are valid or problem with the bot.
+https://patchwork.kernel.org/patch/10623969/
 
 -- 
-https://patchwork.kernel.org/patch/10624567/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
