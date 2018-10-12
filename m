@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAtm8-0008Pb-Ai
- for ath10k@lists.infradead.org; Fri, 12 Oct 2018 09:30:29 +0000
+ id 1gAtm8-0008Ps-HH
+ for ath10k@lists.infradead.org; Fri, 12 Oct 2018 09:30:30 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 2/3] ath10k: Disable interface pause wow config for integrated
- chipset
-Date: Fri, 12 Oct 2018 15:00:02 +0530
-Message-Id: <20181012093003.11932-3-govinds@codeaurora.org>
+Subject: [PATCH 3/3] ath10k: Request credit report if flow control enabled on
+ ep
+Date: Fri, 12 Oct 2018 15:00:03 +0530
+Message-Id: <20181012093003.11932-4-govinds@codeaurora.org>
 In-Reply-To: <20181012093003.11932-1-govinds@codeaurora.org>
 References: <20181012093003.11932-1-govinds@codeaurora.org>
 MIME-Version: 1.0
@@ -26,12 +26,15 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-wow pause iface config controls the PCI D0/D3-WOW cases for pcie
-bus state. Firmware does not expects WOW_IFACE_PAUSE_ENABLED config
-for bus/link that cannot be suspended ex:snoc and does not trigger
-common subsystem shutdown.
-Disable interface pause wow config for integrated chipset(WCN3990)
-for correct WOW configuration in the firmware.
+FW credit flow control is enabled for only WMI ctrl
+service(CE3) but credit update is requested unconditionally
+on all HTC services as part of HTC tx in CE3/CE0/CE4.
+
+This is causing WOW failure as FW is not expecting credit
+report request on other end-points(CE0/CE4).
+
+Request credit report only on those endpoints where
+credit flow control is enabled.
 
 Testing:
     Tested on WCN3990 HW.
@@ -39,43 +42,23 @@ Testing:
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 ++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 7 +++++++
- 2 files changed, 9 insertions(+)
+ drivers/net/wireless/ath/ath10k/htc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 8c49a26fc571..1e608ef6499c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3185,6 +3185,8 @@ ath10k_wmi_tlv_op_gen_wow_enable(struct ath10k *ar)
- 	cmd = (void *)tlv->value;
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 8902720b4e49..31f1a316be7c 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -87,7 +87,8 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 	hdr->eid = ep->eid;
+ 	hdr->len = __cpu_to_le16(skb->len - sizeof(*hdr));
+ 	hdr->flags = 0;
+-	hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
++	if (ep->tx_credit_flow_enabled)
++		hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
  
- 	cmd->enable = __cpu_to_le32(1);
-+	if (ar->hif.bus == ATH10K_BUS_SNOC)
-+		cmd->pause_iface_config = WOW_IFACE_PAUSE_DISABLED;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv wow enable\n");
- 	return skb;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 3e1e340cd834..a8bdb5614b9b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1968,8 +1968,15 @@ struct wmi_tlv_set_quiet_cmd {
- 	__le32 enabled;
- } __packed;
- 
-+enum wmi_tlv_wow_interface_cfg {
-+	WOW_IFACE_PAUSE_ENABLED,
-+	WOW_IFACE_PAUSE_DISABLED
-+};
-+
- struct wmi_tlv_wow_enable_cmd {
- 	__le32 enable;
-+	__le32 pause_iface_config;
-+	__le32 flags;
- } __packed;
- 
- struct wmi_tlv_wow_host_wakeup_ind {
+ 	spin_lock_bh(&ep->htc->tx_lock);
+ 	hdr->seq_no = ep->seq_no++;
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
