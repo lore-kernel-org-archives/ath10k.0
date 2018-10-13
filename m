@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gB8DY-0001Lz-PN
- for ath10k@lists.infradead.org; Sat, 13 Oct 2018 00:55:50 +0000
-Received: by mail-pl1-x643.google.com with SMTP id u6-v6so3918278plz.4
- for <ath10k@lists.infradead.org>; Fri, 12 Oct 2018 17:55:34 -0700 (PDT)
-From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 4/4] ath10k: snoc: fix unbalanced clock error handling
-Date: Fri, 12 Oct 2018 17:55:04 -0700
-Message-Id: <20181013005504.46399-4-briannorris@chromium.org>
-In-Reply-To: <20181013005504.46399-1-briannorris@chromium.org>
-References: <20181013005504.46399-1-briannorris@chromium.org>
+ id 1gBNWi-0005mc-8p
+ for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:16:33 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Fix possible out of bound access of ath10k_rates
+ array
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1538536430-6555-1-git-send-email-srirrama@codeaurora.org>
+References: <1538536430-6555-1-git-send-email-srirrama@codeaurora.org>
+Message-Id: <20181013171621.D32AF6079B@smtp.codeaurora.org>
+Date: Sat, 13 Oct 2018 17:16:21 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Govind Singh <govinds@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, Doug Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Sriram R <srirrama@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Similar to regulator error handling, we should only start tearing down
-the 'i - 1' clock when clock 'i' fails to enable. Otherwise, we might
-end up with an unbalanced clock, where we never successfully enabled the
-clock, but we try to disable it anyway.
+Sriram R <srirrama@codeaurora.org> wrote:
 
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> While using 'ath10k_mac_get_rate_hw_value()' to obtain the hw value
+> from the passed bitrate, there is a chance of out of bound array access
+> when wrong bitrate is passed. This is fixed by comparing the bitrates
+> within the correct size of the ath10k_rates array.
+> 
+> Fixes commit f279294e9ee2 ("ath10k: add support for configuring management
+> packet rate"). Also correction made to some indents used in the above commit.
+> 
+> Signed-off-by: Sriram R <srirrama@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 5a8e87339df2..a835599a8d55 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1470,7 +1470,7 @@ static int ath10k_snoc_clk_init(struct ath10k *ar)
- 	return 0;
- 
- err_clock_config:
--	for (; i >= 0; i--) {
-+	for (i = i - 1; i >= 0; i--) {
- 		clk_info = &ar_snoc->clk[i];
- 
- 		if (!clk_info->handle)
+Patch applied to ath-next branch of ath.git, thanks.
+
+34e141eea7dd ath10k: fix possible out of bound access of ath10k_rates array
+
 -- 
-2.19.1.331.ge82ca0e54c-goog
+https://patchwork.kernel.org/patch/10624225/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
