@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from gateway23.websitewelcome.com ([192.185.48.251])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBNn9-00032U-Gf
- for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:33:33 +0000
+ id 1gBOcy-0004Jk-Au
+ for ath10k@lists.infradead.org; Sat, 13 Oct 2018 18:27:05 +0000
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+ by gateway23.websitewelcome.com (Postfix) with ESMTP id 815127A4A
+ for <ath10k@lists.infradead.org>; Sat, 13 Oct 2018 13:26:40 -0500 (CDT)
+Subject: Re: [PATCH] ath10k: htt_rx: Fix signedness bug in
+ ath10k_update_per_peer_tx_stats
+References: <20181005184245.GA11700@embeddedor.com>
+ <20181013172330.1CC8E60BFE@smtp.codeaurora.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <832fd7db-4e67-b757-d1bb-dbc109a90571@embeddedor.com>
+Date: Sat, 13 Oct 2018 20:26:34 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 1/6] ath10k: Add qmi service helpers for wcn3990 qmi
- client
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180815092637.11455-2-govinds@codeaurora.org>
-References: <20180815092637.11455-2-govinds@codeaurora.org>
-Message-Id: <20181013173320.C72EF60A98@smtp.codeaurora.org>
-Date: Sat, 13 Oct 2018 17:33:20 +0000 (UTC)
+In-Reply-To: <20181013172330.1CC8E60BFE@smtp.codeaurora.org>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +28,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: devicetree@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, bjorn.andersson@linaro.org, andy.gross@linaro.org, niklas.cassel@linaro.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
 
-> WLAN qmi server running in Q6 exposes host to target
-> cold boot qmi handshakes. Add WLAN QMI service helpers
-> for ath10k wcn3990 qmi client.
+On 10/13/18 7:23 PM, Kalle Valo wrote:
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
-> Reviewed-by: Brian Norris <briannorris@chromium.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Patch applied to ath-next branch of ath.git, thanks.
+> 
+> 9d9cdbf3f9ed ath10k: htt_rx: fix signedness bug in ath10k_update_per_peer_tx_stats
+> 
 
-6 patches applied to ath-next branch of ath.git, thanks.
-
-bc17d4b90cdd ath10k: add qmi service helpers for wcn3990 qmi client
-22e8a4602738 ath10k: add support to create boardname for non-bmi target
-2b741a8aaa34 dt: bindings: add bindings for msa memory region
-cc53aabcc283 firmware: qcom: scm: Add WLAN VMID for Qualcomm SCM interface
-35a665766737 ath10k: add debug mask for QMI layer
-ba94c753ccb4 ath10k: add QMI message handshake for wcn3990 client
-
--- 
-https://patchwork.kernel.org/patch/10566407/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Thank you, Kalle.
+--
+Gustavo
 
 _______________________________________________
 ath10k mailing list
