@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBNWi-0005mc-8p
- for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:16:33 +0000
+ id 1gBNXs-0005xp-JG
+ for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:17:46 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fix possible out of bound access of ath10k_rates
- array
+Subject: Re: [PATCH] ath10k: Set probe request oui during driver start
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1538536430-6555-1-git-send-email-srirrama@codeaurora.org>
-References: <1538536430-6555-1-git-send-email-srirrama@codeaurora.org>
-Message-Id: <20181013171621.D32AF6079B@smtp.codeaurora.org>
-Date: Sat, 13 Oct 2018 17:16:21 +0000 (UTC)
+In-Reply-To: <1538503393-17543-1-git-send-email-pillair@codeaurora.org>
+References: <1538503393-17543-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20181013171734.516A160C55@smtp.codeaurora.org>
+Date: Sat, 13 Oct 2018 17:17:34 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sriram R <srirrama@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sriram R <srirrama@codeaurora.org> wrote:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> While using 'ath10k_mac_get_rate_hw_value()' to obtain the hw value
-> from the passed bitrate, there is a chance of out of bound array access
-> when wrong bitrate is passed. This is fixed by comparing the bitrates
-> within the correct size of the ath10k_rates array.
+> Currently the wmi command for setting probe request
+> oui, needed for mac randomization, is sent during
+> the mac register. At this time, during the driver
+> init the wmi has already been detached. This can
+> cause unexpected behavior since the firmware is
+> already down and the wmi has been detached.
 > 
-> Fixes commit f279294e9ee2 ("ath10k: add support for configuring management
-> packet rate"). Also correction made to some indents used in the above commit.
+> Send the wmi command for setting probe request
+> oui during the driver start. This will make sure
+> that the firmware is started and wmi is initialized
+> before we send this command.
 > 
-> Signed-off-by: Sriram R <srirrama@codeaurora.org>
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+> 
+> Fixes: 60e1d0fb290197fe505dff6e4e3b7e4d258dbf60
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-34e141eea7dd ath10k: fix possible out of bound access of ath10k_rates array
+f1157695c527 ath10k: set probe request oui during driver start
 
 -- 
-https://patchwork.kernel.org/patch/10624225/
+https://patchwork.kernel.org/patch/10623963/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
