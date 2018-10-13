@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gB8DX-0001Lc-DG
- for ath10k@lists.infradead.org; Sat, 13 Oct 2018 00:55:47 +0000
-Received: by mail-pg1-x542.google.com with SMTP id f8-v6so6573084pgq.5
- for <ath10k@lists.infradead.org>; Fri, 12 Oct 2018 17:55:33 -0700 (PDT)
+ id 1gB8DY-0001Lz-PN
+ for ath10k@lists.infradead.org; Sat, 13 Oct 2018 00:55:50 +0000
+Received: by mail-pl1-x643.google.com with SMTP id u6-v6so3918278plz.4
+ for <ath10k@lists.infradead.org>; Fri, 12 Oct 2018 17:55:34 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 3/4] ath10k: snoc: relax voltage requirements
-Date: Fri, 12 Oct 2018 17:55:03 -0700
-Message-Id: <20181013005504.46399-3-briannorris@chromium.org>
+Subject: [PATCH 4/4] ath10k: snoc: fix unbalanced clock error handling
+Date: Fri, 12 Oct 2018 17:55:04 -0700
+Message-Id: <20181013005504.46399-4-briannorris@chromium.org>
 In-Reply-To: <20181013005504.46399-1-briannorris@chromium.org>
 References: <20181013005504.46399-1-briannorris@chromium.org>
 MIME-Version: 1.0
@@ -27,44 +27,29 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: Govind Singh <govinds@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, Doug Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 
-I rarely see drivers specify precise voltage requirements like this, but
-if we really have to...let's at least give a little wiggle room. Board
-designs (and accompanying device trees) may not provide exactly the
-voltage listed here, and we shouldn't fail to probe just because of
-this.
-
-Round these ranges down to the nearest volt, and provide a 0.05V margin.
-The regulator should provide its own supported ranges, which will
-helpfully intersect with these ranges.
-
-I would just as well remove these ranges entirely, but if I understand
-correctly, there's some reason that QCOM SoC's like to set zero /
-non-zero voltages.
+Similar to regulator error handling, we should only start tearing down
+the 'i - 1' clock when clock 'i' fails to enable. Otherwise, we might
+end up with an unbalanced clock, where we never successfully enabled the
+clock, but we try to disable it anyway.
 
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index b63ae8b006b4..5a8e87339df2 100644
+index 5a8e87339df2..a835599a8d55 100644
 --- a/drivers/net/wireless/ath/ath10k/snoc.c
 +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -47,10 +47,10 @@ static char *const ce_name[] = {
- };
+@@ -1470,7 +1470,7 @@ static int ath10k_snoc_clk_init(struct ath10k *ar)
+ 	return 0;
  
- static struct ath10k_vreg_info vreg_cfg[] = {
--	{NULL, "vdd-0.8-cx-mx", 800000, 800000, 0, 0, false},
--	{NULL, "vdd-1.8-xo", 1800000, 1800000, 0, 0, false},
--	{NULL, "vdd-1.3-rfa", 1304000, 1304000, 0, 0, false},
--	{NULL, "vdd-3.3-ch0", 3312000, 3312000, 0, 0, false},
-+	{NULL, "vdd-0.8-cx-mx", 800000, 850000, 0, 0, false},
-+	{NULL, "vdd-1.8-xo", 1800000, 1850000, 0, 0, false},
-+	{NULL, "vdd-1.3-rfa", 1300000, 1350000, 0, 0, false},
-+	{NULL, "vdd-3.3-ch0", 3300000, 3350000, 0, 0, false},
- };
+ err_clock_config:
+-	for (; i >= 0; i--) {
++	for (i = i - 1; i >= 0; i--) {
+ 		clk_info = &ar_snoc->clk[i];
  
- static struct ath10k_clk_info clk_cfg[] = {
+ 		if (!clk_info->handle)
 -- 
 2.19.1.331.ge82ca0e54c-goog
 
