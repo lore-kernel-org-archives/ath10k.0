@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBNf8-00086V-4p
- for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:25:15 +0000
+ id 1gBNgN-00013D-Jm
+ for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:26:33 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add peer flush in ath10k_flush for STATION
+Subject: Re: [PATCH V3] ath10k: allocate small size dma memory in
+ ath10k_pci_diag_write_mem
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1538989363-12386-1-git-send-email-wgong@codeaurora.org>
-References: <1538989363-12386-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20181013172503.D38C460C1D@smtp.codeaurora.org>
-Date: Sat, 13 Oct 2018 17:25:03 +0000 (UTC)
+In-Reply-To: <1539244526-31912-1-git-send-email-cjhuang@codeaurora.org>
+References: <1539244526-31912-1-git-send-email-cjhuang@codeaurora.org>
+Message-Id: <20181013172621.5522660C55@smtp.codeaurora.org>
+Date: Sat, 13 Oct 2018 17:26:21 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +23,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Carl Huang <cjhuang@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Carl Huang <cjhuang@codeaurora.org> wrote:
 
-> In the noisy environment, if there are packets in the queue and can't
-> send out, the suspend timing will be more than 5 seconds due to the wait,
-> flush the queue to optimize the suspend timing, and let the upper layer to
-> retry the packets after resume.
+> ath10k_pci_diag_write_mem may allocate big size of the dma memory
+> based on the parameter nbytes. Take firmware diag download as
+> example, the biggest size is about 500K. In some systems, the
+> allocation is likely to fail because it can't acquire such a large
+> contiguous dma memory.
 > 
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-> It's not a regression with new firmware releases.
+> The fix is to allocate a small size dma memory. In the loop,
+> driver copies the data to the allocated dma memory and writes to
+> the destination until all the data is written.
 > 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Tested with QCA6174 PCI with
+> firmware-6.bin_WLAN.RM.4.4.1-00119-QCARMSWP-1, this also affects
+> QCA9377 PCI.
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chomium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-9de4162f0999 ath10k: add peer flush in ath10k_flush for STATION
+0738b4998c6d ath10k: allocate small size dma memory in ath10k_pci_diag_write_mem
 
 -- 
-https://patchwork.kernel.org/patch/10630271/
+https://patchwork.kernel.org/patch/10636245/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
