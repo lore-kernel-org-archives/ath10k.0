@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBNYr-00066l-8Q
- for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:18:46 +0000
+ id 1gBNci-0007dx-Js
+ for ath10k@lists.infradead.org; Sat, 13 Oct 2018 17:22:46 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
+Subject: Re: [PATCH v3] ath10k: management tx ack rssi capability check
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
-References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20181013171835.02BF96079B@smtp.codeaurora.org>
-Date: Sat, 13 Oct 2018 17:18:34 +0000 (UTC)
+In-Reply-To: <1536560670-4292-1-git-send-email-bpothuno@codeaurora.org>
+References: <1536560670-4292-1-git-send-email-bpothuno@codeaurora.org>
+Message-Id: <20181013172234.4459560A98@smtp.codeaurora.org>
+Date: Sat, 13 Oct 2018 17:22:34 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
 
-> For WoWLAN support it is expected to support wake up based on discovery of
-> one or more known SSIDs. This is the WIPHY_WOWLAN_NET_DETECT feature,
-> which shows up as an NL80211 feature flag.
+> Adding WMI service check for management tx ack rssi support; this is
+> done to maintain common avg ack signal in user level for both data
+> and management tx ack packet.
 > 
-> This shows up in 'iw phy' as:
+> Tested on QCA4019(fw version-10.4-3.2.1-00063).
 > 
-> WoWLAN support:
-> * wake up on network detection, up to 16 match sets
-> 
-> And it can be enabled with command:
-> 
-> iw phy0 wowlan enable net-detect interval 5000 delay 30 freqs 2412 matches ssid foo
-> 
-> Firmware will do scan by the configured parameters after suspend and
-> wakeup if it found matched SSIDs. Tested with QCA6174 hw3.0 with
-> firmware WLAN.RM.4.4.1-00110-QCARMSWPZ-1.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> [kvalo@codeaurora.org: fix lots of endian bugs, whitespace, commit log and style cleanup]
+> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-ce834e280f2f ath10k: support NET_DETECT WoWLAN feature
+6bc17950f4b2 ath10k: management tx ack rssi capability check
 
 -- 
-https://patchwork.kernel.org/patch/10567005/
+https://patchwork.kernel.org/patch/10593587/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
