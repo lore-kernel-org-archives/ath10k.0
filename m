@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-f194.google.com ([209.85.167.194])
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gC8To-0006rj-93
- for ath10k@lists.infradead.org; Mon, 15 Oct 2018 19:24:41 +0000
-Received: by mail-oi1-f194.google.com with SMTP id e17-v6so16028116oib.4
- for <ath10k@lists.infradead.org>; Mon, 15 Oct 2018 12:24:28 -0700 (PDT)
-Date: Mon, 15 Oct 2018 14:24:25 -0500
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry to indentify external
- FEM
-Message-ID: <20181015192425.GA19699@bogus>
-References: <1538653364-1239-1-git-send-email-bperumal@codeaurora.org>
- <1538653364-1239-2-git-send-email-bperumal@codeaurora.org>
+ id 1gCArD-0006xk-Lz
+ for ath10k@lists.infradead.org; Mon, 15 Oct 2018 21:57:01 +0000
+Received: by mail-lj1-x242.google.com with SMTP id r8-v6so18924997ljc.10
+ for <ath10k@lists.infradead.org>; Mon, 15 Oct 2018 14:56:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1538653364-1239-2-git-send-email-bperumal@codeaurora.org>
+References: <1537766878-11238-1-git-send-email-vnaralas@codeaurora.org>
+ <87va672nib.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87va672nib.fsf@kamboji.qca.qualcomm.com>
+From: Kan Yan <kyan@google.com>
+Date: Mon, 15 Oct 2018 14:56:33 -0700
+Message-ID: <CA+iem5v7HUuPeXv5bG9=xhW_yhyUvq4R+Ybw+wBm1Niha77iqA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Add wrapper function to ath10k debug
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,78 +25,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: kvalo@codeaurora.org
+Cc: vnaralas@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, Oct 04, 2018 at 05:12:43PM +0530, Bhagavathi Perumal S wrote:
-> This adds new dt entry ext-fem-name, it is used by ath10k driver
-> to select correct timing parameters and configure it in target wifi hardware.
-> The Front End Module(FEM) normally includes tx power amplifier(PA) and
-> rx low noise amplifier(LNA). The default timing parameters like tx end to
-> PA off timing values were fine tuned for internal FEM used in reference
-> design. And these timing values can not be same if ODM modifies hardware
-> design with different external FEM. This DT entry helps to choose correct
-> timing values in driver if different external FEM hardware used.
+> Johannes had an interesting idea to use trace_ath10k_log_dbg_enabled().
+> Could you investigate if that would work? That way we might get the
+> performance improvement even when is enabled CONFIG_ATH10K_TRACING (but
+> actual trace point is disabled, of course).
 
-'dt-bindings: net: ath10k: ...' for the subject please.
-
-> 
-> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
-> ---
->  .../bindings/net/wireless/qcom,ath10k.txt          | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index 7fd4e8c..fbaf309 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -56,6 +56,7 @@ Optional properties:
->  				     the length can vary between hw versions.
->  - <supply-name>-supply: handle to the regulator device tree node
->  			   optional "supply-name" is "vdd-0.8-cx-mx".
-> +- ext-fem-name: name of external front end module used.
-
-What are valid names? What if the OS doesn't recognize the name? Perhaps 
-this should be a compatible string for the particular module instead? 
-Then it could cover any differences, not just the FEM.
-
->  
->  Example (to supply the calibration data alone):
->  
-> @@ -150,3 +151,24 @@ wifi@18000000 {
->  			   <0 141 0 /* CE11 */ >;
->  		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
->  };
-> +
-> +Example (to supply the external front end module name):
-> +
-> +In this example, the front end module is defined as a property of the ath10k
-> +device node.
-
-Really need a whole new example for 1 property?
-
-> +
-> +pci {
-> +	pcie@0 {
-> +		reg = <0 0 0 0 0>;
-> +		#interrupt-cells = <1>;
-> +		#size-cells = <2>;
-> +		#address-cells = <3>;
-> +		device_type = "pci";
-> +
-> +		ath10k@0,0 {
-
-wifi@0,0
-
-> +			reg = <0 0 0 0 0>;
-> +			device_type = "pci";
-> +			ext-fem-name = "microsemi-lx5586";
-> +		};
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
+That's a good idea. This patch was originally made for Google Wifi's
+3.18 kernel and It does use trace_ath10k_log_dbg_enabled():
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/391891
++#define ath10k_dbg(ar, mask, format, ...)                              \
++       do {                                                            \
++               if (unlikely((ath10k_debug_mask & mask) ||              \
++                             trace_ath10k_log_dbg_enabled())) {        \
++                       __ath10k_dbg(ar, mask, format, ##__VA_ARGS__);  \
++               }                                                       \
++       } while (0)
 
 _______________________________________________
 ath10k mailing list
