@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x135.google.com ([2a00:1450:4864:20::135])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCIaP-0000DQ-TN
- for ath10k@lists.infradead.org; Tue, 16 Oct 2018 06:12:11 +0000
-Received: by mail-lf1-x135.google.com with SMTP id p143-v6so4896185lfp.13
- for <ath10k@lists.infradead.org>; Mon, 15 Oct 2018 23:11:59 -0700 (PDT)
-MIME-Version: 1.0
-From: think more <iiiii5322@gmail.com>
-Date: Tue, 16 Oct 2018 09:11:46 +0300
-Message-ID: <CADnr0LACengSm3ZzyTjqrF5fsRBxftDYZ9GJS2AK8X6YtDWCUA@mail.gmail.com>
-Subject: ath10k_pci QCA6174 crashes on sleep or shutdown
+ id 1gCUJ5-0000rg-09
+ for ath10k@lists.infradead.org; Tue, 16 Oct 2018 18:43:05 +0000
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: [PATCH 3/6] mac80211: Apply per-peer NoAck tid bitmap configuration
+Date: Wed, 17 Oct 2018 00:11:08 +0530
+Message-Id: <1539715271-14325-4-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1539715271-14325-1-git-send-email-tamizhr@codeaurora.org>
+References: <1539715271-14325-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,133 +17,261 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, johannes@sipsolutions.net
+Cc: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-I am having a problem. I just can't suspend laptop or shutdown, it
-gets stuck. I narrowed down the cause and it appears it is my wireless
-card, Killer 1525 and QCA6174 firmware drivers. If I switch off wifi
-before sleeping or shutting down, laptop doesn't get stuck. Now I am
-on Ubuntu 18.10, kernel 4.18, everything is updated to newest current
-version on newest firmware 1.175, but the problem persist. Previously
-I was on ubuntu 18.04, had same problem on older firmware 1.173, I
-updated Ubuntu version just to see if it fixes the problem. I also
-tried files in this repository:
-https://github.com/kvokka/msi_gs60/tree/master/wifi. I also tried
-given files in Killer webpage:
-https://www.killernetworking.com/killersupport/driver-downloads/kb/cat/6-linux#faq_80,
-but that too didn't help...
+From: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
 
-This is excerpt from kernel log, after I close the lid:
+Use per-peer NoAck tid bitmap, if it is configured,
+when setting up the qos header. If the NoAck tid bitmap is
+default (-1) for a peer, use the netdev wide noack policy
+configuration. The NoAck tid bitmap for newly connected stations
+is set to default (-1). Also modifies callback set_noack_tid_bitmap()
+with the provision to send per-peer NoAck policy configuration to the
+drivers.
 
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 128.693478] Call Trace:
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 128.693471] wpa_supplicant D
-0 880 1 0x00000004
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 128.693336] Freezing of tasks
-failed after 20.003 seconds (1 tasks refusing to freeze, wq_busy=0):
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 127.808445] atkbd serio0: Use
-'setkeycodes e017 <keycode>' to make it known.
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 127.808437] atkbd serio0:
-Unknown key released (translated set 2, code 0x97 on isa0060/serio0).
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 127.805531] atkbd serio0: Use
-'setkeycodes e017 <keycode>' to make it known.
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 127.805524] atkbd serio0:
-Unknown key pressed (translated set 2, code 0x97 on isa0060/serio0).
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 108.689468] Freezing user
-space processes ...
-Oct 9 19:18:15 linuxtownLaptop kernel: [ 108.646879] rfkill: input
-handler enabled
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.403227] ath10k_pci
-0000:05:00.0: failed to delete WMI vdev 1: -108
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.403192] ieee80211 phy0:
-Hardware restart was requested
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.285067] PM: Syncing
-filesystems ... done.
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.285065] PM: suspend entry (deep)
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272631] ath10k_pci
-0000:05:00.0: [07]: 0x00036000 1 1 1 1
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272621] ath10k_pci
-0000:05:00.0: [06]: 0x00035c00 15 15 15 15
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272612] ath10k_pci
-0000:05:00.0: [05]: 0x00035800 0 0 0 0
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272603] ath10k_pci
-0000:05:00.0: [04]: 0x00035400 833 833 226 162
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272593] ath10k_pci
-0000:05:00.0: [03]: 0x00035000 7 7 8 7
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272584] ath10k_pci
-0000:05:00.0: [02]: 0x00034c00 44 44 107 108
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272575] ath10k_pci
-0000:05:00.0: [01]: 0x00034800 2 2 37 38
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272565] ath10k_pci
-0000:05:00.0: [00]: 0x00034400 1 1 3 3
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272555] ath10k_pci
-0000:05:00.0: Copy Engine register dump:
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272553] ath10k_pci
-0000:05:00.0: [56]: 0x809A6C34 0x0041A8E0 0x0042932C 0x0042CA44
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272550] ath10k_pci
-0000:05:00.0: [52]: 0x800B4405 0x0041A850 0x00422318 0x00005002
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272548] ath10k_pci
-0000:05:00.0: [48]: 0x80996BD3 0x0041A830 0x0044FD68 0x00000000
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272545] ath10k_pci
-0000:05:00.0: [44]: 0x80992076 0x0041A810 0x0044FD68 0x0046FFE8
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272543] ath10k_pci
-0000:05:00.0: [40]: 0x8099638C 0x0041A7F0 0x00404D88 0x00000000
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272540] ath10k_pci
-0000:05:00.0: [36]: 0x809BDECC 0x0041A7D0 0x00404D88 0x0040E074
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272538] ath10k_pci
-0000:05:00.0: [32]: 0x80947BA7 0x0041A7B0 0x00404D88 0x0040E074
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272535] ath10k_pci
-0000:05:00.0: [28]: 0x80942BC4 0x0041A790 0x42D0B71D 0x00400000
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272533] ath10k_pci
-0000:05:00.0: [24]: 0x809432A7 0x0041A770 0x0040D400 0xC092E4DC
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272531] ath10k_pci
-0000:05:00.0: [20]: 0x4092E4DC 0x0041A710 0x00000000 0x0F000000
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272528] ath10k_pci
-0000:05:00.0: [16]: 0x0096BDBC 0x009286B6 0x00000000 0x00000000
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272525] ath10k_pci
-0000:05:00.0: [12]: 0x00000009 0x00000000 0x0096C09C 0x0096C0A7
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272523] ath10k_pci
-0000:05:00.0: [08]: 0x42D0B71D 0x00400000 0x00000000 0x000A5C88
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272520] ath10k_pci
-0000:05:00.0: [04]: 0x0092E4DC 0x00060130 0x00000018 0x0041A760
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272518] ath10k_pci
-0000:05:00.0: [00]: 0x05010000 0x00000000 0x0092E4DC 0x42D0B731
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.272512] ath10k_pci
-0000:05:00.0: firmware register dump:
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.270500] ath10k_pci
-0000:05:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0
-hwcrypto 1
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.270497] ath10k_pci
-0000:05:00.0: board_file api 2 bmi_id N/A crc32 ae2e275a
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.270310] ath10k_pci
-0000:05:00.0: firmware ver SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5
-features ignore-otp,no-4addr-pad crc32 10bf8e08
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.269927] ath10k_pci
-0000:05:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.269925] ath10k_pci
-0000:05:00.0: qca6174 hw2.1 target 0x05010000 chip_id 0x003405ff sub
-1a56:1525
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.269916] ath10k_pci
-0000:05:00.0: firmware crashed! (guid
-2c6b9eda-95ac-4f33-b915-414326bdcc36)
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.269913] wlp5s0: failed to
-remove key (0, a7:57:58:05:ad:44) from hardware (-110)
-Oct 9 19:17:55 linuxtownLaptop kernel: [ 108.269908] ath10k_pci
-0000:05:00.0: failed to install key for vdev 0 peer a7:57:58:05:ad:44:
--110
-What could I try next? I can't use my laptop if I can't put it to
-sleep and have to manually turn off wifi. I have killer wireless 1525.
-My card in lshw command
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
+Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+---
+ include/net/mac80211.h    |   14 ++++++++++----
+ net/mac80211/cfg.c        |   43 ++++++++++++++++++++++++++++++++++++++-----
+ net/mac80211/driver-ops.h |    3 ++-
+ net/mac80211/iface.c      |    2 +-
+ net/mac80211/sta_info.c   |    2 ++
+ net/mac80211/sta_info.h   |    3 +++
+ net/mac80211/tx.c         |    4 +++-
+ net/mac80211/wme.c        |   34 +++++++++++++++++++++++++++++++++-
+ 8 files changed, 92 insertions(+), 13 deletions(-)
 
-product: QCA6174 802.11ac Wireless Network Adapter
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 5ce7ce7..b6cc3e33 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -3624,9 +3624,14 @@ enum ieee80211_reconfig_type {
+  * @get_ftm_responder_stats: Retrieve FTM responder statistics, if available.
+  *	Statistics should be cumulative, currently no way to reset is provided.
+  *
+- * @set_noack_tid_bitmap: Set NoAck policy TID bitmap for a virtual interface.
+- *	Drivers mplementing this callback must take care of setting NoAck policy
+- *	in QOS control field based on the configured TID bitmap.
++ * @set_noack_tid_bitmap: Set NoAck policy TID bitmap. Apply the TID NoAck
++ *	configuration for a particular station when @sta is non-NULL. NoAck
++ *	policy is set to default for a peer when noack_map is -1 for the peer.
++ *	The default NoAck policy for a peer is using netdev NoAck policy.
++ *	When @sta is NULL, apply TID NoAck configuration at virtual interface
++ *	level. Drivers mplementing this callback must take care of setting NoAck
++ *	policy in QOS control field based on the configured TID bitmap.
++ *	This callback may sleep.
+  */
+ struct ieee80211_ops {
+ 	void (*tx)(struct ieee80211_hw *hw,
+@@ -3917,7 +3922,8 @@ struct ieee80211_ops {
+ 				       struct cfg80211_ftm_responder_stats *ftm_stats);
+ 
+ 	int (*set_noack_tid_bitmap)(struct ieee80211_hw *hw,
+-				    struct ieee80211_vif *vif, int noack_map);
++				    struct ieee80211_vif *vif,
++				    struct ieee80211_sta *sta, int noack_map);
+ };
+ 
+ /**
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 7a7e423..02e6d49 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -344,18 +344,51 @@ static int ieee80211_set_noack_map(struct wiphy *wiphy,
+ 				  int noack_map)
+ {
+ 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
++	struct sta_info *sta;
++	int ret;
+ 
+-	sdata->noack_map = noack_map;
++	if (!peer) {
++		sdata->noack_map = noack_map;
+ 
+-	if (!sdata->local->ops->set_noack_tid_bitmap) {
+-		ieee80211_check_fast_xmit_iface(sdata);
+-		return 0;
++		if (!sdata->local->ops->set_noack_tid_bitmap) {
++			ieee80211_check_fast_xmit_iface(sdata);
++			return 0;
++		}
++
++		if (!ieee80211_sdata_running(sdata))
++			return 0;
++
++		return drv_set_noack_tid_bitmap(sdata->local, sdata, NULL,
++						noack_map);
+ 	}
+ 
++	/* NoAck policy is for a connected client on the dev */
++
+ 	if (!ieee80211_sdata_running(sdata))
++		return -ENETDOWN;
++
++	mutex_lock(&sdata->local->sta_mtx);
++
++	sta = sta_info_get_bss(sdata, peer);
++	if (!sta) {
++		mutex_unlock(&sdata->local->sta_mtx);
++		return -ENOENT;
++	}
++
++	sta->noack_map = noack_map;
++
++	if (!sdata->local->ops->set_noack_tid_bitmap) {
++		ieee80211_check_fast_xmit(sta);
++		mutex_unlock(&sdata->local->sta_mtx);
+ 		return 0;
++	}
++
++	ret = drv_set_noack_tid_bitmap(sdata->local, sdata,
++				       &sta->sta, noack_map);
+ 
+-	return drv_set_noack_tid_bitmap(sdata->local, sdata, noack_map);
++	mutex_unlock(&sdata->local->sta_mtx);
++
++	return ret;
+ }
+ 
+ static int ieee80211_add_key(struct wiphy *wiphy, struct net_device *dev,
+diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
+index d705938..ed9bd59 100644
+--- a/net/mac80211/driver-ops.h
++++ b/net/mac80211/driver-ops.h
+@@ -1280,6 +1280,7 @@ static inline void drv_del_nan_func(struct ieee80211_local *local,
+ 
+ static inline int drv_set_noack_tid_bitmap(struct ieee80211_local *local,
+ 					   struct ieee80211_sub_if_data *sdata,
++					   struct ieee80211_sta *sta,
+ 					   int noack_map)
+ {
+ 	int ret;
+@@ -1293,7 +1294,7 @@ static inline int drv_set_noack_tid_bitmap(struct ieee80211_local *local,
+ 
+ 	trace_drv_set_noack_tid_bitmap(local, sdata, noack_map);
+ 	ret = local->ops->set_noack_tid_bitmap(&local->hw, &sdata->vif,
+-					       noack_map);
++					       sta, noack_map);
+ 	trace_drv_return_int(local, ret);
+ 
+ 	return ret;
+diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
+index 06106f2..4999977 100644
+--- a/net/mac80211/iface.c
++++ b/net/mac80211/iface.c
+@@ -635,7 +635,7 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
+ 				goto err_del_interface;
+ 
+ 			if (sdata->noack_map)
+-				drv_set_noack_tid_bitmap(local, sdata,
++				drv_set_noack_tid_bitmap(local, sdata, NULL,
+ 							 sdata->noack_map);
+ 		}
+ 
+diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
+index fb8c225..d2ea8ee 100644
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -606,6 +606,8 @@ static int sta_info_insert_finish(struct sta_info *sta) __acquires(RCU)
+ 	cfg80211_new_sta(sdata->dev, sta->sta.addr, sinfo, GFP_KERNEL);
+ 	kfree(sinfo);
+ 
++	sta->noack_map = -1;
++
+ 	sta_dbg(sdata, "Inserted STA %pM\n", sta->sta.addr);
+ 
+ 	/* move reference to rcu-protected */
+diff --git a/net/mac80211/sta_info.h b/net/mac80211/sta_info.h
+index 9a04327..863601a 100644
+--- a/net/mac80211/sta_info.h
++++ b/net/mac80211/sta_info.h
+@@ -583,6 +583,9 @@ struct sta_info {
+ 
+ 	struct cfg80211_chan_def tdls_chandef;
+ 
++	/* TID bitmap for station's NoAck policy */
++	int noack_map;
++
+ 	/* keep last! */
+ 	struct ieee80211_sta sta;
+ };
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index d744c4b..b57cd1f 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2872,7 +2872,9 @@ void ieee80211_check_fast_xmit(struct sta_info *sta)
+ 	    test_sta_flag(sta, WLAN_STA_CLEAR_PS_FILT))
+ 		goto out;
+ 
+-	if (sdata->noack_map && !local->ops->set_noack_tid_bitmap)
++	if (((sta->noack_map == -1 && sdata->noack_map) ||
++	     (sta->noack_map != -1 && sta->noack_map)) &&
++	    !local->ops->set_noack_tid_bitmap)
+ 		goto out;
+ 
+ 	/* fast-xmit doesn't handle fragmentation at all */
+diff --git a/net/mac80211/wme.c b/net/mac80211/wme.c
+index 11c14b9..b1722b8 100644
+--- a/net/mac80211/wme.c
++++ b/net/mac80211/wme.c
+@@ -227,6 +227,38 @@ u16 ieee80211_select_queue(struct ieee80211_sub_if_data *sdata,
+ }
+ 
+ /**
++ * ieee80211_get_noack_map - Get TID bitmap of NoAck policy. NoAck policy
++ * could be device wide or per-station.
++ *
++ * @sdata: local subif
++ * @mac: MAC address of the receiver
++ */
++int ieee80211_get_noack_map(struct ieee80211_sub_if_data *sdata, const u8 *mac)
++{
++	struct sta_info *sta;
++	int noack_map = 0;
++
++	/* Retrieve per-station noack_map config for the receiver, if any */
++
++	rcu_read_lock();
++
++	sta = sta_info_get(sdata, mac);
++	if (!sta) {
++		rcu_read_unlock();
++		return noack_map;
++	}
++
++	noack_map = sta->noack_map;
++
++	rcu_read_unlock();
++
++	if (noack_map == -1)
++		noack_map = sdata->noack_map;
++
++	return noack_map;
++}
++
++/**
+  * ieee80211_set_qos_hdr - Fill in the QoS header if there is one.
+  *
+  * @sdata: local subif
+@@ -257,7 +289,7 @@ void ieee80211_set_qos_hdr(struct ieee80211_sub_if_data *sdata,
+ 
+ 	if (is_multicast_ether_addr(hdr->addr1) ||
+ 	    (!sdata->local->ops->set_noack_tid_bitmap &&
+-	    sdata->noack_map & BIT(tid))) {
++	     ieee80211_get_noack_map(sdata, hdr->addr1) & BIT(tid))) {
+ 		flags |= IEEE80211_QOS_CTL_ACK_POLICY_NOACK;
+ 		info->flags |= IEEE80211_TX_CTL_NO_ACK;
+ 	}
+-- 
+1.7.9.5
 
-vendor: Qualcomm Atheros
-
-And if I try to shutdown (with wifi on), this is what I see on screen
-and have to force shutdown: https://i.stack.imgur.com/aTMgu.jpg
 
 _______________________________________________
 ath10k mailing list
