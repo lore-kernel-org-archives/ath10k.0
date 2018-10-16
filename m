@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCUJ5-0000rW-87
- for ath10k@lists.infradead.org; Tue, 16 Oct 2018 18:43:07 +0000
+ id 1gCUJH-0000tk-0h
+ for ath10k@lists.infradead.org; Tue, 16 Oct 2018 18:43:29 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCH 1/6] mac80211: Add NoAck policy functionality offload
- infrastructure
-Date: Wed, 17 Oct 2018 00:11:06 +0530
-Message-Id: <1539715271-14325-2-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCH 5/6] ath10k: Add wmi command support for station specific TID
+ config
+Date: Wed, 17 Oct 2018 00:11:10 +0530
+Message-Id: <1539715271-14325-6-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1539715271-14325-1-git-send-email-tamizhr@codeaurora.org>
 References: <1539715271-14325-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -24,189 +24,214 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-From: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
+This patch adds WMI interface to support station specific
+TID configuration like setting noack policy. Host needs to send
+station's MAC address, ack policy and TID info to target through
+WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID.
 
-Add infrastructure for drivers to implement NoAck policy functionlity.
-Driver like ath10k does not use the per-packet TID NoAck policy
-configuration.  Instead NoAck map is sent to the firmware/hardware
-in control path. Firmware takes care of setting up QOS header with
-NoAck policy based on the TID NoAck map.
+WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT flag is added to advertise
+this support.
 
-Drivers having this support should implement callback set_noack_tid_bitmap().
-Supporting drivers would receive TID NoAck map through set_noack_tid_bitmap()
-instead of receiving as part of every tx skb.
+Testing:
+   * Tested HW: QCA9888
+   * Tested FW: 10.4-3.5.1-00052
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- include/net/mac80211.h    |    7 +++++++
- net/mac80211/cfg.c        |   10 ++++++++--
- net/mac80211/driver-ops.h |   21 +++++++++++++++++++++
- net/mac80211/iface.c      |    4 ++++
- net/mac80211/trace.h      |   25 +++++++++++++++++++++++++
- net/mac80211/tx.c         |    2 +-
- net/mac80211/wme.c        |    3 ++-
- 7 files changed, 68 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 19 ++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     | 29 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     | 50 +++++++++++++++++++++++++++++++
+ 3 files changed, 98 insertions(+)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 71985e9..7da9d30 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -3623,6 +3623,10 @@ enum ieee80211_reconfig_type {
-  *	skb is always a real frame, head may or may not be an A-MSDU.
-  * @get_ftm_responder_stats: Retrieve FTM responder statistics, if available.
-  *	Statistics should be cumulative, currently no way to reset is provided.
-+ *
-+ * @set_noack_tid_bitmap: Set NoAck policy TID bitmap for a virtual interface.
-+ *	Drivers mplementing this callback must take care of setting NoAck policy
-+ *	in QOS control field based on the configured TID bitmap.
-  */
- struct ieee80211_ops {
- 	void (*tx)(struct ieee80211_hw *hw,
-@@ -3911,6 +3915,9 @@ struct ieee80211_ops {
- 	int (*get_ftm_responder_stats)(struct ieee80211_hw *hw,
- 				       struct ieee80211_vif *vif,
- 				       struct cfg80211_ftm_responder_stats *ftm_stats);
-+
-+	int (*set_noack_tid_bitmap)(struct ieee80211_hw *hw,
-+				    struct ieee80211_vif *vif, u16 noack_map);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 7978a77..65be00e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -219,6 +219,8 @@ struct wmi_ops {
+ 	struct sk_buff *(*gen_echo)(struct ath10k *ar, u32 value);
+ 	struct sk_buff *(*gen_pdev_get_tpc_table_cmdid)(struct ath10k *ar,
+ 							u32 param);
++	struct sk_buff *(*gen_per_peer_per_tid_cfg)(struct ath10k *ar,
++				const struct wmi_per_peer_per_tid_cfg_arg *arg);
+ 
  };
  
- /**
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 5162233..4d8cc8d 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -346,9 +346,15 @@ static int ieee80211_set_noack_map(struct wiphy *wiphy,
- 
- 	sdata->noack_map = noack_map;
- 
--	ieee80211_check_fast_xmit_iface(sdata);
-+	if (!sdata->local->ops->set_noack_tid_bitmap) {
-+		ieee80211_check_fast_xmit_iface(sdata);
-+		return 0;
-+	}
- 
--	return 0;
-+	if (!ieee80211_sdata_running(sdata))
-+		return 0;
-+
-+	return drv_set_noack_tid_bitmap(sdata->local, sdata, noack_map);
+@@ -1576,4 +1578,21 @@ struct wmi_ops {
+ 				   ar->wmi.cmd->radar_found_cmdid);
  }
  
- static int ieee80211_add_key(struct wiphy *wiphy, struct net_device *dev,
-diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
-index 0b1747a..a6dcef5 100644
---- a/net/mac80211/driver-ops.h
-+++ b/net/mac80211/driver-ops.h
-@@ -1278,4 +1278,25 @@ static inline void drv_del_nan_func(struct ieee80211_local *local,
- 	trace_drv_return_void(local);
- }
- 
-+static inline int drv_set_noack_tid_bitmap(struct ieee80211_local *local,
-+					   struct ieee80211_sub_if_data *sdata,
-+					   u16 noack_map)
++static inline int
++ath10k_wmi_set_per_peer_per_tid_cfg(struct ath10k *ar,
++				const struct wmi_per_peer_per_tid_cfg_arg *arg)
 +{
-+	int ret;
++	struct sk_buff *skb;
 +
-+	might_sleep();
-+	if (!check_sdata_in_driver(sdata))
-+		return -EIO;
-+
-+	if (!local->ops->set_noack_tid_bitmap)
++	if (!ar->wmi.ops->gen_per_peer_per_tid_cfg)
 +		return -EOPNOTSUPP;
 +
-+	trace_drv_set_noack_tid_bitmap(local, sdata, noack_map);
-+	ret = local->ops->set_noack_tid_bitmap(&local->hw, &sdata->vif,
-+					       noack_map);
-+	trace_drv_return_int(local, ret);
++	skb = ar->wmi.ops->gen_per_peer_per_tid_cfg(ar, arg);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
 +
-+	return ret;
++	return ath10k_wmi_cmd_send(ar, skb,
++				   ar->wmi.cmd->per_peer_per_tid_config_cmdid);
 +}
 +
- #endif /* __MAC80211_DRIVER_OPS */
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 5836dde..06106f2 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -633,6 +633,10 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
- 				ieee80211_vif_type_p2p(&sdata->vif));
- 			if (res)
- 				goto err_del_interface;
-+
-+			if (sdata->noack_map)
-+				drv_set_noack_tid_bitmap(local, sdata,
-+							 sdata->noack_map);
- 		}
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 25e8fa7..14fdc94 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -750,6 +750,7 @@
+ 	.tdls_peer_update_cmdid = WMI_10_4_TDLS_PEER_UPDATE_CMDID,
+ 	.tdls_set_offchan_mode_cmdid = WMI_10_4_TDLS_SET_OFFCHAN_MODE_CMDID,
+ 	.radar_found_cmdid = WMI_10_4_RADAR_FOUND_CMDID,
++	.per_peer_per_tid_config_cmdid = WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID,
+ };
  
- 		if (sdata->vif.type == NL80211_IFTYPE_AP) {
-diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
-index 588c51a..a563904 100644
---- a/net/mac80211/trace.h
-+++ b/net/mac80211/trace.h
-@@ -1882,6 +1882,31 @@ struct trace_switch_entry {
- 	)
- );
+ /* MAIN WMI VDEV param map */
+@@ -8744,6 +8745,33 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ }
  
-+TRACE_EVENT(drv_set_noack_tid_bitmap,
-+	TP_PROTO(struct ieee80211_local *local,
-+		 struct ieee80211_sub_if_data *sdata,
-+		 u16 noack_map),
+ static struct sk_buff *
++ath10k_wmi_10_4_gen_per_peer_per_tid_cfg(struct ath10k *ar,
++				const struct wmi_per_peer_per_tid_cfg_arg *arg)
++{
++	struct wmi_peer_per_tid_cfg_cmd *cmd;
++	struct sk_buff *skb;
 +
-+	TP_ARGS(local, sdata, noack_map),
-+	TP_STRUCT__entry(
-+		LOCAL_ENTRY
-+		VIF_ENTRY
-+		__field(u16, noack_map)
-+	),
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
 +
-+	TP_fast_assign(
-+		LOCAL_ASSIGN;
-+		VIF_ASSIGN;
-+		__entry->noack_map = noack_map;
-+	),
++	memset(skb->data, 0, sizeof(*cmd));
 +
-+	TP_printk(
-+		LOCAL_PR_FMT  VIF_PR_FMT
-+		", noack_map: %u",
-+		LOCAL_PR_ARG, VIF_PR_ARG, __entry->noack_map
-+	)
-+);
++	cmd = (struct wmi_peer_per_tid_cfg_cmd *)skb->data;
++	cmd->vdev_id = cpu_to_le32(arg->vdev_id);
++	ether_addr_copy(cmd->peer_macaddr.addr, arg->peer_macaddr.addr);
++	cmd->tid = cpu_to_le32(arg->tid);
++	cmd->ack_policy = cpu_to_le32(arg->ack_policy);
++	cmd->aggr_control = cpu_to_le32(arg->aggr_control);
++	cmd->rate_control = cpu_to_le32(arg->rate_ctrl);
 +
- /*
-  * Tracing for API calls that drivers call.
-  */
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index e0ccee2..d744c4b 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -2872,7 +2872,7 @@ void ieee80211_check_fast_xmit(struct sta_info *sta)
- 	    test_sta_flag(sta, WLAN_STA_CLEAR_PS_FILT))
- 		goto out;
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate %u mac_addr %pM\n",
++		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control, arg->rate_ctrl, arg->peer_macaddr.addr);
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_op_gen_echo(struct ath10k *ar, u32 value)
+ {
+ 	struct wmi_echo_cmd *cmd;
+@@ -9128,6 +9156,7 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.gen_pdev_get_tpc_table_cmdid =
+ 			ath10k_wmi_10_4_op_gen_pdev_get_tpc_table_cmdid,
+ 	.gen_radar_found = ath10k_wmi_10_4_gen_radar_found,
++	.gen_per_peer_per_tid_cfg = ath10k_wmi_10_4_gen_per_peer_per_tid_cfg,
  
--	if (sdata->noack_map)
-+	if (sdata->noack_map && !local->ops->set_noack_tid_bitmap)
- 		goto out;
+ 	/* shared with 10.2 */
+ 	.pull_echo_ev = ath10k_wmi_op_pull_echo_ev,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index f7badd0..d3571b6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -205,6 +205,7 @@ enum wmi_service {
+ 	WMI_SERVICE_SPOOF_MAC_SUPPORT,
+ 	WMI_SERVICE_TX_DATA_ACK_RSSI,
+ 	WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++	WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT,
  
- 	/* fast-xmit doesn't handle fragmentation at all */
-diff --git a/net/mac80211/wme.c b/net/mac80211/wme.c
-index 5f7c963..11c14b9 100644
---- a/net/mac80211/wme.c
-+++ b/net/mac80211/wme.c
-@@ -256,7 +256,8 @@ void ieee80211_set_qos_hdr(struct ieee80211_sub_if_data *sdata,
- 		       IEEE80211_QOS_CTL_ACK_POLICY_MASK);
- 
- 	if (is_multicast_ether_addr(hdr->addr1) ||
--	    sdata->noack_map & BIT(tid)) {
-+	    (!sdata->local->ops->set_noack_tid_bitmap &&
-+	    sdata->noack_map & BIT(tid))) {
- 		flags |= IEEE80211_QOS_CTL_ACK_POLICY_NOACK;
- 		info->flags |= IEEE80211_TX_CTL_NO_ACK;
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -474,6 +475,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_RESET_CHIP);
+ 	SVCSTR(WMI_SERVICE_TX_DATA_ACK_RSSI);
+ 	SVCSTR(WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT);
++	SVCSTR(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT);
+ 	default:
+ 		return NULL;
  	}
+@@ -786,6 +788,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_TX_DATA_ACK_RSSI, len);
+ 	SVCMAP(WMI_10_4_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
+ 	       WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT, len);
++	SVCMAP(WMI_10_4_SERVICE_PEER_TID_CONFIGS_SUPPORT,
++	       WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, len);
+ }
+ 
+ #undef SVCMAP
+@@ -986,6 +990,7 @@ struct wmi_cmd_map {
+ 	u32 pdev_wds_entry_list_cmdid;
+ 	u32 tdls_set_offchan_mode_cmdid;
+ 	u32 radar_found_cmdid;
++	u32 per_peer_per_tid_config_cmdid;
+ };
+ 
+ /*
+@@ -1825,6 +1830,8 @@ enum wmi_10_4_cmd_id {
+ 	WMI_10_4_PDEV_SET_BRIDGE_MACADDR_CMDID,
+ 	WMI_10_4_ATF_GROUP_WMM_AC_CONFIG_REQUEST_CMDID,
+ 	WMI_10_4_RADAR_FOUND_CMDID,
++	WMI_10_4_PEER_CFR_CAPTURE_CMDID,
++	WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID,
+ 	WMI_10_4_PDEV_UTF_CMDID = WMI_10_4_END_CMDID - 1,
+ };
+ 
+@@ -7053,6 +7060,49 @@ struct wmi_tdls_peer_event {
+ 	__le32 vdev_id;
+ } __packed;
+ 
++enum wmi_tid_aggr_control_conf {
++	WMI_TID_CONFIG_AGGR_CONTROL_IGNORE,
++	WMI_TID_CONFIG_AGGR_CONTROL_ENABLE,
++	WMI_TID_CONFIG_AGGR_CONTROL_DISABLE,
++};
++
++enum wmi_noack_tid_conf {
++	WMI_NOACK_TID_CONFIG_IGNORE_ACK_POLICY,
++	WMI_PEER_TID_CONFIG_ACK,
++	WMI_PEER_TID_CONFIG_NOACK,
++};
++
++enum wmi_tid_rate_ctrl_conf {
++	WMI_TID_CONFIG_RATE_CONTROL_IGNORE,
++	WMI_TID_CONFIG_RATE_CONTROL_AUTO,
++	WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE,
++	WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE,
++};
++
++struct wmi_per_peer_per_tid_cfg_arg {
++	u32 vdev_id;
++	struct wmi_mac_addr peer_macaddr;
++	u32 tid;
++	enum wmi_noack_tid_conf ack_policy;
++	enum wmi_tid_aggr_control_conf aggr_control;
++	enum wmi_tid_rate_ctrl_conf rate_ctrl;
++};
++
++struct wmi_peer_per_tid_cfg_cmd {
++	__le32 vdev_id;
++	struct wmi_mac_addr peer_macaddr;
++	__le32 tid;
++
++	/* see enum wmi_noack_tid_conf */
++	__le32 ack_policy;
++	/* see enum wmi_tid_aggr_control_conf */
++	__le32 aggr_control;
++	/* see enum wmi_tid_rate_ctrl_conf */
++	__le32 rate_control;
++	__le32 rcode_rcflags;
++	__le32 sw_retry_threshold;
++} __packed;
++
+ enum wmi_txbf_conf {
+ 	WMI_TXBF_CONF_UNSUPPORTED,
+ 	WMI_TXBF_CONF_BEFORE_ASSOC,
 -- 
-1.7.9.5
+1.9.1
 
 
 _______________________________________________
