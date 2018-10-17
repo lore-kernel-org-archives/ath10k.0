@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCjtj-0004YP-Ky
- for ath10k@lists.infradead.org; Wed, 17 Oct 2018 11:21:57 +0000
+ id 1gClt6-0007mg-Of
+ for ath10k@lists.infradead.org; Wed, 17 Oct 2018 13:29:26 +0000
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com
+ [209.85.222.174])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0E68121527
+ for <ath10k@lists.infradead.org>; Wed, 17 Oct 2018 13:29:14 +0000 (UTC)
+Received: by mail-qk1-f174.google.com with SMTP id m8-v6so16421827qka.12
+ for <ath10k@lists.infradead.org>; Wed, 17 Oct 2018 06:29:14 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 17 Oct 2018 16:51:44 +0530
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fill the channel survey results for WCN3990
- correctly
-In-Reply-To: <87murj2mc0.fsf@kamboji.qca.qualcomm.com>
-References: <1538564267-19863-1-git-send-email-pillair@codeaurora.org>
- <20181012143434.3F49060A98@smtp.codeaurora.org>
- <87murj2mc0.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <c825412eeccfee7a3ca6ebe0b9e68ea8@codeaurora.org>
+References: <87ftxevtek.fsf@codeaurora.org>
+In-Reply-To: <87ftxevtek.fsf@codeaurora.org>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Wed, 17 Oct 2018 09:29:01 -0400
+Message-ID: <CA+5PVA48AzPShnZYcbw-j-DaydOt6U+eDU0o+tN=gf_4vBojdQ@mail.gmail.com>
+Subject: Re: [PULL] ath10k firmware 2018-10-10
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +26,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: Linux Wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Linux Firmware <linux-firmware@kernel.org>
 
-Hi Kalle,
+On Wed, Oct 10, 2018 at 9:11 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Hi linux-firmware maintainers,
+>
+> here are ath10k firmware updates which have been accumulating the last 6
+> months or so. Please let me know if there are any problems.
+>
+> Kalle
+>
+> The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
+>
+>   Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
+>
+> are available in the git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20181010
+>
+> for you to fetch changes up to eaceb79a5a27ef37f85d1a5585b209361330b4bb:
+>
+>   ath10k: QCA9984 hw1.0: update board-2.bin (2018-10-10 15:14:05 +0300)
+>
+> ----------------------------------------------------------------
+> Kalle Valo (10):
+>       ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.6-00140
+>       ath10k: QCA4019 hw1.0: update board-2.bin
+>       ath10k: QCA6174 hw3.0: update firmware-6.bin to RM.4.4.1.c2-00057-QCARMSWP-1
+>       ath10k: QCA9377 hw1.0: add firmware-6.bin to WLAN.TF.2.1-00021-QCARMSWP-1
+>       ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00041
+>       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.6-00140
+>       ath10k: QCA9888 hw2.0: update board-2.bin
+>       ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00041
+>       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.6.0.1-00003
+>       ath10k: QCA9984 hw1.0: update board-2.bin
+>
+>  WHENCE                                            |   15 +-
+>  ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 133452 -> 449316 bytes
+>  ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 568636 -> 583344 bytes
+>  ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 730788 -> 731276 bytes
+>  ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt |  502 +-------
+>  ath10k/QCA9377/hw1.0/firmware-6.bin               |  Bin 0 -> 751436 bytes
+>  ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt | 1352 +++++++++++++++++++++
+>  ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 237584 -> 237660 bytes
+>  ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 72788 -> 84928 bytes
+>  ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 659708 -> 675492 bytes
+>  ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248108 -> 248200 bytes
+>  ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 121264 -> 171916 bytes
+>  ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 647380 -> 662084 bytes
+>  13 files changed, 1423 insertions(+), 446 deletions(-)
+>  create mode 100644 ath10k/QCA9377/hw1.0/firmware-6.bin
+>  create mode 100644 ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt
 
-I have removed the clk_freq variable and now there will be u32 division 
-only.
-This change has been sent in v2.
+Pulled and pushed out.  Thanks.
 
-Thanks,
-Rakesh Pillai.
-
-On 2018-10-12 21:23, Kalle Valo wrote:
-> Kalle Valo <kvalo@codeaurora.org> writes:
-> 
->> Rakesh Pillai <pillair@codeaurora.org> wrote:
->> 
->>> The host driver currently expects the channel info event to be
->>> received in pairs for all the channels, i.e. the first
->>> chan_info event for a particular channel will not have the
->>> COMPLETE flag set and the second chan_info event for the
->>> same channel will have the COMPLETE flag set.
->>> 
->>> The HL2.0 firmware sends only one channel info event per channel
->>> which is scanned without the COMPLETE flag set. After sending the
->>> chan_info_event for all the channels, the HL2.0 firmware sends a
->>> chan_info_event with COMPLETE flag set to indicate the completion
->>> of the channel info event.
->>> 
->>> The firmware does not indicate this behavior with any service bitmap
->>> and hence a new firmware feature flag is used to handle the modified
->>> parsing of the channel info events, in the host driver, for the
->>> firmware which sends single channel info event per scanned channel.
->>> 
->>> Tested HW: WCN3990
->>> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
->>> 
->>> Co-developed-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
->>> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
->>> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
->>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->> 
->> Kbuild bot reported some errors:
->> 
->>>> ERROR: "__udivdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] 
->>>> undefined!
->>>> ERROR: "__divdi3" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] 
->>>> undefined!
->> 
->> Need to investigate those if they are valid or problem with the bot.
-> 
-> Arnd explained the problem in the other thread:
-> 
->   "I think the problem is that 'clock_freq' is a 'u64', which means we
->    can't use a normal 32-bit division. It looks like it cannot actually
->    go beyond the range of a u32, so changing the type should be
->    sufficient."
-> 
-> Please investigate that and submit v2.
+josh
 
 _______________________________________________
 ath10k mailing list
