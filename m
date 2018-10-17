@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCgSa-0008UL-Jh
- for ath10k@lists.infradead.org; Wed, 17 Oct 2018 07:43:40 +0000
-MIME-Version: 1.0
-From: Stephen Boyd <sboyd@kernel.org>
-In-Reply-To: <1539172376-19269-2-git-send-email-govinds@codeaurora.org>
-References: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
- <1539172376-19269-2-git-send-email-govinds@codeaurora.org>
-Message-ID: <153976208916.5275.15753381614937010537@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH v3 1/3] dt: bindings: add missing dt properties for
- WCN3990 wifi node
-Date: Wed, 17 Oct 2018 00:41:29 -0700
+ id 1gCjsQ-0004M0-4l
+ for ath10k@lists.infradead.org; Wed, 17 Oct 2018 11:20:36 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v2] ath10k: Fill the channel survey results for WCN3990
+ correctly
+Date: Wed, 17 Oct 2018 16:50:03 +0530
+Message-Id: <1539775203-22764-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,80 +16,308 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>, andy.gross@linaro.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-Quoting Govind Singh (2018-10-10 04:52:54)
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index 7fd4e8c..f831bb1 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -37,12 +37,20 @@ Optional properties:
->  - clocks: List of clock specifiers, must contain an entry for each required
->            entry in clock-names.
->  - clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
-> -               "wifi_wcss_rtc".
-> -- interrupts: List of interrupt lines. Must contain an entry
-> -             for each entry in the interrupt-names property.
-> +              "wifi_wcss_rtc" for "qcom,ipq4019-wifi" compatible target and
-> +              "cxo_ref_clk_pin", "smmu_aggre2_noc_clk" for "qcom,wcn3990-wifi"
-> +              compatible target.
-> +- interrupts: reference to the list of 17 interrupt no's for "qcom,ipq4019-wifi"
+The host driver currently expects the channel info event to be
+received in pairs for all the channels, i.e. the first
+chan_info event for a particular channel will not have the
+COMPLETE flag set and the second chan_info event for the
+same channel will have the COMPLETE flag set.
 
-Nitpick: Can you write out "numbers" instead of "no's"?
+The HL2.0 firmware sends only one channel info event per channel
+which is scanned without the COMPLETE flag set. After sending the
+chan_info_event for all the channels, the HL2.0 firmware sends a
+chan_info_event with COMPLETE flag set to indicate the completion
+of the channel info event.
 
-> +             compatible target.
-> +             reference to the list of 12 interrupt no's for "qcom,wcn3990-wifi"
-> +             compatible target.
-> +             Must contain interrupt-names property per entry for
-> +             "qcom,ath10k", "qcom,ipq4019-wifi" compatible targets.
-> +
->  - interrupt-names: Must include the entries for MSI interrupt
->                    names ("msi0" to "msi15") and legacy interrupt
-> -                  name ("legacy"),
-> +                  name ("legacy") for "qcom,ath10k", "qcom,ipq4019-wifi"
-> +                  compatible targets.
->  - qcom,msi_addr: MSI interrupt address.
->  - qcom,msi_base: Base value to add before writing MSI data into
->                 MSI address register.
-> @@ -55,7 +63,8 @@ Optional properties:
->  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
->                                      the length can vary between hw versions.
->  - <supply-name>-supply: handle to the regulator device tree node
-> -                          optional "supply-name" is "vdd-0.8-cx-mx".
-> +                          optional "supply-name" are "vdd-0.8-cx-mx",
-> +                          "vdd-1.8-xo", "vdd-1.3-rfa" and "vdd-3.3-ch0".
+The firmware does not indicate this behavior with any service bitmap
+and hence a new firmware feature flag is used to handle the modified
+parsing of the channel info events, in the host driver, for the
+firmware which sends single channel info event per scanned channel.
 
-Why can't the wifi firmware manage these regulators itself?
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 
-And these names don't seem to match any sort of schematic or really
-describe what this device is. From what I can tell, we've combined the
-off-SoC wifi module with the on-SoC wifi I/O space into one DT node here
-and then relied on that node to make some driver probe in the kernel to
-do wifi stuff. Can we model this properly by actually showing that
-there's something in the SoC, and there's something outside the SoC, and
-these two things are connected by having two nodes and a phandle between
-them?
+Co-developed-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c    |   1 +
+ drivers/net/wireless/ath/ath10k/core.h    |   3 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |   3 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  10 +++
+ drivers/net/wireless/ath/ath10k/wmi.c     | 128 +++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/wmi.h     |  12 +++
+ 6 files changed, 120 insertions(+), 37 deletions(-)
 
->  
->  Example (to supply the calibration data alone):
->  
-> @@ -133,8 +142,10 @@ wifi@18000000 {
->                 compatible = "qcom,wcn3990-wifi";
->                 reg = <0x18800000 0x800000>;
->                 reg-names = "membase";
-> -               clocks = <&clock_gcc clk_aggre2_noc_clk>;
-> -               clock-names = "smmu_aggre2_noc_clk"
-> +               clocks = <&clock_gcc clk_aggre2_noc_clk>,
-> +                        <&clock_gcc clk_rf_clk2_pin>;
-> +               clock-names = "smmu_aggre2_noc_clk",
-> +                             "cxo_ref_clk_pin";
->                 interrupts =
->                            <0 130 0 /* CE0 */ >,
->                            <0 131 0 /* CE1 */ >,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 0126e0a..9d0b351 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -594,6 +594,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+ 	[ATH10K_FW_FEATURE_NO_PS] = "no-ps",
+ 	[ATH10K_FW_FEATURE_MGMT_TX_BY_REF] = "mgmt-tx-by-reference",
+ 	[ATH10K_FW_FEATURE_NON_BMI] = "non-bmi",
++	[ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL] = "single-chan-info-per-channel",
+ };
+ 
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 406668a..1376fc5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -760,6 +760,9 @@ enum ath10k_fw_features {
+ 	/* Firmware load is done externally, not by bmi */
+ 	ATH10K_FW_FEATURE_NON_BMI = 19,
+ 
++	/* Firmware sends only one chan_info event per channel */
++	ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL = 20,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 93a7b7b..4b02edc 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -762,6 +762,9 @@ static int ath10k_wmi_tlv_op_pull_ch_info_ev(struct ath10k *ar,
+ 	arg->noise_floor = ev->noise_floor;
+ 	arg->rx_clear_count = ev->rx_clear_count;
+ 	arg->cycle_count = ev->cycle_count;
++	if (test_bit(ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL,
++		     ar->running_fw->fw_file.fw_features))
++		arg->mac_clk_mhz = ev->mac_clk_mhz;
+ 
+ 	kfree(tb);
+ 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 6af8d9b..1454d60 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1579,6 +1579,16 @@ struct ath10k_mgmt_tx_pkt_addr {
+ 	dma_addr_t paddr;
+ };
+ 
++struct chan_info_params {
++	u32 err_code;
++	u32 freq;
++	u32 cmd_flags;
++	u32 noise_floor;
++	u32 rx_clear_count;
++	u32 cycle_count;
++	u32 mac_clk_mhz;
++};
++
+ struct wmi_tlv_mgmt_tx_compl_ev {
+ 	__le32 desc_id;
+ 	__le32 status;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 25e8fa7..659513b 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2554,60 +2554,69 @@ static int ath10k_wmi_10_4_op_pull_ch_info_ev(struct ath10k *ar,
+ 	return 0;
+ }
+ 
+-void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
++/*
++ * Handle the channel info event for firmware which only sends one
++ * chan_info event per scanned channel.
++ */
++static void ath10k_wmi_event_chan_info_unpaired(struct ath10k *ar,
++						struct chan_info_params *params)
+ {
+-	struct wmi_ch_info_ev_arg arg = {};
+ 	struct survey_info *survey;
+-	u32 err_code, freq, cmd_flags, noise_floor, rx_clear_count, cycle_count;
+-	int idx, ret;
++	int idx;
+ 
+-	ret = ath10k_wmi_pull_ch_info(ar, skb, &arg);
+-	if (ret) {
+-		ath10k_warn(ar, "failed to parse chan info event: %d\n", ret);
++	if (params->cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE) {
++		ath10k_dbg(ar, ATH10K_DBG_WMI, "chan info report completed\n");
+ 		return;
+ 	}
+ 
+-	err_code = __le32_to_cpu(arg.err_code);
+-	freq = __le32_to_cpu(arg.freq);
+-	cmd_flags = __le32_to_cpu(arg.cmd_flags);
+-	noise_floor = __le32_to_cpu(arg.noise_floor);
+-	rx_clear_count = __le32_to_cpu(arg.rx_clear_count);
+-	cycle_count = __le32_to_cpu(arg.cycle_count);
++	idx = freq_to_idx(ar, params->freq);
++	if (idx >= ARRAY_SIZE(ar->survey)) {
++		ath10k_warn(ar, "chan info: invalid frequency %d (idx %d out of bounds)\n",
++			    params->freq, idx);
++		return;
++	}
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "chan info err_code %d freq %d cmd_flags %d noise_floor %d rx_clear_count %d cycle_count %d\n",
+-		   err_code, freq, cmd_flags, noise_floor, rx_clear_count,
+-		   cycle_count);
++	survey = &ar->survey[idx];
+ 
+-	spin_lock_bh(&ar->data_lock);
++	if (!params->mac_clk_mhz || !survey)
++		return;
+ 
+-	switch (ar->scan.state) {
+-	case ATH10K_SCAN_IDLE:
+-	case ATH10K_SCAN_STARTING:
+-		ath10k_warn(ar, "received chan info event without a scan request, ignoring\n");
+-		goto exit;
+-	case ATH10K_SCAN_RUNNING:
+-	case ATH10K_SCAN_ABORTING:
+-		break;
+-	}
++	memset(survey, 0, sizeof(*survey));
+ 
+-	idx = freq_to_idx(ar, freq);
++	survey->noise = params->noise_floor;
++	survey->time = (params->cycle_count / params->mac_clk_mhz) / 1000;
++	survey->time_busy = (params->rx_clear_count / params->mac_clk_mhz) / 1000;
++	survey->filled |= SURVEY_INFO_NOISE_DBM | SURVEY_INFO_TIME |
++			  SURVEY_INFO_TIME_BUSY;
++}
++
++/*
++ * Handle the channel info event for firmware which sends chan_info
++ * event in pairs(start and stop events) for every scanned channel.
++ */
++static void ath10k_wmi_event_chan_info_paired(struct ath10k *ar,
++					      struct chan_info_params *params)
++{
++	struct survey_info *survey;
++	int idx;
++
++	idx = freq_to_idx(ar, params->freq);
+ 	if (idx >= ARRAY_SIZE(ar->survey)) {
+ 		ath10k_warn(ar, "chan info: invalid frequency %d (idx %d out of bounds)\n",
+-			    freq, idx);
+-		goto exit;
++			    params->freq, idx);
++		return;
+ 	}
+ 
+-	if (cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE) {
++	if (params->cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE) {
+ 		if (ar->ch_info_can_report_survey) {
+ 			survey = &ar->survey[idx];
+-			survey->noise = noise_floor;
++			survey->noise = params->noise_floor;
+ 			survey->filled = SURVEY_INFO_NOISE_DBM;
+ 
+ 			ath10k_hw_fill_survey_time(ar,
+ 						   survey,
+-						   cycle_count,
+-						   rx_clear_count,
++						   params->cycle_count,
++						   params->rx_clear_count,
+ 						   ar->survey_last_cycle_count,
+ 						   ar->survey_last_rx_clear_count);
+ 		}
+@@ -2617,11 +2626,56 @@ void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
+ 		ar->ch_info_can_report_survey = true;
+ 	}
+ 
+-	if (!(cmd_flags & WMI_CHAN_INFO_FLAG_PRE_COMPLETE)) {
+-		ar->survey_last_rx_clear_count = rx_clear_count;
+-		ar->survey_last_cycle_count = cycle_count;
++	if (!(params->cmd_flags & WMI_CHAN_INFO_FLAG_PRE_COMPLETE)) {
++		ar->survey_last_rx_clear_count = params->rx_clear_count;
++		ar->survey_last_cycle_count = params->cycle_count;
++	}
++}
++
++void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct chan_info_params ch_info_param;
++	struct wmi_ch_info_ev_arg arg = {};
++	int ret;
++
++	ret = ath10k_wmi_pull_ch_info(ar, skb, &arg);
++	if (ret) {
++		ath10k_warn(ar, "failed to parse chan info event: %d\n", ret);
++		return;
++	}
++
++	ch_info_param.err_code = __le32_to_cpu(arg.err_code);
++	ch_info_param.freq = __le32_to_cpu(arg.freq);
++	ch_info_param.cmd_flags = __le32_to_cpu(arg.cmd_flags);
++	ch_info_param.noise_floor = __le32_to_cpu(arg.noise_floor);
++	ch_info_param.rx_clear_count = __le32_to_cpu(arg.rx_clear_count);
++	ch_info_param.cycle_count = __le32_to_cpu(arg.cycle_count);
++	ch_info_param.mac_clk_mhz = __le32_to_cpu(arg.mac_clk_mhz);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "chan info err_code %d freq %d cmd_flags %d noise_floor %d rx_clear_count %d cycle_count %d\n",
++		   ch_info_param.err_code, ch_info_param.freq, ch_info_param.cmd_flags,
++		   ch_info_param.noise_floor, ch_info_param.rx_clear_count,
++		   ch_info_param.cycle_count);
++
++	spin_lock_bh(&ar->data_lock);
++
++	switch (ar->scan.state) {
++	case ATH10K_SCAN_IDLE:
++	case ATH10K_SCAN_STARTING:
++		ath10k_warn(ar, "received chan info event without a scan request, ignoring\n");
++		goto exit;
++	case ATH10K_SCAN_RUNNING:
++	case ATH10K_SCAN_ABORTING:
++		break;
+ 	}
+ 
++	if (test_bit(ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL,
++		     ar->running_fw->fw_file.fw_features))
++		ath10k_wmi_event_chan_info_unpaired(ar, &ch_info_param);
++	else
++		ath10k_wmi_event_chan_info_paired(ar, &ch_info_param);
++
+ exit:
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index f67c527..d70352e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6441,6 +6441,14 @@ struct wmi_chan_info_event {
+ 	__le32 noise_floor;
+ 	__le32 rx_clear_count;
+ 	__le32 cycle_count;
++	__le32 chan_tx_pwr_range;
++	__le32 chan_tx_pwr_tp;
++	__le32 rx_frame_count;
++	__le32 my_bss_rx_cycle_count;
++	__le32 rx_11b_mode_data_duration;
++	__le32 tx_frame_cnt;
++	__le32 mac_clk_mhz;
++
+ } __packed;
+ 
+ struct wmi_10_4_chan_info_event {
+@@ -6669,6 +6677,10 @@ struct wmi_ch_info_ev_arg {
+ 	__le32 chan_tx_pwr_range;
+ 	__le32 chan_tx_pwr_tp;
+ 	__le32 rx_frame_count;
++	__le32 my_bss_rx_cycle_count;
++	__le32 rx_11b_mode_data_duration;
++	__le32 tx_frame_cnt;
++	__le32 mac_clk_mhz;
+ };
+ 
+ /* From 10.4 firmware, not sure all have the same values. */
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
