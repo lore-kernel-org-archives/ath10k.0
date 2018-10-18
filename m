@@ -1,23 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gClt6-0007mg-Of
- for ath10k@lists.infradead.org; Wed, 17 Oct 2018 13:29:26 +0000
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com
- [209.85.222.174])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0E68121527
- for <ath10k@lists.infradead.org>; Wed, 17 Oct 2018 13:29:14 +0000 (UTC)
-Received: by mail-qk1-f174.google.com with SMTP id m8-v6so16421827qka.12
- for <ath10k@lists.infradead.org>; Wed, 17 Oct 2018 06:29:14 -0700 (PDT)
+ id 1gD2rJ-0003fA-L7
+ for ath10k@lists.infradead.org; Thu, 18 Oct 2018 07:38:42 +0000
+Date: Thu, 18 Oct 2018 10:36:19 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ath10k: Fixup extended per sta tx statistics
+Message-ID: <20181018073619.c2cxj74enkramhjr@kili.mountain>
 MIME-Version: 1.0
-References: <87ftxevtek.fsf@codeaurora.org>
-In-Reply-To: <87ftxevtek.fsf@codeaurora.org>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Wed, 17 Oct 2018 09:29:01 -0400
-Message-ID: <CA+5PVA48AzPShnZYcbw-j-DaydOt6U+eDU0o+tN=gf_4vBojdQ@mail.gmail.com>
-Subject: Re: [PULL] ath10k firmware 2018-10-10
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,63 +21,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Linux Wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Linux Firmware <linux-firmware@kernel.org>
+To: Kalle Valo <kvalo@codeaurora.org>, Anilkumar Kolli <akolli@codeaurora.org>
+Cc: kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, Oct 10, 2018 at 9:11 AM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Hi linux-firmware maintainers,
->
-> here are ath10k firmware updates which have been accumulating the last 6
-> months or so. Please let me know if there are any problems.
->
-> Kalle
->
-> The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
->
->   Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20181010
->
-> for you to fetch changes up to eaceb79a5a27ef37f85d1a5585b209361330b4bb:
->
->   ath10k: QCA9984 hw1.0: update board-2.bin (2018-10-10 15:14:05 +0300)
->
-> ----------------------------------------------------------------
-> Kalle Valo (10):
->       ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.6-00140
->       ath10k: QCA4019 hw1.0: update board-2.bin
->       ath10k: QCA6174 hw3.0: update firmware-6.bin to RM.4.4.1.c2-00057-QCARMSWP-1
->       ath10k: QCA9377 hw1.0: add firmware-6.bin to WLAN.TF.2.1-00021-QCARMSWP-1
->       ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00041
->       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.6-00140
->       ath10k: QCA9888 hw2.0: update board-2.bin
->       ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00041
->       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.6.0.1-00003
->       ath10k: QCA9984 hw1.0: update board-2.bin
->
->  WHENCE                                            |   15 +-
->  ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 133452 -> 449316 bytes
->  ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 568636 -> 583344 bytes
->  ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 730788 -> 731276 bytes
->  ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt |  502 +-------
->  ath10k/QCA9377/hw1.0/firmware-6.bin               |  Bin 0 -> 751436 bytes
->  ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt | 1352 +++++++++++++++++++++
->  ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 237584 -> 237660 bytes
->  ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 72788 -> 84928 bytes
->  ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 659708 -> 675492 bytes
->  ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248108 -> 248200 bytes
->  ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 121264 -> 171916 bytes
->  ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 647380 -> 662084 bytes
->  13 files changed, 1423 insertions(+), 446 deletions(-)
->  create mode 100644 ath10k/QCA9377/hw1.0/firmware-6.bin
->  create mode 100644 ath10k/QCA9377/hw1.0/notice_ath10k_firmware-6.txt
+I had a couple concerns with this code.  First, we definitely need to
+set the error code if the kzalloc() fails.  Secondly, I was worried that
+if we didn't set "arsta->tx_stats" to NULL after freeing it, then it
+looks to me like it might lead to a use after free.  I can't test that,
+but it's harmless to set it to NULL so I did.
 
-Pulled and pushed out.  Thanks.
+Fixes: a904417fc876 ("ath10k: add extended per sta tx statistics support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-josh
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a1c2801ded10..2b8c8bf80b0d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6296,8 +6296,10 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
+ 			arsta->tx_stats = kzalloc(sizeof(*arsta->tx_stats),
+ 						  GFP_KERNEL);
+-			if (!arsta->tx_stats)
++			if (!arsta->tx_stats) {
++				ret = -ENOMEM;
+ 				goto exit;
++			}
+ 		}
+ 
+ 		num_tdls_stations = ath10k_mac_tdls_vif_stations_count(hw, vif);
+@@ -6385,8 +6387,10 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			   "mac vdev %d peer delete %pM sta %pK (sta gone)\n",
+ 			   arvif->vdev_id, sta->addr, sta);
+ 
+-		if (ath10k_debug_is_extd_tx_stats_enabled(ar))
++		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
+ 			kfree(arsta->tx_stats);
++			arsta->tx_stats = NULL;
++		}
+ 
+ 		if (sta->tdls) {
+ 			ret = ath10k_mac_tdls_peer_update(ar, arvif->vdev_id,
+-- 
+2.11.0
+
 
 _______________________________________________
 ath10k mailing list
