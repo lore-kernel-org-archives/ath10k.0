@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDGCV-0000tX-Fm
- for ath10k@lists.infradead.org; Thu, 18 Oct 2018 21:51:29 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][ath10k-next] ath10k: fix some spelling mistakes
-Date: Thu, 18 Oct 2018 22:51:04 +0100
-Message-Id: <20181018215104.10444-1-colin.king@canonical.com>
+Received: from mail-eopbgr80070.outbound.protection.outlook.com ([40.107.8.70]
+ helo=EUR04-VI1-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDTgO-0004q1-Uz
+ for ath10k@lists.infradead.org; Fri, 19 Oct 2018 12:15:13 +0000
+From: Arthur Watt <arthur.watt@virtuosys.com>
+Subject: FTM support on ath10k (QCA9984
+Date: Fri, 19 Oct 2018 12:14:57 +0000
+Message-ID: <DB7PR07MB46653AA5417BB7674EF7B3EDFFF90@DB7PR07MB4665.eurprd07.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,54 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S . Miller" <davem@davemloft.net>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Colin Ian King <colin.king@canonical.com>
+Good afternoon
 
-Trivial fix to some spelling mistakes in ath10k_err and ath10k_dbg
-messages:
-"capablity" -> "capability"
-"registed" -> "registered"
+I am trying to determine the amount of support for FTM (Fine Timing Measurement) in Linux wireless.
+In particular the QCA9984 or QCA988X devices (on a 4.14 based kernel).
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/qmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+From what I have gathered so far:
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 56cb1831dcdf..c876f9057468 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -543,7 +543,7 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
- 		goto out;
- 
- 	if (resp->resp.result != QMI_RESULT_SUCCESS_V01) {
--		ath10k_err(ar, "capablity req rejected: %d\n", resp->resp.error);
-+		ath10k_err(ar, "capability req rejected: %d\n", resp->resp.error);
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -623,7 +623,7 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
- 		goto out;
- 	}
- 
--	ath10k_dbg(ar, ATH10K_DBG_QMI, "qmi host capablity request completed\n");
-+	ath10k_dbg(ar, ATH10K_DBG_QMI, "qmi host capability request completed\n");
- 	return 0;
- 
- out:
-@@ -657,7 +657,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
- 			       wlfw_ind_register_req_msg_v01_ei, &req);
- 	if (ret < 0) {
- 		qmi_txn_cancel(&txn);
--		ath10k_err(ar, "failed to send indication registed request: %d\n", ret);
-+		ath10k_err(ar, "failed to send indication registered request: %d\n", ret);
- 		goto out;
- 	}
- 
--- 
-2.19.1
+User space  support
+    hostapd/wpa_supplicant - controls beacon extended capabilities IE (but are not involved in FTM measurements)
+    iw - none (although various unofficial patches are available to trigger FTM procedures)
+Kernel space
+    cfg80211, mac80211 - Virtually nothing
+Device Drivers
+    iwlwifi - Private load with a small community testing 
+   ath10k - Virtually nothing - a few posts to patchwork with minor changes
+
+Is my understanding of the state of FTM in Linux correct?
+
+Has anyone else tried FTM on these devices?
+
+Thank you
+
+Arthur
+
+
+
+
+
+
 
 
 _______________________________________________
