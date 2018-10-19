@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr80070.outbound.protection.outlook.com ([40.107.8.70]
- helo=EUR04-VI1-obe.outbound.protection.outlook.com)
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDTgO-0004q1-Uz
- for ath10k@lists.infradead.org; Fri, 19 Oct 2018 12:15:13 +0000
-From: Arthur Watt <arthur.watt@virtuosys.com>
-Subject: FTM support on ath10k (QCA9984
-Date: Fri, 19 Oct 2018 12:14:57 +0000
-Message-ID: <DB7PR07MB46653AA5417BB7674EF7B3EDFFF90@DB7PR07MB4665.eurprd07.prod.outlook.com>
-Content-Language: en-US
+ id 1gDTbY-0004fF-So
+ for ath10k@lists.infradead.org; Fri, 19 Oct 2018 12:10:14 +0000
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] ath10k: remove set but not used variable 'tlv_len'
+Date: Fri, 19 Oct 2018 12:20:26 +0000
+Message-ID: <1539951626-185764-1-git-send-email-yuehaibing@huawei.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,37 +20,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>, ath10k@lists.infradead.org
 
-Good afternoon
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-I am trying to determine the amount of support for FTM (Fine Timing Measurement) in Linux wireless.
-In particular the QCA9984 or QCA988X devices (on a 4.14 based kernel).
+drivers/net/wireless/ath/ath10k/wmi-tlv.c: In function 'ath10k_wmi_tlv_op_gen_config_pno_start':
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3455:6: warning:
+ variable 'tlv_len' set but not used [-Wunused-but-set-variable]
 
-From what I have gathered so far:
+It never used since inroduction in commit
+ce834e280f2f ("ath10k: support NET_DETECT WoWLAN feature")
 
-User space  support
-    hostapd/wpa_supplicant - controls beacon extended capabilities IE (but are not involved in FTM measurements)
-    iw - none (although various unofficial patches are available to trigger FTM procedures)
-Kernel space
-    cfg80211, mac80211 - Virtually nothing
-Device Drivers
-    iwlwifi - Private load with a small community testing 
-   ath10k - Virtually nothing - a few posts to patchwork with minor changes
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Is my understanding of the state of FTM in Linux correct?
-
-Has anyone else tried FTM on these devices?
-
-Thank you
-
-Arthur
-
-
-
-
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index bab8b25..bcd80e1 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3452,7 +3452,6 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	struct wmi_tlv *tlv;
+ 	struct sk_buff *skb;
+ 	__le32 *channel_list;
+-	u16 tlv_len;
+ 	size_t len;
+ 	void *ptr;
+ 	u32 i;
+@@ -3510,8 +3509,6 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	/* nlo_configured_parameters(nlo_list) */
+ 	cmd->no_of_ssids = __cpu_to_le32(min_t(u8, pno->uc_networks_count,
+ 					       WMI_NLO_MAX_SSIDS));
+-	tlv_len = __le32_to_cpu(cmd->no_of_ssids) *
+-		sizeof(struct nlo_configured_parameters);
+ 
+ 	tlv = ptr;
+ 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_STRUCT);
 
 
 _______________________________________________
