@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDTbY-0004fF-So
- for ath10k@lists.infradead.org; Fri, 19 Oct 2018 12:10:14 +0000
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] ath10k: remove set but not used variable 'tlv_len'
-Date: Fri, 19 Oct 2018 12:20:26 +0000
-Message-ID: <1539951626-185764-1-git-send-email-yuehaibing@huawei.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDp4o-00080z-7U
+ for ath10k@lists.infradead.org; Sat, 20 Oct 2018 11:06:04 +0000
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: [PATCH 0/6] Move TXQ scheduling and airtime fairness into mac80211
+Date: Sat, 20 Oct 2018 04:05:28 -0700
+Message-Id: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,51 +16,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-Fixes gcc '-Wunused-but-set-variable' warning:
-
-drivers/net/wireless/ath/ath10k/wmi-tlv.c: In function 'ath10k_wmi_tlv_op_gen_config_pno_start':
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3455:6: warning:
- variable 'tlv_len' set but not used [-Wunused-but-set-variable]
-
-It never used since inroduction in commit
-ce834e280f2f ("ath10k: support NET_DETECT WoWLAN feature")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index bab8b25..bcd80e1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3452,7 +3452,6 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	struct wmi_tlv *tlv;
- 	struct sk_buff *skb;
- 	__le32 *channel_list;
--	u16 tlv_len;
- 	size_t len;
- 	void *ptr;
- 	u32 i;
-@@ -3510,8 +3509,6 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	/* nlo_configured_parameters(nlo_list) */
- 	cmd->no_of_ssids = __cpu_to_le32(min_t(u8, pno->uc_networks_count,
- 					       WMI_NLO_MAX_SSIDS));
--	tlv_len = __le32_to_cpu(cmd->no_of_ssids) *
--		sizeof(struct nlo_configured_parameters);
- 
- 	tlv = ptr;
- 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_STRUCT);
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VG9rZSwKCkl0IGlzIGJlZW4gYSB3aGlsZSBzaW5jZSBtYWM4MDIxMSBUWFEgZGlzY3Vzc2lvbiBz
+dGFydGVkLiBIZXJlIGlzIHRoZSBjb25zb2xpZGF0ZWQKc2VyaWVzIG9mIG1hYzgwMjExLCBhdGg5
+ayBhbmQgYXRoMTBrIGNoYW5nZXMgdG8gbW92ZSBUWFEgc2NoZWR1bGluZyBhbmQgYWlydGltZQpm
+YWlybmVzcyBpbnRvIG1hYzgwMjExLiBUaGUgbWFqb3IgY2hhbmdlcyB3LnIudCA1dGggUkZDIHZl
+cnNpb24gYXJlIGluIG1heV90cmFuc21pdCgpCkFQSS4gV2hlbmV2ZXIgdGhlIGRyaXZlciBjaGVj
+a3MgZGVmaWNpdCBmb3IgZ2l2ZW4gVFhRLCB0aGUgbGlzdCB3aWxsIGJlCnJlb3JkZXJlZCBzbyB0
+aGF0IGRyaXZlci9maXJtd2FyZSBSUiBxdWlja2x5IGJlY29tZXMgaW4gc3luYyB3aXRoIG1hYzgw
+MjExCmxpc3QuIEFsc28gYWlydGltZSB0YXNrbGV0IGFwcHJvYWNoIGN1bWJlcnNvbWUgYW5kIGNh
+dXNpbmcgcmVncmVzc2lvbgppbiBtdWx0aSBjbGllbnQgcGVyZm9ybWFuY2UuCgotIFJlbW92ZWQg
+YWlydGltZSBraWNrb3V0IHRhc2tsZXQKCi0gUmV3b3JrZWQgb24gaWVlZTgwMjExX3R4cV9tYXlf
+dHJhbnNtaXQoKSBBUEkKCi0gUHJvdmlkZWQgb3B0aW9uIHRvIGNvbmZpZ3VyZSBkcml2ZXIgc3Bl
+Y2lmaWMgZGVmYXVsdCBhaXJ0aW1lLiAKCi0gQnVuZGxlZCBhdGgxMGsgY2hhbmdlcyBhbG9uZyB3
+aXRoIHRoaXMgc2VyaWVzLgoKLVJhamt1bWFyCiAKUmFqa3VtYXIgTWFub2hhcmFuICgyKToKICBh
+dGgxMGs6IG1pZ3JhdGUgdG8gbWFjODAyMTEgdHhxIHNjaGVkdWxpbmcKICBhdGgxMGs6IHJlcG9y
+dGluZyBlc3RpbWF0ZWQgdHggYWlydGltZSBmb3IgZmFpcm5lc3MKClRva2UgSMO4aWxhbmQtSsO4
+cmdlbnNlbiAoNCk6CiAgbWFjODAyMTE6IEFkZCBUWFEgc2NoZWR1bGluZyBBUEkKICBjZmc4MDIx
+MTogQWRkIGFpcnRpbWUgc3RhdGlzdGljcyBhbmQgc2V0dGluZ3MKICBtYWM4MDIxMTogQWRkIGFp
+cnRpbWUgYWNjb3VudGluZyBhbmQgc2NoZWR1bGluZyB0byBUWFFzCiAgYXRoOWs6IFN3aXRjaCB0
+byBtYWM4MDIxMSBUWFEgc2NoZWR1bGluZyBhbmQgYWlydGltZSBBUElzCgogZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgICAgIHwgICAyIC0KIGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvY29yZS5oICAgICB8ICAgOCArLQogZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9odGMuaCAgICAgIHwgICAxIC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvaHR0X3J4LmMgICB8ICAgOSArKwogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9tYWMuYyAgICAgIHwgMTU1ICsrKysrKysrKysrLS0tLS0tLQogZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway90eHJ4LmMgICAgIHwgICA0ICsKIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGg5ay9hdGg5ay5oICAgICB8ICAxNCAtLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDlrL2RlYnVnLmMgICAgIHwgICAzIC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay9k
+ZWJ1Zy5oICAgICB8ICAgOCAtCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoOWsvZGVidWdf
+c3RhLmMgfCAgNzAgLS0tLS0tLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoOWsvaW5p
+dC5jICAgICAgfCAgIDMgKy0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay9yZWN2LmMg
+ICAgICB8ICAgOSArLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDlrL3htaXQuYyAgICAg
+IHwgMjQ0ICsrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tCiBpbmNsdWRlL25ldC9jZmc4MDIx
+MS5oICAgICAgICAgICAgICAgICAgICAgfCAgMTAgKy0KIGluY2x1ZGUvbmV0L21hYzgwMjExLmgg
+ICAgICAgICAgICAgICAgICAgICB8IDExOCArKysrKysrKysrKysrLQogaW5jbHVkZS91YXBpL2xp
+bnV4L25sODAyMTEuaCAgICAgICAgICAgICAgIHwgIDE1ICsrCiBuZXQvbWFjODAyMTEvYWdnLXR4
+LmMgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0KIG5ldC9tYWM4MDIxMS9jZmcuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMyArCiBuZXQvbWFjODAyMTEvZGVidWdmcy5jICAgICAg
+ICAgICAgICAgICAgICAgfCAgIDMgKwogbmV0L21hYzgwMjExL2RlYnVnZnNfc3RhLmMgICAgICAg
+ICAgICAgICAgIHwgIDUwICsrKysrLQogbmV0L21hYzgwMjExL2RyaXZlci1vcHMuaCAgICAgICAg
+ICAgICAgICAgIHwgICA5ICsrCiBuZXQvbWFjODAyMTEvaWVlZTgwMjExX2kuaCAgICAgICAgICAg
+ICAgICAgfCAgMTIgKysKIG5ldC9tYWM4MDIxMS9tYWluLmMgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgOSArKwogbmV0L21hYzgwMjExL3N0YV9pbmZvLmMgICAgICAgICAgICAgICAgICAgIHwg
+IDU0ICsrKysrKy0KIG5ldC9tYWM4MDIxMS9zdGFfaW5mby5oICAgICAgICAgICAgICAgICAgICB8
+ICAxMyArKwogbmV0L21hYzgwMjExL3N0YXR1cy5jICAgICAgICAgICAgICAgICAgICAgIHwgICA2
+ICsKIG5ldC9tYWM4MDIxMS90eC5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDE0MCArKysr
+KysrKysrKysrKysrLQogbmV0L3dpcmVsZXNzL25sODAyMTEuYyAgICAgICAgICAgICAgICAgICAg
+IHwgIDI4ICsrKysKIDI4IGZpbGVzIGNoYW5nZWQsIDY0NiBpbnNlcnRpb25zKCspLCAzNTYgZGVs
+ZXRpb25zKC0pCgotLSAKMS45LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
