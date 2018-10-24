@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-vk1-xa44.google.com ([2607:f8b0:4864:20::a44])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFEgq-0004bt-2b
- for ath10k@lists.infradead.org; Wed, 24 Oct 2018 08:38:57 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH net-next] ath10k: fix copy-paste error in
- ath10k_qmi_setup_msa_resources()
-References: <1539657316-35629-1-git-send-email-weiyongjun1@huawei.com>
-Date: Wed, 24 Oct 2018 11:38:41 +0300
-In-Reply-To: <1539657316-35629-1-git-send-email-weiyongjun1@huawei.com> (Wei
- Yongjun's message of "Tue, 16 Oct 2018 02:35:16 +0000")
-Message-ID: <871s8fu4by.fsf@codeaurora.org>
+ id 1gFJDi-0005si-F6
+ for ath10k@lists.infradead.org; Wed, 24 Oct 2018 13:29:12 +0000
+Received: by mail-vk1-xa44.google.com with SMTP id c82so1237767vke.8
+ for <ath10k@lists.infradead.org>; Wed, 24 Oct 2018 06:28:59 -0700 (PDT)
 MIME-Version: 1.0
+References: <20181023.202921.1185045750138652543.davem@davemloft.net>
+ <CAHk-=whuhCGujWKO8JObGQaSdWOpJBXdkM-B-vD80QZifveScw@mail.gmail.com>
+ <CAHk-=wh2H9jE2RXibQgWs3_Q539roj62_gzPXKjnhhKqSFcw2g@mail.gmail.com>
+ <87lg6nu6k1.fsf@codeaurora.org> <87h8hbu5uy.fsf@qca.qualcomm.com>
+In-Reply-To: <87h8hbu5uy.fsf@qca.qualcomm.com>
+From: Andy Gross <andy.gross@linaro.org>
+Date: Wed, 24 Oct 2018 14:28:47 +0100
+Message-ID: <CAPBZ5QcpooNi=YnGJJxM020LO=Z_GAM_teGiE5gLKX-g9xhcHQ@mail.gmail.com>
+Subject: Re: [GIT] Networking
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +27,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: kernel-janitors@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: govinds@codeaurora.org, netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org, Linux Kernel list <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, David Brown <david.brown@linaro.org>, jeffrey.t.kirsher@intel.com, Niklas Cassel <niklas.cassel@linaro.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
 
-Wei Yongjun <weiyongjun1@huawei.com> writes:
+Sorry for spam, I am resending in cleartext because the previous
+missed the lists.  Thanks Google for resetting my config when you
+'upgraded'.
 
-> The return value from devm_memremap() is not checked correctly.
-> The test is done against a wrong variable. This patch fix it.
+On Wed, 24 Oct 2018 at 09:05, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 >
-> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Kalle Valo <kvalo@codeaurora.org> writes:
+>
+> > Linus Torvalds <torvalds@linux-foundation.org> writes:
+> >
+> >> On Wed, Oct 24, 2018 at 7:01 AM Linus Torvalds
+> >> <torvalds@linux-foundation.org> wrote:
+> >>>
+> >>> Hmm. Tentatively pulled, but there's something wrong with the Kconfig rules.
+> >>
+> >> Confirmed.
+> >
+> > BTW, our emails crossed and more info in the other email[1].
+> >
+> >> I did a978a5b8d83f ("net/kconfig: Make QCOM_QMI_HELPERS available when
+> >> COMPILE_TEST") to fix the breakage.
+> >
+> > Thanks, though I don't see it yet as I guess you haven't pushed it yet.
+> > Do note that it _might_ conflict the other commit which I suspect is in
+> > also coming to you:
+> >
+> > ccfb464cd106 ("soc: qcom: Allow COMPILE_TEST of qcom SoC Kconfigs")
+>
+> git.kernel.org is alive again for me so I can now check both commits. It
+> seems that Niklas' commit[1] is more finegrained than what Linus did[2].
+> I guess either of the commits should be reverted when Niklas' commit
+> goes to Linus tree, or what's the best course of action?
 
-Please don't mark wireless patches for net-next, by default ath10k
-patches go to ath-next branch of my ath.git tree. But no need to resend
-because of this.
+Yes this will conflict with Niklas's patch which is part of the 4.20
+pull requests.  I would prefer that we revert Linus's and take
+Niklas's unless there is a compelling argument to have it fixed before
+-rc1.  That said, if you didn't, the merge conflicts would be minor
+and easily handled.
 
--- 
-Kalle Valo
+Regards,
+Andy Gross
 
 _______________________________________________
 ath10k mailing list
