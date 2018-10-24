@@ -1,29 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFJOk-0002TN-Bt
- for ath10k@lists.infradead.org; Wed, 24 Oct 2018 13:40:35 +0000
-Received: by mail-lj1-x243.google.com with SMTP id v6-v6so4796635ljc.11
- for <ath10k@lists.infradead.org>; Wed, 24 Oct 2018 06:40:23 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com.
- [209.85.208.182])
- by smtp.gmail.com with ESMTPSA id e24-v6sm427060lfj.30.2018.10.24.06.40.19
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 24 Oct 2018 06:40:19 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id z21-v6so4824760ljz.0
- for <ath10k@lists.infradead.org>; Wed, 24 Oct 2018 06:40:19 -0700 (PDT)
+ id 1gFOJV-0005Nu-My
+ for ath10k@lists.infradead.org; Wed, 24 Oct 2018 18:55:31 +0000
 MIME-Version: 1.0
-References: <20181023.202921.1185045750138652543.davem@davemloft.net>
- <CAHk-=whuhCGujWKO8JObGQaSdWOpJBXdkM-B-vD80QZifveScw@mail.gmail.com>
- <CAHk-=wh2H9jE2RXibQgWs3_Q539roj62_gzPXKjnhhKqSFcw2g@mail.gmail.com>
- <87lg6nu6k1.fsf@codeaurora.org> <87h8hbu5uy.fsf@qca.qualcomm.com>
- <CAPBZ5Qen9ak4eFqdHEKNVoGBWUtohu_hwYxZ2cwmyAU=a8Mv9A@mail.gmail.com>
-In-Reply-To: <CAPBZ5Qen9ak4eFqdHEKNVoGBWUtohu_hwYxZ2cwmyAU=a8Mv9A@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 24 Oct 2018 14:40:03 +0100
-Message-ID: <CAHk-=wjjRzVi3qXvKEz7F1kA=YW_Ygp5PA6z6E1Jr-8cy-6J5g@mail.gmail.com>
-Subject: Re: [GIT] Networking
+Date: Wed, 24 Oct 2018 11:55:14 -0700
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH 5/6] ath10k: migrate to mac80211 txq scheduling
+In-Reply-To: <87a7n3u4kl.fsf@codeaurora.org>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-6-git-send-email-rmanohar@codeaurora.org>
+ <87a7n3u4kl.fsf@codeaurora.org>
+Message-ID: <051d255c3377cd9d1724cc288df2d8c2@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,27 +20,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: andy.gross@linaro.org
-Cc: Govind Singh <govinds@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, david.brown@linaro.org, kvalo@qca.qualcomm.com, jeffrey.t.kirsher@intel.com, niklas.cassel@linaro.org, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, Oct 24, 2018 at 2:24 PM Andy Gross <andy.gross@linaro.org> wrote:
->
-> Yes this will conflict with Niklas's patch which is part of the 4.20
-> pull requests. I would prefer that we revert Linus's and take Niklas's
-> unless there is a compelling argument to have it fixed before -rc1.
-
-I have no objection to just reverting my patch when I get the real fix.
-
-I just don't want my tree to have warnings that I see, and that may
-hide new warnings coming in when I do my next pull request..
-
-               Linus
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0xMC0yNCAwMTozMywgS2FsbGUgVmFsbyB3cm90ZToKPiBSYWprdW1hciBNYW5vaGFy
+YW4gPHJtYW5vaGFyQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+IGF0aDEwayBtYWludGFp
+bnMgY29tbW9uIHR4cXMgbGlzdCBmb3IgYWxsIHN0YXRpb25zLiBUaGlzIHR4cQo+PiBtYW5hZ2Vt
+ZW50IGNhbiBiZSByZW1vdmVkIGJ5IG1pZ3JhdGluZyB0byBtYWM4MDIxMSB0eHEgQVBJcwo+PiBh
+bmQgbGV0IG1hYzgwMjExIGhhbmRsZSB0eHFzIHJlb3JkZXJpbmcgYmFzZWQgb24gcmVwb3J0ZWQg
+YWlydGltZS4KPj4gQnkgZG9pbmcgdGhpcywgdHhxIGZhaXJuZXNzIG1haW50YWluZWQgaW4gYXRo
+MTBrIGkuZSBwcm9jZXNzaW5nCj4+IE4gZnJhbWVzIHBlciB0eHEgaXMgcmVtb3ZlZC4gQnkgYWRh
+cHRpbmcgdG8gbWFjODAyMTEgQVBJcywKPj4gYXRoMTBrIHdpbGwgc3VwcG9ydCBtYWM4MDIxMSBi
+YXNlZCBhaXJ0aW1lIGZhaXJuZXNzIGFsZ29yaXRobS4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IFRv
+a2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tlLmRrPgo+PiBTaWduZWQtb2ZmLWJ5OiBS
+YWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQGNvZGVhdXJvcmEub3JnPgo+IAo+IElzIFRva2Ug
+dGhlIG9yaWdpbmFsIGF1dGhvcj8gVGhlbiB5b3Ugc2hvdWxkIGFkZCAiRnJvbToiIHRhZyB0byBt
+YXJrCj4gdGhhdC4gQW5kIHlvdSBtaWdodCB3YW50IHRvIHVzZSBDby1kZXZlbG9wZWQtYnkgdG8g
+bWFyayB5b3Vyc2VsZiBhcwo+IGNvLWRldmVsb3Blci4KPiAKVG9rZSBzdWJtaXR0ZWQgYXRoMTBr
+IGNoYW5nZXMgaW4gUkZDIHYxIGJ1dCB0aG9zZSB3ZXJlIGRyb3BwZWQKaW4gZm9sbG93IHVwIHNl
+cmllcy4gV2hlbiBJIHJld29ya2VkIG9uIGF0aDEwaywgSSByZXRhaW5pbmcgaGlzIHMtby1iLgoK
+V2lsbCBmaXggaXQuCgotUmFqa3VtYXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
