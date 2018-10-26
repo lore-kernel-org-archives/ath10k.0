@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFuHn-0001fU-1C
- for ath10k@lists.infradead.org; Fri, 26 Oct 2018 05:03:52 +0000
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gG1h2-0002uT-4r
+ for ath10k@lists.infradead.org; Fri, 26 Oct 2018 12:58:26 +0000
+MIME-Version: 1.0
+Date: Fri, 26 Oct 2018 18:28:04 +0530
 From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH v2] ath10k: report tx rate using ieee80211_tx_rate_update()
-Date: Fri, 26 Oct 2018 10:37:18 +0530
-Message-Id: <1540530438-11292-1-git-send-email-akolli@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: report tx rate using
+ ieee80211_tx_rate_update()
+In-Reply-To: <20181012113515.202BD6063F@smtp.codeaurora.org>
+References: <1539261904-9016-3-git-send-email-akolli@codeaurora.org>
+ <20181012113515.202BD6063F@smtp.codeaurora.org>
+Message-ID: <186319d123468bce8673c1462507d346@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,186 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Mesh path metric needs tx rate information from ieee80211_tx_status()
-call but in ath10k there is no mechanism to report tx rate information
-via ieee80211_tx_status(), the tx rate is only accessible via
-sta_statiscs() op.
+On 2018-10-12 17:05, Kalle Valo wrote:
+> Anilkumar Kolli <akolli@codeaurora.org> wrote:
+> 
+>> Mesh path metric needs tx rate information from ieee80211_tx_status()
+>> call but in ath10k there is no mechanism to report tx rate information
+>> via ieee80211_tx_status(), the tx rate is only accessible via
+>> sta_statiscs() op.
+>> 
+>> Per peer tx stats has tx rate info available, Tx rate is available
+>> to ath10k driver after every 4 PPDU sent in the air. For each PPDU,
+>> ath10k driver updates rate informattion to mac80211 using
+>> ieee80211_tx_rate_update().
+>> 
+>> Per peer txrate information is updated through per peer statistics
+>> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+>> 
+>> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
+>> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
+>> 
+>> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> 
+> Depends on:
+> 
+> f8252e7b5a83 mac80211: implement ieee80211_tx_rate_update to update 
+> rate
+> 
+> Currently in mac80211-next.
 
-Per peer tx stats has tx rate info available, Tx rate is available
-to ath10k driver after every 4 PPDU sent in the air. For each PPDU,
-ath10k driver updates rate informattion to mac80211 using
-ieee80211_tx_rate_update().
+mac80211 dependent patch is merged.
 
-Per peer txrate information is updated through per peer statistics
-and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+Please drop this patch, I have rebased this patch on latest ath.git,
+and posted v2 https://patchwork.kernel.org/patch/10656927/
 
-Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
-Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
-
-Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
----
-V2:
-  - Rebased on top of tree
-  - Dependency mac80211 patch got merged
-
- drivers/net/wireless/ath/ath10k/core.h   |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   67 +++++++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
- 3 files changed, 64 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 042418097cf9..6fb3944fb76a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -493,6 +493,7 @@ struct ath10k_sta {
- 	u32 smps;
- 	u16 peer_id;
- 	struct rate_info txrate;
-+	struct ieee80211_tx_info tx_info;
- 
- 	struct work_struct update_wk;
- 	u64 rx_duration;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index ffec98f7be50..6a41b4144f01 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2627,7 +2627,7 @@ void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		dev_kfree_skb_any(skb);
- }
- 
--static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
-+static inline s8 ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- {
- 	static const u8 legacy_rates[] = {1, 2, 5, 11, 6, 9, 12,
- 					  18, 24, 36, 48, 54};
-@@ -2646,7 +2646,7 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- ath10k_accumulate_per_peer_tx_stats(struct ath10k *ar,
- 				    struct ath10k_sta *arsta,
- 				    struct ath10k_per_peer_tx_stats *pstats,
--				    u8 legacy_rate_idx)
-+				    s8 legacy_rate_idx)
- {
- 	struct rate_info *txrate = &arsta->txrate;
- 	struct ath10k_htt_tx_stats *tx_stats;
-@@ -2751,8 +2751,10 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 				struct ath10k_per_peer_tx_stats *peer_stats)
- {
- 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ieee80211_chanctx_conf *conf = NULL;
- 	u8 rate = 0, sgi;
- 	s8 rate_idx = 0;
-+	bool skip_auto_rate;
- 	struct rate_info txrate;
- 
- 	lockdep_assert_held(&ar->data_lock);
-@@ -2762,6 +2764,13 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 	txrate.nss = ATH10K_HW_NSS(peer_stats->ratecode);
- 	txrate.mcs = ATH10K_HW_MCS_RATE(peer_stats->ratecode);
- 	sgi = ATH10K_HW_GI(peer_stats->flags);
-+	skip_auto_rate = ATH10K_FW_SKIPPED_RATE_CTRL(peer_stats->flags);
-+
-+	/* Firmware's rate control skips broadcast/management frames,
-+	 * if host has configure fixed rates and in some other special cases.
-+	 */
-+	if (skip_auto_rate)
-+		return;
- 
- 	if (txrate.flags == WMI_RATE_PREAMBLE_VHT && txrate.mcs > 9) {
- 		ath10k_warn(ar, "Invalid VHT mcs %hhd peer stats",  txrate.mcs);
-@@ -2776,7 +2785,7 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 	}
- 
- 	memset(&arsta->txrate, 0, sizeof(arsta->txrate));
--
-+	memset(&arsta->tx_info.status, 0, sizeof(arsta->tx_info.status));
- 	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
- 	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
- 		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
-@@ -2795,11 +2804,59 @@ static inline int ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 		arsta->txrate.mcs = txrate.mcs;
- 	}
- 
--	if (sgi)
--		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-+	switch (txrate.flags) {
-+	case WMI_RATE_PREAMBLE_OFDM:
-+		if (arsta->arvif && arsta->arvif->vif)
-+			conf = rcu_dereference(arsta->arvif->vif->chanctx_conf);
-+		if (conf && conf->def.chan->band == NL80211_BAND_5GHZ)
-+			arsta->tx_info.status.rates[0].idx = rate_idx - 4;
-+		break;
-+	case WMI_RATE_PREAMBLE_CCK:
-+		arsta->tx_info.status.rates[0].idx = rate_idx;
-+		if (sgi)
-+			arsta->tx_info.status.rates[0].flags |=
-+				(IEEE80211_TX_RC_USE_SHORT_PREAMBLE |
-+				 IEEE80211_TX_RC_SHORT_GI);
-+		break;
-+	case WMI_RATE_PREAMBLE_HT:
-+		arsta->tx_info.status.rates[0].idx =
-+				txrate.mcs + ((txrate.nss - 1) * 8);
-+		if (sgi)
-+			arsta->tx_info.status.rates[0].flags |=
-+					IEEE80211_TX_RC_SHORT_GI;
-+		arsta->tx_info.status.rates[0].flags |= IEEE80211_TX_RC_MCS;
-+		break;
-+	case WMI_RATE_PREAMBLE_VHT:
-+		ieee80211_rate_set_vht(&arsta->tx_info.status.rates[0],
-+				       txrate.mcs, txrate.nss);
-+		if (sgi)
-+			arsta->tx_info.status.rates[0].flags |=
-+						IEEE80211_TX_RC_SHORT_GI;
-+		arsta->tx_info.status.rates[0].flags |= IEEE80211_TX_RC_VHT_MCS;
-+		break;
-+	}
- 
- 	arsta->txrate.nss = txrate.nss;
- 	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
-+	if (sgi)
-+		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-+
-+	switch (arsta->txrate.bw) {
-+	case RATE_INFO_BW_40:
-+		arsta->tx_info.status.rates[0].flags |=
-+				IEEE80211_TX_RC_40_MHZ_WIDTH;
-+		break;
-+	case RATE_INFO_BW_80:
-+		arsta->tx_info.status.rates[0].flags |=
-+				IEEE80211_TX_RC_80_MHZ_WIDTH;
-+		break;
-+	}
-+
-+	if (peer_stats->succ_pkts) {
-+		arsta->tx_info.flags = IEEE80211_TX_STAT_ACK;
-+		arsta->tx_info.status.rates[0].count = 1;
-+		ieee80211_tx_rate_update(ar->hw, sta, &arsta->tx_info);
-+	}
- 
- 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
- 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index f7badd079051..e0b1f4767e54 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4984,6 +4984,7 @@ enum wmi_rate_preamble {
- 	(((preamble) << 6) | ((nss) << 4) | (rate))
- #define ATH10K_HW_AMPDU(flags)		((flags) & 0x1)
- #define ATH10K_HW_BA_FAIL(flags)	(((flags) >> 1) & 0x3)
-+#define ATH10K_FW_SKIPPED_RATE_CTRL(flags)	(((flags) >> 6) & 0x1)
- 
- #define ATH10K_VHT_MCS_NUM	10
- #define ATH10K_BW_NUM		4
 -- 
-1.7.9.5
-
+Thanks
+Anil.
 
 _______________________________________________
 ath10k mailing list
