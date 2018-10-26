@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gG1h2-0002uT-4r
- for ath10k@lists.infradead.org; Fri, 26 Oct 2018 12:58:26 +0000
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gG2ug-0002KF-Bv
+ for ath10k@lists.infradead.org; Fri, 26 Oct 2018 14:16:36 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+Date: Fri, 26 Oct 2018 16:16:02 +0200
+Message-ID: <8736ssbxp9.fsf@toke.dk>
 MIME-Version: 1.0
-Date: Fri, 26 Oct 2018 18:28:04 +0530
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: report tx rate using
- ieee80211_tx_rate_update()
-In-Reply-To: <20181012113515.202BD6063F@smtp.codeaurora.org>
-References: <1539261904-9016-3-git-send-email-akolli@codeaurora.org>
- <20181012113515.202BD6063F@smtp.codeaurora.org>
-Message-ID: <186319d123468bce8673c1462507d346@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +20,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-10-12 17:05, Kalle Valo wrote:
-> Anilkumar Kolli <akolli@codeaurora.org> wrote:
-> 
->> Mesh path metric needs tx rate information from ieee80211_tx_status()
->> call but in ath10k there is no mechanism to report tx rate information
->> via ieee80211_tx_status(), the tx rate is only accessible via
->> sta_statiscs() op.
->> 
->> Per peer tx stats has tx rate info available, Tx rate is available
->> to ath10k driver after every 4 PPDU sent in the air. For each PPDU,
->> ath10k driver updates rate informattion to mac80211 using
->> ieee80211_tx_rate_update().
->> 
->> Per peer txrate information is updated through per peer statistics
->> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
->> 
->> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
->> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
->> 
->> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
-> 
-> Depends on:
-> 
-> f8252e7b5a83 mac80211: implement ieee80211_tx_rate_update to update 
-> rate
-> 
-> Currently in mac80211-next.
-
-mac80211 dependent patch is merged.
-
-Please drop this patch, I have rebased this patch on latest ath.git,
-and posted v2 https://patchwork.kernel.org/patch/10656927/
-
--- 
-Thanks
-Anil.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBG
+cm9tOiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAdG9rZS5kaz4KPgo+IFRoaXMgYWRk
+cyBhaXJ0aW1lIGFjY291bnRpbmcgYW5kIHNjaGVkdWxpbmcgdG8gdGhlIG1hYzgwMjExIFRYUQo+
+IHNjaGVkdWxlci4gQSBuZXcgY2FsbGJhY2ssIGllZWU4MDIxMV9zdGFfcmVnaXN0ZXJfYWlydGlt
+ZSgpLCBpcyBhZGRlZAo+IHRoYXQgZHJpdmVycyBjYW4gY2FsbCB0byByZXBvcnQgYWlydGltZSB1
+c2FnZSBmb3Igc3RhdGlvbnMuCj4KPiBXaGVuIGFpcnRpbWUgaW5mb3JtYXRpb24gaXMgcHJlc2Vu
+dCwgbWFjODAyMTEgd2lsbCBzY2hlZHVsZSBUWFFzCj4gKHRocm91Z2ggaWVlZTgwMjExX25leHRf
+dHhxKCkpIGluIGEgd2F5IHRoYXQgZW5mb3JjZXMgYWlydGltZSBmYWlybmVzcwo+IGJldHdlZW4g
+YWN0aXZlIHN0YXRpb25zLiBUaGlzIHNjaGVkdWxpbmcgd29ya3MgdGhlIHNhbWUgd2F5IGFzIHRo
+ZSBhdGg5awo+IGluLWRyaXZlciBhaXJ0aW1lIGZhaXJuZXNzIHNjaGVkdWxpbmcuIElmIG5vIGFp
+cnRpbWUgdXNhZ2UgaXMgcmVwb3J0ZWQKPiBieSB0aGUgZHJpdmVyLCB0aGUgc2NoZWR1bGVyIHdp
+bGwgZGVmYXVsdCB0byByb3VuZC1yb2JpbiBzY2hlZHVsaW5nLgo+Cj4gRm9yIGRyaXZlcnMgdGhh
+dCBkb24ndCBjb250cm9sIFRYUSBzY2hlZHVsaW5nIGluIHNvZnR3YXJlLCBhIG5ldyBBUEkKPiBm
+dW5jdGlvbiwgaWVlZTgwMjExX3R4cV9tYXlfdHJhbnNtaXQoKSwgaXMgYWRkZWQgd2hpY2ggdGhl
+IGRyaXZlciBjYW4gdXNlCj4gdG8gY2hlY2sgaWYgdGhlIFRYUSBpcyBlbGlnaWJsZSBmb3IgdHJh
+bnNtaXNzaW9uLCBvciBzaG91bGQgYmUgdGhyb3R0bGVkIHRvCj4gZW5mb3JjZSBmYWlybmVzcy4g
+Q2FsbHMgdG8gdGhpcyBmdW5jdGlvbiBtdXN0IGFsc28gYmUgZW5jbG9zZWQgaW4KPiBpZWVlODAy
+MTFfdHhxX3NjaGVkdWxlX3tzdGFydCxlbmR9KCkgY2FsbHMgdG8gZW5zdXJlIHByb3BlciBsb2Nr
+aW5nLgo+Cj4gVGhlIEFQSSBpZWVlODAyMTFfdHhxX21heV90cmFuc21pdCgpIGFsc28gZW5zdXJl
+cyB0aGF0IFRYUSBsaXN0IHdpbGwgYmUKPiBhbGlnbmVkIGFnaW5zdCBkcml2ZXIncyBvd24gcm91
+bmQtcm9iaW4gc2NoZWR1bGVyIGxpc3QuIGkuZSBpdCByb3RhdGVzCj4gdGhlIFRYUSBsaXN0IHRp
+bGwgaXQgbWFrZXMgdGhlIHJlcXVlc3RlZCBub2RlIGJlY29tZXMgdGhlIGZpcnN0IGVudHJ5Cj4g
+aW4gVFhRIGxpc3QuIFRodXMgYm90aCB0aGUgVFhRIGxpc3QgYW5kIGRyaXZlcidzIGxpc3QgYXJl
+IGluIHN5bmMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRv
+a2VAdG9rZS5kaz4KPiBTaWduZWQtb2ZmLWJ5OiBSYWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFy
+QGNvZGVhdXJvcmEub3JnPgo+IC0tLQo+ICBpbmNsdWRlL25ldC9tYWM4MDIxMS5oICAgICB8IDU4
+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICBuZXQvbWFjODAyMTEvY2ZnLmMgICAg
+ICAgICB8ICAzICsrCj4gIG5ldC9tYWM4MDIxMS9kZWJ1Z2ZzLmMgICAgIHwgIDMgKysKPiAgbmV0
+L21hYzgwMjExL2RlYnVnZnNfc3RhLmMgfCA1MCArKysrKysrKysrKysrKysrKysrKysrKystLQo+
+ICBuZXQvbWFjODAyMTEvaWVlZTgwMjExX2kuaCB8ICAyICsrCj4gIG5ldC9tYWM4MDIxMS9tYWlu
+LmMgICAgICAgIHwgIDQgKysrCj4gIG5ldC9tYWM4MDIxMS9zdGFfaW5mby5jICAgIHwgNDUgKysr
+KysrKysrKysrKysrKysrKysrLS0KPiAgbmV0L21hYzgwMjExL3N0YV9pbmZvLmggICAgfCAxMyAr
+KysrKysrCj4gIG5ldC9tYWM4MDIxMS9zdGF0dXMuYyAgICAgIHwgIDYgKysrKwo+ICBuZXQvbWFj
+ODAyMTEvdHguYyAgICAgICAgICB8IDkwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKystLS0KPiAgMTAgZmlsZXMgY2hhbmdlZCwgMjY0IGluc2VydGlvbnMoKyksIDEw
+IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbmV0L21hYzgwMjExLmggYi9p
+bmNsdWRlL25ldC9tYWM4MDIxMS5oCj4gaW5kZXggMmY1YzBmYmQ0NTNjLi4wY2VkM2FkYjA5YWMg
+MTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9uZXQvbWFjODAyMTEuaAo+ICsrKyBiL2luY2x1ZGUvbmV0
+L21hYzgwMjExLmgKPiBAQCAtMjMzNCw2ICsyMzM0LDggQEAgZW51bSBpZWVlODAyMTFfaHdfZmxh
+Z3Mgewo+ICAgKiBAdHhfc2tfcGFjaW5nX3NoaWZ0OiBQYWNpbmcgc2hpZnQgdG8gc2V0IG9uIFRD
+UCBzb2NrZXRzIHdoZW4gZnJhbWVzIGZyb20KPiAgICoJdGhlbSBhcmUgZW5jb3VudGVyZWQuIFRo
+ZSBkZWZhdWx0IHNob3VsZCB0eXBpY2FsbHkgbm90IGJlIGNoYW5nZWQsCj4gICAqCXVubGVzcyB0
+aGUgZHJpdmVyIGhhcyBnb29kIHJlYXNvbnMgZm9yIG5lZWRpbmcgbW9yZSBidWZmZXJzLgo+ICsg
+Kgo+ICsgKiBAYWlydGltZV93ZWlnaHQ6IERlZmF1bHQgYWlydGltZSB3ZWlnaHQgcHJlZmVycmVk
+IGJ5IGRyaXZlci4KPiAgICovCj4gIHN0cnVjdCBpZWVlODAyMTFfaHcgewo+ICAJc3RydWN0IGll
+ZWU4MDIxMV9jb25mIGNvbmY7Cj4gQEAgLTIzNzAsNiArMjM3Miw3IEBAIHN0cnVjdCBpZWVlODAy
+MTFfaHcgewo+ICAJY29uc3Qgc3RydWN0IGllZWU4MDIxMV9jaXBoZXJfc2NoZW1lICpjaXBoZXJf
+c2NoZW1lczsKPiAgCXU4IG1heF9uYW5fZGVfZW50cmllczsKPiAgCXU4IHR4X3NrX3BhY2luZ19z
+aGlmdDsKPiArCXUzMiBhaXJ0aW1lX3dlaWdodDsKPiAgfTsKClRoaXMgZG9lc24ndCBtYWtlIHNl
+bnNlLiBBaXJ0aW1lIHdlaWdodHMgY2FuIGJlIHNldCBieSB1c2Vyc3BhY2UsIHNvCmV2ZW4gaWYg
+YSBkcml2ZXIgc2V0cyBhbm90aGVyIGRlZmF1bHQgaXQgaXMgbm90IGd1YXJhbnRlZWQgdG8gYmUK
+aG9ub3VyZWQuIFNvIHdoYXQncyB0aGUgcG9pbnQ/Cgo+ICtib29sIGllZWU4MDIxMV90eHFfbWF5
+X3RyYW5zbWl0KHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+ICsJCQkJc3RydWN0IGllZWU4MDIx
+MV90eHEgKnR4cSkKPiArewo+ICsJc3RydWN0IGllZWU4MDIxMV9sb2NhbCAqbG9jYWwgPSBod190
+b19sb2NhbChodyk7Cj4gKwlzdHJ1Y3QgdHhxX2luZm8gKml0ZXIsICp0bXAsICp0eHFpID0gdG9f
+dHhxX2luZm8odHhxKTsKPiArCXN0cnVjdCBzdGFfaW5mbyAqc3RhOwo+ICsJdTggYWMgPSB0eHEt
+PmFjOwo+ICsKPiArCWxvY2tkZXBfYXNzZXJ0X2hlbGQoJmxvY2FsLT5hY3RpdmVfdHhxX2xvY2tb
+YWNdKTsKPiArCj4gKwlpZiAoIXR4cWktPnR4cS5zdGEpCj4gKwkJZ290byBvdXQ7Cj4gKwo+ICsJ
+aWYgKGxpc3RfZW1wdHkoJnR4cWktPnNjaGVkdWxlX29yZGVyKSkKPiArCQlnb3RvIG91dDsKPiAr
+Cj4gKwlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUoaXRlciwgdG1wLCAmbG9jYWwtPmFjdGl2ZV90
+eHFzW2FjXSwKPiArCQkJCSBzY2hlZHVsZV9vcmRlcikgewo+ICsJCWlmIChpdGVyID09IHR4cWkp
+Cj4gKwkJCWJyZWFrOwo+ICsKPiArCQlpZiAoIWl0ZXItPnR4cS5zdGEpIHsKPiArCQkJbGlzdF9t
+b3ZlX3RhaWwoJml0ZXItPnNjaGVkdWxlX29yZGVyLAo+ICsJCQkJICAgICAgICZsb2NhbC0+YWN0
+aXZlX3R4cXNbYWNdKTsKPiArCQkJY29udGludWU7Cj4gKwkJfQo+ICsJCXN0YSA9IGNvbnRhaW5l
+cl9vZihpdGVyLT50eHEuc3RhLCBzdHJ1Y3Qgc3RhX2luZm8sIHN0YSk7Cj4gKwkJaWYgKHN0YS0+
+YWlydGltZVthY10uZGVmaWNpdCA8IDApCj4gKwkJCXN0YS0+YWlydGltZVthY10uZGVmaWNpdCAr
+PSBzdGEtPmFpcnRpbWVfd2VpZ2h0Owo+ICsJCWxpc3RfbW92ZV90YWlsKCZpdGVyLT5zY2hlZHVs
+ZV9vcmRlciwgJmxvY2FsLT5hY3RpdmVfdHhxc1thY10pOwo+ICsJfQoKU28gc2luY2Ugd2UncmUg
+cm90YXRpbmcgdGhlIHF1ZXVlIG9uIGV2ZXJ5IGNhbGwgdG8gdGhlIGZ1bmN0aW9uLCBJJ20Kd29u
+ZGVyaW5nIGlmIHRoaXMgYWN0dWFsbHkgc3VjY2VlZHMgaW4gdGhyb3R0bGluZyB0aGUgc2xvdyBz
+dGF0aW9uJ3MKYWlydGltZSB1c2FnZSBlbm91Z2ggdG8gYWNoaWV2ZSBmYWlybmVzcz8gU28gSSds
+bCBhc2sgYWdhaW46IERpZCB5b3UKdGVzdCB0aGUgZmFpcm5lc3MgcGVyZm9ybWFuY2UsIGFuZCBo
+b3c/CgoKQWxzbywgdGFraW5nIGEgc3RlcCBiYWNrOgoKV2l0aCB0aGlzLCB3ZSdyZSBkb2luZyBs
+b3RzIG9mIHdvcmsgdG8gbWFrZSBzdXJlIHRoYXQgdGhlIGhhcmR3YXJlJ3MKcm91bmQtcm9iaW4g
+c2NoZWR1bGluZyBxdWV1ZSBsaW5lcyB1cCB3aXRoIG1hYzgwMjExOyBzbyBpZiB3ZSBkbyB0aGlz
+CmFueXdheSwgd2h5IGNhbid0IHdlIGp1c3QgY29udHJvbCB0aGUgb3JkZXIgZGlyZWN0bHkgZnJv
+bSBtYWM4MDIxMQood2hpY2ggaXMgd2hhdCB3ZSBkbyB3aXRoIHRoZSBvdGhlciBuZXh0X3R4cSgp
+IEFQSSk/CgotVG9rZQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
