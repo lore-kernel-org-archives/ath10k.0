@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gH0w4-00036r-Lf
- for ath10k@lists.infradead.org; Mon, 29 Oct 2018 06:22:02 +0000
-From: Yu Wang <yyuwang@codeaurora.org>
-Subject: [PATCH] ath10k: add amsdu support for monitor mode
-Date: Mon, 29 Oct 2018 14:21:44 +0800
-Message-Id: <1540794104-30957-2-git-send-email-yyuwang@codeaurora.org>
-In-Reply-To: <1540794104-30957-1-git-send-email-yyuwang@codeaurora.org>
-References: <1540794104-30957-1-git-send-email-yyuwang@codeaurora.org>
+ id 1gHHJG-0003g5-6p
+ for ath10k@lists.infradead.org; Mon, 29 Oct 2018 23:51:08 +0000
+MIME-Version: 1.0
+Date: Mon, 29 Oct 2018 16:50:50 -0700
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+ <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
+ <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
+Message-ID: <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,251 +22,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-When processing HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND,
-if the length of a msdu is larger than the tailroom
-of the rx skb, skb_over_panic issue will happen when
-calling skb_put.
-In monitor mode, amsdu will be handled in this path,
-and msdu_len of the first msdu_desc is the length of
-the entire amsdu, which might be larger than the
-maximum length of a skb, in such case, it will hit
-the issue upon.
-To fix this issue, processing msdu list separately
-for monitor mode.
-
-Successfully tested with:
-QCA6174 (FW version: RM.4.4.1.c2-00057-QCARMSWP-1).
-
-Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 187 +++++++++++++++++++++++++++++++
- 1 file changed, 187 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index ffec98f..8f88229 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -469,6 +469,167 @@ static struct sk_buff *ath10k_htt_rx_pop_paddr(struct ath10k_htt *htt,
- 	return msdu;
- }
- 
-+static inline void
-+ath10k_htt_append_frag_list(struct sk_buff *skb_head,
-+			    struct sk_buff *frag_list,
-+			    unsigned int frag_len)
-+{
-+	skb_shinfo(skb_head)->frag_list = frag_list;
-+	skb_head->data_len = frag_len;
-+	skb_head->len += skb_head->data_len;
-+}
-+
-+static int
-+ath10k_htt_rx_handle_amsdu_mon_32(struct ath10k_htt *htt, struct sk_buff *msdu,
-+				  struct htt_rx_in_ord_msdu_desc **msdu_desc)
-+{
-+	struct ath10k *ar = htt->ar;
-+	u32 paddr;
-+	struct sk_buff *frag_buf;
-+	struct sk_buff *prev_frag_buf;
-+	u8 last_frag;
-+	struct htt_rx_in_ord_msdu_desc *ind_desc = *msdu_desc;
-+	struct htt_rx_desc *rxd;
-+	int amsdu_len = __le16_to_cpu(ind_desc->msdu_len);
-+
-+	rxd = (void *)msdu->data;
-+	trace_ath10k_htt_rx_desc(ar, rxd, sizeof(*rxd));
-+
-+	skb_put(msdu, sizeof(struct htt_rx_desc));
-+	skb_pull(msdu, sizeof(struct htt_rx_desc));
-+	skb_put(msdu, min(amsdu_len, HTT_RX_MSDU_SIZE));
-+	amsdu_len -= msdu->len;
-+
-+	last_frag = ind_desc->reserved;
-+	if (last_frag) {
-+		if (amsdu_len) {
-+			ath10k_warn(ar, "invalid amsdu len %u, left %d",
-+				    __le16_to_cpu(ind_desc->msdu_len),
-+				    amsdu_len);
-+		}
-+		return 0;
-+	}
-+
-+	ind_desc++;
-+	paddr = __le32_to_cpu(ind_desc->msdu_paddr);
-+	frag_buf = ath10k_htt_rx_pop_paddr(htt, paddr);
-+	if (!frag_buf) {
-+		ath10k_warn(ar, "failed to pop frag-1 paddr: 0x%x", paddr);
-+		return -ENOENT;
-+	}
-+
-+	skb_put(frag_buf, min(amsdu_len, HTT_RX_BUF_SIZE));
-+	ath10k_htt_append_frag_list(msdu, frag_buf, amsdu_len);
-+
-+	amsdu_len -= frag_buf->len;
-+	prev_frag_buf = frag_buf;
-+	last_frag = ind_desc->reserved;
-+	while (!last_frag) {
-+		ind_desc++;
-+		paddr = __le32_to_cpu(ind_desc->msdu_paddr);
-+		frag_buf = ath10k_htt_rx_pop_paddr(htt, paddr);
-+		if (!frag_buf) {
-+			ath10k_warn(ar, "failed to pop frag-n paddr: 0x%x",
-+				    paddr);
-+			prev_frag_buf->next = NULL;
-+			return -ENOENT;
-+		}
-+
-+		skb_put(frag_buf, min(amsdu_len, HTT_RX_BUF_SIZE));
-+		last_frag = ind_desc->reserved;
-+		amsdu_len -= frag_buf->len;
-+
-+		prev_frag_buf->next = frag_buf;
-+		prev_frag_buf = frag_buf;
-+	}
-+
-+	if (amsdu_len) {
-+		ath10k_warn(ar, "invalid amsdu len %u, left %d",
-+			    __le16_to_cpu(ind_desc->msdu_len), amsdu_len);
-+	}
-+
-+	*msdu_desc = ind_desc;
-+
-+	prev_frag_buf->next = NULL;
-+	return 0;
-+}
-+
-+static int
-+ath10k_htt_rx_handle_amsdu_mon_64(struct ath10k_htt *htt, struct sk_buff *msdu,
-+				  struct htt_rx_in_ord_msdu_desc_ext
-+				  **msdu_desc)
-+{
-+	struct ath10k *ar = htt->ar;
-+	u64 paddr;
-+	struct sk_buff *frag_buf;
-+	struct sk_buff *prev_frag_buf;
-+	u8 last_frag;
-+	struct htt_rx_in_ord_msdu_desc_ext *ind_desc = *msdu_desc;
-+	struct htt_rx_desc *rxd;
-+	int amsdu_len = __le16_to_cpu(ind_desc->msdu_len);
-+
-+	rxd = (void *)msdu->data;
-+	trace_ath10k_htt_rx_desc(ar, rxd, sizeof(*rxd));
-+
-+	skb_put(msdu, sizeof(struct htt_rx_desc));
-+	skb_pull(msdu, sizeof(struct htt_rx_desc));
-+	skb_put(msdu, min(amsdu_len, HTT_RX_MSDU_SIZE));
-+	amsdu_len -= msdu->len;
-+
-+	last_frag = ind_desc->reserved;
-+	if (last_frag) {
-+		if (amsdu_len) {
-+			ath10k_warn(ar, "invalid amsdu len %u, left %d",
-+				    __le16_to_cpu(ind_desc->msdu_len),
-+				    amsdu_len);
-+		}
-+		return 0;
-+	}
-+
-+	ind_desc++;
-+	paddr = __le64_to_cpu(ind_desc->msdu_paddr);
-+	frag_buf = ath10k_htt_rx_pop_paddr(htt, paddr);
-+	if (!frag_buf) {
-+		ath10k_warn(ar, "failed to pop frag-1 paddr: 0x%llx", paddr);
-+		return -ENOENT;
-+	}
-+
-+	skb_put(frag_buf, min(amsdu_len, HTT_RX_BUF_SIZE));
-+	ath10k_htt_append_frag_list(msdu, frag_buf, amsdu_len);
-+
-+	amsdu_len -= frag_buf->len;
-+	prev_frag_buf = frag_buf;
-+	last_frag = ind_desc->reserved;
-+	while (!last_frag) {
-+		ind_desc++;
-+		paddr = __le64_to_cpu(ind_desc->msdu_paddr);
-+		frag_buf = ath10k_htt_rx_pop_paddr(htt, paddr);
-+		if (!frag_buf) {
-+			ath10k_warn(ar, "failed to pop frag-n paddr: 0x%llx",
-+				    paddr);
-+			prev_frag_buf->next = NULL;
-+			return -ENOENT;
-+		}
-+
-+		skb_put(frag_buf, min(amsdu_len, HTT_RX_BUF_SIZE));
-+		last_frag = ind_desc->reserved;
-+		amsdu_len -= frag_buf->len;
-+
-+		prev_frag_buf->next = frag_buf;
-+		prev_frag_buf = frag_buf;
-+	}
-+
-+	if (amsdu_len) {
-+		ath10k_warn(ar, "invalid amsdu len %u, left %d",
-+			    __le16_to_cpu(ind_desc->msdu_len), amsdu_len);
-+	}
-+
-+	*msdu_desc = ind_desc;
-+
-+	prev_frag_buf->next = NULL;
-+	return 0;
-+}
-+
- static int ath10k_htt_rx_pop_paddr32_list(struct ath10k_htt *htt,
- 					  struct htt_rx_in_ord_ind *ev,
- 					  struct sk_buff_head *list)
-@@ -495,6 +656,19 @@ static int ath10k_htt_rx_pop_paddr32_list(struct ath10k_htt *htt,
- 			return -ENOENT;
- 		}
- 
-+		if (!is_offload && ar->monitor_arvif) {
-+			int ret =
-+				ath10k_htt_rx_handle_amsdu_mon_32(htt, msdu,
-+								  &msdu_desc);
-+			if (ret) {
-+				__skb_queue_purge(list);
-+				return ret;
-+			}
-+			__skb_queue_tail(list, msdu);
-+			msdu_desc++;
-+			continue;
-+		}
-+
- 		__skb_queue_tail(list, msdu);
- 
- 		if (!is_offload) {
-@@ -544,6 +718,19 @@ static int ath10k_htt_rx_pop_paddr64_list(struct ath10k_htt *htt,
- 			return -ENOENT;
- 		}
- 
-+		if (!is_offload && ar->monitor_arvif) {
-+			int ret =
-+				ath10k_htt_rx_handle_amsdu_mon_64(htt, msdu,
-+								  &msdu_desc);
-+			if (ret) {
-+				__skb_queue_purge(list);
-+				return ret;
-+			}
-+			__skb_queue_tail(list, msdu);
-+			msdu_desc++;
-+			continue;
-+		}
-+
- 		__skb_queue_tail(list, msdu);
- 
- 		if (!is_offload) {
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOC0xMC0yOCAxNTowMSwgUmFqa3VtYXIgTWFub2hhcmFuIHdyb3RlOgo+IE9uIDIwMTgt
+MTAtMjggMDg6NDgsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gUmFqa3VtYXIg
+TWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+PiAKPj4+IAo+Pj4g
+NG1zICAgICAgICAgMjIzICg0MCUpICAgICAgICAgMjE0ICg0MCUpICAgIDEwOSAoMTAlKSAgICAg
+ICA5NCAoMTAlKQo+Pj4gCj4+PiA0bXMgICAgICAgICAzMzcgKDkwJSkgICAgICAgICAxODIgKDgl
+KSAgICAgIDIzICgxJSkgICAgICAgIDMwICgxJSkKPj4gCj4+IFNvIHRoaXMgbG9va3MgbGlrZSBp
+dCdzIGRvaW5nICpzb21ldGhpbmcqLCBidXQgbm90IGxpa2UgaXQncyAKPj4gc3VjY2VlZGluZwo+
+PiBpbiBhY2hpZXZpbmcgdGhlIHNldCBwZXJjZW50YWdlcy4gRGlkIHlvdSBjaGVjayBpZiB0aGUg
+YWN0dWFsIGFpcnRpbWUKPj4gdmFsdWVzIChpbiBkZWJ1Z2ZzKSBjb3JyZXNwb25kcyB0byB0aGUg
+Y29uZmlndXJlZCB3ZWlnaHRzPwo+PiAKPiBOby4gV2lsbCBjaGVjayB0aGF0Lgo+IApUb2tlLAoK
+IEZyb20gYWJvdmUgcmVzdWx0cywgZGlmZmVyZW50IGFpcnRpbWUgZm9yIGVhY2ggc3RhdGlvbiBp
+cyByZWZsZWN0aW5nIG9uCm91dHB1dCBwZXJmb3JtYW5jZS4gVW5mb3J0dW5hdGVseSBJIGRvbid0
+IHNlZSBzdWNoIHRwdXQgZGlmZmVyZW5jZSwgd2hlbgp0aGUgdHggbW9kZSBpcyBmaXhlZCBpbiBw
+dXNoLW9ubHkuIEV2ZW4gbG93IHdlaWdodCBzdGF0aW9uIGlzIGdpdmluZyAKc2FtZQpwZXJmb3Jt
+YW5jZS4gQXJlIHlvdSBhbHNvIHNlZWluZyB0aGUgc2FtZSBiZWhhdmlvciBpbiB5b3VyIHNldHVw
+PyBDb3VsZAp5b3UgcGxlYXNlIHNoYXJlIHlvdXIgcmVzdWx0cz8KCk5vdCBzdXJlIHdoeSBsb3cg
+d2VpZ2h0IHN0YXRpb24gKDI2dXMpIGlzIGNvbnN1bWluZyBtb3JlIGFpcnRpbWUgdGhhbgpoaWdo
+ZXIgYWlydGltZSBzdGF0aW9uLiBCZWxvdyByZXN1bHQgaXMgdGFrZW4gaW4gcHVzaC1vbmx5IG1v
+ZGUgdGhhdAptZWFucyBvbmx5IG5leHRfdHhxKCkgb3JkZXJpbmcgaXMgZm9sbG93ZWQuCgpjYXQg
+L3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvbmV0ZGV2XDp3bGFuMC9zdGF0aW9ucy8q
+L2FpcnRpbWUKUlg6IDAgdXMKVFg6IDk4MDQ0MyB1cwpXZWlnaHQ6IDE3NgpEZWZpY2l0OiBWTzog
+MjU2IHVzIFZJOiAyNTYgdXMgQkU6IC05MSB1cyBCSzogMjU2IHVzClJYOiAwIHVzClRYOiAyMDA4
+NTEyIHVzCldlaWdodDogMjYKRGVmaWNpdDogVk86IDIzOCB1cyBWSTogMjU2IHVzIEJFOiAyNCB1
+cyBCSzogMjU2IHVzClJYOiAwIHVzClRYOiA1MTMyODcgdXMKV2VpZ2h0OiAyNgpEZWZpY2l0OiBW
+TzogMjU2IHVzIFZJOiAyNTYgdXMgQkU6IDEgdXMgQks6IDI1NiB1cwpSWDogMCB1cwpUWDogNTc2
+NzQ2IHVzCldlaWdodDogMjYKRGVmaWNpdDogVk86IDI1NiB1cyBWSTogMjU2IHVzIEJFOiAxMCB1
+cyBCSzogMjU2IHVzCgotUmFqa3VtYXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
