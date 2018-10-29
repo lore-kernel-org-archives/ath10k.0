@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGt85-0001fn-8a
- for ath10k@lists.infradead.org; Sun, 28 Oct 2018 22:01:54 +0000
-MIME-Version: 1.0
-Date: Sun, 28 Oct 2018 15:01:41 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <87woq2843q.fsf@toke.dk>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
- <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
- <87woq2843q.fsf@toke.dk>
-Message-ID: <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
+ id 1gH0w4-00036a-NJ
+ for ath10k@lists.infradead.org; Mon, 29 Oct 2018 06:22:02 +0000
+From: Yu Wang <yyuwang@codeaurora.org>
+Subject: [PATCH] ath10k: add amsdu support for monitor mode
+Date: Mon, 29 Oct 2018 14:21:43 +0800
+Message-Id: <1540794104-30957-1-git-send-email-yyuwang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +15,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-T24gMjAxOC0xMC0yOCAwODo0OCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IFJh
-amt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPiAKPj4g
-WWVzLiBJIGRvIHVuZGVyc3RhbmQgdGhlIHVzZXIgY2FuIGNoYW5nZSBhaXJ0aW1lIGF0IGFueXRp
-bWUgYnV0IEl0Cj4+IG11c3QgYmUgbm90ZWQgdGhhdCBkaWZmZXJlbnQgYWlydGltZSB3ZWlnaHQg
-d2lsbCByZXN1bHQgaW4gZGlmZmVyZW50Cj4+IHRocm91Z2hwdXQuIElNSE8gdGhlIGRlZmF1bHRz
-IHNob3VsZCBub3QgaW1wYWN0IGN1cnJlbnQgYmVuY2htYXJrLgo+PiBPdGhlcndpc2UgaXQgd2ls
-bCBiZSBhbGFybWVkIGFzIHJlZ3Jlc3Npb24gbGF0ZXIuIGlzbid0IGl0Pwo+IAo+IE15IHBvaW50
-IGlzIHRoYXQgaWYgdGhlIHVzZXIgaGFzIHRvIGtub3cgdGhlIGltcGxlbWVudGF0aW9uLXNwZWNp
-ZmljCj4gbGltaXRhdGlvbnMgb2YgZWFjaCBkcml2ZXIgYmVmb3JlIHNldHRpbmcgYSB3ZWlnaHQs
-IHRoZW4gaXQncyBub3QgYQo+IHBhcnRpY3VsYXJseSBmcmllbmRseSBBUEkuIEkgdGhpbmsgd2Ug
-c2hvdWxkIGJlIGFibGUgdG8gZG8gYmV0dGVyIHRoYW4KPiB0aGF0Li4uCj4gCkhtbS4uIEkgd2Fz
-IHRyeWluZyB0byBiYWxhbmNlIHRocm91Z2hwdXQgdnMgQ1BVIHVzYWdlLiBLZWVwaW5nIGxvd2Vy
-CnRocmVzaG9sZCBpcyBjYXVzaW5nIG1vcmUgbG9jayBjb250ZW50aW9uIGFuZCBpbXBhY3Rpbmcg
-dGhyb3VnaHB1dC4KSSB0aG91Z2h0IG9mIGNvbmZpZ3VyaW5nIGRlZmF1bHQgYWlydGltZV93ZWln
-aHQgZnJvbSBob3N0YXBkIGZvcgpsZWdhY3ksIDExbiBhbmQgMTFhYyBzdGF0aW9ucy4KCj4+IGFp
-cnRpbWUgICBzdGF0aW9uMSglYWlydGltZSkgIHN0YXRpb24yICAgICBzdGF0aW9uMyAgICAgICBz
-dGF0aW9uNAo+PiAoTWJwcykKPj4gCj4+IE5vIEFURiAgICAgIDE4MiAgICAgICAgICAgICAgIDE2
-OCAgICAgICAgICAxNjYgICAgICAgICAgICAxNjkKPj4gCj4+IDRtcyAgICAgICAgIDE3MCAoMTAw
-JSkgICAgICAgIDE2NCAoMTAwJSkgICAxODUgICgxMDAlKSAgICAxNzUgKDEwMCUpCj4+IAo+PiA0
-bXMgICAgICAgICAyNzcgKDcwJSkgICAgICAgICAxMTUgKDEwJSkgICAgMTAzICgxMCUpICAgICAg
-MTA1ICgxMCUpCj4+IAo+PiA0bXMgICAgICAgICAyMjMgKDQwJSkgICAgICAgICAyMTQgKDQwJSkg
-ICAgMTA5ICgxMCUpICAgICAgIDk0ICgxMCUpCj4+IAo+PiA0bXMgICAgICAgICAzMzcgKDkwJSkg
-ICAgICAgICAxODIgKDglKSAgICAgIDIzICgxJSkgICAgICAgIDMwICgxJSkKPiAKPiBTbyB0aGlz
-IGxvb2tzIGxpa2UgaXQncyBkb2luZyAqc29tZXRoaW5nKiwgYnV0IG5vdCBsaWtlIGl0J3Mgc3Vj
-Y2VlZGluZwo+IGluIGFjaGlldmluZyB0aGUgc2V0IHBlcmNlbnRhZ2VzLiBEaWQgeW91IGNoZWNr
-IGlmIHRoZSBhY3R1YWwgYWlydGltZQo+IHZhbHVlcyAoaW4gZGVidWdmcykgY29ycmVzcG9uZHMg
-dG8gdGhlIGNvbmZpZ3VyZWQgd2VpZ2h0cz8KPiAKTm8uIFdpbGwgY2hlY2sgdGhhdC4KCj4+IFRo
-ZSBvbmx5IHdheSB0byBlbmZvcmNlIG1hYzgwMjExIG9yZGVyaW5nIGluIGF0aDEwayBpcyB0byBk
-aXNhYmxlIHB1bGwKPj4gbW9kZSBpbiBmaXJtd2FyZSBhbmQgYWx3YXlzIG9wZXJhdGVzIGluIHB1
-c2ggbW9kZSBzaW1pbGFyIHRvIGF0aDlrLgo+IAo+IEFuZCBJIGFzc3VtZSB0aGF0IGlzIG5vdCB0
-b28gbGlrZWx5IHRvIGhhcHBlbiwgb3I/IFdoYXQgaXMgdGhlIGJlbmVmaXQKPiBvZiBwdWxsIG1v
-ZGUgYXQgdGhlIGZpcm13YXJlIGxldmVsPwo+IApQdWxsIG1vZGUgbWFpbmx5IHJlcXVpcmVkIHRv
-IHN1cHBvcnQgTVUtTUlNTy4gSU1ITyBib3RoIE1VTUlNTyAmIEFURiBjYW4gCm5vdApjby1leGlz
-dCB1bmxlc3MgYm90aCBhcmUgaW1wbGVtZW50ZWQgYXQgaG9zdCBkcml2ZXIuIEZpeGluZyB0eCBt
-b2RlIGluIAphdGgxMGsKbmVlZHMgZmlybXdhcmUgcmVsb2FkLiBCeSBpbnRyb2R1Y2luZyBtb2Rw
-YXJhbSwgcHVsbC1tb2RlIGNhbiBiZSAKZGlzYWJsZWQuCgotUmFqa3VtYXIKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+When processing HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND,
+if the length of a msdu is larger than the tailroom
+of the rx skb, skb_over_panic issue will happen when
+calling skb_put.
+In monitor mode, amsdu will be handled in this path,
+and msdu_len of the first msdu_desc is the length of
+the entire amsdu, which might be larger than the
+maximum length of a skb, in such case, it will hit
+the issue upon.
+To fix this issue, processing msdu list separately
+for monitor mode.
+
+Successfully tested with:
+QCA6174 (FW version: RM.4.4.1.c2-00057-QCARMSWP-1).
+
+Yu Wang (1):
+  ath10k: add amsdu support for monitor mode
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 187 +++++++++++++++++++++++++++++++
+ 1 file changed, 187 insertions(+)
+
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
