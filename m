@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHTJn-00075t-Fv
- for ath10k@lists.infradead.org; Tue, 30 Oct 2018 12:40:25 +0000
+ id 1gHPb0-0001MP-Ia
+ for ath10k@lists.infradead.org; Tue, 30 Oct 2018 08:41:56 +0000
 MIME-Version: 1.0
-Date: Tue, 30 Oct 2018 18:10:01 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH v3 1/3] dt: bindings: add missing dt properties for
- WCN3990 wifi node
-In-Reply-To: <CAD=FV=WP-Xx+xeCGTxSFcSrmhAv-6F3zm-0hnLxhHi84u-fUkQ@mail.gmail.com>
-References: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
- <1539172376-19269-2-git-send-email-govinds@codeaurora.org>
- <CAD=FV=WP-Xx+xeCGTxSFcSrmhAv-6F3zm-0hnLxhHi84u-fUkQ@mail.gmail.com>
-Message-ID: <04b30aa1384356011365dae5054c799f@codeaurora.org>
+Date: Tue, 30 Oct 2018 14:11:06 +0530
+From: bperumal@codeaurora.org
+Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry to indentify external
+ FEM
+In-Reply-To: <20181015192425.GA19699@bogus>
+References: <1538653364-1239-1-git-send-email-bperumal@codeaurora.org>
+ <1538653364-1239-2-git-send-email-bperumal@codeaurora.org>
+ <20181015192425.GA19699@bogus>
+Message-ID: <d617b0c39a2faa7c9b23b884bef3f829@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,126 +25,129 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: devicetree@vger.kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Andy Gross <andy.gross@linaro.org>, "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-10-17 04:23, Doug Anderson wrote:
-> Hi,
+On 2018-10-16 00:54, Rob Herring wrote:
+> On Thu, Oct 04, 2018 at 05:12:43PM +0530, Bhagavathi Perumal S wrote:
+>> This adds new dt entry ext-fem-name, it is used by ath10k driver
+>> to select correct timing parameters and configure it in target wifi 
+>> hardware.
+>> The Front End Module(FEM) normally includes tx power amplifier(PA) and
+>> rx low noise amplifier(LNA). The default timing parameters like tx end 
+>> to
+>> PA off timing values were fine tuned for internal FEM used in 
+>> reference
+>> design. And these timing values can not be same if ODM modifies 
+>> hardware
+>> design with different external FEM. This DT entry helps to choose 
+>> correct
+>> timing values in driver if different external FEM hardware used.
 > 
-> On Wed, Oct 10, 2018 at 4:53 AM Govind Singh <govinds@codeaurora.org> 
-> wrote:
+> 'dt-bindings: net: ath10k: ...' for the subject please.
+Sure, I will change and send v2 patch.
+
+> 
 >> 
->> Add missing optional properties in WCN3990 wifi node.
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
 >> ---
->>  .../bindings/net/wireless/qcom,ath10k.txt          | 28 
->> ++++++++++++++++------
->>  1 file changed, 21 insertions(+), 7 deletions(-)
-> 
-> Point of order: please CC LKML on _all_ your patches.  Yes, it's a
-> firehose.  CCing LKML allows your patches to be found on
-> lore.kernel.org's patchwork and also allows people to find your
-> patches via <https://lkml.kernel.org/r/MSG_ID> links.
-> 
-> 
+>>  .../bindings/net/wireless/qcom,ath10k.txt          | 22 
+>> ++++++++++++++++++++++
+>>  1 file changed, 22 insertions(+)
+>> 
 >> diff --git 
 >> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt 
 >> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> index 7fd4e8c..f831bb1 100644
+>> index 7fd4e8c..fbaf309 100644
 >> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
 >> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> @@ -37,12 +37,20 @@ Optional properties:
->>  - clocks: List of clock specifiers, must contain an entry for each 
->> required
->>            entry in clock-names.
->>  - clock-names: Should contain the clock names "wifi_wcss_cmd", 
->> "wifi_wcss_ref",
->> -               "wifi_wcss_rtc".
->> -- interrupts: List of interrupt lines. Must contain an entry
->> -             for each entry in the interrupt-names property.
->> +              "wifi_wcss_rtc" for "qcom,ipq4019-wifi" compatible 
->> target and
->> +              "cxo_ref_clk_pin", "smmu_aggre2_noc_clk" for 
->> "qcom,wcn3990-wifi"
->> +              compatible target.
+>> @@ -56,6 +56,7 @@ Optional properties:
+>>  				     the length can vary between hw versions.
+>>  - <supply-name>-supply: handle to the regulator device tree node
+>>  			   optional "supply-name" is "vdd-0.8-cx-mx".
+>> +- ext-fem-name: name of external front end module used.
 > 
-> I always get confused with these big bindings patches that hide
-> everything under a big "Optional properties" section to avoid
-> specifying which properties are actually optional and which ones are
-> required.
-> 
-> After your patch and thinking about "qcom,wcn3990-wifi" in particular,
-> it's unclear to me which of the following is true (or maybe something
-> totally different I didn't think of)
-> 
-> A) On wcn3990-wifi these clocks should be a required property but it's
-> only listed under "Optional" because it's not used for some of the
-> different WiFi drivers using this same bindings.
-> 
-These clocks are optional as it is voted by firmware in newer fw 
-versions.
-During transient state in case of fw crash, fw might remove the vote in
-its error/fatal handler. The apps vote helps in avoiding un-clocked 
-hw(copy engine)
-access in transient state till driver recovers.
+> What are valid names? What if the OS doesn't recognize the name? 
+> Perhaps
+Some valid FEM devices are "microsemi-lx5586", "sky85703-11" and 
+"sky85803" etc.
+Currently driver accepts only "microsemi-lx5586", Since this FEM 
+requires different timing settings,
+And it can be extended for other FEM devices in future.
+If OS doesn't recognize the name, it uses predefined default timing 
+settings.
 
-> B) On wcn3990-wifi these clocks should either both be there or neither.
+> this should be a compatible string for the particular module instead?
+> Then it could cover any differences, not just the FEM.
 > 
-With the above explanation can you suggest where these controls should 
-fall.
+No, it is specific to FEM device.
 
-> C) On wcm3990-wifi you can specify zero, either, or both of these
-> clocks.  AKA they are independently optional.
+>> 
+>>  Example (to supply the calibration data alone):
+>> 
+>> @@ -150,3 +151,24 @@ wifi@18000000 {
+>>  			   <0 141 0 /* CE11 */ >;
+>>  		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+>>  };
+>> +
+>> +Example (to supply the external front end module name):
+>> +
+>> +In this example, the front end module is defined as a property of the 
+>> ath10k
+>> +device node.
 > 
-
-
-> It might make sense to reorganize this bindings to make this clearer?
-> ...not just for clock but for interrupts / regulators as well.  Maybe
-> you need to break this down into sections per class of compatible
-> string, or add a list per compatible string down below?
-> 
-can you pls point me to some reference for the change you are expecting.
-I will check and rework accordingly.
-
-> Also: even stranger is that even though you list two clocks here the
-> current driver I see in linuxnext only has "cxo_ref_clk_pin".
-> 
-smmu_aggre2_noc_clk is not applicable to SDM845 and required for other 
-msm platforms.
-I will remove smmu_aggre2_noc_clk reference and add when this clock is 
-available
-in upstream for respective target.
+> Really need a whole new example for 1 property?
+Will add this property in existing example.
 
 > 
->> +- interrupts: reference to the list of 17 interrupt no's for 
->> "qcom,ipq4019-wifi"
->> +             compatible target.
->> +             reference to the list of 12 interrupt no's for 
->> "qcom,wcn3990-wifi"
->> +             compatible target.
->> +             Must contain interrupt-names property per entry for
->> +             "qcom,ath10k", "qcom,ipq4019-wifi" compatible targets.
+>> +
+>> +pci {
+>> +	pcie@0 {
+>> +		reg = <0 0 0 0 0>;
+>> +		#interrupt-cells = <1>;
+>> +		#size-cells = <2>;
+>> +		#address-cells = <3>;
+>> +		device_type = "pci";
+>> +
+>> +		ath10k@0,0 {
 > 
-> ...and just to add some credence to my concerns above, "interrupts"
-> are currently listed under "Optional" properties but I don't think
-> that the wcn3990 driver will actually work if you don't specify any of
-> the interrupts, right?  AKA for wcn3990 they are _not_ optional and
-> you must have exactly 12 interrupts.
-> 
-Yes, for other chip-set(QCAxx) also it should not be optional.
-I will move interrupt block to Required properties.
+> wifi@0,0
+Added in ath10k@0,0 to make consistent with existing property 
+"qcom,ath10k-calibration-data" below,
+"
+pci {
+         pcie@0 {
+                 reg = <0 0 0 0 0>;
+                 #interrupt-cells = <1>;
+                 #size-cells = <2>;
+                 #address-cells = <3>;
+                 device_type = "pci";
+
+                 ath10k@0,0 {
+                         reg = <0 0 0 0 0>;
+                         device_type = "pci";
+                         qcom,ath10k-calibration-data = [ 01 02 03 ... ];
+                 };
+         };
+};
+"
+
+If wifi@0,0 is preferable, then I will add new entry "wifi@0,0" and add 
+ext-fem-name into it.
 
 > 
-> One separate issue I have is with your example, which you didn't
-> change in this patch.  You should fix the example with the same
-> feedback that I had to your patch ("dts: arm64/sdm845: Add WCN3990
-> WLAN module device node").
-> 
+>> +			reg = <0 0 0 0 0>;
+>> +			device_type = "pci";
+>> +			ext-fem-name = "microsemi-lx5586";
+>> +		};
+>> +	};
+>> +};
+>> --
+>> 1.9.1
+>> 
 
-sure , will do in next revision.
-
-> -Doug
+Thanks, Sorry for the delayed response,
+Bhagavathi Perumal S.
 
 _______________________________________________
 ath10k mailing list
