@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHHJG-0003g5-6p
- for ath10k@lists.infradead.org; Mon, 29 Oct 2018 23:51:08 +0000
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHTJn-00075t-Fv
+ for ath10k@lists.infradead.org; Tue, 30 Oct 2018 12:40:25 +0000
 MIME-Version: 1.0
-Date: Mon, 29 Oct 2018 16:50:50 -0700
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
- <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
- <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
-Message-ID: <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org>
+Date: Tue, 30 Oct 2018 18:10:01 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH v3 1/3] dt: bindings: add missing dt properties for
+ WCN3990 wifi node
+In-Reply-To: <CAD=FV=WP-Xx+xeCGTxSFcSrmhAv-6F3zm-0hnLxhHi84u-fUkQ@mail.gmail.com>
+References: <1539172376-19269-1-git-send-email-govinds@codeaurora.org>
+ <1539172376-19269-2-git-send-email-govinds@codeaurora.org>
+ <CAD=FV=WP-Xx+xeCGTxSFcSrmhAv-6F3zm-0hnLxhHi84u-fUkQ@mail.gmail.com>
+Message-ID: <04b30aa1384356011365dae5054c799f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +21,132 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Doug Anderson <dianders@chromium.org>
+Cc: devicetree@vger.kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Andy Gross <andy.gross@linaro.org>, "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>
 
-T24gMjAxOC0xMC0yOCAxNTowMSwgUmFqa3VtYXIgTWFub2hhcmFuIHdyb3RlOgo+IE9uIDIwMTgt
-MTAtMjggMDg6NDgsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gUmFqa3VtYXIg
-TWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+PiAKPj4+IAo+Pj4g
-NG1zICAgICAgICAgMjIzICg0MCUpICAgICAgICAgMjE0ICg0MCUpICAgIDEwOSAoMTAlKSAgICAg
-ICA5NCAoMTAlKQo+Pj4gCj4+PiA0bXMgICAgICAgICAzMzcgKDkwJSkgICAgICAgICAxODIgKDgl
-KSAgICAgIDIzICgxJSkgICAgICAgIDMwICgxJSkKPj4gCj4+IFNvIHRoaXMgbG9va3MgbGlrZSBp
-dCdzIGRvaW5nICpzb21ldGhpbmcqLCBidXQgbm90IGxpa2UgaXQncyAKPj4gc3VjY2VlZGluZwo+
-PiBpbiBhY2hpZXZpbmcgdGhlIHNldCBwZXJjZW50YWdlcy4gRGlkIHlvdSBjaGVjayBpZiB0aGUg
-YWN0dWFsIGFpcnRpbWUKPj4gdmFsdWVzIChpbiBkZWJ1Z2ZzKSBjb3JyZXNwb25kcyB0byB0aGUg
-Y29uZmlndXJlZCB3ZWlnaHRzPwo+PiAKPiBOby4gV2lsbCBjaGVjayB0aGF0Lgo+IApUb2tlLAoK
-IEZyb20gYWJvdmUgcmVzdWx0cywgZGlmZmVyZW50IGFpcnRpbWUgZm9yIGVhY2ggc3RhdGlvbiBp
-cyByZWZsZWN0aW5nIG9uCm91dHB1dCBwZXJmb3JtYW5jZS4gVW5mb3J0dW5hdGVseSBJIGRvbid0
-IHNlZSBzdWNoIHRwdXQgZGlmZmVyZW5jZSwgd2hlbgp0aGUgdHggbW9kZSBpcyBmaXhlZCBpbiBw
-dXNoLW9ubHkuIEV2ZW4gbG93IHdlaWdodCBzdGF0aW9uIGlzIGdpdmluZyAKc2FtZQpwZXJmb3Jt
-YW5jZS4gQXJlIHlvdSBhbHNvIHNlZWluZyB0aGUgc2FtZSBiZWhhdmlvciBpbiB5b3VyIHNldHVw
-PyBDb3VsZAp5b3UgcGxlYXNlIHNoYXJlIHlvdXIgcmVzdWx0cz8KCk5vdCBzdXJlIHdoeSBsb3cg
-d2VpZ2h0IHN0YXRpb24gKDI2dXMpIGlzIGNvbnN1bWluZyBtb3JlIGFpcnRpbWUgdGhhbgpoaWdo
-ZXIgYWlydGltZSBzdGF0aW9uLiBCZWxvdyByZXN1bHQgaXMgdGFrZW4gaW4gcHVzaC1vbmx5IG1v
-ZGUgdGhhdAptZWFucyBvbmx5IG5leHRfdHhxKCkgb3JkZXJpbmcgaXMgZm9sbG93ZWQuCgpjYXQg
-L3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvbmV0ZGV2XDp3bGFuMC9zdGF0aW9ucy8q
-L2FpcnRpbWUKUlg6IDAgdXMKVFg6IDk4MDQ0MyB1cwpXZWlnaHQ6IDE3NgpEZWZpY2l0OiBWTzog
-MjU2IHVzIFZJOiAyNTYgdXMgQkU6IC05MSB1cyBCSzogMjU2IHVzClJYOiAwIHVzClRYOiAyMDA4
-NTEyIHVzCldlaWdodDogMjYKRGVmaWNpdDogVk86IDIzOCB1cyBWSTogMjU2IHVzIEJFOiAyNCB1
-cyBCSzogMjU2IHVzClJYOiAwIHVzClRYOiA1MTMyODcgdXMKV2VpZ2h0OiAyNgpEZWZpY2l0OiBW
-TzogMjU2IHVzIFZJOiAyNTYgdXMgQkU6IDEgdXMgQks6IDI1NiB1cwpSWDogMCB1cwpUWDogNTc2
-NzQ2IHVzCldlaWdodDogMjYKRGVmaWNpdDogVk86IDI1NiB1cyBWSTogMjU2IHVzIEJFOiAxMCB1
-cyBCSzogMjU2IHVzCgotUmFqa3VtYXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On 2018-10-17 04:23, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Oct 10, 2018 at 4:53 AM Govind Singh <govinds@codeaurora.org> 
+> wrote:
+>> 
+>> Add missing optional properties in WCN3990 wifi node.
+>> 
+>> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>> ---
+>>  .../bindings/net/wireless/qcom,ath10k.txt          | 28 
+>> ++++++++++++++++------
+>>  1 file changed, 21 insertions(+), 7 deletions(-)
+> 
+> Point of order: please CC LKML on _all_ your patches.  Yes, it's a
+> firehose.  CCing LKML allows your patches to be found on
+> lore.kernel.org's patchwork and also allows people to find your
+> patches via <https://lkml.kernel.org/r/MSG_ID> links.
+> 
+> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt 
+>> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> index 7fd4e8c..f831bb1 100644
+>> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> @@ -37,12 +37,20 @@ Optional properties:
+>>  - clocks: List of clock specifiers, must contain an entry for each 
+>> required
+>>            entry in clock-names.
+>>  - clock-names: Should contain the clock names "wifi_wcss_cmd", 
+>> "wifi_wcss_ref",
+>> -               "wifi_wcss_rtc".
+>> -- interrupts: List of interrupt lines. Must contain an entry
+>> -             for each entry in the interrupt-names property.
+>> +              "wifi_wcss_rtc" for "qcom,ipq4019-wifi" compatible 
+>> target and
+>> +              "cxo_ref_clk_pin", "smmu_aggre2_noc_clk" for 
+>> "qcom,wcn3990-wifi"
+>> +              compatible target.
+> 
+> I always get confused with these big bindings patches that hide
+> everything under a big "Optional properties" section to avoid
+> specifying which properties are actually optional and which ones are
+> required.
+> 
+> After your patch and thinking about "qcom,wcn3990-wifi" in particular,
+> it's unclear to me which of the following is true (or maybe something
+> totally different I didn't think of)
+> 
+> A) On wcn3990-wifi these clocks should be a required property but it's
+> only listed under "Optional" because it's not used for some of the
+> different WiFi drivers using this same bindings.
+> 
+These clocks are optional as it is voted by firmware in newer fw 
+versions.
+During transient state in case of fw crash, fw might remove the vote in
+its error/fatal handler. The apps vote helps in avoiding un-clocked 
+hw(copy engine)
+access in transient state till driver recovers.
+
+> B) On wcn3990-wifi these clocks should either both be there or neither.
+> 
+With the above explanation can you suggest where these controls should 
+fall.
+
+> C) On wcm3990-wifi you can specify zero, either, or both of these
+> clocks.  AKA they are independently optional.
+> 
+
+
+> It might make sense to reorganize this bindings to make this clearer?
+> ...not just for clock but for interrupts / regulators as well.  Maybe
+> you need to break this down into sections per class of compatible
+> string, or add a list per compatible string down below?
+> 
+can you pls point me to some reference for the change you are expecting.
+I will check and rework accordingly.
+
+> Also: even stranger is that even though you list two clocks here the
+> current driver I see in linuxnext only has "cxo_ref_clk_pin".
+> 
+smmu_aggre2_noc_clk is not applicable to SDM845 and required for other 
+msm platforms.
+I will remove smmu_aggre2_noc_clk reference and add when this clock is 
+available
+in upstream for respective target.
+
+> 
+>> +- interrupts: reference to the list of 17 interrupt no's for 
+>> "qcom,ipq4019-wifi"
+>> +             compatible target.
+>> +             reference to the list of 12 interrupt no's for 
+>> "qcom,wcn3990-wifi"
+>> +             compatible target.
+>> +             Must contain interrupt-names property per entry for
+>> +             "qcom,ath10k", "qcom,ipq4019-wifi" compatible targets.
+> 
+> ...and just to add some credence to my concerns above, "interrupts"
+> are currently listed under "Optional" properties but I don't think
+> that the wcn3990 driver will actually work if you don't specify any of
+> the interrupts, right?  AKA for wcn3990 they are _not_ optional and
+> you must have exactly 12 interrupts.
+> 
+Yes, for other chip-set(QCAxx) also it should not be optional.
+I will move interrupt block to Required properties.
+
+> 
+> One separate issue I have is with your example, which you didn't
+> change in this patch.  You should fix the example with the same
+> feedback that I had to your patch ("dts: arm64/sdm845: Add WCN3990
+> WLAN module device node").
+> 
+
+sure , will do in next revision.
+
+> -Doug
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
