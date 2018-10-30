@@ -1,27 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from out3-smtp.messagingengine.com ([66.111.4.27])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHW0P-0008Vh-OP
- for ath10k@lists.infradead.org; Tue, 30 Oct 2018 15:32:41 +0000
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com
- [209.85.222.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1EA792075D
- for <ath10k@lists.infradead.org>; Tue, 30 Oct 2018 15:32:22 +0000 (UTC)
-Received: by mail-qk1-f182.google.com with SMTP id u68so3541614qkg.9
- for <ath10k@lists.infradead.org>; Tue, 30 Oct 2018 08:32:22 -0700 (PDT)
+ id 1gHYRE-0004mW-H1
+ for ath10k@lists.infradead.org; Tue, 30 Oct 2018 18:08:26 +0000
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+ by mailout.nyi.internal (Postfix) with ESMTP id C0A3921D28
+ for <ath10k@lists.infradead.org>; Tue, 30 Oct 2018 14:08:06 -0400 (EDT)
+Message-Id: <1540922886.3700604.1559938168.7431DD90@webmail.messagingengine.com>
+From: nnet <nnet@fastmail.fm>
 MIME-Version: 1.0
-References: <1538653364-1239-1-git-send-email-bperumal@codeaurora.org>
- <1538653364-1239-2-git-send-email-bperumal@codeaurora.org>
- <20181015192425.GA19699@bogus>
- <d617b0c39a2faa7c9b23b884bef3f829@codeaurora.org>
-In-Reply-To: <d617b0c39a2faa7c9b23b884bef3f829@codeaurora.org>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 30 Oct 2018 10:32:10 -0500
-Message-ID: <CAL_JsqLTxzFSQ6jvZo7CCcxBML6Y5j2AvAOotnVDJGTh-1K7ZA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry to indentify external
- FEM
+Subject: qca6174 and 4.19 error on resume from suspend
+Date: Tue, 30 Oct 2018 11:08:06 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,150 +23,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On Tue, Oct 30, 2018 at 3:41 AM <bperumal@codeaurora.org> wrote:
->
-> On 2018-10-16 00:54, Rob Herring wrote:
-> > On Thu, Oct 04, 2018 at 05:12:43PM +0530, Bhagavathi Perumal S wrote:
-> >> This adds new dt entry ext-fem-name, it is used by ath10k driver
-> >> to select correct timing parameters and configure it in target wifi
-> >> hardware.
-> >> The Front End Module(FEM) normally includes tx power amplifier(PA) and
-> >> rx low noise amplifier(LNA). The default timing parameters like tx end
-> >> to
-> >> PA off timing values were fine tuned for internal FEM used in
-> >> reference
-> >> design. And these timing values can not be same if ODM modifies
-> >> hardware
-> >> design with different external FEM. This DT entry helps to choose
-> >> correct
-> >> timing values in driver if different external FEM hardware used.
-> >
-> > 'dt-bindings: net: ath10k: ...' for the subject please.
-> Sure, I will change and send v2 patch.
->
-> >
-> >>
-> >> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
-> >> ---
-> >>  .../bindings/net/wireless/qcom,ath10k.txt          | 22
-> >> ++++++++++++++++++++++
-> >>  1 file changed, 22 insertions(+)
-> >>
-> >> diff --git
-> >> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> >> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> >> index 7fd4e8c..fbaf309 100644
-> >> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> >> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> >> @@ -56,6 +56,7 @@ Optional properties:
-> >>                                   the length can vary between hw versions.
-> >>  - <supply-name>-supply: handle to the regulator device tree node
-> >>                         optional "supply-name" is "vdd-0.8-cx-mx".
-> >> +- ext-fem-name: name of external front end module used.
-> >
-> > What are valid names? What if the OS doesn't recognize the name?
-> > Perhaps
-> Some valid FEM devices are "microsemi-lx5586", "sky85703-11" and
-> "sky85803" etc.
-> Currently driver accepts only "microsemi-lx5586", Since this FEM
-> requires different timing settings,
+Hello,
 
-Assuming you keep this, then you need to enumerate what are valid
-values in the binding. Otherwise, 'ext-fem-name = "rob"' is valid.
+I get this on each resume from suspend (S3) since 4.19 (I'm not getting this with 4.18):
 
-> And it can be extended for other FEM devices in future.
-> If OS doesn't recognize the name, it uses predefined default timing
-> settings.
->
-> > this should be a compatible string for the particular module instead?
-> > Then it could cover any differences, not just the FEM.
-> >
-> No, it is specific to FEM device.
+Oct 30 10:44:24 localhost  kernel: ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+...
+Oct 30 10:44:24 localhost kernel: ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features wowlan,ignore-otp crc32 fd869beb
+...
+Oct 30 10:45:54 localhost kernel: WARNING: CPU: 1 PID: 14185 at drivers/net/wireless/ath/ath10k/mac.c:5625 ath10k_bss_info_changed+0xd2e/0xe70 [ath10>
+...
+Oct 30 10:45:54 localhost kernel: CPU: 1 PID: 14185 Comm: kworker/u16:38 Tainted: 4.19.0-1.vanilla.knurd.1.fc29.x86_64 #1
+...
+Oct 30 10:45:54 localhost kernel: Workqueue: events_unbound async_run_entry_fn
+Oct 30 10:45:54 localhost kernel: RIP: 0010:ath10k_bss_info_changed+0xd2e/0xe70 [ath10k_core]
+Oct 30 10:45:54 localhost kernel: Code: 89 c1 89 f2 4c 89 d7 48 c7 c6 58 17 b6 c0 4c 89 4c 24 10 89 44 24 08 e8 70 34 00 00 8b 44 24 08 4c 8b 4c 24 1>
+Oct 30 10:45:54 localhost kernel: RSP: 0000:ffffbb8210b6fcc0 EFLAGS: 00010246
+Oct 30 10:45:54 localhost kernel: RAX: 0000000000000000 RBX: ffff9ca3be21d3a0 RCX: 0000000000000000
+Oct 30 10:45:54 localhost kernel: RDX: ffff9ca3ac6018b8 RSI: 0000000000000212 RDI: 0000000000000212
+Oct 30 10:45:54 localhost kernel: RBP: 0000000002000000 R08: 0000000000200000 R09: 0000000000000000
+Oct 30 10:45:54 localhost kernel: R10: 000000000000001f R11: ffff9ca3a7f70e00 R12: ffff9ca3be21d3a8
+Oct 30 10:45:54 localhost kernel: R13: ffff9ca3ac601540 R14: ffff9ca3ac601540 R15: ffff9ca3be21d4f8
+Oct 30 10:45:54 localhost kernel: FS:  0000000000000000(0000) GS:ffff9ca3c2440000(0000) knlGS:0000000000000000
+Oct 30 10:45:54 localhost kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Oct 30 10:45:54 localhost kernel: CR2: 0000000000000000 CR3: 000000018720a001 CR4: 00000000003606e0
+Oct 30 10:45:54 localhost kernel: Call Trace:
+Oct 30 10:45:54 localhost kernel:  ? ath10k_conf_tx+0x7a/0x4b0 [ath10k_core]
+Oct 30 10:45:54 localhost kernel:  ieee80211_bss_info_change_notify+0xab/0x1a0 [mac80211]
+Oct 30 10:45:54 localhost kernel:  ieee80211_reconfig+0x656/0x12b0 [mac80211]
+Oct 30 10:45:54 localhost kernel:  ? enqueue_entity+0xf6/0x680
+Oct 30 10:45:54 localhost kernel:  wiphy_resume+0x7f/0x120 [cfg80211]
+Oct 30 10:45:54 localhost kernel:  ? wiphy_suspend+0x270/0x270 [cfg80211]
+Oct 30 10:45:54 localhost kernel:  dpm_run_callback+0x59/0x150
+Oct 30 10:45:54 localhost kernel:  device_resume+0xac/0x1f0
+Oct 30 10:45:54 localhost kernel:  async_resume+0x19/0x30
+Oct 30 10:45:54 localhost kernel:  async_run_entry_fn+0x39/0x160
+Oct 30 10:45:54 localhost kernel:  process_one_work+0x1a1/0x3a0
+Oct 30 10:45:54 localhost kernel:  worker_thread+0x30/0x380
+Oct 30 10:45:54 localhost kernel:  ? wq_update_unbound_numa+0x1a0/0x1a0
+Oct 30 10:45:54 localhost kernel:  kthread+0x112/0x130
+Oct 30 10:45:54 localhost kernel:  ? kthread_create_worker_on_cpu+0x70/0x70
+Oct 30 10:45:54 localhost kernel:  ret_from_fork+0x35/0x40
+Oct 30 10:45:54 localhost kernel: ---[ end trace 22a2cdec565049f3 ]---
 
-You will be better off having either a specific compatible string or
-using VID/PID as this is a PCI device. Then you can handle other
-differences you may find between h/w versions without a DT change.
-
-> >>
-> >>  Example (to supply the calibration data alone):
-> >>
-> >> @@ -150,3 +151,24 @@ wifi@18000000 {
-> >>                         <0 141 0 /* CE11 */ >;
-> >>              vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-> >>  };
-> >> +
-> >> +Example (to supply the external front end module name):
-> >> +
-> >> +In this example, the front end module is defined as a property of the
-> >> ath10k
-> >> +device node.
-> >
-> > Really need a whole new example for 1 property?
-> Will add this property in existing example.
->
-> >
-> >> +
-> >> +pci {
-> >> +    pcie@0 {
-> >> +            reg = <0 0 0 0 0>;
-> >> +            #interrupt-cells = <1>;
-> >> +            #size-cells = <2>;
-> >> +            #address-cells = <3>;
-> >> +            device_type = "pci";
-> >> +
-> >> +            ath10k@0,0 {
-> >
-> > wifi@0,0
-> Added in ath10k@0,0 to make consistent with existing property
-> "qcom,ath10k-calibration-data" below,
-> "
-
-I don't see how that matters.
-
-> pci {
->          pcie@0 {
->                  reg = <0 0 0 0 0>;
->                  #interrupt-cells = <1>;
->                  #size-cells = <2>;
->                  #address-cells = <3>;
->                  device_type = "pci";
->
->                  ath10k@0,0 {
->                          reg = <0 0 0 0 0>;
->                          device_type = "pci";
->                          qcom,ath10k-calibration-data = [ 01 02 03 ... ];
->                  };
->          };
-> };
-> "
->
-> If wifi@0,0 is preferable, then I will add new entry "wifi@0,0" and add
-> ext-fem-name into it.
-
-Node names are supposed to reflect the class of device, not the model.
-See the DT spec for a list.
-
->
-> >
-> >> +                    reg = <0 0 0 0 0>;
-> >> +                    device_type = "pci";
-
-Also, this is wrong. Only PCI bridges should have this property. dtc
-will give you a warning on this.
-
-> >> +                    ext-fem-name = "microsemi-lx5586";
-> >> +            };
-> >> +    };
-> >> +};
-> >> --
-> >> 1.9.1
-> >>
->
-> Thanks, Sorry for the delayed response,
-> Bhagavathi Perumal S.
+Thanks
 
 _______________________________________________
 ath10k mailing list
