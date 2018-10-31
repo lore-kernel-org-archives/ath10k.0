@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from out3-smtp.messagingengine.com ([66.111.4.27])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHYRE-0004mW-H1
- for ath10k@lists.infradead.org; Tue, 30 Oct 2018 18:08:26 +0000
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
- by mailout.nyi.internal (Postfix) with ESMTP id C0A3921D28
- for <ath10k@lists.infradead.org>; Tue, 30 Oct 2018 14:08:06 -0400 (EDT)
-Message-Id: <1540922886.3700604.1559938168.7431DD90@webmail.messagingengine.com>
-From: nnet <nnet@fastmail.fm>
+ id 1gHjpA-0003iC-7z
+ for ath10k@lists.infradead.org; Wed, 31 Oct 2018 06:17:53 +0000
 MIME-Version: 1.0
-Subject: qca6174 and 4.19 error on resume from suspend
-Date: Tue, 30 Oct 2018 11:08:06 -0700
+Date: Wed, 31 Oct 2018 14:17:40 +0800
+From: yiboz@codeaurora.org
+Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <87woq2843q.fsf@toke.dk>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+ <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
+ <87woq2843q.fsf@toke.dk>
+Message-ID: <b452524e6155f075cc8125885c46de2d@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,58 +22,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-Hello,
-
-I get this on each resume from suspend (S3) since 4.19 (I'm not getting this with 4.18):
-
-Oct 30 10:44:24 localhost  kernel: ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-...
-Oct 30 10:44:24 localhost kernel: ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features wowlan,ignore-otp crc32 fd869beb
-...
-Oct 30 10:45:54 localhost kernel: WARNING: CPU: 1 PID: 14185 at drivers/net/wireless/ath/ath10k/mac.c:5625 ath10k_bss_info_changed+0xd2e/0xe70 [ath10>
-...
-Oct 30 10:45:54 localhost kernel: CPU: 1 PID: 14185 Comm: kworker/u16:38 Tainted: 4.19.0-1.vanilla.knurd.1.fc29.x86_64 #1
-...
-Oct 30 10:45:54 localhost kernel: Workqueue: events_unbound async_run_entry_fn
-Oct 30 10:45:54 localhost kernel: RIP: 0010:ath10k_bss_info_changed+0xd2e/0xe70 [ath10k_core]
-Oct 30 10:45:54 localhost kernel: Code: 89 c1 89 f2 4c 89 d7 48 c7 c6 58 17 b6 c0 4c 89 4c 24 10 89 44 24 08 e8 70 34 00 00 8b 44 24 08 4c 8b 4c 24 1>
-Oct 30 10:45:54 localhost kernel: RSP: 0000:ffffbb8210b6fcc0 EFLAGS: 00010246
-Oct 30 10:45:54 localhost kernel: RAX: 0000000000000000 RBX: ffff9ca3be21d3a0 RCX: 0000000000000000
-Oct 30 10:45:54 localhost kernel: RDX: ffff9ca3ac6018b8 RSI: 0000000000000212 RDI: 0000000000000212
-Oct 30 10:45:54 localhost kernel: RBP: 0000000002000000 R08: 0000000000200000 R09: 0000000000000000
-Oct 30 10:45:54 localhost kernel: R10: 000000000000001f R11: ffff9ca3a7f70e00 R12: ffff9ca3be21d3a8
-Oct 30 10:45:54 localhost kernel: R13: ffff9ca3ac601540 R14: ffff9ca3ac601540 R15: ffff9ca3be21d4f8
-Oct 30 10:45:54 localhost kernel: FS:  0000000000000000(0000) GS:ffff9ca3c2440000(0000) knlGS:0000000000000000
-Oct 30 10:45:54 localhost kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Oct 30 10:45:54 localhost kernel: CR2: 0000000000000000 CR3: 000000018720a001 CR4: 00000000003606e0
-Oct 30 10:45:54 localhost kernel: Call Trace:
-Oct 30 10:45:54 localhost kernel:  ? ath10k_conf_tx+0x7a/0x4b0 [ath10k_core]
-Oct 30 10:45:54 localhost kernel:  ieee80211_bss_info_change_notify+0xab/0x1a0 [mac80211]
-Oct 30 10:45:54 localhost kernel:  ieee80211_reconfig+0x656/0x12b0 [mac80211]
-Oct 30 10:45:54 localhost kernel:  ? enqueue_entity+0xf6/0x680
-Oct 30 10:45:54 localhost kernel:  wiphy_resume+0x7f/0x120 [cfg80211]
-Oct 30 10:45:54 localhost kernel:  ? wiphy_suspend+0x270/0x270 [cfg80211]
-Oct 30 10:45:54 localhost kernel:  dpm_run_callback+0x59/0x150
-Oct 30 10:45:54 localhost kernel:  device_resume+0xac/0x1f0
-Oct 30 10:45:54 localhost kernel:  async_resume+0x19/0x30
-Oct 30 10:45:54 localhost kernel:  async_run_entry_fn+0x39/0x160
-Oct 30 10:45:54 localhost kernel:  process_one_work+0x1a1/0x3a0
-Oct 30 10:45:54 localhost kernel:  worker_thread+0x30/0x380
-Oct 30 10:45:54 localhost kernel:  ? wq_update_unbound_numa+0x1a0/0x1a0
-Oct 30 10:45:54 localhost kernel:  kthread+0x112/0x130
-Oct 30 10:45:54 localhost kernel:  ? kthread_create_worker_on_cpu+0x70/0x70
-Oct 30 10:45:54 localhost kernel:  ret_from_fork+0x35/0x40
-Oct 30 10:45:54 localhost kernel: ---[ end trace 22a2cdec565049f3 ]---
-
-Thanks
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+5ZyoIDIwMTgtMTAtMjggMjM6NDjvvIxUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4g5YaZ6YGT77ya
+Cj4gUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+
+IAo+PiBPbiAyMDE4LTEwLTI2IDA3OjE2LCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6
+Cj4+PiBSYWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6
+Cj4+PiAKPj4+PiBGcm9tOiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAdG9rZS5kaz4K
+Pj4gWy4uLl0KPj4+PiAgCXU4IG1heF9uYW5fZGVfZW50cmllczsKPj4+PiAgCXU4IHR4X3NrX3Bh
+Y2luZ19zaGlmdDsKPj4+PiArCXUzMiBhaXJ0aW1lX3dlaWdodDsKPj4+PiAgfTsKPj4+IAo+Pj4g
+VGhpcyBkb2Vzbid0IG1ha2Ugc2Vuc2UuIEFpcnRpbWUgd2VpZ2h0cyBjYW4gYmUgc2V0IGJ5IHVz
+ZXJzcGFjZSwgc28KPj4+IGV2ZW4gaWYgYSBkcml2ZXIgc2V0cyBhbm90aGVyIGRlZmF1bHQgaXQg
+aXMgbm90IGd1YXJhbnRlZWQgdG8gYmUKPj4+IGhvbm91cmVkLiBTbyB3aGF0J3MgdGhlIHBvaW50
+Pwo+Pj4gCj4+IFRoZSByZWFzb24gZm9yIGRyaXZlciBzcGVjaWZpYyBkZWZhdWx0IGlzIHRvIGF2
+b2lkIHBlcmZvcm1hbmNlIGltcGFjdAo+PiBpbiBhdGgxMGsgd2hlbiB0aGUgdXNlciBpcyB1c2lu
+ZyB2YW5pbGxhIGF0aDEwayB3aXRoIGRlZmF1bHQgYWlydGltZS4KPj4gQXMgSSBtZW50aW9uZWQg
+ZWFybGllciwgbWFjODAyMTEgZGVmYXVsdCAoMjU2dXMpIGlzIHRvbyBsb3cgZm9yIDExYWMKPj4g
+ZGV2aWNlcyBlc3BlY2lhbGx5IHdpdGggZHJpdmVyIGlzIGJ1cnN0aW5nIGFnZ3JlZ2F0aW9uLgo+
+PiAKPj4gWWVzLiBJIGRvIHVuZGVyc3RhbmQgdGhlIHVzZXIgY2FuIGNoYW5nZSBhaXJ0aW1lIGF0
+IGFueXRpbWUgYnV0IEl0Cj4+IG11c3QgYmUgbm90ZWQgdGhhdCBkaWZmZXJlbnQgYWlydGltZSB3
+ZWlnaHQgd2lsbCByZXN1bHQgaW4gZGlmZmVyZW50Cj4+IHRocm91Z2hwdXQuIElNSE8gdGhlIGRl
+ZmF1bHRzIHNob3VsZCBub3QgaW1wYWN0IGN1cnJlbnQgYmVuY2htYXJrLgo+PiBPdGhlcndpc2Ug
+aXQgd2lsbCBiZSBhbGFybWVkIGFzIHJlZ3Jlc3Npb24gbGF0ZXIuIGlzbid0IGl0Pwo+IAo+IE15
+IHBvaW50IGlzIHRoYXQgaWYgdGhlIHVzZXIgaGFzIHRvIGtub3cgdGhlIGltcGxlbWVudGF0aW9u
+LXNwZWNpZmljCj4gbGltaXRhdGlvbnMgb2YgZWFjaCBkcml2ZXIgYmVmb3JlIHNldHRpbmcgYSB3
+ZWlnaHQsIHRoZW4gaXQncyBub3QgYQo+IHBhcnRpY3VsYXJseSBmcmllbmRseSBBUEkuIEkgdGhp
+bmsgd2Ugc2hvdWxkIGJlIGFibGUgdG8gZG8gYmV0dGVyIHRoYW4KPiB0aGF0Li4uCj4gCj4+PiBT
+byBzaW5jZSB3ZSdyZSByb3RhdGluZyB0aGUgcXVldWUgb24gZXZlcnkgY2FsbCB0byB0aGUgZnVu
+Y3Rpb24sIEknbQo+Pj4gd29uZGVyaW5nIGlmIHRoaXMgYWN0dWFsbHkgc3VjY2VlZHMgaW4gdGhy
+b3R0bGluZyB0aGUgc2xvdyBzdGF0aW9uJ3MKPj4+IGFpcnRpbWUgdXNhZ2UgZW5vdWdoIHRvIGFj
+aGlldmUgZmFpcm5lc3M/IFNvIEknbGwgYXNrIGFnYWluOiBEaWQgeW91Cj4+PiB0ZXN0IHRoZSBm
+YWlybmVzcyBwZXJmb3JtYW5jZSwgYW5kIGhvdz8KPj4+IAo+PiBXZSBhcmUgY29sbGVjdGluZyBk
+YXRhIG9mIG1peGVkIGNsaWVudHMgKDExYWMsIDExbiBhbmQgbGVnYWN5KSBrZWVwaW5nCj4+IHRo
+ZW0gYXQgc2FtZSBkaXN0YW5jZSBhbmQgZGlmZmVyZW50IGRpc3RhbmNlLiBTbyB0aGF0IGxvd2Vy
+IHJhdGUKPj4gY2xpZW50cyB3aWxsIGludGVyZmVyZSBoaWdoZXIgTUNTIHJhdGUgc3RhdGlvbi4g
+QWxzbyBjb25maWd1cmluZwo+PiBkaWZmZXJlbnQgYWlydGltZSB3ZWlnaHQgZm9yIGVhY2ggc3Rh
+dGlvbnMgc28gdGhhdCB0aHJvdHRsaW5nIGxvdyByYXRlCj4+IGNsaWVudHMgbW9yZSBzaG91bGQg
+aGVscCBoaWdoZXIgcGVyZm9ybWluZyhiZXR0ZXIgTUNTKSBjbGllbnRzLgo+PiAKPj4gQnkgYWxs
+b3dpbmcgZGlmZmVyZW50IGFpcnRpbWUgZm9yIGVhY2ggc3RhdGlvbnMsIHRoZSB1c2VyIGNhbiBj
+b250cm9sCj4+IGd1ZXN0IG5ldHdvcmsgb3ZlciBwcmltYXJ5IG5ldHdvcmsuIEFsc28gSXQgaGVs
+cGVkIHRvIGltcHJvdmUKPj4gcGVyZm9ybWFuY2Ugb2YgcHJlZmVycmVkIHN0YXRpb24gYW5kIGFs
+Z28uIHRvIGNvbnRyb2wgc3RhdGlvbiBpcyBnaXZlbgo+PiB0byBjbG91ZCBvciB1c2VyIGFwcGxp
+Y2F0aW9uLgo+PiAKPj4gQXMgb2Ygbm93LCBXZSBhcmUgdGVzdGluZyB3aXRoIDQgMTFhYyBjbGll
+bnRzIG9mIHNhbWUgZGlzdGFuY2UuIEFuZAo+PiBjb2xsZWN0aW5nIHRoZSBwZXJmb3JtYW5jZSBk
+YXRhIGluIG11bHRpcGxlIGl0ZXJhdGlvbi4gQmVsb3cgYXJlCj4+IGN1cnJlbnQgZGF0YSBvZiBz
+dGF0aW9uJ3MgcGVyZm9ybWFuY2UgKE1icHMpIGFnYWluc3QgYWlydGltZSB3ZWlnaHQuCj4+IAo+
+PiBhaXJ0aW1lICAgc3RhdGlvbjEoJWFpcnRpbWUpICBzdGF0aW9uMiAgICAgc3RhdGlvbjMgICAg
+ICAgc3RhdGlvbjQKPj4gKE1icHMpCj4+IAo+PiBObyBBVEYgICAgICAxODIgICAgICAgICAgICAg
+ICAxNjggICAgICAgICAgMTY2ICAgICAgICAgICAgMTY5Cj4+IAo+PiA0bXMgICAgICAgICAxNzAg
+KDEwMCUpICAgICAgICAxNjQgKDEwMCUpICAgMTg1ICAoMTAwJSkgICAgMTc1ICgxMDAlKQo+PiAK
+Pj4gNG1zICAgICAgICAgMjc3ICg3MCUpICAgICAgICAgMTE1ICgxMCUpICAgIDEwMyAoMTAlKSAg
+ICAgIDEwNSAoMTAlKQo+PiAKPj4gNG1zICAgICAgICAgMjIzICg0MCUpICAgICAgICAgMjE0ICg0
+MCUpICAgIDEwOSAoMTAlKSAgICAgICA5NCAoMTAlKQo+PiAKPj4gNG1zICAgICAgICAgMzM3ICg5
+MCUpICAgICAgICAgMTgyICg4JSkgICAgICAyMyAoMSUpICAgICAgICAzMCAoMSUpCj4gCj4gU28g
+dGhpcyBsb29rcyBsaWtlIGl0J3MgZG9pbmcgKnNvbWV0aGluZyosIGJ1dCBub3QgbGlrZSBpdCdz
+IHN1Y2NlZWRpbmcKPiBpbiBhY2hpZXZpbmcgdGhlIHNldCBwZXJjZW50YWdlcy4gRGlkIHlvdSBj
+aGVjayBpZiB0aGUgYWN0dWFsIGFpcnRpbWUKPiB2YWx1ZXMgKGluIGRlYnVnZnMpIGNvcnJlc3Bv
+bmRzIHRvIHRoZSBjb25maWd1cmVkIHdlaWdodHM/Cj4gCj4+IAo+PiAgICAgICAgICAgICAgU1RB
+MSgxMWFjKSAgU1RBMiAoMTFuKSAgU1RBMygxMWEpCj4+ICAgICAgICAgICAgICA9PT09PT09PT09
+ICA9PT09PT09PT09ICA9PT09PT09PT0KPj4gCj4+IE5vIEFURiAgICAgICAyMjUgICAgICAgICAx
+NjYgICAgICAgICAzLjUKPj4gCj4+IEFURiAoNG1zKSAgICAyMzQgICAgICAgICAxNTEgICAgICAg
+ICAzLjUKPiAKPiBUaGlzIGFsc28gc2hvd3MgbGlrZSBBVEYgaGFzIG5vIGVmZmVjdD8KPiAKPj4+
+IEFsc28sIHRha2luZyBhIHN0ZXAgYmFjazoKPj4+IAo+Pj4gV2l0aCB0aGlzLCB3ZSdyZSBkb2lu
+ZyBsb3RzIG9mIHdvcmsgdG8gbWFrZSBzdXJlIHRoYXQgdGhlIGhhcmR3YXJlJ3MKPj4+IHJvdW5k
+LXJvYmluIHNjaGVkdWxpbmcgcXVldWUgbGluZXMgdXAgd2l0aCBtYWM4MDIxMTsgc28gaWYgd2Ug
+ZG8gdGhpcwo+Pj4gYW55d2F5LCB3aHkgY2FuJ3Qgd2UganVzdCBjb250cm9sIHRoZSBvcmRlciBk
+aXJlY3RseSBmcm9tIG1hYzgwMjExCj4+PiAod2hpY2ggaXMgd2hhdCB3ZSBkbyB3aXRoIHRoZSBv
+dGhlciBuZXh0X3R4cSgpIEFQSSk/Cj4+PiAKVG9rZSBhbmQgUmFqLAoKSG93IGFib3V0IHRyZWF0
+aW5nIGFueSB0eHFzIGJlZm9yZSB0aGUgdHhxIHRoYXQgRlcgYXNrZWQgZm9yIGluIApwdXNoLXB1
+bGwgbW9kZQphcyBwZW5kaW5nIHR4cXM/IFRoZW4gd2UgY2FuIGRlcXVldWUgYW5kIHJlb3JkZXIg
+dGhlbS5BbmQgYWlydGltZSB3ZWlnaHQgCm5lZWQKdG8gYmUgdHVuZWQgdG8gbWFrZSBzdXJlIGl0
+IHdvbid0IGNvc3QgdG9vIG11Y2ggdGltZS4gQWZ0ZXIgdGhhdCwgY2hlY2sgCnRoZSB0eHEKRlcg
+d2lzaGVzIHRvIGZldGNoIGluIHR4cV9tYXlfdHJhbnNtaXQuCgpJcyB0aGlzIHdheSBhYmxlIHRv
+IGFjaGlldmUgZmFpcm5lc3MgYW5kIGxpbmUgdXAgd2l0aCBtYWM4MDIxMT8KQWxzbywgd2UgbWF5
+IG5lZWQgdG8gY29uc2lkZXIgaWYgRlcgc3VwcG9ydHMgaW4gdGhpcyB3YXkuCgo+PiBUaGUgb25s
+eSB3YXkgdG8gZW5mb3JjZSBtYWM4MDIxMSBvcmRlcmluZyBpbiBhdGgxMGsgaXMgdG8gZGlzYWJs
+ZSBwdWxsCj4+IG1vZGUgaW4gZmlybXdhcmUgYW5kIGFsd2F5cyBvcGVyYXRlcyBpbiBwdXNoIG1v
+ZGUgc2ltaWxhciB0byBhdGg5ay4KPiAKPiBBbmQgSSBhc3N1bWUgdGhhdCBpcyBub3QgdG9vIGxp
+a2VseSB0byBoYXBwZW4sIG9yPyBXaGF0IGlzIHRoZSBiZW5lZml0Cj4gb2YgcHVsbCBtb2RlIGF0
+IHRoZSBmaXJtd2FyZSBsZXZlbD8KPiAKPiAtVG9rZQoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
