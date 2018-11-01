@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHjpA-0003iC-7z
- for ath10k@lists.infradead.org; Wed, 31 Oct 2018 06:17:53 +0000
-MIME-Version: 1.0
-Date: Wed, 31 Oct 2018 14:17:40 +0800
-From: yiboz@codeaurora.org
-Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <87woq2843q.fsf@toke.dk>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
- <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
- <87woq2843q.fsf@toke.dk>
-Message-ID: <b452524e6155f075cc8125885c46de2d@codeaurora.org>
+ id 1gIEux-0006BX-R5
+ for ath10k@lists.infradead.org; Thu, 01 Nov 2018 15:29:58 +0000
+Received: by mail-pf1-x442.google.com with SMTP id g21-v6so9500382pfi.7
+ for <ath10k@lists.infradead.org>; Thu, 01 Nov 2018 08:29:45 -0700 (PDT)
+From: Yangtao Li <tiny.windzz@gmail.com>
+Subject: [PATCH] ath10k: fix some typo
+Date: Thu,  1 Nov 2018 11:29:32 -0400
+Message-Id: <20181101152932.22684-1-tiny.windzz@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,90 +17,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: kvalo@codeaurora.org, davem@davemloft.net
+Cc: Yangtao Li <tiny.windzz@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-5ZyoIDIwMTgtMTAtMjggMjM6NDjvvIxUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4g5YaZ6YGT77ya
-Cj4gUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+
-IAo+PiBPbiAyMDE4LTEwLTI2IDA3OjE2LCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6
-Cj4+PiBSYWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6
-Cj4+PiAKPj4+PiBGcm9tOiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAdG9rZS5kaz4K
-Pj4gWy4uLl0KPj4+PiAgCXU4IG1heF9uYW5fZGVfZW50cmllczsKPj4+PiAgCXU4IHR4X3NrX3Bh
-Y2luZ19zaGlmdDsKPj4+PiArCXUzMiBhaXJ0aW1lX3dlaWdodDsKPj4+PiAgfTsKPj4+IAo+Pj4g
-VGhpcyBkb2Vzbid0IG1ha2Ugc2Vuc2UuIEFpcnRpbWUgd2VpZ2h0cyBjYW4gYmUgc2V0IGJ5IHVz
-ZXJzcGFjZSwgc28KPj4+IGV2ZW4gaWYgYSBkcml2ZXIgc2V0cyBhbm90aGVyIGRlZmF1bHQgaXQg
-aXMgbm90IGd1YXJhbnRlZWQgdG8gYmUKPj4+IGhvbm91cmVkLiBTbyB3aGF0J3MgdGhlIHBvaW50
-Pwo+Pj4gCj4+IFRoZSByZWFzb24gZm9yIGRyaXZlciBzcGVjaWZpYyBkZWZhdWx0IGlzIHRvIGF2
-b2lkIHBlcmZvcm1hbmNlIGltcGFjdAo+PiBpbiBhdGgxMGsgd2hlbiB0aGUgdXNlciBpcyB1c2lu
-ZyB2YW5pbGxhIGF0aDEwayB3aXRoIGRlZmF1bHQgYWlydGltZS4KPj4gQXMgSSBtZW50aW9uZWQg
-ZWFybGllciwgbWFjODAyMTEgZGVmYXVsdCAoMjU2dXMpIGlzIHRvbyBsb3cgZm9yIDExYWMKPj4g
-ZGV2aWNlcyBlc3BlY2lhbGx5IHdpdGggZHJpdmVyIGlzIGJ1cnN0aW5nIGFnZ3JlZ2F0aW9uLgo+
-PiAKPj4gWWVzLiBJIGRvIHVuZGVyc3RhbmQgdGhlIHVzZXIgY2FuIGNoYW5nZSBhaXJ0aW1lIGF0
-IGFueXRpbWUgYnV0IEl0Cj4+IG11c3QgYmUgbm90ZWQgdGhhdCBkaWZmZXJlbnQgYWlydGltZSB3
-ZWlnaHQgd2lsbCByZXN1bHQgaW4gZGlmZmVyZW50Cj4+IHRocm91Z2hwdXQuIElNSE8gdGhlIGRl
-ZmF1bHRzIHNob3VsZCBub3QgaW1wYWN0IGN1cnJlbnQgYmVuY2htYXJrLgo+PiBPdGhlcndpc2Ug
-aXQgd2lsbCBiZSBhbGFybWVkIGFzIHJlZ3Jlc3Npb24gbGF0ZXIuIGlzbid0IGl0Pwo+IAo+IE15
-IHBvaW50IGlzIHRoYXQgaWYgdGhlIHVzZXIgaGFzIHRvIGtub3cgdGhlIGltcGxlbWVudGF0aW9u
-LXNwZWNpZmljCj4gbGltaXRhdGlvbnMgb2YgZWFjaCBkcml2ZXIgYmVmb3JlIHNldHRpbmcgYSB3
-ZWlnaHQsIHRoZW4gaXQncyBub3QgYQo+IHBhcnRpY3VsYXJseSBmcmllbmRseSBBUEkuIEkgdGhp
-bmsgd2Ugc2hvdWxkIGJlIGFibGUgdG8gZG8gYmV0dGVyIHRoYW4KPiB0aGF0Li4uCj4gCj4+PiBT
-byBzaW5jZSB3ZSdyZSByb3RhdGluZyB0aGUgcXVldWUgb24gZXZlcnkgY2FsbCB0byB0aGUgZnVu
-Y3Rpb24sIEknbQo+Pj4gd29uZGVyaW5nIGlmIHRoaXMgYWN0dWFsbHkgc3VjY2VlZHMgaW4gdGhy
-b3R0bGluZyB0aGUgc2xvdyBzdGF0aW9uJ3MKPj4+IGFpcnRpbWUgdXNhZ2UgZW5vdWdoIHRvIGFj
-aGlldmUgZmFpcm5lc3M/IFNvIEknbGwgYXNrIGFnYWluOiBEaWQgeW91Cj4+PiB0ZXN0IHRoZSBm
-YWlybmVzcyBwZXJmb3JtYW5jZSwgYW5kIGhvdz8KPj4+IAo+PiBXZSBhcmUgY29sbGVjdGluZyBk
-YXRhIG9mIG1peGVkIGNsaWVudHMgKDExYWMsIDExbiBhbmQgbGVnYWN5KSBrZWVwaW5nCj4+IHRo
-ZW0gYXQgc2FtZSBkaXN0YW5jZSBhbmQgZGlmZmVyZW50IGRpc3RhbmNlLiBTbyB0aGF0IGxvd2Vy
-IHJhdGUKPj4gY2xpZW50cyB3aWxsIGludGVyZmVyZSBoaWdoZXIgTUNTIHJhdGUgc3RhdGlvbi4g
-QWxzbyBjb25maWd1cmluZwo+PiBkaWZmZXJlbnQgYWlydGltZSB3ZWlnaHQgZm9yIGVhY2ggc3Rh
-dGlvbnMgc28gdGhhdCB0aHJvdHRsaW5nIGxvdyByYXRlCj4+IGNsaWVudHMgbW9yZSBzaG91bGQg
-aGVscCBoaWdoZXIgcGVyZm9ybWluZyhiZXR0ZXIgTUNTKSBjbGllbnRzLgo+PiAKPj4gQnkgYWxs
-b3dpbmcgZGlmZmVyZW50IGFpcnRpbWUgZm9yIGVhY2ggc3RhdGlvbnMsIHRoZSB1c2VyIGNhbiBj
-b250cm9sCj4+IGd1ZXN0IG5ldHdvcmsgb3ZlciBwcmltYXJ5IG5ldHdvcmsuIEFsc28gSXQgaGVs
-cGVkIHRvIGltcHJvdmUKPj4gcGVyZm9ybWFuY2Ugb2YgcHJlZmVycmVkIHN0YXRpb24gYW5kIGFs
-Z28uIHRvIGNvbnRyb2wgc3RhdGlvbiBpcyBnaXZlbgo+PiB0byBjbG91ZCBvciB1c2VyIGFwcGxp
-Y2F0aW9uLgo+PiAKPj4gQXMgb2Ygbm93LCBXZSBhcmUgdGVzdGluZyB3aXRoIDQgMTFhYyBjbGll
-bnRzIG9mIHNhbWUgZGlzdGFuY2UuIEFuZAo+PiBjb2xsZWN0aW5nIHRoZSBwZXJmb3JtYW5jZSBk
-YXRhIGluIG11bHRpcGxlIGl0ZXJhdGlvbi4gQmVsb3cgYXJlCj4+IGN1cnJlbnQgZGF0YSBvZiBz
-dGF0aW9uJ3MgcGVyZm9ybWFuY2UgKE1icHMpIGFnYWluc3QgYWlydGltZSB3ZWlnaHQuCj4+IAo+
-PiBhaXJ0aW1lICAgc3RhdGlvbjEoJWFpcnRpbWUpICBzdGF0aW9uMiAgICAgc3RhdGlvbjMgICAg
-ICAgc3RhdGlvbjQKPj4gKE1icHMpCj4+IAo+PiBObyBBVEYgICAgICAxODIgICAgICAgICAgICAg
-ICAxNjggICAgICAgICAgMTY2ICAgICAgICAgICAgMTY5Cj4+IAo+PiA0bXMgICAgICAgICAxNzAg
-KDEwMCUpICAgICAgICAxNjQgKDEwMCUpICAgMTg1ICAoMTAwJSkgICAgMTc1ICgxMDAlKQo+PiAK
-Pj4gNG1zICAgICAgICAgMjc3ICg3MCUpICAgICAgICAgMTE1ICgxMCUpICAgIDEwMyAoMTAlKSAg
-ICAgIDEwNSAoMTAlKQo+PiAKPj4gNG1zICAgICAgICAgMjIzICg0MCUpICAgICAgICAgMjE0ICg0
-MCUpICAgIDEwOSAoMTAlKSAgICAgICA5NCAoMTAlKQo+PiAKPj4gNG1zICAgICAgICAgMzM3ICg5
-MCUpICAgICAgICAgMTgyICg4JSkgICAgICAyMyAoMSUpICAgICAgICAzMCAoMSUpCj4gCj4gU28g
-dGhpcyBsb29rcyBsaWtlIGl0J3MgZG9pbmcgKnNvbWV0aGluZyosIGJ1dCBub3QgbGlrZSBpdCdz
-IHN1Y2NlZWRpbmcKPiBpbiBhY2hpZXZpbmcgdGhlIHNldCBwZXJjZW50YWdlcy4gRGlkIHlvdSBj
-aGVjayBpZiB0aGUgYWN0dWFsIGFpcnRpbWUKPiB2YWx1ZXMgKGluIGRlYnVnZnMpIGNvcnJlc3Bv
-bmRzIHRvIHRoZSBjb25maWd1cmVkIHdlaWdodHM/Cj4gCj4+IAo+PiAgICAgICAgICAgICAgU1RB
-MSgxMWFjKSAgU1RBMiAoMTFuKSAgU1RBMygxMWEpCj4+ICAgICAgICAgICAgICA9PT09PT09PT09
-ICA9PT09PT09PT09ICA9PT09PT09PT0KPj4gCj4+IE5vIEFURiAgICAgICAyMjUgICAgICAgICAx
-NjYgICAgICAgICAzLjUKPj4gCj4+IEFURiAoNG1zKSAgICAyMzQgICAgICAgICAxNTEgICAgICAg
-ICAzLjUKPiAKPiBUaGlzIGFsc28gc2hvd3MgbGlrZSBBVEYgaGFzIG5vIGVmZmVjdD8KPiAKPj4+
-IEFsc28sIHRha2luZyBhIHN0ZXAgYmFjazoKPj4+IAo+Pj4gV2l0aCB0aGlzLCB3ZSdyZSBkb2lu
-ZyBsb3RzIG9mIHdvcmsgdG8gbWFrZSBzdXJlIHRoYXQgdGhlIGhhcmR3YXJlJ3MKPj4+IHJvdW5k
-LXJvYmluIHNjaGVkdWxpbmcgcXVldWUgbGluZXMgdXAgd2l0aCBtYWM4MDIxMTsgc28gaWYgd2Ug
-ZG8gdGhpcwo+Pj4gYW55d2F5LCB3aHkgY2FuJ3Qgd2UganVzdCBjb250cm9sIHRoZSBvcmRlciBk
-aXJlY3RseSBmcm9tIG1hYzgwMjExCj4+PiAod2hpY2ggaXMgd2hhdCB3ZSBkbyB3aXRoIHRoZSBv
-dGhlciBuZXh0X3R4cSgpIEFQSSk/Cj4+PiAKVG9rZSBhbmQgUmFqLAoKSG93IGFib3V0IHRyZWF0
-aW5nIGFueSB0eHFzIGJlZm9yZSB0aGUgdHhxIHRoYXQgRlcgYXNrZWQgZm9yIGluIApwdXNoLXB1
-bGwgbW9kZQphcyBwZW5kaW5nIHR4cXM/IFRoZW4gd2UgY2FuIGRlcXVldWUgYW5kIHJlb3JkZXIg
-dGhlbS5BbmQgYWlydGltZSB3ZWlnaHQgCm5lZWQKdG8gYmUgdHVuZWQgdG8gbWFrZSBzdXJlIGl0
-IHdvbid0IGNvc3QgdG9vIG11Y2ggdGltZS4gQWZ0ZXIgdGhhdCwgY2hlY2sgCnRoZSB0eHEKRlcg
-d2lzaGVzIHRvIGZldGNoIGluIHR4cV9tYXlfdHJhbnNtaXQuCgpJcyB0aGlzIHdheSBhYmxlIHRv
-IGFjaGlldmUgZmFpcm5lc3MgYW5kIGxpbmUgdXAgd2l0aCBtYWM4MDIxMT8KQWxzbywgd2UgbWF5
-IG5lZWQgdG8gY29uc2lkZXIgaWYgRlcgc3VwcG9ydHMgaW4gdGhpcyB3YXkuCgo+PiBUaGUgb25s
-eSB3YXkgdG8gZW5mb3JjZSBtYWM4MDIxMSBvcmRlcmluZyBpbiBhdGgxMGsgaXMgdG8gZGlzYWJs
-ZSBwdWxsCj4+IG1vZGUgaW4gZmlybXdhcmUgYW5kIGFsd2F5cyBvcGVyYXRlcyBpbiBwdXNoIG1v
-ZGUgc2ltaWxhciB0byBhdGg5ay4KPiAKPiBBbmQgSSBhc3N1bWUgdGhhdCBpcyBub3QgdG9vIGxp
-a2VseSB0byBoYXBwZW4sIG9yPyBXaGF0IGlzIHRoZSBiZW5lZml0Cj4gb2YgcHVsbCBtb2RlIGF0
-IHRoZSBmaXJtd2FyZSBsZXZlbD8KPiAKPiAtVG9rZQoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/wow.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
+index a6b179f88d36..e834c25a9330 100644
+--- a/drivers/net/wireless/ath/ath10k/wow.c
++++ b/drivers/net/wireless/ath/ath10k/wow.c
+@@ -135,7 +135,7 @@ static void ath10k_wow_convert_8023_to_80211
+ 	       &old_hdr_mask->h_proto,
+ 	       sizeof(old_hdr_mask->h_proto));
+ 
+-	/* Caculate new pkt_offset */
++	/* Calculate new pkt_offset */
+ 	if (old->pkt_offset < ETH_ALEN)
+ 		new->pkt_offset = old->pkt_offset +
+ 			offsetof(struct ieee80211_hdr_3addr, addr1);
+@@ -146,7 +146,7 @@ static void ath10k_wow_convert_8023_to_80211
+ 	else
+ 		new->pkt_offset = old->pkt_offset + hdr_len + rfc_len - ETH_HLEN;
+ 
+-	/* Caculate new hdr end offset */
++	/* Calculate new hdr end offset */
+ 	if (total_len > ETH_HLEN)
+ 		hdr_80211_end_offset = hdr_len + rfc_len;
+ 	else if (total_len > offsetof(struct ethhdr, h_proto))
+-- 
+2.17.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
