@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIEux-0006BX-R5
- for ath10k@lists.infradead.org; Thu, 01 Nov 2018 15:29:58 +0000
-Received: by mail-pf1-x442.google.com with SMTP id g21-v6so9500382pfi.7
- for <ath10k@lists.infradead.org>; Thu, 01 Nov 2018 08:29:45 -0700 (PDT)
-From: Yangtao Li <tiny.windzz@gmail.com>
-Subject: [PATCH] ath10k: fix some typo
-Date: Thu,  1 Nov 2018 11:29:32 -0400
-Message-Id: <20181101152932.22684-1-tiny.windzz@gmail.com>
+ id 1gIWj1-0004rE-0V
+ for ath10k@lists.infradead.org; Fri, 02 Nov 2018 10:30:50 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+ <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
+ <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
+ <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org>
+Date: Fri, 02 Nov 2018 11:30:22 +0100
+Message-ID: <87h8gzpy9t.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,46 +23,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net
-Cc: Yangtao Li <tiny.windzz@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
----
- drivers/net/wireless/ath/ath10k/wow.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
-index a6b179f88d36..e834c25a9330 100644
---- a/drivers/net/wireless/ath/ath10k/wow.c
-+++ b/drivers/net/wireless/ath/ath10k/wow.c
-@@ -135,7 +135,7 @@ static void ath10k_wow_convert_8023_to_80211
- 	       &old_hdr_mask->h_proto,
- 	       sizeof(old_hdr_mask->h_proto));
- 
--	/* Caculate new pkt_offset */
-+	/* Calculate new pkt_offset */
- 	if (old->pkt_offset < ETH_ALEN)
- 		new->pkt_offset = old->pkt_offset +
- 			offsetof(struct ieee80211_hdr_3addr, addr1);
-@@ -146,7 +146,7 @@ static void ath10k_wow_convert_8023_to_80211
- 	else
- 		new->pkt_offset = old->pkt_offset + hdr_len + rfc_len - ETH_HLEN;
- 
--	/* Caculate new hdr end offset */
-+	/* Calculate new hdr end offset */
- 	if (total_len > ETH_HLEN)
- 		hdr_80211_end_offset = hdr_len + rfc_len;
- 	else if (total_len > offsetof(struct ethhdr, h_proto))
--- 
-2.17.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBP
+biAyMDE4LTEwLTI4IDE1OjAxLCBSYWprdW1hciBNYW5vaGFyYW4gd3JvdGU6Cj4+IE9uIDIwMTgt
+MTAtMjggMDg6NDgsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+IFJhamt1bWFy
+IE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4+IAo+Pj4+IAo+
+Pj4+IDRtcyAgICAgICAgIDIyMyAoNDAlKSAgICAgICAgIDIxNCAoNDAlKSAgICAxMDkgKDEwJSkg
+ICAgICAgOTQgKDEwJSkKPj4+PiAKPj4+PiA0bXMgICAgICAgICAzMzcgKDkwJSkgICAgICAgICAx
+ODIgKDglKSAgICAgIDIzICgxJSkgICAgICAgIDMwICgxJSkKPj4+IAo+Pj4gU28gdGhpcyBsb29r
+cyBsaWtlIGl0J3MgZG9pbmcgKnNvbWV0aGluZyosIGJ1dCBub3QgbGlrZSBpdCdzIAo+Pj4gc3Vj
+Y2VlZGluZwo+Pj4gaW4gYWNoaWV2aW5nIHRoZSBzZXQgcGVyY2VudGFnZXMuIERpZCB5b3UgY2hl
+Y2sgaWYgdGhlIGFjdHVhbCBhaXJ0aW1lCj4+PiB2YWx1ZXMgKGluIGRlYnVnZnMpIGNvcnJlc3Bv
+bmRzIHRvIHRoZSBjb25maWd1cmVkIHdlaWdodHM/Cj4+PiAKPj4gTm8uIFdpbGwgY2hlY2sgdGhh
+dC4KPj4gCj4gVG9rZSwKPgo+ICBGcm9tIGFib3ZlIHJlc3VsdHMsIGRpZmZlcmVudCBhaXJ0aW1l
+IGZvciBlYWNoIHN0YXRpb24gaXMgcmVmbGVjdGluZyBvbgo+IG91dHB1dCBwZXJmb3JtYW5jZS4g
+VW5mb3J0dW5hdGVseSBJIGRvbid0IHNlZSBzdWNoIHRwdXQgZGlmZmVyZW5jZSwgd2hlbgo+IHRo
+ZSB0eCBtb2RlIGlzIGZpeGVkIGluIHB1c2gtb25seS4gRXZlbiBsb3cgd2VpZ2h0IHN0YXRpb24g
+aXMgZ2l2aW5nIAo+IHNhbWUKPiBwZXJmb3JtYW5jZS4gQXJlIHlvdSBhbHNvIHNlZWluZyB0aGUg
+c2FtZSBiZWhhdmlvciBpbiB5b3VyIHNldHVwPyBDb3VsZAo+IHlvdSBwbGVhc2Ugc2hhcmUgeW91
+ciByZXN1bHRzPwoKU29ycnksIEkndmUgYmVlbiB0cmF2ZWxsaW5nIHRoaXMgd2VlazsgSSdsbCBi
+ZSBiYWNrIGluIHRoZSBvZmZpY2UgbmV4dAp3ZWVrIGFuZCBjYW4gcnVuIHNvbWUgdGVzdHMgdGhl
+bi4gSSBtYXkgYWxzbyBoYXZlIGFuIGlkZWEgZm9yIGEKZGlmZmVyZW50IGFsZ29yaXRobSB0aGF0
+IHdpbGwgd29yayBiZXR0ZXIgaW4gcHVsbCBtb2RlLCBidXQgbmVlZCB0byBzZWUKaWYgaXQgd29y
+a3MgYXQgYWxsIGZpcnN0IDopCgpIb3cgZG8gSSBmb3JjZSBhdGgxMGsgaW50byBwdXNoIG1vZGU/
+CgotVG9rZQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
