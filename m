@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gId5n-0002K9-G2
- for ath10k@lists.infradead.org; Fri, 02 Nov 2018 17:18:44 +0000
-Received: by mail-pl1-x644.google.com with SMTP id s5-v6so1288036plq.11
- for <ath10k@lists.infradead.org>; Fri, 02 Nov 2018 10:18:33 -0700 (PDT)
+ id 1gId5j-0002Js-SG
+ for ath10k@lists.infradead.org; Fri, 02 Nov 2018 17:18:45 +0000
+Received: by mail-pg1-x542.google.com with SMTP id w7so1240591pgp.13
+ for <ath10k@lists.infradead.org>; Fri, 02 Nov 2018 10:18:29 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 3/3] ath10k: fix struct init whitespace in SNOC driver
-Date: Fri,  2 Nov 2018 10:17:49 -0700
-Message-Id: <20181102171749.38680-3-briannorris@chromium.org>
-In-Reply-To: <20181102171749.38680-1-briannorris@chromium.org>
-References: <20181102171749.38680-1-briannorris@chromium.org>
+Subject: [PATCH 1/3] ath10k: assign 'n_cipher_suites' for WCN3990
+Date: Fri,  2 Nov 2018 10:17:47 -0700
+Message-Id: <20181102171749.38680-1-briannorris@chromium.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,34 +25,36 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
+Commit 2ea9f12cefe4 ("ath10k: add new cipher suite support") added a new
+n_cipher_suites HW param with a fallback value and a warning log. Commit
+03a72288c546 ("ath10k: wmi: add hw params entry for wcn3990") later
+added WCN3990 HW entries, but it missed the n_cipher_suites.
+
+Rather than seeing this warning every boot
+
+  ath10k_snoc 18800000.wifi: invalid hw_params.n_cipher_suites 0
+
+let's provide the appropriate value.
+
+Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 8d3d9bca410f..ffdebf9a5ac6 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1641,12 +1641,12 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
- }
- 
- static struct platform_driver ath10k_snoc_driver = {
--		.probe  = ath10k_snoc_probe,
--		.remove = ath10k_snoc_remove,
--		.driver = {
--			.name   = "ath10k_snoc",
--			.of_match_table = ath10k_snoc_dt_match,
--		},
-+	.probe  = ath10k_snoc_probe,
-+	.remove = ath10k_snoc_remove,
-+	.driver = {
-+		.name   = "ath10k_snoc",
-+		.of_match_table = ath10k_snoc_dt_match,
-+	},
- };
- module_platform_driver(ath10k_snoc_driver);
- 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index da607febfd82..bdc81f1cdb94 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -561,6 +561,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_ops = &wcn3990_ops,
+ 		.decap_align_bytes = 1,
+ 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
++		.n_cipher_suites = 8,
+ 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
 -- 
 2.19.1.930.g4563a0d9d0-goog
 
