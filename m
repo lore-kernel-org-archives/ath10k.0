@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gId5j-0002Js-SG
- for ath10k@lists.infradead.org; Fri, 02 Nov 2018 17:18:45 +0000
-Received: by mail-pg1-x542.google.com with SMTP id w7so1240591pgp.13
- for <ath10k@lists.infradead.org>; Fri, 02 Nov 2018 10:18:29 -0700 (PDT)
+ id 1gIdth-0005vF-3K
+ for ath10k@lists.infradead.org; Fri, 02 Nov 2018 18:10:18 +0000
+Received: by mail-pf1-x442.google.com with SMTP id j13-v6so1362612pff.11
+ for <ath10k@lists.infradead.org>; Fri, 02 Nov 2018 11:10:06 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 1/3] ath10k: assign 'n_cipher_suites' for WCN3990
-Date: Fri,  2 Nov 2018 10:17:47 -0700
-Message-Id: <20181102171749.38680-1-briannorris@chromium.org>
+Subject: [PATCH] ath10k: ath10k_snoc_{read,write}32() should be static
+Date: Fri,  2 Nov 2018 11:10:00 -0700
+Message-Id: <20181102181000.96834-1-briannorris@chromium.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +23,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Commit 2ea9f12cefe4 ("ath10k: add new cipher suite support") added a new
-n_cipher_suites HW param with a fallback value and a warning log. Commit
-03a72288c546 ("ath10k: wmi: add hw params entry for wcn3990") later
-added WCN3990 HW entries, but it missed the n_cipher_suites.
+They're provided as callbacks in ath10k_hif_ops and should be accessed
+that way, if needed outside of snoc.c, and anyway, they're currently
+unused outside snoc.c.
 
-Rather than seeing this warning every boot
-
-  ath10k_snoc 18800000.wifi: invalid hw_params.n_cipher_suites 0
-
-let's provide the appropriate value.
-
-Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
-Cc: Govind Singh <govinds@qti.qualcomm.com>
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/snoc.c | 4 ++--
+ drivers/net/wireless/ath/ath10k/snoc.h | 2 --
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index da607febfd82..bdc81f1cdb94 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -561,6 +561,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.hw_ops = &wcn3990_ops,
- 		.decap_align_bytes = 1,
- 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
-+		.n_cipher_suites = 8,
- 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
- 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
- 		.target_64bit = true,
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index ffdebf9a5ac6..5b37a0c68be6 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -474,14 +474,14 @@ static struct service_to_pipe target_service_to_ce_map_wlan[] = {
+ 	},
+ };
+ 
+-void ath10k_snoc_write32(struct ath10k *ar, u32 offset, u32 value)
++static void ath10k_snoc_write32(struct ath10k *ar, u32 offset, u32 value)
+ {
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+ 	iowrite32(value, ar_snoc->mem + offset);
+ }
+ 
+-u32 ath10k_snoc_read32(struct ath10k *ar, u32 offset)
++static u32 ath10k_snoc_read32(struct ath10k *ar, u32 offset)
+ {
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 	u32 val;
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index e1d2d6675556..de077bc8bc74 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -91,8 +91,6 @@ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+ 	return (struct ath10k_snoc *)ar->drv_priv;
+ }
+ 
+-void ath10k_snoc_write32(struct ath10k *ar, u32 offset, u32 value);
+-u32 ath10k_snoc_read32(struct ath10k *ar, u32 offset);
+ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type);
+ 
+ #endif /* _SNOC_H_ */
 -- 
 2.19.1.930.g4563a0d9d0-goog
 
