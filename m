@@ -1,17 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJljX-0004QX-Vj
- for ath10k@lists.infradead.org; Mon, 05 Nov 2018 20:44:29 +0000
-Message-ID: <b833d8c0987e838759dbf00d97d4989a267a10fb.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/4] cfg80211/mac80211: Add support for TID specific
- configuration
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 05 Nov 2018 21:43:48 +0100
-In-Reply-To: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
-Mime-Version: 1.0
+ id 1gJmFU-0004XD-6s
+ for ath10k@lists.infradead.org; Mon, 05 Nov 2018 21:17:29 +0000
+Received: by mail-ed1-x544.google.com with SMTP id a14-v6so4564092edr.7
+ for <ath10k@lists.infradead.org>; Mon, 05 Nov 2018 13:17:17 -0800 (PST)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com.
+ [209.85.208.51])
+ by smtp.gmail.com with ESMTPSA id n34-v6sm8069774edc.34.2018.11.05.13.17.13
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 05 Nov 2018 13:17:13 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id w19-v6so8770691eds.1
+ for <ath10k@lists.infradead.org>; Mon, 05 Nov 2018 13:17:13 -0800 (PST)
+MIME-Version: 1.0
+References: <20181013005504.46399-1-briannorris@chromium.org>
+ <20181105130403.93B6560600@smtp.codeaurora.org>
+In-Reply-To: <20181105130403.93B6560600@smtp.codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Mon, 5 Nov 2018 13:17:00 -0800
+Message-ID: <CA+ASDXMz37pOFjeETM_xUQSBuLvki6G==v=RUO1T5G1t6Yv+dg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ath10k: snoc: remove 'wcn3990' from generic resource
+ handling
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +34,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhr@codeaurora.org>, ath10k@lists.infradead.org
-Cc: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: govinds@codeaurora.org, linux-wireless@vger.kernel.org, Doug Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>
 
-On Mon, 2018-10-22 at 23:25 +0530, Tamizh chelvam wrote:
-> Add infrastructure for per TID aggregation/retry count configurations
-> such as retry count and AMPDU aggregation control(disable/enable).
-> In some scenario reducing the number of retry count for a specific data
-> traffic can reduce the latency by proceeding with the next packet
-> instead of retrying the same packet more time. This will be useful
-> where the next packet can resume the operation without an issue.
+On Mon, Nov 5, 2018 at 5:04 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+> This patchset (I think it was with the first patch, but not sure) had some
+> conflicts but 3-way merge was able to automatically solve them. Please check
+> the end result anyway:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=77adda81e264e0c93af9570ac4ada82a5d0f5d99
 
-Not sure I understand this, how can you expect to control something on a
-per-packet basis using this?
+I see the same. There were some unrelated changes to this file that
+you merged to your pending tree in the meantime. The end result looks
+fine to me. Thanks for the heads up.
 
-Sergey, looks like your A-MPDU control is already in here per RA/TID,
-and A-MSDU could be added easily?
-
-johannes
-
+Brian
 
 _______________________________________________
 ath10k mailing list
