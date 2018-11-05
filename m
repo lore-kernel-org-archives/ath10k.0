@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJecr-0002a0-7W
- for ath10k@lists.infradead.org; Mon, 05 Nov 2018 13:09:10 +0000
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJeck-00064Y-Ql
+ for ath10k@lists.infradead.org; Mon, 05 Nov 2018 13:08:59 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v4 2/3] dts: arm64/sdm845: Add WCN3990 WLAN module device node
-Date: Mon,  5 Nov 2018 18:38:37 +0530
-Message-Id: <1541423318-19312-3-git-send-email-govinds@codeaurora.org>
-In-Reply-To: <1541423318-19312-1-git-send-email-govinds@codeaurora.org>
-References: <1541423318-19312-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH v4 0/3] Enable ath10k wcn3990 wifi driver support on sdm845 
+Date: Mon,  5 Nov 2018 18:38:35 +0530
+Message-Id: <1541423318-19312-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +23,34 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: briannorris@chromium.org, andy.gross@linaro.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org, sboyd@kernel.org, dianders@chromium.org, linux-kernel@vger.kernel.org
 Cc: Govind Singh <govinds@codeaurora.org>
 
-Add device node for the ath10k SNOC platform driver probe
-and add resources required for WCN3990 on SDM845 soc.
+This series enables ath10k wifi driver support for WCN3990 target
+on sdm845 SOC. This series also updates the missing dt binding documentation
+and adds optional iommu property.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Tested-by: Brian Norris <briannorris@chromium.org>
----
- arch/arm64/boot/dts/qcom/sdm845-mtp.dts |  8 ++++++++
- arch/arm64/boot/dts/qcom/sdm845.dtsi    | 26 ++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+Changes since v3:
+    Moved interrupt/reg/reg-name to required property.
+    Removed unused clocks.
+    Corrected interrupt no's.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-index eedfaf8..c062c5c 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-@@ -440,3 +440,11 @@
- 		bias-pull-up;
- 	};
- };
-+
-+&wifi {
-+	status = "okay";
-+	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
-+	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
-+	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
-+	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index b72bdb0..324be5b 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -87,6 +87,11 @@
- 			reg = <0 0x86200000 0 0x2d00000>;
- 			no-map;
- 		};
-+
-+		wlan_msa_mem: memory@96700000 {
-+			reg = <0 0x96700000 0 0x100000>;
-+			no-map;
-+		};
- 	};
- 
- 	cpus {
-@@ -1403,5 +1408,26 @@
- 				status = "disabled";
- 			};
- 		};
-+
-+		wifi: wifi@18800000 {
-+			compatible = "qcom,wcn3990-wifi";
-+			status = "disabled";
-+			reg = <0x18800000 0x800000>;
-+			reg-names = "membase";
-+			memory-region = <&wlan_msa_mem>;
-+			interrupts =
-+				<GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>;
-+		};
- 	};
- };
+Changes since v2:
+    dropped [v2,4/4] dts: arm64/sdm845: Enable iommu for WCN3990 wifi module
+    device node patch from the series as dependent patch is not yet merged.
+    Enabled status flag from sdm845-mtp.dts.
+
+Changes since v1:
+    Listed no of interrupts/clocks for each set of compatible.
+    Added missing 'wifi' label to sdm845.dtsi.
+
+Govind Singh (3):
+  dt: bindings: add missing dt properties for WCN3990 wifi node
+  dts: arm64/sdm845: Add WCN3990 WLAN module device node
+  dt: bindings: add bindings for wifi iommu node
+
+ .../bindings/net/wireless/qcom,ath10k.txt          | 62 ++++++++++++++--------
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts            |  8 +++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               | 26 +++++++++
+ 3 files changed, 74 insertions(+), 22 deletions(-)
+
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
