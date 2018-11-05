@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJboB-0005iF-7w
- for ath10k@lists.infradead.org; Mon, 05 Nov 2018 10:08:36 +0000
+ id 1gJbrE-0007Oe-Gz
+ for ath10k@lists.infradead.org; Mon, 05 Nov 2018 10:11:46 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCHv2] ath10k: Dump tx stats in rate table format
+Subject: Re: [PATCH 1/2] ath10k: Add memory dump support for QCA4019
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1539324208-10525-1-git-send-email-akolli@codeaurora.org>
-References: <1539324208-10525-1-git-send-email-akolli@codeaurora.org>
-Message-Id: <20181105100824.F322F6085F@smtp.codeaurora.org>
-Date: Mon,  5 Nov 2018 10:08:24 +0000 (UTC)
+In-Reply-To: <1539324397-10597-1-git-send-email-akolli@codeaurora.org>
+References: <1539324397-10597-1-git-send-email-akolli@codeaurora.org>
+Message-Id: <20181105101134.33B1161311@smtp.codeaurora.org>
+Date: Mon,  5 Nov 2018 10:11:34 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +27,22 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Anilkumar Kolli <akolli@codeaurora.org> wrote:
 
-> This patch adds the tx statistics pkts/bytes dump
-> in rate table format.
+> This patch adds firmware crash memory dump support for QCA4019.
 > 
-> Dump format table is similar to http://mcsindex.com/
+> Tested on:
 > 
-> Tested on QCA9984/QCA4019/QCA988x
-> Firmware: 10.4-3.5.3-00057
-> 	  10.2.4-1.0-00037
-> command:
-> cat /sys/kernel/debug/ieee80211/phy0/netdev\:wlan0/
->     stations/<MACADDR>/tx_stats
+> QCA4019 firmware 10.4-3.2.1.1-00017
 > 
 > Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-e88975ca37d1 ath10k: dump tx stats in rate table format
+bbcfb343fa7f ath10k: add memory dump support for QCA4019
+5f09037a0cc2 ath10k: assign proper firmware crash dump structure
 
 -- 
-https://patchwork.kernel.org/patch/10637889/
+https://patchwork.kernel.org/patch/10637935/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
