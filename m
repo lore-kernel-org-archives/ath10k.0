@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJcoF-0005FU-Bw
- for ath10k@lists.infradead.org; Mon, 05 Nov 2018 11:12:44 +0000
+ id 1gJcp7-0005MP-SE
+ for ath10k@lists.infradead.org; Mon, 05 Nov 2018 11:13:39 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH][ath10k-next] ath10k: fix some spelling mistakes
+Subject: Re: [PATCH] ath10k: remove set but not used variable 'tlv_len'
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20181018215104.10444-1-colin.king@canonical.com>
-References: <20181018215104.10444-1-colin.king@canonical.com>
-Message-Id: <20181105111233.141D16053D@smtp.codeaurora.org>
-Date: Mon,  5 Nov 2018 11:12:33 +0000 (UTC)
+In-Reply-To: <1539951626-185764-1-git-send-email-yuehaibing@huawei.com>
+References: <1539951626-185764-1-git-send-email-yuehaibing@huawei.com>
+Message-Id: <20181105111327.9763260600@smtp.codeaurora.org>
+Date: Mon,  5 Nov 2018 11:13:27 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin King <colin.king@canonical.com>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, ath10k@lists.infradead.org
 
-Colin King <colin.king@canonical.com> wrote:
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-> Trivial fix to some spelling mistakes in ath10k_err and ath10k_dbg
-> messages:
-> "capablity" -> "capability"
-> "registed" -> "registered"
+> Fixes gcc '-Wunused-but-set-variable' warning:
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c: In function 'ath10k_wmi_tlv_op_gen_config_pno_start':
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3455:6: warning:
+>  variable 'tlv_len' set but not used [-Wunused-but-set-variable]
+> 
+> It never used since inroduction in commit
+> ce834e280f2f ("ath10k: support NET_DETECT WoWLAN feature")
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-eb9bd8b963d6 ath10k: fix some spelling mistakes
+3468404f78e1 ath10k: remove set but not used variable 'tlv_len'
 
 -- 
-https://patchwork.kernel.org/patch/10648317/
+https://patchwork.kernel.org/patch/10649069/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
