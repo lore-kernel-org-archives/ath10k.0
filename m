@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJbsJ-0007dl-6C
- for ath10k@lists.infradead.org; Mon, 05 Nov 2018 10:12:53 +0000
+ id 1gJcku-0002GS-W9
+ for ath10k@lists.infradead.org; Mon, 05 Nov 2018 11:09:18 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next] ath10k: fix copy-paste error in
- ath10k_qmi_setup_msa_resources()
+Subject: Re: [PATCH v2] ath10k: Fill the channel survey results for WCN3990
+ correctly
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1539657316-35629-1-git-send-email-weiyongjun1@huawei.com>
-References: <1539657316-35629-1-git-send-email-weiyongjun1@huawei.com>
-Message-Id: <20181105101240.D6A03601DA@smtp.codeaurora.org>
-Date: Mon,  5 Nov 2018 10:12:40 +0000 (UTC)
+In-Reply-To: <1539775203-22764-1-git-send-email-pillair@codeaurora.org>
+References: <1539775203-22764-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20181105110904.4D48F60600@smtp.codeaurora.org>
+Date: Mon,  5 Nov 2018 11:09:04 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +23,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-Wei Yongjun <weiyongjun1@huawei.com> wrote:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> The return value from devm_memremap() is not checked correctly.
-> The test is done against a wrong variable. This patch fix it.
+> The host driver currently expects the channel info event to be
+> received in pairs for all the channels, i.e. the first
+> chan_info event for a particular channel will not have the
+> COMPLETE flag set and the second chan_info event for the
+> same channel will have the COMPLETE flag set.
 > 
-> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> The HL2.0 firmware sends only one channel info event per channel
+> which is scanned without the COMPLETE flag set. After sending the
+> chan_info_event for all the channels, the HL2.0 firmware sends a
+> chan_info_event with COMPLETE flag set to indicate the completion
+> of the channel info event.
+> 
+> The firmware does not indicate this behavior with any service bitmap
+> and hence a new firmware feature flag is used to handle the modified
+> parsing of the channel info events, in the host driver, for the
+> firmware which sends single channel info event per scanned channel.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+> 
+> Co-developed-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-4ab7fd955e47 ath10k: fix copy-paste error in ath10k_qmi_setup_msa_resources()
+13104929d2ec ath10k: fill the channel survey results for WCN3990 correctly
 
 -- 
-https://patchwork.kernel.org/patch/10642589/
+https://patchwork.kernel.org/patch/10645331/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
