@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-co1nam05on0605.outbound.protection.outlook.com
- ([2a01:111:f400:fe50::605]
- helo=NAM05-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-by2nam05on0613.outbound.protection.outlook.com
+ ([2a01:111:f400:fe52::613]
+ helo=NAM05-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJyg4-0007VA-Gv
- for ath10k@lists.infradead.org; Tue, 06 Nov 2018 10:33:45 +0000
+ id 1gJysH-0004Af-0y
+ for ath10k@lists.infradead.org; Tue, 06 Nov 2018 10:46:22 +0000
 From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Subject: Re: [PATCH 3/4] mac80211: Add api to support configuring TID specific
+Subject: Re: [PATCH 0/4] cfg80211/mac80211: Add support for TID specific
  configuration
-Date: Tue, 6 Nov 2018 10:33:30 +0000
-Message-ID: <20181106103325.5phrwo2pv2rc26pd@bars>
+Date: Tue, 6 Nov 2018 10:45:53 +0000
+Message-ID: <20181106104547.5mnbymn4peuhgng3@bars>
 References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
+ <b833d8c0987e838759dbf00d97d4989a267a10fb.camel@sipsolutions.net>
+In-Reply-To: <b833d8c0987e838759dbf00d97d4989a267a10fb.camel@sipsolutions.net>
 Content-Language: en-US
-Content-ID: <C9C6E930C710314EA5978A16A368A73E@namprd05.prod.outlook.com>
+Content-ID: <2BBCEC7EFDE58F40AE39EAAFAFA0B3B8@namprd05.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,60 +28,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Tamizh chelvam <tamizhr@codeaurora.org>
 
-> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
-> ---
->  include/net/mac80211.h    |   40 +++++++++++++++++++++++++
->  net/mac80211/cfg.c        |   71 +++++++++++++++++++++++++++++++++++++++++++++
->  net/mac80211/driver-ops.h |   16 ++++++++++
->  net/mac80211/trace.h      |   34 ++++++++++++++++++++++
->  4 files changed, 161 insertions(+)
+> On Mon, 2018-10-22 at 23:25 +0530, Tamizh chelvam wrote:
+> > Add infrastructure for per TID aggregation/retry count configurations
+> > such as retry count and AMPDU aggregation control(disable/enable).
+> > In some scenario reducing the number of retry count for a specific data
+> > traffic can reduce the latency by proceeding with the next packet
+> > instead of retrying the same packet more time. This will be useful
+> > where the next packet can resume the operation without an issue.
 > 
-> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-> index b6cc3e33..7fa7e25 100644
-> --- a/include/net/mac80211.h
-> +++ b/include/net/mac80211.h
-> @@ -1478,6 +1478,35 @@ struct ieee80211_channel_switch {
->         u8 count;
->  };
+> Not sure I understand this, how can you expect to control something on a
+> per-packet basis using this?
 > 
-> +/*
-> + * enum ieee80211_tid_conf_change - TID change configuration notification flags
-> + *
-> + * These flags are used with the set_tid_conf() callback
-> + * to indicate which TID configuration parameter changed.
-> + *
-> + * @TID_RETRY_CONF_CHANGED: retry configuration changed.
-> + * @TID_AGGR_CONF_CHANGED: Aggregation config changed for the TID.
-> + */
-> +enum ieee80211_tid_conf_change {
-> +       TID_RETRY_CONF_CHANGED          = BIT(0),
-> +       TID_AGGR_CONF_CHANGED           = BIT(1),
-> +};
+> Sergey, looks like your A-MPDU control is already in here per RA/TID,
+> and A-MSDU could be added easily?
 
-Following your approach, AMSDU support can be added in addition to
-AMPDU. So I would suggest to replace AGGR by AMPDU right away.
+Hello Johannes,
 
-> +
-> +/*
-> + * struct ieee80211_tid_conf - holds the tid configiuration data
-> + * The information provided in the structure is required for the driver
-> + * to configure TID specific configuration.
-> + * @tid: TID number
-> + * @retry_short: retry count value
-> + * @retry_long: retry count value
-> + * @aggr: enable/disable aggregation
-> + */
-> +struct ieee80211_tid_conf {
-> +       u8 tid;
-> +       int retry_short;
-> +       int retry_long;
-> +       bool aggr;
-> +};
-
-ditto: aggr -> ampdu
+Thanks for pointing me at this patch series. Indeed, it looks like an
+exact match for proper RA/TID aware implementation of AMPDU control.
+AMSDU can be added following the same approach.
 
 Regards,
 Sergey
