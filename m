@@ -1,27 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
+Received: from mail-by2nam01on0612.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::612]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJmFU-0004XD-6s
- for ath10k@lists.infradead.org; Mon, 05 Nov 2018 21:17:29 +0000
-Received: by mail-ed1-x544.google.com with SMTP id a14-v6so4564092edr.7
- for <ath10k@lists.infradead.org>; Mon, 05 Nov 2018 13:17:17 -0800 (PST)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com.
- [209.85.208.51])
- by smtp.gmail.com with ESMTPSA id n34-v6sm8069774edc.34.2018.11.05.13.17.13
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 05 Nov 2018 13:17:13 -0800 (PST)
-Received: by mail-ed1-f51.google.com with SMTP id w19-v6so8770691eds.1
- for <ath10k@lists.infradead.org>; Mon, 05 Nov 2018 13:17:13 -0800 (PST)
+ id 1gJyPe-0001YK-UL
+ for ath10k@lists.infradead.org; Tue, 06 Nov 2018 10:16:49 +0000
+From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
+Date: Tue, 6 Nov 2018 10:16:11 +0000
+Message-ID: <20181106101601.526ovvmabfqrr7sl@bars>
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+ <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
+Content-Language: en-US
+Content-ID: <A2C02070ED8C72479989A08E6F5DDCF7@namprd05.prod.outlook.com>
 MIME-Version: 1.0
-References: <20181013005504.46399-1-briannorris@chromium.org>
- <20181105130403.93B6560600@smtp.codeaurora.org>
-In-Reply-To: <20181105130403.93B6560600@smtp.codeaurora.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 5 Nov 2018 13:17:00 -0800
-Message-ID: <CA+ASDXMz37pOFjeETM_xUQSBuLvki6G==v=RUO1T5G1t6Yv+dg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] ath10k: snoc: remove 'wcn3990' from generic resource
- handling
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +27,112 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: govinds@codeaurora.org, linux-wireless@vger.kernel.org, Doug Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, Nov 5, 2018 at 5:04 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> This patchset (I think it was with the first patch, but not sure) had some
-> conflicts but 3-way merge was able to automatically solve them. Please check
-> the end result anyway:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=77adda81e264e0c93af9570ac4ada82a5d0f5d99
+Hello Tamizh,
 
-I see the same. There were some unrelated changes to this file that
-you merged to your pending tree in the meantime. The end result looks
-fine to me. Thanks for the heads up.
+> Co-Developed-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
+> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> ---
+>  include/net/cfg80211.h       |   14 +++++++
+>  include/uapi/linux/nl80211.h |   69 +++++++++++++++++++++++++++++++++
+>  net/wireless/nl80211.c       |   86 ++++++++++++++++++++++++++++++++++++++++++
+>  net/wireless/rdev-ops.h      |   15 ++++++++
+>  net/wireless/trace.h         |   27 +++++++++++++
+>  5 files changed, 211 insertions(+)
 
-Brian
+...
+
+> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+> index 5801d76..dd024da 100644
+> --- a/include/net/cfg80211.h
+> +++ b/include/net/cfg80211.h
+
+...
+
+>  /**
+> @@ -4035,6 +4044,9 @@ struct wiphy_iftype_ext_capab {
+>   * @txq_limit: configuration of internal TX queue frame limit
+>   * @txq_memory_limit: configuration internal TX queue memory limit
+>   * @txq_quantum: configuration of internal TX queue scheduler quantum
+> + *
+> + * @max_data_retry_count: Maximum limit can be configured as retry count
+> + *     for a TID.
+>   */
+>  struct wiphy {
+>         /* assign these fields before you register the wiphy */
+> @@ -4171,6 +4183,8 @@ struct wiphy {
+>         u32 txq_memory_limit;
+>         u32 txq_quantum;
+> 
+> +       u8 max_data_retry_count;
+> +
+>         char priv[0] __aligned(NETDEV_ALIGN);
+>  };
+
+Could you please clarify why do you define max_data_retry_count instead of
+making use of existing wiphy params: retry_short (dot11ShortRetryLimit)
+and retry_long (dot11LongRetryLimit) ?
+
+> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+> index d744388..d386ad7 100644
+> --- a/net/wireless/nl80211.c
+> +++ b/net/wireless/nl80211.c
+
+...
+
+> +static int nl80211_set_tid_config(struct sk_buff *skb,
+> +                                 struct genl_info *info)
+> +{
+> +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
+> +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
+> +       struct nlattr *tid;
+> +       struct net_device *dev = info->user_ptr[1];
+> +       const char *peer = NULL;
+> +       u8 tid_no;
+> +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
+> +
+> +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
+> +       if (!tid)
+> +               return -EINVAL;
+> +
+> +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
+> +                              nl80211_attr_tid_policy, info->extack);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (!attrs[NL80211_ATTR_TID])
+> +               return -EINVAL;
+> +
+> +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
+> +               retry_short = nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
+> +               if (!retry_short ||
+> +                   retry_short > rdev->wiphy.max_data_retry_count)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
+> +               retry_long = nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
+> +               if (!retry_long ||
+> +                   retry_long > rdev->wiphy.max_data_retry_count)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
+> +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
+> +               return -EINVAL;
+
+Not that important, but this tid_no check can be placed after
+attrs[NL80211_ATTR_TID].
+
+BTW, some special tid_no value (e.g. (u8)-1) could be used to notify driver
+that retry settings should be applied for all the TIDs. IIUC the only
+required change would be to modify this tid_no sanity check.
+
+Regards,
+Sergey
 
 _______________________________________________
 ath10k mailing list
