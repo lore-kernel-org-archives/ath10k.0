@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK40I-00026p-2b
- for ath10k@lists.infradead.org; Tue, 06 Nov 2018 16:14:59 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 4/4] ath10k: snoc: fix unbalanced clock error handling
-References: <20181013005504.46399-1-briannorris@chromium.org>
- <20181013005504.46399-4-briannorris@chromium.org>
- <CAD=FV=XFUeyYZ-LQwYHeQH=b0kBf_wM5ZywpQDS74+_zqeDhEw@mail.gmail.com>
-Date: Tue, 06 Nov 2018 18:14:40 +0200
-In-Reply-To: <CAD=FV=XFUeyYZ-LQwYHeQH=b0kBf_wM5ZywpQDS74+_zqeDhEw@mail.gmail.com>
- (Doug Anderson's message of "Tue, 16 Oct 2018 16:53:52 -0700")
-Message-ID: <87wopqb2tr.fsf@kamboji.qca.qualcomm.com>
+ id 1gK44E-0002Hk-P8
+ for ath10k@lists.infradead.org; Tue, 06 Nov 2018 16:19:06 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: ath10k_snoc_{read,write}32() should be static
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20181102181000.96834-1-briannorris@chromium.org>
+References: <20181102181000.96834-1-briannorris@chromium.org>
+Message-Id: <20181106161851.742D860741@smtp.codeaurora.org>
+Date: Tue,  6 Nov 2018 16:18:51 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +22,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: Govind Singh <govinds@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Doug Anderson <dianders@chromium.org> writes:
+Brian Norris <briannorris@chromium.org> wrote:
 
-> Hi,
-> On Fri, Oct 12, 2018 at 5:55 PM Brian Norris <briannorris@chromium.org> wrote:
->>
->> Similar to regulator error handling, we should only start tearing down
->> the 'i - 1' clock when clock 'i' fails to enable. Otherwise, we might
->> end up with an unbalanced clock, where we never successfully enabled the
->> clock, but we try to disable it anyway.
->>
->> Signed-off-by: Brian Norris <briannorris@chromium.org>
->
-> Presumably you could have a Fixes tag just to help folks, like:
->
-> Fixes: a6a793f98786 ("ath10k: vote for hardware resources for WCN3990")
+> They're provided as callbacks in ath10k_hif_ops and should be accessed
+> that way, if needed outside of snoc.c, and anyway, they're currently
+> unused outside snoc.c.
+> 
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Thanks, I added that in the pending branch.
+Patch applied to ath-next branch of ath.git, thanks.
+
+97b9608be34f ath10k: ath10k_snoc_{read,write}32() should be static
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10665971/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
