@@ -2,17 +2,15 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJzX1-0003M8-N2
- for ath10k@lists.infradead.org; Tue, 06 Nov 2018 11:28:29 +0000
-Message-ID: <50876f6067d109116a841399006aee950d9a2117.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/4] cfg80211/mac80211: Add support for TID specific
- configuration
+ id 1gJzZi-0005HS-7U
+ for ath10k@lists.infradead.org; Tue, 06 Nov 2018 11:31:15 +0000
+Message-ID: <12abed50303117c884151fd918cc283ed6d1549f.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 06 Nov 2018 12:28:11 +0100
-In-Reply-To: <20181106104547.5mnbymn4peuhgng3@bars>
+Date: Tue, 06 Nov 2018 12:31:01 +0100
+In-Reply-To: <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
 References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <b833d8c0987e838759dbf00d97d4989a267a10fb.camel@sipsolutions.net>
- <20181106104547.5mnbymn4peuhgng3@bars>
+ <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,38 +24,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Cc: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Tamizh chelvam <tamizhr@codeaurora.org>
+To: Tamizh chelvam <tamizhr@codeaurora.org>, ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Hi,
 
-On Tue, 2018-11-06 at 10:45 +0000, Sergey Matyukevich wrote:
-> > On Mon, 2018-10-22 at 23:25 +0530, Tamizh chelvam wrote:
-> > > Add infrastructure for per TID aggregation/retry count configurations
-> > > such as retry count and AMPDU aggregation control(disable/enable).
-> > > In some scenario reducing the number of retry count for a specific data
-> > > traffic can reduce the latency by proceeding with the next packet
-> > > instead of retrying the same packet more time. This will be useful
-> > > where the next packet can resume the operation without an issue.
-> > 
-> > Not sure I understand this, how can you expect to control something on a
-> > per-packet basis using this?
-> > 
-> > Sergey, looks like your A-MPDU control is already in here per RA/TID,
-> > and A-MSDU could be added easily?
+> +static const struct nla_policy
+> +nl80211_attr_tid_policy[NL80211_ATTR_TID_MAX + 1] = {
+> +	[NL80211_ATTR_TID] = { .type = NLA_U8 },
+> +	[NL80211_ATTR_TID_RETRY_CONFIG] = { .type = NLA_FLAG },
+> +	[NL80211_ATTR_TID_RETRY_SHORT] = { .type = NLA_U8 },
+> +	[NL80211_ATTR_TID_RETRY_LONG] = { .type = NLA_U8 },
+> +};
+> +
+> +static int nl80211_set_tid_config(struct sk_buff *skb,
+> +				  struct genl_info *info)
+> +{
+> +	struct cfg80211_registered_device *rdev = info->user_ptr[0];
+> +	struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
+> +	struct nlattr *tid;
+> +	struct net_device *dev = info->user_ptr[1];
+> +	const char *peer = NULL;
+> +	u8 tid_no;
+> +	int ret = -EINVAL, retry_short = -1, retry_long = -1;
+> +
+> +	tid = info->attrs[NL80211_ATTR_TID_CONFIG];
+> +	if (!tid)
+> +		return -EINVAL;
+> +
+> +	ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
+> +			       nl80211_attr_tid_policy, info->extack);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (!attrs[NL80211_ATTR_TID])
+> +		return -EINVAL;
 
-> Thanks for pointing me at this patch series. Indeed, it looks like an
-> exact match for proper RA/TID aware implementation of AMPDU control.
-> AMSDU can be added following the same approach.
-> 
+Why not allow configuring multiple at the same time, and make TID_CONFIG
+an array of
 
-Great. I guess if you could take a look that'd be nice, and perhaps also
-see if you could actually implement it? Your driver patch seemed to
-imply the firmware only has global control, rather than per RA/TID.
+ tid => [config attrs, i.e. retry cfg/short/long]
 
-Also, do you think A-MPDU length control would be something useful?
-Perhaps that should be instead of enable/disable (since setting length
-to 0 or 1 could easily mean "no A-MPDU")
+If not, then you should probably use NLA_POLICY_RANGE() for it.
 
 johannes
 
