@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-cys01nam02on060f.outbound.protection.outlook.com
- ([2a01:111:f400:fe45::60f]
- helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKOTZ-0000qM-Eo
- for ath10k@lists.infradead.org; Wed, 07 Nov 2018 14:06:37 +0000
-From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
-Date: Wed, 7 Nov 2018 14:05:58 +0000
-Message-ID: <20181107140552.zfuusbapgqjumoln@bars>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
-Content-Language: en-US
-Content-ID: <C57996E9EE5522498033E3BB2BDA6CD8@namprd05.prod.outlook.com>
+ id 1gKPCv-0005cJ-Co
+ for ath10k@lists.infradead.org; Wed, 07 Nov 2018 14:53:27 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+ <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
+ <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
+ <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org> <87h8gzpy9t.fsf@toke.dk>
+ <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org>
+Date: Wed, 07 Nov 2018 15:53:06 +0100
+Message-ID: <87va59uegc.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,116 +24,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hello Tamizh,
-
-> Co-Developed-by: Tamizh Chelvam <tamizhr@codeaurora.org>
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
-> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
-> ---
->  include/net/cfg80211.h       |   14 +++++++
->  include/uapi/linux/nl80211.h |   69 +++++++++++++++++++++++++++++++++
->  net/wireless/nl80211.c       |   86 ++++++++++++++++++++++++++++++++++++++++++
->  net/wireless/rdev-ops.h      |   15 ++++++++
->  net/wireless/trace.h         |   27 +++++++++++++
->  5 files changed, 211 insertions(+)
-
-...
-
-> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-> index d744388..d386ad7 100644
-> --- a/net/wireless/nl80211.c
-> +++ b/net/wireless/nl80211.c
-
-...
-
-> +static int nl80211_set_tid_config(struct sk_buff *skb,
-> +                                 struct genl_info *info)
-> +{
-> +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
-> +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
-> +       struct nlattr *tid;
-> +       struct net_device *dev = info->user_ptr[1];
-> +       const char *peer = NULL;
-> +       u8 tid_no;
-> +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
-> +
-> +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
-> +       if (!tid)
-> +               return -EINVAL;
-> +
-> +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
-> +                              nl80211_attr_tid_policy, info->extack);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (!attrs[NL80211_ATTR_TID])
-> +               return -EINVAL;
-> +
-> +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
-> +               retry_short = nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
-> +               if (!retry_short ||
-> +                   retry_short > rdev->wiphy.max_data_retry_count)
-> +                       return -EINVAL;
-> +       }
-> +
-> +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
-> +               retry_long = nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
-> +               if (!retry_long ||
-> +                   retry_long > rdev->wiphy.max_data_retry_count)
-> +                       return -EINVAL;
-> +       }
-> +
-> +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
-> +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
-> +               return -EINVAL;
-> +
-> +       if (info->attrs[NL80211_ATTR_MAC])
-> +               peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
-> +
-> +       if (nla_get_flag(attrs[NL80211_ATTR_TID_RETRY_CONFIG])) {
-
-Do we really need this additional flag to indicate retry data ?
-Maybe we can simply check retry attrs or even retry data, e.g.:
-
-if (attrs[NL80211_ATTR_TID_RETRY_LONG] ||
-    attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
-    ...
-
-if ((retry_short > 0) || (retry_long > 0)) {
-    ...
-
-> +               if (!wiphy_ext_feature_isset(
-> +                               &rdev->wiphy,
-> +                               NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG))
-> +                       return -EOPNOTSUPP;
-> +
-> +               if (peer && !wiphy_ext_feature_isset(
-> +                               &rdev->wiphy,
-> +                               NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG))
-> +                       return -EOPNOTSUPP;
-> +
-> +               if (!rdev->ops->set_data_retry_count ||
-> +                   !rdev->wiphy.max_data_retry_count)
-> +                       return -EOPNOTSUPP;
-> +
-> +               ret = rdev_set_data_retry_count(rdev, dev, peer, tid_no,
-> +                                               retry_short, retry_long);
-> +       }
-> +
-> +       return ret;
-> +}
-
-Regards,
-Sergey
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBP
+biAyMDE4LTExLTAyIDAzOjMwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4+IFJh
+amt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4gCj4+
+PiBPbiAyMDE4LTEwLTI4IDE1OjAxLCBSYWprdW1hciBNYW5vaGFyYW4gd3JvdGU6Cj4+Pj4gT24g
+MjAxOC0xMC0yOCAwODo0OCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+Pj4+PiBS
+YWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+Pj4+
+IAo+Pj4+Pj4gCj4+Pj4+PiA0bXMgICAgICAgICAyMjMgKDQwJSkgICAgICAgICAyMTQgKDQwJSkg
+ICAgMTA5ICgxMCUpICAgICAgIDk0ICgxMCUpCj4+Pj4+PiAKPj4+Pj4+IDRtcyAgICAgICAgIDMz
+NyAoOTAlKSAgICAgICAgIDE4MiAoOCUpICAgICAgMjMgKDElKSAgICAgICAgMzAgKDElKQo+Pj4+
+PiAKPj4+Pj4gU28gdGhpcyBsb29rcyBsaWtlIGl0J3MgZG9pbmcgKnNvbWV0aGluZyosIGJ1dCBu
+b3QgbGlrZSBpdCdzCj4+Pj4+IHN1Y2NlZWRpbmcKPj4+Pj4gaW4gYWNoaWV2aW5nIHRoZSBzZXQg
+cGVyY2VudGFnZXMuIERpZCB5b3UgY2hlY2sgaWYgdGhlIGFjdHVhbCAKPj4+Pj4gYWlydGltZQo+
+Pj4+PiB2YWx1ZXMgKGluIGRlYnVnZnMpIGNvcnJlc3BvbmRzIHRvIHRoZSBjb25maWd1cmVkIHdl
+aWdodHM/Cj4+Pj4+IAo+Pj4+IE5vLiBXaWxsIGNoZWNrIHRoYXQuCj4+Pj4gCj4+PiBUb2tlLAo+
+Pj4gCj4+PiAgRnJvbSBhYm92ZSByZXN1bHRzLCBkaWZmZXJlbnQgYWlydGltZSBmb3IgZWFjaCBz
+dGF0aW9uIGlzIHJlZmxlY3RpbmcgCj4+PiBvbgo+Pj4gb3V0cHV0IHBlcmZvcm1hbmNlLiBVbmZv
+cnR1bmF0ZWx5IEkgZG9uJ3Qgc2VlIHN1Y2ggdHB1dCBkaWZmZXJlbmNlLCAKPj4+IHdoZW4KPj4+
+IHRoZSB0eCBtb2RlIGlzIGZpeGVkIGluIHB1c2gtb25seS4gRXZlbiBsb3cgd2VpZ2h0IHN0YXRp
+b24gaXMgZ2l2aW5nCj4+PiBzYW1lCj4+PiBwZXJmb3JtYW5jZS4gQXJlIHlvdSBhbHNvIHNlZWlu
+ZyB0aGUgc2FtZSBiZWhhdmlvciBpbiB5b3VyIHNldHVwPyAKPj4+IENvdWxkCj4+PiB5b3UgcGxl
+YXNlIHNoYXJlIHlvdXIgcmVzdWx0cz8KPj4gCj4+IFNvcnJ5LCBJJ3ZlIGJlZW4gdHJhdmVsbGlu
+ZyB0aGlzIHdlZWs7IEknbGwgYmUgYmFjayBpbiB0aGUgb2ZmaWNlIG5leHQKPj4gd2VlayBhbmQg
+Y2FuIHJ1biBzb21lIHRlc3RzIHRoZW4uIEkgbWF5IGFsc28gaGF2ZSBhbiBpZGVhIGZvciBhCj4+
+IGRpZmZlcmVudCBhbGdvcml0aG0gdGhhdCB3aWxsIHdvcmsgYmV0dGVyIGluIHB1bGwgbW9kZSwg
+YnV0IG5lZWQgdG8gc2VlCj4+IGlmIGl0IHdvcmtzIGF0IGFsbCBmaXJzdCA6KQo+PiAKPiBXb3cu
+Li4gOikKPgo+IE1lYW53aGlsZSB3ZSBkaWQgc29tZSBtb3JlIGV4cGVyaW1lbnRzIHdpdGggYm90
+aCBtb2Rlcy4gVGhlIGV4cGVyaW1lbnQKPiB3YXMgZG9uZSBpbiBvcGVuIGVudmlyb25tZW50IGFu
+ZCBmaXhlZCByYXRlIGFuZCBVRFAgdHJhZmZpYyByYW4gZm9yIDYwCj4gc2Vjb25kcy4KPgo+IFNl
+ZW1zIGxpa2UgcHVzaCBtb2RlIG5vdCBob25vcmluZyB0aGUgY29uZmlndXJlZCB3ZWlnaHQuIEFs
+d2F5cyB0aGUKPiBhaXJ0aW1lIHdhcyBhbG1vc3Qgc2FtZSB3aGVyZWFzIGluIHB1bGwtbW9kZSBh
+aXJ0aW1lIGlzIGNoYW5naW5nIGJhc2VkCj4gb24gY29uZmlndXJlZCB3ZWlnaHQuIEhlbmNlIEkg
+d291bGQgbGlrZSB0byBrbm93IHlvdXIgcmVzdWx0cy4KClJpZ2h0LCBzbyBJIHZlcmlmaWVkIHRo
+YXQgdGhlIGN1cnJlbnQgdmVyc2lvbiBvZiB0aGUgcGF0Y2ggc2V0IHN0aWxsCndvcmtzIHdpdGgg
+YXRoOWsuIEhvd2V2ZXIsIHRoZSBhdGgxMGsgY2FyZCBJIGhhdmUgZG9lc24ndCBzZWVtIHRvCnN1
+cHBvcnQgcGVlciBzdGF0cywgc28gSSBjYW4ndCB0ZXN0IGF0aDEway4gCgokIGxzcGNpIHwgZ3Jl
+cCBRdWFsY29tbQowMzowMC4wIE5ldHdvcmsgY29udHJvbGxlcjogUXVhbGNvbW0gQXRoZXJvcyBR
+Q0E5ODZ4Lzk4OHggODAyLjExYWMgV2lyZWxlc3MgTmV0d29yayBBZGFwdGVyCgokIGNhdCAvc3lz
+L2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5MS9hdGgxMGsvY2hpcF9pZCAKMHgwNDMyMDJmZgoK
+JCBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTEvYXRoMTBrL3dtaV9zZXJ2aWNl
+cyAgfCBncmVwIFBFRVIKV01JX1NFUlZJQ0VfUEVFUl9DQUNISU5HICAgICAgICAgICAgICAgICAt
+CldNSV9TRVJWSUNFX1BFRVJfU1RBVFMgICAgICAgICAgICAgICAgICAgLQoKCklzIHRoZXJlIGEg
+d2F5IHRvIGZvcmNlLWVuYWJsZSBhaXJ0aW1lIHN1cHBvcnQsIGlzIHRoaXMgYSBoYXJkd2FyZSBp
+c3N1ZT8KCj4gCQlzdGExCQlzdGEyCQlzdGEzCQlzdGE0Cj4gcHVsbC1tb2RlCThzKDIwNXVzKQkx
+OHMoMy4ybXMpCThzKDIwNXVzKQkxNHMoNDEwdXMpCj4gCQkxMnMoMjU2dXMpCTEycygyNTZ1cykJ
+MTNzKDI1NnVzKQkxMnMoMjU2dXMpCj4gCQkxNHMoNG1zKQkxM3MoNG1zKQkxNHMoNG1zKQkxM3Mo
+NG1zKQo+Cj4gcHVzaC1tb2RlCTE1cygyMDV1cykJMTJzKDMuMm1zKQkxNnMoMjA1dXMpCTEycyg0
+MTB1cykKPiAJCTE1cygyNTZ1cykJMTJzKDI1NnVzKQkxNnMoMjU2dXMpCTEycygyNTZ1cykKPiAJ
+CTE0cyg0bXMpCTEzcyg0bXMpCTE2cyg0bXMpCTEycyg0bXMpCgpSaWdodCwgc28gdGhlIHB1bGwt
+bW9kZSByZXN1bHRzIGFyZSBlbmNvdXJhZ2luZyEgKlNvbWV0aGluZyogaXMKaGFwcGVuaW5nLCBh
+dCBsZWFzdCwgZXZlbiB0aG91Z2ggdGhlIGFnZ3JlZ2F0ZSBhaXJ0aW1lIGRvZXNuJ3QgcXVpdGUK
+bWF0Y2ggdGhlIHJhdGlvcyBvZiB0aGUgY29uZmlndXJlZCB3ZWlnaHRzLgoKQXJlIHlvdSBydW5u
+aW5nIHRoZSBVRFAgZ2VuZXJhdG9yIG9uIHRoZSBBUCBpdHNlbGYsIG9yIG9uIGEgc2VwYXJhdGUK
+ZGV2aWNlLCBCVFc/IElmIGl0J3Mgb24gdGhlIEFQLCB0aGUgdXNlcnNwYWNlIHNvY2tldCBjYW4g
+Z2V0IHRocm90dGxlZCwKd2hpY2ggd2lsbCBpbnRlcmZlcmUgd2l0aCByZXN1bHRzLCBzbyBpdCdz
+IGJldHRlciB0byBoYXZlIGl0IG9uIGEKc2VwYXJhdGUgZGV2aWNlIChjb25uZWN0ZWQgdmlhIGV0
+aGVybmV0KS4KCkFzIGZvciBwdXNoLW1vZGUsIGNvdWxkIHRoaXMgYmUgYmVjYXVzZSBvZiBiYWQg
+YnVmZmVyIG1hbmFnZW1lbnQ/IEkuZS4sCmJlY2F1c2UgdGhlcmUncyBhIGxhZyBiZXR3ZWVuIHRo
+ZSB0aW1lIGFpcnRpbWUgaXMgcmVnaXN0ZXJlZCwgYW5kIHRoZQp0aW1lIHRoYXQgYWlydGltZSB1
+c2FnZSBpcyByZXBvcnRlZCwgdGhlIGRyaXZlciBqdXN0IHB1c2hlcyBhIHdob2xlCmJ1bmNoIG9m
+IHBhY2tldHMgdG8gdGhlIGZpcm13YXJlIHdoZW4gaXQgZ2V0cyB0aGUgY2hhbmNlLCB3aGljaCBw
+cmV2ZW50cwp0aGUgc2NoZWR1bGVyIGZyb20gdGhyb3R0bGluZyBwcm9wZXJseS4gVGhpcyBjb3Vs
+ZCBhbHNvIGV4cGxhaW4gdGhlCmJldHRlciwgYnV0IG5vdCBxdWl0ZSBwZXJmZWN0LCByZXN1bHRz
+IGluIHB1bGwgbW9kZSwgYXNzdW1pbmcgdGhhdCBwdWxsCm1vZGUgcmVzdWx0cyBpbiBiZXR0ZXIg
+ZmlybXdhcmUgYnVmZmVyIG1hbmFnZW1lbnQgd2hpY2ggcmVkdWNlcywgYnV0CmRvZXNuJ3QgcXVp
+dGUgcmVtb3ZlLCB0aGUgbGFnLgoKSWYgdGhpcyBpcyBpbmRlZWQgdGhlIHJlYXNvbiwgdGhlIHF1
+ZXVlIGxpbWl0IHBhdGNoZXMgc2hvdWxkIGhvcGVmdWxseQpiZSBhIHNvbHV0aW9uLiBTbyBndWVz
+cyB3ZSBuZWVkIHRvIGdldCB0aG9zZSB3b3JraW5nIGFzIHdlbGwgOikKCi1Ub2tlCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
