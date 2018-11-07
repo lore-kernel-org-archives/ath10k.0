@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKWQJ-00042G-Eh
- for ath10k@lists.infradead.org; Wed, 07 Nov 2018 22:35:44 +0000
+Received: from mail-co1nam04on060a.outbound.protection.outlook.com
+ ([2a01:111:f400:fe4d::60a]
+ helo=NAM04-CO1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKXfk-0003WF-SW
+ for ath10k@lists.infradead.org; Wed, 07 Nov 2018 23:55:46 +0000
+From: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>
+Subject: Re: [PATCH 3/4] mac80211: Add api to support configuring TID specific
+ configuration
+Date: Wed, 7 Nov 2018 23:55:29 +0000
+Message-ID: <58a9731d-e7a7-282f-22f3-b697a93f7278@quantenna.com>
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+ <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
+Content-Language: en-US
+Content-ID: <8809182432A5464CA38A4C0D3C79823E@namprd05.prod.outlook.com>
 MIME-Version: 1.0
-Date: Wed, 07 Nov 2018 14:35:29 -0800
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <87va59uegc.fsf@toke.dk>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
- <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
- <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
- <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org> <87h8gzpy9t.fsf@toke.dk>
- <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org> <87va59uegc.fsf@toke.dk>
-Message-ID: <e018fec62487536859ea8202b187c63e@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,76 +24,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Tamizh chelvam <tamizhr@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-T24gMjAxOC0xMS0wNyAwNjo1MywgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IFJh
-amt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPiAKPj4g
-TWVhbndoaWxlIHdlIGRpZCBzb21lIG1vcmUgZXhwZXJpbWVudHMgd2l0aCBib3RoIG1vZGVzLiBU
-aGUgZXhwZXJpbWVudAo+PiB3YXMgZG9uZSBpbiBvcGVuIGVudmlyb25tZW50IGFuZCBmaXhlZCBy
-YXRlIGFuZCBVRFAgdHJhZmZpYyByYW4gZm9yIDYwCj4+IHNlY29uZHMuCj4+IAo+PiBTZWVtcyBs
-aWtlIHB1c2ggbW9kZSBub3QgaG9ub3JpbmcgdGhlIGNvbmZpZ3VyZWQgd2VpZ2h0LiBBbHdheXMg
-dGhlCj4+IGFpcnRpbWUgd2FzIGFsbW9zdCBzYW1lIHdoZXJlYXMgaW4gcHVsbC1tb2RlIGFpcnRp
-bWUgaXMgY2hhbmdpbmcgYmFzZWQKPj4gb24gY29uZmlndXJlZCB3ZWlnaHQuIEhlbmNlIEkgd291
-bGQgbGlrZSB0byBrbm93IHlvdXIgcmVzdWx0cy4KPiAKPiBSaWdodCwgc28gSSB2ZXJpZmllZCB0
-aGF0IHRoZSBjdXJyZW50IHZlcnNpb24gb2YgdGhlIHBhdGNoIHNldCBzdGlsbAo+IHdvcmtzIHdp
-dGggYXRoOWsuIEhvd2V2ZXIsIHRoZSBhdGgxMGsgY2FyZCBJIGhhdmUgZG9lc24ndCBzZWVtIHRv
-Cj4gc3VwcG9ydCBwZWVyIHN0YXRzLCBzbyBJIGNhbid0IHRlc3QgYXRoMTBrLgo+IAo+ICQgbHNw
-Y2kgfCBncmVwIFF1YWxjb21tCj4gMDM6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IFF1YWxjb21t
-IEF0aGVyb3MgUUNBOTg2eC85ODh4IDgwMi4xMWFjCj4gV2lyZWxlc3MgTmV0d29yayBBZGFwdGVy
-Cj4gCj4gJCBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTEvYXRoMTBrL2NoaXBf
-aWQKPiAweDA0MzIwMmZmCj4gCj4gJCBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3Bo
-eTEvYXRoMTBrL3dtaV9zZXJ2aWNlcyAgfCBncmVwIFBFRVIKPiBXTUlfU0VSVklDRV9QRUVSX0NB
-Q0hJTkcgICAgICAgICAgICAgICAgIC0KPiBXTUlfU0VSVklDRV9QRUVSX1NUQVRTICAgICAgICAg
-ICAgICAgICAgIC0KPiAKCk9vcHMuLi4gWWVhaCA5ODh4IGZpcm13YXJlICgxMC4yLjQpIGRvZXMg
-bm90IGhhdmUgcGVlciBzdGF0cyBzdXBwb3J0LgoKPiAKPiBJcyB0aGVyZSBhIHdheSB0byBmb3Jj
-ZS1lbmFibGUgYWlydGltZSBzdXBwb3J0LCBpcyB0aGlzIGEgaGFyZHdhcmUgCj4gaXNzdWU/Cj4g
-ClVuZm9ydHVuYXRlbHkgbm90LiBUaGVyZSBpcyBvbmUgbW9yZSBwZW5kaW5nIGNoYW5nZSB0aGF0
-IGhhbmRsZXMgYWlydGltZSAKcmVwb3J0CmZyb20gSFRUIHR4LWNvbXBsLiBBZ2FpbiBpdCBkZXBl
-bmRzIGZpcm13YXJlIHN1cHBvcnQuIFRoZXNlIGV4cGVyaW1lbnRzIAphcmUKdGFrZW4gd2l0aCB0
-aGlzIGYvdyBpbnRlcmZhY2UuIFdpbGwgcG9zdCB0aGUgY2hhbmdlLgoKPj4gCQlzdGExCQlzdGEy
-CQlzdGEzCQlzdGE0Cj4+IHB1bGwtbW9kZQk4cygyMDV1cykJMThzKDMuMm1zKQk4cygyMDV1cykJ
-MTRzKDQxMHVzKQo+PiAJCTEycygyNTZ1cykJMTJzKDI1NnVzKQkxM3MoMjU2dXMpCTEycygyNTZ1
-cykKPj4gCQkxNHMoNG1zKQkxM3MoNG1zKQkxNHMoNG1zKQkxM3MoNG1zKQo+PiAKPj4gcHVzaC1t
-b2RlCTE1cygyMDV1cykJMTJzKDMuMm1zKQkxNnMoMjA1dXMpCTEycyg0MTB1cykKPj4gCQkxNXMo
-MjU2dXMpCTEycygyNTZ1cykJMTZzKDI1NnVzKQkxMnMoMjU2dXMpCj4+IAkJMTRzKDRtcykJMTNz
-KDRtcykJMTZzKDRtcykJMTJzKDRtcykKPiAKPiBSaWdodCwgc28gdGhlIHB1bGwtbW9kZSByZXN1
-bHRzIGFyZSBlbmNvdXJhZ2luZyEgKlNvbWV0aGluZyogaXMKPiBoYXBwZW5pbmcsIGF0IGxlYXN0
-LCBldmVuIHRob3VnaCB0aGUgYWdncmVnYXRlIGFpcnRpbWUgZG9lc24ndCBxdWl0ZQo+IG1hdGNo
-IHRoZSByYXRpb3Mgb2YgdGhlIGNvbmZpZ3VyZWQgd2VpZ2h0cy4KPiAKPiBBcmUgeW91IHJ1bm5p
-bmcgdGhlIFVEUCBnZW5lcmF0b3Igb24gdGhlIEFQIGl0c2VsZiwgb3Igb24gYSBzZXBhcmF0ZQo+
-IGRldmljZSwgQlRXPyBJZiBpdCdzIG9uIHRoZSBBUCwgdGhlIHVzZXJzcGFjZSBzb2NrZXQgY2Fu
-IGdldCB0aHJvdHRsZWQsCj4gd2hpY2ggd2lsbCBpbnRlcmZlcmUgd2l0aCByZXN1bHRzLCBzbyBp
-dCdzIGJldHRlciB0byBoYXZlIGl0IG9uIGEKPiBzZXBhcmF0ZSBkZXZpY2UgKGNvbm5lY3RlZCB2
-aWEgZXRoZXJuZXQpLgo+IApUcmFmZmljIGIvdyB3aXJlZCBjbGllbnQgKHZpYSBldGhlcm5ldCkg
-YW5kIHdpcmVsZXNzIGNsaWVudHMuCgo+IEFzIGZvciBwdXNoLW1vZGUsIGNvdWxkIHRoaXMgYmUg
-YmVjYXVzZSBvZiBiYWQgYnVmZmVyIG1hbmFnZW1lbnQ/IEkuZS4sCj4gYmVjYXVzZSB0aGVyZSdz
-IGEgbGFnIGJldHdlZW4gdGhlIHRpbWUgYWlydGltZSBpcyByZWdpc3RlcmVkLCBhbmQgdGhlCj4g
-dGltZSB0aGF0IGFpcnRpbWUgdXNhZ2UgaXMgcmVwb3J0ZWQsIHRoZSBkcml2ZXIganVzdCBwdXNo
-ZXMgYSB3aG9sZQo+IGJ1bmNoIG9mIHBhY2tldHMgdG8gdGhlIGZpcm13YXJlIHdoZW4gaXQgZ2V0
-cyB0aGUgY2hhbmNlLCB3aGljaCAKPiBwcmV2ZW50cwo+IHRoZSBzY2hlZHVsZXIgZnJvbSB0aHJv
-dHRsaW5nIHByb3Blcmx5LiBUaGlzIGNvdWxkIGFsc28gZXhwbGFpbiB0aGUKPiBiZXR0ZXIsIGJ1
-dCBub3QgcXVpdGUgcGVyZmVjdCwgcmVzdWx0cyBpbiBwdWxsIG1vZGUsIGFzc3VtaW5nIHRoYXQg
-cHVsbAo+IG1vZGUgcmVzdWx0cyBpbiBiZXR0ZXIgZmlybXdhcmUgYnVmZmVyIG1hbmFnZW1lbnQg
-d2hpY2ggcmVkdWNlcywgYnV0Cj4gZG9lc24ndCBxdWl0ZSByZW1vdmUsIHRoZSBsYWcuCj4gCkht
-bS4uLiBJIGFncmVlIHRoYXQgbGFnIGluIHJlcG9ydGluZyBhaXJ0aW1lIG1heSBjYXVzZSBtb3Jl
-IGRhdGEgcHVzaCB0byAKaHcuClJpZ2h0IG5vdyBib3RoIHR4IGFuZCB0eC1jb21wbCBhcmUgc2Vy
-aWFsaXplZCBieSBhY3RpdmVfdHhxX2xvY2suIFNvIApvbmNlCmxvY2sgYWNxdWlyZWQgYnkgdHgg
-cGF0aCwgaXQgd2lsbCBkb3dubG9hZCBhbGwgZnJhbWVzLiBpLmUgaXQgaXMgZXZlbiAKdHJ1ZSBm
-b3IKYXRoOWsgZHJpdmVyLiBIZW5jZSBJIGFtIHdvbmRlcmluZyBob3cgaXQgaXMgd29ya2luZyBv
-bmx5IHdpdGggYXRoOWsuCgpJbiBhdGgxMGssIFRoZSBhaXJ0aW1lIGFsd2F5cyBiZSByZXBvcnRl
-ZCBpbiB0eC1jb21wbGV0aW9uLiBJIGRvbnQgc2VlIAptdWNoIGxhZwpmcm9tIG15IGV4cGVyaW1l
-bnRzLgoKPiBJZiB0aGlzIGlzIGluZGVlZCB0aGUgcmVhc29uLCB0aGUgcXVldWUgbGltaXQgcGF0
-Y2hlcyBzaG91bGQgaG9wZWZ1bGx5Cj4gYmUgYSBzb2x1dGlvbi4gU28gZ3Vlc3Mgd2UgbmVlZCB0
-byBnZXQgdGhvc2Ugd29ya2luZyBhcyB3ZWxsIDopCj4gCkkgd291bGQgcHJlZmVyIHRvIGJhc2Vs
-aW5lIHRoZSBiYXNpYyBpbmZyYSBpbnRvIHVwc3RyZWFtIGZpcnN0IGFuZCBkbyAKZW5oYW5jZW1l
-bnQKb24gdG9wIG9mIHRoYXQuIEkgcmVxdWVzdCB5b3UgdG8gcmV2aXNpdCBtYWludGFpbmluZyBw
-ZXIgZHJpdmVyIGRlZmF1bHQuIApPdGhlcndpc2UKdGhlcmUgd291bGQgYmUgcGVyZm9ybWFuY2Ug
-aW1wYWN0IHdpdGggMjU2dXMuIDooCgotUmFqa3VtYXIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+On 10/22/2018 10:55 AM, Tamizh chelvam wrote:
+>   /**
+>    * enum ieee80211_vif_flags - virtual interface flags
+>    *
+> @@ -1565,6 +1594,8 @@ struct ieee80211_vif {
+> 
+>          bool txqs_stopped[IEEE80211_NUM_ACS];
+> 
+> +       struct ieee80211_tid_conf tid_conf;
+> +
+
+Why is there only one TID config? If ieee80211_vif::tid_conf member is 
+used only to pass data to driver through drv_set_tid_conf(), and driver 
+will save it for a specific TID, why do we need to save it in struct 
+ieee80211_vif too?
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
