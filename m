@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKPCv-0005cJ-Co
- for ath10k@lists.infradead.org; Wed, 07 Nov 2018 14:53:27 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
- <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
- <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
- <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org> <87h8gzpy9t.fsf@toke.dk>
- <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org>
-Date: Wed, 07 Nov 2018 15:53:06 +0100
-Message-ID: <87va59uegc.fsf@toke.dk>
+ id 1gKT0k-0002Jf-Db
+ for ath10k@lists.infradead.org; Wed, 07 Nov 2018 18:57:08 +0000
+Received: by mail-pf1-x443.google.com with SMTP id n11-v6so8088781pfb.6
+ for <ath10k@lists.infradead.org>; Wed, 07 Nov 2018 10:56:56 -0800 (PST)
+From: Brian Norris <briannorris@chromium.org>
+Subject: [PATCH REGRESSION] Revert "ath10k: add quiet mode support for
+ QCA6174/QCA9377"
+Date: Wed,  7 Nov 2018 10:56:43 -0800
+Message-Id: <20181107185643.240346-1-briannorris@chromium.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,80 +19,125 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Yu Wang <yyuwang@codeaurora.org>, Rakesh Pillai <pillair@codeaurora.org>
 
-UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBP
-biAyMDE4LTExLTAyIDAzOjMwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4+IFJh
-amt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4gCj4+
-PiBPbiAyMDE4LTEwLTI4IDE1OjAxLCBSYWprdW1hciBNYW5vaGFyYW4gd3JvdGU6Cj4+Pj4gT24g
-MjAxOC0xMC0yOCAwODo0OCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+Pj4+PiBS
-YWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+Pj4+
-IAo+Pj4+Pj4gCj4+Pj4+PiA0bXMgICAgICAgICAyMjMgKDQwJSkgICAgICAgICAyMTQgKDQwJSkg
-ICAgMTA5ICgxMCUpICAgICAgIDk0ICgxMCUpCj4+Pj4+PiAKPj4+Pj4+IDRtcyAgICAgICAgIDMz
-NyAoOTAlKSAgICAgICAgIDE4MiAoOCUpICAgICAgMjMgKDElKSAgICAgICAgMzAgKDElKQo+Pj4+
-PiAKPj4+Pj4gU28gdGhpcyBsb29rcyBsaWtlIGl0J3MgZG9pbmcgKnNvbWV0aGluZyosIGJ1dCBu
-b3QgbGlrZSBpdCdzCj4+Pj4+IHN1Y2NlZWRpbmcKPj4+Pj4gaW4gYWNoaWV2aW5nIHRoZSBzZXQg
-cGVyY2VudGFnZXMuIERpZCB5b3UgY2hlY2sgaWYgdGhlIGFjdHVhbCAKPj4+Pj4gYWlydGltZQo+
-Pj4+PiB2YWx1ZXMgKGluIGRlYnVnZnMpIGNvcnJlc3BvbmRzIHRvIHRoZSBjb25maWd1cmVkIHdl
-aWdodHM/Cj4+Pj4+IAo+Pj4+IE5vLiBXaWxsIGNoZWNrIHRoYXQuCj4+Pj4gCj4+PiBUb2tlLAo+
-Pj4gCj4+PiAgRnJvbSBhYm92ZSByZXN1bHRzLCBkaWZmZXJlbnQgYWlydGltZSBmb3IgZWFjaCBz
-dGF0aW9uIGlzIHJlZmxlY3RpbmcgCj4+PiBvbgo+Pj4gb3V0cHV0IHBlcmZvcm1hbmNlLiBVbmZv
-cnR1bmF0ZWx5IEkgZG9uJ3Qgc2VlIHN1Y2ggdHB1dCBkaWZmZXJlbmNlLCAKPj4+IHdoZW4KPj4+
-IHRoZSB0eCBtb2RlIGlzIGZpeGVkIGluIHB1c2gtb25seS4gRXZlbiBsb3cgd2VpZ2h0IHN0YXRp
-b24gaXMgZ2l2aW5nCj4+PiBzYW1lCj4+PiBwZXJmb3JtYW5jZS4gQXJlIHlvdSBhbHNvIHNlZWlu
-ZyB0aGUgc2FtZSBiZWhhdmlvciBpbiB5b3VyIHNldHVwPyAKPj4+IENvdWxkCj4+PiB5b3UgcGxl
-YXNlIHNoYXJlIHlvdXIgcmVzdWx0cz8KPj4gCj4+IFNvcnJ5LCBJJ3ZlIGJlZW4gdHJhdmVsbGlu
-ZyB0aGlzIHdlZWs7IEknbGwgYmUgYmFjayBpbiB0aGUgb2ZmaWNlIG5leHQKPj4gd2VlayBhbmQg
-Y2FuIHJ1biBzb21lIHRlc3RzIHRoZW4uIEkgbWF5IGFsc28gaGF2ZSBhbiBpZGVhIGZvciBhCj4+
-IGRpZmZlcmVudCBhbGdvcml0aG0gdGhhdCB3aWxsIHdvcmsgYmV0dGVyIGluIHB1bGwgbW9kZSwg
-YnV0IG5lZWQgdG8gc2VlCj4+IGlmIGl0IHdvcmtzIGF0IGFsbCBmaXJzdCA6KQo+PiAKPiBXb3cu
-Li4gOikKPgo+IE1lYW53aGlsZSB3ZSBkaWQgc29tZSBtb3JlIGV4cGVyaW1lbnRzIHdpdGggYm90
-aCBtb2Rlcy4gVGhlIGV4cGVyaW1lbnQKPiB3YXMgZG9uZSBpbiBvcGVuIGVudmlyb25tZW50IGFu
-ZCBmaXhlZCByYXRlIGFuZCBVRFAgdHJhZmZpYyByYW4gZm9yIDYwCj4gc2Vjb25kcy4KPgo+IFNl
-ZW1zIGxpa2UgcHVzaCBtb2RlIG5vdCBob25vcmluZyB0aGUgY29uZmlndXJlZCB3ZWlnaHQuIEFs
-d2F5cyB0aGUKPiBhaXJ0aW1lIHdhcyBhbG1vc3Qgc2FtZSB3aGVyZWFzIGluIHB1bGwtbW9kZSBh
-aXJ0aW1lIGlzIGNoYW5naW5nIGJhc2VkCj4gb24gY29uZmlndXJlZCB3ZWlnaHQuIEhlbmNlIEkg
-d291bGQgbGlrZSB0byBrbm93IHlvdXIgcmVzdWx0cy4KClJpZ2h0LCBzbyBJIHZlcmlmaWVkIHRo
-YXQgdGhlIGN1cnJlbnQgdmVyc2lvbiBvZiB0aGUgcGF0Y2ggc2V0IHN0aWxsCndvcmtzIHdpdGgg
-YXRoOWsuIEhvd2V2ZXIsIHRoZSBhdGgxMGsgY2FyZCBJIGhhdmUgZG9lc24ndCBzZWVtIHRvCnN1
-cHBvcnQgcGVlciBzdGF0cywgc28gSSBjYW4ndCB0ZXN0IGF0aDEway4gCgokIGxzcGNpIHwgZ3Jl
-cCBRdWFsY29tbQowMzowMC4wIE5ldHdvcmsgY29udHJvbGxlcjogUXVhbGNvbW0gQXRoZXJvcyBR
-Q0E5ODZ4Lzk4OHggODAyLjExYWMgV2lyZWxlc3MgTmV0d29yayBBZGFwdGVyCgokIGNhdCAvc3lz
-L2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5MS9hdGgxMGsvY2hpcF9pZCAKMHgwNDMyMDJmZgoK
-JCBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTEvYXRoMTBrL3dtaV9zZXJ2aWNl
-cyAgfCBncmVwIFBFRVIKV01JX1NFUlZJQ0VfUEVFUl9DQUNISU5HICAgICAgICAgICAgICAgICAt
-CldNSV9TRVJWSUNFX1BFRVJfU1RBVFMgICAgICAgICAgICAgICAgICAgLQoKCklzIHRoZXJlIGEg
-d2F5IHRvIGZvcmNlLWVuYWJsZSBhaXJ0aW1lIHN1cHBvcnQsIGlzIHRoaXMgYSBoYXJkd2FyZSBp
-c3N1ZT8KCj4gCQlzdGExCQlzdGEyCQlzdGEzCQlzdGE0Cj4gcHVsbC1tb2RlCThzKDIwNXVzKQkx
-OHMoMy4ybXMpCThzKDIwNXVzKQkxNHMoNDEwdXMpCj4gCQkxMnMoMjU2dXMpCTEycygyNTZ1cykJ
-MTNzKDI1NnVzKQkxMnMoMjU2dXMpCj4gCQkxNHMoNG1zKQkxM3MoNG1zKQkxNHMoNG1zKQkxM3Mo
-NG1zKQo+Cj4gcHVzaC1tb2RlCTE1cygyMDV1cykJMTJzKDMuMm1zKQkxNnMoMjA1dXMpCTEycyg0
-MTB1cykKPiAJCTE1cygyNTZ1cykJMTJzKDI1NnVzKQkxNnMoMjU2dXMpCTEycygyNTZ1cykKPiAJ
-CTE0cyg0bXMpCTEzcyg0bXMpCTE2cyg0bXMpCTEycyg0bXMpCgpSaWdodCwgc28gdGhlIHB1bGwt
-bW9kZSByZXN1bHRzIGFyZSBlbmNvdXJhZ2luZyEgKlNvbWV0aGluZyogaXMKaGFwcGVuaW5nLCBh
-dCBsZWFzdCwgZXZlbiB0aG91Z2ggdGhlIGFnZ3JlZ2F0ZSBhaXJ0aW1lIGRvZXNuJ3QgcXVpdGUK
-bWF0Y2ggdGhlIHJhdGlvcyBvZiB0aGUgY29uZmlndXJlZCB3ZWlnaHRzLgoKQXJlIHlvdSBydW5u
-aW5nIHRoZSBVRFAgZ2VuZXJhdG9yIG9uIHRoZSBBUCBpdHNlbGYsIG9yIG9uIGEgc2VwYXJhdGUK
-ZGV2aWNlLCBCVFc/IElmIGl0J3Mgb24gdGhlIEFQLCB0aGUgdXNlcnNwYWNlIHNvY2tldCBjYW4g
-Z2V0IHRocm90dGxlZCwKd2hpY2ggd2lsbCBpbnRlcmZlcmUgd2l0aCByZXN1bHRzLCBzbyBpdCdz
-IGJldHRlciB0byBoYXZlIGl0IG9uIGEKc2VwYXJhdGUgZGV2aWNlIChjb25uZWN0ZWQgdmlhIGV0
-aGVybmV0KS4KCkFzIGZvciBwdXNoLW1vZGUsIGNvdWxkIHRoaXMgYmUgYmVjYXVzZSBvZiBiYWQg
-YnVmZmVyIG1hbmFnZW1lbnQ/IEkuZS4sCmJlY2F1c2UgdGhlcmUncyBhIGxhZyBiZXR3ZWVuIHRo
-ZSB0aW1lIGFpcnRpbWUgaXMgcmVnaXN0ZXJlZCwgYW5kIHRoZQp0aW1lIHRoYXQgYWlydGltZSB1
-c2FnZSBpcyByZXBvcnRlZCwgdGhlIGRyaXZlciBqdXN0IHB1c2hlcyBhIHdob2xlCmJ1bmNoIG9m
-IHBhY2tldHMgdG8gdGhlIGZpcm13YXJlIHdoZW4gaXQgZ2V0cyB0aGUgY2hhbmNlLCB3aGljaCBw
-cmV2ZW50cwp0aGUgc2NoZWR1bGVyIGZyb20gdGhyb3R0bGluZyBwcm9wZXJseS4gVGhpcyBjb3Vs
-ZCBhbHNvIGV4cGxhaW4gdGhlCmJldHRlciwgYnV0IG5vdCBxdWl0ZSBwZXJmZWN0LCByZXN1bHRz
-IGluIHB1bGwgbW9kZSwgYXNzdW1pbmcgdGhhdCBwdWxsCm1vZGUgcmVzdWx0cyBpbiBiZXR0ZXIg
-ZmlybXdhcmUgYnVmZmVyIG1hbmFnZW1lbnQgd2hpY2ggcmVkdWNlcywgYnV0CmRvZXNuJ3QgcXVp
-dGUgcmVtb3ZlLCB0aGUgbGFnLgoKSWYgdGhpcyBpcyBpbmRlZWQgdGhlIHJlYXNvbiwgdGhlIHF1
-ZXVlIGxpbWl0IHBhdGNoZXMgc2hvdWxkIGhvcGVmdWxseQpiZSBhIHNvbHV0aW9uLiBTbyBndWVz
-cyB3ZSBuZWVkIHRvIGdldCB0aG9zZSB3b3JraW5nIGFzIHdlbGwgOikKCi1Ub2tlCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+This reverts commit cfb353c0dc058bc1619cc226d3cbbda1f360bdd3.
+
+WCN3990 firmware does not yet implement this feature, and so it crashes
+like this:
+
+  fatal error received: err_qdi.c:456:EX:wlan_process:1:WLAN RT:207a:PC=b001b4f0
+
+This feature can be re-implemented with a proper service bitmap or other
+feature-discovery mechanism in the future. But it should not break
+working boards.
+
+Fixes: cfb353c0dc05 ("ath10k: add quiet mode support for QCA6174/QCA9377")
+Cc: Yu Wang <yyuwang@codeaurora.org>
+Cc: Rakesh Pillai <pillair@codeaurora.org>
+Cc: Govind Singh <govinds@codeaurora.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 33 +----------------------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 16 -----------
+ 2 files changed, 1 insertion(+), 48 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index ad4114a88170..099e78b5de1f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3209,37 +3209,6 @@ ath10k_wmi_tlv_op_gen_tdls_peer_update(struct ath10k *ar,
+ 	return skb;
+ }
+ 
+-static struct sk_buff *
+-ath10k_wmi_tlv_op_gen_pdev_set_quiet_mode(struct ath10k *ar, u32 period,
+-					  u32 duration, u32 next_offset,
+-					  u32 enabled)
+-{
+-	struct wmi_tlv_set_quiet_cmd *cmd;
+-	struct wmi_tlv *tlv;
+-	struct sk_buff *skb;
+-
+-	skb = ath10k_wmi_alloc_skb(ar, sizeof(*tlv) + sizeof(*cmd));
+-	if (!skb)
+-		return ERR_PTR(-ENOMEM);
+-
+-	tlv = (void *)skb->data;
+-	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_PDEV_SET_QUIET_CMD);
+-	tlv->len = __cpu_to_le16(sizeof(*cmd));
+-	cmd = (void *)tlv->value;
+-
+-	/* vdev_id is not in use, set to 0 */
+-	cmd->vdev_id = __cpu_to_le32(0);
+-	cmd->period = __cpu_to_le32(period);
+-	cmd->duration = __cpu_to_le32(duration);
+-	cmd->next_start = __cpu_to_le32(next_offset);
+-	cmd->enabled = __cpu_to_le32(enabled);
+-
+-	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "wmi tlv quiet param: period %u duration %u enabled %d\n",
+-		   period, duration, enabled);
+-	return skb;
+-}
+-
+ static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_wow_enable(struct ath10k *ar)
+ {
+@@ -4143,7 +4112,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
+ 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
+-	.gen_pdev_set_quiet_mode = ath10k_wmi_tlv_op_gen_pdev_set_quiet_mode,
++	/* .gen_pdev_set_quiet_mode not implemented */
+ 	.gen_pdev_get_temperature = ath10k_wmi_tlv_op_gen_pdev_get_temperature,
+ 	/* .gen_addba_clear_resp not implemented */
+ 	/* .gen_addba_send not implemented */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index bf8a4320c39c..5db294558ce5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1,7 +1,6 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -1980,21 +1979,6 @@ struct wmi_tlv_wow_add_del_event_cmd {
+ 	__le32 event_bitmap;
+ } __packed;
+ 
+-/* Command to set/unset chip in quiet mode */
+-struct wmi_tlv_set_quiet_cmd {
+-	__le32 vdev_id;
+-
+-	/* in TUs */
+-	__le32 period;
+-
+-	/* in TUs */
+-	__le32 duration;
+-
+-	/* offset in TUs */
+-	__le32 next_start;
+-	__le32 enabled;
+-} __packed;
+-
+ struct wmi_tlv_wow_enable_cmd {
+ 	__le32 enable;
+ } __packed;
+-- 
+2.19.1.930.g4563a0d9d0-goog
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
