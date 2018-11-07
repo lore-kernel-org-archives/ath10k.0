@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKLN7-0004S1-Jt
- for ath10k@lists.infradead.org; Wed, 07 Nov 2018 10:47:42 +0000
+Received: from mail-cys01nam02on060f.outbound.protection.outlook.com
+ ([2a01:111:f400:fe45::60f]
+ helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKOTZ-0000qM-Eo
+ for ath10k@lists.infradead.org; Wed, 07 Nov 2018 14:06:37 +0000
+From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
+Date: Wed, 7 Nov 2018 14:05:58 +0000
+Message-ID: <20181107140552.zfuusbapgqjumoln@bars>
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+ <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
+Content-Language: en-US
+Content-ID: <C57996E9EE5522498033E3BB2BDA6CD8@namprd05.prod.outlook.com>
 MIME-Version: 1.0
-Date: Wed, 07 Nov 2018 16:17:28 +0530
-From: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry to indentify external
- FEM
-In-Reply-To: <CAL_JsqLTxzFSQ6jvZo7CCcxBML6Y5j2AvAOotnVDJGTh-1K7ZA@mail.gmail.com>
-References: <1538653364-1239-1-git-send-email-bperumal@codeaurora.org>
- <1538653364-1239-2-git-send-email-bperumal@codeaurora.org>
- <20181015192425.GA19699@bogus>
- <d617b0c39a2faa7c9b23b884bef3f829@codeaurora.org>
- <CAL_JsqLTxzFSQ6jvZo7CCcxBML6Y5j2AvAOotnVDJGTh-1K7ZA@mail.gmail.com>
-Message-ID: <9632d0a95cf96d777081d2a1d3c12dca@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,174 +23,114 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 2018-10-30 21:02, Rob Herring wrote:
-> On Tue, Oct 30, 2018 at 3:41 AM <bperumal@codeaurora.org> wrote:
->> 
->> On 2018-10-16 00:54, Rob Herring wrote:
->> > On Thu, Oct 04, 2018 at 05:12:43PM +0530, Bhagavathi Perumal S wrote:
->> >> This adds new dt entry ext-fem-name, it is used by ath10k driver
->> >> to select correct timing parameters and configure it in target wifi
->> >> hardware.
->> >> The Front End Module(FEM) normally includes tx power amplifier(PA) and
->> >> rx low noise amplifier(LNA). The default timing parameters like tx end
->> >> to
->> >> PA off timing values were fine tuned for internal FEM used in
->> >> reference
->> >> design. And these timing values can not be same if ODM modifies
->> >> hardware
->> >> design with different external FEM. This DT entry helps to choose
->> >> correct
->> >> timing values in driver if different external FEM hardware used.
->> >
->> > 'dt-bindings: net: ath10k: ...' for the subject please.
->> Sure, I will change and send v2 patch.
->> 
->> >
->> >>
->> >> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
->> >> ---
->> >>  .../bindings/net/wireless/qcom,ath10k.txt          | 22
->> >> ++++++++++++++++++++++
->> >>  1 file changed, 22 insertions(+)
->> >>
->> >> diff --git
->> >> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> >> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> >> index 7fd4e8c..fbaf309 100644
->> >> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> >> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> >> @@ -56,6 +56,7 @@ Optional properties:
->> >>                                   the length can vary between hw versions.
->> >>  - <supply-name>-supply: handle to the regulator device tree node
->> >>                         optional "supply-name" is "vdd-0.8-cx-mx".
->> >> +- ext-fem-name: name of external front end module used.
->> >
->> > What are valid names? What if the OS doesn't recognize the name?
->> > Perhaps
->> Some valid FEM devices are "microsemi-lx5586", "sky85703-11" and
->> "sky85803" etc.
->> Currently driver accepts only "microsemi-lx5586", Since this FEM
->> requires different timing settings,
-> 
-> Assuming you keep this, then you need to enumerate what are valid
-> values in the binding. Otherwise, 'ext-fem-name = "rob"' is valid.
+Hello Tamizh,
 
-Sure, Will enumerate valid values in v2 patch.
-> 
->> And it can be extended for other FEM devices in future.
->> If OS doesn't recognize the name, it uses predefined default timing
->> settings.
->> 
->> > this should be a compatible string for the particular module instead?
->> > Then it could cover any differences, not just the FEM.
->> >
->> No, it is specific to FEM device.
-> 
-> You will be better off having either a specific compatible string or
-> using VID/PID as this is a PCI device. Then you can handle other
-> differences you may find between h/w versions without a DT change.
-> 
+> Co-Developed-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
+> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> ---
+>  include/net/cfg80211.h       |   14 +++++++
+>  include/uapi/linux/nl80211.h |   69 +++++++++++++++++++++++++++++++++
+>  net/wireless/nl80211.c       |   86 ++++++++++++++++++++++++++++++++++++++++++
+>  net/wireless/rdev-ops.h      |   15 ++++++++
+>  net/wireless/trace.h         |   27 +++++++++++++
+>  5 files changed, 211 insertions(+)
 
-FEM is a part of wifi device, and not a separate PCI device. Different 
-external
-FEM can be used in a same wifi device, so it might not be feasible to 
-define
-a compatible string to cover any other differences. IMO we can go with
-the property name instead of defining compatible string specific to
-every FEM device.
+...
 
->> >>
->> >>  Example (to supply the calibration data alone):
->> >>
->> >> @@ -150,3 +151,24 @@ wifi@18000000 {
->> >>                         <0 141 0 /* CE11 */ >;
->> >>              vdd-0.8-cx-mx-supply = <&pm8998_l5>;
->> >>  };
->> >> +
->> >> +Example (to supply the external front end module name):
->> >> +
->> >> +In this example, the front end module is defined as a property of the
->> >> ath10k
->> >> +device node.
->> >
->> > Really need a whole new example for 1 property?
->> Will add this property in existing example.
->> 
->> >
->> >> +
->> >> +pci {
->> >> +    pcie@0 {
->> >> +            reg = <0 0 0 0 0>;
->> >> +            #interrupt-cells = <1>;
->> >> +            #size-cells = <2>;
->> >> +            #address-cells = <3>;
->> >> +            device_type = "pci";
->> >> +
->> >> +            ath10k@0,0 {
->> >
->> > wifi@0,0
->> Added in ath10k@0,0 to make consistent with existing property
->> "qcom,ath10k-calibration-data" below,
->> "
-> 
-> I don't see how that matters.
-> 
->> pci {
->>          pcie@0 {
->>                  reg = <0 0 0 0 0>;
->>                  #interrupt-cells = <1>;
->>                  #size-cells = <2>;
->>                  #address-cells = <3>;
->>                  device_type = "pci";
->> 
->>                  ath10k@0,0 {
->>                          reg = <0 0 0 0 0>;
->>                          device_type = "pci";
->>                          qcom,ath10k-calibration-data = [ 01 02 03 ... 
->> ];
->>                  };
->>          };
->> };
->> "
->> 
->> If wifi@0,0 is preferable, then I will add new entry "wifi@0,0" and 
->> add
->> ext-fem-name into it.
-> 
-> Node names are supposed to reflect the class of device, not the model.
-> See the DT spec for a list.
+> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+> index d744388..d386ad7 100644
+> --- a/net/wireless/nl80211.c
+> +++ b/net/wireless/nl80211.c
 
-Will change accordingly.
+...
 
-> 
->> 
->> >
->> >> +                    reg = <0 0 0 0 0>;
->> >> +                    device_type = "pci";
-> 
-> Also, this is wrong. Only PCI bridges should have this property. dtc
-> will give you a warning on this.
+> +static int nl80211_set_tid_config(struct sk_buff *skb,
+> +                                 struct genl_info *info)
+> +{
+> +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
+> +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
+> +       struct nlattr *tid;
+> +       struct net_device *dev = info->user_ptr[1];
+> +       const char *peer = NULL;
+> +       u8 tid_no;
+> +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
+> +
+> +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
+> +       if (!tid)
+> +               return -EINVAL;
+> +
+> +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
+> +                              nl80211_attr_tid_policy, info->extack);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (!attrs[NL80211_ATTR_TID])
+> +               return -EINVAL;
+> +
+> +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
+> +               retry_short = nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
+> +               if (!retry_short ||
+> +                   retry_short > rdev->wiphy.max_data_retry_count)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
+> +               retry_long = nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
+> +               if (!retry_long ||
+> +                   retry_long > rdev->wiphy.max_data_retry_count)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
+> +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
+> +               return -EINVAL;
+> +
+> +       if (info->attrs[NL80211_ATTR_MAC])
+> +               peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
+> +
+> +       if (nla_get_flag(attrs[NL80211_ATTR_TID_RETRY_CONFIG])) {
 
-Will remove it in v2 patch.
+Do we really need this additional flag to indicate retry data ?
+Maybe we can simply check retry attrs or even retry data, e.g.:
 
-> 
->> >> +                    ext-fem-name = "microsemi-lx5586";
->> >> +            };
->> >> +    };
->> >> +};
->> >> --
->> >> 1.9.1
->> >>
->> 
->> Thanks, Sorry for the delayed response,
->> Bhagavathi Perumal S.
+if (attrs[NL80211_ATTR_TID_RETRY_LONG] ||
+    attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
+    ...
+
+if ((retry_short > 0) || (retry_long > 0)) {
+    ...
+
+> +               if (!wiphy_ext_feature_isset(
+> +                               &rdev->wiphy,
+> +                               NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG))
+> +                       return -EOPNOTSUPP;
+> +
+> +               if (peer && !wiphy_ext_feature_isset(
+> +                               &rdev->wiphy,
+> +                               NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG))
+> +                       return -EOPNOTSUPP;
+> +
+> +               if (!rdev->ops->set_data_retry_count ||
+> +                   !rdev->wiphy.max_data_retry_count)
+> +                       return -EOPNOTSUPP;
+> +
+> +               ret = rdev_set_data_retry_count(rdev, dev, peer, tid_no,
+> +                                               retry_short, retry_long);
+> +       }
+> +
+> +       return ret;
+> +}
+
+Regards,
+Sergey
 
 _______________________________________________
 ath10k mailing list
