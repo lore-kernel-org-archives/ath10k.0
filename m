@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKkdZ-0007Hk-Bq
- for ath10k@lists.infradead.org; Thu, 08 Nov 2018 13:46:23 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <e018fec62487536859ea8202b187c63e@codeaurora.org>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
- <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
- <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
- <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org> <87h8gzpy9t.fsf@toke.dk>
- <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org> <87va59uegc.fsf@toke.dk>
- <e018fec62487536859ea8202b187c63e@codeaurora.org>
-Date: Thu, 08 Nov 2018 14:46:06 +0100
-Message-ID: <874lcrvg0x.fsf@toke.dk>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKnE4-0003Su-Ae
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 16:32:13 +0000
+Subject: Re: [PATCH 0/4] cfg80211/mac80211: Add support for TID specific
+ configuration
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+ <2008ad85-3f13-cc6b-3fc2-d614f8422d68@quantenna.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <fec37af9-5a34-ea82-e81e-54e983278b4f@candelatech.com>
+Date: Thu, 8 Nov 2018 08:31:42 -0800
 MIME-Version: 1.0
+In-Reply-To: <2008ad85-3f13-cc6b-3fc2-d614f8422d68@quantenna.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +20,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBP
-biAyMDE4LTExLTA3IDA2OjUzLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4+IFJh
-amt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4gCj4+
-PiBNZWFud2hpbGUgd2UgZGlkIHNvbWUgbW9yZSBleHBlcmltZW50cyB3aXRoIGJvdGggbW9kZXMu
-IFRoZSBleHBlcmltZW50Cj4+PiB3YXMgZG9uZSBpbiBvcGVuIGVudmlyb25tZW50IGFuZCBmaXhl
-ZCByYXRlIGFuZCBVRFAgdHJhZmZpYyByYW4gZm9yIDYwCj4+PiBzZWNvbmRzLgo+Pj4gCj4+PiBT
-ZWVtcyBsaWtlIHB1c2ggbW9kZSBub3QgaG9ub3JpbmcgdGhlIGNvbmZpZ3VyZWQgd2VpZ2h0LiBB
-bHdheXMgdGhlCj4+PiBhaXJ0aW1lIHdhcyBhbG1vc3Qgc2FtZSB3aGVyZWFzIGluIHB1bGwtbW9k
-ZSBhaXJ0aW1lIGlzIGNoYW5naW5nIGJhc2VkCj4+PiBvbiBjb25maWd1cmVkIHdlaWdodC4gSGVu
-Y2UgSSB3b3VsZCBsaWtlIHRvIGtub3cgeW91ciByZXN1bHRzLgo+PiAKPj4gUmlnaHQsIHNvIEkg
-dmVyaWZpZWQgdGhhdCB0aGUgY3VycmVudCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZXQgc3RpbGwK
-Pj4gd29ya3Mgd2l0aCBhdGg5ay4gSG93ZXZlciwgdGhlIGF0aDEwayBjYXJkIEkgaGF2ZSBkb2Vz
-bid0IHNlZW0gdG8KPj4gc3VwcG9ydCBwZWVyIHN0YXRzLCBzbyBJIGNhbid0IHRlc3QgYXRoMTBr
-Lgo+PiAKPj4gJCBsc3BjaSB8IGdyZXAgUXVhbGNvbW0KPj4gMDM6MDAuMCBOZXR3b3JrIGNvbnRy
-b2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBOTg2eC85ODh4IDgwMi4xMWFjCj4+IFdpcmVsZXNz
-IE5ldHdvcmsgQWRhcHRlcgo+PiAKPj4gJCBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjEx
-L3BoeTEvYXRoMTBrL2NoaXBfaWQKPj4gMHgwNDMyMDJmZgo+PiAKPj4gJCBjYXQgL3N5cy9rZXJu
-ZWwvZGVidWcvaWVlZTgwMjExL3BoeTEvYXRoMTBrL3dtaV9zZXJ2aWNlcyAgfCBncmVwIFBFRVIK
-Pj4gV01JX1NFUlZJQ0VfUEVFUl9DQUNISU5HICAgICAgICAgICAgICAgICAtCj4+IFdNSV9TRVJW
-SUNFX1BFRVJfU1RBVFMgICAgICAgICAgICAgICAgICAgLQo+PiAKPgo+IE9vcHMuLi4gWWVhaCA5
-ODh4IGZpcm13YXJlICgxMC4yLjQpIGRvZXMgbm90IGhhdmUgcGVlciBzdGF0cyBzdXBwb3J0Lgo+
-Cj4+IAo+PiBJcyB0aGVyZSBhIHdheSB0byBmb3JjZS1lbmFibGUgYWlydGltZSBzdXBwb3J0LCBp
-cyB0aGlzIGEgaGFyZHdhcmUgCj4+IGlzc3VlPwo+PiAKPiBVbmZvcnR1bmF0ZWx5IG5vdC4gVGhl
-cmUgaXMgb25lIG1vcmUgcGVuZGluZyBjaGFuZ2UgdGhhdCBoYW5kbGVzCj4gYWlydGltZSByZXBv
-cnQgZnJvbSBIVFQgdHgtY29tcGwuIEFnYWluIGl0IGRlcGVuZHMgZmlybXdhcmUgc3VwcG9ydC4K
-PiBUaGVzZSBleHBlcmltZW50cyBhcmUgdGFrZW4gd2l0aCB0aGlzIGYvdyBpbnRlcmZhY2UuIFdp
-bGwgcG9zdCB0aGUKPiBjaGFuZ2UuCgpSaWdodCwgdGhvdWdodCBzby4gVG9vIGJhZC4gR3Vlc3Mg
-eW91IGFyZSBkb2luZyBhbGwgdGhlIGF0aDEwayB0ZXN0aW5nLAp0aGVuIDspCgo+Pj4gCQlzdGEx
-CQlzdGEyCQlzdGEzCQlzdGE0Cj4+PiBwdWxsLW1vZGUJOHMoMjA1dXMpCTE4cygzLjJtcykJOHMo
-MjA1dXMpCTE0cyg0MTB1cykKPj4+IAkJMTJzKDI1NnVzKQkxMnMoMjU2dXMpCTEzcygyNTZ1cykJ
-MTJzKDI1NnVzKQo+Pj4gCQkxNHMoNG1zKQkxM3MoNG1zKQkxNHMoNG1zKQkxM3MoNG1zKQo+Pj4g
-Cj4+PiBwdXNoLW1vZGUJMTVzKDIwNXVzKQkxMnMoMy4ybXMpCTE2cygyMDV1cykJMTJzKDQxMHVz
-KQo+Pj4gCQkxNXMoMjU2dXMpCTEycygyNTZ1cykJMTZzKDI1NnVzKQkxMnMoMjU2dXMpCj4+PiAJ
-CTE0cyg0bXMpCTEzcyg0bXMpCTE2cyg0bXMpCTEycyg0bXMpCj4+IAo+PiBSaWdodCwgc28gdGhl
-IHB1bGwtbW9kZSByZXN1bHRzIGFyZSBlbmNvdXJhZ2luZyEgKlNvbWV0aGluZyogaXMKPj4gaGFw
-cGVuaW5nLCBhdCBsZWFzdCwgZXZlbiB0aG91Z2ggdGhlIGFnZ3JlZ2F0ZSBhaXJ0aW1lIGRvZXNu
-J3QgcXVpdGUKPj4gbWF0Y2ggdGhlIHJhdGlvcyBvZiB0aGUgY29uZmlndXJlZCB3ZWlnaHRzLgo+
-PiAKPj4gQXJlIHlvdSBydW5uaW5nIHRoZSBVRFAgZ2VuZXJhdG9yIG9uIHRoZSBBUCBpdHNlbGYs
-IG9yIG9uIGEgc2VwYXJhdGUKPj4gZGV2aWNlLCBCVFc/IElmIGl0J3Mgb24gdGhlIEFQLCB0aGUg
-dXNlcnNwYWNlIHNvY2tldCBjYW4gZ2V0IHRocm90dGxlZCwKPj4gd2hpY2ggd2lsbCBpbnRlcmZl
-cmUgd2l0aCByZXN1bHRzLCBzbyBpdCdzIGJldHRlciB0byBoYXZlIGl0IG9uIGEKPj4gc2VwYXJh
-dGUgZGV2aWNlIChjb25uZWN0ZWQgdmlhIGV0aGVybmV0KS4KPj4gCj4gVHJhZmZpYyBiL3cgd2ly
-ZWQgY2xpZW50ICh2aWEgZXRoZXJuZXQpIGFuZCB3aXJlbGVzcyBjbGllbnRzLgoKQ29vbC4KCj4+
-IEFzIGZvciBwdXNoLW1vZGUsIGNvdWxkIHRoaXMgYmUgYmVjYXVzZSBvZiBiYWQgYnVmZmVyIG1h
-bmFnZW1lbnQ/IEkuZS4sCj4+IGJlY2F1c2UgdGhlcmUncyBhIGxhZyBiZXR3ZWVuIHRoZSB0aW1l
-IGFpcnRpbWUgaXMgcmVnaXN0ZXJlZCwgYW5kIHRoZQo+PiB0aW1lIHRoYXQgYWlydGltZSB1c2Fn
-ZSBpcyByZXBvcnRlZCwgdGhlIGRyaXZlciBqdXN0IHB1c2hlcyBhIHdob2xlCj4+IGJ1bmNoIG9m
-IHBhY2tldHMgdG8gdGhlIGZpcm13YXJlIHdoZW4gaXQgZ2V0cyB0aGUgY2hhbmNlLCB3aGljaCAK
-Pj4gcHJldmVudHMKPj4gdGhlIHNjaGVkdWxlciBmcm9tIHRocm90dGxpbmcgcHJvcGVybHkuIFRo
-aXMgY291bGQgYWxzbyBleHBsYWluIHRoZQo+PiBiZXR0ZXIsIGJ1dCBub3QgcXVpdGUgcGVyZmVj
-dCwgcmVzdWx0cyBpbiBwdWxsIG1vZGUsIGFzc3VtaW5nIHRoYXQgcHVsbAo+PiBtb2RlIHJlc3Vs
-dHMgaW4gYmV0dGVyIGZpcm13YXJlIGJ1ZmZlciBtYW5hZ2VtZW50IHdoaWNoIHJlZHVjZXMsIGJ1
-dAo+PiBkb2Vzbid0IHF1aXRlIHJlbW92ZSwgdGhlIGxhZy4KPj4gCj4gSG1tLi4uIEkgYWdyZWUg
-dGhhdCBsYWcgaW4gcmVwb3J0aW5nIGFpcnRpbWUgbWF5IGNhdXNlIG1vcmUgZGF0YSBwdXNoCj4g
-dG8gaHcuIFJpZ2h0IG5vdyBib3RoIHR4IGFuZCB0eC1jb21wbCBhcmUgc2VyaWFsaXplZCBieQo+
-IGFjdGl2ZV90eHFfbG9jay4gU28gb25jZSBsb2NrIGFjcXVpcmVkIGJ5IHR4IHBhdGgsIGl0IHdp
-bGwgZG93bmxvYWQKPiBhbGwgZnJhbWVzLiBpLmUgaXQgaXMgZXZlbiB0cnVlIGZvciBhdGg5ayBk
-cml2ZXIuIEhlbmNlIEkgYW0gd29uZGVyaW5nCj4gaG93IGl0IGlzIHdvcmtpbmcgb25seSB3aXRo
-IGF0aDlrLgoKSWYgZW5vdWdoIHBhY2tldHMgYXJlIGRlcXVldWVkIGF0IG9uY2UgdGhhdCB0aGUg
-VFhRIGVtcHRpZXMgYW5kIGlzIG5vdApwdXQgYmFjayBvbiB0aGUgc2NoZWR1bGluZyBsb29wLCB0
-aGUgbmV4dF90eHEoKSBsb29wIGlzIGp1c3QgZ29pbmcgdG8KbG9vcCB0aHJvdWdoIHRoZSByZW1h
-aW5pbmcgVFhRcyBhbmQgaW1tZWRpYXRlbHkgaW5jcmVhc2UgdGhlaXIgcXVhbnR1bS4KSW4gYXRo
-OWssIHRoZXJlJ3MgYSBtYXhpbXVtIG9mIHR3byBvdXRzdGFuZGluZyBhZ2dyZWdhdGVzIGJlbG93
-IHRoZSBUWFEKbGV2ZWwsIGJ1dCBJIHRoaW5rIHlvdSBtZW50aW9uZWQgdGhhdCBhdGgxMGsgY2Fu
-IHF1ZXVlIHRob3VzYW5kcyBpbgpmaXJtd2FyZT8KCllvdXIgcGF0Y2ggcmVtb3ZlcyB0aGUgJ21h
-eCAxNiBwYWNrZXRzIGF0IGEgdGltZScgY2hlY2sgYmVmb3JlIHRoZSBjYWxsCnRvIGF0aDEwa19t
-YWNfdHhfcHVzaF90eHEoKTsgdHJ5IGFkZGluZyB0aGF0IGJhY2sgYW5kIHNlZSBpZiBpdCBoZWxw
-cz8KCj4+IElmIHRoaXMgaXMgaW5kZWVkIHRoZSByZWFzb24sIHRoZSBxdWV1ZSBsaW1pdCBwYXRj
-aGVzIHNob3VsZCBob3BlZnVsbHkKPj4gYmUgYSBzb2x1dGlvbi4gU28gZ3Vlc3Mgd2UgbmVlZCB0
-byBnZXQgdGhvc2Ugd29ya2luZyBhcyB3ZWxsIDopCj4+IAo+IEkgd291bGQgcHJlZmVyIHRvIGJh
-c2VsaW5lIHRoZSBiYXNpYyBpbmZyYSBpbnRvIHVwc3RyZWFtIGZpcnN0IGFuZCBkbwo+IGVuaGFu
-Y2VtZW50IG9uIHRvcCBvZiB0aGF0LgoKU3VyZSwgSSdtIGZpbmUgd2l0aCBtZXJnaW5nIHRoaXMg
-Zmlyc3QgYW5kIGJ1aWxkaW5nIG9uIHRvcC4KCj4gSSByZXF1ZXN0IHlvdSB0byByZXZpc2l0IG1h
-aW50YWluaW5nIHBlciBkcml2ZXIgZGVmYXVsdC4gT3RoZXJ3aXNlCj4gdGhlcmUgd291bGQgYmUg
-cGVyZm9ybWFuY2UgaW1wYWN0IHdpdGggMjU2dXMuIDooCgpIbW0sIGhvdyBhYm91dCB3ZSBtYWtl
-IGl0IGEgZHJpdmVyLXNwZWNpZmllZCBtdWx0aXBsaWVyIGluc3RlYWQgKHdoaWNoCmNvdWxkIGJl
-IDQsIDggb3IgMTYgZm9yIGF0aDEwayk/IFRoYXQgd2F5IGl0IHdvdWxkIHN0aWxsIHdvcmsgZXZl
-biBpZgp1c2Vyc3BhY2UgY2hhbmdlcyB0aGUgd2VpZ2h0cy4gSXQgd291bGQgYWZmZWN0IHRoZSBt
-aW5pbXVtIHBvc3NpYmxlCmdyYW51bGFyaXR5LCBidXQgdGhhdCBpcyBwcm9iYWJseSBhY2NlcHRh
-YmxlOyBhbmQgd2Ugd291bGQgYmUgZnJlZSB0bwpjaGFuZ2UgdGhlIG1lY2hhbmlzbSBsYXRlciwg
-d2l0aG91dCBhZmZlY3RpbmcgdGhlIHVzZXJzcGFjZSBBUEkuCgotVG9rZQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+
+On 11/07/2018 04:55 PM, Igor Mitsyanko wrote:
+> On 10/22/2018 10:55 AM, Tamizh chelvam wrote:
+>>
+>> Add infrastructure for per TID aggregation/retry count configurations
+>> such as retry count and AMPDU aggregation control(disable/enable).
+>> In some scenario reducing the number of retry count for a specific data
+>> traffic can reduce the latency by proceeding with the next packet
+>> instead of retrying the same packet more time. This will be useful
+>> where the next packet can resume the operation without an issue.
+>> Here added NL80211_CMD_SET_TID_CONFIG to support this operation by
+>> accepting retry count and AMPDU aggregation control.
+>> This command can accept STA mac addreess to make the configuration
+>> station specific rather than applying to all the connected stations
+>> to the netdev.
+>>
+>
+> It's not immediately clear how to make use of these settings, here are
+> several comments:
+>
+> 1. What max retry count limit should actually be applied to? Retries
+> decisions are in a rate adaptation domain, it should know how many
+> retries should be done on each rate, single "max retry" value will not
+> suffice. For example, it can retry twice on MCS9, twice on MCS7, three
+> times on MCS5 or something like that.
+>
+> I'm not familiar with what ATH10k is doing, 4th patch defines
+> ATH10K_MAX_RETRY_COUNT=30, what does it actually mean? It's unlikely "do
+> 30 retries on the same rate". Does retry limit setting interacts with
+> rate adaptation somehow in ath10k?
+>
+> Maybe it makes sense to extend max retry value specification to make it
+> possible to define per-rate? I'm not sure how much flexibility we want
+> here, something like retry value per MCS:BW:SGI?
+
+For ath10k, my understanding is that each time it (re)sends a packet, it will
+query FW rate-ctrl and choose the optimal rate.  It doesn't pay much attention to
+whether a specific frame is retried or not, other than to maybe enable RTS/CTS,
+but lots of retries will bump the rate-ctrl down to a lower rate.
+
+There are no per-rate retry counter logic, but I think there is per-tid
+control, though currently it might not be wired up to the driver.
+
+>
+> 2. AMPDU/AMSDU - the way it is, it is also relevant to rate in Tx
+> direction only, correct? We keep advertised capabilities intact and peer
+> has all rights to send AMPDUs/AMSDUs of whatever size that was advertised.
+> Additionally, posted patches do not do anything with established
+> blockack agreement.
+>
+> 3 With above being said, perhaps it would make sense for this new
+> interface to indicate explicitly that it's related to Tx rate? That can
+> be controlled per-TID, per-node or globally, depending on device
+> capabilities.
+> Some other settings that may be useful are fixed MCS, MCS limit, SGI
+> on/off, bandwidth, maybe even provide rate retry rules.
+
+I think there should be a way to configure the advertised capabilities, and also a way to
+configure the settings actually used for transmit.  This is what we use
+for test-related use cases, but maybe there is not a great deal of general
+use for this type of thing.  For general use, the 'transmit' settings are probably
+more useful.  I do know that several ath10k users are forcing it back to /n
+mode which works around some bugs in their mesh setup.
+
+You can already set a fixed transmit rate or set the MCS rates allowed to be used
+(my supplicant, ath10k-ct driver/firmware is needed to take full advantage of this
+  for ath10k).  In upstream kernels, this will not much affect the advertised capabilities.
+
+I also have patches that allow setting the advertised rates and capabilities, so you can force
+a station to advertise only a/n rates even though it and peer have /AC capability.
+Those patches are not upstream, though if opinions are changed, I'd be happy
+to repost and try to get them upstream.
+
+Thanks,
+Ben
+
+> I don't see how it can be used in real product, unless there is an
+> external rate adaptation logic of some kind. But definitely it will be
+> useful for testing, and can be used for WFA certification.
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
