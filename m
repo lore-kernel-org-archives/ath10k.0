@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKoP1-00044x-L0
- for ath10k@lists.infradead.org; Thu, 08 Nov 2018 17:47:36 +0000
+ id 1gKqMW-000562-Oj
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 19:53:09 +0000
 MIME-Version: 1.0
-Date: Thu, 08 Nov 2018 23:17:22 +0530
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
-In-Reply-To: <20181107140552.zfuusbapgqjumoln@bars>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
- <20181107140552.zfuusbapgqjumoln@bars>
-Message-ID: <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
+Date: Thu, 08 Nov 2018 11:52:53 -0800
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH REGRESSION] Revert "ath10k: add quiet mode support for
+ QCA6174/QCA9377"
+In-Reply-To: <CA+ASDXOqJ1-G2amyu7sJCnzKf1oY_2j9Qw4WS0VTf8EqGr6Uqw@mail.gmail.com>
+References: <20181107185643.240346-1-briannorris@chromium.org>
+ <7f2ef494f4a2aba1845a157da8fec449@codeaurora.org>
+ <b1a64bd66fa25f274af8c018c6fc02f4@codeaurora.org>
+ <CA+ASDXOqJ1-G2amyu7sJCnzKf1oY_2j9Qw4WS0VTf8EqGr6Uqw@mail.gmail.com>
+Message-ID: <f1abeef79b579f91850cab298a32fe00@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,127 +26,68 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: yyuwang@codeaurora.org, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, govinds@codeaurora.org, pillair@codeaurora.org, stable <stable@vger.kernel.org>
 
+On 2018-11-08 09:30, Brian Norris wrote:
+> On Wed, Nov 7, 2018 at 8:32 PM Govind Singh <govinds@codeaurora.org> 
+> wrote:
+>> On 2018-11-08 03:00, Rajkumar Manoharan wrote:
+>> >
+>> > The change "ath10k: add quiet mode support for QCA6174/QCA9377" was
+>> > merged even
+>> > before full WCN3990 device support was added in ath10k. How come it
+>> > could be regression
+>> > for WCN3990. I know both are sharing same WMI-TLV interface but
+>> > reverting this
+>> > will break QCA6174/QCA9377. no?
+> 
+> I don't see how the revert would "break" QCA6174 -- QCA6174 worked
+> just fine without this feature and should continue to do so.
+> 
 
-> Hello Tamizh,
-> 
->> Co-Developed-by: Tamizh Chelvam <tamizhr@codeaurora.org>
->> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
->> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
->> ---
->>  include/net/cfg80211.h       |   14 +++++++
->>  include/uapi/linux/nl80211.h |   69 +++++++++++++++++++++++++++++++++
->>  net/wireless/nl80211.c       |   86 
->> ++++++++++++++++++++++++++++++++++++++++++
->>  net/wireless/rdev-ops.h      |   15 ++++++++
->>  net/wireless/trace.h         |   27 +++++++++++++
->>  5 files changed, 211 insertions(+)
-> 
-> ...
-> 
->> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
->> index d744388..d386ad7 100644
->> --- a/net/wireless/nl80211.c
->> +++ b/net/wireless/nl80211.c
-> 
-> ...
-> 
->> +static int nl80211_set_tid_config(struct sk_buff *skb,
->> +                                 struct genl_info *info)
->> +{
->> +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
->> +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
->> +       struct nlattr *tid;
->> +       struct net_device *dev = info->user_ptr[1];
->> +       const char *peer = NULL;
->> +       u8 tid_no;
->> +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
->> +
->> +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
->> +       if (!tid)
->> +               return -EINVAL;
->> +
->> +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
->> +                              nl80211_attr_tid_policy, info->extack);
->> +       if (ret)
->> +               return ret;
->> +
->> +       if (!attrs[NL80211_ATTR_TID])
->> +               return -EINVAL;
->> +
->> +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
->> +               retry_short = 
->> nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
->> +               if (!retry_short ||
->> +                   retry_short > rdev->wiphy.max_data_retry_count)
->> +                       return -EINVAL;
->> +       }
->> +
->> +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
->> +               retry_long = 
->> nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
->> +               if (!retry_long ||
->> +                   retry_long > rdev->wiphy.max_data_retry_count)
->> +                       return -EINVAL;
->> +       }
->> +
->> +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
->> +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
->> +               return -EINVAL;
->> +
->> +       if (info->attrs[NL80211_ATTR_MAC])
->> +               peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
->> +
->> +       if (nla_get_flag(attrs[NL80211_ATTR_TID_RETRY_CONFIG])) {
-> 
-> Do we really need this additional flag to indicate retry data ?
-> Maybe we can simply check retry attrs or even retry data, e.g.:
+I meant that the revert commit remove quiet mode support from QCA6174 & 
+QCA9377.
 
-Yes, because this implementation gives provision to set default retry 
-count for TID traffic type for a station.
-Since we use single NL command for all TID configurations, this flag 
-will be useful to notify the driver about
-retry TID configuration change.
+>> This regression is found while we switched from 4.18 + WCN3990
+>> back-ports to 4.19.
 > 
-> if (attrs[NL80211_ATTR_TID_RETRY_LONG] ||
->     attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
->     ...
+> ^^ What Govind said. WCN3990 support has been trickling in over a few
+> releases, and it doesn't seem kosher to allow people to submit
+> regressions in the midst of that.
 > 
-> if ((retry_short > 0) || (retry_long > 0)) {
->     ...
-> 
->> +               if (!wiphy_ext_feature_isset(
->> +                               &rdev->wiphy,
->> +                               
->> NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG))
->> +                       return -EOPNOTSUPP;
->> +
->> +               if (peer && !wiphy_ext_feature_isset(
->> +                               &rdev->wiphy,
->> +                               
->> NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG))
->> +                       return -EOPNOTSUPP;
->> +
->> +               if (!rdev->ops->set_data_retry_count ||
->> +                   !rdev->wiphy.max_data_retry_count)
->> +                       return -EOPNOTSUPP;
->> +
->> +               ret = rdev_set_data_retry_count(rdev, dev, peer, 
->> tid_no,
->> +                                               retry_short, 
->> retry_long);
->> +       }
->> +
->> +       return ret;
->> +}
-> 
-> Regards,
-> Sergey
+Nobody prefers regression :). WCN3990 support was still in progress, at
+the time the commit got merged into upstream. My point is that we can't 
+expect
+the community to validate the changes against in-progress platform.
 
-Thanks,
-Tamizh.
+>> 
+>> IMO, we should use (WMI_SERVICE_THERMAL_MGMT | WMI_SERVICE_THERM_THROT 
+>> )
+>> service bitmap check and call
+>> ath10k_thermal_set_throttling only if fw supports THERMAL THROTTLE
+>> feature. But we need to ensure all
+>> available ath10k fw's are reporting this service.
+> 
+> And the above notes from Govind highlight this -- if the feature was
+> not protected by the appropriate service flags, then we can't be sure
+> that you didn't break a bunch of other firmware releases out there.
+> Linux should not break for everyone just because you spun a firmware
+> release.
+> 
+That is true. Any new features or interface changes in firmware will be
+advertised by feature bit. But the quiet param was available in firmware
+since first release.
+
+> Of course, I'll leave it up to Kalle as to how he wants to mediate
+> this. And if you come up with a solid patch soon that can fix this
+> without dropping the feature, then so be it.
+> 
+Govind is working on to handle this properly either by instantiating
+new WMI-TLV table for WCNxxxx or by adding conditional check in exiting 
+path.
+
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
