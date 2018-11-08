@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKjQh-0007pD-JL
- for ath10k@lists.infradead.org; Thu, 08 Nov 2018 12:29:01 +0000
+ id 1gKjeI-0008Sa-9O
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 12:43:04 +0000
 MIME-Version: 1.0
-Date: Thu, 08 Nov 2018 17:58:45 +0530
+Date: Thu, 08 Nov 2018 18:12:49 +0530
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCH 2/4] nl80211: Add netlink attribute for AMPDU aggregation
- enable/disable
-In-Reply-To: <20181106102051.7erib7owjms64knl@bars>
+Subject: Re: [PATCH 3/4] mac80211: Add api to support configuring TID specific
+ configuration
+In-Reply-To: <20181106103325.5phrwo2pv2rc26pd@bars>
 References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-3-git-send-email-tamizhr@codeaurora.org>
- <20181106102051.7erib7owjms64knl@bars>
-Message-ID: <8a8444300c7fc772b0fb219e08c88498@codeaurora.org>
+ <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
+ <20181106103325.5phrwo2pv2rc26pd@bars>
+Message-ID: <a6161336017a59081c24f86a17fee014@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,63 +26,65 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Cc: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Sergey,
-
-> Hello Tamizh,
-> 
+On 2018-11-06 16:03, Sergey Matyukevich wrote:
 >> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 >> ---
->>  include/net/cfg80211.h       |    6 ++++++
->>  include/uapi/linux/nl80211.h |   21 +++++++++++++++++++++
->>  net/wireless/nl80211.c       |   17 +++++++++++++++++
->>  net/wireless/rdev-ops.h      |   15 +++++++++++++++
->>  net/wireless/trace.h         |   23 +++++++++++++++++++++++
->>  5 files changed, 82 insertions(+)
-> ...
+>>  include/net/mac80211.h    |   40 +++++++++++++++++++++++++
+>>  net/mac80211/cfg.c        |   71 
+>> +++++++++++++++++++++++++++++++++++++++++++++
+>>  net/mac80211/driver-ops.h |   16 ++++++++++
+>>  net/mac80211/trace.h      |   34 ++++++++++++++++++++++
+>>  4 files changed, 161 insertions(+)
+>> 
+>> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+>> index b6cc3e33..7fa7e25 100644
+>> --- a/include/net/mac80211.h
+>> +++ b/include/net/mac80211.h
+>> @@ -1478,6 +1478,35 @@ struct ieee80211_channel_switch {
+>>         u8 count;
+>>  };
+>> 
+>> +/*
+>> + * enum ieee80211_tid_conf_change - TID change configuration 
+>> notification flags
+>> + *
+>> + * These flags are used with the set_tid_conf() callback
+>> + * to indicate which TID configuration parameter changed.
+>> + *
+>> + * @TID_RETRY_CONF_CHANGED: retry configuration changed.
+>> + * @TID_AGGR_CONF_CHANGED: Aggregation config changed for the TID.
+>> + */
+>> +enum ieee80211_tid_conf_change {
+>> +       TID_RETRY_CONF_CHANGED          = BIT(0),
+>> +       TID_AGGR_CONF_CHANGED           = BIT(1),
+>> +};
 > 
->> diff --git a/include/uapi/linux/nl80211.h 
->> b/include/uapi/linux/nl80211.h
->> index 9dfcf0a6..7ba0fb7 100644
->> --- a/include/uapi/linux/nl80211.h
->> +++ b/include/uapi/linux/nl80211.h
->> @@ -4449,6 +4449,20 @@ enum nl80211_ps_state {
->>   *     the max value should be advertised by the driver through
->>   *     max_data_retry_count. when this attribute is not present, the 
+> Following your approach, AMSDU support can be added in addition to
+> AMPDU. So I would suggest to replace AGGR by AMPDU right away.
+> 
+>> +
+>> +/*
+>> + * struct ieee80211_tid_conf - holds the tid configiuration data
+>> + * The information provided in the structure is required for the 
 >> driver
->>   *     would use the default configuration.
->> + * @NL80211_ATTR_TID_AMPDU_AGGR_CTRL: Enable/Disable aggregation for 
->> the TID
->> + *     specified in %%NL80211_ATTR_TID. Its type is u8, if the peer 
->> MAC address
->> + *     is passed in %NL80211_ATTR_MAC, the aggregation configuration 
->> is applied
->> + *     to the data frame for the tid to that connected station.
->> + *     Station specific aggregation configuration is valid only for 
->> STA's
->> + *     current connection. i.e. the configuration will be reset to 
->> default when
->> + *     the station connects back after disconnection/roaming.
->> + *     when user-space does not include %NL80211_ATTR_MAC, this 
->> configuration
->> + *     should be treated as per-netdev configuration. This 
->> configuration will
->> + *     be cleared when the interface goes down and on the 
->> disconnection from a
->> + *     BSS. Driver supporting this feature should advertise
->> + *     NL80211_EXT_FEATURE_PER_STA_AMPDU_AGGR_CTRL and supporting per 
->> station
+>> + * to configure TID specific configuration.
+>> + * @tid: TID number
+>> + * @retry_short: retry count value
+>> + * @retry_long: retry count value
+>> + * @aggr: enable/disable aggregation
+>> + */
+>> +struct ieee80211_tid_conf {
+>> +       u8 tid;
+>> +       int retry_short;
+>> +       int retry_long;
+>> +       bool aggr;
+>> +};
 > 
-> typo: should be NL80211_EXT_FEATURE_PER_TID_AMPDU_AGGR_CTRL
-Sure, I'll update in the next version.
+> ditto: aggr -> ampdu
 > 
->> + *     aggregation configuration should advertise
->> + *     NL80211_EXT_FEATURE_PER_STA_AMPDU_AGGR_CTRL.
->>   */
-> 
-> Regards,
-> Sergey
+Sure. I'll update in the next version.
 
 Thanks,
 Tamizh.
