@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKnE4-0003Su-Ae
- for ath10k@lists.infradead.org; Thu, 08 Nov 2018 16:32:13 +0000
-Subject: Re: [PATCH 0/4] cfg80211/mac80211: Add support for TID specific
- configuration
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <2008ad85-3f13-cc6b-3fc2-d614f8422d68@quantenna.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <fec37af9-5a34-ea82-e81e-54e983278b4f@candelatech.com>
-Date: Thu, 8 Nov 2018 08:31:42 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKo80-0003zk-I6
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 17:30:02 +0000
 MIME-Version: 1.0
-In-Reply-To: <2008ad85-3f13-cc6b-3fc2-d614f8422d68@quantenna.com>
+Date: Thu, 08 Nov 2018 22:59:48 +0530
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
+In-Reply-To: <20181106101601.526ovvmabfqrr7sl@bars>
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+ <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
+ <20181106101601.526ovvmabfqrr7sl@bars>
+Message-ID: <7a8662ce7744bee6d9e695c67d7e9643@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,94 +24,131 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+Cc: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, johannes@sipsolutions.net, linux-wireless@vger.kernel.org, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, ath10k@lists.infradead.org
 
+On 2018-11-06 15:46, Sergey Matyukevich wrote:
+> Hello Tamizh,
+> 
+>> Co-Developed-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
+>> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+>> ---
+>>  include/net/cfg80211.h       |   14 +++++++
+>>  include/uapi/linux/nl80211.h |   69 +++++++++++++++++++++++++++++++++
+>>  net/wireless/nl80211.c       |   86 
+>> ++++++++++++++++++++++++++++++++++++++++++
+>>  net/wireless/rdev-ops.h      |   15 ++++++++
+>>  net/wireless/trace.h         |   27 +++++++++++++
+>>  5 files changed, 211 insertions(+)
+> 
+> ...
+> 
+>> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+>> index 5801d76..dd024da 100644
+>> --- a/include/net/cfg80211.h
+>> +++ b/include/net/cfg80211.h
+> 
+> ...
+> 
+>>  /**
+>> @@ -4035,6 +4044,9 @@ struct wiphy_iftype_ext_capab {
+>>   * @txq_limit: configuration of internal TX queue frame limit
+>>   * @txq_memory_limit: configuration internal TX queue memory limit
+>>   * @txq_quantum: configuration of internal TX queue scheduler quantum
+>> + *
+>> + * @max_data_retry_count: Maximum limit can be configured as retry 
+>> count
+>> + *     for a TID.
+>>   */
+>>  struct wiphy {
+>>         /* assign these fields before you register the wiphy */
+>> @@ -4171,6 +4183,8 @@ struct wiphy {
+>>         u32 txq_memory_limit;
+>>         u32 txq_quantum;
+>> 
+>> +       u8 max_data_retry_count;
+>> +
+>>         char priv[0] __aligned(NETDEV_ALIGN);
+>>  };
+> 
+> Could you please clarify why do you define max_data_retry_count instead 
+> of
+> making use of existing wiphy params: retry_short (dot11ShortRetryLimit)
+> and retry_long (dot11LongRetryLimit) ?
 
+max_data_retry_count added to validate the max limit for the retry count 
+supported by the driver.
+existing wiphy parames: retry_short and retry_long can be modified 
+through user command.
+So, I've added this param for validation purpose. Correct me If I'm 
+wrong.
+> 
+>> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+>> index d744388..d386ad7 100644
+>> --- a/net/wireless/nl80211.c
+>> +++ b/net/wireless/nl80211.c
+> 
+> ...
+> 
+>> +static int nl80211_set_tid_config(struct sk_buff *skb,
+>> +                                 struct genl_info *info)
+>> +{
+>> +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
+>> +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
+>> +       struct nlattr *tid;
+>> +       struct net_device *dev = info->user_ptr[1];
+>> +       const char *peer = NULL;
+>> +       u8 tid_no;
+>> +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
+>> +
+>> +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
+>> +       if (!tid)
+>> +               return -EINVAL;
+>> +
+>> +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
+>> +                              nl80211_attr_tid_policy, info->extack);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       if (!attrs[NL80211_ATTR_TID])
+>> +               return -EINVAL;
+>> +
+>> +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
+>> +               retry_short = 
+>> nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
+>> +               if (!retry_short ||
+>> +                   retry_short > rdev->wiphy.max_data_retry_count)
+>> +                       return -EINVAL;
+>> +       }
+>> +
+>> +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
+>> +               retry_long = 
+>> nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
+>> +               if (!retry_long ||
+>> +                   retry_long > rdev->wiphy.max_data_retry_count)
+>> +                       return -EINVAL;
+>> +       }
+>> +
+>> +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
+>> +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
+>> +               return -EINVAL;
+> 
+> Not that important, but this tid_no check can be placed after
+> attrs[NL80211_ATTR_TID].
+> 
+> BTW, some special tid_no value (e.g. (u8)-1) could be used to notify 
+> driver
+> that retry settings should be applied for all the TIDs. IIUC the only
+> required change would be to modify this tid_no sanity check.
 
-On 11/07/2018 04:55 PM, Igor Mitsyanko wrote:
-> On 10/22/2018 10:55 AM, Tamizh chelvam wrote:
->>
->> Add infrastructure for per TID aggregation/retry count configurations
->> such as retry count and AMPDU aggregation control(disable/enable).
->> In some scenario reducing the number of retry count for a specific data
->> traffic can reduce the latency by proceeding with the next packet
->> instead of retrying the same packet more time. This will be useful
->> where the next packet can resume the operation without an issue.
->> Here added NL80211_CMD_SET_TID_CONFIG to support this operation by
->> accepting retry count and AMPDU aggregation control.
->> This command can accept STA mac addreess to make the configuration
->> station specific rather than applying to all the connected stations
->> to the netdev.
->>
->
-> It's not immediately clear how to make use of these settings, here are
-> several comments:
->
-> 1. What max retry count limit should actually be applied to? Retries
-> decisions are in a rate adaptation domain, it should know how many
-> retries should be done on each rate, single "max retry" value will not
-> suffice. For example, it can retry twice on MCS9, twice on MCS7, three
-> times on MCS5 or something like that.
->
-> I'm not familiar with what ATH10k is doing, 4th patch defines
-> ATH10K_MAX_RETRY_COUNT=30, what does it actually mean? It's unlikely "do
-> 30 retries on the same rate". Does retry limit setting interacts with
-> rate adaptation somehow in ath10k?
->
-> Maybe it makes sense to extend max retry value specification to make it
-> possible to define per-rate? I'm not sure how much flexibility we want
-> here, something like retry value per MCS:BW:SGI?
-
-For ath10k, my understanding is that each time it (re)sends a packet, it will
-query FW rate-ctrl and choose the optimal rate.  It doesn't pay much attention to
-whether a specific frame is retried or not, other than to maybe enable RTS/CTS,
-but lots of retries will bump the rate-ctrl down to a lower rate.
-
-There are no per-rate retry counter logic, but I think there is per-tid
-control, though currently it might not be wired up to the driver.
-
->
-> 2. AMPDU/AMSDU - the way it is, it is also relevant to rate in Tx
-> direction only, correct? We keep advertised capabilities intact and peer
-> has all rights to send AMPDUs/AMSDUs of whatever size that was advertised.
-> Additionally, posted patches do not do anything with established
-> blockack agreement.
->
-> 3 With above being said, perhaps it would make sense for this new
-> interface to indicate explicitly that it's related to Tx rate? That can
-> be controlled per-TID, per-node or globally, depending on device
-> capabilities.
-> Some other settings that may be useful are fixed MCS, MCS limit, SGI
-> on/off, bandwidth, maybe even provide rate retry rules.
-
-I think there should be a way to configure the advertised capabilities, and also a way to
-configure the settings actually used for transmit.  This is what we use
-for test-related use cases, but maybe there is not a great deal of general
-use for this type of thing.  For general use, the 'transmit' settings are probably
-more useful.  I do know that several ath10k users are forcing it back to /n
-mode which works around some bugs in their mesh setup.
-
-You can already set a fixed transmit rate or set the MCS rates allowed to be used
-(my supplicant, ath10k-ct driver/firmware is needed to take full advantage of this
-  for ath10k).  In upstream kernels, this will not much affect the advertised capabilities.
-
-I also have patches that allow setting the advertised rates and capabilities, so you can force
-a station to advertise only a/n rates even though it and peer have /AC capability.
-Those patches are not upstream, though if opinions are changed, I'd be happy
-to repost and try to get them upstream.
+Sure, we can use that.
+> 
+> Regards,
+> Sergey
 
 Thanks,
-Ben
-
-> I don't see how it can be used in real product, unless there is an
-> external rate adaptation logic of some kind. But definitely it will be
-> useful for testing, and can be used for WFA certification.
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Tamizh.
 
 _______________________________________________
 ath10k mailing list
