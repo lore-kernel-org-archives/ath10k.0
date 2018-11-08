@@ -1,21 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-co1nam04on060a.outbound.protection.outlook.com
- ([2a01:111:f400:fe4d::60a]
- helo=NAM04-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKXfk-0003WF-SW
- for ath10k@lists.infradead.org; Wed, 07 Nov 2018 23:55:46 +0000
-From: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>
-Subject: Re: [PATCH 3/4] mac80211: Add api to support configuring TID specific
- configuration
-Date: Wed, 7 Nov 2018 23:55:29 +0000
-Message-ID: <58a9731d-e7a7-282f-22f3-b697a93f7278@quantenna.com>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
-Content-Language: en-US
-Content-ID: <8809182432A5464CA38A4C0D3C79823E@namprd05.prod.outlook.com>
+ id 1gKYIu-00016H-NU
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 00:36:14 +0000
+Received: by mail-io1-xd42.google.com with SMTP id d80-v6so13393838iof.1
+ for <ath10k@lists.infradead.org>; Wed, 07 Nov 2018 16:36:01 -0800 (PST)
+Received: from mail-it1-f180.google.com (mail-it1-f180.google.com.
+ [209.85.166.180])
+ by smtp.gmail.com with ESMTPSA id m9-v6sm735203ioc.29.2018.11.07.16.35.58
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 07 Nov 2018 16:35:58 -0800 (PST)
+Received: by mail-it1-f180.google.com with SMTP id m15so25648845itl.4
+ for <ath10k@lists.infradead.org>; Wed, 07 Nov 2018 16:35:58 -0800 (PST)
 MIME-Version: 1.0
+References: <1538989363-12386-1-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1538989363-12386-1-git-send-email-wgong@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Wed, 7 Nov 2018 16:35:46 -0800
+Message-ID: <CA+ASDXNxA2jrn2M=MjcnVV72UCfcFUvSvdcvBCd2kY+d12=wKg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Add peer flush in ath10k_flush for STATION
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +32,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhr@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: wgong@codeaurora.org, Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 10/22/2018 10:55 AM, Tamizh chelvam wrote:
->   /**
->    * enum ieee80211_vif_flags - virtual interface flags
->    *
-> @@ -1565,6 +1594,8 @@ struct ieee80211_vif {
-> 
->          bool txqs_stopped[IEEE80211_NUM_ACS];
-> 
-> +       struct ieee80211_tid_conf tid_conf;
+On Mon, Oct 8, 2018 at 2:03 AM Wen Gong <wgong@codeaurora.org> wrote:
+>
+> In the noisy environment, if there are packets in the queue and can't
+> send out, the suspend timing will be more than 5 seconds due to the wait,
+> flush the queue to optimize the suspend timing, and let the upper layer to
+> retry the packets after resume.
+>
+> Tested with QCA6174 PCI with firmware
+> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
+> It's not a regression with new firmware releases.
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+>  drivers/net/wireless/ath/ath10k/mac.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 97548f9..8df3cec 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -6814,9 +6814,20 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+>                          u32 queues, bool drop)
+>  {
+>         struct ath10k *ar = hw->priv;
+> -
+> -       if (drop)
+> +       struct ath10k_vif *arvif;
+> +       u32 bitmap;
 > +
+> +       if (drop) {
+> +               if (vif->type == NL80211_IFTYPE_STATION) {
 
-Why is there only one TID config? If ieee80211_vif::tid_conf member is 
-used only to pass data to driver through drv_set_tid_conf(), and driver 
-will save it for a specific TID, why do we need to save it in struct 
-ieee80211_vif too?
+'vif' may be NULL. It is trivially easy for me to crash a system on
+v4.20-rc1 by suspending the system while not connected.
+
+I'll send a patch to fix this.
+
+Brian
+
+> +                       bitmap = ~(1 << WMI_MGMT_TID);
+> +                       list_for_each_entry(arvif, &ar->arvifs, list) {
+> +                               if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
+> +                                       ath10k_wmi_peer_flush(ar, arvif->vdev_id,
+> +                                                             arvif->bssid, bitmap);
+> +                       }
+> +               }
+>                 return;
+> +       }
+>
+>         mutex_lock(&ar->conf_mutex);
+>         ath10k_mac_wait_tx_complete(ar);
+> --
+> 1.9.1
+>
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
