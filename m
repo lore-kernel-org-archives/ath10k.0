@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+Received: from mail-by2nam01on0614.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::614]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKYNo-0004jm-Sd
- for ath10k@lists.infradead.org; Thu, 08 Nov 2018 00:41:18 +0000
-Received: by mail-pl1-x642.google.com with SMTP id w22-v6so5335920plk.0
- for <ath10k@lists.infradead.org>; Wed, 07 Nov 2018 16:41:06 -0800 (PST)
-From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 4.20] ath10k: don't assume 'vif' is non-NULL in flush()
-Date: Wed,  7 Nov 2018 16:40:35 -0800
-Message-Id: <20181108004035.136050-1-briannorris@chromium.org>
+ id 1gKYc1-0001EX-CT
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 00:55:59 +0000
+From: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>
+Subject: Re: [PATCH 0/4] cfg80211/mac80211: Add support for TID specific
+ configuration
+Date: Thu, 8 Nov 2018 00:55:25 +0000
+Message-ID: <2008ad85-3f13-cc6b-3fc2-d614f8422d68@quantenna.com>
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+Content-Language: en-US
+Content-ID: <465B98ACDD0BCB40985AC886ABB4557C@namprd05.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,56 +27,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Grant Grundler <grundler@chromium.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-mac80211 may call us with vif == NULL, if the station is not currently
-active (e.g., not associated). It is trivially easy to reproduce a crash
-by suspending the system when not connected to an AP:
+On 10/22/2018 10:55 AM, Tamizh chelvam wrote:
+> 
+> Add infrastructure for per TID aggregation/retry count configurations
+> such as retry count and AMPDU aggregation control(disable/enable).
+> In some scenario reducing the number of retry count for a specific data
+> traffic can reduce the latency by proceeding with the next packet
+> instead of retrying the same packet more time. This will be useful
+> where the next packet can resume the operation without an issue.
+> Here added NL80211_CMD_SET_TID_CONFIG to support this operation by
+> accepting retry count and AMPDU aggregation control.
+> This command can accept STA mac addreess to make the configuration
+> station specific rather than applying to all the connected stations
+> to the netdev.
+> 
 
-[   65.533934] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-...
-[   65.574521] pc : ath10k_flush+0x30/0xd0 [ath10k_core]
-[   65.574538] lr : __ieee80211_flush_queues+0x180/0x244 [mac80211]
-[   65.599680] Process kworker/u12:1 (pid: 57, stack limit = 0x(____ptrval____))
-[   65.599682] Call trace:
-[   65.599695]  ath10k_flush+0x30/0xd0 [ath10k_core]
-[   65.642064]  __ieee80211_flush_queues+0x180/0x244 [mac80211]
-[   65.642079]  ieee80211_flush_queues+0x34/0x40 [mac80211]
-[   65.642095]  __ieee80211_suspend+0xfc/0x47c [mac80211]
-[   65.658611]  ieee80211_suspend+0x30/0x3c [mac80211]
-[   65.658627]  wiphy_suspend+0x15c/0x3a8 [cfg80211]
-[   65.672810]  dpm_run_callback+0xf0/0x1f0
-[   65.672814]  __device_suspend+0x3ac/0x4f8
-[   65.672819]  async_suspend+0x34/0xbc
-[   65.684096]  async_run_entry_fn+0x54/0x104
-[   65.684099]  worker_thread+0x4cc/0x72c
-[   65.684102]  kthread+0x134/0x13c
-[   65.684105]  ret_from_fork+0x10/0x18
+It's not immediately clear how to make use of these settings, here are 
+several comments:
 
-Fixes: 9de4162f0999 ("ath10k: add peer flush in ath10k_flush for STATION")
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1. What max retry count limit should actually be applied to? Retries 
+decisions are in a rate adaptation domain, it should know how many 
+retries should be done on each rate, single "max retry" value will not 
+suffice. For example, it can retry twice on MCS9, twice on MCS7, three 
+times on MCS5 or something like that.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a1c2801ded10..7e49342bae38 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6867,7 +6867,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	u32 bitmap;
- 
- 	if (drop) {
--		if (vif->type == NL80211_IFTYPE_STATION) {
-+		if (vif && vif->type == NL80211_IFTYPE_STATION) {
- 			bitmap = ~(1 << WMI_MGMT_TID);
- 			list_for_each_entry(arvif, &ar->arvifs, list) {
- 				if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
--- 
-2.19.1.930.g4563a0d9d0-goog
+I'm not familiar with what ATH10k is doing, 4th patch defines 
+ATH10K_MAX_RETRY_COUNT=30, what does it actually mean? It's unlikely "do 
+30 retries on the same rate". Does retry limit setting interacts with 
+rate adaptation somehow in ath10k?
 
+Maybe it makes sense to extend max retry value specification to make it 
+possible to define per-rate? I'm not sure how much flexibility we want 
+here, something like retry value per MCS:BW:SGI?
 
+2. AMPDU/AMSDU - the way it is, it is also relevant to rate in Tx 
+direction only, correct? We keep advertised capabilities intact and peer 
+has all rights to send AMPDUs/AMSDUs of whatever size that was advertised.
+Additionally, posted patches do not do anything with established 
+blockack agreement.
+
+3 With above being said, perhaps it would make sense for this new 
+interface to indicate explicitly that it's related to Tx rate? That can 
+be controlled per-TID, per-node or globally, depending on device 
+capabilities.
+Some other settings that may be useful are fixed MCS, MCS limit, SGI 
+on/off, bandwidth, maybe even provide rate retry rules.
+
+I don't see how it can be used in real product, unless there is an 
+external rate adaptation logic of some kind. But definitely it will be 
+useful for testing, and can be used for WFA certification.
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
