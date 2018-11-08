@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKjeI-0008Sa-9O
- for ath10k@lists.infradead.org; Thu, 08 Nov 2018 12:43:04 +0000
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKkdZ-0007Hk-Bq
+ for ath10k@lists.infradead.org; Thu, 08 Nov 2018 13:46:23 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <e018fec62487536859ea8202b187c63e@codeaurora.org>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-4-git-send-email-rmanohar@codeaurora.org>
+ <8736ssbxp9.fsf@toke.dk> <9c2b790132a9a89fecd7dd79dc67d891@codeaurora.org>
+ <87woq2843q.fsf@toke.dk> <8fd3524bfe022ccd2a8b61a3314ed32b@codeaurora.org>
+ <5d8415fe50e8505eb62c5a0d1b40bb2a@codeaurora.org> <87h8gzpy9t.fsf@toke.dk>
+ <10b644b6c7f436a892e3e9f4fd5e179d@codeaurora.org> <87va59uegc.fsf@toke.dk>
+ <e018fec62487536859ea8202b187c63e@codeaurora.org>
+Date: Thu, 08 Nov 2018 14:46:06 +0100
+Message-ID: <874lcrvg0x.fsf@toke.dk>
 MIME-Version: 1.0
-Date: Thu, 08 Nov 2018 18:12:49 +0530
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCH 3/4] mac80211: Add api to support configuring TID specific
- configuration
-In-Reply-To: <20181106103325.5phrwo2pv2rc26pd@bars>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-4-git-send-email-tamizhr@codeaurora.org>
- <20181106103325.5phrwo2pv2rc26pd@bars>
-Message-ID: <a6161336017a59081c24f86a17fee014@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,75 +25,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-11-06 16:03, Sergey Matyukevich wrote:
->> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
->> ---
->>  include/net/mac80211.h    |   40 +++++++++++++++++++++++++
->>  net/mac80211/cfg.c        |   71 
->> +++++++++++++++++++++++++++++++++++++++++++++
->>  net/mac80211/driver-ops.h |   16 ++++++++++
->>  net/mac80211/trace.h      |   34 ++++++++++++++++++++++
->>  4 files changed, 161 insertions(+)
->> 
->> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
->> index b6cc3e33..7fa7e25 100644
->> --- a/include/net/mac80211.h
->> +++ b/include/net/mac80211.h
->> @@ -1478,6 +1478,35 @@ struct ieee80211_channel_switch {
->>         u8 count;
->>  };
->> 
->> +/*
->> + * enum ieee80211_tid_conf_change - TID change configuration 
->> notification flags
->> + *
->> + * These flags are used with the set_tid_conf() callback
->> + * to indicate which TID configuration parameter changed.
->> + *
->> + * @TID_RETRY_CONF_CHANGED: retry configuration changed.
->> + * @TID_AGGR_CONF_CHANGED: Aggregation config changed for the TID.
->> + */
->> +enum ieee80211_tid_conf_change {
->> +       TID_RETRY_CONF_CHANGED          = BIT(0),
->> +       TID_AGGR_CONF_CHANGED           = BIT(1),
->> +};
-> 
-> Following your approach, AMSDU support can be added in addition to
-> AMPDU. So I would suggest to replace AGGR by AMPDU right away.
-> 
->> +
->> +/*
->> + * struct ieee80211_tid_conf - holds the tid configiuration data
->> + * The information provided in the structure is required for the 
->> driver
->> + * to configure TID specific configuration.
->> + * @tid: TID number
->> + * @retry_short: retry count value
->> + * @retry_long: retry count value
->> + * @aggr: enable/disable aggregation
->> + */
->> +struct ieee80211_tid_conf {
->> +       u8 tid;
->> +       int retry_short;
->> +       int retry_long;
->> +       bool aggr;
->> +};
-> 
-> ditto: aggr -> ampdu
-> 
-Sure. I'll update in the next version.
-
-Thanks,
-Tamizh.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBP
+biAyMDE4LTExLTA3IDA2OjUzLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4+IFJh
+amt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4gCj4+
+PiBNZWFud2hpbGUgd2UgZGlkIHNvbWUgbW9yZSBleHBlcmltZW50cyB3aXRoIGJvdGggbW9kZXMu
+IFRoZSBleHBlcmltZW50Cj4+PiB3YXMgZG9uZSBpbiBvcGVuIGVudmlyb25tZW50IGFuZCBmaXhl
+ZCByYXRlIGFuZCBVRFAgdHJhZmZpYyByYW4gZm9yIDYwCj4+PiBzZWNvbmRzLgo+Pj4gCj4+PiBT
+ZWVtcyBsaWtlIHB1c2ggbW9kZSBub3QgaG9ub3JpbmcgdGhlIGNvbmZpZ3VyZWQgd2VpZ2h0LiBB
+bHdheXMgdGhlCj4+PiBhaXJ0aW1lIHdhcyBhbG1vc3Qgc2FtZSB3aGVyZWFzIGluIHB1bGwtbW9k
+ZSBhaXJ0aW1lIGlzIGNoYW5naW5nIGJhc2VkCj4+PiBvbiBjb25maWd1cmVkIHdlaWdodC4gSGVu
+Y2UgSSB3b3VsZCBsaWtlIHRvIGtub3cgeW91ciByZXN1bHRzLgo+PiAKPj4gUmlnaHQsIHNvIEkg
+dmVyaWZpZWQgdGhhdCB0aGUgY3VycmVudCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZXQgc3RpbGwK
+Pj4gd29ya3Mgd2l0aCBhdGg5ay4gSG93ZXZlciwgdGhlIGF0aDEwayBjYXJkIEkgaGF2ZSBkb2Vz
+bid0IHNlZW0gdG8KPj4gc3VwcG9ydCBwZWVyIHN0YXRzLCBzbyBJIGNhbid0IHRlc3QgYXRoMTBr
+Lgo+PiAKPj4gJCBsc3BjaSB8IGdyZXAgUXVhbGNvbW0KPj4gMDM6MDAuMCBOZXR3b3JrIGNvbnRy
+b2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBOTg2eC85ODh4IDgwMi4xMWFjCj4+IFdpcmVsZXNz
+IE5ldHdvcmsgQWRhcHRlcgo+PiAKPj4gJCBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjEx
+L3BoeTEvYXRoMTBrL2NoaXBfaWQKPj4gMHgwNDMyMDJmZgo+PiAKPj4gJCBjYXQgL3N5cy9rZXJu
+ZWwvZGVidWcvaWVlZTgwMjExL3BoeTEvYXRoMTBrL3dtaV9zZXJ2aWNlcyAgfCBncmVwIFBFRVIK
+Pj4gV01JX1NFUlZJQ0VfUEVFUl9DQUNISU5HICAgICAgICAgICAgICAgICAtCj4+IFdNSV9TRVJW
+SUNFX1BFRVJfU1RBVFMgICAgICAgICAgICAgICAgICAgLQo+PiAKPgo+IE9vcHMuLi4gWWVhaCA5
+ODh4IGZpcm13YXJlICgxMC4yLjQpIGRvZXMgbm90IGhhdmUgcGVlciBzdGF0cyBzdXBwb3J0Lgo+
+Cj4+IAo+PiBJcyB0aGVyZSBhIHdheSB0byBmb3JjZS1lbmFibGUgYWlydGltZSBzdXBwb3J0LCBp
+cyB0aGlzIGEgaGFyZHdhcmUgCj4+IGlzc3VlPwo+PiAKPiBVbmZvcnR1bmF0ZWx5IG5vdC4gVGhl
+cmUgaXMgb25lIG1vcmUgcGVuZGluZyBjaGFuZ2UgdGhhdCBoYW5kbGVzCj4gYWlydGltZSByZXBv
+cnQgZnJvbSBIVFQgdHgtY29tcGwuIEFnYWluIGl0IGRlcGVuZHMgZmlybXdhcmUgc3VwcG9ydC4K
+PiBUaGVzZSBleHBlcmltZW50cyBhcmUgdGFrZW4gd2l0aCB0aGlzIGYvdyBpbnRlcmZhY2UuIFdp
+bGwgcG9zdCB0aGUKPiBjaGFuZ2UuCgpSaWdodCwgdGhvdWdodCBzby4gVG9vIGJhZC4gR3Vlc3Mg
+eW91IGFyZSBkb2luZyBhbGwgdGhlIGF0aDEwayB0ZXN0aW5nLAp0aGVuIDspCgo+Pj4gCQlzdGEx
+CQlzdGEyCQlzdGEzCQlzdGE0Cj4+PiBwdWxsLW1vZGUJOHMoMjA1dXMpCTE4cygzLjJtcykJOHMo
+MjA1dXMpCTE0cyg0MTB1cykKPj4+IAkJMTJzKDI1NnVzKQkxMnMoMjU2dXMpCTEzcygyNTZ1cykJ
+MTJzKDI1NnVzKQo+Pj4gCQkxNHMoNG1zKQkxM3MoNG1zKQkxNHMoNG1zKQkxM3MoNG1zKQo+Pj4g
+Cj4+PiBwdXNoLW1vZGUJMTVzKDIwNXVzKQkxMnMoMy4ybXMpCTE2cygyMDV1cykJMTJzKDQxMHVz
+KQo+Pj4gCQkxNXMoMjU2dXMpCTEycygyNTZ1cykJMTZzKDI1NnVzKQkxMnMoMjU2dXMpCj4+PiAJ
+CTE0cyg0bXMpCTEzcyg0bXMpCTE2cyg0bXMpCTEycyg0bXMpCj4+IAo+PiBSaWdodCwgc28gdGhl
+IHB1bGwtbW9kZSByZXN1bHRzIGFyZSBlbmNvdXJhZ2luZyEgKlNvbWV0aGluZyogaXMKPj4gaGFw
+cGVuaW5nLCBhdCBsZWFzdCwgZXZlbiB0aG91Z2ggdGhlIGFnZ3JlZ2F0ZSBhaXJ0aW1lIGRvZXNu
+J3QgcXVpdGUKPj4gbWF0Y2ggdGhlIHJhdGlvcyBvZiB0aGUgY29uZmlndXJlZCB3ZWlnaHRzLgo+
+PiAKPj4gQXJlIHlvdSBydW5uaW5nIHRoZSBVRFAgZ2VuZXJhdG9yIG9uIHRoZSBBUCBpdHNlbGYs
+IG9yIG9uIGEgc2VwYXJhdGUKPj4gZGV2aWNlLCBCVFc/IElmIGl0J3Mgb24gdGhlIEFQLCB0aGUg
+dXNlcnNwYWNlIHNvY2tldCBjYW4gZ2V0IHRocm90dGxlZCwKPj4gd2hpY2ggd2lsbCBpbnRlcmZl
+cmUgd2l0aCByZXN1bHRzLCBzbyBpdCdzIGJldHRlciB0byBoYXZlIGl0IG9uIGEKPj4gc2VwYXJh
+dGUgZGV2aWNlIChjb25uZWN0ZWQgdmlhIGV0aGVybmV0KS4KPj4gCj4gVHJhZmZpYyBiL3cgd2ly
+ZWQgY2xpZW50ICh2aWEgZXRoZXJuZXQpIGFuZCB3aXJlbGVzcyBjbGllbnRzLgoKQ29vbC4KCj4+
+IEFzIGZvciBwdXNoLW1vZGUsIGNvdWxkIHRoaXMgYmUgYmVjYXVzZSBvZiBiYWQgYnVmZmVyIG1h
+bmFnZW1lbnQ/IEkuZS4sCj4+IGJlY2F1c2UgdGhlcmUncyBhIGxhZyBiZXR3ZWVuIHRoZSB0aW1l
+IGFpcnRpbWUgaXMgcmVnaXN0ZXJlZCwgYW5kIHRoZQo+PiB0aW1lIHRoYXQgYWlydGltZSB1c2Fn
+ZSBpcyByZXBvcnRlZCwgdGhlIGRyaXZlciBqdXN0IHB1c2hlcyBhIHdob2xlCj4+IGJ1bmNoIG9m
+IHBhY2tldHMgdG8gdGhlIGZpcm13YXJlIHdoZW4gaXQgZ2V0cyB0aGUgY2hhbmNlLCB3aGljaCAK
+Pj4gcHJldmVudHMKPj4gdGhlIHNjaGVkdWxlciBmcm9tIHRocm90dGxpbmcgcHJvcGVybHkuIFRo
+aXMgY291bGQgYWxzbyBleHBsYWluIHRoZQo+PiBiZXR0ZXIsIGJ1dCBub3QgcXVpdGUgcGVyZmVj
+dCwgcmVzdWx0cyBpbiBwdWxsIG1vZGUsIGFzc3VtaW5nIHRoYXQgcHVsbAo+PiBtb2RlIHJlc3Vs
+dHMgaW4gYmV0dGVyIGZpcm13YXJlIGJ1ZmZlciBtYW5hZ2VtZW50IHdoaWNoIHJlZHVjZXMsIGJ1
+dAo+PiBkb2Vzbid0IHF1aXRlIHJlbW92ZSwgdGhlIGxhZy4KPj4gCj4gSG1tLi4uIEkgYWdyZWUg
+dGhhdCBsYWcgaW4gcmVwb3J0aW5nIGFpcnRpbWUgbWF5IGNhdXNlIG1vcmUgZGF0YSBwdXNoCj4g
+dG8gaHcuIFJpZ2h0IG5vdyBib3RoIHR4IGFuZCB0eC1jb21wbCBhcmUgc2VyaWFsaXplZCBieQo+
+IGFjdGl2ZV90eHFfbG9jay4gU28gb25jZSBsb2NrIGFjcXVpcmVkIGJ5IHR4IHBhdGgsIGl0IHdp
+bGwgZG93bmxvYWQKPiBhbGwgZnJhbWVzLiBpLmUgaXQgaXMgZXZlbiB0cnVlIGZvciBhdGg5ayBk
+cml2ZXIuIEhlbmNlIEkgYW0gd29uZGVyaW5nCj4gaG93IGl0IGlzIHdvcmtpbmcgb25seSB3aXRo
+IGF0aDlrLgoKSWYgZW5vdWdoIHBhY2tldHMgYXJlIGRlcXVldWVkIGF0IG9uY2UgdGhhdCB0aGUg
+VFhRIGVtcHRpZXMgYW5kIGlzIG5vdApwdXQgYmFjayBvbiB0aGUgc2NoZWR1bGluZyBsb29wLCB0
+aGUgbmV4dF90eHEoKSBsb29wIGlzIGp1c3QgZ29pbmcgdG8KbG9vcCB0aHJvdWdoIHRoZSByZW1h
+aW5pbmcgVFhRcyBhbmQgaW1tZWRpYXRlbHkgaW5jcmVhc2UgdGhlaXIgcXVhbnR1bS4KSW4gYXRo
+OWssIHRoZXJlJ3MgYSBtYXhpbXVtIG9mIHR3byBvdXRzdGFuZGluZyBhZ2dyZWdhdGVzIGJlbG93
+IHRoZSBUWFEKbGV2ZWwsIGJ1dCBJIHRoaW5rIHlvdSBtZW50aW9uZWQgdGhhdCBhdGgxMGsgY2Fu
+IHF1ZXVlIHRob3VzYW5kcyBpbgpmaXJtd2FyZT8KCllvdXIgcGF0Y2ggcmVtb3ZlcyB0aGUgJ21h
+eCAxNiBwYWNrZXRzIGF0IGEgdGltZScgY2hlY2sgYmVmb3JlIHRoZSBjYWxsCnRvIGF0aDEwa19t
+YWNfdHhfcHVzaF90eHEoKTsgdHJ5IGFkZGluZyB0aGF0IGJhY2sgYW5kIHNlZSBpZiBpdCBoZWxw
+cz8KCj4+IElmIHRoaXMgaXMgaW5kZWVkIHRoZSByZWFzb24sIHRoZSBxdWV1ZSBsaW1pdCBwYXRj
+aGVzIHNob3VsZCBob3BlZnVsbHkKPj4gYmUgYSBzb2x1dGlvbi4gU28gZ3Vlc3Mgd2UgbmVlZCB0
+byBnZXQgdGhvc2Ugd29ya2luZyBhcyB3ZWxsIDopCj4+IAo+IEkgd291bGQgcHJlZmVyIHRvIGJh
+c2VsaW5lIHRoZSBiYXNpYyBpbmZyYSBpbnRvIHVwc3RyZWFtIGZpcnN0IGFuZCBkbwo+IGVuaGFu
+Y2VtZW50IG9uIHRvcCBvZiB0aGF0LgoKU3VyZSwgSSdtIGZpbmUgd2l0aCBtZXJnaW5nIHRoaXMg
+Zmlyc3QgYW5kIGJ1aWxkaW5nIG9uIHRvcC4KCj4gSSByZXF1ZXN0IHlvdSB0byByZXZpc2l0IG1h
+aW50YWluaW5nIHBlciBkcml2ZXIgZGVmYXVsdC4gT3RoZXJ3aXNlCj4gdGhlcmUgd291bGQgYmUg
+cGVyZm9ybWFuY2UgaW1wYWN0IHdpdGggMjU2dXMuIDooCgpIbW0sIGhvdyBhYm91dCB3ZSBtYWtl
+IGl0IGEgZHJpdmVyLXNwZWNpZmllZCBtdWx0aXBsaWVyIGluc3RlYWQgKHdoaWNoCmNvdWxkIGJl
+IDQsIDggb3IgMTYgZm9yIGF0aDEwayk/IFRoYXQgd2F5IGl0IHdvdWxkIHN0aWxsIHdvcmsgZXZl
+biBpZgp1c2Vyc3BhY2UgY2hhbmdlcyB0aGUgd2VpZ2h0cy4gSXQgd291bGQgYWZmZWN0IHRoZSBt
+aW5pbXVtIHBvc3NpYmxlCmdyYW51bGFyaXR5LCBidXQgdGhhdCBpcyBwcm9iYWJseSBhY2NlcHRh
+YmxlOyBhbmQgd2Ugd291bGQgYmUgZnJlZSB0bwpjaGFuZ2UgdGhlIG1lY2hhbmlzbSBsYXRlciwg
+d2l0aG91dCBhZmZlY3RpbmcgdGhlIHVzZXJzcGFjZSBBUEkuCgotVG9rZQoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
