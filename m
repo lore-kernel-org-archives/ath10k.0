@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-co1nam05on062a.outbound.protection.outlook.com
- ([2a01:111:f400:fe50::62a]
- helo=NAM05-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-cys01nam02on0619.outbound.protection.outlook.com
+ ([2a01:111:f400:fe45::619]
+ helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL3HJ-0001dj-O8
- for ath10k@lists.infradead.org; Fri, 09 Nov 2018 09:40:39 +0000
+ id 1gL3Nj-0005Wh-58
+ for ath10k@lists.infradead.org; Fri, 09 Nov 2018 09:47:21 +0000
 From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
 Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
-Date: Fri, 9 Nov 2018 09:40:24 +0000
-Message-ID: <20181109094017.j4vkhaprz4zmszch@bars>
+Date: Fri, 9 Nov 2018 09:47:01 +0000
+Message-ID: <20181109094654.7w2etehlz55lv662@bars>
 References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
  <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
- <20181107140552.zfuusbapgqjumoln@bars>
- <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
-In-Reply-To: <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
+ <20181106101601.526ovvmabfqrr7sl@bars>
+ <7a8662ce7744bee6d9e695c67d7e9643@codeaurora.org>
+In-Reply-To: <7a8662ce7744bee6d9e695c67d7e9643@codeaurora.org>
 Content-Language: en-US
-Content-ID: <D9016FE9226B684F93C920BFB685E5FD@namprd05.prod.outlook.com>
+Content-ID: <15BA425A48C91040BC7FBC226DFC7A0A@namprd05.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,83 +30,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Hello Tamizh,
 
+> > > Co-Developed-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+> > > Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>
+> > > Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> > > ---
+> > >  include/net/cfg80211.h       |   14 +++++++
+> > >  include/uapi/linux/nl80211.h |   69 +++++++++++++++++++++++++++++++++
+> > >  net/wireless/nl80211.c       |   86
+> > > ++++++++++++++++++++++++++++++++++++++++++
+> > >  net/wireless/rdev-ops.h      |   15 ++++++++
+> > >  net/wireless/trace.h         |   27 +++++++++++++
+> > >  5 files changed, 211 insertions(+)
+
 ...
 
-> > > +static int nl80211_set_tid_config(struct sk_buff *skb,
-> > > +                                 struct genl_info *info)
-> > > +{
-> > > +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
-> > > +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
-> > > +       struct nlattr *tid;
-> > > +       struct net_device *dev = info->user_ptr[1];
-> > > +       const char *peer = NULL;
-> > > +       u8 tid_no;
-> > > +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
+> > >  /**
+> > > @@ -4035,6 +4044,9 @@ struct wiphy_iftype_ext_capab {
+> > >   * @txq_limit: configuration of internal TX queue frame limit
+> > >   * @txq_memory_limit: configuration internal TX queue memory limit
+> > >   * @txq_quantum: configuration of internal TX queue scheduler quantum
+> > > + *
+> > > + * @max_data_retry_count: Maximum limit can be configured as retry
+> > > count
+> > > + *     for a TID.
+> > >   */
+> > >  struct wiphy {
+> > >         /* assign these fields before you register the wiphy */
+> > > @@ -4171,6 +4183,8 @@ struct wiphy {
+> > >         u32 txq_memory_limit;
+> > >         u32 txq_quantum;
+> > > 
+> > > +       u8 max_data_retry_count;
 > > > +
-> > > +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
-> > > +       if (!tid)
-> > > +               return -EINVAL;
-> > > +
-> > > +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
-> > > +                              nl80211_attr_tid_policy, info->extack);
-> > > +       if (ret)
-> > > +               return ret;
-> > > +
-> > > +       if (!attrs[NL80211_ATTR_TID])
-> > > +               return -EINVAL;
-> > > +
-> > > +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
-> > > +               retry_short =
-> > > nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
-> > > +               if (!retry_short ||
-> > > +                   retry_short > rdev->wiphy.max_data_retry_count)
-> > > +                       return -EINVAL;
-> > > +       }
-> > > +
-> > > +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
-> > > +               retry_long =
-> > > nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
-> > > +               if (!retry_long ||
-> > > +                   retry_long > rdev->wiphy.max_data_retry_count)
-> > > +                       return -EINVAL;
-> > > +       }
-> > > +
-> > > +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
-> > > +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
-> > > +               return -EINVAL;
-> > > +
-> > > +       if (info->attrs[NL80211_ATTR_MAC])
-> > > +               peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
-> > > +
-> > > +       if (nla_get_flag(attrs[NL80211_ATTR_TID_RETRY_CONFIG])) {
+> > >         char priv[0] __aligned(NETDEV_ALIGN);
+> > >  };
 > > 
-> > Do we really need this additional flag to indicate retry data ?
-> > Maybe we can simply check retry attrs or even retry data, e.g.:
+> > Could you please clarify why do you define max_data_retry_count instead
+> > of
+> > making use of existing wiphy params: retry_short (dot11ShortRetryLimit)
+> > and retry_long (dot11LongRetryLimit) ?
 > 
-> Yes, because this implementation gives provision to set default retry
-> count for TID traffic type for a station.
-> Since we use single NL command for all TID configurations, this flag
-> will be useful to notify the driver about
-> retry TID configuration change.
+> max_data_retry_count added to validate the max limit for the retry count
+> supported by the driver.
+> existing wiphy parames: retry_short and retry_long can be modified
+> through user command.
+> So, I've added this param for validation purpose. Correct me If I'm
+> wrong.
 
-Ok. So if driver receives retry value (-1), it should reset to some
-default value known to driver or firmware. IMHO it worth making it
-more explicit: in its current form this convention will not be obvious
-for driver authors. Though I don't have a good idea how to do it.
-Maybe merge both aggregation and retry cfg80211 callbacks into one
-and use structure for params and bitmask for operations...
-
-> > 
-> > if (attrs[NL80211_ATTR_TID_RETRY_LONG] ||
-> >     attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
-> >     ...
-> > 
-> > if ((retry_short > 0) || (retry_long > 0)) {
-> >     ...
+Well, but then it probably makes sense to use max_data_retry_count value
+to validate retry_short and retry_long values in nl80211_set_wiphy.
 
 Regards,
 Sergey
