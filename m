@@ -1,12 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL2ZY-00024K-2E
- for ath10k@lists.infradead.org; Fri, 09 Nov 2018 08:55:24 +0000
-From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
-Subject: [PATCH] ath10k: Fix kernel panic due to use after free
-Date: Fri,  9 Nov 2018 14:24:06 +0530
-Message-Id: <1541753646-11533-1-git-send-email-periyasa@codeaurora.org>
+Received: from mail-by2nam01on0612.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::612]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gL33j-0003vH-3I
+ for ath10k@lists.infradead.org; Fri, 09 Nov 2018 09:26:36 +0000
+From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+Subject: Re: [PATCH 4/4] ath10k: Add support to configure TID specific
+ configuration
+Date: Fri, 9 Nov 2018 09:26:03 +0000
+Message-ID: <20181109092557.ciw457se3ssajl3v@bars>
+References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
+ <1540230918-27712-5-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1540230918-27712-5-git-send-email-tamizhr@codeaurora.org>
+Content-Language: en-US
+Content-ID: <4F01E0BEA6845B4595E108C3CA6B2309@namprd05.prod.outlook.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,110 +24,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This issue arise in a race condition between ath10k_sta_state() and
-ath10k_htt_fetch_peer_stats(), explained in below scenario
 
-Steps:
-1. In ath10k_sta_state(), arsta->tx_stats get deallocated before peer deletion
-   when the station moves from IEEE80211_STA_NONE to IEEE80211_STA_NOTEXIST
-   state.
-2. Meanwhile ath10k receive HTT_T2H_MSG_TYPE_PEER_STATS message.
-   In ath10k_htt_fetch_peer_stats(), arsta->tx_stats get accessed after
-   the peer validation check.
+Hello Tamizh,
 
-Since arsta->tx_stats get freed before the peer deletion [1].
-ath10k_htt_fetch_peer_stats() ended up in "use after free" situation.
+> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.h |  23 ++++
+>  drivers/net/wireless/ath/ath10k/mac.c  | 240 +++++++++++++++++++++++++++++----
+>  drivers/net/wireless/ath/ath10k/wmi.c  |   6 +-
+>  drivers/net/wireless/ath/ath10k/wmi.h  |   1 +
+>  4 files changed, 245 insertions(+), 25 deletions(-)
 
-Fixed this issue by moving the arsta->tx_stats free handling after the
-peer deletion. so that ath10k_htt_fetch_peer_stats() will not end up in
-"use after free" situation.
-
-Kernel Panic:
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000286
-pgd = d8754000
-[00000286] *pgd=00000000
-Internal error: Oops: 5 [#1] PREEMPT SMP ARM
 ...
-CPU: 0 PID: 6245 Comm: hostapd Not tainted
-task: dc44cac0 ti: d4a38000 task.ti: d4a38000
-PC is at kmem_cache_alloc+0x7c/0x114
-LR is at ath10k_sta_state+0x190/0xd58 [ath10k_core]
-pc : [<c02bdc50>]    lr : [<bf916b78>]    psr: 20000013
-sp : d4a39b88  ip : 00000000  fp : 00000001
-r10: 00000000  r9 : 1d3bc000  r8 : 00000dc0
-r7 : 000080d0  r6 : d4a38000  r5 : dd401b00  r4 : 00000286
-r3 : 00000000  r2 : d4a39ba0  r1 : 000080d0  r0 : dd401b00
-Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 10c5787d  Table: 5a75406a  DAC: 00000015
-Process hostapd (pid: 6245, stack limit = 0xd4a38238)
-Stack: (0xd4a39b88 to 0xd4a3a000)
-...
-[<c02bdc50>] (kmem_cache_alloc) from [<bf916b78>] (ath10k_sta_state+0x190/0xd58 [ath10k_core])
-[<bf916b78>] (ath10k_sta_state [ath10k_core]) from [<bf870d4c>] (sta_info_insert_rcu+0x418/0x61c [mac80211])
-[<bf870d4c>] (sta_info_insert_rcu [mac80211]) from [<bf88634c>] (ieee80211_add_station+0xf0/0x134 [mac80211])
-[<bf88634c>] (ieee80211_add_station [mac80211]) from [<bf83f3c4>] (nl80211_new_station+0x330/0x36c [cfg80211])
-[<bf83f3c4>] (nl80211_new_station [cfg80211]) from [<bf6c4040>] (extack_doit+0x2c/0x74 [compat])
-[<bf6c4040>] (extack_doit [compat]) from [<c05c285c>] (genl_rcv_msg+0x274/0x30c)
-[<c05c285c>] (genl_rcv_msg) from [<c05c1d98>] (netlink_rcv_skb+0x58/0xac)
-[<c05c1d98>] (netlink_rcv_skb) from [<c05c25d4>] (genl_rcv+0x20/0x34)
-[<c05c25d4>] (genl_rcv) from [<c05c1750>] (netlink_unicast+0x11c/0x204)
-[<c05c1750>] (netlink_unicast) from [<c05c1be0>] (netlink_sendmsg+0x30c/0x370)
-[<c05c1be0>] (netlink_sendmsg) from [<c0587e90>] (sock_sendmsg+0x70/0x84)
-[<c0587e90>] (sock_sendmsg) from [<c058970c>] (___sys_sendmsg.part.3+0x188/0x228)
-[<c058970c>] (___sys_sendmsg.part.3) from [<c058a594>] (__sys_sendmsg+0x4c/0x70)
-[<c058a594>] (__sys_sendmsg) from [<c0208c80>] (ret_fast_syscall+0x0/0x44)
-Code: ebfffec1 e1a04000 ea00001b e5953014 (e7940003)
-ath10k_pci 0000:01:00.0: SWBA overrun on vdev 0, skipped old beacon
 
-Hardware tested: QCA9984
-Firmware tested: 10.4-3.6.0.1-00004
+> +static int ath10k_mac_op_set_tid_conf(struct ieee80211_hw *hw,
+> +                                     struct ieee80211_vif *vif,
+> +                                     struct ieee80211_sta *sta,
+> +                                     struct ieee80211_tid_conf *tid_conf,
+> +                                     u8 changed)
+> +{
+> +       int ret;
+> +       struct ath10k *ar = hw->priv;
+> +       struct ath10k_vif *arvif = (void *)vif->drv_priv;
+> +       struct ath10k_mac_iter_tid_config data = {};
+> +       struct wmi_per_peer_per_tid_cfg_arg arg = {};
+> +       struct ath10k_sta *arsta;
+> +
+> +       if (!(changed & TID_RETRY_CONF_CHANGED) &&
+> +           !(changed & TID_AGGR_CONF_CHANGED))
+> +               return 0;
+> +
+> +       mutex_lock(&ar->conf_mutex);
+> +       arg.vdev_id = arvif->vdev_id;
+> +       arg.tid = tid_conf->tid;
+> +
+> +       if (sta) {
+> +               arsta = (struct ath10k_sta *)sta->drv_priv;
+> +               ether_addr_copy(arg.peer_macaddr.addr, sta->addr);
+> +
+> +               if (changed & TID_RETRY_CONF_CHANGED) {
+> +                       if (tid_conf->retry_long ==
+> +                           arsta->retry_count[arg.tid]) {
+> +                               ret = 0;
+> +                               goto exit;
+> +                       }
+> +
+> +                       if (tid_conf->retry_long == -1) {
+> +                               if (arvif->retry_count[arg.tid])
+> +                                       arg.retry_count =
+> +                                               arvif->retry_count[arg.tid];
+> +                               else
+> +                                       arg.retry_count =
+> +                                               ATH10K_MAX_RETRY_COUNT;
+> +                       } else {
+> +                               arg.retry_count = tid_conf->retry_long;
+> +                       }
+> +               }
+> +               if (changed & TID_AGGR_CONF_CHANGED) {
+> +                       if (tid_conf->aggr)
+> +                               arg.aggr_control =
+> +                                       WMI_TID_CONFIG_AGGR_CONTROL_ENABLE;
+> +                       else
+> +                               arg.aggr_control =
+> +                                       WMI_TID_CONFIG_AGGR_CONTROL_DISABLE;
+> +               }
+> +
+> +               ret = ath10k_wmi_set_per_peer_per_tid_cfg(ar, &arg);
+> +               if (!ret) {
+> +                       /* Store the configured parameters in success case */
+> +                       if (changed & TID_RETRY_CONF_CHANGED)
+> +                               arsta->retry_count[arg.tid] =
+> +                                                       tid_conf->retry_long;
+> +                       if (changed & TID_AGGR_CONF_CHANGED)
+> +                               arsta->aggr_ctrl[arg.tid] = arg.aggr_control;
+> +               }
+> +
+> +               goto exit;
+> +       }
+> +
+> +       ret = 0;
+> +
+> +       if (changed & TID_RETRY_CONF_CHANGED)
+> +               arvif->retry_count[tid_conf->tid] = tid_conf->retry_long;
 
-Fixes: a904417fc ("ath10k: add extended per sta tx statistics support")
-Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Shouldn't it use default ATH10K_MAX_RETRY_COUNT value when
+incoming retry_long value is -1 ?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c5130fa..fbf4ff0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6387,11 +6387,6 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   "mac vdev %d peer delete %pM sta %pK (sta gone)\n",
- 			   arvif->vdev_id, sta->addr, sta);
- 
--		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
--			kfree(arsta->tx_stats);
--			arsta->tx_stats = NULL;
--		}
--
- 		if (sta->tdls) {
- 			ret = ath10k_mac_tdls_peer_update(ar, arvif->vdev_id,
- 							  sta,
-@@ -6431,6 +6426,11 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		}
- 		spin_unlock_bh(&ar->data_lock);
- 
-+		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
-+			kfree(arsta->tx_stats);
-+			arsta->tx_stats = NULL;
-+		}
-+
- 		for (i = 0; i < ARRAY_SIZE(sta->txq); i++)
- 			ath10k_mac_txq_unref(ar, sta->txq[i]);
- 
--- 
-1.9.1
-
+Regards,
+Sergey
 
 _______________________________________________
 ath10k mailing list
