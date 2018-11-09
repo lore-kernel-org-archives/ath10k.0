@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL5qR-00081M-Si
- for ath10k@lists.infradead.org; Fri, 09 Nov 2018 12:25:05 +0000
-Message-ID: <dda0f03868f631ba9f76170e19dd28099a0e0add.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 09 Nov 2018 13:24:51 +0100
-In-Reply-To: <20181109094017.j4vkhaprz4zmszch@bars>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
- <20181107140552.zfuusbapgqjumoln@bars>
- <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
- <20181109094017.j4vkhaprz4zmszch@bars>
-Mime-Version: 1.0
+ id 1gL64N-0005YR-0A
+ for ath10k@lists.infradead.org; Fri, 09 Nov 2018 12:39:29 +0000
+Date: Fri, 09 Nov 2018 13:39:06 +0100
+In-Reply-To: <78adf728bab8943152dc4db311c50fedbe5710f1.camel@sipsolutions.net>
+References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
+ <1540033534-11211-2-git-send-email-rmanohar@codeaurora.org>
+ (sfid-20181020_130555_381291_6F3867B0)
+ <78adf728bab8943152dc4db311c50fedbe5710f1.camel@sipsolutions.net>
+MIME-Version: 1.0
+Subject: Re: [PATCH 1/6] mac80211: Add TXQ scheduling API
+From: =?ISO-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>
+Message-ID: <A76C82FF-46AD-4BDB-A5DA-932E97536FEB@toke.dk>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +25,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>, Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>, Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, 2018-11-09 at 09:40 +0000, Sergey Matyukevich wrote:
-> 
-> Ok. So if driver receives retry value (-1), it should reset to some
-> default value known to driver or firmware. IMHO it worth making it
-> more explicit: in its current form this convention will not be obvious
-> for driver authors. Though I don't have a good idea how to do it.
-> Maybe merge both aggregation and retry cfg80211 callbacks into one
-> and use structure for params and bitmask for operations...
 
-I think we want that anyway, I just suggested to also add the "noack" to
-the same API, and indeed it's pointless to set retries and noack.
 
-johannes
+On 9 November 2018 13:00:04 CET, Johannes Berg <johannes@sipsolutions.net> wrote:
+>On Sat, 2018-10-20 at 04:05 -0700, Rajkumar Manoharan wrote:
+>> 
+>> + * @txq: pointer obtained from station or virtual interface, or from
+>> + *       ieee80211_next_txq()
+>
+>nit: please just indent by a single tab for continuation, trying to
+>line
+>it all up doesn't really make it more readable
 
+Not sure I agree about the "not more readable" part, but OK.
+
+>I see you're still discussing all this, so I'm going to assume you'll
+>resend this series eventually :-)
+
+Yup. Think we're getting close to something that might be mergeable. Will send another version then :)
+
+-Toke
 
 _______________________________________________
 ath10k mailing list
