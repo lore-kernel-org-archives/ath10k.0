@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-by2nam01on0612.outbound.protection.outlook.com
- ([2a01:111:f400:fe42::612]
- helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-co1nam05on062a.outbound.protection.outlook.com
+ ([2a01:111:f400:fe50::62a]
+ helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL33j-0003vH-3I
- for ath10k@lists.infradead.org; Fri, 09 Nov 2018 09:26:36 +0000
+ id 1gL3HJ-0001dj-O8
+ for ath10k@lists.infradead.org; Fri, 09 Nov 2018 09:40:39 +0000
 From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Subject: Re: [PATCH 4/4] ath10k: Add support to configure TID specific
- configuration
-Date: Fri, 9 Nov 2018 09:26:03 +0000
-Message-ID: <20181109092557.ciw457se3ssajl3v@bars>
+Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
+Date: Fri, 9 Nov 2018 09:40:24 +0000
+Message-ID: <20181109094017.j4vkhaprz4zmszch@bars>
 References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-5-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1540230918-27712-5-git-send-email-tamizhr@codeaurora.org>
+ <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
+ <20181107140552.zfuusbapgqjumoln@bars>
+ <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
+In-Reply-To: <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
 Content-Language: en-US
-Content-ID: <4F01E0BEA6845B4595E108C3CA6B2309@namprd05.prod.outlook.com>
+Content-ID: <D9016FE9226B684F93C920BFB685E5FD@namprd05.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,93 +30,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-
+Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Hello Tamizh,
 
-> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/core.h |  23 ++++
->  drivers/net/wireless/ath/ath10k/mac.c  | 240 +++++++++++++++++++++++++++++----
->  drivers/net/wireless/ath/ath10k/wmi.c  |   6 +-
->  drivers/net/wireless/ath/ath10k/wmi.h  |   1 +
->  4 files changed, 245 insertions(+), 25 deletions(-)
-
 ...
 
-> +static int ath10k_mac_op_set_tid_conf(struct ieee80211_hw *hw,
-> +                                     struct ieee80211_vif *vif,
-> +                                     struct ieee80211_sta *sta,
-> +                                     struct ieee80211_tid_conf *tid_conf,
-> +                                     u8 changed)
-> +{
-> +       int ret;
-> +       struct ath10k *ar = hw->priv;
-> +       struct ath10k_vif *arvif = (void *)vif->drv_priv;
-> +       struct ath10k_mac_iter_tid_config data = {};
-> +       struct wmi_per_peer_per_tid_cfg_arg arg = {};
-> +       struct ath10k_sta *arsta;
-> +
-> +       if (!(changed & TID_RETRY_CONF_CHANGED) &&
-> +           !(changed & TID_AGGR_CONF_CHANGED))
-> +               return 0;
-> +
-> +       mutex_lock(&ar->conf_mutex);
-> +       arg.vdev_id = arvif->vdev_id;
-> +       arg.tid = tid_conf->tid;
-> +
-> +       if (sta) {
-> +               arsta = (struct ath10k_sta *)sta->drv_priv;
-> +               ether_addr_copy(arg.peer_macaddr.addr, sta->addr);
-> +
-> +               if (changed & TID_RETRY_CONF_CHANGED) {
-> +                       if (tid_conf->retry_long ==
-> +                           arsta->retry_count[arg.tid]) {
-> +                               ret = 0;
-> +                               goto exit;
-> +                       }
-> +
-> +                       if (tid_conf->retry_long == -1) {
-> +                               if (arvif->retry_count[arg.tid])
-> +                                       arg.retry_count =
-> +                                               arvif->retry_count[arg.tid];
-> +                               else
-> +                                       arg.retry_count =
-> +                                               ATH10K_MAX_RETRY_COUNT;
-> +                       } else {
-> +                               arg.retry_count = tid_conf->retry_long;
-> +                       }
-> +               }
-> +               if (changed & TID_AGGR_CONF_CHANGED) {
-> +                       if (tid_conf->aggr)
-> +                               arg.aggr_control =
-> +                                       WMI_TID_CONFIG_AGGR_CONTROL_ENABLE;
-> +                       else
-> +                               arg.aggr_control =
-> +                                       WMI_TID_CONFIG_AGGR_CONTROL_DISABLE;
-> +               }
-> +
-> +               ret = ath10k_wmi_set_per_peer_per_tid_cfg(ar, &arg);
-> +               if (!ret) {
-> +                       /* Store the configured parameters in success case */
-> +                       if (changed & TID_RETRY_CONF_CHANGED)
-> +                               arsta->retry_count[arg.tid] =
-> +                                                       tid_conf->retry_long;
-> +                       if (changed & TID_AGGR_CONF_CHANGED)
-> +                               arsta->aggr_ctrl[arg.tid] = arg.aggr_control;
-> +               }
-> +
-> +               goto exit;
-> +       }
-> +
-> +       ret = 0;
-> +
-> +       if (changed & TID_RETRY_CONF_CHANGED)
-> +               arvif->retry_count[tid_conf->tid] = tid_conf->retry_long;
+> > > +static int nl80211_set_tid_config(struct sk_buff *skb,
+> > > +                                 struct genl_info *info)
+> > > +{
+> > > +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
+> > > +       struct nlattr *attrs[NL80211_ATTR_TID_MAX + 1];
+> > > +       struct nlattr *tid;
+> > > +       struct net_device *dev = info->user_ptr[1];
+> > > +       const char *peer = NULL;
+> > > +       u8 tid_no;
+> > > +       int ret = -EINVAL, retry_short = -1, retry_long = -1;
+> > > +
+> > > +       tid = info->attrs[NL80211_ATTR_TID_CONFIG];
+> > > +       if (!tid)
+> > > +               return -EINVAL;
+> > > +
+> > > +       ret = nla_parse_nested(attrs, NL80211_ATTR_TID_MAX, tid,
+> > > +                              nl80211_attr_tid_policy, info->extack);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       if (!attrs[NL80211_ATTR_TID])
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
+> > > +               retry_short =
+> > > nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_SHORT]);
+> > > +               if (!retry_short ||
+> > > +                   retry_short > rdev->wiphy.max_data_retry_count)
+> > > +                       return -EINVAL;
+> > > +       }
+> > > +
+> > > +       if (attrs[NL80211_ATTR_TID_RETRY_LONG]) {
+> > > +               retry_long =
+> > > nla_get_u8(attrs[NL80211_ATTR_TID_RETRY_LONG]);
+> > > +               if (!retry_long ||
+> > > +                   retry_long > rdev->wiphy.max_data_retry_count)
+> > > +                       return -EINVAL;
+> > > +       }
+> > > +
+> > > +       tid_no = nla_get_u8(attrs[NL80211_ATTR_TID]);
+> > > +       if (tid_no >= IEEE80211_FIRST_TSPEC_TSID)
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (info->attrs[NL80211_ATTR_MAC])
+> > > +               peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
+> > > +
+> > > +       if (nla_get_flag(attrs[NL80211_ATTR_TID_RETRY_CONFIG])) {
+> > 
+> > Do we really need this additional flag to indicate retry data ?
+> > Maybe we can simply check retry attrs or even retry data, e.g.:
+> 
+> Yes, because this implementation gives provision to set default retry
+> count for TID traffic type for a station.
+> Since we use single NL command for all TID configurations, this flag
+> will be useful to notify the driver about
+> retry TID configuration change.
 
-Shouldn't it use default ATH10K_MAX_RETRY_COUNT value when
-incoming retry_long value is -1 ?
+Ok. So if driver receives retry value (-1), it should reset to some
+default value known to driver or firmware. IMHO it worth making it
+more explicit: in its current form this convention will not be obvious
+for driver authors. Though I don't have a good idea how to do it.
+Maybe merge both aggregation and retry cfg80211 callbacks into one
+and use structure for params and bitmask for operations...
+
+> > 
+> > if (attrs[NL80211_ATTR_TID_RETRY_LONG] ||
+> >     attrs[NL80211_ATTR_TID_RETRY_SHORT]) {
+> >     ...
+> > 
+> > if ((retry_short > 0) || (retry_long > 0)) {
+> >     ...
 
 Regards,
 Sergey
