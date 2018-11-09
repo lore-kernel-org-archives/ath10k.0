@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL64N-0005YR-0A
- for ath10k@lists.infradead.org; Fri, 09 Nov 2018 12:39:29 +0000
-Date: Fri, 09 Nov 2018 13:39:06 +0100
-In-Reply-To: <78adf728bab8943152dc4db311c50fedbe5710f1.camel@sipsolutions.net>
-References: <1540033534-11211-1-git-send-email-rmanohar@codeaurora.org>
- <1540033534-11211-2-git-send-email-rmanohar@codeaurora.org>
- (sfid-20181020_130555_381291_6F3867B0)
- <78adf728bab8943152dc4db311c50fedbe5710f1.camel@sipsolutions.net>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gLG20-0000ih-2t
+ for ath10k@lists.infradead.org; Fri, 09 Nov 2018 23:17:43 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 0/6] Move TXQ scheduling and airtime fairness into mac80211
+Date: Fri,  9 Nov 2018 15:16:55 -0800
+Message-Id: <1541805421-27309-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/6] mac80211: Add TXQ scheduling API
-From: =?ISO-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>
-Message-ID: <A76C82FF-46AD-4BDB-A5DA-932E97536FEB@toke.dk>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +16,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: make-wifi-fast@lists.bufferbloat.net, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-
-
-On 9 November 2018 13:00:04 CET, Johannes Berg <johannes@sipsolutions.net> wrote:
->On Sat, 2018-10-20 at 04:05 -0700, Rajkumar Manoharan wrote:
->> 
->> + * @txq: pointer obtained from station or virtual interface, or from
->> + *       ieee80211_next_txq()
->
->nit: please just indent by a single tab for continuation, trying to
->line
->it all up doesn't really make it more readable
-
-Not sure I agree about the "not more readable" part, but OK.
-
->I see you're still discussing all this, so I'm going to assume you'll
->resend this series eventually :-)
-
-Yup. Think we're getting close to something that might be mergeable. Will send another version then :)
-
--Toke
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVyZSBpcyB0aGUgY29uc29saWRhdGVkIHNlcmllcyBvZiBtYWM4MDIxMSwgYXRoOWsgYW5kIGF0
+aDEwayBjaGFuZ2VzCmZvciBtb3ZpbmcgVFhRIHNjaGVkdWxpbmcgYW5kIGFpcnRpbWUgZmFpcm5l
+c3MgaW50byBtYWM4MDIxMSBhbmQgc3VwcG9ydAphaXJ0aW1lIGZhaXJuZXNzLgoKVGhyZWUgbWFp
+biBBUElzIGFyZSBkZWZpbmVkIGZvciBUWFEgc2NoZWR1bGluZy4KICAtIGllZWU4MDIxMV9uZXh0
+X3R4cQogIC0gaWVlZTgwMjExX3JldHVybl90eHEKICAtIGllZWU4MDIxMV90eHFfbWF5X3RyYW5z
+bWl0CgphbmQgdHdvIEFQSXMgZm9yIHN5bmNocm9uaXphdGlvbiB3aGVuIHRoZSBkcml2ZXIgd2Fu
+dHMgdG8gaXRlcmF0ZQp0aHJvdWdoIGFsbCBUWFFzLgogIC0gaWVlZTgwMjExX3R4cV9zY2hlZHVs
+ZV9zdGFydAogIC0gaWVlZTgwMjExX3R4cV9zY2hlZHVsZV9lbmQKClRoZSBlYXJsaWVyIGRpc2N1
+c3Npb25zOgpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtd2lyZWxl
+c3MvbGlzdC8/c2VyaWVzPSZzdWJtaXR0ZXI9JnN0YXRlPSomcT1UWFErc2NoZWR1bGluZyZhcmNo
+aXZlPWJvdGgmZGVsZWdhdGU9CgotUmFqa3VtYXIKCnYyOgogLSByZXBsYWNlZCBkcml2ZXIgc3Bl
+Y2lmaWMgYWlydGltZSBkZWZhdWx0IGJ5IG11bHRpcGxpZXIKIC0gZml4ZWQgdGFiIGludGVudAog
+LSBmaXhlZCBhdXRob3IgYW5kIGNvbW1pdCBsb2cKCkthbiBZYW4gKDEpOgogIGF0aDEwazogcmVw
+b3J0aW5nIGVzdGltYXRlZCB0eCBhaXJ0aW1lIGZvciBmYWlybmVzcwoKVG9rZSBIw7hpbGFuZC1K
+w7hyZ2Vuc2VuICg1KToKICBtYWM4MDIxMTogQWRkIFRYUSBzY2hlZHVsaW5nIEFQSQogIGNmZzgw
+MjExOiBBZGQgYWlydGltZSBzdGF0aXN0aWNzIGFuZCBzZXR0aW5ncwogIG1hYzgwMjExOiBBZGQg
+YWlydGltZSBhY2NvdW50aW5nIGFuZCBzY2hlZHVsaW5nIHRvIFRYUXMKICBhdGg5azogU3dpdGNo
+IHRvIG1hYzgwMjExIFRYUSBzY2hlZHVsaW5nIGFuZCBhaXJ0aW1lIEFQSXMKICBhdGgxMGs6IG1p
+Z3JhdGUgdG8gbWFjODAyMTEgdHhxIHNjaGVkdWxpbmcKCiBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2NvcmUuYyAgICAgfCAgIDIgLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9jb3JlLmggICAgIHwgICA4ICstCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2h0Yy5oICAgICAgfCAgIDEgLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRf
+cnguYyAgIHwgICA5ICsrCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jICAg
+ICAgfCAxNTUgKysrKysrKysrKystLS0tLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3R4cnguYyAgICAgfCAgIDQgKwogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDlrL2F0
+aDlrLmggICAgIHwgIDE0IC0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoOWsvZGVidWcu
+YyAgICAgfCAgIDMgLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDlrL2RlYnVnLmggICAg
+IHwgICA4IC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay9kZWJ1Z19zdGEuYyB8ICA3
+MCAtLS0tLS0tLS0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay9pbml0LmMgICAgICB8
+ICAgMyArLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDlrL3JlY3YuYyAgICAgIHwgICA5
+ICstCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoOWsveG1pdC5jICAgICAgfCAyNDQgKysr
+KysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGluY2x1ZGUvbmV0L2NmZzgwMjExLmggICAgICAg
+ICAgICAgICAgICAgICB8ICAxMCArLQogaW5jbHVkZS9uZXQvbWFjODAyMTEuaCAgICAgICAgICAg
+ICAgICAgICAgIHwgMTIxICsrKysrKysrKysrKystCiBpbmNsdWRlL3VhcGkvbGludXgvbmw4MDIx
+MS5oICAgICAgICAgICAgICAgfCAgMTUgKysKIG5ldC9tYWM4MDIxMS9hZ2ctdHguYyAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgMiArLQogbmV0L21hYzgwMjExL2NmZy5jICAgICAgICAgICAgICAg
+ICAgICAgICAgIHwgICAzICsKIG5ldC9tYWM4MDIxMS9kZWJ1Z2ZzLmMgICAgICAgICAgICAgICAg
+ICAgICB8ICAgMyArCiBuZXQvbWFjODAyMTEvZGVidWdmc19zdGEuYyAgICAgICAgICAgICAgICAg
+fCAgNTAgKysrKystCiBuZXQvbWFjODAyMTEvZHJpdmVyLW9wcy5oICAgICAgICAgICAgICAgICAg
+fCAgIDkgKysKIG5ldC9tYWM4MDIxMS9pZWVlODAyMTFfaS5oICAgICAgICAgICAgICAgICB8ICAx
+MSArKwogbmV0L21hYzgwMjExL21haW4uYyAgICAgICAgICAgICAgICAgICAgICAgIHwgICA5ICsr
+CiBuZXQvbWFjODAyMTEvc3RhX2luZm8uYyAgICAgICAgICAgICAgICAgICAgfCAgNDYgKysrKyst
+CiBuZXQvbWFjODAyMTEvc3RhX2luZm8uaCAgICAgICAgICAgICAgICAgICAgfCAgMTMgKysKIG5l
+dC9tYWM4MDIxMS9zdGF0dXMuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgNiArCiBuZXQvbWFj
+ODAyMTEvdHguYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxNDAgKysrKysrKysrKysrKysr
+Ky0KIG5ldC93aXJlbGVzcy9ubDgwMjExLmMgICAgICAgICAgICAgICAgICAgICB8ICAyOCArKysr
+CiAyOCBmaWxlcyBjaGFuZ2VkLCA2NDAgaW5zZXJ0aW9ucygrKSwgMzU2IGRlbGV0aW9ucygtKQoK
+LS0gCjEuOS4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
