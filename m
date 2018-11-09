@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL0WJ-0000AM-Uk
- for ath10k@lists.infradead.org; Fri, 09 Nov 2018 06:43:57 +0000
-Subject: Re: [PATCH] ath10k: Disable 4addr source port learning in 10.4 FW by
- default
-References: <20181109061121.4184-1-murugana@codeaurora.org>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <adc29966-6d95-e666-b61f-238053b0dea2@newmedia-net.de>
-Date: Fri, 9 Nov 2018 07:43:38 +0100
-MIME-Version: 1.0
-In-Reply-To: <20181109061121.4184-1-murugana@codeaurora.org>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gL2ZY-00024K-2E
+ for ath10k@lists.infradead.org; Fri, 09 Nov 2018 08:55:24 +0000
+From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Subject: [PATCH] ath10k: Fix kernel panic due to use after free
+Date: Fri,  9 Nov 2018 14:24:06 +0530
+Message-Id: <1541753646-11533-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +15,110 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sathishkumar Muruganandam <murugana@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
 
-thank you very much. waiting for this fix since a long time. i also 
-reported this issue years ago with no response
+This issue arise in a race condition between ath10k_sta_state() and
+ath10k_htt_fetch_peer_stats(), explained in below scenario
 
-Sebastian
+Steps:
+1. In ath10k_sta_state(), arsta->tx_stats get deallocated before peer deletion
+   when the station moves from IEEE80211_STA_NONE to IEEE80211_STA_NOTEXIST
+   state.
+2. Meanwhile ath10k receive HTT_T2H_MSG_TYPE_PEER_STATS message.
+   In ath10k_htt_fetch_peer_stats(), arsta->tx_stats get accessed after
+   the peer validation check.
 
-Am 09.11.2018 um 07:11 schrieb Sathishkumar Muruganandam:
-> One such visible functional impact is when GTK rekey frame from
+Since arsta->tx_stats get freed before the peer deletion [1].
+ath10k_htt_fetch_peer_stats() ended up in "use after free" situation.
+
+Fixed this issue by moving the arsta->tx_stats free handling after the
+peer deletion. so that ath10k_htt_fetch_peer_stats() will not end up in
+"use after free" situation.
+
+Kernel Panic:
+
+Unable to handle kernel NULL pointer dereference at virtual address 00000286
+pgd = d8754000
+[00000286] *pgd=00000000
+Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+...
+CPU: 0 PID: 6245 Comm: hostapd Not tainted
+task: dc44cac0 ti: d4a38000 task.ti: d4a38000
+PC is at kmem_cache_alloc+0x7c/0x114
+LR is at ath10k_sta_state+0x190/0xd58 [ath10k_core]
+pc : [<c02bdc50>]    lr : [<bf916b78>]    psr: 20000013
+sp : d4a39b88  ip : 00000000  fp : 00000001
+r10: 00000000  r9 : 1d3bc000  r8 : 00000dc0
+r7 : 000080d0  r6 : d4a38000  r5 : dd401b00  r4 : 00000286
+r3 : 00000000  r2 : d4a39ba0  r1 : 000080d0  r0 : dd401b00
+Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 10c5787d  Table: 5a75406a  DAC: 00000015
+Process hostapd (pid: 6245, stack limit = 0xd4a38238)
+Stack: (0xd4a39b88 to 0xd4a3a000)
+...
+[<c02bdc50>] (kmem_cache_alloc) from [<bf916b78>] (ath10k_sta_state+0x190/0xd58 [ath10k_core])
+[<bf916b78>] (ath10k_sta_state [ath10k_core]) from [<bf870d4c>] (sta_info_insert_rcu+0x418/0x61c [mac80211])
+[<bf870d4c>] (sta_info_insert_rcu [mac80211]) from [<bf88634c>] (ieee80211_add_station+0xf0/0x134 [mac80211])
+[<bf88634c>] (ieee80211_add_station [mac80211]) from [<bf83f3c4>] (nl80211_new_station+0x330/0x36c [cfg80211])
+[<bf83f3c4>] (nl80211_new_station [cfg80211]) from [<bf6c4040>] (extack_doit+0x2c/0x74 [compat])
+[<bf6c4040>] (extack_doit [compat]) from [<c05c285c>] (genl_rcv_msg+0x274/0x30c)
+[<c05c285c>] (genl_rcv_msg) from [<c05c1d98>] (netlink_rcv_skb+0x58/0xac)
+[<c05c1d98>] (netlink_rcv_skb) from [<c05c25d4>] (genl_rcv+0x20/0x34)
+[<c05c25d4>] (genl_rcv) from [<c05c1750>] (netlink_unicast+0x11c/0x204)
+[<c05c1750>] (netlink_unicast) from [<c05c1be0>] (netlink_sendmsg+0x30c/0x370)
+[<c05c1be0>] (netlink_sendmsg) from [<c0587e90>] (sock_sendmsg+0x70/0x84)
+[<c0587e90>] (sock_sendmsg) from [<c058970c>] (___sys_sendmsg.part.3+0x188/0x228)
+[<c058970c>] (___sys_sendmsg.part.3) from [<c058a594>] (__sys_sendmsg+0x4c/0x70)
+[<c058a594>] (__sys_sendmsg) from [<c0208c80>] (ret_fast_syscall+0x0/0x44)
+Code: ebfffec1 e1a04000 ea00001b e5953014 (e7940003)
+ath10k_pci 0000:01:00.0: SWBA overrun on vdev 0, skipped old beacon
+
+Hardware tested: QCA9984
+Firmware tested: 10.4-3.6.0.1-00004
+
+Fixes: a904417fc ("ath10k: add extended per sta tx statistics support")
+Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c5130fa..fbf4ff0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6387,11 +6387,6 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			   "mac vdev %d peer delete %pM sta %pK (sta gone)\n",
+ 			   arvif->vdev_id, sta->addr, sta);
+ 
+-		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
+-			kfree(arsta->tx_stats);
+-			arsta->tx_stats = NULL;
+-		}
+-
+ 		if (sta->tdls) {
+ 			ret = ath10k_mac_tdls_peer_update(ar, arvif->vdev_id,
+ 							  sta,
+@@ -6431,6 +6426,11 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 		}
+ 		spin_unlock_bh(&ar->data_lock);
+ 
++		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
++			kfree(arsta->tx_stats);
++			arsta->tx_stats = NULL;
++		}
++
+ 		for (i = 0; i < ARRAY_SIZE(sta->txq); i++)
+ 			ath10k_mac_txq_unref(ar, sta->txq[i]);
+ 
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
