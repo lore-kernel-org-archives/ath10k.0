@@ -1,20 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMST4-0001To-Jq
- for ath10k@lists.infradead.org; Tue, 13 Nov 2018 06:46:35 +0000
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMYq8-0003v9-IB
+ for ath10k@lists.infradead.org; Tue, 13 Nov 2018 13:34:50 +0000
+Subject: Re: [EXTERNAL] Re: [PATCH] ath10k: Disable 4addr source port learning
+ in 10.4 FW by default
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+References: <20181109061121.4184-1-murugana@codeaurora.org>
+ <0d74b002-e36d-8169-34e8-59338eac6918@newmedia-net.de>
+ <00fd01d4798e$1c0d2f10$54278d30$@codeaurora.org>
+ <18df2020-f8c4-b9f7-cf9c-63802ea02429@newmedia-net.de>
+ <cc8040a6-47f8-c8f0-0451-2e220d91d62c@newmedia-net.de>
+ <4ec664290c20a58f36f2183fc2fd0b4f@codeaurora.org>
+ <095fa4b0-883e-192c-e919-0dd0ace026e8@newmedia-net.de>
+Message-ID: <cef269dc-b4bc-54a0-5f04-7e4e06bbfe81@newmedia-net.de>
+Date: Tue, 13 Nov 2018 14:34:25 +0100
 MIME-Version: 1.0
-Date: Tue, 13 Nov 2018 12:16:22 +0530
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCH 1/4] New netlink command for TID specific configuration
-In-Reply-To: <dda0f03868f631ba9f76170e19dd28099a0e0add.camel@sipsolutions.net>
-References: <1540230918-27712-1-git-send-email-tamizhr@codeaurora.org>
- <1540230918-27712-2-git-send-email-tamizhr@codeaurora.org>
- <20181107140552.zfuusbapgqjumoln@bars>
- <0b75171a7777bd25e203240a3a119cb5@codeaurora.org>
- <20181109094017.j4vkhaprz4zmszch@bars>
- <dda0f03868f631ba9f76170e19dd28099a0e0add.camel@sipsolutions.net>
-Message-ID: <f024b86729f2361aeb0e8939db8d3a04@codeaurora.org>
+In-Reply-To: <095fa4b0-883e-192c-e919-0dd0ace026e8@newmedia-net.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +30,36 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>, ath10k@lists.infradead.org
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2018-11-09 17:54, Johannes Berg wrote:
-> On Fri, 2018-11-09 at 09:40 +0000, Sergey Matyukevich wrote:
->> 
->> Ok. So if driver receives retry value (-1), it should reset to some
->> default value known to driver or firmware. IMHO it worth making it
->> more explicit: in its current form this convention will not be obvious
->> for driver authors. Though I don't have a good idea how to do it.
->> Maybe merge both aggregation and retry cfg80211 callbacks into one
->> and use structure for params and bitmask for operations...
-> 
-> I think we want that anyway, I just suggested to also add the "noack" 
-> to
-> the same API, and indeed it's pointless to set retries and noack.
-> 
-Sure, I'll change it to a single api for all the tid_config operations.
+is it possible to supply a firmware for 99X0 based devices which suffer 
+from the same issue? i know the firmware codebase is the same for these 
+chipsets and there are alot of embedded
+devices around which this older one. unfortunatly this device suffers 
+from the same issue
+
+Sebastian
+
+Am 12.11.2018 um 08:33 schrieb Sebastian Gottschall:
+> no problem. glad to help you.
+>
+> Sebastian
+>
+> Am 12.11.2018 um 06:34 schrieb Sathishkumar Muruganandam:
+>> On 2018-11-12 09:40, Sebastian Gottschall wrote:
+>>> i tested my proposal now and it fixes the issue. the submitted patch
+>>> was simply broken at that small point
+>>>
+>>
+>> You're right. Thanks for your finding !
+>>
+>> Due to some reason, my patch formatting missed the vdev param
+>> assignments to 10.4 and 10.2.4 (unsupported).
+>>
+>> Sorry for the confusion, let me resend the patch.
+>>
+>
 
 _______________________________________________
 ath10k mailing list
