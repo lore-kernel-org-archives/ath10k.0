@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMz9u-0007af-WF
- for ath10k@lists.infradead.org; Wed, 14 Nov 2018 17:41:01 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v3 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name>
-References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
- <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
- <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name>
-Date: Wed, 14 Nov 2018 09:40:38 -0800
-Message-ID: <871s7nv9pl.fsf@toke.dk>
+ id 1gN3Tf-00081q-Nk
+ for ath10k@lists.infradead.org; Wed, 14 Nov 2018 22:17:43 +0000
+Received: by mail-lf1-x144.google.com with SMTP id b20so12675174lfa.12
+ for <ath10k@lists.infradead.org>; Wed, 14 Nov 2018 14:17:27 -0800 (PST)
 MIME-Version: 1.0
+References: <CAEJqkgiKzYTZQTGWNAPTeOPFWz658FWqDsAhyoxVDP1VKWSukg@mail.gmail.com>
+ <CAEJqkgh7xksO7tmPHGkOXvWftc2AcCgi4j3S3C88CorV53+Hgw@mail.gmail.com>
+In-Reply-To: <CAEJqkgh7xksO7tmPHGkOXvWftc2AcCgi4j3S3C88CorV53+Hgw@mail.gmail.com>
+From: Gabriel C <nix.or.die@gmail.com>
+Date: Wed, 14 Nov 2018 23:16:59 +0100
+Message-ID: <CAEJqkghgyYMxRc8-wnF-J1CGhuYD2vfVDSiLU1A0fwpXKN7Huw@mail.gmail.com>
+Subject: Re: atk10k Unknown eventid and WARN() on resume with kernel 4.19
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,112 +21,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@nbd.name>, Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: make-wifi-fast@lists.bufferbloat.net
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-pm@vger.kernel.org, linux-wireless@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, dex77@frugalware.org
 
-RmVsaXggRmlldGthdSA8bmJkQG5iZC5uYW1lPiB3cml0ZXM6Cgo+IE9uIDIwMTgtMTEtMTIgMjM6
-NTEsIFJhamt1bWFyIE1hbm9oYXJhbiB3cm90ZToKPj4gRnJvbTogVG9rZSBIw7hpbGFuZC1Kw7hy
-Z2Vuc2VuIDx0b2tlQHRva2UuZGs+Cj4+IAo+PiBUaGlzIGFkZHMgYWlydGltZSBhY2NvdW50aW5n
-IGFuZCBzY2hlZHVsaW5nIHRvIHRoZSBtYWM4MDIxMSBUWFEKPj4gc2NoZWR1bGVyLiBBIG5ldyBj
-YWxsYmFjaywgaWVlZTgwMjExX3N0YV9yZWdpc3Rlcl9haXJ0aW1lKCksIGlzIGFkZGVkCj4+IHRo
-YXQgZHJpdmVycyBjYW4gY2FsbCB0byByZXBvcnQgYWlydGltZSB1c2FnZSBmb3Igc3RhdGlvbnMu
-Cj4+IAo+PiBXaGVuIGFpcnRpbWUgaW5mb3JtYXRpb24gaXMgcHJlc2VudCwgbWFjODAyMTEgd2ls
-bCBzY2hlZHVsZSBUWFFzCj4+ICh0aHJvdWdoIGllZWU4MDIxMV9uZXh0X3R4cSgpKSBpbiBhIHdh
-eSB0aGF0IGVuZm9yY2VzIGFpcnRpbWUgZmFpcm5lc3MKPj4gYmV0d2VlbiBhY3RpdmUgc3RhdGlv
-bnMuIFRoaXMgc2NoZWR1bGluZyB3b3JrcyB0aGUgc2FtZSB3YXkgYXMgdGhlIGF0aDlrCj4+IGlu
-LWRyaXZlciBhaXJ0aW1lIGZhaXJuZXNzIHNjaGVkdWxpbmcuIElmIG5vIGFpcnRpbWUgdXNhZ2Ug
-aXMgcmVwb3J0ZWQKPj4gYnkgdGhlIGRyaXZlciwgdGhlIHNjaGVkdWxlciB3aWxsIGRlZmF1bHQg
-dG8gcm91bmQtcm9iaW4gc2NoZWR1bGluZy4KPj4gCj4+IEZvciBkcml2ZXJzIHRoYXQgZG9uJ3Qg
-Y29udHJvbCBUWFEgc2NoZWR1bGluZyBpbiBzb2Z0d2FyZSwgYSBuZXcgQVBJCj4+IGZ1bmN0aW9u
-LCBpZWVlODAyMTFfdHhxX21heV90cmFuc21pdCgpLCBpcyBhZGRlZCB3aGljaCB0aGUgZHJpdmVy
-IGNhbiB1c2UKPj4gdG8gY2hlY2sgaWYgdGhlIFRYUSBpcyBlbGlnaWJsZSBmb3IgdHJhbnNtaXNz
-aW9uLCBvciBzaG91bGQgYmUgdGhyb3R0bGVkIHRvCj4+IGVuZm9yY2UgZmFpcm5lc3MuIENhbGxz
-IHRvIHRoaXMgZnVuY3Rpb24gbXVzdCBhbHNvIGJlIGVuY2xvc2VkIGluCj4+IGllZWU4MDIxMV90
-eHFfc2NoZWR1bGVfe3N0YXJ0LGVuZH0oKSBjYWxscyB0byBlbnN1cmUgcHJvcGVyIGxvY2tpbmcu
-Cj4+IAo+PiBUaGUgQVBJIGllZWU4MDIxMV90eHFfbWF5X3RyYW5zbWl0KCkgYWxzbyBlbnN1cmVz
-IHRoYXQgVFhRIGxpc3Qgd2lsbCBiZQo+PiBhbGlnbmVkIGFnaW5zdCBkcml2ZXIncyBvd24gcm91
-bmQtcm9iaW4gc2NoZWR1bGVyIGxpc3QuIGkuZSBpdCByb3RhdGVzCj4+IHRoZSBUWFEgbGlzdCB0
-aWxsIGl0IG1ha2VzIHRoZSByZXF1ZXN0ZWQgbm9kZSBiZWNvbWVzIHRoZSBmaXJzdCBlbnRyeQo+
-PiBpbiBUWFEgbGlzdC4gVGh1cyBib3RoIHRoZSBUWFEgbGlzdCBhbmQgZHJpdmVyJ3MgbGlzdCBh
-cmUgaW4gc3luYy4KPj4gCj4+IENvLURldmVsb3BlZC1ieTogUmFqa3VtYXIgTWFub2hhcmFuIDxy
-bWFub2hhckBjb2RlYXVyb3JhLm9yZz4KPj4gU2lnbmVkLW9mZi1ieTogVG9rZSBIw7hpbGFuZC1K
-w7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+Cj4+IFNpZ25lZC1vZmYtYnk6IFJhamt1bWFyIE1hbm9o
-YXJhbiA8cm1hbm9oYXJAY29kZWF1cm9yYS5vcmc+Cj4+IC0tLQo+PiAgaW5jbHVkZS9uZXQvbWFj
-ODAyMTEuaCAgICAgfCA1OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gIG5ldC9t
-YWM4MDIxMS9jZmcuYyAgICAgICAgIHwgIDMgKysKPj4gIG5ldC9tYWM4MDIxMS9kZWJ1Z2ZzLmMg
-ICAgIHwgIDMgKysKPj4gIG5ldC9tYWM4MDIxMS9kZWJ1Z2ZzX3N0YS5jIHwgNTAgKysrKysrKysr
-KysrKysrKysrKysrKysrLS0KPj4gIG5ldC9tYWM4MDIxMS9pZWVlODAyMTFfaS5oIHwgIDIgKysK
-Pj4gIG5ldC9tYWM4MDIxMS9tYWluLmMgICAgICAgIHwgIDQgKysrCj4+ICBuZXQvbWFjODAyMTEv
-c3RhX2luZm8uYyAgICB8IDQ0ICsrKysrKysrKysrKysrKysrKysrKy0tCj4+ICBuZXQvbWFjODAy
-MTEvc3RhX2luZm8uaCAgICB8IDEzICsrKysrKysKPj4gIG5ldC9tYWM4MDIxMS9zdGF0dXMuYyAg
-ICAgIHwgIDYgKysrKwo+PiAgbmV0L21hYzgwMjExL3R4LmMgICAgICAgICAgfCA5MCArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tCj4+ICAxMCBmaWxlcyBjaGFu
-Z2VkLCAyNjQgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0
-IGEvbmV0L21hYzgwMjExL3N0YXR1cy5jIGIvbmV0L21hYzgwMjExL3N0YXR1cy5jCj4+IGluZGV4
-IGFhNGFmYmYwYWJhZi4uYTFmMTI1NjQ0OGY1IDEwMDY0NAo+PiAtLS0gYS9uZXQvbWFjODAyMTEv
-c3RhdHVzLmMKPj4gKysrIGIvbmV0L21hYzgwMjExL3N0YXR1cy5jCj4+IEBAIC04MTgsNiArODE4
-LDEyIEBAIHN0YXRpYyB2b2lkIF9faWVlZTgwMjExX3R4X3N0YXR1cyhzdHJ1Y3QgaWVlZTgwMjEx
-X2h3ICpodywKPj4gIAkJCWllZWU4MDIxMV9zdGFfdHhfbm90aWZ5KHN0YS0+c2RhdGEsICh2b2lk
-ICopIHNrYi0+ZGF0YSwKPj4gIAkJCQkJCWFja2VkLCBpbmZvLT5zdGF0dXMudHhfdGltZSk7Cj4+
-ICAKPj4gKwkJaWYgKGluZm8tPnN0YXR1cy50eF90aW1lICYmCj4+ICsJCSAgICB3aXBoeV9leHRf
-ZmVhdHVyZV9pc3NldChsb2NhbC0+aHcud2lwaHksCj4+ICsJCQkJCSAgICBOTDgwMjExX0VYVF9G
-RUFUVVJFX0FJUlRJTUVfRkFJUk5FU1MpKQo+PiArCQkJaWVlZTgwMjExX3N0YV9yZWdpc3Rlcl9h
-aXJ0aW1lKCZzdGEtPnN0YSwgdGlkLAo+PiArCQkJCQkJICAgICAgIGluZm8tPnN0YXR1cy50eF90
-aW1lLCAwKTsKPj4gKwo+PiAgCQlpZiAoaWVlZTgwMjExX2h3X2NoZWNrKCZsb2NhbC0+aHcsIFJF
-UE9SVFNfVFhfQUNLX1NUQVRVUykpIHsKPj4gIAkJCWlmIChpbmZvLT5mbGFncyAmIElFRUU4MDIx
-MV9UWF9TVEFUX0FDSykgewo+PiAgCQkJCWlmIChzdGEtPnN0YXR1c19zdGF0cy5sb3N0X3BhY2tl
-dHMpCj4gSSB0aGluayB0aGUgc2FtZSBpcyBuZWVkZWQgaW4gaWVlZTgwMjExX3R4X3N0YXR1c19l
-eHQuCgpSaWdodCwgZ29vZCBwb2ludC4KCj4+IGRpZmYgLS1naXQgYS9uZXQvbWFjODAyMTEvdHgu
-YyBiL25ldC9tYWM4MDIxMS90eC5jCj4+IGluZGV4IDMwNTk2NTI4MzUwNi4uM2Y0MTdlODBlMDQx
-IDEwMDY0NAo+PiAtLS0gYS9uZXQvbWFjODAyMTEvdHguYwo+PiArKysgYi9uZXQvbWFjODAyMTEv
-dHguYwo+PiBAQCAtMzY2MCwxMiArMzY4MCw3NCBAQCB2b2lkIGllZWU4MDIxMV9yZXR1cm5fdHhx
-KHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+PiAgCWxvY2tkZXBfYXNzZXJ0X2hlbGQoJmxvY2Fs
-LT5hY3RpdmVfdHhxX2xvY2tbdHhxLT5hY10pOwo+PiAgCj4+ICAJaWYgKGxpc3RfZW1wdHkoJnR4
-cWktPnNjaGVkdWxlX29yZGVyKSAmJgo+PiAtCSAgICAoIXNrYl9xdWV1ZV9lbXB0eSgmdHhxaS0+
-ZnJhZ3MpIHx8IHR4cWktPnRpbi5iYWNrbG9nX3BhY2tldHMpKQo+PiAtCQlsaXN0X2FkZF90YWls
-KCZ0eHFpLT5zY2hlZHVsZV9vcmRlciwKPj4gLQkJCSAgICAgICZsb2NhbC0+YWN0aXZlX3R4cXNb
-dHhxLT5hY10pOwo+PiArCSAgICAoIXNrYl9xdWV1ZV9lbXB0eSgmdHhxaS0+ZnJhZ3MpIHx8IHR4
-cWktPnRpbi5iYWNrbG9nX3BhY2tldHMpKSB7Cj4+ICsJCS8qIElmIGFpcnRpbWUgYWNjb3VudGlu
-ZyBpcyBhY3RpdmUsIGFsd2F5cyBlbnF1ZXVlIFNUQXMgYXQgdGhlCj4+ICsJCSAqIGhlYWQgb2Yg
-dGhlIGxpc3QgdG8gZW5zdXJlIHRoYXQgdGhleSBvbmx5IGdldCBtb3ZlZCB0byB0aGUKPj4gKwkJ
-ICogYmFjayBieSB0aGUgYWlydGltZSBEUlIgc2NoZWR1bGVyIG9uY2UgdGhleSBoYXZlIGEgbmVn
-YXRpdmUKPj4gKwkJICogZGVmaWNpdC4gQSBzdGF0aW9uIHRoYXQgYWxyZWFkeSBoYXMgYSBuZWdh
-dGl2ZSBkZWZpY2l0IHdpbGwKPj4gKwkJICogZ2V0IGltbWVkaWF0ZWx5IG1vdmVkIHRvIHRoZSBi
-YWNrIG9mIHRoZSBsaXN0IG9uIHRoZSBuZXh0Cj4+ICsJCSAqIGNhbGwgdG8gaWVlZTgwMjExX25l
-eHRfdHhxKCkuCj4+ICsJCSAqLwo+PiArCQlpZiAodHhxaS0+dHhxLnN0YSAmJgo+PiArCQkgICAg
-d2lwaHlfZXh0X2ZlYXR1cmVfaXNzZXQobG9jYWwtPmh3LndpcGh5LAo+PiArCQkJCQkgICAgTkw4
-MDIxMV9FWFRfRkVBVFVSRV9BSVJUSU1FX0ZBSVJORVNTKSkKPj4gKwkJCWxpc3RfYWRkKCZ0eHFp
-LT5zY2hlZHVsZV9vcmRlciwKPj4gKwkJCQkgJmxvY2FsLT5hY3RpdmVfdHhxc1t0eHEtPmFjXSk7
-Cj4+ICsJCWVsc2UKPj4gKwkJCWxpc3RfYWRkX3RhaWwoJnR4cWktPnNjaGVkdWxlX29yZGVyLAo+
-PiArCQkJCSAgICAgICZsb2NhbC0+YWN0aXZlX3R4cXNbdHhxLT5hY10pOwo+PiArCX0KPj4gIH0K
-PiBUaGlzIHBhcnQgZG9lc24ndCByZWFsbHkgbWFrZSBtdWNoIHNlbnNlIHRvIG1lLCBidXQgbWF5
-YmUgSSdtCj4gbWlzdW5kZXJzdGFuZGluZyBob3cgdGhlIGNvZGUgd29ya3MuCj4gTGV0J3MgYXNz
-dW1lIHdlIGhhdmUgYSBkcml2ZXIgbGlrZSBhdGg5ayBvciBtdDc2LCB3aGljaCB0cmllcyB0byBr
-ZWVwIGEKPiBudW1iZXIgb2YgYWdncmVnYXRlcyBpbiB0aGUgaGFyZHdhcmUgcXVldWUsIGFuZCB0
-aGUgaGFyZHdhcmUgcXVldWUgaXMKPiBjdXJyZW50bHkgZW1wdHkuCj4gSWYgdGhlIGN1cnJlbnQg
-dHhxIGVudHJ5IGlzIGtlcHQgYXQgdGhlIGhlYWQgb2YgdGhlIHNjaGVkdWxlIGxpc3QsCj4gd291
-bGRuJ3QgdGhlIGNvZGUganVzdCBwdWxsIGZyb20gdGhhdCBvbmUgb3ZlciBhbmQgb3ZlciBhZ2Fp
-biwgdW50aWwKPiBlbm91Z2ggcGFja2V0cyBhcmUgdHJhbnNtaXR0ZWQgYnkgdGhlIGhhcmR3YXJl
-IGFuZCB0aGVpciB0eCBzdGF0dXMKPiBwcm9jZXNzZWQ/Cj4gSXQgc2VlbXMgdG8gbWUgdGhhdCB3
-aGlsZSBmYWlybmVzcyBpcyBzdGlsbCBwcmVzZXJ2ZWQgaW4gdGhlIGxvbmcgcnVuLAo+IHRoaXMg
-Y291bGQgbGVhZCB0byByYXRoZXIgYnVyc3R5IHNjaGVkdWxpbmcsIHdoaWNoIG1heSBub3QgYmUK
-PiBwYXJ0aWN1bGFybHkgbGF0ZW5jeSBmcmllbmRseS4KClllcywgaXQnbGwgYmUgYSBiaXQgbW9y
-ZSBidXJzdHkgd2hlbiB0aGUgaGFyZHdhcmUgcXVldWUgaXMgY29tcGxldGVseQplbXB0eS4gSG93
-ZXZlciwgd2hlbiBhIFRYIGNvbXBsZXRpb24gY29tZXMgYmFjaywgdGhhdCB3aWxsIGFkanVzdCB0
-aGUKZGVmaWNpdCBvZiB0aGF0IHN0YSBhbmQgY2F1c2UgaXQgdG8gYmUgcm90YXRlZCBvbiB0aGUg
-bmV4dCBkZXF1ZXVlLiBUaGlzCm9idmlvdXNseSByZWxpZXMgb24gdGhlIGZhY3QgdGhhdCB0aGUg
-bG93ZXItbGV2ZWwgaGFyZHdhcmUgcXVldWUgaXMKc3VmZmljaWVudGx5IHNoYWxsb3cgdG8gbm90
-IGFkZCBhIGxvdCBvZiBsYXRlbmN5LiBCdXQgd2Ugd2FudCB0aGF0IHRvIGJlCnRoZSBjYXNlIGFu
-eXdheS4gSW4gcHJhY3RpY2UsIGl0IHdvcmtzIHF1aXRlIHdlbGwgZm9yIGF0aDlrLCBidXQgbm90
-IHNvCndlbGwgZm9yIGF0aDEwayBiZWNhdXNlIGl0IGhhcyBhIGxhcmdlIGJ1ZmZlciBpbiBmaXJt
-d2FyZS4KCklmIHdlIHJlcXVldWUgdGhlIFRYUSBhdCB0aGUgZW5kIG9mIHRoZSBsaXN0LCBhIHN0
-YXRpb24gdGhhdCBpcyB0YWtpbmcKdXAgdG9vIG11Y2ggYWlydGltZSB3aWxsIGZhaWwgdG8gYmUg
-dGhyb3R0bGVkIHByb3Blcmx5LCBzbyB0aGUKcXVldWUtYXQtaGVhZCBpcyBraW5kYSBuZWVkZWQg
-dG8gZW5zdXJlIGZhaXJuZXNzLi4uCgotVG9rZQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+Am Sa., 3. Nov. 2018 um 21:11 Uhr schrieb Gabriel C <nix.or.die@gmail.com>:
+>
+> Am Sa., 3. Nov. 2018 um 21:01 Uhr schrieb Gabriel C <nix.or.die@gmail.com>:
+> >
+> > Hello,
+> >
+> > starting with kernel 4.19 we noticed  'Unknown eventid: xxxx' warnings
+> > on our Laptops.
+> >
+> > ...
+> >
+> > crazy@devnull:~$ dmesg | grep Unknow
+> > [    7.144998] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > [    7.147758] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > [    9.441654] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > [    9.444446] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > [   11.770997] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > [   11.773787] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > [320339.374108] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > [320339.377020] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > [320342.128664] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > [320342.131447] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > [320344.452864] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > [320344.455696] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> >
+> > ....
+> >
+> > Both boxes also hits the following WARN*() on resume from S3:
+> >
+>  Uh sorry .. Gmail doesn't like long lines it seems.
+> There the WARN() message:
+>
+> http://ftp.frugalware.org/pub/other/people/crazy/warn.txt
+>
+> >
+> > Please let me know if you need an dmesg or any other informations.
+
+
+Added pm list maybe someone there got some idea ?
+
+Also same issue reported there :
+https://bugzilla.kernel.org/show_bug.cgi?id=201499
+
+BR,
+
+Gabriel C
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
