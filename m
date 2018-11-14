@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMlGp-00025c-KV
- for ath10k@lists.infradead.org; Wed, 14 Nov 2018 02:51:13 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: support PCIe enter L1 state
-Date: Wed, 14 Nov 2018 10:50:48 +0800
-Message-Id: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
+Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMpvG-00008n-0d
+ for ath10k@lists.infradead.org; Wed, 14 Nov 2018 07:49:15 +0000
+Received: by mail-qk1-x741.google.com with SMTP id q1so24140985qkf.13
+ for <ath10k@lists.infradead.org>; Tue, 13 Nov 2018 23:49:02 -0800 (PST)
+MIME-Version: 1.0
+References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
+From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
+Date: Wed, 14 Nov 2018 08:48:49 +0100
+Message-ID: <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,76 +20,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-QCA6174A/QCA9377 PCIe chips support PCIe L1 and L1SS, and indicate the
-L1/L1SS capabilities in PCI configuration space. Currently ath10k driver
-write target PCIe config flags to disallow HW enter into L1, this leads
-some HW modules are still powered up even when both system PCIe RC and
-QCA6174A/QCA9377 endpoint decides to enter into L1 or L1SS.
-
-This cause ~12 mA power drain of bottom power consumption for all scenarios.
-Fix this issue by removing the drive code to write PCIe config flags.
-
-Tested with QCA6174 PCI with firmware
-WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-It's not a regression with new firmware releases.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/pci.c | 21 ---------------------
- 1 file changed, 21 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index af2cf55..549da7a 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2301,7 +2301,6 @@ int ath10k_pci_init_config(struct ath10k *ar)
- 	u32 pcie_state_targ_addr = 0;
- 	u32 pipe_cfg_targ_addr = 0;
- 	u32 svc_to_pipe_map = 0;
--	u32 pcie_config_flags = 0;
- 	u32 ealloc_value;
- 	u32 ealloc_targ_addr;
- 	u32 flag2_value;
-@@ -2374,26 +2373,6 @@ int ath10k_pci_init_config(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ret = ath10k_pci_diag_read32(ar, (pcie_state_targ_addr +
--					  offsetof(struct pcie_state,
--						   config_flags)),
--				     &pcie_config_flags);
--	if (ret != 0) {
--		ath10k_err(ar, "Failed to get pcie config_flags: %d\n", ret);
--		return ret;
--	}
--
--	pcie_config_flags &= ~PCIE_CONFIG_FLAG_ENABLE_L1;
--
--	ret = ath10k_pci_diag_write32(ar, (pcie_state_targ_addr +
--					   offsetof(struct pcie_state,
--						    config_flags)),
--				      pcie_config_flags);
--	if (ret != 0) {
--		ath10k_err(ar, "Failed to write pcie config_flags: %d\n", ret);
--		return ret;
--	}
--
- 	/* configure early allocation */
- 	ealloc_targ_addr = host_interest_item_address(HI_ITEM(hi_early_alloc));
- 
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gV2VkLCAxNCBOb3YgMjAxOCBhdCAwMzo1MSwgV2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEu
+b3JnPiB3cm90ZToKPgo+IFdoZW4gdGVzdCBzaW11bGF0ZSBmaXJtd2FyZSBjcmFzaCwgaXQgaXMg
+ZWFzeSB0byB0cmlnZ2VyIGVycm9yLgo+IGNvbW1hbmQ6Cj4gZWNobyBzb2Z0ID4gL3N5cy9rZXJu
+ZWwvZGVidWcvaWVlZTgwMjExL3BoeXh4L2F0aDEway9zaW11bGF0ZV9md19jcmFzaC4KPgo+IElm
+IGlucHV0IG1vcmUgdGhhbiB0d28gdGltZXMgY29udGludW91c2x5LCB0aGVuIGl0IHdpbGwgaGF2
+ZSBlcnJvci4KPiBFcnJvciBtZXNzYWdlOgo+IGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWls
+ZWQgdG8gc2V0IHZkZXYgMSBSWCB3YWtlIHBvbGljeTogLTEwOAo+IGF0aDEwa19wY2kgMDAwMDow
+MjowMC4wOiBkZXZpY2UgaXMgd2VkZ2VkLCB3aWxsIG5vdCByZXN0YXJ0Cj4KPiBJdCBpcyBiZWNh
+dXNlIHRoZSBzdGF0ZSBoYXMgbm90IGNoYW5nZWQgdG8gQVRIMTBLX1NUQVRFX09OIGltbWVkaWF0
+ZWx5LAo+IHRoZW4gaXQgd2lsbCBoYXZlIG1vcmUgdGhhbiB0d28gc2ltdWxhdGUgY3Jhc2ggcHJv
+Y2VzcyBydW5uaW5nIG1lYW53aGlsZSwKPiBhbmQgY29tcGxldGUvd2FrZXVwIHNvbWUgZmllbGQg
+dHdpY2UsIGl0IGRlc3Ryb3kgdGhlIG5vcm1hbCByZWNvdmVyeQo+IHByb2Nlc3MuCgpUaGlzIHdh
+cyBpbnRlbmRlZCB0byBhbGxvdyB0ZXN0aW5nIG5vdCBvbmx5IGZpcm13YXJlIGNyYXNoIHBhdGgg
+KGFuZApyZWNvdmVyeSkgYnV0IGFsc28gZmlybXdhcmUgY3Jhc2ggd2hpbGUgcmVjb3ZlcmluZyBm
+cm9tIGEgZmlybXdhcmUKY3Jhc2guCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
