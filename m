@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gN67y-00025y-BY
- for ath10k@lists.infradead.org; Thu, 15 Nov 2018 01:07:27 +0000
-Received: by mail-lj1-x241.google.com with SMTP id x85-v6so15842043ljb.2
- for <ath10k@lists.infradead.org>; Wed, 14 Nov 2018 17:07:15 -0800 (PST)
+ id 1gN7N5-00024I-PQ
+ for ath10k@lists.infradead.org; Thu, 15 Nov 2018 02:27:09 +0000
+Received: by mail-pf1-x441.google.com with SMTP id u3-v6so6209721pfm.4
+ for <ath10k@lists.infradead.org>; Wed, 14 Nov 2018 18:26:56 -0800 (PST)
+Date: Wed, 14 Nov 2018 18:26:53 -0800
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH v4 2/3] dts: arm64/sdm845: Add WCN3990 WLAN module device
+ node
+Message-ID: <20181115022652.GA205124@google.com>
+References: <1541423318-19312-1-git-send-email-govinds@codeaurora.org>
+ <1541423318-19312-3-git-send-email-govinds@codeaurora.org>
 MIME-Version: 1.0
-References: <CAEJqkgiKzYTZQTGWNAPTeOPFWz658FWqDsAhyoxVDP1VKWSukg@mail.gmail.com>
- <CAEJqkgh7xksO7tmPHGkOXvWftc2AcCgi4j3S3C88CorV53+Hgw@mail.gmail.com>
- <CAEJqkghgyYMxRc8-wnF-J1CGhuYD2vfVDSiLU1A0fwpXKN7Huw@mail.gmail.com>
-In-Reply-To: <CAEJqkghgyYMxRc8-wnF-J1CGhuYD2vfVDSiLU1A0fwpXKN7Huw@mail.gmail.com>
-From: Gabriel C <nix.or.die@gmail.com>
-Date: Thu, 15 Nov 2018 02:06:47 +0100
-Message-ID: <CAEJqkgiz0-5m5uDUW2vzCatxHPX2Gi6oPQwR_J5Y4fV8iuiguw@mail.gmail.com>
-Subject: Re: atk10k Unknown eventid and WARN() on resume with kernel 4.19
+Content-Disposition: inline
+In-Reply-To: <1541423318-19312-3-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +27,91 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
-Cc: linux-pm@vger.kernel.org, linux-wireless@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, dex77@frugalware.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: devicetree@vger.kernel.org, sboyd@kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, andy.gross@linaro.org, linux-soc@vger.kernel.org
 
-Am Mi., 14. Nov. 2018 um 23:16 Uhr schrieb Gabriel C <nix.or.die@gmail.com>:
-> > > Hello,
-> > >
-> > > starting with kernel 4.19 we noticed  'Unknown eventid: xxxx' warnings
-> > > on our Laptops.
-> > >
-> > > ...
-> > >
-> > > crazy@devnull:~$ dmesg | grep Unknow
-> > > [    7.144998] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
-> > > [    7.147758] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
-> > > [    9.441654] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
-> > > [    9.444446] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
-> > > [   11.770997] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
-> > > [   11.773787] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
-> > > [320339.374108] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
-> > > [320339.377020] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
-> > > [320342.128664] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
-> > > [320342.131447] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
-> > > [320344.452864] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
-> > > [320344.455696] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
-> > >
-> > > ....
-> > >
-> > > Both boxes also hits the following WARN*() on resume from S3:
-> > >
-> >  Uh sorry .. Gmail doesn't like long lines it seems.
-> > There the WARN() message:
-> >
-> > http://ftp.frugalware.org/pub/other/people/crazy/warn.txt
-> >
-> > >
-> > > Please let me know if you need an dmesg or any other informations.
->
->
-> Added pm list maybe someone there got some idea ?
->
-> Also same issue reported there :
-> https://bugzilla.kernel.org/show_bug.cgi?id=201499
->
+Hi Govind,
 
-The WARN_ON() on resume seems to be triggered  after commit cd93b83ad927b.
+On Mon, Nov 05, 2018 at 06:38:37PM +0530, Govind Singh wrote:
+> Add device node for the ath10k SNOC platform driver probe
+> and add resources required for WCN3990 on SDM845 soc.
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Tested-by: Brian Norris <briannorris@chromium.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845-mtp.dts |  8 ++++++++
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi    | 26 ++++++++++++++++++++++++++
+>  2 files changed, 34 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> index eedfaf8..c062c5c 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> @@ -440,3 +440,11 @@
+>  		bias-pull-up;
+>  	};
+>  };
+> +
+> +&wifi {
+> +	status = "okay";
+> +	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+> +	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+> +	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+> +	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+> +};
 
-BR,
+This node should be above the PINCTRL section.
 
-Gabriel C
+Brian
+
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index b72bdb0..324be5b 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -87,6 +87,11 @@
+>  			reg = <0 0x86200000 0 0x2d00000>;
+>  			no-map;
+>  		};
+> +
+> +		wlan_msa_mem: memory@96700000 {
+> +			reg = <0 0x96700000 0 0x100000>;
+> +			no-map;
+> +		};
+>  	};
+>  
+>  	cpus {
+> @@ -1403,5 +1408,26 @@
+>  				status = "disabled";
+>  			};
+>  		};
+> +
+> +		wifi: wifi@18800000 {
+> +			compatible = "qcom,wcn3990-wifi";
+> +			status = "disabled";
+> +			reg = <0x18800000 0x800000>;
+> +			reg-names = "membase";
+> +			memory-region = <&wlan_msa_mem>;
+> +			interrupts =
+> +				<GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+>  	};
+>  };
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
 
 _______________________________________________
 ath10k mailing list
