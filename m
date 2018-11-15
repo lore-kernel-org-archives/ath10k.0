@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNLNd-0006yF-VC
- for ath10k@lists.infradead.org; Thu, 15 Nov 2018 17:24:40 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v3 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
-References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
- <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
- <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name> <871s7nv9pl.fsf@toke.dk>
- <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
-Date: Thu, 15 Nov 2018 09:24:22 -0800
-Message-ID: <87sh02tfsp.fsf@toke.dk>
+ id 1gNMcl-0003Rw-8G
+ for ath10k@lists.infradead.org; Thu, 15 Nov 2018 18:44:20 +0000
+Received: by mail-pl1-x644.google.com with SMTP id f12-v6so9906009plo.1
+ for <ath10k@lists.infradead.org>; Thu, 15 Nov 2018 10:44:08 -0800 (PST)
+Date: Thu, 15 Nov 2018 10:43:33 -0800
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
+Message-ID: <20181115184333.GA87504@google.com>
+References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
+ <20181115002836.GA71934@google.com>
+ <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +23,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@nbd.name>, Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: make-wifi-fast@lists.bufferbloat.net
+To: Wen Gong <wgong@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-RmVsaXggRmlldGthdSA8bmJkQG5iZC5uYW1lPiB3cml0ZXM6Cgo+IE9uIDIwMTgtMTEtMTQgMTg6
-NDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+IFRoaXMgcGFydCBkb2Vzbid0
-IHJlYWxseSBtYWtlIG11Y2ggc2Vuc2UgdG8gbWUsIGJ1dCBtYXliZSBJJ20KPj4+IG1pc3VuZGVy
-c3RhbmRpbmcgaG93IHRoZSBjb2RlIHdvcmtzLgo+Pj4gTGV0J3MgYXNzdW1lIHdlIGhhdmUgYSBk
-cml2ZXIgbGlrZSBhdGg5ayBvciBtdDc2LCB3aGljaCB0cmllcyB0byBrZWVwIGEKPj4+IG51bWJl
-ciBvZiBhZ2dyZWdhdGVzIGluIHRoZSBoYXJkd2FyZSBxdWV1ZSwgYW5kIHRoZSBoYXJkd2FyZSBx
-dWV1ZSBpcwo+Pj4gY3VycmVudGx5IGVtcHR5Lgo+Pj4gSWYgdGhlIGN1cnJlbnQgdHhxIGVudHJ5
-IGlzIGtlcHQgYXQgdGhlIGhlYWQgb2YgdGhlIHNjaGVkdWxlIGxpc3QsCj4+PiB3b3VsZG4ndCB0
-aGUgY29kZSBqdXN0IHB1bGwgZnJvbSB0aGF0IG9uZSBvdmVyIGFuZCBvdmVyIGFnYWluLCB1bnRp
-bAo+Pj4gZW5vdWdoIHBhY2tldHMgYXJlIHRyYW5zbWl0dGVkIGJ5IHRoZSBoYXJkd2FyZSBhbmQg
-dGhlaXIgdHggc3RhdHVzCj4+PiBwcm9jZXNzZWQ/Cj4+PiBJdCBzZWVtcyB0byBtZSB0aGF0IHdo
-aWxlIGZhaXJuZXNzIGlzIHN0aWxsIHByZXNlcnZlZCBpbiB0aGUgbG9uZyBydW4sCj4+PiB0aGlz
-IGNvdWxkIGxlYWQgdG8gcmF0aGVyIGJ1cnN0eSBzY2hlZHVsaW5nLCB3aGljaCBtYXkgbm90IGJl
-Cj4+PiBwYXJ0aWN1bGFybHkgbGF0ZW5jeSBmcmllbmRseS4KPj4gCj4+IFllcywgaXQnbGwgYmUg
-YSBiaXQgbW9yZSBidXJzdHkgd2hlbiB0aGUgaGFyZHdhcmUgcXVldWUgaXMgY29tcGxldGVseQo+
-PiBlbXB0eS4gSG93ZXZlciwgd2hlbiBhIFRYIGNvbXBsZXRpb24gY29tZXMgYmFjaywgdGhhdCB3
-aWxsIGFkanVzdCB0aGUKPj4gZGVmaWNpdCBvZiB0aGF0IHN0YSBhbmQgY2F1c2UgaXQgdG8gYmUg
-cm90YXRlZCBvbiB0aGUgbmV4dCBkZXF1ZXVlLiBUaGlzCj4+IG9idmlvdXNseSByZWxpZXMgb24g
-dGhlIGZhY3QgdGhhdCB0aGUgbG93ZXItbGV2ZWwgaGFyZHdhcmUgcXVldWUgaXMKPj4gc3VmZmlj
-aWVudGx5IHNoYWxsb3cgdG8gbm90IGFkZCBhIGxvdCBvZiBsYXRlbmN5LiBCdXQgd2Ugd2FudCB0
-aGF0IHRvIGJlCj4+IHRoZSBjYXNlIGFueXdheS4gSW4gcHJhY3RpY2UsIGl0IHdvcmtzIHF1aXRl
-IHdlbGwgZm9yIGF0aDlrLCBidXQgbm90IHNvCj4+IHdlbGwgZm9yIGF0aDEwayBiZWNhdXNlIGl0
-IGhhcyBhIGxhcmdlIGJ1ZmZlciBpbiBmaXJtd2FyZS4KPj4gCj4+IElmIHdlIHJlcXVldWUgdGhl
-IFRYUSBhdCB0aGUgZW5kIG9mIHRoZSBsaXN0LCBhIHN0YXRpb24gdGhhdCBpcyB0YWtpbmcKPj4g
-dXAgdG9vIG11Y2ggYWlydGltZSB3aWxsIGZhaWwgdG8gYmUgdGhyb3R0bGVkIHByb3Blcmx5LCBz
-byB0aGUKPj4gcXVldWUtYXQtaGVhZCBpcyBraW5kYSBuZWVkZWQgdG8gZW5zdXJlIGZhaXJuZXNz
-Li4uCj4gVGhhbmtzIGZvciB0aGUgZXhwbGFuYXRpb24sIHRoYXQgbWFrZXMgc2Vuc2UgdG8gbWUu
-IEkgaGF2ZSBhbiBpZGVhIG9uCj4gaG93IHRvIG1pdGlnYXRlIHRoZSBidXJzdGluZXNzIHdpdGhp
-biB0aGUgZHJpdmVyLiBJJ2xsIHdyaXRlIGl0IGRvd24gaW4KPiBwc2V1ZG9jb2RlLCBwbGVhc2Ug
-bGV0IG1lIGtub3cgaWYgeW91IHRoaW5rIHRoYXQnbGwgd29yay4KCkkgZG9uJ3QgdGhpbmsgaXQg
-d2lsbCwgdW5mb3J0dW5hdGVseS4gRm9yIGV4YW1wbGUsIGNvbnNpZGVyIHRoZSBjYXNlCndoZXJl
-IHRoZXJlIGFyZSB0d28gc3RhdGlvbnMgcXVldWVkOyBvbmUgd2l0aCBhIGxhcmdlIG5lZ2F0aXZl
-IGRlZmljaXQKKHNheSwgLTEwbXMpLCBhbmQgb25lIHdpdGggYSBwb3NpdGl2ZSBkZWZpY2l0LgoK
-SW4gdGhpcyBjYXNlLCB3ZSByZWFsbHkgbmVlZCB0byB0aHJvdHRsZSB0aGUgc3RhdGlvbiB3aXRo
-IGEgbmVnYXRpdmUKZGVmaWNpdC4gQnV0IGlmIHRoZSBkcml2ZXIgbG9vcHMgYW5kIGNhY2hlcyB0
-eHFzLCB3ZSdsbCBnZXQgc29tZXRoaW5nCmxpa2UgdGhlIGZvbGxvd2luZzoKCi0gRmlyc3QgZHJp
-dmVyIGxvb3AgaXRlcmF0aW9uOiByZXR1cm5zIFRYUSB3aXRoIHBvc2l0aXZlIGRlZmljaXQuCi0g
-U2Vjb25kIGRyaXZlciBsb29wIGl0ZXJhdGlvbjogT25seSB0aGUgbmVnYXRpdmUtZGVmaWNpdCBU
-WFEgaXMgaW4gdGhlCiAgbWFjODAyMTEgbGlzdCwgc28gaXQgd2lsbCBsb29wIHVudGlsIHRoYXQg
-VFhRJ3MgZGVmaWNpdCB0dXJucyBwb3NpdGl2ZQogIGFuZCByZXR1cm4gaXQuCgpCZWNhdXNlIG9m
-IHRoaXMsIHRoZSBuZWdhdGl2ZS1kZWZpY2l0IHN0YXRpb24gd29uJ3QgYmUgdGhyb3R0bGVkLCBh
-bmQgd2UKd29uJ3QgZ2V0IGZhaXJuZXNzLgoKSG93IG1hbnkgZnJhbWVzIHdpbGwgbXQ3NiBxdWV1
-ZSB1cCBiZWxvdyB0aGUgZHJpdmVyIHBvaW50PyBJLmUuLCBob3cKbXVjaCBidXJzdGluZXNzIGFy
-ZSB5b3UgZXhwZWN0aW5nIHRoaXMgd2lsbCBpbnRyb2R1Y2Ugb24gdGhhdCBkcml2ZXI/CgpUYWtp
-bmcgYSBzdGVwIGJhY2ssIGl0J3MgY2xlYXIgdGhhdCBpdCB3b3VsZCBiZSBnb29kIHRvIGJlIGFi
-bGUgdG8KZGVxdWV1ZSBwYWNrZXRzIHRvIG11bHRpcGxlIFNUQXMgYXQgb25jZSAod2UgbmVlZCB0
-aGF0IGZvciBNVS1NSU1PIG9uCmF0aDEwayBhcyB3ZWxsKS4gSG93ZXZlciwgSSBkb24ndCB0aGlu
-ayB3ZSBjYW4gZG8gdGhhdCB3aXRoIHRoZQpyb3VuZC1yb2JpbiBmYWlybmVzcyBzY2hlZHVsZXI7
-IHNvIHdlIGFyZSBnb2luZyB0byBuZWVkIGEgZGlmZmVyZW50CmFsZ29yaXRobS4gSSAqdGhpbmsq
-IGl0IG1heSBiZSBwb3NzaWJsZSB0byBkbyB0aGlzIHdpdGggYSB2aXJ0dWFsLXRpbWUKc2NoZWR1
-bGVyLCBidXQgSSBoYXZlbid0IHNhdCBkb3duIGFuZCB3b3JrZWQgb3V0IHRoZSBkZXRhaWxzIHll
-dC4uLgoKLVRva2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi,
+
+On Thu, Nov 15, 2018 at 06:38:25AM +0000, Wen Gong wrote:
+> > -----Original Message-----
+> > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Brian Norris
+> > 
+> > Is there some reason L1 was disabled in the first place? Was it known to be
+> > unreliable?
+>
+> Hi Brian,
+> It is a BUG for power, and it is not considered this BUG before.
+> So this change will fix the bug.
+
+I understand that the existing behavior is suboptimal for power, but on
+the other hand, code that goes out of its way to *clear* the L1 flag
+doesn't just pop up out of nowhere. Somebody clearly wrote that! If it
+just meant "we didn't verify L1 at first", then maybe it's fine to
+enable it unconditionally and see what happens, but if it meant "we
+tried L1 on some old chip XXXX and it caused problems", then it would be
+nice to know what those problems were.
+
+Or maybe that is hard to figure out, given there's no public git history
+tracking the original code, and we just need to try it out.
+
+Anyway, I'm giving it a try here, but I just wanted to ask :)
+
+Thanks,
+Brian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
