@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gN5Wc-0006Lm-GK
- for ath10k@lists.infradead.org; Thu, 15 Nov 2018 00:28:51 +0000
-Received: by mail-pf1-x441.google.com with SMTP id h3so2207130pfg.1
- for <ath10k@lists.infradead.org>; Wed, 14 Nov 2018 16:28:40 -0800 (PST)
-Date: Wed, 14 Nov 2018 16:28:36 -0800
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
-Message-ID: <20181115002836.GA71934@google.com>
-References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
+ id 1gN67y-00025y-BY
+ for ath10k@lists.infradead.org; Thu, 15 Nov 2018 01:07:27 +0000
+Received: by mail-lj1-x241.google.com with SMTP id x85-v6so15842043ljb.2
+ for <ath10k@lists.infradead.org>; Wed, 14 Nov 2018 17:07:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
+References: <CAEJqkgiKzYTZQTGWNAPTeOPFWz658FWqDsAhyoxVDP1VKWSukg@mail.gmail.com>
+ <CAEJqkgh7xksO7tmPHGkOXvWftc2AcCgi4j3S3C88CorV53+Hgw@mail.gmail.com>
+ <CAEJqkghgyYMxRc8-wnF-J1CGhuYD2vfVDSiLU1A0fwpXKN7Huw@mail.gmail.com>
+In-Reply-To: <CAEJqkghgyYMxRc8-wnF-J1CGhuYD2vfVDSiLU1A0fwpXKN7Huw@mail.gmail.com>
+From: Gabriel C <nix.or.die@gmail.com>
+Date: Thu, 15 Nov 2018 02:06:47 +0100
+Message-ID: <CAEJqkgiz0-5m5uDUW2vzCatxHPX2Gi6oPQwR_J5Y4fV8iuiguw@mail.gmail.com>
+Subject: Re: atk10k Unknown eventid and WARN() on resume with kernel 4.19
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +26,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Cc: linux-pm@vger.kernel.org, linux-wireless@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, dex77@frugalware.org
 
-Hi Wen,
+Am Mi., 14. Nov. 2018 um 23:16 Uhr schrieb Gabriel C <nix.or.die@gmail.com>:
+> > > Hello,
+> > >
+> > > starting with kernel 4.19 we noticed  'Unknown eventid: xxxx' warnings
+> > > on our Laptops.
+> > >
+> > > ...
+> > >
+> > > crazy@devnull:~$ dmesg | grep Unknow
+> > > [    7.144998] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > > [    7.147758] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > > [    9.441654] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > > [    9.444446] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > > [   11.770997] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > > [   11.773787] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > > [320339.374108] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > > [320339.377020] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > > [320342.128664] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > > [320342.131447] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > > [320344.452864] ath10k_pci 0000:03:00.0: Unknown eventid: 118809
+> > > [320344.455696] ath10k_pci 0000:03:00.0: Unknown eventid: 90118
+> > >
+> > > ....
+> > >
+> > > Both boxes also hits the following WARN*() on resume from S3:
+> > >
+> >  Uh sorry .. Gmail doesn't like long lines it seems.
+> > There the WARN() message:
+> >
+> > http://ftp.frugalware.org/pub/other/people/crazy/warn.txt
+> >
+> > >
+> > > Please let me know if you need an dmesg or any other informations.
+>
+>
+> Added pm list maybe someone there got some idea ?
+>
+> Also same issue reported there :
+> https://bugzilla.kernel.org/show_bug.cgi?id=201499
+>
 
-On Wed, Nov 14, 2018 at 10:50:48AM +0800, Wen Gong wrote:
-> QCA6174A/QCA9377 PCIe chips support PCIe L1 and L1SS, and indicate the
-> L1/L1SS capabilities in PCI configuration space. Currently ath10k driver
-> write target PCIe config flags to disallow HW enter into L1, this leads
-> some HW modules are still powered up even when both system PCIe RC and
-> QCA6174A/QCA9377 endpoint decides to enter into L1 or L1SS.
-> 
-> This cause ~12 mA power drain of bottom power consumption for all scenarios.
-> Fix this issue by removing the drive code to write PCIe config flags.
-> 
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-> It's not a regression with new firmware releases.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+The WARN_ON() on resume seems to be triggered  after commit cd93b83ad927b.
 
-Is there some reason L1 was disabled in the first place? Was it known to
-be unreliable?
+BR,
 
-Brian
+Gabriel C
 
 _______________________________________________
 ath10k mailing list
