@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNahx-0003DH-N9
- for ath10k@lists.infradead.org; Fri, 16 Nov 2018 09:46:39 +0000
+ id 1gNaqm-0003YN-DQ
+ for ath10k@lists.infradead.org; Fri, 16 Nov 2018 09:55:46 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath: fix frequent flase radar detection
-References: <1539580047-22512-1-git-send-email-tamizhr@codeaurora.org>
- <b0e823e3-275c-86ab-dce0-dd522ebd3711@bowerswilkins.com>
-Date: Fri, 16 Nov 2018 11:46:20 +0200
-In-Reply-To: <b0e823e3-275c-86ab-dce0-dd522ebd3711@bowerswilkins.com> (Peter
- Oh's message of "Mon, 15 Oct 2018 17:47:36 +0000")
-Message-ID: <87wopd73tf.fsf@codeaurora.org>
+Subject: Re: [PATCH] ath10k: avoid -Wmaybe-uninitialized warning
+References: <20181102161833.2956376-1-arnd@arndb.de>
+ <CA+ASDXPVJMge_B-AUXj1sKc4dB+3FcXew8T5FYEXVsncKYotiw@mail.gmail.com>
+Date: Fri, 16 Nov 2018 11:55:27 +0200
+In-Reply-To: <CA+ASDXPVJMge_B-AUXj1sKc4dB+3FcXew8T5FYEXVsncKYotiw@mail.gmail.com>
+ (Brian Norris's message of "Fri, 2 Nov 2018 09:34:53 -0700")
+Message-ID: <87sh0173e8.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,88 +24,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Tamizh chelvam <tamizhr@codeaurora.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: srirrama@codeaurora.org, Arnd Bergmann <arnd@arndb.de>, bpothuno@codeaurora.org, akolli@codeaurora.org, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, yintang@qti.qualcomm.com, pillair@codeaurora.org, ath10k@lists.infradead.org, netdev@vger.kernel.org, davem@davemloft.net
 
-Peter Oh <peter.oh@bowerswilkins.com> writes:
+Brian Norris <briannorris@chromium.org> writes:
 
-> On 10/14/2018 10:07 PM, Tamizh chelvam wrote:
->> Many number of false radar detection occurred in a noisy
->> environment in QCA4019, QCA9888 devices. By reducing
->> PRI_TOLERANCE to 6 and flushing out pulse queue by dpd_reset
->> if timestamp between current and previous pulse is lesser than
->> 100ms helps to avoid/reduce this false radar detection
->> in the noisy environment.
->>
->> Tested ath10k hw and fw:
->> 	* QCA9888(10.4-3.5.1-00052)
->> 	* QCA4019(10.4-3.2.1.1-00017)
->> 	* QCA9984(10.4-3.6-00104)
->> 	* QCA988X(10.2.4-1.0-00041)
->>
->> Tested ath9k hw: AR9300
+> Hi,
 >
-> Please post the radar detection rate results before and after this change.
-> Especially for ETSI at 30% channel load.
->
->> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> On Fri, Nov 2, 2018 at 9:19 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>>
+>> In some configurations the inlining in gcc is suboptimal, causing
+>> a false-positive warning:
+>>
+>> drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_init_rd':
+>> drivers/net/wireless/ath/ath10k/mac.c:8374:39: error: 'rd' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+>>   ar->ath_common.regulatory.current_rd = rd;
+>>
+>> If we initialize the output of ath10k_mac_get_wrdd_regulatory()
+>> before returning, this problem goes away.
+>>
+>> Fixes: 209b2a68de76 ("ath10k: add platform regulatory domain support")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 >> ---
->>   drivers/net/wireless/ath/ath.h                  | 2 ++
->>   drivers/net/wireless/ath/ath10k/mac.c           | 4 ++++
->>   drivers/net/wireless/ath/ath9k/init.c           | 1 +
->>   drivers/net/wireless/ath/dfs_pattern_detector.c | 4 +++-
->>   drivers/net/wireless/ath/dfs_pattern_detector.h | 2 +-
->>   5 files changed, 11 insertions(+), 2 deletions(-)
+>>  drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
 >>
->> diff --git a/drivers/net/wireless/ath/ath.h b/drivers/net/wireless/ath/ath.h
->> index 7a364ec..2bf2d0c 100644
->> --- a/drivers/net/wireless/ath/ath.h
->> +++ b/drivers/net/wireless/ath/ath.h
->> @@ -184,6 +184,8 @@ struct ath_common {
->>   
->>   	int last_rssi;
->>   	struct ieee80211_supported_band sbands[NUM_NL80211_BANDS];
->> +
->> +	int dfs_pulse_valid_diff_ts;
->>   };
->>   
->>   static inline const struct ath_ps_ops *ath_ps_ops(struct ath_common *common)
 >> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index a1c2801..c93b81c 100644
+>> index a1c2801ded10..0d5fde28ee44 100644
 >> --- a/drivers/net/wireless/ath/ath10k/mac.c
 >> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -8275,6 +8275,8 @@ struct ath10k_vif *ath10k_get_arvif(struct ath10k *ar, u32 vdev_id)
->>   #define WRD_METHOD "WRDD"
->>   #define WRDD_WIFI  (0x07)
->>   
->> +#define ATH10K_DFS_PULSE_VALID_DIFF_TS 100
+>> @@ -8321,6 +8321,8 @@ static int ath10k_mac_get_wrdd_regulatory(struct ath10k *ar, u16 *rd)
+>>         u32 alpha2_code;
+>>         char alpha2[3];
+>>
+>> +       *rd = ar->hw_eeprom_rd;
 >> +
->>   static u32 ath10k_mac_wrdd_get_mcc(struct ath10k *ar, union acpi_object *wrdd)
->>   {
->>   	union acpi_object *mcc_pkg;
->> @@ -8642,6 +8644,8 @@ int ath10k_mac_register(struct ath10k *ar)
->>   	if (IS_ENABLED(CONFIG_ATH10K_DFS_CERTIFIED)) {
->>   		/* Init ath dfs pattern detector */
->>   		ar->ath_common.debug_mask = ATH_DBG_DFS;
->> +		ar->ath_common.dfs_pulse_valid_diff_ts =
->> +					ATH10K_DFS_PULSE_VALID_DIFF_TS;
->>   		ar->dfs_detector = dfs_pattern_detector_init(&ar->ath_common,
->>   							     NL80211_DFS_UNSET);
->>   
->> diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
->> index c070a9e..7ea4460 100644
->> --- a/drivers/net/wireless/ath/ath9k/init.c
->> +++ b/drivers/net/wireless/ath/ath9k/init.c
->> @@ -696,6 +696,7 @@ static int ath9k_init_softc(u16 devid, struct ath_softc *sc,
->>   	common->debug_mask = ath9k_debug;
->>   	common->btcoex_enabled = ath9k_btcoex_enable == 1;
->>   	common->disable_ani = false;
->> +	common->dfs_pulse_valid_diff_ts = 0;
 >
-> Why it's 0 here while ath10k is using 100us?
+> Maybe it's just me, but it seems kinda weird for this function to
+> assign a (valid) value to its "output" and still potentially return an
+> error.
+>
+> If you really need to work around this compiler bug, maybe just put
+> the eeprom assignment back in ath10k_mac_init_rd()? I'll leave it up
+> to Kalle as to whether he wants to work around the compiler at all :)
 
-Tamizh, please reply to Peter's comments. I'll drop this patch now,
-please resubmit once you have reached a conclusion in the discussion.
+In general I'm happy take workaround to compiler problems, I prefer to
+keep ath10k warning free much as possible.
+
+> Oh wait, one more thing: this is actually an invalid refactoring. See
+> how this function assigns '*rd' later in error cases. Today, we still
+> treat those as errors and clobber those with the eeprom value, but
+> now, you're making the fallback case continue to use the erroneous
+> value (0xffff). You need to make that use a local variable and avoid
+> clobbering *rd, if you want this to be correct.
+
+But I agree with Brian here, I don't think this patch is correct.
 
 -- 
 Kalle Valo
