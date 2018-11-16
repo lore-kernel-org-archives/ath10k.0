@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from out4-smtp.messagingengine.com ([66.111.4.28])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNeL0-0003cX-Gm
- for ath10k@lists.infradead.org; Fri, 16 Nov 2018 13:39:12 +0000
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 01C0521C6B
- for <ath10k@lists.infradead.org>; Fri, 16 Nov 2018 08:38:55 -0500 (EST)
-Received: from adell35 (unknown [190.130.101.161])
- by mail.messagingengine.com (Postfix) with ESMTPA id 33EA0E414B
- for <ath10k@lists.infradead.org>; Fri, 16 Nov 2018 08:38:54 -0500 (EST)
-Date: Fri, 16 Nov 2018 08:38:51 -0500
-From: Anil Duggirala <anilduggirala@fastmail.fm>
-Subject: missing firmware in debian 9
-Message-ID: <20181116133851.czjhgfmttodnudzg@adell35>
+ id 1gNgeG-0000wv-CO
+ for ath10k@lists.infradead.org; Fri, 16 Nov 2018 16:07:14 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+Date: Fri, 16 Nov 2018 21:36:57 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH v4 0/3] Enable ath10k wcn3990 wifi driver support on sdm845
+In-Reply-To: <87d0r55ews.fsf@codeaurora.org>
+References: <1541423318-19312-1-git-send-email-govinds@codeaurora.org>
+ <87d0r55ews.fsf@codeaurora.org>
+Message-ID: <6e831363962be4e28d7551e360ed4d46@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +19,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: devicetree@vger.kernel.org, sboyd@kernel.org, linux-arm-msm@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, andy.gross@linaro.org, linux-soc@vger.kernel.org
 
-hello,
-I am getting this message at boot.
+On 2018-11-16 18:59, Kalle Valo wrote:
+> Govind Singh <govinds@codeaurora.org> writes:
+> 
+>> This series enables ath10k wifi driver support for WCN3990 target
+>> on sdm845 SOC. This series also updates the missing dt binding 
+>> documentation
+>> and adds optional iommu property.
+>> 
+>> Changes since v3:
+>>     Moved interrupt/reg/reg-name to required property.
+>>     Removed unused clocks.
+>>     Corrected interrupt no's.
+>> 
+>> Changes since v2:
+>>     dropped [v2,4/4] dts: arm64/sdm845: Enable iommu for WCN3990 wifi 
+>> module
+>>     device node patch from the series as dependent patch is not yet 
+>> merged.
+>>     Enabled status flag from sdm845-mtp.dts.
+>> 
+>> Changes since v1:
+>>     Listed no of interrupts/clocks for each set of compatible.
+>>     Added missing 'wifi' label to sdm845.dtsi.
+>> 
+>> Govind Singh (3):
+>>   dt: bindings: add missing dt properties for WCN3990 wifi node
+>>   dts: arm64/sdm845: Add WCN3990 WLAN module device node
+>>   dt: bindings: add bindings for wifi iommu node
+>> 
+>>  .../bindings/net/wireless/qcom,ath10k.txt          | 62 
+>> ++++++++++++++--------
+>>  arch/arm64/boot/dts/qcom/sdm845-mtp.dts            |  8 +++
+>>  arch/arm64/boot/dts/qcom/sdm845.dtsi               | 26 +++++++++
+>>  3 files changed, 74 insertions(+), 22 deletions(-)
+> 
+> Via which tree are these patches going? That's not clear for me.
 
-[   10.678576] ath10k_pci 0000:03:00.0: firmware: failed to load ath10k/pre-cal-pci-0000:03:00.0.bin (-2)
-[   10.678631] ath10k_pci 0000:03:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:03:00.0.bin failed with error -2
-[   10.678655] ath10k_pci 0000:03:00.0: firmware: failed to load ath10k/cal-pci-0000:03:00.0.bin (-2)        
-[   10.678699] ath10k_pci 0000:03:00.0: Direct firmware load for ath10k/cal-pci-0000:03:00.0.bin failed with error -2
-[   10.681081] ath10k_pci 0000:03:00.0: firmware: failed to load ath10k/QCA6174/hw3.0/firmware-5.bin (-2)
-[   10.681127] ath10k_pci 0000:03:00.0: Direct firmware load for ath10k/QCA6174/hw3.0/firmware-5.bin failed with error -2
-[   10.681131] ath10k_pci 0000:03:00.0: could not fetch firmware file 'ath10k/QCA6174/hw3.0/firmware-5.bin': -2  
+I guess sdm845 dtsi change should be going to 
+git://git.kernel.org/pub/scm/linux/kernel/git/agross/linux.git.
+I need to send v5 to address one comment from Brian.
 
-I have installed the firmware-atheros package from backports in Debian 9, I had installed the package from the main repository before but I was also getting this message. I have also installed the firmware-linux-free package.
-
-Help please,
-thanks,
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
