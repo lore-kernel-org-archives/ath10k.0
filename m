@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNYzl-0006NK-K2
- for ath10k@lists.infradead.org; Fri, 16 Nov 2018 07:56:55 +0000
-Received: by mail-qk1-x744.google.com with SMTP id 189so36050958qkj.8
- for <ath10k@lists.infradead.org>; Thu, 15 Nov 2018 23:56:40 -0800 (PST)
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNahx-0003DH-N9
+ for ath10k@lists.infradead.org; Fri, 16 Nov 2018 09:46:39 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath: fix frequent flase radar detection
+References: <1539580047-22512-1-git-send-email-tamizhr@codeaurora.org>
+ <b0e823e3-275c-86ab-dce0-dd522ebd3711@bowerswilkins.com>
+Date: Fri, 16 Nov 2018 11:46:20 +0200
+In-Reply-To: <b0e823e3-275c-86ab-dce0-dd522ebd3711@bowerswilkins.com> (Peter
+ Oh's message of "Mon, 15 Oct 2018 17:47:36 +0000")
+Message-ID: <87wopd73tf.fsf@codeaurora.org>
 MIME-Version: 1.0
-References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
- <20181115002836.GA71934@google.com>
- <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
- <20181115184333.GA87504@google.com> <87va4x8q2c.fsf@codeaurora.org>
-In-Reply-To: <87va4x8q2c.fsf@codeaurora.org>
-From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
-Date: Fri, 16 Nov 2018 08:56:27 +0100
-Message-ID: <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +20,97 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org
-Cc: wgong@qti.qualcomm.com, briannorris@chromium.org, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Tamizh chelvam <tamizhr@codeaurora.org>
 
-T24gRnJpLCAxNiBOb3YgMjAxOCBhdCAwODowMCwgS2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9y
-YS5vcmc+IHdyb3RlOgo+Cj4gQnJpYW4gTm9ycmlzIDxicmlhbm5vcnJpc0BjaHJvbWl1bS5vcmc+
-IHdyaXRlczoKPiA+IE9uIFRodSwgTm92IDE1LCAyMDE4IGF0IDA2OjM4OjI1QU0gKzAwMDAsIFdl
-biBHb25nIHdyb3RlOgo+ID4+ID4KPiA+PiA+IElzIHRoZXJlIHNvbWUgcmVhc29uIEwxIHdhcyBk
-aXNhYmxlZCBpbiB0aGUgZmlyc3QgcGxhY2U/IFdhcyBpdCBrbm93biB0byBiZQo+ID4+ID4gdW5y
-ZWxpYWJsZT8KPiA+Pgo+ID4+IEhpIEJyaWFuLAo+ID4+IEl0IGlzIGEgQlVHIGZvciBwb3dlciwg
-YW5kIGl0IGlzIG5vdCBjb25zaWRlcmVkIHRoaXMgQlVHIGJlZm9yZS4KPiA+PiBTbyB0aGlzIGNo
-YW5nZSB3aWxsIGZpeCB0aGUgYnVnLgo+ID4KPiA+IEkgdW5kZXJzdGFuZCB0aGF0IHRoZSBleGlz
-dGluZyBiZWhhdmlvciBpcyBzdWJvcHRpbWFsIGZvciBwb3dlciwgYnV0IG9uCj4gPiB0aGUgb3Ro
-ZXIgaGFuZCwgY29kZSB0aGF0IGdvZXMgb3V0IG9mIGl0cyB3YXkgdG8gKmNsZWFyKiB0aGUgTDEg
-ZmxhZwo+ID4gZG9lc24ndCBqdXN0IHBvcCB1cCBvdXQgb2Ygbm93aGVyZS4gU29tZWJvZHkgY2xl
-YXJseSB3cm90ZSB0aGF0ISBJZiBpdAo+ID4ganVzdCBtZWFudCAid2UgZGlkbid0IHZlcmlmeSBM
-MSBhdCBmaXJzdCIsIHRoZW4gbWF5YmUgaXQncyBmaW5lIHRvCj4gPiBlbmFibGUgaXQgdW5jb25k
-aXRpb25hbGx5IGFuZCBzZWUgd2hhdCBoYXBwZW5zLCBidXQgaWYgaXQgbWVhbnQgIndlCj4gPiB0
-cmllZCBMMSBvbiBzb21lIG9sZCBjaGlwIFhYWFggYW5kIGl0IGNhdXNlZCBwcm9ibGVtcyIsIHRo
-ZW4gaXQgd291bGQgYmUKPiA+IG5pY2UgdG8ga25vdyB3aGF0IHRob3NlIHByb2JsZW1zIHdlcmUu
-Cj4gPgo+ID4gT3IgbWF5YmUgdGhhdCBpcyBoYXJkIHRvIGZpZ3VyZSBvdXQsIGdpdmVuIHRoZXJl
-J3Mgbm8gcHVibGljIGdpdCBoaXN0b3J5Cj4gPiB0cmFja2luZyB0aGUgb3JpZ2luYWwgY29kZSwg
-YW5kIHdlIGp1c3QgbmVlZCB0byB0cnkgaXQgb3V0Lgo+Cj4gWWVhaCwgaXQgc2VlbXMgTDEgd2Fz
-IGRpc2FibGVkIGFscmVhZHkgb24gdGhlIGZpcnN0IGF0aDEwayBjb21taXQ6Cj4KPiA1ZTNkZDE1
-N2Q3ZTcwIChLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgMjA6NTI6MTAgKzAz
-MDAgMjQwNCkgICAgICAgIHBjaWVfY29uZmlnX2ZsYWdzICY9IH5QQ0lFX0NPTkZJR19GTEFHX0VO
-QUJMRV9MMTsKPgo+IEkgZG9uJ3QgcmVtZW1iZXIgYW55bW9yZSB3aHkgYnV0IG15IGd1ZXNzIGlz
-IHRoYXQgdGhlIHByb3ByaWV0YXJ5IGRyaXZlcgo+IGF0IHRoZSB0aW1lIGRpZG4ndCBzdXBwb3J0
-IGl0IHdpdGggUUNBOTk4WC4gT3IgbWF5YmUgUUNBOTg4WCBkb2Vzbid0Cj4gZXZlbiBzdXBwb3J0
-IEwxPyBNaWNoYWwsIGRvIHlvdSByZW1lbWJlcj8KClByb3ByaWV0YXJ5IGRyaXZlciBoYXMgaXQg
-aWZkZWYtZWQgdG8gZW5hYmxlL2Rpc2FibGUuCgpPbGRlciBkcml2ZXIgZW5hYmxlZCBpdCBvbmx5
-IGZvciBzb21lIHN0YXRpb24tb25seSB0YXJnZXQvcHJvZHVjdCBzbwpieSBkZWZhdWx0IFFDQTk4
-OFggd291bGQgYnVpbGQgd2l0aCBMMSBmbGFnIG1hc2tlZCBvdXQuIEl0IG1hZGUgc2Vuc2UKdG8g
-YmUgY29uc2VydmF0aXZlIGFuZCBjaGFuZ2UgYXMgbGl0dGxlIGFzIHBvc3NpYmxlIHRvIGF2b2lk
-IHJhbmRvbQpidWdzIGFuZCBicmVha2FnZSAtIHNvIHRoZSBsb2dpYyB3YXMgaW5oZXJpdGVkIG1p
-bnVzIHRoZSBidWlsZC10aW1lCmlmZGVmLgoKSG93ZXZlciAxMC40IGRyaXZlciBzZWVtcyB0byBl
-bmFibGUgaXQgdW5jb25kaXRpb25hbGx5LiBJJ20gbm90IHN1cmUKaWYgdGhpcyBkZXBlbmRzIG9u
-IHRhcmdldCBmaXJtd2FyZSBpbiBhbnkgd2F5IG9yIGlmIHNvbWUgb3RoZXIgaG9zdApkcml2ZXIg
-b3IgYnVzIHNldHRpbmdzIG5lZWQgdG8gYmUgcHJlLXNldCBiZWZvcmUgTDEgY2FuIGJlIGV4cGVj
-dGVkIHRvCndvcmsgcmVsaWFibHkuCgpJIGd1ZXNzIHRoZXJlJ3Mgbm8gd2F5IG90aGVyIHRoYW4g
-dGVzdGluZyBpdCBvdXQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+Peter Oh <peter.oh@bowerswilkins.com> writes:
+
+> On 10/14/2018 10:07 PM, Tamizh chelvam wrote:
+>> Many number of false radar detection occurred in a noisy
+>> environment in QCA4019, QCA9888 devices. By reducing
+>> PRI_TOLERANCE to 6 and flushing out pulse queue by dpd_reset
+>> if timestamp between current and previous pulse is lesser than
+>> 100ms helps to avoid/reduce this false radar detection
+>> in the noisy environment.
+>>
+>> Tested ath10k hw and fw:
+>> 	* QCA9888(10.4-3.5.1-00052)
+>> 	* QCA4019(10.4-3.2.1.1-00017)
+>> 	* QCA9984(10.4-3.6-00104)
+>> 	* QCA988X(10.2.4-1.0-00041)
+>>
+>> Tested ath9k hw: AR9300
+>
+> Please post the radar detection rate results before and after this change.
+> Especially for ETSI at 30% channel load.
+>
+>> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+>> ---
+>>   drivers/net/wireless/ath/ath.h                  | 2 ++
+>>   drivers/net/wireless/ath/ath10k/mac.c           | 4 ++++
+>>   drivers/net/wireless/ath/ath9k/init.c           | 1 +
+>>   drivers/net/wireless/ath/dfs_pattern_detector.c | 4 +++-
+>>   drivers/net/wireless/ath/dfs_pattern_detector.h | 2 +-
+>>   5 files changed, 11 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath.h b/drivers/net/wireless/ath/ath.h
+>> index 7a364ec..2bf2d0c 100644
+>> --- a/drivers/net/wireless/ath/ath.h
+>> +++ b/drivers/net/wireless/ath/ath.h
+>> @@ -184,6 +184,8 @@ struct ath_common {
+>>   
+>>   	int last_rssi;
+>>   	struct ieee80211_supported_band sbands[NUM_NL80211_BANDS];
+>> +
+>> +	int dfs_pulse_valid_diff_ts;
+>>   };
+>>   
+>>   static inline const struct ath_ps_ops *ath_ps_ops(struct ath_common *common)
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index a1c2801..c93b81c 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -8275,6 +8275,8 @@ struct ath10k_vif *ath10k_get_arvif(struct ath10k *ar, u32 vdev_id)
+>>   #define WRD_METHOD "WRDD"
+>>   #define WRDD_WIFI  (0x07)
+>>   
+>> +#define ATH10K_DFS_PULSE_VALID_DIFF_TS 100
+>> +
+>>   static u32 ath10k_mac_wrdd_get_mcc(struct ath10k *ar, union acpi_object *wrdd)
+>>   {
+>>   	union acpi_object *mcc_pkg;
+>> @@ -8642,6 +8644,8 @@ int ath10k_mac_register(struct ath10k *ar)
+>>   	if (IS_ENABLED(CONFIG_ATH10K_DFS_CERTIFIED)) {
+>>   		/* Init ath dfs pattern detector */
+>>   		ar->ath_common.debug_mask = ATH_DBG_DFS;
+>> +		ar->ath_common.dfs_pulse_valid_diff_ts =
+>> +					ATH10K_DFS_PULSE_VALID_DIFF_TS;
+>>   		ar->dfs_detector = dfs_pattern_detector_init(&ar->ath_common,
+>>   							     NL80211_DFS_UNSET);
+>>   
+>> diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
+>> index c070a9e..7ea4460 100644
+>> --- a/drivers/net/wireless/ath/ath9k/init.c
+>> +++ b/drivers/net/wireless/ath/ath9k/init.c
+>> @@ -696,6 +696,7 @@ static int ath9k_init_softc(u16 devid, struct ath_softc *sc,
+>>   	common->debug_mask = ath9k_debug;
+>>   	common->btcoex_enabled = ath9k_btcoex_enable == 1;
+>>   	common->disable_ani = false;
+>> +	common->dfs_pulse_valid_diff_ts = 0;
+>
+> Why it's 0 here while ath10k is using 100us?
+
+Tamizh, please reply to Peter's comments. I'll drop this patch now,
+please resubmit once you have reached a conclusion in the discussion.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
