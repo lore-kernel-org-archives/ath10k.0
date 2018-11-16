@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNY7P-0005fJ-LL
- for ath10k@lists.infradead.org; Fri, 16 Nov 2018 07:00:45 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
+Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNYzl-0006NK-K2
+ for ath10k@lists.infradead.org; Fri, 16 Nov 2018 07:56:55 +0000
+Received: by mail-qk1-x744.google.com with SMTP id 189so36050958qkj.8
+ for <ath10k@lists.infradead.org>; Thu, 15 Nov 2018 23:56:40 -0800 (PST)
+MIME-Version: 1.0
 References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
  <20181115002836.GA71934@google.com>
  <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
- <20181115184333.GA87504@google.com>
-Date: Fri, 16 Nov 2018 09:00:27 +0200
-In-Reply-To: <20181115184333.GA87504@google.com> (Brian Norris's message of
- "Thu, 15 Nov 2018 10:43:33 -0800")
-Message-ID: <87va4x8q2c.fsf@codeaurora.org>
-MIME-Version: 1.0
+ <20181115184333.GA87504@google.com> <87va4x8q2c.fsf@codeaurora.org>
+In-Reply-To: <87va4x8q2c.fsf@codeaurora.org>
+From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
+Date: Fri, 16 Nov 2018 08:56:27 +0100
+Message-ID: <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +23,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Wen Gong <wgong@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: kvalo@codeaurora.org
+Cc: wgong@qti.qualcomm.com, briannorris@chromium.org, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-Brian Norris <briannorris@chromium.org> writes:
-> On Thu, Nov 15, 2018 at 06:38:25AM +0000, Wen Gong wrote:
->> > 
->> > Is there some reason L1 was disabled in the first place? Was it known to be
->> > unreliable?
->>
->> Hi Brian,
->> It is a BUG for power, and it is not considered this BUG before.
->> So this change will fix the bug.
->
-> I understand that the existing behavior is suboptimal for power, but on
-> the other hand, code that goes out of its way to *clear* the L1 flag
-> doesn't just pop up out of nowhere. Somebody clearly wrote that! If it
-> just meant "we didn't verify L1 at first", then maybe it's fine to
-> enable it unconditionally and see what happens, but if it meant "we
-> tried L1 on some old chip XXXX and it caused problems", then it would be
-> nice to know what those problems were.
->
-> Or maybe that is hard to figure out, given there's no public git history
-> tracking the original code, and we just need to try it out.
-
-Yeah, it seems L1 was disabled already on the first ath10k commit:
-
-5e3dd157d7e70 (Kalle Valo                2013-06-12 20:52:10 +0300 2404)        pcie_config_flags &= ~PCIE_CONFIG_FLAG_ENABLE_L1;
-
-I don't remember anymore why but my guess is that the proprietary driver
-at the time didn't support it with QCA998X. Or maybe QCA988X doesn't
-even support L1? Michal, do you remember?
-
-Related to QCA988X supporting L1 state also the commit log is misleading
-as it only talks QCA6174/QCA9377, and has been only tested on QCA6174,
-but the actual change enables L1 on _all_ PCI and AHB devices. So this
-patch needs a lot more testing so that we have confidence that no
-existing setups break.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCAxNiBOb3YgMjAxOCBhdCAwODowMCwgS2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9y
+YS5vcmc+IHdyb3RlOgo+Cj4gQnJpYW4gTm9ycmlzIDxicmlhbm5vcnJpc0BjaHJvbWl1bS5vcmc+
+IHdyaXRlczoKPiA+IE9uIFRodSwgTm92IDE1LCAyMDE4IGF0IDA2OjM4OjI1QU0gKzAwMDAsIFdl
+biBHb25nIHdyb3RlOgo+ID4+ID4KPiA+PiA+IElzIHRoZXJlIHNvbWUgcmVhc29uIEwxIHdhcyBk
+aXNhYmxlZCBpbiB0aGUgZmlyc3QgcGxhY2U/IFdhcyBpdCBrbm93biB0byBiZQo+ID4+ID4gdW5y
+ZWxpYWJsZT8KPiA+Pgo+ID4+IEhpIEJyaWFuLAo+ID4+IEl0IGlzIGEgQlVHIGZvciBwb3dlciwg
+YW5kIGl0IGlzIG5vdCBjb25zaWRlcmVkIHRoaXMgQlVHIGJlZm9yZS4KPiA+PiBTbyB0aGlzIGNo
+YW5nZSB3aWxsIGZpeCB0aGUgYnVnLgo+ID4KPiA+IEkgdW5kZXJzdGFuZCB0aGF0IHRoZSBleGlz
+dGluZyBiZWhhdmlvciBpcyBzdWJvcHRpbWFsIGZvciBwb3dlciwgYnV0IG9uCj4gPiB0aGUgb3Ro
+ZXIgaGFuZCwgY29kZSB0aGF0IGdvZXMgb3V0IG9mIGl0cyB3YXkgdG8gKmNsZWFyKiB0aGUgTDEg
+ZmxhZwo+ID4gZG9lc24ndCBqdXN0IHBvcCB1cCBvdXQgb2Ygbm93aGVyZS4gU29tZWJvZHkgY2xl
+YXJseSB3cm90ZSB0aGF0ISBJZiBpdAo+ID4ganVzdCBtZWFudCAid2UgZGlkbid0IHZlcmlmeSBM
+MSBhdCBmaXJzdCIsIHRoZW4gbWF5YmUgaXQncyBmaW5lIHRvCj4gPiBlbmFibGUgaXQgdW5jb25k
+aXRpb25hbGx5IGFuZCBzZWUgd2hhdCBoYXBwZW5zLCBidXQgaWYgaXQgbWVhbnQgIndlCj4gPiB0
+cmllZCBMMSBvbiBzb21lIG9sZCBjaGlwIFhYWFggYW5kIGl0IGNhdXNlZCBwcm9ibGVtcyIsIHRo
+ZW4gaXQgd291bGQgYmUKPiA+IG5pY2UgdG8ga25vdyB3aGF0IHRob3NlIHByb2JsZW1zIHdlcmUu
+Cj4gPgo+ID4gT3IgbWF5YmUgdGhhdCBpcyBoYXJkIHRvIGZpZ3VyZSBvdXQsIGdpdmVuIHRoZXJl
+J3Mgbm8gcHVibGljIGdpdCBoaXN0b3J5Cj4gPiB0cmFja2luZyB0aGUgb3JpZ2luYWwgY29kZSwg
+YW5kIHdlIGp1c3QgbmVlZCB0byB0cnkgaXQgb3V0Lgo+Cj4gWWVhaCwgaXQgc2VlbXMgTDEgd2Fz
+IGRpc2FibGVkIGFscmVhZHkgb24gdGhlIGZpcnN0IGF0aDEwayBjb21taXQ6Cj4KPiA1ZTNkZDE1
+N2Q3ZTcwIChLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgMjA6NTI6MTAgKzAz
+MDAgMjQwNCkgICAgICAgIHBjaWVfY29uZmlnX2ZsYWdzICY9IH5QQ0lFX0NPTkZJR19GTEFHX0VO
+QUJMRV9MMTsKPgo+IEkgZG9uJ3QgcmVtZW1iZXIgYW55bW9yZSB3aHkgYnV0IG15IGd1ZXNzIGlz
+IHRoYXQgdGhlIHByb3ByaWV0YXJ5IGRyaXZlcgo+IGF0IHRoZSB0aW1lIGRpZG4ndCBzdXBwb3J0
+IGl0IHdpdGggUUNBOTk4WC4gT3IgbWF5YmUgUUNBOTg4WCBkb2Vzbid0Cj4gZXZlbiBzdXBwb3J0
+IEwxPyBNaWNoYWwsIGRvIHlvdSByZW1lbWJlcj8KClByb3ByaWV0YXJ5IGRyaXZlciBoYXMgaXQg
+aWZkZWYtZWQgdG8gZW5hYmxlL2Rpc2FibGUuCgpPbGRlciBkcml2ZXIgZW5hYmxlZCBpdCBvbmx5
+IGZvciBzb21lIHN0YXRpb24tb25seSB0YXJnZXQvcHJvZHVjdCBzbwpieSBkZWZhdWx0IFFDQTk4
+OFggd291bGQgYnVpbGQgd2l0aCBMMSBmbGFnIG1hc2tlZCBvdXQuIEl0IG1hZGUgc2Vuc2UKdG8g
+YmUgY29uc2VydmF0aXZlIGFuZCBjaGFuZ2UgYXMgbGl0dGxlIGFzIHBvc3NpYmxlIHRvIGF2b2lk
+IHJhbmRvbQpidWdzIGFuZCBicmVha2FnZSAtIHNvIHRoZSBsb2dpYyB3YXMgaW5oZXJpdGVkIG1p
+bnVzIHRoZSBidWlsZC10aW1lCmlmZGVmLgoKSG93ZXZlciAxMC40IGRyaXZlciBzZWVtcyB0byBl
+bmFibGUgaXQgdW5jb25kaXRpb25hbGx5LiBJJ20gbm90IHN1cmUKaWYgdGhpcyBkZXBlbmRzIG9u
+IHRhcmdldCBmaXJtd2FyZSBpbiBhbnkgd2F5IG9yIGlmIHNvbWUgb3RoZXIgaG9zdApkcml2ZXIg
+b3IgYnVzIHNldHRpbmdzIG5lZWQgdG8gYmUgcHJlLXNldCBiZWZvcmUgTDEgY2FuIGJlIGV4cGVj
+dGVkIHRvCndvcmsgcmVsaWFibHkuCgpJIGd1ZXNzIHRoZXJlJ3Mgbm8gd2F5IG90aGVyIHRoYW4g
+dGVzdGluZyBpdCBvdXQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
