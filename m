@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.toke.dk ([2001:470:dc45:1000::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOsI2-0007Uj-S3
- for ath10k@lists.infradead.org; Mon, 19 Nov 2018 22:45:13 +0000
+ id 1gOsZL-0006Yx-77
+ for ath10k@lists.infradead.org; Mon, 19 Nov 2018 23:03:04 +0000
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtime accounting
- and scheduling to TXQs
-In-Reply-To: <878t1p2bqz.fsf@taht.net>
+Subject: Re: [PATCH v3 3/6] mac80211: Add airtime accounting and scheduling to
+ TXQs
+In-Reply-To: <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
 References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
  <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
  <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name> <871s7nv9pl.fsf@toke.dk>
- <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name> <87sh02tfsp.fsf@toke.dk>
- <878t1p2bqz.fsf@taht.net>
-Date: Mon, 19 Nov 2018 14:44:43 -0800
-Message-ID: <87muq4sn50.fsf@toke.dk>
+ <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
+Date: Mon, 19 Nov 2018 15:02:50 -0800
+Message-ID: <87k1l8smat.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,96 +22,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave@taht.net>
-Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
+To: Felix Fietkau <nbd@nbd.name>, Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: make-wifi-fast@lists.bufferbloat.net
 
-RGF2ZSBUYWh0IDxkYXZlQHRhaHQubmV0PiB3cml0ZXM6Cgo+IFRva2UgSMO4aWxhbmQtSsO4cmdl
-bnNlbiA8dG9rZUB0b2tlLmRrPiB3cml0ZXM6Cj4KPj4gRmVsaXggRmlldGthdSA8bmJkQG5iZC5u
-YW1lPiB3cml0ZXM6Cj4+Cj4+PiBPbiAyMDE4LTExLTE0IDE4OjQwLCBUb2tlIEjDuGlsYW5kLUrD
-uHJnZW5zZW4gd3JvdGU6Cj4+Pj4+IFRoaXMgcGFydCBkb2Vzbid0IHJlYWxseSBtYWtlIG11Y2gg
-c2Vuc2UgdG8gbWUsIGJ1dCBtYXliZSBJJ20KPj4+Pj4gbWlzdW5kZXJzdGFuZGluZyBob3cgdGhl
-IGNvZGUgd29ya3MuCj4+Pj4+IExldCdzIGFzc3VtZSB3ZSBoYXZlIGEgZHJpdmVyIGxpa2UgYXRo
-OWsgb3IgbXQ3Niwgd2hpY2ggdHJpZXMgdG8ga2VlcCBhCj4+Pj4+IG51bWJlciBvZiBhZ2dyZWdh
-dGVzIGluIHRoZSBoYXJkd2FyZSBxdWV1ZSwgYW5kIHRoZSBoYXJkd2FyZSBxdWV1ZSBpcwo+Pj4+
-PiBjdXJyZW50bHkgZW1wdHkuCj4+Pj4+IElmIHRoZSBjdXJyZW50IHR4cSBlbnRyeSBpcyBrZXB0
-IGF0IHRoZSBoZWFkIG9mIHRoZSBzY2hlZHVsZSBsaXN0LAo+Pj4+PiB3b3VsZG4ndCB0aGUgY29k
-ZSBqdXN0IHB1bGwgZnJvbSB0aGF0IG9uZSBvdmVyIGFuZCBvdmVyIGFnYWluLCB1bnRpbAo+Pj4+
-PiBlbm91Z2ggcGFja2V0cyBhcmUgdHJhbnNtaXR0ZWQgYnkgdGhlIGhhcmR3YXJlIGFuZCB0aGVp
-ciB0eCBzdGF0dXMKPj4+Pj4gcHJvY2Vzc2VkPwo+Pj4+PiBJdCBzZWVtcyB0byBtZSB0aGF0IHdo
-aWxlIGZhaXJuZXNzIGlzIHN0aWxsIHByZXNlcnZlZCBpbiB0aGUgbG9uZyBydW4sCj4+Pj4+IHRo
-aXMgY291bGQgbGVhZCB0byByYXRoZXIgYnVyc3R5IHNjaGVkdWxpbmcsIHdoaWNoIG1heSBub3Qg
-YmUKPj4+Pj4gcGFydGljdWxhcmx5IGxhdGVuY3kgZnJpZW5kbHkuCj4+Pj4gCj4+Pj4gWWVzLCBp
-dCdsbCBiZSBhIGJpdCBtb3JlIGJ1cnN0eSB3aGVuIHRoZSBoYXJkd2FyZSBxdWV1ZSBpcyBjb21w
-bGV0ZWx5Cj4+Pj4gZW1wdHkuIEhvd2V2ZXIsIHdoZW4gYSBUWCBjb21wbGV0aW9uIGNvbWVzIGJh
-Y2ssIHRoYXQgd2lsbCBhZGp1c3QgdGhlCj4+Pj4gZGVmaWNpdCBvZiB0aGF0IHN0YSBhbmQgY2F1
-c2UgaXQgdG8gYmUgcm90YXRlZCBvbiB0aGUgbmV4dCBkZXF1ZXVlLiBUaGlzCj4+Pj4gb2J2aW91
-c2x5IHJlbGllcyBvbiB0aGUgZmFjdCB0aGF0IHRoZSBsb3dlci1sZXZlbCBoYXJkd2FyZSBxdWV1
-ZSBpcwo+Pj4+IHN1ZmZpY2llbnRseSBzaGFsbG93IHRvIG5vdCBhZGQgYSBsb3Qgb2YgbGF0ZW5j
-eS4gQnV0IHdlIHdhbnQgdGhhdCB0byBiZQo+Pj4+IHRoZSBjYXNlIGFueXdheS4gSW4gcHJhY3Rp
-Y2UsIGl0IHdvcmtzIHF1aXRlIHdlbGwgZm9yIGF0aDlrLCBidXQgbm90IHNvCj4+Pj4gd2VsbCBm
-b3IgYXRoMTBrIGJlY2F1c2UgaXQgaGFzIGEgbGFyZ2UgYnVmZmVyIGluIGZpcm13YXJlLgo+Pj4+
-IAo+Pj4+IElmIHdlIHJlcXVldWUgdGhlIFRYUSBhdCB0aGUgZW5kIG9mIHRoZSBsaXN0LCBhIHN0
-YXRpb24gdGhhdCBpcyB0YWtpbmcKPj4+PiB1cCB0b28gbXVjaCBhaXJ0aW1lIHdpbGwgZmFpbCB0
-byBiZSB0aHJvdHRsZWQgcHJvcGVybHksIHNvIHRoZQo+Pj4+IHF1ZXVlLWF0LWhlYWQgaXMga2lu
-ZGEgbmVlZGVkIHRvIGVuc3VyZSBmYWlybmVzcy4uLgo+Pj4gVGhhbmtzIGZvciB0aGUgZXhwbGFu
-YXRpb24sIHRoYXQgbWFrZXMgc2Vuc2UgdG8gbWUuIEkgaGF2ZSBhbiBpZGVhIG9uCj4+PiBob3cg
-dG8gbWl0aWdhdGUgdGhlIGJ1cnN0aW5lc3Mgd2l0aGluIHRoZSBkcml2ZXIuIEknbGwgd3JpdGUg
-aXQgZG93biBpbgo+Pj4gcHNldWRvY29kZSwgcGxlYXNlIGxldCBtZSBrbm93IGlmIHlvdSB0aGlu
-ayB0aGF0J2xsIHdvcmsuCj4+Cj4+IEkgZG9uJ3QgdGhpbmsgaXQgd2lsbCwgdW5mb3J0dW5hdGVs
-eS4gRm9yIGV4YW1wbGUsIGNvbnNpZGVyIHRoZSBjYXNlCj4+IHdoZXJlIHRoZXJlIGFyZSB0d28g
-c3RhdGlvbnMgcXVldWVkOyBvbmUgd2l0aCBhIGxhcmdlIG5lZ2F0aXZlIGRlZmljaXQKPj4gKHNh
-eSwgLTEwbXMpLCBhbmQgb25lIHdpdGggYSBwb3NpdGl2ZSBkZWZpY2l0Lgo+Cj4gUGVyaGFwcyBh
-IGZsYWcgZm9yIG9uZSB3YXkgb3IgdGhlIG90aGVyPwo+Cj4gaWYoZHJpdmVyLT5oYXNfYWJzdXJk
-X2hhcmR3YXJlX3F1ZXVlX2RlcHRoKSBkb2l0dGhpc3dheSgpOyBlbHNlCj4gZG9pdGFiZXR0ZXJ3
-YXkoKTsKCldlbGwsIHRoZXJlJ3MgZ29pbmcgdG8gYmUgYSBCUUwtbGlrZSBxdWV1ZSBsaW1pdCAo
-YnV0IGZvciBhaXJ0aW1lKSBvbgp0b3AsIHdoaWNoIGRyaXZlcnMgY2FuIG9wdC1pbiB0byBpZiB0
-aGUgaGFyZHdhcmUgaGFzIHRvbyBtdWNoIHF1ZXVlaW5nLgoKPj4gSW4gdGhpcyBjYXNlLCB3ZSBy
-ZWFsbHkgbmVlZCB0byB0aHJvdHRsZSB0aGUgc3RhdGlvbiB3aXRoIGEgbmVnYXRpdmUKPj4gZGVm
-aWNpdC4gQnV0IGlmIHRoZSBkcml2ZXIgbG9vcHMgYW5kIGNhY2hlcyB0eHFzLCB3ZSdsbCBnZXQg
-c29tZXRoaW5nCj4+IGxpa2UgdGhlIGZvbGxvd2luZzoKPj4KPj4gLSBGaXJzdCBkcml2ZXIgbG9v
-cCBpdGVyYXRpb246IHJldHVybnMgVFhRIHdpdGggcG9zaXRpdmUgZGVmaWNpdC4KPj4gLSBTZWNv
-bmQgZHJpdmVyIGxvb3AgaXRlcmF0aW9uOiBPbmx5IHRoZSBuZWdhdGl2ZS1kZWZpY2l0IFRYUSBp
-cyBpbiB0aGUKPj4gICBtYWM4MDIxMSBsaXN0LCBzbyBpdCB3aWxsIGxvb3AgdW50aWwgdGhhdCBU
-WFEncyBkZWZpY2l0IHR1cm5zIHBvc2l0aXZlCj4+ICAgYW5kIHJldHVybiBpdC4KPj4KPj4gQmVj
-YXVzZSBvZiB0aGlzLCB0aGUgbmVnYXRpdmUtZGVmaWNpdCBzdGF0aW9uIHdvbid0IGJlIHRocm90
-dGxlZCwgYW5kIHdlCj4+IHdvbid0IGdldCBmYWlybmVzcy4KPj4KPj4gSG93IG1hbnkgZnJhbWVz
-IHdpbGwgbXQ3NiBxdWV1ZSB1cCBiZWxvdyB0aGUgZHJpdmVyIHBvaW50PyBJLmUuLCBob3cKPj4g
-bXVjaCBidXJzdGluZXNzIGFyZSB5b3UgZXhwZWN0aW5nIHRoaXMgd2lsbCBpbnRyb2R1Y2Ugb24g
-dGhhdCBkcml2ZXI/Cj4+Cj4+IFRha2luZyBhIHN0ZXAgYmFjaywgaXQncyBjbGVhciB0aGF0IGl0
-IHdvdWxkIGJlIGdvb2QgdG8gYmUgYWJsZSB0bwo+PiBkZXF1ZXVlIHBhY2tldHMgdG8gbXVsdGlw
-bGUgU1RBcyBhdCBvbmNlICh3ZSBuZWVkIHRoYXQgZm9yIE1VLU1JTU8gb24KPj4gYXRoMTBrIGFz
-IHdlbGwpLiBIb3dldmVyLCBJIGRvbid0IHRoaW5rIHdlIGNhbiBkbyB0aGF0IHdpdGggdGhlCj4+
-IHJvdW5kLXJvYmluIGZhaXJuZXNzIHNjaGVkdWxlcjsgc28gd2UgYXJlIGdvaW5nIHRvIG5lZWQg
-YSBkaWZmZXJlbnQKPj4gYWxnb3JpdGhtLiBJICp0aGluayogaXQgbWF5IGJlIHBvc3NpYmxlIHRv
-IGRvIHRoaXMgd2l0aCBhIHZpcnR1YWwtdGltZQo+PiBzY2hlZHVsZXIsIGJ1dCBJIGhhdmVuJ3Qg
-c2F0IGRvd24gYW5kIHdvcmtlZCBvdXQgdGhlIGRldGFpbHMgeWV0Li4uCj4KPiBUaGUgYW5zd2Vy
-IHRvIHdoaWNoIGRpZCBub3QgZml0IG9uIHRoZSBtYXJnaW5zIG9mIHlvdXIgdGhlc2lzLiA6KQo+
-Cj4gSSB0b28gaGF2ZSBiZWVuIHRyeWluZyB0byBjb21lIHVwIHdpdGggYSBiZXR0ZXIgbWVhbnMg
-b2YgZ2FuZwo+IHNjaGVkdWxpbmcuLi4gZm9yIGFib3V0IDIgeWVhcnMgbm93LiBJbiB0ZXJtcyBv
-ZiBiaXRtYXBzIGl0IGxvb2tzIGEgYml0Cj4gbGlrZSBRRlEsIGJ1dCBob25lc3RseS4uLgoKSXQn
-cyBub3QgdGhlIGdhbmcgc2NoZWR1bGluZyB3ZSBuZWVkLCBkZWNpZGluZyB3aGljaCBkZXZpY2Vz
-IHRvIHNlbmQgdG8KYXQgb25jZSBpcyBnZW5lcmFsbHkgZG9uZSBpbiBmaXJtd2FyZSBhbnl3YXku
-IFdlIGp1c3QgbmVlZCB0byBiZSBhYmxlIHRvCmRlcXVldWUgcGFja2V0cyBmb3IgbW9yZSB0aGFu
-IG9uZSBzdGF0aW9uIHdoZW4gcG9zc2libGUuIEkgZG9uJ3QgdGhpbmsKd2UgbmVlZCB0aGUgZmFu
-Y3kgYml0bWFwIHN0dWZmIGZyb20gUUZRIHNpbmNlIHdlIGRvbid0IGhhdmUgdGhhdCBtYW55CnN0
-YXRpb25zIHRvIHNjaGVkdWxlIGF0IG9uY2U7IHNvIHdlIGNhbiBwcm9iYWJseSBsaXZlIHdpdGgg
-Tyhsb2cobikpIGluCnRoZSBudW1iZXIgb2YgYWN0aXZlIHN0YXRpb25zLgoKPiBJcyB0aGVyZSBn
-b2luZyB0byBiZSBzb21lIHBvaW50IHdoZXJlIHdoYXRldmVyIHdlIGhhdmUgaGVyZSBpcwo+IHNp
-Z25pZmljYW50bHkgYmV0dGVyIHRoYW4gd2hhdCB3ZSBoYWQ/IE9yIG5vdCBzaWduaWZpY2FudGx5
-IHdvcnNlPyBPcgo+IGhhbmR3YXZ5IGVub3VnaCB0byBmaXggdGhlIHJlc3Qgb25jZSBlbmxpZ2h0
-ZW5tZW50IGFycml2ZXM/Cj4KPiBUaGUgcGVyZmVjdCBpcyB0aGUgZW5lbXkgb2YgdGhlIGdvb2Qu
-CgpXZWxsLCB3aGF0IHdlIGhhdmUgbm93IHdvcmtzIGZvciBhdGg5aywgd29ya3MgcmVhc29uYWJs
-eSB3ZWxsIGZvciBhdGgxMGsKaW4gcHVsbCBtb2RlLCBub3Qgc28gd2VsbCBmb3IgYXRoMTBrIGlu
-IHB1c2ggbW9kZSwgYW5kIHRoZW4gdGhlcmUncwpGZWxpeCcgY29tbWVudHMgaW4gdGhpcyB0aHJl
-YWQuLi4KCj4gSSdkIHJhdGhlciBsaWtlIHRoZSBpbnRlbCBmb2xrIHRvIGJlIHdlaWdoaW5nIGlu
-IG9uIHRoaXMgc3R1ZmYsIHRvbywKPiB0cnlpbmcgdG8gZ2V0IGFuIEFQSSByaWdodCByZXF1aXJl
-cyB1c2UgY2FzZXMuCgpKb2hhbm5lcyBoYXMgYWxyZWFkeSByZXZpZXdlZCBhIHByZXZpb3VzIHZl
-cnNpb24sIGFuZCBJIGRvIGJlbGlldmUgaGUKc2FpZCBoZSdkIHJldmlldyBpdCBhZ2FpbiBvbmNl
-IHdlIGhhdmUgY29udmVyZ2VkIG9uIHNvbWV0aGluZyA6KQoKLVRva2UKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+Hi Felix
+
+Thinking a bit more about this, I think that rather than having the
+driver work around the API as in your example...
+
+> do {
+> 	struct ieee80211_txq *pending_txq[4];
+> 	int n_pending_txq = 0;
+> 	int i;
+>
+> 	if (hwq->pending < 4)
+> 		break;p
+>
+> 	nframes = 0;
+>
+> 	ieee80211_txq_schedule_start(hw, ac)
+> 	do {
+> 		bool requeue = false;
+>
+> 		struct ieee80211_txq *txq;
+>
+> 		txq = ieee80211_next_txq(hw, ac);
+> 		if (!txq)
+> 			break;
+>
+> 		nframes += schedule_txq(txq, &requeue);
+> 		if (requeue)
+> 			pending_txq[n_pending_txq++] = txq;
+>
+> 	} while (n_pending_txq < ARRAY_SIZE(pending_txq));
+>
+> 	for (i = n_pending_txq; i > 0; i--)
+> 		ieee80211_return_txq(hw, pending_txq[i - 1]);
+>
+> 	ieee80211_txq_schedule_end(hw, ac)
+> } while (nframes);
+
+... really what we want is that the driver can just do this:
+
+ieee80211_txq_schedule_start(hw, ac);
+while ((txq = ieee80211_next_txq(hw, ac)) {
+	schedule_txq(txq, &requeue);
+        return_txq(txq);
+}
+ieee80211_txq_schedule_end(hw, ac);
+
+and expect so get through all eligible TXQs. Note that there will be
+cases where there is only a single eligible TXQ (such as the example I
+gave in the other email); in which case the current version is fine. But
+there is (probably) also going to be cases where more than one TXQ is
+eligible at the same time, which we cannot handle with the current RR
+scheduler.
+
+However, I think that assuming we can get the scheduler to guarantee
+that it will return all eligible TXQs between each pair of calls to
+schedule_start()/schedule_end(), we should be fine with the current API.
+Do you agree with this?
+
+-Toke
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
