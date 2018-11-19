@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([2001:470:dc45:1000::1])
+Received: from mail.taht.net ([2a01:7e00::f03c:91ff:feae:7028])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOsZL-0006Yx-77
- for ath10k@lists.infradead.org; Mon, 19 Nov 2018 23:03:04 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v3 3/6] mac80211: Add airtime accounting and scheduling to
- TXQs
-In-Reply-To: <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
+ id 1gOt04-0001DU-DG
+ for ath10k@lists.infradead.org; Mon, 19 Nov 2018 23:30:42 +0000
+From: Dave Taht <dave@taht.net>
+Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtime accounting
+ and scheduling to TXQs
 References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
  <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
- <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name> <871s7nv9pl.fsf@toke.dk>
+ <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name>
+ <871s7nv9pl.fsf@toke.dk>
  <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
-Date: Mon, 19 Nov 2018 15:02:50 -0800
-Message-ID: <87k1l8smat.fsf@toke.dk>
+ <87sh02tfsp.fsf@toke.dk> <878t1p2bqz.fsf@taht.net>
+ <87muq4sn50.fsf@toke.dk>
+Date: Mon, 19 Nov 2018 15:30:12 -0800
+In-Reply-To: <87muq4sn50.fsf@toke.dk> ("Toke \=\?utf-8\?Q\?H\=C3\=B8iland-J\?\=
+ \=\?utf-8\?Q\?\=C3\=B8rgensen\=22's\?\= message of
+ "Mon, 19 Nov 2018 14:44:43 -0800")
+Message-ID: <87efbgejcr.fsf@taht.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,74 +27,118 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@nbd.name>, Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: make-wifi-fast@lists.bufferbloat.net
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
 
-Hi Felix
-
-Thinking a bit more about this, I think that rather than having the
-driver work around the API as in your example...
-
-> do {
-> 	struct ieee80211_txq *pending_txq[4];
-> 	int n_pending_txq = 0;
-> 	int i;
->
-> 	if (hwq->pending < 4)
-> 		break;p
->
-> 	nframes = 0;
->
-> 	ieee80211_txq_schedule_start(hw, ac)
-> 	do {
-> 		bool requeue = false;
->
-> 		struct ieee80211_txq *txq;
->
-> 		txq = ieee80211_next_txq(hw, ac);
-> 		if (!txq)
-> 			break;
->
-> 		nframes += schedule_txq(txq, &requeue);
-> 		if (requeue)
-> 			pending_txq[n_pending_txq++] = txq;
->
-> 	} while (n_pending_txq < ARRAY_SIZE(pending_txq));
->
-> 	for (i = n_pending_txq; i > 0; i--)
-> 		ieee80211_return_txq(hw, pending_txq[i - 1]);
->
-> 	ieee80211_txq_schedule_end(hw, ac)
-> } while (nframes);
-
-... really what we want is that the driver can just do this:
-
-ieee80211_txq_schedule_start(hw, ac);
-while ((txq = ieee80211_next_txq(hw, ac)) {
-	schedule_txq(txq, &requeue);
-        return_txq(txq);
-}
-ieee80211_txq_schedule_end(hw, ac);
-
-and expect so get through all eligible TXQs. Note that there will be
-cases where there is only a single eligible TXQ (such as the example I
-gave in the other email); in which case the current version is fine. But
-there is (probably) also going to be cases where more than one TXQ is
-eligible at the same time, which we cannot handle with the current RR
-scheduler.
-
-However, I think that assuming we can get the scheduler to guarantee
-that it will return all eligible TXQs between each pair of calls to
-schedule_start()/schedule_end(), we should be fine with the current API.
-Do you agree with this?
-
--Toke
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+IHdyaXRlczoKCj4gRGF2ZSBU
+YWh0IDxkYXZlQHRhaHQubmV0PiB3cml0ZXM6Cj4KPj4gVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu
+IDx0b2tlQHRva2UuZGs+IHdyaXRlczoKPj4KPj4+IEZlbGl4IEZpZXRrYXUgPG5iZEBuYmQubmFt
+ZT4gd3JpdGVzOgo+Pj4KPj4+PiBPbiAyMDE4LTExLTE0IDE4OjQwLCBUb2tlIEjDuGlsYW5kLUrD
+uHJnZW5zZW4gd3JvdGU6Cj4+Pj4+PiBUaGlzIHBhcnQgZG9lc24ndCByZWFsbHkgbWFrZSBtdWNo
+IHNlbnNlIHRvIG1lLCBidXQgbWF5YmUgSSdtCj4+Pj4+PiBtaXN1bmRlcnN0YW5kaW5nIGhvdyB0
+aGUgY29kZSB3b3Jrcy4KPj4+Pj4+IExldCdzIGFzc3VtZSB3ZSBoYXZlIGEgZHJpdmVyIGxpa2Ug
+YXRoOWsgb3IgbXQ3Niwgd2hpY2ggdHJpZXMgdG8ga2VlcCBhCj4+Pj4+PiBudW1iZXIgb2YgYWdn
+cmVnYXRlcyBpbiB0aGUgaGFyZHdhcmUgcXVldWUsIGFuZCB0aGUgaGFyZHdhcmUgcXVldWUgaXMK
+Pj4+Pj4+IGN1cnJlbnRseSBlbXB0eS4KPj4+Pj4+IElmIHRoZSBjdXJyZW50IHR4cSBlbnRyeSBp
+cyBrZXB0IGF0IHRoZSBoZWFkIG9mIHRoZSBzY2hlZHVsZSBsaXN0LAo+Pj4+Pj4gd291bGRuJ3Qg
+dGhlIGNvZGUganVzdCBwdWxsIGZyb20gdGhhdCBvbmUgb3ZlciBhbmQgb3ZlciBhZ2FpbiwgdW50
+aWwKPj4+Pj4+IGVub3VnaCBwYWNrZXRzIGFyZSB0cmFuc21pdHRlZCBieSB0aGUgaGFyZHdhcmUg
+YW5kIHRoZWlyIHR4IHN0YXR1cwo+Pj4+Pj4gcHJvY2Vzc2VkPwo+Pj4+Pj4gSXQgc2VlbXMgdG8g
+bWUgdGhhdCB3aGlsZSBmYWlybmVzcyBpcyBzdGlsbCBwcmVzZXJ2ZWQgaW4gdGhlIGxvbmcgcnVu
+LAo+Pj4+Pj4gdGhpcyBjb3VsZCBsZWFkIHRvIHJhdGhlciBidXJzdHkgc2NoZWR1bGluZywgd2hp
+Y2ggbWF5IG5vdCBiZQo+Pj4+Pj4gcGFydGljdWxhcmx5IGxhdGVuY3kgZnJpZW5kbHkuCj4+Pj4+
+IAo+Pj4+PiBZZXMsIGl0J2xsIGJlIGEgYml0IG1vcmUgYnVyc3R5IHdoZW4gdGhlIGhhcmR3YXJl
+IHF1ZXVlIGlzIGNvbXBsZXRlbHkKPj4+Pj4gZW1wdHkuIEhvd2V2ZXIsIHdoZW4gYSBUWCBjb21w
+bGV0aW9uIGNvbWVzIGJhY2ssIHRoYXQgd2lsbCBhZGp1c3QgdGhlCj4+Pj4+IGRlZmljaXQgb2Yg
+dGhhdCBzdGEgYW5kIGNhdXNlIGl0IHRvIGJlIHJvdGF0ZWQgb24gdGhlIG5leHQgZGVxdWV1ZS4g
+VGhpcwo+Pj4+PiBvYnZpb3VzbHkgcmVsaWVzIG9uIHRoZSBmYWN0IHRoYXQgdGhlIGxvd2VyLWxl
+dmVsIGhhcmR3YXJlIHF1ZXVlIGlzCj4+Pj4+IHN1ZmZpY2llbnRseSBzaGFsbG93IHRvIG5vdCBh
+ZGQgYSBsb3Qgb2YgbGF0ZW5jeS4gQnV0IHdlIHdhbnQgdGhhdCB0byBiZQo+Pj4+PiB0aGUgY2Fz
+ZSBhbnl3YXkuIEluIHByYWN0aWNlLCBpdCB3b3JrcyBxdWl0ZSB3ZWxsIGZvciBhdGg5aywgYnV0
+IG5vdCBzbwo+Pj4+PiB3ZWxsIGZvciBhdGgxMGsgYmVjYXVzZSBpdCBoYXMgYSBsYXJnZSBidWZm
+ZXIgaW4gZmlybXdhcmUuCj4+Pj4+IAo+Pj4+PiBJZiB3ZSByZXF1ZXVlIHRoZSBUWFEgYXQgdGhl
+IGVuZCBvZiB0aGUgbGlzdCwgYSBzdGF0aW9uIHRoYXQgaXMgdGFraW5nCj4+Pj4+IHVwIHRvbyBt
+dWNoIGFpcnRpbWUgd2lsbCBmYWlsIHRvIGJlIHRocm90dGxlZCBwcm9wZXJseSwgc28gdGhlCj4+
+Pj4+IHF1ZXVlLWF0LWhlYWQgaXMga2luZGEgbmVlZGVkIHRvIGVuc3VyZSBmYWlybmVzcy4uLgo+
+Pj4+IFRoYW5rcyBmb3IgdGhlIGV4cGxhbmF0aW9uLCB0aGF0IG1ha2VzIHNlbnNlIHRvIG1lLiBJ
+IGhhdmUgYW4gaWRlYSBvbgo+Pj4+IGhvdyB0byBtaXRpZ2F0ZSB0aGUgYnVyc3RpbmVzcyB3aXRo
+aW4gdGhlIGRyaXZlci4gSSdsbCB3cml0ZSBpdCBkb3duIGluCj4+Pj4gcHNldWRvY29kZSwgcGxl
+YXNlIGxldCBtZSBrbm93IGlmIHlvdSB0aGluayB0aGF0J2xsIHdvcmsuCj4+Pgo+Pj4gSSBkb24n
+dCB0aGluayBpdCB3aWxsLCB1bmZvcnR1bmF0ZWx5LiBGb3IgZXhhbXBsZSwgY29uc2lkZXIgdGhl
+IGNhc2UKPj4+IHdoZXJlIHRoZXJlIGFyZSB0d28gc3RhdGlvbnMgcXVldWVkOyBvbmUgd2l0aCBh
+IGxhcmdlIG5lZ2F0aXZlIGRlZmljaXQKPj4+IChzYXksIC0xMG1zKSwgYW5kIG9uZSB3aXRoIGEg
+cG9zaXRpdmUgZGVmaWNpdC4KPj4KPj4gUGVyaGFwcyBhIGZsYWcgZm9yIG9uZSB3YXkgb3IgdGhl
+IG90aGVyPwo+Pgo+PiBpZihkcml2ZXItPmhhc19hYnN1cmRfaGFyZHdhcmVfcXVldWVfZGVwdGgp
+IGRvaXR0aGlzd2F5KCk7IGVsc2UKPj4gZG9pdGFiZXR0ZXJ3YXkoKTsKPgo+IFdlbGwsIHRoZXJl
+J3MgZ29pbmcgdG8gYmUgYSBCUUwtbGlrZSBxdWV1ZSBsaW1pdCAoYnV0IGZvciBhaXJ0aW1lKSBv
+bgo+IHRvcCwgd2hpY2ggZHJpdmVycyBjYW4gb3B0LWluIHRvIGlmIHRoZSBoYXJkd2FyZSBoYXMg
+dG9vIG11Y2ggcXVldWVpbmcuCj4KPj4+IEluIHRoaXMgY2FzZSwgd2UgcmVhbGx5IG5lZWQgdG8g
+dGhyb3R0bGUgdGhlIHN0YXRpb24gd2l0aCBhIG5lZ2F0aXZlCj4+PiBkZWZpY2l0LiBCdXQgaWYg
+dGhlIGRyaXZlciBsb29wcyBhbmQgY2FjaGVzIHR4cXMsIHdlJ2xsIGdldCBzb21ldGhpbmcKPj4+
+IGxpa2UgdGhlIGZvbGxvd2luZzoKPj4+Cj4+PiAtIEZpcnN0IGRyaXZlciBsb29wIGl0ZXJhdGlv
+bjogcmV0dXJucyBUWFEgd2l0aCBwb3NpdGl2ZSBkZWZpY2l0Lgo+Pj4gLSBTZWNvbmQgZHJpdmVy
+IGxvb3AgaXRlcmF0aW9uOiBPbmx5IHRoZSBuZWdhdGl2ZS1kZWZpY2l0IFRYUSBpcyBpbiB0aGUK
+Pj4+ICAgbWFjODAyMTEgbGlzdCwgc28gaXQgd2lsbCBsb29wIHVudGlsIHRoYXQgVFhRJ3MgZGVm
+aWNpdCB0dXJucyBwb3NpdGl2ZQo+Pj4gICBhbmQgcmV0dXJuIGl0Lgo+Pj4KPj4+IEJlY2F1c2Ug
+b2YgdGhpcywgdGhlIG5lZ2F0aXZlLWRlZmljaXQgc3RhdGlvbiB3b24ndCBiZSB0aHJvdHRsZWQs
+IGFuZCB3ZQo+Pj4gd29uJ3QgZ2V0IGZhaXJuZXNzLgo+Pj4KPj4+IEhvdyBtYW55IGZyYW1lcyB3
+aWxsIG10NzYgcXVldWUgdXAgYmVsb3cgdGhlIGRyaXZlciBwb2ludD8gSS5lLiwgaG93Cj4+PiBt
+dWNoIGJ1cnN0aW5lc3MgYXJlIHlvdSBleHBlY3RpbmcgdGhpcyB3aWxsIGludHJvZHVjZSBvbiB0
+aGF0IGRyaXZlcj8KPj4+Cj4+PiBUYWtpbmcgYSBzdGVwIGJhY2ssIGl0J3MgY2xlYXIgdGhhdCBp
+dCB3b3VsZCBiZSBnb29kIHRvIGJlIGFibGUgdG8KPj4+IGRlcXVldWUgcGFja2V0cyB0byBtdWx0
+aXBsZSBTVEFzIGF0IG9uY2UgKHdlIG5lZWQgdGhhdCBmb3IgTVUtTUlNTyBvbgo+Pj4gYXRoMTBr
+IGFzIHdlbGwpLiBIb3dldmVyLCBJIGRvbid0IHRoaW5rIHdlIGNhbiBkbyB0aGF0IHdpdGggdGhl
+Cj4+PiByb3VuZC1yb2JpbiBmYWlybmVzcyBzY2hlZHVsZXI7IHNvIHdlIGFyZSBnb2luZyB0byBu
+ZWVkIGEgZGlmZmVyZW50Cj4+PiBhbGdvcml0aG0uIEkgKnRoaW5rKiBpdCBtYXkgYmUgcG9zc2li
+bGUgdG8gZG8gdGhpcyB3aXRoIGEgdmlydHVhbC10aW1lCj4+PiBzY2hlZHVsZXIsIGJ1dCBJIGhh
+dmVuJ3Qgc2F0IGRvd24gYW5kIHdvcmtlZCBvdXQgdGhlIGRldGFpbHMgeWV0Li4uCj4+Cj4+IFRo
+ZSBhbnN3ZXIgdG8gd2hpY2ggZGlkIG5vdCBmaXQgb24gdGhlIG1hcmdpbnMgb2YgeW91ciB0aGVz
+aXMuIDopCj4+Cj4+IEkgdG9vIGhhdmUgYmVlbiB0cnlpbmcgdG8gY29tZSB1cCB3aXRoIGEgYmV0
+dGVyIG1lYW5zIG9mIGdhbmcKPj4gc2NoZWR1bGluZy4uLiBmb3IgYWJvdXQgMiB5ZWFycyBub3cu
+IEluIHRlcm1zIG9mIGJpdG1hcHMgaXQgbG9va3MgYSBiaXQKPj4gbGlrZSBRRlEsIGJ1dCBob25l
+c3RseS4uLgo+Cj4gSXQncyBub3QgdGhlIGdhbmcgc2NoZWR1bGluZyB3ZSBuZWVkLCBkZWNpZGlu
+ZyB3aGljaCBkZXZpY2VzIHRvIHNlbmQgdG8KPiBhdCBvbmNlIGlzIGdlbmVyYWxseSBkb25lIGlu
+IGZpcm13YXJlIGFueXdheS4KCkkgaGF2ZSBhIGxvbmcgaGVsZCBkcmVhbSB0aGF0IG9uZSBkYXkg
+c29tZSBmaXJtd2FyZSB3aWxsIGJlIGFibGUgdG8gc2VuZAphbiBpbnRlcnJ1cHQgYW5kIHNvbWUg
+aW5mb3JtYXRpb24gYWxvbmcuLi4KCiJIaSwgSSdsbCBiZSBkb25lIHRyYW5zbWl0dGluZy9yZWNl
+aXZpbmcgaW4gYWJvdXQgMW1zLCBoZXJlJ3Mgd2hvIEkKdGhpbmsgSSBjYW4gdGFsayB0byBuZXh0
+LCBhbmQgaGVyZSdzIHdobyBlbHNlIEkgbWF5YmUgY291bGQgZ2FuZyBzY2hlZHVsZSIuCgpUaGF0
+IHdvdWxkIGxldCB1cyBnZXQgYXdheSBmcm9tIDVtcyB3YXN0ZWQgaW4gdGhlICJyZWFkeSB0byBn
+byIgcG9ydGlvbgpvZiB0aGUgYWxnbywgYW5kIHNoYXJlIHRoZSBoaWdoZXN0IGxpa2VseWhvb2Qg
+Imdyb3VwcyIgd2l0aCB0aGUgaGlnaGVyCmxheWVyLgoKPiBXZSBqdXN0IG5lZWQgdG8gYmUgYWJs
+ZSB0bwo+IGRlcXVldWUgcGFja2V0cyBmb3IgbW9yZSB0aGFuIG9uZSBzdGF0aW9uIHdoZW4gcG9z
+c2libGUuCgpBbmQgYSBodWdlIGZhbnRhc3kgaXMgaW4gc29tZSBmdXR1cmUgODAyLjExWlpaIHN0
+YW5kYXJkIHRoZSBvbi1ib2FyZCBmaXJtd2FyZSBhbmQKdGhlIGxpbnV4IGRyaXZlcnMgY2FuIGJl
+IGNvLWRlc2lnbmVkLCBldmVuLCBkYXJlIEkgc2F5LCBvcGVuIHNvdXJjZWQsIHRvCmJldHRlciBl
+dm9sdmUgdG8gbWVldCByZWFsIHdvcmxkIHJlcXVpcmVtZW50cy4KCm1ib3gncyBwZXIgc3RhdGlv
+biB3b3VsZCBiZSBuaWNlLCB3aXRoIHNjYXR0ZXIvZ2F0aGVyIEkvTy4uLiBJCmNhbiB0aGluayBv
+ZiBhIHppbGxpb24gdGhpbmdzIEknZCB3YW50IHRoZSBmaXJtd2FyZSB0byBoYW5kbGUgKG90aGVy
+CnRoYW4gYnVmZmVyaW5nKQoKPiBJIGRvbid0IHRoaW5rCj4gd2UgbmVlZCB0aGUgZmFuY3kgYml0
+bWFwIHN0dWZmIGZyb20gUUZRIHNpbmNlIHdlIGRvbid0IGhhdmUgdGhhdCBtYW55Cj4gc3RhdGlv
+bnMgdG8gc2NoZWR1bGUgYXQgb25jZTsgc28gd2UgY2FuIHByb2JhYmx5IGxpdmUgd2l0aCBPKGxv
+ZyhuKSkgaW4KPiB0aGUgbnVtYmVyIG9mIGFjdGl2ZSBzdGF0aW9ucy4KCkJlc3Qgb2YgdHdvIG9y
+IHRocmVlICJncm91cHMiLCBwZXIgYWJvdmUsIGZyb20gdGhlIGZpcm13YXJlLgoKPj4gSXMgdGhl
+cmUgZ29pbmcgdG8gYmUgc29tZSBwb2ludCB3aGVyZSB3aGF0ZXZlciB3ZSBoYXZlIGhlcmUgaXMK
+Pj4gc2lnbmlmaWNhbnRseSBiZXR0ZXIgdGhhbiB3aGF0IHdlIGhhZD8gT3Igbm90IHNpZ25pZmlj
+YW50bHkgd29yc2U/IE9yCj4+IGhhbmR3YXZ5IGVub3VnaCB0byBmaXggdGhlIHJlc3Qgb25jZSBl
+bmxpZ2h0ZW5tZW50IGFycml2ZXM/Cj4+Cj4+IFRoZSBwZXJmZWN0IGlzIHRoZSBlbmVteSBvZiB0
+aGUgZ29vZC4KPgo+IFdlbGwsIHdoYXQgd2UgaGF2ZSBub3cgd29ya3MgZm9yIGF0aDlrLCB3b3Jr
+cyByZWFzb25hYmx5IHdlbGwgZm9yIGF0aDEwawo+IGluIHB1bGwgbW9kZSwgbm90IHNvIHdlbGwg
+Zm9yIGF0aDEwayBpbiBwdXNoIG1vZGUsIGFuZCB0aGVuIHRoZXJlJ3MKPiBGZWxpeCcgY29tbWVu
+dHMgaW4gdGhpcyB0aHJlYWQuLi4KClNvIGhvdyBhYm91dCwgYW4gYXRoMTBrIGluIGEgZnJpZ2dp
+biAiY28tb3BlcmF0aXZlIiBtb2RlPyAKCldoYXQgYXJlIHRoZSBwZXJmb3JtYW5jZSBkaWZmZXJl
+bmNlcyBpbiBhdGgxMGsgaW4gcHVzaCBtb2RlPyBXaHkgZG8gd2UKY2FyZSBpZiB0aGlzIG1vZGUg
+d29ya3MgYXQgYWxsPyAKClBlcmZlY3QsIHZlcnNlcyAiZ29vZCIuCgo+PiBJJ2QgcmF0aGVyIGxp
+a2UgdGhlIGludGVsIGZvbGsgdG8gYmUgd2VpZ2hpbmcgaW4gb24gdGhpcyBzdHVmZiwgdG9vLAo+
+PiB0cnlpbmcgdG8gZ2V0IGFuIEFQSSByaWdodCByZXF1aXJlcyB1c2UgY2FzZXMuCj4KPiBKb2hh
+bm5lcyBoYXMgYWxyZWFkeSByZXZpZXdlZCBhIHByZXZpb3VzIHZlcnNpb24sIGFuZCBJIGRvIGJl
+bGlldmUgaGUKPiBzYWlkIGhlJ2QgcmV2aWV3IGl0IGFnYWluIG9uY2Ugd2UgaGF2ZSBjb252ZXJn
+ZWQgb24gc29tZXRoaW5nIDopCgpXb3VsZCBpbnRlbCBjYXJlIGlmIG9ubHkgdGhlIHB1bGwgbW9k
+ZSB3b3JrZWQgd2VsbCBvbiB0aGVpciBoYXJkd2FyZT8gRG8KdGhleSBoYXZlIGEgcHVsbCBvciBw
+dXNoIG1vZGU/CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
