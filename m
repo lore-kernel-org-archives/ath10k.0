@@ -1,12 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOhly-0005Ie-GR
- for ath10k@lists.infradead.org; Mon, 19 Nov 2018 11:31:24 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: update HOST capability qmi message
-Date: Mon, 19 Nov 2018 17:01:01 +0530
-Message-Id: <20181119113101.23359-1-govinds@codeaurora.org>
+Received: from mail.taht.net ([2a01:7e00::f03c:91ff:feae:7028])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOnlx-0006tG-Vo
+ for ath10k@lists.infradead.org; Mon, 19 Nov 2018 17:55:48 +0000
+From: Dave Taht <dave@taht.net>
+Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtime accounting
+ and scheduling to TXQs
+References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
+ <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
+ <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name>
+ <871s7nv9pl.fsf@toke.dk>
+ <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
+ <87sh02tfsp.fsf@toke.dk>
+Date: Mon, 19 Nov 2018 09:55:16 -0800
+In-Reply-To: <87sh02tfsp.fsf@toke.dk> ("Toke \=\?utf-8\?Q\?H\=C3\=B8iland-J\?\=
+ \=\?utf-8\?Q\?\=C3\=B8rgensen\=22's\?\= message of
+ "Thu, 15 Nov 2018 09:24:22 -0800")
+Message-ID: <878t1p2bqz.fsf@taht.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,329 +26,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
 
-HOST capability interface data structures are updated
-in HL3.1 fw version. Update the qmi host capability
-members for compatibility across different firmware
-versions.
-With this change HL2.0 fw upgrade is required as this
-change breaks the backward compatibility with HL2.0 fw.
-
-Testing:
-        Tested on QCS404 platform(WCN3990 HW).
-        Tested FW: WLAN.HL.3.1-00338-QCAHLSWMTPL-1.
-
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- .../net/wireless/ath/ath10k/qmi_wlfw_v01.c    | 229 +++++++++++++++++-
- .../net/wireless/ath/ath10k/qmi_wlfw_v01.h    |  34 ++-
- 2 files changed, 257 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c b/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
-index ba79c2e4aed6..4102f7b0b5c3 100644
---- a/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c
-@@ -1763,14 +1763,239 @@ struct qmi_elem_info wlfw_host_cap_req_msg_v01_ei[] = {
- 					   daemon_support_valid),
- 	},
- 	{
--		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.data_type      = QMI_UNSIGNED_4_BYTE,
- 		.elem_len       = 1,
--		.elem_size      = sizeof(u8),
-+		.elem_size      = sizeof(u32),
- 		.array_type     = NO_ARRAY,
- 		.tlv_type       = 0x10,
- 		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
- 					   daemon_support),
- 	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x11,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   wake_msi_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_4_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u32),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x11,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   wake_msi),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x12,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   gpios_valid),
-+	},
-+	{
-+		.data_type      = QMI_DATA_LEN,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u32),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x12,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   gpios_len),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_4_BYTE,
-+		.elem_len       = QMI_WLFW_MAX_NUM_GPIO_V01,
-+		.elem_size      = sizeof(u32),
-+		.array_type     = VAR_LEN_ARRAY,
-+		.tlv_type       = 0x12,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   gpios),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x13,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   nm_modem_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x13,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   nm_modem),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x14,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   bdf_support_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x14,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   bdf_support),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x15,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   bdf_cache_support_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x15,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   bdf_cache_support),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x16,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   m3_support_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x16,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   m3_support),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x17,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   m3_cache_support_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x17,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   m3_cache_support),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x18,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   cal_filesys_support_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x18,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   cal_filesys_support),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x19,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   cal_cache_support_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x19,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   cal_cache_support),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x1A,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   cal_done_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x1A,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   cal_done),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x1B,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   mem_bucket_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_4_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u32),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x1B,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   mem_bucket),
-+	},
-+	{
-+		.data_type      = QMI_OPT_FLAG,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x1C,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   mem_cfg_mode_valid),
-+	},
-+	{
-+		.data_type      = QMI_UNSIGNED_1_BYTE,
-+		.elem_len       = 1,
-+		.elem_size      = sizeof(u8),
-+		.array_type     = NO_ARRAY,
-+		.tlv_type       = 0x1C,
-+		.offset         = offsetof(struct wlfw_host_cap_req_msg_v01,
-+					   mem_cfg_mode),
-+	},
- 	{}
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h b/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h
-index c5e3870b8871..ff668f5d8afd 100644
---- a/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h
-+++ b/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h
-@@ -553,12 +553,38 @@ struct wlfw_mac_addr_resp_msg_v01 {
- #define WLFW_MAC_ADDR_RESP_MSG_V01_MAX_MSG_LEN 7
- extern struct qmi_elem_info wlfw_mac_addr_resp_msg_v01_ei[];
- 
-+#define QMI_WLFW_MAX_NUM_GPIO_V01 32
- struct wlfw_host_cap_req_msg_v01 {
- 	u8 daemon_support_valid;
--	u8 daemon_support;
--};
--
--#define WLFW_HOST_CAP_REQ_MSG_V01_MAX_MSG_LEN 4
-+	u32 daemon_support;
-+	u8 wake_msi_valid;
-+	u32 wake_msi;
-+	u8 gpios_valid;
-+	u32 gpios_len;
-+	u32 gpios[QMI_WLFW_MAX_NUM_GPIO_V01];
-+	u8 nm_modem_valid;
-+	u8 nm_modem;
-+	u8 bdf_support_valid;
-+	u8 bdf_support;
-+	u8 bdf_cache_support_valid;
-+	u8 bdf_cache_support;
-+	u8 m3_support_valid;
-+	u8 m3_support;
-+	u8 m3_cache_support_valid;
-+	u8 m3_cache_support;
-+	u8 cal_filesys_support_valid;
-+	u8 cal_filesys_support;
-+	u8 cal_cache_support_valid;
-+	u8 cal_cache_support;
-+	u8 cal_done_valid;
-+	u8 cal_done;
-+	u8 mem_bucket_valid;
-+	u32 mem_bucket;
-+	u8 mem_cfg_mode_valid;
-+	u8 mem_cfg_mode;
-+};
-+
-+#define WLFW_HOST_CAP_REQ_MSG_V01_MAX_MSG_LEN 189
- extern struct qmi_elem_info wlfw_host_cap_req_msg_v01_ei[];
- 
- struct wlfw_host_cap_resp_msg_v01 {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+IHdyaXRlczoKCj4gRmVsaXgg
+RmlldGthdSA8bmJkQG5iZC5uYW1lPiB3cml0ZXM6Cj4KPj4gT24gMjAxOC0xMS0xNCAxODo0MCwg
+VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+Pj4+IFRoaXMgcGFydCBkb2Vzbid0IHJl
+YWxseSBtYWtlIG11Y2ggc2Vuc2UgdG8gbWUsIGJ1dCBtYXliZSBJJ20KPj4+PiBtaXN1bmRlcnN0
+YW5kaW5nIGhvdyB0aGUgY29kZSB3b3Jrcy4KPj4+PiBMZXQncyBhc3N1bWUgd2UgaGF2ZSBhIGRy
+aXZlciBsaWtlIGF0aDlrIG9yIG10NzYsIHdoaWNoIHRyaWVzIHRvIGtlZXAgYQo+Pj4+IG51bWJl
+ciBvZiBhZ2dyZWdhdGVzIGluIHRoZSBoYXJkd2FyZSBxdWV1ZSwgYW5kIHRoZSBoYXJkd2FyZSBx
+dWV1ZSBpcwo+Pj4+IGN1cnJlbnRseSBlbXB0eS4KPj4+PiBJZiB0aGUgY3VycmVudCB0eHEgZW50
+cnkgaXMga2VwdCBhdCB0aGUgaGVhZCBvZiB0aGUgc2NoZWR1bGUgbGlzdCwKPj4+PiB3b3VsZG4n
+dCB0aGUgY29kZSBqdXN0IHB1bGwgZnJvbSB0aGF0IG9uZSBvdmVyIGFuZCBvdmVyIGFnYWluLCB1
+bnRpbAo+Pj4+IGVub3VnaCBwYWNrZXRzIGFyZSB0cmFuc21pdHRlZCBieSB0aGUgaGFyZHdhcmUg
+YW5kIHRoZWlyIHR4IHN0YXR1cwo+Pj4+IHByb2Nlc3NlZD8KPj4+PiBJdCBzZWVtcyB0byBtZSB0
+aGF0IHdoaWxlIGZhaXJuZXNzIGlzIHN0aWxsIHByZXNlcnZlZCBpbiB0aGUgbG9uZyBydW4sCj4+
+Pj4gdGhpcyBjb3VsZCBsZWFkIHRvIHJhdGhlciBidXJzdHkgc2NoZWR1bGluZywgd2hpY2ggbWF5
+IG5vdCBiZQo+Pj4+IHBhcnRpY3VsYXJseSBsYXRlbmN5IGZyaWVuZGx5Lgo+Pj4gCj4+PiBZZXMs
+IGl0J2xsIGJlIGEgYml0IG1vcmUgYnVyc3R5IHdoZW4gdGhlIGhhcmR3YXJlIHF1ZXVlIGlzIGNv
+bXBsZXRlbHkKPj4+IGVtcHR5LiBIb3dldmVyLCB3aGVuIGEgVFggY29tcGxldGlvbiBjb21lcyBi
+YWNrLCB0aGF0IHdpbGwgYWRqdXN0IHRoZQo+Pj4gZGVmaWNpdCBvZiB0aGF0IHN0YSBhbmQgY2F1
+c2UgaXQgdG8gYmUgcm90YXRlZCBvbiB0aGUgbmV4dCBkZXF1ZXVlLiBUaGlzCj4+PiBvYnZpb3Vz
+bHkgcmVsaWVzIG9uIHRoZSBmYWN0IHRoYXQgdGhlIGxvd2VyLWxldmVsIGhhcmR3YXJlIHF1ZXVl
+IGlzCj4+PiBzdWZmaWNpZW50bHkgc2hhbGxvdyB0byBub3QgYWRkIGEgbG90IG9mIGxhdGVuY3ku
+IEJ1dCB3ZSB3YW50IHRoYXQgdG8gYmUKPj4+IHRoZSBjYXNlIGFueXdheS4gSW4gcHJhY3RpY2Us
+IGl0IHdvcmtzIHF1aXRlIHdlbGwgZm9yIGF0aDlrLCBidXQgbm90IHNvCj4+PiB3ZWxsIGZvciBh
+dGgxMGsgYmVjYXVzZSBpdCBoYXMgYSBsYXJnZSBidWZmZXIgaW4gZmlybXdhcmUuCj4+PiAKPj4+
+IElmIHdlIHJlcXVldWUgdGhlIFRYUSBhdCB0aGUgZW5kIG9mIHRoZSBsaXN0LCBhIHN0YXRpb24g
+dGhhdCBpcyB0YWtpbmcKPj4+IHVwIHRvbyBtdWNoIGFpcnRpbWUgd2lsbCBmYWlsIHRvIGJlIHRo
+cm90dGxlZCBwcm9wZXJseSwgc28gdGhlCj4+PiBxdWV1ZS1hdC1oZWFkIGlzIGtpbmRhIG5lZWRl
+ZCB0byBlbnN1cmUgZmFpcm5lc3MuLi4KPj4gVGhhbmtzIGZvciB0aGUgZXhwbGFuYXRpb24sIHRo
+YXQgbWFrZXMgc2Vuc2UgdG8gbWUuIEkgaGF2ZSBhbiBpZGVhIG9uCj4+IGhvdyB0byBtaXRpZ2F0
+ZSB0aGUgYnVyc3RpbmVzcyB3aXRoaW4gdGhlIGRyaXZlci4gSSdsbCB3cml0ZSBpdCBkb3duIGlu
+Cj4+IHBzZXVkb2NvZGUsIHBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3UgdGhpbmsgdGhhdCdsbCB3
+b3JrLgo+Cj4gSSBkb24ndCB0aGluayBpdCB3aWxsLCB1bmZvcnR1bmF0ZWx5LiBGb3IgZXhhbXBs
+ZSwgY29uc2lkZXIgdGhlIGNhc2UKPiB3aGVyZSB0aGVyZSBhcmUgdHdvIHN0YXRpb25zIHF1ZXVl
+ZDsgb25lIHdpdGggYSBsYXJnZSBuZWdhdGl2ZSBkZWZpY2l0Cj4gKHNheSwgLTEwbXMpLCBhbmQg
+b25lIHdpdGggYSBwb3NpdGl2ZSBkZWZpY2l0LgoKUGVyaGFwcyBhIGZsYWcgZm9yIG9uZSB3YXkg
+b3IgdGhlIG90aGVyPwoKaWYoZHJpdmVyLT5oYXNfYWJzdXJkX2hhcmR3YXJlX3F1ZXVlX2RlcHRo
+KSBkb2l0dGhpc3dheSgpOyBlbHNlCmRvaXRhYmV0dGVyd2F5KCk7Cgo+Cj4gSW4gdGhpcyBjYXNl
+LCB3ZSByZWFsbHkgbmVlZCB0byB0aHJvdHRsZSB0aGUgc3RhdGlvbiB3aXRoIGEgbmVnYXRpdmUK
+PiBkZWZpY2l0LiBCdXQgaWYgdGhlIGRyaXZlciBsb29wcyBhbmQgY2FjaGVzIHR4cXMsIHdlJ2xs
+IGdldCBzb21ldGhpbmcKPiBsaWtlIHRoZSBmb2xsb3dpbmc6Cj4KPiAtIEZpcnN0IGRyaXZlciBs
+b29wIGl0ZXJhdGlvbjogcmV0dXJucyBUWFEgd2l0aCBwb3NpdGl2ZSBkZWZpY2l0Lgo+IC0gU2Vj
+b25kIGRyaXZlciBsb29wIGl0ZXJhdGlvbjogT25seSB0aGUgbmVnYXRpdmUtZGVmaWNpdCBUWFEg
+aXMgaW4gdGhlCj4gICBtYWM4MDIxMSBsaXN0LCBzbyBpdCB3aWxsIGxvb3AgdW50aWwgdGhhdCBU
+WFEncyBkZWZpY2l0IHR1cm5zIHBvc2l0aXZlCj4gICBhbmQgcmV0dXJuIGl0Lgo+Cj4gQmVjYXVz
+ZSBvZiB0aGlzLCB0aGUgbmVnYXRpdmUtZGVmaWNpdCBzdGF0aW9uIHdvbid0IGJlIHRocm90dGxl
+ZCwgYW5kIHdlCj4gd29uJ3QgZ2V0IGZhaXJuZXNzLgo+Cj4gSG93IG1hbnkgZnJhbWVzIHdpbGwg
+bXQ3NiBxdWV1ZSB1cCBiZWxvdyB0aGUgZHJpdmVyIHBvaW50PyBJLmUuLCBob3cKPiBtdWNoIGJ1
+cnN0aW5lc3MgYXJlIHlvdSBleHBlY3RpbmcgdGhpcyB3aWxsIGludHJvZHVjZSBvbiB0aGF0IGRy
+aXZlcj8KPgo+IFRha2luZyBhIHN0ZXAgYmFjaywgaXQncyBjbGVhciB0aGF0IGl0IHdvdWxkIGJl
+IGdvb2QgdG8gYmUgYWJsZSB0bwo+IGRlcXVldWUgcGFja2V0cyB0byBtdWx0aXBsZSBTVEFzIGF0
+IG9uY2UgKHdlIG5lZWQgdGhhdCBmb3IgTVUtTUlNTyBvbgo+IGF0aDEwayBhcyB3ZWxsKS4gSG93
+ZXZlciwgSSBkb24ndCB0aGluayB3ZSBjYW4gZG8gdGhhdCB3aXRoIHRoZQo+IHJvdW5kLXJvYmlu
+IGZhaXJuZXNzIHNjaGVkdWxlcjsgc28gd2UgYXJlIGdvaW5nIHRvIG5lZWQgYSBkaWZmZXJlbnQK
+PiBhbGdvcml0aG0uIEkgKnRoaW5rKiBpdCBtYXkgYmUgcG9zc2libGUgdG8gZG8gdGhpcyB3aXRo
+IGEgdmlydHVhbC10aW1lCj4gc2NoZWR1bGVyLCBidXQgSSBoYXZlbid0IHNhdCBkb3duIGFuZCB3
+b3JrZWQgb3V0IHRoZSBkZXRhaWxzIHlldC4uLgoKVGhlIGFuc3dlciB0byB3aGljaCBkaWQgbm90
+IGZpdCBvbiB0aGUgbWFyZ2lucyBvZiB5b3VyIHRoZXNpcy4gOikKCkkgdG9vIGhhdmUgYmVlbiB0
+cnlpbmcgdG8gY29tZSB1cCB3aXRoIGEgYmV0dGVyIG1lYW5zIG9mIGdhbmcKc2NoZWR1bGluZy4u
+LiBmb3IgYWJvdXQgMiB5ZWFycyBub3cuIEluIHRlcm1zIG9mIGJpdG1hcHMgaXQgbG9va3MgYSBi
+aXQKbGlrZSBRRlEsIGJ1dCBob25lc3RseS4uLgoKSXMgdGhlcmUgZ29pbmcgdG8gYmUgc29tZSBw
+b2ludCB3aGVyZSB3aGF0ZXZlciB3ZSBoYXZlIGhlcmUgaXMKc2lnbmlmaWNhbnRseSBiZXR0ZXIg
+dGhhbiB3aGF0IHdlIGhhZD8gT3Igbm90IHNpZ25pZmljYW50bHkgd29yc2U/IE9yCmhhbmR3YXZ5
+IGVub3VnaCB0byBmaXggdGhlIHJlc3Qgb25jZSBlbmxpZ2h0ZW5tZW50IGFycml2ZXM/CgpUaGUg
+cGVyZmVjdCBpcyB0aGUgZW5lbXkgb2YgdGhlIGdvb2QuCgpJJ2QgcmF0aGVyIGxpa2UgdGhlIGlu
+dGVsIGZvbGsgdG8gYmUgd2VpZ2hpbmcgaW4gb24gdGhpcyBzdHVmZiwgdG9vLAp0cnlpbmcgdG8g
+Z2V0IGFuIEFQSSByaWdodCByZXF1aXJlcyB1c2UgY2FzZXMuCgo+Cj4gLVRva2UKPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IE1ha2Utd2lmaS1mYXN0
+IG1haWxpbmcgbGlzdAo+IE1ha2Utd2lmaS1mYXN0QGxpc3RzLmJ1ZmZlcmJsb2F0Lm5ldAo+IGh0
+dHBzOi8vbGlzdHMuYnVmZmVyYmxvYXQubmV0L2xpc3RpbmZvL21ha2Utd2lmaS1mYXN0CgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
