@@ -1,18 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mx2a.mailbox.org ([2001:67c:2050:104:0:2:25:2]
+ helo=mx2.mailbox.org)
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOvxW-0002BK-D3
- for ath10k@lists.infradead.org; Tue, 20 Nov 2018 02:40:16 +0000
+ id 1gP4Tg-0001qC-6g
+ for ath10k@lists.infradead.org; Tue, 20 Nov 2018 11:46:02 +0000
+Received: from smtp1.mailbox.org (unknown [IPv6:2001:67c:2050:105:465:1:1:0])
+ (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256
+ bits)) (No client certificate requested)
+ by mx2.mailbox.org (Postfix) with ESMTPS id 3E9EDA1823
+ for <ath10k@lists.infradead.org>; Tue, 20 Nov 2018 12:34:11 +0100 (CET)
+Received: from smtp1.mailbox.org ([80.241.60.240])
+ by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de
+ [80.241.56.125]) (amavisd-new, port 10030)
+ with ESMTP id ZlPWcUOYkwNP for <ath10k@lists.infradead.org>;
+ Tue, 20 Nov 2018 12:34:09 +0100 (CET)
+Date: Tue, 20 Nov 2018 12:34:08 +0100 (CET)
+From: launchpad_sge4@mailbox.org
+Message-ID: <1084648823.1982.1542713648825@office.mailbox.org>
+Subject: Surface Go - Atheros Qualcomm Killer N1525 Wireless-AC [168c:003e]
+ not correctly recognized
 MIME-Version: 1.0
-Date: Tue, 20 Nov 2018 08:10:00 +0530
-From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
-Subject: Re: [RFC 2/2] ath10k: Add QCA vendor command/attr support to
- filterneighbor BSS frames
-In-Reply-To: <a28348956ba3fbfded80bc78ba1c0335df7edb75.camel@sipsolutions.net>
-References: <1530791512-6915-3-git-send-email-periyasa@codeaurora.org>
- <20181005060031.BA1EB60BF4@smtp.codeaurora.org>
- <a28348956ba3fbfded80bc78ba1c0335df7edb75.camel@sipsolutions.net>
-Message-ID: <c9b16303e344b2dcd4d52cf9c0830846@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +28,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-On 2018-10-18 13:59, Johannes Berg wrote:
+Hello,
 
->> So I'm not sure what to do with this. A bpf type of filtering system 
->> in
->> mac80211 would be nice
-> 
-> Yes, I think we really need to start implementing that sooner rather
-> than later. I had something, must see if I can find time for it.
-> 
->> but then again we cannot benefit from HW offloading.
-> 
-> Yes, that's a concern. But how big of a concern is it really?
-> 
-> This patch only talks about "allow an AP" etc. and so while important,
-> power isn't the _utmost_ concern like on mobile. Given an efficient
-> filtering solution in software, would that be sufficient?
+Output of dmesg on Surface Go fresh installed Ubuntu 18.10.
 
-Assume in a scenario where there are multiple APs (One Center AP and 
-Multiple repeater AP) in same operating channel.
-Clients present in Neighbor APs causing higher traffic.
+"[ 4.242132] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 168c:3370
+[ 4.242138] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+[ 4.243006] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features wowlan,ignore-otp crc32 fd869beb
+[ 4.308059] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370 from ath10k/QCA6174/hw3.0/board-2.bin
+[ 4.309354] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 ed5f849a"
 
-when we try to filter desire client packets,
-In HW offload case, all Neighbor BSS packets are filtered by HW. so 
-there is no impact in CPU load. AP performance not get impacted.
-In bpf (enabling monitor mode) case, all Neighbor BSS packets get 
-filtered by software. It will consume CPU load which will impact AP 
-performance.
+There is a board.bin available directly from the vendor http://www.killernetworking.com/support/K1535_Debian/board.bin But I have no clue what the content of that file is, if somehting is missing etc.
 
-Irrespective of how many neighbor APs present in the topology, HW 
-offload take care of neighbor BSS filtering. Hence no impact in CPU 
-load.
-so we decided to use HW offload. To use our HW offload feature, we ended 
-up in vendor command approach.
+The only thing which is missing is getting this added to https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles so the official board-2.bin. My problem is that I dont know how to read the board files and modify them because I do not know the encoding they use.
 
-Karthikeyan
+Also there have been some updates in the upstream linux-firmware repo. https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/?id=a87eb5f7bac0f70ade57da57d9126d14eee12336 and https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0 but they also do not help to get the wifi card working/recognized.
+
+Also there is a guide how to port it to Linux https://developer.qualcomm.com/download/qca9377/wlan-bluetooth-linux-porting-guide.pdf
+
+After copying the above http://www.killernetworking.com/support/K1535_Debian/board.bin to the following folder "/lib/firmware/ath10k/QCA6174/hw3.0", the wifi works flawless. Just the "board.bin" and "board-2.bin" in "/lib/firmware/ath10k/QCA6174/hw3.0" have to be deleted before.
+
+
+This is the output of dmesg after replacing the board.bin with the one from killernetworking.com:
+
+dmesg | grep ath
+[ 4.513563] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+[ 4.806988] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 168c:3370
+[ 4.806994] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+[ 4.807918] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features wowlan,ignore-otp crc32 fd869beb
+[ 4.876632] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 70c38a29
+[ 5.593731] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+[ 5.596743] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+[ 5.600688] ath10k_pci 0000:01:00.0: htt-ver 3.47 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+[ 5.691843] ath: EEPROM regdomain: 0x0
+[ 5.691845] ath: EEPROM indicates default country code should be used
+[ 5.691846] ath: doing EEPROM country->regdmn map search
+[ 5.691849] ath: country maps to regdmn code: 0x3a
+[ 5.691850] ath: Country alpha2 being used: US
+[ 5.691851] ath: Regpair used: 0x3a
+[ 6.576740] ath10k_pci 0000:01:00.0 wlp1s0: renamed from wlan0
+[ 7.403038] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+[ 7.406042] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+[ 184.060093] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+[ 184.063109] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+
+There is also a .zip files available https://www.killernetworking.com/killersupport/item/killer-drivers-inf which includes some .bin files for the QCA6174 (e.g. "qca61x4_1_1_2.bin" )
+
+I am also not sure if it is exactly that Killer Card. How could I find out, which model it is exactly?
+
+Also added this in the Ubuntu Bug Tracker, but I think it would be good to directly get it solved upstream.
+
+If you need any help, terminal printouts, or testing something, please let me know.
+
+best regards
+
+Christian H.
 
 _______________________________________________
 ath10k mailing list
