@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from h-66-167-227-145.lsan.ca.dynamic.globalcapacity.com
- ([66.167.227.145] helo=mail.lang.hm)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOvXB-0001bf-Op
- for ath10k@lists.infradead.org; Tue, 20 Nov 2018 02:13:03 +0000
-Date: Mon, 19 Nov 2018 18:12:29 -0800 (PST)
-From: David Lang <david@lang.hm>
-Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtime accounting
- and scheduling to TXQs
-In-Reply-To: <CAA93jw55KywLAMEo=hHcqGdB1-qV3-3CCQe+T6GMNZwR6kRhJw@mail.gmail.com>
-Message-ID: <nycvar.QRO.7.76.6.1811191811080.7093@qynat-yncgbc>
-References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
- <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
- <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name> <871s7nv9pl.fsf@toke.dk>
- <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
- <87sh02tfsp.fsf@toke.dk> <878t1p2bqz.fsf@taht.net> <87muq4sn50.fsf@toke.dk>
- <4DD985B6-7DBE-42F8-AC87-D6B40CEAE553@superduper.net>
- <CAA93jw4Cih5HkHYUOy7Vr5G7zi0KkKmNnNohDAVaj65goWOh+A@mail.gmail.com>
- <b0662c97-fb17-3f9d-693e-2fec92535076@candelatech.com>
- <CAA93jw5tgKcRM9x0gd-7SKf=qBbjhSip64e1oQqUB6N67FhdmA@mail.gmail.com>
- <6beaeb84-b705-335b-93a7-36176495099b@candelatech.com>
- <CAA93jw55KywLAMEo=hHcqGdB1-qV3-3CCQe+T6GMNZwR6kRhJw@mail.gmail.com>
+ id 1gOvxW-0002BK-D3
+ for ath10k@lists.infradead.org; Tue, 20 Nov 2018 02:40:16 +0000
 MIME-Version: 1.0
+Date: Tue, 20 Nov 2018 08:10:00 +0530
+From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Subject: Re: [RFC 2/2] ath10k: Add QCA vendor command/attr support to
+ filterneighbor BSS frames
+In-Reply-To: <a28348956ba3fbfded80bc78ba1c0335df7edb75.camel@sipsolutions.net>
+References: <1530791512-6915-3-git-send-email-periyasa@codeaurora.org>
+ <20181005060031.BA1EB60BF4@smtp.codeaurora.org>
+ <a28348956ba3fbfded80bc78ba1c0335df7edb75.camel@sipsolutions.net>
+Message-ID: <c9b16303e344b2dcd4d52cf9c0830846@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,23 +25,44 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Mon, 19 Nov 2018, Dave Taht wrote:
+On 2018-10-18 13:59, Johannes Berg wrote:
 
->> I'm not sure if this was a fluke or not, but at Starbucks recently I sat outside,
->> right next to their window, and could not scan their AP at all.  Previously, I sat
->> inside, 3 feet away through the glass, and got great signal.  I wonder what that was
->> all about!  Maybe special tinting that blocks RF?  Or just dumb luck of some sort.
->
-> Ya know, I could definitely see a market for a material like that! I'd
-> like it for my car, so bluetooth wouldn't escape.
+>> So I'm not sure what to do with this. A bpf type of filtering system 
+>> in
+>> mac80211 would be nice
+> 
+> Yes, I think we really need to start implementing that sooner rather
+> than later. I had something, must see if I can find time for it.
+> 
+>> but then again we cannot benefit from HW offloading.
+> 
+> Yes, that's a concern. But how big of a concern is it really?
+> 
+> This patch only talks about "allow an AP" etc. and so while important,
+> power isn't the _utmost_ concern like on mobile. Given an efficient
+> filtering solution in software, would that be sufficient?
 
-That would break your tire pressure sensors (each car is rolling around 
-broadcasting 4 unique bluetooth IDs, not hard to track)
+Assume in a scenario where there are multiple APs (One Center AP and 
+Multiple repeater AP) in same operating channel.
+Clients present in Neighbor APs causing higher traffic.
 
-David Lang
+when we try to filter desire client packets,
+In HW offload case, all Neighbor BSS packets are filtered by HW. so 
+there is no impact in CPU load. AP performance not get impacted.
+In bpf (enabling monitor mode) case, all Neighbor BSS packets get 
+filtered by software. It will consume CPU load which will impact AP 
+performance.
+
+Irrespective of how many neighbor APs present in the topology, HW 
+offload take care of neighbor BSS filtering. Hence no impact in CPU 
+load.
+so we decided to use HW offload. To use our HW offload feature, we ended 
+up in vendor command approach.
+
+Karthikeyan
 
 _______________________________________________
 ath10k mailing list
