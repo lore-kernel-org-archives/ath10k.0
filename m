@@ -1,28 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOuTT-0007Tg-HP
- for ath10k@lists.infradead.org; Tue, 20 Nov 2018 01:05:09 +0000
-Received: by mail-qk1-x744.google.com with SMTP id o89so404072qko.0
- for <ath10k@lists.infradead.org>; Mon, 19 Nov 2018 17:04:56 -0800 (PST)
-MIME-Version: 1.0
+Received: from h-66-167-227-145.lsan.ca.dynamic.globalcapacity.com
+ ([66.167.227.145] helo=mail.lang.hm)
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOvXB-0001bf-Op
+ for ath10k@lists.infradead.org; Tue, 20 Nov 2018 02:13:03 +0000
+Date: Mon, 19 Nov 2018 18:12:29 -0800 (PST)
+From: David Lang <david@lang.hm>
+Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtime accounting
+ and scheduling to TXQs
+In-Reply-To: <CAA93jw55KywLAMEo=hHcqGdB1-qV3-3CCQe+T6GMNZwR6kRhJw@mail.gmail.com>
+Message-ID: <nycvar.QRO.7.76.6.1811191811080.7093@qynat-yncgbc>
 References: <1542063113-22438-1-git-send-email-rmanohar@codeaurora.org>
  <1542063113-22438-4-git-send-email-rmanohar@codeaurora.org>
  <e5344cad-2a18-a938-f2ed-43870027251c@nbd.name> <871s7nv9pl.fsf@toke.dk>
- <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name> <87sh02tfsp.fsf@toke.dk>
- <878t1p2bqz.fsf@taht.net> <87muq4sn50.fsf@toke.dk>
+ <8e7847ff-4c88-10ae-2223-2fc7321641d9@nbd.name>
+ <87sh02tfsp.fsf@toke.dk> <878t1p2bqz.fsf@taht.net> <87muq4sn50.fsf@toke.dk>
  <4DD985B6-7DBE-42F8-AC87-D6B40CEAE553@superduper.net>
  <CAA93jw4Cih5HkHYUOy7Vr5G7zi0KkKmNnNohDAVaj65goWOh+A@mail.gmail.com>
  <b0662c97-fb17-3f9d-693e-2fec92535076@candelatech.com>
  <CAA93jw5tgKcRM9x0gd-7SKf=qBbjhSip64e1oQqUB6N67FhdmA@mail.gmail.com>
  <6beaeb84-b705-335b-93a7-36176495099b@candelatech.com>
- <46F43681-DF84-4E08-9426-328BA7AE1CED@superduper.net>
-In-Reply-To: <46F43681-DF84-4E08-9426-328BA7AE1CED@superduper.net>
-From: Dave Taht <dave.taht@gmail.com>
-Date: Mon, 19 Nov 2018 17:04:43 -0800
-Message-ID: <CAA93jw60e-oV_axeNg6JoJGXhjUxbr==nnRvoBiJS3eQF_ZO3A@mail.gmail.com>
-Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtime accounting
- and scheduling to TXQs
+ <CAA93jw55KywLAMEo=hHcqGdB1-qV3-3CCQe+T6GMNZwR6kRhJw@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,78 +30,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Barber <simon@superduper.net>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
+To: Dave Taht <dave.taht@gmail.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
 
-T24gTW9uLCBOb3YgMTksIDIwMTggYXQgNDo1MiBQTSBTaW1vbiBCYXJiZXIgPHNpbW9uQHN1cGVy
-ZHVwZXIubmV0PiB3cm90ZToKPgo+IExvdy1lIGdsYXNzLCBpdOKAmXMgYSB0aGluIG1ldGFsbGlj
-IGZpbG0gdXNlZCB0byByZWZsZWN0IGluZnJhLXJlZCB0byBrZWVwIGhlYXQgaW4gb3Igb3V0LiBU
-b3RhbGx5IGJsb2Nrcy9yZWZsZWN0cyBSRi4KClZlcnkgY29vbC4gSSBpbWFnaW5lIGl0J3MgaGVs
-bCBvbiBjZWxsIHRvbz8KCkkgY2FuIHNlZSB0aGlzIHN0dWZmIGJlY29taW5nIHZlcnkgcG9wdWxh
-ciBpbiBwbGFjZXMgd2hlcmUga2VlcGluZyB0aGUKZ29vZCB3aWZpIGluIGlzIGltcG9ydGFudC4g
-Q291bGQgY292ZXIgZmxvb3JzIGFuZCBjZWlsaW5ncyB3aXRoIGl0IHRvLgpDYXJzIGNvdWxkIGJl
-IHRlbXBlc3QgcmF0ZWQuLi4KCi9tZSBnb2VzIGxvb2tpbmcgZm9yIHN0b2NrIHRvIGJ1eQoKPiBT
-aW1vbgo+Cj4gT24gTm92IDE5LCAyMDE4LCBhdCA0OjIwIFBNLCBCZW4gR3JlZWFyIDxncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4KPiBPbiAxMS8xOS8yMDE4IDA0OjEzIFBNLCBEYXZl
-IFRhaHQgd3JvdGU6Cj4KPiBPbiBNb24sIE5vdiAxOSwgMjAxOCBhdCAzOjU2IFBNIEJlbiBHcmVl
-YXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPgo+Cj4gT24gMTEvMTkvMjAxOCAw
-Mzo0NyBQTSwgRGF2ZSBUYWh0IHdyb3RlOgo+Cj4gT24gTW9uLCBOb3YgMTksIDIwMTggYXQgMzoz
-MCBQTSBTaW1vbiBCYXJiZXIgPHNpbW9uQHN1cGVyZHVwZXIubmV0PiB3cm90ZToKPgo+Cj4KPgo+
-IE9uIE5vdiAxOSwgMjAxOCwgYXQgMjo0NCBQTSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0
-b2tlQHRva2UuZGs+IHdyb3RlOgo+Cj4gRGF2ZSBUYWh0IDxkYXZlQHRhaHQubmV0PiB3cml0ZXM6
-Cj4KPiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAdG9rZS5kaz4gd3JpdGVzOgo+Cj4g
-RmVsaXggRmlldGthdSA8bmJkQG5iZC5uYW1lPiB3cml0ZXM6Cj4KPiBPbiAyMDE4LTExLTE0IDE4
-OjQwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4KPiBUaGlzIHBhcnQgZG9lc24n
-dCByZWFsbHkgbWFrZSBtdWNoIHNlbnNlIHRvIG1lLCBidXQgbWF5YmUgSSdtCj4gbWlzdW5kZXJz
-dGFuZGluZyBob3cgdGhlIGNvZGUgd29ya3MuCj4gTGV0J3MgYXNzdW1lIHdlIGhhdmUgYSBkcml2
-ZXIgbGlrZSBhdGg5ayBvciBtdDc2LCB3aGljaCB0cmllcyB0byBrZWVwIGEKPgo+IOKApi4KPgo+
-Cj4gV2VsbCwgdGhlcmUncyBnb2luZyB0byBiZSBhIEJRTC1saWtlIHF1ZXVlIGxpbWl0IChidXQg
-Zm9yIGFpcnRpbWUpIG9uCj4gdG9wLCB3aGljaCBkcml2ZXJzIGNhbiBvcHQtaW4gdG8gaWYgdGhl
-IGhhcmR3YXJlIGhhcyB0b28gbXVjaCBxdWV1ZWluZy4KPgo+Cj4gVmVyeSBoYXBweSB0byByZWFk
-IHRoaXMgLSBJIGZpcnN0IHRhbGtlZCB0byBEYXZlIFRhaHQgYWJvdXQgdGhlIG5lZWQgZm9yIFRp
-bWUgUXVldWUgTGltaXRzIG1vcmUgdGhhbiA1IHllYXJzIGFnbyEKPgo+Cj4gTWljaGFsIGZha2Vk
-IHVwIGEgZHFsIGVzdGltYXRvciAzICg/KSB5ZWFycyBhZ28uIGl0IHdvcmtlZC4KPgo+IGh0dHA6
-Ly9ibG9nLmNlcm93cnQub3JnL3Bvc3QvZHFsX29uX3dpZmlfMi8KPgo+IEFzIGEgc2lkZSBub3Rl
-LCBpbiAqYW55KiByZWFsIHdvcmxkIHdvcmtpbmcgbXUtbWltbyBzaXR1YXRpb24gYXQgYW55Cj4g
-c2NhbGUsIG9uIGFueSBlcXVpcG1lbnQsIGRvZXMgYW55b25lIGhhdmUgYW55IHN0YXRzIG9uIGhv
-dyBvZnRlbiB0aGUKPiBmZWF0dXJlIGlzIGFjdHVhbGx5IHVzZWQgYW5kIHVzZWZ1bD8KPgo+IE15
-IHBlcnNvbmFsIGd1ZXNzLCBmcm9tIGxvb2tpbmcgYXQgdGhlIHN0YW5kYXJkLCB3YXMgaW4gaG9t
-ZQo+IHNjZW5hcmlvcywgdXNhZ2Ugd291bGQgYmUgYWJvdXQuLi4gMCwgYW5kIGluIGEgY29udHJv
-bGxlZCBlbnZpcm9ubWVudAo+IGluIGEgZm9vdGJhbGwgc3RhZGl1bSwgcXVpdGUgYSBsb3QuCj4K
-PiBJbiBhIG9mZmljZSBvciBhcGFydG1lbnQgY29tcGxleCwgSSBmaWd1cmVkIGludGVyZmVyZW5j
-ZSBhbmQgc28gZm9ydGgKPiB3b3VsZCBtYWtlIGl0IGEgbmVnYXRpdmUgYmVuZWZpdCBkdWUgdG8g
-cmV0cmFuc21pdHMuCj4KPiBJIGZlbHQgd2hlbiB0aGF0IHBhcnQgb2YgdGhlIHN0YW5kYXJkIHJv
-bGxlZCBhcm91bmQuLi4gdGhhdCBtdS1taW1vCj4gd2FzIGFuIGlkZWEgdGhhdCBzaG91bGQgbmV2
-ZXIgaGF2ZSBlc2NhcGVkIHRoZSBsYWIuIEkgY2FuIGJlIGNvbnZpbmNlZAo+IGJ5IGRhdGEsIHRo
-YXQgd2UgY2FuIGFpbSBmb3IgYSBoaWdoZXIgZ29hbCBoZXJlLiBCdXQgaXQgd291bGQgYmUKPiBj
-b21mb3J0aW5nIHRvIGhhdmUgYSBtZWFzdXJlZCBub24tbGFiLCByZWFsLXdvcmxkLCBhdCByZWFs
-IHdvcmxkCj4gcmF0ZXMsIHJlc3VsdCBmb3IgaXQsIG9uIHNvbWUgcGxhdGZvcm0sIG9mIGl0IGFj
-dHVhbGx5IGJlaW5nIHVzZWZ1bC4KPgo+Cj4gV2UncmUgd29ya2luZyBvbiBidWlsZGluZyBhIGxh
-YiB3aXRoIDIwIG9yIDMwIG1peGVkICdyZWFsJyBkZXZpY2VzCj4gdXNpbmcgdmFyaW91cyBkaWZm
-ZXJlbnQgL0FDIE5JQ3MgKFFDQSB3YXZlMiBvbiBPcGVuV1JULCBGZWRvcmEsIHJlYWx0ZWsgVVNC
-IDg4MTJhdSBvbiBPcGVuV1JULCBGZWRvcmEsCj4gYW5kIHNvbWUgSW50ZWwgTklDcyBpbiBOVUNz
-IG9uIFdpbmRvd3MsIGFuZCBtYXliZSBtb3JlKS4gIEknbSBub3QgYWN0dWFsbHkgc3VyZSBpZiB0
-aGF0IHJlYWx0ZWsKPiAgb3IgdGhlIE5VQ3MgY2FuIGRvIE1VLU1JTU8gb3Igbm90LCBidXQgdGhl
-IFFDQSBOSUNzIHdpbGwgYmUgYWJsZSB0by4gIEl0IHNob3VsZCBiZSBhdCBsZWFzdCBzb21ld2hh
-dCBzaW1pbGFyCj4gdG8gYSBjbGFzc3Jvb20gZW52aXJvbm1lbnQgb3IgY29mZmVlIHNob3AuCj4K
-Pgo+IEluIHRoZSBsYXN0IDMgY29mZmVlIHNob3BzIEkgd2VudCB0bywgSSBjb3VsZCBoZWFyIG92
-ZXIgMzAgQVBzIG9uCj4gY29tcGV0aW5nIFNTSURzLCBydW5uaW5nIEcsIE4sIGFuZCBBQywKPiBv
-Y2N1cHlpbmcgZXZlcnkgYXZhaWxhYmxlIGNoYW5uZWwuCj4KPgo+IEkgZXNwZWNpYWxseSBsaWtl
-IHdoZW4gc29tZW9uZSB1c2VzIGNoYW5uZWwgMyBiZWNhdXNlLCBJIGd1ZXNzLCB0aGV5Cj4gdGhp
-bmsgaXQgaXMgdW4tdXNlZCA6KQo+Cj4gSSdtIG5vdCBzdXJlIGlmIHRoaXMgd2FzIGEgZmx1a2Ug
-b3Igbm90LCBidXQgYXQgU3RhcmJ1Y2tzIHJlY2VudGx5IEkgc2F0IG91dHNpZGUsCj4gcmlnaHQg
-bmV4dCB0byB0aGVpciB3aW5kb3csIGFuZCBjb3VsZCBub3Qgc2NhbiB0aGVpciBBUCBhdCBhbGwu
-ICBQcmV2aW91c2x5LCBJIHNhdAo+IGluc2lkZSwgMyBmZWV0IGF3YXkgdGhyb3VnaCB0aGUgZ2xh
-c3MsIGFuZCBnb3QgZ3JlYXQgc2lnbmFsLiAgSSB3b25kZXIgd2hhdCB0aGF0IHdhcwo+IGFsbCBh
-Ym91dCEgIE1heWJlIHNwZWNpYWwgdGludGluZyB0aGF0IGJsb2NrcyBSRj8gIE9yIGp1c3QgZHVt
-YiBsdWNrIG9mIHNvbWUgc29ydC4KPgo+IFRoYW5rcywKPiBCZW4KPgo+Cj4gLS0KPiBCZW4gR3Jl
-ZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMg
-IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCj4KPgoKCi0tIAoKRGF2ZSBUw6RodApDVE8sIFRl
-a0xpYnJlLCBMTEMKaHR0cDovL3d3dy50ZWtsaWJyZS5jb20KVGVsOiAxLTgzMS0yMDUtOTc0MAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Mon, 19 Nov 2018, Dave Taht wrote:
+
+>> I'm not sure if this was a fluke or not, but at Starbucks recently I sat outside,
+>> right next to their window, and could not scan their AP at all.  Previously, I sat
+>> inside, 3 feet away through the glass, and got great signal.  I wonder what that was
+>> all about!  Maybe special tinting that blocks RF?  Or just dumb luck of some sort.
+>
+> Ya know, I could definitely see a market for a material like that! I'd
+> like it for my car, so bluetooth wouldn't escape.
+
+That would break your tire pressure sensors (each car is rolling around 
+broadcasting 4 unique bluetooth IDs, not hard to track)
+
+David Lang
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
