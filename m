@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp87.iad3a.emailsrvr.com ([173.203.187.87])
+Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPURC-00024j-67
- for ath10k@lists.infradead.org; Wed, 21 Nov 2018 15:29:11 +0000
-Date: Wed, 21 Nov 2018 10:28:55 -0500 (EST)
-Subject: RE: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add
- airtimeaccounting and scheduling to TXQs
-From: "David P. Reed" <dpreed@deepplum.com>
+ id 1gPUaB-0005QS-RJ
+ for ath10k@lists.infradead.org; Wed, 21 Nov 2018 15:38:29 +0000
+Received: by mail-qt1-x841.google.com with SMTP id d19so4245942qtq.9
+ for <ath10k@lists.infradead.org>; Wed, 21 Nov 2018 07:38:17 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <1542814135.446217011@apps.rackspace.com>
+References: <1542814135.446217011@apps.rackspace.com>
+In-Reply-To: <1542814135.446217011@apps.rackspace.com>
+From: Dave Taht <dave.taht@gmail.com>
+Date: Wed, 21 Nov 2018 07:38:03 -0800
+Message-ID: <CAA93jw5TDtrBDNKhyGhP6VimXavfja17uExYNZyb=x-fbHLDqw@mail.gmail.com>
+Subject: Re: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add
+ airtimeaccounting and scheduling to TXQs
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,49 +21,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Lang <david@lang.hm>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
+To: dpreed@deepplum.com
+Cc: David Lang <david@lang.hm>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
 
-Really? Tires are Bluetooth? I don't think mine are, but now I want to figure out how that works. 1600Chips/sec is 600 microseconds per chip. They spin at up to, say, radial rates that are a 100 revs/sec and thus take maybe 10 msec. to travel 30 cm. How much warble in a chip frequency is there?
-
-Ok, maybe they only need to work when the car is stopped.
-
-I would design a tire pressure system that sends, maybe, 10 bits per second, at most. Or calibrate the sensor to produce 1 bit, and use the car metal frame to carry the signal to the computer as a single bit. A very slowly varying sensor can be sensed without needing a battery, by using some passive, tuned circuit.
-
-Bluetooth is way overkill, but cheap. I doubt it works well in the application, though.
-
------Original
-From: "David Lang" <david@lang.hm>
-Sent: Mon, Nov 19, 2018 at 9:12 pm
-To: "Dave Taht" <dave.taht@gmail.com>
-Cc: "Dave Taht" <dave.taht@gmail.com>, "Rajkumar Manoharan" <rmanohar@codeaurora.org>, "Make-Wifi-fast" <make-wifi-fast@lists.bufferbloat.net>, "linux-wireless" <linux-wireless@vger.kernel.org>, "ath10k" <ath10k@lists.infradead.org>, "Ben Greear" <greearb@candelatech.com>, "Felix Fietkau" <nbd@nbd.name>
-Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtimeaccounting and scheduling to TXQs
-
-On Mon, 19 Nov 2018, Dave Taht wrote:
-
->> I'm not sure if this was a fluke or not, but at Starbucks recently I sat outside,
->> right next to their window, and could not scan their AP at all.  Previously, I sat
->> inside, 3 feet away through the glass, and got great signal.  I wonder what that was
->> all about!  Maybe special tinting that blocks RF?  Or just dumb luck of some sort.
->
-> Ya know, I could definitely see a market for a material like that! I'd
-> like it for my car, so bluetooth wouldn't escape.
-
-That would break your tire pressure sensors (each car is rolling around 
-broadcasting 4 unique bluetooth IDs, not hard to track)
-
-David Lang
-_______________________________________________
-Make-wifi-fast mailing list
-Make-wifi-fast@lists.bufferbloat.net
-https://lists.bufferbloat.net/listinfo/make-wifi-fast
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhpcyBpcyBnZXR0aW5nIHNlcmlvdXNseSBvZmZ0cmFjayBmb3Igc3VjaCBhIHdpZGUgc2V0IG9m
+IG1haWxpbmcKbGlzdHMuIFRpcyBPSyB3ZXJlIGl0IGp1c3QgbWFrZS13aWZpLWZhc3QsIGFuZApJ
+J2QgZW5jb3VyYWdlIGxpbWl0aW5nIHRoZSBkaXN0cmlidXRpb24gaW4gdGhlIGZ1dHVyZSB0byBq
+dXN0IHRoYXQuCgp0aGF0IHNhaWQsIEknbSB0aXJlZCBvZiBsb29raW5nIGF0IHBhdGNoZXMgdGhp
+cyB3ZWVrLCBhbmQgdGhpcyBzb25nJ3MKZ29pbmcgdGhyb3VnaCBteSBoZWFkLiBzby4uLiBqb2lu
+IGluLCBhbmQuLi4KCmh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9VzVfOFU0ajUxbEkK
+Ck9uIFdlZCwgTm92IDIxLCAyMDE4IGF0IDc6MjggQU0gRGF2aWQgUC4gUmVlZCA8ZHByZWVkQGRl
+ZXBwbHVtLmNvbT4gd3JvdGU6Cj4KPiBSZWFsbHk/IFRpcmVzIGFyZSBCbHVldG9vdGg/IEkgZG9u
+J3QgdGhpbmsgbWluZSBhcmUsIGJ1dCBub3cgSSB3YW50IHRvIGZpZ3VyZSBvdXQgaG93IHRoYXQg
+d29ya3MuIDE2MDBDaGlwcy9zZWMgaXMgNjAwIG1pY3Jvc2Vjb25kcyBwZXIgY2hpcC4gVGhleSBz
+cGluIGF0IHVwIHRvLCBzYXksIHJhZGlhbCByYXRlcyB0aGF0IGFyZSBhIDEwMCByZXZzL3NlYyBh
+bmQgdGh1cyB0YWtlIG1heWJlIDEwIG1zZWMuIHRvIHRyYXZlbCAzMCBjbS4gSG93IG11Y2ggd2Fy
+YmxlIGluIGEgY2hpcCBmcmVxdWVuY3kgaXMgdGhlcmU/Cj4KPiBPaywgbWF5YmUgdGhleSBvbmx5
+IG5lZWQgdG8gd29yayB3aGVuIHRoZSBjYXIgaXMgc3RvcHBlZC4KPgo+IEkgd291bGQgZGVzaWdu
+IGEgdGlyZSBwcmVzc3VyZSBzeXN0ZW0gdGhhdCBzZW5kcywgbWF5YmUsIDEwIGJpdHMgcGVyIHNl
+Y29uZCwgYXQgbW9zdC4gT3IgY2FsaWJyYXRlIHRoZSBzZW5zb3IgdG8gcHJvZHVjZSAxIGJpdCwg
+YW5kIHVzZSB0aGUgY2FyIG1ldGFsIGZyYW1lIHRvIGNhcnJ5IHRoZSBzaWduYWwgdG8gdGhlIGNv
+bXB1dGVyIGFzIGEgc2luZ2xlIGJpdC4gQSB2ZXJ5IHNsb3dseSB2YXJ5aW5nIHNlbnNvciBjYW4g
+YmUgc2Vuc2VkIHdpdGhvdXQgbmVlZGluZyBhIGJhdHRlcnksIGJ5IHVzaW5nIHNvbWUgcGFzc2l2
+ZSwgdHVuZWQgY2lyY3VpdC4KCldlbGwsIHBsZWFzZSBwb2tlIGludG8gaXQgYW5kIGdldCBiYWNr
+IHRvIHVzLiA6KQoKPiBCbHVldG9vdGggaXMgd2F5IG92ZXJraWxsLCBidXQgY2hlYXAuIEkgZG91
+YnQgaXQgd29ya3Mgd2VsbCBpbiB0aGUgYXBwbGljYXRpb24sIHRob3VnaC4KCkkgaG9uZXN0bHkg
+ZG9uJ3Qga25vdyBhIGxvdCBhYm91dCBob3cgaXQgd29ya3MsIEkgZG8ga25vdyB0aGF0IG1hbnkK
+dGlyZSBzeXN0ZW1zIERPIHVzZSBzb21lIGZvcm0gb2YgcmFkaW8sIGFuZCBpdCdzIGEgd2VsbCBk
+ZXNjcmliZWQgdnVsbgppbiBzZXZlcmFsIFNGIG5vdmVscywgaW4gYmVpbmcgYWJsZSB0byB0cmFj
+ayBjYXJzIGV2ZXJ5d2hlcmUuIEl0IHdvdWxkCmJlIGdvb2QgdG8gKmtub3cqIGhvdyBiYWQgdGhl
+IHRpcmUgc2Vuc29yIHByb2JsZW0gYWN0dWFsbHkgd2FzLi4uLgoKTXkgc3BlY2lmaWMgZGVzaXJl
+IHRvIGJsb2NrIGJsdWV0b290aCBmcm9tIG91dHNpZGUgb2YgdGhlIGNhciB3YXMgdGhhdApJIGFt
+IHBlcnBldHVhbGx5IHNlZWluZyBuZXcgZGV2aWNlcyB0byBwYWlyIHdpdGgsIHRoYXQgSSBwcmVm
+ZXIgbXkKY29udmVyc2F0aW9uLCBubyBtYXR0ZXIgaG93IHRoZW9yZXRpY2FsbHkgc2VjdXJlIGl0
+IHdhcyB0byBub3QgZXNjYXBlLAphbmQgdGhhdCB0aGVyZSBhcmUgYWxsIHNvcnRzIG9mIGJsdWV0
+b290aHkgY29udHJvbHMgbm93IHRoYXQgc29tZW9uZQpjb3VsZCB0cnkgdG8gdGFrZSBvdmVyLCBh
+bmQgcmFkaW8gaW50ZXJmZXJlbmNlIGlzIGEgUElUQS4gQW5kIG15IHBob25lCnBlcnBldHVhbGx5
+IHRyaWVzIHRvIGFzc29jaWF0ZSB3aXRoIHRoaW5ncyBJJ2QgcmF0aGVyIGl0IG5vdCBhc3NvY2lh
+dGUKd2l0aC4KClNvIEkgY291bGQgY2VydGFpbmx5IHNlZSBhIGNoZWFwIGNvYXRpbmcgbWFraW5n
+IHRoZSBjb2NrcGl0IG1vcmUKdGVtcGVzdCByYXRlZCBiZWluZyBhIHdpbi4gIkF2YWlsYWJsZSBp
+biAyMDIwIGZyb20gYSBUZXNsYSBkZWFsZXIgbmVhcgp5b3UhIgoKTXkgY2FyIHdhcyBidWlsdCBp
+biAyMDAzIGFuZCBkb2Vzbid0IGhhdmUgYW55IG9mIHRoaXMgbmV3ZmFuZ2xlZCBzdHVmZi4KCj4g
+LS0tLS1PcmlnaW5hbAo+IEZyb206ICJEYXZpZCBMYW5nIiA8ZGF2aWRAbGFuZy5obT4KPiBTZW50
+OiBNb24sIE5vdiAxOSwgMjAxOCBhdCA5OjEyIHBtCj4gVG86ICJEYXZlIFRhaHQiIDxkYXZlLnRh
+aHRAZ21haWwuY29tPgo+IENjOiAiRGF2ZSBUYWh0IiA8ZGF2ZS50YWh0QGdtYWlsLmNvbT4sICJS
+YWprdW1hciBNYW5vaGFyYW4iIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4sICJNYWtlLVdpZmkt
+ZmFzdCIgPG1ha2Utd2lmaS1mYXN0QGxpc3RzLmJ1ZmZlcmJsb2F0Lm5ldD4sICJsaW51eC13aXJl
+bGVzcyIgPGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz4sICJhdGgxMGsiIDxhdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZz4sICJCZW4gR3JlZWFyIiA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
+b20+LCAiRmVsaXggRmlldGthdSIgPG5iZEBuYmQubmFtZT4KPiBTdWJqZWN0OiBSZTogW01ha2Ut
+d2lmaS1mYXN0XSBbUEFUQ0ggdjMgMy82XSBtYWM4MDIxMTogQWRkIGFpcnRpbWVhY2NvdW50aW5n
+IGFuZCBzY2hlZHVsaW5nIHRvIFRYUXMKPgo+IE9uIE1vbiwgMTkgTm92IDIwMTgsIERhdmUgVGFo
+dCB3cm90ZToKPgo+ID4+IEknbSBub3Qgc3VyZSBpZiB0aGlzIHdhcyBhIGZsdWtlIG9yIG5vdCwg
+YnV0IGF0IFN0YXJidWNrcyByZWNlbnRseSBJIHNhdCBvdXRzaWRlLAo+ID4+IHJpZ2h0IG5leHQg
+dG8gdGhlaXIgd2luZG93LCBhbmQgY291bGQgbm90IHNjYW4gdGhlaXIgQVAgYXQgYWxsLiAgUHJl
+dmlvdXNseSwgSSBzYXQKPiA+PiBpbnNpZGUsIDMgZmVldCBhd2F5IHRocm91Z2ggdGhlIGdsYXNz
+LCBhbmQgZ290IGdyZWF0IHNpZ25hbC4gIEkgd29uZGVyIHdoYXQgdGhhdCB3YXMKPiA+PiBhbGwg
+YWJvdXQhICBNYXliZSBzcGVjaWFsIHRpbnRpbmcgdGhhdCBibG9ja3MgUkY/ICBPciBqdXN0IGR1
+bWIgbHVjayBvZiBzb21lIHNvcnQuCj4gPgo+ID4gWWEga25vdywgSSBjb3VsZCBkZWZpbml0ZWx5
+IHNlZSBhIG1hcmtldCBmb3IgYSBtYXRlcmlhbCBsaWtlIHRoYXQhIEknZAo+ID4gbGlrZSBpdCBm
+b3IgbXkgY2FyLCBzbyBibHVldG9vdGggd291bGRuJ3QgZXNjYXBlLgo+Cj4gVGhhdCB3b3VsZCBi
+cmVhayB5b3VyIHRpcmUgcHJlc3N1cmUgc2Vuc29ycyAoZWFjaCBjYXIgaXMgcm9sbGluZyBhcm91
+bmQKPiBicm9hZGNhc3RpbmcgNCB1bmlxdWUgYmx1ZXRvb3RoIElEcywgbm90IGhhcmQgdG8gdHJh
+Y2spCj4KPiBEYXZpZCBMYW5nCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KPiBNYWtlLXdpZmktZmFzdCBtYWlsaW5nIGxpc3QKPiBNYWtlLXdpZmktZmFz
+dEBsaXN0cy5idWZmZXJibG9hdC5uZXQKPiBodHRwczovL2xpc3RzLmJ1ZmZlcmJsb2F0Lm5ldC9s
+aXN0aW5mby9tYWtlLXdpZmktZmFzdAo+CgoKLS0gCgpEYXZlIFTDpGh0CkNUTywgVGVrTGlicmUs
+IExMQwpodHRwOi8vd3d3LnRla2xpYnJlLmNvbQpUZWw6IDEtODMxLTIwNS05NzQwCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
