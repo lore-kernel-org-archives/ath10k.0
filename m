@@ -1,18 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
+Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPUaB-0005QS-RJ
- for ath10k@lists.infradead.org; Wed, 21 Nov 2018 15:38:29 +0000
-Received: by mail-qt1-x841.google.com with SMTP id d19so4245942qtq.9
- for <ath10k@lists.infradead.org>; Wed, 21 Nov 2018 07:38:17 -0800 (PST)
+ id 1gPYAY-0003LE-Ra
+ for ath10k@lists.infradead.org; Wed, 21 Nov 2018 19:28:17 +0000
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+ (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+ (No client certificate requested)
+ by mx1.mailbox.org (Postfix) with ESMTPS id BB4814349F
+ for <ath10k@lists.infradead.org>; Wed, 21 Nov 2018 20:28:00 +0100 (CET)
+Received: from smtp1.mailbox.org ([80.241.60.240])
+ by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de
+ [80.241.56.123]) (amavisd-new, port 10030)
+ with ESMTP id 9HeJxW5N_PRn for <ath10k@lists.infradead.org>;
+ Wed, 21 Nov 2018 20:27:59 +0100 (CET)
+Date: Wed, 21 Nov 2018 20:27:59 +0100 (CET)
+From: launchpad_sge4@mailbox.org
+Message-ID: <1705610699.18151.1542828479273@office.mailbox.org>
+In-Reply-To: <1084648823.1982.1542713648825@office.mailbox.org>
+References: <1084648823.1982.1542713648825@office.mailbox.org>
+Subject: Re: Surface Go - Atheros Qualcomm Killer N1525 Wireless-AC
+ [168c:003e] not correctly recognized
 MIME-Version: 1.0
-References: <1542814135.446217011@apps.rackspace.com>
-In-Reply-To: <1542814135.446217011@apps.rackspace.com>
-From: Dave Taht <dave.taht@gmail.com>
-Date: Wed, 21 Nov 2018 07:38:03 -0800
-Message-ID: <CAA93jw5TDtrBDNKhyGhP6VimXavfja17uExYNZyb=x-fbHLDqw@mail.gmail.com>
-Subject: Re: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add
- airtimeaccounting and scheduling to TXQs
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,77 +29,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: dpreed@deepplum.com
-Cc: David Lang <david@lang.hm>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
+To: ath10k@lists.infradead.org
 
-VGhpcyBpcyBnZXR0aW5nIHNlcmlvdXNseSBvZmZ0cmFjayBmb3Igc3VjaCBhIHdpZGUgc2V0IG9m
-IG1haWxpbmcKbGlzdHMuIFRpcyBPSyB3ZXJlIGl0IGp1c3QgbWFrZS13aWZpLWZhc3QsIGFuZApJ
-J2QgZW5jb3VyYWdlIGxpbWl0aW5nIHRoZSBkaXN0cmlidXRpb24gaW4gdGhlIGZ1dHVyZSB0byBq
-dXN0IHRoYXQuCgp0aGF0IHNhaWQsIEknbSB0aXJlZCBvZiBsb29raW5nIGF0IHBhdGNoZXMgdGhp
-cyB3ZWVrLCBhbmQgdGhpcyBzb25nJ3MKZ29pbmcgdGhyb3VnaCBteSBoZWFkLiBzby4uLiBqb2lu
-IGluLCBhbmQuLi4KCmh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9VzVfOFU0ajUxbEkK
-Ck9uIFdlZCwgTm92IDIxLCAyMDE4IGF0IDc6MjggQU0gRGF2aWQgUC4gUmVlZCA8ZHByZWVkQGRl
-ZXBwbHVtLmNvbT4gd3JvdGU6Cj4KPiBSZWFsbHk/IFRpcmVzIGFyZSBCbHVldG9vdGg/IEkgZG9u
-J3QgdGhpbmsgbWluZSBhcmUsIGJ1dCBub3cgSSB3YW50IHRvIGZpZ3VyZSBvdXQgaG93IHRoYXQg
-d29ya3MuIDE2MDBDaGlwcy9zZWMgaXMgNjAwIG1pY3Jvc2Vjb25kcyBwZXIgY2hpcC4gVGhleSBz
-cGluIGF0IHVwIHRvLCBzYXksIHJhZGlhbCByYXRlcyB0aGF0IGFyZSBhIDEwMCByZXZzL3NlYyBh
-bmQgdGh1cyB0YWtlIG1heWJlIDEwIG1zZWMuIHRvIHRyYXZlbCAzMCBjbS4gSG93IG11Y2ggd2Fy
-YmxlIGluIGEgY2hpcCBmcmVxdWVuY3kgaXMgdGhlcmU/Cj4KPiBPaywgbWF5YmUgdGhleSBvbmx5
-IG5lZWQgdG8gd29yayB3aGVuIHRoZSBjYXIgaXMgc3RvcHBlZC4KPgo+IEkgd291bGQgZGVzaWdu
-IGEgdGlyZSBwcmVzc3VyZSBzeXN0ZW0gdGhhdCBzZW5kcywgbWF5YmUsIDEwIGJpdHMgcGVyIHNl
-Y29uZCwgYXQgbW9zdC4gT3IgY2FsaWJyYXRlIHRoZSBzZW5zb3IgdG8gcHJvZHVjZSAxIGJpdCwg
-YW5kIHVzZSB0aGUgY2FyIG1ldGFsIGZyYW1lIHRvIGNhcnJ5IHRoZSBzaWduYWwgdG8gdGhlIGNv
-bXB1dGVyIGFzIGEgc2luZ2xlIGJpdC4gQSB2ZXJ5IHNsb3dseSB2YXJ5aW5nIHNlbnNvciBjYW4g
-YmUgc2Vuc2VkIHdpdGhvdXQgbmVlZGluZyBhIGJhdHRlcnksIGJ5IHVzaW5nIHNvbWUgcGFzc2l2
-ZSwgdHVuZWQgY2lyY3VpdC4KCldlbGwsIHBsZWFzZSBwb2tlIGludG8gaXQgYW5kIGdldCBiYWNr
-IHRvIHVzLiA6KQoKPiBCbHVldG9vdGggaXMgd2F5IG92ZXJraWxsLCBidXQgY2hlYXAuIEkgZG91
-YnQgaXQgd29ya3Mgd2VsbCBpbiB0aGUgYXBwbGljYXRpb24sIHRob3VnaC4KCkkgaG9uZXN0bHkg
-ZG9uJ3Qga25vdyBhIGxvdCBhYm91dCBob3cgaXQgd29ya3MsIEkgZG8ga25vdyB0aGF0IG1hbnkK
-dGlyZSBzeXN0ZW1zIERPIHVzZSBzb21lIGZvcm0gb2YgcmFkaW8sIGFuZCBpdCdzIGEgd2VsbCBk
-ZXNjcmliZWQgdnVsbgppbiBzZXZlcmFsIFNGIG5vdmVscywgaW4gYmVpbmcgYWJsZSB0byB0cmFj
-ayBjYXJzIGV2ZXJ5d2hlcmUuIEl0IHdvdWxkCmJlIGdvb2QgdG8gKmtub3cqIGhvdyBiYWQgdGhl
-IHRpcmUgc2Vuc29yIHByb2JsZW0gYWN0dWFsbHkgd2FzLi4uLgoKTXkgc3BlY2lmaWMgZGVzaXJl
-IHRvIGJsb2NrIGJsdWV0b290aCBmcm9tIG91dHNpZGUgb2YgdGhlIGNhciB3YXMgdGhhdApJIGFt
-IHBlcnBldHVhbGx5IHNlZWluZyBuZXcgZGV2aWNlcyB0byBwYWlyIHdpdGgsIHRoYXQgSSBwcmVm
-ZXIgbXkKY29udmVyc2F0aW9uLCBubyBtYXR0ZXIgaG93IHRoZW9yZXRpY2FsbHkgc2VjdXJlIGl0
-IHdhcyB0byBub3QgZXNjYXBlLAphbmQgdGhhdCB0aGVyZSBhcmUgYWxsIHNvcnRzIG9mIGJsdWV0
-b290aHkgY29udHJvbHMgbm93IHRoYXQgc29tZW9uZQpjb3VsZCB0cnkgdG8gdGFrZSBvdmVyLCBh
-bmQgcmFkaW8gaW50ZXJmZXJlbmNlIGlzIGEgUElUQS4gQW5kIG15IHBob25lCnBlcnBldHVhbGx5
-IHRyaWVzIHRvIGFzc29jaWF0ZSB3aXRoIHRoaW5ncyBJJ2QgcmF0aGVyIGl0IG5vdCBhc3NvY2lh
-dGUKd2l0aC4KClNvIEkgY291bGQgY2VydGFpbmx5IHNlZSBhIGNoZWFwIGNvYXRpbmcgbWFraW5n
-IHRoZSBjb2NrcGl0IG1vcmUKdGVtcGVzdCByYXRlZCBiZWluZyBhIHdpbi4gIkF2YWlsYWJsZSBp
-biAyMDIwIGZyb20gYSBUZXNsYSBkZWFsZXIgbmVhcgp5b3UhIgoKTXkgY2FyIHdhcyBidWlsdCBp
-biAyMDAzIGFuZCBkb2Vzbid0IGhhdmUgYW55IG9mIHRoaXMgbmV3ZmFuZ2xlZCBzdHVmZi4KCj4g
-LS0tLS1PcmlnaW5hbAo+IEZyb206ICJEYXZpZCBMYW5nIiA8ZGF2aWRAbGFuZy5obT4KPiBTZW50
-OiBNb24sIE5vdiAxOSwgMjAxOCBhdCA5OjEyIHBtCj4gVG86ICJEYXZlIFRhaHQiIDxkYXZlLnRh
-aHRAZ21haWwuY29tPgo+IENjOiAiRGF2ZSBUYWh0IiA8ZGF2ZS50YWh0QGdtYWlsLmNvbT4sICJS
-YWprdW1hciBNYW5vaGFyYW4iIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4sICJNYWtlLVdpZmkt
-ZmFzdCIgPG1ha2Utd2lmaS1mYXN0QGxpc3RzLmJ1ZmZlcmJsb2F0Lm5ldD4sICJsaW51eC13aXJl
-bGVzcyIgPGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz4sICJhdGgxMGsiIDxhdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZz4sICJCZW4gR3JlZWFyIiA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+LCAiRmVsaXggRmlldGthdSIgPG5iZEBuYmQubmFtZT4KPiBTdWJqZWN0OiBSZTogW01ha2Ut
-d2lmaS1mYXN0XSBbUEFUQ0ggdjMgMy82XSBtYWM4MDIxMTogQWRkIGFpcnRpbWVhY2NvdW50aW5n
-IGFuZCBzY2hlZHVsaW5nIHRvIFRYUXMKPgo+IE9uIE1vbiwgMTkgTm92IDIwMTgsIERhdmUgVGFo
-dCB3cm90ZToKPgo+ID4+IEknbSBub3Qgc3VyZSBpZiB0aGlzIHdhcyBhIGZsdWtlIG9yIG5vdCwg
-YnV0IGF0IFN0YXJidWNrcyByZWNlbnRseSBJIHNhdCBvdXRzaWRlLAo+ID4+IHJpZ2h0IG5leHQg
-dG8gdGhlaXIgd2luZG93LCBhbmQgY291bGQgbm90IHNjYW4gdGhlaXIgQVAgYXQgYWxsLiAgUHJl
-dmlvdXNseSwgSSBzYXQKPiA+PiBpbnNpZGUsIDMgZmVldCBhd2F5IHRocm91Z2ggdGhlIGdsYXNz
-LCBhbmQgZ290IGdyZWF0IHNpZ25hbC4gIEkgd29uZGVyIHdoYXQgdGhhdCB3YXMKPiA+PiBhbGwg
-YWJvdXQhICBNYXliZSBzcGVjaWFsIHRpbnRpbmcgdGhhdCBibG9ja3MgUkY/ICBPciBqdXN0IGR1
-bWIgbHVjayBvZiBzb21lIHNvcnQuCj4gPgo+ID4gWWEga25vdywgSSBjb3VsZCBkZWZpbml0ZWx5
-IHNlZSBhIG1hcmtldCBmb3IgYSBtYXRlcmlhbCBsaWtlIHRoYXQhIEknZAo+ID4gbGlrZSBpdCBm
-b3IgbXkgY2FyLCBzbyBibHVldG9vdGggd291bGRuJ3QgZXNjYXBlLgo+Cj4gVGhhdCB3b3VsZCBi
-cmVhayB5b3VyIHRpcmUgcHJlc3N1cmUgc2Vuc29ycyAoZWFjaCBjYXIgaXMgcm9sbGluZyBhcm91
-bmQKPiBicm9hZGNhc3RpbmcgNCB1bmlxdWUgYmx1ZXRvb3RoIElEcywgbm90IGhhcmQgdG8gdHJh
-Y2spCj4KPiBEYXZpZCBMYW5nCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KPiBNYWtlLXdpZmktZmFzdCBtYWlsaW5nIGxpc3QKPiBNYWtlLXdpZmktZmFz
-dEBsaXN0cy5idWZmZXJibG9hdC5uZXQKPiBodHRwczovL2xpc3RzLmJ1ZmZlcmJsb2F0Lm5ldC9s
-aXN0aW5mby9tYWtlLXdpZmktZmFzdAo+CgoKLS0gCgpEYXZlIFTDpGh0CkNUTywgVGVrTGlicmUs
-IExMQwpodHRwOi8vd3d3LnRla2xpYnJlLmNvbQpUZWw6IDEtODMxLTIwNS05NzQwCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Additional informations can be found here:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1651779
+
+In comment 1 I posted a possible soultion and .bin file and where I found it and why it should fit and in comment 2 some successfull tests with latest firmare from https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/ath10k/QCA6174/hw3.0/ and https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0
+
+> launchpad_sge4@mailbox.org hat am 20. November 2018 um 12:34 geschrieben:
+> 
+> 
+> Hello,
+> 
+> Output of dmesg on Surface Go fresh installed Ubuntu 18.10.
+> 
+> "[ 4.242132] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 168c:3370
+> [ 4.242138] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+> [ 4.243006] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features wowlan,ignore-otp crc32 fd869beb
+> [ 4.308059] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370 from ath10k/QCA6174/hw3.0/board-2.bin
+> [ 4.309354] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 ed5f849a"
+> 
+> There is a board.bin available directly from the vendor http://www.killernetworking.com/support/K1535_Debian/board.bin But I have no clue what the content of that file is, if somehting is missing etc.
+> 
+> The only thing which is missing is getting this added to https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles so the official board-2.bin. My problem is that I dont know how to read the board files and modify them because I do not know the encoding they use.
+> 
+> Also there have been some updates in the upstream linux-firmware repo. https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/?id=a87eb5f7bac0f70ade57da57d9126d14eee12336 and https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0 but they also do not help to get the wifi card working/recognized.
+> 
+> Also there is a guide how to port it to Linux https://developer.qualcomm.com/download/qca9377/wlan-bluetooth-linux-porting-guide.pdf
+> 
+> After copying the above http://www.killernetworking.com/support/K1535_Debian/board.bin to the following folder "/lib/firmware/ath10k/QCA6174/hw3.0", the wifi works flawless. Just the "board.bin" and "board-2.bin" in "/lib/firmware/ath10k/QCA6174/hw3.0" have to be deleted before.
+> 
+> 
+> This is the output of dmesg after replacing the board.bin with the one from killernetworking.com:
+> 
+> dmesg | grep ath
+> [ 4.513563] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> [ 4.806988] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 168c:3370
+> [ 4.806994] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+> [ 4.807918] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00079-QCARMSWPZ-1 api 6 features wowlan,ignore-otp crc32 fd869beb
+> [ 4.876632] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 70c38a29
+> [ 5.593731] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+> [ 5.596743] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+> [ 5.600688] ath10k_pci 0000:01:00.0: htt-ver 3.47 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> [ 5.691843] ath: EEPROM regdomain: 0x0
+> [ 5.691845] ath: EEPROM indicates default country code should be used
+> [ 5.691846] ath: doing EEPROM country->regdmn map search
+> [ 5.691849] ath: country maps to regdmn code: 0x3a
+> [ 5.691850] ath: Country alpha2 being used: US
+> [ 5.691851] ath: Regpair used: 0x3a
+> [ 6.576740] ath10k_pci 0000:01:00.0 wlp1s0: renamed from wlan0
+> [ 7.403038] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+> [ 7.406042] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+> [ 184.060093] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+> [ 184.063109] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+> 
+> There is also a .zip files available https://www.killernetworking.com/killersupport/item/killer-drivers-inf which includes some .bin files for the QCA6174 (e.g. "qca61x4_1_1_2.bin" )
+> 
+> I am also not sure if it is exactly that Killer Card. How could I find out, which model it is exactly?
+> 
+> Also added this in the Ubuntu Bug Tracker, but I think it would be good to directly get it solved upstream.
+> 
+> If you need any help, terminal printouts, or testing something, please let me know.
+> 
+> best regards
+> 
+> Christian H.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
