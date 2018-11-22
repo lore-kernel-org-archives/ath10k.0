@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from h-66-167-227-145.lsan.ca.dynamic.globalcapacity.com
- ([66.167.227.145] helo=mail.lang.hm)
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPZmg-0000bu-Lt
- for ath10k@lists.infradead.org; Wed, 21 Nov 2018 21:11:44 +0000
-Date: Wed, 21 Nov 2018 12:11:05 -0800 (PST)
-From: David Lang <david@lang.hm>
-Subject: Re: [Make-wifi-fast] [PATCH v3 3/6] mac80211: Add airtimeaccounting
- and scheduling to TXQs
-In-Reply-To: <eb65f613-23b0-737f-fabe-851e6c1abbdd@newmedia-net.de>
-Message-ID: <alpine.DEB.2.02.1811211210190.28423@nftneq.ynat.uz>
-References: <1542814135.446217011@apps.rackspace.com>
- <eb65f613-23b0-737f-fabe-851e6c1abbdd@newmedia-net.de>
+Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPpCw-00071Y-V4
+ for ath10k@lists.infradead.org; Thu, 22 Nov 2018 13:39:52 +0000
+Received: by mail-ot1-x331.google.com with SMTP id 32so8061892ota.12
+ for <ath10k@lists.infradead.org>; Thu, 22 Nov 2018 05:39:37 -0800 (PST)
 MIME-Version: 1.0
+From: =?UTF-8?B?0JrQuNGA0LjQu9C7INCb0YPQutC+0L3QuNC9?= <klukonin@gmail.com>
+Date: Thu, 22 Nov 2018 18:39:35 +0500
+Message-ID: <CALYz8yqiNrbh2AXz3WB0bDELqGCy2fCJVzUyormB6ed6q9AfOQ@mail.gmail.com>
+Subject: [ath10k] driver drops rx packets when MTU is more than 1500
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +18,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "David P. Reed" <dpreed@deepplum.com>, Ben Greear <greearb@candelatech.com>, Felix Fietkau <nbd@nbd.name>
+To: ath10k@lists.infradead.org
 
-On Wed, 21 Nov 2018, Sebastian Gottschall wrote:
-
-> its not bluetooth. active tire pressure control systems are based on 433 mhz 
-> in most countries. in the usa its 315 mhz
-
-Thanks for the correction. My off-hand comment has sure spurred an intersting 
-side-thread.
-
-David Lang
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8uCgoKTm90IHNvIGxvbmcgdGltZSBhZ28gd2UgZmFjZWQgd2l0aCBzb21lIGlzc3VlcyBh
+cm91bmQgSUJTUyBtb2RlIGluIG91ciBsYWIuCgpEaXN0cm8gICAgICAgICAgOiBPcGVuV1JUIDE4
+LjA2IHdpdGggdmFuaWxsYSBhdGgxMGsgb3IgYXRoMTBrLWN0ClN5c3RlbSAgICAgICA6IFF1YWxj
+b21tIEF0aGVyb3MgUUNBOTU2WCB2ZXIgMSByZXYgMApSYWRpbyAgICAgICAgOiBRQ0E5ODh4CkZp
+cm13YXJlICAgIDogMTAuMS1jdCBiZXRhLTIxIChmdWxsLWh0dC1tZ3QtY29tbXVuaXR5KQpNYWNo
+aW5lICAgICAgOiBVYmlxdWl0aSBVbmlGaS1BQy1MSVRFCgpXZSBoYXZlIDUgbm9kZXMgbWVzaCBu
+ZXR3b3JrIGZvciByZXNlYXJjaCBwdXJwb3Nlcy4KU29tZXRpbWVzIHRocm91Z2hwdXQgaXMgZ29v
+ZCAoMzAwLTM1MCBtYnBzKSwgYnV0IGl0IGNhbiBnbyBkb3duIHRvCjEwLTIwIGticHMgb3IgZXZl
+biBieXRlcyBwZXIgc2Vjb25kLgpUaGlzIGlzc3VlIGxvb2tzIGxpa2UgTVRVIHJlbGF0ZWQsIGJ1
+dCB3ZSBjYW7igJl0IGJlIHN1cmUgYW5kIGFza2luZyBmb3IgeW91ciBoZWxwCgpXZSBnZXQgYWJv
+dXQgMTUwLTIwMCBtYnBzIHdoZW4gTVRVIGlzIGRlY3JlYXNlZCB0byAxNDAwIG9yIGxvd2VyLgpN
+VFUgMTUwMCBpcyBhbHNvIGdvb2QsIGJ1dCBzb21ldGltZXMgd2Ugc2VlIGEgbG90IG9mIGRyb3Bw
+ZWQgUlggcGFja2V0cyAoMS01JSApCk1UVSAxNTI4IGlzIHRoZSBsYXN0IGdvb2QgdmFyaWFudCBp
+biBvdXIgY2FzZSB3aXRoIGEgbGl0dGxlIGJpdCBtb3JlCmRyb3BwZWQgcGFja2V0cyAoNS0xMCUp
+Ck1UVSAxNTI5LTE1NjQgYW5kIG1vcmUgc2hvd3MgMCBrYnBzIGlwZXJmIHRocm91Z2hwdXQgYW5k
+IHdlIHNlZSB0aGF0CmFsbCByeCBwYWNrZXRzIGFyZSBkcm9wcGVkLgoKRnJvbSB0aW1lIHRvIHRp
+bWUgaXQgbG9va3MgbGlrZSBmaXJtd2FyZSBjaGFuZ2VzIGl0IHN0YXRlIGFuZCBzb21lCnBhY2tl
+dHMgY2FuIGJlIHJlY2VpdmVkIGNvcnJlY3RseSwgYnV0IHdlIGRvbuKAmXQga25vdyB3aHkuCgpX
+aGlsZSAgd2UgZGlkIHNvbWUgZGVidWdnaW5nIHdpdGggZnRyYWNlIGtlcm5lbCBmcmFtZXdvcmsg
+YW5kIGZvdW5kCm91dCB0aGF0IGRyaXZlciBkcm9wcyBmcmFtZSBpbiBodHRfcnguYzphdGgxMGtf
+aHR0X3J4X2hfdW5jaGFpbgpmdW5jdGlvbi4gQXMgd2UgdGhpbmssIHRoYXTigJlzIGJlY2F1c2Ug
+IG9mIGFnZ3JlZ2F0aW9uL2NoYWluaW5nIGluCndpZmktbmF0aXZlIG1vZGUuCkFsc28gd2UgZm91
+bmQgYSBjb21tZW50OgogIC8qIEZJWE1FOiBDdXJyZW50IHVuY2hhaW5pbmcgbG9naWMgY2FuIG9u
+bHkgaGFuZGxlIHNpbXBsZSBjYXNlIG9mIHJhdwogICAqIG1zZHUgY2hhaW5pbmcuIElmIGRlY2Fw
+cGluZyBpcyBvdGhlciB0aGFuIHJhdyB0aGUgY2hhaW5pbmcgbWF5IGJlCiAgICogbW9yZSBjb21w
+bGV4IGFuZCB0aGlzIGlzbid0IGhhbmRsZWQgYnkgdGhlIGN1cnJlbnQgY29kZS4gRG9uJ3QgZXZl
+bgogICAqIHRyeSByZS1jb25zdHJ1Y3Rpbmcgc3VjaCBmcmFtZXMgLSBpdCdsbCBiZSBwcmV0dHkg
+bXVjaCBnYXJiYWdlLgogICAqLwpCb3RoIHZhbmlsbGEgYXRoMTBrIGFuZCBhdGgxMGstY3QgYXJl
+IHJlbGF0ZWQgdG8gdGhpcyBpc3N1ZS4KCkNvdWxkIHlvdSBwbGVhc2UgaGVscCB1cyByZXNvbHZl
+IHRoaXMgcHJvYmxlbSBieSBhbnN3ZXJpbmcgdG8KZm9sbG93aW5nIHF1ZXN0aW9uczoKMSkgV2hh
+dCBpcyBhY3R1YWxseSBtZWFucyBjaGFpbmluZz8KMikgQXJlIHRoZXJlIGEgdmFsaWQgZnJhbWVz
+IG9uIHNrYnVmZiBxdWV1ZSwgYnV0IGN1cnJlbnQgZHJpdmVyIGNvZGUKY2Fu4oCZdCBwYXJzZSBp
+dD8gU28gaXMgdGhlcmUgYW55IGNoYW5jZSB0byBjb3JyZWN0bHkgZXh0cmFjdCBldmVyeQpjaGFp
+bmVkIGZyYW1lPwozKSBJcyB0aGVyZSBhIHdheSB0byBkaXNhYmxlIGZyYW1lcyBhZ2dyZWdhdGlv
+bi9jaGFpbmluZyBpbiBmaXJtd2FyZT8KCk1heSBiZSBCZW4gR3JlZWFyIGZyb20gQ2FuZGVsYXRl
+Y2ggY2FuIHRlbGwgdXMgbW9yZSBhYm91dCB0aGluZ3MKcmVsYXRlZCB0byBhdGgxMGstY3QgIGZp
+cm13YXJlLgoKLS0gCkJlc3QgUmVnYXJkcywKTHVrb25pbiBLaXJpbGwKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
