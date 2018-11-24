@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
+Received: from mail-it1-x136.google.com ([2607:f8b0:4864:20::136])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPpCw-00071Y-V4
- for ath10k@lists.infradead.org; Thu, 22 Nov 2018 13:39:52 +0000
-Received: by mail-ot1-x331.google.com with SMTP id 32so8061892ota.12
- for <ath10k@lists.infradead.org>; Thu, 22 Nov 2018 05:39:37 -0800 (PST)
+ id 1gQNtq-0007tp-W1
+ for ath10k@lists.infradead.org; Sat, 24 Nov 2018 02:42:28 +0000
+Received: by mail-it1-x136.google.com with SMTP id x19so20809207itl.1
+ for <ath10k@lists.infradead.org>; Fri, 23 Nov 2018 18:42:16 -0800 (PST)
 MIME-Version: 1.0
-From: =?UTF-8?B?0JrQuNGA0LjQu9C7INCb0YPQutC+0L3QuNC9?= <klukonin@gmail.com>
-Date: Thu, 22 Nov 2018 18:39:35 +0500
-Message-ID: <CALYz8yqiNrbh2AXz3WB0bDELqGCy2fCJVzUyormB6ed6q9AfOQ@mail.gmail.com>
-Subject: [ath10k] driver drops rx packets when MTU is more than 1500
+From: David Timber <mieabby@gmail.com>
+Date: Sat, 24 Nov 2018 13:42:04 +1100
+Message-ID: <CAGYH49CnzzN9Q73U5VwARy8kT_JSMP2QbkLb1cMCbS-rx3nK4A@mail.gmail.com>
+Subject: ath10k_pci firmware crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,49 +18,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-SGVsbG8uCgoKTm90IHNvIGxvbmcgdGltZSBhZ28gd2UgZmFjZWQgd2l0aCBzb21lIGlzc3VlcyBh
-cm91bmQgSUJTUyBtb2RlIGluIG91ciBsYWIuCgpEaXN0cm8gICAgICAgICAgOiBPcGVuV1JUIDE4
-LjA2IHdpdGggdmFuaWxsYSBhdGgxMGsgb3IgYXRoMTBrLWN0ClN5c3RlbSAgICAgICA6IFF1YWxj
-b21tIEF0aGVyb3MgUUNBOTU2WCB2ZXIgMSByZXYgMApSYWRpbyAgICAgICAgOiBRQ0E5ODh4CkZp
-cm13YXJlICAgIDogMTAuMS1jdCBiZXRhLTIxIChmdWxsLWh0dC1tZ3QtY29tbXVuaXR5KQpNYWNo
-aW5lICAgICAgOiBVYmlxdWl0aSBVbmlGaS1BQy1MSVRFCgpXZSBoYXZlIDUgbm9kZXMgbWVzaCBu
-ZXR3b3JrIGZvciByZXNlYXJjaCBwdXJwb3Nlcy4KU29tZXRpbWVzIHRocm91Z2hwdXQgaXMgZ29v
-ZCAoMzAwLTM1MCBtYnBzKSwgYnV0IGl0IGNhbiBnbyBkb3duIHRvCjEwLTIwIGticHMgb3IgZXZl
-biBieXRlcyBwZXIgc2Vjb25kLgpUaGlzIGlzc3VlIGxvb2tzIGxpa2UgTVRVIHJlbGF0ZWQsIGJ1
-dCB3ZSBjYW7igJl0IGJlIHN1cmUgYW5kIGFza2luZyBmb3IgeW91ciBoZWxwCgpXZSBnZXQgYWJv
-dXQgMTUwLTIwMCBtYnBzIHdoZW4gTVRVIGlzIGRlY3JlYXNlZCB0byAxNDAwIG9yIGxvd2VyLgpN
-VFUgMTUwMCBpcyBhbHNvIGdvb2QsIGJ1dCBzb21ldGltZXMgd2Ugc2VlIGEgbG90IG9mIGRyb3Bw
-ZWQgUlggcGFja2V0cyAoMS01JSApCk1UVSAxNTI4IGlzIHRoZSBsYXN0IGdvb2QgdmFyaWFudCBp
-biBvdXIgY2FzZSB3aXRoIGEgbGl0dGxlIGJpdCBtb3JlCmRyb3BwZWQgcGFja2V0cyAoNS0xMCUp
-Ck1UVSAxNTI5LTE1NjQgYW5kIG1vcmUgc2hvd3MgMCBrYnBzIGlwZXJmIHRocm91Z2hwdXQgYW5k
-IHdlIHNlZSB0aGF0CmFsbCByeCBwYWNrZXRzIGFyZSBkcm9wcGVkLgoKRnJvbSB0aW1lIHRvIHRp
-bWUgaXQgbG9va3MgbGlrZSBmaXJtd2FyZSBjaGFuZ2VzIGl0IHN0YXRlIGFuZCBzb21lCnBhY2tl
-dHMgY2FuIGJlIHJlY2VpdmVkIGNvcnJlY3RseSwgYnV0IHdlIGRvbuKAmXQga25vdyB3aHkuCgpX
-aGlsZSAgd2UgZGlkIHNvbWUgZGVidWdnaW5nIHdpdGggZnRyYWNlIGtlcm5lbCBmcmFtZXdvcmsg
-YW5kIGZvdW5kCm91dCB0aGF0IGRyaXZlciBkcm9wcyBmcmFtZSBpbiBodHRfcnguYzphdGgxMGtf
-aHR0X3J4X2hfdW5jaGFpbgpmdW5jdGlvbi4gQXMgd2UgdGhpbmssIHRoYXTigJlzIGJlY2F1c2Ug
-IG9mIGFnZ3JlZ2F0aW9uL2NoYWluaW5nIGluCndpZmktbmF0aXZlIG1vZGUuCkFsc28gd2UgZm91
-bmQgYSBjb21tZW50OgogIC8qIEZJWE1FOiBDdXJyZW50IHVuY2hhaW5pbmcgbG9naWMgY2FuIG9u
-bHkgaGFuZGxlIHNpbXBsZSBjYXNlIG9mIHJhdwogICAqIG1zZHUgY2hhaW5pbmcuIElmIGRlY2Fw
-cGluZyBpcyBvdGhlciB0aGFuIHJhdyB0aGUgY2hhaW5pbmcgbWF5IGJlCiAgICogbW9yZSBjb21w
-bGV4IGFuZCB0aGlzIGlzbid0IGhhbmRsZWQgYnkgdGhlIGN1cnJlbnQgY29kZS4gRG9uJ3QgZXZl
-bgogICAqIHRyeSByZS1jb25zdHJ1Y3Rpbmcgc3VjaCBmcmFtZXMgLSBpdCdsbCBiZSBwcmV0dHkg
-bXVjaCBnYXJiYWdlLgogICAqLwpCb3RoIHZhbmlsbGEgYXRoMTBrIGFuZCBhdGgxMGstY3QgYXJl
-IHJlbGF0ZWQgdG8gdGhpcyBpc3N1ZS4KCkNvdWxkIHlvdSBwbGVhc2UgaGVscCB1cyByZXNvbHZl
-IHRoaXMgcHJvYmxlbSBieSBhbnN3ZXJpbmcgdG8KZm9sbG93aW5nIHF1ZXN0aW9uczoKMSkgV2hh
-dCBpcyBhY3R1YWxseSBtZWFucyBjaGFpbmluZz8KMikgQXJlIHRoZXJlIGEgdmFsaWQgZnJhbWVz
-IG9uIHNrYnVmZiBxdWV1ZSwgYnV0IGN1cnJlbnQgZHJpdmVyIGNvZGUKY2Fu4oCZdCBwYXJzZSBp
-dD8gU28gaXMgdGhlcmUgYW55IGNoYW5jZSB0byBjb3JyZWN0bHkgZXh0cmFjdCBldmVyeQpjaGFp
-bmVkIGZyYW1lPwozKSBJcyB0aGVyZSBhIHdheSB0byBkaXNhYmxlIGZyYW1lcyBhZ2dyZWdhdGlv
-bi9jaGFpbmluZyBpbiBmaXJtd2FyZT8KCk1heSBiZSBCZW4gR3JlZWFyIGZyb20gQ2FuZGVsYXRl
-Y2ggY2FuIHRlbGwgdXMgbW9yZSBhYm91dCB0aGluZ3MKcmVsYXRlZCB0byBhdGgxMGstY3QgIGZp
-cm13YXJlLgoKLS0gCkJlc3QgUmVnYXJkcywKTHVrb25pbiBLaXJpbGwKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+Hi
+
+After updating my kernel to 4.19.2, I noticed that my laptop's wifi
+crashes fairly often. The system log shows that this never happened
+before updating the kernel.
+
+When the firmware crashed, I think I closed the lid of the laptop so
+it would have had to go into the sleep mode.
+
+I compared the firmware module and the source code to see if there was
+any change since the last version of my kernel, and there were some
+changes. I'm fine with using a bit older version of kernel(4.18.17),
+but I'd appreciate the fix so I can update the kernel without any
+trouble again.
+
+I reported this bug to the kernel bugzilla, but no one seemed to care.
+https://bugzilla.kernel.org/show_bug.cgi?id=201743
+
+Thank you
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
