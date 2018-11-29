@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp2120.oracle.com ([141.146.126.78])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSJcf-00052e-5M
- for ath10k@lists.infradead.org; Thu, 29 Nov 2018 10:32:42 +0000
-Date: Thu, 29 Nov 2018 13:32:14 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ath10k: remove an unnecessary NULL check
-Message-ID: <20181129103214.5tudci6izlfaasqx@kili.mountain>
+ id 1gSMjE-0004vg-6I
+ for ath10k@lists.infradead.org; Thu, 29 Nov 2018 13:51:41 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: remove an unnecessary NULL check
+References: <20181129103214.5tudci6izlfaasqx@kili.mountain>
+Date: Thu, 29 Nov 2018 15:51:24 +0200
+In-Reply-To: <20181129103214.5tudci6izlfaasqx@kili.mountain> (Dan Carpenter's
+ message of "Thu, 29 Nov 2018 13:32:14 +0300")
+Message-ID: <87sgzk56w3.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +23,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Rakesh Pillai <pillair@codeaurora.org>
-Cc: kernel-janitors@vger.kernel.org, ath10k@lists.infradead.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
 
-The "survey" pointer is the address of an array element.  We know that
-it can't be NULL so this check can be removed.
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The "survey" pointer is the address of an array element.  We know that
+> it can't be NULL so this check can be removed.
+>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 659513bf4ddc..6a04727b63ce 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -2578,7 +2578,7 @@ static void ath10k_wmi_event_chan_info_unpaired(struct ath10k *ar,
+>  
+>  	survey = &ar->survey[idx];
+>  
+> -	if (!params->mac_clk_mhz || !survey)
+> +	if (!params->mac_clk_mhz)
+>  		return;
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 659513bf4ddc..6a04727b63ce 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2578,7 +2578,7 @@ static void ath10k_wmi_event_chan_info_unpaired(struct ath10k *ar,
- 
- 	survey = &ar->survey[idx];
- 
--	if (!params->mac_clk_mhz || !survey)
-+	if (!params->mac_clk_mhz)
- 		return;
- 
- 	memset(survey, 0, sizeof(*survey));
+Can you please CC linux-wireless so that patchwork sees this?
+
 -- 
-2.11.0
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
