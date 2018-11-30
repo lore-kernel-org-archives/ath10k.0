@@ -1,15 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp2120.oracle.com ([141.146.126.78])
+Received: from mail-it1-x133.google.com ([2607:f8b0:4864:20::133])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSNEy-0001m5-HJ
- for ath10k@lists.infradead.org; Thu, 29 Nov 2018 14:24:29 +0000
-Date: Thu, 29 Nov 2018 17:24:06 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ath10k: remove an unnecessary NULL check
-Message-ID: <20181129142406.GV3073@unbuntlaptop>
+ id 1gSptW-0007pd-Uh
+ for ath10k@lists.infradead.org; Fri, 30 Nov 2018 21:00:16 +0000
+Received: by mail-it1-x133.google.com with SMTP id o19so516689itg.5
+ for <ath10k@lists.infradead.org>; Fri, 30 Nov 2018 13:00:03 -0800 (PST)
+Received: from mail-it1-f177.google.com (mail-it1-f177.google.com.
+ [209.85.166.177])
+ by smtp.gmail.com with ESMTPSA id a10sm135337itc.3.2018.11.30.13.00.01
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 30 Nov 2018 13:00:01 -0800 (PST)
+Received: by mail-it1-f177.google.com with SMTP id b5so482151iti.2
+ for <ath10k@lists.infradead.org>; Fri, 30 Nov 2018 13:00:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20181129103214.5tudci6izlfaasqx@kili.mountain>
+References: <20181129042522.11767-1-govinds@codeaurora.org>
+In-Reply-To: <20181129042522.11767-1-govinds@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Fri, 30 Nov 2018 12:59:49 -0800
+Message-ID: <CA+ASDXMOqzXk9HrX9AS58cUfKOHeXA7zN_ME3+zDZXQcok_0Tg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Move non-fatal warn logs to dbg level
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +32,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, ath10k@lists.infradead.org
+To: govinds@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-The "survey" pointer is the address of an array element.  We know that
-it can't be NULL so this check can be removed.
+On Wed, Nov 28, 2018 at 8:25 PM Govind Singh <govinds@codeaurora.org> wrote:
+>
+> During driver load below warn logs are printed in the console.
+> Since driver may not implement all wmi events sent by fw and
+> all of them are non-fatal, move this log to debug level to
+> remove un-necessary warn message on console.
+>
+> [  361.887230] ath10k_snoc a000000.wifi: Unknown eventid: 16393
+> [  361.907037] ath10k_snoc a000000.wifi: Unknown eventid: 237569
+>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Resending with linux-wireless Cc for patchwork.
+Alternatively, you could add these ignored commands to wmi-tlv.h, and
+just ignore them specifically. That's better documentation, in case
+new WMI events come along that *are* important to notice when we
+ignore them. There are other recent examples of that sort of patch
+being merged.
 
- drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 659513bf4ddc..6a04727b63ce 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2578,7 +2578,7 @@ static void ath10k_wmi_event_chan_info_unpaired(struct ath10k *ar,
- 
- 	survey = &ar->survey[idx];
- 
--	if (!params->mac_clk_mhz || !survey)
-+	if (!params->mac_clk_mhz)
- 		return;
- 
- 	memset(survey, 0, sizeof(*survey));
--- 
-2.11.0
+Brian
 
 _______________________________________________
 ath10k mailing list
