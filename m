@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTs7x-0007Xd-AE
- for ath10k@lists.infradead.org; Mon, 03 Dec 2018 17:35:26 +0000
+ id 1gTs88-0007YB-FQ
+ for ath10k@lists.infradead.org; Mon, 03 Dec 2018 17:35:37 +0000
 From: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Subject: [PATCH v2 0/3] ath10k: Add support to configure BB timing for
- external FEM
-Date: Mon,  3 Dec 2018 23:03:32 +0530
-Message-Id: <1543858415-23953-1-git-send-email-bperumal@codeaurora.org>
+Subject: [PATCH v2 1/3] dt-bindings: net: ath10k: fix node name and device
+ type in qcom ath10k example
+Date: Mon,  3 Dec 2018 23:03:33 +0530
+Message-Id: <1543858415-23953-2-git-send-email-bperumal@codeaurora.org>
+In-Reply-To: <1543858415-23953-1-git-send-email-bperumal@codeaurora.org>
+References: <1543858415-23953-1-git-send-email-bperumal@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +26,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, Bhagavathi Perumal S <bperumal@codeaurora.org>
 
-This adds support to choose correct Base Band(BB) timing values based on
-the input Front End Module(FEM) hardware name from Device Tree entry and
-configure it in hardware through WMI interface. Since the BB timing values
-can vary between FEM hardwares and not same as default value used
-in reference hardware.
+In qcom,ath10k documentation, ath10k is used as node name in the example of
+pci based device. Normally, node name shoud be class of device and not the model
+name, so fix it to node name "wifi". And remove the property device_type pci
+since only pci bridges should have this property.
 
-Bhagavathi Perumal S (3):
-  dt-bindings: net: ath10k: fix node name and device type in qcom ath10k
-    example
-  dt-bindings: net: ath10k: add new dt entry to identify external FEM
-  ath10k: Add support to configure BB timing over wmi
+Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-v2:
- Addressed review comments in dt:
-  * Fixed node name and device type with new dt patch "dt-bindings: net: ath10k:
-     fix node name and device type in qcom ath10k example".
-  * Changed the dt patch subject to "dt-bindings: net: ath10k: add new dt entry
-    to identify external FEM".
-  * Added new property in existing example.
-  * Enumarated some valid FEM names.
-
- .../bindings/net/wireless/qcom,ath10k.txt          | 11 +++--
- drivers/net/wireless/ath/ath10k/mac.c              | 47 ++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-ops.h          | 20 +++++++++
- drivers/net/wireless/ath/ath10k/wmi.c              | 23 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h              | 26 ++++++++++++
- 5 files changed, 124 insertions(+), 3 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 2196d1a..ef60f25 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -74,9 +74,8 @@ pci {
+ 		#address-cells = <3>;
+ 		device_type = "pci";
+ 
+-		ath10k@0,0 {
++		wifi@0,0 {
+ 			reg = <0 0 0 0 0>;
+-			device_type = "pci";
+ 			qcom,ath10k-calibration-data = [ 01 02 03 ... ];
+ 		};
+ 	};
 -- 
 1.9.1
 
