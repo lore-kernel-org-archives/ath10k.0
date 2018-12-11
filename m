@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-f68.google.com ([209.85.210.68])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWYhc-0000tm-TI
- for ath10k@lists.infradead.org; Tue, 11 Dec 2018 03:27:22 +0000
-Received: by mail-ot1-f68.google.com with SMTP id k98so12699236otk.3
- for <ath10k@lists.infradead.org>; Mon, 10 Dec 2018 19:27:10 -0800 (PST)
-Date: Mon, 10 Dec 2018 21:27:08 -0600
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 2/3] dt-bindings: net: ath10k: add new dt entry to
- identify external FEM
-Message-ID: <20181211032708.GA14508@bogus>
-References: <1544466691-11821-1-git-send-email-bperumal@codeaurora.org>
- <1544466691-11821-3-git-send-email-bperumal@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1544466691-11821-3-git-send-email-bperumal@codeaurora.org>
+ id 1gWa5u-0001en-UP
+ for ath10k@lists.infradead.org; Tue, 11 Dec 2018 04:56:39 +0000
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Subject: [PATCH] ath10k: fix incorrect multicast/broadcast rate setting
+Date: Mon, 10 Dec 2018 20:56:11 -0800
+Message-Id: <1544504171-19810-1-git-send-email-pradeepc@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +15,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Pradeep kumar Chitrapu <pradeepc@codeaurora.org>, Zhi Chen <zhichen@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On Tue, 11 Dec 2018 00:01:30 +0530, Bhagavathi Perumal S wrote:
-> This adds new dt entry ext-fem-name, it is used by ath10k driver
-> to select correct timing parameters and configure it in target wifi hardware.
-> The Front End Module(FEM) normally includes tx power amplifier(PA) and
-> rx low noise amplifier(LNA). The default timing parameters like tx end to
-> PA off timing values were fine tuned for internal FEM used in reference
-> design. And these timing values can not be same if ODM modifies hardware
-> design with different external FEM. This DT entry helps to choose correct
-> timing values in driver if different external FEM hardware used.
-> 
-> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
+From: Pradeep kumar Chitrapu <pradeepc@codeaurora.org>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Invalid rate code is sent to firmware when multicast rate value of 0 is
+sent to driver indicating disabled case, causing broken mesh path.
+so fix that.
+
+Tested on QCA9984 with firmware 10.4-3.6.1-00827
+
+Fixes: cd93b83ad92 ("ath10k: support for multicast rate control")
+Co-developed-by: Zhi Chen <zhichen@codeaurora.org>
+Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 6771d8185af5..4546b73b2e45 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5486,8 +5486,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	struct cfg80211_chan_def def;
+ 	u32 vdev_param, pdev_param, slottime, preamble;
+ 	u16 bitrate, hw_value;
+-	u8 rate, basic_rate_idx;
+-	int rateidx, ret = 0, hw_rate_code;
++	u8 rate, basic_rate_idx, rateidx;
++	int ret = 0, hw_rate_code, mcast_rate;
+ 	enum nl80211_band band;
+ 	const struct ieee80211_supported_band *sband;
+ 
+@@ -5674,7 +5674,11 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	if (changed & BSS_CHANGED_MCAST_RATE &&
+ 	    !WARN_ON(ath10k_mac_vif_chan(arvif->vif, &def))) {
+ 		band = def.chan->band;
+-		rateidx = vif->bss_conf.mcast_rate[band] - 1;
++		mcast_rate = vif->bss_conf.mcast_rate[band];
++		if (mcast_rate > 0)
++			rateidx = mcast_rate - 1;
++		else
++			rateidx = ffs(vif->bss_conf.basic_rates) - 1;
+ 
+ 		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
+ 			rateidx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
