@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-he1eur04on062b.outbound.protection.outlook.com
- ([2a01:111:f400:fe0d::62b]
- helo=EUR04-HE1-obe.outbound.protection.outlook.com)
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWncP-0003ci-7W
- for ath10k@lists.infradead.org; Tue, 11 Dec 2018 19:22:58 +0000
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Subject: Re: [PATCH] ath10k: fix incorrect multicast/broadcast rate setting
-Date: Tue, 11 Dec 2018 19:22:38 +0000
-Message-ID: <6a59f346-5c9b-190c-feef-39393d17933b@bowerswilkins.com>
-References: <1544504171-19810-1-git-send-email-pradeepc@codeaurora.org>
-In-Reply-To: <1544504171-19810-1-git-send-email-pradeepc@codeaurora.org>
-Content-Language: en-US
-Content-ID: <7EED4595D1C9BF4DB0B027139814A88F@eurprd04.prod.outlook.com>
+ id 1gWoKb-0006IG-FM
+ for ath10k@lists.infradead.org; Tue, 11 Dec 2018 20:08:39 +0000
+Subject: Re: [PATCH v4 2/3] dt-bindings: net: ath10k: add new dt entry to
+ identify external FEM
+References: <1544544804-4039-1-git-send-email-bperumal@codeaurora.org>
+ <1544544804-4039-3-git-send-email-bperumal@codeaurora.org>
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Message-ID: <a944ea19-fcfe-2ae4-d508-2cde9c34fd29@newmedia-net.de>
+Date: Tue, 11 Dec 2018 21:07:55 +0100
 MIME-Version: 1.0
+In-Reply-To: <1544544804-4039-3-git-send-email-bperumal@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +21,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Zhi Chen <zhichen@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
 
-
-
-On 12/10/2018 08:56 PM, Pradeep Kumar Chitrapu wrote:
-> From: Pradeep kumar Chitrapu <pradeepc@codeaurora.org>
->
-> Invalid rate code is sent to firmware when multicast rate value of 0 is
-> sent to driver indicating disabled case, causing broken mesh path.
-> so fix that.
->
-> Tested on QCA9984 with firmware 10.4-3.6.1-00827
->
-Test data is too small. You need to provide at least QCA9880 and QCA4019 
-data together which share ath10k for mesh.
-
-Thanks,
-Peter
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+ZG9jdW1lbnRhdGlvbiBzdGlsbCB3cm9uZy4gb25secKgIG1pY3Jvc2VtaS1seDU1ODYgaXMgdmFs
+aWQgLmFsbCBvdGhlciAKdmFsdWVzIGFyZSBpbnZhbGlkCnNlZSBwYXRjaCA0CgorCWlmICghc3Ry
+Y21wKCJtaWNyb3NlbWktbHg1NTg2IiwgZmVtX25hbWUpKSB7CisJCWJiX3RpbWluZy0+YmJfdHhf
+dGltaW5nID0gMHgwMDsKKwkJYmJfdGltaW5nLT5iYl94cGFfdGltaW5nID0gMHgwMTAxOworCX0g
+ZWxzZSB7CisJCXJldHVybiAtRU5PRU5UOworCX0KCkFtIDExLjEyLjIwMTggdW0gMTc6MTMgc2No
+cmllYiBCaGFnYXZhdGhpIFBlcnVtYWwgUzoKPiBUaGlzIGFkZHMgbmV3IGR0IGVudHJ5IGV4dC1m
+ZW0tbmFtZSwgaXQgaXMgdXNlZCBieSBhdGgxMGsgZHJpdmVyCj4gdG8gc2VsZWN0IGNvcnJlY3Qg
+dGltaW5nIHBhcmFtZXRlcnMgYW5kIGNvbmZpZ3VyZSBpdCBpbiB0YXJnZXQgd2lmaSBoYXJkd2Fy
+ZS4KPiBUaGUgRnJvbnQgRW5kIE1vZHVsZShGRU0pIG5vcm1hbGx5IGluY2x1ZGVzIHR4IHBvd2Vy
+IGFtcGxpZmllcihQQSkgYW5kCj4gcnggbG93IG5vaXNlIGFtcGxpZmllcihMTkEpLiBUaGUgZGVm
+YXVsdCB0aW1pbmcgcGFyYW1ldGVycyBsaWtlIHR4IGVuZCB0bwo+IFBBIG9mZiB0aW1pbmcgdmFs
+dWVzIHdlcmUgZmluZSB0dW5lZCBmb3IgaW50ZXJuYWwgRkVNIHVzZWQgaW4gcmVmZXJlbmNlCj4g
+ZGVzaWduLiBBbmQgdGhlc2UgdGltaW5nIHZhbHVlcyBjYW4gbm90IGJlIHNhbWUgaWYgT0RNIG1v
+ZGlmaWVzIGhhcmR3YXJlCj4gZGVzaWduIHdpdGggZGlmZmVyZW50IGV4dGVybmFsIEZFTS4gVGhp
+cyBEVCBlbnRyeSBoZWxwcyB0byBjaG9vc2UgY29ycmVjdAo+IHRpbWluZyB2YWx1ZXMgaW4gZHJp
+dmVyIGlmIGRpZmZlcmVudCBleHRlcm5hbCBGRU0gaGFyZHdhcmUgdXNlZC4KPgo+IFNpZ25lZC1v
+ZmYtYnk6IEJoYWdhdmF0aGkgUGVydW1hbCBTIDxicGVydW1hbEBjb2RlYXVyb3JhLm9yZz4KPiAt
+LS0KPiAgIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNv
+bSxhdGgxMGsudHh0IHwgOSArKysrKysrKy0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlv
+bnMoKyksIDEgZGVsZXRpb24oLSkKPgo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNzL3Fjb20sYXRoMTBrLnR4dCBiL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNvbSxhdGgxMGsudHh0Cj4gaW5k
+ZXggZWY2MGYyNS4uNzE1MzBmZCAxMDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNzL3Fjb20sYXRoMTBrLnR4dAo+ICsrKyBiL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNvbSxhdGgxMGsudHh0Cj4g
+QEAgLTYxLDggKzYxLDE0IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4gICAJVmFsdWUgdHlwZTog
+PHBoYW5kbGU+Cj4gICAJRGVmaW5pdGlvbjogcmVmZXJlbmNlIHRvIHRoZSByZXNlcnZlZC1tZW1v
+cnkgZm9yIHRoZSBtc2EgcmVnaW9uCj4gICAJCSAgICB1c2VkIGJ5IHRoZSB3aWZpIGZpcm13YXJl
+IHJ1bm5pbmcgaW4gUTYuCj4gKy0gZXh0LWZlbS1uYW1lOgo+ICsJVXNhZ2U6IE9wdGlvbmFsCj4g
+KwlWYWx1ZSB0eXBlOiBzdHJpbmcKPiArCURlZmluaXRpb246IE5hbWUgb2YgZXh0ZXJuYWwgZnJv
+bnQgZW5kIG1vZHVsZSB1c2VkLiBTb21lIHZhbGlkIEZFTSBuYW1lcwo+ICsJCSAgICBmb3IgZXhh
+bXBsZTogIm1pY3Jvc2VtaS1seDU1ODYiLCAic2t5ODU3MDMtMTEiCj4gKwkJICAgIGFuZCAic2t5
+ODU4MDMiIGV0Yy4KPiAgIAo+IC1FeGFtcGxlICh0byBzdXBwbHkgdGhlIGNhbGlicmF0aW9uIGRh
+dGEgYWxvbmUpOgo+ICtFeGFtcGxlICh0byBzdXBwbHkgUENJIGJhc2VkIHdpZmkgYmxvY2sgZGV0
+YWlscyk6Cj4gICAKPiAgIEluIHRoaXMgZXhhbXBsZSwgdGhlIG5vZGUgaXMgZGVmaW5lZCBhcyBj
+aGlsZCBub2RlIG9mIHRoZSBQQ0kgY29udHJvbGxlci4KPiAgIAo+IEBAIC03Nyw2ICs4Myw3IEBA
+IHBjaSB7Cj4gICAJCXdpZmlAMCwwIHsKPiAgIAkJCXJlZyA9IDwwIDAgMCAwIDA+Owo+ICAgCQkJ
+cWNvbSxhdGgxMGstY2FsaWJyYXRpb24tZGF0YSA9IFsgMDEgMDIgMDMgLi4uIF07Cj4gKwkJCWV4
+dC1mZW0tbmFtZSA9ICJtaWNyb3NlbWktbHg1NTg2IjsKPiAgIAkJfTsKPiAgIAl9Owo+ICAgfTsK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
