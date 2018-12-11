@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWkfi-0006DZ-Bk
- for ath10k@lists.infradead.org; Tue, 11 Dec 2018 16:14:43 +0000
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWkfz-0001IH-JZ
+ for ath10k@lists.infradead.org; Tue, 11 Dec 2018 16:14:32 +0000
 From: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Subject: [PATCH v4 0/3] ath10k: Add support to configure BB timing for
+Subject: [PATCH v4 2/3] dt-bindings: net: ath10k: add new dt entry to identify
  external FEM
-Date: Tue, 11 Dec 2018 21:43:21 +0530
-Message-Id: <1544544804-4039-1-git-send-email-bperumal@codeaurora.org>
+Date: Tue, 11 Dec 2018 21:43:23 +0530
+Message-Id: <1544544804-4039-3-git-send-email-bperumal@codeaurora.org>
+In-Reply-To: <1544544804-4039-1-git-send-email-bperumal@codeaurora.org>
+References: <1544544804-4039-1-git-send-email-bperumal@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +26,48 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, Bhagavathi Perumal S <bperumal@codeaurora.org>
 
-This adds support to choose correct Base Band(BB) timing values based on
-the input Front End Module(FEM) hardware name from Device Tree entry and
-configure it in hardware through WMI interface. Since the BB timing values
-can vary between FEM hardwares and not same as default value used
-in reference hardware.
+This adds new dt entry ext-fem-name, it is used by ath10k driver
+to select correct timing parameters and configure it in target wifi hardware.
+The Front End Module(FEM) normally includes tx power amplifier(PA) and
+rx low noise amplifier(LNA). The default timing parameters like tx end to
+PA off timing values were fine tuned for internal FEM used in reference
+design. And these timing values can not be same if ODM modifies hardware
+design with different external FEM. This DT entry helps to choose correct
+timing values in driver if different external FEM hardware used.
 
-Bhagavathi Perumal S (3):
-  dt-bindings: net: ath10k: fix node name and device type in qcom ath10k
-    example
-  dt-bindings: net: ath10k: add new dt entry to identify external FEM
-  ath10k: Add support to configure BB timing over wmi
+Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-v2:
- Addressed review comments in dt:
-  * Fixed node name and device type with new dt patch "dt-bindings: net: ath10k:
-     fix node name and device type in qcom ath10k example".
-  * Changed the dt patch subject to "dt-bindings: net: ath10k: add new dt entry
-    to identify external FEM".
-  * Added new property in existing example.
-  * Enumarated some valid FEM names.
-
-v3:
- Addressed review comments in valid fem names.
-
-v4:
- Corrected typo error in the commit log of PATCH 1/3.
-
- .../bindings/net/wireless/qcom,ath10k.txt          | 12 ++++--
- drivers/net/wireless/ath/ath10k/mac.c              | 47 ++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-ops.h          | 20 +++++++++
- drivers/net/wireless/ath/ath10k/wmi.c              | 23 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h              | 26 ++++++++++++
- 5 files changed, 125 insertions(+), 3 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index ef60f25..71530fd 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -61,8 +61,14 @@ Optional properties:
+ 	Value type: <phandle>
+ 	Definition: reference to the reserved-memory for the msa region
+ 		    used by the wifi firmware running in Q6.
++- ext-fem-name:
++	Usage: Optional
++	Value type: string
++	Definition: Name of external front end module used. Some valid FEM names
++		    for example: "microsemi-lx5586", "sky85703-11"
++		    and "sky85803" etc.
+ 
+-Example (to supply the calibration data alone):
++Example (to supply PCI based wifi block details):
+ 
+ In this example, the node is defined as child node of the PCI controller.
+ 
+@@ -77,6 +83,7 @@ pci {
+ 		wifi@0,0 {
+ 			reg = <0 0 0 0 0>;
+ 			qcom,ath10k-calibration-data = [ 01 02 03 ... ];
++			ext-fem-name = "microsemi-lx5586";
+ 		};
+ 	};
+ };
 -- 
 1.9.1
 
