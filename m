@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWYQ9-0002jk-CD
+ id 1gWYQ9-0002ji-BQ
  for ath10k@lists.infradead.org; Tue, 11 Dec 2018 03:09:18 +0000
 From: zhichen@codeaurora.org
-Subject: [PATCH v1 2/2] ath10k: fix tx_stats memory leak
-Date: Tue, 11 Dec 2018 11:08:25 +0800
-Message-Id: <1544497705-21593-2-git-send-email-zhichen@codeaurora.org>
-In-Reply-To: <1544497705-21593-1-git-send-email-zhichen@codeaurora.org>
-References: <1544497705-21593-1-git-send-email-zhichen@codeaurora.org>
+Subject: [PATCH v1 1/2] ath10k: fix peer stats null pointer dereference
+Date: Tue, 11 Dec 2018 11:08:24 +0800
+Message-Id: <1544497705-21593-1-git-send-email-zhichen@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,83 +25,79 @@ Cc: Zhi Chen <zhichen@codeaurora.org>, linux-wireless@vger.kernel.org
 
 From: Zhi Chen <zhichen@codeaurora.org>
 
-Memory of tx_stats was allocated when a STA was added. But it's not freed
-if the STA failed to be added to driver. This issue could be seen in MDK3
-attack case when STA number reached the limit.
+There was a race condition in SMP that an ath10k_peer was created but its
+member sta was null. Following are procedures of ath10k_peer creation and
+member sta access in peer statistics path.
+
+    1. Peer creation:
+        ath10k_peer_create()
+            =>ath10k_wmi_peer_create()
+                =>ath10k_wait_for_peer_created()
+                ...
+
+        # another kernel path, RX from firmware
+        ath10k_htt_t2h_msg_handler()
+        =>ath10k_peer_map_event()
+                =>wake_up()
+                # ar->peer_map[id] = peer //add peer to map
+
+        #wake up original path from waiting
+                ...
+                # peer->sta = sta //sta assignment
+
+    2.  RX path of statistics
+        ath10k_htt_t2h_msg_handler()
+            =>ath10k_update_per_peer_tx_stats()
+                =>ath10k_htt_fetch_peer_stats()
+                # peer->sta //sta accessing
+
+Any access of peer->sta after peer was added to peer_map but before sta was
+assigned could cause a null pointer issue. And because these two steps are
+asynchronous, no proper lock can protect them. So both peer and sta need to
+be checked before access.
 
 Tested: QCA9984 with firmware ver 10.4-3.9.0.1-00005
 Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c | 2 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c      | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1db2a30..001cf31 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6293,15 +6293,6 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   ar->num_stations + 1, ar->max_num_stations,
- 			   ar->num_peers + 1, ar->max_num_peers);
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index 0f3fd65..4778a45 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -71,7 +71,7 @@ void ath10k_sta_update_rx_tid_stats_ampdu(struct ath10k *ar, u16 peer_id, u8 tid
+ 	spin_lock_bh(&ar->data_lock);
  
--		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
--			arsta->tx_stats = kzalloc(sizeof(*arsta->tx_stats),
--						  GFP_KERNEL);
--			if (!arsta->tx_stats) {
--				ret = -ENOMEM;
--				goto exit;
--			}
--		}
--
- 		num_tdls_stations = ath10k_mac_tdls_vif_stations_count(hw, vif);
- 		num_tdls_vifs = ath10k_mac_tdls_vifs_count(hw);
+ 	peer = ath10k_peer_find_by_id(ar, peer_id);
+-	if (!peer)
++	if (!peer || !peer->sta)
+ 		goto out;
  
-@@ -6323,12 +6314,22 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			goto exit;
- 		}
- 
-+		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
-+			arsta->tx_stats = kzalloc(sizeof(*arsta->tx_stats),
-+						  GFP_KERNEL);
-+			if (!arsta->tx_stats) {
-+				ret = -ENOMEM;
-+				goto exit;
-+			}
-+		}
-+
- 		ret = ath10k_peer_create(ar, vif, sta, arvif->vdev_id,
- 					 sta->addr, peer_type);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to add peer %pM for vdev %d when adding a new sta: %i\n",
- 				    sta->addr, arvif->vdev_id, ret);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 			goto exit;
- 		}
- 
-@@ -6341,6 +6342,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			spin_unlock_bh(&ar->data_lock);
- 			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 			ret = -ENOENT;
- 			goto exit;
- 		}
-@@ -6361,6 +6363,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			ath10k_peer_delete(ar, arvif->vdev_id,
- 					   sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 			goto exit;
- 		}
- 
-@@ -6372,6 +6375,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 				    sta->addr, arvif->vdev_id, ret);
- 			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 
- 			if (num_tdls_stations != 0)
- 				goto exit;
+ 	arsta = (struct ath10k_sta *)peer->sta->drv_priv;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 984b045..a1552f0 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2847,7 +2847,7 @@ static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
+ 	rcu_read_lock();
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find_by_id(ar, peer_id);
+-	if (!peer) {
++	if (!peer || !peer->sta) {
+ 		ath10k_warn(ar, "Invalid peer id %d peer stats buffer\n",
+ 			    peer_id);
+ 		goto out;
+@@ -2900,7 +2900,7 @@ static void ath10k_fetch_10_2_tx_stats(struct ath10k *ar, u8 *data)
+ 	rcu_read_lock();
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find_by_id(ar, peer_id);
+-	if (!peer) {
++	if (!peer || !peer->sta) {
+ 		ath10k_warn(ar, "Invalid peer id %d in peer stats buffer\n",
+ 			    peer_id);
+ 		goto out;
 -- 
 2.7.4
 
