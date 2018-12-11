@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWb2b-0006Vb-0P
- for ath10k@lists.infradead.org; Tue, 11 Dec 2018 05:57:10 +0000
-MIME-Version: 1.0
-Date: Tue, 11 Dec 2018 11:26:57 +0530
-From: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: net: ath10k: fix node name and device
- type in qcom ath10k example
-In-Reply-To: <20181210232523.GA14192@bogus>
-References: <1544466691-11821-1-git-send-email-bperumal@codeaurora.org>
- <1544466691-11821-2-git-send-email-bperumal@codeaurora.org>
- <20181210232523.GA14192@bogus>
-Message-ID: <266a1bec89b88abe4637c33b080d85bb@codeaurora.org>
+ id 1gWfRh-00015Z-Rv
+ for ath10k@lists.infradead.org; Tue, 11 Dec 2018 10:39:23 +0000
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Subject: [PATCH v2] ath10k: Add support to provide higher range mem chunks in
+ wmi init command
+Date: Tue, 11 Dec 2018 16:09:00 +0530
+Message-Id: <1544524740-31372-1-git-send-email-svishnoi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +16,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-On 2018-12-11 04:55, Rob Herring wrote:
-> On Tue, Dec 11, 2018 at 12:01:29AM +0530, Bhagavathi Perumal S wrote:
->> In qcom,ath10k documentation, ath10k is used as node name in the 
->> example of
->> pci based device. Normally, node name shoud be class of device and not 
->> the model
-> 
-> s/shoud/should/
-Thanks, Will correct typo error and send v4 patch.
-> 
->> name, so fix it to node name "wifi". And remove the property 
->> device_type pci
->> since only pci bridges should have this property.
->> 
->> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
->> ---
->>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 
->> +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt 
->> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> index 2196d1a..ef60f25 100644
->> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> @@ -74,9 +74,8 @@ pci {
->>  		#address-cells = <3>;
->>  		device_type = "pci";
->> 
->> -		ath10k@0,0 {
->> +		wifi@0,0 {
->>  			reg = <0 0 0 0 0>;
->> -			device_type = "pci";
->>  			qcom,ath10k-calibration-data = [ 01 02 03 ... ];
->>  		};
->>  	};
->> --
->> 1.9.1
->> 
+With the current implementation of wmi init command,
+there is no provision for the host driver to provide mem
+chunks addresses with more than 32-bit, to the firmware.
+WCN3990 is a 35-bit target and can accept mem chunks addresses
+which are above 32-bit.
+
+If firmware supports address range more than 32 bit, it
+advertises the support by setting the WMI_SERVICE_EXTEND_ADDRESS
+service. Based on this service fill the upper bits of paddr while
+providing the mem chunks in the wmi init command.
+
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01552-QCAHLSWMTPL-1
+
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  6 ++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 29 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  3 +++
+ 3 files changed, 38 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 64e856c..57d1f01 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1538,6 +1538,12 @@ static enum wmi_txbf_conf ath10k_wmi_tlv_txbf_conf_scheme(struct ath10k *ar)
+ 		chunk->size = __cpu_to_le32(ar->wmi.mem_chunks[i].len);
+ 		chunk->req_id = __cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
+ 
++		if (test_bit(WMI_SERVICE_SUPPORT_EXTEND_ADDRESS,
++			     ar->wmi.svc_map))
++			chunk->ptr_high = __cpu_to_le32
++					 (upper_32_bits
++					 (ar->wmi.mem_chunks[i].paddr));
++
+ 		ath10k_dbg(ar, ATH10K_DBG_WMI,
+ 			   "wmi-tlv chunk %d len %d, addr 0x%llx, id 0x%x\n",
+ 			   i,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index bf8a432..51e7aaa 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1394,6 +1394,30 @@ enum wmi_tlv_service {
+ 	WMI_TLV_SERVICE_AP_TWT = 153,
+ 	WMI_TLV_SERVICE_GMAC_OFFLOAD_SUPPORT = 154,
+ 	WMI_TLV_SERVICE_SPOOF_MAC_SUPPORT = 155,
++	WMI_TLV_SERVICE_PEER_TID_CONFIGS_SUPPORT = 156,
++	WMI_TLV_SERVICE_VDEV_SWRETRY_PER_AC_CONFIG_SUPPORT = 157,
++	WMI_TLV_SERVICE_DUAL_BEACON_ON_SINGLE_MAC_SCC_SUPPORT = 158,
++	WMI_TLV_SERVICE_DUAL_BEACON_ON_SINGLE_MAC_MCC_SUPPORT = 159,
++	WMI_TLV_SERVICE_MOTION_DET = 160,
++	WMI_TLV_SERVICE_INFRA_MBSSID = 161,
++	WMI_TLV_SERVICE_OBSS_SPATIAL_REUSE = 162,
++	WMI_TLV_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT = 163,
++	WMI_TLV_SERVICE_NAN_DBS_SUPPORT = 164,
++	WMI_TLV_SERVICE_NDI_DBS_SUPPORT = 165,
++	WMI_TLV_SERVICE_NAN_SAP_SUPPORT = 166,
++	WMI_TLV_SERVICE_NDI_SAP_SUPPORT = 167,
++	WMI_TLV_SERVICE_CFR_CAPTURE_SUPPORT = 168,
++	WMI_TLV_SERVICE_CFR_CAPTURE_IND_MSG_TYPE_1 = 169,
++	WMI_TLV_SERVICE_ESP_SUPPORT = 170,
++	WMI_TLV_SERVICE_PEER_CHWIDTH_CHANGE = 171,
++	WMI_TLV_SERVICE_WLAN_HPCS_PULSE = 172,
++	WMI_TLV_SERVICE_PER_VDEV_CHAINMASK_CONFIG_SUPPORT = 173,
++	WMI_TLV_SERVICE_TX_DATA_MGMT_ACK_RSSI = 174,
++	WMI_TLV_SERVICE_NAN_DISABLE_SUPPORT = 175,
++	WMI_TLV_SERVICE_HTT_H2T_NO_HTC_HDR_LEN_IN_MSG_LEN = 176,
++	WMI_TLV_SERVICE_COEX_SUPPORT_UNEQUAL_ISOLATION = 177,
++	WMI_TLV_SERVICE_HW_DB2DBM_CONVERSION_SUPPORT = 178,
++	WMI_TLV_SERVICE_SUPPORT_EXTEND_ADDRESS = 179,
+ 
+ 	WMI_TLV_MAX_EXT_SERVICE = 256,
+ };
+@@ -1564,6 +1588,11 @@ enum wmi_tlv_service {
+ 	SVCMAP(WMI_TLV_SERVICE_SPOOF_MAC_SUPPORT,
+ 	       WMI_SERVICE_SPOOF_MAC_SUPPORT,
+ 	       WMI_TLV_MAX_SERVICE);
++
++	SVCMAP(WMI_TLV_SERVICE_SUPPORT_EXTEND_ADDRESS,
++	       WMI_SERVICE_SUPPORT_EXTEND_ADDRESS,
++	       WMI_TLV_MAX_SERVICE);
++
+ }
+ 
+ #undef SVCMAP
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 58e33ab..ec2bfcf 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -205,6 +205,7 @@ enum wmi_service {
+ 	WMI_SERVICE_SPOOF_MAC_SUPPORT,
+ 	WMI_SERVICE_TX_DATA_ACK_RSSI,
+ 	WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++	WMI_SERVICE_SUPPORT_EXTEND_ADDRESS,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -2990,6 +2991,8 @@ struct host_memory_chunk {
+ 	__le32 ptr;
+ 	/* size of the chunk */
+ 	__le32 size;
++	/* the upper 32 bit address valid only for more than 32 bit target */
++	__le32 ptr_high;
+ } __packed;
+ 
+ struct wmi_host_mem_chunks {
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
