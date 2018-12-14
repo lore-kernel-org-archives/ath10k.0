@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXS20-00060k-4x
- for ath10k@lists.infradead.org; Thu, 13 Dec 2018 14:32:05 +0000
-Subject: Re: [Ath10k] QCA9377-based USB dongle for aeronautical research
- project
-References: <MW2PR12MB245884F0E7E54C559559A5E2F8A00@MW2PR12MB2458.namprd12.prod.outlook.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <93a9fc73-aeff-ae69-a927-a6e03f73ebad@candelatech.com>
-Date: Thu, 13 Dec 2018 06:31:41 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gXkPQ-00088Z-Br
+ for ath10k@lists.infradead.org; Fri, 14 Dec 2018 10:09:29 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Skip sending quiet mode cmd for WCN3990
+References: <20181211053853.3557-1-govinds@codeaurora.org>
+Date: Fri, 14 Dec 2018 12:09:13 +0200
+In-Reply-To: <20181211053853.3557-1-govinds@codeaurora.org> (Govind Singh's
+ message of "Tue, 11 Dec 2018 11:08:53 +0530")
+Message-ID: <87k1kcxvw6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <MW2PR12MB245884F0E7E54C559559A5E2F8A00@MW2PR12MB2458.namprd12.prod.outlook.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +19,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vincent Guenat <vincent.guenat@zii.aero>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, =?UTF-8?Q?Oliver_L=c3=bccke?= <oliver.luecke@zii.aero>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
 
+Govind Singh <govinds@codeaurora.org> writes:
 
-
-On 12/13/2018 01:01 AM, Vincent Guenat wrote:
-> Dear Mr. Greear,
+> From: Rakesh Pillai <pillair@codeaurora.org>
 >
-> I come to you to ask for directions. TRIAGNOSYS Gmbh, a division of Zodiac Inflight Innovations part of the SAFRAN GROUP, participate in a research project for the ARINC CSS committee aiming at investigating the potential use of 5 GHz DFS channels in aircrafts. In order to do that, the partners in this project aim to gather information about where radar interference occurs and on which channels by monitoring DFS channels during commercial flights. Partners including AIRBUS and DELTA AIRLINES have already provided their support.
+> HL2.0 firmware does not support setting quiet mode.
+> If the host driver sends the quiet mode setting
+> command to the HL2.0 firmware, it crashes with the
+> below signature.
 >
-> In order to monitor the DFS channels, a device based on WiFi dongles to be installed on planes is currently explored. The Linksys WUSB6100M device based on QCA9377 seems a promising choice, especially given the features proposed by the ath10k driver. The idea is to put this device in monitor mode and use the DFS pattern detector to report DFS events to userspace through cfg80211_radar_event/nl80211_radar_notify. This would require some modification in kernelspace so that the device does not switch channel upon radar detection. An application listening on a netlink socket would then retrieve the data. Therefore my question is: do you think this is possible?
+> fatal error received: err_qdi.c:456:EX:wlan_process:1:WLAN RT:207a:PC=b001b4f0
 >
-> In the meantime, trying to use the Linksys device in STA mode does not work as the device does not manage to use DMA to allocate the tx buffer with dma_alloc_coherent in htt_tx.c. Given that it works for PCI devices, I assume that it is firmware-related but have not yet found a workaround. Do you have any ideas what might have caused this?
+> The quiet mode command support is exposed by the firmware
+> via thermal throttle wmi service. Enable ath10k thermal
+> support if thermal throttle wmi service bit is set.
+> 10X firmware version supports this feature by default, hence
+> set this service bit by default.
 >
-> Thank you for any time that you spend considering these questions.
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 
-Hello,
+So this would also need testing with QCA988X or QCA9884 family of
+devices, I don't think this patch would have worked as is.
 
-I do not have any access currently to the firmware for those devices, so it
-would be hard to add any features or stability fixes or even understand
-current bugs.
+> Co-developed-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
 
-With PCI based ath10k devices in AP mode, there is a feature in the driver
-that can disable channel switching on radar detection, and I recently
-added support for querying more details for these radar events through
-the debugfs API to my ath10k-ct driver.
+I had few comments below which I fixed myself. I'll send v2 soon.
 
-I am not sure radar detection works in monitor mode, but possibly it does.
+> @@ -2621,6 +2621,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+>  		goto err_hif_stop;
+>  	}
+>  
+> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X,
+> +		     ar->normal_mode_fw.fw_file.fw_features)) {
+> +		set_bit(WMI_SERVICE_THERM_THROT, ar->wmi.svc_map);
+> +	}
 
-I recently did a test with some realtek USB NICs and was pleasantly surprised
-with performance and stability in station mode.  Possibly it would work for your
-test case.  The driver is out-of-kernel...this is the one I was using and I got it
-compiling against openwrt without a few tweaks:
+I don't think testing for ATH10K_FW_FEATURE_WMI_10X works, that's a
+really old and deprecated flag. wmi_op_version should be more reliable.
 
-https://github.com/greearb/rtl8812AU_8821AU_linux
+Also I refactored this to it's own function.
 
-Thanks,
-Ben
+>  	/* Some firmware revisions do not properly set up hardware rx filter
+>  	 * registers.
+>  	 *
+> @@ -2919,11 +2923,13 @@ static void ath10k_core_register_work(struct work_struct *work)
+>  		goto err_debug_destroy;
+>  	}
+>  
+> -	status = ath10k_thermal_register(ar);
+> -	if (status) {
+> -		ath10k_err(ar, "could not register thermal device: %d\n",
+> -			   status);
+> -		goto err_spectral_destroy;
+> +	if (test_bit(WMI_SERVICE_THERM_THROT, ar->wmi.svc_map)) {
+> +		status = ath10k_thermal_register(ar);
+> +		if (status) {
+> +			ath10k_err(ar, "could not register thermal device: %d\n",
+> +				   status);
+> +			goto err_spectral_destroy;
+> +		}
+>  	}
 
+The code becomes cleaner if the test is in thermal.c so I moved it
+there.
+
+> @@ -2964,7 +2970,8 @@ void ath10k_core_unregister(struct ath10k *ar)
+>  	if (!test_bit(ATH10K_FLAG_CORE_REGISTERED, &ar->dev_flags))
+>  		return;
+>  
+> -	ath10k_thermal_unregister(ar);
+> +	if (test_bit(WMI_SERVICE_THERM_THROT, ar->wmi.svc_map))
+> +		ath10k_thermal_unregister(ar);
+
+Same here.
+
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -4800,7 +4800,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
+>  	ath10k_regd_update(ar);
+>  
+>  	ath10k_spectral_start(ar);
+> -	ath10k_thermal_set_throttling(ar);
+> +	if (test_bit(WMI_SERVICE_THERM_THROT, ar->wmi.svc_map))
+> +		ath10k_thermal_set_throttling(ar);
+
+And here.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
