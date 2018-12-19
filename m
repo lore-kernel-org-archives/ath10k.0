@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.taht.net ([2a01:7e00::f03c:91ff:feae:7028])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZc0T-0005b7-Vd
- for ath10k@lists.infradead.org; Wed, 19 Dec 2018 13:35:27 +0000
-From: Dave Taht <dave@taht.net>
-Subject: Re: [Make-wifi-fast] [PATCH v5 0/6] Move TXQ scheduling and airtime
- fairness into mac80211
-References: <1545181331-5288-1-git-send-email-rmanohar@codeaurora.org>
- <877eg5hd8k.fsf@toke.dk>
-Date: Wed, 19 Dec 2018 05:34:59 -0800
-In-Reply-To: <877eg5hd8k.fsf@toke.dk> ("Toke \=\?utf-8\?Q\?H\=C3\=B8iland-J\?\=
- \=\?utf-8\?Q\?\=C3\=B8rgensen\=22's\?\= message of
- "Wed, 19 Dec 2018 14:12:27 +0100")
-Message-ID: <87mup1od18.fsf@taht.net>
+ id 1gZc2i-00066W-W6
+ for ath10k@lists.infradead.org; Wed, 19 Dec 2018 13:37:46 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH v2] ath10k: skip sending quiet mode cmd for WCN3990
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1544782666-24837-1-git-send-email-kvalo@codeaurora.org>
+References: <1544782666-24837-1-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20181219133734.3DFA261B11@smtp.codeaurora.org>
+Date: Wed, 19 Dec 2018 13:37:34 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +18,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: make-wifi-fast@lists.bufferbloat.net, Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Rakesh Pillai <pillair@codeaurora.org>, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+IHdyaXRlczoKCj4gUmFqa3Vt
-YXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgo+Cj4+IEFsbCwK
-Pj4KPj4gU29ycnkgZm9yIHRoZSBsb25nIGRlbGF5LiBIZXJlIGlzIHRoZSBjb25zb2xpZGF0ZWQg
-c2VyaWVzIG9mIG1hYzgwMjExLAo+PiBhdGg5ayBhbmQgYXRoMTBrIGNoYW5nZXMgZm9yIG1vdmlu
-ZyBUWFEgc2NoZWR1bGluZyBhbmQgYWlydGltZSBmYWlybmVzcwo+PiBpbnRvIG1hYzgwMjExIGFu
-ZCBzdXBwb3J0IGFpcnRpbWUgZmFpcm5lc3MuCj4KPiBUaGFua3MgZm9yIHRha2luZyBjYXJlIG9m
-IHRoZSByZXNwaW4hCj4KPiBKb2hhbm5lcywgSSB0aGluayBpdCdzIHNhZmUgZm9yIHlvdSB0byBy
-ZXZpZXcgdGhpcyB2ZXJzaW9uLiBJIGhhdmUKPiBzdGFydGVkIHdvcmtpbmcgb24gYW5vdGhlciBh
-cHByb2FjaCBmb3IgdGhlIHNjaGVkdWxlciBhbGdvcml0aG0gaXRzZWxmLAo+IGJ1dCBpdCBpcyBm
-aW5lIHRvIGRvIGFzIGFuIGluY3JlbWVudGFsIHBhdGNoIG9uIHRvcCBvZiB0aGlzIGFzIGl0Cj4g
-c2hvdWxkbid0IGltcGFjdCB0aGUgQVBJLiBIYXZpbmcgYSBzZXBhcmF0ZSBwYXRjaCBhbHNvIG1h
-a2VzIHRlc3RpbmcKPiBlYXNpZXIgYW55d2F5LiBJJ2xsIHNlZSBpZiBJIGNhbid0IGdldCBpdCB0
-byBhIHdvcmtpbmcgc3RhdGUgb3ZlciB0aGUKPiBob2xpZGF5cy4uLgoKVGhlcmUgY29tZXMgYSB0
-aW1lIGluIGFsbCBwYXRjaCBzZXJpZXMgd2hlcmUgdGhlIGJlc3QgdGhpbmcgdG8gZG8gaXMKY29t
-bWl0IGl0LCBhbmQgaW5mbGljdCBpdCBvbiBvdGhlcnMuIE5vdyBtYXkgYmUgdGhhdCB0aW1lLgoK
-QWNrZWQtYnk6IERhdmUgVGFodCA8ZGF2ZS50YWh0QGdtYWlsLmNvbT4KCj4KPiAtVG9rZQo+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTWFrZS13aWZp
-LWZhc3QgbWFpbGluZyBsaXN0Cj4gTWFrZS13aWZpLWZhc3RAbGlzdHMuYnVmZmVyYmxvYXQubmV0
-Cj4gaHR0cHM6Ly9saXN0cy5idWZmZXJibG9hdC5uZXQvbGlzdGluZm8vbWFrZS13aWZpLWZhc3QK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Kalle Valo <kvalo@codeaurora.org> wrote:
+
+> From: Rakesh Pillai <pillair@codeaurora.org>
+> 
+> HL2.0 firmware does not support setting quiet mode.  If the host driver sends
+> the quiet mode setting command to the HL2.0 firmware, it crashes with the below
+> signature.
+> 
+> fatal error received: err_qdi.c:456:EX:wlan_process:1:WLAN RT:207a:PC=b001b4f0
+> 
+> The quiet mode command support is exposed by the firmware via thermal throttle
+> wmi service. Enable ath10k thermal support if thermal throttle wmi service bit
+> is set.  10.x firmware versions support this feature by default, but
+> unfortunately do not advertise the support via service flags, hence have to
+> manually set the service flag in ath10k_core_compat_services().
+> 
+> Tested on QCA988X with 10.2.4.70.9-2. Also tested on WCN3990.
+> 
+> Co-developed-by: Govind Singh <govinds@codeaurora.org>
+> Co-developed-by: Kalle Valo <kvalo@codeaurora.org>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to wireless-drivers.git, thanks.
+
+53884577fbce ath10k: skip sending quiet mode cmd for WCN3990
+
+-- 
+https://patchwork.kernel.org/patch/10730831/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
