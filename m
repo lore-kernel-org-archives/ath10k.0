@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga1qe-0005aE-CW
- for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:11:01 +0000
+ id 1ga2MH-0000Qr-IW
+ for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:43:42 +0000
+Received: by mail-pf1-x444.google.com with SMTP id r136so1257281pfc.6
+ for <ath10k@lists.infradead.org>; Thu, 20 Dec 2018 09:43:30 -0800 (PST)
+Date: Thu, 20 Dec 2018 09:43:26 -0800
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: Move non-fatal warn logs to dbg level
+Message-ID: <20181220174324.GA67805@google.com>
+References: <20181129042522.11767-1-govinds@codeaurora.org>
+ <CA+ASDXMOqzXk9HrX9AS58cUfKOHeXA7zN_ME3+zDZXQcok_0Tg@mail.gmail.com>
+ <87h8f8talw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 1/3] dt-bindings: net: ath10k: fix node name and device
- type in qcom ath10k example
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1544544804-4039-2-git-send-email-bperumal@codeaurora.org>
-References: <1544544804-4039-2-git-send-email-bperumal@codeaurora.org>
-Message-Id: <20181220171050.13D7E6074E@smtp.codeaurora.org>
-Date: Thu, 20 Dec 2018 17:10:50 +0000 (UTC)
+Content-Disposition: inline
+In-Reply-To: <87h8f8talw.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +27,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bhagavathi Perumal S <bperumal@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: govinds@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bhagavathi Perumal S <bperumal@codeaurora.org> wrote:
-
-> In qcom,ath10k documentation, ath10k is used as node name in the example of
-> pci based device. Normally, node name should be class of device and not the
-> model name, so fix it to node name "wifi". And remove the property device_type
-> pci since only pci bridges should have this property.
+On Thu, Dec 20, 2018 at 06:40:43PM +0200, Kalle Valo wrote:
+> Brian Norris <briannorris@chromium.org> writes:
+> > Alternatively, you could add these ignored commands to wmi-tlv.h, and
+> > just ignore them specifically. That's better documentation, in case
+> > new WMI events come along that *are* important to notice when we
+> > ignore them. There are other recent examples of that sort of patch
+> > being merged.
 > 
-> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> I have actually tried to do that (what Brian describes above) during the
+> last years but the problem is that there are just so many different
+> firmware branches that it's difficult to keep up in ath10k. So in the
+> end these warnings just confused the users and they mistakenly thought
+> this warning message is the cause of their problems. That's why I think
+> it's best to remove this warning.
 
-3 patches applied to ath-next branch of ath.git, thanks.
+Thanks for the background. To be clear, I'm perfectly fine with this
+patch too. I was mostly just volunteering an alternative, in case it
+*was* your intention as maintainer to keep it this way.
 
-e5404969a335 dt-bindings: net: ath10k: fix node name and device type in qcom ath10k example
-f3f587995c5a dt-bindings: net: ath10k: add new dt entry to identify external FEM
-84758d4d43e9 ath10k: add support to configure BB timing over wmi
-
--- 
-https://patchwork.kernel.org/patch/10724123/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Regards,
+Brian
 
 _______________________________________________
 ath10k mailing list
