@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga1gB-0007ys-TU
- for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:00:13 +0000
+ id 1ga1i1-00018I-ES
+ for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:02:06 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: report tx rate using ieee80211_tx_rate_update()
+Subject: Re: [PATCH v2] ath10k: Disable 4addr source port learning in 10.4 FW
+ by default
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1540530438-11292-1-git-send-email-akolli@codeaurora.org>
-References: <1540530438-11292-1-git-send-email-akolli@codeaurora.org>
-Message-Id: <20181220170001.7792360734@smtp.codeaurora.org>
-Date: Thu, 20 Dec 2018 17:00:01 +0000 (UTC)
+In-Reply-To: <20181112064008.3610-1-murugana@codeaurora.org>
+References: <20181112064008.3610-1-murugana@codeaurora.org>
+Message-Id: <20181220170155.0F5806053B@smtp.codeaurora.org>
+Date: Thu, 20 Dec 2018 17:01:55 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +23,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anilkumar Kolli <akolli@codeaurora.org>
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Anilkumar Kolli <akolli@codeaurora.org> wrote:
+Sathishkumar Muruganandam <murugana@codeaurora.org> wrote:
 
-> Mesh path metric needs tx rate information from ieee80211_tx_status()
-> call but in ath10k there is no mechanism to report tx rate information
-> via ieee80211_tx_status(), the tx rate is only accessible via
-> sta_statiscs() op.
+> Currently in 10.4 FW, all the received 4addr frames are processed for
+> source port learning which is enabled by default. This learning can't be
+> disabled by default in FW since it breaks backward compatibility.
 > 
-> Per peer tx stats has tx rate info available, Tx rate is available
-> to ath10k driver after every 4 PPDU sent in the air. For each PPDU,
-> ath10k driver updates rate informattion to mac80211 using
-> ieee80211_tx_rate_update().
+> Since ath10k uses mac80211 based 4addr mode, source port learning done in
+> 10.4 FW is redundant and also causes issues when 3addr frames are
+> transmitted/received for a 4addr station.
 > 
-> Per peer txrate information is updated through per peer statistics
-> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
+> One such visible functional impact is when GTK rekey frame from
+> hostapd based AP to 4addr STA is dropped in AP's 10.4 FW. This is since
+> GTK rekey EAPOL frame is 3addr frame on AP interface and STA enabled
+> with 4addr is already allowed for receiving 3addr EAPOL frames.
 > 
-> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
-> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
+> Source port learning implementation in 10.4 FW drops this 3addr GTK rekey
+> frame in AP destinated for 4addr STA causing disassociation and
+> re-association for every GTK rekey session. GTK rekey issue is not seen
+> when learning is disabled in FW.
 > 
-> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> To prevent such issues without breaking backward compatibility, FW
+> advertises new service bit making the source port learning configurable and
+> this learning is being currently disabled during ath10k vdev creation.
+> 
+> * Tested HW: QCA9984
+> * Tested FW: 10.4-3.6.0.1-00004
+> 
+> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-9a9cf0e63f70 ath10k: report tx rate using ieee80211_tx_rate_update()
+68c295f21abc ath10k: disable 4addr source port learning in 10.4 FW by default
 
 -- 
-https://patchwork.kernel.org/patch/10656925/
+https://patchwork.kernel.org/patch/10678191/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
