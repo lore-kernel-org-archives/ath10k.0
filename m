@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga1i1-00018I-ES
- for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:02:06 +0000
+ id 1ga1j0-0001hr-LU
+ for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:03:08 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Disable 4addr source port learning in 10.4 FW
- by default
+Subject: Re: [PATCH] ath10k: Fix warning due to msdu limit error
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20181112064008.3610-1-murugana@codeaurora.org>
-References: <20181112064008.3610-1-murugana@codeaurora.org>
-Message-Id: <20181220170155.0F5806053B@smtp.codeaurora.org>
-Date: Thu, 20 Dec 2018 17:01:55 +0000 (UTC)
+In-Reply-To: <1542613703-9704-1-git-send-email-bperumal@codeaurora.org>
+References: <1542613703-9704-1-git-send-email-bperumal@codeaurora.org>
+Message-Id: <20181220170255.D4E20608FB@smtp.codeaurora.org>
+Date: Thu, 20 Dec 2018 17:02:51 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sathishkumar Muruganandam <murugana@codeaurora.org>
+To: Bhagavathi Perumal S <bperumal@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sathishkumar Muruganandam <murugana@codeaurora.org> wrote:
+Bhagavathi Perumal S <bperumal@codeaurora.org> wrote:
 
-> Currently in 10.4 FW, all the received 4addr frames are processed for
-> source port learning which is enabled by default. This learning can't be
-> disabled by default in FW since it breaks backward compatibility.
+> Some hardwares variants (QCA99x0) are limiting msdu deaggregation with
+> some threshold value(default limit in QCA99x0 is 64 msdus), it was introduced to
+> avoid excessive MSDU-deaggregation in error cases. When number of sub frames
+> exceeds the limit, target hardware will send all msdus starting from present
+> msdu in RAW format as a single msdu packet and it will be indicated with
+> error status bit "RX_MSDU_END_INFO0_MSDU_LIMIT_ERR" set in rx descriptor.
+> This msdu frame is a partial raw MSDU and does't have first msdu and ieee80211
+> header. It caused below warning message.
 > 
-> Since ath10k uses mac80211 based 4addr mode, source port learning done in
-> 10.4 FW is redundant and also causes issues when 3addr frames are
-> transmitted/received for a 4addr station.
+> [  320.151332] ------------[ cut here ]------------
+> [  320.155006] WARNING: CPU: 0 PID: 3 at drivers/net/wireless/ath/ath10k/htt_rx.c:1188
 > 
-> One such visible functional impact is when GTK rekey frame from
-> hostapd based AP to 4addr STA is dropped in AP's 10.4 FW. This is since
-> GTK rekey EAPOL frame is 3addr frame on AP interface and STA enabled
-> with 4addr is already allowed for receiving 3addr EAPOL frames.
+> In our issue case, MSDU limit error happened due to FCS error and generated
+> this warning message.
 > 
-> Source port learning implementation in 10.4 FW drops this 3addr GTK rekey
-> frame in AP destinated for 4addr STA causing disassociation and
-> re-association for every GTK rekey session. GTK rekey issue is not seen
-> when learning is disabled in FW.
+> This fixes the warning by handling the MSDU limit error. If msdu limit error
+> happens, driver adds first MSDU's ieee80211 header and sets A-MSDU present bit
+> in QOS header so that upper layer processes this frame if it is valid or drop it
+> if FCS error set. And removed the warning message, hence partial msdus without
+> first msdu is expected in msdu limit error cases.
 > 
-> To prevent such issues without breaking backward compatibility, FW
-> advertises new service bit making the source port learning configurable and
-> this learning is being currently disabled during ath10k vdev creation.
+> Tested on QCA9984, Firmware 10.4-3.6-00104
 > 
-> * Tested HW: QCA9984
-> * Tested FW: 10.4-3.6.0.1-00004
-> 
-> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
+> Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-68c295f21abc ath10k: disable 4addr source port learning in 10.4 FW by default
+a2864772f33a ath10k: fix warning due to msdu limit error
 
 -- 
-https://patchwork.kernel.org/patch/10678191/
+https://patchwork.kernel.org/patch/10688251/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
