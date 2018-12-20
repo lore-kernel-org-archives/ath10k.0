@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga1kt-0002B8-M8
- for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:05:05 +0000
+ id 1ga1lm-0003WD-Df
+ for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:06:00 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Remove work in progress logs from snoc driver
+Subject: Re: [PATCH] ath10k: fix a NULL vs IS_ERR() check
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20181119113040.23294-1-govinds@codeaurora.org>
-References: <20181119113040.23294-1-govinds@codeaurora.org>
-Message-Id: <20181220170453.1F8B8608FF@smtp.codeaurora.org>
-Date: Thu, 20 Dec 2018 17:04:53 +0000 (UTC)
+In-Reply-To: <20181126081143.tvu55aimdc3safcq@kili.mountain>
+References: <20181126081143.tvu55aimdc3safcq@kili.mountain>
+Message-Id: <20181220170543.2DC646076A@smtp.codeaurora.org>
+Date: Thu, 20 Dec 2018 17:05:43 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: kernel-janitors@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-> All the necessary patches to make wifi running (over SNOC)
-> are merged and tested on SDM845/QCS404 platform with WCN3990
-> wifi module, hence remove work in progress debug from snoc
-> driver and Kconfig.
+> The devm_memremap() function doesn't return NULLs, it returns error
+> pointers.
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-876596759287 ath10k: remove work in progress logs from snoc driver
+c28dcbce0592 ath10k: fix a NULL vs IS_ERR() check
 
 -- 
-https://patchwork.kernel.org/patch/10688559/
+https://patchwork.kernel.org/patch/10697755/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
