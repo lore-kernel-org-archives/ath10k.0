@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga1Nb-0002QX-Hd
- for ath10k@lists.infradead.org; Thu, 20 Dec 2018 16:41:00 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Move non-fatal warn logs to dbg level
-References: <20181129042522.11767-1-govinds@codeaurora.org>
- <CA+ASDXMOqzXk9HrX9AS58cUfKOHeXA7zN_ME3+zDZXQcok_0Tg@mail.gmail.com>
-Date: Thu, 20 Dec 2018 18:40:43 +0200
-In-Reply-To: <CA+ASDXMOqzXk9HrX9AS58cUfKOHeXA7zN_ME3+zDZXQcok_0Tg@mail.gmail.com>
- (Brian Norris's message of "Fri, 30 Nov 2018 12:59:49 -0800")
-Message-ID: <87h8f8talw.fsf@kamboji.qca.qualcomm.com>
+ id 1ga1Tc-0004Fu-Ay
+ for ath10k@lists.infradead.org; Thu, 20 Dec 2018 16:47:13 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: remove set but not used variable 'num_tdls_vifs'
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1541669570-110540-1-git-send-email-yuehaibing@huawei.com>
+References: <1541669570-110540-1-git-send-email-yuehaibing@huawei.com>
+Message-Id: <20181220164702.013FD6071C@smtp.codeaurora.org>
+Date: Thu, 20 Dec 2018 16:47:01 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: govinds@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, ath10k@lists.infradead.org, netdev@vger.kernel.org
 
-Brian Norris <briannorris@chromium.org> writes:
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-> On Wed, Nov 28, 2018 at 8:25 PM Govind Singh <govinds@codeaurora.org> wrote:
->>
->> During driver load below warn logs are printed in the console.
->> Since driver may not implement all wmi events sent by fw and
->> all of them are non-fatal, move this log to debug level to
->> remove un-necessary warn message on console.
->>
->> [  361.887230] ath10k_snoc a000000.wifi: Unknown eventid: 16393
->> [  361.907037] ath10k_snoc a000000.wifi: Unknown eventid: 237569
->>
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->
-> Alternatively, you could add these ignored commands to wmi-tlv.h, and
-> just ignore them specifically. That's better documentation, in case
-> new WMI events come along that *are* important to notice when we
-> ignore them. There are other recent examples of that sort of patch
-> being merged.
+> Fixes gcc '-Wunused-but-set-variable' warning:
+> 
+> drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_sta_state':
+> drivers/net/wireless/ath/ath10k/mac.c:6238:7: warning:
+>  variable 'num_tdls_vifs' set but not used [-Wunused-but-set-variable]
+> 
+> 'num_tdls_vifs' not used any more after
+>   9a993cc1ea95 ("ath10k: fix the logic of limiting tdls peer counts")
+> 
+> Also, remove the single called function ath10k_mac_tdls_vifs_count
+> and ath10k_mac_tdls_vifs_count_iter.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-I have actually tried to do that (what Brian describes above) during the
-last years but the problem is that there are just so many different
-firmware branches that it's difficult to keep up in ath10k. So in the
-end these warnings just confused the users and they mistakenly thought
-this warning message is the cause of their problems. That's why I think
-it's best to remove this warning.
+Patch applied to ath-next branch of ath.git, thanks.
+
+bff70e5f78e9 ath10k: remove set but not used variable 'num_tdls_vifs'
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10673841/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
