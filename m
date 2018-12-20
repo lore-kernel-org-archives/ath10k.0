@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga1aA-0006Kx-NY
- for ath10k@lists.infradead.org; Thu, 20 Dec 2018 16:54:00 +0000
+ id 1ga1gB-0007ys-TU
+ for ath10k@lists.infradead.org; Thu, 20 Dec 2018 17:00:13 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add amsdu support for monitor mode
+Subject: Re: [PATCH v2] ath10k: report tx rate using ieee80211_tx_rate_update()
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1540794104-30957-2-git-send-email-yyuwang@codeaurora.org>
-References: <1540794104-30957-2-git-send-email-yyuwang@codeaurora.org>
-Message-Id: <20181220165347.5EFE5607CA@smtp.codeaurora.org>
-Date: Thu, 20 Dec 2018 16:53:47 +0000 (UTC)
+In-Reply-To: <1540530438-11292-1-git-send-email-akolli@codeaurora.org>
+References: <1540530438-11292-1-git-send-email-akolli@codeaurora.org>
+Message-Id: <20181220170001.7792360734@smtp.codeaurora.org>
+Date: Thu, 20 Dec 2018 17:00:01 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yu Wang <yyuwang@codeaurora.org>
+To: Anilkumar Kolli <akolli@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yu Wang <yyuwang@codeaurora.org> wrote:
+Anilkumar Kolli <akolli@codeaurora.org> wrote:
 
-> When processing HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND, if the length of a msdu
-> is larger than the tailroom of the rx skb, skb_over_panic issue will happen
-> when calling skb_put.  In monitor mode, amsdu will be handled in this path, and
-> msdu_len of the first msdu_desc is the length of the entire amsdu, which might
-> be larger than the maximum length of a skb, in such case, it will hit the issue
-> upon.
+> Mesh path metric needs tx rate information from ieee80211_tx_status()
+> call but in ath10k there is no mechanism to report tx rate information
+> via ieee80211_tx_status(), the tx rate is only accessible via
+> sta_statiscs() op.
 > 
-> To fix this issue, process msdu list separately for monitor mode.
+> Per peer tx stats has tx rate info available, Tx rate is available
+> to ath10k driver after every 4 PPDU sent in the air. For each PPDU,
+> ath10k driver updates rate informattion to mac80211 using
+> ieee80211_tx_rate_update().
 > 
-> Successfully tested with:
-> QCA6174 (FW version: RM.4.4.1.c2-00057-QCARMSWP-1).
+> Per peer txrate information is updated through per peer statistics
+> and is available for QCA9888/QCA9984/QCA4019/QCA998X only
 > 
-> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
-> [kvalo@codeaurora.org: cosmetic cleanup]
+> Tested on QCA9984 with firmware-5.bin_10.4-3.5.3-00053
+> Tested on QCA998X with firmware-5.bin_10.2.4-1.0-00036
+> 
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-85bd0107c6cd ath10k: add amsdu support for monitor mode
+9a9cf0e63f70 ath10k: report tx rate using ieee80211_tx_rate_update()
 
 -- 
-https://patchwork.kernel.org/patch/10658777/
+https://patchwork.kernel.org/patch/10656925/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
