@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gcThf-00025s-EN
- for ath10k@lists.infradead.org; Thu, 27 Dec 2018 11:19:53 +0000
-Received: by mail-wr1-x442.google.com with SMTP id z5so17974165wrt.11
- for <ath10k@lists.infradead.org>; Thu, 27 Dec 2018 03:19:39 -0800 (PST)
-From: DeX77 <dex@dragonslave.de>
-Subject: Re: =?iso-8859-1?Q?ath10=5Fpci:_WARN(()_on_resume_from_S3?=
-Date: Thu, 27 Dec 2018 12:19:39 +0100
+ id 1getHF-0005ED-Km
+ for ath10k@lists.infradead.org; Thu, 03 Jan 2019 03:02:34 +0000
+Received: by mail-io1-xd2b.google.com with SMTP id g8so14710649iok.4
+ for <ath10k@lists.infradead.org>; Wed, 02 Jan 2019 19:02:33 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <61b6a969-9692-4ebc-91fa-9c221ca5d4d4@frugalware.org>
-In-Reply-To: <de26281344602d5edbd3600e0ef4afd3@frugalware.org>
-References: <de26281344602d5edbd3600e0ef4afd3@frugalware.org>
+References: <CAKHTHFX7twj11AxUbuxT_OxghmRdS0YNnBZhHOA3oMf8MvQPaA@mail.gmail.com>
+In-Reply-To: <CAKHTHFX7twj11AxUbuxT_OxghmRdS0YNnBZhHOA3oMf8MvQPaA@mail.gmail.com>
+From: =?UTF-8?Q?Ant=C3=B3n_Valladares_Poncela?= <labaunti3@gmail.com>
+Date: Thu, 3 Jan 2019 04:02:21 +0100
+Message-ID: <CAKHTHFWhRJiCOms87JComo-ys6RHPHOvhL3D+xTUWFHXwi3dMA@mail.gmail.com>
+Subject: Fwd: [BUG REPORT] QCA6174 Killer Wireless 1535 monitor mode not
+ working.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,109 +21,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gabriel C <crazy@frugalware.org>
-Cc: nix.or.die@gmail.com, linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, dex77@frugalware.org
+To: ath10k@lists.infradead.org
 
-Hi,
+So I have a Dell XPS 9570 with a Killer Wireless 1535 adapter, which
+is based off the QCA6174 and uses the ath10k_pci driver.
 
+I wanted to try monitor mode but apparently I can't get it to actually
+do anything. I can get the card to monitor mode, but once there, it
+doesn't actually do anything.
+Airodump-ng shows absolutely nothing, no APs, no stations. Nothing.
+Other wireless tools act exactly the same.
 
-> 4.20.0 I see now two.
->
-> Also I see Unknown eventid: xxx and on 4.20.0
-> a unsupported HTC service id: xxx message(s).
+Im on kernel 4.20.0-1-MANJARO and the firmware is RM.4.4.1.c2-00057-QCARMSWP-1.
 
-I have a similar trace on my Dell XPS 13:
+Seems like everyone else with this PC and wireless card is having the
+same issue where monitor mode just doesn't do anything. There are
+several forum posts over at aircrack, kali, and ubuntu forums.
 
-[31530.551292] ath10k_pci 0000:3a:00.0: unsupported HTC service id: 1536
-[31530.566621] ath10k_pci 0000:3a:00.0: Unknown eventid: 118809
-[31530.589165] WARNING: CPU: 0 PID: 6424 at 
-drivers/net/wireless/ath/ath10k/mac.c:5687 
-ath10k_bss_info_changed+0xad4/0xef0 [ath10k_core]
-[31530.589166] Modules linked in: tun ctr ccm cmac bnep uvcvideo 
-videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common videodev 
-btusb media btrtl btbcm btintel bluetooth ecdh_generic crc16 af_packet 
-joydev arc4 nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct 
-xt_tcpudp xt_state xt_conntrack nf_conntrack nf_tables_set nf_defrag_ipv6 
-nf_defrag_ipv4 iptable_filter nf_tables ip_tables x_tables nfnetlink 
-snd_hda_codec_hdmi iTCO_wdt iTCO_vendor_support ath10k_pci 
-i2c_designware_platform i2c_designware_core ath10k_core snd_soc_skl 
-snd_soc_hdac_hda coretemp intel_rapl snd_hda_ext_core x86_pkg_temp_thermal 
-intel_powerclamp snd_soc_skl_ipc kvm_intel snd_soc_sst_ipc snd_soc_sst_dsp 
-ath snd_soc_acpi_intel_match snd_soc_acpi mac80211 dell_laptop kvm 
-snd_soc_core nls_utf8 nls_cp437 snd_hda_codec_realtek vfat 
-snd_hda_codec_generic fat snd_compress dell_wmi snd_pcm_dmaengine 
-dell_smbios snd_hda_intel dcdbas cfg80211 snd_hda_codec irqbypass 
-efi_pstore intel_wmi_thunderbolt rfkill
-[31530.589196]  efivars snd_hda_core dell_wmi_descriptor wmi_bmof pcspkr 
-hwmon rtsx_pci_ms ucsi_acpi snd_hwdep i2c_i801 memstick typec_ucsi thermal 
-typec mei_wdt battery soc_button_array intel_vbtn evdev 
-pinctrl_sunrisepoint mac_hid pinctrl_intel intel_hid 
-processor_thermal_device int3403_thermal sparse_keymap int3400_thermal 
-acpi_pad idma64 acpi_thermal_rel pcc_cpufreq int340x_thermal_zone ac button 
-intel_soc_dts_iosf intel_pch_thermal intel_lpss_pci intel_lpss ppdev 
-sch_fq_codel binfmt_misc btrfs libcrc32c crc32c_generic xor raid6_pq 
-dm_crypt algif_skcipher af_alg hid_multitouch hid_generic usbhid i915 
-rtsx_pci_sdmmc mmc_core intel_gtt i2c_algo_bit cec rc_core drm_kms_helper 
-syscopyarea sysfillrect sysimgblt fb_sys_fops drm crct10dif_pclmul xhci_pci 
-xhci_hcd crc32_pclmul ghash_clmulni_intel aesni_intel usbcore aes_x86_64 
-crypto_simd cryptd glue_helper serio_raw i2c_hid agpgart rtsx_pci hid 
-i2c_core wmi video dm_mirror dm_region_hash dm_log dm_mod fuse crc32c_intel 
-snd_pcm_oss snd_mixer_oss
-[31530.589230]  snd_pcm snd_seq_oss snd_seq_midi_event snd_seq snd_timer 
-snd_seq_device snd soundcore lp parport_pc parport efivarfs unix 
-sha256_ssse3 sha256_generic sha1_ssse3 sha1_generic hmac ipv6 autofs4
-[31530.589240] CPU: 0 PID: 6424 Comm: kworker/u8:4 Tainted: G        W      
-   4.20-fw1 #1
-[31530.589241] Hardware name: Dell Inc. XPS 13 9360/06CC14, BIOS 2.9.0 
-07/09/2018
-[31530.589245] Workqueue: events_unbound async_run_entry_fn
-[31530.589250] RIP: 0010:ath10k_bss_info_changed+0xad4/0xef0 [ath10k_core]
-[31530.589251] Code: 00 00 e8 af 0c fc d1 e9 94 f8 ff ff 8b b5 68 01 00 00 
-89 f2 89 c1 48 c7 c6 70 ef 0f c1 48 89 df e8 e1 35 00 00 e9 eb f5 ff ff 
-<0f> 0b 4c 89 f7 e8 f2 8f 5b d2 e9 4f f9 ff ff 66 83 f8 0a 0f 85 27
-[31530.589252] RSP: 0018:ffffb733c428fcd8 EFLAGS: 00010282
-[31530.589253] RAX: 00000000fffffffe RBX: ffff91ed1d781580 RCX: 
-0000000000000000
-[31530.589254] RDX: ffff91ed1d7818f8 RSI: ffffb733c428fcf8 RDI: 
-ffff91ed17073380
-[31530.589255] RBP: ffff91ed17073380 R08: 0000000000200000 R09: 
-0000000000000000
-[31530.589256] R10: 000000000000001f R11: ffff91eb26c1b600 R12: 
-0000000000000020
-[31530.589256] R13: ffff91ed17073388 R14: ffff91ed1d782558 R15: 
-ffff91ed1d781580
-[31530.589258] FS:  0000000000000000(0000) GS:ffff91ed2e200000(0000) 
-knlGS:0000000000000000
-[31530.589258] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[31530.589259] CR2: 000056125129f4d6 CR3: 00000002b200a002 CR4: 
-00000000003606f0
-[31530.589260] Call Trace:
-[31530.589266]  ? ath10k_conf_tx+0x12d/0x4c0 [ath10k_core]
-[31530.589284]  ieee80211_bss_info_change_notify+0xa9/0x1c0 [mac80211]
-[31530.589297]  ieee80211_reconfig+0xa4f/0x1560 [mac80211]
-[31530.589313]  wiphy_resume+0x7e/0x150 [cfg80211]
-[31530.589322]  ? wiphy_namespace+0x10/0x10 [cfg80211]
-[31530.589325]  dpm_run_callback+0x2e/0x130
-[31530.589327]  device_resume+0x97/0x190
-[31530.589329]  async_resume+0x19/0x40
-[31530.589331]  async_run_entry_fn+0x37/0xe0
-[31530.589334]  process_one_work+0x1e9/0x410
-[31530.589336]  worker_thread+0x2d/0x3d0
-[31530.589338]  ? process_one_work+0x410/0x410
-[31530.589340]  kthread+0x113/0x130
-[31530.589341]  ? kthread_park+0x90/0x90
-[31530.589344]  ret_from_fork+0x35/0x40
-[31530.589346] ---[ end trace e8c7a75d6d802f88 ]---
+Any help or update on this would be well appreciated as there are
+several users which have already begun switching to other wireless
+adapters because of this.
 
-
-Please keep me CC, as I'm currently not subscribed. Thx.
-
-Greetings
-DeX
+Thanks in advance.
 
 _______________________________________________
 ath10k mailing list
