@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
+Received: from mail-lj1-x235.google.com ([2a00:1450:4864:20::235])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1getHF-0005ED-Km
- for ath10k@lists.infradead.org; Thu, 03 Jan 2019 03:02:34 +0000
-Received: by mail-io1-xd2b.google.com with SMTP id g8so14710649iok.4
- for <ath10k@lists.infradead.org>; Wed, 02 Jan 2019 19:02:33 -0800 (PST)
+ id 1gf4Ty-0000ap-6n
+ for ath10k@lists.infradead.org; Thu, 03 Jan 2019 15:00:27 +0000
+Received: by mail-lj1-x235.google.com with SMTP id q2-v6so29910950lji.10
+ for <ath10k@lists.infradead.org>; Thu, 03 Jan 2019 07:00:25 -0800 (PST)
 MIME-Version: 1.0
-References: <CAKHTHFX7twj11AxUbuxT_OxghmRdS0YNnBZhHOA3oMf8MvQPaA@mail.gmail.com>
-In-Reply-To: <CAKHTHFX7twj11AxUbuxT_OxghmRdS0YNnBZhHOA3oMf8MvQPaA@mail.gmail.com>
-From: =?UTF-8?Q?Ant=C3=B3n_Valladares_Poncela?= <labaunti3@gmail.com>
-Date: Thu, 3 Jan 2019 04:02:21 +0100
-Message-ID: <CAKHTHFWhRJiCOms87JComo-ys6RHPHOvhL3D+xTUWFHXwi3dMA@mail.gmail.com>
-Subject: Fwd: [BUG REPORT] QCA6174 Killer Wireless 1535 monitor mode not
- working.
+From: Richard Toy <richard.toy@gmail.com>
+Date: Thu, 3 Jan 2019 15:59:48 +0100
+Message-ID: <CAK3eJOABrJyjifD5-cmaDu4U7XPHdwNdJ81jX++vMRbfS5e8DQ@mail.gmail.com>
+Subject: QCA988X/hw2.0 firmware versions - what is the difference
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +24,29 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-So I have a Dell XPS 9570 with a Killer Wireless 1535 adapter, which
-is based off the QCA6174 and uses the ath10k_pci driver.
+Hi,
 
-I wanted to try monitor mode but apparently I can't get it to actually
-do anything. I can get the card to monitor mode, but once there, it
-doesn't actually do anything.
-Airodump-ng shows absolutely nothing, no APs, no stations. Nothing.
-Other wireless tools act exactly the same.
+There are two current builds of QCA988X/hw2.0 firmware: -
+a) firmware-5.bin_10.2.4-1.0 -> latest -> firmware-5.bin_10.2.4-1.0-00043
+b) firmware-5.bin_10.2.4.70 -> latest -> firmware-5.bin_10.2.4.70.69
 
-Im on kernel 4.20.0-1-MANJARO and the firmware is RM.4.4.1.c2-00057-QCARMSWP-1.
+The site https://wireless.wiki.kernel.org/en/users/drivers/ath10k/firmware
+indicates that both of these are suitable for Kernel version 4 and
+they both work in my ar71xx-generic-archer-c7-v2 router with OpenWrt
+18.06.1 which was itself originally packaged with 10.2.4-1.0-00033
 
-Seems like everyone else with this PC and wireless card is having the
-same issue where monitor mode just doesn't do anything. There are
-several forum posts over at aircrack, kali, and ubuntu forums.
+Both firmware have the same options: -
+firmware ver 10.2.4.70.69        api 5 features
+no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 edfb196a
+firmware ver 10.2.4-1.0-00043 api 5 features
+no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 ed0aafd8
 
-Any help or update on this would be well appreciated as there are
-several users which have already begun switching to other wireless
-adapters because of this.
+What is the difference between the two builds?
 
-Thanks in advance.
+Are there release notes for the builds?
+
+Kindest regards,
+Richard
 
 _______________________________________________
 ath10k mailing list
