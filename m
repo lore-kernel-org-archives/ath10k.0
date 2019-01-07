@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtpbguseast2.qq.com ([54.204.34.130])
+Received: from smtpbg201.qq.com ([103.7.29.243] helo=smtpproxy27.qq.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfbg5-0008LM-MZ
- for ath10k@lists.infradead.org; Sat, 05 Jan 2019 02:27:12 +0000
-From: "=?ISO-8859-1?B?VGhlb25l?=" <1805692831@qq.com>
+ id 1ggL0N-0004qp-PN
+ for ath10k@lists.infradead.org; Mon, 07 Jan 2019 02:51:14 +0000
+From: "=?gb18030?B?VGhlb25l?=" <1805692831@qq.com>
 Subject: ath10k-firmware: QCA4019 hw1.0: Add Qxwlan E2600AC specific BDFs
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="----=_NextPart_5C3015E4_0D43ABB8_4D105868"
+ boundary="----=_NextPart_5C32BE4D_0A2C7B68_7DDEE974"
 Content-Transfer-Encoding: 8Bit
-Date: Sat, 5 Jan 2019 10:26:44 +0800
-Message-ID: <tencent_9DDF95DF96EF68F50B6B6DC8FE5D21E63C0A@qq.com>
+Date: Mon, 7 Jan 2019 10:49:49 +0800
+Message-ID: <tencent_C743F5CF1BF1E399A55CAD3C5B4B40F87805@qq.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?ISO-8859-1?B?YXRoMTBr?= <ath10k@lists.infradead.org>
+To: =?gb18030?B?YXRoMTBr?= <ath10k@lists.infradead.org>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_5C3015E4_0D43ABB8_4D105868
+------=_NextPart_5C32BE4D_0A2C7B68_7DDEE974
 Content-Type: text/plain;
-	charset="ISO-8859-1"
+	charset="gb18030"
 Content-Transfer-Encoding: base64
 
 SGksCgpGb3IgdGhlIHF1ZXN0aW9ucyBmcm9tIHRoZSB3aWtpIHBhZ2U6CgoqIGRlc2NyaXB0
@@ -51,11 +51,12 @@ b2FyZC1pZD0zMCx2YXJpYW50PVF4d2xhbi1FMjYwMEFDCiAgICAgIHNoYTI1NnN1bToKICAg
 ICAgOGJhODkwYjhiMzRmNmFjMGNkNGMzNTA0YmNlY2FkMDAxYzhjN2JjMzI5ZDE5ZjQ2Mjdl
 Y2RkYzViMDk5ZTU4NgoKKiBhdHRhY2ggdGhlIGFjdHVhbCBib2FyZCBmaWxlIChib2FyZC5i
 aW4pCgogIC0gVGhlIG5hbWUgb2YgdGhlIGZpbGVzIGFyZSBlcXVhbCB0byB0aGUgaWQgc3Ry
-aW5nIGluIHRoZSBib2FyZC0yLmJpbgogICAgKG1pbnVzIHRoZSAiLmJpbiIp
+aW5nIGluIHRoZSBib2FyZC0yLmJpbgogICAgKG1pbnVzIHRoZSAiLmJpbiIpCgoKS2luZCBy
+ZWdhcmRzLCAgICAgICAK1cXF9A==
 
-------=_NextPart_5C3015E4_0D43ABB8_4D105868
+------=_NextPart_5C32BE4D_0A2C7B68_7DDEE974
 Content-Type: application/octet-stream;
-	charset="ISO-8859-1";
+	charset="gb18030";
 	name="board_wifi0_2g.bin"
 Content-Disposition: attachment; filename="board_wifi0_2g.bin"
 Content-Transfer-Encoding: base64
@@ -284,10 +285,9 @@ PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-
-------=_NextPart_5C3015E4_0D43ABB8_4D105868
+------=_NextPart_5C32BE4D_0A2C7B68_7DDEE974
 Content-Type: application/octet-stream;
-	charset="ISO-8859-1";
+	charset="gb18030";
 	name="board_wifi0_5g.bin"
 Content-Disposition: attachment; filename="board_wifi0_5g.bin"
 Content-Transfer-Encoding: base64
@@ -516,10 +516,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-
-------=_NextPart_5C3015E4_0D43ABB8_4D105868
+------=_NextPart_5C32BE4D_0A2C7B68_7DDEE974
 Content-Type: application/octet-stream;
-	charset="ISO-8859-1";
+	charset="gb18030";
 	name="board_wifi1_5g.bin"
 Content-Disposition: attachment; filename="board_wifi1_5g.bin"
 Content-Transfer-Encoding: base64
@@ -748,8 +747,7 @@ PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-
-------=_NextPart_5C3015E4_0D43ABB8_4D105868
+------=_NextPart_5C32BE4D_0A2C7B68_7DDEE974
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -760,4 +758,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
-------=_NextPart_5C3015E4_0D43ABB8_4D105868--
+------=_NextPart_5C32BE4D_0A2C7B68_7DDEE974--
