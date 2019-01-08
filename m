@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggx3z-0007Mp-U1
- for ath10k@lists.infradead.org; Tue, 08 Jan 2019 19:29:30 +0000
+ id 1ggx6c-0001Iw-W0
+ for ath10k@lists.infradead.org; Tue, 08 Jan 2019 19:32:09 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.20 105/117] ath10k: fix peer stats null pointer
+Subject: [PATCH AUTOSEL 4.19 89/97] ath10k: fix peer stats null pointer
  dereference
-Date: Tue,  8 Jan 2019 14:26:13 -0500
-Message-Id: <20190108192628.121270-105-sashal@kernel.org>
-In-Reply-To: <20190108192628.121270-1-sashal@kernel.org>
-References: <20190108192628.121270-1-sashal@kernel.org>
+Date: Tue,  8 Jan 2019 14:29:38 -0500
+Message-Id: <20190108192949.122407-89-sashal@kernel.org>
+In-Reply-To: <20190108192949.122407-1-sashal@kernel.org>
+References: <20190108192949.122407-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -71,7 +71,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index b09cdc699c69..38afbbd9fb44 100644
+index a63c97e2c50c..6f10331e986b 100644
 --- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
 +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
 @@ -71,7 +71,7 @@ void ath10k_sta_update_rx_tid_stats_ampdu(struct ath10k *ar, u16 peer_id, u8 tid
@@ -84,10 +84,10 @@ index b09cdc699c69..38afbbd9fb44 100644
  
  	arsta = (struct ath10k_sta *)peer->sta->drv_priv;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index ffec98f7be50..2c2761d04d01 100644
+index 4d1cd90d6d27..03d4cc6f35bc 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2832,7 +2832,7 @@ static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
+@@ -2589,7 +2589,7 @@ static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
  	rcu_read_lock();
  	spin_lock_bh(&ar->data_lock);
  	peer = ath10k_peer_find_by_id(ar, peer_id);
@@ -96,7 +96,7 @@ index ffec98f7be50..2c2761d04d01 100644
  		ath10k_warn(ar, "Invalid peer id %d peer stats buffer\n",
  			    peer_id);
  		goto out;
-@@ -2885,7 +2885,7 @@ static void ath10k_fetch_10_2_tx_stats(struct ath10k *ar, u8 *data)
+@@ -2642,7 +2642,7 @@ static void ath10k_fetch_10_2_tx_stats(struct ath10k *ar, u8 *data)
  	rcu_read_lock();
  	spin_lock_bh(&ar->data_lock);
  	peer = ath10k_peer_find_by_id(ar, peer_id);
