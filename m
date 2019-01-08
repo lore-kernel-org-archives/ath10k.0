@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr10066.outbound.protection.outlook.com ([40.107.1.66]
- helo=EUR02-HE1-obe.outbound.protection.outlook.com)
+Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggUMy-0002I3-Ch
- for ath10k@lists.infradead.org; Mon, 07 Jan 2019 12:51:06 +0000
-From: Andreas Tobler <andreas.tobler@cloudguard.ch>
-Subject: ath10k Invalid peer id 255 in peer stats buffer
-Date: Mon, 7 Jan 2019 12:50:57 +0000
-Message-ID: <153eb99c-07e5-9ce7-b3b2-40b166da6e7a@cloudguard.ch>
+ id 1ggn0t-00046i-Ov
+ for ath10k@lists.infradead.org; Tue, 08 Jan 2019 08:45:33 +0000
+Subject: RE: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
+From: Wen Gong <wgong@qti.qualcomm.com>
+Date: Tue, 8 Jan 2019 08:45:26 +0000
+Message-ID: <e18e50cae69e44f4b9e4abb1fa110193@aptaiexm02f.ap.qualcomm.com>
+References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
+ <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
+ <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
+ <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
+In-Reply-To: <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
 Content-Language: en-US
-Content-ID: <6BF555261B9C124B9924A7FFD7DAF5B7@eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,40 +22,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-All,
-
-We have the following scenario here:
-
-- station (qca988x) connects to ap
-- connection is up and running
-- ap shuts down
-
--> station gives continuously the following warning on the console:
-
-ath10k_pci 0000:02:00.0: Invalid peer id 255 in peer stats buffer
-
-The warning comes from the ath10k_fetch_10_2_tx_stats function.
-
-- once the ap is up and running again, the console output is gone and we 
-no more see the warning unless we shut down the ap again.
-
-The kernel we see this on is a 4.19.x.
-The firmware of the qca988x card is 10.2.4.70.69.
-
-So far I only have a way to silence the warning if I omit it if the 
-peer_id is == 255. I think this is not the right way.
-
-Has anybody else seen this warning? With the exact same peer_id?
-
-TIA,
-Andreas
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiA+DQo+ID4gPiA+IEl0IGlzIGJlY2F1c2UgdGhlIHN0YXRlIGhhcyBub3QgY2hhbmdlZCB0byBB
+VEgxMEtfU1RBVEVfT04NCj4gPiA+ID4gaW1tZWRpYXRlbHksIHRoZW4gaXQgd2lsbCBoYXZlIG1v
+cmUgdGhhbiB0d28gc2ltdWxhdGUgY3Jhc2gNCj4gPiA+ID4gcHJvY2VzcyBydW5uaW5nIG1lYW53
+aGlsZSwgYW5kIGNvbXBsZXRlL3dha2V1cCBzb21lIGZpZWxkIHR3aWNlLA0KPiA+ID4gPiBpdCBk
+ZXN0cm95IHRoZSBub3JtYWwgcmVjb3ZlcnkgcHJvY2Vzcy4NCj4gPiA+DQo+ID4gPiBUaGlzIHdh
+cyBpbnRlbmRlZCB0byBhbGxvdyB0ZXN0aW5nIG5vdCBvbmx5IGZpcm13YXJlIGNyYXNoIHBhdGgg
+KGFuZA0KPiA+ID4gcmVjb3ZlcnkpIGJ1dCBhbHNvIGZpcm13YXJlIGNyYXNoIHdoaWxlIHJlY292
+ZXJpbmcgZnJvbSBhIGZpcm13YXJlIGNyYXNoLg0KPiA+ID4NCj4gPiBJZiBmaXJtd2FyZSBpcyBy
+ZWNvdmVyaW5nIGZyb20gY3Jhc2gsIHRoZW4gc2ltdWxhdGUgYSBuZXcgY3Jhc2ggd2lsbCB0cmln
+Z2VyDQo+IGVycm9yLg0KPiA+IFNvIHJlbW92ZSBpdC4NCj4gDQo+IFRoYXQncyBhY3R1YWxseSBh
+IGZlYXR1cmUsIG5vdCBhIGJ1Zy4gSWYgZmlybXdhcmUgY3Jhc2hlcyB3aGlsZSBkcml2ZXIgaXMN
+Cj4gcmVzdGFydGluZyBhZnRlciBhIGNyYXNoIHRoZW4gaXRzIGxpa2VseSBnb2luZyB0byBmYWls
+IGFnYWluIGFuZCBhZ2FpbiBjYXVzaW5nIGENCj4gY3Jhc2gtcmVzdGFydCBsb29wIHdoaWNoIGNh
+biBhZmZlY3Qgc3lzdGVtIHBlcmZvcm1hbmNlIGFuZCByZXNwb25zaXZlbmVzcy4NCj4gSXQncyBi
+ZXR0ZXIgdG8gZ2l2ZSB1cCBhbmQgbGV0IHRoZSBzeXN0ZW0gYWRtaW4gdGFrZSBvdmVyLg0KPiAN
+Cj4gSWYgaXQncyBzdGlsbCBib3RoZXJpbmcgeW91IHRoZW4gcGxlYXNlIGNvbnNpZGVyIGEgY3Jh
+c2ggY291bnRlciB0aHJlc2hvbGQgc28NCj4gdGhhdCwgZS5nLiBhZnRlciA1IGNyYXNoLXdoaWxl
+LXJlc3RhcnRpbmcgaXQncyBnb2luZyB0byBnaXZlIHVwLiBIb3dldmVyIEkgZG91YnQNCj4gaXQn
+cyB3b3J0aCB0aGUgZWZmb3J0LiBNeSBleHBlcmllbmNlIHRlbGxzIG1lIGZpcm13YXJlIGNyYXNo
+ZXMgZHVyaW5nDQo+IHJlY292ZXJ5IGFyZSByYXJlbHksIGlmIGF0IGFsbCwgdHJhbnNpZW50Lg0K
+PiANCj4gVGhlIHNpbXVsYXRlZCBmdyBjcmFzaCBpcyBub3QgcmVwcmVzZW50YXRpdmUgaGVyZS4g
+SXQncyBhIG1lcmUgdG9vbCB0byB0ZXN0DQo+IGRyaXZlciBjb2RlLg0KDQpUaGUgc2ltdWxhdGVk
+IGZ3IGNyYXNoIGlzIG9ubHkgYSB0b29sIGZvciB1c2VyIHRvIHRyaWdnZXIgZncgY3Jhc2ggd2l0
+aCBjb21tYW5kLA0KVGhpcyBjaGFuZ2UncyBwdXJwb3NlIGlzIHRvIGRpc2FsbG93IHVzZXIgdG8g
+dHJpZ2dlciBmdyBjcmFzaCBpZiB0aGUgZncgaXMgbm90IGluIGENCk5vcm1hbCBzdGF0ZS4NCg0K
+SWYgdGhlIGZ3IGlzIGluIHJlY292ZXJpbmcgc3RhdGUgdHJpZ2dlcmVkIGJ5IHVzZXIncyBjb21t
+YW5kIG9yIGJ5IGZ3LCB0aGVuIGl0IHdpbGwNCmRpc2FsbG93IHVzZXIgdG8gcnVuIGNvbW1hbmQg
+dG8gdHJpZ2dlciBmdyBjcmFzaCBhZ2FpbiB1bnRpbCBmdyBiZWNvbWUgdG8gYSBub3JtYWwNClN0
+YXRlLg0KDQo+IA0KPiANCj4gTWljaGHFgg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
