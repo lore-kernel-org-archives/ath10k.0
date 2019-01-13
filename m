@@ -1,14 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from lvs-smtpgate3.nz.fh-koeln.de ([139.6.1.49])
+Received: from n7smtp2.enseeiht.fr ([147.127.176.23])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghudI-0007dw-3J
- for ath10k@lists.infradead.org; Fri, 11 Jan 2019 11:05:50 +0000
-From: Constantin Eiling <constantin.eiling@th-koeln.de>
-Subject: how to interpret ath10k fw_stats debugging counters
-Message-ID: <3c2ab19a-f9f1-6a35-0aba-0915f7b8e960@th-koeln.de>
-Date: Fri, 11 Jan 2019 12:05:40 +0100
+ id 1gihFr-000098-OY
+ for ath10k@lists.infradead.org; Sun, 13 Jan 2019 15:00:53 +0000
+Received: from imap.enseeiht.fr (imap.enseeiht.fr [147.127.176.21])
+ by n7smtp2.enseeiht.fr (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
+ x0DF0mHu024049
+ for <ath10k@lists.infradead.org>; Sun, 13 Jan 2019 16:00:50 +0100
+Received: from [192.168.0.17] (182.130.83.79.rev.sfr.net [79.83.130.182])
+ (authenticated bits=0)
+ by imap.enseeiht.fr (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
+ x0DF0jqN029494
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
+ for <ath10k@lists.infradead.org>; Sun, 13 Jan 2019 16:00:47 +0100
+From: Kevin Jiokeng <kevin.jiokeng@enseeiht.fr>
+Subject: ath10k CSI extraction
+Message-ID: <472d6fc4-5960-de33-ee0a-77b0148c816e@enseeiht.fr>
+Date: Sun, 13 Jan 2019 16:00:40 +0100
 MIME-Version: 1.0
-Content-Language: en-US
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,35 +27,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-SGkgYWxsLAoKYXQgY29sb2duZSB1bml2ZXJzaXR5IG9mIGFwcGxpZWQgc2NpZW5jZXMgd2UgY3Vy
-cmVudGx5IGRldmVsb3AgYSBXaUZpIAphbmFseXppbmcgc3lzdGVtIGZvciBiZW5jaG1hcmtpbmcg
-aG90c3BvdCBpbnN0YWxsYXRpb25zLiBPdXIgdGFyZ2V0IGlzIAp0byBnYXRoZXIgV2lGaSBwZXJm
-b3JtYW5jZSBwYXJhbWV0ZXJzIGluIHBhcmFsbGVsIHdpdGggYXBwbGljYXRpb24gbGF5ZXIgCnRl
-c3QgcGFyYW1ldGVycyBhbmQgdG8gc3R1ZHkgaG93IHRoZXNlIGFyZSBjb3JyZWxhdGVkLiBBcyBo
-dyBwbGF0Zm9ybSB3ZSAKdXNlIENaLk5JQydzIFR1cnJpcyBPbW5pYSBvcGVuIHNvdXJjZSByb3V0
-ZXIgd2l0aCBDb21wZXggV0xFOTAwdnggCihhdGgxMGspIHJ1bm5pbmcgRGViaWFuLiBJJ20gZXh0
-cmFjdGluZyBXaUZpIHBlcmZvcm1hbmNlIGRhdGEgZnJvbSAKZndfc3RhdHMgZGVidWdGUyBvdXRw
-dXQgYnkgcG9sbGluZyBpdCBldmVyeSAyMDBtcyBhbmQgaGF2ZSBhIGZldyAKcXVlc3Rpb25zIHJl
-Z2FyZGluZyBhbGwgdGhlc2UgY291bnRlcnMuCgpJbiBnZW5lcmFsLCBpcyB0aGVyZSBzb21lIGRv
-Y3VtZW50YXRpb24gaG93IGFsbCB0aGVzZSBwYXJhbWV0ZXJzIGNhbiBiZSAKaW50ZXJwcmV0ZWQ/
-CgpJJ20gYWxyZWFkeSB0YXJnZXRpbmcgdGhlIHdyYXAgYXJvdW5kIGlzc3VlIG9mIGN5Y2xlIGNv
-dW50LiBJIG5vdGljZWQgCnRoYXQgd2hlbiB0aGUgV2lGaSBjaGFubmVsIGlzIGlkbGUgdGhlIHN1
-bSBvZiBSWC9UWCBmcmFtZSBhbmQgUlggY2xlYXIgCmRlbHRhcyBmaXRzIHRoZSBkZWx0YSBvZiBj
-eWNsZSBjb3VudCBmb3IgZWFjaCBpbnRlcnZhbC4gQnV0IHdoZW4gdGhlIApuZXR3b3JrIGlzIHVu
-ZGVyIGxvYWQsIGFib3V0IDUlIG9mIHRoZSB0b3RhbCBjeWNsZXMgYXJlIG5vdCBpbmNsdWRlZCBp
-biAKdGhlIG90aGVyIHRocmVlIGNvdW50ZXJzLiBBbnkgaWRlYSB3aHkgdGhleSBhcmUgbWlzc2lu
-Zz8KCldoYXQgZG9lcyBQSFkgZXJyb3IsIFJUUyBiYWQsIFJUUyBnb29kLCBGQ1MgYmFkLCBObyBi
-ZWFjb24gYW5kIE1JQiBpbnQgCmNvdW50PyBJIGRvbid0IHRoaW5rIHRoZXkgYXJlIHJlbGF0ZWQg
-dG8gY3ljbGUgY291bnQsIGF0IGxlYXN0IHRoZXkgCmRvbid0IGdldCBzaGlmdGVkIHRvZ2V0aGVy
-IHdpdGggY3ljbGUgY291bnQuCgpUaGFua3MgaW4gYWR2YW5jZSEKCi0tIAoqQ29uc3RhbnRpbiBF
-aWxpbmcgKgpXaXNzZW5zY2hhZnRsaWNoZXIgTWl0YXJiZWl0ZXIKRmFrdWx0w6R0IGbDvHIgSW5m
-b3JtYXRpb25zLSwgTWVkaWVuLSB1bmQgRWxla3Ryb3RlY2huaWsgKEYwNykKSW5zdGl0dXQgZsO8
-ciBOYWNocmljaHRlbnRlY2huaWsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hello,
+
+I'm trying to extract CSI (Channel State Information) on some 
+ath10k-based devices (QCA9984 and IPQ4018).
+I saw some threads about this subject in this mailing list, but they did 
+not get any practical answer.
+
+Can anyone point me to a patch/tool to obtain that info ?
+
+Thanks in advance.
+Kevin
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
