@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjjOK-0004r7-K5
- for ath10k@lists.infradead.org; Wed, 16 Jan 2019 11:29:54 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: Add support for extended HTT aggr msg support
-Date: Wed, 16 Jan 2019 16:59:42 +0530
-Message-Id: <20190116112942.11687-1-govinds@codeaurora.org>
-MIME-Version: 1.0
+ id 1gk5lG-0000RL-2n
+ for ath10k@lists.infradead.org; Thu, 17 Jan 2019 11:23:04 +0000
+From: Balaji Pothunoori <bpothuno@codeaurora.org>
+Subject: [PATCH 1/3] cfg80211: Add support to set tx power for a station
+ associated
+Date: Thu, 17 Jan 2019 16:52:47 +0530
+Message-Id: <1547724167-11420-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,150 +16,184 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: johannes@sipsolutions.net, ath10k@lists.infradead.org
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, Ashok Raj Nagarajan <arnagara@codeaurora.org>, linux-wireless@vger.kernel.org
 
-HTT aggr message parameter in HL2.0 fw are different in comparison
-to legacy fw version. Fill correct HTT aggr msg parameter for
-targets using HL2.0 firmware.
+From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+This patch adds support to set transmit power setting type and transmit
+power level attributes to NL80211_CMD_SET_STATION in order to facilitate
+adjusting the transmit power level of a station associated to the AP.
+
+The added attributes allow selection of automatic and limited transmit
+power level, with the level defined in mBm format.
+
+Co-developed-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+Signed-off-by: Ashok Raj Nagarajan <arnagara@codeaurora.org>
+Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htt.c    |  2 +-
- drivers/net/wireless/ath/ath10k/htt.h    | 11 ++++++
- drivers/net/wireless/ath/ath10k/htt_tx.c | 49 ++++++++++++++++++++++++
- 3 files changed, 61 insertions(+), 1 deletion(-)
+ include/net/cfg80211.h       | 12 ++++++++++++
+ include/uapi/linux/nl80211.h | 14 ++++++++++++++
+ net/wireless/nl80211.c       | 35 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 61 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 21a67f82f037..55c716499830 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -268,7 +268,7 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
- 		return status;
- 	}
- 
--	status = ath10k_htt_h2t_aggr_cfg_msg(htt,
-+	status = htt->tx_ops->htt_h2t_aggr_cfg_msg(htt,
- 					     htt->max_num_ampdu,
- 					     htt->max_num_amsdu);
- 	if (status) {
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index a76f7c9e2199..f5fa86f6efad 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -357,6 +357,13 @@ struct htt_aggr_conf {
- 	u8 max_num_amsdu_subframes;
- } __packed;
- 
-+struct htt_aggr_conf_v2 {
-+	u8 max_num_ampdu_subframes;
-+	/* amsdu_subframes is limited by 0x1F mask */
-+	u8 max_num_amsdu_subframes;
-+	u8 reserved;
-+} __packed;
-+
- #define HTT_MGMT_FRM_HDR_DOWNLOAD_LEN 32
- struct htt_mgmt_tx_desc_qca99x0 {
- 	__le32 rate;
-@@ -1650,6 +1657,7 @@ struct htt_cmd {
- 		struct htt_stats_req stats_req;
- 		struct htt_oob_sync_req oob_sync_req;
- 		struct htt_aggr_conf aggr_conf;
-+		struct htt_aggr_conf_v2 aggr_conf_v2;
- 		struct htt_frag_desc_bank_cfg32 frag_desc_bank_cfg32;
- 		struct htt_frag_desc_bank_cfg64 frag_desc_bank_cfg64;
- 		struct htt_tx_fetch_resp tx_fetch_resp;
-@@ -1890,6 +1898,9 @@ struct ath10k_htt_tx_ops {
- 		      struct sk_buff *msdu);
- 	int (*htt_alloc_txbuff)(struct ath10k_htt *htt);
- 	void (*htt_free_txbuff)(struct ath10k_htt *htt);
-+	int (*htt_h2t_aggr_cfg_msg)(struct ath10k_htt *htt,
-+				    u8 max_subfrms_ampdu,
-+				    u8 max_subfrms_amsdu);
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index ede7fcd..592f564 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -958,6 +958,7 @@ enum station_parameters_apply_mask {
+ 	STATION_PARAM_APPLY_UAPSD = BIT(0),
+ 	STATION_PARAM_APPLY_CAPABILITY = BIT(1),
+ 	STATION_PARAM_APPLY_PLINK_STATE = BIT(2),
++	STATION_PARAM_APPLY_STA_TXPOWER = BIT(3),
  };
  
- static inline int ath10k_htt_send_rx_ring_cfg(struct ath10k_htt *htt)
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index ad05ab714c9b..336170a4fea6 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -1035,6 +1035,53 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 	return 0;
+ /**
+@@ -1001,6 +1002,15 @@ enum station_parameters_apply_mask {
+  * @support_p2p_ps: information if station supports P2P PS mechanism
+  * @he_capa: HE capabilities of station
+  * @he_capa_len: the length of the HE capabilities
++ * @txpwr: tx power (in mBm) to be used for sending data traffic. If tx power
++ *	is not provided, the default per-interface tx power setting will be
++ *	overriding. Driver should be picking up the lowest tx power, either tx
++ *	power per-interface or per-station.
++ * @type: In particular if TPC %type is NL80211_TX_POWER_LIMITED then txpwr will
++ *	be less than or equal to specified from userspace, whereas if TPC %type
++ *	is NL80211_TX_POWER_AUTOMATIC then it indicates default txpwr.
++ *	NL80211_TX_POWER_FIXED is not a valid configuration option for
++ *	per peer TPC.
+  */
+ struct station_parameters {
+ 	const u8 *supported_rates;
+@@ -1030,6 +1040,8 @@ struct station_parameters {
+ 	int support_p2p_ps;
+ 	const struct ieee80211_he_cap_elem *he_capa;
+ 	u8 he_capa_len;
++	s16 txpwr;
++	enum nl80211_tx_power_setting type;
+ };
+ 
+ /**
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index 2b53c0e..09c9e14 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -2292,6 +2292,15 @@ enum nl80211_commands {
+  *	This is also used for capability advertisement in the wiphy information,
+  *	with the appropriate sub-attributes.
+  *
++ * @NL80211_ATTR_STA_TX_POWER_SETTING: Transmit power setting type (u8) for
++ *	station associated with the AP. See &enum nl80211_tx_power_setting for
++ *	possible values.
++ * @NL80211_ATTR_STA_TX_POWER: Transmit power level (s16) in mBm units. This
++ *	allows to set Tx power for a station. If this attribute is not included,
++ *	the default per-interface tx power setting will be overriding. Driver
++ *	should be picking up the lowest tx power, either tx power per-interface
++ *	or per-station.
++ *
+  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+  * @NL80211_ATTR_MAX: highest attribute number currently defined
+  * @__NL80211_ATTR_AFTER_LAST: internal use
+@@ -2740,6 +2749,8 @@ enum nl80211_attrs {
+ 	NL80211_ATTR_TIMEOUT,
+ 
+ 	NL80211_ATTR_PEER_MEASUREMENTS,
++	NL80211_ATTR_STA_TX_POWER_SETTING,
++	NL80211_ATTR_STA_TX_POWER,
+ 
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+@@ -5308,6 +5319,8 @@ enum nl80211_feature_flags {
+  *      able to rekey an in-use key correctly. Userspace must not rekey PTK keys
+  *      if this flag is not set. Ignoring this can leak clear text packets and/or
+  *      freeze the connection.
++ * @NL80211_EXT_FEATURE_STA_TX_PWR: This driver supports controlling tx power
++ *	to a station.
+  *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+@@ -5348,6 +5361,7 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT,
+ 	NL80211_EXT_FEATURE_CAN_REPLACE_PTK0,
+ 	NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER,
++	NL80211_EXT_FEATURE_STA_TX_PWR,
+ 
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index e20329b..753ab51 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -347,6 +347,8 @@ const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
+ 					       .len = NL80211_MAX_SUPP_RATES },
+ 	[NL80211_ATTR_STA_PLINK_ACTION] =
+ 		NLA_POLICY_MAX(NLA_U8, NUM_NL80211_PLINK_ACTIONS - 1),
++	[NL80211_ATTR_STA_TX_POWER_SETTING] = { .type = NLA_U8 },
++	[NL80211_ATTR_STA_TX_POWER] = { .type = NLA_S16 },
+ 	[NL80211_ATTR_STA_VLAN] = { .type = NLA_U32 },
+ 	[NL80211_ATTR_MNTR_FLAGS] = { /* NLA_NESTED can't be empty */ },
+ 	[NL80211_ATTR_MESH_ID] = { .type = NLA_BINARY,
+@@ -5377,6 +5379,31 @@ static int nl80211_set_station_tdls(struct genl_info *info,
+ 	return nl80211_parse_sta_wme(info, params);
  }
  
-+static int ath10k_htt_h2t_aggr_cfg_msg_v2(struct ath10k_htt *htt,
-+					  u8 max_subfrms_ampdu,
-+					  u8 max_subfrms_amsdu)
++static int nl80211_parse_sta_txpower_setting(struct genl_info *info,
++					     struct station_parameters *params)
 +{
-+	struct ath10k *ar = htt->ar;
-+	struct htt_aggr_conf_v2 *aggr_conf;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	int len;
-+	int ret;
++	struct cfg80211_registered_device *rdev = info->user_ptr[0];
++	int idx;
 +
-+	/* Firmware defaults are: amsdu = 3 and ampdu = 64 */
++	if (info->attrs[NL80211_ATTR_STA_TX_POWER_SETTING]) {
++		if (!rdev->ops->set_tx_power ||
++		    !wiphy_ext_feature_isset(&rdev->wiphy,
++					 NL80211_EXT_FEATURE_STA_TX_PWR))
++			return -EOPNOTSUPP;
 +
-+	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
-+		return -EINVAL;
++		idx = NL80211_ATTR_STA_TX_POWER_SETTING;
++		params->type = nla_get_u32(info->attrs[idx]);
 +
-+	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
-+		return -EINVAL;
-+
-+	len = sizeof(cmd->hdr);
-+	len += sizeof(cmd->aggr_conf_v2);
-+
-+	skb = ath10k_htc_alloc_skb(ar, len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, len);
-+	cmd = (struct htt_cmd *)skb->data;
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
-+
-+	aggr_conf = &cmd->aggr_conf_v2;
-+	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
-+	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt h2t aggr cfg msg amsdu %d ampdu %d",
-+		   aggr_conf->max_num_amsdu_subframes,
-+		   aggr_conf->max_num_ampdu_subframes);
-+
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		dev_kfree_skb_any(skb);
-+		return ret;
++		if (params->type == NL80211_TX_POWER_LIMITED) {
++			idx = NL80211_ATTR_STA_TX_POWER;
++			params->txpwr = nla_get_u32(info->attrs[idx]);
++		}
++		params->sta_modify_mask |= STATION_PARAM_APPLY_STA_TXPOWER;
 +	}
 +
 +	return 0;
 +}
 +
- int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
- 			     __le32 token,
- 			     __le16 fetch_seq_num,
-@@ -1692,6 +1739,7 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_32 = {
- 	.htt_tx = ath10k_htt_tx_32,
- 	.htt_alloc_txbuff = ath10k_htt_tx_alloc_cont_txbuf_32,
- 	.htt_free_txbuff = ath10k_htt_tx_free_cont_txbuf_32,
-+	.htt_h2t_aggr_cfg_msg = ath10k_htt_h2t_aggr_cfg_msg,
- };
+ static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
+@@ -5461,6 +5488,10 @@ static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
+ 			nla_get_u8(info->attrs[NL80211_ATTR_OPMODE_NOTIF]);
+ 	}
  
- static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
-@@ -1702,6 +1750,7 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
- 	.htt_tx = ath10k_htt_tx_64,
- 	.htt_alloc_txbuff = ath10k_htt_tx_alloc_cont_txbuf_64,
- 	.htt_free_txbuff = ath10k_htt_tx_free_cont_txbuf_64,
-+	.htt_h2t_aggr_cfg_msg = ath10k_htt_h2t_aggr_cfg_msg_v2,
- };
++	err = nl80211_parse_sta_txpower_setting(info, &params);
++	if (err)
++		return err;
++
+ 	/* Include parameters for TDLS peer (will check later) */
+ 	err = nl80211_set_station_tdls(info, &params);
+ 	if (err)
+@@ -5589,6 +5620,10 @@ static int nl80211_new_station(struct sk_buff *skb, struct genl_info *info)
+ 		params.plink_action =
+ 			nla_get_u8(info->attrs[NL80211_ATTR_STA_PLINK_ACTION]);
  
- static const struct ath10k_htt_tx_ops htt_tx_ops_hl = {
++	err = nl80211_parse_sta_txpower_setting(info, &params);
++	if (err)
++		return err;
++
+ 	err = nl80211_parse_sta_channel_info(info, &params);
+ 	if (err)
+ 		return err;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.7.4
 
 
 _______________________________________________
