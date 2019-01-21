@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.toke.dk ([52.28.52.200])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glTa0-0002Ia-Oa
- for ath10k@lists.infradead.org; Mon, 21 Jan 2019 07:01:10 +0000
-From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH] mac80211: don't initiate TDLS connection if station is not
- associated to AP
-Date: Mon, 21 Jan 2019 12:30:43 +0530
-Message-Id: <1548054043-446-1-git-send-email-bpothuno@codeaurora.org>
+ id 1glWF6-0004Z5-Bu
+ for ath10k@lists.infradead.org; Mon, 21 Jan 2019 09:52:07 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH v4 6/6] ath10k: reporting estimated tx airtime for fairness
+In-Reply-To: <1545172374-1072-7-git-send-email-rmanohar@codeaurora.org>
+References: <1545172374-1072-1-git-send-email-rmanohar@codeaurora.org>
+ <1545172374-1072-7-git-send-email-rmanohar@codeaurora.org>
+Date: Mon, 21 Jan 2019 10:49:35 +0100
+Message-ID: <8736pmmjbk.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,61 +19,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Kan Yan <kyan@google.com>, make-wifi-fast@lists.bufferbloat.net
 
-Following call trace is observed while adding TDLS peer entry in driver
-during TDLS setup.
+Rajkumar Manoharan <rmanohar@codeaurora.org> writes:
 
-Call Trace:
-[<c1301476>] dump_stack+0x47/0x61
-[<c10537d2>] __warn+0xe2/0x100
-[<fa22415f>] ? sta_apply_parameters+0x49f/0x550 [mac80211]
-[<c1053895>] warn_slowpath_null+0x25/0x30
-[<fa22415f>] sta_apply_parameters+0x49f/0x550 [mac80211]
-[<fa20ad42>] ? sta_info_alloc+0x1c2/0x450 [mac80211]
-[<fa224623>] ieee80211_add_station+0xe3/0x160 [mac80211]
-[<c1876fe3>] nl80211_new_station+0x273/0x420
-[<c170f6d9>] genl_rcv_msg+0x219/0x3c0
-[<c170f4c0>] ? genl_rcv+0x30/0x30
-[<c170ee7e>] netlink_rcv_skb+0x8e/0xb0
-[<c170f4ac>] genl_rcv+0x1c/0x30
-[<c170e8aa>] netlink_unicast+0x13a/0x1d0
-[<c170ec18>] netlink_sendmsg+0x2d8/0x390
-[<c16c5acd>] sock_sendmsg+0x2d/0x40
-[<c16c6369>] ___sys_sendmsg+0x1d9/0x1e0
+> From: Kan Yan <kyan@google.com>
+>
+> Transmit airtime will be estimated from last tx rate used.
+> Firmware report tx rate by peer stats. Airtime is computed
+> on tx path and the same will be reported to mac80211 upon
+> tx completion.
 
-Fixing this by allowing TDLS setup request only when we have completed
-association.
+FYI, it seems that this last patch in the series no longer applies
+cleanly on top of mac80211-next. May need a refresh.
 
-Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
----
- net/mac80211/cfg.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The mac80211 parts were merged into mac80211-next (thanks, Johannes!); I
+guess the driver updates are waiting for drivers-next to catch up to
+that?
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 80d8ebc..d65aa01 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -1498,6 +1498,10 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
- 	if (params->sta_flags_set & BIT(NL80211_STA_FLAG_TDLS_PEER))
- 		sta->sta.tdls = true;
- 
-+	if (sta->sta.tdls && sdata->vif.type == NL80211_IFTYPE_STATION &&
-+	    !sdata->u.mgd.associated)
-+		return -EINVAL;
-+
- 	err = sta_apply_parameters(local, sta, params);
- 	if (err) {
- 		sta_info_free(local, sta);
--- 
-2.7.4
+Patches 4 and 5 in the series are fine...
 
+-Toke
 
 _______________________________________________
 ath10k mailing list
