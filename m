@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmftB-0005nl-88
- for ath10k@lists.infradead.org; Thu, 24 Jan 2019 14:21:55 +0000
-From: Abhishek Ambure <aambure@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Update GCMP & GCMP-256 cipher suite number for
- WCN3990
-Date: Thu, 24 Jan 2019 19:51:37 +0530
-Message-Id: <1548339697-17766-3-git-send-email-aambure@codeaurora.org>
-In-Reply-To: <1548339697-17766-1-git-send-email-aambure@codeaurora.org>
-References: <1548339697-17766-1-git-send-email-aambure@codeaurora.org>
+ id 1gmkgK-0001PB-MY
+ for ath10k@lists.infradead.org; Thu, 24 Jan 2019 19:28:58 +0000
+Received: by mail-lf1-x141.google.com with SMTP id c16so5185164lfj.8
+ for <ath10k@lists.infradead.org>; Thu, 24 Jan 2019 11:28:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20190122142019.21417-1-toke@redhat.com>
+ <20190122142019.21417-5-toke@redhat.com>
+In-Reply-To: <20190122142019.21417-5-toke@redhat.com>
+From: Kan Yan <kyan@google.com>
+Date: Thu, 24 Jan 2019 11:28:37 -0800
+Message-ID: <CA+iem5vnADN5YSvsts8sBO=_4yNE62E3roySHz5hU6OqNke-6A@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] ath10k: reporting estimated tx airtime for fairness
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,234 +21,159 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Abhishek Ambure <aambure@codeaurora.org>, linux-wireless@vger.kernel.org
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-TLV based firmware ex. QCA6174, WCN3990 expects key cipher value
-set to 9 while non-TLV firmware expects key cipher value set to 8
-for enabling GCMP and GCMP-256 cipher suites.
-
-To fix this problem, attach the key cipher suite values based on
-wmi version.
-
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-
-Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.h    |  1 +
- drivers/net/wireless/ath/ath10k/mac.c     | 12 +++++------
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  6 ++++--
- drivers/net/wireless/ath/ath10k/wmi.c     | 30 ++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 33 ++++++++++++++++++++++---------
- 5 files changed, 65 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 46e9c8c..f2278d0 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1182,6 +1182,7 @@ struct ath10k {
- 
- 	u32 ampdu_reference;
- 
-+	const u8 *wmi_key_cipher;
- 	void *ce_priv;
- 
- 	u32 sta_tid_stats_mask;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e49b367..beaff23 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -250,24 +250,24 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 
- 	switch (key->cipher) {
- 	case WLAN_CIPHER_SUITE_CCMP:
--		arg.key_cipher = WMI_CIPHER_AES_CCM;
-+		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_AES_CCM];
- 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV_MGMT;
- 		break;
- 	case WLAN_CIPHER_SUITE_TKIP:
--		arg.key_cipher = WMI_CIPHER_TKIP;
-+		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_TKIP];
- 		arg.key_txmic_len = 8;
- 		arg.key_rxmic_len = 8;
- 		break;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 	case WLAN_CIPHER_SUITE_WEP104:
--		arg.key_cipher = WMI_CIPHER_WEP;
-+		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_WEP];
- 		break;
- 	case WLAN_CIPHER_SUITE_CCMP_256:
--		arg.key_cipher = WMI_CIPHER_AES_CCM;
-+		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_AES_CCM];
- 		break;
- 	case WLAN_CIPHER_SUITE_GCMP:
- 	case WLAN_CIPHER_SUITE_GCMP_256:
--		arg.key_cipher = WMI_CIPHER_AES_GCM;
-+		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_AES_GCM];
- 		break;
- 	case WLAN_CIPHER_SUITE_BIP_GMAC_128:
- 	case WLAN_CIPHER_SUITE_BIP_GMAC_256:
-@@ -284,7 +284,7 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV;
- 
- 	if (cmd == DISABLE_KEY) {
--		arg.key_cipher = WMI_CIPHER_NONE;
-+		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_NONE];
- 		arg.key_data = NULL;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e85d6be..bba032b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2060,9 +2060,11 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	size_t len;
- 	void *ptr;
- 
--	if (arg->key_cipher == WMI_CIPHER_NONE && arg->key_data != NULL)
-+	if (arg->key_cipher == ar->wmi_key_cipher[WMI_CIPHER_NONE] &&
-+	    arg->key_data)
- 		return ERR_PTR(-EINVAL);
--	if (arg->key_cipher != WMI_CIPHER_NONE && arg->key_data == NULL)
-+	if (arg->key_cipher != ar->wmi_key_cipher[WMI_CIPHER_NONE] &&
-+	    !arg->key_data)
- 		return ERR_PTR(-EINVAL);
- 
- 	len = sizeof(*tlv) + sizeof(*cmd) +
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 971ff36..a7f00a5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1606,6 +1606,30 @@
- 	.enable_btcoex = WMI_10_4_PDEV_PARAM_ENABLE_BTCOEX,
- };
- 
-+static const u8 wmi_key_cipher_suites[] = {
-+	[WMI_CIPHER_NONE] = WMI_CIPHER_NONE,
-+	[WMI_CIPHER_WEP] = WMI_CIPHER_WEP,
-+	[WMI_CIPHER_TKIP] = WMI_CIPHER_TKIP,
-+	[WMI_CIPHER_AES_OCB] = WMI_CIPHER_AES_OCB,
-+	[WMI_CIPHER_AES_CCM] = WMI_CIPHER_AES_CCM,
-+	[WMI_CIPHER_WAPI] = WMI_CIPHER_WAPI,
-+	[WMI_CIPHER_CKIP] = WMI_CIPHER_CKIP,
-+	[WMI_CIPHER_AES_CMAC] = WMI_CIPHER_AES_CMAC,
-+	[WMI_CIPHER_AES_GCM] = WMI_CIPHER_AES_GCM,
-+};
-+
-+static const u8 wmi_tlv_key_cipher_suites[] = {
-+	[WMI_CIPHER_NONE] = WMI_TLV_CIPHER_NONE,
-+	[WMI_CIPHER_WEP] = WMI_TLV_CIPHER_WEP,
-+	[WMI_CIPHER_TKIP] = WMI_TLV_CIPHER_TKIP,
-+	[WMI_CIPHER_AES_OCB] = WMI_TLV_CIPHER_AES_OCB,
-+	[WMI_CIPHER_AES_CCM] = WMI_TLV_CIPHER_AES_CCM,
-+	[WMI_CIPHER_WAPI] = WMI_TLV_CIPHER_WAPI,
-+	[WMI_CIPHER_CKIP] = WMI_TLV_CIPHER_CKIP,
-+	[WMI_CIPHER_AES_CMAC] = WMI_TLV_CIPHER_AES_CMAC,
-+	[WMI_CIPHER_AES_GCM] = WMI_TLV_CIPHER_AES_GCM,
-+};
-+
- static const struct wmi_peer_flags_map wmi_peer_flags_map = {
- 	.auth = WMI_PEER_AUTH,
- 	.qos = WMI_PEER_QOS,
-@@ -9252,6 +9276,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.vdev_param = &wmi_10_4_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10_4_pdev_param_map;
- 		ar->wmi.peer_flags = &wmi_10_2_peer_flags_map;
-+		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
- 		ar->wmi.cmd = &wmi_10_2_4_cmd_map;
-@@ -9259,6 +9284,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.vdev_param = &wmi_10_2_4_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10_2_4_pdev_param_map;
- 		ar->wmi.peer_flags = &wmi_10_2_peer_flags_map;
-+		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_2:
- 		ar->wmi.cmd = &wmi_10_2_cmd_map;
-@@ -9266,6 +9292,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
- 		ar->wmi.peer_flags = &wmi_10_2_peer_flags_map;
-+		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_1:
- 		ar->wmi.cmd = &wmi_10x_cmd_map;
-@@ -9273,6 +9300,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
- 		ar->wmi.peer_flags = &wmi_10x_peer_flags_map;
-+		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
- 		ar->wmi.cmd = &wmi_cmd_map;
-@@ -9280,9 +9308,11 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.vdev_param = &wmi_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_pdev_param_map;
- 		ar->wmi.peer_flags = &wmi_peer_flags_map;
-+		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_TLV:
- 		ath10k_wmi_tlv_attach(ar);
-+		ar->wmi_key_cipher = wmi_tlv_key_cipher_suites;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ac04077c..ddd4d0f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4929,15 +4929,30 @@ struct wmi_key_seq_counter {
- 	__le32 key_seq_counter_h;
- } __packed;
- 
--#define WMI_CIPHER_NONE     0x0 /* clear key */
--#define WMI_CIPHER_WEP      0x1
--#define WMI_CIPHER_TKIP     0x2
--#define WMI_CIPHER_AES_OCB  0x3
--#define WMI_CIPHER_AES_CCM  0x4
--#define WMI_CIPHER_WAPI     0x5
--#define WMI_CIPHER_CKIP     0x6
--#define WMI_CIPHER_AES_CMAC 0x7
--#define WMI_CIPHER_AES_GCM  0x8
-+enum wmi_cipher_suites {
-+	WMI_CIPHER_NONE,
-+	WMI_CIPHER_WEP,
-+	WMI_CIPHER_TKIP,
-+	WMI_CIPHER_AES_OCB,
-+	WMI_CIPHER_AES_CCM,
-+	WMI_CIPHER_WAPI,
-+	WMI_CIPHER_CKIP,
-+	WMI_CIPHER_AES_CMAC,
-+	WMI_CIPHER_AES_GCM,
-+};
-+
-+enum wmi_tlv_cipher_suites {
-+	WMI_TLV_CIPHER_NONE,
-+	WMI_TLV_CIPHER_WEP,
-+	WMI_TLV_CIPHER_TKIP,
-+	WMI_TLV_CIPHER_AES_OCB,
-+	WMI_TLV_CIPHER_AES_CCM,
-+	WMI_TLV_CIPHER_WAPI,
-+	WMI_TLV_CIPHER_CKIP,
-+	WMI_TLV_CIPHER_AES_CMAC,
-+	WMI_TLV_CIPHER_ANY,
-+	WMI_TLV_CIPHER_AES_GCM,
-+};
- 
- struct wmi_vdev_install_key_cmd {
- 	__le32 vdev_id;
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgVG9rZSwKClRoaXMgcGF0Y2ggbG9va3MgZ29vZCB0byBtZS4gR3JlYXQgam9iIG9uIGdldHRp
+bmcgdGhlIGFpcnRpbWUgZmFpcm5lc3MKc2NoZWR1bGluZyBmcmFtZXdvcmsgZG9uZSEKCgpPbiBU
+dWUsIEphbiAyMiwgMjAxOSBhdCA2OjIxIEFNIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9r
+ZUByZWRoYXQuY29tPiB3cm90ZToKPgo+IEZyb206IEthbiBZYW4gPGt5YW5AZ29vZ2xlLmNvbT4K
+Pgo+IFRyYW5zbWl0IGFpcnRpbWUgd2lsbCBiZSBlc3RpbWF0ZWQgZnJvbSBsYXN0IHR4IHJhdGUg
+dXNlZC4KPiBGaXJtd2FyZSByZXBvcnQgdHggcmF0ZSBieSBwZWVyIHN0YXRzLiBBaXJ0aW1lIGlz
+IGNvbXB1dGVkCj4gb24gdHggcGF0aCBhbmQgdGhlIHNhbWUgd2lsbCBiZSByZXBvcnRlZCB0byBt
+YWM4MDIxMSB1cG9uCj4gdHggY29tcGxldGlvbi4KPgo+IFRoaXMgY2hhbmdlIGlzIGJhc2VkIG9u
+IEthbidzIG9yZ2luYWwgY29tbWl0IGluIENocm9taXVtIHRyZWUKPiAoIkNIUk9NSVVNOiBhdGgx
+MGs6IEltcGxlbWVudGluZyBhaXJ0aW1lIGZhaXJuZXNzIGJhc2VkIFRYIHNjaGVkdWxlciIpCj4g
+cmVmOiBodHRwczovL2Nocm9taXVtLXJldmlldy5nb29nbGVzb3VyY2UuY29tLzU4ODE5MAo+Cj4g
+VGVzdGVkIG9uIFFDQTQwMTkgd2l0aCBmaXJtd2FyZSB2ZXJzaW9uIDEwLjQtMy4yLjEuMS0wMDAx
+NQo+IFRlc3RlZCBvbiBRQ0E5OTg0IHdpdGggZmlybXdhcmUgdmVyc2lvbiAxMC40LTMuOS4wLjEt
+MDAwMDUKPgo+IFNpZ25lZC1vZmYtYnk6IEthbiBZYW4gPGt5YW5AZ29vZ2xlLmNvbT4KPiBbcm1h
+bm9oYXJAY29kZWF1cm9yYS5vcmc6IHBvcnRlZCBvbmx5IHRoZSBhaXJ0aW1lIGNvbXB1dGF0aW9u
+XQo+IFNpZ25lZC1vZmYtYnk6IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAY29kZWF1cm9y
+YS5vcmc+Cj4gW3Rva2VAcmVkaGF0LmNvbTogUmViYXNlIHRvIG1hYzgwMjExLW5leHQsIGFkZCB0
+ZXN0IG5vdGVdCj4gU2lnbmVkLW9mZi1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tl
+QHJlZGhhdC5jb20+Cj4gLS0tCj4KPiBSYWprdW1hciAvIEthbjogUGxlYXNlIGNoZWNrIHRoYXQg
+SSBkaWRuJ3QgbWVzcyBhbnl0aGluZyB1cCB3aGlsZQo+IHJlYmFzaW5nIHRoaXMgb250byB0aGUg
+Y3VycmVudCBtYWM4MDIxMS1uZXh0IGJyYW5jaCEKPgo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2NvcmUuaCAgIHwgIDIgKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL2h0dF9yeC5jIHwgIDEgKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
+Yy5jICAgIHwgNTcgKysrKysrKysrKysrKysrKysrKysrKy0tCj4gIGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvdHhyeC5jICAgfCAgNCArKwo+ICA0IGZpbGVzIGNoYW5nZWQsIDYxIGlu
+c2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL2NvcmUuaAo+IGluZGV4IDI4Y2VjZjczNzVmOC4uNDUyOGE2ZTQ3YjhkIDEwMDY0NAo+IC0t
+LSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4gKysrIGIvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiBAQCAtMTI2LDYgKzEyNiw3IEBAIHN0
+cnVjdCBhdGgxMGtfc2tiX2NiIHsKPiAgICAgICAgIHU4IGZsYWdzOwo+ICAgICAgICAgdTggZWlk
+Owo+ICAgICAgICAgdTE2IG1zZHVfaWQ7Cj4gKyAgICAgICB1MTYgYWlydGltZV9lc3Q7Cj4gICAg
+ICAgICBzdHJ1Y3QgaWVlZTgwMjExX3ZpZiAqdmlmOwo+ICAgICAgICAgc3RydWN0IGllZWU4MDIx
+MV90eHEgKnR4cTsKPiAgfSBfX3BhY2tlZDsKPiBAQCAtNDk4LDYgKzQ5OSw3IEBAIHN0cnVjdCBh
+dGgxMGtfc3RhIHsKPiAgICAgICAgIHUxNiBwZWVyX2lkOwo+ICAgICAgICAgc3RydWN0IHJhdGVf
+aW5mbyB0eHJhdGU7Cj4gICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3R4X2luZm8gdHhfaW5mbzsK
+PiArICAgICAgIHUzMiBsYXN0X3R4X2JpdHJhdGU7Cj4KPiAgICAgICAgIHN0cnVjdCB3b3JrX3N0
+cnVjdCB1cGRhdGVfd2s7Cj4gICAgICAgICB1NjQgcnhfZHVyYXRpb247Cj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMgYi9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCj4gaW5kZXggZGM5ODk1ZjJlYjlkLi42YTkzYjU3
+OTAwYWUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRf
+cnguYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMKPiBA
+QCAtMzA3OCw2ICszMDc4LDcgQEAgYXRoMTBrX3VwZGF0ZV9wZXJfcGVlcl90eF9zdGF0cyhzdHJ1
+Y3QgYXRoMTBrICphciwKPgo+ICAgICAgICAgYXJzdGEtPnR4cmF0ZS5uc3MgPSB0eHJhdGUubnNz
+Owo+ICAgICAgICAgYXJzdGEtPnR4cmF0ZS5idyA9IGF0aDEwa19id190b19tYWM4MDIxMV9idyh0
+eHJhdGUuYncpOwo+ICsgICAgICAgYXJzdGEtPmxhc3RfdHhfYml0cmF0ZSA9IGNmZzgwMjExX2Nh
+bGN1bGF0ZV9iaXRyYXRlKCZhcnN0YS0+dHhyYXRlKTsKPiAgICAgICAgIGlmIChzZ2kpCj4gICAg
+ICAgICAgICAgICAgIGFyc3RhLT50eHJhdGUuZmxhZ3MgfD0gUkFURV9JTkZPX0ZMQUdTX1NIT1JU
+X0dJOwo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFj
+LmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gaW5kZXggY2Y3ZmRm
+NzJlOTkwLi5iMTNkY2I0NTMzY2IgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9tYWMuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+bWFjLmMKPiBAQCAtMzU0NCw3ICszNTQ0LDcgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3R4X2hfYWRk
+X3AycF9ub2FfaWUoc3RydWN0IGF0aDEwayAqYXIsCj4gIHN0YXRpYyB2b2lkIGF0aDEwa19tYWNf
+dHhfaF9maWxsX2NiKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHN0cnVjdCBpZWVlODAyMTFfdmlmICp2aWYsCj4gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSwKPiAtICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBza19idWZmICpza2IsIHUxNiBh
+aXJ0aW1lKQo+ICB7Cj4gICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX2hkciAqaGRyID0gKHZvaWQg
+Kilza2ItPmRhdGE7Cj4gICAgICAgICBzdHJ1Y3QgYXRoMTBrX3NrYl9jYiAqY2IgPSBBVEgxMEtf
+U0tCX0NCKHNrYik7Cj4gQEAgLTM1NjEsNiArMzU2MSw3IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19t
+YWNfdHhfaF9maWxsX2NiKHN0cnVjdCBhdGgxMGsgKmFyLAo+Cj4gICAgICAgICBjYi0+dmlmID0g
+dmlmOwo+ICAgICAgICAgY2ItPnR4cSA9IHR4cTsKPiArICAgICAgIGNiLT5haXJ0aW1lX2VzdCA9
+IGFpcnRpbWU7Cj4gIH0KPgo+ICBib29sIGF0aDEwa19tYWNfdHhfZnJtX2hhc19mcmVxKHN0cnVj
+dCBhdGgxMGsgKmFyKQo+IEBAIC0zOTQ4LDYgKzM5NDksNDkgQEAgc3RhdGljIGJvb2wgYXRoMTBr
+X21hY190eF9jYW5fcHVzaChzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPiAgICAgICAgIHJldHVy
+biBmYWxzZTsKPiAgfQo+Cj4gKy8qIFJldHVybiBlc3RpbWF0ZWQgYWlydGltZSBpbiBtaWNyb3Nl
+Y29uZCwgd2hpY2ggaXMgY2FsY3VsYXRlZCB1c2luZyBsYXN0Cj4gKyAqIHJlcG9ydGVkIFRYIHJh
+dGUuIFRoaXMgaXMganVzdCBhIHJvdWdoIGVzdGltYXRpb24gYmVjYXVzZSBob3N0IGRyaXZlciBo
+YXMgbm8KPiArICoga25vd2xlZGdlIG9mIHRoZSBhY3R1YWwgdHJhbnNtaXQgcmF0ZSwgcmV0cmll
+cyBvciBhZ2dyZWdhdGlvbi4gSWYgYWN0dWFsCj4gKyAqIGFpcnRpbWUgY2FuIGJlIHJlcG9ydGVk
+IGJ5IGZpcm13YXJlLCB0aGVuIGRlbHRhIGJldHdlZW4gZXN0aW1hdGVkIGFuZCBhY3R1YWwKPiAr
+ICogYWlydGltZSBjYW4gYmUgYWRqdXN0ZWQgZnJvbSBkZWZpY2l0Lgo+ICsgKi8KPiArI2RlZmlu
+ZSBJRUVFODAyMTFfQVRGX09WRVJIRUFEICAgICAgICAgMTAwICAgICAvKiBJRlMgKyBzb21lIHNs
+b3QgdGltZSAqLwo+ICsjZGVmaW5lIElFRUU4MDIxMV9BVEZfT1ZFUkhFQURfSUZTICAgICAxNiAg
+ICAgIC8qIElGUyBvbmx5ICovCj4gK3N0YXRpYyB1MTYgYXRoMTBrX21hY191cGRhdGVfYWlydGlt
+ZShzdHJ1Y3QgYXRoMTBrICphciwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSwKPiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgc3RydWN0IHNrX2J1ZmYgKnNrYikKPiArewo+ICsgICAgICAgc3RydWN0IGF0
+aDEwa19zdGEgKmFyc3RhOwo+ICsgICAgICAgdTMyIHBrdGxlbjsKPiArICAgICAgIHUxNiBhaXJ0
+aW1lID0gMDsKPiArCj4gKyAgICAgICBpZiAoIXR4cSB8fCAhdHhxLT5zdGEpCj4gKyAgICAgICAg
+ICAgICAgIHJldHVybiBhaXJ0aW1lOwo+ICsKPiArICAgICAgIHNwaW5fbG9ja19iaCgmYXItPmRh
+dGFfbG9jayk7Cj4gKyAgICAgICBhcnN0YSA9IChzdHJ1Y3QgYXRoMTBrX3N0YSAqKXR4cS0+c3Rh
+LT5kcnZfcHJpdjsKPiArCj4gKyAgICAgICBwa3RsZW4gPSBza2ItPmxlbiArIDM4OyAvKiBBc3N1
+bWUgTUFDIGhlYWRlciAzMCwgU05BUCA4IGZvciBtb3N0IGNhc2UgKi8KPiArICAgICAgIGlmIChh
+cnN0YS0+bGFzdF90eF9iaXRyYXRlKSB7Cj4gKyAgICAgICAgICAgICAgIC8qIGFpcnRpbWUgaW4g
+dXMsIGxhc3RfdHhfYml0cmF0ZSBpbiAxMDBrYnBzICovCj4gKyAgICAgICAgICAgICAgIGFpcnRp
+bWUgPSAocGt0bGVuICogOCAqICgxMDAwIC8gMTAwKSkKPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIC8gYXJzdGEtPmxhc3RfdHhfYml0cmF0ZTsKPiArICAgICAgICAgICAgICAgLyog
+b3ZlcmhlYWQgZm9yIG1lZGlhIGFjY2VzcyB0aW1lIGFuZCBJRlMgKi8KPiArICAgICAgICAgICAg
+ICAgYWlydGltZSArPSBJRUVFODAyMTFfQVRGX09WRVJIRUFEX0lGUzsKPiArICAgICAgIH0gZWxz
+ZSB7Cj4gKyAgICAgICAgICAgICAgIC8qIFRoaXMgaXMgbW9zdGx5IGZvciB0aHJvdHRsZSBleGNl
+c3NpdmUgQkMvTUMgZnJhbWVzLCBhbmQgdGhlCj4gKyAgICAgICAgICAgICAgICAqIGFpcnRpbWUv
+cmF0ZSBkb2Vzbid0IG5lZWQgYmUgZXhhY3QuIEFpcnRpbWUgb2YgQkMvTUMgZnJhbWVzCj4gKyAg
+ICAgICAgICAgICAgICAqIGluIDJHIGdldCBzb21lIGRpc2NvdW50LCB3aGljaCBoZWxwcyBwcmV2
+ZW50IHZlcnkgbG93IHJhdGUKPiArICAgICAgICAgICAgICAgICogZnJhbWVzIGZyb20gYmVpbmcg
+YmxvY2tlZCBmb3IgdG9vIGxvbmcuCj4gKyAgICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAg
+ICAgICBhaXJ0aW1lID0gKHBrdGxlbiAqIDggKiAoMTAwMCAvIDEwMCkpIC8gNjA7IC8qIDZNICov
+Cj4gKyAgICAgICAgICAgICAgIGFpcnRpbWUgKz0gSUVFRTgwMjExX0FURl9PVkVSSEVBRDsKPiAr
+ICAgICAgIH0KPiArICAgICAgIHNwaW5fdW5sb2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsKPiArCj4g
+KyAgICAgICByZXR1cm4gYWlydGltZTsKPiArfQo+ICsKPiAgaW50IGF0aDEwa19tYWNfdHhfcHVz
+aF90eHEoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkKPiAgewo+IEBAIC0zOTYzLDYgKzQwMDcsNyBA
+QCBpbnQgYXRoMTBrX21hY190eF9wdXNoX3R4cShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPiAg
+ICAgICAgIHNpemVfdCBza2JfbGVuOwo+ICAgICAgICAgYm9vbCBpc19tZ210LCBpc19wcmVzcDsK
+PiAgICAgICAgIGludCByZXQ7Cj4gKyAgICAgICB1MTYgYWlydGltZTsKPgo+ICAgICAgICAgc3Bp
+bl9sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOwo+ICAgICAgICAgcmV0ID0gYXRoMTBrX2h0dF90
+eF9pbmNfcGVuZGluZyhodHQpOwo+IEBAIC0zOTgwLDcgKzQwMjUsOCBAQCBpbnQgYXRoMTBrX21h
+Y190eF9wdXNoX3R4cShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPiAgICAgICAgICAgICAgICAg
+cmV0dXJuIC1FTk9FTlQ7Cj4gICAgICAgICB9Cj4KPiAtICAgICAgIGF0aDEwa19tYWNfdHhfaF9m
+aWxsX2NiKGFyLCB2aWYsIHR4cSwgc2tiKTsKPiArICAgICAgIGFpcnRpbWUgPSBhdGgxMGtfbWFj
+X3VwZGF0ZV9haXJ0aW1lKGFyLCB0eHEsIHNrYik7Cj4gKyAgICAgICBhdGgxMGtfbWFjX3R4X2hf
+ZmlsbF9jYihhciwgdmlmLCB0eHEsIHNrYiwgYWlydGltZSk7Cj4KPiAgICAgICAgIHNrYl9sZW4g
+PSBza2ItPmxlbjsKPiAgICAgICAgIHR4bW9kZSA9IGF0aDEwa19tYWNfdHhfaF9nZXRfdHhtb2Rl
+KGFyLCB2aWYsIHN0YSwgc2tiKTsKPiBAQCAtNDI0Nyw4ICs0MjkzLDEwIEBAIHN0YXRpYyB2b2lk
+IGF0aDEwa19tYWNfb3BfdHgoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICBib29s
+IGlzX21nbXQ7Cj4gICAgICAgICBib29sIGlzX3ByZXNwOwo+ICAgICAgICAgaW50IHJldDsKPiAr
+ICAgICAgIHUxNiBhaXJ0aW1lOwo+Cj4gLSAgICAgICBhdGgxMGtfbWFjX3R4X2hfZmlsbF9jYihh
+ciwgdmlmLCB0eHEsIHNrYik7Cj4gKyAgICAgICBhaXJ0aW1lID0gYXRoMTBrX21hY191cGRhdGVf
+YWlydGltZShhciwgdHhxLCBza2IpOwo+ICsgICAgICAgYXRoMTBrX21hY190eF9oX2ZpbGxfY2Io
+YXIsIHZpZiwgdHhxLCBza2IsIGFpcnRpbWUpOwo+Cj4gICAgICAgICB0eG1vZGUgPSBhdGgxMGtf
+bWFjX3R4X2hfZ2V0X3R4bW9kZShhciwgdmlmLCBzdGEsIHNrYik7Cj4gICAgICAgICB0eHBhdGgg
+PSBhdGgxMGtfbWFjX3R4X2hfZ2V0X3R4cGF0aChhciwgc2tiLCB0eG1vZGUpOwo+IEBAIC04NjAz
+LDYgKzg2NTEsOSBAQCBpbnQgYXRoMTBrX21hY19yZWdpc3RlcihzdHJ1Y3QgYXRoMTBrICphcikK
+PiAgICAgICAgICAgICAgICAgd2lwaHlfZXh0X2ZlYXR1cmVfc2V0KGFyLT5ody0+d2lwaHksCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOTDgwMjExX0VYVF9GRUFUVVJF
+X0FDS19TSUdOQUxfU1VQUE9SVCk7Cj4KPiArICAgICAgIGlmIChhdGgxMGtfcGVlcl9zdGF0c19l
+bmFibGVkKGFyKSkKPiArICAgICAgICAgICAgICAgd2lwaHlfZXh0X2ZlYXR1cmVfc2V0KGFyLT5o
+dy0+d2lwaHksCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOTDgwMjEx
+X0VYVF9GRUFUVVJFX0FJUlRJTUVfRkFJUk5FU1MpOwo+ICAgICAgICAgLyoKPiAgICAgICAgICAq
+IG9uIExMIGhhcmR3YXJlIHF1ZXVlcyBhcmUgbWFuYWdlZCBlbnRpcmVseSBieSB0aGUgRlcKPiAg
+ICAgICAgICAqIHNvIHdlIG9ubHkgYWR2ZXJ0aXNlIHRvIG1hYyB3ZSBjYW4gZG8gdGhlIHF1ZXVl
+cyB0aGluZwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4
+cnguYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jCj4gaW5kZXggMjM2
+MDZiNjk3MmQwLi44ZTdjNDE2Y2QzMzAgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway90eHJ4LmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3R4cnguYwo+IEBAIC05NSw2ICs5NSwxMCBAQCBpbnQgYXRoMTBrX3R4cnhfdHhfdW5yZWYo
+c3RydWN0IGF0aDEwa19odHQgKmh0dCwKPiAgICAgICAgICAgICAgICAgd2FrZV91cCgmaHR0LT5l
+bXB0eV90eF93cSk7Cj4gICAgICAgICBzcGluX3VubG9ja19iaCgmaHR0LT50eF9sb2NrKTsKPgo+
+ICsgICAgICAgaWYgKHR4cSAmJiB0eHEtPnN0YSkKPiArICAgICAgICAgICAgICAgaWVlZTgwMjEx
+X3N0YV9yZWdpc3Rlcl9haXJ0aW1lKHR4cS0+c3RhLCB0eHEtPnRpZCwKPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNrYl9jYi0+YWlydGltZV9lc3QsIDAp
+Owo+ICsKPiAgICAgICAgIGlmIChhci0+ZGV2X3R5cGUgIT0gQVRIMTBLX0RFVl9UWVBFX0hMKQo+
+ICAgICAgICAgICAgICAgICBkbWFfdW5tYXBfc2luZ2xlKGRldiwgc2tiX2NiLT5wYWRkciwgbXNk
+dS0+bGVuLCBETUFfVE9fREVWSUNFKTsKPgo+IC0tCj4gMi4yMC4xCj4KCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
