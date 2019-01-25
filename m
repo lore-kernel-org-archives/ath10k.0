@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lj1-f194.google.com ([209.85.208.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmszc-0005wA-OF
- for ath10k@lists.infradead.org; Fri, 25 Jan 2019 04:21:29 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: fix dma unmap direction for management frames
-Date: Fri, 25 Jan 2019 09:51:06 +0530
-Message-Id: <1548390066-12305-1-git-send-email-pillair@codeaurora.org>
+ id 1gmwtt-0004SF-Ux
+ for ath10k@lists.infradead.org; Fri, 25 Jan 2019 08:31:47 +0000
+Received: by mail-lj1-f194.google.com with SMTP id q2-v6so7642863lji.10
+ for <ath10k@lists.infradead.org>; Fri, 25 Jan 2019 00:31:44 -0800 (PST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v6 4/4] ath10k: reporting estimated tx airtime for fairness
+In-Reply-To: <CA+iem5vnADN5YSvsts8sBO=_4yNE62E3roySHz5hU6OqNke-6A@mail.gmail.com>
+References: <20190122142019.21417-1-toke@redhat.com>
+ <20190122142019.21417-5-toke@redhat.com>
+ <CA+iem5vnADN5YSvsts8sBO=_4yNE62E3roySHz5hU6OqNke-6A@mail.gmail.com>
+Date: Fri, 25 Jan 2019 09:31:41 +0100
+Message-ID: <874l9xcf4i.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,78 +22,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Kan Yan <kyan@google.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-The management frames transmitted are dma mapped with
-direction TO_DEVICE, but incorrectly mapped with
-direction FROM_DEVICE during tx complete and error cases.
+Kan Yan <kyan@google.com> writes:
 
-Fix the direction of dma during dma unmap of the
-transmitted management frames.
+> Hi Toke,
+>
+> This patch looks good to me. Great job on getting the airtime fairness
+> scheduling framework done!
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+Great, thanks for checking! Have another patch to test on top of this
+series, then we should look into getting the airtime queue limit patch
+into mac80211 as well :)
 
-Fixes: 38a1390e02b7
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
- drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e49b367..8c6c515 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -3863,7 +3863,7 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 				ath10k_warn(ar, "failed to transmit management frame by ref via WMI: %d\n",
- 					    ret);
- 				dma_unmap_single(ar->dev, paddr, skb->len,
--						 DMA_FROM_DEVICE);
-+						 DMA_TO_DEVICE);
- 				ieee80211_free_txskb(ar->hw, skb);
- 			}
- 		} else {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ba83740..5a07c7d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -2346,7 +2346,7 @@ static int wmi_process_mgmt_tx_comp(struct ath10k *ar, u32 desc_id,
- 
- 	msdu = pkt_addr->vaddr;
- 	dma_unmap_single(ar->dev, pkt_addr->paddr,
--			 msdu->len, DMA_FROM_DEVICE);
-+			 msdu->len, DMA_TO_DEVICE);
- 	info = IEEE80211_SKB_CB(msdu);
- 
- 	if (status)
--- 
-2.7.4
-
+-Toke
 
 _______________________________________________
 ath10k mailing list
