@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-f67.google.com ([209.85.208.67])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gn1Zm-0003pj-9T
- for ath10k@lists.infradead.org; Fri, 25 Jan 2019 13:31:20 +0000
-Received: by mail-ed1-f67.google.com with SMTP id g22so7379975edr.7
- for <ath10k@lists.infradead.org>; Fri, 25 Jan 2019 05:31:17 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v7 1/4] mac80211: Expose ieee80211_schedule_txq() function
-In-Reply-To: <4f4eab34a995000d230c8b99cb6cff3f9dfd5c64.camel@sipsolutions.net>
-References: <20190122142019.21417-1-toke@redhat.com>
- <20190122142019.21417-2-toke@redhat.com>
- <4f4eab34a995000d230c8b99cb6cff3f9dfd5c64.camel@sipsolutions.net>
-Date: Fri, 25 Jan 2019 14:31:14 +0100
-Message-ID: <87sgxgc199.fsf@toke.dk>
+ id 1gn220-0005lm-Ar
+ for ath10k@lists.infradead.org; Fri, 25 Jan 2019 14:00:29 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: fix dma unmap direction for management frames
+References: <1548390066-12305-1-git-send-email-pillair@codeaurora.org>
+Date: Fri, 25 Jan 2019 16:00:23 +0200
+In-Reply-To: <1548390066-12305-1-git-send-email-pillair@codeaurora.org>
+ (Rakesh Pillai's message of "Fri, 25 Jan 2019 09:51:06 +0530")
+Message-ID: <87o9843ki0.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,34 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org
-Cc: make-wifi-fast@lists.bufferbloat.net, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Johannes Berg <johannes@sipsolutions.net> writes:
+Rakesh Pillai <pillair@codeaurora.org> writes:
 
->> +void ieee80211_schedule_txq(struct ieee80211_hw *hw,
->> +			    struct ieee80211_txq *txq)
->> +	__acquires(txq_lock) __releases(txq_lock)
->> +{
->> +	struct ieee80211_local *local = hw_to_local(hw);
->> +	struct txq_info *txqi = to_txq_info(txq);
->> +
->> +	spin_lock_bh(&local->active_txq_lock[txq->ac]);
->> +	ieee80211_return_txq(hw, txq);
->> +	spin_unlock_bh(&local->active_txq_lock[ac]);
->> 
-> Maybe v6 had txq->ac here instead of just ac which doesn't compile ;-)
+> The management frames transmitted are dma mapped with
+> direction TO_DEVICE, but incorrectly mapped with
+> direction FROM_DEVICE during tx complete and error cases.
 >
-> I fixed it up, but I hope you tested a compiling version :P
+> Fix the direction of dma during dma unmap of the
+> transmitted management frames.
+>
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+>
+> Fixes: 38a1390e02b7
 
-Ah, right, thanks for fixing it! I think this was an artifact of moving
-things around while rebasing for submission (I have another patch on top
-of this series that I need to test first).
+This should be:
 
-So yeah, I definitely have a version in my tree somewhere that actually
-compiles ;)
+Fixes: 38a1390e02b7 ("ath10k: dma unmap mgmt tx buffer if wmi cmd send fails")
 
--Toke
+I'll fix that in the pending branch.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
