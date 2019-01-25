@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-f194.google.com ([209.85.208.194])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmwtt-0004SF-Ux
- for ath10k@lists.infradead.org; Fri, 25 Jan 2019 08:31:47 +0000
-Received: by mail-lj1-f194.google.com with SMTP id q2-v6so7642863lji.10
- for <ath10k@lists.infradead.org>; Fri, 25 Jan 2019 00:31:44 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v6 4/4] ath10k: reporting estimated tx airtime for fairness
-In-Reply-To: <CA+iem5vnADN5YSvsts8sBO=_4yNE62E3roySHz5hU6OqNke-6A@mail.gmail.com>
-References: <20190122142019.21417-1-toke@redhat.com>
- <20190122142019.21417-5-toke@redhat.com>
- <CA+iem5vnADN5YSvsts8sBO=_4yNE62E3roySHz5hU6OqNke-6A@mail.gmail.com>
-Date: Fri, 25 Jan 2019 09:31:41 +0100
-Message-ID: <874l9xcf4i.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1gn0ea-0003FI-Km
+ for ath10k@lists.infradead.org; Fri, 25 Jan 2019 12:32:14 +0000
+Message-ID: <5b2d0128ff33cdeb268a3954c4aab3ab7b1145c6.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/3] cfg80211: Add support to set tx power for a station
+ associated
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 25 Jan 2019 13:32:08 +0100
+In-Reply-To: <1547724167-11420-1-git-send-email-bpothuno@codeaurora.org>
+References: <1547724167-11420-1-git-send-email-bpothuno@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +24,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Balaji Pothunoori <bpothuno@codeaurora.org>, ath10k@lists.infradead.org
+Cc: Ashok Raj Nagarajan <arnagara@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Kan Yan <kyan@google.com> writes:
+On Thu, 2019-01-17 at 16:52 +0530, Balaji Pothunoori wrote:
+> 
+> +	s16 txpwr;
+> +	enum nl80211_tx_power_setting type;
 
-> Hi Toke,
->
-> This patch looks good to me. Great job on getting the airtime fairness
-> scheduling framework done!
+you should probably call this txpwr_type, or do something like
 
-Great, thanks for checking! Have another patch to test on top of this
-series, then we should look into getting the airtime queue limit patch
-into mac80211 as well :)
+struct {
+	s16 power;
+	enum ... type;
+} txpwr;
 
--Toke
+
+> +	[NL80211_ATTR_STA_TX_POWER_SETTING] = { .type = NLA_U8 },
+
+That should use NLA_POLICY_RANGE()
+
+> +	[NL80211_ATTR_STA_TX_POWER] = { .type = NLA_S16 },
+ 
+
+> +		params->type = nla_get_u32(info->attrs[idx]);
+> +
+> +		if (params->type == NL80211_TX_POWER_LIMITED) {
+> +			idx = NL80211_ATTR_STA_TX_POWER;
+> +			params->txpwr = nla_get_u32(info->attrs[idx]);
+
+You cannot use nla_get_u32 with U8/S16 attributes, use the correct
+corresponding helper.
+
+johannes
+
 
 _______________________________________________
 ath10k mailing list
