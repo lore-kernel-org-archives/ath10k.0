@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1go0va-00065J-Aw
- for ath10k@lists.infradead.org; Mon, 28 Jan 2019 07:01:57 +0000
+ id 1go952-0006mG-9g
+ for ath10k@lists.infradead.org; Mon, 28 Jan 2019 15:44:16 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.20 017/304] ath10k: assign 'n_cipher_suites' for
+ WCN3990
+Date: Mon, 28 Jan 2019 10:38:54 -0500
+Message-Id: <20190128154341.47195-17-sashal@kernel.org>
+In-Reply-To: <20190128154341.47195-1-sashal@kernel.org>
+References: <20190128154341.47195-1-sashal@kernel.org>
 MIME-Version: 1.0
-Date: Mon, 28 Jan 2019 15:01:50 +0800
-From: yiboz <yiboz@codeaurora.org>
-Subject: Re: FW: [PATCH] ath10k: fix return value check in wake_tx_q op
-In-Reply-To: <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
-References: <20180506132500.16888-1-erik.stromdahl@gmail.com>
- <6dc00772b826410e930306891fd13ed9@euamsexm01f.eu.qualcomm.com>
- <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
-Message-ID: <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,73 +19,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: erik.stromdahl@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Govind Singh <govinds@qti.qualcomm.com>, Sasha Levin <sashal@kernel.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Hi Erik,
+From: Brian Norris <briannorris@chromium.org>
 
-We have met performance issue on our two-core system after applying your 
-patch. In WDS mode, we found that the peak throughput in TCP-DL and 
-UDP-DL dropped more than 10% compared with previous one. And in some 
-cases, though throughput stays the same, one CPU usage rises about 20% 
-which leads to 10% in total CPU usage. With your change, I think driver 
-will try its best to push as many packets as it can. During this time, 
-the driver's queue lock will be held for too much time in one CPU and as 
-a result, the other CPU will be blocked if it wants to acquired the same 
-lock. Working in this way seems not efficiency.
+[ Upstream commit 2bd345cd2bfc0bd44528896313c0b45f087bdf67 ]
 
-So I think it is better to revert the change till we come up with a new 
-solution.
+Commit 2ea9f12cefe4 ("ath10k: add new cipher suite support") added a new
+n_cipher_suites HW param with a fallback value and a warning log. Commit
+03a72288c546 ("ath10k: wmi: add hw params entry for wcn3990") later
+added WCN3990 HW entries, but it missed the n_cipher_suites.
 
->>  Subject: [PATCH] ath10k: fix return value check in wake_tx_q op
->> 
->>  ath10k_mac_tx_push_txq returns either a postive integer (length) on 
->> success
->>  or a negative error code on error.
->> 
->>  The "if (ret) break;" statement will thus always break out of the 
->> loop
->>  immediately after ath10k_mac_tx_push_txq has returned (making the 
->> loop
->>  pointless).
->> 
->>  A side effect of this fix is that we will iterate the queue until
->>  ath10k_mac_tx_push_txq returns -ENOENT. This will make sure the queue 
->> is
->>  not added back to ar->txqs when it is empty. This could potentially 
->> improve
->>  performance somewhat (I have seen a small improvement with SDIO 
->> devices).
->> 
->>  Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
->>  ---
->>   drivers/net/wireless/ath/ath10k/mac.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->>  diff --git a/drivers/net/wireless/ath/ath10k/mac.c
->>  b/drivers/net/wireless/ath/ath10k/mac.c
->>  index 3d7119ad7c7a..487a7a7380fd 100644
->>  --- a/drivers/net/wireless/ath/ath10k/mac.c
->>  +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>  @@ -4290,7 +4290,7 @@ static void ath10k_mac_op_wake_tx_queue(struct
->>  ieee80211_hw *hw,
->> 
->>   	while (ath10k_mac_tx_can_push(hw, f_txq) && max--) {
->>   		ret = ath10k_mac_tx_push_txq(hw, f_txq);
->>  -		if (ret)
->>  +		if (ret < 0)
->>   			break;
->>   	}
->>   	if (ret != -ENOENT)
->>  --
->>  2.17.0
+Rather than seeing this warning every boot
 
+  ath10k_snoc 18800000.wifi: invalid hw_params.n_cipher_suites 0
+
+let's provide the appropriate value.
+
+Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index d210b0ed59be..59fdda67f89f 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -561,6 +561,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_ops = &wcn3990_ops,
+ 		.decap_align_bytes = 1,
+ 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
++		.n_cipher_suites = 8,
+ 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
 -- 
-yibo
+2.19.1
+
 
 _______________________________________________
 ath10k mailing list
