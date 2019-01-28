@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1go9GC-0007M6-6r
- for ath10k@lists.infradead.org; Mon, 28 Jan 2019 15:55:46 +0000
+ id 1go9KM-0000CM-Mx
+ for ath10k@lists.infradead.org; Mon, 28 Jan 2019 16:00:04 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.20 242/304] ath10k: fix tx_stats memory leak
-Date: Mon, 28 Jan 2019 10:42:39 -0500
-Message-Id: <20190128154341.47195-242-sashal@kernel.org>
-In-Reply-To: <20190128154341.47195-1-sashal@kernel.org>
-References: <20190128154341.47195-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 013/258] ath10k: assign 'n_cipher_suites' for
+ WCN3990
+Date: Mon, 28 Jan 2019 10:55:19 -0500
+Message-Id: <20190128155924.51521-13-sashal@kernel.org>
+In-Reply-To: <20190128155924.51521-1-sashal@kernel.org>
+References: <20190128155924.51521-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,91 +24,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Zhi Chen <zhichen@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, Sasha Levin <sashal@kernel.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Zhi Chen <zhichen@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
 
-[ Upstream commit 386f97e3b201d18578abb0e7037b85a1ae50c0a3 ]
+[ Upstream commit 2bd345cd2bfc0bd44528896313c0b45f087bdf67 ]
 
-Memory of tx_stats was allocated when a STA was added. But it's not freed
-if the STA failed to be added to driver. This issue could be seen in MDK3
-attack case when STA number reached the limit.
+Commit 2ea9f12cefe4 ("ath10k: add new cipher suite support") added a new
+n_cipher_suites HW param with a fallback value and a warning log. Commit
+03a72288c546 ("ath10k: wmi: add hw params entry for wcn3990") later
+added WCN3990 HW entries, but it missed the n_cipher_suites.
 
-Tested: QCA9984 with firmware ver 10.4-3.9.0.1-00005
-Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+Rather than seeing this warning every boot
+
+  ath10k_snoc 18800000.wifi: invalid hw_params.n_cipher_suites 0
+
+let's provide the appropriate value.
+
+Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>
+Signed-off-by: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6436dc229be5..400495858e4e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6293,15 +6293,6 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   ar->num_stations + 1, ar->max_num_stations,
- 			   ar->num_peers + 1, ar->max_num_peers);
- 
--		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
--			arsta->tx_stats = kzalloc(sizeof(*arsta->tx_stats),
--						  GFP_KERNEL);
--			if (!arsta->tx_stats) {
--				ret = -ENOMEM;
--				goto exit;
--			}
--		}
--
- 		num_tdls_stations = ath10k_mac_tdls_vif_stations_count(hw, vif);
- 		num_tdls_vifs = ath10k_mac_tdls_vifs_count(hw);
- 
-@@ -6323,12 +6314,22 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			goto exit;
- 		}
- 
-+		if (ath10k_debug_is_extd_tx_stats_enabled(ar)) {
-+			arsta->tx_stats = kzalloc(sizeof(*arsta->tx_stats),
-+						  GFP_KERNEL);
-+			if (!arsta->tx_stats) {
-+				ret = -ENOMEM;
-+				goto exit;
-+			}
-+		}
-+
- 		ret = ath10k_peer_create(ar, vif, sta, arvif->vdev_id,
- 					 sta->addr, peer_type);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to add peer %pM for vdev %d when adding a new sta: %i\n",
- 				    sta->addr, arvif->vdev_id, ret);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 			goto exit;
- 		}
- 
-@@ -6341,6 +6342,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			spin_unlock_bh(&ar->data_lock);
- 			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 			ret = -ENOENT;
- 			goto exit;
- 		}
-@@ -6361,6 +6363,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			ath10k_peer_delete(ar, arvif->vdev_id,
- 					   sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 			goto exit;
- 		}
- 
-@@ -6372,6 +6375,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 				    sta->addr, arvif->vdev_id, ret);
- 			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
-+			kfree(arsta->tx_stats);
- 
- 			if (num_tdls_stations != 0)
- 				goto exit;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c40cd129afe7..5210cffb5344 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -532,6 +532,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_ops = &wcn3990_ops,
+ 		.decap_align_bytes = 1,
+ 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
++		.n_cipher_suites = 8,
+ 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
 -- 
 2.19.1
 
