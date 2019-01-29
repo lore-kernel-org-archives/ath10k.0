@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goMKv-0006ml-9q
- for ath10k@lists.infradead.org; Tue, 29 Jan 2019 05:53:30 +0000
-Subject: Re: [PATCH] ath10k: snoc: remove set but not used variable 'ar_snoc'
-References: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
-From: YueHaibing <yuehaibing@huawei.com>
-Message-ID: <4b16caf3-9a25-99d0-5b35-f27d6e5a5c65@huawei.com>
-Date: Tue, 29 Jan 2019 13:53:20 +0800
-MIME-Version: 1.0
-In-Reply-To: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
+ id 1goPev-0005Ql-OG
+ for ath10k@lists.infradead.org; Tue, 29 Jan 2019 09:26:26 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] ath10k: Fix hw-restart crash inject mode for WCN3990
+Date: Tue, 29 Jan 2019 14:56:07 +0530
+Message-Id: <1548753967-2233-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,50 +15,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-ping...
+The hw-restart crash inject mode is a special mode, where
+there is no crash generated in the firmware, but instead
+the driver restarts the firmware. In order to restart WCN3990
+firmware, the driver needs to send qmi_wlan_disable message
+followed by the qmi_wlan_enable message to the WCN3990 firmware.
 
-On 2018/9/6 10:29, YueHaibing wrote:
-> From: Yue Haibing <yuehaibing@huawei.com>
-> 
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_tx_pipe_cleanup':
-> drivers/net/wireless/ath/ath10k/snoc.c:681:22: warning:
->  variable 'ar_snoc' set but not used [-Wunused-but-set-variable]
-> 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
->  drivers/net/wireless/ath/ath10k/snoc.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index fa1843a..2d6ae00 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -678,13 +678,11 @@ static void ath10k_snoc_tx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
->  {
->  	struct ath10k_ce_pipe *ce_pipe;
->  	struct ath10k_ce_ring *ce_ring;
-> -	struct ath10k_snoc *ar_snoc;
->  	struct sk_buff *skb;
->  	struct ath10k *ar;
->  	int i;
->  
->  	ar = snoc_pipe->hif_ce_state;
-> -	ar_snoc = ath10k_snoc_priv(ar);
->  	ce_pipe = snoc_pipe->ce_hdl;
->  	ce_ring = ce_pipe->src_ring;
-> 
-> 
-> .
-> 
+Currently the qmi_wlan_disable message is not sent to
+the WCN3990 firmware when hw-restart crash is injected,
+which causes the firmware to crash when the driver sends
+qmi_wlan_enable message during ath10k_restart.
+
+Send qmi_wlan_disable to the WCN3990 firmware when the
+hw-restart crash is injected via debugfs.
+
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 54efe6b..cceb6d4 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1000,7 +1000,16 @@ static int ath10k_snoc_wlan_enable(struct ath10k *ar)
+ 
+ static void ath10k_snoc_wlan_disable(struct ath10k *ar)
+ {
+-	if (!test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++
++	/* If both ATH10K_FLAG_CRASH_FLUSH and ATH10K_SNOC_FLAG_RECOVERY
++	 * flags are not set, it means that the driver has restarted
++	 * due to a crash inject via debugfs. In this case, the driver
++	 * needs to restart the firmware and hence send qmi wlan disable,
++	 * during the driver restart sequence.
++	 */
++	if (!test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags) ||
++	    !test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+ 		ath10k_qmi_wlan_disable(ar);
+ }
+ 
+-- 
+2.7.4
 
 
 _______________________________________________
