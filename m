@@ -1,12 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goS7L-0003Wj-9E
- for ath10k@lists.infradead.org; Tue, 29 Jan 2019 12:03:52 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: Change swap mail box check after htc ready
-Date: Tue, 29 Jan 2019 20:03:12 +0800
-Message-Id: <1548763392-3378-1-git-send-email-wgong@codeaurora.org>
+ id 1goXsY-0007th-8a
+ for ath10k@lists.infradead.org; Tue, 29 Jan 2019 18:12:59 +0000
+Received: by mail-ed1-x543.google.com with SMTP id x30so16806604edx.2
+ for <ath10k@lists.infradead.org>; Tue, 29 Jan 2019 10:12:57 -0800 (PST)
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com.
+ [209.85.208.53])
+ by smtp.gmail.com with ESMTPSA id a27sm15376450eda.65.2019.01.29.10.12.53
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 29 Jan 2019 10:12:53 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id f9so16729754eds.10
+ for <ath10k@lists.infradead.org>; Tue, 29 Jan 2019 10:12:53 -0800 (PST)
+MIME-Version: 1.0
+References: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
+ <4b16caf3-9a25-99d0-5b35-f27d6e5a5c65@huawei.com>
+In-Reply-To: <4b16caf3-9a25-99d0-5b35-f27d6e5a5c65@huawei.com>
+From: Brian Norris <briannorris@chromium.org>
+Date: Tue, 29 Jan 2019 10:12:42 -0800
+Message-ID: <CA+ASDXMQto_dqPOuUEX9vqqbWmor8qvpwxBVTg6tSnHkfsCzpw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: snoc: remove set but not used variable 'ar_snoc'
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,147 +29,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-The swap box flag of firmware is not set before htc ready, then it
-will not set swap box flag in ath10k driver, and it will let swap
-box setting not same between firmware and ath10k driver, then it
-will trigger firmware assert failure.
+On Mon, Jan 28, 2019 at 9:53 PM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> ping...
 
-Check the flag and set swap box after htc ready will fix the firmware
-assert failure.
+For some reason, your patch shows up as Deferred in patchwork:
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00005-QCARMSWP-1.
+https://patchwork.kernel.org/patch/10589789/
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c |  6 ++++++
- drivers/net/wireless/ath/ath10k/hif.h  |  9 ++++++++
- drivers/net/wireless/ath/ath10k/sdio.c | 38 ++++++++++++++++++++--------------
- 3 files changed, 38 insertions(+), 15 deletions(-)
+So the maintainers have accidentally (?) ignored it. I'm not what the
+official suggestion is for that, but you might just resend.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 22cbe9a..55fa521 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2534,6 +2534,12 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		goto err_hif_stop;
- 	}
- 
-+	status = ath10k_hif_swap_mailbox(ar);
-+	if (status) {
-+		ath10k_err(ar, "failed to swap mailbox: %d\n", status);
-+		goto err_hif_stop;
-+	}
-+
- 	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
- 		status = ath10k_htt_connect(&ar->htt);
- 		if (status) {
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 1a59ea0..5f7f1e0 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -59,6 +59,8 @@ struct ath10k_hif_ops {
- 	 */
- 	void (*stop)(struct ath10k *ar);
- 
-+	int (*swap_mailbox)(struct ath10k *ar);
-+
- 	int (*map_service_to_pipe)(struct ath10k *ar, u16 service_id,
- 				   u8 *ul_pipe, u8 *dl_pipe);
- 
-@@ -139,6 +141,13 @@ static inline void ath10k_hif_stop(struct ath10k *ar)
- 	return ar->hif.ops->stop(ar);
- }
- 
-+static inline int ath10k_hif_swap_mailbox(struct ath10k *ar)
-+{
-+	if (ar->hif.ops->swap_mailbox)
-+		return ar->hif.ops->swap_mailbox(ar);
-+	return 0;
-+}
-+
- static inline int ath10k_hif_map_service_to_pipe(struct ath10k *ar,
- 						 u16 service_id,
- 						 u8 *ul_pipe, u8 *dl_pipe)
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 983ecfe..334a147 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1615,12 +1615,33 @@ static int ath10k_sdio_hif_diag_write_mem(struct ath10k *ar, u32 address,
- 	return 0;
- }
- 
-+static int ath10k_sdio_hif_swap_mailbox(struct ath10k *ar)
-+{
-+	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	u32 addr, val;
-+	int ret = 0;
-+
-+	addr = host_interest_item_address(HI_ITEM(hi_acs_flags));
-+
-+	ret = ath10k_sdio_hif_diag_read32(ar, addr, &val);
-+	if (ret) {
-+		ath10k_warn(ar, "unable to read hi_acs_flags : %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (val & HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_FW_ACK) {
-+		ath10k_dbg(ar, ATH10K_DBG_SDIO,
-+			   "sdio mailbox swap service enabled\n");
-+		ar_sdio->swap_mbox = true;
-+	}
-+	return 0;
-+}
-+
- /* HIF start/stop */
- 
- static int ath10k_sdio_hif_start(struct ath10k *ar)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
--	u32 addr, val;
- 	int ret;
- 
- 	/* Sleep 20 ms before HIF interrupts are disabled.
-@@ -1654,20 +1675,6 @@ static int ath10k_sdio_hif_start(struct ath10k *ar)
- 	if (ret)
- 		ath10k_warn(ar, "failed to enable sdio interrupts: %d\n", ret);
- 
--	addr = host_interest_item_address(HI_ITEM(hi_acs_flags));
--
--	ret = ath10k_sdio_hif_diag_read32(ar, addr, &val);
--	if (ret) {
--		ath10k_warn(ar, "unable to read hi_acs_flags address: %d\n", ret);
--		return ret;
--	}
--
--	if (val & HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_FW_ACK) {
--		ath10k_dbg(ar, ATH10K_DBG_SDIO,
--			   "sdio mailbox swap service enabled\n");
--		ar_sdio->swap_mbox = true;
--	}
--
- 	/* Enable sleep and then disable it again */
- 	ret = ath10k_sdio_hif_set_mbox_sleep(ar, true);
- 	if (ret)
-@@ -1898,6 +1905,7 @@ static void ath10k_sdio_hif_send_complete_check(struct ath10k *ar,
- 	.exchange_bmi_msg	= ath10k_sdio_bmi_exchange_msg,
- 	.start			= ath10k_sdio_hif_start,
- 	.stop			= ath10k_sdio_hif_stop,
-+	.swap_mailbox		= ath10k_sdio_hif_swap_mailbox,
- 	.map_service_to_pipe	= ath10k_sdio_hif_map_service_to_pipe,
- 	.get_default_pipe	= ath10k_sdio_hif_get_default_pipe,
- 	.send_complete_check	= ath10k_sdio_hif_send_complete_check,
--- 
-1.9.1
+In any case...
 
+> On 2018/9/6 10:29, YueHaibing wrote:
+> > From: Yue Haibing <yuehaibing@huawei.com>
+> >
+> > Fixes gcc '-Wunused-but-set-variable' warning:
+> >
+> > drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_tx_pipe_cleanup':
+> > drivers/net/wireless/ath/ath10k/snoc.c:681:22: warning:
+> >  variable 'ar_snoc' set but not used [-Wunused-but-set-variable]
+> >
+> > Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+
+...patch looks fine to me:
+
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 
 _______________________________________________
 ath10k mailing list
