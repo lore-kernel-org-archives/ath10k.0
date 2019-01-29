@@ -1,26 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goXsY-0007th-8a
- for ath10k@lists.infradead.org; Tue, 29 Jan 2019 18:12:59 +0000
-Received: by mail-ed1-x543.google.com with SMTP id x30so16806604edx.2
- for <ath10k@lists.infradead.org>; Tue, 29 Jan 2019 10:12:57 -0800 (PST)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com.
- [209.85.208.53])
- by smtp.gmail.com with ESMTPSA id a27sm15376450eda.65.2019.01.29.10.12.53
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 29 Jan 2019 10:12:53 -0800 (PST)
-Received: by mail-ed1-f53.google.com with SMTP id f9so16729754eds.10
- for <ath10k@lists.infradead.org>; Tue, 29 Jan 2019 10:12:53 -0800 (PST)
-MIME-Version: 1.0
-References: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
- <4b16caf3-9a25-99d0-5b35-f27d6e5a5c65@huawei.com>
-In-Reply-To: <4b16caf3-9a25-99d0-5b35-f27d6e5a5c65@huawei.com>
+ id 1gocY8-0006NZ-2C
+ for ath10k@lists.infradead.org; Tue, 29 Jan 2019 23:12:13 +0000
+Received: by mail-pf1-x443.google.com with SMTP id y126so10429755pfb.4
+ for <ath10k@lists.infradead.org>; Tue, 29 Jan 2019 15:12:11 -0800 (PST)
 From: Brian Norris <briannorris@chromium.org>
-Date: Tue, 29 Jan 2019 10:12:42 -0800
-Message-ID: <CA+ASDXMQto_dqPOuUEX9vqqbWmor8qvpwxBVTg6tSnHkfsCzpw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: snoc: remove set but not used variable 'ar_snoc'
+Subject: [PATCH for-5.0] ath10k: correct bus type for WCN3990
+Date: Tue, 29 Jan 2019 15:12:01 -0800
+Message-Id: <20190129231201.42230-1-briannorris@chromium.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,36 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Govind Singh <govinds@codeaurora.org>, Erik Stromdahl <erik.stromdahl@gmail.com>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-On Mon, Jan 28, 2019 at 9:53 PM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> ping...
+WCN3990 is SNOC, not PCI. This prevents probing WCN3990.
 
-For some reason, your patch shows up as Deferred in patchwork:
+Fixes: 367c899f622c ("ath10k: add bus type check in ath10k_init_hw_params")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+This was a regression in 4.20.
 
-https://patchwork.kernel.org/patch/10589789/
+ drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So the maintainers have accidentally (?) ignored it. I'm not what the
-official suggestion is for that, but you might just resend.
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 399b501f3c3c..e8891f5fc83a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -548,7 +548,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+ 		.dev_id = 0,
+-		.bus = ATH10K_BUS_PCI,
++		.bus = ATH10K_BUS_SNOC,
+ 		.name = "wcn3990 hw1.0",
+ 		.continuous_frag_desc = true,
+ 		.tx_chain_mask = 0x7,
+-- 
+2.20.1.495.gaa96b0ce6b-goog
 
-In any case...
-
-> On 2018/9/6 10:29, YueHaibing wrote:
-> > From: Yue Haibing <yuehaibing@huawei.com>
-> >
-> > Fixes gcc '-Wunused-but-set-variable' warning:
-> >
-> > drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_tx_pipe_cleanup':
-> > drivers/net/wireless/ath/ath10k/snoc.c:681:22: warning:
-> >  variable 'ar_snoc' set but not used [-Wunused-but-set-variable]
-> >
-> > Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-
-...patch looks fine to me:
-
-Reviewed-by: Brian Norris <briannorris@chromium.org>
 
 _______________________________________________
 ath10k mailing list
