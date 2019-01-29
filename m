@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1go9KM-0000CM-Mx
- for ath10k@lists.infradead.org; Mon, 28 Jan 2019 16:00:04 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 013/258] ath10k: assign 'n_cipher_suites' for
- WCN3990
-Date: Mon, 28 Jan 2019 10:55:19 -0500
-Message-Id: <20190128155924.51521-13-sashal@kernel.org>
-In-Reply-To: <20190128155924.51521-1-sashal@kernel.org>
-References: <20190128155924.51521-1-sashal@kernel.org>
+ id 1goMKv-0006ml-9q
+ for ath10k@lists.infradead.org; Tue, 29 Jan 2019 05:53:30 +0000
+Subject: Re: [PATCH] ath10k: snoc: remove set but not used variable 'ar_snoc'
+References: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Message-ID: <4b16caf3-9a25-99d0-5b35-f27d6e5a5c65@huawei.com>
+Date: Tue, 29 Jan 2019 13:53:20 +0800
 MIME-Version: 1.0
+In-Reply-To: <1536200965-121172-1-git-send-email-yuehaibing@huawei.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, Sasha Levin <sashal@kernel.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Brian Norris <briannorris@chromium.org>
+ping...
 
-[ Upstream commit 2bd345cd2bfc0bd44528896313c0b45f087bdf67 ]
-
-Commit 2ea9f12cefe4 ("ath10k: add new cipher suite support") added a new
-n_cipher_suites HW param with a fallback value and a warning log. Commit
-03a72288c546 ("ath10k: wmi: add hw params entry for wcn3990") later
-added WCN3990 HW entries, but it missed the n_cipher_suites.
-
-Rather than seeing this warning every boot
-
-  ath10k_snoc 18800000.wifi: invalid hw_params.n_cipher_suites 0
-
-let's provide the appropriate value.
-
-Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
-Cc: Govind Singh <govinds@qti.qualcomm.com>
-Signed-off-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c40cd129afe7..5210cffb5344 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -532,6 +532,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.hw_ops = &wcn3990_ops,
- 		.decap_align_bytes = 1,
- 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
-+		.n_cipher_suites = 8,
- 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
- 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
- 		.target_64bit = true,
--- 
-2.19.1
+On 2018/9/6 10:29, YueHaibing wrote:
+> From: Yue Haibing <yuehaibing@huawei.com>
+> 
+> Fixes gcc '-Wunused-but-set-variable' warning:
+> 
+> drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_tx_pipe_cleanup':
+> drivers/net/wireless/ath/ath10k/snoc.c:681:22: warning:
+>  variable 'ar_snoc' set but not used [-Wunused-but-set-variable]
+> 
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index fa1843a..2d6ae00 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -678,13 +678,11 @@ static void ath10k_snoc_tx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
+>  {
+>  	struct ath10k_ce_pipe *ce_pipe;
+>  	struct ath10k_ce_ring *ce_ring;
+> -	struct ath10k_snoc *ar_snoc;
+>  	struct sk_buff *skb;
+>  	struct ath10k *ar;
+>  	int i;
+>  
+>  	ar = snoc_pipe->hif_ce_state;
+> -	ar_snoc = ath10k_snoc_priv(ar);
+>  	ce_pipe = snoc_pipe->ce_hdl;
+>  	ce_ring = ce_pipe->src_ring;
+> 
+> 
+> .
+> 
 
 
 _______________________________________________
