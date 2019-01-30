@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gonCN-0003IS-PP
- for ath10k@lists.infradead.org; Wed, 30 Jan 2019 10:34:29 +0000
+ id 1gonDN-00058d-Ip
+ for ath10k@lists.infradead.org; Wed, 30 Jan 2019 10:35:31 +0000
 From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH v2 1/3] cfg80211: Add support to set tx power for a station
- associated
-Date: Wed, 30 Jan 2019 16:04:10 +0530
-Message-Id: <1548844450-13691-1-git-send-email-bpothuno@codeaurora.org>
+Subject: [PATCH v2 2/3] mac80211: store tx power value from user to station
+Date: Wed, 30 Jan 2019 16:05:20 +0530
+Message-Id: <1548844520-13752-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,181 +25,172 @@ Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, Ashok Raj Nagarajan <arnagara@c
 
 From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
 
-This patch adds support to set transmit power setting type and transmit
-power level attributes to NL80211_CMD_SET_STATION in order to facilitate
-adjusting the transmit power level of a station associated to the AP.
-
-The added attributes allow selection of automatic and limited transmit
-power level, with the level defined in dBm format.
+This patch introduce a new driver callback drv_sta_set_txpwr. This API will
+copy the transmit power value passed from user space and call the driver
+callback to set the tx power for the station.
 
 Co-developed-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 Signed-off-by: Ashok Raj Nagarajan <arnagara@codeaurora.org>
 Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 ---
 v2: add txpwr structure
-    replaced nla_get_u32 with nla_get_u8/s16
-    added NLA_POLICY_RANGE check
+    added tx power set type in trace event
 
- include/net/cfg80211.h       | 14 ++++++++++++++
- include/uapi/linux/nl80211.h | 14 ++++++++++++++
- net/wireless/nl80211.c       | 38 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 66 insertions(+)
+ include/net/mac80211.h    | 14 ++++++++++++++
+ net/mac80211/cfg.c        |  9 +++++++++
+ net/mac80211/driver-ops.c | 21 +++++++++++++++++++++
+ net/mac80211/driver-ops.h |  5 +++++
+ net/mac80211/trace.h      | 30 ++++++++++++++++++++++++++++++
+ 5 files changed, 79 insertions(+)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 7033c90..029d9fe 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -973,6 +973,7 @@ enum station_parameters_apply_mask {
- 	STATION_PARAM_APPLY_UAPSD = BIT(0),
- 	STATION_PARAM_APPLY_CAPABILITY = BIT(1),
- 	STATION_PARAM_APPLY_PLINK_STATE = BIT(2),
-+	STATION_PARAM_APPLY_STA_TXPOWER = BIT(3),
- };
- 
- /**
-@@ -1017,6 +1018,15 @@ enum station_parameters_apply_mask {
-  * @he_capa: HE capabilities of station
-  * @he_capa_len: the length of the HE capabilities
-  * @airtime_weight: airtime scheduler weight for this station
-+ * @power: tx power (in dBm) to be used for sending data traffic. If tx power
-+ *	is not provided, the default per-interface tx power setting will be
-+ *	overriding. Driver should be picking up the lowest tx power, either tx
-+ *	power per-interface or per-station.
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 294a8a3..c637d28 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -1886,6 +1886,13 @@ struct ieee80211_sta_rates {
+  * @support_p2p_ps: indicates whether the STA supports P2P PS mechanism or not.
+  * @max_rc_amsdu_len: Maximum A-MSDU size in bytes recommended by rate control.
+  * @max_tid_amsdu_len: Maximum A-MSDU size in bytes for this TID
++ * @power: indicates the tx power, in dBm, to be used when sending data frames
++ *	to the STA.
 + * @type: In particular if TPC %type is NL80211_TX_POWER_LIMITED then tx power
 + *	will be less than or equal to specified from userspace, whereas if TPC
 + *	%type is NL80211_TX_POWER_AUTOMATIC then it indicates default tx power.
 + *	NL80211_TX_POWER_FIXED is not a valid configuration option for
 + *	per peer TPC.
+  * @txq: per-TID data TX queues (if driver uses the TXQ abstraction); note that
+  *	the last entry (%IEEE80211_NUM_TIDS) is used for non-data frames
   */
- struct station_parameters {
- 	const u8 *supported_rates;
-@@ -1047,6 +1057,10 @@ struct station_parameters {
- 	const struct ieee80211_he_cap_elem *he_capa;
- 	u8 he_capa_len;
- 	u16 airtime_weight;
+@@ -1928,6 +1935,10 @@ struct ieee80211_sta {
+ 	bool support_p2p_ps;
+ 	u16 max_rc_amsdu_len;
+ 	u16 max_tid_amsdu_len[IEEE80211_NUM_TIDS];
 +	struct {
 +		s16 power;
 +		enum nl80211_tx_power_setting type;
 +	} txpwr;
- };
  
- /**
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index dd4f86e..83040c6 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -2308,6 +2308,15 @@ enum nl80211_commands {
-  * @NL80211_ATTR_AIRTIME_WEIGHT: Station's weight when scheduled by the airtime
-  *	scheduler.
-  *
-+ * @NL80211_ATTR_STA_TX_POWER_SETTING: Transmit power setting type (u8) for
-+ *	station associated with the AP. See &enum nl80211_tx_power_setting for
-+ *	possible values.
-+ * @NL80211_ATTR_STA_TX_POWER: Transmit power level (s16) in dBm units. This
-+ *	allows to set Tx power for a station. If this attribute is not included,
-+ *	the default per-interface tx power setting will be overriding. Driver
-+ *	should be picking up the lowest tx power, either tx power per-interface
-+ *	or per-station.
-+ *
-  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
-  * @NL80211_ATTR_MAX: highest attribute number currently defined
-  * @__NL80211_ATTR_AFTER_LAST: internal use
-@@ -2758,6 +2767,8 @@ enum nl80211_attrs {
- 	NL80211_ATTR_PEER_MEASUREMENTS,
+ 	struct ieee80211_txq *txq[IEEE80211_NUM_TIDS + 1];
  
- 	NL80211_ATTR_AIRTIME_WEIGHT,
-+	NL80211_ATTR_STA_TX_POWER_SETTING,
-+	NL80211_ATTR_STA_TX_POWER,
+@@ -3735,6 +3746,9 @@ struct ieee80211_ops {
+ #endif
+ 	void (*sta_notify)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			enum sta_notify_cmd, struct ieee80211_sta *sta);
++	int (*sta_set_txpwr)(struct ieee80211_hw *hw,
++			     struct ieee80211_vif *vif,
++			     struct ieee80211_sta *sta);
+ 	int (*sta_state)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			 struct ieee80211_sta *sta,
+ 			 enum ieee80211_sta_state old_state,
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 80d8ebc..72d0670 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -1417,6 +1417,15 @@ static int sta_apply_parameters(struct ieee80211_local *local,
+ 	if (params->listen_interval >= 0)
+ 		sta->listen_interval = params->listen_interval;
  
- 	/* add attributes here, update the policy in nl80211.c */
- 
-@@ -5343,6 +5354,8 @@ enum nl80211_feature_flags {
-  * @NL80211_EXT_FEATURE_AP_PMKSA_CACHING: Driver/device supports PMKSA caching
-  *	(set/del PMKSA operations) in AP mode.
-  *
-+ * @NL80211_EXT_FEATURE_STA_TX_PWR: This driver supports controlling tx power
-+ 8	to a station.
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-  */
-@@ -5384,6 +5397,7 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER,
- 	NL80211_EXT_FEATURE_AIRTIME_FAIRNESS,
- 	NL80211_EXT_FEATURE_AP_PMKSA_CACHING,
-+	NL80211_EXT_FEATURE_STA_TX_PWR,
- 
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index af89e5c..7e8073a 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -347,6 +347,11 @@ const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
- 					       .len = NL80211_MAX_SUPP_RATES },
- 	[NL80211_ATTR_STA_PLINK_ACTION] =
- 		NLA_POLICY_MAX(NLA_U8, NUM_NL80211_PLINK_ACTIONS - 1),
-+	[NL80211_ATTR_STA_TX_POWER_SETTING] =
-+		NLA_POLICY_RANGE(NLA_U8,
-+				 NL80211_TX_POWER_AUTOMATIC,
-+				 NL80211_TX_POWER_FIXED),
-+	[NL80211_ATTR_STA_TX_POWER] = { .type = NLA_S16 },
- 	[NL80211_ATTR_STA_VLAN] = { .type = NLA_U32 },
- 	[NL80211_ATTR_MNTR_FLAGS] = { /* NLA_NESTED can't be empty */ },
- 	[NL80211_ATTR_MESH_ID] = { .type = NLA_BINARY,
-@@ -5404,6 +5409,31 @@ static int nl80211_set_station_tdls(struct genl_info *info,
- 	return nl80211_parse_sta_wme(info, params);
- }
- 
-+static int nl80211_parse_sta_txpower_setting(struct genl_info *info,
-+					     struct station_parameters *params)
-+{
-+	struct cfg80211_registered_device *rdev = info->user_ptr[0];
-+	int idx;
-+
-+	if (info->attrs[NL80211_ATTR_STA_TX_POWER_SETTING]) {
-+		if (!rdev->ops->set_tx_power ||
-+		    !wiphy_ext_feature_isset(&rdev->wiphy,
-+					 NL80211_EXT_FEATURE_STA_TX_PWR))
-+			return -EOPNOTSUPP;
-+
-+		idx = NL80211_ATTR_STA_TX_POWER_SETTING;
-+		params->txpwr.type = nla_get_u8(info->attrs[idx]);
-+
-+		if (params->txpwr.type == NL80211_TX_POWER_LIMITED) {
-+			idx = NL80211_ATTR_STA_TX_POWER;
-+			params->txpwr.power = nla_get_s16(info->attrs[idx]);
-+		}
-+		params->sta_modify_mask |= STATION_PARAM_APPLY_STA_TXPOWER;
++	if (params->sta_modify_mask & STATION_PARAM_APPLY_STA_TXPOWER) {
++		sta->sta.txpwr.type = params->txpwr.type;
++		if (params->txpwr.type == NL80211_TX_POWER_LIMITED)
++			sta->sta.txpwr.power = params->txpwr.power;
++		ret = drv_sta_set_txpwr(local, sdata, sta);
++		if (ret)
++			return ret;
 +	}
 +
-+	return 0;
+ 	if (params->supported_rates) {
+ 		ieee80211_parse_bitrates(&sdata->vif.bss_conf.chandef,
+ 					 sband, params->supported_rates,
+diff --git a/net/mac80211/driver-ops.c b/net/mac80211/driver-ops.c
+index bb886e7..839c002 100644
+--- a/net/mac80211/driver-ops.c
++++ b/net/mac80211/driver-ops.c
+@@ -138,6 +138,27 @@ int drv_sta_state(struct ieee80211_local *local,
+ 	return ret;
+ }
+ 
++__must_check
++int drv_sta_set_txpwr(struct ieee80211_local *local,
++		      struct ieee80211_sub_if_data *sdata,
++		      struct sta_info *sta)
++{
++	int ret = -EOPNOTSUPP;
++
++	might_sleep();
++
++	sdata = get_bss_sdata(sdata);
++	if (!check_sdata_in_driver(sdata))
++		return -EIO;
++
++	trace_drv_sta_set_txpwr(local, sdata, &sta->sta);
++	if (local->ops->sta_set_txpwr)
++		ret = local->ops->sta_set_txpwr(&local->hw, &sdata->vif,
++						&sta->sta);
++	trace_drv_return_int(local, ret);
++	return ret;
 +}
 +
- static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
- {
- 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
-@@ -5497,6 +5527,10 @@ static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
- 				     NL80211_EXT_FEATURE_AIRTIME_FAIRNESS))
- 		return -EOPNOTSUPP;
+ void drv_sta_rc_update(struct ieee80211_local *local,
+ 		       struct ieee80211_sub_if_data *sdata,
+ 		       struct ieee80211_sta *sta, u32 changed)
+diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
+index ba3c07b..2cc5bb2 100644
+--- a/net/mac80211/driver-ops.h
++++ b/net/mac80211/driver-ops.h
+@@ -529,6 +529,11 @@ int drv_sta_state(struct ieee80211_local *local,
+ 		  enum ieee80211_sta_state old_state,
+ 		  enum ieee80211_sta_state new_state);
  
-+	err = nl80211_parse_sta_txpower_setting(info, &params);
-+	if (err)
-+		return err;
++__must_check
++int drv_sta_set_txpwr(struct ieee80211_local *local,
++		      struct ieee80211_sub_if_data *sdata,
++		      struct sta_info *sta);
 +
- 	/* Include parameters for TDLS peer (will check later) */
- 	err = nl80211_set_station_tdls(info, &params);
- 	if (err)
-@@ -5634,6 +5668,10 @@ static int nl80211_new_station(struct sk_buff *skb, struct genl_info *info)
- 				     NL80211_EXT_FEATURE_AIRTIME_FAIRNESS))
- 		return -EOPNOTSUPP;
+ void drv_sta_rc_update(struct ieee80211_local *local,
+ 		       struct ieee80211_sub_if_data *sdata,
+ 		       struct ieee80211_sta *sta, u32 changed);
+diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
+index 35ea0dc..c86e42a 100644
+--- a/net/mac80211/trace.h
++++ b/net/mac80211/trace.h
+@@ -828,6 +828,36 @@ TRACE_EVENT(drv_sta_state,
+ 	)
+ );
  
-+	err = nl80211_parse_sta_txpower_setting(info, &params);
-+	if (err)
-+		return err;
++TRACE_EVENT(drv_sta_set_txpwr,
++	TP_PROTO(struct ieee80211_local *local,
++		 struct ieee80211_sub_if_data *sdata,
++		 struct ieee80211_sta *sta),
 +
- 	err = nl80211_parse_sta_channel_info(info, &params);
- 	if (err)
- 		return err;
++	TP_ARGS(local, sdata, sta),
++
++	TP_STRUCT__entry(
++		LOCAL_ENTRY
++		VIF_ENTRY
++		STA_ENTRY
++		__field(s16, txpwr)
++		__field(u8, type)
++	),
++
++	TP_fast_assign(
++		LOCAL_ASSIGN;
++		VIF_ASSIGN;
++		STA_ASSIGN;
++		__entry->txpwr = sta->txpwr.power;
++		__entry->type = sta->txpwr.type;
++	),
++
++	TP_printk(
++		LOCAL_PR_FMT  VIF_PR_FMT  STA_PR_FMT " txpwr: %d type %d",
++		LOCAL_PR_ARG, VIF_PR_ARG, STA_PR_ARG,
++		__entry->txpwr,  __entry->type
++	)
++);
++
+ TRACE_EVENT(drv_sta_rc_update,
+ 	TP_PROTO(struct ieee80211_local *local,
+ 		 struct ieee80211_sub_if_data *sdata,
 -- 
 2.7.4
 
