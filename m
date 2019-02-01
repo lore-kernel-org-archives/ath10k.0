@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpOOj-0008Ia-G1
- for ath10k@lists.infradead.org; Fri, 01 Feb 2019 02:17:42 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: reduce transmit msdu count
-Date: Fri,  1 Feb 2019 10:17:09 +0800
-Message-Id: <1548987429-14008-1-git-send-email-wgong@codeaurora.org>
+ id 1gpRTG-0002y1-5K
+ for ath10k@lists.infradead.org; Fri, 01 Feb 2019 05:34:35 +0000
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Subject: [PATCH] ath10k: Add a condtion to fill the LDPC capability correctly
+Date: Fri,  1 Feb 2019 11:04:22 +0530
+Message-Id: <1548999262-25353-1-git-send-email-svishnoi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,71 +21,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-From: Alagu Sankar <alagusankar@silex-india.com>
+The firmware advertises the LDPC support information for HT in
+HT capability info in the wmi service ready event. To provide
+granularity, firmware now advertises WMI_HT_CAP_RX_LDPC and
+WMI_HT_CAP_TX_LDPC separately. To support LDPC, host should
+also check for WMI_HT_CAP_RX_LDPC and WMI_HT_CAP_TX_LDPC in HT
+capabilities.
 
-Reduce the transmit MSDU count for SDIO, to match with the descriptors
-as used by the firmware. This also acts as a high watermark level for
-transmit. Too many packets to the firmware results in transmit overflow
-interrupt.
+Add a condition to existing logic in host to know whether firmware
+supports LDPC or not.
 
-It only affect SDIO chip, it will not cause functionaly changes to
-other hardware.
+Tested HW: WCN3990
+Tested SW: WLAN.HL.2.0
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00005-QCARMSWP-1.
-
-Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c    | 6 +++++-
- drivers/net/wireless/ath/ath10k/hw.h      | 1 +
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
- 3 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ drivers/net/wireless/ath/ath10k/wmi.h | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 22cbe9a..fee4ec1 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2309,7 +2309,11 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
- 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
--		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
-+		if (ar->hif.bus == ATH10K_BUS_SDIO)
-+			ar->htt.max_num_pending_tx =
-+				TARGET_TLV_NUM_MSDU_DESC_HL;
-+		else
-+			ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
- 		ar->wow.max_num_patterns = TARGET_TLV_NUM_WOW_PATTERNS;
- 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
- 			WMI_STAT_PEER;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 1b5da27..c012523 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -724,6 +724,7 @@ struct ath10k_hw_ops {
- #define TARGET_TLV_NUM_TDLS_VDEVS		1
- #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
-+#define TARGET_TLV_NUM_MSDU_DESC_HL		64
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
- #define TARGET_TLV_MGMT_NUM_MSDU_DESC		(50)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e49b367..1645b1e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4549,7 +4549,8 @@ static struct ieee80211_sta_ht_cap ath10k_get_ht_cap(struct ath10k *ar)
+ 		ht_cap.cap |= stbc;
+ 	}
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index ad4114a..35fb852 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1611,7 +1611,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(0);
- 	cfg->vow_config = __cpu_to_le32(0);
- 	cfg->gtk_offload_max_vdev = __cpu_to_le32(2);
--	cfg->num_msdu_desc = __cpu_to_le32(TARGET_TLV_NUM_MSDU_DESC);
-+	cfg->num_msdu_desc = __cpu_to_le32(ar->htt.max_num_pending_tx);
- 	cfg->max_frag_entries = __cpu_to_le32(2);
- 	cfg->num_tdls_vdevs = __cpu_to_le32(TARGET_TLV_NUM_TDLS_VDEVS);
- 	cfg->num_tdls_conn_table_entries = __cpu_to_le32(0x20);
+-	if (ar->ht_cap_info & WMI_HT_CAP_LDPC)
++	if (ar->ht_cap_info & WMI_HT_CAP_LDPC || (ar->ht_cap_info &
++	    WMI_HT_CAP_RX_LDPC && (ar->ht_cap_info & WMI_HT_CAP_TX_LDPC)))
+ 		ht_cap.cap |= IEEE80211_HT_CAP_LDPC_CODING;
+ 
+ 	if (ar->ht_cap_info & WMI_HT_CAP_L_SIG_TXOP_PROT)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 427ca79..0aca84e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2076,6 +2076,8 @@ enum wmi_channel_change_cause {
+ #define WMI_HT_CAP_MPDU_DENSITY           0x0700   /* MPDU Density */
+ #define WMI_HT_CAP_MPDU_DENSITY_MASK_SHIFT 8
+ #define WMI_HT_CAP_HT40_SGI               0x0800
++#define WMI_HT_CAP_RX_LDPC                0x1000   /* LDPC RX support */
++#define WMI_HT_CAP_TX_LDPC                0x2000   /* LDPC TX support */
+ 
+ #define WMI_HT_CAP_DEFAULT_ALL (WMI_HT_CAP_ENABLED       | \
+ 				WMI_HT_CAP_HT20_SGI      | \
 -- 
 1.9.1
 
