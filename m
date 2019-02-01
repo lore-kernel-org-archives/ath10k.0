@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpRTG-0002y1-5K
- for ath10k@lists.infradead.org; Fri, 01 Feb 2019 05:34:35 +0000
+ id 1gpRVE-0004hk-Ob
+ for ath10k@lists.infradead.org; Fri, 01 Feb 2019 05:36:46 +0000
 From: Surabhi Vishnoi <svishnoi@codeaurora.org>
-Subject: [PATCH] ath10k: Add a condtion to fill the LDPC capability correctly
-Date: Fri,  1 Feb 2019 11:04:22 +0530
-Message-Id: <1548999262-25353-1-git-send-email-svishnoi@codeaurora.org>
+Subject: [PATCH] ath10k: Fill tx_duration for each peer in Tx stats per STA
+Date: Fri,  1 Feb 2019 11:06:30 +0530
+Message-Id: <1548999390-25576-1-git-send-email-svishnoi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +23,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-The firmware advertises the LDPC support information for HT in
-HT capability info in the wmi service ready event. To provide
-granularity, firmware now advertises WMI_HT_CAP_RX_LDPC and
-WMI_HT_CAP_TX_LDPC separately. To support LDPC, host should
-also check for WMI_HT_CAP_RX_LDPC and WMI_HT_CAP_TX_LDPC in HT
-capabilities.
-
-Add a condition to existing logic in host to know whether firmware
-supports LDPC or not.
+Firmware sends the tx_duration for each in HTT_T2H_MSG_TYPE_PEER_STATS
+msg. Fill the tx_duration sent by firmware in the tx stats information
+per STA.
 
 Tested HW: WCN3990
-Tested SW: WLAN.HL.2.0
+Tested FW: WLAN.HL.2.0
 
 Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- drivers/net/wireless/ath/ath10k/wmi.h | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e49b367..1645b1e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4549,7 +4549,8 @@ static struct ieee80211_sta_ht_cap ath10k_get_ht_cap(struct ath10k *ar)
- 		ht_cap.cap |= stbc;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index f42bac2..89d84dc 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2975,6 +2975,8 @@ static inline s8 ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
+ 		STATS_OP_FMT(RETRY).rate_table[0][idx] += pstats->retry_bytes;
+ 		STATS_OP_FMT(RETRY).rate_table[1][idx] += pstats->retry_pkts;
  	}
++
++	tx_stats->tx_duration += pstats->duration;
+ }
  
--	if (ar->ht_cap_info & WMI_HT_CAP_LDPC)
-+	if (ar->ht_cap_info & WMI_HT_CAP_LDPC || (ar->ht_cap_info &
-+	    WMI_HT_CAP_RX_LDPC && (ar->ht_cap_info & WMI_HT_CAP_TX_LDPC)))
- 		ht_cap.cap |= IEEE80211_HT_CAP_LDPC_CODING;
+ static void
+@@ -3141,6 +3143,7 @@ static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
+ 		p_tx_stats->succ_pkts = __le16_to_cpu(tx_stats->succ_pkts);
+ 		p_tx_stats->retry_pkts = __le16_to_cpu(tx_stats->retry_pkts);
+ 		p_tx_stats->failed_pkts = __le16_to_cpu(tx_stats->failed_pkts);
++		p_tx_stats->duration = __le16_to_cpu(tx_stats->tx_duration);
  
- 	if (ar->ht_cap_info & WMI_HT_CAP_L_SIG_TXOP_PROT)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 427ca79..0aca84e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2076,6 +2076,8 @@ enum wmi_channel_change_cause {
- #define WMI_HT_CAP_MPDU_DENSITY           0x0700   /* MPDU Density */
- #define WMI_HT_CAP_MPDU_DENSITY_MASK_SHIFT 8
- #define WMI_HT_CAP_HT40_SGI               0x0800
-+#define WMI_HT_CAP_RX_LDPC                0x1000   /* LDPC RX support */
-+#define WMI_HT_CAP_TX_LDPC                0x2000   /* LDPC TX support */
- 
- #define WMI_HT_CAP_DEFAULT_ALL (WMI_HT_CAP_ENABLED       | \
- 				WMI_HT_CAP_HT20_SGI      | \
+ 		ath10k_update_per_peer_tx_stats(ar, sta, p_tx_stats);
+ 	}
 -- 
 1.9.1
 
