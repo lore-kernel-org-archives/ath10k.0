@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqgNV-0006dk-Jf
- for ath10k@lists.infradead.org; Mon, 04 Feb 2019 15:41:47 +0000
+ id 1gqgQv-0000Ea-UU
+ for ath10k@lists.infradead.org; Mon, 04 Feb 2019 15:45:19 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH] ath10k: implement set_base_macaddr to fix rx-bssid mask
  in multiple APs conf
 References: <20190114153558.972-1-chunkeey@gmail.com>
-Date: Mon, 04 Feb 2019 17:41:39 +0200
+Date: Mon, 04 Feb 2019 17:45:12 +0200
 In-Reply-To: <20190114153558.972-1-chunkeey@gmail.com> (Christian Lamparter's
  message of "Mon, 14 Jan 2019 16:35:58 +0100")
-Message-ID: <87y36vd0i4.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87tvhjd0c7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -64,11 +64,7 @@ Christian Lamparter <chunkeey@gmail.com> writes:
 > The pdev_set_base_macaddr_cmdid is already declared for all devices
 > and version. The driver just needed the support code for this
 > function.
-
-I prefer listing hardware and firmware version(s) tested in the commit
-log. That way it's easier to understand and lates track how this is
-supposed to work.
-
+>
 > BugLink: https://lists.openwrt.org/pipermail/openwrt-devel/2018-November/014595.html
 > Fixes: 9d5804662ce1 ("ath10k: retrieve MAC address from system firmware if provided")
 > Cc: Brian Norris <briannorris@chromium.org>
@@ -76,71 +72,26 @@ supposed to work.
 > Cc: Felix Fietkau <nbd@nbd.name>
 > Cc: Mathias Kresin <dev@kresin.me>
 > Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
-> ---
->
-> WARNING: line over 80 characters
-> L85: FILE: drivers/net/wireless/ath/ath10k/wmi-ops.h:68:
-> +                                 const u8 macaddr[ETH_ALEN]);
->
-> The function parameter has been aligned to match other functions
-> parameters that extend over 80 characters.
 
-That's fine. In my ath10k-check script I have max-line-lenght 90 chars
-anyway.
+[...]
 
-https://github.com/qca/qca-swiss-army-knife/blob/master/tools/scripts/ath10k/ath10k-check
-
-> @@ -8885,6 +8904,7 @@ static const struct wmi_ops wmi_ops = {
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2649,6 +2649,13 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+>  		goto err_hif_stop;
+>  	}
 >  
->  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->  	.gen_pdev_set_rd = ath10k_wmi_op_gen_pdev_set_rd,
->  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->  	.gen_init = ath10k_wmi_op_gen_init,
-> @@ -8960,6 +8980,7 @@ static const struct wmi_ops wmi_10_1_ops = {
->  
->  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->  	.gen_stop_scan = ath10k_wmi_op_gen_stop_scan,
->  	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
-> @@ -9032,6 +9053,7 @@ static const struct wmi_ops wmi_10_2_ops = {
->  
->  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->  	.gen_stop_scan = ath10k_wmi_op_gen_stop_scan,
->  	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
+> +	status = ath10k_wmi_pdev_set_base_macaddr(ar, ar->mac_addr);
+> +	if (status) {
+> +		ath10k_err(ar,
+> +			   "failed to set base mac address: %d\n", status);
+> +		goto err_hif_stop;
+> +	}
 
-These are in practise obsolete WMI interfaces so not sure if it makes it
-worth to support this parameter in them. But on the other hand it won't
-hurt either, so dunno.
-
-> @@ -9115,6 +9137,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
->  	.gen_peer_create = ath10k_wmi_op_gen_peer_create,
->  	.gen_peer_delete = ath10k_wmi_op_gen_peer_delete,
->  	.gen_peer_flush = ath10k_wmi_op_gen_peer_flush,
-> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->  	.gen_peer_set_param = ath10k_wmi_op_gen_peer_set_param,
->  	.gen_set_psmode = ath10k_wmi_op_gen_set_psmode,
->  	.gen_set_sta_ps = ath10k_wmi_op_gen_set_sta_ps,
-
-This is only used by QCA988X. Did you test with that? If not, IMHO
-better not to enable it for 10.2.4 until it's tested.
-
-> @@ -9166,6 +9189,7 @@ static const struct wmi_ops wmi_10_4_ops = {
->  
->  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->  	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
->  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->  	.gen_init = ath10k_wmi_10_4_op_gen_init,
-
-This looks fine.
+Oh, and as the new parameter is not supported with WMI TLV interface
+(QCA6174, WCN3990 etc) this will print an error on those. I think you
+need to check for -EOPNOTSUPP and then just ignore the error on that
+case. IIRC we have similar checks elsewhere in ath10k.
 
 -- 
 Kalle Valo
