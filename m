@@ -1,28 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqj5K-00035R-0J
- for ath10k@lists.infradead.org; Mon, 04 Feb 2019 18:35:26 +0000
-Received: by mail-ed1-x541.google.com with SMTP id b3so791482ede.1
- for <ath10k@lists.infradead.org>; Mon, 04 Feb 2019 10:33:19 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com.
- [209.85.208.42])
- by smtp.gmail.com with ESMTPSA id s3sm4488816edm.31.2019.02.04.10.32.33
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 04 Feb 2019 10:32:34 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id h50so759819ede.5
- for <ath10k@lists.infradead.org>; Mon, 04 Feb 2019 10:32:33 -0800 (PST)
+ id 1gqlIs-0001DL-EP
+ for ath10k@lists.infradead.org; Mon, 04 Feb 2019 20:57:20 +0000
+Received: by mail-wr1-x441.google.com with SMTP id l9so1338776wrt.13
+ for <ath10k@lists.infradead.org>; Mon, 04 Feb 2019 12:57:17 -0800 (PST)
+From: Christian Lamparter <chunkeey@gmail.com>
+Subject: [PATCH v2] ath10k: implement set_base_macaddr to fix rx-bssid mask in
+ multiple APs conf
+Date: Mon,  4 Feb 2019 21:57:14 +0100
+Message-Id: <20190204205714.23858-1-chunkeey@gmail.com>
 MIME-Version: 1.0
-References: <20190114153558.972-1-chunkeey@gmail.com>
- <87tvhjd0c7.fsf@kamboji.qca.qualcomm.com>
- <4891660.4ehrp1WKpm@debian64>
-In-Reply-To: <4891660.4ehrp1WKpm@debian64>
-From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 4 Feb 2019 10:32:21 -0800
-Message-ID: <CA+ASDXP5KFmsUXuOC2WfgBQX4VGAT7dqCHUTmPguxgeveYU5tA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: implement set_base_macaddr to fix rx-bssid mask
- in multiple APs conf
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,50 +23,190 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mathias Kresin <dev@kresin.me>, Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, Brian Norris <briannorris@chromium.org>, Mathias Kresin <dev@kresin.me>, Felix Fietkau <nbd@nbd.name>
 
-On Mon, Feb 4, 2019 at 10:10 AM Christian Lamparter <chunkeey@gmail.com> wrote:
-> On Monday, February 4, 2019 4:45:12 PM CET Kalle Valo wrote:
-> > Christian Lamparter <chunkeey@gmail.com> writes:
-> > > --- a/drivers/net/wireless/ath/ath10k/core.c
-> > > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> > > @@ -2649,6 +2649,13 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
-> > >             goto err_hif_stop;
-> > >     }
-> > >
-> > > +   status = ath10k_wmi_pdev_set_base_macaddr(ar, ar->mac_addr);
-> > > +   if (status) {
-> > > +           ath10k_err(ar,
-> > > +                      "failed to set base mac address: %d\n", status);
-> > > +           goto err_hif_stop;
-> > > +   }
-> >
-> > Oh, and as the new parameter is not supported with WMI TLV interface
-> > (QCA6174, WCN3990 etc) this will print an error on those.
->
-> This also means that Brian won't be able to test/verify this anyway?
+Many integrated QCA9984 WiFis in various IPQ806x platform routers
+from various vendors (Netgear R7800, ZyXEL NBG6817, TP-LINK C2600,
+etc.) have either blank, bogus or non-unique MAC-addresses in
+their calibration data.
 
-Well, I'd be able to tell you if this started dumping new errors to the log :)
+As a result, OpenWrt utilizes a discouraged binary calibration data
+patching method that allows to modify the device's MAC-addresses right
+at the source. This is because the ath10k' firmware extracts the MAC
+address from the supplied radio/calibration data and issues a response
+to the ath10k linux driver. Which was designed to take the main MAC in
+ath10k_wmi_event_ready().
 
-And in fact, it seems this crashes my firmware:
+Part of the "setting an alternate MAC" issue was already tackled by a
+patch from Brian Norris:
+commit 9d5804662ce1
+("ath10k: retrieve MAC address from system firmware if provided")
+by allowing the option to specify an alternate MAC-address with the
+established device_get_mac_address() function which extracts the right
+address from DeviceTree/fwnode mac-address or local-mac-address
+properties and saves it for later.
 
-[  150.091401] qcom-q6v5-mss 4080000.remoteproc: fatal error received:
-err_qdi.c:456:EF:wlan_process:1:cmnos_thread.c:3921:Asserted in
-wlan_dev.c:WLAN_GET_MAC_ID_FROM_WMI_PDEV_ID:536
+However, Ben Greear noted that the Qualcomm's ath10k firmware is liable
+to not properly calculate its rx-bssid mask in this case. This can cause
+issues in the popluar "multiple AP with a single ath10k instance"
+configurations.
 
-Note that I'm running WCN3990, and I haven't configure any sort of PD
-restart -- so any WiFi firmware assertions/crashes take down the
-entire modem/WiFi.
+To improve MAC address handling, Felix Fietkau suggested to call
+pdev_set_base_macaddr_cmdid before bringing up the first vif and
+use the first vif MAC address there. Which is in ath10k_core_start().
 
-IOW:
+This patch implement Felix Fietkau's request to
+"call pdev_set_base_macaddr_cmdid before bringing up the first vif".
+The pdev_set_base_macaddr_cmdid is already declared for all devices
+and version. The driver just needed the support code for this
+function.
 
-Tested-and-found-wanting-by: Brian Norris <briannorris@chromium.org>
+Tested on:
+QCA9880/CUS223, firmwares: 10.2.4.13-2, 10.2.4.70.44, 10.2.4-1.0-00041
+QCA9887/MR33 firmware:10.2.4-1.0-00033
+QCA4019/RT-AC58U firmware: 10.4-3.4-00104, 10.4-3.5.3-00057
+QCA9984/R7800 firmware: Candela Technologies (CT) Firmware
 
-Willing to test a v2!
+BugLink: https://lists.openwrt.org/pipermail/openwrt-devel/2018-November/014595.html
+Fixes: 9d5804662ce1 ("ath10k: retrieve MAC address from system firmware if provided")
+Cc: Brian Norris <briannorris@chromium.org>
+Cc: Ben Greear <greearb@candelatech.com>
+Cc: Felix Fietkau <nbd@nbd.name>
+Cc: Mathias Kresin <dev@kresin.me>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
 
-Regards,
-Brian
+---
+
+Changed from v1:
+	- removed support for obsolete, untested firmwares
+	- removed unsupported TLV ops
+	- don't error-out on unsupported platforms
+---
+ drivers/net/wireless/ath/ath10k/core.c    |  7 +++++++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 18 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     | 21 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  4 ++++
+ 4 files changed, 50 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 399b501f3c3c..dd980af04ed6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2649,6 +2649,13 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		goto err_hif_stop;
+ 	}
+ 
++	status = ath10k_wmi_pdev_set_base_macaddr(ar, ar->mac_addr);
++	if (status && status != -EOPNOTSUPP) {
++		ath10k_err(ar,
++			   "failed to set base mac address: %d\n", status);
++		goto err_hif_stop;
++	}
++
+ 	/* Some firmware revisions do not properly set up hardware rx filter
+ 	 * registers.
+ 	 *
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 04663076d27a..4f8c7e402e6f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -66,6 +66,8 @@ struct wmi_ops {
+ 
+ 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
+ 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
++	struct sk_buff *(*gen_pdev_set_base_macaddr)(struct ath10k *ar,
++						     const u8 macaddr[ETH_ALEN]);
+ 	struct sk_buff *(*gen_pdev_set_rd)(struct ath10k *ar, u16 rd, u16 rd2g,
+ 					   u16 rd5g, u16 ctl2g, u16 ctl5g,
+ 					   enum wmi_dfs_region dfs_reg);
+@@ -506,6 +508,22 @@ ath10k_wmi_pdev_set_regdomain(struct ath10k *ar, u16 rd, u16 rd2g, u16 rd5g,
+ 				   ar->wmi.cmd->pdev_set_regdomain_cmdid);
+ }
+ 
++static inline int
++ath10k_wmi_pdev_set_base_macaddr(struct ath10k *ar, const u8 macaddr[ETH_ALEN])
++{
++	struct sk_buff *skb;
++
++	if (!ar->wmi.ops->gen_pdev_set_base_macaddr)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_pdev_set_base_macaddr(ar, macaddr);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send(ar, skb,
++				   ar->wmi.cmd->pdev_set_base_macaddr_cmdid);
++}
++
+ static inline int
+ ath10k_wmi_pdev_suspend_target(struct ath10k *ar, u32 suspend_opt)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 8e236d158ca6..1b9b9f10ad5e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -6239,6 +6239,25 @@ int ath10k_wmi_connect(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_op_gen_pdev_set_base_macaddr(struct ath10k *ar,
++					const u8 macaddr[ETH_ALEN])
++{
++	struct wmi_pdev_set_base_macaddr_cmd *cmd;
++	struct sk_buff *skb;
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	cmd = (struct wmi_pdev_set_base_macaddr_cmd *)skb->data;
++	ether_addr_copy(cmd->mac_addr.addr, macaddr);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi pdev basemac %pM\n", macaddr);
++	return skb;
++}
++
+ static struct sk_buff *
+ ath10k_wmi_op_gen_pdev_set_rd(struct ath10k *ar, u16 rd, u16 rd2g, u16 rd5g,
+ 			      u16 ctl2g, u16 ctl5g,
+@@ -9115,6 +9134,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	.gen_peer_create = ath10k_wmi_op_gen_peer_create,
+ 	.gen_peer_delete = ath10k_wmi_op_gen_peer_delete,
+ 	.gen_peer_flush = ath10k_wmi_op_gen_peer_flush,
++	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
+ 	.gen_peer_set_param = ath10k_wmi_op_gen_peer_set_param,
+ 	.gen_set_psmode = ath10k_wmi_op_gen_set_psmode,
+ 	.gen_set_sta_ps = ath10k_wmi_op_gen_set_sta_ps,
+@@ -9166,6 +9186,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
++	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
+ 	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
+ 	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
+ 	.gen_init = ath10k_wmi_10_4_op_gen_init,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 2034ccc7cc72..151abcb5ec35 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4083,6 +4083,10 @@ struct wmi_pdev_set_param_cmd {
+ 	__le32 param_value;
+ } __packed;
+ 
++struct wmi_pdev_set_base_macaddr_cmd {
++	struct wmi_mac_addr mac_addr;
++} __packed;
++
+ /* valid period is 1 ~ 60000ms, unit in millisecond */
+ #define WMI_PDEV_PARAM_CAL_PERIOD_MAX 60000
+ 
+-- 
+2.20.1
+
 
 _______________________________________________
 ath10k mailing list
