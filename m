@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqn8X-0005to-2J
- for ath10k@lists.infradead.org; Mon, 04 Feb 2019 22:54:48 +0000
-Received: by mail-ed1-x541.google.com with SMTP id p6so1433419eds.0
- for <ath10k@lists.infradead.org>; Mon, 04 Feb 2019 14:54:42 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com.
- [209.85.208.54])
- by smtp.gmail.com with ESMTPSA id j4sm1811920ejx.75.2019.02.04.14.54.39
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 04 Feb 2019 14:54:39 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id t6so126587edw.12
- for <ath10k@lists.infradead.org>; Mon, 04 Feb 2019 14:54:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20181107185643.240346-1-briannorris@chromium.org>
- <20190204164254.86E0860734@smtp.codeaurora.org>
-In-Reply-To: <20190204164254.86E0860734@smtp.codeaurora.org>
+ id 1gqp7s-0004Wv-GF
+ for ath10k@lists.infradead.org; Tue, 05 Feb 2019 01:02:14 +0000
+Received: by mail-pg1-x543.google.com with SMTP id z11so715638pgu.0
+ for <ath10k@lists.infradead.org>; Mon, 04 Feb 2019 17:02:12 -0800 (PST)
+Date: Mon, 4 Feb 2019 17:02:08 -0800
 From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 4 Feb 2019 14:54:27 -0800
-Message-ID: <CA+ASDXO4bMY9tWjeKND1+7yBC47XimNEohQEpyA-TZxgS7Xiiw@mail.gmail.com>
-Subject: Re: [PATCH REGRESSION] Revert "ath10k: add quiet mode support for
- QCA6174/QCA9377"
+Subject: Re: [PATCH] ath10k: Enable Factory Test Mode for WCN3990
+Message-ID: <20190205010207.GA219734@google.com>
+References: <1535526038-4299-1-git-send-email-pillair@codeaurora.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1535526038-4299-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +25,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Yu Wang <yyuwang@codeaurora.org>, Rakesh Pillai <pillair@codeaurora.org>, stable <stable@vger.kernel.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Mon, Feb 4, 2019 at 8:43 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> Brian Norris <briannorris@chromium.org> wrote:
->
-> > This reverts commit cfb353c0dc058bc1619cc226d3cbbda1f360bdd3.
-> >
-> > WCN3990 firmware does not yet implement this feature, and so it crashes
-> > like this:
-> >
-> >   fatal error received: err_qdi.c:456:EX:wlan_process:1:WLAN RT:207a:PC=b001b4f0
-> >
-> > This feature can be re-implemented with a proper service bitmap or other
-> > feature-discovery mechanism in the future. But it should not break
-> > working boards.
-> >
-> > Fixes: cfb353c0dc05 ("ath10k: add quiet mode support for QCA6174/QCA9377")
-> > Cc: Yu Wang <yyuwang@codeaurora.org>
-> > Cc: Rakesh Pillai <pillair@codeaurora.org>
-> > Cc: Govind Singh <govinds@codeaurora.org>
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Brian Norris <briannorris@chromium.org>
->
-> This regression should be fixed by (which is in v4.20):
->
-> 53884577fbce ath10k: skip sending quiet mode cmd for WCN3990
->
-> So this revert should not be needed anymore and I'll drop this.
+On Wed, Aug 29, 2018 at 12:30:38PM +0530, Rakesh Pillai wrote:
+> The support to put WCN3990 firmware into Factory
+> test mode is not present currently. The WCN3990
+> firmware can operate in Factory test mode based
+> on the mode it receives in the wlan enable message
+> from the host driver.
+> 
+> When the host driver is started in testmode send
+> the operating mode as UTF mode, to the WCN3990
+> firmware, in the wlan enable message to start the
+> firmware in Factory test mode.
+> 
+> Tested on: WCN3990
+> Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/ahb.c      |  3 ++-
+>  drivers/net/wireless/ath/ath10k/core.c     |  2 +-
+>  drivers/net/wireless/ath/ath10k/hif.h      |  7 ++++---
+>  drivers/net/wireless/ath/ath10k/mac.c      |  2 +-
+>  drivers/net/wireless/ath/ath10k/pci.c      |  3 ++-
+>  drivers/net/wireless/ath/ath10k/sdio.c     |  3 ++-
+>  drivers/net/wireless/ath/ath10k/snoc.c     | 20 ++++++++++++++++----
+>  drivers/net/wireless/ath/ath10k/testmode.c |  2 +-
+>  drivers/net/wireless/ath/ath10k/usb.c      |  3 ++-
+>  9 files changed, 31 insertions(+), 14 deletions(-)
 
-Yes, that seems to work for me. I'll probably replace the revert with
-the above in my downstream. Thanks!
+What ever happened here? I'm told this is useful, but I see no comments
+and it's marked Deferred in patchwork:
 
-Can't really be fixed now, but it would have been nice to have a Fixes
-tag on that one.
+https://patchwork.kernel.org/patch/10579559/
 
-Brian
+FWIW, it looks OK to me:
+
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 
 _______________________________________________
 ath10k mailing list
