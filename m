@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grkac-0000Z8-KP
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:23:45 +0000
-Subject: Re: [PATCH] ath10k: implement set_base_macaddr to fix rx-bssid mask
- in multiple APs conf
-References: <20190114153558.972-1-chunkeey@gmail.com>
- <87tvhjd0c7.fsf@kamboji.qca.qualcomm.com> <4891660.4ehrp1WKpm@debian64>
- <87womb8yw1.fsf@kamboji.qca.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <bd92e361-f6f3-cfd9-090d-6381134edfdb@candelatech.com>
-Date: Thu, 7 Feb 2019 06:23:26 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1grkcB-0001y8-VO
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:25:21 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: FW: [PATCH] ath10k: fix return value check in wake_tx_q op
+References: <20180506132500.16888-1-erik.stromdahl@gmail.com>
+ <6dc00772b826410e930306891fd13ed9@euamsexm01f.eu.qualcomm.com>
+ <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
+ <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
+Date: Thu, 07 Feb 2019 16:25:15 +0200
+In-Reply-To: <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
+ (yiboz@codeaurora.org's message of "Mon, 28 Jan 2019 15:01:50 +0800")
+Message-ID: <87sgwz8ylw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87womb8yw1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +22,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Christian Lamparter <chunkeey@gmail.com>
-Cc: Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, Mathias Kresin <dev@kresin.me>, ath10k@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
+To: yiboz <yiboz@codeaurora.org>
+Cc: erik.stromdahl@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+(please don't top post)
 
+yiboz <yiboz@codeaurora.org> writes:
 
-On 02/07/2019 06:19 AM, Kalle Valo wrote:
-> Christian Lamparter <chunkeey@gmail.com> writes:
+> We have met performance issue on our two-core system after applying
+> your patch. In WDS mode, we found that the peak throughput in TCP-DL
+> and UDP-DL dropped more than 10% compared with previous one. And in
+> some cases, though throughput stays the same, one CPU usage rises
+> about 20% which leads to 10% in total CPU usage. With your change, I
+> think driver will try its best to push as many packets as it can.
+> During this time, the driver's queue lock will be held for too much
+> time in one CPU and as a result, the other CPU will be blocked if it
+> wants to acquired the same lock. Working in this way seems not
+> efficiency.
 >
->> On Monday, February 4, 2019 4:45:12 PM CET Kalle Valo wrote:
->>> Christian Lamparter <chunkeey@gmail.com> writes:
->>>
->>>> @@ -8885,6 +8904,7 @@ static const struct wmi_ops wmi_ops = {
->>>>
->>>>  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->>>>  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
->>>> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->>>>  	.gen_pdev_set_rd = ath10k_wmi_op_gen_pdev_set_rd,
->>>>  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->>>>  	.gen_init = ath10k_wmi_op_gen_init,
->>>> @@ -8960,6 +8980,7 @@ static const struct wmi_ops wmi_10_1_ops = {
->>>>
->>>>  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->>>>  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
->>>> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->>>>  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->>>>  	.gen_stop_scan = ath10k_wmi_op_gen_stop_scan,
->>>>  	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
->>>> @@ -9032,6 +9053,7 @@ static const struct wmi_ops wmi_10_2_ops = {
->>>>
->>>>  	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
->>>>  	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
->>>> +	.gen_pdev_set_base_macaddr = ath10k_wmi_op_gen_pdev_set_base_macaddr,
->>>>  	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
->>>>  	.gen_stop_scan = ath10k_wmi_op_gen_stop_scan,
->>>>  	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
->>>
->>> These are in practise obsolete WMI interfaces so not sure if it makes it
->>> worth to support this parameter in them. But on the other hand it won't
->>> hurt either, so dunno.
->>
->> Ok. I looked what firmware interfaces (wmi_cmd_map) supported the
->> pdev_set_base_macaddr_cmdid and all did (including the old and tlv)
->> so I added the line everywhere I could.
->> As far as the support for the old firmwares goes: I don't think
->> anybody with a current ath10k is willingly still stuck on the 10.1,
->> 10.2 firmware. So, I might as well just remove those for 10_2, 10_1 and MAIN.
->
-> Yeah, that's the best. BTW I'm planning (or better hoping) to remove
-> 10.1, 10.2 and main WMI interfaces altogether. They are just making
-> these unnecessary complex.
+> So I think it is better to revert the change till we come up with a
+> new solution.
 
-My wave-1 firmware uses the 10.1 interface and it is used by a fair number of people,
-so please leave that one in place.
+I don't think reverting is a clear option at this stage because that
+again creates problems for SDIO. IIRC without this patch SDIO was
+sending one packet a time (or something like that, can't remember all
+the details right now).
 
-Thanks,
-Ben
+Why does this happen only WDS mode? Did you test other modes, like AP or
+client mode?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
