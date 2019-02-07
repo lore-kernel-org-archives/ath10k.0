@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grfhE-0002pR-94
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 09:10:13 +0000
+ id 1grfhy-0002yi-JY
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 09:10:59 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Add a condtion to fill the LDPC capability
- correctly
-References: <1548999262-25353-1-git-send-email-svishnoi@codeaurora.org>
- <877eefefh3.fsf@kamboji.qca.qualcomm.com>
- <b14e2139c794201664a49d36cc28ab48@codeaurora.org>
-Date: Thu, 07 Feb 2019 11:10:06 +0200
-In-Reply-To: <b14e2139c794201664a49d36cc28ab48@codeaurora.org> (Surabhi
- Vishnoi's message of "Wed, 06 Feb 2019 19:21:41 +0530")
-Message-ID: <87lg2s9d75.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fill tx_duration for each peer in Tx stats per STA
+References: <1548999390-25576-1-git-send-email-svishnoi@codeaurora.org>
+ <8736p3effe.fsf@kamboji.qca.qualcomm.com>
+ <ad4c09475713750aa1c6d2db30178de8@codeaurora.org>
+Date: Thu, 07 Feb 2019 11:10:54 +0200
+In-Reply-To: <ad4c09475713750aa1c6d2db30178de8@codeaurora.org> (Surabhi
+ Vishnoi's message of "Wed, 06 Feb 2019 19:23:02 +0530")
+Message-ID: <87h8dg9d5t.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -33,36 +32,26 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
 
-> On 2019-02-04 21:02, Kalle Valo wrote:
+> On 2019-02-04 21:03, Kalle Valo wrote:
 >> Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
 >>
->>> The firmware advertises the LDPC support information for HT in
->>> HT capability info in the wmi service ready event. To provide
->>> granularity, firmware now advertises WMI_HT_CAP_RX_LDPC and
->>> WMI_HT_CAP_TX_LDPC separately. To support LDPC, host should
->>> also check for WMI_HT_CAP_RX_LDPC and WMI_HT_CAP_TX_LDPC in HT
->>> capabilities.
->>>
->>> Add a condition to existing logic in host to know whether firmware
->>> supports LDPC or not.
+>>> Firmware sends the tx_duration for each in HTT_T2H_MSG_TYPE_PEER_STATS
+>>> msg. Fill the tx_duration sent by firmware in the tx stats information
+>>> per STA.
 >>>
 >>> Tested HW: WCN3990
->>> Tested SW: WLAN.HL.2.0
+>>> Tested FW: WLAN.HL.2.0
 >>
->> Can you give exact firmware version you tested, please? I'll add it to
->> the commit log.
->>
->> I'll also fix the typo "condtion" in the title.
+>> Same here, please let me know the firmware version so I can add it.
 >
 >
 > Hi Kalle,
 >
 > The Fw version tested are:
 > Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1,
-> WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
+>            WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
 
-Thanks. But please do not drop the lists, otherwise patchwork won't see
-this.
+Thanks. I'll add these.
 
 -- 
 Kalle Valo
