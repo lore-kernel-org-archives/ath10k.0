@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grko4-00062D-5D
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:37:37 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] ath10k: Handle bundled tx completion for
- management frames
+ id 1grktK-00083D-4s
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:43:03 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1548389402-10083-2-git-send-email-pillair@codeaurora.org>
-References: <1548389402-10083-2-git-send-email-pillair@codeaurora.org>
-Message-Id: <20190207143735.C0D3660131@smtp.codeaurora.org>
-Date: Thu,  7 Feb 2019 14:37:35 +0000 (UTC)
+Subject: Re: [PATCH] ath10k: fix incorrect multicast/broadcast rate setting
+References: <1544504171-19810-1-git-send-email-pradeepc@codeaurora.org>
+ <6a59f346-5c9b-190c-feef-39393d17933b@bowerswilkins.com>
+Date: Thu, 07 Feb 2019 16:42:57 +0200
+In-Reply-To: <6a59f346-5c9b-190c-feef-39393d17933b@bowerswilkins.com> (Peter
+ Oh's message of "Tue, 11 Dec 2018 19:22:38 +0000")
+Message-ID: <87lg2r8xse.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +24,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, Zhi Chen <zhichen@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+Peter Oh <peter.oh@bowerswilkins.com> writes:
 
-> WCN3990 supports sending tx completion for multiple
-> management frames bundled together in a single event.
-> 
-> Add support to handle the bundled tx completion
-> event for WCN3990.
-> 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> On 12/10/2018 08:56 PM, Pradeep Kumar Chitrapu wrote:
+>> From: Pradeep kumar Chitrapu <pradeepc@codeaurora.org>
+>>
+>> Invalid rate code is sent to firmware when multicast rate value of 0 is
+>> sent to driver indicating disabled case, causing broken mesh path.
+>> so fix that.
+>>
+>> Tested on QCA9984 with firmware 10.4-3.6.1-00827
+>>
+> Test data is too small. You need to provide at least QCA9880 and QCA4019 
+> data together which share ath10k for mesh.
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Pradeep, did you test those? Or someone else?
 
-cc123fac978f ath10k: Handle bundled tx completion for management frames
-543271334483 ath10k: Enable bundle tx compl for management frames in WCN3990
+But isn't the firmware almost the same on those hardware anyway?
 
 -- 
-https://patchwork.kernel.org/patch/10780541/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
