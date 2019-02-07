@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grl8V-00061l-Kd
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:58:45 +0000
+ id 1grm6A-0001j4-BE
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 16:00:24 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fill tx_duration for each peer in Tx stats per STA
+Subject: Re: [PATCH 1/2] ath10k: Assign 'n_cipher_suites = 11' for WCN3990 to
+ enable WPA3
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1548999390-25576-1-git-send-email-svishnoi@codeaurora.org>
-References: <1548999390-25576-1-git-send-email-svishnoi@codeaurora.org>
-Message-Id: <20190207145843.5A1436030D@smtp.codeaurora.org>
-Date: Thu,  7 Feb 2019 14:58:43 +0000 (UTC)
+In-Reply-To: <1548339697-17766-2-git-send-email-aambure@codeaurora.org>
+References: <1548339697-17766-2-git-send-email-aambure@codeaurora.org>
+Message-Id: <20190207160021.9936260734@smtp.codeaurora.org>
+Date: Thu,  7 Feb 2019 16:00:21 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +23,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+To: Abhishek Ambure <aambure@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
+Abhishek Ambure <aambure@codeaurora.org> wrote:
 
-> Firmware sends the tx_duration for each in HTT_T2H_MSG_TYPE_PEER_STATS
-> msg. Fill the tx_duration sent by firmware in the tx stats information
-> per STA.
+> Hostapd uses CCMP, GCMP & GCMP-256 as 'wpa_pairwise' option to run WPA3.
+> In WCN3990 firmware cipher suite numbers 9 to 11 are for CCMP,
+> GCMP & GCMP-256.
+> 
+> To enable CCMP, GCMP & GCMP-256 cipher suites in WCN3990 firmware,
+> host sets 'n_cipher_suites = 11' while initializing hardware parameters.
 > 
 > Tested HW: WCN3990
-> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1,
->            WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
+> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 > 
-> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+> Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+This issued a new warning:
 
-056550291d98 ath10k: fill tx_duration for each peer in Tx stats per STA
+drivers/net/wireless/ath/ath10k/core.c:564:18: warning: Initializer entry defined twice
+drivers/net/wireless/ath/ath10k/core.c:574:18:   also defined here
+
+I fixed that in the pending branch:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=de1c369206cf48b73f74d5bf904ee26da485c84f
 
 -- 
-https://patchwork.kernel.org/patch/10791825/
+https://patchwork.kernel.org/patch/10779097/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
