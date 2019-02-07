@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grfhy-0002yi-JY
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 09:10:59 +0000
+ id 1grkRo-0004vt-O3
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:14:38 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fill tx_duration for each peer in Tx stats per STA
-References: <1548999390-25576-1-git-send-email-svishnoi@codeaurora.org>
- <8736p3effe.fsf@kamboji.qca.qualcomm.com>
- <ad4c09475713750aa1c6d2db30178de8@codeaurora.org>
-Date: Thu, 07 Feb 2019 11:10:54 +0200
-In-Reply-To: <ad4c09475713750aa1c6d2db30178de8@codeaurora.org> (Surabhi
- Vishnoi's message of "Wed, 06 Feb 2019 19:23:02 +0530")
-Message-ID: <87h8dg9d5t.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Enable Factory Test Mode for WCN3990
+References: <1535526038-4299-1-git-send-email-pillair@codeaurora.org>
+ <20190205010207.GA219734@google.com>
+Date: Thu, 07 Feb 2019 16:14:31 +0200
+In-Reply-To: <20190205010207.GA219734@google.com> (Brian Norris's message of
+ "Mon, 4 Feb 2019 17:02:08 -0800")
+Message-ID: <871s4jado8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,33 +24,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Surabhi Vishnoi <svishnoi@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
 
-+ lists
+Brian Norris <briannorris@chromium.org> writes:
 
-Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
-
-> On 2019-02-04 21:03, Kalle Valo wrote:
->> Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
->>
->>> Firmware sends the tx_duration for each in HTT_T2H_MSG_TYPE_PEER_STATS
->>> msg. Fill the tx_duration sent by firmware in the tx stats information
->>> per STA.
->>>
->>> Tested HW: WCN3990
->>> Tested FW: WLAN.HL.2.0
->>
->> Same here, please let me know the firmware version so I can add it.
+> On Wed, Aug 29, 2018 at 12:30:38PM +0530, Rakesh Pillai wrote:
+>> The support to put WCN3990 firmware into Factory
+>> test mode is not present currently. The WCN3990
+>> firmware can operate in Factory test mode based
+>> on the mode it receives in the wlan enable message
+>> from the host driver.
+>> 
+>> When the host driver is started in testmode send
+>> the operating mode as UTF mode, to the WCN3990
+>> firmware, in the wlan enable message to start the
+>> firmware in Factory test mode.
+>> 
+>> Tested on: WCN3990
+>> Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1.
+>> 
+>> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/ahb.c      |  3 ++-
+>>  drivers/net/wireless/ath/ath10k/core.c     |  2 +-
+>>  drivers/net/wireless/ath/ath10k/hif.h      |  7 ++++---
+>>  drivers/net/wireless/ath/ath10k/mac.c      |  2 +-
+>>  drivers/net/wireless/ath/ath10k/pci.c      |  3 ++-
+>>  drivers/net/wireless/ath/ath10k/sdio.c     |  3 ++-
+>>  drivers/net/wireless/ath/ath10k/snoc.c     | 20 ++++++++++++++++----
+>>  drivers/net/wireless/ath/ath10k/testmode.c |  2 +-
+>>  drivers/net/wireless/ath/ath10k/usb.c      |  3 ++-
+>>  9 files changed, 31 insertions(+), 14 deletions(-)
 >
+> What ever happened here? I'm told this is useful, but I see no comments
+> and it's marked Deferred in patchwork:
 >
-> Hi Kalle,
->
-> The Fw version tested are:
-> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1,
->            WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
+> https://patchwork.kernel.org/patch/10579559/
 
-Thanks. I'll add these.
+Not sure, I guess it just got accidentally hidden with other patches.
+It's in new state now.
+
+> FWIW, it looks OK to me:
+>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+
+Thanks!
 
 -- 
 Kalle Valo
