@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grm6A-0001j4-BE
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 16:00:24 +0000
+ id 1grm7L-0001qN-GR
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 16:01:37 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k: Assign 'n_cipher_suites = 11' for WCN3990 to
- enable WPA3
+Subject: Re: [PATCH v3 2/3] ath10k: Disable interface pause wow config for
+ integrated chipset
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1548339697-17766-2-git-send-email-aambure@codeaurora.org>
-References: <1548339697-17766-2-git-send-email-aambure@codeaurora.org>
-Message-Id: <20190207160021.9936260734@smtp.codeaurora.org>
-Date: Thu,  7 Feb 2019 16:00:21 +0000 (UTC)
+In-Reply-To: <20190206121433.11606-3-govinds@codeaurora.org>
+References: <20190206121433.11606-3-govinds@codeaurora.org>
+Message-Id: <20190207160135.3D16F6047C@smtp.codeaurora.org>
+Date: Thu,  7 Feb 2019 16:01:35 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +23,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Ambure <aambure@codeaurora.org>
+To: Govind Singh <govinds@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Abhishek Ambure <aambure@codeaurora.org> wrote:
+Govind Singh <govinds@codeaurora.org> wrote:
 
-> Hostapd uses CCMP, GCMP & GCMP-256 as 'wpa_pairwise' option to run WPA3.
-> In WCN3990 firmware cipher suite numbers 9 to 11 are for CCMP,
-> GCMP & GCMP-256.
+> wow pause iface config controls the PCI D0/D3-WOW cases for pcie
+> bus state. Firmware does not expects WOW_IFACE_PAUSE_ENABLED config
+> for bus/link that cannot be suspended ex:snoc and does not trigger
+> common subsystem shutdown.
+> Disable interface pause wow config for integrated chipset(WCN3990)
+> for correct WOW configuration in the firmware.
 > 
-> To enable CCMP, GCMP & GCMP-256 cipher suites in WCN3990 firmware,
-> host sets 'n_cipher_suites = 11' while initializing hardware parameters.
+> Testing:
+>     Tested on WCN3990 HW.
+>     Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1.
 > 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 This issued a new warning:
 
-drivers/net/wireless/ath/ath10k/core.c:564:18: warning: Initializer entry defined twice
-drivers/net/wireless/ath/ath10k/core.c:574:18:   also defined here
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3327:41: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3327:41:    expected restricted __le32 [usertype] pause_iface_config
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3327:41:    got int
 
-I fixed that in the pending branch:
+I fixed it in the pending branch:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=de1c369206cf48b73f74d5bf904ee26da485c84f
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=f21da752a87f8fefdf97fcef565adce9c778fc5e
 
 -- 
-https://patchwork.kernel.org/patch/10779097/
+https://patchwork.kernel.org/patch/10799253/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
