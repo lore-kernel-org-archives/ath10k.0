@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grl4j-00047Q-My
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:54:51 +0000
+ id 1grl5U-0005Td-QP
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:55:38 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH][RESEND] ath10k: snoc: remove set but not used variable
- 'ar_snoc'
+Subject: Re: [PATCH] ath10k: do not return invalid pointers as a *dentry
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190130030900.18764-1-yuehaibing@huawei.com>
-References: <20190130030900.18764-1-yuehaibing@huawei.com>
-Message-Id: <20190207145449.66D0E60131@smtp.codeaurora.org>
-Date: Thu,  7 Feb 2019 14:54:49 +0000 (UTC)
+In-Reply-To: <20190131131556.GB19807@kroah.com>
+References: <20190131131556.GB19807@kroah.com>
+Message-Id: <20190207145536.8595D60131@smtp.codeaurora.org>
+Date: Thu,  7 Feb 2019 14:55:36 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +22,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-YueHaibing <yuehaibing@huawei.com> wrote:
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> Fixes gcc '-Wunused-but-set-variable' warning:
+> When calling debugfs functions, they can now return error values if
+> something went wrong.  If that happens, return a NULL as a *dentry to
+> the relay core instead of passing it an illegal pointer.
 > 
-> drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_tx_pipe_cleanup':
-> drivers/net/wireless/ath/ath10k/snoc.c:681:22: warning:
->  variable 'ar_snoc' set but not used [-Wunused-but-set-variable]
+> The relay core should be able to handle an illegal pointer, but add this
+> check to be safe.
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-f9a4b7f45ff5 ath10k: snoc: remove set but not used variable 'ar_snoc'
+0b38b4b44516 ath10k: do not return invalid pointers as a *dentry
 
 -- 
-https://patchwork.kernel.org/patch/10787609/
+https://patchwork.kernel.org/patch/10790493/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
