@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grl6T-0005cQ-DG
- for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:56:38 +0000
+ id 1grl7T-0005nv-8L
+ for ath10k@lists.infradead.org; Thu, 07 Feb 2019 14:57:40 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: reduce transmit msdu count
+Subject: Re: [PATCH] ath10k: Add a condtion to fill the LDPC capability
+ correctly
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1548987429-14008-1-git-send-email-wgong@codeaurora.org>
-References: <1548987429-14008-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190207145637.21B8F60247@smtp.codeaurora.org>
-Date: Thu,  7 Feb 2019 14:56:36 +0000 (UTC)
+In-Reply-To: <1548999262-25353-1-git-send-email-svishnoi@codeaurora.org>
+References: <1548999262-25353-1-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190207145738.E76C760264@smtp.codeaurora.org>
+Date: Thu,  7 Feb 2019 14:57:38 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
-> Reduce the transmit MSDU count for SDIO, to match with the descriptors
-> as used by the firmware. This also acts as a high watermark level for
-> transmit. Too many packets to the firmware results in transmit overflow
-> interrupt.
+> The firmware advertises the LDPC support information for HT in
+> HT capability info in the wmi service ready event. To provide
+> granularity, firmware now advertises WMI_HT_CAP_RX_LDPC and
+> WMI_HT_CAP_TX_LDPC separately. To support LDPC, host should
+> also check for WMI_HT_CAP_RX_LDPC and WMI_HT_CAP_TX_LDPC in HT
+> capabilities.
 > 
-> It only affect SDIO chip, it will not cause functionaly changes to
-> other hardware.
+> Add a condition to existing logic in host to know whether firmware
+> supports LDPC or not.
 > 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00005-QCARMSWP-1.
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1,
+>            WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
 > 
-> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-a73dbce3a6f4 ath10k: reduce transmit msdu count
+ff488d0ef1c2 ath10k: add a condition to fill the LDPC capability correctly
 
 -- 
-https://patchwork.kernel.org/patch/10791705/
+https://patchwork.kernel.org/patch/10791807/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
