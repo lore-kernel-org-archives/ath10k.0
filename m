@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs79r-0007uF-Vu
- for ath10k@lists.infradead.org; Fri, 08 Feb 2019 14:29:37 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH] ath10k: fix line length warning in ath10k_ce_alloc_dest_ring()
-Date: Fri,  8 Feb 2019 16:29:31 +0200
-Message-Id: <1549636171-32628-1-git-send-email-kvalo@codeaurora.org>
+ id 1gs7KL-0004wv-2P
+ for ath10k@lists.infradead.org; Fri, 08 Feb 2019 14:40:26 +0000
+MIME-Version: 1.0
+Date: Fri, 08 Feb 2019 20:10:23 +0530
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Enable Factory Test Mode for WCN3990
+In-Reply-To: <20190208141604.B2D266074F@smtp.codeaurora.org>
+References: <1535526038-4299-1-git-send-email-pillair@codeaurora.org>
+ <20190208141604.B2D266074F@smtp.codeaurora.org>
+Message-ID: <ab3140ba07ac91bc3729e9e2e31d9333@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,41 +19,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Commit 750afb08ca71 ("cross-tree: phase out dma_zalloc_coherent()") introduced
-a new checkpatch warning:
+Hi Kalle,
+I have checked the patch, and it is fine.
 
-drivers/net/wireless/ath/ath10k/ce.c:1602: line over 90 characters
+Thanks,
+Rakesh Pillai.
 
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/ce.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 8b4a9102d7eb..17ff65937136 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1599,7 +1599,8 @@ ath10k_ce_alloc_dest_ring(struct ath10k *ar, unsigned int ce_id,
- 	 */
- 	dest_ring->base_addr_owner_space_unaligned =
- 		dma_alloc_coherent(ar->dev,
--				   (nentries * sizeof(struct ce_desc) + CE_DESC_RING_ALIGN),
-+				   (nentries * sizeof(struct ce_desc) +
-+				    CE_DESC_RING_ALIGN),
- 				   &base_addr, GFP_KERNEL);
- 	if (!dest_ring->base_addr_owner_space_unaligned) {
- 		kfree(dest_ring);
--- 
-2.7.4
-
+On 2019-02-08 19:46, Kalle Valo wrote:
+> Rakesh Pillai <pillair@codeaurora.org> wrote:
+> 
+>> The support to put WCN3990 firmware into Factory
+>> test mode is not present currently. The WCN3990
+>> firmware can operate in Factory test mode based
+>> on the mode it receives in the wlan enable message
+>> from the host driver.
+>> 
+>> When the host driver is started in testmode send
+>> the operating mode as UTF mode, to the WCN3990
+>> firmware, in the wlan enable message to start the
+>> firmware in Factory test mode.
+>> 
+>> Tested on: WCN3990
+>> Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1.
+>> 
+>> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+>> Reviewed-by: Brian Norris <briannorris@chromium.org>
+>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> 
+> I was able to apply with 3-way merge but please double check the 
+> results:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ef562f95826f412c14f59ca916ff55931bed0813
+> 
+> Applying: ath10k: Enable Factory Test Mode for WCN3990
+> Using index info to reconstruct a base tree...
+> M       drivers/net/wireless/ath/ath10k/ahb.c
+> M       drivers/net/wireless/ath/ath10k/core.c
+> M       drivers/net/wireless/ath/ath10k/hif.h
+> M       drivers/net/wireless/ath/ath10k/mac.c
+> M       drivers/net/wireless/ath/ath10k/pci.c
+> M       drivers/net/wireless/ath/ath10k/sdio.c
+> M       drivers/net/wireless/ath/ath10k/snoc.c
+> M       drivers/net/wireless/ath/ath10k/usb.c
+> Falling back to patching base and 3-way merge...
+> Auto-merging drivers/net/wireless/ath/ath10k/usb.c
+> Auto-merging drivers/net/wireless/ath/ath10k/snoc.c
+> Auto-merging drivers/net/wireless/ath/ath10k/sdio.c
+> Auto-merging drivers/net/wireless/ath/ath10k/pci.c
+> Auto-merging drivers/net/wireless/ath/ath10k/mac.c
+> Auto-merging drivers/net/wireless/ath/ath10k/hif.h
+> Auto-merging drivers/net/wireless/ath/ath10k/core.c
+> Auto-merging drivers/net/wireless/ath/ath10k/ahb.c
 
 _______________________________________________
 ath10k mailing list
