@@ -1,16 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs7Md-0005j4-NW
- for ath10k@lists.infradead.org; Fri, 08 Feb 2019 14:43:04 +0000
+ id 1gs9aj-0002c8-1R
+ for ath10k@lists.infradead.org; Fri, 08 Feb 2019 17:05:44 +0000
+Received: by mail-ed1-x543.google.com with SMTP id g4so3382595eds.4
+ for <ath10k@lists.infradead.org>; Fri, 08 Feb 2019 09:05:28 -0800 (PST)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com.
+ [209.85.208.41])
+ by smtp.gmail.com with ESMTPSA id c12sm731174edi.52.2019.02.08.09.05.24
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 08 Feb 2019 09:05:25 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id o10so3328519edt.13
+ for <ath10k@lists.infradead.org>; Fri, 08 Feb 2019 09:05:24 -0800 (PST)
 MIME-Version: 1.0
-Date: Fri, 08 Feb 2019 20:12:35 +0530
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fix shadow register implementation for WCN3990
-In-Reply-To: <20190208141735.43AF360734@smtp.codeaurora.org>
-References: <1548755647-23356-1-git-send-email-pillair@codeaurora.org>
- <20190208141735.43AF360734@smtp.codeaurora.org>
-Message-ID: <566bdcf168c95646e1a0d2689649025d@codeaurora.org>
+References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
+ <20181115002836.GA71934@google.com>
+ <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
+ <20181115184333.GA87504@google.com> <87va4x8q2c.fsf@codeaurora.org>
+ <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
+ <87y36q75wr.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87y36q75wr.fsf@kamboji.qca.qualcomm.com>
+From: Brian Norris <briannorris@chromium.org>
+Date: Fri, 8 Feb 2019 09:05:11 -0800
+Message-ID: <CA+ASDXO8NujrORVLZMPbDy916cnzOvx_Bp8Vr-VvkbBwJvB97A@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +33,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>, Wen Gong <wgong@qti.qualcomm.com>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-Hi Kalle,
-I have checked the patch, and it is fine.
+On Fri, Feb 8, 2019 at 5:42 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+> No replies from anyone (including Wen) for 3 months about testing this
+> patch on anything else than QCA6174. So I'll drop this now, please
+> resubmit once test coverage is better.
 
-Thanks,
-Rakesh Pillai.
+I know this isn't exactly what you're asking for, but FWIW we've been
+using this since late November on all our QCA6174 products. No issues
+seen as far as I know, and we have seen some power savings.
 
-On 2019-02-08 19:47, Kalle Valo wrote:
-> Rakesh Pillai <pillair@codeaurora.org> wrote:
-> 
->> WCN3990 supports shadow registers write operation support
->> for copy engine for regular operation in powersave mode.
->> 
->> Since WCN3990 is a 64-bit target, the shadow register
->> implementation needs to be done in the copy engine handlers
->> for 64-bit target. Currently the shadow register implementation
->> is present in the 32-bit target handlers of copy engine.
->> 
->> Fix the shadow register copy engine write operation
->> implementation for 64-bit target(WCN3990).
->> 
->> Tested HW: WCN3990
->> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
->> 
->> Fixes: b7ba83f7c414 ("ath10k: add support for shadow register for 
->> WNC3990")
->> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> 
-> I was able to apply with 3-way merge but please double check the 
-> results:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=45112636f48a180c2867c78731ea28ac665495d9
-> 
-> Applying: ath10k: Fix shadow register implementation for WCN3990
-> Using index info to reconstruct a base tree...
-> M       drivers/net/wireless/ath/ath10k/ce.c
-> M       drivers/net/wireless/ath/ath10k/ce.h
-> Falling back to patching base and 3-way merge...
-> Auto-merging drivers/net/wireless/ath/ath10k/ce.h
-> Auto-merging drivers/net/wireless/ath/ath10k/ce.c
+Regards,
+Brian
 
 _______________________________________________
 ath10k mailing list
