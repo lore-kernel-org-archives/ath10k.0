@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs6ID-0007MY-Nk
- for ath10k@lists.infradead.org; Fri, 08 Feb 2019 13:34:11 +0000
+ id 1gs6Qb-0003IZ-M8
+ for ath10k@lists.infradead.org; Fri, 08 Feb 2019 13:42:51 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
-References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
- <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
- <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
- <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
- <e18e50cae69e44f4b9e4abb1fa110193@aptaiexm02f.ap.qualcomm.com>
- <877eea8kys.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 08 Feb 2019 15:34:04 +0200
-In-Reply-To: <877eea8kys.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Fri, 08 Feb 2019 15:32:11 +0200")
-Message-ID: <8736oy8kvn.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
+References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
+ <20181115002836.GA71934@google.com>
+ <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
+ <20181115184333.GA87504@google.com> <87va4x8q2c.fsf@codeaurora.org>
+ <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
+Date: Fri, 08 Feb 2019 15:42:44 +0200
+In-Reply-To: <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
+ (=?utf-8?Q?=22Micha=C5=82?= Kazior"'s message of "Fri, 16 Nov 2018 08:56:27
+ +0100")
+Message-ID: <87y36q75wr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,31 +24,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@qti.qualcomm.com>
-Cc: =?utf-8?Q?Micha=C5=82?= Kazior <kazikcz@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: =?utf-8?Q?Micha=C5=82?= Kazior <kazikcz@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, briannorris@chromium.org, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-Kalle Valo <kvalo@codeaurora.org> writes:
-
->> This change's purpose is to disallow user to trigger fw crash if the fw is not in a
->> Normal state.
->>
->> If the fw is in recovering state triggered by user's command or by fw, then it will
->> disallow user to run command to trigger fw crash again until fw become to a normal
->> State.
->
-> I agree with Michal here and his proposal about having a crash counter
-> sounds like a good to me. So I'm dropping this patch.
-
-Bah, missed a word again. I meant "sounds like a good idea to me".
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+TWljaGHFgiBLYXppb3IgPGthemlrY3pAZ21haWwuY29tPiB3cml0ZXM6Cgo+IE9uIEZyaSwgMTYg
+Tm92IDIwMTggYXQgMDg6MDAsIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cm90
+ZToKPj4KPj4gQnJpYW4gTm9ycmlzIDxicmlhbm5vcnJpc0BjaHJvbWl1bS5vcmc+IHdyaXRlczoK
+Pj4gPiBPbiBUaHUsIE5vdiAxNSwgMjAxOCBhdCAwNjozODoyNUFNICswMDAwLCBXZW4gR29uZyB3
+cm90ZToKPj4gPj4gPgo+PiA+PiA+IElzIHRoZXJlIHNvbWUgcmVhc29uIEwxIHdhcyBkaXNhYmxl
+ZCBpbiB0aGUgZmlyc3QgcGxhY2U/IFdhcyBpdCBrbm93biB0byBiZQo+PiA+PiA+IHVucmVsaWFi
+bGU/Cj4+ID4+Cj4+ID4+IEhpIEJyaWFuLAo+PiA+PiBJdCBpcyBhIEJVRyBmb3IgcG93ZXIsIGFu
+ZCBpdCBpcyBub3QgY29uc2lkZXJlZCB0aGlzIEJVRyBiZWZvcmUuCj4+ID4+IFNvIHRoaXMgY2hh
+bmdlIHdpbGwgZml4IHRoZSBidWcuCj4+ID4KPj4gPiBJIHVuZGVyc3RhbmQgdGhhdCB0aGUgZXhp
+c3RpbmcgYmVoYXZpb3IgaXMgc3Vib3B0aW1hbCBmb3IgcG93ZXIsIGJ1dCBvbgo+PiA+IHRoZSBv
+dGhlciBoYW5kLCBjb2RlIHRoYXQgZ29lcyBvdXQgb2YgaXRzIHdheSB0byAqY2xlYXIqIHRoZSBM
+MSBmbGFnCj4+ID4gZG9lc24ndCBqdXN0IHBvcCB1cCBvdXQgb2Ygbm93aGVyZS4gU29tZWJvZHkg
+Y2xlYXJseSB3cm90ZSB0aGF0ISBJZiBpdAo+PiA+IGp1c3QgbWVhbnQgIndlIGRpZG4ndCB2ZXJp
+ZnkgTDEgYXQgZmlyc3QiLCB0aGVuIG1heWJlIGl0J3MgZmluZSB0bwo+PiA+IGVuYWJsZSBpdCB1
+bmNvbmRpdGlvbmFsbHkgYW5kIHNlZSB3aGF0IGhhcHBlbnMsIGJ1dCBpZiBpdCBtZWFudCAid2UK
+Pj4gPiB0cmllZCBMMSBvbiBzb21lIG9sZCBjaGlwIFhYWFggYW5kIGl0IGNhdXNlZCBwcm9ibGVt
+cyIsIHRoZW4gaXQgd291bGQgYmUKPj4gPiBuaWNlIHRvIGtub3cgd2hhdCB0aG9zZSBwcm9ibGVt
+cyB3ZXJlLgo+PiA+Cj4+ID4gT3IgbWF5YmUgdGhhdCBpcyBoYXJkIHRvIGZpZ3VyZSBvdXQsIGdp
+dmVuIHRoZXJlJ3Mgbm8gcHVibGljIGdpdCBoaXN0b3J5Cj4+ID4gdHJhY2tpbmcgdGhlIG9yaWdp
+bmFsIGNvZGUsIGFuZCB3ZSBqdXN0IG5lZWQgdG8gdHJ5IGl0IG91dC4KPj4KPj4gWWVhaCwgaXQg
+c2VlbXMgTDEgd2FzIGRpc2FibGVkIGFscmVhZHkgb24gdGhlIGZpcnN0IGF0aDEwayBjb21taXQ6
+Cj4+Cj4+IDVlM2RkMTU3ZDdlNzAgKEthbGxlIFZhbG8gMjAxMy0wNi0xMiAyMDo1MjoxMCArMDMw
+MCAyNDA0KQo+PiBwY2llX2NvbmZpZ19mbGFncyAmPSB+UENJRV9DT05GSUdfRkxBR19FTkFCTEVf
+TDE7Cj4+Cj4+IEkgZG9uJ3QgcmVtZW1iZXIgYW55bW9yZSB3aHkgYnV0IG15IGd1ZXNzIGlzIHRo
+YXQgdGhlIHByb3ByaWV0YXJ5IGRyaXZlcgo+PiBhdCB0aGUgdGltZSBkaWRuJ3Qgc3VwcG9ydCBp
+dCB3aXRoIFFDQTk5OFguIE9yIG1heWJlIFFDQTk4OFggZG9lc24ndAo+PiBldmVuIHN1cHBvcnQg
+TDE/IE1pY2hhbCwgZG8geW91IHJlbWVtYmVyPwo+Cj4gUHJvcHJpZXRhcnkgZHJpdmVyIGhhcyBp
+dCBpZmRlZi1lZCB0byBlbmFibGUvZGlzYWJsZS4KPgo+IE9sZGVyIGRyaXZlciBlbmFibGVkIGl0
+IG9ubHkgZm9yIHNvbWUgc3RhdGlvbi1vbmx5IHRhcmdldC9wcm9kdWN0IHNvCj4gYnkgZGVmYXVs
+dCBRQ0E5ODhYIHdvdWxkIGJ1aWxkIHdpdGggTDEgZmxhZyBtYXNrZWQgb3V0LiBJdCBtYWRlIHNl
+bnNlCj4gdG8gYmUgY29uc2VydmF0aXZlIGFuZCBjaGFuZ2UgYXMgbGl0dGxlIGFzIHBvc3NpYmxl
+IHRvIGF2b2lkIHJhbmRvbQo+IGJ1Z3MgYW5kIGJyZWFrYWdlIC0gc28gdGhlIGxvZ2ljIHdhcyBp
+bmhlcml0ZWQgbWludXMgdGhlIGJ1aWxkLXRpbWUKPiBpZmRlZi4KPgo+IEhvd2V2ZXIgMTAuNCBk
+cml2ZXIgc2VlbXMgdG8gZW5hYmxlIGl0IHVuY29uZGl0aW9uYWxseS4gSSdtIG5vdCBzdXJlCj4g
+aWYgdGhpcyBkZXBlbmRzIG9uIHRhcmdldCBmaXJtd2FyZSBpbiBhbnkgd2F5IG9yIGlmIHNvbWUg
+b3RoZXIgaG9zdAo+IGRyaXZlciBvciBidXMgc2V0dGluZ3MgbmVlZCB0byBiZSBwcmUtc2V0IGJl
+Zm9yZSBMMSBjYW4gYmUgZXhwZWN0ZWQgdG8KPiB3b3JrIHJlbGlhYmx5Lgo+Cj4gSSBndWVzcyB0
+aGVyZSdzIG5vIHdheSBvdGhlciB0aGFuIHRlc3RpbmcgaXQgb3V0LgoKTm8gcmVwbGllcyBmcm9t
+IGFueW9uZSAoaW5jbHVkaW5nIFdlbikgZm9yIDMgbW9udGhzIGFib3V0IHRlc3RpbmcgdGhpcwpw
+YXRjaCBvbiBhbnl0aGluZyBlbHNlIHRoYW4gUUNBNjE3NC4gU28gSSdsbCBkcm9wIHRoaXMgbm93
+LCBwbGVhc2UKcmVzdWJtaXQgb25jZSB0ZXN0IGNvdmVyYWdlIGlzIGJldHRlci4KCi0tIApLYWxs
+ZSBWYWxvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
