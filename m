@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs6tY-0007BD-Bi
- for ath10k@lists.infradead.org; Fri, 08 Feb 2019 14:12:46 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: Add support to provide higher range mem chunks
- in wmi init command
-References: <1544524740-31372-1-git-send-email-svishnoi@codeaurora.org>
-Date: Fri, 08 Feb 2019 16:12:40 +0200
-In-Reply-To: <1544524740-31372-1-git-send-email-svishnoi@codeaurora.org>
- (Surabhi Vishnoi's message of "Tue, 11 Dec 2018 16:09:00 +0530")
-Message-ID: <87tvhe74iv.fsf@kamboji.qca.qualcomm.com>
+ id 1gs6wn-0001P8-AS
+ for ath10k@lists.infradead.org; Fri, 08 Feb 2019 14:16:06 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Enable Factory Test Mode for WCN3990
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1535526038-4299-1-git-send-email-pillair@codeaurora.org>
+References: <1535526038-4299-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20190208141605.01BC3605FC@smtp.codeaurora.org>
+Date: Fri,  8 Feb 2019 14:16:05 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +22,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> With the current implementation of wmi init command,
-> there is no provision for the host driver to provide mem
-> chunks addresses with more than 32-bit, to the firmware.
-> WCN3990 is a 35-bit target and can accept mem chunks addresses
-> which are above 32-bit.
->
-> If firmware supports address range more than 32 bit, it
-> advertises the support by setting the WMI_SERVICE_EXTEND_ADDRESS
-> service. Based on this service fill the upper bits of paddr while
-> providing the mem chunks in the wmi init command.
->
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.2.0-01552-QCAHLSWMTPL-1
->
-> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+> The support to put WCN3990 firmware into Factory
+> test mode is not present currently. The WCN3990
+> firmware can operate in Factory test mode based
+> on the mode it receives in the wlan enable message
+> from the host driver.
+> 
+> When the host driver is started in testmode send
+> the operating mode as UTF mode, to the WCN3990
+> firmware, in the wlan enable message to start the
+> firmware in Factory test mode.
+> 
+> Tested on: WCN3990
+> Tested FW: WLAN.HL.2.0-01192-QCAHLSWMTPLZ-1.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Does not apply and I even tried to find a commit from December to make
-it work, and as the sha1 is not valid so 3-way merge won't work either.
-I strongly recommend to use pristine ath.git master branch (meaning that
-there are no other unapplied patches on top) when submitting patches,
-otherwise this can happen. Please rebase and resubmit.
+I was able to apply with 3-way merge but please double check the results:
 
-Applying: ath10k: Add support to provide higher range mem chunks in wmi init command
-fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/wmi-tlv.c).
-error: could not build fake ancestor
-Patch failed at 0001 ath10k: Add support to provide higher range mem chunks in wmi init comman
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ef562f95826f412c14f59ca916ff55931bed0813
+
+Applying: ath10k: Enable Factory Test Mode for WCN3990
+Using index info to reconstruct a base tree...
+M       drivers/net/wireless/ath/ath10k/ahb.c
+M       drivers/net/wireless/ath/ath10k/core.c
+M       drivers/net/wireless/ath/ath10k/hif.h
+M       drivers/net/wireless/ath/ath10k/mac.c
+M       drivers/net/wireless/ath/ath10k/pci.c
+M       drivers/net/wireless/ath/ath10k/sdio.c
+M       drivers/net/wireless/ath/ath10k/snoc.c
+M       drivers/net/wireless/ath/ath10k/usb.c
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/net/wireless/ath/ath10k/usb.c
+Auto-merging drivers/net/wireless/ath/ath10k/snoc.c
+Auto-merging drivers/net/wireless/ath/ath10k/sdio.c
+Auto-merging drivers/net/wireless/ath/ath10k/pci.c
+Auto-merging drivers/net/wireless/ath/ath10k/mac.c
+Auto-merging drivers/net/wireless/ath/ath10k/hif.h
+Auto-merging drivers/net/wireless/ath/ath10k/core.c
+Auto-merging drivers/net/wireless/ath/ath10k/ahb.c
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10579559/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
