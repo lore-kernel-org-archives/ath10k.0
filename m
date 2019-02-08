@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs6Qb-0003IZ-M8
- for ath10k@lists.infradead.org; Fri, 08 Feb 2019 13:42:51 +0000
+ id 1gs6tY-0007BD-Bi
+ for ath10k@lists.infradead.org; Fri, 08 Feb 2019 14:12:46 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
-References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
- <20181115002836.GA71934@google.com>
- <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
- <20181115184333.GA87504@google.com> <87va4x8q2c.fsf@codeaurora.org>
- <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
-Date: Fri, 08 Feb 2019 15:42:44 +0200
-In-Reply-To: <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
- (=?utf-8?Q?=22Micha=C5=82?= Kazior"'s message of "Fri, 16 Nov 2018 08:56:27
- +0100")
-Message-ID: <87y36q75wr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Add support to provide higher range mem chunks
+ in wmi init command
+References: <1544524740-31372-1-git-send-email-svishnoi@codeaurora.org>
+Date: Fri, 08 Feb 2019 16:12:40 +0200
+In-Reply-To: <1544524740-31372-1-git-send-email-svishnoi@codeaurora.org>
+ (Surabhi Vishnoi's message of "Tue, 11 Dec 2018 16:09:00 +0530")
+Message-ID: <87tvhe74iv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,54 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?Q?Micha=C5=82?= Kazior <kazikcz@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, briannorris@chromium.org, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-TWljaGHFgiBLYXppb3IgPGthemlrY3pAZ21haWwuY29tPiB3cml0ZXM6Cgo+IE9uIEZyaSwgMTYg
-Tm92IDIwMTggYXQgMDg6MDAsIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cm90
-ZToKPj4KPj4gQnJpYW4gTm9ycmlzIDxicmlhbm5vcnJpc0BjaHJvbWl1bS5vcmc+IHdyaXRlczoK
-Pj4gPiBPbiBUaHUsIE5vdiAxNSwgMjAxOCBhdCAwNjozODoyNUFNICswMDAwLCBXZW4gR29uZyB3
-cm90ZToKPj4gPj4gPgo+PiA+PiA+IElzIHRoZXJlIHNvbWUgcmVhc29uIEwxIHdhcyBkaXNhYmxl
-ZCBpbiB0aGUgZmlyc3QgcGxhY2U/IFdhcyBpdCBrbm93biB0byBiZQo+PiA+PiA+IHVucmVsaWFi
-bGU/Cj4+ID4+Cj4+ID4+IEhpIEJyaWFuLAo+PiA+PiBJdCBpcyBhIEJVRyBmb3IgcG93ZXIsIGFu
-ZCBpdCBpcyBub3QgY29uc2lkZXJlZCB0aGlzIEJVRyBiZWZvcmUuCj4+ID4+IFNvIHRoaXMgY2hh
-bmdlIHdpbGwgZml4IHRoZSBidWcuCj4+ID4KPj4gPiBJIHVuZGVyc3RhbmQgdGhhdCB0aGUgZXhp
-c3RpbmcgYmVoYXZpb3IgaXMgc3Vib3B0aW1hbCBmb3IgcG93ZXIsIGJ1dCBvbgo+PiA+IHRoZSBv
-dGhlciBoYW5kLCBjb2RlIHRoYXQgZ29lcyBvdXQgb2YgaXRzIHdheSB0byAqY2xlYXIqIHRoZSBM
-MSBmbGFnCj4+ID4gZG9lc24ndCBqdXN0IHBvcCB1cCBvdXQgb2Ygbm93aGVyZS4gU29tZWJvZHkg
-Y2xlYXJseSB3cm90ZSB0aGF0ISBJZiBpdAo+PiA+IGp1c3QgbWVhbnQgIndlIGRpZG4ndCB2ZXJp
-ZnkgTDEgYXQgZmlyc3QiLCB0aGVuIG1heWJlIGl0J3MgZmluZSB0bwo+PiA+IGVuYWJsZSBpdCB1
-bmNvbmRpdGlvbmFsbHkgYW5kIHNlZSB3aGF0IGhhcHBlbnMsIGJ1dCBpZiBpdCBtZWFudCAid2UK
-Pj4gPiB0cmllZCBMMSBvbiBzb21lIG9sZCBjaGlwIFhYWFggYW5kIGl0IGNhdXNlZCBwcm9ibGVt
-cyIsIHRoZW4gaXQgd291bGQgYmUKPj4gPiBuaWNlIHRvIGtub3cgd2hhdCB0aG9zZSBwcm9ibGVt
-cyB3ZXJlLgo+PiA+Cj4+ID4gT3IgbWF5YmUgdGhhdCBpcyBoYXJkIHRvIGZpZ3VyZSBvdXQsIGdp
-dmVuIHRoZXJlJ3Mgbm8gcHVibGljIGdpdCBoaXN0b3J5Cj4+ID4gdHJhY2tpbmcgdGhlIG9yaWdp
-bmFsIGNvZGUsIGFuZCB3ZSBqdXN0IG5lZWQgdG8gdHJ5IGl0IG91dC4KPj4KPj4gWWVhaCwgaXQg
-c2VlbXMgTDEgd2FzIGRpc2FibGVkIGFscmVhZHkgb24gdGhlIGZpcnN0IGF0aDEwayBjb21taXQ6
-Cj4+Cj4+IDVlM2RkMTU3ZDdlNzAgKEthbGxlIFZhbG8gMjAxMy0wNi0xMiAyMDo1MjoxMCArMDMw
-MCAyNDA0KQo+PiBwY2llX2NvbmZpZ19mbGFncyAmPSB+UENJRV9DT05GSUdfRkxBR19FTkFCTEVf
-TDE7Cj4+Cj4+IEkgZG9uJ3QgcmVtZW1iZXIgYW55bW9yZSB3aHkgYnV0IG15IGd1ZXNzIGlzIHRo
-YXQgdGhlIHByb3ByaWV0YXJ5IGRyaXZlcgo+PiBhdCB0aGUgdGltZSBkaWRuJ3Qgc3VwcG9ydCBp
-dCB3aXRoIFFDQTk5OFguIE9yIG1heWJlIFFDQTk4OFggZG9lc24ndAo+PiBldmVuIHN1cHBvcnQg
-TDE/IE1pY2hhbCwgZG8geW91IHJlbWVtYmVyPwo+Cj4gUHJvcHJpZXRhcnkgZHJpdmVyIGhhcyBp
-dCBpZmRlZi1lZCB0byBlbmFibGUvZGlzYWJsZS4KPgo+IE9sZGVyIGRyaXZlciBlbmFibGVkIGl0
-IG9ubHkgZm9yIHNvbWUgc3RhdGlvbi1vbmx5IHRhcmdldC9wcm9kdWN0IHNvCj4gYnkgZGVmYXVs
-dCBRQ0E5ODhYIHdvdWxkIGJ1aWxkIHdpdGggTDEgZmxhZyBtYXNrZWQgb3V0LiBJdCBtYWRlIHNl
-bnNlCj4gdG8gYmUgY29uc2VydmF0aXZlIGFuZCBjaGFuZ2UgYXMgbGl0dGxlIGFzIHBvc3NpYmxl
-IHRvIGF2b2lkIHJhbmRvbQo+IGJ1Z3MgYW5kIGJyZWFrYWdlIC0gc28gdGhlIGxvZ2ljIHdhcyBp
-bmhlcml0ZWQgbWludXMgdGhlIGJ1aWxkLXRpbWUKPiBpZmRlZi4KPgo+IEhvd2V2ZXIgMTAuNCBk
-cml2ZXIgc2VlbXMgdG8gZW5hYmxlIGl0IHVuY29uZGl0aW9uYWxseS4gSSdtIG5vdCBzdXJlCj4g
-aWYgdGhpcyBkZXBlbmRzIG9uIHRhcmdldCBmaXJtd2FyZSBpbiBhbnkgd2F5IG9yIGlmIHNvbWUg
-b3RoZXIgaG9zdAo+IGRyaXZlciBvciBidXMgc2V0dGluZ3MgbmVlZCB0byBiZSBwcmUtc2V0IGJl
-Zm9yZSBMMSBjYW4gYmUgZXhwZWN0ZWQgdG8KPiB3b3JrIHJlbGlhYmx5Lgo+Cj4gSSBndWVzcyB0
-aGVyZSdzIG5vIHdheSBvdGhlciB0aGFuIHRlc3RpbmcgaXQgb3V0LgoKTm8gcmVwbGllcyBmcm9t
-IGFueW9uZSAoaW5jbHVkaW5nIFdlbikgZm9yIDMgbW9udGhzIGFib3V0IHRlc3RpbmcgdGhpcwpw
-YXRjaCBvbiBhbnl0aGluZyBlbHNlIHRoYW4gUUNBNjE3NC4gU28gSSdsbCBkcm9wIHRoaXMgbm93
-LCBwbGVhc2UKcmVzdWJtaXQgb25jZSB0ZXN0IGNvdmVyYWdlIGlzIGJldHRlci4KCi0tIApLYWxs
-ZSBWYWxvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
+
+> With the current implementation of wmi init command,
+> there is no provision for the host driver to provide mem
+> chunks addresses with more than 32-bit, to the firmware.
+> WCN3990 is a 35-bit target and can accept mem chunks addresses
+> which are above 32-bit.
+>
+> If firmware supports address range more than 32 bit, it
+> advertises the support by setting the WMI_SERVICE_EXTEND_ADDRESS
+> service. Based on this service fill the upper bits of paddr while
+> providing the mem chunks in the wmi init command.
+>
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.2.0-01552-QCAHLSWMTPL-1
+>
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+
+Does not apply and I even tried to find a commit from December to make
+it work, and as the sha1 is not valid so 3-way merge won't work either.
+I strongly recommend to use pristine ath.git master branch (meaning that
+there are no other unapplied patches on top) when submitting patches,
+otherwise this can happen. Please rebase and resubmit.
+
+Applying: ath10k: Add support to provide higher range mem chunks in wmi init command
+fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/wmi-tlv.c).
+error: could not build fake ancestor
+Patch failed at 0001 ath10k: Add support to provide higher range mem chunks in wmi init comman
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
