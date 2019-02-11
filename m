@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gt7pi-0007il-DY
- for ath10k@lists.infradead.org; Mon, 11 Feb 2019 09:25:00 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v6 4/4] ath10k: reporting estimated tx airtime for fairness
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gtDDW-0004QR-Ou
+ for ath10k@lists.infradead.org; Mon, 11 Feb 2019 15:09:56 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190122142019.21417-5-toke@redhat.com>
-References: <20190122142019.21417-5-toke@redhat.com>
-Message-Id: <20190211092454.DFF8D60ECB@smtp.codeaurora.org>
-Date: Mon, 11 Feb 2019 09:24:50 +0000 (UTC)
+Subject: [PATCH 1/6] ath10k: add missing values to wmi_service_name()
+Date: Mon, 11 Feb 2019 17:09:42 +0200
+Message-Id: <1549897787-28537-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,58 +15,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: Kan Yan <kyan@google.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgoKPiBUaGUgYWlydGltZSBvZiBhIHRyYW5z
-bWl0dGVkIGZyYW1lIHdpbGwgYmUgZXN0aW1hdGVkIGZyb20gbGFzdCB1c2VkIHR4IHJhdGUKPiB3
-aGljaCB0aGUgZmlybXdhcmUgcmVwb3J0cyB3aXRoIHRoZSBwZWVyIHN0YXRzIGZlYXR1cmUKPiAo
-V01JX1NFUlZJQ0VfUEVFUl9TVEFUUykuIFRoZSBhaXJ0aW1lIGlzIGNvbXB1dGVkIG9uIHRoZSB0
-eCBwYXRoIGFuZCBpdAo+IHdpbGwgYmUgcmVwb3J0ZWQgdG8gbWFjODAyMTEgdXBvbiB0eCBjb21w
-bGV0aW9uLgo+IAo+IFRoaXMgY2hhbmdlIGlzIGJhc2VkIG9uIEthbidzIG9yZ2luYWwgY29tbWl0
-IGluIENocm9taXVtIHRyZWUKPiAoIkNIUk9NSVVNOiBhdGgxMGs6IEltcGxlbWVudGluZyBhaXJ0
-aW1lIGZhaXJuZXNzIGJhc2VkIFRYIHNjaGVkdWxlciIpCj4gcmVmOiBodHRwczovL2Nocm9taXVt
-LXJldmlldy5nb29nbGVzb3VyY2UuY29tLzU4ODE5MAo+IAo+IFRlc3RlZCBvbiBRQ0E0MDE5IHdp
-dGggZmlybXdhcmUgdmVyc2lvbiAxMC40LTMuMi4xLjEtMDAwMTUKPiBUZXN0ZWQgb24gUUNBOTk4
-NCB3aXRoIGZpcm13YXJlIHZlcnNpb24gMTAuNC0zLjkuMC4xLTAwMDA1Cj4gCj4gU2lnbmVkLW9m
-Zi1ieTogS2FuIFlhbiA8a3lhbkBnb29nbGUuY29tPgo+IFtybWFub2hhckBjb2RlYXVyb3JhLm9y
-ZzogcG9ydGVkIG9ubHkgdGhlIGFpcnRpbWUgY29tcHV0YXRpb25dCj4gU2lnbmVkLW9mZi1ieTog
-UmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBjb2RlYXVyb3JhLm9yZz4KPiBbdG9rZUByZWRo
-YXQuY29tOiBSZWJhc2UgdG8gbWFjODAyMTEtbmV4dCwgYWRkIHRlc3Qgbm90ZV0KPiBTaWduZWQt
-b2ZmLWJ5OiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAcmVkaGF0LmNvbT4KPiBTaWdu
-ZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz4KClRoZXJlIHdhcyBh
-IHRyaXZpYWwgY29uZmxpY3QsIHBsZWFzZSBjaGVjayBteSByZXNvbHV0aW9uIGluIHRoZSBwZW5k
-aW5nIGJyYW5jaC4KSSBhbHNvIHJld29yZGVkIHRoZSBjb21taXQgbG9nIGEgYml0LgoKJCBnaXQg
-YW0gLXMgLS1yZWplY3QgMTA3NzU1NTEubWJveApBcHBseWluZzogYXRoMTBrOiByZXBvcnRpbmcg
-ZXN0aW1hdGVkIHR4IGFpcnRpbWUgZm9yIGZhaXJuZXNzCkNoZWNraW5nIHBhdGNoIGRyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oLi4uCkNoZWNraW5nIHBhdGNoIGRyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMuLi4KSHVuayAjMSBzdWNjZWVkZWQgYXQg
-MzA4MCAob2Zmc2V0IDIgbGluZXMpLgpDaGVja2luZyBwYXRjaCBkcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL21hYy5jLi4uCkh1bmsgIzEgc3VjY2VlZGVkIGF0IDM1NjYgKG9mZnNldCAy
-MiBsaW5lcykuCkh1bmsgIzIgc3VjY2VlZGVkIGF0IDM1ODMgKG9mZnNldCAyMiBsaW5lcykuCkh1
-bmsgIzMgc3VjY2VlZGVkIGF0IDM5NzEgKG9mZnNldCAyMiBsaW5lcykuCkh1bmsgIzQgc3VjY2Vl
-ZGVkIGF0IDQwMjkgKG9mZnNldCAyMiBsaW5lcykuCkh1bmsgIzUgc3VjY2VlZGVkIGF0IDQwNDcg
-KG9mZnNldCAyMiBsaW5lcykuCkh1bmsgIzYgc3VjY2VlZGVkIGF0IDQzMTUgKG9mZnNldCAyMiBs
-aW5lcykuCkh1bmsgIzcgc3VjY2VlZGVkIGF0IDg2NzEgKG9mZnNldCAyMCBsaW5lcykuCkNoZWNr
-aW5nIHBhdGNoIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jLi4uCmVycm9y
-OiB3aGlsZSBzZWFyY2hpbmcgZm9yOgogICAgICAgICAgICAgICAgd2FrZV91cCgmaHR0LT5lbXB0
-eV90eF93cSk7CiAgICAgICAgc3Bpbl91bmxvY2tfYmgoJmh0dC0+dHhfbG9jayk7CgogICAgICAg
-IGlmIChhci0+ZGV2X3R5cGUgIT0gQVRIMTBLX0RFVl9UWVBFX0hMKQogICAgICAgICAgICAgICAg
-ZG1hX3VubWFwX3NpbmdsZShkZXYsIHNrYl9jYi0+cGFkZHIsIG1zZHUtPmxlbiwgRE1BX1RPX0RF
-VklDRSk7CgoKZXJyb3I6IHBhdGNoIGZhaWxlZDogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway90eHJ4LmM6OTUKQXBwbGllZCBwYXRjaCBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL2NvcmUuaCBjbGVhbmx5LgpBcHBsaWVkIHBhdGNoIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvaHR0X3J4LmMgY2xlYW5seS4KQXBwbGllZCBwYXRjaCBkcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL21hYy5jIGNsZWFubHkuCkFwcGx5aW5nIHBhdGNoIGRyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jIHdpdGggMSByZWplY3QuLi4KUmVqZWN0ZWQgaHVu
-ayAjMS4KUGF0Y2ggZmFpbGVkIGF0IDAwMDEgYXRoMTBrOiByZXBvcnRpbmcgZXN0aW1hdGVkIHR4
-IGFpcnRpbWUgZm9yIGZhaXJuZXNzCgotLSAKaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9w
-YXRjaC8xMDc3NTU1MS8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVs
-b3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+After implementing the next patch GCC reported:
+
+drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_BTCOEX' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_MGMT_TX_WMI' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_SPOOF_MAC_SUPPORT' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_VDEV_DISABLE_4_ADDR_SRC_LRN_SUPPORT' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_THERM_THROT' not handled in switch [-Wswitch]
+
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index b10ed523b99e..529f5a26f3f3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -475,6 +475,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
+ 	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
+ 	SVCSTR(WMI_SERVICE_VDEV_RX_FILTER);
++	SVCSTR(WMI_SERVICE_BTCOEX);
+ 	SVCSTR(WMI_SERVICE_CHECK_CAL_VERSION);
+ 	SVCSTR(WMI_SERVICE_DBGLOG_WARN2);
+ 	SVCSTR(WMI_SERVICE_BTCOEX_DUTY_CYCLE);
+@@ -484,13 +485,18 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_SMART_LOGGING_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE);
+ 	SVCSTR(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY);
++	SVCSTR(WMI_SERVICE_MGMT_TX_WMI);
+ 	SVCSTR(WMI_SERVICE_TDLS_WIDER_BANDWIDTH);
+ 	SVCSTR(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS);
+ 	SVCSTR(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_TPC_STATS_FINAL);
+ 	SVCSTR(WMI_SERVICE_RESET_CHIP);
++	SVCSTR(WMI_SERVICE_SPOOF_MAC_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_TX_DATA_ACK_RSSI);
+ 	SVCSTR(WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT);
++	SVCSTR(WMI_SERVICE_VDEV_DISABLE_4_ADDR_SRC_LRN_SUPPORT);
++	SVCSTR(WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT);
++	SVCSTR(WMI_SERVICE_THERM_THROT);
+ 	SVCSTR(WMI_SERVICE_RTT_RESPONDER_ROLE);
+ 	SVCSTR(WMI_SERVICE_PER_PACKET_SW_ENCRYPT);
+ 	SVCSTR(WMI_SERVICE_REPORT_AIRTIME);
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
