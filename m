@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtd5y-000620-S0
- for ath10k@lists.infradead.org; Tue, 12 Feb 2019 18:47:52 +0000
+ id 1gtd6t-0006FB-D9
+ for ath10k@lists.infradead.org; Tue, 12 Feb 2019 18:48:51 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: add dynamic vlan support
+Subject: Re: [PATCH] ath10k: report tx airtime provided by fw
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1542798288-8946-1-git-send-email-mpubbise@codeaurora.org>
-References: <1542798288-8946-1-git-send-email-mpubbise@codeaurora.org>
-Message-Id: <20190212184750.8F5106030D@smtp.codeaurora.org>
-Date: Tue, 12 Feb 2019 18:47:50 +0000 (UTC)
+In-Reply-To: <1542298483-15879-1-git-send-email-mpubbise@codeaurora.org>
+References: <1542298483-15879-1-git-send-email-mpubbise@codeaurora.org>
+Message-Id: <20190212184846.8F5F5608A5@smtp.codeaurora.org>
+Date: Tue, 12 Feb 2019 18:48:46 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +27,26 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Manikanta Pubbisetty <mpubbise@codeaurora.org> wrote:
 
-> Multicast/broadcast traffic destined for a particular vlan group will
-> always be encrypted in software. To enable dynamic VLANs, it requires
-> driver support for sending software encrypted packets.
+> If supported, update transmit airtime in mac80211 with the airtime
+> values reported by the firmware. TX airtime of the PPDU is reported
+> via HTT data TX completion indication message.
 > 
-> In ath10k, sending software encrypted frames is allowed only when we insmod
-> the driver with cryptmode param set to 1, this configuration disables
-> hardware crypto and enables RAW mode implicitly. Since, enabling raw
-> mode has performance impact, this cannot be considered as an ideal
-> solution for supporting VLANs in the driver.
+> A new service flag 'WMI_SERVICE_REPORT_AIRTIME' is added to advertise
+> the firmware support. For firmwares which do not support this feature,
+> TX airtime is calculated in the driver using TX bitrate.
 > 
-> As an alternative take, in this approach, cryptographic keys for
-> unicast traffic (per peer PTKs) and keys for non-vlan group traffic
-> will be configured in hardware, allowing hardware encryption for unicast
-> and non-vlan group traffic. Only vlan group traffic will be encrypted in
-> software and pushed to the target with encap mode set to RAW in the TX
-> descriptors.
-> 
-> Not all firmwares can support this type of key configuration(having few
-> keys installed in hardware and few only in software); for this purpose a
-> new WMI service flag "WMI_SERVICE_PER_PACKET_SW_ENCRYPT" is introduced to
-> advertise this support.
-> 
-> Also, adding the logic required to send sw encrypted frames in raw mode.
-> 
-> Hardwares Tested : QCA9984, QCA988X
-> Firmwares Tested : 10.4-3.5.3-00057, 10.2.4-1.0-00042
+> Hardwares tested : QCA9984
+> Firmwares tested : 10.4-3.6.1-00841
 > 
 > Signed-off-by: Manikanta Pubbisetty <mpubbise@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-4920ce3bf7e0 ath10k: add dynamic vlan support
+bb31b7cb106c ath10k: report tx airtime provided by fw
 
 -- 
-https://patchwork.kernel.org/patch/10692385/
+https://patchwork.kernel.org/patch/10684687/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
