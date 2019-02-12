@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtd6t-0006FB-D9
- for ath10k@lists.infradead.org; Tue, 12 Feb 2019 18:48:51 +0000
+ id 1gtd9R-0001oW-J1
+ for ath10k@lists.infradead.org; Tue, 12 Feb 2019 18:51:27 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: report tx airtime provided by fw
+Subject: Re: [PATCH 1/6] ath10k: add missing values to wmi_service_name()
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1542298483-15879-1-git-send-email-mpubbise@codeaurora.org>
-References: <1542298483-15879-1-git-send-email-mpubbise@codeaurora.org>
-Message-Id: <20190212184846.8F5F5608A5@smtp.codeaurora.org>
-Date: Tue, 12 Feb 2019 18:48:46 +0000 (UTC)
+In-Reply-To: <1549897787-28537-1-git-send-email-kvalo@codeaurora.org>
+References: <1549897787-28537-1-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20190212185125.4C0266074F@smtp.codeaurora.org>
+Date: Tue, 12 Feb 2019 18:51:25 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Manikanta Pubbisetty <mpubbise@codeaurora.org> wrote:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> If supported, update transmit airtime in mac80211 with the airtime
-> values reported by the firmware. TX airtime of the PPDU is reported
-> via HTT data TX completion indication message.
+> After implementing the next patch GCC reported:
 > 
-> A new service flag 'WMI_SERVICE_REPORT_AIRTIME' is added to advertise
-> the firmware support. For firmwares which do not support this feature,
-> TX airtime is calculated in the driver using TX bitrate.
+> drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_BTCOEX' not handled in switch [-Wswitch]
+> drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_MGMT_TX_WMI' not handled in switch [-Wswitch]
+> drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_SPOOF_MAC_SUPPORT' not handled in switch [-Wswitch]
+> drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_VDEV_DISABLE_4_ADDR_SRC_LRN_SUPPORT' not handled in switch [-Wswitch]
+> drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT' not handled in switch [-Wswitch]
+> drivers/net/wireless/ath/ath10k/wmi.h:385:2: warning: enumeration value 'WMI_SERVICE_THERM_THROT' not handled in switch [-Wswitch]
 > 
-> Hardwares tested : QCA9984
-> Firmwares tested : 10.4-3.6.1-00841
-> 
-> Signed-off-by: Manikanta Pubbisetty <mpubbise@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+6 patches applied to ath-next branch of ath.git, thanks.
 
-bb31b7cb106c ath10k: report tx airtime provided by fw
+2321dd5d78fb ath10k: add missing values to wmi_service_name()
+95cccf4d79fe ath10k: make wmi_service_name() warn about missing service ids
+db3b6280f5f1 ath10k: change wmi.h to include only ieee80211.h
+385bd8816cb5 ath10k: align ath10k_htt_txbuf structures
+bdf2bd9aa684 ath10k: fix documentation in ath10k_wow_convert_8023_to_80211()
+01dc76dfdc91 ath10k: copy the whole struct ath10k_bus_params in ath10k_core_register()
 
 -- 
-https://patchwork.kernel.org/patch/10684687/
+https://patchwork.kernel.org/patch/10806063/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
