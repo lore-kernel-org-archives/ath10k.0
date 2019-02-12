@@ -1,23 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtXQ1-0002Bt-1R
- for ath10k@lists.infradead.org; Tue, 12 Feb 2019 12:44:11 +0000
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com
- [209.85.160.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EF49220821
- for <ath10k@lists.infradead.org>; Tue, 12 Feb 2019 12:44:07 +0000 (UTC)
-Received: by mail-qt1-f172.google.com with SMTP id y20so2642907qtm.13
- for <ath10k@lists.infradead.org>; Tue, 12 Feb 2019 04:44:07 -0800 (PST)
-MIME-Version: 1.0
-References: <1549035547599.95403@qca.qualcomm.com>
-In-Reply-To: <1549035547599.95403@qca.qualcomm.com>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Tue, 12 Feb 2019 07:43:56 -0500
-Message-ID: <CA+5PVA5cO9vpLjKezoTiBUOrZwL9tPnY9G66zC9gM9hb=CgTTQ@mail.gmail.com>
-Subject: Re: [PULL] ath10k firmware 2019-02-01
+ id 1gtYQ7-000492-Mg
+ for ath10k@lists.infradead.org; Tue, 12 Feb 2019 13:48:21 +0000
+From: Dundi Raviteja <dundi@codeaurora.org>
+Subject: [PATCH] ath10k: Enable support for beacon interval per VAP
+Date: Tue, 12 Feb 2019 19:18:06 +0530
+Message-Id: <1549979286-9255-1-git-send-email-dundi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +15,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Dundi Raviteja <dundi@codeaurora.org>
 
-On Fri, Feb 1, 2019 at 10:41 AM Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->
-> Hi,
->
-> here are few ath10k firmware updates, please pull.
->
-> Kalle
->
-> The following changes since commit a8b75cac06f80dc1500ba385680ac5b5c1d1c4f8:
->
->   Merge tag 'add-rpi-fw' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux-firmware (2019-01-18 07:04:02 -0500)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20190201
->
-> for you to fetch changes up to 6b5e23a113704867df5205f31f02ffbc3ec4453e:
->
->   ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00021 (2019-02-01 17:22:55 +0200)
->
-> ----------------------------------------------------------------
-> Kalle Valo (4):
->       ath10k: QCA6174 hw3.0: update board-2.bin
->       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00024
->       ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00043
->       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00021
->
->  WHENCE                              |   6 +++---
->  ath10k/QCA6174/hw3.0/board-2.bin    | Bin 551128 -> 567608 bytes
->  ath10k/QCA9888/hw2.0/firmware-5.bin | Bin 675492 -> 688536 bytes
->  ath10k/QCA988X/hw2.0/firmware-5.bin | Bin 248200 -> 248840 bytes
->  ath10k/QCA9984/hw1.0/firmware-5.bin | Bin 662084 -> 676316 bytes
->  5 files changed, 3 insertions(+), 3 deletions(-)
+Enable support to configure different beacon interval per VAP.
 
-Pulled and pushed out.  Thanks.
+To support this feature, map different beacon interval service bit
+to wmi tlv service.
 
-josh
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+
+Signed-off-by: Dundi Raviteja <dundi@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c     | 33 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  3 +++
+ 2 files changed, 36 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e49b367..09c4705 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8232,6 +8232,30 @@ void ath10k_mac_destroy(struct ath10k *ar)
+ 	},
+ };
+ 
++static struct
++ieee80211_iface_combination ath10k_tlv_qcs_bcn_int_if_comb[] = {
++	{
++		.limits = ath10k_tlv_if_limit,
++		.num_different_channels = 1,
++		.max_interfaces = 4,
++		.beacon_int_infra_match = true,
++		.beacon_int_min_gcd = 1,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
++	},
++	{
++		.limits = ath10k_tlv_qcs_if_limit,
++		.num_different_channels = 2,
++		.max_interfaces = 4,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_qcs_if_limit),
++	},
++	{
++		.limits = ath10k_tlv_if_limit_ibss,
++		.num_different_channels = 1,
++		.max_interfaces = 2,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
++	},
++};
++
+ static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
+ 	{
+ 		.max = 1,
+@@ -8642,6 +8666,15 @@ int ath10k_mac_register(struct ath10k *ar)
+ 				ath10k_tlv_qcs_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+ 				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
++
++			if (test_bit
++			    (WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++			    ar->wmi.svc_map)) {
++				ar->hw->wiphy->iface_combinations =
++						ath10k_tlv_qcs_bcn_int_if_comb;
++				ar->hw->wiphy->n_iface_combinations =
++				     ARRAY_SIZE(ath10k_tlv_qcs_bcn_int_if_comb);
++			}
+ 		} else {
+ 			ar->hw->wiphy->iface_combinations = ath10k_tlv_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index e07e990..9f78502 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1567,6 +1567,9 @@ enum wmi_tlv_service {
+ 	SVCMAP(WMI_TLV_SERVICE_THERM_THROT,
+ 	       WMI_SERVICE_THERM_THROT,
+ 	       WMI_TLV_MAX_SERVICE);
++	SVCMAP(WMI_TLV_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++	       WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++	       WMI_TLV_MAX_SERVICE);
+ }
+ 
+ #undef SVCMAP
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
