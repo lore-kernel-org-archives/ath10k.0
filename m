@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtvHL-0004Um-7H
- for ath10k@lists.infradead.org; Wed, 13 Feb 2019 14:12:48 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Report low ack rssi based on the reason code
-Date: Wed, 13 Feb 2019 19:42:30 +0530
-Message-Id: <1550067150-8796-1-git-send-email-pillair@codeaurora.org>
+ id 1gtxOA-0000zG-38
+ for ath10k@lists.infradead.org; Wed, 13 Feb 2019 16:28:00 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [ath6kl:pending 14/43]
+ drivers/net/wireless/ath/wil6210/txrx.c:341 wil_rx_add_radiotap_header()
+ error: potentially dereferencing uninitialized 'rtap'.
+References: <20190213061220.GD5458@kadam>
+Date: Wed, 13 Feb 2019 18:27:49 +0200
+In-Reply-To: <20190213061220.GD5458@kadam> (Dan Carpenter's message of "Wed,
+ 13 Feb 2019 09:12:21 +0300")
+Message-ID: <87tvh71wmy.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,119 +21,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Maya Erez <merez@codeaurora.org>, kbuild@01.org, kbuild-all@01.org, ath10k@lists.infradead.org
 
-Firmware sends peer sta kickout event to the driver
-along with the reason code for a particular peer.
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
-Currently the sta kickout event is delivered to the
-upper layer without checking if the reason code is
-valid or not. This causes frequent disconnection of
-the STA.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+> head:   6600762d087f745bb0ee1cdf12a6611c2f852e79
+> commit: 88f31c736d0ac41bc93fadf853e71b16e8ffbc2f [14/43] wil6210: remove rtap_include_phy_info module param
+>
+> smatch warnings:
+> drivers/net/wireless/ath/wil6210/txrx.c:341 wil_rx_add_radiotap_header() error: potentially dereferencing uninitialized 'rtap'.
+>
+> # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=88f31c736d0ac41bc93fadf853e71b16e8ffbc2f
+> git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+> git remote update ath6kl
+> git checkout 88f31c736d0ac41bc93fadf853e71b16e8ffbc2f
+> vim +/rtap +341 drivers/net/wireless/ath/wil6210/txrx.c
+>
+> 2be7d22f Vladimir Kondratiev 2012-12-20  304  
+> 2be7d22f Vladimir Kondratiev 2012-12-20  305  /**
+> 2be7d22f Vladimir Kondratiev 2012-12-20  306   * Adds radiotap header
+> 2be7d22f Vladimir Kondratiev 2012-12-20  307   *
+> 2be7d22f Vladimir Kondratiev 2012-12-20  308   * Any error indicated as "Bad FCS"
+> 2be7d22f Vladimir Kondratiev 2012-12-20  309   *
+> 2be7d22f Vladimir Kondratiev 2012-12-20  310   * Vendor data for 04:ce:14-1 (Wilocity-1) consists of:
+> 2be7d22f Vladimir Kondratiev 2012-12-20  311   *  - Rx descriptor: 32 bytes
+> 2be7d22f Vladimir Kondratiev 2012-12-20  312   *  - Phy info
+> 2be7d22f Vladimir Kondratiev 2012-12-20  313   */
+> 2be7d22f Vladimir Kondratiev 2012-12-20  314  static void wil_rx_add_radiotap_header(struct wil6210_priv *wil,
+> 33e61169 Vladimir Kondratiev 2013-04-18  315  				       struct sk_buff *skb)
+> 2be7d22f Vladimir Kondratiev 2012-12-20  316  {
+> 2be7d22f Vladimir Kondratiev 2012-12-20  317  	struct wil6210_rtap {
+> 2be7d22f Vladimir Kondratiev 2012-12-20  318  		struct ieee80211_radiotap_header rthdr;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  319  		/* fields should be in the order of bits in rthdr.it_present */
+> 2be7d22f Vladimir Kondratiev 2012-12-20  320  		/* flags */
+> 2be7d22f Vladimir Kondratiev 2012-12-20  321  		u8 flags;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  322  		/* channel */
+> 2be7d22f Vladimir Kondratiev 2012-12-20  323  		__le16 chnl_freq __aligned(2);
+> 2be7d22f Vladimir Kondratiev 2012-12-20  324  		__le16 chnl_flags;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  325  		/* MCS */
+> 2be7d22f Vladimir Kondratiev 2012-12-20  326  		u8 mcs_present;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  327  		u8 mcs_flags;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  328  		u8 mcs_index;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  329  	} __packed;
+> 33e61169 Vladimir Kondratiev 2013-04-18  330  	struct vring_rx_desc *d = wil_skb_rxdesc(skb);
+> 88f31c73 Maya Erez           2019-02-11  331  	struct wil6210_rtap *rtap;
+>                                                                      ^^^^
+>
+> 2be7d22f Vladimir Kondratiev 2012-12-20  332  	int rtap_len = sizeof(struct wil6210_rtap);
+> 7d3e4dbe Lior David          2017-12-14  333  	struct ieee80211_channel *ch = wil->monitor_chandef.chan;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  334  
+> 2be7d22f Vladimir Kondratiev 2012-12-20  335  	if (skb_headroom(skb) < rtap_len &&
+> 2be7d22f Vladimir Kondratiev 2012-12-20  336  	    pskb_expand_head(skb, rtap_len, 0, GFP_ATOMIC)) {
+> 9165dabb Masanari Iida       2016-09-17  337  		wil_err(wil, "Unable to expand headroom to %d\n", rtap_len);
+> 2be7d22f Vladimir Kondratiev 2012-12-20  338  		return;
+> 2be7d22f Vladimir Kondratiev 2012-12-20  339  	}
+> 2be7d22f Vladimir Kondratiev 2012-12-20  340  
+> 88f31c73 Maya Erez           2019-02-11 @341  	rtap->rthdr.it_version = PKTHDR_RADIOTAP_VERSION;
+>                                                 ^^^^^^^^^^^^
+>
+> Looks like maybe part of the commit is missing.
 
-Report low ack rssi event to mac80211 only if the reason
-code is valid.
+Yeah, that was my suspicion as well. BTW, this patch was only in my
+pending branch and I have not "officially" applied it yet.
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 ++
- drivers/net/wireless/ath/ath10k/wmi.c     |  9 ++++++---
- drivers/net/wireless/ath/ath10k/wmi.h     | 12 ++++++++++++
- 3 files changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 90617e1..63ca9c5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -885,6 +885,8 @@ static int ath10k_wmi_tlv_op_pull_peer_kick_ev(struct ath10k *ar,
- 	}
- 
- 	arg->mac_addr = ev->peer_macaddr.addr;
-+	arg->reason = __le32_to_cpu(ev->reason);
-+	arg->reason_code_valid = true;
- 
- 	kfree(tb);
- 	return 0;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index b99b3a1..75707d6b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3393,9 +3393,6 @@ void ath10k_wmi_event_peer_sta_kickout(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	}
- 
--	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event peer sta kickout %pM\n",
--		   arg.mac_addr);
--
- 	rcu_read_lock();
- 
- 	sta = ieee80211_find_sta_by_ifaddr(ar->hw, arg.mac_addr, NULL);
-@@ -3405,10 +3402,16 @@ void ath10k_wmi_event_peer_sta_kickout(struct ath10k *ar, struct sk_buff *skb)
- 		goto exit;
- 	}
- 
-+	if (arg.reason_code_valid &&
-+	    arg.reason == WMI_PEER_STA_KICKOUT_REASON_UNSPECIFIED)
-+		goto exit;
-+
- 	ieee80211_report_low_ack(sta, 10);
- 
- exit:
- 	rcu_read_unlock();
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event peer sta kickout %pM reason code %d\n",
-+		    arg.mac_addr, arg.reason);
- }
- 
- /*
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 1f82f10..492ce0f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6498,6 +6498,7 @@ struct wmi_10_4_chan_info_event {
- 
- struct wmi_peer_sta_kickout_event {
- 	struct wmi_mac_addr peer_macaddr;
-+	__le32 reason;
- } __packed;
- 
- #define WMI_CHAN_INFO_FLAG_COMPLETE BIT(0)
-@@ -6737,6 +6738,8 @@ struct wmi_vdev_start_ev_arg {
- 
- struct wmi_peer_kick_ev_arg {
- 	const u8 *mac_addr;
-+	u32 reason;
-+	bool reason_code_valid;
- };
- 
- struct wmi_swba_ev_arg {
-@@ -6827,6 +6830,15 @@ struct wmi_pdev_bss_chan_info_event {
- 	__le32 reserved;
- } __packed;
- 
-+enum wmi_peer_sta_kickout_reason {
-+	WMI_PEER_STA_KICKOUT_REASON_UNSPECIFIED,
-+	WMI_PEER_STA_KICKOUT_REASON_XRETRY,
-+	WMI_PEER_STA_KICKOUT_REASON_INACTIVITY,
-+	WMI_PEER_STA_KICKOUT_REASON_IBSS_DISCONNECT,
-+	WMI_PEER_STA_KICKOUT_REASON_TDLS_DISCONNECT,
-+	WMI_PEER_STA_KICKOUT_REASON_SA_QUERY_TIMEOUT,
-+};
-+
- /* WOW structures */
- enum wmi_wow_wakeup_event {
- 	WOW_BMISS_EVENT = 0,
 -- 
-2.7.4
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
