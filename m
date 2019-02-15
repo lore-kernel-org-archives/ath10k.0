@@ -1,12 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1guZK9-0000hB-A9
- for ath10k@lists.infradead.org; Fri, 15 Feb 2019 08:58:22 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] mac80211: Restore vif beacon interval if start ap fails
-Date: Fri, 15 Feb 2019 14:16:02 +0530
-Message-Id: <1550220362-5573-1-git-send-email-pillair@codeaurora.org>
+ id 1guckg-0000Xa-8O
+ for ath10k@lists.infradead.org; Fri, 15 Feb 2019 12:38:00 +0000
+Message-ID: <dd920f575478bee3cc071765c9e848e3d2dfffab.camel@sipsolutions.net>
+Subject: Re: [RFC 2/2] ath10k: Add QCA vendor command/attr support to
+ filterneighbor BSS frames
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 15 Feb 2019 13:37:49 +0100
+In-Reply-To: <7212e3a5157ab61d10b8d7184e290593@codeaurora.org>
+References: <1530791512-6915-3-git-send-email-periyasa@codeaurora.org>
+ <20181005060031.BA1EB60BF4@smtp.codeaurora.org>
+ <a28348956ba3fbfded80bc78ba1c0335df7edb75.camel@sipsolutions.net>
+ <c9b16303e344b2dcd4d52cf9c0830846@codeaurora.org>
+ <69a99a7f1b2b7434b70c5c6df1812952928547cc.camel@sipsolutions.net>
+ <7212e3a5157ab61d10b8d7184e290593@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,78 +25,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-The starting of AP interface can fail due to invalid
-beacon interval, which does not match the minimum gcd
-requirement set by the wifi driver. In such case, the
-beacon interval of that interface gets updated with
-that invalid beacon interval.
+On Mon, 2019-01-28 at 10:19 +0530, Karthikeyan Periyasamy wrote:
 
-The next time that interface is brought up in AP mode,
-an interface combination check is performed and the
-beacon interval is taken from the previously set value.
+> > At the same time, what happens today actually? Do all frames from non-
+> > associated clients come up to the host? If so, is this not a problem 
+> > for all APs, not just ath10k?
+> 
+> Today, without this patch. No frames from non-associated clients come up 
+> to the host in AP mode.
 
-In a case where an invalid beacon interval, i.e. a beacon
-interval value which does not satisfy the minimum gcd criteria
-set by the driver, is set, all the subsequent trials to
-bring that interface in AP mode will fail, even if the
-subsequent trials have a valid beacon interval.
+So it's not just _filtering_ but also enabling to see them, right?
 
-To avoid this, in case of a failure in bringing up an
-interface in AP mode due to interface combination error,
-the interface beacon interval which is stored in bss
-conf, needs to be restored with the last working value
-of beacon interval.
+> > And if they don't come up, what feature requires this? Sorry for the
+> > vague questions, but I'm not really sure what this is all about. If
+> > there's a need for these frames, wouldn't we need a generic way of
+> > enabling receiving them, and perhaps even signalling hostapd with them?
+> 
+> Steering application use this feature in their logical part of client 
+> steering.
 
-Tested on ath10k using WCN3990.
+But there aren't even any steering applications that are open source or
+anything like that, right?
 
-Fixes: 0c317a02ca98 ("cfg80211: support virtual interfaces with different beacon intervals")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- net/mac80211/cfg.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+I don't see why we should include this upstream. Clearly you can use
+this for whatever you like to do with your driver in non-upstream
+builds, and you can open-source this code, but if there are no
+applications that could possibly use it upstream why bother?
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index d65aa01..09dd1c2 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -941,6 +941,7 @@ static int ieee80211_start_ap(struct wiphy *wiphy, struct net_device *dev,
- 		      BSS_CHANGED_P2P_PS |
- 		      BSS_CHANGED_TXPOWER;
- 	int err;
-+	int prev_beacon_int;
- 
- 	old = sdata_dereference(sdata->u.ap.beacon, sdata);
- 	if (old)
-@@ -963,6 +964,7 @@ static int ieee80211_start_ap(struct wiphy *wiphy, struct net_device *dev,
- 
- 	sdata->needed_rx_chains = sdata->local->rx_chains;
- 
-+	prev_beacon_int = sdata->vif.bss_conf.beacon_int;
- 	sdata->vif.bss_conf.beacon_int = params->beacon_interval;
- 
- 	if (params->he_cap)
-@@ -974,8 +976,10 @@ static int ieee80211_start_ap(struct wiphy *wiphy, struct net_device *dev,
- 	if (!err)
- 		ieee80211_vif_copy_chanctx_to_vlans(sdata, false);
- 	mutex_unlock(&local->mtx);
--	if (err)
-+	if (err) {
-+		sdata->vif.bss_conf.beacon_int = prev_beacon_int;
- 		return err;
-+	}
- 
- 	/*
- 	 * Apply control port protocol, this allows us to
--- 
-2.7.4
+johannes
 
 
 _______________________________________________
