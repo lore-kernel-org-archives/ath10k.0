@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway34.websitewelcome.com ([192.185.148.104])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gvn3a-00081H-CE
- for ath10k@lists.infradead.org; Mon, 18 Feb 2019 17:50:19 +0000
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
- by gateway34.websitewelcome.com (Postfix) with ESMTP id 8C6115F858
- for <ath10k@lists.infradead.org>; Mon, 18 Feb 2019 11:50:04 -0600 (CST)
-References: <20180524225928.GA19570@embeddedor.com>
- <20180613114059.DAC95601D2@smtp.codeaurora.org>
- <87zhqwuggt.fsf_-_@kamboji.qca.qualcomm.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: -Wimplicit-fallthrough not working with ccache
-Message-ID: <18320143-188a-8940-1830-1955e279952a@embeddedor.com>
-Date: Mon, 18 Feb 2019 11:49:59 -0600
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gv2eq-0003nI-3c
+ for ath10k@lists.infradead.org; Sat, 16 Feb 2019 16:17:42 +0000
+Subject: Re: QCA9888: Driver/Firmware Crash After Initialization
+References: <460b8a83-bb24-17c7-1e73-21c6ddd0280f@wagsky.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <81a7f20d-49d2-24d1-9b9e-69b58ea5d721@candelatech.com>
+Date: Sat, 16 Feb 2019 08:17:29 -0800
 MIME-Version: 1.0
-In-Reply-To: <87zhqwuggt.fsf_-_@kamboji.qca.qualcomm.com>
-Content-Language: en-US
+In-Reply-To: <460b8a83-bb24-17c7-1e73-21c6ddd0280f@wagsky.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +18,176 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Jeff Kletsky <lede@allycomm.com>, ath10k@lists.infradead.org
 
-SGkgS2FsbGUsCgpPbiAyLzE2LzE5IDU6MjEgQU0sIEthbGxlIFZhbG8gd3JvdGU6Cj4gKHJlcGx5
-aW5nIHRvIGFuIG9sZCB0aHJlYWQgYnV0IHJlbmFtaW5nIGl0KQo+IAo+IEthbGxlIFZhbG8gPGt2
-YWxvQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4gCj4+ICJHdXN0YXZvIEEuIFIuIFNpbHZhIiA8
-Z3VzdGF2b0BlbWJlZGRlZG9yLmNvbT4gd3JvdGU6Cj4+Cj4+PiBJbiBwcmVwYXJhdGlvbiB0byBl
-bmFibGluZyAtV2ltcGxpY2l0LWZhbGx0aHJvdWdoLCBtYXJrIHN3aXRjaCBjYXNlcwo+Pj4gd2hl
-cmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guCj4+Pgo+Pj4gTm90aWNlIHRoYXQg
-aW4gdGhpcyBwYXJ0aWN1bGFyIGNhc2UsIEkgcmVwbGFjZWQgInBhc3MgdGhyb3VnaCIgd2l0aAo+
-Pj4gYSBwcm9wZXIgImZhbGwgdGhyb3VnaCIgY29tbWVudCwgd2hpY2ggaXMgd2hhdCBHQ0MgaXMg
-ZXhwZWN0aW5nCj4+PiB0byBmaW5kLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4g
-Ui4gU2lsdmEgPGd1c3Rhdm9AZW1iZWRkZWRvci5jb20+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBLYWxs
-ZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz4KPj4KPj4gUGF0Y2ggYXBwbGllZCB0byBhdGgt
-bmV4dCBicmFuY2ggb2YgYXRoLmdpdCwgdGhhbmtzLgo+Pgo+PiBmMWQyNzBhZTEwZmYgYXRoMTBr
-OiBodHRfdHg6IG1hcmsgZXhwZWN0ZWQgc3dpdGNoIGZhbGwtdGhyb3VnaHMKPiAKPiBHdXN0YXZv
-LCBJIGVuYWJsZWQgVz0xIG9uIG15IGF0aDEwayBidWlsZCBjaGVja3MgYW5kIGl0IHRvb2sgbWUg
-YSB3aGlsZQo+IHRvIGZpZ3VyZSBvdXQgd2h5IEdDQyB3YXMgd2FybmluZyBhYm91dCBmYWxsIHRo
-cm91Z2ggYW5ub3RhdGlvbnMgbWlzc2luZwo+IGV2ZW4gSSBrbmV3IHlvdSBoYWQgZml4ZWQgdGhl
-bS4gRmluYWxseSBJIGZpZ3VyZWQgb3V0IHRoYXQgdGhlIHJlYXNvbgo+IHdhcyBjY2FjaGUsIHdo
-aWNoIEkgbmVlZCBiZWNhdXNlIEkgd29yayB3aXRoIGRpZmZlcmVudCBicmFuY2hlcyBhbmQgbmVl
-ZAo+IHRvIHJlY29tcGlsZSB0aGUga2VybmVsIHF1aXRlIG9mdGVuLgo+IAo+IElmIHRoZSBwbGFu
-IGlzIHRvIGVuYWJsZSAtV2ltcGxpY2l0LWZhbGx0aHJvdWdoIGJ5IGRlZmF1bHQgaW4gdGhlIGtl
-cm5lbAo+IElNSE8gdGhpcyBtaWdodCBiZWNvbWUgYW4gaXNzdWUsIGFzIG90aGVyd2lzZSBwZW9w
-bGUgdXNpbmcgY2NhY2hlIHN0YXJ0Cj4gc2VlaW5nIGxvdHMgb2YgaW52YWxpZCB3YXJuaW5ncy4g
-QXBwYXJlbnRseSBDQ0FDSEVfQ09NTUVOVFM9MSB3aWxsIGZpeAo+IHRoYXQgYnV0IG15IHZlcnNp
-b24gb2YgY2NhY2hlIGRvZXNuJ3Qgc3VwcG9ydCBpdCwgYW5kIGhvdyB3b3VsZCBldmVyeW9uZQo+
-IGxlYXJuIHRoYXQgdHJpY2sgYW55d2F5PyBPciBtYXliZSBDQ0FDSEVfQ09NTUVOVFMgY2FuIGVu
-YWJsZWQgdGhyb3VnaAo+IGtlcm5lbCBNYWtlZmlsZT8KPiAKCkNhbiB5b3Ugc2hhcmUgd2l0aCBt
-ZSB0aGUgd2FybmluZyBtZXNzYWdlcyB5b3UgZ2V0PwoKSSBqdXN0IHNlZSB0aGUgZm9sbG93aW5n
-IHdhcm5pbmdzIHdpdGggbGludXgtbmV4dDoKCiQgbWFrZSBDQz0iY2NhY2hlIGdjYyIgVz0xIGRy
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4Lm8KICBDQyBbTV0gIGRyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4Lm8KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGRy
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4LmM6MTk6CmRyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvaHR0Lmg6MTcyNzoxOiB3YXJuaW5nOiBhbGlnbm1lbnQgMSBvZiDi
-gJhzdHJ1Y3QgYXRoMTBrX2h0dF90eGJ1Zl8zMuKAmSBpcyBsZXNzIHRoYW4gNCBbLVdwYWNrZWQt
-bm90LWFsaWduZWRdCiB9IF9fcGFja2VkOwogXgpkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL2h0dC5oOjE3MzQ6MTogd2FybmluZzogYWxpZ25tZW50IDEgb2Yg4oCYc3RydWN0IGF0aDEw
-a19odHRfdHhidWZfNjTigJkgaXMgbGVzcyB0aGFuIDQgWy1XcGFja2VkLW5vdC1hbGlnbmVkXQog
-fSBfX3BhY2tlZDsKIF4KCkluIG15IE1ha2VmaWxlIEkgaGF2ZToKCktCVUlMRF9DRkxBR1MgICs9
-ICQoY2FsbCBjYy1vcHRpb24sLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD0zLCkKCgpUaGFua3MKLS0K
-R3VzdGF2bwoKCgoKCgoKCgoKCgoKCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+On 02/15/2019 05:12 PM, Jeff Kletsky wrote:
+>
+> TL;DR
+>
+> QCA9880 on PCIe on IPQ4019 bring-up is seen, can be can be configured,
+> will come up, but seems to time out in ath10k-ct driver communication.
+>
+> "Hangs always", with firmware crashes occasionally seen.
+
+Please send me full dmesg output of the boot attempt.
+
+Thanks,
+Ben
+
+>
+> Theories include:
+>
+> * Problem with ath10k driver and/or firmware
+> * Misconfiguration of GPIO or other DTS issues
+>
+>
+> Similar behavior seen on the "plain" ath10k drivers / firmware
+>
+> "Linksys Dallas WiFi AP router based on Qualcomm AP DK07.1-c1 "
+>
+> firmware ver 10.4b-ct-9888-fW-012-5815a26a
+>
+>
+> My search of this list, or the Internet, in general, didn't reveal
+> anything obvious.  Logs below use ath10k-ct drivers/firmware based on
+> the suggestions of a more-experienced OpenWrt dev than I am.
+>
+>
+> ==> How can I debug / resolve this?
+>
+>
+> Logs linked below, additional data available as requested.
+>
+> Thanks!
+>
+> Jeff Kletsky
+>
+>
+> ---
+>
+>
+> (the details)
+>
+> Hardware is a Linksys EA8300 "Dallas", with OEM DTS declaring
+> model = "Linksys Dallas WiFi AP router based on Qualcomm AP DK07.1-c1 ";
+> running on a bring-up under current OpenWrt `master` from 2019-02-14.
+>
+>
+> $ git merge-base openwrt/master HEAD
+> 94993a79f8269274e9087d2ce3aed10f4e34cb5f
+>
+>
+> Device boots and the IPQ4019 wireless subsystems seem
+> responsive. Serial and SSH access available, along with any
+> OpenWrt-packaged utilities.
+>
+> at10k-ct drivers and firmware for the QCA9888 appear to load both the
+> extracted pre-cal data from the ART partition, as well as either the
+> "default" board data, or that from the OEM firmware from the "FCC"
+> directory, boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin
+>
+> The location of the pre-cal data as well as that choice of board data
+> has been confirmed by inspection of the OEM's initialization shell
+> scripts.
+>
+> The OEM firmware executes a three-step init process, based on the logs:
+>   1) "Caldata" from ART extraction
+>   2) boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin
+>   3) athwlan.bin and athwlan.codeswap.bin
+>
+>
+>
+> The logs around initialization of the QCA9888 seems reasonable, with
+> the "expected" lack of failure messages suggesting success.
+>
+> (Side note: it would be greatly appreciated one day if those messages
+>  showed successes as well.)
+>
+>
+>
+> Observed behavior, on editing `/etc/config/wireless` to enable the
+> QCA9888 (only) and `wifi up`
+>
+> * Device brings up AP
+>   (as seen by `iw dev wlanN-M scan` on another device)
+> * One of three failure types "always" seen (there may be more):
+>   * Wireless comes up for 1-2 min, then becomes non-responsive
+>   * Rare: Firmware crash reported, wireless system becomes non-responsive
+>   * Seen only once: Device runs; `wifi down` causes crash
+> * Wireless subsystem does not recover
+>
+>     Full log of one "typical" run available at https://pastebin.com/3ruVuVyj
+>     ath10k-ct, extracted pre-cal data,
+>     boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin symlinked to board.bin
+>     and board-2.bin as a zero-length file
+>
+>     Full log including "firmware crashed!" available at https://pastebin.com/Sk9cpLnD
+>     ath10k-ct, extracted pre-cal data,
+>     "stock" ath10k-firmware-qca9888-ct board files/links
+>
+> "Non-responsive" typically results in an attempt to restart the
+> device, which provides logs similar to
+>
+> [  195.521893] ath10k_pci 0000:01:00.0: wmi command 40859 timeout, restarting hardware
+> [  195.522265] ath10k_pci 0000:01:00.0: failed to send wmi nop: -11
+> [  195.529372] ath10k_pci 0000:01:00.0: failed to send pdev bss chan info request: -108
+> [  195.536021] ath10k_pci 0000:01:00.0: removing peer, cleanup-all, deleting: peer cdfcca00 vdev: 0 addr: 30:23:03:67:e9:57
+> [  195.637550] ieee80211 phy0: Hardware restart was requested
+> [  198.801805] ath10k_pci 0000:01:00.0: failed to receive control response completion, polling..
+> [  199.841840] ath10k_pci 0000:01:00.0: Service connect timeout
+> [  199.842149] ath10k_pci 0000:01:00.0: failed to connect htt (-110)
+> [  199.943024] ath10k_pci 0000:01:00.0: Could not init core: -110
+> [  199.943066] ------------[ cut here ]------------
+> [  199.947930] WARNING: CPU: 1 PID: 36 at backports-4.19.7-1/net/mac80211/util.c:1940 ieee80211_reconfig+0x9c/0x130c [mac80211]
+> [  199.952581] Hardware became unavailable during restart.
+> [...]
+>
+> followed by many similar warnings, along the lines of
+>
+> [  200.459127] ------------[ cut here ]------------
+> [  200.464051] WARNING: CPU: 1 PID: 36 at backports-4.19.7-1/net/mac80211/driver-ops.h:19 ieee80211_stop_ap+0x180/0x2f0 [mac80211]
+> [  200.468514] wlan0:  Failed check-sdata-in-driver check, flags: 0x9
+> [...]
+>
+> at various s/r within driver-ops code.
+>
+>
+>
+> ath10k-ct firmware identifies as
+>
+> [ 12.160172] ath10k_pci 0000:01:00.0:
+>   firmware ver 10.4b-ct-9888-fW-012-5815a26a api 5
+>   features mfp,peer-flow-ctrl,txstatus-noack,wmi-10.x-CT,ratemask-CT,
+> regdump-CT,txrate-CT,flush-all-CT,pingpong-CT,ch-regs-CT,nop-CT,
+>     set-special-CT,tx-rc-CT,cust-stats-CT,txrate2-CT
+>   crc32 4a66be6f
+>
+> OpenWrt package identifiers
+>
+> ath10k-firmware-qca4019-ct - 2018-10-10-d366b80d-1
+> ath10k-firmware-qca9888-ct - 2018-10-10-d366b80d-1
+> kmod-ath10k-ct - 4.14.99+2018-12-20-118e16da-2
+>
+>
+>
+>
+>
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
