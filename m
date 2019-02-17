@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from userp2130.oracle.com ([156.151.31.86])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gvMr3-0004TG-1D
- for ath10k@lists.infradead.org; Sun, 17 Feb 2019 13:51:43 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v2] ath10k: wait for vdev delete response from firmware
-Date: Sun, 17 Feb 2019 19:21:19 +0530
-Message-Id: <1550411479-32253-1-git-send-email-pillair@codeaurora.org>
+ id 1gvMDh-0007oU-N4
+ for ath10k@lists.infradead.org; Sun, 17 Feb 2019 13:10:59 +0000
+Date: Sun, 17 Feb 2019 16:10:39 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [ath6kl:pending 31/37] drivers/net/wireless/ath/ath10k/mac.c:5570
+ ath10k_remove_interface() warn: inconsistent returns
+ 'mutex:&ar->conf_mutex'.
+Message-ID: <20190217131039.GI2304@kadam>
+MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,268 +19,192 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+To: kbuild@01.org, Rakesh Pillai <pillair@codeaurora.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
 
-When we add an interface immediately after removing
-the interface the vdev deletion in firmware might not
-have been completed. We need to synchronize the vdev creation
-with the firmware.
-
-Wait for vdev delete response from firmware when we
-remove an interface.
-
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-Changes from v1:
-- Unlock conf_mutex in vdev delete failure case.
----
- drivers/net/wireless/ath/ath10k/core.c    |  4 +++-
- drivers/net/wireless/ath/ath10k/core.h    |  6 ++++--
- drivers/net/wireless/ath/ath10k/mac.c     | 15 +++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 12 +++++++++++-
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  6 +++++-
- drivers/net/wireless/ath/ath10k/wmi.h     |  4 +++-
- 6 files changed, 41 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 327a74c0..16d2d04 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -2137,6 +2137,7 @@ static void ath10k_core_restart(struct work_struct *work)
- 	complete(&ar->offchan_tx_completed);
- 	complete(&ar->install_key_done);
- 	complete(&ar->vdev_setup_done);
-+	complete(&ar->vdev_delete_done);
- 	complete(&ar->thermal.wmi_sync);
- 	complete(&ar->bss_survey_done);
- 	wake_up(&ar->htt.empty_tx_wq);
-@@ -3093,6 +3094,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 
- 	init_completion(&ar->install_key_done);
- 	init_completion(&ar->vdev_setup_done);
-+	init_completion(&ar->vdev_delete_done);
- 	init_completion(&ar->thermal.wmi_sync);
- 	init_completion(&ar->bss_survey_done);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 46e9c8c..ad1da95 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -511,7 +511,8 @@ struct ath10k_sta {
- 	u32 peer_ps_state;
- };
- 
--#define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5 * HZ)
-+#define ATH10K_VDEV_SETUP_TIMEOUT_HZ	(5 * HZ)
-+#define ATH10K_VDEV_DELETE_TIMEOUT_HZ	(5 * HZ)
- 
- enum ath10k_beacon_state {
- 	ATH10K_BEACON_SCHEDULED = 0,
-@@ -1058,6 +1059,7 @@ struct ath10k {
- 
- 	int last_wmi_vdev_start_status;
- 	struct completion vdev_setup_done;
-+	struct completion vdev_delete_done;
- 
- 	struct workqueue_struct *workqueue;
- 	/* Auxiliary workqueue */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 4dd64f3..02c17f4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1022,6 +1022,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- 	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
- 
- 	reinit_completion(&ar->vdev_setup_done);
-+	reinit_completion(&ar->vdev_delete_done);
- 
- 	ret = ath10k_wmi_vdev_start(ar, &arg);
- 	if (ret) {
-@@ -1071,6 +1072,7 @@ static int ath10k_monitor_vdev_stop(struct ath10k *ar)
- 			    ar->monitor_vdev_id, ret);
- 
- 	reinit_completion(&ar->vdev_setup_done);
-+	reinit_completion(&ar->vdev_delete_done);
- 
- 	ret = ath10k_wmi_vdev_stop(ar, ar->monitor_vdev_id);
- 	if (ret)
-@@ -1412,6 +1414,7 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	reinit_completion(&ar->vdev_setup_done);
-+	reinit_completion(&ar->vdev_delete_done);
- 
- 	ret = ath10k_wmi_vdev_stop(ar, arvif->vdev_id);
- 	if (ret) {
-@@ -1448,6 +1451,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif,
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	reinit_completion(&ar->vdev_setup_done);
-+	reinit_completion(&ar->vdev_delete_done);
- 
- 	arg.vdev_id = arvif->vdev_id;
- 	arg.dtim_period = arvif->dtim_period;
-@@ -5397,6 +5401,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
- 	struct ath10k_peer *peer;
-+	unsigned long time_left;
- 	int ret;
- 	int i;
- 
-@@ -5438,6 +5443,15 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to delete WMI vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
-+	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
-+		time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
-+							ATH10K_VDEV_DELETE_TIMEOUT_HZ);
-+		if (time_left == 0) {
-+			ath10k_warn(ar, "Timeout in receiving vdev delete response\n");
-+			goto out:
-+		}
-+	}
-+
- 	/* Some firmware revisions don't notify host about self-peer removal
- 	 * until after associated vdev is deleted.
- 	 */
-@@ -5488,6 +5502,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 
- 	ath10k_mac_txq_unref(ar, vif->txq);
- 
-+out:
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 90617e1..642d770 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -222,6 +222,13 @@ static int ath10k_wmi_tlv_event_bcn_tx_status(struct ath10k *ar,
- 	return 0;
- }
- 
-+static void ath10k_wmi_tlv_event_vdev_delete_resp(struct ath10k *ar,
-+						  struct sk_buff *skb)
-+{
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_VDEV_DELETE_RESP_EVENTID\n");
-+	complete(&ar->vdev_delete_done);
-+}
-+
- static int ath10k_wmi_tlv_event_diag_data(struct ath10k *ar,
- 					  struct sk_buff *skb)
- {
-@@ -524,6 +531,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_TLV_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
- 		break;
-+	case WMI_TLV_VDEV_DELETE_RESP_EVENTID:
-+		ath10k_wmi_tlv_event_vdev_delete_resp(ar, skb);
-+		break;
- 	case WMI_TLV_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
- 		break;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 298d917..872da8e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -310,6 +310,8 @@ enum wmi_tlv_event_id {
- 	WMI_TLV_VDEV_STOPPED_EVENTID,
- 	WMI_TLV_VDEV_INSTALL_KEY_COMPLETE_EVENTID,
- 	WMI_TLV_VDEV_MCC_BCN_INTERVAL_CHANGE_REQ_EVENTID,
-+	WMI_TLV_VDEV_TSF_REPORT_EVENTID,
-+	WMI_TLV_VDEV_DELETE_RESP_EVENTID,
- 	WMI_TLV_PEER_STA_KICKOUT_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_PEER),
- 	WMI_TLV_PEER_INFO_EVENTID,
- 	WMI_TLV_PEER_TX_FAIL_CNT_THR_EVENTID,
-@@ -1557,6 +1559,8 @@ wmi_tlv_svc_map(const __le32 *in, unsigned long *out, size_t len)
- 	       WMI_SERVICE_SAP_AUTH_OFFLOAD, len);
- 	SVCMAP(WMI_TLV_SERVICE_MGMT_TX_WMI,
- 	       WMI_SERVICE_MGMT_TX_WMI, len);
-+	SVCMAP(WMI_TLV_SERVICE_SYNC_DELETE_CMDS,
-+	       WMI_SERVICE_SYNC_DELETE_CMDS, len);
- }
- 
- static inline void
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 1f82f10..b941240 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -208,6 +208,7 @@ enum wmi_service {
- 	WMI_SERVICE_VDEV_DISABLE_4_ADDR_SRC_LRN_SUPPORT,
- 	WMI_SERVICE_BB_TIMING_CONFIG_SUPPORT,
- 	WMI_SERVICE_THERM_THROT,
-+	WMI_SERVICE_SYNC_DELETE_CMDS,
- 
- 	/* keep last */
- 	WMI_SERVICE_MAX,
-@@ -483,6 +484,7 @@ static inline char *wmi_service_name(int service_id)
- 	SVCSTR(WMI_SERVICE_RESET_CHIP);
- 	SVCSTR(WMI_SERVICE_TX_DATA_ACK_RSSI);
- 	SVCSTR(WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT);
-+	SVCSTR(WMI_SERVICE_SYNC_DELETE_CMDS);
- 	default:
- 		return NULL;
- 	}
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+dHJlZTogICBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9r
+dmFsby9hdGguZ2l0IHBlbmRpbmcKaGVhZDogICA3ZmY5NmIxZDAwNTI4YmYwNDkyY2ZiNWZlZmJh
+YTdjMzRiMDQyNWU5CmNvbW1pdDogMzY0NGM4NDRlZjNlOTU2MTY0MjEzYjE0NWQ4ZWY0OTY5MWI3
+MDBhYyBbMzEvMzddIGF0aDEwazogd2FpdCBmb3IgdmRldiBkZWxldGUgcmVzcG9uc2UgZnJvbSBm
+aXJtd2FyZQoKc21hdGNoIHdhcm5pbmdzOgpkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L21hYy5jOjU1NzAgYXRoMTBrX3JlbW92ZV9pbnRlcmZhY2UoKSB3YXJuOiBpbmNvbnNpc3RlbnQg
+cmV0dXJucyAnbXV0ZXg6JmFyLT5jb25mX211dGV4Jy4KICBMb2NrZWQgb246ICAgbGluZSA1NTE2
+CiAgVW5sb2NrZWQgb246IGxpbmUgNTU3MAoKIyBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
+Y20vbGludXgva2VybmVsL2dpdC9rdmFsby9hdGguZ2l0L2NvbW1pdC8/aWQ9MzY0NGM4NDRlZjNl
+OTU2MTY0MjEzYjE0NWQ4ZWY0OTY5MWI3MDBhYwpnaXQgcmVtb3RlIGFkZCBhdGg2a2wgaHR0cHM6
+Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQva3ZhbG8vYXRoLmdpdApn
+aXQgcmVtb3RlIHVwZGF0ZSBhdGg2a2wKZ2l0IGNoZWNrb3V0IDM2NDRjODQ0ZWYzZTk1NjE2NDIx
+M2IxNDVkOGVmNDk2OTFiNzAwYWMKdmltICs1NTcwIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvbWFjLmMKCmI0YWE1MzlkZCBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTUtMDMt
+MzEgIDU0NjIgIAo1ZTNkZDE1N2QgS2FsbGUgVmFsbyAgICAgICAgICAgICAgICAyMDEzLTA2LTEy
+ICA1NDYzICBzdGF0aWMgdm9pZCBhdGgxMGtfcmVtb3ZlX2ludGVyZmFjZShzdHJ1Y3QgaWVlZTgw
+MjExX2h3ICpodywKNWUzZGQxNTdkIEthbGxlIFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0x
+MiAgNTQ2NCAgCQkJCSAgICBzdHJ1Y3QgaWVlZTgwMjExX3ZpZiAqdmlmKQo1ZTNkZDE1N2QgS2Fs
+bGUgVmFsbyAgICAgICAgICAgICAgICAyMDEzLTA2LTEyICA1NDY1ICB7CjVlM2RkMTU3ZCBLYWxs
+ZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgIDU0NjYgIAlzdHJ1Y3QgYXRoMTBrICph
+ciA9IGh3LT5wcml2Owo1NmFjMTNiZmMgQW1hZGV1c3ogU8WCYXdpxYRza2kgICAgICAgIDIwMTct
+MDItMTMgIDU0NjcgIAlzdHJ1Y3QgYXRoMTBrX3ZpZiAqYXJ2aWYgPSAodm9pZCAqKXZpZi0+ZHJ2
+X3ByaXY7CjY5NDI3MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTYtMDMtMDYgIDU0
+NjggIAlzdHJ1Y3QgYXRoMTBrX3BlZXIgKnBlZXI7CjM2NDRjODQ0ZSBSYWtlc2ggUGlsbGFpICAg
+ICAgICAgICAgIDIwMTktMDItMTUgIDU0NjkgIAl1bnNpZ25lZCBsb25nIHRpbWVfbGVmdDsKNWUz
+ZGQxNTdkIEthbGxlIFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0xMiAgNTQ3MCAgCWludCBy
+ZXQ7CjY5NDI3MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTYtMDMtMDYgIDU0NzEg
+IAlpbnQgaTsKNWUzZGQxNTdkIEthbGxlIFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0xMiAg
+NTQ3MiAgCjgxYTlhMTdkYiBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTUtMDMtMDUgIDU0
+NzMgIAljYW5jZWxfd29ya19zeW5jKCZhcnZpZi0+YXBfY3NhX3dvcmspOwpjYzk5MDRlNjkgTWlj
+aGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTEwICA1NDc0ICAJY2FuY2VsX2RlbGF5ZWRf
+d29ya19zeW5jKCZhcnZpZi0+Y29ubmVjdGlvbl9sb3NzX3dvcmspOwo4MWE5YTE3ZGIgTWljaGFs
+IEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTA1ICA1NDc1ICAKNWQwMTFmNWMxIFN1aml0aCBN
+YW5vaGFyYW4gICAgICAgICAgMjAxNC0xMS0yNSAgNTQ3NiAgCW11dGV4X2xvY2soJmFyLT5jb25m
+X211dGV4KTsKNWQwMTFmNWMxIFN1aml0aCBNYW5vaGFyYW4gICAgICAgICAgMjAxNC0xMS0yNSAg
+NTQ3NyAgCmVkNTQzODhhMyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTMtMDktMTMgIDU0
+NzggIAlzcGluX2xvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwo2NGJhZGNiNmQgTWljaGFsIEthemlv
+ciAgICAgICAgICAgICAyMDE0LTA5LTE4ICA1NDc5ICAJYXRoMTBrX21hY192aWZfYmVhY29uX2Ns
+ZWFudXAoYXJ2aWYpOwplZDU0Mzg4YTMgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDEzLTA5
+LTEzICA1NDgwICAJc3Bpbl91bmxvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwplZDU0Mzg4YTMgTWlj
+aGFsIEthemlvciAgICAgICAgICAgICAyMDEzLTA5LTEzICA1NDgxICAKODU1YWVkMTIyIFNpbW9u
+IFd1bmRlcmxpY2ggICAgICAgICAgMjAxNC0wOC0wMiAgNTQ4MiAgCXJldCA9IGF0aDEwa19zcGVj
+dHJhbF92aWZfc3RvcChhcnZpZik7Cjg1NWFlZDEyMiBTaW1vbiBXdW5kZXJsaWNoICAgICAgICAg
+IDIwMTQtMDgtMDIgIDU0ODMgIAlpZiAocmV0KQo3YWE3YTcyYTIgTWljaGFsIEthemlvciAgICAg
+ICAgICAgICAyMDE0LTA4LTI1ICA1NDg0ICAJCWF0aDEwa193YXJuKGFyLCAiZmFpbGVkIHRvIHN0
+b3Agc3BlY3RyYWwgZm9yIHZkZXYgJWk6ICVkXG4iLAo4NTVhZWQxMjIgU2ltb24gV3VuZGVybGlj
+aCAgICAgICAgICAyMDE0LTA4LTAyICA1NDg1ICAJCQkgICAgYXJ2aWYtPnZkZXZfaWQsIHJldCk7
+Cjg1NWFlZDEyMiBTaW1vbiBXdW5kZXJsaWNoICAgICAgICAgIDIwMTQtMDgtMDIgIDU0ODYgIAox
+NmMxMTE3NjcgQmVuIEdyZWVhciAgICAgICAgICAgICAgICAyMDE0LTA5LTIzICA1NDg3ICAJYXIt
+PmZyZWVfdmRldl9tYXAgfD0gMUxMIDw8IGFydmlmLT52ZGV2X2lkOwplYmFhNGIxNjIgVmFzYW50
+aGFrdW1hciBUaGlhZ2FyYWphbiAyMDE2LTEwLTEwICA1NDg4ICAJc3Bpbl9sb2NrX2JoKCZhci0+
+ZGF0YV9sb2NrKTsKMDU3OTExOWY3IE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAxMy0xMC0x
+NiAgNTQ4OSAgCWxpc3RfZGVsKCZhcnZpZi0+bGlzdCk7CmViYWE0YjE2MiBWYXNhbnRoYWt1bWFy
+IFRoaWFnYXJhamFuIDIwMTYtMTAtMTAgIDU0OTAgIAlzcGluX3VubG9ja19iaCgmYXItPmRhdGFf
+bG9jayk7CjVlM2RkMTU3ZCBLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgIDU0
+OTEgIAplNTdlMDU3MTYgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTI0ICA1NDky
+ICAJaWYgKGFydmlmLT52ZGV2X3R5cGUgPT0gV01JX1ZERVZfVFlQRV9BUCB8fAplNTdlMDU3MTYg
+TWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTI0ICA1NDkzICAJICAgIGFydmlmLT52
+ZGV2X3R5cGUgPT0gV01JX1ZERVZfVFlQRV9JQlNTKSB7CjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9y
+ICAgICAgICAgICAgIDIwMTUtMDItMTUgIDU0OTQgIAkJcmV0ID0gYXRoMTBrX3dtaV9wZWVyX2Rl
+bGV0ZShhcnZpZi0+YXIsIGFydmlmLT52ZGV2X2lkLAoyYzUxMjA1OWIgTWljaGFsIEthemlvciAg
+ICAgICAgICAgICAyMDE1LTAyLTE1ICA1NDk1ICAJCQkJCSAgICAgdmlmLT5hZGRyKTsKNWUzZGQx
+NTdkIEthbGxlIFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0xMiAgNTQ5NiAgCQlpZiAocmV0
+KQplNTdlMDU3MTYgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTI0ICA1NDk3ICAJ
+CQlhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBzdWJtaXQgQVAvSUJTUyBzZWxmLXBlZXIgcmVt
+b3ZhbCBvbiB2ZGV2ICVpOiAlZFxuIiwKNjkyNDRlNTY1IEJlbiBHcmVlYXIgICAgICAgICAgICAg
+ICAgMjAxNC0wMi0yNyAgNTQ5OCAgCQkJCSAgICBhcnZpZi0+dmRldl9pZCwgcmV0KTsKNWUzZGQx
+NTdkIEthbGxlIFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0xMiAgNTQ5OSAgCjVlM2RkMTU3
+ZCBLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgIDU1MDAgIAkJa2ZyZWUoYXJ2
+aWYtPnUuYXAubm9hX2RhdGEpOwo1ZTNkZDE1N2QgS2FsbGUgVmFsbyAgICAgICAgICAgICAgICAy
+MDEzLTA2LTEyICA1NTAxICAJfQo1ZTNkZDE1N2QgS2FsbGUgVmFsbyAgICAgICAgICAgICAgICAy
+MDEzLTA2LTEyICA1NTAyICAKN2FhN2E3MmEyIE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAx
+NC0wOC0yNSAgNTUwMyAgCWF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfTUFDLCAibWFjIHZkZXYg
+JWkgZGVsZXRlIChyZW1vdmUgaW50ZXJmYWNlKVxuIiwKNjBjM2RhYTg4IEthbGxlIFZhbG8gICAg
+ICAgICAgICAgICAgMjAxMy0wOS0wOCAgNTUwNCAgCQkgICBhcnZpZi0+dmRldl9pZCk7CjYwYzNk
+YWE4OCBLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDktMDggIDU1MDUgIAo1ZTNkZDE1
+N2QgS2FsbGUgVmFsbyAgICAgICAgICAgICAgICAyMDEzLTA2LTEyICA1NTA2ICAJcmV0ID0gYXRo
+MTBrX3dtaV92ZGV2X2RlbGV0ZShhciwgYXJ2aWYtPnZkZXZfaWQpOwo1ZTNkZDE1N2QgS2FsbGUg
+VmFsbyAgICAgICAgICAgICAgICAyMDEzLTA2LTEyICA1NTA3ICAJaWYgKHJldCkKN2FhN2E3MmEy
+IE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAxNC0wOC0yNSAgNTUwOCAgCQlhdGgxMGtfd2Fy
+bihhciwgImZhaWxlZCB0byBkZWxldGUgV01JIHZkZXYgJWk6ICVkXG4iLAo2OTI0NGU1NjUgQmVu
+IEdyZWVhciAgICAgICAgICAgICAgICAyMDE0LTAyLTI3ICA1NTA5ICAJCQkgICAgYXJ2aWYtPnZk
+ZXZfaWQsIHJldCk7CjVlM2RkMTU3ZCBLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYt
+MTIgIDU1MTAgIAozNjQ0Yzg0NGUgUmFrZXNoIFBpbGxhaSAgICAgICAgICAgICAyMDE5LTAyLTE1
+ICA1NTExICAJaWYgKHRlc3RfYml0KFdNSV9TRVJWSUNFX1NZTkNfREVMRVRFX0NNRFMsIGFyLT53
+bWkuc3ZjX21hcCkpIHsKMzY0NGM4NDRlIFJha2VzaCBQaWxsYWkgICAgICAgICAgICAgMjAxOS0w
+Mi0xNSAgNTUxMiAgCQl0aW1lX2xlZnQgPSB3YWl0X2Zvcl9jb21wbGV0aW9uX3RpbWVvdXQoJmFy
+LT52ZGV2X2RlbGV0ZV9kb25lLAozNjQ0Yzg0NGUgUmFrZXNoIFBpbGxhaSAgICAgICAgICAgICAy
+MDE5LTAyLTE1ICA1NTEzICAJCQkJCQkJQVRIMTBLX1ZERVZfREVMRVRFX1RJTUVPVVRfSFopOwoz
+NjQ0Yzg0NGUgUmFrZXNoIFBpbGxhaSAgICAgICAgICAgICAyMDE5LTAyLTE1ICA1NTE0ICAJCWlm
+ICh0aW1lX2xlZnQgPT0gMCkgewozNjQ0Yzg0NGUgUmFrZXNoIFBpbGxhaSAgICAgICAgICAgICAy
+MDE5LTAyLTE1ICA1NTE1ICAJCQlhdGgxMGtfd2FybihhciwgIlRpbWVvdXQgaW4gcmVjZWl2aW5n
+IHZkZXYgZGVsZXRlIHJlc3BvbnNlXG4iKTsKMzY0NGM4NDRlIFJha2VzaCBQaWxsYWkgICAgICAg
+ICAgICAgMjAxOS0wMi0xNSAgNTUxNiAgCQkJcmV0dXJuOwozNjQ0Yzg0NGUgUmFrZXNoIFBpbGxh
+aSAgICAgICAgICAgICAyMDE5LTAyLTE1ICA1NTE3ICAJCX0KMzY0NGM4NDRlIFJha2VzaCBQaWxs
+YWkgICAgICAgICAgICAgMjAxOS0wMi0xNSAgNTUxOCAgCX0KMzY0NGM4NDRlIFJha2VzaCBQaWxs
+YWkgICAgICAgICAgICAgMjAxOS0wMi0xNSAgNTUxOSAgCjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9y
+ICAgICAgICAgICAgIDIwMTUtMDItMTUgIDU1MjAgIAkvKiBTb21lIGZpcm13YXJlIHJldmlzaW9u
+cyBkb24ndCBub3RpZnkgaG9zdCBhYm91dCBzZWxmLXBlZXIgcmVtb3ZhbAoyYzUxMjA1OWIgTWlj
+aGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAyLTE1ICA1NTIxICAJICogdW50aWwgYWZ0ZXIg
+YXNzb2NpYXRlZCB2ZGV2IGlzIGRlbGV0ZWQuCjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9yICAgICAg
+ICAgICAgIDIwMTUtMDItMTUgIDU1MjIgIAkgKi8KZTU3ZTA1NzE2IE1pY2hhbCBLYXppb3IgICAg
+ICAgICAgICAgMjAxNS0wMy0yNCAgNTUyMyAgCWlmIChhcnZpZi0+dmRldl90eXBlID09IFdNSV9W
+REVWX1RZUEVfQVAgfHwKZTU3ZTA1NzE2IE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAxNS0w
+My0yNCAgNTUyNCAgCSAgICBhcnZpZi0+dmRldl90eXBlID09IFdNSV9WREVWX1RZUEVfSUJTUykg
+ewoyYzUxMjA1OWIgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAyLTE1ICA1NTI1ICAJ
+CXJldCA9IGF0aDEwa193YWl0X2Zvcl9wZWVyX2RlbGV0ZWQoYXIsIGFydmlmLT52ZGV2X2lkLAoy
+YzUxMjA1OWIgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAyLTE1ICA1NTI2ICAJCQkJ
+CQkgICB2aWYtPmFkZHIpOwoyYzUxMjA1OWIgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1
+LTAyLTE1ICA1NTI3ICAJCWlmIChyZXQpCjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9yICAgICAgICAg
+ICAgIDIwMTUtMDItMTUgIDU1MjggIAkJCWF0aDEwa193YXJuKGFyLCAiZmFpbGVkIHRvIHJlbW92
+ZSBBUCBzZWxmLXBlZXIgb24gdmRldiAlaTogJWRcbiIsCjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9y
+ICAgICAgICAgICAgIDIwMTUtMDItMTUgIDU1MjkgIAkJCQkgICAgYXJ2aWYtPnZkZXZfaWQsIHJl
+dCk7CjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTUtMDItMTUgIDU1MzAg
+IAoyYzUxMjA1OWIgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAyLTE1ICA1NTMxICAJ
+CXNwaW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7CjJjNTEyMDU5YiBNaWNoYWwgS2F6aW9yICAg
+ICAgICAgICAgIDIwMTUtMDItMTUgIDU1MzIgIAkJYXItPm51bV9wZWVycy0tOwoyYzUxMjA1OWIg
+TWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAyLTE1ICA1NTMzICAJCXNwaW5fdW5sb2Nr
+X2JoKCZhci0+ZGF0YV9sb2NrKTsKMmM1MTIwNTliIE1pY2hhbCBLYXppb3IgICAgICAgICAgICAg
+MjAxNS0wMi0xNSAgNTUzNCAgCX0KMmM1MTIwNTliIE1pY2hhbCBLYXppb3IgICAgICAgICAgICAg
+MjAxNS0wMi0xNSAgNTUzNSAgCjY5NDI3MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIw
+MTYtMDMtMDYgIDU1MzYgIAlzcGluX2xvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwo2OTQyNzI2Zjcg
+TWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE2LTAzLTA2ICA1NTM3ICAJZm9yIChpID0gMDsg
+aSA8IEFSUkFZX1NJWkUoYXItPnBlZXJfbWFwKTsgaSsrKSB7CjY5NDI3MjZmNyBNaWNoYWwgS2F6
+aW9yICAgICAgICAgICAgIDIwMTYtMDMtMDYgIDU1MzggIAkJcGVlciA9IGFyLT5wZWVyX21hcFtp
+XTsKNjk0MjcyNmY3IE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAxNi0wMy0wNiAgNTUzOSAg
+CQlpZiAoIXBlZXIpCjY5NDI3MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTYtMDMt
+MDYgIDU1NDAgIAkJCWNvbnRpbnVlOwo2OTQyNzI2ZjcgTWljaGFsIEthemlvciAgICAgICAgICAg
+ICAyMDE2LTAzLTA2ICA1NTQxICAKNjk0MjcyNmY3IE1pY2hhbCBLYXppb3IgICAgICAgICAgICAg
+MjAxNi0wMy0wNiAgNTU0MiAgCQlpZiAocGVlci0+dmlmID09IHZpZikgewo2OTQyNzI2ZjcgTWlj
+aGFsIEthemlvciAgICAgICAgICAgICAyMDE2LTAzLTA2ICA1NTQzICAJCQlhdGgxMGtfd2Fybihh
+ciwgImZvdW5kIHZpZiBwZWVyICVwTSBlbnRyeSBvbiB2ZGV2ICVpIGFmdGVyIGl0IHdhcyBzdXBw
+b3NlZGx5IHJlbW92ZWRcbiIsCjY5NDI3MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIw
+MTYtMDMtMDYgIDU1NDQgIAkJCQkgICAgdmlmLT5hZGRyLCBhcnZpZi0+dmRldl9pZCk7CjY5NDI3
+MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTYtMDMtMDYgIDU1NDUgIAkJCXBlZXIt
+PnZpZiA9IE5VTEw7CjY5NDI3MjZmNyBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTYtMDMt
+MDYgIDU1NDYgIAkJfQo2OTQyNzI2ZjcgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE2LTAz
+LTA2ICA1NTQ3ICAJfQo2OTQyNzI2ZjcgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE2LTAz
+LTA2ICA1NTQ4ICAJc3Bpbl91bmxvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwo2OTQyNzI2ZjcgTWlj
+aGFsIEthemlvciAgICAgICAgICAgICAyMDE2LTAzLTA2ICA1NTQ5ICAKNWUzZGQxNTdkIEthbGxl
+IFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0xMiAgNTU1MCAgCWF0aDEwa19wZWVyX2NsZWFu
+dXAoYXIsIGFydmlmLT52ZGV2X2lkKTsKZGQ0NzE3YjZmIE1pY2hhbCBLYXppb3IgICAgICAgICAg
+ICAgMjAxNi0wMy0wNiAgNTU1MSAgCWF0aDEwa19tYWNfdHhxX3VucmVmKGFyLCB2aWYtPnR4cSk7
+CjVlM2RkMTU3ZCBLYWxsZSBWYWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgIDU1NTIgIAo1
+MDBmZjlmOTMgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTMxICA1NTUzICAJaWYg
+KHZpZi0+dHlwZSA9PSBOTDgwMjExX0lGVFlQRV9NT05JVE9SKSB7CjUwMGZmOWY5MyBNaWNoYWwg
+S2F6aW9yICAgICAgICAgICAgIDIwMTUtMDMtMzEgIDU1NTQgIAkJYXItPm1vbml0b3JfYXJ2aWYg
+PSBOVUxMOwo1MDBmZjlmOTMgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTMxICA1
+NTU1ICAJCXJldCA9IGF0aDEwa19tb25pdG9yX3JlY2FsYyhhcik7CjUwMGZmOWY5MyBNaWNoYWwg
+S2F6aW9yICAgICAgICAgICAgIDIwMTUtMDMtMzEgIDU1NTYgIAkJaWYgKHJldCkKNTAwZmY5Zjkz
+IE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAxNS0wMy0zMSAgNTU1NyAgCQkJYXRoMTBrX3dh
+cm4oYXIsICJmYWlsZWQgdG8gcmVjYWxjIG1vbml0b3I6ICVkXG4iLCByZXQpOwo1MDBmZjlmOTMg
+TWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTMxICA1NTU4ICAJfQo1MDBmZjlmOTMg
+TWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE1LTAzLTMxICA1NTU5ICAKZDY3OWZhMWIzIFJ5
+YW4gSHN1ICAgICAgICAgICAgICAgICAgMjAxNi0xMi0yMiAgNTU2MCAgCXJldCA9IGF0aDEwa19t
+YWNfdHhwb3dlcl9yZWNhbGMoYXIpOwpkNjc5ZmExYjMgUnlhbiBIc3UgICAgICAgICAgICAgICAg
+ICAyMDE2LTEyLTIyICA1NTYxICAJaWYgKHJldCkKZDY3OWZhMWIzIFJ5YW4gSHN1ICAgICAgICAg
+ICAgICAgICAgMjAxNi0xMi0yMiAgNTU2MiAgCQlhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBy
+ZWNhbGMgdHggcG93ZXI6ICVkXG4iLCByZXQpOwpkNjc5ZmExYjMgUnlhbiBIc3UgICAgICAgICAg
+ICAgICAgICAyMDE2LTEyLTIyICA1NTYzICAKYjRhYTUzOWRkIE1pY2hhbCBLYXppb3IgICAgICAg
+ICAgICAgMjAxNS0wMy0zMSAgNTU2NCAgCXNwaW5fbG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsK
+YjRhYTUzOWRkIE1pY2hhbCBLYXppb3IgICAgICAgICAgICAgMjAxNS0wMy0zMSAgNTU2NSAgCWF0
+aDEwa19tYWNfdmlmX3R4X3VubG9ja19hbGwoYXJ2aWYpOwpiNGFhNTM5ZGQgTWljaGFsIEthemlv
+ciAgICAgICAgICAgICAyMDE1LTAzLTMxICA1NTY2ICAJc3Bpbl91bmxvY2tfYmgoJmFyLT5odHQu
+dHhfbG9jayk7CmI0YWE1MzlkZCBNaWNoYWwgS2F6aW9yICAgICAgICAgICAgIDIwMTUtMDMtMzEg
+IDU1NjcgIAoyOTk0Njg3ODIgTWljaGFsIEthemlvciAgICAgICAgICAgICAyMDE2LTAzLTA2ICA1
+NTY4ICAJYXRoMTBrX21hY190eHFfdW5yZWYoYXIsIHZpZi0+dHhxKTsKMjk5NDY4NzgyIE1pY2hh
+bCBLYXppb3IgICAgICAgICAgICAgMjAxNi0wMy0wNiAgNTU2OSAgCjVlM2RkMTU3ZCBLYWxsZSBW
+YWxvICAgICAgICAgICAgICAgIDIwMTMtMDYtMTIgQDU1NzAgIAltdXRleF91bmxvY2soJmFyLT5j
+b25mX211dGV4KTsKNWUzZGQxNTdkIEthbGxlIFZhbG8gICAgICAgICAgICAgICAgMjAxMy0wNi0x
+MiAgNTU3MSAgfQo1ZTNkZDE1N2QgS2FsbGUgVmFsbyAgICAgICAgICAgICAgICAyMDEzLTA2LTEy
+ICA1NTcyICAKCjo6Ojo6OiBUaGUgY29kZSBhdCBsaW5lIDU1NzAgd2FzIGZpcnN0IGludHJvZHVj
+ZWQgYnkgY29tbWl0Cjo6Ojo6OiA1ZTNkZDE1N2Q3ZTcwZjBlM2NlYTNmMjU3M2VkNjlmYjE1NmEx
+OWQ1IGF0aDEwazogbWFjODAyMTEgZHJpdmVyIGZvciBRdWFsY29tbSBBdGhlcm9zIDgwMi4xMWFj
+IENRQTk4eHggZGV2aWNlcwoKOjo6Ojo6IFRPOiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPgo6Ojo6OjogQ0M6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+Cgot
+LS0KMC1EQVkga2VybmVsIHRlc3QgaW5mcmFzdHJ1Y3R1cmUgICAgICAgICAgICAgICAgT3BlbiBT
+b3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKaHR0cHM6Ly9saXN0cy4wMS5vcmcvcGlwZXJtYWlsL2ti
+dWlsZC1hbGwgICAgICAgICAgICAgICAgICAgSW50ZWwgQ29ycG9yYXRpb24KCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
