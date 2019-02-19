@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gw4Fl-0001XG-4Q
- for ath10k@lists.infradead.org; Tue, 19 Feb 2019 12:12:06 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH] ath10k: change 'unsigned long int' to 'unsigned long'
-Date: Tue, 19 Feb 2019 14:11:43 +0200
-Message-Id: <1550578303-15962-1-git-send-email-kvalo@codeaurora.org>
+ id 1gw4RY-0006rY-JU
+ for ath10k@lists.infradead.org; Tue, 19 Feb 2019 12:24:17 +0000
+From: Dundi Raviteja <dundi@codeaurora.org>
+Subject: [PATCH v2] ath10k: Enable support for beacon interval per VAP
+Date: Tue, 19 Feb 2019 17:54:06 +0530
+Message-Id: <1550579046-22649-1-git-send-email-dundi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,173 +21,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Dundi Raviteja <dundi@codeaurora.org>
 
-Fixes checkpatch warnings:
+Enable support to configure different beacon interval per VAP.
 
-Prefer 'unsigned long' over 'unsigned long int' as the int is unnecessary
+To support this feature, map different beacon interval service bit
+to wmi tlv service.
 
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+
+Signed-off-by: Dundi Raviteja <dundi@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.h        | 16 ++++++++--------
- drivers/net/wireless/ath/ath10k/debug.h       | 20 ++++++++++----------
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 10 +++++-----
- drivers/net/wireless/ath/ath10k/htt_rx.c      | 16 ++++++++--------
- drivers/net/wireless/ath/ath10k/snoc.h        |  2 +-
- 5 files changed, 32 insertions(+), 32 deletions(-)
+This change is dependent on the below patchset
+ath10k: Add support for ack rssi value of management tx packets (https://patchwork.kernel.org/patch/10809631/)
+---
+ drivers/net/wireless/ath/ath10k/mac.c     | 33 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  3 +++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2f43600717ec..482e60221ccb 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -448,14 +448,14 @@ enum ath10k_amsdu_subfrm_num {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e49b367..09c4705 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8232,6 +8232,30 @@ void ath10k_mac_destroy(struct ath10k *ar)
+ 	},
  };
  
- struct ath10k_sta_tid_stats {
--	unsigned long int rx_pkt_from_fw;
--	unsigned long int rx_pkt_unchained;
--	unsigned long int rx_pkt_drop_chained;
--	unsigned long int rx_pkt_drop_filter;
--	unsigned long int rx_pkt_err[ATH10K_PKT_RX_ERR_MAX];
--	unsigned long int rx_pkt_queued_for_mac;
--	unsigned long int rx_pkt_ampdu[ATH10K_AMPDU_SUBFRM_NUM_MAX];
--	unsigned long int rx_pkt_amsdu[ATH10K_AMSDU_SUBFRM_NUM_MAX];
-+	unsigned long rx_pkt_from_fw;
-+	unsigned long rx_pkt_unchained;
-+	unsigned long rx_pkt_drop_chained;
-+	unsigned long rx_pkt_drop_filter;
-+	unsigned long rx_pkt_err[ATH10K_PKT_RX_ERR_MAX];
-+	unsigned long rx_pkt_queued_for_mac;
-+	unsigned long rx_pkt_ampdu[ATH10K_AMPDU_SUBFRM_NUM_MAX];
-+	unsigned long rx_pkt_amsdu[ATH10K_AMSDU_SUBFRM_NUM_MAX];
- };
- 
- enum ath10k_counter_type {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 5cf16d690724..eecafdbc873f 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -213,12 +213,12 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 				   struct ath10k_fw_stats *stats);
- void ath10k_sta_update_rx_tid_stats(struct ath10k *ar, u8 *first_hdr,
--				    unsigned long int num_msdus,
-+				    unsigned long num_msdus,
- 				    enum ath10k_pkt_rx_err err,
--				    unsigned long int unchain_cnt,
--				    unsigned long int drop_cnt,
--				    unsigned long int drop_cnt_filter,
--				    unsigned long int queued_msdus);
-+				    unsigned long unchain_cnt,
-+				    unsigned long drop_cnt,
-+				    unsigned long drop_cnt_filter,
-+				    unsigned long queued_msdus);
- void ath10k_sta_update_rx_tid_stats_ampdu(struct ath10k *ar,
- 					  u16 peer_id, u8 tid,
- 					  struct htt_rx_indication_mpdu_range *ranges,
-@@ -232,12 +232,12 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 
- static inline
- void ath10k_sta_update_rx_tid_stats(struct ath10k *ar, u8 *first_hdr,
--				    unsigned long int num_msdus,
-+				    unsigned long num_msdus,
- 				    enum ath10k_pkt_rx_err err,
--				    unsigned long int unchain_cnt,
--				    unsigned long int drop_cnt,
--				    unsigned long int drop_cnt_filter,
--				    unsigned long int queued_msdus)
-+				    unsigned long unchain_cnt,
-+				    unsigned long drop_cnt,
-+				    unsigned long drop_cnt_filter,
-+				    unsigned long queued_msdus)
- {
++static struct
++ieee80211_iface_combination ath10k_tlv_qcs_bcn_int_if_comb[] = {
++	{
++		.limits = ath10k_tlv_if_limit,
++		.num_different_channels = 1,
++		.max_interfaces = 4,
++		.beacon_int_infra_match = true,
++		.beacon_int_min_gcd = 1,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
++	},
++	{
++		.limits = ath10k_tlv_qcs_if_limit,
++		.num_different_channels = 2,
++		.max_interfaces = 4,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_qcs_if_limit),
++	},
++	{
++		.limits = ath10k_tlv_if_limit_ibss,
++		.num_different_channels = 1,
++		.max_interfaces = 2,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
++	},
++};
++
+ static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
+ 	{
+ 		.max = 1,
+@@ -8642,6 +8666,15 @@ int ath10k_mac_register(struct ath10k *ar)
+ 				ath10k_tlv_qcs_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+ 				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
++
++			if (test_bit
++			    (WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++			    ar->wmi.svc_map)) {
++				ar->hw->wiphy->iface_combinations =
++						ath10k_tlv_qcs_bcn_int_if_comb;
++				ar->hw->wiphy->n_iface_combinations =
++				     ARRAY_SIZE(ath10k_tlv_qcs_bcn_int_if_comb);
++			}
+ 		} else {
+ 			ar->hw->wiphy->iface_combinations = ath10k_tlv_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index e07e990..9f78502 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1567,6 +1567,9 @@ enum wmi_tlv_service {
+ 	SVCMAP(WMI_TLV_SERVICE_THERM_THROT,
+ 	       WMI_SERVICE_THERM_THROT,
+ 	       WMI_TLV_MAX_SERVICE);
++	SVCMAP(WMI_TLV_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++	       WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
++	       WMI_TLV_MAX_SERVICE);
  }
  
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 4778a455d81a..ab49793353f4 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -87,12 +87,12 @@ void ath10k_sta_update_rx_tid_stats_ampdu(struct ath10k *ar, u16 peer_id, u8 tid
- }
- 
- void ath10k_sta_update_rx_tid_stats(struct ath10k *ar, u8 *first_hdr,
--				    unsigned long int num_msdus,
-+				    unsigned long num_msdus,
- 				    enum ath10k_pkt_rx_err err,
--				    unsigned long int unchain_cnt,
--				    unsigned long int drop_cnt,
--				    unsigned long int drop_cnt_filter,
--				    unsigned long int queued_msdus)
-+				    unsigned long unchain_cnt,
-+				    unsigned long drop_cnt,
-+				    unsigned long drop_cnt_filter,
-+				    unsigned long queued_msdus)
- {
- 	struct ieee80211_sta *sta;
- 	struct ath10k_sta *arsta;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d5c666c2504c..1afaa107024a 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1905,7 +1905,7 @@ static void ath10k_htt_rx_h_enqueue(struct ath10k *ar,
- }
- 
- static int ath10k_unchain_msdu(struct sk_buff_head *amsdu,
--			       unsigned long int *unchain_cnt)
-+			       unsigned long *unchain_cnt)
- {
- 	struct sk_buff *skb, *first;
- 	int space;
-@@ -1954,8 +1954,8 @@ static int ath10k_unchain_msdu(struct sk_buff_head *amsdu,
- 
- static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
- 				    struct sk_buff_head *amsdu,
--				    unsigned long int *drop_cnt,
--				    unsigned long int *unchain_cnt)
-+				    unsigned long *drop_cnt,
-+				    unsigned long *unchain_cnt)
- {
- 	struct sk_buff *first;
- 	struct htt_rx_desc *rxd;
-@@ -2005,7 +2005,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
- static void ath10k_htt_rx_h_filter(struct ath10k *ar,
- 				   struct sk_buff_head *amsdu,
- 				   struct ieee80211_rx_status *rx_status,
--				   unsigned long int *drop_cnt)
-+				   unsigned long *drop_cnt)
- {
- 	if (skb_queue_empty(amsdu))
- 		return;
-@@ -2025,10 +2025,10 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
- 	struct ieee80211_rx_status *rx_status = &htt->rx_status;
- 	struct sk_buff_head amsdu;
- 	int ret;
--	unsigned long int drop_cnt = 0;
--	unsigned long int unchain_cnt = 0;
--	unsigned long int drop_cnt_filter = 0;
--	unsigned long int msdus_to_queue, num_msdus;
-+	unsigned long drop_cnt = 0;
-+	unsigned long unchain_cnt = 0;
-+	unsigned long drop_cnt_filter = 0;
-+	unsigned long msdus_to_queue, num_msdus;
- 	enum ath10k_pkt_rx_err err = ATH10K_PKT_RX_ERR_MAX;
- 	u8 first_hdr[RX_HTT_HDR_STATUS_LEN];
- 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 2b2f23cf7c5d..4e256ae4b3ff 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -90,7 +90,7 @@ struct ath10k_snoc {
- 	struct ath10k_vreg_info *vreg;
- 	struct ath10k_clk_info *clk;
- 	struct ath10k_qmi *qmi;
--	unsigned long int flags;
-+	unsigned long flags;
- };
- 
- static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+ #undef SVCMAP
 -- 
-2.7.4
+1.9.1
 
 
 _______________________________________________
