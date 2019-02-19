@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gvybF-0000Cz-JJ
- for ath10k@lists.infradead.org; Tue, 19 Feb 2019 06:09:51 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Add peer param map for tlv and non-tlv
-Date: Tue, 19 Feb 2019 11:39:36 +0530
-Message-Id: <1550556576-19803-1-git-send-email-pillair@codeaurora.org>
+ id 1gw27V-0000Zg-Oo
+ for ath10k@lists.infradead.org; Tue, 19 Feb 2019 09:55:23 +0000
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Subject: [PATCH] ath10k: Fill rx duration for each peer in fw_stats for WCN3990
+Date: Tue, 19 Feb 2019 15:25:10 +0530
+Message-Id: <1550570110-32010-1-git-send-email-svishnoi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,297 +21,215 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-The peer param id for PEER_PARAM_USE_FIXED_PWR
-is different for tlv and non-tlv firmware. This
-causes incorrect peer param to be set by the driver
-to the firmware(tlv/non-tlv).
+Currently, rx_duration for each peer is not getting populated in
+fw_stats debugfs entry for WCN3990.
 
-Create seperate peer param map for tlv and non-tlv
-firmware and attach the peer param id based on the
-firmware type during the init.
+WCN3990 firmware sends rx duration for each peer as part of
+peer_extd_stats in WMI_UPDATE_STATS_EVENT. To enable peer_extd_stats,
+firmware expects host to send fw_stats_req_mask with flag
+WMI_TLV_PEER_STATS_EXTD set in WMI_REQUEST_STATS_CMD.
+
+Send fw_stats_req_mask with flag WMI_TLV_PEER_STATS_EXTD set in
+WMI_REQUEST_STATS_CMD and parse the peer_extd_stats in
+WMI_UPDATE_STATS_EVENT to populate the rx_duration of each peer
+in fw_stats debugfs entry.
+
+Currently the driver handles 32-bit rx_duration, but the rx_duration
+for WCN3990 can be upto 63 bit. The firmware sends rx_duration split
+into two 32-bit fields, with the upper 32-bits being valid only if its
+MSB is set. This change handles the 63-bit rx_duration obtained from
+WCN3990 and maintain the backward compatibility.
+
+To get the rx_duration of each connected peer :
+cat /sys/kernel/debug/ieee80211/phyX/ath10k/fw_stats
 
 Tested HW: WCN3990
 Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 ---
-This change is dependent on the below patchset
-ath10k: add support for controlling tx power to a station (https://patchwork.kernel.org/patch/9562405/)
----
- drivers/net/wireless/ath/ath10k/core.h        |  1 +
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |  2 +-
- drivers/net/wireless/ath/ath10k/mac.c         | 16 ++++++++--------
- drivers/net/wireless/ath/ath10k/wmi-tlv.c     | 19 +++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h     | 18 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c         | 18 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h         | 19 +++++++++++++++++++
- 7 files changed, 84 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c    |  4 ++--
+ drivers/net/wireless/ath/ath10k/core.h    |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 31 +++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 20 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi.h     |  7 +++++++
+ 6 files changed, 60 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index a1b2aea..5ff9cf4 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2315,8 +2315,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		else
+ 			ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
+ 		ar->wow.max_num_patterns = TARGET_TLV_NUM_WOW_PATTERNS;
+-		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
+-			WMI_STAT_PEER;
++		ar->fw_stats_req_mask = WMI_TLV_STAT_PDEV | WMI_TLV_STAT_VDEV |
++			WMI_TLV_STAT_PEER | WMI_TLV_STAT_PEER_EXTD;
+ 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		ar->wmi.mgmt_max_num_pending_tx = TARGET_TLV_MGMT_NUM_MSDU_DESC;
+ 		break;
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2f43600..5be2d5d 100644
+index 2f43600..e786ce0 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -180,6 +180,7 @@ struct ath10k_wmi {
- 	struct wmi_cmd_map *cmd;
- 	struct wmi_vdev_param_map *vdev_param;
- 	struct wmi_pdev_param_map *pdev_param;
-+	struct wmi_peer_param_map *peer_param;
- 	const struct wmi_ops *ops;
- 	const struct wmi_peer_flags_map *peer_flags;
+@@ -200,7 +200,7 @@ struct ath10k_fw_stats_peer {
+ 	u32 peer_rssi;
+ 	u32 peer_tx_rate;
+ 	u32 peer_rx_rate; /* 10x only */
+-	u32 rx_duration;
++	u64 rx_duration;
+ };
  
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 4778a45..a887f71 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -441,7 +441,7 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
- 	}
- 
- 	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
--					WMI_PEER_DEBUG, peer_debug_trigger);
-+					ar->wmi.peer_param->debug, peer_debug_trigger);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
- 			    ret);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bce2698..dece2b0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2744,7 +2744,7 @@ static int ath10k_setup_peer_smps(struct ath10k *ar, struct ath10k_vif *arvif,
- 		return -EINVAL;
- 
- 	return ath10k_wmi_peer_set_param(ar, arvif->vdev_id, addr,
--					 WMI_PEER_SMPS_STATE,
-+					 ar->wmi.peer_param->smps_state,
- 					 ath10k_smps_map[smps]);
- }
- 
-@@ -2901,7 +2901,7 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
- 	 * poked with peer param command.
- 	 */
- 	ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, arvif->bssid,
--					WMI_PEER_DUMMY_VAR, 1);
-+					ar->wmi.peer_param->dummy_var, 1);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to poke peer %pM param for ps workaround on vdev %i: %d\n",
- 			    arvif->bssid, arvif->vdev_id, ret);
-@@ -6189,7 +6189,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 
- 	if (sta && sta->tdls)
- 		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
--					  WMI_PEER_AUTHORIZE, 1);
-+					  ar->wmi.peer_param->authorize, 1);
- 
- exit:
- 	mutex_unlock(&ar->conf_mutex);
-@@ -6280,7 +6280,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 			   sta->addr, bw, mode);
- 
- 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
--						WMI_PEER_PHYMODE, mode);
-+						ar->wmi.peer_param->phymode, mode);
- 		if (err) {
- 			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
- 				    sta->addr, mode, err);
-@@ -6288,7 +6288,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 		}
- 
- 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
--						WMI_PEER_CHAN_WIDTH, bw);
-+						ar->wmi.peer_param->chan_width, bw);
- 		if (err)
- 			ath10k_warn(ar, "failed to update STA %pM peer bw %d: %d\n",
- 				    sta->addr, bw, err);
-@@ -6299,7 +6299,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 			   sta->addr, nss);
- 
- 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
--						WMI_PEER_NSS, nss);
-+						ar->wmi.peer_param->nss, nss);
- 		if (err)
- 			ath10k_warn(ar, "failed to update STA %pM nss %d: %d\n",
- 				    sta->addr, nss, err);
-@@ -6310,7 +6310,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 			   sta->addr, smps);
- 
- 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
--						WMI_PEER_SMPS_STATE, smps);
-+						ar->wmi.peer_param->smps_state, smps);
- 		if (err)
- 			ath10k_warn(ar, "failed to update STA %pM smps %d: %d\n",
- 				    sta->addr, smps, err);
-@@ -6384,7 +6384,7 @@ static int ath10k_sta_set_txpwr(struct ieee80211_hw *hw,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
--					WMI_PEER_USE_FIXED_PWR, txpwr);
-+					ar->wmi.peer_param->use_fixed_power, txpwr);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to set tx power for station ret: %d\n",
- 			    ret);
+ struct ath10k_fw_extd_stats_peer {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 5d05bff..13f9084 100644
+index 84de6ec..80c35ad 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -4077,6 +4077,24 @@ static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
- 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
- };
+@@ -24,6 +24,7 @@
+ #include "wmi-tlv.h"
+ #include "p2p.h"
+ #include "testmode.h"
++#include <linux/bitfield.h>
  
-+static struct wmi_peer_param_map wmi_tlv_peer_param_map = {
-+	.smps_state = WMI_TLV_PEER_SMPS_STATE,
-+	.ampdu = WMI_TLV_PEER_AMPDU,
-+	.authorize = WMI_TLV_PEER_AUTHORIZE,
-+	.chan_width = WMI_TLV_PEER_CHAN_WIDTH,
-+	.nss = WMI_TLV_PEER_NSS,
-+	.use_4addr = WMI_TLV_PEER_USE_4ADDR,
-+	.membership = WMI_TLV_PEER_MEMBERSHIP,
-+	.user_pos = WMI_TLV_PEER_USERPOS,
-+	.crit_proto_hint_enabled = WMI_TLV_PEER_CRIT_PROTO_HINT_ENABLED,
-+	.tx_fail_cnt_thr = WMI_TLV_PEER_TX_FAIL_CNT_THR,
-+	.set_hw_retry_cts2s = WMI_TLV_PEER_SET_HW_RETRY_CTS2S,
-+	.ibss_atim_win_len = WMI_TLV_PEER_IBSS_ATIM_WINDOW_LENGTH,
-+	.phymode = WMI_TLV_PEER_PHYMODE,
-+	.use_fixed_power = WMI_TLV_PEER_USE_FIXED_PWR,
-+	.dummy_var = WMI_TLV_PEER_DUMMY_VAR,
-+};
+ /***************/
+ /* TLV helpers */
+@@ -1289,6 +1290,7 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
+ {
+ 	const void **tb;
+ 	const struct wmi_tlv_stats_ev *ev;
++	u32 num_peer_stats_extd;
+ 	const void *data;
+ 	u32 num_pdev_stats;
+ 	u32 num_vdev_stats;
+@@ -1296,6 +1298,7 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
+ 	u32 num_bcnflt_stats;
+ 	u32 num_chan_stats;
+ 	size_t data_len;
++	u32 stats_id;
+ 	int ret;
+ 	int i;
+ 
+@@ -1320,11 +1323,13 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
+ 	num_bcnflt_stats = __le32_to_cpu(ev->num_bcnflt_stats);
+ 	num_chan_stats = __le32_to_cpu(ev->num_chan_stats);
++	stats_id = __le32_to_cpu(ev->stats_id);
++	num_peer_stats_extd = __le32_to_cpu(ev->num_peer_stats_extd);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "wmi tlv stats update pdev %i vdev %i peer %i bcnflt %i chan %i\n",
++		   "wmi tlv stats update pdev %i vdev %i peer %i bcnflt %i chan %i peer_extd %i\n",
+ 		   num_pdev_stats, num_vdev_stats, num_peer_stats,
+-		   num_bcnflt_stats, num_chan_stats);
++		   num_bcnflt_stats, num_chan_stats, num_peer_stats_extd);
+ 
+ 	for (i = 0; i < num_pdev_stats; i++) {
+ 		const struct wmi_pdev_stats *src;
+@@ -1389,6 +1394,28 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
+ 
+ 		ath10k_wmi_pull_peer_stats(&src->old, dst);
+ 		dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
 +
- static struct wmi_vdev_param_map wmi_tlv_vdev_param_map = {
- 	.rts_threshold = WMI_TLV_VDEV_PARAM_RTS_THRESHOLD,
- 	.fragmentation_threshold = WMI_TLV_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
-@@ -4265,6 +4283,7 @@ void ath10k_wmi_tlv_attach(struct ath10k *ar)
- 	ar->wmi.cmd = &wmi_tlv_cmd_map;
- 	ar->wmi.vdev_param = &wmi_tlv_vdev_param_map;
- 	ar->wmi.pdev_param = &wmi_tlv_pdev_param_map;
-+	ar->wmi.peer_param = &wmi_tlv_peer_param_map;
- 	ar->wmi.ops = &wmi_tlv_ops;
- 	ar->wmi.peer_flags = &wmi_tlv_peer_flags_map;
- }
++		if (stats_id & WMI_TLV_STAT_PEER_EXTD) {
++			const struct wmi_tlv_peer_stats_extd *extd;
++			unsigned long rx_duration_high;
++
++			extd = data + sizeof(*src) * (num_peer_stats - i - 1)
++			       + sizeof(*extd) * i;
++
++			dst->rx_duration = __le32_to_cpu(extd->rx_duration);
++			rx_duration_high = __le32_to_cpu
++						(extd->rx_duration_high);
++
++			if (test_bit(WMI_TLV_PEER_RX_DURATION_HIGH_VALID_BIT,
++				     &rx_duration_high)) {
++				rx_duration_high =
++					FIELD_GET(WMI_TLV_PEER_RX_DURATION_HIGH_MASK,
++						  rx_duration_high);
++				dst->rx_duration |= rx_duration_high <<
++						    WMI_TLV_PEER_RX_DURATION_SHIFT;
++			}
++		}
++
+ 		list_add_tail(&dst->list, &stats->peers);
+ 	}
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 4fba581..8d50808 100644
+index 4fba581..3165d95 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -533,6 +533,24 @@ enum wmi_tlv_vdev_param {
- 	WMI_TLV_VDEV_PARAM_IBSS_PS_1RX_CHAIN_IN_ATIM_WINDOW_ENABLE,
- };
+@@ -1875,6 +1875,22 @@ struct wmi_tlv_req_stats_cmd {
+ 	struct wmi_mac_addr peer_macaddr;
+ } __packed;
  
-+enum wmi_tlv_peer_param {
-+	WMI_TLV_PEER_SMPS_STATE = 0x1, /* see %wmi_peer_smps_state */
-+	WMI_TLV_PEER_AMPDU      = 0x2,
-+	WMI_TLV_PEER_AUTHORIZE  = 0x3,
-+	WMI_TLV_PEER_CHAN_WIDTH = 0x4,
-+	WMI_TLV_PEER_NSS        = 0x5,
-+	WMI_TLV_PEER_USE_4ADDR  = 0x6,
-+	WMI_TLV_PEER_MEMBERSHIP = 0x7,
-+	WMI_TLV_PEER_USERPOS = 0x8,
-+	WMI_TLV_PEER_CRIT_PROTO_HINT_ENABLED = 0x9,
-+	WMI_TLV_PEER_TX_FAIL_CNT_THR = 0xa,
-+	WMI_TLV_PEER_SET_HW_RETRY_CTS2S = 0xb,
-+	WMI_TLV_PEER_IBSS_ATIM_WINDOW_LENGTH = 0xc,
-+	WMI_TLV_PEER_PHYMODE = 0xd,
-+	WMI_TLV_PEER_USE_FIXED_PWR = 0xe,
-+	WMI_TLV_PEER_DUMMY_VAR = 0xff,
-+};
++#define WMI_TLV_PEER_RX_DURATION_HIGH_VALID_BIT	31
++#define WMI_TLV_PEER_RX_DURATION_HIGH_MASK	GENMASK(30, 0)
++#define WMI_TLV_PEER_RX_DURATION_SHIFT		32
 +
- enum wmi_tlv_peer_flags {
- 	WMI_TLV_PEER_AUTH = 0x00000001,
- 	WMI_TLV_PEER_QOS = 0x00000002,
++struct wmi_tlv_peer_stats_extd {
++	struct wmi_mac_addr peer_macaddr;
++	__le32 rx_duration;
++	__le32 peer_tx_bytes;
++	__le32 peer_rx_bytes;
++	__le32 last_tx_rate_code;
++	__le32 last_tx_power;
++	__le32 rx_mc_bc_cnt;
++	__le32 rx_duration_high;
++	__le32 reserved[2];
++} __packed;
++
+ struct wmi_tlv_vdev_stats {
+ 	__le32 vdev_id;
+ 	__le32 beacon_snr;
+@@ -1968,6 +1984,10 @@ struct wmi_tlv_stats_ev {
+ 	__le32 num_peer_stats;
+ 	__le32 num_bcnflt_stats;
+ 	__le32 num_chan_stats;
++	__le32 num_mib_stats;
++	__le32 pdev_id;
++	__le32 num_bcn_stats;
++	__le32 num_peer_stats_extd;
+ } __packed;
+ 
+ struct wmi_tlv_p2p_noa_ev {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 704c71b..35f9f90 100644
+index 704c71b..1c51341 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -753,6 +753,19 @@ static struct wmi_cmd_map wmi_10_4_cmd_map = {
- 	.radar_found_cmdid = WMI_10_4_RADAR_FOUND_CMDID,
- };
+@@ -8315,7 +8315,7 @@ size_t ath10k_wmi_fw_stats_num_vdevs(struct list_head *head)
+ 			"Peer TX rate", peer->peer_tx_rate);
+ 	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
+ 			"Peer RX rate", peer->peer_rx_rate);
+-	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++	len += scnprintf(buf + len, buf_len - len, "%30s %llu\n",
+ 			"Peer RX duration", peer->rx_duration);
  
-+static struct wmi_peer_param_map wmi_peer_param_map = {
-+	.smps_state = WMI_PEER_SMPS_STATE,
-+	.ampdu = WMI_PEER_AMPDU,
-+	.authorize = WMI_PEER_AUTHORIZE,
-+	.chan_width = WMI_PEER_CHAN_WIDTH,
-+	.nss = WMI_PEER_NSS,
-+	.use_4addr = WMI_PEER_USE_4ADDR,
-+	.use_fixed_power = WMI_PEER_USE_FIXED_PWR,
-+	.debug = WMI_PEER_DEBUG,
-+	.phymode = WMI_PEER_PHYMODE,
-+	.dummy_var = WMI_PEER_DUMMY_VAR,
-+};
-+
- /* MAIN WMI VDEV param map */
- static struct wmi_vdev_param_map wmi_vdev_param_map = {
- 	.rts_threshold = WMI_VDEV_PARAM_RTS_THRESHOLD,
-@@ -9300,6 +9313,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.cmd = &wmi_10_4_cmd_map;
- 		ar->wmi.vdev_param = &wmi_10_4_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10_4_pdev_param_map;
-+		ar->wmi.peer_param = &wmi_peer_param_map;
- 		ar->wmi.peer_flags = &wmi_10_2_peer_flags_map;
- 		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
-@@ -9308,6 +9322,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.ops = &wmi_10_2_4_ops;
- 		ar->wmi.vdev_param = &wmi_10_2_4_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10_2_4_pdev_param_map;
-+		ar->wmi.peer_param = &wmi_peer_param_map;
- 		ar->wmi.peer_flags = &wmi_10_2_peer_flags_map;
- 		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
-@@ -9316,6 +9331,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.ops = &wmi_10_2_ops;
- 		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
-+		ar->wmi.peer_param = &wmi_peer_param_map;
- 		ar->wmi.peer_flags = &wmi_10_2_peer_flags_map;
- 		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
-@@ -9324,6 +9340,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.ops = &wmi_10_1_ops;
- 		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
-+		ar->wmi.peer_param = &wmi_peer_param_map;
- 		ar->wmi.peer_flags = &wmi_10x_peer_flags_map;
- 		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
-@@ -9332,6 +9349,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 		ar->wmi.ops = &wmi_ops;
- 		ar->wmi.vdev_param = &wmi_vdev_param_map;
- 		ar->wmi.pdev_param = &wmi_pdev_param_map;
-+		ar->wmi.peer_param = &wmi_peer_param_map;
- 		ar->wmi.peer_flags = &wmi_peer_flags_map;
- 		ar->wmi_key_cipher = wmi_key_cipher_suites;
- 		break;
+ 	len += scnprintf(buf + len, buf_len - len, "\n");
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 9b5a7ec..23666ca 100644
+index 0e27878..b3aa696 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5083,6 +5083,25 @@ enum wmi_rate_preamble {
- /* Value to disable fixed rate setting */
- #define WMI_FIXED_RATE_NONE    (0xff)
+@@ -4545,6 +4545,13 @@ enum wmi_10_4_stats_id {
+ 	WMI_10_4_STAT_VDEV_EXTD		= BIT(4),
+ };
  
-+struct wmi_peer_param_map {
-+	u32 smps_state;
-+	u32 ampdu;
-+	u32 authorize;
-+	u32 chan_width;
-+	u32 nss;
-+	u32 use_4addr;
-+	u32 membership;
-+	u32 use_fixed_power;
-+	u32 user_pos;
-+	u32 crit_proto_hint_enabled;
-+	u32 tx_fail_cnt_thr;
-+	u32 set_hw_retry_cts2s;
-+	u32 ibss_atim_win_len;
-+	u32 debug;
-+	u32 phymode;
-+	u32 dummy_var;
++enum wmi_tlv_stats_id {
++	WMI_TLV_STAT_PDEV	= BIT(0),
++	WMI_TLV_STAT_VDEV	= BIT(1),
++	WMI_TLV_STAT_PEER	= BIT(2),
++	WMI_TLV_STAT_PEER_EXTD  = BIT(10),
 +};
 +
- struct wmi_vdev_param_map {
- 	u32 rts_threshold;
- 	u32 fragmentation_threshold;
+ struct wlan_inst_rssi_args {
+ 	__le16 cfg_retry_count;
+ 	__le16 retry_count;
 -- 
-2.7.4
+1.9.1
 
 
 _______________________________________________
