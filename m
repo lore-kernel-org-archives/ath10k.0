@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwNJ6-0007sb-KM
- for ath10k@lists.infradead.org; Wed, 20 Feb 2019 08:32:46 +0000
+ id 1gwNKu-00083T-NU
+ for ath10k@lists.infradead.org; Wed, 20 Feb 2019 08:34:38 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: change 'unsigned long int' to 'unsigned long'
+Subject: Re: [PATCH] ath10k: switch to use SPDX license identifiers
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1550578303-15962-1-git-send-email-kvalo@codeaurora.org>
-References: <1550578303-15962-1-git-send-email-kvalo@codeaurora.org>
-Message-Id: <20190220083242.0EEDE60388@smtp.codeaurora.org>
-Date: Wed, 20 Feb 2019 08:32:41 +0000 (UTC)
+In-Reply-To: <1550598326-20720-1-git-send-email-kvalo@codeaurora.org>
+References: <1550598326-20720-1-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20190220083436.6F2AB6081B@smtp.codeaurora.org>
+Date: Wed, 20 Feb 2019 08:34:36 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +27,19 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> Fixes checkpatch warnings:
+> Use SPDX identifiers everywhere in ath10k.
 > 
-> Prefer 'unsigned long' over 'unsigned long int' as the int is unnecessary
+> Makefile was incorrectly marked in commit b24413180f56 ("License cleanup: add
+> SPDX GPL-2.0 license identifier to files with no license"), fix that as well.
 > 
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-28bbe2374041 ath10k: change 'unsigned long int' to 'unsigned long'
+f0553ca9ceb5 ath10k: switch to use SPDX license identifiers
 
 -- 
-https://patchwork.kernel.org/patch/10819777/
+https://patchwork.kernel.org/patch/10820537/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
