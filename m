@@ -1,14 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwr6x-0002E9-5F
- for ath10k@lists.infradead.org; Thu, 21 Feb 2019 16:22:15 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4/4] ath10k: don't report unset rssi values to mac80211
-Date: Thu, 21 Feb 2019 18:21:58 +0200
-Message-Id: <1550766118-31703-5-git-send-email-kvalo@codeaurora.org>
-In-Reply-To: <1550766118-31703-1-git-send-email-kvalo@codeaurora.org>
-References: <1550766118-31703-1-git-send-email-kvalo@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gwr76-0002RQ-Ac
+ for ath10k@lists.infradead.org; Thu, 21 Feb 2019 16:22:25 +0000
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
+ <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
+ <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
+ <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+ <871sa7ylmi.fsf@toke.dk>
+ <CANEJEGuBoRMBJBOrFOYyPtiJSMfTahrVgTfxZ2ift6Q5uGazFA@mail.gmail.com>
+ <87r2c1i1vj.fsf@toke.dk> <871s41nmvx.fsf@kamboji.qca.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <ecc20e01-1515-d227-62d8-377f3c35e449@candelatech.com>
+Date: Thu, 21 Feb 2019 08:22:14 -0800
+MIME-Version: 1.0
+In-Reply-To: <871s41nmvx.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,62 +32,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rg?= =?UTF-8?Q?ensen?= <toke@toke.dk>
+Cc: Kan Yan <kyan@google.com>, wgong@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Grant Grundler <grundler@google.com>, wgong@codeaurora.org, Johannes Berg <johannes@sipsolutions.net>
 
-From: Alagu Sankar <alagusankar@silex-india.com>
-
-The SDIO firmware does not provide RSSI value to the host, it's only set to
-zero. In that case don't report the value to mac80211. One risk here is that
-value zero might be a valid value with other firmware, currently there's no way
-to detect that.
-
-Without the fix, the rssi value indicated by iw changes between the actual
-value and -95.
-
-Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00005-QCARMSWP-1.
-
-Co-developed-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 4fc885617de1..62479b037210 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2119,9 +2119,15 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
- 	hdr = (struct ieee80211_hdr *)skb->data;
- 	rx_status = IEEE80211_SKB_RXCB(skb);
- 	rx_status->chains |= BIT(0);
--	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
--			    rx->ppdu.combined_rssi;
--	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
-+	if (rx->ppdu.combined_rssi == 0) {
-+		/* SDIO firmware does not provide signal */
-+		rx_status->signal = 0;
-+		rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
-+	} else {
-+		rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
-+			rx->ppdu.combined_rssi;
-+		rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
-+	}
- 
- 	spin_lock_bh(&ar->data_lock);
- 	ch = ar->scan_channel;
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMi8yMS8xOSA4OjEwIEFNLCBLYWxsZSBWYWxvIHdyb3RlOgo+IFRva2UgSMO4aWxhbmQtSsO4
+cmdlbnNlbiA8dG9rZUB0b2tlLmRrPiB3cml0ZXM6Cj4gCj4+IEdyYW50IEdydW5kbGVyIDxncnVu
+ZGxlckBnb29nbGUuY29tPiB3cml0ZXM6Cj4+Cj4+PiBPbiBUaHUsIFNlcCA2LCAyMDE4IGF0IDM6
+MTggQU0gVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+IHdyb3RlOgo+Pj4+
+Cj4+Pj4gR3JhbnQgR3J1bmRsZXIgPGdydW5kbGVyQGdvb2dsZS5jb20+IHdyaXRlczoKPj4+Pgo+
+Pj4+Pj4gQW5kLCB3ZWxsLCBHcmFudCdzIGRhdGEgaXMgZnJvbSBhIHNpbmdsZSB0ZXN0IGluIGEg
+bm9pc3kKPj4+Pj4+IGVudmlyb25tZW50IHdoZXJlIHRoZSB0aW1lIHNlcmllcyBncmFwaCBzaG93
+cyB0aGF0IHRocm91Z2hwdXQgaXMgYWxsIG92ZXIKPj4+Pj4+IHRoZSBwbGFjZSBmb3IgdGhlIGR1
+cmF0aW9uIG9mIHRoZSB0ZXN0OyBzbyBpdCdzIGhhcmQgdG8gZHJhdyBzb2xpZAo+Pj4+Pj4gY29u
+Y2x1c2lvbnMgZnJvbSAoZm9yIGluc3RhbmNlLCBmb3IgdGhlIDUtc3RyZWFtIHRlc3QsIHRoZSBh
+dmVyYWdlCj4+Pj4+PiB0aHJvdWdocHV0IGZvciA2IGlzIDMzMSBhbmQgMzc5IE1icHMgZm9yIHRo
+ZSB0d28gcmVwZXRpdGlvbnMsIGFuZCBmb3IgNwo+Pj4+Pj4gaXQncyAzMjYgYW5kIDM3MSBNYnBz
+KSAuIFVuZm9ydHVuYXRlbHkgSSBkb24ndCBoYXZlIHRoZSBzYW1lIGhhcmR3YXJlCj4+Pj4+PiB1
+c2VkIGluIHRoaXMgdGVzdCwgc28gSSBjYW4ndCBnbyB2ZXJpZnkgaXQgbXlzZWxmOyBzbyB0aGUg
+b25seSB0aGluZyBJCj4+Pj4+PiBjYW4gZG8gaXMgZ3J1bWJsZSBhYm91dCBpdCBoZXJlLi4uIDop
+Cj4+Pj4+Cj4+Pj4+IEl0J3MgYSBmYWlyIGNvbXBsYWludCBhbmQgSSBhZ3JlZSB3aXRoIGl0LiBN
+eSBjb3VudGVyIGFyZ3VtZW50IGlzIHRoZQo+Pj4+PiBvcHBvc2l0ZSBpcyB0cnVlIHRvbzogbW9z
+dCBpZGVhbCBiZW5jaG1hcmtzIGRvbid0IG1lYXN1cmUgd2hhdCBtb3N0Cj4+Pj4+IHVzZXJzIHNl
+ZS4gV2hpbGUgdGhlIGRhdGEgd2dvbmcgcHJvdmlkZWQgYXJlIHdheSBtb3JlIG5vaXN5IHRoYW4g
+SQo+Pj4+PiBsaWtlLCBteSBvdmVyYWxsICJjb25maWRlbmNlIiBpbiB0aGUgImNvbmNsdXNpb24i
+IEkgb2ZmZXJlZCBpcyBzdGlsbAo+Pj4+PiBwb3NpdGl2ZS4KPj4+Pgo+Pj4+IFJpZ2h0LiBJIGd1
+ZXNzIEkgd291bGQganVzdCBwcmVmZXIgYSBzbGlnaHRseSBtb3JlIGNvbXByZWhlbnNpdmUKPj4+
+PiBldmFsdWF0aW9uIHRvIGJhc2UgYSA0eCBpbmNyZWFzZSBpbiBidWZmZXIgc2l6ZSBvbi4uLgo+
+Pj4KPj4+IEthbGxlLCBpcyB0aGlzIHdoeSB5b3UgZGlkbid0IGFjY2VwdCB0aGlzIHBhdGNoPyBP
+dGhlciByZWFzb25zPwo+Pj4KPj4+IFRva2UsIHdoYXQgZWxzZSB3b3VsZCB5b3UgbGlrZSB0byBz
+ZWUgZXZhbHVhdGVkPwo+Pj4KPj4+IEkgZ2VuZXJhbGx5IHdhbnQgdG8gc2VlIHRocmVlIHRoaW5n
+cyBtZWFzdXJlZCB3aGVuICJiZW5jaG1hcmtpbmciCj4+PiB0ZWNobm9sb2dpZXM6IHRocm91Z2hw
+dXQsIGxhdGVuY3ksIGNwdSB1dGlsaXphdGlvbgo+Pj4gV2UndmUgY292ZXJlZCB0aG9zZSB0aHJl
+ZSBJIHRoaW5rICJyZWFzb25hYmx5Ii4KPj4KPj4gSG1tLCBnb2luZyBiYWNrIGFuZCBsb29raW5n
+IGF0IHRoaXMgKEknZCBjb21wbGV0ZWx5IGZvcmdvdHRlbiBhYm91dCB0aGlzCj4+IHBhdGNoKSwg
+SSB0aGluayBJIGhhZCB0d28gbWFpbiBjb25jZXJuczoKPj4KPj4gMS4gV2hhdCBoYXBwZW5zIGlu
+IGEgZGVncmFkZWQgc2lnbmFsIHNpdHVhdGlvbiwgd2hlcmUgdGhlIHRocm91Z2hwdXQgaXMKPj4g
+ICAgIGxpbWl0ZWQgYnkgdGhlIHNpZ25hbCBjb25kaXRpb25zLCBvciBieSBjb250ZW50aW9uIHdp
+dGggb3RoZXIgZGV2aWNlcy4KPj4gICAgIEJvdGggb2YgdGhlc2UgaGFwcGVuIHJlZ3VsYXJseSwg
+YW5kIEkgd29ycnkgdGhhdCBsYXRlbmN5IHdpbGwgYmUKPj4gICAgIGJhZGx5IGFmZmVjdGVkIHVu
+ZGVyIHRob3NlIGNvbmRpdGlvbnMuCj4+Cj4+IDIuIFdoYXQgaGFwcGVucyB3aXRoIG9sZCBoYXJk
+d2FyZSB0aGF0IGhhcyB3b3JzZSBidWZmZXIgbWFuYWdlbWVudCBpbgo+PiAgICAgdGhlIGRyaXZl
+ci0+ZmlybXdhcmUgcGF0aCAoZXNwZWNpYWxseSBkcml2ZXJzIHdpdGhvdXQgcHVzaC9wdWxsIG1v
+ZGUKPj4gICAgIHN1cHBvcnQpPyBGb3IgdGhlc2UsIHRoZSBsb3dlci1sZXZlbCBxdWV1ZWluZyBz
+dHJ1Y3R1cmUgaXMgbGVzcwo+PiAgICAgZWZmZWN0aXZlIGF0IGNvbnRyb2xsaW5nIHF1ZXVlaW5n
+IGxhdGVuY3kuCj4gCj4gRG8gbm90ZSB0aGF0IHRoaXMgcGF0Y2ggY2hhbmdlcyBiZWhhdmlvdXIg
+X29ubHlfIGZvciBRQ0E2MTc0IGFuZCBRQ0E5Mzc3Cj4gUENJIGRldmljZXMsIHdoaWNoIElJUkMg
+ZG8gbm90IGV2ZW4gc3VwcG9ydCBwdXNoL3B1bGwgbW9kZS4gQWxsIHRoZQo+IHJlc3QsIGluY2x1
+ZGluZyBRQ0E5ODhYIGFuZCBRQ0E5OTg0IGFyZSB1bmFmZmVjdGVkLgoKSnVzdCBhcyBhIG5vdGUs
+IGF0IGxlYXN0IGtlcm5lbHMgc3VjaCBhcyA0LjE0LndoYXRldmVyIHBlcmZvcm0gcG9vcmx5IHdo
+ZW4KcnVubmluZyBhdGgxMGsgb24gOTk4NCB3aGVuIGFjdGluZyBhcyBUQ1AgZW5kcG9pbnRzLiAg
+VGhpcyBtYWtlcyB0aGVtIG5vdApyZWFsbHkgdXNhYmxlIGZvciBzdHVmZiBsaWtlIHNlcnZpbmcg
+dmlkZW8gdG8gbG90cyBvZiBjbGllbnRzLgoKVHdlYWtpbmcgVENQIChJIGRvIGl0IGEgYml0IGRp
+ZmZlcmVudGx5LCBidXQgZWl0aGVyIHdheSkgY2FuIHNpZ25pZmljYW50bHkKaW1wcm92ZSBwZXJm
+b3JtYW5jZS4KClJlY2VudGx5IEkgaGVscGVkIGEgdXNlciB0aGF0IGNvdWxkIGdldCBiYXJlbHkg
+NzAgc3RhdGlvbnMgc3RyZWFtaW5nIGF0IDFNYnBzCm9uIHN0b2NrIGtlcm5lbCAodXNpbmcgb25l
+IHdhdmUxIG9uIDIuNCwgb25lIHdhdmUtMiBvbiA1R2h6KSwKYW5kIHdlIGdvdCAxMTAgd29ya2lu
+ZyB3aXRoIGEgdHdlYWtlZCBUQ1Agc3RhY2suICBUaGVzZSB3ZXJlIC9uIHN0YXRpb25zIHRvby4K
+CkkgdGhpbmsgaXQgaXMgbGFtZSB0aGF0IGl0IF9zdGlsbF8gcmVxdWlyZXMgb3V0IG9mIHRyZWUg
+cGF0Y2hlcyB0byBtYWtlIFRDUCB3b3JrCndlbGwgb24gYXRoMTBrLi4uZXZlbiBpZiB5b3Ugd2Fu
+dCB0byBkZWZhdWx0IHRvIGN1cnJlbnQgYmVoYXZpb3VyLCB5b3Ugc2hvdWxkCmFsbG93IHVzZXJz
+IHRvIHR3ZWFrIGl0IHRvIHdvcmsgd2l0aCB0aGVpciB1c2UgY2FzZS4KClRoYW5rcywKQmVuCgoK
+LS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xv
+Z2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
