@@ -1,28 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from atl4mhob04.registeredsite.com ([209.17.115.42])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwmy4-0001Kc-4d
- for ath10k@lists.infradead.org; Thu, 21 Feb 2019 11:56:45 +0000
-Received: from mailpod.hostingplatform.com
- (atl4qobmail01pod5.registeredsite.com [10.30.71.94])
- by atl4mhob04.registeredsite.com (8.14.4/8.14.4) with ESMTP id x1LBubpB015964
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
- for <ath10k@lists.infradead.org>; Thu, 21 Feb 2019 06:56:37 -0500
-Received: from localhost (localhost [127.0.0.1])
- by 155-15-85-208.altiusbb.net (Postfix) with ESMTP id EEE21154043E
- for <ath10k@lists.infradead.org>; Thu, 21 Feb 2019 06:56:35 -0500 (EST)
-Received: from 155-15-85-208.altiusbb.net ([127.0.0.1])
- by localhost (fl-server.ewol.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 1M4_Q2vsLKxs for <ath10k@lists.infradead.org>;
- Thu, 21 Feb 2019 06:56:29 -0500 (EST)
-Received: from w7.lan (w7.lan [192.168.1.9])
- by 155-15-85-208.altiusbb.net (Postfix) with ESMTP id 6F7FB15403A1
- for <ath10k@lists.infradead.org>; Thu, 21 Feb 2019 06:56:29 -0500 (EST)
-Message-ID: <5c6cebd6325381949f95803abe2ebfd15eb39b0c.camel@ewol.com>
-Subject: Can't parse chan info event return from firmware 10.2.4-1.0-00043
-From: Steve Brown <sbrown@ewol.com>
-Date: Thu, 21 Feb 2019 06:56:29 -0500
-Mime-Version: 1.0
+Received: from mail.toke.dk ([52.28.52.200])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gwqX2-0002ku-5v
+ for ath10k@lists.infradead.org; Thu, 21 Feb 2019 15:45:10 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH v2 2/2] ath10k: Set sk_pacing_shift to 6 for 11AC WiFi
+ chips
+In-Reply-To: <CANEJEGuBoRMBJBOrFOYyPtiJSMfTahrVgTfxZ2ift6Q5uGazFA@mail.gmail.com>
+References: <1533724802-30944-1-git-send-email-wgong@codeaurora.org>
+ <1533724802-30944-3-git-send-email-wgong@codeaurora.org>
+ <87sh3pdtpg.fsf@toke.dk>
+ <f185ab8722e84c959b375e606d25a29b@aptaiexm02f.ap.qualcomm.com>
+ <87mutue4y8.fsf@toke.dk>
+ <ef7b317006964c0fa72763bbfc5149e5@aptaiexm02f.ap.qualcomm.com>
+ <CANEJEGvcj9gPT8yy++qvi3hz3t9pAXyeUves06gr+ADfn9Ouhg@mail.gmail.com>
+ <1535967508.3437.31.camel@sipsolutions.net> <87in3m25uu.fsf@toke.dk>
+ <1535975240.3437.61.camel@sipsolutions.net> <878t4i1z74.fsf@toke.dk>
+ <CANEJEGsm_BKM6g2x0+a7_5dBy5jkROs+jEjHmrcneGrMdDK41g@mail.gmail.com>
+ <871sa7ylmi.fsf@toke.dk>
+ <CANEJEGuBoRMBJBOrFOYyPtiJSMfTahrVgTfxZ2ift6Q5uGazFA@mail.gmail.com>
+Date: Thu, 21 Feb 2019 16:42:56 +0100
+Message-ID: <87r2c1i1vj.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,45 +30,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Grant Grundler <grundler@google.com>, Kan Yan <kyan@google.com>
+Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, wgong@qti.qualcomm.com, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-I get "ath10k_pci 0000:03:00.0: failed to parse chan info event: -71"
-when scanning.
-
-After some instrumentation, the return is 7 words and the event
-structure size is 13 words. This causes the error.
-
-As only the first 6 words are recovered, it's not clear if the problem
-is the size of the event structure or the test.
-
-The kernel was built from kvalo/ath.git
-7ce94a62264be94dc1c41ff5d0c8a19c7f0d3143.
-
-Samples below.
-
-Steve
-
-================
-Feb 21 05:50:16 w7 kernel: [39829.224813] ath10k_pci 0000:03:00.0: scan event foreign channel type 8 reason 3 freq 2412 req_id 40961 scan_id 40960 vdev_id 0 state running (2)
-Feb 21 05:50:16 w7 kernel: [39829.224816] ath10k_wmi_op_pull_ch_info_ev: skb->len:28 sizeof(ev):52
-Feb 21 05:50:16 w7 kernel: [39829.224819] ath10k_pci 0000:03:00.0: wmi chan info: 00000000: 00 00 00 00 6c 09 00 00 00 00 00 00 00 00 00 00  ....l...........
-Feb 21 05:50:16 w7 kernel: [39829.224822] ath10k_pci 0000:03:00.0: wmi chan info: 00000010: 81 2c fa 01 8c 8d 7b 33 3c da 39 00              .,....{3<.9.
-Feb 21 05:50:16 w7 kernel: [39829.224823] ath10k_wmi_event_chan_info: ret:-71
-Feb 21 05:50:16 w7 kernel: [39829.224825] ath10k_pci 0000:03:00.0: failed to parse chan info event: -71
-Feb 21 05:50:16 w7 kernel: [39829.267441] ath10k_pci 0000:03:00.0: scan event bss channel type 4 reason 3 freq 2412 req_id 40961 scan_id 40960 vdev_id 0 state running (2)
-Feb 21 05:50:16 w7 kernel: [39829.267445] ath10k_wmi_op_pull_ch_info_ev: skb->len:28 sizeof(ev):52
-Feb 21 05:50:16 w7 kernel: [39829.267448] ath10k_pci 0000:03:00.0: wmi chan info: 00000000: 00 00 00 00 6c 09 00 00 01 00 00 00 af ff ff ff  ....l...........
-Feb 21 05:50:16 w7 kernel: [39829.267451] ath10k_pci 0000:03:00.0: wmi chan info: 00000010: 14 ee fa 01 17 c7 b4 33 2a dd 39 00              .......3*.9.
-Feb 21 05:50:16 w7 kernel: [39829.267452] ath10k_wmi_event_chan_info: ret:-71
-Feb 21 05:50:16 w7 kernel: [39829.267454] ath10k_pci 0000:03:00.0: failed to parse chan info event: -71
-================
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+R3JhbnQgR3J1bmRsZXIgPGdydW5kbGVyQGdvb2dsZS5jb20+IHdyaXRlczoKCj4gT24gVGh1LCBT
+ZXAgNiwgMjAxOCBhdCAzOjE4IEFNIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tl
+LmRrPiB3cm90ZToKPj4KPj4gR3JhbnQgR3J1bmRsZXIgPGdydW5kbGVyQGdvb2dsZS5jb20+IHdy
+aXRlczoKPj4KPj4gPj4gQW5kLCB3ZWxsLCBHcmFudCdzIGRhdGEgaXMgZnJvbSBhIHNpbmdsZSB0
+ZXN0IGluIGEgbm9pc3kKPj4gPj4gZW52aXJvbm1lbnQgd2hlcmUgdGhlIHRpbWUgc2VyaWVzIGdy
+YXBoIHNob3dzIHRoYXQgdGhyb3VnaHB1dCBpcyBhbGwgb3Zlcgo+PiA+PiB0aGUgcGxhY2UgZm9y
+IHRoZSBkdXJhdGlvbiBvZiB0aGUgdGVzdDsgc28gaXQncyBoYXJkIHRvIGRyYXcgc29saWQKPj4g
+Pj4gY29uY2x1c2lvbnMgZnJvbSAoZm9yIGluc3RhbmNlLCBmb3IgdGhlIDUtc3RyZWFtIHRlc3Qs
+IHRoZSBhdmVyYWdlCj4+ID4+IHRocm91Z2hwdXQgZm9yIDYgaXMgMzMxIGFuZCAzNzkgTWJwcyBm
+b3IgdGhlIHR3byByZXBldGl0aW9ucywgYW5kIGZvciA3Cj4+ID4+IGl0J3MgMzI2IGFuZCAzNzEg
+TWJwcykgLiBVbmZvcnR1bmF0ZWx5IEkgZG9uJ3QgaGF2ZSB0aGUgc2FtZSBoYXJkd2FyZQo+PiA+
+PiB1c2VkIGluIHRoaXMgdGVzdCwgc28gSSBjYW4ndCBnbyB2ZXJpZnkgaXQgbXlzZWxmOyBzbyB0
+aGUgb25seSB0aGluZyBJCj4+ID4+IGNhbiBkbyBpcyBncnVtYmxlIGFib3V0IGl0IGhlcmUuLi4g
+OikKPj4gPgo+PiA+IEl0J3MgYSBmYWlyIGNvbXBsYWludCBhbmQgSSBhZ3JlZSB3aXRoIGl0LiBN
+eSBjb3VudGVyIGFyZ3VtZW50IGlzIHRoZQo+PiA+IG9wcG9zaXRlIGlzIHRydWUgdG9vOiBtb3N0
+IGlkZWFsIGJlbmNobWFya3MgZG9uJ3QgbWVhc3VyZSB3aGF0IG1vc3QKPj4gPiB1c2VycyBzZWUu
+IFdoaWxlIHRoZSBkYXRhIHdnb25nIHByb3ZpZGVkIGFyZSB3YXkgbW9yZSBub2lzeSB0aGFuIEkK
+Pj4gPiBsaWtlLCBteSBvdmVyYWxsICJjb25maWRlbmNlIiBpbiB0aGUgImNvbmNsdXNpb24iIEkg
+b2ZmZXJlZCBpcyBzdGlsbAo+PiA+IHBvc2l0aXZlLgo+Pgo+PiBSaWdodC4gSSBndWVzcyBJIHdv
+dWxkIGp1c3QgcHJlZmVyIGEgc2xpZ2h0bHkgbW9yZSBjb21wcmVoZW5zaXZlCj4+IGV2YWx1YXRp
+b24gdG8gYmFzZSBhIDR4IGluY3JlYXNlIGluIGJ1ZmZlciBzaXplIG9uLi4uCj4KPiBLYWxsZSwg
+aXMgdGhpcyB3aHkgeW91IGRpZG4ndCBhY2NlcHQgdGhpcyBwYXRjaD8gT3RoZXIgcmVhc29ucz8K
+Pgo+IFRva2UsIHdoYXQgZWxzZSB3b3VsZCB5b3UgbGlrZSB0byBzZWUgZXZhbHVhdGVkPwo+Cj4g
+SSBnZW5lcmFsbHkgd2FudCB0byBzZWUgdGhyZWUgdGhpbmdzIG1lYXN1cmVkIHdoZW4gImJlbmNo
+bWFya2luZyIKPiB0ZWNobm9sb2dpZXM6IHRocm91Z2hwdXQsIGxhdGVuY3ksIGNwdSB1dGlsaXph
+dGlvbgo+IFdlJ3ZlIGNvdmVyZWQgdGhvc2UgdGhyZWUgSSB0aGluayAicmVhc29uYWJseSIuCgpI
+bW0sIGdvaW5nIGJhY2sgYW5kIGxvb2tpbmcgYXQgdGhpcyAoSSdkIGNvbXBsZXRlbHkgZm9yZ290
+dGVuIGFib3V0IHRoaXMKcGF0Y2gpLCBJIHRoaW5rIEkgaGFkIHR3byBtYWluIGNvbmNlcm5zOgoK
+MS4gV2hhdCBoYXBwZW5zIGluIGEgZGVncmFkZWQgc2lnbmFsIHNpdHVhdGlvbiwgd2hlcmUgdGhl
+IHRocm91Z2hwdXQgaXMKICAgbGltaXRlZCBieSB0aGUgc2lnbmFsIGNvbmRpdGlvbnMsIG9yIGJ5
+IGNvbnRlbnRpb24gd2l0aCBvdGhlciBkZXZpY2VzLgogICBCb3RoIG9mIHRoZXNlIGhhcHBlbiBy
+ZWd1bGFybHksIGFuZCBJIHdvcnJ5IHRoYXQgbGF0ZW5jeSB3aWxsIGJlCiAgIGJhZGx5IGFmZmVj
+dGVkIHVuZGVyIHRob3NlIGNvbmRpdGlvbnMuCgoyLiBXaGF0IGhhcHBlbnMgd2l0aCBvbGQgaGFy
+ZHdhcmUgdGhhdCBoYXMgd29yc2UgYnVmZmVyIG1hbmFnZW1lbnQgaW4KICAgdGhlIGRyaXZlci0+
+ZmlybXdhcmUgcGF0aCAoZXNwZWNpYWxseSBkcml2ZXJzIHdpdGhvdXQgcHVzaC9wdWxsIG1vZGUK
+ICAgc3VwcG9ydCk/IEZvciB0aGVzZSwgdGhlIGxvd2VyLWxldmVsIHF1ZXVlaW5nIHN0cnVjdHVy
+ZSBpcyBsZXNzCiAgIGVmZmVjdGl2ZSBhdCBjb250cm9sbGluZyBxdWV1ZWluZyBsYXRlbmN5LgoK
+R2V0dGluZyB0aGUgcXVldWUgc2l6ZSBsaW1pdCBwYXRjaGVzIGZyb20gQ2hyb21lT1MgcG9ydGVk
+IHdvdWxkCmFsbGV2aWF0ZSBwb2ludCAyLiBJIGRvIGJlbGlldmUgS2FuIHNhaWQgaGUnZCBsb29r
+IGludG8gdGhhdCBvbmNlIHRoZQphaXJ0aW1lIHBhdGNoZXMgd2VyZSBtZXJnZWQuIFNvIEthbiwg
+YW55IHByb2dyZXNzIG9uIHRoYXQgZnJvbnQ/IDopCgo+IFdoYXQgZG9lcyBhICI0eCBpbmNyZWFz
+ZSBpbiBtZW1vcnkiIG1lYW4gaGVyZT8gV2VuLCBob3cgbXVjaCBtb3JlCj4gbWVtb3J5IGRvZXMg
+dGhpcyBjYXVzZSBhdGgxMGsgdG8gdXNlPwoKSSBkaWRuJ3Qgc2F5ICJtZW1vcnkiLCBJIHNhaWQg
+ImJ1ZmZlciBzaXplIi4uLiA6KQpJLmUuLCBpdCdzIHRoZSBsYXRlbmN5IGltcGFjdCBvZiB0aGUg
+aW5jcmVhc2VkIGJ1ZmZlcmluZyBJJ20gd29ycmllZAphYm91dCAoc2VlIGFib3ZlKSwgbm90IHRo
+ZSBzeXN0ZW0gbWVtb3J5IHVzYWdlLgoKLVRva2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
