@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwr6v-0002By-AS
- for ath10k@lists.infradead.org; Thu, 21 Feb 2019 16:22:12 +0000
+ id 1gwr6x-0002E9-5F
+ for ath10k@lists.infradead.org; Thu, 21 Feb 2019 16:22:15 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 3/4] ath10k: sdio: reset chip on power_down()
-Date: Thu, 21 Feb 2019 18:21:57 +0200
-Message-Id: <1550766118-31703-4-git-send-email-kvalo@codeaurora.org>
+Subject: [PATCH 4/4] ath10k: don't report unset rssi values to mac80211
+Date: Thu, 21 Feb 2019 18:21:58 +0200
+Message-Id: <1550766118-31703-5-git-send-email-kvalo@codeaurora.org>
 In-Reply-To: <1550766118-31703-1-git-send-email-kvalo@codeaurora.org>
 References: <1550766118-31703-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -23,74 +23,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
+Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
 
-From: Wen Gong <wgong@codeaurora.org>
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-The target device needs to be reset during power_down(), otherwise only the
-first power_up() will work. And as ath10k calls power_up() during driver
-initialisation the driver would be otherwise unusable.
+The SDIO firmware does not provide RSSI value to the host, it's only set to
+zero. In that case don't report the value to mac80211. One risk here is that
+value zero might be a valid value with other firmware, currently there's no way
+to detect that.
+
+Without the fix, the rssi value indicated by iw changes between the actual
+value and -95.
 
 Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00005-QCARMSWP-1.
 
+Co-developed-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index d62502f386f2..fae56c67766f 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1382,6 +1382,12 @@ static int ath10k_sdio_hif_power_up(struct ath10k *ar,
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio power on\n");
- 
-+	ret = ath10k_sdio_config(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to config sdio: %d\n", ret);
-+		return ret;
-+	}
-+
- 	sdio_claim_host(func);
- 
- 	ret = sdio_enable_func(func);
-@@ -1419,11 +1425,19 @@ static void ath10k_sdio_hif_power_down(struct ath10k *ar)
- 
- 	/* Disable the card */
- 	sdio_claim_host(ar_sdio->func);
-+
- 	ret = sdio_disable_func(ar_sdio->func);
--	sdio_release_host(ar_sdio->func);
-+	if (ret) {
-+		ath10k_warn(ar, "unable to disable sdio function: %d\n", ret);
-+		sdio_release_host(ar_sdio->func);
-+		return;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 4fc885617de1..62479b037210 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2119,9 +2119,15 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+ 	rx_status = IEEE80211_SKB_RXCB(skb);
+ 	rx_status->chains |= BIT(0);
+-	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
+-			    rx->ppdu.combined_rssi;
+-	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++	if (rx->ppdu.combined_rssi == 0) {
++		/* SDIO firmware does not provide signal */
++		rx_status->signal = 0;
++		rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
++	} else {
++		rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++			rx->ppdu.combined_rssi;
++		rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
 +	}
  
-+	ret = mmc_hw_reset(ar_sdio->func->card->host);
- 	if (ret)
--		ath10k_warn(ar, "unable to disable sdio function: %d\n", ret);
-+		ath10k_warn(ar, "unable to reset sdio: %d\n", ret);
-+
-+	sdio_release_host(ar_sdio->func);
- 
- 	ar_sdio->is_disabled = true;
- }
-@@ -2028,12 +2042,6 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 
- 	ath10k_sdio_set_mbox_info(ar);
- 
--	ret = ath10k_sdio_config(ar);
--	if (ret) {
--		ath10k_err(ar, "failed to config sdio: %d\n", ret);
--		goto err_free_wq;
--	}
--
- 	bus_params.dev_type = ATH10K_DEV_TYPE_HL;
- 	/* TODO: don't know yet how to get chip_id with SDIO */
- 	bus_params.chip_id = 0;
+ 	spin_lock_bh(&ar->data_lock);
+ 	ch = ar->scan_channel;
 -- 
 2.7.4
 
