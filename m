@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gx3Tq-0001bx-47
- for ath10k@lists.infradead.org; Fri, 22 Feb 2019 05:34:42 +0000
+ id 1gx3Tx-0001mW-H1
+ for ath10k@lists.infradead.org; Fri, 22 Feb 2019 05:34:55 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv2 7/9] ath10k: Add wmi command support for station specific
- TID config
-Date: Fri, 22 Feb 2019 11:02:32 +0530
-Message-Id: <1550813554-11581-8-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv2 9/9] ath10k: Add extended TID configuration support
+Date: Fri, 22 Feb 2019 11:02:34 +0530
+Message-Id: <1550813554-11581-10-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
 References: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -26,215 +25,229 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-This patch adds WMI interface to configure station specific
-TID configuration . Host needs to send station's MAC address
-along with TID number and its configuration to target through
-WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID.
+This patch extend TID configuration support to configure
+RTS_CTS control and TX rate limit. Tx rate limit is
+similar to auto rate but it will be limited to the user
+configured rate mask rather than the station's highest
+supported rate mask. Here ext_tid_cfg_bitmap added
+to notify the target which extended configuration
+parameter has modified(here RTS_CTS).
 
-WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT flag is added to advertise
-this support.
+WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT service flag
+introduced to advertise this support.
 
 Testing:
-   * Tested HW: QCA9888
-   * Tested FW: 10.4-3.5.1-00052
+	* Tested HW: QCA9984
+	* Tested FW: 10.4-3.9.0.2-00021
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 19 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c     | 32 +++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 52 +++++++++++++++++++++++++++++++
- 3 files changed, 103 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c |  4 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 48 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  7 ++---
+ drivers/net/wireless/ath/ath10k/wmi.h  | 20 ++++++++++++++
+ 4 files changed, 76 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 1491c25..796badf 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -216,6 +216,8 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_bb_timing)
- 			(struct ath10k *ar,
- 			 const struct wmi_bb_timing_cfg_arg *arg);
-+	struct sk_buff *(*gen_per_peer_per_tid_cfg)(struct ath10k *ar,
-+				const struct wmi_per_peer_per_tid_cfg_arg *arg);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index ac2cf3f..248709d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2623,6 +2623,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		if (test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
+ 			val |= WMI_10_4_REPORT_AIRTIME;
  
- };
++		if (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
++			     ar->wmi.svc_map))
++			val |= WMI_10_4_EXT_PEER_TID_CONFIGS_SUPPORT;
++
+ 		status = ath10k_mac_ext_resource_config(ar, val);
+ 		if (status) {
+ 			ath10k_err(ar,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5ba399f..eccda87 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2950,6 +2950,12 @@ static int ath10k_new_peer_tid_config(struct ath10k *ar,
+ 			arg.aggr_control = vif->ampdu[i];
+ 			arg.rate_ctrl = vif->rate_ctrl[i];
+ 			arg.rcode_flags = vif->rate_code[i];
++			if (vif->rtscts[i])
++				arg.ext_tid_cfg_bitmap =
++					WMI_EXT_TID_RTS_CTS_CONFIG;
++			else
++				arg.ext_tid_cfg_bitmap = 0;
++			arg.rtscts_ctrl = vif->rtscts[i];
+ 		}
  
-@@ -1616,4 +1618,21 @@ struct wmi_ops {
- 	return ath10k_wmi_cmd_send(ar, skb,
- 				   ar->wmi.cmd->set_bb_timing_cmdid);
+ 		if (vif->noack[i]) {
+@@ -6559,6 +6565,10 @@ static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
+ 
+ 	if (txrate_type == NL80211_TX_RATE_FIXED)
+ 		*rate_ctrl = WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE;
++	else if (txrate_type == NL80211_TX_RATE_LIMITED &&
++		 (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
++			   ar->wmi.svc_map)))
++		*rate_ctrl = WMI_PEER_TID_CONFIG_RATE_UPPER_CAP;
+ 	else
+ 		return -EOPNOTSUPP;
+ 	return 0;
+@@ -6625,6 +6635,14 @@ static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
+ 			arg->rate_ctrl = 0;
+ 		}
+ 	}
++
++	if (changed & IEEE80211_TID_CONF_RTSCTS) {
++		if (tid_conf->rtscts)
++			arg->rtscts_ctrl = tid_conf->rtscts - 1;
++		else
++			arg->rtscts_ctrl = WMI_TID_CONFIG_RTSCTS_CONTROL_ENABLE;
++		arg->ext_tid_cfg_bitmap = WMI_EXT_TID_RTS_CTS_CONFIG;
++	}
  }
+ 
+ static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
+@@ -6699,6 +6717,18 @@ static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
+ 			}
+ 		}
+ 
++		if (changed & IEEE80211_TID_CONF_RTSCTS) {
++			if (sta->rtscts[i]) {
++				arg.rtscts_ctrl = 0;
++				arg.ext_tid_cfg_bitmap = 0;
++			} else {
++				arg.rtscts_ctrl = vif->rtscts[i] - 1;
++				arg.ext_tid_cfg_bitmap =
++					WMI_EXT_TID_RTS_CTS_CONFIG;
++				config_apply = true;
++			}
++		}
 +
-+static inline int
-+ath10k_wmi_set_per_peer_per_tid_cfg(struct ath10k *ar,
-+				const struct wmi_per_peer_per_tid_cfg_arg *arg)
-+{
-+	struct sk_buff *skb;
+ 		arg.tid = i;
+ 
+ 		if (config_apply) {
+@@ -8375,6 +8405,13 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
+ 				arg.rate_ctrl = 0;
+ 				arg.rcode_flags = 0;
+ 			}
 +
-+	if (!ar->wmi.ops->gen_per_peer_per_tid_cfg)
-+		return -EOPNOTSUPP;
++			if (changed & IEEE80211_TID_CONF_RTSCTS) {
++				sta->rtscts[arg.tid] =
++					tid_config->tid_conf[i].rtscts;
++				arg.rtscts_ctrl = 0;
++				arg.ext_tid_cfg_bitmap = 0;
++			}
+ 		} else {
+ 			arvif->tid_conf_changed[arg.tid] |= changed;
+ 
+@@ -8391,6 +8428,10 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
+ 				vif->rate_ctrl[arg.tid] = arg.rate_ctrl;
+ 				vif->rate_code[arg.tid] = arg.rcode_flags;
+ 			}
 +
-+	skb = ar->wmi.ops->gen_per_peer_per_tid_cfg(ar, arg);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
++			if (changed & IEEE80211_TID_CONF_RTSCTS)
++				vif->rtscts[arg.tid] =
++					tid_config->tid_conf[i].rtscts;
+ 		}
+ 	}
+ 
+@@ -9137,6 +9178,13 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->ops->set_tid_config = NULL;
+ 		ar->hw->wiphy->flags &= ~WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT;
+ 	}
 +
-+	return ath10k_wmi_cmd_send(ar, skb,
-+				   ar->wmi.cmd->per_peer_per_tid_config_cmdid);
-+}
- #endif
++	if (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT, ar->wmi.svc_map)) {
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL);
++	}
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 97e5b2e..44b66f2 100644
+index 44b66f2..583c398 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -740,6 +740,7 @@
- 	.tdls_peer_update_cmdid = WMI_10_4_TDLS_PEER_UPDATE_CMDID,
- 	.tdls_set_offchan_mode_cmdid = WMI_10_4_TDLS_SET_OFFCHAN_MODE_CMDID,
- 	.radar_found_cmdid = WMI_10_4_RADAR_FOUND_CMDID,
-+	.per_peer_per_tid_config_cmdid = WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID,
- };
+@@ -8886,9 +8886,10 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	cmd->rcode_flags = cpu_to_le32(arg->rcode_flags);
  
- /* MAIN WMI VDEV param map */
-@@ -8862,6 +8863,36 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d mac_addr %pM\n",
+-		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control, arg->rate_ctrl,
+-		   arg->rcode_flags, arg->retry_count, arg->peer_macaddr.addr);
++		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d rtscts %d ext_tid_cfg_bitmap %d mac_addr %pM\n",
++		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control,
++		   arg->rate_ctrl, arg->rcode_flags, arg->retry_count, arg->rtscts_ctrl,
++		   arg->ext_tid_cfg_bitmap, arg->peer_macaddr.addr);
+ 	return skb;
  }
  
- static struct sk_buff *
-+ath10k_wmi_10_4_gen_per_peer_per_tid_cfg(struct ath10k *ar,
-+				const struct wmi_per_peer_per_tid_cfg_arg *arg)
-+{
-+	struct wmi_peer_per_tid_cfg_cmd *cmd;
-+	struct sk_buff *skb;
-+
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	memset(skb->data, 0, sizeof(*cmd));
-+
-+	cmd = (struct wmi_peer_per_tid_cfg_cmd *)skb->data;
-+	cmd->vdev_id = cpu_to_le32(arg->vdev_id);
-+	ether_addr_copy(cmd->peer_macaddr.addr, arg->peer_macaddr.addr);
-+	cmd->tid = cpu_to_le32(arg->tid);
-+	cmd->ack_policy = cpu_to_le32(arg->ack_policy);
-+	cmd->aggr_control = cpu_to_le32(arg->aggr_control);
-+	cmd->rate_control = cpu_to_le32(arg->rate_ctrl);
-+	cmd->retry_count = cpu_to_le32(arg->retry_count);
-+	cmd->rcode_flags = cpu_to_le32(arg->rcode_flags);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d mac_addr %pM\n",
-+		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control, arg->rate_ctrl,
-+		   arg->rcode_flags, arg->retry_count, arg->peer_macaddr.addr);
-+	return skb;
-+}
-+
-+static struct sk_buff *
- ath10k_wmi_op_gen_echo(struct ath10k *ar, u32 value)
- {
- 	struct wmi_echo_cmd *cmd;
-@@ -9270,6 +9301,7 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	.gen_pdev_get_tpc_table_cmdid =
- 			ath10k_wmi_10_4_op_gen_pdev_get_tpc_table_cmdid,
- 	.gen_radar_found = ath10k_wmi_10_4_gen_radar_found,
-+	.gen_per_peer_per_tid_cfg = ath10k_wmi_10_4_gen_per_peer_per_tid_cfg,
- 
- 	/* shared with 10.2 */
- 	.pull_echo_ev = ath10k_wmi_op_pull_echo_ev,
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index d9b646f..187c13e 100644
+index 187c13e..21a328f 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -200,6 +200,7 @@ enum wmi_service {
- 	WMI_SERVICE_RTT_RESPONDER_ROLE,
+@@ -201,6 +201,7 @@ enum wmi_service {
  	WMI_SERVICE_PER_PACKET_SW_ENCRYPT,
  	WMI_SERVICE_REPORT_AIRTIME,
-+	WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT,
+ 	WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT,
++	WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
  
  	/* Remember to add the new value to wmi_service_name()! */
  
-@@ -491,6 +492,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
- 	SVCSTR(WMI_SERVICE_RTT_RESPONDER_ROLE);
+@@ -493,6 +494,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
  	SVCSTR(WMI_SERVICE_PER_PACKET_SW_ENCRYPT);
  	SVCSTR(WMI_SERVICE_REPORT_AIRTIME);
-+	SVCSTR(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT);
++	SVCSTR(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT);
  
  	case WMI_SERVICE_MAX:
  		return NULL;
-@@ -818,6 +820,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_PER_PACKET_SW_ENCRYPT, len);
- 	SVCMAP(WMI_10_4_SERVICE_REPORT_AIRTIME,
+@@ -822,6 +824,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
  	       WMI_SERVICE_REPORT_AIRTIME, len);
-+	SVCMAP(WMI_10_4_SERVICE_PEER_TID_CONFIGS_SUPPORT,
-+	       WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, len);
+ 	SVCMAP(WMI_10_4_SERVICE_PEER_TID_CONFIGS_SUPPORT,
+ 	       WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, len);
++	SVCMAP(WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
++	       WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT, len);
  }
  
  #undef SVCMAP
-@@ -1019,6 +1023,7 @@ struct wmi_cmd_map {
- 	u32 tdls_set_offchan_mode_cmdid;
- 	u32 radar_found_cmdid;
- 	u32 set_bb_timing_cmdid;
-+	u32 per_peer_per_tid_config_cmdid;
+@@ -7169,6 +7173,16 @@ enum wmi_tid_rate_ctrl_conf {
+ 	WMI_TID_CONFIG_RATE_CONTROL_AUTO,
+ 	WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE,
+ 	WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE,
++	WMI_PEER_TID_CONFIG_RATE_UPPER_CAP,
++};
++
++enum wmi_tid_rtscts_control_conf {
++	WMI_TID_CONFIG_RTSCTS_CONTROL_ENABLE,
++	WMI_TID_CONFIG_RTSCTS_CONTROL_DISABLE,
++};
++
++enum wmi_ext_tid_config_map {
++	WMI_EXT_TID_RTS_CTS_CONFIG = BIT(0),
  };
  
- /*
-@@ -1860,6 +1865,8 @@ enum wmi_10_4_cmd_id {
- 	WMI_10_4_PDEV_SET_BRIDGE_MACADDR_CMDID,
- 	WMI_10_4_ATF_GROUP_WMM_AC_CONFIG_REQUEST_CMDID,
- 	WMI_10_4_RADAR_FOUND_CMDID,
-+	WMI_10_4_PEER_CFR_CAPTURE_CMDID,
-+	WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID,
- 	WMI_10_4_PDEV_UTF_CMDID = WMI_10_4_END_CMDID - 1,
+ struct wmi_per_peer_per_tid_cfg_arg {
+@@ -7180,6 +7194,8 @@ struct wmi_per_peer_per_tid_cfg_arg {
+ 	u8 rate_ctrl;
+ 	u32 retry_count;
+ 	u32 rcode_flags;
++	u32 ext_tid_cfg_bitmap;
++	u32 rtscts_ctrl;
  };
  
-@@ -7145,6 +7152,51 @@ struct wmi_tdls_peer_event {
- 	__le32 vdev_id;
+ struct wmi_peer_per_tid_cfg_cmd {
+@@ -7195,6 +7211,10 @@ struct wmi_peer_per_tid_cfg_cmd {
+ 	__le32 rate_control;
+ 	__le32 rcode_flags;
+ 	__le32 retry_count;
++	/* See enum wmi_ext_tid_config_map */
++	__le32 ext_tid_cfg_bitmap;
++	/* see enum wmi_tid_rtscts_control_conf */
++	__le32 rtscts_ctrl;
  } __packed;
  
-+enum wmi_tid_aggr_control_conf {
-+	WMI_TID_CONFIG_AGGR_CONTROL_IGNORE,
-+	WMI_TID_CONFIG_AGGR_CONTROL_ENABLE,
-+	WMI_TID_CONFIG_AGGR_CONTROL_DISABLE,
-+};
-+
-+enum wmi_noack_tid_conf {
-+	WMI_NOACK_TID_CONFIG_IGNORE_ACK_POLICY,
-+	WMI_PEER_TID_CONFIG_ACK,
-+	WMI_PEER_TID_CONFIG_NOACK,
-+};
-+
-+enum wmi_tid_rate_ctrl_conf {
-+	WMI_TID_CONFIG_RATE_CONTROL_IGNORE,
-+	WMI_TID_CONFIG_RATE_CONTROL_AUTO,
-+	WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE,
-+	WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE,
-+};
-+
-+struct wmi_per_peer_per_tid_cfg_arg {
-+	u32 vdev_id;
-+	struct wmi_mac_addr peer_macaddr;
-+	u32 tid;
-+	enum wmi_noack_tid_conf ack_policy;
-+	enum wmi_tid_aggr_control_conf aggr_control;
-+	u8 rate_ctrl;
-+	u32 retry_count;
-+	u32 rcode_flags;
-+};
-+
-+struct wmi_peer_per_tid_cfg_cmd {
-+	__le32 vdev_id;
-+	struct wmi_mac_addr peer_macaddr;
-+	__le32 tid;
-+
-+	/* see enum wmi_noack_tid_conf */
-+	__le32 ack_policy;
-+	/* see enum wmi_tid_aggr_control_conf */
-+	__le32 aggr_control;
-+	/* see enum wmi_tid_rate_ctrl_conf */
-+	__le32 rate_control;
-+	__le32 rcode_flags;
-+	__le32 retry_count;
-+} __packed;
-+
  enum wmi_txbf_conf {
- 	WMI_TXBF_CONF_UNSUPPORTED,
- 	WMI_TXBF_CONF_BEFORE_ASSOC,
 -- 
 1.9.1
 
