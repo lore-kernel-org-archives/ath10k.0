@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gx3Te-0001Ly-55
- for ath10k@lists.infradead.org; Fri, 22 Feb 2019 05:34:28 +0000
+ id 1gx3Tg-0001Ot-FH
+ for ath10k@lists.infradead.org; Fri, 22 Feb 2019 05:34:30 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv2 4/9] nl80211: Add netlink attribute to enable/disable RTS_CTS
-Date: Fri, 22 Feb 2019 11:02:29 +0530
-Message-Id: <1550813554-11581-5-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv2 5/9] nl80211: Add netlink attribute to configure TID
+ specific tx rate
+Date: Fri, 22 Feb 2019 11:02:30 +0530
+Message-Id: <1550813554-11581-6-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
 References: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,142 +26,211 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-Introduce NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL in nl80211_attr_tid_config
-to accept TID specific RTS_CTS enable/disable configuration
+Introduce NL80211_ATTR_TID_CONFIG_TX_RATES in nl80211_attr_tid_config
+to accept data TID specific TX bitrate configuration
 through NL80211_CMD_SET_TID_CONFIG command. TID for which the
-RTS_CTS control configuration is to be applied is passed in
-NL80211_ATTR_TID_CONFIG_TID attribute. When the user-space wants this
-configuration peer specific rather than being applied for all the
-connected stations, MAC address of the peer can be passed in
-NL80211_ATTR_MAC attribute.
+this configuration is to be applied is passed in
+NL80211_ATTR_TID_CONFIG_TID attribute. TX bitrate mask values passed
+in NL80211_ATTR_TX_RATES attribute and NL80211_ATTR_TID_CONFIG_TX_RATES
+attribute will have types of the TX rate should be applied.
+When the user-space wants this configuration peer specific
+rather than being applied for all the connected stations,
+MAC address of the peer can be passed in NL80211_ATTR_MAC attribute.
+NL80211_ATTR_TX_RATES attribute can hold single value at a time, so the
+TX bitrate configuration can be set one TID at a time.
 
 Driver supporting this feature should advertise
-NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per-STA data TID
-RTS_CTS configuration should advertise NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
+NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per-STA data TID
+TX bitrate configuration should advertise
+NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- include/net/cfg80211.h       |  3 +++
- include/uapi/linux/nl80211.h | 22 ++++++++++++++++++++++
- net/wireless/nl80211.c       | 17 +++++++++++++++++
- 3 files changed, 42 insertions(+)
+ include/net/cfg80211.h       |  5 +++++
+ include/uapi/linux/nl80211.h | 38 ++++++++++++++++++++++++++++++++++++++
+ net/wireless/nl80211.c       | 41 +++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 82 insertions(+), 2 deletions(-)
 
 diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index fcf33c9..cf4a3f0 100644
+index cf4a3f0..713de1e 100644
 --- a/include/net/cfg80211.h
 +++ b/include/net/cfg80211.h
-@@ -513,6 +513,7 @@ enum ieee80211_tid_conf_mask {
- 	IEEE80211_TID_CONF_NOACK	= BIT(0),
+@@ -514,6 +514,7 @@ enum ieee80211_tid_conf_mask {
  	IEEE80211_TID_CONF_RETRY	= BIT(1),
  	IEEE80211_TID_CONF_AMPDU	= BIT(2),
-+	IEEE80211_TID_CONF_RTSCTS	= BIT(3),
+ 	IEEE80211_TID_CONF_RTSCTS	= BIT(3),
++	IEEE80211_TID_CONF_TX_BITRATE	= BIT(4),
  };
  
  /**
-@@ -524,6 +525,7 @@ enum ieee80211_tid_conf_mask {
-  * @retry_long: retry count value
+@@ -526,6 +527,8 @@ enum ieee80211_tid_conf_mask {
   * @retry_short: retry count value
   * @ampdu: Enable/Disable aggregation
-+ * @rtscts: Enable/Disable RTS/CTS
+  * @rtscts: Enable/Disable RTS/CTS
++ * @txrate_type: TX bitrate mask type
++ * @mask: bitrate to be applied for the TID
   */
  struct ieee80211_tid_cfg {
  	u8 tid;
-@@ -532,6 +534,7 @@ struct ieee80211_tid_cfg {
- 	int retry_long;
+@@ -535,6 +538,8 @@ struct ieee80211_tid_cfg {
  	int retry_short;
  	u8 ampdu;
-+	u8 rtscts;
+ 	u8 rtscts;
++	enum nl80211_tx_rate_setting txrate_type;
++	struct cfg80211_bitrate_mask *mask;
  };
  
  /**
 diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index f94651d..996b4d4 100644
+index 996b4d4..9a6f63e 100644
 --- a/include/uapi/linux/nl80211.h
 +++ b/include/uapi/linux/nl80211.h
-@@ -4630,6 +4630,21 @@ enum nl80211_tid_config {
-  *	NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL and supporting per station
-  *	aggregation configuration should advertise
-  *	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL.
-+ * @NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL: Enable/Disable RTS_CTS for the TID
-+ *	specified in %%NL80211_ATTR_TID_CONFIG_TID. It is u8 type, if the
-+ *	peer MAC address is passed in %NL80211_ATTR_MAC, then this
-+ *	configuration is applied to the data frame for the tid to that
-+ *	connected station.
-+ *	Station specific RTS_CTS configuration is valid only for STA's
+@@ -4557,6 +4557,18 @@ enum nl80211_tx_power_setting {
+ 	NL80211_TX_POWER_FIXED,
+ };
+ 
++/**
++ * enum nl80211_tx_rate_setting - TX rate configuration type
++ * @NL80211_TX_RATE_AUTOMATIC: automatically determine TX rate
++ * @NL80211_TX_RATE_LIMITED: limit the TX rate by the TX rate parameter
++ * @NL80211_TX_RATE_FIXED: fix TX rate to the TX rate parameter
++ */
++enum nl80211_tx_rate_setting {
++	NL80211_TX_RATE_AUTOMATIC,
++	NL80211_TX_RATE_LIMITED,
++	NL80211_TX_RATE_FIXED,
++};
++
+ enum nl80211_tid_config {
+ 	NL80211_TID_CONFIG_DEFAULT,
+ 	NL80211_TID_CONFIG_ENABLE,
+@@ -4645,6 +4657,25 @@ enum nl80211_tid_config {
+  *	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per station
+  *	RTS_CTS configuration should advertise
+  *	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
++ * @NL80211_ATTR_TID_CONFIG_TX_RATES: Data frame TX rate mask should be applied
++ *	with the parameters passed through %NL80211_ATTR_TX_RATES. This
++ *	configuration is per TID, TID is specified with
++ *	%NL80211_ATTR_TID_CONFIG_TID.
++ *	If the peer MAC address is passed in %NL80211_ATTR_MAC, then this
++ *	configuration is applied to the data frame for the tid to that connected
++ *	station. This attribute will be useful to notfiy the driver that what
++ *	type of txrate should be applied(%enum enum nl80211_tx_rate_setting)
++ *	for the connected station (%NL80211_ATTR_MAC),
++ *	Station specific retry configuration is valid only for STA's
 + *	current connection. i.e. the configuration will be reset to default when
 + *	the station connects back after disconnection/roaming.
 + *	when user-space does not include %NL80211_ATTR_MAC, this configuration
 + *	should be treated as per-netdev configuration. This configuration will
 + *	be cleared when the interface goes down and on the disconnection from a
 + *	BSS. Driver supporting this feature should advertise
-+ *	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per station
-+ *	RTS_CTS configuration should advertise
-+ *	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
++ *	NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per station
++ *	TX bitrate configuration should advertise
++ *	NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
   */
  enum nl80211_attr_tid_config {
  	__NL80211_ATTR_TID_INVALID,
-@@ -4639,6 +4654,7 @@ enum nl80211_attr_tid_config {
- 	NL80211_ATTR_TID_CONFIG_RETRY_SHORT,
+@@ -4655,6 +4686,7 @@ enum nl80211_attr_tid_config {
  	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
  	NL80211_ATTR_TID_CONFIG_AMPDU_CTRL,
-+	NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL,
+ 	NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL,
++	NL80211_ATTR_TID_CONFIG_TX_RATES,
  
  	/* keep last */
  	__NL80211_ATTR_TID_CONFIG_AFTER_LAST,
-@@ -5457,6 +5473,10 @@ enum nl80211_feature_flags {
-  *	aggregation control(enable/disable).
-  * @NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL: Driver supports per STA
-  *	specific TID aggregation control(enable/disable).
-+ * @NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL: Driver supports TID specific
-+ *	RTS_CTS control(enable/disable).
-+ * @NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL: Driver supports STA specific
-+ *	RTS_CTS control(enable/disable).
+@@ -5477,6 +5509,10 @@ enum nl80211_feature_flags {
+  *	RTS_CTS control(enable/disable).
+  * @NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL: Driver supports STA specific
+  *	RTS_CTS control(enable/disable).
++ * @NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK: Driver supports TID specific
++ *	TX bitrate configuration.
++ * @NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK: Driver supports STA specific
++ *	TX bitrate configuration.
   *
   * @NUM_NL80211_EXT_FEATURES: number of extended features.
   * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-@@ -5505,6 +5525,8 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG,
- 	NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL,
+@@ -5527,6 +5563,8 @@ enum nl80211_ext_feature_index {
  	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL,
-+	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL,
-+	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL,
+ 	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL,
+ 	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL,
++	NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK,
++	NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK,
  
  	/* add new features before the definition below */
  	NUM_NL80211_EXT_FEATURES,
 diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index d4a88fa..cd1e1e8 100644
+index cd1e1e8..25ed505 100644
 --- a/net/wireless/nl80211.c
 +++ b/net/wireless/nl80211.c
-@@ -290,6 +290,8 @@ static int validate_ie_attr(const struct nlattr *attr,
- 	[NL80211_ATTR_TID_CONFIG_RETRY_LONG] = NLA_POLICY_MIN(NLA_U8, 1),
- 	[NL80211_ATTR_TID_CONFIG_AMPDU_CTRL] =
+@@ -292,6 +292,8 @@ static int validate_ie_attr(const struct nlattr *attr,
  			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
-+	[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL] =
-+			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
+ 	[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL] =
+ 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
++	[NL80211_ATTR_TID_CONFIG_TX_RATES] =
++			NLA_POLICY_MAX(NLA_U8, NL80211_TX_RATE_FIXED),
  };
  
  const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
-@@ -13319,6 +13321,21 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 		tid_conf->ampdu =
- 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_AMPDU_CTRL]);
+@@ -13260,8 +13262,10 @@ static int nl80211_get_ftm_responder_stats(struct sk_buff *skb,
+ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
+ 			  struct nlattr *attrs[],
+ 			  struct ieee80211_tid_cfg *tid_conf,
+-			  const u8 *peer)
++			  struct genl_info *info, const u8 *peer)
+ {
++	int ret;
++
+ 	tid_conf->tid = nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_TID]);
+ 	if (attrs[NL80211_ATTR_TID_CONFIG_NOACK]) {
+ 		if (!wiphy_ext_feature_isset(&rdev->wiphy,
+@@ -13336,6 +13340,39 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
+ 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]);
  	}
+ 
++	if (attrs[NL80211_ATTR_TID_CONFIG_TX_RATES]) {
++		int idx;
 +
-+	if (attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]) {
 +		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL))
-+			return -ENOTSUPP;
++				NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK))
++			return -EOPNOTSUPP;
 +
-+		if (peer && !wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL))
-+			return -ENOTSUPP;
++		if (peer &&
++		    !wiphy_ext_feature_isset(&rdev->wiphy,
++				NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK))
++			return -EOPNOTSUPP;
 +
-+		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_RTSCTS;
-+		tid_conf->rtscts =
-+			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]);
++		idx = NL80211_ATTR_TID_CONFIG_TX_RATES;
++		tid_conf->txrate_type = nla_get_u8(attrs[idx]);
++
++		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_TX_BITRATE;
++		if (tid_conf->txrate_type != NL80211_TX_RATE_AUTOMATIC) {
++			tid_conf->mask =
++				kzalloc(sizeof(struct cfg80211_bitrate_mask),
++					GFP_KERNEL);
++			if (!tid_conf->mask)
++				return -ENOMEM;
++			ret = nl80211_parse_tx_bitrate_mask(info,
++							    tid_conf->mask);
++			if (ret) {
++				kfree(tid_conf->mask);
++				return ret;
++			}
++		} else {
++			tid_conf->mask = NULL;
++		}
 +	}
 +
  	return 0;
  }
+ 
+@@ -13387,7 +13424,7 @@ static int nl80211_set_tid_config(struct sk_buff *skb,
+ 			return -EINVAL;
+ 
+ 		ret = parse_tid_conf(rdev, attrs, &tid_conf->tid_conf[conf_idx],
+-				     tid_conf->peer);
++				     info, tid_conf->peer);
+ 		if (ret)
+ 			goto bad_tid_conf;
  
 -- 
 1.9.1
