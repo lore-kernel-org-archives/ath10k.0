@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gx4Q3-0004Ut-Ns
- for ath10k@lists.infradead.org; Fri, 22 Feb 2019 06:34:49 +0000
+ id 1gx4Qx-00062G-7Z
+ for ath10k@lists.infradead.org; Fri, 22 Feb 2019 06:35:44 +0000
 From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH v3 2/3] mac80211: store tx power value from user to station
-Date: Fri, 22 Feb 2019 12:04:36 +0530
-Message-Id: <1550817276-18582-1-git-send-email-bpothuno@codeaurora.org>
+Subject: [PATCH v3 3/3] ath10k: add support for controlling tx power to a
+ station
+Date: Fri, 22 Feb 2019 12:05:35 +0530
+Message-Id: <1550817335-18661-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,187 +21,160 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net, linux-wireless@vger.kernel.org
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, Ashok Raj Nagarajan <arnagara@codeaurora.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, Ashok Raj Nagarajan <arnagara@codeaurora.org>
 
 From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
 
-This patch introduce a new driver callback drv_sta_set_txpwr. This API will
-copy the transmit power value passed from user space and call the driver
-callback to set the tx power for the station.
+This patch will add the support to control the transmit power for traffic
+to a station associated with the AP.
+
+Underlying firmware will enforce that the maximum tx power will be based
+on the regulatory requirements. If the user given transmit power is greater
+than the allowed tx power in the given channel, then the firmware will use
+the maximum tx power in the same channel.
+
+When 0 is sent to the firmware as tx power, it will revert to the default
+tx power for the station.
+
+Tested Hardware : QCA9984
+Tested Firmware : 10.4-3.9.0.1-00013
 
 Co-developed-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 Signed-off-by: Ashok Raj Nagarajan <arnagara@codeaurora.org>
 Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 ---
-v2: add txpwr structure
-    added tx power set type in trace event
-v3: updated kernel-doc for ieee80211_sta_txpwr
-    structure and rebased
+v2: removed mBm to dBm conversion
+v3: rebased wmi.h changes
 
- include/net/mac80211.h    | 22 ++++++++++++++++++++++
- net/mac80211/cfg.c        |  9 +++++++++
- net/mac80211/driver-ops.c | 21 +++++++++++++++++++++
- net/mac80211/driver-ops.h |  5 +++++
- net/mac80211/trace.h      | 30 ++++++++++++++++++++++++++++++
- 5 files changed, 87 insertions(+)
+ drivers/net/wireless/ath/ath10k/debug.h |  3 +++
+ drivers/net/wireless/ath/ath10k/mac.c   | 39 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h   |  6 +++++
+ 3 files changed, 48 insertions(+)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 97aed7b..74aad69 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -1884,6 +1884,24 @@ struct ieee80211_sta_rates {
- };
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index db78e85..2e43d8d 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -71,6 +71,9 @@ struct ath10k_pktlog_hdr {
+ /* FIXME: How to calculate the buffer size sanely? */
+ #define ATH10K_FW_STATS_BUF_SIZE (1024 * 1024)
  
- /**
-+ * struct ieee80211_sta_txpwr - station txpower configuration
-+ *
-+ * Used to configure txpower for station.
-+ *
-+ * @power: indicates the tx power, in dBm, to be used when sending data frames
-+ *	to the STA.
-+ * @type: In particular if TPC %type is NL80211_TX_POWER_LIMITED then tx power
-+ *	will be less than or equal to specified from userspace, whereas if TPC
-+ *	%type is NL80211_TX_POWER_AUTOMATIC then it indicates default tx power.
-+ *	NL80211_TX_POWER_FIXED is not a valid configuration option for
-+ *	per peer TPC.
-+ */
-+struct ieee80211_sta_txpwr {
-+		s16 power;
-+		enum nl80211_tx_power_setting type;
-+};
++#define ATH10K_TX_POWER_MAX_VAL 70
++#define ATH10K_TX_POWER_MIN_VAL 0
 +
-+/**
-  * struct ieee80211_sta - station table entry
-  *
-  * A station table entry represents a station we are possibly
-@@ -1969,6 +1987,7 @@ struct ieee80211_sta {
- 	bool support_p2p_ps;
- 	u16 max_rc_amsdu_len;
- 	u16 max_tid_amsdu_len[IEEE80211_NUM_TIDS];
-+	struct ieee80211_sta_txpwr txpwr;
+ extern unsigned int ath10k_debug_mask;
  
- 	struct ieee80211_txq *txq[IEEE80211_NUM_TIDS + 1];
- 
-@@ -3785,6 +3804,9 @@ struct ieee80211_ops {
- #endif
- 	void (*sta_notify)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			enum sta_notify_cmd, struct ieee80211_sta *sta);
-+	int (*sta_set_txpwr)(struct ieee80211_hw *hw,
-+			     struct ieee80211_vif *vif,
-+			     struct ieee80211_sta *sta);
- 	int (*sta_state)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			 struct ieee80211_sta *sta,
- 			 enum ieee80211_sta_state old_state,
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index d65aa01..6a8b4a4 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -1417,6 +1417,15 @@ static int sta_apply_parameters(struct ieee80211_local *local,
- 	if (params->listen_interval >= 0)
- 		sta->listen_interval = params->listen_interval;
- 
-+	if (params->sta_modify_mask & STATION_PARAM_APPLY_STA_TXPOWER) {
-+		sta->sta.txpwr.type = params->txpwr.type;
-+		if (params->txpwr.type == NL80211_TX_POWER_LIMITED)
-+			sta->sta.txpwr.power = params->txpwr.power;
-+		ret = drv_sta_set_txpwr(local, sdata, sta);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (params->supported_rates) {
- 		ieee80211_parse_bitrates(&sdata->vif.bss_conf.chandef,
- 					 sband, params->supported_rates,
-diff --git a/net/mac80211/driver-ops.c b/net/mac80211/driver-ops.c
-index bb886e7..839c002 100644
---- a/net/mac80211/driver-ops.c
-+++ b/net/mac80211/driver-ops.c
-@@ -138,6 +138,27 @@ int drv_sta_state(struct ieee80211_local *local,
- 	return ret;
+ __printf(2, 3) void ath10k_info(struct ath10k *ar, const char *fmt, ...);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b73c23d..d6ed452 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6350,6 +6350,41 @@ static void ath10k_mac_dec_num_stations(struct ath10k_vif *arvif,
+ 	ar->num_stations--;
  }
  
-+__must_check
-+int drv_sta_set_txpwr(struct ieee80211_local *local,
-+		      struct ieee80211_sub_if_data *sdata,
-+		      struct sta_info *sta)
++static int ath10k_sta_set_txpwr(struct ieee80211_hw *hw,
++				struct ieee80211_vif *vif,
++				struct ieee80211_sta *sta)
 +{
-+	int ret = -EOPNOTSUPP;
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif = (void *)vif->drv_priv;
++	int ret = 0;
++	s16 txpwr;
 +
-+	might_sleep();
++	if (sta->txpwr.type == NL80211_TX_POWER_AUTOMATIC) {
++		txpwr = 0;
++	} else {
++		txpwr = sta->txpwr.power;
++		if (!txpwr)
++			return -EINVAL;
++	}
 +
-+	sdata = get_bss_sdata(sdata);
-+	if (!check_sdata_in_driver(sdata))
-+		return -EIO;
++	if (txpwr > ATH10K_TX_POWER_MAX_VAL || txpwr < ATH10K_TX_POWER_MIN_VAL)
++		return -EINVAL;
 +
-+	trace_drv_sta_set_txpwr(local, sdata, &sta->sta);
-+	if (local->ops->sta_set_txpwr)
-+		ret = local->ops->sta_set_txpwr(&local->hw, &sdata->vif,
-+						&sta->sta);
-+	trace_drv_return_int(local, ret);
++	mutex_lock(&ar->conf_mutex);
++
++	ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++					WMI_PEER_USE_FIXED_PWR, txpwr);
++	if (ret) {
++		ath10k_warn(ar, "failed to set tx power for station ret: %d\n",
++			    ret);
++		goto out;
++	}
++
++out:
++	mutex_unlock(&ar->conf_mutex);
 +	return ret;
 +}
 +
- void drv_sta_rc_update(struct ieee80211_local *local,
- 		       struct ieee80211_sub_if_data *sdata,
- 		       struct ieee80211_sta *sta, u32 changed)
-diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
-index ba3c07b..2cc5bb2 100644
---- a/net/mac80211/driver-ops.h
-+++ b/net/mac80211/driver-ops.h
-@@ -529,6 +529,11 @@ int drv_sta_state(struct ieee80211_local *local,
- 		  enum ieee80211_sta_state old_state,
- 		  enum ieee80211_sta_state new_state);
+ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			    struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta,
+@@ -8007,6 +8042,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_key			= ath10k_set_key,
+ 	.set_default_unicast_key        = ath10k_set_default_unicast_key,
+ 	.sta_state			= ath10k_sta_state,
++	.sta_set_txpwr			= ath10k_sta_set_txpwr,
+ 	.conf_tx			= ath10k_conf_tx,
+ 	.remain_on_channel		= ath10k_remain_on_channel,
+ 	.cancel_remain_on_channel	= ath10k_cancel_remain_on_channel,
+@@ -8695,6 +8731,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		wiphy_ext_feature_set(ar->hw->wiphy,
+ 				      NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER);
  
-+__must_check
-+int drv_sta_set_txpwr(struct ieee80211_local *local,
-+		      struct ieee80211_sub_if_data *sdata,
-+		      struct sta_info *sta);
-+
- void drv_sta_rc_update(struct ieee80211_local *local,
- 		       struct ieee80211_sub_if_data *sdata,
- 		       struct ieee80211_sta *sta, u32 changed);
-diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
-index 35ea0dc..c86e42a 100644
---- a/net/mac80211/trace.h
-+++ b/net/mac80211/trace.h
-@@ -828,6 +828,36 @@ TRACE_EVENT(drv_sta_state,
- 	)
- );
++	if (test_bit(WMI_SERVICE_TX_PWR_PER_PEER, ar->wmi.svc_map))
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_STA_TX_PWR);
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index d9b646f..1557253 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -200,6 +200,7 @@ enum wmi_service {
+ 	WMI_SERVICE_RTT_RESPONDER_ROLE,
+ 	WMI_SERVICE_PER_PACKET_SW_ENCRYPT,
+ 	WMI_SERVICE_REPORT_AIRTIME,
++	WMI_SERVICE_TX_PWR_PER_PEER,
  
-+TRACE_EVENT(drv_sta_set_txpwr,
-+	TP_PROTO(struct ieee80211_local *local,
-+		 struct ieee80211_sub_if_data *sdata,
-+		 struct ieee80211_sta *sta),
-+
-+	TP_ARGS(local, sdata, sta),
-+
-+	TP_STRUCT__entry(
-+		LOCAL_ENTRY
-+		VIF_ENTRY
-+		STA_ENTRY
-+		__field(s16, txpwr)
-+		__field(u8, type)
-+	),
-+
-+	TP_fast_assign(
-+		LOCAL_ASSIGN;
-+		VIF_ASSIGN;
-+		STA_ASSIGN;
-+		__entry->txpwr = sta->txpwr.power;
-+		__entry->type = sta->txpwr.type;
-+	),
-+
-+	TP_printk(
-+		LOCAL_PR_FMT  VIF_PR_FMT  STA_PR_FMT " txpwr: %d type %d",
-+		LOCAL_PR_ARG, VIF_PR_ARG, STA_PR_ARG,
-+		__entry->txpwr,  __entry->type
-+	)
-+);
-+
- TRACE_EVENT(drv_sta_rc_update,
- 	TP_PROTO(struct ieee80211_local *local,
- 		 struct ieee80211_sub_if_data *sdata,
+ 	/* Remember to add the new value to wmi_service_name()! */
+ 
+@@ -367,6 +368,7 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_RTT_RESPONDER_ROLE,
+ 	WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
+ 	WMI_10_4_SERVICE_REPORT_AIRTIME,
++	WMI_10_4_SERVICE_TX_PWR_PER_PEER,
+ };
+ 
+ static inline char *wmi_service_name(enum wmi_service service_id)
+@@ -491,6 +493,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
+ 	SVCSTR(WMI_SERVICE_RTT_RESPONDER_ROLE);
+ 	SVCSTR(WMI_SERVICE_PER_PACKET_SW_ENCRYPT);
+ 	SVCSTR(WMI_SERVICE_REPORT_AIRTIME);
++	SVCSTR(WMI_SERVICE_TX_PWR_PER_PEER);
+ 
+ 	case WMI_SERVICE_MAX:
+ 		return NULL;
+@@ -818,6 +821,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_PER_PACKET_SW_ENCRYPT, len);
+ 	SVCMAP(WMI_10_4_SERVICE_REPORT_AIRTIME,
+ 	       WMI_SERVICE_REPORT_AIRTIME, len);
++	SVCMAP(WMI_10_4_SERVICE_TX_PWR_PER_PEER,
++	       WMI_SERVICE_TX_PWR_PER_PEER, len);
+ }
+ 
+ #undef SVCMAP
+@@ -6253,6 +6258,7 @@ enum wmi_peer_param {
+ 	WMI_PEER_USE_4ADDR  = 0x6,
+ 	WMI_PEER_DEBUG      = 0xa,
+ 	WMI_PEER_PHYMODE    = 0xd,
++	WMI_PEER_USE_FIXED_PWR = 0x8,
+ 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
+ };
+ 
 -- 
 2.7.4
 
