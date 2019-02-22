@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x22f.google.com ([2607:f8b0:4864:20::22f])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwzAN-0008Fv-3K
- for ath10k@lists.infradead.org; Fri, 22 Feb 2019 00:58:16 +0000
-Received: by mail-oi1-x22f.google.com with SMTP id s16so444642oih.9
- for <ath10k@lists.infradead.org>; Thu, 21 Feb 2019 16:58:14 -0800 (PST)
-MIME-Version: 1.0
-References: <CAMrEMU8siEmdzETiA5gvQ6+OAKiQCqUBgnVcO67rwu-x-BxUKA@mail.gmail.com>
-In-Reply-To: <CAMrEMU8siEmdzETiA5gvQ6+OAKiQCqUBgnVcO67rwu-x-BxUKA@mail.gmail.com>
-From: Justin Capella <justincapella@gmail.com>
-Date: Thu, 21 Feb 2019 16:58:02 -0800
-Message-ID: <CAMrEMU-++j02+sMwMKFS5SSsEzXbu7Sb7WceheKvVPoMUmyi1Q@mail.gmail.com>
-Subject: Re: ACS scans not returning noise floor
+ id 1gx3TP-0001Ah-C9
+ for ath10k@lists.infradead.org; Fri, 22 Feb 2019 05:34:12 +0000
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: [PATCHv2 0/9] cfg80211/mac80211: Add support for TID specific
+ configuration
+Date: Fri, 22 Feb 2019 11:02:25 +0530
+Message-Id: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +16,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: johannes@sipsolutions.net, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-My apologies,
-I left out the important bit of the debug logs
-[ 1265.917324] ath10k_warn: 61 callbacks suppressed
-[ 1265.917330] ath10k_pci 0000:01:00.0: failed to parse chan info event: -71
+Add infrastructure to support per TID configurations like noack policy,
+retry count, AMPDU control(disable/enable), RTSCTS control(enable/disable)
+and TX rate mask configurations.
+This will be useful for the driver which can supports data TID
+specific configuration rather than phy level configurations.
+Here NL80211_CMD_SET_TID_CONFIG added to support this operation by
+accepting TID configuration.
+This command can accept STA mac addreess to make the configuration
+station specific rather than applying to all the connected stations
+to the netdev.
+And this nested command configuration can accept multiple number of
+data TID specific configuration in a single command,
+enum ieee80211_tid_conf_mask used to notify the driver that which
+configuration got modified for the TID.
 
-Possibly also relevant, i'm using country "US" I am aware that the fcc
-crda/regdom wasn't supported, but without the 802.11h option
-condigured in hostapd it had been working with older firmware.
+Tamizh chelvam (9):
+  nl80211: New netlink command for TID specific configuration
+  nl80211: Add new netlink attribute for TID speicific retry count
+  nl80211: Add netlink attribute for AMPDU aggregation enable/disable
+  nl80211: Add netlink attribute to enable/disable RTS_CTS
+  nl80211: Add netlink attribute to configure TID specific tx rate
+  mac80211: Add api to support configuring TID specific configuration
+  ath10k: Add wmi command support for station specific TID config
+  ath10k: Add new api to support TID specific configuration
+  ath10k: Add extended TID configuration support
 
-7ce94a62264be94dc1c41ff5d0c8a19c7f0d3143 is the head of the master
-branch I'm using
+v2:
+  * Added support to accept multiple TID configuration
+  * Added support to configure TX rate and RTSCTS control
 
-On Thu, Feb 21, 2019 at 4:39 PM Justin Capella <justincapella@gmail.com> wrote:
->
-> I'm using the firmware from ~2 days ago, and ath10k_wmi_pull_ch_info
-> seems to be returning -EPROTO. I have no idea what I'm doing, but I
-> notice there is a default noise floor in one of the headers, perhaps
-> this could be used somewhere? I'm encountering this becuase hostapd is
-> complaining that the ACS survey does not contain enough info.
->
-> [ 1261.111452] ath10k_pci 0000:01:00.0: pci rx ce pipe 5 len 28
-> [ 1261.111457] ath10k_pci 0000:01:00.0: pci rx: 00000000: 01 00 14 00
-> 00 05 00 00 0f 00 00 00 50 14 00 00  ............P...
-> [ 1261.111460] ath10k_pci 0000:01:00.0: pci rx: 00000010: 50 14 00 00
-> 00 00 00 00 00 00 00 00              P...........
-> [ 1261.111464] ath10k_pci 0000:01:00.0: htt rx, msg_type: 0xF
-> [ 1261.111469] ath10k_pci 0000:01:00.0: htt chan change freq 5200 phymode 11a
-> [ 1261.115411] ath10k_pci 0000:01:00.0: pci rx ce pipe 2 len 36
-> [ 1261.115419] ath10k_pci 0000:01:00.0: pci rx: 00000000: 02 00 1c 00
-> 00 06 00 00 00 90 00 00 08 00 00 00  ................
-> [ 1261.115424] ath10k_pci 0000:01:00.0: pci rx: 00000010: 03 00 00 00
-> 50 14 00 00 01 a0 00 00 00 a0 00 00  ....P...........
-> [ 1261.115427] ath10k_pci 0000:01:00.0: pci rx: 00000020: 00 00 00 00
->                                     ....
-> [ 1261.115432] ath10k_pci 0000:01:00.0: htc rx completion ep 2 skb
-> 0000000063dc45b6
-> [ 1261.115439] ath10k_pci 0000:01:00.0: scan event foreign channel
-> type 8 reason 3 freq 5200 req_id 40961 scan_id 40960 vdev_id 0 state
-> running (2)
-> [ 1261.115448] ath10k_pci 0000:01:00.0: pci rx ce pipe 2 len 40
-> [ 1261.115452] ath10k_pci 0000:01:00.0: pci rx: 00000000: 02 00 20 00
-> 00 07 00 00 0c 90 00 00 00 00 00 00  .. .............
-> [ 1261.115456] ath10k_pci 0000:01:00.0: pci rx: 00000010: 50 14 00 00
-> 00 00 00 00 00 00 00 00 a3 43 33 00  P............C3.
-> [ 1261.115459] ath10k_pci 0000:01:00.0: pci rx: 00000020: c8 67 4a 01
-> e8 90 16 00                          .gJ.....
-> [ 1261.115463] ath10k_pci 0000:01:00.0: htc rx completion ep 2 skb
-> 00000000b2b31359
+ drivers/net/wireless/ath/ath10k/core.c    |   4 +
+ drivers/net/wireless/ath/ath10k/core.h    |   7 +
+ drivers/net/wireless/ath/ath10k/mac.c     | 650 ++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  19 +
+ drivers/net/wireless/ath/ath10k/wmi.c     |  33 ++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  72 ++++
+ include/net/cfg80211.h                    |  57 +++
+ include/net/mac80211.h                    |  35 ++
+ include/uapi/linux/nl80211.h              | 181 +++++++++
+ net/mac80211/cfg.c                        |  28 ++
+ net/mac80211/driver-ops.h                 |  15 +
+ net/wireless/nl80211.c                    | 205 ++++++++++
+ net/wireless/rdev-ops.h                   |  11 +
+ net/wireless/trace.h                      |  18 +
+ 14 files changed, 1255 insertions(+), 80 deletions(-)
+
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
