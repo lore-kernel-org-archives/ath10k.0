@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.toke.dk ([52.28.52.200])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gxGDB-0003TK-TF
- for ath10k@lists.infradead.org; Fri, 22 Feb 2019 19:10:19 +0000
-Message-ID: <44add7675ef89dd61fcea9da6b55804c498a2d24.camel@sipsolutions.net>
+ id 1gxVoj-0005mS-OI
+ for ath10k@lists.infradead.org; Sat, 23 Feb 2019 11:50:07 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Subject: Re: [PATCH] mac80211: Change default tx_sk_pacing_shift to 7
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 22 Feb 2019 20:10:05 +0100
-In-Reply-To: <87imxcvt4z.fsf@toke.dk>
+In-Reply-To: <44add7675ef89dd61fcea9da6b55804c498a2d24.camel@sipsolutions.net>
 References: <20190221172936.21816-1-toke@redhat.com>
  <E1gx9x3-0002j0-1J@sipsolutions.net> <87lg28vup0.fsf@toke.dk>
  <a5151441bdfe02cb11043aa0786185b8ee3c3ee9.camel@sipsolutions.net>
  <87imxcvt4z.fsf@toke.dk>
-Mime-Version: 1.0
+ <44add7675ef89dd61fcea9da6b55804c498a2d24.camel@sipsolutions.net>
+Date: Sat, 23 Feb 2019 12:49:58 +0100
+Message-ID: <87d0niwwpl.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +26,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Kan Yan <kyan@google.com>, wgong@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Grant Grundler <grundler@google.com>, wgong@codeaurora.org, Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@codeaurora.org>
 
-T24gRnJpLCAyMDE5LTAyLTIyIGF0IDE0OjQwICswMTAwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
-ZW4gd3JvdGU6Cj4gCj4gQW5kIHNlbmQgaXQgZGlyZWN0bHkgdG8gc3RhYmxlLCBvciBkb2VzIGl0
-IG5lZWQgdG8gZ28gdGhyb3VnaCB5b3U/CgpJIGFkZGVkIGEgQ2M6IHN0YWJsZSB0YWcuIFNvIGFs
-bCB5b3UgcmVhbGx5IG5lZWQgdG8gZG8gaXMgd2FpdCBmb3IgdGhlCmVtYWlscyB0ZWxsaW5nIHlv
-dSBpdCBmYWlsZWQgdG8gYXBwbHksIGFuZCBoYW5kbGUgYWNjb3JkaW5nbHkgOikKCmpvaGFubmVz
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBG
+cmksIDIwMTktMDItMjIgYXQgMTQ6NDAgKzAxMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
+cm90ZToKPj4gCj4+IEFuZCBzZW5kIGl0IGRpcmVjdGx5IHRvIHN0YWJsZSwgb3IgZG9lcyBpdCBu
+ZWVkIHRvIGdvIHRocm91Z2ggeW91Pwo+Cj4gSSBhZGRlZCBhIENjOiBzdGFibGUgdGFnLiBTbyBh
+bGwgeW91IHJlYWxseSBuZWVkIHRvIGRvIGlzIHdhaXQgZm9yIHRoZQo+IGVtYWlscyB0ZWxsaW5n
+IHlvdSBpdCBmYWlsZWQgdG8gYXBwbHksIGFuZCBoYW5kbGUgYWNjb3JkaW5nbHkgOikKCkNvb2ws
+IHRoYXQgSSBjYW4gZG87IHRoYW5rcyEgOikKCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
