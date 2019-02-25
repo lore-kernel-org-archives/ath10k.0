@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gy83m-0000A1-P6
- for ath10k@lists.infradead.org; Mon, 25 Feb 2019 04:40:12 +0000
+ id 1gyDIc-0001wh-77
+ for ath10k@lists.infradead.org; Mon, 25 Feb 2019 10:15:53 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Add peer param map for tlv and non-tlv
+References: <1550556576-19803-1-git-send-email-pillair@codeaurora.org>
+Date: Mon, 25 Feb 2019 12:15:43 +0200
+In-Reply-To: <1550556576-19803-1-git-send-email-pillair@codeaurora.org>
+ (Rakesh Pillai's message of "Tue, 19 Feb 2019 11:39:36 +0530")
+Message-ID: <87bm30mawg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Mon, 25 Feb 2019 12:40:08 +0800
-From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: Re: FW: [PATCH] ath10k: fix return value check in wake_tx_q op
-In-Reply-To: <87sgwz8ylw.fsf@kamboji.qca.qualcomm.com>
-References: <20180506132500.16888-1-erik.stromdahl@gmail.com>
- <6dc00772b826410e930306891fd13ed9@euamsexm01f.eu.qualcomm.com>
- <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
- <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
- <87sgwz8ylw.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <a1c113622b9aec9b32393c0a3e159e32@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,77 +19,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: erik.stromdahl@gmail.com, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-5ZyoIDIwMTktMDItMDcgMjI6MjXvvIxLYWxsZSBWYWxvIOWGmemBk++8mgo+IFlpYm8gWmhhbyA8
-eWlib3pAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPiAKPj4gV2UgaGF2ZSBtZXQgcGVyZm9ybWFu
-Y2UgaXNzdWUgb24gb3VyIHR3by1jb3JlIHN5c3RlbSBhZnRlciBhcHBseWluZwo+PiB5b3VyIHBh
-dGNoLiBJbiBXRFMgbW9kZSwgd2UgZm91bmQgdGhhdCB0aGUgcGVhayB0aHJvdWdocHV0IGluIFRD
-UC1ETAo+PiBhbmQgVURQLURMIGRyb3BwZWQgbW9yZSB0aGFuIDEwJSBjb21wYXJlZCB3aXRoIHBy
-ZXZpb3VzIG9uZS4gQW5kIGluCj4+IHNvbWUgY2FzZXMsIHRob3VnaCB0aHJvdWdocHV0IHN0YXlz
-IHRoZSBzYW1lLCBvbmUgQ1BVIHVzYWdlIHJpc2VzCj4+IGFib3V0IDIwJSB3aGljaCBsZWFkcyB0
-byAxMCUgaW4gdG90YWwgQ1BVIHVzYWdlLiBXaXRoIHlvdXIgY2hhbmdlLCBJCj4+IHRoaW5rIGRy
-aXZlciB3aWxsIHRyeSBpdHMgYmVzdCB0byBwdXNoIGFzIG1hbnkgcGFja2V0cyBhcyBpdCBjYW4u
-Cj4+IER1cmluZyB0aGlzIHRpbWUsIHRoZSBkcml2ZXIncyBxdWV1ZSBsb2NrIHdpbGwgYmUgaGVs
-ZCBmb3IgdG9vIG11Y2gKPj4gdGltZSBpbiBvbmUgQ1BVIGFuZCBhcyBhIHJlc3VsdCwgdGhlIG90
-aGVyIENQVSB3aWxsIGJlIGJsb2NrZWQgaWYgaXQKPj4gd2FudHMgdG8gYWNxdWlyZWQgdGhlIHNh
-bWUgbG9jay4gV29ya2luZyBpbiB0aGlzIHdheSBzZWVtcyBub3QKPj4gZWZmaWNpZW5jeS4KPj4g
-Cj4+IFNvIEkgdGhpbmsgaXQgaXMgYmV0dGVyIHRvIHJldmVydCB0aGUgY2hhbmdlIHRpbGwgd2Ug
-Y29tZSB1cCB3aXRoIGEKPj4gbmV3IHNvbHV0aW9uLgo+IAo+IEkgZG9uJ3QgdGhpbmsgcmV2ZXJ0
-aW5nIGlzIGEgY2xlYXIgb3B0aW9uIGF0IHRoaXMgc3RhZ2UgYmVjYXVzZSB0aGF0Cj4gYWdhaW4g
-Y3JlYXRlcyBwcm9ibGVtcyBmb3IgU0RJTy4gSUlSQyB3aXRob3V0IHRoaXMgcGF0Y2ggU0RJTyB3
-YXMKPiBzZW5kaW5nIG9uZSBwYWNrZXQgYSB0aW1lIChvciBzb21ldGhpbmcgbGlrZSB0aGF0LCBj
-YW4ndCByZW1lbWJlciBhbGwKPiB0aGUgZGV0YWlscyByaWdodCBub3cpLgo+IAoKQmVsb3cgaXMg
-dGhlIGFxbSByZXN1bHQgYWZ0ZXIgMSBtaW4gdGVzdCB3aXRoIEVyaWsncyBwYXRjaC4KCnRhcmdl
-dCAxOTk5OXVzIGludGVydmFsIDk5OTk5dXMgZWNuIHllcwp0aWQgYWMgYmFja2xvZy1ieXRlcyBi
-YWNrbG9nLXBhY2tldHMgbmV3LWZsb3dzIGRyb3BzIG1hcmtzIG92ZXJsaW1pdApjb2xsaXNpb25z
-IHR4LWJ5dGVzIHR4LXBhY2tldHMgZmxhZ3MKMCAyIDAgMCA1MzQyMjI5IDAgMCAwIDAgMzg2NzY1
-NzAyOSA1MzQyMjI5IDB4MChSVU4pCjEgMyAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQoyIDMg
-MCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKMyAyIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4p
-CjQgMSAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQo1IDEgMCAwIDAgMCAwIDAgMCAwIDAgMHgw
-KFJVTikKNiAwIDAgMCAyIDAgMCAwIDAgMTQ0IDIgMHgwKFJVTikKNyAwIDAgMCAyIDAgMCAwIDAg
-MjgyIDIgMHgwKFJVTikKOCAyIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCjkgMyAwIDAgMCAw
-IDAgMCAwIDAgMCAweDAoUlVOKQoxMCAzIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCjExIDIg
-MCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKMTIgMSAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVO
-KQoxMyAxIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCjE0IDAgMCAwIDAgMCAwIDAgMCAwIDAg
-MHgwKFJVTikKMTUgMCAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQoKd2Ugc2VlIG5vIGRpZmZl
-cmVuY2UgYmV0d2VlbiB0eC1wYWNrZXRzIGFuZCBuZXctZmxvd3MuCldoZXJlYXMgaWYgd2UgcmV2
-ZXJ0IHRoZSBwYXRjaCwgd2UgZ2V077yaCgp0YXJnZXQgMTk5OTl1cyBpbnRlcnZhbCA5OTk5OXVz
-IGVjbiB5ZXMKdGlkIGFjIGJhY2tsb2ctYnl0ZXMgYmFja2xvZy1wYWNrZXRzIG5ldy1mbG93cyBk
-cm9wcyBtYXJrcyBvdmVybGltaXQKY29sbGlzaW9ucyB0eC1ieXRlcyB0eC1wYWNrZXRzIGZsYWdz
-CjAgMiAwIDAgMjIzMzA1OSAzIDAgOTIzNiAxMiAxMTU5NjYxNzgzIDYzODA4NjcgMHgwKFJVTikK
-MSAzIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCjIgMyAwIDAgMCAwIDAgMCAwIDAgMCAweDAo
-UlVOKQozIDIgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKNCAxIDAgMCAwIDAgMCAwIDAgMCAw
-IDB4MChSVU4pCjUgMSAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQo2IDAgMCAwIDEgMCAwIDAg
-MCAxNDQgMiAweDAoUlVOKQo3IDAgMCAwIDEgMCAwIDAgMCAyODIgMiAweDAoUlVOKQo4IDIgMCAw
-IDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKOSAzIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCjEw
-IDMgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKMTEgMiAwIDAgMCAwIDAgMCAwIDAgMCAweDAo
-UlVOKQoxMiAxIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCjEzIDEgMCAwIDAgMCAwIDAgMCAw
-IDAgMHgwKFJVTikKMTQgMCAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQoxNSAwIDAgMCAwIDAg
-MCAwIDAgMCAwIDB4MChSVU4pCgpuZXctZmxvd3MgYXJlIHJvdWdobHkgb25lLXRoaXJkIG9mIHRo
-ZSB0b3RhbCB0eC1wYWNrZXRzLgoKSU1ITywgd2l0aCBFcmlrJ3MgY2hhbmdlLCBFcmlrJ3MgY2hh
-bmdlIGhhcyBjaGFuZ2VkIHRoZSB3YXkgZnEncyAKc2NoZWR1bGUgYmVoYXZpb3IgYW5kIGl0IGxv
-b2tzIGxpa2UgdGhlcmUgaXMgbm8gb3RoZXIgcGFja2V0cyBpbiB0aGUgZnEgCmFmdGVyIGEgcGFj
-a2V0IGhhcyBiZWVuIGRlcXVldWVkLiBBbmQgYXMgYSByZXN1bHQsIHRoaXMgZmxvdydzIGRlZmlj
-aXQgCndpbGwgYmUgcmVmaWxsIGFuZCB0aGVuIHJlbW92ZWQgZnJvbSBmcSBsaXN0IGF0IG9uY2Ug
-aW4gdGhlIHNhbWUgQ1BVLiAKQW5kIGR1cmluZyB0aGlzIHRpbWUsIHRoZSBvdGhlciBDUFUgY291
-bGQgYmUgYmxvY2tlZC4gV2hlbiBuZXcgcGFja2V0IApjb21lcywgc2FtZSB0aGluZyBoYXBwZW5z
-LiBTbyB3ZSBnZXQgZXF1YWwgbmV3IGZsb3dzIGFuZCB0eC1wYWNrZXRzLgoKVGhpbmdzIHdvdWxk
-IGJlIGRpZmZlcmVudCB3aXRob3V0IEVyaWsncyBjaGFuZ2UuIEFmdGVyIGEgcGFja2V0IGhhcyBi
-ZWVuIApkZXF1ZXVlZCwgdGhpcyBmbG93J3MgZGVmaWNpdCB3aWxsIG5vdCBiZSByZWZpbGwgaW1t
-ZWRpYXRlbHkgaW4KQ1BVMC4gSXQgaXMgcG9zc2libGUgdGhhdCB0aGUgZGVmaWNpdCB0byBiZSBy
-ZWZpbGxlZCBpbiBDUFUxIHdoaWxlIGF0IAp0aGUgc2FtZSB0aW1lIENQVTAgY2FuIGZldGNoIGRh
-dGEgZnJvbSBldGhlcm5ldC4gU28gd2UgY2FuIHNlZSBtb3JlIAp0eC1wYWNrZXRzIGRlbGl2ZXJl
-ZCB0byBGVyBmcm9tIGFxbS4KCgo+IFdoeSBkb2VzIHRoaXMgaGFwcGVuIG9ubHkgV0RTIG1vZGU/
-IERpZCB5b3UgdGVzdCBvdGhlciBtb2RlcywgbGlrZSBBUCAKPiBvcgo+IGNsaWVudCBtb2RlPwpB
-UCBtb2RlIGhhcyBzYW1lIGlzc3VlLiBVRFAgdGhyb3VnaHB1dCBkcm9wcyBtb3JlIHRoYW4gMTAl
-LiBBcyBmb3IgVENQLCAKQ1BVIHVzYWdlIHJpc2luZyBhIGxvdCBhbHRob3VnaCB0aHJvdWdocHV0
-IHN0YXlzIHNpbWlsaWFyLgpTbywgSSdkIHNheSBFcmlrJ3MgY2hhbmdlIGRvZXMgbm90IHdvcmsg
-Zm9yIHVzLgoKCi0tIApZaWJvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Rakesh Pillai <pillair@codeaurora.org> writes:
+
+> The peer param id for PEER_PARAM_USE_FIXED_PWR
+> is different for tlv and non-tlv firmware. This
+> causes incorrect peer param to be set by the driver
+> to the firmware(tlv/non-tlv).
+>
+> Create seperate peer param map for tlv and non-tlv
+> firmware and attach the peer param id based on the
+> firmware type during the init.
+>
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+> This change is dependent on the below patchset
+> ath10k: add support for controlling tx power to a station (https://patchwork.kernel.org/patch/9562405/)
+
+You got me really confused, that patch is two years old :) But I think
+you mean this v3 patch (oddly the one submitted in 2017 was also v3?):
+
+[v3,3/3] ath10k: add support for controlling tx power to a station
+
+https://patchwork.kernel.org/patch/10825293/
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
