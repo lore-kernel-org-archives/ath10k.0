@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr780081.outbound.protection.outlook.com
- ([40.107.78.81] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gybtW-00014D-E4
- for ath10k@lists.infradead.org; Tue, 26 Feb 2019 12:31:36 +0000
-From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Subject: Re: [PATCHv2 8/9] ath10k: Add new api to support TID specific
- configuration
-Date: Tue, 26 Feb 2019 12:31:04 +0000
-Message-ID: <20190226123058.yu5brtbu4euwbzxx@bars>
-References: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
- <1550813554-11581-9-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1550813554-11581-9-git-send-email-tamizhr@codeaurora.org>
-Content-Language: en-US
-Content-ID: <1AE0BBBBCC6BCA4E929F1E9F0675BCFD@namprd05.prod.outlook.com>
+ id 1gycHx-0002zM-8z
+ for ath10k@lists.infradead.org; Tue, 26 Feb 2019 12:56:50 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Fix descriptor size in ce tx completion for
+ WCN3990
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1549952423-25096-1-git-send-email-pillair@codeaurora.org>
+References: <1549952423-25096-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20190226125648.2EFE660397@smtp.codeaurora.org>
+Date: Tue, 26 Feb 2019 12:56:47 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +23,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hello Tamizh,
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> This patch add ops for set_tid_config to support TID
-> specific configuration. STA information along with the
-> TID config change mask to notify driver that which configuration
-> needs to be applied for this current command.
-> If the STA info not available in the command then the
-> configuration will be applied for all connected stations
-> in the vif. TID specific noack configuration requires
-> aggregation disabled and rate for the data TID packets
-> should be basic rates. So, if the TID already configured
-> with noack policy then driver will ignore the aggregation
-> or TX rate related configuration for the same data TID.
-> In TX rate configuration should be applied with highest
-> preamble configuration(HT rates should not be applied
-> for the station which supports vht rates).
+> When the driver receives the tx completion of the
+> descriptor over ce, it clears the nbytes configured
+> for that particular descriptor. WCN3990 uses ce
+> descriptors with 64-bit address.
 > 
-> Vif specific TID configuration will be applied for all
-> the connected stations except for the station which
-> already applied with the same configuration for the TID
-> through station specific command. Newly connecting stations
-> will be applied with vif TID configuration which will be stored
-> in ieee80211_vif.
+> Currently during handling the tx completion of the
+> descriptors, the nbytes are accessed from the descriptors
+> using ce_desc for 32-bit targets. This will lead to clearing
+> of memory at incorrect offset if DMA MASK is set to greater
+> than 32 bits.
 > 
-> Testing:
->         * Tested HW: QCA9888
->         * Tested FW: 10.4-3.5.1-00052
+> Attach different ce tx copy completed handler for targets
+> using address above 32-bit address.
 > 
-> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/core.h |   7 +
->  drivers/net/wireless/ath/ath10k/mac.c  | 602 ++++++++++++++++++++++++++++-----
->  2 files changed, 529 insertions(+), 80 deletions(-)
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 27ec555..c25c426 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -82,6 +82,9 @@
->  /* Default Airtime weight multipler (Tuned for multiclient performance) */
->  #define ATH10K_AIRTIME_WEIGHT_MULTIPLIER  4
-> 
-> +#define ATH10K_MAX_RETRY_COUNT 30
-> +#define ATH10K_MAX_TIDS        8
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Is there any reason why you don't use IEEE80211_TID_MAX here ?
+Patch applied to ath-next branch of ath.git, thanks.
 
-Regards,
-Sergey
+02f73d3a9bdb ath10k: fix descriptor size in ce tx completion for WCN3990
+
+-- 
+https://patchwork.kernel.org/patch/10807393/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
