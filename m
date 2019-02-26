@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from narfation.org ([2001:4d88:2000:7::2] helo=v3-1039.vlinux.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyYqV-0004SU-Dd
- for ath10k@lists.infradead.org; Tue, 26 Feb 2019 09:16:22 +0000
+ id 1gyYxb-0006nT-US
+ for ath10k@lists.infradead.org; Tue, 26 Feb 2019 09:23:37 +0000
 From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
- various chipsets
-Date: Tue, 26 Feb 2019 10:16:05 +0100
-Message-ID: <2468724.JaAZLprVu6@bentobox>
-In-Reply-To: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
-References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: fix incorrect multicast/broadcast rate setting
+Date: Tue, 26 Feb 2019 10:23:30 +0100
+Message-ID: <3062143.B1lnfLpWcE@bentobox>
+In-Reply-To: <2172036.sbaLp6LFFn@bentobox>
+References: <1544504171-19810-1-git-send-email-pradeepc@codeaurora.org>
+ <2172036.sbaLp6LFFn@bentobox>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,36 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7124945091753558564=="
+Content-Type: multipart/mixed; boundary="===============6605506175473657364=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Ansuel Smith <ansuelsmth@gmail.com>, openwrt-devel@lists.openwrt.org
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@codeaurora.org>
+To: Sven Eckelmann <sven@narfation.org>, Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Steve deRosier <derosier@cal-sierra.com>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Zhi Chen <zhichen@codeaurora.org>, John Crispin <john@phrozen.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>
 
---===============7124945091753558564==
-Content-Type: multipart/signed; boundary="nextPart3062142.xbTPQMdo2G"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+--===============6605506175473657364==
+Content-Type: multipart/signed; boundary="nextPart2093160.Su1pxlAiQj"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
---nextPart3062142.xbTPQMdo2G
+--nextPart2093160.Su1pxlAiQj
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-On Friday, 6 April 2018 17:17:55 CET Kalle Valo wrote:
-> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+On Monday, 25 February 2019 21:00:38 CET Sven Eckelmann wrote:
+[...]
+> Tested-by: Sven Eckelmann <sven@narfation.org>
 > 
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based
-> chipsets with on chipset connected led's using WMI Firmware API.  The LED
-> device will get available named as "ath10k-phyX" at sysfs and can be controlled
-> with various triggers.  adds also debugfs interface for gpio control.
-> 
-> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
-> [kvalo: major reorg and cleanup]
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Was tested on QCA988X with 10.2.4-1.0-00041
 
-
-This patch was imported to OpenWrt in commit 61d57a2f88b9 ("mac80211: ath10k 
-add leds support") and broke the 11s support for IPQ4019 and QCA4019 (5GHz) 
-firmware versions 10.4-3.5.3-00053, 10.4-3.5.3-00057, 10.4-3.6-00140:
+I just wanted to test it with 802.11s setup on IPQ4019 with 10.4-3.5.3-00057 
+and QCA9888 with 10.4-3.5.3-00053 (ath10k-firmware) and 10.4-3.6-00140
+(linux-firmware 2018-12-16-211de167) for both. But it looks like the firmware 
+always crashes with and without this patch and 11s.
 
     [  221.620803] ath10k_pci 0000:01:00.0: wmi command 36967 timeout, restarting hardware
     [  221.744056] ieee80211 phy0: Hardware restart was requested
@@ -57,93 +50,55 @@ firmware versions 10.4-3.5.3-00053, 10.4-3.5.3-00057, 10.4-3.6-00140:
     [  226.170871] ath10k_pci 0000:01:00.0: failed to connect htt (-110)
     [  226.252248] ath10k_pci 0000:01:00.0: Could not init core: -110
 
-This was tested on an A62 with following wireless config:
+If i count correctly, this is WMI_10_4_GPIO_CONFIG_CMDID. Not really supported 
+by upstream but it looks like there is an Openwrt private patch (not yet
+accepted upstream [1])
 
-    config wifi-device 'radio0'
-            option type 'mac80211'
-            option channel '36'
-            option hwmode '11a'
-            option path 'soc/40000000.pci/pci0000:00/0000:00:00.0/0000:01:00.0'
-            option htmode 'VHT80'
-            option disabled '0'
-            option country US
-    
-    config wifi-device 'radio1'
-            option type 'mac80211'
-            option channel '11'
-            option hwmode '11g'
-            option path 'platform/soc/a000000.wifi'
-            option htmode 'HT20'
-            option disabled '0'
-            option country US
-    
-    config wifi-device 'radio2'
-            option type 'mac80211'
-            option channel '149'
-            option hwmode '11a'
-            option path 'platform/soc/a800000.wifi'
-            option htmode 'VHT80'
-            option disabled '0'
-            option country US
-    
-    config wifi-iface 'mesh0'
-        option device 'radio0'
-        option ifname 'mesh0'
-        option network 'nwi_mesh0'
-        option mode 'mesh'
-        option mesh_id 'TestMesh'
-        option mesh_fwding '1'
-        option encryption 'none'
-    
-    config wifi-iface 'mesh1'
-        option device 'radio1'
-        option ifname 'mesh1'
-        option network 'nwi_mesh1'
-        option mode 'mesh'
-        option mesh_id 'TestMesh'
-        option encryption 'none'
-    
-    
-    config wifi-iface 'mesh2'
-        option device 'radio2'
-        option ifname 'mesh2'
-        option network 'nwi_mesh2'
-        option mode 'mesh'
-        option mesh_id 'TestMesh'
-        option mesh_fwding '1'
-        option encryption 'none
+  package/kernel/mac80211/patches/ath/974-ath10k_add-LED-and-GPIO-controlling-support-for-various-chipsets.patch 
+
+which I have now removed to fix this problem for me.
+
+The tests with 10.4-3.6-00140 and 10.4-3.5.3-* worked fine without this patch.
+
+@Kalle are you expecting that he resents the patch again or can you just 
+append this information to the commit message? At least it looks at the moment 
+like there will be no new patch in the near future. But the 
+commit cd93b83ad92 ("ath10k: support for multicast rate control") is breaking 
+real world setups.
 
 Kind regards,
 	Sven
---nextPart3062142.xbTPQMdo2G
+
+[1] https://patchwork.kernel.org/patch/10327075/
+--nextPart2093160.Su1pxlAiQj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlx1A9UACgkQXYcKB8Em
-e0ZR5A//Z5JgzDfPdNg3PFL8+ZN+obc7d/AlOyYHm5EXEHDvsYx6CMlA3TVfbChy
-7sDHN4NBIjWW3qxUcAm1fLc/HQ6TCJcMCW7FBpXL+lSLxJwZA4AmROIk1ICy67wu
-FaPZUmUC95VuqWQLRtwpYLZ9fGkStnIZYsZLIZCWeUpuMK62FxPwe2VDfiI7oZXV
-EIJRhZ/nER7ZzTl8Cm9K5uOhLGqNyAo0ki9mNmM8xJZnWX9Ggziavoe8GqXheENa
-/PL6GTpxv5qlNR/Yf0Hvgcc+oXlRI2/jKVMWWAsK17oZrLuiDMQg/TWLc1XYwwbI
-2Gae5N+1FK90qHmnQKzHxOvxgski4wtC5XCnsl6PzIVNDsA11JYu2V90h73azSds
-1IwjlvfJkchA5AxcXBjOpH8BGF41AE3kBfRINhCA3gxP8XYKgtkzUJSqv0dc4mmD
-nbuqxu1GoBCMoz8XjKsVGeLE70M/0xzTHhe4qr619eNcvcmax4M0M9N9cU5ofHEd
-6B+zxRtUAPPLDMKiLp7lNNJgWDB9t/NXKMfsuLjXpMGb01bTVLGm52HBtioJ3vRU
-qdjB2NEXk9XMCUnYYV8a757V1Gnr/yiqgUDjowUyDrEaVOHrtAwOZuRol2aW5CCP
-dzeS/Nne606+B17PRu5WgHLjE/AAVvgISVSO/c1Ff/ar8zzvCGU=
-=y19m
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlx1BZIACgkQXYcKB8Em
+e0YvKhAAnyguDTsGDYi5g7x5U4XjIbo0doEW7Gqmb4KvMTsUvdSMjhCh9ckvGdkp
+1j6js0WN+f1lZ8Ob6qMEtySjABZ7r9KZs0QlWC1QUoZtesO4aJpzBbRK8vQwi1aw
+ytzu2lP/NvHsMIY7VT4xX/6THGeV/yNZmudT4dj3KvzM4vnSrtoeR7FD/jv+AmxG
+GWtNjgsNZfApqTrRef5j9F8Nl118GMVwpqpluAQL8w0f6h/mQA+6ZdyNAKJlWt/p
+3ZMRV/1d8KUpwIb8QhNCsGnV7oAh+xJQhat6UqMa7Wsiz/ahVHlvweYUIc0Rm43u
+By5aYj6Bi0amJLkAZpHI8xyyhQK5UVFv6pwJi4PEs4pY7dUfnAjXGY9SeqMqmPWH
+WNGhQRJn/E+M1Y9NAYzaNyrsFMgWtb7D7QiI7F2te+DZnoXjjRD2nLzX9UcEWNpO
+Yp2BuddecxVij8lId0tN7qDUua4CrAEJrRdUH7iDGkR+fIPqQ9ftS+jqESOSpB9T
+p2VLoRiqiIs7eSiW5qZvx93xKFtkaK9E10vAkd/oV2KE1ds/Ct0Dn4uyfxN3Bu+1
+ThieigxlY4Af317nXwAat8X01SUSHWf1iGWB8XA2q4Yvklpx3V4CdVCgWwzZcsix
+Cn/4fanEatPLvTI8Ef8Vz526puDSLsntmb9YTtkBNvBevQtiVI4=
+=1miS
 -----END PGP SIGNATURE-----
 
---nextPart3062142.xbTPQMdo2G--
+--nextPart2093160.Su1pxlAiQj--
 
 
 
 
 
---===============7124945091753558564==
+--===============6605506175473657364==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -154,4 +109,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============7124945091753558564==--
+--===============6605506175473657364==--
