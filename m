@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gycNo-0005zi-7R
- for ath10k@lists.infradead.org; Tue, 26 Feb 2019 13:02:57 +0000
+ id 1gycPg-0006X4-9O
+ for ath10k@lists.infradead.org; Tue, 26 Feb 2019 13:04:49 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] ath10k: sdio: set hi_acs_flags
+Subject: Re: [PATCH] ath10k: Fix length of wmi tlv command for protected mgmt
+ frames
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1550766118-31703-2-git-send-email-kvalo@codeaurora.org>
-References: <1550766118-31703-2-git-send-email-kvalo@codeaurora.org>
-Message-Id: <20190226130251.92467616BA@smtp.codeaurora.org>
-Date: Tue, 26 Feb 2019 13:02:51 +0000 (UTC)
+In-Reply-To: <1550243977-8612-1-git-send-email-svishnoi@codeaurora.org>
+References: <1550243977-8612-1-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190226130447.B8FCB60E5A@smtp.codeaurora.org>
+Date: Tue, 26 Feb 2019 13:04:47 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
-> The SDIO firmware does not allow transmitting packets with the
-> reduced tx completion HI_ACS option. SDIO firmware uses 1544 as
-> alternate credit size, which is not big enough for the maximum sized
-> mac80211 frames. Disable both these HI_ACS flags for SDIO.
+> The length of wmi tlv command for management tx send is calculated
+> incorrectly in case of protected management frames as there is addition
+> of IEEE80211_CCMP_MIC_LEN twice. This leads to improper behaviour of
+> firmware as the wmi tlv mgmt tx send command for protected mgmt frames
+> is formed wrongly.
 > 
-> Co-developed-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Fix the length calculation of wmi tlv command for mgmt tx send in case
+> of protected management frames by adding the IEEE80211_CCMP_MIC_LEN only
+> once.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> 
+> Fixes: 1807da49733e "ath10k: wmi: add management tx by reference support over wmi"
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-4 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-bf1f0a1a4da1 ath10k: sdio: set hi_acs_flags
-6cd70c65647b ath10k: sdio: disable fwlog prints
-55545b087012 ath10k: sdio: reset chip on power_down()
-7d4445223031 ath10k: don't report unset rssi values to mac80211
+761156ff573d ath10k: Fix length of wmi tlv command for protected mgmt frames
 
 -- 
-https://patchwork.kernel.org/patch/10824323/
+https://patchwork.kernel.org/patch/10815099/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
