@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gytOw-0005k1-9w
- for ath10k@lists.infradead.org; Wed, 27 Feb 2019 07:13:11 +0000
+ id 1gytPd-00067S-KP
+ for ath10k@lists.infradead.org; Wed, 27 Feb 2019 07:13:55 +0000
 From: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Subject: [PATCH 0/2] Add support for per peer HTT tx stats for WCN3990 
-Date: Wed, 27 Feb 2019 12:42:59 +0530
-Message-Id: <1551251581-21193-1-git-send-email-svishnoi@codeaurora.org>
+Date: Wed, 27 Feb 2019 12:43:46 +0530
+Message-Id: <1551251628-22518-1-git-send-email-svishnoi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
