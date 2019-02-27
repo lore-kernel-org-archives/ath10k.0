@@ -1,14 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-eopbgr720040.outbound.protection.outlook.com
+ ([40.107.72.40] helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gytPk-0006Bo-Rs
- for ath10k@lists.infradead.org; Wed, 27 Feb 2019 07:14:04 +0000
-From: Surabhi Vishnoi <svishnoi@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Add support for per peer HTT tx stats for WCN3990
-Date: Wed, 27 Feb 2019 12:43:48 +0530
-Message-Id: <1551251628-22518-3-git-send-email-svishnoi@codeaurora.org>
-In-Reply-To: <1551251628-22518-1-git-send-email-svishnoi@codeaurora.org>
-References: <1551251628-22518-1-git-send-email-svishnoi@codeaurora.org>
+ id 1gywCa-0005ZS-VV
+ for ath10k@lists.infradead.org; Wed, 27 Feb 2019 10:12:38 +0000
+From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+Subject: Re: [PATCHv2 1/9] nl80211: New netlink command for TID specific
+ configuration
+Date: Wed, 27 Feb 2019 10:01:53 +0000
+Message-ID: <20190227100147.b62xtvl2plsaxiic@bars>
+References: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
+ <1550813554-11581-2-git-send-email-tamizhr@codeaurora.org>
+ <20190226122901.focow4odsbkmv7jn@bars>
+ <1be400e2f95b87ca0f9e7144177a9b3e@codeaurora.org>
+In-Reply-To: <1be400e2f95b87ca0f9e7144177a9b3e@codeaurora.org>
+Content-Language: en-US
+Content-ID: <3D4AF52C0186F6498A3B5EA9BC65D11C@namprd05.prod.outlook.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,533 +25,162 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The firmware sends peer stats to the host driver if the firmware
-advertises WMI_SERVICE_PEER_STATS service and the host driver
-indicates the WMI_RSRC_CFG_FLAG_TX_PEER_STATS capability in the
-host capab flag in wmi init cmd.
+Hi Tamizh,
 
-When peer stats are enabled, firmware sends one HTT event
-HTT_TLV_T2H_MSG_TYPE_PEER_STATS for every four PPDUs transmitted.
-HTT msg payload has tag followed by length followed by
-success pkts/bytes, failed pkts/bytes, retry pkts/bytes and rate
-info per ppdu.
+> Hi Sergey,
+> > 
+> > > Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> > > ---
+> > >  include/net/cfg80211.h       |  35 +++++++++++++++
+> > >  include/uapi/linux/nl80211.h |  51 ++++++++++++++++++++++
+> > >  net/wireless/nl80211.c       | 102
+> > > +++++++++++++++++++++++++++++++++++++++++++
+> > >  net/wireless/rdev-ops.h      |  11 +++++
+> > >  net/wireless/trace.h         |  18 ++++++++
+> > >  5 files changed, 217 insertions(+)
+> > 
+> > ...
+> > 
+> > > diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+> > > index 82d5e1e..352eb4a2 100644
+> > > --- a/net/wireless/nl80211.c
+> > > +++ b/net/wireless/nl80211.c
+> > > @@ -280,6 +280,13 @@ static int validate_ie_attr(const struct nlattr
+> > > *attr,
+> > > 
+> > > NLA_POLICY_NESTED_ARRAY(nl80211_psmr_peer_attr_policy),
+> > >  };
+> > > 
+> > > +static const struct nla_policy
+> > > +nl80211_attr_tid_config_policy[NL80211_ATTR_TID_CONFIG_MAX + 1] = {
+> > > +       [NL80211_ATTR_TID_CONFIG_TID] = NLA_POLICY_MAX(NLA_U8, 7),
+> > 
+> > Such a policy permits configuration of per-TID settings, either
+> > for per-STA or for all the STAs. However it is not possible to
+> > perform configuration for all TIDs at once, e.g. passing -1 value
+> > to driver.
+> > 
+> > Maybe simplify policy and use .type = NLA_U8 ?
+> > 
+> > Sanity check, if needed, can be performed by driver or even by
+> > firmware.
+> > 
+> Sure, we can have like that. And do you feel driver should advertise
+> support to perform configuration for all TIDs(like accepting tid -1) ?
 
-Parse peer stats sent by the firmware in tlv format and update the
-tx rate information and tx_stats debugfs entry per STA.
+Do you think this additional level of granularity is needed ?
+IIUC if driver/firmware supports per TID feature configuration,
+then can handle all-TIDs configuration as well. Anyway, attempt
+for global feature configuration can be rejected on driver
+or firmware level if needed.
 
-To get the tx_stats:
-echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/enable_extd_tx_stats
-cat /sys/kernel/debug/ieee80211/phyX/net:wlanX/stations/xx:xx:xx:xx:xx:xx/tx_stats
+> > > +       [NL80211_ATTR_TID_CONFIG_NOACK] =
+> > > +                       NLA_POLICY_MAX(NLA_U8,
+> > > NL80211_TID_CONFIG_DISABLE),
+> > > +};
+> > > +
+> > >  const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
+> > >         [NL80211_ATTR_WIPHY] = { .type = NLA_U32 },
+> > >         [NL80211_ATTR_WIPHY_NAME] = { .type = NLA_NUL_STRING,
+> > > @@ -541,6 +548,8 @@ static int validate_ie_attr(const struct nlattr
+> > > *attr,
+> > >         [NL80211_ATTR_PEER_MEASUREMENTS] =
+> > >                 NLA_POLICY_NESTED(nl80211_pmsr_attr_policy),
+> > >         [NL80211_ATTR_AIRTIME_WEIGHT] = NLA_POLICY_MIN(NLA_U16, 1),
+> > > +       [NL80211_ATTR_TID_CONFIG] =
+> > > +
+> > > NLA_POLICY_NESTED(nl80211_attr_tid_config_policy),
+> > >  };
+> > 
+> > ...
+> > 
+> > > +static int nl80211_set_tid_config(struct sk_buff *skb,
+> > > +                                 struct genl_info *info)
+> > > +{
+> > > +       struct cfg80211_registered_device *rdev = info->user_ptr[0];
+> > > +       struct nlattr *attrs[NL80211_ATTR_TID_CONFIG_MAX + 1];
+> > > +       struct net_device *dev = info->user_ptr[1];
+> > > +       struct ieee80211_tid_config *tid_conf;
+> > > +       struct nlattr *tid;
+> > > +       int conf_idx = 0, rem_conf;
+> > > +       u32 num_conf = 0, size_of_conf;
+> > > +       int ret = -EINVAL;
+> > > +
+> > > +       if (!info->attrs[NL80211_ATTR_TID_CONFIG])
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (!rdev->ops->set_tid_config)
+> > > +               return -EOPNOTSUPP;
+> > > +
+> > > +       nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
+> > > +                           rem_conf)
+> > > +               num_conf++;
+> > > +
+> > > +       size_of_conf = sizeof(struct ieee80211_tid_config) +
+> > > +               num_conf * sizeof(struct ieee80211_tid_cfg);
+> > > +
+> > > +       tid_conf = kzalloc(size_of_conf, GFP_KERNEL);
+> > > +       if (!tid_conf)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       tid_conf->n_tid_conf = num_conf;
+> > > +
+> > > +       if (info->attrs[NL80211_ATTR_MAC])
+> > > +               tid_conf->peer =
+> > > nla_data(info->attrs[NL80211_ATTR_MAC]);
+> > > +       else
+> > > +               tid_conf->peer = NULL;
+> > > +
+> > > +       nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
+> > > +                           rem_conf) {
+> > > +               ret = nla_parse_nested(attrs,
+> > > NL80211_ATTR_TID_CONFIG_MAX, tid,
+> > > +                                      NULL, NULL);
+> > > +
+> > > +               if (ret)
+> > > +                       return ret;
+> > > +
+> > > +               if (!attrs[NL80211_ATTR_TID_CONFIG_TID])
+> > > +                       return -EINVAL;
+> > > +
+> > > +               ret = parse_tid_conf(rdev, attrs,
+> > > &tid_conf->tid_conf[conf_idx],
+> > > +                                    tid_conf->peer);
+> > > +               if (ret)
+> > > +                       goto bad_tid_conf;
+> > > +
+> > > +               conf_idx++;
+> > > +       }
+> > > +
+> > > +       return rdev_set_tid_config(rdev, dev, tid_conf);
+> > 
+> > What is the ownership rule for tid_conf ? In other words, who is
+> > responsible for freeing this structure ?
+> > 
+> > Unless I am missing something, in the suggested patches there is no
+> > kfree for this structure and all the nested structures (see Tx bitrate
+> > patch), neither in cfg80211/mac80211 nor in ath10k.
+> > 
+> > As far as I understand, we have two options here. One option is to
+> > explicitly specify that ownership is passed to the caller, similar
+> > to nl80211_set_reg. Another option is to release memory in this
+> > function after driver makes copies of all necessary fields,
+> > e.g. see nl80211_set_mac_acl.
+> > 
+> Thanks for pointing out, will free it in this function(cfg80211) itself.
+> I will make the change and send next patchset.
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+Great!
 
-Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt.c     |   2 +
- drivers/net/wireless/ath/ath10k/htt.h     |  64 ++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 136 +++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/hw.c      |  45 +++++++++-
- drivers/net/wireless/ath/ath10k/hw.h      |  34 ++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |   3 +
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  33 ++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |   3 -
- 8 files changed, 312 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index d235ff3..828e76d 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -89,6 +89,8 @@
- 	[HTT_TLV_T2H_MSG_TYPE_RX_OFLD_PKT_ERR] =
- 		HTT_T2H_MSG_TYPE_RX_OFLD_PKT_ERR,
- 	[HTT_TLV_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
-+	[HTT_TLV_T2H_MSG_TYPE_PEER_STATS] =
-+				HTT_T2H_MSG_TYPE_PEER_STATS,
- };
- 
- static const enum htt_t2h_msg_type htt_10_4_t2h_msg_types[] = {
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 0ab29bd..2c2b1c7 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -449,6 +449,12 @@ enum htt_tlv_t2h_msg_type {
- 	HTT_TLV_T2H_MSG_TYPE_WDI_IPA_OP_RESPONSE       = 0x14,
- 	HTT_TLV_T2H_MSG_TYPE_CHAN_CHANGE               = 0x15,
- 	HTT_TLV_T2H_MSG_TYPE_RX_OFLD_PKT_ERR           = 0x16,
-+	HTT_TLV_T2H_MSG_TYPE_PEER_MAP_V2	       = 0x1e,
-+	HTT_TLV_T2H_MSG_TYPE_PEER_UNMAP_V2	       = 0x1f,
-+	HTT_TLV_T2H_MSG_TYPE_MONITOR_MAC_HEADER_IND    = 0x20,
-+	HTT_TLV_T2H_MSG_TYPE_FLOW_POOL_RESIZE	       = 0x21,
-+	HTT_TLV_T2H_MSG_TYPE_CFR_DUMP_COMPL_IND	       = 0x22,
-+	HTT_TLV_T2H_MSG_TYPE_PEER_STATS		       = 0x23,
- 	HTT_TLV_T2H_MSG_TYPE_TEST,
- 	/* keep this last */
- 	HTT_TLV_T2H_NUM_MSGS
-@@ -1604,6 +1610,63 @@ struct htt_channel_change {
- 	__le32 phymode;
- } __packed;
- 
-+#define HTT_TAG_ADDR_MASK	GENMASK(11, 0)
-+#define HTT_LEN_ADDR_MASK	GENMASK(23, 12)
-+#define HTT_LEN_ADDR_LSB	12
-+
-+struct htt_tlv_msg {
-+	/* BIT [11 : 0]   :- tag
-+	 * BIT [23 : 12]   :- length
-+	 * BIT [31 : 24]   :- reserved
-+	 */
-+	__le32 tag_length;
-+	u8 payload[0];
-+};
-+
-+struct htt_tlv {
-+	__le16 reserved1;
-+	u8 reserved2;
-+	u8 payload[0];
-+};
-+
-+#define HTT_TX_STATS_IS_AMPDU_MASK		GENMASK(0, 0)
-+#define HTT_TX_STATS_BA_ACK_FAILED_MASK		GENMASK(2, 1)
-+#define HTT_TX_STATS_BW_MASK			GENMASK(5, 3)
-+#define HTT_TX_STATS_GI_MASK			GENMASK(6, 6)
-+#define HTT_TX_STATS_SKIPPED_RATE_CTRL_MASK	GENMASK(7, 7)
-+
-+enum htt_tx_stats_valid_bitmap {
-+	HTT_TX_STATS_VALID,
-+	HTT_TX_STATS_SUCCESS_BYTES,
-+	HTT_TX_STATS_RETRY_BYTES,
-+	HTT_TX_STATS_FAILED_BYTES,
-+	HTT_TX_STATS_RATECODE,
-+	HTT_TX_STATS_IS_AMPDU,
-+	HTT_TX_STATS_BA_ACK_FAILED,
-+	HTT_TX_STATS_BW,
-+	HTT_TX_STATS_GI,
-+	HTT_TX_STATS_SKIPPED_RATE_CTRL,
-+	HTT_TX_STATS_PEER_ID,
-+	HTT_TX_STATS_SUCCESS_PKTS,
-+	HTT_TX_STATS_RETRY_PKTS,
-+	HTT_TX_STATS_FAILED_PKTS,
-+	HTT_TX_STATS_TX_DURATION,
-+};
-+
-+struct htt_tlv_per_peer_tx_stats_ind {
-+	__le32	succ_bytes;
-+	__le32  retry_bytes;
-+	__le32  failed_bytes;
-+	u8	ratecode;
-+	u8	flags;
-+	__le16	peer_id;
-+	__le16  succ_pkts;
-+	__le16	retry_pkts;
-+	__le16	failed_pkts;
-+	__le16	tx_duration;
-+	__le32  valid_bitmap;
-+} __packed;
-+
- struct htt_per_peer_tx_stats_ind {
- 	__le32	succ_bytes;
- 	__le32  retry_bytes;
-@@ -1699,6 +1762,7 @@ struct htt_resp {
- 		struct htt_tx_mode_switch_ind tx_mode_switch_ind;
- 		struct htt_channel_change chan_change;
- 		struct htt_peer_tx_stats peer_tx_stats;
-+		struct htt_tlv tlv;
- 	};
- } __packed;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index c7a2411..b3bbc8f 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3039,11 +3039,12 @@ static inline s8 ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- 	lockdep_assert_held(&ar->data_lock);
- 
- 	txrate.flags = ATH10K_HW_PREAMBLE(peer_stats->ratecode);
--	txrate.bw = ATH10K_HW_BW(peer_stats->flags);
-+	txrate.bw = ath10k_get_bw(&ar->hw_params, peer_stats->flags);
- 	txrate.nss = ATH10K_HW_NSS(peer_stats->ratecode);
- 	txrate.mcs = ATH10K_HW_MCS_RATE(peer_stats->ratecode);
--	sgi = ATH10K_HW_GI(peer_stats->flags);
--	skip_auto_rate = ATH10K_FW_SKIPPED_RATE_CTRL(peer_stats->flags);
-+	sgi = ath10k_get_gi(&ar->hw_params, peer_stats->flags);
-+	skip_auto_rate = ath10k_get_skipped_rate_ctrl(&ar->hw_params,
-+						      peer_stats->flags);
- 
- 	/* Firmware's rate control skips broadcast/management frames,
- 	 * if host has configure fixed rates and in some other special cases.
-@@ -3146,6 +3147,133 @@ static inline s8 ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
- static void ath10k_htt_fetch_peer_stats_tlv(struct ath10k *ar,
- 					    struct sk_buff *skb)
- {
-+	struct ath10k_per_peer_tx_stats *p_tx_stats = &ar->peer_tx_stats;
-+	struct htt_resp *resp = (struct htt_resp *)skb->data;
-+	struct htt_tlv_per_peer_tx_stats_ind *tx_stats;
-+	const struct htt_tlv_msg *tlv;
-+	unsigned long valid_bitmap;
-+	struct ieee80211_sta *sta;
-+	struct ath10k_sta *arsta;
-+	struct ath10k_peer *peer;
-+	u16 tlv_tag, tlv_len;
-+	void *begin, *ptr;
-+	int peer_id, len;
-+
-+	begin = resp->tlv.payload;
-+	ptr = begin;
-+	len = skb->len - sizeof(struct htt_tlv);
-+
-+	while (len > 0) {
-+		if (len < sizeof(*tlv)) {
-+			ath10k_dbg(ar, ATH10K_DBG_HTT,
-+				   "HTT tlv parse failure at byte %zd (%d bytes left, %zu expected)\n",
-+				   ptr - begin, len, sizeof(*tlv));
-+			return;
-+		}
-+
-+		tlv = (struct htt_tlv_msg *)ptr;
-+		tlv_tag = HTT_TAG_ADDR_MASK & __le32_to_cpu(tlv->tag_length);
-+		tlv_len = MS(__le32_to_cpu(tlv->tag_length), HTT_LEN_ADDR);
-+		ptr += sizeof(*tlv);
-+		len -= sizeof(*tlv);
-+
-+		if (tlv_len > len) {
-+			ath10k_dbg(ar, ATH10K_DBG_HTT,
-+				   "HTT tlv parse failure of tag %hu at byte %zd (%d bytes left, %hu expected)\n",
-+				   tlv_tag, ptr - begin, len, tlv_len);
-+			return;
-+		}
-+
-+		tx_stats = (struct htt_tlv_per_peer_tx_stats_ind *)ptr;
-+		valid_bitmap = __le32_to_cpu(tx_stats->valid_bitmap);
-+
-+		if (test_bit(HTT_TX_STATS_VALID, &valid_bitmap)) {
-+			if (test_bit(HTT_TX_STATS_PEER_ID, &valid_bitmap)) {
-+				peer_id = __le16_to_cpu(tx_stats->peer_id);
-+			} else {
-+				ath10k_dbg(ar, ATH10K_DBG_HTT, "Peer id is not received, ignoring\n");
-+				goto next;
-+			}
-+
-+			rcu_read_lock();
-+			spin_lock_bh(&ar->data_lock);
-+			peer = ath10k_peer_find_by_id(ar, peer_id);
-+			if (!peer) {
-+				ath10k_warn(ar, "Invalid peer id %d peer stats buffer\n",
-+					    peer_id);
-+				spin_unlock_bh(&ar->data_lock);
-+				rcu_read_unlock();
-+				return;
-+			}
-+
-+			sta = peer->sta;
-+			arsta = (struct ath10k_sta *)sta->drv_priv;
-+			p_tx_stats->flags = 0;
-+
-+			if (test_bit(HTT_TX_STATS_SUCCESS_BYTES, &valid_bitmap))
-+				p_tx_stats->succ_bytes =
-+					__le32_to_cpu(tx_stats->succ_bytes);
-+
-+			if (test_bit(HTT_TX_STATS_RETRY_BYTES, &valid_bitmap))
-+				p_tx_stats->retry_bytes =
-+					__le32_to_cpu(tx_stats->retry_bytes);
-+
-+			if (test_bit(HTT_TX_STATS_FAILED_BYTES, &valid_bitmap))
-+				p_tx_stats->failed_bytes =
-+					__le32_to_cpu(tx_stats->failed_bytes);
-+
-+			if (test_bit(HTT_TX_STATS_RATECODE, &valid_bitmap))
-+				p_tx_stats->ratecode = tx_stats->ratecode;
-+
-+			if (test_bit(HTT_TX_STATS_IS_AMPDU, &valid_bitmap))
-+				p_tx_stats->flags |= tx_stats->flags &
-+						     HTT_TX_STATS_IS_AMPDU_MASK;
-+
-+			if (test_bit(HTT_TX_STATS_BA_ACK_FAILED, &valid_bitmap))
-+				p_tx_stats->flags |= tx_stats->flags &
-+						HTT_TX_STATS_BA_ACK_FAILED_MASK;
-+
-+			if (test_bit(HTT_TX_STATS_BW, &valid_bitmap))
-+				p_tx_stats->flags |= tx_stats->flags &
-+						     HTT_TX_STATS_BW_MASK;
-+
-+			if (test_bit(HTT_TX_STATS_GI, &valid_bitmap))
-+				p_tx_stats->flags |= tx_stats->flags &
-+						     HTT_TX_STATS_GI_MASK;
-+
-+			if (test_bit(HTT_TX_STATS_SKIPPED_RATE_CTRL,
-+				     &valid_bitmap))
-+				p_tx_stats->flags |= tx_stats->flags &
-+					HTT_TX_STATS_SKIPPED_RATE_CTRL_MASK;
-+
-+			if (test_bit(HTT_TX_STATS_SUCCESS_PKTS, &valid_bitmap))
-+				p_tx_stats->succ_pkts =
-+					__le16_to_cpu(tx_stats->succ_pkts);
-+
-+			if (test_bit(HTT_TX_STATS_RETRY_PKTS, &valid_bitmap))
-+				p_tx_stats->retry_pkts =
-+					__le16_to_cpu(tx_stats->retry_pkts);
-+
-+			if (test_bit(HTT_TX_STATS_FAILED_PKTS, &valid_bitmap))
-+				p_tx_stats->failed_pkts =
-+					__le16_to_cpu(tx_stats->failed_pkts);
-+
-+			if (test_bit(HTT_TX_STATS_TX_DURATION, &valid_bitmap))
-+				p_tx_stats->duration =
-+					__le16_to_cpu(tx_stats->tx_duration);
-+
-+			ath10k_update_per_peer_tx_stats(ar, sta, p_tx_stats);
-+
-+			spin_unlock_bh(&ar->data_lock);
-+			rcu_read_unlock();
-+		} else {
-+			ath10k_dbg(ar, ATH10K_DBG_HTT, "received invalid bitmap 0x%lx for tag %hu at byte %zd\n",
-+				   valid_bitmap, tlv_tag, ptr - begin);
-+		}
-+next:
-+		ptr += tlv_len;
-+		len -= tlv_len;
-+	}
- }
- 
- static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
-@@ -3438,7 +3566,7 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_htt_rx_tx_mode_switch_ind(ar, skb);
- 		break;
- 	case HTT_T2H_MSG_TYPE_PEER_STATS:
--		ath10k_htt_fetch_peer_stats(ar, skb);
-+		htt->rx_ops->htt_fetch_peer_stats(ar, skb);
- 		break;
- 	case HTT_T2H_MSG_TYPE_EN_STATS:
- 	default:
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index eeaee8e..54b2735 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -1100,8 +1100,26 @@ int ath10k_hw_diag_fast_download(struct ath10k *ar,
- 	return ret;
- }
- 
-+static int ath10k_hw_bw(u8 flags)
-+{
-+	return FIELD_GET(ATH10K_HW_BW_MASK, flags);
-+}
-+
-+static int ath10k_hw_gi(u8 flags)
-+{
-+	return FIELD_GET(ATH10K_HW_GI_MASK, flags);
-+}
-+
-+static int ath10k_hw_skipped_rate_ctrl(u8 flags)
-+{
-+	return FIELD_GET(ATH10K_HW_SKIPPED_RATE_CTRL_MASK, flags);
-+}
-+
- const struct ath10k_hw_ops qca988x_ops = {
- 	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
-+	.get_bw = ath10k_hw_bw,
-+	.get_gi = ath10k_hw_gi,
-+	.get_skipped_rate_ctrl = ath10k_hw_skipped_rate_ctrl,
- };
- 
- static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
-@@ -1119,11 +1137,36 @@ static bool ath10k_qca99x0_rx_desc_msdu_limit_error(struct htt_rx_desc *rxd)
- const struct ath10k_hw_ops qca99x0_ops = {
- 	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
- 	.rx_desc_get_msdu_limit_error = ath10k_qca99x0_rx_desc_msdu_limit_error,
-+	.get_bw = ath10k_hw_bw,
-+	.get_gi = ath10k_hw_gi,
-+	.get_skipped_rate_ctrl = ath10k_hw_skipped_rate_ctrl,
- };
- 
- const struct ath10k_hw_ops qca6174_ops = {
- 	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
- 	.enable_pll_clk = ath10k_hw_qca6174_enable_pll_clock,
-+	.get_bw = ath10k_hw_bw,
-+	.get_gi = ath10k_hw_gi,
-+	.get_skipped_rate_ctrl = ath10k_hw_skipped_rate_ctrl,
- };
- 
--const struct ath10k_hw_ops wcn3990_ops = {};
-+static int ath10k_hw_wcn3990_bw(u8 flags)
-+{
-+	return FIELD_GET(ATH10K_HW_WCN3990_BW_BIT_MASK, flags);
-+}
-+
-+static int ath10k_hw_wcn3990_gi(u8 flags)
-+{
-+	return FIELD_GET(ATH10K_HW_WCN3990_GI_MASK, flags);
-+}
-+
-+static int ath10k_hw_wcn3990_skipped_rate_ctrl(u8 flags)
-+{
-+	return FIELD_GET(ATH10K_HW_WCN3990_SKIPPED_RATE_CTRL_MASK, flags);
-+}
-+
-+const struct ath10k_hw_ops wcn3990_ops = {
-+	.get_bw = ath10k_hw_wcn3990_bw,
-+	.get_gi = ath10k_hw_wcn3990_gi,
-+	.get_skipped_rate_ctrl = ath10k_hw_wcn3990_skipped_rate_ctrl,
-+};
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index de7dc01..737e4f7 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -159,6 +159,13 @@ enum qca9377_chip_id_rev {
- 
- #define REG_DUMP_COUNT_QCA988X 60
- 
-+#define ATH10K_HW_BW_MASK				GENMASK(4, 3)
-+#define ATH10K_HW_GI_MASK				GENMASK(5, 5)
-+#define ATH10K_HW_SKIPPED_RATE_CTRL_MASK		GENMASK(6, 6)
-+#define ATH10K_HW_WCN3990_BW_BIT_MASK			GENMASK(5, 3)
-+#define ATH10K_HW_WCN3990_GI_MASK			GENMASK(6, 6)
-+#define ATH10K_HW_WCN3990_SKIPPED_RATE_CTRL_MASK	GENMASK(7, 7)
-+
- struct ath10k_fw_ie {
- 	__le32 id;
- 	__le32 len;
-@@ -616,6 +623,9 @@ struct ath10k_hw_ops {
- 	void (*set_coverage_class)(struct ath10k *ar, s16 value);
- 	int (*enable_pll_clk)(struct ath10k *ar);
- 	bool (*rx_desc_get_msdu_limit_error)(struct htt_rx_desc *rxd);
-+	int (*get_bw)(u8 flags);
-+	int (*get_gi)(u8 flags);
-+	int (*get_skipped_rate_ctrl)(u8 flags);
- };
- 
- extern const struct ath10k_hw_ops qca988x_ops;
-@@ -643,6 +653,30 @@ struct ath10k_hw_ops {
- 	return false;
- }
- 
-+static inline int
-+ath10k_get_bw(struct ath10k_hw_params *hw, u8 flags)
-+{
-+	if (hw->hw_ops->get_bw)
-+		return hw->hw_ops->get_bw(flags);
-+	return 0;
-+}
-+
-+static inline int
-+ath10k_get_gi(struct ath10k_hw_params *hw, u8 flags)
-+{
-+	if (hw->hw_ops->get_gi)
-+		return hw->hw_ops->get_gi(flags);
-+	return 0;
-+}
-+
-+static inline int
-+ath10k_get_skipped_rate_ctrl(struct ath10k_hw_params *hw, u8 flags)
-+{
-+	if (hw->hw_ops->get_skipped_rate_ctrl)
-+		return hw->hw_ops->get_skipped_rate_ctrl(flags);
-+	return 0;
-+}
-+
- /* Target specific defines for MAIN firmware */
- #define TARGET_NUM_VDEVS			8
- #define TARGET_NUM_PEER_AST			2
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 9b2ed0e..b700fe1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1706,6 +1706,9 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->num_ocb_schedules = __cpu_to_le32(0);
- 	cfg->host_capab = __cpu_to_le32(WMI_TLV_FLAG_MGMT_BUNDLE_TX_COMPL);
- 
-+	if (ath10k_peer_stats_enabled(ar))
-+		cfg->host_capab |= __cpu_to_le32(WMI_RSRC_CFG_FLAG_TX_PEER_STATS);
-+
- 	ath10k_wmi_put_host_mem_chunks(ar, chunks);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv init\n");
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 03d02ed..d5a090f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -13,6 +13,7 @@
- #define WMI_TLV_PDEV_PARAM_UNSUPPORTED 0
- #define WMI_TLV_VDEV_PARAM_UNSUPPORTED 0
- #define WMI_TLV_MGMT_TX_FRAME_MAX_LEN	64
-+#define WMI_RSRC_CFG_FLAG_TX_PEER_STATS          BIT(21)
- 
- enum wmi_tlv_grp_id {
- 	WMI_TLV_GRP_START = 0x3,
-@@ -1384,6 +1385,36 @@ enum wmi_tlv_service {
- 	WMI_TLV_SERVICE_AP_TWT = 153,
- 	WMI_TLV_SERVICE_GMAC_OFFLOAD_SUPPORT = 154,
- 	WMI_TLV_SERVICE_SPOOF_MAC_SUPPORT = 155,
-+	WMI_TLV_SERVICE_PEER_TID_CONFIGS_SUPPORT = 156,
-+	WMI_TLV_SERVICE_VDEV_SWRETRY_PER_AC_CONFIG_SUPPORT = 157,
-+	WMI_TLV_SERVICE_DUAL_BEACON_ON_SINGLE_MAC_SCC_SUPPORT = 158,
-+	WMI_TLV_SERVICE_DUAL_BEACON_ON_SINGLE_MAC_MCC_SUPPORT = 159,
-+	WMI_TLV_SERVICE_MOTION_DET = 160,
-+	WMI_TLV_SERVICE_INFRA_MBSSID = 161,
-+	WMI_TLV_SERVICE_OBSS_SPATIAL_REUSE = 162,
-+	WMI_TLV_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT = 163,
-+	WMI_TLV_SERVICE_NAN_DBS_SUPPORT = 164,
-+	WMI_TLV_SERVICE_NDI_DBS_SUPPORT = 165,
-+	WMI_TLV_SERVICE_NAN_SAP_SUPPORT = 166,
-+	WMI_TLV_SERVICE_NDI_SAP_SUPPORT = 167,
-+	WMI_TLV_SERVICE_CFR_CAPTURE_SUPPORT = 168,
-+	WMI_TLV_SERVICE_CFR_CAPTURE_IND_MSG_TYPE_1 = 169,
-+	WMI_TLV_SERVICE_ESP_SUPPORT = 170,
-+	WMI_TLV_SERVICE_PEER_CHWIDTH_CHANGE = 171,
-+	WMI_TLV_SERVICE_WLAN_HPCS_PULSE = 172,
-+	WMI_TLV_SERVICE_PER_VDEV_CHAINMASK_CONFIG_SUPPORT = 173,
-+	WMI_TLV_SERVICE_TX_DATA_MGMT_ACK_RSSI = 174,
-+	WMI_TLV_SERVICE_NAN_DISABLE_SUPPORT = 175,
-+	WMI_TLV_SERVICE_HTT_H2T_NO_HTC_HDR_LEN_IN_MSG_LEN = 176,
-+	WMI_TLV_SERVICE_COEX_SUPPORT_UNEQUAL_ISOLATION = 177,
-+	WMI_TLV_SERVICE_HW_DB2DBM_CONVERSION_SUPPORT = 178,
-+	WMI_TLV_SERVICE_SUPPORT_EXTEND_ADDRESS = 179,
-+	WMI_TLV_SERVICE_BEACON_RECEPTION_STATS = 180,
-+	WMI_TLV_SERVICE_FETCH_TX_PN = 181,
-+	WMI_TLV_SERVICE_PEER_UNMAP_RESPONSE_SUPPORT = 182,
-+	WMI_TLV_SERVICE_TX_PER_PEER_AMPDU_SIZE = 183,
-+	WMI_TLV_SERVICE_BSS_COLOR_SWITCH_COUNT = 184,
-+	WMI_TLV_SERVICE_PEER_STATS = 185,
- 
- 	WMI_TLV_MAX_EXT_SERVICE = 256,
- };
-@@ -1557,6 +1588,8 @@ enum wmi_tlv_service {
- 	SVCMAP(WMI_TLV_SERVICE_THERM_THROT,
- 	       WMI_SERVICE_THERM_THROT,
- 	       WMI_TLV_MAX_SERVICE);
-+	SVCMAP(WMI_TLV_SERVICE_PEER_STATS,
-+	       WMI_SERVICE_PEER_STATS, WMI_TLV_MAX_SERVICE);
- }
- 
- #undef SVCMAP
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 39a6568..e89066b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5043,13 +5043,10 @@ enum wmi_rate_preamble {
- #define ATH10K_HW_PREAMBLE(rate)	(((rate) >> 6) & 0x3)
- #define ATH10K_HW_MCS_RATE(rate)	((rate) & 0xf)
- #define ATH10K_HW_LEGACY_RATE(rate)	((rate) & 0x3f)
--#define ATH10K_HW_BW(flags)		(((flags) >> 3) & 0x3)
--#define ATH10K_HW_GI(flags)		(((flags) >> 5) & 0x1)
- #define ATH10K_HW_RATECODE(rate, nss, preamble) \
- 	(((preamble) << 6) | ((nss) << 4) | (rate))
- #define ATH10K_HW_AMPDU(flags)		((flags) & 0x1)
- #define ATH10K_HW_BA_FAIL(flags)	(((flags) >> 1) & 0x3)
--#define ATH10K_FW_SKIPPED_RATE_CTRL(flags)	(((flags) >> 6) & 0x1)
- 
- #define ATH10K_VHT_MCS_NUM	10
- #define ATH10K_BW_NUM		4
--- 
-1.9.1
-
+Thanks,
+Sergey
 
 _______________________________________________
 ath10k mailing list
