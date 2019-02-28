@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzHLG-000384-1B
- for ath10k@lists.infradead.org; Thu, 28 Feb 2019 08:46:59 +0000
+ id 1gzHN1-0003Ip-H2
+ for ath10k@lists.infradead.org; Thu, 28 Feb 2019 08:48:49 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/4] ath10k: Fix the incorrect updation of NSS data in
- tx stats
+Subject: Re: [PATCH v2] ath10k: Fill rx duration for each peer in fw_stats for
+ WCN3990
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1551173278-20926-2-git-send-email-svishnoi@codeaurora.org>
-References: <1551173278-20926-2-git-send-email-svishnoi@codeaurora.org>
-Message-Id: <20190228084657.B750960E7A@smtp.codeaurora.org>
-Date: Thu, 28 Feb 2019 08:46:57 +0000 (UTC)
+In-Reply-To: <1551174796-25264-1-git-send-email-svishnoi@codeaurora.org>
+References: <1551174796-25264-1-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190228084847.402FF60A0A@smtp.codeaurora.org>
+Date: Thu, 28 Feb 2019 08:48:47 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +28,40 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
-> The NSS data is updated incorrectly in the tx stats as the array
-> indexing starts from zero.
+> Currently, rx_duration for each peer is not getting populated in
+> fw_stats debugfs entry for WCN3990.
 > 
-> Fix the incorrect updation of NSS data in tx_stats by taking into
-> consideration the array index starting from zero.
+> WCN3990 firmware sends rx duration for each peer as part of
+> peer_extd_stats in WMI_UPDATE_STATS_EVENT. To enable peer_extd_stats,
+> firmware expects host to send fw_stats_req_mask with flag
+> WMI_TLV_PEER_STATS_EXTD set in WMI_REQUEST_STATS_CMD.
+> 
+> Send fw_stats_req_mask with flag WMI_TLV_PEER_STATS_EXTD set in
+> WMI_REQUEST_STATS_CMD and parse the peer_extd_stats in
+> WMI_UPDATE_STATS_EVENT to populate the rx_duration of each peer
+> in fw_stats debugfs entry.
+> 
+> Currently the driver handles 32-bit rx_duration, but the rx_duration
+> for WCN3990 can be upto 63 bit. The firmware sends rx_duration split
+> into two 32-bit fields, with the upper 32-bits being valid only if its
+> MSB is set. This change handles the 63-bit rx_duration obtained from
+> WCN3990 and maintain the backward compatibility.
+> 
+> To get the rx_duration of each connected peer :
+> cat /sys/kernel/debug/ieee80211/phyX/ath10k/fw_stats
 > 
 > Tested HW: WCN3990
 > Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
 > 
-> Fixes: a904417fc876 ("ath10k: add extended per sta tx statistics support")
 > Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-4 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-3a08ac3e79e8 ath10k: Fix the incorrect updation of NSS data in tx stats
-ef9051c72ab7 ath10k: Fix the wrong updation of BW in tx_stats debugfs entry
-8e55fdaa8ea7 ath10k: Fix the wrong updation of SGI in tx_stats debugfs
-d23c2cdaa013 ath10k: Fix the wrong calculation ht_idx and idx of rate table for tx_stats
+f40a307eb92c ath10k: Fill rx duration for each peer in fw_stats for WCN3990
 
 -- 
-https://patchwork.kernel.org/patch/10829765/
+https://patchwork.kernel.org/patch/10829811/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
