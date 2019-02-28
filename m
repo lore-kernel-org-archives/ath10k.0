@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzHN1-0003Ip-H2
- for ath10k@lists.infradead.org; Thu, 28 Feb 2019 08:48:49 +0000
+ id 1gzNJL-00032i-VS
+ for ath10k@lists.infradead.org; Thu, 28 Feb 2019 15:09:25 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.20 44/81] ath10k: correct bus type for WCN3990
+Date: Thu, 28 Feb 2019 10:07:36 -0500
+Message-Id: <20190228150813.10256-44-sashal@kernel.org>
+In-Reply-To: <20190228150813.10256-1-sashal@kernel.org>
+References: <20190228150813.10256-1-sashal@kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Fill rx duration for each peer in fw_stats for
- WCN3990
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1551174796-25264-1-git-send-email-svishnoi@codeaurora.org>
-References: <1551174796-25264-1-git-send-email-svishnoi@codeaurora.org>
-Message-Id: <20190228084847.402FF60A0A@smtp.codeaurora.org>
-Date: Thu, 28 Feb 2019 08:48:47 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Surabhi Vishnoi <svishnoi@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
+From: Brian Norris <briannorris@chromium.org>
 
-> Currently, rx_duration for each peer is not getting populated in
-> fw_stats debugfs entry for WCN3990.
-> 
-> WCN3990 firmware sends rx duration for each peer as part of
-> peer_extd_stats in WMI_UPDATE_STATS_EVENT. To enable peer_extd_stats,
-> firmware expects host to send fw_stats_req_mask with flag
-> WMI_TLV_PEER_STATS_EXTD set in WMI_REQUEST_STATS_CMD.
-> 
-> Send fw_stats_req_mask with flag WMI_TLV_PEER_STATS_EXTD set in
-> WMI_REQUEST_STATS_CMD and parse the peer_extd_stats in
-> WMI_UPDATE_STATS_EVENT to populate the rx_duration of each peer
-> in fw_stats debugfs entry.
-> 
-> Currently the driver handles 32-bit rx_duration, but the rx_duration
-> for WCN3990 can be upto 63 bit. The firmware sends rx_duration split
-> into two 32-bit fields, with the upper 32-bits being valid only if its
-> MSB is set. This change handles the 63-bit rx_duration obtained from
-> WCN3990 and maintain the backward compatibility.
-> 
-> To get the rx_duration of each connected peer :
-> cat /sys/kernel/debug/ieee80211/phyX/ath10k/fw_stats
-> 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+[ Upstream commit 2c2008a63e482654ab137c84d3c61c03b75e7df6 ]
 
-Patch applied to ath-next branch of ath.git, thanks.
+WCN3990 is SNOC, not PCI. This prevents probing WCN3990.
 
-f40a307eb92c ath10k: Fill rx duration for each peer in fw_stats for WCN3990
+Fixes: 367c899f622c ("ath10k: add bus type check in ath10k_init_hw_params")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 59fdda67f89f4..0a3b2c45549eb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -548,7 +548,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+ 		.dev_id = 0,
+-		.bus = ATH10K_BUS_PCI,
++		.bus = ATH10K_BUS_SNOC,
+ 		.name = "wcn3990 hw1.0",
+ 		.continuous_frag_desc = true,
+ 		.tx_chain_mask = 0x7,
 -- 
-https://patchwork.kernel.org/patch/10829811/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.19.1
 
 
 _______________________________________________
