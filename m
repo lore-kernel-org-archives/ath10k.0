@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyyYc-000119-N8
- for ath10k@lists.infradead.org; Wed, 27 Feb 2019 12:43:32 +0000
+ id 1gzHLG-000384-1B
+ for ath10k@lists.infradead.org; Thu, 28 Feb 2019 08:46:59 +0000
 MIME-Version: 1.0
-Date: Wed, 27 Feb 2019 18:13:29 +0530
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCHv2 8/9] ath10k: Add new api to support TID specific
- configuration
-In-Reply-To: <20190226123058.yu5brtbu4euwbzxx@bars>
-References: <1550813554-11581-1-git-send-email-tamizhr@codeaurora.org>
- <1550813554-11581-9-git-send-email-tamizhr@codeaurora.org>
- <20190226123058.yu5brtbu4euwbzxx@bars>
-Message-ID: <eab54b79f171e76e1e1fe7784e98d8ce@codeaurora.org>
+Subject: Re: [PATCH v2 1/4] ath10k: Fix the incorrect updation of NSS data in
+ tx stats
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1551173278-20926-2-git-send-email-svishnoi@codeaurora.org>
+References: <1551173278-20926-2-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190228084657.B750960E7A@smtp.codeaurora.org>
+Date: Thu, 28 Feb 2019 08:46:57 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Sergey,
+Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
->> This patch add ops for set_tid_config to support TID
->> specific configuration. STA information along with the
->> TID config change mask to notify driver that which configuration
->> needs to be applied for this current command.
->> If the STA info not available in the command then the
->> configuration will be applied for all connected stations
->> in the vif. TID specific noack configuration requires
->> aggregation disabled and rate for the data TID packets
->> should be basic rates. So, if the TID already configured
->> with noack policy then driver will ignore the aggregation
->> or TX rate related configuration for the same data TID.
->> In TX rate configuration should be applied with highest
->> preamble configuration(HT rates should not be applied
->> for the station which supports vht rates).
->> 
->> Vif specific TID configuration will be applied for all
->> the connected stations except for the station which
->> already applied with the same configuration for the TID
->> through station specific command. Newly connecting stations
->> will be applied with vif TID configuration which will be stored
->> in ieee80211_vif.
->> 
->> Testing:
->>         * Tested HW: QCA9888
->>         * Tested FW: 10.4-3.5.1-00052
->> 
->> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/core.h |   7 +
->>  drivers/net/wireless/ath/ath10k/mac.c  | 602 
->> ++++++++++++++++++++++++++++-----
->>  2 files changed, 529 insertions(+), 80 deletions(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/core.h 
->> b/drivers/net/wireless/ath/ath10k/core.h
->> index 27ec555..c25c426 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.h
->> +++ b/drivers/net/wireless/ath/ath10k/core.h
->> @@ -82,6 +82,9 @@
->>  /* Default Airtime weight multipler (Tuned for multiclient 
->> performance) */
->>  #define ATH10K_AIRTIME_WEIGHT_MULTIPLIER  4
->> 
->> +#define ATH10K_MAX_RETRY_COUNT 30
->> +#define ATH10K_MAX_TIDS        8
+> The NSS data is updated incorrectly in the tx stats as the array
+> indexing starts from zero.
 > 
-> Is there any reason why you don't use IEEE80211_TID_MAX here ?
+> Fix the incorrect updation of NSS data in tx_stats by taking into
+> consideration the array index starting from zero.
 > 
-Thanks for pointing this one. Somehow I missed it. I will reuse this 
-instead ATH10K_MAX_TIDS in the next patchset.
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> 
+> Fixes: a904417fc876 ("ath10k: add extended per sta tx statistics support")
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Thanks,
-Tamizh.
+4 patches applied to ath-next branch of ath.git, thanks.
+
+3a08ac3e79e8 ath10k: Fix the incorrect updation of NSS data in tx stats
+ef9051c72ab7 ath10k: Fix the wrong updation of BW in tx_stats debugfs entry
+8e55fdaa8ea7 ath10k: Fix the wrong updation of SGI in tx_stats debugfs
+d23c2cdaa013 ath10k: Fix the wrong calculation ht_idx and idx of rate table for tx_stats
+
+-- 
+https://patchwork.kernel.org/patch/10829765/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
