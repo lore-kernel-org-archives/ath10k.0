@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cloudserver094114.home.pl ([79.96.170.134])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzhfR-0001ON-3x
- for ath10k@lists.infradead.org; Fri, 01 Mar 2019 12:53:34 +0000
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
+ id 1gziTo-0000B7-2B
+ for ath10k@lists.infradead.org; Fri, 01 Mar 2019 13:45:37 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
  resume
-Date: Fri, 01 Mar 2019 13:51:54 +0100
-Message-ID: <3687330.FyvvPAkb64@aspire.rjw.lan>
+References: <3687330.FyvvPAkb64@aspire.rjw.lan>
+Date: Fri, 01 Mar 2019 15:45:29 +0200
+In-Reply-To: <3687330.FyvvPAkb64@aspire.rjw.lan> (Rafael J. Wysocki's message
+ of "Fri, 01 Mar 2019 13:51:54 +0100")
+Message-ID: <87h8cmhfnq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,44 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Cc: Todd Brandt <todd.e.brandt@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, ath10k@lists.infradead.org, Linux PM <linux-pm@vger.kernel.org>
 
-rom: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+"Rafael J. Wysocki" <rjw@rjwysocki.net> writes:
 
-ath10k_mac_vif_chan() always returns an error for the given vif
-during system-wide resume which reliably triggers two WARN_ON()s
-in ath10k_bss_info_changed() and they are not particularly
-useful in that code path, so drop them.
+> rom: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+'F' chraracter is missing.
 
-Index: linux-pm/drivers/net/wireless/ath/ath10k/mac.c
-===================================================================
---- linux-pm.orig/drivers/net/wireless/ath/ath10k/mac.c
-+++ linux-pm/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5705,7 +5705,7 @@ static void ath10k_bss_info_changed(stru
- 	}
- 
- 	if (changed & BSS_CHANGED_MCAST_RATE &&
--	    !WARN_ON(ath10k_mac_vif_chan(arvif->vif, &def))) {
-+	    !ath10k_mac_vif_chan(arvif->vif, &def)) {
- 		band = def.chan->band;
- 		rateidx = vif->bss_conf.mcast_rate[band] - 1;
- 
-@@ -5743,7 +5743,7 @@ static void ath10k_bss_info_changed(stru
- 	}
- 
- 	if (changed & BSS_CHANGED_BASIC_RATES) {
--		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
-+		if (ath10k_mac_vif_chan(vif, &def)) {
- 			mutex_unlock(&ar->conf_mutex);
- 			return;
- 		}
+> ath10k_mac_vif_chan() always returns an error for the given vif
+> during system-wide resume which reliably triggers two WARN_ON()s
+> in ath10k_bss_info_changed() and they are not particularly
+> useful in that code path, so drop them.
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
+And could you CC linux-wireless, please? That way the patchwork will see
+it and I can take it directly from there.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
