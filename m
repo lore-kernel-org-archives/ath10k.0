@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzwNi-0006Z6-4M
- for ath10k@lists.infradead.org; Sat, 02 Mar 2019 04:36:15 +0000
+ id 1gzwrF-0001t7-1Z
+ for ath10k@lists.infradead.org; Sat, 02 Mar 2019 05:06:46 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: Modify CE4 src buffer entries to 2048 for WCN3990
-Date: Sat,  2 Mar 2019 10:06:05 +0530
-Message-Id: <20190302043605.27626-1-govinds@codeaurora.org>
+Subject: [PATCH 1/2] dt: bindings: add dt entry for XO calibration support
+Date: Sat,  2 Mar 2019 10:36:34 +0530
+Message-Id: <20190302050635.17694-2-govinds@codeaurora.org>
+In-Reply-To: <20190302050635.17694-1-govinds@codeaurora.org>
+References: <20190302050635.17694-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,36 +23,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: devicetree@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-CE4 is host to target HTT tx pipe, tx completion are not served
-on time when CPU is loaded and this cause ce src ring full condition
-due to less no of src buffer entries.
-
-To mitigate the issue increase CE4 src buffer entries to 2048.
-
-Testing:
-        Tested on QCS404 platform(WCN3990 HW)
-        Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+Add dt binding to get xo calibration data support for wifi rf clock.
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 7fa0f5c1d070..f0ea3c494fe6 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -176,7 +176,7 @@ static struct ce_attr host_ce_config_wlan[] = {
- 	/* CE4: host->target HTT */
- 	{
- 		.flags = CE_ATTR_FLAGS | CE_ATTR_DIS_INTR,
--		.src_nentries = 256,
-+		.src_nentries = 2048,
- 		.src_sz_max = 256,
- 		.dest_nentries = 0,
- 		.send_cb = ath10k_snoc_htt_tx_cb,
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index ae661e65354e..ab8042866e83 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -81,6 +81,7 @@ Optional properties:
+ 	Definition: Name of external front end module used. Some valid FEM names
+ 		    for example: "microsemi-lx5586", "sky85703-11"
+ 		    and "sky85803" etc.
++- xo-cal-data: xo cal offset to be configured in xo trim register.
+ 
+ Example (to supply PCI based wifi block details):
+ 
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
