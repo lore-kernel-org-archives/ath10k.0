@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from cloudserver094114.home.pl ([79.96.170.134])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzwrH-0001uc-Mw
- for ath10k@lists.infradead.org; Sat, 02 Mar 2019 05:06:49 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Add xo calibration support for wifi rf clock
-Date: Sat,  2 Mar 2019 10:36:35 +0530
-Message-Id: <20190302050635.17694-3-govinds@codeaurora.org>
-In-Reply-To: <20190302050635.17694-1-govinds@codeaurora.org>
-References: <20190302050635.17694-1-govinds@codeaurora.org>
+ id 1h0UsT-0006UJ-LC
+ for ath10k@lists.infradead.org; Sun, 03 Mar 2019 17:26:19 +0000
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
+ resume
+Date: Sun, 03 Mar 2019 18:24:33 +0100
+Message-ID: <2884043.Jv1Mn93hE8@aspire.rjw.lan>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,115 +21,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: devicetree@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Todd Brandt <todd.e.brandt@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Linux PM <linux-pm@vger.kernel.org>
 
-PMIC XO is the clock source for wifi rf clock in integrated wifi
-chipset ex: WCN3990. Due to board layout errors XO frequency drifts
-can cause wifi rf clock inaccuracy.
-XO calibration test tree in Factory Test Mode is used to find the
-best frequency offset(for example +/-2KHz )by programming XO trim
-register. This ensure system clock stays within required 20 ppm
-WLAN rf clock.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Retrieve the xo trim offset via system firmware (e.g., device tree),
-especially in the case where the device doesn't have a useful EEPROM
-on which to store the calibrated XO offset (e.g., for integrated Wifi).
-Calibrated XO offset is sent to fw, which compensate the clock drift
-by programing the XO trim register.
+ath10k_mac_vif_chan() always returns an error for the given vif
+during system-wide resume which reliably triggers two WARN_ON()s
+in ath10k_bss_info_changed() and they are not particularly
+useful in that code path, so drop them.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/net/wireless/ath/ath10k/qmi.c  | 12 ++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.c | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/snoc.h |  2 ++
- 3 files changed, 24 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 37b3bd629f48..99c140a6628d 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -302,10 +302,16 @@ static int ath10k_qmi_send_cal_report_req(struct ath10k_qmi *qmi)
- 	struct wlfw_cal_report_resp_msg_v01 resp = {};
- 	struct wlfw_cal_report_req_msg_v01 req = {};
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 	struct qmi_txn txn;
- 	int i, j = 0;
- 	int ret;
- 
-+	if (ar_snoc->xo_cal_supported) {
-+		req.xo_cal_data_valid = 1;
-+		req.xo_cal_data = ar_snoc->xo_cal_data;
-+	}
-+
- 	ret = qmi_txn_init(&qmi->qmi_hdl, &txn, wlfw_cal_report_resp_msg_v01_ei,
- 			   &resp);
- 	if (ret < 0)
-@@ -636,6 +642,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
- 	struct wlfw_ind_register_resp_msg_v01 resp = {};
- 	struct wlfw_ind_register_req_msg_v01 req = {};
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 	struct qmi_txn txn;
- 	int ret;
- 
-@@ -646,6 +653,11 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
- 	req.msa_ready_enable_valid = 1;
- 	req.msa_ready_enable = 1;
- 
-+	if (ar_snoc->xo_cal_supported) {
-+		req.xo_cal_enable_valid = 1;
-+		req.xo_cal_enable = 1;
-+	}
-+
- 	ret = qmi_txn_init(&qmi->qmi_hdl, &txn,
- 			   wlfw_ind_register_resp_msg_v01_ei, &resp);
- 	if (ret < 0)
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 54efe6be8f1d..7fa0f5c1d070 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -20,6 +20,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regulator/consumer.h>
- 
- #include "ce.h"
-@@ -1189,6 +1190,15 @@ static int ath10k_snoc_resource_init(struct ath10k *ar)
- 		ar_snoc->ce_irqs[i].irq_line = res->start;
+Index: linux-pm/drivers/net/wireless/ath/ath10k/mac.c
+===================================================================
+--- linux-pm.orig/drivers/net/wireless/ath/ath10k/mac.c
++++ linux-pm/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5705,7 +5705,7 @@ static void ath10k_bss_info_changed(stru
  	}
  
-+	ret = device_property_read_u32(&pdev->dev, "xo-cal-data",
-+				       &ar_snoc->xo_cal_data);
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc xo-cal-data return %d\n", ret);
-+	if (ret == 0) {
-+		ar_snoc->xo_cal_supported = true;
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "xo cal data %x\n",
-+			   ar_snoc->xo_cal_data);
-+	}
-+
- out:
- 	return ret;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 2b2f23cf7c5d..25383de8f17d 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -91,6 +91,8 @@ struct ath10k_snoc {
- 	struct ath10k_clk_info *clk;
- 	struct ath10k_qmi *qmi;
- 	unsigned long int flags;
-+	bool xo_cal_supported;
-+	u32 xo_cal_data;
- };
+ 	if (changed & BSS_CHANGED_MCAST_RATE &&
+-	    !WARN_ON(ath10k_mac_vif_chan(arvif->vif, &def))) {
++	    !ath10k_mac_vif_chan(arvif->vif, &def)) {
+ 		band = def.chan->band;
+ 		rateidx = vif->bss_conf.mcast_rate[band] - 1;
  
- static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+@@ -5743,7 +5743,7 @@ static void ath10k_bss_info_changed(stru
+ 	}
+ 
+ 	if (changed & BSS_CHANGED_BASIC_RATES) {
+-		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
++		if (ath10k_mac_vif_chan(vif, &def)) {
+ 			mutex_unlock(&ar->conf_mutex);
+ 			return;
+ 		}
 
 
 _______________________________________________
