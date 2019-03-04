@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cloudserver094114.home.pl ([79.96.170.134])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0Usj-0006Zb-If
- for ath10k@lists.infradead.org; Sun, 03 Mar 2019 17:26:35 +0000
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
- resume
-Date: Sun, 03 Mar 2019 18:24:55 +0100
-Message-ID: <2109586.0yxO8rlmZ5@aspire.rjw.lan>
-In-Reply-To: <87h8cmhfnq.fsf@kamboji.qca.qualcomm.com>
-References: <3687330.FyvvPAkb64@aspire.rjw.lan>
- <87h8cmhfnq.fsf@kamboji.qca.qualcomm.com>
+ id 1h0cqQ-0001s4-A2
+ for ath10k@lists.infradead.org; Mon, 04 Mar 2019 01:56:43 +0000
 MIME-Version: 1.0
+Date: Mon, 04 Mar 2019 09:56:40 +0800
+From: Yibo Zhao <yiboz@codeaurora.org>
+Subject: Re: FW: [PATCH] ath10k: fix return value check in wake_tx_q op
+In-Reply-To: <a1c113622b9aec9b32393c0a3e159e32@codeaurora.org>
+References: <20180506132500.16888-1-erik.stromdahl@gmail.com>
+ <6dc00772b826410e930306891fd13ed9@euamsexm01f.eu.qualcomm.com>
+ <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
+ <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
+ <87sgwz8ylw.fsf@kamboji.qca.qualcomm.com>
+ <a1c113622b9aec9b32393c0a3e159e32@codeaurora.org>
+Message-ID: <4dadbeebe8dc1e911cc4871d767b4ed1@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +23,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Todd Brandt <todd.e.brandt@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, ath10k@lists.infradead.org, Linux PM <linux-pm@vger.kernel.org>
+Cc: erik.stromdahl@gmail.com, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Friday, March 1, 2019 2:45:29 PM CET Kalle Valo wrote:
-> "Rafael J. Wysocki" <rjw@rjwysocki.net> writes:
-> 
-> > rom: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> 'F' chraracter is missing.
-> 
-> > ath10k_mac_vif_chan() always returns an error for the given vif
-> > during system-wide resume which reliably triggers two WARN_ON()s
-> > in ath10k_bss_info_changed() and they are not particularly
-> > useful in that code path, so drop them.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> And could you CC linux-wireless, please? That way the patchwork will see
-> it and I can take it directly from there.
-
-Done, thank you!
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+5ZyoIDIwMTktMDItMjUgMTI6NDDvvIxZaWJvIFpoYW8g5YaZ6YGT77yaCj4g5ZyoIDIwMTktMDIt
+MDcgMjI6MjXvvIxLYWxsZSBWYWxvIOWGmemBk++8mgo+PiBZaWJvIFpoYW8gPHlpYm96QGNvZGVh
+dXJvcmEub3JnPiB3cml0ZXM6Cj4+IAo+Pj4gV2UgaGF2ZSBtZXQgcGVyZm9ybWFuY2UgaXNzdWUg
+b24gb3VyIHR3by1jb3JlIHN5c3RlbSBhZnRlciBhcHBseWluZwo+Pj4geW91ciBwYXRjaC4gSW4g
+V0RTIG1vZGUsIHdlIGZvdW5kIHRoYXQgdGhlIHBlYWsgdGhyb3VnaHB1dCBpbiBUQ1AtREwKPj4+
+IGFuZCBVRFAtREwgZHJvcHBlZCBtb3JlIHRoYW4gMTAlIGNvbXBhcmVkIHdpdGggcHJldmlvdXMg
+b25lLiBBbmQgaW4KPj4+IHNvbWUgY2FzZXMsIHRob3VnaCB0aHJvdWdocHV0IHN0YXlzIHRoZSBz
+YW1lLCBvbmUgQ1BVIHVzYWdlIHJpc2VzCj4+PiBhYm91dCAyMCUgd2hpY2ggbGVhZHMgdG8gMTAl
+IGluIHRvdGFsIENQVSB1c2FnZS4gV2l0aCB5b3VyIGNoYW5nZSwgSQo+Pj4gdGhpbmsgZHJpdmVy
+IHdpbGwgdHJ5IGl0cyBiZXN0IHRvIHB1c2ggYXMgbWFueSBwYWNrZXRzIGFzIGl0IGNhbi4KPj4+
+IER1cmluZyB0aGlzIHRpbWUsIHRoZSBkcml2ZXIncyBxdWV1ZSBsb2NrIHdpbGwgYmUgaGVsZCBm
+b3IgdG9vIG11Y2gKPj4+IHRpbWUgaW4gb25lIENQVSBhbmQgYXMgYSByZXN1bHQsIHRoZSBvdGhl
+ciBDUFUgd2lsbCBiZSBibG9ja2VkIGlmIGl0Cj4+PiB3YW50cyB0byBhY3F1aXJlZCB0aGUgc2Ft
+ZSBsb2NrLiBXb3JraW5nIGluIHRoaXMgd2F5IHNlZW1zIG5vdAo+Pj4gZWZmaWNpZW5jeS4KPj4+
+IAo+Pj4gU28gSSB0aGluayBpdCBpcyBiZXR0ZXIgdG8gcmV2ZXJ0IHRoZSBjaGFuZ2UgdGlsbCB3
+ZSBjb21lIHVwIHdpdGggYQo+Pj4gbmV3IHNvbHV0aW9uLgo+PiAKPj4gSSBkb24ndCB0aGluayBy
+ZXZlcnRpbmcgaXMgYSBjbGVhciBvcHRpb24gYXQgdGhpcyBzdGFnZSBiZWNhdXNlIHRoYXQKPj4g
+YWdhaW4gY3JlYXRlcyBwcm9ibGVtcyBmb3IgU0RJTy4gSUlSQyB3aXRob3V0IHRoaXMgcGF0Y2gg
+U0RJTyB3YXMKPj4gc2VuZGluZyBvbmUgcGFja2V0IGEgdGltZSAob3Igc29tZXRoaW5nIGxpa2Ug
+dGhhdCwgY2FuJ3QgcmVtZW1iZXIgYWxsCj4+IHRoZSBkZXRhaWxzIHJpZ2h0IG5vdykuCj4+IAo+
+IAo+IEJlbG93IGlzIHRoZSBhcW0gcmVzdWx0IGFmdGVyIDEgbWluIHRlc3Qgd2l0aCBFcmlrJ3Mg
+cGF0Y2guCj4gCj4gdGFyZ2V0IDE5OTk5dXMgaW50ZXJ2YWwgOTk5OTl1cyBlY24geWVzCj4gdGlk
+IGFjIGJhY2tsb2ctYnl0ZXMgYmFja2xvZy1wYWNrZXRzIG5ldy1mbG93cyBkcm9wcyBtYXJrcyBv
+dmVybGltaXQKPiBjb2xsaXNpb25zIHR4LWJ5dGVzIHR4LXBhY2tldHMgZmxhZ3MKPiAwIDIgMCAw
+IDUzNDIyMjkgMCAwIDAgMCAzODY3NjU3MDI5IDUzNDIyMjkgMHgwKFJVTikKPiAxIDMgMCAwIDAg
+MCAwIDAgMCAwIDAgMHgwKFJVTikKPiAyIDMgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiAz
+IDIgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiA0IDEgMCAwIDAgMCAwIDAgMCAwIDAgMHgw
+KFJVTikKPiA1IDEgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiA2IDAgMCAwIDIgMCAwIDAg
+MCAxNDQgMiAweDAoUlVOKQo+IDcgMCAwIDAgMiAwIDAgMCAwIDI4MiAyIDB4MChSVU4pCj4gOCAy
+IDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCj4gOSAzIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChS
+VU4pCj4gMTAgMyAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQo+IDExIDIgMCAwIDAgMCAwIDAg
+MCAwIDAgMHgwKFJVTikKPiAxMiAxIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCj4gMTMgMSAw
+IDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQo+IDE0IDAgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJV
+TikKPiAxNSAwIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCj4gCj4gd2Ugc2VlIG5vIGRpZmZl
+cmVuY2UgYmV0d2VlbiB0eC1wYWNrZXRzIGFuZCBuZXctZmxvd3MuCj4gV2hlcmVhcyBpZiB3ZSBy
+ZXZlcnQgdGhlIHBhdGNoLCB3ZSBnZXTvvJoKPiAKPiB0YXJnZXQgMTk5OTl1cyBpbnRlcnZhbCA5
+OTk5OXVzIGVjbiB5ZXMKPiB0aWQgYWMgYmFja2xvZy1ieXRlcyBiYWNrbG9nLXBhY2tldHMgbmV3
+LWZsb3dzIGRyb3BzIG1hcmtzIG92ZXJsaW1pdAo+IGNvbGxpc2lvbnMgdHgtYnl0ZXMgdHgtcGFj
+a2V0cyBmbGFncwo+IDAgMiAwIDAgMjIzMzA1OSAzIDAgOTIzNiAxMiAxMTU5NjYxNzgzIDYzODA4
+NjcgMHgwKFJVTikKPiAxIDMgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiAyIDMgMCAwIDAg
+MCAwIDAgMCAwIDAgMHgwKFJVTikKPiAzIDIgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiA0
+IDEgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiA1IDEgMCAwIDAgMCAwIDAgMCAwIDAgMHgw
+KFJVTikKPiA2IDAgMCAwIDEgMCAwIDAgMCAxNDQgMiAweDAoUlVOKQo+IDcgMCAwIDAgMSAwIDAg
+MCAwIDI4MiAyIDB4MChSVU4pCj4gOCAyIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCj4gOSAz
+IDAgMCAwIDAgMCAwIDAgMCAwIDB4MChSVU4pCj4gMTAgMyAwIDAgMCAwIDAgMCAwIDAgMCAweDAo
+UlVOKQo+IDExIDIgMCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiAxMiAxIDAgMCAwIDAgMCAw
+IDAgMCAwIDB4MChSVU4pCj4gMTMgMSAwIDAgMCAwIDAgMCAwIDAgMCAweDAoUlVOKQo+IDE0IDAg
+MCAwIDAgMCAwIDAgMCAwIDAgMHgwKFJVTikKPiAxNSAwIDAgMCAwIDAgMCAwIDAgMCAwIDB4MChS
+VU4pCj4gCj4gbmV3LWZsb3dzIGFyZSByb3VnaGx5IG9uZS10aGlyZCBvZiB0aGUgdG90YWwgdHgt
+cGFja2V0cy4KPiAKPiBJTUhPLCB3aXRoIEVyaWsncyBjaGFuZ2UsIEVyaWsncyBjaGFuZ2UgaGFz
+IGNoYW5nZWQgdGhlIHdheSBmcSdzCj4gc2NoZWR1bGUgYmVoYXZpb3IgYW5kIGl0IGxvb2tzIGxp
+a2UgdGhlcmUgaXMgbm8gb3RoZXIgcGFja2V0cyBpbiB0aGUKPiBmcSBhZnRlciBhIHBhY2tldCBo
+YXMgYmVlbiBkZXF1ZXVlZC4gQW5kIGFzIGEgcmVzdWx0LCB0aGlzIGZsb3cncwo+IGRlZmljaXQg
+d2lsbCBiZSByZWZpbGwgYW5kIHRoZW4gcmVtb3ZlZCBmcm9tIGZxIGxpc3QgYXQgb25jZSBpbiB0
+aGUKPiBzYW1lIENQVS4gQW5kIGR1cmluZyB0aGlzIHRpbWUsIHRoZSBvdGhlciBDUFUgY291bGQg
+YmUgYmxvY2tlZC4gV2hlbgo+IG5ldyBwYWNrZXQgY29tZXMsIHNhbWUgdGhpbmcgaGFwcGVucy4g
+U28gd2UgZ2V0IGVxdWFsIG5ldyBmbG93cyBhbmQKPiB0eC1wYWNrZXRzLgo+IAo+IFRoaW5ncyB3
+b3VsZCBiZSBkaWZmZXJlbnQgd2l0aG91dCBFcmlrJ3MgY2hhbmdlLiBBZnRlciBhIHBhY2tldCBo
+YXMKPiBiZWVuIGRlcXVldWVkLCB0aGlzIGZsb3cncyBkZWZpY2l0IHdpbGwgbm90IGJlIHJlZmls
+bCBpbW1lZGlhdGVseSBpbgo+IENQVTAuIEl0IGlzIHBvc3NpYmxlIHRoYXQgdGhlIGRlZmljaXQg
+dG8gYmUgcmVmaWxsZWQgaW4gQ1BVMSB3aGlsZSBhdAo+IHRoZSBzYW1lIHRpbWUgQ1BVMCBjYW4g
+ZmV0Y2ggZGF0YSBmcm9tIGV0aGVybmV0LiBTbyB3ZSBjYW4gc2VlIG1vcmUKPiB0eC1wYWNrZXRz
+IGRlbGl2ZXJlZCB0byBGVyBmcm9tIGFxbS4KPiAKPiAKPj4gV2h5IGRvZXMgdGhpcyBoYXBwZW4g
+b25seSBXRFMgbW9kZT8gRGlkIHlvdSB0ZXN0IG90aGVyIG1vZGVzLCBsaWtlIEFQIAo+PiBvcgo+
+PiBjbGllbnQgbW9kZT8KPiBBUCBtb2RlIGhhcyBzYW1lIGlzc3VlLiBVRFAgdGhyb3VnaHB1dCBk
+cm9wcyBtb3JlIHRoYW4gMTAlLiBBcyBmb3IKPiBUQ1AsIENQVSB1c2FnZSByaXNpbmcgYSBsb3Qg
+YWx0aG91Z2ggdGhyb3VnaHB1dCBzdGF5cyBzaW1pbGlhci4KPiBTbywgSSdkIHNheSBFcmlrJ3Mg
+Y2hhbmdlIGRvZXMgbm90IHdvcmsgZm9yIHVzLgoKSGkgS2FsbGUsCgpNYXkgSSBoYXZlIHlvdXIg
+Y29tbWVudHM/CgotLSAKWWlibwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
