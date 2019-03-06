@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0nCo-00040S-IF
- for ath10k@lists.infradead.org; Mon, 04 Mar 2019 13:00:33 +0000
-Received: by mail-lj1-x241.google.com with SMTP id z25so4230998ljk.8
- for <ath10k@lists.infradead.org>; Mon, 04 Mar 2019 05:00:30 -0800 (PST)
-MIME-Version: 1.0
-References: <362a9b5f-8908-17f5-3594-6c3c68789dea@molgen.mpg.de>
- <CAEJqkggKGTn0ojWzuYGfoYehDnOf=je5L-7-M1kWogutPGMg3g@mail.gmail.com>
- <874l8ic0l4.fsf@codeaurora.org>
-In-Reply-To: <874l8ic0l4.fsf@codeaurora.org>
-From: Gabriel C <nix.or.die@gmail.com>
-Date: Mon, 4 Mar 2019 14:00:40 +0100
-Message-ID: <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
-Subject: Re: Warning at drivers/net/wireless/ath/ath10k/mac.c:5625
- ath10k_bss_info_changed
+ id 1h1aUb-0000fM-HS
+ for ath10k@lists.infradead.org; Wed, 06 Mar 2019 17:38:10 +0000
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: [PATCH] ath: DFS JP domain W56 fixed pulse type 3 RADAR detection
+Date: Wed,  6 Mar 2019 23:06:11 +0530
+Message-Id: <1551893771-22485-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +15,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-QW0gTW8uLCA0LiBNw6RyeiAyMDE5IHVtIDEyOjU5IFVociBzY2hyaWViIEthbGxlIFZhbG8gPGt2
-YWxvQGNvZGVhdXJvcmEub3JnPjoKPgo+IEdhYnJpZWwgQyA8bml4Lm9yLmRpZUBnbWFpbC5jb20+
-IHdyaXRlczoKPgo+ID4gQW0gTW8uLCA0LiBNw6RyeiAyMDE5IHVtIDEyOjI4IFVociBzY2hyaWVi
-IFBhdWwgTWVuemVsIDxwbWVuemVsQG1vbGdlbi5tcGcuZGU+Ogo+ID4KPiA+PiBSZXN1bWluZyBm
-cm9tIEFDUEkgUzMgb24gdGhlIERlbGwgWFBTIDEzIDkzNzAgd2l0aCBEZWJpYW4gU2lkL3Vuc3Rh
-YmxlLAo+ID4+IExpbnV4IDQuMTkuMjAgc2hvd2VkIHRoZSB3YXJuaW5nIGJlbG93LiBJdOKAmXMg
-bm90IHJlcHJvZHVjaWJsZS4KPgo+IFsuLi5dCj4KPiA+PiBbIDMwMTguOTkyOTE2XSBDYWxsIFRy
-YWNlOgo+ID4+IFsgMzAxOC45OTI5MjFdICA/IGF0aDEwa19jb25mX3R4KzB4N2EvMHg0YjAgW2F0
-aDEwa19jb3JlXQo+ID4+IFsgMzAxOC45OTI5MzddICBpZWVlODAyMTFfYnNzX2luZm9fY2hhbmdl
-X25vdGlmeSsweGFiLzB4MWEwIFttYWM4MDIxMV0KPiA+PiBbIDMwMTguOTkyOTQ2XSAgaWVlZTgw
-MjExX3JlY29uZmlnKzB4NjYxLzB4MTJhMCBbbWFjODAyMTFdCj4gPj4gWyAzMDE4Ljk5Mjk2Ml0g
-IHdpcGh5X3Jlc3VtZSsweDdmLzB4MTIwIFtjZmc4MDIxMV0KPiA+PiBbIDMwMTguOTkyOTY5XSAg
-PyB3aXBoeV9zdXNwZW5kKzB4MjcwLzB4MjcwIFtjZmc4MDIxMV0KPiA+PiBbIDMwMTguOTkyOTcx
-XSAgZHBtX3J1bl9jYWxsYmFjaysweDU5LzB4MTUwCj4gPj4gWyAzMDE4Ljk5Mjk3Ml0gIGRldmlj
-ZV9yZXN1bWUrMHg5Ny8weDE5MAo+ID4+IFsgMzAxOC45OTI5NzNdICBhc3luY19yZXN1bWUrMHgx
-OS8weDMwCj4gPj4gWyAzMDE4Ljk5Mjk3NF0gIGFzeW5jX3J1bl9lbnRyeV9mbisweDM5LzB4MTYw
-Cj4gPj4gWyAzMDE4Ljk5Mjk3Nl0gIHByb2Nlc3Nfb25lX3dvcmsrMHgxYTcvMHgzYTAKPiA+PiBb
-IDMwMTguOTkyOTc4XSAgd29ya2VyX3RocmVhZCsweDMwLzB4MzkwCj4gPj4gWyAzMDE4Ljk5Mjk3
-OV0gID8gcHdxX3VuYm91bmRfcmVsZWFzZV93b3JrZm4rMHhkMC8weGQwCj4gPj4gWyAzMDE4Ljk5
-Mjk4MF0gIGt0aHJlYWQrMHgxMTIvMHgxMzAKPiA+PiBbIDMwMTguOTkyOTgxXSAgPyBrdGhyZWFk
-X2JpbmQrMHgzMC8weDMwCj4gPj4gWyAzMDE4Ljk5Mjk4M10gIHJldF9mcm9tX2ZvcmsrMHgzNS8w
-eDQwCj4gPj4gWyAzMDE4Ljk5Mjk4NF0gLS0tWyBlbmQgdHJhY2UgM2FmNjE4Y2E5N2JkNGEwYSBd
-LS0tCj4gPj4gYGBgCj4gPj4KPiA+PiBQbGVhc2UgZmluZCBhbGwgTGludXggbWVzc2FnZXMgYXR0
-YWNoZWQuCj4gPgo+ID4gSSByZXBvcnRlZCB0aGF0IHR3aWNlIGFuZCBubyBvbmUgc2VlbXMgdG8g
-Y2FyZSBhYm91dC4KPiA+Cj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwv
-YXRoMTBrLzIwMTgtTm92ZW1iZXIvMDEyMzk4Lmh0bWwKPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxOC1EZWNlbWJlci8wMTI2NTguaHRtbAo+Cj4gRG9l
-cyB0aGlzIHBhdGNoIGhlbHA6Cj4KPiBhdGgxMGs6IERyb3AgV0FSTl9PTigpcyB0aGF0IGFsd2F5
-cyB0cmlnZ2VyIGR1cmluZyBzeXN0ZW0gcmVzdW1lCj4KPiBodHRwczovL3BhdGNod29yay5rZXJu
-ZWwub3JnL3BhdGNoLzEwODM3MTM5Lwo+CgpXaXRob3V0IHRvIHRlc3QgdGhpcyBwYXRjaCBJIGNh
-biBjb25maXJtIGl0IHdpbGwgaGVscCAsIEkgZHJvcHBlZCB0aGUKV0FSTl9PTigpJ3MgaW4gNC4x
-OSBhbHJlYWR5LgpJZiBJIHJlbWVtYmVyIHJpZ2h0IDQuMTkgaGFzIG9uZSBXQVJOX09OKCkgdHJp
-Z2dlcnMgd2hpbGUgNC4yMCBnb3QgdHdvLgoKaHR0cHM6Ly9naXR3ZWIuZnJ1Z2Fsd2FyZS5vcmcv
-ZnJ1Z2Fsd2FyZS1jdXJyZW50L2Jsb2IvbWFzdGVyL3NvdXJjZS9iYXNlL2tlcm5lbC9hdGgxMGst
-ZHJvcC1XQVJOX09OLWFkZGVkLWluLWNkOTNiODNhZDkyN2IyYzc5NzllMGFkZDAzNDNhY2U1OTMy
-OGI0NjEucGF0Y2gKCkJSLAoKR2FicmllbCBDCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+From: Anilkumar Kolli <akolli@codeaurora.org>
+
+Increase pulse width range from 1-2usec to 0-4usec.
+During data traffic HW occasionally fails detecting radar pulses,
+so that SW cannot get enough radar reports to achieve the success rate.
+
+Tested ath10k hw and fw:
+	* QCA9888(10.4-3.5.1-00052)
+	* QCA4019(10.4-3.2.1.1-00017)
+	* QCA9984(10.4-3.6-00104)
+	* QCA988X(10.2.4-1.0-00041)
+
+Tested ath9k hw: AR9300
+
+Tested-by: Tamizh chelvam <tamizhr@codeaurora.org>
+Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+---
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index d52b31b..a274eb0 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -111,7 +111,7 @@ struct radar_types {
+ 	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 29, false),
+ 	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 29, false),
+ 	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, 50, false),
+-	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, 50, false),
++	JP_PATTERN(3, 0, 4, 4000, 4000, 1, 18, 50, false),
+ 	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, 50, false),
+ 	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, 50, false),
+ 	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, 50, false),
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
