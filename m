@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h1asj-0000LC-P5
- for ath10k@lists.infradead.org; Wed, 06 Mar 2019 18:03:11 +0000
+ id 1h1asq-0000Vo-EV
+ for ath10k@lists.infradead.org; Wed, 06 Mar 2019 18:03:15 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv3 4/9] nl80211: Add netlink attribute to enable/disable RTS_CTS
-Date: Wed,  6 Mar 2019 23:30:46 +0530
-Message-Id: <1551895251-22941-5-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv3 6/9] mac80211: Add api to support configuring TID specific
+ configuration
+Date: Wed,  6 Mar 2019 23:30:48 +0530
+Message-Id: <1551895251-22941-7-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1551895251-22941-1-git-send-email-tamizhr@codeaurora.org>
 References: <1551895251-22941-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,143 +26,173 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-Introduce NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL in nl80211_attr_tid_config
-to accept TID specific RTS_CTS enable/disable configuration
-through NL80211_CMD_SET_TID_CONFIG command. TID for which the
-RTS_CTS control configuration is to be applied is passed in
-NL80211_ATTR_TID_CONFIG_TID attribute. When the user-space wants this
-configuration peer specific rather than being applied for all the
-connected stations, MAC address of the peer can be passed in
-NL80211_ATTR_MAC attribute.
-
-Driver supporting this feature should advertise
-NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per-STA data TID
-RTS_CTS configuration should advertise NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
+Implement drv_set_tid_config api to allow TID specific
+configuration. This per-TID configuration
+will be applied for all the connected stations when MAC is NULL.
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- include/net/cfg80211.h       |  3 +++
- include/uapi/linux/nl80211.h | 22 ++++++++++++++++++++++
- net/wireless/nl80211.c       | 17 +++++++++++++++++
- 3 files changed, 42 insertions(+)
+ include/net/mac80211.h    | 35 +++++++++++++++++++++++++++++++++++
+ net/mac80211/cfg.c        | 28 ++++++++++++++++++++++++++++
+ net/mac80211/driver-ops.h | 15 +++++++++++++++
+ 3 files changed, 78 insertions(+)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index aa0f44c..86dee3d 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -513,6 +513,7 @@ enum ieee80211_tid_conf_mask {
- 	IEEE80211_TID_CONF_NOACK	= BIT(0),
- 	IEEE80211_TID_CONF_RETRY	= BIT(1),
- 	IEEE80211_TID_CONF_AMPDU	= BIT(2),
-+	IEEE80211_TID_CONF_RTSCTS	= BIT(3),
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index ac2ed8e..f8e279c 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -1556,6 +1556,8 @@ enum ieee80211_vif_flags {
+ 	IEEE80211_VIF_GET_NOA_UPDATE		= BIT(3),
  };
  
++#define IEEE80211_TID_MAX	8
++
  /**
-@@ -524,6 +525,7 @@ enum ieee80211_tid_conf_mask {
-  * @retry_long: retry count value
-  * @retry_short: retry count value
-  * @ampdu: Enable/Disable aggregation
-+ * @rtscts: Enable/Disable RTS/CTS
-  */
- struct ieee80211_tid_cfg {
- 	u8 tid;
-@@ -532,6 +534,7 @@ struct ieee80211_tid_cfg {
- 	int retry_long;
- 	int retry_short;
- 	u8 ampdu;
-+	u8 rtscts;
- };
- 
- /**
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index f94651d..996b4d4 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -4630,6 +4630,21 @@ enum nl80211_tid_config {
-  *	NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL and supporting per station
-  *	aggregation configuration should advertise
-  *	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL.
-+ * @NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL: Enable/Disable RTS_CTS for the TID
-+ *	specified in %%NL80211_ATTR_TID_CONFIG_TID. It is u8 type, if the
-+ *	peer MAC address is passed in %NL80211_ATTR_MAC, then this
-+ *	configuration is applied to the data frame for the tid to that
-+ *	connected station.
-+ *	Station specific RTS_CTS configuration is valid only for STA's
-+ *	current connection. i.e. the configuration will be reset to default when
-+ *	the station connects back after disconnection/roaming.
-+ *	when user-space does not include %NL80211_ATTR_MAC, this configuration
-+ *	should be treated as per-netdev configuration. This configuration will
-+ *	be cleared when the interface goes down and on the disconnection from a
-+ *	BSS. Driver supporting this feature should advertise
-+ *	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per station
-+ *	RTS_CTS configuration should advertise
-+ *	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
-  */
- enum nl80211_attr_tid_config {
- 	__NL80211_ATTR_TID_INVALID,
-@@ -4639,6 +4654,7 @@ enum nl80211_attr_tid_config {
- 	NL80211_ATTR_TID_CONFIG_RETRY_SHORT,
- 	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
- 	NL80211_ATTR_TID_CONFIG_AMPDU_CTRL,
-+	NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL,
- 
- 	/* keep last */
- 	__NL80211_ATTR_TID_CONFIG_AFTER_LAST,
-@@ -5457,6 +5473,10 @@ enum nl80211_feature_flags {
-  *	aggregation control(enable/disable).
-  * @NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL: Driver supports per STA
-  *	specific TID aggregation control(enable/disable).
-+ * @NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL: Driver supports TID specific
-+ *	RTS_CTS control(enable/disable).
-+ * @NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL: Driver supports STA specific
-+ *	RTS_CTS control(enable/disable).
+  * struct ieee80211_vif - per-interface data
   *
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-@@ -5505,6 +5525,8 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG,
- 	NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL,
- 	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL,
-+	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL,
-+	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL,
+@@ -1593,6 +1595,11 @@ enum ieee80211_vif_flags {
+  * @txq: the multicast data TX queue (if driver uses the TXQ abstraction)
+  * @txqs_stopped: per AC flag to indicate that intermediate TXQs are stopped,
+  *	protected by fq->lock.
++ * @noack: per-TID noack policy.
++ * @retry_short: per-TID retry count.
++ * @retry_long: per-TID count.
++ * @ampdu: per-TID Aggregation-MPDU.
++ * @tx_rate_mask: per-TID tx rate value.
+  */
+ struct ieee80211_vif {
+ 	enum nl80211_iftype type;
+@@ -1619,6 +1626,14 @@ struct ieee80211_vif {
  
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 1a001d0..47bfc62 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -290,6 +290,8 @@ static int validate_ie_attr(const struct nlattr *attr,
- 	[NL80211_ATTR_TID_CONFIG_RETRY_LONG] = NLA_POLICY_MIN(NLA_U8, 1),
- 	[NL80211_ATTR_TID_CONFIG_AMPDU_CTRL] =
- 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
-+	[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL] =
-+			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
+ 	bool txqs_stopped[IEEE80211_NUM_ACS];
+ 
++	int noack[IEEE80211_TID_MAX];
++	int retry_short[IEEE80211_TID_MAX];
++	int retry_long[IEEE80211_TID_MAX];
++	int ampdu[IEEE80211_TID_MAX];
++	u8 rate_ctrl[IEEE80211_TID_MAX];
++	u32 rate_code[IEEE80211_TID_MAX];
++	u8 rtscts[IEEE80211_TID_MAX];
++
+ 	/* must be last */
+ 	u8 drv_priv[0] __aligned(sizeof(void *));
+ };
+@@ -1933,6 +1948,11 @@ struct ieee80211_sta_rates {
+  * @max_tid_amsdu_len: Maximum A-MSDU size in bytes for this TID
+  * @txq: per-TID data TX queues (if driver uses the TXQ abstraction); note that
+  *	the last entry (%IEEE80211_NUM_TIDS) is used for non-data frames
++ * @noack: per-TID noack policy.
++ * @retry_short: per-TID retry count.
++ * @retry_long: per-TID count.
++ * @ampdu: per-TID Aggregation-MPDU.
++ * @tx_rate_mask: per-TID tx rate value.
+  */
+ struct ieee80211_sta {
+ 	u32 supp_rates[NUM_NL80211_BANDS];
+@@ -1976,6 +1996,13 @@ struct ieee80211_sta {
+ 
+ 	struct ieee80211_txq *txq[IEEE80211_NUM_TIDS + 1];
+ 
++	int noack[IEEE80211_TID_MAX];
++	int retry_short[IEEE80211_TID_MAX];
++	int retry_long[IEEE80211_TID_MAX];
++	int ampdu[IEEE80211_TID_MAX];
++	u8 rate_ctrl[IEEE80211_TID_MAX];
++	u8 rtscts[IEEE80211_TID_MAX];
++
+ 	/* must be last */
+ 	u8 drv_priv[0] __aligned(sizeof(void *));
+ };
+@@ -3707,6 +3734,10 @@ enum ieee80211_reconfig_type {
+  *
+  * @start_pmsr: start peer measurement (e.g. FTM) (this call can sleep)
+  * @abort_pmsr: abort peer measurement (this call can sleep)
++ * @set_tid_config: TID specific configurations will be applied for a particular
++ *	station when @sta is non-NULL. When @sta is NULL, then the configuration
++ *	will be for all the connected clients in the vif.
++ *	This callback may sleep.
+  */
+ struct ieee80211_ops {
+ 	void (*tx)(struct ieee80211_hw *hw,
+@@ -4004,6 +4035,10 @@ struct ieee80211_ops {
+ 			  struct cfg80211_pmsr_request *request);
+ 	void (*abort_pmsr)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			   struct cfg80211_pmsr_request *request);
++	int (*set_tid_config)(struct ieee80211_hw *hw,
++			      struct ieee80211_vif *vif,
++			      struct ieee80211_sta *sta,
++			      struct ieee80211_tid_config *tid_conf);
  };
  
- const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
-@@ -13337,6 +13339,21 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 		tid_conf->ampdu =
- 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_AMPDU_CTRL]);
- 	}
-+
-+	if (attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]) {
-+		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL))
-+			return -ENOTSUPP;
-+
-+		if (peer && !wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL))
-+			return -ENOTSUPP;
-+
-+		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_RTSCTS;
-+		tid_conf->rtscts =
-+			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]);
-+	}
-+
- 	return 0;
+ /**
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 09dd1c2..7d9c44d 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -3893,6 +3893,33 @@ static int ieee80211_get_txq_stats(struct wiphy *wiphy,
+ 	return drv_abort_pmsr(local, sdata, request);
  }
  
++static int ieee80211_set_tid_config(struct wiphy *wiphy,
++				    struct net_device *dev,
++				    struct ieee80211_tid_config *tid_conf)
++{
++	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
++	struct sta_info *sta;
++	int ret;
++
++	if (!sdata->local->ops->set_tid_config)
++		return -EOPNOTSUPP;
++
++	if (!tid_conf->peer)
++		return drv_set_tid_config(sdata->local, sdata, NULL, tid_conf);
++
++	mutex_lock(&sdata->local->sta_mtx);
++
++	sta = sta_info_get_bss(sdata, tid_conf->peer);
++	if (!sta) {
++		mutex_unlock(&sdata->local->sta_mtx);
++		return -ENOENT;
++	}
++
++	ret = drv_set_tid_config(sdata->local, sdata, &sta->sta, tid_conf);
++	mutex_unlock(&sdata->local->sta_mtx);
++	return ret;
++}
++
+ const struct cfg80211_ops mac80211_config_ops = {
+ 	.add_virtual_intf = ieee80211_add_iface,
+ 	.del_virtual_intf = ieee80211_del_iface,
+@@ -3990,4 +4017,5 @@ static int ieee80211_get_txq_stats(struct wiphy *wiphy,
+ 	.get_ftm_responder_stats = ieee80211_get_ftm_responder_stats,
+ 	.start_pmsr = ieee80211_start_pmsr,
+ 	.abort_pmsr = ieee80211_abort_pmsr,
++	.set_tid_config = ieee80211_set_tid_config,
+ };
+diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
+index 28d022a..d316b18 100644
+--- a/net/mac80211/driver-ops.h
++++ b/net/mac80211/driver-ops.h
+@@ -1348,4 +1348,19 @@ static inline void drv_del_nan_func(struct ieee80211_local *local,
+ 	trace_drv_return_void(local);
+ }
+ 
++static inline int drv_set_tid_config(struct ieee80211_local *local,
++				     struct ieee80211_sub_if_data *sdata,
++				     struct ieee80211_sta *sta,
++				     struct ieee80211_tid_config *tid_conf)
++{
++	int ret;
++
++	might_sleep();
++	ret = local->ops->set_tid_config(&local->hw, &sdata->vif, sta,
++					 tid_conf);
++	trace_drv_return_int(local, ret);
++
++	return ret;
++}
++
+ #endif /* __MAC80211_DRIVER_OPS */
 -- 
 1.9.1
 
