@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h1asm-0000Q2-Cx
- for ath10k@lists.infradead.org; Wed, 06 Mar 2019 18:03:15 +0000
+ id 1h1asx-0000gD-L8
+ for ath10k@lists.infradead.org; Wed, 06 Mar 2019 18:03:27 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv3 5/9] nl80211: Add netlink attribute to configure TID
- specific tx rate
-Date: Wed,  6 Mar 2019 23:30:47 +0530
-Message-Id: <1551895251-22941-6-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv3 9/9] ath10k: Add extended TID configuration support
+Date: Wed,  6 Mar 2019 23:30:51 +0530
+Message-Id: <1551895251-22941-10-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1551895251-22941-1-git-send-email-tamizhr@codeaurora.org>
 References: <1551895251-22941-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -26,324 +25,233 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-Introduce NL80211_ATTR_TID_CONFIG_TX_RATES in nl80211_attr_tid_config
-to accept data TID specific TX bitrate configuration
-through NL80211_CMD_SET_TID_CONFIG command. TID for which the
-this configuration is to be applied is passed in
-NL80211_ATTR_TID_CONFIG_TID attribute. TX bitrate mask values passed
-in NL80211_ATTR_TX_RATES attribute and NL80211_ATTR_TID_CONFIG_TX_RATES
-attribute will have types of the TX rate should be applied.
-When the user-space wants this configuration peer specific
-rather than being applied for all the connected stations,
-MAC address of the peer can be passed in NL80211_ATTR_MAC attribute.
+This patch extend TID configuration support to configure
+RTS_CTS control and TX rate limit. Tx rate limit is
+similar to auto rate but it will be limited to the user
+configured rate mask rather than the station's highest
+supported rate mask. Here ext_tid_cfg_bitmap added
+to notify the target which extended configuration
+parameter has modified(here RTS_CTS).
 
-Driver supporting this feature should advertise
-NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per-STA data TID
-TX bitrate configuration should advertise
-NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
+WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT service flag
+introduced to advertise this support.
+
+Testing:
+	* Tested HW: QCA9984
+	* Tested FW: 10.4-3.9.0.2-00021
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- include/net/cfg80211.h       |  5 +++
- include/uapi/linux/nl80211.h | 39 +++++++++++++++++++
- net/wireless/nl80211.c       | 89 ++++++++++++++++++++++++++++++++++----------
- 3 files changed, 113 insertions(+), 20 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |  4 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 48 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  9 ++++---
+ drivers/net/wireless/ath/ath10k/wmi.h  | 20 ++++++++++++++
+ 4 files changed, 78 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 86dee3d..ebf041b 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -514,6 +514,7 @@ enum ieee80211_tid_conf_mask {
- 	IEEE80211_TID_CONF_RETRY	= BIT(1),
- 	IEEE80211_TID_CONF_AMPDU	= BIT(2),
- 	IEEE80211_TID_CONF_RTSCTS	= BIT(3),
-+	IEEE80211_TID_CONF_TX_BITRATE	= BIT(4),
- };
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c2d2155..c1e0908 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2636,6 +2636,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		if (test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
+ 			val |= WMI_10_4_REPORT_AIRTIME;
  
- /**
-@@ -526,6 +527,8 @@ enum ieee80211_tid_conf_mask {
-  * @retry_short: retry count value
-  * @ampdu: Enable/Disable aggregation
-  * @rtscts: Enable/Disable RTS/CTS
-+ * @txrate_type: TX bitrate mask type
-+ * @mask: bitrate to be applied for the TID
-  */
- struct ieee80211_tid_cfg {
- 	u8 tid;
-@@ -535,6 +538,8 @@ struct ieee80211_tid_cfg {
- 	int retry_short;
- 	u8 ampdu;
- 	u8 rtscts;
-+	enum nl80211_tx_rate_setting txrate_type;
-+	struct cfg80211_bitrate_mask *mask;
- };
- 
- /**
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 996b4d4..c8aa3ba 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -4557,6 +4557,18 @@ enum nl80211_tx_power_setting {
- 	NL80211_TX_POWER_FIXED,
- };
- 
-+/**
-+ * enum nl80211_tx_rate_setting - TX rate configuration type
-+ * @NL80211_TX_RATE_AUTOMATIC: automatically determine TX rate
-+ * @NL80211_TX_RATE_LIMITED: limit the TX rate by the TX rate parameter
-+ * @NL80211_TX_RATE_FIXED: fix TX rate to the TX rate parameter
-+ */
-+enum nl80211_tx_rate_setting {
-+	NL80211_TX_RATE_AUTOMATIC,
-+	NL80211_TX_RATE_LIMITED,
-+	NL80211_TX_RATE_FIXED,
-+};
++		if (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
++			     ar->wmi.svc_map))
++			val |= WMI_10_4_EXT_PEER_TID_CONFIGS_SUPPORT;
 +
- enum nl80211_tid_config {
- 	NL80211_TID_CONFIG_DEFAULT,
- 	NL80211_TID_CONFIG_ENABLE,
-@@ -4645,6 +4657,25 @@ enum nl80211_tid_config {
-  *	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per station
-  *	RTS_CTS configuration should advertise
-  *	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
-+ * @NL80211_ATTR_TID_CONFIG_TX_RATES: Data frame TX rate mask should be applied
-+ *	with the parameters passed through %NL80211_ATTR_TX_RATES. This
-+ *	configuration is per TID, TID is specified with
-+ *	%NL80211_ATTR_TID_CONFIG_TID.
-+ *	If the peer MAC address is passed in %NL80211_ATTR_MAC, then this
-+ *	configuration is applied to the data frame for the tid to that connected
-+ *	station. This attribute will be useful to notfiy the driver that what
-+ *	type of txrate should be applied(%enum enum nl80211_tx_rate_setting)
-+ *	for the connected station (%NL80211_ATTR_MAC),
-+ *	Station specific retry configuration is valid only for STA's
-+ *	current connection. i.e. the configuration will be reset to default when
-+ *	the station connects back after disconnection/roaming.
-+ *	when user-space does not include %NL80211_ATTR_MAC, this configuration
-+ *	should be treated as per-netdev configuration. This configuration will
-+ *	be cleared when the interface goes down and on the disconnection from a
-+ *	BSS. Driver supporting this feature should advertise
-+ *	NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per station
-+ *	TX bitrate configuration should advertise
-+ *	NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
-  */
- enum nl80211_attr_tid_config {
- 	__NL80211_ATTR_TID_INVALID,
-@@ -4655,6 +4686,8 @@ enum nl80211_attr_tid_config {
- 	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
- 	NL80211_ATTR_TID_CONFIG_AMPDU_CTRL,
- 	NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL,
-+	NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE,
-+	NL80211_ATTR_TID_CONFIG_TX_RATES,
+ 		status = ath10k_mac_ext_resource_config(ar, val);
+ 		if (status) {
+ 			ath10k_err(ar,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e5ae054..5d4611e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2950,6 +2950,12 @@ static int ath10k_new_peer_tid_config(struct ath10k *ar,
+ 			arg.aggr_control = vif->ampdu[i];
+ 			arg.rate_ctrl = vif->rate_ctrl[i];
+ 			arg.rcode_flags = vif->rate_code[i];
++			if (vif->rtscts[i])
++				arg.ext_tid_cfg_bitmap =
++					WMI_EXT_TID_RTS_CTS_CONFIG;
++			else
++				arg.ext_tid_cfg_bitmap = 0;
++			arg.rtscts_ctrl = vif->rtscts[i];
+ 		}
  
- 	/* keep last */
- 	__NL80211_ATTR_TID_CONFIG_AFTER_LAST,
-@@ -5477,6 +5510,10 @@ enum nl80211_feature_flags {
-  *	RTS_CTS control(enable/disable).
-  * @NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL: Driver supports STA specific
-  *	RTS_CTS control(enable/disable).
-+ * @NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK: Driver supports TID specific
-+ *	TX bitrate configuration.
-+ * @NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK: Driver supports STA specific
-+ *	TX bitrate configuration.
-  *
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-@@ -5527,6 +5564,8 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL,
- 	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL,
- 	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL,
-+	NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK,
-+	NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK,
+ 		if (vif->noack[i]) {
+@@ -6560,6 +6566,10 @@ static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
  
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 47bfc62..1e46778 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -280,6 +280,15 @@ static int validate_ie_attr(const struct nlattr *attr,
- 		NLA_POLICY_NESTED_ARRAY(nl80211_psmr_peer_attr_policy),
- };
- 
-+static const struct nla_policy nl80211_txattr_policy[NL80211_TXRATE_MAX + 1] = {
-+	[NL80211_TXRATE_LEGACY] = { .type = NLA_BINARY,
-+				    .len = NL80211_MAX_SUPP_RATES },
-+	[NL80211_TXRATE_HT] = { .type = NLA_BINARY,
-+				.len = NL80211_MAX_SUPP_HT_RATES },
-+	[NL80211_TXRATE_VHT] = { .len = sizeof(struct nl80211_txrate_vht)},
-+	[NL80211_TXRATE_GI] = { .type = NLA_U8 },
-+};
-+
- static const struct nla_policy
- nl80211_attr_tid_config_policy[NL80211_ATTR_TID_CONFIG_MAX + 1] = {
- 	[NL80211_ATTR_TID_CONFIG_TID] = { .type = NLA_U8 },
-@@ -292,6 +301,10 @@ static int validate_ie_attr(const struct nlattr *attr,
- 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
- 	[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL] =
- 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
-+	[NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE] =
-+			NLA_POLICY_MAX(NLA_U8, NL80211_TX_RATE_FIXED),
-+	[NL80211_ATTR_TID_CONFIG_TX_RATES] =
-+			NLA_POLICY_NESTED(nl80211_txattr_policy),
- };
- 
- const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
-@@ -397,7 +410,8 @@ static int validate_ie_attr(const struct nlattr *attr,
- 	[NL80211_ATTR_PMKID] = { .len = WLAN_PMKID_LEN },
- 	[NL80211_ATTR_DURATION] = { .type = NLA_U32 },
- 	[NL80211_ATTR_COOKIE] = { .type = NLA_U64 },
--	[NL80211_ATTR_TX_RATES] = { .type = NLA_NESTED },
-+	[NL80211_ATTR_TX_RATES] =
-+			NLA_POLICY_NESTED(nl80211_txattr_policy),
- 	[NL80211_ATTR_FRAME] = { .type = NLA_BINARY,
- 				 .len = IEEE80211_MAX_DATA_LEN },
- 	[NL80211_ATTR_FRAME_MATCH] = { .type = NLA_BINARY, },
-@@ -4014,20 +4028,12 @@ static bool vht_set_mcs_mask(struct ieee80211_supported_band *sband,
- 	return true;
- }
- 
--static const struct nla_policy nl80211_txattr_policy[NL80211_TXRATE_MAX + 1] = {
--	[NL80211_TXRATE_LEGACY] = { .type = NLA_BINARY,
--				    .len = NL80211_MAX_SUPP_RATES },
--	[NL80211_TXRATE_HT] = { .type = NLA_BINARY,
--				.len = NL80211_MAX_SUPP_HT_RATES },
--	[NL80211_TXRATE_VHT] = { .len = sizeof(struct nl80211_txrate_vht)},
--	[NL80211_TXRATE_GI] = { .type = NLA_U8 },
--};
--
--static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
-+static int nl80211_parse_tx_bitrate_mask(struct nlattr *attrs[],
-+					 struct cfg80211_registered_device *rdev,
-+					 enum nl80211_attrs attr,
- 					 struct cfg80211_bitrate_mask *mask)
- {
- 	struct nlattr *tb[NL80211_TXRATE_MAX + 1];
--	struct cfg80211_registered_device *rdev = info->user_ptr[0];
- 	int rem, i;
- 	struct nlattr *tx_rates;
- 	struct ieee80211_supported_band *sband;
-@@ -4054,14 +4060,14 @@ static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
- 	}
- 
- 	/* if no rates are given set it back to the defaults */
--	if (!info->attrs[NL80211_ATTR_TX_RATES])
-+	if (!attrs[attr])
- 		goto out;
- 
- 	/* The nested attribute uses enum nl80211_band as the index. This maps
- 	 * directly to the enum nl80211_band values used in cfg80211.
- 	 */
- 	BUILD_BUG_ON(NL80211_MAX_SUPP_HT_RATES > IEEE80211_HT_MCS_MASK_LEN * 8);
--	nla_for_each_nested(tx_rates, info->attrs[NL80211_ATTR_TX_RATES], rem) {
-+	nla_for_each_nested(tx_rates, attrs[attr], rem) {
- 		enum nl80211_band band = nla_type(tx_rates);
- 		int err;
- 
-@@ -4071,7 +4077,7 @@ static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
- 		if (sband == NULL)
- 			return -EINVAL;
- 		err = nla_parse_nested(tb, NL80211_TXRATE_MAX, tx_rates,
--				       nl80211_txattr_policy, info->extack);
-+				       NULL, NULL);
- 		if (err)
- 			return err;
- 		if (tb[NL80211_TXRATE_LEGACY]) {
-@@ -4504,7 +4510,9 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
- 		return -EINVAL;
- 
- 	if (info->attrs[NL80211_ATTR_TX_RATES]) {
--		err = nl80211_parse_tx_bitrate_mask(info, &params.beacon_rate);
-+		err = nl80211_parse_tx_bitrate_mask(info->attrs, rdev,
-+						    NL80211_ATTR_TX_RATES,
-+						    &params.beacon_rate);
- 		if (err)
- 			return err;
- 
-@@ -10110,7 +10118,8 @@ static int nl80211_set_tx_bitrate_mask(struct sk_buff *skb,
- 	if (!rdev->ops->set_bitrate_mask)
+ 	if (txrate_type == NL80211_TX_RATE_FIXED)
+ 		*rate_ctrl = WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE;
++	else if (txrate_type == NL80211_TX_RATE_LIMITED &&
++		 (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
++			   ar->wmi.svc_map)))
++		*rate_ctrl = WMI_PEER_TID_CONFIG_RATE_UPPER_CAP;
+ 	else
  		return -EOPNOTSUPP;
- 
--	err = nl80211_parse_tx_bitrate_mask(info, &mask);
-+	err = nl80211_parse_tx_bitrate_mask(info->attrs, rdev, NL80211_ATTR_TX_RATES,
-+					    &mask);
- 	if (err)
- 		return err;
- 
-@@ -10702,7 +10711,9 @@ static int nl80211_join_mesh(struct sk_buff *skb, struct genl_info *info)
- 	}
- 
- 	if (info->attrs[NL80211_ATTR_TX_RATES]) {
--		err = nl80211_parse_tx_bitrate_mask(info, &setup.beacon_rate);
-+		err = nl80211_parse_tx_bitrate_mask(info->attrs, rdev,
-+						    NL80211_ATTR_TX_RATES,
-+						    &setup.beacon_rate);
- 		if (err)
- 			return err;
- 
-@@ -13278,8 +13289,10 @@ static int nl80211_get_ftm_responder_stats(struct sk_buff *skb,
- static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 			  struct nlattr *attrs[],
- 			  struct ieee80211_tid_cfg *tid_conf,
--			  const u8 *peer)
-+			  struct genl_info *info, const u8 *peer)
- {
-+	int ret;
-+
- 	tid_conf->tid = nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_TID]);
- 	if (attrs[NL80211_ATTR_TID_CONFIG_NOACK]) {
- 		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-@@ -13354,6 +13367,42 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]);
- 	}
- 
-+	if (attrs[NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE]) {
-+		int idx;
-+		enum nl80211_attrs attr;
-+
-+		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK))
-+			return -EOPNOTSUPP;
-+
-+		if (peer &&
-+		    !wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK))
-+			return -EOPNOTSUPP;
-+
-+		idx = NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE;
-+		tid_conf->txrate_type = nla_get_u8(attrs[idx]);
-+
-+		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_TX_BITRATE;
-+		if (tid_conf->txrate_type != NL80211_TX_RATE_AUTOMATIC) {
-+			tid_conf->mask =
-+				kzalloc(sizeof(struct cfg80211_bitrate_mask),
-+					GFP_KERNEL);
-+			if (!tid_conf->mask)
-+				return -ENOMEM;
-+
-+			attr = NL80211_ATTR_TID_CONFIG_TX_RATES;
-+			ret = nl80211_parse_tx_bitrate_mask(attrs, rdev, attr,
-+							    tid_conf->mask);
-+			if (ret) {
-+				kfree(tid_conf->mask);
-+				return ret;
-+			}
-+		} else {
-+			tid_conf->mask = NULL;
-+		}
-+	}
-+
  	return 0;
+@@ -6626,6 +6636,14 @@ static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
+ 			arg->rate_ctrl = 0;
+ 		}
+ 	}
++
++	if (changed & IEEE80211_TID_CONF_RTSCTS) {
++		if (tid_conf->rtscts)
++			arg->rtscts_ctrl = tid_conf->rtscts - 1;
++		else
++			arg->rtscts_ctrl = WMI_TID_CONFIG_RTSCTS_CONTROL_ENABLE;
++		arg->ext_tid_cfg_bitmap = WMI_EXT_TID_RTS_CTS_CONFIG;
++	}
  }
  
-@@ -13405,7 +13454,7 @@ static int nl80211_set_tid_config(struct sk_buff *skb,
- 			return -EINVAL;
+ static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
+@@ -6706,6 +6724,18 @@ static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
+ 			}
+ 		}
  
- 		ret = parse_tid_conf(rdev, attrs, &tid_conf->tid_conf[conf_idx],
--				     tid_conf->peer);
-+				     info, tid_conf->peer);
- 		if (ret)
- 			goto bad_tid_conf;
++		if (changed & IEEE80211_TID_CONF_RTSCTS) {
++			if (sta->rtscts[i]) {
++				arg.rtscts_ctrl = 0;
++				arg.ext_tid_cfg_bitmap = 0;
++			} else {
++				arg.rtscts_ctrl = vif->rtscts[i] - 1;
++				arg.ext_tid_cfg_bitmap =
++					WMI_EXT_TID_RTS_CTS_CONFIG;
++				config_apply = true;
++			}
++		}
++
+ 		arg.tid = i;
  
+ 		if (config_apply) {
+@@ -8401,6 +8431,13 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
+ 				arg.rate_ctrl = 0;
+ 				arg.rcode_flags = 0;
+ 			}
++
++			if (changed & IEEE80211_TID_CONF_RTSCTS) {
++				sta->rtscts[arg.tid] =
++					tid_config->tid_conf[i].rtscts;
++				arg.rtscts_ctrl = 0;
++				arg.ext_tid_cfg_bitmap = 0;
++			}
+ 		} else {
+ 			arvif->tid_conf_changed[arg.tid] |= changed;
+ 
+@@ -8420,6 +8457,10 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
+ 				vif->rate_ctrl[arg.tid] = arg.rate_ctrl;
+ 				vif->rate_code[arg.tid] = arg.rcode_flags;
+ 			}
++
++			if (changed & IEEE80211_TID_CONF_RTSCTS)
++				vif->rtscts[arg.tid] =
++					tid_config->tid_conf[i].rtscts;
+ 		}
+ 	}
+ 
+@@ -9166,6 +9207,13 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->ops->set_tid_config = NULL;
+ 		ar->hw->wiphy->flags &= ~WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT;
+ 	}
++
++	if (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT, ar->wmi.svc_map)) {
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL);
++	}
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 895b7b17..fbb8853 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -8902,11 +8902,14 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	cmd->rate_control = cpu_to_le32(arg->rate_ctrl);
+ 	cmd->retry_count = cpu_to_le32(arg->retry_count);
+ 	cmd->rcode_flags = cpu_to_le32(arg->rcode_flags);
++	cmd->ext_tid_cfg_bitmap = cpu_to_le32(arg->ext_tid_cfg_bitmap);
++	cmd->rtscts_ctrl = cpu_to_le32(arg->rtscts_ctrl);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d mac_addr %pM\n",
+-		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control, arg->rate_ctrl,
+-		   arg->rcode_flags, arg->retry_count, arg->peer_macaddr.addr);
++		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d rtscts %d ext_tid_cfg_bitmap %d mac_addr %pM\n",
++		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control,
++		   arg->rate_ctrl, arg->rcode_flags, arg->retry_count, arg->rtscts_ctrl,
++		   arg->ext_tid_cfg_bitmap, arg->peer_macaddr.addr);
+ 	return skb;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 5932f41..297f3b2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -201,6 +201,7 @@ enum wmi_service {
+ 	WMI_SERVICE_PER_PACKET_SW_ENCRYPT,
+ 	WMI_SERVICE_REPORT_AIRTIME,
+ 	WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT,
++	WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
+ 
+ 	/* Remember to add the new value to wmi_service_name()! */
+ 
+@@ -493,6 +494,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
+ 	SVCSTR(WMI_SERVICE_PER_PACKET_SW_ENCRYPT);
+ 	SVCSTR(WMI_SERVICE_REPORT_AIRTIME);
+ 	SVCSTR(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT);
++	SVCSTR(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT);
+ 
+ 	case WMI_SERVICE_MAX:
+ 		return NULL;
+@@ -822,6 +824,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_REPORT_AIRTIME, len);
+ 	SVCMAP(WMI_10_4_SERVICE_PEER_TID_CONFIGS_SUPPORT,
+ 	       WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, len);
++	SVCMAP(WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
++	       WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT, len);
+ }
+ 
+ #undef SVCMAP
+@@ -7180,6 +7184,16 @@ enum wmi_tid_rate_ctrl_conf {
+ 	WMI_TID_CONFIG_RATE_CONTROL_AUTO,
+ 	WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE,
+ 	WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE,
++	WMI_PEER_TID_CONFIG_RATE_UPPER_CAP,
++};
++
++enum wmi_tid_rtscts_control_conf {
++	WMI_TID_CONFIG_RTSCTS_CONTROL_ENABLE,
++	WMI_TID_CONFIG_RTSCTS_CONTROL_DISABLE,
++};
++
++enum wmi_ext_tid_config_map {
++	WMI_EXT_TID_RTS_CTS_CONFIG = BIT(0),
+ };
+ 
+ struct wmi_per_peer_per_tid_cfg_arg {
+@@ -7191,6 +7205,8 @@ struct wmi_per_peer_per_tid_cfg_arg {
+ 	u8 rate_ctrl;
+ 	u32 retry_count;
+ 	u32 rcode_flags;
++	u32 ext_tid_cfg_bitmap;
++	u32 rtscts_ctrl;
+ };
+ 
+ struct wmi_peer_per_tid_cfg_cmd {
+@@ -7206,6 +7222,10 @@ struct wmi_peer_per_tid_cfg_cmd {
+ 	__le32 rate_control;
+ 	__le32 rcode_flags;
+ 	__le32 retry_count;
++	/* See enum wmi_ext_tid_config_map */
++	__le32 ext_tid_cfg_bitmap;
++	/* see enum wmi_tid_rtscts_control_conf */
++	__le32 rtscts_ctrl;
+ } __packed;
+ 
+ enum wmi_txbf_conf {
 -- 
 1.9.1
 
