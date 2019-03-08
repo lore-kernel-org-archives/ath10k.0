@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h2Ddo-00075I-80
- for ath10k@lists.infradead.org; Fri, 08 Mar 2019 11:26:17 +0000
+ id 1h2Dhu-00015W-JA
+ for ath10k@lists.infradead.org; Fri, 08 Mar 2019 11:30:32 +0000
+MIME-Version: 1.0
+Date: Fri, 08 Mar 2019 17:00:29 +0530
 From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Fix channel info parsing for non tlv target
-Date: Fri,  8 Mar 2019 16:56:06 +0530
-Message-Id: <1552044366-9186-1-git-send-email-pillair@codeaurora.org>
+Subject: Re: [PATCH] ath10k: fill the channel survey results for WCN3990
+ correctly
+In-Reply-To: <2de8e7ef-9cdd-d6c9-4110-fa57ca0a8622@kernel.org>
+References: <2de8e7ef-9cdd-d6c9-4110-fa57ca0a8622@kernel.org>
+Message-ID: <c84153d480eb77fa36c3a3ee5ec76da6@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,106 +19,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Greg Ungerer <gerg@kernel.org>
+Cc: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-The tlv targets such as WCN3990 send more data in
-the chan info event, which is not sent by the non tlv
-targets. There is a minimum size check in the wmi event for
-non-tlv targets and hence we cannot update the common
-channel info structure.
+Hi Greg,
 
-If the common channel info structure is updated, the
-size check for chan info event for non-tlv targets
-will fail and return -EPROTO and we see the below
-error messages
+Yes, the commit 13104929d2ec ("[PATCH]ath10k: fill the channel survey 
+results for WCN3990 correctly") causes a regression for the non-tlv 
+targets since the common wmi channel info structure  was extended in 
+this particular commit. The -EPROTO error is a result of this, since the 
+wmi event for channel info has a size check which will fail due to the 
+extension of the wmi_chan_info_event structure.
 
-   ath10k_pci 0000:01:00.0: failed to parse chan info event: -71
+I have raised a fix for this
+https://patchwork.kernel.org/patch/10844513/
 
-Add tlv specific channel info structure and restore the
-original size of the common channel info structure to
-mitigate this issue.
 
-Tested HW: WCN3990
-	   QCA9887
-Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
-	   10.2.4-1.0-00037
+Thanks,
+Rakesh
 
-Fixes: 13104929d2ec ("ath10k: fill the channel survey results for WCN3990 correctly")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 16 ++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  8 --------
- 3 files changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 582fb11..a826acb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -810,7 +810,7 @@ static int ath10k_wmi_tlv_op_pull_ch_info_ev(struct ath10k *ar,
- 					     struct wmi_ch_info_ev_arg *arg)
- {
- 	const void **tb;
--	const struct wmi_chan_info_event *ev;
-+	const struct wmi_tlv_chan_info_event *ev;
- 	int ret;
- 
- 	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 65e6aa5..4bdd655 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1607,6 +1607,22 @@ struct chan_info_params {
- 
- #define WMI_TLV_FLAG_MGMT_BUNDLE_TX_COMPL	BIT(9)
- 
-+struct wmi_tlv_chan_info_event {
-+	__le32 err_code;
-+	__le32 freq;
-+	__le32 cmd_flags;
-+	__le32 noise_floor;
-+	__le32 rx_clear_count;
-+	__le32 cycle_count;
-+	__le32 chan_tx_pwr_range;
-+	__le32 chan_tx_pwr_tp;
-+	__le32 rx_frame_count;
-+	__le32 my_bss_rx_cycle_count;
-+	__le32 rx_11b_mode_data_duration;
-+	__le32 tx_frame_cnt;
-+	__le32 mac_clk_mhz;
-+} __packed;
-+
- struct wmi_tlv_mgmt_tx_compl_ev {
- 	__le32 desc_id;
- 	__le32 status;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e1c40bb..d188a2c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6523,14 +6523,6 @@ struct wmi_chan_info_event {
- 	__le32 noise_floor;
- 	__le32 rx_clear_count;
- 	__le32 cycle_count;
--	__le32 chan_tx_pwr_range;
--	__le32 chan_tx_pwr_tp;
--	__le32 rx_frame_count;
--	__le32 my_bss_rx_cycle_count;
--	__le32 rx_11b_mode_data_duration;
--	__le32 tx_frame_cnt;
--	__le32 mac_clk_mhz;
--
- } __packed;
- 
- struct wmi_10_4_chan_info_event {
--- 
-2.7.4
-
+On 2019-03-07 18:36, Greg Ungerer wrote:
+> Hi Rakesh, Surabhi,
+> 
+> This patch, which is in the linux kernel as commit 13104929d2ec 
+> ("[PATCH]
+> ath10k: fill the channel survey results for WCN3990 correctly"), is 
+> causing
+> me problems when running linux-5.0 kernel.
+> 
+> I see messages like this on the console:
+> 
+>   ath10k_pci 0000:01:00.0: failed to parse chan info event: -71
+> 
+> They come out in bunches every few seconds. This same hardware and 
+> setup
+> works again if I revert out this patch.
+> 
+> For reference the hardware platform is a Mediatek MT7621 (quad core
+> MIPS at 880MHz). The the ath10k hardware is a mini PCIe device.
+> 
+> The dmesg init trace for the ath10k modules is this:
+> 
+> <6>ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)^M
+> <6>ath10k_pci 0000:01:00.0: pci irq legacy oper_irq_mode 1 irq_mode 0
+> reset_mode 0^M
+> <6>ath10k_pci 0000:01:00.0: qca988x hw2.0 target 0x4100016c chip_id
+> 0x043222ff sub 0000:0000^M
+> <6>ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 1
+> testmode 0^M
+> <6>ath10k_pci 0000:01:00.0: firmware ver 10.2.4-1.0-00043 api 5
+> features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 ed0aafd8^M
+> <6>ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 
+> bebc7c08^M
+> <4>ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536^M
+> <6>ath10k_pci 0000:01:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp
+> max-sta 128 raw 0 hwcrypto 1^M
+> <7>ath: EEPROM regdomain: 0x0^M
+> <7>ath: EEPROM indicates default country code should be used^M
+> <7>ath: doing EEPROM country->regdmn map search^M
+> <7>ath: country maps to regdmn code: 0x3a^M
+> <7>ath: Country alpha2 being used: US^M
+> <7>ath: Regpair used: 0x3a^M
+> 
+> I am using hostapd-2.7 and the linux-firmware package is the very 
+> latest from
+> their git repository.
+> 
+> This looks a lot like the problem reported by Justin Capella (thread at
+> http://lists.infradead.org/pipermail/ath10k/2019-February/012900.html).
+> 
+> Anyway, thoughts?
+> 
+> Regards
+> Greg
 
 _______________________________________________
 ath10k mailing list
