@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h2DCa-00068k-44
- for ath10k@lists.infradead.org; Fri, 08 Mar 2019 10:58:09 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Warning at drivers/net/wireless/ath/ath10k/mac.c:5625
- ath10k_bss_info_changed
-References: <362a9b5f-8908-17f5-3594-6c3c68789dea@molgen.mpg.de>
- <CAEJqkggKGTn0ojWzuYGfoYehDnOf=je5L-7-M1kWogutPGMg3g@mail.gmail.com>
- <874l8ic0l4.fsf@codeaurora.org>
- <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
-Date: Fri, 08 Mar 2019 12:58:02 +0200
-In-Reply-To: <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
- (Gabriel C.'s message of "Mon, 4 Mar 2019 14:00:40 +0100")
-Message-ID: <87wol97hvp.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1h2Ddo-00075I-80
+ for ath10k@lists.infradead.org; Fri, 08 Mar 2019 11:26:17 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] ath10k: Fix channel info parsing for non tlv target
+Date: Fri,  8 Mar 2019 16:56:06 +0530
+Message-Id: <1552044366-9186-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +15,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gabriel C <nix.or.die@gmail.com>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-R2FicmllbCBDIDxuaXgub3IuZGllQGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBBbSBNby4sIDQuIE3D
-pHJ6IDIwMTkgdW0gMTI6NTkgVWhyIHNjaHJpZWIgS2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9y
-YS5vcmc+Ogo+Pgo+PiBHYWJyaWVsIEMgPG5peC5vci5kaWVAZ21haWwuY29tPiB3cml0ZXM6Cj4+
-Cj4+ID4gQW0gTW8uLCA0LiBNw6RyeiAyMDE5IHVtIDEyOjI4IFVociBzY2hyaWViIFBhdWwgTWVu
-emVsIDxwbWVuemVsQG1vbGdlbi5tcGcuZGU+Ogo+PiA+Cj4+ID4+IFJlc3VtaW5nIGZyb20gQUNQ
-SSBTMyBvbiB0aGUgRGVsbCBYUFMgMTMgOTM3MCB3aXRoIERlYmlhbiBTaWQvdW5zdGFibGUsCj4+
-ID4+IExpbnV4IDQuMTkuMjAgc2hvd2VkIHRoZSB3YXJuaW5nIGJlbG93LiBJdOKAmXMgbm90IHJl
-cHJvZHVjaWJsZS4KPj4KPj4gWy4uLl0KPj4KPj4gPj4gWyAzMDE4Ljk5MjkxNl0gQ2FsbCBUcmFj
-ZToKPj4gPj4gWyAzMDE4Ljk5MjkyMV0gID8gYXRoMTBrX2NvbmZfdHgrMHg3YS8weDRiMCBbYXRo
-MTBrX2NvcmVdCj4+ID4+IFsgMzAxOC45OTI5MzddICBpZWVlODAyMTFfYnNzX2luZm9fY2hhbmdl
-X25vdGlmeSsweGFiLzB4MWEwIFttYWM4MDIxMV0KPj4gPj4gWyAzMDE4Ljk5Mjk0Nl0gIGllZWU4
-MDIxMV9yZWNvbmZpZysweDY2MS8weDEyYTAgW21hYzgwMjExXQo+PiA+PiBbIDMwMTguOTkyOTYy
-XSAgd2lwaHlfcmVzdW1lKzB4N2YvMHgxMjAgW2NmZzgwMjExXQo+PiA+PiBbIDMwMTguOTkyOTY5
-XSAgPyB3aXBoeV9zdXNwZW5kKzB4MjcwLzB4MjcwIFtjZmc4MDIxMV0KPj4gPj4gWyAzMDE4Ljk5
-Mjk3MV0gIGRwbV9ydW5fY2FsbGJhY2srMHg1OS8weDE1MAo+PiA+PiBbIDMwMTguOTkyOTcyXSAg
-ZGV2aWNlX3Jlc3VtZSsweDk3LzB4MTkwCj4+ID4+IFsgMzAxOC45OTI5NzNdICBhc3luY19yZXN1
-bWUrMHgxOS8weDMwCj4+ID4+IFsgMzAxOC45OTI5NzRdICBhc3luY19ydW5fZW50cnlfZm4rMHgz
-OS8weDE2MAo+PiA+PiBbIDMwMTguOTkyOTc2XSAgcHJvY2Vzc19vbmVfd29yaysweDFhNy8weDNh
-MAo+PiA+PiBbIDMwMTguOTkyOTc4XSAgd29ya2VyX3RocmVhZCsweDMwLzB4MzkwCj4+ID4+IFsg
-MzAxOC45OTI5NzldICA/IHB3cV91bmJvdW5kX3JlbGVhc2Vfd29ya2ZuKzB4ZDAvMHhkMAo+PiA+
-PiBbIDMwMTguOTkyOTgwXSAga3RocmVhZCsweDExMi8weDEzMAo+PiA+PiBbIDMwMTguOTkyOTgx
-XSAgPyBrdGhyZWFkX2JpbmQrMHgzMC8weDMwCj4+ID4+IFsgMzAxOC45OTI5ODNdICByZXRfZnJv
-bV9mb3JrKzB4MzUvMHg0MAo+PiA+PiBbIDMwMTguOTkyOTg0XSAtLS1bIGVuZCB0cmFjZSAzYWY2
-MThjYTk3YmQ0YTBhIF0tLS0KPj4gPj4gYGBgCj4+ID4+Cj4+ID4+IFBsZWFzZSBmaW5kIGFsbCBM
-aW51eCBtZXNzYWdlcyBhdHRhY2hlZC4KPj4gPgo+PiA+IEkgcmVwb3J0ZWQgdGhhdCB0d2ljZSBh
-bmQgbm8gb25lIHNlZW1zIHRvIGNhcmUgYWJvdXQuCj4+ID4KPj4gPiBodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTgtTm92ZW1iZXIvMDEyMzk4Lmh0bWwKPj4g
-PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTgtRGVjZW1i
-ZXIvMDEyNjU4Lmh0bWwKPj4KPj4gRG9lcyB0aGlzIHBhdGNoIGhlbHA6Cj4+Cj4+IGF0aDEwazog
-RHJvcCBXQVJOX09OKClzIHRoYXQgYWx3YXlzIHRyaWdnZXIgZHVyaW5nIHN5c3RlbSByZXN1bWUK
-Pj4KPj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDgzNzEzOS8KPj4KPgo+
-IFdpdGhvdXQgdG8gdGVzdCB0aGlzIHBhdGNoIEkgY2FuIGNvbmZpcm0gaXQgd2lsbCBoZWxwICwg
-SSBkcm9wcGVkIHRoZQo+IFdBUk5fT04oKSdzIGluIDQuMTkgYWxyZWFkeS4KPiBJZiBJIHJlbWVt
-YmVyIHJpZ2h0IDQuMTkgaGFzIG9uZSBXQVJOX09OKCkgdHJpZ2dlcnMgd2hpbGUgNC4yMCBnb3Qg
-dHdvLgoKT2ssIHRoYW5rcy4gSSdsbCB0cnkgdG8gZ2V0IHRoaXMgcGF0Y2ggdG8gNS4xLgoKLS0g
-CkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+The tlv targets such as WCN3990 send more data in
+the chan info event, which is not sent by the non tlv
+targets. There is a minimum size check in the wmi event for
+non-tlv targets and hence we cannot update the common
+channel info structure.
+
+If the common channel info structure is updated, the
+size check for chan info event for non-tlv targets
+will fail and return -EPROTO and we see the below
+error messages
+
+   ath10k_pci 0000:01:00.0: failed to parse chan info event: -71
+
+Add tlv specific channel info structure and restore the
+original size of the common channel info structure to
+mitigate this issue.
+
+Tested HW: WCN3990
+	   QCA9887
+Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+	   10.2.4-1.0-00037
+
+Fixes: 13104929d2ec ("ath10k: fill the channel survey results for WCN3990 correctly")
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 16 ++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  8 --------
+ 3 files changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 582fb11..a826acb 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -810,7 +810,7 @@ static int ath10k_wmi_tlv_op_pull_ch_info_ev(struct ath10k *ar,
+ 					     struct wmi_ch_info_ev_arg *arg)
+ {
+ 	const void **tb;
+-	const struct wmi_chan_info_event *ev;
++	const struct wmi_tlv_chan_info_event *ev;
+ 	int ret;
+ 
+ 	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 65e6aa5..4bdd655 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1607,6 +1607,22 @@ struct chan_info_params {
+ 
+ #define WMI_TLV_FLAG_MGMT_BUNDLE_TX_COMPL	BIT(9)
+ 
++struct wmi_tlv_chan_info_event {
++	__le32 err_code;
++	__le32 freq;
++	__le32 cmd_flags;
++	__le32 noise_floor;
++	__le32 rx_clear_count;
++	__le32 cycle_count;
++	__le32 chan_tx_pwr_range;
++	__le32 chan_tx_pwr_tp;
++	__le32 rx_frame_count;
++	__le32 my_bss_rx_cycle_count;
++	__le32 rx_11b_mode_data_duration;
++	__le32 tx_frame_cnt;
++	__le32 mac_clk_mhz;
++} __packed;
++
+ struct wmi_tlv_mgmt_tx_compl_ev {
+ 	__le32 desc_id;
+ 	__le32 status;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index e1c40bb..d188a2c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6523,14 +6523,6 @@ struct wmi_chan_info_event {
+ 	__le32 noise_floor;
+ 	__le32 rx_clear_count;
+ 	__le32 cycle_count;
+-	__le32 chan_tx_pwr_range;
+-	__le32 chan_tx_pwr_tp;
+-	__le32 rx_frame_count;
+-	__le32 my_bss_rx_cycle_count;
+-	__le32 rx_11b_mode_data_duration;
+-	__le32 tx_frame_cnt;
+-	__le32 mac_clk_mhz;
+-
+ } __packed;
+ 
+ struct wmi_10_4_chan_info_event {
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
