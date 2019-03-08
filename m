@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h2C1R-0004jw-IZ
- for ath10k@lists.infradead.org; Fri, 08 Mar 2019 09:42:34 +0000
+ id 1h2DCa-00068k-44
+ for ath10k@lists.infradead.org; Fri, 08 Mar 2019 10:58:09 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: support PCIe enter L1 state
-References: <1542163848-837-1-git-send-email-wgong@codeaurora.org>
- <20181115002836.GA71934@google.com>
- <c94346b26a6d4b11a045a176ca854051@aptaiexm02f.ap.qualcomm.com>
- <20181115184333.GA87504@google.com> <87va4x8q2c.fsf@codeaurora.org>
- <CABvG-CVAnwkiKVJik0PdsmRxF62kKv2N+aRKNq=nbopoExLvDA@mail.gmail.com>
- <87y36q75wr.fsf@kamboji.qca.qualcomm.com>
- <CA+ASDXO8NujrORVLZMPbDy916cnzOvx_Bp8Vr-VvkbBwJvB97A@mail.gmail.com>
-Date: Fri, 08 Mar 2019 11:42:29 +0200
-In-Reply-To: <CA+ASDXO8NujrORVLZMPbDy916cnzOvx_Bp8Vr-VvkbBwJvB97A@mail.gmail.com>
- (Brian Norris's message of "Fri, 8 Feb 2019 09:05:11 -0800")
-Message-ID: <87h8cd8zy2.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Warning at drivers/net/wireless/ath/ath10k/mac.c:5625
+ ath10k_bss_info_changed
+References: <362a9b5f-8908-17f5-3594-6c3c68789dea@molgen.mpg.de>
+ <CAEJqkggKGTn0ojWzuYGfoYehDnOf=je5L-7-M1kWogutPGMg3g@mail.gmail.com>
+ <874l8ic0l4.fsf@codeaurora.org>
+ <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
+Date: Fri, 08 Mar 2019 12:58:02 +0200
+In-Reply-To: <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
+ (Gabriel C.'s message of "Mon, 4 Mar 2019 14:00:40 +0100")
+Message-ID: <87wol97hvp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,33 +23,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: =?utf-8?Q?Micha=C5=82?= Kazior <kazikcz@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Gabriel C <nix.or.die@gmail.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
 
-Brian Norris <briannorris@chromium.org> writes:
-
-> On Fri, Feb 8, 2019 at 5:42 AM Kalle Valo <kvalo@codeaurora.org> wrote:
->> No replies from anyone (including Wen) for 3 months about testing this
->> patch on anything else than QCA6174. So I'll drop this now, please
->> resubmit once test coverage is better.
->
-> I know this isn't exactly what you're asking for, but FWIW we've been
-> using this since late November on all our QCA6174 products. No issues
-> seen as far as I know, and we have seen some power savings.
-
-Thanks for the feedback, this is very good to know. I also would like to
-apply this but not before we have some testing feedback from AP chipsets
-like QCA988X or QCA9984. Wen, are you planning to test those and
-resubmit?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+R2FicmllbCBDIDxuaXgub3IuZGllQGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBBbSBNby4sIDQuIE3D
+pHJ6IDIwMTkgdW0gMTI6NTkgVWhyIHNjaHJpZWIgS2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9y
+YS5vcmc+Ogo+Pgo+PiBHYWJyaWVsIEMgPG5peC5vci5kaWVAZ21haWwuY29tPiB3cml0ZXM6Cj4+
+Cj4+ID4gQW0gTW8uLCA0LiBNw6RyeiAyMDE5IHVtIDEyOjI4IFVociBzY2hyaWViIFBhdWwgTWVu
+emVsIDxwbWVuemVsQG1vbGdlbi5tcGcuZGU+Ogo+PiA+Cj4+ID4+IFJlc3VtaW5nIGZyb20gQUNQ
+SSBTMyBvbiB0aGUgRGVsbCBYUFMgMTMgOTM3MCB3aXRoIERlYmlhbiBTaWQvdW5zdGFibGUsCj4+
+ID4+IExpbnV4IDQuMTkuMjAgc2hvd2VkIHRoZSB3YXJuaW5nIGJlbG93LiBJdOKAmXMgbm90IHJl
+cHJvZHVjaWJsZS4KPj4KPj4gWy4uLl0KPj4KPj4gPj4gWyAzMDE4Ljk5MjkxNl0gQ2FsbCBUcmFj
+ZToKPj4gPj4gWyAzMDE4Ljk5MjkyMV0gID8gYXRoMTBrX2NvbmZfdHgrMHg3YS8weDRiMCBbYXRo
+MTBrX2NvcmVdCj4+ID4+IFsgMzAxOC45OTI5MzddICBpZWVlODAyMTFfYnNzX2luZm9fY2hhbmdl
+X25vdGlmeSsweGFiLzB4MWEwIFttYWM4MDIxMV0KPj4gPj4gWyAzMDE4Ljk5Mjk0Nl0gIGllZWU4
+MDIxMV9yZWNvbmZpZysweDY2MS8weDEyYTAgW21hYzgwMjExXQo+PiA+PiBbIDMwMTguOTkyOTYy
+XSAgd2lwaHlfcmVzdW1lKzB4N2YvMHgxMjAgW2NmZzgwMjExXQo+PiA+PiBbIDMwMTguOTkyOTY5
+XSAgPyB3aXBoeV9zdXNwZW5kKzB4MjcwLzB4MjcwIFtjZmc4MDIxMV0KPj4gPj4gWyAzMDE4Ljk5
+Mjk3MV0gIGRwbV9ydW5fY2FsbGJhY2srMHg1OS8weDE1MAo+PiA+PiBbIDMwMTguOTkyOTcyXSAg
+ZGV2aWNlX3Jlc3VtZSsweDk3LzB4MTkwCj4+ID4+IFsgMzAxOC45OTI5NzNdICBhc3luY19yZXN1
+bWUrMHgxOS8weDMwCj4+ID4+IFsgMzAxOC45OTI5NzRdICBhc3luY19ydW5fZW50cnlfZm4rMHgz
+OS8weDE2MAo+PiA+PiBbIDMwMTguOTkyOTc2XSAgcHJvY2Vzc19vbmVfd29yaysweDFhNy8weDNh
+MAo+PiA+PiBbIDMwMTguOTkyOTc4XSAgd29ya2VyX3RocmVhZCsweDMwLzB4MzkwCj4+ID4+IFsg
+MzAxOC45OTI5NzldICA/IHB3cV91bmJvdW5kX3JlbGVhc2Vfd29ya2ZuKzB4ZDAvMHhkMAo+PiA+
+PiBbIDMwMTguOTkyOTgwXSAga3RocmVhZCsweDExMi8weDEzMAo+PiA+PiBbIDMwMTguOTkyOTgx
+XSAgPyBrdGhyZWFkX2JpbmQrMHgzMC8weDMwCj4+ID4+IFsgMzAxOC45OTI5ODNdICByZXRfZnJv
+bV9mb3JrKzB4MzUvMHg0MAo+PiA+PiBbIDMwMTguOTkyOTg0XSAtLS1bIGVuZCB0cmFjZSAzYWY2
+MThjYTk3YmQ0YTBhIF0tLS0KPj4gPj4gYGBgCj4+ID4+Cj4+ID4+IFBsZWFzZSBmaW5kIGFsbCBM
+aW51eCBtZXNzYWdlcyBhdHRhY2hlZC4KPj4gPgo+PiA+IEkgcmVwb3J0ZWQgdGhhdCB0d2ljZSBh
+bmQgbm8gb25lIHNlZW1zIHRvIGNhcmUgYWJvdXQuCj4+ID4KPj4gPiBodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTgtTm92ZW1iZXIvMDEyMzk4Lmh0bWwKPj4g
+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTgtRGVjZW1i
+ZXIvMDEyNjU4Lmh0bWwKPj4KPj4gRG9lcyB0aGlzIHBhdGNoIGhlbHA6Cj4+Cj4+IGF0aDEwazog
+RHJvcCBXQVJOX09OKClzIHRoYXQgYWx3YXlzIHRyaWdnZXIgZHVyaW5nIHN5c3RlbSByZXN1bWUK
+Pj4KPj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDgzNzEzOS8KPj4KPgo+
+IFdpdGhvdXQgdG8gdGVzdCB0aGlzIHBhdGNoIEkgY2FuIGNvbmZpcm0gaXQgd2lsbCBoZWxwICwg
+SSBkcm9wcGVkIHRoZQo+IFdBUk5fT04oKSdzIGluIDQuMTkgYWxyZWFkeS4KPiBJZiBJIHJlbWVt
+YmVyIHJpZ2h0IDQuMTkgaGFzIG9uZSBXQVJOX09OKCkgdHJpZ2dlcnMgd2hpbGUgNC4yMCBnb3Qg
+dHdvLgoKT2ssIHRoYW5rcy4gSSdsbCB0cnkgdG8gZ2V0IHRoaXMgcGF0Y2ggdG8gNS4xLgoKLS0g
+CkthbGxlIFZhbG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
