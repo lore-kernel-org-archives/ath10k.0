@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from narfation.org ([2001:4d88:2000:7::2] helo=v3-1039.vlinux.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3GLA-00036T-5K
- for ath10k@lists.infradead.org; Mon, 11 Mar 2019 08:31:22 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH] ath10k: avoid leaving .bss_info_changed prematurely
-Date: Mon, 11 Mar 2019 09:31:07 +0100
-Message-Id: <20190311083107.311-1-sven@narfation.org>
-MIME-Version: 1.0
+ id 1h3NF5-0006BS-Nb
+ for ath10k@lists.infradead.org; Mon, 11 Mar 2019 15:53:32 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH 0/2] Fix tx stats inconsistencies
+Date: Mon, 11 Mar 2019 21:23:20 +0530
+Message-Id: <1552319602-17795-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,128 +15,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>, Sven Eckelmann <seckelmann@datto.com>, Sriram R <srirrama@codeaurora.org>
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-From: Sven Eckelmann <seckelmann@datto.com>
+The rate table indexes and the NSS values are
+incorrect, causing the tx stats to be displayed
+incorrectly.
 
-ath10k_bss_info_changed() handles various events from the upper layers. It
-parses the changed bitfield and then configures the driver/firmware
-accordingly. Each detected event is handled in a separate scope which is
-independent of each other - but in the same function.
+This patchset fix these issues in the tx stats
+displayed via debugfs.
 
-The commit f279294e9ee2 ("ath10k: add support for configuring management
-packet rate") changed this behavior by returning from this function
-prematurely when some precondition was not fulfilled. All new event
-handlers added after the BSS_CHANGED_BASIC_RATES event handler would then
-also be skipped.
+Rakesh Pillai (2):
+  ath10k: Fix rate table updation in tx stats
+  ath10k: Fix NSS tx stats for legacy rates
 
-Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
----
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sriram R <srirrama@codeaurora.org>
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Only compile tested
----
- drivers/net/wireless/ath/ath10k/mac.c | 64 ++++++++++++++++-----------
- 1 file changed, 38 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b73c23d4ce86..b1d0741c7861 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5578,6 +5578,40 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+static void ath10k_recalculate_mgmt_rate(struct ath10k *ar,
-+					 struct ieee80211_vif *vif)
-+{
-+	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	const struct ieee80211_supported_band *sband;
-+	struct cfg80211_chan_def def;
-+	u8 basic_rate_idx;
-+	int hw_rate_code;
-+	u32 vdev_param;
-+	u16 bitrate;
-+	int ret;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	if (WARN_ON(ath10k_mac_vif_chan(vif, &def)))
-+		return;
-+
-+	sband = ar->hw->wiphy->bands[def.chan->band];
-+	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
-+	bitrate = sband->bitrates[basic_rate_idx].bitrate;
-+
-+	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
-+	if (hw_rate_code < 0) {
-+		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
-+		return;
-+	}
-+
-+	vdev_param = ar->wmi.vdev_param->mgmt_rate;
-+	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
-+					hw_rate_code);
-+	if (ret)
-+		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
-+}
-+
- static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				    struct ieee80211_vif *vif,
- 				    struct ieee80211_bss_conf *info,
-@@ -5588,10 +5622,9 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	struct cfg80211_chan_def def;
- 	u32 vdev_param, pdev_param, slottime, preamble;
- 	u16 bitrate, hw_value;
--	u8 rate, basic_rate_idx;
--	int rateidx, ret = 0, hw_rate_code;
-+	u8 rate;
-+	int rateidx, ret = 0;
- 	enum nl80211_band band;
--	const struct ieee80211_supported_band *sband;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -5811,29 +5844,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				    arvif->vdev_id,  ret);
- 	}
- 
--	if (changed & BSS_CHANGED_BASIC_RATES) {
--		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
--			mutex_unlock(&ar->conf_mutex);
--			return;
--		}
--
--		sband = ar->hw->wiphy->bands[def.chan->band];
--		basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
--		bitrate = sband->bitrates[basic_rate_idx].bitrate;
--
--		hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
--		if (hw_rate_code < 0) {
--			ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
--			mutex_unlock(&ar->conf_mutex);
--			return;
--		}
--
--		vdev_param = ar->wmi.vdev_param->mgmt_rate;
--		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
--						hw_rate_code);
--		if (ret)
--			ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
--	}
-+	if (changed & BSS_CHANGED_BASIC_RATES)
-+		ath10k_recalculate_mgmt_rate(ar, vif);
- 
- 	mutex_unlock(&ar->conf_mutex);
- }
 -- 
-2.20.1
+2.7.4
 
 
 _______________________________________________
