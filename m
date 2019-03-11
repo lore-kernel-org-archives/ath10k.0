@@ -1,24 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3EfT-00017m-NB
- for ath10k@lists.infradead.org; Mon, 11 Mar 2019 06:44:13 +0000
-Received: by mail-lf1-x144.google.com with SMTP id h71so2527617lfe.0
- for <ath10k@lists.infradead.org>; Sun, 10 Mar 2019 23:44:10 -0700 (PDT)
-Subject: Re: FW: [PATCH] ath10k: fix return value check in wake_tx_q op
-References: <20180506132500.16888-1-erik.stromdahl@gmail.com>
- <6dc00772b826410e930306891fd13ed9@euamsexm01f.eu.qualcomm.com>
- <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
- <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
- <87sgwz8ylw.fsf@kamboji.qca.qualcomm.com>
- <a1c113622b9aec9b32393c0a3e159e32@codeaurora.org>
- <4dadbeebe8dc1e911cc4871d767b4ed1@codeaurora.org>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <8c882c7d-41e3-cdc9-34ae-6446970dbc52@gmail.com>
-Date: Mon, 11 Mar 2019 07:44:06 +0100
-MIME-Version: 1.0
-In-Reply-To: <4dadbeebe8dc1e911cc4871d767b4ed1@codeaurora.org>
-Content-Language: en-US
+ id 1h3ElX-0004IT-0x
+ for ath10k@lists.infradead.org; Mon, 11 Mar 2019 06:50:28 +0000
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: [PATCHv4 0/9] cfg80211/mac80211: Add support for TID specific
+ configuration
+Date: Mon, 11 Mar 2019 12:18:12 +0530
+Message-Id: <1552286901-28285-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +16,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: johannes@sipsolutions.net, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-SGkgWWlibywKClNvcnJ5IGZvciBhIGxhdGUgcmVwbHksIGJ1dCBJIGhhdmUgYmVlbiBidXN5IHdp
-dGggb3RoZXIgcHJvamVjdHMgbGF0ZWx5LgpJIGhhdmUgYWRkZWQgbXkgY29tbWVudHMgYmVsb3cK
-Ck9uIDMvNC8xOSAyOjU2IEFNLCBZaWJvIFpoYW8gd3JvdGU6Cj4g5ZyoIDIwMTktMDItMjUgMTI6
-NDDvvIxZaWJvIFpoYW8g5YaZ6YGT77yaCj4+IOWcqCAyMDE5LTAyLTA3IDIyOjI177yMS2FsbGUg
-VmFsbyDlhpnpgZPvvJoKPj4+IFlpYm8gWmhhbyA8eWlib3pAY29kZWF1cm9yYS5vcmc+IHdyaXRl
-czoKPj4+Cj4+Pj4gV2UgaGF2ZSBtZXQgcGVyZm9ybWFuY2UgaXNzdWUgb24gb3VyIHR3by1jb3Jl
-IHN5c3RlbSBhZnRlciBhcHBseWluZwo+Pj4+IHlvdXIgcGF0Y2guIEluIFdEUyBtb2RlLCB3ZSBm
-b3VuZCB0aGF0IHRoZSBwZWFrIHRocm91Z2hwdXQgaW4gVENQLURMCj4+Pj4gYW5kIFVEUC1ETCBk
-cm9wcGVkIG1vcmUgdGhhbiAxMCUgY29tcGFyZWQgd2l0aCBwcmV2aW91cyBvbmUuIEFuZCBpbgo+
-Pj4+IHNvbWUgY2FzZXMsIHRob3VnaCB0aHJvdWdocHV0IHN0YXlzIHRoZSBzYW1lLCBvbmUgQ1BV
-IHVzYWdlIHJpc2VzCj4+Pj4gYWJvdXQgMjAlIHdoaWNoIGxlYWRzIHRvIDEwJSBpbiB0b3RhbCBD
-UFUgdXNhZ2UuIFdpdGggeW91ciBjaGFuZ2UsIEkKPj4+PiB0aGluayBkcml2ZXIgd2lsbCB0cnkg
-aXRzIGJlc3QgdG8gcHVzaCBhcyBtYW55IHBhY2tldHMgYXMgaXQgY2FuLgo+Pj4+IER1cmluZyB0
-aGlzIHRpbWUsIHRoZSBkcml2ZXIncyBxdWV1ZSBsb2NrIHdpbGwgYmUgaGVsZCBmb3IgdG9vIG11
-Y2gKPj4+PiB0aW1lIGluIG9uZSBDUFUgYW5kIGFzIGEgcmVzdWx0LCB0aGUgb3RoZXIgQ1BVIHdp
-bGwgYmUgYmxvY2tlZCBpZiBpdAo+Pj4+IHdhbnRzIHRvIGFjcXVpcmVkIHRoZSBzYW1lIGxvY2su
-IFdvcmtpbmcgaW4gdGhpcyB3YXkgc2VlbXMgbm90Cj4+Pj4gZWZmaWNpZW5jeS4KPj4+Pgo+Pj4+
-IFNvIEkgdGhpbmsgaXQgaXMgYmV0dGVyIHRvIHJldmVydCB0aGUgY2hhbmdlIHRpbGwgd2UgY29t
-ZSB1cCB3aXRoIGEKPj4+PiBuZXcgc29sdXRpb24uCj4+Pgo+Pj4gSSBkb24ndCB0aGluayByZXZl
-cnRpbmcgaXMgYSBjbGVhciBvcHRpb24gYXQgdGhpcyBzdGFnZSBiZWNhdXNlIHRoYXQKPj4+IGFn
-YWluIGNyZWF0ZXMgcHJvYmxlbXMgZm9yIFNESU8uIElJUkMgd2l0aG91dCB0aGlzIHBhdGNoIFNE
-SU8gd2FzCj4+PiBzZW5kaW5nIG9uZSBwYWNrZXQgYSB0aW1lIChvciBzb21ldGhpbmcgbGlrZSB0
-aGF0LCBjYW4ndCByZW1lbWJlciBhbGwKPj4+IHRoZSBkZXRhaWxzIHJpZ2h0IG5vdykuCgpJIGhh
-dmUgYSBmZXcgcGF0Y2hlcyByZWxhdGVkIHRvIGJ1bmRsaW5nIG9mIFRYIHBhY2tldHMgb24gbXkg
-cHJpdmF0ZSByZXBvLgpJIGhhdmUgbm90IHlldCBoYWQgdGhlIHRpbWUgdG8gcHJlcGFyZSB0aGVt
-IGZvciBzdWJtaXNzaW9uLgpUaGlzIHBhdGNoIGlzIHJlbGF0ZWQgdG8gdGhhdCB3b3JrLCBidXQg
-SSBkZWNpZGVkIHRvIHN1Ym1pdCBpdCBzZXBhcmF0ZWx5CnNpbmNlIEkgY29uc2lkZXJlZCBpdCBh
-IGJ1Z2ZpeC4KCjxzbmlwPgoKPj4KPj4gSU1ITywgd2l0aCBFcmlrJ3MgY2hhbmdlLCBFcmlrJ3Mg
-Y2hhbmdlIGhhcyBjaGFuZ2VkIHRoZSB3YXkgZnEncwo+PiBzY2hlZHVsZSBiZWhhdmlvciBhbmQg
-aXQgbG9va3MgbGlrZSB0aGVyZSBpcyBubyBvdGhlciBwYWNrZXRzIGluIHRoZQo+PiBmcSBhZnRl
-ciBhIHBhY2tldCBoYXMgYmVlbiBkZXF1ZXVlZC4gQW5kIGFzIGEgcmVzdWx0LCB0aGlzIGZsb3cn
-cwo+PiBkZWZpY2l0IHdpbGwgYmUgcmVmaWxsIGFuZCB0aGVuIHJlbW92ZWQgZnJvbSBmcSBsaXN0
-IGF0IG9uY2UgaW4gdGhlCj4+IHNhbWUgQ1BVLiBBbmQgZHVyaW5nIHRoaXMgdGltZSwgdGhlIG90
-aGVyIENQVSBjb3VsZCBiZSBibG9ja2VkLiBXaGVuCj4+IG5ldyBwYWNrZXQgY29tZXMsIHNhbWUg
-dGhpbmcgaGFwcGVucy4gU28gd2UgZ2V0IGVxdWFsIG5ldyBmbG93cyBhbmQKPj4gdHgtcGFja2V0
-cy4KPj4KPj4gVGhpbmdzIHdvdWxkIGJlIGRpZmZlcmVudCB3aXRob3V0IEVyaWsncyBjaGFuZ2Uu
-IEFmdGVyIGEgcGFja2V0IGhhcwo+PiBiZWVuIGRlcXVldWVkLCB0aGlzIGZsb3cncyBkZWZpY2l0
-IHdpbGwgbm90IGJlIHJlZmlsbCBpbW1lZGlhdGVseSBpbgo+PiBDUFUwLiBJdCBpcyBwb3NzaWJs
-ZSB0aGF0IHRoZSBkZWZpY2l0IHRvIGJlIHJlZmlsbGVkIGluIENQVTEgd2hpbGUgYXQKPj4gdGhl
-IHNhbWUgdGltZSBDUFUwIGNhbiBmZXRjaCBkYXRhIGZyb20gZXRoZXJuZXQuIFNvIHdlIGNhbiBz
-ZWUgbW9yZQo+PiB0eC1wYWNrZXRzIGRlbGl2ZXJlZCB0byBGVyBmcm9tIGFxbS4KPj4KPj4KPj4+
-IFdoeSBkb2VzIHRoaXMgaGFwcGVuIG9ubHkgV0RTIG1vZGU/IERpZCB5b3UgdGVzdCBvdGhlciBt
-b2RlcywgbGlrZSBBUCBvcgo+Pj4gY2xpZW50IG1vZGU/Cj4+IEFQIG1vZGUgaGFzIHNhbWUgaXNz
-dWUuIFVEUCB0aHJvdWdocHV0IGRyb3BzIG1vcmUgdGhhbiAxMCUuIEFzIGZvcgo+PiBUQ1AsIENQ
-VSB1c2FnZSByaXNpbmcgYSBsb3QgYWx0aG91Z2ggdGhyb3VnaHB1dCBzdGF5cyBzaW1pbGlhci4K
-Pj4gU28sIEknZCBzYXkgRXJpaydzIGNoYW5nZSBkb2VzIG5vdCB3b3JrIGZvciB1cy4KPiAKPiBI
-aSBLYWxsZSwKPiAKPiBNYXkgSSBoYXZlIHlvdXIgY29tbWVudHM/Cj4gCgpBcyBJIHdyb3RlIGlu
-IHRoZSBjb21taXQgbWVzc2FnZSwgdGhlIG9yaWdpbmFsIGNvZGUgd2lsbCBhbHdheXMgYnJlYWsg
-b3V0IG9mCnRoZSBsb29wIGFmdGVyIGp1c3Qgb25lIGl0ZXJhdGlvbi4KCkl0IGlzIE9LIHdpdGgg
-bWUgdG8gYnJpbmcgYmFjayB0aGUgb2xkIGxvZ2ljLCBidXQgSSB0aGluayB3ZSBzaG91bGQgc2tp
-cCB0aGUKbG9vcCBlbnRpcmVseSB0aGVuLgoKU29tZXRoaW5nIGxpa2UgdGhpczoKCmlmIChhdGgx
-MGtfbWFjX3R4X2Nhbl9wdXNoKGh3LCB0eHEpKSB7CglhdGgxMGtfbWFjX3R4X3B1c2hfdHhxKGh3
-LCB0eHEpOwp9CgoKQnR3LCBJIG5vdGljZWQgdGhhdCB0aGUgImZhaXIgc2NoZWR1bGluZyIgbWVj
-aGFuaXNtIChkZXJpdmVkIGZyb20gYXRoOWspIGZyb20KVG9rZSBoYXZlIGJlZW4gaW50ZWdyYXRl
-ZC4KCkkgaGF2ZW4ndCByZWJhc2VkIG15IHRyZWUgZm9yIGEgd2hpbGUsIHNvIEkgd2lsbCBtb3N0
-IGxpa2VseSBoYXZlIHRvIHJld3JpdGUKbXkgcGF0Y2hlcyBhbnl3YXkgaW4gb3JkZXIgdG8gbWFr
-ZSB0aGVtIHdvcmsgd2l0aCB0aGUgbmV3IFRYIHNjaGVkdWxpbmcuCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+
+Add infrastructure to support per TID configurations like noack policy,
+retry count, AMPDU control(disable/enable), RTSCTS control(enable/disable)
+and TX rate mask configurations.
+This will be useful for the driver which can supports data TID
+specific configuration rather than phy level configurations.
+Here NL80211_CMD_SET_TID_CONFIG added to support this operation by
+accepting TID configuration.
+This command can accept STA mac addreess to make the configuration
+station specific rather than applying to all the connected stations
+to the netdev.
+And this nested command configuration can accept multiple number of
+data TID specific configuration in a single command,
+enum ieee80211_tid_conf_mask used to notify the driver that which
+configuration got modified for the TID.
+
+Tamizh chelvam (9):
+  nl80211: New netlink command for TID specific configuration
+  nl80211: Add new netlink attribute for TID speicific retry count
+  nl80211: Add netlink attribute for AMPDU aggregation enable/disable
+  nl80211: Add netlink attribute to enable/disable RTS_CTS
+  nl80211: Add netlink attribute to configure TID specific tx rate
+  mac80211: Add api to support configuring TID specific configuration
+  ath10k: Add wmi command support for station specific TID config
+  ath10k: Add new api to support TID specific configuration
+  ath10k: Add extended TID configuration support
+
+v4:
+  * Fixed kbuild warnings.
+
+v3:
+  * Modified "nl80211: Add netlink attribute to configure TID specific tx rate" patch
+    to accept multiple TX rate configuration at a time.
+  * Modified noack and ampdu variable data type to int in
+    "mac80211: Add api to support configuring TID specific configuration" patch to store
+    default configuration.
+  * Modified "ath10k: Add new api to support TID specific configuration" patch to handle
+    default values for noack and ampdu. And added sta pointer sanity check in
+    ath10k_mac_tid_bitrate_config function.
+  * Fixed "ath10k: Add extended TID configuration support" wmi command parameters
+    assigned part.
+
+v2:
+  * Added support to accept multiple TID configuration
+  * Added support to configure TX rate and RTSCTS control
+
+ drivers/net/wireless/ath/ath10k/core.c    |    4 +
+ drivers/net/wireless/ath/ath10k/core.h    |    6 +
+ drivers/net/wireless/ath/ath10k/mac.c     |  679 +++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |   19 +
+ drivers/net/wireless/ath/ath10k/wmi.c     |   35 ++
+ drivers/net/wireless/ath/ath10k/wmi.h     |   72 +++
+ include/net/cfg80211.h                    |   57 +++
+ include/net/mac80211.h                    |   38 ++
+ include/uapi/linux/nl80211.h              |  182 ++++++++
+ net/mac80211/cfg.c                        |   28 ++
+ net/mac80211/driver-ops.h                 |   15 +
+ net/wireless/nl80211.c                    |  253 ++++++++++-
+ net/wireless/rdev-ops.h                   |   11 +
+ net/wireless/trace.h                      |   18 +
+ 14 files changed, 1319 insertions(+), 98 deletions(-)
+
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
