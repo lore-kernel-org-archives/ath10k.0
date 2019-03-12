@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3X4q-0007nP-9P
- for ath10k@lists.infradead.org; Tue, 12 Mar 2019 02:23:38 +0000
-MIME-Version: 1.0
-Date: Tue, 12 Mar 2019 10:23:34 +0800
-From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: Re: FW: [PATCH] ath10k: fix return value check in wake_tx_q op
-In-Reply-To: <8c882c7d-41e3-cdc9-34ae-6446970dbc52@gmail.com>
-References: <20180506132500.16888-1-erik.stromdahl@gmail.com>
- <6dc00772b826410e930306891fd13ed9@euamsexm01f.eu.qualcomm.com>
- <c77a1c0961f34ee68b7266444d2207f5@aptaiexm02e.ap.qualcomm.com>
- <66a74025a23795f305de37989c1b8aa3@codeaurora.org>
- <87sgwz8ylw.fsf@kamboji.qca.qualcomm.com>
- <a1c113622b9aec9b32393c0a3e159e32@codeaurora.org>
- <4dadbeebe8dc1e911cc4871d767b4ed1@codeaurora.org>
- <8c882c7d-41e3-cdc9-34ae-6446970dbc52@gmail.com>
-Message-ID: <671c9c3a172ecc164c1ee45cfb1ccd71@codeaurora.org>
+ id 1h3Z7D-00015d-G3
+ for ath10k@lists.infradead.org; Tue, 12 Mar 2019 04:34:12 +0000
+From: Brandon Huang <yanghuan@codeaurora.org>
+Subject: [PATCH] ath10k: Fix the tx stats bytes & packets parsing
+Date: Tue, 12 Mar 2019 12:33:39 +0800
+Message-Id: <1552365219-16842-1-git-send-email-yanghuan@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +15,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: Brandon Huang <yanghuan@codeaurora.org>, linux-wireless@vger.kernel.org
 
-T24gMjAxOS0wMy0xMSAxNDo0NCwgRXJpayBTdHJvbWRhaGwgd3JvdGU6Cj4gSGkgWWlibywKPiAK
-PiBTb3JyeSBmb3IgYSBsYXRlIHJlcGx5LCBidXQgSSBoYXZlIGJlZW4gYnVzeSB3aXRoIG90aGVy
-IHByb2plY3RzIAo+IGxhdGVseS4KPiBJIGhhdmUgYWRkZWQgbXkgY29tbWVudHMgYmVsb3cKPiAK
-PiBPbiAzLzQvMTkgMjo1NiBBTSwgWWlibyBaaGFvIHdyb3RlOgo+PiDlnKggMjAxOS0wMi0yNSAx
-Mjo0MO+8jFlpYm8gWmhhbyDlhpnpgZPvvJoKPj4+IOWcqCAyMDE5LTAyLTA3IDIyOjI177yMS2Fs
-bGUgVmFsbyDlhpnpgZPvvJoKPj4+PiBZaWJvIFpoYW8gPHlpYm96QGNvZGVhdXJvcmEub3JnPiB3
-cml0ZXM6Cj4gCj4gSSBoYXZlIGEgZmV3IHBhdGNoZXMgcmVsYXRlZCB0byBidW5kbGluZyBvZiBU
-WCBwYWNrZXRzIG9uIG15IHByaXZhdGUgCj4gcmVwby4KPiBJIGhhdmUgbm90IHlldCBoYWQgdGhl
-IHRpbWUgdG8gcHJlcGFyZSB0aGVtIGZvciBzdWJtaXNzaW9uLgo+IFRoaXMgcGF0Y2ggaXMgcmVs
-YXRlZCB0byB0aGF0IHdvcmssIGJ1dCBJIGRlY2lkZWQgdG8gc3VibWl0IGl0IAo+IHNlcGFyYXRl
-bHkKPiBzaW5jZSBJIGNvbnNpZGVyZWQgaXQgYSBidWdmaXguCgpHcmVhdCEgUmVhbGx5IGxvb2tp
-bmcgZm9yd2FyZCB0byB5b3VyIG5ldyBwYXRjaC4KCj4gCj4gPHNuaXA+Cj4gCj4+PiAKPj4+IElN
-SE8sIHdpdGggRXJpaydzIGNoYW5nZSwgRXJpaydzIGNoYW5nZSBoYXMgY2hhbmdlZCB0aGUgd2F5
-IGZxJ3MKPj4+IHNjaGVkdWxlIGJlaGF2aW9yIGFuZCBpdCBsb29rcyBsaWtlIHRoZXJlIGlzIG5v
-IG90aGVyIHBhY2tldHMgaW4gdGhlCj4+PiBmcSBhZnRlciBhIHBhY2tldCBoYXMgYmVlbiBkZXF1
-ZXVlZC4gQW5kIGFzIGEgcmVzdWx0LCB0aGlzIGZsb3cncwo+Pj4gZGVmaWNpdCB3aWxsIGJlIHJl
-ZmlsbCBhbmQgdGhlbiByZW1vdmVkIGZyb20gZnEgbGlzdCBhdCBvbmNlIGluIHRoZQo+Pj4gc2Ft
-ZSBDUFUuIEFuZCBkdXJpbmcgdGhpcyB0aW1lLCB0aGUgb3RoZXIgQ1BVIGNvdWxkIGJlIGJsb2Nr
-ZWQuIFdoZW4KPj4+IG5ldyBwYWNrZXQgY29tZXMsIHNhbWUgdGhpbmcgaGFwcGVucy4gU28gd2Ug
-Z2V0IGVxdWFsIG5ldyBmbG93cyBhbmQKPj4+IHR4LXBhY2tldHMuCj4+PiAKPj4+IFRoaW5ncyB3
-b3VsZCBiZSBkaWZmZXJlbnQgd2l0aG91dCBFcmlrJ3MgY2hhbmdlLiBBZnRlciBhIHBhY2tldCBo
-YXMKPj4+IGJlZW4gZGVxdWV1ZWQsIHRoaXMgZmxvdydzIGRlZmljaXQgd2lsbCBub3QgYmUgcmVm
-aWxsIGltbWVkaWF0ZWx5IGluCj4+PiBDUFUwLiBJdCBpcyBwb3NzaWJsZSB0aGF0IHRoZSBkZWZp
-Y2l0IHRvIGJlIHJlZmlsbGVkIGluIENQVTEgd2hpbGUgYXQKPj4+IHRoZSBzYW1lIHRpbWUgQ1BV
-MCBjYW4gZmV0Y2ggZGF0YSBmcm9tIGV0aGVybmV0LiBTbyB3ZSBjYW4gc2VlIG1vcmUKPj4+IHR4
-LXBhY2tldHMgZGVsaXZlcmVkIHRvIEZXIGZyb20gYXFtLgo+Pj4gCj4+PiAKPj4+PiBXaHkgZG9l
-cyB0aGlzIGhhcHBlbiBvbmx5IFdEUyBtb2RlPyBEaWQgeW91IHRlc3Qgb3RoZXIgbW9kZXMsIGxp
-a2UgCj4+Pj4gQVAgb3IKPj4+PiBjbGllbnQgbW9kZT8KPj4+IEFQIG1vZGUgaGFzIHNhbWUgaXNz
-dWUuIFVEUCB0aHJvdWdocHV0IGRyb3BzIG1vcmUgdGhhbiAxMCUuIEFzIGZvcgo+Pj4gVENQLCBD
-UFUgdXNhZ2UgcmlzaW5nIGEgbG90IGFsdGhvdWdoIHRocm91Z2hwdXQgc3RheXMgc2ltaWxpYXIu
-Cj4+PiBTbywgSSdkIHNheSBFcmlrJ3MgY2hhbmdlIGRvZXMgbm90IHdvcmsgZm9yIHVzLgo+PiAK
-Pj4gSGkgS2FsbGUsCj4+IAo+PiBNYXkgSSBoYXZlIHlvdXIgY29tbWVudHM/Cj4+IAo+IAo+IEFz
-IEkgd3JvdGUgaW4gdGhlIGNvbW1pdCBtZXNzYWdlLCB0aGUgb3JpZ2luYWwgY29kZSB3aWxsIGFs
-d2F5cyBicmVhayAKPiBvdXQgb2YKPiB0aGUgbG9vcCBhZnRlciBqdXN0IG9uZSBpdGVyYXRpb24u
-Cj4gCj4gSXQgaXMgT0sgd2l0aCBtZSB0byBicmluZyBiYWNrIHRoZSBvbGQgbG9naWMsIGJ1dCBJ
-IHRoaW5rIHdlIHNob3VsZCAKPiBza2lwIHRoZQo+IGxvb3AgZW50aXJlbHkgdGhlbi4KPiAKPiBT
-b21ldGhpbmcgbGlrZSB0aGlzOgo+IAo+IGlmIChhdGgxMGtfbWFjX3R4X2Nhbl9wdXNoKGh3LCB0
-eHEpKSB7Cj4gCWF0aDEwa19tYWNfdHhfcHVzaF90eHEoaHcsIHR4cSk7Cj4gfQpZZXMsIGl0IGlz
-IHRoZSBleGFjdCB3YXkgd2UgdHJpZWQgaW4gb3VyIHByaXZhdGUgcmVwby4gQW5kIGl0IHdvcmtz
-IGZpbmUgCmluIG91ciBzZXR1cCBzbyBmYXIuIE5vdCBzdXJlIGl0IGlzIG9rIGZvciBvdGhlciBz
-aXR1YXRpb25zLiBIYXZlIHlvdSAKdGVzdGVkIG9uIHlvdXIgc2RpbyBzZXR1cCB3aXRoIHRoaXMg
-Y2hhbmdlPyBBbnkgaXNzdWUgb2JzZXJ2ZWQ/Cj4gCj4gCj4gQnR3LCBJIG5vdGljZWQgdGhhdCB0
-aGUgImZhaXIgc2NoZWR1bGluZyIgbWVjaGFuaXNtIChkZXJpdmVkIGZyb20gCj4gYXRoOWspIGZy
-b20KPiBUb2tlIGhhdmUgYmVlbiBpbnRlZ3JhdGVkLgo+IAo+IEkgaGF2ZW4ndCByZWJhc2VkIG15
-IHRyZWUgZm9yIGEgd2hpbGUsIHNvIEkgd2lsbCBtb3N0IGxpa2VseSBoYXZlIHRvIAo+IHJld3Jp
-dGUKPiBteSBwYXRjaGVzIGFueXdheSBpbiBvcmRlciB0byBtYWtlIHRoZW0gd29yayB3aXRoIHRo
-ZSBuZXcgVFggCj4gc2NoZWR1bGluZy4KCi0tIApZaWJvCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+In tx_stats debugfs, txrate->flags may contain multiple bits. For
+example, RATE_INFO_FLAGS_SHORT_GI could be set, and tx stats bytes
+and packets will be not updated correctly.
+
+Fix this issue by using bit operation to check txrate->flags.
+
+Tested HW: QCA9984
+Tested Firmware: 10.4-3.9.0.1-00007
+
+Signed-off-by: Brandon Huang <yanghuan@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index a20ea27..584b86b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2938,14 +2938,14 @@ static inline s8 ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
+ 
+ #define STATS_OP_FMT(name) tx_stats->stats[ATH10K_STATS_TYPE_##name]
+ 
+-	if (txrate->flags == RATE_INFO_FLAGS_VHT_MCS) {
++	if (txrate->flags & RATE_INFO_FLAGS_VHT_MCS) {
+ 		STATS_OP_FMT(SUCC).vht[0][mcs] += pstats->succ_bytes;
+ 		STATS_OP_FMT(SUCC).vht[1][mcs] += pstats->succ_pkts;
+ 		STATS_OP_FMT(FAIL).vht[0][mcs] += pstats->failed_bytes;
+ 		STATS_OP_FMT(FAIL).vht[1][mcs] += pstats->failed_pkts;
+ 		STATS_OP_FMT(RETRY).vht[0][mcs] += pstats->retry_bytes;
+ 		STATS_OP_FMT(RETRY).vht[1][mcs] += pstats->retry_pkts;
+-	} else if (txrate->flags == RATE_INFO_FLAGS_MCS) {
++	} else if (txrate->flags & RATE_INFO_FLAGS_MCS) {
+ 		STATS_OP_FMT(SUCC).ht[0][ht_idx] += pstats->succ_bytes;
+ 		STATS_OP_FMT(SUCC).ht[1][ht_idx] += pstats->succ_pkts;
+ 		STATS_OP_FMT(FAIL).ht[0][ht_idx] += pstats->failed_bytes;
+@@ -2966,7 +2966,7 @@ static inline s8 ath10k_get_legacy_rate_idx(struct ath10k *ar, u8 rate)
+ 	if (ATH10K_HW_AMPDU(pstats->flags)) {
+ 		tx_stats->ba_fails += ATH10K_HW_BA_FAIL(pstats->flags);
+ 
+-		if (txrate->flags == RATE_INFO_FLAGS_MCS) {
++		if (txrate->flags & RATE_INFO_FLAGS_MCS) {
+ 			STATS_OP_FMT(AMPDU).ht[0][ht_idx] +=
+ 				pstats->succ_bytes + pstats->retry_bytes;
+ 			STATS_OP_FMT(AMPDU).ht[1][ht_idx] +=
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
