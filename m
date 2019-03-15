@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4fKW-0006ia-Pg
- for ath10k@lists.infradead.org; Fri, 15 Mar 2019 05:24:30 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] net: ath: fix missing checks for bmi reads and writes
-References: <20190315051903.10664-1-kjlu@umn.edu>
-Date: Fri, 15 Mar 2019 07:24:22 +0200
-In-Reply-To: <20190315051903.10664-1-kjlu@umn.edu> (Kangjie Lu's message of
- "Fri, 15 Mar 2019 00:19:03 -0500")
-Message-ID: <87tvg44smx.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1h4jIk-0000KE-3F
+ for ath10k@lists.infradead.org; Fri, 15 Mar 2019 09:38:56 +0000
+Message-ID: <13392e1203be4ddd97c4e0e6b6a6c48ce97aae6f.camel@sipsolutions.net>
+Subject: Re: [PATCH v2] fq: fix fq_tin tx bytes overflow
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 15 Mar 2019 10:38:48 +0100
+In-Reply-To: <1552446505-15444-1-git-send-email-yiboz@codeaurora.org>
+ (sfid-20190313_040846_202389_4E584F4C)
+References: <1552446505-15444-1-git-send-email-yiboz@codeaurora.org>
+ (sfid-20190313_040846_202389_4E584F4C)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +25,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kangjie Lu <kjlu@umn.edu>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, pakki001@umn.edu, "David S. Miller" <davem@davemloft.net>
+To: Yibo Zhao <yiboz@codeaurora.org>, ath10k@lists.infradead.org
+Cc: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org
 
-Kangjie Lu <kjlu@umn.edu> writes:
+On Wed, 2019-03-13 at 11:08 +0800, Yibo Zhao wrote:
+> Currently, we are using u32 for tx_bytes in fq_tin.
+> If the throughput stays more than 1.2Gbps, tx_bytes
+> statistics overflow in about 1 min.
+> 
+> In order to allow us to trace the tx_bytes statistics
+> for longer time in high throughput, change its type
+> from u32 to u64.
 
-> ath10k_bmi_write32 and ath10k_bmi_read32 can fail. The fix
-> checks their statuses to avoid potential undefined behaviors.
->
-> Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+Hmm. 64-bit values are kinda expensive on 32-bit architectures. How
+badly do you need this? I mean ... worst case you just have to capture
+every 30 seconds or so if you're doing really high throughput with HE or
+something?
 
-The title prefix should be "ath10k: ", I'll fix that.
+johannes
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
