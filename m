@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from narfation.org ([79.140.41.39] helo=v3-1039.vlinux.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6T9h-0004sG-Db
- for ath10k@lists.infradead.org; Wed, 20 Mar 2019 04:48:47 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 2/2] ath10k: Add xo calibration support for wifi rf clock
-Date: Wed, 20 Mar 2019 10:15:11 +0530
-Message-Id: <20190320044511.12172-3-govinds@codeaurora.org>
+ id 1h6Wj1-00006u-9n
+ for ath10k@lists.infradead.org; Wed, 20 Mar 2019 08:37:29 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: Re: [PATCH v2 0/2] Add xo calibration support for wifi rf clock
+Date: Wed, 20 Mar 2019 09:37:14 +0100
+Message-ID: <2614783.8fX38OIfA2@bentobox>
 In-Reply-To: <20190320044511.12172-1-govinds@codeaurora.org>
 References: <20190320044511.12172-1-govinds@codeaurora.org>
 MIME-Version: 1.0
@@ -18,123 +18,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8139639996297762151=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: Catrinel Catrinescu <cc@80211.de>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Shashidhar Lakkavalli <slakkavalli@datto.com>
 
-PMIC XO is the clock source for wifi rf clock in integrated wifi
-chipset ex: WCN3990. Due to board layout errors XO frequency drifts
-can cause wifi rf clock inaccuracy.
-XO calibration test tree in Factory Test Mode is used to find the
-best frequency offset(for example +/-2KHz )by programming XO trim
-register. This ensure system clock stays within required 20 ppm
-WLAN rf clock.
+--===============8139639996297762151==
+Content-Type: multipart/signed; boundary="nextPart2399685.A95HZVWdDr"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Retrieve the xo trim offset via system firmware (e.g., device tree),
-especially in the case where the device doesn't have a useful EEPROM
-on which to store the calibrated XO offset (e.g., for integrated Wifi).
-Calibrated XO offset is sent to fw, which compensate the clock drift
-by programing the XO trim register.
+--nextPart2399685.A95HZVWdDr
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/qmi.c  | 12 ++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.c | 11 +++++++++++
- drivers/net/wireless/ath/ath10k/snoc.h |  2 ++
- 3 files changed, 25 insertions(+)
+On Wednesday, 20 March 2019 05:45:09 CET Govind Singh wrote:
+> PMIC XO is the clock source for wifi rf clock in integrated wifi
+> chipset ex: WCN3990. Due to board layout errors XO frequency drifts
+> can cause wifi rf clock inaccuracy.
+> XO calibration test tree in Factory Test Mode is used to find the
+> best frequency offset(for example +/-2KHz )by programming XO trim
+> register. This ensure system clock stays within required 20 ppm
+> WLAN rf clock.
+> 
+> Retrieve the xo trim offset via system firmware (e.g., device tree),
+> especially in the case where the device doesn't have a useful EEPROM
+> on which to store the calibrated XO offset (e.g., for integrated Wifi).
+> Calibrated XO offset is sent to fw, which compensate the clock drift
+> by programing the XO trim register.
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 37b3bd629f48..99c140a6628d 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -302,10 +302,16 @@ static int ath10k_qmi_send_cal_report_req(struct ath10k_qmi *qmi)
- 	struct wlfw_cal_report_resp_msg_v01 resp = {};
- 	struct wlfw_cal_report_req_msg_v01 req = {};
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 	struct qmi_txn txn;
- 	int i, j = 0;
- 	int ret;
- 
-+	if (ar_snoc->xo_cal_supported) {
-+		req.xo_cal_data_valid = 1;
-+		req.xo_cal_data = ar_snoc->xo_cal_data;
-+	}
-+
- 	ret = qmi_txn_init(&qmi->qmi_hdl, &txn, wlfw_cal_report_resp_msg_v01_ei,
- 			   &resp);
- 	if (ret < 0)
-@@ -636,6 +642,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
- 	struct wlfw_ind_register_resp_msg_v01 resp = {};
- 	struct wlfw_ind_register_req_msg_v01 req = {};
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 	struct qmi_txn txn;
- 	int ret;
- 
-@@ -646,6 +653,11 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
- 	req.msa_ready_enable_valid = 1;
- 	req.msa_ready_enable = 1;
- 
-+	if (ar_snoc->xo_cal_supported) {
-+		req.xo_cal_enable_valid = 1;
-+		req.xo_cal_enable = 1;
-+	}
-+
- 	ret = qmi_txn_init(&qmi->qmi_hdl, &txn,
- 			   wlfw_ind_register_resp_msg_v01_ei, &resp);
- 	if (ret < 0)
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 54efe6be8f1d..7cfd17beb7b0 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -20,6 +20,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regulator/consumer.h>
- 
- #include "ce.h"
-@@ -1189,6 +1190,16 @@ static int ath10k_snoc_resource_init(struct ath10k *ar)
- 		ar_snoc->ce_irqs[i].irq_line = res->start;
- 	}
- 
-+	ret = device_property_read_u32(&pdev->dev, "xo-cal-data",
-+				       &ar_snoc->xo_cal_data);
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc xo-cal-data return %d\n", ret);
-+	if (ret == 0) {
-+		ar_snoc->xo_cal_supported = true;
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "xo cal data %x\n",
-+			   ar_snoc->xo_cal_data);
-+	}
-+	ret = 0;
-+
- out:
- 	return ret;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 2b2f23cf7c5d..25383de8f17d 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -91,6 +91,8 @@ struct ath10k_snoc {
- 	struct ath10k_clk_info *clk;
- 	struct ath10k_qmi *qmi;
- 	unsigned long int flags;
-+	bool xo_cal_supported;
-+	u32 xo_cal_data;
- };
- 
- static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Who is responsible to fill in this values in the device-tree? On other 
+products, the correct XTAL capacitor registers values are calibrated on 
+different devices (in the same product line) separately to ensure that each 
+device has a minimal inaccuracy. During the boot of the device, the two u8 
+taken from params_for_tuning_caps (inside the EEPROM) are just written to the 
+AR_CH0_XTAL register (mapped to the correct the INDAC and OUTDAC region).
 
+Your patch here seems to be doing something similar (you may correct me if I 
+misinterpret something) but you are already saying that these devices don't 
+have an EEPROM. This is already quite odd because then we also wouldn't have 
+temperature compensation (also stored in per device EEPROM/precal data for 
+other devices).
+
+So you move it to the device tree. By default, this device tree is most likely 
+a static thing which is shipped with the rest of the firmware. So no per 
+device data is stored in this DTB on the flash. To include device specific 
+information (mac addresses, calibration data, ...), you could also have the 
+bootloader (u-boot for example) change the device tree during the boot process 
+and let it inject the device specific XO trim register data.
+
+How is this planned to work? Is the bootloader expected to modify the device 
+tree during the boot to provide the device specific xo-cal-data. If yes, where 
+is it getting the information from? And is there already support for QDART for 
+it?
+
+If you do this, why aren't you using the data from qcom,ath10k-pre-
+calibration-data. At least for other ath10k devices, it includes the 
+previously mentioned tuning caps. It is the first time I heard about an XO 
+trim register and thus it might be something different than what I expect.
+
+
+Last question: why is it an u32 when the message with xo_cal_data can only 
+transport an u8?
+
+Kind regards,
+	Sven
+--nextPart2399685.A95HZVWdDr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlyR+7oACgkQXYcKB8Em
+e0YN1Q//bYYPDFBXGEMAMOw9fXoqELZn3tQrZTxIQgO4pUgSC5z0AJRYhhInJSjX
+Bpj6xZErQCRBbDQ6Rt5l4MVff7kdAsxdlk1EvC6PfwmPp5W16kQbFKDzgg2jLv7q
+HctZ0a0Ymg+af9yfmk3LF2jTBxHQI8E/0acVriRji0BUyJr25xMNvigoUP2i/W8N
+z8JcGlG6H/gQOQqpkmcmbfxVZfO8NdYFplreYnObEIqCVE2jxHs+WT74wN4jtc9R
+rocuFgUx1wyCfR368ZaebFedCmOLMLFKfgz343qN445WCTTsXteVX0iRA2uGjYoi
+nbO+w7takmRHMiB7p33McJIiIPLhNx5pvVZQY2Hq0/PCp/WJan5JuHjTwNH9cXc1
+FGtohj9zcCNsl6zVzxi9RtLpYy7pxWrXblUNhXdozNoi/36EGJr/ZJAWzoBZmAgX
+3YiQZxwmAPWKvochTzkIc90kQXvVv0/OlXHPRTrtzB6Ld8rCy0pKKK2PpIiIJeRB
+PuuaBWzdrvSP3K+ilK7aPu9PrrVaagIXaIY80Wgw5uO8zvC3zSbsZpJ31ePsR1Mv
+oorynjVevuP38PPBSwRl/XicZR1Ea55Q97fdvR+LBPUrPOArTyAekLHOWqORqqtP
+pgvd+j/8wQVIp95T4Q5g9/UxmUq8Ord7j11T12a2rWWv1osJ3L0=
+=1z4Z
+-----END PGP SIGNATURE-----
+
+--nextPart2399685.A95HZVWdDr--
+
+
+
+
+
+--===============8139639996297762151==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============8139639996297762151==--
