@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h7Acp-0001cv-17
- for ath10k@lists.infradead.org; Fri, 22 Mar 2019 03:13:44 +0000
-Date: Fri, 22 Mar 2019 08:05:33 +0800
+ id 1h7Acp-0001dA-RY
+ for ath10k@lists.infradead.org; Fri, 22 Mar 2019 03:13:45 +0000
+Date: Fri, 22 Mar 2019 02:59:52 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-bringup 46/60]
- drivers/net/wireless/ath/ath11k/dp_rx.c:2016:16: sparse: symbol
- 'ath11k_dp_rx_alloc_mon_status_buf' was not declared. Should it be static?
-Message-ID: <201903220804.WHevvYHk%lkp@intel.com>
+Subject: [RFC PATCH ath6kl] ath11k: ath11k_pdev_ctl_failsafe_check_event()
+ can be static
+Message-ID: <20190321185952.GA110059@lkp-hsx03>
+References: <201903220231.XMGhENMe%lkp@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <201903220231.XMGhENMe%lkp@intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +24,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manikanta Pubbisetty <mpubbise@codeaurora.org>
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
 Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-bringup
-head:   3c46e2415dac1f744640d0e42594fb27de804df9
-commit: ecee39218556f1d47d797521e11890556b15109d [46/60] ath11k: initialise monitor status ring
-reproduce:
-        # apt-get install sparse
-        git checkout ecee39218556f1d47d797521e11890556b15109d
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-
-sparse warnings: (new ones prefixed by >>)
-
-   drivers/net/wireless/ath/ath11k/dp_tx.c:644:23: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:646:23: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:649:23: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:833:23: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:835:23: sparse: dubious: x & !y
->> drivers/net/wireless/ath/ath11k/dp_tx.c:840:33: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] pkt_type_en_flags0 @@    got ed int [unsigned] [usertype] pkt_type_en_flags0 @@
-   drivers/net/wireless/ath/ath11k/dp_tx.c:840:33:    expected unsigned int [unsigned] [usertype] pkt_type_en_flags0
-   drivers/net/wireless/ath/ath11k/dp_tx.c:840:33:    got restricted __le32 [usertype] <noident>
->> drivers/net/wireless/ath/ath11k/dp_tx.c:841:33: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] pkt_type_en_flags1 @@    got ed int [unsigned] [usertype] pkt_type_en_flags1 @@
-   drivers/net/wireless/ath/ath11k/dp_tx.c:841:33:    expected unsigned int [unsigned] [usertype] pkt_type_en_flags1
-   drivers/net/wireless/ath/ath11k/dp_tx.c:841:33:    got restricted __le32 [usertype] <noident>
->> drivers/net/wireless/ath/ath11k/dp_tx.c:842:33: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] pkt_type_en_flags2 @@    got ed int [unsigned] [usertype] pkt_type_en_flags2 @@
-   drivers/net/wireless/ath/ath11k/dp_tx.c:842:33:    expected unsigned int [unsigned] [usertype] pkt_type_en_flags2
-   drivers/net/wireless/ath/ath11k/dp_tx.c:842:33:    got restricted __le32 [usertype] <noident>
->> drivers/net/wireless/ath/ath11k/dp_tx.c:843:33: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] pkt_type_en_flags3 @@    got ed int [unsigned] [usertype] pkt_type_en_flags3 @@
-   drivers/net/wireless/ath/ath11k/dp_tx.c:843:33:    expected unsigned int [unsigned] [usertype] pkt_type_en_flags3
-   drivers/net/wireless/ath/ath11k/dp_tx.c:843:33:    got restricted __le32 [usertype] <noident>
->> drivers/net/wireless/ath/ath11k/dp_tx.c:844:28: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] [usertype] rx_filter_tlv @@    got ed int [unsigned] [usertype] rx_filter_tlv @@
-   drivers/net/wireless/ath/ath11k/dp_tx.c:844:28:    expected unsigned int [unsigned] [usertype] rx_filter_tlv
-   drivers/net/wireless/ath/ath11k/dp_tx.c:844:28:    got restricted __le32 [usertype] <noident>
---
-   drivers/net/wireless/ath/ath11k/dp_rx.c:30:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath11k/dp_rx.c:30:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath11k/dp_rx.c:42:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath11k/dp_rx.c:42:23: sparse: expression using sizeof(void)
->> drivers/net/wireless/ath/ath11k/dp_rx.c:2016:16: sparse: symbol 'ath11k_dp_rx_alloc_mon_status_buf' was not declared. Should it be static?
-   drivers/net/wireless/ath/ath11k/dp_rx.c:2076:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath11k/dp_rx.c:2076:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath11k/dp_rx.c:2086:23: sparse: expression using sizeof(void)
-   drivers/net/wireless/ath/ath11k/dp_rx.c:2086:23: sparse: expression using sizeof(void)
-
-Please review and possibly fold the followup patch.
-
+Fixes: 886785f92306 ("ath11k: fix acs survey")
+Signed-off-by: kbuild test robot <lkp@intel.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ wmi.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index 18f441e..e95ad6c 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -5609,8 +5609,8 @@ void ath11k_update_stats_event(struct ath11k_base *ab, u8 *evt_buf, u32 len)
+ /* PDEV_CTL_FAILSAFE_CHECK_EVENT is received from FW when the frequency scanned
+  * is not part of BDF CTL(Conformance test limits) table entries.
+  */
+-void ath11k_pdev_ctl_failsafe_check_event(struct ath11k_base *ab, u8 *evt_buf,
+-					  u32 len)
++static void ath11k_pdev_ctl_failsafe_check_event(struct ath11k_base *ab, u8 *evt_buf,
++						 u32 len)
+ {
+ 	const void **tb;
+ 	const struct wmi_pdev_ctl_failsafe_chk_event *ev;
 
 _______________________________________________
 ath10k mailing list
