@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h7LHs-00064e-NJ
- for ath10k@lists.infradead.org; Fri, 22 Mar 2019 14:37:24 +0000
-Received: from [192.168.1.16] (unknown [78.192.148.53])
- (Authenticated sender: lepoissonlibre@spika.xyz)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id BC547100018
- for <ath10k@lists.infradead.org>; Fri, 22 Mar 2019 14:36:44 +0000 (UTC)
-From: LePoissonLibre <lepoissonlibre@spika.xyz>
-Subject: ath10k_pci : failed to wake target for write32
-Message-ID: <94b04bbd-1a12-5b65-185e-e41e80c8d5c4@spika.xyz>
-Date: Fri, 22 Mar 2019 15:36:43 +0100
-MIME-Version: 1.0
-Content-Language: en-US
+ id 1h7MKB-0001j8-PQ
+ for ath10k@lists.infradead.org; Fri, 22 Mar 2019 15:43:17 +0000
+Received: from mail-pf1-f197.google.com ([209.85.210.197])
+ by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
+ (Exim 4.76) (envelope-from <kai.heng.feng@canonical.com>)
+ id 1h7MK8-0007b3-9J
+ for ath10k@lists.infradead.org; Fri, 22 Mar 2019 15:43:12 +0000
+Received: by mail-pf1-f197.google.com with SMTP id z26so2684799pfa.7
+ for <ath10k@lists.infradead.org>; Fri, 22 Mar 2019 08:43:12 -0700 (PDT)
+Mime-Version: 1.0 (Mac OS X Mail 12.2 \(3445.102.3\))
+Subject: Re: Ath10k on XPS 9380 regularly disconnects
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <87pnqknonc.fsf@codeaurora.org>
+Date: Fri, 22 Mar 2019 23:43:07 +0800
+Message-Id: <8ACA9157-127E-43B8-ADD0-28D9EBBCEEB0@canonical.com>
+References: <042C2903-585B-47BA-8657-8819D225EEA8@canonical.com>
+ <87pnqknonc.fsf@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,132 +26,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"; DelSp="yes"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Anthony Wong <anthony.wong@canonical.com>, ath10k@lists.infradead.org, Stephan Fabel <stephan.fabel@canonical.com>
 
-Hello,
-
-I apologize in advance for not putting right shapes to my message.
-
-During last months, I suffer randomly of crash from ath10k_pci. 
-Network-manager continue to display that I'm connected to AP, but the 
-connection itself didn't work.
-
-When it occurs, in my journalctl, I have repeating messages like this :
-
-mars 22 15:28:02 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ab7 at 0x0003543c: -110
-mars 22 15:28:02 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ab9 at 0x0003543c: -110
-mars 22 15:28:02 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001abb at 0x0003543c: -110
-mars 22 15:28:02 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001abd at 0x0003543c: -110
-mars 22 15:28:02 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001abf at 0x0003543c: -110
-mars 22 15:28:03 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ac1 at 0x0003543c: -110
-mars 22 15:28:03 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ac3 at 0x0003543c: -110
-mars 22 15:28:03 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ac5 at 0x0003543c: -110
-mars 22 15:28:03 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ac7 at 0x0003543c: -110
-mars 22 15:28:03 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001ac9 at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_warn: 28 callbacks suppressed
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b03 at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b05 at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b07 at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b09 at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b0b at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b0d at 0x0003543c: -110
-mars 22 15:28:07 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b0f at 0x0003543c: -110
-mars 22 15:28:08 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b11 at 0x0003543c: -110
-mars 22 15:28:08 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b13 at 0x0003543c: -110
-mars 22 15:28:08 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b15 at 0x0003543c: -110
-mars 22 15:28:12 keaton kernel: ath10k_warn: 23 callbacks suppressed
-mars 22 15:28:12 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b45 at 0x0003543c: -110
-mars 22 15:28:12 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b47 at 0x0003543c: -110
-mars 22 15:28:12 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b49 at 0x0003543c: -110
-mars 22 15:28:12 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b4b at 0x0003543c: -110
-mars 22 15:28:12 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b4d at 0x0003543c: -110
-mars 22 15:28:12 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b4f at 0x0003543c: -110
-mars 22 15:28:13 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b51 at 0x0003543c: -110
-mars 22 15:28:13 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b53 at 0x0003543c: -110
-mars 22 15:28:13 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b55 at 0x0003543c: -110
-mars 22 15:28:13 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b57 at 0x0003543c: -110
-mars 22 15:28:19 keaton kernel: ath10k_warn: 5 callbacks suppressed
-mars 22 15:28:19 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b63 at 0x0003543c: -110
-mars 22 15:28:22 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b65 at 0x0003543c: -110
-mars 22 15:28:22 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b67 at 0x0003543c: -110
-mars 22 15:28:22 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b69 at 0x0003543c: -110
-mars 22 15:28:23 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b6b at 0x0003543c: -110
-mars 22 15:28:26 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b6d at 0x0003543c: -110
-mars 22 15:28:27 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b6f at 0x0003543c: -110
-mars 22 15:28:28 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b71 at 0x0003543c: -110
-mars 22 15:28:29 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b73 at 0x0003543c: -110
-mars 22 15:28:29 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b75 at 0x0003543c: -110
-mars 22 15:28:31 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b77 at 0x0003543c: -110
-mars 22 15:28:31 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b79 at 0x0003543c: -110
-mars 22 15:28:35 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b7b at 0x0003543c: -110
-mars 22 15:28:36 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b7d at 0x0003543c: -110
-mars 22 15:28:36 keaton kernel: ath10k_pci 0000:01:00.0: failed to wake 
-target for write32 of 0x00001b7f at 0x0003543c: -110
-
-Nothing different about ath10k_pci comes before or after.
-
-Sometimes, disconnecting and rescanning pci devices solves the problem :
-- echo 1 > /sys/bus/pci/devices/0000:01:00.0/remove
-- echo 1 > /sys/devices/pci0000:00/0000:00:13.0/rescan
-But other times, only a reboot solves it.
-
-I'm currently running 4.14.105-1-MANJARO and my linux-firmware package 
-is 20190212.28f5f7d-1.
-My card is QCA9377.
-
-Thank you for your time, and sorry for the lack of information.
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+YXQgMDE6MDUsIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cm90ZToKCj4gKyBh
+dGgxMGsgbGlzdAo+IC0gbmV0ZGV2ICYgbGludXgta2VybmVsCj4KPiBLYWktSGVuZyBGZW5nIDxr
+YWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+IHdyaXRlczoKPgo+PiBUaGVyZeKAmXMgYW4gaXNz
+dWUgdGhhdCBhdGgxMGsgZGlzY29ubmVjdHMgYXQgcmVndWxhciBiYXNpcyBbMV0sIG9uCj4+IExp
+bnV4IGtlcm5lbCA0LjE4Lgo+Pgo+PiBVbmZvcnR1bmF0ZWx5IEkgY2Fu4oCZdCByZXByb2R1Y2Ug
+dGhlIGlzc3VlIG9uIFhQUyA5MzgwIGF0IG15IGhhbmQuCj4+Cj4+IElzIHRoZXJlIGFscmVhZHkg
+YSBmaXggaW4gdXBzdHJlYW0ga2VybmVsPwo+Cj4gSSdtIG5vdCBhd2FyZSBvZiBhbnkgZml4ZXMg
+cmVsYXRlZCB0byB0aGlzLiBJcyB0aGlzIGEgcmVncmVzc2lvbj8gSW4KPiBvdGhlciB3b3Jkcywg
+aXMgdGhlcmUgYSBrbm93biB2ZXJzaW9uIG9mIGF0aDEwayBvciBmaXJtd2FyZSB3aGljaCBkaWRu
+J3QKPiBoYXZlIHRoaXMgcHJvYmxlbT8KCldlIGtub3cgdGhpcyBpc3N1ZSBoYXBwZW4gb24ga2Vy
+bmVsIHY0LjE1IGFuZCB2NC4xOCwgYnV0IGtlcm5lbHMgYmVmb3JlICAKdjQuMTUgd2VyZSBub3Qg
+dGVzdGVkLgoKVGhlIGlzc3VlIGhhcHBlbnMgd2l0aCBHb29nbGUgTWVzaCwgd2hpY2ggaGFzIDgw
+Mi4xMWFjIGNhcGFiaWxpdHkuCgpJIGhhdmVu4oCZdCBiZWVuIGFibGUgdG8gcmVwcm9kdWNlIHRo
+ZSBpc3N1ZSB3aXRoIGFuIDgwMi4xMW4gcm91dGVyICh5ZXQpLgoKS2FpLUhlbmcKCj4KPj4gWzFd
+IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvMTgxODg4MQo+Cj4gUmVsZXZhbnQgaW5m
+b3JtYXRpb24gZnJvbSBkbWVzZzoKPgo+IFsgICAxOS4zNDY4MTBdIGF0aDEwa19wY2kgMDAwMDow
+MjowMC4wOiBxY2E2MTc0IGh3My4yIHRhcmdldCAweDA1MDMwMDAwICAKPiBjaGlwX2lkIDB4MDAz
+NDBhZmYgc3ViIDFhNTY6MTQzYQo+IFsgICAxOS4zNDY4MTJdIGF0aDEwa19wY2kgMDAwMDowMjow
+MC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxIHRyYWNpbmcgIAo+IDEgZGZzIDAgdGVzdG1v
+ZGUgMAo+IFsgICAxOS4zNDcxMzZdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmaXJtd2FyZSB2
+ZXIgIAo+IFdMQU4uUk0uNC40LjEtMDAxMzItUUNBUk1TV1AtMSBhcGkgNiBmZWF0dXJlcyB3b3ds
+YW4saWdub3JlLW90cCxtZnAgY3JjMzIgIAo+IDc5ZjRkYjg2Cj4KPiBbLi4uXQo+Cj4gWzc3NDUx
+LjMzODMzOV0gV0FSTklORzogQ1BVOiA0IFBJRDogMCBhdCAgCj4gL2J1aWxkL2xpbnV4LWh3ZS05
+S0owN3EvbGludXgtaHdlLTQuMTguMC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0
+dF9yeC5jOjQ2ICAKPiBhdGgxMGtfaHR0X3J4X3BvcF9wYWRkci5pc3JhLjI5KzB4ZDkvMHhmMCBb
+YXRoMTBrX2NvcmVdCj4KPiBbLi4uXQo+Cj4gWzgxMjU0Ljg1NzY2N10gV0FSTklORzogQ1BVOiAx
+IFBJRDogMCBhdCAgCj4gL2J1aWxkL2xpbnV4LWh3ZS05S0owN3EvbGludXgtaHdlLTQuMTguMC9k
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jOjQ2ICAKPiBhdGgxMGtfaHR0
+X3J4X3BvcF9wYWRkci5pc3JhLjI5KzB4ZDkvMHhmMCBbYXRoMTBrX2NvcmVdCj4KPiBbLi4uXQo+
+Cj4gWzgxMzkwLjE4NjE2N10gV0FSTklORzogQ1BVOiAyIFBJRDogMCBhdCAgCj4gL2J1aWxkL2xp
+bnV4LWh3ZS05S0owN3EvbGludXgtaHdlLTQuMTguMC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2h0dF9yeC5jOjQ2ICAKPiBhdGgxMGtfaHR0X3J4X3BvcF9wYWRkci5pc3JhLjI5KzB4
+ZDkvMHhmMCBbYXRoMTBrX2NvcmVdCj4KPiAtLSAKPiBLYWxsZSBWYWxvCgoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
