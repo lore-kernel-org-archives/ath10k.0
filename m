@@ -1,30 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8Smo-0002by-WC
- for ath10k@lists.infradead.org; Mon, 25 Mar 2019 16:49:33 +0000
-Received: by mail-lj1-x243.google.com with SMTP id f18so8476559lja.10
- for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 09:49:22 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com.
- [209.85.208.169])
- by smtp.gmail.com with ESMTPSA id x6sm3454323lfe.67.2019.03.25.09.49.17
+ id 1h8TDN-0005kZ-E1
+ for ath10k@lists.infradead.org; Mon, 25 Mar 2019 17:16:51 +0000
+Received: by mail-lj1-x244.google.com with SMTP id r24so7513032ljg.3
+ for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 10:16:48 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com.
+ [209.85.208.170])
+ by smtp.gmail.com with ESMTPSA id 7sm3881853lju.27.2019.03.25.10.16.44
  for <ath10k@lists.infradead.org>
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 25 Mar 2019 09:49:17 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id h16so4013278ljg.11
- for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 09:49:17 -0700 (PDT)
+ Mon, 25 Mar 2019 10:16:44 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id z26so8488037lja.13
+ for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 10:16:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <362a9b5f-8908-17f5-3594-6c3c68789dea@molgen.mpg.de>
- <CAEJqkggKGTn0ojWzuYGfoYehDnOf=je5L-7-M1kWogutPGMg3g@mail.gmail.com>
- <874l8ic0l4.fsf@codeaurora.org>
- <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
- <87wol97hvp.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87wol97hvp.fsf@kamboji.qca.qualcomm.com>
+References: <20190320044511.12172-1-govinds@codeaurora.org>
+ <20190320044511.12172-2-govinds@codeaurora.org>
+In-Reply-To: <20190320044511.12172-2-govinds@codeaurora.org>
 From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 25 Mar 2019 09:49:05 -0700
-Message-ID: <CA+ASDXOcbSGJs3Xk_SjjsAA87fcwrx_JB_mB9cyV=9u6V+FZ_A@mail.gmail.com>
-Subject: Re: Warning at drivers/net/wireless/ath/ath10k/mac.c:5625
- ath10k_bss_info_changed
+Date: Mon, 25 Mar 2019 10:16:32 -0700
+Message-ID: <CA+ASDXOMt9=bHOp3UrVy7FaPjta_GA70YeQJM3ksFRyoXK=kGw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt: bindings: add dt entry for XO calibration
+ support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,30 +30,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Gabriel C <nix.or.die@gmail.com>, ath10k@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-SGkgS2FsbGUsCgpPbiBGcmksIE1hciA4LCAyMDE5IGF0IDI6NTggQU0gS2FsbGUgVmFsbyA8a3Zh
-bG9AY29kZWF1cm9yYS5vcmc+IHdyb3RlOgo+IEdhYnJpZWwgQyA8bml4Lm9yLmRpZUBnbWFpbC5j
-b20+IHdyaXRlczoKPiA+IEFtIE1vLiwgNC4gTcOkcnogMjAxOSB1bSAxMjo1OSBVaHIgc2Nocmll
-YiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz46Cj4gPj4gR2FicmllbCBDIDxuaXgu
-b3IuZGllQGdtYWlsLmNvbT4gd3JpdGVzOgo+ID4+ID4gSSByZXBvcnRlZCB0aGF0IHR3aWNlIGFu
-ZCBubyBvbmUgc2VlbXMgdG8gY2FyZSBhYm91dC4KPiA+PiA+Cj4gPj4gPiBodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTgtTm92ZW1iZXIvMDEyMzk4Lmh0bWwK
-PiA+PiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxOC1E
-ZWNlbWJlci8wMTI2NTguaHRtbAo+ID4+Cj4gPj4gRG9lcyB0aGlzIHBhdGNoIGhlbHA6Cj4gPj4K
-PiA+PiBhdGgxMGs6IERyb3AgV0FSTl9PTigpcyB0aGF0IGFsd2F5cyB0cmlnZ2VyIGR1cmluZyBz
-eXN0ZW0gcmVzdW1lCj4gPj4KPiA+PiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNo
-LzEwODM3MTM5Lwo+ID4+Cj4gPgo+ID4gV2l0aG91dCB0byB0ZXN0IHRoaXMgcGF0Y2ggSSBjYW4g
-Y29uZmlybSBpdCB3aWxsIGhlbHAgLCBJIGRyb3BwZWQgdGhlCj4gPiBXQVJOX09OKCkncyBpbiA0
-LjE5IGFscmVhZHkuCj4gPiBJZiBJIHJlbWVtYmVyIHJpZ2h0IDQuMTkgaGFzIG9uZSBXQVJOX09O
-KCkgdHJpZ2dlcnMgd2hpbGUgNC4yMCBnb3QgdHdvLgo+Cj4gT2ssIHRoYW5rcy4gSSdsbCB0cnkg
-dG8gZ2V0IHRoaXMgcGF0Y2ggdG8gNS4xLgoKUGluZz8gSXMgdGhlcmUgYW55IHNvbHV0aW9uIHF1
-ZXVlZCBhbnl3aGVyZT8gSXQncyBraW5kYSBzYWQgaG93IGxvbmcKdGhpcyBoYXMgc2F0IGhlcmUu
-CgpCcmlhbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Tue, Mar 19, 2019 at 9:48 PM Govind Singh <govinds@codeaurora.org> wrote:
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -81,6 +81,7 @@ Optional properties:
+>         Definition: Name of external front end module used. Some valid FEM names
+>                     for example: "microsemi-lx5586", "sky85703-11"
+>                     and "sky85803" etc.
+> +- xo-cal-data: xo cal offset to be configured in xo trim register.
+
+https://media.readthedocs.org/pdf/devicetree-specification/stable/devicetree-specification.pdf
+
+"2.2.4 Properties
+...
+Nonstandard property names should specify a unique string prefix, such
+as a stock ticker symbol, identifying the name of the company or
+organization that defined the property. Examples:
+  fsl,channel-fifo-len ibm,ppc-interrupt-server#s
+  linux,network-index"
+
+In other words, like most other custom properties in this file, you
+should probably have a "qcom," prefix.
+
+Brian
+
+>  Example (to supply PCI based wifi block details):
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
