@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8WBc-0005LJ-8l
- for ath10k@lists.infradead.org; Mon, 25 Mar 2019 20:27:15 +0000
-Received: by mail-pl1-x644.google.com with SMTP id y5so484974plk.8
- for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 13:27:11 -0700 (PDT)
-Date: Mon, 25 Mar 2019 13:27:07 -0700
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH] ath10k: pci: use mutex for diagnostic window CE polling
-Message-ID: <20190325202706.GA68720@google.com>
-References: <20190207014143.41529-1-briannorris@chromium.org>
+ id 1h8X1C-0008B8-4c
+ for ath10k@lists.infradead.org; Mon, 25 Mar 2019 21:20:33 +0000
+Received: by mail-qt1-x843.google.com with SMTP id x12so12157165qts.7
+ for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 14:20:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190207014143.41529-1-briannorris@chromium.org>
+References: <20190207014143.41529-1-briannorris@chromium.org>
+ <20190325202706.GA68720@google.com>
+In-Reply-To: <20190325202706.GA68720@google.com>
+From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
+Date: Mon, 25 Mar 2019 22:20:14 +0100
+Message-ID: <CABvG-CWODF24BMeoCE98OK5fnGNgX0k3z5qTU8A0AD9ncH0jHw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: pci: use mutex for diagnostic window CE polling
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +21,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
 
-Hi Kalle,
-
-On Wed, Feb 06, 2019 at 05:41:43PM -0800, Brian Norris wrote:
-> The DIAG copy engine is only used via polling, but it holds a spinlock
-> with softirqs disabled. Each iteration of our read/write loops can
-> theoretically take 20ms (two 10ms timeout loops), and this loop can be
-> run an unbounded number of times while holding the spinlock -- dependent
-> on the request size given by the caller.
-> 
-> As of commit 39501ea64116 ("ath10k: download firmware via diag Copy
-> Engine for QCA6174 and QCA9377."), we transfer large chunks of firmware
-> memory using this mechanism. With large enough firmware segments, this
-> becomes an exceedingly long period for disabling soft IRQs. For example,
-> with a 500KiB firmware segment, in testing QCA6174A, I see 200 loop
-> iterations of about 50-100us each, which can total about 10-20ms.
-> 
-> In reality, we don't really need to block softirqs for this duration.
-> The DIAG CE is only used in polling mode, and we only need to hold
-> ce_lock to make sure any CE bookkeeping is done without screwing up
-> another CE. Otherwise, we only need to ensure exclusion between
-> ath10k_pci_diag_{read,write}_mem() contexts.
-> 
-> This patch moves to use fine-grained locking for the shared ce_lock,
-> while adding a new mutex just to ensure mutual exclusion of diag
-> read/write operations.
-> 
-> Tested on QCA6174A, firmware version WLAN.RM.4.4.1-00132-QCARMSWPZ-1.
-> 
-> Fixes: 39501ea64116 ("ath10k: download firmware via diag Copy Engine for QCA6174 and QCA9377.")
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-
-It would appear that this triggers new warnings
-
-  BUG: sleeping function called from invalid context
-
-when handling firmware crashes. The call stack is
-
-  ath10k_pci_fw_crashed_dump
-    -> ath10k_pci_dump_memory
-    ...
-      -> ath10k_pci_diag_read_mem
-
-and the problem is that we're holding the 'data_lock' spinlock with
-softirqs disabled, while later trying to grab this new mutex.
-
-Unfortunately, data_lock is used in a lot of places, and it's unclear if
-it can be migrated to a mutex as well. It seems like it probably can be,
-but I'd have to audit a little more closely.
-
-Any thoughts on what the short- and long-term solutions should be? I can
-send a revert, to get v5.1 fixed. But it still seems like we should
-avoid disabling softirqs for so long.
-
-Brian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQnJpYW4sCgpPbiBNb24sIDI1IE1hciAyMDE5IGF0IDIxOjI3LCBCcmlhbiBOb3JyaXMgPGJy
+aWFubm9ycmlzQGNocm9taXVtLm9yZz4gd3JvdGU6Cj4gSGkgS2FsbGUsCj4KPiBPbiBXZWQsIEZl
+YiAwNiwgMjAxOSBhdCAwNTo0MTo0M1BNIC0wODAwLCBCcmlhbiBOb3JyaXMgd3JvdGU6Cj4gPiBU
+aGUgRElBRyBjb3B5IGVuZ2luZSBpcyBvbmx5IHVzZWQgdmlhIHBvbGxpbmcsIGJ1dCBpdCBob2xk
+cyBhIHNwaW5sb2NrCj4gPiB3aXRoIHNvZnRpcnFzIGRpc2FibGVkLiBFYWNoIGl0ZXJhdGlvbiBv
+ZiBvdXIgcmVhZC93cml0ZSBsb29wcyBjYW4KPiA+IHRoZW9yZXRpY2FsbHkgdGFrZSAyMG1zICh0
+d28gMTBtcyB0aW1lb3V0IGxvb3BzKSwgYW5kIHRoaXMgbG9vcCBjYW4gYmUKPiA+IHJ1biBhbiB1
+bmJvdW5kZWQgbnVtYmVyIG9mIHRpbWVzIHdoaWxlIGhvbGRpbmcgdGhlIHNwaW5sb2NrIC0tIGRl
+cGVuZGVudAo+ID4gb24gdGhlIHJlcXVlc3Qgc2l6ZSBnaXZlbiBieSB0aGUgY2FsbGVyLgo+ID4K
+PiA+IEFzIG9mIGNvbW1pdCAzOTUwMWVhNjQxMTYgKCJhdGgxMGs6IGRvd25sb2FkIGZpcm13YXJl
+IHZpYSBkaWFnIENvcHkKPiA+IEVuZ2luZSBmb3IgUUNBNjE3NCBhbmQgUUNBOTM3Ny4iKSwgd2Ug
+dHJhbnNmZXIgbGFyZ2UgY2h1bmtzIG9mIGZpcm13YXJlCj4gPiBtZW1vcnkgdXNpbmcgdGhpcyBt
+ZWNoYW5pc20uIFdpdGggbGFyZ2UgZW5vdWdoIGZpcm13YXJlIHNlZ21lbnRzLCB0aGlzCj4gPiBi
+ZWNvbWVzIGFuIGV4Y2VlZGluZ2x5IGxvbmcgcGVyaW9kIGZvciBkaXNhYmxpbmcgc29mdCBJUlFz
+LiBGb3IgZXhhbXBsZSwKPiA+IHdpdGggYSA1MDBLaUIgZmlybXdhcmUgc2VnbWVudCwgaW4gdGVz
+dGluZyBRQ0E2MTc0QSwgSSBzZWUgMjAwIGxvb3AKPiA+IGl0ZXJhdGlvbnMgb2YgYWJvdXQgNTAt
+MTAwdXMgZWFjaCwgd2hpY2ggY2FuIHRvdGFsIGFib3V0IDEwLTIwbXMuCj4gPgo+ID4gSW4gcmVh
+bGl0eSwgd2UgZG9uJ3QgcmVhbGx5IG5lZWQgdG8gYmxvY2sgc29mdGlycXMgZm9yIHRoaXMgZHVy
+YXRpb24uCj4gPiBUaGUgRElBRyBDRSBpcyBvbmx5IHVzZWQgaW4gcG9sbGluZyBtb2RlLCBhbmQg
+d2Ugb25seSBuZWVkIHRvIGhvbGQKPiA+IGNlX2xvY2sgdG8gbWFrZSBzdXJlIGFueSBDRSBib29r
+a2VlcGluZyBpcyBkb25lIHdpdGhvdXQgc2NyZXdpbmcgdXAKPiA+IGFub3RoZXIgQ0UuIE90aGVy
+d2lzZSwgd2Ugb25seSBuZWVkIHRvIGVuc3VyZSBleGNsdXNpb24gYmV0d2Vlbgo+ID4gYXRoMTBr
+X3BjaV9kaWFnX3tyZWFkLHdyaXRlfV9tZW0oKSBjb250ZXh0cy4KPiA+Cj4gPiBUaGlzIHBhdGNo
+IG1vdmVzIHRvIHVzZSBmaW5lLWdyYWluZWQgbG9ja2luZyBmb3IgdGhlIHNoYXJlZCBjZV9sb2Nr
+LAo+ID4gd2hpbGUgYWRkaW5nIGEgbmV3IG11dGV4IGp1c3QgdG8gZW5zdXJlIG11dHVhbCBleGNs
+dXNpb24gb2YgZGlhZwo+ID4gcmVhZC93cml0ZSBvcGVyYXRpb25zLgo+ID4KPiA+IFRlc3RlZCBv
+biBRQ0E2MTc0QSwgZmlybXdhcmUgdmVyc2lvbiBXTEFOLlJNLjQuNC4xLTAwMTMyLVFDQVJNU1dQ
+Wi0xLgo+ID4KPiA+IEZpeGVzOiAzOTUwMWVhNjQxMTYgKCJhdGgxMGs6IGRvd25sb2FkIGZpcm13
+YXJlIHZpYSBkaWFnIENvcHkgRW5naW5lIGZvciBRQ0E2MTc0IGFuZCBRQ0E5Mzc3LiIpCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBCcmlhbiBOb3JyaXMgPGJyaWFubm9ycmlzQGNocm9taXVtLm9yZz4KPgo+
+IEl0IHdvdWxkIGFwcGVhciB0aGF0IHRoaXMgdHJpZ2dlcnMgbmV3IHdhcm5pbmdzCj4KPiAgIEJV
+Rzogc2xlZXBpbmcgZnVuY3Rpb24gY2FsbGVkIGZyb20gaW52YWxpZCBjb250ZXh0Cj4KPiB3aGVu
+IGhhbmRsaW5nIGZpcm13YXJlIGNyYXNoZXMuIFRoZSBjYWxsIHN0YWNrIGlzCj4KPiAgIGF0aDEw
+a19wY2lfZndfY3Jhc2hlZF9kdW1wCj4gICAgIC0+IGF0aDEwa19wY2lfZHVtcF9tZW1vcnkKPiAg
+ICAgLi4uCj4gICAgICAgLT4gYXRoMTBrX3BjaV9kaWFnX3JlYWRfbWVtCj4KPiBhbmQgdGhlIHBy
+b2JsZW0gaXMgdGhhdCB3ZSdyZSBob2xkaW5nIHRoZSAnZGF0YV9sb2NrJyBzcGlubG9jayB3aXRo
+Cj4gc29mdGlycXMgZGlzYWJsZWQsIHdoaWxlIGxhdGVyIHRyeWluZyB0byBncmFiIHRoaXMgbmV3
+IG11dGV4LgoKTm8sIHRoZSBzcGlubG9jayBpcyBub3QgdGhlIHJlYWwgcHJvYmxlbS4gVGhlIHJl
+YWwgcHJvYmxlbSBpcyB5b3UncmUKdHJ5aW5nIHRvIGhvbGQgYSBtdXRleCBvbiBhIHBhdGggd2hp
+Y2ggaXMgcG90ZW50aWFsbHkgYXRvbWljIC8Kbm9uLXNsZWVwYWJsZTogYXRoMTBrX3BjaV9uYXBp
+X3BvbGwoKS4KCgo+IFVuZm9ydHVuYXRlbHksIGRhdGFfbG9jayBpcyB1c2VkIGluIGEgbG90IG9m
+IHBsYWNlcywgYW5kIGl0J3MgdW5jbGVhciBpZgo+IGl0IGNhbiBiZSBtaWdyYXRlZCB0byBhIG11
+dGV4IGFzIHdlbGwuIEl0IHNlZW1zIGxpa2UgaXQgcHJvYmFibHkgY2FuIGJlLAo+IGJ1dCBJJ2Qg
+aGF2ZSB0byBhdWRpdCBhIGxpdHRsZSBtb3JlIGNsb3NlbHkuCgpJdCBjYW4ndCBiZSBtaWdyYXRl
+ZCB0byBhIG11dGV4LiBJdCdzIGludGVuZGVkIHRvIHN5bmNocm9uaXplIHRvcCBoYWxmCndpdGgg
+Ym90dG9tIGhhbGYuIEl0IGhhcyB0byBiZSBhbiBhdG9taWMgbm9uLXNsZWVwaW5nIGxvY2sgbWVj
+aGFuaXNtLgoKV2hhdCB5b3UgbmVlZCB0byBkbyBpcyBtYWtlIHN1cmUgYXRoMTBrX3BjaV9kaWFn
+X3JlYWRfbWVtKCkgYW5kCmF0aDEwa19wY2lfZGlhZ193cml0ZV9tZW0oKSBhcmUgbmV2ZXIgY2Fs
+bGVkIGZyb20gYW4gYXRvbWljIGNvbnRleHQuCgpGb3Igb25lLCB5b3UnbGwgbmVlZCB0byBkZWZl
+ciBhdGgxMGtfcGNpX2Z3X2NyYXNoZWRfZHVtcCB0byBhIHdvcmtlci4KTWF5YmUgaW50byBhci0+
+cmVzdGFydF93b3JrIHdoaWNoIHRoZSBkdW1wIGZ1bmN0aW9uIGNhbGxzIG5vdy4KClRvIGdldCBy
+aWQgb2YgZGF0YV9sb2NrIGZyb20gYXRoMTBrX3BjaV9md19jcmFzaGVkX2R1bXAoKSB5b3UnbGwg
+bmVlZAp0byBhdCBsZWFzdCBtYWtlIGZ3X2NyYXNoX2NvdW50ZXIgaW50byBhbiBhdG9taWNfdC4g
+VGhpcyBpcyBqdXN0IGZyb20KYSBxdWljayBnbGFuY2UuCgoKTWljaGHFggoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
