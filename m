@@ -1,23 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail-lj1-x22e.google.com ([2a00:1450:4864:20::22e])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h7MKB-0001j8-PQ
- for ath10k@lists.infradead.org; Fri, 22 Mar 2019 15:43:17 +0000
-Received: from mail-pf1-f197.google.com ([209.85.210.197])
- by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
- (Exim 4.76) (envelope-from <kai.heng.feng@canonical.com>)
- id 1h7MK8-0007b3-9J
- for ath10k@lists.infradead.org; Fri, 22 Mar 2019 15:43:12 +0000
-Received: by mail-pf1-f197.google.com with SMTP id z26so2684799pfa.7
- for <ath10k@lists.infradead.org>; Fri, 22 Mar 2019 08:43:12 -0700 (PDT)
-Mime-Version: 1.0 (Mac OS X Mail 12.2 \(3445.102.3\))
-Subject: Re: Ath10k on XPS 9380 regularly disconnects
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <87pnqknonc.fsf@codeaurora.org>
-Date: Fri, 22 Mar 2019 23:43:07 +0800
-Message-Id: <8ACA9157-127E-43B8-ADD0-28D9EBBCEEB0@canonical.com>
-References: <042C2903-585B-47BA-8657-8819D225EEA8@canonical.com>
- <87pnqknonc.fsf@codeaurora.org>
+ id 1h8Olw-0007Jd-1N
+ for ath10k@lists.infradead.org; Mon, 25 Mar 2019 12:32:20 +0000
+Received: by mail-lj1-x22e.google.com with SMTP id v22so7623685lje.9
+ for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 05:32:09 -0700 (PDT)
+MIME-Version: 1.0
+From: Mohammed Sha <mohammed.sha@vvdntech.in>
+Date: Mon, 25 Mar 2019 18:01:30 +0530
+Message-ID: <CAA6+HYVQON8etxqegZQO=PU3jtx_CvBwyTK5FkKtKFgT3V6rGA@mail.gmail.com>
+Subject: QCA6174A Bluetooth HSP could not work
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +18,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Anthony Wong <anthony.wong@canonical.com>, ath10k@lists.infradead.org, Stephan Fabel <stephan.fabel@canonical.com>
+To: ath10k@lists.infradead.org
 
-YXQgMDE6MDUsIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cm90ZToKCj4gKyBh
-dGgxMGsgbGlzdAo+IC0gbmV0ZGV2ICYgbGludXgta2VybmVsCj4KPiBLYWktSGVuZyBGZW5nIDxr
-YWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+IHdyaXRlczoKPgo+PiBUaGVyZeKAmXMgYW4gaXNz
-dWUgdGhhdCBhdGgxMGsgZGlzY29ubmVjdHMgYXQgcmVndWxhciBiYXNpcyBbMV0sIG9uCj4+IExp
-bnV4IGtlcm5lbCA0LjE4Lgo+Pgo+PiBVbmZvcnR1bmF0ZWx5IEkgY2Fu4oCZdCByZXByb2R1Y2Ug
-dGhlIGlzc3VlIG9uIFhQUyA5MzgwIGF0IG15IGhhbmQuCj4+Cj4+IElzIHRoZXJlIGFscmVhZHkg
-YSBmaXggaW4gdXBzdHJlYW0ga2VybmVsPwo+Cj4gSSdtIG5vdCBhd2FyZSBvZiBhbnkgZml4ZXMg
-cmVsYXRlZCB0byB0aGlzLiBJcyB0aGlzIGEgcmVncmVzc2lvbj8gSW4KPiBvdGhlciB3b3Jkcywg
-aXMgdGhlcmUgYSBrbm93biB2ZXJzaW9uIG9mIGF0aDEwayBvciBmaXJtd2FyZSB3aGljaCBkaWRu
-J3QKPiBoYXZlIHRoaXMgcHJvYmxlbT8KCldlIGtub3cgdGhpcyBpc3N1ZSBoYXBwZW4gb24ga2Vy
-bmVsIHY0LjE1IGFuZCB2NC4xOCwgYnV0IGtlcm5lbHMgYmVmb3JlICAKdjQuMTUgd2VyZSBub3Qg
-dGVzdGVkLgoKVGhlIGlzc3VlIGhhcHBlbnMgd2l0aCBHb29nbGUgTWVzaCwgd2hpY2ggaGFzIDgw
-Mi4xMWFjIGNhcGFiaWxpdHkuCgpJIGhhdmVu4oCZdCBiZWVuIGFibGUgdG8gcmVwcm9kdWNlIHRo
-ZSBpc3N1ZSB3aXRoIGFuIDgwMi4xMW4gcm91dGVyICh5ZXQpLgoKS2FpLUhlbmcKCj4KPj4gWzFd
-IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvMTgxODg4MQo+Cj4gUmVsZXZhbnQgaW5m
-b3JtYXRpb24gZnJvbSBkbWVzZzoKPgo+IFsgICAxOS4zNDY4MTBdIGF0aDEwa19wY2kgMDAwMDow
-MjowMC4wOiBxY2E2MTc0IGh3My4yIHRhcmdldCAweDA1MDMwMDAwICAKPiBjaGlwX2lkIDB4MDAz
-NDBhZmYgc3ViIDFhNTY6MTQzYQo+IFsgICAxOS4zNDY4MTJdIGF0aDEwa19wY2kgMDAwMDowMjow
-MC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxIHRyYWNpbmcgIAo+IDEgZGZzIDAgdGVzdG1v
-ZGUgMAo+IFsgICAxOS4zNDcxMzZdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmaXJtd2FyZSB2
-ZXIgIAo+IFdMQU4uUk0uNC40LjEtMDAxMzItUUNBUk1TV1AtMSBhcGkgNiBmZWF0dXJlcyB3b3ds
-YW4saWdub3JlLW90cCxtZnAgY3JjMzIgIAo+IDc5ZjRkYjg2Cj4KPiBbLi4uXQo+Cj4gWzc3NDUx
-LjMzODMzOV0gV0FSTklORzogQ1BVOiA0IFBJRDogMCBhdCAgCj4gL2J1aWxkL2xpbnV4LWh3ZS05
-S0owN3EvbGludXgtaHdlLTQuMTguMC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0
-dF9yeC5jOjQ2ICAKPiBhdGgxMGtfaHR0X3J4X3BvcF9wYWRkci5pc3JhLjI5KzB4ZDkvMHhmMCBb
-YXRoMTBrX2NvcmVdCj4KPiBbLi4uXQo+Cj4gWzgxMjU0Ljg1NzY2N10gV0FSTklORzogQ1BVOiAx
-IFBJRDogMCBhdCAgCj4gL2J1aWxkL2xpbnV4LWh3ZS05S0owN3EvbGludXgtaHdlLTQuMTguMC9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jOjQ2ICAKPiBhdGgxMGtfaHR0
-X3J4X3BvcF9wYWRkci5pc3JhLjI5KzB4ZDkvMHhmMCBbYXRoMTBrX2NvcmVdCj4KPiBbLi4uXQo+
-Cj4gWzgxMzkwLjE4NjE2N10gV0FSTklORzogQ1BVOiAyIFBJRDogMCBhdCAgCj4gL2J1aWxkL2xp
-bnV4LWh3ZS05S0owN3EvbGludXgtaHdlLTQuMTguMC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL2h0dF9yeC5jOjQ2ICAKPiBhdGgxMGtfaHR0X3J4X3BvcF9wYWRkci5pc3JhLjI5KzB4
-ZDkvMHhmMCBbYXRoMTBrX2NvcmVdCj4KPiAtLSAKPiBLYWxsZSBWYWxvCgoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi All,
+
+Chip set: QCA6174A
+Kernel : 4.14.62
+
+I am attempting to implement hands-free telephony on my board, I
+successfully connected my android phone to the board via bluetooth
+module in phone and media audio sharing mode.
+I was able to play media files via bluetooth by this. But when a call
+connected the bluetooth speaker works properly, i.e. I can hear what
+is said on the Mobile Phone, but audio is not transmitted from Board
+to Mobile Phone is not heard ( I guess there is some error in getting
+the data from mic or in transmitting data from bluetooth device). I
+get the following log message keeps appearing many times as soon as a
+call is initiated
+
+"***Bluetooth: hci0 SCO packet for unknown connection handle 0***
+
+***Bluetooth: hci0 sending frame failed (-27)***
+
+***Bluetooth: hci0 sending frame failed (-27)***"
+
+The microphone on the phone is also not functioning(after bluetooth
+connection is established). Also in *hciconfig -a* it is found as
+follows
+
+hci0:   Type: Primary  Bus: USB
+    BD Address: 00:0E:8E:76:00:55  ACL MTU: 1024:8  SCO MTU: 50:8
+    UP RUNNING PSCAN
+    RX bytes:810924 acl:982 sco:18885 events:670 errors:0
+    **TX bytes:528349 acl:530 sco:10271 commands:108 errors:111**
+    Features: 0xff 0xfe 0x8f 0xfe 0xd8 0x3f 0x5b 0x87
+    Packet type: DM1 DM3 DM5 DH1 DH3 DH5 HV1 HV2 HV3
+    Link policy: RSWITCH HOLD SNIFF
+    Link mode: SLAVE ACCEPT
+    Name: mydevice
+    Class: 0x2c041c
+    Service Classes: Rendering, Capturing, Audio
+    Device Class: Audio/Video, Portable Audio
+    HCI Version: 4.2 (0x8)  Revision: 0x0
+    LMP Version: 4.2 (0x8)  Subversion: 0x25a
+    Manufacturer: Qualcomm
+
+How can I solve this and implement proper hands-free telephony?
+
+The Bluetooth device is connected via USB interface, Below is the
+device package configuration,
+pulseaudio --version
+
+pulseaudio 11.1
+ bluetoothctl --version
+bluetoothctl: 5.49
+
+ofonod --version
+1.22
+
+The steps I followed to setup connection are as follows
+
+    $ hciconfig hci0 up
+    $ pactl list sources short
+    $ pactl list sinks short
+    $ bluetoothctl
+    agent on
+    scan on
+    scan off
+    pair <address>
+    connect<address>
+
+https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Bluetooth
+In the above website section 5 they are mentioning to configure sco
+audio using hcitool command, but i dont know the parameter to
+configure qca6174a, Could someone help me to configure HSP/HFP profile
+in QCA6174A chipset ?
+
+-- 
+Thanks & Regards
+Mohammed Sha
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
