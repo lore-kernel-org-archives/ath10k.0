@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8iPD-0004a1-WA
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 09:30:14 +0000
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv5 9/9] ath10k: Add extended TID configuration support
-Date: Tue, 26 Mar 2019 14:59:10 +0530
-Message-Id: <1553592550-15282-10-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
-References: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h8oxO-00079s-Sj
+ for ath10k@lists.infradead.org; Tue, 26 Mar 2019 16:29:47 +0000
+Received: by mail-lf1-x144.google.com with SMTP id b7so4604724lfg.9
+ for <ath10k@lists.infradead.org>; Tue, 26 Mar 2019 09:29:45 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [PATCH 2/2] ath10k: add htt_h2t_aggr_cfg_msg op for high latency
+ devices
+Date: Tue, 26 Mar 2019 17:29:04 +0100
+Message-Id: <20190326162904.6737-2-erik.stromdahl@gmail.com>
+In-Reply-To: <20190326162904.6737-1-erik.stromdahl@gmail.com>
+References: <20190326162904.6737-1-erik.stromdahl@gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,243 +21,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This patch extend TID configuration support to configure
-RTS_CTS control and TX rate limit. Tx rate limit is
-similar to auto rate but it will be limited to the user
-configured rate mask rather than the station's highest
-supported rate mask. Here ext_tid_cfg_bitmap added
-to notify the target which extended configuration
-parameter has modified(here RTS_CTS).
+Without this op, it will not be possible to configure aggregation for
+high latency devices.
 
-WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT service flag
-introduced to advertise this support.
-
-Testing:
-	* Tested HW: QCA9984
-	* Tested FW: 10.4-3.9.0.2-00021
-
-Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    4 +++
- drivers/net/wireless/ath/ath10k/mac.c  |   48 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c  |    9 ++++--
- drivers/net/wireless/ath/ath10k/wmi.h  |   20 +++++++++++++
- 4 files changed, 78 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index ac2cf3f..248709d 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2623,6 +2623,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
- 			val |= WMI_10_4_REPORT_AIRTIME;
- 
-+		if (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
-+			     ar->wmi.svc_map))
-+			val |= WMI_10_4_EXT_PEER_TID_CONFIGS_SUPPORT;
-+
- 		status = ath10k_mac_ext_resource_config(ar, val);
- 		if (status) {
- 			ath10k_err(ar,
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e5ae054..5d4611e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2950,6 +2950,12 @@ static int ath10k_new_peer_tid_config(struct ath10k *ar,
- 			arg.aggr_control = vif->ampdu[i];
- 			arg.rate_ctrl = vif->rate_ctrl[i];
- 			arg.rcode_flags = vif->rate_code[i];
-+			if (vif->rtscts[i])
-+				arg.ext_tid_cfg_bitmap =
-+					WMI_EXT_TID_RTS_CTS_CONFIG;
-+			else
-+				arg.ext_tid_cfg_bitmap = 0;
-+			arg.rtscts_ctrl = vif->rtscts[i];
- 		}
- 
- 		if (vif->noack[i]) {
-@@ -6560,6 +6566,10 @@ static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
- 
- 	if (txrate_type == NL80211_TX_RATE_FIXED)
- 		*rate_ctrl = WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE;
-+	else if (txrate_type == NL80211_TX_RATE_LIMITED &&
-+		 (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
-+			   ar->wmi.svc_map)))
-+		*rate_ctrl = WMI_PEER_TID_CONFIG_RATE_UPPER_CAP;
- 	else
- 		return -EOPNOTSUPP;
- 	return 0;
-@@ -6626,6 +6636,14 @@ static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
- 			arg->rate_ctrl = 0;
- 		}
- 	}
-+
-+	if (changed & IEEE80211_TID_CONF_RTSCTS) {
-+		if (tid_conf->rtscts)
-+			arg->rtscts_ctrl = tid_conf->rtscts - 1;
-+		else
-+			arg->rtscts_ctrl = WMI_TID_CONFIG_RTSCTS_CONTROL_ENABLE;
-+		arg->ext_tid_cfg_bitmap = WMI_EXT_TID_RTS_CTS_CONFIG;
-+	}
- }
- 
- static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
-@@ -6706,6 +6724,18 @@ static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
- 			}
- 		}
- 
-+		if (changed & IEEE80211_TID_CONF_RTSCTS) {
-+			if (sta->rtscts[i]) {
-+				arg.rtscts_ctrl = 0;
-+				arg.ext_tid_cfg_bitmap = 0;
-+			} else {
-+				arg.rtscts_ctrl = vif->rtscts[i] - 1;
-+				arg.ext_tid_cfg_bitmap =
-+					WMI_EXT_TID_RTS_CTS_CONFIG;
-+				config_apply = true;
-+			}
-+		}
-+
- 		arg.tid = i;
- 
- 		if (config_apply) {
-@@ -8401,6 +8431,13 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
- 				arg.rate_ctrl = 0;
- 				arg.rcode_flags = 0;
- 			}
-+
-+			if (changed & IEEE80211_TID_CONF_RTSCTS) {
-+				sta->rtscts[arg.tid] =
-+					tid_config->tid_conf[i].rtscts;
-+				arg.rtscts_ctrl = 0;
-+				arg.ext_tid_cfg_bitmap = 0;
-+			}
- 		} else {
- 			arvif->tid_conf_changed[arg.tid] |= changed;
- 
-@@ -8420,6 +8457,10 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
- 				vif->rate_ctrl[arg.tid] = arg.rate_ctrl;
- 				vif->rate_code[arg.tid] = arg.rcode_flags;
- 			}
-+
-+			if (changed & IEEE80211_TID_CONF_RTSCTS)
-+				vif->rtscts[arg.tid] =
-+					tid_config->tid_conf[i].rtscts;
- 		}
- 	}
- 
-@@ -9166,6 +9207,13 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ar->ops->set_tid_config = NULL;
- 		ar->hw->wiphy->flags &= ~WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT;
- 	}
-+
-+	if (test_bit(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT, ar->wmi.svc_map)) {
-+		wiphy_ext_feature_set(ar->hw->wiphy,
-+				      NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL);
-+		wiphy_ext_feature_set(ar->hw->wiphy,
-+				      NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL);
-+	}
- 	/*
- 	 * on LL hardware queues are managed entirely by the FW
- 	 * so we only advertise to mac we can do the queues thing
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 44b66f2..6ae3f8c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -8884,11 +8884,14 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	cmd->rate_control = cpu_to_le32(arg->rate_ctrl);
- 	cmd->retry_count = cpu_to_le32(arg->retry_count);
- 	cmd->rcode_flags = cpu_to_le32(arg->rcode_flags);
-+	cmd->ext_tid_cfg_bitmap = cpu_to_le32(arg->ext_tid_cfg_bitmap);
-+	cmd->rtscts_ctrl = cpu_to_le32(arg->rtscts_ctrl);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI,
--		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d mac_addr %pM\n",
--		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control, arg->rate_ctrl,
--		   arg->rcode_flags, arg->retry_count, arg->peer_macaddr.addr);
-+		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d rtscts %d ext_tid_cfg_bitmap %d mac_addr %pM\n",
-+		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control,
-+		   arg->rate_ctrl, arg->rcode_flags, arg->retry_count, arg->rtscts_ctrl,
-+		   arg->ext_tid_cfg_bitmap, arg->peer_macaddr.addr);
- 	return skb;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 187c13e..21a328f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -201,6 +201,7 @@ enum wmi_service {
- 	WMI_SERVICE_PER_PACKET_SW_ENCRYPT,
- 	WMI_SERVICE_REPORT_AIRTIME,
- 	WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT,
-+	WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
- 
- 	/* Remember to add the new value to wmi_service_name()! */
- 
-@@ -493,6 +494,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
- 	SVCSTR(WMI_SERVICE_PER_PACKET_SW_ENCRYPT);
- 	SVCSTR(WMI_SERVICE_REPORT_AIRTIME);
- 	SVCSTR(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT);
-+	SVCSTR(WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT);
- 
- 	case WMI_SERVICE_MAX:
- 		return NULL;
-@@ -822,6 +824,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_REPORT_AIRTIME, len);
- 	SVCMAP(WMI_10_4_SERVICE_PEER_TID_CONFIGS_SUPPORT,
- 	       WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, len);
-+	SVCMAP(WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
-+	       WMI_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT, len);
- }
- 
- #undef SVCMAP
-@@ -7169,6 +7173,16 @@ enum wmi_tid_rate_ctrl_conf {
- 	WMI_TID_CONFIG_RATE_CONTROL_AUTO,
- 	WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE,
- 	WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE,
-+	WMI_PEER_TID_CONFIG_RATE_UPPER_CAP,
-+};
-+
-+enum wmi_tid_rtscts_control_conf {
-+	WMI_TID_CONFIG_RTSCTS_CONTROL_ENABLE,
-+	WMI_TID_CONFIG_RTSCTS_CONTROL_DISABLE,
-+};
-+
-+enum wmi_ext_tid_config_map {
-+	WMI_EXT_TID_RTS_CTS_CONFIG = BIT(0),
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 8d533f5eb1aa..619c2b87b8bb 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1746,6 +1746,7 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_hl = {
+ 	.htt_send_rx_ring_cfg = ath10k_htt_send_rx_ring_cfg_hl,
+ 	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_32,
+ 	.htt_tx = ath10k_htt_tx_hl,
++	.htt_h2t_aggr_cfg_msg = ath10k_htt_h2t_aggr_cfg_msg_32,
  };
  
- struct wmi_per_peer_per_tid_cfg_arg {
-@@ -7180,6 +7194,8 @@ struct wmi_per_peer_per_tid_cfg_arg {
- 	u8 rate_ctrl;
- 	u32 retry_count;
- 	u32 rcode_flags;
-+	u32 ext_tid_cfg_bitmap;
-+	u32 rtscts_ctrl;
- };
- 
- struct wmi_peer_per_tid_cfg_cmd {
-@@ -7195,6 +7211,10 @@ struct wmi_peer_per_tid_cfg_cmd {
- 	__le32 rate_control;
- 	__le32 rcode_flags;
- 	__le32 retry_count;
-+	/* See enum wmi_ext_tid_config_map */
-+	__le32 ext_tid_cfg_bitmap;
-+	/* see enum wmi_tid_rtscts_control_conf */
-+	__le32 rtscts_ctrl;
- } __packed;
- 
- enum wmi_txbf_conf {
+ void ath10k_htt_set_tx_ops(struct ath10k_htt *htt)
 -- 
-1.7.9.5
+2.19.1
 
 
 _______________________________________________
