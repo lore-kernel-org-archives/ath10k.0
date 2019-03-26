@@ -1,23 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
+Received: from userp2120.oracle.com ([156.151.31.85])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8d2x-0004Hb-GZ
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 03:46:45 +0000
-Received: by mail-qt1-x843.google.com with SMTP id d13so8331360qth.5
- for <ath10k@lists.infradead.org>; Mon, 25 Mar 2019 20:46:38 -0700 (PDT)
+ id 1h8g4P-0000jR-Jr
+ for ath10k@lists.infradead.org; Tue, 26 Mar 2019 07:00:30 +0000
+Date: Tue, 26 Mar 2019 10:00:02 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCHv3 1/9] nl80211: New netlink command for TID specific
+ configuration
+Message-ID: <20190326070002.GB32613@kadam>
 MIME-Version: 1.0
-References: <362a9b5f-8908-17f5-3594-6c3c68789dea@molgen.mpg.de>
- <CAEJqkggKGTn0ojWzuYGfoYehDnOf=je5L-7-M1kWogutPGMg3g@mail.gmail.com>
- <874l8ic0l4.fsf@codeaurora.org>
- <CAEJqkgjYRu1Az6ec1ksQfLZ71fa062Us7XkOzw8BZ2bEoUe8BQ@mail.gmail.com>
- <87wol97hvp.fsf@kamboji.qca.qualcomm.com>
- <CA+ASDXOcbSGJs3Xk_SjjsAA87fcwrx_JB_mB9cyV=9u6V+FZ_A@mail.gmail.com>
-In-Reply-To: <CA+ASDXOcbSGJs3Xk_SjjsAA87fcwrx_JB_mB9cyV=9u6V+FZ_A@mail.gmail.com>
-From: Claire Chang <tientzu@google.com>
-Date: Tue, 26 Mar 2019 11:46:26 +0800
-Message-ID: <CALiNf2-Wdo4YnKLprUUyPF9QJBL10Mz3wvVG6fWtd_Xi-Yn=6w@mail.gmail.com>
-Subject: Re: Warning at drivers/net/wireless/ath/ath10k/mac.c:5625
- ath10k_bss_info_changed
+Content-Disposition: inline
+In-Reply-To: <1551895251-22941-2-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +19,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>, ath10k@lists.infradead.org, Gabriel C <nix.or.die@gmail.com>, Kalle Valo <kvalo@codeaurora.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: kbuild@01.org, Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
 
-SGkKCk9uIFR1ZSwgTWFyIDI2LCAyMDE5IGF0IDEyOjQ5IEFNIEJyaWFuIE5vcnJpcyA8YnJpYW5u
-b3JyaXNAY2hyb21pdW0ub3JnPiB3cm90ZToKPgo+IEhpIEthbGxlLAo+Cj4gT24gRnJpLCBNYXIg
-OCwgMjAxOSBhdCAyOjU4IEFNIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cm90
-ZToKPiA+IEdhYnJpZWwgQyA8bml4Lm9yLmRpZUBnbWFpbC5jb20+IHdyaXRlczoKPiA+ID4gQW0g
-TW8uLCA0LiBNw6RyeiAyMDE5IHVtIDEyOjU5IFVociBzY2hyaWViIEthbGxlIFZhbG8gPGt2YWxv
-QGNvZGVhdXJvcmEub3JnPjoKPiA+ID4+IEdhYnJpZWwgQyA8bml4Lm9yLmRpZUBnbWFpbC5jb20+
-IHdyaXRlczoKPiA+ID4+ID4gSSByZXBvcnRlZCB0aGF0IHR3aWNlIGFuZCBubyBvbmUgc2VlbXMg
-dG8gY2FyZSBhYm91dC4KPiA+ID4+ID4KPiA+ID4+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvcGlwZXJtYWlsL2F0aDEway8yMDE4LU5vdmVtYmVyLzAxMjM5OC5odG1sCj4gPiA+PiA+IGh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxOC1EZWNlbWJlci8w
-MTI2NTguaHRtbAo+ID4gPj4KPiA+ID4+IERvZXMgdGhpcyBwYXRjaCBoZWxwOgo+ID4gPj4KPiA+
-ID4+IGF0aDEwazogRHJvcCBXQVJOX09OKClzIHRoYXQgYWx3YXlzIHRyaWdnZXIgZHVyaW5nIHN5
-c3RlbSByZXN1bWUKPiA+ID4+Cj4gPiA+PiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Bh
-dGNoLzEwODM3MTM5Lwo+ID4gPj4KPiA+ID4KPiA+ID4gV2l0aG91dCB0byB0ZXN0IHRoaXMgcGF0
-Y2ggSSBjYW4gY29uZmlybSBpdCB3aWxsIGhlbHAgLCBJIGRyb3BwZWQgdGhlCj4gPiA+IFdBUk5f
-T04oKSdzIGluIDQuMTkgYWxyZWFkeS4KPiA+ID4gSWYgSSByZW1lbWJlciByaWdodCA0LjE5IGhh
-cyBvbmUgV0FSTl9PTigpIHRyaWdnZXJzIHdoaWxlIDQuMjAgZ290IHR3by4KPiA+Cj4gPiBPaywg
-dGhhbmtzLiBJJ2xsIHRyeSB0byBnZXQgdGhpcyBwYXRjaCB0byA1LjEuCj4KPiBQaW5nPyBJcyB0
-aGVyZSBhbnkgc29sdXRpb24gcXVldWVkIGFueXdoZXJlPyBJdCdzIGtpbmRhIHNhZCBob3cgbG9u
-Zwo+IHRoaXMgaGFzIHNhdCBoZXJlLgo+Cj4gQnJpYW4KCkRvIHdlIG5lZWQgdG8gc2V0IG1jYXN0
-IHJhdGUgYW5kIGJhc2ljIHJhdGVzIGR1cmluZy9hZnRlciBzeXN0ZW0gcmVzdW1lPwpEcm9wcGlu
-ZyB0aGUgV0FSTl9PTigpIHdpbGwgc29sdmUgdGhlIHdhcm5pbmcgaXNzdWUsIGJ1dCB3b24ndCBt
-YWtlCnRob3NlIHJhdGVzIHNldCBwcm9wZXJseS4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+Hi Tamizh,
+
+Thank you for the patch! Perhaps something to improve:
+
+url:    https://github.com/0day-ci/linux/commits/Tamizh-chelvam/cfg80211-mac80211-Add-support-for-TID-specific-configuration/20190308-195433
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211-next.git master
+
+New smatch warnings:
+net/wireless/nl80211.c:13336 nl80211_set_tid_config() warn: possible memory leak of 'tid_conf'
+
+Old smatch warnings:
+net/wireless/nl80211.c:13339 nl80211_set_tid_config() warn: possible memory leak of 'tid_conf'
+
+# https://github.com/0day-ci/linux/commit/e462f4e99ba46deede4c2e78bd343211d372246d
+git remote add linux-review https://github.com/0day-ci/linux
+git remote update linux-review
+git checkout e462f4e99ba46deede4c2e78bd343211d372246d
+vim +/tid_conf +13336 net/wireless/nl80211.c
+
+e462f4e9 Tamizh chelvam 2019-03-06  13293  
+e462f4e9 Tamizh chelvam 2019-03-06  13294  static int nl80211_set_tid_config(struct sk_buff *skb,
+e462f4e9 Tamizh chelvam 2019-03-06  13295  				  struct genl_info *info)
+e462f4e9 Tamizh chelvam 2019-03-06  13296  {
+e462f4e9 Tamizh chelvam 2019-03-06  13297  	struct cfg80211_registered_device *rdev = info->user_ptr[0];
+e462f4e9 Tamizh chelvam 2019-03-06  13298  	struct nlattr *attrs[NL80211_ATTR_TID_CONFIG_MAX + 1];
+e462f4e9 Tamizh chelvam 2019-03-06  13299  	struct net_device *dev = info->user_ptr[1];
+e462f4e9 Tamizh chelvam 2019-03-06  13300  	struct ieee80211_tid_config *tid_conf;
+e462f4e9 Tamizh chelvam 2019-03-06  13301  	struct nlattr *tid;
+e462f4e9 Tamizh chelvam 2019-03-06  13302  	int conf_idx = 0, rem_conf;
+e462f4e9 Tamizh chelvam 2019-03-06  13303  	u32 num_conf = 0, size_of_conf;
+e462f4e9 Tamizh chelvam 2019-03-06  13304  	int ret = -EINVAL;
+e462f4e9 Tamizh chelvam 2019-03-06  13305  
+e462f4e9 Tamizh chelvam 2019-03-06  13306  	if (!info->attrs[NL80211_ATTR_TID_CONFIG])
+e462f4e9 Tamizh chelvam 2019-03-06  13307  		return -EINVAL;
+e462f4e9 Tamizh chelvam 2019-03-06  13308  
+e462f4e9 Tamizh chelvam 2019-03-06  13309  	if (!rdev->ops->set_tid_config)
+e462f4e9 Tamizh chelvam 2019-03-06  13310  		return -EOPNOTSUPP;
+e462f4e9 Tamizh chelvam 2019-03-06  13311  
+e462f4e9 Tamizh chelvam 2019-03-06  13312  	nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
+e462f4e9 Tamizh chelvam 2019-03-06  13313  			    rem_conf)
+e462f4e9 Tamizh chelvam 2019-03-06  13314  		num_conf++;
+e462f4e9 Tamizh chelvam 2019-03-06  13315  
+e462f4e9 Tamizh chelvam 2019-03-06  13316  	size_of_conf = sizeof(struct ieee80211_tid_config) +
+e462f4e9 Tamizh chelvam 2019-03-06  13317  		num_conf * sizeof(struct ieee80211_tid_cfg);
+e462f4e9 Tamizh chelvam 2019-03-06  13318  
+e462f4e9 Tamizh chelvam 2019-03-06  13319  	tid_conf = kzalloc(size_of_conf, GFP_KERNEL);
+e462f4e9 Tamizh chelvam 2019-03-06  13320  	if (!tid_conf)
+e462f4e9 Tamizh chelvam 2019-03-06  13321  		return -ENOMEM;
+e462f4e9 Tamizh chelvam 2019-03-06  13322  
+e462f4e9 Tamizh chelvam 2019-03-06  13323  	tid_conf->n_tid_conf = num_conf;
+e462f4e9 Tamizh chelvam 2019-03-06  13324  
+e462f4e9 Tamizh chelvam 2019-03-06  13325  	if (info->attrs[NL80211_ATTR_MAC])
+e462f4e9 Tamizh chelvam 2019-03-06  13326  		tid_conf->peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
+e462f4e9 Tamizh chelvam 2019-03-06  13327  	else
+e462f4e9 Tamizh chelvam 2019-03-06  13328  		tid_conf->peer = NULL;
+e462f4e9 Tamizh chelvam 2019-03-06  13329  
+e462f4e9 Tamizh chelvam 2019-03-06  13330  	nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
+e462f4e9 Tamizh chelvam 2019-03-06  13331  			    rem_conf) {
+e462f4e9 Tamizh chelvam 2019-03-06  13332  		ret = nla_parse_nested(attrs, NL80211_ATTR_TID_CONFIG_MAX, tid,
+e462f4e9 Tamizh chelvam 2019-03-06  13333  				       NULL, NULL);
+e462f4e9 Tamizh chelvam 2019-03-06  13334  
+e462f4e9 Tamizh chelvam 2019-03-06  13335  		if (ret)
+e462f4e9 Tamizh chelvam 2019-03-06 @13336  			return ret;
+e462f4e9 Tamizh chelvam 2019-03-06  13337  
+e462f4e9 Tamizh chelvam 2019-03-06  13338  		if (!attrs[NL80211_ATTR_TID_CONFIG_TID])
+e462f4e9 Tamizh chelvam 2019-03-06  13339  			return -EINVAL;
+e462f4e9 Tamizh chelvam 2019-03-06  13340  
+e462f4e9 Tamizh chelvam 2019-03-06  13341  		ret = parse_tid_conf(rdev, attrs, &tid_conf->tid_conf[conf_idx],
+e462f4e9 Tamizh chelvam 2019-03-06  13342  				     tid_conf->peer);
+e462f4e9 Tamizh chelvam 2019-03-06  13343  		if (ret)
+e462f4e9 Tamizh chelvam 2019-03-06  13344  			goto bad_tid_conf;
+e462f4e9 Tamizh chelvam 2019-03-06  13345  
+e462f4e9 Tamizh chelvam 2019-03-06  13346  		conf_idx++;
+e462f4e9 Tamizh chelvam 2019-03-06  13347  	}
+e462f4e9 Tamizh chelvam 2019-03-06  13348  
+e462f4e9 Tamizh chelvam 2019-03-06  13349  	ret = rdev_set_tid_config(rdev, dev, tid_conf);
+e462f4e9 Tamizh chelvam 2019-03-06  13350  
+e462f4e9 Tamizh chelvam 2019-03-06  13351  bad_tid_conf:
+e462f4e9 Tamizh chelvam 2019-03-06  13352  	kfree(tid_conf);
+e462f4e9 Tamizh chelvam 2019-03-06  13353  	return ret;
+e462f4e9 Tamizh chelvam 2019-03-06  13354  }
+e462f4e9 Tamizh chelvam 2019-03-06  13355  
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
