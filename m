@@ -1,28 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8snI-0002Ve-3c
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 20:35:37 +0000
-Received: by mail-lf1-x142.google.com with SMTP id d18so9705967lfn.3
- for <ath10k@lists.infradead.org>; Tue, 26 Mar 2019 13:35:30 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com.
- [209.85.208.174])
- by smtp.gmail.com with ESMTPSA id r24sm2756870ljr.63.2019.03.26.13.35.24
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 26 Mar 2019 13:35:25 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id f23so12403129ljc.0
- for <ath10k@lists.infradead.org>; Tue, 26 Mar 2019 13:35:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190207014143.41529-1-briannorris@chromium.org>
- <20190325202706.GA68720@google.com>
- <CABvG-CWODF24BMeoCE98OK5fnGNgX0k3z5qTU8A0AD9ncH0jHw@mail.gmail.com>
- <CA+ASDXMRXMSFPXfzbG_2wKzBYAZmp2AVO1qsAJdALLOkPrVRCw@mail.gmail.com>
-In-Reply-To: <CA+ASDXMRXMSFPXfzbG_2wKzBYAZmp2AVO1qsAJdALLOkPrVRCw@mail.gmail.com>
+ id 1h8t8a-0000o6-Ra
+ for ath10k@lists.infradead.org; Tue, 26 Mar 2019 20:57:39 +0000
+Received: by mail-pf1-x444.google.com with SMTP id i19so8639792pfd.0
+ for <ath10k@lists.infradead.org>; Tue, 26 Mar 2019 13:57:35 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
-Date: Tue, 26 Mar 2019 13:35:12 -0700
-Message-ID: <CA+ASDXO+qTj4FLxSQXQ7wLHU-OuY0taFkdRfb0fkEEYQwZRY9A@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: pci: use mutex for diagnostic window CE polling
+Subject: [PATCH for-5.1] ath10k: perform crash dump collection in workqueue
+Date: Tue, 26 Mar 2019 13:57:28 -0700
+Message-Id: <20190326205728.168973-1-briannorris@chromium.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +18,234 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
-Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
+To: linux-wireless@vger.kernel.org
+Cc: Brian Norris <briannorris@chromium.org>, =?UTF-8?q?Micha=C5=82=20Kazior?= <kazikcz@gmail.com>, Carl Huang <cjhuang@codeaurora.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-T24gTW9uLCBNYXIgMjUsIDIwMTkgYXQgMzoxNCBQTSBCcmlhbiBOb3JyaXMgPGJyaWFubm9ycmlz
-QGNocm9taXVtLm9yZz4gd3JvdGU6Cj4gT24gTW9uLCBNYXIgMjUsIDIwMTkgYXQgMjoyMCBQTSBN
-aWNoYcWCIEthemlvciA8a2F6aWtjekBnbWFpbC5jb20+IHdyb3RlOgo+ID4gRm9yIG9uZSwgeW91
-J2xsIG5lZWQgdG8gZGVmZXIgYXRoMTBrX3BjaV9md19jcmFzaGVkX2R1bXAgdG8gYSB3b3JrZXIu
-Cj4gPiBNYXliZSBpbnRvIGFyLT5yZXN0YXJ0X3dvcmsgd2hpY2ggdGhlIGR1bXAgZnVuY3Rpb24g
-Y2FsbHMgbm93Lgo+Cj4gSG1tLCB0aGF0J3MgYW4gaWRlYSAtLSBhbHRob3VnaCBJJ20gbm90IHN1
-cmUgaWYgSSdkIHN0ZWFsCj4gJ3Jlc3RhcnRfd29yaycsIG9yIGNyZWF0ZSBhIGRpZmZlcmVudCB3
-b3JrIGl0ZW0gb24gdGhlIHNhbWUgcXVldWUuIEJ1dAo+IGVpdGhlciB3YXksIHdlJ2Qgc3RpbGwg
-YWxzbyBoYXZlIHRvIGF2b2lkIGhvbGRpbmcgJ2RhdGFfbG9jaycsIGFuZCBhdAo+IHRoYXQgcG9p
-bnQsIEknbSBub3Qgc3VyZSBpZiB3ZSdyZSBsb3NpbmcgZGVzaXJhYmxlIHByb3BlcnRpZXMgb2Yg
-dGhlc2UKPiBmaXJtd2FyZSBkdW1wcyAtLSBpdCBhbGxvd3MgbW9yZSAic3R1ZmYiIHRvIGtlZXAg
-Z29pbmcgb24gd2hpbGUgd2UncmUKPiBwcmVwYXJpbmcgdG8gZHVtcCB0aGUgZGV2aWNlIG1lbW9y
-eSBzdGF0ZS4KClNvIElJVUMsIHdlIGRvbid0IHRvZGF5IGhhdmUsIGZvciBpbnN0YW5jZSwgYSBj
-b21wbGV0ZSBndWFyYW50ZWUgdGhhdApDb3B5IEVuZ2luZXMgYXJlIHN0b3BwZWQgYXQgdGhpcyBw
-b2ludCwgc28gdGhlc2UgbWVtb3J5IGR1bXBzIGFyZQp1c2VmdWwgbW9zdGx5IGJ5IHRoZSBpbXBs
-aWVkIGZhY3QgdGhhdCBhIGNyYXNoZWQgZmlybXdhcmUgaXMgbm8gbG9uZ2VyCmRvaW5nIGFueXRo
-aW5nIGFjdGl2ZS4KClNvIGFzIGxvbmcgYXMgd2UgZW5zdXJlIHRoZSBkcml2ZXIgaXMgcmV0YWlu
-aW5nIGV4Y2x1c2lvbiBvbiBpdHMgb3duCnJlc291cmNlcyAoZS5nLiwgY29yZWR1bXAgYnVmZmVy
-cykgd2hpbGUgcGVyZm9ybWluZyB0aGUgZHVtcCB3b3JrLAp0aGVuIHdlIHNob3VsZCBiZSBPSy4K
-Cj4gPiBUbyBnZXQgcmlkIG9mIGRhdGFfbG9jayBmcm9tIGF0aDEwa19wY2lfZndfY3Jhc2hlZF9k
-dW1wKCkgeW91J2xsIG5lZWQKPiA+IHRvIGF0IGxlYXN0IG1ha2UgZndfY3Jhc2hfY291bnRlciBp
-bnRvIGFuIGF0b21pY190LiBUaGlzIGlzIGp1c3QgZnJvbQo+ID4gYSBxdWljayBnbGFuY2UuCj4K
-PiBZZXMsIHdlJ2QgbmVlZCBhdCBsZWFzdCB0aGF0IG11Y2guIFdlJ2QgYWxzbyBuZWVkIHNvbWUg
-b3RoZXIgZm9ybSBvZgo+IGxvY2tpbmcgdG8gZW5zdXJlIGV4Y2x1c2lvbiBiZXR3ZWVuIGFsbCB1
-c2VycyBvZgo+IGFyLT5jb3JlZHVtcC5md19jcmFzaF9kYXRhIGFuZCBzaW1pbGFyLiBBdCB0aGUg
-bW9tZW50LCB0aGF0J3MKPiAnZGF0YV9sb2NrJywgYnV0IEkgc3VwcG9zZSB3ZSBnZXQgYSBzaW1p
-bGFyIGV4Y2x1c2lvbiBpZiBhbGwgdGhlCj4gZHVtcC9yZXN0YXJ0IHdvcmsgaXMgb24gdGhlIHNh
-bWUgd29ya3F1ZXVlLgoKSSd2ZSBjb29rZWQgdXAgYSBzb2x1dGlvbiB3aXRoIGEgbmV3IGR1bXBf
-e3dvcmssbXV0ZXh9IHRvIHByb3RlY3QgdGhlCmNvcmVkdW1wIGJ1ZmZlcnMgYW5kIGRvIHRoZSBk
-dW1waW5nIHdvcmsuIEkgc3RpbGwga2VlcCB0aGUgJ2RhdGFfbG9jaycKb25seSBhcm91bmQgdGhl
-IGZ3X2NyYXNoX2NvdW50ZXIuCgo+IEknbSBzdGlsbCBub3QgcXVpdGUgc3VyZSBpZiB0aGlzIGlz
-IDUuMS1yYyBtYXRlcmlhbCwgb3IgSSBzaG91bGQganVzdAo+IHJldmVydCBmb3IgNS4xLgoKSSds
-bCBwb3N0IHRoZSBhYm92ZSBzb29uIHdpdGggYSBnb2FsIG9mIDUuMS4gSWYgdGhhdCdzIG5vdCBj
-b25zaWRlcmVkCmdvb2QgZW5vdWdoLCBpJ2xsIHBvc3QgYSByZXZlcnQgdG9vLgoKQnJpYW4KCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Commit 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE
+polling") introduced a regression where we try to sleep (grab a mutex)
+in an atomic context:
+
+[  233.602619] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:254
+[  233.602626] in_atomic(): 1, irqs_disabled(): 0, pid: 0, name: swapper/0
+[  233.602636] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.1.0-rc2 #4
+[  233.602642] Hardware name: Google Scarlet (DT)
+[  233.602647] Call trace:
+[  233.602663]  dump_backtrace+0x0/0x11c
+[  233.602672]  show_stack+0x20/0x28
+[  233.602681]  dump_stack+0x98/0xbc
+[  233.602690]  ___might_sleep+0x154/0x16c
+[  233.602696]  __might_sleep+0x78/0x88
+[  233.602704]  mutex_lock+0x2c/0x5c
+[  233.602717]  ath10k_pci_diag_read_mem+0x68/0x21c [ath10k_pci]
+[  233.602725]  ath10k_pci_diag_read32+0x48/0x74 [ath10k_pci]
+[  233.602733]  ath10k_pci_dump_registers+0x5c/0x16c [ath10k_pci]
+[  233.602741]  ath10k_pci_fw_crashed_dump+0xb8/0x548 [ath10k_pci]
+[  233.602749]  ath10k_pci_napi_poll+0x60/0x128 [ath10k_pci]
+[  233.602757]  net_rx_action+0x140/0x388
+[  233.602766]  __do_softirq+0x1b0/0x35c
+[...]
+
+ath10k_pci_fw_crashed_dump() is called from NAPI contexts, and firmware
+memory dumps are retrieved using the diag memory interface.
+
+A simple reproduction case is to run this on QCA6174A /
+WLAN.RM.4.4.1-00132-QCARMSWP-1, which happens to be a way to b0rk the
+firmware:
+
+  dd if=/sys/kernel/debug/ieee80211/phy0/ath10k/mem_value bs=4K count=1
+of=/dev/null
+
+(NB: simulated firmware crashes, via debugfs, don't trigger firmware
+dumps.)
+
+The fix is to move the crash-dump into a workqueue context, and avoid
+relying on 'data_lock' for most mutual exclusion. We only keep using it
+here for protecting 'fw_crash_counter', while the rest of the coredump
+buffers are protected by a new 'dump_mutex'.
+
+I've tested the above with simulated firmware crashes (debugfs 'reset'
+file), real firmware crashes (the 'dd' command above), and a variety of
+reboot and suspend/resume configurations on QCA6174A.
+
+Reported here:
+http://lkml.kernel.org/linux-wireless/20190325202706.GA68720@google.com
+
+Fixes: 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE polling")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+ drivers/net/wireless/ath/ath10k/ce.c       |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c     |  1 +
+ drivers/net/wireless/ath/ath10k/core.h     |  3 +++
+ drivers/net/wireless/ath/ath10k/coredump.c |  6 +++---
+ drivers/net/wireless/ath/ath10k/pci.c      | 24 +++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/pci.h      |  2 ++
+ 6 files changed, 29 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 24b983edb357..eca87f7c5b6c 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1855,7 +1855,7 @@ void ath10k_ce_dump_registers(struct ath10k *ar,
+ 	struct ath10k_ce_crash_data ce_data;
+ 	u32 addr, id;
+ 
+-	lockdep_assert_held(&ar->data_lock);
++	lockdep_assert_held(&ar->dump_mutex);
+ 
+ 	ath10k_err(ar, "Copy Engine register dump:\n");
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 835b8de92d55..aff585658fc0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -3119,6 +3119,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 		goto err_free_wq;
+ 
+ 	mutex_init(&ar->conf_mutex);
++	mutex_init(&ar->dump_mutex);
+ 	spin_lock_init(&ar->data_lock);
+ 
+ 	INIT_LIST_HEAD(&ar->peers);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index e08a17b01e03..e35aae5146f1 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1063,6 +1063,9 @@ struct ath10k {
+ 	/* prevents concurrent FW reconfiguration */
+ 	struct mutex conf_mutex;
+ 
++	/* protects coredump data */
++	struct mutex dump_mutex;
++
+ 	/* protects shared structure data */
+ 	spinlock_t data_lock;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
+index 33838d9c1cb6..45a355fb62b9 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.c
++++ b/drivers/net/wireless/ath/ath10k/coredump.c
+@@ -1102,7 +1102,7 @@ struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar)
+ {
+ 	struct ath10k_fw_crash_data *crash_data = ar->coredump.fw_crash_data;
+ 
+-	lockdep_assert_held(&ar->data_lock);
++	lockdep_assert_held(&ar->dump_mutex);
+ 
+ 	if (ath10k_coredump_mask == 0)
+ 		/* coredump disabled */
+@@ -1146,7 +1146,7 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
+ 	if (!buf)
+ 		return NULL;
+ 
+-	spin_lock_bh(&ar->data_lock);
++	mutex_lock(&ar->dump_mutex);
+ 
+ 	dump_data = (struct ath10k_dump_file_data *)(buf);
+ 	strlcpy(dump_data->df_magic, "ATH10K-FW-DUMP",
+@@ -1213,7 +1213,7 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
+ 		sofar += sizeof(*dump_tlv) + crash_data->ramdump_buf_len;
+ 	}
+ 
+-	spin_unlock_bh(&ar->data_lock);
++	mutex_unlock(&ar->dump_mutex);
+ 
+ 	return dump_data;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 271f92c24d44..2c27f407a851 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1441,7 +1441,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
+ 	__le32 reg_dump_values[REG_DUMP_COUNT_QCA988X] = {};
+ 	int i, ret;
+ 
+-	lockdep_assert_held(&ar->data_lock);
++	lockdep_assert_held(&ar->dump_mutex);
+ 
+ 	ret = ath10k_pci_diag_read_hi(ar, &reg_dump_values[0],
+ 				      hi_failure_state,
+@@ -1656,7 +1656,7 @@ static void ath10k_pci_dump_memory(struct ath10k *ar,
+ 	int ret, i;
+ 	u8 *buf;
+ 
+-	lockdep_assert_held(&ar->data_lock);
++	lockdep_assert_held(&ar->dump_mutex);
+ 
+ 	if (!crash_data)
+ 		return;
+@@ -1734,14 +1734,19 @@ static void ath10k_pci_dump_memory(struct ath10k *ar,
+ 	}
+ }
+ 
+-static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
++static void ath10k_pci_fw_dump_work(struct work_struct *work)
+ {
++	struct ath10k_pci *ar_pci = container_of(work, struct ath10k_pci,
++						 dump_work);
+ 	struct ath10k_fw_crash_data *crash_data;
++	struct ath10k *ar = ar_pci->ar;
+ 	char guid[UUID_STRING_LEN + 1];
+ 
+-	spin_lock_bh(&ar->data_lock);
++	mutex_lock(&ar->dump_mutex);
+ 
++	spin_lock_bh(&ar->data_lock);
+ 	ar->stats.fw_crash_counter++;
++	spin_unlock_bh(&ar->data_lock);
+ 
+ 	crash_data = ath10k_coredump_new(ar);
+ 
+@@ -1756,11 +1761,18 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ 	ath10k_ce_dump_registers(ar, crash_data);
+ 	ath10k_pci_dump_memory(ar, crash_data);
+ 
+-	spin_unlock_bh(&ar->data_lock);
++	mutex_unlock(&ar->dump_mutex);
+ 
+ 	queue_work(ar->workqueue, &ar->restart_work);
+ }
+ 
++static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	queue_work(ar->workqueue, &ar_pci->dump_work);
++}
++
+ void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
+ 					int force)
+ {
+@@ -3442,6 +3454,8 @@ int ath10k_pci_setup_resource(struct ath10k *ar)
+ 	spin_lock_init(&ar_pci->ps_lock);
+ 	mutex_init(&ar_pci->ce_diag_mutex);
+ 
++	INIT_WORK(&ar_pci->dump_work, ath10k_pci_fw_dump_work);
++
+ 	timer_setup(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry, 0);
+ 
+ 	if (QCA_REV_6174(ar) || QCA_REV_9377(ar))
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 3773c79f322f..4455ed6c5275 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -121,6 +121,8 @@ struct ath10k_pci {
+ 	/* For protecting ce_diag */
+ 	struct mutex ce_diag_mutex;
+ 
++	struct work_struct dump_work;
++
+ 	struct ath10k_ce ce;
+ 	struct timer_list rx_post_retry;
+ 
+-- 
+2.21.0.392.gf8f6787159e-goog
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
