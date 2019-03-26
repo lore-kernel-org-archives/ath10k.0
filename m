@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from userp2120.oracle.com ([156.151.31.85])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8g4P-0000jR-Jr
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 07:00:30 +0000
-Date: Tue, 26 Mar 2019 10:00:02 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCHv3 1/9] nl80211: New netlink command for TID specific
- configuration
-Message-ID: <20190326070002.GB32613@kadam>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1551895251-22941-2-git-send-email-tamizhr@codeaurora.org>
+ id 1h8iOu-0004IE-Hq
+ for ath10k@lists.infradead.org; Tue, 26 Mar 2019 09:29:48 +0000
+From: Tamizh chelvam <tamizhr@codeaurora.org>
+Subject: [PATCHv5 4/9] nl80211: Add netlink attribute to enable/disable RTS_CTS
+Date: Tue, 26 Mar 2019 14:59:05 +0530
+Message-Id: <1553592550-15282-5-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
+References: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,99 +17,154 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild@01.org, Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
+To: johannes@sipsolutions.net, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-Hi Tamizh,
+Introduce NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL in nl80211_attr_tid_config
+to accept TID specific RTS_CTS enable/disable configuration
+through NL80211_CMD_SET_TID_CONFIG command. TID for which the
+RTS_CTS control configuration is to be applied is passed in
+NL80211_ATTR_TID_CONFIG_TID attribute. When the user-space wants this
+configuration peer specific rather than being applied for all the
+connected stations, MAC address of the peer can be passed in
+NL80211_ATTR_MAC attribute.
 
-Thank you for the patch! Perhaps something to improve:
+Driver supporting this feature should advertise
+NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per-STA data TID
+RTS_CTS configuration should advertise NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
 
-url:    https://github.com/0day-ci/linux/commits/Tamizh-chelvam/cfg80211-mac80211-Add-support-for-TID-specific-configuration/20190308-195433
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211-next.git master
-
-New smatch warnings:
-net/wireless/nl80211.c:13336 nl80211_set_tid_config() warn: possible memory leak of 'tid_conf'
-
-Old smatch warnings:
-net/wireless/nl80211.c:13339 nl80211_set_tid_config() warn: possible memory leak of 'tid_conf'
-
-# https://github.com/0day-ci/linux/commit/e462f4e99ba46deede4c2e78bd343211d372246d
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout e462f4e99ba46deede4c2e78bd343211d372246d
-vim +/tid_conf +13336 net/wireless/nl80211.c
-
-e462f4e9 Tamizh chelvam 2019-03-06  13293  
-e462f4e9 Tamizh chelvam 2019-03-06  13294  static int nl80211_set_tid_config(struct sk_buff *skb,
-e462f4e9 Tamizh chelvam 2019-03-06  13295  				  struct genl_info *info)
-e462f4e9 Tamizh chelvam 2019-03-06  13296  {
-e462f4e9 Tamizh chelvam 2019-03-06  13297  	struct cfg80211_registered_device *rdev = info->user_ptr[0];
-e462f4e9 Tamizh chelvam 2019-03-06  13298  	struct nlattr *attrs[NL80211_ATTR_TID_CONFIG_MAX + 1];
-e462f4e9 Tamizh chelvam 2019-03-06  13299  	struct net_device *dev = info->user_ptr[1];
-e462f4e9 Tamizh chelvam 2019-03-06  13300  	struct ieee80211_tid_config *tid_conf;
-e462f4e9 Tamizh chelvam 2019-03-06  13301  	struct nlattr *tid;
-e462f4e9 Tamizh chelvam 2019-03-06  13302  	int conf_idx = 0, rem_conf;
-e462f4e9 Tamizh chelvam 2019-03-06  13303  	u32 num_conf = 0, size_of_conf;
-e462f4e9 Tamizh chelvam 2019-03-06  13304  	int ret = -EINVAL;
-e462f4e9 Tamizh chelvam 2019-03-06  13305  
-e462f4e9 Tamizh chelvam 2019-03-06  13306  	if (!info->attrs[NL80211_ATTR_TID_CONFIG])
-e462f4e9 Tamizh chelvam 2019-03-06  13307  		return -EINVAL;
-e462f4e9 Tamizh chelvam 2019-03-06  13308  
-e462f4e9 Tamizh chelvam 2019-03-06  13309  	if (!rdev->ops->set_tid_config)
-e462f4e9 Tamizh chelvam 2019-03-06  13310  		return -EOPNOTSUPP;
-e462f4e9 Tamizh chelvam 2019-03-06  13311  
-e462f4e9 Tamizh chelvam 2019-03-06  13312  	nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
-e462f4e9 Tamizh chelvam 2019-03-06  13313  			    rem_conf)
-e462f4e9 Tamizh chelvam 2019-03-06  13314  		num_conf++;
-e462f4e9 Tamizh chelvam 2019-03-06  13315  
-e462f4e9 Tamizh chelvam 2019-03-06  13316  	size_of_conf = sizeof(struct ieee80211_tid_config) +
-e462f4e9 Tamizh chelvam 2019-03-06  13317  		num_conf * sizeof(struct ieee80211_tid_cfg);
-e462f4e9 Tamizh chelvam 2019-03-06  13318  
-e462f4e9 Tamizh chelvam 2019-03-06  13319  	tid_conf = kzalloc(size_of_conf, GFP_KERNEL);
-e462f4e9 Tamizh chelvam 2019-03-06  13320  	if (!tid_conf)
-e462f4e9 Tamizh chelvam 2019-03-06  13321  		return -ENOMEM;
-e462f4e9 Tamizh chelvam 2019-03-06  13322  
-e462f4e9 Tamizh chelvam 2019-03-06  13323  	tid_conf->n_tid_conf = num_conf;
-e462f4e9 Tamizh chelvam 2019-03-06  13324  
-e462f4e9 Tamizh chelvam 2019-03-06  13325  	if (info->attrs[NL80211_ATTR_MAC])
-e462f4e9 Tamizh chelvam 2019-03-06  13326  		tid_conf->peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
-e462f4e9 Tamizh chelvam 2019-03-06  13327  	else
-e462f4e9 Tamizh chelvam 2019-03-06  13328  		tid_conf->peer = NULL;
-e462f4e9 Tamizh chelvam 2019-03-06  13329  
-e462f4e9 Tamizh chelvam 2019-03-06  13330  	nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
-e462f4e9 Tamizh chelvam 2019-03-06  13331  			    rem_conf) {
-e462f4e9 Tamizh chelvam 2019-03-06  13332  		ret = nla_parse_nested(attrs, NL80211_ATTR_TID_CONFIG_MAX, tid,
-e462f4e9 Tamizh chelvam 2019-03-06  13333  				       NULL, NULL);
-e462f4e9 Tamizh chelvam 2019-03-06  13334  
-e462f4e9 Tamizh chelvam 2019-03-06  13335  		if (ret)
-e462f4e9 Tamizh chelvam 2019-03-06 @13336  			return ret;
-e462f4e9 Tamizh chelvam 2019-03-06  13337  
-e462f4e9 Tamizh chelvam 2019-03-06  13338  		if (!attrs[NL80211_ATTR_TID_CONFIG_TID])
-e462f4e9 Tamizh chelvam 2019-03-06  13339  			return -EINVAL;
-e462f4e9 Tamizh chelvam 2019-03-06  13340  
-e462f4e9 Tamizh chelvam 2019-03-06  13341  		ret = parse_tid_conf(rdev, attrs, &tid_conf->tid_conf[conf_idx],
-e462f4e9 Tamizh chelvam 2019-03-06  13342  				     tid_conf->peer);
-e462f4e9 Tamizh chelvam 2019-03-06  13343  		if (ret)
-e462f4e9 Tamizh chelvam 2019-03-06  13344  			goto bad_tid_conf;
-e462f4e9 Tamizh chelvam 2019-03-06  13345  
-e462f4e9 Tamizh chelvam 2019-03-06  13346  		conf_idx++;
-e462f4e9 Tamizh chelvam 2019-03-06  13347  	}
-e462f4e9 Tamizh chelvam 2019-03-06  13348  
-e462f4e9 Tamizh chelvam 2019-03-06  13349  	ret = rdev_set_tid_config(rdev, dev, tid_conf);
-e462f4e9 Tamizh chelvam 2019-03-06  13350  
-e462f4e9 Tamizh chelvam 2019-03-06  13351  bad_tid_conf:
-e462f4e9 Tamizh chelvam 2019-03-06  13352  	kfree(tid_conf);
-e462f4e9 Tamizh chelvam 2019-03-06  13353  	return ret;
-e462f4e9 Tamizh chelvam 2019-03-06  13354  }
-e462f4e9 Tamizh chelvam 2019-03-06  13355  
-
+Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ include/net/cfg80211.h       |    3 +++
+ include/uapi/linux/nl80211.h |   22 ++++++++++++++++++++++
+ net/wireless/nl80211.c       |   17 +++++++++++++++++
+ 3 files changed, 42 insertions(+)
+
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index aa0f44c..86dee3d 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -513,6 +513,7 @@ enum ieee80211_tid_conf_mask {
+ 	IEEE80211_TID_CONF_NOACK	= BIT(0),
+ 	IEEE80211_TID_CONF_RETRY	= BIT(1),
+ 	IEEE80211_TID_CONF_AMPDU	= BIT(2),
++	IEEE80211_TID_CONF_RTSCTS	= BIT(3),
+ };
+ 
+ /**
+@@ -524,6 +525,7 @@ enum ieee80211_tid_conf_mask {
+  * @retry_long: retry count value
+  * @retry_short: retry count value
+  * @ampdu: Enable/Disable aggregation
++ * @rtscts: Enable/Disable RTS/CTS
+  */
+ struct ieee80211_tid_cfg {
+ 	u8 tid;
+@@ -532,6 +534,7 @@ struct ieee80211_tid_cfg {
+ 	int retry_long;
+ 	int retry_short;
+ 	u8 ampdu;
++	u8 rtscts;
+ };
+ 
+ /**
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index f94651d..996b4d4 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -4630,6 +4630,21 @@ enum nl80211_tid_config {
+  *	NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL and supporting per station
+  *	aggregation configuration should advertise
+  *	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL.
++ * @NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL: Enable/Disable RTS_CTS for the TID
++ *	specified in %%NL80211_ATTR_TID_CONFIG_TID. It is u8 type, if the
++ *	peer MAC address is passed in %NL80211_ATTR_MAC, then this
++ *	configuration is applied to the data frame for the tid to that
++ *	connected station.
++ *	Station specific RTS_CTS configuration is valid only for STA's
++ *	current connection. i.e. the configuration will be reset to default when
++ *	the station connects back after disconnection/roaming.
++ *	when user-space does not include %NL80211_ATTR_MAC, this configuration
++ *	should be treated as per-netdev configuration. This configuration will
++ *	be cleared when the interface goes down and on the disconnection from a
++ *	BSS. Driver supporting this feature should advertise
++ *	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per station
++ *	RTS_CTS configuration should advertise
++ *	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
+  */
+ enum nl80211_attr_tid_config {
+ 	__NL80211_ATTR_TID_INVALID,
+@@ -4639,6 +4654,7 @@ enum nl80211_attr_tid_config {
+ 	NL80211_ATTR_TID_CONFIG_RETRY_SHORT,
+ 	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
+ 	NL80211_ATTR_TID_CONFIG_AMPDU_CTRL,
++	NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL,
+ 
+ 	/* keep last */
+ 	__NL80211_ATTR_TID_CONFIG_AFTER_LAST,
+@@ -5457,6 +5473,10 @@ enum nl80211_feature_flags {
+  *	aggregation control(enable/disable).
+  * @NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL: Driver supports per STA
+  *	specific TID aggregation control(enable/disable).
++ * @NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL: Driver supports TID specific
++ *	RTS_CTS control(enable/disable).
++ * @NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL: Driver supports STA specific
++ *	RTS_CTS control(enable/disable).
+  *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+@@ -5505,6 +5525,8 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG,
+ 	NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL,
+ 	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL,
++	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL,
++	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL,
+ 
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index fb2bb01..9e5c58c 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -290,6 +290,8 @@ static int validate_ie_attr(const struct nlattr *attr,
+ 	[NL80211_ATTR_TID_CONFIG_RETRY_LONG] = NLA_POLICY_MIN(NLA_U8, 1),
+ 	[NL80211_ATTR_TID_CONFIG_AMPDU_CTRL] =
+ 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
++	[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL] =
++			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
+ };
+ 
+ const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
+@@ -13337,6 +13339,21 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
+ 		tid_conf->ampdu =
+ 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_AMPDU_CTRL]);
+ 	}
++
++	if (attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]) {
++		if (!wiphy_ext_feature_isset(&rdev->wiphy,
++				NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL))
++			return -ENOTSUPP;
++
++		if (peer && !wiphy_ext_feature_isset(&rdev->wiphy,
++				NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL))
++			return -ENOTSUPP;
++
++		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_RTSCTS;
++		tid_conf->rtscts =
++			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]);
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
