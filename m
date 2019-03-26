@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8iOx-0004Is-8H
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 09:29:52 +0000
+ id 1h8iOx-0004HG-8E
+ for ath10k@lists.infradead.org; Tue, 26 Mar 2019 09:29:53 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv5 5/9] nl80211: Add netlink attribute to configure TID
- specific tx rate
-Date: Tue, 26 Mar 2019 14:59:06 +0530
-Message-Id: <1553592550-15282-6-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv5 2/9] nl80211: Add new netlink attribute for TID speicific
+ retry count
+Date: Tue, 26 Mar 2019 14:59:03 +0530
+Message-Id: <1553592550-15282-3-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
 References: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -26,323 +26,243 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-Introduce NL80211_ATTR_TID_CONFIG_TX_RATES in nl80211_attr_tid_config
-to accept data TID specific TX bitrate configuration
-through NL80211_CMD_SET_TID_CONFIG command. TID for which the
-this configuration is to be applied is passed in
-NL80211_ATTR_TID_CONFIG_TID attribute. TX bitrate mask values passed
-in NL80211_ATTR_TX_RATES attribute and NL80211_ATTR_TID_CONFIG_TX_RATES
-attribute will have types of the TX rate should be applied.
-When the user-space wants this configuration peer specific
+This patch introduced below NL attributes to add support for
+configuring data TID specific retry count
+
+NL80211_ATTR_TID_CONFIG_RETRY
+NL80211_ATTR_TID_CONFIG_RETRY_LONG
+NL80211_ATTR_TID_CONFIG_RETRY_SHORT
+
+These attributes are added in NL80211_ATTR_TID_CONFIG nested attribute.
+This will be useful for the driver which supports data TID specific retry
+count configuration rather using phy level retry configuration.
+This TID specific retry configuration will have more precedence than
+phy level configuration. This configuration can be applied for a
+specific peer. To apply this configuration specific to a peer
 rather than being applied for all the connected stations,
 MAC address of the peer can be passed in NL80211_ATTR_MAC attribute.
 
-Driver supporting this feature should advertise
-NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per-STA data TID
-TX bitrate configuration should advertise
-NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
+Driver should advertise WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT and
+max_data_retry_count value to notify user space to avoid of passing
+greater than the allowed limit.
+
+Driver supporting TID specific retry configuration should advertise
+NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG and per STA specific
+data TID retry configuration should advertise
+NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG.
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- include/net/cfg80211.h       |    5 +++
- include/uapi/linux/nl80211.h |   39 ++++++++++++++++++
- net/wireless/nl80211.c       |   89 ++++++++++++++++++++++++++++++++----------
- 3 files changed, 113 insertions(+), 20 deletions(-)
+ include/net/cfg80211.h       |   11 ++++++++++
+ include/uapi/linux/nl80211.h |   48 ++++++++++++++++++++++++++++++++++++++++++
+ net/wireless/nl80211.c       |   34 ++++++++++++++++++++++++++++++
+ 3 files changed, 93 insertions(+)
 
 diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 86dee3d..ebf041b 100644
+index c606e78..888de00 100644
 --- a/include/net/cfg80211.h
 +++ b/include/net/cfg80211.h
-@@ -514,6 +514,7 @@ enum ieee80211_tid_conf_mask {
- 	IEEE80211_TID_CONF_RETRY	= BIT(1),
- 	IEEE80211_TID_CONF_AMPDU	= BIT(2),
- 	IEEE80211_TID_CONF_RTSCTS	= BIT(3),
-+	IEEE80211_TID_CONF_TX_BITRATE	= BIT(4),
+@@ -511,6 +511,7 @@ struct cfg80211_chan_def {
+ 
+ enum ieee80211_tid_conf_mask {
+ 	IEEE80211_TID_CONF_NOACK	= BIT(0),
++	IEEE80211_TID_CONF_RETRY	= BIT(1),
  };
  
  /**
-@@ -526,6 +527,8 @@ enum ieee80211_tid_conf_mask {
-  * @retry_short: retry count value
-  * @ampdu: Enable/Disable aggregation
-  * @rtscts: Enable/Disable RTS/CTS
-+ * @txrate_type: TX bitrate mask type
-+ * @mask: bitrate to be applied for the TID
+@@ -519,11 +520,15 @@ enum ieee80211_tid_conf_mask {
+  * @tid_conf_mask: bitmap indicating which parameter changed
+  *	see %enum ieee80211_tid_conf_mask
+  * @noack: noack configuration value for the TID
++ * @retry_long: retry count value
++ * @retry_short: retry count value
   */
  struct ieee80211_tid_cfg {
  	u8 tid;
-@@ -535,6 +538,8 @@ struct ieee80211_tid_cfg {
- 	int retry_short;
- 	u8 ampdu;
- 	u8 rtscts;
-+	enum nl80211_tx_rate_setting txrate_type;
-+	struct cfg80211_bitrate_mask *mask;
+ 	enum ieee80211_tid_conf_mask tid_conf_mask;
+ 	u8 noack;
++	int retry_long;
++	int retry_short;
  };
  
  /**
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 996b4d4..c8aa3ba 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -4557,6 +4557,18 @@ enum nl80211_tx_power_setting {
- 	NL80211_TX_POWER_FIXED,
+@@ -3832,6 +3837,7 @@ struct cfg80211_ops {
+  *	beaconing mode (AP, IBSS, Mesh, ...).
+  * @WIPHY_FLAG_HAS_STATIC_WEP: The device supports static WEP key installation
+  *	before connection.
++ * @WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT: Device supports data retry count call.
+  */
+ enum wiphy_flags {
+ 	/* use hole at 0 */
+@@ -3858,6 +3864,7 @@ enum wiphy_flags {
+ 	WIPHY_FLAG_SUPPORTS_5_10_MHZ		= BIT(22),
+ 	WIPHY_FLAG_HAS_CHANNEL_SWITCH		= BIT(23),
+ 	WIPHY_FLAG_HAS_STATIC_WEP		= BIT(24),
++	WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT	= BIT(25),
  };
  
-+/**
-+ * enum nl80211_tx_rate_setting - TX rate configuration type
-+ * @NL80211_TX_RATE_AUTOMATIC: automatically determine TX rate
-+ * @NL80211_TX_RATE_LIMITED: limit the TX rate by the TX rate parameter
-+ * @NL80211_TX_RATE_FIXED: fix TX rate to the TX rate parameter
-+ */
-+enum nl80211_tx_rate_setting {
-+	NL80211_TX_RATE_AUTOMATIC,
-+	NL80211_TX_RATE_LIMITED,
-+	NL80211_TX_RATE_FIXED,
-+};
+ /**
+@@ -4365,6 +4372,8 @@ struct cfg80211_pmsr_capabilities {
+  *	@support_mbssid must be set for this to have any effect.
+  *
+  * @pmsr_capa: peer measurement capabilities
++ * @max_data_retry_count: Maximum limit can be configured as retry count
++ *	for a TID.
+  */
+ struct wiphy {
+ 	/* assign these fields before you register the wiphy */
+@@ -4509,6 +4518,8 @@ struct wiphy {
+ 
+ 	const struct cfg80211_pmsr_capabilities *pmsr_capa;
+ 
++	u8 max_data_retry_count;
 +
- enum nl80211_tid_config {
- 	NL80211_TID_CONFIG_DEFAULT,
- 	NL80211_TID_CONFIG_ENABLE,
-@@ -4645,6 +4657,25 @@ enum nl80211_tid_config {
-  *	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL and supporting per station
-  *	RTS_CTS configuration should advertise
-  *	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL.
-+ * @NL80211_ATTR_TID_CONFIG_TX_RATES: Data frame TX rate mask should be applied
-+ *	with the parameters passed through %NL80211_ATTR_TX_RATES. This
-+ *	configuration is per TID, TID is specified with
-+ *	%NL80211_ATTR_TID_CONFIG_TID.
-+ *	If the peer MAC address is passed in %NL80211_ATTR_MAC, then this
-+ *	configuration is applied to the data frame for the tid to that connected
-+ *	station. This attribute will be useful to notfiy the driver that what
-+ *	type of txrate should be applied(%enum enum nl80211_tx_rate_setting)
-+ *	for the connected station (%NL80211_ATTR_MAC),
+ 	char priv[0] __aligned(NETDEV_ALIGN);
+ };
+ 
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index c901a48..f2ce845 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -2316,6 +2316,8 @@ enum nl80211_commands {
+  *
+  * @NL80211_ATTR_TID_CONFIG: TID specific configuration in a
+  *	nested attribute with %NL80211_ATTR_TID_* sub-attributes.
++ * @NL80211_ATTR_MAX_RETRY_COUNT: The upper limit for the retry count
++ *	configuration that the driver can accept.
+  *
+  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+  * @NL80211_ATTR_MAX: highest attribute number currently defined
+@@ -2769,6 +2771,7 @@ enum nl80211_attrs {
+ 	NL80211_ATTR_AIRTIME_WEIGHT,
+ 
+ 	NL80211_ATTR_TID_CONFIG,
++	NL80211_ATTR_MAX_RETRY_COUNT,
+ 
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+@@ -4576,11 +4579,50 @@ enum nl80211_tid_config {
+  *	advertise NL80211_EXT_FEATURE_PER_TID_NOACK_CONFIG and
+  *	NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG for supporting  per sta
+  *	configuration.
++ * @NL80211_ATTR_TID_CONFIG_RETRY: Data TID retry count should be applied
++ *	with the value passed through %NL80211_ATTR_TID_CONFIG_RETRY_LONG
++ *	and/or %NL80211_ATTR_TID_CONFIG_RETRY_SHORT. This configuration
++ *	is per-TID, and the TID is specified with %NL80211_ATTR_TID_CONFIG_TID.
++ *	If the peer MAC address is passed in %NL80211_ATTR_MAC, the retry
++ *	configuration is applied to the data frame for the tid to that
++ *	connected station.
++ *	This attribute will be useful to notfiy the driver to apply default
++ *	retry values for the connected station (%NL80211_ATTR_MAC), when the
++ *	command received without %NL80211_ATTR_RETRY_LONG and/or
++ *	%NL80211_ATTR_RETRY_SHORT.
 + *	Station specific retry configuration is valid only for STA's
 + *	current connection. i.e. the configuration will be reset to default when
 + *	the station connects back after disconnection/roaming.
 + *	when user-space does not include %NL80211_ATTR_MAC, this configuration
 + *	should be treated as per-netdev configuration. This configuration will
 + *	be cleared when the interface goes down and on the disconnection from a
-+ *	BSS. Driver supporting this feature should advertise
-+ *	NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per station
-+ *	TX bitrate configuration should advertise
-+ *	NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
++ *	BSS. When retry count has never been configured using this command, the
++ *	other available radio level retry configuration
++ *	(%NL80211_ATTR_WIPHY_RETRY_SHORT and %NL80211_ATTR_WIPHY_RETRY_LONG)
++ *	should be used. Driver supporting this feature should advertise
++ *	NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG and supporting per station
++ *	retry count configuration should advertise
++ *	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG.
++ * @NL80211_ATTR_TID_CONFIG_RETRY_SHORT: Number of retries used with data frame
++ *	transmission, user-space sets this configuration in
++ *	&NL80211_CMD_SET_TID_CONFIG. It is u8 type, min value is 1 and
++ *	the max value should be advertised by the driver through
++ *	max_data_retry_count. when this attribute is not present, the driver
++ *	would use the default configuration.
++ * @NL80211_ATTR_TID_CONFIG_RETRY_LONG: Number of retries used with data frame
++ *	transmission, user-space sets this configuration in
++ *	&NL80211_CMD_SET_TID_CONFIG. Its type is u8, min value is 1 and
++ *	the max value should be advertised by the driver through
++ *	max_data_retry_count. when this attribute is not present, the driver
++ *	would use the default configuration.
   */
  enum nl80211_attr_tid_config {
  	__NL80211_ATTR_TID_INVALID,
-@@ -4655,6 +4686,8 @@ enum nl80211_attr_tid_config {
- 	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
- 	NL80211_ATTR_TID_CONFIG_AMPDU_CTRL,
- 	NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL,
-+	NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE,
-+	NL80211_ATTR_TID_CONFIG_TX_RATES,
+ 	NL80211_ATTR_TID_CONFIG_TID,
+ 	NL80211_ATTR_TID_CONFIG_NOACK,
++	NL80211_ATTR_TID_CONFIG_RETRY,
++	NL80211_ATTR_TID_CONFIG_RETRY_SHORT,
++	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
  
  	/* keep last */
  	__NL80211_ATTR_TID_CONFIG_AFTER_LAST,
-@@ -5477,6 +5510,10 @@ enum nl80211_feature_flags {
-  *	RTS_CTS control(enable/disable).
-  * @NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL: Driver supports STA specific
-  *	RTS_CTS control(enable/disable).
-+ * @NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK: Driver supports TID specific
-+ *	TX bitrate configuration.
-+ * @NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK: Driver supports STA specific
-+ *	TX bitrate configuration.
+@@ -5391,6 +5433,10 @@ enum nl80211_feature_flags {
+  *	policy functionality.
+  * @NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG: Driver supports STA specific NoAck
+  *	policy functionality.
++ * @NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG: Driver supports per TID data retry
++ *	count functionality.
++ * @NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG: Driver supports STA specific
++ *	data retry count functionality.
   *
   * @NUM_NL80211_EXT_FEATURES: number of extended features.
   * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-@@ -5527,6 +5564,8 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL,
- 	NL80211_EXT_FEATURE_PER_TID_RTSCTS_CTRL,
- 	NL80211_EXT_FEATURE_PER_STA_RTSCTS_CTRL,
-+	NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK,
-+	NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK,
+@@ -5435,6 +5481,8 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_AP_PMKSA_CACHING,
+ 	NL80211_EXT_FEATURE_PER_TID_NOACK_CONFIG,
+ 	NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG,
++	NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG,
++	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG,
  
  	/* add new features before the definition below */
  	NUM_NL80211_EXT_FEATURES,
 diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 9e5c58c..05f6158 100644
+index 25e8849..e2a4eb2 100644
 --- a/net/wireless/nl80211.c
 +++ b/net/wireless/nl80211.c
-@@ -280,6 +280,15 @@ static int validate_ie_attr(const struct nlattr *attr,
- 		NLA_POLICY_NESTED_ARRAY(nl80211_psmr_peer_attr_policy),
- };
- 
-+static const struct nla_policy nl80211_txattr_policy[NL80211_TXRATE_MAX + 1] = {
-+	[NL80211_TXRATE_LEGACY] = { .type = NLA_BINARY,
-+				    .len = NL80211_MAX_SUPP_RATES },
-+	[NL80211_TXRATE_HT] = { .type = NLA_BINARY,
-+				.len = NL80211_MAX_SUPP_HT_RATES },
-+	[NL80211_TXRATE_VHT] = { .len = sizeof(struct nl80211_txrate_vht)},
-+	[NL80211_TXRATE_GI] = { .type = NLA_U8 },
-+};
-+
- static const struct nla_policy
- nl80211_attr_tid_config_policy[NL80211_ATTR_TID_CONFIG_MAX + 1] = {
+@@ -285,6 +285,9 @@ static int validate_ie_attr(const struct nlattr *attr,
  	[NL80211_ATTR_TID_CONFIG_TID] = { .type = NLA_U8 },
-@@ -292,6 +301,10 @@ static int validate_ie_attr(const struct nlattr *attr,
+ 	[NL80211_ATTR_TID_CONFIG_NOACK] =
  			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
- 	[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL] =
- 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
-+	[NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE] =
-+			NLA_POLICY_MAX(NLA_U8, NL80211_TX_RATE_FIXED),
-+	[NL80211_ATTR_TID_CONFIG_TX_RATES] =
-+			NLA_POLICY_NESTED(nl80211_txattr_policy),
++	[NL80211_ATTR_TID_CONFIG_RETRY] = { .type = NLA_FLAG },
++	[NL80211_ATTR_TID_CONFIG_RETRY_SHORT] = NLA_POLICY_MIN(NLA_U8, 1),
++	[NL80211_ATTR_TID_CONFIG_RETRY_LONG] = NLA_POLICY_MIN(NLA_U8, 1),
  };
  
  const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
-@@ -397,7 +410,8 @@ static int validate_ie_attr(const struct nlattr *attr,
- 	[NL80211_ATTR_PMKID] = { .len = WLAN_PMKID_LEN },
- 	[NL80211_ATTR_DURATION] = { .type = NLA_U32 },
- 	[NL80211_ATTR_COOKIE] = { .type = NLA_U64 },
--	[NL80211_ATTR_TX_RATES] = { .type = NLA_NESTED },
-+	[NL80211_ATTR_TX_RATES] =
-+			NLA_POLICY_NESTED(nl80211_txattr_policy),
- 	[NL80211_ATTR_FRAME] = { .type = NLA_BINARY,
- 				 .len = IEEE80211_MAX_DATA_LEN },
- 	[NL80211_ATTR_FRAME_MATCH] = { .type = NLA_BINARY, },
-@@ -4014,20 +4028,12 @@ static bool vht_set_mcs_mask(struct ieee80211_supported_band *sband,
- 	return true;
- }
- 
--static const struct nla_policy nl80211_txattr_policy[NL80211_TXRATE_MAX + 1] = {
--	[NL80211_TXRATE_LEGACY] = { .type = NLA_BINARY,
--				    .len = NL80211_MAX_SUPP_RATES },
--	[NL80211_TXRATE_HT] = { .type = NLA_BINARY,
--				.len = NL80211_MAX_SUPP_HT_RATES },
--	[NL80211_TXRATE_VHT] = { .len = sizeof(struct nl80211_txrate_vht)},
--	[NL80211_TXRATE_GI] = { .type = NLA_U8 },
--};
--
--static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
-+static int nl80211_parse_tx_bitrate_mask(struct nlattr *attrs[],
-+					 struct cfg80211_registered_device *rdev,
-+					 enum nl80211_attrs attr,
- 					 struct cfg80211_bitrate_mask *mask)
- {
- 	struct nlattr *tb[NL80211_TXRATE_MAX + 1];
--	struct cfg80211_registered_device *rdev = info->user_ptr[0];
- 	int rem, i;
- 	struct nlattr *tx_rates;
- 	struct ieee80211_supported_band *sband;
-@@ -4054,14 +4060,14 @@ static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
+@@ -13288,6 +13291,37 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
+ 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_NOACK]);
  	}
  
- 	/* if no rates are given set it back to the defaults */
--	if (!info->attrs[NL80211_ATTR_TX_RATES])
-+	if (!attrs[attr])
- 		goto out;
- 
- 	/* The nested attribute uses enum nl80211_band as the index. This maps
- 	 * directly to the enum nl80211_band values used in cfg80211.
- 	 */
- 	BUILD_BUG_ON(NL80211_MAX_SUPP_HT_RATES > IEEE80211_HT_MCS_MASK_LEN * 8);
--	nla_for_each_nested(tx_rates, info->attrs[NL80211_ATTR_TX_RATES], rem) {
-+	nla_for_each_nested(tx_rates, attrs[attr], rem) {
- 		enum nl80211_band band = nla_type(tx_rates);
- 		int err;
- 
-@@ -4071,7 +4077,7 @@ static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
- 		if (sband == NULL)
- 			return -EINVAL;
- 		err = nla_parse_nested(tb, NL80211_TXRATE_MAX, tx_rates,
--				       nl80211_txattr_policy, info->extack);
-+				       NULL, NULL);
- 		if (err)
- 			return err;
- 		if (tb[NL80211_TXRATE_LEGACY]) {
-@@ -4504,7 +4510,9 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
- 		return -EINVAL;
- 
- 	if (info->attrs[NL80211_ATTR_TX_RATES]) {
--		err = nl80211_parse_tx_bitrate_mask(info, &params.beacon_rate);
-+		err = nl80211_parse_tx_bitrate_mask(info->attrs, rdev,
-+						    NL80211_ATTR_TX_RATES,
-+						    &params.beacon_rate);
- 		if (err)
- 			return err;
- 
-@@ -10110,7 +10118,8 @@ static int nl80211_set_tx_bitrate_mask(struct sk_buff *skb,
- 	if (!rdev->ops->set_bitrate_mask)
- 		return -EOPNOTSUPP;
- 
--	err = nl80211_parse_tx_bitrate_mask(info, &mask);
-+	err = nl80211_parse_tx_bitrate_mask(info->attrs, rdev, NL80211_ATTR_TX_RATES,
-+					    &mask);
- 	if (err)
- 		return err;
- 
-@@ -10702,7 +10711,9 @@ static int nl80211_join_mesh(struct sk_buff *skb, struct genl_info *info)
- 	}
- 
- 	if (info->attrs[NL80211_ATTR_TX_RATES]) {
--		err = nl80211_parse_tx_bitrate_mask(info, &setup.beacon_rate);
-+		err = nl80211_parse_tx_bitrate_mask(info->attrs, rdev,
-+						    NL80211_ATTR_TX_RATES,
-+						    &setup.beacon_rate);
- 		if (err)
- 			return err;
- 
-@@ -13278,8 +13289,10 @@ static int nl80211_get_ftm_responder_stats(struct sk_buff *skb,
- static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 			  struct nlattr *attrs[],
- 			  struct ieee80211_tid_cfg *tid_conf,
--			  const u8 *peer)
-+			  struct genl_info *info, const u8 *peer)
- {
-+	int ret;
-+
- 	tid_conf->tid = nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_TID]);
- 	if (attrs[NL80211_ATTR_TID_CONFIG_NOACK]) {
- 		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-@@ -13354,6 +13367,42 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RTSCTS_CTRL]);
- 	}
- 
-+	if (attrs[NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE]) {
-+		int idx;
-+		enum nl80211_attrs attr;
-+
++	if (nla_get_flag(attrs[NL80211_ATTR_TID_CONFIG_RETRY])) {
 +		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK))
-+			return -EOPNOTSUPP;
++				NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG))
++			return -ENOTSUPP;
 +
-+		if (peer &&
-+		    !wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK))
-+			return -EOPNOTSUPP;
++		if (peer && !wiphy_ext_feature_isset(&rdev->wiphy,
++				NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG))
++			return -ENOTSUPP;
 +
-+		idx = NL80211_ATTR_TID_CONFIG_TX_RATES_TYPE;
-+		tid_conf->txrate_type = nla_get_u8(attrs[idx]);
-+
-+		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_TX_BITRATE;
-+		if (tid_conf->txrate_type != NL80211_TX_RATE_AUTOMATIC) {
-+			tid_conf->mask =
-+				kzalloc(sizeof(struct cfg80211_bitrate_mask),
-+					GFP_KERNEL);
-+			if (!tid_conf->mask)
-+				return -ENOMEM;
-+
-+			attr = NL80211_ATTR_TID_CONFIG_TX_RATES;
-+			ret = nl80211_parse_tx_bitrate_mask(attrs, rdev, attr,
-+							    tid_conf->mask);
-+			if (ret) {
-+				kfree(tid_conf->mask);
-+				return ret;
-+			}
++		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_RETRY;
++		if (attrs[NL80211_ATTR_TID_CONFIG_RETRY_SHORT]) {
++			tid_conf->retry_short =
++			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RETRY_SHORT]);
++			if (tid_conf->retry_short >
++					rdev->wiphy.max_data_retry_count)
++				return -EINVAL;
 +		} else {
-+			tid_conf->mask = NULL;
++			tid_conf->retry_short = -1;
++		}
++
++		if (attrs[NL80211_ATTR_TID_CONFIG_RETRY_LONG]) {
++			tid_conf->retry_long =
++			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RETRY_LONG]);
++			if (tid_conf->retry_long >
++					rdev->wiphy.max_data_retry_count)
++				return -EINVAL;
++		} else {
++			tid_conf->retry_long = -1;
 +		}
 +	}
 +
  	return 0;
  }
- 
-@@ -13407,7 +13456,7 @@ static int nl80211_set_tid_config(struct sk_buff *skb,
- 		}
- 
- 		ret = parse_tid_conf(rdev, attrs, &tid_conf->tid_conf[conf_idx],
--				     tid_conf->peer);
-+				     info, tid_conf->peer);
- 		if (ret)
- 			goto bad_tid_conf;
  
 -- 
 1.7.9.5
