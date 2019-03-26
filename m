@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8iOx-0004HG-8E
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 09:29:53 +0000
+ id 1h8iP3-0004Mr-8p
+ for ath10k@lists.infradead.org; Tue, 26 Mar 2019 09:30:10 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv5 2/9] nl80211: Add new netlink attribute for TID speicific
- retry count
-Date: Tue, 26 Mar 2019 14:59:03 +0530
-Message-Id: <1553592550-15282-3-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv5 8/9] ath10k: Add new api to support TID specific
+ configuration
+Date: Tue, 26 Mar 2019 14:59:09 +0530
+Message-Id: <1553592550-15282-9-git-send-email-tamizhr@codeaurora.org>
 In-Reply-To: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
 References: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -26,244 +26,775 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>
 
-This patch introduced below NL attributes to add support for
-configuring data TID specific retry count
+This patch add ops for set_tid_config to support TID
+specific configuration. STA information along with the
+TID config change mask to notify driver that which configuration
+needs to be applied for this current command.
+If the STA info not available in the command then the
+configuration will be applied for all connected stations
+in the vif. TID specific noack configuration requires
+aggregation disabled and rate for the data TID packets
+should be basic rates. So, if the TID already configured
+with noack policy then driver will ignore the aggregation
+or TX rate related configuration for the same data TID.
+In TX rate configuration should be applied with highest
+preamble configuration(HT rates should not be applied
+for the station which supports vht rates).
 
-NL80211_ATTR_TID_CONFIG_RETRY
-NL80211_ATTR_TID_CONFIG_RETRY_LONG
-NL80211_ATTR_TID_CONFIG_RETRY_SHORT
+Vif specific TID configuration will be applied for all
+the connected stations except for the station which
+already applied with the same configuration for the TID
+through station specific command. Newly connecting stations
+will be applied with vif TID configuration which will be stored
+in ieee80211_vif.
 
-These attributes are added in NL80211_ATTR_TID_CONFIG nested attribute.
-This will be useful for the driver which supports data TID specific retry
-count configuration rather using phy level retry configuration.
-This TID specific retry configuration will have more precedence than
-phy level configuration. This configuration can be applied for a
-specific peer. To apply this configuration specific to a peer
-rather than being applied for all the connected stations,
-MAC address of the peer can be passed in NL80211_ATTR_MAC attribute.
-
-Driver should advertise WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT and
-max_data_retry_count value to notify user space to avoid of passing
-greater than the allowed limit.
-
-Driver supporting TID specific retry configuration should advertise
-NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG and per STA specific
-data TID retry configuration should advertise
-NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG.
+Testing:
+        * Tested HW: QCA9888
+        * Tested FW: 10.4-3.5.1-00052
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- include/net/cfg80211.h       |   11 ++++++++++
- include/uapi/linux/nl80211.h |   48 ++++++++++++++++++++++++++++++++++++++++++
- net/wireless/nl80211.c       |   34 ++++++++++++++++++++++++++++++
- 3 files changed, 93 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.h |    6 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  631 ++++++++++++++++++++++++++++----
+ 2 files changed, 557 insertions(+), 80 deletions(-)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index c606e78..888de00 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -511,6 +511,7 @@ struct cfg80211_chan_def {
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 27ec555..87234d2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -82,6 +82,8 @@
+ /* Default Airtime weight multipler (Tuned for multiclient performance) */
+ #define ATH10K_AIRTIME_WEIGHT_MULTIPLIER  4
  
- enum ieee80211_tid_conf_mask {
- 	IEEE80211_TID_CONF_NOACK	= BIT(0),
-+	IEEE80211_TID_CONF_RETRY	= BIT(1),
- };
- 
- /**
-@@ -519,11 +520,15 @@ enum ieee80211_tid_conf_mask {
-  * @tid_conf_mask: bitmap indicating which parameter changed
-  *	see %enum ieee80211_tid_conf_mask
-  * @noack: noack configuration value for the TID
-+ * @retry_long: retry count value
-+ * @retry_short: retry count value
-  */
- struct ieee80211_tid_cfg {
- 	u8 tid;
- 	enum ieee80211_tid_conf_mask tid_conf_mask;
- 	u8 noack;
-+	int retry_long;
-+	int retry_short;
- };
- 
- /**
-@@ -3832,6 +3837,7 @@ struct cfg80211_ops {
-  *	beaconing mode (AP, IBSS, Mesh, ...).
-  * @WIPHY_FLAG_HAS_STATIC_WEP: The device supports static WEP key installation
-  *	before connection.
-+ * @WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT: Device supports data retry count call.
-  */
- enum wiphy_flags {
- 	/* use hole at 0 */
-@@ -3858,6 +3864,7 @@ enum wiphy_flags {
- 	WIPHY_FLAG_SUPPORTS_5_10_MHZ		= BIT(22),
- 	WIPHY_FLAG_HAS_CHANNEL_SWITCH		= BIT(23),
- 	WIPHY_FLAG_HAS_STATIC_WEP		= BIT(24),
-+	WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT	= BIT(25),
- };
- 
- /**
-@@ -4365,6 +4372,8 @@ struct cfg80211_pmsr_capabilities {
-  *	@support_mbssid must be set for this to have any effect.
-  *
-  * @pmsr_capa: peer measurement capabilities
-+ * @max_data_retry_count: Maximum limit can be configured as retry count
-+ *	for a TID.
-  */
- struct wiphy {
- 	/* assign these fields before you register the wiphy */
-@@ -4509,6 +4518,8 @@ struct wiphy {
- 
- 	const struct cfg80211_pmsr_capabilities *pmsr_capa;
- 
-+	u8 max_data_retry_count;
++#define ATH10K_MAX_RETRY_COUNT 30
 +
- 	char priv[0] __aligned(NETDEV_ALIGN);
+ struct ath10k;
+ 
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+@@ -504,6 +506,7 @@ struct ath10k_sta {
+ #endif
+ 	/* Protected with ar->data_lock */
+ 	u32 peer_ps_state;
++	struct work_struct tid_config_wk;
  };
  
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index c901a48..f2ce845 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -2316,6 +2316,8 @@ enum nl80211_commands {
-  *
-  * @NL80211_ATTR_TID_CONFIG: TID specific configuration in a
-  *	nested attribute with %NL80211_ATTR_TID_* sub-attributes.
-+ * @NL80211_ATTR_MAX_RETRY_COUNT: The upper limit for the retry count
-+ *	configuration that the driver can accept.
-  *
-  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
-  * @NL80211_ATTR_MAX: highest attribute number currently defined
-@@ -2769,6 +2771,7 @@ enum nl80211_attrs {
- 	NL80211_ATTR_AIRTIME_WEIGHT,
- 
- 	NL80211_ATTR_TID_CONFIG,
-+	NL80211_ATTR_MAX_RETRY_COUNT,
- 
- 	/* add attributes here, update the policy in nl80211.c */
- 
-@@ -4576,11 +4579,50 @@ enum nl80211_tid_config {
-  *	advertise NL80211_EXT_FEATURE_PER_TID_NOACK_CONFIG and
-  *	NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG for supporting  per sta
-  *	configuration.
-+ * @NL80211_ATTR_TID_CONFIG_RETRY: Data TID retry count should be applied
-+ *	with the value passed through %NL80211_ATTR_TID_CONFIG_RETRY_LONG
-+ *	and/or %NL80211_ATTR_TID_CONFIG_RETRY_SHORT. This configuration
-+ *	is per-TID, and the TID is specified with %NL80211_ATTR_TID_CONFIG_TID.
-+ *	If the peer MAC address is passed in %NL80211_ATTR_MAC, the retry
-+ *	configuration is applied to the data frame for the tid to that
-+ *	connected station.
-+ *	This attribute will be useful to notfiy the driver to apply default
-+ *	retry values for the connected station (%NL80211_ATTR_MAC), when the
-+ *	command received without %NL80211_ATTR_RETRY_LONG and/or
-+ *	%NL80211_ATTR_RETRY_SHORT.
-+ *	Station specific retry configuration is valid only for STA's
-+ *	current connection. i.e. the configuration will be reset to default when
-+ *	the station connects back after disconnection/roaming.
-+ *	when user-space does not include %NL80211_ATTR_MAC, this configuration
-+ *	should be treated as per-netdev configuration. This configuration will
-+ *	be cleared when the interface goes down and on the disconnection from a
-+ *	BSS. When retry count has never been configured using this command, the
-+ *	other available radio level retry configuration
-+ *	(%NL80211_ATTR_WIPHY_RETRY_SHORT and %NL80211_ATTR_WIPHY_RETRY_LONG)
-+ *	should be used. Driver supporting this feature should advertise
-+ *	NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG and supporting per station
-+ *	retry count configuration should advertise
-+ *	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG.
-+ * @NL80211_ATTR_TID_CONFIG_RETRY_SHORT: Number of retries used with data frame
-+ *	transmission, user-space sets this configuration in
-+ *	&NL80211_CMD_SET_TID_CONFIG. It is u8 type, min value is 1 and
-+ *	the max value should be advertised by the driver through
-+ *	max_data_retry_count. when this attribute is not present, the driver
-+ *	would use the default configuration.
-+ * @NL80211_ATTR_TID_CONFIG_RETRY_LONG: Number of retries used with data frame
-+ *	transmission, user-space sets this configuration in
-+ *	&NL80211_CMD_SET_TID_CONFIG. Its type is u8, min value is 1 and
-+ *	the max value should be advertised by the driver through
-+ *	max_data_retry_count. when this attribute is not present, the driver
-+ *	would use the default configuration.
-  */
- enum nl80211_attr_tid_config {
- 	__NL80211_ATTR_TID_INVALID,
- 	NL80211_ATTR_TID_CONFIG_TID,
- 	NL80211_ATTR_TID_CONFIG_NOACK,
-+	NL80211_ATTR_TID_CONFIG_RETRY,
-+	NL80211_ATTR_TID_CONFIG_RETRY_SHORT,
-+	NL80211_ATTR_TID_CONFIG_RETRY_LONG,
- 
- 	/* keep last */
- 	__NL80211_ATTR_TID_CONFIG_AFTER_LAST,
-@@ -5391,6 +5433,10 @@ enum nl80211_feature_flags {
-  *	policy functionality.
-  * @NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG: Driver supports STA specific NoAck
-  *	policy functionality.
-+ * @NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG: Driver supports per TID data retry
-+ *	count functionality.
-+ * @NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG: Driver supports STA specific
-+ *	data retry count functionality.
-  *
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-@@ -5435,6 +5481,8 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_AP_PMKSA_CACHING,
- 	NL80211_EXT_FEATURE_PER_TID_NOACK_CONFIG,
- 	NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG,
-+	NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG,
-+	NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG,
- 
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 25e8849..e2a4eb2 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -285,6 +285,9 @@ static int validate_ie_attr(const struct nlattr *attr,
- 	[NL80211_ATTR_TID_CONFIG_TID] = { .type = NLA_U8 },
- 	[NL80211_ATTR_TID_CONFIG_NOACK] =
- 			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
-+	[NL80211_ATTR_TID_CONFIG_RETRY] = { .type = NLA_FLAG },
-+	[NL80211_ATTR_TID_CONFIG_RETRY_SHORT] = NLA_POLICY_MIN(NLA_U8, 1),
-+	[NL80211_ATTR_TID_CONFIG_RETRY_LONG] = NLA_POLICY_MIN(NLA_U8, 1),
+ #define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5 * HZ)
+@@ -571,6 +574,9 @@ struct ath10k_vif {
+ 	struct work_struct ap_csa_work;
+ 	struct delayed_work connection_loss_work;
+ 	struct cfg80211_bitrate_mask bitrate_mask;
++	u32 tid_conf_changed[IEEE80211_TID_MAX];
++
++	struct ieee80211_tid_config *tid_config;
  };
  
- const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
-@@ -13288,6 +13291,37 @@ static int parse_tid_conf(struct cfg80211_registered_device *rdev,
- 			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_NOACK]);
- 	}
+ struct ath10k_vif_iter {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b73c23d..e5ae054 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2930,6 +2930,59 @@ static void ath10k_bss_disassoc(struct ieee80211_hw *hw,
+ 	cancel_delayed_work_sync(&arvif->connection_loss_work);
+ }
  
-+	if (nla_get_flag(attrs[NL80211_ATTR_TID_CONFIG_RETRY])) {
-+		if (!wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG))
-+			return -ENOTSUPP;
++static int ath10k_new_peer_tid_config(struct ath10k *ar,
++				      struct ieee80211_sta *sta,
++				      struct ath10k_vif *arvif)
++{
++	struct wmi_per_peer_per_tid_cfg_arg arg = {};
++	struct ieee80211_vif *vif = arvif->vif;
++	bool config_apply;
++	int ret, i;
 +
-+		if (peer && !wiphy_ext_feature_isset(&rdev->wiphy,
-+				NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG))
-+			return -ENOTSUPP;
-+
-+		tid_conf->tid_conf_mask |= IEEE80211_TID_CONF_RETRY;
-+		if (attrs[NL80211_ATTR_TID_CONFIG_RETRY_SHORT]) {
-+			tid_conf->retry_short =
-+			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RETRY_SHORT]);
-+			if (tid_conf->retry_short >
-+					rdev->wiphy.max_data_retry_count)
-+				return -EINVAL;
-+		} else {
-+			tid_conf->retry_short = -1;
++	for (i = 0; i < IEEE80211_TID_MAX; i++) {
++		config_apply = false;
++		if (vif->retry_long[i] || vif->ampdu[i] ||
++		    vif->rate_code[i]) {
++			config_apply = true;
++			arg.tid = i;
++			arg.vdev_id = arvif->vdev_id;
++			arg.retry_count = vif->retry_long[i];
++			arg.aggr_control = vif->ampdu[i];
++			arg.rate_ctrl = vif->rate_ctrl[i];
++			arg.rcode_flags = vif->rate_code[i];
 +		}
 +
-+		if (attrs[NL80211_ATTR_TID_CONFIG_RETRY_LONG]) {
-+			tid_conf->retry_long =
-+			nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_RETRY_LONG]);
-+			if (tid_conf->retry_long >
-+					rdev->wiphy.max_data_retry_count)
-+				return -EINVAL;
-+		} else {
-+			tid_conf->retry_long = -1;
++		if (vif->noack[i]) {
++			arg.ack_policy	= vif->noack[i];
++			arg.rate_ctrl =
++				WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE;
++			arg.aggr_control = WMI_TID_CONFIG_AGGR_CONTROL_DISABLE;
++			config_apply = true;
++		}
++
++		/* Assign default value(-1) to newly connected station.
++		 * This is to identify station specific tid configuration not
++		 * configured for the station.
++		 */
++		sta->retry_long[i] = -1;
++		sta->noack[i] = -1;
++		sta->ampdu[i] = -1;
++
++		if (!config_apply)
++			continue;
++
++		ether_addr_copy(arg.peer_macaddr.addr, sta->addr);
++		ret = ath10k_wmi_set_per_peer_per_tid_cfg(ar, &arg);
++		if (ret) {
++			ath10k_warn(ar, "failed to set per tid retry/aggr config for sta %pM: %d\n",
++				    sta->addr, ret);
++			return ret;
++		}
++		memset(&arg, 0, sizeof(arg));
++	}
++	return 0;
++}
++
+ static int ath10k_station_assoc(struct ath10k *ar,
+ 				struct ieee80211_vif *vif,
+ 				struct ieee80211_sta *sta,
+@@ -2995,7 +3048,10 @@ static int ath10k_station_assoc(struct ath10k *ar,
+ 		}
+ 	}
+ 
+-	return ret;
++	if (!test_bit(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, ar->wmi.svc_map))
++		return ret;
++
++	return ath10k_new_peer_tid_config(ar, sta, arvif);
+ }
+ 
+ static int ath10k_station_disassoc(struct ath10k *ar,
+@@ -6350,6 +6406,338 @@ static void ath10k_mac_dec_num_stations(struct ath10k_vif *arvif,
+ 	ar->num_stations--;
+ }
+ 
++struct ath10k_mac_iter_tid_conf_data {
++	struct ieee80211_vif *curr_vif;
++	struct ath10k *ar;
++};
++
++static bool
++ath10k_mac_bitrate_mask_has_single_rate(struct ath10k *ar,
++					enum nl80211_band band,
++					const struct cfg80211_bitrate_mask *mask)
++{
++	int num_rates = 0;
++	int i;
++
++	num_rates += hweight32(mask->control[band].legacy);
++
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++)
++		num_rates += hweight8(mask->control[band].ht_mcs[i]);
++
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++)
++		num_rates += hweight16(mask->control[band].vht_mcs[i]);
++
++	return num_rates == 1;
++}
++
++static int
++ath10k_mac_bitrate_mask_get_single_rate(struct ath10k *ar,
++					enum nl80211_band band,
++					const struct cfg80211_bitrate_mask *mask,
++					u8 *rate, u8 *nss)
++{
++	int rate_idx;
++	int i;
++	u16 bitrate;
++	u8 preamble;
++	u8 hw_rate;
++
++	if (hweight32(mask->control[band].legacy) == 1) {
++		rate_idx = ffs(mask->control[band].legacy) - 1;
++
++		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
++			rate_idx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
++
++		hw_rate = ath10k_wmi_legacy_rates[rate_idx].hw_value;
++		bitrate = ath10k_wmi_legacy_rates[rate_idx].bitrate;
++
++		if (ath10k_mac_bitrate_is_cck(bitrate))
++			preamble = WMI_RATE_PREAMBLE_CCK;
++		else
++			preamble = WMI_RATE_PREAMBLE_OFDM;
++
++		*nss = 1;
++		*rate = preamble << 6 |
++			(*nss - 1) << 4 |
++			hw_rate << 0;
++
++		return 0;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++) {
++		if (hweight8(mask->control[band].ht_mcs[i]) == 1) {
++			*nss = i + 1;
++			*rate = WMI_RATE_PREAMBLE_HT << 6 |
++				(*nss - 1) << 4 |
++				(ffs(mask->control[band].ht_mcs[i]) - 1);
++
++			return 0;
 +		}
 +	}
 +
- 	return 0;
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
++		if (hweight16(mask->control[band].vht_mcs[i]) == 1) {
++			*nss = i + 1;
++			*rate = WMI_RATE_PREAMBLE_VHT << 6 |
++				(*nss - 1) << 4 |
++				(ffs(mask->control[band].vht_mcs[i]) - 1);
++
++			return 0;
++		}
++	}
++
++	return -EINVAL;
++}
++
++static int ath10k_mac_validate_rate_mask(struct ath10k *ar,
++					 struct ieee80211_sta *sta,
++					 u32 rate_ctrl_flag, u8 nss)
++{
++	if (nss > sta->rx_nss) {
++		ath10k_warn(ar, "Invalid nss field, configured %u limit %u\n",
++			    nss, sta->rx_nss);
++		return -EINVAL;
++	}
++
++	if (ATH10K_HW_PREAMBLE(rate_ctrl_flag) == WMI_RATE_PREAMBLE_VHT) {
++		if (!sta->vht_cap.vht_supported) {
++			ath10k_warn(ar, "Invalid VHT rate for sta %pM\n",
++				    sta->addr);
++			return -EINVAL;
++		}
++	} else if (ATH10K_HW_PREAMBLE(rate_ctrl_flag) == WMI_RATE_PREAMBLE_HT) {
++		if (!sta->ht_cap.ht_supported || sta->vht_cap.vht_supported) {
++			ath10k_warn(ar, "Invalid HT rate for sta %pM\n",
++				    sta->addr);
++			return -EINVAL;
++		}
++	} else {
++		if (sta->ht_cap.ht_supported || sta->vht_cap.vht_supported)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int
++ath10k_mac_tid_bitrate_config(struct ath10k *ar,
++			      struct ieee80211_vif *vif,
++			      struct ieee80211_sta *sta,
++			      u32 *rate_ctrl_flag, u8 *rate_ctrl,
++			      enum nl80211_tx_rate_setting txrate_type,
++			      const struct cfg80211_bitrate_mask *mask)
++{
++	struct cfg80211_chan_def def;
++	enum nl80211_band band;
++	u8 nss, rate;
++	int ret;
++
++	if (WARN_ON(ath10k_mac_vif_chan(vif, &def)))
++		return -EINVAL;
++
++	if (txrate_type == NL80211_TX_RATE_AUTOMATIC) {
++		*rate_ctrl = WMI_TID_CONFIG_RATE_CONTROL_AUTO;
++		*rate_ctrl_flag = 0;
++		return 0;
++	}
++
++	band = def.chan->band;
++
++	if (!ath10k_mac_bitrate_mask_has_single_rate(ar, band, mask))
++		return -EINVAL;
++
++	ret = ath10k_mac_bitrate_mask_get_single_rate(ar, band, mask,
++						      &rate, &nss);
++	if (ret) {
++		ath10k_warn(ar, "failed to get single rate: %d\n",
++			    ret);
++		return ret;
++	}
++	*rate_ctrl_flag = rate;
++
++	if (sta && ath10k_mac_validate_rate_mask(ar, sta, *rate_ctrl_flag, nss))
++		return -EINVAL;
++
++	if (txrate_type == NL80211_TX_RATE_FIXED)
++		*rate_ctrl = WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE;
++	else
++		return -EOPNOTSUPP;
++	return 0;
++}
++
++static void
++ath10k_mac_parse_tid_config(struct ath10k *ar,
++			    struct ieee80211_sta *sta,
++			    struct ieee80211_vif *vif,
++			    struct ieee80211_tid_cfg *tid_conf,
++			    struct wmi_per_peer_per_tid_cfg_arg *arg)
++{
++	u8 changed = tid_conf->tid_conf_mask;
++	int ret;
++
++	arg->tid = tid_conf->tid;
++
++	if (changed & IEEE80211_TID_CONF_NOACK) {
++		if (tid_conf->noack == NL80211_TID_CONFIG_ENABLE) {
++			arg->ack_policy = WMI_PEER_TID_CONFIG_NOACK;
++			arg->rate_ctrl =
++				WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE;
++			arg->aggr_control = WMI_TID_CONFIG_AGGR_CONTROL_DISABLE;
++		} else {
++			arg->ack_policy = WMI_PEER_TID_CONFIG_ACK;
++			arg->rate_ctrl = WMI_TID_CONFIG_RATE_CONTROL_AUTO;
++			arg->aggr_control = WMI_TID_CONFIG_AGGR_CONTROL_ENABLE;
++		}
++	}
++
++	if (changed & IEEE80211_TID_CONF_RETRY) {
++		if (tid_conf->retry_long == -1) {
++			if (vif->retry_long[arg->tid])
++				arg->retry_count = vif->retry_long[arg->tid];
++			else
++				arg->retry_count = ATH10K_MAX_RETRY_COUNT;
++		} else {
++			arg->retry_count = tid_conf->retry_long;
++		}
++	}
++
++	if (changed & IEEE80211_TID_CONF_AMPDU) {
++		if (tid_conf->ampdu) {
++			arg->aggr_control = tid_conf->ampdu;
++		} else {
++			if (vif->ampdu[arg->tid])
++				arg->aggr_control = vif->ampdu[arg->tid];
++			else
++				arg->aggr_control =
++					WMI_TID_CONFIG_AGGR_CONTROL_DISABLE;
++		}
++	}
++
++	if (changed & IEEE80211_TID_CONF_TX_BITRATE) {
++		ret = ath10k_mac_tid_bitrate_config(ar, vif, sta,
++						    &arg->rcode_flags,
++						    &arg->rate_ctrl,
++						    tid_conf->txrate_type,
++						    tid_conf->mask);
++		if (ret) {
++			ath10k_warn(ar, "failed to configure bitrate mask %d\n",
++				    ret);
++			arg->rcode_flags = 0;
++			arg->rate_ctrl = 0;
++		}
++	}
++}
++
++static void ath10k_sta_tid_cfg_wk(struct work_struct *wk)
++{
++	struct wmi_per_peer_per_tid_cfg_arg arg = {};
++	struct ieee80211_vif *vif;
++	struct ieee80211_sta *sta;
++	struct ath10k_sta *arsta;
++	struct ath10k_vif *arvif;
++	struct ath10k *ar;
++	bool config_apply;
++	int ret, i;
++	u8 changed;
++
++	arsta = container_of(wk, struct ath10k_sta, tid_config_wk);
++	sta = container_of((void *)arsta, struct ieee80211_sta, drv_priv);
++	arvif = arsta->arvif;
++	vif = arvif->vif;
++	ar = arvif->ar;
++
++	mutex_lock(&ar->conf_mutex);
++
++	ether_addr_copy(arg.peer_macaddr.addr, sta->addr);
++	for (i = 0; i < IEEE80211_TID_MAX; i++) {
++		config_apply = false;
++		changed = arvif->tid_conf_changed[i];
++
++		if (changed & IEEE80211_TID_CONF_NOACK) {
++			if (sta->noack[i] != -1) {
++				arg.ack_policy  = 0;
++			} else {
++				config_apply = true;
++				arg.ack_policy = vif->noack[i];
++				arg.aggr_control = vif->ampdu[i];
++				arg.rate_ctrl = vif->rate_ctrl[i];
++			}
++		}
++
++		if (changed & IEEE80211_TID_CONF_RETRY) {
++			if (sta->retry_long[i] != -1 ||
++			    sta->noack[i] == WMI_PEER_TID_CONFIG_NOACK ||
++			    vif->noack[i] == WMI_PEER_TID_CONFIG_NOACK) {
++				arg.retry_count = 0;
++			} else {
++				arg.retry_count = vif->retry_long[i];
++				config_apply = true;
++			}
++		}
++
++		if (changed & IEEE80211_TID_CONF_AMPDU) {
++			if (sta->ampdu[i] != -1 ||
++			    sta->noack[i] == WMI_PEER_TID_CONFIG_NOACK ||
++			    vif->noack[i] == WMI_PEER_TID_CONFIG_NOACK) {
++				arg.aggr_control = 0;
++			} else {
++				arg.aggr_control = vif->ampdu[i];
++				config_apply = true;
++			}
++		}
++
++		if (changed & IEEE80211_TID_CONF_TX_BITRATE) {
++			if (ath10k_mac_validate_rate_mask(ar, sta, vif->rate_code[i],
++						ATH10K_HW_NSS(vif->rate_code[i]))) {
++				arg.rate_ctrl = 0;
++				arg.rcode_flags = 0;
++			}
++
++			if (sta->rate_ctrl[i] >
++			    WMI_TID_CONFIG_RATE_CONTROL_AUTO ||
++			    sta->noack[i] == WMI_PEER_TID_CONFIG_NOACK ||
++			    vif->noack[i] == WMI_PEER_TID_CONFIG_NOACK) {
++				arg.rate_ctrl = 0;
++				arg.rcode_flags = 0;
++			} else {
++				arg.rate_ctrl = vif->rate_ctrl[i];
++				arg.rcode_flags = vif->rate_code[i];
++				config_apply = true;
++			}
++		}
++
++		arg.tid = i;
++
++		if (config_apply) {
++			ret = ath10k_wmi_set_per_peer_per_tid_cfg(ar, &arg);
++			if (ret)
++				ath10k_warn(ar, "failed to set per tid config for sta %pM: %d\n",
++					    sta->addr, ret);
++		}
++
++		arg.ack_policy  = 0;
++		arg.retry_count  = 0;
++		arg.aggr_control  = 0;
++		arg.rate_ctrl = 0;
++		arg.rcode_flags = 0;
++	}
++
++	mutex_unlock(&ar->conf_mutex);
++}
++
++static void ath10k_mac_vif_stations_tid_conf(void *data,
++					     struct ieee80211_sta *sta)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k_mac_iter_tid_conf_data *iter_data = data;
++	struct ieee80211_vif *sta_vif = arsta->arvif->vif;
++
++	if (sta_vif != iter_data->curr_vif || !sta->wme)
++		return;
++
++	ieee80211_queue_work(iter_data->ar->hw, &arsta->tid_config_wk);
++}
++
+ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			    struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta,
+@@ -6369,6 +6757,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 		arsta->arvif = arvif;
+ 		arsta->peer_ps_state = WMI_PEER_PS_STATE_DISABLED;
+ 		INIT_WORK(&arsta->update_wk, ath10k_sta_rc_update_wk);
++		INIT_WORK(&arsta->tid_config_wk, ath10k_sta_tid_cfg_wk);
+ 
+ 		for (i = 0; i < ARRAY_SIZE(sta->txq); i++)
+ 			ath10k_mac_txq_init(sta->txq[i]);
+@@ -6376,8 +6765,10 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 
+ 	/* cancel must be done outside the mutex to avoid deadlock */
+ 	if ((old_state == IEEE80211_STA_NONE &&
+-	     new_state == IEEE80211_STA_NOTEXIST))
++	     new_state == IEEE80211_STA_NOTEXIST)) {
+ 		cancel_work_sync(&arsta->update_wk);
++		cancel_work_sync(&arsta->tid_config_wk);
++	}
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -7097,25 +7488,6 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
  }
  
+ static bool
+-ath10k_mac_bitrate_mask_has_single_rate(struct ath10k *ar,
+-					enum nl80211_band band,
+-					const struct cfg80211_bitrate_mask *mask)
+-{
+-	int num_rates = 0;
+-	int i;
+-
+-	num_rates += hweight32(mask->control[band].legacy);
+-
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++)
+-		num_rates += hweight8(mask->control[band].ht_mcs[i]);
+-
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++)
+-		num_rates += hweight16(mask->control[band].vht_mcs[i]);
+-
+-	return num_rates == 1;
+-}
+-
+-static bool
+ ath10k_mac_bitrate_mask_get_single_nss(struct ath10k *ar,
+ 				       enum nl80211_band band,
+ 				       const struct cfg80211_bitrate_mask *mask,
+@@ -7164,65 +7536,6 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ 	return true;
+ }
+ 
+-static int
+-ath10k_mac_bitrate_mask_get_single_rate(struct ath10k *ar,
+-					enum nl80211_band band,
+-					const struct cfg80211_bitrate_mask *mask,
+-					u8 *rate, u8 *nss)
+-{
+-	int rate_idx;
+-	int i;
+-	u16 bitrate;
+-	u8 preamble;
+-	u8 hw_rate;
+-
+-	if (hweight32(mask->control[band].legacy) == 1) {
+-		rate_idx = ffs(mask->control[band].legacy) - 1;
+-
+-		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
+-			rate_idx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
+-
+-		hw_rate = ath10k_wmi_legacy_rates[rate_idx].hw_value;
+-		bitrate = ath10k_wmi_legacy_rates[rate_idx].bitrate;
+-
+-		if (ath10k_mac_bitrate_is_cck(bitrate))
+-			preamble = WMI_RATE_PREAMBLE_CCK;
+-		else
+-			preamble = WMI_RATE_PREAMBLE_OFDM;
+-
+-		*nss = 1;
+-		*rate = preamble << 6 |
+-			(*nss - 1) << 4 |
+-			hw_rate << 0;
+-
+-		return 0;
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++) {
+-		if (hweight8(mask->control[band].ht_mcs[i]) == 1) {
+-			*nss = i + 1;
+-			*rate = WMI_RATE_PREAMBLE_HT << 6 |
+-				(*nss - 1) << 4 |
+-				(ffs(mask->control[band].ht_mcs[i]) - 1);
+-
+-			return 0;
+-		}
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
+-		if (hweight16(mask->control[band].vht_mcs[i]) == 1) {
+-			*nss = i + 1;
+-			*rate = WMI_RATE_PREAMBLE_VHT << 6 |
+-				(*nss - 1) << 4 |
+-				(ffs(mask->control[band].vht_mcs[i]) - 1);
+-
+-			return 0;
+-		}
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static int ath10k_mac_set_fixed_rate_params(struct ath10k_vif *arvif,
+ 					    u8 rate, u8 nss, u8 sgi, u8 ldpc)
+ {
+@@ -7991,6 +8304,140 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
+ }
+ 
++static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
++					struct ieee80211_vif *vif,
++					struct ieee80211_sta *sta,
++					struct ieee80211_tid_config *tid_config)
++{
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif = (void *)vif->drv_priv;
++	struct ath10k_mac_iter_tid_conf_data data = {};
++	struct wmi_per_peer_per_tid_cfg_arg arg = {};
++	int ret, i;
++	u8 changed;
++
++	mutex_lock(&ar->conf_mutex);
++	arg.vdev_id = arvif->vdev_id;
++
++	memset(arvif->tid_conf_changed, 0, sizeof(arvif->tid_conf_changed));
++
++	for (i = 0; i < tid_config->n_tid_conf; i++) {
++		if (tid_config->tid_conf[i].tid >= IEEE80211_TID_MAX)
++			continue;
++
++		ath10k_mac_parse_tid_config(ar, sta, vif,
++					    &tid_config->tid_conf[i],
++					    &arg);
++		changed = tid_config->tid_conf[i].tid_conf_mask;
++		if (sta) {
++			if (!sta->wme) {
++				ret = -ENOTSUPP;
++				goto exit;
++			}
++
++			if (changed & IEEE80211_TID_CONF_RETRY) {
++				if (sta->noack[arg.tid] == WMI_PEER_TID_CONFIG_NOACK ||
++				    vif->noack[arg.tid] == WMI_PEER_TID_CONFIG_NOACK)
++					arg.retry_count = 0;
++			}
++
++			if (changed & IEEE80211_TID_CONF_AMPDU) {
++				if (sta->noack[arg.tid] == WMI_PEER_TID_CONFIG_NOACK ||
++				    vif->noack[arg.tid] == WMI_PEER_TID_CONFIG_NOACK)
++					arg.aggr_control = 0;
++			}
++
++			if (changed & IEEE80211_TID_CONF_TX_BITRATE) {
++				if (sta->noack[arg.tid] == WMI_PEER_TID_CONFIG_NOACK ||
++				    vif->noack[arg.tid] == WMI_PEER_TID_CONFIG_NOACK) {
++					arg.rate_ctrl = 0;
++					arg.rcode_flags = 0;
++				}
++			}
++
++			ether_addr_copy(arg.peer_macaddr.addr, sta->addr);
++			ret = ath10k_wmi_set_per_peer_per_tid_cfg(ar, &arg);
++			if (ret)
++				goto exit;
++
++			/* Store the configured parameters in success case */
++			if (changed & IEEE80211_TID_CONF_NOACK) {
++				if (tid_config->tid_conf[i].noack ==
++						NL80211_TID_CONFIG_DEFAULT) {
++					sta->noack[arg.tid] = -1;
++				} else {
++					sta->noack[arg.tid] = arg.ack_policy;
++				}
++
++				arg.ack_policy = 0;
++				arg.aggr_control = 0;
++				arg.rate_ctrl = 0;
++				arg.rcode_flags = 0;
++			}
++
++			if (changed & IEEE80211_TID_CONF_RETRY) {
++				if (tid_config->tid_conf[i].retry_long == -1) {
++					sta->retry_long[arg.tid] = -1;
++				} else {
++					sta->retry_long[arg.tid] = arg.retry_count;
++				}
++
++				arg.retry_count = 0;
++			}
++
++			if (changed & IEEE80211_TID_CONF_AMPDU) {
++				if (tid_config->tid_conf[i].ampdu ==
++						NL80211_TID_CONFIG_DEFAULT) {
++					sta->ampdu[arg.tid] = -1;
++				} else {
++					sta->ampdu[arg.tid] = arg.aggr_control;
++				}
++
++				arg.aggr_control = 0;
++			}
++
++			if (changed & IEEE80211_TID_CONF_TX_BITRATE) {
++				sta->rate_ctrl[arg.tid] = arg.rate_ctrl;
++				arg.rate_ctrl = 0;
++				arg.rcode_flags = 0;
++			}
++		} else {
++			arvif->tid_conf_changed[arg.tid] |= changed;
++
++			if (changed & IEEE80211_TID_CONF_NOACK) {
++				vif->noack[arg.tid] = arg.ack_policy;
++				vif->ampdu[arg.tid] = arg.aggr_control;
++				vif->rate_ctrl[arg.tid] = arg.rate_ctrl;
++			}
++
++			if (changed & IEEE80211_TID_CONF_RETRY)
++				vif->retry_long[arg.tid] = arg.retry_count;
++
++			if (changed & IEEE80211_TID_CONF_AMPDU)
++				vif->ampdu[arg.tid] = arg.aggr_control;
++
++			if (changed & IEEE80211_TID_CONF_TX_BITRATE) {
++				vif->rate_ctrl[arg.tid] = arg.rate_ctrl;
++				vif->rate_code[arg.tid] = arg.rcode_flags;
++			}
++		}
++	}
++
++	if (sta)
++		goto exit;
++
++	ret = 0;
++	data.curr_vif = vif;
++	data.ar = ar;
++
++	ieee80211_iterate_stations_atomic(hw, ath10k_mac_vif_stations_tid_conf,
++					  &data);
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_mac_op_tx,
+ 	.wake_tx_queue			= ath10k_mac_op_wake_tx_queue,
+@@ -8033,6 +8480,7 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
+ 	.sta_pre_rcu_remove		= ath10k_mac_op_sta_pre_rcu_remove,
+ 	.sta_statistics			= ath10k_sta_statistics,
++	.set_tid_config			= ath10k_mac_op_set_tid_config,
+ 
+ 	CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
+ 
+@@ -8695,6 +9143,29 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		wiphy_ext_feature_set(ar->hw->wiphy,
+ 				      NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER);
+ 
++	if (test_bit(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, ar->wmi.svc_map)) {
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_TID_NOACK_CONFIG);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_STA_NOACK_CONFIG);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_TID_RETRY_CONFIG);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_STA_RETRY_CONFIG);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK);
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK);
++		ar->hw->wiphy->max_data_retry_count = ATH10K_MAX_RETRY_COUNT;
++		ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT;
++	} else {
++		ar->ops->set_tid_config = NULL;
++		ar->hw->wiphy->flags &= ~WIPHY_FLAG_HAS_MAX_DATA_RETRY_COUNT;
++	}
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
 -- 
 1.7.9.5
 
