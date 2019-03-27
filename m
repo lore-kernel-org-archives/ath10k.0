@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9Cu2-0003Bv-H9
- for ath10k@lists.infradead.org; Wed, 27 Mar 2019 18:03:56 +0000
+ id 1h9CuY-0003df-L8
+ for ath10k@lists.infradead.org; Wed, 27 Mar 2019 18:04:28 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.0 065/262] ath10k: Fix the wrong updation of BW in
- tx_stats debugfs entry
-Date: Wed, 27 Mar 2019 13:58:40 -0400
-Message-Id: <20190327180158.10245-65-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.0 079/262] ath10k: don't report unset rssi values to
+ mac80211
+Date: Wed, 27 Mar 2019 13:58:54 -0400
+Message-Id: <20190327180158.10245-79-sashal@kernel.org>
 In-Reply-To: <20190327180158.10245-1-sashal@kernel.org>
 References: <20190327180158.10245-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,65 +24,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, Alagu Sankar <alagusankar@silex-india.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-[ Upstream commit ef9051c72ab7bc664e8047c55ac74bdb1c7fa3ee ]
+[ Upstream commit 7d444522303177f3a3c09b9abb104ddeea470a70 ]
 
-Currently, the bandwidth is updated wrongly in BW table in tx_stats
-debugfs per sta as there is difference in number of bandwidth type
-in mac80211 and driver stats table. This leads to bandwidth getting
-updated at wrong index in bandwidth table in tx_stats.
+The SDIO firmware does not provide RSSI value to the host, it's only set to
+zero. In that case don't report the value to mac80211. One risk here is that
+value zero might be a valid value with other firmware, currently there's no way
+to detect that.
 
-Fix this index mismatch between mac80211 and driver stats table (BW table)
-by making the number of bandwidth type in driver compatible with mac80211.
+Without the fix, the rssi value indicated by iw changes between the actual
+value and -95.
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00005-QCARMSWP-1.
 
-Fixes: a904417fc876 ("ath10k: add extended per sta tx statistics support")
-Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Co-developed-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 7 ++++---
- drivers/net/wireless/ath/ath10k/wmi.h         | 2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 4778a455d81a..068f1a7e07d3 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -696,11 +696,12 @@ static ssize_t ath10k_dbg_sta_dump_tx_stats(struct file *file,
- 						 "  %llu ", stats->ht[j][i]);
- 			len += scnprintf(buf + len, size - len, "\n");
- 			len += scnprintf(buf + len, size - len,
--					" BW %s (20,40,80,160 MHz)\n", str[j]);
-+					" BW %s (20,5,10,40,80,160 MHz)\n", str[j]);
- 			len += scnprintf(buf + len, size - len,
--					 "  %llu %llu %llu %llu\n",
-+					 "  %llu %llu %llu %llu %llu %llu\n",
- 					 stats->bw[j][0], stats->bw[j][1],
--					 stats->bw[j][2], stats->bw[j][3]);
-+					 stats->bw[j][2], stats->bw[j][3],
-+					 stats->bw[j][4], stats->bw[j][5]);
- 			len += scnprintf(buf + len, size - len,
- 					 " NSS %s (1x1,2x2,3x3,4x4)\n", str[j]);
- 			len += scnprintf(buf + len, size - len,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 2034ccc7cc72..1d5d0209ebeb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5003,7 +5003,7 @@ enum wmi_rate_preamble {
- #define ATH10K_FW_SKIPPED_RATE_CTRL(flags)	(((flags) >> 6) & 0x1)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index f42bac204ef8..ecf34ce7acf0 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2130,9 +2130,15 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+ 	rx_status = IEEE80211_SKB_RXCB(skb);
+ 	rx_status->chains |= BIT(0);
+-	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
+-			    rx->ppdu.combined_rssi;
+-	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++	if (rx->ppdu.combined_rssi == 0) {
++		/* SDIO firmware does not provide signal */
++		rx_status->signal = 0;
++		rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
++	} else {
++		rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++			rx->ppdu.combined_rssi;
++		rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++	}
  
- #define ATH10K_VHT_MCS_NUM	10
--#define ATH10K_BW_NUM		4
-+#define ATH10K_BW_NUM		6
- #define ATH10K_NSS_NUM		4
- #define ATH10K_LEGACY_NUM	12
- #define ATH10K_GI_NUM		2
+ 	spin_lock_bh(&ar->data_lock);
+ 	ch = ar->scan_channel;
 -- 
 2.19.1
 
