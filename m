@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9Cwy-0006MU-1w
- for ath10k@lists.infradead.org; Wed, 27 Mar 2019 18:06:57 +0000
+ id 1h9D3U-0002qH-01
+ for ath10k@lists.infradead.org; Wed, 27 Mar 2019 18:13:51 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.0 157/262] ath10k: fix shadow register
+Subject: [PATCH AUTOSEL 4.19 110/192] ath10k: fix shadow register
  implementation for WCN3990
-Date: Wed, 27 Mar 2019 14:00:12 -0400
-Message-Id: <20190327180158.10245-157-sashal@kernel.org>
-In-Reply-To: <20190327180158.10245-1-sashal@kernel.org>
-References: <20190327180158.10245-1-sashal@kernel.org>
+Date: Wed, 27 Mar 2019 14:09:02 -0400
+Message-Id: <20190327181025.13507-110-sashal@kernel.org>
+In-Reply-To: <20190327181025.13507-1-sashal@kernel.org>
+References: <20190327181025.13507-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -54,7 +54,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 2a5668b4f6bc..1a1ea4bbf8a0 100644
+index 18c709c484e7..f761d651c16e 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.c
 +++ b/drivers/net/wireless/ath/ath10k/ce.c
 @@ -500,14 +500,8 @@ static int _ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
@@ -91,7 +91,7 @@ index 2a5668b4f6bc..1a1ea4bbf8a0 100644
  
  	src_ring->write_index = write_index;
  exit:
-@@ -1404,12 +1404,12 @@ static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
+@@ -1394,12 +1394,12 @@ static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
  				       u32 nentries)
  {
  	src_ring->shadow_base_unaligned = kcalloc(nentries,
@@ -106,7 +106,7 @@ index 2a5668b4f6bc..1a1ea4bbf8a0 100644
  			PTR_ALIGN(src_ring->shadow_base_unaligned,
  				  CE_DESC_RING_ALIGN);
  	return 0;
-@@ -1461,7 +1461,7 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
+@@ -1453,7 +1453,7 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
  		ret = ath10k_ce_alloc_shadow_base(ar, src_ring, nentries);
  		if (ret) {
  			dma_free_coherent(ar->dev,
@@ -116,7 +116,7 @@ index 2a5668b4f6bc..1a1ea4bbf8a0 100644
  					  src_ring->base_addr_owner_space_unaligned,
  					  base_addr);
 diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index ead9987c3259..463e2fc8b501 100644
+index b8fb5382dede..8088f7a66426 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.h
 +++ b/drivers/net/wireless/ath/ath10k/ce.h
 @@ -118,7 +118,7 @@ struct ath10k_ce_ring {
