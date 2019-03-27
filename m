@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8t8a-0000o6-Ra
- for ath10k@lists.infradead.org; Tue, 26 Mar 2019 20:57:39 +0000
-Received: by mail-pf1-x444.google.com with SMTP id i19so8639792pfd.0
- for <ath10k@lists.infradead.org>; Tue, 26 Mar 2019 13:57:35 -0700 (PDT)
-From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH for-5.1] ath10k: perform crash dump collection in workqueue
-Date: Tue, 26 Mar 2019 13:57:28 -0700
-Message-Id: <20190326205728.168973-1-briannorris@chromium.org>
+ id 1h98Qe-00012O-7Z
+ for ath10k@lists.infradead.org; Wed, 27 Mar 2019 13:17:22 +0000
+Received: by mail-qt1-x82b.google.com with SMTP id x12so18698140qts.7
+ for <ath10k@lists.infradead.org>; Wed, 27 Mar 2019 06:17:13 -0700 (PDT)
 MIME-Version: 1.0
+From: Robert Marko <robimarko@gmail.com>
+Date: Wed, 27 Mar 2019 14:16:57 +0100
+Message-ID: <CAOX2RU4qYWap-yWCoPsFT2o7K-Fwz7Xjdzo=aLc1rR2ytWNLOw@mail.gmail.com>
+Subject: ath10k-firmware: QCA9984 hw1.0: Update Netgear Orbi Pro SRK60
+ specific BDFs
+Content-Type: multipart/mixed; boundary="000000000000374656058513414f"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,234 +20,289 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Brian Norris <briannorris@chromium.org>, =?UTF-8?q?Micha=C5=82=20Kazior?= <kazikcz@gmail.com>, Carl Huang <cjhuang@codeaurora.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-Commit 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE
-polling") introduced a regression where we try to sleep (grab a mutex)
-in an atomic context:
+--000000000000374656058513414f
+Content-Type: text/plain; charset="UTF-8"
 
-[  233.602619] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:254
-[  233.602626] in_atomic(): 1, irqs_disabled(): 0, pid: 0, name: swapper/0
-[  233.602636] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.1.0-rc2 #4
-[  233.602642] Hardware name: Google Scarlet (DT)
-[  233.602647] Call trace:
-[  233.602663]  dump_backtrace+0x0/0x11c
-[  233.602672]  show_stack+0x20/0x28
-[  233.602681]  dump_stack+0x98/0xbc
-[  233.602690]  ___might_sleep+0x154/0x16c
-[  233.602696]  __might_sleep+0x78/0x88
-[  233.602704]  mutex_lock+0x2c/0x5c
-[  233.602717]  ath10k_pci_diag_read_mem+0x68/0x21c [ath10k_pci]
-[  233.602725]  ath10k_pci_diag_read32+0x48/0x74 [ath10k_pci]
-[  233.602733]  ath10k_pci_dump_registers+0x5c/0x16c [ath10k_pci]
-[  233.602741]  ath10k_pci_fw_crashed_dump+0xb8/0x548 [ath10k_pci]
-[  233.602749]  ath10k_pci_napi_poll+0x60/0x128 [ath10k_pci]
-[  233.602757]  net_rx_action+0x140/0x388
-[  233.602766]  __do_softirq+0x1b0/0x35c
-[...]
+Hi,
 
-ath10k_pci_fw_crashed_dump() is called from NAPI contexts, and firmware
-memory dumps are retrieved using the diag memory interface.
+I am currently working on the Netgear Orbi Pro SRK60 support for
+OpenWrt. This
+AP requires three special BDFs to get the Wi-Fi PHYs working (correctly). The
+bmi-board-id='s would clash with one of the the IPQ401X AP-DK boards because
+QCA doesn't provide special IDs for customers and seems to use the AP-DK
+board-ids in the wifi firmware to change its behavior.
 
-A simple reproduction case is to run this on QCA6174A /
-WLAN.RM.4.4.1-00132-QCARMSWP-1, which happens to be a way to b0rk the
-firmware:
+This update finally makes the QCA9984 stable, this is v6 of Netgear
+BDFs and previous ones
+would crash the firmware and driver after couple of minutes.
 
-  dd if=/sys/kernel/debug/ieee80211/phy0/ath10k/mem_value bs=4K count=1
-of=/dev/null
+Now to the questions from the wiki page [1]:
 
-(NB: simulated firmware crashes, via debugfs, don't trigger firmware
-dumps.)
+* description for what hardware this is:
 
-The fix is to move the crash-dump into a workqueue context, and avoid
-relying on 'data_lock' for most mutual exclusion. We only keep using it
-here for protecting 'fw_crash_counter', while the rest of the coredump
-buffers are protected by a new 'dump_mutex'.
+  - it is a QCA4019 based module (based on qcom-ipq4019-ap.dk04.1-c1)
+  - one QCA4019 radio is used as 2.4GHz radio
+  - one QCA4019 radio is used as 5GHz radio
+  - an additional QCA9984 5GHz radio is attached via PCI
 
-I've tested the above with simulated firmware crashes (debugfs 'reset'
-file), real firmware crashes (the 'dd' command above), and a variety of
-reboot and suspend/resume configurations on QCA6174A.
+* origin of the board file (did you create it yourself or where you
+  downloaded)
 
-Reported here:
-http://lkml.kernel.org/linux-wireless/20190325202706.GA68720@google.com
+  - it was pulled from the factory firmware image
+  - it is based on latest 2.3.0.0 firmware
 
-Fixes: 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE polling")
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
- drivers/net/wireless/ath/ath10k/ce.c       |  2 +-
- drivers/net/wireless/ath/ath10k/core.c     |  1 +
- drivers/net/wireless/ath/ath10k/core.h     |  3 +++
- drivers/net/wireless/ath/ath10k/coredump.c |  6 +++---
- drivers/net/wireless/ath/ath10k/pci.c      | 24 +++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/pci.h      |  2 ++
- 6 files changed, 29 insertions(+), 9 deletions(-)
+* ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 24b983edb357..eca87f7c5b6c 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1855,7 +1855,7 @@ void ath10k_ce_dump_registers(struct ath10k *ar,
- 	struct ath10k_ce_crash_data ce_data;
- 	u32 addr, id;
- 
--	lockdep_assert_held(&ar->data_lock);
-+	lockdep_assert_held(&ar->dump_mutex);
- 
- 	ath10k_err(ar, "Copy Engine register dump:\n");
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 835b8de92d55..aff585658fc0 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3119,6 +3119,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 		goto err_free_wq;
- 
- 	mutex_init(&ar->conf_mutex);
-+	mutex_init(&ar->dump_mutex);
- 	spin_lock_init(&ar->data_lock);
- 
- 	INIT_LIST_HEAD(&ar->peers);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index e08a17b01e03..e35aae5146f1 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1063,6 +1063,9 @@ struct ath10k {
- 	/* prevents concurrent FW reconfiguration */
- 	struct mutex conf_mutex;
- 
-+	/* protects coredump data */
-+	struct mutex dump_mutex;
-+
- 	/* protects shared structure data */
- 	spinlock_t data_lock;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index 33838d9c1cb6..45a355fb62b9 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -1102,7 +1102,7 @@ struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar)
- {
- 	struct ath10k_fw_crash_data *crash_data = ar->coredump.fw_crash_data;
- 
--	lockdep_assert_held(&ar->data_lock);
-+	lockdep_assert_held(&ar->dump_mutex);
- 
- 	if (ath10k_coredump_mask == 0)
- 		/* coredump disabled */
-@@ -1146,7 +1146,7 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
- 	if (!buf)
- 		return NULL;
- 
--	spin_lock_bh(&ar->data_lock);
-+	mutex_lock(&ar->dump_mutex);
- 
- 	dump_data = (struct ath10k_dump_file_data *)(buf);
- 	strlcpy(dump_data->df_magic, "ATH10K-FW-DUMP",
-@@ -1213,7 +1213,7 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
- 		sofar += sizeof(*dump_tlv) + crash_data->ramdump_buf_len;
- 	}
- 
--	spin_unlock_bh(&ar->data_lock);
-+	mutex_unlock(&ar->dump_mutex);
- 
- 	return dump_data;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 271f92c24d44..2c27f407a851 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1441,7 +1441,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
- 	__le32 reg_dump_values[REG_DUMP_COUNT_QCA988X] = {};
- 	int i, ret;
- 
--	lockdep_assert_held(&ar->data_lock);
-+	lockdep_assert_held(&ar->dump_mutex);
- 
- 	ret = ath10k_pci_diag_read_hi(ar, &reg_dump_values[0],
- 				      hi_failure_state,
-@@ -1656,7 +1656,7 @@ static void ath10k_pci_dump_memory(struct ath10k *ar,
- 	int ret, i;
- 	u8 *buf;
- 
--	lockdep_assert_held(&ar->data_lock);
-+	lockdep_assert_held(&ar->dump_mutex);
- 
- 	if (!crash_data)
- 		return;
-@@ -1734,14 +1734,19 @@ static void ath10k_pci_dump_memory(struct ath10k *ar,
- 	}
- }
- 
--static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
-+static void ath10k_pci_fw_dump_work(struct work_struct *work)
- {
-+	struct ath10k_pci *ar_pci = container_of(work, struct ath10k_pci,
-+						 dump_work);
- 	struct ath10k_fw_crash_data *crash_data;
-+	struct ath10k *ar = ar_pci->ar;
- 	char guid[UUID_STRING_LEN + 1];
- 
--	spin_lock_bh(&ar->data_lock);
-+	mutex_lock(&ar->dump_mutex);
- 
-+	spin_lock_bh(&ar->data_lock);
- 	ar->stats.fw_crash_counter++;
-+	spin_unlock_bh(&ar->data_lock);
- 
- 	crash_data = ath10k_coredump_new(ar);
- 
-@@ -1756,11 +1761,18 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- 	ath10k_ce_dump_registers(ar, crash_data);
- 	ath10k_pci_dump_memory(ar, crash_data);
- 
--	spin_unlock_bh(&ar->data_lock);
-+	mutex_unlock(&ar->dump_mutex);
- 
- 	queue_work(ar->workqueue, &ar->restart_work);
- }
- 
-+static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+
-+	queue_work(ar->workqueue, &ar_pci->dump_work);
-+}
-+
- void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
- 					int force)
- {
-@@ -3442,6 +3454,8 @@ int ath10k_pci_setup_resource(struct ath10k *ar)
- 	spin_lock_init(&ar_pci->ps_lock);
- 	mutex_init(&ar_pci->ce_diag_mutex);
- 
-+	INIT_WORK(&ar_pci->dump_work, ath10k_pci_fw_dump_work);
-+
- 	timer_setup(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry, 0);
- 
- 	if (QCA_REV_6174(ar) || QCA_REV_9377(ar))
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 3773c79f322f..4455ed6c5275 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -121,6 +121,8 @@ struct ath10k_pci {
- 	/* For protecting ce_diag */
- 	struct mutex ce_diag_mutex;
- 
-+	struct work_struct dump_work;
-+
- 	struct ath10k_ce ce;
- 	struct timer_list rx_post_retry;
- 
--- 
-2.21.0.392.gf8f6787159e-goog
+  - QCA9984 hw1.0
 
+  + bus=pci,bmi-chip-id=0,bmi-board-id=6,variant=Netgear-Orbi-Pro-SRK60
+     md5sum:
+     7002a32bac187b47b5e14fb7d1659836
+
+* attach the actual board file (board.bin)
+
+  - The name of the files are equal to the id string in the board-2.bin
+    (minus the ".bin")
+
+Kind regards,
+Robert Marko
+
+[1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
+
+--000000000000374656058513414f
+Content-Type: application/x-sega-cd-rom; 
+	name="bus=pci,bmi-chip-id=0,bmi-board-id=6,variant=Netgear-Orbi-Pro-SRK60.bin"
+Content-Disposition: attachment; 
+	filename="bus=pci,bmi-chip-id=0,bmi-board-id=6,variant=Netgear-Orbi-Pro-SRK60.bin"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jtr88frf0>
+X-Attachment-Id: f_jtr88frf0
+
+IC/7wAEBEjRWeJASAAAAABXgAAAAYAAAdVcCAQAAAAACAAAN/wAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAB5WAAEAAAAAADMzM/Ty8gE8FAYA////P////z////8/AxQAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADbAAAAAAAAAAAAAAAAAAAA
+AJABAAAAAAAA/////wABAAAAAAAABgEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A
+SQQJAJmZCQAQABAAEAAQAAAAABAAAAAA////PwAAAAAeEQAAAAAAAAAAAAAAAD8UBQUFAwMDAQEB
+AwMDAwMDAwMDAAC4/wAAitIUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAoBKQIJAJmZCQBQAVABUAFQAQAAAAAAAAAAAAAAAAAAAAAUEQAAAAAAAAAAAAAAAD8UAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAATExMAExMTABMTEwATExMAFhYWABYWFgAWFhYAFhYWAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQkJCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAA//////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACljwEA
+CAEBAgQIAgQICAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATGBkjJDQ1NgA
+AAAA2P+w/wAAuv8UALr/uv+6/wAAAAAAAAAAdP9C/87/YP8KALQAoACgAAAAAAAAAAAACgCw/5YA
+sP9W/7r/pv+S/wAAAAAAAAAAkJB2WlRUTEY4ABAQCPIAAAAAAAA4KSUjIiIfAAAA/Ork4N/f2AAA
+ADgpJSMiIiIfAAAJ9/Ht6+vlAAAABwABAJCQdmBUVExGOAANDQLyAAAAAAAAZmZaVlRUTEY4ABoa
+ExMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAAsLCwsLCwsLCws
+LCwqKigmHh4sLCwsKiooJh4eLCwsLCoqKCYeHiwsLCwqKigmHh4sLCwsKiooJh4eLCwsLCoqKCYe
+HiwsLCwqLiwqKCQsLCwsKi4sKCYiLCwsLCoqKCYeHiwsLCwqKigmHh4sLCwsKiooJh4eLCwsLCoq
+KCYeHiwsLCwqKigmHh4sLCwsKiooJh4eLCwsLCoqKCYeHiwsLCwqKigmHh4AAAAAAAAAAAAAAAAA
+AAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TmHB1en+EiY6TmHB1en+EiY6TmACurq6urq6urq6u
+rq6urq6urq68vLy8vLy8vLy8vLy8vLy8vLyZmZmZmZmZmZmZmZmZmZmZmZkSHhIuEswSERoeGi4a
+TBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAROB5wdXp/hImOk5id
+onB1en+EiY6TmJ2icHV6f4SJjpOYnaIAK66urq6urq6urisrrq6urq6urq6uKyuurq6urq6urq4r
+K66urq6urq6urisrrq6urq6urq6uLSuurq6urq6urq4tK66urq6urq6uri0rrq6urq6urq6uKyuu
+rq6urq6urq4rK66urq6urq6uriu8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8
+vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8
+vLy8vLy8vLy8vLy8vLy8vJubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ub
+m5ubkZGRkZGRkZGRkZGVlZWVlZWVlZWVlZWVlZWVlZWVlZWVmpqampqampqampqampqampqampqa
+mpqampqampqampqaEx4T7hMRGx4bLhtMQx5D7kMRSx5LLktMMx4z7jMROx47LjtMen+EiY6YcHV6
+f4SJcHV6f4SJJKqqqqooJKqqqqooJKqqqqooJKqqqqolJKqqqqolJKqqqqolvLy8vLy8vLy8vLy8
+vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8m5ubm5ubm5ubm5ubm5ubm5ubkZGRkZGRlZWVlZWVlZWV
+lZWVAAAAAHCJnaxwiZ2scImdrHCJnawlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUl
+JSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUljJCVoK69zf//////////////////////////
+//////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN7Ev6adgXtcYUDHwK6pjINqYlA+
+zsKuo4x7alpQNdfCt6SVfnJaWTf4+Pj4jJWQjwDXwLeilXtyVlkyx8OurYyFamNQPs7DrqSMfGpZ
+UDTXwrellX5yWVk2+Pj4+IyVkI8AzsWupZWDclxZNr/GpauMjGpnUEHHw66tlYxyZVk/zseuqJWG
+cl9ZOfj4+PiLlZCPALfCnaSDhWprUES3wZ2kg4VhXUg9rsSdrXuFYWZIRq7DlaNyfFlWODH4+Pj4
+jJaRjwC3wKWrjIpqZFA8t8CdoIOAamRQPbfFnaWDh2prUESuwJ2og4hqbVBG+Pj4+IyWkY8Av8Cl
+oox/aldQL7fHpbGMjnJtWUW/xqWojIdqX1A3v8KlpIyDalxQNPj4+PiMlpGQAMfCrqqVgntgYT+3
+xqWxjI1ya2FRv8SlpYyCcmFZOcfArqmVgnthYUD4+Pj4jJaRkADXw7eonYCDXWo/v8elqIyEcmBh
+Rr/CrrCdkoNvalDXw7ennYCDXmpA+Pj4+I2WkJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAAA
+AAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAIrEY7g8pimXFoGEt1upM5QegxFwuMJwsU2jKo0be6i8aKtHnSeHGHWuxn27
+TaochBFyo7turTyXJIUWcYCyV6Qwjhx8EGi7vXWsT54rhxp2lsVetT6lH4wSesHGQp8njBZ3D2ed
+vGitNpUggxFtm7hnqDSQH3wQZ57Jars3pCCQEXvGyEekKpAYexBsrsRdrTeaH4UTdXCtQpklhBd0
+C1aHyFe4K54Zig10p8huuTagH4sRdZS+S6Uqkhh8D2uvwFioNJQdfRJtgsBSsCWUFH8MaIS/PqQi
+jhB2C2WItkKbJocUcAxfxcI+lyODE2wMXLHJdrxKqiCNEniTv0ajJo0UdAxiyMQ7lyGCEWoKWaO5
+aKkwjRp4D2GgyXO+ULEwnxSAg7c8miCEDmoKV6zCaLAukhl8DWOTvmKwPJ4agA5rAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQcJCw0PERMVFxkbHf//////
+///////////////////4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+AcHBwcHBwcHBwcH
+BwcAAAAAAAAAAAAAAAAAAAAAAAAAyKB4UCjIfVAyHiUlJCUlJCMiISAjISEiIVYFCAABAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAECAwUCAAIDBAYHAwAAAAIHBgEAAAAHBwIBAAAHBwMCAQAAAAECAwUCAAIDBAYHAwAAAAIHBgEA
+AAAHBwIBAAAHBwMCAQAXMhcRHxJHMkcRTxI3MjcRPxIICAgICAgICAgAUmKSorLDUmKSorLDUmKS
+orLDPDyioqKwPDyioqKwPDyenp6rPDycnDw8PDycnDw8PDycnDw8vLyqqqqqvLyqqqqqvLyhoaGh
+FzIXER8SRzJHEU8SNzI3ET8SCQkJCQkJCQkJAFJikqKyw1JikqKyw1JikqKywzw8oqKisDw8oqKC
+sDw8np6eqzw8nJw8PDw8nJw8PDw8nJw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADz8/Pz8/Pz8/Pz8/Pz8/Pz8/MAAAAAAAAAAAAA
+AAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMXGh4jKC0zUxcaHiMoLTNTFxo
+eIygtM1MXGh4jKC0zTAwMDAwLiwsKCYwMDAwMC4sKCQiMDAwMDAuLCwoJjAwMDAwLiwoJCIwMDAw
+MC4sLCgmMDAwMDAuLCgkIjAwMDAwLiwsKCYwMDAwMC4sKCQiLCwsLCwqKCYiICwsLCwsKigiHhws
+LCwsLCooJiIgLCwsLCwqKCIeHDAwMDAwLiwsKCYwMDAwMC4sKCQiMDAwMDAuLCwoJjAwMDAwLiwo
+JCIwMDAwLiwqKigmMDAwMC4sKiYkIjAwMDAuLCoqKCYwMDAwLiwqJiQiMDAwMC4sKiooJjAwMDAu
+LComJCIwMDAwLiwqKigmMDAwMC4sKiYkIiwsLCwqKCYlJCIsLCwsKigmISAeLCwsLCooJiUkIiws
+LCwqKCYhIB4wMDAwLiwqKigmMDAwMC4sKiYkIjAwMDAuLCoqKCYwMDAwLiwqJiQiMDAwMC4sLCoo
+JjAwMDAuLCwmJCIwMDAwLiwsKigmMDAwMC4sLCYkIjAwMDAuLCwqKCYwMDAwLiwsJiQiMDAwMC4s
+LCooJjAwMDAuLCwmJCIsLCwsKigmJCQiLCwsLCooJiAgHiwsLCwqKCYkJCIsLCwsKigmICAeMDAw
+MC4sLCooJjAwMDAuLCwmJCIwMDAwLiwsKigmMDAwMC4sLCYkIjAwMDAuLCwqKCYwMDAwLiwsJiQi
+MDAwMC4sLCooJjAwMDAuLCwmJCIwMDAwLiwsKigmMDAwMC4sLCYkIjAwMDAuLCwqKCYwMDAwLiws
+JiQiLCwsLCooJiQkIiwsLCwqKCYgIB4sLCwsKigmJCQiLCwsLCooJiAgHjAwMDAuLCwqKCYwMDAw
+LiwsJiQiMDAwMC4sLCooJjAwMDAuLCwmJCIgABEBtANsChwAEQGcT3sZAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAA/7AMFAQEZABYmKjFAQIECJeXl5ehoaGhAAAAAAAAAAC4uLi4
+l5eXl6GhoaEAAAAAAAAAALi4uLiXl5eXoaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4
+uLi4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATFhcaIygtMlMWFxojKC0
+yUxYXGiMoLTJTFhcaIygtMknJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUk
+JyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQn
+JiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJBAeEBEYHkAeQBFIHjAeMBE4HkxQVFhcYGRo
+jJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxgZGiMkJSYnKCk
+qKywtLi9wcXJzQAuLi4uPDw8PKKioqKioqKioqKiorCwsLCwLi4uLjw8PDyioqKioqKioqKioqKw
+sLCwsC4uLi48PDw8oqKioqKioqKioqKisLCwsLA8PDw8PDw8PJ+fn5+fnZ2dnZ2ePDw8PDw8PDw8
+PDw8PDyfn5+fn52dnZ2dnjw8PDw8PDw8PDw8PDw8n5+fn5+dnZ2dnZ48PDw8PDwfHx8fHx8fH6qq
+qqqqqqqqqqqqqqqqqqqqHx8fHx8fHx+qqqqqqqqqqqqqqqqqqqqqqh8fHx8fHx8foqKioqKioqKi
+oqKioqKioqIAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKIQhFKHkouSkwyHjIuMkwyiDIROh46LjpM
+TFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBk
+aIyQlJicoKSorLC0uL3BxcnNAC4uLi48PDw8oqKioqKioqKioqKisLCwsLAuLi4uPDw8PKKioqKi
+oqKioqKiorCwsLCwLi4uLjw8PDyioqKioqKioqKioqKwsLCwsC4uLi48PDw8oqKioqKioqKioqKi
+sLCwsLAuLi4uPDw8PKKioqKioqKioqKiorCwsLCwLS4uLjw8PDyenp6enp6enp6enp6tra2trS0u
+Li48PDw8np6enp6enp6enp6esLCwsLAtLi4uPDw8PJ6enp6enp6enp6enrCwsLCwPDw8PDw8PDyf
+n5+fn52dnZ2dnjw8PDw8PDw8PDw8PDw8n5+fn5+dnZ2dnZ48PDw8PDw8PDw8PDw8PJ+fn5+fnZ2d
+nZ2ePDw8PDw8PDw8PDw8PDyfn5+fn52dnZ2dnjw8PDw8PDw8PDw8PDw8n5+fn5+dnZ2dnZ48PDw8
+PDw8PDw8PDw8PJ+fn5+fnZ2dnZ2ePDw8PDw8PDw8PDw8PDyfn5+fn52dnZ2dnjw8PDw8PDw8PDw8
+PDw8n5+fn5+dnZ2dnZ48PDw8PDwgICAgICAgIKqqqqqqqqqqqqqqqqqqqqqqICAgICAgICCqqqqq
+qqqqqqqqqqqqqqqqqiAgICAgICAgqqqqqqqqqqqqqqqqqqqqqqogICAgICAgIKqqqqqqqqqqqqqq
+qqqqqqqqICAgICAgICCqqqqqqqqqqqqqqqqqqqqqqhYWFhYWFhYWoqKioqKioqKioqKioqKioqIa
+GhoaGhoaGqampqampqampqampqampqamGhoaGhoaGhqmpqampqampqampqampqamphMeE+4TERse
+Gy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6mrra/x05WXmaO
+lp6mrra/xyguPDyioqKioqKwsCguPDyioqKioqKwsCguPDyioqKioqKwsCcuPDyanp6enp6srCcu
+PDyanp6enp6wsCcuPDyanp6enp6wsDw8PDycnJubnDw8PDw8PDycnJubnDw8PDw8PDycnJubnDw8
+PDw8PDycnJubnDw8PDw8PDycnJubnDw8PDw8PDycnJubnDw8PKCgoKCpqampqampqaCgoKCpqamp
+qampqaCgoKCpqampqampqZaWlpaioqKioqKiopqampqmpqampqamppqampqmpqampqamphT+FBEc
+HhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJikqKyw1JikqKyw1JikqKywyY8oqKisCY8
+oqKisCY8np6eqyc8np6esCc8np6esCY8oqKisDw8nJw8PDw8nJw8PDw8nJw8PDw8nJw8PDw8nJw8
+PDw8nJw8PKCgqqqqqqCgqqqqqpaWoaGhoZqapaWlpZqapaWlpaCgqqqqqhYyFhEeEkYyRhFOEjYy
+NhE+ElqaWppamjw8PDw8PDw8PDw8PDw8PDw8PAABAAAAAQAAAAEAAAABAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAACQkIyQkIyUiISEjIiEiISQkIyQkIyUiISEjIiEiISUlJCUlJCMiISAjISEiISUlJCUl
+JCMiISAjISEiISQkIyQkIyUiISEjIiEiISQkIyQkIyUiISEjIiEiISUlJCUlJCMiISAjISEiISUl
+JCUlJCMiISAjISEiIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+--000000000000374656058513414f
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--000000000000374656058513414f--
