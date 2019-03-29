@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-f193.google.com ([209.85.167.193])
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9ELT-0003e9-UD
- for ath10k@lists.infradead.org; Wed, 27 Mar 2019 19:36:22 +0000
-Received: by mail-oi1-f193.google.com with SMTP id 3so13862732oir.7
- for <ath10k@lists.infradead.org>; Wed, 27 Mar 2019 12:36:19 -0700 (PDT)
-Date: Wed, 27 Mar 2019 14:36:17 -0500
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt: bindings: add dt entry for XO calibration support
-Message-ID: <20190327193617.GA18283@bogus>
-References: <20190302050635.17694-1-govinds@codeaurora.org>
- <20190302050635.17694-2-govinds@codeaurora.org>
+ id 1h9mEj-0005xY-EG
+ for ath10k@lists.infradead.org; Fri, 29 Mar 2019 07:47:38 +0000
+Received: by mail-lf1-x144.google.com with SMTP id g7so758252lfh.10
+ for <ath10k@lists.infradead.org>; Fri, 29 Mar 2019 00:47:36 -0700 (PDT)
+Subject: Re: [PATCH] ath10k: remove iteration in wake_tx_queue
+References: <20190327162906.6010-1-erik.stromdahl@gmail.com>
+ <ba7a88e5-10ff-2ec2-feee-6d4adf472833@bowerswilkins.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <fd76296d-e88e-1dbd-b3d2-e9e7edc7f49d@gmail.com>
+Date: Fri, 29 Mar 2019 08:47:33 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190302050635.17694-2-govinds@codeaurora.org>
+In-Reply-To: <ba7a88e5-10ff-2ec2-feee-6d4adf472833@bowerswilkins.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Peter Oh <peter.oh@bowerswilkins.com>, "kvalo@qca.qualcomm.com" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "yiboz@codeaurora.org" <yiboz@codeaurora.org>
 
-On Sat, Mar 02, 2019 at 10:36:34AM +0530, Govind Singh wrote:
-> Add dt binding to get xo calibration data support for wifi rf clock.
+
+
+On 3/27/19 6:49 PM, Peter Oh wrote:
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index ae661e65354e..ab8042866e83 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -81,6 +81,7 @@ Optional properties:
->  	Definition: Name of external front end module used. Some valid FEM names
->  		    for example: "microsemi-lx5586", "sky85703-11"
->  		    and "sky85803" etc.
-> +- xo-cal-data: xo cal offset to be configured in xo trim register.
+> On 03/27/2019 09:29 AM, Erik Stromdahl wrote:
+>> Iterating the TX queue and thereby dequeuing all available packets in the
+>> queue could result in performance penalties on some SMP systems.
+>>
+> Please share the test results and numbers you've run to help others
+> thoughts.
+> 
 
-Should have a vendor prefix.
+I haven't run any tests with ath10k PCIe, but Yibo Zhao had noticed a 10%
+degradation without this patch.
 
-Rob
+Yibo:
+Can you provide iperf results etc. that shows the performance gain?
+
+--
+Erik
 
 _______________________________________________
 ath10k mailing list
