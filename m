@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9pbX-0002jl-6d
- for ath10k@lists.infradead.org; Fri, 29 Mar 2019 11:23:25 +0000
-From: Balaji Pothunoori <bpothuno@codeaurora.org>
-Subject: [PATCH v4] iw: Add support for controlling tx power for per station
-Date: Fri, 29 Mar 2019 16:53:15 +0530
-Message-Id: <1553858595-21819-1-git-send-email-bpothuno@codeaurora.org>
+ id 1hA3Kd-000813-MZ
+ for ath10k@lists.infradead.org; Sat, 30 Mar 2019 02:02:53 +0000
+Received: by mail-wm1-x332.google.com with SMTP id y197so4844572wmd.0
+ for <ath10k@lists.infradead.org>; Fri, 29 Mar 2019 19:02:50 -0700 (PDT)
+MIME-Version: 1.0
+From: Carlito Nueno <carlitonueno@gmail.com>
+Date: Fri, 29 Mar 2019 19:02:38 -0700
+Message-ID: <CAEUausqyscU3yt-f-5XjnpHPiLHN7QJ_96sA1pMfB4V459Wb+Q@mail.gmail.com>
+Subject: QCA9984 all devices being de-authenticated and unable to re-connect
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,134 +18,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, Ashok Raj Nagarajan <arnagara@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
+Hi all,
 
-This patch allows userspace to set transmit power,
-in dBm units, to a station associated to the AP.
+I am using:
 
-To set a limit tx power of 20 dBm:
-iw wlan0 station set <mac-addr> txpwr limit 20
+ath10k-firmware-qca9984 - 2018-12-16-211de167-1
+kmod-ath10k - 4.14.109+4.19.23-1-5
 
-To revert the user defined tx power for a station:
-iw wlan0 station set <mac-addr> txpwr auto
+## Problem
+I am able to associate and authenticate many clients. Max I tested was
+15 clients.
+But when more than 4 clients start to play video stream (youtube,
+twitch, netflix):
 
-Co-developed-by: Balaji Pothunoori <bpothuno@codeaurora.org>
-Signed-off-by: Ashok Raj Nagarajan <arnagara@codeaurora.org>
-Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
----
-v2: modified user configured units to dBm from mBm
-v3: no changes, rebased
-v4: rebased and removed check for sta_txpwr
-    in order to configure tx power '0'
+1. all the clients loose internet connectivity
+2. all of them are _de-authenticated_
 
- station.c | 71 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+3. when trying to reconnect, they connect but are _disassociated_ immediately.
 
-diff --git a/station.c b/station.c
-index 25cbbc3..0454f87 100644
---- a/station.c
-+++ b/station.c
-@@ -661,6 +661,7 @@ static const struct cmd *station_set_plink;
- static const struct cmd *station_set_vlan;
- static const struct cmd *station_set_mesh_power_mode;
- static const struct cmd *station_set_airtime_weight;
-+static const struct cmd *station_set_txpwr;
- 
- static const struct cmd *select_station_cmd(int argc, char **argv)
- {
-@@ -674,6 +675,8 @@ static const struct cmd *select_station_cmd(int argc, char **argv)
- 		return station_set_mesh_power_mode;
- 	if (strcmp(argv[1], "airtime_weight") == 0)
- 		return station_set_airtime_weight;
-+	if (strcmp(argv[1], "txpwr") == 0)
-+		return station_set_txpwr;
- 	return NULL;
- }
- 
-@@ -873,6 +876,72 @@ COMMAND_ALIAS(station, set, "<MAC address> airtime_weight <weight>",
- 	"Set airtime weight for this station.",
- 	select_station_cmd, station_set_airtime_weight);
- 
-+static int handle_station_set_txpwr(struct nl80211_state *state,
-+				    struct nl_msg *msg,
-+				    int argc, char **argv,
-+				    enum id_input id)
-+{
-+	enum nl80211_tx_power_setting type;
-+	unsigned char mac_addr[ETH_ALEN];
-+	int sta_txpwr = 0;
-+	char *err = NULL;
-+
-+	if (argc != 3 && argc != 4)
-+		return 1;
-+
-+	if (mac_addr_a2n(mac_addr, argv[0])) {
-+		fprintf(stderr, "invalid mac address\n");
-+		return 2;
-+	}
-+
-+	NLA_PUT(msg, NL80211_ATTR_MAC, ETH_ALEN, mac_addr);
-+	argc--;
-+	argv++;
-+
-+	if (strcmp("txpwr", argv[0]) != 0)
-+		return 1;
-+	argc--;
-+	argv++;
-+
-+	if (!strcmp(argv[0], "auto"))
-+		type = NL80211_TX_POWER_AUTOMATIC;
-+	else if (!strcmp(argv[0], "limit"))
-+		type = NL80211_TX_POWER_LIMITED;
-+	else {
-+		printf("Invalid parameter: %s\n", argv[0]);
-+		return 2;
-+	}
-+
-+	NLA_PUT_U8(msg, NL80211_ATTR_STA_TX_POWER_SETTING, type);
-+
-+	if (type != NL80211_TX_POWER_AUTOMATIC) {
-+		if (argc != 2) {
-+			printf("Missing TX power level argument.\n");
-+			return 2;
-+		}
-+
-+		argc--;
-+		argv++;
-+
-+		sta_txpwr = strtoul(argv[0], &err, 0);
-+		NLA_PUT_U16(msg, NL80211_ATTR_STA_TX_POWER, sta_txpwr);
-+	}
-+
-+	argc--;
-+	argv++;
-+
-+	if (argc)
-+		return 1;
-+
-+	return 0;
-+ nla_put_failure:
-+	return -ENOBUFS;
-+}
-+COMMAND_ALIAS(station, set, "<MAC address> txpwr <auto|limit> [<tx power dBm>]",
-+	NL80211_CMD_SET_STATION, 0, CIB_NETDEV, handle_station_set_txpwr,
-+	"Set Tx power for this station.",
-+	select_station_cmd, station_set_txpwr);
-+
- static int handle_station_dump(struct nl80211_state *state,
- 			       struct nl_msg *msg,
- 			       int argc, char **argv,
--- 
-2.7.4
+c2:44:2f:f3:3c:22  -64 dBm / -109 dBm (SNR 45)  40 ms ago
+    RX: 200.0 MBit/s, VHT-MCS 9, 40MHz, VHT-NSS 1        48 Pkts.
+    TX: 12.0 MBit/s                                    9 Pkts.
+    expected throughput: unknown
 
+c2:44:2f:f3:3c:22  -57 dBm / -109 dBm (SNR 52)  10 ms ago
+    RX: 12.0 MBit/s                                   17 Pkts.
+    TX: 12.0 MBit/s                                    5 Pkts.
+    expected throughput: unknown
+
+4. internet on the AP works. (I am able to ping google.com)
+
+## Firmware and OS this problem occurs
+- ath10k + 18.06.2 = yes, there is this problem
+- ath10k + snapshot = yes, there is this problem
+- ath10k-ct + 18.06.2 = yes, similar problem occurs
+(https://github.com/greearb/ath10k-ct/issues/82)
+- ath10k-ct + snapshot = no, works fine
+
+## OpenWRT info
+
+### Release
+DISTRIB_ID='OpenWrt'
+DISTRIB_RELEASE='SNAPSHOT'
+DISTRIB_REVISION='r9753-6df5ab89cf'
+DISTRIB_TARGET='ar71xx/generic'
+DISTRIB_ARCH='mips_24kc'
+DISTRIB_DESCRIPTION='OpenWrt SNAPSHOT r9753-6df5ab89cf'
+DISTRIB_TAINTS='no-all'
+
+### Logs
+Include:
+- Full list of OPKGs installed: 2_opkg_installed-txt
+- Logs up to the point of crash: 3_ath10k_crash-txt
+- Logs after the crash and trying to reconnect: 4_after_crash_reconnect-txt
+
+https://gist.github.com/ironpillow/96ce9173721163a8c8c93113b2a677d7
+
+### More logs
+I noticed that the some devices stay connected :man_shrugging: and
+when these connected devices make a dns request, the request is
+reaching the DNS server but the AP is not receiving response.
+
+I ran ping on *one device* and captured packets on AP (two interfaces):
+- tcpdump -i wlan0-ap
+- tcpdump -i br-lan
+
+ping google.com:
+https://gist.github.com/ironpillow/50cb0e2010ac5bc9acc7abc7e20ab910
+ping 8.8.8.8: https://gist.github.com/ironpillow/97cb3dd6eb8e9d028a8231f142fae01f
+
+Packets are not reaching wifi wlan0-ap interface.
+
+I am happy to run more tests.
+
+Any advice?
 
 _______________________________________________
 ath10k mailing list
