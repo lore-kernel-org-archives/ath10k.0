@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [208.74.158.174] (helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAnHK-00059x-CT
- for ath10k@lists.infradead.org; Mon, 01 Apr 2019 03:06:32 +0000
-Subject: Re: QCA9984 all devices being de-authenticated and unable to
- re-connect
-References: <CAEUausqyscU3yt-f-5XjnpHPiLHN7QJ_96sA1pMfB4V459Wb+Q@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <b75d752f-dc9e-a2a2-ac57-ae2a4716f0dc@candelatech.com>
-Date: Sun, 31 Mar 2019 20:06:27 -0700
+Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hAqAU-0002bX-AT
+ for ath10k@lists.infradead.org; Mon, 01 Apr 2019 06:11:40 +0000
+Subject: RE: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
+From: Wen Gong <wgong@qti.qualcomm.com>
+Date: Mon, 1 Apr 2019 06:11:31 +0000
+Message-ID: <02904ba8682441e1a89668c1345cbec9@aptaiexm02f.ap.qualcomm.com>
+References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
+ <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
+ <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
+ <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
+In-Reply-To: <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <CAEUausqyscU3yt-f-5XjnpHPiLHN7QJ_96sA1pMfB4V459Wb+Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,113 +22,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carlito Nueno <carlitonueno@gmail.com>, ath10k@lists.infradead.org
+To: =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-Hello,
-
-You could try using the ath10k-ct firmware that does NOT work for you (18.06.2) in
-the latest snapshot.  If problem still happens, then it is firmware related,
-and I can then build you a series of images so you can do a bisect to find what
-commit fixes the issue if you really want to know what is the fix.
-
-Otherwise, maybe something else fixed the problem.  For what it is worth, we
-have regularly done 64+ stations connected to our ath10k firmware/driver
-for years.
-
-Thanks,
-Ben
-
-On 03/29/2019 07:02 PM, Carlito Nueno wrote:
-> Hi all,
->
-> I am using:
->
-> ath10k-firmware-qca9984 - 2018-12-16-211de167-1
-> kmod-ath10k - 4.14.109+4.19.23-1-5
->
-> ## Problem
-> I am able to associate and authenticate many clients. Max I tested was
-> 15 clients.
-> But when more than 4 clients start to play video stream (youtube,
-> twitch, netflix):
->
-> 1. all the clients loose internet connectivity
-> 2. all of them are _de-authenticated_
->
-> 3. when trying to reconnect, they connect but are _disassociated_ immediately.
->
-> c2:44:2f:f3:3c:22  -64 dBm / -109 dBm (SNR 45)  40 ms ago
->     RX: 200.0 MBit/s, VHT-MCS 9, 40MHz, VHT-NSS 1        48 Pkts.
->     TX: 12.0 MBit/s                                    9 Pkts.
->     expected throughput: unknown
->
-> c2:44:2f:f3:3c:22  -57 dBm / -109 dBm (SNR 52)  10 ms ago
->     RX: 12.0 MBit/s                                   17 Pkts.
->     TX: 12.0 MBit/s                                    5 Pkts.
->     expected throughput: unknown
->
-> 4. internet on the AP works. (I am able to ping google.com)
->
-> ## Firmware and OS this problem occurs
-> - ath10k + 18.06.2 = yes, there is this problem
-> - ath10k + snapshot = yes, there is this problem
-> - ath10k-ct + 18.06.2 = yes, similar problem occurs
-> (https://github.com/greearb/ath10k-ct/issues/82)
-> - ath10k-ct + snapshot = no, works fine
->
-> ## OpenWRT info
->
-> ### Release
-> DISTRIB_ID='OpenWrt'
-> DISTRIB_RELEASE='SNAPSHOT'
-> DISTRIB_REVISION='r9753-6df5ab89cf'
-> DISTRIB_TARGET='ar71xx/generic'
-> DISTRIB_ARCH='mips_24kc'
-> DISTRIB_DESCRIPTION='OpenWrt SNAPSHOT r9753-6df5ab89cf'
-> DISTRIB_TAINTS='no-all'
->
-> ### Logs
-> Include:
-> - Full list of OPKGs installed: 2_opkg_installed-txt
-> - Logs up to the point of crash: 3_ath10k_crash-txt
-> - Logs after the crash and trying to reconnect: 4_after_crash_reconnect-txt
->
-> https://gist.github.com/ironpillow/96ce9173721163a8c8c93113b2a677d7
->
-> ### More logs
-> I noticed that the some devices stay connected :man_shrugging: and
-> when these connected devices make a dns request, the request is
-> reaching the DNS server but the AP is not receiving response.
->
-> I ran ping on *one device* and captured packets on AP (two interfaces):
-> - tcpdump -i wlan0-ap
-> - tcpdump -i br-lan
->
-> ping google.com:
-> https://gist.github.com/ironpillow/50cb0e2010ac5bc9acc7abc7e20ab910
-> ping 8.8.8.8: https://gist.github.com/ironpillow/97cb3dd6eb8e9d028a8231f142fae01f
->
-> Packets are not reaching wifi wlan0-ap interface.
->
-> I am happy to run more tests.
->
-> Any advice?
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaWNoYcWCIEthemlvciA8a2F6
+aWtjekBnbWFpbC5jb20+DQo+IFNlbnQ6IE1vbmRheSwgSmFudWFyeSA3LCAyMDE5IDQ6MzYgUE0N
+Cj4gVG86IFdlbiBHb25nIDx3Z29uZ0BxdGkucXVhbGNvbW0uY29tPg0KPiBDYzogV2VuIEdvbmcg
+PHdnb25nQGNvZGVhdXJvcmEub3JnPjsgbGludXgtd2lyZWxlc3MgPGxpbnV4LQ0KPiB3aXJlbGVz
+c0B2Z2VyLmtlcm5lbC5vcmc+OyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0
+OiBbRVhUXSBSZTogW1BBVENIXSBhdGgxMGs6IFJlbW92ZSBBVEgxMEtfU1RBVEVfUkVTVEFSVEVE
+IGluDQo+IHNpbXVsYXRlIGZ3IGNyYXNoDQo+IFRoYXQncyBhY3R1YWxseSBhIGZlYXR1cmUsIG5v
+dCBhIGJ1Zy4gSWYgZmlybXdhcmUgY3Jhc2hlcyB3aGlsZSBkcml2ZXINCj4gaXMgcmVzdGFydGlu
+ZyBhZnRlciBhIGNyYXNoIHRoZW4gaXRzIGxpa2VseSBnb2luZyB0byBmYWlsIGFnYWluIGFuZA0K
+PiBhZ2FpbiBjYXVzaW5nIGEgY3Jhc2gtcmVzdGFydCBsb29wIHdoaWNoIGNhbiBhZmZlY3Qgc3lz
+dGVtIHBlcmZvcm1hbmNlDQo+IGFuZCByZXNwb25zaXZlbmVzcy4gSXQncyBiZXR0ZXIgdG8gZ2l2
+ZSB1cCBhbmQgbGV0IHRoZSBzeXN0ZW0gYWRtaW4NCj4gdGFrZSBvdmVyLg0KPiANCj4gSWYgaXQn
+cyBzdGlsbCBib3RoZXJpbmcgeW91IHRoZW4gcGxlYXNlIGNvbnNpZGVyIGEgY3Jhc2ggY291bnRl
+cg0KPiB0aHJlc2hvbGQgc28gdGhhdCwgZS5nLiBhZnRlciA1IGNyYXNoLXdoaWxlLXJlc3RhcnRp
+bmcgaXQncyBnb2luZyB0bw0KPiBnaXZlIHVwLiBIb3dldmVyIEkgZG91YnQgaXQncyB3b3J0aCB0
+aGUgZWZmb3J0LiBNeSBleHBlcmllbmNlIHRlbGxzIG1lDQo+IGZpcm13YXJlIGNyYXNoZXMgZHVy
+aW5nIHJlY292ZXJ5IGFyZSByYXJlbHksIGlmIGF0IGFsbCwgdHJhbnNpZW50Lg0KPiANCj4gVGhl
+IHNpbXVsYXRlZCBmdyBjcmFzaCBpcyBub3QgcmVwcmVzZW50YXRpdmUgaGVyZS4gSXQncyBhIG1l
+cmUgdG9vbCB0bw0KPiB0ZXN0IGRyaXZlciBjb2RlLg0KPiANCkhpIE1pY2hhbCwNClRoZXJlIGhh
+dmUgYSBzdHJlc3MgdGVzdCBjYXNlIGZvciB0aGUgc2ltdWxhdGUgZncgY3Jhc2gsIGl0IHdpbGwg
+c2ltdWxhdGUgZncgY3Jhc2gNCmluIGEgdmVyeSBzaG9ydCB0aW1lIGZvciBlYWNoIHRlc3QsIHRo
+aXMgd2lsbCB0cmlnZ2VyIHRoZSBzdHJlc3MgdGVzdCBmYWlsLg0KVGhlIHNpbXVsYXRlIGZ3IGNy
+YXNoIHByb2Nlc3Mgc2hvdWxkIG5vdCBiZSBydW4gcGFyYWxsZWwsIGFmdGVyIHRoaXMgcGF0Y2gs
+IHRoZQ0KU3RyZXNzIHRlc3QgY2FzZSB3aWxsIHBhc3MuDQo+IA0KPiBNaWNoYcWCDQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
