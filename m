@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-f65.google.com ([209.85.167.65])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAulR-0002EZ-8f
- for ath10k@lists.infradead.org; Mon, 01 Apr 2019 11:06:07 +0000
-Received: by mail-lf1-f65.google.com with SMTP id a6so5974799lfl.5
- for <ath10k@lists.infradead.org>; Mon, 01 Apr 2019 04:06:03 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH] ath10k: remove iteration in wake_tx_queue
-In-Reply-To: <20190327162906.6010-1-erik.stromdahl@gmail.com>
-References: <20190327162906.6010-1-erik.stromdahl@gmail.com>
-Date: Mon, 01 Apr 2019 13:05:56 +0200
-Message-ID: <87bm1qq92j.fsf@toke.dk>
+ id 1hAvsa-000420-Ff
+ for ath10k@lists.infradead.org; Mon, 01 Apr 2019 12:17:33 +0000
 MIME-Version: 1.0
+Date: Mon, 01 Apr 2019 20:17:28 +0800
+From: Yibo Zhao <yiboz@codeaurora.org>
+Subject: Re: [PATCH] ath10k: remove iteration in wake_tx_queue
+In-Reply-To: <fd76296d-e88e-1dbd-b3d2-e9e7edc7f49d@gmail.com>
+References: <20190327162906.6010-1-erik.stromdahl@gmail.com>
+ <ba7a88e5-10ff-2ec2-feee-6d4adf472833@bowerswilkins.com>
+ <fd76296d-e88e-1dbd-b3d2-e9e7edc7f49d@gmail.com>
+Message-ID: <07f403379ca955f2867b29d8f6a2e457@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +20,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: yiboz@codeaurora.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: linux-wireless-owner@vger.kernel.org, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Peter Oh <peter.oh@bowerswilkins.com>
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+On 2019-03-29 15:47, Erik Stromdahl wrote:
+> On 3/27/19 6:49 PM, Peter Oh wrote:
+>> 
+>> 
+>> On 03/27/2019 09:29 AM, Erik Stromdahl wrote:
+>>> Iterating the TX queue and thereby dequeuing all available packets in 
+>>> the
+>>> queue could result in performance penalties on some SMP systems.
+>>> 
+>> Please share the test results and numbers you've run to help others
+>> thoughts.
+>> 
+> 
+> I haven't run any tests with ath10k PCIe, but Yibo Zhao had noticed a 
+> 10%
+> degradation without this patch.
+> 
+> Yibo:
+> Can you provide iperf results etc. that shows the performance gain?
 
-> Iterating the TX queue and thereby dequeuing all available packets in the
-> queue could result in performance penalties on some SMP systems.
->
-> The reason for this is most likely that the per-ac lock (active_txq_lock)
-> in mac80211 will be held by the CPU iterating the current queue.
->
-> This will lock up other CPUs trying to push new messages on the TX
-> queue.
->
-> Instead of iterating the queue we fetch just one packet at the time,
-> resulting in minimal starvation of the other CPUs.
+My tests are based on ixchariot with cabled setup(two-core AP system).
+WDS mode--10% deviation:
+With previous change: UDP DL-1246 Mbps
+W/O previous change:  UDP DL-987 Mbps
 
-Did you test this with Felix' patches reducing the time the lock is held
-in mac80211?
+Normal mode:
+With previous change: UDP DL-1380 Mbps
+W/O previous change:  UDP DL-1310 Mbps
 
--Toke
+Also attached the aqm status.
+
+With previous change:
+
+tid ac backlog-bytes backlog-packets new-flows drops marks overlimit 
+collisions tx-bytes tx-packets flags
+0 2 0 0 5342229 0 0 0 0 3867657029 5342229 0x0(RUN)
+1 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+2 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+3 2 0 0 0 0 0 0 0 0 0 0x0(RUN)
+4 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+5 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+6 0 0 0 2 0 0 0 0 144 2 0x0(RUN)
+7 0 0 0 2 0 0 0 0 282 2 0x0(RUN)
+8 2 0 0 0 0 0 0 0 0 0 0x0(RUN)
+9 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+10 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+11 2 0 0 0 0 0 0 0 0 0 0x0(RUN)
+12 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+13 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+14 0 0 0 0 0 0 0 0 0 0 0x0(RUN)
+15 0 0 0 0 0 0 0 0 0 0 0x0(RUN)
+
+we see no difference between tx-packets and new-flows.
+
+W/O previous change:
+
+tid ac backlog-bytes backlog-packets new-flows drops marks overlimit 
+collisions tx-bytes tx-packets flags
+0 2 0 0 2233059 3 0 9236 12 1159661783 6380867 0x0(RUN)
+1 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+2 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+3 2 0 0 0 0 0 0 0 0 0 0x0(RUN)
+4 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+5 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+6 0 0 0 1 0 0 0 0 144 2 0x0(RUN)
+7 0 0 0 1 0 0 0 0 282 2 0x0(RUN)
+8 2 0 0 0 0 0 0 0 0 0 0x0(RUN)
+9 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+10 3 0 0 0 0 0 0 0 0 0 0x0(RUN)
+11 2 0 0 0 0 0 0 0 0 0 0x0(RUN)
+12 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+13 1 0 0 0 0 0 0 0 0 0 0x0(RUN)
+14 0 0 0 0 0 0 0 0 0 0 0x0(RUN)
+15 0 0 0 0 0 0 0 0 0 0 0x0(RUN)
+
+new-flows are roughly one-third of the total tx-packets.
+
+> 
+> --
+> Erik
+
+-- 
+Yibo
 
 _______________________________________________
 ath10k mailing list
