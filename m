@@ -1,24 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hArul-0006DY-0o
- for ath10k@lists.infradead.org; Mon, 01 Apr 2019 08:03:33 +0000
-Received: from mail-pg1-f199.google.com ([209.85.215.199])
- by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
- (Exim 4.76) (envelope-from <kai.heng.feng@canonical.com>)
- id 1hAruh-00066k-BF
- for ath10k@lists.infradead.org; Mon, 01 Apr 2019 08:03:27 +0000
-Received: by mail-pg1-f199.google.com with SMTP id h14so2954046pgn.23
- for <ath10k@lists.infradead.org>; Mon, 01 Apr 2019 01:03:27 -0700 (PDT)
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+ id 1hAsRX-0001EO-PD
+ for ath10k@lists.infradead.org; Mon, 01 Apr 2019 08:37:25 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: Ath10k on XPS 9380 regularly disconnects
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <8ACA9157-127E-43B8-ADD0-28D9EBBCEEB0@canonical.com>
-Date: Mon, 1 Apr 2019 16:03:21 +0800
-Message-Id: <BD07B681-0083-4537-87D2-099F7152C51F@canonical.com>
 References: <042C2903-585B-47BA-8657-8819D225EEA8@canonical.com>
  <87pnqknonc.fsf@codeaurora.org>
  <8ACA9157-127E-43B8-ADD0-28D9EBBCEEB0@canonical.com>
+ <BD07B681-0083-4537-87D2-099F7152C51F@canonical.com>
+Date: Mon, 01 Apr 2019 11:37:17 +0300
+In-Reply-To: <BD07B681-0083-4537-87D2-099F7152C51F@canonical.com> (Kai-Heng
+ Feng's message of "Mon, 1 Apr 2019 16:03:21 +0800")
+Message-ID: <877ece2kaq.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"; DelSp="yes"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, Anthony Wong <anthony.wong@canonical.com>, ath10k@lists.infradead.org, Stephan Fabel <stephan.fabel@canonical.com>
 
-SGkgS2FsbGUsCgphdCAyMzo0MywgS2FpLUhlbmcgRmVuZyA8a2FpLmhlbmcuZmVuZ0BjYW5vbmlj
-YWwuY29tPiB3cm90ZToKCj4gYXQgMDE6MDUsIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEu
-b3JnPiB3cm90ZToKPgo+PiArIGF0aDEwayBsaXN0Cj4+IC0gbmV0ZGV2ICYgbGludXgta2VybmVs
-Cj4+Cj4+IEthaS1IZW5nIEZlbmcgPGthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNvbT4gd3JpdGVz
-Ogo+Pgo+Pj4gVGhlcmXigJlzIGFuIGlzc3VlIHRoYXQgYXRoMTBrIGRpc2Nvbm5lY3RzIGF0IHJl
-Z3VsYXIgYmFzaXMgWzFdLCBvbgo+Pj4gTGludXgga2VybmVsIDQuMTguCj4+Pgo+Pj4gVW5mb3J0
-dW5hdGVseSBJIGNhbuKAmXQgcmVwcm9kdWNlIHRoZSBpc3N1ZSBvbiBYUFMgOTM4MCBhdCBteSBo
-YW5kLgo+Pj4KPj4+IElzIHRoZXJlIGFscmVhZHkgYSBmaXggaW4gdXBzdHJlYW0ga2VybmVsPwo+
-Pgo+PiBJJ20gbm90IGF3YXJlIG9mIGFueSBmaXhlcyByZWxhdGVkIHRvIHRoaXMuIElzIHRoaXMg
-YSByZWdyZXNzaW9uPyBJbgo+PiBvdGhlciB3b3JkcywgaXMgdGhlcmUgYSBrbm93biB2ZXJzaW9u
-IG9mIGF0aDEwayBvciBmaXJtd2FyZSB3aGljaCBkaWRuJ3QKPj4gaGF2ZSB0aGlzIHByb2JsZW0/
-Cj4KPiBXZSBrbm93IHRoaXMgaXNzdWUgaGFwcGVuIG9uIGtlcm5lbCB2NC4xNSBhbmQgdjQuMTgs
-IGJ1dCBrZXJuZWxzIGJlZm9yZSAgCj4gdjQuMTUgd2VyZSBub3QgdGVzdGVkLgo+Cj4gVGhlIGlz
-c3VlIGhhcHBlbnMgd2l0aCBHb29nbGUgTWVzaCwgd2hpY2ggaGFzIDgwMi4xMWFjIGNhcGFiaWxp
-dHkuCj4KPiBJIGhhdmVu4oCZdCBiZWVuIGFibGUgdG8gcmVwcm9kdWNlIHRoZSBpc3N1ZSB3aXRo
-IGFuIDgwMi4xMW4gcm91dGVyICh5ZXQpLgoKRG8gSSBuZWVkIGEgc3BlY2lhbCBXaUZpIHJvdXRl
-ciB3aGljaCBzdXBwb3J0IFJYIHJlb3JkZXIgdG8gcmVwcm9kdWNlIHRoZSAgCmlzc3VlPwoKSXQn
-cyBpbnRyb2R1Y2VkIGJ5IGNvbW1pdCBjNTQ1MDcwZTQwNGIgKOKAnGF0aDEwazogaW1wbGVtZW50
-IHJ4IHJlb3JkZXIgIApzdXBwb3J04oCdKS4KCkthaS1IZW5nCgo+Cj4gS2FpLUhlbmcKPgo+Pj4g
-WzFdIGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvMTgxODg4MQo+Pgo+PiBSZWxldmFu
-dCBpbmZvcm1hdGlvbiBmcm9tIGRtZXNnOgo+Pgo+PiBbICAgMTkuMzQ2ODEwXSBhdGgxMGtfcGNp
-IDAwMDA6MDI6MDAuMDogcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCAgCj4+IGNoaXBf
-aWQgMHgwMDM0MGFmZiBzdWIgMWE1NjoxNDNhCj4+IFsgICAxOS4zNDY4MTJdIGF0aDEwa19wY2kg
-MDAwMDowMjowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxICAKPj4gdHJhY2luZyAxIGRm
-cyAwIHRlc3Rtb2RlIDAKPj4gWyAgIDE5LjM0NzEzNl0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6
-IGZpcm13YXJlIHZlciAgCj4+IFdMQU4uUk0uNC40LjEtMDAxMzItUUNBUk1TV1AtMSBhcGkgNiBm
-ZWF0dXJlcyB3b3dsYW4saWdub3JlLW90cCxtZnAgIAo+PiBjcmMzMiA3OWY0ZGI4Ngo+Pgo+PiBb
-Li4uXQo+Pgo+PiBbNzc0NTEuMzM4MzM5XSBXQVJOSU5HOiBDUFU6IDQgUElEOiAwIGF0ICAKPj4g
-L2J1aWxkL2xpbnV4LWh3ZS05S0owN3EvbGludXgtaHdlLTQuMTguMC9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jOjQ2ICAKPj4gYXRoMTBrX2h0dF9yeF9wb3BfcGFkZHIu
-aXNyYS4yOSsweGQ5LzB4ZjAgW2F0aDEwa19jb3JlXQo+Pgo+PiBbLi4uXQo+Pgo+PiBbODEyNTQu
-ODU3NjY3XSBXQVJOSU5HOiBDUFU6IDEgUElEOiAwIGF0ICAKPj4gL2J1aWxkL2xpbnV4LWh3ZS05
-S0owN3EvbGludXgtaHdlLTQuMTguMC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0
-dF9yeC5jOjQ2ICAKPj4gYXRoMTBrX2h0dF9yeF9wb3BfcGFkZHIuaXNyYS4yOSsweGQ5LzB4ZjAg
-W2F0aDEwa19jb3JlXQo+Pgo+PiBbLi4uXQo+Pgo+PiBbODEzOTAuMTg2MTY3XSBXQVJOSU5HOiBD
-UFU6IDIgUElEOiAwIGF0ICAKPj4gL2J1aWxkL2xpbnV4LWh3ZS05S0owN3EvbGludXgtaHdlLTQu
-MTguMC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jOjQ2ICAKPj4gYXRo
-MTBrX2h0dF9yeF9wb3BfcGFkZHIuaXNyYS4yOSsweGQ5LzB4ZjAgW2F0aDEwa19jb3JlXQo+Pgo+
-PiAtLSAKPj4gS2FsbGUgVmFsbwoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+S2FpLUhlbmcgRmVuZyA8a2FpLmhlbmcuZmVuZ0BjYW5vbmljYWwuY29tPiB3cml0ZXM6Cgo+IGF0
+IDIzOjQzLCBLYWktSGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+IHdyb3Rl
+Ogo+Cj4+IGF0IDAxOjA1LCBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz4gd3JvdGU6
+Cj4+Cj4+PiArIGF0aDEwayBsaXN0Cj4+PiAtIG5ldGRldiAmIGxpbnV4LWtlcm5lbAo+Pj4KPj4+
+IEthaS1IZW5nIEZlbmcgPGthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNvbT4gd3JpdGVzOgo+Pj4K
+Pj4+PiBUaGVyZeKAmXMgYW4gaXNzdWUgdGhhdCBhdGgxMGsgZGlzY29ubmVjdHMgYXQgcmVndWxh
+ciBiYXNpcyBbMV0sIG9uCj4+Pj4gTGludXgga2VybmVsIDQuMTguCj4+Pj4KPj4+PiBVbmZvcnR1
+bmF0ZWx5IEkgY2Fu4oCZdCByZXByb2R1Y2UgdGhlIGlzc3VlIG9uIFhQUyA5MzgwIGF0IG15IGhh
+bmQuCj4+Pj4KPj4+PiBJcyB0aGVyZSBhbHJlYWR5IGEgZml4IGluIHVwc3RyZWFtIGtlcm5lbD8K
+Pj4+Cj4+PiBJJ20gbm90IGF3YXJlIG9mIGFueSBmaXhlcyByZWxhdGVkIHRvIHRoaXMuIElzIHRo
+aXMgYSByZWdyZXNzaW9uPyBJbgo+Pj4gb3RoZXIgd29yZHMsIGlzIHRoZXJlIGEga25vd24gdmVy
+c2lvbiBvZiBhdGgxMGsgb3IgZmlybXdhcmUgd2hpY2ggZGlkbid0Cj4+PiBoYXZlIHRoaXMgcHJv
+YmxlbT8KPj4KPj4gV2Uga25vdyB0aGlzIGlzc3VlIGhhcHBlbiBvbiBrZXJuZWwgdjQuMTUgYW5k
+IHY0LjE4LCBidXQga2VybmVscwo+PiBiZWZvcmUgdjQuMTUgd2VyZSBub3QgdGVzdGVkLgo+Pgo+
+PiBUaGUgaXNzdWUgaGFwcGVucyB3aXRoIEdvb2dsZSBNZXNoLCB3aGljaCBoYXMgODAyLjExYWMg
+Y2FwYWJpbGl0eS4KPj4KPj4gSSBoYXZlbuKAmXQgYmVlbiBhYmxlIHRvIHJlcHJvZHVjZSB0aGUg
+aXNzdWUgd2l0aCBhbiA4MDIuMTFuIHJvdXRlciAoeWV0KS4KPgo+IERvIEkgbmVlZCBhIHNwZWNp
+YWwgV2lGaSByb3V0ZXIgd2hpY2ggc3VwcG9ydCBSWCByZW9yZGVyIHRvIHJlcHJvZHVjZQo+IHRo
+ZSBpc3N1ZT8KPgo+IEl0J3MgaW50cm9kdWNlZCBieSBjb21taXQgYzU0NTA3MGU0MDRiICjigJxh
+dGgxMGs6IGltcGxlbWVudCByeCByZW9yZGVyCj4gc3VwcG9ydOKAnSkuCgpJIGRvbid0IHVuZGVy
+c3RhbmQgeW91ciBxdWVzdGlvbiBhdCBhbGwuCgotLSAKS2FsbGUgVmFsbwoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
