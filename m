@@ -1,12 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBIkt-0000fW-Ng
- for ath10k@lists.infradead.org; Tue, 02 Apr 2019 12:43:08 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Fix encoding for protected management frames
-Date: Tue,  2 Apr 2019 18:12:50 +0530
-Message-Id: <1554208970-16527-1-git-send-email-pillair@codeaurora.org>
+ id 1hBJ0Q-0000RP-Vv
+ for ath10k@lists.infradead.org; Tue, 02 Apr 2019 12:59:15 +0000
+Received: by mail-it1-x141.google.com with SMTP id s3so4876463itk.1
+ for <ath10k@lists.infradead.org>; Tue, 02 Apr 2019 05:59:10 -0700 (PDT)
+Date: Tue, 2 Apr 2019 08:59:08 -0400
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: [PATCH v4 1/3] cfg80211: Add support to set tx power for a
+ station associated
+Message-ID: <20190402125908.GD32168@localhost>
+References: <1553856501-21492-1-git-send-email-bpothuno@codeaurora.org>
+ <20190401204611.GA8910@localhost>
+ <cd497042d164c322bc06c4cfbf26435a@codeaurora.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <cd497042d164c322bc06c4cfbf26435a@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,51 +24,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
+Cc: johannes@sipsolutions.net, Ashok Raj Nagarajan <arnagara@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Currently the protected management frames are
-not appended with the MIC_LEN which results in
-the protected management frames being encoded
-incorrectly.
+On Tue, Apr 02, 2019 at 12:00:29PM +0530, Balaji Pothunoori wrote:
+> > Should this really dBm?  It's a bit asymmetric for WIPHY_TX_POWER_LEVEL
+> > to
+> > use mBm and this to use dBm, and I might want to adjust in half-dB steps
+> > if
+> > supported by hardware.  Also allocating an s16 is a bit much for dBm.
+> 
+> if user will send mBm value then driver has to convert to dBm because
+> firmware will expect the value in dBm.
+> Please refer johannes comments on following patch " [EXT] Re: [PATCH] iw:
+> Add support for controlling tx power for per station"
+> for the reason why we opted dBm.
 
-Add the extra space at the end of the protected
-management frames to fix this encoding error for
-the protected management frames.
+The quote was:
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> I would prefer if this was *dBm*, rather than mBm, and be allowed to
+> take float values, i.e. this would become "limit 20".
 
-Fixes: 1807da49733e "ath10k: wmi: add management tx by reference support over wmi"
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I read that as "iw should convert fractional dBm to mBm" not "kernel should
+only support dBm".
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 582fb11..02709fc 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2840,8 +2840,10 @@ ath10k_wmi_tlv_op_gen_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 	if ((ieee80211_is_action(hdr->frame_control) ||
- 	     ieee80211_is_deauth(hdr->frame_control) ||
- 	     ieee80211_is_disassoc(hdr->frame_control)) &&
--	     ieee80211_has_protected(hdr->frame_control))
-+	     ieee80211_has_protected(hdr->frame_control)) {
-+		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
- 		buf_len += IEEE80211_CCMP_MIC_LEN;
-+	}
- 
- 	buf_len = min_t(u32, buf_len, WMI_TLV_MGMT_TX_FRAME_MAX_LEN);
- 	buf_len = round_up(buf_len, 4);
+ath10k might only support dBm, fine -- but even ath5k could support
+per-packet transmit power in 0.5 dB steps, so this is already limiting
+applicability to existing hardware.
+
 -- 
-2.7.4
-
+Bob Copeland %% https://bobcopeland.com/
 
 _______________________________________________
 ath10k mailing list
