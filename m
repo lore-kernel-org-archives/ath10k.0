@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway34.websitewelcome.com ([192.185.149.222])
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBlDc-0002gT-Hk
- for ath10k@lists.infradead.org; Wed, 03 Apr 2019 19:06:41 +0000
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
- by gateway34.websitewelcome.com (Postfix) with ESMTP id 3135B479BB4
- for <ath10k@lists.infradead.org>; Wed,  3 Apr 2019 14:06:38 -0500 (CDT)
-Date: Wed, 3 Apr 2019 14:06:36 -0500
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] ath10k: coredump: use struct_size() helper
-Message-ID: <20190403190636.GA9827@embeddedor>
+ id 1hBm0j-0007ef-3h
+ for ath10k@lists.infradead.org; Wed, 03 Apr 2019 19:57:26 +0000
+Received: by mail-pg1-x544.google.com with SMTP id g8so17598pgf.2
+ for <ath10k@lists.infradead.org>; Wed, 03 Apr 2019 12:57:24 -0700 (PDT)
+Date: Wed, 3 Apr 2019 12:57:20 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: Drop WARN_ON()s that always trigger during
+ system resume
+Message-ID: <20190403195718.GA74723@google.com>
+References: <2884043.Jv1Mn93hE8@aspire.rjw.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <2884043.Jv1Mn93hE8@aspire.rjw.lan>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +26,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Claire Chang <tientzu@google.com>, Sriram R <srirrama@codeaurora.org>, Linux PM <linux-pm@vger.kernel.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Todd Brandt <todd.e.brandt@intel.com>, Kalle Valo <kvalo@codeaurora.org>
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes, in particular in the
-context in which this code is being used.
++ Sriram, Pradeep, Claire
 
-So, replace code of the following form:
+On Sun, Mar 03, 2019 at 06:24:33PM +0100, Rafael J. Wysocki wrote:
 
-sizeof(*ce_hdr) + CE_COUNT * sizeof(ce_hdr->entries[0])
+Ooh, exactly 1 month ago!
 
-with:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> ath10k_mac_vif_chan() always returns an error for the given vif
+> during system-wide resume which reliably triggers two WARN_ON()s
+> in ath10k_bss_info_changed() and they are not particularly
+> useful in that code path, so drop them.
+> 
 
-struct_size(ce_hdr, entries, CE_COUNT)
+Particularly, when WOWLAN isn't enabled, we get called during resume via
+ieee80211_reconfig(), where we're not associated and don't have any
+channel contexts. AFAICT, we shouldn't need to communicate anything in
+particular to the firmware here, and so failing the 'if' is definitely
+not worth WARN-ing about.
 
-This code was detected with the help of Coccinelle.
+I'd love to see this get applied with:
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/net/wireless/ath/ath10k/coredump.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Fixes: cd93b83ad927 ("ath10k: support for multicast rate control")
+Fixes: f279294e9ee2 ("ath10k: add support for configuring management packet rate")
 
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index 33838d9c1cb6..7825b6a1b104 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -1192,8 +1192,8 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
- 	if (test_bit(ATH10K_FW_CRASH_DUMP_CE_DATA, &ath10k_coredump_mask)) {
- 		dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
- 		dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_CE_DATA);
--		dump_tlv->tlv_len = cpu_to_le32(sizeof(*ce_hdr) +
--						CE_COUNT * sizeof(ce_hdr->entries[0]));
-+		dump_tlv->tlv_len = cpu_to_le32(struct_size(ce_hdr, entries,
-+							    CE_COUNT));
- 		ce_hdr = (struct ath10k_ce_crash_hdr *)(dump_tlv->tlv_data);
- 		ce_hdr->ce_count = cpu_to_le32(CE_COUNT);
- 		memset(ce_hdr->reserved, 0, sizeof(ce_hdr->reserved));
--- 
-2.21.0
+and sent to stable. This has been bugging people since 4.19. Spurious
+WARN_ON()s can trigger reports to various crash trackers, and on some
+systems appear as user-visible warnings ("System problem detected").
 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Tested-by: Brian Norris <briannorris@chromium.org>
+
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Index: linux-pm/drivers/net/wireless/ath/ath10k/mac.c
+> ===================================================================
+> --- linux-pm.orig/drivers/net/wireless/ath/ath10k/mac.c
+> +++ linux-pm/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5705,7 +5705,7 @@ static void ath10k_bss_info_changed(stru
+>  	}
+>  
+>  	if (changed & BSS_CHANGED_MCAST_RATE &&
+> -	    !WARN_ON(ath10k_mac_vif_chan(arvif->vif, &def))) {
+> +	    !ath10k_mac_vif_chan(arvif->vif, &def)) {
+>  		band = def.chan->band;
+>  		rateidx = vif->bss_conf.mcast_rate[band] - 1;
+>  
+> @@ -5743,7 +5743,7 @@ static void ath10k_bss_info_changed(stru
+>  	}
+>  
+>  	if (changed & BSS_CHANGED_BASIC_RATES) {
+> -		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
+> +		if (ath10k_mac_vif_chan(vif, &def)) {
+>  			mutex_unlock(&ar->conf_mutex);
+>  			return;
+>  		}
+> 
 
 _______________________________________________
 ath10k mailing list
