@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBW9v-0005iN-BA
- for ath10k@lists.infradead.org; Wed, 03 Apr 2019 03:01:52 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: add peer id check in ath10k_peer_find_by_id
-Date: Wed,  3 Apr 2019 11:01:18 +0800
-Message-Id: <1554260478-4161-1-git-send-email-wgong@codeaurora.org>
+ id 1hBaEo-0007L9-C9
+ for ath10k@lists.infradead.org; Wed, 03 Apr 2019 07:23:11 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v2] ath10k: Report low ack rssi based on the reason code
+Date: Wed,  3 Apr 2019 12:53:01 +0530
+Message-Id: <1554276181-7879-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +21,129 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-For some SDIO chip, the peer id is 65535 for MPDU with error status,
-then test_bit will trigger buffer overflow for peer's memory, if kasan
-enabled, it will report error.
+Firmware sends peer sta kickout event to the driver
+along with the reason code for a particular peer.
 
-Add check for overflow the size of peer's peer_ids will avoid the buffer
-overflow access.
+Currently the sta kickout event is delivered to the
+upper layer without checking if the reason code is
+valid or not. This causes frequent disconnection of
+the STA.
 
-Call trace of kasan:
-dump_backtrace+0x0/0x2ec
-show_stack+0x20/0x2c
-__dump_stack+0x20/0x28
-dump_stack+0xc8/0xec
-print_address_description+0x74/0x240
-kasan_report+0x250/0x26c
-__asan_report_load8_noabort+0x20/0x2c
-ath10k_peer_find_by_id+0x180/0x1e4 [ath10k_core]
-ath10k_htt_t2h_msg_handler+0x100c/0x2fd4 [ath10k_core]
-ath10k_htt_htc_t2h_msg_handler+0x20/0x34 [ath10k_core]
-ath10k_sdio_irq_handler+0xcc8/0x1678 [ath10k_sdio]
-process_sdio_pending_irqs+0xec/0x370
-sdio_run_irqs+0x68/0xe4
-sdio_irq_work+0x1c/0x28
-process_one_work+0x3d8/0x8b0
-worker_thread+0x508/0x7cc
-kthread+0x24c/0x264
-ret_from_fork+0x10/0x18
+Report low ack rssi event to mac80211 only if the reason
+code is valid.
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/txrx.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes from v1:
+- Added reason code in tlv structure, so that it does not break non-tlv wmi event parsing.
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 +++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  5 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  9 ++++++---
+ drivers/net/wireless/ath/ath10k/wmi.h     | 11 +++++++++++
+ 4 files changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 23606b6..33de9e1 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -157,6 +157,9 @@ struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 582fb11..9d6ee92 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -876,7 +876,7 @@ static int ath10k_wmi_tlv_op_pull_peer_kick_ev(struct ath10k *ar,
+ 					       struct wmi_peer_kick_ev_arg *arg)
  {
- 	struct ath10k_peer *peer;
+ 	const void **tb;
+-	const struct wmi_peer_sta_kickout_event *ev;
++	const struct wmi_tlv_peer_sta_kickout_event *ev;
+ 	int ret;
  
-+	if (peer_id >= sizeof(peer->peer_ids) * BITS_PER_BYTE)
-+		return NULL;
+ 	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
+@@ -893,6 +893,8 @@ static int ath10k_wmi_tlv_op_pull_peer_kick_ev(struct ath10k *ar,
+ 	}
+ 
+ 	arg->mac_addr = ev->peer_macaddr.addr;
++	arg->reason = __le32_to_cpu(ev->reason);
++	arg->reason_code_valid = true;
+ 
+ 	kfree(tb);
+ 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 65e6aa5..be68ac6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1984,6 +1984,11 @@ struct wmi_tlv_diag_data_ev {
+ 	__le32 num_items;
+ } __packed;
+ 
++struct wmi_tlv_peer_sta_kickout_event {
++	struct wmi_mac_addr peer_macaddr;
++	__le32 reason;
++} __packed;
 +
- 	lockdep_assert_held(&ar->data_lock);
+ struct wmi_tlv_sta_keepalive_cmd {
+ 	__le32 vdev_id;
+ 	__le32 enabled;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 98a90e4..6603c31 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3428,9 +3428,6 @@ void ath10k_wmi_event_peer_sta_kickout(struct ath10k *ar, struct sk_buff *skb)
+ 		return;
+ 	}
  
- 	list_for_each_entry(peer, &ar->peers, list)
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event peer sta kickout %pM\n",
+-		   arg.mac_addr);
+-
+ 	rcu_read_lock();
+ 
+ 	sta = ieee80211_find_sta_by_ifaddr(ar->hw, arg.mac_addr, NULL);
+@@ -3440,6 +3437,12 @@ void ath10k_wmi_event_peer_sta_kickout(struct ath10k *ar, struct sk_buff *skb)
+ 		goto exit;
+ 	}
+ 
++	if (arg.reason_code_valid &&
++	    arg.reason == WMI_PEER_STA_KICKOUT_REASON_UNSPECIFIED)
++		goto exit;
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event peer sta kickout %pM reason code %d\n",
++		   arg.mac_addr, arg.reason);
+ 	ieee80211_report_low_ack(sta, 10);
+ 
+ exit:
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index e1c40bb..3ccd79e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6797,6 +6797,8 @@ struct wmi_vdev_start_ev_arg {
+ 
+ struct wmi_peer_kick_ev_arg {
+ 	const u8 *mac_addr;
++	u32 reason;
++	bool reason_code_valid;
+ };
+ 
+ struct wmi_swba_ev_arg {
+@@ -6887,6 +6889,15 @@ struct wmi_pdev_bss_chan_info_event {
+ 	__le32 reserved;
+ } __packed;
+ 
++enum wmi_peer_sta_kickout_reason {
++	WMI_PEER_STA_KICKOUT_REASON_UNSPECIFIED,
++	WMI_PEER_STA_KICKOUT_REASON_XRETRY,
++	WMI_PEER_STA_KICKOUT_REASON_INACTIVITY,
++	WMI_PEER_STA_KICKOUT_REASON_IBSS_DISCONNECT,
++	WMI_PEER_STA_KICKOUT_REASON_TDLS_DISCONNECT,
++	WMI_PEER_STA_KICKOUT_REASON_SA_QUERY_TIMEOUT,
++};
++
+ /* WOW structures */
+ enum wmi_wow_wakeup_event {
+ 	WOW_BMISS_EVENT = 0,
 -- 
-1.9.1
+2.7.4
 
 
 _______________________________________________
