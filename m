@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out.xnet.cz ([178.217.244.18])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCL5p-0005c8-S7
- for ath10k@lists.infradead.org; Fri, 05 Apr 2019 09:25:03 +0000
-Received: from meh.true.cz (meh.true.cz [108.61.167.218])
- (Authenticated sender: petr@true.cz)
- by smtp-out.xnet.cz (Postfix) with ESMTPSA id 6C3816DC9
- for <ath10k@lists.infradead.org>; Fri,  5 Apr 2019 11:24:59 +0200 (CEST)
-Received: from localhost (meh.true.cz [local])
- by meh.true.cz (OpenSMTPD) with ESMTPA id a44da3f4
- for <ath10k@lists.infradead.org>;
- Fri, 5 Apr 2019 11:24:57 +0200 (CEST)
-Date: Fri, 5 Apr 2019 11:24:57 +0200
-From: Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
-Subject: Kernel crash in skb_put caused by ath10k_htt_t2h_msg_handler
-Message-ID: <20190405092457.GE41661@meh.true.cz>
+ id 1hCLjr-0000Vv-Ky
+ for ath10k@lists.infradead.org; Fri, 05 Apr 2019 10:06:25 +0000
+From: Peter Jones <pjones@redhat.com>
+Subject: [PATCH] ath10k: Don't log a traceback on invalid event IDs.
+Date: Fri,  5 Apr 2019 12:05:08 +0200
+Message-Id: <20190405100508.12679-1-pjones@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +16,161 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Peter Jones <pjones@redhat.com>, "David S. Miller" <davem@davemloft.net>
 
-Hi,
+Very frequently upon resume from suspend, we see tracebacks like:
 
-I've just hit following crash on my TP Link Archer C7 v5 with QCA9880,
-running latest OpenWrt with 4.14.109 (4.19.23-1 backports) and qca988x-ct
-firmware:
+ath10k_pci 0000:02:00.0: unsupported HTC service id: 1536
+ath10k_pci 0000:02:00.0: Unknown eventid: 118809
+WARNING: CPU: 1 PID: 23135 at drivers/net/wireless/ath/ath10k/mac.c:5650 ath10k_bss_info_changed+0xe8e/0xfd0 [ath10k_core]
+Modules linked in: ...
+CPU: 1 PID: 23135 Comm: kworker/u16:54 Not tainted 4.20.15-200.fc29.x86_64 #1
+Hardware name: ...
+Workqueue: events_unbound async_run_entry_fn
+RIP: 0010:ath10k_bss_info_changed+0xe8e/0xfd0 [ath10k_core]
+Code: 89 c1 89 f2 4c 89 d7 48 c7 c6 60 7e ed c0 4c 89 4c 24 10 89 44 24 08 e8 e0 35 00 00 8b 44 24 08 4c 8b 4c 24 10 e9 22 f8 ff ff <0f> 0b e9 7a f4 ff ff 8b b3 70 01 00 00 89 f2 89 c1 48 c7 c6 20 7e
+RSP: 0018:ffffaba5456b7cc0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff8d9b612a33a0 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: 00000000fffffe01 RDI: ffffffffc0cca4ae
+RBP: 00000000020674ff R08: 0000000000200000 R09: 0000000000000000
+R10: ffff8d9a6d490700 R11: 0000000039a6c800 R12: ffff8d9b612a33a8
+R13: ffff8d9b4bd31580 R14: ffff8d9b4bd31580 R15: ffff8d9b612a3500
+FS:  0000000000000000(0000) GS:ffff8d9b66440000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000556cca653b66 CR3: 000000027920a001 CR4: 00000000003606e0
+Call Trace:
+ ? ath10k_conf_tx+0x7a/0x4b0 [ath10k_core]
+ ieee80211_bss_info_change_notify+0xab/0x1a0 [mac80211]
+ ieee80211_reconfig+0x66c/0x1300 [mac80211]
+ ? __switch_to_asm+0x34/0x70
+ ? __switch_to_asm+0x34/0x70
+ ? __switch_to_asm+0x40/0x70
+ wiphy_resume+0x7f/0x120 [cfg80211]
+ ? index_show+0x20/0x20 [cfg80211]
+ dpm_run_callback+0x59/0x150
+ device_resume+0xac/0x1f0
+ async_resume+0x19/0x30
+ async_run_entry_fn+0x39/0x160
+ process_one_work+0x1a1/0x3a0
+ worker_thread+0x30/0x380
+ ? process_one_work+0x3a0/0x3a0
+ kthread+0x112/0x130
+ ? kthread_create_on_node+0x60/0x60
+ ret_from_fork+0x35/0x40
+---[ end trace 0afe382792dba858 ]---
 
- skbuff: skb_over_panic: text:87622780 len:360 put:360 head:  (null) data:  (null) tail:0x168 end:0x0 dev:<NULL>
- Kernel bug detected[#1]:
- CPU: 0 PID: 0 Comm: swapper Not tainted 4.14.109 #0
- task: 804e5490 task.stack: 804e0000
- $ 0   : 00000000 00000001 0000006f 00000000
- $ 4   : 804ea7d8 804ea7d8 804f1a50 000085c8
- $ 8   : 00000000 00000000 00000007 00000000
- $12   : 000001c1 efec8fad 000001c0 00000000
- $16   : 00000000 87551bf8 87263054 00000416
- $20   : 875514e0 87c07dc0 87551bf8 00000000
- $24   : 00000002 80279994
- $28   : 804e0000 87c07d40 8765d994 802f4bd0
- Hi    : 00000000
- Lo    : ec4e4000
- epc   : 802f4bd0 skb_panic+0x58/0x5c
- ra    : 802f4bd0 skb_panic+0x58/0x5c
- Status: 1100dc03 KERNEL EXL IE
- Cause : 00800024 (ExcCode 09)
- PrId  : 00019750 (MIPS 74Kc)
- Modules linked in: ath9k ath9k_common ath9k_hw ath10k_pci ath10k_core ath mac80211 iptable_nat iptable_mangle iptable_filter ipt_REJECT ipt_MASQUERADE ip_tables cfg80211 xt_time xt_tcpudp xt_state xt_nat xt_multiport xt_mark xt_mac xt_limit xt_conntrack xt_comment xt_TCPMSS xt_REDIRECT xt_LOG xt_FLOWOFFLOAD xt_CT x_tables nf_reject_ipv4 nf_nat_redirect nf_nat_masquerade_ipv4 nf_conntrack_ipv4 nf_nat_ipv4 nf_nat nf_log_ipv4 nf_log_common nf_flow_table_hw nf_flow_table nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack compat ledtrig_usbport tun ehci_platform ehci_hcd gpio_button_hotplug usbcore nls_base usb_common  
- Process swapper (pid: 0, threadinfo=804e0000, task=804e5490, tls=00000000)
- Stack : 80501cc0 8041f040 87622780 00000168 00000168 00000000 00000000 00000168
-         00000000 804b209c 00001770 802f4c60 87490000 87649118 804fcbf4 00000900
-         01080020 87622780 00000900 875514e0 875578c4 804e0000 00000000 00000000
-         fffffffb 87c07dc4 87551cdc 804e0000 875514e0 804e0000 00000000 00000004
-         87263054 87263054 00000001 00000034 87465180 8755777c 87465b40 87660000
-         ...
- Call Trace:
- [<802f4bd0>] skb_panic+0x58/0x5c
- [<802f4c60>] skb_put+0x48/0x54
- [<87622780>] ath10k_htt_t2h_msg_handler+0x27e0/0x31dc [ath10k_core]
- [<8764901c>] ath10k_ce_rx_update_write_idx+0x9c/0xc4 [ath10k_core]
- Code: 00602825  0c02ce18  248433d4 <000c000d> 8c8200ac  8c88005c  8c8700a8  00451023  01054021
+These errors are completely transient, and the card goes back to working
+perfectly fine afterwards.  I suspect the driver is just reading an
+uninitialized buffer as the card comes back up.
 
- ---[ end trace 6b934e1b587e6bcd ]---
- Kernel panic - not syncing: Fatal exception in interrupt
- Rebooting in 3 seconds..
+In any case, there's no point in treating this as a major problem and
+logging a full register dump and a traceback; just logginng an INFO
+message saying that it happened is enough.  This patch does that.
 
-I've looked at the git log till 5.1-rc3 for htt_rx.c and ce.c, but couldn't
-find anything possibly related to this issue, so I'm wondering if this is known
-and already fixed bug. Thanks for any pointers!
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ drivers/net/wireless/ath/ath10k/htc.c     | 4 ++--
+ drivers/net/wireless/ath/ath10k/sdio.c    | 2 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
+ drivers/net/wireless/ath/ath10k/wmi.c     | 8 ++++----
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
--- ynezz
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 805a7f8a04f..c244889b72e 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -799,7 +799,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 						&ep->ul_pipe_id,
+ 						&ep->dl_pipe_id);
+ 	if (status) {
+-		ath10k_warn(ar, "unsupported HTC service id: %d\n",
++		ath10k_info(ar, "unsupported HTC service id: %d\n",
+ 			    ep->service_id);
+ 		return status;
+ 	}
+@@ -877,7 +877,7 @@ static bool ath10k_htc_pktlog_svc_supported(struct ath10k *ar)
+ 						&ul_pipe_id,
+ 						&dl_pipe_id);
+ 	if (status) {
+-		ath10k_warn(ar, "unsupported HTC service id: %d\n",
++		ath10k_info(ar, "unsupported HTC service id: %d\n",
+ 			    ATH10K_HTC_SVC_ID_HTT_LOG_MSG);
+ 
+ 		return false;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index fae56c67766..a265225216e 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -1871,7 +1871,7 @@ static int ath10k_sdio_hif_map_service_to_pipe(struct ath10k *ar,
+ 			   ar_sdio->mbox_addr[eid], ar_sdio->mbox_size[eid]);
+ 		break;
+ 	default:
+-		ath10k_warn(ar, "unsupported HTC service id: %d\n",
++		ath10k_info(ar, "unsupported HTC service id: %d\n",
+ 			    service_id);
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 582fb11f648..ca990c8d306 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -614,7 +614,7 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_mgmt_tx_bundle_compl(ar, skb);
+ 		break;
+ 	default:
+-		ath10k_dbg(ar, ATH10K_DBG_WMI, "Unknown eventid: %d\n", id);
++		ath10k_info(ar, ATH10K_DBG_WMI, "Unknown eventid: %d\n", id);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 98a90e49d66..f4fa406d9fe 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5850,7 +5850,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_service_available(ar, skb);
+ 		break;
+ 	default:
+-		ath10k_warn(ar, "Unknown eventid: %d\n", id);
++		ath10k_info(ar, "Unknown eventid: %d\n", id);
+ 		break;
+ 	}
+ 
+@@ -5981,7 +5981,7 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		/* ignore utf events */
+ 		break;
+ 	default:
+-		ath10k_warn(ar, "Unknown eventid: %d\n", id);
++		ath10k_info(ar, "Unknown eventid: %d\n", id);
+ 		break;
+ 	}
+ 
+@@ -6130,7 +6130,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_peer_sta_ps_state_chg(ar, skb);
+ 		break;
+ 	default:
+-		ath10k_warn(ar, "Unknown eventid: %d\n", id);
++		ath10k_info(ar, "Unknown eventid: %d\n", id);
+ 		break;
+ 	}
+ 
+@@ -6250,7 +6250,7 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_peer_sta_ps_state_chg(ar, skb);
+ 		break;
+ 	default:
+-		ath10k_warn(ar, "Unknown eventid: %d\n", id);
++		ath10k_info(ar, "Unknown eventid: %d\n", id);
+ 		break;
+ 	}
+ 
+-- 
+2.20.1
+
 
 _______________________________________________
 ath10k mailing list
