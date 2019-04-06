@@ -1,25 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out.xnet.cz ([178.217.244.18])
+Received: from mail-pl1-f194.google.com ([209.85.214.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCRPk-0007ZI-9s
- for ath10k@lists.infradead.org; Fri, 05 Apr 2019 16:10:01 +0000
-Received: from meh.true.cz (meh.true.cz [108.61.167.218])
- (Authenticated sender: petr@true.cz)
- by smtp-out.xnet.cz (Postfix) with ESMTPSA id BDEF13DD6
- for <ath10k@lists.infradead.org>; Fri,  5 Apr 2019 18:09:58 +0200 (CEST)
-Received: from localhost (meh.true.cz [local])
- by meh.true.cz (OpenSMTPD) with ESMTPA id a3c0d93b
- for <ath10k@lists.infradead.org>;
- Fri, 5 Apr 2019 18:09:57 +0200 (CEST)
-Date: Fri, 5 Apr 2019 18:09:57 +0200
-From: Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
-Subject: Re: Kernel crash in skb_put caused by ath10k_htt_t2h_msg_handler
-Message-ID: <20190405160957.GI41661@meh.true.cz>
-References: <20190405092457.GE41661@meh.true.cz>
- <13451ca6-d102-0d19-7cb9-450b04c5f06f@candelatech.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <13451ca6-d102-0d19-7cb9-450b04c5f06f@candelatech.com>
+ id 1hCeSz-00088L-MH
+ for ath10k@lists.infradead.org; Sat, 06 Apr 2019 06:06:21 +0000
+Received: by mail-pl1-f194.google.com with SMTP id b3so4168841plr.7
+ for <ath10k@lists.infradead.org>; Fri, 05 Apr 2019 23:06:13 -0700 (PDT)
+Message-ID: <5ca841d3.1c69fb81.7ec38.ae4e@mx.google.com>
+Date: Sat, 06 Apr 2019 01:06:10 -0500
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt: bindings: add dt entry for XO calibration
+ support
+References: <20190401091926.19119-1-govinds@codeaurora.org>
+ <20190401091926.19119-2-govinds@codeaurora.org>
+In-Reply-To: <20190401091926.19119-2-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +21,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: robh@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
 
-Hi,
+On Mon,  1 Apr 2019 14:49:25 +0530, Govind Singh wrote:
+> Add dt binding to get xo calibration data support for wifi rf clock.
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-while searching for the kmod with the same md5sum as the one used on the
-device, I've found out, that OpenWrt is not using upstream ath10k kernel
-module, so I don't want to make more noise on the ath10k mailing list, and
-I've moved the discussion to the openwrt-devel mailing list[1].
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Sorry for the noise.
-
-1. http://lists.infradead.org/pipermail/openwrt-devel/2019-April/016614.html
-
--- ynezz
 
 _______________________________________________
 ath10k mailing list
