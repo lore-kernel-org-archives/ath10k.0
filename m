@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.core-networks.de ([2001:1bc0:d::4:9])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hD19N-0003u2-Jz
- for ath10k@lists.infradead.org; Sun, 07 Apr 2019 06:19:31 +0000
-Received: from localhost (localhost [127.0.0.1])
- by mail.core-networks.de id 1hD19F-00053w-BQ
- with ESMTPSA (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- for ath10k@lists.infradead.org; Sun, 07 Apr 2019 08:19:23 +0200
-From: "Rene 'Renne' Bartsch, B.Sc. Informatics" <ml@bartschnet.de>
-Subject: [BUG] Can't change default country code from US to DE with Compex
+ id 1hD3N7-0002ng-Jb
+ for ath10k@lists.infradead.org; Sun, 07 Apr 2019 08:41:52 +0000
+Subject: Re: [BUG] Can't change default country code from US to DE with Compex
  WLE900VX (Debian 10 Buster amd64)
-Message-ID: <e3ba2603-152b-3c05-57d8-68b04023514d@bartschnet.de>
-Date: Sun, 7 Apr 2019 08:19:14 +0200
+References: <e3ba2603-152b-3c05-57d8-68b04023514d@bartschnet.de>
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Message-ID: <1508da28-bef5-1436-bd39-4dbcf8629e32@newmedia-net.de>
+Date: Sun, 7 Apr 2019 10:41:27 +0200
 MIME-Version: 1.0
-Content-Language: en-US
+In-Reply-To: <e3ba2603-152b-3c05-57d8-68b04023514d@bartschnet.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,108 +20,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "Rene 'Renne' Bartsch, B.Sc. Informatics" <ml@bartschnet.de>, ath10k@lists.infradead.org
 
-Hi,
-
-I posted this to the linux-wireless mailing-list 4 days ago and did not receive an answer.
-
-The ath10k module sets the country code to "US" at initialization. After that the country code can't be changed anymore (e.g. to "DE").
-
-Compex support suggests setting "reg->country_code = CTRY_UNITED_STATES;" in "/drivers/net/wireless/ath/regd.c" to the local country.
-Patching and re-compiling every kernel-update isn't an option on an UEFI-only production system.
-
-Kernel version: 4.19.0-4-amd64 #1 SMP Debian 4.19.28-2 (2019-03-15) x86_64 GNU/Linux on Debian 10 Buster
-
-The WLE900VX is based on the QCA XB140 reference design.
-
-Until Thursday we have the option to return the cards to the dealer.
-
-Thanx for any hint,
-
-Renne
-
-
-renne@cloud:/lib/firmware/ath10k/QCA988X/hw2.0$ uname -a
-Linux cloud 4.19.0-4-amd64 #1 SMP Debian 4.19.28-2 (2019-03-15) x86_64 GNU/Linux
-
-renne@cloud:~$ ls /lib/firmware/ath10k/QCA988X/hw2.0/
-board.bin  firmware-4.bin  firmware-5.bin
-
-What doesn't work:
-
-/etc/modprobe.d/cfg80211.conf:
-options cfg80211 ieee80211_regdom=DE
-
-/etc/hostapd/hostapd.conf:
-...
-ieee80211d=1
-country_code=DE
-...
-
-root@cloud:/# export COUNTRY=DE; /sbin/crda
-Failed to set regulatory domain: -7
-
-root@cloud:/# iw reg set DE && iw reg get
-global
-country 98: DFS-UNSET
-    (2402 - 2472 @ 40), (N/A, 20), (N/A)
-    (5170 - 5250 @ 80), (N/A, 20), (N/A), NO-OUTDOOR, AUTO-BW
-    (5250 - 5330 @ 80), (N/A, 20), (0 ms), NO-OUTDOOR, DFS, AUTO-BW
-    (5490 - 5725 @ 160), (N/A, 23), (0 ms), DFS
-    (5725 - 5730 @ 5), (N/A, 13), (0 ms), DFS
-    (5735 - 5835 @ 80), (N/A, 13), (N/A)
-    (57240 - 63720 @ 2160), (N/A, 40), (N/A)
-
-phy#1
-country US: DFS-FCC
-   (2402 - 2472 @ 40), (N/A, 30), (N/A)
-   (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-   (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-   (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-   (5735 - 5835 @ 80), (N/A, 30), (N/A)
-   (57240 - 63720 @ 2160), (N/A, 40), (N/A)
-
-phy#0
-country US: DFS-FCC
-    (2402 - 2472 @ 40), (N/A, 30), (N/A)
-    (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-    (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-    (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-    (5735 - 5835 @ 80), (N/A, 30), (N/A)
-    (57240 - 63720 @ 2160), (N/A, 40), (N/A)
-
-
-LOGs:
-
-renne@cloud:~$ sudo dmesg | grep ath
-[    4.630113] ath10k_pci 0000:04:00.0: enabling device (0000 -> 0002)
-[    4.630548] ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-[    4.803687] ath10k_pci 0000:04:00.0: firmware: failed to load ath10k/pre-cal-pci-0000:04:00.0.bin (-2)
-[    4.803700] ath10k_pci 0000:04:00.0: firmware: failed to load ath10k/cal-pci-0000:04:00.0.bin (-2)
-[    4.803872] ath10k_pci 0000:04:00.0: firmware: failed to load ath10k/QCA988X/hw2.0/firmware-6.bin (-2)
-[    4.804994] ath10k_pci 0000:04:00.0: firmware: direct-loading firmware ath10k/QCA988X/hw2.0/firmware-5.bin
-[    4.804999] ath10k_pci 0000:04:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-[    4.805000] ath10k_pci 0000:04:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-[    4.805147] ath10k_pci 0000:04:00.0: firmware ver 10.2.4-1.0-00041 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 f43fa422
-[    4.840158] ath10k_pci 0000:04:00.0: firmware: failed to load ath10k/QCA988X/hw2.0/board-2.bin (-2)
-[    4.840338] ath10k_pci 0000:04:00.0: firmware: direct-loading firmware ath10k/QCA988X/hw2.0/board.bin
-[    4.840343] ath10k_pci 0000:04:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-[    5.988575] ath10k_pci 0000:04:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
-[    6.067999] ath: EEPROM regdomain: 0x0
-[    6.068000] ath: EEPROM indicates default country code should be used
-[    6.068000] ath: doing EEPROM country->regdmn map search
-[    6.068001] ath: country maps to regdmn code: 0x3a
-[    6.068002] ath: Country alpha2 being used: US
-[    6.068002] ath: Regpair used: 0x3a
-[    6.078078] ath10k_pci 0000:04:00.0 wlp4s0: renamed from wlan0
-[ 5099.420780] ath10k_pci 0000:04:00.0: pdev param 0 not supported by firmware
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+eW91ciBkb2N1bWVudGF0aW9uIGlzIHZlcnkgdW5zcGVjaWZpYy4gaXRzIHVuY2xlYXIgaWYgeW91
+IGV2ZW4gdHJpZWQgdG8gCmNoYW5nZSB0aGUgY291bnRyeSBjb2RlIHVzaW5nICJpdyByZWcgc2V0
+IgoKbGlrZSBvbnkgYW55IG90aGVyIHFjYS9hdGhlcm9zIGNhcmQgeW91IGNhbiBzaW1wbHkgY2hh
+bmdlIHRoZSBjb3VudHJ5IApjb2RlIHVzaW5nIGl3IHJlZyBzZXQKCkFtIDA3LjA0LjIwMTkgdW0g
+MDg6MTkgc2NocmllYiBSZW5lICdSZW5uZScgQmFydHNjaCwgQi5TYy4gSW5mb3JtYXRpY3M6Cj4g
+SGksCj4KPiBJIHBvc3RlZCB0aGlzIHRvIHRoZSBsaW51eC13aXJlbGVzcyBtYWlsaW5nLWxpc3Qg
+NCBkYXlzIGFnbyBhbmQgZGlkIAo+IG5vdCByZWNlaXZlIGFuIGFuc3dlci4KPgo+IFRoZSBhdGgx
+MGsgbW9kdWxlIHNldHMgdGhlIGNvdW50cnkgY29kZSB0byAiVVMiIGF0IGluaXRpYWxpemF0aW9u
+LiAKPiBBZnRlciB0aGF0IHRoZSBjb3VudHJ5IGNvZGUgY2FuJ3QgYmUgY2hhbmdlZCBhbnltb3Jl
+IChlLmcuIHRvICJERSIpLgo+Cj4gQ29tcGV4IHN1cHBvcnQgc3VnZ2VzdHMgc2V0dGluZyAicmVn
+LT5jb3VudHJ5X2NvZGUgPSAKPiBDVFJZX1VOSVRFRF9TVEFURVM7IiBpbiAiL2RyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9yZWdkLmMiIHRvIHRoZSAKPiBsb2NhbCBjb3VudHJ5Lgo+IFBhdGNoaW5n
+IGFuZCByZS1jb21waWxpbmcgZXZlcnkga2VybmVsLXVwZGF0ZSBpc24ndCBhbiBvcHRpb24gb24g
+YW4gCj4gVUVGSS1vbmx5IHByb2R1Y3Rpb24gc3lzdGVtLgo+Cj4gS2VybmVsIHZlcnNpb246IDQu
+MTkuMC00LWFtZDY0ICMxIFNNUCBEZWJpYW4gNC4xOS4yOC0yICgyMDE5LTAzLTE1KSAKPiB4ODZf
+NjQgR05VL0xpbnV4IG9uIERlYmlhbiAxMCBCdXN0ZXIKPgo+IFRoZSBXTEU5MDBWWCBpcyBiYXNl
+ZCBvbiB0aGUgUUNBIFhCMTQwIHJlZmVyZW5jZSBkZXNpZ24uCj4KPiBVbnRpbCBUaHVyc2RheSB3
+ZSBoYXZlIHRoZSBvcHRpb24gdG8gcmV0dXJuIHRoZSBjYXJkcyB0byB0aGUgZGVhbGVyLgo+Cj4g
+VGhhbnggZm9yIGFueSBoaW50LAo+Cj4gUmVubmUKPgo+Cj4gcmVubmVAY2xvdWQ6L2xpYi9maXJt
+d2FyZS9hdGgxMGsvUUNBOTg4WC9odzIuMCQgdW5hbWUgLWEKPiBMaW51eCBjbG91ZCA0LjE5LjAt
+NC1hbWQ2NCAjMSBTTVAgRGViaWFuIDQuMTkuMjgtMiAoMjAxOS0wMy0xNSkgeDg2XzY0IAo+IEdO
+VS9MaW51eAo+Cj4gcmVubmVAY2xvdWQ6fiQgbHMgL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBOTg4
+WC9odzIuMC8KPiBib2FyZC5iaW7CoCBmaXJtd2FyZS00LmJpbsKgIGZpcm13YXJlLTUuYmluCj4K
+PiBXaGF0IGRvZXNuJ3Qgd29yazoKPgo+IC9ldGMvbW9kcHJvYmUuZC9jZmc4MDIxMS5jb25mOgo+
+IG9wdGlvbnMgY2ZnODAyMTEgaWVlZTgwMjExX3JlZ2RvbT1ERQo+Cj4gL2V0Yy9ob3N0YXBkL2hv
+c3RhcGQuY29uZjoKPiAuLi4KPiBpZWVlODAyMTFkPTEKPiBjb3VudHJ5X2NvZGU9REUKPiAuLi4K
+Pgo+IHJvb3RAY2xvdWQ6LyMgZXhwb3J0IENPVU5UUlk9REU7IC9zYmluL2NyZGEKPiBGYWlsZWQg
+dG8gc2V0IHJlZ3VsYXRvcnkgZG9tYWluOiAtNwo+Cj4gcm9vdEBjbG91ZDovIyBpdyByZWcgc2V0
+IERFICYmIGl3IHJlZyBnZXQKPiBnbG9iYWwKPiBjb3VudHJ5IDk4OiBERlMtVU5TRVQKPiDCoMKg
+ICgyNDAyIC0gMjQ3MiBAIDQwKSwgKE4vQSwgMjApLCAoTi9BKQo+IMKgwqAgKDUxNzAgLSA1MjUw
+IEAgODApLCAoTi9BLCAyMCksIChOL0EpLCBOTy1PVVRET09SLCBBVVRPLUJXCj4gwqDCoCAoNTI1
+MCAtIDUzMzAgQCA4MCksIChOL0EsIDIwKSwgKDAgbXMpLCBOTy1PVVRET09SLCBERlMsIEFVVE8t
+QlcKPiDCoMKgICg1NDkwIC0gNTcyNSBAIDE2MCksIChOL0EsIDIzKSwgKDAgbXMpLCBERlMKPiDC
+oMKgICg1NzI1IC0gNTczMCBAIDUpLCAoTi9BLCAxMyksICgwIG1zKSwgREZTCj4gwqDCoCAoNTcz
+NSAtIDU4MzUgQCA4MCksIChOL0EsIDEzKSwgKE4vQSkKPiDCoMKgICg1NzI0MCAtIDYzNzIwIEAg
+MjE2MCksIChOL0EsIDQwKSwgKE4vQSkKPgo+IHBoeSMxCj4gY291bnRyeSBVUzogREZTLUZDQwo+
+IMKgICgyNDAyIC0gMjQ3MiBAIDQwKSwgKE4vQSwgMzApLCAoTi9BKQo+IMKgICg1MTcwIC0gNTI1
+MCBAIDgwKSwgKE4vQSwgMjMpLCAoTi9BKSwgQVVUTy1CVwo+IMKgICg1MjUwIC0gNTMzMCBAIDgw
+KSwgKE4vQSwgMjMpLCAoMCBtcyksIERGUywgQVVUTy1CVwo+IMKgICg1NDkwIC0gNTczMCBAIDE2
+MCksIChOL0EsIDIzKSwgKDAgbXMpLCBERlMKPiDCoCAoNTczNSAtIDU4MzUgQCA4MCksIChOL0Es
+IDMwKSwgKE4vQSkKPiDCoCAoNTcyNDAgLSA2MzcyMCBAIDIxNjApLCAoTi9BLCA0MCksIChOL0Ep
+Cj4KPiBwaHkjMAo+IGNvdW50cnkgVVM6IERGUy1GQ0MKPiDCoMKgICgyNDAyIC0gMjQ3MiBAIDQw
+KSwgKE4vQSwgMzApLCAoTi9BKQo+IMKgwqAgKDUxNzAgLSA1MjUwIEAgODApLCAoTi9BLCAyMyks
+IChOL0EpLCBBVVRPLUJXCj4gwqDCoCAoNTI1MCAtIDUzMzAgQCA4MCksIChOL0EsIDIzKSwgKDAg
+bXMpLCBERlMsIEFVVE8tQlcKPiDCoMKgICg1NDkwIC0gNTczMCBAIDE2MCksIChOL0EsIDIzKSwg
+KDAgbXMpLCBERlMKPiDCoMKgICg1NzM1IC0gNTgzNSBAIDgwKSwgKE4vQSwgMzApLCAoTi9BKQo+
+IMKgwqAgKDU3MjQwIC0gNjM3MjAgQCAyMTYwKSwgKE4vQSwgNDApLCAoTi9BKQo+Cj4KPiBMT0dz
+Ogo+Cj4gcmVubmVAY2xvdWQ6fiQgc3VkbyBkbWVzZyB8IGdyZXAgYXRoCj4gW8KgwqDCoCA0LjYz
+MDExM10gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAw
+MDAyKQo+IFvCoMKgwqAgNC42MzA1NDhdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBwY2kgaXJx
+IG1zaSBvcGVyX2lycV9tb2RlIDIgCj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPiBbwqDCoMKg
+IDQuODAzNjg3XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogZmlybXdhcmU6IGZhaWxlZCB0byBs
+b2FkIAo+IGF0aDEway9wcmUtY2FsLXBjaS0wMDAwOjA0OjAwLjAuYmluICgtMikKPiBbwqDCoMKg
+IDQuODAzNzAwXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogZmlybXdhcmU6IGZhaWxlZCB0byBs
+b2FkIAo+IGF0aDEway9jYWwtcGNpLTAwMDA6MDQ6MDAuMC5iaW4gKC0yKQo+IFvCoMKgwqAgNC44
+MDM4NzJdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBmaXJtd2FyZTogZmFpbGVkIHRvIGxvYWQg
+Cj4gYXRoMTBrL1FDQTk4OFgvaHcyLjAvZmlybXdhcmUtNi5iaW4gKC0yKQo+IFvCoMKgwqAgNC44
+MDQ5OTRdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBmaXJtd2FyZTogZGlyZWN0LWxvYWRpbmcg
+Cj4gZmlybXdhcmUgYXRoMTBrL1FDQTk4OFgvaHcyLjAvZmlybXdhcmUtNS5iaW4KPiBbwqDCoMKg
+IDQuODA0OTk5XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogcWNhOTg4eCBodzIuMCB0YXJnZXQg
+Cj4gMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjAyZmYgc3ViIDAwMDA6MDAwMAo+IFvCoMKgwqAg
+NC44MDUwMDBdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdm
+cyAwIAo+IHRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAwCj4gW8KgwqDCoCA0LjgwNTE0N10gYXRo
+MTBrX3BjaSAwMDAwOjA0OjAwLjA6IGZpcm13YXJlIHZlciAxMC4yLjQtMS4wLTAwMDQxIAo+IGFw
+aSA1IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSxtZnAsYWxsb3dzLW1lc2gtYmNhc3QgY3JjMzIg
+ZjQzZmE0MjIKPiBbwqDCoMKgIDQuODQwMTU4XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogZmly
+bXdhcmU6IGZhaWxlZCB0byBsb2FkIAo+IGF0aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJkLTIuYmlu
+ICgtMikKPiBbwqDCoMKgIDQuODQwMzM4XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogZmlybXdh
+cmU6IGRpcmVjdC1sb2FkaW5nIAo+IGZpcm13YXJlIGF0aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJk
+LmJpbgo+IFvCoMKgwqAgNC44NDAzNDNdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBib2FyZF9m
+aWxlIGFwaSAxIGJtaV9pZCBOL0EgCj4gY3JjMzIgYmViYzdjMDgKPiBbwqDCoMKgIDUuOTg4NTc1
+XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogaHR0LXZlciAyLjEgd21pLW9wIDUgaHR0LW9wIDIg
+Cj4gY2FsIG90cCBtYXgtc3RhIDEyOCByYXcgMCBod2NyeXB0byAxCj4gW8KgwqDCoCA2LjA2Nzk5
+OV0gYXRoOiBFRVBST00gcmVnZG9tYWluOiAweDAKPiBbwqDCoMKgIDYuMDY4MDAwXSBhdGg6IEVF
+UFJPTSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxkIGJlIHVzZWQKPiBbwqDC
+oMKgIDYuMDY4MDAwXSBhdGg6IGRvaW5nIEVFUFJPTSBjb3VudHJ5LT5yZWdkbW4gbWFwIHNlYXJj
+aAo+IFvCoMKgwqAgNi4wNjgwMDFdIGF0aDogY291bnRyeSBtYXBzIHRvIHJlZ2RtbiBjb2RlOiAw
+eDNhCj4gW8KgwqDCoCA2LjA2ODAwMl0gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBV
+Uwo+IFvCoMKgwqAgNi4wNjgwMDJdIGF0aDogUmVncGFpciB1c2VkOiAweDNhCj4gW8KgwqDCoCA2
+LjA3ODA3OF0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjAgd2xwNHMwOiByZW5hbWVkIGZyb20gd2xh
+bjAKPiBbIDUwOTkuNDIwNzgwXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogcGRldiBwYXJhbSAw
+IG5vdCBzdXBwb3J0ZWQgYnkgCj4gZmlybXdhcmUKPgo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsKPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
