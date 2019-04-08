@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDY3D-0002RN-Bz
- for ath10k@lists.infradead.org; Mon, 08 Apr 2019 17:27:21 +0000
-Received: by mail-qt1-x844.google.com with SMTP id k2so16455882qtm.1
- for <ath10k@lists.infradead.org>; Mon, 08 Apr 2019 10:27:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
- <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
- <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
- <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
- <02904ba8682441e1a89668c1345cbec9@aptaiexm02f.ap.qualcomm.com>
- <54b4dab1191d41b8b329f3ceb7017626@aptaiexm02f.ap.qualcomm.com>
-In-Reply-To: <54b4dab1191d41b8b329f3ceb7017626@aptaiexm02f.ap.qualcomm.com>
-From: =?UTF-8?Q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
-Date: Mon, 8 Apr 2019 19:27:06 +0200
-Message-ID: <CABvG-CWz0rBCXfF7mX9L62=fmdcYhpOaO5JNLtvSE87o_XJFng@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
+ id 1hDaSR-0002QB-ST
+ for ath10k@lists.infradead.org; Mon, 08 Apr 2019 20:01:33 +0000
+Message-ID: <717acf1bde5507f73436ae7d45d114b34aee1c05.camel@sipsolutions.net>
+Subject: Re: [PATCH v2] fq: fix fq_tin tx bytes overflow
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 08 Apr 2019 22:01:25 +0200
+In-Reply-To: <fa575f93f3936aa3be1cf6b14f87e511@codeaurora.org>
+References: <1552446505-15444-1-git-send-email-yiboz@codeaurora.org>
+ (sfid-20190313_040846_202389_4E584F4C)
+ <13392e1203be4ddd97c4e0e6b6a6c48ce97aae6f.camel@sipsolutions.net>
+ <fa575f93f3936aa3be1cf6b14f87e511@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +22,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@qti.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: Yibo Zhao <yiboz@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gTW9uLCA4IEFwciAyMDE5IGF0IDEyOjIwLCBXZW4gR29uZyA8d2dvbmdAcXRpLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gRnJvbTogV2Vu
-IEdvbmcKPiA+IFNlbnQ6IE1vbmRheSwgQXByaWwgMSwgMjAxOSAyOjExIFBNCj4gPiBUbzogJ01p
-Y2hhxYIgS2F6aW9yJyA8a2F6aWtjekBnbWFpbC5jb20+Cj4gPiBDYzogV2VuIEdvbmcgPHdnb25n
-QGNvZGVhdXJvcmEub3JnPjsgbGludXgtd2lyZWxlc3MgPGxpbnV4LQo+ID4gd2lyZWxlc3NAdmdl
-ci5rZXJuZWwub3JnPjsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+IFN1YmplY3Q6IFJF
-OiBbRVhUXSBSZTogW1BBVENIXSBhdGgxMGs6IFJlbW92ZSBBVEgxMEtfU1RBVEVfUkVTVEFSVEVE
-IGluCj4gPiBzaW11bGF0ZSBmdyBjcmFzaAo+ID4KPiA+ID4KPiA+ID4gSWYgaXQncyBzdGlsbCBi
-b3RoZXJpbmcgeW91IHRoZW4gcGxlYXNlIGNvbnNpZGVyIGEgY3Jhc2ggY291bnRlcgo+ID4gPiB0
-aHJlc2hvbGQgc28gdGhhdCwgZS5nLiBhZnRlciA1IGNyYXNoLXdoaWxlLXJlc3RhcnRpbmcgaXQn
-cyBnb2luZyB0bwo+ID4gPiBnaXZlIHVwLiBIb3dldmVyIEkgZG91YnQgaXQncyB3b3J0aCB0aGUg
-ZWZmb3J0LiBNeSBleHBlcmllbmNlIHRlbGxzIG1lCj4gPiA+IGZpcm13YXJlIGNyYXNoZXMgZHVy
-aW5nIHJlY292ZXJ5IGFyZSByYXJlbHksIGlmIGF0IGFsbCwgdHJhbnNpZW50Lgo+ID4gPgo+ID4g
-PiBUaGUgc2ltdWxhdGVkIGZ3IGNyYXNoIGlzIG5vdCByZXByZXNlbnRhdGl2ZSBoZXJlLiBJdCdz
-IGEgbWVyZSB0b29sIHRvCj4gPiA+IHRlc3QgZHJpdmVyIGNvZGUuCj4gPiA+Cj4gPiBIaSBNaWNo
-YWwsCj4gPiBUaGVyZSBoYXZlIGEgc3RyZXNzIHRlc3QgY2FzZSBmb3IgdGhlIHNpbXVsYXRlIGZ3
-IGNyYXNoLCBpdCB3aWxsIHNpbXVsYXRlIGZ3Cj4gPiBjcmFzaAo+ID4gaW4gYSB2ZXJ5IHNob3J0
-IHRpbWUgZm9yIGVhY2ggdGVzdCwgdGhpcyB3aWxsIHRyaWdnZXIgdGhlIHN0cmVzcyB0ZXN0IGZh
-aWwuCj4gPiBUaGUgc2ltdWxhdGUgZncgY3Jhc2ggcHJvY2VzcyBzaG91bGQgbm90IGJlIHJ1biBw
-YXJhbGxlbCwgYWZ0ZXIgdGhpcyBwYXRjaCwgdGhlCj4gPiBTdHJlc3MgdGVzdCBjYXNlIHdpbGwg
-cGFzcy4KPiA+ID4KPgo+IEhpIE1pY2hhxYIsCj4gRG8geW91IGhhdmUgc29tZSBuZXcgY29tbWVu
-dHM/CgpNeSBvcmlnaW5hbCB1c2UgY2FzZSB3YXMgdG8gYmUgYWJsZSB0byBleGVyY2lzZSB0aGUg
-ZHJpdmVyJ3MKcm9idXN0bmVzcyBpbiBoYW5kbGluZyBuZXN0ZWQgZncgY3Jhc2hlcywgSU9XIGNy
-YXNoLXdpdGhpbi1hLWNyYXNoLgoKWW91ciB0ZXN0IGNhc2UsIGFzIGZhciBhcyBJIHVuZGVyc3Rh
-bmQsIGludGVuZHMgdG8gcGVyZm9ybQpjb25zZWN1dGl2ZSwgbm9uLW5lc3RlZCBmdyBjcmFzaCBz
-aW11bGF0aW9uIHN0cmVzcyB0ZXN0LgoKQm90aCBvZiB0aGVzZSBhcmUgbXV0dWFsbHkgZXhjbHVz
-aXZlIGFuZCB5b3VyIHBhdGNoIGZpeGVzIHlvdXIgdGVzdApjYXNlIGF0IHRoZSBleHBlbnNlIG9m
-IGJyZWFraW5nIG15IG9yaWdpbmFsIGNhc2UuCgpUbyBzYXRpc2Z5IGJvdGggSSB3b3VsZCBzdWdn
-ZXN0IHlvdSBlaXRoZXIgZXhwb3NlIGFyLT5zdGF0ZSB2aWEKZGVidWdmcyBhbmQgbWFrZSB5b3Vy
-IHRlc3QgcHJvY2VkdXJlIHdhaXQgZm9yIHRoYXQgdG8gZ2V0IGJhY2sgaW50byBPTgpzdGF0ZSBi
-ZWZvcmUgc2ltdWxhdGluZyBhIGNyYXNoIGFnYWluLCBvciB0byBleHRlbmQgdGhlIHNldCBvZiBj
-dXJyZW50CnNpbXVsYXRlX2Z3X2NyYXNoIGNvbW1hbmRzIChjdXJyZW50bHkganVzdDogc29mdCwg
-aGFyZCwgYXNzZXJ0LApody1yZXN0YXJ0KSB0byBzb21ldGhpbmcgdGhhdCBhbGxvd3MgZXhwcmVz
-c2luZyB0aGUgaW50ZW50IHdoZXRoZXIKY3Jhc2gtaW4tY3Jhc2ggcHJldmVudGlvbiBpcyBpbnRl
-bmRlZCAoeW91ciBjYXNlKSBvciBub3QgKG15IG9yaWdpbmFsCmNhc2UpLgoKVGhpcyBjb3VsZCBi
-ZSBmb3IgZXhhbXBsZSBzb21ldGhpbmcgbGlrZSB0aGlzOgogIGVjaG8gc29mdCB3YWl0LXJlYWR5
-ID4gc2ltdWxhdGVfZndfY3Jhc2gKClRoZSAid2FpdC1yZWFkeSIgZXh0cmEga2V5d29yZCB3b3Vs
-ZCBpbXBseSBjcmFzaC1pbi1jcmFzaCBwcmV2ZW50aW9uLgpUaGlzIHdvdWxkIGtlZXAgZXhpc3Rp
-bmcgdG9vbHMgd29ya2luZyAoYm90aCBiZWhhdmlvciBhbmQgc3ludGF4KSBhbmQKd291bGQgYWxs
-b3cgeW91ciB0ZXN0IGNhc2UgdG8gYmUgaW1wbGVtZW50ZWQuCgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Mon, 2019-03-18 at 12:59 +0800, Yibo Zhao wrote:
+> 
+> I understand your concern. Yes, I am using high end AP for throughput 
+> test. I'd say 1.2 Gbps is not the worst case since we can achieve max 
+> 1.4Gbps according to our test. AFAIK, for most throughput cases, 1min is 
+> the minimum requirement. And I think, with more and more high end 
+> products(even higher throughput) on the ways to the market, it is highly 
+> possible that 30s is not a safe time before overflow.
+
+Well, 2 Gbps (goodput) would make it overflow every 16 seconds, so I'm
+not sure where you take the 1 minute from :-) Maybe from 1.2Gbps PHY
+rate.
+
+But still, the only place we expose this is debugfs, so I'm not really
+sure we want to spend that.
+
+Note that I'm generally pushing back on statistics right now - I really
+want to put some trace points or eBPF hooks in places that people can
+use to keep their favourite statistics, instead of trying to cover each
+and every use case in the stack itself.
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
