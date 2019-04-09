@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDkTX-0001Rj-He
- for ath10k@lists.infradead.org; Tue, 09 Apr 2019 06:43:20 +0000
-From: Surabhi Vishnoi <svishnoi@codeaurora.org>
-Subject: [PATCH] ath10k: Fix the wrong value of enums for wmi tlv stats id
-Date: Tue,  9 Apr 2019 12:13:13 +0530
-Message-Id: <1554792193-22535-1-git-send-email-svishnoi@codeaurora.org>
+ id 1hDwBB-0001kk-Ia
+ for ath10k@lists.infradead.org; Tue, 09 Apr 2019 19:13:10 +0000
+Received: by mail-lj1-x241.google.com with SMTP id f23so15549920ljc.0
+ for <ath10k@lists.infradead.org>; Tue, 09 Apr 2019 12:13:08 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [PATCH 0/6] ath10k: SDIO and high latency patches from Silex
+Date: Tue,  9 Apr 2019 21:08:45 +0200
+Message-Id: <20190409190851.4557-1-erik.stromdahl@gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,50 +18,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The enum value for WMI_TLV_STAT_PDEV, WMI_TLV_STAT_VDEV
-and WMI_TLV_STAT_PEER is wrong, due to which the vdev stats
-are not received from firmware in wmi_update_stats event.
+This series adds a few more fixes for SDIO and high latency devices.
 
-Fix the enum values for above stats to receive all stats
-from firmware in WMI_TLV_UPDATE_STATS_EVENTID.
+I have had these on my private tree for quite some time now so they
+should be considered fairly well tested.
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+4 out of 6 patches are from Alagu Sankar at Silex.
+I have made some adjustments to some of them in order to make them
+smaller and easier to review.
 
-Fixes: f40a307eb92c ("ath10k: Fill rx duration for each peer in fw_stats for WCN3990)
-Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Alagu Sankar (4):
+  ath10k: use clean packet headers
+  ath10k: high latency fixes for beacon buffer
+  ath10k: sdio: read RX packets in bundles
+  ath10k: sdio: add MSDU ID allocation in HTT TX path
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e1c40bb..12f57f9 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4535,9 +4535,10 @@ enum wmi_10_4_stats_id {
- };
- 
- enum wmi_tlv_stats_id {
--	WMI_TLV_STAT_PDEV	= BIT(0),
--	WMI_TLV_STAT_VDEV	= BIT(1),
--	WMI_TLV_STAT_PEER	= BIT(2),
-+	WMI_TLV_STAT_PEER	= BIT(0),
-+	WMI_TLV_STAT_AP		= BIT(1),
-+	WMI_TLV_STAT_PDEV	= BIT(2),
-+	WMI_TLV_STAT_VDEV	= BIT(3),
- 	WMI_TLV_STAT_PEER_EXTD  = BIT(10),
- };
- 
+Erik Stromdahl (2):
+  ath10k: sdio: add missing error check
+  ath10k: sdio: replace skb_trim with explicit set of skb->len
+
+ drivers/net/wireless/ath/ath10k/htc.c    |  1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  4 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 16 ++++-
+ drivers/net/wireless/ath/ath10k/hw.c     |  2 +
+ drivers/net/wireless/ath/ath10k/mac.c    | 31 +++++++---
+ drivers/net/wireless/ath/ath10k/sdio.c   | 78 +++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/sdio.h   |  2 +
+ 7 files changed, 109 insertions(+), 25 deletions(-)
+
 -- 
-1.9.1
+2.19.1
 
 
 _______________________________________________
