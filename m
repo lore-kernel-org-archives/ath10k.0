@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDj0O-0008CK-Cw
- for ath10k@lists.infradead.org; Tue, 09 Apr 2019 05:09:10 +0000
-Subject: RE: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Tue, 9 Apr 2019 05:09:02 +0000
-Message-ID: <1fec49e1b6794860a1eff2330bcdea28@aptaiexm02f.ap.qualcomm.com>
-References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
- <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
- <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
- <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
- <02904ba8682441e1a89668c1345cbec9@aptaiexm02f.ap.qualcomm.com>
- <54b4dab1191d41b8b329f3ceb7017626@aptaiexm02f.ap.qualcomm.com>
- <CABvG-CWz0rBCXfF7mX9L62=fmdcYhpOaO5JNLtvSE87o_XJFng@mail.gmail.com>
-In-Reply-To: <CABvG-CWz0rBCXfF7mX9L62=fmdcYhpOaO5JNLtvSE87o_XJFng@mail.gmail.com>
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1hDkTX-0001Rj-He
+ for ath10k@lists.infradead.org; Tue, 09 Apr 2019 06:43:20 +0000
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Subject: [PATCH] ath10k: Fix the wrong value of enums for wmi tlv stats id
+Date: Tue,  9 Apr 2019 12:13:13 +0530
+Message-Id: <1554792193-22535-1-git-send-email-svishnoi@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +15,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-PiBGcm9tOiBNaWNoYcWCIEthemlvciA8a2F6aWtjekBnbWFpbC5jb20+DQo+IFNlbnQ6IFR1ZXNk
-YXksIEFwcmlsIDksIDIwMTkgMToyNyBBTQ0KPiBUbzogV2VuIEdvbmcgPHdnb25nQHF0aS5xdWFs
-Y29tbS5jb20+DQo+IENjOiBXZW4gR29uZyA8d2dvbmdAY29kZWF1cm9yYS5vcmc+OyBsaW51eC13
-aXJlbGVzcyA8bGludXgtDQo+IHdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz47IGF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFtFWFRdIFJlOiBbUEFUQ0hdIGF0aDEwazogUmVt
-b3ZlIEFUSDEwS19TVEFURV9SRVNUQVJURUQgaW4NCj4gc2ltdWxhdGUgZncgY3Jhc2gNCj4gDQo+
-ID4gPiBIaSBNaWNoYWwsDQo+ID4gPiBUaGVyZSBoYXZlIGEgc3RyZXNzIHRlc3QgY2FzZSBmb3Ig
-dGhlIHNpbXVsYXRlIGZ3IGNyYXNoLCBpdCB3aWxsIHNpbXVsYXRlIGZ3DQo+ID4gPiBjcmFzaA0K
-PiA+ID4gaW4gYSB2ZXJ5IHNob3J0IHRpbWUgZm9yIGVhY2ggdGVzdCwgdGhpcyB3aWxsIHRyaWdn
-ZXIgdGhlIHN0cmVzcyB0ZXN0IGZhaWwuDQo+ID4gPiBUaGUgc2ltdWxhdGUgZncgY3Jhc2ggcHJv
-Y2VzcyBzaG91bGQgbm90IGJlIHJ1biBwYXJhbGxlbCwgYWZ0ZXIgdGhpcyBwYXRjaCwNCj4gdGhl
-DQo+ID4gPiBTdHJlc3MgdGVzdCBjYXNlIHdpbGwgcGFzcy4NCj4gPiA+ID4NCj4gPg0KPiA+IEhp
-IE1pY2hhxYIsDQo+ID4gRG8geW91IGhhdmUgc29tZSBuZXcgY29tbWVudHM/DQo+IA0KPiBNeSBv
-cmlnaW5hbCB1c2UgY2FzZSB3YXMgdG8gYmUgYWJsZSB0byBleGVyY2lzZSB0aGUgZHJpdmVyJ3MN
-Cj4gcm9idXN0bmVzcyBpbiBoYW5kbGluZyBuZXN0ZWQgZncgY3Jhc2hlcywgSU9XIGNyYXNoLXdp
-dGhpbi1hLWNyYXNoLg0KPiANCj4gWW91ciB0ZXN0IGNhc2UsIGFzIGZhciBhcyBJIHVuZGVyc3Rh
-bmQsIGludGVuZHMgdG8gcGVyZm9ybQ0KPiBjb25zZWN1dGl2ZSwgbm9uLW5lc3RlZCBmdyBjcmFz
-aCBzaW11bGF0aW9uIHN0cmVzcyB0ZXN0Lg0KPiANCj4gQm90aCBvZiB0aGVzZSBhcmUgbXV0dWFs
-bHkgZXhjbHVzaXZlIGFuZCB5b3VyIHBhdGNoIGZpeGVzIHlvdXIgdGVzdA0KPiBjYXNlIGF0IHRo
-ZSBleHBlbnNlIG9mIGJyZWFraW5nIG15IG9yaWdpbmFsIGNhc2UuDQo+IA0KPiBUbyBzYXRpc2Z5
-IGJvdGggSSB3b3VsZCBzdWdnZXN0IHlvdSBlaXRoZXIgZXhwb3NlIGFyLT5zdGF0ZSB2aWENCj4g
-ZGVidWdmcyBhbmQgbWFrZSB5b3VyIHRlc3QgcHJvY2VkdXJlIHdhaXQgZm9yIHRoYXQgdG8gZ2V0
-IGJhY2sgaW50byBPTg0KPiBzdGF0ZSBiZWZvcmUgc2ltdWxhdGluZyBhIGNyYXNoIGFnYWluLCBv
-ciB0byBleHRlbmQgdGhlIHNldCBvZiBjdXJyZW50DQo+IHNpbXVsYXRlX2Z3X2NyYXNoIGNvbW1h
-bmRzIChjdXJyZW50bHkganVzdDogc29mdCwgaGFyZCwgYXNzZXJ0LA0KPiBody1yZXN0YXJ0KSB0
-byBzb21ldGhpbmcgdGhhdCBhbGxvd3MgZXhwcmVzc2luZyB0aGUgaW50ZW50IHdoZXRoZXINCj4g
-Y3Jhc2gtaW4tY3Jhc2ggcHJldmVudGlvbiBpcyBpbnRlbmRlZCAoeW91ciBjYXNlKSBvciBub3Qg
-KG15IG9yaWdpbmFsDQo+IGNhc2UpLg0KPiANCj4gVGhpcyBjb3VsZCBiZSBmb3IgZXhhbXBsZSBz
-b21ldGhpbmcgbGlrZSB0aGlzOg0KPiAgIGVjaG8gc29mdCB3YWl0LXJlYWR5ID4gc2ltdWxhdGVf
-ZndfY3Jhc2gNCj4gDQo+IFRoZSAid2FpdC1yZWFkeSIgZXh0cmEga2V5d29yZCB3b3VsZCBpbXBs
-eSBjcmFzaC1pbi1jcmFzaCBwcmV2ZW50aW9uLg0KPiBUaGlzIHdvdWxkIGtlZXAgZXhpc3Rpbmcg
-dG9vbHMgd29ya2luZyAoYm90aCBiZWhhdmlvciBhbmQgc3ludGF4KSBhbmQNCj4gd291bGQgYWxs
-b3cgeW91ciB0ZXN0IGNhc2UgdG8gYmUgaW1wbGVtZW50ZWQuDQo+IA0KSXMgaXQgZWFzeSB0byBj
-aGFuZ2UgeW91ciBleGlzdGluZyB0b29scz8NCkkgd2FudCB0byBjaGFuZ2UgaXQgdG86IGVjaG8g
-c29mdCBza2lwLXJlYWR5ID4gc2ltdWxhdGVfZndfY3Jhc2gNClRoZSAic2tpcC1yZWFkeSIgZXh0
-cmEga2V5d29yZCB3b3VsZCBpbXBseSBjcmFzaC1pbi1jcmFzaCwgKm5vdCogcHJldmVudGlvbi4N
-Ck15IHRlc3QgdG9vbHMgaXMgaGFyZCB0byBjaGFuZ2UuDQoNCj4gDQo+IE1pY2hhxYINCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
-IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+The enum value for WMI_TLV_STAT_PDEV, WMI_TLV_STAT_VDEV
+and WMI_TLV_STAT_PEER is wrong, due to which the vdev stats
+are not received from firmware in wmi_update_stats event.
+
+Fix the enum values for above stats to receive all stats
+from firmware in WMI_TLV_UPDATE_STATS_EVENTID.
+
+Tested HW: WCN3990
+Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+
+Fixes: f40a307eb92c ("ath10k: Fill rx duration for each peer in fw_stats for WCN3990)
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index e1c40bb..12f57f9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4535,9 +4535,10 @@ enum wmi_10_4_stats_id {
+ };
+ 
+ enum wmi_tlv_stats_id {
+-	WMI_TLV_STAT_PDEV	= BIT(0),
+-	WMI_TLV_STAT_VDEV	= BIT(1),
+-	WMI_TLV_STAT_PEER	= BIT(2),
++	WMI_TLV_STAT_PEER	= BIT(0),
++	WMI_TLV_STAT_AP		= BIT(1),
++	WMI_TLV_STAT_PDEV	= BIT(2),
++	WMI_TLV_STAT_VDEV	= BIT(3),
+ 	WMI_TLV_STAT_PEER_EXTD  = BIT(10),
+ };
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
