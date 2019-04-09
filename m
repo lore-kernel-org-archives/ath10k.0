@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDaSR-0002QB-ST
- for ath10k@lists.infradead.org; Mon, 08 Apr 2019 20:01:33 +0000
-Message-ID: <717acf1bde5507f73436ae7d45d114b34aee1c05.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] fq: fix fq_tin tx bytes overflow
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 08 Apr 2019 22:01:25 +0200
-In-Reply-To: <fa575f93f3936aa3be1cf6b14f87e511@codeaurora.org>
-References: <1552446505-15444-1-git-send-email-yiboz@codeaurora.org>
- (sfid-20190313_040846_202389_4E584F4C)
- <13392e1203be4ddd97c4e0e6b6a6c48ce97aae6f.camel@sipsolutions.net>
- <fa575f93f3936aa3be1cf6b14f87e511@codeaurora.org>
-Mime-Version: 1.0
+ id 1hDj0O-0008CK-Cw
+ for ath10k@lists.infradead.org; Tue, 09 Apr 2019 05:09:10 +0000
+Subject: RE: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
+From: Wen Gong <wgong@qti.qualcomm.com>
+Date: Tue, 9 Apr 2019 05:09:02 +0000
+Message-ID: <1fec49e1b6794860a1eff2330bcdea28@aptaiexm02f.ap.qualcomm.com>
+References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
+ <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
+ <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
+ <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
+ <02904ba8682441e1a89668c1345cbec9@aptaiexm02f.ap.qualcomm.com>
+ <54b4dab1191d41b8b329f3ceb7017626@aptaiexm02f.ap.qualcomm.com>
+ <CABvG-CWz0rBCXfF7mX9L62=fmdcYhpOaO5JNLtvSE87o_XJFng@mail.gmail.com>
+In-Reply-To: <CABvG-CWz0rBCXfF7mX9L62=fmdcYhpOaO5JNLtvSE87o_XJFng@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +25,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>
-Cc: linux-wireless-owner@vger.kernel.org, Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-On Mon, 2019-03-18 at 12:59 +0800, Yibo Zhao wrote:
-> 
-> I understand your concern. Yes, I am using high end AP for throughput 
-> test. I'd say 1.2 Gbps is not the worst case since we can achieve max 
-> 1.4Gbps according to our test. AFAIK, for most throughput cases, 1min is 
-> the minimum requirement. And I think, with more and more high end 
-> products(even higher throughput) on the ways to the market, it is highly 
-> possible that 30s is not a safe time before overflow.
-
-Well, 2 Gbps (goodput) would make it overflow every 16 seconds, so I'm
-not sure where you take the 1 minute from :-) Maybe from 1.2Gbps PHY
-rate.
-
-But still, the only place we expose this is debugfs, so I'm not really
-sure we want to spend that.
-
-Note that I'm generally pushing back on statistics right now - I really
-want to put some trace points or eBPF hooks in places that people can
-use to keep their favourite statistics, instead of trying to cover each
-and every use case in the stack itself.
-
-johannes
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiBGcm9tOiBNaWNoYcWCIEthemlvciA8a2F6aWtjekBnbWFpbC5jb20+DQo+IFNlbnQ6IFR1ZXNk
+YXksIEFwcmlsIDksIDIwMTkgMToyNyBBTQ0KPiBUbzogV2VuIEdvbmcgPHdnb25nQHF0aS5xdWFs
+Y29tbS5jb20+DQo+IENjOiBXZW4gR29uZyA8d2dvbmdAY29kZWF1cm9yYS5vcmc+OyBsaW51eC13
+aXJlbGVzcyA8bGludXgtDQo+IHdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz47IGF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFtFWFRdIFJlOiBbUEFUQ0hdIGF0aDEwazogUmVt
+b3ZlIEFUSDEwS19TVEFURV9SRVNUQVJURUQgaW4NCj4gc2ltdWxhdGUgZncgY3Jhc2gNCj4gDQo+
+ID4gPiBIaSBNaWNoYWwsDQo+ID4gPiBUaGVyZSBoYXZlIGEgc3RyZXNzIHRlc3QgY2FzZSBmb3Ig
+dGhlIHNpbXVsYXRlIGZ3IGNyYXNoLCBpdCB3aWxsIHNpbXVsYXRlIGZ3DQo+ID4gPiBjcmFzaA0K
+PiA+ID4gaW4gYSB2ZXJ5IHNob3J0IHRpbWUgZm9yIGVhY2ggdGVzdCwgdGhpcyB3aWxsIHRyaWdn
+ZXIgdGhlIHN0cmVzcyB0ZXN0IGZhaWwuDQo+ID4gPiBUaGUgc2ltdWxhdGUgZncgY3Jhc2ggcHJv
+Y2VzcyBzaG91bGQgbm90IGJlIHJ1biBwYXJhbGxlbCwgYWZ0ZXIgdGhpcyBwYXRjaCwNCj4gdGhl
+DQo+ID4gPiBTdHJlc3MgdGVzdCBjYXNlIHdpbGwgcGFzcy4NCj4gPiA+ID4NCj4gPg0KPiA+IEhp
+IE1pY2hhxYIsDQo+ID4gRG8geW91IGhhdmUgc29tZSBuZXcgY29tbWVudHM/DQo+IA0KPiBNeSBv
+cmlnaW5hbCB1c2UgY2FzZSB3YXMgdG8gYmUgYWJsZSB0byBleGVyY2lzZSB0aGUgZHJpdmVyJ3MN
+Cj4gcm9idXN0bmVzcyBpbiBoYW5kbGluZyBuZXN0ZWQgZncgY3Jhc2hlcywgSU9XIGNyYXNoLXdp
+dGhpbi1hLWNyYXNoLg0KPiANCj4gWW91ciB0ZXN0IGNhc2UsIGFzIGZhciBhcyBJIHVuZGVyc3Rh
+bmQsIGludGVuZHMgdG8gcGVyZm9ybQ0KPiBjb25zZWN1dGl2ZSwgbm9uLW5lc3RlZCBmdyBjcmFz
+aCBzaW11bGF0aW9uIHN0cmVzcyB0ZXN0Lg0KPiANCj4gQm90aCBvZiB0aGVzZSBhcmUgbXV0dWFs
+bHkgZXhjbHVzaXZlIGFuZCB5b3VyIHBhdGNoIGZpeGVzIHlvdXIgdGVzdA0KPiBjYXNlIGF0IHRo
+ZSBleHBlbnNlIG9mIGJyZWFraW5nIG15IG9yaWdpbmFsIGNhc2UuDQo+IA0KPiBUbyBzYXRpc2Z5
+IGJvdGggSSB3b3VsZCBzdWdnZXN0IHlvdSBlaXRoZXIgZXhwb3NlIGFyLT5zdGF0ZSB2aWENCj4g
+ZGVidWdmcyBhbmQgbWFrZSB5b3VyIHRlc3QgcHJvY2VkdXJlIHdhaXQgZm9yIHRoYXQgdG8gZ2V0
+IGJhY2sgaW50byBPTg0KPiBzdGF0ZSBiZWZvcmUgc2ltdWxhdGluZyBhIGNyYXNoIGFnYWluLCBv
+ciB0byBleHRlbmQgdGhlIHNldCBvZiBjdXJyZW50DQo+IHNpbXVsYXRlX2Z3X2NyYXNoIGNvbW1h
+bmRzIChjdXJyZW50bHkganVzdDogc29mdCwgaGFyZCwgYXNzZXJ0LA0KPiBody1yZXN0YXJ0KSB0
+byBzb21ldGhpbmcgdGhhdCBhbGxvd3MgZXhwcmVzc2luZyB0aGUgaW50ZW50IHdoZXRoZXINCj4g
+Y3Jhc2gtaW4tY3Jhc2ggcHJldmVudGlvbiBpcyBpbnRlbmRlZCAoeW91ciBjYXNlKSBvciBub3Qg
+KG15IG9yaWdpbmFsDQo+IGNhc2UpLg0KPiANCj4gVGhpcyBjb3VsZCBiZSBmb3IgZXhhbXBsZSBz
+b21ldGhpbmcgbGlrZSB0aGlzOg0KPiAgIGVjaG8gc29mdCB3YWl0LXJlYWR5ID4gc2ltdWxhdGVf
+ZndfY3Jhc2gNCj4gDQo+IFRoZSAid2FpdC1yZWFkeSIgZXh0cmEga2V5d29yZCB3b3VsZCBpbXBs
+eSBjcmFzaC1pbi1jcmFzaCBwcmV2ZW50aW9uLg0KPiBUaGlzIHdvdWxkIGtlZXAgZXhpc3Rpbmcg
+dG9vbHMgd29ya2luZyAoYm90aCBiZWhhdmlvciBhbmQgc3ludGF4KSBhbmQNCj4gd291bGQgYWxs
+b3cgeW91ciB0ZXN0IGNhc2UgdG8gYmUgaW1wbGVtZW50ZWQuDQo+IA0KSXMgaXQgZWFzeSB0byBj
+aGFuZ2UgeW91ciBleGlzdGluZyB0b29scz8NCkkgd2FudCB0byBjaGFuZ2UgaXQgdG86IGVjaG8g
+c29mdCBza2lwLXJlYWR5ID4gc2ltdWxhdGVfZndfY3Jhc2gNClRoZSAic2tpcC1yZWFkeSIgZXh0
+cmEga2V5d29yZCB3b3VsZCBpbXBseSBjcmFzaC1pbi1jcmFzaCwgKm5vdCogcHJldmVudGlvbi4N
+Ck15IHRlc3QgdG9vbHMgaXMgaGFyZCB0byBjaGFuZ2UuDQoNCj4gDQo+IE1pY2hhxYINCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
