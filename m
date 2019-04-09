@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDwBD-0001lI-PU
- for ath10k@lists.infradead.org; Tue, 09 Apr 2019 19:13:13 +0000
-Received: by mail-lj1-x244.google.com with SMTP id h16so15472181ljg.11
- for <ath10k@lists.infradead.org>; Tue, 09 Apr 2019 12:13:11 -0700 (PDT)
+ id 1hDwBE-0001ly-J8
+ for ath10k@lists.infradead.org; Tue, 09 Apr 2019 19:13:15 +0000
+Received: by mail-lf1-x142.google.com with SMTP id o199so598222lfo.1
+ for <ath10k@lists.infradead.org>; Tue, 09 Apr 2019 12:13:12 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 3/6] ath10k: sdio: read RX packets in bundles
-Date: Tue,  9 Apr 2019 21:08:48 +0200
-Message-Id: <20190409190851.4557-4-erik.stromdahl@gmail.com>
+Subject: [PATCH 4/6] ath10k: sdio: add MSDU ID allocation in HTT TX path
+Date: Tue,  9 Apr 2019 21:08:49 +0200
+Message-Id: <20190409190851.4557-5-erik.stromdahl@gmail.com>
 In-Reply-To: <20190409190851.4557-1-erik.stromdahl@gmail.com>
 References: <20190409190851.4557-1-erik.stromdahl@gmail.com>
 MIME-Version: 1.0
@@ -29,156 +29,86 @@ Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, Alagu Sankar <alagusankar@silex-i
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-The existing implementation of initiating multiple sdio transfers for
-receive bundling is slowing down the receive speed.
+This makes the SDIO HTT TX path more similar to PCIe.
+Transmit completion for SDIO is similar to PCIe, via the T2H message
+HTT_T2H_MSG_TYPE_TX_COMPL_IND. This means that we will create a unique
+MSDU ID for each transmitted frame just as we do in the PCIe case.
 
-Instead of having one sdio transfer for each packet in the bundle, we
-read all packets in one sdio transfer.
-
-This results in significant performance improvement on some targets.
+As a result of this, the TX skb will be freed when we receive the
+HTT_T2H_MSG_TYPE_TX_COMPL_IND message. Thus, we must not free the skb in
+the HTT ep_tx_complete handler in the SDIO case.
 
 Co-developed-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 66 +++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/sdio.h |  2 +
- 2 files changed, 55 insertions(+), 13 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  4 +++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 16 ++++++++++++++--
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index fae56c67766f..295e1e7ec3b0 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -24,6 +24,8 @@
- #include "trace.h"
- #include "sdio.h"
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index a20ea270d519..6e3331b96c0f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2277,7 +2277,9 @@ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
+ 		 *  Note that with only one concurrent reader and one concurrent
+ 		 *  writer, you don't need extra locking to use these macro.
+ 		 */
+-		if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
++		if (ar->hif.bus == ATH10K_BUS_SDIO) {
++			ath10k_txrx_tx_unref(htt, &tx_done);
++		} else if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
+ 			ath10k_warn(ar, "txdone fifo overrun, msdu_id %d status %d\n",
+ 				    tx_done.msdu_id, tx_done.status);
+ 			ath10k_txrx_tx_unref(htt, &tx_done);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 619c2b87b8bb..e5e6e206a52f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -543,7 +543,8 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
  
-+#define ATH10K_SDIO_READ_BUF_SIZE	(32 * 1024)
-+
- /* inlined helper functions */
- 
- static inline int ath10k_sdio_calc_txrx_padded_len(struct ath10k_sdio *ar_sdio,
-@@ -618,41 +620,68 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 	return ret;
+ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+ {
+-	dev_kfree_skb_any(skb);
++	if (!(ar->hif.bus == ATH10K_BUS_SDIO))
++		dev_kfree_skb_any(skb);
  }
  
--static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
--				      struct ath10k_sdio_rx_data *pkt)
-+static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct ath10k_sdio_rx_data *pkt = &ar_sdio->rx_pkts[0];
- 	struct sk_buff *skb = pkt->skb;
- 	int ret;
+ void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+@@ -1244,6 +1245,7 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
+ 	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
+ 	u8 flags0 = 0;
+ 	u16 flags1 = 0;
++	u16 msdu_id = 0;
  
--	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
--				 skb->data, pkt->alloc_len);
--	pkt->status = ret;
--	if (!ret)
-+	ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
-+			       skb->data, pkt->alloc_len);
-+	if (ret) {
-+		ar_sdio->n_rx_pkts = 0;
-+		ath10k_sdio_mbox_free_rx_pkt(pkt);
-+	} else {
-+		pkt->status = ret;
- 		skb_put(skb, pkt->act_len);
-+	}
+ 	data_len = msdu->len;
  
- 	return ret;
- }
- 
--static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
-+static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct ath10k_sdio_rx_data *pkt;
- 	int ret, i;
-+	u32 pkt_offset = 0, pkt_bundle_len = 0;
-+
-+	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
-+		pkt_bundle_len += ar_sdio->rx_pkts[i].alloc_len;
-+
-+	if (pkt_bundle_len > ATH10K_SDIO_READ_BUF_SIZE) {
-+		ret = -ENOMEM;
-+		ath10k_err(ar, "bundle size (%d) exceeding limit %d\n",
-+			   pkt_bundle_len, ATH10K_SDIO_READ_BUF_SIZE);
-+		goto err;
-+	}
-+
-+	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
-+				 ar_sdio->sdio_read_buf, pkt_bundle_len);
-+	if (ret)
-+		goto err;
- 
- 	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
--		ret = ath10k_sdio_mbox_rx_packet(ar,
--						 &ar_sdio->rx_pkts[i]);
--		if (ret)
--			goto err;
-+		struct sk_buff *skb = ar_sdio->rx_pkts[i].skb;
-+
-+		pkt = &ar_sdio->rx_pkts[i];
-+		memcpy(skb->data, ar_sdio->sdio_read_buf + pkt_offset,
-+		       pkt->alloc_len);
-+		pkt->status = 0;
-+		skb_put(skb, pkt->act_len);
-+		pkt_offset += pkt->alloc_len;
+@@ -1291,6 +1293,16 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
+ 		}
  	}
  
- 	return 0;
- 
- err:
- 	/* Free all packets that was not successfully fetched. */
--	for (; i < ar_sdio->n_rx_pkts; i++)
-+	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
- 		ath10k_sdio_mbox_free_rx_pkt(&ar_sdio->rx_pkts[i]);
- 
-+	ar_sdio->n_rx_pkts = 0;
-+
- 	return ret;
- }
- 
-@@ -695,7 +724,10 @@ static int ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
- 			 */
- 			*done = false;
- 
--		ret = ath10k_sdio_mbox_rx_fetch(ar);
-+		if (ar_sdio->n_rx_pkts > 1)
-+			ret = ath10k_sdio_mbox_rx_fetch_bundle(ar);
-+		else
-+			ret = ath10k_sdio_mbox_rx_fetch(ar);
- 
- 		/* Process fetched packets. This will potentially update
- 		 * n_lookaheads depending on if the packets contain lookahead
-@@ -2001,6 +2033,14 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_core_destroy;
- 	}
- 
-+	ar_sdio->sdio_read_buf = devm_kzalloc(ar->dev,
-+					      ATH10K_SDIO_READ_BUF_SIZE,
-+					      GFP_KERNEL);
-+	if (!ar_sdio->sdio_read_buf) {
-+		ret = -ENOMEM;
-+		goto err_core_destroy;
++	if (ar->hif.bus == ATH10K_BUS_SDIO) {
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_POSTPONED;
++		res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
++		if (res < 0) {
++			ath10k_err(ar, "msdu_id allocation failed %d\n", res);
++			goto out;
++		}
++		msdu_id = res;
 +	}
 +
- 	ar_sdio->func = func;
- 	sdio_set_drvdata(func, ar_sdio);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index b8c7ac0330bd..07e2cc6a3bd8 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -196,6 +196,8 @@ struct ath10k_sdio {
- 	struct ath10k *ar;
- 	struct ath10k_sdio_irq_data irq_data;
- 
-+	u8 *sdio_read_buf;
-+
- 	/* temporary buffer for BMI requests */
- 	u8 *bmi_buf;
- 
+ 	skb_push(msdu, sizeof(*cmd_hdr));
+ 	skb_push(msdu, sizeof(*tx_desc));
+ 	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
+@@ -1300,7 +1312,7 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
+ 	tx_desc->flags0 = flags0;
+ 	tx_desc->flags1 = __cpu_to_le16(flags1);
+ 	tx_desc->len = __cpu_to_le16(data_len);
+-	tx_desc->id = 0;
++	tx_desc->id = __cpu_to_le16(msdu_id);
+ 	tx_desc->frags_paddr = 0; /* always zero */
+ 	/* Initialize peer_id to INVALID_PEER because this is NOT
+ 	 * Reinjection path
 -- 
 2.19.1
 
