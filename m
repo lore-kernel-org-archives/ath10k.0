@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDwBC-0001ks-Vu
- for ath10k@lists.infradead.org; Tue, 09 Apr 2019 19:13:12 +0000
-Received: by mail-lf1-x142.google.com with SMTP id u17so3900665lfi.3
- for <ath10k@lists.infradead.org>; Tue, 09 Apr 2019 12:13:10 -0700 (PDT)
+ id 1hDwBD-0001lI-PU
+ for ath10k@lists.infradead.org; Tue, 09 Apr 2019 19:13:13 +0000
+Received: by mail-lj1-x244.google.com with SMTP id h16so15472181ljg.11
+ for <ath10k@lists.infradead.org>; Tue, 09 Apr 2019 12:13:11 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 2/6] ath10k: high latency fixes for beacon buffer
-Date: Tue,  9 Apr 2019 21:08:47 +0200
-Message-Id: <20190409190851.4557-3-erik.stromdahl@gmail.com>
+Subject: [PATCH 3/6] ath10k: sdio: read RX packets in bundles
+Date: Tue,  9 Apr 2019 21:08:48 +0200
+Message-Id: <20190409190851.4557-4-erik.stromdahl@gmail.com>
 In-Reply-To: <20190409190851.4557-1-erik.stromdahl@gmail.com>
 References: <20190409190851.4557-1-erik.stromdahl@gmail.com>
 MIME-Version: 1.0
@@ -25,75 +25,159 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Alagu Sankar <alagusankar@silex-india.com>
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, Alagu Sankar <alagusankar@silex-india.com>
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-Beacon buffer for high latency devices does not use DMA. other similar
-buffer allocation methods in the driver have already been modified for
-high latency path. Fix the beacon buffer allocation left out in the
-earlier high latency changes.
+The existing implementation of initiating multiple sdio transfers for
+receive bundling is slowing down the receive speed.
 
+Instead of having one sdio transfer for each packet in the bundle, we
+read all packets in one sdio transfer.
+
+This results in significant performance improvement on some targets.
+
+Co-developed-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 31 ++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 66 +++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/sdio.h |  2 +
+ 2 files changed, 55 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c9e700b844f8..2dd99ce44453 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -953,8 +953,12 @@ static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
- 	ath10k_mac_vif_beacon_free(arvif);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index fae56c67766f..295e1e7ec3b0 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -24,6 +24,8 @@
+ #include "trace.h"
+ #include "sdio.h"
  
- 	if (arvif->beacon_buf) {
--		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
--				  arvif->beacon_buf, arvif->beacon_paddr);
-+		if (ar->dev_type == ATH10K_DEV_TYPE_HL)
-+			kfree(arvif->beacon_buf);
-+		else
-+			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
-+					  arvif->beacon_buf,
-+					  arvif->beacon_paddr);
- 		arvif->beacon_buf = NULL;
- 	}
++#define ATH10K_SDIO_READ_BUF_SIZE	(32 * 1024)
++
+ /* inlined helper functions */
+ 
+ static inline int ath10k_sdio_calc_txrx_padded_len(struct ath10k_sdio *ar_sdio,
+@@ -618,41 +620,68 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 	return ret;
  }
-@@ -5210,10 +5214,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	if (vif->type == NL80211_IFTYPE_ADHOC ||
- 	    vif->type == NL80211_IFTYPE_MESH_POINT ||
- 	    vif->type == NL80211_IFTYPE_AP) {
--		arvif->beacon_buf = dma_alloc_coherent(ar->dev,
--						       IEEE80211_MAX_FRAME_LEN,
--						       &arvif->beacon_paddr,
--						       GFP_ATOMIC);
-+		if (ar->dev_type == ATH10K_DEV_TYPE_HL) {
-+			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
-+						    GFP_KERNEL);
-+			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
-+		} else {
-+			arvif->beacon_buf =
-+				dma_alloc_coherent(ar->dev,
-+						   IEEE80211_MAX_FRAME_LEN,
-+						   &arvif->beacon_paddr,
-+						   GFP_ATOMIC);
-+		}
- 		if (!arvif->beacon_buf) {
- 			ret = -ENOMEM;
- 			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
-@@ -5424,8 +5435,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 
+-static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
+-				      struct ath10k_sdio_rx_data *pkt)
++static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
+ {
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
++	struct ath10k_sdio_rx_data *pkt = &ar_sdio->rx_pkts[0];
+ 	struct sk_buff *skb = pkt->skb;
+ 	int ret;
+ 
+-	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
+-				 skb->data, pkt->alloc_len);
+-	pkt->status = ret;
+-	if (!ret)
++	ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
++			       skb->data, pkt->alloc_len);
++	if (ret) {
++		ar_sdio->n_rx_pkts = 0;
++		ath10k_sdio_mbox_free_rx_pkt(pkt);
++	} else {
++		pkt->status = ret;
+ 		skb_put(skb, pkt->act_len);
++	}
+ 
+ 	return ret;
+ }
+ 
+-static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
++static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
+ {
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
++	struct ath10k_sdio_rx_data *pkt;
+ 	int ret, i;
++	u32 pkt_offset = 0, pkt_bundle_len = 0;
++
++	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
++		pkt_bundle_len += ar_sdio->rx_pkts[i].alloc_len;
++
++	if (pkt_bundle_len > ATH10K_SDIO_READ_BUF_SIZE) {
++		ret = -ENOMEM;
++		ath10k_err(ar, "bundle size (%d) exceeding limit %d\n",
++			   pkt_bundle_len, ATH10K_SDIO_READ_BUF_SIZE);
++		goto err;
++	}
++
++	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
++				 ar_sdio->sdio_read_buf, pkt_bundle_len);
++	if (ret)
++		goto err;
+ 
+ 	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
+-		ret = ath10k_sdio_mbox_rx_packet(ar,
+-						 &ar_sdio->rx_pkts[i]);
+-		if (ret)
+-			goto err;
++		struct sk_buff *skb = ar_sdio->rx_pkts[i].skb;
++
++		pkt = &ar_sdio->rx_pkts[i];
++		memcpy(skb->data, ar_sdio->sdio_read_buf + pkt_offset,
++		       pkt->alloc_len);
++		pkt->status = 0;
++		skb_put(skb, pkt->act_len);
++		pkt_offset += pkt->alloc_len;
+ 	}
+ 
+ 	return 0;
  
  err:
- 	if (arvif->beacon_buf) {
--		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
--				  arvif->beacon_buf, arvif->beacon_paddr);
-+		if (ar->dev_type == ATH10K_DEV_TYPE_HL)
-+			kfree(arvif->beacon_buf);
+ 	/* Free all packets that was not successfully fetched. */
+-	for (; i < ar_sdio->n_rx_pkts; i++)
++	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
+ 		ath10k_sdio_mbox_free_rx_pkt(&ar_sdio->rx_pkts[i]);
+ 
++	ar_sdio->n_rx_pkts = 0;
++
+ 	return ret;
+ }
+ 
+@@ -695,7 +724,10 @@ static int ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
+ 			 */
+ 			*done = false;
+ 
+-		ret = ath10k_sdio_mbox_rx_fetch(ar);
++		if (ar_sdio->n_rx_pkts > 1)
++			ret = ath10k_sdio_mbox_rx_fetch_bundle(ar);
 +		else
-+			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
-+					  arvif->beacon_buf,
-+					  arvif->beacon_paddr);
- 		arvif->beacon_buf = NULL;
++			ret = ath10k_sdio_mbox_rx_fetch(ar);
+ 
+ 		/* Process fetched packets. This will potentially update
+ 		 * n_lookaheads depending on if the packets contain lookahead
+@@ -2001,6 +2033,14 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		goto err_core_destroy;
  	}
+ 
++	ar_sdio->sdio_read_buf = devm_kzalloc(ar->dev,
++					      ATH10K_SDIO_READ_BUF_SIZE,
++					      GFP_KERNEL);
++	if (!ar_sdio->sdio_read_buf) {
++		ret = -ENOMEM;
++		goto err_core_destroy;
++	}
++
+ 	ar_sdio->func = func;
+ 	sdio_set_drvdata(func, ar_sdio);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+index b8c7ac0330bd..07e2cc6a3bd8 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.h
++++ b/drivers/net/wireless/ath/ath10k/sdio.h
+@@ -196,6 +196,8 @@ struct ath10k_sdio {
+ 	struct ath10k *ar;
+ 	struct ath10k_sdio_irq_data irq_data;
+ 
++	u8 *sdio_read_buf;
++
+ 	/* temporary buffer for BMI requests */
+ 	u8 *bmi_buf;
  
 -- 
 2.19.1
