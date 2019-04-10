@@ -1,24 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hE3F1-0002ht-VX
- for ath10k@lists.infradead.org; Wed, 10 Apr 2019 02:45:37 +0000
-Subject: RE: [PATCH] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw crash
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 10 Apr 2019 02:45:29 +0000
-Message-ID: <b073fa90e9a3437c9846ce2d22fab15f@aptaiexm02f.ap.qualcomm.com>
-References: <1542163824-795-1-git-send-email-wgong@codeaurora.org>
- <CABvG-CWg-VXAtoN8HZumW-ZdP6dX9cO_8fWJ58C22kD2yDcXdw@mail.gmail.com>
- <195f3bb0c88c43a6b1ca0ad336f947c0@aptaiexm02f.ap.qualcomm.com>
- <CABvG-CWAfB8jjCDW4ggjJ8_YC++CjttJOMOt4s24F3mymvNR9A@mail.gmail.com>
- <02904ba8682441e1a89668c1345cbec9@aptaiexm02f.ap.qualcomm.com>
- <54b4dab1191d41b8b329f3ceb7017626@aptaiexm02f.ap.qualcomm.com>
- <CABvG-CWz0rBCXfF7mX9L62=fmdcYhpOaO5JNLtvSE87o_XJFng@mail.gmail.com>
- <1fec49e1b6794860a1eff2330bcdea28@aptaiexm02f.ap.qualcomm.com>
- <CA+ASDXP1Ftpi93p=Bp2w1rRd3xVtNn_+diwkKTMXbTqK0B3ahA@mail.gmail.com>
-In-Reply-To: <CA+ASDXP1Ftpi93p=Bp2w1rRd3xVtNn_+diwkKTMXbTqK0B3ahA@mail.gmail.com>
-Content-Language: en-US
+ id 1hE3kR-0003ny-7w
+ for ath10k@lists.infradead.org; Wed, 10 Apr 2019 03:18:06 +0000
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x3A3Ag3x090727
+ for <ath10k@lists.infradead.org>; Tue, 9 Apr 2019 23:18:00 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2rs4fwqmfd-1
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ath10k@lists.infradead.org>; Tue, 09 Apr 2019 23:18:00 -0400
+Received: from localhost
+ by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <ath10k@lists.infradead.org> from <alastair@au1.ibm.com>;
+ Wed, 10 Apr 2019 04:17:58 +0100
+From: "Alastair D'Silva" <alastair@au1.ibm.com>
+Subject: [PATCH 0/4] Hexdump enhancements
+Date: Wed, 10 Apr 2019 13:17:16 +1000
 MIME-Version: 1.0
+Message-Id: <20190410031720.11067-1-alastair@au1.ibm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +29,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: alastair@d-silva.org
+Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Jani Nikula <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Alexander Viro <viro@zeniv.linux.org.uk>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCcmlhbiBOb3JyaXMgPGJyaWFu
-bm9ycmlzQGNocm9taXVtLm9yZz4NCj4gU2VudDogV2VkbmVzZGF5LCBBcHJpbCAxMCwgMjAxOSA3
-OjI1IEFNDQo+IFRvOiBXZW4gR29uZyA8d2dvbmdAcXRpLnF1YWxjb21tLmNvbT4NCj4gQ2M6IE1p
-Y2hhxYIgS2F6aW9yIDxrYXppa2N6QGdtYWlsLmNvbT47IFdlbiBHb25nDQo+IDx3Z29uZ0Bjb2Rl
-YXVyb3JhLm9yZz47IGxpbnV4LXdpcmVsZXNzIDxsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5v
-cmc+Ow0KPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBbRVhUXSBSZTog
-W1BBVENIXSBhdGgxMGs6IFJlbW92ZSBBVEgxMEtfU1RBVEVfUkVTVEFSVEVEIGluDQo+IHNpbXVs
-YXRlIGZ3IGNyYXNoDQo+IA0KPiBPbiBNb24sIEFwciA4LCAyMDE5IGF0IDEwOjA5IFBNIFdlbiBH
-b25nIDx3Z29uZ0BxdGkucXVhbGNvbW0uY29tPg0KPiB3cm90ZToNCj4gPiA+IEZyb206IE1pY2hh
-xYIgS2F6aW9yIDxrYXppa2N6QGdtYWlsLmNvbT4NCj4gPiA+IFRvIHNhdGlzZnkgYm90aCBJIHdv
-dWxkIHN1Z2dlc3QgeW91IGVpdGhlciBleHBvc2UgYXItPnN0YXRlIHZpYQ0KPiA+ID4gZGVidWdm
-cyBhbmQgbWFrZSB5b3VyIHRlc3QgcHJvY2VkdXJlIHdhaXQgZm9yIHRoYXQgdG8gZ2V0IGJhY2sg
-aW50byBPTg0KPiA+ID4gc3RhdGUgYmVmb3JlIHNpbXVsYXRpbmcgYSBjcmFzaCBhZ2Fpbiwgb3Ig
-dG8gZXh0ZW5kIHRoZSBzZXQgb2YgY3VycmVudA0KPiA+ID4gc2ltdWxhdGVfZndfY3Jhc2ggY29t
-bWFuZHMgKGN1cnJlbnRseSBqdXN0OiBzb2Z0LCBoYXJkLCBhc3NlcnQsDQo+ID4gPiBody1yZXN0
-YXJ0KSB0byBzb21ldGhpbmcgdGhhdCBhbGxvd3MgZXhwcmVzc2luZyB0aGUgaW50ZW50IHdoZXRo
-ZXINCj4gPiA+IGNyYXNoLWluLWNyYXNoIHByZXZlbnRpb24gaXMgaW50ZW5kZWQgKHlvdXIgY2Fz
-ZSkgb3Igbm90IChteSBvcmlnaW5hbA0KPiA+ID4gY2FzZSkuDQo+ID4gPg0KPiA+ID4gVGhpcyBj
-b3VsZCBiZSBmb3IgZXhhbXBsZSBzb21ldGhpbmcgbGlrZSB0aGlzOg0KPiA+ID4gICBlY2hvIHNv
-ZnQgd2FpdC1yZWFkeSA+IHNpbXVsYXRlX2Z3X2NyYXNoDQo+ID4gPg0KPiA+ID4gVGhlICJ3YWl0
-LXJlYWR5IiBleHRyYSBrZXl3b3JkIHdvdWxkIGltcGx5IGNyYXNoLWluLWNyYXNoIHByZXZlbnRp
-b24uDQo+ID4gPiBUaGlzIHdvdWxkIGtlZXAgZXhpc3RpbmcgdG9vbHMgd29ya2luZyAoYm90aCBi
-ZWhhdmlvciBhbmQgc3ludGF4KSBhbmQNCj4gPiA+IHdvdWxkIGFsbG93IHlvdXIgdGVzdCBjYXNl
-IHRvIGJlIGltcGxlbWVudGVkLg0KPiA+ID4NCj4gPiBJcyBpdCBlYXN5IHRvIGNoYW5nZSB5b3Vy
-IGV4aXN0aW5nIHRvb2xzPw0KPiA+IEkgd2FudCB0byBjaGFuZ2UgaXQgdG86IGVjaG8gc29mdCBz
-a2lwLXJlYWR5ID4gc2ltdWxhdGVfZndfY3Jhc2gNCj4gPiBUaGUgInNraXAtcmVhZHkiIGV4dHJh
-IGtleXdvcmQgd291bGQgaW1wbHkgY3Jhc2gtaW4tY3Jhc2gsICpub3QqDQo+IHByZXZlbnRpb24u
-DQo+ID4gTXkgdGVzdCB0b29scyBpcyBoYXJkIHRvIGNoYW5nZS4NCj4gDQo+IEluIGNhc2UgeW91
-J3JlIHRhbGtpbmcgYWJvdXQgdGhlIHRlc3QgZnJhbWV3b3JrIHdlIHJ1biBmb3IgQ2hyb21lT1MN
-Cj4gdmFsaWRhdGlvbiwgbm8sIGl0J3Mgbm90IGhhcmQgYXQgYWxsIHRvIGNoYW5nZS4gQXMgbG9u
-ZyBhcyB0aGVyZSdzIGENCj4gZ29vZCByZWFzb24uDQo+IA0KPiBJIGhhdmVuJ3QgY2xvc2VseSBm
-b2xsb3dlZCB0aGlzLCBidXQganVkZ2luZyBieSB0aGUgYWJvdmUgc3VtbWFyeSwNCj4gaXQncyBw
-cm9iYWJseSBtb3JlIHJlYXNvbmFibGUgZm9yIG91ciB0ZXN0IGZyYW1ld29yayB0byBvbmx5IHNp
-bXVsYXRlDQo+IEZXIGNyYXNoZXMgYWZ0ZXIgdGhlIGRyaXZlciByZXR1cm5zIHRvICJyZWFkeSIg
-KG9yIGF0IGxlYXN0LCBpZiB3ZSBkbw0KPiBjcmFzaC1pbi1jcmFzaCwgZG9uJ3QgZXhwZWN0IHRo
-ZSBkcml2ZXIgdG8gcmVjb3Zlcj8pLiBJIGV4cGVjdCB3ZSBjYW4NCj4gd29yayB3aXRoIHdoYXRl
-dmVyIG1lY2hhbmlzbSB5b3UgaW1wbGVtZW50IGZvciB0aGF0IChleHBvc2luZyB0aGUNCj4gInN0
-YXRlIiwgb3IgcHJvdmlkaW5nIGEgbmV3IHNpbXVsYXRlX2Z3X2NyYXNoIG1vZGUpLg0KPiANCg0K
-SWYgQ2hyb21lT1MgaXMgZWFzeSB0byBjaGFuZ2UgdG9vbCwgDQpJIHRoaW5rIEkgd2lsbCBjaGFu
-Z2UgdGhlIG1lY2hhbmlzbSBvZiB0aGUgc2ltdWxhdGVfZndfY3Jhc2guDQpUaGVuIGFsbCB0b29s
-cyB3aWxsIHdvcmsgbm9ybWFsbHkuDQoNCj4gQnJpYW4NCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+From: Alastair D'Silva <alastair@d-silva.org>
+
+Apologies for the large CC list, it's a heads up for those responsible
+for subsystems where a prototype change in generic code causes a change
+in those subsystems.
+
+This series enhances hexdump.
+
+These improve the readability of the dumped data in certain situations
+(eg. wide terminals are available, many lines of empty bytes exist, etc).
+
+The default behaviour of hexdump is unchanged, however, the prototype
+for hex_dump_to_buffer() has changed, and print_hex_dump() has been
+renamed to print_hex_dump_ext(), with a wrapper replacing it for
+compatibility with existing code, which would have been too invasive to
+change.
+
+Alastair D'Silva (4):
+  lib/hexdump.c: Allow 64 bytes per line
+  lib/hexdump.c: Optionally suppress lines of filler bytes
+  lib/hexdump.c: Replace ascii bool in hex_dump_to_buffer with flags
+  lib/hexdump.c: Allow multiple groups to be separated by lines '|'
+
+ drivers/gpu/drm/i915/intel_engine_cs.c        |   2 +-
+ drivers/isdn/hardware/mISDN/mISDNisar.c       |   6 +-
+ drivers/mailbox/mailbox-test.c                |   2 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c      |   2 +-
+ .../net/ethernet/synopsys/dwc-xlgmac-common.c |   2 +-
+ drivers/net/wireless/ath/ath10k/debug.c       |   3 +-
+ .../net/wireless/intel/iwlegacy/3945-mac.c    |   2 +-
+ drivers/platform/chrome/wilco_ec/debugfs.c    |   3 +-
+ drivers/scsi/scsi_logging.c                   |   8 +-
+ drivers/staging/fbtft/fbtft-core.c            |   2 +-
+ fs/seq_file.c                                 |   3 +-
+ include/linux/printk.h                        |  38 ++++-
+ lib/hexdump.c                                 | 143 ++++++++++++++----
+ lib/test_hexdump.c                            |   5 +-
+ 14 files changed, 168 insertions(+), 53 deletions(-)
+
+-- 
+2.20.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
