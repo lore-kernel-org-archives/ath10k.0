@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ushosting.nmnhosting.com ([167.160.173.127])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hE9ux-0001Ql-2F
- for ath10k@lists.infradead.org; Wed, 10 Apr 2019 09:53:20 +0000
-From: "Alastair D'Silva" <alastair@d-silva.org>
-References: <20190410031720.11067-1-alastair@au1.ibm.com>
- <20190410031720.11067-5-alastair@au1.ibm.com>
- <1cd09186c67b4fa4bceb84faf835ff10@AcuMS.aculab.com>
-In-Reply-To: <1cd09186c67b4fa4bceb84faf835ff10@AcuMS.aculab.com>
-Subject: RE: [PATCH 4/4] lib/hexdump.c: Allow multiple groups to be separated
- by lines '|'
-Date: Wed, 10 Apr 2019 19:52:58 +1000
-Message-ID: <051301d4ef83$34d2c710$9e785530$@d-silva.org>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hEBhW-0005gT-T0
+ for ath10k@lists.infradead.org; Wed, 10 Apr 2019 11:47:36 +0000
 MIME-Version: 1.0
-Content-Language: en-au
+Date: Wed, 10 Apr 2019 17:17:33 +0530
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Fix the wrong value of enums for wmi tlv stats id
+In-Reply-To: <CAJ-VmoncvErDWb4a2CNE38ECt2_8-vYr3sZ+AcjiPGCaPGuoCQ@mail.gmail.com>
+References: <1554792193-22535-1-git-send-email-svishnoi@codeaurora.org>
+ <CAJ-VmoncvErDWb4a2CNE38ECt2_8-vYr3sZ+AcjiPGCaPGuoCQ@mail.gmail.com>
+Message-ID: <5e133105e60e45a48986c54a814b5a60@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +19,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'David Laight' <David.Laight@ACULAB.COM>, 'Alastair D'Silva' <alastair@au1.ibm.com>
-Cc: linux-fbdev@vger.kernel.org, 'Stanislaw Gruszka' <sgruszka@redhat.com>, 'Petr Mladek' <pmladek@suse.com>, 'David Airlie' <airlied@linux.ie>, 'Joonas Lahtinen' <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, 'Jose Abreu' <Jose.Abreu@synopsys.com>, 'Tom Lendacky' <thomas.lendacky@amd.com>, "'James E.J. Bottomley'" <jejb@linux.ibm.com>, 'Jani Nikula' <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, 'Steven Rostedt' <rostedt@goodmis.org>, 'Rodrigo Vivi' <rodrigo.vivi@intel.com>, 'Benson Leung' <bleung@chromium.org>, 'Kalle Valo' <kvalo@codeaurora.org>, 'Karsten Keil' <isdn@linux-pingi.de>, "'Martin K. Petersen'" <martin.petersen@oracle.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>, 'Daniel Vetter' <daniel@ffwll.ch>, netdev@vger.kernel.org, 'Enric Balletbo i Serra' <enric.balletbo@collabora.com>, 'Andrew Morton' <akpm@linux-foundation.org>, "'David S. Miller'" <davem@davemloft.net>, 'Alexander Viro' <viro@zeniv.linux.org.uk>
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-> -----Original Message-----
-> From: David Laight <David.Laight@ACULAB.COM>
-> Sent: Wednesday, 10 April 2019 6:45 PM
-> To: 'Alastair D'Silva' <alastair@au1.ibm.com>; alastair@d-silva.org
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>; Joonas Lahtinen
-> <joonas.lahtinen@linux.intel.com>; Rodrigo Vivi <rodrigo.vivi@intel.com>;
-> David Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>; Karsten Keil
-> <isdn@linux-pingi.de>; Jassi Brar <jassisinghbrar@gmail.com>; Tom Lendacky
-> <thomas.lendacky@amd.com>; David S. Miller <davem@davemloft.net>;
-> Jose Abreu <Jose.Abreu@synopsys.com>; Kalle Valo
-> <kvalo@codeaurora.org>; Stanislaw Gruszka <sgruszka@redhat.com>;
-> Benson Leung <bleung@chromium.org>; Enric Balletbo i Serra
-> <enric.balletbo@collabora.com>; James E.J. Bottomley
-> <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@oracle.com>;
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Alexander Viro
-> <viro@zeniv.linux.org.uk>; Petr Mladek <pmladek@suse.com>; Sergey
-> Senozhatsky <sergey.senozhatsky@gmail.com>; Steven Rostedt
-> <rostedt@goodmis.org>; Andrew Morton <akpm@linux-foundation.org>;
-> intel-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
-> kernel@vger.kernel.org; netdev@vger.kernel.org;
-> ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
-> scsi@vger.kernel.org; linux-fbdev@vger.kernel.org;
-> devel@driverdev.osuosl.org; linux-fsdevel@vger.kernel.org
-> Subject: RE: [PATCH 4/4] lib/hexdump.c: Allow multiple groups to be
-> separated by lines '|'
+On 2019-04-09 12:18, Adrian Chadd wrote:
+> What about QCA6174 that uses TLV? Does this change its behaviour?
 > 
-> From: Alastair D'Silva
-> > Sent: 10 April 2019 04:17
-> > With the wider display format, it can become hard to identify how many
-> > bytes into the line you are looking at.
-> >
-> > The patch adds new flags to hex_dump_to_buffer() and
-> print_hex_dump()
-> > to print vertical lines to separate every N groups of bytes.
-> >
-> > eg.
-> > buf:00000000: 454d414e 43415053|4e495f45 00584544
-> NAMESPAC|E_INDEX.
-> > buf:00000010: 00000000 00000002|00000000 00000000  ........|........
+> -a
 > 
-> Ugg, that is just horrid.
-> It is enough to add an extra space if you really need the columns to be more
-> easily counted.
->
 
-I did consider that, but it would be a more invasive change, as the buffer length required would differ based on the flags.
- 
-> I'm not even sure that is needed if you are printing 32bit words.
-> OTOH 32bit words makes 64bit values really stupid on LE systems.
-> Bytes with extra spaces every 4 bytes is the format I prefer even for long
-> lines.
-> 
-> Oh, and if you are using hexdump() a lot you want a version that never uses
-> snprintf().
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes,
-> MK1 1PT, UK Registration No: 1397386 (Wales)
-> 
-> 
-> ---
-> This email has been checked for viruses by AVG.
-> https://www.avg.com
+No, it will not break QCA6174, as earlier also same enum values 
+(wmi_stats_id) were used for TLV targets,
+enum wmi_stats_id {
+         WMI_STAT_PEER = BIT(0),
+         WMI_STAT_AP = BIT(1),
+         WMI_STAT_PDEV = BIT(2),
+         WMI_STAT_VDEV = BIT(3),
+         WMI_STAT_BCNFLT = BIT(4),
+         WMI_STAT_VDEV_RATE = BIT(5),
+};
+
+In the change f40a307eb92c ("ath10k: Fill rx duration for each peer in 
+fw_stats for WCN3990), enum values for wmi_tlv_stats_id were wrongly 
+added.
+
+Thanks,
+Surabhi Vishnoi
 
 
+> On Mon, 8 Apr 2019 at 23:43, Surabhi Vishnoi <svishnoi@codeaurora.org>
+> wrote:
+> 
+>> The enum value for WMI_TLV_STAT_PDEV, WMI_TLV_STAT_VDEV
+>> and WMI_TLV_STAT_PEER is wrong, due to which the vdev stats
+>> are not received from firmware in wmi_update_stats event.
+>> 
+>> Fix the enum values for above stats to receive all stats
+>> from firmware in WMI_TLV_UPDATE_STATS_EVENTID.
+>> 
+>> Tested HW: WCN3990
+>> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+>> 
+>> Fixes: f40a307eb92c ("ath10k: Fill rx duration for each peer in
+>> fw_stats for WCN3990)
+>> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+>> ---
+>> drivers/net/wireless/ath/ath10k/wmi.h | 7 ++++---
+>> 1 file changed, 4 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h
+>> b/drivers/net/wireless/ath/ath10k/wmi.h
+>> index e1c40bb..12f57f9 100644
+>> --- a/drivers/net/wireless/ath/ath10k/wmi.h
+>> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
+>> @@ -4535,9 +4535,10 @@ enum wmi_10_4_stats_id {
+>> };
+>> 
+>> enum wmi_tlv_stats_id {
+>> -       WMI_TLV_STAT_PDEV       = BIT(0),
+>> -       WMI_TLV_STAT_VDEV       = BIT(1),
+>> -       WMI_TLV_STAT_PEER       = BIT(2),
+>> +       WMI_TLV_STAT_PEER       = BIT(0),
+>> +       WMI_TLV_STAT_AP         = BIT(1),
+>> +       WMI_TLV_STAT_PDEV       = BIT(2),
+>> +       WMI_TLV_STAT_VDEV       = BIT(3),
+>> WMI_TLV_STAT_PEER_EXTD  = BIT(10),
+>> };
+>> 
+>> --
+>> 1.9.1
 
 _______________________________________________
 ath10k mailing list
