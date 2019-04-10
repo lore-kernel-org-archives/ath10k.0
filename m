@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ushosting.nmnhosting.com ([167.160.173.127])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hE4Ku-00080M-Ep
- for ath10k@lists.infradead.org; Wed, 10 Apr 2019 03:55:46 +0000
-Message-ID: <646b3b03b2c9a2612d3bbc6f1e00d4f9fa79769f.camel@d-silva.org>
-Subject: Re: [PATCH 2/4] lib/hexdump.c: Optionally suppress lines of filler
- bytes
-From: "Alastair D'Silva" <alastair@d-silva.org>
-Date: Wed, 10 Apr 2019 13:32:46 +1000
-In-Reply-To: <20190410031720.11067-3-alastair@au1.ibm.com>
-References: <20190410031720.11067-1-alastair@au1.ibm.com>
- <20190410031720.11067-3-alastair@au1.ibm.com>
-MIME-Version: 1.0
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hE4tE-0005Za-28
+ for ath10k@lists.infradead.org; Wed, 10 Apr 2019 04:31:16 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: change swap mail box config for UTF mode of SDIO
+Date: Wed, 10 Apr 2019 12:30:54 +0800
+Message-Id: <1554870654-4236-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,128 +15,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David
- S. Miller" <davem@davemloft.net>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Wed, 2019-04-10 at 13:17 +1000, Alastair D'Silva wrote:
-> From: Alastair D'Silva <alastair@d-silva.org>
-> 
-> Some buffers may only be partially filled with useful data, while the
-> rest
-> is padded (typically with 0x00 or 0xff).
-> 
-This patch introduces flags which allow lines of padding bytes to be
-> suppressed, making the output easier to interpret:
-> HEXDUMP_SUPPRESS_0X00,
-> HEXDUMP_SUPPRESS_0XFF
-> 
-> The first and last lines are not suppressed by default, so the
-> function
-> always outputs something. This behaviour can be further controlled
-> with
-> the HEXDUMP_SUPPRESS_FIRST & HEXDUMP_SUPPRESS_LAST flags.
-> 
-> An inline wrapper function is provided for backwards compatibility
-> with
-> existing code, which maintains the original behaviour.
-> 
-> Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
-> ---
-> 
-<snip>
+For SDIO chip, it does not have HTT connect step in boot phase of UTF
+mode, so it does not need the swap configuration for UTF mode, otherwise
+it will trigger UTF load fail. For normal mode, it is swap between HTT
+and WMI, for UTF mode, it does not have HTT, so it can not swap between
+HTT and WMI.
 
-> diff --git a/lib/hexdump.c b/lib/hexdump.c
-> index b8a164814744..2f3bafb55a44 100644
-> --- a/lib/hexdump.c
-> +++ b/lib/hexdump.c
-> @@ -209,8 +209,21 @@ int hex_dump_to_buffer(const void *buf, size_t
-> len, int rowsize, int groupsize,
->  EXPORT_SYMBOL(hex_dump_to_buffer);
->  
->  #ifdef CONFIG_PRINTK
-> +
-> +static bool buf_is_all(const u8 *buf, size_t len, u8 val)
-> +{
-> +	size_t i;
-> +
-> +	for (i = 0; i < len; i++) {
-> +		if (buf[i] != val)
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
->  /**
-> - * print_hex_dump - print a text hex dump to syslog for a binary
-> blob of data
-> + * print_hex_dump_ext: dump a binary blob of data to syslog in
-> hexadecimal
->   * @level: kernel log level (e.g. KERN_DEBUG)
->   * @prefix_str: string to prefix each line with;
->   *  caller supplies trailing spaces for alignment if desired
-> @@ -221,42 +234,73 @@ EXPORT_SYMBOL(hex_dump_to_buffer);
->   * @buf: data blob to dump
->   * @len: number of bytes in the @buf
->   * @ascii: include ASCII after the hex output
-This line should have been removed. I'll address it in V2.
+Disable swap mail box for UTF mode will let UTF mode load success.
 
-> + * @flags: A bitwise OR of the following flags:
-> + *	HEXDUMP_ASCII:		include ASCII after the hex output
-> + *	HEXDUMP_SUPPRESS_0X00:	suppress lines that are all 0x00
-> + *				(other than first or last)
-> + *	HEXDUMP_SUPPRESS_0XFF:	suppress lines that are all 0xff
-> + *				(other than first or last)
-> + *	HEXDUMP_SUPPRESS_FIRST:	allows the first line to be
-> suppressed
-> + *	HEXDUMP_SUPPRESS_LAST:	allows the last line to be suppressed
-> + *				If the first and last line may be
-> suppressed,
-> + *				an empty buffer will not produce any
-> output
->   *
->   * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII
-> dump
->   * to the kernel log at the specified kernel log level, with an
-> optional
->   * leading prefix.
->   *
-> - * print_hex_dump() works on one "line" of output at a time, i.e.,
-> + * print_hex_dump_ext() works on one "line" of output at a time,
-> i.e.,
->   * 16, 32 or 64 bytes of input data converted to hex + ASCII output.
-> - * print_hex_dump() iterates over the entire input @buf, breaking it
-> into
-> + * print_hex_dump_ext() iterates over the entire input @buf,
-> breaking it into
->   * "line size" chunks to format and print.
->   *
->   * E.g.:
-> - *   print_hex_dump(KERN_DEBUG, "raw data: ", DUMP_PREFIX_ADDRESS,
-> - *		    16, 1, frame->data, frame->len, true);
-> + *   print_hex_dump_ext(KERN_DEBUG, "raw data: ",
-> DUMP_PREFIX_ADDRESS,
-> + *		    16, 1, frame->data, frame->len, HEXDUMP_ASCII);
->   *
->   * Example output using %DUMP_PREFIX_OFFSET and 1-byte mode:
->   * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e
-> 4f  @ABCDEFGHIJKLMNO
->   * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
->   * ffffffff88089af0: 73727170 77767574 7b7a7978
-> 7f7e7d7c  pqrstuvwxyz{|}~.
->   */
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 11 ++++++++---
+ drivers/net/wireless/ath/ath10k/sdio.c |  5 +++++
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 835b8de..79a238c 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -629,7 +629,7 @@ static void ath10k_send_suspend_complete(struct ath10k *ar)
+ 	complete(&ar->target_suspend);
+ }
+ 
+-static void ath10k_init_sdio(struct ath10k *ar)
++static void ath10k_init_sdio(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ {
+ 	u32 param = 0;
+ 
+@@ -646,7 +646,12 @@ static void ath10k_init_sdio(struct ath10k *ar)
+ 	 * not big enough for mac80211 / native wifi frames. disable it
+ 	 */
+ 	param &= ~HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
+-	param |= HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET;
++
++	if (mode == ATH10K_FIRMWARE_MODE_UTF)
++		param &= ~HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET;
++	else
++		param |= HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET;
++
+ 	ath10k_bmi_write32(ar, hi_acs_flags, param);
+ 
+ 	/* Explicitly set fwlog prints to zero as target may turn it on
+@@ -2501,7 +2506,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 			goto err;
+ 
+ 		if (ar->hif.bus == ATH10K_BUS_SDIO)
+-			ath10k_init_sdio(ar);
++			ath10k_init_sdio(ar, mode);
+ 	}
+ 
+ 	ar->htc.htc_ops.target_send_suspend_complete =
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index fae56c6..bfb125b 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -1637,7 +1637,12 @@ static int ath10k_sdio_hif_swap_mailbox(struct ath10k *ar)
+ 		ath10k_dbg(ar, ATH10K_DBG_SDIO,
+ 			   "sdio mailbox swap service enabled\n");
+ 		ar_sdio->swap_mbox = true;
++	} else {
++		ath10k_dbg(ar, ATH10K_DBG_SDIO,
++			"sdio mailbox swap service disabled\n");
++		ar_sdio->swap_mbox = false;
+ 	}
++
+ 	return 0;
+ }
+ 
 -- 
-Alastair D'Silva           mob: 0423 762 819
-skype: alastair_dsilva    
-Twitter: @EvilDeece
-blog: http://alastair.d-silva.org
-
+1.9.1
 
 
 _______________________________________________
