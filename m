@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEt7M-0003hn-8L
- for ath10k@lists.infradead.org; Fri, 12 Apr 2019 10:09:09 +0000
+ id 1hEvPn-0004H1-PG
+ for ath10k@lists.infradead.org; Fri, 12 Apr 2019 12:36:21 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 0/6] ath10k: SDIO and high latency patches from Silex
+References: <20190409190851.4557-1-erik.stromdahl@gmail.com>
+Date: Fri, 12 Apr 2019 15:36:15 +0300
+In-Reply-To: <20190409190851.4557-1-erik.stromdahl@gmail.com> (Erik
+ Stromdahl's message of "Tue, 9 Apr 2019 21:08:45 +0200")
+Message-ID: <87pnprflj4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Fri, 12 Apr 2019 18:09:03 +0800
-From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: Re: [PATCH v2] fq: fix fq_tin tx bytes overflow
-In-Reply-To: <717acf1bde5507f73436ae7d45d114b34aee1c05.camel@sipsolutions.net>
-References: <1552446505-15444-1-git-send-email-yiboz@codeaurora.org>
- (sfid-20190313_040846_202389_4E584F4C)
- <13392e1203be4ddd97c4e0e6b6a6c48ce97aae6f.camel@sipsolutions.net>
- <fa575f93f3936aa3be1cf6b14f87e511@codeaurora.org>
- <717acf1bde5507f73436ae7d45d114b34aee1c05.camel@sipsolutions.net>
-Message-ID: <dba1c91baf387a5e44743075ec7efbc2@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless-owner@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2019-04-09 04:01, Johannes Berg wrote:
-> On Mon, 2019-03-18 at 12:59 +0800, Yibo Zhao wrote:
->> 
->> I understand your concern. Yes, I am using high end AP for throughput
->> test. I'd say 1.2 Gbps is not the worst case since we can achieve max
->> 1.4Gbps according to our test. AFAIK, for most throughput cases, 1min 
->> is
->> the minimum requirement. And I think, with more and more high end
->> products(even higher throughput) on the ways to the market, it is 
->> highly
->> possible that 30s is not a safe time before overflow.
-> 
-> Well, 2 Gbps (goodput) would make it overflow every 16 seconds, so I'm
-> not sure where you take the 1 minute from :-) Maybe from 1.2Gbps PHY
-> rate.
-> 
-> But still, the only place we expose this is debugfs, so I'm not really
-> sure we want to spend that.
-> 
-> Note that I'm generally pushing back on statistics right now - I really
-> want to put some trace points or eBPF hooks in places that people can
-> use to keep their favourite statistics, instead of trying to cover each
-> and every use case in the stack itself.
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-Cool, great!looking forward to that change. :-)
-> 
-> johannes
+> This series adds a few more fixes for SDIO and high latency devices.
+>
+> I have had these on my private tree for quite some time now so they
+> should be considered fairly well tested.
+>
+> 4 out of 6 patches are from Alagu Sankar at Silex.
+> I have made some adjustments to some of them in order to make them
+> smaller and easier to review.
+>
+> Alagu Sankar (4):
+>   ath10k: use clean packet headers
+>   ath10k: high latency fixes for beacon buffer
+>   ath10k: sdio: read RX packets in bundles
+>   ath10k: sdio: add MSDU ID allocation in HTT TX path
+>
+> Erik Stromdahl (2):
+>   ath10k: sdio: add missing error check
+>   ath10k: sdio: replace skb_trim with explicit set of skb->len
+
+Bad timing as also me and Wen have been cleaning up these patches and
+finalising the SDIO support so our work overlapped. I'll send our
+version of patches soon and we can then compare.
 
 -- 
-Yibo
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
