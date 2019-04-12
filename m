@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEw3e-000774-EO
- for ath10k@lists.infradead.org; Fri, 12 Apr 2019 13:17:34 +0000
+ id 1hEwE8-0002T5-L9
+ for ath10k@lists.infradead.org; Fri, 12 Apr 2019 13:28:22 +0000
+Subject: [PATCH 1/6] ath10k: sdio: workaround firmware UART pin
+ configuration bug
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 6/6] ath10k: sdio: replace skb_trim with explicit set of
- skb->len
-References: <20190409190851.4557-1-erik.stromdahl@gmail.com>
- <20190409190851.4557-7-erik.stromdahl@gmail.com>
-Date: Fri, 12 Apr 2019 16:17:26 +0300
-In-Reply-To: <20190409190851.4557-7-erik.stromdahl@gmail.com> (Erik
- Stromdahl's message of "Tue, 9 Apr 2019 21:08:51 +0200")
-Message-ID: <87zhovcqhl.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 12 Apr 2019 16:28:17 +0300
+Message-ID: <155507569645.32018.15231567732563770250.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,43 +21,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+From: Wen Gong <wgong@codeaurora.org>
 
-> This patch fixes a bug with padding of the skb data buffer.
-> Since skb_trim can only be used to reduce the skb len, it is useless when
-> we pad (increase the length of) the skb. Instead we must set skb->len
-> directly.
->
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath10k/sdio.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-> index 3eb241cb8a25..989e3f563f3d 100644
-> --- a/drivers/net/wireless/ath/ath10k/sdio.c
-> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-> @@ -1496,7 +1496,12 @@ static int ath10k_sdio_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
->  		skb = items[i].transfer_context;
->  		padded_len = ath10k_sdio_calc_txrx_padded_len(ar_sdio,
->  							      skb->len);
-> -		skb_trim(skb, padded_len);
-> +		/* FIXME: unsure if just extending the skb len is the right
-> +		 * thing to do since we might read outside the skb->data
-> +		 * buffer. But we really don't want to realloc the skb just to
-> +		 * pad the length.
-> +		 */
-> +		skb->len = padded_len;
+On QCA6174 SDIO devices the SDIO interrupt will fail if UART is
+disabled from ath10k. SDIO firmware enables UART printouts by
+default. If ath10k will try to enable UART again the firmware
+will configure it's GPIO line incorrectly and SDIO interrupts
+won't work anymore. The workaround is to set UART pin again (19
+for QCA6174 SDIO) if uart_print is 0.
 
-Good catch! But I don't think you can modify skb->len directly like
-that. There is skb_pad() but that doesn't change skb->len, so that most
-likely needs more changes. So maybe skb_put() is the safest here?
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
--- 
-Kalle Valo
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c |   10 +++++++++-
+ drivers/net/wireless/ath/ath10k/hw.h   |    5 +++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 835b8de92d55..cfd7bb29a1ec 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2065,8 +2065,16 @@ static int ath10k_init_uart(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	if (!uart_print)
++	if (!uart_print && ar->hw_params.uart_pin_workaround) {
++		ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin,
++					 ar->hw_params.uart_pin);
++		if (ret) {
++			ath10k_warn(ar, "failed to set UART TX pin: %d", ret);
++			return ret;
++		}
++
+ 		return 0;
++	}
+ 
+ 	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, ar->hw_params.uart_pin);
+ 	if (ret) {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 71314999aa24..a92fce1bb6f0 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -606,6 +606,11 @@ struct ath10k_hw_params {
+ 
+ 	/* target supporting fw download via diag ce */
+ 	bool fw_diag_ce_download;
++
++	/* need to set uart pin if disable uart print, workaround for a
++	 * firmware bug
++	 */
++	bool uart_pin_workaround;
+ };
+ 
+ struct htt_rx_desc;
+
 
 _______________________________________________
 ath10k mailing list
