@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ushosting.nmnhosting.com ([167.160.173.127])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hF5wl-000864-Nu
- for ath10k@lists.infradead.org; Fri, 12 Apr 2019 23:51:05 +0000
-From: "Alastair D'Silva" <alastair@d-silva.org>
-References: <20190410031720.11067-1-alastair@au1.ibm.com>
- <20190410031720.11067-3-alastair@au1.ibm.com>
- <20190412140353.mgvksn3yk6n65hbk@pathway.suse.cz>
-In-Reply-To: <20190412140353.mgvksn3yk6n65hbk@pathway.suse.cz>
-Subject: RE: [PATCH 2/4] lib/hexdump.c: Optionally suppress lines of filler
- bytes
-Date: Sat, 13 Apr 2019 09:28:03 +1000
-Message-ID: <093101d4f187$612f0f20$238d2d60$@d-silva.org>
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hFiOF-00017z-5E
+ for ath10k@lists.infradead.org; Sun, 14 Apr 2019 16:54:00 +0000
+Received: by mail-lf1-x141.google.com with SMTP id t11so6698307lfl.12
+ for <ath10k@lists.infradead.org>; Sun, 14 Apr 2019 09:53:56 -0700 (PDT)
+Subject: Re: [PATCH 0/6] ath10k: SDIO and high latency patches from Silex
+References: <20190409190851.4557-1-erik.stromdahl@gmail.com>
+ <87pnprflj4.fsf@kamboji.qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <7b74fac8-2f9e-12c8-bf83-8403aca55d06@gmail.com>
+Date: Sun, 14 Apr 2019 18:53:53 +0200
 MIME-Version: 1.0
-Content-Language: en-au
+In-Reply-To: <87pnprflj4.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,150 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Petr Mladek' <pmladek@suse.com>, 'Alastair D'Silva' <alastair@au1.ibm.com>
-Cc: linux-fbdev@vger.kernel.org, 'Stanislaw Gruszka' <sgruszka@redhat.com>, 'David Airlie' <airlied@linux.ie>, 'Joonas Lahtinen' <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, 'Jose Abreu' <Jose.Abreu@synopsys.com>, 'Tom Lendacky' <thomas.lendacky@amd.com>, "'James E.J. Bottomley'" <jejb@linux.ibm.com>, 'Jani Nikula' <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, 'Steven Rostedt' <rostedt@goodmis.org>, 'Rodrigo Vivi' <rodrigo.vivi@intel.com>, 'Benson Leung' <bleung@chromium.org>, 'Kalle Valo' <kvalo@codeaurora.org>, 'Karsten Keil' <isdn@linux-pingi.de>, "'Martin K. Petersen'" <martin.petersen@oracle.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>, 'Daniel Vetter' <daniel@ffwll.ch>, netdev@vger.kernel.org, 'Enric Balletbo i Serra' <enric.balletbo@collabora.com>, 'Andrew Morton' <akpm@linux-foundation.org>, "'David S. Miller'" <davem@davemloft.net>, 'Alexander Viro' <viro@zeniv.linux.org.uk>
-
-> -----Original Message-----
-> From: Petr Mladek <pmladek@suse.com>
-> Sent: Saturday, 13 April 2019 12:04 AM
-> To: Alastair D'Silva <alastair@au1.ibm.com>
-> Cc: alastair@d-silva.org; Jani Nikula <jani.nikula@linux.intel.com>;
-Joonas
-> Lahtinen <joonas.lahtinen@linux.intel.com>; Rodrigo Vivi
-> <rodrigo.vivi@intel.com>; David Airlie <airlied@linux.ie>; Daniel Vetter
-> <daniel@ffwll.ch>; Karsten Keil <isdn@linux-pingi.de>; Jassi Brar
-> <jassisinghbrar@gmail.com>; Tom Lendacky <thomas.lendacky@amd.com>;
-> David S. Miller <davem@davemloft.net>; Jose Abreu
-> <Jose.Abreu@synopsys.com>; Kalle Valo <kvalo@codeaurora.org>;
-> Stanislaw Gruszka <sgruszka@redhat.com>; Benson Leung
-> <bleung@chromium.org>; Enric Balletbo i Serra
-> <enric.balletbo@collabora.com>; James E.J. Bottomley
-> <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@oracle.com>;
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Alexander Viro
-> <viro@zeniv.linux.org.uk>; Sergey Senozhatsky
-> <sergey.senozhatsky@gmail.com>; Steven Rostedt <rostedt@goodmis.org>;
-> Andrew Morton <akpm@linux-foundation.org>; intel-
-> gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
-> kernel@vger.kernel.org; netdev@vger.kernel.org;
-> ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
-> scsi@vger.kernel.org; linux-fbdev@vger.kernel.org;
-> devel@driverdev.osuosl.org; linux-fsdevel@vger.kernel.org
-> Subject: Re: [PATCH 2/4] lib/hexdump.c: Optionally suppress lines of
-filler
-> bytes
-> 
-> On Wed 2019-04-10 13:17:18, Alastair D'Silva wrote:
-> > From: Alastair D'Silva <alastair@d-silva.org>
-> >
-> > Some buffers may only be partially filled with useful data, while the
-> > rest is padded (typically with 0x00 or 0xff).
-> >
-> > This patch introduces flags which allow lines of padding bytes to be
-> > suppressed, making the output easier to interpret:
-> > HEXDUMP_SUPPRESS_0X00, HEXDUMP_SUPPRESS_0XFF
-> >
-> > The first and last lines are not suppressed by default, so the
-> > function always outputs something. This behaviour can be further
-> > controlled with the HEXDUMP_SUPPRESS_FIRST &
-> HEXDUMP_SUPPRESS_LAST flags.
-> >
-> > An inline wrapper function is provided for backwards compatibility
-> > with existing code, which maintains the original behaviour.
-> >
-> 
-> > diff --git a/lib/hexdump.c b/lib/hexdump.c index
-> > b8a164814744..2f3bafb55a44 100644
-> > --- a/lib/hexdump.c
-> > +++ b/lib/hexdump.c
-> > +void print_hex_dump_ext(const char *level, const char *prefix_str,
-> > +			int prefix_type, int rowsize, int groupsize,
-> > +			const void *buf, size_t len, u64 flags)
-> >  {
-> >  	const u8 *ptr = buf;
-> > -	int i, linelen, remaining = len;
-> > +	int i, remaining = len;
-> >  	unsigned char linebuf[64 * 3 + 2 + 64 + 1];
-> > +	bool first_line = true;
-> >
-> >  	if (rowsize != 16 && rowsize != 32 && rowsize != 64)
-> >  		rowsize = 16;
-> >
-> >  	for (i = 0; i < len; i += rowsize) {
-> > -		linelen = min(remaining, rowsize);
-> > +		bool skip = false;
-> > +		int linelen = min(remaining, rowsize);
-> > +
-> >  		remaining -= rowsize;
-> >
-> > +		if (flags & HEXDUMP_SUPPRESS_0X00)
-> > +			skip = buf_is_all(ptr + i, linelen, 0x00);
-> > +
-> > +		if (!skip && (flags & HEXDUMP_SUPPRESS_0XFF))
-> > +			skip = buf_is_all(ptr + i, linelen, 0xff);
-> > +
-> > +		if (first_line && !(flags & HEXDUMP_SUPPRESS_FIRST))
-> > +			skip = false;
-> > +
-> > +		if (remaining <= 0 && !(flags & HEXDUMP_SUPPRESS_LAST))
-> > +			skip = false;
-> > +
-> > +		if (skip)
-> > +			continue;
-> 
-> IMHO, quietly skipping lines could cause a lot of confusion, espcially
-when
-> the address is not printed.
->
-It's up to the caller to decide how they want it displayed.
-
-> I wonder how it would look like when we print something like:
-> 
->     --- skipped XX lines full of 0x00 ---
-
-This could be added as a later enhancement, with a new flag (eg.
-HEXDUMP_SUPPRESS_VERBOSE).
-
-> 
-> Then we might even remove the SUPPRESS_FIRST, SUPPRESS_LAST and the
-> ambiguous QUIET flags.
-> 
-> > +
-> > +		first_line = false;
-> 
-> This should be above the if (skip).
-> 
-> > +
-> >  		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
-> > -				   linebuf, sizeof(linebuf), ascii);
-> > +				   linebuf, sizeof(linebuf),
-> > +				   flags & HEXDUMP_ASCII);
-> >
-> >  		switch (prefix_type) {
-> >  		case DUMP_PREFIX_ADDRESS:
-> > @@ -272,7 +316,7 @@ void print_hex_dump(const char *level, const char
-> *prefix_str, int prefix_type,
-> >  		}
-> >  	}
-> >  }
-> > -EXPORT_SYMBOL(print_hex_dump);
-> > +EXPORT_SYMBOL(print_hex_dump_ext);
-> 
-> We should still export even the original function that is still used
-everywhere.
-
-It's replaced with an inline wrapper function, there's no need to export it.
-
--- 
-Alastair D'Silva           mob: 0423 762 819
-skype: alastair_dsilva     msn: alastair@d-silva.org
-blog: http://alastair.d-silva.org    Twitter: @EvilDeece
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 
 
+On 4/12/19 2:36 PM, Kalle Valo wrote:
+> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+> 
+>> This series adds a few more fixes for SDIO and high latency devices.
+>>
+>> I have had these on my private tree for quite some time now so they
+>> should be considered fairly well tested.
+>>
+>> 4 out of 6 patches are from Alagu Sankar at Silex.
+>> I have made some adjustments to some of them in order to make them
+>> smaller and easier to review.
+>>
+>> Alagu Sankar (4):
+>>    ath10k: use clean packet headers
+>>    ath10k: high latency fixes for beacon buffer
+>>    ath10k: sdio: read RX packets in bundles
+>>    ath10k: sdio: add MSDU ID allocation in HTT TX path
+>>
+>> Erik Stromdahl (2):
+>>    ath10k: sdio: add missing error check
+>>    ath10k: sdio: replace skb_trim with explicit set of skb->len
+> 
+> Bad timing as also me and Wen have been cleaning up these patches and
+> finalising the SDIO support so our work overlapped. I'll send our
+> version of patches soon and we can then compare.
+> 
+Ok, I will rework these patches and apply them on top of yours and Wen's.
+I'll send a v2 set later.
 
 _______________________________________________
 ath10k mailing list
