@@ -1,25 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ushosting.nmnhosting.com ([167.160.173.127])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hFzXI-0003PR-3o
- for ath10k@lists.infradead.org; Mon, 15 Apr 2019 11:12:29 +0000
-From: "Alastair D'Silva" <alastair@d-silva.org>
-References: <20190410031720.11067-1-alastair@au1.ibm.com>
- <20190410031720.11067-4-alastair@au1.ibm.com>
- <20190412141211.lvnz6wb7mwkykmxf@pathway.suse.cz>
- <093301d4f187$da0756a0$8e1603e0$@d-silva.org>
- <20190415092424.qos7d54nbyr5hphu@pathway.suse.cz>
- <0da301d4f373$01d5bb80$05813280$@d-silva.org>
- <10c791893f034c26b4fee1a4659133e5@AcuMS.aculab.com>
- <0db501d4f378$3bd50bb0$b37f2310$@d-silva.org>
- <42fb90eb9c8f4ede8a56a09be90218e3@AcuMS.aculab.com>
-In-Reply-To: <42fb90eb9c8f4ede8a56a09be90218e3@AcuMS.aculab.com>
-Subject: RE: [PATCH 3/4] lib/hexdump.c: Replace ascii bool in
- hex_dump_to_buffer with flags
-Date: Mon, 15 Apr 2019 21:12:15 +1000
-Message-ID: <0dcb01d4f37c$17b948a0$472bd9e0$@d-silva.org>
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hG3Gd-0005Qv-8r
+ for ath10k@lists.infradead.org; Mon, 15 Apr 2019 15:11:42 +0000
+Received: by mail-lj1-x243.google.com with SMTP id q66so919021ljq.7
+ for <ath10k@lists.infradead.org>; Mon, 15 Apr 2019 08:11:30 -0700 (PDT)
+Subject: Re: [PATCH 6/6] ath10k: sdio: replace skb_trim with explicit set of
+ skb->len
+References: <20190409190851.4557-1-erik.stromdahl@gmail.com>
+ <20190409190851.4557-7-erik.stromdahl@gmail.com>
+ <87zhovcqhl.fsf@kamboji.qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <deca77d1-f171-e0cd-b571-89c2f8bafc87@gmail.com>
+Date: Mon, 15 Apr 2019 17:11:27 +0200
 MIME-Version: 1.0
-Content-Language: en-au
+In-Reply-To: <87zhovcqhl.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,76 +24,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'David Laight' <David.Laight@ACULAB.COM>, 'Petr Mladek' <pmladek@suse.com>
-Cc: linux-fbdev@vger.kernel.org, 'Stanislaw Gruszka' <sgruszka@redhat.com>, 'David Airlie' <airlied@linux.ie>, 'Joonas Lahtinen' <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, 'Jose Abreu' <Jose.Abreu@synopsys.com>, 'Tom Lendacky' <thomas.lendacky@amd.com>, "'James E.J. Bottomley'" <jejb@linux.ibm.com>, 'Jani Nikula' <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, 'Steven Rostedt' <rostedt@goodmis.org>, 'Rodrigo Vivi' <rodrigo.vivi@intel.com>, 'Benson Leung' <bleung@chromium.org>, 'Kalle Valo' <kvalo@codeaurora.org>, 'Karsten Keil' <isdn@linux-pingi.de>, 'Alastair D'Silva' <alastair@au1.ibm.com>, "'Martin K. Petersen'" <martin.petersen@oracle.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>, 'Daniel Vetter' <daniel@ffwll.ch>, netdev@vger.kernel.org, 'Enric Balletbo i Serra' <enric.balletbo@collabora.com>, 'Andrew Morton' <akpm@linux-foundation.org>, "'David S. Miller'" <davem@davemloft.net>, 'Alexander Viro' <viro@zeniv.linux.org.uk>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-> -----Original Message-----
-> From: David Laight <David.Laight@ACULAB.COM>
-> Sent: Monday, 15 April 2019 9:04 PM
-> To: 'Alastair D'Silva' <alastair@d-silva.org>; 'Petr Mladek'
-> <pmladek@suse.com>
-> Cc: 'Alastair D'Silva' <alastair@au1.ibm.com>; 'Jani Nikula'
-> <jani.nikula@linux.intel.com>; 'Joonas Lahtinen'
-> <joonas.lahtinen@linux.intel.com>; 'Rodrigo Vivi' <rodrigo.vivi@intel.com>;
-> 'David Airlie' <airlied@linux.ie>; 'Daniel Vetter' <daniel@ffwll.ch>; 'Karsten
-> Keil' <isdn@linux-pingi.de>; 'Jassi Brar' <jassisinghbrar@gmail.com>; 'Tom
-> Lendacky' <thomas.lendacky@amd.com>; 'David S. Miller'
-> <davem@davemloft.net>; 'Jose Abreu' <Jose.Abreu@synopsys.com>; 'Kalle
-> Valo' <kvalo@codeaurora.org>; 'Stanislaw Gruszka' <sgruszka@redhat.com>;
-> 'Benson Leung' <bleung@chromium.org>; 'Enric Balletbo i Serra'
-> <enric.balletbo@collabora.com>; 'James E.J. Bottomley'
-> <jejb@linux.ibm.com>; 'Martin K. Petersen' <martin.petersen@oracle.com>;
-> 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>; 'Alexander Viro'
-> <viro@zeniv.linux.org.uk>; 'Sergey Senozhatsky'
-> <sergey.senozhatsky@gmail.com>; 'Steven Rostedt'
-> <rostedt@goodmis.org>; 'Andrew Morton' <akpm@linux-foundation.org>;
-> intel-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
-> kernel@vger.kernel.org; netdev@vger.kernel.org;
-> ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
-> scsi@vger.kernel.org; linux-fbdev@vger.kernel.org;
-> devel@driverdev.osuosl.org; linux-fsdevel@vger.kernel.org
-> Subject: RE: [PATCH 3/4] lib/hexdump.c: Replace ascii bool in
-> hex_dump_to_buffer with flags
+
+
+On 4/12/19 3:17 PM, Kalle Valo wrote:
+> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 > 
-> From: Alastair D'Silva
-> > Sent: 15 April 2019 11:45
-> ...
-> > > Although I think you'd want a 'no hex' flag to suppress the hex.
-> > >
-> > > Probably more useful flags are ones to suppress the address column.
-> >
-> > This is already supported by the prefix_type parameter - are you
-> > proposing that we eliminate the parameter & combine it with flags?
+>> This patch fixes a bug with padding of the skb data buffer.
+>> Since skb_trim can only be used to reduce the skb len, it is useless when
+>> we pad (increase the length of) the skb. Instead we must set skb->len
+>> directly.
+>>
+>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/sdio.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+>> index 3eb241cb8a25..989e3f563f3d 100644
+>> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+>> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+>> @@ -1496,7 +1496,12 @@ static int ath10k_sdio_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+>>   		skb = items[i].transfer_context;
+>>   		padded_len = ath10k_sdio_calc_txrx_padded_len(ar_sdio,
+>>   							      skb->len);
+>> -		skb_trim(skb, padded_len);
+>> +		/* FIXME: unsure if just extending the skb len is the right
+>> +		 * thing to do since we might read outside the skb->data
+>> +		 * buffer. But we really don't want to realloc the skb just to
+>> +		 * pad the length.
+>> +		 */
+>> +		skb->len = padded_len;
 > 
-> I was looking at the flags on one of my hexdump() functions...
+> Good catch! But I don't think you can modify skb->len directly like
+> that. There is skb_pad() but that doesn't change skb->len, so that most
+> likely needs more changes. So maybe skb_put() is the safest here?
 > 
-> > > I've also used flags to enable (or disable) suppression of multiple
-> > > lines of zeros of constant bytes.
-> > > In that case you may want hexdump to return the flags for the next
-> > > call when a large buffer is being dumped in fragments.
-> >
-> > I'm afraid I don't quite follow here, hex_dump_to_buffer doesn't alter
-> > the flags, so the caller already knows it.
-> 
-> If you are suppressing lines of zeros and dumping a buffer in several blocks
-> then subsequent calls need to know that the last line of the previous call was
-> suppressed zeros - and carry on with the same suppressed block.
+I have tried a few different solutions for this, but none seems to be
+bullet proof.
 
-Why wouldn't you do this with a single call to print_hex_dump? (that is where the repeated lines are suppressed)
+skb_pad() raises a BUG() if there is not enough space in skb->data.
 
-That will already take chunks of the buffer until the whole thing is output, in what situation do you see a caller chunking the access themselves?
+The best candidate so far has been skb_put_padto(). It pads and reallocates
+the skb if needed.
 
--- 
-Alastair D'Silva           mob: 0423 762 819
-skype: alastair_dsilva     msn: alastair@d-silva.org
-blog: http://alastair.d-silva.org    Twitter: @EvilDeece
+The problem is that it also cause a panic if there is more than one reference
+to the skb (skb_shared() returns true).
 
+Some of the management frames via nl80211 have a refcount of 2.
+In this case it is not possible to free and allocate the skb since there are
+other users/references.
 
-
+I think I will have to make some kind of solution where I copy the content of
+the skb to an internal buffer instead.
 
 _______________________________________________
 ath10k mailing list
