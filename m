@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hFxVj-0008P2-Ss
- for ath10k@lists.infradead.org; Mon, 15 Apr 2019 09:02:46 +0000
-Date: Mon, 15 Apr 2019 11:02:32 +0200
+ id 1hFxkm-0007YM-Gh
+ for ath10k@lists.infradead.org; Mon, 15 Apr 2019 09:18:26 +0000
+Date: Mon, 15 Apr 2019 11:18:12 +0200
 From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 1/4] lib/hexdump.c: Allow 64 bytes per line
-Message-ID: <20190415090232.3ualhrt5ssrb2ixq@pathway.suse.cz>
+Subject: Re: [PATCH 2/4] lib/hexdump.c: Optionally suppress lines of filler
+ bytes
+Message-ID: <20190415091812.s4e5zlwldbe62ego@pathway.suse.cz>
 References: <20190410031720.11067-1-alastair@au1.ibm.com>
- <20190410031720.11067-2-alastair@au1.ibm.com>
- <20190412134802.kprel2c2iqijd4ai@pathway.suse.cz>
- <092f01d4f186$8e9e7cd0$abdb7670$@d-silva.org>
+ <20190410031720.11067-3-alastair@au1.ibm.com>
+ <20190412140353.mgvksn3yk6n65hbk@pathway.suse.cz>
+ <093101d4f187$612f0f20$238d2d60$@d-silva.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <092f01d4f186$8e9e7cd0$abdb7670$@d-silva.org>
+In-Reply-To: <093101d4f187$612f0f20$238d2d60$@d-silva.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,12 +28,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Alastair D'Silva <alastair@d-silva.org>
-Cc: linux-fbdev@vger.kernel.org, 'Stanislaw Gruszka' <sgruszka@redhat.com>, 'David Airlie' <airlied@linux.ie>, 'Joonas Lahtinen' <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, 'Jose Abreu' <Jose.Abreu@synopsys.com>, 'Tom Lendacky' <thomas.lendacky@amd.com>, "'James E.J. Bottomley'" <jejb@linux.ibm.com>, 'Jani Nikula' <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, 'Steven Rostedt' <rostedt@goodmis.org>, 'Rodrigo Vivi' <rodrigo.vivi@intel.com>, 'Benson Leung' <bleung@chromium.org>, 'Kalle Valo' <kvalo@codeaurora.org>, 'Karsten Keil' <isdn@linux-pingi.de>, "'Martin K. Petersen'" <martin.petersen@oracle.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>, 'Daniel Vetter' <daniel@ffwll.ch>, netdev@vger.kernel.org, 'Enric Balletbo i Serra' <enric.balletbo@collabora.com>, 'Andrew Morton' <akpm@linux-foundation.org>, "'David S. Miller'" <davem@davemloft.net>, 'Alexander Viro' <viro@zeniv.linux.org.uk>
+Cc: linux-fbdev@vger.kernel.org, 'Stanislaw Gruszka' <sgruszka@redhat.com>, 'David Airlie' <airlied@linux.ie>, 'Joonas Lahtinen' <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, 'Jose Abreu' <Jose.Abreu@synopsys.com>, 'Tom Lendacky' <thomas.lendacky@amd.com>, "'James E.J. Bottomley'" <jejb@linux.ibm.com>, 'Jani Nikula' <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, 'Steven Rostedt' <rostedt@goodmis.org>, 'Rodrigo Vivi' <rodrigo.vivi@intel.com>, 'Benson Leung' <bleung@chromium.org>, 'Kalle Valo' <kvalo@codeaurora.org>, 'Karsten Keil' <isdn@linux-pingi.de>, 'Alastair D'Silva' <alastair@au1.ibm.com>, "'Martin K. Petersen'" <martin.petersen@oracle.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>, 'Daniel Vetter' <daniel@ffwll.ch>, netdev@vger.kernel.org, 'Enric Balletbo i Serra' <enric.balletbo@collabora.com>, 'Andrew Morton' <akpm@linux-foundation.org>, "'David S. Miller'" <davem@davemloft.net>, 'Alexander Viro' <viro@zeniv.linux.org.uk>
 
-On Sat 2019-04-13 09:22:05, Alastair D'Silva wrote:
+On Sat 2019-04-13 09:28:03, Alastair D'Silva wrote:
 > > -----Original Message-----
 > > From: Petr Mladek <pmladek@suse.com>
-> > Sent: Friday, 12 April 2019 11:48 PM
+> > Sent: Saturday, 13 April 2019 12:04 AM
 > > To: Alastair D'Silva <alastair@au1.ibm.com>
 > > Cc: alastair@d-silva.org; Jani Nikula <jani.nikula@linux.intel.com>;
 > Joonas
@@ -55,45 +56,95 @@ On Sat 2019-04-13 09:22:05, Alastair D'Silva wrote:
 > > ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
 > > scsi@vger.kernel.org; linux-fbdev@vger.kernel.org;
 > > devel@driverdev.osuosl.org; linux-fsdevel@vger.kernel.org
-> > Subject: Re: [PATCH 1/4] lib/hexdump.c: Allow 64 bytes per line
+> > Subject: Re: [PATCH 2/4] lib/hexdump.c: Optionally suppress lines of
+> filler
+> > bytes
 > > 
-> > On Wed 2019-04-10 13:17:17, Alastair D'Silva wrote:
+> > On Wed 2019-04-10 13:17:18, Alastair D'Silva wrote:
 > > > From: Alastair D'Silva <alastair@d-silva.org>
 > > >
-> > > With modern high resolution screens, we can display more data, which
-> > > makes life a bit easier when debugging.
+> > > Some buffers may only be partially filled with useful data, while the
+> > > rest is padded (typically with 0x00 or 0xff).
+> > >
+> > > This patch introduces flags which allow lines of padding bytes to be
+> > > suppressed, making the output easier to interpret:
+> > > HEXDUMP_SUPPRESS_0X00, HEXDUMP_SUPPRESS_0XFF
+> > >
+> > > The first and last lines are not suppressed by default, so the
+> > > function always outputs something. This behaviour can be further
+> > > controlled with the HEXDUMP_SUPPRESS_FIRST &
+> > HEXDUMP_SUPPRESS_LAST flags.
+> > >
+> > > An inline wrapper function is provided for backwards compatibility
+> > > with existing code, which maintains the original behaviour.
+> > >
 > > 
-> > I have quite some doubts about this feature.
+> > > diff --git a/lib/hexdump.c b/lib/hexdump.c index
+> > > b8a164814744..2f3bafb55a44 100644
+> > > --- a/lib/hexdump.c
+> > > +++ b/lib/hexdump.c
+> > > +void print_hex_dump_ext(const char *level, const char *prefix_str,
+> > > +			int prefix_type, int rowsize, int groupsize,
+> > > +			const void *buf, size_t len, u64 flags)
+> > >  {
+> > >  	const u8 *ptr = buf;
+> > > -	int i, linelen, remaining = len;
+> > > +	int i, remaining = len;
+> > >  	unsigned char linebuf[64 * 3 + 2 + 64 + 1];
+> > > +	bool first_line = true;
+> > >
+> > >  	if (rowsize != 16 && rowsize != 32 && rowsize != 64)
+> > >  		rowsize = 16;
+> > >
+> > >  	for (i = 0; i < len; i += rowsize) {
+> > > -		linelen = min(remaining, rowsize);
+> > > +		bool skip = false;
+> > > +		int linelen = min(remaining, rowsize);
+> > > +
+> > >  		remaining -= rowsize;
+> > >
+> > > +		if (flags & HEXDUMP_SUPPRESS_0X00)
+> > > +			skip = buf_is_all(ptr + i, linelen, 0x00);
+> > > +
+> > > +		if (!skip && (flags & HEXDUMP_SUPPRESS_0XFF))
+> > > +			skip = buf_is_all(ptr + i, linelen, 0xff);
+> > > +
+> > > +		if (first_line && !(flags & HEXDUMP_SUPPRESS_FIRST))
+> > > +			skip = false;
+> > > +
+> > > +		if (remaining <= 0 && !(flags & HEXDUMP_SUPPRESS_LAST))
+> > > +			skip = false;
+> > > +
+> > > +		if (skip)
+> > > +			continue;
 > > 
-> > We are talking about more than 256 characters per-line. I wonder if such a
-> > long line is really easier to read for a human.
-> 
-> It's basically 2 separate panes of information side by side, the hexdump and
-> the ASCII version.
-> 
-> I'm using this myself when dealing with the pmem labels, and it works quite
-> nicely.
+> > IMHO, quietly skipping lines could cause a lot of confusion, espcially
+> when the address is not printed.
+> >
+> It's up to the caller to decide how they want it displayed.
 
-I am sure that it works for you. But I do not believe that it
-would be useful in general.
+I wonder who would want to quietly skip some data values.
+Are you using it yourself? Could you please provide an
+example?
+
+I do not see why we would need to complicate the API and code
+by this.
+
+The behavior proposed by Tvrtko Ursulin makes much more
+sense. I mean
+https://lkml.kernel.org/r/929244ed-cc7f-b0f3-b5ac-50e798e83188@linux.intel.com
 
 
-> > I am not expert but there is a reason why the standard is 80 characters
-> per-
-> > line. I guess that anything above 100 characters is questionable.
-> > https://en.wikipedia.org/wiki/Line_length
-> > somehow confirms that.
+> > I wonder how it would look like when we print something like:
 > > 
-> > Second, if we take 8 pixels per-character. Then we need
-> > 2048 to show the 256 characters. It is more than HD.
-> > IMHO, there is still huge number of people that even do not have HD
-> display,
-> > especially on a notebook.
+> >     --- skipped XX lines full of 0x00 ---
 > 
-> The intent is to make debugging easier when dealing with large chunks of
-> binary data. I don't expect end users to see this output.
+> This could be added as a later enhancement, with a new flag (eg.
+> HEXDUMP_SUPPRESS_VERBOSE).
 
-How is it supposed to be used then? Only by your temporary patches?
+Who will add this later? Frankly, this looks like a half baked
+feature that it good enough for you. If you want it upstream,
+it must behave reasonably and it must be worth it.
 
 Best Regards,
 Petr
