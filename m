@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGKNo-000164-2A
- for ath10k@lists.infradead.org; Tue, 16 Apr 2019 09:28:08 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: add support for simulate crash on SDIO chip
-Date: Tue, 16 Apr 2019 17:27:45 +0800
-Message-Id: <1555406865-21514-1-git-send-email-wgong@codeaurora.org>
+ id 1hGTDZ-0008KO-FE
+ for ath10k@lists.infradead.org; Tue, 16 Apr 2019 18:54:06 +0000
+Received: by mail-lf1-x144.google.com with SMTP id k18so7912018lfj.13
+ for <ath10k@lists.infradead.org>; Tue, 16 Apr 2019 11:54:04 -0700 (PDT)
+Subject: Re: [PATCH] ath10k: remove iteration in wake_tx_queue
+References: <20190327162906.6010-1-erik.stromdahl@gmail.com>
+ <87bm1qq92j.fsf@toke.dk>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <8772dfe6-3f52-05ca-f55a-b7eae14fa7ac@gmail.com>
+Date: Tue, 16 Apr 2019 20:54:01 +0200
+MIME-Version: 1.0
+In-Reply-To: <87bm1qq92j.fsf@toke.dk>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,76 +22,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: yiboz@codeaurora.org
 
-The command to simulate firmware crash:
-echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
-
-It will send WMI_FORCE_FW_HANG_ASSERT to firmware, then it will trigger
-CPU interrupt status register for SDIO chip, ath10k driver need to
-configure it while enable SDIO interrupt, otherwise ath10k driver will
-not get the assert error info.
-
-After this change, it will success for simulate firmware crash.
-
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/hw.h   | 1 +
- drivers/net/wireless/ath/ath10k/sdio.c | 8 ++++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7131499..60521ed 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -1095,6 +1095,7 @@ struct ath10k_hw_ops {
- #define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
- #define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
- #define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
-+#define MBOX_CPU_STATUS_ENABLE_ASSERT_MASK 0x00000001
- #define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
- #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
- #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index fae56c6..78a2f3b 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -850,6 +850,8 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
- 
- out:
- 	mutex_unlock(&irq_data->mtx);
-+	ath10k_err(ar, "firmware crashed!\n");
-+	queue_work(ar->workqueue, &ar->restart_work);
- 	return ret;
- }
- 
-@@ -1495,8 +1497,10 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
- 	regs->int_status_en |=
- 		FIELD_PREP(MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK, 1);
- 
--	/* Set up the CPU Interrupt status Register */
--	regs->cpu_int_status_en = 0;
-+	/* Set up the CPU Interrupt Status Register, enable CPU sourced interrupt #0
-+	 * #0 is used for report assertion from target
-+	 */
-+	regs->cpu_int_status_en = FIELD_PREP(MBOX_CPU_STATUS_ENABLE_ASSERT_MASK, 1);
- 
- 	/* Set up the Error Interrupt status Register */
- 	regs->err_int_status_en =
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiA0LzEvMTkgMTowNSBQTSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IEVy
+aWsgU3Ryb21kYWhsIDxlcmlrLnN0cm9tZGFobEBnbWFpbC5jb20+IHdyaXRlczoKPiAKPj4gSXRl
+cmF0aW5nIHRoZSBUWCBxdWV1ZSBhbmQgdGhlcmVieSBkZXF1ZXVpbmcgYWxsIGF2YWlsYWJsZSBw
+YWNrZXRzIGluIHRoZQo+PiBxdWV1ZSBjb3VsZCByZXN1bHQgaW4gcGVyZm9ybWFuY2UgcGVuYWx0
+aWVzIG9uIHNvbWUgU01QIHN5c3RlbXMuCj4+Cj4+IFRoZSByZWFzb24gZm9yIHRoaXMgaXMgbW9z
+dCBsaWtlbHkgdGhhdCB0aGUgcGVyLWFjIGxvY2sgKGFjdGl2ZV90eHFfbG9jaykKPj4gaW4gbWFj
+ODAyMTEgd2lsbCBiZSBoZWxkIGJ5IHRoZSBDUFUgaXRlcmF0aW5nIHRoZSBjdXJyZW50IHF1ZXVl
+Lgo+Pgo+PiBUaGlzIHdpbGwgbG9jayB1cCBvdGhlciBDUFVzIHRyeWluZyB0byBwdXNoIG5ldyBt
+ZXNzYWdlcyBvbiB0aGUgVFgKPj4gcXVldWUuCj4+Cj4+IEluc3RlYWQgb2YgaXRlcmF0aW5nIHRo
+ZSBxdWV1ZSB3ZSBmZXRjaCBqdXN0IG9uZSBwYWNrZXQgYXQgdGhlIHRpbWUsCj4+IHJlc3VsdGlu
+ZyBpbiBtaW5pbWFsIHN0YXJ2YXRpb24gb2YgdGhlIG90aGVyIENQVXMuCj4gCj4gRGlkIHlvdSB0
+ZXN0IHRoaXMgd2l0aCBGZWxpeCcgcGF0Y2hlcyByZWR1Y2luZyB0aGUgdGltZSB0aGUgbG9jayBp
+cyBoZWxkCj4gaW4gbWFjODAyMTE/Cj4gCj4gLVRva2UKPiAKSGkgVG9rZSwKCkkgYW0gbm90IGF3
+YXJlIG9mIHRoZXNlIHBhdGNoZXMuIENhbiB5b3UgcGxlYXNlIHBvaW50IHRoZW0gb3V0IGZvciBt
+ZT8KCi0tCkVyaWsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
