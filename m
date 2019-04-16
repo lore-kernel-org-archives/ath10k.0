@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-f66.google.com ([209.85.208.66])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGJmG-0006nu-D0
- for ath10k@lists.infradead.org; Tue, 16 Apr 2019 08:49:17 +0000
-Received: by mail-ed1-f66.google.com with SMTP id k45so17161404edb.6
- for <ath10k@lists.infradead.org>; Tue, 16 Apr 2019 01:49:13 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH] mac80211: Fix kernel panic due to use of txq after free
-In-Reply-To: <1555399480-30537-1-git-send-email-bperumal@codeaurora.org>
-References: <1555399480-30537-1-git-send-email-bperumal@codeaurora.org>
-Date: Tue, 16 Apr 2019 09:49:07 +0100
-Message-ID: <87sguiuygs.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1hGKNo-000164-2A
+ for ath10k@lists.infradead.org; Tue, 16 Apr 2019 09:28:08 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: add support for simulate crash on SDIO chip
+Date: Tue, 16 Apr 2019 17:27:45 +0800
+Message-Id: <1555406865-21514-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +15,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bhagavathi Perumal S <bperumal@codeaurora.org>, johannes@sipsolutions.net, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-QmhhZ2F2YXRoaSBQZXJ1bWFsIFMgPGJwZXJ1bWFsQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+
-IFRoZSB0eHEgb2YgdmlmIGlzIGFkZGVkIHRvIGFjdGl2ZV90eHFzIGxpc3QgZm9yIEFURiBUWFEg
-c2NoZWR1bGluZwo+IGluIHRoZSBmdW5jdGlvbiBpZWVlODAyMTFfcXVldWVfc2tiKCksIGJ1dCBp
-dCB3YXMgbm90IHByb3Blcmx5IHJlbW92ZWQKPiBiZWZvcmUgZnJlZWluZyB0aGUgdHhxIG9iamVj
-dC4gSXQgd2FzIGNhdXNpbmcgdXNlIGFmdGVyIGZyZWUgb2YgdGhlIHR4cQo+IG9iamVjdHMgZnJv
-bSB0aGUgYWN0aXZlX3R4cXMgbGlzdCwgcmVzdWx0IHdhcyBrZXJuZWwgcGFuaWMKPiBkdWUgdG8g
-aW52YWxpZCBtZW1vcnkgYWNjZXNzLgo+Cj4gRml4IGtlcm5lbCBpbnZhbGlkIG1lbW9yeSBhY2Nl
-c3MgYnkgcHJvcGVybHkgcmVtb3ZpbmcgdHhxIG9iamVjdAo+IGZyb20gYWN0aXZlX3R4cXMgbGlz
-dCBiZWZvcmUgZnJlZSB0aGUgb2JqZWN0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogQmhhZ2F2YXRoaSBQ
-ZXJ1bWFsIFMgPGJwZXJ1bWFsQGNvZGVhdXJvcmEub3JnPgoKTmljZSBjYXRjaCwgdGhhbmtzIQoK
-QWNrZWQtYnk6IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPgoKVGhp
-cyBzaG91bGQgcHJvYmFibHkgaGF2ZSBhIGZpeGVzIHRhZzoKCkZpeGVzOiAxODY2NzYwMDk2YmYg
-KCJtYWM4MDIxMTogQWRkIFRYUSBzY2hlZHVsaW5nIEFQSSIpCgotVG9rZQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+The command to simulate firmware crash:
+echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
+
+It will send WMI_FORCE_FW_HANG_ASSERT to firmware, then it will trigger
+CPU interrupt status register for SDIO chip, ath10k driver need to
+configure it while enable SDIO interrupt, otherwise ath10k driver will
+not get the assert error info.
+
+After this change, it will success for simulate firmware crash.
+
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/hw.h   | 1 +
+ drivers/net/wireless/ath/ath10k/sdio.c | 8 ++++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 7131499..60521ed 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -1095,6 +1095,7 @@ struct ath10k_hw_ops {
+ #define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
+ #define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
+ #define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
++#define MBOX_CPU_STATUS_ENABLE_ASSERT_MASK 0x00000001
+ #define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
+ #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
+ #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index fae56c6..78a2f3b 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -850,6 +850,8 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
+ 
+ out:
+ 	mutex_unlock(&irq_data->mtx);
++	ath10k_err(ar, "firmware crashed!\n");
++	queue_work(ar->workqueue, &ar->restart_work);
+ 	return ret;
+ }
+ 
+@@ -1495,8 +1497,10 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
+ 	regs->int_status_en |=
+ 		FIELD_PREP(MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK, 1);
+ 
+-	/* Set up the CPU Interrupt status Register */
+-	regs->cpu_int_status_en = 0;
++	/* Set up the CPU Interrupt Status Register, enable CPU sourced interrupt #0
++	 * #0 is used for report assertion from target
++	 */
++	regs->cpu_int_status_en = FIELD_PREP(MBOX_CPU_STATUS_ENABLE_ASSERT_MASK, 1);
+ 
+ 	/* Set up the Error Interrupt status Register */
+ 	regs->err_int_status_en =
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
