@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGlXe-0003N5-6r
- for ath10k@lists.infradead.org; Wed, 17 Apr 2019 14:28:03 +0000
-Received: by mail-oi1-x235.google.com with SMTP id x188so20163296oia.13
- for <ath10k@lists.infradead.org>; Wed, 17 Apr 2019 07:28:01 -0700 (PDT)
+ id 1hGq1o-0007F8-OI
+ for ath10k@lists.infradead.org; Wed, 17 Apr 2019 19:15:29 +0000
+Received: by mail-lf1-x141.google.com with SMTP id w23so19690890lfc.9
+ for <ath10k@lists.infradead.org>; Wed, 17 Apr 2019 12:15:28 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [PATCH v2 1/5] ath10k: add initialization of HTC header
+Date: Wed, 17 Apr 2019 21:14:59 +0200
+Message-Id: <20190417191503.18814-2-erik.stromdahl@gmail.com>
+In-Reply-To: <20190417191503.18814-1-erik.stromdahl@gmail.com>
+References: <20190417191503.18814-1-erik.stromdahl@gmail.com>
 MIME-Version: 1.0
-From: Fredrik Olofsson <fredrik.olofsson@anyfinetworks.com>
-Date: Wed, 17 Apr 2019 16:27:50 +0200
-Message-ID: <CADiFmNM_6wE=ar_fgsNFk-6mBxPQNf9sq0rQH-vjsvqCz8L89w@mail.gmail.com>
-Subject: Frame injection in wave 2 chipsets?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +24,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, Alagu Sankar <alagusankar@silex-india.com>
 
-We are developing a product using split mac to distribute a WiFi
-network over several different access points. The implementation
-forwards the encrypted 802.11 frames over the ethernet to a gateway
-where the 802.11 network is terminated (no enctyption keys for the
-802.11 network are available in the access point). For this to work,
-we use monitor mode and frame injection to receive and send frames to
-the driver in a modified OpenWrt firmware. This works fine on ath9k,
-and on ath10k wave 1 chipsets (e.g. Archer C7 with firmware QCA988X
-ver 10.2.4-1.0-00041, rawmode=1).
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-However, using ath10k wave 2 chipsets injecting encrypted frames on a
-monitor interface does not work, they are silently dropped by the
-firmware. I have not been able to locate any firmware supporting
-rawmode which I believe would allow this.
+HTC header carries junk values that may be interpreted by the firmware
+differently. Enable credit update only if flow control is enabled for
+the corresponding endpoint.
 
-Does any way of injecting encrypted frames currently exist on ath10k
-for wave 2 chipsets?
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for any help
-/Fredrik
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 805a7f8a04f2..1d4d1a1992fe 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -73,6 +73,7 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 	struct ath10k_htc_hdr *hdr;
+ 
+ 	hdr = (struct ath10k_htc_hdr *)skb->data;
++	memset(hdr, 0, sizeof(struct ath10k_htc_hdr));
+ 
+ 	hdr->eid = ep->eid;
+ 	hdr->len = __cpu_to_le16(skb->len - sizeof(*hdr));
 -- 
-Fredrik Olofsson, M.Sc.
-Senior Engineer | E fredrik.olofsson@anyfinetworks.com
+2.19.1
+
 
 _______________________________________________
 ath10k mailing list
