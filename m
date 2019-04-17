@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGq1o-0007F7-8W
- for ath10k@lists.infradead.org; Wed, 17 Apr 2019 19:15:29 +0000
-Received: by mail-lf1-x143.google.com with SMTP id k18so10787976lfj.13
- for <ath10k@lists.infradead.org>; Wed, 17 Apr 2019 12:15:27 -0700 (PDT)
+ id 1hGq1p-0007F9-JU
+ for ath10k@lists.infradead.org; Wed, 17 Apr 2019 19:15:30 +0000
+Received: by mail-lf1-x142.google.com with SMTP id w23so19690925lfc.9
+ for <ath10k@lists.infradead.org>; Wed, 17 Apr 2019 12:15:29 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH v2 0/5] ath10k: SDIO and high latency patches from Silex
-Date: Wed, 17 Apr 2019 21:14:58 +0200
-Message-Id: <20190417191503.18814-1-erik.stromdahl@gmail.com>
+Subject: [PATCH v2 2/5] ath10k: high latency fixes for beacon buffer
+Date: Wed, 17 Apr 2019 21:15:00 +0200
+Message-Id: <20190417191503.18814-3-erik.stromdahl@gmail.com>
+In-Reply-To: <20190417191503.18814-1-erik.stromdahl@gmail.com>
+References: <20190417191503.18814-1-erik.stromdahl@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,40 +25,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, Alagu Sankar <alagusankar@silex-india.com>
 
-This series adds a few more fixes for SDIO and high latency devices.
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-I have had these on my private tree for quite some time now so they
-should be considered fairly well tested.
+Beacon buffer for high latency devices does not use DMA. other similar
+buffer allocation methods in the driver have already been modified for
+high latency path. Fix the beacon buffer allocation left out in the
+earlier high latency changes.
 
-changes since v1:
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 31 ++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-Patch "ath10k: use clean packet headers" was renamed to
-"ath10k: add initialization of HTC header" and PLL stuff was removed.
-
-Patch "ath10k: sdio: add MSDU ID allocation in HTT TX path"
-was removed since it became redundant after I had added Kalle's and
-Wen's patches to my tree.
-
-Patch "ath10k: sdio: replace skb_trim with explicit set of skb->len"
-was rewritten and renamed to "ath10k: sdio: remove skb_trim in TX path"
-
-Alagu Sankar (3):
-  ath10k: add initialization of HTC header
-  ath10k: high latency fixes for beacon buffer
-  ath10k: sdio: read RX packets in bundles
-
-Erik Stromdahl (2):
-  ath10k: sdio: add missing error check
-  ath10k: sdio: remove skb_trim in TX path
-
- drivers/net/wireless/ath/ath10k/htc.c  |   1 +
- drivers/net/wireless/ath/ath10k/mac.c  |  31 ++++++--
- drivers/net/wireless/ath/ath10k/sdio.c | 103 ++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/sdio.h |   4 +
- 4 files changed, 112 insertions(+), 27 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c9e700b844f8..2dd99ce44453 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -953,8 +953,12 @@ static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
+ 	ath10k_mac_vif_beacon_free(arvif);
+ 
+ 	if (arvif->beacon_buf) {
+-		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
+-				  arvif->beacon_buf, arvif->beacon_paddr);
++		if (ar->dev_type == ATH10K_DEV_TYPE_HL)
++			kfree(arvif->beacon_buf);
++		else
++			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
++					  arvif->beacon_buf,
++					  arvif->beacon_paddr);
+ 		arvif->beacon_buf = NULL;
+ 	}
+ }
+@@ -5210,10 +5214,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	if (vif->type == NL80211_IFTYPE_ADHOC ||
+ 	    vif->type == NL80211_IFTYPE_MESH_POINT ||
+ 	    vif->type == NL80211_IFTYPE_AP) {
+-		arvif->beacon_buf = dma_alloc_coherent(ar->dev,
+-						       IEEE80211_MAX_FRAME_LEN,
+-						       &arvif->beacon_paddr,
+-						       GFP_ATOMIC);
++		if (ar->dev_type == ATH10K_DEV_TYPE_HL) {
++			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
++						    GFP_KERNEL);
++			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
++		} else {
++			arvif->beacon_buf =
++				dma_alloc_coherent(ar->dev,
++						   IEEE80211_MAX_FRAME_LEN,
++						   &arvif->beacon_paddr,
++						   GFP_ATOMIC);
++		}
+ 		if (!arvif->beacon_buf) {
+ 			ret = -ENOMEM;
+ 			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
+@@ -5424,8 +5435,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 
+ err:
+ 	if (arvif->beacon_buf) {
+-		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
+-				  arvif->beacon_buf, arvif->beacon_paddr);
++		if (ar->dev_type == ATH10K_DEV_TYPE_HL)
++			kfree(arvif->beacon_buf);
++		else
++			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
++					  arvif->beacon_buf,
++					  arvif->beacon_paddr);
+ 		arvif->beacon_buf = NULL;
+ 	}
+ 
 -- 
 2.19.1
 
