@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJv7m-0006cW-Nm
- for ath10k@lists.infradead.org; Fri, 26 Apr 2019 07:18:24 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
- resume
-References: <2884043.Jv1Mn93hE8@aspire.rjw.lan>
- <20190403195718.GA74723@google.com>
-Date: Fri, 26 Apr 2019 10:18:16 +0300
-In-Reply-To: <20190403195718.GA74723@google.com> (Brian Norris's message of
- "Wed, 3 Apr 2019 12:57:20 -0700")
-Message-ID: <87o94tutdz.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1hJx9Y-0005OV-Cl
+ for ath10k@lists.infradead.org; Fri, 26 Apr 2019 09:28:21 +0000
+Message-ID: <b90f20a45af63a3261ee14eda38239521dce6486.camel@sipsolutions.net>
+Subject: Re: [PATCHv5 1/9] nl80211: New netlink command for TID specific
+ configuration
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 26 Apr 2019 11:28:17 +0200
+In-Reply-To: <1553592550-15282-2-git-send-email-tamizhr@codeaurora.org>
+References: <1553592550-15282-1-git-send-email-tamizhr@codeaurora.org>
+ <1553592550-15282-2-git-send-email-tamizhr@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +25,152 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Claire Chang <tientzu@google.com>, Sriram R <srirrama@codeaurora.org>, Linux PM <linux-pm@vger.kernel.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Todd Brandt <todd.e.brandt@intel.com>
+To: Tamizh chelvam <tamizhr@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Brian Norris <briannorris@chromium.org> writes:
+Hi,
 
-> + Sriram, Pradeep, Claire
->
-> On Sun, Mar 03, 2019 at 06:24:33PM +0100, Rafael J. Wysocki wrote:
->
-> Ooh, exactly 1 month ago!
->
->> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> 
->> ath10k_mac_vif_chan() always returns an error for the given vif
->> during system-wide resume which reliably triggers two WARN_ON()s
->> in ath10k_bss_info_changed() and they are not particularly
->> useful in that code path, so drop them.
->> 
->
-> Particularly, when WOWLAN isn't enabled, we get called during resume via
-> ieee80211_reconfig(), where we're not associated and don't have any
-> channel contexts. AFAICT, we shouldn't need to communicate anything in
-> particular to the firmware here, and so failing the 'if' is definitely
-> not worth WARN-ing about.
->
-> I'd love to see this get applied with:
->
-> Fixes: cd93b83ad927 ("ath10k: support for multicast rate control")
-> Fixes: f279294e9ee2 ("ath10k: add support for configuring management packet rate")
->
-> and sent to stable. This has been bugging people since 4.19. Spurious
-> WARN_ON()s can trigger reports to various crash trackers, and on some
-> systems appear as user-visible warnings ("System problem detected").
->
->> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Reviewed-by: Brian Norris <briannorris@chromium.org>
-> Tested-by: Brian Norris <briannorris@chromium.org>
+Sorry, I apologize for taking so long to review this (again).
 
-I added these now to the commit log, thanks Brian.
+> +enum ieee80211_tid_conf_mask {
+> +	IEEE80211_TID_CONF_NOACK	= BIT(0),
+> +};
+> +
+> +/**
+> + * struct ieee80211_tid_cfg - TID specific configuration
+> + * @tid: TID number
+> + * @tid_conf_mask: bitmap indicating which parameter changed
+> + *	see %enum ieee80211_tid_conf_mask
+> + * @noack: noack configuration value for the TID
+> + */
+> +struct ieee80211_tid_cfg {
+> +	u8 tid;
+> +	enum ieee80211_tid_conf_mask tid_conf_mask;
 
-Rafael, could you please provide the hardware and firmware versions you
-tested this on? We have so many different firmware branches to support
-that I prefer to have that documented in the commit log. Providing
-ath10k startup messages in dmesg are enough, I can then add it to the
-commit log.
+This shouldn't use the enum type if it's a bitmap. Doing the enum type
+above is only useful for documentation, which you should add there.
 
--- 
-Kalle Valo
+> + * @set_tid_config: TID specific configuration. Apply this configuration for
+> + *	all the connected stations in the BSS if peer is NULL. Otherwise
+
+%NULL renders better, IIRC
+
+> + * @NL80211_ATTR_TID_CONFIG: TID specific configuration in a
+> + *	nested attribute with %NL80211_ATTR_TID_* sub-attributes.
+
+Please use NL80211_TID_ATTR_* to disambiguate the namespaces
+
+> +enum nl80211_tid_config {
+> +	NL80211_TID_CONFIG_DEFAULT,
+> +	NL80211_TID_CONFIG_ENABLE,
+> +	NL80211_TID_CONFIG_DISABLE,
+> +};
+
+
+That could do with some documentation
+
+> +
+> +/* enum nl80211_attr_tid_config - TID specific configuration.
+> + * @NL80211_ATTR_TID_CONFIG_TID: a TID value (u8 attribute).
+
+See above - TID_ATTR_* is better.
+
+> + * @NL80211_ATTR_TID_CONFIG_NOACK: Configure ack policy for the TID.
+> + *	specified in %NL80211_ATTR_TID_CONFIG_TID. see %enum nl80211_tid_config.
+> + *	Its type is u8, if the peer MAC address is passed in %NL80211_ATTR_MAC,
+> + *	then the noack configuration is applied to the data frame for the tid
+> + *	to that connected station. This configuration is valid only for STA's
+> + *      current connection. i.e. the configuration will be reset to default when
+> + *      the station connects back after disconnection/roaming.
+> + *      when user-space does not include %NL80211_ATTR_MAC, then this
+
+please use tabs consistently
+
+> + *	configuration should be treated as per-netdev configuration.
+> + *	This configuration will be cleared when the interface goes down and on
+> + *	the disconnection from a BSS. 
+
+"goes down" is redundant then? Or do you mean that's for the AP case?
+
+> +static const struct nla_policy
+> +nl80211_attr_tid_config_policy[NL80211_ATTR_TID_CONFIG_MAX + 1] = {
+> +	[NL80211_ATTR_TID_CONFIG_TID] = { .type = NLA_U8 },
+
+Shouldn't this use NLA_POLICY_RANGE() or MAX()?
+
+> +	[NL80211_ATTR_TID_CONFIG_NOACK] =
+> +			NLA_POLICY_MAX(NLA_U8, NL80211_TID_CONFIG_DISABLE),
+> +};
+> +
+>  const struct nla_policy nl80211_policy[NUM_NL80211_ATTR] = {
+>  	[NL80211_ATTR_WIPHY] = { .type = NLA_U32 },
+>  	[NL80211_ATTR_WIPHY_NAME] = { .type = NLA_NUL_STRING,
+> @@ -541,6 +548,8 @@ static int validate_ie_attr(const struct nlattr *attr,
+>  	[NL80211_ATTR_PEER_MEASUREMENTS] =
+>  		NLA_POLICY_NESTED(nl80211_pmsr_attr_policy),
+>  	[NL80211_ATTR_AIRTIME_WEIGHT] = NLA_POLICY_MIN(NLA_U16, 1),
+> +	[NL80211_ATTR_TID_CONFIG] =
+> +			NLA_POLICY_NESTED(nl80211_attr_tid_config_policy),
+>  };
+
+Great! :-)
+
+>  /* policy for the key attributes */
+> @@ -13259,6 +13268,93 @@ static int nl80211_get_ftm_responder_stats(struct sk_buff *skb,
+>  	return -ENOBUFS;
+>  }
+>  
+> +static int parse_tid_conf(struct cfg80211_registered_device *rdev,
+> +			  struct nlattr *attrs[],
+> +			  struct ieee80211_tid_cfg *tid_conf,
+> +			  const u8 *peer)
+> +{
+> +	tid_conf->tid = nla_get_u8(attrs[NL80211_ATTR_TID_CONFIG_TID]);
+
+You need to check that this is even present!
+
+> +	size_of_conf = sizeof(struct ieee80211_tid_config) +
+> +		num_conf * sizeof(struct ieee80211_tid_cfg);
+
+use struct_size()
+
+> +	tid_conf = kzalloc(size_of_conf, GFP_KERNEL);
+> +	if (!tid_conf)
+> +		return -ENOMEM;
+> +
+> +	tid_conf->n_tid_conf = num_conf;
+> +
+> +	if (info->attrs[NL80211_ATTR_MAC])
+> +		tid_conf->peer = nla_data(info->attrs[NL80211_ATTR_MAC]);
+> +	else
+> +		tid_conf->peer = NULL;
+
+No need to initialize to NULL after kzalloc()
+
+> +	nla_for_each_nested(tid, info->attrs[NL80211_ATTR_TID_CONFIG],
+> +			    rem_conf) {
+> +		ret = nla_parse_nested(attrs, NL80211_ATTR_TID_CONFIG_MAX, tid,
+> +				       NULL, NULL);
+> +
+> +		if (ret)
+> +			goto bad_tid_conf;
+> +
+> +		if (!attrs[NL80211_ATTR_TID_CONFIG_TID]) {
+> +			ret = -EINVAL;
+> +			goto bad_tid_conf;
+> +		}
+
+Oh, you check here. Perhaps easier to do inside though?
+
+> +	{
+> +		.cmd = NL80211_CMD_SET_TID_CONFIG,
+> +		.doit = nl80211_set_tid_config,
+> +		.policy = nl80211_policy,
+
+The .policy field no longer exists.
+
+johannes
+
 
 _______________________________________________
 ath10k mailing list
