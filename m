@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJuXu-0007Xi-Ko
- for ath10k@lists.infradead.org; Fri, 26 Apr 2019 06:41:20 +0000
+ id 1hJuXx-0007ZH-Re
+ for ath10k@lists.infradead.org; Fri, 26 Apr 2019 06:41:25 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 1/5] ath10k: add struct for high latency PN replay protection
-Date: Fri, 26 Apr 2019 09:41:07 +0300
-Message-Id: <1556260871-2919-2-git-send-email-kvalo@codeaurora.org>
+Subject: [PATCH 3/5] ath10k: add PN replay protection for high latency devices
+Date: Fri, 26 Apr 2019 09:41:09 +0300
+Message-Id: <1556260871-2919-4-git-send-email-kvalo@codeaurora.org>
 In-Reply-To: <1556260871-2919-1-git-send-email-kvalo@codeaurora.org>
 References: <1556260871-2919-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,124 +27,165 @@ Cc: linux-wireless@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
 
 From: Wen Gong <wgong@codeaurora.org>
 
-Add the struct for PN replay protection and fragment packet
-handler.
+On high latency devices (SDIO, USB) ath10k did not do PN replay check, a data
+frame with an invalid PN number was not discard as it should have been. So this
+patch implements PN replay in ath10k. PN replay check for fragmented frames is
+implemented in followup patch.
 
-Also fix the bitmask of HTT_RX_DESC_HL_INFO_MCAST_BCAST to match what's currently
-used by SDIO firmware. The defines are not used yet so it's safe to modify
-them. Remove the conflicting HTT_RX_DESC_HL_INFO_FRAGMENT as
-it's not either used in ath10k.
+With low latency devices (PCI, AHB) hardware can store the data
+frames's content to host memory directly and the firmware can fully reorder
+data frames, and do PN replay check at the same time. But for high latency
+devices all data frames will be received and stored in firmware's memory and it
+is hard to do full reorder because of the memory size limitations in the
+firmware. This is why the PN replay protections needs to be implemented in host
+driver.
 
 Tested on QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.h |  8 +++++++
- drivers/net/wireless/ath/ath10k/htt.h  | 43 ++++++++++++++++++++++++++++++----
- 2 files changed, 47 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 97 +++++++++++++++++++++++++++++++-
+ 1 file changed, 95 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index f22cb3f49034..02e53fb85814 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -400,6 +400,14 @@ struct ath10k_peer {
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index cc2875d73bf0..961e14633320 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2061,9 +2061,91 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 	return 0;
+ }
  
- 	/* protected by ar->data_lock */
- 	struct ieee80211_key_conf *keys[WMI_MAX_KEY_INDEX + 1];
-+	union htt_rx_pn_t tids_last_pn[ATH10K_TXRX_NUM_EXT_TIDS];
-+	bool tids_last_pn_valid[ATH10K_TXRX_NUM_EXT_TIDS];
-+	union htt_rx_pn_t frag_tids_last_pn[ATH10K_TXRX_NUM_EXT_TIDS];
-+	u32 frag_tids_seq[ATH10K_TXRX_NUM_EXT_TIDS];
-+	struct {
-+		enum htt_security_types sec_type;
-+		int pn_len;
-+	} rx_pn[ATH10K_HTT_TXRX_PEER_SECURITY_MAX];
- };
- 
- struct ath10k_txq {
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 4cee5492abc8..fb5cb9169073 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -733,6 +733,20 @@ struct htt_rx_indication_hl {
- 	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
- } __packed;
- 
-+struct htt_hl_rx_desc {
-+	__le32 info;
-+	__le32 pn_31_0;
-+	union {
-+		struct {
-+			__le16 pn_47_32;
-+			__le16 pn_63_48;
-+		} pn16;
-+		__le32 pn_63_32;
-+	} u0;
-+	__le32 pn_95_64;
-+	__le32 pn_127_96;
-+} __packed;
++static void ath10k_htt_rx_mpdu_desc_pn_hl(struct htt_hl_rx_desc *rx_desc,
++					  union htt_rx_pn_t *pn,
++					  int pn_len_bits)
++{
++	switch (pn_len_bits) {
++	case 48:
++		pn->pn48 = __le32_to_cpu(rx_desc->pn_31_0) +
++			   ((u64)(__le32_to_cpu(rx_desc->u0.pn_63_32) & 0xFFFF) << 32);
++		break;
++	case 24:
++		pn->pn24 = __le32_to_cpu(rx_desc->pn_31_0);
++		break;
++	};
++}
 +
- static inline struct htt_rx_indication_mpdu_range *
- 		htt_rx_ind_get_mpdu_ranges(struct htt_rx_indication *rx_ind)
++static bool ath10k_htt_rx_pn_cmp48(union htt_rx_pn_t *new_pn,
++				   union htt_rx_pn_t *old_pn)
++{
++	return ((new_pn->pn48 & 0xffffffffffffULL) <=
++		(old_pn->pn48 & 0xffffffffffffULL));
++}
++
++static bool ath10k_htt_rx_pn_check_replay_hl(struct ath10k *ar,
++					     struct ath10k_peer *peer,
++					     struct htt_rx_indication_hl *rx)
++{
++	bool last_pn_valid, pn_invalid = false;
++	enum htt_txrx_sec_cast_type sec_index;
++	enum htt_security_types sec_type;
++	union htt_rx_pn_t new_pn = {0};
++	struct htt_hl_rx_desc *rx_desc;
++	union htt_rx_pn_t *last_pn;
++	u32 rx_desc_info, tid;
++	int num_mpdu_ranges;
++
++	lockdep_assert_held(&ar->data_lock);
++
++	if (!peer)
++		return false;
++
++	if (!(rx->fw_desc.flags & FW_RX_DESC_FLAGS_FIRST_MSDU))
++		return false;
++
++	num_mpdu_ranges = MS(__le32_to_cpu(rx->hdr.info1),
++			     HTT_RX_INDICATION_INFO1_NUM_MPDU_RANGES);
++
++	rx_desc = (struct htt_hl_rx_desc *)&rx->mpdu_ranges[num_mpdu_ranges];
++	rx_desc_info = __le32_to_cpu(rx_desc->info);
++
++	if (!MS(rx_desc_info, HTT_RX_DESC_HL_INFO_ENCRYPTED))
++		return false;
++
++	tid = MS(rx->hdr.info0, HTT_RX_INDICATION_INFO0_EXT_TID);
++	last_pn_valid = peer->tids_last_pn_valid[tid];
++	last_pn = &peer->tids_last_pn[tid];
++
++	if (MS(rx_desc_info, HTT_RX_DESC_HL_INFO_MCAST_BCAST))
++		sec_index = HTT_TXRX_SEC_MCAST;
++	else
++		sec_index = HTT_TXRX_SEC_UCAST;
++
++	sec_type = peer->rx_pn[sec_index].sec_type;
++	ath10k_htt_rx_mpdu_desc_pn_hl(rx_desc, &new_pn, peer->rx_pn[sec_index].pn_len);
++
++	if (sec_type != HTT_SECURITY_AES_CCMP &&
++	    sec_type != HTT_SECURITY_TKIP &&
++	    sec_type != HTT_SECURITY_TKIP_NOMIC)
++		return false;
++
++	if (last_pn_valid)
++		pn_invalid = ath10k_htt_rx_pn_cmp48(&new_pn, last_pn);
++	else
++		peer->tids_last_pn_valid[tid] = 1;
++
++	if (!pn_invalid)
++		last_pn->pn48 = new_pn.pn48;
++
++	return pn_invalid;
++}
++
+ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 					 struct htt_rx_indication_hl *rx,
+-					 struct sk_buff *skb)
++					 struct sk_buff *skb,
++					 enum htt_rx_pn_check_type check_pn_type,
++					 enum htt_rx_tkip_demic_type tkip_mic_type)
  {
-@@ -790,6 +804,21 @@ struct htt_rx_peer_unmap {
- 	__le16 peer_id;
- } __packed;
+ 	struct ath10k *ar = htt->ar;
+ 	struct ath10k_peer *peer;
+@@ -2107,6 +2189,10 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 		goto err;
+ 	}
  
-+enum htt_txrx_sec_cast_type {
-+	HTT_TXRX_SEC_MCAST = 0,
-+	HTT_TXRX_SEC_UCAST
-+};
++	if (check_pn_type == HTT_RX_PN_CHECK &&
++	    ath10k_htt_rx_pn_check_replay_hl(ar, peer, rx))
++		goto err;
 +
-+enum htt_rx_pn_check_type {
-+	HTT_RX_NON_PN_CHECK = 0,
-+	HTT_RX_PN_CHECK
-+};
+ 	/* Strip off all headers before the MAC header before delivery to
+ 	 * mac80211
+ 	 */
+@@ -2114,6 +2200,7 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 		      sizeof(rx->ppdu) + sizeof(rx->prefix) +
+ 		      sizeof(rx->fw_desc) +
+ 		      sizeof(*mpdu_ranges) * num_mpdu_ranges + rx_desc_len;
 +
-+enum htt_rx_tkip_demic_type {
-+	HTT_RX_NON_TKIP_MIC = 0,
-+	HTT_RX_TKIP_MIC
-+};
-+
- enum htt_security_types {
- 	HTT_SECURITY_NONE,
- 	HTT_SECURITY_WEP128,
-@@ -803,6 +832,9 @@ enum htt_security_types {
- 	HTT_NUM_SECURITY_TYPES /* keep this last! */
- };
+ 	skb_pull(skb, tot_hdr_len);
  
-+#define ATH10K_HTT_TXRX_PEER_SECURITY_MAX 2
-+#define ATH10K_TXRX_NUM_EXT_TIDS 19
-+
- enum htt_security_flags {
- #define HTT_SECURITY_TYPE_MASK 0x7F
- #define HTT_SECURITY_TYPE_LSB  0
-@@ -1010,6 +1042,11 @@ struct htt_rx_fragment_indication {
- 	u8 fw_msdu_rx_desc[0];
- } __packed;
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+@@ -2162,6 +2249,10 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 				   RX_FLAG_MMIC_STRIPPED;
+ 	}
  
-+#define ATH10K_IEEE80211_EXTIV               BIT(5)
-+#define ATH10K_IEEE80211_TKIP_MICLEN         8   /* trailing MIC */
++	if (tkip_mic_type == HTT_RX_TKIP_MIC)
++		rx_status->flag &= ~RX_FLAG_IV_STRIPPED &
++				   ~RX_FLAG_MMIC_STRIPPED;
 +
-+#define HTT_RX_FRAG_IND_INFO0_HEADER_LEN     16
-+
- #define HTT_RX_FRAG_IND_INFO0_EXT_TID_MASK     0x1F
- #define HTT_RX_FRAG_IND_INFO0_EXT_TID_LSB      0
- #define HTT_RX_FRAG_IND_INFO0_FLUSH_VALID_MASK 0x20
-@@ -2128,10 +2165,8 @@ struct htt_rx_desc {
- #define HTT_RX_DESC_HL_INFO_ENCRYPTED_LSB          12
- #define HTT_RX_DESC_HL_INFO_CHAN_INFO_PRESENT_MASK 0x00002000
- #define HTT_RX_DESC_HL_INFO_CHAN_INFO_PRESENT_LSB  13
--#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_MASK       0x00008000
--#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_LSB        15
--#define HTT_RX_DESC_HL_INFO_FRAGMENT_MASK          0x00010000
--#define HTT_RX_DESC_HL_INFO_FRAGMENT_LSB           16
-+#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_MASK       0x00010000
-+#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_LSB        16
- #define HTT_RX_DESC_HL_INFO_KEY_ID_OCT_MASK        0x01fe0000
- #define HTT_RX_DESC_HL_INFO_KEY_ID_OCT_LSB         17
+ 	ieee80211_rx_ni(ar->hw, skb);
  
+ 	/* We have delivered the skb to the upper layers (mac80211) so we
+@@ -3343,7 +3434,9 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL)
+ 			return ath10k_htt_rx_proc_rx_ind_hl(htt,
+ 							    &resp->rx_ind_hl,
+-							    skb);
++							    skb,
++							    HTT_RX_PN_CHECK,
++							    HTT_RX_NON_TKIP_MIC);
+ 		else
+ 			ath10k_htt_rx_proc_rx_ind_ll(htt, &resp->rx_ind);
+ 		break;
 -- 
 2.7.4
 
