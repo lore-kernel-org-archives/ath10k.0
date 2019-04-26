@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJuY0-0007dL-RW
- for ath10k@lists.infradead.org; Fri, 26 Apr 2019 06:41:27 +0000
+ id 1hJuwu-0001gp-EH
+ for ath10k@lists.infradead.org; Fri, 26 Apr 2019 07:07:09 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5/5] ath10k: enable QCA6174 hw3.2 SDIO hardware
-Date: Fri, 26 Apr 2019 09:41:11 +0300
-Message-Id: <1556260871-2919-6-git-send-email-kvalo@codeaurora.org>
-In-Reply-To: <1556260871-2919-1-git-send-email-kvalo@codeaurora.org>
-References: <1556260871-2919-1-git-send-email-kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: remove iteration in wake_tx_queue
+References: <20190327162906.6010-1-erik.stromdahl@gmail.com>
+ <87bm1qq92j.fsf@toke.dk>
+ <8772dfe6-3f52-05ca-f55a-b7eae14fa7ac@gmail.com>
+ <87imvdu5u8.fsf@toke.dk>
+ <f915fa20-a4e1-7312-dea2-d60b716e4877@gmail.com>
+Date: Fri, 26 Apr 2019 10:07:03 +0300
+In-Reply-To: <f915fa20-a4e1-7312-dea2-d60b716e4877@gmail.com> (Erik
+ Stromdahl's message of "Wed, 17 Apr 2019 15:29:41 +0200")
+Message-ID: <87sgu5utwo.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,101 +23,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: yiboz@codeaurora.org, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Wen Gong <wgong@codeaurora.org>
-
-After implementing PN replay check we can enable SDIO support on QCA6174.
-Tested with client mode on all security modes, and fragmentation as well. AP
-mode does not work yet.
-
-Also tone down the warning about SDIO being not ready yet.
-
-Tested on QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1. AP mode
-is not working yet.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 27 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- drivers/net/wireless/ath/ath10k/sdio.c |  2 +-
- 3 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index cfd7bb29a1ec..525a7ff87bf4 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -154,6 +154,33 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.fw_diag_ce_download = false,
- 	},
- 	{
-+		.id = QCA6174_HW_3_2_VERSION,
-+		.dev_id = QCA6174_3_2_DEVICE_ID,
-+		.bus = ATH10K_BUS_SDIO,
-+		.name = "qca6174 hw3.2 sdio",
-+		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 19,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 0,
-+		.fw = {
-+			.dir = QCA6174_HW_3_0_FW_DIR,
-+			.board = QCA6174_HW_3_0_BOARD_DATA_FILE,
-+			.board_size = QCA6174_BOARD_DATA_SZ,
-+			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca6174_ops,
-+		.hw_clk = qca6174_clk,
-+		.target_cpu_freq = 176000000,
-+		.decap_align_bytes = 4,
-+		.n_cipher_suites = 8,
-+		.num_peers = 10,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
-+		.uart_pin_workaround = true,
-+	},
-+	{
- 		.id = QCA6174_HW_2_1_VERSION,
- 		.dev_id = QCA6164_2_1_DEVICE_ID,
- 		.bus = ATH10K_BUS_PCI,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index a92fce1bb6f0..248cfb4e53c3 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -24,6 +24,7 @@ enum ath10k_bus {
- #define QCA988X_2_0_DEVICE_ID   (0x003c)
- #define QCA6164_2_1_DEVICE_ID   (0x0041)
- #define QCA6174_2_1_DEVICE_ID   (0x003e)
-+#define QCA6174_3_2_DEVICE_ID   (0x0042)
- #define QCA99X0_2_0_DEVICE_ID   (0x0040)
- #define QCA9888_2_0_DEVICE_ID	(0x0056)
- #define QCA9984_1_0_DEVICE_ID	(0x0046)
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 30102090e282..a2c1bad67b5b 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2059,7 +2059,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	}
- 
- 	/* TODO: remove this once SDIO support is fully implemented */
--	ath10k_warn(ar, "WARNING: ath10k SDIO support is incomplete, don't expect anything to work!\n");
-+	ath10k_warn(ar, "WARNING: ath10k SDIO support is work-in-progress, problems may arise!\n");
- 
- 	return 0;
- 
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBPbiA0
+LzE2LzE5IDk6MDcgUE0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gRXJpayBT
+dHJvbWRhaGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4gd3JpdGVzOgo+Pgo+Pj4gT24gNC8x
+LzE5IDE6MDUgUE0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4+PiBFcmlrIFN0
+cm9tZGFobCA8ZXJpay5zdHJvbWRhaGxAZ21haWwuY29tPiB3cml0ZXM6Cj4+Pj4KPj4+Pj4gSXRl
+cmF0aW5nIHRoZSBUWCBxdWV1ZSBhbmQgdGhlcmVieSBkZXF1ZXVpbmcgYWxsIGF2YWlsYWJsZSBw
+YWNrZXRzIGluIHRoZQo+Pj4+PiBxdWV1ZSBjb3VsZCByZXN1bHQgaW4gcGVyZm9ybWFuY2UgcGVu
+YWx0aWVzIG9uIHNvbWUgU01QIHN5c3RlbXMuCj4+Pj4+Cj4+Pj4+IFRoZSByZWFzb24gZm9yIHRo
+aXMgaXMgbW9zdCBsaWtlbHkgdGhhdCB0aGUgcGVyLWFjIGxvY2sgKGFjdGl2ZV90eHFfbG9jaykK
+Pj4+Pj4gaW4gbWFjODAyMTEgd2lsbCBiZSBoZWxkIGJ5IHRoZSBDUFUgaXRlcmF0aW5nIHRoZSBj
+dXJyZW50IHF1ZXVlLgo+Pj4+Pgo+Pj4+PiBUaGlzIHdpbGwgbG9jayB1cCBvdGhlciBDUFVzIHRy
+eWluZyB0byBwdXNoIG5ldyBtZXNzYWdlcyBvbiB0aGUgVFgKPj4+Pj4gcXVldWUuCj4+Pj4+Cj4+
+Pj4+IEluc3RlYWQgb2YgaXRlcmF0aW5nIHRoZSBxdWV1ZSB3ZSBmZXRjaCBqdXN0IG9uZSBwYWNr
+ZXQgYXQgdGhlIHRpbWUsCj4+Pj4+IHJlc3VsdGluZyBpbiBtaW5pbWFsIHN0YXJ2YXRpb24gb2Yg
+dGhlIG90aGVyIENQVXMuCj4+Pj4KPj4+PiBEaWQgeW91IHRlc3QgdGhpcyB3aXRoIEZlbGl4JyBw
+YXRjaGVzIHJlZHVjaW5nIHRoZSB0aW1lIHRoZSBsb2NrIGlzIGhlbGQKPj4+PiBpbiBtYWM4MDIx
+MT8KPj4+Pgo+Pj4+IC1Ub2tlCj4+Pj4KPj4+IEhpIFRva2UsCj4+Pgo+Pj4gSSBhbSBub3QgYXdh
+cmUgb2YgdGhlc2UgcGF0Y2hlcy4gQ2FuIHlvdSBwbGVhc2UgcG9pbnQgdGhlbSBvdXQgZm9yIG1l
+Pwo+Pgo+PiBUaGV5J3ZlIGFscmVhZHkgYmVlbiBtZXJnZWQuIENvbW1pdHMgZGNlYzFkOWJjOGE3
+IGFuZCA3ZWY3Njk0NTlmMTQgaW4KPj4gbWFjODAyMTEtbmV4dCA6KQo+Pgo+PiAtVG9rZQo+Pgo+
+Cj4gSSBzZWUuIEkgYW0gdXNpbmcgdGhlIGF0aCB0cmVlIGFuZCBJIGNvdWxkbid0IGZpbmQgdGhl
+bSB0aGVyZS4KPiBJIGNhbiBjaGVycnktcGljayB0aGVtIHRvIG15IG93biB0cmVlIGFuZCB0cnkg
+dGhlbSBvdXQKPiAob3Igd2FpdCB1bnRpbCBLYWxsZSB1cGRhdGVzIGF0aC5naXQpLgoKSXQgd2ls
+bCB0YWtlIGEgd2hpbGUgYmVmb3JlIHRoZXNlIGNvbW1pdHMgdHJpY2tsZSBkb3duIHRvIGF0aC1u
+ZXh0CmJyYW5jaCwgbW9zdCBsaWtlbHkgYWZ0ZXIgdjUuMi1yYzEgaXMgcmVsZWFzZWQuCgotLSAK
+S2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
