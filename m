@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLM1r-0002r0-Ar
- for ath10k@lists.infradead.org; Tue, 30 Apr 2019 06:14:13 +0000
-Subject: RE: [PATCHv2] ath10k: Add wrapper function to ath10k debug
-From: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
-Date: Tue, 30 Apr 2019 06:13:56 +0000
-Message-ID: <d0784b86ad184a188e82b86e14a89338@APSANEXR01F.ap.qualcomm.com>
-References: <1556283505-29539-1-git-send-email-vnaralas@codeaurora.org>
- <CABvG-CVxmnm=JsSsgYQqEzHHYU8RJDxqCZJn4Rzy=zPLtKY1hA@mail.gmail.com>
- <52f8d2ff-9bd0-d456-e29a-c60b99a1eb8a@candelatech.com>
-In-Reply-To: <52f8d2ff-9bd0-d456-e29a-c60b99a1eb8a@candelatech.com>
-Content-Language: en-US
+ id 1hL7Dt-0000ox-G9
+ for ath10k@lists.infradead.org; Mon, 29 Apr 2019 14:25:39 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH for-5.1] ath10k: perform crash dump collection in workqueue
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20190326205728.168973-1-briannorris@chromium.org>
+References: <20190326205728.168973-1-briannorris@chromium.org>
+Message-Id: <20190429142537.2614F60131@smtp.codeaurora.org>
+Date: Mon, 29 Apr 2019 14:25:37 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +18,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>, Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Cc: Kan Yan <kyan@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, =?utf-8?q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogYXRoMTBrIDxhdGgxMGst
-Ym91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnPiBPbiBCZWhhbGYgT2YgQmVuDQo+IEdyZWVhcg0K
-PiBTZW50OiBGcmlkYXksIEFwcmlsIDI2LCAyMDE5IDc6MjcgUE0NCj4gVG86IE1pY2hhxYIgS2F6
-aW9yIDxrYXppa2N6QGdtYWlsLmNvbT47IFZlbmthdGVzd2FyYSBOYXJhbGFzZXR0eQ0KPiA8dm5h
-cmFsYXNAY29kZWF1cm9yYS5vcmc+DQo+IENjOiBLYW4gWWFuIDxreWFuQGNocm9taXVtLm9yZz47
-IGxpbnV4LXdpcmVsZXNzIDxsaW51eC0NCj4gd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnPjsgYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogW0VYVF0gUmU6IFtQQVRDSHYyXSBh
-dGgxMGs6IEFkZCB3cmFwcGVyIGZ1bmN0aW9uIHRvIGF0aDEwayBkZWJ1Zw0KPiANCj4gT24gNC8y
-Ni8xOSA2OjQ0IEFNLCBNaWNoYcWCIEthemlvciB3cm90ZToNCj4gPiBPbiBGcmksIDI2IEFwciAy
-MDE5IGF0IDE0OjU4LCBWZW5rYXRlc3dhcmEgTmFyYWxhc2V0dHkNCj4gPiA8dm5hcmFsYXNAY29k
-ZWF1cm9yYS5vcmc+IHdyb3RlOg0KPiA+Pg0KPiA+PiBhdGgxMGtfZGJnKCkgaXMgY2FsbGVkIGlu
-IGF0aDEwa19wcm9jZXNzX3J4KCkgd2l0aCBodWdlIHNldCBvZg0KPiA+PiBhcmd1bWVudHMgd2hp
-Y2ggaXMgY2F1c2luZyBDUFUgb3ZlcmhlYWQgZXZlbiB3aGVuIGRlYnVnX21hc2sgaXMgbm90DQo+
-IHNldC4NCj4gPj4gR29vZCBpbXByb3ZlbWVudCB3YXMgb2JzZXJ2ZWQgaW4gdGhlIHJlY2VpdmUg
-c2lkZSBwZXJmb3JtYW5jZSB3aGVuDQo+ID4+IGNhbGwgdG8gYXRoMTBrX2RiZygpIGlzIGF2b2lk
-ZWQgaW4gdGhlIFJYIHBhdGguDQo+ID4gWy4uLl0NCj4gPg0KPiA+PiArLyogQXZvaWQgY2FsbGlu
-ZyBfX2F0aDEwa19kYmcoKSBpZiBkZWJ1Z19tYXNrIGlzIG5vdCBzZXQgYW5kIHRyYWNpbmcNCj4g
-Pj4gKyAqIGRpc2FibGVkLg0KPiA+PiArICovDQo+ID4+ICsjZGVmaW5lIGF0aDEwa19kYmcoYXIs
-IGRiZ19tYXNrLCBmbXQsIC4uLikgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ICtkbyB7ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBc
-DQo+ID4+ICsgICAgICAgaWYgKChhdGgxMGtfZGVidWdfbWFzayAmIGRiZ19tYXNrKSB8fCAgICAg
-ICAgICAgICAgICAgICBcDQo+ID4+ICsgICAgICAgICAgIHRyYWNlX2F0aDEwa19sb2dfZGJnX2Vu
-YWJsZWQoKSkgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ICsgICAgICAgICAgICAgICBfX2F0
-aDEwa19kYmcoYXIsIGRiZ19tYXNrLCBmbXQsICMjX19WQV9BUkdTX18pOyBcIH0NCj4gPj4gK3do
-aWxlICgwKQ0KPiA+DQo+ID4gRGlkIHlvdSBjb25zaWRlciB1c2luZyBqdW1wIGxhYmVscyAoc2Vl
-IGluY2x1ZGUvbGludXgvanVtcF9sYWJlbC5oKT8NCj4gPiBJdCdzIHdoYXQgdHJhY2luZyB1c2Vz
-IHVuZGVyIHRoZSBob29kLiBJIHdvbmRlciBpZiB5b3UgY291bGQgc3F1ZWV6ZQ0KPiA+IG91dCBh
-IGJpdCBtb3JlIHBlcmZvcm1hbmNlIHdpdGggdGhhdD8gSSBndWVzcyB5b3UnZCBuZWVkIHRvIGFk
-ZA0KPiA+IGBzdHJ1Y3Qgc3RhdGljX2tleSBhdGgxMGtfZGJnX21hc2tfa2V5c1tBVEgxMEtfREJH
-X01BWF1gIGFuZCByZS1kbw0KPiA+IGF0aDEwa19kZWJ1Z19tYXNrIGVudW0gYSBiaXQuDQo+IA0K
-PiBNYXliZSBmaXJzdCB0ZXN0IHdpdGggZGVidWdnaW5nIGp1c3QgY29tcGlsZWQgb3V0IHRvIHNl
-ZSBpZiB0aGVyZSBpcyBzdGlsbCBhbnkNCj4gc2lnbmlmaWNhbnQgb3ZlcmhlYWQgd2l0aCB0aGlz
-IG5ldyBwYXRjaCBhcHBsaWVkPw0KU2luY2UgdGhpcyBtYWNybyBhdGgxMGtfZGJnIGRlZmluZWQg
-b3V0c2lkZSBvZiBDT05GSUdfQVRIMTBLX0RFQlVHIHdpbGwgaXQgbWFrZSBhbnkgZGlmZmVyZW5j
-ZSBldmVuIGlmIGRlYnVnZ2luZyBjb21waWxlZCBvdXQ/DQoNClRoYW5rcywNClZlbmthdGVzaC4N
-Cj4gDQo+IFRoYW5rcywNCj4gQmVuDQo+IA0KPiAtLQ0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNh
-bmRlbGF0ZWNoLmNvbT4NCj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNh
-bmRlbGF0ZWNoLmNvbQ0KPiANCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fDQo+IGF0aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Brian Norris <briannorris@chromium.org> wrote:
+
+> Commit 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE
+> polling") introduced a regression where we try to sleep (grab a mutex)
+> in an atomic context:
+> 
+> [  233.602619] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:254
+> [  233.602626] in_atomic(): 1, irqs_disabled(): 0, pid: 0, name: swapper/0
+> [  233.602636] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.1.0-rc2 #4
+> [  233.602642] Hardware name: Google Scarlet (DT)
+> [  233.602647] Call trace:
+> [  233.602663]  dump_backtrace+0x0/0x11c
+> [  233.602672]  show_stack+0x20/0x28
+> [  233.602681]  dump_stack+0x98/0xbc
+> [  233.602690]  ___might_sleep+0x154/0x16c
+> [  233.602696]  __might_sleep+0x78/0x88
+> [  233.602704]  mutex_lock+0x2c/0x5c
+> [  233.602717]  ath10k_pci_diag_read_mem+0x68/0x21c [ath10k_pci]
+> [  233.602725]  ath10k_pci_diag_read32+0x48/0x74 [ath10k_pci]
+> [  233.602733]  ath10k_pci_dump_registers+0x5c/0x16c [ath10k_pci]
+> [  233.602741]  ath10k_pci_fw_crashed_dump+0xb8/0x548 [ath10k_pci]
+> [  233.602749]  ath10k_pci_napi_poll+0x60/0x128 [ath10k_pci]
+> [  233.602757]  net_rx_action+0x140/0x388
+> [  233.602766]  __do_softirq+0x1b0/0x35c
+> [...]
+> 
+> ath10k_pci_fw_crashed_dump() is called from NAPI contexts, and firmware
+> memory dumps are retrieved using the diag memory interface.
+> 
+> A simple reproduction case is to run this on QCA6174A /
+> WLAN.RM.4.4.1-00132-QCARMSWP-1, which happens to be a way to b0rk the
+> firmware:
+> 
+>   dd if=/sys/kernel/debug/ieee80211/phy0/ath10k/mem_value bs=4K count=1
+> of=/dev/null
+> 
+> (NB: simulated firmware crashes, via debugfs, don't trigger firmware
+> dumps.)
+> 
+> The fix is to move the crash-dump into a workqueue context, and avoid
+> relying on 'data_lock' for most mutual exclusion. We only keep using it
+> here for protecting 'fw_crash_counter', while the rest of the coredump
+> buffers are protected by a new 'dump_mutex'.
+> 
+> I've tested the above with simulated firmware crashes (debugfs 'reset'
+> file), real firmware crashes (the 'dd' command above), and a variety of
+> reboot and suspend/resume configurations on QCA6174A.
+> 
+> Reported here:
+> http://lkml.kernel.org/linux-wireless/20190325202706.GA68720@google.com
+> 
+> Fixes: 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE polling")
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-current branch of ath.git, thanks.
+
+38faed150438 ath10k: perform crash dump collection in workqueue
+
+-- 
+https://patchwork.kernel.org/patch/10872181/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
