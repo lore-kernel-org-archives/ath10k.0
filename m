@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hL3Y5-0006KC-3z
- for ath10k@lists.infradead.org; Mon, 29 Apr 2019 10:30:14 +0000
-Received: by mail-qk1-x744.google.com with SMTP id w73so5540575qkb.13
- for <ath10k@lists.infradead.org>; Mon, 29 Apr 2019 03:30:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <1554260478-4161-1-git-send-email-wgong@codeaurora.org>
-In-Reply-To: <1554260478-4161-1-git-send-email-wgong@codeaurora.org>
-From: Nicolas Boichat <drinkcat@chromium.org>
-Date: Mon, 29 Apr 2019 18:30:00 +0800
-Message-ID: <CANMq1KAU1B4Bweq3O6O8HOMwT7fHjj9tDyxqMsn_vn4gwxXL=Q@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add peer id check in ath10k_peer_find_by_id
+ id 1hL17O-0007Je-0x
+ for ath10k@lists.infradead.org; Mon, 29 Apr 2019 07:54:31 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v2] ath10k: add support for simulate crash on SDIO chip
+Date: Mon, 29 Apr 2019 15:54:17 +0800
+Message-Id: <1556524457-17469-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +15,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: Claire Chang <tientzu@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Wed, Apr 3, 2019 at 3:01 AM Wen Gong <wgong@codeaurora.org> wrote:
->
-> For some SDIO chip, the peer id is 65535 for MPDU with error status,
-> then test_bit will trigger buffer overflow for peer's memory, if kasan
-> enabled, it will report error.
->
-> Add check for overflow the size of peer's peer_ids will avoid the buffer
-> overflow access.
->
-> Call trace of kasan:
-> dump_backtrace+0x0/0x2ec
-> show_stack+0x20/0x2c
-> __dump_stack+0x20/0x28
-> dump_stack+0xc8/0xec
-> print_address_description+0x74/0x240
-> kasan_report+0x250/0x26c
-> __asan_report_load8_noabort+0x20/0x2c
-> ath10k_peer_find_by_id+0x180/0x1e4 [ath10k_core]
-> ath10k_htt_t2h_msg_handler+0x100c/0x2fd4 [ath10k_core]
-> ath10k_htt_htc_t2h_msg_handler+0x20/0x34 [ath10k_core]
-> ath10k_sdio_irq_handler+0xcc8/0x1678 [ath10k_sdio]
-> process_sdio_pending_irqs+0xec/0x370
-> sdio_run_irqs+0x68/0xe4
-> sdio_irq_work+0x1c/0x28
-> process_one_work+0x3d8/0x8b0
-> worker_thread+0x508/0x7cc
-> kthread+0x24c/0x264
-> ret_from_fork+0x10/0x18
->
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
->
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/txrx.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-> index 23606b6..33de9e1 100644
-> --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> @@ -157,6 +157,9 @@ struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id)
->  {
->         struct ath10k_peer *peer;
->
-> +       if (peer_id >= sizeof(peer->peer_ids) * BITS_PER_BYTE)
+The command to simulate firmware crash:
+echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
 
-I'd use >= BITS_PER_TYPE(peer->peer_ids).
+It will send WMI_FORCE_FW_HANG_ASSERT to firmware, then it will trigger
+CPU interrupt status register for SDIO chip, ath10k driver need to
+configure it while enable SDIO interrupt, otherwise ath10k driver will
+not get the assert error info.
 
-> +               return NULL;
-> +
->         lockdep_assert_held(&ar->data_lock);
->
->         list_for_each_entry(peer, &ar->peers, list)
+After this change, it will success for simulate firmware crash.
+
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+v2: add MBOX_CPU_STATUS_ENABLE_ASSERT_MASK for fw assert check
+ drivers/net/wireless/ath/ath10k/hw.h   |  1 +
+ drivers/net/wireless/ath/ath10k/sdio.c | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 7131499..60521ed 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -1095,6 +1095,7 @@ struct ath10k_hw_ops {
+ #define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
+ #define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
+ #define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
++#define MBOX_CPU_STATUS_ENABLE_ASSERT_MASK 0x00000001
+ #define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
+ #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
+ #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index fae56c6..1a3a7bf 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -850,6 +850,10 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
+ 
+ out:
+ 	mutex_unlock(&irq_data->mtx);
++	if (cpu_int_status & MBOX_CPU_STATUS_ENABLE_ASSERT_MASK) {
++		ath10k_err(ar, "firmware crashed!\n");
++		queue_work(ar->workqueue, &ar->restart_work);
++	}
+ 	return ret;
+ }
+ 
+@@ -1495,8 +1499,10 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
+ 	regs->int_status_en |=
+ 		FIELD_PREP(MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK, 1);
+ 
+-	/* Set up the CPU Interrupt status Register */
+-	regs->cpu_int_status_en = 0;
++	/* Set up the CPU Interrupt Status Register, enable CPU sourced interrupt #0
++	 * #0 is used for report assertion from target
++	 */
++	regs->cpu_int_status_en = FIELD_PREP(MBOX_CPU_STATUS_ENABLE_ASSERT_MASK, 1);
+ 
+ 	/* Set up the Error Interrupt status Register */
+ 	regs->err_int_status_en =
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
