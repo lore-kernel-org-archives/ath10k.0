@@ -1,12 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hL17O-0007Je-0x
- for ath10k@lists.infradead.org; Mon, 29 Apr 2019 07:54:31 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v2] ath10k: add support for simulate crash on SDIO chip
-Date: Mon, 29 Apr 2019 15:54:17 +0800
-Message-Id: <1556524457-17469-1-git-send-email-wgong@codeaurora.org>
+ id 1hL3jY-0000hD-S1
+ for ath10k@lists.infradead.org; Mon, 29 Apr 2019 10:42:06 +0000
+Received: by mail-qk1-x744.google.com with SMTP id m137so5608749qke.3
+ for <ath10k@lists.infradead.org>; Mon, 29 Apr 2019 03:42:04 -0700 (PDT)
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com.
+ [209.85.222.169])
+ by smtp.gmail.com with ESMTPSA id z85sm16628533qka.18.2019.04.29.03.42.01
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 29 Apr 2019 03:42:02 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id w20so5584353qka.7
+ for <ath10k@lists.infradead.org>; Mon, 29 Apr 2019 03:42:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <2884043.Jv1Mn93hE8@aspire.rjw.lan>
+ <20190403195718.GA74723@google.com>
+ <87o94tutdz.fsf@kamboji.qca.qualcomm.com>
+ <CAJZ5v0ifD=DATprUeeO2_LGs04aEEhPB6AcGVPxWUdQaOma+ww@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ifD=DATprUeeO2_LGs04aEEhPB6AcGVPxWUdQaOma+ww@mail.gmail.com>
+From: Claire Chang <tientzu@chromium.org>
+Date: Mon, 29 Apr 2019 18:41:50 +0800
+Message-ID: <CALiNf2_qV+iViHbS0tQquTMZfu6XfFvQCH14mdT5bixn94DZ2Q@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
+ resume
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,77 +32,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Sriram R <srirrama@codeaurora.org>, Linux PM <linux-pm@vger.kernel.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, ath10k@lists.infradead.org, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Todd Brandt <todd.e.brandt@intel.com>, Kalle Valo <kvalo@codeaurora.org>
 
-The command to simulate firmware crash:
-echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
+Tested-by: Claire Chang <tientzu@chromium.org>
 
-It will send WMI_FORCE_FW_HANG_ASSERT to firmware, then it will trigger
-CPU interrupt status register for SDIO chip, ath10k driver need to
-configure it while enable SDIO interrupt, otherwise ath10k driver will
-not get the assert error info.
+> Still, I'm quite sure that the WARN_ON()s trigger during system resume
+> regardless of the hw/fw combination.
 
-After this change, it will success for simulate firmware crash.
+Also see this on sido:
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
-v2: add MBOX_CPU_STATUS_ENABLE_ASSERT_MASK for fw assert check
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- drivers/net/wireless/ath/ath10k/sdio.c | 10 ++++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7131499..60521ed 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -1095,6 +1095,7 @@ struct ath10k_hw_ops {
- #define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
- #define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
- #define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
-+#define MBOX_CPU_STATUS_ENABLE_ASSERT_MASK 0x00000001
- #define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
- #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
- #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index fae56c6..1a3a7bf 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -850,6 +850,10 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
- 
- out:
- 	mutex_unlock(&irq_data->mtx);
-+	if (cpu_int_status & MBOX_CPU_STATUS_ENABLE_ASSERT_MASK) {
-+		ath10k_err(ar, "firmware crashed!\n");
-+		queue_work(ar->workqueue, &ar->restart_work);
-+	}
- 	return ret;
- }
- 
-@@ -1495,8 +1499,10 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
- 	regs->int_status_en |=
- 		FIELD_PREP(MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK, 1);
- 
--	/* Set up the CPU Interrupt status Register */
--	regs->cpu_int_status_en = 0;
-+	/* Set up the CPU Interrupt Status Register, enable CPU sourced interrupt #0
-+	 * #0 is used for report assertion from target
-+	 */
-+	regs->cpu_int_status_en = FIELD_PREP(MBOX_CPU_STATUS_ENABLE_ASSERT_MASK, 1);
- 
- 	/* Set up the Error Interrupt status Register */
- 	regs->err_int_status_en =
--- 
-1.9.1
-
+[    4.925278] ath10k_sdio mmc1:0001:1: qca6174 hw3.2 sdio target
+0x05030000 chip_id 0x00000000 sub 0000:0000
+[    4.935721] ath10k_sdio mmc1:0001:1: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 1
+[    4.948750] ath10k_sdio mmc1:0001:1: firmware ver
+WLAN.RMH.4.4.1-00007-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32
+b98adaf8
+[    5.132728] ath10k_sdio mmc1:0001:1: board_file api 2 bmi_id 0:4
+crc32 6364cfcc
 
 _______________________________________________
 ath10k mailing list
