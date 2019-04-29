@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [208.74.158.174] (helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hK1Lj-0005Yw-7p
- for ath10k@lists.infradead.org; Fri, 26 Apr 2019 13:57:14 +0000
-Subject: Re: [PATCHv2] ath10k: Add wrapper function to ath10k debug
-References: <1556283505-29539-1-git-send-email-vnaralas@codeaurora.org>
- <b9f263a4-e9da-18bb-5932-941a018ee860@candelatech.com>
- <be151755e771423eaa0ad6e6e2e81c2b@APSANEXR01F.ap.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <380a88cf-9da4-a772-a119-d8df24d5b450@candelatech.com>
-Date: Fri, 26 Apr 2019 06:57:10 -0700
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hL6z1-0003JY-UQ
+ for ath10k@lists.infradead.org; Mon, 29 Apr 2019 14:10:17 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Drop WARN_ON()s that always trigger during system
+ resume
+References: <2884043.Jv1Mn93hE8@aspire.rjw.lan>
+ <20190403195718.GA74723@google.com>
+ <87o94tutdz.fsf@kamboji.qca.qualcomm.com>
+ <CAJZ5v0ifD=DATprUeeO2_LGs04aEEhPB6AcGVPxWUdQaOma+ww@mail.gmail.com>
+Date: Mon, 29 Apr 2019 17:10:08 +0300
+In-Reply-To: <CAJZ5v0ifD=DATprUeeO2_LGs04aEEhPB6AcGVPxWUdQaOma+ww@mail.gmail.com>
+ (Rafael J. Wysocki's message of "Mon, 29 Apr 2019 10:48:35 +0200")
+Message-ID: <87imuwsy0v.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <be151755e771423eaa0ad6e6e2e81c2b@APSANEXR01F.ap.qualcomm.com>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +23,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>, Venkateswara Naralasetty <vnaralas@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Kan Yan <kyan@chromium.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Claire Chang <tientzu@google.com>, Sriram R <srirrama@codeaurora.org>, Linux PM <linux-pm@vger.kernel.org>, Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, ath10k@lists.infradead.org, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Todd Brandt <todd.e.brandt@intel.com>
 
-On 4/26/19 6:38 AM, Venkateswara Naralasetty wrote:
+"Rafael J. Wysocki" <rafael@kernel.org> writes:
 
->>>    #ifdef CONFIG_ATH10K_DEBUG
->>> -void ath10k_dbg(struct ath10k *ar, enum ath10k_debug_mask mask,
->>> -		const char *fmt, ...)
->>> +void __ath10k_dbg(struct ath10k *ar, enum ath10k_debug_mask mask,
->>> +		  const char *fmt, ...)
->>>    {
->>>    	struct va_format vaf;
->>>    	va_list args;
+> On Fri, Apr 26, 2019 at 9:18 AM Kalle Valo <kvalo@codeaurora.org> wrote:
 >>
->> Do you still need the check later in this method:
+>> Brian Norris <briannorris@chromium.org> writes:
 >>
->> if (ath10k_debug_mask & mask)
+>> > + Sriram, Pradeep, Claire
+>> >
+>> > On Sun, Mar 03, 2019 at 06:24:33PM +0100, Rafael J. Wysocki wrote:
+>> >
+>> > Ooh, exactly 1 month ago!
+>> >
+>> >> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> >>
+>> >> ath10k_mac_vif_chan() always returns an error for the given vif
+>> >> during system-wide resume which reliably triggers two WARN_ON()s
+>> >> in ath10k_bss_info_changed() and they are not particularly
+>> >> useful in that code path, so drop them.
+>> >>
+>> >
+>> > Particularly, when WOWLAN isn't enabled, we get called during resume via
+>> > ieee80211_reconfig(), where we're not associated and don't have any
+>> > channel contexts. AFAICT, we shouldn't need to communicate anything in
+>> > particular to the firmware here, and so failing the 'if' is definitely
+>> > not worth WARN-ing about.
+>> >
+>> > I'd love to see this get applied with:
+>> >
+>> > Fixes: cd93b83ad927 ("ath10k: support for multicast rate control")
+>> > Fixes: f279294e9ee2 ("ath10k: add support for configuring management packet rate")
+>> >
+>> > and sent to stable. This has been bugging people since 4.19. Spurious
+>> > WARN_ON()s can trigger reports to various crash trackers, and on some
+>> > systems appear as user-visible warnings ("System problem detected").
+>> >
+>> >> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> >
+>> > Reviewed-by: Brian Norris <briannorris@chromium.org>
+>> > Tested-by: Brian Norris <briannorris@chromium.org>
 >>
->> since you already checked in the ath10k_dbg() macro?
-> Yes, we need this check.
-> Otherwise all debug messages will be printed even without any debug mask set in case of tracing enabled.
+>> I added these now to the commit log, thanks Brian.
+>>
+>> Rafael, could you please provide the hardware and firmware versions you
+>> tested this on? We have so many different firmware branches to support
+>> that I prefer to have that documented in the commit log. Providing
+>> ath10k startup messages in dmesg are enough,
+>
+> There you go:
+>
+> [    4.695349] ath10k_pci 0000:3a:00.0: enabling device (0000 -> 0002)
+> [    4.698165] ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2
+> irq_mode 0 reset_mode 0
+> [    4.912240] ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target
+> 0x05030000 chip_id 0x00340aff sub 1a56:1535
+> [    4.912255] ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0
+> tracing 0 dfs 0 testmode 0
+> [    4.912716] ath10k_pci 0000:3a:00.0: firmware ver
+> WLAN.RM.2.0-00180-QCARMSWPZ-1 api 4 features
+> wowlan,ignore-otp,no-4addr-pad crc32 75dee6c5
+> [    4.982563] ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A
+> crc32 19644295
 
-Ahh, I see.
+Thanks, I added the info to the commit log.
 
-Thanks,
-Ben
+>> I can then add it to the commit log.
+>
+> Still, I'm quite sure that the WARN_ON()s trigger during system resume
+> regardless of the hw/fw combination.
+
+Sure, I'm not claiming anything else. We just have so many different
+hw/fw combos that I want to have the environment documented in the
+commit log in case we need to investigate history in the future.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
