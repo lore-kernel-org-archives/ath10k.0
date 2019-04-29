@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hL7kV-0003fw-2p
- for ath10k@lists.infradead.org; Mon, 29 Apr 2019 14:59:20 +0000
+ id 1hKyif-00067B-Ma
+ for ath10k@lists.infradead.org; Mon, 29 Apr 2019 05:20:51 +0000
+Received: by mail-qt1-x842.google.com with SMTP id i31so1841633qti.13
+ for <ath10k@lists.infradead.org>; Sun, 28 Apr 2019 22:20:48 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath: DFS JP domain W56 fixed pulse type 3 RADAR detection
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1551893771-22485-1-git-send-email-tamizhr@codeaurora.org>
-References: <1551893771-22485-1-git-send-email-tamizhr@codeaurora.org>
-Message-Id: <20190429145918.B155B607DF@smtp.codeaurora.org>
-Date: Mon, 29 Apr 2019 14:59:18 +0000 (UTC)
+References: <1555406865-21514-1-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1555406865-21514-1-git-send-email-wgong@codeaurora.org>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Date: Mon, 29 Apr 2019 13:20:36 +0800
+Message-ID: <CANMq1KBjupZeuw3hmQHbYui4G9+Ni7SPPE1SNqG9=89iVhFjgg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: add support for simulate crash on SDIO chip
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +24,78 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhr@codeaurora.org>
-Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: Claire Chang <tientzu@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Tamizh chelvam <tamizhr@codeaurora.org> wrote:
+On Tue, Apr 16, 2019 at 5:28 PM Wen Gong <wgong@codeaurora.org> wrote:
+>
+> The command to simulate firmware crash:
+> echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
+>
+> It will send WMI_FORCE_FW_HANG_ASSERT to firmware, then it will trigger
+> CPU interrupt status register for SDIO chip, ath10k driver need to
+> configure it while enable SDIO interrupt, otherwise ath10k driver will
+> not get the assert error info.
+>
+> After this change, it will success for simulate firmware crash.
+>
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/hw.h   | 1 +
+>  drivers/net/wireless/ath/ath10k/sdio.c | 8 ++++++--
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 7131499..60521ed 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -1095,6 +1095,7 @@ struct ath10k_hw_ops {
+>  #define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS     0x00000819
+>  #define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB     0
+>  #define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK    0x000000ff
+> +#define MBOX_CPU_STATUS_ENABLE_ASSERT_MASK 0x00000001
+>  #define MBOX_ERROR_STATUS_ENABLE_ADDRESS       0x0000081a
+>  #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
+>  #define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index fae56c6..78a2f3b 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -850,6 +850,8 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
+>
+>  out:
+>         mutex_unlock(&irq_data->mtx);
+> +       ath10k_err(ar, "firmware crashed!\n");
+> +       queue_work(ar->workqueue, &ar->restart_work);
 
-> Increase pulse width range from 1-2usec to 0-4usec.
-> During data traffic HW occasionally fails detecting radar pulses,
-> so that SW cannot get enough radar reports to achieve the success rate.
-> 
-> Tested ath10k hw and fw:
-> 	* QCA9888(10.4-3.5.1-00052)
-> 	* QCA4019(10.4-3.2.1.1-00017)
-> 	* QCA9984(10.4-3.6-00104)
-> 	* QCA988X(10.2.4-1.0-00041)
-> 
-> Tested ath9k hw: AR9300
-> 
-> Tested-by: Tamizh chelvam <tamizhr@codeaurora.org>
-> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
-> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Err, so you consider _any_ CPU interrupt to be caused by the FW
+crashing? Is that correct? If so, please at least add a comment.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Otherwise, maybe you should run this only if
+MBOX_CPU_STATUS_ENABLE_ASSERT_MASK is set in cpu_int_status?
 
-d8792393a783 ath: DFS JP domain W56 fixed pulse type 3 RADAR detection
-
--- 
-https://patchwork.kernel.org/patch/10841487/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+>         return ret;
+>  }
+>
+> @@ -1495,8 +1497,10 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
+>         regs->int_status_en |=
+>                 FIELD_PREP(MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK, 1);
+>
+> -       /* Set up the CPU Interrupt status Register */
+> -       regs->cpu_int_status_en = 0;
+> +       /* Set up the CPU Interrupt Status Register, enable CPU sourced interrupt #0
+> +        * #0 is used for report assertion from target
+> +        */
+> +       regs->cpu_int_status_en = FIELD_PREP(MBOX_CPU_STATUS_ENABLE_ASSERT_MASK, 1);
+>
+>         /* Set up the Error Interrupt status Register */
+>         regs->err_int_status_en =
+> --
+> 1.9.1
+>
 
 _______________________________________________
 ath10k mailing list
