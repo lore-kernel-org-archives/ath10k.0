@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hL7Dt-0000ox-G9
- for ath10k@lists.infradead.org; Mon, 29 Apr 2019 14:25:39 +0000
+ id 1hL7kV-0003fw-2p
+ for ath10k@lists.infradead.org; Mon, 29 Apr 2019 14:59:20 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH for-5.1] ath10k: perform crash dump collection in workqueue
+Subject: Re: [PATCH] ath: DFS JP domain W56 fixed pulse type 3 RADAR detection
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190326205728.168973-1-briannorris@chromium.org>
-References: <20190326205728.168973-1-briannorris@chromium.org>
-Message-Id: <20190429142537.2614F60131@smtp.codeaurora.org>
-Date: Mon, 29 Apr 2019 14:25:37 +0000 (UTC)
+In-Reply-To: <1551893771-22485-1-git-send-email-tamizhr@codeaurora.org>
+References: <1551893771-22485-1-git-send-email-tamizhr@codeaurora.org>
+Message-Id: <20190429145918.B155B607DF@smtp.codeaurora.org>
+Date: Mon, 29 Apr 2019 14:59:18 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,70 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, =?utf-8?q?Micha=C5=82_Kazior?= <kazikcz@gmail.com>
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Brian Norris <briannorris@chromium.org> wrote:
+Tamizh chelvam <tamizhr@codeaurora.org> wrote:
 
-> Commit 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE
-> polling") introduced a regression where we try to sleep (grab a mutex)
-> in an atomic context:
+> Increase pulse width range from 1-2usec to 0-4usec.
+> During data traffic HW occasionally fails detecting radar pulses,
+> so that SW cannot get enough radar reports to achieve the success rate.
 > 
-> [  233.602619] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:254
-> [  233.602626] in_atomic(): 1, irqs_disabled(): 0, pid: 0, name: swapper/0
-> [  233.602636] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.1.0-rc2 #4
-> [  233.602642] Hardware name: Google Scarlet (DT)
-> [  233.602647] Call trace:
-> [  233.602663]  dump_backtrace+0x0/0x11c
-> [  233.602672]  show_stack+0x20/0x28
-> [  233.602681]  dump_stack+0x98/0xbc
-> [  233.602690]  ___might_sleep+0x154/0x16c
-> [  233.602696]  __might_sleep+0x78/0x88
-> [  233.602704]  mutex_lock+0x2c/0x5c
-> [  233.602717]  ath10k_pci_diag_read_mem+0x68/0x21c [ath10k_pci]
-> [  233.602725]  ath10k_pci_diag_read32+0x48/0x74 [ath10k_pci]
-> [  233.602733]  ath10k_pci_dump_registers+0x5c/0x16c [ath10k_pci]
-> [  233.602741]  ath10k_pci_fw_crashed_dump+0xb8/0x548 [ath10k_pci]
-> [  233.602749]  ath10k_pci_napi_poll+0x60/0x128 [ath10k_pci]
-> [  233.602757]  net_rx_action+0x140/0x388
-> [  233.602766]  __do_softirq+0x1b0/0x35c
-> [...]
+> Tested ath10k hw and fw:
+> 	* QCA9888(10.4-3.5.1-00052)
+> 	* QCA4019(10.4-3.2.1.1-00017)
+> 	* QCA9984(10.4-3.6-00104)
+> 	* QCA988X(10.2.4-1.0-00041)
 > 
-> ath10k_pci_fw_crashed_dump() is called from NAPI contexts, and firmware
-> memory dumps are retrieved using the diag memory interface.
+> Tested ath9k hw: AR9300
 > 
-> A simple reproduction case is to run this on QCA6174A /
-> WLAN.RM.4.4.1-00132-QCARMSWP-1, which happens to be a way to b0rk the
-> firmware:
-> 
->   dd if=/sys/kernel/debug/ieee80211/phy0/ath10k/mem_value bs=4K count=1
-> of=/dev/null
-> 
-> (NB: simulated firmware crashes, via debugfs, don't trigger firmware
-> dumps.)
-> 
-> The fix is to move the crash-dump into a workqueue context, and avoid
-> relying on 'data_lock' for most mutual exclusion. We only keep using it
-> here for protecting 'fw_crash_counter', while the rest of the coredump
-> buffers are protected by a new 'dump_mutex'.
-> 
-> I've tested the above with simulated firmware crashes (debugfs 'reset'
-> file), real firmware crashes (the 'dd' command above), and a variety of
-> reboot and suspend/resume configurations on QCA6174A.
-> 
-> Reported here:
-> http://lkml.kernel.org/linux-wireless/20190325202706.GA68720@google.com
-> 
-> Fixes: 25733c4e67df ("ath10k: pci: use mutex for diagnostic window CE polling")
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Tested-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-current branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-38faed150438 ath10k: perform crash dump collection in workqueue
+d8792393a783 ath: DFS JP domain W56 fixed pulse type 3 RADAR detection
 
 -- 
-https://patchwork.kernel.org/patch/10872181/
+https://patchwork.kernel.org/patch/10841487/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
