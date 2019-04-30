@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smail.rz.tu-ilmenau.de ([141.24.186.67])
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hL3wB-0003lA-SP
- for ath10k@lists.infradead.org; Mon, 29 Apr 2019 10:55:09 +0000
-Received: from [192.168.2.97] (wlan-control.prakinf.tu-ilmenau.de
- [141.24.207.101])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by smail.rz.tu-ilmenau.de (Postfix) with ESMTPSA id 7D8F5580088
- for <ath10k@lists.infradead.org>; Mon, 29 Apr 2019 12:55:00 +0200 (CEST)
-From: Markus Theil <markus.theil@tu-ilmenau.de>
-Subject: [BUG] QCA9888 unable to tx data frames in mesh mode (fw:
- 10.4-3.9.0.2-00024)
-Message-ID: <4c59eaed-a39c-0041-3951-463edbf9c925@tu-ilmenau.de>
-Date: Mon, 29 Apr 2019 12:55:00 +0200
-MIME-Version: 1.0
+ id 1hLM1r-0002r0-Ar
+ for ath10k@lists.infradead.org; Tue, 30 Apr 2019 06:14:13 +0000
+Subject: RE: [PATCHv2] ath10k: Add wrapper function to ath10k debug
+From: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
+Date: Tue, 30 Apr 2019 06:13:56 +0000
+Message-ID: <d0784b86ad184a188e82b86e14a89338@APSANEXR01F.ap.qualcomm.com>
+References: <1556283505-29539-1-git-send-email-vnaralas@codeaurora.org>
+ <CABvG-CVxmnm=JsSsgYQqEzHHYU8RJDxqCZJn4Rzy=zPLtKY1hA@mail.gmail.com>
+ <52f8d2ff-9bd0-d456-e29a-c60b99a1eb8a@candelatech.com>
+In-Reply-To: <52f8d2ff-9bd0-d456-e29a-c60b99a1eb8a@candelatech.com>
 Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>, =?utf-8?B?TWljaGHFgiBLYXppb3I=?= <kazikcz@gmail.com>, Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Cc: Kan Yan <kyan@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi,
-
-I currently use a QCA9888 based NIC in mesh mode under Linux 5.0.9.
-Contrasting to other modes, like STA or AP, the card does not send data
-frames to other stations in mesh mode (cannot see them in monitor mode
-on nearby mesh devices). Receiving frames seems to work (I can see them
-in tcpdump on the same box). I use the newest available firmware
-10.4-3.9.0.2-00024.
-
-Best regards,
-Markus
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogYXRoMTBrIDxhdGgxMGst
+Ym91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnPiBPbiBCZWhhbGYgT2YgQmVuDQo+IEdyZWVhcg0K
+PiBTZW50OiBGcmlkYXksIEFwcmlsIDI2LCAyMDE5IDc6MjcgUE0NCj4gVG86IE1pY2hhxYIgS2F6
+aW9yIDxrYXppa2N6QGdtYWlsLmNvbT47IFZlbmthdGVzd2FyYSBOYXJhbGFzZXR0eQ0KPiA8dm5h
+cmFsYXNAY29kZWF1cm9yYS5vcmc+DQo+IENjOiBLYW4gWWFuIDxreWFuQGNocm9taXVtLm9yZz47
+IGxpbnV4LXdpcmVsZXNzIDxsaW51eC0NCj4gd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnPjsgYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogW0VYVF0gUmU6IFtQQVRDSHYyXSBh
+dGgxMGs6IEFkZCB3cmFwcGVyIGZ1bmN0aW9uIHRvIGF0aDEwayBkZWJ1Zw0KPiANCj4gT24gNC8y
+Ni8xOSA2OjQ0IEFNLCBNaWNoYcWCIEthemlvciB3cm90ZToNCj4gPiBPbiBGcmksIDI2IEFwciAy
+MDE5IGF0IDE0OjU4LCBWZW5rYXRlc3dhcmEgTmFyYWxhc2V0dHkNCj4gPiA8dm5hcmFsYXNAY29k
+ZWF1cm9yYS5vcmc+IHdyb3RlOg0KPiA+Pg0KPiA+PiBhdGgxMGtfZGJnKCkgaXMgY2FsbGVkIGlu
+IGF0aDEwa19wcm9jZXNzX3J4KCkgd2l0aCBodWdlIHNldCBvZg0KPiA+PiBhcmd1bWVudHMgd2hp
+Y2ggaXMgY2F1c2luZyBDUFUgb3ZlcmhlYWQgZXZlbiB3aGVuIGRlYnVnX21hc2sgaXMgbm90DQo+
+IHNldC4NCj4gPj4gR29vZCBpbXByb3ZlbWVudCB3YXMgb2JzZXJ2ZWQgaW4gdGhlIHJlY2VpdmUg
+c2lkZSBwZXJmb3JtYW5jZSB3aGVuDQo+ID4+IGNhbGwgdG8gYXRoMTBrX2RiZygpIGlzIGF2b2lk
+ZWQgaW4gdGhlIFJYIHBhdGguDQo+ID4gWy4uLl0NCj4gPg0KPiA+PiArLyogQXZvaWQgY2FsbGlu
+ZyBfX2F0aDEwa19kYmcoKSBpZiBkZWJ1Z19tYXNrIGlzIG5vdCBzZXQgYW5kIHRyYWNpbmcNCj4g
+Pj4gKyAqIGRpc2FibGVkLg0KPiA+PiArICovDQo+ID4+ICsjZGVmaW5lIGF0aDEwa19kYmcoYXIs
+IGRiZ19tYXNrLCBmbXQsIC4uLikgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ICtkbyB7ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBc
+DQo+ID4+ICsgICAgICAgaWYgKChhdGgxMGtfZGVidWdfbWFzayAmIGRiZ19tYXNrKSB8fCAgICAg
+ICAgICAgICAgICAgICBcDQo+ID4+ICsgICAgICAgICAgIHRyYWNlX2F0aDEwa19sb2dfZGJnX2Vu
+YWJsZWQoKSkgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ICsgICAgICAgICAgICAgICBfX2F0
+aDEwa19kYmcoYXIsIGRiZ19tYXNrLCBmbXQsICMjX19WQV9BUkdTX18pOyBcIH0NCj4gPj4gK3do
+aWxlICgwKQ0KPiA+DQo+ID4gRGlkIHlvdSBjb25zaWRlciB1c2luZyBqdW1wIGxhYmVscyAoc2Vl
+IGluY2x1ZGUvbGludXgvanVtcF9sYWJlbC5oKT8NCj4gPiBJdCdzIHdoYXQgdHJhY2luZyB1c2Vz
+IHVuZGVyIHRoZSBob29kLiBJIHdvbmRlciBpZiB5b3UgY291bGQgc3F1ZWV6ZQ0KPiA+IG91dCBh
+IGJpdCBtb3JlIHBlcmZvcm1hbmNlIHdpdGggdGhhdD8gSSBndWVzcyB5b3UnZCBuZWVkIHRvIGFk
+ZA0KPiA+IGBzdHJ1Y3Qgc3RhdGljX2tleSBhdGgxMGtfZGJnX21hc2tfa2V5c1tBVEgxMEtfREJH
+X01BWF1gIGFuZCByZS1kbw0KPiA+IGF0aDEwa19kZWJ1Z19tYXNrIGVudW0gYSBiaXQuDQo+IA0K
+PiBNYXliZSBmaXJzdCB0ZXN0IHdpdGggZGVidWdnaW5nIGp1c3QgY29tcGlsZWQgb3V0IHRvIHNl
+ZSBpZiB0aGVyZSBpcyBzdGlsbCBhbnkNCj4gc2lnbmlmaWNhbnQgb3ZlcmhlYWQgd2l0aCB0aGlz
+IG5ldyBwYXRjaCBhcHBsaWVkPw0KU2luY2UgdGhpcyBtYWNybyBhdGgxMGtfZGJnIGRlZmluZWQg
+b3V0c2lkZSBvZiBDT05GSUdfQVRIMTBLX0RFQlVHIHdpbGwgaXQgbWFrZSBhbnkgZGlmZmVyZW5j
+ZSBldmVuIGlmIGRlYnVnZ2luZyBjb21waWxlZCBvdXQ/DQoNClRoYW5rcywNClZlbmthdGVzaC4N
+Cj4gDQo+IFRoYW5rcywNCj4gQmVuDQo+IA0KPiAtLQ0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNh
+bmRlbGF0ZWNoLmNvbT4NCj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNh
+bmRlbGF0ZWNoLmNvbQ0KPiANCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fDQo+IGF0aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
