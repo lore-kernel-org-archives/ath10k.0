@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMFZ5-0002NY-SV
- for ath10k@lists.infradead.org; Thu, 02 May 2019 17:32:13 +0000
-Date: Fri, 3 May 2019 01:31:53 +0800
+ id 1hMGMS-0003xU-V2
+ for ath10k@lists.infradead.org; Thu, 02 May 2019 18:23:15 +0000
+Date: Fri, 3 May 2019 02:22:15 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-bringup 45/111]
- drivers/net/wireless/ath/ath11k/dp_tx.c:840:33: sparse: sparse: incorrect
- type in assignment (different base types)
-Message-ID: <201905030152.Bl4Qm68k%lkp@intel.com>
+Subject: [ath6kl:ath11k-bringup 47/111]
+ drivers/net/wireless/ath/ath11k/hal_rx.c:1156:27: sparse: sparse: cast to
+ restricted __le32
+Message-ID: <201905030214.7piELllE%lkp@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
@@ -28,10 +28,10 @@ Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-bringup
 head:   9cacba94c6118dd96276ffe745dbad51dd4fe6b4
-commit: 2d0fbbf73a7789991f685dc25fc25011af3e04ef [45/111] ath11k: add htt rx filter support
+commit: 627a418bbae46c034b1fd8739c0e94fa62190620 [47/111] ath11k: process monitor status ring for RX stats
 reproduce:
         # apt-get install sparse
-        git checkout 2d0fbbf73a7789991f685dc25fc25011af3e04ef
+        git checkout 627a418bbae46c034b1fd8739c0e94fa62190620
         make ARCH=x86_64 allmodconfig
         make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
@@ -41,339 +41,348 @@ Reported-by: kbuild test robot <lkp@intel.com>
 
 sparse warnings: (new ones prefixed by >>)
 
-   drivers/net/wireless/ath/ath11k/dp_tx.c:644:23: sparse: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:646:23: sparse: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:649:23: sparse: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:833:23: sparse: sparse: dubious: x & !y
-   drivers/net/wireless/ath/ath11k/dp_tx.c:835:23: sparse: sparse: dubious: x & !y
->> drivers/net/wireless/ath/ath11k/dp_tx.c:840:33: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] pkt_type_en_flags0 @@    got restrunsigned int [usertype] pkt_type_en_flags0 @@
->> drivers/net/wireless/ath/ath11k/dp_tx.c:840:33: sparse:    expected unsigned int [usertype] pkt_type_en_flags0
->> drivers/net/wireless/ath/ath11k/dp_tx.c:840:33: sparse:    got restricted __le32 [usertype]
->> drivers/net/wireless/ath/ath11k/dp_tx.c:841:33: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] pkt_type_en_flags1 @@    got restrunsigned int [usertype] pkt_type_en_flags1 @@
->> drivers/net/wireless/ath/ath11k/dp_tx.c:841:33: sparse:    expected unsigned int [usertype] pkt_type_en_flags1
-   drivers/net/wireless/ath/ath11k/dp_tx.c:841:33: sparse:    got restricted __le32 [usertype]
->> drivers/net/wireless/ath/ath11k/dp_tx.c:842:33: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] pkt_type_en_flags2 @@    got restrunsigned int [usertype] pkt_type_en_flags2 @@
->> drivers/net/wireless/ath/ath11k/dp_tx.c:842:33: sparse:    expected unsigned int [usertype] pkt_type_en_flags2
-   drivers/net/wireless/ath/ath11k/dp_tx.c:842:33: sparse:    got restricted __le32 [usertype]
->> drivers/net/wireless/ath/ath11k/dp_tx.c:843:33: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] pkt_type_en_flags3 @@    got restrunsigned int [usertype] pkt_type_en_flags3 @@
->> drivers/net/wireless/ath/ath11k/dp_tx.c:843:33: sparse:    expected unsigned int [usertype] pkt_type_en_flags3
-   drivers/net/wireless/ath/ath11k/dp_tx.c:843:33: sparse:    got restricted __le32 [usertype]
->> drivers/net/wireless/ath/ath11k/dp_tx.c:844:28: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] rx_filter_tlv @@    got restrunsigned int [usertype] rx_filter_tlv @@
->> drivers/net/wireless/ath/ath11k/dp_tx.c:844:28: sparse:    expected unsigned int [usertype] rx_filter_tlv
-   drivers/net/wireless/ath/ath11k/dp_tx.c:844:28: sparse:    got restricted __le32 [usertype]
+   drivers/net/wireless/ath/ath11k/hal_rx.c:118:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:120:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:122:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:124:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:126:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:128:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:130:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:132:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:134:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:136:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:138:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:140:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:142:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:144:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:146:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:148:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:150:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:152:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:154:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:156:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:158:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:160:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:166:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:170:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:172:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:176:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:178:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:180:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:182:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:184:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:186:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:188:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:190:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:192:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:212:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:216:17: sparse: sparse: dubious: x & !y
+   drivers/net/wireless/ath/ath11k/hal_rx.c:218:17: sparse: sparse: dubious: x & !y
+>> drivers/net/wireless/ath/ath11k/hal_rx.c:1156:27: sparse: sparse: cast to restricted __le32
+>> drivers/net/wireless/ath/ath11k/hal_rx.c:1156:27: sparse: sparse: cast to restricted __le32
 
-vim +840 drivers/net/wireless/ath/ath11k/dp_tx.c
+vim +1156 drivers/net/wireless/ath/ath11k/hal_rx.c
 
-   548	
-   549	int ath11k_dp_htt_srng_setup(struct ath11k_base *ab, u32 ring_id,
-   550				     int mac_id, enum hal_ring_type ring_type)
-   551	{
-   552		struct htt_srng_setup_cmd *cmd;
-   553		struct hal_srng *srng = &ab->hal.srng_list[ring_id];
-   554		struct hal_srng_params params;
-   555		struct sk_buff *skb;
-   556		u32 ring_entry_sz;
-   557		int len = sizeof(*cmd);
-   558		dma_addr_t hp_addr, tp_addr;
-   559		int lmac_ring_id_offset;
-   560		enum htt_srng_ring_type htt_ring_type;
-   561		enum htt_srng_ring_id htt_ring_id;
-   562		int ret;
-   563	
-   564		skb = ath11k_htc_alloc_skb(ab, len);
-   565		if (!skb)
-   566			return -ENOMEM;
-   567	
-   568		memset(&params, 0, sizeof(params));
-   569		ath11k_hal_srng_get_params(ab, srng, &params);
-   570	
-   571		hp_addr = ath11k_hal_srng_get_hp_addr(ab, srng);
-   572		tp_addr = ath11k_hal_srng_get_tp_addr(ab, srng);
-   573	
-   574		switch (ring_type) {
-   575		case HAL_RXDMA_BUF:
-   576			lmac_ring_id_offset = mac_id * HAL_SRNG_RINGS_PER_LMAC;
-   577			if (!(ring_id == (HAL_SRNG_RING_ID_WMAC1_SW2RXDMA0_BUF +
-   578					  lmac_ring_id_offset) ||
-   579			    ring_id == (HAL_SRNG_RING_ID_WMAC1_SW2RXDMA1_BUF +
-   580					lmac_ring_id_offset))) {
-   581				ret = -EINVAL;
-   582				goto err_free;
-   583			}
-   584	
-   585			htt_ring_id = HTT_RXDMA_HOST_BUF_RING;
-   586			htt_ring_type = HTT_SW_TO_HW_RING;
-   587			break;
-   588		case HAL_RXDMA_DST:
-   589			htt_ring_id = HTT_RXDMA_NON_MONITOR_DEST_RING;
-   590			htt_ring_type = HTT_HW_TO_SW_RING;
-   591			break;
-   592		case HAL_RXDMA_MONITOR_BUF:
-   593			htt_ring_id = HTT_RXDMA_MONITOR_BUF_RING;
-   594			htt_ring_type = HTT_SW_TO_HW_RING;
-   595			break;
-   596		case HAL_RXDMA_MONITOR_STATUS:
-   597			htt_ring_id = HTT_RXDMA_MONITOR_STATUS_RING;
-   598			htt_ring_type = HTT_SW_TO_HW_RING;
-   599			break;
-   600		case HAL_RXDMA_MONITOR_DST:
-   601			htt_ring_id = HTT_RXDMA_MONITOR_DEST_RING;
-   602			htt_ring_type = HTT_HW_TO_SW_RING;
-   603			break;
-   604		case HAL_RXDMA_MONITOR_DESC:
-   605			htt_ring_id = HTT_RXDMA_MONITOR_DESC_RING;
-   606			htt_ring_type = HTT_SW_TO_HW_RING;
-   607			break;
-   608		default:
-   609			ath11k_warn(ab, "Unsupported ring type in DP :%d\n", ring_type);
-   610			ret = -EINVAL;
-   611			goto err_free;
-   612		}
-   613	
-   614		skb_put(skb, len);
-   615		cmd = (struct htt_srng_setup_cmd *)skb->data;
-   616		cmd->info0 = FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO0_MSG_TYPE,
-   617					HTT_H2T_MSG_TYPE_SRING_SETUP);
-   618		if (htt_ring_type == HTT_SW_TO_HW_RING ||
-   619		    htt_ring_type == HTT_HW_TO_SW_RING)
-   620			cmd->info0 |= FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO0_PDEV_ID,
-   621						 DP_SW2HW_MACID(mac_id));
-   622		else
-   623			cmd->info0 |= FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO0_PDEV_ID,
-   624						 mac_id);
-   625		cmd->info0 |= FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO0_RING_TYPE,
-   626					 htt_ring_type);
-   627		cmd->info0 |= FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO0_RING_ID, htt_ring_id);
-   628	
-   629		cmd->ring_base_addr_lo = params.ring_base_paddr &
-   630					 HAL_ADDR_LSB_REG_MASK;
-   631	
-   632		cmd->ring_base_addr_hi = (u64)params.ring_base_paddr >>
-   633					 HAL_ADDR_MSB_REG_SHIFT;
-   634	
-   635		ring_entry_sz = ath11k_hal_srng_get_entrysize(ring_type);
-   636		if (ring_entry_sz < 0)
-   637			return -EINVAL;
-   638	
-   639		ring_entry_sz >>= 2;
-   640		cmd->info1 = FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO1_RING_ENTRY_SIZE,
-   641					ring_entry_sz);
-   642		cmd->info1 |= FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO1_RING_SIZE,
-   643					 params.num_entries * ring_entry_sz);
- > 644		cmd->info1 |= FIELD_PREP(HTT_SRNG_SETUP_CMD_INFO1_RING_FLAGS_MSI_SWAP,
-   645					 !!(params.flags & HAL_SRNG_FLAGS_MSI_SWAP));
-   646		cmd->info1 |= FIELD_PREP(
-   647				HTT_SRNG_SETUP_CMD_INFO1_RING_FLAGS_TLV_SWAP,
-   648				!!(params.flags & HAL_SRNG_FLAGS_DATA_TLV_SWAP));
- > 649		cmd->info1 |= FIELD_PREP(
-   650				HTT_SRNG_SETUP_CMD_INFO1_RING_FLAGS_HOST_FW_SWAP,
-   651				!!(params.flags & HAL_SRNG_FLAGS_RING_PTR_SWAP));
-   652		if (htt_ring_type == HTT_SW_TO_HW_RING)
-   653			cmd->info1 |= HTT_SRNG_SETUP_CMD_INFO1_RING_LOOP_CNT_DIS;
-   654	
-   655		cmd->ring_head_off32_remote_addr_lo = hp_addr & HAL_ADDR_LSB_REG_MASK;
-   656		cmd->ring_head_off32_remote_addr_hi = (u64)hp_addr >>
-   657						      HAL_ADDR_MSB_REG_SHIFT;
-   658	
-   659		cmd->ring_tail_off32_remote_addr_lo = tp_addr & HAL_ADDR_LSB_REG_MASK;
-   660		cmd->ring_tail_off32_remote_addr_hi = (u64)tp_addr >>
-   661						      HAL_ADDR_MSB_REG_SHIFT;
-   662	
-   663		cmd->ring_msi_addr_lo = 0;
-   664		cmd->ring_msi_addr_hi = 0;
-   665		cmd->msi_data = 0;
-   666	
-   667		cmd->intr_info = FIELD_PREP(
-   668				HTT_SRNG_SETUP_CMD_INTR_INFO_BATCH_COUNTER_THRESH,
-   669				params.intr_batch_cntr_thres_entries * ring_entry_sz);
-   670		cmd->intr_info |= FIELD_PREP(
-   671				HTT_SRNG_SETUP_CMD_INTR_INFO_INTR_TIMER_THRESH,
-   672				params.intr_timer_thres_us >> 3);
-   673	
-   674		cmd->info2 = 0;
-   675		if (params.flags & HAL_SRNG_FLAGS_LOW_THRESH_INTR_EN) {
-   676			cmd->info2 = FIELD_PREP(
-   677					HTT_SRNG_SETUP_CMD_INFO2_INTR_LOW_THRESH,
-   678					params.low_threshold);
-   679		}
-   680	
-   681		ret = ath11k_htc_send(&ab->htc, ab->dp.eid, skb);
-   682		if (ret)
-   683			goto err_free;
-   684	
-   685		return 0;
-   686	
-   687	err_free:
-   688		dev_kfree_skb_any(skb);
-   689	
-   690		return ret;
-   691	}
-   692	
-   693	#define HTT_TARGET_VERSION_TIMEOUT_HZ (3 * HZ)
-   694	
-   695	int ath11k_dp_htt_h2t_ver_req_msg(struct ath11k_base *ab)
-   696	{
-   697		struct ath11k_dp *dp = &ab->dp;
-   698		struct sk_buff *skb;
-   699		struct htt_ver_req_cmd *cmd;
-   700		int len = sizeof(*cmd);
-   701		int ret;
-   702	
-   703		init_completion(&dp->htt_tgt_version_received);
-   704	
-   705		skb = ath11k_htc_alloc_skb(ab, len);
-   706		if (!skb)
-   707			return -ENOMEM;
-   708	
-   709		skb_put(skb, len);
-   710		cmd = (struct htt_ver_req_cmd *)skb->data;
-   711		cmd->ver_reg_info = FIELD_PREP(HTT_VER_REQ_INFO_MSG_ID,
-   712					       HTT_H2T_MSG_TYPE_VERSION_REQ);
-   713	
-   714		ret = ath11k_htc_send(&ab->htc, dp->eid, skb);
-   715		if (ret) {
-   716			dev_kfree_skb_any(skb);
-   717			return ret;
-   718		}
-   719	
-   720		ret = wait_for_completion_timeout(&dp->htt_tgt_version_received,
-   721						  HTT_TARGET_VERSION_TIMEOUT_HZ);
-   722		if (ret == 0) {
-   723			ath11k_warn(ab, "htt target version request timed out\n");
-   724			return -ETIMEDOUT;
-   725		}
-   726	
-   727		if (dp->htt_tgt_ver_major != HTT_TARGET_VERSION_MAJOR) {
-   728			ath11k_err(ab, "unsupported htt major version %d supported version is %d\n",
-   729				   dp->htt_tgt_ver_major, HTT_TARGET_VERSION_MAJOR);
-   730			return -ENOTSUPP;
-   731		}
-   732	
-   733		return 0;
-   734	}
-   735	
-   736	int ath11k_dp_htt_h2t_ppdu_stats_req(struct ath11k *ar, u32 mask)
-   737	{
-   738		struct ath11k_base *ab = ar->ab;
-   739		struct ath11k_dp *dp = &ab->dp;
-   740		struct sk_buff *skb;
-   741		struct htt_ppdu_stats_cfg_cmd *cmd;
-   742		int len = sizeof(*cmd);
-   743		u8 pdev_mask;
-   744		int ret;
-   745	
-   746		skb = ath11k_htc_alloc_skb(ab, len);
-   747		if (!skb)
-   748			return -ENOMEM;
-   749	
-   750		skb_put(skb, len);
-   751		cmd = (struct htt_ppdu_stats_cfg_cmd *)skb->data;
-   752		cmd->msg = FIELD_PREP(HTT_PPDU_STATS_CFG_MSG_TYPE,
-   753				      HTT_H2T_MSG_TYPE_PPDU_STATS_CFG);
-   754	
-   755		pdev_mask = DP_SW2HW_MACID(ar->pdev_idx);
-   756		cmd->msg |= FIELD_PREP(HTT_PPDU_STATS_CFG_PDEV_ID, pdev_mask);
-   757		cmd->msg |= FIELD_PREP(HTT_PPDU_STATS_CFG_TLV_TYPE_BITMASK, mask);
-   758	
-   759		ret = ath11k_htc_send(&ab->htc, dp->eid, skb);
-   760		if (ret) {
-   761			dev_kfree_skb_any(skb);
-   762			return ret;
-   763		}
-   764	
-   765		return 0;
-   766	}
-   767	
-   768	int ath11k_dp_htt_rx_filter_setup(struct ath11k_base *ab, u32 ring_id,
-   769					  int mac_id, enum hal_ring_type ring_type,
-   770					  int rx_buf_size,
-   771					  struct htt_rx_ring_tlv_filter *tlv_filter)
-   772	{
-   773		struct htt_rx_ring_selection_cfg_cmd *cmd;
-   774		struct hal_srng *srng = &ab->hal.srng_list[ring_id];
-   775		struct hal_srng_params params;
-   776		struct sk_buff *skb;
-   777		int len = sizeof(*cmd);
-   778		enum htt_srng_ring_type htt_ring_type;
-   779		enum htt_srng_ring_id htt_ring_id;
-   780		int ret;
-   781	
-   782		skb = ath11k_htc_alloc_skb(ab, len);
-   783		if (!skb)
-   784			return -ENOMEM;
-   785	
-   786		memset(&params, 0, sizeof(params));
-   787		ath11k_hal_srng_get_params(ab, srng, &params);
-   788	
-   789		switch (ring_type) {
-   790		case HAL_RXDMA_BUF:
-   791			htt_ring_id = HTT_RXDMA_HOST_BUF_RING;
-   792			htt_ring_type = HTT_SW_TO_HW_RING;
-   793			break;
-   794		case HAL_RXDMA_DST:
-   795			htt_ring_id = HTT_RXDMA_NON_MONITOR_DEST_RING;
-   796			htt_ring_type = HTT_HW_TO_SW_RING;
-   797			break;
-   798		case HAL_RXDMA_MONITOR_BUF:
-   799			htt_ring_id = HTT_RXDMA_MONITOR_BUF_RING;
-   800			htt_ring_type = HTT_SW_TO_HW_RING;
-   801			break;
-   802		case HAL_RXDMA_MONITOR_STATUS:
-   803			htt_ring_id = HTT_RXDMA_MONITOR_STATUS_RING;
-   804			htt_ring_type = HTT_SW_TO_HW_RING;
-   805			break;
-   806		case HAL_RXDMA_MONITOR_DST:
-   807			htt_ring_id = HTT_RXDMA_MONITOR_DEST_RING;
-   808			htt_ring_type = HTT_HW_TO_SW_RING;
-   809			break;
-   810		case HAL_RXDMA_MONITOR_DESC:
-   811			htt_ring_id = HTT_RXDMA_MONITOR_DESC_RING;
-   812			htt_ring_type = HTT_SW_TO_HW_RING;
-   813			break;
-   814		default:
-   815			ath11k_warn(ab, "Unsupported ring type in DP :%d\n", ring_type);
-   816			ret = -EINVAL;
-   817			goto err_free;
-   818		}
-   819	
-   820		skb_put(skb, len);
-   821		cmd = (struct htt_rx_ring_selection_cfg_cmd *)skb->data;
-   822		cmd->info0 = FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO0_MSG_TYPE,
-   823					HTT_H2T_MSG_TYPE_RX_RING_SELECTION_CFG);
-   824		if (htt_ring_type == HTT_SW_TO_HW_RING ||
-   825		    htt_ring_type == HTT_HW_TO_SW_RING)
-   826			cmd->info0 |= FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO0_PDEV_ID,
-   827						 DP_SW2HW_MACID(mac_id));
-   828		else
-   829			cmd->info0 |= FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO0_PDEV_ID,
-   830						 mac_id);
-   831		cmd->info0 |= FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO0_RING_ID,
-   832					 htt_ring_id);
- > 833		cmd->info0 |= FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO0_SS,
-   834					 !!(params.flags & HAL_SRNG_FLAGS_MSI_SWAP));
-   835		cmd->info0 |= FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO0_PS,
-   836					 !!(params.flags & HAL_SRNG_FLAGS_DATA_TLV_SWAP));
-   837	
-   838		cmd->info1 = FIELD_PREP(HTT_RX_RING_SELECTION_CFG_CMD_INFO1_BUF_SIZE,
-   839					rx_buf_size);
- > 840		cmd->pkt_type_en_flags0 = __cpu_to_le32(tlv_filter->pkt_filter_flags0);
- > 841		cmd->pkt_type_en_flags1 = __cpu_to_le32(tlv_filter->pkt_filter_flags1);
- > 842		cmd->pkt_type_en_flags2 = __cpu_to_le32(tlv_filter->pkt_filter_flags2);
- > 843		cmd->pkt_type_en_flags3 = __cpu_to_le32(tlv_filter->pkt_filter_flags3);
- > 844		cmd->rx_filter_tlv = __cpu_to_le32(tlv_filter->rx_filter);
-   845	
-   846		ret = ath11k_htc_send(&ab->htc, ab->dp.eid, skb);
-   847		if (ret)
-   848			goto err_free;
-   849	
-   850		return 0;
-   851	
-   852	err_free:
-   853		dev_kfree_skb_any(skb);
-   854	
-   855		return ret;
-   856	}
-   857	
+   874	
+   875	static enum hal_rx_mon_status
+   876	ath11k_hal_rx_parse_mon_status_tlv(struct ath11k_base *ab,
+   877					   struct hal_rx_mon_ppdu_info *ppdu_info,
+   878					   u32 tlv_tag, u8 *tlv_data)
+   879	{
+   880		u32 info0, info1;
+   881	
+   882		switch (tlv_tag) {
+   883		case HAL_RX_PPDU_START: {
+   884			struct hal_rx_ppdu_start *ppdu_start =
+   885				(struct hal_rx_ppdu_start *)tlv_data;
+   886	
+   887			ppdu_info->ppdu_id =
+   888				FIELD_GET(HAL_RX_PPDU_START_INFO0_PPDU_ID,
+   889					  __le32_to_cpu(ppdu_start->info0));
+   890			ppdu_info->chan_num = __le32_to_cpu(ppdu_start->chan_num);
+   891			ppdu_info->ppdu_ts = __le32_to_cpu(ppdu_start->ppdu_start_ts);
+   892			break;
+   893		}
+   894		case HAL_RX_PPDU_END_USER_STATS: {
+   895			struct hal_rx_ppdu_end_user_stats *eu_stats =
+   896				(struct hal_rx_ppdu_end_user_stats *)tlv_data;
+   897	
+   898			info0 = __le32_to_cpu(eu_stats->info0);
+   899			info1 = __le32_to_cpu(eu_stats->info1);
+   900	
+   901			ppdu_info->tid =
+   902				ffs(FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO6_TID_BITMAP,
+   903					      __le32_to_cpu(eu_stats->info6))) - 1;
+   904			ppdu_info->tcp_msdu_count =
+   905				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO4_TCP_MSDU_CNT,
+   906					  __le32_to_cpu(eu_stats->info4));
+   907			ppdu_info->udp_msdu_count =
+   908				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO4_UDP_MSDU_CNT,
+   909					  __le32_to_cpu(eu_stats->info4));
+   910			ppdu_info->other_msdu_count =
+   911				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO5_OTHER_MSDU_CNT,
+   912					  __le32_to_cpu(eu_stats->info5));
+   913			ppdu_info->tcp_ack_msdu_count =
+   914				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO5_TCP_ACK_MSDU_CNT,
+   915					  __le32_to_cpu(eu_stats->info5));
+   916			ppdu_info->preamble_type =
+   917				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO1_PKT_TYPE, info1);
+   918			ppdu_info->num_mpdu_fcs_ok =
+   919				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO1_MPDU_CNT_FCS_OK,
+   920					  info1);
+   921			ppdu_info->num_mpdu_fcs_err =
+   922				FIELD_GET(HAL_RX_PPDU_END_USER_STATS_INFO0_MPDU_CNT_FCS_ERR,
+   923					  info0);
+   924			break;
+   925		}
+   926		case HAL_PHYRX_HT_SIG: {
+   927			struct hal_rx_ht_sig_info *ht_sig =
+   928				(struct hal_rx_ht_sig_info *)tlv_data;
+   929	
+   930			info0 = __le32_to_cpu(ht_sig->info0);
+   931			info1 = __le32_to_cpu(ht_sig->info1);
+   932	
+   933			ppdu_info->mcs = FIELD_GET(HAL_RX_HT_SIG_INFO_INFO0_MCS, info0);
+   934			ppdu_info->bw = FIELD_GET(HAL_RX_HT_SIG_INFO_INFO0_BW, info0);
+   935			ppdu_info->is_stbc = FIELD_GET(HAL_RX_HT_SIG_INFO_INFO1_STBC,
+   936						       info1);
+   937			ppdu_info->ldpc = (info1 &
+   938					   HAL_RX_HT_SIG_INFO_INFO1_FEC_CODING) ==
+   939						HAL_RX_SU_MU_CODING_LDPC;
+   940			ppdu_info->gi = info1 & HAL_RX_HT_SIG_INFO_INFO1_GI;
+   941	
+   942			switch (ppdu_info->mcs) {
+   943			case 0 ... 7:
+   944				ppdu_info->nss = 1;
+   945				break;
+   946			case 8 ... 15:
+   947				ppdu_info->nss = 2;
+   948				break;
+   949			case 16 ... 23:
+   950				ppdu_info->nss = 3;
+   951				break;
+   952			case 24 ... 31:
+   953				ppdu_info->nss = 4;
+   954				break;
+   955			}
+   956	
+   957			if (ppdu_info->nss > 1)
+   958				ppdu_info->mcs = ppdu_info->mcs % 8;
+   959	
+   960			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_SU;
+   961			break;
+   962		}
+   963		case HAL_PHYRX_L_SIG_B: {
+   964			struct hal_rx_lsig_b_info *lsigb =
+   965				(struct hal_rx_lsig_b_info *)tlv_data;
+   966	
+   967			ppdu_info->rate = FIELD_GET(HAL_RX_LSIG_B_INFO_INFO0_RATE,
+   968						    __le32_to_cpu(lsigb->info0));
+   969			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_SU;
+   970			break;
+   971		}
+   972		case HAL_PHYRX_L_SIG_A: {
+   973			struct hal_rx_lsig_a_info *lsiga =
+   974				(struct hal_rx_lsig_a_info *)tlv_data;
+   975	
+   976			ppdu_info->rate = FIELD_GET(HAL_RX_LSIG_A_INFO_INFO0_RATE,
+   977						    __le32_to_cpu(lsiga->info0));
+   978			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_SU;
+   979			break;
+   980		}
+   981		case HAL_PHYRX_VHT_SIG_A: {
+   982			struct hal_rx_vht_sig_a_info *vht_sig =
+   983				(struct hal_rx_vht_sig_a_info *)tlv_data;
+   984			u32 nsts;
+   985			u32 group_id;
+   986	
+   987			info0 = __le32_to_cpu(vht_sig->info0);
+   988			info1 = __le32_to_cpu(vht_sig->info1);
+   989	
+   990			ppdu_info->ldpc = (info1 &
+   991					   HAL_RX_VHT_SIG_A_INFO_INFO1_SU_MU_CODING) ==
+   992						HAL_RX_SU_MU_CODING_LDPC;
+   993			ppdu_info->mcs = FIELD_GET(HAL_RX_VHT_SIG_A_INFO_INFO1_MCS,
+   994						   info1);
+   995			ppdu_info->gi =
+   996				FIELD_GET(HAL_RX_VHT_SIG_A_INFO_INFO1_GI_SETTING,
+   997					  info1);
+   998			ppdu_info->is_stbc = info0 & HAL_RX_VHT_SIG_A_INFO_INFO0_STBC;
+   999			nsts = FIELD_GET(HAL_RX_VHT_SIG_A_INFO_INFO0_NSTS, info0);
+  1000			if (ppdu_info->is_stbc && nsts > 0)
+  1001				nsts = ((nsts + 1) >> 1) - 1;
+  1002	
+  1003			ppdu_info->nss = (nsts & VHT_SIG_SU_NSS_MASK) + 1;
+  1004			ppdu_info->bw = FIELD_GET(HAL_RX_VHT_SIG_A_INFO_INFO0_BW,
+  1005						  info0);
+  1006			ppdu_info->beamformed = info1 &
+  1007						HAL_RX_VHT_SIG_A_INFO_INFO1_BEAMFORMED;
+  1008			group_id = FIELD_GET(HAL_RX_VHT_SIG_A_INFO_INFO0_GROUP_ID,
+  1009					     info0);
+  1010			if (group_id == 0 || group_id == 63)
+  1011				ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_SU;
+  1012			else
+  1013				ppdu_info->reception_type =
+  1014					HAL_RX_RECEPTION_TYPE_MU_MIMO;
+  1015			break;
+  1016		}
+  1017		case HAL_PHYRX_HE_SIG_A_SU: {
+  1018			struct hal_rx_he_sig_a_su_info *he_sig_a =
+  1019				(struct hal_rx_he_sig_a_su_info *)tlv_data;
+  1020			u32 nsts, cp_ltf, dcm;
+  1021	
+  1022			info0 = __le32_to_cpu(he_sig_a->info0);
+  1023			info1 = __le32_to_cpu(he_sig_a->info1);
+  1024	
+  1025			ppdu_info->mcs =
+  1026				FIELD_GET(HAL_RX_HE_SIG_A_SU_INFO_INFO0_TRANSMIT_MCS,
+  1027					  info0);
+  1028			ppdu_info->bw =
+  1029				FIELD_GET(HAL_RX_HE_SIG_A_SU_INFO_INFO0_TRANSMIT_BW,
+  1030					  info0);
+  1031			ppdu_info->ldpc = (info1 &
+  1032					   HAL_RX_HE_SIG_A_SU_INFO_INFO1_CODING) ==
+  1033						HAL_RX_SU_MU_CODING_LDPC;
+  1034			ppdu_info->is_stbc = info1 &
+  1035					     HAL_RX_HE_SIG_A_SU_INFO_INFO1_STBC;
+  1036			ppdu_info->beamformed = info1 &
+  1037						HAL_RX_HE_SIG_A_SU_INFO_INFO1_TXBF;
+  1038			dcm = info0 & HAL_RX_HE_SIG_A_SU_INFO_INFO0_DCM;
+  1039			cp_ltf = FIELD_GET(HAL_RX_HE_SIG_A_SU_INFO_INFO0_CP_LTF_SIZE,
+  1040					   info0);
+  1041			nsts = FIELD_GET(HAL_RX_HE_SIG_A_SU_INFO_INFO0_NSTS, info0);
+  1042	
+  1043			switch (cp_ltf) {
+  1044			case 0:
+  1045			case 1:
+  1046				ppdu_info->gi = HAL_RX_GI_0_8_US;
+  1047				break;
+  1048			case 2:
+  1049				ppdu_info->gi = HAL_RX_GI_1_6_US;
+  1050				break;
+  1051			case 3:
+  1052				if (dcm && ppdu_info->is_stbc)
+  1053					ppdu_info->gi = HAL_RX_GI_0_8_US;
+  1054				else
+  1055					ppdu_info->gi = HAL_RX_GI_3_2_US;
+  1056				break;
+  1057			}
+  1058	
+  1059			ppdu_info->nss = nsts + 1;
+  1060			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_SU;
+  1061			break;
+  1062		}
+  1063		case HAL_PHYRX_HE_SIG_A_MU_DL: {
+  1064			struct hal_rx_he_sig_a_mu_dl_info *he_sig_a_mu_dl =
+  1065				(struct hal_rx_he_sig_a_mu_dl_info *)tlv_data;
+  1066	
+  1067			u32 cp_ltf;
+  1068	
+  1069			info0 = __le32_to_cpu(he_sig_a_mu_dl->info0);
+  1070			info1 = __le32_to_cpu(he_sig_a_mu_dl->info1);
+  1071	
+  1072			ppdu_info->bw =
+  1073				FIELD_GET(HAL_RX_HE_SIG_A_MU_DL_INFO_INFO0_TRANSMIT_BW,
+  1074					  info0);
+  1075			cp_ltf = FIELD_GET(HAL_RX_HE_SIG_A_MU_DL_INFO_INFO0_CP_LTF_SIZE,
+  1076					   info0);
+  1077	
+  1078			switch (cp_ltf) {
+  1079			case 0:
+  1080			case 1:
+  1081				ppdu_info->gi = HAL_RX_GI_0_8_US;
+  1082				break;
+  1083			case 2:
+  1084				ppdu_info->gi = HAL_RX_GI_1_6_US;
+  1085				break;
+  1086			case 3:
+  1087				ppdu_info->gi = HAL_RX_GI_3_2_US;
+  1088				break;
+  1089			}
+  1090	
+  1091			ppdu_info->is_stbc = info1 &
+  1092					     HAL_RX_HE_SIG_A_MU_DL_INFO_INFO1_STBC;
+  1093			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_MU_MIMO;
+  1094			break;
+  1095		}
+  1096		case HAL_PHYRX_HE_SIG_B1_MU: {
+  1097			/* TODO: Check if resource unit(RU) allocation stats
+  1098			 * are required
+  1099			 */
+  1100			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_MU_MIMO;
+  1101			break;
+  1102		}
+  1103		case HAL_PHYRX_HE_SIG_B2_MU: {
+  1104			struct hal_rx_he_sig_b2_mu_info *he_sig_b2_mu =
+  1105				(struct hal_rx_he_sig_b2_mu_info *)tlv_data;
+  1106	
+  1107			info0 = __le32_to_cpu(he_sig_b2_mu->info0);
+  1108	
+  1109			ppdu_info->mcs =
+  1110				FIELD_GET(HAL_RX_HE_SIG_B2_MU_INFO_INFO0_STA_MCS,
+  1111					  info0);
+  1112			ppdu_info->nss =
+  1113				FIELD_GET(HAL_RX_HE_SIG_B2_MU_INFO_INFO0_STA_NSTS,
+  1114					  info0) + 1;
+  1115			ppdu_info->ldpc = (info0 &
+  1116					   HAL_RX_HE_SIG_B2_MU_INFO_INFO0_STA_CODING) ==
+  1117						HAL_RX_SU_MU_CODING_LDPC;
+  1118			break;
+  1119		}
+  1120		case HAL_PHYRX_HE_SIG_B2_OFDMA: {
+  1121			struct hal_rx_he_sig_b2_ofdma_info *he_sig_b2_ofdma =
+  1122				(struct hal_rx_he_sig_b2_ofdma_info *)tlv_data;
+  1123	
+  1124			info0 = __le32_to_cpu(he_sig_b2_ofdma->info0);
+  1125	
+  1126			ppdu_info->mcs =
+  1127				FIELD_GET(HAL_RX_HE_SIG_B2_OFDMA_INFO_INFO0_STA_MCS,
+  1128					  info0);
+  1129			ppdu_info->nss =
+  1130				FIELD_GET(HAL_RX_HE_SIG_B2_OFDMA_INFO_INFO0_STA_NSTS,
+  1131					  info0) + 1;
+  1132			ppdu_info->beamformed =
+  1133				info0 &
+  1134				HAL_RX_HE_SIG_B2_OFDMA_INFO_INFO0_STA_TXBF;
+  1135			ppdu_info->ldpc =
+  1136				(info0 &
+  1137				 HAL_RX_HE_SIG_B2_OFDMA_INFO_INFO0_STA_CODING) ==
+  1138					HAL_RX_SU_MU_CODING_LDPC;
+  1139			ppdu_info->reception_type = HAL_RX_RECEPTION_TYPE_MU_OFDMA;
+  1140			break;
+  1141		}
+  1142		case HAL_PHYRX_RSSI_LEGACY: {
+  1143			struct hal_rx_phyrx_rssi_legacy_info *rssi =
+  1144				(struct hal_rx_phyrx_rssi_legacy_info *)tlv_data;
+  1145	
+  1146			ppdu_info->rssi_comb =
+  1147				FIELD_GET(HAL_RX_PHYRX_RSSI_LEGACY_INFO_INFO1_RSSI_COMB,
+  1148					  __le32_to_cpu(rssi->info0));
+  1149			break;
+  1150		}
+  1151		case HAL_RX_MPDU_START: {
+  1152			struct hal_rx_mpdu_info *mpdu_info =
+  1153				(struct hal_rx_mpdu_info *)tlv_data;
+  1154			u16 peer_id;
+  1155	
+> 1156			peer_id = FIELD_GET(HAL_RX_MPDU_INFO_INFO0_PEERID,
+  1157					    __le32_to_cpu(mpdu_info->info0));
+  1158			if (peer_id)
+  1159				ppdu_info->peer_id = peer_id;
+  1160			break;
+  1161		}
+  1162		case HAL_DUMMY:
+  1163			return HAL_RX_MON_STATUS_BUF_DONE;
+  1164		case HAL_RX_PPDU_END_STATUS_DONE:
+  1165		case 0:
+  1166			return HAL_RX_MON_STATUS_PPDU_DONE;
+  1167		default:
+  1168			break;
+  1169		}
+  1170	
+  1171		return HAL_RX_MON_STATUS_PPDU_NOT_DONE;
+  1172	}
+  1173	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
