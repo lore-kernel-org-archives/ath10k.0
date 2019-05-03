@@ -1,18 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMSFb-0006Jp-BA
- for ath10k@lists.infradead.org; Fri, 03 May 2019 07:04:57 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 1/2] ath10k: Fix rate table updation in tx stats
-References: <1552319602-17795-2-git-send-email-pillair@codeaurora.org>
- <20190503060032.23F1C61195@smtp.codeaurora.org>
- <edfbff30627849996b0597b964ed018c@codeaurora.org>
-Date: Fri, 03 May 2019 10:04:50 +0300
-In-Reply-To: <edfbff30627849996b0597b964ed018c@codeaurora.org> (Rakesh
- Pillai's message of "Fri, 03 May 2019 12:26:31 +0530")
-Message-ID: <87d0l0koh9.fsf@kamboji.qca.qualcomm.com>
+ id 1hMSTu-0002k8-7d
+ for ath10k@lists.infradead.org; Fri, 03 May 2019 07:19:43 +0000
+Received: by mail-qt1-x842.google.com with SMTP id t1so4911176qtc.12
+ for <ath10k@lists.infradead.org>; Fri, 03 May 2019 00:19:40 -0700 (PDT)
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com.
+ [209.85.160.175])
+ by smtp.gmail.com with ESMTPSA id 8sm923939qtr.32.2019.05.03.00.19.38
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+ Fri, 03 May 2019 00:19:38 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id y42so5624837qtk.6
+ for <ath10k@lists.infradead.org>; Fri, 03 May 2019 00:19:38 -0700 (PDT)
 MIME-Version: 1.0
+References: <1556536632-19433-1-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1556536632-19433-1-git-send-email-wgong@codeaurora.org>
+From: Claire Chang <tientzu@chromium.org>
+Date: Fri, 3 May 2019 15:19:27 +0800
+Message-ID: <CALiNf2-WUfiFeV5QDGRhjRh7A6J-y5xihN5M3RgBqdiiFKqAiw@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: add peer id check in ath10k_peer_find_by_id
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +32,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-(please don't top post, fixing that manually)
-
-Rakesh Pillai <pillair@codeaurora.org> writes:
-
-> On 2019-05-03 11:30, Kalle Valo wrote:
->> Rakesh Pillai <pillair@codeaurora.org> wrote:
->>
->>> The index for updating rate table, which is displayed
->>> in the tx stats via debugfs, is calculated using the
->>> bandwidth value. The bandwidth values do not map
->>> correctly with the bandwidth values shown in the rate table.
->>>
->>> Correct the bandwidth value calculation which is used
->>> to calculate the index for rate table updation for tx stats.
->>>
->>> Tested HW: WCN3990
->>> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
->>>
->>> Fixes: e88975ca37d1 ("ath10k: dump tx stats in rate table format")
->>> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
->>
->> Fails to compile:
->>
->> drivers/net/wireless/ath/ath10k/htt_rx.c: In function
->> 'ath10k_accumulate_per_peer_tx_stats':
->> drivers/net/wireless/ath/ath10k/htt_rx.c:3252:14: error: implicit
->> declaration of function 'ath10k_get_bw'; did you mean
->> 'ath10k_get_tid'? [-Werror=implicit-function-declaration]
->>   rtable_bw = ath10k_get_bw(&ar->hw_params, pstats->flags);
->>               ^~~~~~~~~~~~~
->>               ath10k_get_tid
->
-> This set of patches is dependent on
-> https://patchwork.kernel.org/patch/10831319/
-> I can send out v2 for this patchset, marking the dependency, if needed.
-
-Ok, I added this patchset back to my queue. No need to resend.
-
--- 
-Kalle Valo
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Tested-by: Claire Chang <tientzu@chromium.org>
 
 _______________________________________________
 ath10k mailing list
