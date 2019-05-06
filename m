@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hNUQR-0007UQ-39
- for ath10k@lists.infradead.org; Mon, 06 May 2019 03:36:25 +0000
-Subject: RE: ath10k: Two missing sdio patches
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Mon, 6 May 2019 03:36:16 +0000
-Message-ID: <68e788e5355c4f689e85d526b89da6a7@aptaiexm02f.ap.qualcomm.com>
-References: <1d5b4f00-2da8-b435-9122-07f93890dda9@gmail.com>
-In-Reply-To: <1d5b4f00-2da8-b435-9122-07f93890dda9@gmail.com>
-Content-Language: en-US
+ id 1hNYCx-0003WG-Oa
+ for ath10k@lists.infradead.org; Mon, 06 May 2019 07:38:45 +0000
+Received: by mail-pg1-x542.google.com with SMTP id h1so6052313pgs.2
+ for <ath10k@lists.infradead.org>; Mon, 06 May 2019 00:38:43 -0700 (PDT)
+From: Claire Chang <tientzu@chromium.org>
+Subject: [PATCH] ath10k: acquire lock to fix lockdep's warning
+Date: Mon,  6 May 2019 15:38:36 +0800
+Message-Id: <20190506073836.184059-1-tientzu@chromium.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,52 +22,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>, "wgong@codeaurora.org" <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kvalo@codeaurora.org
+Cc: Claire Chang <tientzu@chromium.org>, drinkcat@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-> -----Original Message-----
-> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Erik
-> Stromdahl
-> Sent: Sunday, May 5, 2019 10:23 PM
-> To: kvalo@codeaurora.org; wgong@codeaurora.org;
-> ath10k@lists.infradead.org
-> Subject: [EXT] ath10k: Two missing sdio patches
-> 
-> Hej Kalle, Wen,
-> 
-> I see there are lots of SDIO patches coming in to the mailing ath10k list, great!
-> 
-> I while back I submitted two patches that adds an inline wrapper for an htt
-> op.
-> 
-> patchwork:
-> https://patchwork.kernel.org/project/linux-wireless/list/?series=97099
-> 
-> Without these patches I get a panic due to calling a NULL pointer callback
-> with SDIO.
-> 
-> It is the htt->tx_ops->htt_h2t_aggr_cfg_msg() in ath10k_htt_setup() that
-> causes the panic.
-> 
-> Kalle:
-> I notice that you don't have these patches in your pending-sdio-usb branch.
-> 
-> Wen:
-> Do you have any other patch that fixes this issue (I can't see how it can work
-> without
-> these patches unless you have some other fix)?
-> 
-Hi Erik,
-I do not have other patch to fix the issue.
-The patch change the ath10k_htt_h2t_aggr_cfg_msg to htt->tx_ops->htt_h2t_aggr_cfg_msg in ath10k_htt_setup.
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/drivers/net/wireless/ath/ath10k/htt.c?id=5cbb117477501df2f8b3a384b042b08cd7174c92
-I used chromeos which does not include the upper patch.
-> --
-> Erik
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+Lockdep warns at lockdep_assert_held(&ar->data_lock) in
+ath10k_htt_rx_pn_check_replay_hl(). Acquire ar->data_lock before calling
+ath10k_htt_rx_pn_check_replay_hl() to fix it.
+
+Call trace:
+ath10k_htt_rx_pn_check_replay_hl+0x118/0x134 [ath10k_core]
+ath10k_htt_rx_proc_rx_ind_hl+0xd8/0x250 [ath10k_core]
+ath10k_htt_t2h_msg_handler+0x148/0xf30 [ath10k_core]
+ath10k_htt_htc_t2h_msg_handler+0x24/0x40 [ath10k_core]
+ath10k_sdio_irq_handler+0x374/0xaa4 [ath10k_sdio]
+
+Fixes: 130c77495708 ("ath10k: add PN replay protection for high latency devices")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 9eed1cb17fda..3e3be1e5bbaf 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1952,6 +1952,7 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 	int num_mpdu_ranges;
+ 	size_t tot_hdr_len;
+ 	struct ieee80211_channel *ch;
++	bool pn_invalid;
+ 
+ 	peer_id = __le16_to_cpu(rx->hdr.peer_id);
+ 
+@@ -1983,9 +1984,13 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 		goto err;
+ 	}
+ 
+-	if (check_pn_type == HTT_RX_PN_CHECK &&
+-	    ath10k_htt_rx_pn_check_replay_hl(ar, peer, rx))
+-		goto err;
++	if (check_pn_type == HTT_RX_PN_CHECK) {
++		spin_lock_bh(&ar->data_lock);
++		pn_invalid = ath10k_htt_rx_pn_check_replay_hl(ar, peer, rx);
++		spin_unlock_bh(&ar->data_lock);
++		if (pn_invalid)
++			goto err;
++	}
+ 
+ 	/* Strip off all headers before the MAC header before delivery to
+ 	 * mac80211
+-- 
+2.21.0.1020.gf2820cf01a-goog
+
 
 _______________________________________________
 ath10k mailing list
