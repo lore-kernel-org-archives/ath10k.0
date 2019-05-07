@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO0JF-0004YZ-07
- for ath10k@lists.infradead.org; Tue, 07 May 2019 13:39:06 +0000
+ id 1hO0LZ-0005zv-SZ
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 13:41:31 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Move board id and fw version logging to info level
+Subject: Re: [PATCH] ath10k: Modify CE4 src buffer entries to 2048 for WCN3990
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190301145000.22624-1-govinds@codeaurora.org>
-References: <20190301145000.22624-1-govinds@codeaurora.org>
-Message-Id: <20190507133904.ABA1D60ACE@smtp.codeaurora.org>
-Date: Tue,  7 May 2019 13:39:04 +0000 (UTC)
+In-Reply-To: <20190302043605.27626-1-govinds@codeaurora.org>
+References: <20190302043605.27626-1-govinds@codeaurora.org>
+Message-Id: <20190507134129.4714A60A44@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 13:41:29 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +27,25 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Govind Singh <govinds@codeaurora.org> wrote:
 
-> Board id and fw version is not printed by default in qmi
-> cap response message. Move board id and fw version logging
-> to info level for default logging.
+> CE4 is host to target HTT tx pipe, tx completion are not served
+> on time when CPU is loaded and this cause ce src ring full condition
+> due to less no of src buffer entries.
 > 
-> [   34.005399] ath10k_snoc a000000.wifi: qmi chip_id 0x30b chip_family 0x4001 board_id 0xff soc_id 0x40070000
-> [   34.005432] ath10k_snoc a000000.wifi: qmi fw_version 0x3106836b fw_build_timestamp 2019-02-13 10:24 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.3.1-00875-QCAHLSWMTPL-1
+> To mitigate the issue increase CE4 src buffer entries to 2048.
+> 
+> Testing:
+>         Tested on QCS404 platform(WCN3990 HW)
+>         Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
 > 
 > Signed-off-by: Govind Singh <govinds@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-7b612ed94d0a ath10k: Move board id and fw version logging to info level
+889ab61d9dc1 ath10k: Modify CE4 src buffer entries to 2048 for WCN3990
 
 -- 
-https://patchwork.kernel.org/patch/10835539/
+https://patchwork.kernel.org/patch/10836431/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
