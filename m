@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO0LZ-0005zv-SZ
- for ath10k@lists.infradead.org; Tue, 07 May 2019 13:41:31 +0000
+ id 1hO0NJ-00067Z-Bz
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 13:43:18 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Modify CE4 src buffer entries to 2048 for WCN3990
+Subject: Re: [PATCH] ath10k: Fix the tx stats bytes & packets parsing
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190302043605.27626-1-govinds@codeaurora.org>
-References: <20190302043605.27626-1-govinds@codeaurora.org>
-Message-Id: <20190507134129.4714A60A44@smtp.codeaurora.org>
-Date: Tue,  7 May 2019 13:41:29 +0000 (UTC)
+In-Reply-To: <1552365219-16842-1-git-send-email-yanghuan@codeaurora.org>
+References: <1552365219-16842-1-git-send-email-yanghuan@codeaurora.org>
+Message-Id: <20190507134317.152F060CEC@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 13:43:17 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
+To: Brandon Huang <yanghuan@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Brandon Huang <yanghuan@codeaurora.org> wrote:
 
-> CE4 is host to target HTT tx pipe, tx completion are not served
-> on time when CPU is loaded and this cause ce src ring full condition
-> due to less no of src buffer entries.
+> In tx_stats debugfs, txrate->flags may contain multiple bits. For
+> example, RATE_INFO_FLAGS_SHORT_GI could be set, and tx stats bytes
+> and packets will be not updated correctly.
 > 
-> To mitigate the issue increase CE4 src buffer entries to 2048.
+> Fix this issue by using bit operation to check txrate->flags.
 > 
-> Testing:
->         Tested on QCS404 platform(WCN3990 HW)
->         Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> Tested HW: QCA9984
+> Tested Firmware: 10.4-3.9.0.1-00007
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Brandon Huang <yanghuan@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-889ab61d9dc1 ath10k: Modify CE4 src buffer entries to 2048 for WCN3990
+9e0b341a3d66 ath10k: Fix the tx stats bytes & packets parsing
 
 -- 
-https://patchwork.kernel.org/patch/10836431/
+https://patchwork.kernel.org/patch/10848577/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
