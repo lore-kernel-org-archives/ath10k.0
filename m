@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-f67.google.com ([209.85.208.67])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hNyVo-0005lA-HF
- for ath10k@lists.infradead.org; Tue, 07 May 2019 11:43:58 +0000
-Received: by mail-ed1-f67.google.com with SMTP id p26so566506edr.2
- for <ath10k@lists.infradead.org>; Tue, 07 May 2019 04:43:55 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v2] ath10k: fix different tx duration output
-In-Reply-To: <ef8c4fec57a8117b98e30c904fc1a3f5@codeaurora.org>
-References: <1555489045-18070-1-git-send-email-leiwa@codeaurora.org>
- <87mukprnie.fsf@toke.dk> <298a645b17aac0f5c466f011225533b0@codeaurora.org>
- <875zrbrb1q.fsf@toke.dk> <ef8c4fec57a8117b98e30c904fc1a3f5@codeaurora.org>
-Date: Tue, 07 May 2019 13:43:52 +0200
-Message-ID: <87y33i7amf.fsf@toke.dk>
+ id 1hO0Ic-0004MX-NL
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 13:38:28 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/2] ath10k: Extended the HTT stats support to retrieve
+ Mu-MIMO related stats
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1551266682-32073-1-git-send-email-mkenna@codeaurora.org>
+References: <1551266682-32073-1-git-send-email-mkenna@codeaurora.org>
+Message-Id: <20190507133825.0527260A42@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 13:38:24 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: leiwa@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: vikpatel@codeaurora.org, arnagara@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-bGVpd2FAY29kZWF1cm9yYS5vcmcgd3JpdGVzOgoKPiBPbiAyMDE5LTA0LTE4IDE2OjA3LCBUb2tl
-IEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4+IGxlaXdhQGNvZGVhdXJvcmEub3JnIHdyaXRl
-czoKPj4gCj4+PiBPbiAyMDE5LTA0LTE3IDE3OjI2LCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4g
-d3JvdGU6Cj4+Pj4gTGVpIFdhbmcgPGxlaXdhQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+Pj4g
-Cj4+Pj4+IFRYIGR1cmF0aW9uIG91dHB1dCBvZiB0eF9zdGF0cyBpbiBkZWJ1Z2ZzIGFuZCBzdGF0
-aW9uIGR1bXAgaGFkIGJpZwo+Pj4+PiBkaWZmZXJlbmNlIGJlY2F1c2UgdGhleSBnb3QgdHggZHVy
-YXRpb24gdmFsdWUgZnJvbSBkaWZmZXJlbnQgCj4+Pj4+IHN0YXRpc3RpYwo+Pj4+PiBkYXRhLiBX
-ZSBzaG91bGQgdXNlIHRoZSBzYW1lIHN0YXRpc3RpYyBkYXRhLgo+Pj4+IAo+Pj4+IFNvIGFyZSB5
-b3Ugc3VyZSB5b3UgcGlja2VkIHRoZSBtb3N0IGFjY3VyYXRlIG9uZSBvZiB0aGUgdHdvPyA6KQo+
-Pj4+IAo+Pj4+IC1Ub2tlCj4+PiAKPj4+IEhpIFRva2UsCj4+PiAKPj4+IFllcy4KPj4+IE5vdyBm
-b3IgYXRoMTBrLCB0aGVyZSBhcmUgdHdvIHdheXMgdG8gZ2V0IHR4IGR1cmF0aW9uIG91dHB1dC4K
-Pj4+IE9uZSBpcyBnb3QgZnJvbSB0eF9zdGF0cyBpbiBkZWJ1Z2ZzIHJlcG9ydGVkIGJ5IGZpcm13
-YXJlLiBJdCBpcyBhIAo+Pj4gdG90YWwKPj4+IHZhbHVlIGluY2x1ZGluZyBhbGwgdGhlIGZyYW1l
-cyB3aGljaCBjcmVhdGVkIGJ5IGhvc3QgYW5kIGZpcm13YXJlIHNlbnQKPj4+IHRvIHRoZSBwZWVy
-Lgo+Pj4gQW5kIHRoZSBzZWNvbmQgaXMgY2FsY3VsYXRlZCBmcm9tCj4+PiBhdGgxMGtfaHR0X3J4
-X3R4X2NvbXBsX2luZCgpLS0+aWVlZTgwMjExX3N0YV9yZWdpc3Rlcl9haXJ0aW1lKCksIGhlcmUK
-Pj4+IHRoZSB0eCBkdXJhdGlvbiBqdXN0IGluY2x1ZGVzIHRoZSBkYXRhIGZyYW1lcyBzZW50IGZy
-b20gaG9zdCB0byB0aGUKPj4+IHBlZXIuCj4+IAo+PiBTbyB0aGUgZGlmZmVyZW5jZSBpcyB0aGF0
-IHRoZSBmb3JtZXIgaW5jbHVkZXMgY29udHJvbCBmcmFtZXMgYXMgd2VsbD8gCj4+IElzCj4+IHRo
-YXQgdGhlIG9ubHkgZGlmZmVyZW5jZT8gQW5kIHdoYXQgZXhhY3RseSBpcyBhICJiaWcgZGlmZmVy
-ZW5jZSIgKGZyb20KPj4gdGhlIGNvbW1pdCBtZXNzYWdlKT8KPj4gCj4gWWVzLGl0IGFkZHMgdGhl
-IGR1cmF0aW9uIHRpbWUgb2YgcmVjZWl2aW5nIEFDSyBmcmFtZXMuCj4gIEZyb20gbXkgdGVzdCxU
-WCBmcm9tIEFQIHRvIHN0YXRpb24gd2l0aCBpcGVyZiBVRFAgdGVzdCBpbiAKPiAxMHMsdHhfc3Rh
-dHMtPnR4X2R1cmF0aW9uOjU0OTY2MjN1cywKPiBhbmQgYW5vdGhlciB2YWx1ZSBpcyAzOTM0MzI3
-dXMuCgpIbW0sIHRoYXQncyBxdWl0ZSBhIGJpZyBkaWZmZXJlbmNlLiBJcyB0aGlzIHJlYWxseSBv
-bmx5IEFDS3MsIG9yIGlzIGl0CmFsc28gYSBxdWVzdGlvbiBvZiB3aGV0aGVyIHJldHJpZXMgYXJl
-IGFjY291bnRlZD8gSWYgc28sIGl0IG1heSBhY3R1YWxseQpiZSB0aGF0IHdoYXQgd2Ugc2hvdWxk
-IGRvIGlzIGNoYW5nZSB3aGljaCB2YWx1ZSBpcyBwYXNzZWQgdG8KaWVlZTgwMjExX3N0YV9yZWdp
-c3Rlcl9haXJ0aW1lKCk/Cgo+Pj4gU28gdGhlIGZpcnN0IHZhbHVlIGlzIHByZWZlcmFibGUgZm9y
-IHN0YXRpb24gZHVtcC4KPj4gCj4+IEhtbSwgSSdtIG5vdCBzdXJlIGlmIEkgYWdyZWUgd2l0aCB0
-aGlzLiBJIHNwZWNpZmljYWxseSBhZGRlZCB0aGUKPj4gdHhfZHVyYXRpb24gdG8gdGhlIHN0YXRp
-b24gZHVtcCB0byBiZSBhYmxlIHRvIGdldCB0aGUgdmFsdWVzIHVzZWQgYnkgCj4+IHRoZQo+PiBh
-aXJ0aW1lIHNjaGVkdWxlci4gVGhpcyBicmVha3Mgd2l0aCB0aGlzIHBhdGNoLgo+PiAKPj4gLVRv
-a2UKPiAgRnJvbSBvdXIgaW50ZXJuYWwgZGlzY3Vzc2luZywgd2Ugd2lsbCByZXZlcnQgdGhpcyBj
-aGFuZ2UuCgpDb29sLCBidXQgc2VlIGFib3ZlIDopCgotVG9rZQoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
+
+> Extended the bit mask value of the HTT stats to get the Mu-MIMO
+> related stats via tracing.
+> 
+> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+2 patches applied to ath-next branch of ath.git, thanks.
+
+14bf9217d66d ath10k: Extended the HTT stats support to retrieve Mu-MIMO related stats
+473a4084e19e ath10k: Added support to reset HTT stats in debugfs
+
+-- 
+https://patchwork.kernel.org/patch/10831589/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
