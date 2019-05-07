@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO0c4-0006G3-MY
- for ath10k@lists.infradead.org; Tue, 07 May 2019 13:58:34 +0000
+ id 1hO0fY-0007ts-IW
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 14:02:13 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: change swap mail box config for UTF mode of SDIO
+Subject: Re: [PATCH 1/3] ath10k: Add wmi tlv vdev subtype for mesh in WCN3990
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1554870654-4236-1-git-send-email-wgong@codeaurora.org>
-References: <1554870654-4236-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190507135832.2042360AA8@smtp.codeaurora.org>
-Date: Tue,  7 May 2019 13:58:31 +0000 (UTC)
+In-Reply-To: <1555489907-30117-2-git-send-email-svishnoi@codeaurora.org>
+References: <1555489907-30117-2-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190507140207.D214060350@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 14:02:07 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
-> For SDIO chip, it does not have HTT connect step in boot phase of UTF
-> mode, so it does not need the swap configuration for UTF mode, otherwise
-> it will trigger UTF load fail. For normal mode, it is swap between HTT
-> and WMI, for UTF mode, it does not have HTT, so it can not swap between
-> HTT and WMI.
+> There is a disparity in wmi and wmi tlv vdev subtype
+> enum for WMI_VDEV_SUBTYPE_MESH_11S.
 > 
-> Disable swap mail box for UTF mode will let UTF mode load success.
+> Add different enum for wmi tlv vdev subtype to support
+> vdev of subtype mesh 11s for WCN3990.
 > 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+> Tested HW: WCN3990
 > 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+3 patches applied to ath-next branch of ath.git, thanks.
 
-8cdee1affe90 ath10k: change swap mail box config for UTF mode of SDIO
+a7368c395fc3 ath10k: Add wmi tlv vdev subtype for mesh in WCN3990
+97354f2c4327 ath10k: Do not send probe response template for mesh
+7835d8f8792d ath10k: Add wmi tlv service map for mesh 11s
 
 -- 
-https://patchwork.kernel.org/patch/10893131/
+https://patchwork.kernel.org/patch/10904959/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
