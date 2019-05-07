@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO0X2-0003eJ-UF
- for ath10k@lists.infradead.org; Tue, 07 May 2019 13:53:42 +0000
+ id 1hO0Yw-0005nu-Be
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 13:55:26 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] ath10k: coredump: use struct_size() helper
+Subject: Re: [PATCH] ath10k: Fix the wrong value of enums for wmi tlv stats id
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190403190636.GA9827@embeddedor>
-References: <20190403190636.GA9827@embeddedor>
-Message-Id: <20190507135320.78AEE60DB3@smtp.codeaurora.org>
-Date: Tue,  7 May 2019 13:53:14 +0000 (UTC)
+In-Reply-To: <1554792193-22535-1-git-send-email-svishnoi@codeaurora.org>
+References: <1554792193-22535-1-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190507135517.DC7AA61230@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 13:55:17 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +22,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
+Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
-> Make use of the struct_size() helper instead of an open-coded version
-> in order to avoid any potential type mistakes, in particular in the
-> context in which this code is being used.
+> The enum value for WMI_TLV_STAT_PDEV, WMI_TLV_STAT_VDEV
+> and WMI_TLV_STAT_PEER is wrong, due to which the vdev stats
+> are not received from firmware in wmi_update_stats event.
 > 
-> So, replace code of the following form:
+> Fix the enum values for above stats to receive all stats
+> from firmware in WMI_TLV_UPDATE_STATS_EVENTID.
 > 
-> sizeof(*ce_hdr) + CE_COUNT * sizeof(ce_hdr->entries[0])
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
 > 
-> with:
-> 
-> struct_size(ce_hdr, entries, CE_COUNT)
-> 
-> This code was detected with the help of Coccinelle.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Fixes: f40a307eb92c ("ath10k: Fill rx duration for each peer in fw_stats for WCN3990)
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-4f735cd73650 ath10k: coredump: use struct_size() helper
+9280f4fc06f4 ath10k: Fix the wrong value of enums for wmi tlv stats id
 
 -- 
-https://patchwork.kernel.org/patch/10884377/
+https://patchwork.kernel.org/patch/10890577/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
