@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO0hj-00089E-Vq
- for ath10k@lists.infradead.org; Tue, 07 May 2019 14:04:27 +0000
+ id 1hO0iw-00010j-QP
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 14:05:43 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Check tx_stats before use it
+Subject: Re: [PATCH v2] ath10k: fix different tx duration output
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1556804210-28599-1-git-send-email-yintang@codeaurora.org>
-References: <1556804210-28599-1-git-send-email-yintang@codeaurora.org>
-Message-Id: <20190507140423.AF01060A33@smtp.codeaurora.org>
-Date: Tue,  7 May 2019 14:04:23 +0000 (UTC)
+In-Reply-To: <1555489045-18070-1-git-send-email-leiwa@codeaurora.org>
+References: <1555489045-18070-1-git-send-email-leiwa@codeaurora.org>
+Message-Id: <20190507140538.7B155609CD@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 14:05:38 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yingying Tang <yintang@codeaurora.org>
+To: Lei Wang <leiwa@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yingying Tang <yintang@codeaurora.org> wrote:
+Lei Wang <leiwa@codeaurora.org> wrote:
 
-> tx_stats will be freed and set to NULL before debugfs_sta node is
-> removed in station disconnetion process. So if read the debugfs_sta
-> node there may be NULL pointer error. Add check for tx_stats before
-> use it to resove this issue.
+> TX duration output of tx_stats in debugfs and station dump had big
+> difference because they got tx duration value from different statistic
+> data. We should use the same statistic data.
 > 
-> Signed-off-by: Yingying Tang <yintang@codeaurora.org>
+> Tested: QCA988X with firmware ver 10.2.4-1.0-00043
+> 
+> Signed-off-by: Lei Wang <leiwa@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+Dropping per discussion, please resend once everything is clarified.
 
-9e7251fa3897 ath10k: Check tx_stats before use it
+Patch set to Changes Requested.
 
 -- 
-https://patchwork.kernel.org/patch/10926861/
+https://patchwork.kernel.org/patch/10904909/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
