@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO0VM-00023i-PW
- for ath10k@lists.infradead.org; Tue, 07 May 2019 13:51:39 +0000
+ id 1hO0X2-0003eJ-UF
+ for ath10k@lists.infradead.org; Tue, 07 May 2019 13:53:42 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] ath10k: Use struct_size() helper
+Subject: Re: [PATCH][next] ath10k: coredump: use struct_size() helper
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190403172029.GA302@embeddedor>
-References: <20190403172029.GA302@embeddedor>
-Message-Id: <20190507135136.391B76137D@smtp.codeaurora.org>
-Date: Tue,  7 May 2019 13:51:36 +0000 (UTC)
+In-Reply-To: <20190403190636.GA9827@embeddedor>
+References: <20190403190636.GA9827@embeddedor>
+Message-Id: <20190507135320.78AEE60DB3@smtp.codeaurora.org>
+Date: Tue,  7 May 2019 13:53:14 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +31,13 @@ Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.ke
 > in order to avoid any potential type mistakes, in particular in the
 > context in which this code is being used.
 > 
-> So, change the following form:
+> So, replace code of the following form:
 > 
-> sizeof(*rx) + (sizeof(struct htt_rx_indication_mpdu_range) * num_mpdu_ranges)
+> sizeof(*ce_hdr) + CE_COUNT * sizeof(ce_hdr->entries[0])
 > 
->  to :
+> with:
 > 
-> struct_size(rx, mpdu_ranges, num_mpdu_ranges)
+> struct_size(ce_hdr, entries, CE_COUNT)
 > 
 > This code was detected with the help of Coccinelle.
 > 
@@ -46,10 +46,10 @@ Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.ke
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-35b50e70df27 ath10k: Use struct_size() helper
+4f735cd73650 ath10k: coredump: use struct_size() helper
 
 -- 
-https://patchwork.kernel.org/patch/10884271/
+https://patchwork.kernel.org/patch/10884377/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
