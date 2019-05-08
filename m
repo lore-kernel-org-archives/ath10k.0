@@ -1,26 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOGbK-0005dY-6h
+ id 1hOGbK-0005d9-4J
  for ath10k@lists.infradead.org; Wed, 08 May 2019 07:02:51 +0000
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
- x4872HtS017018
- for <ath10k@lists.infradead.org>; Wed, 8 May 2019 03:02:50 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2sbqy8xjp0-1
+ x48727EW051381
+ for <ath10k@lists.infradead.org>; Wed, 8 May 2019 03:02:49 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2sbs0tuxqc-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ath10k@lists.infradead.org>; Wed, 08 May 2019 03:02:49 -0400
+ for <ath10k@lists.infradead.org>; Wed, 08 May 2019 03:02:48 -0400
 Received: from localhost
- by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <ath10k@lists.infradead.org> from <alastair@au1.ibm.com>;
- Wed, 8 May 2019 08:02:47 +0100
+ Wed, 8 May 2019 08:02:46 +0100
 From: "Alastair D'Silva" <alastair@au1.ibm.com>
-Subject: [PATCH v2 0/7] Hexdump Enhancements
-Date: Wed,  8 May 2019 17:01:40 +1000
+Subject: [PATCH v2 1/7] lib/hexdump.c: Fix selftests
+Date: Wed,  8 May 2019 17:01:41 +1000
+In-Reply-To: <20190508070148.23130-1-alastair@au1.ibm.com>
+References: <20190508070148.23130-1-alastair@au1.ibm.com>
 MIME-Version: 1.0
-Message-Id: <20190508070148.23130-1-alastair@au1.ibm.com>
+Message-Id: <20190508070148.23130-2-alastair@au1.ibm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,62 +40,96 @@ Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr M
 
 From: Alastair D'Silva <alastair@d-silva.org>
 
-Apologies for the large CC list, it's a heads up for those responsible
-for subsystems where a prototype change in generic code causes a change
-in those subsystems.
+The overflow tests did not account for the situation where no
+overflow occurs and len < rowsize.
 
-This series enhances hexdump.
+This patch renames the cryptic variables and accounts for the
+above case.
 
-These improve the readability of the dumped data in certain situations
-(eg. wide terminals are available, many lines of empty bytes exist, etc).
+The selftests now pass.
 
-The default behaviour of hexdump is unchanged, however, the prototype
-for hex_dump_to_buffer() has changed, and print_hex_dump() has been
-renamed to print_hex_dump_ext(), with a wrapper replacing it for
-compatibility with existing code, which would have been too invasive to
-change.
+Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
+---
+ lib/test_hexdump.c | 47 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
-Hexdump selftests have be run & confirmed passed.
-
-Changelog:
- - Fix failing selftests
- - Fix precedence bug in 'Replace ascii bool in hex_dump_to_buffer...'
- - Remove hardcoded new lengths & instead relax the checks in
-   hex_dump_to_buffer, allocating the buffer from the heap instead of the
-   stack.
- - Replace the skipping of lines of 0x00/0xff with skipping lines of
-   repeated characters, announcing what has been skipped.
- - Add spaces as an optional N-group separator
- - Allow byte ordering to be maintained when HEXDUMP_RETAIN_BYTE_ORDERING
-   is set.
- - Updated selftests to cover 'Relax rowsize checks' &
-   'Optionally retain byte ordering'
-
-Alastair D'Silva (7):
-  lib/hexdump.c: Fix selftests
-  lib/hexdump.c: Relax rowsize checks in hex_dump_to_buffer
-  lib/hexdump.c: Optionally suppress lines of repeated bytes
-  lib/hexdump.c: Replace ascii bool in hex_dump_to_buffer with flags
-  lib/hexdump.c: Allow multiple groups to be separated by lines '|'
-  lib/hexdump.c: Allow multiple groups to be separated by spaces
-  lib/hexdump.c: Optionally retain byte ordering
-
- drivers/gpu/drm/i915/intel_engine_cs.c        |   2 +-
- drivers/isdn/hardware/mISDN/mISDNisar.c       |   6 +-
- drivers/mailbox/mailbox-test.c                |   2 +-
- drivers/net/ethernet/amd/xgbe/xgbe-drv.c      |   2 +-
- .../net/ethernet/synopsys/dwc-xlgmac-common.c |   2 +-
- drivers/net/wireless/ath/ath10k/debug.c       |   3 +-
- .../net/wireless/intel/iwlegacy/3945-mac.c    |   2 +-
- drivers/platform/chrome/wilco_ec/debugfs.c    |   2 +-
- drivers/scsi/scsi_logging.c                   |   8 +-
- drivers/staging/fbtft/fbtft-core.c            |   2 +-
- fs/seq_file.c                                 |   3 +-
- include/linux/printk.h                        |  34 ++-
- lib/hexdump.c                                 | 260 +++++++++++++++---
- lib/test_hexdump.c                            | 146 +++++++---
- 14 files changed, 372 insertions(+), 102 deletions(-)
-
+diff --git a/lib/test_hexdump.c b/lib/test_hexdump.c
+index 5144899d3c6b..d78ddd62ffd0 100644
+--- a/lib/test_hexdump.c
++++ b/lib/test_hexdump.c
+@@ -163,45 +163,52 @@ static void __init test_hexdump_overflow(size_t buflen, size_t len,
+ {
+ 	char test[TEST_HEXDUMP_BUF_SIZE];
+ 	char buf[TEST_HEXDUMP_BUF_SIZE];
+-	int rs = rowsize, gs = groupsize;
+-	int ae, he, e, f, r;
+-	bool a;
++	int ascii_len, hex_len, expected_len, fill_point, ngroups, rc;
++	bool match;
+ 
+ 	total_tests++;
+ 
+ 	memset(buf, FILL_CHAR, sizeof(buf));
+ 
+-	r = hex_dump_to_buffer(data_b, len, rs, gs, buf, buflen, ascii);
++	rc = hex_dump_to_buffer(data_b, len, rowsize, groupsize, buf, buflen, ascii);
+ 
+ 	/*
+ 	 * Caller must provide the data length multiple of groupsize. The
+ 	 * calculations below are made with that assumption in mind.
+ 	 */
+-	ae = rs * 2 /* hex */ + rs / gs /* spaces */ + 1 /* space */ + len /* ascii */;
+-	he = (gs * 2 /* hex */ + 1 /* space */) * len / gs - 1 /* no trailing space */;
++	ngroups = rowsize / groupsize;
++	hex_len = (groupsize * 2 /* hex */ + 1 /* spaces */) * ngroups
++		  - 1 /* no trailing space */;
++	ascii_len = hex_len + 2 /* space */ + len /* ascii */;
++
++	if (len < rowsize) {
++		ngroups = len / groupsize;
++		hex_len = (groupsize * 2 /* hex */ + 1 /* spaces */) * ngroups
++		  - 1 /* no trailing space */;
++	}
+ 
+-	if (ascii)
+-		e = ae;
+-	else
+-		e = he;
++	expected_len = (ascii) ? ascii_len : hex_len;
+ 
+-	f = min_t(int, e + 1, buflen);
++	fill_point = min_t(int, expected_len + 1, buflen);
+ 	if (buflen) {
+-		test_hexdump_prepare_test(len, rs, gs, test, sizeof(test), ascii);
+-		test[f - 1] = '\0';
++		test_hexdump_prepare_test(len, rowsize, groupsize, test,
++					  sizeof(test), ascii);
++		test[fill_point - 1] = '\0';
+ 	}
+-	memset(test + f, FILL_CHAR, sizeof(test) - f);
++	memset(test + fill_point, FILL_CHAR, sizeof(test) - fill_point);
+ 
+-	a = r == e && !memcmp(test, buf, TEST_HEXDUMP_BUF_SIZE);
++	match = rc == expected_len && !memcmp(test, buf, TEST_HEXDUMP_BUF_SIZE);
+ 
+ 	buf[sizeof(buf) - 1] = '\0';
+ 
+-	if (!a) {
+-		pr_err("Len: %zu buflen: %zu strlen: %zu\n",
+-			len, buflen, strnlen(buf, sizeof(buf)));
+-		pr_err("Result: %d '%s'\n", r, buf);
+-		pr_err("Expect: %d '%s'\n", e, test);
++	if (!match) {
++		pr_err("rowsize: %u groupsize: %u ascii: %d Len: %zu buflen: %zu strlen: %zu\n",
++			rowsize, groupsize, ascii, len, buflen,
++			strnlen(buf, sizeof(buf)));
++		pr_err("Result: %d '%-.*s'\n", rc, (int)buflen, buf);
++		pr_err("Expect: %d '%-.*s'\n", expected_len, (int)buflen, test);
+ 		failed_tests++;
++
+ 	}
+ }
+ 
 -- 
 2.21.0
 
