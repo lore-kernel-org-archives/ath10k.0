@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-f67.google.com ([209.85.128.67])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hP4vt-0000xh-Ru
- for ath10k@lists.infradead.org; Fri, 10 May 2019 12:47:27 +0000
-Received: by mail-wm1-f67.google.com with SMTP id 7so1398640wmo.2
- for <ath10k@lists.infradead.org>; Fri, 10 May 2019 05:47:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wim_asb1MRpis39SDghBNN5SpKDvUvF6cTtwa9w8cS8_Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wim_asb1MRpis39SDghBNN5SpKDvUvF6cTtwa9w8cS8_Q@mail.gmail.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Fri, 10 May 2019 05:47:10 -0700
-Message-ID: <CAJ-Vmonr0wbSV4hgcF=BWVM9-y3axAuTgsfys8q7cTP96FbYgQ@mail.gmail.com>
+Received: from [208.74.158.174] (helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hP5yX-0005AV-0W
+ for ath10k@lists.infradead.org; Fri, 10 May 2019 13:54:14 +0000
 Subject: Re: ath10k: wmi service ready event not received
+References: <CAHk-=wim_asb1MRpis39SDghBNN5SpKDvUvF6cTtwa9w8cS8_Q@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <6e530d73-91e9-faaf-31d0-cd5fadc66ffc@candelatech.com>
+Date: Fri, 10 May 2019 06:54:11 -0700
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wim_asb1MRpis39SDghBNN5SpKDvUvF6cTtwa9w8cS8_Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,16 +18,16 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Fri, 10 May 2019 at 05:28, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
+
+
+On 05/10/2019 05:28 AM, Linus Torvalds wrote:
 > Hmm.
 >
 > I have a nice new laptop, and it works fine. Except today it lost
@@ -44,11 +42,7 @@ On Fri, 10 May 2019 at 05:28, Linus Torvalds
 >   ath10k_pci 0000:02:00.0: could not probe fw (-110)
 >
 > and then nothing works. -110 is ETIMEDOUT, fwiw.
-
-Which NIC is it?
-
-That's super, super early after NIC wake-up.
-
+>
 > Rebooting got wireless back. It's possible I could have done something
 > less drastic, but I was thinking that it would be the new kernel and
 > rebooted into an older version. But then rebooting into the new one
@@ -57,20 +51,23 @@ That's super, super early after NIC wake-up.
 >
 > Is there anything I can do to debug this if it happens again?
 
-I'd see whether it detached from the PCI bus or not - sometimes a
-firmware crash super early does that. You could also rmmod reload
-ath10k/ath10k_pci to see if that's enough. It's almost always enough.
+Please provide 'lspci' or other info on the NIC chipset, for reference.
 
-We've been poking at this in FreeBSD for a bit. Some NICs don't reset
-right after PCI reset is deasserted; some don't like being reset via
-registers and need a PCI bus reset; some just take longer to wake-up
-than the service ready event timeout is. Some just .. crash super
-early :-) Someone ended up submitting a patch to my driver fork that
-attempts this a few times in a loop with resets in between to ensure
-it does load at boot.
+Sometimes a work-around is:
 
+rmmod ath10k_pci ath10k_core; modprobe ath10k_pci
 
--adrian
+Sometimes you will get a firmware register dump in this crash case, and then someone
+from QCA might can get a backtrace if you post that with the chipset info and
+such (or if it is one of the NICs my ath10k-ct firmware supports and you can reproduce
+an issue with that firmware, then I can debug it).
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
