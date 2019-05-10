@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [66.55.73.32] (helo=ushosting.nmnhosting.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOtKn-00050R-RL
- for ath10k@lists.infradead.org; Fri, 10 May 2019 00:24:23 +0000
-Message-ID: <80e51facb280e96018a4220adf8efa6fac823a94.camel@d-silva.org>
-Subject: Re: [PATCH v2 3/7] lib/hexdump.c: Optionally suppress lines of
- repeated bytes
-From: "Alastair D'Silva" <alastair@d-silva.org>
-Date: Fri, 10 May 2019 10:16:42 +1000
-In-Reply-To: <dc093079-43a0-0a45-f5dd-88b20702fd93@infradead.org>
-References: <20190508070148.23130-1-alastair@au1.ibm.com>
- <20190508070148.23130-4-alastair@au1.ibm.com>
- <dc093079-43a0-0a45-f5dd-88b20702fd93@infradead.org>
-MIME-Version: 1.0
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hOzXe-0006MU-OT
+ for ath10k@lists.infradead.org; Fri, 10 May 2019 07:02:04 +0000
+From: Yibo Zhao <yiboz@codeaurora.org>
+Subject: [PATCH] mac80211: remove warning message
+Date: Fri, 10 May 2019 15:01:02 +0800
+Message-Id: <1557471662-1355-1-git-send-email-yiboz@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,86 +15,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Tom Lendacky <thomas.lendacky@amd.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, "James E.J. Bottomley" <jejb@linux.ibm.com>, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Petr Mladek <pmladek@suse.com>, intel-gfx@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Steven Rostedt <rostedt@goodmis.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Alexander Viro <viro@zeniv.linux.org.uk>
+To: linux-wireless@vger.kernel.org
+Cc: Zhi Chen <zhichen@codeaurora.org>, Yibo Zhao <yiboz@codeaurora.org>, ath10k@lists.infradead.org
 
-On Wed, 2019-05-08 at 17:58 -0700, Randy Dunlap wrote:
-> On 5/8/19 12:01 AM, Alastair D'Silva wrote:
-> > From: Alastair D'Silva <alastair@d-silva.org>
-> > 
-> > Some buffers may only be partially filled with useful data, while
-> > the rest
-> > is padded (typically with 0x00 or 0xff).
-> > 
-> > This patch introduces a flag to allow the supression of lines of
-> > repeated
-> > bytes, which are replaced with '** Skipped %u bytes of value 0x%x
-> > **'
-> > 
-> > An inline wrapper function is provided for backwards compatibility
-> > with
-> > existing code, which maintains the original behaviour.
-> > 
-> > Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
-> > ---
-> >  include/linux/printk.h | 25 +++++++++---
-> >  lib/hexdump.c          | 91 ++++++++++++++++++++++++++++++++++++
-> > ------
-> >  2 files changed, 99 insertions(+), 17 deletions(-)
-> > 
-> 
-> Hi,
-> Did you do "make htmldocs" or something similar on this?
-> 
-> > diff --git a/lib/hexdump.c b/lib/hexdump.c
-> > index 3943507bc0e9..d61a1e4f19fa 100644
-> > --- a/lib/hexdump.c
-> > +++ b/lib/hexdump.c
-> > @@ -212,8 +212,44 @@ int hex_dump_to_buffer(const void *buf, size_t
-> > len, int rowsize, int groupsize,
-> >  EXPORT_SYMBOL(hex_dump_to_buffer);
-> >  
-> >  #ifdef CONFIG_PRINTK
-> > +
-> > +/**
-> > + * Check if a buffer contains only a single byte value
-> > + * @buf: pointer to the buffer
-> > + * @len: the size of the buffer in bytes
-> > + * @val: outputs the value if if the bytes are identical
-> 
-> Does this work without a function name?
-> Documentation/doc-guide/kernel-doc.rst says the general format is:
-> 
->   /**
->    * function_name() - Brief description of function.
->    * @arg1: Describe the first argument.
->    * @arg2: Describe the second argument.
->    *        One can provide multiple line descriptions
->    *        for arguments.
->    *
-> 
-> > + */
-> >  /**
-> > - * print_hex_dump - print a text hex dump to syslog for a binary
-> > blob of data
-> > + * print_hex_dump_ext: dump a binary blob of data to syslog in
-> > hexadecimal
-> 
-> Also not in the general documented format.
-> 
+In multiple SSID cases, it takes time to prepare every AP interface
+to be ready in initializing phase. If a sta already knows everything it
+needs to join one of the APs and sends authentication to the AP which
+is not fully prepared at this point of time, AP's channel context
+could be NULL. As a result, warning message occurs.
 
-Thanks Randy, I'll address these.
+Even worse, if the AP is under attack via tools such as MDK3 and massive
+authentication requests are received in a very short time, console will
+be hung due to kernel warning messages.
 
+If this case can be hit during normal functionality, there should be no
+WARN_ON(). Those should be reserved to cases that are not supposed to be
+hit at all or some other more specific cases like indicating obsolete
+interface.
+
+Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
+---
+ net/mac80211/ieee80211_i.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
+index 2ae0364..f39c289 100644
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -1435,7 +1435,7 @@ struct ieee80211_local {
+ 	rcu_read_lock();
+ 	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
+ 
+-	if (WARN_ON_ONCE(!chanctx_conf)) {
++	if (!chanctx_conf) {
+ 		rcu_read_unlock();
+ 		return NULL;
+ 	}
 -- 
-Alastair D'Silva           mob: 0423 762 819
-skype: alastair_dsilva    
-Twitter: @EvilDeece
-blog: http://alastair.d-silva.org
-
+1.9.1
 
 
 _______________________________________________
