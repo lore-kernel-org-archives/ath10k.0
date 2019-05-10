@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [208.74.158.174] (helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hP68I-0001Em-5D
- for ath10k@lists.infradead.org; Fri, 10 May 2019 14:04:19 +0000
-Subject: Re: [PATCH] mac80211: remove warning message
-References: <1557471662-1355-1-git-send-email-yiboz@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <7119f24f-5b88-629a-d507-73776b841f65@candelatech.com>
-Date: Fri, 10 May 2019 07:04:16 -0700
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hP6Si-0001wc-Ii
+ for ath10k@lists.infradead.org; Fri, 10 May 2019 14:25:25 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: ath10k: wmi service ready event not received
+References: <CAHk-=wim_asb1MRpis39SDghBNN5SpKDvUvF6cTtwa9w8cS8_Q@mail.gmail.com>
+Date: Fri, 10 May 2019 17:25:19 +0300
+In-Reply-To: <CAHk-=wim_asb1MRpis39SDghBNN5SpKDvUvF6cTtwa9w8cS8_Q@mail.gmail.com>
+ (Linus Torvalds's message of "Fri, 10 May 2019 05:28:11 -0700")
+Message-ID: <87r296jsj4.fsf@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1557471662-1355-1-git-send-email-yiboz@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,65 +19,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
-Cc: Zhi Chen <zhichen@codeaurora.org>, ath10k@lists.infradead.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ath10k@lists.infradead.org
 
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-
-On 05/10/2019 12:01 AM, Yibo Zhao wrote:
-> In multiple SSID cases, it takes time to prepare every AP interface
-> to be ready in initializing phase. If a sta already knows everything it
-> needs to join one of the APs and sends authentication to the AP which
-> is not fully prepared at this point of time, AP's channel context
-> could be NULL. As a result, warning message occurs.
+> I have a nice new laptop, and it works fine. Except today it lost
+> wireless, and I have no idea why.
 >
-> Even worse, if the AP is under attack via tools such as MDK3 and massive
-> authentication requests are received in a very short time, console will
-> be hung due to kernel warning messages.
+> It's not happened before (but it's fairly new and I'm actually on my
+> first trip with it), so I don't know how common this is, but the
+> kernel messages seem to say that the cause of it was
+>
+>   ath10k_pci 0000:02:00.0: wmi service ready event not received
+>   ath10k_pci 0000:02:00.0: could not init core (-110)
+>   ath10k_pci 0000:02:00.0: could not probe fw (-110)
+>
+> and then nothing works. -110 is ETIMEDOUT, fwiw.
+>
+> Rebooting got wireless back. It's possible I could have done something
+> less drastic, but I was thinking that it would be the new kernel and
+> rebooted into an older version. But then rebooting into the new one
+> afterwards (double-checking before starting a bisect) and it all
+> worked.
+>
+> Is there anything I can do to debug this if it happens again?
 
-Since it is a WARN_ON_ONCE, how it the console hang due to warnings?  You should
-get no more than once per boot?
-
-I have no problem with removing it though.  Seems a harmless splat and I removed
-it from my tree some time back as well.
-
-Thanks,
-Ben
-
->
-> If this case can be hit during normal functionality, there should be no
-> WARN_ON(). Those should be reserved to cases that are not supposed to be
-> hit at all or some other more specific cases like indicating obsolete
-> interface.
->
-> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
-> Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
-> ---
->  net/mac80211/ieee80211_i.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-> index 2ae0364..f39c289 100644
-> --- a/net/mac80211/ieee80211_i.h
-> +++ b/net/mac80211/ieee80211_i.h
-> @@ -1435,7 +1435,7 @@ struct ieee80211_local {
->  	rcu_read_lock();
->  	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
->
-> -	if (WARN_ON_ONCE(!chanctx_conf)) {
-> +	if (!chanctx_conf) {
->  		rcu_read_unlock();
->  		return NULL;
->  	}
->
+Can you post dmesg log when ath10k starts so that we know what hardware
+and firmware you are using? "dmesg | grep ath10k" should tell that, I
+assume this is a QCA6174 PCI device. Even better if you can provide full
+dmesg so that we could see what was happening before this timeout, even
+if just privately to me. Did this happen during laptop startup or after
+resume?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
