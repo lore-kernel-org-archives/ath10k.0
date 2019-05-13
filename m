@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-vs1-f65.google.com ([209.85.217.65])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQ4K4-0000oQ-He
- for ath10k@lists.infradead.org; Mon, 13 May 2019 06:20:29 +0000
+ id 1hQ4xj-0007LF-LY
+ for ath10k@lists.infradead.org; Mon, 13 May 2019 07:01:28 +0000
+Received: by mail-vs1-f65.google.com with SMTP id q64so7352118vsd.1
+ for <ath10k@lists.infradead.org>; Mon, 13 May 2019 00:01:27 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 13 May 2019 14:20:26 +0800
-From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: Re: [PATCH] mac80211: remove warning message
-In-Reply-To: <7119f24f-5b88-629a-d507-73776b841f65@candelatech.com>
-References: <1557471662-1355-1-git-send-email-yiboz@codeaurora.org>
- <7119f24f-5b88-629a-d507-73776b841f65@candelatech.com>
-Message-ID: <0247de90c551b76aed1f9647f9b274c0@codeaurora.org>
+References: <20190508070148.23130-1-alastair@au1.ibm.com>
+ <20190508070148.23130-4-alastair@au1.ibm.com>
+In-Reply-To: <20190508070148.23130-4-alastair@au1.ibm.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 13 May 2019 09:01:14 +0200
+Message-ID: <CAMuHMdVefYTgHzGKBc0ebku1z8V3wsM0ydN+6-S2nFKaB8eH_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] lib/hexdump.c: Optionally suppress lines of
+ repeated bytes
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,77 +22,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Zhi Chen <zhichen@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Alastair D'Silva <alastair@au1.ibm.com>
+Cc: Linux Fbdev development list <linux-fbdev@vger.kernel.org>, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, DRI Development <dri-devel@lists.freedesktop.org>, driverdevel <devel@driverdev.osuosl.org>, scsi <linux-scsi@vger.kernel.org>, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, alastair@d-silva.org, Intel Graphics Development <intel-gfx@lists.freedesktop.org>, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Jani Nikula <jani.nikula@linux.intel.com>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@aculab.com>, Daniel Vetter <daniel@ffwll.ch>, netdev <netdev@vger.kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
 
-On 2019-05-10 22:04, Ben Greear wrote:
-> On 05/10/2019 12:01 AM, Yibo Zhao wrote:
->> In multiple SSID cases, it takes time to prepare every AP interface
->> to be ready in initializing phase. If a sta already knows everything 
->> it
->> needs to join one of the APs and sends authentication to the AP which
->> is not fully prepared at this point of time, AP's channel context
->> could be NULL. As a result, warning message occurs.
->> 
->> Even worse, if the AP is under attack via tools such as MDK3 and 
->> massive
->> authentication requests are received in a very short time, console 
->> will
->> be hung due to kernel warning messages.
-> 
-> Since it is a WARN_ON_ONCE, how it the console hang due to warnings?  
-> You should
-> get no more than once per boot?
-> 
-Hi Ben,
+Hi Alastair,
 
-I was planning to use WARN_ON_ONCE() in the first place to replace 
-WARN_ON() then after some discussion, we think removing it could be 
-better. So the patch was based on my first version. Sorry for the 
-confusing. Will raise another one.
+Thanks for your patch!
 
-> I have no problem with removing it though.  Seems a harmless splat and 
-> I removed
-> it from my tree some time back as well.
-> 
-> Thanks,
-> Ben
-> 
->> 
->> If this case can be hit during normal functionality, there should be 
->> no
->> WARN_ON(). Those should be reserved to cases that are not supposed to 
->> be
->> hit at all or some other more specific cases like indicating obsolete
->> interface.
->> 
->> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
->> Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
->> ---
->>  net/mac80211/ieee80211_i.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
->> index 2ae0364..f39c289 100644
->> --- a/net/mac80211/ieee80211_i.h
->> +++ b/net/mac80211/ieee80211_i.h
->> @@ -1435,7 +1435,7 @@ struct ieee80211_local {
->>  	rcu_read_lock();
->>  	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
->> 
->> -	if (WARN_ON_ONCE(!chanctx_conf)) {
->> +	if (!chanctx_conf) {
->>  		rcu_read_unlock();
->>  		return NULL;
->>  	}
->> 
+On Wed, May 8, 2019 at 9:04 AM Alastair D'Silva <alastair@au1.ibm.com> wrote:
+> From: Alastair D'Silva <alastair@d-silva.org>
+>
+> Some buffers may only be partially filled with useful data, while the rest
+> is padded (typically with 0x00 or 0xff).
+>
+> This patch introduces a flag to allow the supression of lines of repeated
+> bytes,
+
+Given print_hex_dump() operates on entities of groupsize (1, 2, 4, or 8)
+bytes, wouldn't it make more sense to consider repeated groups instead
+of repeated bytes?
+
+> which are replaced with '** Skipped %u bytes of value 0x%x **'
+
+Using a custom message instead of just "*", like "hexdump" uses, will
+require preprocessing the output when recovering the original binary
+data by feeding it to e.g. "xxd".
+This may sound worse than it is, though, as I never got "xxd" to work
+without preprocessing anyway ;-)
+
+    $ cat $(type -p unhexdump)
+    #!/bin/sh
+    sed 's/^[0-9a-f]*//' $1 | xxd -r -p | dd conv=swab
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Yibo
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 _______________________________________________
 ath10k mailing list
