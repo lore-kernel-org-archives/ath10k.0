@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ushosting.nmnhosting.com ([66.55.73.32])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQ5VH-0005a6-JU
- for ath10k@lists.infradead.org; Mon, 13 May 2019 07:36:09 +0000
-From: "Alastair D'Silva" <alastair@d-silva.org>
-References: <20190508070148.23130-1-alastair@au1.ibm.com>
- <20190508070148.23130-4-alastair@au1.ibm.com>
- <CAMuHMdVefYTgHzGKBc0ebku1z8V3wsM0ydN+6-S2nFKaB8eH_Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdVefYTgHzGKBc0ebku1z8V3wsM0ydN+6-S2nFKaB8eH_Q@mail.gmail.com>
-Subject: RE: [PATCH v2 3/7] lib/hexdump.c: Optionally suppress lines of
- repeated bytes
-Date: Mon, 13 May 2019 17:35:47 +1000
-Message-ID: <04de01d5095e$7f6af730$7e40e590$@d-silva.org>
-MIME-Version: 1.0
-Content-Language: en-au
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hQCKT-0003MG-2H
+ for ath10k@lists.infradead.org; Mon, 13 May 2019 14:53:26 +0000
+From: Balaji Pothunoori <bpothuno@codeaurora.org>
+Subject: [PATCH] ath10k: enabling tx stats support over pktlog
+Date: Mon, 13 May 2019 20:23:07 +0530
+Message-Id: <1557759187-23910-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,82 +15,189 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Geert Uytterhoeven' <geert@linux-m68k.org>, 'Alastair D'Silva' <alastair@au1.ibm.com>
-Cc: 'Linux Fbdev development list' <linux-fbdev@vger.kernel.org>, 'Stanislaw Gruszka' <sgruszka@redhat.com>, 'Petr Mladek' <pmladek@suse.com>, 'David Airlie' <airlied@linux.ie>, 'Joonas Lahtinen' <joonas.lahtinen@linux.intel.com>, 'DRI Development' <dri-devel@lists.freedesktop.org>, 'driverdevel' <devel@driverdev.osuosl.org>, 'scsi' <linux-scsi@vger.kernel.org>, 'Jassi Brar' <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, 'Intel Graphics Development' <intel-gfx@lists.freedesktop.org>, 'Dan Carpenter' <dan.carpenter@oracle.com>, 'Jose Abreu' <Jose.Abreu@synopsys.com>, 'Tom Lendacky' <thomas.lendacky@amd.com>, "'James E.J. Bottomley'" <jejb@linux.ibm.com>, 'Jani Nikula' <jani.nikula@linux.intel.com>, 'Linux FS Devel' <linux-fsdevel@vger.kernel.org>, 'Steven Rostedt' <rostedt@goodmis.org>, 'Rodrigo Vivi' <rodrigo.vivi@intel.com>, 'Benson Leung' <bleung@chromium.org>, 'Kalle Valo' <kvalo@codeaurora.org>, 'Karsten Keil' <isdn@linux-pingi.de>, "'Martin K. Petersen'" <martin.petersen@oracle.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>, 'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>, 'David Laight' <David.Laight@aculab.com>, 'Daniel Vetter' <daniel@ffwll.ch>, 'netdev' <netdev@vger.kernel.org>, 'Enric Balletbo i Serra' <enric.balletbo@collabora.com>, 'Andrew Morton' <akpm@linux-foundation.org>, "'David S. Miller'" <davem@davemloft.net>, 'Alexander Viro' <viro@zeniv.linux.org.uk>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>
 
-> -----Original Message-----
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Sent: Monday, 13 May 2019 5:01 PM
-> To: Alastair D'Silva <alastair@au1.ibm.com>
-> Cc: alastair@d-silva.org; Jani Nikula <jani.nikula@linux.intel.com>; Joonas
-> Lahtinen <joonas.lahtinen@linux.intel.com>; Rodrigo Vivi
-> <rodrigo.vivi@intel.com>; David Airlie <airlied@linux.ie>; Daniel Vetter
-> <daniel@ffwll.ch>; Dan Carpenter <dan.carpenter@oracle.com>; Karsten
-> Keil <isdn@linux-pingi.de>; Jassi Brar <jassisinghbrar@gmail.com>; Tom
-> Lendacky <thomas.lendacky@amd.com>; David S. Miller
-> <davem@davemloft.net>; Jose Abreu <Jose.Abreu@synopsys.com>; Kalle
-> Valo <kvalo@codeaurora.org>; Stanislaw Gruszka <sgruszka@redhat.com>;
-> Benson Leung <bleung@chromium.org>; Enric Balletbo i Serra
-> <enric.balletbo@collabora.com>; James E.J. Bottomley
-> <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@oracle.com>;
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Alexander Viro
-> <viro@zeniv.linux.org.uk>; Petr Mladek <pmladek@suse.com>; Sergey
-> Senozhatsky <sergey.senozhatsky@gmail.com>; Steven Rostedt
-> <rostedt@goodmis.org>; David Laight <David.Laight@aculab.com>; Andrew
-> Morton <akpm@linux-foundation.org>; Intel Graphics Development <intel-
-> gfx@lists.freedesktop.org>; DRI Development <dri-
-> devel@lists.freedesktop.org>; Linux Kernel Mailing List <linux-
-> kernel@vger.kernel.org>; netdev <netdev@vger.kernel.org>;
-> ath10k@lists.infradead.org; linux-wireless <linux-wireless@vger.kernel.org>;
-> scsi <linux-scsi@vger.kernel.org>; Linux Fbdev development list <linux-
-> fbdev@vger.kernel.org>; driverdevel <devel@driverdev.osuosl.org>; Linux
-> FS Devel <linux-fsdevel@vger.kernel.org>
-> Subject: Re: [PATCH v2 3/7] lib/hexdump.c: Optionally suppress lines of
-> repeated bytes
-> 
-> Hi Alastair,
-> 
-> Thanks for your patch!
+For QCA988X target, pktlog gives details of the tx bitrate
+which is used in the driver for station info.
 
-And thanks for your politeness :)
+Enabling pktlog by default will cause more interrupts
+in target to host CE pipe, which can impact more CPU usage
+for targets ex:WCN3990 and also not required for all other
+platforms (eg: WCN3990), for getting tx bitrate.
 
-> 
-> On Wed, May 8, 2019 at 9:04 AM Alastair D'Silva <alastair@au1.ibm.com>
-> wrote:
-> > From: Alastair D'Silva <alastair@d-silva.org>
-> >
-> > Some buffers may only be partially filled with useful data, while the
-> > rest is padded (typically with 0x00 or 0xff).
-> >
-> > This patch introduces a flag to allow the supression of lines of
-> > repeated bytes,
-> 
-> Given print_hex_dump() operates on entities of groupsize (1, 2, 4, or 8)
-> bytes, wouldn't it make more sense to consider repeated groups instead of
-> repeated bytes?
+Enable pktlog only for QCA988X based on hardware params.
 
-Maybe, it would mean that subsequent addresses may not be a multiple of rowsize though, which is useful.
+Tested HW : WCN3990
+Tested FW : WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
 
-> > which are replaced with '** Skipped %u bytes of value 0x%x **'
-> 
-> Using a custom message instead of just "*", like "hexdump" uses, will require
-> preprocessing the output when recovering the original binary data by
-> feeding it to e.g. "xxd".
-> This may sound worse than it is, though, as I never got "xxd" to work without
-> preprocessing anyway ;-)
+Fixes: e8123bb74c4e ("ath10k: add per peer tx stats support for 10.2.4")
+Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+ drivers/net/wireless/ath/ath10k/mac.c  |  3 ++-
+ 3 files changed, 20 insertions(+), 1 deletion(-)
 
-I think showing the details of the skipped values is useful when reading the output directly. In situations where binary extracts are desired, the feature can always be disabled.
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 61ef903..252e9af 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -83,6 +83,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = true,
+ 	},
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+@@ -117,6 +118,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = true,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -152,6 +154,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -179,6 +182,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.uart_pin_workaround = true,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -213,6 +217,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -247,6 +252,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -281,6 +287,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -318,6 +325,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = true,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -358,6 +366,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -405,6 +414,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -449,6 +459,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -483,6 +494,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -519,6 +531,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = true,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -560,6 +573,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -587,6 +601,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rri_on_ddr = true,
+ 		.hw_filter_reset_required = false,
+ 		.fw_diag_ce_download = false,
++		.tx_stats_over_pktlog = false,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 248cfb4..1e80beb 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -612,6 +612,9 @@ struct ath10k_hw_params {
+ 	 * firmware bug
+ 	 */
+ 	bool uart_pin_workaround;
++
++	/* tx stats support over pktlog */
++	bool tx_stats_over_pktlog;
+ };
+ 
+ struct htt_rx_desc;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b500fd4..40e7cea 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7877,7 +7877,8 @@ ath10k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+-	if (ath10k_peer_stats_enabled(ar)) {
++	if (ath10k_peer_stats_enabled(ar) &&
++	    ar->hw_params.tx_stats_over_pktlog) {
+ 		ar->pktlog_filter |= ATH10K_PKTLOG_PEER_STATS;
+ 		ret = ath10k_wmi_pdev_pktlog_enable(ar,
+ 						    ar->pktlog_filter);
 -- 
-Alastair D'Silva           mob: 0423 762 819
-skype: alastair_dsilva     msn: alastair@d-silva.org
-blog: http://alastair.d-silva.org    Twitter: @EvilDeece
-
-
+2.7.4
 
 
 _______________________________________________
