@@ -1,23 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQccR-0006j6-36
- for ath10k@lists.infradead.org; Tue, 14 May 2019 18:57:44 +0000
-Message-ID: <ea87337c24666355059488b42d97ee22711ce7b8.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] mac80211: remove warning message
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 14 May 2019 20:57:38 +0200
-In-Reply-To: <730d3664-488d-7d57-04d5-1a57e91fa070@candelatech.com>
-References: <1557824507-17668-1-git-send-email-yiboz@codeaurora.org>
- <7c92f5cf51eaec1d5449698d90f5b6c5ca6c2bea.camel@sipsolutions.net>
- <ccb48284f0d96e72f4c041e12c943f0a@codeaurora.org>
- <e2a6596b99085541a5886c0d0d6393c849ac2d57.camel@sipsolutions.net>
- <34f72d5db336b9898618bf1c5c15ec41094d7d06.camel@perches.com>
- <4d013893-3302-14f0-c957-b3771f4b6b82@candelatech.com>
- <8eacb8e107c854b64a0c6116fca9731ddd99dcac.camel@sipsolutions.net>
- <730d3664-488d-7d57-04d5-1a57e91fa070@candelatech.com>
-Mime-Version: 1.0
+Received: from [208.74.158.174] (helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hQj5q-00063q-2p
+ for ath10k@lists.infradead.org; Wed, 15 May 2019 01:52:31 +0000
+Received: from [192.168.100.195] (50-251-239-81-static.hfc.comcastbusiness.net
+ [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail3.candelatech.com (Postfix) with ESMTPSA id 1CEEA16320
+ for <ath10k@lists.infradead.org>; Tue, 14 May 2019 18:52:29 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Problem with 9984 in routed mode with 512b frames.
+Message-ID: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
+Date: Tue, 14 May 2019 18:52:28 -0700
+MIME-Version: 1.0
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +23,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Yibo Zhao <yiboz@codeaurora.org>
-Cc: Zhi Chen <zhichen@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On Tue, 2019-05-14 at 11:54 -0700, Ben Greear wrote:
-> 
-> Here is the info I have in my commit that changed this to WARN_ON_ONCE.
-> I never posted it because I had to hack ath10k to get to this state, so maybe
-> this is not a valid case to debug.
-> 
-> 
-> Maybe Yibo Zhao has a better example.
-> 
->      mac80211: don't spam kernel logs when chantx is null.
-> 
->      I set up ath10k to be chandef based again in order to test
->      WDS.  My WDS stations are not very functional yet, and
->      when ethtool stats are queried, there is a WARN_ON splat
->      generated.  Change this to WARN_ON_ONCE so that there is
->      less kernel spam.
+Hello,
 
-I'm totally fine with WARN_ON_ONCE, FWIW.
+I found a strange issue and curious if someone has seen similar.
 
-Sounds like different bugs though. You're talking about WDS here, and
-Yibo was talking about something with AP interfaces prematurely
-accepting frames or so.
+I made an AP where the AP interface acts as a routed interface.  I generate
+traffic through another interface in the router.  When sending 300Mbps of 512 byte
+UDP payloads, in the downstream direction, and with the station being a 1x1 /AC device,
+then the AP NIC appears to mostly lock up within about 1 minute.  I still see beacons, but no
+data frames.  In some cases, I reproduced with very slow speed traffic as well.
 
-johannes
+I tried using a mostly un-modified firmware (ie, similar to upstream QCA), as well as my
+hacked upon firmware, and all act similarly.  I'm using the 4.20 kernel, but at least for now,
+it does not appear to be a kernel issue.
+
+If I use larger MTU sized frames, or have a 2x2 station instead of 1x1 then it is much harder
+to reproduce (and maybe cannot be reproduced).  Also, when generating traffic directly on
+the AP device instead of using the routed interface as a traffic source, it is harder to
+reproduce.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
