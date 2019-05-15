@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [208.74.158.174] (helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQj5q-00063q-2p
- for ath10k@lists.infradead.org; Wed, 15 May 2019 01:52:31 +0000
-Received: from [192.168.100.195] (50-251-239-81-static.hfc.comcastbusiness.net
- [50.251.239.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail3.candelatech.com (Postfix) with ESMTPSA id 1CEEA16320
- for <ath10k@lists.infradead.org>; Tue, 14 May 2019 18:52:29 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: Problem with 9984 in routed mode with 512b frames.
-Message-ID: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
-Date: Tue, 14 May 2019 18:52:28 -0700
+Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hQk2K-0007IN-91
+ for ath10k@lists.infradead.org; Wed, 15 May 2019 02:52:57 +0000
+Received: by mail-qt1-x841.google.com with SMTP id d13so1619866qth.5
+ for <ath10k@lists.infradead.org>; Tue, 14 May 2019 19:52:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: en-US
+References: <1556524457-17469-1-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1556524457-17469-1-git-send-email-wgong@codeaurora.org>
+From: Claire Chang <tientzu@google.com>
+Date: Wed, 15 May 2019 10:52:41 +0800
+Message-ID: <CALiNf29_GwSEUJ_vdp+_1DeDyFZj0uuUY9kYh94w4P_eeDT=8g@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: add support for simulate crash on SDIO chip
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +20,18 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Hello,
+Tested-by: Claire Chang <tientzu@chromium.org>
 
-I found a strange issue and curious if someone has seen similar.
-
-I made an AP where the AP interface acts as a routed interface.  I generate
-traffic through another interface in the router.  When sending 300Mbps of 512 byte
-UDP payloads, in the downstream direction, and with the station being a 1x1 /AC device,
-then the AP NIC appears to mostly lock up within about 1 minute.  I still see beacons, but no
-data frames.  In some cases, I reproduced with very slow speed traffic as well.
-
-I tried using a mostly un-modified firmware (ie, similar to upstream QCA), as well as my
-hacked upon firmware, and all act similarly.  I'm using the 4.20 kernel, but at least for now,
-it does not appear to be a kernel issue.
-
-If I use larger MTU sized frames, or have a 2x2 station instead of 1x1 then it is much harder
-to reproduce (and maybe cannot be reproduced).  Also, when generating traffic directly on
-the AP device instead of using the routed interface as a traffic source, it is harder to
-reproduce.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+If this patch adds support for detecting the real firmware assert,
+maybe the title should be "add support for _crash recovery_ on SDIO
+chip"
 
 _______________________________________________
 ath10k mailing list
