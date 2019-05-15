@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQkdU-0003vF-SN
- for ath10k@lists.infradead.org; Wed, 15 May 2019 03:31:22 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: change firmware file name for UTF mode of SDIO/USB
-Date: Wed, 15 May 2019 11:30:47 +0800
-Message-Id: <1557891047-16606-1-git-send-email-wgong@codeaurora.org>
+ id 1hQlVE-0004Ma-Ir
+ for ath10k@lists.infradead.org; Wed, 15 May 2019 04:26:54 +0000
+Subject: Re: Problem with 9984 in routed mode with 512b frames.
+References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Message-ID: <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
+Date: Wed, 15 May 2019 06:26:33 +0200
+MIME-Version: 1.0
+In-Reply-To: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,77 +19,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-Firmware name for UTF mode of SDIO has changed from utf-2.bin to
-utf-sdio-2.bin, so it need to change in ath10k, otherwise it will
-fail for UTF mode.
-
-After change the name in ath10k, it will success for UTF mode of
-SDIO/USB.
-
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/hw.h       |  2 ++
- drivers/net/wireless/ath/ath10k/testmode.c | 17 ++++++++++++++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7131499..d4fc13d 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -151,6 +151,8 @@ enum qca9377_chip_id_rev {
- #define ATH10K_FW_UTF_FILE		"utf.bin"
- #define ATH10K_FW_UTF_API2_FILE		"utf-2.bin"
- 
-+#define ATH10K_FW_UTF_FILE_BASE		"utf"
-+
- /* includes also the null byte */
- #define ATH10K_FIRMWARE_MAGIC               "QCA-ATH10K"
- #define ATH10K_BOARD_MAGIC                  "QCA-ATH10K-BOARD"
-diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-index 6433ff1..da9c596 100644
---- a/drivers/net/wireless/ath/ath10k/testmode.c
-+++ b/drivers/net/wireless/ath/ath10k/testmode.c
-@@ -174,8 +174,23 @@ static int ath10k_tm_fetch_firmware(struct ath10k *ar)
- {
- 	struct ath10k_fw_components *utf_mode_fw;
- 	int ret;
-+	char fw_name[100];
-+	int fw_api2 = 2;
-+
-+	switch (ar->hif.bus) {
-+	case ATH10K_BUS_SDIO:
-+	case ATH10K_BUS_USB:
-+		scnprintf(fw_name, sizeof(fw_name), "%s-%s-%d.bin",
-+			  ATH10K_FW_UTF_FILE_BASE, ath10k_bus_str(ar->hif.bus),
-+			  fw_api2);
-+		break;
-+	default:
-+		scnprintf(fw_name, sizeof(fw_name), "%s-%d.bin",
-+			  ATH10K_FW_UTF_FILE_BASE, fw_api2);
-+		break;
-+	}
- 
--	ret = ath10k_core_fetch_firmware_api_n(ar, ATH10K_FW_UTF_API2_FILE,
-+	ret = ath10k_core_fetch_firmware_api_n(ar, fw_name,
- 					       &ar->testmode.utf_mode_fw.fw_file);
- 	if (ret == 0) {
- 		ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode using fw utf api 2");
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Y2FuIHlvdSBzZW5kIG1lIGEgZGV0YWlsZWQgaW5zdHJ1Y3Rpb24gZm9yIHRlc3RpbmcgdGhpcyBv
+biBteSBkZXZpY2VzPyAKc28gd2hpY2ggY29tbWFuZHMgaGF2ZSBiZWVuIHVzZWQgZm9yIGdlbmVy
+YXRpbmcgdGhlIHRyYWZmaWMgZXRjLiAoaXBlcmYzPykKClNlYmFzdGlhbgoKQW0gMTUuMDUuMjAx
+OSB1bSAwMzo1MiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gSGVsbG8sCj4KPiBJIGZvdW5kIGEgc3Ry
+YW5nZSBpc3N1ZSBhbmQgY3VyaW91cyBpZiBzb21lb25lIGhhcyBzZWVuIHNpbWlsYXIuCj4KPiBJ
+IG1hZGUgYW4gQVAgd2hlcmUgdGhlIEFQIGludGVyZmFjZSBhY3RzIGFzIGEgcm91dGVkIGludGVy
+ZmFjZS7CoCBJIAo+IGdlbmVyYXRlCj4gdHJhZmZpYyB0aHJvdWdoIGFub3RoZXIgaW50ZXJmYWNl
+IGluIHRoZSByb3V0ZXIuwqAgV2hlbiBzZW5kaW5nIDMwME1icHMgCj4gb2YgNTEyIGJ5dGUKPiBV
+RFAgcGF5bG9hZHMsIGluIHRoZSBkb3duc3RyZWFtIGRpcmVjdGlvbiwgYW5kIHdpdGggdGhlIHN0
+YXRpb24gYmVpbmcgCj4gYSAxeDEgL0FDIGRldmljZSwKPiB0aGVuIHRoZSBBUCBOSUMgYXBwZWFy
+cyB0byBtb3N0bHkgbG9jayB1cCB3aXRoaW4gYWJvdXQgMSBtaW51dGUuIEkgCj4gc3RpbGwgc2Vl
+IGJlYWNvbnMsIGJ1dCBubwo+IGRhdGEgZnJhbWVzLsKgIEluIHNvbWUgY2FzZXMsIEkgcmVwcm9k
+dWNlZCB3aXRoIHZlcnkgc2xvdyBzcGVlZCB0cmFmZmljIAo+IGFzIHdlbGwuCj4KPiBJIHRyaWVk
+IHVzaW5nIGEgbW9zdGx5IHVuLW1vZGlmaWVkIGZpcm13YXJlIChpZSwgc2ltaWxhciB0byB1cHN0
+cmVhbSAKPiBRQ0EpLCBhcyB3ZWxsIGFzIG15Cj4gaGFja2VkIHVwb24gZmlybXdhcmUsIGFuZCBh
+bGwgYWN0IHNpbWlsYXJseS7CoCBJJ20gdXNpbmcgdGhlIDQuMjAgCj4ga2VybmVsLCBidXQgYXQg
+bGVhc3QgZm9yIG5vdywKPiBpdCBkb2VzIG5vdCBhcHBlYXIgdG8gYmUgYSBrZXJuZWwgaXNzdWUu
+Cj4KPiBJZiBJIHVzZSBsYXJnZXIgTVRVIHNpemVkIGZyYW1lcywgb3IgaGF2ZSBhIDJ4MiBzdGF0
+aW9uIGluc3RlYWQgb2YgMXgxIAo+IHRoZW4gaXQgaXMgbXVjaCBoYXJkZXIKPiB0byByZXByb2R1
+Y2UgKGFuZCBtYXliZSBjYW5ub3QgYmUgcmVwcm9kdWNlZCkuwqAgQWxzbywgd2hlbiBnZW5lcmF0
+aW5nIAo+IHRyYWZmaWMgZGlyZWN0bHkgb24KPiB0aGUgQVAgZGV2aWNlIGluc3RlYWQgb2YgdXNp
+bmcgdGhlIHJvdXRlZCBpbnRlcmZhY2UgYXMgYSB0cmFmZmljIAo+IHNvdXJjZSwgaXQgaXMgaGFy
+ZGVyIHRvCj4gcmVwcm9kdWNlLgo+Cj4gVGhhbmtzLAo+IEJlbgo+CgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
