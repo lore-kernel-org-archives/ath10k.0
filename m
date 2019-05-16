@@ -1,20 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [208.74.158.174] (helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRMEk-0003hI-N9
- for ath10k@lists.infradead.org; Thu, 16 May 2019 19:40:20 +0000
-Subject: Re: Problem with 9984 in routed mode with 512b frames.
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wr1-f47.google.com ([209.85.221.47])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hRMTV-000855-Pv
+ for ath10k@lists.infradead.org; Thu, 16 May 2019 19:55:35 +0000
+Received: by mail-wr1-f47.google.com with SMTP id r7so4645976wrr.13
+ for <ath10k@lists.infradead.org>; Thu, 16 May 2019 12:55:30 -0700 (PDT)
+MIME-Version: 1.0
 References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
  <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
  <10ed4e39-4364-c8ef-2b38-15ea7672ad94@candelatech.com>
  <2ec6f626-6391-f9b5-918c-99ad7e6b3e31@newmedia-net.de>
  <ad97576c-d6dd-e29c-10d4-00b8aff77805@candelatech.com>
-Message-ID: <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
-Date: Thu, 16 May 2019 12:40:14 -0700
-MIME-Version: 1.0
-In-Reply-To: <ad97576c-d6dd-e29c-10d4-00b8aff77805@candelatech.com>
-Content-Language: en-US
+ <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
+In-Reply-To: <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Thu, 16 May 2019 12:55:17 -0700
+Message-ID: <CAJ-Vmo=MgeKdUj+d7L6oJKfdSMb84D_nYHZ+BMSr6guB4Q_Y2Q@mail.gmail.com>
+Subject: Re: Problem with 9984 in routed mode with 512b frames.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +25,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@newmedia-net.de>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, ath10k <ath10k@lists.infradead.org>
 
-T24gNS8xNS8xOSA2OjAwIEFNLCBCZW4gR3JlZWFyIHdyb3RlOgo+IE9uIDUvMTUvMTkgNToyNiBB
-TSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwgd3JvdGU6Cj4+Cj4+IEFtIDE1LjA1LjIwMTkgdW0gMTQ6
-MjAgc2NocmllYiBCZW4gR3JlZWFyOgo+Pj4gT24gMDUvMTQvMjAxOSAwOToyNiBQTSwgU2ViYXN0
-aWFuIEdvdHRzY2hhbGwgd3JvdGU6Cj4+Pj4gY2FuIHlvdSBzZW5kIG1lIGEgZGV0YWlsZWQgaW5z
-dHJ1Y3Rpb24gZm9yIHRlc3RpbmcgdGhpcyBvbiBteSBkZXZpY2VzPyBzbyB3aGljaCBjb21tYW5k
-cyBoYXZlIGJlZW4gdXNlZCBmb3IgZ2VuZXJhdGluZyB0aGUgdHJhZmZpYyBldGMuIChpcGVyZjM/
-KQo+Pj4KPj4+IEkgYW0gdXNpbmcgb3VyIG93biB0cmFmZmljIGdlbmVyYXRvciwgYnV0IEkgaW1h
-Z2luZSBpcGVyZjMgc2hvdWxkIHdvcmsgZmluZSB0b28uCj4+Pgo+Pj4gSSBhbSB0ZXN0aW5nIG9u
-IHg4Ni02NCBhbmQgc28gZm9ydGguwqAgTWF5YmUgeW91IGNhbiB0ZXN0IHdpdGggVURQIHNtYWxs
-LXBhY2tldCBsb2FkIG9uIHlvdXIgcGxhdGZvcm0KPj4+IGluIHJvdXRlZCBtb2RlIChpZSwgZXh0
-ZXJuYWwgaXBlcmYgZ2VuZXJhdG9yIHRocm91Z2ggeW91ciBBUCkgYW5kIHNlZSBpZiB5b3Ugc2Vl
-IGlzc3Vlcz8KPj4gdGhhdHMgdGhlIHBsYW4uIGNhbiB5b3UgZG8gYSB0ZXN0IHdpdGggaXBlcmYz
-IHRvIHNlZSBpZiBpdHMgcmVwcm9kdWNlYWJsZS4gaSBtZWFuIGkgd2lsbCB0ZXN0IGl0IG9uIGlw
-cSBiYXNlZCBib2FyZHMgYW5kIHg2NC4gYnV0IHRvIG1ha2Ugc3VyZSB0aGF0IHRoZSBzY2VuYXJp
-bwo+PiBpcyBpZGVudGljYWwgd2hpY2ggcmFpc2VkIHVwIHlvdXIgaXNzdWUsIGl0IHdvdWxkIGJl
-IGZpbmQgaWYgd2UgaGF2ZSBpZGVudGljYWwgc29mdHdhcmUgZm9yIHRlc3RpbmcgaW5jbHVkaW5n
-IHRoZSBzYW1lIG9wdGlvbnMKCkkgdGhpbmsgSSBmb3VuZCB0aGUgaXNzdWUuICBUaGUgcmF0ZS1j
-dHJsIGxvZ2ljIGluIHRoZSBmaXJtd2FyZSBhbGxvd3MgYSB0cmFuc2l0aW9uIGZyb20gSFQvVkhU
-IDIwIE1DUzAgZG93biB0byBPRkRNIHJhdGVzLgpJdCBzZWVtcyB0aGUgaGFyZHdhcmUgZG9lcyBu
-b3QgbGlrZSB0byBzZWUgYW4gQU1QRFUgd2l0aCBhbiBPRkRNIHJhdGUgZm9yIDIwTWh6IGFuZCBh
-IFZIVCByYXRlIGZvciA4ME1oeiAob3IgbWF5YmUganVzdCB0aGUKc2luZ2xlIE9GRE0gcmF0ZSBp
-cyB0aGUgZmF1bHQpLgoKSWYgeW91IGNhbiBlZGl0IGZpcm13YXJlLCB0aGVuIHNldHRpbmcgdGhp
-cyB0byAwIHByb2JhYmx5IGZpeGVzIHRoZSBpc3N1ZS4KCmdfcmNfY2NrX3JhdGVfYWxsb3dlZAoK
-SSB0aGluayB0byByZXByb2R1Y2UgeW91J2QgbmVlZCB0byBzZW5kIGhpZ2ggc3BlZWQgdHJhZmZp
-YyBpbiBhIHNpdHVhdGlvbiB3aGVyZSB0aGUKUkYgZW52aXJvbm1lbnQgaXMgZ29pbmcgdG8gbWFr
-ZSByYXRlLWN0cmwgZmFpbCBxdWl0ZSBhIGJpdC4gIChTbG93IHNwZWVkIHNob3VsZAp3b3JrIHRv
-bywgYnV0IGl0IHdvdWxkIGxpa2VseSB0YWtlIGEgbG90IGxvbmdlcikuCgpBbmQsIGl0IGlzIGFs
-d2F5cyBwb3NzaWJsZSB0aGF0IHdoYXRldmVyIEkgc2F3IHdoZW4gdGVzdGluZyBtb3N0bHktc3Rv
-Y2sgRlcgaXMgZGlmZmVyZW50CmZyb20gd2hhdCBJIGV2ZW50dWFsbHkgZGVidWdnZWQgdG8gaW4g
-bXkgZmlybXdhcmUuICBTdGlsbCwgZnJvbSBsb29raW5nIGF0IE1DUyB2cyBTTlIKY2hhcnRzLCB0
-aGVyZSBzZWVtcyB0byBiZSBubyBhZHZhbnRhZ2UgdG8gdHJ5aW5nIE9GRE0gdnMgTUNTMCBmb3Ig
-MjBNaHouCgpUaGFua3MsCkJlbgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
-Y29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+You can totally go down to OFDM yeah but you then need to send it at
+20MHz and non-AMPDU.
+
+Is it maybe the retry code + rate control code is retagging an AMPDU
+at a lower rate and it's transitioning down to CCK/OFDM without
+breaking the AMPDU apart?
+
+
+-a
+
+On Thu, 16 May 2019 at 12:40, Ben Greear <greearb@candelatech.com> wrote:
+>
+> On 5/15/19 6:00 AM, Ben Greear wrote:
+> > On 5/15/19 5:26 AM, Sebastian Gottschall wrote:
+> >>
+> >> Am 15.05.2019 um 14:20 schrieb Ben Greear:
+> >>> On 05/14/2019 09:26 PM, Sebastian Gottschall wrote:
+> >>>> can you send me a detailed instruction for testing this on my devices? so which commands have been used for generating the traffic etc. (iperf3?)
+> >>>
+> >>> I am using our own traffic generator, but I imagine iperf3 should work fine too.
+> >>>
+> >>> I am testing on x86-64 and so forth.  Maybe you can test with UDP small-packet load on your platform
+> >>> in routed mode (ie, external iperf generator through your AP) and see if you see issues?
+> >> thats the plan. can you do a test with iperf3 to see if its reproduceable. i mean i will test it on ipq based boards and x64. but to make sure that the scenario
+> >> is identical which raised up your issue, it would be find if we have identical software for testing including the same options
+>
+> I think I found the issue.  The rate-ctrl logic in the firmware allows a transition from HT/VHT 20 MCS0 down to OFDM rates.
+> It seems the hardware does not like to see an AMPDU with an OFDM rate for 20Mhz and a VHT rate for 80Mhz (or maybe just the
+> single OFDM rate is the fault).
+>
+> If you can edit firmware, then setting this to 0 probably fixes the issue.
+>
+> g_rc_cck_rate_allowed
+>
+> I think to reproduce you'd need to send high speed traffic in a situation where the
+> RF environment is going to make rate-ctrl fail quite a bit.  (Slow speed should
+> work too, but it would likely take a lot longer).
+>
+> And, it is always possible that whatever I saw when testing mostly-stock FW is different
+> from what I eventually debugged to in my firmware.  Still, from looking at MCS vs SNR
+> charts, there seems to be no advantage to trying OFDM vs MCS0 for 20Mhz.
+>
+> Thanks,
+> Ben
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
