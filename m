@@ -1,10 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-wm1-f47.google.com ([209.85.128.47])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hReQn-0005wG-8D
- for ath10k@lists.infradead.org; Fri, 17 May 2019 15:05:59 +0000
-Subject: Re: Problem with 9984 in routed mode with 512b frames.
+ id 1hRf5J-0004yr-L0
+ for ath10k@lists.infradead.org; Fri, 17 May 2019 15:47:51 +0000
+Received: by mail-wm1-f47.google.com with SMTP id i3so7393702wml.4
+ for <ath10k@lists.infradead.org>; Fri, 17 May 2019 08:47:49 -0700 (PDT)
+MIME-Version: 1.0
 References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
  <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
  <10ed4e39-4364-c8ef-2b38-15ea7672ad94@candelatech.com>
@@ -13,11 +14,12 @@ References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
  <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
  <2ef800e2-5ce6-f579-ded5-65dc82827e4d@newmedia-net.de>
  <cdfa7b09-4e32-a62d-1bb6-d6128ba6594b@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <eae17245-eec2-96fe-34ff-f3800fae44d8@newmedia-net.de>
-Date: Fri, 17 May 2019 17:05:46 +0200
-MIME-Version: 1.0
-In-Reply-To: <cdfa7b09-4e32-a62d-1bb6-d6128ba6594b@candelatech.com>
+ <eae17245-eec2-96fe-34ff-f3800fae44d8@newmedia-net.de>
+In-Reply-To: <eae17245-eec2-96fe-34ff-f3800fae44d8@newmedia-net.de>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Fri, 17 May 2019 08:47:35 -0700
+Message-ID: <CAJ-Vmo=xhBvLmzec5mzf-gcFm1h6cQBLUOdVhuQjvbUWFjP-AQ@mail.gmail.com>
+Subject: Re: Problem with 9984 in routed mode with 512b frames.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +28,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-CkFtIDE3LjA1LjIwMTkgdW0gMTM6NDggc2NocmllYiBCZW4gR3JlZWFyOgo+Cj4KPiBPbiAwNS8x
-Ni8yMDE5IDA5OjIxIFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4KPj4gQW0gMTYu
-MDUuMjAxOSB1bSAyMTo0MCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+PiBPbiA1LzE1LzE5IDY6MDAg
-QU0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+Pj4gT24gNS8xNS8xOSA1OjI2IEFNLCBTZWJhc3RpYW4g
-R290dHNjaGFsbCB3cm90ZToKPj4+Pj4KPj4+Pj4gQW0gMTUuMDUuMjAxOSB1bSAxNDoyMCBzY2hy
-aWViIEJlbiBHcmVlYXI6Cj4+Pj4+PiBPbiAwNS8xNC8yMDE5IDA5OjI2IFBNLCBTZWJhc3RpYW4g
-R290dHNjaGFsbCB3cm90ZToKPj4+Pj4+PiBjYW4geW91IHNlbmQgbWUgYSBkZXRhaWxlZCBpbnN0
-cnVjdGlvbiBmb3IgdGVzdGluZyB0aGlzIG9uIG15IAo+Pj4+Pj4+IGRldmljZXM/IHNvIHdoaWNo
-IGNvbW1hbmRzIGhhdmUgYmVlbiB1c2VkIGZvciBnZW5lcmF0aW5nIHRoZSAKPj4+Pj4+PiB0cmFm
-ZmljIGV0Yy4gKGlwZXJmMz8pCj4+Pj4+Pgo+Pj4+Pj4gSSBhbSB1c2luZyBvdXIgb3duIHRyYWZm
-aWMgZ2VuZXJhdG9yLCBidXQgSSBpbWFnaW5lIGlwZXJmMyBzaG91bGQgCj4+Pj4+PiB3b3JrIGZp
-bmUgdG9vLgo+Pj4+Pj4KPj4+Pj4+IEkgYW0gdGVzdGluZyBvbiB4ODYtNjQgYW5kIHNvIGZvcnRo
-LsKgIE1heWJlIHlvdSBjYW4gdGVzdCB3aXRoIFVEUCAKPj4+Pj4+IHNtYWxsLXBhY2tldCBsb2Fk
-IG9uIHlvdXIgcGxhdGZvcm0KPj4+Pj4+IGluIHJvdXRlZCBtb2RlIChpZSwgZXh0ZXJuYWwgaXBl
-cmYgZ2VuZXJhdG9yIHRocm91Z2ggeW91ciBBUCkgYW5kIAo+Pj4+Pj4gc2VlIGlmIHlvdSBzZWUg
-aXNzdWVzPwo+Pj4+PiB0aGF0cyB0aGUgcGxhbi4gY2FuIHlvdSBkbyBhIHRlc3Qgd2l0aCBpcGVy
-ZjMgdG8gc2VlIGlmIGl0cyAKPj4+Pj4gcmVwcm9kdWNlYWJsZS4gaSBtZWFuIGkgd2lsbCB0ZXN0
-IGl0IG9uIGlwcSBiYXNlZCBib2FyZHMgYW5kIHg2NC4gCj4+Pj4+IGJ1dCB0byBtYWtlIHN1cmUg
-dGhhdCB0aGUgc2NlbmFyaW8KPj4+Pj4gaXMgaWRlbnRpY2FsIHdoaWNoIHJhaXNlZCB1cCB5b3Vy
-IGlzc3VlLCBpdCB3b3VsZCBiZSBmaW5kIGlmIHdlIAo+Pj4+PiBoYXZlIGlkZW50aWNhbCBzb2Z0
-d2FyZSBmb3IgdGVzdGluZyBpbmNsdWRpbmcgdGhlIHNhbWUgb3B0aW9ucwo+Pj4KPj4+IEkgdGhp
-bmsgSSBmb3VuZCB0aGUgaXNzdWUuwqAgVGhlIHJhdGUtY3RybCBsb2dpYyBpbiB0aGUgZmlybXdh
-cmUgCj4+PiBhbGxvd3MgYSB0cmFuc2l0aW9uIGZyb20gSFQvVkhUIDIwIE1DUzAgZG93biB0byBP
-RkRNIHJhdGVzLgo+Pj4gSXQgc2VlbXMgdGhlIGhhcmR3YXJlIGRvZXMgbm90IGxpa2UgdG8gc2Vl
-IGFuIEFNUERVIHdpdGggYW4gT0ZETSAKPj4+IHJhdGUgZm9yIDIwTWh6IGFuZCBhIFZIVCByYXRl
-IGZvciA4ME1oeiAob3IgbWF5YmUganVzdCB0aGUKPj4+IHNpbmdsZSBPRkRNIHJhdGUgaXMgdGhl
-IGZhdWx0KS4KPj4+Cj4+PiBJZiB5b3UgY2FuIGVkaXQgZmlybXdhcmUsIHRoZW4gc2V0dGluZyB0
-aGlzIHRvIDAgcHJvYmFibHkgZml4ZXMgdGhlIAo+Pj4gaXNzdWUuCj4+Pgo+Pj4gZ19yY19jY2tf
-cmF0ZV9hbGxvd2VkCj4+Cj4+IGFjY29yZGluZyB0byB0aGUgY29kZSB0aGlzIHZhcmlhYmxlIGhh
-cyBvbmx5IGVmZmVjdCBvbiAyLjQgZ2h6LiB0aGUgCj4+IGZhbGxiYWNrIHRvIGNjayByYXRlcyB3
-aWxsIG9ubHkgYmUgZG9uZSBpZiBwaHltb2RlIGlzIDIuNCBnaHoKPgo+IE9rLCBtYXliZSB0aGUg
-c3ltcHRvbSBJIHNhdyB3aXRoIHN0b2NrLWlzaCBmaXJtd2FyZSB3YXMgZHVlIHRvIHNvbWUgCj4g
-b3RoZXIgY2F1c2UuwqAgSW4gbXkgZmlybXdhcmUsCj4gSSBoYWQgImZpeGVkIiB0aGF0IGNjay1m
-YWxsYmFjayB0byB1c2UgT0ZETSByYXRlcyBpbiBjYXNlIENDSyB3YXMgbm90IAo+IGF2YWlsYWJs
-ZSwgc28gbWluZSB3YXMKPiBkZWZpbml0ZWx5IHRyeWluZyB0byB1c2UgYW4gT0ZETSByYXRlLgo+
-Cj4gVGhhdCBzYWlkLCB2ZXJ5IGxpa2VseSB0aGUgc2FtZSBidWcgZXhpc3RzIGluIHVwc3RyZWFt
-IFFDQSBmaXJtd2FyZSAKPiBmb3IgMi40R2h6IHJhZGlvcyB3aGVyZSBDQ0sgaXMgYXZhaWxhYmxl
-LAo+IHNvIHN0aWxsIG1pZ2h0IGJlIHdvcnRoIGZpeGluZyBvciBhdCBsZWFzdCBhZGRpbmcgQVBJ
-IHRvIGxldCB0aGUgdXNlciAKPiBkaXNhYmxlIHRoZSBmYWxsYmFjayBpbiBjYXNlIHN0cmFuZ2UK
-PiBwcm9ibGVtcyBhcmUgc2Vlbi4KPgo+IEkgYW0gZ3Vlc3NpbmcgdGhhdCBpZiBpdCByZWFsbHkg
-d2FudHMgdG8gc2VuZCBPRkRNL0NDSyByYXRlcywgdGhlbiBpdCAKPiB3aWxsIGhhdmUgdG8gdXNl
-IGEgZGlmZmVyZW50Cj4gVElEIHRoYXQgaXMgbm90IHNldCB1cCBmb3IgQU1QRFVzLCBhbmQgdGhl
-IGN1cnJlbnQgY29kZSBkb2VzIG5vdCBkZWFsIAo+IHdpdGggdGhhdCBhcyBmYXIgYXMgSSBjYW4g
-dGVsbC4KcGVyc29uYWxseSBpIHRoaW5rIGdvaW5nIGJhY2sgdG8gYmFzaWMgcmF0ZXMgbGlrZSAy
-IG1iaXQgbWFrZXMgbm8gc2Vuc2UgCmFueXdheS4gaXRzIHRoYXQgZGVhZCBzbG93IHRoYXQgYSBj
-b25uZWN0aW9uIG11c3QgYnJlYWsgYW5kIGhhcyB0byBiZSAKYnJva2VuIGlmIHRoaXMgZG9lc250
-IHdvcmsuCnN0aWxsIGEgc2hhbWUgdGhhdCBiZWFjb25zIGFyZSBzdGlsbCB0cmFuc21pdHRlZCBp
-biB0aGlzIHdheSBhbmQgCm11bHRpY2FzdC9icm9hZGNhc3QgcGFja2V0cyBhcyB3ZWxsIHdoaWNo
-IGNhdXNlcyBhIGhlbGwgb2YgcHJvYmxlbXMuIGJ1dCAKdGhhdHMgZm9yIGJhY2t3YXJkIGNvbXBh
-dGliaWxpdHkgb2YgY2F1c2UKPgo+IFRoYW5rcywKPiBCZW4KPgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+On Fri, 17 May 2019 at 08:06, Sebastian Gottschall
+<s.gottschall@newmedia-net.de> wrote:
+
+
+> personally i think going back to basic rates like 2 mbit makes no sense
+> anyway. its that dead slow that a connection must break and has to be
+> broken if this doesnt work.
+> still a shame that beacons are still transmitted in this way and
+> multicast/broadcast packets as well which causes a hell of problems. but
+> thats for backward compatibility of cause
+
+It depends on what kind of channel you are. Not everyone is deploying
+super dense enterprise APs. :-)
+
+The 11ac and 11ax chips that do constant frequency readjusting work
+better in things like moving drones, where you have constant doppler
+shift. I know some people doing drone work that just don't bother with
+MCS and aggregation because they need a super reliable channel and the
+conditions constantly shift.
+
+That said, they're very sad that they can't hack on the 11ac/11ax
+firmware to fix some err, less optimal decisions in their use case
+space like they can with ath5k/ath9k.
+
+ISTR back at QCA days there were some people on the systems team that
+could demonstrate CCK was more stable in some use cases and so didn't
+like the Linux rate control behaviour of not falling back to CCK in 2G
+11n mode. There was .. pushback against the linux upstream rate
+control in this respect right until the linux folk totally deprecated
+the QCA rate control in ath9k. :)
+
+(And then bugs like what ben is seeing :)
+
+Ben - did disabling CCK/OFDM fallback rates help? Did you fix the bit
+that tries to send AMPDU frames in non-11n rates?
+
+
+-adrian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
