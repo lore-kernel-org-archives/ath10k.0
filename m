@@ -1,26 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-f50.google.com ([209.85.221.50])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRN6Z-0006JD-F8
- for ath10k@lists.infradead.org; Thu, 16 May 2019 20:35:56 +0000
-Received: by mail-wr1-f50.google.com with SMTP id d9so4851331wrx.0
- for <ath10k@lists.infradead.org>; Thu, 16 May 2019 13:35:55 -0700 (PDT)
-MIME-Version: 1.0
+ id 1hRUNL-0002MM-BD
+ for ath10k@lists.infradead.org; Fri, 17 May 2019 04:21:45 +0000
+Subject: Re: Problem with 9984 in routed mode with 512b frames.
 References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
  <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
  <10ed4e39-4364-c8ef-2b38-15ea7672ad94@candelatech.com>
  <2ec6f626-6391-f9b5-918c-99ad7e6b3e31@newmedia-net.de>
  <ad97576c-d6dd-e29c-10d4-00b8aff77805@candelatech.com>
  <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
- <CAJ-Vmo=MgeKdUj+d7L6oJKfdSMb84D_nYHZ+BMSr6guB4Q_Y2Q@mail.gmail.com>
- <a41b74e9-230d-1094-cb86-3b105e602788@candelatech.com>
- <CAJ-VmokYa4LpQCokRu_7gp1LsV+-1fS=UmWd=6SZ07F-O5cw+w@mail.gmail.com>
- <958466d1-2d3a-d1cd-e1f6-65e032f15e15@candelatech.com>
-In-Reply-To: <958466d1-2d3a-d1cd-e1f6-65e032f15e15@candelatech.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 16 May 2019 13:35:41 -0700
-Message-ID: <CAJ-VmoksXc_f2R+acVCdLH0dtriv06cWYxw04v1Sq=ezHn-A1Q@mail.gmail.com>
-Subject: Re: Problem with 9984 in routed mode with 512b frames.
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Message-ID: <2ef800e2-5ce6-f579-ded5-65dc82827e4d@newmedia-net.de>
+Date: Fri, 17 May 2019 06:21:30 +0200
+MIME-Version: 1.0
+In-Reply-To: <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +24,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On Thu, 16 May 2019 at 13:20, Ben Greear <greearb@candelatech.com> wrote:
->
-> On 5/16/19 1:16 PM, Adrian Chadd wrote:
-> > You can't do AMPDU with OFDM/CCK. If they're setting the AMPDU bit
-> > then that's wrong. it needs to be individual MPDU/PPDUs.
-> >
-> > There's a benefit for CCK. OFDM 6M is I think roughly the same as OFDM
-> > MCS0. But CCK is a lot more reliable.
->
-> 5Ghz can (should) not do CCK anyway.  Do you have any reference for why
-> you think CCK will be better?  The one I found shows otherwise:
->
-> https://d2cpnw0u24fjm4.cloudfront.net/wp-content/uploads/LaminatedCard_RevolutionWiFiMCStoSNRSinglePage.png
-
-Well, you should try measuring it :-) I remember stories of decoding
-CCK frames with MRC-CCK at an RSSI of 0 or -1...
-
-And yes, you shouldn't do CCK on 5G, but some wifi PHYs do support it
-("support" "it")...
-
-
-
--adrian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CkFtIDE2LjA1LjIwMTkgdW0gMjE6NDAgc2NocmllYiBCZW4gR3JlZWFyOgo+IE9uIDUvMTUvMTkg
+NjowMCBBTSwgQmVuIEdyZWVhciB3cm90ZToKPj4gT24gNS8xNS8xOSA1OjI2IEFNLCBTZWJhc3Rp
+YW4gR290dHNjaGFsbCB3cm90ZToKPj4+Cj4+PiBBbSAxNS4wNS4yMDE5IHVtIDE0OjIwIHNjaHJp
+ZWIgQmVuIEdyZWVhcjoKPj4+PiBPbiAwNS8xNC8yMDE5IDA5OjI2IFBNLCBTZWJhc3RpYW4gR290
+dHNjaGFsbCB3cm90ZToKPj4+Pj4gY2FuIHlvdSBzZW5kIG1lIGEgZGV0YWlsZWQgaW5zdHJ1Y3Rp
+b24gZm9yIHRlc3RpbmcgdGhpcyBvbiBteSAKPj4+Pj4gZGV2aWNlcz8gc28gd2hpY2ggY29tbWFu
+ZHMgaGF2ZSBiZWVuIHVzZWQgZm9yIGdlbmVyYXRpbmcgdGhlIAo+Pj4+PiB0cmFmZmljIGV0Yy4g
+KGlwZXJmMz8pCj4+Pj4KPj4+PiBJIGFtIHVzaW5nIG91ciBvd24gdHJhZmZpYyBnZW5lcmF0b3Is
+IGJ1dCBJIGltYWdpbmUgaXBlcmYzIHNob3VsZCAKPj4+PiB3b3JrIGZpbmUgdG9vLgo+Pj4+Cj4+
+Pj4gSSBhbSB0ZXN0aW5nIG9uIHg4Ni02NCBhbmQgc28gZm9ydGguwqAgTWF5YmUgeW91IGNhbiB0
+ZXN0IHdpdGggVURQIAo+Pj4+IHNtYWxsLXBhY2tldCBsb2FkIG9uIHlvdXIgcGxhdGZvcm0KPj4+
+PiBpbiByb3V0ZWQgbW9kZSAoaWUsIGV4dGVybmFsIGlwZXJmIGdlbmVyYXRvciB0aHJvdWdoIHlv
+dXIgQVApIGFuZCAKPj4+PiBzZWUgaWYgeW91IHNlZSBpc3N1ZXM/Cj4+PiB0aGF0cyB0aGUgcGxh
+bi4gY2FuIHlvdSBkbyBhIHRlc3Qgd2l0aCBpcGVyZjMgdG8gc2VlIGlmIGl0cyAKPj4+IHJlcHJv
+ZHVjZWFibGUuIGkgbWVhbiBpIHdpbGwgdGVzdCBpdCBvbiBpcHEgYmFzZWQgYm9hcmRzIGFuZCB4
+NjQuIAo+Pj4gYnV0IHRvIG1ha2Ugc3VyZSB0aGF0IHRoZSBzY2VuYXJpbwo+Pj4gaXMgaWRlbnRp
+Y2FsIHdoaWNoIHJhaXNlZCB1cCB5b3VyIGlzc3VlLCBpdCB3b3VsZCBiZSBmaW5kIGlmIHdlIGhh
+dmUgCj4+PiBpZGVudGljYWwgc29mdHdhcmUgZm9yIHRlc3RpbmcgaW5jbHVkaW5nIHRoZSBzYW1l
+IG9wdGlvbnMKPgo+IEkgdGhpbmsgSSBmb3VuZCB0aGUgaXNzdWUuwqAgVGhlIHJhdGUtY3RybCBs
+b2dpYyBpbiB0aGUgZmlybXdhcmUgYWxsb3dzIAo+IGEgdHJhbnNpdGlvbiBmcm9tIEhUL1ZIVCAy
+MCBNQ1MwIGRvd24gdG8gT0ZETSByYXRlcy4KPiBJdCBzZWVtcyB0aGUgaGFyZHdhcmUgZG9lcyBu
+b3QgbGlrZSB0byBzZWUgYW4gQU1QRFUgd2l0aCBhbiBPRkRNIHJhdGUgCj4gZm9yIDIwTWh6IGFu
+ZCBhIFZIVCByYXRlIGZvciA4ME1oeiAob3IgbWF5YmUganVzdCB0aGUKPiBzaW5nbGUgT0ZETSBy
+YXRlIGlzIHRoZSBmYXVsdCkuCj4KPiBJZiB5b3UgY2FuIGVkaXQgZmlybXdhcmUsIHRoZW4gc2V0
+dGluZyB0aGlzIHRvIDAgcHJvYmFibHkgZml4ZXMgdGhlIAo+IGlzc3VlLgo+Cj4gZ19yY19jY2tf
+cmF0ZV9hbGxvd2VkCgphY2NvcmRpbmcgdG8gdGhlIGNvZGUgdGhpcyB2YXJpYWJsZSBoYXMgb25s
+eSBlZmZlY3Qgb24gMi40IGdoei4gdGhlIApmYWxsYmFjayB0byBjY2sgcmF0ZXMgd2lsbCBvbmx5
+IGJlIGRvbmUgaWYgcGh5bW9kZSBpcyAyLjQgZ2h6CgoKPgo+IEkgdGhpbmsgdG8gcmVwcm9kdWNl
+IHlvdSdkIG5lZWQgdG8gc2VuZCBoaWdoIHNwZWVkIHRyYWZmaWMgaW4gYSAKPiBzaXR1YXRpb24g
+d2hlcmUgdGhlCj4gUkYgZW52aXJvbm1lbnQgaXMgZ29pbmcgdG8gbWFrZSByYXRlLWN0cmwgZmFp
+bCBxdWl0ZSBhIGJpdC7CoCAoU2xvdyAKPiBzcGVlZCBzaG91bGQKPiB3b3JrIHRvbywgYnV0IGl0
+IHdvdWxkIGxpa2VseSB0YWtlIGEgbG90IGxvbmdlcikuCj4KPiBBbmQsIGl0IGlzIGFsd2F5cyBw
+b3NzaWJsZSB0aGF0IHdoYXRldmVyIEkgc2F3IHdoZW4gdGVzdGluZyAKPiBtb3N0bHktc3RvY2sg
+RlcgaXMgZGlmZmVyZW50Cj4gZnJvbSB3aGF0IEkgZXZlbnR1YWxseSBkZWJ1Z2dlZCB0byBpbiBt
+eSBmaXJtd2FyZS7CoCBTdGlsbCwgZnJvbSAKPiBsb29raW5nIGF0IE1DUyB2cyBTTlIKPiBjaGFy
+dHMsIHRoZXJlIHNlZW1zIHRvIGJlIG5vIGFkdmFudGFnZSB0byB0cnlpbmcgT0ZETSB2cyBNQ1Mw
+IGZvciAyME1oei4KPgo+IFRoYW5rcywKPiBCZW4KPgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
