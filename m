@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRZjx-00083d-0B
- for ath10k@lists.infradead.org; Fri, 17 May 2019 10:05:26 +0000
+ id 1hRZjy-000846-MK
+ for ath10k@lists.infradead.org; Fri, 17 May 2019 10:05:27 +0000
 From: Abhishek Ambure <aambure@codeaurora.org>
-Subject: [PATCH 1/2] ath10k: move pktlog connect service before htc start
-Date: Fri, 17 May 2019 15:35:15 +0530
-Message-Id: <1558087516-666-2-git-send-email-aambure@codeaurora.org>
+Subject: [PATCH 2/2] ath10k: correct wmi_tlv command params to enable pktlog
+ for WCN3990
+Date: Fri, 17 May 2019 15:35:16 +0530
+Message-Id: <1558087516-666-3-git-send-email-aambure@codeaurora.org>
 In-Reply-To: <1558087516-666-1-git-send-email-aambure@codeaurora.org>
 References: <1558087516-666-1-git-send-email-aambure@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,53 +26,45 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Abhishek Ambure <aambure@codeaurora.org>, linux-wireless@vger.kernel.org
 
-WCN3990 supports HTC service for pktlog. PKTLOG service should be
-connected before HTC start. Hence move connect pktlog service before
-HTC start
+PKT log enable command expects pdev id in enable params which is missing
+in current configuration. Fill pdev id in pkt log enable wmi command for
+correct configuration.
 
-Fixes: 713358c321f4 ("ath10k: enable pktlog for WCN3990 target")
+Fixes: ca996ec56608 ("ath10k: implement wmi-tlv backend")
 Tested HW: WCN3990
 Tested FW: WLAN.HL.3.1-00963-QCAHLSWMTPL-1
 
 Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 ++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 805a7f8..e2980fe9 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -893,6 +893,14 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- 	int status = 0;
- 	struct ath10k_htc_msg *msg;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 582fb11..8a209f8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2981,6 +2981,8 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ 	tlv->len = __cpu_to_le16(sizeof(*cmd));
+ 	cmd = (void *)tlv->value;
+ 	cmd->filter = __cpu_to_le32(filter);
++	cmd->pdev_id = __cpu_to_le32(0);
++	cmd->reserved = __cpu_to_le32(0);
  
-+	if (ath10k_htc_pktlog_svc_supported(ar)) {
-+		status = ath10k_htc_pktlog_connect(ar);
-+		if (status) {
-+			ath10k_err(ar, "failed to connect to pktlog: %d\n", status);
-+			return status;
-+		}
-+	}
-+
- 	skb = ath10k_htc_build_tx_ctrl_skb(htc->ar);
- 	if (!skb)
- 		return -ENOMEM;
-@@ -919,14 +927,6 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- 		return status;
- 	}
+ 	ptr += sizeof(*tlv);
+ 	ptr += sizeof(*cmd);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 65e6aa5..5226283 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1923,6 +1923,7 @@ struct wmi_tlv_vdev_stats {
+ } __packed;
  
--	if (ath10k_htc_pktlog_svc_supported(ar)) {
--		status = ath10k_htc_pktlog_connect(ar);
--		if (status) {
--			ath10k_err(ar, "failed to connect to pktlog: %d\n", status);
--			return status;
--		}
--	}
--
- 	return 0;
- }
- 
+ struct wmi_tlv_pktlog_enable {
++	__le32 pdev_id;
+ 	__le32 reserved;
+ 	__le32 filter;
+ } __packed;
 -- 
 1.9.1
 
