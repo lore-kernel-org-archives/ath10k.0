@@ -1,21 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRUNL-0002MM-BD
- for ath10k@lists.infradead.org; Fri, 17 May 2019 04:21:45 +0000
-Subject: Re: Problem with 9984 in routed mode with 512b frames.
-References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
- <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
- <10ed4e39-4364-c8ef-2b38-15ea7672ad94@candelatech.com>
- <2ec6f626-6391-f9b5-918c-99ad7e6b3e31@newmedia-net.de>
- <ad97576c-d6dd-e29c-10d4-00b8aff77805@candelatech.com>
- <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <2ef800e2-5ce6-f579-ded5-65dc82827e4d@newmedia-net.de>
-Date: Fri, 17 May 2019 06:21:30 +0200
-MIME-Version: 1.0
-In-Reply-To: <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
+ id 1hRZjv-00083O-Sl
+ for ath10k@lists.infradead.org; Fri, 17 May 2019 10:05:25 +0000
+From: Abhishek Ambure <aambure@codeaurora.org>
+Subject: [PATCH 0/2] correction in pktlog service connect and pktlog enable
+ command
+Date: Fri, 17 May 2019 15:35:14 +0530
+Message-Id: <1558087516-666-1-git-send-email-aambure@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +16,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: Abhishek Ambure <aambure@codeaurora.org>, linux-wireless@vger.kernel.org
 
-CkFtIDE2LjA1LjIwMTkgdW0gMjE6NDAgc2NocmllYiBCZW4gR3JlZWFyOgo+IE9uIDUvMTUvMTkg
-NjowMCBBTSwgQmVuIEdyZWVhciB3cm90ZToKPj4gT24gNS8xNS8xOSA1OjI2IEFNLCBTZWJhc3Rp
-YW4gR290dHNjaGFsbCB3cm90ZToKPj4+Cj4+PiBBbSAxNS4wNS4yMDE5IHVtIDE0OjIwIHNjaHJp
-ZWIgQmVuIEdyZWVhcjoKPj4+PiBPbiAwNS8xNC8yMDE5IDA5OjI2IFBNLCBTZWJhc3RpYW4gR290
-dHNjaGFsbCB3cm90ZToKPj4+Pj4gY2FuIHlvdSBzZW5kIG1lIGEgZGV0YWlsZWQgaW5zdHJ1Y3Rp
-b24gZm9yIHRlc3RpbmcgdGhpcyBvbiBteSAKPj4+Pj4gZGV2aWNlcz8gc28gd2hpY2ggY29tbWFu
-ZHMgaGF2ZSBiZWVuIHVzZWQgZm9yIGdlbmVyYXRpbmcgdGhlIAo+Pj4+PiB0cmFmZmljIGV0Yy4g
-KGlwZXJmMz8pCj4+Pj4KPj4+PiBJIGFtIHVzaW5nIG91ciBvd24gdHJhZmZpYyBnZW5lcmF0b3Is
-IGJ1dCBJIGltYWdpbmUgaXBlcmYzIHNob3VsZCAKPj4+PiB3b3JrIGZpbmUgdG9vLgo+Pj4+Cj4+
-Pj4gSSBhbSB0ZXN0aW5nIG9uIHg4Ni02NCBhbmQgc28gZm9ydGguwqAgTWF5YmUgeW91IGNhbiB0
-ZXN0IHdpdGggVURQIAo+Pj4+IHNtYWxsLXBhY2tldCBsb2FkIG9uIHlvdXIgcGxhdGZvcm0KPj4+
-PiBpbiByb3V0ZWQgbW9kZSAoaWUsIGV4dGVybmFsIGlwZXJmIGdlbmVyYXRvciB0aHJvdWdoIHlv
-dXIgQVApIGFuZCAKPj4+PiBzZWUgaWYgeW91IHNlZSBpc3N1ZXM/Cj4+PiB0aGF0cyB0aGUgcGxh
-bi4gY2FuIHlvdSBkbyBhIHRlc3Qgd2l0aCBpcGVyZjMgdG8gc2VlIGlmIGl0cyAKPj4+IHJlcHJv
-ZHVjZWFibGUuIGkgbWVhbiBpIHdpbGwgdGVzdCBpdCBvbiBpcHEgYmFzZWQgYm9hcmRzIGFuZCB4
-NjQuIAo+Pj4gYnV0IHRvIG1ha2Ugc3VyZSB0aGF0IHRoZSBzY2VuYXJpbwo+Pj4gaXMgaWRlbnRp
-Y2FsIHdoaWNoIHJhaXNlZCB1cCB5b3VyIGlzc3VlLCBpdCB3b3VsZCBiZSBmaW5kIGlmIHdlIGhh
-dmUgCj4+PiBpZGVudGljYWwgc29mdHdhcmUgZm9yIHRlc3RpbmcgaW5jbHVkaW5nIHRoZSBzYW1l
-IG9wdGlvbnMKPgo+IEkgdGhpbmsgSSBmb3VuZCB0aGUgaXNzdWUuwqAgVGhlIHJhdGUtY3RybCBs
-b2dpYyBpbiB0aGUgZmlybXdhcmUgYWxsb3dzIAo+IGEgdHJhbnNpdGlvbiBmcm9tIEhUL1ZIVCAy
-MCBNQ1MwIGRvd24gdG8gT0ZETSByYXRlcy4KPiBJdCBzZWVtcyB0aGUgaGFyZHdhcmUgZG9lcyBu
-b3QgbGlrZSB0byBzZWUgYW4gQU1QRFUgd2l0aCBhbiBPRkRNIHJhdGUgCj4gZm9yIDIwTWh6IGFu
-ZCBhIFZIVCByYXRlIGZvciA4ME1oeiAob3IgbWF5YmUganVzdCB0aGUKPiBzaW5nbGUgT0ZETSBy
-YXRlIGlzIHRoZSBmYXVsdCkuCj4KPiBJZiB5b3UgY2FuIGVkaXQgZmlybXdhcmUsIHRoZW4gc2V0
-dGluZyB0aGlzIHRvIDAgcHJvYmFibHkgZml4ZXMgdGhlIAo+IGlzc3VlLgo+Cj4gZ19yY19jY2tf
-cmF0ZV9hbGxvd2VkCgphY2NvcmRpbmcgdG8gdGhlIGNvZGUgdGhpcyB2YXJpYWJsZSBoYXMgb25s
-eSBlZmZlY3Qgb24gMi40IGdoei4gdGhlIApmYWxsYmFjayB0byBjY2sgcmF0ZXMgd2lsbCBvbmx5
-IGJlIGRvbmUgaWYgcGh5bW9kZSBpcyAyLjQgZ2h6CgoKPgo+IEkgdGhpbmsgdG8gcmVwcm9kdWNl
-IHlvdSdkIG5lZWQgdG8gc2VuZCBoaWdoIHNwZWVkIHRyYWZmaWMgaW4gYSAKPiBzaXR1YXRpb24g
-d2hlcmUgdGhlCj4gUkYgZW52aXJvbm1lbnQgaXMgZ29pbmcgdG8gbWFrZSByYXRlLWN0cmwgZmFp
-bCBxdWl0ZSBhIGJpdC7CoCAoU2xvdyAKPiBzcGVlZCBzaG91bGQKPiB3b3JrIHRvbywgYnV0IGl0
-IHdvdWxkIGxpa2VseSB0YWtlIGEgbG90IGxvbmdlcikuCj4KPiBBbmQsIGl0IGlzIGFsd2F5cyBw
-b3NzaWJsZSB0aGF0IHdoYXRldmVyIEkgc2F3IHdoZW4gdGVzdGluZyAKPiBtb3N0bHktc3RvY2sg
-RlcgaXMgZGlmZmVyZW50Cj4gZnJvbSB3aGF0IEkgZXZlbnR1YWxseSBkZWJ1Z2dlZCB0byBpbiBt
-eSBmaXJtd2FyZS7CoCBTdGlsbCwgZnJvbSAKPiBsb29raW5nIGF0IE1DUyB2cyBTTlIKPiBjaGFy
-dHMsIHRoZXJlIHNlZW1zIHRvIGJlIG5vIGFkdmFudGFnZSB0byB0cnlpbmcgT0ZETSB2cyBNQ1Mw
-IGZvciAyME1oei4KPgo+IFRoYW5rcywKPiBCZW4KPgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+WCN3990 firmware supports htc pktlog service through which host driver
+gets pktlog information. Pktlog service should be connected before htc
+start command, hence pktlog connect is moved before htc start. 
+
+WCN3990 firwmare expects pdev_id along with filter and reserved params to
+enable pktlog htc service. So adding pdev_id in pktlog enable comamnd
+params.
+
+Tested HW: WCN3990
+Tested FW: WLAN.HL.3.1-00963-QCAHLSWMTPL-1
+
+
+Abhishek Ambure (2):
+  ath10k: move pktlog connect service before htc start
+  ath10k: correct wmi_tlv command params to enable pktlog for WCN3990
+
+ drivers/net/wireless/ath/ath10k/htc.c     | 16 ++++++++--------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 ++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  1 +
+ 3 files changed, 11 insertions(+), 8 deletions(-)
+
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
