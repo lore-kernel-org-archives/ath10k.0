@@ -2,8 +2,8 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hSlcH-0005ic-Po
- for ath10k@lists.infradead.org; Mon, 20 May 2019 16:58:27 +0000
+ id 1hSldT-0005oj-TL
+ for ath10k@lists.infradead.org; Mon, 20 May 2019 16:59:41 +0000
 Subject: Re: Problem with 9984 in routed mode with 512b frames.
 References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
  <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
@@ -15,11 +15,12 @@ References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
  <cdfa7b09-4e32-a62d-1bb6-d6128ba6594b@candelatech.com>
  <eae17245-eec2-96fe-34ff-f3800fae44d8@newmedia-net.de>
  <CAJ-Vmo=xhBvLmzec5mzf-gcFm1h6cQBLUOdVhuQjvbUWFjP-AQ@mail.gmail.com>
+ <6378a260-0441-b985-6421-091f46d871f5@candelatech.com>
 From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <24c966c0-2cd6-cdb0-c5dc-2f505eeb40ca@newmedia-net.de>
-Date: Mon, 20 May 2019 18:58:04 +0200
+Message-ID: <3d1db9ca-92a0-2bf7-5608-54e2b8e0476f@newmedia-net.de>
+Date: Mon, 20 May 2019 18:59:22 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAJ-Vmo=xhBvLmzec5mzf-gcFm1h6cQBLUOdVhuQjvbUWFjP-AQ@mail.gmail.com>
+In-Reply-To: <6378a260-0441-b985-6421-091f46d871f5@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +29,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
+To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-
-Am 17.05.2019 um 17:47 schrieb Adrian Chadd:
-> On Fri, 17 May 2019 at 08:06, Sebastian Gottschall
-> <s.gottschall@newmedia-net.de> wrote:
->
->
->> personally i think going back to basic rates like 2 mbit makes no sense
->> anyway. its that dead slow that a connection must break and has to be
->> broken if this doesnt work.
->> still a shame that beacons are still transmitted in this way and
->> multicast/broadcast packets as well which causes a hell of problems. but
->> thats for backward compatibility of cause
-> It depends on what kind of channel you are. Not everyone is deploying
-> super dense enterprise APs. :-)
->
-> The 11ac and 11ax chips that do constant frequency readjusting work
-> better in things like moving drones, where you have constant doppler
-> shift. I know some people doing drone work that just don't bother with
-> MCS and aggregation because they need a super reliable channel and the
-> conditions constantly shift.
->
-> That said, they're very sad that they can't hack on the 11ac/11ax
-> firmware to fix some err, less optimal decisions in their use case
-> space like they can with ath5k/ath9k.
->
-> ISTR back at QCA days there were some people on the systems team that
-> could demonstrate CCK was more stable in some use cases and so didn't
-> like the Linux rate control behaviour of not falling back to CCK in 2G
-> 11n mode. There was .. pushback against the linux upstream rate
-> control in this respect right until the linux folk totally deprecated
-> the QCA rate control in ath9k. :)
-CCK is dead stable of cause, but also dead slow and its blocking the 
-channel which decreases performance for all other people
->
-> (And then bugs like what ben is seeing :)
->
-> Ben - did disabling CCK/OFDM fallback rates help? Did you fix the bit
-> that tries to send AMPDU frames in non-11n rates?
->
->
-> -adrian
->
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CkFtIDE3LjA1LjIwMTkgdW0gMTg6MDAgc2NocmllYiBCZW4gR3JlZWFyOgo+IE9uIDUvMTcvMTkg
+ODo0NyBBTSwgQWRyaWFuIENoYWRkIHdyb3RlOgo+PiBPbiBGcmksIDE3IE1heSAyMDE5IGF0IDA4
+OjA2LCBTZWJhc3RpYW4gR290dHNjaGFsbAo+PiA8cy5nb3R0c2NoYWxsQG5ld21lZGlhLW5ldC5k
+ZT4gd3JvdGU6Cj4+Cj4+Cj4+PiBwZXJzb25hbGx5IGkgdGhpbmsgZ29pbmcgYmFjayB0byBiYXNp
+YyByYXRlcyBsaWtlIDIgbWJpdCBtYWtlcyBubyBzZW5zZQo+Pj4gYW55d2F5LiBpdHMgdGhhdCBk
+ZWFkIHNsb3cgdGhhdCBhIGNvbm5lY3Rpb24gbXVzdCBicmVhayBhbmQgaGFzIHRvIGJlCj4+PiBi
+cm9rZW4gaWYgdGhpcyBkb2VzbnQgd29yay4KPj4+IHN0aWxsIGEgc2hhbWUgdGhhdCBiZWFjb25z
+IGFyZSBzdGlsbCB0cmFuc21pdHRlZCBpbiB0aGlzIHdheSBhbmQKPj4+IG11bHRpY2FzdC9icm9h
+ZGNhc3QgcGFja2V0cyBhcyB3ZWxsIHdoaWNoIGNhdXNlcyBhIGhlbGwgb2YgcHJvYmxlbXMuIAo+
+Pj4gYnV0Cj4+PiB0aGF0cyBmb3IgYmFja3dhcmQgY29tcGF0aWJpbGl0eSBvZiBjYXVzZQo+Pgo+
+PiBJdCBkZXBlbmRzIG9uIHdoYXQga2luZCBvZiBjaGFubmVsIHlvdSBhcmUuIE5vdCBldmVyeW9u
+ZSBpcyBkZXBsb3lpbmcKPj4gc3VwZXIgZGVuc2UgZW50ZXJwcmlzZSBBUHMuIDotKQo+Pgo+PiBU
+aGUgMTFhYyBhbmQgMTFheCBjaGlwcyB0aGF0IGRvIGNvbnN0YW50IGZyZXF1ZW5jeSByZWFkanVz
+dGluZyB3b3JrCj4+IGJldHRlciBpbiB0aGluZ3MgbGlrZSBtb3ZpbmcgZHJvbmVzLCB3aGVyZSB5
+b3UgaGF2ZSBjb25zdGFudCBkb3BwbGVyCj4+IHNoaWZ0LiBJIGtub3cgc29tZSBwZW9wbGUgZG9p
+bmcgZHJvbmUgd29yayB0aGF0IGp1c3QgZG9uJ3QgYm90aGVyIHdpdGgKPj4gTUNTIGFuZCBhZ2dy
+ZWdhdGlvbiBiZWNhdXNlIHRoZXkgbmVlZCBhIHN1cGVyIHJlbGlhYmxlIGNoYW5uZWwgYW5kIHRo
+ZQo+PiBjb25kaXRpb25zIGNvbnN0YW50bHkgc2hpZnQuCj4+Cj4+IFRoYXQgc2FpZCwgdGhleSdy
+ZSB2ZXJ5IHNhZCB0aGF0IHRoZXkgY2FuJ3QgaGFjayBvbiB0aGUgMTFhYy8xMWF4Cj4+IGZpcm13
+YXJlIHRvIGZpeCBzb21lIGVyciwgbGVzcyBvcHRpbWFsIGRlY2lzaW9ucyBpbiB0aGVpciB1c2Ug
+Y2FzZQo+PiBzcGFjZSBsaWtlIHRoZXkgY2FuIHdpdGggYXRoNWsvYXRoOWsuCj4+Cj4+IElTVFIg
+YmFjayBhdCBRQ0EgZGF5cyB0aGVyZSB3ZXJlIHNvbWUgcGVvcGxlIG9uIHRoZSBzeXN0ZW1zIHRl
+YW0gdGhhdAo+PiBjb3VsZCBkZW1vbnN0cmF0ZSBDQ0sgd2FzIG1vcmUgc3RhYmxlIGluIHNvbWUg
+dXNlIGNhc2VzIGFuZCBzbyBkaWRuJ3QKPj4gbGlrZSB0aGUgTGludXggcmF0ZSBjb250cm9sIGJl
+aGF2aW91ciBvZiBub3QgZmFsbGluZyBiYWNrIHRvIENDSyBpbiAyRwo+PiAxMW4gbW9kZS4gVGhl
+cmUgd2FzIC4uIHB1c2hiYWNrIGFnYWluc3QgdGhlIGxpbnV4IHVwc3RyZWFtIHJhdGUKPj4gY29u
+dHJvbCBpbiB0aGlzIHJlc3BlY3QgcmlnaHQgdW50aWwgdGhlIGxpbnV4IGZvbGsgdG90YWxseSBk
+ZXByZWNhdGVkCj4+IHRoZSBRQ0EgcmF0ZSBjb250cm9sIGluIGF0aDlrLiA6KQo+Pgo+PiAoQW5k
+IHRoZW4gYnVncyBsaWtlIHdoYXQgYmVuIGlzIHNlZWluZyA6KQo+Pgo+PiBCZW4gLSBkaWQgZGlz
+YWJsaW5nIENDSy9PRkRNIGZhbGxiYWNrIHJhdGVzIGhlbHA/IERpZCB5b3UgZml4IHRoZSBiaXQK
+Pj4gdGhhdCB0cmllcyB0byBzZW5kIEFNUERVIGZyYW1lcyBpbiBub24tMTFuIHJhdGVzPwo+Cj4g
+WWVzLCBkaXNhYmxpbmcgdGhlIGZhbGxiYWNrIGFwcGVhcnMgdG8gaGF2ZSBmaXhlZCBteSBpc3N1
+ZS4KPgo+IEkgZGlkIG5vdCB0cnkgdG8gZml4IHRoZSBmYWxsYmFjayBjb2RlIGJlY2F1c2UgSSB0
+aGluayBpdCB3aWxsIGJlIHF1aXRlCj4gY29tcGxpY2F0ZWQgdG8gZG8gaXQgcHJvcGVybHkgKEkg
+c3VzcGVjdCBhIGRpZmZlcmVudCB0aWQgbXVzdCBiZSB1c2VkIAo+IGZvciB0aGlzCj4gdG8gd29y
+aykuwqAgSSdtIG5vdCBldmVuIGVudGlyZWx5IHN1cmUgb2YgZXhhY3RseSB3aHkgdGhlIHRyYW5z
+bWl0IAo+IGxvZ2ljIGZhaWxzCj4gaW4gdGhpcyBjYXNlLCBhbmQgYnkgdGhlIHRpbWUgcmF0ZS1j
+dHJsIGxvZ2ljIGlzIHF1ZXJpZWQsIEkgdGhpbmsgaXQgCj4gaXMgdG9vCj4gbGF0ZSB0byBlYXNp
+bHkgY2hhbmdlIHRpZHMuCj4KPiBBbmQgRllJLCBpbiBteSBmaXJtd2FyZS9kcml2ZXIsIHlvdSBj
+YW4gbm93IHNwZWNpZnkgdGhlIGV4YWN0IAo+IHByZWFtYmxlLXR5cGUsIG1jcywgYmFuZHdpZHRo
+LCB0eHBvd2VyLAo+IHJldHJhbnNtaXQgY291bnQsIGV0YyBvbiBhIHBlciBwYWNrZXQgYmFzaXMu
+wqAgSSdtIG5vdCBzdXJlIG9mIGFsbCB0aGUgCj4gYnVncyBhbmQgbGltaXRhdGlvbnMKPiBpbiB0
+aGlzIGNvZGUsIGJ1dCBpdCBhdCBsZWFzdCBtb3N0bHkgd29ya3MgYXMgaG9wZWQgZm9yIHRoZSB3
+YXlzIHdlIAo+IGFyZSB1c2luZyBpdAo+IChyeCBzZW5zaXRpdml0eSB0ZXN0IHJpZ3MsIGV0Yyku
+Cj4KPiBNaWdodCBiZSBvZiBpbnRlcmVzdCBpZiBzb21lb25lIHdhbnRzIHRvIGRvIGEgc29tZXdo
+YXQgbGltaXRlZCAKPiB1c2VyLXNwYWNlIHJhdGUtY3RybCBmb3IKPiBhdGgxMGsgd2F2ZS0yLgp0
+aGUgY3VyaW91cyB0aGluZyBpcyBzdGlsbCB0aGF0IHRoZSBmYWxsYmFjayBjb2RlIGFwcGxpZXMg
+b25seSBmb3IgMi40IApnaHogc28gaXQgd291bGQgbmV2ZXIgaGF2ZSBhZmZlY3RlZCA4MDIuMTFh
+Ywo+Cj4gVGhhbmtzLAo+IEJlbgo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
