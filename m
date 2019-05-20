@@ -1,23 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hSimd-0007Ra-IK
- for ath10k@lists.infradead.org; Mon, 20 May 2019 13:56:56 +0000
+ id 1hSlcH-0005ic-Po
+ for ath10k@lists.infradead.org; Mon, 20 May 2019 16:58:27 +0000
+Subject: Re: Problem with 9984 in routed mode with 512b frames.
+References: <e11b8d7f-bc28-bc66-fb8c-ff4db22d7c46@candelatech.com>
+ <daaad6d3-cf60-4ddc-af20-279a0cbbbe0c@newmedia-net.de>
+ <10ed4e39-4364-c8ef-2b38-15ea7672ad94@candelatech.com>
+ <2ec6f626-6391-f9b5-918c-99ad7e6b3e31@newmedia-net.de>
+ <ad97576c-d6dd-e29c-10d4-00b8aff77805@candelatech.com>
+ <55b50a9a-49f4-d669-22d4-84e2efabf451@candelatech.com>
+ <2ef800e2-5ce6-f579-ded5-65dc82827e4d@newmedia-net.de>
+ <cdfa7b09-4e32-a62d-1bb6-d6128ba6594b@candelatech.com>
+ <eae17245-eec2-96fe-34ff-f3800fae44d8@newmedia-net.de>
+ <CAJ-Vmo=xhBvLmzec5mzf-gcFm1h6cQBLUOdVhuQjvbUWFjP-AQ@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Message-ID: <24c966c0-2cd6-cdb0-c5dc-2f505eeb40ca@newmedia-net.de>
+Date: Mon, 20 May 2019 18:58:04 +0200
 MIME-Version: 1.0
-Date: Mon, 20 May 2019 21:56:52 +0800
-From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: Re: [PATCH v2] mac80211: remove warning message
-In-Reply-To: <ea87337c24666355059488b42d97ee22711ce7b8.camel@sipsolutions.net>
-References: <1557824507-17668-1-git-send-email-yiboz@codeaurora.org>
- <7c92f5cf51eaec1d5449698d90f5b6c5ca6c2bea.camel@sipsolutions.net>
- <ccb48284f0d96e72f4c041e12c943f0a@codeaurora.org>
- <e2a6596b99085541a5886c0d0d6393c849ac2d57.camel@sipsolutions.net>
- <34f72d5db336b9898618bf1c5c15ec41094d7d06.camel@perches.com>
- <4d013893-3302-14f0-c957-b3771f4b6b82@candelatech.com>
- <8eacb8e107c854b64a0c6116fca9731ddd99dcac.camel@sipsolutions.net>
- <730d3664-488d-7d57-04d5-1a57e91fa070@candelatech.com>
- <ea87337c24666355059488b42d97ee22711ce7b8.camel@sipsolutions.net>
-Message-ID: <bbfd69ccb4289ba3f1767c1066f61ee1@codeaurora.org>
+In-Reply-To: <CAJ-Vmo=xhBvLmzec5mzf-gcFm1h6cQBLUOdVhuQjvbUWFjP-AQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,44 +32,51 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Zhi Chen <zhichen@codeaurora.org>, Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 2019-05-15 02:57, Johannes Berg wrote:
-> On Tue, 2019-05-14 at 11:54 -0700, Ben Greear wrote:
->> 
->> Here is the info I have in my commit that changed this to 
->> WARN_ON_ONCE.
->> I never posted it because I had to hack ath10k to get to this state, 
->> so maybe
->> this is not a valid case to debug.
->> 
->> 
->> Maybe Yibo Zhao has a better example.
->> 
->>      mac80211: don't spam kernel logs when chantx is null.
->> 
->>      I set up ath10k to be chandef based again in order to test
->>      WDS.  My WDS stations are not very functional yet, and
->>      when ethtool stats are queried, there is a WARN_ON splat
->>      generated.  Change this to WARN_ON_ONCE so that there is
->>      less kernel spam.
-> 
-> I'm totally fine with WARN_ON_ONCE, FWIW.
-> 
-> Sounds like different bugs though. You're talking about WDS here, and
-> Yibo was talking about something with AP interfaces prematurely
-> accepting frames or so.
 
-Yes, they might be different bugs that hit the same point. Looks like 
-others found this too many warnings issue as well. Then I believe 
-WARN_ON_ONCE() seems to be our solution for now.
-
-> 
-> johannes
-
--- 
-Yibo
+Am 17.05.2019 um 17:47 schrieb Adrian Chadd:
+> On Fri, 17 May 2019 at 08:06, Sebastian Gottschall
+> <s.gottschall@newmedia-net.de> wrote:
+>
+>
+>> personally i think going back to basic rates like 2 mbit makes no sense
+>> anyway. its that dead slow that a connection must break and has to be
+>> broken if this doesnt work.
+>> still a shame that beacons are still transmitted in this way and
+>> multicast/broadcast packets as well which causes a hell of problems. but
+>> thats for backward compatibility of cause
+> It depends on what kind of channel you are. Not everyone is deploying
+> super dense enterprise APs. :-)
+>
+> The 11ac and 11ax chips that do constant frequency readjusting work
+> better in things like moving drones, where you have constant doppler
+> shift. I know some people doing drone work that just don't bother with
+> MCS and aggregation because they need a super reliable channel and the
+> conditions constantly shift.
+>
+> That said, they're very sad that they can't hack on the 11ac/11ax
+> firmware to fix some err, less optimal decisions in their use case
+> space like they can with ath5k/ath9k.
+>
+> ISTR back at QCA days there were some people on the systems team that
+> could demonstrate CCK was more stable in some use cases and so didn't
+> like the Linux rate control behaviour of not falling back to CCK in 2G
+> 11n mode. There was .. pushback against the linux upstream rate
+> control in this respect right until the linux folk totally deprecated
+> the QCA rate control in ath9k. :)
+CCK is dead stable of cause, but also dead slow and its blocking the 
+channel which decreases performance for all other people
+>
+> (And then bugs like what ben is seeing :)
+>
+> Ben - did disabling CCK/OFDM fallback rates help? Did you fix the bit
+> that tries to send AMPDU frames in non-11n rates?
+>
+>
+> -adrian
+>
 
 _______________________________________________
 ath10k mailing list
