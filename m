@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ua1-x932.google.com ([2607:f8b0:4864:20::932])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hVQOJ-0005sm-Rt
- for ath10k@lists.infradead.org; Tue, 28 May 2019 00:55:02 +0000
-Received: by mail-ua1-x932.google.com with SMTP id n7so7165543uap.12
- for <ath10k@lists.infradead.org>; Mon, 27 May 2019 17:54:59 -0700 (PDT)
-MIME-Version: 1.0
-From: Vjaceslavs Klimovs <vklimovs@gmail.com>
-Date: Mon, 27 May 2019 17:54:47 -0700
-Message-ID: <CAC_j7i3ZAcfaQ-on5mXTKxd--erzCChKhEEU_6Yk+j2w57PeVg@mail.gmail.com>
-Subject: ath10k panic with 5.1 kernel and qca9984 on association
+ id 1hVR5A-0003fS-JL
+ for ath10k@lists.infradead.org; Tue, 28 May 2019 01:39:18 +0000
+From: Miaoqing Pan <miaoqing@codeaurora.org>
+Subject: [PATCH] ath10k: fix failure to set multiple fixed rate
+Date: Tue, 28 May 2019 09:38:27 +0800
+Message-Id: <1559007507-3358-1-git-send-email-miaoqing@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,78 +15,317 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>
 
-Hi,
-With 5.1 and head kernel, machine running as AP with qca9984 locks up
-without being able to complete stack trace to console after a client
-tries to associate with it. Following are (OCR transcribed) error
-messages:
+Currently, below fixed rate commands are broken,
+iw wlanx set bitrates legacy-<2.4|5> ht-mcs-<2.4|5> vht-mcs-<2.4|5> \
+<NSS:MCSx>
+iw wlanx set bitrates legacy-<2.4|5> <legacy rate> ht-mcs-<2.4|5> \
+<MCS index> vht-mcs-<2.4|5>
+iw wlanx set bitrates legacy-<2.4|5> <legacy rate> ht-mcs-<2.4|5> \
+vht-mcs-<2.4|5> <NSS:MCSx>
 
-[ 177.161539] BUG: unable to handle kernel paging request at fffffffffffff7bo
-[ 177.161553] #PF error: (normal kernel read fault)
-[ 177.161561] PGD 703812067 P4D 703812067 PUD 20381406 PMD 0
-[ 177.161571] Oops: 0000 (#1) SMP PTI
-[ 177.161577] CPU: 6 PID: 0 Comm: swapper/6 Tainted: G OE 5.1.3-gentoo #1
+There are two methods to set fixed rate, both failed,
+- Use vdev fixed rate command
+  This command only support one single rate, but it's broken due to
+  mac80211 change commit e8e4f5280ddd ("mac80211: reject/clear user
+  rate mask if not usable"), which requires user to specify at least
+  one legacy rate. So we can't use this command to set ht/vht single
+  rate any more.
+- Use peer_assoc command
+  This command can update rx capability for multiple rates, it will
+  work fine for ht mcs rates, as each supported mcs can be advertised
+  in ht_mcs index mask. But this will not work with vht rates because,
+  as per the vht mcs capability advertisement, there are only two bits
+  to indicate the supported mcs. E.g. only support 0-7, 0-8, 0-9.
 
-[Garbage on screen after that point]
+So introduced new WMI command: WMI_PEER_PARAM_FIXED_RATE. After peer
+assoc, the peer fixed rate cmd will work for that specific peer.
+Remaining peers will use auto rate. If both vdev fixed rate and peer
+fixed rates are given, peer fixed rate will take effect to peers for
+which this cmd is given. Remaining peers in that vdev, will use vdev
+fixed rate.
 
-and
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00035
 
-[67.805490] RBP: ffff9c4c57983d 18 R08: 0000000000000000 R09:
-0000000000000000 [67.805501] R10: 0000000000000002 R11:
-0000000000000000 R12: 0000000000000001 [67.805512] R13:
-0000000000000000 R14: 0000000000060002 R15: 0000000000000000
-[67.805523] FS: 000000000000000000000) GS:ffff9c4c57980000 (0000)
-knIGS:000000000 [67.805535] CS: 0010 DS: 0000 ES: 0000 CRO:
-0000000080050033
-[67.805544] CR2: fffffffffffff7b0 CR3: 00000005f7e0e006 CR4: 00000000003606e0
-[67.805555] DRO: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000 [67.805566] DR3: 0000000000000000 DR6:
-00000000fffeoffO DR7: 0000000000000400 [67.805577] Call Trace:
-[67.805582] <IRQ>
-[67.805592] ath10k_htt_t2h_msg_handler+0xbda/0xf80 [ath10k_core]
-[67.805603] ? _raw_spin_unlock_bh+0xie/0x20
-[67.805614] ? ath1ok_ce_per_engine_service+0xf1/0x100 [ath10k_corel
-[67.805626] ath10k_pci_htt_rx_cb+0x172/0x260 [ath10k_pci]
-[67.8056391] ath10k_ce_per_engine_service+0x9e/0x100 [ath10k_core)
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c |   1 +
+ drivers/net/wireless/ath/ath10k/core.h |   7 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 111 +++++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/wmi.h  |   1 +
+ 4 files changed, 108 insertions(+), 12 deletions(-)
 
-[Garbage on screen after that point]
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 61ef903..811cf38 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -612,6 +612,7 @@
+ 	[ATH10K_FW_FEATURE_MGMT_TX_BY_REF] = "mgmt-tx-by-reference",
+ 	[ATH10K_FW_FEATURE_NON_BMI] = "non-bmi",
+ 	[ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL] = "single-chan-info-per-channel",
++	[ATH10K_FW_FEATURE_PEER_FIXED_RATE] = "peer-fixed-rate",
+ };
+ 
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 2d109c0..fe6e88d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -579,6 +579,10 @@ struct ath10k_vif {
+ 	struct work_struct ap_csa_work;
+ 	struct delayed_work connection_loss_work;
+ 	struct cfg80211_bitrate_mask bitrate_mask;
++
++	/* For setting VHT peer fixed rate, protected by conf_mutex */
++	int vht_num_rates;
++	u8 vht_pfr;
+ };
+ 
+ struct ath10k_vif_iter {
+@@ -770,6 +774,9 @@ enum ath10k_fw_features {
+ 	/* Firmware sends only one chan_info event per channel */
+ 	ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL = 20,
+ 
++	/* Firmware allows setting peer fixed rate */
++	ATH10K_FW_FEATURE_PEER_FIXED_RATE = 21,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b500fd4..e555a22 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7107,18 +7107,23 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ static bool
+ ath10k_mac_bitrate_mask_has_single_rate(struct ath10k *ar,
+ 					enum nl80211_band band,
+-					const struct cfg80211_bitrate_mask *mask)
++					const struct cfg80211_bitrate_mask *mask,
++					int *vht_num_rates)
+ {
+ 	int num_rates = 0;
+-	int i;
++	int i, tmp;
+ 
+ 	num_rates += hweight32(mask->control[band].legacy);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++)
+ 		num_rates += hweight8(mask->control[band].ht_mcs[i]);
+ 
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++)
+-		num_rates += hweight16(mask->control[band].vht_mcs[i]);
++	*vht_num_rates = 0;
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
++		tmp = hweight16(mask->control[band].vht_mcs[i]);
++		num_rates += tmp;
++		*vht_num_rates += tmp;
++	}
+ 
+ 	return num_rates == 1;
+ }
+@@ -7176,7 +7181,7 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ ath10k_mac_bitrate_mask_get_single_rate(struct ath10k *ar,
+ 					enum nl80211_band band,
+ 					const struct cfg80211_bitrate_mask *mask,
+-					u8 *rate, u8 *nss)
++					u8 *rate, u8 *nss, bool vht_only)
+ {
+ 	int rate_idx;
+ 	int i;
+@@ -7184,6 +7189,9 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ 	u8 preamble;
+ 	u8 hw_rate;
+ 
++	if (vht_only)
++		goto next;
++
+ 	if (hweight32(mask->control[band].legacy) == 1) {
+ 		rate_idx = ffs(mask->control[band].legacy) - 1;
+ 
+@@ -7217,6 +7225,7 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ 		}
+ 	}
+ 
++next:
+ 	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
+ 		if (hweight16(mask->control[band].vht_mcs[i]) == 1) {
+ 			*nss = i + 1;
+@@ -7278,7 +7287,8 @@ static int ath10k_mac_set_fixed_rate_params(struct ath10k_vif *arvif,
+ static bool
+ ath10k_mac_can_set_bitrate_mask(struct ath10k *ar,
+ 				enum nl80211_band band,
+-				const struct cfg80211_bitrate_mask *mask)
++				const struct cfg80211_bitrate_mask *mask,
++				bool allow_pfr)
+ {
+ 	int i;
+ 	u16 vht_mcs;
+@@ -7297,7 +7307,8 @@ static int ath10k_mac_set_fixed_rate_params(struct ath10k_vif *arvif,
+ 		case BIT(10) - 1:
+ 			break;
+ 		default:
+-			ath10k_warn(ar, "refusing bitrate mask with missing 0-7 VHT MCS rates\n");
++			if (!allow_pfr)
++				ath10k_warn(ar, "refusing bitrate mask with missing 0-7 VHT MCS rates\n");
+ 			return false;
+ 		}
+ 	}
+@@ -7305,6 +7316,26 @@ static int ath10k_mac_set_fixed_rate_params(struct ath10k_vif *arvif,
+ 	return true;
+ }
+ 
++static bool ath10k_mac_set_vht_bitrate_mask_fixup(struct ath10k *ar,
++						  struct ath10k_vif *arvif,
++						  struct ieee80211_sta *sta)
++{
++	int err;
++	u8 rate = arvif->vht_pfr;
++
++	/* skip non vht and multiple rate peers */
++	if (!sta->vht_cap.vht_supported || arvif->vht_num_rates != 1)
++		return false;
++
++	err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++					WMI_PEER_PARAM_FIXED_RATE, rate);
++	if (err)
++		ath10k_warn(ar, "failed to eanble STA %pM peer fixed rate: %d\n",
++			    sta->addr, err);
++
++	return true;
++}
++
+ static void ath10k_mac_set_bitrate_mask_iter(void *data,
+ 					     struct ieee80211_sta *sta)
+ {
+@@ -7315,6 +7346,9 @@ static void ath10k_mac_set_bitrate_mask_iter(void *data,
+ 	if (arsta->arvif != arvif)
+ 		return;
+ 
++	if (ath10k_mac_set_vht_bitrate_mask_fixup(ar, arvif, sta))
++		return;
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	arsta->changed |= IEEE80211_RC_SUPP_RATES_CHANGED;
+ 	spin_unlock_bh(&ar->data_lock);
+@@ -7322,6 +7356,26 @@ static void ath10k_mac_set_bitrate_mask_iter(void *data,
+ 	ieee80211_queue_work(ar->hw, &arsta->update_wk);
+ }
+ 
++static void ath10k_mac_clr_bitrate_mask_iter(void *data,
++					     struct ieee80211_sta *sta)
++{
++	struct ath10k_vif *arvif = data;
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k *ar = arvif->ar;
++	int err;
++
++	/* clear vht peers only */
++	if (arsta->arvif != arvif || !sta->vht_cap.vht_supported)
++		return;
++
++	err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++					WMI_PEER_PARAM_FIXED_RATE,
++					WMI_FIXED_RATE_NONE);
++	if (err)
++		ath10k_warn(ar, "failed to clear STA %pM peer fixed rate: %d\n",
++			    sta->addr, err);
++}
++
+ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+ 					  struct ieee80211_vif *vif,
+ 					  const struct cfg80211_bitrate_mask *mask)
+@@ -7338,6 +7392,9 @@ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+ 	u8 ldpc;
+ 	int single_nss;
+ 	int ret;
++	int vht_num_rates, allow_pfr;
++	u8 vht_pfr;
++	bool update_bitrate_mask = true;
+ 
+ 	if (ath10k_mac_vif_chan(vif, &def))
+ 		return -EPERM;
+@@ -7351,9 +7408,21 @@ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+ 	if (sgi == NL80211_TXRATE_FORCE_LGI)
+ 		return -EINVAL;
+ 
+-	if (ath10k_mac_bitrate_mask_has_single_rate(ar, band, mask)) {
++	allow_pfr = test_bit(ATH10K_FW_FEATURE_PEER_FIXED_RATE,
++			     ar->normal_mode_fw.fw_file.fw_features);
++	if (allow_pfr) {
++		mutex_lock(&ar->conf_mutex);
++		ieee80211_iterate_stations_atomic(ar->hw,
++						  ath10k_mac_clr_bitrate_mask_iter,
++						  arvif);
++		mutex_unlock(&ar->conf_mutex);
++	}
++
++	if (ath10k_mac_bitrate_mask_has_single_rate(ar, band, mask,
++						    &vht_num_rates)) {
+ 		ret = ath10k_mac_bitrate_mask_get_single_rate(ar, band, mask,
+-							      &rate, &nss);
++							      &rate, &nss,
++							      false);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to get single rate for vdev %i: %d\n",
+ 				    arvif->vdev_id, ret);
+@@ -7369,12 +7438,30 @@ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+ 			  max(ath10k_mac_max_ht_nss(ht_mcs_mask),
+ 			      ath10k_mac_max_vht_nss(vht_mcs_mask)));
+ 
+-		if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask))
+-			return -EINVAL;
++		if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
++						     allow_pfr)) {
++			u8 vht_nss;
++
++			if (!allow_pfr || vht_num_rates != 1)
++				return -EINVAL;
++
++			/* Reach here, firmware supports peer fixed rate and has
++			 * single vht rate, and don't update vif birate_mask, as
++			 * the rate only for specific peer.
++			 */
++			ath10k_mac_bitrate_mask_get_single_rate(ar, band, mask,
++								&vht_pfr,
++								&vht_nss,
++								true);
++			update_bitrate_mask = false;
++		}
+ 
+ 		mutex_lock(&ar->conf_mutex);
+ 
+-		arvif->bitrate_mask = *mask;
++		if (update_bitrate_mask)
++			arvif->bitrate_mask = *mask;
++		arvif->vht_num_rates = vht_num_rates;
++		arvif->vht_pfr = vht_pfr;
+ 		ieee80211_iterate_stations_atomic(ar->hw,
+ 						  ath10k_mac_set_bitrate_mask_iter,
+ 						  arvif);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 12f57f9..bd54da6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6260,6 +6260,7 @@ enum wmi_peer_param {
+ 	WMI_PEER_CHAN_WIDTH = 0x4,
+ 	WMI_PEER_NSS        = 0x5,
+ 	WMI_PEER_USE_4ADDR  = 0x6,
++	WMI_PEER_PARAM_FIXED_RATE = 0x9,
+ 	WMI_PEER_DEBUG      = 0xa,
+ 	WMI_PEER_PHYMODE    = 0xd,
+ 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
+-- 
+1.9.1
 
-The issue does not reproduce on 5.0.17 but is reliably reproducible in
-5.1+ by just trying to associate to that AP. So I thought I'd run git
-bisect. After bisecting,
-
-6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956, ath10k: add support for ack
-rssi value of data tx packets
-
-is the first commit that triggers the problem. Reverting that commit
-from head or from 5.1.5 reliably makes everything work as expected.
-
-Device parameters and FW are as follows:
-
-[    4.502988] ath10k_pci 0000:0a:00.0: enabling device (0000 -> 0002)
-[    4.503324] ath10k_pci 0000:0a:00.0: pci irq msi oper_irq_mode 2
-irq_mode 0 reset_mode 0
-[    4.615989] ath10k_pci 0000:0a:00.0: qca9984/qca9994 hw1.0 target
-0x01000000 chip_id 0x00000000 sub 168c:cafe
-[    4.615990] ath10k_pci 0000:0a:00.0: kconfig debug 0 debugfs 1
-tracing 1 dfs 1 testmode 0
-[    4.616269] ath10k_pci 0000:0a:00.0: firmware ver
-10.4-3.9.0.2-00021 api 5 features
-no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps crc32
-9626782c
-[    5.845294] ath10k_pci 0000:0a:00.0: board_file api 2 bmi_id 0:1
-crc32 cf58c3bc
-[    8.390524] ath10k_pci 0000:0a:00.0: unsupported HTC service id: 1536
-[    8.503161] ath10k_pci 0000:0a:00.0: htt-ver 2.2 wmi-op 6 htt-op 4
-cal otp max-sta 512 raw 0 hwcrypto 1
-
-I also tried with firmware-5.bin_10.4-3.9.0.2-00044, same results.
 
 _______________________________________________
 ath10k mailing list
