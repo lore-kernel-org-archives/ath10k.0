@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk1-x743.google.com ([2607:f8b0:4864:20::743])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hVRpf-0002ii-Em
- for ath10k@lists.infradead.org; Tue, 28 May 2019 02:27:20 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: add report MIC error for sdio chip
-Date: Tue, 28 May 2019 10:27:12 +0800
-Message-Id: <1559010432-1005-1-git-send-email-wgong@codeaurora.org>
+ id 1hVRun-0004Qe-Tx
+ for ath10k@lists.infradead.org; Tue, 28 May 2019 02:32:39 +0000
+Received: by mail-qk1-x743.google.com with SMTP id m14so1241650qka.10
+ for <ath10k@lists.infradead.org>; Mon, 27 May 2019 19:32:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <1558506776-19702-1-git-send-email-wgong@codeaurora.org>
+ <CALiNf28PQFtAM6uZVPhh-_ASnYeeAtm8kWpP0b8k_P6zGwxbcQ@mail.gmail.com>
+In-Reply-To: <CALiNf28PQFtAM6uZVPhh-_ASnYeeAtm8kWpP0b8k_P6zGwxbcQ@mail.gmail.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Date: Tue, 28 May 2019 10:32:25 +0800
+Message-ID: <CANMq1KDgafzxyVc6H6i0OtKW32T2mpMSp4di81qNChDv-5RBKw@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: add support for firmware crash recovery on
+ SDIO chip
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,59 +22,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Claire Chang <tientzu@google.com>
+Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-Firmware will report flag with HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR
-if MIC error, the flag will be used in mac80211.
+Change to the interrupt handler since v1 sounds good to me.
 
-ieee80211_rx_h_michael_mic_verify will check the flag and start TKIP
-countermeasures.
+Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
 
-Now countermeasure tests pass both with WPA only and WPA2/WPA mixed
-mode.
-
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a20ea27..c0b0061 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2101,7 +2101,9 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
- 			    num_mpdu_ranges);
- 
- 	if (mpdu_ranges->mpdu_range_status !=
--	    HTT_RX_IND_MPDU_STATUS_OK) {
-+	    HTT_RX_IND_MPDU_STATUS_OK &&
-+	    mpdu_ranges->mpdu_range_status !=
-+	    HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR) {
- 		ath10k_warn(ar, "MPDU range status: %d\n",
- 			    mpdu_ranges->mpdu_range_status);
- 		goto err;
-@@ -2162,6 +2164,9 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
- 				   RX_FLAG_MMIC_STRIPPED;
- 	}
- 
-+	if (mpdu_ranges->mpdu_range_status == HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR)
-+		rx_status->flag |= RX_FLAG_MMIC_ERROR;
-+
- 	ieee80211_rx_ni(ar->hw, skb);
- 
- 	/* We have delivered the skb to the upper layers (mac80211) so we
--- 
-1.9.1
-
+On Thu, May 23, 2019 at 4:53 PM Claire Chang <tientzu@google.com> wrote:
+>
+> Tested-by: Claire Chang <tientzu@chromium.org>
 
 _______________________________________________
 ath10k mailing list
