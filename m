@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hWADc-0004In-TM
- for ath10k@lists.infradead.org; Thu, 30 May 2019 01:51:02 +0000
-From: Miaoqing Pan <miaoqing@codeaurora.org>
-Subject: [PATCH] ath10k: fix PCIE device wake up failed
-Date: Thu, 30 May 2019 09:49:20 +0800
-Message-Id: <1559180960-13565-1-git-send-email-miaoqing@codeaurora.org>
+ id 1hWHeh-0004H6-45
+ for ath10k@lists.infradead.org; Thu, 30 May 2019 09:47:28 +0000
+From: Balaji Pothunoori <bpothuno@codeaurora.org>
+Subject: [PATCH v5] ath10k: add support for controlling tx power to a station
+Date: Thu, 30 May 2019 15:17:18 +0530
+Message-Id: <1559209638-23887-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +21,176 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, Ashok Raj Nagarajan <arnagara@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Observed PCIE device wake up failed after ~120 iterations of
-soft-reboot test. The error message is
-"ath10k_pci 0000:01:00.0: failed to wake up device : -110"
+From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
 
-The call trace as below:
-ath10k_pci_probe -> ath10k_pci_force_wake -> ath10k_pci_wake_wait ->
-ath10k_pci_is_awake
+This patch will add the support to control the transmit power for traffic
+to a station associated with the AP.
 
-Once trigger the device to wake up, we will continuously check the RTC
-state until it returns RTC_STATE_V_ON or timeout.
+Underlying firmware will enforce that the maximum tx power will be based
+on the regulatory requirements. If the user given transmit power is greater
+than the allowed tx power in the given channel, then the firmware will use
+the maximum tx power in the same channel.
 
-But for QCA99x0 chips, we use wrong value for RTC_STATE_V_ON.
-Occasionally, we get 0x7 on the fist read, we thought as a failure
-case, but actually is the right value, also verified with the spec.
-So fix the issue by changing RTC_STATE_V_ON from 0x5 to 0x7, passed
-~2000 iterations.
+Max and Min tx power values will depends on no of tx chain masks,
+for QCA9984 allowed tx power range values from 6 to 23.
 
-Tested HW: QCA9984
+When 0 is sent to the firmware as tx power, it will revert to the default
+tx power for the station.
 
-Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Tested Hardware : QCA9984
+Tested Firmware : 10.4-3.9.0.2-00046
+
+Co-developed-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+Signed-off-by: Ashok Raj Nagarajan <arnagara@codeaurora.org>
+Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: removed mBm to dBm conversion
+v3: rebased wmi.h changes
+v4: no changes, rebased 
+v5: updated firmware details which 
+    addresses Bob comments.
+    updated commit log.
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index ad082b7..b242085 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -158,7 +158,7 @@
+Note: mac80211/cfg80211 patches got merged hence sending
+      ath10k alone with v5 and mentioned 10.4-3.9.0.2-00046
+      firmware is yet to be upstream.
+
+patchwork links :
+ 	https://patchwork.kernel.org/patch/10876859/
+	https://patchwork.kernel.org/patch/10876853/
+
+ drivers/net/wireless/ath/ath10k/debug.h |  3 +++
+ drivers/net/wireless/ath/ath10k/mac.c   | 39 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h   |  6 +++++
+ 3 files changed, 48 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index db78e85..2e43d8d 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -71,6 +71,9 @@ struct ath10k_pktlog_hdr {
+ /* FIXME: How to calculate the buffer size sanely? */
+ #define ATH10K_FW_STATS_BUF_SIZE (1024 * 1024)
+ 
++#define ATH10K_TX_POWER_MAX_VAL 70
++#define ATH10K_TX_POWER_MIN_VAL 0
++
+ extern unsigned int ath10k_debug_mask;
+ 
+ __printf(2, 3) void ath10k_info(struct ath10k *ar, const char *fmt, ...);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b500fd4..7e3e403 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6358,6 +6358,41 @@ static void ath10k_mac_dec_num_stations(struct ath10k_vif *arvif,
+ 	ar->num_stations--;
+ }
+ 
++static int ath10k_sta_set_txpwr(struct ieee80211_hw *hw,
++				struct ieee80211_vif *vif,
++				struct ieee80211_sta *sta)
++{
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif = (void *)vif->drv_priv;
++	int ret = 0;
++	s16 txpwr;
++
++	if (sta->txpwr.type == NL80211_TX_POWER_AUTOMATIC) {
++		txpwr = 0;
++	} else {
++		txpwr = sta->txpwr.power;
++		if (!txpwr)
++			return -EINVAL;
++	}
++
++	if (txpwr > ATH10K_TX_POWER_MAX_VAL || txpwr < ATH10K_TX_POWER_MIN_VAL)
++		return -EINVAL;
++
++	mutex_lock(&ar->conf_mutex);
++
++	ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++					WMI_PEER_USE_FIXED_PWR, txpwr);
++	if (ret) {
++		ath10k_warn(ar, "failed to set tx power for station ret: %d\n",
++			    ret);
++		goto out;
++	}
++
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
+ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			    struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta,
+@@ -8015,6 +8050,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_key			= ath10k_set_key,
+ 	.set_default_unicast_key        = ath10k_set_default_unicast_key,
+ 	.sta_state			= ath10k_sta_state,
++	.sta_set_txpwr			= ath10k_sta_set_txpwr,
+ 	.conf_tx			= ath10k_conf_tx,
+ 	.remain_on_channel		= ath10k_remain_on_channel,
+ 	.cancel_remain_on_channel	= ath10k_cancel_remain_on_channel,
+@@ -8703,6 +8739,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		wiphy_ext_feature_set(ar->hw->wiphy,
+ 				      NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER);
+ 
++	if (test_bit(WMI_SERVICE_TX_PWR_PER_PEER, ar->wmi.svc_map))
++		wiphy_ext_feature_set(ar->hw->wiphy,
++				      NL80211_EXT_FEATURE_STA_TX_PWR);
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 12f57f9..a0ed078 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -200,6 +200,7 @@ enum wmi_service {
+ 	WMI_SERVICE_RTT_RESPONDER_ROLE,
+ 	WMI_SERVICE_PER_PACKET_SW_ENCRYPT,
+ 	WMI_SERVICE_REPORT_AIRTIME,
++	WMI_SERVICE_TX_PWR_PER_PEER,
+ 
+ 	/* Remember to add the new value to wmi_service_name()! */
+ 
+@@ -367,6 +368,7 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_RTT_RESPONDER_ROLE,
+ 	WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
+ 	WMI_10_4_SERVICE_REPORT_AIRTIME,
++	WMI_10_4_SERVICE_TX_PWR_PER_PEER,
  };
  
- const struct ath10k_hw_values qca99x0_values = {
--	.rtc_state_val_on		= 5,
-+	.rtc_state_val_on		= 7,
- 	.ce_count			= 12,
- 	.msi_assign_ce_max		= 12,
- 	.num_target_ce_config_wlan	= 10,
+ static inline char *wmi_service_name(enum wmi_service service_id)
+@@ -491,6 +493,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
+ 	SVCSTR(WMI_SERVICE_RTT_RESPONDER_ROLE);
+ 	SVCSTR(WMI_SERVICE_PER_PACKET_SW_ENCRYPT);
+ 	SVCSTR(WMI_SERVICE_REPORT_AIRTIME);
++	SVCSTR(WMI_SERVICE_TX_PWR_PER_PEER);
+ 
+ 	case WMI_SERVICE_MAX:
+ 		return NULL;
+@@ -818,6 +821,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_PER_PACKET_SW_ENCRYPT, len);
+ 	SVCMAP(WMI_10_4_SERVICE_REPORT_AIRTIME,
+ 	       WMI_SERVICE_REPORT_AIRTIME, len);
++	SVCMAP(WMI_10_4_SERVICE_TX_PWR_PER_PEER,
++	       WMI_SERVICE_TX_PWR_PER_PEER, len);
+ }
+ 
+ #undef SVCMAP
+@@ -6262,6 +6267,7 @@ enum wmi_peer_param {
+ 	WMI_PEER_USE_4ADDR  = 0x6,
+ 	WMI_PEER_DEBUG      = 0xa,
+ 	WMI_PEER_PHYMODE    = 0xd,
++	WMI_PEER_USE_FIXED_PWR = 0x8,
+ 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
+ };
+ 
 -- 
-1.9.1
+2.7.4
 
 
 _______________________________________________
