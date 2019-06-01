@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr800092.outbound.protection.outlook.com
- ([40.107.80.92] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+Received: from mail-ua1-x941.google.com ([2607:f8b0:4864:20::941])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hWeHj-0002Yl-W4
- for ath10k@lists.infradead.org; Fri, 31 May 2019 09:57:17 +0000
-From: Patrick Daume <patrick.daume@dedrone.com>
-Subject: Qualcomm Atheros QCA6174 monitoring mode receiving no data
-Date: Fri, 31 May 2019 09:57:09 +0000
-Message-ID: <1559296628.11260.4.camel@dedrone.com>
-Content-Language: en-US
-Content-ID: <72B658548A19CB4EB714E7609D1B2782@namprd15.prod.outlook.com>
+ id 1hX8QC-0003st-PG
+ for ath10k@lists.infradead.org; Sat, 01 Jun 2019 18:08:02 +0000
+Received: by mail-ua1-x941.google.com with SMTP id 89so3457693uar.10
+ for <ath10k@lists.infradead.org>; Sat, 01 Jun 2019 11:07:55 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAC_j7i3ZAcfaQ-on5mXTKxd--erzCChKhEEU_6Yk+j2w57PeVg@mail.gmail.com>
+ <8736ky6cyp.fsf@kamboji.qca.qualcomm.com>
+ <CAC_j7i0eQfHu=9r8biPkpGhxrSqbYQdf2cxT0tDfnH7YgGxO6w@mail.gmail.com>
+ <000001d516ec$fed6f190$fc84d4b0$@codeaurora.org>
+ <dd642aad7d2f83ebb3c955a9475ed85f@codeaurora.org>
+In-Reply-To: <dd642aad7d2f83ebb3c955a9475ed85f@codeaurora.org>
+From: Vjaceslavs Klimovs <vklimovs@gmail.com>
+Date: Sat, 1 Jun 2019 11:07:43 -0700
+Message-ID: <CAC_j7i2peXFf5VYXxjP=FSyoArsK8fVBGYvKFfLQ=neep=-h8w@mail.gmail.com>
+Subject: Re: ath10k panic with 5.1 kernel and qca9984 on association
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,129 +24,169 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
+Cc: Abhishek Ambure <aambure@codeaurora.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-SSd2ZSBhbiBTcGFya0xhbiBXUEVRLTI2MUFDTihCVCkgUXVhbGNvbW0gQXRoZXJvcyBRQ0E2MTc0
-IGNoaXBzZXQgb24gYW4gNC40LjEgS2VybmVsLg0KSWYgSSBicmluZyB0aGUgY2hpcCBpbiBtb2lu
-aXRvciBtb2RlIHNvbWUgRGF0YS0sIFFvUy0sIEFja25vd2xlZGdtZW50LXBhY2tldHMgYXJlIG5v
-dGFibHkgbWlzc2luZy4NCkZvciBjb21wYXJpc29uIEkgdXNlZCB0Y3BkdW1wIGluIHBhcmFsbGVs
-IHdpY2ggYW4gSW50ZWwgV2lyZWxlc3MgMzE2MCBjaGlwLg0KT25seSBCZWFjb25zLCBQcm9iZSBS
-ZXF1ZXN0cyBhbmQgUmVzcG9uc2Ugd2VyZSByZWNvcmRlZC4NCg0KSSB0cmllZCB0byB1cGRhdGUg
-dGhlIGtlcm5lbCB0byAnNC45LjE0MCcgYW5kIHRoZSBmaXJtd2FyZSB0byAnV0xBTi5STS40LjQu
-MS0wMDA3OS1RQ0FSTVNXUFotMScgcmVzdWx0aW5nIGluIHRoZSBtb25pdG9yaW5nIG1vZGUgSW50
-ZXJmYWNlIHJlY2VpdmluZyBubyBkYXRhIGF0IGFsbC4NCkkgYWxzbyB0cmllZCBkaWZmZXJlbnQg
-dmVyc2lvbiBvZiB0aGUgZmlybXdhcmUgaW4gY29tYmluYXRpb24gd2l0aCBiYWNrcG9ydHMgb24g
-dGhlIDQuNC4xIEtlcm5lbC7CoA0KQWxsIHJlbGV2YW50IGJhY2twb3J0cyBzdGFydGluZyBmcm9t
-ICd2NC4xNC1yYzInIHNob3cgdGhlIHNhbWUgYmVoYXZpb3VyIGluIG1vbml0b3IgbW9kZcKgDQoo
-aW5jbHVkaW5nIHRlc3RzIHdpdGggdGhlICdXTEFOLlJNLjQuNC4xLTAwMDc5LVFDQVJNU1dQWi0x
-JywgJzQuNC4xLmMzJywgJzQuNC4xLmMyJyBmaXJtd2FyZSBpbiBjb21iaW5hdGlvbiB3aXRoICd2
-NC4xNC1yYzInLCAndjQuMjAuMTcnLCAndjUuMC41JyAndjUuMS1yYzInIGJhY2twb3J0cynCoMKg
-wqDCoMKgwqDCoA0KDQpDYW4gYW55b25lIHBvaW50IG91dCB3aGljaCBwYXRjaGVzIG1heSBiZSBy
-ZWxhdmFudD8NCklzIHRoZSBtb25pdG9yaW5nIG1vZGUgbm8gbG9uZ2VyIHN1cHBvcnRlZCB3aXRo
-IGEgbmV3ZXIgZmlybXdhcmUvZHJpdmVyIHZlcnNpb24/DQpJcyB0aGUgbG93ZXIgYW1vdW50IG9m
-IHBhY2thZ2VzIGEgZmlybXdhcmUgbGltaXRhdGlvbiBvciBwb3NzaWJsZSB0byB3b3JrIGFyb3Vu
-ZCBpbiB0aGUgZHJpdmVyPw0KDQpsc2h3ID4+DQrCoMKgwqDCoMKgKi1wY2kNCsKgwqDCoMKgwqDC
-oMKgwqDCoMKgZGVzY3JpcHRpb246IFBDSSBicmlkZ2UNCsKgwqDCoMKgwqDCoMKgwqDCoMKgcHJv
-ZHVjdDogTlZJRElBIENvcnBvcmF0aW9uDQrCoMKgwqDCoMKgwqDCoMKgwqDCoHZlbmRvcjogTlZJ
-RElBIENvcnBvcmF0aW9uDQrCoMKgwqDCoMKgwqDCoMKgwqDCoHBoeXNpY2FsIGlkOiAxDQrCoMKg
-wqDCoMKgwqDCoMKgwqDCoGJ1cyBpbmZvOiBwY2lAMDAwMDowMDowMS4wDQrCoMKgwqDCoMKgwqDC
-oMKgwqDCoHZlcnNpb246IGExDQrCoMKgwqDCoMKgwqDCoMKgwqDCoHdpZHRoOiAzMiBiaXRzDQrC
-oMKgwqDCoMKgwqDCoMKgwqDCoGNsb2NrOiAzM01Ieg0KwqDCoMKgwqDCoMKgwqDCoMKgwqBjYXBh
-YmlsaXRpZXM6IHBjaSBub3JtYWxfZGVjb2RlIGJ1c19tYXN0ZXIgY2FwX2xpc3QNCsKgwqDCoMKg
-wqDCoMKgwqDCoMKgY29uZmlndXJhdGlvbjogZHJpdmVyPXBjaWVwb3J0DQrCoMKgwqDCoMKgwqDC
-oMKgwqDCoHJlc291cmNlczogaXJxOjM4OCBtZW1vcnk6NTAyMDAwMDAtNTAzZmZmZmYNCsKgwqDC
-oMKgwqDCoMKgwqAqLW5ldHdvcmsNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGVzY3JpcHRp
-b246IGludGVyZmFjZQ0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcm9kdWN0OiBRQ0E2MTc0
-IDgwMi4xMWFjIFdpcmVsZXNzIE5ldHdvcmsgQWRhcHRlcg0KwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqB2ZW5kb3I6IFF1YWxjb21tIEF0aGVyb3MNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-cGh5c2ljYWwgaWQ6IDANCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYnVzIGluZm86IHBjaUAw
-MDAwOjAxOjAwLjANCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbG9naWNhbCBuYW1lOiB3bGFu
-MA0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB2ZXJzaW9uOiAzMg0KwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBzZXJpYWw6IFtSRU1PVkVEXQ0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB3
-aWR0aDogNjQgYml0cw0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjbG9jazogMzNNSHoNCsKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY2FwYWJpbGl0aWVzOiBidXNfbWFzdGVyIGNhcF9saXN0
-IGxvZ2ljYWwNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29uZmlndXJhdGlvbjogYnJvYWRj
-YXN0PXllcyBkcml2ZXI9YXRoMTBrX3BjaSBkcml2ZXJ2ZXJzaW9uPTQuNC4zOC02LWRlZHJvbmUg
-ZmlybXdhcmU9V0xBTi5STS4yLjAtMDAxODAtUUNBUk1TV1BaLTEgbGF0ZW5jeT0wIGxpbms9eWVz
-IG11bHRpY2FzdD15ZXMNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmVzb3VyY2VzOiBpcnE6
-NDUyIG1lbW9yeTo1MDIwMDAwMC01MDNmZmZmZg0KDQpsc2h3ID4+DQrCoMKgwqDCoMKgKi1wY2k6
-MA0KwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXNjcmlwdGlvbjogUENJIGJyaWRnZQ0KwqDCoMKgwqDC
-oMKgwqDCoMKgwqBwcm9kdWN0OiBOVklESUEgQ29ycG9yYXRpb24NCsKgwqDCoMKgwqDCoMKgwqDC
-oMKgdmVuZG9yOiBOVklESUEgQ29ycG9yYXRpb24NCsKgwqDCoMKgwqDCoMKgwqDCoMKgcGh5c2lj
-YWwgaWQ6IDEwMA0KwqDCoMKgwqDCoMKgwqDCoMKgwqBidXMgaW5mbzogcGNpQDAwMDA6MDA6MDAu
-MA0KwqDCoMKgwqDCoMKgwqDCoMKgwqB2ZXJzaW9uOiBhMQ0KwqDCoMKgwqDCoMKgwqDCoMKgwqB3
-aWR0aDogMzIgYml0cw0KwqDCoMKgwqDCoMKgwqDCoMKgwqBjbG9jazogMzNNSHoNCsKgwqDCoMKg
-wqDCoMKgwqDCoMKgY2FwYWJpbGl0aWVzOiBwY2kgbm9ybWFsX2RlY29kZSBidXNfbWFzdGVyIGNh
-cF9saXN0DQrCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbmZpZ3VyYXRpb246IGRyaXZlcj1wY2llcG9y
-dA0KwqDCoMKgwqDCoMKgwqDCoMKgwqByZXNvdXJjZXM6IGlycToxMzAgbWVtb3J5OjMyMjAwMDAw
-LTMyMmZmZmZmDQrCoMKgwqDCoMKgwqDCoMKgKi1uZXR3b3JrDQrCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoGRlc2NyaXB0aW9uOiBpbnRlcmZhY2UNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-cHJvZHVjdDogV2lyZWxlc3MgMzE2MA0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB2ZW5kb3I6
-IEludGVsIENvcnBvcmF0aW9uDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHBoeXNpY2FsIGlk
-OiAwDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJ1cyBpbmZvOiBwY2lAMDAwMDowMTowMC4w
-DQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGxvZ2ljYWwgbmFtZTogd2xhbjANCsKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgdmVyc2lvbjogODMNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-c2VyaWFsOiBbUkVNT1ZFRF0NCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgd2lkdGg6IDY0IGJp
-dHMNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY2xvY2s6IDMzTUh6DQrCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoGNhcGFiaWxpdGllczogYnVzX21hc3RlciBjYXBfbGlzdCBsb2dpY2FsDQrC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbmZpZ3VyYXRpb246IGJyb2FkY2FzdD15ZXMgZHJp
-dmVyPWl3bHdpZmkgZHJpdmVydmVyc2lvbj0zLjEwLjQwIGZpcm13YXJlPTI1LjMwLjEzLjAgbGF0
-ZW5jeT0wIGxpbms9eWVzIG11bHRpY2FzdD15ZXMNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-cmVzb3VyY2VzOiBpcnE6NjQzIG1lbW9yeTozMjIwMDAwMC0zMjIwMWZmZg0KDQoNCg0KbHNodyBh
-ZnRlciBrZXJuZWwgYW5kIGZpcm13YXJlIHVwZGF0ZSA+Pg0KwqDCoMKgwqDCoCotcGNpDQrCoMKg
-wqDCoMKgwqDCoMKgwqDCoGRlc2NyaXB0aW9uOiBQQ0kgYnJpZGdlDQrCoMKgwqDCoMKgwqDCoMKg
-wqDCoHByb2R1Y3Q6IE5WSURJQSBDb3Jwb3JhdGlvbg0KwqDCoMKgwqDCoMKgwqDCoMKgwqB2ZW5k
-b3I6IE5WSURJQSBDb3Jwb3JhdGlvbg0KwqDCoMKgwqDCoMKgwqDCoMKgwqBwaHlzaWNhbCBpZDog
-MQ0KwqDCoMKgwqDCoMKgwqDCoMKgwqBidXMgaW5mbzogcGNpQDAwMDA6MDA6MDEuMA0KwqDCoMKg
-wqDCoMKgwqDCoMKgwqB2ZXJzaW9uOiBhMQ0KwqDCoMKgwqDCoMKgwqDCoMKgwqB3aWR0aDogMzIg
-Yml0cw0KwqDCoMKgwqDCoMKgwqDCoMKgwqBjbG9jazogMzNNSHoNCsKgwqDCoMKgwqDCoMKgwqDC
-oMKgY2FwYWJpbGl0aWVzOiBwY2kgbm9ybWFsX2RlY29kZSBidXNfbWFzdGVyIGNhcF9saXN0DQrC
-oMKgwqDCoMKgwqDCoMKgwqDCoGNvbmZpZ3VyYXRpb246IGRyaXZlcj1wY2llcG9ydA0KwqDCoMKg
-wqDCoMKgwqDCoMKgwqByZXNvdXJjZXM6IGlycTozODEgbWVtb3J5OjQwMjAwMDAwLTQwM2ZmZmZm
-DQrCoMKgwqDCoMKgwqDCoMKgKi1uZXR3b3JrDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRl
-c2NyaXB0aW9uOiBXaXJlbGVzcyBpbnRlcmZhY2UNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-cHJvZHVjdDogUUNBNjE3NCA4MDIuMTFhYyBXaXJlbGVzcyBOZXR3b3JrIEFkYXB0ZXINCsKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgdmVuZG9yOiBRdWFsY29tbSBBdGhlcm9zDQrCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoHBoeXNpY2FsIGlkOiAwDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oGJ1cyBpbmZvOiBwY2lAMDAwMDowMTowMC4wDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGxv
-Z2ljYWwgbmFtZTogd2xhbjANCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdmVyc2lvbjogMzIN
-CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2VyaWFsOiBbUkVNT1ZFRF0NCsKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgd2lkdGg6IDY0IGJpdHMNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-Y2xvY2s6IDMzTUh6DQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNhcGFiaWxpdGllczogYnVz
-X21hc3RlciBjYXBfbGlzdCBsb2dpY2FsIHdpcmVsZXNzDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoGNvbmZpZ3VyYXRpb246IGJyb2FkY2FzdD15ZXMgZHJpdmVyPWF0aDEwa19wY2kgZHJpdmVy
-dmVyc2lvbj00LjkuMTQwLXRlZ3JhIGZpcm13YXJlPVdMQU4uUk0uNC40LjEtMDAwNzktUUNBUk1T
-V1BaLTEgbGF0ZW5jeT0wIGxpbms9eWVzIG11bHRpY2FzdD15ZXMgd2lyZWxlc3M9SUVFRSA4MDIu
-MTENCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmVzb3VyY2VzOiBpcnE6NDQ2IG1lbW9yeTo0
-MDIwMDAwMC00MDNmZmZmZg0KDQoNCmRtZXNnID4+DQpbwqDCoMKgwqA4LjEyNTE2M10gYXRoMTBr
-X3BjaSAwMDAwOjAxOjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQ0KW8KgwqDC
-oMKgOC4xMjgyODNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBwY2kgaXJxIG1zaSBvcGVyX2ly
-cV9tb2RlIDIgaXJxX21vZGUgMCByZXNldF9tb2RlIDANClvCoMKgwqDCoDguNDA3ODE0XSBhdGgx
-MGtfcGNpIDAwMDA6MDE6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGF0aDEway9wcmUt
-Y2FsLXBjaS0wMDAwOjAxOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yDQpbwqDCoMKgwqA4
-LjQwNzgxN10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IEZhbGxpbmcgYmFjayB0byB1c2VyIGhl
-bHBlcg0KW8KgwqDCoMKgOC40MTA0NDddIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBEaXJlY3Qg
-ZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL2NhbC1wY2ktMDAwMDowMTowMC4wLmJpbiBmYWlsZWQg
-d2l0aCBlcnJvciAtMg0KW8KgwqDCoMKgOC40MTA0NTBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4w
-OiBGYWxsaW5nIGJhY2sgdG8gdXNlciBoZWxwZXINClvCoMKgwqDCoDguNDI1NjY4XSBhdGgxMGtf
-cGNpIDAwMDA6MDE6MDAuMDogcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCBjaGlwX2lk
-IDB4MDAzNDBhZmYgc3ViIDFkYWM6MDI2MQ0KW8KgwqDCoMKgOC40MjU2NzJdIGF0aDEwa19wY2kg
-MDAwMDowMTowMC4wOiBrY29uZmlnIGRlYnVnIDEgZGVidWdmcyAxIHRyYWNpbmcgMCBkZnMgMCB0
-ZXN0bW9kZSAwDQpbwqDCoMKgwqA4LjQyNjQwNl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZp
-cm13YXJlIHZlciBXTEFOLlJNLjQuNC4xLTAwMDc5LVFDQVJNU1dQWi0xIGFwaSA2IGZlYXR1cmVz
-IHdvd2xhbixpZ25vcmUtb3RwIGNyYzMyIGZkODY5YmViDQpbwqDCoMKgwqA4LjQ5Mzk4N10gYXRo
-MTBrX3BjaSAwMDAwOjAxOjAwLjA6IGJvYXJkX2ZpbGUgYXBpIDIgYm1pX2lkIE4vQSBjcmMzMiA0
-ZWQzNTY5ZQ0KDQoNCnN1ZG8gaWZjb25maWcgd2xhbjAgZG93bg0KaXcgZGV2IHdsYW4wIHNldCB0
-eXBlIG1vbml0b3INCmlmY29uZmlnIHdsYW4wIHVwDQppdyBkZXYgd2xhbjAgc2V0IGZyZXEgMjQx
-Mg0KdGNwZHVtcCAtaSB3bGFuMA0KDQo+Pj4NCnRjcGR1bXA6IHZlcmJvc2Ugb3V0cHV0IHN1cHBy
-ZXNzZWQsIHVzZSAtdiBvciAtdnYgZm9yIGZ1bGwgcHJvdG9jb2wgZGVjb2RlDQpsaXN0ZW5pbmcg
-b24gd2xhbjAsIGxpbmstdHlwZSBJRUVFODAyXzExX1JBRElPICg4MDIuMTEgcGx1cyByYWRpb3Rh
-cCBoZWFkZXIpLCBjYXB0dXJlIHNpemUgMjYyMTQ0IGJ5dGVzDQowIHBhY2tldHMgY2FwdHVyZWQN
-CjAgcGFja2V0cyByZWNlaXZlZCBieSBmaWx0ZXINCjAgcGFja2V0cyBkcm9wcGVkIGJ5IGtlcm5l
-bApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi Balaji,
+Thank you for looking into this.
+
+1) x86_64 AP
+2) Compex WLE1216V5-23 or WLE1216V5-20 card with QCA9984
+3) any kernel with commit 6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956 present
+4) kernel has DFS enabled and CONFIG_ATH10K_DFS_CERTIFIED=y,
+CONFIG_ATH_REG_DYNAMIC_USER_REG_HINTS=y,
+CONFIG_ATH_REG_DYNAMIC_USER_CERT_TESTING=y  set
+5) any firmware from
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA9984/hw1.0/3.9.0.2,
+see card initialization dmesg in my first message
+6) hostapd with the following config:
+
+interface=wlp9s0
+ctrl_interface=/var/run/hostapd
+bridge=br0
+ssid=XXXXXXXX
+hw_mode=a
+chanlist=52 100 116 132
+acs_chan_bias=116:0.1 132:0.1
+country_code=US
+ieee80211d=1
+ieee80211h=1
+ieee80211n=1
+ht_capab=[LDPC][HT40+][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-7935][DSSS_CCK-40]
+ieee80211ac=1
+vht_capab=[MAX-MPDU-11454][VHT160-80PLUS80][RXLDPC][SHORT-GI-80][SHORT-GI-160][TX-STBC-2BY1][RX-STBC-1][SU-BEAMFORMER][SU-BEAMFORMEE][BF-ANTENNA-4][SOUNDING-DIMENSION-4][MU-BEAMFORMER][MAX-A-MPDU-LEN-EXP7][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+vht_oper_chwidth=1
+auth_algs=1
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_passphrase=XXXXXXXX
+wpa_disable_eapol_key_retries=1
+rsn_pairwise=CCMP
+wmm_enabled=1
+ap_isolate=1
+
+7) any STA (ChromeOS, Android, Windows tried) triggers the crash.
+
+On Thu, May 30, 2019 at 6:58 AM Balaji Pothunoori
+<bpothuno@codeaurora.org> wrote:
+>
+> Hi,
+>
+> We are not seeing mentioned issue with following setup.
+> Setup details are :
+> AP - X86 with 5.1.0 kernel + QCA9984.
+> STA - Standard STA.
+> Observation : Crash is not observed during STA join.
+>
+> Could you please share the steps what you have followed ?
+>
+> Regards,
+> Balaji.
+>
+> > -----Original Message-----
+> > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of
+> > Vjaceslavs Klimovs
+> > Sent: Tuesday, May 28, 2019 11:53 PM
+> > To: kvalo@codeaurora.org
+> > Cc: Abhishek Ambure <aambure@codeaurora.org>;
+> > ath10k@lists.infradead.org
+> > Subject: [EXT] Re: ath10k panic with 5.1 kernel and qca9984 on
+> > association
+> >
+> > Abhishek,
+> > I am happy to test a proposed fix, let me know.
+> >
+> > On Tue, May 28, 2019 at 4:22 AM Kalle Valo <kvalo@codeaurora.org>
+> > wrote:
+> >>
+> >> + Abhishek
+> >>
+> >> Vjaceslavs Klimovs <vklimovs@gmail.com> writes:
+> >>
+> >> > With 5.1 and head kernel, machine running as AP with qca9984 locks
+> >> > up without being able to complete stack trace to console after a
+> >> > client tries to associate with it. Following are (OCR transcribed)
+> >> > error
+> >> > messages:
+> >> >
+> >> > [ 177.161539] BUG: unable to handle kernel paging request at
+> >> > fffffffffffff7bo [ 177.161553] #PF error: (normal kernel read fault)
+> >> > [ 177.161561] PGD 703812067 P4D 703812067 PUD 20381406 PMD 0 [
+> >> > 177.161571] Oops: 0000 (#1) SMP PTI [ 177.161577] CPU: 6 PID: 0
+> >> > Comm: swapper/6 Tainted: G OE 5.1.3-gentoo #1
+> >> >
+> >> > [Garbage on screen after that point]
+> >> >
+> >> > and
+> >> >
+> >> > [67.805490] RBP: ffff9c4c57983d 18 R08: 0000000000000000 R09:
+> >> > 0000000000000000 [67.805501] R10: 0000000000000002 R11:
+> >> > 0000000000000000 R12: 0000000000000001 [67.805512] R13:
+> >> > 0000000000000000 R14: 0000000000060002 R15: 0000000000000000
+> >> > [67.805523] FS: 000000000000000000000) GS:ffff9c4c57980000 (0000)
+> >> > knIGS:000000000 [67.805535] CS: 0010 DS: 0000 ES: 0000 CRO:
+> >> > 0000000080050033
+> >> > [67.805544] CR2: fffffffffffff7b0 CR3: 00000005f7e0e006 CR4:
+> >> > 00000000003606e0 [67.805555] DRO: 0000000000000000 DR1: 0000000000000000 DR2:
+> >> > 0000000000000000 [67.805566] DR3: 0000000000000000 DR6:
+> >> > 00000000fffeoffO DR7: 0000000000000400 [67.805577] Call Trace:
+> >> > [67.805582] <IRQ>
+> >> > [67.805592] ath10k_htt_t2h_msg_handler+0xbda/0xf80 [ath10k_core]
+> >> > [67.805603] ? _raw_spin_unlock_bh+0xie/0x20 [67.805614] ?
+> >> > ath1ok_ce_per_engine_service+0xf1/0x100 [ath10k_corel [67.805626]
+> >> > ath10k_pci_htt_rx_cb+0x172/0x260 [ath10k_pci] [67.8056391]
+> >> > ath10k_ce_per_engine_service+0x9e/0x100 [ath10k_core)
+> >> >
+> >> > [Garbage on screen after that point]
+> >> >
+> >> > The issue does not reproduce on 5.0.17 but is reliably reproducible
+> >> > in 5.1+ by just trying to associate to that AP. So I thought I'd run
+> >> > git bisect. After bisecting,
+> >> >
+> >> > 6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956, ath10k: add support for
+> >> > ack rssi value of data tx packets
+> >> >
+> >> > is the first commit that triggers the problem. Reverting that commit
+> >> > from head or from 5.1.5 reliably makes everything work as expected.
+> >>
+> >> Thank you for the bisect, this is really helpful. Full commit log
+> >> below.
+> >> Abhishek, please fix this or send a revert for 5.2.
+> >>
+> >> commit 6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956
+> >> Author:     Abhishek Ambure <aambure@codeaurora.org>
+> >> AuthorDate: Mon Feb 25 11:45:48 2019 +0200
+> >> Commit:     Kalle Valo <kvalo@codeaurora.org>
+> >> CommitDate: Tue Feb 26 14:58:06 2019 +0200
+> >>
+> >>     ath10k: add support for ack rssi value of data tx packets
+> >>
+> >>     In WCN3990, WMI_TLV_SERVICE_TX_DATA_MGMT_ACK_RSSI service
+> >> Indicates that
+> >>     the firmware has the capability to send the RSSI value of the ACK
+> >> for all
+> >>     data and management packets transmitted.
+> >>
+> >>     If WMI_RSRC_CFG_FLAG_TX_ACK_RSSI is set in host capability then
+> >> firmware
+> >>     sends RSSI value in "data" tx completion event. Host extracts ack
+> >> rssi
+> >>     values of data packets from their tx completion event.
+> >>
+> >>     Tested HW: WCN3990
+> >>     Tested FW: WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
+> >>
+> >>     Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+> >>     Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> >>
+> >> --
+> >> Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
