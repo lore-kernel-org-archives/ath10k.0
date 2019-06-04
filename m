@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from narfation.org ([79.140.41.39] helo=v3-1039.vlinux.de)
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXoq5-0005GU-8N
- for ath10k@lists.infradead.org; Mon, 03 Jun 2019 15:25:34 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH v2] ath10k: avoid leaving .bss_info_changed prematurely
-Date: Mon,  3 Jun 2019 17:25:07 +0200
-Message-Id: <20190603152507.22011-1-sven@narfation.org>
+ id 1hY6wh-00019T-JF
+ for ath10k@lists.infradead.org; Tue, 04 Jun 2019 10:45:54 +0000
+Date: Tue, 4 Jun 2019 18:45:27 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:pending 170/170]
+ drivers/net/wireless/ath/ath11k/mac.c:1334:83: sparse: sparse: incorrect
+ type in assignment (different base types)
+Message-ID: <201906041825.blatvak2%lkp@intel.com>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,130 +23,128 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>, Sven Eckelmann <seckelmann@datto.com>, Sriram R <srirrama@codeaurora.org>
+To: John Crispin <john@phrozen.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild-all@01.org, ath10k@lists.infradead.org, Shashidhar Lakkavalli <slakkavalli@datto.com>
 
-From: Sven Eckelmann <seckelmann@datto.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+head:   17aca2d9a969788a7f1e3e0c72b5485bf6a432a4
+commit: 17aca2d9a969788a7f1e3e0c72b5485bf6a432a4 [170/170] ath11k: add HE support
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-rc1-7-g2b96cd8-dirty
+        git checkout 17aca2d9a969788a7f1e3e0c72b5485bf6a432a4
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-ath10k_bss_info_changed() handles various events from the upper layers. It
-parses the changed bitfield and then configures the driver/firmware
-accordingly. Each detected event is handled in a separate scope which is
-independent of each other - but in the same function.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-The commit f279294e9ee2 ("ath10k: add support for configuring management
-packet rate") changed this behavior by returning from this function
-prematurely when some precondition was not fulfilled. All new event
-handlers added after the BSS_CHANGED_BASIC_RATES event handler would then
-also be skipped.
 
-Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/net/wireless/ath/ath11k/mac.c:1334:83: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int @@    got restricted __le16 constunsigned int @@
+>> drivers/net/wireless/ath/ath11k/mac.c:1334:83: sparse:    expected unsigned int
+>> drivers/net/wireless/ath/ath11k/mac.c:1334:83: sparse:    got restricted __le16 const [usertype] rx_mcs_80p80
+   drivers/net/wireless/ath/ath11k/mac.c:1336:83: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int @@    got restricted __le16 constunsigned int @@
+   drivers/net/wireless/ath/ath11k/mac.c:1336:83: sparse:    expected unsigned int
+>> drivers/net/wireless/ath/ath11k/mac.c:1336:83: sparse:    got restricted __le16 const [usertype] tx_mcs_80p80
+   drivers/net/wireless/ath/ath11k/mac.c:1340:73: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int @@    got restricted __le16 constunsigned int @@
+   drivers/net/wireless/ath/ath11k/mac.c:1340:73: sparse:    expected unsigned int
+>> drivers/net/wireless/ath/ath11k/mac.c:1340:73: sparse:    got restricted __le16 const [usertype] rx_mcs_160
+   drivers/net/wireless/ath/ath11k/mac.c:1342:73: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int @@    got restricted __le16 constunsigned int @@
+   drivers/net/wireless/ath/ath11k/mac.c:1342:73: sparse:    expected unsigned int
+>> drivers/net/wireless/ath/ath11k/mac.c:1342:73: sparse:    got restricted __le16 const [usertype] tx_mcs_160
+   drivers/net/wireless/ath/ath11k/mac.c:1348:72: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int @@    got restricted __le16 constunsigned int @@
+   drivers/net/wireless/ath/ath11k/mac.c:1348:72: sparse:    expected unsigned int
+>> drivers/net/wireless/ath/ath11k/mac.c:1348:72: sparse:    got restricted __le16 const [usertype] rx_mcs_80
+   drivers/net/wireless/ath/ath11k/mac.c:1350:72: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int @@    got restricted __le16 constunsigned int @@
+   drivers/net/wireless/ath/ath11k/mac.c:1350:72: sparse:    expected unsigned int
+>> drivers/net/wireless/ath/ath11k/mac.c:1350:72: sparse:    got restricted __le16 const [usertype] tx_mcs_80
+
+vim +1334 drivers/net/wireless/ath/ath11k/mac.c
+
+  1279	
+  1280	static void ath11k_peer_assoc_h_he(struct ath11k *ar,
+  1281					   struct ieee80211_vif *vif,
+  1282					   struct ieee80211_sta *sta,
+  1283					   struct peer_assoc_params *arg)
+  1284	{
+  1285		const struct ieee80211_sta_he_cap *he_cap = &sta->he_cap;
+  1286	
+  1287		if (!he_cap->has_he)
+  1288			return;
+  1289	
+  1290		arg->he_flag = true;
+  1291	
+  1292		memcpy(&arg->peer_he_cap_macinfo, he_cap->he_cap_elem.mac_cap_info,
+  1293		       sizeof(arg->peer_he_cap_macinfo));
+  1294		memcpy(&arg->peer_he_cap_phyinfo, he_cap->he_cap_elem.phy_cap_info,
+  1295		       sizeof(arg->peer_he_cap_phyinfo));
+  1296		memcpy(&arg->peer_he_ops, &vif->bss_conf.he_operation,
+  1297		       sizeof(arg->peer_he_ops));
+  1298	
+  1299		if (he_cap->he_cap_elem.phy_cap_info[6] &
+  1300		    IEEE80211_HE_PHY_CAP6_PPE_THRESHOLD_PRESENT) {
+  1301			int bit = 7;
+  1302			int nss, ru;
+  1303	
+  1304			arg->peer_ppet.numss_m1 = he_cap->ppe_thres[0] &
+  1305						  IEEE80211_PPE_THRES_NSS_MASK;
+  1306			arg->peer_ppet.ru_bit_mask =
+  1307				(he_cap->ppe_thres[0] &
+  1308				 IEEE80211_PPE_THRES_RU_INDEX_BITMASK_MASK) >>
+  1309				IEEE80211_PPE_THRES_RU_INDEX_BITMASK_POS;
+  1310	
+  1311			for (nss = 0; nss <= arg->peer_ppet.numss_m1; nss++) {
+  1312				for (ru = 0; ru < 4; ru++) {
+  1313					u32 val = 0;
+  1314					int i;
+  1315	
+  1316					if ((arg->peer_ppet.ru_bit_mask & BIT(ru)) == 0)
+  1317						continue;
+  1318					for (i = 0; i < 6; i++) {
+  1319						val >>= 1;
+  1320						val |= ((he_cap->ppe_thres[bit / 8] >>
+  1321							 (bit % 8)) & 0x1) << 5;
+  1322						bit++;
+  1323					}
+  1324					arg->peer_ppet.ppet16_ppet8_ru3_ru0[nss] |=
+  1325									val << (ru * 6);
+  1326				}
+  1327			}
+  1328		}
+  1329	
+  1330		switch (sta->bandwidth) {
+  1331		case IEEE80211_STA_RX_BW_160:
+  1332			if (he_cap->he_cap_elem.phy_cap_info[0] &
+  1333			    IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G) {
+> 1334				arg->peer_he_rx_mcs_set[WMI_HECAP_TXRX_MCS_NSS_IDX_80_80] =
+  1335					he_cap->he_mcs_nss_supp.rx_mcs_80p80;
+> 1336				arg->peer_he_tx_mcs_set[WMI_HECAP_TXRX_MCS_NSS_IDX_80_80] =
+  1337					he_cap->he_mcs_nss_supp.tx_mcs_80p80;
+  1338				arg->peer_he_mcs_count++;
+  1339			}
+> 1340			arg->peer_he_rx_mcs_set[WMI_HECAP_TXRX_MCS_NSS_IDX_160] =
+  1341				he_cap->he_mcs_nss_supp.rx_mcs_160;
+> 1342			arg->peer_he_tx_mcs_set[WMI_HECAP_TXRX_MCS_NSS_IDX_160] =
+  1343				he_cap->he_mcs_nss_supp.tx_mcs_160;
+  1344			arg->peer_he_mcs_count++;
+  1345			/* drop through */
+  1346	
+  1347		default:
+> 1348			arg->peer_he_rx_mcs_set[WMI_HECAP_TXRX_MCS_NSS_IDX_80] =
+  1349				he_cap->he_mcs_nss_supp.rx_mcs_80;
+> 1350			arg->peer_he_tx_mcs_set[WMI_HECAP_TXRX_MCS_NSS_IDX_80] =
+  1351				he_cap->he_mcs_nss_supp.tx_mcs_80;
+  1352			arg->peer_he_mcs_count++;
+  1353			break;
+  1354		}
+  1355	}
+  1356	
+
 ---
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sriram R <srirrama@codeaurora.org>
-
-Only compile tested
-
-v2:
-
-* rebased on top of commit 9e7251fa3897 ("ath10k: Check tx_stats before
-  use it")
-
- drivers/net/wireless/ath/ath10k/mac.c | 64 ++++++++++++++++-----------
- 1 file changed, 38 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 98a7842e09b1..90f59117a04d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5582,6 +5582,40 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+static void ath10k_recalculate_mgmt_rate(struct ath10k *ar,
-+					 struct ieee80211_vif *vif)
-+{
-+	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	const struct ieee80211_supported_band *sband;
-+	struct cfg80211_chan_def def;
-+	u8 basic_rate_idx;
-+	int hw_rate_code;
-+	u32 vdev_param;
-+	u16 bitrate;
-+	int ret;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	if (WARN_ON(ath10k_mac_vif_chan(vif, &def)))
-+		return;
-+
-+	sband = ar->hw->wiphy->bands[def.chan->band];
-+	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
-+	bitrate = sband->bitrates[basic_rate_idx].bitrate;
-+
-+	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
-+	if (hw_rate_code < 0) {
-+		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
-+		return;
-+	}
-+
-+	vdev_param = ar->wmi.vdev_param->mgmt_rate;
-+	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
-+					hw_rate_code);
-+	if (ret)
-+		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
-+}
-+
- static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				    struct ieee80211_vif *vif,
- 				    struct ieee80211_bss_conf *info,
-@@ -5592,10 +5626,9 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	struct cfg80211_chan_def def;
- 	u32 vdev_param, pdev_param, slottime, preamble;
- 	u16 bitrate, hw_value;
--	u8 rate, basic_rate_idx, rateidx;
--	int ret = 0, hw_rate_code, mcast_rate;
-+	u8 rate, rateidx;
-+	int ret = 0, mcast_rate;
- 	enum nl80211_band band;
--	const struct ieee80211_supported_band *sband;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -5819,29 +5852,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				    arvif->vdev_id,  ret);
- 	}
- 
--	if (changed & BSS_CHANGED_BASIC_RATES) {
--		if (WARN_ON(ath10k_mac_vif_chan(vif, &def))) {
--			mutex_unlock(&ar->conf_mutex);
--			return;
--		}
--
--		sband = ar->hw->wiphy->bands[def.chan->band];
--		basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
--		bitrate = sband->bitrates[basic_rate_idx].bitrate;
--
--		hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
--		if (hw_rate_code < 0) {
--			ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
--			mutex_unlock(&ar->conf_mutex);
--			return;
--		}
--
--		vdev_param = ar->wmi.vdev_param->mgmt_rate;
--		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
--						hw_rate_code);
--		if (ret)
--			ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
--	}
-+	if (changed & BSS_CHANGED_BASIC_RATES)
-+		ath10k_recalculate_mgmt_rate(ar, vif);
- 
- 	mutex_unlock(&ar->conf_mutex);
- }
--- 
-2.20.1
-
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 _______________________________________________
 ath10k mailing list
