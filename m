@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr800113.outbound.protection.outlook.com
- ([40.107.80.113] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hYXzt-0005uV-LT
- for ath10k@lists.infradead.org; Wed, 05 Jun 2019 15:38:43 +0000
-From: Patrick Daume <patrick.daume@dedrone.com>
-Subject: Re: Qualcomm Atheros QCA6174 monitoring mode receiving no data
-Date: Wed, 5 Jun 2019 15:38:37 +0000
-Message-ID: <1559749116.10289.19.camel@dedrone.com>
-References: <1559296628.11260.4.camel@dedrone.com>
- <87lfyjyq9c.fsf@kamboji.qca.qualcomm.com>
- <1559566253.12864.47.camel@dedrone.com>
- <87zhmwvcs5.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87zhmwvcs5.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
-Content-ID: <A66ECFEA8A72AD45BD460ECCD412A93B@namprd15.prod.outlook.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1haGRM-0001jt-MS
+ for ath10k@lists.infradead.org; Mon, 10 Jun 2019 09:18:15 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH v3] ath10k: Enable MSA region dump support for WCN3990
+Date: Mon, 10 Jun 2019 14:47:59 +0530
+Message-Id: <20190610091759.29508-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,74 +16,204 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-SSB0ZXN0IGl0IHdpdGggbW9kcHJvYmUgb3B0aW9uIHJhd21vZGU9MSBhbmQgaXQgc2VlbXMgdG8g
-d29yay4NCg0Kc29sdXRpb246DQoNCmxpbnV4IGtlcm5lbCA1LjEuMC1yYzctd3QtYXRoKw0KZmly
-bXdhcmU6IFdMQU4uUk0uNC40LjEuYzMtMDAwMzANCg0Kc3VkbyBtb2Rwcm9iZSBhdGgxMGtfY29y
-ZSByYXdtb2RlPTENCnN1ZG8gbW9kcHJvYmUgYXRoMTBrX3BjaQ0KDQoNCkJ1dCBpZiBpIGNhbGwg
-dGNwZHVtcCBmb3IgYSB3aGlsZSBpIGdvdCBzb21lIGVycm9yIHRyYWNlcyBpbiBkbWVzZy4NCkhv
-dw0KY2FuIGkgZml4IHRoaXM/DQoNClvCoMKgMjgxLjEwMTY4Ml3CoMKgcGluY3RybF9pbnRlbCBb
-bGFzdCB1bmxvYWRlZDogY2ZnODAyMTFdDQpbwqDCoDI4MS4xMDE2OTRdIENQVTogMSBQSUQ6IDAg
-Q29tbTogc3dhcHBlci8xIFRhaW50ZWQ6IEfCoMKgwqDCoMKgwqDCoMKgV8KgwqDCoMKgwqDCoMKg
-wqDCoDUuMS4wLXJjNy13dC1hdGgrICMzDQpbwqDCoDI4MS4xMDE2OTddIEhhcmR3YXJlIG5hbWU6
-wqDCoC8sIEJJT1MgNS4xMSAwMy8yNC8yMDE2DQpbwqDCoDI4MS4xMDE3MDNdIFJJUDogMDAxMDpz
-a2JfdHJpbSsweDJkLzB4MzANClvCoMKgMjgxLjEwMTcwOF0gQ29kZTogMDAgMDAgMzkgNzcgNzAg
-NzcgMDIgZjMgYzMgOGIgNDcgNzQgODUgYzAgNzUgMWEgNDggOGIgODcgYzggMDAgMDAgMDAgNDgg
-MmIgODcgYzAgMDAgMDAgMDAgODkgNzcgNzAgMDEgYzYgODkgYjcgYjggMDAgMDAgMDAgYzMgPDBm
-PiAwYiBjMyAwZiAxZiA0NCAwMCAwMCA4YiA4NyBlOCAwMCAwMCAwMCA4YiA5NiBkMCAwMCAwMCAw
-MCAwMSBkMA0KW8KgwqAyODEuMTAxNzEyXSBSU1A6IDAwMTg6ZmZmZjlkNDdkZGE4M2NlMCBFRkxB
-R1M6IDAwMDEwMjA2DQpbwqDCoDI4MS4xMDE3MTddIFJBWDogMDAwMDAwMDAwMDAwMDRjYyBSQlg6
-IDAwMDAwMDAwMDAwMDgwMDAgUkNYOiBmZmZmOWQ0N2RkYTgzZTYwDQpbwqDCoDI4MS4xMDE3MjBd
-IFJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IDAwMDAwMDAwMDAwMDBhZTAgUkRJOiBmZmZmOWQ0
-N2QzZWViZjAwDQpbwqDCoDI4MS4xMDE3MjNdIFJCUDogMDAwMDAwMDAwMDAwMDAwNCBSMDg6IDAw
-MDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQpbwqDCoDI4MS4xMDE3MjZdIFIx
-MDogZmZmZmYyYzA1MTU4ZDg0MCBSMTE6IGZmZmY5ZDQzYjQ0N2U0YjggUjEyOiAwMDAwMDAwMDAw
-MDAwMDAwDQpbwqDCoDI4MS4xMDE3MjldIFIxMzogMDAwMDAwMDAwMDAwNDAwMCBSMTQ6IGZmZmY5
-ZDQ3ZDA0MjE2MjAgUjE1OiBmZmZmOWQ0N2QzZWViZjAwDQpbwqDCoDI4MS4xMDE3MzRdIEZTOsKg
-wqAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY5ZDQ3ZGRhODAwMDAoMDAwMCkga25sR1M6
-MDAwMDAwMDAwMDAwMDAwMA0KW8KgwqAyODEuMTAxNzM3XSBDUzrCoMKgMDAxMCBEUzogMDAwMCBF
-UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNClvCoMKgMjgxLjEwMTc0MV0gQ1IyOiAwMDAw
-NTYxMTBmMDU4MGE0IENSMzogMDAwMDAwMDNhMTIwZTAwMyBDUjQ6IDAwMDAwMDAwMDAzNjA2ZTAN
-ClvCoMKgMjgxLjEwMTc0NF0gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAw
-MDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANClvCoMKgMjgxLjEwMTc0N10gRFIzOiAwMDAwMDAw
-MDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANClvC
-oMKgMjgxLjEwMTc0OV0gQ2FsbCBUcmFjZToNClvCoMKgMjgxLjEwMTc1NV3CoMKgPElSUT4NClvC
-oMKgMjgxLjEwMTc5OF3CoMKgYXRoMTBrX2h0dF9yeF9oX21wZHUrMHg2YTUvMHhhYjAgW2F0aDEw
-a19jb3JlXQ0KW8KgwqAyODEuMTAxODEzXcKgwqA/IHN3aW90bGJfbWFwKzB4NmIvMHgxYzANClvC
-oMKgMjgxLjEwMTg0Nl3CoMKgYXRoMTBrX2h0dF90eHJ4X2NvbXBsX3Rhc2srMHhjNGYvMHgxNDkw
-IFthdGgxMGtfY29yZV0NClvCoMKgMjgxLjEwMTg2NF3CoMKgYXRoMTBrX3BjaV9uYXBpX3BvbGwr
-MHg1MS8weDEzMCBbYXRoMTBrX3BjaV0NClvCoMKgMjgxLjEwMTg3Nl3CoMKgbmV0X3J4X2FjdGlv
-bisweDI3ZS8weDNkMA0KW8KgwqAyODEuMTAxODg4XcKgwqBfX2RvX3NvZnRpcnErMHhmZC8weDJk
-OA0KW8KgwqAyODEuMTAxODk5XcKgwqBpcnFfZXhpdCsweGFlLzB4YjANClvCoMKgMjgxLjEwMTkw
-Nl3CoMKgZG9fSVJRKzB4NTIvMHhlMA0KW8KgwqAyODEuMTAxOTEzXcKgwqBjb21tb25faW50ZXJy
-dXB0KzB4Zi8weGYNClvCoMKgMjgxLjEwMTkxN13CoMKgPC9JUlE+DQpbwqDCoDI4MS4xMDE5Mjhd
-IFJJUDogMDAxMDpjcHVpZGxlX2VudGVyX3N0YXRlKzB4YzQvMHg0NjANClvCoMKgMjgxLjEwMTkz
-Ml0gQ29kZTogZTggNzEgZjcgOTAgZmYgODAgN2MgMjQgMGYgMDAgNzQgMTcgOWMgNTggMGYgMWYg
-NDQgMDAgMDAgZjYgYzQgMDIgMGYgODUgNjUgMDMgMDAgMDAgMzEgZmYgZTggYjMgZjYgOTYgZmYg
-ZmIgNjYgMGYgMWYgNDQgMDAgMDAgPDQ1PiA4NSBlNCAwZiA4OCAzNSAwMyAwMCAwMCA0YyAyYiA3
-YyAyNCAxMCA0OCBiYSBjZiBmNyA1MyBlMyBhNSA5Yg0KW8KgwqAyODEuMTAxOTM2XSBSU1A6IDAw
-MTg6ZmZmZmFjZWY0MTk0M2U4OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiBmZmZmZmZmZmZm
-ZmZmZmRkDQpbwqDCoDI4MS4xMDE5NDFdIFJBWDogZmZmZjlkNDdkZGFhMmM4MCBSQlg6IGZmZmZm
-ZmZmYWQyZDc4NjAgUkNYOiAwMDAwMDAwMDAwMDAwMDFmDQpbwqDCoDI4MS4xMDE5NDRdIFJEWDog
-MDAwMDAwMDAwMDAwMDAwMCBSU0k6IDAwMDAwMDAwMmQ5NTg0MDMgUkRJOiAwMDAwMDAwMDAwMDAw
-MDAwDQpbwqDCoDI4MS4xMDE5NDddIFJCUDogZmZmZjlkNDdkZGFhYzEwMCBSMDg6IGZmZmZmZmZj
-YThmMTI2YTcgUjA5OiBmZmZmOWQ0N2RkYWExY2E0DQpbwqDCoDI4MS4xMDE5NTBdIFIxMDogMDAw
-MDAwMDAwMDAwMDAxOCBSMTE6IDAwMDAwMDAwMDAwMDI2MTUgUjEyOiAwMDAwMDAwMDAwMDAwMDA4
-DQpbwqDCoDI4MS4xMDE5NTNdIFIxMzogMDAwMDAwMDAwMDAwMDAwOCBSMTQ6IGZmZmZmZmZmYWQy
-ZDc4NjAgUjE1OiAwMDAwMDA0MTcyZjJmNDUzDQpbwqDCoDI4MS4xMDE5NjVdwqDCoD8gY3B1aWRs
-ZV9lbnRlcl9zdGF0ZSsweDlmLzB4NDYwDQpbwqDCoDI4MS4xMDE5NzJdwqDCoGRvX2lkbGUrMHgy
-MDIvMHgyODANClvCoMKgMjgxLjEwMTk4MF3CoMKgY3B1X3N0YXJ0dXBfZW50cnkrMHgxOS8weDIw
-DQpbwqDCoDI4MS4xMDE5OTBdwqDCoHN0YXJ0X3NlY29uZGFyeSsweDE3YS8weDFkMA0KW8KgwqAy
-ODEuMTAxOTk5XcKgwqBzZWNvbmRhcnlfc3RhcnR1cF82NCsweGE0LzB4YjANClvCoMKgMjgxLjEw
-MjAwNl0gLS0tWyBlbmQgdHJhY2UgMjNkYzZkZGIwOTMzOTZjNSBdLS0tDQpbwqDCoDMwNi4xMjY0
-NTRdIGRldmljZSB3bHAyczAgZW50ZXJlZCBwcm9taXNjdW91cyBtb2RlDQpbwqDCoDMxNy43MDA4
-MzVdIGRldmljZSB3bHAyczAgbGVmdCBwcm9taXNjdW91cyBtb2RlCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+MSA memory region caries the hw descriptors information.
+Dump MSA region in core dump as this is very helpful in debugging
+hw issues.
+
+Testing: Tested on WCN3990 HW
+Tested FW: WLAN.HL.3.1-00959-QCAHLSWMTPLZ-1
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+
+---
+Changes from v2:
+- Rebased on top of 38faed150438 ath10k: perform crash dump collection in workqueue.
+- Removed redundant msa permission call.
+---
+ drivers/net/wireless/ath/ath10k/coredump.c | 21 +++++++
+ drivers/net/wireless/ath/ath10k/coredump.h |  1 +
+ drivers/net/wireless/ath/ath10k/qmi.c      |  4 ++
+ drivers/net/wireless/ath/ath10k/snoc.c     | 66 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.h     |  1 +
+ 5 files changed, 93 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
+index aa04fbf146e0..0ec690b49fb1 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.c
++++ b/drivers/net/wireless/ath/ath10k/coredump.c
+@@ -962,6 +962,19 @@ static const struct ath10k_mem_region qca4019_hw10_mem_regions[] = {
+ 	},
+ };
+ 
++static const struct ath10k_mem_region wcn399x_hw10_mem_regions[] = {
++	{
++		/* MSA region start is not fixed, hence it is assigned at runtime */
++		.type = ATH10K_MEM_REGION_TYPE_MSA,
++		.len = 0x100000,
++		.name = "DRAM",
++		.section_table = {
++			.sections = NULL,
++			.size = 0,
++		},
++	},
++};
++
+ static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
+ 	{
+ 		.hw_id = QCA6174_HW_1_0_VERSION,
+@@ -1059,6 +1072,14 @@ static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
+ 			.size = ARRAY_SIZE(qca4019_hw10_mem_regions),
+ 		},
+ 	},
++	{
++		.hw_id = WCN3990_HW_1_0_DEV_VERSION,
++		.hw_rev = ATH10K_HW_WCN3990,
++		.region_table = {
++			.regions = wcn399x_hw10_mem_regions,
++			.size = ARRAY_SIZE(wcn399x_hw10_mem_regions),
++		},
++	},
+ };
+ 
+ static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
+index 5dac653e1649..9802e90483f4 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.h
++++ b/drivers/net/wireless/ath/ath10k/coredump.h
+@@ -126,6 +126,7 @@ enum ath10k_mem_region_type {
+ 	ATH10K_MEM_REGION_TYPE_IRAM2	= 5,
+ 	ATH10K_MEM_REGION_TYPE_IOSRAM	= 6,
+ 	ATH10K_MEM_REGION_TYPE_IOREG	= 7,
++	ATH10K_MEM_REGION_TYPE_MSA	= 8,
+ };
+ 
+ /* Define a section of the region which should be copied. As not all parts
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index ba8f5a8f83d1..8eb0f0f0d3a7 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -817,9 +817,13 @@ ath10k_qmi_driver_event_post(struct ath10k_qmi *qmi,
+ static void ath10k_qmi_event_server_exit(struct ath10k_qmi *qmi)
+ {
+ 	struct ath10k *ar = qmi->ar;
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+ 	ath10k_qmi_remove_msa_permission(qmi);
+ 	ath10k_core_free_board_files(ar);
++	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
++		ath10k_snoc_fw_crashed_dump(ar);
++
+ 	ath10k_snoc_fw_indication(ar, ATH10K_QMI_EVENT_FW_DOWN_IND);
+ 	ath10k_dbg(ar, ATH10K_DBG_QMI, "wifi fw qmi service disconnected\n");
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 0be12996beba..ecc0f884b123 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -24,6 +24,7 @@
+ #include <linux/regulator/consumer.h>
+ 
+ #include "ce.h"
++#include "coredump.h"
+ #include "debug.h"
+ #include "hif.h"
+ #include "htc.h"
+@@ -1586,6 +1587,71 @@ static int ath10k_hw_power_off(struct ath10k *ar)
+ 	return ret;
+ }
+ 
++static void ath10k_msa_dump_memory(struct ath10k *ar,
++				   struct ath10k_fw_crash_data *crash_data)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	const struct ath10k_hw_mem_layout *mem_layout;
++	const struct ath10k_mem_region *current_region;
++	struct ath10k_dump_ram_data_hdr *hdr;
++	size_t buf_len;
++	u8 *buf;
++
++	if (!crash_data && !crash_data->ramdump_buf)
++		return;
++
++	mem_layout = ath10k_coredump_get_mem_layout(ar);
++	if (!mem_layout)
++		return;
++
++	current_region = &mem_layout->region_table.regions[0];
++
++	buf = crash_data->ramdump_buf;
++	buf_len = crash_data->ramdump_buf_len;
++	memset(buf, 0, buf_len);
++
++	/* Reserve space for the header. */
++	hdr = (void *)buf;
++	buf += sizeof(*hdr);
++	buf_len -= sizeof(*hdr);
++
++	hdr->region_type = cpu_to_le32(current_region->type);
++	hdr->start = cpu_to_le32(ar_snoc->qmi->msa_va);
++	hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
++
++	if (current_region->len < ar_snoc->qmi->msa_mem_size) {
++		memcpy(buf, ar_snoc->qmi->msa_va, current_region->len);
++		ath10k_warn(ar, "msa dump length is less than msa size %x, %x\n",
++			    current_region->len, ar_snoc->qmi->msa_mem_size);
++	} else {
++		memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
++	}
++}
++
++void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
++{
++	struct ath10k_fw_crash_data *crash_data;
++	char guid[UUID_STRING_LEN + 1];
++
++	mutex_lock(&ar->dump_mutex);
++
++	spin_lock_bh(&ar->data_lock);
++	ar->stats.fw_crash_counter++;
++	spin_unlock_bh(&ar->data_lock);
++
++	crash_data = ath10k_coredump_new(ar);
++
++	if (crash_data)
++		scnprintf(guid, sizeof(guid), "%pUl", &crash_data->guid);
++	else
++		scnprintf(guid, sizeof(guid), "n/a");
++
++	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
++	ath10k_print_driver_info(ar);
++	ath10k_msa_dump_memory(ar, crash_data);
++	mutex_unlock(&ar->dump_mutex);
++}
++
+ static const struct of_device_id ath10k_snoc_dt_match[] = {
+ 	{ .compatible = "qcom,wcn3990-wifi",
+ 	 .data = &drv_priv,
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index 25383de8f17d..6d28a6290a94 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -101,5 +101,6 @@ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+ }
+ 
+ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type);
++void ath10k_snoc_fw_crashed_dump(struct ath10k *ar);
+ 
+ #endif /* _SNOC_H_ */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
