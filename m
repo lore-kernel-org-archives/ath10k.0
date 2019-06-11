@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt1-x836.google.com ([2607:f8b0:4864:20::836])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1haGRM-0001jt-MS
- for ath10k@lists.infradead.org; Mon, 10 Jun 2019 09:18:15 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3] ath10k: Enable MSA region dump support for WCN3990
-Date: Mon, 10 Jun 2019 14:47:59 +0530
-Message-Id: <20190610091759.29508-1-govinds@codeaurora.org>
+ id 1haZrC-0002hA-Vm
+ for ath10k@lists.infradead.org; Tue, 11 Jun 2019 06:02:08 +0000
+Received: by mail-qt1-x836.google.com with SMTP id a15so13157045qtn.7
+ for <ath10k@lists.infradead.org>; Mon, 10 Jun 2019 23:02:05 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAD8Lp45wxQ3vL_ttq-yKYDxscjn2KyJVCx_vJBCn+u8Yc5QtOQ@mail.gmail.com>
+ <87h89lei7e.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87h89lei7e.fsf@kamboji.qca.qualcomm.com>
+From: Daniel Drake <drake@endlessm.com>
+Date: Tue, 11 Jun 2019 14:01:53 +0800
+Message-ID: <CAD8Lp455PaQYqC0PKYK_2_nP2dP_bn=eCJnpiJP3=Dh34B0whw@mail.gmail.com>
+Subject: Re: ath10k QCA9377 firmware crashes and fails to recover
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,198 +25,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Endless Linux Upstreaming Team <linux@endlessm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-MSA memory region caries the hw descriptors information.
-Dump MSA region in core dump as this is very helpful in debugging
-hw issues.
+Hi Kalle,
 
-Testing: Tested on WCN3990 HW
-Tested FW: WLAN.HL.3.1-00959-QCAHLSWMTPLZ-1
+On Thu, May 23, 2019 at 3:36 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Daniel Drake <drake@endlessm.com> writes:
+>
+> > We are experiencing failures with QCA9377 wifi, using Linux 4.18 and
+> > Linux 5.0 with the latest firmware version:
+> >
+> > ath10k_pci 0000:02:00.0: firmware crashed! (guid
+> > 54a4649a-1240-4459-9442-9d498c49de79)
+> > ath10k_pci 0000:02:00.0: qca9377 hw1.1 target 0x05020001 chip_id
+> > 0x003821ff sub 1a3b:2b31
+> > ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+> > ath10k_pci 0000:02:00.0: firmware ver WLAN.TF.1.0-00002-QCATFSWPZ-5
+> > api 5 features ignore-otp crc32 c3e0d04f
+>
+> Is this a regression? For example, have you tried older firmware
+> versions?
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Sorry for the delayed response, as we were testing old versions.
+It doesn't seem to be a regression, at least we tested:
 
----
-Changes from v2:
-- Rebased on top of 38faed150438 ath10k: perform crash dump collection in workqueue.
-- Removed redundant msa permission call.
----
- drivers/net/wireless/ath/ath10k/coredump.c | 21 +++++++
- drivers/net/wireless/ath/ath10k/coredump.h |  1 +
- drivers/net/wireless/ath/ath10k/qmi.c      |  4 ++
- drivers/net/wireless/ath/ath10k/snoc.c     | 66 ++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.h     |  1 +
- 5 files changed, 93 insertions(+)
+Linux 5.0 / latest firmware API 6
+ath10k_pci 0000:02:00.0: firmware crashed! (guid
+697a3b62-bf3a-4953-bf3d-058eb3b828ff)
+ath10k_pci 0000:02:00.0: qca9377 hw1.1 target 0x05020001 chip_id
+0x003821ff sub 1a3b:2b31
+ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+ath10k_pci 0000:02:00.0: firmware ver WLAN.TF.2.1-00021-QCARMSWP-1 api
+6 features wowlan,ignore-otp crc32 42e41877
+ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 8aedfa4a
+ath10k_pci 0000:02:00.0: htt-ver 3.56 wmi-op 4 htt-op 3 cal otp
+max-sta 32 raw 0 hwcrypto 1
 
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index aa04fbf146e0..0ec690b49fb1 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -962,6 +962,19 @@ static const struct ath10k_mem_region qca4019_hw10_mem_regions[] = {
- 	},
- };
- 
-+static const struct ath10k_mem_region wcn399x_hw10_mem_regions[] = {
-+	{
-+		/* MSA region start is not fixed, hence it is assigned at runtime */
-+		.type = ATH10K_MEM_REGION_TYPE_MSA,
-+		.len = 0x100000,
-+		.name = "DRAM",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+};
-+
- static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
- 	{
- 		.hw_id = QCA6174_HW_1_0_VERSION,
-@@ -1059,6 +1072,14 @@ static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
- 			.size = ARRAY_SIZE(qca4019_hw10_mem_regions),
- 		},
- 	},
-+	{
-+		.hw_id = WCN3990_HW_1_0_DEV_VERSION,
-+		.hw_rev = ATH10K_HW_WCN3990,
-+		.region_table = {
-+			.regions = wcn399x_hw10_mem_regions,
-+			.size = ARRAY_SIZE(wcn399x_hw10_mem_regions),
-+		},
-+	},
- };
- 
- static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-index 5dac653e1649..9802e90483f4 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.h
-+++ b/drivers/net/wireless/ath/ath10k/coredump.h
-@@ -126,6 +126,7 @@ enum ath10k_mem_region_type {
- 	ATH10K_MEM_REGION_TYPE_IRAM2	= 5,
- 	ATH10K_MEM_REGION_TYPE_IOSRAM	= 6,
- 	ATH10K_MEM_REGION_TYPE_IOREG	= 7,
-+	ATH10K_MEM_REGION_TYPE_MSA	= 8,
- };
- 
- /* Define a section of the region which should be copied. As not all parts
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index ba8f5a8f83d1..8eb0f0f0d3a7 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -817,9 +817,13 @@ ath10k_qmi_driver_event_post(struct ath10k_qmi *qmi,
- static void ath10k_qmi_event_server_exit(struct ath10k_qmi *qmi)
- {
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 
- 	ath10k_qmi_remove_msa_permission(qmi);
- 	ath10k_core_free_board_files(ar);
-+	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
-+		ath10k_snoc_fw_crashed_dump(ar);
-+
- 	ath10k_snoc_fw_indication(ar, ATH10K_QMI_EVENT_FW_DOWN_IND);
- 	ath10k_dbg(ar, ATH10K_DBG_QMI, "wifi fw qmi service disconnected\n");
- }
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 0be12996beba..ecc0f884b123 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -24,6 +24,7 @@
- #include <linux/regulator/consumer.h>
- 
- #include "ce.h"
-+#include "coredump.h"
- #include "debug.h"
- #include "hif.h"
- #include "htc.h"
-@@ -1586,6 +1587,71 @@ static int ath10k_hw_power_off(struct ath10k *ar)
- 	return ret;
- }
- 
-+static void ath10k_msa_dump_memory(struct ath10k *ar,
-+				   struct ath10k_fw_crash_data *crash_data)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	const struct ath10k_hw_mem_layout *mem_layout;
-+	const struct ath10k_mem_region *current_region;
-+	struct ath10k_dump_ram_data_hdr *hdr;
-+	size_t buf_len;
-+	u8 *buf;
-+
-+	if (!crash_data && !crash_data->ramdump_buf)
-+		return;
-+
-+	mem_layout = ath10k_coredump_get_mem_layout(ar);
-+	if (!mem_layout)
-+		return;
-+
-+	current_region = &mem_layout->region_table.regions[0];
-+
-+	buf = crash_data->ramdump_buf;
-+	buf_len = crash_data->ramdump_buf_len;
-+	memset(buf, 0, buf_len);
-+
-+	/* Reserve space for the header. */
-+	hdr = (void *)buf;
-+	buf += sizeof(*hdr);
-+	buf_len -= sizeof(*hdr);
-+
-+	hdr->region_type = cpu_to_le32(current_region->type);
-+	hdr->start = cpu_to_le32(ar_snoc->qmi->msa_va);
-+	hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
-+
-+	if (current_region->len < ar_snoc->qmi->msa_mem_size) {
-+		memcpy(buf, ar_snoc->qmi->msa_va, current_region->len);
-+		ath10k_warn(ar, "msa dump length is less than msa size %x, %x\n",
-+			    current_region->len, ar_snoc->qmi->msa_mem_size);
-+	} else {
-+		memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
-+	}
-+}
-+
-+void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
-+{
-+	struct ath10k_fw_crash_data *crash_data;
-+	char guid[UUID_STRING_LEN + 1];
-+
-+	mutex_lock(&ar->dump_mutex);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	ar->stats.fw_crash_counter++;
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	crash_data = ath10k_coredump_new(ar);
-+
-+	if (crash_data)
-+		scnprintf(guid, sizeof(guid), "%pUl", &crash_data->guid);
-+	else
-+		scnprintf(guid, sizeof(guid), "n/a");
-+
-+	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
-+	ath10k_print_driver_info(ar);
-+	ath10k_msa_dump_memory(ar, crash_data);
-+	mutex_unlock(&ar->dump_mutex);
-+}
-+
- static const struct of_device_id ath10k_snoc_dt_match[] = {
- 	{ .compatible = "qcom,wcn3990-wifi",
- 	 .data = &drv_priv,
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 25383de8f17d..6d28a6290a94 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -101,5 +101,6 @@ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
- }
- 
- int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type);
-+void ath10k_snoc_fw_crashed_dump(struct ath10k *ar);
- 
- #endif /* _SNOC_H_ */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Linux 4.18 / latest firmware API 5
+ath10k_pci 0000:02:00.0: firmware crashed! (guid
+54a4649a-1240-4459-9442-9d498c49de79)
+ath10k_pci 0000:02:00.0: qca9377 hw1.1 target 0x05020001 chip_id
+0x003821ff sub 1a3b:2b31
+ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+ath10k_pci 0000:02:00.0: firmware ver WLAN.TF.1.0-00002-QCATFSWPZ-5
+api 5 features ignore-otp crc32 c3e0d04f
 
+Linux 4.15 / older firmware
+ath10k_pci 0000:02:00.0: firmware crashed! (guid
+7e1505fa-49e1-4fab-a7c5-a2352f1a47f6)
+ath10k_pci 0000:02:00.0: qca9377 hw1.1 target 0x05020001 chip_id
+0x003821ff sub 1a3b:2b31
+ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+ath10k_pci 0000:02:00.0: firmware ver WLAN.TF.1.0-00267-1 api 5
+features ignore-otp crc32 79cea2c7
+ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 8aedfa4a
+ath10k_pci 0000:02:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta
+32 raw 0 hwcrypto 1
+
+Linux 4.13 / same older firmware
+ath10k_pci 0000:02:00.0: firmware crashed! (uuid
+701e7d5e-b405-408c-ae27-7de285c38c8f)
+ath10k_pci 0000:02:00.0: qca9377 hw1.1 target 0x05020001 chip_id
+0x003821ff sub 1a3b:2b31
+ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+ath10k_pci 0000:02:00.0: firmware ver WLAN.TF.1.0-00267-1 api 5
+features ignore-otp crc32 79cea2c7
+ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 8aedfa4a
+ath10k_pci 0000:02:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta
+32 raw 0 hwcrypto 1
+
+Any further suggestions?
+
+Thanks
+Daniel
 
 _______________________________________________
 ath10k mailing list
