@@ -1,12 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from durin.narfation.org ([79.140.41.39])
+Received: from mail-eopbgr710112.outbound.protection.outlook.com
+ ([40.107.71.112] helo=NAM05-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hakSs-0003jn-Uw
- for ath10k@lists.infradead.org; Tue, 11 Jun 2019 17:21:45 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH v2] ath10k: fix max antenna gain unit
-Date: Tue, 11 Jun 2019 19:21:31 +0200
-Message-Id: <20190611172131.6064-1-sven@narfation.org>
+ id 1hbLUr-0004Bn-At
+ for ath10k@lists.infradead.org; Thu, 13 Jun 2019 08:54:14 +0000
+From: Patrick Daume <patrick.daume@dedrone.com>
+Subject: Re: Qualcomm Atheros QCA6174 monitoring mode receiving no data
+Date: Thu, 13 Jun 2019 08:54:10 +0000
+Message-ID: <1560416049.23005.9.camel@dedrone.com>
+References: <1559296628.11260.4.camel@dedrone.com>
+ <87lfyjyq9c.fsf@kamboji.qca.qualcomm.com>
+ <1559566253.12864.47.camel@dedrone.com>
+ <87zhmwvcs5.fsf@kamboji.qca.qualcomm.com>
+ <1559749116.10289.19.camel@dedrone.com>
+In-Reply-To: <1559749116.10289.19.camel@dedrone.com>
+Content-Language: en-US
+Content-ID: <C4B1459A05C9B547AF19D3A437D721A5@namprd15.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,94 +25,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Sven Eckelmann <seckelmann@datto.com>
+To: "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Sven Eckelmann <seckelmann@datto.com>
-
-Most of the txpower for the ath10k firmware is stored as twicepower (0.5 dB
-steps). This isn't the case for max_antenna_gain - which is still expected
-by the firmware as dB.
-
-The firmware is converting it from dB to the internal (twicepower)
-representation when it calculates the limits of a channel. This can be seen
-in tpc_stats when configuring "12" as max_antenna_gain. Instead of the
-expected 12 (6 dB), the tpc_stats shows 24 (12 dB).
-
-Tested on QCA9888 and IPQ4019 with firmware 10.4-3.5.3-00057.
-
-Fixes: 02256930d9b8 ("ath10k: use proper tx power unit")
-Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
----
-v2:
-* Add comments to wmi.h regarding the power unit
-
- drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
- drivers/net/wireless/ath/ath10k/wmi.h | 3 +++
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9c703d287333..35d026a2772a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1008,7 +1008,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- 	arg.channel.min_power = 0;
- 	arg.channel.max_power = channel->max_power * 2;
- 	arg.channel.max_reg_power = channel->max_reg_power * 2;
--	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
-+	arg.channel.max_antenna_gain = channel->max_antenna_gain;
- 
- 	reinit_completion(&ar->vdev_setup_done);
- 
-@@ -1450,7 +1450,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif,
- 	arg.channel.min_power = 0;
- 	arg.channel.max_power = chandef->chan->max_power * 2;
- 	arg.channel.max_reg_power = chandef->chan->max_reg_power * 2;
--	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain * 2;
-+	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain;
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
- 		arg.ssid = arvif->u.ap.ssid;
-@@ -3105,7 +3105,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
- 			ch->min_power = 0;
- 			ch->max_power = channel->max_power * 2;
- 			ch->max_reg_power = channel->max_reg_power * 2;
--			ch->max_antenna_gain = channel->max_antenna_gain * 2;
-+			ch->max_antenna_gain = channel->max_antenna_gain;
- 			ch->reg_class_id = 0; /* FIXME */
- 
- 			/* FIXME: why use only legacy modes, why not any
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e1c40bb69932..9cc0ef47deb7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2038,7 +2038,9 @@ struct wmi_channel {
- 	union {
- 		__le32 reginfo1;
- 		struct {
-+			/* note: power unit is 1 dBm */
- 			u8 antenna_max;
-+			/* note: power unit is 0.5 dBm */
- 			u8 max_tx_power;
- 		} __packed;
- 	} __packed;
-@@ -2058,6 +2060,7 @@ struct wmi_channel_arg {
- 	u32 min_power;
- 	u32 max_power;
- 	u32 max_reg_power;
-+	/* note: power unit is 1 dBm */
- 	u32 max_antenna_gain;
- 	u32 reg_class_id;
- 	enum wmi_phy_mode mode;
--- 
-2.20.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTWksIDIwMTktMDYtMDUgYXQgMTc6MzggKzAyMDAsIFBhdHJpY2sgRGF1bWUgd3JvdGU6DQo+
+IEkgdGVzdCBpdCB3aXRoIG1vZHByb2JlIG9wdGlvbiByYXdtb2RlPTEgYW5kIGl0IHNlZW1zIHRv
+IHdvcmsuDQo+IA0KPiBzb2x1dGlvbjoNCj4gDQo+IGxpbnV4IGtlcm5lbCA1LjEuMC1yYzctd3Qt
+YXRoKw0KPiBmaXJtd2FyZTogV0xBTi5STS40LjQuMS5jMy0wMDAzMA0KPiANCj4gc3VkbyBtb2Rw
+cm9iZSBhdGgxMGtfY29yZSByYXdtb2RlPTENCj4gc3VkbyBtb2Rwcm9iZSBhdGgxMGtfcGNpDQo+
+IA0KPiANCj4gQnV0IGlmIGkgY2FsbCB0Y3BkdW1wIGZvciBhIHdoaWxlIGkgZ290IHNvbWUgZXJy
+b3IgdHJhY2VzIGluIGRtZXNnLg0KPiBIb3cNCj4gY2FuIGkgZml4IHRoaXM/DQo+IA0KPiBbwqDC
+oDI4MS4xMDE2ODJdwqDCoHBpbmN0cmxfaW50ZWwgW2xhc3QgdW5sb2FkZWQ6IGNmZzgwMjExXQ0K
+PiBbwqDCoDI4MS4xMDE2OTRdIENQVTogMSBQSUQ6IDAgQ29tbTogc3dhcHBlci8xIFRhaW50ZWQ6
+DQo+IEfCoMKgwqDCoMKgwqDCoMKgV8KgwqDCoMKgwqDCoMKgwqDCoDUuMS4wLXJjNy13dC1hdGgr
+ICMzDQo+IFvCoMKgMjgxLjEwMTY5N10gSGFyZHdhcmUgbmFtZTrCoMKgLywgQklPUyA1LjExIDAz
+LzI0LzIwMTYNCj4gW8KgwqAyODEuMTAxNzAzXSBSSVA6IDAwMTA6c2tiX3RyaW0rMHgyZC8weDMw
+DQo+IFvCoMKgMjgxLjEwMTcwOF0gQ29kZTogMDAgMDAgMzkgNzcgNzAgNzcgMDIgZjMgYzMgOGIg
+NDcgNzQgODUgYzAgNzUgMWENCj4gNDggOGIgODcgYzggMDAgMDAgMDAgNDggMmIgODcgYzAgMDAg
+MDAgMDAgODkgNzcgNzAgMDEgYzYgODkgYjcgYjggMDANCj4gMDAgMDAgYzMgPDBmPiAwYiBjMyAw
+ZiAxZiA0NCAwMCAwMCA4YiA4NyBlOCAwMCAwMCAwMCA4YiA5NiBkMCAwMCAwMA0KPiAwMCAwMSBk
+MA0KPiBbwqDCoDI4MS4xMDE3MTJdIFJTUDogMDAxODpmZmZmOWQ0N2RkYTgzY2UwIEVGTEFHUzog
+MDAwMTAyMDYNCj4gW8KgwqAyODEuMTAxNzE3XSBSQVg6IDAwMDAwMDAwMDAwMDA0Y2MgUkJYOiAw
+MDAwMDAwMDAwMDA4MDAwIFJDWDoNCj4gZmZmZjlkNDdkZGE4M2U2MA0KPiBbwqDCoDI4MS4xMDE3
+MjBdIFJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IDAwMDAwMDAwMDAwMDBhZTAgUkRJOg0KPiBm
+ZmZmOWQ0N2QzZWViZjAwDQo+IFvCoMKgMjgxLjEwMTcyM10gUkJQOiAwMDAwMDAwMDAwMDAwMDA0
+IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6DQo+IDAwMDAwMDAwMDAwMDAwMDANCj4gW8KgwqAy
+ODEuMTAxNzI2XSBSMTA6IGZmZmZmMmMwNTE1OGQ4NDAgUjExOiBmZmZmOWQ0M2I0NDdlNGI4IFIx
+MjoNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiBbwqDCoDI4MS4xMDE3MjldIFIxMzogMDAwMDAwMDAw
+MDAwNDAwMCBSMTQ6IGZmZmY5ZDQ3ZDA0MjE2MjAgUjE1Og0KPiBmZmZmOWQ0N2QzZWViZjAwDQo+
+IFvCoMKgMjgxLjEwMTczNF0gRlM6wqDCoDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjlk
+NDdkZGE4MDAwMCgwMDAwKQ0KPiBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+IFvCoMKgMjgxLjEw
+MTczN10gQ1M6wqDCoDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMz
+DQo+IFvCoMKgMjgxLjEwMTc0MV0gQ1IyOiAwMDAwNTYxMTBmMDU4MGE0IENSMzogMDAwMDAwMDNh
+MTIwZTAwMyBDUjQ6DQo+IDAwMDAwMDAwMDAzNjA2ZTANCj4gW8KgwqAyODEuMTAxNzQ0XSBEUjA6
+IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjoNCj4gMDAwMDAwMDAw
+MDAwMDAwMA0KPiBbwqDCoDI4MS4xMDE3NDddIERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAw
+MDAwMDAwZmZmZTBmZjAgRFI3Og0KPiAwMDAwMDAwMDAwMDAwNDAwDQo+IFvCoMKgMjgxLjEwMTc0
+OV0gQ2FsbCBUcmFjZToNCj4gW8KgwqAyODEuMTAxNzU1XcKgwqA8SVJRPg0KPiBbwqDCoDI4MS4x
+MDE3OThdwqDCoGF0aDEwa19odHRfcnhfaF9tcGR1KzB4NmE1LzB4YWIwIFthdGgxMGtfY29yZV0N
+Cj4gW8KgwqAyODEuMTAxODEzXcKgwqA/IHN3aW90bGJfbWFwKzB4NmIvMHgxYzANCj4gW8KgwqAy
+ODEuMTAxODQ2XcKgwqBhdGgxMGtfaHR0X3R4cnhfY29tcGxfdGFzaysweGM0Zi8weDE0OTAgW2F0
+aDEwa19jb3JlXQ0KPiBbwqDCoDI4MS4xMDE4NjRdwqDCoGF0aDEwa19wY2lfbmFwaV9wb2xsKzB4
+NTEvMHgxMzAgW2F0aDEwa19wY2ldDQo+IFvCoMKgMjgxLjEwMTg3Nl3CoMKgbmV0X3J4X2FjdGlv
+bisweDI3ZS8weDNkMA0KPiBbwqDCoDI4MS4xMDE4ODhdwqDCoF9fZG9fc29mdGlycSsweGZkLzB4
+MmQ4DQo+IFvCoMKgMjgxLjEwMTg5OV3CoMKgaXJxX2V4aXQrMHhhZS8weGIwDQo+IFvCoMKgMjgx
+LjEwMTkwNl3CoMKgZG9fSVJRKzB4NTIvMHhlMA0KPiBbwqDCoDI4MS4xMDE5MTNdwqDCoGNvbW1v
+bl9pbnRlcnJ1cHQrMHhmLzB4Zg0KPiBbwqDCoDI4MS4xMDE5MTddwqDCoDwvSVJRPg0KPiBbwqDC
+oDI4MS4xMDE5MjhdIFJJUDogMDAxMDpjcHVpZGxlX2VudGVyX3N0YXRlKzB4YzQvMHg0NjANCj4g
+W8KgwqAyODEuMTAxOTMyXSBDb2RlOiBlOCA3MSBmNyA5MCBmZiA4MCA3YyAyNCAwZiAwMCA3NCAx
+NyA5YyA1OCAwZiAxZg0KPiA0NCAwMCAwMCBmNiBjNCAwMiAwZiA4NSA2NSAwMyAwMCAwMCAzMSBm
+ZiBlOCBiMyBmNiA5NiBmZiBmYiA2NiAwZiAxZg0KPiA0NCAwMCAwMCA8NDU+IDg1IGU0IDBmIDg4
+IDM1IDAzIDAwIDAwIDRjIDJiIDdjIDI0IDEwIDQ4IGJhIGNmIGY3IDUzDQo+IGUzIGE1IDliDQo+
+IFvCoMKgMjgxLjEwMTkzNl0gUlNQOiAwMDE4OmZmZmZhY2VmNDE5NDNlODggRUZMQUdTOiAwMDAw
+MDI0NiBPUklHX1JBWDoNCj4gZmZmZmZmZmZmZmZmZmZkZA0KPiBbwqDCoDI4MS4xMDE5NDFdIFJB
+WDogZmZmZjlkNDdkZGFhMmM4MCBSQlg6IGZmZmZmZmZmYWQyZDc4NjAgUkNYOg0KPiAwMDAwMDAw
+MDAwMDAwMDFmDQo+IFvCoMKgMjgxLjEwMTk0NF0gUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJTSTog
+MDAwMDAwMDAyZDk1ODQwMyBSREk6DQo+IDAwMDAwMDAwMDAwMDAwMDANCj4gW8KgwqAyODEuMTAx
+OTQ3XSBSQlA6IGZmZmY5ZDQ3ZGRhYWMxMDAgUjA4OiBmZmZmZmZmY2E4ZjEyNmE3IFIwOToNCj4g
+ZmZmZjlkNDdkZGFhMWNhNA0KPiBbwqDCoDI4MS4xMDE5NTBdIFIxMDogMDAwMDAwMDAwMDAwMDAx
+OCBSMTE6IDAwMDAwMDAwMDAwMDI2MTUgUjEyOg0KPiAwMDAwMDAwMDAwMDAwMDA4DQo+IFvCoMKg
+MjgxLjEwMTk1M10gUjEzOiAwMDAwMDAwMDAwMDAwMDA4IFIxNDogZmZmZmZmZmZhZDJkNzg2MCBS
+MTU6DQo+IDAwMDAwMDQxNzJmMmY0NTMNCj4gW8KgwqAyODEuMTAxOTY1XcKgwqA/IGNwdWlkbGVf
+ZW50ZXJfc3RhdGUrMHg5Zi8weDQ2MA0KPiBbwqDCoDI4MS4xMDE5NzJdwqDCoGRvX2lkbGUrMHgy
+MDIvMHgyODANCj4gW8KgwqAyODEuMTAxOTgwXcKgwqBjcHVfc3RhcnR1cF9lbnRyeSsweDE5LzB4
+MjANCj4gW8KgwqAyODEuMTAxOTkwXcKgwqBzdGFydF9zZWNvbmRhcnkrMHgxN2EvMHgxZDANCj4g
+W8KgwqAyODEuMTAxOTk5XcKgwqBzZWNvbmRhcnlfc3RhcnR1cF82NCsweGE0LzB4YjANCj4gW8Kg
+wqAyODEuMTAyMDA2XSAtLS1bIGVuZCB0cmFjZSAyM2RjNmRkYjA5MzM5NmM1IF0tLS0NCj4gW8Kg
+wqAzMDYuMTI2NDU0XSBkZXZpY2Ugd2xwMnMwIGVudGVyZWQgcHJvbWlzY3VvdXMgbW9kZQ0KPiBb
+wqDCoDMxNy43MDA4MzVdIGRldmljZSB3bHAyczAgbGVmdCBwcm9taXNjdW91cyBtb2RlDQoNCg0K
+DQoNCg0KDQoNCg0KaHR0Lmg6MjIyNg0KDQovKg0KwqAqIFNob3VsZCBiZTogc2l6ZW9mKHN0cnVj
+dCBodHRfaG9zdF9yeF9kZXNjKSArIG1heCByeCBNU0RVIHNpemUsDQo+PiAqIHNpemVvZihzdHJ1
+Y3QgaHR0X2hvc3RfcnhfZGVzYykgMzYwIGJ5dGVzICsgbWF4IE1QRFUvfk1EU1Ugc2l6ZQ0KODAy
+LjExQUMgMTYuMzg0IGJ5dGVzICgyXjE0KSArICgyXjkpDQrCoCogcm91bmRlZCB1cCB0byBhIGNh
+Y2hlIGxpbmUgc2l6ZS4NCsKgKi8NCj4+ICNkZWZpbmUgSFRUX1JYX0JVRl9TSVpFIDE2ODk2DQoj
+ZGVmaW5lIEhUVF9SWF9NU0RVX1NJWkUgKEhUVF9SWF9CVUZfU0laRSAtIChpbnQpc2l6ZW9mKHN0
+cnVjdA0KaHR0X3J4X2Rlc2MpKQ0KDQoNCg0KDQoNCmh0dF9yeC5jOjEzOTAsIGF0aDEwa19odHRf
+cnhfaF91bmRlY2FwX3Jhdw0KDQppZiAoV0FSTl9PTl9PTkNFKCEoaXNfZmlyc3QgJiYgaXNfbGFz
+dCkgJiYgIW1zZHVfbGltaXRfZXJyKSkNCglyZXR1cm47DQoNCi8qIFdlIHNlZSB6ZXJvIGxlbmd0
+aCBtc2R1cyBhbmQgZ3JlYXRlciBtYXggbGVuZ2h0IG1zZHVzLA0KwqAqIG5vdCBzdXJlIHdoeS4g
+QXQgbGVhc3QgZG9uJ3QgdHJ5IHRvIHRyaW0gaXQgZnVydGhlci4NCsKgKi8NCj4+IGlmICh1bmxp
+a2VseShtc2R1LT5sZW4gPCBGQ1NfTEVOIHx8IG1zZHUtPmxlbiA+IEhUVF9SWF9NU0RVX1NJWkUp
+KQ0KPj4JcmV0dXJuOw0KDQpza2JfdHJpbShtc2R1LCBtc2R1LT5sZW4gLSBGQ1NfTEVOKTsNCg0K
+DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
