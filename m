@@ -1,22 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr770090.outbound.protection.outlook.com
- ([40.107.77.90] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr770133.outbound.protection.outlook.com
+ ([40.107.77.133] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hbLdm-00007W-G7
- for ath10k@lists.infradead.org; Thu, 13 Jun 2019 09:03:27 +0000
+ id 1hbLer-0000GV-AQ
+ for ath10k@lists.infradead.org; Thu, 13 Jun 2019 09:04:38 +0000
 From: Patrick Daume <patrick.daume@dedrone.com>
-Subject: Re: Qualcomm Atheros QCA6174 monitoring mode receiving no data
-Date: Thu, 13 Jun 2019 09:03:22 +0000
-Message-ID: <1560416602.23005.13.camel@dedrone.com>
-References: <1559296628.11260.4.camel@dedrone.com>
- <87lfyjyq9c.fsf@kamboji.qca.qualcomm.com>
- <1559566253.12864.47.camel@dedrone.com>
- <87zhmwvcs5.fsf@kamboji.qca.qualcomm.com>
- <1559749116.10289.19.camel@dedrone.com>
- <1560416049.23005.9.camel@dedrone.com>
-In-Reply-To: <1560416049.23005.9.camel@dedrone.com>
+Subject: ath10k kernel cannot allocate memory after some ifupdown cycles
+Date: Thu, 13 Jun 2019 09:04:30 +0000
+Message-ID: <1560416670.23005.15.camel@dedrone.com>
 Content-Language: en-US
-Content-ID: <DD3FBA7EAC5A444999594522A6F09F38@namprd15.prod.outlook.com>
+Content-ID: <B76E552F0675CC48B7C86964F5658E2E@namprd15.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,28 +19,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SSBoYXZlIGEgc29sdXRpb24gZm9yIHRoaXMgaXNzdWUsDQpwbGVhc2UgZmluZCBvdXQgaWYgaXRz
-IHRoZSByaWdodCB3YXkNCg0KaHR0Lmg6MjIyNg0KDQovKg0KwqAqIFNob3VsZCBiZTogc2l6ZW9m
-KHN0cnVjdCBodHRfaG9zdF9yeF9kZXNjKSArIG1heCByeCBNU0RVIHNpemUsDQo+PiAqIHNpemVv
-ZihzdHJ1Y3QgaHR0X2hvc3RfcnhfZGVzYykgMzYwIGJ5dGVzICsgbWF4IE1QRFUvfk1EU1Ugc2l6
-ZQ0KODAyLjExQUMgMTYuMzg0IGJ5dGVzICgyXjE0KSArICgyXjkpDQrCoCogcm91bmRlZCB1cCB0
-byBhIGNhY2hlIGxpbmUgc2l6ZS4NCsKgKi8NCj4+ICNkZWZpbmUgSFRUX1JYX0JVRl9TSVpFIDE2
-ODk2DQojZGVmaW5lIEhUVF9SWF9NU0RVX1NJWkUgKEhUVF9SWF9CVUZfU0laRSAtIChpbnQpc2l6
-ZW9mKHN0cnVjdA0KaHR0X3J4X2Rlc2MpKQ0KDQoNCg0KDQoNCmh0dF9yeC5jOjEzOTAsIGF0aDEw
-a19odHRfcnhfaF91bmRlY2FwX3Jhdw0KDQppZiAoV0FSTl9PTl9PTkNFKCEoaXNfZmlyc3QgJiYg
-aXNfbGFzdCkgJiYgIW1zZHVfbGltaXRfZXJyKSkNCsKgwqDCoMKgwqDCoMKgwqByZXR1cm47DQoN
-Ci8qIFdlIHNlZSB6ZXJvIGxlbmd0aCBtc2R1cyBhbmQgZ3JlYXRlciBtYXggbGVuZ2h0IG1zZHVz
-LA0KwqAqIG5vdCBzdXJlIHdoeS4gQXQgbGVhc3QgZG9uJ3QgdHJ5IHRvIHRyaW0gaXQgZnVydGhl
-ci4NCsKgKi8NCj4+IGlmICh1bmxpa2VseShtc2R1LT5sZW4gPCBGQ1NfTEVOIHx8IG1zZHUtPmxl
-biA+IEhUVF9SWF9NU0RVX1NJWkUpKQ0KPj7CoMKgwqDCoMKgwqByZXR1cm47DQoNCnNrYl90cmlt
-KG1zZHUsIG1zZHUtPmxlbiAtIEZDU19MRU4pOwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+I've an SparkLan WPEQ-261ACN(BT) Qualcomm Atheros QCA6174 chipset on an 4.4.38 Kernel with the newest kernel backport 'v5.1-rc2'.
+When i toggle the wlan0 interface in 10s cycles then the kernel cannot allocate memory after a while.
+Can anyone point out which patches may be relavant to fix this issue?
+
+watch -n 10 sudo ./toggle.sh
++ sudo ifup wlan0
+RTNETLINK answers: Cannot allocate memory
++ sleep 10s
++ sudo ifdown wlan0
+
+dmesg
+[ 1917.775193] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 1917.812460] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 1943.467822] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 1943.508383] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 1969.157238] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 1969.196090] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 1994.850710] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 1994.891609] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2020.546382] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2020.587174] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2046.241897] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2046.283581] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2071.937823] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2071.979395] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2097.633628] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2097.675403] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2123.330689] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2123.381449] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2149.033861] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2149.080214] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2174.734434] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2174.776393] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2200.413865] ath10k_pci 0000:01:00.0: failed to write diag value at 0xa7000: -12
+[ 2200.423219] ath10k_pci 0000:01:00.0: failed to download firmware via diag interface:-12
+[ 2200.433298] ath10k_pci 0000:01:00.0: failed to upload firmware via diag ce, trying BMI: -12
+[ 2200.992785] ath10k_pci 0000:01:00.0: unsupported HTC service id: 1536
+[ 2201.034673] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 2216.242340] ath10k_pci 0000:01:00.0: failed to read hi_board_data address: -12
+[ 2226.622023] ath10k_pci 0000:01:00.0: Failed to get pcie state addr: -12
+[ 2226.629859] ath10k_pci 0000:01:00.0: failed to setup init config: -12
+[ 2226.637622] ath10k_pci 0000:01:00.0: Could not init hif: -12
+
+
+hwinfo
+description: Ethernet interface
+product: QCA6174 802.11ac Wireless Network Adapter
+vendor: Qualcomm Atheros
+physical id: 0
+bus info: pci@0000:01:00.0
+logical name: wlan0
+version: 32
+serial: [REMOVED]
+width: 64 bits
+clock: 33MHz
+capabilities: bus_master cap_list ethernet physical
+configuration: broadcast=yes driver=ath10k_pci driverversion=4.4.38 firmware=WLAN.RM.4.4.1.c3-00030 latency=0 link=no multicast=yes
+resources: irq:452 memory:50200000-503fffff
+
+
+>>
+#/bin/bash
+
+set -x
+
+sudo ifup wlan0
+sleep 10s
+sudo ifdown wlan0
+<<
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
