@@ -1,26 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hbgXv-0005Jm-Ky
- for ath10k@lists.infradead.org; Fri, 14 Jun 2019 07:22:49 +0000
-Message-ID: <30365971038fd772ea766bb3c429f218648f6547.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] mac80211: remove warning message
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 14 Jun 2019 09:22:37 +0200
-In-Reply-To: <143d044082b54b2be41ba3760390d97f@codeaurora.org>
-References: <1557824507-17668-1-git-send-email-yiboz@codeaurora.org>
- <7c92f5cf51eaec1d5449698d90f5b6c5ca6c2bea.camel@sipsolutions.net>
- <ccb48284f0d96e72f4c041e12c943f0a@codeaurora.org>
- <e2a6596b99085541a5886c0d0d6393c849ac2d57.camel@sipsolutions.net>
- <34f72d5db336b9898618bf1c5c15ec41094d7d06.camel@perches.com>
- <4d013893-3302-14f0-c957-b3771f4b6b82@candelatech.com>
- <8eacb8e107c854b64a0c6116fca9731ddd99dcac.camel@sipsolutions.net>
- <730d3664-488d-7d57-04d5-1a57e91fa070@candelatech.com>
- <ea87337c24666355059488b42d97ee22711ce7b8.camel@sipsolutions.net>
- <bbfd69ccb4289ba3f1767c1066f61ee1@codeaurora.org>
- <143d044082b54b2be41ba3760390d97f@codeaurora.org>
-Mime-Version: 1.0
+ id 1hbjy8-0003Vo-Of
+ for ath10k@lists.infradead.org; Fri, 14 Jun 2019 11:02:06 +0000
+From: Yibo Zhao <yiboz@codeaurora.org>
+Subject: [PATCH] mac80211: suppress kernel warning message
+Date: Fri, 14 Jun 2019 19:01:52 +0800
+Message-Id: <1560510112-21613-1-git-send-email-yiboz@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +15,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>
-Cc: Zhi Chen <zhichen@codeaurora.org>, Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Zhi Chen <zhichen@codeaurora.org>, Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On Fri, 2019-06-14 at 10:52 +0800, Yibo Zhao wrote:
-> 
-> May I know if it is fine that WARN_ON_ONCE() to be applied in kernel in 
-> the future? If a separate patch for it is needed, please let me know so 
-> that I can raise a new one.
+In multiple SSID cases, it takes time to prepare every AP interface
+to be ready in initializing phase. If a sta already knows everything it
+needs to join one of the APs and sends authentication to the AP which
+is not fully prepared at this point of time, AP's channel context
+could be NULL. As a result, warning message occurs.
 
-Please do send a new patch.
+Even worse, if the AP is under attack via tools such as MDK3 and massive
+authentication requests are received in a very short time, console will
+be hung due to kernel warning messages.
 
-johannes
+WARN_ON_ONCE() could be a better way for indicating warning messages
+without duplicate messages to flood the console.
+
+Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
+---
+ net/mac80211/ieee80211_i.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
+index a8af4aa..682d0ab 100644
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -1435,7 +1435,7 @@ struct ieee80211_local {
+ 	rcu_read_lock();
+ 	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
+ 
+-	if (WARN_ON(!chanctx_conf)) {
++	if (WARN_ON_ONCE(!chanctx_conf)) {
+ 		rcu_read_unlock();
+ 		return NULL;
+ 	}
+-- 
+1.9.1
 
 
 _______________________________________________
