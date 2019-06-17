@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcmCR-0005ZF-3n
- for ath10k@lists.infradead.org; Mon, 17 Jun 2019 07:37:08 +0000
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v3 4/7] lib/hexdump.c: Replace ascii bool in
- hex_dump_to_buffer with flags
-In-Reply-To: <20190617020430.8708-5-alastair@au1.ibm.com>
-References: <20190617020430.8708-1-alastair@au1.ibm.com>
- <20190617020430.8708-5-alastair@au1.ibm.com>
-Date: Mon, 17 Jun 2019 10:39:53 +0300
-Message-ID: <87imt4vewm.fsf@intel.com>
-MIME-Version: 1.0
+ id 1hcmCw-00060s-O2
+ for ath10k@lists.infradead.org; Mon, 17 Jun 2019 07:37:40 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: add new hw_ops for sdio chip
+Date: Mon, 17 Jun 2019 15:37:28 +0800
+Message-Id: <1560757048-19223-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +15,92 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alastair D'Silva <alastair@au1.ibm.com>, alastair@d-silva.org
-Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Mon, 17 Jun 2019, "Alastair D'Silva" <alastair@au1.ibm.com> wrote:
-> From: Alastair D'Silva <alastair@d-silva.org>
->
-> In order to support additional features in hex_dump_to_buffer, replace
-> the ascii bool parameter with flags.
->
-> Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
-> ---
->  drivers/gpu/drm/i915/intel_engine_cs.c            |  2 +-
->  drivers/isdn/hardware/mISDN/mISDNisar.c           |  6 ++++--
->  drivers/mailbox/mailbox-test.c                    |  2 +-
->  drivers/net/ethernet/amd/xgbe/xgbe-drv.c          |  2 +-
->  drivers/net/ethernet/synopsys/dwc-xlgmac-common.c |  2 +-
->  drivers/net/wireless/ath/ath10k/debug.c           |  3 ++-
->  drivers/net/wireless/intel/iwlegacy/3945-mac.c    |  2 +-
->  drivers/platform/chrome/wilco_ec/debugfs.c        |  2 +-
->  drivers/scsi/scsi_logging.c                       |  8 +++-----
->  drivers/staging/fbtft/fbtft-core.c                |  2 +-
->  fs/seq_file.c                                     |  3 ++-
->  include/linux/printk.h                            |  8 ++++----
->  lib/hexdump.c                                     | 15 ++++++++-------
->  lib/test_hexdump.c                                |  5 +++--
->  14 files changed, 33 insertions(+), 29 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/intel_engine_cs.c b/drivers/gpu/drm/i915/intel_engine_cs.c
-> index eea9bec04f1b..5df5fffdb848 100644
-> --- a/drivers/gpu/drm/i915/intel_engine_cs.c
-> +++ b/drivers/gpu/drm/i915/intel_engine_cs.c
-> @@ -1340,7 +1340,7 @@ static void hexdump(struct drm_printer *m, const void *buf, size_t len)
->  		WARN_ON_ONCE(hex_dump_to_buffer(buf + pos, len - pos,
->  						rowsize, sizeof(u32),
->  						line, sizeof(line),
-> -						false) >= sizeof(line));
-> +						0) >= sizeof(line));
->  		drm_printf(m, "[%04zx] %s\n", pos, line);
->  
->  		prev = buf + pos;
+It report error message while suspend/resume test.
+dmesg log:
+[  150.749962] ath10k_sdio mmc1:0001:1: hif read32 not supported
+[  150.755728] ath10k_sdio mmc1:0001:1: failed to set coverage class: expected integer microsecond value in register
 
-On i915,
+Reason is sdio chip does not support set_coverage_class as well as
+pcie chip, remove the set_coverage_class handler will avoid it.
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+callstack of the error message:
+OUTLINED_FUNCTION_6+0xc/0x14 [ath10k_core]
+ath10k_mac_op_set_coverage_class+0x2c/0x40 [ath10k_core]
+ieee80211_reconfig+0x5d0/0x108c [mac80211]
+ieee80211_resume+0x34/0x6c [mac80211]
+wiphy_resume+0xbc/0x13c [cfg80211]
+dpm_run_callback+0xa4/0x168
+device_resume+0x1d4/0x200
+async_resume+0x1c/0x34
+async_run_entry_fn+0x48/0xf8
+process_one_work+0x178/0x2f8
+worker_thread+0x1d8/0x2cc
+kthread+0x11c/0x12c
+ret_from_fork+0x10/0x18
 
+the error log will not happen after this patch applied.
 
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ drivers/net/wireless/ath/ath10k/hw.c   | 4 ++++
+ drivers/net/wireless/ath/ath10k/hw.h   | 1 +
+ 3 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 76504bc..3c6d921 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -101,7 +101,7 @@
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_ops = &qca6174_ops,
++		.hw_ops = &qca6174_sdio_ops,
+ 		.hw_clk = qca6174_clk,
+ 		.target_cpu_freq = 176000000,
+ 		.decap_align_bytes = 4,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index ad082b7..a6a38c9 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -1153,6 +1153,10 @@ static bool ath10k_qca99x0_rx_desc_msdu_limit_error(struct htt_rx_desc *rxd)
+ 	.is_rssi_enable = ath10k_htt_tx_rssi_enable,
+ };
+ 
++const struct ath10k_hw_ops qca6174_sdio_ops = {
++	.enable_pll_clk = ath10k_hw_qca6174_enable_pll_clock,
++};
++
+ const struct ath10k_hw_ops wcn3990_ops = {
+ 	.tx_data_rssi_pad_bytes = ath10k_get_htt_tx_data_rssi_pad,
+ 	.is_rssi_enable = ath10k_htt_tx_rssi_enable_wcn3990,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 54c01f1..3a6f87e 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -626,6 +626,7 @@ struct ath10k_hw_ops {
+ extern const struct ath10k_hw_ops qca988x_ops;
+ extern const struct ath10k_hw_ops qca99x0_ops;
+ extern const struct ath10k_hw_ops qca6174_ops;
++extern const struct ath10k_hw_ops qca6174_sdio_ops;
+ extern const struct ath10k_hw_ops wcn3990_ops;
+ 
+ extern const struct ath10k_hw_clk_params qca6174_clk[];
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
