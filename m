@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
- id 1hcu6n-0004oz-OB
- for ath10k@lists.infradead.org; Mon, 17 Jun 2019 16:03:51 +0000
-Subject: Re: [PATCH] ath10k: add mic bytes for pmf management packet
-References: <1560757079-19266-1-git-send-email-wgong@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <136d04d4-671b-8dde-2abd-63070b07bd26@candelatech.com>
-Date: Mon, 17 Jun 2019 09:03:41 -0700
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hcxpg-0004KV-Kf
+ for ath10k@lists.infradead.org; Mon, 17 Jun 2019 20:02:25 +0000
+Received: by mail-lf1-x141.google.com with SMTP id y17so7515476lfe.0
+ for <ath10k@lists.infradead.org>; Mon, 17 Jun 2019 13:02:23 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [PATCH 1/2] mac80211: add tx dequeue function for process context
+Date: Mon, 17 Jun 2019 22:01:39 +0200
+Message-Id: <20190617200140.6189-1-erik.stromdahl@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1560757079-19266-1-git-send-email-wgong@codeaurora.org>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,107 +18,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: johannes@sipsolutions.net, kvalo@codeaurora.org, davem@davemloft.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-On 6/17/19 12:37 AM, Wen Gong wrote:
-> For PMF case, the action,deauth,disassoc management need to encrypt
-> by hardware, it need to reserve 8 bytes for encryption, otherwise
-> the packet will be sent out with error format, then PMF case will
-> fail.
-> 
-> After add the 8 bytes, it will pass the PMF case.
-> 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00005-QCARMSWP-1.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> ---
->   drivers/net/wireless/ath/ath10k/htt_tx.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-> index d8e9cc0..7bef9d9 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-> @@ -1236,6 +1236,7 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
->   	struct ath10k *ar = htt->ar;
->   	int res, data_len;
->   	struct htt_cmd_hdr *cmd_hdr;
-> +	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
->   	struct htt_data_tx_desc *tx_desc;
->   	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
->   	struct sk_buff *tmp_skb;
-> @@ -1245,6 +1246,13 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
->   	u8 flags0 = 0;
->   	u16 flags1 = 0;
->   
-> +	if ((ieee80211_is_action(hdr->frame_control) ||
-> +	     ieee80211_is_deauth(hdr->frame_control) ||
-> +	     ieee80211_is_disassoc(hdr->frame_control)) &&
-> +	     ieee80211_has_protected(hdr->frame_control)) {
-> +		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-> +	}
+Since ieee80211_tx_dequeue() must not be called with softirqs enabled
+(i.e. from process context without proper disable of bottom halves),
+we add a wrapper that disables bottom halves before calling
+ieee80211_tx_dequeue()
 
-I was looking at mac80211 code recently, and it seems some action
-frames are NOT supposed to be protected.  I added my own helper
-method to my local ath10k.  Maybe you want to use this?
+The new function is named ieee80211_tx_dequeue_ni() just as all other
+from-process-context versions found in mac80211.
 
+The documentation of ieee80211_tx_dequeue() is also updated so it
+mentions that the function should not be called from process context.
 
-/* Copied from ieee80211_is_robust_mgmt_frame, but disable the check for has_protected
-  * since we do tx hw crypt, and it won't actually be encrypted even when this flag is
-  * set.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ include/net/mac80211.h | 26 ++++++++++++++++++++++++++
+ net/mac80211/tx.c      |  2 ++
+ 2 files changed, 28 insertions(+)
+
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 72080d9d617e..c47990d8db79 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -6251,10 +6251,36 @@ void ieee80211_unreserve_tid(struct ieee80211_sta *sta, u8 tid);
+  * but for the duration of the frame handling.
+  * However, also note that while in the wake_tx_queue() method,
+  * rcu_read_lock() is already held.
++ *
++ * softirqs must also be disabled when this function is called.
++ * In process context, use ieee80211_tx_dequeue_ni() instead.
   */
-bool ieee80211_is_robust_mgmt_frame_tx(struct ieee80211_hdr *hdr)
-{
-         if (ieee80211_is_disassoc(hdr->frame_control) ||
-             ieee80211_is_deauth(hdr->frame_control))
-                 return true;
-
-         if (ieee80211_is_action(hdr->frame_control)) {
-                 u8 *category;
-
-                 /*
-                  * Action frames, excluding Public Action frames, are Robust
-                  * Management Frames. However, if we are looking at a Protected
-                  * frame, skip the check since the data may be encrypted and
-                  * the frame has already been found to be a Robust Management
-                  * Frame (by the other end).
-                  */
-		/*
-		if (ieee80211_has_protected(hdr->frame_control))
-                         return true;
-		*/
-                 category = ((u8 *) hdr) + 24;
-                 return *category != WLAN_CATEGORY_PUBLIC &&
-                         *category != WLAN_CATEGORY_HT &&
-                         *category != WLAN_CATEGORY_WNM_UNPROTECTED &&
-                         *category != WLAN_CATEGORY_SELF_PROTECTED &&
-                         *category != WLAN_CATEGORY_UNPROT_DMG &&
-                         *category != WLAN_CATEGORY_VHT &&
-                         *category != WLAN_CATEGORY_VENDOR_SPECIFIC;
-         }
-
-         return false;
-}
-
-Thanks,
-Ben
-
-> +
->   	data_len = msdu->len;
->   
->   	switch (txmode) {
-> 
-
-
+ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
+ 				     struct ieee80211_txq *txq);
+ 
++/**
++ * ieee80211_tx_dequeue_ni - dequeue a packet from a software tx queue
++ * (in process context)
++ *
++ * Like ieee80211_tx_dequeue() but can be called in process context
++ * (internally disables bottom halves).
++ *
++ * @hw: pointer as obtained from ieee80211_alloc_hw()
++ * @txq: pointer obtained from station or virtual interface, or from
++ *	ieee80211_next_txq()
++ */
++static inline struct sk_buff *ieee80211_tx_dequeue_ni(struct ieee80211_hw *hw,
++						      struct ieee80211_txq *txq)
++{
++	struct sk_buff *skb;
++
++	local_bh_disable();
++	skb = ieee80211_tx_dequeue(hw, txq);
++	local_bh_enable();
++
++	return skb;
++}
++
+ /**
+  * ieee80211_next_txq - get next tx queue to pull packets from
+  *
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index dd220b977025..4bd0066ea7cd 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -3550,6 +3550,8 @@ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
+ 	ieee80211_tx_result r;
+ 	struct ieee80211_vif *vif = txq->vif;
+ 
++	WARN_ON_ONCE(softirq_count() == 0);
++
+ begin:
+ 	spin_lock_bh(&fq->lock);
+ 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.22.0
 
 
 _______________________________________________
