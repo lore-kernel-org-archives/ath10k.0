@@ -1,29 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hch3U-0006WD-Bl
- for ath10k@lists.infradead.org; Mon, 17 Jun 2019 02:07:34 +0000
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
- x5H27TRc014710
- for <ath10k@lists.infradead.org>; Sun, 16 Jun 2019 22:07:31 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2t61jcgbqp-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ath10k@lists.infradead.org>; Sun, 16 Jun 2019 22:07:31 -0400
-Received: from localhost
- by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <ath10k@lists.infradead.org> from <alastair@au1.ibm.com>;
- Mon, 17 Jun 2019 03:06:53 +0100
-From: "Alastair D'Silva" <alastair@au1.ibm.com>
-Subject: [PATCH v3 5/7] lib/hexdump.c: Allow multiple groups to be separated
- by lines '|'
-Date: Mon, 17 Jun 2019 12:04:28 +1000
-In-Reply-To: <20190617020430.8708-1-alastair@au1.ibm.com>
+Received: from ushosting.nmnhosting.com ([66.55.73.32])
+ by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
+ id 1hcivm-00012E-Co
+ for ath10k@lists.infradead.org; Mon, 17 Jun 2019 04:07:43 +0000
+Message-ID: <da2ff58290c4b6f08eb5ac25c288bdd03b5688f7.camel@d-silva.org>
+Subject: Re: [PATCH v3 3/7] lib/hexdump.c: Optionally suppress lines of
+ repeated bytes
+From: "Alastair D'Silva" <alastair@d-silva.org>
+Date: Mon, 17 Jun 2019 14:07:12 +1000
+In-Reply-To: <20190617020430.8708-4-alastair@au1.ibm.com>
 References: <20190617020430.8708-1-alastair@au1.ibm.com>
+ <20190617020430.8708-4-alastair@au1.ibm.com>
 MIME-Version: 1.0
-Message-Id: <20190617020430.8708-6-alastair@au1.ibm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,193 +24,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: alastair@d-silva.org
-Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Jani Nikula <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Alexander Viro <viro@zeniv.linux.org.uk>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
 
-From: Alastair D'Silva <alastair@d-silva.org>
+On Mon, 2019-06-17 at 12:04 +1000, Alastair D'Silva wrote:
+> From: Alastair D'Silva <alastair@d-silva.org>
+> 
+> Some buffers may only be partially filled with useful data, while the
+> rest
+> is padded (typically with 0x00 or 0xff).
+> 
+> This patch introduces a flag to allow the supression of lines of
+> repeated
+> bytes, which are replaced with '** Skipped %u bytes of value 0x%x **'
+> 
+> An inline wrapper function is provided for backwards compatibility
+> with
+> existing code, which maintains the original behaviour.
+> 
+> Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
+> ---
+>  include/linux/printk.h | 25 +++++++++---
+>  lib/hexdump.c          | 91 ++++++++++++++++++++++++++++++++++++--
+> ----
+>  2 files changed, 99 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index cefd374c47b1..d7754799cfe0 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -481,13 +481,18 @@ enum {
+>  	DUMP_PREFIX_ADDRESS,
+>  	DUMP_PREFIX_OFFSET
+>  };
+> +
+>  extern int hex_dump_to_buffer(const void *buf, size_t len, int
+> rowsize,
+>  			      int groupsize, char *linebuf, size_t
+> linebuflen,
+>  			      bool ascii);
+> +
+> +#define HEXDUMP_ASCII			BIT(0)
+> +#define HEXDUMP_SUPPRESS_REPEATED	BIT(1)
+> +
 
-With the wider display format, it can become hard to identify how many
-bytes into the line you are looking at.
+This is missing the include of linux/bits.h, I'll fix this in the next
+version.
 
-The patch adds new flags to hex_dump_to_buffer() and print_hex_dump() to
-print vertical lines to separate every N groups of bytes.
-
-eg.
-buf:00000000: 454d414e 43415053|4e495f45 00584544  NAMESPAC|E_INDEX.
-buf:00000010: 00000000 00000002|00000000 00000000  ........|........
-
-Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
----
- include/linux/printk.h |  3 +++
- lib/hexdump.c          | 59 ++++++++++++++++++++++++++++++++++++------
- 2 files changed, 54 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 97dd29a2bd77..c6b748f66a82 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -484,6 +484,9 @@ enum {
- 
- #define HEXDUMP_ASCII			BIT(0)
- #define HEXDUMP_SUPPRESS_REPEATED	BIT(1)
-+#define HEXDUMP_2_GRP_LINES		BIT(2)
-+#define HEXDUMP_4_GRP_LINES		BIT(3)
-+#define HEXDUMP_8_GRP_LINES		BIT(4)
- 
- extern int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
- 			      int groupsize, char *linebuf, size_t linebuflen,
-diff --git a/lib/hexdump.c b/lib/hexdump.c
-index 08c6084d7daa..4da7d24826fb 100644
---- a/lib/hexdump.c
-+++ b/lib/hexdump.c
-@@ -77,6 +77,23 @@ char *bin2hex(char *dst, const void *src, size_t count)
- }
- EXPORT_SYMBOL(bin2hex);
- 
-+static const char *group_separator(int group, u64 flags)
-+{
-+	if (group == 0)
-+		return " ";
-+
-+	if ((flags & HEXDUMP_8_GRP_LINES) && !((group) % 8))
-+		return "|";
-+
-+	if ((flags & HEXDUMP_4_GRP_LINES) && !((group) % 4))
-+		return "|";
-+
-+	if ((flags & HEXDUMP_2_GRP_LINES) && !((group) % 2))
-+		return "|";
-+
-+	return " ";
-+}
-+
- /**
-  * hex_dump_to_buffer - convert a blob of data to "hex ASCII" in memory
-  * @buf: data blob to dump
-@@ -87,6 +104,9 @@ EXPORT_SYMBOL(bin2hex);
-  * @linebuflen: total size of @linebuf, including space for terminating NUL
-  * @flags: A bitwise OR of the following flags:
-  *	HEXDUMP_ASCII:			include ASCII after the hex output
-+ *	HEXDUMP_2_GRP_LINES:		insert a '|' after every 2 groups
-+ *	HEXDUMP_4_GRP_LINES:		insert a '|' after every 4 groups
-+ *	HEXDUMP_8_GRP_LINES:		insert a '|' after every 8 groups
-  *
-  * hex_dump_to_buffer() works on one "line" of output at a time, converting
-  * <groupsize> bytes of input to hexadecimal (and optionally printable ASCII)
-@@ -118,6 +138,7 @@ int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
- 	int j, lx = 0;
- 	int ascii_column;
- 	int ret;
-+	int line_chars = 0;
- 
- 	if (!is_power_of_2(groupsize) || groupsize > 8)
- 		groupsize = 1;
-@@ -144,7 +165,8 @@ int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
- 
- 		for (j = 0; j < ngroups; j++) {
- 			ret = snprintf(linebuf + lx, linebuflen - lx,
--				       "%s%16.16llx", j ? " " : "",
-+				       "%s%16.16llx",
-+				       j ? group_separator(j, flags) : "",
- 				       get_unaligned(ptr8 + j));
- 			if (ret >= linebuflen - lx)
- 				goto overflow1;
-@@ -155,7 +177,8 @@ int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
- 
- 		for (j = 0; j < ngroups; j++) {
- 			ret = snprintf(linebuf + lx, linebuflen - lx,
--				       "%s%8.8x", j ? " " : "",
-+				       "%s%8.8x",
-+				       j ? group_separator(j, flags) : "",
- 				       get_unaligned(ptr4 + j));
- 			if (ret >= linebuflen - lx)
- 				goto overflow1;
-@@ -166,7 +189,8 @@ int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
- 
- 		for (j = 0; j < ngroups; j++) {
- 			ret = snprintf(linebuf + lx, linebuflen - lx,
--				       "%s%4.4x", j ? " " : "",
-+				       "%s%4.4x",
-+				       j ? group_separator(j, flags) : "",
- 				       get_unaligned(ptr2 + j));
- 			if (ret >= linebuflen - lx)
- 				goto overflow1;
-@@ -196,11 +220,26 @@ int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
- 			goto overflow2;
- 		linebuf[lx++] = ' ';
- 	}
-+
-+	if (flags & HEXDUMP_2_GRP_LINES)
-+		line_chars = groupsize * 2;
-+	if (flags & HEXDUMP_4_GRP_LINES)
-+		line_chars = groupsize * 4;
-+	if (flags & HEXDUMP_8_GRP_LINES)
-+		line_chars = groupsize * 8;
-+
- 	for (j = 0; j < len; j++) {
- 		if (linebuflen < lx + 2)
- 			goto overflow2;
- 		ch = ptr[j];
- 		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
-+
-+		if (line_chars && ((j + 1) < len) &&
-+				((j + 1) % line_chars == 0)) {
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			linebuf[lx++] = '|';
-+		}
- 	}
- nil:
- 	linebuf[lx] = '\0';
-@@ -208,7 +247,8 @@ int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
- overflow2:
- 	linebuf[lx++] = '\0';
- overflow1:
--	return (flags & HEXDUMP_ASCII) ? ascii_column + len :
-+	return (flags & HEXDUMP_ASCII) ? ascii_column + len +
-+					(len - 1) / line_chars :
- 					 (groupsize * 2 + 1) * ngroups - 1;
- }
- EXPORT_SYMBOL(hex_dump_to_buffer);
-@@ -246,7 +286,7 @@ static void announce_skipped(const char *level, const char *prefix_str,
- 	if (count == 0)
- 		return;
- 
--	printk("%s%s ** Skipped %lu bytes of value 0x%x **\n",
-+	printk("%s%s ** Skipped %lu bytes of value 0x%02x **\n",
- 	       level, prefix_str, count, val);
- }
- 
-@@ -266,6 +306,9 @@ static void announce_skipped(const char *level, const char *prefix_str,
-  *	HEXDUMP_ASCII:			include ASCII after the hex output
-  *	HEXDUMP_SUPPRESS_REPEATED:	suppress repeated lines of identical
-  *					bytes
-+ *	HEXDUMP_2_GRP_LINES:		insert a '|' after every 2 groups
-+ *	HEXDUMP_4_GRP_LINES:		insert a '|' after every 4 groups
-+ *	HEXDUMP_8_GRP_LINES:		insert a '|' after every 8 groups
-  *
-  * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII dump
-  * to the kernel log at the specified kernel log level, with an optional
-@@ -295,14 +338,14 @@ void print_hex_dump_ext(const char *level, const char *prefix_str,
- 	u8 skipped_val = 0;
- 	size_t skipped = 0;
- 
--
- 	if (rowsize % groupsize)
- 		rowsize -= rowsize % groupsize;
- 
- 	/* Worst case line length:
--	 * 2 hex chars + space per byte in, 2 spaces, 1 char per byte in, NULL
-+	 * 2 hex chars + space per byte in, 2 spaces, 1 char per byte in,
-+	 * 1 char per N groups, NULL
- 	 */
--	linebuf_len = rowsize * 3 + 2 + rowsize + 1;
-+	linebuf_len = rowsize * 3 + 2 + rowsize + rowsize / groupsize + 1;
- 	linebuf = kzalloc(linebuf_len, GFP_KERNEL);
- 	if (!linebuf) {
- 		printk("%s%shexdump: Could not alloc %u bytes for buffer\n",
 -- 
-2.21.0
+Alastair D'Silva           mob: 0423 762 819
+skype: alastair_dsilva    
+Twitter: @EvilDeece
+blog: http://alastair.d-silva.org
+
 
 
 _______________________________________________
