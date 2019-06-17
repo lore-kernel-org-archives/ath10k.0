@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcxpg-0004KV-Kf
- for ath10k@lists.infradead.org; Mon, 17 Jun 2019 20:02:25 +0000
-Received: by mail-lf1-x141.google.com with SMTP id y17so7515476lfe.0
- for <ath10k@lists.infradead.org>; Mon, 17 Jun 2019 13:02:23 -0700 (PDT)
+ id 1hcxpi-0004KW-42
+ for ath10k@lists.infradead.org; Mon, 17 Jun 2019 20:02:27 +0000
+Received: by mail-lj1-x243.google.com with SMTP id m23so10548440lje.12
+ for <ath10k@lists.infradead.org>; Mon, 17 Jun 2019 13:02:24 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 1/2] mac80211: add tx dequeue function for process context
-Date: Mon, 17 Jun 2019 22:01:39 +0200
-Message-Id: <20190617200140.6189-1-erik.stromdahl@gmail.com>
+Subject: [PATCH 2/2] ath10k: switch to ieee80211_tx_dequeue_ni
+Date: Mon, 17 Jun 2019 22:01:40 +0200
+Message-Id: <20190617200140.6189-2-erik.stromdahl@gmail.com>
+In-Reply-To: <20190617200140.6189-1-erik.stromdahl@gmail.com>
+References: <20190617200140.6189-1-erik.stromdahl@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,77 +27,36 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net, kvalo@codeaurora.org, davem@davemloft.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Since ieee80211_tx_dequeue() must not be called with softirqs enabled
-(i.e. from process context without proper disable of bottom halves),
-we add a wrapper that disables bottom halves before calling
-ieee80211_tx_dequeue()
+Since ath10k_mac_tx_push_txq() can be called from process context, we
+must explicitly disable softirqs before the call into mac80211.
 
-The new function is named ieee80211_tx_dequeue_ni() just as all other
-from-process-context versions found in mac80211.
+By calling ieee80211_tx_dequeue_ni() instead of ieee80211_tx_dequeue()
+we make sure softirqs are always disabled even in the case when
+ath10k_mac_tx_push_txq() is called from process context.
 
-The documentation of ieee80211_tx_dequeue() is also updated so it
-mentions that the function should not be called from process context.
+Calling ieee80211_tx_dequeue_ni() with softirq's already disabled
+(e.g., from softirq context) should be safe as the local_bh_disable()
+and local_bh_enable() functions (called from ieee80211_tx_dequeue_ni)
+are fully reentrant.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- include/net/mac80211.h | 26 ++++++++++++++++++++++++++
- net/mac80211/tx.c      |  2 ++
- 2 files changed, 28 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 72080d9d617e..c47990d8db79 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -6251,10 +6251,36 @@ void ieee80211_unreserve_tid(struct ieee80211_sta *sta, u8 tid);
-  * but for the duration of the frame handling.
-  * However, also note that while in the wake_tx_queue() method,
-  * rcu_read_lock() is already held.
-+ *
-+ * softirqs must also be disabled when this function is called.
-+ * In process context, use ieee80211_tx_dequeue_ni() instead.
-  */
- struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
- 				     struct ieee80211_txq *txq);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2d503d6cdcd2..bbed9f1b1778 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4033,7 +4033,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	if (ret)
+ 		return ret;
  
-+/**
-+ * ieee80211_tx_dequeue_ni - dequeue a packet from a software tx queue
-+ * (in process context)
-+ *
-+ * Like ieee80211_tx_dequeue() but can be called in process context
-+ * (internally disables bottom halves).
-+ *
-+ * @hw: pointer as obtained from ieee80211_alloc_hw()
-+ * @txq: pointer obtained from station or virtual interface, or from
-+ *	ieee80211_next_txq()
-+ */
-+static inline struct sk_buff *ieee80211_tx_dequeue_ni(struct ieee80211_hw *hw,
-+						      struct ieee80211_txq *txq)
-+{
-+	struct sk_buff *skb;
-+
-+	local_bh_disable();
-+	skb = ieee80211_tx_dequeue(hw, txq);
-+	local_bh_enable();
-+
-+	return skb;
-+}
-+
- /**
-  * ieee80211_next_txq - get next tx queue to pull packets from
-  *
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index dd220b977025..4bd0066ea7cd 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -3550,6 +3550,8 @@ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
- 	ieee80211_tx_result r;
- 	struct ieee80211_vif *vif = txq->vif;
- 
-+	WARN_ON_ONCE(softirq_count() == 0);
-+
- begin:
- 	spin_lock_bh(&fq->lock);
- 
+-	skb = ieee80211_tx_dequeue(hw, txq);
++	skb = ieee80211_tx_dequeue_ni(hw, txq);
+ 	if (!skb) {
+ 		spin_lock_bh(&ar->htt.tx_lock);
+ 		ath10k_htt_tx_dec_pending(htt);
 -- 
 2.22.0
 
