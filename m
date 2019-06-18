@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
+Received: from userp2130.oracle.com ([156.151.31.86])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdBWx-0004zn-C4
- for ath10k@lists.infradead.org; Tue, 18 Jun 2019 10:40:00 +0000
-Received: by mail-qk1-x742.google.com with SMTP id s22so8164811qkj.12
- for <ath10k@lists.infradead.org>; Tue, 18 Jun 2019 03:39:58 -0700 (PDT)
+ id 1hdCad-0000kA-BB
+ for ath10k@lists.infradead.org; Tue, 18 Jun 2019 11:47:52 +0000
+Date: Tue, 18 Jun 2019 14:47:32 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [ath6kl:pending-ath11k 198/205]
+ drivers/net/wireless/ath/ath11k/mac.c:1274 ath11k_peer_assoc_h_he() error:
+ memcpy() 'he_cap->he_cap_elem.mac_cap_info' too small (6 vs 8)
+Message-ID: <20190618114732.GD18776@kadam>
+References: <20190618065329.GY1893@kadam>
+ <be8949ff-7ac2-3570-05ec-342036a6f52e@phrozen.org>
 MIME-Version: 1.0
-References: <1556417825-13713-1-git-send-email-wgong@codeaurora.org>
- <CANEJEGug_YregN5vZq_R=ppUV5ptb4WUq_TB+JApzQ4DEO_AfQ@mail.gmail.com>
- <36950ff25c0747629e60ccb68819e93a@aptaiexm02f.ap.qualcomm.com>
- <87pnour4jg.fsf@codeaurora.org>
- <CAPDyKFrs1rO38yd-yQ50y2Oo1JE=R2hWM-5FWp=Ng_TM1df7ww@mail.gmail.com>
-In-Reply-To: <CAPDyKFrs1rO38yd-yQ50y2Oo1JE=R2hWM-5FWp=Ng_TM1df7ww@mail.gmail.com>
-From: Nicolas Boichat <drinkcat@chromium.org>
-Date: Tue, 18 Jun 2019 19:39:46 +0900
-Message-ID: <CANMq1KD7tjG4dq4YP=oKTs_Ki6Wd1E_VbT7+b7e4UeBGY-KMsw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: remove mmc_hw_reset while hif power down
+Content-Disposition: inline
+In-Reply-To: <be8949ff-7ac2-3570-05ec-342036a6f52e@phrozen.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +26,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Wen Gong <wgong@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Grant Grundler <grundler@google.com>, Wen Gong <wgong@codeaurora.org>, Claire Chang <tientzu@chromium.org>, Kalle Valo <kvalo@codeaurora.org>
+To: John Crispin <john@phrozen.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>, kbuild@01.org, kbuild test robot <lkp@intel.com>, ath10k@lists.infradead.org, kbuild-all@01.org
 
-On Tue, May 28, 2019 at 9:46 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-[snip]
->
-> In the end, it seems like this needs a more detailed debug study, to
-> figure out what exactly happens during the re-initialization of the
-> SDIO card, rather than just papering over the problem by removing the
-> call to mmc_hw_reset() in the SDIO func driver. Hope this helps.
+On Tue, Jun 18, 2019 at 08:59:55AM +0200, John Crispin wrote:
+> 
+> On 18/06/2019 08:53, kbuild test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-ath11k
+> > head:   0f82fec5679664bb91d6c167fd1a146f113e4197
+> > commit: cbdb3159fdf450b7b3999a06600aa0e1fb78383f [198/205] ath11k: set additional values inside wmi_peer_assoc_complete_cmd
+> > 
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> > New smatch warnings:
+> > drivers/net/wireless/ath/ath11k/mac.c:1274 ath11k_peer_assoc_h_he() error: memcpy() 'he_cap->he_cap_elem.mac_cap_info' too small (6 vs 8)
+> > 
+> > Old smatch warnings:
+> > drivers/net/wireless/ath/ath11k/mac.c:1276 ath11k_peer_assoc_h_he() error: memcpy() 'he_cap->he_cap_elem.phy_cap_info' too small (11 vs 12)
+> > 
+> > # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=cbdb3159fdf450b7b3999a06600aa0e1fb78383f
+> > git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+> > git remote update ath6kl
+> > git checkout cbdb3159fdf450b7b3999a06600aa0e1fb78383f
+> > vim +1274 drivers/net/wireless/ath/ath11k/mac.c
+> > 
+> > 258bbf52 Kalle Valo   2019-02-05  1260
+> > 258bbf52 Kalle Valo   2019-02-05  1261  static void ath11k_peer_assoc_h_he(struct ath11k *ar,
+> > 258bbf52 Kalle Valo   2019-02-05  1262  				   struct ieee80211_vif *vif,
+> > 258bbf52 Kalle Valo   2019-02-05  1263  				   struct ieee80211_sta *sta,
+> > 258bbf52 Kalle Valo   2019-02-05  1264  				   struct peer_assoc_params *arg)
+> > 258bbf52 Kalle Valo   2019-02-05  1265  {
+> > 17aca2d9 John Crispin 2019-06-03  1266  	const struct ieee80211_sta_he_cap *he_cap = &sta->he_cap;
+> > 3db59a23 Kalle Valo   2019-06-12  1267  	u16 v;
+> > 17aca2d9 John Crispin 2019-06-03  1268
+> > 17aca2d9 John Crispin 2019-06-03  1269  	if (!he_cap->has_he)
+> > 17aca2d9 John Crispin 2019-06-03  1270  		return;
+> > 17aca2d9 John Crispin 2019-06-03  1271
+> > 17aca2d9 John Crispin 2019-06-03  1272  	arg->he_flag = true;
+> > 17aca2d9 John Crispin 2019-06-03  1273
+> > 17aca2d9 John Crispin 2019-06-03 @1274  	memcpy(&arg->peer_he_cap_macinfo, he_cap->he_cap_elem.mac_cap_info,
+> > 17aca2d9 John Crispin 2019-06-03  1275  	       sizeof(arg->peer_he_cap_macinfo));
+> > 
+> > Smatch thinks these are different sizes...  I don't have a copy of
+> > struct peer_assoc_params so I can't check.
+> 
+> Hi,
+> 
+> its he_cap->he_cap_elem.mac_cap_info[6] and arg->peer_he_cap_macinfo[2] and we only copy the first 2 elements as the FW only cares for the first 2 bytes.
+> 
 
-To close the loop on this, we fixed this on the platform by driving a
-reset/enable pin during reset:
-https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1657506
-(device tree for this device is not upstream yet).
+I did download the latest git.  The problem is that
+he_cap->he_cap_elem.mac_cap_info[] is six bytes and arg->peer_he_cap_macinfo[]
+is two u32s or eight bytes.  So we are reading beyond the end of the
+array.
 
-The problem has to do with the fact that on re-init (without power
-cycle or reset/enable pin cycling), the device still sets S18A=1 in
-CMD5 response (that's incorrect, the device should set S18A=0 if it's
-already using 1.8V), so the host tries to switch voltage using CMD11,
-which fails, as the device is already in 1.8V mode (that's correct
-according to the specs).
+regards,
+dan carpenter
 
-Thanks,
-
->
-> Kind regards
-> Uffe
 
 _______________________________________________
 ath10k mailing list
