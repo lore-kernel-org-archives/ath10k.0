@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfl06-0006Zz-PD
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:56:44 +0000
+ id 1hfl2B-00071m-Lz
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:58:53 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: enabling tx stats support over pktlog
+Subject: Re: [PATCH] ath10k: add missing error handling
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1557759187-23910-1-git-send-email-bpothuno@codeaurora.org>
-References: <1557759187-23910-1-git-send-email-bpothuno@codeaurora.org>
-Message-Id: <20190625125642.14A2860867@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 12:56:41 +0000 (UTC)
+In-Reply-To: <20190523071534.254611-1-tientzu@chromium.org>
+References: <20190523071534.254611-1-tientzu@chromium.org>
+Message-Id: <20190625125851.44127602F4@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 12:58:51 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Claire Chang <tientzu@chromium.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
+Claire Chang <tientzu@chromium.org> wrote:
 
-> For QCA988X target, pktlog gives details of the tx bitrate
-> which is used in the driver for station info.
+> In function ath10k_sdio_mbox_rx_alloc() [sdio.c],
+> ath10k_sdio_mbox_alloc_rx_pkt() is called without handling the error cases.
+> This will make the driver think the allocation for skb is successful and
+> try to access the skb. If we enable failslab, system will easily crash with
+> NULL pointer dereferencing.
 > 
-> Enabling pktlog by default will cause more interrupts
-> in target to host CE pipe, which can impact more CPU usage
-> for targets ex:WCN3990 and also not required for all other
-> platforms (eg: WCN3990), for getting tx bitrate.
+> Call trace of CONFIG_FAILSLAB:
+> ath10k_sdio_irq_handler+0x570/0xa88 [ath10k_sdio]
+> process_sdio_pending_irqs+0x4c/0x174
+> sdio_run_irqs+0x3c/0x64
+> sdio_irq_work+0x1c/0x28
 > 
-> Enable pktlog only for QCA988X based on hardware params.
-> 
-> Tested HW : WCN3990
-> Tested FW : WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
-> 
-> Fixes: e8123bb74c4e ("ath10k: add per peer tx stats support for 10.2.4")
-> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+> Fixes: d96db25d2025 ("ath10k: add initial SDIO support")
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-4fa42adebe5b ath10k: enabling tx stats support over pktlog
+4b553f3ca4cb ath10k: add missing error handling
 
 -- 
-https://patchwork.kernel.org/patch/10941167/
+https://patchwork.kernel.org/patch/10957013/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
