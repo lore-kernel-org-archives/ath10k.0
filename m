@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0183.hostedemail.com ([216.40.44.183]
+Received: from smtprelay0079.hostedemail.com ([216.40.44.79]
  helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfdaW-0002MW-Ti
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 05:01:50 +0000
-Message-ID: <3340b520a57e00a483eae170be97316c8d18c22c.camel@perches.com>
-Subject: Re: [PATCH v4 4/7] lib/hexdump.c: Replace ascii bool in
- hex_dump_to_buffer with flags
+ id 1hfdaQ-0002Lv-8H
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 05:01:47 +0000
+Message-ID: <3ae4c1a4a72f8ee6b75c45adfbe543fc0a7b5da1.camel@perches.com>
+Subject: Re: [PATCH v4 0/7] Hexdump Enhancements
 From: Joe Perches <joe@perches.com>
-Date: Mon, 24 Jun 2019 22:01:40 -0700
-In-Reply-To: <20190625031726.12173-5-alastair@au1.ibm.com>
+Date: Mon, 24 Jun 2019 22:01:30 -0700
+In-Reply-To: <20190625031726.12173-1-alastair@au1.ibm.com>
 References: <20190625031726.12173-1-alastair@au1.ibm.com>
- <20190625031726.12173-5-alastair@au1.ibm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,38 +29,21 @@ Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr M
 On Tue, 2019-06-25 at 13:17 +1000, Alastair D'Silva wrote:
 > From: Alastair D'Silva <alastair@d-silva.org>
 > 
-> In order to support additional features, rename hex_dump_to_buffer to
-> hex_dump_to_buffer_ext, and replace the ascii bool parameter with flags.
+> Apologies for the large CC list, it's a heads up for those responsible
+> for subsystems where a prototype change in generic code causes a change
+> in those subsystems.
 []
-> diff --git a/drivers/gpu/drm/i915/intel_engine_cs.c b/drivers/gpu/drm/i915/intel_engine_cs.c
-[]
-> @@ -1338,9 +1338,8 @@ static void hexdump(struct drm_printer *m, const void *buf, size_t len)
->  		}
->  
->  		WARN_ON_ONCE(hex_dump_to_buffer(buf + pos, len - pos,
-> -						rowsize, sizeof(u32),
-> -						line, sizeof(line),
-> -						false) >= sizeof(line));
-> +						rowsize, sizeof(u32), line,
-> +						sizeof(line)) >= sizeof(line));
+> The default behaviour of hexdump is unchanged, however, the prototype
+> for hex_dump_to_buffer() has changed, and print_hex_dump() has been
+> renamed to print_hex_dump_ext(), with a wrapper replacing it for
+> compatibility with existing code, which would have been too invasive to
+> change.
 
-Huh?  Why do this?
+I believe this cover letter is misleading.
 
-> diff --git a/drivers/isdn/hardware/mISDN/mISDNisar.c b/drivers/isdn/hardware/mISDN/mISDNisar.c
-[]
-> @@ -70,8 +70,9 @@ send_mbox(struct isar_hw *isar, u8 his, u8 creg, u8 len, u8 *msg)
->  			int l = 0;
->  
->  			while (l < (int)len) {
-> -				hex_dump_to_buffer(msg + l, len - l, 32, 1,
-> -						   isar->log, 256, 1);
-> +				hex_dump_to_buffer_ext(msg + l, len - l, 32, 1,
-> +						       isar->log, 256,
-> +						       HEXDUMP_ASCII);
-
-Again, why do any of these?
-
-The point of the wrapper is to avoid changing these.
+The point of the wrapper is to avoid unnecessary changes
+in existing
+code.
 
 
 
