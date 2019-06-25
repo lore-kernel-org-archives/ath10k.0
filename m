@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfky2-0004ZE-US
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:54:38 +0000
+ id 1hfkyw-0005uZ-RZ
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:55:32 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: change firmware file name for UTF mode of SDIO/USB
+Subject: Re: [PATCH] ath10k: acquire lock to fix lockdep's warning
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1557891047-16606-1-git-send-email-wgong@codeaurora.org>
-References: <1557891047-16606-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190625125434.A1769602F4@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 12:54:34 +0000 (UTC)
+In-Reply-To: <20190506073836.184059-1-tientzu@chromium.org>
+References: <20190506073836.184059-1-tientzu@chromium.org>
+Message-Id: <20190625125530.7E8E260312@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 12:55:30 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Claire Chang <tientzu@chromium.org>
+Cc: drinkcat@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, wgong@codeaurora.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Claire Chang <tientzu@chromium.org> wrote:
 
-> Firmware name for UTF mode of SDIO has changed from utf-2.bin to
-> utf-sdio-2.bin, so it need to change in ath10k, otherwise it will
-> fail for UTF mode.
+> Lockdep warns at lockdep_assert_held(&ar->data_lock) in
+> ath10k_htt_rx_pn_check_replay_hl(). Acquire ar->data_lock before calling
+> ath10k_htt_rx_pn_check_replay_hl() to fix it.
 > 
-> After change the name in ath10k, it will success for UTF mode of
-> SDIO/USB.
+> Call trace:
+> ath10k_htt_rx_pn_check_replay_hl+0x118/0x134 [ath10k_core]
+> ath10k_htt_rx_proc_rx_ind_hl+0xd8/0x250 [ath10k_core]
+> ath10k_htt_t2h_msg_handler+0x148/0xf30 [ath10k_core]
+> ath10k_htt_htc_t2h_msg_handler+0x24/0x40 [ath10k_core]
+> ath10k_sdio_irq_handler+0x374/0xaa4 [ath10k_sdio]
 > 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Fixes: 130c77495708 ("ath10k: add PN replay protection for high latency devices")
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-54f6643bf19e ath10k: change firmware file name for UTF mode of SDIO/USB
+ef9cc0c44394 ath10k: acquire lock to fix lockdep's warning
 
 -- 
-https://patchwork.kernel.org/patch/10944213/
+https://patchwork.kernel.org/patch/10930667/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
