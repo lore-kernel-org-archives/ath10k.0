@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfl42-0008W9-QB
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 13:00:48 +0000
+ id 1hfl5k-0000Ri-I1
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 13:02:33 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Change the warning message string
+Subject: Re: [PATCH v2] ath10k: fix failure to set multiple fixed rate
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190509121500.4730-1-festevam@gmail.com>
-References: <20190509121500.4730-1-festevam@gmail.com>
-Message-Id: <20190625130045.57209606DC@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 13:00:45 +0000 (UTC)
+In-Reply-To: <1559117608-11117-1-git-send-email-miaoqing@codeaurora.org>
+References: <1559117608-11117-1-git-send-email-miaoqing@codeaurora.org>
+Message-Id: <20190625130232.451AB6085C@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 13:02:32 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: andreyknvl@google.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, gregkh@linuxfoundation.org
+To: Miaoqing Pan <miaoqing@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Fabio Estevam <festevam@gmail.com> wrote:
+Miaoqing Pan <miaoqing@codeaurora.org> wrote:
 
-> The "WARNING" string confuses syzbot, which thinks it found
-> a crash [1].
+> Currently, below fixed rate commands are broken,
+> iw wlanx set bitrates legacy-<2.4|5> ht-mcs-<2.4|5> vht-mcs-<2.4|5> \
+> <NSS:MCSx>
+> iw wlanx set bitrates legacy-<2.4|5> <legacy rate> ht-mcs-<2.4|5> \
+> vht-mcs-<2.4|5> <NSS:MCSx>
 > 
-> Change the string to avoid such problem.
+> There are two methods to set fixed rate, both failed,
+> - Use vdev fixed rate command
+>   This command only support one single rate, but it's broken due to
+>   mac80211 change commit e8e4f5280ddd ("mac80211: reject/clear user
+>   rate mask if not usable"), which requires user to specify at least
+>   one legacy rate. So we can't use this command to set ht/vht single
+>   rate any more.
+> - Use peer_assoc command
+>   This command can update rx capability for multiple rates, it will
+>   work fine for ht mcs rates, as each supported mcs can be advertised
+>   in ht_mcs index mask. But this will not work with vht rates because,
+>   as per the vht mcs capability advertisement, there are only two bits
+>   to indicate the supported mcs. E.g. only support 0-7, 0-8, 0-9.
 > 
-> [1] https://lkml.org/lkml/2019/5/9/243
+> So introduced new WMI command: WMI_PEER_PARAM_FIXED_RATE. After peer
+> assoc, the peer fixed rate cmd will work for that specific peer.
+> Remaining peers will use auto rate. If both vdev fixed rate and peer
+> fixed rates are given, peer fixed rate will take effect to peers for
+> which this cmd is given. Remaining peers in that vdev, will use vdev
+> fixed rate.
 > 
-> Reported-by: syzbot+c1b25598aa60dcd47e78@syzkaller.appspotmail.com
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Fabio Estevam <festevam@gmail.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Tested HW: QCA9984
+> Tested FW: 10.4-3.9.0.2-00035
+> 
+> Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-265df32eae58 ath10k: Change the warning message string
+8b97b055dc9d ath10k: fix failure to set multiple fixed rate
 
 -- 
-https://patchwork.kernel.org/patch/10937077/
+https://patchwork.kernel.org/patch/10966425/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
