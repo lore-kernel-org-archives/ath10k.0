@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfkwh-0004Bl-Hq
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:53:12 +0000
+ id 1hfky2-0004ZE-US
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:54:38 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] ath10k: add support for firmware crash recovery on
- SDIO chip
+Subject: Re: [PATCH] ath10k: change firmware file name for UTF mode of SDIO/USB
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1558506776-19702-1-git-send-email-wgong@codeaurora.org>
-References: <1558506776-19702-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190625125311.35171601B4@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 12:53:11 +0000 (UTC)
+In-Reply-To: <1557891047-16606-1-git-send-email-wgong@codeaurora.org>
+References: <1557891047-16606-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190625125434.A1769602F4@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 12:54:34 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +27,25 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> wrote:
 
-> The command to simulate firmware crash:
-> echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
+> Firmware name for UTF mode of SDIO has changed from utf-2.bin to
+> utf-sdio-2.bin, so it need to change in ath10k, otherwise it will
+> fail for UTF mode.
 > 
-> It will send WMI_FORCE_FW_HANG_ASSERT to firmware, then it will trigger
-> CPU interrupt status register for SDIO chip, ath10k driver need to
-> configure it while enable SDIO interrupt, otherwise ath10k driver will
-> not get the assert error info.
-> 
-> After this change, it will success for simulate firmware crash.
+> After change the name in ath10k, it will success for UTF mode of
+> SDIO/USB.
 > 
 > Tested with QCA6174 SDIO with firmware
 > WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 > 
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Tested-by: Claire Chang <tientzu@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-0f132ba7ac64 ath10k: add support for firmware crash recovery on SDIO chip
+54f6643bf19e ath10k: change firmware file name for UTF mode of SDIO/USB
 
 -- 
-https://patchwork.kernel.org/patch/10955189/
+https://patchwork.kernel.org/patch/10944213/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
