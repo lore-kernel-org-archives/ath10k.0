@@ -1,20 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdubf-0004Mn-QE
- for ath10k@lists.infradead.org; Thu, 20 Jun 2019 10:47:53 +0000
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v3 0/7] Hexdump Enhancements
-In-Reply-To: <fcf57339aea60fb1744cea2a2593656c728c4ec4.camel@perches.com>
-References: <20190617020430.8708-1-alastair@au1.ibm.com>
- <9a000734375c0801fc16b71f4be1235f9b857772.camel@perches.com>
- <c68cb819257f251cbb66f8998a95c31cebe2d72e.camel@d-silva.org>
- <d8316be322f33ea67640ff83f2248fe433078407.camel@perches.com>
- <9456ca2a4ae827635bb6d864e5095a9e51f2ac45.camel@d-silva.org>
- <fcf57339aea60fb1744cea2a2593656c728c4ec4.camel@perches.com>
-Date: Thu, 20 Jun 2019 13:50:33 +0300
-Message-ID: <87sgs4sf7q.fsf@intel.com>
+ id 1hfbzb-0006O6-NJ
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 03:19:37 +0000
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x5P36w2I025997
+ for <ath10k@lists.infradead.org>; Mon, 24 Jun 2019 23:19:33 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+ by mx0b-001b2d01.pphosted.com with ESMTP id 2tb9r3ur22-1
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ath10k@lists.infradead.org>; Mon, 24 Jun 2019 23:19:32 -0400
+Received: from localhost
+ by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <ath10k@lists.infradead.org> from <alastair@au1.ibm.com>;
+ Tue, 25 Jun 2019 04:19:31 +0100
+From: "Alastair D'Silva" <alastair@au1.ibm.com>
+Subject: [PATCH v4 1/7] lib/hexdump.c: Fix selftests
+Date: Tue, 25 Jun 2019 13:17:20 +1000
+In-Reply-To: <20190625031726.12173-1-alastair@au1.ibm.com>
+References: <20190625031726.12173-1-alastair@au1.ibm.com>
 MIME-Version: 1.0
+Message-Id: <20190625031726.12173-2-alastair@au1.ibm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,93 +36,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>, Alastair D'Silva <alastair@d-silva.org>
-Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
+To: alastair@d-silva.org
+Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Jani Nikula <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Alexander Viro <viro@zeniv.linux.org.uk>
 
-On Wed, 19 Jun 2019, Joe Perches <joe@perches.com> wrote:
-> On Thu, 2019-06-20 at 11:14 +1000, Alastair D'Silva wrote:
->> On Wed, 2019-06-19 at 17:35 -0700, Joe Perches wrote:
->> > On Thu, 2019-06-20 at 09:15 +1000, Alastair D'Silva wrote:
->> > > On Wed, 2019-06-19 at 09:31 -0700, Joe Perches wrote:
->> > > > On Mon, 2019-06-17 at 12:04 +1000, Alastair D'Silva wrote:
->> > > > > From: Alastair D'Silva <alastair@d-silva.org>
->> > > > > 
->> > > > > Apologies for the large CC list, it's a heads up for those
->> > > > > responsible
->> > > > > for subsystems where a prototype change in generic code causes
->> > > > > a
->> > > > > change
->> > > > > in those subsystems.
->> > > > > 
->> > > > > This series enhances hexdump.
->> > > > 
->> > > > Still not a fan of these patches.
->> > > 
->> > > I'm afraid there's not too much action I can take on that, I'm
->> > > happy to
->> > > address specific issues though.
->> > > 
->> > > > > These improve the readability of the dumped data in certain
->> > > > > situations
->> > > > > (eg. wide terminals are available, many lines of empty bytes
->> > > > > exist,
->> > > > > etc).
->> > 
->> > I think it's generally overkill for the desired uses.
->> 
->> I understand where you're coming from, however, these patches make it a
->> lot easier to work with large chucks of binary data. I think it makes
->> more sense to have these patches upstream, even though committed code
->> may not necessarily have all the features enabled, as it means that
->> devs won't have to apply out-of-tree patches during development to make
->> larger dumps manageable.
->> 
->> > > > Changing hexdump's last argument from bool to int is odd.
->> > > > 
->> > > 
->> > > Think of it as replacing a single boolean with many booleans.
->> > 
->> > I understand it.  It's odd.
->> > 
->> > I would rather not have a mixture of true, false, and apparently
->> > random collections of bitfields like 0xd or 0b1011 or their
->> > equivalent or'd defines.
->> > 
->> 
->> Where's the mixture? What would you propose instead?
->
-> create a hex_dump_to_buffer_ext with a new argument
-> and a new static inline for the old hex_dump_to_buffer
-> without modifying the argument list that calls
-> hex_dump_to_buffer with whatever added argument content
-> you need.
->
-> Something like:
->
-> static inline
-> int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
-> 		       int groupsize, char *linebuf, size_t linebuflen,
-> 		       bool ascii)
-> {
-> 	return hex_dump_to_buffer_ext(buf, len, rowsize, groupsize,
-> 				      linebuf, linebuflen, ascii, 0);
-> }
->
-> and remove EXPORT_SYMBOL(hex_dump_to_buffer)
+From: Alastair D'Silva <alastair@d-silva.org>
 
-If you decide to do something like this, I'd actually suggest you drop
-the bool ascii parameter from hex_dump_to_buffer() altogether, and
-replace the callers that do require ascii with
-hex_dump_to_buffer_ext(..., HEXDUMP_ASCII). Even if that also requires
-touching all callers.
+The overflow tests did not account for the situation where no
+overflow occurs and len < rowsize.
 
-But no strong opinions, really.
+This patch renames the cryptic variables and accounts for the
+above case.
 
-BR,
-Jani.
+The selftests now pass.
 
+Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
+---
+ lib/test_hexdump.c | 48 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 20 deletions(-)
+
+diff --git a/lib/test_hexdump.c b/lib/test_hexdump.c
+index 5144899d3c6b..bef97a964582 100644
+--- a/lib/test_hexdump.c
++++ b/lib/test_hexdump.c
+@@ -163,45 +163,53 @@ static void __init test_hexdump_overflow(size_t buflen, size_t len,
+ {
+ 	char test[TEST_HEXDUMP_BUF_SIZE];
+ 	char buf[TEST_HEXDUMP_BUF_SIZE];
+-	int rs = rowsize, gs = groupsize;
+-	int ae, he, e, f, r;
+-	bool a;
++	int ascii_len, hex_len, expected_len, fill_point, ngroups, rc;
++	bool match;
+ 
+ 	total_tests++;
+ 
+ 	memset(buf, FILL_CHAR, sizeof(buf));
+ 
+-	r = hex_dump_to_buffer(data_b, len, rs, gs, buf, buflen, ascii);
++	rc = hex_dump_to_buffer(data_b, len, rowsize, groupsize, buf, buflen,
++				ascii);
+ 
+ 	/*
+ 	 * Caller must provide the data length multiple of groupsize. The
+ 	 * calculations below are made with that assumption in mind.
+ 	 */
+-	ae = rs * 2 /* hex */ + rs / gs /* spaces */ + 1 /* space */ + len /* ascii */;
+-	he = (gs * 2 /* hex */ + 1 /* space */) * len / gs - 1 /* no trailing space */;
++	ngroups = rowsize / groupsize;
++	hex_len = (groupsize * 2 /* hex */ + 1 /* spaces */) * ngroups
++		  - 1 /* no trailing space */;
++	ascii_len = hex_len + 2 /* space */ + len /* ascii */;
++
++	if (len < rowsize) {
++		ngroups = len / groupsize;
++		hex_len = (groupsize * 2 /* hex */ + 1 /* spaces */) * ngroups
++		  - 1 /* no trailing space */;
++	}
+ 
+-	if (ascii)
+-		e = ae;
+-	else
+-		e = he;
++	expected_len = (ascii) ? ascii_len : hex_len;
+ 
+-	f = min_t(int, e + 1, buflen);
++	fill_point = min_t(int, expected_len + 1, buflen);
+ 	if (buflen) {
+-		test_hexdump_prepare_test(len, rs, gs, test, sizeof(test), ascii);
+-		test[f - 1] = '\0';
++		test_hexdump_prepare_test(len, rowsize, groupsize, test,
++					  sizeof(test), ascii);
++		test[fill_point - 1] = '\0';
+ 	}
+-	memset(test + f, FILL_CHAR, sizeof(test) - f);
++	memset(test + fill_point, FILL_CHAR, sizeof(test) - fill_point);
+ 
+-	a = r == e && !memcmp(test, buf, TEST_HEXDUMP_BUF_SIZE);
++	match = rc == expected_len && !memcmp(test, buf, TEST_HEXDUMP_BUF_SIZE);
+ 
+ 	buf[sizeof(buf) - 1] = '\0';
+ 
+-	if (!a) {
+-		pr_err("Len: %zu buflen: %zu strlen: %zu\n",
+-			len, buflen, strnlen(buf, sizeof(buf)));
+-		pr_err("Result: %d '%s'\n", r, buf);
+-		pr_err("Expect: %d '%s'\n", e, test);
++	if (!match) {
++		pr_err("rowsize: %u groupsize: %u ascii: %d Len: %zu buflen: %zu strlen: %zu\n",
++			rowsize, groupsize, ascii, len, buflen,
++			strnlen(buf, sizeof(buf)));
++		pr_err("Result: %d '%-.*s'\n", rc, (int)buflen, buf);
++		pr_err("Expect: %d '%-.*s'\n", expected_len, (int)buflen, test);
+ 		failed_tests++;
++
+ 	}
+ }
+ 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.21.0
+
 
 _______________________________________________
 ath10k mailing list
