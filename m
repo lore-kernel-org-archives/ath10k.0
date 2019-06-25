@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0094.hostedemail.com ([216.40.44.94]
- helo=smtprelay.hostedemail.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfe8n-0004ne-93
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 05:37:14 +0000
-Message-ID: <c364c36338d385eba60c523828ad8995c792ae4d.camel@perches.com>
-Subject: Re: [PATCH v4 5/7] lib/hexdump.c: Allow multiple groups to be
- separated by lines '|'
-From: Joe Perches <joe@perches.com>
-Date: Mon, 24 Jun 2019 22:37:03 -0700
-In-Reply-To: <20190625031726.12173-6-alastair@au1.ibm.com>
-References: <20190625031726.12173-1-alastair@au1.ibm.com>
- <20190625031726.12173-6-alastair@au1.ibm.com>
+ id 1hfkrf-0002FN-31
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:48:00 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/2] ath10k: add inline wrapper for htt_h2t_aggr_cfg_msg
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20190326162904.6737-1-erik.stromdahl@gmail.com>
+References: <20190326162904.6737-1-erik.stromdahl@gmail.com>
+Message-Id: <20190625124758.22A1960909@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 12:47:57 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alastair D'Silva <alastair@au1.ibm.com>, alastair@d-silva.org
-Cc: linux-fbdev@vger.kernel.org, Stanislaw Gruszka <sgruszka@redhat.com>, Petr Mladek <pmladek@suse.com>, David Airlie <airlied@linux.ie>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, dri-devel@lists.freedesktop.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, ath10k@lists.infradead.org, intel-gfx@lists.freedesktop.org, Dan Carpenter <dan.carpenter@oracle.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Tom Lendacky <thomas.lendacky@amd.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, Jani Nikula <jani.nikula@linux.intel.com>, linux-fsdevel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Benson Leung <bleung@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, Karsten Keil <isdn@linux-pingi.de>, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, David Laight <David.Laight@ACULAB.COM>, Daniel Vetter <daniel@ffwll.ch>, netdev@vger.kernel.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Alexander Viro <viro@zeniv.linux.org.uk>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tue, 2019-06-25 at 13:17 +1000, Alastair D'Silva wrote:
-> From: Alastair D'Silva <alastair@d-silva.org>
-> 
-> With the wider display format, it can become hard to identify how many
-> bytes into the line you are looking at.
-> 
-> The patch adds new flags to hex_dump_to_buffer() and print_hex_dump() to
-> print vertical lines to separate every N groups of bytes.
-> 
-> eg.
-> buf:00000000: 454d414e 43415053|4e495f45 00584544  NAMESPAC|E_INDEX.
-> buf:00000010: 00000000 00000002|00000000 00000000  ........|........
-> 
-> Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
-> ---
->  include/linux/printk.h |  3 +++
->  lib/hexdump.c          | 59 ++++++++++++++++++++++++++++++++++++------
->  2 files changed, 54 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-[]
-> @@ -485,6 +485,9 @@ enum {
->  
->  #define HEXDUMP_ASCII			BIT(0)
->  #define HEXDUMP_SUPPRESS_REPEATED	BIT(1)
-> +#define HEXDUMP_2_GRP_LINES		BIT(2)
-> +#define HEXDUMP_4_GRP_LINES		BIT(3)
-> +#define HEXDUMP_8_GRP_LINES		BIT(4)
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
 
-These aren't really bits as only one value should be set
-as 8 overrides 4 and 4 overrides 2.
+> This is done in order to make the *htt_h2t_aggr_cfg_msg* op align better
+> with the rest of the htt ops (whom all have inline wrappers).
+> 
+> It also adds support for the case when the op is missing (function
+> pointer is NULL).
+> 
+> As a result of this, the name of the 32 bit implementation in htt_tx.c
+> was changed and the function was made static.
+> 
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-I would also expect this to be a value of 2 in your above
-example, rather than 8.  It's described as groups not bytes.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-The example is showing a what would normally be a space ' '
-separator as a vertical bar '|' every 2nd grouping.
+74ee5715991f ath10k: add inline wrapper for htt_h2t_aggr_cfg_msg
+bc31c2cfecc7 ath10k: add htt_h2t_aggr_cfg_msg op for high latency devices
 
+-- 
+https://patchwork.kernel.org/patch/10871563/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
