@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfkyw-0005uZ-RZ
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:55:32 +0000
+ id 1hfl06-0006Zz-PD
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 12:56:44 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: acquire lock to fix lockdep's warning
+Subject: Re: [PATCH] ath10k: enabling tx stats support over pktlog
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190506073836.184059-1-tientzu@chromium.org>
-References: <20190506073836.184059-1-tientzu@chromium.org>
-Message-Id: <20190625125530.7E8E260312@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 12:55:30 +0000 (UTC)
+In-Reply-To: <1557759187-23910-1-git-send-email-bpothuno@codeaurora.org>
+References: <1557759187-23910-1-git-send-email-bpothuno@codeaurora.org>
+Message-Id: <20190625125642.14A2860867@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 12:56:41 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Claire Chang <tientzu@chromium.org>
-Cc: drinkcat@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, wgong@codeaurora.org
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Claire Chang <tientzu@chromium.org> wrote:
+Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
 
-> Lockdep warns at lockdep_assert_held(&ar->data_lock) in
-> ath10k_htt_rx_pn_check_replay_hl(). Acquire ar->data_lock before calling
-> ath10k_htt_rx_pn_check_replay_hl() to fix it.
+> For QCA988X target, pktlog gives details of the tx bitrate
+> which is used in the driver for station info.
 > 
-> Call trace:
-> ath10k_htt_rx_pn_check_replay_hl+0x118/0x134 [ath10k_core]
-> ath10k_htt_rx_proc_rx_ind_hl+0xd8/0x250 [ath10k_core]
-> ath10k_htt_t2h_msg_handler+0x148/0xf30 [ath10k_core]
-> ath10k_htt_htc_t2h_msg_handler+0x24/0x40 [ath10k_core]
-> ath10k_sdio_irq_handler+0x374/0xaa4 [ath10k_sdio]
+> Enabling pktlog by default will cause more interrupts
+> in target to host CE pipe, which can impact more CPU usage
+> for targets ex:WCN3990 and also not required for all other
+> platforms (eg: WCN3990), for getting tx bitrate.
 > 
-> Fixes: 130c77495708 ("ath10k: add PN replay protection for high latency devices")
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> Enable pktlog only for QCA988X based on hardware params.
+> 
+> Tested HW : WCN3990
+> Tested FW : WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> 
+> Fixes: e8123bb74c4e ("ath10k: add per peer tx stats support for 10.2.4")
+> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-ef9cc0c44394 ath10k: acquire lock to fix lockdep's warning
+4fa42adebe5b ath10k: enabling tx stats support over pktlog
 
 -- 
-https://patchwork.kernel.org/patch/10930667/
+https://patchwork.kernel.org/patch/10941167/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
