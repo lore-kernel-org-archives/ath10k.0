@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hflHg-00023I-4P
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 13:14:53 +0000
+ id 1hflJG-0003Rb-OD
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 13:16:32 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] ath10k: add support for controlling tx power to a
- station
+Subject: Re: [PATCH] ath10k: add report MIC error for sdio chip
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1559209638-23887-1-git-send-email-bpothuno@codeaurora.org>
-References: <1559209638-23887-1-git-send-email-bpothuno@codeaurora.org>
-Message-Id: <20190625131451.D07FA6028D@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 13:14:51 +0000 (UTC)
+In-Reply-To: <1559010432-1005-1-git-send-email-wgong@codeaurora.org>
+References: <1559010432-1005-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190625131630.6CFFF607DE@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 13:16:30 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@codeaurora.org>
-Cc: Ashok Raj Nagarajan <arnagara@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Balaji Pothunoori <bpothuno@codeaurora.org> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> This patch will add the support to control the transmit power for traffic
-> to a station associated with the AP.
+> Firmware will report flag with HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR
+> if MIC error, the flag will be used in mac80211.
 > 
-> Underlying firmware will enforce that the maximum tx power will be based
-> on the regulatory requirements. If the user given transmit power is greater
-> than the allowed tx power in the given channel, then the firmware will use
-> the maximum tx power in the same channel.
+> ieee80211_rx_h_michael_mic_verify will check the flag and start TKIP
+> countermeasures.
 > 
-> Max and Min tx power values will depends on no of tx chain masks,
-> for QCA9984 allowed tx power range values from 6 to 23.
+> Now countermeasure tests pass both with WPA only and WPA2/WPA mixed
+> mode.
 > 
-> When 0 is sent to the firmware as tx power, it will revert to the default
-> tx power for the station.
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 > 
-> Tested Hardware : QCA9984
-> Tested Firmware : 10.4-3.9.0.2-00046
-> 
-> Co-developed-by: Balaji Pothunoori <bpothuno@codeaurora.org>
-> Signed-off-by: Ashok Raj Nagarajan <arnagara@codeaurora.org>
-> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-33410a51468f ath10k: add support for controlling tx power to a station
+47ed1b4e5d62 ath10k: add report MIC error for sdio chip
 
 -- 
-https://patchwork.kernel.org/patch/10968517/
+https://patchwork.kernel.org/patch/10963647/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
