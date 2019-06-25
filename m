@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hflKW-0003g2-4V
- for ath10k@lists.infradead.org; Tue, 25 Jun 2019 13:17:49 +0000
+ id 1hfm5u-0008TD-39
+ for ath10k@lists.infradead.org; Tue, 25 Jun 2019 14:06:47 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add WMI diag fw logging support for WCN3990
+Subject: Re: [PATCH v3] ath10k: Enable MSA region dump support for WCN3990
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190401132202.29626-1-govinds@codeaurora.org>
-References: <20190401132202.29626-1-govinds@codeaurora.org>
-Message-Id: <20190625131747.8FDB860AD1@smtp.codeaurora.org>
-Date: Tue, 25 Jun 2019 13:17:47 +0000 (UTC)
+In-Reply-To: <20190610091759.29508-1-govinds@codeaurora.org>
+References: <20190610091759.29508-1-govinds@codeaurora.org>
+Message-Id: <20190625140645.A32456085C@smtp.codeaurora.org>
+Date: Tue, 25 Jun 2019 14:06:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +27,26 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Govind Singh <govinds@codeaurora.org> wrote:
 
-> Integrated WiFi chipset ex:WCN399x supports fw logging
-> using WMI copy engine and shared mem DIAG based fw logging.
-> By default shared mem DIAG based fw logging is enabled.
-> To support WMI copy engine based fw logging add QMI
-> control message to enable WMI copy engine based fw logging.
+> MSA memory region caries the hw descriptors information.
+> Dump MSA region in core dump as this is very helpful in debugging
+> hw issues.
 > 
-> Enable WMI based fw logging using fw_diag_log module parameter.
-> 
-> insmod ath10k_core.ko fw_diag_log=1
-> 
-> DIAG utility(https://github.com/andersson/diag) implements extraction
-> of diagnostics related messages between application processor and
-> various subsystems while shared mem DIAG based fw logging is enabled.
-> 
-> Testing: Tested on WCN3990/QCA6174 HW
+> Testing: Tested on WCN3990 HW
 > Tested FW: WLAN.HL.3.1-00959-QCAHLSWMTPLZ-1
 > 
 > Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+New warning:
 
-d9e47698965d ath10k: Add WMI diag fw logging support for WCN3990
+drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_msa_dump_memory':
+drivers/net/wireless/ath/ath10k/snoc.c:1662:25: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  hdr->start = cpu_to_le32(ar_snoc->qmi->msa_va);
+                         ^
+
+Patch set to Changes Requested.
 
 -- 
-https://patchwork.kernel.org/patch/10879943/
+https://patchwork.kernel.org/patch/10984519/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
