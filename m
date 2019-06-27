@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfxh1-0000qC-Dg
- for ath10k@lists.infradead.org; Wed, 26 Jun 2019 02:29:52 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: Move non-fatal warn logs to dbg level for SDIO chip
-Date: Wed, 26 Jun 2019 10:29:35 +0800
-Message-Id: <1561516175-13873-1-git-send-email-wgong@codeaurora.org>
+ id 1hgYSm-00086v-7p
+ for ath10k@lists.infradead.org; Thu, 27 Jun 2019 17:45:37 +0000
+Received: by mail-pl1-x644.google.com with SMTP id bh12so1679900plb.4
+ for <ath10k@lists.infradead.org>; Thu, 27 Jun 2019 10:45:36 -0700 (PDT)
+From: Fuqian Huang <huangfq.daxian@gmail.com>
+Subject: [PATCH 78/87] wireless: ath10k: remove memset after dma_alloc_coherent
+Date: Fri, 28 Jun 2019 01:45:27 +0800
+Message-Id: <20190627174527.5987-1-huangfq.daxian@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Fuqian Huang <huangfq.daxian@gmail.com>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-ath10k will receive some message with invalid peer id from firmware.
-reason is:
-There are incoming frames to MAC hardware that NOT find relative
-address search table, then peer id is invalid set by MAC hardware,
-it is hardware's logic, so fix it in ath10k will be more convenient.
+In commit af7ddd8a627c
+("Merge tag 'dma-mapping-4.21' of git://git.infradead.org/users/hch/dma-mapping"),
+dma_alloc_coherent has already zeroed the memory.
+So memset is not needed.
 
-log:
-ath10k_sdio mmc1:0001:1: Got RX ind from invalid peer: 65535
-
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/ce.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a20ea27..14b838f 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2082,7 +2082,7 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find_by_id(ar, peer_id);
- 	spin_unlock_bh(&ar->data_lock);
--	if (!peer)
-+	if (!peer && peer_id != HTT_INVALID_PEERID)
- 		ath10k_warn(ar, "Got RX ind from invalid peer: %u\n", peer_id);
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index eca87f7c5b6c..294fbc1e89ab 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1704,9 +1704,6 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
+ 	/* Correctly initialize memory to 0 to prevent garbage
+ 	 * data crashing system when download firmware
+ 	 */
+-	memset(dest_ring->base_addr_owner_space_unaligned, 0,
+-	       nentries * sizeof(struct ce_desc_64) + CE_DESC_RING_ALIGN);
+-
+ 	dest_ring->base_addr_owner_space =
+ 			PTR_ALIGN(dest_ring->base_addr_owner_space_unaligned,
+ 				  CE_DESC_RING_ALIGN);
+@@ -2019,8 +2016,6 @@ void ath10k_ce_alloc_rri(struct ath10k *ar)
+ 		value |= ar->hw_ce_regs->upd->mask;
+ 		ath10k_ce_write32(ar, ce_base_addr + ctrl1_regs, value);
+ 	}
+-
+-	memset(ce->vaddr_rri, 0, CE_COUNT * sizeof(u32));
+ }
+ EXPORT_SYMBOL(ath10k_ce_alloc_rri);
  
- 	num_mpdu_ranges = MS(__le32_to_cpu(rx->hdr.info1),
 -- 
-1.9.1
+2.11.0
 
 
 _______________________________________________
