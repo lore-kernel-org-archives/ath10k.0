@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgZQm-0007bh-BW
- for ath10k@lists.infradead.org; Thu, 27 Jun 2019 18:47:37 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: pci: remove unnecessary casts
-Date: Thu, 27 Jun 2019 21:47:30 +0300
-Message-Id: <1561661250-30528-2-git-send-email-kvalo@codeaurora.org>
-In-Reply-To: <1561661250-30528-1-git-send-email-kvalo@codeaurora.org>
+ id 1hgZox-000795-9x
+ for ath10k@lists.infradead.org; Thu, 27 Jun 2019 19:12:37 +0000
+Message-ID: <58e8952b87c8aa533c15fe5650f3f71288377f36.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/2] ath10k: pci: remove unnecessary casts
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 27 Jun 2019 21:12:28 +0200
+In-Reply-To: <1561661250-30528-2-git-send-email-kvalo@codeaurora.org>
+ (sfid-20190627_204740_465294_470A1055)
 References: <1561661250-30528-1-git-send-email-kvalo@codeaurora.org>
+ <1561661250-30528-2-git-send-email-kvalo@codeaurora.org>
+ (sfid-20190627_204740_465294_470A1055)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,76 +22,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Fixes checkpatch warnings:
+On Thu, 2019-06-27 at 21:47 +0300, Kalle Valo wrote:
+> Fixes checkpatch warnings:
+> 
+> drivers/net/wireless/ath/ath10k/pci.c:926: unnecessary cast may hide bugs, see http://c-faq.com/malloc/ma
+> drivers/net/wireless/ath/ath10k/pci.c:1072: unnecessary cast may hide bugs, see http://c-faq.com/malloc/m
 
-drivers/net/wireless/ath/ath10k/pci.c:926: unnecessary cast may hide bugs, see http://c-faq.com/malloc/ma
-drivers/net/wireless/ath/ath10k/pci.c:1072: unnecessary cast may hide bugs, see http://c-faq.com/malloc/m
+I think you cut off the link there, did you mean
+http://c-faq.com/malloc/mallocnocast.html perhaps?
 
-While at it, also remove unnecessary initialisation of data_buf variable in both cases.
-
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/pci.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 80bcb2ef5926..a0b4d265c6eb 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -909,7 +909,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 	/* Host buffer address in CE space */
- 	u32 ce_data;
- 	dma_addr_t ce_data_base = 0;
--	void *data_buf = NULL;
-+	void *data_buf;
- 	int i;
- 
- 	mutex_lock(&ar_pci->ce_diag_mutex);
-@@ -923,10 +923,8 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 	 */
- 	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
- 
--	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev, alloc_nbytes,
--						       &ce_data_base,
--						       GFP_ATOMIC);
--
-+	data_buf = dma_alloc_coherent(ar->dev, alloc_nbytes, &ce_data_base,
-+				      GFP_ATOMIC);
- 	if (!data_buf) {
- 		ret = -ENOMEM;
- 		goto done;
-@@ -1054,7 +1052,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	u32 *buf;
- 	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
- 	struct ath10k_ce_pipe *ce_diag;
--	void *data_buf = NULL;
-+	void *data_buf;
- 	dma_addr_t ce_data_base = 0;
- 	int i;
- 
-@@ -1069,10 +1067,8 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	 */
- 	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
- 
--	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
--						       alloc_nbytes,
--						       &ce_data_base,
--						       GFP_ATOMIC);
-+	data_buf = dma_alloc_coherent(ar->dev, alloc_nbytes, &ce_data_base,
-+				      GFP_ATOMIC);
- 	if (!data_buf) {
- 		ret = -ENOMEM;
- 		goto done;
--- 
-2.7.4
+johannes
 
 
 _______________________________________________
