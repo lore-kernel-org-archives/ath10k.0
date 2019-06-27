@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgYSm-00086v-7p
- for ath10k@lists.infradead.org; Thu, 27 Jun 2019 17:45:37 +0000
-Received: by mail-pl1-x644.google.com with SMTP id bh12so1679900plb.4
- for <ath10k@lists.infradead.org>; Thu, 27 Jun 2019 10:45:36 -0700 (PDT)
-From: Fuqian Huang <huangfq.daxian@gmail.com>
-Subject: [PATCH 78/87] wireless: ath10k: remove memset after dma_alloc_coherent
-Date: Fri, 28 Jun 2019 01:45:27 +0800
-Message-Id: <20190627174527.5987-1-huangfq.daxian@gmail.com>
+ id 1hgYg1-00051O-N1
+ for ath10k@lists.infradead.org; Thu, 27 Jun 2019 17:59:19 +0000
+MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: add new hw_ops for sdio chip
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1560757048-19223-1-git-send-email-wgong@codeaurora.org>
+References: <1560757048-19223-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190627175914.7D99D60A05@smtp.codeaurora.org>
+Date: Thu, 27 Jun 2019 17:59:14 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,48 +18,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Fuqian Huang <huangfq.daxian@gmail.com>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-In commit af7ddd8a627c
-("Merge tag 'dma-mapping-4.21' of git://git.infradead.org/users/hch/dma-mapping"),
-dma_alloc_coherent has already zeroed the memory.
-So memset is not needed.
+Wen Gong <wgong@codeaurora.org> wrote:
 
-Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
----
- drivers/net/wireless/ath/ath10k/ce.c | 5 -----
- 1 file changed, 5 deletions(-)
+> It report error message while suspend/resume test.
+> dmesg log:
+> [  150.749962] ath10k_sdio mmc1:0001:1: hif read32 not supported
+> [  150.755728] ath10k_sdio mmc1:0001:1: failed to set coverage class: expected integer microsecond value in register
+> 
+> Reason is sdio chip does not support set_coverage_class as well as
+> pcie chip, remove the set_coverage_class handler will avoid it.
+> 
+> callstack of the error message:
+> OUTLINED_FUNCTION_6+0xc/0x14 [ath10k_core]
+> ath10k_mac_op_set_coverage_class+0x2c/0x40 [ath10k_core]
+> ieee80211_reconfig+0x5d0/0x108c [mac80211]
+> ieee80211_resume+0x34/0x6c [mac80211]
+> wiphy_resume+0xbc/0x13c [cfg80211]
+> dpm_run_callback+0xa4/0x168
+> device_resume+0x1d4/0x200
+> async_resume+0x1c/0x34
+> async_run_entry_fn+0x48/0xf8
+> process_one_work+0x178/0x2f8
+> worker_thread+0x1d8/0x2cc
+> kthread+0x11c/0x12c
+> ret_from_fork+0x10/0x18
+> 
+> the error log will not happen after this patch applied.
+> 
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index eca87f7c5b6c..294fbc1e89ab 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1704,9 +1704,6 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
- 	/* Correctly initialize memory to 0 to prevent garbage
- 	 * data crashing system when download firmware
- 	 */
--	memset(dest_ring->base_addr_owner_space_unaligned, 0,
--	       nentries * sizeof(struct ce_desc_64) + CE_DESC_RING_ALIGN);
--
- 	dest_ring->base_addr_owner_space =
- 			PTR_ALIGN(dest_ring->base_addr_owner_space_unaligned,
- 				  CE_DESC_RING_ALIGN);
-@@ -2019,8 +2016,6 @@ void ath10k_ce_alloc_rri(struct ath10k *ar)
- 		value |= ar->hw_ce_regs->upd->mask;
- 		ath10k_ce_write32(ar, ce_base_addr + ctrl1_regs, value);
- 	}
--
--	memset(ce->vaddr_rri, 0, CE_COUNT * sizeof(u32));
- }
- EXPORT_SYMBOL(ath10k_ce_alloc_rri);
- 
+Patch applied to ath-next branch of ath.git, thanks.
+
+6b4021deb03f ath10k: add new hw_ops for sdio chip
+
 -- 
-2.11.0
+https://patchwork.kernel.org/patch/10998099/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
