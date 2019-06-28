@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgrGG-0003E8-9y
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:49:57 +0000
+ id 1hgrJc-0004hV-0p
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:53:25 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA9888 hw2.0: Add BDF for Linksys EA8300 [2/2]
-References: <ac097652-455f-cd1f-0f48-f19fad61933c@allycomm.com>
-Date: Fri, 28 Jun 2019 16:49:52 +0300
-In-Reply-To: <ac097652-455f-cd1f-0f48-f19fad61933c@allycomm.com> (Jeff
- Kletsky's message of "Fri, 17 May 2019 09:39:05 -0700")
-Message-ID: <87pnmxbz0f.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k-firmware: QCA9984 hw1.0: Update Netgear Orbi Pro SRK60
+ specific BDFs
+References: <CAOX2RU4qYWap-yWCoPsFT2o7K-Fwz7Xjdzo=aLc1rR2ytWNLOw@mail.gmail.com>
+Date: Fri, 28 Jun 2019 16:53:20 +0300
+In-Reply-To: <CAOX2RU4qYWap-yWCoPsFT2o7K-Fwz7Xjdzo=aLc1rR2ytWNLOw@mail.gmail.com>
+ (Robert Marko's message of "Wed, 27 Mar 2019 14:16:57 +0100")
+Message-ID: <87lfxlbyun.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,94 +24,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeff Kletsky <lede@allycomm.com>
+To: Robert Marko <robimarko@gmail.com>
 Cc: ath10k@lists.infradead.org
 
-Jeff Kletsky <lede@allycomm.com> writes:
+Robert Marko <robimarko@gmail.com> writes:
 
-> Support for the Linksys EA8300 under OpenWrt is undergoing final
-> review. This is a QCA4019-based device with a PCI-attached QCA9888
-> supplying a third radio on 5 GHz. The OEM's firmware and source
-> suggest that this device is "based on Qualcomm AP DK07.1-c1"
+> I am currently working on the Netgear Orbi Pro SRK60 support for
+> OpenWrt. This
+> AP requires three special BDFs to get the Wi-Fi PHYs working (correctly). The
+> bmi-board-id='s would clash with one of the the IPQ401X AP-DK boards because
+> QCA doesn't provide special IDs for customers and seems to use the AP-DK
+> board-ids in the wifi firmware to change its behavior.
 >
-> Linksys ships four market-specific variants of this device, notated as
-> -AH, -EU, (no suffix), and -CA. They supply four sets of pre-cal board
-> files in their firmware, AH, EU, FCC, and IC. The corresponding files
-> differ from each other, and appear to provide different parameters in
-> the different regions. The OEM firmware copies the appropriate set of
-> files into place based on examining the SKU of the device at boot.
+> This update finally makes the QCA9984 stable, this is v6 of Netgear
+> BDFs and previous ones
+> would crash the firmware and driver after couple of minutes.
 >
-> These board files may be obtained from extraction of the OEM firmware
-> Ver. 1.1.4.191539, Latest Date: 11/8/2018, 49.0 MB
-> http://downloads.linksys.com/downloads/firmware/FW_EA8300_1.1.4.191539_prod.img
-> Ver. 1.1.3.184925, Latest Date: 11/15/2017, 47.4 MB
-> http://downloads.linksys.com/downloads/firmware/FW_EA8300_1.1.3.184925_prod.img
-> and/or from a running device. There does not appear to be a difference
-> in the board files between the two firmware versions.
+> Now to the questions from the wiki page [1]:
 >
-> DTS for the EA8300 under OpenWrt expects that the variant be encoded
-> as, for example, linksys-ea8300-fcc, with the lower-cased suffix
-> indicating the OEM's regional code, or -fcc.
+> * description for what hardware this is:
 >
-> Two similar messages will be sent, one for each chipset, as per the directions.
+>   - it is a QCA4019 based module (based on qcom-ipq4019-ap.dk04.1-c1)
+>   - one QCA4019 radio is used as 2.4GHz radio
+>   - one QCA4019 radio is used as 5GHz radio
+>   - an additional QCA9984 5GHz radio is attached via PCI
 >
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
 >
-> The files selected and their original names and organization include:
+>   - it was pulled from the factory firmware image
+>   - it is based on latest 2.3.0.0 firmware
 >
->     27d9dfe1e86c3befe808f89dd3cd105b  OEM/QCA9888/IC/boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin
->     7f2f0de6c0fb2df1d642895d8233d3ef  OEM/QCA9888/EU/boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin
->     62049f88a498e51870973143e376e7af  OEM/QCA9888/FCC/boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin
->     27d71485fc4987bc1c11b7744c373b59  OEM/QCA9888/AH/boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin
->     435d236890521515feffc834218ca594  OEM/IPQ4019/IC/boardData_1_0_IPQ4019_DK04_5G.bin
->     e8858ab9259f7d4372040da1c592d1cc  OEM/IPQ4019/IC/boardData_1_0_IPQ4019_DK04_2G.bin
->     d6d7ed00db985b4d8c48ccc3fe10fa87  OEM/IPQ4019/EU/boardData_1_0_IPQ4019_DK04_5G.bin
->     5cef8208a0345c1469494e44e1f370f1  OEM/IPQ4019/EU/boardData_1_0_IPQ4019_DK04_2G.bin
->     0e820f5946b5773ad9f4a74809c05b79  OEM/IPQ4019/FCC/boardData_1_0_IPQ4019_DK04_5G.bin
->     057ed5528e360197c2239796710cb61c  OEM/IPQ4019/FCC/boardData_1_0_IPQ4019_DK04_2G.bin
->     0171919a4576199ae88e8831f72c03fe  OEM/IPQ4019/AH/boardData_1_0_IPQ4019_DK04_5G.bin
->     a8e23769dc98da97b6c70a4f601ffca8  OEM/IPQ4019/AH/boardData_1_0_IPQ4019_DK04_2G.bin
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 >
+>   - QCA9984 hw1.0
 >
-> The files were renamed as follows:
+>   + bus=pci,bmi-chip-id=0,bmi-board-id=6,variant=Netgear-Orbi-Pro-SRK60
+>      md5sum:
+>      7002a32bac187b47b5e14fb7d1659836
 >
->     for JD in AH EU FCC IC ; do
->         jd=$(echo "$JD" | tr 'A-Z' 'a-z')
->         cp -vp OEM/IPQ4019/${JD}/boardData_1_0_IPQ4019_DK04_2G.bin \
-> 	    ${dest}/bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-${jd}
->         cp -vp OEM/IPQ4019/${JD}/boardData_1_0_IPQ4019_DK04_5G.bin \
-> 	    ${dest}/bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-${jd}
->         cp -vp OEM/QCA9888/${JD}/boardData_2_0_QCA9888_5G_Y9690_SBS_HB.bin \
-> 	    ${dest}/bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-${jd}
->     done
+> * attach the actual board file (board.bin)
 >
->
-> Renamed board files are individually attached to the IPQ4019 and QCA9888
-> messages. dmesg excerpts are from the device running OpenWrt with
-> locally crafted, aggregate board files.
->
->
->
-> For the QCA9888:
->
->     ath10k_pci 0000:01:00.0: qca9888 hw2.0 target 0x01000000 chip_id 0x00000000 sub 0000:0000
->
->     ath10k_pci 0000:01:00.0: board_file api 2 bmi_id 0:23 crc32 b050e9d6
->
->
-> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-eu
-> 7f2f0de6c0fb2df1d642895d8233d3ef
->
-> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-ic
-> 27d9dfe1e86c3befe808f89dd3cd105b
->
-> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-ah
-> 27d71485fc4987bc1c11b7744c373b59
->
-> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-fcc
-> 62049f88a498e51870973143e376e7af
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
 
-My script expects that the attachments end with '.bin' suffix. Could you
-please fix that and resend everything?
+Thanks, added to QCA9984/hw1.0/board-2.bin:
+
+New:
+
+
+Changed:
+bus=pci,bmi-chip-id=0,bmi-board-id=6,variant=Netgear-Orbi-Pro-SRK60
+
+Deleted:
+
+0 board image(s) added, 1 changed, 0 deleted, 15 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/7651f5bb299c40e34e05179b1bd15b211856a4b0
 
 -- 
 Kalle Valo
