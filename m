@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgwII-0002qZ-An
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 19:12:27 +0000
+ id 1hgwJH-0002yg-SI
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 19:13:26 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Move non-fatal warn logs to dbg level for SDIO
- chip
+Subject: Re: [PATCH] ath10k: destroy sdio workqueue while remove sdio module
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1561516175-13873-1-git-send-email-wgong@codeaurora.org>
-References: <1561516175-13873-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190628191222.15B1660909@smtp.codeaurora.org>
-Date: Fri, 28 Jun 2019 19:12:22 +0000 (UTC)
+In-Reply-To: <1561515940-13748-1-git-send-email-wgong@codeaurora.org>
+References: <1561515940-13748-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190628191323.933C3608BA@smtp.codeaurora.org>
+Date: Fri, 28 Jun 2019 19:13:23 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +27,9 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> wrote:
 
-> ath10k will receive some message with invalid peer id from firmware.
-> reason is:
-> There are incoming frames to MAC hardware that NOT find relative
-> address search table, then peer id is invalid set by MAC hardware,
-> it is hardware's logic, so fix it in ath10k will be more convenient.
-> 
-> log:
-> ath10k_sdio mmc1:0001:1: Got RX ind from invalid peer: 65535
+> The workqueue need to flush and destory while remove sdio module,
+> otherwise it will have thread which is not destory after remove
+> sdio modules.
 > 
 > Tested with QCA6174 SDIO with firmware
 > WLAN.RMH.4.4.1-00007-QCARMSWP-1.
@@ -45,10 +39,10 @@ Wen Gong <wgong@codeaurora.org> wrote:
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-bd1a4ac556df ath10k: Move non-fatal warn logs to dbg level for SDIO chip
+3ed39f8e747a ath10k: destroy sdio workqueue while remove sdio module
 
 -- 
-https://patchwork.kernel.org/patch/11016771/
+https://patchwork.kernel.org/patch/11016767/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
