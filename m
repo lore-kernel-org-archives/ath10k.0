@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgr7L-0000RS-2v
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:40:44 +0000
+ id 1hgr8k-0000ZQ-FD
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:42:11 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update OpenMesh A42 specific BDFs
-References: <2339663.SsakJrGtyZ@bentobox>
-Date: Fri, 28 Jun 2019 16:40:39 +0300
-In-Reply-To: <2339663.SsakJrGtyZ@bentobox> (Sven Eckelmann's message of "Thu, 
- 10 Jan 2019 14:17:06 +0100")
-Message-ID: <87r27dde08.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add ALFA Network AP120C-AC
+ specific BDF
+References: <39b9616c-592c-1560-b3df-e39598e61db8@gmail.com>
+Date: Fri, 28 Jun 2019 16:42:06 +0300
+In-Reply-To: <39b9616c-592c-1560-b3df-e39598e61db8@gmail.com> (Piotr Dymacz's
+ message of "Wed, 23 Jan 2019 01:38:03 +0100")
+Message-ID: <87mui1ddxt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,66 +24,87 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <seckelmann@datto.com>
+To: Piotr Dymacz <pepe2k@gmail.com>
 Cc: ath10k@lists.infradead.org
 
-Sven Eckelmann <seckelmann@datto.com> writes:
+Piotr Dymacz <pepe2k@gmail.com> writes:
 
-> The OpenMesh AA2 AP requires two special BDFs to get the Wi-Fi PHYs working 
-> (correctly). The  bmi-board-id='s would clash with one of the the IPQ401X 
-> AP-DK boards because QCA doesn't provide special IDs for customers and seems 
-> to use the AP-DK board-ids in the wifi firmware to change its behavior. 
+> This is a special BDF for 5 GHz radio inside ALFA Network AP120C-AC
+> [0]. In case of 2.4 GHz radio, BDF used by the vendor firmware is the
+> same as the one already embedded in the upstream board-2.bin file:
 >
-> This update contains:
+> root@AP120C-AC:/# dmesg | grep -i board
+> [   32.198686] Board extended Data download address: 0x0
+> [   32.223026]  Board data initialized
+> [   32.337060] ol_ath_download_firmware:##Board Id 18 , CHIP Id 0
+> [   32.343005] ol_ath_download_firmware: BOARDDATA DOWNLOAD TO address
+> 0xc0000
+> [   32.349831]  wifi0: Selecting board data file name
+> boardData_1_0_IPQ4019_DK03_wifi0.bin
+> [   32.359265] ol_transfer_bin_file: Board Data File download to
+> address=0xc0000 file
+> name=IPQ4019/hw.1/boardData_1_0_IPQ4019_DK03_wifi0.bin
+> [...]
 >
-> * add of the antenna gain
-> * CTLs for DFS channels
+> root@AP120C-AC:/# md5sum
+> /lib/firmware/IPQ4019/hw.1/boardData_1_0_IPQ4019_DK03_w
+> ifi0.bin
+> 11c70b64c714c30d040fcd7b0ef3f53f
+> /lib/firmware/IPQ4019/hw.1/boardData_1_0_IPQ4019_DK03_wifi0.bin
 >
 >
-> Now to the questions from the wiki page [1]:
+> And the same (checksum and board/chip-id match) file inside upstream
+> board-2.bin:
+>
+> ath10k-bdencoder -i board-2.bin
+> [...]
+> BoardNames[2]: 'bus=ahb,bmi-chip-id=0,bmi-board-id=18'
+> BoardLength[2]: 12064
+> BoardCRC32[2]: 628eba64
+> BoardMD5[2]: 11c70b64c714c30d040fcd7b0ef3f53f
+> [...]
+>
+>
+> Thus, only one additional BDF has to be included in board-2.bin.
+> As per the current "Submitting board files" guidelines [1]:
 >
 > * description for what hardware this is:
 >
->   - it is a QCA4019 based module (based on qcom-ipq4019-ap.dk01.1)
->   - one QCA4019 radio is used as 2.4GHz radio
->   - one QCA4019 radio is used as 5GHz radio
+>   - this is an IPQ4018 based indoor ceiling AP
+>   - one QCA40xx radio is used as 2.4GHz radio
+>   - one QCA40xx radio is used as 5GHz radio
 >
 > * origin of the board file (did you create it yourself or where you
 >   downloaded)
 >
->   - it was created by the ODM and QCA for the OpenMesh A42
->   - was provided by the ODM to OpenMesh for this product (this includes
->     distribution)
->   - it is the latest release from 2018-11-28
+>   - file was extracted from a running vendor firmware the device was
+>     delivered with
 >
 > * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 >
->   - QCA4019 hw1.0
+>   - QCA4019 hw1.0:
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=25,variant=ALFA-Network-AP120C-AC
+>     md5sum: e676f159de8afd74df3fecc8ecf94389
 >
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42
->       md5sum: d9690f7937509e920ed070702262a585
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42
->       md5sum: 9a670abb62c7348dfbf70fe706323e2f
 >
 > * attach the actual board file (board.bin)
 >
->   - The name of the files are equal to the id string in the board-2.bin
+>   - the name of the file is equal to the id string in the board-2.bin
 >     (minus the ".bin")
 
 Thanks, added to QCA4019/hw1.0/board-2.bin:
 
 New:
-
+bus=ahb,bmi-chip-id=0,bmi-board-id=25,variant=ALFA-Network-AP120C-AC
 
 Changed:
-bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42
-bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42
+
 
 Deleted:
 
-0 board image(s) added, 2 changed, 0 deleted, 41 in total
+1 board image(s) added, 0 changed, 0 deleted, 42 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/93a59a9c2deb8e29cb75ecef801987483c04e748
+https://github.com/kvalo/ath10k-firmware/commit/36d375992210ffe5b6e44aab5910eeb83967072c
 
 -- 
 Kalle Valo
