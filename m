@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgr9j-0000gM-Iy
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:43:13 +0000
+ id 1hgrAj-0000qZ-Oa
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:44:15 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add AVM FRITZ!Box 7530 specific
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update Linksys EA6350v3 specific
  BDFs
-References: <319459b8-abce-a2d7-c8d4-df9e253dccef@david-bauer.net>
-Date: Fri, 28 Jun 2019 16:43:07 +0300
-In-Reply-To: <319459b8-abce-a2d7-c8d4-df9e253dccef@david-bauer.net> (David
- Bauer's message of "Sat, 9 Feb 2019 23:06:53 +0100")
-Message-ID: <87imspddw4.fsf@kamboji.qca.qualcomm.com>
+References: <75520287-0A5A-4840-B100-7CF4BB627F8B@gmail.com>
+Date: Fri, 28 Jun 2019 16:44:09 +0300
+In-Reply-To: <75520287-0A5A-4840-B100-7CF4BB627F8B@gmail.com> ("Oever
+ \=\?utf-8\?Q\?Gonz\=C3\=A1lez\=22's\?\= message of "Wed, 20 Feb 2019 11:08:24
+ -0600")
+Message-ID: <87ef3dddue.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,64 +21,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Bauer <mail@david-bauer.net>
+To: Oever =?utf-8?Q?Gonz=C3=A1lez?= <notengobattery@gmail.com>
 Cc: ath10k@lists.infradead.org
 
-David Bauer <mail@david-bauer.net> writes:
-
-> this is a set of board.bin files for the AVM FRITZ!Box 7530 Router [0],
-> which I wish to be added to the ath10k-firmware repository.
->
-> As per the current "Submitting board files" guidelines [1]:
->
-> * description for what hardware this is:
->   - it is a IPQ4019 based board [0]
->     - one QCA40xx radio is used as 2.4 GHz radio
->     - one QCA40xx radio is used as 5 GHz radio
->
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
->   - all files were extracted from official vendor firmware which was on
-> the device and can be downloaded from AVM [2]
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->   - qca4019 hw1.0
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=AVM-FRITZBox-7530
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=AVM-FRITZBox-7530
->
-> * sha256sum of each new board file to add
->   - bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=AVM-FRITZBox-7530
->     - c7b6026635bd32fe0709600edb024e1752151a0d038a1a8830f847bb815ad32b
->   - bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=AVM-FRITZBox-7530
->     - 5191621ea04058dad1709c492c559de24454374c9d286582154ff94a1978d248
->
-> * attach the actual board file (board.bin)
->   - the name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
-
-Thanks, added to QCA4019/hw1.0/board-2.bin:
-
-New:
-bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=AVM-FRITZBox-7530
-bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=AVM-FRITZBox-7530
-
-Changed:
-
-
-Deleted:
-
-2 board image(s) added, 0 changed, 0 deleted, 44 in total
-
-https://github.com/kvalo/ath10k-firmware/commit/c0190272ee9ca94efbfa30b48bc2a8f29a91d7bd
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T2V2ZXIgR29uesOhbGV6IDxub3RlbmdvYmF0dGVyeUBnbWFpbC5jb20+IHdyaXRlczoKCj4gVGhp
+cyBpcyBhbiB1cGRhdGUgdG8gdGhlIEJERnMgc2VudCBmb3IgdGhlIExpbmtzeXMgRUE2MzUwdjMg
+ZGV2aWNlLiBBZnRlcgo+IHRlc3RpbmcgYWxsIGZpbGVzIGZyb20gdGhlIG9yaWdpbmFsIGZpcm13
+YXJlLCB0aGUgZm9sbG93aW5nIGZpbGVzIGdhdmUKPiB0aGUgYmVzdCByZXN1bHRzLgo+Cj4gVGhp
+cyB1cGRhdGUgY29udGFpbnM6Cj4KPiAqIG9yaWdpbmFsIGZpbGVzIGZyb20gdGhlIE9FTSBmaXJt
+d2FyZSBrbm93biB0byBiZSB0aGUgYmVzdCBmb3IgdGhlIGRldmljZQo+Cj4KPiBOb3cgdG8gdGhl
+IHF1ZXN0aW9ucyBmcm9tIHRoZSB3aWtpIHBhZ2UgWzFdOgo+Cj4gKiBkZXNjcmlwdGlvbiBmb3Ig
+d2hhdCBoYXJkd2FyZSB0aGlzIGlzOgo+Cj4gICAtIGl0IGlzIGEgSVBRNDAxOCBiYXNlZCBib2Fy
+ZCAoQVAtREswMS4xLUMyKQo+ICAgLSBvbmUgUUNBNDB4eCByYWRpbyBpcyB1c2VkIGFzIDIuNEdI
+eiByYWRpbwo+ICAgLSBvbmUgUUNBNDB4eCByYWRpbyBpcyB1c2VkIGFzIDVHSHogcmFkaW8KPgo+
+ICogb3JpZ2luIG9mIHRoZSBib2FyZCBmaWxlIChkaWQgeW91IGNyZWF0ZSBpdCB5b3Vyc2VsZiBv
+ciB3aGVyZSB5b3UKPiAgIGRvd25sb2FkZWQpCj4KPiAgIC0gVGhlIGJvYXJkIGZpbGUocykgd2hl
+cmUgZXh0cmFjdGVkIGZyb20gdGhlIExpbmtzeXMgZmlybXdhcmUuIEZyb20KPiAgICAgdGhlIGlt
+YWdlLCB0aGVyZSBhcmUgYSB0b3RhbCBvZiA4IGZvbGRlcnM6IEFILCBBUCwgQVUsIEVVLCBGQ0Ms
+Cj4gICAgIGh3XzEsIElDIGFuZCBQSC4KPiAgIC0gVGhlIGZpbGVzIGluIHRoaXMgZW1haWwgYXJl
+Ogo+ICAgICAqIGh3XzEvYm9hcmREYXRhXzFfMF9JUFE0MDE5X1k5ODAzX3dpZmkwLmJpbgo+ICAg
+ICAqIElDL2JvYXJkRGF0YV8xXzBfSVBRNDAxOV9ZOTgwM193aWZpMS5iaW4KPgo+ICogaWRzIHRv
+IGJlIHVzZWQgd2l0aCB0aGUgYm9hcmQgZmlsZSAoQVRIMTBLX0JEX0lFX0JPQVJEX05BTUUgaW4g
+YXRoMTBrKQo+Cj4gICAtIFFDQTQwMTkgaHcxLjAKPgo+ICAgICArIGJ1cz1haGIsYm1pLWNoaXAt
+aWQ9MCxibWktYm9hcmQtaWQ9MTYsdmFyaWFudD1saW5rc3lzLWVhNjM1MHYzCj4gICAgICAgbWQ1
+c3VtOgo+ICAgICAgIDY1MjUyMmE1MzJiMGYxZTY5ZDBkYzg3ZjRlZjY3MjljCj4gICAgICAgc2hh
+MjU2c3VtOgo+ICAgICAgIDZjMGFiMGU0MTU4YWRmOWU2YjA4YTg2MjNjOGI1OWRmYmI5MjE5MjM0
+NzQ1ZWRiZmExNzEyYWZlZTIyOGYxYmEKPiAgICAgKyBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1p
+LWJvYXJkLWlkPTE3LHZhcmlhbnQ9bGlua3N5cy1lYTYzNTB2Mwo+ICAgICAgIG1kNXN1bToKPiAg
+ICAgICBlYTcxODY3NzE4OGU5Njg0NzVjNzk1NTAwMmYwOTM2Mgo+ICAgICAgIHNoYTI1NnN1bToK
+PiAgICAgICA0NGYwOGQxNjRjZjM1MjQyY2FjMGRjNzliZTk4NWRiNjk0ZmYyNmQ4ZjkzNDYyNWI4
+YzA3MGQwMjE4YmZmMGYzCj4KPiAqIGF0dGFjaCB0aGUgYWN0dWFsIGJvYXJkIGZpbGUgKGJvYXJk
+LmJpbikKPgo+ICAgLSBUaGUgbmFtZSBvZiB0aGUgZmlsZXMgYXJlIGVxdWFsIHRvIHRoZSBpZCBz
+dHJpbmcgaW4gdGhlIGJvYXJkLTIuYmluCj4gICAgIChtaW51cyB0aGUgIi5iaW4iKQoKVGhhbmtz
+LCBhZGRlZCB0byBRQ0E0MDE5L2h3MS4wL2JvYXJkLTIuYmluOgoKTmV3OgpidXM9YWhiLGJtaS1j
+aGlwLWlkPTAsYm1pLWJvYXJkLWlkPTE3LHZhcmlhbnQ9bGlua3N5cy1lYTYzNTB2MwpidXM9YWhi
+LGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTE2LHZhcmlhbnQ9bGlua3N5cy1lYTYzNTB2MwoK
+Q2hhbmdlZDoKCgpEZWxldGVkOgoKMiBib2FyZCBpbWFnZShzKSBhZGRlZCwgMCBjaGFuZ2VkLCAw
+IGRlbGV0ZWQsIDQ2IGluIHRvdGFsCgpodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZp
+cm13YXJlL2NvbW1pdC84NDg1NTJmN2U3NjA2YWU1Y2IyMGJlOTZiNzcyMTNkZWZkNDE0ZTZiCgot
+LSAKS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
