@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgwJH-0002yg-SI
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 19:13:26 +0000
+ id 1hgwKX-00036c-N2
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 19:14:44 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: destroy sdio workqueue while remove sdio module
+Subject: Re: [PATCH 1/2] ath10k: remove unnecessary 'out of memory' message
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1561515940-13748-1-git-send-email-wgong@codeaurora.org>
-References: <1561515940-13748-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190628191323.933C3608BA@smtp.codeaurora.org>
-Date: Fri, 28 Jun 2019 19:13:23 +0000 (UTC)
+In-Reply-To: <1561661250-30528-1-git-send-email-kvalo@codeaurora.org>
+References: <1561661250-30528-1-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20190628191441.6972760909@smtp.codeaurora.org>
+Date: Fri, 28 Jun 2019 19:14:41 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> The workqueue need to flush and destory while remove sdio module,
-> otherwise it will have thread which is not destory after remove
-> sdio modules.
+> Fixes checkpatch warning:
 > 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+> drivers/net/wireless/ath/ath10k/swap.c:110: Possible unnecessary 'out of memory' message
 > 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-3ed39f8e747a ath10k: destroy sdio workqueue while remove sdio module
+2189135437d0 ath10k: remove unnecessary 'out of memory' message
+d44c732cffe5 ath10k: pci: remove unnecessary casts
 
 -- 
-https://patchwork.kernel.org/patch/11016767/
+https://patchwork.kernel.org/patch/11020277/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
