@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgwHc-0002iT-Qn
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 19:11:43 +0000
+ id 1hgwII-0002qZ-An
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 19:12:27 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fix memory leak in qmi
+Subject: Re: [PATCH] ath10k: Move non-fatal warn logs to dbg level for SDIO
+ chip
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1561472748-28467-1-git-send-email-dundi@codeaurora.org>
-References: <1561472748-28467-1-git-send-email-dundi@codeaurora.org>
-Message-Id: <20190628191139.242FE6070D@smtp.codeaurora.org>
-Date: Fri, 28 Jun 2019 19:11:39 +0000 (UTC)
+In-Reply-To: <1561516175-13873-1-git-send-email-wgong@codeaurora.org>
+References: <1561516175-13873-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190628191222.15B1660909@smtp.codeaurora.org>
+Date: Fri, 28 Jun 2019 19:12:22 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dundi Raviteja <dundi@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Dundi Raviteja <dundi@codeaurora.org> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> Currently the memory allocated for qmi handle is
-> not being freed during de-init which leads to memory leak.
+> ath10k will receive some message with invalid peer id from firmware.
+> reason is:
+> There are incoming frames to MAC hardware that NOT find relative
+> address search table, then peer id is invalid set by MAC hardware,
+> it is hardware's logic, so fix it in ath10k will be more convenient.
 > 
-> Free the allocated qmi memory in qmi deinit
-> to avoid memory leak.
+> log:
+> ath10k_sdio mmc1:0001:1: Got RX ind from invalid peer: 65535
 > 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 > 
-> Fixes: fda6fee0001e ("ath10k: add QMI message handshake for wcn3990 client")
-> Signed-off-by: Dundi Raviteja <dundi@codeaurora.org>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-c709df58832c ath10k: Fix memory leak in qmi
+bd1a4ac556df ath10k: Move non-fatal warn logs to dbg level for SDIO chip
 
 -- 
-https://patchwork.kernel.org/patch/11015647/
+https://patchwork.kernel.org/patch/11016771/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
