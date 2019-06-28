@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgr2d-0006o0-5t
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:35:52 +0000
+ id 1hgr2s-0006te-1j
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:36:07 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Qxwlan E2600AC specific BDFs
-References: <tencent_9DDF95DF96EF68F50B6B6DC8FE5D21E63C0A@qq.com>
-Date: Fri, 28 Jun 2019 16:35:47 +0300
-In-Reply-To: <tencent_9DDF95DF96EF68F50B6B6DC8FE5D21E63C0A@qq.com> (Theone's
- message of "Sat, 5 Jan 2019 10:26:44 +0800")
-Message-ID: <87ef3desss.fsf@kamboji.qca.qualcomm.com>
+References: <tencent_C743F5CF1BF1E399A55CAD3C5B4B40F87805@qq.com>
+Date: Fri, 28 Jun 2019 16:36:02 +0300
+In-Reply-To: <tencent_C743F5CF1BF1E399A55CAD3C5B4B40F87805@qq.com> (Theone's
+ message of "Mon, 7 Jan 2019 10:49:49 +0800")
+Message-ID: <87a7e1essd.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,6 +28,8 @@ Cc: ath10k <ath10k@lists.infradead.org>
 
 "Theone" <1805692831@qq.com> writes:
 
+> For the questions from the wiki page:
+>
 > * description for what hardware this is:
 >
 >   - it is a IPQ4018 based board (AP-DK07-C1)
