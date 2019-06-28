@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgj0X-0002Ms-Nz
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 05:01:11 +0000
+ id 1hgj7I-00042m-90
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 05:08:09 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 16/27] net: remove unneeded memset
-References: <20190628024843.15635-1-huangfq.daxian@gmail.com>
-Date: Fri, 28 Jun 2019 08:00:54 +0300
-In-Reply-To: <20190628024843.15635-1-huangfq.daxian@gmail.com> (Fuqian Huang's
- message of "Fri, 28 Jun 2019 10:48:31 +0800")
-Message-ID: <87v9wqqp6h.fsf@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: pci: remove unnecessary casts
+References: <1561661250-30528-1-git-send-email-kvalo@codeaurora.org>
+ <1561661250-30528-2-git-send-email-kvalo@codeaurora.org>
+ <58e8952b87c8aa533c15fe5650f3f71288377f36.camel@sipsolutions.net>
+ <a6c87741bc3e992bf61d2706834e069917018745.camel@sipsolutions.net>
+Date: Fri, 28 Jun 2019 08:08:04 +0300
+In-Reply-To: <a6c87741bc3e992bf61d2706834e069917018745.camel@sipsolutions.net>
+ (Johannes Berg's message of "Thu, 27 Jun 2019 21:15:48 +0200")
+Message-ID: <87r27eqouj.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,48 +26,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fuqian Huang <huangfq.daxian@gmail.com>
-Cc: Ronak Doshi <doshir@vmware.com>, Sergey Matyukevich <smatyukevich@quantenna.com>, "VMware,
- Inc." <pv-drivers@vmware.com>, Chris Snook <chris.snook@gmail.com>, Chi-Hsien Lin <chi-hsien.lin@cypress.com>, Arend van Spriel <arend.vanspriel@broadcom.com>, linux-kernel@vger.kernel.org, Vishal Kulkarni <vishal@chelsio.com>, Samuel Chessman <chessman@tux.org>, =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, netdev@vger.kernel.org, Avinash Patil <avinashp@quantenna.com>, Thomas Gleixner <tglx@linutronix.de>, Manish Chopra <manishc@marvell.com>, linux-rdma@vger.kernel.org, Will Deacon <will@kernel.org>, Guo-Fu Tseng <cooldavid@cooldavid.org>, Rahul Verma <rahulv@marvell.com>, ath10k@lists.infradead.org, brcm80211-dev-list@cypress.com, Saeed Mahameed <saeedm@mellanox.com>, linux-hippi@sunsite.dk, Franky Lin <franky.lin@broadcom.com>, Yang Wei <yang.wei9@zte.com.cn>, Jes Sorensen <jes@trained-monkey.org>, Jay Cliburn <jcliburn@gmail.com>, YueHaibing <yuehaibing@huawei.com>, Hante Meuleman <hante.meuleman@broadcom.com>, Ido Schimmel <idosch@mellanox.com>, Hans de Goede <hdegoede@redhat.com>, Jiri Pirko <jiri@mellanox.com>, Wright Feng <wright.feng@cypress.com>, Michael Chan <michael.chan@broadcom.com>, zhong jiang <zhongjiang@huawei.com>, Allison Randal <allison@lohutok.net>, Mirko Lindner <mlindner@marvell.com>, Igor Mitsyanko <imitsyanko@quantenna.com>, brcm80211-dev-list.pdl@broadcom.com, GR-Linux-NIC-Dev@marvell.com, Fugang Duan <fugang.duan@nxp.com>, Leon Romanovsky <leon@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, Mao Wenan <maowenan@huawei.com>, Stephen Hemminger <stephen@networkplumber.org>, Luis Chamberlain <mcgrof@kernel.org>, Jon Mason <jdmason@kudzu.us>, Andrey Shevchenko <ashevchenko@quantenna.com>, Colin Ian King <colin.king@canonical.com>, "David S. Miller" <davem@davemloft.net>, Tariq Toukan <tariqt@mellanox.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Fuqian Huang <huangfq.daxian@gmail.com> writes:
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-> The memset with 0 after zeroing allocator is unneeded.
->
-> pci_alloc_persistent calls dma_alloc_coherent directly.
-> In commit af7ddd8a627c
-> ("Merge tag 'dma-mapping-4.21' of git://git.infradead.org/users/hch/dma-mapping"),
-> dma_alloc_coherent has already zeroed the memory.
-> So the memset after these functions is unneeded.
->
-> Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
-> ---
->  drivers/net/ethernet/atheros/atlx/atl1.c                   | 2 --
->  drivers/net/ethernet/atheros/atlx/atl2.c                   | 1 -
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c                  | 2 --
->  drivers/net/ethernet/chelsio/cxgb4/sched.c                 | 1 -
->  drivers/net/ethernet/freescale/fec_main.c                  | 2 --
->  drivers/net/ethernet/jme.c                                 | 5 -----
->  drivers/net/ethernet/marvell/skge.c                        | 2 --
->  drivers/net/ethernet/mellanox/mlx4/eq.c                    | 2 --
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch.c          | 1 -
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 2 --
->  drivers/net/ethernet/mellanox/mlxsw/pci.c                  | 1 -
->  drivers/net/ethernet/neterion/s2io.c                       | 1 -
->  drivers/net/ethernet/qlogic/netxen/netxen_nic_ctx.c        | 3 ---
->  drivers/net/ethernet/ti/tlan.c                             | 1 -
->  drivers/net/hippi/rrunner.c                                | 2 --
->  drivers/net/vmxnet3/vmxnet3_drv.c                          | 1 -
->  drivers/net/wireless/ath/ath10k/ce.c                       | 5 -----
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c    | 2 --
->  drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c   | 2 --
->  drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c   | 2 --
+> On Thu, 2019-06-27 at 21:12 +0200, Johannes Berg wrote:
+>> On Thu, 2019-06-27 at 21:47 +0300, Kalle Valo wrote:
+>> > Fixes checkpatch warnings:
+>> > 
+>> > drivers/net/wireless/ath/ath10k/pci.c:926: unnecessary cast may
+>> > hide bugs, see http://c-faq.com/malloc/ma
+>> > drivers/net/wireless/ath/ath10k/pci.c:1072: unnecessary cast may
+>> > hide bugs, see http://c-faq.com/malloc/m
+>> 
+>> I think you cut off the link there, did you mean
+>> http://c-faq.com/malloc/mallocnocast.html perhaps?
 
-For the wireless part:
+Yes, thanks. Fixed now in the pending branch.
 
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
+> Which I should've read before replying ... WHAT? We consider calling
+> undeclared functions an *error* in the kernel, this is quite pointless.
 
-I assume Dave will take this.
+Yeah, the link checkpatch provides is pointless. TBH I didn't even read
+it until you commented on it :) But the patch is still good to have as
+there's no point of use casting on void pointers, it's just extra cruft.
+Right?
 
 -- 
 Kalle Valo
