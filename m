@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgrBR-0001Ik-2P
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:44:58 +0000
+ id 1hgrC4-0002bg-10
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:45:37 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add AVM FRITZ!Repeater 3000
- specific BDFs
-References: <154c0e78-e6df-ffe3-035b-d1e11d35f36f@david-bauer.net>
-Date: Fri, 28 Jun 2019 16:44:52 +0300
-In-Reply-To: <154c0e78-e6df-ffe3-035b-d1e11d35f36f@david-bauer.net> (David
- Bauer's message of "Sat, 9 Mar 2019 00:26:56 +0100")
-Message-ID: <87a7e1ddt7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k-firmware: IPQ4018 hw1.0: Add EnGenius ENS620EXT specific
+ BDFs
+References: <7C60B6E9-D2E1-44C6-8818-5E22D435C4BD@cablelabs.com>
+Date: Fri, 28 Jun 2019 16:45:31 +0300
+In-Reply-To: <7C60B6E9-D2E1-44C6-8818-5E22D435C4BD@cablelabs.com> (Steve
+ Glennon's message of "Mon, 11 Mar 2019 18:41:53 +0000")
+Message-ID: <875zopdds4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,54 +24,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Bauer <mail@david-bauer.net>
-Cc: ath10k@lists.infradead.org
+To: Steve Glennon <S.Glennon@cablelabs.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-David Bauer <mail@david-bauer.net> writes:
+Steve Glennon <S.Glennon@cablelabs.com> writes:
 
-> this is a set of board.bin files for the AVM FRITZ!Repeater 3000 [0],
-> which I wish to be added to the ath10k-firmware repository.
+> I am adding support for this device to OpenWrt. This AP requires 
+> two special BDFs to get the Wi-Fi PHYs working (correctly). The  bmi-board-
+> id='s would clash with one of the the IPQ401X AP-DK boards because QCA doesn't 
+> provide special IDs for customers and seems to use the AP-DK board-ids in the 
+> wifi firmware to change its behavior.
 >
-> As per the current "Submitting board files" guidelines [1]:
+> Now to the questions from the wiki page [1]:
 >
 > * description for what hardware this is:
->   - it is a IPQ4019 based board [0]
->     - one QCA40xx radio is used as 2.4 GHz radio
->     - one QCA40xx radio is used as 5 GHz radio
+>
+>   - it is a IPQ4018 based board
+>   - one QCA40xx radio is used as 2.4GHz radio
+>   - one QCA40xx radio is used as 5GHz radio
 >
 > * origin of the board file (did you create it yourself or where you
 >   downloaded)
->   - all files were extracted from official vendor firmware which was on
-> the device and can be downloaded from AVM [2]
+>
+>   - from stock firmware image
 >
 > * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->   - qca4019 hw1.0
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=AVM-FRITZRepeater-3000
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=AVM-FRITZRepeater-3000
-> * sha256sum of each new board file to add
->   - bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=AVM-FRITZRepeater-3000
->     - c7b6026635bd32fe0709600edb024e1752151a0d038a1a8830f847bb815ad32b
->   - bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=AVM-FRITZRepeater-3000
->     - 5191621ea04058dad1709c492c559de24454374c9d286582154ff94a1978d248
+>
+>   - QCA4019 hw1.0
+>
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=EnGenius-ENS620EXT
+>       md5sum:
+>       06b06ff901de575a57b054af238c1335
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=EnGenius-ENS620EXT.bin
+>       md5sum:
+>       7cb23e1ff21179de5c4e726552864285
 >
 > * attach the actual board file (board.bin)
->   - the name of the files are equal to the id string in the board-2.bin
+>
+>   - The name of the files are equal to the id string in the board-2.bin
 >     (minus the ".bin")
 
 Thanks, added to QCA4019/hw1.0/board-2.bin:
 
 New:
-bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=AVM-FRITZRepeater-3000
-bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=AVM-FRITZRepeater-3000
+bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=EnGenius-ENS620EXT
+bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=EnGenius-ENS620EXT
 
 Changed:
 
 
 Deleted:
 
-2 board image(s) added, 0 changed, 0 deleted, 48 in total
+2 board image(s) added, 0 changed, 0 deleted, 50 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/1d86284494beb1f796bf7a5fddac04b4e7f5c302
+https://github.com/kvalo/ath10k-firmware/commit/30a36dcd3c77668891cf12971f80b5cdb4fa851d
 
 -- 
 Kalle Valo
