@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgj7I-00042m-90
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 05:08:09 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: pci: remove unnecessary casts
-References: <1561661250-30528-1-git-send-email-kvalo@codeaurora.org>
- <1561661250-30528-2-git-send-email-kvalo@codeaurora.org>
- <58e8952b87c8aa533c15fe5650f3f71288377f36.camel@sipsolutions.net>
- <a6c87741bc3e992bf61d2706834e069917018745.camel@sipsolutions.net>
-Date: Fri, 28 Jun 2019 08:08:04 +0300
-In-Reply-To: <a6c87741bc3e992bf61d2706834e069917018745.camel@sipsolutions.net>
- (Johannes Berg's message of "Thu, 27 Jun 2019 21:15:48 +0200")
-Message-ID: <87r27eqouj.fsf@codeaurora.org>
-MIME-Version: 1.0
+ id 1hglMK-0003o9-Ho
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 07:31:49 +0000
+From: Balaji Pothunoori <bpothuno@codeaurora.org>
+Subject: [PATCH] ath10k: check data ack rssi enabled/disabled in htt rx event
+Date: Fri, 28 Jun 2019 13:01:24 +0530
+Message-Id: <1561707084-10021-1-git-send-email-bpothuno@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +15,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Abhishek Ambure <aambure@codeaurora.org>, linux-wireless@vger.kernel.org, Balaji Pothunoori <bpothuno@codeaurora.org>
 
-Johannes Berg <johannes@sipsolutions.net> writes:
+From: Abhishek Ambure <aambure@codeaurora.org>
 
-> On Thu, 2019-06-27 at 21:12 +0200, Johannes Berg wrote:
->> On Thu, 2019-06-27 at 21:47 +0300, Kalle Valo wrote:
->> > Fixes checkpatch warnings:
->> > 
->> > drivers/net/wireless/ath/ath10k/pci.c:926: unnecessary cast may
->> > hide bugs, see http://c-faq.com/malloc/ma
->> > drivers/net/wireless/ath/ath10k/pci.c:1072: unnecessary cast may
->> > hide bugs, see http://c-faq.com/malloc/m
->> 
->> I think you cut off the link there, did you mean
->> http://c-faq.com/malloc/mallocnocast.html perhaps?
+For all data packets trasmmited, host gets htt tx completion event.
 
-Yes, thanks. Fixed now in the pending branch.
+QCA9984 firmware gives data ack rssi values to host through
+htt event of data tx completion. Data ack rssi values are valid
+if A0 bit is set in HTT rx message.
 
-> Which I should've read before replying ... WHAT? We consider calling
-> undeclared functions an *error* in the kernel, this is quite pointless.
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00044
 
-Yeah, the link checkpatch provides is pointless. TBH I didn't even read
-it until you commented on it :) But the patch is still good to have as
-there's no point of use casting on void pointers, it's just extra cruft.
-Right?
+Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/hw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index ad082b7..303f17d 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -1145,6 +1145,7 @@ static bool ath10k_qca99x0_rx_desc_msdu_limit_error(struct htt_rx_desc *rxd)
+ const struct ath10k_hw_ops qca99x0_ops = {
+ 	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
+ 	.rx_desc_get_msdu_limit_error = ath10k_qca99x0_rx_desc_msdu_limit_error,
++	.is_rssi_enable = ath10k_htt_tx_rssi_enable,
+ };
+ 
+ const struct ath10k_hw_ops qca6174_ops = {
 -- 
-Kalle Valo
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
