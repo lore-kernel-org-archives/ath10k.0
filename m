@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgr2s-0006te-1j
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:36:07 +0000
+ id 1hgr3I-00071g-Ka
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:36:33 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Qxwlan E2600AC specific BDFs
-References: <tencent_C743F5CF1BF1E399A55CAD3C5B4B40F87805@qq.com>
-Date: Fri, 28 Jun 2019 16:36:02 +0300
-In-Reply-To: <tencent_C743F5CF1BF1E399A55CAD3C5B4B40F87805@qq.com> (Theone's
- message of "Mon, 7 Jan 2019 10:49:49 +0800")
-Message-ID: <87a7e1essd.fsf@kamboji.qca.qualcomm.com>
+References: <tencent_65F0DF86E55F2622C233457975F99096AF06@qq.com>
+Date: Fri, 28 Jun 2019 16:36:18 +0300
+In-Reply-To: <tencent_65F0DF86E55F2622C233457975F99096AF06@qq.com> (Theone's
+ message of "Thu, 10 Jan 2019 18:18:50 +0800")
+Message-ID: <875zopesrx.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,8 +32,8 @@ Cc: ath10k <ath10k@lists.infradead.org>
 >
 > * description for what hardware this is:
 >
->   - it is a IPQ4018 based board (AP-DK07-C1)
->   - one QCA40xx radio is used as 2.4/5 GHz radio
+>   - it is a IPQ4019 based board (AP-DK07-C1)
+>   - one QCA40xx radio is used as 5 GHz radio
 >   - one QCA40xx radio is used as 5GHz radio
 >
 > * origin of the board file (did you create it yourself or where you
@@ -41,23 +41,18 @@ Cc: ath10k <ath10k@lists.infradead.org>
 >
 >   - The board file(s) where extracted from the Qxwlan firmware. 
 >   - The files in this email are:
->     * board_wifi0_2g.bin
->     * board_wifi0_5g.bin
->     * board_wifi1_5g.bin
+>     * board-wifi0-5g.bin
+>     * board-wifi1-5g.bin
 >
 > * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 >
 >   - QCA4019 hw1.0
->
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=28,variant=Qxwlan-E2600AC
->       sha256sum:
->       4d8d5ca0f2de7bdf4dc6e3c65c381ffa7eea16bd42dd5b74b0a30f1a41b49e5b
 >     + bus=ahb,bmi-chip-id=0,bmi-board-id=29,variant=Qxwlan-E2600AC
 >       sha256sum:
->       07363a402ac058ddb96f2f4938bae88e89260b52df3af8a6fd6cd2575d93294f
+>       6706954c7b363911bb84d4b70f90312e665701acca2dba40f2397e6cd6d6c000
 >     + bus=ahb,bmi-chip-id=0,bmi-board-id=30,variant=Qxwlan-E2600AC
 >       sha256sum:
->       8ba890b8b34f6ac0cd4c3504bcecad001c8c7bc329d19f4627ecddc5b099e586
+>      70dd461cf1dd44b443d903ea5d3aa4efbaa376dfbb3d7983dcbcf9b125e8a9d5
 >
 > * attach the actual board file (board.bin)
 >
