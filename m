@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgrFt-00038Y-Kg
- for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:49:35 +0000
+ id 1hgrGG-0003E8-9y
+ for ath10k@lists.infradead.org; Fri, 28 Jun 2019 13:49:57 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k-firmware: IPQ4019 hw1.0: Add BDF for Linksys EA8300 [1/2]
-References: <d84cb3b1-6708-6a87-9181-9c2319742111@allycomm.com>
-Date: Fri, 28 Jun 2019 16:49:29 +0300
-In-Reply-To: <d84cb3b1-6708-6a87-9181-9c2319742111@allycomm.com> (Jeff
- Kletsky's message of "Fri, 17 May 2019 09:38:40 -0700")
-Message-ID: <87tvc9bz12.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k-firmware: QCA9888 hw2.0: Add BDF for Linksys EA8300 [2/2]
+References: <ac097652-455f-cd1f-0f48-f19fad61933c@allycomm.com>
+Date: Fri, 28 Jun 2019 16:49:52 +0300
+In-Reply-To: <ac097652-455f-cd1f-0f48-f19fad61933c@allycomm.com> (Jeff
+ Kletsky's message of "Fri, 17 May 2019 09:39:05 -0700")
+Message-ID: <87pnmxbz0f.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -90,58 +90,27 @@ Jeff Kletsky <lede@allycomm.com> writes:
 >
 >
 >
-> For the IPQ4019:
+> For the QCA9888:
 >
->     ath10k_ahb a000000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003b00ff sub 0000:0000
+>     ath10k_pci 0000:01:00.0: qca9888 hw2.0 target 0x01000000 chip_id 0x00000000 sub 0000:0000
 >
->     ath10k_ahb a000000.wifi: board_file api 2 bmi_id 0:20 crc32 8fda7e22
->     ath10k_ahb a800000.wifi: board_file api 2 bmi_id 0:21 crc32 8fda7e22
->
->
-> bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ah
-> a8e23769dc98da97b6c70a4f601ffca8
->
-> bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-fcc
-> 057ed5528e360197c2239796710cb61c
->
-> bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-eu
-> 5cef8208a0345c1469494e44e1f370f1
->
-> bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ic
-> e8858ab9259f7d4372040da1c592d1cc
+>     ath10k_pci 0000:01:00.0: board_file api 2 bmi_id 0:23 crc32 b050e9d6
 >
 >
-> bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-eu
-> d6d7ed00db985b4d8c48ccc3fe10fa87
+> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-eu
+> 7f2f0de6c0fb2df1d642895d8233d3ef
 >
-> bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ic
-> 435d236890521515feffc834218ca594
+> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-ic
+> 27d9dfe1e86c3befe808f89dd3cd105b
 >
-> bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-fcc
-> 0e820f5946b5773ad9f4a74809c05b79
+> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-ah
+> 27d71485fc4987bc1c11b7744c373b59
 >
-> bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ah
-> 0171919a4576199ae88e8831f72c03fe
+> bus=pci,bmi-chip-id=0,bmi-board-id=23,variant=linksys-ea8300-fcc
+> 62049f88a498e51870973143e376e7af
 
 My script expects that the attachments end with '.bin' suffix. Could you
 please fix that and resend everything?
-
-[2. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ah]...
-
-[3. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-eu]...
-
-[4. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-fcc]...
-
-[5. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ic]...
-
-[6. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ah]...
-
-[7. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-eu]...
-
-[8. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-fcc]...
-
-[9. application/octet-stream; bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ic]...
-
 
 -- 
 Kalle Valo
