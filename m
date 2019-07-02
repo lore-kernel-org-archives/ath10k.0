@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiI3x-0000Gd-5X
- for ath10k@lists.infradead.org; Tue, 02 Jul 2019 12:39:11 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ath: fix various spelling mistakes
-Date: Tue,  2 Jul 2019 13:39:04 +0100
-Message-Id: <20190702123904.8786-1-colin.king@canonical.com>
+ id 1hiNMY-0004ot-WE
+ for ath10k@lists.infradead.org; Tue, 02 Jul 2019 18:18:44 +0000
+Received: by mail-ed1-x542.google.com with SMTP id k8so28186852eds.7
+ for <ath10k@lists.infradead.org>; Tue, 02 Jul 2019 11:18:41 -0700 (PDT)
+Date: Tue, 2 Jul 2019 11:18:37 -0700
+From: Nathan Chancellor <natechancellor@gmail.com>
+Subject: -Wsometimes-uninitialized warning after
+ 8b97b055dc9db09b48d5a9a37d847900dd00d3cc
+Message-ID: <20190702181837.GA118849@archlinux-epyc>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,86 +24,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S . Miller" <davem@davemloft.net>, Maya Erez <merez@codeaurora.org>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, wil6210@qti.qualcomm.com
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Miaoqing Pan <miaoqing@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, clang-built-linux@googlegroups.com
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi all,
 
-There are a bunch of spelling mistakes in two ath drivers, fix
-these.
+After commit 8b97b055dc9d ("ath10k: fix failure to set multiple fixed
+rate") in -next, clang warns:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 2 +-
- drivers/net/wireless/ath/ath10k/qmi.c  | 4 ++--
- drivers/net/wireless/ath/wil6210/wmi.c | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+../drivers/net/wireless/ath/ath10k/mac.c:7528:7: warning: variable 'vht_pfr' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+                if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/net/wireless/ath/ath10k/mac.c:7551:20: note: uninitialized use occurs here
+                arvif->vht_pfr = vht_pfr;
+                                 ^~~~~~~
+../drivers/net/wireless/ath/ath10k/mac.c:7528:3: note: remove the 'if' if its condition is always true
+                if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/net/wireless/ath/ath10k/mac.c:7483:12: note: initialize the variable 'vht_pfr' to silence this warning
+        u8 vht_pfr;
+                  ^
+                   = '\0'
+1 warning generated.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dc45d16e8d21..a7c25d49683b 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2784,7 +2784,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 
- 	status = ath10k_hif_set_target_log_mode(ar, fw_diag_log);
- 	if (status && status != -EOPNOTSUPP) {
--		ath10k_warn(ar, "set traget log mode faileds: %d\n", status);
-+		ath10k_warn(ar, "set target log mode failed: %d\n", status);
- 		goto err_hif_stop;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e43a566eef77..20f72ec95b28 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7417,7 +7417,7 @@ static bool ath10k_mac_set_vht_bitrate_mask_fixup(struct ath10k *ar,
- 	err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
- 					WMI_PEER_PARAM_FIXED_RATE, rate);
- 	if (err)
--		ath10k_warn(ar, "failed to eanble STA %pM peer fixed rate: %d\n",
-+		ath10k_warn(ar, "failed to enable STA %pM peer fixed rate: %d\n",
- 			    sta->addr, err);
- 
- 	return true;
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 3b63b6257c43..d28daa2d9449 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -643,7 +643,7 @@ int ath10k_qmi_set_fw_log_mode(struct ath10k *ar, u8 fw_log_mode)
- 			       wlfw_ini_req_msg_v01_ei, &req);
- 	if (ret < 0) {
- 		qmi_txn_cancel(&txn);
--		ath10k_err(ar, "fail to send fw log reqest: %d\n", ret);
-+		ath10k_err(ar, "failed to send fw log request: %d\n", ret);
- 		goto out;
- 	}
- 
-@@ -652,7 +652,7 @@ int ath10k_qmi_set_fw_log_mode(struct ath10k *ar, u8 fw_log_mode)
- 		goto out;
- 
- 	if (resp.resp.result != QMI_RESULT_SUCCESS_V01) {
--		ath10k_err(ar, "fw log request rejectedr: %d\n",
-+		ath10k_err(ar, "fw log request rejected: %d\n",
- 			   resp.resp.error);
- 		ret = -EINVAL;
- 		goto out;
-diff --git a/drivers/net/wireless/ath/wil6210/wmi.c b/drivers/net/wireless/ath/wil6210/wmi.c
-index 475b1a233cc9..e1704cdfc03e 100644
---- a/drivers/net/wireless/ath/wil6210/wmi.c
-+++ b/drivers/net/wireless/ath/wil6210/wmi.c
-@@ -2688,7 +2688,7 @@ int wmi_get_all_temperatures(struct wil6210_priv *wil,
- 		return rc;
- 
- 	if (reply.evt.status == WMI_FW_STATUS_FAILURE) {
--		wil_err(wil, "Failed geting TEMP_SENSE_ALL\n");
-+		wil_err(wil, "Failed getting TEMP_SENSE_ALL\n");
- 		return -EINVAL;
- 	}
- 
--- 
-2.20.1
+This definitely seems legitimate as the call to
+ath10k_mac_can_set_bitrate_mask might fail and vht_pfr
+won't be initialized. I would fix this myself but I assume
+there is a sane default value for vht_pfr other than just
+0 that should be used?
 
+Please look into this when you get a chance. Thanks,
+Nathan
 
 _______________________________________________
 ath10k mailing list
