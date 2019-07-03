@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiWOU-0002nT-7T
- for ath10k@lists.infradead.org; Wed, 03 Jul 2019 03:57:19 +0000
+ id 1hiWOV-0002no-Mp
+ for ath10k@lists.infradead.org; Wed, 03 Jul 2019 03:57:20 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 0/3] Move voltage regulator config to driver private data
-Date: Wed,  3 Jul 2019 09:27:08 +0530
-Message-Id: <20190703035711.25592-1-govinds@codeaurora.org>
+Subject: [PATCH 1/3] dt: bindings: update compatible dt properties for WCN3990
+ wifi node
+Date: Wed,  3 Jul 2019 09:27:09 +0530
+Message-Id: <20190703035711.25592-2-govinds@codeaurora.org>
+In-Reply-To: <20190703035711.25592-1-govinds@codeaurora.org>
+References: <20190703035711.25592-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,27 +26,27 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-arm-msm@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, devicetree@vger.kernel.org
 
-WCN3990 voltage regulator config is varying b/w different MSM platforms ex: SDM845/
-QCS404. In order to have scalable config, move regulator config to driver
-private data.
+update compatible dt properties for WCN3990 wifi node to be
+compatible across different MSM platforms.
 
-Tested HW: WCN3990(SDM845/QCS404)
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Govind Singh (3):
-  dt: bindings: update compatible dt properties for WCN3990 wifi node
-  ath10k: Move regulator config to driver private data
-  arm64: dts: qcom: qcs404: Modify wifi dt node for SDM845/QCS404
-    devices
-
- .../bindings/net/wireless/qcom,ath10k.txt     |  2 +
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi      |  3 ++
- arch/arm64/boot/dts/qcom/qcs404.dtsi          |  2 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi          |  2 +-
- drivers/net/wireless/ath/ath10k/snoc.c        | 38 +++++++++++++++----
- drivers/net/wireless/ath/ath10k/snoc.h        | 23 ++++++-----
- 6 files changed, 51 insertions(+), 19 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index ae661e65354e..baaa3f32ae44 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -5,6 +5,8 @@ Required properties:
+ 	* "qcom,ath10k"
+ 	* "qcom,ipq4019-wifi"
+ 	* "qcom,wcn3990-wifi"
++	* "qcom,sdm845-wcn39xx-wifi"
++	* "qcom,qcs40x-wcn39xx-wifi"
+ 
+ PCI based devices uses compatible string "qcom,ath10k" and takes calibration
+ data along with board specific data via "qcom,ath10k-calibration-data".
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
