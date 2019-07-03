@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiNMY-0004ot-WE
- for ath10k@lists.infradead.org; Tue, 02 Jul 2019 18:18:44 +0000
-Received: by mail-ed1-x542.google.com with SMTP id k8so28186852eds.7
- for <ath10k@lists.infradead.org>; Tue, 02 Jul 2019 11:18:41 -0700 (PDT)
-Date: Tue, 2 Jul 2019 11:18:37 -0700
-From: Nathan Chancellor <natechancellor@gmail.com>
-Subject: -Wsometimes-uninitialized warning after
- 8b97b055dc9db09b48d5a9a37d847900dd00d3cc
-Message-ID: <20190702181837.GA118849@archlinux-epyc>
+ id 1hiWOU-0002nT-7T
+ for ath10k@lists.infradead.org; Wed, 03 Jul 2019 03:57:19 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH 0/3] Move voltage regulator config to driver private data
+Date: Wed,  3 Jul 2019 09:27:08 +0530
+Message-Id: <20190703035711.25592-1-govinds@codeaurora.org>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +20,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Miaoqing Pan <miaoqing@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, clang-built-linux@googlegroups.com
+To: ath10k@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, devicetree@vger.kernel.org
 
-Hi all,
+WCN3990 voltage regulator config is varying b/w different MSM platforms ex: SDM845/
+QCS404. In order to have scalable config, move regulator config to driver
+private data.
 
-After commit 8b97b055dc9d ("ath10k: fix failure to set multiple fixed
-rate") in -next, clang warns:
+Tested HW: WCN3990(SDM845/QCS404)
+Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
-../drivers/net/wireless/ath/ath10k/mac.c:7528:7: warning: variable 'vht_pfr' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-                if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
-                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../drivers/net/wireless/ath/ath10k/mac.c:7551:20: note: uninitialized use occurs here
-                arvif->vht_pfr = vht_pfr;
-                                 ^~~~~~~
-../drivers/net/wireless/ath/ath10k/mac.c:7528:3: note: remove the 'if' if its condition is always true
-                if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../drivers/net/wireless/ath/ath10k/mac.c:7483:12: note: initialize the variable 'vht_pfr' to silence this warning
-        u8 vht_pfr;
-                  ^
-                   = '\0'
-1 warning generated.
+Govind Singh (3):
+  dt: bindings: update compatible dt properties for WCN3990 wifi node
+  ath10k: Move regulator config to driver private data
+  arm64: dts: qcom: qcs404: Modify wifi dt node for SDM845/QCS404
+    devices
 
-This definitely seems legitimate as the call to
-ath10k_mac_can_set_bitrate_mask might fail and vht_pfr
-won't be initialized. I would fix this myself but I assume
-there is a sane default value for vht_pfr other than just
-0 that should be used?
+ .../bindings/net/wireless/qcom,ath10k.txt     |  2 +
+ arch/arm64/boot/dts/qcom/qcs404-evb.dtsi      |  3 ++
+ arch/arm64/boot/dts/qcom/qcs404.dtsi          |  2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        | 38 +++++++++++++++----
+ drivers/net/wireless/ath/ath10k/snoc.h        | 23 ++++++-----
+ 6 files changed, 51 insertions(+), 19 deletions(-)
 
-Please look into this when you get a chance. Thanks,
-Nathan
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
 
 _______________________________________________
 ath10k mailing list
