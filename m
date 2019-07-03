@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from dvalin.narfation.org ([213.160.73.56])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiWOa-0002pS-76
- for ath10k@lists.infradead.org; Wed, 03 Jul 2019 03:57:26 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 3/3] arm64: dts: qcom: qcs404: Modify wifi dt node for
- SDM845/QCS404 devices
-Date: Wed,  3 Jul 2019 09:27:11 +0530
-Message-Id: <20190703035711.25592-4-govinds@codeaurora.org>
-In-Reply-To: <20190703035711.25592-1-govinds@codeaurora.org>
-References: <20190703035711.25592-1-govinds@codeaurora.org>
+ id 1hig76-0006LW-As
+ for ath10k@lists.infradead.org; Wed, 03 Jul 2019 14:20:02 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: [PATCH v3] ath10k: avoid leaving .bss_info_changed prematurely
+Date: Wed,  3 Jul 2019 16:19:49 +0200
+Message-Id: <20190703141949.9295-1-sven@narfation.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,63 +21,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-arm-msm@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org, devicetree@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>, Sven Eckelmann <seckelmann@datto.com>, Sriram R <srirrama@codeaurora.org>
 
-Modify the compatible string of wifi node for SDM845/QCS404 devices.
-Add wifi regulators in qcs404 dt node for proxy vote. Proxy votes are
-required for handling driver recovery scenarios to prevent
-un-clocked register access during driver recovery.
+From: Sven Eckelmann <seckelmann@datto.com>
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+ath10k_bss_info_changed() handles various events from the upper layers. It
+parses the changed bitfield and then configures the driver/firmware
+accordingly. Each detected event is handled in a separate scope which is
+independent of each other - but in the same function.
+
+The commit f279294e9ee2 ("ath10k: add support for configuring management
+packet rate") changed this behavior by returning from this function
+prematurely when some precondition was not fulfilled. All new event
+handlers added after the BSS_CHANGED_BASIC_RATES event handler would then
+also be skipped.
+
+Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
 ---
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi | 3 +++
- arch/arm64/boot/dts/qcom/qcs404.dtsi     | 2 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi     | 2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Sriram R <srirrama@codeaurora.org>
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-index 50b3589c7f15..ff81b9c5b057 100644
---- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-@@ -190,6 +190,9 @@
+Only compile tested
+
+v3:
+
+* rebased on top of commit 9e80ad37f678 ("ath10k: Drop WARN_ON()s that always
+  trigger during system resume")
+
+v2:
+
+* rebased on top of commit 9e7251fa3897 ("ath10k: Check tx_stats before
+  use it")
+
+ drivers/net/wireless/ath/ath10k/mac.c | 62 ++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e43a566eef77..329c052a8dc0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5634,6 +5634,37 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
+ 	mutex_unlock(&ar->conf_mutex);
+ }
  
- &wifi {
- 	status = "okay";
-+	vdd-0.8-cx-mx-supply = <&vreg_l2_1p275>;
-+	vdd-1.8-xo-supply = <&vreg_l5_1p8>;
-+	vdd-1.3-rfa-supply = <&vreg_l1_1p3>;
- };
++static void ath10k_recalculate_mgmt_rate(struct ath10k *ar,
++					 struct ieee80211_vif *vif,
++					 struct cfg80211_chan_def *def)
++{
++	struct ath10k_vif *arvif = (void *)vif->drv_priv;
++	const struct ieee80211_supported_band *sband;
++	u8 basic_rate_idx;
++	int hw_rate_code;
++	u32 vdev_param;
++	u16 bitrate;
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	sband = ar->hw->wiphy->bands[def->chan->band];
++	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
++	bitrate = sband->bitrates[basic_rate_idx].bitrate;
++
++	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
++	if (hw_rate_code < 0) {
++		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
++		return;
++	}
++
++	vdev_param = ar->wmi.vdev_param->mgmt_rate;
++	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++					hw_rate_code);
++	if (ret)
++		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
++}
++
+ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 				    struct ieee80211_vif *vif,
+ 				    struct ieee80211_bss_conf *info,
+@@ -5644,10 +5675,9 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	struct cfg80211_chan_def def;
+ 	u32 vdev_param, pdev_param, slottime, preamble;
+ 	u16 bitrate, hw_value;
+-	u8 rate, basic_rate_idx, rateidx;
+-	int ret = 0, hw_rate_code, mcast_rate;
++	u8 rate, rateidx;
++	int ret = 0, mcast_rate;
+ 	enum nl80211_band band;
+-	const struct ieee80211_supported_band *sband;
  
- /* PINCTRL - additions to nodes defined in qcs404.dtsi */
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index e8fd26633d57..d9e2173cd3e9 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -480,7 +480,7 @@
- 		};
+ 	mutex_lock(&ar->conf_mutex);
  
- 		wifi: wifi@a000000 {
--			compatible = "qcom,wcn3990-wifi";
-+			compatible = "qcom,qcs40x-wcn39xx-wifi";
- 			reg = <0xa000000 0x800000>;
- 			reg-names = "membase";
- 			memory-region = <&wlan_msa_mem>;
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 5308f1671824..fdb5fcd814f4 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -2235,7 +2235,7 @@
- 		};
+@@ -5871,29 +5901,9 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 				    arvif->vdev_id,  ret);
+ 	}
  
- 		wifi: wifi@18800000 {
--			compatible = "qcom,wcn3990-wifi";
-+			compatible = "qcom,sdm845-wcn39xx-wifi";
- 			status = "disabled";
- 			reg = <0 0x18800000 0 0x800000>;
- 			reg-names = "membase";
+-	if (changed & BSS_CHANGED_BASIC_RATES) {
+-		if (ath10k_mac_vif_chan(vif, &def)) {
+-			mutex_unlock(&ar->conf_mutex);
+-			return;
+-		}
+-
+-		sband = ar->hw->wiphy->bands[def.chan->band];
+-		basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
+-		bitrate = sband->bitrates[basic_rate_idx].bitrate;
+-
+-		hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
+-		if (hw_rate_code < 0) {
+-			ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
+-			mutex_unlock(&ar->conf_mutex);
+-			return;
+-		}
+-
+-		vdev_param = ar->wmi.vdev_param->mgmt_rate;
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+-						hw_rate_code);
+-		if (ret)
+-			ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
+-	}
++	if (changed & BSS_CHANGED_BASIC_RATES &&
++	    !ath10k_mac_vif_chan(arvif->vif, &def))
++		ath10k_recalculate_mgmt_rate(ar, vif, &def);
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+ }
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.20.1
 
 
 _______________________________________________
