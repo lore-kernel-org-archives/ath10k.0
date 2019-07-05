@@ -1,13 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from dvalin.narfation.org ([213.160.73.56])
+Received: from mail-vs1-xe42.google.com ([2607:f8b0:4864:20::e42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hig76-0006LW-As
- for ath10k@lists.infradead.org; Wed, 03 Jul 2019 14:20:02 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH v3] ath10k: avoid leaving .bss_info_changed prematurely
-Date: Wed,  3 Jul 2019 16:19:49 +0200
-Message-Id: <20190703141949.9295-1-sven@narfation.org>
+ id 1hjDqQ-0007fp-2q
+ for ath10k@lists.infradead.org; Fri, 05 Jul 2019 02:21:03 +0000
+Received: by mail-vs1-xe42.google.com with SMTP id m8so2923028vsj.0
+ for <ath10k@lists.infradead.org>; Thu, 04 Jul 2019 19:21:01 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAC_j7i3ZAcfaQ-on5mXTKxd--erzCChKhEEU_6Yk+j2w57PeVg@mail.gmail.com>
+ <8736ky6cyp.fsf@kamboji.qca.qualcomm.com>
+ <CAC_j7i0eQfHu=9r8biPkpGhxrSqbYQdf2cxT0tDfnH7YgGxO6w@mail.gmail.com>
+ <000001d516ec$fed6f190$fc84d4b0$@codeaurora.org>
+ <dd642aad7d2f83ebb3c955a9475ed85f@codeaurora.org>
+ <CAC_j7i2peXFf5VYXxjP=FSyoArsK8fVBGYvKFfLQ=neep=-h8w@mail.gmail.com>
+ <b9771ff5d5f95e136abff14d5618dffa@codeaurora.org>
+In-Reply-To: <b9771ff5d5f95e136abff14d5618dffa@codeaurora.org>
+From: Vjaceslavs Klimovs <vklimovs@gmail.com>
+Date: Thu, 4 Jul 2019 19:20:50 -0700
+Message-ID: <CAC_j7i3prBO70QV1GaqOF__AVsZhcuKCdrmH4pVaarX_CeTrLw@mail.gmail.com>
+Subject: Re: ath10k panic with 5.1 kernel and qca9984 on association
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,133 +30,181 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>, Sven Eckelmann <seckelmann@datto.com>, Sriram R <srirrama@codeaurora.org>
+To: Balaji Pothunoori <bpothuno@codeaurora.org>
+Cc: Abhishek Ambure <aambure@codeaurora.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Sven Eckelmann <seckelmann@datto.com>
+Hi Balaji,
+This patch fixes it, thank you.
 
-ath10k_bss_info_changed() handles various events from the upper layers. It
-parses the changed bitfield and then configures the driver/firmware
-accordingly. Each detected event is handled in a separate scope which is
-independent of each other - but in the same function.
 
-The commit f279294e9ee2 ("ath10k: add support for configuring management
-packet rate") changed this behavior by returning from this function
-prematurely when some precondition was not fulfilled. All new event
-handlers added after the BSS_CHANGED_BASIC_RATES event handler would then
-also be skipped.
-
-Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
----
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sriram R <srirrama@codeaurora.org>
-
-Only compile tested
-
-v3:
-
-* rebased on top of commit 9e80ad37f678 ("ath10k: Drop WARN_ON()s that always
-  trigger during system resume")
-
-v2:
-
-* rebased on top of commit 9e7251fa3897 ("ath10k: Check tx_stats before
-  use it")
-
- drivers/net/wireless/ath/ath10k/mac.c | 62 ++++++++++++++++-----------
- 1 file changed, 36 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e43a566eef77..329c052a8dc0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5634,6 +5634,37 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+static void ath10k_recalculate_mgmt_rate(struct ath10k *ar,
-+					 struct ieee80211_vif *vif,
-+					 struct cfg80211_chan_def *def)
-+{
-+	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	const struct ieee80211_supported_band *sband;
-+	u8 basic_rate_idx;
-+	int hw_rate_code;
-+	u32 vdev_param;
-+	u16 bitrate;
-+	int ret;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	sband = ar->hw->wiphy->bands[def->chan->band];
-+	basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
-+	bitrate = sband->bitrates[basic_rate_idx].bitrate;
-+
-+	hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
-+	if (hw_rate_code < 0) {
-+		ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
-+		return;
-+	}
-+
-+	vdev_param = ar->wmi.vdev_param->mgmt_rate;
-+	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
-+					hw_rate_code);
-+	if (ret)
-+		ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
-+}
-+
- static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				    struct ieee80211_vif *vif,
- 				    struct ieee80211_bss_conf *info,
-@@ -5644,10 +5675,9 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	struct cfg80211_chan_def def;
- 	u32 vdev_param, pdev_param, slottime, preamble;
- 	u16 bitrate, hw_value;
--	u8 rate, basic_rate_idx, rateidx;
--	int ret = 0, hw_rate_code, mcast_rate;
-+	u8 rate, rateidx;
-+	int ret = 0, mcast_rate;
- 	enum nl80211_band band;
--	const struct ieee80211_supported_band *sband;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -5871,29 +5901,9 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				    arvif->vdev_id,  ret);
- 	}
- 
--	if (changed & BSS_CHANGED_BASIC_RATES) {
--		if (ath10k_mac_vif_chan(vif, &def)) {
--			mutex_unlock(&ar->conf_mutex);
--			return;
--		}
--
--		sband = ar->hw->wiphy->bands[def.chan->band];
--		basic_rate_idx = ffs(vif->bss_conf.basic_rates) - 1;
--		bitrate = sband->bitrates[basic_rate_idx].bitrate;
--
--		hw_rate_code = ath10k_mac_get_rate_hw_value(bitrate);
--		if (hw_rate_code < 0) {
--			ath10k_warn(ar, "bitrate not supported %d\n", bitrate);
--			mutex_unlock(&ar->conf_mutex);
--			return;
--		}
--
--		vdev_param = ar->wmi.vdev_param->mgmt_rate;
--		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
--						hw_rate_code);
--		if (ret)
--			ath10k_warn(ar, "failed to set mgmt tx rate %d\n", ret);
--	}
-+	if (changed & BSS_CHANGED_BASIC_RATES &&
-+	    !ath10k_mac_vif_chan(arvif->vif, &def))
-+		ath10k_recalculate_mgmt_rate(ar, vif, &def);
- 
- 	mutex_unlock(&ar->conf_mutex);
- }
--- 
-2.20.1
-
+On Fri, Jun 28, 2019 at 2:17 AM Balaji Pothunoori
+<bpothuno@codeaurora.org> wrote:
+>
+> Hi,
+>
+> Can you try with this patch ?
+>
+> https://patchwork.kernel.org/patch/11021495/
+>
+> Regards,
+> Balaji.
+>
+> On 2019-06-01 23:37, Vjaceslavs Klimovs wrote:
+> > Hi Balaji,
+> > Thank you for looking into this.
+> >
+> > 1) x86_64 AP
+> > 2) Compex WLE1216V5-23 or WLE1216V5-20 card with QCA9984
+> > 3) any kernel with commit 6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956
+> > present
+> > 4) kernel has DFS enabled and CONFIG_ATH10K_DFS_CERTIFIED=y,
+> > CONFIG_ATH_REG_DYNAMIC_USER_REG_HINTS=y,
+> > CONFIG_ATH_REG_DYNAMIC_USER_CERT_TESTING=y  set
+> > 5) any firmware from
+> > https://github.com/kvalo/ath10k-firmware/tree/master/QCA9984/hw1.0/3.9.0.2,
+> > see card initialization dmesg in my first message
+> > 6) hostapd with the following config:
+> >
+> > interface=wlp9s0
+> > ctrl_interface=/var/run/hostapd
+> > bridge=br0
+> > ssid=XXXXXXXX
+> > hw_mode=a
+> > chanlist=52 100 116 132
+> > acs_chan_bias=116:0.1 132:0.1
+> > country_code=US
+> > ieee80211d=1
+> > ieee80211h=1
+> > ieee80211n=1
+> > ht_capab=[LDPC][HT40+][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-7935][DSSS_CCK-40]
+> > ieee80211ac=1
+> > vht_capab=[MAX-MPDU-11454][VHT160-80PLUS80][RXLDPC][SHORT-GI-80][SHORT-GI-160][TX-STBC-2BY1][RX-STBC-1][SU-BEAMFORMER][SU-BEAMFORMEE][BF-ANTENNA-4][SOUNDING-DIMENSION-4][MU-BEAMFORMER][MAX-A-MPDU-LEN-EXP7][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+> > vht_oper_chwidth=1
+> > auth_algs=1
+> > wpa=2
+> > wpa_key_mgmt=WPA-PSK
+> > wpa_passphrase=XXXXXXXX
+> > wpa_disable_eapol_key_retries=1
+> > rsn_pairwise=CCMP
+> > wmm_enabled=1
+> > ap_isolate=1
+> >
+> > 7) any STA (ChromeOS, Android, Windows tried) triggers the crash.
+> >
+> > On Thu, May 30, 2019 at 6:58 AM Balaji Pothunoori
+> > <bpothuno@codeaurora.org> wrote:
+> >>
+> >> Hi,
+> >>
+> >> We are not seeing mentioned issue with following setup.
+> >> Setup details are :
+> >> AP - X86 with 5.1.0 kernel + QCA9984.
+> >> STA - Standard STA.
+> >> Observation : Crash is not observed during STA join.
+> >>
+> >> Could you please share the steps what you have followed ?
+> >>
+> >> Regards,
+> >> Balaji.
+> >>
+> >> > -----Original Message-----
+> >> > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of
+> >> > Vjaceslavs Klimovs
+> >> > Sent: Tuesday, May 28, 2019 11:53 PM
+> >> > To: kvalo@codeaurora.org
+> >> > Cc: Abhishek Ambure <aambure@codeaurora.org>;
+> >> > ath10k@lists.infradead.org
+> >> > Subject: [EXT] Re: ath10k panic with 5.1 kernel and qca9984 on
+> >> > association
+> >> >
+> >> > Abhishek,
+> >> > I am happy to test a proposed fix, let me know.
+> >> >
+> >> > On Tue, May 28, 2019 at 4:22 AM Kalle Valo <kvalo@codeaurora.org>
+> >> > wrote:
+> >> >>
+> >> >> + Abhishek
+> >> >>
+> >> >> Vjaceslavs Klimovs <vklimovs@gmail.com> writes:
+> >> >>
+> >> >> > With 5.1 and head kernel, machine running as AP with qca9984 locks
+> >> >> > up without being able to complete stack trace to console after a
+> >> >> > client tries to associate with it. Following are (OCR transcribed)
+> >> >> > error
+> >> >> > messages:
+> >> >> >
+> >> >> > [ 177.161539] BUG: unable to handle kernel paging request at
+> >> >> > fffffffffffff7bo [ 177.161553] #PF error: (normal kernel read fault)
+> >> >> > [ 177.161561] PGD 703812067 P4D 703812067 PUD 20381406 PMD 0 [
+> >> >> > 177.161571] Oops: 0000 (#1) SMP PTI [ 177.161577] CPU: 6 PID: 0
+> >> >> > Comm: swapper/6 Tainted: G OE 5.1.3-gentoo #1
+> >> >> >
+> >> >> > [Garbage on screen after that point]
+> >> >> >
+> >> >> > and
+> >> >> >
+> >> >> > [67.805490] RBP: ffff9c4c57983d 18 R08: 0000000000000000 R09:
+> >> >> > 0000000000000000 [67.805501] R10: 0000000000000002 R11:
+> >> >> > 0000000000000000 R12: 0000000000000001 [67.805512] R13:
+> >> >> > 0000000000000000 R14: 0000000000060002 R15: 0000000000000000
+> >> >> > [67.805523] FS: 000000000000000000000) GS:ffff9c4c57980000 (0000)
+> >> >> > knIGS:000000000 [67.805535] CS: 0010 DS: 0000 ES: 0000 CRO:
+> >> >> > 0000000080050033
+> >> >> > [67.805544] CR2: fffffffffffff7b0 CR3: 00000005f7e0e006 CR4:
+> >> >> > 00000000003606e0 [67.805555] DRO: 0000000000000000 DR1: 0000000000000000 DR2:
+> >> >> > 0000000000000000 [67.805566] DR3: 0000000000000000 DR6:
+> >> >> > 00000000fffeoffO DR7: 0000000000000400 [67.805577] Call Trace:
+> >> >> > [67.805582] <IRQ>
+> >> >> > [67.805592] ath10k_htt_t2h_msg_handler+0xbda/0xf80 [ath10k_core]
+> >> >> > [67.805603] ? _raw_spin_unlock_bh+0xie/0x20 [67.805614] ?
+> >> >> > ath1ok_ce_per_engine_service+0xf1/0x100 [ath10k_corel [67.805626]
+> >> >> > ath10k_pci_htt_rx_cb+0x172/0x260 [ath10k_pci] [67.8056391]
+> >> >> > ath10k_ce_per_engine_service+0x9e/0x100 [ath10k_core)
+> >> >> >
+> >> >> > [Garbage on screen after that point]
+> >> >> >
+> >> >> > The issue does not reproduce on 5.0.17 but is reliably reproducible
+> >> >> > in 5.1+ by just trying to associate to that AP. So I thought I'd run
+> >> >> > git bisect. After bisecting,
+> >> >> >
+> >> >> > 6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956, ath10k: add support for
+> >> >> > ack rssi value of data tx packets
+> >> >> >
+> >> >> > is the first commit that triggers the problem. Reverting that commit
+> >> >> > from head or from 5.1.5 reliably makes everything work as expected.
+> >> >>
+> >> >> Thank you for the bisect, this is really helpful. Full commit log
+> >> >> below.
+> >> >> Abhishek, please fix this or send a revert for 5.2.
+> >> >>
+> >> >> commit 6ddc3860a5668808bacbfcb1f1bf50d5d7ad1956
+> >> >> Author:     Abhishek Ambure <aambure@codeaurora.org>
+> >> >> AuthorDate: Mon Feb 25 11:45:48 2019 +0200
+> >> >> Commit:     Kalle Valo <kvalo@codeaurora.org>
+> >> >> CommitDate: Tue Feb 26 14:58:06 2019 +0200
+> >> >>
+> >> >>     ath10k: add support for ack rssi value of data tx packets
+> >> >>
+> >> >>     In WCN3990, WMI_TLV_SERVICE_TX_DATA_MGMT_ACK_RSSI service
+> >> >> Indicates that
+> >> >>     the firmware has the capability to send the RSSI value of the ACK
+> >> >> for all
+> >> >>     data and management packets transmitted.
+> >> >>
+> >> >>     If WMI_RSRC_CFG_FLAG_TX_ACK_RSSI is set in host capability then
+> >> >> firmware
+> >> >>     sends RSSI value in "data" tx completion event. Host extracts ack
+> >> >> rssi
+> >> >>     values of data packets from their tx completion event.
+> >> >>
+> >> >>     Tested HW: WCN3990
+> >> >>     Tested FW: WLAN.HL.2.0-01617-QCAHLSWMTPLZ-1
+> >> >>
+> >> >>     Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+> >> >>     Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> >> >>
+> >> >> --
+> >> >> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
