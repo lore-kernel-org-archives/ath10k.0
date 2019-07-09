@@ -1,25 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkaLR-0004Zr-KV
- for ath10k@lists.infradead.org; Mon, 08 Jul 2019 20:34:43 +0000
-Received: by mail-lj1-x241.google.com with SMTP id r9so17286797ljg.5
- for <ath10k@lists.infradead.org>; Mon, 08 Jul 2019 13:34:40 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com.
- [209.85.208.177])
- by smtp.gmail.com with ESMTPSA id m4sm3870665ljc.56.2019.07.08.13.34.34
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
- Mon, 08 Jul 2019 13:34:35 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id z28so8379865ljn.4
- for <ath10k@lists.infradead.org>; Mon, 08 Jul 2019 13:34:34 -0700 (PDT)
+ id 1hkink-0008Ip-NF
+ for ath10k@lists.infradead.org; Tue, 09 Jul 2019 05:36:30 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH v4] ath10k: Enable MSA region dump support for WCN3990
+Date: Tue,  9 Jul 2019 11:06:17 +0530
+Message-Id: <20190709053617.32042-1-govinds@codeaurora.org>
 MIME-Version: 1.0
-References: <20190708125050.3689133-1-arnd@arndb.de>
-In-Reply-To: <20190708125050.3689133-1-arnd@arndb.de>
-From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 8 Jul 2019 13:34:22 -0700
-Message-ID: <CA+ASDXOjPbZ0k8dvWr3b6ns_Y3c_ydanYA9+HVUA00btJB5rxQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: work around uninitialized vht_pfr variable
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,71 +20,201 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Sriram R <srirrama@codeaurora.org>, Miaoqing Pan <miaoqing@codeaurora.org>, Pradeep kumar Chitrapu <pradeepc@codeaurora.org>, Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, clang-built-linux@googlegroups.com, "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>, Rakesh Pillai <pillair@codeaurora.org>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Hi Arnd,
+MSA memory region caries the hw descriptors information.
+Dump MSA region in core dump as this is very helpful in debugging
+hw issues.
 
-On Mon, Jul 8, 2019 at 5:50 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> As clang points out, the vht_pfr is assigned to a struct member
-> without being initialized in one case:
->
-> drivers/net/wireless/ath/ath10k/mac.c:7528:7: error: variable 'vht_pfr' is used uninitialized whenever 'if' condition
->       is false [-Werror,-Wsometimes-uninitialized]
->                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
->                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:7551:20: note: uninitialized use occurs here
->                 arvif->vht_pfr = vht_pfr;
->                                  ^~~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:7528:3: note: remove the 'if' if its condition is always true
->                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:7483:12: note: initialize the variable 'vht_pfr' to silence this warning
->         u8 vht_pfr;
->
-> Add an explicit but probably incorrect initialization here.
-> I suspect we want a better fix here, but chose this approach to
-> illustrate the issue.
->
-> Fixes: 8b97b055dc9d ("ath10k: fix failure to set multiple fixed rate")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index e43a566eef77..0606416dc971 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -7541,6 +7541,8 @@ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
->                                                                 &vht_nss,
->                                                                 true);
+Testing: Tested on WCN3990 HW
+Tested FW: WLAN.HL.3.1-00959-QCAHLSWMTPLZ-1
 
-^^ Technically, this call to ath10k_mac_bitrate_mask_get_single_rate()
-can fail to assign 'vht_pfr' as well. I can't immediately tell whether
-it provably will never hit the -EINVAL case, but if we do, then you'd
-have another uninitialized case.
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
 
-I *believe* it shouldn't fail, since we already pre-checked the VHT
-MCS lists for "exactly 1" rate. But it still seems like better code to
-pre-initialize and/or add error-handling, so we don't rely on that
-implicit proof.
+---
+Changes from v3:
+- Fixed error reported in v2.
 
-I'm not quite sure yet what the "better" answer should be for
-resolving this, but at a minimum, I think the above could be improved.
+Changes from v2:
+- Rebased on top of 38faed150438 ath10k: perform crash dump collection in workqueue.
+- Removed redundant msa permission call.
+---
+ drivers/net/wireless/ath/ath10k/coredump.c | 21 +++++++
+ drivers/net/wireless/ath/ath10k/coredump.h |  1 +
+ drivers/net/wireless/ath/ath10k/qmi.c      |  4 ++
+ drivers/net/wireless/ath/ath10k/snoc.c     | 66 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.h     |  1 +
+ 5 files changed, 93 insertions(+)
 
-Brian
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
+index aa04fbf146e0..0ec690b49fb1 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.c
++++ b/drivers/net/wireless/ath/ath10k/coredump.c
+@@ -962,6 +962,19 @@ static const struct ath10k_mem_region qca4019_hw10_mem_regions[] = {
+ 	},
+ };
+ 
++static const struct ath10k_mem_region wcn399x_hw10_mem_regions[] = {
++	{
++		/* MSA region start is not fixed, hence it is assigned at runtime */
++		.type = ATH10K_MEM_REGION_TYPE_MSA,
++		.len = 0x100000,
++		.name = "DRAM",
++		.section_table = {
++			.sections = NULL,
++			.size = 0,
++		},
++	},
++};
++
+ static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
+ 	{
+ 		.hw_id = QCA6174_HW_1_0_VERSION,
+@@ -1059,6 +1072,14 @@ static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
+ 			.size = ARRAY_SIZE(qca4019_hw10_mem_regions),
+ 		},
+ 	},
++	{
++		.hw_id = WCN3990_HW_1_0_DEV_VERSION,
++		.hw_rev = ATH10K_HW_WCN3990,
++		.region_table = {
++			.regions = wcn399x_hw10_mem_regions,
++			.size = ARRAY_SIZE(wcn399x_hw10_mem_regions),
++		},
++	},
+ };
+ 
+ static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
+index 5dac653e1649..9802e90483f4 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.h
++++ b/drivers/net/wireless/ath/ath10k/coredump.h
+@@ -126,6 +126,7 @@ enum ath10k_mem_region_type {
+ 	ATH10K_MEM_REGION_TYPE_IRAM2	= 5,
+ 	ATH10K_MEM_REGION_TYPE_IOSRAM	= 6,
+ 	ATH10K_MEM_REGION_TYPE_IOREG	= 7,
++	ATH10K_MEM_REGION_TYPE_MSA	= 8,
+ };
+ 
+ /* Define a section of the region which should be copied. As not all parts
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index ba8f5a8f83d1..8eb0f0f0d3a7 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -817,9 +817,13 @@ ath10k_qmi_driver_event_post(struct ath10k_qmi *qmi,
+ static void ath10k_qmi_event_server_exit(struct ath10k_qmi *qmi)
+ {
+ 	struct ath10k *ar = qmi->ar;
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+ 	ath10k_qmi_remove_msa_permission(qmi);
+ 	ath10k_core_free_board_files(ar);
++	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
++		ath10k_snoc_fw_crashed_dump(ar);
++
+ 	ath10k_snoc_fw_indication(ar, ATH10K_QMI_EVENT_FW_DOWN_IND);
+ 	ath10k_dbg(ar, ATH10K_DBG_QMI, "wifi fw qmi service disconnected\n");
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 0be12996beba..6c362c928e4e 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -24,6 +24,7 @@
+ #include <linux/regulator/consumer.h>
+ 
+ #include "ce.h"
++#include "coredump.h"
+ #include "debug.h"
+ #include "hif.h"
+ #include "htc.h"
+@@ -1586,6 +1587,71 @@ static int ath10k_hw_power_off(struct ath10k *ar)
+ 	return ret;
+ }
+ 
++static void ath10k_msa_dump_memory(struct ath10k *ar,
++				   struct ath10k_fw_crash_data *crash_data)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	const struct ath10k_hw_mem_layout *mem_layout;
++	const struct ath10k_mem_region *current_region;
++	struct ath10k_dump_ram_data_hdr *hdr;
++	size_t buf_len;
++	u8 *buf;
++
++	if (!crash_data && !crash_data->ramdump_buf)
++		return;
++
++	mem_layout = ath10k_coredump_get_mem_layout(ar);
++	if (!mem_layout)
++		return;
++
++	current_region = &mem_layout->region_table.regions[0];
++
++	buf = crash_data->ramdump_buf;
++	buf_len = crash_data->ramdump_buf_len;
++	memset(buf, 0, buf_len);
++
++	/* Reserve space for the header. */
++	hdr = (void *)buf;
++	buf += sizeof(*hdr);
++	buf_len -= sizeof(*hdr);
++
++	hdr->region_type = cpu_to_le32(current_region->type);
++	hdr->start = cpu_to_le32((unsigned long)ar_snoc->qmi->msa_va);
++	hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
++
++	if (current_region->len < ar_snoc->qmi->msa_mem_size) {
++		memcpy(buf, ar_snoc->qmi->msa_va, current_region->len);
++		ath10k_warn(ar, "msa dump length is less than msa size %x, %x\n",
++			    current_region->len, ar_snoc->qmi->msa_mem_size);
++	} else {
++		memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
++	}
++}
++
++void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
++{
++	struct ath10k_fw_crash_data *crash_data;
++	char guid[UUID_STRING_LEN + 1];
++
++	mutex_lock(&ar->dump_mutex);
++
++	spin_lock_bh(&ar->data_lock);
++	ar->stats.fw_crash_counter++;
++	spin_unlock_bh(&ar->data_lock);
++
++	crash_data = ath10k_coredump_new(ar);
++
++	if (crash_data)
++		scnprintf(guid, sizeof(guid), "%pUl", &crash_data->guid);
++	else
++		scnprintf(guid, sizeof(guid), "n/a");
++
++	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
++	ath10k_print_driver_info(ar);
++	ath10k_msa_dump_memory(ar, crash_data);
++	mutex_unlock(&ar->dump_mutex);
++}
++
+ static const struct of_device_id ath10k_snoc_dt_match[] = {
+ 	{ .compatible = "qcom,wcn3990-wifi",
+ 	 .data = &drv_priv,
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index 25383de8f17d..6d28a6290a94 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -101,5 +101,6 @@ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+ }
+ 
+ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type);
++void ath10k_snoc_fw_crashed_dump(struct ath10k *ar);
+ 
+ #endif /* _SNOC_H_ */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
->                         update_bitrate_mask = false;
-> +               } else {
-> +                       vht_pfr = 0;
->                 }
->
->                 mutex_lock(&ar->conf_mutex);
-> --
-> 2.20.0
->
 
 _______________________________________________
 ath10k mailing list
