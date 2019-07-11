@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mx0b-00183b01.pphosted.com ([67.231.157.42]
+ helo=mx0a-00183b01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkink-0008Ip-NF
- for ath10k@lists.infradead.org; Tue, 09 Jul 2019 05:36:30 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v4] ath10k: Enable MSA region dump support for WCN3990
-Date: Tue,  9 Jul 2019 11:06:17 +0530
-Message-Id: <20190709053617.32042-1-govinds@codeaurora.org>
+ id 1hlYbO-0008I3-1G
+ for ath10k@lists.infradead.org; Thu, 11 Jul 2019 12:55:12 +0000
+From: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+Subject: Re: [PATCHv6 5/9] nl80211: Add netlink attribute to configure TID
+ specific tx rate
+Date: Thu, 11 Jul 2019 12:54:48 +0000
+Message-ID: <20190711125442.unlaqjl5nnqgsbod@bars>
+References: <1560835632-17405-1-git-send-email-tamizhr@codeaurora.org>
+ <1560835632-17405-6-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1560835632-17405-6-git-send-email-tamizhr@codeaurora.org>
+Content-Language: en-US
+Content-ID: <1C243749BB147E41A5268EBD4E997466@namprd05.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,201 +27,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Tamizh chelvam <tamizhr@codeaurora.org>
+Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-MSA memory region caries the hw descriptors information.
-Dump MSA region in core dump as this is very helpful in debugging
-hw issues.
+> Introduce NL80211_TID_ATTR_CONFIG_TX_RATES in nl80211_tid_attr_config
+> to accept data TID specific TX bitrate configuration
+> through NL80211_CMD_SET_TID_CONFIG command. TID for which the
+> this configuration is to be applied is passed in
+> NL80211_TID_ATTR_CONFIG_TID attribute. TX bitrate mask values passed
+> in NL80211_ATTR_TX_RATES attribute and NL80211_TID_ATTR_CONFIG_TX_RATES
+> attribute will have types of the TX rate should be applied.
+> When the user-space wants this configuration peer specific
+> rather than being applied for all the connected stations,
+> MAC address of the peer can be passed in NL80211_ATTR_MAC attribute.
+> 
+> Driver supporting this feature should advertise
+> NL80211_EXT_FEATURE_PER_TID_TX_BITRATE_MASK and supporting per-STA data TID
+> TX bitrate configuration should advertise
+> NL80211_EXT_FEATURE_PER_STA_TX_BITRATE_MASK.
+> 
+> Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 
-Testing: Tested on WCN3990 HW
-Tested FW: WLAN.HL.3.1-00959-QCAHLSWMTPLZ-1
+...
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+>         if (info->attrs[NL80211_ATTR_TX_RATES]) {
+> -               err = nl80211_parse_tx_bitrate_mask(info, &params.beacon_rate);
+> +               err = nl80211_parse_tx_bitrate_mask(info, info->attrs,
+> +                                                   NL80211_ATTR_TX_RATES,
+> +                                                   &params.beacon_rate);
+>                 if (err)
+>                         return err;
+> 
 
----
-Changes from v3:
-- Fixed error reported in v2.
+Could you please clarify this change of nl80211_parse_tx_bitrate_mask arguments.
+Unless I missing something, the appropriate change for nl80211_parse_tx_bitrate_mask
+is not included into this patch set.
 
-Changes from v2:
-- Rebased on top of 38faed150438 ath10k: perform crash dump collection in workqueue.
-- Removed redundant msa permission call.
----
- drivers/net/wireless/ath/ath10k/coredump.c | 21 +++++++
- drivers/net/wireless/ath/ath10k/coredump.h |  1 +
- drivers/net/wireless/ath/ath10k/qmi.c      |  4 ++
- drivers/net/wireless/ath/ath10k/snoc.c     | 66 ++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.h     |  1 +
- 5 files changed, 93 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index aa04fbf146e0..0ec690b49fb1 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -962,6 +962,19 @@ static const struct ath10k_mem_region qca4019_hw10_mem_regions[] = {
- 	},
- };
- 
-+static const struct ath10k_mem_region wcn399x_hw10_mem_regions[] = {
-+	{
-+		/* MSA region start is not fixed, hence it is assigned at runtime */
-+		.type = ATH10K_MEM_REGION_TYPE_MSA,
-+		.len = 0x100000,
-+		.name = "DRAM",
-+		.section_table = {
-+			.sections = NULL,
-+			.size = 0,
-+		},
-+	},
-+};
-+
- static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
- 	{
- 		.hw_id = QCA6174_HW_1_0_VERSION,
-@@ -1059,6 +1072,14 @@ static const struct ath10k_hw_mem_layout hw_mem_layouts[] = {
- 			.size = ARRAY_SIZE(qca4019_hw10_mem_regions),
- 		},
- 	},
-+	{
-+		.hw_id = WCN3990_HW_1_0_DEV_VERSION,
-+		.hw_rev = ATH10K_HW_WCN3990,
-+		.region_table = {
-+			.regions = wcn399x_hw10_mem_regions,
-+			.size = ARRAY_SIZE(wcn399x_hw10_mem_regions),
-+		},
-+	},
- };
- 
- static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-index 5dac653e1649..9802e90483f4 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.h
-+++ b/drivers/net/wireless/ath/ath10k/coredump.h
-@@ -126,6 +126,7 @@ enum ath10k_mem_region_type {
- 	ATH10K_MEM_REGION_TYPE_IRAM2	= 5,
- 	ATH10K_MEM_REGION_TYPE_IOSRAM	= 6,
- 	ATH10K_MEM_REGION_TYPE_IOREG	= 7,
-+	ATH10K_MEM_REGION_TYPE_MSA	= 8,
- };
- 
- /* Define a section of the region which should be copied. As not all parts
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index ba8f5a8f83d1..8eb0f0f0d3a7 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -817,9 +817,13 @@ ath10k_qmi_driver_event_post(struct ath10k_qmi *qmi,
- static void ath10k_qmi_event_server_exit(struct ath10k_qmi *qmi)
- {
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 
- 	ath10k_qmi_remove_msa_permission(qmi);
- 	ath10k_core_free_board_files(ar);
-+	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
-+		ath10k_snoc_fw_crashed_dump(ar);
-+
- 	ath10k_snoc_fw_indication(ar, ATH10K_QMI_EVENT_FW_DOWN_IND);
- 	ath10k_dbg(ar, ATH10K_DBG_QMI, "wifi fw qmi service disconnected\n");
- }
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 0be12996beba..6c362c928e4e 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -24,6 +24,7 @@
- #include <linux/regulator/consumer.h>
- 
- #include "ce.h"
-+#include "coredump.h"
- #include "debug.h"
- #include "hif.h"
- #include "htc.h"
-@@ -1586,6 +1587,71 @@ static int ath10k_hw_power_off(struct ath10k *ar)
- 	return ret;
- }
- 
-+static void ath10k_msa_dump_memory(struct ath10k *ar,
-+				   struct ath10k_fw_crash_data *crash_data)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	const struct ath10k_hw_mem_layout *mem_layout;
-+	const struct ath10k_mem_region *current_region;
-+	struct ath10k_dump_ram_data_hdr *hdr;
-+	size_t buf_len;
-+	u8 *buf;
-+
-+	if (!crash_data && !crash_data->ramdump_buf)
-+		return;
-+
-+	mem_layout = ath10k_coredump_get_mem_layout(ar);
-+	if (!mem_layout)
-+		return;
-+
-+	current_region = &mem_layout->region_table.regions[0];
-+
-+	buf = crash_data->ramdump_buf;
-+	buf_len = crash_data->ramdump_buf_len;
-+	memset(buf, 0, buf_len);
-+
-+	/* Reserve space for the header. */
-+	hdr = (void *)buf;
-+	buf += sizeof(*hdr);
-+	buf_len -= sizeof(*hdr);
-+
-+	hdr->region_type = cpu_to_le32(current_region->type);
-+	hdr->start = cpu_to_le32((unsigned long)ar_snoc->qmi->msa_va);
-+	hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
-+
-+	if (current_region->len < ar_snoc->qmi->msa_mem_size) {
-+		memcpy(buf, ar_snoc->qmi->msa_va, current_region->len);
-+		ath10k_warn(ar, "msa dump length is less than msa size %x, %x\n",
-+			    current_region->len, ar_snoc->qmi->msa_mem_size);
-+	} else {
-+		memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
-+	}
-+}
-+
-+void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
-+{
-+	struct ath10k_fw_crash_data *crash_data;
-+	char guid[UUID_STRING_LEN + 1];
-+
-+	mutex_lock(&ar->dump_mutex);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	ar->stats.fw_crash_counter++;
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	crash_data = ath10k_coredump_new(ar);
-+
-+	if (crash_data)
-+		scnprintf(guid, sizeof(guid), "%pUl", &crash_data->guid);
-+	else
-+		scnprintf(guid, sizeof(guid), "n/a");
-+
-+	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
-+	ath10k_print_driver_info(ar);
-+	ath10k_msa_dump_memory(ar, crash_data);
-+	mutex_unlock(&ar->dump_mutex);
-+}
-+
- static const struct of_device_id ath10k_snoc_dt_match[] = {
- 	{ .compatible = "qcom,wcn3990-wifi",
- 	 .data = &drv_priv,
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 25383de8f17d..6d28a6290a94 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -101,5 +101,6 @@ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
- }
- 
- int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type);
-+void ath10k_snoc_fw_crashed_dump(struct ath10k *ar);
- 
- #endif /* _SNOC_H_ */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Regards,
+Sergey
 
 _______________________________________________
 ath10k mailing list
