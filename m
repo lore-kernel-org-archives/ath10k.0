@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1BL-0004Ra-BY
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:38:20 +0000
+ id 1hn1BO-0004Tr-Aj
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:38:23 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.1 002/219] ath10k: htt: don't use txdone_fifo with
- SDIO
-Date: Mon, 15 Jul 2019 09:34:34 -0400
-Message-Id: <20190715133811.2441-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 003/219] ath10k: fix incorrect multicast/broadcast
+ rate setting
+Date: Mon, 15 Jul 2019 09:34:35 -0400
+Message-Id: <20190715133811.2441-3-sashal@kernel.org>
 In-Reply-To: <20190715133811.2441-1-sashal@kernel.org>
 References: <20190715133811.2441-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,44 +24,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Alagu Sankar <alagusankar@silex-india.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, Pradeep kumar Chitrapu <pradeepc@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Zhi Chen <zhichen@codeaurora.org>, Sven Eckelmann <sven@narfation.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Alagu Sankar <alagusankar@silex-india.com>
+From: Pradeep kumar Chitrapu <pradeepc@codeaurora.org>
 
-[ Upstream commit e2a6b711282a371c5153239e0468a48254f17ca6 ]
+[ Upstream commit 93ee3d108fc77e19efeac3ec5aa7d5886711bfef ]
 
-HTT High Latency (ATH10K_DEV_TYPE_HL) does not use txdone_fifo at all, we don't
-even initialise it by skipping ath10k_htt_tx_alloc_buf() in
-ath10k_htt_tx_start(). Because of this using QCA6174 SDIO
-ath10k_htt_rx_tx_compl_ind() will crash when it accesses unitialised
-txdone_fifo. So skip txdone_fifo when using High Latency mode.
+Invalid rate code is sent to firmware when multicast rate value of 0 is
+sent to driver indicating disabled case, causing broken mesh path.
+so fix that.
 
-Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+Tested on QCA9984 with firmware 10.4-3.6.1-00827
 
-Co-developed-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Sven tested on IPQ4019 with 10.4-3.5.3-00057 and QCA9888 with 10.4-3.5.3-00053
+(ath10k-firmware) and 10.4-3.6-00140 (linux-firmware 2018-12-16-211de167).
+
+Fixes: cd93b83ad92 ("ath10k: support for multicast rate control")
+Co-developed-by: Zhi Chen <zhichen@codeaurora.org>
+Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Tested-by: Sven Eckelmann <sven@narfation.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 1acc622d2183..f22840bbc389 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2277,7 +2277,9 @@ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
- 		 *  Note that with only one concurrent reader and one concurrent
- 		 *  writer, you don't need extra locking to use these macro.
- 		 */
--		if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
-+		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
-+			ath10k_txrx_tx_unref(htt, &tx_done);
-+		} else if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
- 			ath10k_warn(ar, "txdone fifo overrun, msdu_id %d status %d\n",
- 				    tx_done.msdu_id, tx_done.status);
- 			ath10k_txrx_tx_unref(htt, &tx_done);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9c703d287333..e8997e22ceec 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5588,8 +5588,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	struct cfg80211_chan_def def;
+ 	u32 vdev_param, pdev_param, slottime, preamble;
+ 	u16 bitrate, hw_value;
+-	u8 rate, basic_rate_idx;
+-	int rateidx, ret = 0, hw_rate_code;
++	u8 rate, basic_rate_idx, rateidx;
++	int ret = 0, hw_rate_code, mcast_rate;
+ 	enum nl80211_band band;
+ 	const struct ieee80211_supported_band *sband;
+ 
+@@ -5776,7 +5776,11 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	if (changed & BSS_CHANGED_MCAST_RATE &&
+ 	    !ath10k_mac_vif_chan(arvif->vif, &def)) {
+ 		band = def.chan->band;
+-		rateidx = vif->bss_conf.mcast_rate[band] - 1;
++		mcast_rate = vif->bss_conf.mcast_rate[band];
++		if (mcast_rate > 0)
++			rateidx = mcast_rate - 1;
++		else
++			rateidx = ffs(vif->bss_conf.basic_rates) - 1;
+ 
+ 		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
+ 			rateidx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
 -- 
 2.20.1
 
