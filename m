@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1Bu-00051y-6E
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:38:56 +0000
+ id 1hn1CT-0005Kb-Ju
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:39:31 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.1 016/219] ath10k: Fix encoding for protected
- management frames
-Date: Mon, 15 Jul 2019 09:34:48 -0400
-Message-Id: <20190715133811.2441-16-sashal@kernel.org>
-In-Reply-To: <20190715133811.2441-1-sashal@kernel.org>
-References: <20190715133811.2441-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 002/158] ath10k: Do not send probe response
+ template for mesh
+Date: Mon, 15 Jul 2019 09:36:47 -0400
+Message-Id: <20190715133923.2890-2-sashal@kernel.org>
+In-Reply-To: <20190715133923.2890-1-sashal@kernel.org>
+References: <20190715133923.2890-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,48 +24,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-From: Rakesh Pillai <pillair@codeaurora.org>
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-[ Upstream commit 42f1bc43e6a97b9ddbe976eba9bd05306c990c75 ]
+[ Upstream commit 97354f2c432788e3163134df6bb144f4b6289d87 ]
 
-Currently the protected management frames are
-not appended with the MIC_LEN which results in
-the protected management frames being encoded
-incorrectly.
+Currently mac80211 do not support probe response template for
+mesh point. When WMI_SERVICE_BEACON_OFFLOAD is enabled, host
+driver tries to configure probe response template for mesh, but
+it fails because the interface type is not NL80211_IFTYPE_AP but
+NL80211_IFTYPE_MESH_POINT.
 
-Add the extra space at the end of the protected
-management frames to fix this encoding error for
-the protected management frames.
+To avoid this failure, skip sending probe response template to
+firmware for mesh point.
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+Tested HW: WCN3990/QCA6174/QCA9984
 
-Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 582fb11f648a..02709fc99034 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2840,8 +2840,10 @@ ath10k_wmi_tlv_op_gen_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 	if ((ieee80211_is_action(hdr->frame_control) ||
- 	     ieee80211_is_deauth(hdr->frame_control) ||
- 	     ieee80211_is_disassoc(hdr->frame_control)) &&
--	     ieee80211_has_protected(hdr->frame_control))
-+	     ieee80211_has_protected(hdr->frame_control)) {
-+		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
- 		buf_len += IEEE80211_CCMP_MIC_LEN;
-+	}
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f3b1cfacfe9d..1419f9d1505f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1624,6 +1624,10 @@ static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
+ 	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
+ 		return 0;
  
- 	buf_len = min_t(u32, buf_len, WMI_TLV_MGMT_TX_FRAME_MAX_LEN);
- 	buf_len = round_up(buf_len, 4);
++	 /* For mesh, probe response and beacon share the same template */
++	if (ieee80211_vif_is_mesh(vif))
++		return 0;
++
+ 	prb = ieee80211_proberesp_get(hw, vif);
+ 	if (!prb) {
+ 		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
 -- 
 2.20.1
 
