@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1kJ-0000hG-SL
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:14:29 +0000
+ id 1hn1nz-000320-Mf
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:18:16 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.1 176/219] ath10k: destroy sdio workqueue while
- remove sdio module
-Date: Mon, 15 Jul 2019 10:02:57 -0400
-Message-Id: <20190715140341.6443-176-sashal@kernel.org>
-In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
-References: <20190715140341.6443-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 002/158] ath10k: Do not send probe response
+ template for mesh
+Date: Mon, 15 Jul 2019 10:15:33 -0400
+Message-Id: <20190715141809.8445-2-sashal@kernel.org>
+In-Reply-To: <20190715141809.8445-1-sashal@kernel.org>
+References: <20190715141809.8445-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,40 +24,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-From: Wen Gong <wgong@codeaurora.org>
+From: Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-[ Upstream commit 3ed39f8e747a7aafeec07bb244f2c3a1bdca5730 ]
+[ Upstream commit 97354f2c432788e3163134df6bb144f4b6289d87 ]
 
-The workqueue need to flush and destory while remove sdio module,
-otherwise it will have thread which is not destory after remove
-sdio modules.
+Currently mac80211 do not support probe response template for
+mesh point. When WMI_SERVICE_BEACON_OFFLOAD is enabled, host
+driver tries to configure probe response template for mesh, but
+it fails because the interface type is not NL80211_IFTYPE_AP but
+NL80211_IFTYPE_MESH_POINT.
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+To avoid this failure, skip sending probe response template to
+firmware for mesh point.
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Tested HW: WCN3990/QCA6174/QCA9984
+
+Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 73ef3e75d199..28bdf0212538 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2081,6 +2081,9 @@ static void ath10k_sdio_remove(struct sdio_func *func)
- 	cancel_work_sync(&ar_sdio->wr_async_work);
- 	ath10k_core_unregister(ar);
- 	ath10k_core_destroy(ar);
-+
-+	flush_workqueue(ar_sdio->workqueue);
-+	destroy_workqueue(ar_sdio->workqueue);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f3b1cfacfe9d..1419f9d1505f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1624,6 +1624,10 @@ static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
+ 	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
+ 		return 0;
  
- static const struct sdio_device_id ath10k_sdio_devices[] = {
++	 /* For mesh, probe response and beacon share the same template */
++	if (ieee80211_vif_is_mesh(vif))
++		return 0;
++
+ 	prb = ieee80211_proberesp_get(hw, vif);
+ 	if (!prb) {
+ 		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
 -- 
 2.20.1
 
