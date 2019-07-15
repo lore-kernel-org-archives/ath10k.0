@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1u3-0006dA-Lp
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:24:41 +0000
+ by casper.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hn1u8-00044x-MS
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:24:38 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 109/158] ath10k: fix PCIE device wake up failed
-Date: Mon, 15 Jul 2019 10:17:20 -0400
-Message-Id: <20190715141809.8445-109-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 108/158] ath10k: add missing error handling
+Date: Mon, 15 Jul 2019 10:17:19 -0400
+Message-Id: <20190715141809.8445-108-sashal@kernel.org>
 In-Reply-To: <20190715141809.8445-1-sashal@kernel.org>
 References: <20190715141809.8445-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -23,51 +23,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Miaoqing Pan <miaoqing@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Claire Chang <tientzu@chromium.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Miaoqing Pan <miaoqing@codeaurora.org>
+From: Claire Chang <tientzu@chromium.org>
 
-[ Upstream commit 011d4111c8c602ea829fa4917af1818eb0500a90 ]
+[ Upstream commit 4b553f3ca4cbde67399aa3a756c37eb92145b8a1 ]
 
-Observed PCIE device wake up failed after ~120 iterations of
-soft-reboot test. The error message is
-"ath10k_pci 0000:01:00.0: failed to wake up device : -110"
+In function ath10k_sdio_mbox_rx_alloc() [sdio.c],
+ath10k_sdio_mbox_alloc_rx_pkt() is called without handling the error cases.
+This will make the driver think the allocation for skb is successful and
+try to access the skb. If we enable failslab, system will easily crash with
+NULL pointer dereferencing.
 
-The call trace as below:
-ath10k_pci_probe -> ath10k_pci_force_wake -> ath10k_pci_wake_wait ->
-ath10k_pci_is_awake
+Call trace of CONFIG_FAILSLAB:
+ath10k_sdio_irq_handler+0x570/0xa88 [ath10k_sdio]
+process_sdio_pending_irqs+0x4c/0x174
+sdio_run_irqs+0x3c/0x64
+sdio_irq_work+0x1c/0x28
 
-Once trigger the device to wake up, we will continuously check the RTC
-state until it returns RTC_STATE_V_ON or timeout.
-
-But for QCA99x0 chips, we use wrong value for RTC_STATE_V_ON.
-Occasionally, we get 0x7 on the fist read, we thought as a failure
-case, but actually is the right value, also verified with the spec.
-So fix the issue by changing RTC_STATE_V_ON from 0x5 to 0x7, passed
-~2000 iterations.
-
-Tested HW: QCA9984
-
-Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Fixes: d96db25d2025 ("ath10k: add initial SDIO support")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 677535b3d207..476e0535f06f 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -168,7 +168,7 @@ const struct ath10k_hw_values qca6174_values = {
- };
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 7f61591ce0de..cb527a21f1ac 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -613,6 +613,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 						    full_len,
+ 						    last_in_bundle,
+ 						    last_in_bundle);
++		if (ret) {
++			ath10k_warn(ar, "alloc_rx_pkt error %d\n", ret);
++			goto err;
++		}
+ 	}
  
- const struct ath10k_hw_values qca99x0_values = {
--	.rtc_state_val_on		= 5,
-+	.rtc_state_val_on		= 7,
- 	.ce_count			= 12,
- 	.msi_assign_ce_max		= 12,
- 	.num_target_ce_config_wlan	= 10,
+ 	ar_sdio->n_rx_pkts = i;
 -- 
 2.20.1
 
