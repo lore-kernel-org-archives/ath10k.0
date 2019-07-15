@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hmwxn-0003l7-T9
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 09:08:06 +0000
+ id 1hmxXG-0003fR-6q
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 09:44:43 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v3 20/24] wireless: Remove call to memset after
- dma_alloc_coherent
-References: <20190715031941.7120-1-huangfq.daxian@gmail.com>
-Date: Mon, 15 Jul 2019 12:07:56 +0300
-In-Reply-To: <20190715031941.7120-1-huangfq.daxian@gmail.com> (Fuqian Huang's
- message of "Mon, 15 Jul 2019 11:19:41 +0800")
-Message-ID: <87v9w38y37.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: work around uninitialized vht_pfr variable
+References: <20190708125050.3689133-1-arnd@arndb.de>
+Date: Mon, 15 Jul 2019 12:44:33 +0300
+In-Reply-To: <20190708125050.3689133-1-arnd@arndb.de> (Arnd Bergmann's message
+ of "Mon, 8 Jul 2019 14:50:06 +0200")
+Message-ID: <87v9w3pr7i.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,39 +23,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fuqian Huang <huangfq.daxian@gmail.com>
-Cc: brcm80211-dev-list.pdl@broadcom.com, Arend van Spriel <arend.vanspriel@broadcom.com>, Sergey Matyukevich <smatyukevich@quantenna.com>, netdev@vger.kernel.org, Chi-Hsien Lin <chi-hsien.lin@cypress.com>, linux-wireless@vger.kernel.org, Hante Meuleman <hante.meuleman@broadcom.com>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, Igor Mitsyanko <imitsyanko@quantenna.com>, Wright Feng <wright.feng@cypress.com>, brcm80211-dev-list@cypress.com, Avinash Patil <avinashp@quantenna.com>, "David S . Miller" <davem@davemloft.net>, Franky Lin <franky.lin@broadcom.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Sriram R <srirrama@codeaurora.org>, Miaoqing Pan <miaoqing@codeaurora.org>, Pradeep kumar Chitrapu <pradeepc@codeaurora.org>, Balaji Pothunoori <bpothuno@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, clang-built-linux@googlegroups.com, netdev@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
 
-Fuqian Huang <huangfq.daxian@gmail.com> writes:
+Arnd Bergmann <arnd@arndb.de> writes:
 
-> In commit 518a2f1925c3
-> ("dma-mapping: zero memory returned from dma_alloc_*"),
-> dma_alloc_coherent has already zeroed the memory.
-> So memset is not needed.
+> As clang points out, the vht_pfr is assigned to a struct member
+> without being initialized in one case:
 >
-> Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
-> ---
-> Changes in v3:
->   - Use actual commit rather than the merge commit in the commit message
+> drivers/net/wireless/ath/ath10k/mac.c:7528:7: error: variable 'vht_pfr' is used uninitialized whenever 'if' condition
+>       is false [-Werror,-Wsometimes-uninitialized]
+>                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
+>                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/mac.c:7551:20: note: uninitialized use occurs here
+>                 arvif->vht_pfr = vht_pfr;
+>                                  ^~~~~~~
+> drivers/net/wireless/ath/ath10k/mac.c:7528:3: note: remove the 'if' if its condition is always true
+>                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
+>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/mac.c:7483:12: note: initialize the variable 'vht_pfr' to silence this warning
+>         u8 vht_pfr;
 >
->  drivers/net/wireless/ath/ath10k/ce.c                     | 5 -----
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c  | 2 --
->  drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c | 2 --
->  drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c | 2 --
->  4 files changed, 11 deletions(-)
+> Add an explicit but probably incorrect initialization here.
+> I suspect we want a better fix here, but chose this approach to
+> illustrate the issue.
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-> index eca87f7c5b6c..294fbc1e89ab 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.c
-> +++ b/drivers/net/wireless/ath/ath10k/ce.c
-> @@ -1704,9 +1704,6 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
->  	/* Correctly initialize memory to 0 to prevent garbage
->  	 * data crashing system when download firmware
->  	 */
-> -	memset(dest_ring->base_addr_owner_space_unaligned, 0,
-> -	       nentries * sizeof(struct ce_desc_64) + CE_DESC_RING_ALIGN);
+> Fixes: 8b97b055dc9d ("ath10k: fix failure to set multiple fixed rate")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Shouldn't you also remove the comment?
+I'll queue this for v5.3.
 
 -- 
 Kalle Valo
