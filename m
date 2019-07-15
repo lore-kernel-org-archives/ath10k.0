@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1K2-0001Ji-FZ
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:47:21 +0000
+ id 1hn1K9-0001Nj-04
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:47:26 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.2 006/249] ath10k: Do not send probe response
- template for mesh
-Date: Mon, 15 Jul 2019 09:42:51 -0400
-Message-Id: <20190715134655.4076-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 009/249] ath10k: Fix the wrong value of enums for
+ wmi tlv stats id
+Date: Mon, 15 Jul 2019 09:42:54 -0400
+Message-Id: <20190715134655.4076-9-sashal@kernel.org>
 In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
 References: <20190715134655.4076-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -28,41 +28,44 @@ Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger
 
 From: Surabhi Vishnoi <svishnoi@codeaurora.org>
 
-[ Upstream commit 97354f2c432788e3163134df6bb144f4b6289d87 ]
+[ Upstream commit 9280f4fc06f44d0b4dc9e831f72d97b3d7cd35d3 ]
 
-Currently mac80211 do not support probe response template for
-mesh point. When WMI_SERVICE_BEACON_OFFLOAD is enabled, host
-driver tries to configure probe response template for mesh, but
-it fails because the interface type is not NL80211_IFTYPE_AP but
-NL80211_IFTYPE_MESH_POINT.
+The enum value for WMI_TLV_STAT_PDEV, WMI_TLV_STAT_VDEV
+and WMI_TLV_STAT_PEER is wrong, due to which the vdev stats
+are not received from firmware in wmi_update_stats event.
 
-To avoid this failure, skip sending probe response template to
-firmware for mesh point.
+Fix the enum values for above stats to receive all stats
+from firmware in WMI_TLV_UPDATE_STATS_EVENTID.
 
-Tested HW: WCN3990/QCA6174/QCA9984
+Tested HW: WCN3990
+Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
 
+Fixes: f40a307eb92c ("ath10k: Fill rx duration for each peer in fw_stats for WCN3990)
 Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e8997e22ceec..b500fd427595 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1630,6 +1630,10 @@ static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
- 	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
- 		return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index e1c40bb69932..12f57f9adbba 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4535,9 +4535,10 @@ enum wmi_10_4_stats_id {
+ };
  
-+	 /* For mesh, probe response and beacon share the same template */
-+	if (ieee80211_vif_is_mesh(vif))
-+		return 0;
-+
- 	prb = ieee80211_proberesp_get(hw, vif);
- 	if (!prb) {
- 		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
+ enum wmi_tlv_stats_id {
+-	WMI_TLV_STAT_PDEV	= BIT(0),
+-	WMI_TLV_STAT_VDEV	= BIT(1),
+-	WMI_TLV_STAT_PEER	= BIT(2),
++	WMI_TLV_STAT_PEER	= BIT(0),
++	WMI_TLV_STAT_AP		= BIT(1),
++	WMI_TLV_STAT_PDEV	= BIT(2),
++	WMI_TLV_STAT_VDEV	= BIT(3),
+ 	WMI_TLV_STAT_PEER_EXTD  = BIT(10),
+ };
+ 
 -- 
 2.20.1
 
