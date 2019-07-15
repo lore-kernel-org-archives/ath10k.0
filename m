@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hmxXG-0003fR-6q
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 09:44:43 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: work around uninitialized vht_pfr variable
-References: <20190708125050.3689133-1-arnd@arndb.de>
-Date: Mon, 15 Jul 2019 12:44:33 +0300
-In-Reply-To: <20190708125050.3689133-1-arnd@arndb.de> (Arnd Bergmann's message
- of "Mon, 8 Jul 2019 14:50:06 +0200")
-Message-ID: <87v9w3pr7i.fsf@codeaurora.org>
+ id 1hn191-0003UY-TL
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 13:35:57 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 002/249] ath10k: htt: don't use txdone_fifo with
+ SDIO
+Date: Mon, 15 Jul 2019 09:31:43 -0400
+Message-Id: <20190715133550.1772-2-sashal@kernel.org>
+In-Reply-To: <20190715133550.1772-1-sashal@kernel.org>
+References: <20190715133550.1772-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +23,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Sriram R <srirrama@codeaurora.org>, Miaoqing Pan <miaoqing@codeaurora.org>, Pradeep kumar Chitrapu <pradeepc@codeaurora.org>, Balaji Pothunoori <bpothuno@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, clang-built-linux@googlegroups.com, netdev@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, Alagu Sankar <alagusankar@silex-india.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-Arnd Bergmann <arnd@arndb.de> writes:
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-> As clang points out, the vht_pfr is assigned to a struct member
-> without being initialized in one case:
->
-> drivers/net/wireless/ath/ath10k/mac.c:7528:7: error: variable 'vht_pfr' is used uninitialized whenever 'if' condition
->       is false [-Werror,-Wsometimes-uninitialized]
->                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
->                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:7551:20: note: uninitialized use occurs here
->                 arvif->vht_pfr = vht_pfr;
->                                  ^~~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:7528:3: note: remove the 'if' if its condition is always true
->                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:7483:12: note: initialize the variable 'vht_pfr' to silence this warning
->         u8 vht_pfr;
->
-> Add an explicit but probably incorrect initialization here.
-> I suspect we want a better fix here, but chose this approach to
-> illustrate the issue.
->
-> Fixes: 8b97b055dc9d ("ath10k: fix failure to set multiple fixed rate")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[ Upstream commit e2a6b711282a371c5153239e0468a48254f17ca6 ]
 
-I'll queue this for v5.3.
+HTT High Latency (ATH10K_DEV_TYPE_HL) does not use txdone_fifo at all, we don't
+even initialise it by skipping ath10k_htt_tx_alloc_buf() in
+ath10k_htt_tx_start(). Because of this using QCA6174 SDIO
+ath10k_htt_rx_tx_compl_ind() will crash when it accesses unitialised
+txdone_fifo. So skip txdone_fifo when using High Latency mode.
 
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+
+Co-developed-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 1acc622d2183..f22840bbc389 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2277,7 +2277,9 @@ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
+ 		 *  Note that with only one concurrent reader and one concurrent
+ 		 *  writer, you don't need extra locking to use these macro.
+ 		 */
+-		if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
++		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
++			ath10k_txrx_tx_unref(htt, &tx_done);
++		} else if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
+ 			ath10k_warn(ar, "txdone fifo overrun, msdu_id %d status %d\n",
+ 				    tx_done.msdu_id, tx_done.status);
+ 			ath10k_txrx_tx_unref(htt, &tx_done);
 -- 
-Kalle Valo
+2.20.1
+
 
 _______________________________________________
 ath10k mailing list
