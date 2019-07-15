@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.3])
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hlsUB-0002gZ-FD
- for ath10k@lists.infradead.org; Fri, 12 Jul 2019 10:09:04 +0000
-From: Isaac Hermida <isaac.hermida@digi.com>
-Subject: [PATCH][master/pending] ath10k: assign new interfaces type to parent
- type
-Date: Fri, 12 Jul 2019 12:08:46 +0200
-Message-ID: <20190712100846.11158-1-isaac.hermida@digi.com>
-MIME-Version: 1.0
+ id 1hmrWo-0003NB-Ts
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 03:19:52 +0000
+Received: by mail-pl1-x641.google.com with SMTP id t14so7529828plr.11
+ for <ath10k@lists.infradead.org>; Sun, 14 Jul 2019 20:19:50 -0700 (PDT)
+From: Fuqian Huang <huangfq.daxian@gmail.com>
+Subject: [PATCH v3 20/24] wireless: Remove call to memset after
+ dma_alloc_coherent
+Date: Mon, 15 Jul 2019 11:19:41 +0800
+Message-Id: <20190715031941.7120-1-huangfq.daxian@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,36 +18,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: brcm80211-dev-list.pdl@broadcom.com, Arend van Spriel <arend.vanspriel@broadcom.com>, Sergey Matyukevich <smatyukevich@quantenna.com>, netdev@vger.kernel.org, Chi-Hsien Lin <chi-hsien.lin@cypress.com>, linux-wireless@vger.kernel.org, Hante Meuleman <hante.meuleman@broadcom.com>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, Igor Mitsyanko <imitsyanko@quantenna.com>, Wright Feng <wright.feng@cypress.com>, Fuqian Huang <huangfq.daxian@gmail.com>, brcm80211-dev-list@cypress.com, Avinash Patil <avinashp@quantenna.com>, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, Franky Lin <franky.lin@broadcom.com>
 
-This is needed to have the AP mode working for SDIO.
-Tested with lastest master/pending code on a QCA6564 chip with firmware
-firmware-sdio-6.bin_WLAN.RMH.4.4.1-00011-QCARMSWP-2
+In commit 518a2f1925c3
+("dma-mapping: zero memory returned from dma_alloc_*"),
+dma_alloc_coherent has already zeroed the memory.
+So memset is not needed.
 
-Signed-off-by: Isaac Hermida <isaac.hermida@digi.com>
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v3:
+  - Use actual commit rather than the merge commit in the commit message
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e43a566eef77..2c4f8da98b24 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5150,6 +5150,9 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	arvif->ar = ar;
- 	arvif->vif = vif;
+ drivers/net/wireless/ath/ath10k/ce.c                     | 5 -----
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c  | 2 --
+ drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c | 2 --
+ drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c | 2 --
+ 4 files changed, 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index eca87f7c5b6c..294fbc1e89ab 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1704,9 +1704,6 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
+ 	/* Correctly initialize memory to 0 to prevent garbage
+ 	 * data crashing system when download firmware
+ 	 */
+-	memset(dest_ring->base_addr_owner_space_unaligned, 0,
+-	       nentries * sizeof(struct ce_desc_64) + CE_DESC_RING_ALIGN);
+-
+ 	dest_ring->base_addr_owner_space =
+ 			PTR_ALIGN(dest_ring->base_addr_owner_space_unaligned,
+ 				  CE_DESC_RING_ALIGN);
+@@ -2019,8 +2016,6 @@ void ath10k_ce_alloc_rri(struct ath10k *ar)
+ 		value |= ar->hw_ce_regs->upd->mask;
+ 		ath10k_ce_write32(ar, ce_base_addr + ctrl1_regs, value);
+ 	}
+-
+-	memset(ce->vaddr_rri, 0, CE_COUNT * sizeof(u32));
+ }
+ EXPORT_SYMBOL(ath10k_ce_alloc_rri);
  
-+	// assign type of the new interface to the parent type (SDIO, PCI, etc)
-+	ar->dev_type = arvif->ar->bus_param.dev_type;
-+
- 	INIT_LIST_HEAD(&arvif->list);
- 	INIT_WORK(&arvif->ap_csa_work, ath10k_mac_vif_ap_csa_work);
- 	INIT_DELAYED_WORK(&arvif->connection_loss_work,
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 4ea5401c4d6b..5f0437a3fd82 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -1023,8 +1023,6 @@ brcmf_pcie_init_dmabuffer_for_device(struct brcmf_pciedev_info *devinfo,
+ 			       address & 0xffffffff);
+ 	brcmf_pcie_write_tcm32(devinfo, tcm_dma_phys_addr + 4, address >> 32);
+ 
+-	memset(ring, 0, size);
+-
+ 	return (ring);
+ }
+ 
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c
+index 3aa3714d4dfd..5ec1c9bc1612 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c
+@@ -244,8 +244,6 @@ static int pearl_alloc_bd_table(struct qtnf_pcie_pearl_state *ps)
+ 
+ 	/* tx bd */
+ 
+-	memset(vaddr, 0, len);
+-
+ 	ps->bd_table_vaddr = vaddr;
+ 	ps->bd_table_paddr = paddr;
+ 	ps->bd_table_len = len;
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c
+index 9a4380ed7f1b..1f91088e3dff 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c
+@@ -199,8 +199,6 @@ static int topaz_alloc_bd_table(struct qtnf_pcie_topaz_state *ts,
+ 	if (!vaddr)
+ 		return -ENOMEM;
+ 
+-	memset(vaddr, 0, len);
+-
+ 	/* tx bd */
+ 
+ 	ts->tx_bd_vbase = vaddr;
+-- 
+2.11.0
+
 
 _______________________________________________
 ath10k mailing list
