@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1kH-0000gE-9P
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:14:26 +0000
+ id 1hn1kJ-0000hG-SL
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:14:29 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.1 175/219] ath10k: Fix memory leak in qmi
-Date: Mon, 15 Jul 2019 10:02:56 -0400
-Message-Id: <20190715140341.6443-175-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 176/219] ath10k: destroy sdio workqueue while
+ remove sdio module
+Date: Mon, 15 Jul 2019 10:02:57 -0400
+Message-Id: <20190715140341.6443-176-sashal@kernel.org>
 In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
 References: <20190715140341.6443-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -23,41 +24,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Dundi Raviteja <dundi@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Dundi Raviteja <dundi@codeaurora.org>
+From: Wen Gong <wgong@codeaurora.org>
 
-[ Upstream commit c709df58832c5f575f0255bea4b09ad477fc62ea ]
+[ Upstream commit 3ed39f8e747a7aafeec07bb244f2c3a1bdca5730 ]
 
-Currently the memory allocated for qmi handle is
-not being freed during de-init which leads to memory leak.
+The workqueue need to flush and destory while remove sdio module,
+otherwise it will have thread which is not destory after remove
+sdio modules.
 
-Free the allocated qmi memory in qmi deinit
-to avoid memory leak.
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Fixes: fda6fee0001e ("ath10k: add QMI message handshake for wcn3990 client")
-Signed-off-by: Dundi Raviteja <dundi@codeaurora.org>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/qmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/sdio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index a7bc2c70d076..8f8f717a23ee 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -1002,6 +1002,7 @@ int ath10k_qmi_deinit(struct ath10k *ar)
- 	qmi_handle_release(&qmi->qmi_hdl);
- 	cancel_work_sync(&qmi->event_work);
- 	destroy_workqueue(qmi->event_wq);
-+	kfree(qmi);
- 	ar_snoc->qmi = NULL;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 73ef3e75d199..28bdf0212538 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2081,6 +2081,9 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+ 	cancel_work_sync(&ar_sdio->wr_async_work);
+ 	ath10k_core_unregister(ar);
+ 	ath10k_core_destroy(ar);
++
++	flush_workqueue(ar_sdio->workqueue);
++	destroy_workqueue(ar_sdio->workqueue);
+ }
  
- 	return 0;
+ static const struct sdio_device_id ath10k_sdio_devices[] = {
 -- 
 2.20.1
 
