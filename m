@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1yD-0001ty-8Z
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:28:50 +0000
+ id 1hn22Y-0004rM-8N
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:33:19 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 002/105] ath10k: Do not send probe response
- template for mesh
-Date: Mon, 15 Jul 2019 10:26:56 -0400
-Message-Id: <20190715142839.9896-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 076/105] ath10k: add missing error handling
+Date: Mon, 15 Jul 2019 10:28:10 -0400
+Message-Id: <20190715142839.9896-76-sashal@kernel.org>
 In-Reply-To: <20190715142839.9896-1-sashal@kernel.org>
 References: <20190715142839.9896-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,45 +23,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Claire Chang <tientzu@chromium.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Surabhi Vishnoi <svishnoi@codeaurora.org>
+From: Claire Chang <tientzu@chromium.org>
 
-[ Upstream commit 97354f2c432788e3163134df6bb144f4b6289d87 ]
+[ Upstream commit 4b553f3ca4cbde67399aa3a756c37eb92145b8a1 ]
 
-Currently mac80211 do not support probe response template for
-mesh point. When WMI_SERVICE_BEACON_OFFLOAD is enabled, host
-driver tries to configure probe response template for mesh, but
-it fails because the interface type is not NL80211_IFTYPE_AP but
-NL80211_IFTYPE_MESH_POINT.
+In function ath10k_sdio_mbox_rx_alloc() [sdio.c],
+ath10k_sdio_mbox_alloc_rx_pkt() is called without handling the error cases.
+This will make the driver think the allocation for skb is successful and
+try to access the skb. If we enable failslab, system will easily crash with
+NULL pointer dereferencing.
 
-To avoid this failure, skip sending probe response template to
-firmware for mesh point.
+Call trace of CONFIG_FAILSLAB:
+ath10k_sdio_irq_handler+0x570/0xa88 [ath10k_sdio]
+process_sdio_pending_irqs+0x4c/0x174
+sdio_run_irqs+0x3c/0x64
+sdio_irq_work+0x1c/0x28
 
-Tested HW: WCN3990/QCA6174/QCA9984
-
-Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Fixes: d96db25d2025 ("ath10k: add initial SDIO support")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 4 ++++
+ drivers/net/wireless/ath/ath10k/sdio.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index cdcfb175ad9b..58a3c42c4aed 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1611,6 +1611,10 @@ static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
- 	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
- 		return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index da9dbf3ddaa5..c6440d28ab48 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -610,6 +610,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 						    full_len,
+ 						    last_in_bundle,
+ 						    last_in_bundle);
++		if (ret) {
++			ath10k_warn(ar, "alloc_rx_pkt error %d\n", ret);
++			goto err;
++		}
+ 	}
  
-+	 /* For mesh, probe response and beacon share the same template */
-+	if (ieee80211_vif_is_mesh(vif))
-+		return 0;
-+
- 	prb = ieee80211_proberesp_get(hw, vif);
- 	if (!prb) {
- 		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
+ 	ar_sdio->n_rx_pkts = i;
 -- 
 2.20.1
 
