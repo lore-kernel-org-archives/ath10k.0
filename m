@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn2H3-0003pM-CG
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:48:18 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 44/53] ath10k: fix PCIE device wake up failed
-Date: Mon, 15 Jul 2019 10:45:26 -0400
-Message-Id: <20190715144535.11636-44-sashal@kernel.org>
-In-Reply-To: <20190715144535.11636-1-sashal@kernel.org>
-References: <20190715144535.11636-1-sashal@kernel.org>
+ id 1hn57K-0004YO-T4
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 17:50:28 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: work around uninitialized vht_pfr variable
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20190708125050.3689133-1-arnd@arndb.de>
+References: <20190708125050.3689133-1-arnd@arndb.de>
+Message-Id: <20190715175026.92B72608A5@smtp.codeaurora.org>
+Date: Mon, 15 Jul 2019 17:50:26 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Miaoqing Pan <miaoqing@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Sriram R <srirrama@codeaurora.org>, Miaoqing Pan <miaoqing@codeaurora.org>, Pradeep kumar Chitrapu <pradeepc@codeaurora.org>, Balaji Pothunoori <bpothuno@codeaurora.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, clang-built-linux@googlegroups.com, netdev@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
 
-From: Miaoqing Pan <miaoqing@codeaurora.org>
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-[ Upstream commit 011d4111c8c602ea829fa4917af1818eb0500a90 ]
+> As clang points out, the vht_pfr is assigned to a struct member
+> without being initialized in one case:
+> 
+> drivers/net/wireless/ath/ath10k/mac.c:7528:7: error: variable 'vht_pfr' is used uninitialized whenever 'if' condition
+>       is false [-Werror,-Wsometimes-uninitialized]
+>                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
+>                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/mac.c:7551:20: note: uninitialized use occurs here
+>                 arvif->vht_pfr = vht_pfr;
+>                                  ^~~~~~~
+> drivers/net/wireless/ath/ath10k/mac.c:7528:3: note: remove the 'if' if its condition is always true
+>                 if (!ath10k_mac_can_set_bitrate_mask(ar, band, mask,
+>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/mac.c:7483:12: note: initialize the variable 'vht_pfr' to silence this warning
+>         u8 vht_pfr;
+> 
+> Add an explicit but probably incorrect initialization here.
+> I suspect we want a better fix here, but chose this approach to
+> illustrate the issue.
+> 
+> Fixes: 8b97b055dc9d ("ath10k: fix failure to set multiple fixed rate")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Observed PCIE device wake up failed after ~120 iterations of
-soft-reboot test. The error message is
-"ath10k_pci 0000:01:00.0: failed to wake up device : -110"
+Patch applied to wireless-drivers.git, thanks.
 
-The call trace as below:
-ath10k_pci_probe -> ath10k_pci_force_wake -> ath10k_pci_wake_wait ->
-ath10k_pci_is_awake
+ff414f31ce37 ath10k: work around uninitialized vht_pfr variable
 
-Once trigger the device to wake up, we will continuously check the RTC
-state until it returns RTC_STATE_V_ON or timeout.
-
-But for QCA99x0 chips, we use wrong value for RTC_STATE_V_ON.
-Occasionally, we get 0x7 on the fist read, we thought as a failure
-case, but actually is the right value, also verified with the spec.
-So fix the issue by changing RTC_STATE_V_ON from 0x5 to 0x7, passed
-~2000 iterations.
-
-Tested HW: QCA9984
-
-Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 7b84d08a5154..12d6549e45a1 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -128,7 +128,7 @@ const struct ath10k_hw_values qca6174_values = {
- };
- 
- const struct ath10k_hw_values qca99x0_values = {
--	.rtc_state_val_on		= 5,
-+	.rtc_state_val_on		= 7,
- 	.ce_count			= 12,
- 	.msi_assign_ce_max		= 12,
- 	.num_target_ce_config_wlan	= 10,
 -- 
-2.20.1
+https://patchwork.kernel.org/patch/11034993/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
