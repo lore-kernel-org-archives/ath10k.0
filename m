@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hn1u8-00044x-MS
- for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:24:38 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hn1vy-0000ST-Gm
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2019 14:26:31 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 108/158] ath10k: add missing error handling
-Date: Mon, 15 Jul 2019 10:17:19 -0400
-Message-Id: <20190715141809.8445-108-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 131/158] ath10k: destroy sdio workqueue while
+ remove sdio module
+Date: Mon, 15 Jul 2019 10:17:42 -0400
+Message-Id: <20190715141809.8445-131-sashal@kernel.org>
 In-Reply-To: <20190715141809.8445-1-sashal@kernel.org>
 References: <20190715141809.8445-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -23,48 +24,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Claire Chang <tientzu@chromium.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Claire Chang <tientzu@chromium.org>
+From: Wen Gong <wgong@codeaurora.org>
 
-[ Upstream commit 4b553f3ca4cbde67399aa3a756c37eb92145b8a1 ]
+[ Upstream commit 3ed39f8e747a7aafeec07bb244f2c3a1bdca5730 ]
 
-In function ath10k_sdio_mbox_rx_alloc() [sdio.c],
-ath10k_sdio_mbox_alloc_rx_pkt() is called without handling the error cases.
-This will make the driver think the allocation for skb is successful and
-try to access the skb. If we enable failslab, system will easily crash with
-NULL pointer dereferencing.
+The workqueue need to flush and destory while remove sdio module,
+otherwise it will have thread which is not destory after remove
+sdio modules.
 
-Call trace of CONFIG_FAILSLAB:
-ath10k_sdio_irq_handler+0x570/0xa88 [ath10k_sdio]
-process_sdio_pending_irqs+0x4c/0x174
-sdio_run_irqs+0x3c/0x64
-sdio_irq_work+0x1c/0x28
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
-Fixes: d96db25d2025 ("ath10k: add initial SDIO support")
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/sdio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 7f61591ce0de..cb527a21f1ac 100644
+index cb527a21f1ac..686759b5613f 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -613,6 +613,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 						    full_len,
- 						    last_in_bundle,
- 						    last_in_bundle);
-+		if (ret) {
-+			ath10k_warn(ar, "alloc_rx_pkt error %d\n", ret);
-+			goto err;
-+		}
- 	}
+@@ -2073,6 +2073,9 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+ 	cancel_work_sync(&ar_sdio->wr_async_work);
+ 	ath10k_core_unregister(ar);
+ 	ath10k_core_destroy(ar);
++
++	flush_workqueue(ar_sdio->workqueue);
++	destroy_workqueue(ar_sdio->workqueue);
+ }
  
- 	ar_sdio->n_rx_pkts = i;
+ static const struct sdio_device_id ath10k_sdio_devices[] = {
 -- 
 2.20.1
 
