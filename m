@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1ho6yi-0001Jx-3A
- for ath10k@lists.infradead.org; Thu, 18 Jul 2019 14:01:55 +0000
-Received: by mail-wr1-x433.google.com with SMTP id y4so28855377wrm.2
- for <ath10k@lists.infradead.org>; Thu, 18 Jul 2019 07:01:47 -0700 (PDT)
-From: "Victor J. Orlikowski" <vjorlikowski@gmail.com>
-Subject: ath10k spat a "WARNING" message...
-Date: Thu, 18 Jul 2019 10:01:40 -0400
-Message-ID: <068E46DD-8965-4693-AA4D-797B8119E000.notmuch@neverland>
-MIME-Version: 1.0
+ id 1hoD3O-0002Iu-5f
+ for ath10k@lists.infradead.org; Thu, 18 Jul 2019 20:31:03 +0000
+Received: by mail-lj1-x242.google.com with SMTP id r9so28638116ljg.5
+ for <ath10k@lists.infradead.org>; Thu, 18 Jul 2019 13:30:59 -0700 (PDT)
+From: Vasyl Gomonovych <gomonovych@gmail.com>
+Subject: [PATCH] ath10k: Use ARRAY_SIZE
+Date: Thu, 18 Jul 2019 22:30:32 +0200
+Message-Id: <20190718203032.15528-1-gomonovych@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,94 +17,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: kvalo@codeaurora.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org, Vasyl Gomonovych <gomonovych@gmail.com>, linux-kernel@vger.kernel.org
 
-To whom it may engage,
+fix coccinelle warning, use ARRAY_SIZE
 
-I have a GL.iNet B1300 AP, which uses ath10k hardware (QCA4019).
-It's running OpenWRT 18.06.04.
+Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-It had been running stably, until about 48 hours ago; I have it
-mostly stable again now, by updating to the latest firmware Kalle
-makes available at Github.
-
-With this latest firmware, I *did* get a "WARNING" message, that
-might be of interest to folks; here it is:
-
-[20528.715145] ------------[ cut here ]------------
-[20528.715192] WARNING: CPU: 0 PID: 0 at backports-2017-11-01/drivers/net/wireless/ath/ath10k/htt_rx.c:1015 0xbf3925ac [ath10k_core@bf37e000+0x3a000]
-[20528.718851] Modules linked in: pppoe ppp_async ath10k_pci ath10k_core ath pppox ppp_generic nf_nat_pptp nf_conntrack_pptp nf_conntrack_ipv6 mac80211 iptable_nat ipt_REJECT ipt_MASQUERADE cfg80211 xt_time xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark xt_mac xt_limit xt_length xt_hl xt_helper xt_ecn xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_FLOWOFFLOAD xt_DSCP xt_CT xt_CLASSIFY ts_fsm ts_bm slhc nf_reject_ipv4 nf_nat_tftp nf_nat_snmp_basic nf_nat_sip nf_nat_redirect nf_nat_proto_gre nf_nat_masquerade_ipv4 nf_nat_irc nf_conntrack_ipv4 nf_nat_ipv4 nf_nat_h323 nf_nat_amanda nf_nat nf_log_ipv4 nf_flow_table_hw nf_flow_table nf_defrag_ipv6 nf_defrag_ipv4 nf_conntrack_tftp nf_conntrack_snmp nf_conntrack_sip
-[20528.780346]  nf_conntrack_rtcache nf_conntrack_proto_gre nf_conntrack_irc nf_conntrack_h323 nf_conntrack_broadcast ts_kmp nf_conntrack_amanda iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt compat sch_cake nf_conntrack act_skbedit act_mirred em_u32 cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_tbf sch_htb sch_hfsc sch_ingress ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables x_tables ip6_gre ip_gre gre ifb ip6_tunnel tunnel6 ip_tunnel leds_gpio xhci_plat_hcd xhci_pci xhci_hcd dwc3 dwc3_of_simple gpio_button_hotplug
-[20528.831103] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.14.131 #0
-[20528.853295] Hardware name: Generic DT based system
-[20528.859293] Function entered at [<c030e35c>] from [<c030a870>]
-[20528.863973] Function entered at [<c030a870>] from [<c07328c8>]
-[20528.869789] Function entered at [<c07328c8>] from [<c0316f74>]
-[20528.875605] Function entered at [<c0316f74>] from [<c0317040>]
-[20528.881420] Function entered at [<c0317040>] from [<bf3925ac>]
-[20528.887295] Function entered at [<bf3925ac>] from [<bf3939f4>]
-[20528.893054] Function entered at [<bf3939f4>] from [<bf3bb720>]
-[20528.898880] Function entered at [<bf3bb720>] from [<c0634694>]
-[20528.904686] Function entered at [<c0634694>] from [<c0301520>]
-[20528.910501] Function entered at [<c0301520>] from [<c031af5c>]
-[20528.916318] Function entered at [<c031af5c>] from [<c0352a20>]
-[20528.922133] Function entered at [<c0352a20>] from [<c030140c>]
-[20528.927948] Function entered at [<c030140c>] from [<c030b3cc>]
-[20528.933765] Exception stack(0xc0a01f40 to 0xc0a01f88)
-[20528.939587] 1f40: 00000001 00000000 00000000 c0313840 ffffe000 c0a03c74 c0a03c28 00000000
-[20528.944711] 1f60: 00000000 00000001 cfffce00 c092da28 c0a01f88 c0a01f90 c0307f88 c0307f8c
-[20528.952864] 1f80: 60000013 ffffffff
-[20528.961018] Function entered at [<c030b3cc>] from [<c0307f8c>]
-[20528.964321] Function entered at [<c0307f8c>] from [<c0349708>]
-[20528.970223] Function entered at [<c0349708>] from [<c0349a28>]
-[20528.976038] Function entered at [<c0349a28>] from [<c0900c04>]
-[20528.981927] ---[ end trace be8769e792e356eb ]---
-
-The card is still working, despite the above being issued.
-For additional information - here's what dmesg has to say, from the
-boot that led up to this message, about device detection:
-
-[   12.463353] ath10k_ahb a000000.wifi: Direct firmware load for ath10k/QCA4019/hw1.0/firmware-6.bin failed with error -2
-[   12.463399] ath10k_ahb a000000.wifi: Falling back to user helper
-[   13.399673] firmware ath10k!QCA4019!hw1.0!firmware-6.bin: firmware_loading_store: map pages failed
-[   14.179555] ath10k_ahb a000000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003900ff sub 0000:0000
-[   14.179611] ath10k_ahb a000000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-[   14.198549] ath10k_ahb a000000.wifi: firmware ver 10.4-3.2.1.1-00025 api 5 features no-p2p,raw-mode,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps crc32 1a4815a4
-[   14.451946] ath10k_ahb a000000.wifi: board_file api 2 bmi_id 0:16 crc32 e2dfaa91
-[   15.780119] ath10k_ahb a000000.wifi: htt-ver 2.2 wmi-op 6 htt-op 4 cal pre-cal-file max-sta 512 raw 0 hwcrypto 1
-[   15.791204] ath: EEPROM regdomain: 0x0
-[   15.791224] ath: EEPROM indicates default country code should be used
-[   15.791237] ath: doing EEPROM country->regdmn map search
-[   15.791259] ath: country maps to regdmn code: 0x3a
-[   15.791275] ath: Country alpha2 being used: US
-[   15.791287] ath: Regpair used: 0x3a
-[   15.986278] ath10k_ahb a800000.wifi: Direct firmware load for ath10k/QCA4019/hw1.0/firmware-6.bin failed with error -2
-[   15.986322] ath10k_ahb a800000.wifi: Falling back to user helper
-[   16.310239] firmware ath10k!QCA4019!hw1.0!firmware-6.bin: firmware_loading_store: map pages failed
-[   16.310609] ath10k_ahb a800000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003900ff sub 0000:0000
-[   16.318137] ath10k_ahb a800000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-[   16.332395] ath10k_ahb a800000.wifi: firmware ver 10.4-3.2.1.1-00025 api 5 features no-p2p,raw-mode,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps crc32 1a4815a4
-[   16.380001] ath10k_ahb a800000.wifi: board_file api 2 bmi_id 0:17 crc32 e2dfaa91
-[   17.710957] ath10k_ahb a800000.wifi: htt-ver 2.2 wmi-op 6 htt-op 4 cal pre-cal-file max-sta 512 raw 0 hwcrypto 1
-[   17.719427] ath: EEPROM regdomain: 0x0
-[   17.719436] ath: EEPROM indicates default country code should be used
-[   17.719441] ath: doing EEPROM country->regdmn map search
-[   17.719451] ath: country maps to regdmn code: 0x3a
-[   17.719458] ath: Country alpha2 being used: US
-[   17.719463] ath: Regpair used: 0x3a
-
-If there's any additional information that might be of use, please
-let me know, and I'll be glad to provide it.
-
-Hope this helps in resolving any open bugs,
-Victor
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index b491361e6ed4..49fc04412e9b 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -976,8 +976,7 @@ static int ath10k_snoc_wlan_enable(struct ath10k *ar,
+ 				  sizeof(struct ath10k_svc_pipe_cfg);
+ 	cfg.ce_svc_cfg = (struct ath10k_svc_pipe_cfg *)
+ 		&target_service_to_ce_map_wlan;
+-	cfg.num_shadow_reg_cfg = sizeof(target_shadow_reg_cfg_map) /
+-					sizeof(struct ath10k_shadow_reg_cfg);
++	cfg.num_shadow_reg_cfg = ARRAY_SIZE(target_shadow_reg_cfg_map);
+ 	cfg.shadow_reg_cfg = (struct ath10k_shadow_reg_cfg *)
+ 		&target_shadow_reg_cfg_map;
+ 
 -- 
-Victor J. Orlikowski <> vjorlikowski@gmail.com
+2.17.1
+
 
 _______________________________________________
 ath10k mailing list
