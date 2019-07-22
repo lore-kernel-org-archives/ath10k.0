@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+Received: from mail-io1-f68.google.com ([209.85.166.68])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hoD3O-0002Iu-5f
- for ath10k@lists.infradead.org; Thu, 18 Jul 2019 20:31:03 +0000
-Received: by mail-lj1-x242.google.com with SMTP id r9so28638116ljg.5
- for <ath10k@lists.infradead.org>; Thu, 18 Jul 2019 13:30:59 -0700 (PDT)
-From: Vasyl Gomonovych <gomonovych@gmail.com>
-Subject: [PATCH] ath10k: Use ARRAY_SIZE
-Date: Thu, 18 Jul 2019 22:30:32 +0200
-Message-Id: <20190718203032.15528-1-gomonovych@gmail.com>
+ id 1hphux-0001wA-AS
+ for ath10k@lists.infradead.org; Mon, 22 Jul 2019 23:40:32 +0000
+Received: by mail-io1-f68.google.com with SMTP id q22so77864389iog.4
+ for <ath10k@lists.infradead.org>; Mon, 22 Jul 2019 16:40:30 -0700 (PDT)
+Date: Mon, 22 Jul 2019 17:40:28 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/3] dt: bindings: update compatible dt properties for
+ WCN3990 wifi node
+Message-ID: <20190722234028.GA9986@bogus>
+References: <20190703035711.25592-1-govinds@codeaurora.org>
+ <20190703035711.25592-2-govinds@codeaurora.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190703035711.25592-2-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,38 +23,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org, Vasyl Gomonovych <gomonovych@gmail.com>, linux-kernel@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
 
-fix coccinelle warning, use ARRAY_SIZE
+On Wed,  3 Jul 2019 09:27:09 +0530, Govind Singh wrote:
+> update compatible dt properties for WCN3990 wifi node to be
+> compatible across different MSM platforms.
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index b491361e6ed4..49fc04412e9b 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -976,8 +976,7 @@ static int ath10k_snoc_wlan_enable(struct ath10k *ar,
- 				  sizeof(struct ath10k_svc_pipe_cfg);
- 	cfg.ce_svc_cfg = (struct ath10k_svc_pipe_cfg *)
- 		&target_service_to_ce_map_wlan;
--	cfg.num_shadow_reg_cfg = sizeof(target_shadow_reg_cfg_map) /
--					sizeof(struct ath10k_shadow_reg_cfg);
-+	cfg.num_shadow_reg_cfg = ARRAY_SIZE(target_shadow_reg_cfg_map);
- 	cfg.shadow_reg_cfg = (struct ath10k_shadow_reg_cfg *)
- 		&target_shadow_reg_cfg_map;
- 
--- 
-2.17.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 _______________________________________________
 ath10k mailing list
