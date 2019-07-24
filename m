@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hpoWR-0006Hw-W6
- for ath10k@lists.infradead.org; Tue, 23 Jul 2019 06:43:41 +0000
+ id 1hqG6Z-0000pE-9l
+ for ath10k@lists.infradead.org; Wed, 24 Jul 2019 12:10:48 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: add mic bytes for pmf management packet
+References: <1560757079-19266-1-git-send-email-wgong@codeaurora.org>
+ <136d04d4-671b-8dde-2abd-63070b07bd26@candelatech.com>
+ <9403fef58374427fa76fb32ee64ee333@aptaiexm02f.ap.qualcomm.com>
+Date: Wed, 24 Jul 2019 15:10:42 +0300
+In-Reply-To: <9403fef58374427fa76fb32ee64ee333@aptaiexm02f.ap.qualcomm.com>
+ (Wen Gong's message of "Tue, 18 Jun 2019 07:21:30 +0000")
+Message-ID: <87v9vrzl8d.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 23 Jul 2019 12:13:38 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH 2/3] ath10k: Move regulator config to driver private data
-In-Reply-To: <20190722235735.GA5828@builder>
-References: <20190703035711.25592-1-govinds@codeaurora.org>
- <20190703035711.25592-3-govinds@codeaurora.org>
- <20190722235735.GA5828@builder>
-Message-ID: <9eb90be817330f531e8082af74f4c97e@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,206 +21,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
+To: Wen Gong <wgong@qti.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-On 2019-07-23 05:27, Bjorn Andersson wrote:
-> On Tue 02 Jul 20:57 PDT 2019, Govind Singh wrote:
-> 
->> WCN3990 Regulator config is varying b/w different MSM platforms.
->> In order to have scalable config, move regulator config to driver
->> private data.
->> 
-> 
-> Regulators supplying clients with fixed voltage requirements should be
-> specified in the board devicetree with these required voltage values,
-> rather than in the driver.  So the appropriate solution is not to add
-> and adjust these values but rather to drop this code from the driver.
-> 
-> I was about to send a patch that does this, because I have an SDM845
-> device where the voltage constraints specified on board level does not
-> meet the ranges specified here in the driver.
-> 
-Thanks Bjorn for the feedback.
-I will resend the qcs404 specific changes(dt) on top of your changes 
-once available.
+Wen Gong <wgong@qti.qualcomm.com> writes:
 
-> Regards,
-> Bjorn
-> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/snoc.c | 38 
->> +++++++++++++++++++++-----
->>  drivers/net/wireless/ath/ath10k/snoc.h | 23 +++++++++-------
->>  2 files changed, 44 insertions(+), 17 deletions(-)
+>> -----Original Message-----
+>> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Ben
+>> Greear
+>> Sent: Tuesday, June 18, 2019 12:04 AM
+>> To: Wen Gong <wgong@codeaurora.org>; ath10k@lists.infradead.org
+>> Cc: linux-wireless@vger.kernel.org
+>> Subject: [EXT] Re: [PATCH] ath10k: add mic bytes for pmf management
+>> packet
 >> 
->> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c 
->> b/drivers/net/wireless/ath/ath10k/snoc.c
->> index ca1186ec4129..bd7d97924fe0 100644
->> --- a/drivers/net/wireless/ath/ath10k/snoc.c
->> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
->> @@ -36,13 +36,20 @@ static char *const ce_name[] = {
->>  	"WLAN_CE_11",
->>  };
+>> I was looking at mac80211 code recently, and it seems some action
+>> frames are NOT supposed to be protected.  I added my own helper
+>> method to my local ath10k.  Maybe you want to use this?
 >> 
->> -static struct ath10k_vreg_info vreg_cfg[] = {
->> +static struct ath10k_vreg_info sdm845_reg_cfg[] = {
->>  	{NULL, "vdd-0.8-cx-mx", 800000, 850000, 0, 0, false},
->>  	{NULL, "vdd-1.8-xo", 1800000, 1850000, 0, 0, false},
->>  	{NULL, "vdd-1.3-rfa", 1300000, 1350000, 0, 0, false},
->>  	{NULL, "vdd-3.3-ch0", 3300000, 3350000, 0, 0, false},
->>  };
 >> 
->> +static struct ath10k_vreg_info qcs40x_reg_cfg[] = {
->> +	{NULL, "vdd-0.8-cx-mx", 1224000, 1224000, 0, 0, false},
->> +	{NULL, "vdd-1.8-xo", 1800000, 1850000, 0, 0, false},
->> +	{NULL, "vdd-1.3-rfa", 1300000, 1350000, 0, 0, false},
->> +	{NULL, "vdd-3.3-ch0", 3300000, 3350000, 0, 0, false},
->> +};
->> +
->>  static struct ath10k_clk_info clk_cfg[] = {
->>  	{NULL, "cxo_ref_clk_pin", 0, false},
->>  };
->> @@ -54,10 +61,20 @@ static void ath10k_snoc_htt_rx_cb(struct 
->> ath10k_ce_pipe *ce_state);
->>  static void ath10k_snoc_htt_htc_rx_cb(struct ath10k_ce_pipe 
->> *ce_state);
->>  static void ath10k_snoc_pktlog_rx_cb(struct ath10k_ce_pipe 
->> *ce_state);
+>> /* Copied from ieee80211_is_robust_mgmt_frame, but disable the check for
+>> has_protected
+>>   * since we do tx hw crypt, and it won't actually be encrypted even when this
+>> flag is
+>>   * set.
+>>   */
+>> bool ieee80211_is_robust_mgmt_frame_tx(struct ieee80211_hdr *hdr)
+>> {
+>>          if (ieee80211_is_disassoc(hdr->frame_control) ||
+>>              ieee80211_is_deauth(hdr->frame_control))
+>>                  return true;
 >> 
->> -static const struct ath10k_snoc_drv_priv drv_priv = {
->> +static const struct ath10k_snoc_drv_priv sdm845_wcn39xx_drv_priv = {
->> +	.hw_rev = ATH10K_HW_WCN3990,
->> +	.dma_mask = DMA_BIT_MASK(35),
->> +	.msa_size = 0x100000,
->> +	.vreg_cfg = sdm845_reg_cfg,
->> +	.vreg_count = ARRAY_SIZE(sdm845_reg_cfg),
->> +};
->> +
->> +static const struct ath10k_snoc_drv_priv qcs40x_wcn39xx_drv_priv = {
->>  	.hw_rev = ATH10K_HW_WCN3990,
->>  	.dma_mask = DMA_BIT_MASK(35),
->>  	.msa_size = 0x100000,
->> +	.vreg_cfg = qcs40x_reg_cfg,
->> +	.vreg_count =  ARRAY_SIZE(qcs40x_reg_cfg),
->>  };
+>>          if (ieee80211_is_action(hdr->frame_control)) {
+>>                  u8 *category;
 >> 
->>  #define WCN3990_SRC_WR_IDX_OFFSET 0x3C
->> @@ -1465,7 +1482,7 @@ static int ath10k_snoc_vreg_on(struct ath10k 
->> *ar)
->>  	int ret = 0;
->>  	int i;
+>>                  /*
+>>                   * Action frames, excluding Public Action frames, are Robust
+>>                   * Management Frames. However, if we are looking at a Protected
+>>                   * frame, skip the check since the data may be encrypted and
+>>                   * the frame has already been found to be a Robust Management
+>>                   * Frame (by the other end).
+>>                   */
+>> 		/*
+>> 		if (ieee80211_has_protected(hdr->frame_control))
+>>                          return true;
+>> 		*/
+>>                  category = ((u8 *) hdr) + 24;
+>>                  return *category != WLAN_CATEGORY_PUBLIC &&
+>>                          *category != WLAN_CATEGORY_HT &&
+>>                          *category != WLAN_CATEGORY_WNM_UNPROTECTED &&
+>>                          *category != WLAN_CATEGORY_SELF_PROTECTED &&
+>>                          *category != WLAN_CATEGORY_UNPROT_DMG &&
+>>                          *category != WLAN_CATEGORY_VHT &&
+>>                          *category != WLAN_CATEGORY_VENDOR_SPECIFIC;
+>>          }
 >> 
->> -	for (i = 0; i < ARRAY_SIZE(vreg_cfg); i++) {
->> +	for (i = 0; i < ar_snoc->vreg_count; i++) {
->>  		vreg_info = &ar_snoc->vreg[i];
+>>          return false;
+>> }
 >> 
->>  		if (!vreg_info->reg)
->> @@ -1498,7 +1515,7 @@ static int ath10k_snoc_vreg_off(struct ath10k 
->> *ar)
->>  	int ret = 0;
->>  	int i;
+>> Thanks,
+>> Ben
 >> 
->> -	for (i = ARRAY_SIZE(vreg_cfg) - 1; i >= 0; i--) {
->> +	for (i = ar_snoc->vreg_count - 1; i >= 0; i--) {
->>  		vreg_info = &ar_snoc->vreg[i];
+>> > +
+>> >   	data_len = msdu->len;
+>> >
+>> >   	switch (txmode) {
+>> >
 >> 
->>  		if (!vreg_info->reg)
->> @@ -1616,7 +1633,13 @@ static int ath10k_hw_power_off(struct ath10k 
->> *ar)
 >> 
->>  static const struct of_device_id ath10k_snoc_dt_match[] = {
->>  	{ .compatible = "qcom,wcn3990-wifi",
->> -	 .data = &drv_priv,
->> +	 .data = &sdm845_wcn39xx_drv_priv,
->> +	},
->> +	{ .compatible = "qcom,sdm845-wcn39xx-wifi",
->> +	 .data = &sdm845_wcn39xx_drv_priv,
->> +	},
->> +	{ .compatible = "qcom,qcs40x-wcn39xx-wifi",
->> +	 .data = &qcs40x_wcn39xx_drv_priv,
->>  	},
->>  	{ }
->>  };
->> @@ -1680,8 +1703,9 @@ static int ath10k_snoc_probe(struct 
->> platform_device *pdev)
->>  		goto err_release_resource;
->>  	}
->> 
->> -	ar_snoc->vreg = vreg_cfg;
->> -	for (i = 0; i < ARRAY_SIZE(vreg_cfg); i++) {
->> +	ar_snoc->vreg = drv_data->vreg_cfg;
->> +	ar_snoc->vreg_count = drv_data->vreg_count;
->> +	for (i = 0; i < ar_snoc->vreg_count; i++) {
->>  		ret = ath10k_get_vreg_info(ar, dev, &ar_snoc->vreg[i]);
->>  		if (ret)
->>  			goto err_free_irq;
->> diff --git a/drivers/net/wireless/ath/ath10k/snoc.h 
->> b/drivers/net/wireless/ath/ath10k/snoc.h
->> index d62f53501fbb..0bdada11985c 100644
->> --- a/drivers/net/wireless/ath/ath10k/snoc.h
->> +++ b/drivers/net/wireless/ath/ath10k/snoc.h
->> @@ -10,10 +10,22 @@
->>  #include "ce.h"
->>  #include "qmi.h"
->> 
->> +struct ath10k_vreg_info {
->> +	struct regulator *reg;
->> +	const char *name;
->> +	u32 min_v;
->> +	u32 max_v;
->> +	u32 load_ua;
->> +	unsigned long settle_delay;
->> +	bool required;
->> +};
->> +
->>  struct ath10k_snoc_drv_priv {
->>  	enum ath10k_hw_rev hw_rev;
->>  	u64 dma_mask;
->>  	u32 msa_size;
->> +	struct ath10k_vreg_info *vreg_cfg;
->> +	u8 vreg_count;
->>  };
->> 
->>  struct snoc_state {
->> @@ -42,16 +54,6 @@ struct ath10k_snoc_ce_irq {
->>  	u32 irq_line;
->>  };
->> 
->> -struct ath10k_vreg_info {
->> -	struct regulator *reg;
->> -	const char *name;
->> -	u32 min_v;
->> -	u32 max_v;
->> -	u32 load_ua;
->> -	unsigned long settle_delay;
->> -	bool required;
->> -};
->> -
->>  struct ath10k_clk_info {
->>  	struct clk *handle;
->>  	const char *name;
->> @@ -77,6 +79,7 @@ struct ath10k_snoc {
->>  	struct ath10k_ce ce;
->>  	struct timer_list rx_post_retry;
->>  	struct ath10k_vreg_info *vreg;
->> +	u8 vreg_count;
->>  	struct ath10k_clk_info *clk;
->>  	struct ath10k_qmi *qmi;
->>  	unsigned long flags;
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+> Thanks Ben,
+>
+> seems the ieee80211_is_robust_mgmt_frame_tx is not 
+> match my change.
 
-BR,
-Govind
+So what's the conclusion, can I take this patch?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
