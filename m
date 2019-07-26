@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqhqT-0000Ok-5y
- for ath10k@lists.infradead.org; Thu, 25 Jul 2019 17:48:02 +0000
-Received: by mail-pf1-x443.google.com with SMTP id b13so23123202pfo.1
- for <ath10k@lists.infradead.org>; Thu, 25 Jul 2019 10:48:01 -0700 (PDT)
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 1/3] ath10k: snoc: skip regulator operations
-Date: Thu, 25 Jul 2019 10:47:53 -0700
-Message-Id: <20190725174755.23432-2-bjorn.andersson@linaro.org>
+ id 1hqu5b-000660-0R
+ for ath10k@lists.infradead.org; Fri, 26 Jul 2019 06:52:28 +0000
+MIME-Version: 1.0
+Date: Fri, 26 Jul 2019 12:22:24 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH 0/3] ath10k: Clean up regulator and clock handling
 In-Reply-To: <20190725174755.23432-1-bjorn.andersson@linaro.org>
 References: <20190725174755.23432-1-bjorn.andersson@linaro.org>
+Message-ID: <196fa4aa63fd5135aead736396fe3f8c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,115 +18,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Govind Singh <govinds@codeaurora.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-The regulator operations is trying to set a voltage to a fixed value, by
-giving some wiggle room. But some board designs specifies regulator
-voltages outside this limited range. One such example is the Lenovo Yoga
-C630, with vdd-3.3-ch0 in particular specified at 3.1V.
+On 2019-07-25 23:17, Bjorn Andersson wrote:
+> The first patch in this series removes the regulator_set_voltage() of a 
+> fixed
+> voltate, as fixed regulator constraints should be specified on a board 
+> level
+> and on certain boards - such as the Lenovo Yoga C630 - the voltage 
+> specified
+> for the 3.3V regulator is outside the given range.
+> 
+> The following two patches cleans up regulator and clock usage by using 
+> the bulk
+> API provided by the two frameworks.
+> 
+> Bjorn Andersson (3):
+>   ath10k: snoc: skip regulator operations
+>   ath10k: Use standard regulator bulk API in snoc
+>   ath10k: Use standard bulk clock API in snoc
+> 
+>  drivers/net/wireless/ath/ath10k/snoc.c | 324 ++++---------------------
+>  drivers/net/wireless/ath/ath10k/snoc.h |  26 +-
+>  2 files changed, 48 insertions(+), 302 deletions(-)
 
-But consumers with fixed voltage requirements should just rely on the
-board configuration to provide the power at the required level, so this
-code should be removed.
+Tested on 845 MTP and QCS404 platform with normal sanity and driver 
+recover cases for proxy votes.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Tested-by: Govind Singh <govinds@codeaurora.org>
+Reviewed-by: Govind Singh <govinds@codeaurora.org>
 
-This patch is required for Lenovo Yoga C630 to succeed in power on ath10k, it
-can be merged independently of the two following cleanup patches.
-
- drivers/net/wireless/ath/ath10k/snoc.c | 27 ++++++--------------------
- drivers/net/wireless/ath/ath10k/snoc.h |  2 --
- 2 files changed, 6 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index fc15a0037f0e..3d93ab09a298 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -37,10 +37,10 @@ static char *const ce_name[] = {
- };
- 
- static struct ath10k_vreg_info vreg_cfg[] = {
--	{NULL, "vdd-0.8-cx-mx", 800000, 850000, 0, 0, false},
--	{NULL, "vdd-1.8-xo", 1800000, 1850000, 0, 0, false},
--	{NULL, "vdd-1.3-rfa", 1300000, 1350000, 0, 0, false},
--	{NULL, "vdd-3.3-ch0", 3300000, 3350000, 0, 0, false},
-+	{NULL, "vdd-0.8-cx-mx", 0, 0, false},
-+	{NULL, "vdd-1.8-xo", 0, 0, false},
-+	{NULL, "vdd-1.3-rfa", 0, 0, false},
-+	{NULL, "vdd-3.3-ch0", 0, 0, false},
- };
- 
- static struct ath10k_clk_info clk_cfg[] = {
-@@ -1377,9 +1377,8 @@ static int ath10k_get_vreg_info(struct ath10k *ar, struct device *dev,
- 
- done:
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC,
--		   "snog vreg %s min_v %u max_v %u load_ua %u settle_delay %lu\n",
--		   vreg_info->name, vreg_info->min_v, vreg_info->max_v,
--		   vreg_info->load_ua, vreg_info->settle_delay);
-+		   "snog vreg %s load_ua %u settle_delay %lu\n",
-+		   vreg_info->name, vreg_info->load_ua, vreg_info->settle_delay);
- 
- 	return 0;
- }
-@@ -1420,15 +1419,6 @@ static int __ath10k_snoc_vreg_on(struct ath10k *ar,
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc regulator %s being enabled\n",
- 		   vreg_info->name);
- 
--	ret = regulator_set_voltage(vreg_info->reg, vreg_info->min_v,
--				    vreg_info->max_v);
--	if (ret) {
--		ath10k_err(ar,
--			   "failed to set regulator %s voltage-min: %d voltage-max: %d\n",
--			   vreg_info->name, vreg_info->min_v, vreg_info->max_v);
--		return ret;
--	}
--
- 	if (vreg_info->load_ua) {
- 		ret = regulator_set_load(vreg_info->reg, vreg_info->load_ua);
- 		if (ret < 0) {
-@@ -1453,7 +1443,6 @@ static int __ath10k_snoc_vreg_on(struct ath10k *ar,
- err_enable:
- 	regulator_set_load(vreg_info->reg, 0);
- err_set_load:
--	regulator_set_voltage(vreg_info->reg, 0, vreg_info->max_v);
- 
- 	return ret;
- }
-@@ -1475,10 +1464,6 @@ static int __ath10k_snoc_vreg_off(struct ath10k *ar,
- 	if (ret < 0)
- 		ath10k_err(ar, "failed to set load %s\n", vreg_info->name);
- 
--	ret = regulator_set_voltage(vreg_info->reg, 0, vreg_info->max_v);
--	if (ret)
--		ath10k_err(ar, "failed to set voltage %s\n", vreg_info->name);
--
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 9db823e46314..1bf7bd4ef2a3 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -45,8 +45,6 @@ struct ath10k_snoc_ce_irq {
- struct ath10k_vreg_info {
- 	struct regulator *reg;
- 	const char *name;
--	u32 min_v;
--	u32 max_v;
- 	u32 load_ua;
- 	unsigned long settle_delay;
- 	bool required;
--- 
-2.18.0
-
+BR,
+Govind
 
 _______________________________________________
 ath10k mailing list
