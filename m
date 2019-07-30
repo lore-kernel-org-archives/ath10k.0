@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqu5b-000660-0R
- for ath10k@lists.infradead.org; Fri, 26 Jul 2019 06:52:28 +0000
+ id 1hsNg3-00082o-QU
+ for ath10k@lists.infradead.org; Tue, 30 Jul 2019 08:40:13 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Fix channel info parsing for non tlv target
+References: <1552044366-9186-1-git-send-email-pillair@codeaurora.org>
+Date: Tue, 30 Jul 2019 11:40:06 +0300
+In-Reply-To: <1552044366-9186-1-git-send-email-pillair@codeaurora.org> (Rakesh
+ Pillai's message of "Fri, 8 Mar 2019 16:56:06 +0530")
+Message-ID: <87ftmnncex.fsf@codeaurora.org>
 MIME-Version: 1.0
-Date: Fri, 26 Jul 2019 12:22:24 +0530
-From: Govind Singh <govinds@codeaurora.org>
-Subject: Re: [PATCH 0/3] ath10k: Clean up regulator and clock handling
-In-Reply-To: <20190725174755.23432-1-bjorn.andersson@linaro.org>
-References: <20190725174755.23432-1-bjorn.andersson@linaro.org>
-Message-ID: <196fa4aa63fd5135aead736396fe3f8c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +19,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2019-07-25 23:17, Bjorn Andersson wrote:
-> The first patch in this series removes the regulator_set_voltage() of a 
-> fixed
-> voltate, as fixed regulator constraints should be specified on a board 
-> level
-> and on certain boards - such as the Lenovo Yoga C630 - the voltage 
-> specified
-> for the 3.3V regulator is outside the given range.
-> 
-> The following two patches cleans up regulator and clock usage by using 
-> the bulk
-> API provided by the two frameworks.
-> 
-> Bjorn Andersson (3):
->   ath10k: snoc: skip regulator operations
->   ath10k: Use standard regulator bulk API in snoc
->   ath10k: Use standard bulk clock API in snoc
-> 
->  drivers/net/wireless/ath/ath10k/snoc.c | 324 ++++---------------------
->  drivers/net/wireless/ath/ath10k/snoc.h |  26 +-
->  2 files changed, 48 insertions(+), 302 deletions(-)
+Rakesh Pillai <pillair@codeaurora.org> writes:
 
-Tested on 845 MTP and QCS404 platform with normal sanity and driver 
-recover cases for proxy votes.
+> The tlv targets such as WCN3990 send more data in
+> the chan info event, which is not sent by the non tlv
+> targets. There is a minimum size check in the wmi event for
+> non-tlv targets and hence we cannot update the common
+> channel info structure.
+>
+> If the common channel info structure is updated, the
+> size check for chan info event for non-tlv targets
+> will fail and return -EPROTO and we see the below
+> error messages
+>
+>    ath10k_pci 0000:01:00.0: failed to parse chan info event: -71
+>
+> Add tlv specific channel info structure and restore the
+> original size of the common channel info structure to
+> mitigate this issue.
+>
+> Tested HW: WCN3990
+> 	   QCA9887
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> 	   10.2.4-1.0-00037
+>
+> Fixes: 13104929d2ec ("ath10k: fill the channel survey results for WCN3990 correctly")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 
-Tested-by: Govind Singh <govinds@codeaurora.org>
-Reviewed-by: Govind Singh <govinds@codeaurora.org>
+I'll queue this v5.3, and also for stable v5.0 and later.
 
-BR,
-Govind
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
