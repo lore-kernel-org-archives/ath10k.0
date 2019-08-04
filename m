@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsnNw-0002dh-S7
- for ath10k@lists.infradead.org; Wed, 31 Jul 2019 12:07:14 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2] arm64: dts: qcom: qcs404: Add wifi rails in QCS404 dt node
- for proxy votes
-Date: Wed, 31 Jul 2019 17:37:04 +0530
-Message-Id: <20190731120704.7039-1-govinds@codeaurora.org>
+ id 1hu4QY-0007p1-Es
+ for ath10k@lists.infradead.org; Sun, 04 Aug 2019 00:31:11 +0000
+Received: by mail-io1-xd42.google.com with SMTP id k8so160267966iot.1
+ for <ath10k@lists.infradead.org>; Sat, 03 Aug 2019 17:31:09 -0700 (PDT)
+From: Hui Peng <benquike@gmail.com>
+Subject: [PATCH 2/2] Fix a NULL-ptr-deref bug in ath10k_usb_alloc_urb_from_pipe
+Date: Sat,  3 Aug 2019 20:31:01 -0400
+Message-Id: <20190804003101.11541-1-benquike@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,35 +22,72 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: kvalo@codeaurora.org, davem@davemloft.net
+Cc: Mathias Payer <mathias.payer@nebelwelt.net>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Hui Peng <benquike@gmail.com>
 
-Add wifi regulators in qcs404 dt node for proxy vote. Proxy votes are
-required for handling driver recovery scenarios to prevent
-un-clocked register access during driver recovery.
+The `ar_usb` field of `ath10k_usb_pipe_usb_pipe` objects
+are initialized to point to the containing `ath10k_usb` object
+according to endpoint descriptors read from the device side, as shown
+below in `ath10k_usb_setup_pipe_resources`:
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
+        endpoint = &iface_desc->endpoint[i].desc;
+
+        // get the address from endpoint descriptor
+        pipe_num = ath10k_usb_get_logical_pipe_num(ar_usb,
+                                                endpoint->bEndpointAddress,
+                                                &urbcount);
+        ......
+        // select the pipe object
+        pipe = &ar_usb->pipes[pipe_num];
+
+        // initialize the ar_usb field
+        pipe->ar_usb = ar_usb;
+}
+
+The driver assumes that the addresses reported in endpoint
+descriptors from device side  to be complete. If a device is
+malicious and does not report complete addresses, it may trigger
+NULL-ptr-deref `ath10k_usb_alloc_urb_from_pipe` and
+`ath10k_usb_free_urb_to_pipe`.
+
+This patch fixes the bug by preventing potential NULL-ptr-deref.
+
+Signed-off-by: Hui Peng <benquike@gmail.com>
+Reported-by: Hui Peng <benquike@gmail.com>
+Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
 ---
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/ath/ath10k/usb.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-index 11c0a7137823..2289b01ee9f0 100644
---- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-@@ -270,6 +270,9 @@
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index e1420f67f776..14d86627b47f 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -38,6 +38,10 @@ ath10k_usb_alloc_urb_from_pipe(struct ath10k_usb_pipe *pipe)
+ 	struct ath10k_urb_context *urb_context = NULL;
+ 	unsigned long flags;
  
- &wifi {
- 	status = "okay";
-+	vdd-0.8-cx-mx-supply = <&vreg_l2_1p275>;
-+	vdd-1.8-xo-supply = <&vreg_l5_1p8>;
-+	vdd-1.3-rfa-supply = <&vreg_l1_1p3>;
- };
++	/* bail if this pipe is not initialized */
++	if (!pipe->ar_usb)
++		return NULL;
++
+ 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
+ 	if (!list_empty(&pipe->urb_list_head)) {
+ 		urb_context = list_first_entry(&pipe->urb_list_head,
+@@ -55,6 +59,10 @@ static void ath10k_usb_free_urb_to_pipe(struct ath10k_usb_pipe *pipe,
+ {
+ 	unsigned long flags;
  
- /* PINCTRL - additions to nodes defined in qcs404.dtsi */
++	/* bail if this pipe is not initialized */
++	if (!pipe->ar_usb)
++		return NULL;
++
+ 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
+ 
+ 	pipe->urb_cnt++;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.22.0
 
 
 _______________________________________________
