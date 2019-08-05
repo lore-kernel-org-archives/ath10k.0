@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hu4QY-0007p1-Es
- for ath10k@lists.infradead.org; Sun, 04 Aug 2019 00:31:11 +0000
-Received: by mail-io1-xd42.google.com with SMTP id k8so160267966iot.1
- for <ath10k@lists.infradead.org>; Sat, 03 Aug 2019 17:31:09 -0700 (PDT)
-From: Hui Peng <benquike@gmail.com>
-Subject: [PATCH 2/2] Fix a NULL-ptr-deref bug in ath10k_usb_alloc_urb_from_pipe
-Date: Sat,  3 Aug 2019 20:31:01 -0400
-Message-Id: <20190804003101.11541-1-benquike@gmail.com>
+ id 1huhLz-0007M6-H0
+ for ath10k@lists.infradead.org; Mon, 05 Aug 2019 18:05:04 +0000
+Received: by mail-pf1-x442.google.com with SMTP id g2so40038482pfq.0
+ for <ath10k@lists.infradead.org>; Mon, 05 Aug 2019 11:05:03 -0700 (PDT)
+Date: Mon, 5 Aug 2019 11:06:33 -0700
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH 0/3] ath10k: Clean up regulator and clock handling
+Message-ID: <20190805180633.GB23928@tuxbook-pro>
+References: <20190725174755.23432-1-bjorn.andersson@linaro.org>
+ <196fa4aa63fd5135aead736396fe3f8c@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <196fa4aa63fd5135aead736396fe3f8c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +26,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net
-Cc: Mathias Payer <mathias.payer@nebelwelt.net>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Hui Peng <benquike@gmail.com>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-The `ar_usb` field of `ath10k_usb_pipe_usb_pipe` objects
-are initialized to point to the containing `ath10k_usb` object
-according to endpoint descriptors read from the device side, as shown
-below in `ath10k_usb_setup_pipe_resources`:
+On Thu 25 Jul 23:52 PDT 2019, Govind Singh wrote:
 
-for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
-        endpoint = &iface_desc->endpoint[i].desc;
+> On 2019-07-25 23:17, Bjorn Andersson wrote:
+> > The first patch in this series removes the regulator_set_voltage() of a
+> > fixed
+> > voltate, as fixed regulator constraints should be specified on a board
+> > level
+> > and on certain boards - such as the Lenovo Yoga C630 - the voltage
+> > specified
+> > for the 3.3V regulator is outside the given range.
+> > 
+> > The following two patches cleans up regulator and clock usage by using
+> > the bulk
+> > API provided by the two frameworks.
+> > 
+> > Bjorn Andersson (3):
+> >   ath10k: snoc: skip regulator operations
+> >   ath10k: Use standard regulator bulk API in snoc
+> >   ath10k: Use standard bulk clock API in snoc
+> > 
+> >  drivers/net/wireless/ath/ath10k/snoc.c | 324 ++++---------------------
+> >  drivers/net/wireless/ath/ath10k/snoc.h |  26 +-
+> >  2 files changed, 48 insertions(+), 302 deletions(-)
+> 
+> Tested on 845 MTP and QCS404 platform with normal sanity and driver recover
+> cases for proxy votes.
+> 
+> Tested-by: Govind Singh <govinds@codeaurora.org>
+> Reviewed-by: Govind Singh <govinds@codeaurora.org>
+> 
 
-        // get the address from endpoint descriptor
-        pipe_num = ath10k_usb_get_logical_pipe_num(ar_usb,
-                                                endpoint->bEndpointAddress,
-                                                &urbcount);
-        ......
-        // select the pipe object
-        pipe = &ar_usb->pipes[pipe_num];
+Thanks Govind!
 
-        // initialize the ar_usb field
-        pipe->ar_usb = ar_usb;
-}
-
-The driver assumes that the addresses reported in endpoint
-descriptors from device side  to be complete. If a device is
-malicious and does not report complete addresses, it may trigger
-NULL-ptr-deref `ath10k_usb_alloc_urb_from_pipe` and
-`ath10k_usb_free_urb_to_pipe`.
-
-This patch fixes the bug by preventing potential NULL-ptr-deref.
-
-Signed-off-by: Hui Peng <benquike@gmail.com>
-Reported-by: Hui Peng <benquike@gmail.com>
-Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
----
- drivers/net/wireless/ath/ath10k/usb.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index e1420f67f776..14d86627b47f 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -38,6 +38,10 @@ ath10k_usb_alloc_urb_from_pipe(struct ath10k_usb_pipe *pipe)
- 	struct ath10k_urb_context *urb_context = NULL;
- 	unsigned long flags;
- 
-+	/* bail if this pipe is not initialized */
-+	if (!pipe->ar_usb)
-+		return NULL;
-+
- 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
- 	if (!list_empty(&pipe->urb_list_head)) {
- 		urb_context = list_first_entry(&pipe->urb_list_head,
-@@ -55,6 +59,10 @@ static void ath10k_usb_free_urb_to_pipe(struct ath10k_usb_pipe *pipe,
- {
- 	unsigned long flags;
- 
-+	/* bail if this pipe is not initialized */
-+	if (!pipe->ar_usb)
-+		return NULL;
-+
- 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
- 
- 	pipe->urb_cnt++;
--- 
-2.22.0
-
+Regards,
+Bjorn
 
 _______________________________________________
 ath10k mailing list
