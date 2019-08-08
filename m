@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1huhLz-0007M6-H0
- for ath10k@lists.infradead.org; Mon, 05 Aug 2019 18:05:04 +0000
-Received: by mail-pf1-x442.google.com with SMTP id g2so40038482pfq.0
- for <ath10k@lists.infradead.org>; Mon, 05 Aug 2019 11:05:03 -0700 (PDT)
-Date: Mon, 5 Aug 2019 11:06:33 -0700
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 0/3] ath10k: Clean up regulator and clock handling
-Message-ID: <20190805180633.GB23928@tuxbook-pro>
-References: <20190725174755.23432-1-bjorn.andersson@linaro.org>
- <196fa4aa63fd5135aead736396fe3f8c@codeaurora.org>
+ id 1hvf8K-0004lp-CH
+ for ath10k@lists.infradead.org; Thu, 08 Aug 2019 09:54:57 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: [PULL] ath10k firmware 20190808
+Date: Thu, 8 Aug 2019 09:54:48 +0000
+Message-ID: <BYAPR02MB6006478A57983F5B4067F54392D70@BYAPR02MB6006.namprd02.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <196fa4aa63fd5135aead736396fe3f8c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +21,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu 25 Jul 23:52 PDT 2019, Govind Singh wrote:
+Hi linux-firmware maintainers,
 
-> On 2019-07-25 23:17, Bjorn Andersson wrote:
-> > The first patch in this series removes the regulator_set_voltage() of a
-> > fixed
-> > voltate, as fixed regulator constraints should be specified on a board
-> > level
-> > and on certain boards - such as the Lenovo Yoga C630 - the voltage
-> > specified
-> > for the 3.3V regulator is outside the given range.
-> > 
-> > The following two patches cleans up regulator and clock usage by using
-> > the bulk
-> > API provided by the two frameworks.
-> > 
-> > Bjorn Andersson (3):
-> >   ath10k: snoc: skip regulator operations
-> >   ath10k: Use standard regulator bulk API in snoc
-> >   ath10k: Use standard bulk clock API in snoc
-> > 
-> >  drivers/net/wireless/ath/ath10k/snoc.c | 324 ++++---------------------
-> >  drivers/net/wireless/ath/ath10k/snoc.h |  26 +-
-> >  2 files changed, 48 insertions(+), 302 deletions(-)
-> 
-> Tested on 845 MTP and QCS404 platform with normal sanity and driver recover
-> cases for proxy votes.
-> 
-> Tested-by: Govind Singh <govinds@codeaurora.org>
-> Reviewed-by: Govind Singh <govinds@codeaurora.org>
-> 
+here's a pull request to update some ath10k firmware images. Please let me know if there are any problems.
 
-Thanks Govind!
+Kalle
 
-Regards,
-Bjorn
+The following changes since commit dff98c6c57383fe343407bcb7b6e775e0b87274f:
+
+  Merge branch 'master' of git://github.com/skeggsb/linux-firmware (2019-07-26 07:32:37 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20190808
+
+for you to fetch changes up to 1f0a99f6b07e24449411ccf208836b6769a5a2a4:
+
+  ath10k: QCA9984 hw1.0: update board-2.bin (2019-08-08 12:39:06 +0300)
+
+----------------------------------------------------------------
+Kalle Valo (8):
+      ath10k: QCA4019 hw1.0: update board-2.bin
+      ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00140-QCARMSWPZ-1
+      ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00045
+      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00040
+      ath10k: QCA9888 hw2.0: update board-2.bin
+      ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00045
+      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00046
+      ath10k: QCA9984 hw1.0: update board-2.bin
+
+ WHENCE                              |  10 +++++-----
+ ath10k/QCA4019/hw1.0/board-2.bin    | Bin 449316 -> 607304 bytes
+ ath10k/QCA6174/hw3.0/firmware-6.bin | Bin 731276 -> 700988 bytes
+ ath10k/QCA9887/hw1.0/firmware-5.bin | Bin 237660 -> 238484 bytes
+ ath10k/QCA9888/hw2.0/board-2.bin    | Bin 84928 -> 84928 bytes
+ ath10k/QCA9888/hw2.0/firmware-5.bin | Bin 688536 -> 686996 bytes
+ ath10k/QCA988X/hw2.0/firmware-5.bin | Bin 248840 -> 248984 bytes
+ ath10k/QCA9984/hw1.0/board-2.bin    | Bin 171916 -> 171916 bytes
+ ath10k/QCA9984/hw1.0/firmware-5.bin | Bin 676316 -> 674940 bytes
+ 9 files changed, 5 insertions(+), 5 deletions(-)
 
 _______________________________________________
 ath10k mailing list
