@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hwQgN-0003j5-Uf
- for ath10k@lists.infradead.org; Sat, 10 Aug 2019 12:41:17 +0000
+ id 1hyDxQ-0007n2-Mw
+ for ath10k@lists.infradead.org; Thu, 15 Aug 2019 11:30:18 +0000
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com
+ [209.85.222.172])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D423C2086C
+ for <ath10k@lists.infradead.org>; Thu, 15 Aug 2019 11:30:15 +0000 (UTC)
+Received: by mail-qk1-f172.google.com with SMTP id g17so1492856qkk.8
+ for <ath10k@lists.infradead.org>; Thu, 15 Aug 2019 04:30:15 -0700 (PDT)
 MIME-Version: 1.0
-Date: Sat, 10 Aug 2019 18:11:14 +0530
-From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCHv6 3/9] nl80211: Add netlink attribute for AMPDU
- aggregation enable/disable
-In-Reply-To: <1077c62701b31cfcb4436e6b13be64ade6b1ae1b.camel@sipsolutions.net>
-References: <1560835632-17405-1-git-send-email-tamizhr@codeaurora.org>
- <1560835632-17405-4-git-send-email-tamizhr@codeaurora.org>
- <1077c62701b31cfcb4436e6b13be64ade6b1ae1b.camel@sipsolutions.net>
-Message-ID: <e704b7dd39c86c2596b6c0861a376117@codeaurora.org>
+References: <BYAPR02MB6006478A57983F5B4067F54392D70@BYAPR02MB6006.namprd02.prod.outlook.com>
+In-Reply-To: <BYAPR02MB6006478A57983F5B4067F54392D70@BYAPR02MB6006.namprd02.prod.outlook.com>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Thu, 15 Aug 2019 07:30:04 -0400
+Message-ID: <CA+5PVA47DT2vcSW2c=QBT-=ZZ9muwh5_GOehoZKo3avCerPmbA@mail.gmail.com>
+Subject: Re: [PULL] ath10k firmware 20190808
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +26,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>
 
-On 2019-07-31 14:58, Johannes Berg wrote:
-> On Tue, 2019-06-18 at 10:57 +0530, Tamizh chelvam wrote:
->> 
->> +		if (!wiphy_ext_feature_isset(&rdev->wiphy,
->> +				NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL)) {
->> +			NL_SET_ERR_MSG_ATTR(extack,
->> +					    attrs[NL80211_TID_ATTR_CONFIG_AMPDU_CTRL],
->> +					    "TID specific configuration not "
->> +					    "supported");
->> +			return -ENOTSUPP;
->> +		}
->> +
->> +		if (peer && !wiphy_ext_feature_isset(&rdev->wiphy,
->> +				NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL)) {
->> +			NL_SET_ERR_MSG_ATTR(extack,
->> +					    attrs[NL80211_TID_ATTR_CONFIG_AMPDU_CTRL],
->> +					    "peer specfic TID configuration not "
->> +					    "supported");
->> +			return -ENOTSUPP;
->> +		}
-> 
-> I think you should probably make this be a function to which you pass
-> the attribute pointer and feature flags.
-> 
-> err = nl80211_check_tid_config_supported(extack,
-> 					 attrs[NL80211_TID_ATTR_CONFIG_AMPDU_CTRL],
-> 					 NL80211_EXT_FEATURE_PER_TID_AMPDU_CTRL,
-> 					 NL80211_EXT_FEATURE_PER_STA_AMPDU_CTRL);
-> 
-> since you have this code a lot?
-> 
-Sure, I will make that change in the next version of patchset.
+On Thu, Aug 8, 2019 at 5:56 AM Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>
+> Hi linux-firmware maintainers,
+>
+> here's a pull request to update some ath10k firmware images. Please let me know if there are any problems.
+>
+> Kalle
+>
+> The following changes since commit dff98c6c57383fe343407bcb7b6e775e0b87274f:
+>
+>   Merge branch 'master' of git://github.com/skeggsb/linux-firmware (2019-07-26 07:32:37 -0400)
+>
+> are available in the git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20190808
+>
+> for you to fetch changes up to 1f0a99f6b07e24449411ccf208836b6769a5a2a4:
+>
+>   ath10k: QCA9984 hw1.0: update board-2.bin (2019-08-08 12:39:06 +0300)
+>
+> ----------------------------------------------------------------
+> Kalle Valo (8):
+>       ath10k: QCA4019 hw1.0: update board-2.bin
+>       ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00140-QCARMSWPZ-1
+>       ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00045
+>       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00040
+>       ath10k: QCA9888 hw2.0: update board-2.bin
+>       ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00045
+>       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00046
+>       ath10k: QCA9984 hw1.0: update board-2.bin
+>
+>  WHENCE                              |  10 +++++-----
+>  ath10k/QCA4019/hw1.0/board-2.bin    | Bin 449316 -> 607304 bytes
+>  ath10k/QCA6174/hw3.0/firmware-6.bin | Bin 731276 -> 700988 bytes
+>  ath10k/QCA9887/hw1.0/firmware-5.bin | Bin 237660 -> 238484 bytes
+>  ath10k/QCA9888/hw2.0/board-2.bin    | Bin 84928 -> 84928 bytes
+>  ath10k/QCA9888/hw2.0/firmware-5.bin | Bin 688536 -> 686996 bytes
+>  ath10k/QCA988X/hw2.0/firmware-5.bin | Bin 248840 -> 248984 bytes
+>  ath10k/QCA9984/hw1.0/board-2.bin    | Bin 171916 -> 171916 bytes
+>  ath10k/QCA9984/hw1.0/firmware-5.bin | Bin 676316 -> 674940 bytes
+>  9 files changed, 5 insertions(+), 5 deletions(-)
 
-Thanks,
-Tamizh.
+Pulled and pushed out.  Thanks.
+
+josh
 
 _______________________________________________
 ath10k mailing list
