@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from verein.lst.de ([213.95.11.211])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hzyK6-0000V9-P1
- for ath10k@lists.infradead.org; Tue, 20 Aug 2019 07:12:56 +0000
-Date: Tue, 20 Aug 2019 09:12:50 +0200
-From: Christoph Hellwig <hch@lst.de>
-Subject: Re: regression in ath10k dma allocation
-Message-ID: <20190820071250.GA28968@lst.de>
-References: <8fe8b415-2d34-0a14-170b-dcb31c162e67@mni.thm.de>
- <20190816164301.GA3629@lst.de>
- <af96ea6a-2b17-9b66-7aba-b7dae5bcbba5@mni.thm.de>
- <20190816222506.GA24413@Asurada-Nvidia.nvidia.com>
- <20190818031328.11848-1-hdanton@sina.com>
- <acd7a4b0-fde8-1aa2-af07-2b469e5d5ca7@mni.thm.de>
- <20190820065833.1628-1-hdanton@sina.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190820065833.1628-1-hdanton@sina.com>
+ id 1i02jX-0006pj-6g
+ for ath10k@lists.infradead.org; Tue, 20 Aug 2019 11:55:30 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH 1/7] ath10k: enable RX bundle receive for sdio
+Date: Tue, 20 Aug 2019 19:55:02 +0800
+Message-Id: <1566302108-18219-2-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
+References: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,149 +17,280 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Hillf Danton <hdanton@sina.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net, Nicolin Chen <nicoleotsuka@gmail.com>, iommu@lists.linux-foundation.org, tobias.klausmann@freenet.de, Tobias Klausmann <tobias.johannes.klausmann@mni.thm.de>, robin.murphy@arm.com, Christoph Hellwig <hch@lst.de>, kvalo@codeaurora.org, m.szyprowski@samsung.com
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 02:58:33PM +0800, Hillf Danton wrote:
-> 
-> On Tue, 20 Aug 2019 05:05:14 +0200 Christoph Hellwig wrote:
-> > 
-> > Tobias, plase try this patch:
-> > 
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-New version below:
+The existing implementation of initiating multiple sdio transfers for
+receive bundling is slowing down the receive speed. Combining the
+transfers using a bundle method would be ideal.
 
+The transmission utilization ratio for sdio bus for small packet is
+slow, because the space and time cost for sdio bus is same for large
+length packet and small length packet. So the speed of data for large
+length packet is higher than small length.
+
+Test result of different length of data:
+data packet(byte)   cost time(us)   calculated rate(Mbps)
+      256               28                73
+      512               33               124
+     1024               35               234
+     1792               45               318
+    14336              168               682
+    28672              333               688
+    57344              660               695
+
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
-From b8a805e93be5a5662323b8ac61fe686df839c4ac Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Tue, 20 Aug 2019 11:45:49 +0900
-Subject: dma-direct: fix zone selection after an unaddressable CMA allocation
+ drivers/net/wireless/ath/ath10k/sdio.c | 101 ++++++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/sdio.h |   7 ++-
+ 2 files changed, 79 insertions(+), 29 deletions(-)
 
-The new dma_alloc_contiguous hides if we allocate CMA or regular
-pages, and thus fails to retry a ZONE_NORMAL allocation if the CMA
-allocation succeeds but isn't addressable.  That means we either fail
-outright or dip into a small zone that might not succeed either.
-
-Thanks to Hillf Danton for debugging this issue.
-
-Fixes: b1d2dc009dec ("dma-contiguous: add dma_{alloc,free}_contiguous() helpers")
-Reported-by: Tobias Klausmann <tobias.johannes.klausmann@mni.thm.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/iommu/dma-iommu.c      |  3 +++
- include/linux/dma-contiguous.h |  5 +----
- kernel/dma/contiguous.c        |  9 +++------
- kernel/dma/direct.c            | 10 +++++++++-
- 4 files changed, 16 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index d991d40f797f..f68a62c3c32b 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -965,10 +965,13 @@ static void *iommu_dma_alloc_pages(struct device *dev, size_t size,
- {
- 	bool coherent = dev_is_dma_coherent(dev);
- 	size_t alloc_size = PAGE_ALIGN(size);
-+	int node = dev_to_node(dev);
- 	struct page *page = NULL;
- 	void *cpu_addr;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 8ed4fbd..d9395f0 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -24,6 +24,9 @@
+ #include "trace.h"
+ #include "sdio.h"
  
- 	page = dma_alloc_contiguous(dev, alloc_size, gfp);
-+	if (!page)
-+		page = alloc_pages_node(node, gfp, get_order(alloc_size));
- 	if (!page)
- 		return NULL;
++#define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
++#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
++
+ /* inlined helper functions */
  
-diff --git a/include/linux/dma-contiguous.h b/include/linux/dma-contiguous.h
-index c05d4e661489..03f8e98e3bcc 100644
---- a/include/linux/dma-contiguous.h
-+++ b/include/linux/dma-contiguous.h
-@@ -160,10 +160,7 @@ bool dma_release_from_contiguous(struct device *dev, struct page *pages,
- static inline struct page *dma_alloc_contiguous(struct device *dev, size_t size,
- 		gfp_t gfp)
- {
--	int node = dev ? dev_to_node(dev) : NUMA_NO_NODE;
--	size_t align = get_order(PAGE_ALIGN(size));
--
--	return alloc_pages_node(node, gfp, align);
-+	return NULL;
+ static inline int ath10k_sdio_calc_txrx_padded_len(struct ath10k_sdio *ar_sdio,
+@@ -489,11 +492,11 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
+ 	return ret;
  }
  
- static inline void dma_free_contiguous(struct device *dev, struct page *page,
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index 2bd410f934b3..e6b450fdbeb6 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -230,9 +230,7 @@ bool dma_release_from_contiguous(struct device *dev, struct page *pages,
-  */
- struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
+-static int ath10k_sdio_mbox_alloc_pkt_bundle(struct ath10k *ar,
+-					     struct ath10k_sdio_rx_data *rx_pkts,
+-					     struct ath10k_htc_hdr *htc_hdr,
+-					     size_t full_len, size_t act_len,
+-					     size_t *bndl_cnt)
++static int ath10k_sdio_mbox_alloc_bundle(struct ath10k *ar,
++					 struct ath10k_sdio_rx_data *rx_pkts,
++					 struct ath10k_htc_hdr *htc_hdr,
++					 size_t full_len, size_t act_len,
++					 size_t *bndl_cnt)
  {
--	int node = dev ? dev_to_node(dev) : NUMA_NO_NODE;
--	size_t count = PAGE_ALIGN(size) >> PAGE_SHIFT;
--	size_t align = get_order(PAGE_ALIGN(size));
-+	size_t count = size >> PAGE_SHIFT;
- 	struct page *page = NULL;
- 	struct cma *cma = NULL;
+ 	int ret, i;
  
-@@ -243,14 +241,12 @@ struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
+@@ -534,6 +537,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 	size_t full_len, act_len;
+ 	bool last_in_bundle;
+ 	int ret, i;
++	int pkt_cnt = 0;
  
- 	/* CMA can be used only in the context which permits sleeping */
- 	if (cma && gfpflags_allow_blocking(gfp)) {
-+		size_t align = get_order(size);
- 		size_t cma_align = min_t(size_t, align, CONFIG_CMA_ALIGNMENT);
+ 	if (n_lookaheads > ATH10K_SDIO_MAX_RX_MSGS) {
+ 		ath10k_warn(ar,
+@@ -577,20 +581,22 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 			 */
+ 			size_t bndl_cnt;
  
- 		page = cma_alloc(cma, count, cma_align, gfp & __GFP_NOWARN);
+-			ret = ath10k_sdio_mbox_alloc_pkt_bundle(ar,
+-								&ar_sdio->rx_pkts[i],
+-								htc_hdr,
+-								full_len,
+-								act_len,
+-								&bndl_cnt);
++			struct ath10k_sdio_rx_data *rx_pkts =
++				&ar_sdio->rx_pkts[pkt_cnt];
++
++			ret = ath10k_sdio_mbox_alloc_bundle(ar,
++							    rx_pkts,
++							    htc_hdr,
++							    full_len,
++							    act_len,
++							    &bndl_cnt);
+ 
+ 			if (ret) {
+ 				ath10k_warn(ar, "alloc_bundle error %d\n", ret);
+ 				goto err;
+ 			}
+ 
+-			n_lookaheads += bndl_cnt;
+-			i += bndl_cnt;
++			pkt_cnt += bndl_cnt;
+ 			/*Next buffer will be the last in the bundle */
+ 			last_in_bundle = true;
+ 		}
+@@ -602,7 +608,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 		if (htc_hdr->flags & ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK)
+ 			full_len += ATH10K_HIF_MBOX_BLOCK_SIZE;
+ 
+-		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[i],
++		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[pkt_cnt],
+ 						    act_len,
+ 						    full_len,
+ 						    last_in_bundle,
+@@ -611,9 +617,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 			ath10k_warn(ar, "alloc_rx_pkt error %d\n", ret);
+ 			goto err;
+ 		}
++		pkt_cnt++;
  	}
  
--	/* Fallback allocation of normal pages */
--	if (!page)
--		page = alloc_pages_node(node, gfp, align);
- 	return page;
+-	ar_sdio->n_rx_pkts = i;
++	ar_sdio->n_rx_pkts = pkt_cnt;
+ 
+ 	return 0;
+ 
+@@ -627,41 +634,72 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 	return ret;
  }
  
-@@ -258,6 +254,7 @@ struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
-  * dma_free_contiguous() - release allocated pages
-  * @dev:   Pointer to device for which the pages were allocated.
-  * @page:  Pointer to the allocated pages.
-+	int node = dev ? dev_to_node(dev) : NUMA_NO_NODE;
-  * @size:  Size of allocated pages.
-  *
-  * This function releases memory allocated by dma_alloc_contiguous(). As the
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 795c9b095d75..706113c6bebc 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -85,6 +85,8 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
- struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
- 		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
+-static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
+-				      struct ath10k_sdio_rx_data *pkt)
++static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
  {
-+	size_t alloc_size = PAGE_ALIGN(size);
-+	int node = dev_to_node(dev);
- 	struct page *page = NULL;
- 	u64 phys_mask;
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct sk_buff *skb = pkt->skb;
++	struct ath10k_sdio_rx_data *pkt = &ar_sdio->rx_pkts[0];
++	struct sk_buff *skb;
+ 	int ret;
  
-@@ -95,8 +97,14 @@ struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
- 	gfp &= ~__GFP_ZERO;
- 	gfp |= __dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
- 			&phys_mask);
-+	page = dma_alloc_contiguous(dev, alloc_size, gfp);
-+	if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
-+		dma_free_contiguous(dev, page, alloc_size);
-+		page = NULL;
++	skb = pkt->skb;
+ 	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
+ 				 skb->data, pkt->alloc_len);
+-	pkt->status = ret;
+-	if (!ret)
++
++	if (ret) {
++		ar_sdio->n_rx_pkts = 0;
++		ath10k_sdio_mbox_free_rx_pkt(pkt);
++	} else {
++		pkt->status = ret;
+ 		skb_put(skb, pkt->act_len);
 +	}
- again:
--	page = dma_alloc_contiguous(dev, size, gfp);
-+	if (!page)
-+		page = alloc_pages_node(node, gfp, get_order(alloc_size));
- 	if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
- 		dma_free_contiguous(dev, page, size);
- 		page = NULL;
+ 
+ 	return ret;
+ }
+ 
+-static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
++static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
+ {
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
++	struct ath10k_sdio_rx_data *pkt;
+ 	int ret, i;
++	u32 pkt_offset, virt_pkt_len;
+ 
++	virt_pkt_len = 0;
+ 	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
+-		ret = ath10k_sdio_mbox_rx_packet(ar,
+-						 &ar_sdio->rx_pkts[i]);
+-		if (ret)
++		virt_pkt_len += ar_sdio->rx_pkts[i].alloc_len;
++	}
++
++	if (virt_pkt_len < ATH10K_SDIO_DMA_BUF_SIZE) {
++		ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
++					 ar_sdio->vsg_buffer, virt_pkt_len);
++		if (ret) {
++			i = 0;
+ 			goto err;
++		}
++	} else {
++		ath10k_err(ar, "size exceeding limit %d\n", virt_pkt_len);
++	}
++
++	pkt_offset = 0;
++	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
++		struct sk_buff *skb = ar_sdio->rx_pkts[i].skb;
++
++		pkt = &ar_sdio->rx_pkts[i];
++		memcpy(skb->data, ar_sdio->vsg_buffer + pkt_offset,
++		       pkt->alloc_len);
++		pkt->status = 0;
++		skb_put(skb, pkt->act_len);
++		pkt_offset += pkt->alloc_len;
+ 	}
+ 
+ 	return 0;
+ 
+ err:
+ 	/* Free all packets that was not successfully fetched. */
+-	for (; i < ar_sdio->n_rx_pkts; i++)
++	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
+ 		ath10k_sdio_mbox_free_rx_pkt(&ar_sdio->rx_pkts[i]);
+ 
++	ar_sdio->n_rx_pkts = 0;
++
+ 	return ret;
+ }
+ 
+@@ -704,7 +742,10 @@ static int ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
+ 			 */
+ 			*done = false;
+ 
+-		ret = ath10k_sdio_mbox_rx_fetch(ar);
++		if (ar_sdio->n_rx_pkts > 1)
++			ret = ath10k_sdio_mbox_rx_fetch_bundle(ar);
++		else
++			ret = ath10k_sdio_mbox_rx_fetch(ar);
+ 
+ 		/* Process fetched packets. This will potentially update
+ 		 * n_lookaheads depending on if the packets contain lookahead
+@@ -1112,7 +1153,7 @@ static int ath10k_sdio_bmi_get_rx_lookahead(struct ath10k *ar)
+ 					 MBOX_HOST_INT_STATUS_ADDRESS,
+ 					 &rx_word);
+ 		if (ret) {
+-			ath10k_warn(ar, "unable to read RX_LOOKAHEAD_VALID: %d\n", ret);
++			ath10k_warn(ar, "unable to read rx_lookahd: %d\n", ret);
+ 			return ret;
+ 		}
+ 
+@@ -2007,6 +2048,12 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		goto err_core_destroy;
+ 	}
+ 
++	ar_sdio->vsg_buffer = devm_kmalloc(ar->dev, ATH10K_SDIO_VSG_BUF_SIZE, GFP_KERNEL);
++	if (!ar_sdio->vsg_buffer) {
++		ret = -ENOMEM;
++		goto err_core_destroy;
++	}
++
+ 	ar_sdio->irq_data.irq_en_reg =
+ 		devm_kzalloc(ar->dev, sizeof(struct ath10k_sdio_irq_enable_regs),
+ 			     GFP_KERNEL);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+index b8c7ac0..4896eca 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.h
++++ b/drivers/net/wireless/ath/ath10k/sdio.h
+@@ -138,8 +138,8 @@ struct ath10k_sdio_irq_proc_regs {
+ 	u8 rx_lookahead_valid;
+ 	u8 host_int_status2;
+ 	u8 gmbox_rx_avail;
+-	__le32 rx_lookahead[2];
+-	__le32 rx_gmbox_lookahead_alias[2];
++	__le32 rx_lookahead[2 * ATH10K_HIF_MBOX_NUM_MAX];
++	__le32 int_status_enable;
+ };
+ 
+ struct ath10k_sdio_irq_enable_regs {
+@@ -196,6 +196,9 @@ struct ath10k_sdio {
+ 	struct ath10k *ar;
+ 	struct ath10k_sdio_irq_data irq_data;
+ 
++	/* temporary buffer for sdio read */
++	u8 *vsg_buffer;
++
+ 	/* temporary buffer for BMI requests */
+ 	u8 *bmi_buf;
+ 
 -- 
-2.20.1
+1.9.1
 
 
 _______________________________________________
