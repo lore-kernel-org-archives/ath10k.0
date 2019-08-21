@@ -1,26 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i0NRS-0004lx-D5
- for ath10k@lists.infradead.org; Wed, 21 Aug 2019 10:02:11 +0000
+ id 1i0NZX-0008In-2d
+ for ath10k@lists.infradead.org; Wed, 21 Aug 2019 10:10:32 +0000
 Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
  [209.85.208.69])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mx1.redhat.com (Postfix) with ESMTPS id C6D2483F40
- for <ath10k@lists.infradead.org>; Wed, 21 Aug 2019 10:02:09 +0000 (UTC)
-Received: by mail-ed1-f69.google.com with SMTP id z25so991468edm.3
- for <ath10k@lists.infradead.org>; Wed, 21 Aug 2019 03:02:09 -0700 (PDT)
+ by mx1.redhat.com (Postfix) with ESMTPS id B2CE43D96B
+ for <ath10k@lists.infradead.org>; Wed, 21 Aug 2019 10:10:30 +0000 (UTC)
+Received: by mail-ed1-f69.google.com with SMTP id r25so1092088edp.20
+ for <ath10k@lists.infradead.org>; Wed, 21 Aug 2019 03:10:30 -0700 (PDT)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: RE: [PATCH 2/7] ath10k: change max RX bundle size from 8 to 32 for
- sdio
-In-Reply-To: <59f668bda688419e9b6f44587d391135@aptaiexm02f.ap.qualcomm.com>
+Subject: RE: [PATCH 4/7] ath10k: disable TX complete indication of htt for sdio
+In-Reply-To: <00992d0991704b0fae73a500bb2eb504@aptaiexm02f.ap.qualcomm.com>
 References: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
- <1566302108-18219-3-git-send-email-wgong@codeaurora.org>
- <87ef1gt49d.fsf@toke.dk>
- <59f668bda688419e9b6f44587d391135@aptaiexm02f.ap.qualcomm.com>
-Date: Wed, 21 Aug 2019 12:02:07 +0200
-Message-ID: <878srmsuow.fsf@toke.dk>
+ <1566302108-18219-5-git-send-email-wgong@codeaurora.org>
+ <87blwkt480.fsf@toke.dk>
+ <00992d0991704b0fae73a500bb2eb504@aptaiexm02f.ap.qualcomm.com>
+Date: Wed, 21 Aug 2019 12:10:27 +0200
+Message-ID: <8736husub0.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -40,20 +39,35 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 V2VuIEdvbmcgPHdnb25nQHF0aS5xdWFsY29tbS5jb20+IHdyaXRlczoKCj4+IC0tLS0tT3JpZ2lu
 YWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IGF0aDEwayA8YXRoMTBrLWJvdW5jZXNAbGlzdHMuaW5m
 cmFkZWFkLm9yZz4gT24gQmVoYWxmIE9mIFRva2UKPj4gSMO4aWxhbmQtSsO4cmdlbnNlbgo+PiBT
-ZW50OiBUdWVzZGF5LCBBdWd1c3QgMjAsIDIwMTkgODoyMyBQTQo+PiBUbzogV2VuIEdvbmcgPHdn
+ZW50OiBUdWVzZGF5LCBBdWd1c3QgMjAsIDIwMTkgODoyNCBQTQo+PiBUbzogV2VuIEdvbmcgPHdn
 b25nQGNvZGVhdXJvcmEub3JnPjsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gQ2M6IGxp
 bnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9yZwo+PiBTdWJqZWN0OiBbRVhUXSBSZTogW1BBVENI
-IDIvN10gYXRoMTBrOiBjaGFuZ2UgbWF4IFJYIGJ1bmRsZSBzaXplIGZyb20gOCB0bwo+PiAzMiBm
-b3Igc2Rpbwo+PiAKPj4gV2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cj4+
-IAo+PiA+IFRoZSBtYXggYnVuZGxlIHNpemUgc3VwcG9ydCBieSBmaXJtd2FyZSBpcyAzMiwgY2hh
-bmdlIGl0IGZyb20gOCB0byAzMgo+PiA+IHdpbGwgaGVscCBwZXJmb3JtYW5jZS4gVGhpcyByZXN1
-bHRzIGluIHNpZ25pZmljYW50IHBlcmZvcm1hbmNlCj4+ID4gaW1wcm92ZW1lbnQgb24gUlggcGF0
-aC4KPj4gCj4+IFdoYXQgaGFwcGVucyB3aGVuIHRoZSBoYXJkd2FyZSBkb2Vzbid0IGhhdmUgZW5v
-dWdoIGRhdGEgdG8gZmlsbCBhCj4+IGJ1bmRsZT8gRG9lcyBpdCBzZW5kIGEgc21hbGxlciBvbmUs
-IG9yIGRvZXMgaXQgd2FpdCB1bnRpbCBpdCBjYW4gZmlsbAo+PiBpdD8KPj4gCj4KPiBUaGUgYnVu
-ZGxlIGlzIGZpbGxlZCBieSBmaXJtd2FyZS4gCj4gSXQgd2lsbCBub3Qgd2FpdCB1bnRpbCBpdCBj
-YW4gZmlsbCBpdC4KPiBGb3IgZXhhbXBsZSwgaWYgeW91IGRvIHBpbmcgcGVyIHNlY29uZCwgaXQg
-d2lsbCBoYXZlIG9ubHkgMSBwaW5nIHBhY2tldAo+IEluIHRoZSBidW5kbGUuCgpSaWdodCwgY29v
-bC4KCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+IDQvN10gYXRoMTBrOiBkaXNhYmxlIFRYIGNvbXBsZXRlIGluZGljYXRpb24gb2YgaHR0Cj4+IGZv
+ciBzZGlvCj4+IAo+PiBXZW4gR29uZyA8d2dvbmdAY29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPj4g
+Cj4+ID4gVHggY29tcGxldGUgbWVzc2FnZSBmcm9tIGZpcm13YXJlIGNvc3QgYnVzIGJhbmR3aWR0
+aCBvZiBzZGlvLCBhbmQgYnVzCj4+ID4gYmFuZHdpZHRoIGlzIHRoZSBib2xsdGVuZWNrIG9mIHRo
+cm91Z2hwdXQsIGl0IHdpbGwgZWZmZWN0IHRoZSBiYW5kd2lkdGgKPj4gPiBvY2N1cGFuY3kgb2Yg
+ZGF0YSBwYWNrZXQgb2YgVFggYW5kIFJYLgo+PiA+Cj4+ID4gVGhpcyBwYXRjaCBkaXNhYmxlIFRY
+IGNvbXBsZXRlIGluZGljYXRpb24gZnJvbSBmaXJtd2FyZSBmb3IgaHR0IGRhdGEKPj4gPiBwYWNr
+ZXQsIGl0IHJlc3VsdHMgaW4gc2lnbmlmaWNhbnQgcGVyZm9ybWFuY2UgaW1wcm92ZW1lbnQgb24g
+VFggcGF0aC4KPj4gCj4+IFdhaXQsIGhvdyBkb2VzIHRoYXQgd29yaz8gQW0gSSB1bmRlcnN0YW5k
+aW5nIGl0IGNvcnJlY3RseSB0aGF0IHRoaXMKPj4gcmVwbGFjZXMgYSBwZXItcGFja2V0IFRYIGNv
+bXBsZXRpb24gd2l0aCBhIHBlcmlvZGljIG9uZSBzZW50IG91dCBvZgo+PiBiYW5kPwo+IFdoZW4g
+dGhpcyBwYXRjaCBhcHBsaWVkLCBmaXJtd2FyZSB3aWxsIG5vdCBpbmRpY2F0ZSB0eCBjb21wbGV0
+ZSBmb3IgdHgKPiBEYXRhLCBpdCBvbmx5IGluZGljYXRlIEhUVF9UMkhfTVNHX1RZUEVfVFhfQ1JF
+RElUX1VQREFURV9JTkQsCj4gVGhpcyBodHQgbXNnIHdpbGwgdGVsbCBob3cgbWFueSBkYXRhIHR4
+IGNvbXBsZXRlIHdpdGhvdXQgc3RhdHVzKHN0YXR1cyBtYXliZSBzdWNjZXNzL2ZhaWwpLgoKQWgs
+IHNvIHRoaXMgaXMgYmFzaWNhbGx5IGEgY291bnRlciBvZiBob3cgbXVjaCBkYXRhIGlzIGN1cnJl
+bnRseSBxdWV1ZWQKaW4gdGhlIGZpcm13YXJlPwoKPj4gQW5kIGNvdWxkIHlvdSBleHBsYWluIHdo
+YXQgdGhlIGNyZWRpdHMgdGhpbmcgaXMgZm9yLCBwbGVhc2U/IDopCj4gRm9yIGhpZ2ggbGF0ZW5j
+eSBidXMgY2hpcCwgYWxsIHRoZSB0eCBkYXRhJ3MgY29udGVudChpbmNsdWRlIGlwL3VkcC90Y3Ag
+aGVhZGVyCj4gYW5kIHBheWxvYWQpIHdpbGwgYmUgdHJhbnNmZXIgdG8gZmlybXdhcmUncyBtZW1v
+cnkgdmlhIGJ1cy4KPiBBbmQgZmlybXdhcmUgaGFzIGxpbWl0ZWQgbWVtb3J5IGZvciB0eCBkYXRh
+LCB0aGUgdHggZGF0YSdzIGNvbnRlbnQgbXVzdAo+IFNhdmVkIGluIGZpcm13YXJlIG1lbW9yeSBi
+ZWZvcmUgaXQgdHggY29tcGxldGUsIGlmIGF0aDEwayB0cmFuc2ZlciB0eAo+IGRhdGEgbW9yZSB0
+aGFuIHRoZSBsaW1pdCwgZmlybXdhcmUgd2lsbCBvY2N1ciBlcnJvci4gVGhlIGNyZWRpdCBpcyB1
+c2VkCj4gdG8gYXZvaWQgYXRoMTBrIGV4Y2VlZCB0aGUgbGltaXQuCgpXaGF0J3MgYSB0eXBpY2Fs
+IGxpbWl0IGluIHRoZSBmaXJtd2FyZT8KCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
