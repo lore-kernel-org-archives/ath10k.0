@@ -1,11 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: =?UTF-8?Q?=5bPATCH=5d_net/wireless=3a_Delete_unnecessary_checks_bef?=
- =?UTF-8?B?b3JlIHRoZSBtYWNybyBjYWxsIOKAnGRldl9rZnJlZV9za2LigJ0=?=
-Message-ID: <ea6c6fef-9868-196b-d914-23faf12d7f5c@web.de>
-Date: Thu, 22 Aug 2019 10:30:47 +0200
+Received: from mx1.redhat.com ([209.132.183.28])
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i0lwk-0000k0-Kd
+ for ath10k@lists.infradead.org; Thu, 22 Aug 2019 12:12:08 +0000
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id 0F3DF81F01
+ for <ath10k@lists.infradead.org>; Thu, 22 Aug 2019 12:12:05 +0000 (UTC)
+Received: by mail-ed1-f69.google.com with SMTP id n7so3276344edr.5
+ for <ath10k@lists.infradead.org>; Thu, 22 Aug 2019 05:12:04 -0700 (PDT)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: RE: [PATCH 4/7] ath10k: disable TX complete indication of htt for sdio
+In-Reply-To: <86d0eabcc63849efa914f2c14a3cd59f@aptaiexm02f.ap.qualcomm.com>
+References: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
+ <1566302108-18219-5-git-send-email-wgong@codeaurora.org>
+ <87blwkt480.fsf@toke.dk>
+ <00992d0991704b0fae73a500bb2eb504@aptaiexm02f.ap.qualcomm.com>
+ <8736husub0.fsf@toke.dk>
+ <86d0eabcc63849efa914f2c14a3cd59f@aptaiexm02f.ap.qualcomm.com>
+Date: Thu, 22 Aug 2019 14:12:01 +0200
+Message-ID: <874l29pffy.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -14,130 +31,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@codeaurora.org>, Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, Roy Luo <royluo@google.com>, Ryder Lee <ryder.lee@mediatek.com>, Solomon Peachy <pizza@shaftnet.org>, Stanislaw Gruszka <sgruszka@redhat.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Wen Gong <wgong@qti.qualcomm.com>, Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 22 Aug 2019 10:20:10 +0200
-
-The dev_kfree_skb() function performs also input parameter validation.
-Thus the test around the shown calls is not needed.
-
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/net/wireless/ath/ath10k/wmi.c               | 4 +---
- drivers/net/wireless/intel/iwlegacy/3945-mac.c      | 8 ++------
- drivers/net/wireless/intel/iwlegacy/common.c        | 8 ++------
- drivers/net/wireless/mediatek/mt76/mt76x02_beacon.c | 5 +----
- drivers/net/wireless/st/cw1200/scan.c               | 3 +--
- 5 files changed, 7 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 4f707c6394bb..d384293429b4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -9440,7 +9440,5 @@ void ath10k_wmi_detach(struct ath10k *ar)
- 	}
-
- 	cancel_work_sync(&ar->svc_rdy_work);
--
--	if (ar->svc_rdy_skb)
--		dev_kfree_skb(ar->svc_rdy_skb);
-+	dev_kfree_skb(ar->svc_rdy_skb);
- }
-diff --git a/drivers/net/wireless/intel/iwlegacy/3945-mac.c b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-index b82da75a9ae3..4b3b166f6f2a 100644
---- a/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-+++ b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-@@ -2302,9 +2302,7 @@ __il3945_down(struct il_priv *il)
- 	il3945_hw_txq_ctx_free(il);
- exit:
- 	memset(&il->card_alive, 0, sizeof(struct il_alive_resp));
--
--	if (il->beacon_skb)
--		dev_kfree_skb(il->beacon_skb);
-+	dev_kfree_skb(il->beacon_skb);
- 	il->beacon_skb = NULL;
-
- 	/* clear out any free frames */
-@@ -3847,9 +3845,7 @@ il3945_pci_remove(struct pci_dev *pdev)
- 	il_free_channel_map(il);
- 	il_free_geos(il);
- 	kfree(il->scan_cmd);
--	if (il->beacon_skb)
--		dev_kfree_skb(il->beacon_skb);
--
-+	dev_kfree_skb(il->beacon_skb);
- 	ieee80211_free_hw(il->hw);
- }
-
-diff --git a/drivers/net/wireless/intel/iwlegacy/common.c b/drivers/net/wireless/intel/iwlegacy/common.c
-index 73f7bbf742bc..4e7e64f46ea8 100644
---- a/drivers/net/wireless/intel/iwlegacy/common.c
-+++ b/drivers/net/wireless/intel/iwlegacy/common.c
-@@ -5182,8 +5182,7 @@ il_mac_reset_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	memset(&il->current_ht_config, 0, sizeof(struct il_ht_config));
-
- 	/* new association get rid of ibss beacon skb */
--	if (il->beacon_skb)
--		dev_kfree_skb(il->beacon_skb);
-+	dev_kfree_skb(il->beacon_skb);
- 	il->beacon_skb = NULL;
- 	il->timestamp = 0;
-
-@@ -5302,10 +5301,7 @@ il_beacon_update(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	}
-
- 	spin_lock_irqsave(&il->lock, flags);
--
--	if (il->beacon_skb)
--		dev_kfree_skb(il->beacon_skb);
--
-+	dev_kfree_skb(il->beacon_skb);
- 	il->beacon_skb = skb;
-
- 	timestamp = ((struct ieee80211_mgmt *)skb->data)->u.beacon.timestamp;
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_beacon.c b/drivers/net/wireless/mediatek/mt76/mt76x02_beacon.c
-index d61c686e08de..d6487cd67cca 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76x02_beacon.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76x02_beacon.c
-@@ -88,10 +88,7 @@ int mt76x02_mac_set_beacon(struct mt76x02_dev *dev, u8 vif_idx,
- 	for (i = 0; i < ARRAY_SIZE(dev->beacons); i++) {
- 		if (vif_idx == i) {
- 			force_update = !!dev->beacons[i] ^ !!skb;
--
--			if (dev->beacons[i])
--				dev_kfree_skb(dev->beacons[i]);
--
-+			dev_kfree_skb(dev->beacons[i]);
- 			dev->beacons[i] = skb;
- 			__mt76x02_mac_set_beacon(dev, bcn_idx, skb);
- 		} else if (force_update && dev->beacons[i]) {
-diff --git a/drivers/net/wireless/st/cw1200/scan.c b/drivers/net/wireless/st/cw1200/scan.c
-index c46b044b7f7b..988581cc134b 100644
---- a/drivers/net/wireless/st/cw1200/scan.c
-+++ b/drivers/net/wireless/st/cw1200/scan.c
-@@ -120,8 +120,7 @@ int cw1200_hw_scan(struct ieee80211_hw *hw,
- 		++priv->scan.n_ssids;
- 	}
-
--	if (frame.skb)
--		dev_kfree_skb(frame.skb);
-+	dev_kfree_skb(frame.skb);
- 	mutex_unlock(&priv->conf_mutex);
- 	queue_work(priv->workqueue, &priv->scan.work);
- 	return 0;
---
-2.23.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+V2VuIEdvbmcgPHdnb25nQHF0aS5xdWFsY29tbS5jb20+IHdyaXRlczoKCj4+IC0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUBy
+ZWRoYXQuY29tPgo+PiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAyMSwgMjAxOSA2OjEwIFBNCj4+
+IFRvOiBXZW4gR29uZyA8d2dvbmdAcXRpLnF1YWxjb21tLmNvbT47IFdlbiBHb25nCj4+IDx3Z29u
+Z0Bjb2RlYXVyb3JhLm9yZz47IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IENjOiBsaW51
+eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmcKPj4gU3ViamVjdDogW0VYVF0gUkU6IFtQQVRDSCA0
+LzddIGF0aDEwazogZGlzYWJsZSBUWCBjb21wbGV0ZSBpbmRpY2F0aW9uIG9mIGh0dAo+PiBmb3Ig
+c2Rpbwo+PiAKPj4gV2VuIEdvbmcgPHdnb25nQHF0aS5xdWFsY29tbS5jb20+IHdyaXRlczoKPj4g
+Cj4+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+ID4+IEZyb206IGF0aDEwayA8YXRo
+MTBrLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZz4gT24gQmVoYWxmIE9mIFRva2UKPj4gPj4g
+SMO4aWxhbmQtSsO4cmdlbnNlbgo+PiA+PiBTZW50OiBUdWVzZGF5LCBBdWd1c3QgMjAsIDIwMTkg
+ODoyNCBQTQo+PiA+PiBUbzogV2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPjsgYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gPj4gQ2M6IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVs
+Lm9yZwo+PiA+PiBTdWJqZWN0OiBbRVhUXSBSZTogW1BBVENIIDQvN10gYXRoMTBrOiBkaXNhYmxl
+IFRYIGNvbXBsZXRlIGluZGljYXRpb24gb2YKPj4gaHR0Cj4+ID4gV2hlbiB0aGlzIHBhdGNoIGFw
+cGxpZWQsIGZpcm13YXJlIHdpbGwgbm90IGluZGljYXRlIHR4IGNvbXBsZXRlIGZvciB0eAo+PiA+
+IERhdGEsIGl0IG9ubHkgaW5kaWNhdGUgSFRUX1QySF9NU0dfVFlQRV9UWF9DUkVESVRfVVBEQVRF
+X0lORCwKPj4gPiBUaGlzIGh0dCBtc2cgd2lsbCB0ZWxsIGhvdyBtYW55IGRhdGEgdHggY29tcGxl
+dGUgd2l0aG91dCBzdGF0dXMoc3RhdHVzCj4+IG1heWJlIHN1Y2Nlc3MvZmFpbCkuCj4+IAo+PiBB
+aCwgc28gdGhpcyBpcyBiYXNpY2FsbHkgYSBjb3VudGVyIG9mIGhvdyBtdWNoIGRhdGEgaXMgY3Vy
+cmVudGx5IHF1ZXVlZAo+PiBpbiB0aGUgZmlybXdhcmU/Cj4gWWVzLgo+PiAKPj4gPj4gQW5kIGNv
+dWxkIHlvdSBleHBsYWluIHdoYXQgdGhlIGNyZWRpdHMgdGhpbmcgaXMgZm9yLCBwbGVhc2U/IDop
+Cj4+ID4gRm9yIGhpZ2ggbGF0ZW5jeSBidXMgY2hpcCwgYWxsIHRoZSB0eCBkYXRhJ3MgY29udGVu
+dChpbmNsdWRlIGlwL3VkcC90Y3AKPj4gaGVhZGVyCj4+ID4gYW5kIHBheWxvYWQpIHdpbGwgYmUg
+dHJhbnNmZXIgdG8gZmlybXdhcmUncyBtZW1vcnkgdmlhIGJ1cy4KPj4gPiBBbmQgZmlybXdhcmUg
+aGFzIGxpbWl0ZWQgbWVtb3J5IGZvciB0eCBkYXRhLCB0aGUgdHggZGF0YSdzIGNvbnRlbnQgbXVz
+dAo+PiA+IFNhdmVkIGluIGZpcm13YXJlIG1lbW9yeSBiZWZvcmUgaXQgdHggY29tcGxldGUsIGlm
+IGF0aDEwayB0cmFuc2ZlciB0eAo+PiA+IGRhdGEgbW9yZSB0aGFuIHRoZSBsaW1pdCwgZmlybXdh
+cmUgd2lsbCBvY2N1ciBlcnJvci4gVGhlIGNyZWRpdCBpcyB1c2VkCj4+ID4gdG8gYXZvaWQgYXRo
+MTBrIGV4Y2VlZCB0aGUgbGltaXQuCj4+IAo+PiBXaGF0J3MgYSB0eXBpY2FsIGxpbWl0IGluIHRo
+ZSBmaXJtd2FyZT8KPiBJdCBpcyA5NiBkYXRhIHBhY2tldCBpbiBteSB0ZXN0LiBJdCBjYW4gY2hh
+bmdlZCBpbiBmaXJtd2FyZSBjb2RlLgoKUmlnaHQsIEkgc2VlLiBJcyB0aGlzIGNvdW50ZXIgYXZh
+aWxhYmxlIGluIGFsbCBhdGgxMGsgZmlybXdhcmUsIG9yIGlzIGl0ClNESU8gb25seT8KCkknbSBh
+c2tpbmcgYmVjYXVzZSB0aGlzIGNvdWxkIGFsc28gYmUgYSB3YXkgb2YgaW1wbGVtZW50aW5nIHNv
+bWV0aGluZwpsaWtlIEJ5dGUgUXVldWUgTGltaXRzICh0aG91Z2ggSSdtIG5vdCBzdXJlIGhvdyBl
+ZmZlY3RpdmUgaXQgd291bGQgYmUpLgoKLVRva2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
