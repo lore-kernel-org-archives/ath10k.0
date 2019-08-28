@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2nkP-0002ko-Kd
- for ath10k@lists.infradead.org; Wed, 28 Aug 2019 02:31:47 +0000
-Subject: RE: [PATCH 2/7] ath10k: change max RX bundle size from 8 to 32 for
- sdio
+ id 1i2pVW-0004Zt-6g
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2019 04:24:32 +0000
+Subject: RE: [PATCH 4/7] ath10k: disable TX complete indication of htt for sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 28 Aug 2019 02:31:34 +0000
-Message-ID: <166d63589ee043c9bc5fab8e837a5aa1@aptaiexm02f.ap.qualcomm.com>
+Date: Wed, 28 Aug 2019 04:24:19 +0000
+Message-ID: <7975595590134eb298cf3c0ea17aa4b1@aptaiexm02f.ap.qualcomm.com>
 References: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
- <1566302108-18219-3-git-send-email-wgong@codeaurora.org>
- <CANMq1KBRMnVqw5rcnVcJs1UjYJxh+RqAEKSAjboojoMgJQpSDw@mail.gmail.com>
-In-Reply-To: <CANMq1KBRMnVqw5rcnVcJs1UjYJxh+RqAEKSAjboojoMgJQpSDw@mail.gmail.com>
+ <1566302108-18219-5-git-send-email-wgong@codeaurora.org>
+ <CANMq1KDo1xur9M7+XgNWkdarJOQfu9_Ofk=G5ajypWpq00e9=A@mail.gmail.com>
+In-Reply-To: <CANMq1KDo1xur9M7+XgNWkdarJOQfu9_Ofk=G5ajypWpq00e9=A@mail.gmail.com>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -29,28 +28,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Nicolas Boichat <drinkcat@chromium.org>, Wen Gong <wgong@codeaurora.org>
 Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+
 > -----Original Message-----
 > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Nicolas
 > Boichat
-> Sent: Tuesday, August 27, 2019 3:43 PM
+> Sent: Tuesday, August 27, 2019 3:56 PM
 > To: Wen Gong <wgong@codeaurora.org>
 > Cc: open list:NETWORKING DRIVERS (WIRELESS) <linux-
 > wireless@vger.kernel.org>; ath10k@lists.infradead.org
-> Subject: [EXT] Re: [PATCH 2/7] ath10k: change max RX bundle size from 8 to
-> 32 for sdio
+> Subject: [EXT] Re: [PATCH 4/7] ath10k: disable TX complete indication of htt
+> for sdio
 > 
-> > @@ -501,6 +501,7 @@ static int ath10k_sdio_mbox_alloc_bundle(struct
-> ath10k *ar,
-> >         int ret, i;
+> On Tue, Aug 20, 2019 at 7:55 PM Wen Gong <wgong@codeaurora.org> wrote:
 > >
-> >         *bndl_cnt = FIELD_GET(ATH10K_HTC_FLAG_BUNDLE_MASK, htc_hdr-
-> >flags);
-> > +       *bndl_cnt += (FIELD_GET(GENMASK(3, 2), htc_hdr->flags) << 4);
+> > Tx complete message from firmware cost bus bandwidth of sdio, and bus
+> > bandwidth is the bollteneck of throughput, it will effect the bandwidth
+> > occupancy of data packet of TX and RX.
+> >
+> > This patch disable TX complete indication from firmware for htt data
+> > packet, it results in significant performance improvement on TX path.
+> >
+Patch v2 sent with the changes, https://patchwork.kernel.org/patch/11116685/
+
+> >
 > 
-> GENMASK(3, 2): Please define this macro somewhere.
-> 
-> Also, I'd merge the 2 lines in 1.
-Patch v2 has sent, https://patchwork.kernel.org/patch/11116677/
+> _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
 > http://lists.infradead.org/mailman/listinfo/ath10k
