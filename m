@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3OZa-0006pO-Nr
- for ath10k@lists.infradead.org; Thu, 29 Aug 2019 17:51:06 +0000
+ id 1i3ObT-00075C-4Z
+ for ath10k@lists.infradead.org; Thu, 29 Aug 2019 17:53:00 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v3 2/8] ath10k: enable RX bundle receive for sdio
-Date: Wed, 28 Aug 2019 21:16:11 +0800
-Message-Id: <1566998177-2658-3-git-send-email-wgong@codeaurora.org>
+Subject: [PATCH v3 8/8] ath10k: enable napi on RX path for sdio
+Date: Wed, 28 Aug 2019 21:16:17 +0800
+Message-Id: <1566998177-2658-9-git-send-email-wgong@codeaurora.org>
 In-Reply-To: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
 References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,285 +25,261 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-From: Alagu Sankar <alagusankar@silex-india.com>
+For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
+of tcp data from remote, then it will have many small length packets
+on TX path of sdio bus, then it reduce the RX packets's bandwidth of
+tcp.
 
-The existing implementation of initiating multiple sdio transfers for
-receive bundling is slowing down the receive speed. Combining the
-transfers using a bundle method would be ideal.
+This patch enable napi on RX path, then the RX packet of tcp will not
+feed to tcp stack immeditely from mac80211 since GRO is enabled by
+default, it will feed to tcp stack after napi complete, if rx bundle
+is enabled, then it will feed to tcp stack one time for each bundle
+of RX. For example, RX bundle size is 32, then tcp stack will receive
+one large length packet, its length is neary 1500*32, then tcp stack
+will send a tcp ack for this large packet, this will reduce the tcp
+acks ratio from 1/2 to 1/32. This results in significant performance
+improvement for tcp RX.
 
-The transmission utilization ratio for sdio bus for small packet is
-slow, because the space and time cost for sdio bus is same for large
-length packet and small length packet. So the speed of data for large
-length packet is higher than small length.
+Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
+with this patch. The cpu usage has no obvious difference with and
+without NAPI.
 
-Test result of different length of data:
-data packet(byte)   cost time(us)   calculated rate(Mbps)
-      256               28                73
-      512               33               124
-     1024               35               234
-     1792               45               318
-    14336              168               682
-    28672              333               688
-    57344              660               695
+call stack for each RX packet on GRO path:
+(skb length is about 1500 bytes)
+  skb_gro_receive ([kernel.kallsyms])
+  tcp4_gro_receive ([kernel.kallsyms])
+  inet_gro_receive ([kernel.kallsyms])
+  dev_gro_receive ([kernel.kallsyms])
+  napi_gro_receive ([kernel.kallsyms])
+  ieee80211_deliver_skb ([mac80211])
+  ieee80211_rx_handlers ([mac80211])
+  ieee80211_prepare_and_rx_handle ([mac80211])
+  ieee80211_rx_napi ([mac80211])
+  ath10k_htt_rx_proc_rx_ind_hl ([ath10k_core])
+  ath10k_htt_rx_pktlog_completion_handler ([ath10k_core])
+  ath10k_sdio_napi_poll ([ath10k_sdio])
+  net_rx_action ([kernel.kallsyms])
+  softirqentry_text_start ([kernel.kallsyms])
+  do_softirq ([kernel.kallsyms])
+
+call stack for napi complete and send tcp ack from tcp stack:
+(skb length is about 1500*32 bytes)
+ _tcp_ack_snd_check ([kernel.kallsyms])
+ tcp_v4_do_rcv ([kernel.kallsyms])
+ tcp_v4_rcv ([kernel.kallsyms])
+ local_deliver_finish ([kernel.kallsyms])
+ ip_local_deliver ([kernel.kallsyms])
+ ip_rcv_finish ([kernel.kallsyms])
+ ip_rcv ([kernel.kallsyms])
+ netif_receive_skb_core ([kernel.kallsyms])
+ netif_receive_skb_one_core([kernel.kallsyms])
+ netif_receive_skb ([kernel.kallsyms])
+ netif_receive_skb_internal ([kernel.kallsyms])
+ napi_gro_complete ([kernel.kallsyms])
+ napi_gro_flush ([kernel.kallsyms])
+ napi_complete_done ([kernel.kallsyms])
+ ath10k_sdio_napi_poll ([ath10k_sdio])
+ net_rx_action ([kernel.kallsyms])
+ __softirqentry_text_start ([kernel.kallsyms])
+ do_softirq ([kernel.kallsyms])
 
 Tested with QCA6174 SDIO with firmware
 WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
-Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
-v2: fix incorrect skb tail of rx bundle in ath10k_sdio_mbox_rx_process_packet
-v3: change some code style
-split fix incorrect skb tail of rx bundle to patch "adjust skb length in ath10k_sdio_mbox_rx_packet"
+v2:no change
+v3:change some code style
+ drivers/net/wireless/ath/ath10k/htt.c    |  2 ++
+ drivers/net/wireless/ath/ath10k/htt.h    |  3 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 45 ++++++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/sdio.c   | 33 +++++++++++++++++++++++
+ 4 files changed, 75 insertions(+), 8 deletions(-)
 
- drivers/net/wireless/ath/ath10k/sdio.c | 106 +++++++++++++++++++++------------
- drivers/net/wireless/ath/ath10k/sdio.h |   7 ++-
- 2 files changed, 74 insertions(+), 39 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 127b4e4..f69346f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -157,6 +157,8 @@ int ath10k_htt_connect(struct ath10k_htt *htt)
+ 
+ 	htt->eid = conn_resp.eid;
+ 
++	skb_queue_head_init(&htt->rx_indication_head);
++
+ 	if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
+ 		ep = &ar->htc.endpoint[htt->eid];
+ 		ath10k_htc_setup_tx_req(ep);
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 4851a2e..462a25b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1879,6 +1879,8 @@ struct ath10k_htt {
+ 	struct ath10k *ar;
+ 	enum ath10k_htc_ep_id eid;
+ 
++	struct sk_buff_head rx_indication_head;
++
+ 	u8 target_version_major;
+ 	u8 target_version_minor;
+ 	struct completion target_version_received;
+@@ -2298,6 +2300,7 @@ int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
+ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ 					     struct sk_buff *skb);
+ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
++int ath10k_htt_rx_hl_indication(struct ath10k *ar, int budget);
+ void ath10k_htt_set_tx_ops(struct ath10k_htt *htt);
+ void ath10k_htt_set_rx_ops(struct ath10k_htt *htt);
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 09825b1..71b4afe 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2263,7 +2263,7 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 	if (mpdu_ranges->mpdu_range_status == HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR)
+ 		rx_status->flag |= RX_FLAG_MMIC_ERROR;
+ 
+-	ieee80211_rx_ni(ar->hw, skb);
++	ieee80211_rx_napi(ar->hw, NULL, skb, &ar->napi);
+ 
+ 	/* We have delivered the skb to the upper layers (mac80211) so we
+ 	 * must not free it.
+@@ -3664,14 +3664,12 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_RX_IND:
+-		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL)
+-			return ath10k_htt_rx_proc_rx_ind_hl(htt,
+-							    &resp->rx_ind_hl,
+-							    skb,
+-							    HTT_RX_PN_CHECK,
+-							    HTT_RX_NON_TKIP_MIC);
+-		else
++		if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL) {
+ 			ath10k_htt_rx_proc_rx_ind_ll(htt, &resp->rx_ind);
++		} else {
++			skb_queue_tail(&htt->rx_indication_head, skb);
++			return false;
++		}
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
+ 		struct htt_peer_map_event ev = {
+@@ -3894,6 +3892,37 @@ static int ath10k_htt_rx_deliver_msdu(struct ath10k *ar, int quota, int budget)
+ 	return quota;
+ }
+ 
++int ath10k_htt_rx_hl_indication(struct ath10k *ar, int budget)
++{
++	struct htt_resp *resp;
++	struct ath10k_htt *htt = &ar->htt;
++	struct sk_buff *skb;
++	bool release;
++	int quota = 0;
++
++	for (quota = 0; quota < budget; quota++) {
++		skb = skb_dequeue(&htt->rx_indication_head);
++		if (!skb)
++			break;
++
++		resp = (struct htt_resp *)skb->data;
++
++		release = ath10k_htt_rx_proc_rx_ind_hl(htt,
++						       &resp->rx_ind_hl,
++						       skb,
++						       HTT_RX_PN_CHECK,
++						       HTT_RX_NON_TKIP_MIC);
++
++		if (release)
++			dev_kfree_skb_any(skb);
++
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "rx indication poll pending count:%d\n",
++			   skb_queue_len(&htt->rx_indication_head));
++	}
++	return quota;
++}
++EXPORT_SYMBOL(ath10k_htt_rx_hl_indication);
++
+ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 1127e44..23c998d 100644
+index c641f1b..23e92ea 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -24,6 +24,9 @@
- #include "trace.h"
- #include "sdio.h"
- 
-+#define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
-+#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
-+
- /* inlined helper functions */
- 
- static inline int ath10k_sdio_calc_txrx_padded_len(struct ath10k_sdio *ar_sdio,
-@@ -484,11 +487,11 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
- 	return ret;
- }
- 
--static int ath10k_sdio_mbox_alloc_pkt_bundle(struct ath10k *ar,
--					     struct ath10k_sdio_rx_data *rx_pkts,
--					     struct ath10k_htc_hdr *htc_hdr,
--					     size_t full_len, size_t act_len,
--					     size_t *bndl_cnt)
-+static int ath10k_sdio_mbox_alloc_bundle(struct ath10k *ar,
-+					 struct ath10k_sdio_rx_data *rx_pkts,
-+					 struct ath10k_htc_hdr *htc_hdr,
-+					 size_t full_len, size_t act_len,
-+					 size_t *bndl_cnt)
- {
- 	int ret, i;
- 
-@@ -529,6 +532,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 	size_t full_len, act_len;
- 	bool last_in_bundle;
- 	int ret, i;
-+	int pkt_cnt = 0;
- 
- 	if (n_lookaheads > ATH10K_SDIO_MAX_RX_MSGS) {
- 		ath10k_warn(ar,
-@@ -572,20 +576,22 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 			 */
- 			size_t bndl_cnt;
- 
--			ret = ath10k_sdio_mbox_alloc_pkt_bundle(ar,
--								&ar_sdio->rx_pkts[i],
--								htc_hdr,
--								full_len,
--								act_len,
--								&bndl_cnt);
-+			struct ath10k_sdio_rx_data *rx_pkts =
-+				&ar_sdio->rx_pkts[pkt_cnt];
-+
-+			ret = ath10k_sdio_mbox_alloc_bundle(ar,
-+							    rx_pkts,
-+							    htc_hdr,
-+							    full_len,
-+							    act_len,
-+							    &bndl_cnt);
- 
- 			if (ret) {
- 				ath10k_warn(ar, "alloc_bundle error %d\n", ret);
- 				goto err;
- 			}
- 
--			n_lookaheads += bndl_cnt;
--			i += bndl_cnt;
-+			pkt_cnt += bndl_cnt;
- 			/*Next buffer will be the last in the bundle */
- 			last_in_bundle = true;
- 		}
-@@ -597,7 +603,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 		if (htc_hdr->flags & ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK)
- 			full_len += ATH10K_HIF_MBOX_BLOCK_SIZE;
- 
--		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[i],
-+		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[pkt_cnt],
- 						    act_len,
- 						    full_len,
- 						    last_in_bundle,
-@@ -606,9 +612,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 			ath10k_warn(ar, "alloc_rx_pkt error %d\n", ret);
- 			goto err;
- 		}
-+		pkt_cnt++;
+@@ -1400,6 +1400,9 @@ static void ath10k_rx_indication_async_work(struct work_struct *work)
+ 		spin_lock_bh(&ar_sdio->wr_async_lock_rx);
  	}
  
--	ar_sdio->n_rx_pkts = i;
-+	ar_sdio->n_rx_pkts = pkt_cnt;
- 
- 	return 0;
- 
-@@ -622,10 +629,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 	return ret;
++	if (test_bit(ATH10K_FLAG_CORE_REGISTERED, &ar->dev_flags))
++		napi_schedule(&ar->napi);
++
+ 	spin_unlock_bh(&ar_sdio->wr_async_lock_rx);
  }
  
--static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
--				      struct ath10k_sdio_rx_data *pkt)
-+static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
- {
+@@ -1813,6 +1816,8 @@ static int ath10k_sdio_hif_start(struct ath10k *ar)
  	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct ath10k_sdio_rx_data *pkt = &ar_sdio->rx_pkts[0];
- 	struct sk_buff *skb = pkt->skb;
- 	struct ath10k_htc_hdr *htc_hdr;
  	int ret;
-@@ -633,46 +640,62 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
- 	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
- 				 skb->data, pkt->alloc_len);
  
--	if (!ret) {
--		/* Update actual length. The original length may be incorrect,
--		 * as the FW will bundle multiple packets as long as their sizes
--		 * fit within the same aligned length (pkt->alloc_len).
--		 */
--		htc_hdr = (struct ath10k_htc_hdr *)skb->data;
--		pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
--		if (pkt->act_len <= pkt->alloc_len) {
--			skb_put(skb, pkt->act_len);
--		} else {
--			ath10k_warn(ar, "rx packet too large (%zu > %zu)\n",
--				    pkt->act_len, pkt->alloc_len);
--			ret = -EMSGSIZE;
--		}
-+	if (ret) {
-+		ar_sdio->n_rx_pkts = 0;
-+		ath10k_sdio_mbox_free_rx_pkt(pkt);
-+		return ret;
++	napi_enable(&ar->napi);
++
+ 	/* Sleep 20 ms before HIF interrupts are disabled.
+ 	 * This will give target plenty of time to process the BMI done
+ 	 * request before interrupts are disabled.
+@@ -1951,6 +1956,9 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
  	}
  
-+	htc_hdr = (struct ath10k_htc_hdr *)skb->data;
-+	pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
- 	pkt->status = ret;
-+	skb_put(skb, pkt->act_len);
- 
- 	return ret;
+ 	spin_unlock_bh(&ar_sdio->wr_async_lock);
++
++	napi_synchronize(&ar->napi);
++	napi_disable(&ar->napi);
  }
  
--static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
-+static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
+ #ifdef CONFIG_PM
+@@ -2127,6 +2135,26 @@ static SIMPLE_DEV_PM_OPS(ath10k_sdio_pm_ops, ath10k_sdio_pm_suspend,
+ 
+ #endif /* CONFIG_PM_SLEEP */
+ 
++static int ath10k_sdio_napi_poll(struct napi_struct *ctx, int budget)
++{
++	struct ath10k *ar = container_of(ctx, struct ath10k, napi);
++	int done;
++
++	done = ath10k_htt_rx_hl_indication(ar, budget);
++	ath10k_dbg(ar, ATH10K_DBG_SDIO, "napi poll: done: %d,budget:%d\n", done, budget);
++
++	if (done < budget)
++		napi_complete_done(ctx, done);
++
++	return done;
++}
++
++void ath10k_sdio_init_napi(struct ath10k *ar)
++{
++	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll,
++		       ATH10K_NAPI_BUDGET);
++}
++
+ static int ath10k_sdio_probe(struct sdio_func *func,
+ 			     const struct sdio_device_id *id)
  {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct ath10k_sdio_rx_data *pkt;
-+	struct ath10k_htc_hdr *htc_hdr;
- 	int ret, i;
-+	u32 pkt_offset, virt_pkt_len;
- 
-+	virt_pkt_len = 0;
- 	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
--		ret = ath10k_sdio_mbox_rx_packet(ar,
--						 &ar_sdio->rx_pkts[i]);
-+		virt_pkt_len += ar_sdio->rx_pkts[i].alloc_len;
-+	}
-+
-+	if (virt_pkt_len < ATH10K_SDIO_DMA_BUF_SIZE) {
-+		ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
-+					 ar_sdio->vsg_buffer, virt_pkt_len);
- 		if (ret)
- 			goto err;
-+	} else {
-+		ath10k_err(ar, "size exceeding limit %d\n", virt_pkt_len);
-+	}
-+
-+	pkt_offset = 0;
-+	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
-+		pkt = &ar_sdio->rx_pkts[i];
-+		htc_hdr = (struct ath10k_htc_hdr *)(ar_sdio->vsg_buffer + pkt_offset);
-+		pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
-+
-+		skb_put_data(pkt->skb, htc_hdr, pkt->act_len);
-+		pkt->status = 0;
-+		pkt_offset += pkt->alloc_len;
+@@ -2152,6 +2180,8 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		return -ENOMEM;
  	}
  
- 	return 0;
- 
- err:
- 	/* Free all packets that was not successfully fetched. */
--	for (; i < ar_sdio->n_rx_pkts; i++)
-+	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
- 		ath10k_sdio_mbox_free_rx_pkt(&ar_sdio->rx_pkts[i]);
- 
-+	ar_sdio->n_rx_pkts = 0;
++	ath10k_sdio_init_napi(ar);
 +
- 	return ret;
- }
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+ 		   "sdio new func %d vendor 0x%x device 0x%x block 0x%x/0x%x\n",
+ 		   func->num, func->vendor, func->device,
+@@ -2272,6 +2302,9 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+ 		   func->num, func->vendor, func->device);
  
-@@ -715,7 +738,10 @@ static int ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
- 			 */
- 			*done = false;
- 
--		ret = ath10k_sdio_mbox_rx_fetch(ar);
-+		if (ar_sdio->n_rx_pkts > 1)
-+			ret = ath10k_sdio_mbox_rx_fetch_bundle(ar);
-+		else
-+			ret = ath10k_sdio_mbox_rx_fetch(ar);
- 
- 		/* Process fetched packets. This will potentially update
- 		 * n_lookaheads depending on if the packets contain lookahead
-@@ -1123,7 +1149,7 @@ static int ath10k_sdio_bmi_get_rx_lookahead(struct ath10k *ar)
- 					 MBOX_HOST_INT_STATUS_ADDRESS,
- 					 &rx_word);
- 		if (ret) {
--			ath10k_warn(ar, "unable to read RX_LOOKAHEAD_VALID: %d\n", ret);
-+			ath10k_warn(ar, "unable to read rx_lookahd: %d\n", ret);
- 			return ret;
- 		}
- 
-@@ -2018,6 +2044,12 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_core_destroy;
- 	}
- 
-+	ar_sdio->vsg_buffer = devm_kmalloc(ar->dev, ATH10K_SDIO_VSG_BUF_SIZE, GFP_KERNEL);
-+	if (!ar_sdio->vsg_buffer) {
-+		ret = -ENOMEM;
-+		goto err_core_destroy;
-+	}
+ 	ath10k_core_unregister(ar);
 +
- 	ar_sdio->irq_data.irq_en_reg =
- 		devm_kzalloc(ar->dev, sizeof(struct ath10k_sdio_irq_enable_regs),
- 			     GFP_KERNEL);
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index b8c7ac0..4896eca 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -138,8 +138,8 @@ struct ath10k_sdio_irq_proc_regs {
- 	u8 rx_lookahead_valid;
- 	u8 host_int_status2;
- 	u8 gmbox_rx_avail;
--	__le32 rx_lookahead[2];
--	__le32 rx_gmbox_lookahead_alias[2];
-+	__le32 rx_lookahead[2 * ATH10K_HIF_MBOX_NUM_MAX];
-+	__le32 int_status_enable;
- };
- 
- struct ath10k_sdio_irq_enable_regs {
-@@ -196,6 +196,9 @@ struct ath10k_sdio {
- 	struct ath10k *ar;
- 	struct ath10k_sdio_irq_data irq_data;
- 
-+	/* temporary buffer for sdio read */
-+	u8 *vsg_buffer;
++	netif_napi_del(&ar->napi);
 +
- 	/* temporary buffer for BMI requests */
- 	u8 *bmi_buf;
+ 	ath10k_core_destroy(ar);
  
+ 	flush_workqueue(ar_sdio->workqueue);
 -- 
 1.9.1
 
