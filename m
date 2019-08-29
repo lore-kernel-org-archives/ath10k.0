@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i34hX-0004aT-0D
- for ath10k@lists.infradead.org; Wed, 28 Aug 2019 20:37:57 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v3 1/8] ath10k: adjust skb length in ath10k_sdio_mbox_rx_packet
-Date: Wed, 28 Aug 2019 21:16:10 +0800
-Message-Id: <1566998177-2658-2-git-send-email-wgong@codeaurora.org>
-In-Reply-To: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
-References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
+Received: from icp-osb-irony-out4.external.iinet.net.au ([203.59.1.220])
+ by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
+ id 1i3E0Z-0005x0-Qx
+ for ath10k@lists.infradead.org; Thu, 29 Aug 2019 06:34:13 +0000
+From: Greg Ungerer <gerg@kernel.org>
+Subject: problems with a 9377 based SDIO module
+Message-ID: <176a3a2d-ff81-3b72-86af-73c70df729f4@kernel.org>
+Date: Thu, 29 Aug 2019 16:33:58 +1000
+MIME-Version: 1.0
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,102 +17,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: erik.stromdahl@gmail.com
 
-When the FW bundles multiple packets, pkt->act_len may be incorrect
-as it refers to the first packet only (however, the FW will only
-bundle packets that fit into the same pkt->alloc_len).
 
-Before this patch, the skb length would be set (incorrectly) to
-pkt->act_len in ath10k_sdio_mbox_rx_packet, and then later manually
-adjusted in ath10k_sdio_mbox_rx_process_packet.
+Hi Erik,
 
-The first problem is that ath10k_sdio_mbox_rx_process_packet does not
-use proper skb_put commands to adjust the length (it directly changes
-skb->len), so we end up with a mismatch between skb->head + skb->tail
-and skb->data + skb->len. This is quite serious, and causes corruptions
-in the TCP stack, as the stack tries to coalesce packets, and relies
-on skb->tail being correct (that is, skb_tail_pointer must point to
-the first byte_after_ the data).
+I have a Compex WSD377 WiFi module with SDIO interface on a new
+iMX6 based platform. I am trying to get the module going but am
+having problems with it at probe/init time.
 
-Instead of re-adjusting the size in ath10k_sdio_mbox_rx_process_packet,
-this moves the code to ath10k_sdio_mbox_rx_packet, and also add a
-bounds check, as skb_put would crash the kernel if not enough space is
-available.
+Ultimately what I see at ath10k_sdio module load time is:
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+<4>ath10k_sdio mmc0:0001:1: WARNING: ath10k SDIO support is incomplete, don't expect anything to work!
+<6>ath10k_sdio mmc0:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id 0x00000000 sub 0000:0000
+<6>ath10k_sdio mmc0:0001:1: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
+<6>ath10k_sdio mmc0:0001:1: firmware ver WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5 features ignore-otp crc32 7746e551
+<3>ath10k_sdio mmc0:0001:1: failed to fetch board data for bus=sdio,vendor=0271,device=0701,subsystem-vendor=0000,subsystem-device=0000 from ath10k/QCA9377/hw1.0/board-2.bin
+<6>ath10k_sdio mmc0:0001:1: board_file api 1 bmi_id N/A crc32 78c48ff6
+<4>ath10k_sdio mmc0:0001:1: failed to write to address 0x828: -84
+<4>ath10k_sdio mmc0:0001:1: unable to disable sdio interrupts: -84
+<3>ath10k_sdio mmc0:0001:1: could not start HIF: -84
+<3>ath10k_sdio mmc0:0001:1: could not init core (-84)
+<4>mmc0: queuing unknown CIS tuple 0x01 (3 bytes)
+<4>mmc0: queuing unknown CIS tuple 0x1a (5 bytes)
+<4>mmc0: queuing unknown CIS tuple 0x1b (8 bytes)
+<4>mmc0: queuing unknown CIS tuple 0x14 (0 bytes)
+<3>ath10k_sdio mmc0:0001:1: could not probe fw (-84)
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
-v2:no this patch
-v2:new added
- drivers/net/wireless/ath/ath10k/sdio.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+Tracing I can see that a fair bit of IO has gone on when it finally
+gets to the "failed to write to address 0x828: -84". I assume the
+bulk writes up to that point are the firmware download.
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 8ed4fbd..1127e44 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -381,16 +381,11 @@ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
- 	struct ath10k_htc_hdr *htc_hdr = (struct ath10k_htc_hdr *)skb->data;
- 	bool trailer_present = htc_hdr->flags & ATH10K_HTC_FLAG_TRAILER_PRESENT;
- 	enum ath10k_htc_ep_id eid;
--	u16 payload_len;
- 	u8 *trailer;
- 	int ret;
- 
--	payload_len = le16_to_cpu(htc_hdr->len);
--	skb->len = payload_len + sizeof(struct ath10k_htc_hdr);
--
- 	if (trailer_present) {
--		trailer = skb->data + sizeof(*htc_hdr) +
--			  payload_len - htc_hdr->trailer_len;
-+		trailer = skb->data + skb->len - htc_hdr->trailer_len;
- 
- 		eid = pipe_id_to_eid(htc_hdr->eid);
- 
-@@ -632,13 +627,29 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
- 	struct sk_buff *skb = pkt->skb;
-+	struct ath10k_htc_hdr *htc_hdr;
- 	int ret;
- 
- 	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
- 				 skb->data, pkt->alloc_len);
-+
-+	if (!ret) {
-+		/* Update actual length. The original length may be incorrect,
-+		 * as the FW will bundle multiple packets as long as their sizes
-+		 * fit within the same aligned length (pkt->alloc_len).
-+		 */
-+		htc_hdr = (struct ath10k_htc_hdr *)skb->data;
-+		pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
-+		if (pkt->act_len <= pkt->alloc_len) {
-+			skb_put(skb, pkt->act_len);
-+		} else {
-+			ath10k_warn(ar, "rx packet too large (%zu > %zu)\n",
-+				    pkt->act_len, pkt->alloc_len);
-+			ret = -EMSGSIZE;
-+		}
-+	}
-+
- 	pkt->status = ret;
--	if (!ret)
--		skb_put(skb, pkt->act_len);
- 
- 	return ret;
- }
--- 
-1.9.1
+I am using a linux-5.2 kernel with your patches at
+https://github.com/erstrom/linux-ath.git, v5.2-ath10k-sdio branch.
+
+My primary concern is if I am using the write firmware.
+
+I have a firmware-sdio-5.bin which is the QCA9377/hw1.0/untested/firmware-sdio-5.bin_WLAN.TF.1.1.1-00061-QCATFSWPZ-1
+file from the ath10k-firmware tree at https://github.com/kvalo/ath10k-firmware.git.
+And the board-sdio.bin which is the bdwlan30.bin from https://github.com/boundarydevices/qca-firmware.git.
+
+I ended up with those from comments made in
+https://ath10k.infradead.narkive.com/lgpFutCZ/patch-00-11-sdio-support-for-ath10k
+But maybe I am off-track here?
+
+Does the kernel trace give any clues as what the problem may be?
+Any other ideas?
+
+Regards
+Greg
 
 
 _______________________________________________
