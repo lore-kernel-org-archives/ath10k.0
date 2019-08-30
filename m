@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
+Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3X0l-0000P0-UQ
- for ath10k@lists.infradead.org; Fri, 30 Aug 2019 02:51:41 +0000
-Subject: RE: [PATCH v2 5/7] ath10k: add htt TX bundle for sdio
+ id 1i3X1P-0000Uk-25
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2019 02:52:25 +0000
+Subject: RE: [PATCH v2 6/7] ath10k: enable alt data of TX path for sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Fri, 30 Aug 2019 02:51:36 +0000
-Message-ID: <ad1a5a4649aa49a78021a9f9628b17f1@aptaiexm02f.ap.qualcomm.com>
+Date: Fri, 30 Aug 2019 02:52:15 +0000
+Message-ID: <46f55dc93a744069a4107e1bce6674a0@aptaiexm02f.ap.qualcomm.com>
 References: <1566903707-27536-1-git-send-email-wgong@codeaurora.org>
- <1566903707-27536-6-git-send-email-wgong@codeaurora.org>
- <CANMq1KAQncoZ3yX5Sfsc5tR8z9tJyA=jFF4_F1K=hLRe51OD4g@mail.gmail.com>
- <2ebd81574092476a952ddeb671d1bfcf@aptaiexm02f.ap.qualcomm.com>
-In-Reply-To: <2ebd81574092476a952ddeb671d1bfcf@aptaiexm02f.ap.qualcomm.com>
+ <1566903707-27536-7-git-send-email-wgong@codeaurora.org>
+ <CANMq1KDJSwyzz2y-yadJPnGijm=G6y0zg1tMZDyacH8a990BOg@mail.gmail.com>
+In-Reply-To: <CANMq1KDJSwyzz2y-yadJPnGijm=G6y0zg1tMZDyacH8a990BOg@mail.gmail.com>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -26,19 +25,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@qti.qualcomm.com>, Nicolas Boichat <drinkcat@chromium.org>, Wen Gong <wgong@codeaurora.org>
+To: Nicolas Boichat <drinkcat@chromium.org>, Wen Gong <wgong@codeaurora.org>
 Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 > -----Original Message-----
-> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
-> Sent: Wednesday, August 28, 2019 9:03 PM
-> To: Nicolas Boichat <drinkcat@chromium.org>; Wen Gong
-> <wgong@codeaurora.org>
+> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Nicolas
+> Boichat
+> Sent: Wednesday, August 28, 2019 1:38 PM
+> To: Wen Gong <wgong@codeaurora.org>
 > Cc: open list:NETWORKING DRIVERS (WIRELESS) <linux-
 > wireless@vger.kernel.org>; ath10k@lists.infradead.org
-> Subject: [EXT] RE: [PATCH v2 5/7] ath10k: add htt TX bundle for sdio
+> Subject: [EXT] Re: [PATCH v2 6/7] ath10k: enable alt data of TX path for sdio
 > 
-Changed and V3 sent, https://patchwork.kernel.org/patch/11121539/ 
+Changed and V3 sent, https://patchwork.kernel.org/patch/11122141/
+
+> 
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
