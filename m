@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3Wy4-000709-L4
- for ath10k@lists.infradead.org; Fri, 30 Aug 2019 02:48:54 +0000
-Subject: RE: [PATCH v2 1/7] ath10k: enable RX bundle receive for sdio
+ id 1i3WyE-000748-Ry
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2019 02:49:04 +0000
+Subject: RE: [PATCH v2 2/7] ath10k: change max RX bundle size from 8 to 32 for
+ sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Fri, 30 Aug 2019 02:48:41 +0000
-Message-ID: <fce5391f6279436fb3a2a1d9b408c70b@aptaiexm02f.ap.qualcomm.com>
+Date: Fri, 30 Aug 2019 02:48:54 +0000
+Message-ID: <9821fb44c1b34b2890e0aa8b422d4c67@aptaiexm02f.ap.qualcomm.com>
 References: <1566903707-27536-1-git-send-email-wgong@codeaurora.org>
- <1566903707-27536-2-git-send-email-wgong@codeaurora.org>
- <CANMq1KBLX3rKs6q2SmKhMctRAKF71y0K3it5kTfR0xG5Qk8MLg@mail.gmail.com>
-In-Reply-To: <CANMq1KBLX3rKs6q2SmKhMctRAKF71y0K3it5kTfR0xG5Qk8MLg@mail.gmail.com>
+ <1566903707-27536-3-git-send-email-wgong@codeaurora.org>
+ <CANMq1KAntBMo40jdv3T5k00EfjPzO1XvVdjL3oo2V9Eot1H4jg@mail.gmail.com>
+In-Reply-To: <CANMq1KAntBMo40jdv3T5k00EfjPzO1XvVdjL3oo2V9Eot1H4jg@mail.gmail.com>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -30,14 +31,13 @@ Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, 
 
 -----Original Message-----
 From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Nicolas Boichat
-Sent: Wednesday, August 28, 2019 1:09 PM
+Sent: Wednesday, August 28, 2019 1:14 PM
 To: Wen Gong <wgong@codeaurora.org>
 Cc: open list:NETWORKING DRIVERS (WIRELESS) <linux-wireless@vger.kernel.org>; ath10k@lists.infradead.org
-Subject: [EXT] Re: [PATCH v2 1/7] ath10k: enable RX bundle receive for sdio
+Subject: [EXT] Re: [PATCH v2 2/7] ath10k: change max RX bundle size from 8 to 32 for sdio
 
-Changed and V3 sent, split to 2 patches
-https://patchwork.kernel.org/patch/11121751/
-https://patchwork.kernel.org/patch/11119355/
+Changed and V3 sent, https://patchwork.kernel.org/patch/11122175/
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
