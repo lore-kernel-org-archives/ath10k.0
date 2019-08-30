@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3X1P-0000Uk-25
- for ath10k@lists.infradead.org; Fri, 30 Aug 2019 02:52:25 +0000
-Subject: RE: [PATCH v2 6/7] ath10k: enable alt data of TX path for sdio
+ id 1i3X1y-0000an-R2
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2019 02:52:56 +0000
+Subject: RE: [PATCH v2 7/7] ath10k: enable napi on RX path for sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Fri, 30 Aug 2019 02:52:15 +0000
-Message-ID: <46f55dc93a744069a4107e1bce6674a0@aptaiexm02f.ap.qualcomm.com>
+Date: Fri, 30 Aug 2019 02:52:51 +0000
+Message-ID: <dd7f7cd664e64ee59965117ffd7c2c7e@aptaiexm02f.ap.qualcomm.com>
 References: <1566903707-27536-1-git-send-email-wgong@codeaurora.org>
- <1566903707-27536-7-git-send-email-wgong@codeaurora.org>
- <CANMq1KDJSwyzz2y-yadJPnGijm=G6y0zg1tMZDyacH8a990BOg@mail.gmail.com>
-In-Reply-To: <CANMq1KDJSwyzz2y-yadJPnGijm=G6y0zg1tMZDyacH8a990BOg@mail.gmail.com>
+ <1566903707-27536-8-git-send-email-wgong@codeaurora.org>
+ <CANMq1KCQZCOw8kHn2MJfAT9fWoLCmz2jFWqHzd=9QOgZ7MeaXQ@mail.gmail.com>
+In-Reply-To: <CANMq1KCQZCOw8kHn2MJfAT9fWoLCmz2jFWqHzd=9QOgZ7MeaXQ@mail.gmail.com>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -31,15 +31,14 @@ Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, 
 > -----Original Message-----
 > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Nicolas
 > Boichat
-> Sent: Wednesday, August 28, 2019 1:38 PM
+> Sent: Wednesday, August 28, 2019 1:40 PM
 > To: Wen Gong <wgong@codeaurora.org>
 > Cc: open list:NETWORKING DRIVERS (WIRELESS) <linux-
 > wireless@vger.kernel.org>; ath10k@lists.infradead.org
-> Subject: [EXT] Re: [PATCH v2 6/7] ath10k: enable alt data of TX path for sdio
+> Subject: [EXT] Re: [PATCH v2 7/7] ath10k: enable napi on RX path for sdio
 > 
-Changed and V3 sent, https://patchwork.kernel.org/patch/11122141/
+Changed and v3 sent, https://patchwork.kernel.org/patch/11122183/
 
-> 
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
