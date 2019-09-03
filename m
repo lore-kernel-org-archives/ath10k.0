@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.taht.net ([176.58.107.8])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i59Zb-0006ad-P7
- for ath10k@lists.infradead.org; Tue, 03 Sep 2019 14:14:22 +0000
+ id 1i5BNR-000328-0L
+ for ath10k@lists.infradead.org; Tue, 03 Sep 2019 16:09:56 +0000
+From: Dave Taht <dave@taht.net>
+Subject: Re: [PATCH 2/7] ath10k: change max RX bundle size from 8 to 32 for
+ sdio
+References: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
+ <1566302108-18219-3-git-send-email-wgong@codeaurora.org>
+Date: Tue, 03 Sep 2019 09:09:35 -0700
+In-Reply-To: <1566302108-18219-3-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Tue, 20 Aug 2019 19:55:03 +0800")
+Message-ID: <87k1apnyyo.fsf@taht.net>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] Fix a NULL-ptr-deref bug in
- ath10k_usb_alloc_urb_from_pipe
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190804003101.11541-1-benquike@gmail.com>
-References: <20190804003101.11541-1-benquike@gmail.com>
-Message-Id: <20190903141418.225AE60592@smtp.codeaurora.org>
-Date: Tue,  3 Sep 2019 14:14:17 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +25,100 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Hui Peng <benquike@gmail.com>
-Cc: Mathias Payer <mathias.payer@nebelwelt.net>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net
+To: Wen Gong <wgong@qti.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
 
-Hui Peng <benquike@gmail.com> wrote:
 
-> The `ar_usb` field of `ath10k_usb_pipe_usb_pipe` objects
-> are initialized to point to the containing `ath10k_usb` object
-> according to endpoint descriptors read from the device side, as shown
-> below in `ath10k_usb_setup_pipe_resources`:
-> 
-> for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
->         endpoint = &iface_desc->endpoint[i].desc;
-> 
->         // get the address from endpoint descriptor
->         pipe_num = ath10k_usb_get_logical_pipe_num(ar_usb,
->                                                 endpoint->bEndpointAddress,
->                                                 &urbcount);
->         ......
->         // select the pipe object
->         pipe = &ar_usb->pipes[pipe_num];
-> 
->         // initialize the ar_usb field
->         pipe->ar_usb = ar_usb;
-> }
-> 
-> The driver assumes that the addresses reported in endpoint
-> descriptors from device side  to be complete. If a device is
-> malicious and does not report complete addresses, it may trigger
-> NULL-ptr-deref `ath10k_usb_alloc_urb_from_pipe` and
-> `ath10k_usb_free_urb_to_pipe`.
-> 
-> This patch fixes the bug by preventing potential NULL-ptr-deref.
-> 
-> Signed-off-by: Hui Peng <benquike@gmail.com>
-> Reported-by: Hui Peng <benquike@gmail.com>
-> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In terms of deeply grokking what increasing buffering to achieve high
+bandwidth on a testbench, vs what it can do to clobber latency in the
+real world at low bandwidths, I tend to point folk at:
 
-This causes a new warning, please build test your patches.
+https://www.youtube.com/watch?v=Rb-UnHDw02o&t=25m40s
 
-In file included from ./include/uapi/linux/posix_types.h:5,
-                 from ./include/uapi/linux/types.h:14,
-                 from ./include/linux/types.h:6,
-                 from ./include/linux/list.h:5,
-                 from ./include/linux/module.h:9,
-                 from drivers/net/wireless/ath/ath10k/usb.c:8:
-drivers/net/wireless/ath/ath10k/usb.c: In function 'ath10k_usb_free_urb_to_pipe':
-./include/linux/stddef.h:8:14: warning: 'return' with a value, in function returning void
- #define NULL ((void *)0)
-              ^
-drivers/net/wireless/ath/ath10k/usb.c:64:10: note: in expansion of macro 'NULL'
-   return NULL;
-          ^~~~
-drivers/net/wireless/ath/ath10k/usb.c:57:13: note: declared here
- static void ath10k_usb_free_urb_to_pipe(struct ath10k_usb_pipe *pipe,
-             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+where I got a whole bunch of hackers to stand up and act like packets
+in an aggregating FIFO wifi queue.
 
-Patch set to Changes Requested.
+This key section is only 8 minutes long, and I promise, y'all laugh
+at least 3 times at the demonstration.
 
--- 
-https://patchwork.kernel.org/patch/11074657/
+At the time, also, the ath10k was so overbuffered that on one test
+I could try to start 100 flows, and only get five.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+https://lwn.net/Articles/705884/
 
+and on my slides:
+
+https://blog.linuxplumbersconf.org/2016/ocw//system/presentations/3963/original/linuxplumbers_wifi_latency-3Nov.pdf
+
+
+Wen Gong <wgong@codeaurora.org> writes:
+
+> The max bundle size support by firmware is 32, change it from 8 to 32
+> will help performance. This results in significant performance
+> improvement on RX path.
+>
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/htc.h  | 2 +-
+>  drivers/net/wireless/ath/ath10k/sdio.c | 5 +++--
+>  drivers/net/wireless/ath/ath10k/sdio.h | 4 ++--
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+> index f55d3ca..8c79b9e 100644
+> --- a/drivers/net/wireless/ath/ath10k/htc.h
+> +++ b/drivers/net/wireless/ath/ath10k/htc.h
+> @@ -39,7 +39,7 @@
+>   * 4-byte aligned.
+>   */
+>  
+> -#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        8
+> +#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        32
+>  
+>  enum ath10k_htc_tx_flags {
+>  	ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE = 0x01,
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index d9395f0..baa6051 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -24,8 +24,8 @@
+>  #include "trace.h"
+>  #include "sdio.h"
+>  
+> -#define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
+> -#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
+> +#define ATH10K_SDIO_DMA_BUF_SIZE	(64 * 1024)
+> +#define ATH10K_SDIO_VSG_BUF_SIZE	(64 * 1024)
+>  
+>  /* inlined helper functions */
+>  
+> @@ -501,6 +501,7 @@ static int ath10k_sdio_mbox_alloc_bundle(struct ath10k *ar,
+>  	int ret, i;
+>  
+>  	*bndl_cnt = FIELD_GET(ATH10K_HTC_FLAG_BUNDLE_MASK, htc_hdr->flags);
+> +	*bndl_cnt += (FIELD_GET(GENMASK(3, 2), htc_hdr->flags) << 4);
+>  
+>  	if (*bndl_cnt > HTC_HOST_MAX_MSG_PER_RX_BUNDLE) {
+>  		ath10k_warn(ar,
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+> index 4896eca..3ca76c7 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.h
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.h
+> @@ -89,10 +89,10 @@
+>   * to the maximum value (HTC_HOST_MAX_MSG_PER_RX_BUNDLE).
+>   *
+>   * in this case the driver must allocate
+> - * (HTC_HOST_MAX_MSG_PER_RX_BUNDLE * HTC_HOST_MAX_MSG_PER_RX_BUNDLE) skb's.
+> + * (HTC_HOST_MAX_MSG_PER_RX_BUNDLE * 2) skb's.
+>   */
+>  #define ATH10K_SDIO_MAX_RX_MSGS \
+> -	(HTC_HOST_MAX_MSG_PER_RX_BUNDLE * HTC_HOST_MAX_MSG_PER_RX_BUNDLE)
+> +	(HTC_HOST_MAX_MSG_PER_RX_BUNDLE * 2)
+>  
+>  #define ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL   0x00000868u
+>  #define ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_OFF 0xFFFEFFFF
 
 _______________________________________________
 ath10k mailing list
