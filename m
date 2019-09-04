@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5LAd-0006GB-TE
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:37:21 +0000
-Subject: RE: [PATCH 7/7] ath10k: enable napi on RX path for sdio
+ id 1i5LFc-0007id-55
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:42:29 +0000
+Subject: RE: [PATCH v3 1/8] ath10k: adjust skb length in
+ ath10k_sdio_mbox_rx_packet
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 4 Sep 2019 02:37:16 +0000
-Message-ID: <2f1d0d1cdd6d4f9097304d52ff3d3c98@aptaiexm02f.ap.qualcomm.com>
-References: <1566302108-18219-1-git-send-email-wgong@codeaurora.org>
- <1566302108-18219-8-git-send-email-wgong@codeaurora.org>
-In-Reply-To: <1566302108-18219-8-git-send-email-wgong@codeaurora.org>
+Date: Wed, 4 Sep 2019 02:42:24 +0000
+Message-ID: <f56d38971787410f8518e4c2c7964908@aptaiexm02f.ap.qualcomm.com>
+References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
+ <1566998177-2658-2-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1566998177-2658-2-git-send-email-wgong@codeaurora.org>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -29,13 +30,14 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
 > -----Original Message-----
 > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
-> Sent: Tuesday, August 20, 2019 7:55 PM
+> Sent: Wednesday, August 28, 2019 9:16 PM
 > To: ath10k@lists.infradead.org
 > Cc: linux-wireless@vger.kernel.org
-> Subject: [EXT] [PATCH 7/7] ath10k: enable napi on RX path for sdio
+> Subject: [EXT] [PATCH v3 1/8] ath10k: adjust skb length in
+> ath10k_sdio_mbox_rx_packet
 > 
-Patch v2 sent, https://patchwork.kernel.org/patch/11116669/
-
+Patch v4 sent, https://patchwork.kernel.org/patch/11126221/
+> 
 > 
 > _______________________________________________
 > ath10k mailing list
