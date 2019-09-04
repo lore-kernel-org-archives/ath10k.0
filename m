@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5LLN-000192-AT
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:48:26 +0000
-Subject: RE: [PATCH v3 2/8] ath10k: enable RX bundle receive for sdio
+ id 1i5LN8-0002Tw-9B
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:50:15 +0000
+Subject: RE: [PATCH v4 3/8] ath10k: change max RX bundle size from 8 to 32 for
+ sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 4 Sep 2019 02:48:17 +0000
-Message-ID: <f1c93bdef05a4c5a88a29d98778d7def@aptaiexm02f.ap.qualcomm.com>
-References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
- <1566998177-2658-3-git-send-email-wgong@codeaurora.org>
-In-Reply-To: <1566998177-2658-3-git-send-email-wgong@codeaurora.org>
+Date: Wed, 4 Sep 2019 02:50:10 +0000
+Message-ID: <f70df46709bc4badb36c94e2dd8a49a9@aptaiexm02f.ap.qualcomm.com>
+References: <1567416146-14403-1-git-send-email-wgong@codeaurora.org>
+ <1567416146-14403-4-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1567416146-14403-4-git-send-email-wgong@codeaurora.org>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -29,12 +30,13 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
 > -----Original Message-----
 > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
-> Sent: Wednesday, August 28, 2019 9:16 PM
+> Sent: Monday, September 2, 2019 5:22 PM
 > To: ath10k@lists.infradead.org
 > Cc: linux-wireless@vger.kernel.org
-> Subject: [EXT] [PATCH v3 2/8] ath10k: enable RX bundle receive for sdio
+> Subject: [EXT] [PATCH v4 3/8] ath10k: change max RX bundle size from 8 to
+> 32 for sdio
 > 
-Patch v4 sent, https://patchwork.kernel.org/patch/11126223/
+Patch v4 sent, https://patchwork.kernel.org/patch/11126225/
 > 
 > 
 > _______________________________________________
