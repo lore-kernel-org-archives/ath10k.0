@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
+Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5LGv-00080F-NE
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:43:51 +0000
+ id 1i5LLN-000192-AT
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:48:26 +0000
 Subject: RE: [PATCH v3 2/8] ath10k: enable RX bundle receive for sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 4 Sep 2019 02:43:41 +0000
-Message-ID: <c121be75ba8f48d496d5a4fce7354059@aptaiexm02f.ap.qualcomm.com>
+Date: Wed, 4 Sep 2019 02:48:17 +0000
+Message-ID: <f1c93bdef05a4c5a88a29d98778d7def@aptaiexm02f.ap.qualcomm.com>
 References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
  <1566998177-2658-3-git-send-email-wgong@codeaurora.org>
 In-Reply-To: <1566998177-2658-3-git-send-email-wgong@codeaurora.org>
@@ -35,8 +35,6 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 > Subject: [EXT] [PATCH v3 2/8] ath10k: enable RX bundle receive for sdio
 > 
 Patch v4 sent, https://patchwork.kernel.org/patch/11126223/
-
-> 1.9.1
 > 
 > 
 > _______________________________________________
