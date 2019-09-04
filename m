@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5LSL-00048R-JE
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:55:39 +0000
-Subject: RE: [PATCH v3 4/8] ath10k: add workqueue for RX path of sdio
+ id 1i5LSN-00048R-N7
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:55:41 +0000
+Subject: RE: [PATCH v3 5/8] ath10k: disable TX complete indication of htt for
+ sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 4 Sep 2019 02:53:56 +0000
-Message-ID: <69b89708f046420793e4aa5ac4dd2562@aptaiexm02f.ap.qualcomm.com>
+Date: Wed, 4 Sep 2019 02:54:58 +0000
+Message-ID: <9bafbc777b224f5180ddec0d0ab25b31@aptaiexm02f.ap.qualcomm.com>
 References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
- <1566998177-2658-5-git-send-email-wgong@codeaurora.org>
-In-Reply-To: <1566998177-2658-5-git-send-email-wgong@codeaurora.org>
+ <1566998177-2658-6-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1566998177-2658-6-git-send-email-wgong@codeaurora.org>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -32,9 +33,11 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 > Sent: Wednesday, August 28, 2019 9:16 PM
 > To: ath10k@lists.infradead.org
 > Cc: linux-wireless@vger.kernel.org
-> Subject: [EXT] [PATCH v3 4/8] ath10k: add workqueue for RX path of sdio
+> Subject: [EXT] [PATCH v3 5/8] ath10k: disable TX complete indication of htt
+> for sdio
+Patch v4 sent, https://patchwork.kernel.org/patch/11126231/
 > 
-Patch v4 sent, https://patchwork.kernel.org/patch/11126229/
+> 
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
