@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5Pxv-0000Tf-Ap
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 07:44:33 +0000
-From: zhong jiang <zhongjiang@huawei.com>
-Subject: [PATCH] ath10k: Use ARRAY_SIZE instead of dividing sizeof array with
- sizeof an element
-Date: Wed, 4 Sep 2019 15:41:18 +0800
-Message-ID: <1567582878-18739-1-git-send-email-zhongjiang@huawei.com>
-MIME-Version: 1.0
+ id 1i5R8i-0008GJ-PV
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 08:59:46 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v2] mac80211: Store max_mtu in ieee80211_hw
+Date: Wed,  4 Sep 2019 16:58:04 +0800
+Message-Id: <1567587484-31930-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,36 +15,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net
-Cc: zhongjiang@huawei.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, netdev@vger.kernel.org
+To: ath10k@lists.infradead.org, johannes@sipsolutions.net
+Cc: linux-wireless@vger.kernel.org
 
-With the help of Coccinelle, ARRAY_SIZE can be replaced in ath10k_snoc_wlan_enable.
+Make it possibly for drivers to adjust the default mat_mtu
+by storing it in the hardware struct.
 
-Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v2: change to set max_mtu to IEEE80211_MAX_DATA_LEN in alloc_hw
+ include/net/mac80211.h | 3 +++
+ net/mac80211/iface.c   | 2 +-
+ net/mac80211/main.c    | 1 +
+ 3 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index b491361..49fc044 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -976,8 +976,7 @@ static int ath10k_snoc_wlan_enable(struct ath10k *ar,
- 				  sizeof(struct ath10k_svc_pipe_cfg);
- 	cfg.ce_svc_cfg = (struct ath10k_svc_pipe_cfg *)
- 		&target_service_to_ce_map_wlan;
--	cfg.num_shadow_reg_cfg = sizeof(target_shadow_reg_cfg_map) /
--					sizeof(struct ath10k_shadow_reg_cfg);
-+	cfg.num_shadow_reg_cfg = ARRAY_SIZE(target_shadow_reg_cfg_map);
- 	cfg.shadow_reg_cfg = (struct ath10k_shadow_reg_cfg *)
- 		&target_shadow_reg_cfg_map;
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index d26da01..8545b03 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -2454,6 +2454,8 @@ enum ieee80211_hw_flags {
+  *
+  * @weight_multiplier: Driver specific airtime weight multiplier used while
+  *	refilling deficit of each TXQ.
++ *
++ * @max_mtu: the max mtu could be set.
+  */
+ struct ieee80211_hw {
+ 	struct ieee80211_conf conf;
+@@ -2491,6 +2493,7 @@ struct ieee80211_hw {
+ 	u8 max_nan_de_entries;
+ 	u8 tx_sk_pacing_shift;
+ 	u8 weight_multiplier;
++	u32 max_mtu;
+ };
  
+ static inline bool _ieee80211_hw_check(struct ieee80211_hw *hw,
+diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
+index 06aac0a..32d87f0 100644
+--- a/net/mac80211/iface.c
++++ b/net/mac80211/iface.c
+@@ -1877,7 +1877,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
+ 
+ 		/* MTU range: 256 - 2304 */
+ 		ndev->min_mtu = 256;
+-		ndev->max_mtu = IEEE80211_MAX_DATA_LEN;
++		ndev->max_mtu = local->hw.max_mtu;
+ 
+ 		ret = register_netdevice(ndev);
+ 		if (ret) {
+diff --git a/net/mac80211/main.c b/net/mac80211/main.c
+index 85e4162..89a6a09 100644
+--- a/net/mac80211/main.c
++++ b/net/mac80211/main.c
+@@ -638,6 +638,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
+ 					 IEEE80211_RADIOTAP_VHT_KNOWN_BANDWIDTH;
+ 	local->hw.uapsd_queues = IEEE80211_DEFAULT_UAPSD_QUEUES;
+ 	local->hw.uapsd_max_sp_len = IEEE80211_DEFAULT_MAX_SP_LEN;
++	local->hw.max_mtu = IEEE80211_MAX_DATA_LEN;
+ 	local->user_power_level = IEEE80211_UNSET_POWER_LEVEL;
+ 	wiphy->ht_capa_mod_mask = &mac80211_ht_capa_mod_mask;
+ 	wiphy->vht_capa_mod_mask = &mac80211_vht_capa_mod_mask;
 -- 
-1.7.12.4
+1.9.1
 
 
 _______________________________________________
