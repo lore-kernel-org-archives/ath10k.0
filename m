@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5OaJ-000131-Ut
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 06:16:05 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] mac80211: Store max_mtu in ieee80211_hw
-Date: Wed,  4 Sep 2019 14:15:43 +0800
-Message-Id: <1567577743-27684-1-git-send-email-wgong@codeaurora.org>
+ id 1i5PKi-0002xq-QS
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 07:04:05 +0000
+Message-ID: <582e0a7eef96bb7d97fee4bae340ded97fda86a2.camel@sipsolutions.net>
+Subject: Re: [PATCH] mac80211: Store max_mtu in ieee80211_hw
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 04 Sep 2019 09:03:54 +0200
+In-Reply-To: <1567577743-27684-1-git-send-email-wgong@codeaurora.org>
+References: <1567577743-27684-1-git-send-email-wgong@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,62 +19,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, johannes@sipsolutions.net
+To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Make it possibly for drivers to adjust the default mat_mtu
-by storing it in the hardware struct.
+On Wed, 2019-09-04 at 14:15 +0800, Wen Gong wrote:
+> Make it possibly for drivers to adjust the default mat_mtu
+> by storing it in the hardware struct.
+> 
+> +++ b/net/mac80211/iface.c
+> @@ -1877,7 +1877,10 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
+>  
+>  		/* MTU range: 256 - 2304 */
+>  		ndev->min_mtu = 256;
+> -		ndev->max_mtu = IEEE80211_MAX_DATA_LEN;
+> +		if (local->hw.max_mtu)
+> +			ndev->max_mtu = local->hw.max_mtu;
+> +		else
+> +			ndev->max_mtu = IEEE80211_MAX_DATA_LEN;
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- include/net/mac80211.h | 3 +++
- net/mac80211/iface.c   | 5 ++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+It seems (slightly) preferable to me to just initialize the value in
+local->hw.max_mtu in alloc_hw(), so the driver can override it before
+register_hw(), and then use it here unconditionally. Any particular
+reason for it being this way?
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index d26da01..8545b03 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -2454,6 +2454,8 @@ enum ieee80211_hw_flags {
-  *
-  * @weight_multiplier: Driver specific airtime weight multiplier used while
-  *	refilling deficit of each TXQ.
-+ *
-+ * @max_mtu: the max mtu could be set.
-  */
- struct ieee80211_hw {
- 	struct ieee80211_conf conf;
-@@ -2491,6 +2493,7 @@ struct ieee80211_hw {
- 	u8 max_nan_de_entries;
- 	u8 tx_sk_pacing_shift;
- 	u8 weight_multiplier;
-+	u32 max_mtu;
- };
- 
- static inline bool _ieee80211_hw_check(struct ieee80211_hw *hw,
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 06aac0a..00c33e6 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1877,7 +1877,10 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
- 
- 		/* MTU range: 256 - 2304 */
- 		ndev->min_mtu = 256;
--		ndev->max_mtu = IEEE80211_MAX_DATA_LEN;
-+		if (local->hw.max_mtu)
-+			ndev->max_mtu = local->hw.max_mtu;
-+		else
-+			ndev->max_mtu = IEEE80211_MAX_DATA_LEN;
- 
- 		ret = register_netdevice(ndev);
- 		if (ret) {
--- 
-1.9.1
+johannes
 
 
 _______________________________________________
