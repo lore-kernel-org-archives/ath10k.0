@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5LPt-0002f5-Pc
- for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:53:07 +0000
-Subject: RE: [PATCH v3 3/8] ath10k: change max RX bundle size from 8 to 32 for
- sdio
+ id 1i5LSL-00048R-JE
+ for ath10k@lists.infradead.org; Wed, 04 Sep 2019 02:55:39 +0000
+Subject: RE: [PATCH v3 4/8] ath10k: add workqueue for RX path of sdio
 From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 4 Sep 2019 02:52:57 +0000
-Message-ID: <bf3c71d1826a4a238d0b0fd41058ed08@aptaiexm02f.ap.qualcomm.com>
+Date: Wed, 4 Sep 2019 02:53:56 +0000
+Message-ID: <69b89708f046420793e4aa5ac4dd2562@aptaiexm02f.ap.qualcomm.com>
 References: <1566998177-2658-1-git-send-email-wgong@codeaurora.org>
- <1566998177-2658-4-git-send-email-wgong@codeaurora.org>
- <CANMq1KDLXsar1AqU=mfce-2LGD7SRDmC5phkKtz92D3BG35Eog@mail.gmail.com>
-In-Reply-To: <CANMq1KDLXsar1AqU=mfce-2LGD7SRDmC5phkKtz92D3BG35Eog@mail.gmail.com>
+ <1566998177-2658-5-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1566998177-2658-5-git-send-email-wgong@codeaurora.org>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -26,21 +24,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicolas Boichat <drinkcat@chromium.org>, Wen Gong <wgong@codeaurora.org>
-Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
 > -----Original Message-----
-> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Nicolas
-> Boichat
-> Sent: Friday, August 30, 2019 11:11 AM
-> To: Wen Gong <wgong@codeaurora.org>
-> Cc: open list:NETWORKING DRIVERS (WIRELESS) <linux-
-> wireless@vger.kernel.org>; ath10k@lists.infradead.org
-> Subject: [EXT] Re: [PATCH v3 3/8] ath10k: change max RX bundle size from 8
-> to 32 for sdio
-Patch v4 sent, https://patchwork.kernel.org/patch/11126225/
+> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
+> Sent: Wednesday, August 28, 2019 9:16 PM
+> To: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Subject: [EXT] [PATCH v3 4/8] ath10k: add workqueue for RX path of sdio
 > 
-> 
+Patch v4 sent, https://patchwork.kernel.org/patch/11126229/
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
