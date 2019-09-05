@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5qgW-0005NQ-KU
- for ath10k@lists.infradead.org; Thu, 05 Sep 2019 12:16:22 +0000
+ id 1i5qk8-00073C-Gm
+ for ath10k@lists.infradead.org; Thu, 05 Sep 2019 12:20:05 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v4 1/8] ath10k: adjust skb length in
- ath10k_sdio_mbox_rx_packet
+Subject: Re: [PATCH v4 8/8] ath10k: enable napi on RX path for sdio
 References: <1567416146-14403-1-git-send-email-wgong@codeaurora.org>
- <1567416146-14403-2-git-send-email-wgong@codeaurora.org>
- <CANMq1KANHhmP+yEj7Yw3P+akT+mM=y6rjfq1sEjg0NUuWJkdCw@mail.gmail.com>
-Date: Thu, 05 Sep 2019 15:16:13 +0300
-In-Reply-To: <CANMq1KANHhmP+yEj7Yw3P+akT+mM=y6rjfq1sEjg0NUuWJkdCw@mail.gmail.com>
- (Nicolas Boichat's message of "Tue, 3 Sep 2019 16:02:09 +0800")
-Message-ID: <87a7bjlz02.fsf@kamboji.qca.qualcomm.com>
+ <1567416146-14403-9-git-send-email-wgong@codeaurora.org>
+ <c816734498c349119c12c23bc8a4827f@aptaiexm02f.ap.qualcomm.com>
+Date: Thu, 05 Sep 2019 15:19:59 +0300
+In-Reply-To: <c816734498c349119c12c23bc8a4827f@aptaiexm02f.ap.qualcomm.com>
+ (Wen Gong's message of "Thu, 5 Sep 2019 10:50:29 +0000")
+Message-ID: <875zm7lyts.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,23 +25,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Wen Gong <wgong@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-Nicolas Boichat <drinkcat@chromium.org> writes:
+Wen Gong <wgong@qti.qualcomm.com> writes:
 
-> Kalle: Can you please help prioritize the review and merge of this
-> patch? This is quite a serious regression (the rest of the series is
-> performance improvement and probably a little less urgent).
+>> -----Original Message-----
+>> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
+>> Sent: Monday, September 2, 2019 5:22 PM
+>> To: ath10k@lists.infradead.org
+>> Cc: linux-wireless@vger.kernel.org
+>> Subject: [EXT] [PATCH v4 8/8] ath10k: enable napi on RX path for sdio
+>> 
+> Patch v5 sent with change, https://patchwork.kernel.org/patch/11132677/
 
-Ok, I'll prioritise this (but I have not reviewed it yet).
-
-But in the future if there's something urgent, it's best to submit the
-patch separately and label it with "[PATCH 5.3]" or something like that:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#tree_labels
-
-This way I can find the patch faster.
+No need to reply to every patch in the series. It's enough to reply to
+the cover letter that a new version was posted, less emails that way.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
