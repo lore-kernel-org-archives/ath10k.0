@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5pAE-00069s-4d
- for ath10k@lists.infradead.org; Thu, 05 Sep 2019 10:38:56 +0000
+ id 1i5pAF-0006CN-Uk
+ for ath10k@lists.infradead.org; Thu, 05 Sep 2019 10:38:57 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v5 5/8] ath10k: disable TX complete indication of htt for sdio
-Date: Thu,  5 Sep 2019 18:38:10 +0800
-Message-Id: <1567679893-14029-6-git-send-email-wgong@codeaurora.org>
+Subject: [PATCH v5 7/8] ath10k: enable alt data of TX path for sdio
+Date: Thu,  5 Sep 2019 18:38:12 +0800
+Message-Id: <1567679893-14029-8-git-send-email-wgong@codeaurora.org>
 In-Reply-To: <1567679893-14029-1-git-send-email-wgong@codeaurora.org>
 References: <1567679893-14029-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,357 +25,149 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Tx complete message from firmware cost bus bandwidth of sdio, and bus
-bandwidth is the bollteneck of throughput, it will effect the bandwidth
-occupancy of data packet of TX and RX.
+The default credit size is 1792 bytes, but the IP mtu is 1500 bytes,
+then it has about 290 bytes's waste for each data packet on sdio
+transfer path for TX bundle, it will reduce the transmission utilization
+ratio for data packet.
 
-This patch disable TX complete indication from firmware for htt data
-packet, it results in significant performance improvement on TX path.
-
-The downside of this patch is ath10k will not know the TX status of
-the data packet for poor signal situation. Although upper network stack
-or application layer have retry mechanism, the retry will be later than
-ath10k get the TX fail status if not disable TX complete.
+This patch enable the small credit size in firmware, firmware will use
+the new credit size 1556 bytes, it will increase the transmission
+utilization ratio for data packet on TX patch. It results in significant
+performance improvement on TX path.
 
 This patch only effect sdio chip, it will not effect PCI, SNOC etc.
 
 Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+WLAN.RMH.4.4.1-00017-QCARMSWP-1.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
-v2: change some code style
+v2: no change
 v3: change some code style
-v4: no change
+v4: add macro ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK
 v5: no change
- drivers/net/wireless/ath/ath10k/core.c   |  9 ++++++++-
- drivers/net/wireless/ath/ath10k/hif.h    |  9 +++++++++
- drivers/net/wireless/ath/ath10k/htc.c    | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/htc.h    |  3 +++
- drivers/net/wireless/ath/ath10k/htt.c    |  5 +++++
- drivers/net/wireless/ath/ath10k/htt.h    | 13 +++++++++++-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 34 +++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/htt_tx.c | 31 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h     |  2 +-
- drivers/net/wireless/ath/ath10k/sdio.c   | 23 +++++++++++++++++++++
- 10 files changed, 135 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/htc.c  | 12 ++++++++++--
+ drivers/net/wireless/ath/ath10k/htc.h  | 13 +++++++++++--
+ 3 files changed, 38 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dc45d16..d56dcbd 100644
+index 9841533..9fd07c7 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -30,6 +30,7 @@
- 
+@@ -31,6 +31,7 @@
  static unsigned int ath10k_cryptmode_param;
  static bool uart_print;
-+static bool disable_tx_comp = true;
+ static bool disable_tx_comp = true;
++static bool alt_data = true;
  static bool skip_otp;
  static bool rawmode;
  static bool fw_diag_log;
-@@ -41,6 +42,9 @@
- module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
- module_param_named(cryptmode, ath10k_cryptmode_param, uint, 0644);
- module_param(uart_print, bool, 0644);
+@@ -45,6 +46,15 @@
+ 
+ /* If upper layer need the TX complete status, it can enable tx complete */
+ module_param(disable_tx_comp, bool, 0644);
 +
-+/* If upper layer need the TX complete status, it can enable tx complete */
-+module_param(disable_tx_comp, bool, 0644);
++/* alt_data is only used for sdio chip, for previous version of firmware, its
++ * alt data size is 1544 which is not enough for native wifi, so it need to
++ * alt_data for the firmware.
++ * If the firmware has changed alt data size to 1556, then it can enable
++ * alt_data for the firmware.
++ * alt_data will not effect PCI, SNOC etc.
++ */
++module_param(alt_data, bool, 0644);
  module_param(skip_otp, bool, 0644);
  module_param(rawmode, bool, 0644);
  module_param(fw_diag_log, bool, 0644);
-@@ -688,7 +692,10 @@ static void ath10k_init_sdio(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 	/* Data transfer is not initiated, when reduced Tx completion
- 	 * is used for SDIO. disable it until fixed
- 	 */
--	param &= ~HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET;
-+	if (disable_tx_comp)
-+		param |= HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET;
-+	else
-+		param &= ~HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET;
+@@ -698,9 +708,14 @@ static void ath10k_init_sdio(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 		param &= ~HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET;
  
  	/* Alternate credit size of 1544 as used by SDIO firmware is
- 	 * not big enough for mac80211 / native wifi frames. disable it
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 496ee34..0dd8973 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -56,6 +56,8 @@ struct ath10k_hif_ops {
+-	 * not big enough for mac80211 / native wifi frames. disable it
++	 * not big enough for mac80211 / native wifi frames. disable it.
++	 * If alternate credit size of 1556 as used by SDIO firmware is
++	 * big enough for mac80211 / native wifi frames. enable it
+ 	 */
+-	param &= ~HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
++	if (alt_data && mode == ATH10K_FIRMWARE_MODE_NORMAL)
++		param |= HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
++	else
++		param &= ~HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
  
- 	int (*swap_mailbox)(struct ath10k *ar);
- 
-+	int (*get_htt_tx_complete)(struct ath10k *ar);
-+
- 	int (*map_service_to_pipe)(struct ath10k *ar, u16 service_id,
- 				   u8 *ul_pipe, u8 *dl_pipe);
- 
-@@ -144,6 +146,13 @@ static inline int ath10k_hif_swap_mailbox(struct ath10k *ar)
- 	return 0;
- }
- 
-+static inline int ath10k_hif_get_htt_tx_complete(struct ath10k *ar)
-+{
-+	if (ar->hif.ops->get_htt_tx_complete)
-+		return ar->hif.ops->get_htt_tx_complete(ar);
-+	return 0;
-+}
-+
- static inline int ath10k_hif_map_service_to_pipe(struct ath10k *ar,
- 						 u16 service_id,
- 						 u8 *ul_pipe, u8 *dl_pipe)
+ 	if (mode == ATH10K_FIRMWARE_MODE_UTF)
+ 		param &= ~HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET;
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 1d4d1a1..4c6cdc2 100644
+index 3e551e4..3bf5722 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -660,6 +660,16 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 	return 0;
- }
+@@ -941,12 +941,16 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 	 */
+ 	if (htc->control_resp_len >=
+ 	    sizeof(msg->hdr) + sizeof(msg->ready_ext)) {
++		htc->alt_data_credit_size =
++			__le16_to_cpu(msg->ready_ext.reserved) &
++			ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK;
+ 		htc->max_msgs_per_htc_bundle =
+ 			min_t(u8, msg->ready_ext.max_msgs_per_htc_bundle,
+ 			      HTC_HOST_MAX_MSG_PER_RX_BUNDLE);
+ 		ath10k_dbg(ar, ATH10K_DBG_HTC,
+-			   "Extended ready message. RX bundle size: %d\n",
+-			   htc->max_msgs_per_htc_bundle);
++			   "Extended ready message. RX bundle size: %d, alt size:%d\n",
++			   htc->max_msgs_per_htc_bundle,
++			   htc->alt_data_credit_size);
+ 	}
  
-+void ath10k_htc_change_tx_credit_flow(struct ath10k_htc *htc,
-+				      enum ath10k_htc_ep_id eid,
-+				      bool enable)
-+{
-+	struct ath10k *ar = htc->ar;
-+	struct ath10k_htc_ep *ep = &ar->htc.endpoint[eid];
+ 	INIT_WORK(&ar->bundle_tx_work, ath10k_htc_bundle_tx_work);
+@@ -1098,6 +1102,10 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 	ep->tx_credits = tx_alloc;
+ 	ep->tx_credit_size = htc->target_credit_size;
+ 
++	if (conn_req->service_id == ATH10K_HTC_SVC_ID_HTT_DATA_MSG &&
++	    htc->alt_data_credit_size != 0)
++		ep->tx_credit_size = htc->alt_data_credit_size;
 +
-+	ep->tx_credit_flow_enabled = enable;
-+}
-+
- int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 			       struct ath10k_htc_svc_conn_req *conn_req,
- 			       struct ath10k_htc_svc_conn_resp *conn_resp)
+ 	/* copy all the callbacks */
+ 	ep->ep_ops = conn_req->ep_ops;
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 7055156..d61eb6c0 100644
+index ec4957a..5c21ec7 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.h
 +++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -373,6 +373,9 @@ struct ath10k_htc {
- int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 			       struct ath10k_htc_svc_conn_req  *conn_req,
- 			       struct ath10k_htc_svc_conn_resp *conn_resp);
-+void ath10k_htc_change_tx_credit_flow(struct ath10k_htc *htc,
-+				      enum ath10k_htc_ep_id eid,
-+				      bool enable);
- int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
- 		    struct sk_buff *packet);
- struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size);
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 7b75200..4354bf2 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -10,6 +10,7 @@
- #include "htt.h"
- #include "core.h"
- #include "debug.h"
-+#include "hif.h"
- 
- static const enum htt_t2h_msg_type htt_main_t2h_msg_types[] = {
- 	[HTT_MAIN_T2H_MSG_TYPE_VERSION_CONF] = HTT_T2H_MSG_TYPE_VERSION_CONF,
-@@ -153,6 +154,10 @@ int ath10k_htt_connect(struct ath10k_htt *htt)
- 
- 	htt->eid = conn_resp.eid;
- 
-+	htt->disable_tx_comp = ath10k_hif_get_htt_tx_complete(htt->ar);
-+	if (htt->disable_tx_comp)
-+		ath10k_htc_change_tx_credit_flow(&htt->ar->htc, htt->eid, true);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 30c0800..889bf9f 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -150,9 +150,19 @@ enum htt_data_tx_desc_flags1 {
- 	HTT_DATA_TX_DESC_FLAGS1_MORE_IN_BATCH    = 1 << 12,
- 	HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD = 1 << 13,
- 	HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD = 1 << 14,
--	HTT_DATA_TX_DESC_FLAGS1_RSVD1            = 1 << 15
-+	HTT_DATA_TX_DESC_FLAGS1_TX_COMPLETE      = 1 << 15
+@@ -109,6 +109,8 @@ enum ath10k_htc_conn_flags {
+ #define ATH10K_HTC_CONN_FLAGS_RECV_ALLOC_LSB  8
  };
  
-+#define HTT_TX_CREDIT_DELTA_ABS_M      0xffff0000
-+#define HTT_TX_CREDIT_DELTA_ABS_S      16
-+#define HTT_TX_CREDIT_DELTA_ABS_GET(word) \
-+	    (((word) & HTT_TX_CREDIT_DELTA_ABS_M) >> HTT_TX_CREDIT_DELTA_ABS_S)
++#define ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK 0xFFF
 +
-+#define HTT_TX_CREDIT_SIGN_BIT_M       0x00000100
-+#define HTT_TX_CREDIT_SIGN_BIT_S       8
-+#define HTT_TX_CREDIT_SIGN_BIT_GET(word) \
-+	    (((word) & HTT_TX_CREDIT_SIGN_BIT_M) >> HTT_TX_CREDIT_SIGN_BIT_S)
+ enum ath10k_htc_conn_svc_status {
+ 	ATH10K_HTC_CONN_SVC_STATUS_SUCCESS      = 0,
+ 	ATH10K_HTC_CONN_SVC_STATUS_NOT_FOUND    = 1,
+@@ -141,8 +143,14 @@ struct ath10k_htc_ready_extended {
+ 	struct ath10k_htc_ready base;
+ 	u8 htc_version; /* @enum ath10k_htc_version */
+ 	u8 max_msgs_per_htc_bundle;
+-	u8 pad0;
+-	u8 pad1;
++	union {
++		__le16 reserved;
++		struct {
++			u8 pad0;
++			u8 pad1;
++		} __packed;
++	} __packed;
 +
- enum htt_data_tx_ext_tid {
- 	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 16,
- 	HTT_DATA_TX_EXT_TID_MGMT                = 17,
-@@ -2019,6 +2029,7 @@ struct ath10k_htt {
- 	bool tx_mem_allocated;
- 	const struct ath10k_htt_tx_ops *tx_ops;
- 	const struct ath10k_htt_rx_ops *rx_ops;
-+	bool disable_tx_comp;
+ } __packed;
+ 
+ struct ath10k_htc_conn_svc {
+@@ -379,6 +387,7 @@ struct ath10k_htc {
+ 	int total_transmit_credits;
+ 	int target_credit_size;
+ 	u8 max_msgs_per_htc_bundle;
++	int alt_data_credit_size;
  };
  
- struct ath10k_htt_tx_ops {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 83a7fb6..5bf3179 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3691,6 +3691,9 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	}
- 	case HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION: {
- 		struct htt_tx_done tx_done = {};
-+		struct ath10k_htt *htt = &ar->htt;
-+		struct ath10k_htc *htc = &ar->htc;
-+		struct ath10k_htc_ep *ep = &ar->htc.endpoint[htt->eid];
- 		int status = __le32_to_cpu(resp->mgmt_tx_completion.status);
- 		int info = __le32_to_cpu(resp->mgmt_tx_completion.info);
- 
-@@ -3716,6 +3719,12 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 			break;
- 		}
- 
-+		if (htt->disable_tx_comp) {
-+			spin_lock_bh(&htc->tx_lock);
-+			ep->tx_credits++;
-+			spin_unlock_bh(&htc->tx_lock);
-+		}
-+
- 		status = ath10k_txrx_tx_unref(htt, &tx_done);
- 		if (!status) {
- 			spin_lock_bh(&htt->tx_lock);
-@@ -3790,8 +3799,31 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
- 		return false;
- 	}
--	case HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND:
-+	case HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND: {
-+		struct ath10k_htt *htt = &ar->htt;
-+		struct ath10k_htc *htc = &ar->htc;
-+		struct ath10k_htc_ep *ep = &ar->htc.endpoint[htt->eid];
-+		u32 msg_word = __le32_to_cpu(*(__le32 *)resp);
-+		int htt_credit_delta;
-+
-+		htt_credit_delta = HTT_TX_CREDIT_DELTA_ABS_GET(msg_word);
-+		if (HTT_TX_CREDIT_SIGN_BIT_GET(msg_word))
-+			htt_credit_delta = -htt_credit_delta;
-+
-+		ath10k_dbg(ar, ATH10K_DBG_HTT,
-+			   "credit update: delta:%d\n",
-+			   htt_credit_delta);
-+
-+		if (htt->disable_tx_comp) {
-+			spin_lock_bh(&htc->tx_lock);
-+			ep->tx_credits += htt_credit_delta;
-+			spin_unlock_bh(&htc->tx_lock);
-+			ath10k_dbg(ar, ATH10K_DBG_HTT,
-+				   "credit total:%d\n",
-+				   ep->tx_credits);
-+		}
- 		break;
-+	}
- 	case HTT_T2H_MSG_TYPE_CHAN_CHANGE: {
- 		u32 phymode = __le32_to_cpu(resp->chan_change.phymode);
- 		u32 freq = __le32_to_cpu(resp->chan_change.freq);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 2ef717f1..7eb753a8 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -543,7 +543,35 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
- 
- void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
- {
-+	struct ath10k_htt *htt = &ar->htt;
-+	struct htt_tx_done tx_done = {0};
-+	struct htt_cmd_hdr *htt_hdr;
-+	struct htt_data_tx_desc *desc_hdr;
-+	u16 flags1;
-+
- 	dev_kfree_skb_any(skb);
-+
-+	if (!htt->disable_tx_comp)
-+		return;
-+
-+	htt_hdr = (struct htt_cmd_hdr *)skb->data;
-+	if (htt_hdr->msg_type != HTT_H2T_MSG_TYPE_TX_FRM)
-+		return;
-+
-+	desc_hdr = (struct htt_data_tx_desc *)
-+		(skb->data + sizeof(*htt_hdr));
-+	flags1 = __le16_to_cpu(desc_hdr->flags1);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT,
-+		   "htt tx complete msdu id:%u ,flags1:%x\n",
-+		   __le16_to_cpu(desc_hdr->id), flags1);
-+
-+	if (flags1 & HTT_DATA_TX_DESC_FLAGS1_TX_COMPLETE)
-+		return;
-+
-+	tx_done.status = HTT_TX_COMPL_STATE_ACK;
-+	tx_done.msdu_id = __le16_to_cpu(desc_hdr->id);
-+	ath10k_txrx_tx_unref(&ar->htt, &tx_done);
- }
- 
- void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb)
-@@ -1261,6 +1289,9 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
- 		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
- 			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+
-+		if (htt->disable_tx_comp)
-+			flags1 |= HTT_DATA_TX_DESC_FLAGS1_TX_COMPLETE;
- 		break;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 2ae57c1..6349665 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -759,7 +759,7 @@ struct ath10k_hw_ops {
- #define TARGET_TLV_NUM_TDLS_VDEVS		1
- #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
--#define TARGET_TLV_NUM_MSDU_DESC_HL		64
-+#define TARGET_TLV_NUM_MSDU_DESC_HL		1024
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
- #define TARGET_TLV_MGMT_NUM_MSDU_DESC		(50)
- 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 3b808a3..e01ab63 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1786,6 +1786,28 @@ static int ath10k_sdio_hif_swap_mailbox(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_sdio_get_htt_tx_complete(struct ath10k *ar)
-+{
-+	u32 addr, val;
-+	int ret;
-+
-+	addr = host_interest_item_address(HI_ITEM(hi_acs_flags));
-+
-+	ret = ath10k_sdio_hif_diag_read32(ar, addr, &val);
-+	if (ret) {
-+		ath10k_warn(ar,
-+			    "unable to read hi_acs_flags for htt tx comple : %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = (val & HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_FW_ACK);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio reduce tx complete fw%sack\n",
-+		   ret ? " " : " not ");
-+
-+	return ret;
-+}
-+
- /* HIF start/stop */
- 
- static int ath10k_sdio_hif_start(struct ath10k *ar)
-@@ -2069,6 +2091,7 @@ static void ath10k_sdio_hif_send_complete_check(struct ath10k *ar,
- 	.start			= ath10k_sdio_hif_start,
- 	.stop			= ath10k_sdio_hif_stop,
- 	.swap_mailbox		= ath10k_sdio_hif_swap_mailbox,
-+	.get_htt_tx_complete	= ath10k_sdio_get_htt_tx_complete,
- 	.map_service_to_pipe	= ath10k_sdio_hif_map_service_to_pipe,
- 	.get_default_pipe	= ath10k_sdio_hif_get_default_pipe,
- 	.send_complete_check	= ath10k_sdio_hif_send_complete_check,
+ int ath10k_htc_init(struct ath10k *ar);
 -- 
 1.9.1
 
