@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i64JJ-0006Qe-De
- for ath10k@lists.infradead.org; Fri, 06 Sep 2019 02:49:18 +0000
+ id 1i6Bu6-00078t-9y
+ for ath10k@lists.infradead.org; Fri, 06 Sep 2019 10:55:47 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v3] mac80211: Store max_mtu in ieee80211_hw
-Date: Fri,  6 Sep 2019 10:48:57 +0800
-Message-Id: <1567738137-31748-1-git-send-email-wgong@codeaurora.org>
+Subject: [PATCH] ath10k: remove the warning of sdio not full support
+Date: Fri,  6 Sep 2019 18:55:01 +0800
+Message-Id: <1567767301-22940-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +20,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, johannes@sipsolutions.net
+To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Make it possibly for drivers to adjust the default max_mtu
-by storing it in the hardware struct.
+Recently, it has the basic feature of sdio tested success, so remove
+it.
+
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00017-QCARMSWP-1.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
-v2: change to set max_mtu to IEEE80211_MAX_DATA_LEN in alloc_hw
-v3: change commit log(mat_mtu->max_mtu)
- include/net/mac80211.h | 3 +++
- net/mac80211/iface.c   | 2 +-
- net/mac80211/main.c    | 1 +
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index d26da01..8545b03 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -2454,6 +2454,8 @@ enum ieee80211_hw_flags {
-  *
-  * @weight_multiplier: Driver specific airtime weight multiplier used while
-  *	refilling deficit of each TXQ.
-+ *
-+ * @max_mtu: the max mtu could be set.
-  */
- struct ieee80211_hw {
- 	struct ieee80211_conf conf;
-@@ -2491,6 +2493,7 @@ struct ieee80211_hw {
- 	u8 max_nan_de_entries;
- 	u8 tx_sk_pacing_shift;
- 	u8 weight_multiplier;
-+	u32 max_mtu;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 8ed4fbd..0801215 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2073,9 +2073,6 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		goto err_free_wq;
+ 	}
  
- static inline bool _ieee80211_hw_check(struct ieee80211_hw *hw,
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 06aac0a..32d87f0 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1877,7 +1877,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
+-	/* TODO: remove this once SDIO support is fully implemented */
+-	ath10k_warn(ar, "WARNING: ath10k SDIO support is work-in-progress, problems may arise!\n");
+-
+ 	return 0;
  
- 		/* MTU range: 256 - 2304 */
- 		ndev->min_mtu = 256;
--		ndev->max_mtu = IEEE80211_MAX_DATA_LEN;
-+		ndev->max_mtu = local->hw.max_mtu;
- 
- 		ret = register_netdevice(ndev);
- 		if (ret) {
-diff --git a/net/mac80211/main.c b/net/mac80211/main.c
-index 85e4162..89a6a09 100644
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -638,6 +638,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
- 					 IEEE80211_RADIOTAP_VHT_KNOWN_BANDWIDTH;
- 	local->hw.uapsd_queues = IEEE80211_DEFAULT_UAPSD_QUEUES;
- 	local->hw.uapsd_max_sp_len = IEEE80211_DEFAULT_MAX_SP_LEN;
-+	local->hw.max_mtu = IEEE80211_MAX_DATA_LEN;
- 	local->user_power_level = IEEE80211_UNSET_POWER_LEVEL;
- 	wiphy->ht_capa_mod_mask = &mac80211_ht_capa_mod_mask;
- 	wiphy->vht_capa_mod_mask = &mac80211_vht_capa_mod_mask;
+ err_free_wq:
 -- 
 1.9.1
 
