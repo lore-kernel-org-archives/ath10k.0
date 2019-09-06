@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i6Bu6-00078t-9y
- for ath10k@lists.infradead.org; Fri, 06 Sep 2019 10:55:47 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: remove the warning of sdio not full support
-Date: Fri,  6 Sep 2019 18:55:01 +0800
-Message-Id: <1567767301-22940-1-git-send-email-wgong@codeaurora.org>
+ id 1i6MBX-0007lm-Ki
+ for ath10k@lists.infradead.org; Fri, 06 Sep 2019 21:54:29 +0000
+Received: by mail-wr1-x441.google.com with SMTP id y19so8016993wrd.3
+ for <ath10k@lists.infradead.org>; Fri, 06 Sep 2019 14:54:26 -0700 (PDT)
+From: Christian Lamparter <chunkeey@gmail.com>
+Subject: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
+Date: Fri,  6 Sep 2019 23:54:23 +0200
+Message-Id: <20190906215423.23589-1-chunkeey@gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,41 +18,106 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
 
-Recently, it has the basic feature of sdio tested success, so remove
-it.
+This patch restores the old behavior that read
+the chip_id on the QCA988x before resetting the
+chip. This needs to be done in this order since
+the unsupported QCA988x AR1A chips fall off the
+bus when resetted. Otherwise the next MMIO Op
+after the reset causes a BUS ERROR and panic.
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00017-QCARMSWP-1.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Cc: stable@vger.kernel.org
+Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 8ed4fbd..0801215 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2073,9 +2073,6 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_free_wq;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index a0b4d265c6eb..347bb92e4130 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3490,7 +3490,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	struct ath10k_bus_params bus_params = {};
+-	bool pci_ps;
++	bool pci_ps, is_qca988x = false;
+ 	int (*pci_soft_reset)(struct ath10k *ar);
+ 	int (*pci_hard_reset)(struct ath10k *ar);
+ 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
+@@ -3500,6 +3500,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
++		is_qca988x = true;
+ 		pci_soft_reset = ath10k_pci_warm_reset;
+ 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
+ 		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
+@@ -3619,25 +3620,34 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_deinit_irq;
  	}
  
--	/* TODO: remove this once SDIO support is fully implemented */
--	ath10k_warn(ar, "WARNING: ath10k SDIO support is work-in-progress, problems may arise!\n");
--
++	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
++	bus_params.link_can_suspend = true;
++	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
++	 * fall off the bus during chip_reset. These chips have the same pci
++	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
++	 */
++	if (is_qca988x) {
++		bus_params.chip_id =
++			ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
++		if (bus_params.chip_id != 0xffffffff) {
++			if (!ath10k_pci_chip_is_supported(pdev->device,
++							  bus_params.chip_id))
++				goto err_unsupported;
++		}
++	}
++
+ 	ret = ath10k_pci_chip_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
+ 		goto err_free_irq;
+ 	}
+ 
+-	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
+-	bus_params.link_can_suspend = true;
+ 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+-	if (bus_params.chip_id == 0xffffffff) {
+-		ath10k_err(ar, "failed to get chip id\n");
+-		goto err_free_irq;
+-	}
++	if (bus_params.chip_id == 0xffffffff)
++		goto err_unsupported;
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
+-		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
+-			   pdev->device, bus_params.chip_id);
++	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
+ 		goto err_free_irq;
+-	}
+ 
+ 	ret = ath10k_core_register(ar, &bus_params);
+ 	if (ret) {
+@@ -3647,6 +3657,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
  	return 0;
  
- err_free_wq:
++err_unsupported:
++	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
++		   pdev->device, bus_params.chip_id);
++
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_rx_retry_sync(ar);
 -- 
-1.9.1
+2.23.0
 
 
 _______________________________________________
