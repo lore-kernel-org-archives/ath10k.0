@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i6iUz-0005Tt-GG
- for ath10k@lists.infradead.org; Sat, 07 Sep 2019 21:44:03 +0000
-Date: Sat, 07 Sep 2019 21:43:58 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
-In-Reply-To: <20190906215423.23589-1-chunkeey@gmail.com>
+ id 1i6jyI-0000BB-Jo
+ for ath10k@lists.infradead.org; Sat, 07 Sep 2019 23:18:25 +0000
+Received: by mail-wr1-x431.google.com with SMTP id l11so10025490wrx.5
+ for <ath10k@lists.infradead.org>; Sat, 07 Sep 2019 16:18:19 -0700 (PDT)
+From: Christian Lamparter <chunkeey@gmail.com>
+Subject: stable backports for "ath10k: restore QCA9880-AR1A (v1) detection"
+Date: Sun, 08 Sep 2019 01:18:13 +0200
+Message-ID: <8482869.vuxnZITksI@debian64>
+In-Reply-To: <20190907214359.1C52A21835@mail.kernel.org>
 References: <20190906215423.23589-1-chunkeey@gmail.com>
-Message-Id: <20190907214359.1C52A21835@mail.kernel.org>
+ <20190907214359.1C52A21835@mail.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="nextPart5470804.AK8FHB7eIg"
+Content-Transfer-Encoding: 7Bit
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,99 +23,538 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sasha Levin <sashal@kernel.org>, Christian Lamparter <chunkeey@gmail.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sasha Levin <sashal@kernel.org>
 Cc: stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
 
-Hi,
+This is a multi-part message in MIME format.
 
-[This is an automated email]
+--nextPart5470804.AK8FHB7eIg
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-This commit has been processed because it contains a "Fixes:" tag,
-fixing commit: 1a7fecb766c8 ath10k: reset chip before reading chip_id in probe.
+Hello,
 
-The bot has tested the following trees: v5.2.13, v4.19.71, v4.14.142, v4.9.191, v4.4.191.
+On Saturday, September 7, 2019 11:43:58 PM CEST Sasha Levin wrote:
+> This commit has been processed because it contains a "Fixes:" tag,
+> fixing commit: 1a7fecb766c8 ath10k: reset chip before reading chip_id in probe.
+> 
+> The bot has tested the following trees: v5.2.13, v4.19.71, v4.14.142, v4.9.191, v4.4.191.
+> 
+> v5.2.13: Failed to apply! Possible dependencies:
+>     6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
 
-v5.2.13: Failed to apply! Possible dependencies:
-    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
+The bot is right. Either add that patch or remove the "= {};" from the patch
+that was sent to linux-wireless (based on "wireless-testing.git").
 
-v4.19.71: Failed to apply! Possible dependencies:
-    31324d17976e ("ath10k: support extended board data download for dual-band QCA9984")
-    5849ed48d226 ("ath10k: refactoring needed for extended board data download")
-    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
-    7c2dd6154fc2 ("ath10k: add device type enum to ath10k_bus_params")
-    ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-    c0d8d565787c ("ath10k: add struct ath10k_bus_params")
-    de8781d7e74d ("ath10k: disable interface pause wow config for integrated chipset")
-    f1908735f141 ("ath10k: allow ATH10K_SNOC with COMPILE_TEST")
+Alternatively, I've also added patches (as file attachments, I did this in
+the hopes of fooling patchwork and the bots at least a bit... as well as
+parking the patches for later). That said, I think this will go horribly
+wrong because of this response. Since It has been a long time since I needed
+a multi-version patch so I'm sorry for not being up-to-date with the latest
+for-stable meta.
 
-v4.14.142: Failed to apply! Possible dependencies:
-    0fa4fbe9b8cf ("ath10k: add hif power-up/power-down methods")
-    17f5559e0da5 ("ath10k: platform driver for WCN3990 SNOC WLAN module")
-    2a1e1ad3fd37 ("ath10k: Add support for 64 bit ce descriptor")
-    50c51f394e68 ("ath10k: do not mix spaces and tabs in Kconfig")
-    5dac5f3772f6 ("ath10k: Use dma_addr_t for ce buffers to support 64bit target")
-    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
-    7f9befbb555d ("ath10k: move pktlog_filter out of ath10k_debug")
-    84efe7f6ebc5 ("ath10k: map HTC services to tx/rx pipes for wcn3990")
-    a0aedd6e0b57 ("ath10k: build ce layer in ath10k core module")
-    a6a793f98786 ("ath10k: vote for hardware resources for WCN3990")
-    a6e149a9ff03 ("ath10k: add hif start/stop methods for wcn3990 snoc layer")
-    ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-    c0d8d565787c ("ath10k: add struct ath10k_bus_params")
-    c963a683e701 ("ath10k: add resource init and deinit for WCN3990")
-    d390509bdf50 ("ath10k: add hif tx methods for wcn3990")
-    dafa42036012 ("ath10k: use 64-bit crash dump timestamps")
-    e2fcf60c6fe8 ("ath10k: detach coredump.c from debug.c")
-    f1908735f141 ("ath10k: allow ATH10K_SNOC with COMPILE_TEST")
-    f25b9f285a0e ("ath10k: refactor firmware crashdump code to coredump.c")
+> v4.19.71: Failed to apply! Possible dependencies:
+>     31324d17976e ("ath10k: support extended board data download for dual-band QCA9984")
+>     [...] too much
+> [...]: [...]
+> 
+> NOTE: The patch will not be queued to stable trees until it is upstream.
+> 
+> How should we proceed with this patch?
+You could let loose your ci-bot on the attached patches and see if they would
+do the trick. I'm very optimistic that this will need some more time though. 
+So, "let's cross that bridge whenever we get there."
 
-v4.9.191: Failed to apply! Possible dependencies:
-    0fa4fbe9b8cf ("ath10k: add hif power-up/power-down methods")
-    17f5559e0da5 ("ath10k: platform driver for WCN3990 SNOC WLAN module")
-    4db66499df91 ("ath10k: add initial USB support")
-    50c51f394e68 ("ath10k: do not mix spaces and tabs in Kconfig")
-    5524ddd4c1f1 ("ath10k: select WANT_DEV_COREDUMP")
-    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
-    84efe7f6ebc5 ("ath10k: map HTC services to tx/rx pipes for wcn3990")
-    a0aedd6e0b57 ("ath10k: build ce layer in ath10k core module")
-    a6a793f98786 ("ath10k: vote for hardware resources for WCN3990")
-    a6e149a9ff03 ("ath10k: add hif start/stop methods for wcn3990 snoc layer")
-    ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-    c0d8d565787c ("ath10k: add struct ath10k_bus_params")
-    c963a683e701 ("ath10k: add resource init and deinit for WCN3990")
-    cec17c382140 ("ath10k: add per peer htt tx stats support for 10.4")
-    d390509bdf50 ("ath10k: add hif tx methods for wcn3990")
-    d96db25d2025 ("ath10k: add initial SDIO support")
-    f1908735f141 ("ath10k: allow ATH10K_SNOC with COMPILE_TEST")
+Cheers,
+Christian
+--nextPart5470804.AK8FHB7eIg
+Content-Disposition: attachment; filename="4-9-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="4-9-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
 
-v4.4.191: Failed to apply! Possible dependencies:
-    0b523ced9a3c ("ath10k: add basic skeleton to support ahb")
-    0d87c9208a17 ("ath10k: expose hif ops for ahb")
-    133df0f849bc ("ath10k: add chip and bus halt logic in ahb")
-    14854bfd9daa ("ath10k: add reset ctrl related functions in ahb")
-    1c44fcb9234c ("ath10k: include irq related functions in ahb")
-    4ddb3299aa49 ("ath10k: make ath10k_pci_read32/write32() ops more generic")
-    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
-    704dc4e36769 ("ath10k: add resource init and deinit in ahb")
-    7f8e79cdc253 ("ath10k: add helper functions in ahb.c for reg rd/wr")
-    8beff219c528 ("ath10k: add clock ctrl related functions in ahb")
-    f52f517189de ("ath10k: make some of ath10k_pci_* func reusable")
+From 38ac13d668f237941c8b77f16375f8f0e4de966a Mon Sep 17 00:00:00 2001
+From: Christian Lamparter <chunkeey@gmail.com>
+Date: Mon, 25 Mar 2019 13:50:19 +0100
+Subject: [PATCH 4.9] ath10k: restore QCA9880-AR1A (v1) detection
+To: linux-wireless@vger.kernel.org,
+    ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+
+This patch restores the old behavior that read
+the chip_id on the QCA988x before resetting the
+chip. This needs to be done in this order since
+the unsupported QCA988x AR1A chips fall off the
+bus when resetted. Otherwise the next MMIO Op
+after the reset causes a BUS ERROR and panic.
+
+Cc: stable@vger.kernel.org # 4.9
+Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+--- a/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:07:21.374565470 +0200
++++ b/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:17:15.365912133 +0200
+@@ -3172,7 +3172,7 @@ static int ath10k_pci_probe(struct pci_d
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	u32 chip_id;
+-	bool pci_ps;
++	bool pci_ps, is_qca988x = false;
+ 	int (*pci_soft_reset)(struct ath10k *ar);
+ 	int (*pci_hard_reset)(struct ath10k *ar);
+ 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
+@@ -3181,6 +3181,7 @@ static int ath10k_pci_probe(struct pci_d
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
++		is_qca988x = true;
+ 		pci_soft_reset = ath10k_pci_warm_reset;
+ 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
+ 		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
+@@ -3300,6 +3301,19 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_deinit_irq;
+ 	}
+ 
++	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
++	 * fall off the bus during chip_reset. These chips have the same pci
++	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
++	 */
++	if (is_qca988x) {
++		chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
++		if (chip_id != 0xffffffff) {
++			if (!ath10k_pci_chip_is_supported(pdev->device,
++							  chip_id))
++				goto err_unsupported;
++		}
++	}
++
+ 	ret = ath10k_pci_chip_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
+@@ -3312,11 +3326,8 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_free_irq;
+ 	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id)) {
+-		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
+-			   pdev->device, chip_id);
+-		goto err_free_irq;
+-	}
++	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id))
++		goto err_unsupported;
+ 
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+@@ -3326,6 +3337,10 @@ static int ath10k_pci_probe(struct pci_d
+ 
+ 	return 0;
+ 
++err_unsupported:
++	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
++		   pdev->device, bus_params.chip_id);
++
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_rx_retry_sync(ar);
+
+--nextPart5470804.AK8FHB7eIg
+Content-Disposition: attachment; filename="4-4-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="4-4-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+
+From 38ac13d668f237941c8b77f16375f8f0e4de966a Mon Sep 17 00:00:00 2001
+From: Christian Lamparter <chunkeey@gmail.com>
+Date: Mon, 25 Mar 2019 13:50:19 +0100
+Subject: [PATCH 4.4] ath10k: restore QCA9880-AR1A (v1) detection
+To: linux-wireless@vger.kernel.org,
+    ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+
+This patch restores the old behavior that read
+the chip_id on the QCA988x before resetting the
+chip. This needs to be done in this order since
+the unsupported QCA988x AR1A chips fall off the
+bus when resetted. Otherwise the next MMIO Op
+after the reset causes a BUS ERROR and panic.
+
+Cc: stable@vger.kernel.org # 4.4
+Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+--- a/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:07:21.374565470 +0200
++++ b/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:17:15.365912133 +0200
+@@ -2988,12 +2988,13 @@ static int ath10k_pci_probe(struct pci_d
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	u32 chip_id;
+-	bool pci_ps;
++	bool pci_ps, is_qca988x = false;
+ 
+ 	switch (pci_dev->device) {
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
++		is_qca988x = true;
+ 		break;
+ 	case QCA6164_2_1_DEVICE_ID:
+ 	case QCA6174_2_1_DEVICE_ID:
+@@ -3087,6 +3088,19 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_deinit_irq;
+ 	}
+ 
++	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
++	 * fall off the bus during chip_reset. These chips have the same pci
++	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
++	 */
++	if (is_qca988x) {
++		chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
++		if (chip_id != 0xffffffff) {
++			if (!ath10k_pci_chip_is_supported(pdev->device,
++							  chip_id))
++				goto err_unsupported;
++		}
++	}
++
+ 	ret = ath10k_pci_chip_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
+@@ -3099,11 +3113,8 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_free_irq;
+ 	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id)) {
+-		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
+-			   pdev->device, chip_id);
+-		goto err_free_irq;
+-	}
++	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id))
++		goto err_unsupported;
+ 
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+@@ -3113,6 +3124,10 @@ static int ath10k_pci_probe(struct pci_d
+ 
+ 	return 0;
+ 
++err_unsupported:
++	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
++		   pdev->device, bus_params.chip_id);
++
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_kill_tasklet(ar);
+
+--nextPart5470804.AK8FHB7eIg
+Content-Disposition: attachment; filename="4-14-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="4-14-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+
+From 38ac13d668f237941c8b77f16375f8f0e4de966a Mon Sep 17 00:00:00 2001
+From: Christian Lamparter <chunkeey@gmail.com>
+Date: Mon, 25 Mar 2019 13:50:19 +0100
+Subject: [PATCH 4.14] ath10k: restore QCA9880-AR1A (v1) detection
+To: linux-wireless@vger.kernel.org,
+    ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+
+This patch restores the old behavior that read
+the chip_id on the QCA988x before resetting the
+chip. This needs to be done in this order since
+the unsupported QCA988x AR1A chips fall off the
+bus when resetted. Otherwise the next MMIO Op
+after the reset causes a BUS ERROR and panic.
+
+Cc: stable@vger.kernel.org # 4.14
+Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+--- a/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:07:21.374565470 +0200
++++ b/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:17:15.365912133 +0200
+@@ -3202,7 +3202,7 @@ static int ath10k_pci_probe(struct pci_d
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	u32 chip_id;
+-	bool pci_ps;
++	bool pci_ps, is_qca988x = false;
+ 	int (*pci_soft_reset)(struct ath10k *ar);
+ 	int (*pci_hard_reset)(struct ath10k *ar);
+ 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
+@@ -3211,6 +3211,7 @@ static int ath10k_pci_probe(struct pci_d
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
++		is_qca988x = true;
+ 		pci_soft_reset = ath10k_pci_warm_reset;
+ 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
+ 		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
+@@ -3331,6 +3332,19 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_deinit_irq;
+ 	}
+ 
++	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
++	 * fall off the bus during chip_reset. These chips have the same pci
++	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
++	 */
++	if (is_qca988x) {
++		chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
++		if (chip_id != 0xffffffff) {
++			if (!ath10k_pci_chip_is_supported(pdev->device,
++							  chip_id))
++				goto err_unsupported;
++		}
++	}
++
+ 	ret = ath10k_pci_chip_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
+@@ -3343,11 +3357,8 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_free_irq;
+ 	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id)) {
+-		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
+-			   pdev->device, chip_id);
+-		goto err_free_irq;
+-	}
++	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id))
++		goto err_unsupported;
+ 
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+@@ -3357,6 +3368,10 @@ static int ath10k_pci_probe(struct pci_d
+ 
+ 	return 0;
+ 
++err_unsupported:
++	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
++		   pdev->device, bus_params.chip_id);
++
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_rx_retry_sync(ar);
+
+--nextPart5470804.AK8FHB7eIg
+Content-Disposition: attachment; filename="4-19-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="4-19-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+
+From 38ac13d668f237941c8b77f16375f8f0e4de966a Mon Sep 17 00:00:00 2001
+From: Christian Lamparter <chunkeey@gmail.com>
+Date: Mon, 25 Mar 2019 13:50:19 +0100
+Subject: [PATCH 4.19] ath10k: restore QCA9880-AR1A (v1) detection
+To: linux-wireless@vger.kernel.org,
+    ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+
+This patch restores the old behavior that read
+the chip_id on the QCA988x before resetting the
+chip. This needs to be done in this order since
+the unsupported QCA988x AR1A chips fall off the
+bus when resetted. Otherwise the next MMIO Op
+after the reset causes a BUS ERROR and panic.
+
+Cc: stable@vger.kernel.org # 4.19
+Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+--- a/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:07:21.374565470 +0200
++++ b/drivers/net/wireless/ath/ath10k/pci.c	2019-09-08 00:17:15.365912133 +0200
+@@ -3483,7 +3483,7 @@ static int ath10k_pci_probe(struct pci_d
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	u32 chip_id;
+-	bool pci_ps;
++	bool pci_ps, is_qca988x = false;
+ 	int (*pci_soft_reset)(struct ath10k *ar);
+ 	int (*pci_hard_reset)(struct ath10k *ar);
+ 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
+@@ -3493,6 +3493,7 @@ static int ath10k_pci_probe(struct pci_d
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
++		is_qca988x = true;
+ 		pci_soft_reset = ath10k_pci_warm_reset;
+ 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
+ 		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
+@@ -3612,6 +3613,19 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_deinit_irq;
+ 	}
+ 
++	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
++	 * fall off the bus during chip_reset. These chips have the same pci
++	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
++	 */
++	if (is_qca988x) {
++		chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
++		if (chip_id != 0xffffffff) {
++			if (!ath10k_pci_chip_is_supported(pdev->device,
++							  chip_id))
++				goto err_unsupported;
++		}
++	}
++
+ 	ret = ath10k_pci_chip_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
+@@ -3624,11 +3638,8 @@ static int ath10k_pci_probe(struct pci_d
+ 		goto err_free_irq;
+ 	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id)) {
+-		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
+-			   pdev->device, chip_id);
+-		goto err_free_irq;
+-	}
++	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id))
++		goto err_unsupported;
+ 
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+@@ -3638,6 +3649,10 @@ static int ath10k_pci_probe(struct pci_d
+ 
+ 	return 0;
+ 
++err_unsupported:
++	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
++		   pdev->device, bus_params.chip_id);
++
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_rx_retry_sync(ar);
+
+--nextPart5470804.AK8FHB7eIg
+Content-Disposition: attachment; filename="5-2-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="5-2-ath10k-restore-QCA9880-AR1A-v1-detection.patch"
+
+From 38ac13d668f237941c8b77f16375f8f0e4de966a Mon Sep 17 00:00:00 2001
+From: Christian Lamparter <chunkeey@gmail.com>
+Date: Mon, 25 Mar 2019 13:50:19 +0100
+Subject: [PATCH 5.2] ath10k: restore QCA9880-AR1A (v1) detection
+To: linux-wireless@vger.kernel.org,
+    ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+
+This patch restores the old behavior that read
+the chip_id on the QCA988x before resetting the
+chip. This needs to be done in this order since
+the unsupported QCA988x AR1A chips fall off the
+bus when resetted. Otherwise the next MMIO Op
+after the reset causes a BUS ERROR and panic.
+
+Cc: stable@vger.kernel.org # 5.2
+Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3490,7 +3490,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	struct ath10k_bus_params bus_params;
+-	bool pci_ps;
++	bool pci_ps, is_qca988x = false;
+ 	int (*pci_soft_reset)(struct ath10k *ar);
+ 	int (*pci_hard_reset)(struct ath10k *ar);
+ 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
+@@ -3500,6 +3500,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
++		is_qca988x = true;
+ 		pci_soft_reset = ath10k_pci_warm_reset;
+ 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
+ 		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
+@@ -3619,25 +3620,34 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_deinit_irq;
+ 	}
+ 
++	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
++	bus_params.link_can_suspend = true;
++	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
++	 * fall off the bus during chip_reset. These chips have the same pci
++	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
++	 */
++	if (is_qca988x) {
++		bus_params.chip_id =
++			ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
++		if (bus_params.chip_id != 0xffffffff) {
++			if (!ath10k_pci_chip_is_supported(pdev->device,
++							  bus_params.chip_id))
++				goto err_unsupported;
++		}
++	}
++
+ 	ret = ath10k_pci_chip_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
+ 		goto err_free_irq;
+ 	}
+ 
+-	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
+-	bus_params.link_can_suspend = true;
+ 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+-	if (bus_params.chip_id == 0xffffffff) {
+-		ath10k_err(ar, "failed to get chip id\n");
+-		goto err_free_irq;
+-	}
++	if (bus_params.chip_id == 0xffffffff)
++		goto err_unsupported;
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
+-		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
+-			   pdev->device, bus_params.chip_id);
++	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
+ 		goto err_free_irq;
+-	}
+ 
+ 	ret = ath10k_core_register(ar, &bus_params);
+ 	if (ret) {
+@@ -3647,6 +3657,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ 	return 0;
+ 
++err_unsupported:
++	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
++		   pdev->device, bus_params.chip_id);
++
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_rx_retry_sync(ar);
+-- 
+2.23.0
 
 
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
-
---
-Thanks,
-Sasha
+--nextPart5470804.AK8FHB7eIg
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--nextPart5470804.AK8FHB7eIg--
