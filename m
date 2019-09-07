@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i6MBX-0007lm-Ki
- for ath10k@lists.infradead.org; Fri, 06 Sep 2019 21:54:29 +0000
-Received: by mail-wr1-x441.google.com with SMTP id y19so8016993wrd.3
- for <ath10k@lists.infradead.org>; Fri, 06 Sep 2019 14:54:26 -0700 (PDT)
-From: Christian Lamparter <chunkeey@gmail.com>
-Subject: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
-Date: Fri,  6 Sep 2019 23:54:23 +0200
-Message-Id: <20190906215423.23589-1-chunkeey@gmail.com>
-MIME-Version: 1.0
+ id 1i6iUz-0005Tt-GG
+ for ath10k@lists.infradead.org; Sat, 07 Sep 2019 21:44:03 +0000
+Date: Sat, 07 Sep 2019 21:43:58 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
+In-Reply-To: <20190906215423.23589-1-chunkeey@gmail.com>
+References: <20190906215423.23589-1-chunkeey@gmail.com>
+Message-Id: <20190907214359.1C52A21835@mail.kernel.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,107 +17,97 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@codeaurora.org>
+To: Sasha Levin <sashal@kernel.org>, Christian Lamparter <chunkeey@gmail.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
 
-This patch restores the old behavior that read
-the chip_id on the QCA988x before resetting the
-chip. This needs to be done in this order since
-the unsupported QCA988x AR1A chips fall off the
-bus when resetted. Otherwise the next MMIO Op
-after the reset causes a BUS ERROR and panic.
+Hi,
 
-Cc: stable@vger.kernel.org
-Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 36 +++++++++++++++++++--------
- 1 file changed, 25 insertions(+), 11 deletions(-)
+[This is an automated email]
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index a0b4d265c6eb..347bb92e4130 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3490,7 +3490,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	struct ath10k_pci *ar_pci;
- 	enum ath10k_hw_rev hw_rev;
- 	struct ath10k_bus_params bus_params = {};
--	bool pci_ps;
-+	bool pci_ps, is_qca988x = false;
- 	int (*pci_soft_reset)(struct ath10k *ar);
- 	int (*pci_hard_reset)(struct ath10k *ar);
- 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
-@@ -3500,6 +3500,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	case QCA988X_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA988X;
- 		pci_ps = false;
-+		is_qca988x = true;
- 		pci_soft_reset = ath10k_pci_warm_reset;
- 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
- 		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
-@@ -3619,25 +3620,34 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		goto err_deinit_irq;
- 	}
- 
-+	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
-+	bus_params.link_can_suspend = true;
-+	/* Read CHIP_ID before reset to catch QCA9880-AR1A v1 devices that
-+	 * fall off the bus during chip_reset. These chips have the same pci
-+	 * device id as the QCA9880 BR4A or 2R4E. So that's why the check.
-+	 */
-+	if (is_qca988x) {
-+		bus_params.chip_id =
-+			ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
-+		if (bus_params.chip_id != 0xffffffff) {
-+			if (!ath10k_pci_chip_is_supported(pdev->device,
-+							  bus_params.chip_id))
-+				goto err_unsupported;
-+		}
-+	}
-+
- 	ret = ath10k_pci_chip_reset(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to reset chip: %d\n", ret);
- 		goto err_free_irq;
- 	}
- 
--	bus_params.dev_type = ATH10K_DEV_TYPE_LL;
--	bus_params.link_can_suspend = true;
- 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
--	if (bus_params.chip_id == 0xffffffff) {
--		ath10k_err(ar, "failed to get chip id\n");
--		goto err_free_irq;
--	}
-+	if (bus_params.chip_id == 0xffffffff)
-+		goto err_unsupported;
- 
--	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
--		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
--			   pdev->device, bus_params.chip_id);
-+	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
- 		goto err_free_irq;
--	}
- 
- 	ret = ath10k_core_register(ar, &bus_params);
- 	if (ret) {
-@@ -3647,6 +3657,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 
- 	return 0;
- 
-+err_unsupported:
-+	ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
-+		   pdev->device, bus_params.chip_id);
-+
- err_free_irq:
- 	ath10k_pci_free_irq(ar);
- 	ath10k_pci_rx_retry_sync(ar);
--- 
-2.23.0
+This commit has been processed because it contains a "Fixes:" tag,
+fixing commit: 1a7fecb766c8 ath10k: reset chip before reading chip_id in probe.
 
+The bot has tested the following trees: v5.2.13, v4.19.71, v4.14.142, v4.9.191, v4.4.191.
+
+v5.2.13: Failed to apply! Possible dependencies:
+    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
+
+v4.19.71: Failed to apply! Possible dependencies:
+    31324d17976e ("ath10k: support extended board data download for dual-band QCA9984")
+    5849ed48d226 ("ath10k: refactoring needed for extended board data download")
+    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
+    7c2dd6154fc2 ("ath10k: add device type enum to ath10k_bus_params")
+    ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+    c0d8d565787c ("ath10k: add struct ath10k_bus_params")
+    de8781d7e74d ("ath10k: disable interface pause wow config for integrated chipset")
+    f1908735f141 ("ath10k: allow ATH10K_SNOC with COMPILE_TEST")
+
+v4.14.142: Failed to apply! Possible dependencies:
+    0fa4fbe9b8cf ("ath10k: add hif power-up/power-down methods")
+    17f5559e0da5 ("ath10k: platform driver for WCN3990 SNOC WLAN module")
+    2a1e1ad3fd37 ("ath10k: Add support for 64 bit ce descriptor")
+    50c51f394e68 ("ath10k: do not mix spaces and tabs in Kconfig")
+    5dac5f3772f6 ("ath10k: Use dma_addr_t for ce buffers to support 64bit target")
+    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
+    7f9befbb555d ("ath10k: move pktlog_filter out of ath10k_debug")
+    84efe7f6ebc5 ("ath10k: map HTC services to tx/rx pipes for wcn3990")
+    a0aedd6e0b57 ("ath10k: build ce layer in ath10k core module")
+    a6a793f98786 ("ath10k: vote for hardware resources for WCN3990")
+    a6e149a9ff03 ("ath10k: add hif start/stop methods for wcn3990 snoc layer")
+    ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+    c0d8d565787c ("ath10k: add struct ath10k_bus_params")
+    c963a683e701 ("ath10k: add resource init and deinit for WCN3990")
+    d390509bdf50 ("ath10k: add hif tx methods for wcn3990")
+    dafa42036012 ("ath10k: use 64-bit crash dump timestamps")
+    e2fcf60c6fe8 ("ath10k: detach coredump.c from debug.c")
+    f1908735f141 ("ath10k: allow ATH10K_SNOC with COMPILE_TEST")
+    f25b9f285a0e ("ath10k: refactor firmware crashdump code to coredump.c")
+
+v4.9.191: Failed to apply! Possible dependencies:
+    0fa4fbe9b8cf ("ath10k: add hif power-up/power-down methods")
+    17f5559e0da5 ("ath10k: platform driver for WCN3990 SNOC WLAN module")
+    4db66499df91 ("ath10k: add initial USB support")
+    50c51f394e68 ("ath10k: do not mix spaces and tabs in Kconfig")
+    5524ddd4c1f1 ("ath10k: select WANT_DEV_COREDUMP")
+    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
+    84efe7f6ebc5 ("ath10k: map HTC services to tx/rx pipes for wcn3990")
+    a0aedd6e0b57 ("ath10k: build ce layer in ath10k core module")
+    a6a793f98786 ("ath10k: vote for hardware resources for WCN3990")
+    a6e149a9ff03 ("ath10k: add hif start/stop methods for wcn3990 snoc layer")
+    ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+    c0d8d565787c ("ath10k: add struct ath10k_bus_params")
+    c963a683e701 ("ath10k: add resource init and deinit for WCN3990")
+    cec17c382140 ("ath10k: add per peer htt tx stats support for 10.4")
+    d390509bdf50 ("ath10k: add hif tx methods for wcn3990")
+    d96db25d2025 ("ath10k: add initial SDIO support")
+    f1908735f141 ("ath10k: allow ATH10K_SNOC with COMPILE_TEST")
+
+v4.4.191: Failed to apply! Possible dependencies:
+    0b523ced9a3c ("ath10k: add basic skeleton to support ahb")
+    0d87c9208a17 ("ath10k: expose hif ops for ahb")
+    133df0f849bc ("ath10k: add chip and bus halt logic in ahb")
+    14854bfd9daa ("ath10k: add reset ctrl related functions in ahb")
+    1c44fcb9234c ("ath10k: include irq related functions in ahb")
+    4ddb3299aa49 ("ath10k: make ath10k_pci_read32/write32() ops more generic")
+    6d084ac27ab4 ("ath10k: initialise struct ath10k_bus params to zero")
+    704dc4e36769 ("ath10k: add resource init and deinit in ahb")
+    7f8e79cdc253 ("ath10k: add helper functions in ahb.c for reg rd/wr")
+    8beff219c528 ("ath10k: add clock ctrl related functions in ahb")
+    f52f517189de ("ath10k: make some of ath10k_pci_* func reusable")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+--
+Thanks,
+Sasha
 
 _______________________________________________
 ath10k mailing list
