@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x341.google.com ([2607:f8b0:4864:20::341])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7fkF-0004tP-UN
- for ath10k@lists.infradead.org; Tue, 10 Sep 2019 12:59:45 +0000
-Received: by mail-ot1-x341.google.com with SMTP id y39so18455915ota.7
- for <ath10k@lists.infradead.org>; Tue, 10 Sep 2019 05:59:42 -0700 (PDT)
+ id 1i7g2f-0004ip-9x
+ for ath10k@lists.infradead.org; Tue, 10 Sep 2019 13:18:46 +0000
 MIME-Version: 1.0
-In-Reply-To: <87h85kfwfn.fsf@codeaurora.org>
-References: <20190906215423.23589-1-chunkeey@gmail.com>
- <20190907214359.1C52A21835@mail.kernel.org>
- <CAKR_QVKv8kgXSSCwd8esw28hARA61Pah3usRi+ZZG6ss2CcS=g@mail.gmail.com>
- <87h85kfwfn.fsf@codeaurora.org>
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Tue, 10 Sep 2019 14:59:40 +0200
-Message-ID: <CAKR_QVJpGZCBaE3hW6FShykYa=T6hy2dHn22daQVodWGL_-Afw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
+Subject: Re: [PATCH] ath10k: add mic bytes for pmf management packet
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1560757079-19266-1-git-send-email-wgong@codeaurora.org>
+References: <1560757079-19266-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190910131843.737306050D@smtp.codeaurora.org>
+Date: Tue, 10 Sep 2019 13:18:43 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +22,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sasha Levin <sashal@kernel.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Christian Lamparter <chunkeey@gmail.com>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 10/09/2019, Kalle Valo <kvalo@codeaurora.org> wrote:
-> (dropping stable list)
->
-> Tom Psyborg <pozega.tomislav@gmail.com> writes:
->
->> According to this very old post
->> http://lists.infradead.org/pipermail/ath10k/2013-July/000021.html
->> seems like you've been misinformed on amount of these cards that were
->> put out in the market.
->>
->> At least digipart only have >40000 units in stocks
->> https://www.digipart.com/part/QCA9880-AR1A and other retailers
->> probably few thousands more.
->>
->> With that large amount of cards I think it is justified to request
->> firmware support for the chip. And probably a lot easier to make few
->> firmware modifications than go hacking a bunch of API calls so it
->> works with v2 firmware.
->
-> I'm very surprised that QCA9880 hw1.0 boards are still available, after
-> six years. Did you confirm that it really is hw1.0 and not just some
-> mixup with hardware ids or something like that?
+Wen Gong <wgong@codeaurora.org> wrote:
 
-Print on the chip clearly says QCA9880-AR1A. ID same as for v2 - 003C.
+> For PMF case, the action,deauth,disassoc management need to encrypt
+> by hardware, it need to reserve 8 bytes for encryption, otherwise
+> the packet will be sent out with error format, then PMF case will
+> fail.
+> 
+> After add the 8 bytes, it will pass the PMF case.
+> 
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00005-QCARMSWP-1.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-> old hw1.0 firmware to see if it works.
+Patch applied to ath-next branch of ath.git, thanks.
 
-I don't know which fw blob version that is. I could not find it
-online. All files are v2 related.
+83ac260151e7 ath10k: add mic bytes for pmf management packet
 
->
-> But if it's really is hw1.0 I doubt there will be any support for that.
-> I recommend to avoid hw1.0 altogether.
->
-> --
-> Kalle Valo
->
+-- 
+https://patchwork.kernel.org/patch/10998135/
 
-That would be too bad, even worse when you find out that
-qca-wifi-10.2.4.58.1 driver fails to load firmware too. The only one
-that works is qca-wifi that comes with tp-link firmware, some very
-early version 10.0.108 or somtehing like that that has no available
-sources..
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
