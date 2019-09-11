@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7h1e-0003EA-2M
- for ath10k@lists.infradead.org; Tue, 10 Sep 2019 14:21:49 +0000
-Subject: Re: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
-References: <20190906215423.23589-1-chunkeey@gmail.com>
- <20190907214359.1C52A21835@mail.kernel.org>
- <CAKR_QVKv8kgXSSCwd8esw28hARA61Pah3usRi+ZZG6ss2CcS=g@mail.gmail.com>
- <87h85kfwfn.fsf@codeaurora.org>
- <CAKR_QVJpGZCBaE3hW6FShykYa=T6hy2dHn22daQVodWGL_-Afw@mail.gmail.com>
- <a1cf238e-ee80-ee81-f7a6-28faff3a35a6@newmedia-net.de>
- <a599bf9a-44ad-2d70-79dc-324e8dbeb1cd@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <c25df199-bfe6-942a-8120-d818a8f387b2@newmedia-net.de>
-Date: Tue, 10 Sep 2019 16:20:20 +0200
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1i874O-00083O-B3
+ for ath10k@lists.infradead.org; Wed, 11 Sep 2019 18:10:21 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: WARNING at net/mac80211/sta_info.c:1057
+ (__sta_info_destroy_part2())
+References: <CAHk-=wgBuu8PiYpD7uWgxTSY8aUOJj6NJ=ivNQPYjAKO=cRinA@mail.gmail.com>
+Date: Wed, 11 Sep 2019 21:10:12 +0300
+In-Reply-To: <CAHk-=wgBuu8PiYpD7uWgxTSY8aUOJj6NJ=ivNQPYjAKO=cRinA@mail.gmail.com>
+ (Linus Torvalds's message of "Wed, 11 Sep 2019 11:05:46 +0100")
+Message-ID: <87lfuuln5n.fsf@tynnyri.adurom.net>
 MIME-Version: 1.0
-In-Reply-To: <a599bf9a-44ad-2d70-79dc-324e8dbeb1cd@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +20,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org, Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Johannes Berg <johannes@sipsolutions.net>, "David S. Miller" <davem@davemloft.net>
 
-CkFtIDEwLjA5LjIwMTkgdW0gMTY6MTEgc2NocmllYiBCZW4gR3JlZWFyOgo+Cj4KPiBPbiAwOS8x
-MC8yMDE5IDA2OjUxIEFNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4gdGhlIHRwbGlu
-ayBhcmNoZXIgYzcgdjEgaW5kZWVkIGhhcyB0aGlzIGh3IDEgdmVyc2lvbi4gYnV0IHRoYXRzIHRo
-ZSAKPj4gb25seSBkZXZpY2UgaSBrbm93IGNvbW1pbmcgd2l0aCB0aGlzIGNoaXBzZXQgdmVyc2lv
-bgo+PiBidXQgdGhlIHYxIGhhcyBhbHNvIGEgbWluaXBjaWUgc2xvdCBhbmQgaXMgbm90IHNvbGRl
-cmVkIGxpa2UgYWxsIAo+PiBvdGhlciByZXZpc2lvbnMuwqAgc28gaSBqdXN0IHJlcGxhY2VkIHRo
-ZSBjYXJkIG9uIG15IHRlc3QgZGV2aWNlLgo+PiBpbiBhZGRpdGlvbiB3ZSBtYXkgYXNrIGJlbiBn
-cmVhciBpZiBoZSBpcyBhYmxlIHRvIHByb3ZpZGUgYSB2MSAKPj4gZmlybXdhcmUgZnJvbSBoaXMg
-Y3QgdHJlZSBzaW5jZSB0aGUgcWNhIHNvdXJjZWNvZGVzIGRvIGNvbnRhaW4gc3VwcG9ydAo+PiBm
-b3IgdGhlIHYxIHJldmlzaW9uLiBidXQgZG9udCBleHBlY3QgdG9vIG11Y2guIHRoZXJlIHdhcyBh
-IHJlYXNvbiB3aHkgCj4+IHYxIHdhcyBuZXZlciByZWFsbHkgb24gdGhlIG1hcmtldAo+Cj4gSGVs
-bG8sCj4KPiBJIGRvbid0IHRoaW5rIEkgY2FuIGV2ZW4gYnVpbGQgYSB2MSBmaXJtd2FyZSBpZiBJ
-IHdhbnRlZCB0bywgYW5kIEknZCAKPiBtdWNoIHJhdGhlciB3b3JrIG9uIG5ld2VyCj4gY2hpcHMu
-wqAgVGhhdCB2MSB3YXMgYW4gdW5zdGFibGUgd3JlY2sgZnJvbSB0aGUgYmVnaW5uaW5nLCBhdCBs
-ZWFzdCAKPiB3aXRoIG9wZW4tc291cmNlIGRyaXZlci4KPgo+IFRoYW5rcywKPiBCZW4KdGhhdHMg
-d2hhdCBpIG1lYW4uIHRoZSB2MSBpcyBrbm93biB0byBiZSBhIGJ1Z2d5IGNoaXBzZXQuIGkgaGF2
-ZSBzdGlsbCAKb25lIGJ1dCBuZXZlciBwbGF5ZWQgbXVjaCB3aXRoIGl0LiBidXQgb3duZXJzIG9m
-IHRoZSBvbGQgYXJjaGVyIHY3IHYxIApvZnRlbiBhc2sgZm9yIHN1cHBvcnQKPgo+Pgo+PiBBbSAx
-MC4wOS4yMDE5IHVtIDE0OjU5IHNjaHJpZWIgVG9tIFBzeWJvcmc6Cj4+PiBPbiAxMC8wOS8yMDE5
-LCBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz4gd3JvdGU6Cj4+Pj4gKGRyb3BwaW5n
-IHN0YWJsZSBsaXN0KQo+Pj4+Cj4+Pj4gVG9tIFBzeWJvcmcgPHBvemVnYS50b21pc2xhdkBnbWFp
-bC5jb20+IHdyaXRlczoKPj4+Pgo+Pj4+PiBBY2NvcmRpbmcgdG8gdGhpcyB2ZXJ5IG9sZCBwb3N0
-Cj4+Pj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxMy1K
-dWx5LzAwMDAyMS5odG1sCj4+Pj4+IHNlZW1zIGxpa2UgeW91J3ZlIGJlZW4gbWlzaW5mb3JtZWQg
-b24gYW1vdW50IG9mIHRoZXNlIGNhcmRzIHRoYXQgd2VyZQo+Pj4+PiBwdXQgb3V0IGluIHRoZSBt
-YXJrZXQuCj4+Pj4+Cj4+Pj4+IEF0IGxlYXN0IGRpZ2lwYXJ0IG9ubHkgaGF2ZSA+NDAwMDAgdW5p
-dHMgaW4gc3RvY2tzCj4+Pj4+IGh0dHBzOi8vd3d3LmRpZ2lwYXJ0LmNvbS9wYXJ0L1FDQTk4ODAt
-QVIxQSBhbmQgb3RoZXIgcmV0YWlsZXJzCj4+Pj4+IHByb2JhYmx5IGZldyB0aG91c2FuZHMgbW9y
-ZS4KPj4+Pj4KPj4+Pj4gV2l0aCB0aGF0IGxhcmdlIGFtb3VudCBvZiBjYXJkcyBJIHRoaW5rIGl0
-IGlzIGp1c3RpZmllZCB0byByZXF1ZXN0Cj4+Pj4+IGZpcm13YXJlIHN1cHBvcnQgZm9yIHRoZSBj
-aGlwLiBBbmQgcHJvYmFibHkgYSBsb3QgZWFzaWVyIHRvIG1ha2UgZmV3Cj4+Pj4+IGZpcm13YXJl
-IG1vZGlmaWNhdGlvbnMgdGhhbiBnbyBoYWNraW5nIGEgYnVuY2ggb2YgQVBJIGNhbGxzIHNvIGl0
-Cj4+Pj4+IHdvcmtzIHdpdGggdjIgZmlybXdhcmUuCj4+Pj4gSSdtIHZlcnkgc3VycHJpc2VkIHRo
-YXQgUUNBOTg4MCBodzEuMCBib2FyZHMgYXJlIHN0aWxsIGF2YWlsYWJsZSwgCj4+Pj4gYWZ0ZXIK
-Pj4+PiBzaXggeWVhcnMuIERpZCB5b3UgY29uZmlybSB0aGF0IGl0IHJlYWxseSBpcyBodzEuMCBh
-bmQgbm90IGp1c3Qgc29tZQo+Pj4+IG1peHVwIHdpdGggaGFyZHdhcmUgaWRzIG9yIHNvbWV0aGlu
-ZyBsaWtlIHRoYXQ/Cj4+PiBQcmludCBvbiB0aGUgY2hpcCBjbGVhcmx5IHNheXMgUUNBOTg4MC1B
-UjFBLiBJRCBzYW1lIGFzIGZvciB2MiAtIDAwM0MuCj4+Pgo+Pj4+IG9sZCBodzEuMCBmaXJtd2Fy
-ZSB0byBzZWUgaWYgaXQgd29ya3MuCj4+PiBJIGRvbid0IGtub3cgd2hpY2ggZncgYmxvYiB2ZXJz
-aW9uIHRoYXQgaXMuIEkgY291bGQgbm90IGZpbmQgaXQKPj4+IG9ubGluZS4gQWxsIGZpbGVzIGFy
-ZSB2MiByZWxhdGVkLgo+Pj4KPj4+PiBCdXQgaWYgaXQncyByZWFsbHkgaXMgaHcxLjAgSSBkb3Vi
-dCB0aGVyZSB3aWxsIGJlIGFueSBzdXBwb3J0IGZvciAKPj4+PiB0aGF0Lgo+Pj4+IEkgcmVjb21t
-ZW5kIHRvIGF2b2lkIGh3MS4wIGFsdG9nZXRoZXIuCj4+Pj4KPj4+PiAtLSAKPj4+PiBLYWxsZSBW
-YWxvCj4+Pj4KPj4+IFRoYXQgd291bGQgYmUgdG9vIGJhZCwgZXZlbiB3b3JzZSB3aGVuIHlvdSBm
-aW5kIG91dCB0aGF0Cj4+PiBxY2Etd2lmaS0xMC4yLjQuNTguMSBkcml2ZXIgZmFpbHMgdG8gbG9h
-ZCBmaXJtd2FyZSB0b28uIFRoZSBvbmx5IG9uZQo+Pj4gdGhhdCB3b3JrcyBpcyBxY2Etd2lmaSB0
-aGF0IGNvbWVzIHdpdGggdHAtbGluayBmaXJtd2FyZSwgc29tZSB2ZXJ5Cj4+PiBlYXJseSB2ZXJz
-aW9uIDEwLjAuMTA4IG9yIHNvbXRlaGluZyBsaWtlIHRoYXQgdGhhdCBoYXMgbm8gYXZhaWxhYmxl
-Cj4+PiBzb3VyY2VzLi4KPj4+Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4gYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKPj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCj4+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
-aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
++ ath10k list
+
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+
+> So I'm at LCA, reading email, using my laptop more than I normally do,
+> and with different networking than I normally do.
+>
+> And I just had a 802.11 WARN_ON() trigger, followed by essentially a
+> dead machine due to some lock held (maybe rtnl_lock).
+>
+> It's possible that the lock held thing happened before, and is the
+> _reason_ for the delay, I don't know. I had to reboot the machine, but
+> I gathered as much information as made sense and was obvious before I
+> did so. That's appended.
+
+Some notes while investigating this:
+
+> But wait!
+>
+> ... then 10+ minutes later:
+>
+>    ath10k_pci 0000:02:00.0: wmi command 16387 timeout, restarting hardware
+>    ath10k_pci 0000:02:00.0: failed to set 5g txpower 23: -11
+>    ath10k_pci 0000:02:00.0: failed to setup tx power 23: -11
+>    ath10k_pci 0000:02:00.0: failed to recalc tx power: -11
+>    ath10k_pci 0000:02:00.0: failed to set inactivity time for vdev 0: -108
+>    ath10k_pci 0000:02:00.0: failed to setup powersave: -108
+>
+> That certainly looks like something did try to set a power limit, but
+> eventually failed.
+
+I suspect the failing WMI command is called from:
+
+ath10k_bss_info_changed()
+ath10k_mac_txpower_recalc()
+ath10k_mac_txpower_setup()
+ath10k_wmi_pdev_set_param()
+ath10k_wmi_cmd_send()
+ath10k_wmi_cmd_send_nowait()
+ath10k_htc_send()
+
+-11 is -EAGAIN which would mean that the HTC credits have run out some
+ reason for the WMI command:
+
+if (ep->tx_credits < credits) {
+        ath10k_dbg(ar, ATH10K_DBG_HTC,
+                "htc insufficient credits ep %d required %d available %d\n",
+                eid, credits, ep->tx_credits);
+        spin_unlock_bh(&htc->tx_lock);
+        ret = -EAGAIN;
+        goto err_pull;
+}
+
+Credits can run out, for example, if there's a lot of WMI command/event
+activity and are not returned during the 3s wait, firmware crashed or
+problems with the PCI bus. But when the WMI command timeout happens
+ath10k is supposed to restart the firmware and everything should be
+usable again.
+                                             
+> Immediately after that:
+>
+>    wlp2s0: deauthenticating from 54:ec:2f:05:70:2c by local choice
+> (Reason: 3=DEAUTH_LEAVING)
+>    ath10k_pci 0000:02:00.0: failed to read hi_board_data address: -16
+>    ath10k_pci 0000:02:00.0: failed to receive initialized event from
+> target: 00000000
+>    ath10k_pci 0000:02:00.0: failed to receive initialized event from
+> target: 00000000
+>    ath10k_pci 0000:02:00.0: failed to wait for target init: -110
+
+I suspect here ath10k tries to reset the target during stop operation,
+"failed to receive initialized event from target" comes from:
+
+ath10k_pci_hif_stop()
+ath10k_pci_safe_chip_reset()
+ath10k_pci_warm_reset()
+ath10k_pci_wait_for_target_init()
+
+It shouldn't fail like that, which makes me suspect either a low level
+problem or a bug in qca6174 firmware restart code. To check the latter,
+could you please try to force a firmware crash and see if firmware
+restart is working for you?
+
+To crash the firmware you need to write either "hard" or "assert" (I
+forgot which one QCA6174 firmware supports) to
+/sys/kernel/debug/ieee80211/phy*/ath10k/simulate_fw_crash. And what
+should happen is that the firmware crashes, ath10k prints a big pile of
+warnings, restarts it and in few seconds everything resumes to normal
+without user space even noticing it.
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
