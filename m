@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i8PMK-0000Qa-7P
- for ath10k@lists.infradead.org; Thu, 12 Sep 2019 13:42:05 +0000
+ id 1i8PQM-0002QN-3e
+ for ath10k@lists.infradead.org; Thu, 12 Sep 2019 13:46:15 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fix channel info parsing for non tlv target
-References: <1552044366-9186-1-git-send-email-pillair@codeaurora.org>
-Date: Thu, 12 Sep 2019 16:41:58 +0300
-In-Reply-To: <1552044366-9186-1-git-send-email-pillair@codeaurora.org> (Rakesh
- Pillai's message of "Fri, 8 Mar 2019 16:56:06 +0530")
-Message-ID: <87r24lk4wp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v5 1/8] ath10k: adjust skb length in
+ ath10k_sdio_mbox_rx_packet
+References: <1567679893-14029-1-git-send-email-wgong@codeaurora.org>
+ <1567679893-14029-2-git-send-email-wgong@codeaurora.org>
+Date: Thu, 12 Sep 2019 16:46:09 +0300
+In-Reply-To: <1567679893-14029-2-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Thu, 5 Sep 2019 18:38:06 +0800")
+Message-ID: <87muf9k4pq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,53 +25,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>, Nicolas Boichat <drinkcat@chromium.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> writes:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> The tlv targets such as WCN3990 send more data in
-> the chan info event, which is not sent by the non tlv
-> targets. There is a minimum size check in the wmi event for
-> non-tlv targets and hence we cannot update the common
-> channel info structure.
+> From: Nicolas Boichat <drinkcat@chromium.org>
 >
-> If the common channel info structure is updated, the
-> size check for chan info event for non-tlv targets
-> will fail and return -EPROTO
+> When the FW bundles multiple packets, pkt->act_len may be incorrect
+> as it refers to the first packet only (however, the FW will only
+> bundle packets that fit into the same pkt->alloc_len).
+>
+> Before this patch, the skb length would be set (incorrectly) to
+> pkt->act_len in ath10k_sdio_mbox_rx_packet, and then later manually
+> adjusted in ath10k_sdio_mbox_rx_process_packet.
+>
+> The first problem is that ath10k_sdio_mbox_rx_process_packet does not
+> use proper skb_put commands to adjust the length (it directly changes
+> skb->len), so we end up with a mismatch between skb->head + skb->tail
+> and skb->data + skb->len. This is quite serious, and causes corruptions
+> in the TCP stack, as the stack tries to coalesce packets, and relies
+> on skb->tail being correct (that is, skb_tail_pointer must point to
+> the first byte_after_ the data).
+>
+> Instead of re-adjusting the size in ath10k_sdio_mbox_rx_process_packet,
+> this moves the code to ath10k_sdio_mbox_rx_packet, and also add a
+> bounds check, as skb_put would crash the kernel if not enough space is
+> available.
+>
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+>
+> Fixes: 8530b4e7b22bc3b ("ath10k: sdio: set skb len for all rx packets")
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 
-This is the code in question:
+[...]
 
-static int ath10k_wmi_op_pull_ch_info_ev(struct ath10k *ar, struct sk_buff *skb,
-					 struct wmi_ch_info_ev_arg *arg)
-{
-	struct wmi_chan_info_event *ev = (void *)skb->data;
+> @@ -632,13 +627,29 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
+>  {
+>  	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+>  	struct sk_buff *skb = pkt->skb;
+> +	struct ath10k_htc_hdr *htc_hdr;
+>  	int ret;
+>  
+>  	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
+>  				 skb->data, pkt->alloc_len);
+> +
+> +	if (!ret) {
+> +		/* Update actual length. The original length may be incorrect,
+> +		 * as the FW will bundle multiple packets as long as their sizes
+> +		 * fit within the same aligned length (pkt->alloc_len).
+> +		 */
+> +		htc_hdr = (struct ath10k_htc_hdr *)skb->data;
+> +		pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
+> +		if (pkt->act_len <= pkt->alloc_len) {
+> +			skb_put(skb, pkt->act_len);
+> +		} else {
+> +			ath10k_warn(ar, "rx packet too large (%zu > %zu)\n",
+> +				    pkt->act_len, pkt->alloc_len);
+> +			ret = -EMSGSIZE;
+> +		}
+> +	}
+> +
+>  	pkt->status = ret;
+> -	if (!ret)
+> -		skb_put(skb, pkt->act_len);
+>  
+>  	return ret;
+>  }
 
-	if (skb->len < sizeof(*ev))
-		return -EPROTO;
+I simplified the error handling in this function to follow the ath10k
+style, please check carefully that I didn't create any bugs:
 
-	skb_pull(skb, sizeof(*ev));
-	arg->err_code = ev->err_code;
-	arg->freq = ev->freq;
-	arg->cmd_flags = ev->cmd_flags;
-	arg->noise_floor = ev->noise_floor;
-	arg->rx_clear_count = ev->rx_clear_count;
-	arg->cycle_count = ev->cycle_count;
-
-	return 0;
-}
-
-And here I see a disconnection between firmware and ath10k. The design
-philosophy in firmware is that if the firmware does not provide all
-fields, for example cycle_count in this event, the host driver is
-supposed to replace the missing field with value zero and continue
-normally. Obviously ath10k does not do that and instead it drops the
-whole WMI event, which causes breakup like this.
-
-The quick fix (having separate structs for TLV and 10.x interfaces) in
-this patch is ok, but in the future if similar field additions arise we
-need to remember to fix ath10k event parsing so that both new ath10k
-will continue to work with older firmwares.
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=6e4d2cc5
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
