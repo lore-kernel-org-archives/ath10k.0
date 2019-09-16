@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i9qm8-0004aU-MR
- for ath10k@lists.infradead.org; Mon, 16 Sep 2019 13:10:42 +0000
-From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: [PATCH 4/4] mac80211: Sync airtime weight sum with per AC synced sta
- airtime weight together
-Date: Mon, 16 Sep 2019 21:09:48 +0800
-Message-Id: <1568639388-27291-4-git-send-email-yiboz@codeaurora.org>
-In-Reply-To: <1568639388-27291-1-git-send-email-yiboz@codeaurora.org>
+ id 1i9suu-0008IC-AM
+ for ath10k@lists.infradead.org; Mon, 16 Sep 2019 15:27:53 +0000
+Message-ID: <6684ceecde399edeb31c594f889a403440c78142.camel@sipsolutions.net>
+Subject: Re: [PATCH 3/4] mac80211: fix low throughput in push pull mode
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 16 Sep 2019 17:27:37 +0200
+In-Reply-To: <1568639388-27291-3-git-send-email-yiboz@codeaurora.org>
+ (sfid-20190916_151039_049848_BE125514)
 References: <1568639388-27291-1-git-send-email-yiboz@codeaurora.org>
+ <1568639388-27291-3-git-send-email-yiboz@codeaurora.org>
+ (sfid-20190916_151039_049848_BE125514)
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,172 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Yibo Zhao <yiboz@codeaurora.org>, ath10k@lists.infradead.org
+Cc: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org
 
-Global airtime weight sum is updated only when txq is added/removed
-from rbtree. If upper layer configures sta weight during high load,
-airtime weight sum will not be updated since txq is most likely on the
-tree. It could a little late for upper layer to reconfigure sta weight
-when txq is already in the rbtree. And thus, incorrect airtime weight sum
-will lead to incorrect global virtual time calculation as well as global
-airtime weight sum overflow of airtime weight sum during txq removed.
+Without really looking at the code - 
 
-Hence, need to update airtime weight sum upon receiving event for
-configuring sta weight once sta's txq is on the rbtree.
+> If station is ineligible for transmission in ieee80211_txq_may_transmit(),
+> no packet will be delivered to FW. During the tests in push-pull mode with
+> many clients, after several seconds, not a single station is an eligible
+> candidate for transmission since global time is smaller than all the
+> station's virtual airtime. As a consequence, the Tx has been blocked and
+> throughput is quite low.
 
-Besides, if airtime weight sum of ACs and sta weight is synced under the
-same per AC lock protection, there can be a very short window causing
-incorrct airtime weight sum calculation as below:
+You should rewrite this to be, erm, a bit more understandable in
+mac80211 context. I assume you're speaking (mostly?) about ath10k, but I
+have very little context there. "push pull mode"? "firmware"? These
+things are not something mac80211 knows about.
 
-    active_txq_lock_VO                          .
-    VO weight sum is syncd			.
-    sta airtime weight sum is synced		.
-    active_txq_unlock_VO			.
-    .						.
-    active_txq_lock_VI    			.
-    VI weight sum is syncd			.
-    sta airtime weight sum		active_txq_lock_BE
-    active_txq_unlock_VI	      Remove txq and thus sum
-    .				      is calculated with synced
-    .				      sta airtime weight
-    .					active_txq_unlock_BE
+> Co-developed-by: Yibo Zhao <yiboz@codeaurora.org>
 
-So introduce a per ac synced station airtime weight synced with per
-AC synced weight sum together. And the per-AC station airtime weight
-is used to calculate weight sum.
+That also seems wrong, should be Toke I guess, unless you intended for a
+From: Toke to be present?
 
-Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
----
- net/mac80211/cfg.c      | 27 +++++++++++++++++++++++++--
- net/mac80211/sta_info.c |  6 ++++--
- net/mac80211/sta_info.h |  3 +++
- net/mac80211/tx.c       |  4 ++--
- 4 files changed, 34 insertions(+), 6 deletions(-)
+johannes
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index d65aa01..4b420bb 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -1284,7 +1284,8 @@ static int sta_apply_parameters(struct ieee80211_local *local,
- 	int ret = 0;
- 	struct ieee80211_supported_band *sband;
- 	struct ieee80211_sub_if_data *sdata = sta->sdata;
--	u32 mask, set;
-+	u32 mask, set, tid, ac;
-+	struct txq_info *txqi;
- 
- 	sband = ieee80211_get_sband(sdata);
- 	if (!sband)
-@@ -1452,8 +1453,30 @@ static int sta_apply_parameters(struct ieee80211_local *local,
- 	if (ieee80211_vif_is_mesh(&sdata->vif))
- 		sta_apply_mesh_params(local, sta, params);
- 
--	if (params->airtime_weight)
-+	if (params->airtime_weight &&
-+	    params->airtime_weight != sta->airtime_weight) {
-+		for (ac = 0; ac < IEEE80211_NUM_ACS; ac++) {
-+			spin_lock_bh(&local->active_txq_lock[ac]);
-+			for (tid = 0; tid < IEEE80211_NUM_TIDS + 1; tid++) {
-+				if (!sta->sta.txq[tid] ||
-+				    ac != ieee80211_ac_from_tid(tid))
-+					continue;
-+
-+				sta->airtime_weight_synced[ac] =
-+							params->airtime_weight;
-+
-+				txqi = to_txq_info(sta->sta.txq[tid]);
-+				if (RB_EMPTY_NODE(&txqi->schedule_order))
-+					continue;
-+
-+				local->airtime_weight_sum[ac] = local->airtime_weight_sum[ac] +
-+								params->airtime_weight -
-+								sta->airtime_weight;
-+			}
-+			spin_unlock_bh(&local->active_txq_lock[ac]);
-+		}
- 		sta->airtime_weight = params->airtime_weight;
-+	}
- 
- 	/* set the STA state after all sta info from usermode has been set */
- 	if (test_sta_flag(sta, WLAN_STA_TDLS_PEER) ||
-diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
-index feac975..b00812f 100644
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -389,6 +389,7 @@ struct sta_info *sta_info_alloc(struct ieee80211_sub_if_data *sdata,
- 	for (i = 0; i < IEEE80211_NUM_ACS; i++) {
- 		skb_queue_head_init(&sta->ps_tx_buf[i]);
- 		skb_queue_head_init(&sta->tx_filtered[i]);
-+		sta->airtime_weight_synced[i] = sta->airtime_weight;
- 	}
- 
- 	for (i = 0; i < IEEE80211_NUM_TIDS; i++)
-@@ -1850,11 +1851,12 @@ void ieee80211_sta_register_airtime(struct ieee80211_sta *pubsta, u8 tid,
- 	sta->airtime[ac].tx_airtime += tx_airtime;
- 	sta->airtime[ac].rx_airtime += rx_airtime;
- 
--	weight_sum = local->airtime_weight_sum[ac] ?: sta->airtime_weight;
-+	weight_sum = local->airtime_weight_sum[ac] ?
-+					: sta->airtime_weight_synced[ac];
- 
- 	/* Round the calculation of global vt */
- 	local->airtime_v_t[ac] += (airtime + (weight_sum >> 1)) / weight_sum;
--	sta->airtime[ac].v_t += airtime / sta->airtime_weight;
-+	sta->airtime[ac].v_t += airtime / sta->airtime_weight_synced[ac];
- 	ieee80211_resort_txq(&local->hw, txq);
- 
- 	spin_unlock_bh(&local->active_txq_lock[ac]);
-diff --git a/net/mac80211/sta_info.h b/net/mac80211/sta_info.h
-index 5055f94..1298902 100644
---- a/net/mac80211/sta_info.h
-+++ b/net/mac80211/sta_info.h
-@@ -476,6 +476,8 @@ struct ieee80211_sta_rx_stats {
-  * @tid_seq: per-TID sequence numbers for sending to this STA
-  * @airtime: per-AC struct airtime_info describing airtime statistics for this
-  *	station
-+ * @airtime_weight_synced: station per-AC airtime weight for sync and
-+ *  calculation
-  * @airtime_weight: station weight for airtime fairness calculation purposes
-  * @ampdu_mlme: A-MPDU state machine state
-  * @mesh: mesh STA information
-@@ -602,6 +604,7 @@ struct sta_info {
- 	u16 tid_seq[IEEE80211_QOS_CTL_TID_MASK + 1];
- 
- 	struct airtime_info airtime[IEEE80211_NUM_ACS];
-+	u16 airtime_weight_synced[IEEE80211_NUM_ACS];
- 	u16 airtime_weight;
- 
- 	/*
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index 60cf569..3592d49 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -3735,7 +3735,7 @@ void ieee80211_schedule_txq(struct ieee80211_hw *hw,
- 		struct sta_info *sta = container_of(txq->sta,
- 						    struct sta_info, sta);
- 
--		local->airtime_weight_sum[ac] += sta->airtime_weight;
-+		local->airtime_weight_sum[ac] += sta->airtime_weight_synced[ac];
- 		if (local->airtime_v_t[ac] > AIRTIME_GRACE)
- 			sta->airtime[ac].v_t = max(local->airtime_v_t[ac] - AIRTIME_GRACE,
- 						   sta->airtime[ac].v_t);
-@@ -3779,7 +3779,7 @@ static void __ieee80211_unschedule_txq(struct ieee80211_hw *hw,
- 		struct sta_info *sta = container_of(txq->sta,
- 						    struct sta_info, sta);
- 
--		local->airtime_weight_sum[ac] -= sta->airtime_weight;
-+		local->airtime_weight_sum[ac] -= sta->airtime_weight_synced[ac];
- 	}
- 
- 	rb_erase_cached(&txqi->schedule_order,
--- 
-1.9.1
 
 
 _______________________________________________
