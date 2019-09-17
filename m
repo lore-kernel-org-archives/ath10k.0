@@ -2,18 +2,17 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
  helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAKxI-0002Be-KT
- for ath10k@lists.infradead.org; Tue, 17 Sep 2019 21:24:14 +0000
-Received: by mail-ed1-f70.google.com with SMTP id s3so2993779edr.15
- for <ath10k@lists.infradead.org>; Tue, 17 Sep 2019 14:24:07 -0700 (PDT)
+ id 1iAL49-0005WW-Ov
+ for ath10k@lists.infradead.org; Tue, 17 Sep 2019 21:31:19 +0000
+Received: by mail-ed1-f70.google.com with SMTP id s3so3003789edr.15
+ for <ath10k@lists.infradead.org>; Tue, 17 Sep 2019 14:31:10 -0700 (PDT)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH 4/4] mac80211: Sync airtime weight sum with per AC synced
- sta airtime weight together
-In-Reply-To: <1568639388-27291-4-git-send-email-yiboz@codeaurora.org>
+Subject: Re: [PATCH 1/4] mac80211: Switch to a virtual time-based airtime
+ scheduler
+In-Reply-To: <1568639388-27291-1-git-send-email-yiboz@codeaurora.org>
 References: <1568639388-27291-1-git-send-email-yiboz@codeaurora.org>
- <1568639388-27291-4-git-send-email-yiboz@codeaurora.org>
-Date: Tue, 17 Sep 2019 23:24:04 +0200
-Message-ID: <87impqipl7.fsf@toke.dk>
+Date: Tue, 17 Sep 2019 23:31:08 +0200
+Message-ID: <87ftkuip9f.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,108 +22,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Yibo Zhao <yiboz@codeaurora.org>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Yibo Zhao <yiboz@codeaurora.org> writes:
-
-> Global airtime weight sum is updated only when txq is added/removed
-> from rbtree. If upper layer configures sta weight during high load,
-> airtime weight sum will not be updated since txq is most likely on the
-> tree. It could a little late for upper layer to reconfigure sta weight
-> when txq is already in the rbtree. And thus, incorrect airtime weight sum
-> will lead to incorrect global virtual time calculation as well as global
-> airtime weight sum overflow of airtime weight sum during txq removed.
->
-> Hence, need to update airtime weight sum upon receiving event for
-> configuring sta weight once sta's txq is on the rbtree.
->
-> Besides, if airtime weight sum of ACs and sta weight is synced under the
-> same per AC lock protection, there can be a very short window causing
-> incorrct airtime weight sum calculation as below:
->
->     active_txq_lock_VO                          .
->     VO weight sum is syncd			.
->     sta airtime weight sum is synced		.
->     active_txq_unlock_VO			.
->     .						.
->     active_txq_lock_VI    			.
->     VI weight sum is syncd			.
->     sta airtime weight sum		active_txq_lock_BE
->     active_txq_unlock_VI	      Remove txq and thus sum
->     .				      is calculated with synced
->     .				      sta airtime weight
->     .					active_txq_unlock_BE
->
-> So introduce a per ac synced station airtime weight synced with per
-> AC synced weight sum together. And the per-AC station airtime weight
-> is used to calculate weight sum.
->
-> Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
-> ---
->  net/mac80211/cfg.c      | 27 +++++++++++++++++++++++++--
->  net/mac80211/sta_info.c |  6 ++++--
->  net/mac80211/sta_info.h |  3 +++
->  net/mac80211/tx.c       |  4 ++--
->  4 files changed, 34 insertions(+), 6 deletions(-)
->
-> diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-> index d65aa01..4b420bb 100644
-> --- a/net/mac80211/cfg.c
-> +++ b/net/mac80211/cfg.c
-> @@ -1284,7 +1284,8 @@ static int sta_apply_parameters(struct ieee80211_local *local,
->  	int ret = 0;
->  	struct ieee80211_supported_band *sband;
->  	struct ieee80211_sub_if_data *sdata = sta->sdata;
-> -	u32 mask, set;
-> +	u32 mask, set, tid, ac;
-> +	struct txq_info *txqi;
->  
->  	sband = ieee80211_get_sband(sdata);
->  	if (!sband)
-> @@ -1452,8 +1453,30 @@ static int sta_apply_parameters(struct ieee80211_local *local,
->  	if (ieee80211_vif_is_mesh(&sdata->vif))
->  		sta_apply_mesh_params(local, sta, params);
->  
-> -	if (params->airtime_weight)
-> +	if (params->airtime_weight &&
-> +	    params->airtime_weight != sta->airtime_weight) {
-> +		for (ac = 0; ac < IEEE80211_NUM_ACS; ac++) {
-> +			spin_lock_bh(&local->active_txq_lock[ac]);
-> +			for (tid = 0; tid < IEEE80211_NUM_TIDS + 1; tid++) {
-> +				if (!sta->sta.txq[tid] ||
-> +				    ac != ieee80211_ac_from_tid(tid))
-> +					continue;
-> +
-> +				sta->airtime_weight_synced[ac] =
-> +							params->airtime_weight;
-> +
-> +				txqi = to_txq_info(sta->sta.txq[tid]);
-> +				if (RB_EMPTY_NODE(&txqi->schedule_order))
-> +					continue;
-> +
-> +				local->airtime_weight_sum[ac] = local->airtime_weight_sum[ac] +
-> +								params->airtime_weight -
-> +								sta->airtime_weight;
-> +			}
-> +			spin_unlock_bh(&local->active_txq_lock[ac]);
-> +		}
->  		sta->airtime_weight = params->airtime_weight;
-
-With this, airtime_weight is basically only used to return to and from
-userspace, right? I.e., after the above loop has run, it will match the
-contents of airtime_weight_synced; so why not just turn airtime_weight
-into  a per-ac array? You could just use airtime_weight[0] as the value
-to return to userspace...
-
--Toke
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+WWlibyBaaGFvIDx5aWJvekBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOgoKPiBGcm9tOiBUb2tlIEjD
+uGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAcmVkaGF0LmNvbT4KPgo+IFRoaXMgc3dpdGNoZXMgdGhl
+IGFpcnRpbWUgc2NoZWR1bGVyIGluIG1hYzgwMjExIHRvIHVzZSBhIHZpcnR1YWwgdGltZS1iYXNl
+ZAo+IHNjaGVkdWxlciBpbnN0ZWFkIG9mIHRoZSByb3VuZC1yb2JpbiBzY2hlZHVsZXIgdXNlZCBi
+ZWZvcmUuIFRoaXMgaGFzIGEKPiBjb3VwbGUgb2YgYWR2YW50YWdlczoKPgo+IC0gTm8gbmVlZCB0
+byBzeW5jIHVwIHRoZSByb3VuZC1yb2JpbiBzY2hlZHVsZXIgaW4gZmlybXdhcmUvaGFyZHdhcmUg
+d2l0aAo+ICAgdGhlIHJvdW5kLXJvYmluIGFpcnRpbWUgc2NoZWR1bGVyLgo+Cj4gLSBJZiBzZXZl
+cmFsIHN0YXRpb25zIGFyZSBlbGlnaWJsZSBmb3IgdHJhbnNtaXNzaW9uIHdlIGNhbiBzY2hlZHVs
+ZSBib3RoIG9mCj4gICB0aGVtOyBubyBuZWVkIHRvIGhhcmQtYmxvY2sgdGhlIHNjaGVkdWxpbmcg
+cm90YXRpb24gdW50aWwgdGhlIGhlYWQgb2YgdGhlCj4gICBxdWV1ZSBoYXMgdXNlZCB1cCBpdHMg
+cXVhbnR1bS4KPgo+IC0gVGhlIGNoZWNrIG9mIHdoZXRoZXIgYSBzdGF0aW9uIGlzIGVsaWdpYmxl
+IGZvciB0cmFuc21pc3Npb24gYmVjb21lcwo+ICAgc2ltcGxlciAoaW4gaWVlZTgwMjExX3R4cV9t
+YXlfdHJhbnNtaXQoKSkuCj4KPiBUaGUgZHJhd2JhY2sgaXMgdGhhdCBzY2hlZHVsaW5nIGJlY29t
+ZXMgc2xpZ2h0bHkgbW9yZSBleHBlbnNpdmUsIGFzIHdlIG5lZWQKPiB0byBtYWludGFpbiBhbiBy
+YnRyZWUgb2YgVFhRcyBzb3J0ZWQgYnkgdmlydHVhbCB0aW1lLiBUaGlzIG1lYW5zIHRoYXQKPiBp
+ZWVlODAyMTFfcmVnaXN0ZXJfYWlydGltZSgpIGJlY29tZXMgTyhsb2dOKSBpbiB0aGUgbnVtYmVy
+IG9mIGN1cnJlbnRseQo+IHNjaGVkdWxlZCBUWFFzLiBIb3dldmVyLCBob3BlZnVsbHkgdGhpcyBu
+dW1iZXIgcmFyZWx5IGdyb3dzIHRvbyBiaWcgKGl0J3MKPiBvbmx5IFRYUXMgY3VycmVudGx5IGJh
+Y2tsb2dnZWQsIG5vdCBhbGwgYXNzb2NpYXRlZCBzdGF0aW9ucyksIHNvIGl0Cj4gc2hvdWxkbid0
+IGJlIHRvbyBiaWcgb2YgYW4gaXNzdWUuCj4KPiBTaWduZWQtb2ZmLWJ5OiBUb2tlIEjDuGlsYW5k
+LUrDuHJnZW5zZW4gPHRva2VAcmVkaGF0LmNvbT4KCkknbGwgbm90ZSB0aGF0IHRoaXMgcGF0Y2gg
+c3RpbGwgaGFzIHRoZSB0d28gaXNzdWVzIHRoYXQgRmVsaXggcG9pbnRlZApvdXQgd2hlbiBJIHBv
+c3RlZCB0aGUgUkZDIHZlcnNpb24uIE5hbWVseToKCi0gVGhlIHVzZSBvZiBkaXZpc2lvbnMgaW4g
+dGhlIGZhc3QgcGF0aC4gSSBndWVzcyBJIG5lZWQgdG8gZ28gd3JpdGUgc29tZQogIHJlY2lwcm9j
+YWwtY2FsY3VsYXRpb24gY29kZSwgc2luY2UgdGhhdCBpcyBhbHNvIGFuIGlzc3VlIHdpdGggdGhl
+IEFRTAogIHBhdGNoZXMgSSBsaW5rZWQgdG8gYmVmb3JlLgoKLSBUaGUgZmFjdCB0aGF0IHdlIGRv
+bid0IGNvdW50IHRoZSBhaXJ0aW1lIHVzYWdlIG9mIG11bHRpY2FzdCB0cmFmZmljLAogIHdoaWNo
+IHdpdGggdGhpcyBzZXJpZXMgbWVhbnMgdGhhdCB0aGUgdmlmIFRYUSB3aWxsIGdldCBwcmlvcml0
+eSBvdmVyCiAgdGhlIG90aGVycy4gSSB0aGluayB3ZSBhZ3JlZWQgdG8gZml4IHRoaXMgYnkganVz
+dCBhZGRpbmcgYW4gYWlydGltZQogIHZfdCB0byB0aGUgdmlmIGFzIHdlbGwgYW5kIHVzZSB0aGF0
+IGZvciBzY2hlZHVsaW5nIHRoZSBUWFEuIERvZXMKICBhdGgxMGsgcmVwb3J0IGFpcnRpbWUgdXNh
+Z2UgZm9yIG11bHRpY2FzdCBhcyB3ZWxsLCBvciBvbmx5IGZvcgogIHN0YXRpb25zPwoKCi1Ub2tl
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
