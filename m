@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAEAc-0002qI-9J
- for ath10k@lists.infradead.org; Tue, 17 Sep 2019 14:09:31 +0000
+ id 1iAEBy-0004Et-Ao
+ for ath10k@lists.infradead.org; Tue, 17 Sep 2019 14:10:55 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Use ARRAY_SIZE
+Subject: Re: [PATCH] ath10k: revalidate the msa region coming from firmware
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190718203032.15528-1-gomonovych@gmail.com>
-References: <20190718203032.15528-1-gomonovych@gmail.com>
-Message-Id: <20190917140930.0150B611BE@smtp.codeaurora.org>
-Date: Tue, 17 Sep 2019 14:09:29 +0000 (UTC)
+In-Reply-To: <20190731114220.22830-1-govinds@codeaurora.org>
+References: <20190731114220.22830-1-govinds@codeaurora.org>
+Message-Id: <20190917141053.C49A36141C@smtp.codeaurora.org>
+Date: Tue, 17 Sep 2019 14:10:53 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasyl Gomonovych <gomonovych@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vasyl Gomonovych <gomonovych@gmail.com> wrote:
+Govind Singh <govinds@codeaurora.org> wrote:
 
-> fix coccinelle warning, use ARRAY_SIZE
+> driver sends QMI_WLFW_MSA_INFO_REQ_V01 QMI request to firmware
+> and in response expects range of addresses and size to be mapped.
+> Add condition to check whether addresses in response falls
+> under valid range otherwise return failure.
 > 
-> Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
+> Testing: Tested on WCN3990 HW
+> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-7921ae091907 ath10k: Use ARRAY_SIZE
+c41305993ff5 ath10k: revalidate the msa region coming from firmware
 
 -- 
-https://patchwork.kernel.org/patch/11049553/
+https://patchwork.kernel.org/patch/11067547/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
