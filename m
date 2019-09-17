@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAEBy-0004Et-Ao
- for ath10k@lists.infradead.org; Tue, 17 Sep 2019 14:10:55 +0000
+ id 1iAECg-0004PK-OY
+ for ath10k@lists.infradead.org; Tue, 17 Sep 2019 14:11:40 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: revalidate the msa region coming from firmware
+Subject: Re: [PATCH] ath10k: add cleanup in ath10k_sta_state()
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190731114220.22830-1-govinds@codeaurora.org>
-References: <20190731114220.22830-1-govinds@codeaurora.org>
-Message-Id: <20190917141053.C49A36141C@smtp.codeaurora.org>
-Date: Tue, 17 Sep 2019 14:10:53 +0000 (UTC)
+In-Reply-To: <1565903072-3948-1-git-send-email-wenwen@cs.uga.edu>
+References: <1565903072-3948-1-git-send-email-wenwen@cs.uga.edu>
+Message-Id: <20190917141138.6F6C6614C3@smtp.codeaurora.org>
+Date: Tue, 17 Sep 2019 14:11:38 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Wenwen Wang <wenwen@cs.uga.edu>
+Cc: "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, "open list:NETWORKING DRIVERS WIRELESS" <linux-wireless@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS
+ DRIVER" <ath10k@lists.infradead.org>, "David S. Miller" <davem@davemloft.net>
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Wenwen Wang <wenwen@cs.uga.edu> wrote:
 
-> driver sends QMI_WLFW_MSA_INFO_REQ_V01 QMI request to firmware
-> and in response expects range of addresses and size to be mapped.
-> Add condition to check whether addresses in response falls
-> under valid range otherwise return failure.
+> If 'sta->tdls' is false, no cleanup is executed, leading to memory/resource
+> leaks, e.g., 'arsta->tx_stats'. To fix this issue, perform cleanup before
+> go to the 'exit' label.
 > 
-> Testing: Tested on WCN3990 HW
-> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-c41305993ff5 ath10k: revalidate the msa region coming from firmware
+334f5b61a6f2 ath10k: add cleanup in ath10k_sta_state()
 
 -- 
-https://patchwork.kernel.org/patch/11067547/
+https://patchwork.kernel.org/patch/11096481/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
