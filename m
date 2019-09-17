@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAECg-0004PK-OY
- for ath10k@lists.infradead.org; Tue, 17 Sep 2019 14:11:40 +0000
+ id 1iAEDY-0004Wi-95
+ for ath10k@lists.infradead.org; Tue, 17 Sep 2019 14:12:33 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add cleanup in ath10k_sta_state()
+Subject: Re: [PATCH] ath10k: fix latency issue for QCA988x
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1565903072-3948-1-git-send-email-wenwen@cs.uga.edu>
-References: <1565903072-3948-1-git-send-email-wenwen@cs.uga.edu>
-Message-Id: <20190917141138.6F6C6614C3@smtp.codeaurora.org>
-Date: Tue, 17 Sep 2019 14:11:38 +0000 (UTC)
+In-Reply-To: <1567046712-23057-1-git-send-email-miaoqing@codeaurora.org>
+References: <1567046712-23057-1-git-send-email-miaoqing@codeaurora.org>
+Message-Id: <20190917141232.0062C6141C@smtp.codeaurora.org>
+Date: Tue, 17 Sep 2019 14:12:31 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wenwen Wang <wenwen@cs.uga.edu>
-Cc: "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, "open list:NETWORKING DRIVERS WIRELESS" <linux-wireless@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS
- DRIVER" <ath10k@lists.infradead.org>, "David S. Miller" <davem@davemloft.net>
+To: Miaoqing Pan <miaoqing@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wenwen Wang <wenwen@cs.uga.edu> wrote:
+Miaoqing Pan <miaoqing@codeaurora.org> wrote:
 
-> If 'sta->tdls' is false, no cleanup is executed, leading to memory/resource
-> leaks, e.g., 'arsta->tx_stats'. To fix this issue, perform cleanup before
-> go to the 'exit' label.
+> Bad latency is found on QCA988x, the issue was introduced by
+> commit 4504f0e5b571 ("ath10k: sdio: workaround firmware UART
+> pin configuration bug"). If uart_pin_workaround is false, this
+> change will set uart pin even if uart_print is false.
 > 
-> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+> Tested HW: QCA9880
+> Tested FW: 10.2.4-1.0-00037
+> 
+> Fixes: 4504f0e5b571 ("ath10k: sdio: workaround firmware UART pin configuration bug")
+> Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-334f5b61a6f2 ath10k: add cleanup in ath10k_sta_state()
+1340cc631bd0 ath10k: fix latency issue for QCA988x
 
 -- 
-https://patchwork.kernel.org/patch/11096481/
+https://patchwork.kernel.org/patch/11122193/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
