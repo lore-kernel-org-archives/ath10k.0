@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iA7Of-0003ur-I2
- for ath10k@lists.infradead.org; Tue, 17 Sep 2019 06:55:34 +0000
-Message-ID: <dd8ee4a2e5cffa1bb6ab4176a57c2b66d495d3ac.camel@sipsolutions.net>
-Subject: Re: [PATCH 3/4] mac80211: fix low throughput in push pull mode
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 17 Sep 2019 08:55:01 +0200
-In-Reply-To: <8e4cd872d082c6bce598c87411a2125f@codeaurora.org>
-References: <1568639388-27291-1-git-send-email-yiboz@codeaurora.org>
- <1568639388-27291-3-git-send-email-yiboz@codeaurora.org>
- (sfid-20190916_151039_049848_BE125514)
- <6684ceecde399edeb31c594f889a403440c78142.camel@sipsolutions.net>
- <8e4cd872d082c6bce598c87411a2125f@codeaurora.org>
+ id 1iA7ec-0000Dj-Lo
+ for ath10k@lists.infradead.org; Tue, 17 Sep 2019 07:12:04 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: remove TX lock from ath10k_htt_tx_inc_pending
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20190824134857.4094-1-erik.stromdahl@gmail.com>
+References: <20190824134857.4094-1-erik.stromdahl@gmail.com>
+Message-Id: <20190917071202.3752F6016D@smtp.codeaurora.org>
+Date: Tue, 17 Sep 2019 07:12:02 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +18,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>
-Cc: linux-wireless-owner@vger.kernel.org, Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gVHVlLCAyMDE5LTA5LTE3IGF0IDE0OjM2ICswODAwLCBZaWJvIFpoYW8gd3JvdGU6Cj4gCj4g
-RG8geW91IG1lYW4gaXQgc2hvdWxkIGJlIHNvbWV0aGluZyBsaWtlOgo+IAo+IENvLWRldmVsb3Bl
-ZC1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+Cj4gU2lnbmVkLW9m
-Zi1ieTogWWlibyBaaGFvIDx5aWJvekBjb2RlYXVyb3JhLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBU
-b2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAdG9rZS5kaz4KClllcywgSSB0aGluayB5b3Ug
-bWVhbiB0aGUgcmlnaHQgdGhpbmcuIEZvciB0aGUgcmVjb3JkLCBpdCBzZWVtcyB0byBtZSBpdApz
-aG91bGQgYmUKCkZyb206IEEgPC4uLj4KClsuLi5dCgpDby1kZXZlbG9wZWQtYnk6IEIgPC4uLj4K
-U2lnbmVkLW9mZi1ieTogQiA8Li4uPgpTaWduZWQtb2ZmLWJ5OiBBIDwuLi4+CgpvciBzby4KCklP
-VywgSSB0aGluayBoYXZpbmcgdGhlIHNhbWUgIkZyb206IiAod2hpY2ggZ2V0cyBwcmVzZXJ2ZWQg
-aW4gZ2l0IGFzCiJBdXRob3IiKSBhbmQgIkNvLWRldmVsb3BlZC1ieSIgbWFrZXMgbm8gc2Vuc2U/
-CgpZb3VyICJGcm9tIiBsaW5lIHdhcyBpbXBsaWVkLCBidXQgSSBzdXBwb3NlIHlvdSBkaWQgbWVh
-biB0aGF0IEZyb20gd291bGQKYmUgeW91cnNlbGYgKGFzIGl0IHdhcyBpbiB0aGUgcGF0Y2gpIGFu
-ZCB0aGVuIHRoZSBhYm92ZSBzZWVtcyByaWdodC4KCk9yIHlvdSBjYW4gYWRkIGEgIkZyb206IFRv
-a2UgLi4uIiB0byB5b3VyIHBhdGNoIG1lc3NhZ2UgYW5kIGxlYXZlIHRoZQoiQ28tZGV2ZWxvcGVk
-LWJ5OiB5b3Vyc2VsZiIgSSBzdXBwb3NlLCB0aGUgZGlmZmVyZW5jZSBpcyBpbiBob3cgZ2l0IHdp
-bGwKcmVjb3JkIGl0LgoKam9oYW5uZXMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+
+> This commit removes the call to ath10k_mac_tx_lock() from
+> ath10k_htt_tx_inc_pending() in case the high water mark is reached.
+> 
+> ath10k_mac_tx_lock() calls ieee80211_stop_queues() in order to stop
+> mac80211 from pushing more TX data to the driver (this is the TX lock).
+> 
+> If a driver is trying to fetch an skb from a queue while the queue is
+> stopped, ieee80211_tx_dequeue() will return NULL.
+> 
+> So, in ath10k_mac_tx_push_txq(), there is a risk that the call to
+> ath10k_htt_tx_inc_pending() results in a stop of the mac80211 TX queues
+> just before the skb is fetched.
+> 
+> This will cause ieee80211_tx_dequeue() to return NULL and
+> ath10k_mac_tx_push_txq() to exit prematurely and return -ENOENT.
+> Before the function returns ath10k_htt_tx_dec_pending() will be called.
+> This call will re-enable the TX queues through ath10k_mac_tx_unlock().
+> When ath10k_mac_tx_push_txq() has returned, the TX queue will be
+> returned back to mac80211 with ieee80211_return_txq() without the skb
+> being properly consumed.
+> 
+> Since the TX queues were re-enabled in the error exit path of
+> ath10k_mac_tx_push_txq(), mac80211 can continue pushing data to the
+> driver. If the hardware does not consume the data, the above mentioned
+> case will be repeated over and over.
+> 
+> A case when the hardware is not able to transmit the data from the host
+> is when a STA has been dis-associated from an AP and has not yet been
+> able to re-associate. In this case there will be no TX_COMPL_INDs from
+> the hardware, resulting in the TX counter not be decremented.
+> 
+> This phenomenon has been observed in both a real and a test setup.
+> 
+> In order to fix this, the actual TX locking (the call to
+> ath10k_mac_tx_lock()) was removed from ath10k_htt_tx_inc_pending().
+> Instead, ath10k_mac_tx_lock() is called separately after the skb has
+> been fetched (after the call to ieee80211_tx_dequeue()). At this point
+> it is OK to stop the queues.
+> 
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+
+What hardware and firmware versions did you test this? Please always add that
+to the commit log.
+
+As Erik mostly works on SDIO I assume PCI is not that well tested. Has anyone
+else tried this?
+
+-- 
+https://patchwork.kernel.org/patch/11112997/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
