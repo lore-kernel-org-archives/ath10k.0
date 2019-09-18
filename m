@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAWYc-0003F6-QE
- for ath10k@lists.infradead.org; Wed, 18 Sep 2019 09:47:32 +0000
+ id 1iAWYi-0003L5-Ra
+ for ath10k@lists.infradead.org; Wed, 18 Sep 2019 09:47:38 +0000
 From: Yibo Zhao <yiboz@codeaurora.org>
-Subject: [PATCH V2 3/4] mac80211: fix low throughput in multi-clients situation
-Date: Wed, 18 Sep 2019 17:47:12 +0800
-Message-Id: <1568800033-17297-3-git-send-email-yiboz@codeaurora.org>
+Subject: [PATCH V2 4/4] mac80211: Sync airtime weight sum with per AC synced
+ sta airtime weight together
+Date: Wed, 18 Sep 2019 17:47:13 +0800
+Message-Id: <1568800033-17297-4-git-send-email-yiboz@codeaurora.org>
 In-Reply-To: <1568800033-17297-1-git-send-email-yiboz@codeaurora.org>
 References: <1568800033-17297-1-git-send-email-yiboz@codeaurora.org>
-MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,82 +18,175 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Yibo Zhao <yiboz@codeaurora.org>, =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org
+Cc: Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Tm90IGxvbmcgYWZ0ZXIgdGhlIHN0YXJ0IG9mIG11bHRpLWNsaWVudHMgdGVzdCwgbm90IGEgc2lu
-Z2xlIHN0YXRpb24gaXMKYW4gZWxpZ2libGUgY2FuZGlkYXRlIGZvciB0cmFuc21pc3Npb24gc2lu
-Y2UgZ2xvYmFsIHZpcnR1YWwgdGltZShnX3Z0KSBpcwpzbWFsbGVyIHRoYW4gdGhlIHZpcnR1YWwg
-YWlydGltZShzX3Z0KSBvZiBhbGwgdGhlIHN0YXRpb25zLiBBcyBhIHJlc3VsdCwKdGhlIFR4IGhh
-cyBiZWVuIGJsb2NrZWQgYW5kIHRocm91Z2hwdXQgaXMgcXVpdGUgbG93LgoKVGhpcyBtYXkgbWFp
-bmx5IGR1ZSB0byBzeW5jIG1lY2hhbmlzbSBhbmQgYWNjdW11bGF0aXZlIGRldmlhdGlvbiBmcm9t
-IHRoZQpkZXZpc2lvbiBjYWxjdWxhdGlvbiBvZiBnX3Z0LgoKRm9yIGV4YW1wbGU6ClN1cHBvc2Ug
-d2UgaGF2ZSA1MCBjbGllbnRzIGluIGZpcnN0IHJvdW5kLgpSb3VuZCAxOgpTVEEJd2VpZ2h0CVR4
-X3RpbWVfcm91bmQgIHd0X3N1bQlzX3Z0CWdfdnQgIHZhbGlkX2Zvcl9uZXh0X1R4Ci4JLgkuCQkJ
-LgkJLgouCS4JLgkJCS4JCS4KLgkuCS4JCQkuCQkuCgpBZnRlciB0aGlzIHJvdW5kLCBhbGwgdGhl
-IHN0YXRpb25zIGFyZSBub3QgdmFsaWQgZm9yIG5leHQgdHJhbnNtaXNzaW9uIGR1ZQp0byBhY2N1
-bXVsYXRpdmUgZGV2aWF0aW9uLgoKQW5kIGlmIHdlIGFkZCBhIG5ldyAjNTEsClJvdW5kIDI6ClNU
-QQl3ZWlnaHQJVHhfdGltZV9yb3VuZAl3dF9zdW0gIHNfdnQJZ192dCAgdmFsaWRfZm9yX25leHRf
-VHgKLgkuCS4JCQkuCQkuCi4JLgkuCQkJLgkJLgouCS4JLgkJCS4JCS4KClN5bmMgaXMgZG9uZSBi
-eToKbWF4KGdfdnQgb2YgbGFzdCByb3VuZCAtIGdyYWNlIHBlcmlvZCwgc192dCkKYW5kIHNfdnQg
-b2YgIzUxID0gbWF4KDIwMDAgLSA1MDAsIDApICsgMTAyNCA9IDI1MjQsIGFuZCBpdCBpcyBtb3Jl
-IHRoYW4gdGhlCmZpbmFsIGdfdnQgb2YgdGhpcyByb3VuZC4KCkFmdGVyIHRoaXMgcm91bmQsIG5v
-IG1vcmUgc3RhdGlvbiBpcyB2YWxpZCBmb3IgdHJhbnNtaXNzaW9uLgoKVGhlIHJlYWwgc2l0dWF0
-aW9uIGNhbiBiZSBtb3JlIGNvbXBsaWNhdGUsIGFib3ZlIGlzIG9uZSBvZiB0aGUgZXh0cmVtZWx5
-CmNhc2UuCgpUbyBhdm9pZCB0aGlzIHNpdHVhdGlvbiB0byBvY2N1ciwgdGhlIG5ldyBwcm9wb3Nh
-bCBpczoKCi0gSW5jcmVhc2UgdGhlIGFpcnRpbWUgZ3JhY2UgcGVyaW9kIGEgbGl0dGxlIG1vcmUg
-dG8gcmVkdWNlIHRoZQogIHVuZXhwZWN0ZWQgc3luYwoKLSBJZiBnbG9iYWwgdmlydHVhbCB0aW1l
-IGlzIGxlc3MgdGhhbiB0aGUgdmlydHVhbCBhaXJ0aW1lIG9mIGFueSBzdGF0aW9uLAogIHN5bmMg
-aXQgdG8gdGhlIGFpcnRpbWUgb2YgZmlyc3Qgc3RhdGlvbiBpbiB0aGUgcmVkLWJsYWNrIHRyZWUK
-Ci0gUm91bmQgdGhlIGRpdmlzaW9uIHJlc3VsdAoKQ28tZGV2ZWxvcGVkLWJ5OiBUb2tlIEjDuGls
-YW5kLUrDuHJnZW5zZW4gPHRva2VAcmVkaGF0LmNvbT4KU2lnbmVkLW9mZi1ieTogWWlibyBaaGFv
-IDx5aWJvekBjb2RlYXVyb3JhLm9yZz4KU2lnbmVkLW9mZi1ieTogVG9rZSBIw7hpbGFuZC1Kw7hy
-Z2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+Ci0tLQogbmV0L21hYzgwMjExL3N0YV9pbmZvLmMgfCAg
-MyArKy0KIG5ldC9tYWM4MDIxMS9zdGFfaW5mby5oIHwgIDIgKy0KIG5ldC9tYWM4MDIxMS90eC5j
-ICAgICAgIHwgMTYgKysrKysrKysrKysrKysrLQogMyBmaWxlcyBjaGFuZ2VkLCAxOCBpbnNlcnRp
-b25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL25ldC9tYWM4MDIxMS9zdGFfaW5m
-by5jIGIvbmV0L21hYzgwMjExL3N0YV9pbmZvLmMKaW5kZXggOWQwMWZkZC4uZmVhYzk3NSAxMDA2
-NDQKLS0tIGEvbmV0L21hYzgwMjExL3N0YV9pbmZvLmMKKysrIGIvbmV0L21hYzgwMjExL3N0YV9p
-bmZvLmMKQEAgLTE4NTIsNyArMTg1Miw4IEBAIHZvaWQgaWVlZTgwMjExX3N0YV9yZWdpc3Rlcl9h
-aXJ0aW1lKHN0cnVjdCBpZWVlODAyMTFfc3RhICpwdWJzdGEsIHU4IHRpZCwKIAogCXdlaWdodF9z
-dW0gPSBsb2NhbC0+YWlydGltZV93ZWlnaHRfc3VtW2FjXSA/OiBzdGEtPmFpcnRpbWVfd2VpZ2h0
-OwogCi0JbG9jYWwtPmFpcnRpbWVfdl90W2FjXSArPSBhaXJ0aW1lIC8gd2VpZ2h0X3N1bTsKKwkv
-KiBSb3VuZCB0aGUgY2FsY3VsYXRpb24gb2YgZ2xvYmFsIHZ0ICovCisJbG9jYWwtPmFpcnRpbWVf
-dl90W2FjXSArPSAoYWlydGltZSArICh3ZWlnaHRfc3VtID4+IDEpKSAvIHdlaWdodF9zdW07CiAJ
-c3RhLT5haXJ0aW1lW2FjXS52X3QgKz0gYWlydGltZSAvIHN0YS0+YWlydGltZV93ZWlnaHQ7CiAJ
-aWVlZTgwMjExX3Jlc29ydF90eHEoJmxvY2FsLT5odywgdHhxKTsKIApkaWZmIC0tZ2l0IGEvbmV0
-L21hYzgwMjExL3N0YV9pbmZvLmggYi9uZXQvbWFjODAyMTEvc3RhX2luZm8uaAppbmRleCA1YzFj
-YWM5Li41MDU1Zjk0IDEwMDY0NAotLS0gYS9uZXQvbWFjODAyMTEvc3RhX2luZm8uaAorKysgYi9u
-ZXQvbWFjODAyMTEvc3RhX2luZm8uaApAQCAtMTMwLDcgKzEzMCw3IEBAIGVudW0gaWVlZTgwMjEx
-X2FnZ19zdG9wX3JlYXNvbiB7CiAvKiBEZWJ1Z2ZzIGZsYWdzIHRvIGVuYWJsZS9kaXNhYmxlIHVz
-ZSBvZiBSWC9UWCBhaXJ0aW1lIGluIHNjaGVkdWxlciAqLwogI2RlZmluZSBBSVJUSU1FX1VTRV9U
-WAkJQklUKDApCiAjZGVmaW5lIEFJUlRJTUVfVVNFX1JYCQlCSVQoMSkKLSNkZWZpbmUgQUlSVElN
-RV9HUkFDRSA1MDAgLyogdXNlYyBvZiBncmFjZSBwZXJpb2QgYmVmb3JlIHJlc2V0ICovCisjZGVm
-aW5lIEFJUlRJTUVfR1JBQ0UgMjAwMCAvKiB1c2VjIG9mIGdyYWNlIHBlcmlvZCBiZWZvcmUgcmVz
-ZXQgKi8KIAogc3RydWN0IGFpcnRpbWVfaW5mbyB7CiAJdTY0IHJ4X2FpcnRpbWU7CmRpZmYgLS1n
-aXQgYS9uZXQvbWFjODAyMTEvdHguYyBiL25ldC9tYWM4MDIxMS90eC5jCmluZGV4IDQyY2EwMTAu
-LjYwY2Y1NjkgMTAwNjQ0Ci0tLSBhL25ldC9tYWM4MDIxMS90eC5jCisrKyBiL25ldC9tYWM4MDIx
-MS90eC5jCkBAIC0zODY3LDE1ICszODY3LDI5IEBAIGJvb2wgaWVlZTgwMjExX3R4cV9tYXlfdHJh
-bnNtaXQoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCiAJCQkJc3RydWN0IGllZWU4MDIxMV90eHEg
-KnR4cSkKIHsKIAlzdHJ1Y3QgaWVlZTgwMjExX2xvY2FsICpsb2NhbCA9IGh3X3RvX2xvY2FsKGh3
-KTsKLQlzdHJ1Y3QgdHhxX2luZm8gKnR4cWkgPSB0b190eHFfaW5mbyh0eHEpOworCXN0cnVjdCB0
-eHFfaW5mbyAqZmlyc3RfdHhxaSwgKnR4cWkgPSB0b190eHFfaW5mbyh0eHEpOworCXN0cnVjdCBy
-Yl9ub2RlICpub2RlID0gTlVMTDsKIAlzdHJ1Y3Qgc3RhX2luZm8gKnN0YTsKIAl1OCBhYyA9IHR4
-cS0+YWM7CisJZmlyc3RfdHhxaSA9IE5VTEw7CiAKIAlsb2NrZGVwX2Fzc2VydF9oZWxkKCZsb2Nh
-bC0+YWN0aXZlX3R4cV9sb2NrW2FjXSk7CiAKIAlpZiAoIXR4cWktPnR4cS5zdGEpCiAJCXJldHVy
-biB0cnVlOwogCisJbm9kZSA9IHJiX2ZpcnN0X2NhY2hlZCgmbG9jYWwtPmFjdGl2ZV90eHFzW2Fj
-XSk7CisJaWYgKG5vZGUpIHsKKwkJZmlyc3RfdHhxaSA9IGNvbnRhaW5lcl9vZihub2RlLCBzdHJ1
-Y3QgdHhxX2luZm8sCisJCQkJCSAgc2NoZWR1bGVfb3JkZXIpOworCQlpZiAoZmlyc3RfdHhxaS0+
-dHhxLnN0YSkgeworCQkJc3RhID0gY29udGFpbmVyX29mKGZpcnN0X3R4cWktPnR4cS5zdGEsCisJ
-CQkJCSAgIHN0cnVjdCBzdGFfaW5mbywgc3RhKTsKKwkJCWlmIChsb2NhbC0+YWlydGltZV92X3Rb
-YWNdIDwgc3RhLT5haXJ0aW1lW2FjXS52X3QpCisJCQkJbG9jYWwtPmFpcnRpbWVfdl90W2FjXSA9
-IHN0YS0+YWlydGltZVthY10udl90OworCQl9CisJfQorCiAJc3RhID0gY29udGFpbmVyX29mKHR4
-cWktPnR4cS5zdGEsIHN0cnVjdCBzdGFfaW5mbywgc3RhKTsKIAlyZXR1cm4gKHN0YS0+YWlydGlt
-ZVthY10udl90IDw9IGxvY2FsLT5haXJ0aW1lX3ZfdFthY10pOwogfQotLSAKMS45LjEKCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Global airtime weight sum is updated only when txq is added/removed
+from rbtree. If upper layer configures sta weight during high load,
+airtime weight sum will not be updated since txq is most likely on the
+tree. It could a little late for upper layer to reconfigure sta weight
+when txq is already in the rbtree. And thus, incorrect airtime weight sum
+will lead to incorrect global virtual time calculation as well as overflow
+of airtime weight sum during txq removed.
+
+Hence, need to update airtime weight sum upon receiving event for
+configuring sta weight once sta's txq is on the rbtree.
+
+Besides, if airtime weight sum of ACs and sta weight is synced under the
+same per AC lock protection, there can be a very short window causing
+incorrct airtime weight sum calculation as below:
+
+    active_txq_lock_VO                          .
+    VO weight sum is syncd			.
+    sta airtime weight sum is synced		.
+    active_txq_unlock_VO			.
+    .						.
+    active_txq_lock_VI    			.
+    VI weight sum is syncd			.
+    sta airtime weight sum		active_txq_lock_BE
+    active_txq_unlock_VI	      Remove txq and thus sum
+    .				      is calculated with synced
+    .				      sta airtime weight
+    .					active_txq_unlock_BE
+
+So introduce a per ac synced station airtime weight synced with per
+AC synced weight sum together. And the per-AC station airtime weight
+is used to calculate weight sum.
+
+Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
+---
+ net/mac80211/cfg.c      | 27 +++++++++++++++++++++++++--
+ net/mac80211/sta_info.c |  6 ++++--
+ net/mac80211/sta_info.h |  3 +++
+ net/mac80211/tx.c       |  4 ++--
+ 4 files changed, 34 insertions(+), 6 deletions(-)
+
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index d65aa01..4b420bb 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -1284,7 +1284,8 @@ static int sta_apply_parameters(struct ieee80211_local *local,
+ 	int ret = 0;
+ 	struct ieee80211_supported_band *sband;
+ 	struct ieee80211_sub_if_data *sdata = sta->sdata;
+-	u32 mask, set;
++	u32 mask, set, tid, ac;
++	struct txq_info *txqi;
+ 
+ 	sband = ieee80211_get_sband(sdata);
+ 	if (!sband)
+@@ -1452,8 +1453,30 @@ static int sta_apply_parameters(struct ieee80211_local *local,
+ 	if (ieee80211_vif_is_mesh(&sdata->vif))
+ 		sta_apply_mesh_params(local, sta, params);
+ 
+-	if (params->airtime_weight)
++	if (params->airtime_weight &&
++	    params->airtime_weight != sta->airtime_weight) {
++		for (ac = 0; ac < IEEE80211_NUM_ACS; ac++) {
++			spin_lock_bh(&local->active_txq_lock[ac]);
++			for (tid = 0; tid < IEEE80211_NUM_TIDS + 1; tid++) {
++				if (!sta->sta.txq[tid] ||
++				    ac != ieee80211_ac_from_tid(tid))
++					continue;
++
++				sta->airtime_weight_synced[ac] =
++							params->airtime_weight;
++
++				txqi = to_txq_info(sta->sta.txq[tid]);
++				if (RB_EMPTY_NODE(&txqi->schedule_order))
++					continue;
++
++				local->airtime_weight_sum[ac] = local->airtime_weight_sum[ac] +
++								params->airtime_weight -
++								sta->airtime_weight;
++			}
++			spin_unlock_bh(&local->active_txq_lock[ac]);
++		}
+ 		sta->airtime_weight = params->airtime_weight;
++	}
+ 
+ 	/* set the STA state after all sta info from usermode has been set */
+ 	if (test_sta_flag(sta, WLAN_STA_TDLS_PEER) ||
+diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
+index feac975..b00812f 100644
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -389,6 +389,7 @@ struct sta_info *sta_info_alloc(struct ieee80211_sub_if_data *sdata,
+ 	for (i = 0; i < IEEE80211_NUM_ACS; i++) {
+ 		skb_queue_head_init(&sta->ps_tx_buf[i]);
+ 		skb_queue_head_init(&sta->tx_filtered[i]);
++		sta->airtime_weight_synced[i] = sta->airtime_weight;
+ 	}
+ 
+ 	for (i = 0; i < IEEE80211_NUM_TIDS; i++)
+@@ -1850,11 +1851,12 @@ void ieee80211_sta_register_airtime(struct ieee80211_sta *pubsta, u8 tid,
+ 	sta->airtime[ac].tx_airtime += tx_airtime;
+ 	sta->airtime[ac].rx_airtime += rx_airtime;
+ 
+-	weight_sum = local->airtime_weight_sum[ac] ?: sta->airtime_weight;
++	weight_sum = local->airtime_weight_sum[ac] ?
++					: sta->airtime_weight_synced[ac];
+ 
+ 	/* Round the calculation of global vt */
+ 	local->airtime_v_t[ac] += (airtime + (weight_sum >> 1)) / weight_sum;
+-	sta->airtime[ac].v_t += airtime / sta->airtime_weight;
++	sta->airtime[ac].v_t += airtime / sta->airtime_weight_synced[ac];
+ 	ieee80211_resort_txq(&local->hw, txq);
+ 
+ 	spin_unlock_bh(&local->active_txq_lock[ac]);
+diff --git a/net/mac80211/sta_info.h b/net/mac80211/sta_info.h
+index 5055f94..1298902 100644
+--- a/net/mac80211/sta_info.h
++++ b/net/mac80211/sta_info.h
+@@ -476,6 +476,8 @@ struct ieee80211_sta_rx_stats {
+  * @tid_seq: per-TID sequence numbers for sending to this STA
+  * @airtime: per-AC struct airtime_info describing airtime statistics for this
+  *	station
++ * @airtime_weight_synced: station per-AC airtime weight for sync and
++ *  calculation
+  * @airtime_weight: station weight for airtime fairness calculation purposes
+  * @ampdu_mlme: A-MPDU state machine state
+  * @mesh: mesh STA information
+@@ -602,6 +604,7 @@ struct sta_info {
+ 	u16 tid_seq[IEEE80211_QOS_CTL_TID_MASK + 1];
+ 
+ 	struct airtime_info airtime[IEEE80211_NUM_ACS];
++	u16 airtime_weight_synced[IEEE80211_NUM_ACS];
+ 	u16 airtime_weight;
+ 
+ 	/*
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 60cf569..3592d49 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -3735,7 +3735,7 @@ void ieee80211_schedule_txq(struct ieee80211_hw *hw,
+ 		struct sta_info *sta = container_of(txq->sta,
+ 						    struct sta_info, sta);
+ 
+-		local->airtime_weight_sum[ac] += sta->airtime_weight;
++		local->airtime_weight_sum[ac] += sta->airtime_weight_synced[ac];
+ 		if (local->airtime_v_t[ac] > AIRTIME_GRACE)
+ 			sta->airtime[ac].v_t = max(local->airtime_v_t[ac] - AIRTIME_GRACE,
+ 						   sta->airtime[ac].v_t);
+@@ -3779,7 +3779,7 @@ static void __ieee80211_unschedule_txq(struct ieee80211_hw *hw,
+ 		struct sta_info *sta = container_of(txq->sta,
+ 						    struct sta_info, sta);
+ 
+-		local->airtime_weight_sum[ac] -= sta->airtime_weight;
++		local->airtime_weight_sum[ac] -= sta->airtime_weight_synced[ac];
+ 	}
+ 
+ 	rb_erase_cached(&txqi->schedule_order,
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
