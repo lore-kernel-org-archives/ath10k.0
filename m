@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAZmN-0002WC-0W
- for ath10k@lists.infradead.org; Wed, 18 Sep 2019 13:13:57 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH] cfg80211: Add cumulative channel survey dump support.
-Date: Wed, 18 Sep 2019 15:13:50 +0200
-Message-ID: <1915721.epgQvm9qp9@bentobox>
-In-Reply-To: <9396620.6V9WzEIOqW@bentobox>
-References: <1526980556-26707-1-git-send-email-vnaralas@codeaurora.org>
- <b24ec622-8510-d8e4-bbc4-86a34c1dd32b@candelatech.com>
- <9396620.6V9WzEIOqW@bentobox>
+ id 1iAaDY-0007Pc-CM
+ for ath10k@lists.infradead.org; Wed, 18 Sep 2019 13:42:01 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v4 3/3] ath10k: add support for controlling tx power to a
+ station
+References: <1553856587-21611-1-git-send-email-bpothuno@codeaurora.org>
+ <20190402223709.GB8910@localhost>
+Date: Wed, 18 Sep 2019 16:41:54 +0300
+In-Reply-To: <20190402223709.GB8910@localhost> (Bob Copeland's message of
+ "Tue, 2 Apr 2019 18:37:09 -0400")
+Message-ID: <871rwdbu1p.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,66 +21,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7519398677582963616=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: sw@simonwunderlich.de, vnaralas@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, slakkavalli@datto.com, Johannes Berg <johannes@sipsolutions.net>
+To: Bob Copeland <me@bobcopeland.com>
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, johannes@sipsolutions.net, Ashok Raj Nagarajan <arnagara@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
---===============7519398677582963616==
-Content-Type: multipart/signed; boundary="nextPart3096840.zzhJXNy4Gy"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Bob Copeland <me@bobcopeland.com> writes:
 
---nextPart3096840.zzhJXNy4Gy
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+> On Fri, Mar 29, 2019 at 04:19:47PM +0530, Balaji Pothunoori wrote:
+>> From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
+>> 
+>> This patch will add the support to control the transmit power for traffic
+>> to a station associated with the AP.
+>> 
+>> Underlying firmware will enforce that the maximum tx power will be based
+>> on the regulatory requirements. If the user given transmit power is greater
+>> than the allowed tx power in the given channel, then the firmware will use
+>> the maximum tx power in the same channel.
+>> 
+>> When 0 is sent to the firmware as tx power, it will revert to the default
+>> tx power for the station.
+>> 
+>> Tested Hardware : QCA9984
+>> Tested Firmware : 10.4-3.9.0.1-00013
+>
+> I tried this on qca9984 with 10.4-3.9.0.2-00040, which claims to support
+> this feature, and it didn't seem to work:
+>
+> - with global tx power limit set to 30 dBm, I started an iperf from station
+>   A -> B
+>
+> - while iperf underway, I did tcpdump on a monitor on B and looked at signal
+>   level in radiotap, in this case around -75 dBm
+>
+> - on A, changed the per-sta txpwr limit for B to something (tried as low as
+>   1 dBm).  verified via printk that it went through to the driver / firmware
+>   command and reported no error
+>   -> result: signal level unchanged
+>
+> - on A, changed the global tx power limit to 1 dBm
+>   -> result: signal level dropped to ~ -95 dBm
+>
+> Reading the description above, now I'm wondering if the txpower is
+> max(sta-power,global-power)?  If so, that seems a bit unintuitive to me,
+> or at least isn't what I hoped for.  I'd prefer to have per-sta power
+> setting override the global power.
 
-On Wednesday, 18 September 2019 15:07:11 CEST Sven Eckelmann wrote:
-[...]
-> I have now prepared a test patch [1] to get the data every 10 seconds. This 
-> was a compromise between having useful information over time and the 
-> overflowing problem. 
+Balaji, please reply to Bob's questions. I missed this thread while
+applying v5, sorry Bob.
 
-...over time without too many "bss channel survey timed out" errors and...
-
-Kind regards,
-	Sven
---nextPart3096840.zzhJXNy4Gy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl2CLY8ACgkQXYcKB8Em
-e0b1SxAAtEDe5QoD4u5/aCttIe1q0DlYYCSY1cIBm7fIp8VuQsZYr5zL7lI/NEEv
-ISZmqrQ5Ml4fjKPZ8P0lV1mHGvKrdAS82gk+f/QmAE5IpMeOZ2UsYN8h4BY3aH5+
-tXAG+6/Dwy3hnFP4TluS4zdIhN30tSXxbafV0LL7im25GDHTwYWczQ38Y38xko62
-974A6iwfavwuUSuN9L8wwee1EHPsueh7dclPoGkeLfBtMxD/vr7EE3GAffGvnYSk
-FpiGZotSulIEWg7oLkZoF2QUFxZ9GaN5uVY+t2WWF+cC2xpTtjS6CfDXHRKVq9B4
-Slw2+EyFe0X5u6P7cimmwR9FRSGmJYi7pFdU6wt698Oc+1/+tHGXMVnuViIMrVgT
-LHt+POqDyrB8+dilI2UQKKXaK/0NdfboB2PlIZxta6CVTf93N0E9xVxmIW2IbVIi
-UkBHmGjmz5C70Z1Z3MuYs+0iyMmBov0Lhr23+3t85SK8M7Hdk6DNrs9W43r7VcwE
-ZSgwAF5OfNeTsWvbJWFRTOr7bVaFju8EhY/zQOgXWCWmrS3BTYvGhfL2tl9PtyWy
-ELrflQVZWNbYy1ECF4ZDFAh1UBaBo4l9vhft7OeB36cFVMPAypX+ZR3wNI8uHxay
-LAfGb5aSMfNj4U+1g3zuZ+7WZhC6C/tOJttV7ljFCH9fAqN4YHo=
-=vMka
------END PGP SIGNATURE-----
-
---nextPart3096840.zzhJXNy4Gy--
-
-
-
-
-
---===============7519398677582963616==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============7519398677582963616==--
