@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAaY9-0006xH-FU
- for ath10k@lists.infradead.org; Wed, 18 Sep 2019 14:03:19 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
-References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
- <20181114225910.GA220599@google.com>
- <CA+ASDXMh7vdfkA5jtJqWEU-g-4Ta5Xvy046zujyASZcESCGhAQ@mail.gmail.com>
-Date: Wed, 18 Sep 2019 17:03:12 +0300
-In-Reply-To: <CA+ASDXMh7vdfkA5jtJqWEU-g-4Ta5Xvy046zujyASZcESCGhAQ@mail.gmail.com>
- (Brian Norris's message of "Tue, 17 Sep 2019 09:32:52 -0700")
-Message-ID: <87woe5aehr.fsf@kamboji.qca.qualcomm.com>
+ id 1iAhXA-000788-2F
+ for ath10k@lists.infradead.org; Wed, 18 Sep 2019 21:30:45 +0000
+Received: by mail-oi1-x244.google.com with SMTP id i185so877643oif.9
+ for <ath10k@lists.infradead.org>; Wed, 18 Sep 2019 14:30:43 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20190917064412.E237C61577@smtp.codeaurora.org>
+References: <20190906215423.23589-1-chunkeey@gmail.com>
+ <20190917064412.E237C61577@smtp.codeaurora.org>
+From: Tom Psyborg <pozega.tomislav@gmail.com>
+Date: Wed, 18 Sep 2019 23:30:42 +0200
+Message-ID: <CAKR_QVJ09gsbvvutDjDU4tR3VdkQRyYveCnAZ-gU9qByERb-=g@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: restore QCA9880-AR1A (v1) detection
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +25,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Christian Lamparter <chunkeey@gmail.com>
 
-Brian Norris <briannorris@chromium.org> writes:
-
-> Since Wen has once again suggested I use this patch in other forums,
-> I'll ping here to note:
+On 17/09/2019, Kalle Valo <kvalo@codeaurora.org> wrote:
+> Christian Lamparter <chunkeey@gmail.com> wrote:
 >
-> On Wed, Nov 14, 2018 at 2:59 PM Brian Norris <briannorris@chromium.org> wrote:
->> You've introduced a regression in 4.20-rc1:
+>> This patch restores the old behavior that read
+>> the chip_id on the QCA988x before resetting the
+>> chip. This needs to be done in this order since
+>> the unsupported QCA988x AR1A chips fall off the
+>> bus when resetted. Otherwise the next MMIO Op
+>> after the reset causes a BUS ERROR and panic.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in
+>> probe")
+>> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
 >
-> This regression still survives in the latest tree. Is it fair to just
-> submit a revert?
+> I'll drop this as there's no plan to support QCA988X hw1.0.
+>
+> --
+> https://patchwork.kernel.org/patch/11136089/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
+>
 
-Your description about the problem from an earlier email:
-
-  "It seems like youre enabling SCHED_SCAN support? But you're not
-   adding the NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR feature flag.
-   So it puts us in a tough place on using randomization -- we either
-   can't trust the FEATURE flags, or else we can't use both SCHED_SCAN
-   and scan randomization."
-
-So essentially the problem is that with firmwares supporting both
-WMI_SERVICE_NLO and WMI_SERVICE_SPOOF_MAC_SUPPORT ath10k enables
-NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR, but
-NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR is not enabled which is
-inconsistent from user space point of view. Is my understanding correct?
-
-Wen, can you enable NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR? Does firmware
-support that?
-
-If that's not possible, one workaround might to be to not enable
-NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR if firmware supports
-WMI_SERVICE_NLO, but of course that would suck big time.
-
-Here's the full context in case someone is interested:
-
-https://patchwork.kernel.org/patch/10567005/
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Maybe the whole subject on QCA988X cards should be re-evaluated? Since
+at this point it's not for certain whether the card is difficult to
+support or whether it is damaged.
+There was at least one report of QCA988X hw2.0 failing in an identical
+way as QCA988X hw1.0. In case it turns out to be hw damage, a fallback
+driver mechanism could provide extended lifetime for these cards. A
+link to the hw2.0 failure:
+https://forum.openwrt.org/t/is-it-possible-to-brick-the-wireless-card-qca988x-irreversibly/32615
 
 _______________________________________________
 ath10k mailing list
