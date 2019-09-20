@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBFLs-0004oP-TZ
- for ath10k@lists.infradead.org; Fri, 20 Sep 2019 09:37:22 +0000
-Subject: RE: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Fri, 20 Sep 2019 09:37:09 +0000
-Message-ID: <29044fb6c3ba43af9a433aeb63f55e41@aptaiexm02f.ap.qualcomm.com>
-References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
- <20181114225910.GA220599@google.com>
- <CA+ASDXMh7vdfkA5jtJqWEU-g-4Ta5Xvy046zujyASZcESCGhAQ@mail.gmail.com>
- <87woe5aehr.fsf@kamboji.qca.qualcomm.com>
- <40854e84bd4b4a9699b60530b1c373ad@aptaiexm02f.ap.qualcomm.com>
- <87pnjvctjh.fsf@codeaurora.org>
-In-Reply-To: <87pnjvctjh.fsf@codeaurora.org>
-Content-Language: en-US
+ id 1iBIHZ-0003V4-IN
+ for ath10k@lists.infradead.org; Fri, 20 Sep 2019 12:45:07 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v5 0/8] ath10k: improve throughout of tcp/udp TX/RX of sdio
+References: <1567679893-14029-1-git-send-email-wgong@codeaurora.org>
+ <87tv9hikwe.fsf@kamboji.qca.qualcomm.com>
+ <87d0g5h07v.fsf@kamboji.qca.qualcomm.com>
+ <1568346854209.29270@qti.qualcomm.com>
+Date: Fri, 20 Sep 2019 15:44:59 +0300
+In-Reply-To: <1568346854209.29270@qti.qualcomm.com> (Wen Gong's message of
+ "Fri, 13 Sep 2019 03:54:14 +0000")
+Message-ID: <87tv97b0hg.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,59 +26,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: Wen Gong <wgong@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-> -----Original Message-----
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Sent: Friday, September 20, 2019 3:32 PM
-> To: Wen Gong <wgong@qti.qualcomm.com>
-> Cc: Brian Norris <briannorris@chromium.org>; linux-wireless <linux-
-> wireless@vger.kernel.org>; Linux Kernel <linux-kernel@vger.kernel.org>;
-> ath10k@lists.infradead.org; Wen Gong <wgong@codeaurora.org>
-> Subject: [EXT] Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
-> 
-> >> Wen, can you enable NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR?
-> >> Does firmware
-> >> support that?
-> >
-> > Yes, I test again, it is enabled
-> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR now.
-> 
-> Sorry, I'm not quite understanding your reply.
-> 
-> But I mixed up the flags. I meant that can we enable
-> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR in ath10k? Does the
-> firmware
-> releases which have WMI_SERVICE_NLO support
-> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR as well?
-Kalle,
-I tested with this firmware: https://github.com/kvalo/ath10k-firmware/blob/master/QCA6174/hw3.0/sdio-4.4.1/firmware-sdio-6.bin_WLAN.RMH.4.4.1-00017-QCARMSWPZ-2
+Wen Gong <wgong@qti.qualcomm.com> writes:
 
-In ath10k_mac_register, it has flag WMI_SERVICE_SPOOF_MAC_SUPPORT enabled.
-	if (test_bit(WMI_SERVICE_SPOOF_MAC_SUPPORT, ar->wmi.svc_map)) {
-		ar->hw->wiphy->features |=
-			NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
-	}
+>>>> The bottleneck of throughout on sdio chip is the bus bandwidth, to the
+>>>>patches are all to increase the use ratio of sdio bus.
+>
+>>> I tried to apply patches 2-8, patch 2 had a conflict due to my changes
+>>> and patch 8 didn't apply at all. Also I saw few warnings with the
+>>> patches I was able to test:
+>
+> Hi kalle,
+>
+> i see some warning is from patch "ath10k: add fw coredump for sdio when firmware assert"
+> and this patch also have change in sdio.c, so maybe it will have
+> conflict with the 8 patches.
+>
+> patch 8 didn't apply at all, is it means each change of the patch is
+> conflict?
 
-In ath10k_wow_init, it has flag ATH10K_FW_FEATURE_WOWLAN_SUPPORT, WMI_SERVICE_WOW, WMI_SERVICE_NLO enabled.
-int ath10k_wow_init(struct ath10k *ar)
-{
-	if (!test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
-		      ar->running_fw->fw_file.fw_features))
-		return 0;
+Patches 1-7 applied fine, but patch 8 didn't apply. I didn't investigate
+what was the conflict.
 
-	if (WARN_ON(!test_bit(WMI_SERVICE_WOW, ar->wmi.svc_map)))
-		return -EINVAL;
+> I used command to check each patch.
+> perl ~/opensource/checkpatch.pl --strict --no-tree
+> --max-line-length=90 --show-types --ignore CONST_STRUCT ./*
+>
+> I found it not check Wunused-but-set-variable.
 
-	if (test_bit(WMI_SERVICE_NLO, ar->wmi.svc_map)) {
-		ar->wow.wowlan_support.flags |= WIPHY_WOWLAN_NET_DETECT;
-		ar->wow.wowlan_support.max_nd_match_sets = WMI_PNO_MAX_SUPP_NETWORKS;
-	}
-}
-> 
-> --
-> Kalle Valo
+checkpatch only checks style issues, unused-but-set-variable is a
+warning from GCC.
+
+I use ath10k-check script to check all ath10k patches:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
+
+And I use latest GCC and sparse with that. crosstool is a simple way to
+install a relatively new version of GCC for kernel compilation:
+
+https://mirrors.edge.kernel.org/pub/tools/crosstool/
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
