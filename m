@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iB7qr-0006A2-PC
- for ath10k@lists.infradead.org; Fri, 20 Sep 2019 01:36:51 +0000
-Received: by mail-io1-xd43.google.com with SMTP id q10so12531160iop.2
- for <ath10k@lists.infradead.org>; Thu, 19 Sep 2019 18:36:47 -0700 (PDT)
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: [PATCH] ath10k: fix memory leak
-Date: Thu, 19 Sep 2019 20:36:26 -0500
-Message-Id: <20190920013632.30796-1-navid.emamdoost@gmail.com>
+ id 1iB94z-00058B-Ri
+ for ath10k@lists.infradead.org; Fri, 20 Sep 2019 02:55:31 +0000
+Subject: RE: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
+From: Wen Gong <wgong@qti.qualcomm.com>
+Date: Fri, 20 Sep 2019 02:55:08 +0000
+Message-ID: <40854e84bd4b4a9699b60530b1c373ad@aptaiexm02f.ap.qualcomm.com>
+References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
+ <20181114225910.GA220599@google.com>
+ <CA+ASDXMh7vdfkA5jtJqWEU-g-4Ta5Xvy046zujyASZcESCGhAQ@mail.gmail.com>
+ <87woe5aehr.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87woe5aehr.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,36 +22,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, kjlu@umn.edu, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, emamd001@umn.edu, smccaman@umn.edu, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, Navid Emamdoost <navid.emamdoost@gmail.com>
+To: "kvalo@codeaurora.org" <kvalo@codeaurora.org>, Brian Norris <briannorris@chromium.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-In ath10k_usb_hif_tx_sg the allocated urb should be released if
-usb_submit_urb fails.
+> -----Original Message-----
+> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Kalle Valo
+> Sent: Wednesday, September 18, 2019 10:03 PM
+> To: Brian Norris <briannorris@chromium.org>
+> Cc: linux-wireless <linux-wireless@vger.kernel.org>; Linux Kernel <linux-
+> kernel@vger.kernel.org>; ath10k@lists.infradead.org; Wen Gong
+> <wgong@codeaurora.org>
+> Subject: [EXT] Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
+> 
+> So essentially the problem is that with firmwares supporting both
+> WMI_SERVICE_NLO and WMI_SERVICE_SPOOF_MAC_SUPPORT ath10k
+> enables
+> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR, but
+> NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR is not enabled
+> which is
+> inconsistent from user space point of view. Is my understanding correct?
+> 
+> Wen, can you enable NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR?
+> Does firmware
+> support that?
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- drivers/net/wireless/ath/ath10k/usb.c | 1 +
- 1 file changed, 1 insertion(+)
+Yes, I test again, it is enabled NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR now.
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index e1420f67f776..730ed22e08a0 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -435,6 +435,7 @@ static int ath10k_usb_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 			ath10k_dbg(ar, ATH10K_DBG_USB_BULK,
- 				   "usb bulk transmit failed: %d\n", ret);
- 			usb_unanchor_urb(urb);
-+			usb_free_urb(urb);
- 			ret = -EINVAL;
- 			goto err_free_urb_to_pipe;
- 		}
--- 
-2.17.1
-
+> 
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
