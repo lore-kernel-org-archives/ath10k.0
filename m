@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBdj6-000171-MA
- for ath10k@lists.infradead.org; Sat, 21 Sep 2019 11:38:57 +0000
+ id 1iBdtH-0008Kk-OS
+ for ath10k@lists.infradead.org; Sat, 21 Sep 2019 11:49:29 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH v2] ath10k: add fw coredump for sdio when firmware assert
 References: <1567132338-7407-1-git-send-email-wgong@codeaurora.org>
-Date: Sat, 21 Sep 2019 14:38:52 +0300
+Date: Sat, 21 Sep 2019 14:49:18 +0300
 In-Reply-To: <1567132338-7407-1-git-send-email-wgong@codeaurora.org> (Wen
  Gong's message of "Fri, 30 Aug 2019 10:32:18 +0800")
-Message-ID: <874l15c20j.fsf@codeaurora.org>
+Message-ID: <87zhixamyp.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -42,26 +42,24 @@ Wen Gong <wgong@codeaurora.org> writes:
 
 [...]
 
-> +static int ath10k_sdio_read_mem(struct ath10k *ar, u32 address, void *buf,
-> +				u32 buf_len)
+> +void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
 > +{
-> +	u32 val;
-> +	int i, ret;
+> +	struct ath10k_fw_crash_data *crash_data;
+> +	char guid[UUID_STRING_LEN + 1];
+> +	u32 fast_dump = 0;
 > +
-> +	for (i = 0; i < buf_len; i += 4) {
-> +		ret = ath10k_sdio_hif_diag_read32(ar, address + i, &val);
-> +		if (ret) {
-> +			ath10k_warn(ar, "unable to read mem %d value\n", address + i);
-> +			break;
-> +		}
-> +		memcpy(buf + i, &val, 4);
-> +	}
+> +	ath10k_err(ar, "begin fw dump\n", guid);
 > +
-> +	return ret;
-> +}
+> +	ath10k_sdio_check_fw_reg(ar, &fast_dump);
+> +
+> +	if (fast_dump)
+> +		ar->bmi.done_sent = false;
 
-What's wrong with ath10k_sdio_hif_diag_read()? AFAICS this whole
-function duplicates just what it does.
+After looking more closely, the ar->bmi.done_set checks in bmi.c does
+not look necessary to me, I have never seen that warning. I would remove
+those and the done_sent field altogether from ath10k to make the code
+cleaner and I avoid hacks like above. This should be done in a separate
+patch, of course.
 
 -- 
 Kalle Valo
