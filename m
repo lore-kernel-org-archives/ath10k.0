@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBdgE-0000w9-Lp
- for ath10k@lists.infradead.org; Sat, 21 Sep 2019 11:35:59 +0000
+ id 1iBdj6-000171-MA
+ for ath10k@lists.infradead.org; Sat, 21 Sep 2019 11:38:57 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH v2] ath10k: add fw coredump for sdio when firmware assert
 References: <1567132338-7407-1-git-send-email-wgong@codeaurora.org>
-Date: Sat, 21 Sep 2019 14:35:54 +0300
+Date: Sat, 21 Sep 2019 14:38:52 +0300
 In-Reply-To: <1567132338-7407-1-git-send-email-wgong@codeaurora.org> (Wen
  Gong's message of "Fri, 30 Aug 2019 10:32:18 +0800")
-Message-ID: <878sqhc25h.fsf@codeaurora.org>
+Message-ID: <874l15c20j.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -42,27 +42,26 @@ Wen Gong <wgong@codeaurora.org> writes:
 
 [...]
 
-> +void ath10k_sdio_check_fw_reg(struct ath10k *ar, u32 *fast_dump)
+> +static int ath10k_sdio_read_mem(struct ath10k *ar, u32 address, void *buf,
+> +				u32 buf_len)
 > +{
-> +	int ret = 0;
-> +	u32 param;
+> +	u32 val;
+> +	int i, ret;
 > +
-> +	ret = ath10k_sdio_read_host_interest_value(ar, HI_ITEM(hi_option_flag2), &param);
+> +	for (i = 0; i < buf_len; i += 4) {
+> +		ret = ath10k_sdio_hif_diag_read32(ar, address + i, &val);
+> +		if (ret) {
+> +			ath10k_warn(ar, "unable to read mem %d value\n", address + i);
+> +			break;
+> +		}
+> +		memcpy(buf + i, &val, 4);
+> +	}
 > +
-> +	*fast_dump = ((param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW)
-> +			     == HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW);
-
-The commit log tells nothing about fast, it should always document the
-design decisions. Why this fast dump, what's the benefit? Why not always
-use the fast dump and forget the slow dump (or vice versa)? There needs
-to be really good reasons to have all this complexity to support both
-slow and fast dumps.
-
-> +	ath10k_err(ar, "check fw reg : %x\n", param);
+> +	return ret;
 > +}
 
-This is a debug message, not an error. And debug messages should use
-format "sdio hi_option_flag2 %x\n".
+What's wrong with ath10k_sdio_hif_diag_read()? AFAICS this whole
+function duplicates just what it does.
 
 -- 
 Kalle Valo
