@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJaH-00020Y-Hq
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:20:38 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 0/2] Add support for per peer HTT tx stats for WCN3990
-References: <1551251581-21193-1-git-send-email-svishnoi@codeaurora.org>
-Date: Mon, 23 Sep 2019 11:20:31 +0300
-In-Reply-To: <1551251581-21193-1-git-send-email-svishnoi@codeaurora.org>
- (Surabhi Vishnoi's message of "Wed, 27 Feb 2019 12:42:59 +0530")
-Message-ID: <875zlja0fk.fsf@codeaurora.org>
+ id 1iCJc0-0002TH-Vu
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:22:26 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/2] ath10k: Fix rate table updation in tx stats
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1552319602-17795-2-git-send-email-pillair@codeaurora.org>
+References: <1552319602-17795-2-git-send-email-pillair@codeaurora.org>
+Message-Id: <20190923082224.A3404614C3@smtp.codeaurora.org>
+Date: Mon, 23 Sep 2019 08:22:24 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +22,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> WCN3990 firmware sends the HTT_TLV_T2H_MSG_TYPE_PEER_STATS in tlv
-> format so the handling of this message has to be done in different
-> manner.
->
-> This patchset adds support to attach rx_ops based on htt version
-> and adds the handling of HTT_TLV_T2H_MSG_TYPE_PEER_STATS message
-> based on HTT version.
->
-> Surabhi Vishnoi (2):
->   ath10k: Add support for adding htt_rx_ops based on htt_version
->   ath10k: Add support for per peer HTT tx stats for WCN3990
+> The index for updating rate table, which is displayed
+> in the tx stats via debugfs, is calculated using the
+> bandwidth value. The bandwidth values do not map
+> correctly with the bandwidth values shown in the rate table.
+> 
+> Correct the bandwidth value calculation which is used
+> to calculate the index for rate table updation for tx stats.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> 
+> Fixes: e88975ca37d1 ("ath10k: dump tx stats in rate table format")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-When you resubmit, could you please include Rakesh's fixes in the same patchset:
+I requested Surabhi to include these patches into his patchset, due to the dependency.
 
-ath10k: Fix rate table updation in tx stats
-ath10k: Fix NSS tx stats for legacy rates
+https://patchwork.kernel.org/project/linux-wireless/list/?series=85455&state=*&order=date
 
-https://patchwork.kernel.org/project/linux-wireless/list/?series=90199&state=*&order=date
+2 patches set to Changes Requested.
 
-They depend on this patchset, so it's easier to handle them all
-together.
+10847733 [1/2] ath10k: Fix rate table updation in tx stats
+10847737 [2/2] ath10k: Fix NSS tx stats for legacy rates
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10847733/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
