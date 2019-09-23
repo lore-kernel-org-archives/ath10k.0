@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJNM-0003bM-57
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:07:17 +0000
+ id 1iCJS7-00054J-RG
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:12:13 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 1/2] ath10k: Add support for adding htt_rx_ops based on
- htt_version
+Subject: Re: [PATCH 2/2] ath10k: Add support for per peer HTT tx stats for
+ WCN3990
 References: <1551251628-22518-1-git-send-email-svishnoi@codeaurora.org>
- <1551251628-22518-2-git-send-email-svishnoi@codeaurora.org>
-Date: Mon, 23 Sep 2019 11:07:12 +0300
-In-Reply-To: <1551251628-22518-2-git-send-email-svishnoi@codeaurora.org>
- (Surabhi Vishnoi's message of "Wed, 27 Feb 2019 12:43:47 +0530")
-Message-ID: <87ef07a11r.fsf@codeaurora.org>
+ <1551251628-22518-3-git-send-email-svishnoi@codeaurora.org>
+Date: Mon, 23 Sep 2019 11:12:07 +0300
+In-Reply-To: <1551251628-22518-3-git-send-email-svishnoi@codeaurora.org>
+ (Surabhi Vishnoi's message of "Wed, 27 Feb 2019 12:43:48 +0530")
+Message-ID: <87a7ava0tk.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,8 +30,23 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
 
-> Refactor the code to add the support to attach htt_rx_ops
-> based on HTT version.
+> The firmware sends peer stats to the host driver if the firmware
+> advertises WMI_SERVICE_PEER_STATS service and the host driver
+> indicates the WMI_RSRC_CFG_FLAG_TX_PEER_STATS capability in the
+> host capab flag in wmi init cmd.
+>
+> When peer stats are enabled, firmware sends one HTT event
+> HTT_TLV_T2H_MSG_TYPE_PEER_STATS for every four PPDUs transmitted.
+> HTT msg payload has tag followed by length followed by
+> success pkts/bytes, failed pkts/bytes, retry pkts/bytes and rate
+> info per ppdu.
+>
+> Parse peer stats sent by the firmware in tlv format and update the
+> tx rate information and tx_stats debugfs entry per STA.
+>
+> To get the tx_stats:
+> echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/enable_extd_tx_stats
+> cat /sys/kernel/debug/ieee80211/phyX/net:wlanX/stations/xx:xx:xx:xx:xx:xx/tx_stats
 >
 > Tested HW: WCN3990
 > Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
@@ -40,45 +55,31 @@ Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
 
 [...]
 
-> @@ -3572,7 +3580,7 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
->  	.htt_reset_paddrs_ring = ath10k_htt_reset_paddrs_ring_64,
->  };
->  
-> -static const struct ath10k_htt_rx_ops htt_rx_ops_hl = {
-> +static struct ath10k_htt_rx_ops htt_rx_ops_hl = {
->  };
->  
->  void ath10k_htt_set_rx_ops(struct ath10k_htt *htt)
-> @@ -3585,4 +3593,19 @@ void ath10k_htt_set_rx_ops(struct ath10k_htt *htt)
->  		htt->rx_ops = &htt_rx_ops_64;
->  	else
->  		htt->rx_ops = &htt_rx_ops_32;
-> +
-> +	switch (ar->running_fw->fw_file.htt_op_version) {
-> +	case ATH10K_FW_HTT_OP_VERSION_MAIN:
-> +	case ATH10K_FW_HTT_OP_VERSION_10_1:
-> +	case ATH10K_FW_HTT_OP_VERSION_10_4:
-> +		htt->rx_ops->htt_fetch_peer_stats = ath10k_htt_fetch_peer_stats;
-> +	break;
-> +	case ATH10K_FW_HTT_OP_VERSION_TLV:
-> +		htt->rx_ops->htt_fetch_peer_stats = ath10k_htt_fetch_peer_stats_tlv;
-> +	break;
-> +	case ATH10K_FW_HTT_OP_VERSION_MAX:
-> +	case ATH10K_FW_HTT_OP_VERSION_UNSET:
-> +		WARN_ON(1);
-> +	return;
-> +	}
->  }
+> @@ -3438,7 +3566,7 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+>  		ath10k_htt_rx_tx_mode_switch_ind(ar, skb);
+>  		break;
+>  	case HTT_T2H_MSG_TYPE_PEER_STATS:
+> -		ath10k_htt_fetch_peer_stats(ar, skb);
+> +		htt->rx_ops->htt_fetch_peer_stats(ar, skb);
+>  		break;
 
-I just realised this won't work. Let's say that there's both a qca988x
-and a qca6174 PCI device on the same host. Then htt->rx_ops is shared by
-_both_ devices and the htt_fetch_peer_stats field will contain the value
-of the last initialised ath10k device.
+I think this belongs to patch 1.
 
-So back to the drawing board. As this feature is for wcn3990 would it be
-enough to modify htt_rx_ops_64? IIRC only wcn3990 support 64bit HTT
-interface, right? Of course then qca6174 won't support this feature, but
-does the qca6174 firmware even support that?
+> +#define ATH10K_HW_GI_MASK				GENMASK(5, 5)
+
+BIT(5)
+
+> +#define ATH10K_HW_SKIPPED_RATE_CTRL_MASK		GENMASK(6, 6)
+
+BIT(6)
+
+> +#define ATH10K_HW_WCN3990_GI_MASK			GENMASK(6, 6)
+
+BIT(6)
+
+> +#define ATH10K_HW_WCN3990_SKIPPED_RATE_CTRL_MASK	GENMASK(7, 7)
+
+BIT(7)
 
 -- 
 Kalle Valo
