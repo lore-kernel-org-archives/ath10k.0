@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJjz-0006KH-Df
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:30:40 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix memory leak
+ id 1iCKHb-000562-Jq
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 09:05:25 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190920013632.30796-1-navid.emamdoost@gmail.com>
-References: <20190920013632.30796-1-navid.emamdoost@gmail.com>
-Message-Id: <20190923083038.AE7F26074F@smtp.codeaurora.org>
-Date: Mon, 23 Sep 2019 08:30:38 +0000 (UTC)
+Subject: Re: [PATCH v5 3/8] ath10k: change max RX bundle size from 8 to 32 for
+ sdio
+References: <1567679893-14029-1-git-send-email-wgong@codeaurora.org>
+ <1567679893-14029-4-git-send-email-wgong@codeaurora.org>
+Date: Mon, 23 Sep 2019 12:05:17 +0300
+In-Reply-To: <1567679893-14029-4-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Thu, 5 Sep 2019 18:38:08 +0800")
+Message-ID: <871rw79ycy.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +25,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc: linux-wireless@vger.kernel.org, kjlu@umn.edu, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, emamd001@umn.edu, smccaman@umn.edu, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Navid Emamdoost <navid.emamdoost@gmail.com> wrote:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> In ath10k_usb_hif_tx_sg the allocated urb should be released if
-> usb_submit_urb fails.
-> 
-> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> The max bundle size support by firmware is 32, change it from 8 to 32
+> will help performance. This results in significant performance
+> improvement on RX path.
+>
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+[...]
 
-b8d17e7d93d2 ath10k: fix memory leak
+> --- a/drivers/net/wireless/ath/ath10k/htc.h
+> +++ b/drivers/net/wireless/ath/ath10k/htc.h
+> @@ -39,7 +39,7 @@
+>   * 4-byte aligned.
+>   */
+>  
+> -#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        8
+> +#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        32
+>  
+>  enum ath10k_htc_tx_flags {
+>  	ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE = 0x01,
+> @@ -48,10 +48,16 @@ enum ath10k_htc_tx_flags {
+>  
+>  enum ath10k_htc_rx_flags {
+>  	ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK = 0x01,
+> -	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02,
+> -	ATH10K_HTC_FLAG_BUNDLE_MASK     = 0xF0
+> +	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02
+>  };
+>  
+> +#define ATH10K_HTC_FLAG_BUNDLE_MASK 0xF0
+> +#define ATH10K_HTC_BUNDLE_EXTRA_MASK GENMASK(3, 2)
+> +
+> +#define ATH10K_HTC_GET_BUNDLE_COUNT(flags) \
+> +	    (FIELD_GET(ATH10K_HTC_FLAG_BUNDLE_MASK, (flags)) +  \
+> +	    (FIELD_GET(ATH10K_HTC_BUNDLE_EXTRA_MASK, (flags)) << 4))
+
+When using FIELD_GET() there should be no need to use '<<', the main id
+of FIELD_GET() and BITMASK() is that there's no need do any manual
+shifting. So I suspect something is wrong here, but didn't have time to
+investigate.
 
 -- 
-https://patchwork.kernel.org/patch/11153699/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
