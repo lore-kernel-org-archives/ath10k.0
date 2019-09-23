@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJ9d-0006wn-CC
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 07:53:06 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: correct wmi_tlv command params to enable
- pktlog for WCN3990
-References: <1558087516-666-3-git-send-email-aambure@codeaurora.org>
- <20190918134502.91240614C3@smtp.codeaurora.org>
-Date: Mon, 23 Sep 2019 10:53:00 +0300
-In-Reply-To: <20190918134502.91240614C3@smtp.codeaurora.org> (Kalle Valo's
- message of "Wed, 18 Sep 2019 13:45:02 +0000 (UTC)")
-Message-ID: <87impja1pf.fsf@codeaurora.org>
+ id 1iCJBW-0007cs-S6
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 07:55:09 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH v3] ath10k: Add support to provide higher range mem chunks
+ in wmi init command
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1551098926-24644-1-git-send-email-svishnoi@codeaurora.org>
+References: <1551098926-24644-1-git-send-email-svishnoi@codeaurora.org>
+Message-Id: <20190923075502.8F36C6047C@smtp.codeaurora.org>
+Date: Mon, 23 Sep 2019 07:55:02 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +23,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Ambure <aambure@codeaurora.org>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+Surabhi Vishnoi <svishnoi@codeaurora.org> wrote:
 
-> Abhishek Ambure <aambure@codeaurora.org> wrote:
->
->> PKT log enable command expects pdev id in enable params which is missing
->> in current configuration. Fill pdev id in pkt log enable wmi command for
->> correct configuration.
->> 
->> Fixes: ca996ec56608 ("ath10k: implement wmi-tlv backend")
->> Tested HW: WCN3990
->> Tested FW: WLAN.HL.3.1-00963-QCAHLSWMTPL-1
->> 
->> Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->
-> How do I know this doesn't break QCA6174/QCA9377?
+> With the current implementation of wmi init command,
+> there is no provision for the host driver to provide mem
+> chunks addresses with more than 32-bit, to the firmware.
+> WCN3990 is a 35-bit target and can accept mem chunks addresses
+> which are above 32-bit.
+> 
+> If firmware supports address range more than 32 bit, it
+> advertises the support by setting the WMI_SERVICE_EXTEND_ADDRESS
+> service. Based on this service fill the upper bits of paddr while
+> providing the mem chunks in the wmi init command.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+> 
+> Signed-off-by: Surabhi Vishnoi <svishnoi@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Abhishek mentioned me privately that he is checking this.
+Patch applied to ath-next branch of ath.git, thanks.
+
+40f4ef5e9232 ath10k: Add support to provide higher range mem chunks in wmi init command
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10828535/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
