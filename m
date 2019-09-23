@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJhE-0004On-1s
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:27:49 +0000
+ id 1iCJjz-0006KH-Df
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:30:40 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: remove the warning of sdio not full support
+Subject: Re: [PATCH] ath10k: fix memory leak
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1567767301-22940-1-git-send-email-wgong@codeaurora.org>
-References: <1567767301-22940-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20190923082747.814776141B@smtp.codeaurora.org>
-Date: Mon, 23 Sep 2019 08:27:47 +0000 (UTC)
+In-Reply-To: <20190920013632.30796-1-navid.emamdoost@gmail.com>
+References: <20190920013632.30796-1-navid.emamdoost@gmail.com>
+Message-Id: <20190923083038.AE7F26074F@smtp.codeaurora.org>
+Date: Mon, 23 Sep 2019 08:30:38 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc: linux-wireless@vger.kernel.org, kjlu@umn.edu, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, emamd001@umn.edu, smccaman@umn.edu, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Navid Emamdoost <navid.emamdoost@gmail.com> wrote:
 
-> Recently, it has the basic feature of sdio tested success, so remove
-> it.
+> In ath10k_usb_hif_tx_sg the allocated urb should be released if
+> usb_submit_urb fails.
 > 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-35cc054d944e ath10k: remove the warning of sdio not full support
+b8d17e7d93d2 ath10k: fix memory leak
 
 -- 
-https://patchwork.kernel.org/patch/11135025/
+https://patchwork.kernel.org/patch/11153699/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
