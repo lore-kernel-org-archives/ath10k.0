@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJeh-0003qU-L1
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:25:12 +0000
+ id 1iCJhE-0004On-1s
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:27:49 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] ath: fix various spelling mistakes
+Subject: Re: [PATCH] ath10k: remove the warning of sdio not full support
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190702123904.8786-1-colin.king@canonical.com>
-References: <20190702123904.8786-1-colin.king@canonical.com>
-Message-Id: <20190923082511.52E7C613A3@smtp.codeaurora.org>
-Date: Mon, 23 Sep 2019 08:25:11 +0000 (UTC)
+In-Reply-To: <1567767301-22940-1-git-send-email-wgong@codeaurora.org>
+References: <1567767301-22940-1-git-send-email-wgong@codeaurora.org>
+Message-Id: <20190923082747.814776141B@smtp.codeaurora.org>
+Date: Mon, 23 Sep 2019 08:27:47 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin King <colin.king@canonical.com>
-Cc: Maya Erez <merez@codeaurora.org>, kernel-janitors@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, wil6210@qti.qualcomm.com, "David S . Miller" <davem@davemloft.net>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Colin King <colin.king@canonical.com> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> There are a bunch of spelling mistakes in two ath drivers, fix
-> these.
+> Recently, it has the basic feature of sdio tested success, so remove
+> it.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-80ce8ca7a647 ath: fix various spelling mistakes
+35cc054d944e ath10k: remove the warning of sdio not full support
 
 -- 
-https://patchwork.kernel.org/patch/11027799/
+https://patchwork.kernel.org/patch/11135025/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
