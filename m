@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCJY8-0000Uj-Ai
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:18:25 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] net: ath: fix missing checks for bmi reads and writes
+ id 1iCJaH-00020Y-Hq
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 08:20:38 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20190315051903.10664-1-kjlu@umn.edu>
-References: <20190315051903.10664-1-kjlu@umn.edu>
-Message-Id: <20190923081823.5D2CF614DC@smtp.codeaurora.org>
-Date: Mon, 23 Sep 2019 08:18:23 +0000 (UTC)
+Subject: Re: [PATCH 0/2] Add support for per peer HTT tx stats for WCN3990
+References: <1551251581-21193-1-git-send-email-svishnoi@codeaurora.org>
+Date: Mon, 23 Sep 2019 11:20:31 +0300
+In-Reply-To: <1551251581-21193-1-git-send-email-svishnoi@codeaurora.org>
+ (Surabhi Vishnoi's message of "Wed, 27 Feb 2019 12:42:59 +0530")
+Message-ID: <875zlja0fk.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +23,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kangjie Lu <kjlu@umn.edu>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, pakki001@umn.edu, "David S. Miller" <davem@davemloft.net>
+To: Surabhi Vishnoi <svishnoi@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kangjie Lu <kjlu@umn.edu> wrote:
+Surabhi Vishnoi <svishnoi@codeaurora.org> writes:
 
-> ath10k_bmi_write32 and ath10k_bmi_read32 can fail. The fix
-> checks their statuses to avoid potential undefined behaviors.
-> 
-> Signed-off-by: Kangjie Lu <kjlu@umn.edu>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> WCN3990 firmware sends the HTT_TLV_T2H_MSG_TYPE_PEER_STATS in tlv
+> format so the handling of this message has to be done in different
+> manner.
+>
+> This patchset adds support to attach rx_ops based on htt version
+> and adds the handling of HTT_TLV_T2H_MSG_TYPE_PEER_STATS message
+> based on HTT version.
+>
+> Surabhi Vishnoi (2):
+>   ath10k: Add support for adding htt_rx_ops based on htt_version
+>   ath10k: Add support for per peer HTT tx stats for WCN3990
 
-Patch applied to ath-next branch of ath.git, thanks.
+When you resubmit, could you please include Rakesh's fixes in the same patchset:
 
-8da96730331d ath10k: fix missing checks for bmi reads and writes
+ath10k: Fix rate table updation in tx stats
+ath10k: Fix NSS tx stats for legacy rates
+
+https://patchwork.kernel.org/project/linux-wireless/list/?series=90199&state=*&order=date
+
+They depend on this patchset, so it's easier to handle them all
+together.
 
 -- 
-https://patchwork.kernel.org/patch/10854069/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
