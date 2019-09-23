@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCIm3-0006Wz-6A
- for ath10k@lists.infradead.org; Mon, 23 Sep 2019 07:28:45 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add peer param map for tlv and non-tlv
+ id 1iCJ9d-0006wn-CC
+ for ath10k@lists.infradead.org; Mon, 23 Sep 2019 07:53:06 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1550556576-19803-1-git-send-email-pillair@codeaurora.org>
-References: <1550556576-19803-1-git-send-email-pillair@codeaurora.org>
-Message-Id: <20190923072841.9CE6761528@smtp.codeaurora.org>
-Date: Mon, 23 Sep 2019 07:28:41 +0000 (UTC)
+Subject: Re: [PATCH 2/2] ath10k: correct wmi_tlv command params to enable
+ pktlog for WCN3990
+References: <1558087516-666-3-git-send-email-aambure@codeaurora.org>
+ <20190918134502.91240614C3@smtp.codeaurora.org>
+Date: Mon, 23 Sep 2019 10:53:00 +0300
+In-Reply-To: <20190918134502.91240614C3@smtp.codeaurora.org> (Kalle Valo's
+ message of "Wed, 18 Sep 2019 13:45:02 +0000 (UTC)")
+Message-ID: <87impja1pf.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +25,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
+To: Abhishek Ambure <aambure@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+Kalle Valo <kvalo@codeaurora.org> writes:
 
-> The peer param id for PEER_PARAM_USE_FIXED_PWR
-> is different for tlv and non-tlv firmware. This
-> causes incorrect peer param to be set by the driver
-> to the firmware(tlv/non-tlv).
-> 
-> Create seperate peer param map for tlv and non-tlv
-> firmware and attach the peer param id based on the
-> firmware type during the init.
-> 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Abhishek Ambure <aambure@codeaurora.org> wrote:
+>
+>> PKT log enable command expects pdev id in enable params which is missing
+>> in current configuration. Fill pdev id in pkt log enable wmi command for
+>> correct configuration.
+>> 
+>> Fixes: ca996ec56608 ("ath10k: implement wmi-tlv backend")
+>> Tested HW: WCN3990
+>> Tested FW: WLAN.HL.3.1-00963-QCAHLSWMTPL-1
+>> 
+>> Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>
+> How do I know this doesn't break QCA6174/QCA9377?
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-c0e33fe6fb0f ath10k: Add peer param map for tlv and non-tlv
+Abhishek mentioned me privately that he is checking this.
 
 -- 
-https://patchwork.kernel.org/patch/10819255/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
