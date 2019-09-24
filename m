@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCdP5-0005tn-Vx
- for ath10k@lists.infradead.org; Tue, 24 Sep 2019 05:30:25 +0000
+ id 1iCday-0000Gc-7w
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2019 05:42:42 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 5/5] ath10k: pull_svc_rdy code-style fix
-References: <1569268165-1639-1-git-send-email-pozega.tomislav@gmail.com>
- <1569268165-1639-5-git-send-email-pozega.tomislav@gmail.com>
-Date: Tue, 24 Sep 2019 08:30:19 +0300
-In-Reply-To: <1569268165-1639-5-git-send-email-pozega.tomislav@gmail.com>
- ("Tomislav \=\?utf-8\?Q\?Po\=C5\=BEega\=22's\?\= message of "Mon, 23 Sep 2019
- 21:49:25 +0200")
-Message-ID: <87d0fq5kic.fsf@codeaurora.org>
+Subject: Re: [PATCH v3 0/2] add fw coredump for sdio when firmware assert
+References: <1569241055-30816-1-git-send-email-wgong@codeaurora.org>
+Date: Tue, 24 Sep 2019 08:42:35 +0300
+In-Reply-To: <1569241055-30816-1-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Mon, 23 Sep 2019 20:17:33 +0800")
+Message-ID: <878sqe5jxw.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,33 +19,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tomislav =?utf-8?Q?Po=C5=BEega?= <pozega.tomislav@gmail.com>
+To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-VG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2QGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBE
-cm9wIHVubmVlZGVkIGxpbmVzIGJ5IG1vdmluZyBza2IgZGF0YSBpbiBib3RoIG1haW4gYW5kIDEw
-eCBXTUkKPiBwdWxsIHNlcnZpY2UgcmVhZHkgZXZlbnQgb3BlcmF0aW9ucy4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IFRvbWlzbGF2IFBvxb5lZ2EgPHBvemVnYS50b21pc2xhdkBnbWFpbC5jb20+Cj4gLS0t
-Cj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMgfCAgICA2ICsrLS0tLQo+
-ICAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPgo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jIGIvZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+IGluZGV4IDU5ZDJkMmEuLjhhYjE3OGMg
-MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+ICsr
-KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPiBAQCAtNTM0NSwxMyAr
-NTM0NSwxMiBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlfYWxsb2NfaG9zdF9tZW0oc3RydWN0IGF0
-aDEwayAqYXIsIHUzMiByZXFfaWQsCj4gIGF0aDEwa193bWlfbWFpbl9vcF9wdWxsX3N2Y19yZHlf
-ZXYoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IsCj4gIAkJCQkgICBzdHJ1
-Y3Qgd21pX3N2Y19yZHlfZXZfYXJnICphcmcpCj4gIHsKPiAtCXN0cnVjdCB3bWlfc2VydmljZV9y
-ZWFkeV9ldmVudCAqZXY7Cj4gKwlzdHJ1Y3Qgd21pX3NlcnZpY2VfcmVhZHlfZXZlbnQgKmV2ID0g
-KHZvaWQgKilza2ItPmRhdGE7Cj4gIAlzaXplX3QgaSwgbjsKPiAgCj4gIAlpZiAoc2tiLT5sZW4g
-PCBzaXplb2YoKmV2KSkKPiAgCQlyZXR1cm4gLUVQUk9UTzsKPiAgCj4gLQlldiA9ICh2b2lkICop
-c2tiLT5kYXRhOwoKQWN0dWFsbHkgSSBwcmVmZXIgdGhlIG9yaWdpbmFsIHN0eWxlLCBzbyB0aGF0
-IHdlIGZpcnN0IGNoZWNrIHRoZSBkYXRhIGluCnNrYiBpcyB2YWxpZCBhbmQgb25seSB0aGVuIGFz
-c2lnbiB0aGUgZGF0YSB0byBldi4KCi0tIApLYWxsZSBWYWxvCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Wen Gong <wgong@codeaurora.org> writes:
+
+> add fw coredump for sdio when firmware assert
+
+Please add the changelog here.
+
+> Wen Gong (2):
+>   ath10k: add bus type for each layout of coredump
+> v2: change code style
+> v3: split bus type to another patch, 
+> remove ATH10K_BUS_ANY, 
+> add bus type for each layout
+>   ath10k: add fw coredump for sdio when firmware assert
+> v2: change code style
+> v3: add commit log for fastdump, 
+> add commit log for ath10k_sdio_hif_diag_read,
+> change ath10k_err to dbg log
+
+Then you mix the changelog with patch titles like that it makes it hard
+to read the summary. So instead add the changelog above, before the
+summary, and leave the summary intact.
+
+Also this didn't apply:
+
+Applying: ath10k: add bus type for each layout of coredump
+Applying: ath10k: add fw coredump for sdio when firmware assert
+fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/coredump.c).
+error: could not build fake ancestor
+Patch failed at 0002 ath10k: add fw coredump for sdio when firmware assert
+
+Then you submit the patch use ath.git master branch as the baseline and
+do NOT have any other patches applied. Otherwise the sha1 information is
+wrong and it's a lot more work for me to fix the conflicts.
+
+So please rebase and resend.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
