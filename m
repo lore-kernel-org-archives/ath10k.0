@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCzce-00037N-P3
- for ath10k@lists.infradead.org; Wed, 25 Sep 2019 05:13:54 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: Enable support for beacon interval per VAP
-References: <1550579046-22649-1-git-send-email-dundi@codeaurora.org>
-Date: Wed, 25 Sep 2019 08:13:47 +0300
-In-Reply-To: <1550579046-22649-1-git-send-email-dundi@codeaurora.org> (Dundi
- Raviteja's message of "Tue, 19 Feb 2019 17:54:06 +0530")
-Message-ID: <87pnjp3qlw.fsf@codeaurora.org>
+ id 1iD032-0003U6-2u
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2019 05:41:09 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: remove iteration in wake_tx_queue
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20190327162906.6010-1-erik.stromdahl@gmail.com>
+References: <20190327162906.6010-1-erik.stromdahl@gmail.com>
+Message-Id: <20190925054107.A6456609F3@smtp.codeaurora.org>
+Date: Wed, 25 Sep 2019 05:41:07 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +22,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dundi Raviteja <dundi@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, yiboz@codeaurora.org, ath10k@lists.infradead.org
 
-Dundi Raviteja <dundi@codeaurora.org> writes:
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
 
-> Enable support to configure different beacon interval per VAP.
->
-> To support this feature, map different beacon interval service bit
-> to wmi tlv service.
->
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
->
-> Signed-off-by: Dundi Raviteja <dundi@codeaurora.org>
+> Iterating the TX queue and thereby dequeuing all available packets in the
+> queue could result in performance penalties on some SMP systems.
+> 
+> The reason for this is most likely that the per-ac lock (active_txq_lock)
+> in mac80211 will be held by the CPU iterating the current queue.
+> 
+> This will lock up other CPUs trying to push new messages on the TX
+> queue.
+> 
+> Instead of iterating the queue we fetch just one packet at the time,
+> resulting in minimal starvation of the other CPUs.
+> 
+> Reported-by: Yibo Zhao <yiboz@codeaurora.org>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-[...]
+Like others, I'm not convinced about this either. To me it looks like a quick
+workaround instead of properly investigating, and fixing, the root cause. To my
+understanding the throughput dip was caused by this commit:
 
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -8232,6 +8232,30 @@ void ath10k_mac_destroy(struct ath10k *ar)
->  	},
->  };
->  
-> +static struct
-> +ieee80211_iface_combination ath10k_tlv_qcs_bcn_int_if_comb[] = {
-> +	{
-> +		.limits = ath10k_tlv_if_limit,
-> +		.num_different_channels = 1,
-> +		.max_interfaces = 4,
-> +		.beacon_int_infra_match = true,
-> +		.beacon_int_min_gcd = 1,
-> +		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
-> +	},
-> +	{
-> +		.limits = ath10k_tlv_qcs_if_limit,
-> +		.num_different_channels = 2,
-> +		.max_interfaces = 4,
-> +		.n_limits = ARRAY_SIZE(ath10k_tlv_qcs_if_limit),
-> +	},
-> +	{
-> +		.limits = ath10k_tlv_if_limit_ibss,
-> +		.num_different_channels = 1,
-> +		.max_interfaces = 2,
-> +		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
-> +	},
-> +};
-> +
->  static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
->  	{
->  		.max = 1,
-> @@ -8642,6 +8666,15 @@ int ath10k_mac_register(struct ath10k *ar)
->  				ath10k_tlv_qcs_if_comb;
->  			ar->hw->wiphy->n_iface_combinations =
->  				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
-> +
-> +			if (test_bit
-> +			    (WMI_SERVICE_VDEV_DIFFERENT_BEACON_INTERVAL_SUPPORT,
-> +			    ar->wmi.svc_map)) {
-> +				ar->hw->wiphy->iface_combinations =
-> +						ath10k_tlv_qcs_bcn_int_if_comb;
-> +				ar->hw->wiphy->n_iface_combinations =
-> +				     ARRAY_SIZE(ath10k_tlv_qcs_bcn_int_if_comb);
-> +			}
+e3148cc5fecf ath10k: fix return value check in wake_tx_q op
 
-I don't like using WMI service flags to advertise different interface
-combinations, it makes ath10k code convoluted. A much better approach is
-to use WMI_SERVICE_IFACE_COMBINATION_SUPPORT:
-
-ath10k:New interface to get interface combinations from FW
-
-https://patchwork.kernel.org/patch/11027361/
+So to me it feels like the issue has been there all along, just hidden, and the
+fix above just exposed it.
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10873753/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
