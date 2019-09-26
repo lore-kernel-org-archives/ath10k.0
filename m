@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iDOxV-0005d1-W8
- for ath10k@lists.infradead.org; Thu, 26 Sep 2019 08:17:08 +0000
-From: Miaoqing Pan <miaoqing@codeaurora.org>
-Subject: [PATCH] nl80211: fix null pointer dereference
-Date: Thu, 26 Sep 2019 16:16:50 +0800
-Message-Id: <1569485810-761-1-git-send-email-miaoqing@codeaurora.org>
+ id 1iDTwQ-0006RD-Av
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2019 13:36:19 +0000
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: [PATCH 1/2] ath10k: fix IRAM addr in coredump
+Date: Thu, 26 Sep 2019 19:07:00 +0530
+Message-Id: <1569505021-20515-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,96 +21,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>
+Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
 
-If the interface is not in MESH mode, the command 'iw wlanx mpath del'
-will cause kernel panic.
+Fix IRAM start address in coredump.
+Tested on: QCA9984, QCA4019
+FW version: 10.4-3.9.0.2-00044
 
-The root cause is null pointer access in mpp_flush_by_proxy(), as the
-pointer 'sdata->u.mesh.mpp_paths' is NULL for non MESH interface.
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000068
-pgd = d2cf4000
-[00000068] *pgd=00000000
-Internal error: Oops: 5 [#1] PREEMPT SMP ARM
-CPU: 1 PID: 4537 Comm: iw Not tainted 3.14.77 #1
-task: dcfba280 ti: d83e0000 task.ti: d83e0000
-PC is at _raw_spin_lock_bh+0x20/0x5c
-LR is at mesh_path_del+0x1c/0x17c [mac80211]
-pc : [<c021211c>]    lr : [<bf8c7648>]    psr: a0000013
-sp : d83e1ca0  ip : 0000000f  fp : 00000014
-r10: c08b3400  r9 : daf46800  r8 : d5f50f20
-r7 : d8526500  r6 : d5f50f14  r5 : 00000068  r4 : 00000000
-r3 : d83e0000  r2 : 00000201  r1 : d5f50f20  r0 : 00000068
-Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 10c5787d  Table: 54cf406a  DAC: 00000015
-Process iw (pid: 4537, stack limit = 0xd83e0238)
-Stack: (0xd83e1ca0 to 0xd83e2000)
-1ca0: d8526500 d5f50f20 d5f50f20 d83e1ce8 d9720300 d5f50f14 d9720300 00000000
-1cc0: daf46800 c08b3400 00000014 bf6cdb7c bf6cdb5c bf86c868 d93b61a4 c05c309c
-1ce0: 00000000 80150015 5d2f3783 000011b9 d5f50f00 d5f50f10 d52e9200 daf46800
-1d00: c08b3400 d8a70000 d8526000 dd56a000 d83e0000 d5f50f00 d9720300 c05c2e28
-1d20: 00000028 d83e1d5c 00000000 00000028 d83e1e08 c05c25d8 c08b4e94 d9720300
-1d40: d3fcec00 c05c2e14 c05c2df4 dd56a000 d9720300 c05c1f90 d3fcec00 7fffffff
-1d60: 00000000 d9720300 00000000 00000000 d3fcec00 d83e1f7c 00000000 c05c2420
-1d80: 00000000 00000045 00000008 00000000 d2cf6db8 d2d242c0 00000000 000011b9
-1da0: 00000000 00000000 00000000 d5a30900 00000028 d83e1f7c dcfba280 00000000
-1dc0: d5a30900 d83e1e64 00000000 c05886d0 00000000 00000000 00000000 d83e1e08
-1de0: dcfba280 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-1e00: 00000000 00000000 d2cf6db8 00000045 00045000 00000028 d5a30900 c02ae84c
-1e20: d83e1d94 d83e1f7c d83e1ec4 d83e1e64 d83e1ec4 00000128 00000000 d83e1e64
-1e40: 00000008 00000000 d83e1f7c d83e1f7c 00000028 00000000 d83e1ea4 c0589f4c
-1e60: dcf23318 b7c66138 00000000 dcfba280 d83e1fb0 00000200 b6e7dce8 c02228a0
-1e80: 00003fec 00000000 d5f9aa80 dcf236bc b6e7dce8 00000000 00000000 00000000
-1ea0: 00000000 bead2c68 00000020 00000000 bead2c68 c05b1498 00000000 00000010
-1ec0: 00000000 00000010 00000000 00000000 00000030 00000000 00000000 0000001f
-1ee0: dd4e4190 c02e124c 00000010 00000007 c087020c b6e7dce8 d83e1fb0 00000001
-1f00: 00000000 bead28f8 00000001 c0208440 0000000e d59f1aa0 d5a30aa0 d59f1af0
-1f20: dd401500 c02d3780 00000000 00000000 00000395 dcfba280 dcfba60c dcfba280
-1f40: 00000128 bd943663 bead2c48 d5a30900 00000000 bead2c48 00000128 c0208e24
-1f60: d83e0000 00001000 b6f30e34 c058add4 000044c0 00000000 fffffff7 d83e1ec4
-1f80: 0000000c d83e1e64 00000001 00000000 00000000 00000000 b7c66078 bead2c48
-1fa0: b7c66078 c0208c80 b7c66078 bead2c48 00000003 bead2c48 00000000 00000000
-1fc0: b7c66078 bead2c48 b7c66078 00000128 b7c660d0 b7c67188 bead2d20 b6f30e34
-1fe0: b6ecef8c bead2c18 b6ebaf94 b6e799e4 60000010 00000003 00000000 00000000
-[<c021211c>] (_raw_spin_lock_bh) from [<bf8c7648>] (mesh_path_del+0x1c/0x17c [mac80211])
-[<bf8c7648>] (mesh_path_del [mac80211]) from [<bf6cdb7c>] (extack_doit+0x20/0x68 [compat])
-[<bf6cdb7c>] (extack_doit [compat]) from [<c05c309c>] (genl_rcv_msg+0x274/0x30c)
-[<c05c309c>] (genl_rcv_msg) from [<c05c25d8>] (netlink_rcv_skb+0x58/0xac)
-[<c05c25d8>] (netlink_rcv_skb) from [<c05c2e14>] (genl_rcv+0x20/0x34)
-[<c05c2e14>] (genl_rcv) from [<c05c1f90>] (netlink_unicast+0x11c/0x204)
-[<c05c1f90>] (netlink_unicast) from [<c05c2420>] (netlink_sendmsg+0x30c/0x370)
-[<c05c2420>] (netlink_sendmsg) from [<c05886d0>] (sock_sendmsg+0x70/0x84)
-[<c05886d0>] (sock_sendmsg) from [<c0589f4c>] (___sys_sendmsg.part.3+0x188/0x228)
-[<c0589f4c>] (___sys_sendmsg.part.3) from [<c058add4>] (__sys_sendmsg+0x4c/0x70)
-[<c058add4>] (__sys_sendmsg) from [<c0208c80>] (ret_fast_syscall+0x0/0x44)
-Code: e2822c02 e2822001 e5832004 f590f000 (e1902f9f)
----[ end trace bbd717600f8f884d ]---
-
-Tested HW: QCA9984
-Tested FW: 10.4-3.10-00047
-
-Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 ---
- net/wireless/nl80211.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/ath/ath10k/coredump.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index d21b158..54d5c89 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -6270,6 +6270,9 @@ static int nl80211_del_mpath(struct sk_buff *skb, struct genl_info *info)
- 	if (!rdev->ops->del_mpath)
- 		return -EOPNOTSUPP;
- 
-+	if (dev->ieee80211_ptr->iftype != NL80211_IFTYPE_MESH_POINT)
-+		return -EOPNOTSUPP;
-+
- 	return rdev_del_mpath(rdev, dev, dst);
- }
- 
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
+index b6d2932383cf..ecd3dd5d8356 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.c
++++ b/drivers/net/wireless/ath/ath10k/coredump.c
+@@ -703,7 +703,7 @@
+ 	},
+ 	{
+ 		.type = ATH10K_MEM_REGION_TYPE_REG,
+-		.start = 0x98000,
++		.start = 0x980000,
+ 		.len = 0x50000,
+ 		.name = "IRAM",
+ 		.section_table = {
+@@ -786,7 +786,7 @@
+ 	},
+ 	{
+ 		.type = ATH10K_MEM_REGION_TYPE_REG,
+-		.start = 0x98000,
++		.start = 0x980000,
+ 		.len = 0x50000,
+ 		.name = "IRAM",
+ 		.section_table = {
+@@ -891,7 +891,7 @@
+ 	},
+ 	{
+ 		.type = ATH10K_MEM_REGION_TYPE_REG,
+-		.start = 0x98000,
++		.start = 0x980000,
+ 		.len = 0x50000,
+ 		.name = "IRAM",
+ 		.section_table = {
 -- 
-1.9.1
+1.7.9.5
 
 
 _______________________________________________
