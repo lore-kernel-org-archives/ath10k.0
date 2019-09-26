@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iDTwQ-0006RD-Av
- for ath10k@lists.infradead.org; Thu, 26 Sep 2019 13:36:19 +0000
+ id 1iDTwX-0006Tk-UR
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2019 13:36:27 +0000
 From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH 1/2] ath10k: fix IRAM addr in coredump
-Date: Thu, 26 Sep 2019 19:07:00 +0530
-Message-Id: <1569505021-20515-1-git-send-email-akolli@codeaurora.org>
+Subject: [PATCH 2/2] ath10k: fix backtrace on coredump
+Date: Thu, 26 Sep 2019 19:07:01 +0530
+Message-Id: <1569505021-20515-2-git-send-email-akolli@codeaurora.org>
+In-Reply-To: <1569505021-20515-1-git-send-email-akolli@codeaurora.org>
+References: <1569505021-20515-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +25,66 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Fix IRAM start address in coredump.
-Tested on: QCA9984, QCA4019
+In a multiradio board with one QCA9984 and one AR9987
+after enabling the crashdump with module parameter
+coredump_mask=7, below backtrace is seen.
+
+vmalloc: allocation failure: 0 bytes
+ kworker/u4:0: page allocation failure: order:0, mode:0x80d2
+ CPU: 0 PID: 6 Comm: kworker/u4:0 Not tainted 3.14.77 #130
+ Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
+ (unwind_backtrace) from [<c021abf8>] (show_stack+0x10/0x14)
+ (dump_stack+0x80/0xa0)
+ (warn_alloc_failed+0xd0/0xfc)
+ (__vmalloc_node_range+0x1b4/0x1d8)
+ (__vmalloc_node+0x34/0x40)
+ (vzalloc+0x24/0x30)
+ (ath10k_coredump_register+0x6c/0x88 [ath10k_core])
+ (ath10k_core_register_work+0x350/0xb34 [ath10k_core])
+ (process_one_work+0x20c/0x32c)
+ (worker_thread+0x228/0x360)
+
+This is due to ath10k_hw_mem_layout is not defined for AR9987.
+For coredump undefined hw ramdump_size is 0.
+Check for the ramdump_size before allocation memory.
+
+Tested on: AR9987, QCA9984
 FW version: 10.4-3.9.0.2-00044
 
 Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/coredump.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/coredump.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index b6d2932383cf..ecd3dd5d8356 100644
+index ecd3dd5d8356..a127122b4721 100644
 --- a/drivers/net/wireless/ath/ath10k/coredump.c
 +++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -703,7 +703,7 @@
- 	},
- 	{
- 		.type = ATH10K_MEM_REGION_TYPE_REG,
--		.start = 0x98000,
-+		.start = 0x980000,
- 		.len = 0x50000,
- 		.name = "IRAM",
- 		.section_table = {
-@@ -786,7 +786,7 @@
- 	},
- 	{
- 		.type = ATH10K_MEM_REGION_TYPE_REG,
--		.start = 0x98000,
-+		.start = 0x980000,
- 		.len = 0x50000,
- 		.name = "IRAM",
- 		.section_table = {
-@@ -891,7 +891,7 @@
- 	},
- 	{
- 		.type = ATH10K_MEM_REGION_TYPE_REG,
--		.start = 0x98000,
-+		.start = 0x980000,
- 		.len = 0x50000,
- 		.name = "IRAM",
- 		.section_table = {
+@@ -1208,9 +1208,11 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
+ 		dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
+ 		dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_RAM_DATA);
+ 		dump_tlv->tlv_len = cpu_to_le32(crash_data->ramdump_buf_len);
+-		memcpy(dump_tlv->tlv_data, crash_data->ramdump_buf,
+-		       crash_data->ramdump_buf_len);
+-		sofar += sizeof(*dump_tlv) + crash_data->ramdump_buf_len;
++		if (crash_data->ramdump_buf_len) {
++			memcpy(dump_tlv->tlv_data, crash_data->ramdump_buf,
++			       crash_data->ramdump_buf_len);
++			sofar += sizeof(*dump_tlv) + crash_data->ramdump_buf_len;
++		}
+ 	}
+ 
+ 	mutex_unlock(&ar->dump_mutex);
+@@ -1257,6 +1259,9 @@ int ath10k_coredump_register(struct ath10k *ar)
+ 	if (test_bit(ATH10K_FW_CRASH_DUMP_RAM_DATA, &ath10k_coredump_mask)) {
+ 		crash_data->ramdump_buf_len = ath10k_coredump_get_ramdump_size(ar);
+ 
++		if (!crash_data->ramdump_buf_len)
++			return 0;
++
+ 		crash_data->ramdump_buf = vzalloc(crash_data->ramdump_buf_len);
+ 		if (!crash_data->ramdump_buf)
+ 			return -ENOMEM;
 -- 
 1.7.9.5
 
