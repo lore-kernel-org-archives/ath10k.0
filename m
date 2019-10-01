@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]
- helo=us-smtp-delivery-1.mimecast.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFFyL-0002FI-H3
- for ath10k@lists.infradead.org; Tue, 01 Oct 2019 11:05:39 +0000
-Received: by mail-lf1-f72.google.com with SMTP id c83so2680360lfg.8
- for <ath10k@lists.infradead.org>; Tue, 01 Oct 2019 04:05:29 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH V3 0/4] Enable virtual time-based airtime scheduler
- support on ath10k
-In-Reply-To: <e710a18d65ecaf2168a27556c85dada8@codeaurora.org>
-References: <1569223201-1490-1-git-send-email-yiboz@codeaurora.org>
- <20985660fd0872db1511948bd42cd925cef13cee.camel@sipsolutions.net>
- <e710a18d65ecaf2168a27556c85dada8@codeaurora.org>
-Date: Tue, 01 Oct 2019 13:05:26 +0200
-Message-ID: <8736gcvi89.fsf@toke.dk>
+ id 1iFG86-0006LM-O5
+ for ath10k@lists.infradead.org; Tue, 01 Oct 2019 11:15:44 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/5] ath10k: add 2ghz channel arguments to service ready
+ structure
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1569268165-1639-1-git-send-email-pozega.tomislav@gmail.com>
+References: <1569268165-1639-1-git-send-email-pozega.tomislav@gmail.com>
+Message-Id: <20191001111541.894C460A05@smtp.codeaurora.org>
+Date: Tue,  1 Oct 2019 11:15:41 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +19,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>, Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: =?utf-8?q?Tomislav_Po=C5=BEega?= <pozega.tomislav@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yibo Zhao <yiboz@codeaurora.org> writes:
-
-> On 2019-10-01 18:19, Johannes Berg wrote:
->> On Mon, 2019-09-23 at 15:19 +0800, Yibo Zhao wrote:
->>> This series fix some issues when enabling virtual time-based airtime 
->>> scheduler on ath10k.
->>> 
->> Given the lengthy discussion here and also over in the related thread
->> about AQL, I'm assuming you're going to repost this eventually.
->
-> Yes, will repost once Toke have updated "mac80211: Switch to a virtual 
-> time-based airtime scheduler" with his new ideas.
-
-Which in turn is waiting for the AQL stuff... :)
-
--Toke
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VG9taXNsYXYgUG/FvmVnYSB3cm90ZToKCj4gQWRkIGxvd2VzdC9oaWdoZXN0IDJnaHogY2hhbm5l
+bCBhcmd1bWVudHMgZm9yIHVzZSB3aXRoaW4gV01JIHNlcnZpY2UKPiByZWFkeSBzdHJ1Y3R1cmUu
+Cj4gCj4gU2lnbmVkLW9mZi1ieTogVG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2QGdt
+YWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9y
+Zz4KCjQgcGF0Y2hlcyBhcHBsaWVkIHRvIGF0aC1uZXh0IGJyYW5jaCBvZiBhdGguZ2l0LCB0aGFu
+a3MuCgpmYTg3OTQ5MGU0MTIgYXRoMTBrOiBhZGQgMmdoeiBjaGFubmVsIGFyZ3VtZW50cyB0byBz
+ZXJ2aWNlIHJlYWR5IHN0cnVjdHVyZQoyNzVlYTFiMjZmMzggYXRoMTBrOiBwcmludCBzZXJ2aWNl
+IHJlYWR5IHJldHVybmVkIGNoYW5uZWwgcmFuZ2UKNzM2OTBjNDg0M2ZiIGF0aDEwazogcHJpbnQg
+c3VwcG9ydGVkIE1DUyByYXRlcyB3aXRoaW4gc2VydmljZSByZWFkeSBldmVudAo3YjMwODczMjNm
+YWEgYXRoMTBrOiBjaGFuZ2Ugc3cgdmVyc2lvbiBwcmludCBmb3JtYXQgdG8gaGV4CgotLSAKaHR0
+cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTE1NzUxOS8KCmh0dHBzOi8vd2lyZWxl
+c3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5n
+cGF0Y2hlcwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
