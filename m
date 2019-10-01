@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFG86-0006LM-O5
- for ath10k@lists.infradead.org; Tue, 01 Oct 2019 11:15:44 +0000
+ id 1iFG9H-0006WQ-CX
+ for ath10k@lists.infradead.org; Tue, 01 Oct 2019 11:16:56 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/5] ath10k: add 2ghz channel arguments to service ready
- structure
+Subject: Re: [PATCH 2/2] ath10k: switch to ieee80211_tx_dequeue_ni
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1569268165-1639-1-git-send-email-pozega.tomislav@gmail.com>
-References: <1569268165-1639-1-git-send-email-pozega.tomislav@gmail.com>
-Message-Id: <20191001111541.894C460A05@smtp.codeaurora.org>
-Date: Tue,  1 Oct 2019 11:15:41 +0000 (UTC)
+In-Reply-To: <20190617200140.6189-2-erik.stromdahl@gmail.com>
+References: <20190617200140.6189-2-erik.stromdahl@gmail.com>
+Message-Id: <20191001111655.1983D6053D@smtp.codeaurora.org>
+Date: Tue,  1 Oct 2019 11:16:55 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +18,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?q?Tomislav_Po=C5=BEega?= <pozega.tomislav@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, johannes@sipsolutions.net, davem@davemloft.net
 
-VG9taXNsYXYgUG/FvmVnYSB3cm90ZToKCj4gQWRkIGxvd2VzdC9oaWdoZXN0IDJnaHogY2hhbm5l
-bCBhcmd1bWVudHMgZm9yIHVzZSB3aXRoaW4gV01JIHNlcnZpY2UKPiByZWFkeSBzdHJ1Y3R1cmUu
-Cj4gCj4gU2lnbmVkLW9mZi1ieTogVG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2QGdt
-YWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9y
-Zz4KCjQgcGF0Y2hlcyBhcHBsaWVkIHRvIGF0aC1uZXh0IGJyYW5jaCBvZiBhdGguZ2l0LCB0aGFu
-a3MuCgpmYTg3OTQ5MGU0MTIgYXRoMTBrOiBhZGQgMmdoeiBjaGFubmVsIGFyZ3VtZW50cyB0byBz
-ZXJ2aWNlIHJlYWR5IHN0cnVjdHVyZQoyNzVlYTFiMjZmMzggYXRoMTBrOiBwcmludCBzZXJ2aWNl
-IHJlYWR5IHJldHVybmVkIGNoYW5uZWwgcmFuZ2UKNzM2OTBjNDg0M2ZiIGF0aDEwazogcHJpbnQg
-c3VwcG9ydGVkIE1DUyByYXRlcyB3aXRoaW4gc2VydmljZSByZWFkeSBldmVudAo3YjMwODczMjNm
-YWEgYXRoMTBrOiBjaGFuZ2Ugc3cgdmVyc2lvbiBwcmludCBmb3JtYXQgdG8gaGV4CgotLSAKaHR0
-cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTE1NzUxOS8KCmh0dHBzOi8vd2lyZWxl
-c3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5n
-cGF0Y2hlcwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+
+> Since ath10k_mac_tx_push_txq() can be called from process context, we
+> must explicitly disable softirqs before the call into mac80211.
+> 
+> By calling ieee80211_tx_dequeue_ni() instead of ieee80211_tx_dequeue()
+> we make sure softirqs are always disabled even in the case when
+> ath10k_mac_tx_push_txq() is called from process context.
+> 
+> Calling ieee80211_tx_dequeue_ni() with softirq's already disabled
+> (e.g., from softirq context) should be safe as the local_bh_disable()
+> and local_bh_enable() functions (called from ieee80211_tx_dequeue_ni)
+> are fully reentrant.
+> 
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+306547608c84 ath10k: switch to ieee80211_tx_dequeue_ni
+
+-- 
+https://patchwork.kernel.org/patch/11000363/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
