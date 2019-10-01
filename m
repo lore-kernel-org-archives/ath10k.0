@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFGAX-0006gY-7k
- for ath10k@lists.infradead.org; Tue, 01 Oct 2019 11:18:14 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k: fix IRAM addr in coredump
+ id 1iFGdo-0003XB-5R
+ for ath10k@lists.infradead.org; Tue, 01 Oct 2019 11:48:29 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1569505021-20515-1-git-send-email-akolli@codeaurora.org>
-References: <1569505021-20515-1-git-send-email-akolli@codeaurora.org>
-Message-Id: <20191001111812.E3E836053D@smtp.codeaurora.org>
-Date: Tue,  1 Oct 2019 11:18:12 +0000 (UTC)
+Subject: Re: [PATCH 2/2] ath10k: switch to ieee80211_tx_dequeue_ni
+References: <20190617200140.6189-1-erik.stromdahl@gmail.com>
+ <20190617200140.6189-2-erik.stromdahl@gmail.com>
+Date: Tue, 01 Oct 2019 14:48:20 +0300
+In-Reply-To: <20190617200140.6189-2-erik.stromdahl@gmail.com> (Erik
+ Stromdahl's message of "Mon, 17 Jun 2019 22:01:40 +0200")
+Message-ID: <87eezw660r.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +24,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anilkumar Kolli <akolli@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: johannes@sipsolutions.net, linux-wireless@vger.kernel.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 
-Anilkumar Kolli <akolli@codeaurora.org> wrote:
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-> The IRAM start address in coredump was wrong for QCA9984, QCA4019, QCA9888 and
-> QCA99x0.
-> 
-> Tested on: QCA9984, QCA4019
-> FW version: 10.4-3.9.0.2-00044
-> 
-> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Since ath10k_mac_tx_push_txq() can be called from process context, we
+> must explicitly disable softirqs before the call into mac80211.
+>
+> By calling ieee80211_tx_dequeue_ni() instead of ieee80211_tx_dequeue()
+> we make sure softirqs are always disabled even in the case when
+> ath10k_mac_tx_push_txq() is called from process context.
+>
+> Calling ieee80211_tx_dequeue_ni() with softirq's already disabled
+> (e.g., from softirq context) should be safe as the local_bh_disable()
+> and local_bh_enable() functions (called from ieee80211_tx_dequeue_ni)
+> are fully reentrant.
+>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-2 patches applied to ath-next branch of ath.git, thanks.
-
-93f9fefcf528 ath10k: coredump: fix IRAM addr for QCA9984, QCA4019, QCA9888 and QCA99x0
-d98ddae85a4a ath10k: fix backtrace on coredump
+I already applied this, but I still want to check _why_ you are changing
+this? Is it that you want to call ath10k_mac_tx_push_pending() from a
+workqueue in sdio.c in a future patch, or what? Because at the moment me
+and Johannes were not able to find where this is called in process
+context.
 
 -- 
-https://patchwork.kernel.org/patch/11162763/
-
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
