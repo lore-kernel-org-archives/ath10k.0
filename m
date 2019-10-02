@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFYak-0006QO-Jh
- for ath10k@lists.infradead.org; Wed, 02 Oct 2019 06:58:32 +0000
-Received: by mail-wm1-x344.google.com with SMTP id a6so5819430wma.5
- for <ath10k@lists.infradead.org>; Tue, 01 Oct 2019 23:58:29 -0700 (PDT)
-Subject: Re: [PATCH] ath10k: Fix offchannel tx failure when no
- ath10k_mac_tx_frm_has_freq
-References: <1508284992-3574-1-git-send-email-greearb@candelatech.com>
- <ba256006-b42b-0dee-4eb7-093da5885341@kaiwoo.ai>
- <87tv8r3cnm.fsf@kamboji.qca.qualcomm.com>
-From: Antonio Quartulli <antonio.quartulli@kaiwoo.ai>
-Message-ID: <d1719c78-1c40-22e1-bb84-a5aee0b41750@kaiwoo.ai>
-Date: Wed, 2 Oct 2019 08:55:51 +0200
+ id 1iFiGE-00081s-UJ
+ for ath10k@lists.infradead.org; Wed, 02 Oct 2019 17:18:00 +0000
 MIME-Version: 1.0
-In-Reply-To: <87tv8r3cnm.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
+Subject: Re: [PATCH] ath10k: Fix offchannel tx failure when
+ noath10k_mac_tx_frm_has_freq
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1508284992-3574-1-git-send-email-greearb@candelatech.com>
+References: <1508284992-3574-1-git-send-email-greearb@candelatech.com>
+Message-Id: <20191002171758.121E760AD9@smtp.codeaurora.org>
+Date: Wed,  2 Oct 2019 17:17:57 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +23,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+greearb@candelatech.com wrote:
 
-On 02/10/2019 08:05, Kalle Valo wrote:
->> Tested-by: Antonio Quartulli <antonio.quartulli@kaiwoo.ai>
+> Offchannel management frames were failing:
 > 
-> Thanks! What hardware did you test this? I'll add that to the commit
-> log.
+> [18099.253732] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
+> [18102.293686] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
+> [18105.333653] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
+> [18108.373712] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
+> [18111.413687] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e36c0
+> [18114.453726] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3f00
+> [18117.493773] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e36c0
+> [18120.533631] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3f00
 > 
-
-It was tested on my AP equipped with and QCA4019 and QCA9888.
-
-> The patch also had some conflicts which I fixed in the pending branch,
-> please check:
+> This bug appears to have been added between 4.0 (which works for us),
+> and 4.4, which does not work.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=bdc657dd0c0cb7163fcf39b94e664e3d9409140e
+> I think this is because the tx-offchannel logic gets in a loop when
+> ath10k_mac_tx_frm_has_freq(ar) is false, so pkt is never actually
+> sent to the firmware for transmit.
 > 
+> This patch fixes the problem on 4.9 for me, and now HS20 clients
+> can work again with my firmware.
+> 
+> Antonio: tested with 10.4-3.5.3-00057 on QCA4019 and QCA9888
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> Tested-by: Antonio Quartulli <antonio.quartulli@kaiwoo.ai>
+> [kvalo@codeaurora.org: improve commit log, remove unneeded parenthesis]
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Looks good to me, thanks!
+Patch applied to ath-next branch of ath.git, thanks.
 
-Regards,
+cc6df017e557 ath10k: fix offchannel tx failure when no ath10k_mac_tx_frm_has_freq
 
 -- 
-Antonio Quartulli
-Kaiwoo.ai
+https://patchwork.kernel.org/patch/10013117/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
