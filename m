@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iG0lg-0000JN-Ig
- for ath10k@lists.infradead.org; Thu, 03 Oct 2019 13:03:42 +0000
+ id 1iG1Eu-0005Ao-CZ
+ for ath10k@lists.infradead.org; Thu, 03 Oct 2019 13:33:53 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: Report low ack rssi based on the reason code
-References: <1554276181-7879-1-git-send-email-pillair@codeaurora.org>
- <5f25f471-5753-7d4a-91f8-9a3986117580@bowerswilkins.com>
-Date: Thu, 03 Oct 2019 16:03:33 +0300
-In-Reply-To: <5f25f471-5753-7d4a-91f8-9a3986117580@bowerswilkins.com> (Peter
- Oh's message of "Wed, 3 Apr 2019 16:58:51 +0000")
-Message-ID: <878sq20ymy.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix ASPM L1 state on QCA988X
+References: <1553025580-6118-1-git-send-email-pozega.tomislav@gmail.com>
+Date: Thu, 03 Oct 2019 16:33:46 +0300
+In-Reply-To: <1553025580-6118-1-git-send-email-pozega.tomislav@gmail.com>
+ ("Tomislav \=\?utf-8\?Q\?Po\=C5\=BEega\=22's\?\= message of "Tue, 19 Mar 2019
+ 20:59:40 +0100")
+Message-ID: <87wodmgdhh.fsf@tynnyri.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,83 +20,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Rakesh Pillai <pillair@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Tomislav =?utf-8?Q?Po=C5=BEega?= <pozega.tomislav@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <peter.oh@bowerswilkins.com> writes:
-
-> On 04/03/2019 12:23 AM, Rakesh Pillai wrote:
->> Firmware sends peer sta kickout event to the driver
->> along with the reason code for a particular peer.
->>
->> Currently the sta kickout event is delivered to the
->> upper layer without checking if the reason code is
->> valid or not. This causes frequent disconnection of
->> the STA.
->>
->> Report low ack rssi event to mac80211 only if the reason
->> code is valid.
->>
->> Tested HW: WCN3990
->> Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
->>
->> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-
-[...]
-
->> @@ -3440,6 +3437,12 @@ void ath10k_wmi_event_peer_sta_kickout(struct ath10k *ar, struct sk_buff *skb)
->>   		goto exit;
->>   	}
->>   
->> +	if (arg.reason_code_valid &&
->> +	    arg.reason == WMI_PEER_STA_KICKOUT_REASON_UNSPECIFIED)
->> +		goto exit;
->> +
->
-> Why do we want this event not to be delivered to user space?
-
-Yeah, I'm curious about that as well. If I'm guessing right,
-WMI_PEER_STA_KICKOUT_REASON_UNSPECIFIED is supposed to mean that the
-firmware does not support providing the reason code. Usually, but not
-always, in the firmware interface value zero means unsupported. So why
-would we want to ignore a kickout event which has a valid mac address
-for the peer?
-
-In what kind of cases is the firmware emitting these events? Is this
-really the correct thing to do?
-
->> +	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event peer sta kickout %pM reason code %d\n",
->> +		   arg.mac_addr, arg.reason);
->>   	ieee80211_report_low_ack(sta, 10);
->>   
->>   exit:
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
->> index e1c40bb..3ccd79e 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.h
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
->> @@ -6797,6 +6797,8 @@ struct wmi_vdev_start_ev_arg {
->>   
->>   struct wmi_peer_kick_ev_arg {
->>   	const u8 *mac_addr;
->> +	u32 reason;
->> +	bool reason_code_valid;
->>   };
->
-> Adding extra members to this structure breaks structure consistency 
-> between FW and host driver since FW doesn't have such members.
-
-Yeah, this reason_code_valid boolean is set if WMI-TLV is used, but it
-does not still mean that the reason code is valid. (There might be
-WMI-TLV firmwares which do not provide the reason code.)
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+KHBsZWFzZSBhbHdheXMgQ0MgYXRoMTBrIGxpc3Qgc28gdGhhdCBhdGgxMGsgcGF0Y2hlcyBhcmUg
+ZWFzeSB0byBmaW5kKQoKVG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2QGdtYWlsLmNv
+bT4gd3JpdGVzOgoKPiBPbiBzb21lIHN5c3RlbXMgdGhlcmUgYXJlIGhlYXZ5IGNyYXNoZXMgaWYg
+dGhlIGtlcm5lbCBjb25maWcKPiBvcHRpb24gQ09ORklHX1BDSUVBU1BNX1BFUkZPUk1BTkNFIGlz
+IG5vdCBzZXQuIFBhdGNoIHByb3ZpZGVkIGJ5Cj4gU3VqaXRoIGZvciBhdGg5ayBmaXhlcyB0aGlz
+IGlzc3VlIGFuZCB0aGUgY2FyZCBvcGVyYXRlcyB3aXRob3V0Cj4gY3Jhc2hlcyB3aXRoIGtlcm5l
+bCBkZWZhdWx0IENPTkZJR19QQ0lFQVNQTV9ERUZBVUxUIG9wdGlvbiB0aGF0IHVzZXMKPiBCSU9T
+IHByb3ZpZGVkIEFTUE0gc2V0dGluZ3MuIFRlc3RlZCB3aXRoIFFDQTk4NjIgbVBDSWUgY2FyZC4K
+Pgo+IFNpZ25lZC1vZmYtYnk6IFN1aml0aCBNYW5vaGFyYW4gPGNfbWFub2hhQHFjYS5xdWFsY29t
+bS5jb20+Cj4gU2lnbmVkLW9mZi1ieTogVG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2
+QGdtYWlsLmNvbT4KClNvIEknbGwgc3VtbWFyaXNlIHRoZSBkaXNjdXNzaW9uIGZyb20gcGF0Y2h3
+b3JrOgoKaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDg2MDMwMS8KClN1aml0
+aCB3cm90ZSB0aGlzIHdvcmthcm91bmQgZmlyc3QgZm9yIGF0aDlrIGFuZCB5b3UgcG9ydGVkIGl0
+IHRvCmF0aDEwazoKCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXdpcmVsZXNzLzEzNzc0
+MjE5ODktMjEyNDAtMS1naXQtc2VuZC1lbWFpbC1zdWppdGhAbXN1aml0aC5vcmcvCgpodHRwczov
+L2dpdC5rZXJuZWwub3JnL2xpbnVzL2IzODBhNDNiNTJiZQoKQW5kIHlvdSBoYXZlIFBDSSBwcm9i
+bGVtcyBhZnRlciBRQ0E5ODhYIGZpcm13YXJlIGhhcyBjcmFzaGVkIG9uIEhQCkNvbXBhcSA2NzM1
+YiBsYXB0b3AsIGFwcGFyZW50bHkgdGhlIGRldmljZSBqdXN0IGRvZXMgbm90IHJlc3BvbmQgb24g
+UENJCmJ1cyBhdCB0aGF0IHBvaW50LiBBbmQgdGhpcyB3b3JrYXJvdW5kIHNvbHZlcyB0aGUgaXNz
+dWUgYW5kIHlvdSBkb24ndApoYXZlIGFueSBwcm9ibGVtcyBhbnltb3JlLgoKUGxlYXNlIGNvcnJl
+Y3QgaWYgSSBoYXZlIG1pc3VuZGVyc3Rvb2QuCgo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvcGNpLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L3BjaS5jCj4gQEAgLTI3ODcsMTQgKzI3ODcsMjUgQEAgc3RhdGljIGludCBhdGgxMGtfcGNpX2hp
+Zl9wb3dlcl91cChzdHJ1Y3QgYXRoMTBrICphciwKPiAgCQkJCSAgIGVudW0gYXRoMTBrX2Zpcm13
+YXJlX21vZGUgZndfbW9kZSkKPiAgewo+ICAJc3RydWN0IGF0aDEwa19wY2kgKmFyX3BjaSA9IGF0
+aDEwa19wY2lfcHJpdihhcik7Cj4gKwlzdHJ1Y3QgcGNpX2RldiAqcGRldiA9IGFyX3BjaS0+cGRl
+djsKPiAgCWludCByZXQ7Cj4gKwl1MzIgdmFsOwo+ICAKPiAgCWF0aDEwa19kYmcoYXIsIEFUSDEw
+S19EQkdfQk9PVCwgImJvb3QgaGlmIHBvd2VyIHVwXG4iKTsKPiAgCj4gLQlwY2llX2NhcGFiaWxp
+dHlfcmVhZF93b3JkKGFyX3BjaS0+cGRldiwgUENJX0VYUF9MTktDVEwsCj4gKwlpZiAoYXItPmRl
+dl9pZCA9PSBRQ0E5ODhYXzJfMF9ERVZJQ0VfSUQpIHsKPiArCQlwY2lfcmVhZF9jb25maWdfZHdv
+cmQocGRldiwgMHg3MGMsICZ2YWwpOwo+ICsJCWlmICgodmFsICYgMHhmZjAwMDAwMCkgPT0gMHgx
+NzAwMDAwMCkgewo+ICsJCQl2YWwgJj0gMHgwMGZmZmZmZjsKPiArCQkJdmFsIHw9IDB4MjcwMDAw
+MDA7Cj4gKwkJCXBjaV93cml0ZV9jb25maWdfZHdvcmQocGRldiwgMHg1NzBjLCB2YWwpOwo+ICsJ
+CX0KPiArCX0gZWxzZSB7Cj4gKwkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfd29yZChhcl9wY2ktPnBk
+ZXYsIFBDSV9FWFBfTE5LQ1RMLAo+ICAJCQkJICAmYXJfcGNpLT5saW5rX2N0bCk7Cj4gLQlwY2ll
+X2NhcGFiaWxpdHlfd3JpdGVfd29yZChhcl9wY2ktPnBkZXYsIFBDSV9FWFBfTE5LQ1RMLAo+ICsJ
+CXBjaWVfY2FwYWJpbGl0eV93cml0ZV93b3JkKGFyX3BjaS0+cGRldiwgUENJX0VYUF9MTktDVEws
+Cj4gIAkJCQkgICBhcl9wY2ktPmxpbmtfY3RsICYgflBDSV9FWFBfTE5LQ1RMX0FTUE1DKTsKPiAr
+CX0KCk1hZ2ljIHZhbHVlcyBhcmUgbm90IG5pY2UsIGl0J3MgYmV0dGVyIHRvIGhhdmUgcHJvcGVy
+IGRlZmluZXMuIFN1aml0aAphbHJlYWR5IHByb3ZpZGVkIG1lYW5pbmcgZm9yIDB4NzBjLCBidXQg
+SSBkb24ndCBrbm93IHdoYXQgMHg1NzBjIG1lYW5zCihvciBJIGd1ZXNzIDB4NTAwIG9mZnNldCk/
+CgpBbHNvIHBsZWFzZSB1c2UgR0VOTUFTSygpIGFuZCBGSUVMRF9QUkVQKCkuIE90aGVyd2lzZSBs
+b29rcyBnb29kIHRvIG1lLgoKLS0gCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2Vu
+L2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
