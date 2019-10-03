@@ -1,15 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFiJK-0001Px-F8
- for ath10k@lists.infradead.org; Wed, 02 Oct 2019 17:21:11 +0000
+ id 1iFpSa-0006zl-Vr
+ for ath10k@lists.infradead.org; Thu, 03 Oct 2019 00:59:14 +0000
+Received: by mail-qk1-x742.google.com with SMTP id p10so645788qkg.8
+ for <ath10k@lists.infradead.org>; Wed, 02 Oct 2019 17:59:11 -0700 (PDT)
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com.
+ [209.85.160.172])
+ by smtp.gmail.com with ESMTPSA id c131sm640696qke.24.2019.10.02.17.59.08
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 02 Oct 2019 17:59:09 -0700 (PDT)
+Received: by mail-qt1-f172.google.com with SMTP id c3so1228184qtv.10
+ for <ath10k@lists.infradead.org>; Wed, 02 Oct 2019 17:59:08 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add support for hardware rfkill
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <156985855686.10126.201242458794108566.stgit@potku.adurom.net>
-References: <156985855686.10126.201242458794108566.stgit@potku.adurom.net>
-Message-Id: <20191002172110.0577960ADE@smtp.codeaurora.org>
-Date: Wed,  2 Oct 2019 17:21:09 +0000 (UTC)
+References: <1534402113-14337-1-git-send-email-wgong@codeaurora.org>
+ <20181114225910.GA220599@google.com>
+ <CA+ASDXMh7vdfkA5jtJqWEU-g-4Ta5Xvy046zujyASZcESCGhAQ@mail.gmail.com>
+ <87woe5aehr.fsf@kamboji.qca.qualcomm.com>
+ <40854e84bd4b4a9699b60530b1c373ad@aptaiexm02f.ap.qualcomm.com>
+ <87pnjvctjh.fsf@codeaurora.org>
+In-Reply-To: <87pnjvctjh.fsf@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Wed, 2 Oct 2019 17:58:56 -0700
+Message-ID: <CA+ASDXNXZrBS8dZW4jmXkg7c8-sK=pcYtQtj5KPxCDCEc8XqYA@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: support NET_DETECT WoWLAN feature
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +38,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Wen Gong <wgong@qti.qualcomm.com>, Linux Kernel <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+Hi Kalle,
 
-> When hardware rfkill is enabled in the firmware it will report the
-> capability via using WMI_TLV_SYS_CAP_INFO_RFKILL bit in the WMI_SERVICE_READY
-> event to the host. ath10k will check the capability, and if it is enabled then
-> ath10k will set the GPIO information to firmware using WMI_PDEV_SET_PARAM. When
-> the firmware detects hardware rfkill is enabled by the user, it will report it
-> via WMI_RFKILL_STATE_CHANGE_EVENTID. Once ath10k receives the event it will
-> send wmi command WMI_PDEV_SET_PARAM to the firmware to enable/disable the radio
-> and also notifies cfg80211.
-> 
-> We can't power off the device when rfkill is enabled, as otherwise the
-> firmware would not be able to detect GPIO changes and report them to the
-> host. So when rfkill is enabled, we need to keep the firmware running.
-> 
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1.
-> 
-> Signed-off-by: Alan Liu <alanliu@codeaurora.org>
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Sorry, I failed to follow up on some of this.
 
-Patch applied to ath-next branch of ath.git, thanks.
+On Fri, Sep 20, 2019 at 12:32 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+> But I mixed up the flags. I meant that can we enable
+> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR in ath10k? Does the firmware
+> releases which have WMI_SERVICE_NLO support
+> NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR as well?
 
-1382993f882b ath10k: add support for hardware rfkill
+I'm looking at firmware which supports WMI_SERVICE_NLO and
+WMI_SERVICE_SPOOF_MAC_SUPPORT. This leads to support for
+NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR and
+NL80211_WOWLAN_TRIG_NET_DETECT (good!), but it also leads to
+NL80211_CMD_START_SCHED_SCAN support and *not*
+NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, which is inconsistent
+(bad!).
 
--- 
-https://patchwork.kernel.org/patch/11166921/
+(I think a few times in here you noted the FEATURE_SCAN variant, when
+you probably meant FEATURE_SCHED_SCAN.)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+If I understand Wen correctly, he is working on dropping
+NL80211_CMD_START_SCHED_SCAN, which would fix the inconsistency.
 
+But I also noticed that ath10k does not support
+NL80211_FEATURE_ND_RANDOM_MAC_ADDR, which is again an inconsistency:
+we're going to lose randomization when in WoWLAN + NET_DETECT mode. I
+don't suspect we (Chrome OS) would ever enable this feature in that
+state.
+
+Regards,
+Brian
 
 _______________________________________________
 ath10k mailing list
