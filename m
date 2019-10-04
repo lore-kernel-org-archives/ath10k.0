@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iG1fn-0007wz-Hy
- for ath10k@lists.infradead.org; Thu, 03 Oct 2019 14:01:41 +0000
-Received: by mail-oi1-x241.google.com with SMTP id e18so2715619oii.0
- for <ath10k@lists.infradead.org>; Thu, 03 Oct 2019 07:01:37 -0700 (PDT)
+ id 1iGQ2L-0002qs-ER
+ for ath10k@lists.infradead.org; Fri, 04 Oct 2019 16:02:34 +0000
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ath10k: fix null dereference on pointer crash_data
+Date: Fri,  4 Oct 2019 17:02:27 +0100
+Message-Id: <20191004160227.31577-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <87wodmgdhh.fsf@tynnyri.adurom.net>
-References: <1553025580-6118-1-git-send-email-pozega.tomislav@gmail.com>
- <87wodmgdhh.fsf@tynnyri.adurom.net>
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Thu, 3 Oct 2019 16:01:35 +0200
-Message-ID: <CAKR_QV+mJKoP1MGdw3GYA5NHG00DOj00tRC0KTCnM9txXev8Qw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix ASPM L1 state on QCA988X
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +16,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>, "David S . Miller" <davem@davemloft.net>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-T24gMDMvMTAvMjAxOSwgS2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9yYS5vcmc+IHdyb3RlOgo+
-IChwbGVhc2UgYWx3YXlzIENDIGF0aDEwayBsaXN0IHNvIHRoYXQgYXRoMTBrIHBhdGNoZXMgYXJl
-IGVhc3kgdG8gZmluZCkKPgo+IFRvbWlzbGF2IFBvxb5lZ2EgPHBvemVnYS50b21pc2xhdkBnbWFp
-bC5jb20+IHdyaXRlczoKPgo+PiBPbiBzb21lIHN5c3RlbXMgdGhlcmUgYXJlIGhlYXZ5IGNyYXNo
-ZXMgaWYgdGhlIGtlcm5lbCBjb25maWcKPj4gb3B0aW9uIENPTkZJR19QQ0lFQVNQTV9QRVJGT1JN
-QU5DRSBpcyBub3Qgc2V0LiBQYXRjaCBwcm92aWRlZCBieQo+PiBTdWppdGggZm9yIGF0aDlrIGZp
-eGVzIHRoaXMgaXNzdWUgYW5kIHRoZSBjYXJkIG9wZXJhdGVzIHdpdGhvdXQKPj4gY3Jhc2hlcyB3
-aXRoIGtlcm5lbCBkZWZhdWx0IENPTkZJR19QQ0lFQVNQTV9ERUZBVUxUIG9wdGlvbiB0aGF0IHVz
-ZXMKPj4gQklPUyBwcm92aWRlZCBBU1BNIHNldHRpbmdzLiBUZXN0ZWQgd2l0aCBRQ0E5ODYyIG1Q
-Q0llIGNhcmQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFN1aml0aCBNYW5vaGFyYW4gPGNfbWFub2hh
-QHFjYS5xdWFsY29tbS5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFRvbWlzbGF2IFBvxb5lZ2EgPHBv
-emVnYS50b21pc2xhdkBnbWFpbC5jb20+Cj4KPiBTbyBJJ2xsIHN1bW1hcmlzZSB0aGUgZGlzY3Vz
-c2lvbiBmcm9tIHBhdGNod29yazoKPgo+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0
-Y2gvMTA4NjAzMDEvCj4KPiBTdWppdGggd3JvdGUgdGhpcyB3b3JrYXJvdW5kIGZpcnN0IGZvciBh
-dGg5ayBhbmQgeW91IHBvcnRlZCBpdCB0bwo+IGF0aDEwazoKPgo+IGh0dHBzOi8vbG9yZS5rZXJu
-ZWwub3JnL2xpbnV4LXdpcmVsZXNzLzEzNzc0MjE5ODktMjEyNDAtMS1naXQtc2VuZC1lbWFpbC1z
-dWppdGhAbXN1aml0aC5vcmcvCj4KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2xpbnVzL2IzODBh
-NDNiNTJiZQo+Cj4gQW5kIHlvdSBoYXZlIFBDSSBwcm9ibGVtcyBhZnRlciBRQ0E5ODhYIGZpcm13
-YXJlIGhhcyBjcmFzaGVkIG9uIEhQCj4gQ29tcGFxIDY3MzViIGxhcHRvcCwgYXBwYXJlbnRseSB0
-aGUgZGV2aWNlIGp1c3QgZG9lcyBub3QgcmVzcG9uZCBvbiBQQ0kKPiBidXMgYXQgdGhhdCBwb2lu
-dC4gQW5kIHRoaXMgd29ya2Fyb3VuZCBzb2x2ZXMgdGhlIGlzc3VlIGFuZCB5b3UgZG9uJ3QKPiBo
-YXZlIGFueSBwcm9ibGVtcyBhbnltb3JlLgo+Cj4gUGxlYXNlIGNvcnJlY3QgaWYgSSBoYXZlIG1p
-c3VuZGVyc3Rvb2QuCj4KPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9w
-Y2kuYwo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4+IEBA
-IC0yNzg3LDE0ICsyNzg3LDI1IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3BjaV9oaWZfcG93ZXJfdXAo
-c3RydWN0IGF0aDEwawo+PiAqYXIsCj4+ICAJCQkJICAgZW51bSBhdGgxMGtfZmlybXdhcmVfbW9k
-ZSBmd19tb2RlKQo+PiAgewo+PiAgCXN0cnVjdCBhdGgxMGtfcGNpICphcl9wY2kgPSBhdGgxMGtf
-cGNpX3ByaXYoYXIpOwo+PiArCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gYXJfcGNpLT5wZGV2Owo+
-PiAgCWludCByZXQ7Cj4+ICsJdTMyIHZhbDsKPj4KPj4gIAlhdGgxMGtfZGJnKGFyLCBBVEgxMEtf
-REJHX0JPT1QsICJib290IGhpZiBwb3dlciB1cFxuIik7Cj4+Cj4+IC0JcGNpZV9jYXBhYmlsaXR5
-X3JlYWRfd29yZChhcl9wY2ktPnBkZXYsIFBDSV9FWFBfTE5LQ1RMLAo+PiArCWlmIChhci0+ZGV2
-X2lkID09IFFDQTk4OFhfMl8wX0RFVklDRV9JRCkgewo+PiArCQlwY2lfcmVhZF9jb25maWdfZHdv
-cmQocGRldiwgMHg3MGMsICZ2YWwpOwo+PiArCQlpZiAoKHZhbCAmIDB4ZmYwMDAwMDApID09IDB4
-MTcwMDAwMDApIHsKPj4gKwkJCXZhbCAmPSAweDAwZmZmZmZmOwo+PiArCQkJdmFsIHw9IDB4Mjcw
-MDAwMDA7Cj4+ICsJCQlwY2lfd3JpdGVfY29uZmlnX2R3b3JkKHBkZXYsIDB4NTcwYywgdmFsKTsK
-Pj4gKwkJfQo+PiArCX0gZWxzZSB7Cj4+ICsJCXBjaWVfY2FwYWJpbGl0eV9yZWFkX3dvcmQoYXJf
-cGNpLT5wZGV2LCBQQ0lfRVhQX0xOS0NUTCwKPj4gIAkJCQkgICZhcl9wY2ktPmxpbmtfY3RsKTsK
-Pj4gLQlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChhcl9wY2ktPnBkZXYsIFBDSV9FWFBfTE5L
-Q1RMLAo+PiArCQlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChhcl9wY2ktPnBkZXYsIFBDSV9F
-WFBfTE5LQ1RMLAo+PiAgCQkJCSAgIGFyX3BjaS0+bGlua19jdGwgJiB+UENJX0VYUF9MTktDVExf
-QVNQTUMpOwo+PiArCX0KPgo+IE1hZ2ljIHZhbHVlcyBhcmUgbm90IG5pY2UsIGl0J3MgYmV0dGVy
-IHRvIGhhdmUgcHJvcGVyIGRlZmluZXMuIFN1aml0aAo+IGFscmVhZHkgcHJvdmlkZWQgbWVhbmlu
-ZyBmb3IgMHg3MGMsIGJ1dCBJIGRvbid0IGtub3cgd2hhdCAweDU3MGMgbWVhbnMKPiAob3IgSSBn
-dWVzcyAweDUwMCBvZmZzZXQpPwo+Cj4gQWxzbyBwbGVhc2UgdXNlIEdFTk1BU0soKSBhbmQgRklF
-TERfUFJFUCgpLiBPdGhlcndpc2UgbG9va3MgZ29vZCB0byBtZS4KPgo+IC0tCj4gaHR0cHM6Ly93
-aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL3N1Ym1p
-dHRpbmdwYXRjaGVzCj4KCkkgZG9uJ3QgdGhpbmsgdGhlIG9sZCBwYXRjaCBmcm9tIGF0aDlrIGlz
-IHRoYXQgbXVjaCByZWxldmFudCBpbiB0aGlzCmJ1ZyBjYXNlIGF0IGFsbCwgc2luY2UgYnkgYXBw
-bHlpbmcgaXQgdGhlIHdheSBpdCBpcyB0aGUgcGF0Y2ggYWN0dWFsbHkKcHJldmVudGVkIEFTUE0g
-Y29kZSBmcm9tIGV4ZWN1dGlvbiAobW92ZWQgYWZ0ZXIgfSBlbHNlIHsgKSBvbgpRQ0E5ODhYXzJf
-MCBkZXZpY2VzLiBUaGUgQVNQTSBlbmFibGUgY29kZSB0aGF0IHdhcyBjb21taXRlZCB5ZWFycyBh
-Z28KY2F1c2VzIHJlZ3Jlc3Npb24gYXMgSSd2ZSBhbHJlYWR5IHdyb3RlLCBhbmQgcmV2ZXJ0aW5n
-IHRoYXQgY29tbWl0IGlzCnN1ZmZpY2llbnQgdG8gaGF2ZSBjYXJkIG9wZXJhdGluZyBwcm9wZXJs
-eS4KV2hlbiB0aGF0IGlzIGhhbmRsZWQgcHJvcGVybHksIHRoaXMgcGF0Y2ggY2FuIHRoZW4gYmUg
-YWRkZWQgYmVmb3JlIG9yCmFmdGVyIHRoZSBBU1BNIGVuYWJsZSBjb2RlLiBBbHNvLCBzaW5jZSB0
-aGUgcmVhZCB2YWx1ZSB3aWxsIG9idmlvdXNseQpkaWZmZXIgZnJvbSBzeXN0ZW0gdG8gc3lzdGVt
-LCBzb21ldGhpbmcgbGlrZSB0aGlzIGNvdWxkIGJlIHVzZWQ6CgppZiAoKHZhbCAmIDB4ZmYwMDAw
-MDApICE9IDB4MjcwMDAwMDApCgoweDU3MGMgc2hvdWxkIHJlZmVyIHRvIHByb2dyYW1taW5nIGFk
-ZHJlc3MgZm9yIHRoaXMgcmVnaXN0ZXIsIGF0IGxlYXN0CmFjY29yZGluZyB0byByZWZlcmVuY2Ug
-ZHJpdmVyLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Colin Ian King <colin.king@canonical.com>
+
+Currently when pointer crash_data is null the present null check
+will also check that crash_data->ramdump_buf is null and will cause
+a null pointer dereference on crash_data. Fix this by using the ||
+operator instead of &&.
+
+Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index cd22c8654aa9..16177497bba7 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1400,7 +1400,7 @@ static void ath10k_msa_dump_memory(struct ath10k *ar,
+ 	size_t buf_len;
+ 	u8 *buf;
+ 
+-	if (!crash_data && !crash_data->ramdump_buf)
++	if (!crash_data || !crash_data->ramdump_buf)
+ 		return;
+ 
+ 	mem_layout = ath10k_coredump_get_mem_layout(ar);
+-- 
+2.20.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
