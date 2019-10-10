@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iIO8p-0005mn-8H
- for ath10k@lists.infradead.org; Thu, 10 Oct 2019 02:25:24 +0000
-Received: by mail-pl1-x64a.google.com with SMTP id x8so2867405plr.23
- for <ath10k@lists.infradead.org>; Wed, 09 Oct 2019 19:25:22 -0700 (PDT)
-Date: Wed,  9 Oct 2019 19:25:02 -0700
-In-Reply-To: <20191010022502.141862-1-kyan@google.com>
-Message-Id: <20191010022502.141862-3-kyan@google.com>
-Mime-Version: 1.0
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iIaYF-0001gJ-VR
+ for ath10k@lists.infradead.org; Thu, 10 Oct 2019 15:40:29 +0000
+Message-ID: <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 1/2] mac80211: Implement Airtime-based Queue Limit (AQL)
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 10 Oct 2019 17:40:12 +0200
+In-Reply-To: <20191010022502.141862-2-kyan@google.com>
+ (sfid-20191010_042522_960956_7035429C)
 References: <20191010022502.141862-1-kyan@google.com>
-Subject: [PATCH v3 2/2] ath10k: Enable Airtime-based Queue Limit (AQL)
-From: Kan Yan <kyan@google.com>
+ <20191010022502.141862-2-kyan@google.com>
+ (sfid-20191010_042522_960956_7035429C)
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,92 +26,128 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net
-Cc: Kan Yan <kyan@google.com>, make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, nbd@nbd.name
+To: Kan Yan <kyan@google.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, nbd@nbd.name
 
-Calculate the estimated airtime pending in the txqs and apply AQL to
-prevent excessive amounts of packets being queued in the firmware queue.
+Hi,
 
-Signed-off-by: Kan Yan <kyan@google.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |  1 +
- drivers/net/wireless/ath/ath10k/mac.c    |  8 +++++---
- drivers/net/wireless/ath/ath10k/txrx.c   | 11 ++++++++---
- 3 files changed, 14 insertions(+), 6 deletions(-)
+A couple of points...
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 83a7fb68fd24..f2115b940964 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3053,6 +3053,7 @@ static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
- 
- 			num_msdus++;
- 			num_bytes += ret;
-+			may_tx = ieee80211_txq_aql_check(hw, txq);
- 		}
- 		ieee80211_return_txq(hw, txq, false);
- 		ieee80211_txq_schedule_end(hw, txq->ac);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0606416dc971..b300a3c506b2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3983,6 +3983,9 @@ static bool ath10k_mac_tx_can_push(struct ieee80211_hw *hw,
- 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
- 
- 	/* No need to get locks */
-+	if (!ieee80211_txq_aql_check(hw, txq))
-+		return false;
-+
- 	if (ar->htt.tx_q_state.mode == HTT_TX_MODE_SWITCH_PUSH)
- 		return true;
- 
-@@ -4009,13 +4012,11 @@ static u16 ath10k_mac_update_airtime(struct ath10k *ar,
- {
- 	struct ath10k_sta *arsta;
- 	u32 pktlen;
--	u16 airtime = 0;
-+	s32 airtime = 0;
- 
- 	if (!txq || !txq->sta)
- 		return airtime;
- 
--	if (test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
--		return airtime;
- 
- 	spin_lock_bh(&ar->data_lock);
- 	arsta = (struct ath10k_sta *)txq->sta->drv_priv;
-@@ -4038,6 +4039,7 @@ static u16 ath10k_mac_update_airtime(struct ath10k *ar,
- 	}
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	ieee80211_sta_register_pending_airtime(txq->sta, txq->tid, airtime);
- 	return airtime;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 4102df016931..739046b34d4b 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -84,9 +84,14 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 		wake_up(&htt->empty_tx_wq);
- 	spin_unlock_bh(&htt->tx_lock);
- 
--	if (txq && txq->sta && skb_cb->airtime_est)
--		ieee80211_sta_register_airtime(txq->sta, txq->tid,
--					       skb_cb->airtime_est, 0);
-+	if (txq && txq->sta && skb_cb->airtime_est) {
-+		if (!test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
-+			ieee80211_sta_register_airtime(txq->sta, txq->tid,
-+						       skb_cb->airtime_est, 0);
-+
-+		ieee80211_sta_release_pending_airtime(txq->sta, txq->tid,
-+						      skb_cb->airtime_est);
-+	}
- 
- 	if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL)
- 		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
--- 
-2.23.0.581.g78d2f28ef7-goog
+First, I'd like Toke to review & ack this if possible :-)
+
+Second, I probably won't apply this until I return from vacation (will
+be out next week & the week after).
+
+Third, a couple of more comments on the code:
+
+> +/* The per TXQ firmware queue limit in airtime */
+
+I was pretty sure I mentioned it *somewhere*, but I think just calling
+this "device" or something would be more general. If you don't mind, I
+can edit that also (unless you have other reasons to resubmit?)
+
+> +/**
+> + * ieee80211_sta_update_pending_airtime - update txq's estimated airtime
+> + *
+> + * Update the estimated total airtime of frames queued in a lower layer queue.
+> + *
+> + * The estimated airtime is calculated for each frame using the last reported
+> + * data rate and stored in the SKB's CB. Once the frame is completed, the same
+> + * airtime stored in the CB should be subtracted from a txq's pending airtime
+
+"stored in the CB" should probably be just given as an example "(e.g.
+stored in the CB)"
+
+> + * count.
+
+"count" is a bit odd for a time value, just remove "count"?
+
+(again, I can fix these)
+
+> +/**
+> + * ieee80211_txq_aql_check - check if a txq can send frame to device
+
+I wonder if this really should even be have "aql" in the name? It's also
+going to return NULL if there's nothing on the TXQ, for example, right?
+
+> +	len = scnprintf(buf, sizeof(buf),
+> +			"AC	AQL limit low	AQL limit high\n"
+> +			"0	%u		%u\n"
+> +			"1	%u		%u\n"
+> +			"2	%u		%u\n"
+> +			"3	%u		%u\n",
+
+BK/BE/VI/VO instead of 0/1/23?
+
+> +			local->aql_txq_limit_low[0],
+> +			local->aql_txq_limit_high[0],
+> +			local->aql_txq_limit_low[1],
+> +			local->aql_txq_limit_high[1],
+> +			local->aql_txq_limit_low[2],
+> +			local->aql_txq_limit_high[2],
+> +			local->aql_txq_limit_low[3],
+> +			local->aql_txq_limit_high[3]);
+
+but then I guess we have to use the macros to index here too
+
+> +	local->airtime_flags =
+> +		AIRTIME_USE_TX | AIRTIME_USE_RX | AIRTIME_USE_AQL;
+
+
+might be nicer as 
+
+ airtime_flags = TX |
+                 RX |
+                 AQL;
+
+but doesn't matter, just in case you have to resend anyway...
+
+> +	spin_lock_bh(&local->active_txq_lock[ac]);
+> +	if (unlikely(sta->airtime[ac].aql_tx_pending + tx_airtime > S32_MAX)) {
+> +		WARN_ONCE(1, "TXQ pending airtime underflow: %d, %d",
+> +			  sta->airtime[ac].aql_tx_pending, tx_airtime);
+
+if (WARN_ONCE(..., "...", ...))
+
+saves you the braces and the extra condition
+
+Also, hmm, doesn't this rely on 2s complement underflow or something?
+
+Maybe that should be
+
+	__signed_add_overflow(aql_tx_pending, tx_airtime,
+                              &aql_tx_pending) ||
+        aql_tx_pending < 0
+
+or so?
+
+But then again, we don't really care *that* much about overflow or
+underflow in this code path - it's not going to be security critical.
+
+But it seems that your code there actually can cause UB? That would be
+nice to avoid.
+
+Actually, that condition can never be true, right? Wait, ok, this one
+can because integer promotion?
+
+> +		sta->airtime[ac].aql_tx_pending = 0;
+> +	} else {
+> +		sta->airtime[ac].aql_tx_pending += tx_airtime;
+> +	}
+> +
+> +	if (unlikely(local->aql_total_pending_airtime + tx_airtime > S32_MAX)) {
+> +		WARN_ONCE(1, "pending airtime underflow: %d, %d",
+> +			  local->aql_total_pending_airtime, tx_airtime);
+
+same here
+
+Except aql_total_pending_airtime is still defined as s32 and that causes
+different behaviour?
+
+All this confuses me ... is it possible to write this more clearly?
+
+Thanks,
+johannes
 
 
 _______________________________________________
