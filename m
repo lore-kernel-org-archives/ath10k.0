@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIaYF-0001gJ-VR
- for ath10k@lists.infradead.org; Thu, 10 Oct 2019 15:40:29 +0000
-Message-ID: <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 1/2] mac80211: Implement Airtime-based Queue Limit (AQL)
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 10 Oct 2019 17:40:12 +0200
-In-Reply-To: <20191010022502.141862-2-kyan@google.com>
- (sfid-20191010_042522_960956_7035429C)
-References: <20191010022502.141862-1-kyan@google.com>
- <20191010022502.141862-2-kyan@google.com>
- (sfid-20191010_042522_960956_7035429C)
+ id 1iIbHF-0003J7-Uw
+ for ath10k@lists.infradead.org; Thu, 10 Oct 2019 16:26:59 +0000
+Received: by mail-pl1-x641.google.com with SMTP id e5so3030487pls.9
+ for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 09:26:57 -0700 (PDT)
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH] ath10k: Correct error check of dma_map_single()
+Date: Thu, 10 Oct 2019 09:26:53 -0700
+Message-Id: <20191010162653.141303-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,128 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, nbd@nbd.name
+To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, ath10k@lists.infradead.org, Niklas Cassel <niklas.cassel@linaro.org>
 
-Hi,
+The return value of dma_map_single() should be checked for errors using
+dma_mapping_error(), rather than testing for NULL. Correct this.
 
-A couple of points...
+Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
+Cc: stable@vger.kernel.org
+Reported-by: Niklas Cassel <niklas.cassel@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-First, I'd like Toke to review & ack this if possible :-)
-
-Second, I probably won't apply this until I return from vacation (will
-be out next week & the week after).
-
-Third, a couple of more comments on the code:
-
-> +/* The per TXQ firmware queue limit in airtime */
-
-I was pretty sure I mentioned it *somewhere*, but I think just calling
-this "device" or something would be more general. If you don't mind, I
-can edit that also (unless you have other reasons to resubmit?)
-
-> +/**
-> + * ieee80211_sta_update_pending_airtime - update txq's estimated airtime
-> + *
-> + * Update the estimated total airtime of frames queued in a lower layer queue.
-> + *
-> + * The estimated airtime is calculated for each frame using the last reported
-> + * data rate and stored in the SKB's CB. Once the frame is completed, the same
-> + * airtime stored in the CB should be subtracted from a txq's pending airtime
-
-"stored in the CB" should probably be just given as an example "(e.g.
-stored in the CB)"
-
-> + * count.
-
-"count" is a bit odd for a time value, just remove "count"?
-
-(again, I can fix these)
-
-> +/**
-> + * ieee80211_txq_aql_check - check if a txq can send frame to device
-
-I wonder if this really should even be have "aql" in the name? It's also
-going to return NULL if there's nothing on the TXQ, for example, right?
-
-> +	len = scnprintf(buf, sizeof(buf),
-> +			"AC	AQL limit low	AQL limit high\n"
-> +			"0	%u		%u\n"
-> +			"1	%u		%u\n"
-> +			"2	%u		%u\n"
-> +			"3	%u		%u\n",
-
-BK/BE/VI/VO instead of 0/1/23?
-
-> +			local->aql_txq_limit_low[0],
-> +			local->aql_txq_limit_high[0],
-> +			local->aql_txq_limit_low[1],
-> +			local->aql_txq_limit_high[1],
-> +			local->aql_txq_limit_low[2],
-> +			local->aql_txq_limit_high[2],
-> +			local->aql_txq_limit_low[3],
-> +			local->aql_txq_limit_high[3]);
-
-but then I guess we have to use the macros to index here too
-
-> +	local->airtime_flags =
-> +		AIRTIME_USE_TX | AIRTIME_USE_RX | AIRTIME_USE_AQL;
-
-
-might be nicer as 
-
- airtime_flags = TX |
-                 RX |
-                 AQL;
-
-but doesn't matter, just in case you have to resend anyway...
-
-> +	spin_lock_bh(&local->active_txq_lock[ac]);
-> +	if (unlikely(sta->airtime[ac].aql_tx_pending + tx_airtime > S32_MAX)) {
-> +		WARN_ONCE(1, "TXQ pending airtime underflow: %d, %d",
-> +			  sta->airtime[ac].aql_tx_pending, tx_airtime);
-
-if (WARN_ONCE(..., "...", ...))
-
-saves you the braces and the extra condition
-
-Also, hmm, doesn't this rely on 2s complement underflow or something?
-
-Maybe that should be
-
-	__signed_add_overflow(aql_tx_pending, tx_airtime,
-                              &aql_tx_pending) ||
-        aql_tx_pending < 0
-
-or so?
-
-But then again, we don't really care *that* much about overflow or
-underflow in this code path - it's not going to be security critical.
-
-But it seems that your code there actually can cause UB? That would be
-nice to avoid.
-
-Actually, that condition can never be true, right? Wait, ok, this one
-can because integer promotion?
-
-> +		sta->airtime[ac].aql_tx_pending = 0;
-> +	} else {
-> +		sta->airtime[ac].aql_tx_pending += tx_airtime;
-> +	}
-> +
-> +	if (unlikely(local->aql_total_pending_airtime + tx_airtime > S32_MAX)) {
-> +		WARN_ONCE(1, "pending airtime underflow: %d, %d",
-> +			  local->aql_total_pending_airtime, tx_airtime);
-
-same here
-
-Except aql_total_pending_airtime is still defined as s32 and that causes
-different behaviour?
-
-All this confuses me ... is it possible to write this more clearly?
-
-Thanks,
-johannes
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3d2c8fcba952..a01868938692 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3904,7 +3904,7 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ 			     ar->running_fw->fw_file.fw_features)) {
+ 			paddr = dma_map_single(ar->dev, skb->data,
+ 					       skb->len, DMA_TO_DEVICE);
+-			if (!paddr)
++			if (dma_mapping_error(ar->dev, paddr))
+ 				continue;
+ 			ret = ath10k_wmi_mgmt_tx_send(ar, skb, paddr);
+ 			if (ret) {
+-- 
+2.23.0
 
 
 _______________________________________________
