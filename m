@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
+ helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIbHF-0003J7-Uw
- for ath10k@lists.infradead.org; Thu, 10 Oct 2019 16:26:59 +0000
-Received: by mail-pl1-x641.google.com with SMTP id e5so3030487pls.9
- for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 09:26:57 -0700 (PDT)
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH] ath10k: Correct error check of dma_map_single()
-Date: Thu, 10 Oct 2019 09:26:53 -0700
-Message-Id: <20191010162653.141303-1-bjorn.andersson@linaro.org>
+ id 1iIenF-0001x5-0F
+ for ath10k@lists.infradead.org; Thu, 10 Oct 2019 20:12:14 +0000
+Received: by mail-lj1-f197.google.com with SMTP id y12so1247441ljc.8
+ for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 13:12:06 -0700 (PDT)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v3 1/2] mac80211: Implement Airtime-based Queue Limit (AQL)
+In-Reply-To: <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
+References: <20191010022502.141862-1-kyan@google.com>
+ <20191010022502.141862-2-kyan@google.com>
+ <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
+Date: Thu, 10 Oct 2019 22:12:03 +0200
+Message-ID: <87ftk0jr70.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,35 +27,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, ath10k@lists.infradead.org, Niklas Cassel <niklas.cassel@linaro.org>
+To: Johannes Berg <johannes@sipsolutions.net>, Kan Yan <kyan@google.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, yiboz@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, nbd@nbd.name
 
-The return value of dma_map_single() should be checked for errors using
-dma_mapping_error(), rather than testing for NULL. Correct this.
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-Cc: stable@vger.kernel.org
-Reported-by: Niklas Cassel <niklas.cassel@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi,
+>
+> A couple of points...
+>
+> First, I'd like Toke to review & ack this if possible :-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3d2c8fcba952..a01868938692 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3904,7 +3904,7 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 			     ar->running_fw->fw_file.fw_features)) {
- 			paddr = dma_map_single(ar->dev, skb->data,
- 					       skb->len, DMA_TO_DEVICE);
--			if (!paddr)
-+			if (dma_mapping_error(ar->dev, paddr))
- 				continue;
- 			ret = ath10k_wmi_mgmt_tx_send(ar, skb, paddr);
- 			if (ret) {
--- 
-2.23.0
+Sure, I'll look at it. I'm away the rest of this week, but should
+hopefully get some more time next week. It may be that it will take the
+form of another submission that integrates this with the previous patch
+I sent that put more of the calculation into mac80211 itself...
+
+-Toke
 
 
 _______________________________________________
