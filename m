@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
- helo=us-smtp-1.mimecast.com)
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIenF-0001x5-0F
- for ath10k@lists.infradead.org; Thu, 10 Oct 2019 20:12:14 +0000
-Received: by mail-lj1-f197.google.com with SMTP id y12so1247441ljc.8
- for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 13:12:06 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v3 1/2] mac80211: Implement Airtime-based Queue Limit (AQL)
-In-Reply-To: <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
-References: <20191010022502.141862-1-kyan@google.com>
- <20191010022502.141862-2-kyan@google.com>
- <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
-Date: Thu, 10 Oct 2019 22:12:03 +0200
-Message-ID: <87ftk0jr70.fsf@toke.dk>
+ id 1iIfR3-0000P5-5W
+ for ath10k@lists.infradead.org; Thu, 10 Oct 2019 20:53:22 +0000
+Received: by mail-wr1-x441.google.com with SMTP id r5so9442212wrm.12
+ for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 13:53:20 -0700 (PDT)
+From: =?UTF-8?q?Tomislav=20Po=C5=BEega?= <pozega.tomislav@gmail.com>
+Subject: [PATCH] ath: rename regulatory rules
+Date: Thu, 10 Oct 2019 22:53:15 +0200
+Message-Id: <1570740795-12522-1-git-send-email-pozega.tomislav@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,30 +18,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Kan Yan <kyan@google.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, yiboz@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, nbd@nbd.name
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org, kvalo@codeaurora.org
 
-Johannes Berg <johannes@sipsolutions.net> writes:
-
-> Hi,
->
-> A couple of points...
->
-> First, I'd like Toke to review & ack this if possible :-)
-
-Sure, I'll look at it. I'm away the rest of this week, but should
-hopefully get some more time next week. It may be that it will take the
-form of another submission that integrates this with the previous patch
-I sent that put more of the calculation into mac80211 itself...
-
--Toke
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UmVndWxhdG9yeSBydWxlIGRlZmluZXMgaW4gcmVnZC5jIGFyZSB1c2VkIG5vdCBvbmx5IGJ5IGF0
+aDlrIGJ1dCBhbHNvCmF0aDEwayBkcml2ZXIgKGhhdmVuJ3QgdGVzdCBvdGhlciBkcml2ZXJzKSBh
+bmQgdGh1cyBzaG91bGQgYmUKcmVuYW1lZCBmcm9tIEFUSDlLKiB0byBBVEgqLgoKU2lnbmVkLW9m
+Zi1ieTogVG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2QGdtYWlsLmNvbT4KLS0tCiBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvcmVnZC5jIHwgICA1MCArKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCAy
+NSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvcmVn
+ZC5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL3JlZ2QuYwppbmRleCBlMjViZmRmLi4yMGY0
+ZjhlIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvcmVnZC5jCisrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9yZWdkLmMKQEAgLTMzLDMzICszMywzMyBAQAogICovCiAK
+IC8qIE9ubHkgdGhlc2UgY2hhbm5lbHMgYWxsIGFsbG93IGFjdGl2ZSBzY2FuIG9uIGFsbCB3b3Js
+ZCByZWd1bGF0b3J5IGRvbWFpbnMgKi8KLSNkZWZpbmUgQVRIOUtfMkdIWl9DSDAxXzExCVJFR19S
+VUxFKDI0MTItMTAsIDI0NjIrMTAsIDQwLCAwLCAyMCwgMCkKKyNkZWZpbmUgQVRIXzJHSFpfQ0gw
+MV8xMQlSRUdfUlVMRSgyNDEyLTEwLCAyNDYyKzEwLCA0MCwgMCwgMjAsIDApCiAKIC8qIFdlIGVu
+YWJsZSBhY3RpdmUgc2NhbiBvbiB0aGVzZSBhIGNhc2UgYnkgY2FzZSBiYXNpcyBieSByZWd1bGF0
+b3J5IGRvbWFpbiAqLwotI2RlZmluZSBBVEg5S18yR0haX0NIMTJfMTMJUkVHX1JVTEUoMjQ2Ny0x
+MCwgMjQ3MisxMCwgNDAsIDAsIDIwLFwKKyNkZWZpbmUgQVRIXzJHSFpfQ0gxMl8xMwlSRUdfUlVM
+RSgyNDY3LTEwLCAyNDcyKzEwLCA0MCwgMCwgMjAsXAogCQkJCQkgTkw4MDIxMV9SUkZfTk9fSVIp
+Ci0jZGVmaW5lIEFUSDlLXzJHSFpfQ0gxNAkJUkVHX1JVTEUoMjQ4NC0xMCwgMjQ4NCsxMCwgNDAs
+IDAsIDIwLFwKKyNkZWZpbmUgQVRIXzJHSFpfQ0gxNAkJUkVHX1JVTEUoMjQ4NC0xMCwgMjQ4NCsx
+MCwgNDAsIDAsIDIwLFwKIAkJCQkJIE5MODAyMTFfUlJGX05PX0lSIHwgXAogCQkJCQkgTkw4MDIx
+MV9SUkZfTk9fT0ZETSkKIAogLyogV2UgYWxsb3cgSUJTUyBvbiB0aGVzZSBvbiBhIGNhc2UgYnkg
+Y2FzZSBiYXNpcyBieSByZWd1bGF0b3J5IGRvbWFpbiAqLwotI2RlZmluZSBBVEg5S181R0haXzUx
+NTBfNTM1MAlSRUdfUlVMRSg1MTUwLTEwLCA1MzUwKzEwLCA4MCwgMCwgMzAsXAorI2RlZmluZSBB
+VEhfNUdIWl81MTUwXzUzNTAJUkVHX1JVTEUoNTE1MC0xMCwgNTM1MCsxMCwgODAsIDAsIDMwLFwK
+IAkJCQkJIE5MODAyMTFfUlJGX05PX0lSKQotI2RlZmluZSBBVEg5S181R0haXzU0NzBfNTg1MAlS
+RUdfUlVMRSg1NDcwLTEwLCA1ODUwKzEwLCA4MCwgMCwgMzAsXAorI2RlZmluZSBBVEhfNUdIWl81
+NDcwXzU4NTAJUkVHX1JVTEUoNTQ3MC0xMCwgNTg1MCsxMCwgODAsIDAsIDMwLFwKIAkJCQkJIE5M
+ODAyMTFfUlJGX05PX0lSKQotI2RlZmluZSBBVEg5S181R0haXzU3MjVfNTg1MAlSRUdfUlVMRSg1
+NzI1LTEwLCA1ODUwKzEwLCA4MCwgMCwgMzAsXAorI2RlZmluZSBBVEhfNUdIWl81NzI1XzU4NTAJ
+UkVHX1JVTEUoNTcyNS0xMCwgNTg1MCsxMCwgODAsIDAsIDMwLFwKIAkJCQkJIE5MODAyMTFfUlJG
+X05PX0lSKQogCi0jZGVmaW5lIEFUSDlLXzJHSFpfQUxMCQlBVEg5S18yR0haX0NIMDFfMTEsIFwK
+LQkJCQlBVEg5S18yR0haX0NIMTJfMTMsIFwKLQkJCQlBVEg5S18yR0haX0NIMTQKKyNkZWZpbmUg
+QVRIXzJHSFpfQUxMCQlBVEhfMkdIWl9DSDAxXzExLCBcCisJCQkJQVRIXzJHSFpfQ0gxMl8xMywg
+XAorCQkJCUFUSF8yR0haX0NIMTQKIAotI2RlZmluZSBBVEg5S181R0haX0FMTAkJQVRIOUtfNUdI
+Wl81MTUwXzUzNTAsIFwKLQkJCQlBVEg5S181R0haXzU0NzBfNTg1MAorI2RlZmluZSBBVEhfNUdI
+Wl9BTEwJCUFUSF81R0haXzUxNTBfNTM1MCwgXAorCQkJCUFUSF81R0haXzU0NzBfNTg1MAogCiAv
+KiBUaGlzIG9uZSBza2lwcyB3aGF0IHdlIGNhbGwgIm1pZCBiYW5kIiAqLwotI2RlZmluZSBBVEg5
+S181R0haX05PX01JREJBTkQJQVRIOUtfNUdIWl81MTUwXzUzNTAsIFwKLQkJCQlBVEg5S181R0ha
+XzU3MjVfNTg1MAorI2RlZmluZSBBVEhfNUdIWl9OT19NSURCQU5ECUFUSF81R0haXzUxNTBfNTM1
+MCwgXAorCQkJCUFUSF81R0haXzU3MjVfNTg1MAogCiAvKiBDYW4gYmUgdXNlZCBmb3I6CiAgKiAw
+eDYwLCAweDYxLCAweDYyICovCkBAIC02Nyw4ICs2Nyw4IEBACiAJLm5fcmVnX3J1bGVzID0gNSwK
+IAkuYWxwaGEyID0gICI5OSIsCiAJLnJlZ19ydWxlcyA9IHsKLQkJQVRIOUtfMkdIWl9BTEwsCi0J
+CUFUSDlLXzVHSFpfQUxMLAorCQlBVEhfMkdIWl9BTEwsCisJCUFUSF81R0haX0FMTCwKIAl9CiB9
+OwogCkBAIC03Nyw5ICs3Nyw5IEBACiAJLm5fcmVnX3J1bGVzID0gNCwKIAkuYWxwaGEyID0gICI5
+OSIsCiAJLnJlZ19ydWxlcyA9IHsKLQkJQVRIOUtfMkdIWl9DSDAxXzExLAotCQlBVEg5S18yR0ha
+X0NIMTJfMTMsCi0JCUFUSDlLXzVHSFpfTk9fTUlEQkFORCwKKwkJQVRIXzJHSFpfQ0gwMV8xMSwK
+KwkJQVRIXzJHSFpfQ0gxMl8xMywKKwkJQVRIXzVHSFpfTk9fTUlEQkFORCwKIAl9CiB9OwogCkBA
+IC04OCw4ICs4OCw4IEBACiAJLm5fcmVnX3J1bGVzID0gMywKIAkuYWxwaGEyID0gICI5OSIsCiAJ
+LnJlZ19ydWxlcyA9IHsKLQkJQVRIOUtfMkdIWl9DSDAxXzExLAotCQlBVEg5S181R0haX05PX01J
+REJBTkQsCisJCUFUSF8yR0haX0NIMDFfMTEsCisJCUFUSF81R0haX05PX01JREJBTkQsCiAJfQog
+fTsKIApAQCAtOTgsOCArOTgsOCBAQAogCS5uX3JlZ19ydWxlcyA9IDMsCiAJLmFscGhhMiA9ICAi
+OTkiLAogCS5yZWdfcnVsZXMgPSB7Ci0JCUFUSDlLXzJHSFpfQ0gwMV8xMSwKLQkJQVRIOUtfNUdI
+Wl9BTEwsCisJCUFUSF8yR0haX0NIMDFfMTEsCisJCUFUSF81R0haX0FMTCwKIAl9CiB9OwogCkBA
+IC0xMDgsOSArMTA4LDkgQEAKIAkubl9yZWdfcnVsZXMgPSA0LAogCS5hbHBoYTIgPSAgIjk5IiwK
+IAkucmVnX3J1bGVzID0gewotCQlBVEg5S18yR0haX0NIMDFfMTEsCi0JCUFUSDlLXzJHSFpfQ0gx
+Ml8xMywKLQkJQVRIOUtfNUdIWl9BTEwsCisJCUFUSF8yR0haX0NIMDFfMTEsCisJCUFUSF8yR0ha
+X0NIMTJfMTMsCisJCUFUSF81R0haX0FMTCwKIAl9CiB9OwogCi0tIAoxLjcuMC40CgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
