@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIqTK-00035t-G7
- for ath10k@lists.infradead.org; Fri, 11 Oct 2019 08:40:28 +0000
+ id 1iIqUq-0003Zv-Na
+ for ath10k@lists.infradead.org; Fri, 11 Oct 2019 08:42:02 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [RFC PATCH 2/2] ath10k: regularly fetch survey counters
+Subject: Re: [RFC PATCH 1/2] ath10k: report survey info as accumulated values
 References: <20190918124259.17804-1-sven@narfation.org>
- <20190918124259.17804-3-sven@narfation.org>
-Date: Fri, 11 Oct 2019 11:40:20 +0300
-In-Reply-To: <20190918124259.17804-3-sven@narfation.org> (Sven Eckelmann's
- message of "Wed, 18 Sep 2019 14:42:59 +0200")
-Message-ID: <87r23jznd7.fsf@kamboji.qca.qualcomm.com>
+ <20190918124259.17804-2-sven@narfation.org>
+Date: Fri, 11 Oct 2019 11:41:56 +0300
+In-Reply-To: <20190918124259.17804-2-sven@narfation.org> (Sven Eckelmann's
+ message of "Wed, 18 Sep 2019 14:42:58 +0200")
+Message-ID: <87mue7znaj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,39 +31,22 @@ Sven Eckelmann <sven@narfation.org> writes:
 
 > From: Sven Eckelmann <seckelmann@datto.com>
 >
-> The survey counters from firmwares like 10.2.4 are not actually using the
-> full 64 bit. Instead, they only use the lower 31 bit and overflow ever
-> 14-30s. The driver must frequently fetch the survey data and add it to the
-> survey data storage to avoid this problem and to present meaningful values
-> to the caller of .get_survey.
+> The survey report is expected to contain a counter which is increasing all
+> the time. But ath10k reports some kind of delta. This can either be the
+> difference to the last get_survey or the difference to some even older
+> get_survey because the values are sometimes cached and sometimes
+> overwritten.
 >
-> It is assumed for now that only the current rx_channel retrieves relevant
-> updates for the survey data. This should avoid that the bss channel survey
-> request times out too often.
+> To make the returned values useful, they must be accumulated manually by
+> ath10k before send out to the upper layers. Special care must be taken when
+> accepting values from older firmware versions (which use
+> ATH10K_HW_CC_WRAP_SHIFTED_ALL) because they will not clear the cycle_busy
+> and cycle_total counter and will only use 31 bit of the 64 but counter.
 
-Please clarify in the commit log on which hardware this workaround is
-enabled. It should be all hardware with ATH10K_HW_CC_WRAP_SHIFTED_ALL
-enabled so both QCA988X versions and QCA9887, right?
-
-> Tested on QCA988x hw2.0 10.2.4-1.0-00043
->
-> Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
-
-[...]
-
-> --- a/drivers/net/wireless/ath/ath10k/mac.h
-> +++ b/drivers/net/wireless/ath/ath10k/mac.h
-> @@ -40,6 +40,9 @@ void ath10k_offchan_tx_purge(struct ath10k *ar);
->  void ath10k_offchan_tx_work(struct work_struct *work);
->  void ath10k_mgmt_over_wmi_tx_purge(struct ath10k *ar);
->  void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work);
-> +void ath10k_survey_dwork(struct work_struct *work);
-> +int ath10k_survey_start(struct ath10k *ar);
-> +void ath10k_survey_stop(struct ath10k *ar);
-
-Please use ath10k_mac_ prefix for all functions you are adding to mac.c.
-Yeah, I know not all the existing one even have that, should fix it at
-some point.
+Please clarify a bit more which older firmware versions you are talking
+about, we have so many of them :) I assume you are talking about _all_
+QCA988X and QCA9887 firmware versions, but it would be nice to clarify
+that in the commit log.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
