@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIqWs-0004y1-KB
- for ath10k@lists.infradead.org; Fri, 11 Oct 2019 08:44:08 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [RFC PATCH 0/2] ath10k: provide survey info as accumulated data
-References: <20190918124259.17804-1-sven@narfation.org>
-Date: Fri, 11 Oct 2019 11:44:01 +0300
-In-Reply-To: <20190918124259.17804-1-sven@narfation.org> (Sven Eckelmann's
- message of "Wed, 18 Sep 2019 14:42:57 +0200")
-Message-ID: <87imovzn72.fsf@kamboji.qca.qualcomm.com>
+ id 1iIqZ9-0006S6-CT
+ for ath10k@lists.infradead.org; Fri, 11 Oct 2019 08:46:28 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH][next] ath10k: fix null dereference on pointer crash_data
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20191004160227.31577-1-colin.king@canonical.com>
+References: <20191004160227.31577-1-colin.king@canonical.com>
+Message-Id: <20191011084627.105B0605FE@smtp.codeaurora.org>
+Date: Fri, 11 Oct 2019 08:46:27 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@narfation.org>
-Cc: vnaralas@codeaurora.org, linux-wireless@vger.kernel.org, Sven Eckelmann <seckelmann@datto.com>, ath10k@lists.infradead.org
+To: Colin King <colin.king@canonical.com>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
 
-Sven Eckelmann <sven@narfation.org> writes:
+Colin King <colin.king@canonical.com> wrote:
 
-> it was observed that ath9k provides accumulated survey counters but ath10k
-> neither provides deltas nor accumulated counters. Instead it returns
-> some value which was returned at some point from the firmware.
->
-> But as it turns out, this data is not reliable. To make it more useful,
-> ath10k has to:
->
-> * retrieve counters rather frequently for hardware which is known to use
->   firmware versions with low number counter bits (for only 14-30s)
-> * clean up received counter values 
-> * accumulate counters from firmware
->
-> A comparison of the resulting output with these fixes can be seen under
-> https://stats.freifunk-vogtland.net/d/ffv_node/nodeinfo?orgId=1&var-node=ac86749f4d60&fullscreen&panelId=5&from=1568782046974&to=1568807068706
->
-> The left side of the graph shows the output before the patches were applied
-> and the right side the output with the patches applied. Just as reference, an
-> ath9k device in the same building is
-> https://stats.freifunk-vogtland.net/d/ffv_node/nodeinfo?orgId=1&var-node=ac86740037e0&fullscreen&panelId=5&from=1568782046974&to=1568807068706
+> Currently when pointer crash_data is null the present null check
+> will also check that crash_data->ramdump_buf is null and will cause
+> a null pointer dereference on crash_data. Fix this by using the ||
+> operator instead of &&.
+> 
+> Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Thanks, this looks very good to me and I had only cosmetic comments.
-Please submit next version without RFC so that I can apply these.
+Patch applied to ath-next branch of ath.git, thanks.
+
+a69d3bdd4d40 ath10k: fix null dereference on pointer crash_data
 
 -- 
+https://patchwork.kernel.org/patch/11174955/
+
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
