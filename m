@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIfR3-0000P5-5W
- for ath10k@lists.infradead.org; Thu, 10 Oct 2019 20:53:22 +0000
-Received: by mail-wr1-x441.google.com with SMTP id r5so9442212wrm.12
- for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 13:53:20 -0700 (PDT)
-From: =?UTF-8?q?Tomislav=20Po=C5=BEega?= <pozega.tomislav@gmail.com>
-Subject: [PATCH] ath: rename regulatory rules
-Date: Thu, 10 Oct 2019 22:53:15 +0200
-Message-Id: <1570740795-12522-1-git-send-email-pozega.tomislav@gmail.com>
-MIME-Version: 1.0
+ id 1iIkbP-0004AB-5I
+ for ath10k@lists.infradead.org; Fri, 11 Oct 2019 02:24:24 +0000
+Received: by mail-vk1-xa49.google.com with SMTP id u123so2910980vkf.8
+ for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 19:24:19 -0700 (PDT)
+Date: Thu, 10 Oct 2019 19:24:11 -0700
+Message-Id: <20191011022413.176208-1-kyan@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v4 0/2] Implement Airtime-based Queue Limit (AQL)
+From: Kan Yan <kyan@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,71 +18,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org, kvalo@codeaurora.org
+To: johannes@sipsolutions.net
+Cc: Kan Yan <kyan@google.com>, make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, nbd@nbd.name
 
-UmVndWxhdG9yeSBydWxlIGRlZmluZXMgaW4gcmVnZC5jIGFyZSB1c2VkIG5vdCBvbmx5IGJ5IGF0
-aDlrIGJ1dCBhbHNvCmF0aDEwayBkcml2ZXIgKGhhdmVuJ3QgdGVzdCBvdGhlciBkcml2ZXJzKSBh
-bmQgdGh1cyBzaG91bGQgYmUKcmVuYW1lZCBmcm9tIEFUSDlLKiB0byBBVEgqLgoKU2lnbmVkLW9m
-Zi1ieTogVG9taXNsYXYgUG/FvmVnYSA8cG96ZWdhLnRvbWlzbGF2QGdtYWlsLmNvbT4KLS0tCiBk
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvcmVnZC5jIHwgICA1MCArKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCAy
-NSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvcmVn
-ZC5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL3JlZ2QuYwppbmRleCBlMjViZmRmLi4yMGY0
-ZjhlIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvcmVnZC5jCisrKyBiL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9yZWdkLmMKQEAgLTMzLDMzICszMywzMyBAQAogICovCiAK
-IC8qIE9ubHkgdGhlc2UgY2hhbm5lbHMgYWxsIGFsbG93IGFjdGl2ZSBzY2FuIG9uIGFsbCB3b3Js
-ZCByZWd1bGF0b3J5IGRvbWFpbnMgKi8KLSNkZWZpbmUgQVRIOUtfMkdIWl9DSDAxXzExCVJFR19S
-VUxFKDI0MTItMTAsIDI0NjIrMTAsIDQwLCAwLCAyMCwgMCkKKyNkZWZpbmUgQVRIXzJHSFpfQ0gw
-MV8xMQlSRUdfUlVMRSgyNDEyLTEwLCAyNDYyKzEwLCA0MCwgMCwgMjAsIDApCiAKIC8qIFdlIGVu
-YWJsZSBhY3RpdmUgc2NhbiBvbiB0aGVzZSBhIGNhc2UgYnkgY2FzZSBiYXNpcyBieSByZWd1bGF0
-b3J5IGRvbWFpbiAqLwotI2RlZmluZSBBVEg5S18yR0haX0NIMTJfMTMJUkVHX1JVTEUoMjQ2Ny0x
-MCwgMjQ3MisxMCwgNDAsIDAsIDIwLFwKKyNkZWZpbmUgQVRIXzJHSFpfQ0gxMl8xMwlSRUdfUlVM
-RSgyNDY3LTEwLCAyNDcyKzEwLCA0MCwgMCwgMjAsXAogCQkJCQkgTkw4MDIxMV9SUkZfTk9fSVIp
-Ci0jZGVmaW5lIEFUSDlLXzJHSFpfQ0gxNAkJUkVHX1JVTEUoMjQ4NC0xMCwgMjQ4NCsxMCwgNDAs
-IDAsIDIwLFwKKyNkZWZpbmUgQVRIXzJHSFpfQ0gxNAkJUkVHX1JVTEUoMjQ4NC0xMCwgMjQ4NCsx
-MCwgNDAsIDAsIDIwLFwKIAkJCQkJIE5MODAyMTFfUlJGX05PX0lSIHwgXAogCQkJCQkgTkw4MDIx
-MV9SUkZfTk9fT0ZETSkKIAogLyogV2UgYWxsb3cgSUJTUyBvbiB0aGVzZSBvbiBhIGNhc2UgYnkg
-Y2FzZSBiYXNpcyBieSByZWd1bGF0b3J5IGRvbWFpbiAqLwotI2RlZmluZSBBVEg5S181R0haXzUx
-NTBfNTM1MAlSRUdfUlVMRSg1MTUwLTEwLCA1MzUwKzEwLCA4MCwgMCwgMzAsXAorI2RlZmluZSBB
-VEhfNUdIWl81MTUwXzUzNTAJUkVHX1JVTEUoNTE1MC0xMCwgNTM1MCsxMCwgODAsIDAsIDMwLFwK
-IAkJCQkJIE5MODAyMTFfUlJGX05PX0lSKQotI2RlZmluZSBBVEg5S181R0haXzU0NzBfNTg1MAlS
-RUdfUlVMRSg1NDcwLTEwLCA1ODUwKzEwLCA4MCwgMCwgMzAsXAorI2RlZmluZSBBVEhfNUdIWl81
-NDcwXzU4NTAJUkVHX1JVTEUoNTQ3MC0xMCwgNTg1MCsxMCwgODAsIDAsIDMwLFwKIAkJCQkJIE5M
-ODAyMTFfUlJGX05PX0lSKQotI2RlZmluZSBBVEg5S181R0haXzU3MjVfNTg1MAlSRUdfUlVMRSg1
-NzI1LTEwLCA1ODUwKzEwLCA4MCwgMCwgMzAsXAorI2RlZmluZSBBVEhfNUdIWl81NzI1XzU4NTAJ
-UkVHX1JVTEUoNTcyNS0xMCwgNTg1MCsxMCwgODAsIDAsIDMwLFwKIAkJCQkJIE5MODAyMTFfUlJG
-X05PX0lSKQogCi0jZGVmaW5lIEFUSDlLXzJHSFpfQUxMCQlBVEg5S18yR0haX0NIMDFfMTEsIFwK
-LQkJCQlBVEg5S18yR0haX0NIMTJfMTMsIFwKLQkJCQlBVEg5S18yR0haX0NIMTQKKyNkZWZpbmUg
-QVRIXzJHSFpfQUxMCQlBVEhfMkdIWl9DSDAxXzExLCBcCisJCQkJQVRIXzJHSFpfQ0gxMl8xMywg
-XAorCQkJCUFUSF8yR0haX0NIMTQKIAotI2RlZmluZSBBVEg5S181R0haX0FMTAkJQVRIOUtfNUdI
-Wl81MTUwXzUzNTAsIFwKLQkJCQlBVEg5S181R0haXzU0NzBfNTg1MAorI2RlZmluZSBBVEhfNUdI
-Wl9BTEwJCUFUSF81R0haXzUxNTBfNTM1MCwgXAorCQkJCUFUSF81R0haXzU0NzBfNTg1MAogCiAv
-KiBUaGlzIG9uZSBza2lwcyB3aGF0IHdlIGNhbGwgIm1pZCBiYW5kIiAqLwotI2RlZmluZSBBVEg5
-S181R0haX05PX01JREJBTkQJQVRIOUtfNUdIWl81MTUwXzUzNTAsIFwKLQkJCQlBVEg5S181R0ha
-XzU3MjVfNTg1MAorI2RlZmluZSBBVEhfNUdIWl9OT19NSURCQU5ECUFUSF81R0haXzUxNTBfNTM1
-MCwgXAorCQkJCUFUSF81R0haXzU3MjVfNTg1MAogCiAvKiBDYW4gYmUgdXNlZCBmb3I6CiAgKiAw
-eDYwLCAweDYxLCAweDYyICovCkBAIC02Nyw4ICs2Nyw4IEBACiAJLm5fcmVnX3J1bGVzID0gNSwK
-IAkuYWxwaGEyID0gICI5OSIsCiAJLnJlZ19ydWxlcyA9IHsKLQkJQVRIOUtfMkdIWl9BTEwsCi0J
-CUFUSDlLXzVHSFpfQUxMLAorCQlBVEhfMkdIWl9BTEwsCisJCUFUSF81R0haX0FMTCwKIAl9CiB9
-OwogCkBAIC03Nyw5ICs3Nyw5IEBACiAJLm5fcmVnX3J1bGVzID0gNCwKIAkuYWxwaGEyID0gICI5
-OSIsCiAJLnJlZ19ydWxlcyA9IHsKLQkJQVRIOUtfMkdIWl9DSDAxXzExLAotCQlBVEg5S18yR0ha
-X0NIMTJfMTMsCi0JCUFUSDlLXzVHSFpfTk9fTUlEQkFORCwKKwkJQVRIXzJHSFpfQ0gwMV8xMSwK
-KwkJQVRIXzJHSFpfQ0gxMl8xMywKKwkJQVRIXzVHSFpfTk9fTUlEQkFORCwKIAl9CiB9OwogCkBA
-IC04OCw4ICs4OCw4IEBACiAJLm5fcmVnX3J1bGVzID0gMywKIAkuYWxwaGEyID0gICI5OSIsCiAJ
-LnJlZ19ydWxlcyA9IHsKLQkJQVRIOUtfMkdIWl9DSDAxXzExLAotCQlBVEg5S181R0haX05PX01J
-REJBTkQsCisJCUFUSF8yR0haX0NIMDFfMTEsCisJCUFUSF81R0haX05PX01JREJBTkQsCiAJfQog
-fTsKIApAQCAtOTgsOCArOTgsOCBAQAogCS5uX3JlZ19ydWxlcyA9IDMsCiAJLmFscGhhMiA9ICAi
-OTkiLAogCS5yZWdfcnVsZXMgPSB7Ci0JCUFUSDlLXzJHSFpfQ0gwMV8xMSwKLQkJQVRIOUtfNUdI
-Wl9BTEwsCisJCUFUSF8yR0haX0NIMDFfMTEsCisJCUFUSF81R0haX0FMTCwKIAl9CiB9OwogCkBA
-IC0xMDgsOSArMTA4LDkgQEAKIAkubl9yZWdfcnVsZXMgPSA0LAogCS5hbHBoYTIgPSAgIjk5IiwK
-IAkucmVnX3J1bGVzID0gewotCQlBVEg5S18yR0haX0NIMDFfMTEsCi0JCUFUSDlLXzJHSFpfQ0gx
-Ml8xMywKLQkJQVRIOUtfNUdIWl9BTEwsCisJCUFUSF8yR0haX0NIMDFfMTEsCisJCUFUSF8yR0ha
-X0NIMTJfMTMsCisJCUFUSF81R0haX0FMTCwKIAl9CiB9OwogCi0tIAoxLjcuMC40CgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+This patch series implements Airtime-based Queue Limit (AQL) in the mac80211 and Ath10k driver. It is based on an earlier version from the ChromiumOS tree[0].
+
+This version has been tested with QCA9884 platform with 4.14 kernel. Tests show AQL is able to reduce latency by an order of magnitude in a congested environment without negative impact on the throughput.
+
+[0] https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1703105/7
+
+Kan Yan (2):
+  mac80211: Implement Airtime-based Queue Limit (AQL)
+  ath10k: Enable Airtime-based Queue Limit (AQL)
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c    |  6 +-
+ drivers/net/wireless/ath/ath10k/txrx.c   | 11 +++-
+ include/net/cfg80211.h                   |  7 +++
+ include/net/mac80211.h                   | 47 ++++++++++++++
+ net/mac80211/debugfs.c                   | 78 ++++++++++++++++++++++++
+ net/mac80211/debugfs_sta.c               | 43 ++++++++++---
+ net/mac80211/ieee80211_i.h               |  4 ++
+ net/mac80211/main.c                      |  9 ++-
+ net/mac80211/sta_info.c                  | 33 ++++++++++
+ net/mac80211/sta_info.h                  |  4 ++
+ net/mac80211/tx.c                        | 46 +++++++++++++-
+ 12 files changed, 270 insertions(+), 19 deletions(-)
+
+-- 
+Changes from v1:
+ - Fix checkpatch error.
+ - Keep iterate the list of active_txq until an eligible txq's deficit become non-negative in ieee80211_next_txq(), instead of break the loop after one iteration.
+ - Enforce the AQL limit in ath10k's pull mode in ath10k_htt_rx_tx_fetch_ind()
+
+Changes from v2:
+ - More coding style fixes.
+ - Fixed a bug that txq is not removed from the active_txqs list when txq.sta is null.
+ - Removed AQL queue limit check from ieee80211_txq_may_transmit(), so at least one frame will be sent to the firmware when called from ath10k_htt_rx_tx_fetch_ind() in ath10k's poll mode.
+
+Changes from v3:
+ - Coding style fixes.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
