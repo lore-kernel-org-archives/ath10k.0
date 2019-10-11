@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
+Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIkbP-0004AB-5I
- for ath10k@lists.infradead.org; Fri, 11 Oct 2019 02:24:24 +0000
-Received: by mail-vk1-xa49.google.com with SMTP id u123so2910980vkf.8
- for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 19:24:19 -0700 (PDT)
-Date: Thu, 10 Oct 2019 19:24:11 -0700
-Message-Id: <20191011022413.176208-1-kyan@google.com>
+ id 1iIkbR-0004Cs-2n
+ for ath10k@lists.infradead.org; Fri, 11 Oct 2019 02:24:26 +0000
+Received: by mail-pf1-x44a.google.com with SMTP id w16so6295600pfj.9
+ for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 19:24:23 -0700 (PDT)
+Date: Thu, 10 Oct 2019 19:24:13 -0700
+In-Reply-To: <20191011022413.176208-1-kyan@google.com>
+Message-Id: <20191011022413.176208-3-kyan@google.com>
 Mime-Version: 1.0
-Subject: [PATCH v4 0/2] Implement Airtime-based Queue Limit (AQL)
+References: <20191011022413.176208-1-kyan@google.com>
+Subject: [PATCH v4 2/2] ath10k: Enable Airtime-based Queue Limit (AQL)
 From: Kan Yan <kyan@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,43 +27,84 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: johannes@sipsolutions.net
 Cc: Kan Yan <kyan@google.com>, make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, nbd@nbd.name
 
-This patch series implements Airtime-based Queue Limit (AQL) in the mac80211 and Ath10k driver. It is based on an earlier version from the ChromiumOS tree[0].
+Calculate the estimated airtime pending in the txqs and apply AQL to
+prevent excessive amounts of packets being queued in the firmware queue.
 
-This version has been tested with QCA9884 platform with 4.14 kernel. Tests show AQL is able to reduce latency by an order of magnitude in a congested environment without negative impact on the throughput.
-
-[0] https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1703105/7
-
-Kan Yan (2):
-  mac80211: Implement Airtime-based Queue Limit (AQL)
-  ath10k: Enable Airtime-based Queue Limit (AQL)
-
+Signed-off-by: Kan Yan <kyan@google.com>
+---
  drivers/net/wireless/ath/ath10k/htt_rx.c |  1 +
- drivers/net/wireless/ath/ath10k/mac.c    |  6 +-
- drivers/net/wireless/ath/ath10k/txrx.c   | 11 +++-
- include/net/cfg80211.h                   |  7 +++
- include/net/mac80211.h                   | 47 ++++++++++++++
- net/mac80211/debugfs.c                   | 78 ++++++++++++++++++++++++
- net/mac80211/debugfs_sta.c               | 43 ++++++++++---
- net/mac80211/ieee80211_i.h               |  4 ++
- net/mac80211/main.c                      |  9 ++-
- net/mac80211/sta_info.c                  | 33 ++++++++++
- net/mac80211/sta_info.h                  |  4 ++
- net/mac80211/tx.c                        | 46 +++++++++++++-
- 12 files changed, 270 insertions(+), 19 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c    |  6 ++++--
+ drivers/net/wireless/ath/ath10k/txrx.c   | 11 ++++++++---
+ 3 files changed, 13 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 83a7fb68fd24..12d63fa02e8e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -3053,6 +3053,7 @@ static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 			num_msdus++;
+ 			num_bytes += ret;
++			may_tx = ieee80211_txq_airtime_check(hw, txq);
+ 		}
+ 		ieee80211_return_txq(hw, txq, false);
+ 		ieee80211_txq_schedule_end(hw, txq->ac);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0606416dc971..ed19a40c2c3a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3983,6 +3983,9 @@ static bool ath10k_mac_tx_can_push(struct ieee80211_hw *hw,
+ 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
+ 
+ 	/* No need to get locks */
++	if (!ieee80211_txq_airtime_check(hw, txq))
++		return false;
++
+ 	if (ar->htt.tx_q_state.mode == HTT_TX_MODE_SWITCH_PUSH)
+ 		return true;
+ 
+@@ -4014,8 +4017,6 @@ static u16 ath10k_mac_update_airtime(struct ath10k *ar,
+ 	if (!txq || !txq->sta)
+ 		return airtime;
+ 
+-	if (test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
+-		return airtime;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 	arsta = (struct ath10k_sta *)txq->sta->drv_priv;
+@@ -4038,6 +4039,7 @@ static u16 ath10k_mac_update_airtime(struct ath10k *ar,
+ 	}
+ 	spin_unlock_bh(&ar->data_lock);
+ 
++	ieee80211_sta_register_pending_airtime(txq->sta, txq->tid, airtime);
+ 	return airtime;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 4102df016931..739046b34d4b 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -84,9 +84,14 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
+-	if (txq && txq->sta && skb_cb->airtime_est)
+-		ieee80211_sta_register_airtime(txq->sta, txq->tid,
+-					       skb_cb->airtime_est, 0);
++	if (txq && txq->sta && skb_cb->airtime_est) {
++		if (!test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
++			ieee80211_sta_register_airtime(txq->sta, txq->tid,
++						       skb_cb->airtime_est, 0);
++
++		ieee80211_sta_release_pending_airtime(txq->sta, txq->tid,
++						      skb_cb->airtime_est);
++	}
+ 
+ 	if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL)
+ 		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
 -- 
-Changes from v1:
- - Fix checkpatch error.
- - Keep iterate the list of active_txq until an eligible txq's deficit become non-negative in ieee80211_next_txq(), instead of break the loop after one iteration.
- - Enforce the AQL limit in ath10k's pull mode in ath10k_htt_rx_tx_fetch_ind()
+2.23.0.700.g56cf767bdb-goog
 
-Changes from v2:
- - More coding style fixes.
- - Fixed a bug that txq is not removed from the active_txqs list when txq.sta is null.
- - Removed AQL queue limit check from ieee80211_txq_may_transmit(), so at least one frame will be sent to the firmware when called from ath10k_htt_rx_tx_fetch_ind() in ath10k's poll mode.
-
-Changes from v3:
- - Coding style fixes.
 
 _______________________________________________
 ath10k mailing list
