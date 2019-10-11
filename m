@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIkbR-0004Cs-2n
- for ath10k@lists.infradead.org; Fri, 11 Oct 2019 02:24:26 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id w16so6295600pfj.9
- for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 19:24:23 -0700 (PDT)
-Date: Thu, 10 Oct 2019 19:24:13 -0700
-In-Reply-To: <20191011022413.176208-1-kyan@google.com>
-Message-Id: <20191011022413.176208-3-kyan@google.com>
-Mime-Version: 1.0
-References: <20191011022413.176208-1-kyan@google.com>
-Subject: [PATCH v4 2/2] ath10k: Enable Airtime-based Queue Limit (AQL)
+ id 1iIkbR-0004AC-98
+ for ath10k@lists.infradead.org; Fri, 11 Oct 2019 02:24:28 +0000
+Received: by mail-lf1-x143.google.com with SMTP id u28so5861327lfc.5
+ for <ath10k@lists.infradead.org>; Thu, 10 Oct 2019 19:24:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191010022502.141862-1-kyan@google.com>
+ <20191010022502.141862-2-kyan@google.com>
+ <a2cc0ebecfb055c8b667db57d0469fe69054a69c.camel@sipsolutions.net>
+ <87ftk0jr70.fsf@toke.dk>
+In-Reply-To: <87ftk0jr70.fsf@toke.dk>
 From: Kan Yan <kyan@google.com>
+Date: Thu, 10 Oct 2019 19:24:07 -0700
+Message-ID: <CA+iem5u8p7pDZw-QvqU285p7F5AunN3Z4YyS=TjAd9xbKqegnQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mac80211: Implement Airtime-based Queue Limit (AQL)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,93 +23,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net
-Cc: Kan Yan <kyan@google.com>, make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, nbd@nbd.name
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Yibo Zhao <yiboz@codeaurora.org>, Johannes Berg <johannes@sipsolutions.net>, Felix Fietkau <nbd@nbd.name>
 
-Calculate the estimated airtime pending in the txqs and apply AQL to
-prevent excessive amounts of packets being queued in the firmware queue.
-
-Signed-off-by: Kan Yan <kyan@google.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |  1 +
- drivers/net/wireless/ath/ath10k/mac.c    |  6 ++++--
- drivers/net/wireless/ath/ath10k/txrx.c   | 11 ++++++++---
- 3 files changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 83a7fb68fd24..12d63fa02e8e 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3053,6 +3053,7 @@ static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
- 
- 			num_msdus++;
- 			num_bytes += ret;
-+			may_tx = ieee80211_txq_airtime_check(hw, txq);
- 		}
- 		ieee80211_return_txq(hw, txq, false);
- 		ieee80211_txq_schedule_end(hw, txq->ac);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0606416dc971..ed19a40c2c3a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3983,6 +3983,9 @@ static bool ath10k_mac_tx_can_push(struct ieee80211_hw *hw,
- 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
- 
- 	/* No need to get locks */
-+	if (!ieee80211_txq_airtime_check(hw, txq))
-+		return false;
-+
- 	if (ar->htt.tx_q_state.mode == HTT_TX_MODE_SWITCH_PUSH)
- 		return true;
- 
-@@ -4014,8 +4017,6 @@ static u16 ath10k_mac_update_airtime(struct ath10k *ar,
- 	if (!txq || !txq->sta)
- 		return airtime;
- 
--	if (test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
--		return airtime;
- 
- 	spin_lock_bh(&ar->data_lock);
- 	arsta = (struct ath10k_sta *)txq->sta->drv_priv;
-@@ -4038,6 +4039,7 @@ static u16 ath10k_mac_update_airtime(struct ath10k *ar,
- 	}
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	ieee80211_sta_register_pending_airtime(txq->sta, txq->tid, airtime);
- 	return airtime;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 4102df016931..739046b34d4b 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -84,9 +84,14 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 		wake_up(&htt->empty_tx_wq);
- 	spin_unlock_bh(&htt->tx_lock);
- 
--	if (txq && txq->sta && skb_cb->airtime_est)
--		ieee80211_sta_register_airtime(txq->sta, txq->tid,
--					       skb_cb->airtime_est, 0);
-+	if (txq && txq->sta && skb_cb->airtime_est) {
-+		if (!test_bit(WMI_SERVICE_REPORT_AIRTIME, ar->wmi.svc_map))
-+			ieee80211_sta_register_airtime(txq->sta, txq->tid,
-+						       skb_cb->airtime_est, 0);
-+
-+		ieee80211_sta_release_pending_airtime(txq->sta, txq->tid,
-+						      skb_cb->airtime_est);
-+	}
- 
- 	if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL)
- 		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
--- 
-2.23.0.700.g56cf767bdb-goog
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiA+ICsvKiBUaGUgcGVyIFRYUSBmaXJtd2FyZSBxdWV1ZSBsaW1pdCBpbiBhaXJ0aW1lICovCj4K
+PiBJIHdhcyBwcmV0dHkgc3VyZSBJIG1lbnRpb25lZCBpdCAqc29tZXdoZXJlKiwgYnV0IEkgdGhp
+bmsganVzdCBjYWxsaW5nCj4gdGhpcyAiZGV2aWNlIiBvciBzb21ldGhpbmcgd291bGQgYmUgbW9y
+ZSBnZW5lcmFsLiBJZiB5b3UgZG9uJ3QgbWluZCwgSQo+IGNhbiBlZGl0IHRoYXQgYWxzbyAodW5s
+ZXNzIHlvdSBoYXZlIG90aGVyIHJlYXNvbnMgdG8gcmVzdWJtaXQ/KQoKZG9uZS4gSSB3aWxsIHVw
+bG9hZCBhIG5ldyB2ZXJzaW9uIHRvIGZpeCBjb2Rpbmcgc3R5bGUgaXNzdWVzIGFjY29yZGluZwp0
+byB5b3VyIGNvbW1lbnQuIFBsZWFzZSBkbyBoZWxwCnJldmlzZSBjb21tZW50IGFzIHlvdSBzZWUg
+Zml0LgoKPiA+ICsgKiBpZWVlODAyMTFfdHhxX2FxbF9jaGVjayAtIGNoZWNrIGlmIGEgdHhxIGNh
+biBzZW5kIGZyYW1lIHRvIGRldmljZQo+IEkgd29uZGVyIGlmIHRoaXMgcmVhbGx5IHNob3VsZCBl
+dmVuIGJlIGhhdmUgImFxbCIgaW4gdGhlIG5hbWU/IEl0J3MgYWxzbwo+IGdvaW5nIHRvIHJldHVy
+biBOVUxMIGlmIHRoZXJlJ3Mgbm90aGluZyBvbiB0aGUgVFhRLCBmb3IgZXhhbXBsZSwgcmlnaHQ/
+CgpSZW5hbWVkIHRvICBpZWVlODAyMTFfdHhxX2FpcnRpbWVfY2hlY2soKQpUaGlzIGZ1bmN0aW9u
+IGlzIG5vdCBmb3IgZmluZGluZyBuZXh0IGVsaWdpYmxlIHR4cSwgYnV0IHJldHVybiBhCmJvb2xl
+YW4gdG8gaW5kaWNhdGUgaWYgYSBnaXZlbiB0eHEgY2FuIHNlbmQgbW9yZSBwYWNrZXRzIHRvIGRl
+dmljZS4gSXQKaXMgYWxzbyBjYWxsZWQgZnJvbSBhdGgxMGs6CnN0YXRpYyBib29sIGF0aDEwa19t
+YWNfdHhfY2FuX3B1c2goc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkKewogICAgICAgLi4u
+CiAgICAgICAgaWYgKCFpZWVlODAyMTFfdHhxX2FpcnRpbWVfY2hlY2soaHcsIHR4cSkpCiAgICAg
+ICAgICAgICAgICByZXR1cm4gZmFsc2U7Cgo+IGlmIChXQVJOX09OQ0UoLi4uLCAiLi4uIiwgLi4u
+KSkKPiBzYXZlcyB5b3UgdGhlIGJyYWNlcyBhbmQgdGhlIGV4dHJhIGNvbmRpdGlvbgoKZG9uZS4K
+Cj4gQnV0IHRoZW4gYWdhaW4sIHdlIGRvbid0IHJlYWxseSBjYXJlICp0aGF0KiBtdWNoIGFib3V0
+IG92ZXJmbG93IG9yCj4gdW5kZXJmbG93IGluIHRoaXMgY29kZSBwYXRoIC0gaXQncyBub3QgZ29p
+bmcgdG8gYmUgc2VjdXJpdHkgY3JpdGljYWwuCj4gQnV0IGl0IHNlZW1zIHRoYXQgeW91ciBjb2Rl
+IHRoZXJlIGFjdHVhbGx5IGNhbiBjYXVzZSBVQj8gVGhhdCB3b3VsZCBiZQo+IG5pY2UgdG8gYXZv
+aWQuCj4gQWN0dWFsbHksIHRoYXQgY29uZGl0aW9uIGNhbiBuZXZlciBiZSB0cnVlLCByaWdodD8g
+V2FpdCwgb2ssIHRoaXMgb25lCj4gY2FuIGJlY2F1c2UgaW50ZWdlciBwcm9tb3Rpb24/CgogSSBk
+b24ndCB0aGluayB0aGF0IGNvbmRpdGlvbiBjb3VsZCBoYXBwZW4uIFRoZSBXQVJOX09OQ0UoKSB3
+YXMgYWRkZWQKcGVyIHlvdXIgZWFybGllciBjb21tZW50LiBUaGUgb2xkZXIgdmVyc2lvbiBkb24n
+dCBoYXZlIHVuZGVyZmxvdyBjaGVjawphbmQgcmVzZXQgcGVuZGluZ19haXJ0aW1lIHBhcnQgYW5k
+IEkgZGlkbid0IGZpbmQgYW55IGlzc3Vlcy4KCj4gRXhjZXB0IGFxbF90b3RhbF9wZW5kaW5nX2Fp
+cnRpbWUgaXMgc3RpbGwgZGVmaW5lZCBhcyBzMzIgYW5kIHRoYXQgY2F1c2VzCj4gZGlmZmVyZW50
+IGJlaGF2aW91cj8KPiBBbGwgdGhpcyBjb25mdXNlcyBtZSAuLi4gaXMgaXQgcG9zc2libGUgdG8g
+d3JpdGUgdGhpcyBtb3JlIGNsZWFybHk/CgpJIHJldmlzZWQgaXQgdG8gc29tZXRoaW5nIHNpbWls
+YXIgdG8gdGhlIG9yaWdpbmFsIHZlcnNpb24sIHdoaWNoCmllZWU4MDIxMV9zdGFfdXBkYXRlX3Bl
+bmRpbmdfYWlydGltZSgpIHRha2VzIGV4dHJhIHBhcmFtZXRlciB0bwppbmRpY2F0ZSB3aGV0aGVy
+IGl0IGlzIGZvciBhIHR4IGNvbXBsZXRpb24gZXZlbnQuCnZvaWQgaWVlZTgwMjExX3N0YV91cGRh
+dGVfcGVuZGluZ19haXJ0aW1lKHN0cnVjdCBpZWVlODAyMTFfc3RhICpwdWJzdGEsIHU4IHRpZCwK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdTMyIHR4X2FpcnRpbWUs
+IGJvb2wgdHhfY29tcGxldGVkKQpUaGlzIGhlbHAgZ2V0IHJpZCBvZiB0aGUgcHJvYmxlbSB0aGF0
+IGFpcnRpbWUgbmVlZCBiZSBzaWduZWQuIEFsc28KYWRkZWQgdGhlIGlubGluZSBmdW5jdGlvbiBv
+ZgppZWVlODAyMTFfc3RhX3JlZ2lzdGVyL3JlbGVhc2VfcGVuZGluZ19haXJ0aW1lKCkgYXMgeW91
+IHN1Z2dlc3RlZC4KCgpPbiBUaHUsIE9jdCAxMCwgMjAxOSBhdCAxOjEyIFBNIFRva2UgSMO4aWxh
+bmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPiB3cm90ZToKPgo+IEpvaGFubmVzIEJlcmcg
+PGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+IHdyaXRlczoKPgo+ID4gSGksCj4gPgo+ID4gQSBj
+b3VwbGUgb2YgcG9pbnRzLi4uCj4gPgo+ID4gRmlyc3QsIEknZCBsaWtlIFRva2UgdG8gcmV2aWV3
+ICYgYWNrIHRoaXMgaWYgcG9zc2libGUgOi0pCj4KPiBTdXJlLCBJJ2xsIGxvb2sgYXQgaXQuIEkn
+bSBhd2F5IHRoZSByZXN0IG9mIHRoaXMgd2VlaywgYnV0IHNob3VsZAo+IGhvcGVmdWxseSBnZXQg
+c29tZSBtb3JlIHRpbWUgbmV4dCB3ZWVrLiBJdCBtYXkgYmUgdGhhdCBpdCB3aWxsIHRha2UgdGhl
+Cj4gZm9ybSBvZiBhbm90aGVyIHN1Ym1pc3Npb24gdGhhdCBpbnRlZ3JhdGVzIHRoaXMgd2l0aCB0
+aGUgcHJldmlvdXMgcGF0Y2gKPiBJIHNlbnQgdGhhdCBwdXQgbW9yZSBvZiB0aGUgY2FsY3VsYXRp
+b24gaW50byBtYWM4MDIxMSBpdHNlbGYuLi4KPgo+IC1Ub2tlCj4KCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
