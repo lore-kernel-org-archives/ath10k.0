@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from out4-smtp.messagingengine.com ([66.111.4.28])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iJejP-0006qE-ML
- for ath10k@lists.infradead.org; Sun, 13 Oct 2019 14:20:28 +0000
-From: Patrick Steinhardt <ps@pks.im>
-Subject: [PATCH] ath10k: fix disabling of UART debugging
-Date: Sun, 13 Oct 2019 16:20:08 +0200
-Message-Id: <d492617ed38eb7953401c3171bb3e08c48b7b431.1570976384.git.ps@pks.im>
+ id 1iJm9I-0007tv-KO
+ for ath10k@lists.infradead.org; Sun, 13 Oct 2019 22:15:39 +0000
+Subject: Re: [RFC PATCH 0/2] ath10k: provide survey info as accumulated data
+References: <20190918124259.17804-1-sven@narfation.org>
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+Message-ID: <9a9ec99b-9643-7288-eed5-b549a9fe1487@newmedia-net.de>
+Date: Mon, 14 Oct 2019 00:15:20 +0200
 MIME-Version: 1.0
+In-Reply-To: <20190918124259.17804-1-sven@narfation.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,58 +19,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Patrick Steinhardt <ps@pks.im>, Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
+To: Sven Eckelmann <sven@narfation.org>, ath10k@lists.infradead.org
+Cc: vnaralas@codeaurora.org, linux-wireless@vger.kernel.org, Sven Eckelmann <seckelmann@datto.com>
 
-Starting with v5.3.0, it was observed that throughput of an access point
-with QCA988x-based wireless chip is severely degraded from at least
-10MB/s to roughly 200KB/s. A bisect of the issue points to commit
-4504f0e5b571 (ath10k: sdio: workaround firmware UART pin configuration
-bug, 2019-04-19), which employs a workaround for a firmware bug in some
-QCA6174 SDIO devices.
+i checked your patch on 10.4 based chipsets with 9984. the values are 
+now looking bogus and wrong at all. busy and active time time in ms does 
+increase in hours each second
+the problem seem to be that your patch is 10.2.4 only related. 
+ath_clean_survey does not trigger on 10.4 so the values double itself 
+each time the event raises since you add the full values and not just a 
+delta on top
 
-If UART debugging is disabled via the "ath10k.uart_print" module
-parameter, then the UART initialization code is skipped. With the new
-workaround introduced in the mentioned commit, devices that need the
-workaround will also re-set the UART pin of the device to avoid a
-failing SDIO interrupt. But in fact, the change effectively removed the
-early return for all devices that do not use the workaround, and as a
-result UART debugging is now unconditionally turned on disregarding the
-value of "ath10k.uart_print", causing the decrease in throughput.
+Sebastian
 
-Fix the issue by re-introducing the early return for all devices again,
-independent of the UART pin workaround. Tests show that throughput is
-back to normal levels again with this fix.
-
-Fixes: 4504f0e5b571 ("ath10k: sdio: workaround firmware UART pin configuration bug")
-Signed-off-by: Patrick Steinhardt <ps@pks.im>
----
- drivers/net/wireless/ath/ath10k/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dc45d16e8d21..8e4ca231634d 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2125,9 +2125,10 @@ static int ath10k_init_uart(struct ath10k *ar)
- 			ath10k_warn(ar, "failed to set UART TX pin: %d", ret);
- 			return ret;
- 		}
-+	}
- 
-+	if (!uart_print)
- 		return 0;
--	}
- 
- 	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, ar->hw_params.uart_pin);
- 	if (ret) {
--- 
-2.23.0
-
+Am 18.09.2019 um 14:42 schrieb Sven Eckelmann:
+> From: Sven Eckelmann <seckelmann@datto.com>
+>
+> Hi,
+>
+> it was observed that ath9k provides accumulated survey counters but ath10k
+> neither provides deltas nor accumulated counters. Instead it returns
+> some value which was returned at some point from the firmware.
+>
+> But as it turns out, this data is not reliable. To make it more useful,
+> ath10k has to:
+>
+> * retrieve counters rather frequently for hardware which is known to use
+>    firmware versions with low number counter bits (for only 14-30s)
+> * clean up received counter values
+> * accumulate counters from firmware
+>
+> A comparison of the resulting output with these fixes can be seen under
+> https://stats.freifunk-vogtland.net/d/ffv_node/nodeinfo?orgId=1&var-node=ac86749f4d60&fullscreen&panelId=5&from=1568782046974&to=1568807068706
+>
+> The left side of the graph shows the output before the patches were applied
+> and the right side the output with the patches applied. Just as reference, an
+> ath9k device in the same building is
+> https://stats.freifunk-vogtland.net/d/ffv_node/nodeinfo?orgId=1&var-node=ac86740037e0&fullscreen&panelId=5&from=1568782046974&to=1568807068706
+>
+> Kind regards,
+> 	Sven
+>
+> Sven Eckelmann (2):
+>    ath10k: report survey info as accumulated values
+>    ath10k: regularly fetch survey counters
+>
+>   drivers/net/wireless/ath/ath10k/core.c |  8 ++++
+>   drivers/net/wireless/ath/ath10k/core.h |  3 ++
+>   drivers/net/wireless/ath/ath10k/hw.c   | 13 +++--
+>   drivers/net/wireless/ath/ath10k/mac.c  | 52 ++++++++++++++++++++
+>   drivers/net/wireless/ath/ath10k/mac.h  |  3 ++
+>   drivers/net/wireless/ath/ath10k/wmi.c  | 66 ++++++++++++++++++++++----
+>   6 files changed, 130 insertions(+), 15 deletions(-)
+>
 
 _______________________________________________
 ath10k mailing list
