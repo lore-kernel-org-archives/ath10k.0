@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+Received: from out4-smtp.messagingengine.com ([66.111.4.28])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIzeI-0002wV-IB
- for ath10k@lists.infradead.org; Fri, 11 Oct 2019 18:28:23 +0000
-Received: by mail-pf1-x442.google.com with SMTP id v4so6570510pff.6
- for <ath10k@lists.infradead.org>; Fri, 11 Oct 2019 11:28:22 -0700 (PDT)
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v2] ath10k: Correct error handling of dma_map_single()
-Date: Fri, 11 Oct 2019 11:28:17 -0700
-Message-Id: <20191011182817.194565-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20191010162653.141303-1-bjorn.andersson@linaro.org>
-References: 
+ id 1iJejP-0006qE-ML
+ for ath10k@lists.infradead.org; Sun, 13 Oct 2019 14:20:28 +0000
+From: Patrick Steinhardt <ps@pks.im>
+Subject: [PATCH] ath10k: fix disabling of UART debugging
+Date: Sun, 13 Oct 2019 16:20:08 +0200
+Message-Id: <d492617ed38eb7953401c3171bb3e08c48b7b431.1570976384.git.ps@pks.im>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,40 +20,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
-Cc: Niklas Cassel <niklas.cassel@linaro.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Patrick Steinhardt <ps@pks.im>, Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
 
-The return value of dma_map_single() should be checked for errors using
-dma_mapping_error() and the skb has been dequeued so it needs to be
-freed.
+Starting with v5.3.0, it was observed that throughput of an access point
+with QCA988x-based wireless chip is severely degraded from at least
+10MB/s to roughly 200KB/s. A bisect of the issue points to commit
+4504f0e5b571 (ath10k: sdio: workaround firmware UART pin configuration
+bug, 2019-04-19), which employs a workaround for a firmware bug in some
+QCA6174 SDIO devices.
 
-Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-Reported-by: Niklas Cassel <niklas.cassel@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+If UART debugging is disabled via the "ath10k.uart_print" module
+parameter, then the UART initialization code is skipped. With the new
+workaround introduced in the mentioned commit, devices that need the
+workaround will also re-set the UART pin of the device to avoid a
+failing SDIO interrupt. But in fact, the change effectively removed the
+early return for all devices that do not use the workaround, and as a
+result UART debugging is now unconditionally turned on disregarding the
+value of "ath10k.uart_print", causing the decrease in throughput.
+
+Fix the issue by re-introducing the early return for all devices again,
+independent of the UART pin workaround. Tests show that throughput is
+back to normal levels again with this fix.
+
+Fixes: 4504f0e5b571 ("ath10k: sdio: workaround firmware UART pin configuration bug")
+Signed-off-by: Patrick Steinhardt <ps@pks.im>
 ---
+ drivers/net/wireless/ath/ath10k/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Changes since v1:
-- Free the dequeued skb
-
- drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3d2c8fcba952..e8bdb2ba9b18 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3904,8 +3904,10 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 			     ar->running_fw->fw_file.fw_features)) {
- 			paddr = dma_map_single(ar->dev, skb->data,
- 					       skb->len, DMA_TO_DEVICE);
--			if (!paddr)
-+			if (dma_mapping_error(ar->dev, paddr)) {
-+				ieee80211_free_txskb(ar->hw, skb);
- 				continue;
-+			}
- 			ret = ath10k_wmi_mgmt_tx_send(ar, skb, paddr);
- 			if (ret) {
- 				ath10k_warn(ar, "failed to transmit management frame by ref via WMI: %d\n",
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index dc45d16e8d21..8e4ca231634d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2125,9 +2125,10 @@ static int ath10k_init_uart(struct ath10k *ar)
+ 			ath10k_warn(ar, "failed to set UART TX pin: %d", ret);
+ 			return ret;
+ 		}
++	}
+ 
++	if (!uart_print)
+ 		return 0;
+-	}
+ 
+ 	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, ar->hw_params.uart_pin);
+ 	if (ret) {
 -- 
 2.23.0
 
