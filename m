@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iJwAp-0007sW-Tm
- for ath10k@lists.infradead.org; Mon, 14 Oct 2019 08:57:53 +0000
+ id 1iJwJb-0003tI-EJ
+ for ath10k@lists.infradead.org; Mon, 14 Oct 2019 09:06:58 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [RFC PATCH 0/2] ath10k: provide survey info as accumulated data
-References: <20190918124259.17804-1-sven@narfation.org>
- <9a9ec99b-9643-7288-eed5-b549a9fe1487@newmedia-net.de>
- <1614044.H5m0Cyd3Ly@bentobox>
-Date: Mon, 14 Oct 2019 11:57:47 +0300
-In-Reply-To: <1614044.H5m0Cyd3Ly@bentobox> (Sven Eckelmann's message of "Mon, 
- 14 Oct 2019 09:07:42 +0200")
-Message-ID: <871rvfzotw.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v4 0/2] Implement Airtime-based Queue Limit (AQL)
+References: <20191011022413.176208-1-kyan@google.com>
+Date: Mon, 14 Oct 2019 12:06:45 +0300
+In-Reply-To: <20191011022413.176208-1-kyan@google.com> (Kan Yan's message of
+ "Thu, 10 Oct 2019 19:24:11 -0700")
+Message-ID: <87wod7y9ui.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,36 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@narfation.org>
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, vnaralas@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kan Yan <kyan@google.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, johannes@sipsolutions.net, nbd@nbd.name
 
-Sven Eckelmann <sven@narfation.org> writes:
+Kan Yan <kyan@google.com> writes:
 
-> On Monday, 14 October 2019 00:15:20 CEST Sebastian Gottschall wrote:
->> i checked your patch on 10.4 based chipsets with 9984. the values are 
->> now looking bogus and wrong at all. busy and active time time in ms does 
->> increase in hours each second
->> the problem seem to be that your patch is 10.2.4 only related. 
->> ath_clean_survey does not trigger on 10.4 so the values double itself 
->> each time the event raises since you add the full values and not just a 
->> delta on top
+> This patch series implements Airtime-based Queue Limit (AQL) in the mac80211 and Ath10k driver. It is based on an earlier version from the ChromiumOS tree[0].
 >
-> Thanks for the feedback. So we have now a firmware 10.2.4 which is counting 
-> busy + active up and has wraparound problems. And then we have a 10.4 firmware 
-> (on QCA9888 and QCA4019) which is clearing everything as expected with 
-> WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR  and then we have some 10.4 firmware (one 
-> QCA9984) which behaves more like ath 10.2.4 firmware but is marked as 
-> ATH10K_HW_CC_WRAP_SHIFTED_EACH like the QCA4019.
+> This version has been tested with QCA9884 platform with 4.14 kernel. Tests show AQL is able to reduce latency by an order of magnitude in a congested environment without negative impact on the throughput.
 >
-> So I have no idea how to fix this when QCA4019 and QCA9984 are currently 
-> marked the same but behave differently. Does somebody have a overview how the 
-> different HW versions should behave or is there some special bit in the data 
-> reported by the firmware which can be used to evaluate the expected behavior?
+> [0] https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1703105/7
+>
+> Kan Yan (2):
+>   mac80211: Implement Airtime-based Queue Limit (AQL)
+>   ath10k: Enable Airtime-based Queue Limit (AQL)
 
-I hope there's an easy way to detect this behaviour change, but if
-nothing else we could add a new bit to enum ath10k_fw_features. But of
-course that's the last resort, maintaining the firmware features
-bitfield accross different firmware branches is quite cumbersome.
+Please always include a change log so that people know what has changed
+since the previous version:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#changelog_missing
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
