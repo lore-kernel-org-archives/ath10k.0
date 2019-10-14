@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iJwUJ-0008Vc-FY
- for ath10k@lists.infradead.org; Mon, 14 Oct 2019 09:18:01 +0000
+ id 1iJwa6-0003UI-MB
+ for ath10k@lists.infradead.org; Mon, 14 Oct 2019 09:24:00 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v4 0/2] Implement Airtime-based Queue Limit (AQL)
+Subject: Re: [PATCH v4 2/2] ath10k: Enable Airtime-based Queue Limit (AQL)
 References: <20191011022413.176208-1-kyan@google.com>
- <87wod7y9ui.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 14 Oct 2019 12:17:49 +0300
-In-Reply-To: <87wod7y9ui.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Mon, 14 Oct 2019 12:06:45 +0300")
-Message-ID: <87sgnvy9c2.fsf@kamboji.qca.qualcomm.com>
+ <20191011022413.176208-3-kyan@google.com>
+Date: Mon, 14 Oct 2019 12:23:49 +0300
+In-Reply-To: <20191011022413.176208-3-kyan@google.com> (Kan Yan's message of
+ "Thu, 10 Oct 2019 19:24:13 -0700")
+Message-ID: <87lftny922.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,33 +27,19 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kan Yan <kyan@google.com>
 Cc: make-wifi-fast@lists.bufferbloat.net, toke@redhat.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, yiboz@codeaurora.org, johannes@sipsolutions.net, nbd@nbd.name
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+Kan Yan <kyan@google.com> writes:
 
-> Kan Yan <kyan@google.com> writes:
+> Calculate the estimated airtime pending in the txqs and apply AQL to
+> prevent excessive amounts of packets being queued in the firmware queue.
 >
->> This patch series implements Airtime-based Queue Limit (AQL) in the
->> mac80211 and Ath10k driver. It is based on an earlier version from
->> the ChromiumOS tree[0].
->>
->> This version has been tested with QCA9884 platform with 4.14 kernel.
->> Tests show AQL is able to reduce latency by an order of magnitude in
->> a congested environment without negative impact on the throughput.
->>
->> [0]
->> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1703105/7
->>
->> Kan Yan (2):
->>   mac80211: Implement Airtime-based Queue Limit (AQL)
->>   ath10k: Enable Airtime-based Queue Limit (AQL)
->
-> Please always include a change log so that people know what has changed
-> since the previous version:
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#changelog_missing
+> Signed-off-by: Kan Yan <kyan@google.com>
 
-Never mind, you actually had the changelog after the signature separator
-("-- \n" line) and I automatically skip the signature :) So instead I
-recommend moving the change log up and above the signature separator.
+Forgot to mention earlier that please add tested hardware and firmware
+versions:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#guidelines
+
+I can also add that during commit, no need to resend because of this.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
