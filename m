@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iJyxM-00083i-13
- for ath10k@lists.infradead.org; Mon, 14 Oct 2019 11:56:09 +0000
-Subject: RE: [PATCH v5 0/8] ath10k: improve throughout of tcp/udp TX/RX of sdio
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Mon, 14 Oct 2019 11:53:07 +0000
-Message-ID: <048a697517b4459087bae05dce4cc1a4@aptaiexm02f.ap.qualcomm.com>
-References: <1567679893-14029-1-git-send-email-wgong@codeaurora.org>
- <87sgon8inp.fsf@codeaurora.org>
- <11062c4e1659ac759cb73af7d46a6db2@codeaurora.org>
- <7f5d822f2dd1f98ba26a8fdecb5dc011@codeaurora.org>
-In-Reply-To: <7f5d822f2dd1f98ba26a8fdecb5dc011@codeaurora.org>
-Content-Language: en-US
+ id 1iKAEJ-0001Wb-9f
+ for ath10k@lists.infradead.org; Mon, 14 Oct 2019 23:58:24 +0000
+Received: by mail-lj1-x243.google.com with SMTP id v24so18300506ljj.3
+ for <ath10k@lists.infradead.org>; Mon, 14 Oct 2019 16:58:17 -0700 (PDT)
 MIME-Version: 1.0
+References: <20191011022413.176208-1-kyan@google.com>
+ <87wod7y9ui.fsf@kamboji.qca.qualcomm.com>
+ <87sgnvy9c2.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87sgnvy9c2.fsf@kamboji.qca.qualcomm.com>
+From: Kan Yan <kyan@google.com>
+Date: Mon, 14 Oct 2019 16:58:04 -0700
+Message-ID: <CA+iem5uLYFVQjPaE1QDKc6c+eKz8Xd4LbwczYXOBKP3q+HHdBg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Implement Airtime-based Queue Limit (AQL)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +26,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Yibo Zhao <yiboz@codeaurora.org>, Johannes Berg <johannes@sipsolutions.net>, Felix Fietkau <nbd@nbd.name>
 
-> -----Original Message-----
-> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
-> Sent: Thursday, September 26, 2019 10:33 AM
-> To: kvalo@codeaurora.org
-> Cc: linux-wireless@vger.kernel.org; ath10k@lists.infradead.org
-> Subject: [EXT] Re: [PATCH v5 0/8] ath10k: improve throughout of tcp/udp
-> TX/RX of sdio
-> 
-> On 2019-09-24 20:32, Wen Gong wrote:
-> > On 2019-09-23 17:29, Kalle Valo wrote:
-> >> Wen Gong <wgong@codeaurora.org> writes:
-> 
-> 
-> patch v6 ath10k: improve throughout of RX of sdio has sent
-> new patch v6 only have 3 patches, the left patches will also sent later
-> 
-> Alagu Sankar (1):
->    ath10k: enable RX bundle receive for sdio
-> 
-> Wen Gong (2):
->    ath10k: change max RX bundle size from 8 to 32 for sdio
->    ath10k: add workqueue for RX path of sdio
-> 
-> https://patchwork.kernel.org/patch/11160247/
-> https://patchwork.kernel.org/patch/11160245/
-> https://patchwork.kernel.org/patch/11160241/
-> 
-Left 4 patches sent v6:
-https://patchwork.kernel.org/patch/11188393/
-https://patchwork.kernel.org/patch/11188403/
-https://patchwork.kernel.org/patch/11188405/
-https://patchwork.kernel.org/patch/11188407/
+Hi Kalle,
 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+Thanks for the help and tips.  Will do that if I need to submit again.
+
+I believe Toke will integrate this with his version and move the
+estimating pending airtime part to mac80211, so maybe in the next
+version, ath10k change is no longer required.
+
+Thanks,
+Kan
+
+
+On Mon, Oct 14, 2019 at 2:18 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Kalle Valo <kvalo@codeaurora.org> writes:
+>
+> > Kan Yan <kyan@google.com> writes:
+> >
+> >> This patch series implements Airtime-based Queue Limit (AQL) in the
+> >> mac80211 and Ath10k driver. It is based on an earlier version from
+> >> the ChromiumOS tree[0].
+> >>
+> >> This version has been tested with QCA9884 platform with 4.14 kernel.
+> >> Tests show AQL is able to reduce latency by an order of magnitude in
+> >> a congested environment without negative impact on the throughput.
+> >>
+> >> [0]
+> >> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1703105/7
+> >>
+> >> Kan Yan (2):
+> >>   mac80211: Implement Airtime-based Queue Limit (AQL)
+> >>   ath10k: Enable Airtime-based Queue Limit (AQL)
+> >
+> > Please always include a change log so that people know what has changed
+> > since the previous version:
+> >
+> > https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#changelog_missing
+>
+> Never mind, you actually had the changelog after the signature separator
+> ("-- \n" line) and I automatically skip the signature :) So instead I
+> recommend moving the change log up and above the signature separator.
+>
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
