@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]
+ helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iKtju-0004nb-DZ
- for ath10k@lists.infradead.org; Thu, 17 Oct 2019 00:34:04 +0000
-Received: by mail-lf1-x144.google.com with SMTP id w6so401516lfl.2
- for <ath10k@lists.infradead.org>; Wed, 16 Oct 2019 17:33:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <157115993755.2500430.12214017471129215800.stgit@toke.dk>
- <157115994190.2500430.14955682016008497593.stgit@toke.dk>
-In-Reply-To: <157115994190.2500430.14955682016008497593.stgit@toke.dk>
-From: Kan Yan <kyan@google.com>
-Date: Wed, 16 Oct 2019 17:33:43 -0700
-Message-ID: <CA+iem5s=xbzZ5goaBO4tZWUKVQRaXb+SnB34NPCppej9mi8sAA@mail.gmail.com>
+ id 1iL2Kg-0003Bf-UC
+ for ath10k@lists.infradead.org; Thu, 17 Oct 2019 09:44:36 +0000
+Received: by mail-lj1-f197.google.com with SMTP id m8so310378ljb.3
+ for <ath10k@lists.infradead.org>; Thu, 17 Oct 2019 02:44:30 -0700 (PDT)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 Subject: Re: [PATCH v2 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
  packet dequeue
+In-Reply-To: <CA+iem5s=xbzZ5goaBO4tZWUKVQRaXb+SnB34NPCppej9mi8sAA@mail.gmail.com>
+References: <157115993755.2500430.12214017471129215800.stgit@toke.dk>
+ <157115994190.2500430.14955682016008497593.stgit@toke.dk>
+ <CA+iem5s=xbzZ5goaBO4tZWUKVQRaXb+SnB34NPCppej9mi8sAA@mail.gmail.com>
+Date: Thu, 17 Oct 2019 11:44:27 +0200
+Message-ID: <87o8yfg0zo.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,122 +24,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+To: Kan Yan <kyan@google.com>
 Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-SGkgVG9rZSwKClRoYW5rcyBmb3IgZ2V0dGluZyB0aGlzIGRvbmUhIEkgd2lsbCBnaXZlIGl0IGEg
-dHJ5IGluIHRoZSBuZXh0IGZldwpkYXlzLiAgQSBmZXcgY29tbWVudHM6Cgo+IFRoZSBlc3RpbWF0
-ZWQgYWlydGltZSBmb3IgZWFjaCBza2IgaXMgc3RvcmVkIGluIHRoZSB0eF9pbmZvLCBzbyB3ZSBj
-YW4KPiBzdWJ0cmFjdCB0aGUgc2FtZSBhbW91bnQgZnJvbSB0aGUgcnVubmluZyB0b3RhbCB3aGVu
-IHRoZSBza2IgaXMgZnJlZWQgb3IKPiByZWN5Y2xlZC4KCkxvb2tzIGxpa2UgYXRoMTBrIGRyaXZl
-ciB6ZXJvIG91dCB0aGUgaW5mby0+c3RhdHVzIGJlZm9yZSBjYWxsaW5nCmllZWU4MDIxMV90eF9z
-dGF0dXMoLi4uKToKaW50IGF0aDEwa190eHJ4X3R4X3VucmVmKHN0cnVjdCBhdGgxMGtfaHR0ICpo
-dHQsCiAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgaHR0X3R4X2RvbmUgKnR4
-X2RvbmUpCnsKIC4uLgogICAgICAgIGluZm8gPSBJRUVFODAyMTFfU0tCX0NCKG1zZHUpOwogICAg
-ICAgIG1lbXNldCgmaW5mby0+c3RhdHVzLCAwLCBzaXplb2YoaW5mby0+c3RhdHVzKSk7Ci4uLgog
-ICAgICAgIGllZWU4MDIxMV90eF9zdGF0dXMoaHR0LT5hci0+aHcsIG1zZHUpOwp9CgpXZSBuZWVk
-IGVpdGhlciByZXN0b3JlIHRoZSBpbmZvLT5zdGF0dXMudHhfdGltZV9lc3Qgb3IgY2FsbGluZwpp
-ZWVlODAyMTFfc3RhX3VwZGF0ZV9wZW5kaW5nX2FpcnRpbWUoKSBpbiBhdGgxMGsgYmVmb3JlIHR4
-X3RpbWVfZXN0CmdldCBlcmFzZWQuCgo+ICsgICAgICAgaWYgKGxvY2FsLT5haXJ0aW1lX2ZsYWdz
-ICYgQUlSVElNRV9VU0VfQVFMKSB7Cj4gKyAgICAgICAgICAgICAgIGFpcnRpbWUgPSBpZWVlODAy
-MTFfY2FsY19leHBlY3RlZF90eF9haXJ0aW1lKGh3LCB2aWYsIHR4cS0+c3RhLAo+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBza2It
-PmxlbiArIDM4KTsKCkkgdGhpbmsgaXQgaXMgYmV0dGVyIHRvIHB1dCB0aGUgIisgIDM4IiB0aGF0
-IHRha2VzIGNhcmUgb2YgdGhlIGhlYWRlcgpvdmVyaGVhZCBpbnNpZGUgaWVlZTgwMjExX2NhbGNf
-ZXhwZWN0ZWRfdHhfYWlydGltZSgpLgoKS2FuCgoKT24gVHVlLCBPY3QgMTUsIDIwMTkgYXQgMTA6
-MTkgQU0gVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+IHdyb3RlOgo+
-Cj4gRnJvbTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+Cj4KPiBU
-aGUgcHJldmlvdXMgY29tbWl0IGFkZGVkIHRoZSBhYmlsaXR5IHRvIHRocm90dGxlIHN0YXRpb25z
-IHdoZW4gdGhleSBxdWV1ZQo+IHRvbyBtdWNoIGFpcnRpbWUgaW4gdGhlIGhhcmR3YXJlLiBUaGlz
-IGNvbW1pdCBlbmFibGVzIHRoZSBmdW5jdGlvbmFsaXR5IGJ5Cj4gY2FsY3VsYXRpbmcgdGhlIGV4
-cGVjdGVkIGFpcnRpbWUgdXNhZ2Ugb2YgZWFjaCBwYWNrZXQgdGhhdCBpcyBkZXF1ZXVlZCBmcm9t
-Cj4gdGhlIFRYUXMgaW4gbWFjODAyMTEsIGFuZCBhY2NvdW50aW5nIHRoYXQgYXMgcGVuZGluZyBh
-aXJ0aW1lLgo+Cj4gVGhlIGVzdGltYXRlZCBhaXJ0aW1lIGZvciBlYWNoIHNrYiBpcyBzdG9yZWQg
-aW4gdGhlIHR4X2luZm8sIHNvIHdlIGNhbgo+IHN1YnRyYWN0IHRoZSBzYW1lIGFtb3VudCBmcm9t
-IHRoZSBydW5uaW5nIHRvdGFsIHdoZW4gdGhlIHNrYiBpcyBmcmVlZCBvcgo+IHJlY3ljbGVkLiBU
-aGUgdGhyb3R0bGluZyBtZWNoYW5pc20gcmVsaWVzIG9uIHRoaXMgYWNjb3VudGluZyB0byBiZQo+
-IGFjY3VyYXRlIChpLmUuLCB0aGF0IHdlIGFyZSBub3QgZnJlZWluZyBza2JzIHdpdGhvdXQgc3Vi
-dHJhY3RpbmcgYW55Cj4gYWlydGltZSB0aGV5IHdlcmUgYWNjb3VudGVkIGZvciksIHNvIHdlIHB1
-dCB0aGUgc3VidHJhY3Rpb24gaW50bwo+IGllZWU4MDIxMV9yZXBvcnRfdXNlZF9za2IoKS4gQXMg
-YW4gb3B0aW1pc2F0aW9uLCB3ZSBhbHNvIHN1YnRyYWN0IHRoZQo+IGFpcnRpbWUgb24gcmVndWxh
-ciBUWCBjb21wbGV0aW9uLCB6ZXJvaW5nIG91dCB0aGUgdmFsdWUgc3RvcmVkIGluIHRoZQo+IHBh
-Y2tldCBhZnRlcndhcmRzLCB0byBhdm9pZCBoYXZpbmcgdG8gZG8gYW4gZXhwZW5zaXZlIGxvb2t1
-cCBvZiB0aGUKPiBzdGF0aW9uIGZyb20gdGhlIHBhY2tldCBkYXRhIG9uIGV2ZXJ5IHBhY2tldC4K
-Pgo+IFRoaXMgcGF0Y2ggZG9lcyAqbm90KiBpbmNsdWRlIGFueSBtZWNoYW5pc20gdG8gd2FrZSBh
-IHRocm90dGxlZCBUWFEgYWdhaW4sCj4gb24gdGhlIGFzc3VtcHRpb24gdGhhdCB0aGlzIHdpbGwg
-aGFwcGVuIGFueXdheSBhcyBhIHNpZGUgZWZmZWN0IG9mIHdoYXRldmVyCj4gZnJlZWQgdGhlIHNr
-YiAobW9zdCBjb21tb25seSBhIFRYIGNvbXBsZXRpb24pLgo+Cj4gU2lnbmVkLW9mZi1ieTogVG9r
-ZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+Cj4gLS0tCj4gIG5ldC9tYWM4
-MDIxMS9zdGF0dXMuYyB8ICAgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysKPiAgbmV0L21hYzgwMjExL3R4LmMgICAgIHwgICAxNiArKysrKysrKysrKysrKysrCj4gIDIg
-ZmlsZXMgY2hhbmdlZCwgNTQgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL25ldC9tYWM4
-MDIxMS9zdGF0dXMuYyBiL25ldC9tYWM4MDIxMS9zdGF0dXMuYwo+IGluZGV4IGFiOGJhNTgzNWNh
-MC4uY2U5OTBhMWU5MDQzIDEwMDY0NAo+IC0tLSBhL25ldC9tYWM4MDIxMS9zdGF0dXMuYwo+ICsr
-KyBiL25ldC9tYWM4MDIxMS9zdGF0dXMuYwo+IEBAIC02NzYsNiArNjc2LDMzIEBAIHN0YXRpYyB2
-b2lkIGllZWU4MDIxMV9yZXBvcnRfdXNlZF9za2Ioc3RydWN0IGllZWU4MDIxMV9sb2NhbCAqbG9j
-YWwsCj4gICAgICAgICBpZiAoZHJvcHBlZCkKPiAgICAgICAgICAgICAgICAgYWNrZWQgPSBmYWxz
-ZTsKPgo+ICsgICAgICAgaWYgKGluZm8tPnN0YXR1cy50eF90aW1lX2VzdCkgewo+ICsgICAgICAg
-ICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N1Yl9pZl9kYXRhICpzZGF0YTsKPiArICAgICAgICAg
-ICAgICAgc3RydWN0IHN0YV9pbmZvICpzdGEgPSBOVUxMOwo+ICsgICAgICAgICAgICAgICB1OCAq
-cWMsIGFjOwo+ICsgICAgICAgICAgICAgICBpbnQgdGlkOwo+ICsKPiArICAgICAgICAgICAgICAg
-cmN1X3JlYWRfbG9jaygpOwo+ICsKPiArICAgICAgICAgICAgICAgc2RhdGEgPSBpZWVlODAyMTFf
-c2RhdGFfZnJvbV9za2IobG9jYWwsIHNrYik7Cj4gKyAgICAgICAgICAgICAgIGlmIChzZGF0YSkK
-PiArICAgICAgICAgICAgICAgICAgICAgICBzdGEgPSBzdGFfaW5mb19nZXRfYnNzKHNkYXRhLCBz
-a2JfbWFjX2hlYWRlcihza2IpKTsKPiArCj4gKyAgICAgICAgICAgICAgIGlmIChpZWVlODAyMTFf
-aXNfZGF0YV9xb3MoaGRyLT5mcmFtZV9jb250cm9sKSkgewo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIHFjID0gaWVlZTgwMjExX2dldF9xb3NfY3RsKGhkcik7Cj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgdGlkID0gcWNbMF0gJiAweGY7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgYWMgPSBp
-ZWVlODAyMTFfYWNfZnJvbV90aWQodGlkKTsKPiArICAgICAgICAgICAgICAgfSBlbHNlIHsKPiAr
-ICAgICAgICAgICAgICAgICAgICAgICBhYyA9IElFRUU4MDIxMV9BQ19CRTsKPiArICAgICAgICAg
-ICAgICAgfQo+ICsKPiArICAgICAgICAgICAgICAgaWVlZTgwMjExX3N0YV91cGRhdGVfcGVuZGlu
-Z19haXJ0aW1lKGxvY2FsLCBzdGEsIGFjLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgaW5mby0+c3RhdHVzLnR4X3RpbWVfZXN0LAo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHJ1ZSk7Cj4g
-KyAgICAgICAgICAgICAgIHJjdV9yZWFkX3VubG9jaygpOwo+ICsKPiArICAgICAgIH0KPiArCj4g
-ICAgICAgICBpZiAoaW5mby0+ZmxhZ3MgJiBJRUVFODAyMTFfVFhfSU5URkxfTUxNRV9DT05OX1RY
-KSB7Cj4gICAgICAgICAgICAgICAgIHN0cnVjdCBpZWVlODAyMTFfc3ViX2lmX2RhdGEgKnNkYXRh
-Owo+Cj4gQEAgLTkzMCw2ICs5NTcsMTcgQEAgc3RhdGljIHZvaWQgX19pZWVlODAyMTFfdHhfc3Rh
-dHVzKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+ICAgICAgICAgICAgICAgICAgICAgICAgIHRp
-ZCA9IHFjWzBdICYgMHhmOwo+ICAgICAgICAgICAgICAgICB9Cj4KPiArICAgICAgICAgICAgICAg
-aWYgKGluZm8tPnN0YXR1cy50eF90aW1lX2VzdCkgewo+ICsgICAgICAgICAgICAgICAgICAgICAg
-IC8qIERvIHRoaXMgaGVyZSB0byBhdm9pZCB0aGUgZXhwZW5zaXZlIGxvb2t1cCBvZiB0aGUgc3Rh
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICogaW4gaWVlZTgwMjExX3JlcG9ydF91c2VkX3Nr
-YigpLgo+ICsgICAgICAgICAgICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIGllZWU4MDIxMV9zdGFfdXBkYXRlX3BlbmRpbmdfYWlydGltZShsb2NhbCwgc3RhLAo+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBpZWVlODAyMTFfYWNfZnJvbV90aWQodGlkKSwKPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW5mby0+c3RhdHVzLnR4X3RpbWVf
-ZXN0LAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB0cnVlKTsKPiArICAgICAgICAgICAgICAgICAgICAgICBpbmZvLT5zdGF0dXMu
-dHhfdGltZV9lc3QgPSAwOwo+ICsgICAgICAgICAgICAgICB9Cj4gKwo+ICAgICAgICAgICAgICAg
-ICBpZiAoIWFja2VkICYmIGllZWU4MDIxMV9pc19iYWNrX3JlcShmYykpIHsKPiAgICAgICAgICAg
-ICAgICAgICAgICAgICB1MTYgY29udHJvbDsKPgo+IGRpZmYgLS1naXQgYS9uZXQvbWFjODAyMTEv
-dHguYyBiL25ldC9tYWM4MDIxMS90eC5jCj4gaW5kZXggNDA1ZjYyMmIzZmUwLi5iNmI0NzE3MWIz
-NDAgMTAwNjQ0Cj4gLS0tIGEvbmV0L21hYzgwMjExL3R4LmMKPiArKysgYi9uZXQvbWFjODAyMTEv
-dHguYwo+IEBAIC0zNTM5LDkgKzM1MzksMTQgQEAgc3RydWN0IHNrX2J1ZmYgKmllZWU4MDIxMV90
-eF9kZXF1ZXVlKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+ICAgICAgICAgc3RydWN0IGllZWU4
-MDIxMV90eF9kYXRhIHR4Owo+ICAgICAgICAgaWVlZTgwMjExX3R4X3Jlc3VsdCByOwo+ICAgICAg
-ICAgc3RydWN0IGllZWU4MDIxMV92aWYgKnZpZiA9IHR4cS0+dmlmOwo+ICsgICAgICAgdTggYWMg
-PSB0eHEtPmFjOwo+ICsgICAgICAgdTMyIGFpcnRpbWU7Cj4KPiAgICAgICAgIFdBUk5fT05fT05D
-RShzb2Z0aXJxX2NvdW50KCkgPT0gMCk7Cj4KPiArICAgICAgIGlmICghaWVlZTgwMjExX3R4cV9h
-aXJ0aW1lX2NoZWNrKGh3LCB0eHEpKQo+ICsgICAgICAgICAgICAgICByZXR1cm4gTlVMTDsKPiAr
-Cj4gIGJlZ2luOgo+ICAgICAgICAgc3Bpbl9sb2NrX2JoKCZmcS0+bG9jayk7Cj4KPiBAQCAtMzY1
-Miw2ICszNjU3LDE3IEBAIHN0cnVjdCBza19idWZmICppZWVlODAyMTFfdHhfZGVxdWV1ZShzdHJ1
-Y3QgaWVlZTgwMjExX2h3ICpodywKPiAgICAgICAgIH0KPgo+ICAgICAgICAgSUVFRTgwMjExX1NL
-Ql9DQihza2IpLT5jb250cm9sLnZpZiA9IHZpZjsKPiArCj4gKyAgICAgICBpZiAobG9jYWwtPmFp
-cnRpbWVfZmxhZ3MgJiBBSVJUSU1FX1VTRV9BUUwpIHsKPiArICAgICAgICAgICAgICAgYWlydGlt
-ZSA9IGllZWU4MDIxMV9jYWxjX2V4cGVjdGVkX3R4X2FpcnRpbWUoaHcsIHZpZiwgdHhxLT5zdGEs
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHNrYi0+bGVuICsgMzgpOwo+ICsgICAgICAgICAgICAgICBpZiAoYWlydGltZSkgewo+
-ICsgICAgICAgICAgICAgICAgICAgICAgIGluZm8tPmNvbnRyb2wudHhfdGltZV9lc3QgPSBhaXJ0
-aW1lOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIGllZWU4MDIxMV9zdGFfdXBkYXRlX3BlbmRp
-bmdfYWlydGltZShsb2NhbCwgdHguc3RhLCBhYywKPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWlydGltZSwgZmFsc2UpOwo+ICsg
-ICAgICAgICAgICAgICB9Cj4gKyAgICAgICB9Cj4gKwo+ICAgICAgICAgcmV0dXJuIHNrYjsKPgo+
-ICBvdXQ6Cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Kan Yan <kyan@google.com> writes:
+
+> Hi Toke,
+>
+> Thanks for getting this done! I will give it a try in the next few
+> days.  A few comments:
+>
+>> The estimated airtime for each skb is stored in the tx_info, so we can
+>> subtract the same amount from the running total when the skb is freed or
+>> recycled.
+>
+> Looks like ath10k driver zero out the info->status before calling
+> ieee80211_tx_status(...):
+> int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>                          const struct htt_tx_done *tx_done)
+> {
+>  ...
+>         info = IEEE80211_SKB_CB(msdu);
+>         memset(&info->status, 0, sizeof(info->status));
+> ...
+>         ieee80211_tx_status(htt->ar->hw, msdu);
+> }
+
+Ah, bugger; I was afraid we'd run into this. A quick grep indicates that
+it's only ath10k and iwl that do this, though, so it's probably
+manageable to just fix this. I think the simplest solution is just to
+restore the field after clearing, no?
+
+> We need either restore the info->status.tx_time_est or calling
+> ieee80211_sta_update_pending_airtime() in ath10k before tx_time_est
+> get erased.
+>
+>> +       if (local->airtime_flags & AIRTIME_USE_AQL) {
+>> +               airtime = ieee80211_calc_expected_tx_airtime(hw, vif, txq->sta,
+>> +                                                            skb->len + 38);
+>
+> I think it is better to put the "+  38" that takes care of the header
+> overhead inside ieee80211_calc_expected_tx_airtime().
+
+Hmm, no strong opinion about this; but yeah, since we have a dedicated
+function for this use I guess there's no harm in adding it there :)
+
+-Toke
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
