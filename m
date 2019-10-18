@@ -1,23 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]
- helo=us-smtp-delivery-1.mimecast.com)
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLSMO-0004Sb-B1
- for ath10k@lists.infradead.org; Fri, 18 Oct 2019 13:32:06 +0000
-Received: by mail-lj1-f197.google.com with SMTP id m8so1083946ljb.3
- for <ath10k@lists.infradead.org>; Fri, 18 Oct 2019 06:31:59 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v2 1/4] mac80211: Rearrange ieee80211_tx_info to make room
- for tx_time_est
-In-Reply-To: <10b885b3238cede2d99c6134bebcc0c8ba6f6b10.camel@sipsolutions.net>
-References: <157115993755.2500430.12214017471129215800.stgit@toke.dk>
- <157115993866.2500430.13989567853855880476.stgit@toke.dk>
- <CA+iem5t6xghBocck864nDX2snWQ5O+v6_M2Jc9aCdn_hE+mFCA@mail.gmail.com>
- <87sgnqe4wg.fsf@toke.dk>
- <10b885b3238cede2d99c6134bebcc0c8ba6f6b10.camel@sipsolutions.net>
-Date: Fri, 18 Oct 2019 15:31:56 +0200
-Message-ID: <87imomdvsj.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1iLSPa-0006Az-6S
+ for ath10k@lists.infradead.org; Fri, 18 Oct 2019 13:35:23 +0000
+Received: by mail-pl1-x641.google.com with SMTP id u12so2855022pls.12
+ for <ath10k@lists.infradead.org>; Fri, 18 Oct 2019 06:35:21 -0700 (PDT)
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2] ath10k: Fix a NULL-ptr-deref bug in
+ ath10k_usb_alloc_urb_from_pipe
+Date: Fri, 18 Oct 2019 06:35:16 -0700
+Message-Id: <20191018133516.12606-1-linux@roeck-us.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +18,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Kan Yan <kyan@google.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Hui Peng <benquike@gmail.com>, Guenter Roeck <linux@roeck-us.net>
 
-Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBG
-cmksIDIwMTktMTAtMTggYXQgMTI6MTUgKzAyMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
-cm90ZToKPgo+PiBIb3dldmVyLCB0aGVyZSdzIGEgbmljZSBqdWljeSAndTE2IGFja19mcmFtZV9p
-ZCcgYXQgdGhlIHN0YXJ0IG9mCj4+IGllZWU4MDIxMV90eF9pbmZvLiBDb3VsZCB3ZSBwb3RlbnRp
-YWxseSB1c2UgdGhhdD8gV2UgY291bGQgdXNlIHRoZSB0b3AKPj4gYml0IGFzIGEgZGlzYW1iaWd1
-YXRpb24gZmxhZzsgSSB0aGluayB3ZSdyZSBmaW5lIHdpdGggMTUgYml0cyBmb3IgdGhlIFRYCj4+
-IHRpbWUgaXRzZWxmIChhIHNpbmdsZSBwYWNrZXQgd29uJ3QgZXhjZWVkIDhtcyBvciBUWCB0aW1l
-KSwgc28gaWYgd2UgY2FuCj4+IGxpdmUgd2l0aCAxNSBiaXRzIG9mIEFDSyBmcmFtZSBJRCBzcGFj
-ZSwgdGhhdCBjb3VsZCBiZSBhIHdheSBmb3J3YXJkPwo+Cj4gSSB3YXMgZ29pbmcgdG8gc2F5IHRo
-YXQgc2hvdWxkIHdvcmsgYXMgd2Ugb25seSBldmVyIGhhdmUgYSBoYW5kZnVsIG9mCj4gQUNLIGZy
-YW1lIElEcywgYnV0IC4uLiB5b3Ugc3RpbGwgbmVlZCB0aGUgYWlydGltZSBldmVuIGZvciBhIGZy
-YW1lIHRoYXQKPiB1c2Vyc3BhY2Ugd2FudHMgdG8ga25vdyB0aGUgQUNLIHN0YXR1cyBvZiwgbm8/
-CgpPaCwgcmlnaHQuCgpXZWxsLCBsZXQncyB0cnkgdG8gZG8gdGhlIGFjdHVhbCBtYXRoLi4uIEEg
-ZnVsbC1zaXplICgxNTM4IGJ5dGVzKSBwYWNrZXQKdGFrZXMgfjIwNTAgbWljcm9zZWNvbmRzIHRv
-IHRyYW5zbWl0IGF0IDYgTWJwcy4gQWRkaW5nIGluIG92ZXJoZWFkLCBpdCdzCmNlcnRhaW5seSBz
-dGlsbCBsZXNzIHRoYXQgNDA5NiB1cywgc28gMTIgYml0cyBpcyBwbGVudHkuIFRoYXQgbGVhdmVz
-CmZvdXIgYml0cyBmb3IgdGhlIEFDSyBzdGF0dXMgSUQgaWYgd2UganVzdCBzcGxpdCB0aGUgdTE2
-OyBpZiB3ZSBvbmx5CmV2ZXIgaGF2ZSAiYSBoYW5kZnVsIiwgdGhhdCBzaG91bGQgYmUgZW5vdWdo
-LCBubz8KCldlIGNvdWxkIGFsc28gc3BsaXQgNS8xMS4gVGhhdCB3b3VsZCBzdXBwb3J0IHVwIHRv
-IDMyIEFDSyBJRHMsIGFuZCB3ZQpjYW4ganVzdCB0cnVuY2F0ZSB0aGUgYWlydGltZSBhdCAyMDQ4
-IHVzLCB3aGljaCBpcyBub3QgYSBiaWcgZGVhbCBJJ2QKc2F5LiBXZSBjb3VsZCBldmVuIHNwbGl0
-IDYvMTAgYW5kIG9ubHkgbmVlZCB0byB0cnVuY2F0ZSB0aGUgVFggdGltZSBhdApyYXRlcyBiZWxv
-dyAxMyBNYnBzLi4uIE9yIHdlIGNvdWxkIHNhY3JpZmljZSBhIGJpdCB0byB0aGUgZmxhZyBhbmQg
-b25seQp0cnVuY2F0ZSBpZiB0aGUgQUNLIHN0YXR1cyBmbGFnIGlzIHNldC4KClRoaW5rIGl0IG1v
-c3RseSBkZXBlbmRzIG9uIHdoYXQgaXMgdGhlIHNtYWxsZXN0IElEIHNwYWNlIGZvciBBQ0sgSURz
-IHdlCmNhbiBsaXZlIHdpdGg/IDopCgotVG9rZQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+From: Hui Peng <benquike@gmail.com>
+
+The `ar_usb` field of `ath10k_usb_pipe_usb_pipe` objects
+are initialized to point to the containing `ath10k_usb` object
+according to endpoint descriptors read from the device side, as shown
+below in `ath10k_usb_setup_pipe_resources`:
+
+for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
+        endpoint = &iface_desc->endpoint[i].desc;
+
+        // get the address from endpoint descriptor
+        pipe_num = ath10k_usb_get_logical_pipe_num(ar_usb,
+                                                endpoint->bEndpointAddress,
+                                                &urbcount);
+        ......
+        // select the pipe object
+        pipe = &ar_usb->pipes[pipe_num];
+
+        // initialize the ar_usb field
+        pipe->ar_usb = ar_usb;
+}
+
+The driver assumes that the addresses reported in endpoint
+descriptors from device side  to be complete. If a device is
+malicious and does not report complete addresses, it may trigger
+NULL-ptr-deref `ath10k_usb_alloc_urb_from_pipe` and
+`ath10k_usb_free_urb_to_pipe`.
+
+This patch fixes the bug by preventing potential NULL-ptr-deref.
+
+Signed-off-by: Hui Peng <benquike@gmail.com>
+Reported-by: Hui Peng <benquike@gmail.com>
+Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[groeck: Add driver tag to subject, fix build warning]
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: Fix build warning, add "ath10k:" to subject
+
+ drivers/net/wireless/ath/ath10k/usb.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index e1420f67f776..9ebe74ee4aef 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -38,6 +38,10 @@ ath10k_usb_alloc_urb_from_pipe(struct ath10k_usb_pipe *pipe)
+ 	struct ath10k_urb_context *urb_context = NULL;
+ 	unsigned long flags;
+ 
++	/* bail if this pipe is not initialized */
++	if (!pipe->ar_usb)
++		return NULL;
++
+ 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
+ 	if (!list_empty(&pipe->urb_list_head)) {
+ 		urb_context = list_first_entry(&pipe->urb_list_head,
+@@ -55,6 +59,10 @@ static void ath10k_usb_free_urb_to_pipe(struct ath10k_usb_pipe *pipe,
+ {
+ 	unsigned long flags;
+ 
++	/* bail if this pipe is not initialized */
++	if (!pipe->ar_usb)
++		return;
++
+ 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
+ 
+ 	pipe->urb_cnt++;
+-- 
+2.17.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
