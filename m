@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLZlA-0005kD-Kd
- for ath10k@lists.infradead.org; Fri, 18 Oct 2019 21:26:10 +0000
-Received: by mail-lf1-x144.google.com with SMTP id v8so5143918lfa.12
- for <ath10k@lists.infradead.org>; Fri, 18 Oct 2019 14:26:07 -0700 (PDT)
+ id 1iLaNr-0002k9-Rg
+ for ath10k@lists.infradead.org; Fri, 18 Oct 2019 22:06:09 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 022/100] ath10k: assign 'n_cipher_suites = 11'
+ for WCN3990 to enable WPA3
+Date: Fri, 18 Oct 2019 18:04:07 -0400
+Message-Id: <20191018220525.9042-22-sashal@kernel.org>
+In-Reply-To: <20191018220525.9042-1-sashal@kernel.org>
+References: <20191018220525.9042-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <157140962094.2866668.3383184317264069493.stgit@toke.dk>
- <157140962534.2866668.1182822483250825739.stgit@toke.dk>
-In-Reply-To: <157140962534.2866668.1182822483250825739.stgit@toke.dk>
-From: Kan Yan <kyan@google.com>
-Date: Fri, 18 Oct 2019 14:25:53 -0700
-Message-ID: <CA+iem5sCTsPe4PW=0j20NoAratvdCvB0ss7zO3wMWLcirXsLgg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
- packet dequeue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,124 +19,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Abhishek Ambure <aambure@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-PiArICAgICAgIGlmIChsb2NhbC0+YWlydGltZV9mbGFncyAmIEFJUlRJTUVfVVNFX0FRTCkgewo+
-ICsgICAgICAgICAgICAgICBhaXJ0aW1lID0gaWVlZTgwMjExX2NhbGNfZXhwZWN0ZWRfdHhfYWly
-dGltZShodywgdmlmLCB0eHEtPnN0YSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2tiLT5sZW4pOwo+ICsgICAgICAgICAgICAg
-ICBpZiAoYWlydGltZSkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIC8qIFdlIG9ubHkgaGF2
-ZSAxMCBiaXRzIGluIHR4X3RpbWVfZXN0LCBzbyBzdG9yZSBhaXJ0aW1lCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgICogaW4gaW5jcmVtZW50cyBvZiA0IHVzIGFuZCBjbGFtcCB0aGF0IHRvIDIq
-KjEwLgo+ICsgICAgICAgICAgICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIGluZm8tPnR4X3RpbWVfZXN0ID0gbWluX3QodTMyLCBhaXJ0aW1lID4+IDIsIDEgPDwgMTAp
-Owo+ICsgICAgICAgICAgICAgICAgICAgICAgIGllZWU4MDIxMV9zdGFfdXBkYXRlX3BlbmRpbmdf
-YWlydGltZShsb2NhbCwgdHguc3RhLCBhYywKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWlydGltZSwgZmFsc2UpOwo+ICsgICAg
-ICAgICAgICAgICB9Cj4gKyAgICAgICB9Cj4gKwoKSXQgc2hvdWxkIGJlOgogICAgICAgICAgICAg
-ICAgICAgICAgICAgaWVlZTgwMjExX3N0YV91cGRhdGVfcGVuZGluZ19haXJ0aW1lKGxvY2FsLCB0
-eC5zdGEsIGFjLAoKaW5mby0+dHhfdGltZV9lc3QgPDwgMiwgZmFsc2UpOwoKVGhlIGFpcnRpbWUg
-cm91bmRlZCB0byA0dXMgKGluZm8tPnR4X3RpbWVfZXN0IDw8IDIpLCBpbnN0ZWFkIG9mIHRoZQpv
-cmlnaW5hbCBhaXJ0aW1lIHNob3VsZCBiZSB1c2VkIHdoZW4gcmVnaXN0ZXJpbmcgdGhlIHBlbmRp
-bmcgYWlydGltZSwKdG8ga2VlcCBpdCBjb25zaXN0ZW50IHdpdGggYWlydGltZSBzdWJ0cmFjdGVk
-IHdoZW4gdGhlIHNrYiBpcyBmcmVlZC4KCgpPbiBGcmksIE9jdCAxOCwgMjAxOSBhdCA3OjQwIEFN
-IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPiB3cm90ZToKPgo+IEZy
-b206IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPgo+Cj4gVGhlIHBy
-ZXZpb3VzIGNvbW1pdCBhZGRlZCB0aGUgYWJpbGl0eSB0byB0aHJvdHRsZSBzdGF0aW9ucyB3aGVu
-IHRoZXkgcXVldWUKPiB0b28gbXVjaCBhaXJ0aW1lIGluIHRoZSBoYXJkd2FyZS4gVGhpcyBjb21t
-aXQgZW5hYmxlcyB0aGUgZnVuY3Rpb25hbGl0eSBieQo+IGNhbGN1bGF0aW5nIHRoZSBleHBlY3Rl
-ZCBhaXJ0aW1lIHVzYWdlIG9mIGVhY2ggcGFja2V0IHRoYXQgaXMgZGVxdWV1ZWQgZnJvbQo+IHRo
-ZSBUWFFzIGluIG1hYzgwMjExLCBhbmQgYWNjb3VudGluZyB0aGF0IGFzIHBlbmRpbmcgYWlydGlt
-ZS4KPgo+IFRoZSBlc3RpbWF0ZWQgYWlydGltZSBmb3IgZWFjaCBza2IgaXMgc3RvcmVkIGluIHRo
-ZSB0eF9pbmZvLCBzbyB3ZSBjYW4KPiBzdWJ0cmFjdCB0aGUgc2FtZSBhbW91bnQgZnJvbSB0aGUg
-cnVubmluZyB0b3RhbCB3aGVuIHRoZSBza2IgaXMgZnJlZWQgb3IKPiByZWN5Y2xlZC4gVGhlIHRo
-cm90dGxpbmcgbWVjaGFuaXNtIHJlbGllcyBvbiB0aGlzIGFjY291bnRpbmcgdG8gYmUKPiBhY2N1
-cmF0ZSAoaS5lLiwgdGhhdCB3ZSBhcmUgbm90IGZyZWVpbmcgc2ticyB3aXRob3V0IHN1YnRyYWN0
-aW5nIGFueQo+IGFpcnRpbWUgdGhleSB3ZXJlIGFjY291bnRlZCBmb3IpLCBzbyB3ZSBwdXQgdGhl
-IHN1YnRyYWN0aW9uIGludG8KPiBpZWVlODAyMTFfcmVwb3J0X3VzZWRfc2tiKCkuIEFzIGFuIG9w
-dGltaXNhdGlvbiwgd2UgYWxzbyBzdWJ0cmFjdCB0aGUKPiBhaXJ0aW1lIG9uIHJlZ3VsYXIgVFgg
-Y29tcGxldGlvbiwgemVyb2luZyBvdXQgdGhlIHZhbHVlIHN0b3JlZCBpbiB0aGUKPiBwYWNrZXQg
-YWZ0ZXJ3YXJkcywgdG8gYXZvaWQgaGF2aW5nIHRvIGRvIGFuIGV4cGVuc2l2ZSBsb29rdXAgb2Yg
-dGhlCj4gc3RhdGlvbiBmcm9tIHRoZSBwYWNrZXQgZGF0YSBvbiBldmVyeSBwYWNrZXQuCj4KPiBU
-aGlzIHBhdGNoIGRvZXMgKm5vdCogaW5jbHVkZSBhbnkgbWVjaGFuaXNtIHRvIHdha2UgYSB0aHJv
-dHRsZWQgVFhRIGFnYWluLAo+IG9uIHRoZSBhc3N1bXB0aW9uIHRoYXQgdGhpcyB3aWxsIGhhcHBl
-biBhbnl3YXkgYXMgYSBzaWRlIGVmZmVjdCBvZiB3aGF0ZXZlcgo+IGZyZWVkIHRoZSBza2IgKG1v
-c3QgY29tbW9ubHkgYSBUWCBjb21wbGV0aW9uKS4KPgo+IFNpZ25lZC1vZmYtYnk6IFRva2UgSMO4
-aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPgo+IC0tLQo+ICBuZXQvbWFjODAyMTEv
-c3RhdHVzLmMgfCAgIDM4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4g
-IG5ldC9tYWM4MDIxMS90eC5jICAgICB8ICAgMTkgKysrKysrKysrKysrKysrKysrKwo+ICAyIGZp
-bGVzIGNoYW5nZWQsIDU3IGluc2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9uZXQvbWFjODAy
-MTEvc3RhdHVzLmMgYi9uZXQvbWFjODAyMTEvc3RhdHVzLmMKPiBpbmRleCBhYjhiYTU4MzVjYTAu
-LjkwNWI0YWZkNDU3ZCAxMDA2NDQKPiAtLS0gYS9uZXQvbWFjODAyMTEvc3RhdHVzLmMKPiArKysg
-Yi9uZXQvbWFjODAyMTEvc3RhdHVzLmMKPiBAQCAtNjc2LDYgKzY3NiwzMyBAQCBzdGF0aWMgdm9p
-ZCBpZWVlODAyMTFfcmVwb3J0X3VzZWRfc2tiKHN0cnVjdCBpZWVlODAyMTFfbG9jYWwgKmxvY2Fs
-LAo+ICAgICAgICAgaWYgKGRyb3BwZWQpCj4gICAgICAgICAgICAgICAgIGFja2VkID0gZmFsc2U7
-Cj4KPiArICAgICAgIGlmIChpbmZvLT50eF90aW1lX2VzdCkgewo+ICsgICAgICAgICAgICAgICBz
-dHJ1Y3QgaWVlZTgwMjExX3N1Yl9pZl9kYXRhICpzZGF0YTsKPiArICAgICAgICAgICAgICAgc3Ry
-dWN0IHN0YV9pbmZvICpzdGEgPSBOVUxMOwo+ICsgICAgICAgICAgICAgICB1OCAqcWMsIGFjOwo+
-ICsgICAgICAgICAgICAgICBpbnQgdGlkOwo+ICsKPiArICAgICAgICAgICAgICAgcmN1X3JlYWRf
-bG9jaygpOwo+ICsKPiArICAgICAgICAgICAgICAgc2RhdGEgPSBpZWVlODAyMTFfc2RhdGFfZnJv
-bV9za2IobG9jYWwsIHNrYik7Cj4gKyAgICAgICAgICAgICAgIGlmIChzZGF0YSkKPiArICAgICAg
-ICAgICAgICAgICAgICAgICBzdGEgPSBzdGFfaW5mb19nZXRfYnNzKHNkYXRhLCBza2JfbWFjX2hl
-YWRlcihza2IpKTsKPiArCj4gKyAgICAgICAgICAgICAgIGlmIChpZWVlODAyMTFfaXNfZGF0YV9x
-b3MoaGRyLT5mcmFtZV9jb250cm9sKSkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIHFjID0g
-aWVlZTgwMjExX2dldF9xb3NfY3RsKGhkcik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgdGlk
-ID0gcWNbMF0gJiAweGY7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgYWMgPSBpZWVlODAyMTFf
-YWNfZnJvbV90aWQodGlkKTsKPiArICAgICAgICAgICAgICAgfSBlbHNlIHsKPiArICAgICAgICAg
-ICAgICAgICAgICAgICBhYyA9IElFRUU4MDIxMV9BQ19CRTsKPiArICAgICAgICAgICAgICAgfQo+
-ICsKPiArICAgICAgICAgICAgICAgaWVlZTgwMjExX3N0YV91cGRhdGVfcGVuZGluZ19haXJ0aW1l
-KGxvY2FsLCBzdGEsIGFjLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgaW5mby0+dHhfdGltZV9lc3QgPDwgMiwKPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRydWUpOwo+ICsgICAgICAgICAg
-ICAgICByY3VfcmVhZF91bmxvY2soKTsKPiArCj4gKyAgICAgICB9Cj4gKwo+ICAgICAgICAgaWYg
-KGluZm8tPmZsYWdzICYgSUVFRTgwMjExX1RYX0lOVEZMX01MTUVfQ09OTl9UWCkgewo+ICAgICAg
-ICAgICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N1Yl9pZl9kYXRhICpzZGF0YTsKPgo+IEBAIC05
-MzAsNiArOTU3LDE3IEBAIHN0YXRpYyB2b2lkIF9faWVlZTgwMjExX3R4X3N0YXR1cyhzdHJ1Y3Qg
-aWVlZTgwMjExX2h3ICpodywKPiAgICAgICAgICAgICAgICAgICAgICAgICB0aWQgPSBxY1swXSAm
-IDB4ZjsKPiAgICAgICAgICAgICAgICAgfQo+Cj4gKyAgICAgICAgICAgICAgIGlmIChpbmZvLT50
-eF90aW1lX2VzdCkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIC8qIERvIHRoaXMgaGVyZSB0
-byBhdm9pZCB0aGUgZXhwZW5zaXZlIGxvb2t1cCBvZiB0aGUgc3RhCj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICogaW4gaWVlZTgwMjExX3JlcG9ydF91c2VkX3NrYigpLgo+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAgICAgICAgICAgICAgIGllZWU4MDIxMV9zdGFf
-dXBkYXRlX3BlbmRpbmdfYWlydGltZShsb2NhbCwgc3RhLAo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFfYWNfZnJv
-bV90aWQodGlkKSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgaW5mby0+dHhfdGltZV9lc3QgPDwgMiwKPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHJ1ZSk7Cj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgaW5mby0+dHhfdGltZV9lc3QgPSAwOwo+ICsgICAgICAg
-ICAgICAgICB9Cj4gKwo+ICAgICAgICAgICAgICAgICBpZiAoIWFja2VkICYmIGllZWU4MDIxMV9p
-c19iYWNrX3JlcShmYykpIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICB1MTYgY29udHJvbDsK
-Pgo+IGRpZmYgLS1naXQgYS9uZXQvbWFjODAyMTEvdHguYyBiL25ldC9tYWM4MDIxMS90eC5jCj4g
-aW5kZXggMTI2NTNkODczYjhjLi5iZDgyODRmMDQzNjEgMTAwNjQ0Cj4gLS0tIGEvbmV0L21hYzgw
-MjExL3R4LmMKPiArKysgYi9uZXQvbWFjODAyMTEvdHguYwo+IEBAIC0zNTM5LDkgKzM1MzksMTQg
-QEAgc3RydWN0IHNrX2J1ZmYgKmllZWU4MDIxMV90eF9kZXF1ZXVlKHN0cnVjdCBpZWVlODAyMTFf
-aHcgKmh3LAo+ICAgICAgICAgc3RydWN0IGllZWU4MDIxMV90eF9kYXRhIHR4Owo+ICAgICAgICAg
-aWVlZTgwMjExX3R4X3Jlc3VsdCByOwo+ICAgICAgICAgc3RydWN0IGllZWU4MDIxMV92aWYgKnZp
-ZiA9IHR4cS0+dmlmOwo+ICsgICAgICAgdTggYWMgPSB0eHEtPmFjOwo+ICsgICAgICAgdTMyIGFp
-cnRpbWU7Cj4KPiAgICAgICAgIFdBUk5fT05fT05DRShzb2Z0aXJxX2NvdW50KCkgPT0gMCk7Cj4K
-PiArICAgICAgIGlmICghaWVlZTgwMjExX3R4cV9haXJ0aW1lX2NoZWNrKGh3LCB0eHEpKQo+ICsg
-ICAgICAgICAgICAgICByZXR1cm4gTlVMTDsKPiArCj4gIGJlZ2luOgo+ICAgICAgICAgc3Bpbl9s
-b2NrX2JoKCZmcS0+bG9jayk7Cj4KPiBAQCAtMzY1Miw2ICszNjU3LDIwIEBAIHN0cnVjdCBza19i
-dWZmICppZWVlODAyMTFfdHhfZGVxdWV1ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywKPiAgICAg
-ICAgIH0KPgo+ICAgICAgICAgSUVFRTgwMjExX1NLQl9DQihza2IpLT5jb250cm9sLnZpZiA9IHZp
-ZjsKPiArCj4gKyAgICAgICBpZiAobG9jYWwtPmFpcnRpbWVfZmxhZ3MgJiBBSVJUSU1FX1VTRV9B
-UUwpIHsKPiArICAgICAgICAgICAgICAgYWlydGltZSA9IGllZWU4MDIxMV9jYWxjX2V4cGVjdGVk
-X3R4X2FpcnRpbWUoaHcsIHZpZiwgdHhxLT5zdGEsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNrYi0+bGVuKTsKPiArICAgICAg
-ICAgICAgICAgaWYgKGFpcnRpbWUpIHsKPiArICAgICAgICAgICAgICAgICAgICAgICAvKiBXZSBv
-bmx5IGhhdmUgMTAgYml0cyBpbiB0eF90aW1lX2VzdCwgc28gc3RvcmUgYWlydGltZQo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgICAqIGluIGluY3JlbWVudHMgb2YgNCB1cyBhbmQgY2xhbXAgdGhh
-dCB0byAyKioxMC4KPiArICAgICAgICAgICAgICAgICAgICAgICAgKi8KPiArICAgICAgICAgICAg
-ICAgICAgICAgICBpbmZvLT50eF90aW1lX2VzdCA9IG1pbl90KHUzMiwgYWlydGltZSA+PiAyLCAx
-IDw8IDEwKTsKPiArICAgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFfc3RhX3VwZGF0ZV9w
-ZW5kaW5nX2FpcnRpbWUobG9jYWwsIHR4LnN0YSwgYWMsCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFpcnRpbWUsIGZhbHNlKTsK
-PiArICAgICAgICAgICAgICAgfQo+ICsgICAgICAgfQo+ICsKPiAgICAgICAgIHJldHVybiBza2I7
-Cj4KPiAgb3V0Ogo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Abhishek Ambure <aambure@codeaurora.org>
+
+[ Upstream commit 7ba31e6e0cdc0cc2e60e1fcbf467f3c95aea948e ]
+
+Hostapd uses CCMP, GCMP & GCMP-256 as 'wpa_pairwise' option to run WPA3.
+In WCN3990 firmware cipher suite numbers 9 to 11 are for CCMP,
+GCMP & GCMP-256.
+
+To enable CCMP, GCMP & GCMP-256 cipher suites in WCN3990 firmware,
+host sets 'n_cipher_suites = 11' while initializing hardware parameters.
+
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
+
+Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5210cffb53440..2791ef2fd716c 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -532,7 +532,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_ops = &wcn3990_ops,
+ 		.decap_align_bytes = 1,
+ 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
+-		.n_cipher_suites = 8,
++		.n_cipher_suites = 11,
+ 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
+-- 
+2.20.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
