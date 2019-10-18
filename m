@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
- helo=us-smtp-1.mimecast.com)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLPHz-0002wY-BX
- for ath10k@lists.infradead.org; Fri, 18 Oct 2019 10:15:22 +0000
-Received: by mail-lf1-f72.google.com with SMTP id r3so1177255lfn.13
- for <ath10k@lists.infradead.org>; Fri, 18 Oct 2019 03:15:15 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v2 1/4] mac80211: Rearrange ieee80211_tx_info to make room
- for tx_time_est
-In-Reply-To: <CA+iem5t6xghBocck864nDX2snWQ5O+v6_M2Jc9aCdn_hE+mFCA@mail.gmail.com>
+ id 1iLRGZ-0000gq-Pn
+ for ath10k@lists.infradead.org; Fri, 18 Oct 2019 12:22:01 +0000
+Message-ID: <10b885b3238cede2d99c6134bebcc0c8ba6f6b10.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/4] mac80211: Rearrange ieee80211_tx_info to make
+ room for tx_time_est
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 18 Oct 2019 14:21:52 +0200
+In-Reply-To: <87sgnqe4wg.fsf@toke.dk>
 References: <157115993755.2500430.12214017471129215800.stgit@toke.dk>
  <157115993866.2500430.13989567853855880476.stgit@toke.dk>
  <CA+iem5t6xghBocck864nDX2snWQ5O+v6_M2Jc9aCdn_hE+mFCA@mail.gmail.com>
-Date: Fri, 18 Oct 2019 12:15:11 +0200
-Message-ID: <87sgnqe4wg.fsf@toke.dk>
+ <87sgnqe4wg.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,59 +23,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>, Kan Yan <kyan@google.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-Kan Yan <kyan@google.com> writes:
-
-> The "tx_time_est" field, shared by control and status, is not able to
-> survive until the skb returns to the mac80211 layer in some
-> architectures. The same space is defined as driver_data and some
-> wireless drivers use it for other purposes, as the cb in the sk_buff
-> is free to be used by any layer.
->
-> In the case of ath10k, the tx_time_est get clobbered by
-> struct ath10k_skb_cb {
->         dma_addr_t paddr;
->         u8 flags;
->         u8 eid;
->         u16 msdu_id;
->         u16 airtime_est;
->         struct ieee80211_vif *vif;
->         struct ieee80211_txq *txq;
-> } __packed;
-
-Ah, bugger, of course the driver that actually needs this is using the
-full driver_data space :P
-
-> Do you think shrink driver_data by 2 bytes and use that space for
-> tx_time_est to make it persistent across mac80211 and wireless driver
-> layer an acceptable solution?
-
-Hmm, the driver_data field is defined as an array of pointers, so we can
-only shrink it in increments of sizeof(void *). I think it may be
-feasible to shrink it (as in, I don't think any drivers are actually
-using the full 40 bytes), but doing this in a way that will gain us a
-2-byte space that is also usable in the case driver_data is *not* used
-(i.e., it needs be able to align with a field in .control and .status as
-well) would require some serious surgery of the whole ieee80211_tx_info...
-
-However, there's a nice juicy 'u16 ack_frame_id' at the start of
-ieee80211_tx_info. Could we potentially use that? We could use the top
-bit as a disambiguation flag; I think we're fine with 15 bits for the TX
-time itself (a single packet won't exceed 8ms or TX time), so if we can
-live with 15 bits of ACK frame ID space, that could be a way forward?
-
-Johannes, what do you think?
-
--Toke
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCAyMDE5LTEwLTE4IGF0IDEyOjE1ICswMjAwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
+ZW4gd3JvdGU6Cgo+IEhvd2V2ZXIsIHRoZXJlJ3MgYSBuaWNlIGp1aWN5ICd1MTYgYWNrX2ZyYW1l
+X2lkJyBhdCB0aGUgc3RhcnQgb2YKPiBpZWVlODAyMTFfdHhfaW5mby4gQ291bGQgd2UgcG90ZW50
+aWFsbHkgdXNlIHRoYXQ/IFdlIGNvdWxkIHVzZSB0aGUgdG9wCj4gYml0IGFzIGEgZGlzYW1iaWd1
+YXRpb24gZmxhZzsgSSB0aGluayB3ZSdyZSBmaW5lIHdpdGggMTUgYml0cyBmb3IgdGhlIFRYCj4g
+dGltZSBpdHNlbGYgKGEgc2luZ2xlIHBhY2tldCB3b24ndCBleGNlZWQgOG1zIG9yIFRYIHRpbWUp
+LCBzbyBpZiB3ZSBjYW4KPiBsaXZlIHdpdGggMTUgYml0cyBvZiBBQ0sgZnJhbWUgSUQgc3BhY2Us
+IHRoYXQgY291bGQgYmUgYSB3YXkgZm9yd2FyZD8KCkkgd2FzIGdvaW5nIHRvIHNheSB0aGF0IHNo
+b3VsZCB3b3JrIGFzIHdlIG9ubHkgZXZlciBoYXZlIGEgaGFuZGZ1bCBvZgpBQ0sgZnJhbWUgSURz
+LCBidXQgLi4uIHlvdSBzdGlsbCBuZWVkIHRoZSBhaXJ0aW1lIGV2ZW4gZm9yIGEgZnJhbWUgdGhh
+dAp1c2Vyc3BhY2Ugd2FudHMgdG8ga25vdyB0aGUgQUNLIHN0YXR1cyBvZiwgbm8/CgpXZSBjb3Vs
+ZCBwdWxsIHRoZSBhY2tfZnJhbWVfaWQgb3V0LW9mLWxpbmUgdXNpbmcgdGhlIHNrYiBleHRlbnNp
+b25zCmZyYW1ld29yaywgYnV0IEknbSBub3Qgc3VyZSB3ZSBzaG91bGQgYWxsb2NhdGUgb25lIG9m
+IHRoZSBwb3NzaWJsZSA4CmV4dGVuc2lvbiBJRHMgZm9yIHRoYXQgZWl0aGVyIC4uLgoKV2hhdCB3
+ZSByZWFsbHkgc2hvdWxkIGRvIGlzIGNvbnZlcnQgYWxsIChyZWxldmFudCkgZHJpdmVycyB0byB1
+c2UgcmF0ZQp0YWJsZXMgaW5zdGVhZCBvZiBoYXZpbmcgYWxsIHRoZSByYXRlcyBpbiB0aGUgVFgg
+aW5mbywgdGhlbiB3ZSdkIGdldCBhCmxvdCBvZiBzcGFjZSwgYnV0IHRoYXQncyBhIGxvdCBvZiB3
+b3JrIC4uLgoKam9oYW5uZXMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
