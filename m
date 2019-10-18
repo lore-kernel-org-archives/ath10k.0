@@ -1,23 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLSQ1-0006Hg-Jm
- for ath10k@lists.infradead.org; Fri, 18 Oct 2019 13:35:51 +0000
-Received: by mail-pf1-x441.google.com with SMTP id h195so3918539pfe.5
- for <ath10k@lists.infradead.org>; Fri, 18 Oct 2019 06:35:49 -0700 (PDT)
-Subject: Re: [PATCH 2/2] Fix a NULL-ptr-deref bug in
- ath10k_usb_alloc_urb_from_pipe
-References: <20190804003101.11541-1-benquike@gmail.com>
- <20190831213139.GA32507@roeck-us.net>
- <87ftlgqw42.fsf@kamboji.qca.qualcomm.com>
- <20191018040530.GA28167@roeck-us.net>
- <875zkmxz6f.fsf@kamboji.qca.qualcomm.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Message-ID: <5e0e1760-07ee-efa1-1c33-3276dc81cc67@roeck-us.net>
-Date: Fri, 18 Oct 2019 06:35:46 -0700
+ id 1iLScA-0002Lj-C2
+ for ath10k@lists.infradead.org; Fri, 18 Oct 2019 13:48:24 +0000
+Message-ID: <9fc60b546b54b40357264d67536733251cf39ebe.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/4] mac80211: Rearrange ieee80211_tx_info to make
+ room for tx_time_est
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 18 Oct 2019 15:48:13 +0200
+In-Reply-To: <87imomdvsj.fsf@toke.dk>
+References: <157115993755.2500430.12214017471129215800.stgit@toke.dk>
+ <157115993866.2500430.13989567853855880476.stgit@toke.dk>
+ <CA+iem5t6xghBocck864nDX2snWQ5O+v6_M2Jc9aCdn_hE+mFCA@mail.gmail.com>
+ <87sgnqe4wg.fsf@toke.dk>
+ <10b885b3238cede2d99c6134bebcc0c8ba6f6b10.camel@sipsolutions.net>
+ <87imomdvsj.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <875zkmxz6f.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,81 +25,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Mathias Payer <mathias.payer@nebelwelt.net>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Hui Peng <benquike@gmail.com>, davem@davemloft.net
+To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>, Kan Yan <kyan@google.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-On 10/18/19 12:58 AM, Kalle Valo wrote:
-> Guenter Roeck <linux@roeck-us.net> writes:
-> 
->> On Sun, Sep 01, 2019 at 11:06:05AM +0300, Kalle Valo wrote:
->>> Guenter Roeck <linux@roeck-us.net> writes:
->>>
->>>> Hi,
->>>>
->>>> On Sat, Aug 03, 2019 at 08:31:01PM -0400, Hui Peng wrote:
->>>>> The `ar_usb` field of `ath10k_usb_pipe_usb_pipe` objects
->>>>> are initialized to point to the containing `ath10k_usb` object
->>>>> according to endpoint descriptors read from the device side, as shown
->>>>> below in `ath10k_usb_setup_pipe_resources`:
->>>>>
->>>>> for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
->>>>>          endpoint = &iface_desc->endpoint[i].desc;
->>>>>
->>>>>          // get the address from endpoint descriptor
->>>>>          pipe_num = ath10k_usb_get_logical_pipe_num(ar_usb,
->>>>>                                                  endpoint->bEndpointAddress,
->>>>>                                                  &urbcount);
->>>>>          ......
->>>>>          // select the pipe object
->>>>>          pipe = &ar_usb->pipes[pipe_num];
->>>>>
->>>>>          // initialize the ar_usb field
->>>>>          pipe->ar_usb = ar_usb;
->>>>> }
->>>>>
->>>>> The driver assumes that the addresses reported in endpoint
->>>>> descriptors from device side  to be complete. If a device is
->>>>> malicious and does not report complete addresses, it may trigger
->>>>> NULL-ptr-deref `ath10k_usb_alloc_urb_from_pipe` and
->>>>> `ath10k_usb_free_urb_to_pipe`.
->>>>>
->>>>> This patch fixes the bug by preventing potential NULL-ptr-deref.
->>>>>
->>>>> Signed-off-by: Hui Peng <benquike@gmail.com>
->>>>> Reported-by: Hui Peng <benquike@gmail.com>
->>>>> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
->>>>
->>>> This patch fixes CVE-2019-15099, which has CVSS scores of 7.5 (CVSS 3.0)
->>>> and 7.8 (CVSS 2.0). Yet, I don't find it in the upstream kernel or in Linux
->>>> next.
->>>>
->>>> Is the patch going to be applied to the upstream kernel anytime soon ?
->>>
->>> Same answer as in patch 1:
->>>
->>> https://patchwork.kernel.org/patch/11074655/
->>>
->>
->> Sorry to bring this up again. The ath6k patch made it into the upstream
->> kernel, but the ath10k patch didn't. Did it get lost, or was there a
->> reason not to apply this patch ?
-> 
-> This patch had a build warning, you can see it from patchwork:
-> 
-> https://patchwork.kernel.org/patch/11074657/
-> 
-> Can someone fix it and resend the patch, please?
-> 
-
-Done.
-
-Guenter
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCAyMDE5LTEwLTE4IGF0IDE1OjMxICswMjAwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
+ZW4gd3JvdGU6Cgo+IFdlbGwsIGxldCdzIHRyeSB0byBkbyB0aGUgYWN0dWFsIG1hdGguLi4gQSBm
+dWxsLXNpemUgKDE1MzggYnl0ZXMpIHBhY2tldAo+IHRha2VzIH4yMDUwIG1pY3Jvc2Vjb25kcyB0
+byB0cmFuc21pdCBhdCA2IE1icHMuIEFkZGluZyBpbiBvdmVyaGVhZCwgaXQncwo+IGNlcnRhaW5s
+eSBzdGlsbCBsZXNzIHRoYXQgNDA5NiB1cywgc28gMTIgYml0cyBpcyBwbGVudHkuCgpXaGF0IGFi
+b3V0IEEtTVNEVXM/IEJ1dCBJIGd1ZXNzIG1heGltdW0gY29udGlub3VzIHRyYW5zbWlzc2lvbnMg
+YXJlIGF0Cm1vc3QgNG1zIGFueXdheSwgc28gYSBzaW5nbGUgcGFja2V0IHNob3VsZCBuZXZlciBi
+ZSBsb25nZXIuCgo+IFRoYXQgbGVhdmVzCj4gZm91ciBiaXRzIGZvciB0aGUgQUNLIHN0YXR1cyBJ
+RCBpZiB3ZSBqdXN0IHNwbGl0IHRoZSB1MTY7IGlmIHdlIG9ubHkKPiBldmVyIGhhdmUgImEgaGFu
+ZGZ1bCIsIHRoYXQgc2hvdWxkIGJlIGVub3VnaCwgbm8/CgpJdCdzIGhvdyBtYW55IGFyZSBpbiBm
+bGlnaHQgYXQgYSB0aW1lLCAxNiBkb2Vzbid0IHNlZW0gbGlrZWx5IHRvIGhhcHBlbiwKYnV0IEkg
+ZG9uJ3QgcmVhbGx5IGtub3cgd2hhdCBhcHBsaWNhdGlvbnMgYXJlIGRvaW5nIHdpdGggaXQgbm93
+LgpQcm9iYWJseSBvbmx5IHdwYV9zIGZvciB0aGUgRUFQT0wgVFggc3RhdHVzLgoKPiBXZSBjb3Vs
+ZCBhbHNvIHNwbGl0IDUvMTEuIFRoYXQgd291bGQgc3VwcG9ydCB1cCB0byAzMiBBQ0sgSURzLCBh
+bmQgd2UKPiBjYW4ganVzdCB0cnVuY2F0ZSB0aGUgYWlydGltZSBhdCAyMDQ4IHVzLCB3aGljaCBp
+cyBub3QgYSBiaWcgZGVhbCBJJ2QKPiBzYXkuCgpXZSBjYW4gYWxzbyBwbGF5IHdpdGggdGhlIHVu
+aXRzIG9mIHRoZSBhaXJ0aW1lLCBlLmcuIG1ha2luZyB0aGF0IGEKbXVsdGlwbGUgb2YgMiBvciA0
+IHVzPyBTZWVtcyB1bmxpa2VseSB0byBtYXR0ZXIgbXVjaD8KCj4gVGhpbmsgaXQgbW9zdGx5IGRl
+cGVuZHMgb24gd2hhdCBpcyB0aGUgc21hbGxlc3QgSUQgc3BhY2UgZm9yIEFDSyBJRHMgd2UKPiBj
+YW4gbGl2ZSB3aXRoPyA6KQoKOikKClRCSCwgSSBkb24ndCByZWFsbHkga25vdy4gSW4gYSBsb3Qg
+b2YgaGFyZHdhcmUgdXNpbmcgdGhpcyBpcyByZWFsbHkgYmFkCmZvciBwZXJmb3JtYW5jZSBzbyBp
+dCBzaG91bGRuJ3QgYmUgdXNlZCBtdWNoLCBzbyAuLi4KCmpvaGFubmVzCgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
