@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]
+ helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLaNr-0002k9-Rg
- for ath10k@lists.infradead.org; Fri, 18 Oct 2019 22:06:09 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 022/100] ath10k: assign 'n_cipher_suites = 11'
- for WCN3990 to enable WPA3
-Date: Fri, 18 Oct 2019 18:04:07 -0400
-Message-Id: <20191018220525.9042-22-sashal@kernel.org>
-In-Reply-To: <20191018220525.9042-1-sashal@kernel.org>
-References: <20191018220525.9042-1-sashal@kernel.org>
+ id 1iLmfT-00049y-Of
+ for ath10k@lists.infradead.org; Sat, 19 Oct 2019 11:13:09 +0000
+Received: by mail-lj1-f199.google.com with SMTP id p14so1609537ljh.22
+ for <ath10k@lists.infradead.org>; Sat, 19 Oct 2019 04:12:58 -0700 (PDT)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v3 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
+ packet dequeue
+In-Reply-To: <CA+iem5sCTsPe4PW=0j20NoAratvdCvB0ss7zO3wMWLcirXsLgg@mail.gmail.com>
+References: <157140962094.2866668.3383184317264069493.stgit@toke.dk>
+ <157140962534.2866668.1182822483250825739.stgit@toke.dk>
+ <CA+iem5sCTsPe4PW=0j20NoAratvdCvB0ss7zO3wMWLcirXsLgg@mail.gmail.com>
+Date: Sat, 19 Oct 2019 13:12:55 +0200
+Message-ID: <87o8ydc7k8.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,45 +28,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Abhishek Ambure <aambure@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+To: Kan Yan <kyan@google.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-From: Abhishek Ambure <aambure@codeaurora.org>
+Kan Yan <kyan@google.com> writes:
 
-[ Upstream commit 7ba31e6e0cdc0cc2e60e1fcbf467f3c95aea948e ]
+>> +       if (local->airtime_flags & AIRTIME_USE_AQL) {
+>> +               airtime = ieee80211_calc_expected_tx_airtime(hw, vif, txq->sta,
+>> +                                                            skb->len);
+>> +               if (airtime) {
+>> +                       /* We only have 10 bits in tx_time_est, so store airtime
+>> +                        * in increments of 4 us and clamp that to 2**10.
+>> +                        */
+>> +                       info->tx_time_est = min_t(u32, airtime >> 2, 1 << 10);
+>> +                       ieee80211_sta_update_pending_airtime(local, tx.sta, ac,
+>> +                                                            airtime, false);
+>> +               }
+>> +       }
+>> +
+>
+> It should be:
+>                          ieee80211_sta_update_pending_airtime(local, tx.sta, ac,
+>
+> info->tx_time_est << 2, false);
+>
+> The airtime rounded to 4us (info->tx_time_est << 2), instead of the
+> original airtime should be used when registering the pending airtime,
+> to keep it consistent with airtime subtracted when the skb is freed.
 
-Hostapd uses CCMP, GCMP & GCMP-256 as 'wpa_pairwise' option to run WPA3.
-In WCN3990 firmware cipher suite numbers 9 to 11 are for CCMP,
-GCMP & GCMP-256.
+Yes, I realised that last night as well. The rounding is also off (max
+is 2**10-1, not 2**10. Will send a v4 :)
 
-To enable CCMP, GCMP & GCMP-256 cipher suites in WCN3990 firmware,
-host sets 'n_cipher_suites = 11' while initializing hardware parameters.
-
-Tested HW: WCN3990
-Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
-
-Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5210cffb53440..2791ef2fd716c 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -532,7 +532,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.hw_ops = &wcn3990_ops,
- 		.decap_align_bytes = 1,
- 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
--		.n_cipher_suites = 8,
-+		.n_cipher_suites = 11,
- 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
- 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
- 		.target_64bit = true,
--- 
-2.20.1
+-Toke
 
 
 _______________________________________________
