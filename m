@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMYF6-0002YG-LO
- for ath10k@lists.infradead.org; Mon, 21 Oct 2019 14:01:06 +0000
-Subject: Re: WARNING at net/mac80211/sta_info.c:1057
- (__sta_info_destroy_part2())
-References: <87lfuuln5n.fsf@tynnyri.adurom.net>
- <1571584320-29816-1-git-send-email-pozega.tomislav@gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <073b0ffb-187b-659e-0967-23ae44c5c660@candelatech.com>
-Date: Mon, 21 Oct 2019 07:01:00 -0700
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iMYkO-0002cF-0t
+ for ath10k@lists.infradead.org; Mon, 21 Oct 2019 14:33:25 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v4 0/2] Implement Airtime-based Queue Limit (AQL)
+References: <20191011022413.176208-1-kyan@google.com>
+ <87wod7y9ui.fsf@kamboji.qca.qualcomm.com>
+ <87sgnvy9c2.fsf@kamboji.qca.qualcomm.com>
+ <CA+iem5uLYFVQjPaE1QDKc6c+eKz8Xd4LbwczYXOBKP3q+HHdBg@mail.gmail.com>
+Date: Mon, 21 Oct 2019 17:33:16 +0300
+In-Reply-To: <CA+iem5uLYFVQjPaE1QDKc6c+eKz8Xd4LbwczYXOBKP3q+HHdBg@mail.gmail.com>
+ (Kan Yan's message of "Mon, 14 Oct 2019 16:58:04 -0700")
+Message-ID: <87r236tbgz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1571584320-29816-1-git-send-email-pozega.tomislav@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +22,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Tomislav_Po=c5=beega?= <pozega.tomislav@gmail.com>, kvalo@codeaurora.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, johannes@sipsolutions.net, torvalds@linux-foundation.org, davem@davemloft.net
+To: Kan Yan <kyan@google.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, Toke =?utf-8?Q?H=C3=B8iland-J?= =?utf-8?Q?=C3=B8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Yibo Zhao <yiboz@codeaurora.org>, Johannes Berg <johannes@sipsolutions.net>, Felix Fietkau <nbd@nbd.name>
 
+(please don't top post)
 
+Kan Yan <kyan@google.com> writes:
 
-On 10/20/2019 08:12 AM, Tomislav Po=9Eega wrote:
->> -11 is -EAGAIN which would mean that the HTC credits have run out some
->>  reason for the WMI command:
->>
->> if (ep->tx_credits < credits) {
->>         ath10k_dbg(ar, ATH10K_DBG_HTC,
->>                 "htc insufficient credits ep %d required %d available %d=
-\n",
->>                 eid, credits, ep->tx_credits);
->>         spin_unlock_bh(&htc->tx_lock);
->>         ret =3D -EAGAIN;
->>         goto err_pull;
->> }
->>
->> Credits can run out, for example, if there's a lot of WMI command/event
->> activity and are not returned during the 3s wait, firmware crashed or
->> problems with the PCI bus.
->
-> Hi
->
-> Can this occur if the target memory is not properly allocated?
+> I believe Toke will integrate this with his version and move the
+> estimating pending airtime part to mac80211, so maybe in the next
+> version, ath10k change is no longer required.
 
-I have only seen this on wave-1 cards, and it is usually paired with situat=
-ions
-where the wave-1 stops doing WMI related interrupts properly as best as I c=
-an
-understand.  If I force the firmware to poll instead of waiting for irqs, t=
-hen
-WMI communication will work for a while...I have not implemented that on the
-driver side though, so I still see these WMI timeout issues.
+What do you mean? Are you saying that I can drop this patch:
 
-Thanks,
-Ben
+[v4,2/2] ath10k: Enable Airtime-based Queue Limit (AQL)
 
--- =
+https://patchwork.kernel.org/patch/11184783/
 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
