@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMfx4-0003li-C7
+ id 1iMfx4-0003ld-0D
  for ath10k@lists.infradead.org; Mon, 21 Oct 2019 22:14:59 +0000
-Date: Tue, 22 Oct 2019 06:14:33 +0800
+Date: Tue, 22 Oct 2019 06:14:32 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [RFC PATCH] mac80211: ieee80211_calc_rx_airtime() can be static
-Message-ID: <20191021221433.5nnny72acwx7lr4a@4978f4969bb8>
+Subject: Re: [PATCH v4 2/4] mac80211: Import airtime calculation code from mt76
+Message-ID: <201910220654.AzuMkFgk%lkp@intel.com>
 References: <157148503639.2989444.8337290298332344733.stgit@toke.dk>
 MIME-Version: 1.0
 Content-Disposition: inline
@@ -26,43 +26,38 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
 Cc: Kan Yan <kyan@google.com>, kbuild-all@lists.01.org, Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
+Hi "Toke,
 
-Fixes: 427959c8f966 ("mac80211: Import airtime calculation code from mt76")
-Signed-off-by: kbuild test robot <lkp@intel.com>
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on mac80211-next/master]
+[cannot apply to v5.4-rc4 next-20191021]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Toke-H-iland-J-rgensen/Add-Airtime-Queue-Limits-AQL-to-mac80211/20191021-234455
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211-next.git master
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> net/mac80211/airtime.c:211:5: sparse: sparse: symbol 'ieee80211_calc_rx_airtime' was not declared. Should it be static?
+>> net/mac80211/airtime.c:282:5: sparse: sparse: symbol 'ieee80211_calc_tx_airtime_rate' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
 ---
- airtime.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/net/mac80211/airtime.c b/net/mac80211/airtime.c
-index c8d0cee613660..3f13640643e34 100644
---- a/net/mac80211/airtime.c
-+++ b/net/mac80211/airtime.c
-@@ -208,9 +208,9 @@ ieee80211_calc_legacy_rate_duration(const struct ieee80211_rate *rate,
- 	return duration;
- }
- 
--u32 ieee80211_calc_rx_airtime(struct ieee80211_hw *hw,
--			      struct ieee80211_rx_status *status,
--			      int len)
-+static u32 ieee80211_calc_rx_airtime(struct ieee80211_hw *hw,
-+				     struct ieee80211_rx_status *status,
-+				     int len)
- {
- 	struct ieee80211_supported_band *sband;
- 	const struct ieee80211_rate *rate;
-@@ -279,9 +279,9 @@ u32 ieee80211_calc_rx_airtime(struct ieee80211_hw *hw,
- 	return duration;
- }
- 
--u32 ieee80211_calc_tx_airtime_rate(struct ieee80211_hw *hw,
--				   struct ieee80211_tx_rate *rate,
--				   u8 band, int len)
-+static u32 ieee80211_calc_tx_airtime_rate(struct ieee80211_hw *hw,
-+					  struct ieee80211_tx_rate *rate,
-+					  u8 band, int len)
- {
- 	struct ieee80211_rx_status stat = {
- 		.band = band,
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 _______________________________________________
 ath10k mailing list
