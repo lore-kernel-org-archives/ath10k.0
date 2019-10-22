@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMpfs-0002Us-83
- for ath10k@lists.infradead.org; Tue, 22 Oct 2019 08:37:53 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Fix a NULL-ptr-deref bug in
- ath10k_usb_alloc_urb_from_pipe
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191018133516.12606-1-linux@roeck-us.net>
-References: <20191018133516.12606-1-linux@roeck-us.net>
-Message-Id: <20191022083751.85496608CC@smtp.codeaurora.org>
-Date: Tue, 22 Oct 2019 08:37:51 +0000 (UTC)
+ id 1iMpz6-0001yR-O9
+ for ath10k@lists.infradead.org; Tue, 22 Oct 2019 08:57:46 +0000
+From: Zhi Chen <zhichen@codeaurora.org>
+Subject: [PATCH RFC] Revert "ath10k: fix DMA related firmware crashes on
+ multiple devices"
+Date: Tue, 22 Oct 2019 16:57:09 +0800
+Message-Id: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +16,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Hui Peng <benquike@gmail.com>
+To: ath10k@lists.infradead.org
+Cc: Zhi Chen <zhichen@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Guenter Roeck <linux@roeck-us.net> wrote:
+This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
+PCIe hung issue was observed on multiple platforms. The issue was reproduced
+when DUT was configured as AP and associated with 50+ STAs.
 
-> The `ar_usb` field of `ath10k_usb_pipe_usb_pipe` objects
-> are initialized to point to the containing `ath10k_usb` object
-> according to endpoint descriptors read from the device side, as shown
-> below in `ath10k_usb_setup_pipe_resources`:
-> 
-> for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
->         endpoint = &iface_desc->endpoint[i].desc;
-> 
->         // get the address from endpoint descriptor
->         pipe_num = ath10k_usb_get_logical_pipe_num(ar_usb,
->                                                 endpoint->bEndpointAddress,
->                                                 &urbcount);
->         ......
->         // select the pipe object
->         pipe = &ar_usb->pipes[pipe_num];
-> 
->         // initialize the ar_usb field
->         pipe->ar_usb = ar_usb;
-> }
-> 
-> The driver assumes that the addresses reported in endpoint
-> descriptors from device side  to be complete. If a device is
-> malicious and does not report complete addresses, it may trigger
-> NULL-ptr-deref `ath10k_usb_alloc_urb_from_pipe` and
-> `ath10k_usb_free_urb_to_pipe`.
-> 
-> This patch fixes the bug by preventing potential NULL-ptr-deref.
-> 
-> Signed-off-by: Hui Peng <benquike@gmail.com>
-> Reported-by: Hui Peng <benquike@gmail.com>
-> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> [groeck: Add driver tag to subject, fix build warning]
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
+issue happened. It broke PCIe spec and caused PCIe stuck.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
+         QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
+         Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
 
-bfd6e6e6c5d2 ath10k: Fix a NULL-ptr-deref bug in ath10k_usb_alloc_urb_from_pipe
+Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/hw.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 35a3623..17f620b 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -753,7 +753,7 @@ ath10k_is_rssi_enable(struct ath10k_hw_params *hw,
+ #define TARGET_10X_MAX_FRAG_ENTRIES		0
+ 
+ /* 10.2 parameters */
+-#define TARGET_10_2_DMA_BURST_SIZE		0
++#define TARGET_10_2_DMA_BURST_SIZE		1
+ 
+ /* Target specific defines for WMI-TLV firmware */
+ #define TARGET_TLV_NUM_VDEVS			4
+@@ -813,7 +813,7 @@ ath10k_is_rssi_enable(struct ath10k_hw_params *hw,
+ 
+ #define TARGET_10_4_TX_DBG_LOG_SIZE		1024
+ #define TARGET_10_4_NUM_WDS_ENTRIES		32
+-#define TARGET_10_4_DMA_BURST_SIZE		0
++#define TARGET_10_4_DMA_BURST_SIZE		1
+ #define TARGET_10_4_MAC_AGGR_DELIM		0
+ #define TARGET_10_4_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK 1
+ #define TARGET_10_4_VOW_CONFIG			0
 -- 
-https://patchwork.kernel.org/patch/11198433/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.7.4
 
 
 _______________________________________________
