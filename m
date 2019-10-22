@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]
- helo=us-smtp-delivery-1.mimecast.com)
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
+ helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMsRe-00007h-Nn
- for ath10k@lists.infradead.org; Tue, 22 Oct 2019 11:35:24 +0000
-Received: by mail-lj1-f199.google.com with SMTP id h19so2894022ljc.5
- for <ath10k@lists.infradead.org>; Tue, 22 Oct 2019 04:35:18 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v4 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
- packet dequeue
-In-Reply-To: <CA+iem5sy16=xMZjJi1nKHrxP_xWHk-86G=ZLwtMMb04EOt5tQA@mail.gmail.com>
-References: <157148503415.2989444.7391437309981941226.stgit@toke.dk>
- <157148503865.2989444.7118792679603045723.stgit@toke.dk>
- <CA+iem5sy16=xMZjJi1nKHrxP_xWHk-86G=ZLwtMMb04EOt5tQA@mail.gmail.com>
-Date: Tue, 22 Oct 2019 13:35:16 +0200
-Message-ID: <871rv5ovwr.fsf@toke.dk>
+ id 1iMuEx-0008DI-3i
+ for ath10k@lists.infradead.org; Tue, 22 Oct 2019 13:30:25 +0000
+Received: by mail-wm1-f71.google.com with SMTP id z24so6238812wmk.8
+ for <ath10k@lists.infradead.org>; Tue, 22 Oct 2019 06:30:18 -0700 (PDT)
+Subject: [PATCH v5 0/4] Add Airtime Queue Limits (AQL) to mac80211
+From: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Date: Tue, 22 Oct 2019 15:30:15 +0200
+Message-ID: <157175101518.104114.6722791270722911023.stgit@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,35 +19,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Kan Yan <kyan@google.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-Kan Yan <kyan@google.com> writes:
-
->> +               if (ieee80211_is_data_qos(hdr->frame_control)) {
->> +                       qc = ieee80211_get_qos_ctl(hdr);
->> +                       tid = qc[0] & 0xf;
->> +                       ac = ieee80211_ac_from_tid(tid);
->> +               } else {
->> +                       ac = IEEE80211_AC_BE;
->> +               }
->
-> The tid/ac is incorrect either here or in __ieee80211_tx_status() when
-> tested with ath10k. The ac is set to AC_BE with test done using BK
-> class traffic,  hence the pending airtime get updated for the wrong
-> txq.
-
-Hmm, I guess we could just get the ac using skb_get_queue_mapping().
-I'll send an update with this fixed for you to try :)
-
--Toke
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhpcyBzZXJpZXMgaXMgYSBmaXJzdCBhdHRlbXB0IGF0IHBvcnRpbmcgdGhlIEFpcnRpbWUgUXVl
+dWUgTGltaXRzIGNvbmNlcHQgZnJvbQp0aGUgb3V0LW9mLXRyZWUgYXRoMTBrIGltcGxlbWVudGF0
+aW9uWzBdIHRvIG1hYzgwMjExLiBUaGlzIHZlcnNpb24gdGFrZXMgS2FuJ3MKcGF0Y2ggdG8gZG8g
+dGhlIHRocm90dGxpbmcgaW4gbWFjODAyMTEsIGFuZCByZXBsYWNlcyB0aGUgZHJpdmVyIEFQSSB3
+aXRoIHRoZQptZWNoYW5pc20gZnJvbSB0aGUgcHJldmlvdXMgdmVyc2lvbiBvZiBteSBzZXJpZXMs
+IHdoaWNoIGluc3RlYWQgY2FsY3VsYXRlZCB0aGUKZXhwZWN0ZWQgYWlydGltZSBhdCBkZXF1ZXVl
+IHRpbWUgaW5zaWRlIG1hYzgwMjExLCBzdG9yaW5nIGl0IGluIHRoZSBTS0IgY2IKZmllbGQuCgpU
+aGlzIHNlcmllcyBhbHNvIGltcG9ydHMgRmVsaXgnIGFpcnRpbWUgY2FsY3VsYXRpb24gY29kZSBm
+cm9tIG10NzYgaW50bwptYWM4MDIxMSwgYWRqdXN0aW5nIHRoZSBBUEkgc28gaXQgY2FuIGJlIHVz
+ZWQgZnJvbSBUWCBkZXF1ZXVlLCBieSBleHRyYWN0aW5nIHRoZQpsYXRlc3QgVFggcmF0ZSBmcm9t
+IHRoZSB0eF9zdGF0cyBzdHJ1Y3R1cmUga2VwdCBmb3IgZWFjaCBzdGF0aW9uLgoKQXMgYmVmb3Jl
+LCBJJ3ZlIG9ubHkgY29tcGlsZSB0ZXN0ZWQgdGhpcyAobGFja2luZyB0aGUgcHJvcGVyIGhhcmR3
+YXJlIHRvIGRvIG1vcmUKdGVzdGluZykuIFNvIEknbSBob3Bpbmcgc29tZW9uZSB3aXRoIGEgcHJv
+cGVyIHRlc3Rpbmcgc2V0dXAgY2FuIHRha2UgdGhlIHdob2xlCnRoaW5nIGZvciBhIHNwaW4uLi4g
+OikKClRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgaW4gbXkgZ2l0IHJlcG8gaGVyZToKaHR0
+cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9rZS9saW51eC5n
+aXQvbG9nLz9oPW1hYzgwMjExLWFxbC0wMgoKQ2hhbmdlbG9nOgoKdjU6CiAgLSBBZGQgbWlzc2lu
+ZyBleHBvcnQgb2YgaWVlZTgwMjExX2NhbGNfcnhfYWlydGltZSgpIGFuZCBtYWtlCiAgICBpZWVl
+ODAyMTFfY2FsY190eF9haXJ0aW1lX3JhdGUoKSBzdGF0aWMgKGtidWlsZGJvdCkuCiAgLSBVc2Ug
+c2tiX2dldF9xdWV1ZV9tYXBwaW5nKCkgdG8gZ2V0IHRoZSBBQyBmcm9tIHRoZSBza2IuCiAgLSBU
+YWtlIGJhc2ljIHJhdGUgY29uZmlndXJhdGlvbiBmb3IgdGhlIEJTUyBpbnRvIGFjY291bnQgd2hl
+biBjYWxjdWxhdGluZwogICAgbXVsdGljYXN0IHJhdGUuCnY0OgogIC0gRml4IGNhbGN1bGF0aW9u
+IHRoYXQgY2xhbXBzIHRoZSBtYXhpbXVtIGFpcnRpbWUgdG8gZml0IGludG8gMTAgYml0cwogIC0g
+SW5jb3Jwb3JhdGUgUmljaCBCcm93bidzIG5pdHMgZm9yIHRoZSBjb21taXQgbWVzc2FnZSBpbiBL
+YW4ncyBwYXRjaAogIC0gQWRkIGZld2VyIGxvY2FsIHZhcmlhYmxlcyB0byBpZWVlODAyMTFfdHhf
+ZGVxdWV1ZSgpCnYzOgogIC0gTW92ZSB0aGUgdHhfdGltZV9lc3QgZmllbGQgc28gaXQncyBzaGFy
+ZWQgd2l0aCBhY2tfZnJhbWVfaWQsIGFuZCB1c2UgdW5pdHMKICAgIG9mIDR1cyBmb3IgdGhlIHZh
+bHVlIHN0b3JlZCBpbiBpdC4KICAtIE1vdmUgdGhlIGFkZGl0aW9uIG9mIHRoZSBFdGhlcm5ldCBo
+ZWFkZXIgc2l6ZSBpbnRvIGllZWU4MDIxMV9jYWxjX2V4cGVjdGVkX3R4X2FpcnRpbWUoKQp2MjoK
+ICAtIEludGVncmF0ZSBLYW4ncyBhcHByb2FjaCB0byBhaXJ0aW1lIHRocm90dGxpbmcuCiAgLSBI
+b3BlZnVsbHkgZml4IHRoZSBjYiBzdHJ1Y3QgYWxpZ25tZW50IG9uIGJpZy1lbmRpYW4gYXJjaGl0
+ZWN0dXJlcy4KCi0tLQoKS2FuIFlhbiAoMSk6CiAgICAgIG1hYzgwMjExOiBJbXBsZW1lbnQgQWly
+dGltZS1iYXNlZCBRdWV1ZSBMaW1pdCAoQVFMKQoKVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuICgz
+KToKICAgICAgbWFjODAyMTE6IFNocmluayB0aGUgc2l6ZSBvZiBhY2tfZnJhbWVfaWQgdG8gbWFr
+ZSByb29tIGZvciB0eF90aW1lX2VzdAogICAgICBtYWM4MDIxMTogSW1wb3J0IGFpcnRpbWUgY2Fs
+Y3VsYXRpb24gY29kZSBmcm9tIG10NzYKICAgICAgbWFjODAyMTE6IFVzZSBBaXJ0aW1lLWJhc2Vk
+IFF1ZXVlIExpbWl0cyAoQVFMKSBvbiBwYWNrZXQgZGVxdWV1ZQoKCiBpbmNsdWRlL25ldC9jZmc4
+MDIxMS5oICAgICB8ICAgIDcgKwogaW5jbHVkZS9uZXQvbWFjODAyMTEuaCAgICAgfCAgIDQ1ICsr
+KysrCiBuZXQvbWFjODAyMTEvTWFrZWZpbGUgICAgICB8ICAgIDMgCiBuZXQvbWFjODAyMTEvYWly
+dGltZS5jICAgICB8ICAzOTAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysKIG5ldC9tYWM4MDIxMS9jZmcuYyAgICAgICAgIHwgICAgMiAKIG5ldC9tYWM4MDIxMS9k
+ZWJ1Z2ZzLmMgICAgIHwgICA3OCArKysrKysrKysKIG5ldC9tYWM4MDIxMS9kZWJ1Z2ZzX3N0YS5j
+IHwgICA0MyArKysrLQogbmV0L21hYzgwMjExL2llZWU4MDIxMV9pLmggfCAgICA4ICsKIG5ldC9t
+YWM4MDIxMS9tYWluLmMgICAgICAgIHwgICAgOSArCiBuZXQvbWFjODAyMTEvc3RhX2luZm8uYyAg
+ICB8ICAgMzIgKysrKwogbmV0L21hYzgwMjExL3N0YV9pbmZvLmggICAgfCAgICA4ICsKIG5ldC9t
+YWM4MDIxMS9zdGF0dXMuYyAgICAgIHwgICAyOCArKysKIG5ldC9tYWM4MDIxMS90eC5jICAgICAg
+ICAgIHwgICA2OSArKysrKysrLQogMTMgZmlsZXMgY2hhbmdlZCwgNzA0IGluc2VydGlvbnMoKyks
+IDE4IGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IG5ldC9tYWM4MDIxMS9haXJ0aW1l
+LmMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
