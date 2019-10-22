@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]
- helo=us-smtp-delivery-1.mimecast.com)
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMuF2-0008Is-Ru
- for ath10k@lists.infradead.org; Tue, 22 Oct 2019 13:30:31 +0000
-Received: by mail-wr1-f70.google.com with SMTP id v8so8275589wrt.16
- for <ath10k@lists.infradead.org>; Tue, 22 Oct 2019 06:30:22 -0700 (PDT)
-Subject: [PATCH v5 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
- packet dequeue
-From: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Date: Tue, 22 Oct 2019 15:30:19 +0200
-Message-ID: <157175101956.104114.5352455639882457638.stgit@toke.dk>
-In-Reply-To: <157175101518.104114.6722791270722911023.stgit@toke.dk>
-References: <157175101518.104114.6722791270722911023.stgit@toke.dk>
+ id 1iMxmG-0007LH-D0
+ for ath10k@lists.infradead.org; Tue, 22 Oct 2019 17:17:01 +0000
+Received: by mail-pg1-x542.google.com with SMTP id f14so10317501pgi.9
+ for <ath10k@lists.infradead.org>; Tue, 22 Oct 2019 10:16:59 -0700 (PDT)
+Subject: Re: [PATCH RFC] Revert "ath10k: fix DMA related firmware crashes on
+ multiple devices"
+References: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
+From: Peter Oh <peter.oh@eero.com>
+Message-ID: <d6cfd945-7bab-a01d-0157-e0e1802f66e3@eero.com>
+Date: Tue, 22 Oct 2019 10:16:53 -0700
 MIME-Version: 1.0
+In-Reply-To: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,78 +22,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Kan Yan <kyan@google.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Zhi Chen <zhichen@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-RnJvbTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+CgpUaGUgcHJl
-dmlvdXMgY29tbWl0IGFkZGVkIHRoZSBhYmlsaXR5IHRvIHRocm90dGxlIHN0YXRpb25zIHdoZW4g
-dGhleSBxdWV1ZQp0b28gbXVjaCBhaXJ0aW1lIGluIHRoZSBoYXJkd2FyZS4gVGhpcyBjb21taXQg
-ZW5hYmxlcyB0aGUgZnVuY3Rpb25hbGl0eSBieQpjYWxjdWxhdGluZyB0aGUgZXhwZWN0ZWQgYWly
-dGltZSB1c2FnZSBvZiBlYWNoIHBhY2tldCB0aGF0IGlzIGRlcXVldWVkIGZyb20KdGhlIFRYUXMg
-aW4gbWFjODAyMTEsIGFuZCBhY2NvdW50aW5nIHRoYXQgYXMgcGVuZGluZyBhaXJ0aW1lLgoKVGhl
-IGVzdGltYXRlZCBhaXJ0aW1lIGZvciBlYWNoIHNrYiBpcyBzdG9yZWQgaW4gdGhlIHR4X2luZm8s
-IHNvIHdlIGNhbgpzdWJ0cmFjdCB0aGUgc2FtZSBhbW91bnQgZnJvbSB0aGUgcnVubmluZyB0b3Rh
-bCB3aGVuIHRoZSBza2IgaXMgZnJlZWQgb3IKcmVjeWNsZWQuIFRoZSB0aHJvdHRsaW5nIG1lY2hh
-bmlzbSByZWxpZXMgb24gdGhpcyBhY2NvdW50aW5nIHRvIGJlCmFjY3VyYXRlIChpLmUuLCB0aGF0
-IHdlIGFyZSBub3QgZnJlZWluZyBza2JzIHdpdGhvdXQgc3VidHJhY3RpbmcgYW55CmFpcnRpbWUg
-dGhleSB3ZXJlIGFjY291bnRlZCBmb3IpLCBzbyB3ZSBwdXQgdGhlIHN1YnRyYWN0aW9uIGludG8K
-aWVlZTgwMjExX3JlcG9ydF91c2VkX3NrYigpLiBBcyBhbiBvcHRpbWlzYXRpb24sIHdlIGFsc28g
-c3VidHJhY3QgdGhlCmFpcnRpbWUgb24gcmVndWxhciBUWCBjb21wbGV0aW9uLCB6ZXJvaW5nIG91
-dCB0aGUgdmFsdWUgc3RvcmVkIGluIHRoZQpwYWNrZXQgYWZ0ZXJ3YXJkcywgdG8gYXZvaWQgaGF2
-aW5nIHRvIGRvIGFuIGV4cGVuc2l2ZSBsb29rdXAgb2YgdGhlIHN0YXRpb24KZnJvbSB0aGUgcGFj
-a2V0IGRhdGEgb24gZXZlcnkgcGFja2V0LgoKVGhpcyBwYXRjaCBkb2VzICpub3QqIGluY2x1ZGUg
-YW55IG1lY2hhbmlzbSB0byB3YWtlIGEgdGhyb3R0bGVkIFRYUSBhZ2FpbiwKb24gdGhlIGFzc3Vt
-cHRpb24gdGhhdCB0aGlzIHdpbGwgaGFwcGVuIGFueXdheSBhcyBhIHNpZGUgZWZmZWN0IG9mIHdo
-YXRldmVyCmZyZWVkIHRoZSBza2IgKG1vc3QgY29tbW9ubHkgYSBUWCBjb21wbGV0aW9uKS4KClNp
-Z25lZC1vZmYtYnk6IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPgot
-LS0KIG5ldC9tYWM4MDIxMS9zdGF0dXMuYyB8ICAgMjggKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKwogbmV0L21hYzgwMjExL3R4LmMgICAgIHwgICAyMSArKysrKysrKysrKysrKysrKysrKysK
-IDIgZmlsZXMgY2hhbmdlZCwgNDkgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL25ldC9tYWM4
-MDIxMS9zdGF0dXMuYyBiL25ldC9tYWM4MDIxMS9zdGF0dXMuYwppbmRleCBhYjhiYTU4MzVjYTAu
-LmYxMjU5ODRkNWJlYiAxMDA2NDQKLS0tIGEvbmV0L21hYzgwMjExL3N0YXR1cy5jCisrKyBiL25l
-dC9tYWM4MDIxMS9zdGF0dXMuYwpAQCAtNjc2LDYgKzY3NiwyMyBAQCBzdGF0aWMgdm9pZCBpZWVl
-ODAyMTFfcmVwb3J0X3VzZWRfc2tiKHN0cnVjdCBpZWVlODAyMTFfbG9jYWwgKmxvY2FsLAogCWlm
-IChkcm9wcGVkKQogCQlhY2tlZCA9IGZhbHNlOwogCisJaWYgKGluZm8tPnR4X3RpbWVfZXN0KSB7
-CisJCXN0cnVjdCBpZWVlODAyMTFfc3ViX2lmX2RhdGEgKnNkYXRhOworCQlzdHJ1Y3Qgc3RhX2lu
-Zm8gKnN0YSA9IE5VTEw7CisKKwkJcmN1X3JlYWRfbG9jaygpOworCisJCXNkYXRhID0gaWVlZTgw
-MjExX3NkYXRhX2Zyb21fc2tiKGxvY2FsLCBza2IpOworCQlpZiAoc2RhdGEpCisJCQlzdGEgPSBz
-dGFfaW5mb19nZXRfYnNzKHNkYXRhLCBza2JfbWFjX2hlYWRlcihza2IpKTsKKworCQlpZWVlODAy
-MTFfc3RhX3VwZGF0ZV9wZW5kaW5nX2FpcnRpbWUobG9jYWwsIHN0YSwKKwkJCQkJCSAgICAgc2ti
-X2dldF9xdWV1ZV9tYXBwaW5nKHNrYiksCisJCQkJCQkgICAgIGluZm8tPnR4X3RpbWVfZXN0IDw8
-IDIsCisJCQkJCQkgICAgIHRydWUpOworCQlyY3VfcmVhZF91bmxvY2soKTsKKwl9CisKIAlpZiAo
-aW5mby0+ZmxhZ3MgJiBJRUVFODAyMTFfVFhfSU5URkxfTUxNRV9DT05OX1RYKSB7CiAJCXN0cnVj
-dCBpZWVlODAyMTFfc3ViX2lmX2RhdGEgKnNkYXRhOwogCkBAIC05MzAsNiArOTQ3LDE3IEBAIHN0
-YXRpYyB2b2lkIF9faWVlZTgwMjExX3R4X3N0YXR1cyhzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywK
-IAkJCXRpZCA9IHFjWzBdICYgMHhmOwogCQl9CiAKKwkJaWYgKGluZm8tPnR4X3RpbWVfZXN0KSB7
-CisJCQkvKiBEbyB0aGlzIGhlcmUgdG8gYXZvaWQgdGhlIGV4cGVuc2l2ZSBsb29rdXAgb2YgdGhl
-IHN0YQorCQkJICogaW4gaWVlZTgwMjExX3JlcG9ydF91c2VkX3NrYigpLgorCQkJICovCisJCQlp
-ZWVlODAyMTFfc3RhX3VwZGF0ZV9wZW5kaW5nX2FpcnRpbWUobG9jYWwsIHN0YSwKKwkJCQkJCQkg
-ICAgIHNrYl9nZXRfcXVldWVfbWFwcGluZyhza2IpLAorCQkJCQkJCSAgICAgaW5mby0+dHhfdGlt
-ZV9lc3QgPDwgMiwKKwkJCQkJCQkgICAgIHRydWUpOworCQkJaW5mby0+dHhfdGltZV9lc3QgPSAw
-OworCQl9CisKIAkJaWYgKCFhY2tlZCAmJiBpZWVlODAyMTFfaXNfYmFja19yZXEoZmMpKSB7CiAJ
-CQl1MTYgY29udHJvbDsKIApkaWZmIC0tZ2l0IGEvbmV0L21hYzgwMjExL3R4LmMgYi9uZXQvbWFj
-ODAyMTEvdHguYwppbmRleCAxMjY1M2Q4NzNiOGMuLjE0MDUzMDRkODk5NCAxMDA2NDQKLS0tIGEv
-bmV0L21hYzgwMjExL3R4LmMKKysrIGIvbmV0L21hYzgwMjExL3R4LmMKQEAgLTM1NDIsNiArMzU0
-Miw5IEBAIHN0cnVjdCBza19idWZmICppZWVlODAyMTFfdHhfZGVxdWV1ZShzdHJ1Y3QgaWVlZTgw
-MjExX2h3ICpodywKIAogCVdBUk5fT05fT05DRShzb2Z0aXJxX2NvdW50KCkgPT0gMCk7CiAKKwlp
-ZiAoIWllZWU4MDIxMV90eHFfYWlydGltZV9jaGVjayhodywgdHhxKSkKKwkJcmV0dXJuIE5VTEw7
-CisKIGJlZ2luOgogCXNwaW5fbG9ja19iaCgmZnEtPmxvY2spOwogCkBAIC0zNjUyLDYgKzM2NTUs
-MjQgQEAgc3RydWN0IHNrX2J1ZmYgKmllZWU4MDIxMV90eF9kZXF1ZXVlKHN0cnVjdCBpZWVlODAy
-MTFfaHcgKmh3LAogCX0KIAogCUlFRUU4MDIxMV9TS0JfQ0Ioc2tiKS0+Y29udHJvbC52aWYgPSB2
-aWY7CisKKwlpZiAobG9jYWwtPmFpcnRpbWVfZmxhZ3MgJiBBSVJUSU1FX1VTRV9BUUwpIHsKKwkJ
-dTMyIGFpcnRpbWU7CisKKwkJYWlydGltZSA9IGllZWU4MDIxMV9jYWxjX2V4cGVjdGVkX3R4X2Fp
-cnRpbWUoaHcsIHZpZiwgdHhxLT5zdGEsCisJCQkJCQkJICAgICBza2ItPmxlbik7CisJCWlmIChh
-aXJ0aW1lKSB7CisJCQkvKiBXZSBvbmx5IGhhdmUgMTAgYml0cyBpbiB0eF90aW1lX2VzdCwgc28g
-c3RvcmUgYWlydGltZQorCQkJICogaW4gaW5jcmVtZW50cyBvZiA0dXMgYW5kIGNsYW1wIHRoZSBt
-YXhpbXVtIHRvIDIqKjEyLTEKKwkJCSAqLworCQkJYWlydGltZSA9IG1pbl90KHUzMiwgYWlydGlt
-ZSwgNDA5NSkgJiB+M1U7CisJCQlpbmZvLT50eF90aW1lX2VzdCA9IGFpcnRpbWUgPj4gMjsKKwkJ
-CWllZWU4MDIxMV9zdGFfdXBkYXRlX3BlbmRpbmdfYWlydGltZShsb2NhbCwgdHguc3RhLAorCQkJ
-CQkJCSAgICAgdHhxLT5hYywgYWlydGltZSwKKwkJCQkJCQkgICAgIGZhbHNlKTsKKwkJfQorCX0K
-KwogCXJldHVybiBza2I7CiAKIG91dDoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+
+On 10/22/19 1:57 AM, Zhi Chen wrote:
+> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
+> PCIe hung issue was observed on multiple platforms. The issue was reproduced
+> when DUT was configured as AP and associated with 50+ STAs.
+>
+> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
+> issue happened. It broke PCIe spec and caused PCIe stuck.
+
+How can you say value 0 (I believe it's 64 bytes) DMA burst size causes 
+the symptom and 1 fixes it?
+
+Peter
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
