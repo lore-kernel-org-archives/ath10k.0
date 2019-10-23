@@ -1,23 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]
+ helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iNIn6-0002yZ-PG
- for ath10k@lists.infradead.org; Wed, 23 Oct 2019 15:43:18 +0000
-Received: by mail-lj1-x241.google.com with SMTP id q78so6506243lje.5
- for <ath10k@lists.infradead.org>; Wed, 23 Oct 2019 08:43:16 -0700 (PDT)
-MIME-Version: 1.0
+ id 1iNNse-0002Kz-Ba
+ for ath10k@lists.infradead.org; Wed, 23 Oct 2019 21:09:21 +0000
+Received: by mail-lf1-f72.google.com with SMTP id v204so2672116lfa.0
+ for <ath10k@lists.infradead.org>; Wed, 23 Oct 2019 14:09:11 -0700 (PDT)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v4 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
+ packet dequeue
+In-Reply-To: <CA+iem5vU-K-+sSSeNugy5ZZF_nH5vuaXW3J_WC=1WWhdkHOgjw@mail.gmail.com>
 References: <157148503415.2989444.7391437309981941226.stgit@toke.dk>
  <157148503865.2989444.7118792679603045723.stgit@toke.dk>
  <CA+iem5sy16=xMZjJi1nKHrxP_xWHk-86G=ZLwtMMb04EOt5tQA@mail.gmail.com>
  <871rv5ovwr.fsf@toke.dk>
  <CA+iem5tZ95Jd9htLEdAJMubuFeWeUibK9MhTnTHLWNucX6_cRg@mail.gmail.com>
  <87tv7znact.fsf@toke.dk> <87lftbn60t.fsf@toke.dk>
-In-Reply-To: <87lftbn60t.fsf@toke.dk>
-From: Kan Yan <kyan@google.com>
-Date: Wed, 23 Oct 2019 08:43:03 -0700
-Message-ID: <CA+iem5tbSFyY0pS5Ufb8Ch=y3UGR_iuX_8ao9=2iS05-MozQwA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
- packet dequeue
+ <CA+iem5vU-K-+sSSeNugy5ZZF_nH5vuaXW3J_WC=1WWhdkHOgjw@mail.gmail.com>
+Date: Wed, 23 Oct 2019 23:09:08 +0200
+Message-ID: <877e4vmaob.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +28,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+To: Kan Yan <kyan@google.com>
 Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-PiBBaGEhIFR1cm5zIG91dCBJIHdhcyBkb2luZyB0aGUgc3RhIGxvb2t1cCBjb21wbGV0ZWx5IHdy
-b25nIGluCj4gaWVlZTgwMjExX3JlcG9ydF91c2VkX3NrYigpOyBzbyBhbnl0aGluZyBmcmFtZXMg
-dGhhdCB3ZXJlIGRyb3BwZWQgYW5kCj4gd2VudCB0aHJvdWdoIHRoZXJlIHdvdWxkIG5vdCBnZXQg
-aXRzIGFpcnRpbWUgc3VidHJhY3RlZCBjb3JyZWN0bHkuIFdpbGwKPiBzZW5kIGEgdjYgd2l0aCBh
-IGZpeCA6KQoKQXdlc29tZSwgdGhhbmtzISBUaGF0IGxvb2tzIHZlcnkgcHJvbWlzaW5nLiAgVGhl
-IHN5bXB0b20gSSBzZWUgd2l0aApwcmV2aW91cyBwYXRjaCBpcyB0aGUgaW50ZXJmYWNlJ3MgcGVu
-ZGluZyBhaXJ0aW1lIGNvdW50IGxvb2tzIGZpbmUsCmJ1dCB0aGUgc3RhdGlvbidzIGFpcnRpbWUg
-Z2V0IHdyb25nLCBlaXRoZXIgZHVlIHRvIGFpcnRpbWUgaXMgY3JlZGl0ZWQKdG8gdGhlIHdyb25n
-IHN0YXRpb24gb3Igd3JvbmcgQUMuCgpPbiBXZWQsIE9jdCAyMywgMjAxOSBhdCAyOjUyIEFNIFRv
-a2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPiB3cm90ZToKPgo+IFRva2Ug
-SMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPiB3cml0ZXM6Cj4KPiA+IEthbiBZ
-YW4gPGt5YW5AZ29vZ2xlLmNvbT4gd3JpdGVzOgo+ID4KPiA+Pj4gPj4gKyAgICAgICAgICAgICAg
-IGlmIChpZWVlODAyMTFfaXNfZGF0YV9xb3MoaGRyLT5mcmFtZV9jb250cm9sKSkgewo+ID4+PiA+
-PiArICAgICAgICAgICAgICAgICAgICAgICBxYyA9IGllZWU4MDIxMV9nZXRfcW9zX2N0bChoZHIp
-Owo+ID4+PiA+PiArICAgICAgICAgICAgICAgICAgICAgICB0aWQgPSBxY1swXSAmIDB4ZjsKPiA+
-Pj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYWMgPSBpZWVlODAyMTFfYWNfZnJvbV90aWQo
-dGlkKTsKPiA+Pj4gPj4gKyAgICAgICAgICAgICAgIH0gZWxzZSB7Cj4gPj4+ID4+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIGFjID0gSUVFRTgwMjExX0FDX0JFOwo+ID4+PiA+PiArICAgICAgICAg
-ICAgICAgfQo+ID4+PiA+Cj4gPj4+ID4gVGhlIHRpZC9hYyBpcyBpbmNvcnJlY3QgZWl0aGVyIGhl
-cmUgb3IgaW4gX19pZWVlODAyMTFfdHhfc3RhdHVzKCkgd2hlbgo+ID4+PiA+IHRlc3RlZCB3aXRo
-IGF0aDEway4gVGhlIGFjIGlzIHNldCB0byBBQ19CRSB3aXRoIHRlc3QgZG9uZSB1c2luZyBCSwo+
-ID4+PiA+IGNsYXNzIHRyYWZmaWMsIGhlbmNlIHRoZSBwZW5kaW5nIGFpcnRpbWUgZ2V0IHVwZGF0
-ZWQgZm9yIHRoZSB3cm9uZwo+ID4+PiA+IHR4cS4KPiA+Pj4KPiA+Pj4gSHVoLCB3ZWxsIHRoYXQg
-d29uJ3QgZG8sIG9idmlvdXNseSA6KQo+ID4+Pgo+ID4+PiBBbnkgaWRlYSB3aHkgaXQgbWlnaHQg
-YmUgd3Jvbmc/Cj4gPj4KPiA+PiBzb21laG93ICBpZWVlODAyMTFfaXNfZGF0YV9xb3MoKSByZXR1
-cm5zIGZhbHNlLiBCZXNpZGVzLCAgcW9zX2NvbnRyb2wKPiA+PiBmaWVsZCBkb2Vzbid0IHNlZW1z
-IHRvIGJlIHNldCBpbiBpZWVlODAyMTFfYnVpbGRfaGRyKCkuCj4gPj4KPiA+Pj4gSG1tLCBJIGd1
-ZXNzIHdlIGNvdWxkIGp1c3QgZ2V0IHRoZSBhYyB1c2luZyBza2JfZ2V0X3F1ZXVlX21hcHBpbmco
-KS4KPiA+Pj4gSSdsbCBzZW5kIGFuIHVwZGF0ZSB3aXRoIHRoaXMgZml4ZWQgZm9yIHlvdSB0byB0
-cnkgOikKPiA+PiBUaGFua3MgZm9yIHRoZSBxdWljayB1cGRhdGUuIEl0IGlzIGdldHRpbmcgbXVj
-aCBiZXR0ZXIsIGJ1dAo+ID4+IHVuZm9ydHVuYXRlbHkgdGhlIHBlbmRpbmcgYWlydGltZSBhY2Nv
-dW50aW5nIHNvbWV0aW1lcyBpcyBzdGlsbCBub3QKPiA+PiBjb3JyZWN0IGFuZCBjYXVzZSB0eHEg
-c3R1Y2sgb2NjYXNpb25hbGx5Lgo+ID4KPiA+IE9LLCBzbyB0aGF0IGhhcyB0byBtZWFuIHRoYXQg
-dGhlcmUgYXJlIHBhY2tldHMgZ2V0dGluZyBkcm9wcGVkIHNvbWV3aGVyZQo+ID4gd2l0aG91dCBn
-b2luZyB0aHJvdWdoIGllZWU4MDIxMV9yZXBvcnRfdXNlZF9za2IoKS4gQXNzdW1pbmcgeW91J3Jl
-IG5vdAo+ID4gaGl0dGluZyB0aGUgdW5kZXJmbG93IHdhcm5pbmdzLCBqdXN0IHNlZWluZyB0aGUg
-Y291bnRlciBub3QgZ2V0IGJhY2sKPiA+IGRvd24gdG8gemVybz8KPiA+Cj4gPiBDb3VsZCB5b3Ug
-c2VlIGlmIHlvdSBjYW4gZmluZCBvdXQgaWYgYXRoMTBrIGRvZXMgdGhhdCBhbnl3aGVyZT8gSSds
-bCBnbwo+ID4gaHVudGluZyBpbiBtYWM4MDIxMS4KPiA+Cj4gPiBMb29raW5nIGZvciBjYWxscyB0
-byBrZnJlZV9za2IoKSBvciBrZnJlZV9za2JfbGlzdCgpIHNob3VsZCBob3BlZnVsbHkKPiA+IHR1
-cm4gdXAgc29tZXRoaW5nLi4uCj4KPiBBaGEhIFR1cm5zIG91dCBJIHdhcyBkb2luZyB0aGUgc3Rh
-IGxvb2t1cCBjb21wbGV0ZWx5IHdyb25nIGluCj4gaWVlZTgwMjExX3JlcG9ydF91c2VkX3NrYigp
-OyBzbyBhbnl0aGluZyBmcmFtZXMgdGhhdCB3ZXJlIGRyb3BwZWQgYW5kCj4gd2VudCB0aHJvdWdo
-IHRoZXJlIHdvdWxkIG5vdCBnZXQgaXRzIGFpcnRpbWUgc3VidHJhY3RlZCBjb3JyZWN0bHkuIFdp
-bGwKPiBzZW5kIGEgdjYgd2l0aCBhIGZpeCA6KQo+Cj4gLVRva2UKPgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Kan Yan <kyan@google.com> writes:
+
+>>
+>> Aha! Turns out I was doing the sta lookup completely wrong in
+>> ieee80211_report_used_skb(); so anything frames that were dropped and
+>> went through there would not get its airtime subtracted correctly. Will
+>> send a v6 with a fix :)
+>
+> Awesome, thanks! That looks very promising.  The symptom I see with
+> previous patch is the interface's pending airtime count looks fine, but the
+> station's airtime get wrong, either due to airtime is credited to the wrong
+> station or wrong AC.
+
+Right, if the interface count is fine that means it's not a missing call
+to the subtraction. So hopefully it will be fixed with v6 :)
+
+-Toke
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
