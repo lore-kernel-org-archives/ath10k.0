@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iND7v-0001YV-EM
- for ath10k@lists.infradead.org; Wed, 23 Oct 2019 09:40:24 +0000
+ id 1iND7z-0001c3-3Z
+ for ath10k@lists.infradead.org; Wed, 23 Oct 2019 09:40:28 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 0/2] Don't call SCM interface for statically mapped msa region
-Date: Wed, 23 Oct 2019 15:10:12 +0530
-Message-Id: <20191023094014.28683-1-govinds@codeaurora.org>
+Subject: [PATCH 2/2] ath10k: Don't call SCM interface for statically mapped
+ msa region
+Date: Wed, 23 Oct 2019 15:10:14 +0530
+Message-Id: <20191023094014.28683-3-govinds@codeaurora.org>
+In-Reply-To: <20191023094014.28683-1-govinds@codeaurora.org>
+References: <20191023094014.28683-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,19 +26,65 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-For some targets ex: SC7180/QCS404, SCM permissions for MSA region is
+For some targets ex: QCS404, SCM permissions for MSA region is
 statically configured in TrustZone fw. Add SCM call disable option
 for such targets to avoid duplicate permissions.
 
-Govind Singh (2):
-  dt: bindings: add dt entry flag to skip SCM call for msa region
-  ath10k: Don't call SCM interface for statically mapped msa region
+Testing: Tested on WCN3990 HW
+Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt     | 4 ++++
- drivers/net/wireless/ath/ath10k/qmi.c                    | 9 +++++++++
- drivers/net/wireless/ath/ath10k/qmi.h                    | 1 +
- 3 files changed, 14 insertions(+)
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/qmi.c | 9 +++++++++
+ drivers/net/wireless/ath/ath10k/qmi.h | 1 +
+ 2 files changed, 10 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index da16874012c5..d43ec0183287 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -95,6 +95,9 @@ static int ath10k_qmi_setup_msa_permissions(struct ath10k_qmi *qmi)
+ 	int ret;
+ 	int i;
+ 
++	if (qmi->msa_fixed_perm)
++		return 0;
++
+ 	for (i = 0; i < qmi->nr_mem_region; i++) {
+ 		ret = ath10k_qmi_map_msa_permission(qmi, &qmi->mem_region[i]);
+ 		if (ret)
+@@ -113,6 +116,9 @@ static void ath10k_qmi_remove_msa_permission(struct ath10k_qmi *qmi)
+ {
+ 	int i;
+ 
++	if (qmi->msa_fixed_perm)
++		return;
++
+ 	for (i = 0; i < qmi->nr_mem_region; i++)
+ 		ath10k_qmi_unmap_msa_permission(qmi, &qmi->mem_region[i]);
+ }
+@@ -1021,6 +1027,9 @@ static int ath10k_qmi_setup_msa_resources(struct ath10k_qmi *qmi, u32 msa_size)
+ 		qmi->msa_mem_size = msa_size;
+ 	}
+ 
++	if (of_property_read_bool(dev->of_node, "qcom,msa_fixed_perm"))
++		qmi->msa_fixed_perm = true;
++
+ 	ath10k_dbg(ar, ATH10K_DBG_QMI, "msa pa: %pad , msa va: 0x%p\n",
+ 		   &qmi->msa_pa,
+ 		   qmi->msa_va);
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.h b/drivers/net/wireless/ath/ath10k/qmi.h
+index 4ab21b223aaf..3a039e6e29df 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.h
++++ b/drivers/net/wireless/ath/ath10k/qmi.h
+@@ -115,6 +115,7 @@ struct ath10k_qmi {
+ 	bool fw_ready;
+ 	char fw_build_timestamp[MAX_TIMESTAMP_LEN + 1];
+ 	struct ath10k_qmi_cal_data cal_data[MAX_NUM_CAL_V01];
++	bool msa_fixed_perm;
+ };
+ 
+ int ath10k_qmi_wlan_enable(struct ath10k *ar,
 -- 
 2.22.0
 
