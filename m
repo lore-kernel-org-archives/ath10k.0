@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iNZou-00043j-7n
- for ath10k@lists.infradead.org; Thu, 24 Oct 2019 09:54:17 +0000
+ id 1iNa0G-0001N9-Lg
+ for ath10k@lists.infradead.org; Thu, 24 Oct 2019 10:06:02 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: sdio: remove struct ath10k_sdio_rx_data::status
-Date: Thu, 24 Oct 2019 12:54:09 +0300
-Message-Id: <1571910849-11489-2-git-send-email-kvalo@codeaurora.org>
-In-Reply-To: <1571910849-11489-1-git-send-email-kvalo@codeaurora.org>
-References: <1571910849-11489-1-git-send-email-kvalo@codeaurora.org>
+Subject: Re: [PATCH v6 2/3] ath10k: change max RX bundle size from 8 to 32 for
+ sdio
+References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
+ <1569402639-31720-3-git-send-email-wgong@codeaurora.org>
+Date: Thu, 24 Oct 2019 13:05:53 +0300
+In-Reply-To: <1569402639-31720-3-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Wed, 25 Sep 2019 17:10:38 +0800")
+Message-ID: <87h83ysbjy.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,57 +21,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-It seems to be unused.
+Wen Gong <wgong@codeaurora.org> writes:
 
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 2 --
- drivers/net/wireless/ath/ath10k/sdio.h | 1 -
- 2 files changed, 3 deletions(-)
+> The max bundle size support by firmware is 32, change it from 8 to 32
+> will help performance. This results in significant performance
+> improvement on RX path.
+>
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00017-QCARMSWPZ-1
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index ef16b45c18da..ceeee465a73a 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -649,7 +649,6 @@ static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
- 
- 	htc_hdr = (struct ath10k_htc_hdr *)skb->data;
- 	pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
--	pkt->status = ret;
- 	skb_put(skb, pkt->act_len);
- 
- 	return ret;
-@@ -687,7 +686,6 @@ static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
- 		pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
- 
- 		skb_put_data(pkt->skb, htc_hdr, pkt->act_len);
--		pkt->status = 0;
- 		pkt_offset += pkt->alloc_len;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index 9acaf0229cf2..33195f49acab 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -126,7 +126,6 @@ struct ath10k_sdio_rx_data {
- 	bool part_of_bundle;
- 	bool last_in_bundle;
- 	bool trailer_only;
--	int status;
- };
- 
- struct ath10k_sdio_irq_proc_regs {
+[...]
+
+> --- a/drivers/net/wireless/ath/ath10k/htc.h
+> +++ b/drivers/net/wireless/ath/ath10k/htc.h
+> @@ -39,7 +39,7 @@
+>   * 4-byte aligned.
+>   */
+>  
+> -#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        8
+> +#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        32
+>  
+>  enum ath10k_htc_tx_flags {
+>  	ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE = 0x01,
+> @@ -48,10 +48,16 @@ enum ath10k_htc_tx_flags {
+>  
+>  enum ath10k_htc_rx_flags {
+>  	ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK = 0x01,
+> -	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02,
+> -	ATH10K_HTC_FLAG_BUNDLE_MASK     = 0xF0
+> +	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02
+>  };
+
+I left the comma in ATH10K_HTC_FLAG_TRAILER_PRESENT to make the diff cleaner.
+
+> +#define ATH10K_HTC_FLAG_BUNDLE_MASK 0xF0
+> +#define ATH10K_HTC_BUNDLE_EXTRA_MASK GENMASK(3, 2)
+> +
+> +#define ATH10K_HTC_GET_BUNDLE_COUNT(flags) \
+> +	    (FIELD_GET(ATH10K_HTC_FLAG_BUNDLE_MASK, (flags)) +  \
+> +	    (FIELD_GET(ATH10K_HTC_BUNDLE_EXTRA_MASK, (flags)) << 4))
+
+I think I asked you about the shift of 4 bits earlier but now I figured
+it out (I hope) and documented it like this:
+
+#define ATH10K_HTC_FLAG_BUNDLE_MASK GENMASK(7,4)
+
+/* bits 2-3 are for extra bundle count bits 4-5 */
+#define ATH10K_HTC_BUNDLE_EXTRA_MASK GENMASK(3, 2)
+#define ATH10K_HTC_BUNDLE_EXTRA_SHIFT 4
+
+static inline unsigned int ath10k_htc_get_bundle_count(u8 flags)
+{
+	unsigned int count, extra_count;
+
+	count = FIELD_GET(ATH10K_HTC_FLAG_BUNDLE_MASK, flags);
+	extra_count = FIELD_GET(ATH10K_HTC_BUNDLE_EXTRA_MASK, flags) <<
+		ATH10K_HTC_BUNDLE_EXTRA_SHIFT;
+
+	return count + extra_count;
+}
+
+As you can see I also changed the macro to a function, as I prefer C
+over CPP :) And changed ATH10K_HTC_FLAG_BUNDLE_MASK to use GENMASK().
+
+But this only compiled tested, please do properly test the patches from
+pending branch and let me know if I broke something:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=afd85ca1b086695cfd26bf484442eaf3bccb6bdd
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=4225b4d50a4f6a1159dc3316d068398f1b5edb57
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=911e0fc846cfc46fb4ccd1d223cb153681ff05bd
+
 -- 
-2.7.4
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
