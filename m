@@ -1,24 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]
- helo=us-smtp-delivery-1.mimecast.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iNNse-0002Kz-Ba
- for ath10k@lists.infradead.org; Wed, 23 Oct 2019 21:09:21 +0000
-Received: by mail-lf1-f72.google.com with SMTP id v204so2672116lfa.0
- for <ath10k@lists.infradead.org>; Wed, 23 Oct 2019 14:09:11 -0700 (PDT)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v4 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
- packet dequeue
-In-Reply-To: <CA+iem5vU-K-+sSSeNugy5ZZF_nH5vuaXW3J_WC=1WWhdkHOgjw@mail.gmail.com>
-References: <157148503415.2989444.7391437309981941226.stgit@toke.dk>
- <157148503865.2989444.7118792679603045723.stgit@toke.dk>
- <CA+iem5sy16=xMZjJi1nKHrxP_xWHk-86G=ZLwtMMb04EOt5tQA@mail.gmail.com>
- <871rv5ovwr.fsf@toke.dk>
- <CA+iem5tZ95Jd9htLEdAJMubuFeWeUibK9MhTnTHLWNucX6_cRg@mail.gmail.com>
- <87tv7znact.fsf@toke.dk> <87lftbn60t.fsf@toke.dk>
- <CA+iem5vU-K-+sSSeNugy5ZZF_nH5vuaXW3J_WC=1WWhdkHOgjw@mail.gmail.com>
-Date: Wed, 23 Oct 2019 23:09:08 +0200
-Message-ID: <877e4vmaob.fsf@toke.dk>
+ id 1iNXKI-00021p-IO
+ for ath10k@lists.infradead.org; Thu, 24 Oct 2019 07:14:32 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 1/2] dt: bindings: add dt entry flag to skip SCM call for
+ msa region
+References: <20191023094014.28683-1-govinds@codeaurora.org>
+ <20191023094014.28683-2-govinds@codeaurora.org>
+Date: Thu, 24 Oct 2019 10:14:26 +0300
+In-Reply-To: <20191023094014.28683-2-govinds@codeaurora.org> (Govind Singh's
+ message of "Wed, 23 Oct 2019 15:10:13 +0530")
+Message-ID: <87a79qk431.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,27 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kan Yan <kyan@google.com> writes:
+Govind Singh <govinds@codeaurora.org> writes:
 
->>
->> Aha! Turns out I was doing the sta lookup completely wrong in
->> ieee80211_report_used_skb(); so anything frames that were dropped and
->> went through there would not get its airtime subtracted correctly. Will
->> send a v6 with a fix :)
+> Add boolean context flag to disable SCM call for statically
+> mapped msa region.
 >
-> Awesome, thanks! That looks very promising.  The symptom I see with
-> previous patch is the interface's pending airtime count looks fine, but the
-> station's airtime get wrong, either due to airtime is credited to the wrong
-> station or wrong AC.
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
 
-Right, if the interface count is fine that means it's not a missing call
-to the subtraction. So hopefully it will be fixed with v6 :)
+Oddly this didn't apply, but 3-way merge did work. Please double check
+the result in the pending branch:
 
--Toke
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=6f308524cf602ed9a0dbb0b0b50ba625b9091879
 
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
