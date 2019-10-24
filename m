@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iNZNb-0004Vd-4j
- for ath10k@lists.infradead.org; Thu, 24 Oct 2019 09:26:04 +0000
+ id 1iNZSK-0006xU-PY
+ for ath10k@lists.infradead.org; Thu, 24 Oct 2019 09:30:59 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH v6 2/3] ath10k: change max RX bundle size from 8 to 32 for
  sdio
 References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
  <1569402639-31720-3-git-send-email-wgong@codeaurora.org>
-Date: Thu, 24 Oct 2019 12:25:58 +0300
+Date: Thu, 24 Oct 2019 12:30:50 +0300
 In-Reply-To: <1569402639-31720-3-git-send-email-wgong@codeaurora.org> (Wen
  Gong's message of "Wed, 25 Sep 2019 17:10:38 +0800")
-Message-ID: <87r232sdeh.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87mudqsd6d.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -38,28 +38,21 @@ Wen Gong <wgong@codeaurora.org> writes:
 > WLAN.RMH.4.4.1-00017-QCARMSWPZ-1
 >
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/htc.h  | 12 +++++++++---
->  drivers/net/wireless/ath/ath10k/sdio.c |  4 ++--
->  drivers/net/wireless/ath/ath10k/sdio.h |  4 ++--
->  3 files changed, 13 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-> index f55d3ca..7055156 100644
-> --- a/drivers/net/wireless/ath/ath10k/htc.h
-> +++ b/drivers/net/wireless/ath/ath10k/htc.h
-> @@ -39,7 +39,7 @@
->   * 4-byte aligned.
->   */
+
+[...]
+
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -24,7 +24,7 @@
+>  #include "trace.h"
+>  #include "sdio.h"
 >  
-> -#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        8
-> +#define HTC_HOST_MAX_MSG_PER_RX_BUNDLE        32
+> -#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
+> +#define ATH10K_SDIO_VSG_BUF_SIZE	(64 * 1024)
 
-So how do I know that this change doesn't break any other hardware? I
-did a quick review and I think it's safe, but the commit log mentions
-nothing about this.
-
-Please clarify and I can update the commit log.
+Is allocating 64 kb with kmalloc() reliable, especially on smaller
+systems? I hope it is, but checking if someone else knows better. We
+only do this only once in probe(), though.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
