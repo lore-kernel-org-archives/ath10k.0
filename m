@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iNZhz-0001wr-Sf
- for ath10k@lists.infradead.org; Thu, 24 Oct 2019 09:47:09 +0000
-MIME-Version: 1.0
-Date: Thu, 24 Oct 2019 17:47:05 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v6 2/3] ath10k: change max RX bundle size from 8 to 32 for
- sdio
-In-Reply-To: <87mudqsd6d.fsf@kamboji.qca.qualcomm.com>
-References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
- <1569402639-31720-3-git-send-email-wgong@codeaurora.org>
- <87mudqsd6d.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <200eef83925da532e49565bcf4f9ffc1@codeaurora.org>
+ id 1iNZos-00042o-9n
+ for ath10k@lists.infradead.org; Thu, 24 Oct 2019 09:54:16 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 1/2] ath10k: cosmetic cleanup to sdio files
+Date: Thu, 24 Oct 2019 12:54:08 +0300
+Message-Id: <1571910849-11489-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +15,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 2019-10-24 17:30, Kalle Valo wrote:
-> Wen Gong <wgong@codeaurora.org> writes:
-> 
->> The max bundle size support by firmware is 32, change it from 8 to 32
->> will help performance. This results in significant performance
->> improvement on RX path.
->> 
->> Tested with QCA6174 SDIO with firmware
->> WLAN.RMH.4.4.1-00017-QCARMSWPZ-1
->> 
->> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> 
-> [...]
-> 
->> --- a/drivers/net/wireless/ath/ath10k/sdio.c
->> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
->> @@ -24,7 +24,7 @@
->>  #include "trace.h"
->>  #include "sdio.h"
->> 
->> -#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
->> +#define ATH10K_SDIO_VSG_BUF_SIZE	(64 * 1024)
-> 
-> Is allocating 64 kb with kmalloc() reliable, especially on smaller
-> systems? I hope it is, but checking if someone else knows better. We
-> only do this only once in probe(), though.
-rx packet is more than 1500 bytes for performance test, so for 32 
-packets, 32*1024 is not enough.
-yes, it is allocated only one time for probe.
+Do some cosmetic cleanup while reviewing the files. No functional changes.
+
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/sdio.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index c34637881219..ef16b45c18da 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -541,10 +541,8 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 	int pkt_cnt = 0;
+ 
+ 	if (n_lookaheads > ATH10K_SDIO_MAX_RX_MSGS) {
+-		ath10k_warn(ar,
+-			    "the total number of pkgs to be fetched (%u) exceeds maximum %u\n",
+-			    n_lookaheads,
+-			    ATH10K_SDIO_MAX_RX_MSGS);
++		ath10k_warn(ar, "the total number of pkgs to be fetched (%u) exceeds maximum %u\n",
++			    n_lookaheads, ATH10K_SDIO_MAX_RX_MSGS);
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+@@ -553,10 +551,8 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 		htc_hdr = (struct ath10k_htc_hdr *)&lookaheads[i];
+ 		last_in_bundle = false;
+ 
+-		if (le16_to_cpu(htc_hdr->len) >
+-		    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH) {
+-			ath10k_warn(ar,
+-				    "payload length %d exceeds max htc length: %zu\n",
++		if (le16_to_cpu(htc_hdr->len) > ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH) {
++			ath10k_warn(ar, "payload length %d exceeds max htc length: %zu\n",
+ 				    le16_to_cpu(htc_hdr->len),
+ 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
+ 			ret = -ENOMEM;
+@@ -567,8 +563,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 		full_len = ath10k_sdio_calc_txrx_padded_len(ar_sdio, act_len);
+ 
+ 		if (full_len > ATH10K_SDIO_MAX_BUFFER_SIZE) {
+-			ath10k_warn(ar,
+-				    "rx buffer requested with invalid htc_hdr length (%d, 0x%x): %d\n",
++			ath10k_warn(ar, "rx buffer requested with invalid htc_hdr length (%d, 0x%x): %d\n",
+ 				    htc_hdr->eid, htc_hdr->flags,
+ 				    le16_to_cpu(htc_hdr->len));
+ 			ret = -EINVAL;
+@@ -590,12 +585,14 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 							    &bndl_cnt);
+ 
+ 			if (ret) {
+-				ath10k_warn(ar, "alloc_bundle error %d\n", ret);
++				ath10k_warn(ar, "failed to allocate a bundle: %d\n",
++					    ret);
+ 				goto err;
+ 			}
+ 
+ 			pkt_cnt += bndl_cnt;
+-			/*Next buffer will be the last in the bundle */
++
++			/* next buffer will be the last in the bundle */
+ 			last_in_bundle = true;
+ 		}
+ 
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
