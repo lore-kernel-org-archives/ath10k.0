@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iNzPH-0006za-KK
- for ath10k@lists.infradead.org; Fri, 25 Oct 2019 13:13:33 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v6] ath10k: enable napi on RX path for sdio
-References: <20191014114753.7459-1-wgong@codeaurora.org>
-Date: Fri, 25 Oct 2019 16:13:23 +0300
-In-Reply-To: <20191014114753.7459-1-wgong@codeaurora.org> (Wen Gong's message
- of "Mon, 14 Oct 2019 19:47:53 +0800")
-Message-ID: <875zkdaryk.fsf@kamboji.qca.qualcomm.com>
+ id 1iOLx1-0007BL-BL
+ for ath10k@lists.infradead.org; Sat, 26 Oct 2019 13:17:52 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.3 60/99] ath10k: fix latency issue for QCA988x
+Date: Sat, 26 Oct 2019 09:15:21 -0400
+Message-Id: <20191026131600.2507-60-sashal@kernel.org>
+In-Reply-To: <20191026131600.2507-1-sashal@kernel.org>
+References: <20191026131600.2507-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,92 +22,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, Miaoqing Pan <miaoqing@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Wen Gong <wgong@codeaurora.org> writes:
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-> For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
-> of tcp data from remote, then it will have many small length packets
-> on TX path of sdio bus, then it reduce the RX packets's bandwidth of
-> tcp.
->
-> This patch enable napi on RX path, then the RX packet of tcp will not
-> feed to tcp stack immeditely from mac80211 since GRO is enabled by
-> default, it will feed to tcp stack after napi complete, if rx bundle
-> is enabled, then it will feed to tcp stack one time for each bundle
-> of RX. For example, RX bundle size is 32, then tcp stack will receive
-> one large length packet, its length is neary 1500*32, then tcp stack
-> will send a tcp ack for this large packet, this will reduce the tcp
-> acks ratio from 1/2 to 1/32. This results in significant performance
-> improvement for tcp RX.
->
-> Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
-> with this patch. The cpu usage has no obvious difference with and
-> without NAPI.
->
-> call stack for each RX packet on GRO path:
-> (skb length is about 1500 bytes)
->   skb_gro_receive ([kernel.kallsyms])
->   tcp4_gro_receive ([kernel.kallsyms])
->   inet_gro_receive ([kernel.kallsyms])
->   dev_gro_receive ([kernel.kallsyms])
->   napi_gro_receive ([kernel.kallsyms])
->   ieee80211_deliver_skb ([mac80211])
->   ieee80211_rx_handlers ([mac80211])
->   ieee80211_prepare_and_rx_handle ([mac80211])
->   ieee80211_rx_napi ([mac80211])
->   ath10k_htt_rx_proc_rx_ind_hl ([ath10k_core])
->   ath10k_htt_rx_pktlog_completion_handler ([ath10k_core])
->   ath10k_sdio_napi_poll ([ath10k_sdio])
->   net_rx_action ([kernel.kallsyms])
->   softirqentry_text_start ([kernel.kallsyms])
->   do_softirq ([kernel.kallsyms])
->
-> call stack for napi complete and send tcp ack from tcp stack:
-> (skb length is about 1500*32 bytes)
->  _tcp_ack_snd_check ([kernel.kallsyms])
->  tcp_v4_do_rcv ([kernel.kallsyms])
->  tcp_v4_rcv ([kernel.kallsyms])
->  local_deliver_finish ([kernel.kallsyms])
->  ip_local_deliver ([kernel.kallsyms])
->  ip_rcv_finish ([kernel.kallsyms])
->  ip_rcv ([kernel.kallsyms])
->  netif_receive_skb_core ([kernel.kallsyms])
->  netif_receive_skb_one_core([kernel.kallsyms])
->  netif_receive_skb ([kernel.kallsyms])
->  netif_receive_skb_internal ([kernel.kallsyms])
->  napi_gro_complete ([kernel.kallsyms])
->  napi_gro_flush ([kernel.kallsyms])
->  napi_complete_done ([kernel.kallsyms])
->  ath10k_sdio_napi_poll ([ath10k_sdio])
->  net_rx_action ([kernel.kallsyms])
->  __softirqentry_text_start ([kernel.kallsyms])
->  do_softirq ([kernel.kallsyms])
->
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
->
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+[ Upstream commit d79749f7716d9dc32fa2d5075f6ec29aac63c76d ]
 
-[...]
+(kvalo: cherry picked from commit 1340cc631bd00431e2f174525c971f119df9efa1 in
+wireless-drivers-next to wireless-drivers as this a frequently reported
+regression)
 
-> +void ath10k_sdio_init_napi(struct ath10k *ar)
-> +{
-> +	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll,
-> +		       ATH10K_NAPI_BUDGET);
-> +}
+Bad latency is found on QCA988x, the issue was introduced by
+commit 4504f0e5b571 ("ath10k: sdio: workaround firmware UART
+pin configuration bug"). If uart_pin_workaround is false, this
+change will set uart pin even if uart_print is false.
 
-This had a new warning:
+Tested HW: QCA9880
+Tested FW: 10.2.4-1.0-00037
 
-drivers/net/wireless/ath/ath10k/sdio.c:2053:6: warning: no previous prototype for 'ath10k_sdio_init_napi' [-Wmissing-prototypes]
-drivers/net/wireless/ath/ath10k/sdio.c:2053:6: warning: symbol 'ath10k_sdio_init_napi' was not declared. Should it be static?
+Fixes: 4504f0e5b571 ("ath10k: sdio: workaround firmware UART pin configuration bug")
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-But as you are calling this function from only ath10k_sdio_probe(), in
-the pending branch I removed the function and moved the napi call there.
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index dc45d16e8d214..383d4fa555a88 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2118,12 +2118,15 @@ static int ath10k_init_uart(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	if (!uart_print && ar->hw_params.uart_pin_workaround) {
+-		ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin,
+-					 ar->hw_params.uart_pin);
+-		if (ret) {
+-			ath10k_warn(ar, "failed to set UART TX pin: %d", ret);
+-			return ret;
++	if (!uart_print) {
++		if (ar->hw_params.uart_pin_workaround) {
++			ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin,
++						 ar->hw_params.uart_pin);
++			if (ret) {
++				ath10k_warn(ar, "failed to set UART TX pin: %d",
++					    ret);
++				return ret;
++			}
+ 		}
+ 
+ 		return 0;
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.20.1
+
 
 _______________________________________________
 ath10k mailing list
