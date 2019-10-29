@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from nbd.name ([2a01:4f8:221:3d45::2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPNYw-0000Yl-4r
- for ath10k@lists.infradead.org; Tue, 29 Oct 2019 09:13:15 +0000
+ id 1iPNYw-0000Yr-Ti
+ for ath10k@lists.infradead.org; Tue, 29 Oct 2019 09:13:16 +0000
 From: John Crispin <john@phrozen.org>
-Subject: [PATCH V9 0/3] mac80211: add 802.11 encapsulation offloading
-Date: Tue, 29 Oct 2019 10:13:01 +0100
-Message-Id: <20191029091304.7330-1-john@phrozen.org>
+Subject: [PATCH V9 1/3] mac80211: move store skb ack code to its own function
+Date: Tue, 29 Oct 2019 10:13:02 +0100
+Message-Id: <20191029091304.7330-2-john@phrozen.org>
+In-Reply-To: <20191029091304.7330-1-john@phrozen.org>
+References: <20191029091304.7330-1-john@phrozen.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,61 +25,82 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>
 
-This series picks up prior work from QCA. The patch is currently shipped
-inside QSDK as part of the wlan-open package.
+This patch moves the code handling SKBTX_WIFI_STATUS inside the TX path
+into an extra function. This allows us to reuse it inside the 802.11 encap
+offloading datapath.
 
-Changes in V9
-* implement comments from Johannes
-* add tx status reporting
-* let the driver decide if tx frag will break encap mode
-* use true/false for bool values
-* move use_4addr check to driver
+Signed-off-by: John Crispin <john@phrozen.org>
+---
+ net/mac80211/tx.c | 49 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 20 deletions(-)
 
-Changes in V8
-* fix double locking when setting frag threshold
-
-Changes in V7
-* dont mask out monitor support when encap is available. Instead turn encap
-  of if a monitor device is brought up or already present
-
-Changes in V6
-* the conditional masking out monitor support was inverse
-
-Changes in V5
-* implement comments from Johannes
-
-Changes in V4
-* disable encap when TKIP is used instead of refusing TKIP
-* use a flag inside tx_info instead of an extra element
-* move 4addr detection into ieee80211_set_hw_80211_encap()
-* ieee80211_tx_dequeue() was dropping out to early
-
-Changes in V3
-* rebase on latest kernel
-* various code style clean ups
-* give some of the variables and functions more obvious names
-* move the code that disables support for non-linear frames to the core
-* disable monitor and tkip support
-
-John Crispin (3):
-  mac80211: move store skb ack code to its own function
-  mac80211: add hw 80211 encapsulation offloading support
-  ath10k: add tx hw 802.11 encapusaltion offloading support
-
- drivers/net/wireless/ath/ath10k/core.c   |  11 ++
- drivers/net/wireless/ath/ath10k/core.h   |   3 +
- drivers/net/wireless/ath/ath10k/htt_tx.c |  24 ++-
- drivers/net/wireless/ath/ath10k/mac.c    |  76 ++++++--
- drivers/net/wireless/ath/ath10k/txrx.c   |  11 +-
- include/net/mac80211.h                   |  39 ++++
- net/mac80211/debugfs.c                   |   1 +
- net/mac80211/ieee80211_i.h               |   9 +
- net/mac80211/iface.c                     |  68 +++++++
- net/mac80211/key.c                       |   7 +
- net/mac80211/status.c                    |  74 +++++++
- net/mac80211/tx.c                        | 233 ++++++++++++++++++++---
- 12 files changed, 506 insertions(+), 50 deletions(-)
-
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 235c6377a203..be3ce5e5a1c3 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2423,6 +2423,33 @@ static int ieee80211_lookup_ra_sta(struct ieee80211_sub_if_data *sdata,
+ 	return 0;
+ }
+ 
++static int ieee80211_store_ack_skb(struct ieee80211_local *local,
++				   struct sk_buff *skb,
++				   u32 *info_flags)
++{
++	struct sk_buff *ack_skb = skb_clone_sk(skb);
++	u16 info_id = 0;
++
++	if (ack_skb) {
++		unsigned long flags;
++		int id;
++
++		spin_lock_irqsave(&local->ack_status_lock, flags);
++		id = idr_alloc(&local->ack_status_frames, ack_skb,
++			       1, 0x10000, GFP_ATOMIC);
++		spin_unlock_irqrestore(&local->ack_status_lock, flags);
++
++		if (id >= 0) {
++			info_id = id;
++			*info_flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
++		} else {
++			kfree_skb(ack_skb);
++		}
++	}
++
++	return info_id;
++}
++
+ /**
+  * ieee80211_build_hdr - build 802.11 header in the given frame
+  * @sdata: virtual interface to build the header for
+@@ -2716,26 +2743,8 @@ static struct sk_buff *ieee80211_build_hdr(struct ieee80211_sub_if_data *sdata,
+ 	}
+ 
+ 	if (unlikely(!multicast && skb->sk &&
+-		     skb_shinfo(skb)->tx_flags & SKBTX_WIFI_STATUS)) {
+-		struct sk_buff *ack_skb = skb_clone_sk(skb);
+-
+-		if (ack_skb) {
+-			unsigned long flags;
+-			int id;
+-
+-			spin_lock_irqsave(&local->ack_status_lock, flags);
+-			id = idr_alloc(&local->ack_status_frames, ack_skb,
+-				       1, 0x10000, GFP_ATOMIC);
+-			spin_unlock_irqrestore(&local->ack_status_lock, flags);
+-
+-			if (id >= 0) {
+-				info_id = id;
+-				info_flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
+-			} else {
+-				kfree_skb(ack_skb);
+-			}
+-		}
+-	}
++		     skb_shinfo(skb)->tx_flags & SKBTX_WIFI_STATUS))
++		info_id = ieee80211_store_ack_skb(local, skb, &info_flags);
+ 
+ 	/*
+ 	 * If the skb is shared we need to obtain our own copy.
 -- 
 2.20.1
 
