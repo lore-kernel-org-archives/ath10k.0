@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPhTJ-0000vE-4e
- for ath10k@lists.infradead.org; Wed, 30 Oct 2019 06:28:46 +0000
+ id 1iPov6-00048o-HM
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2019 14:25:58 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Fixed "Failed to wake target" QCA6174
+References: <20191030125035.31848-1-rohn.ch@gmail.com>
+Date: Wed, 30 Oct 2019 16:25:50 +0200
+In-Reply-To: <20191030125035.31848-1-rohn.ch@gmail.com> (liupold's message of
+ "Wed, 30 Oct 2019 18:20:35 +0530")
+Message-ID: <87eeyu2tu9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Wed, 30 Oct 2019 14:28:41 +0800
-From: zhichen@codeaurora.org
-Subject: Re: [PATCH RFC] Revert "ath10k: fix DMA related firmware crashes on
- multiple devices"
-In-Reply-To: <CAJ-VmonXbUQ=Gv9fBbpN+ez25c3Pz+xxLoL67etMdC0Q+bwyXg@mail.gmail.com>
-References: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
- <d6cfd945-7bab-a01d-0157-e0e1802f66e3@eero.com>
- <CAJ-VmonXbUQ=Gv9fBbpN+ez25c3Pz+xxLoL67etMdC0Q+bwyXg@mail.gmail.com>
-Message-ID: <fb2b3b1fc5b3fd00a23e97413777a21e@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +19,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: linux-wireless@vger.kernel.org, Peter Oh <peter.oh@eero.com>, ath10k <ath10k@lists.infradead.org>
+To: liupold <rohn.ch@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2019-10-23 02:24, Adrian Chadd wrote:
-> On Tue, 22 Oct 2019 at 10:17, Peter Oh <peter.oh@eero.com> wrote:
->> 
->> 
->> On 10/22/19 1:57 AM, Zhi Chen wrote:
->> > This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
->> > PCIe hung issue was observed on multiple platforms. The issue was reproduced
->> > when DUT was configured as AP and associated with 50+ STAs.
->> >
->> > With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
->> > issue happened. It broke PCIe spec and caused PCIe stuck.
->> 
->> How can you say value 0 (I believe it's 64 bytes) DMA burst size 
->> causes
->> the symptom and 1 fixes it?
-> 
-> 
-> +1 to this question.
-> 
-> Also, shouldn't the DMA engine be doing what the firmware says? Is the
-> firmware/copy engine actually somehow bursting / prefetching across a
-> 4K page boundary?
-> 
-> Surely this is something that can be fixed in software/firmware by
-> correctly configuring up buffer size/offsets?
-> 
-> 
-> 
-> -Adrian
++ ath10k list
 
-DMA engine is working as expected as the configuration. It's copy engine 
-which actually
-splits the RD/WR requests and accesses host memory.
-And yes it's platform related configuration. We have never hit this 
-issue on x86 platform.
+liupold <rohn.ch@gmail.com> writes:
 
+> There is a issue with card about waking up during boot and from suspend
+> the only way to prevent it (is seems) by making pci_ps = false,
+> on Acer Swift 3 (ryzen 2500u).
 
-Zhi
+Can you provide dmesg output when this problem happens? Was QCA6174
+installed to Swift 3 by default at the factory or did you install it
+afterwards on your own?
+
+> Signed-off-by: liupold <rohn.ch@gmail.com>
+
+Is 'liupold' your full legal name?
+
+> ---
+>  drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+> index a0b4d265c6eb..653590342619 100644
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -3514,7 +3514,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+>  	case QCA6164_2_1_DEVICE_ID:
+>  	case QCA6174_2_1_DEVICE_ID:
+>  		hw_rev = ATH10K_HW_QCA6174;
+> -		pci_ps = true;
+> +		pci_ps = false;
+>  		pci_soft_reset = ath10k_pci_warm_reset;
+>  		pci_hard_reset = ath10k_pci_qca6174_chip_reset;
+>  		targ_cpu_to_ce_addr = ath10k_pci_qca6174_targ_cpu_to_ce_addr;
+
+This increases power consumption for all QCA6174 devices so I'm not
+eager to do this.
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
