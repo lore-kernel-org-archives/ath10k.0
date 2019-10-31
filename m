@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQ6Su-0002no-2x
- for ath10k@lists.infradead.org; Thu, 31 Oct 2019 09:10:01 +0000
+ id 1iQ6kA-0004Kp-Nq
+ for ath10k@lists.infradead.org; Thu, 31 Oct 2019 09:27:52 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v6 2/3] ath10k: change max RX bundle size from 8 to 32 for
- sdio
-References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
- <1569402639-31720-3-git-send-email-wgong@codeaurora.org>
- <87h83ysbjy.fsf@kamboji.qca.qualcomm.com>
- <73e2d996575023b14c24665b2607a5b3@codeaurora.org>
-Date: Thu, 31 Oct 2019 11:09:56 +0200
-In-Reply-To: <73e2d996575023b14c24665b2607a5b3@codeaurora.org> (Wen Gong's
- message of "Thu, 24 Oct 2019 18:48:21 +0800")
-Message-ID: <87y2x11dsr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v6] ath10k: enable napi on RX path for sdio
+References: <20191014114753.7459-1-wgong@codeaurora.org>
+Date: Thu, 31 Oct 2019 11:27:46 +0200
+In-Reply-To: <20191014114753.7459-1-wgong@codeaurora.org> (Wen Gong's message
+ of "Mon, 14 Oct 2019 19:47:53 +0800")
+Message-ID: <87tv7p1cz1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,28 +28,38 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> writes:
 
-> On 2019-10-24 18:05, Kalle Valo wrote:
->> Wen Gong <wgong@codeaurora.org> writes:
+> For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
+> of tcp data from remote, then it will have many small length packets
+> on TX path of sdio bus, then it reduce the RX packets's bandwidth of
+> tcp.
 >
->> As you can see I also changed the macro to a function, as I prefer C
->> over CPP :) And changed ATH10K_HTC_FLAG_BUNDLE_MASK to use GENMASK().
->>
-> yes.
->> But this only compiled tested, please do properly test the patches from
->> pending branch and let me know if I broke something:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=afd85ca1b086695cfd26bf484442eaf3bccb6bdd
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=4225b4d50a4f6a1159dc3316d068398f1b5edb57
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=911e0fc846cfc46fb4ccd1d223cb153681ff05bd
+> This patch enable napi on RX path, then the RX packet of tcp will not
+> feed to tcp stack immeditely from mac80211 since GRO is enabled by
+> default, it will feed to tcp stack after napi complete, if rx bundle
+> is enabled, then it will feed to tcp stack one time for each bundle
+> of RX. For example, RX bundle size is 32, then tcp stack will receive
+> one large length packet, its length is neary 1500*32, then tcp stack
+> will send a tcp ack for this large packet, this will reduce the tcp
+> acks ratio from 1/2 to 1/32. This results in significant performance
+> improvement for tcp RX.
 >
-> I will test the 3 patches.
+> Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
+> with this patch. The cpu usage has no obvious difference with and
+> without NAPI.
 
-Did you have a chance to test them? Do note that I did one minor change
-today:
+I have not done thorough review yet, but few quick questions:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=28da1fe7a3ffa5c55c52328c21165d9efdf2e94c
+This adds a new skb queue ar->htt.rx_indication_head to RX path, but on
+one of your earlier patches you also add another skb queue
+ar_sdio->rx_head. Is it really necessary to have two separate queues in
+RX path? Sounds like extra complexity to me.
+
+The way I have understood that NAPI is used as a mechanism to disable
+interrupts on the device and gain throughput from that. But in your
+patch the poll function ath10k_sdio_napi_poll() doesn't touch the
+hardware at all, it just processes packets from
+ar->htt.rx_indication_head queue until budget runs out. I'm no NAPI
+expert so I can't claim it's wrong, but at least it feels odd to me.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
