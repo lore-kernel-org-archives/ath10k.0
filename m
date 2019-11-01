@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.aperture-lab.de ([2a01:4f8:171:314c::100:a1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQRrF-0007ET-9U
- for ath10k@lists.infradead.org; Fri, 01 Nov 2019 08:00:34 +0000
+ id 1iQUqP-0008U1-2C
+ for ath10k@lists.infradead.org; Fri, 01 Nov 2019 11:11:55 +0000
+From: =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: [RFC PATCH] ath10k: fix RX of frames with broken FCS in monitor mode
+Date: Fri,  1 Nov 2019 12:11:38 +0100
+Message-Id: <20191101111138.9086-1-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
-Date: Fri, 01 Nov 2019 16:00:31 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v6] ath10k: enable napi on RX path for sdio
-In-Reply-To: <87tv7p1cz1.fsf@kamboji.qca.qualcomm.com>
-References: <20191014114753.7459-1-wgong@codeaurora.org>
- <87tv7p1cz1.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <e9db35228a09ccc14ac0ec31e9a10552@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +16,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>
 
-On 2019-10-31 17:27, Kalle Valo wrote:
-> Wen Gong <wgong@codeaurora.org> writes:
-> 
->> For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
->> of tcp data from remote, then it will have many small length packets
->> on TX path of sdio bus, then it reduce the RX packets's bandwidth of
->> tcp.
->> 
->> This patch enable napi on RX path, then the RX packet of tcp will not
->> feed to tcp stack immeditely from mac80211 since GRO is enabled by
->> default, it will feed to tcp stack after napi complete, if rx bundle
->> is enabled, then it will feed to tcp stack one time for each bundle
->> of RX. For example, RX bundle size is 32, then tcp stack will receive
->> one large length packet, its length is neary 1500*32, then tcp stack
->> will send a tcp ack for this large packet, this will reduce the tcp
->> acks ratio from 1/2 to 1/32. This results in significant performance
->> improvement for tcp RX.
->> 
->> Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
->> with this patch. The cpu usage has no obvious difference with and
->> without NAPI.
-> 
-> I have not done thorough review yet, but few quick questions:
-> 
-> This adds a new skb queue ar->htt.rx_indication_head to RX path, but on
-> one of your earlier patches you also add another skb queue
-> ar_sdio->rx_head. Is it really necessary to have two separate queues in
-> RX path? Sounds like extra complexity to me.
-it is because the ar_sdio->rx_head is for all rx of sdio bus, include 
-wmi event, fw log event,
-pkt log event, htt event... and ar_sdio->rx_head is a lower layer of 
-stack,
-but the NAPI it to improve htt rx data's performance, it is only for htt 
-rx, also pcie has the same
-queue in ath10k_htt for napi, but it only used for low latency.
-> 
-> The way I have understood that NAPI is used as a mechanism to disable
-> interrupts on the device and gain throughput from that. But in your
-> patch the poll function ath10k_sdio_napi_poll() doesn't touch the
-> hardware at all, it just processes packets from
-> ar->htt.rx_indication_head queue until budget runs out. I'm no NAPI
-> expert so I can't claim it's wrong, but at least it feels odd to me.
-The difference of this sdio NAPI and pcie NAPI is PCIE's napi_schedule 
-is called in isr,
-and sdio is called in indication_work of sdio rx, because ath10k's isr 
-is not a real isr, it is
-owned by sdio host, and actually it is a thread.
-When napi_schedule called, it will raise a soft irq in the same context, 
-it will block current thread
-but not block current isr, in order not to block sdio host thread, so 
-called napi_schedule in indication_work of sdio rx is the best choise.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RnJvbTogTGludXMgTMO8c3NpbmcgPGxsQHNpbW9ud3VuZGVybGljaC5kZT4KClNvIGZhciwgZnJh
+bWVzIHdlcmUgZm9yd2FyZGVkIHJlZ2FyZGxlc3Mgb2YgdGhlIEZDUyBjb3JyZWN0bmVzcyBsZWFk
+aW5nCnRvIHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMgbGlzdGVuaW5nIG9uIHRoZSBtb25pdG9yIG1v
+ZGUgaW50ZXJmYWNlIHRvCnJlY2VpdmUgcG90ZW50aWFsbHkgYnJva2VuIGZyYW1lcywgZXZlbiB3
+aXRoIHRoZSAiZmNzZmFpbCIgZmxhZyB1bnNldC4KCkJ5IGRlZmF1bHQsIHdpdGggdGhlICJmY3Nm
+YWlsIiBmbGFnIG9mIGEgbW9uaXRvciBtb2RlIGludGVyZmFjZQp1bnNldCwgZnJhbWVzIHdpdGgg
+RkNTIGVycm9ycyBzaG91bGQgYmUgZHJvcHBlZC4gV2l0aCB0aGlzIHBhdGNoLCB0aGUKZmNzZmFp
+bCBmbGFnIGlzIHRha2VuIGludG8gYWNjb3VudCBjb3JyZWN0bHkuCgpTaWduZWQtb2ZmLWJ5OiBM
+aW51cyBMw7xzc2luZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgotLS0KVGhpcyB3YXMgdGVzdGVk
+IG9uIGFuIE9wZW4gTWVzaCBBNDEgZGV2aWNlLCBmZWF0dXJpbmcgYSBRQ0E0MDE5LiBBbmQKd2l0
+aCB0aGlzIGZpcm13YXJlOgoKaHR0cHM6Ly93d3cuY2FuZGVsYXRlY2guY29tL2Rvd25sb2Fkcy9h
+dGgxMGstNDAxOS0xMC00Yi9maXJtd2FyZS01LWN0LWZ1bGwtY29tbXVuaXR5LTEyLmJpbi1sZWRl
+LjAxMQoKQnV0IGZyb20gbG9va2luZyBhdCB0aGUgY29kZSBpdCBzZWVtcyB0aGF0IHRoZSB2YW5p
+bGxhIGF0aDEwayBoYXMgdGhlCnNhbWUgaXNzdWUsIHRoZXJlZm9yZSBzdWJtaXR0aW5nIGl0IGhl
+cmUuCgpJJ20gYWxzbyBub3QgdGhhdCBmYW1pbGlhciB3aXRoIHRoZSBhdGgxMGsgY29kZSB5ZXQu
+IFNvIG5vdCAxMDAlIHN1cmUgaWYKaXQncyB0aGUgcmlnaHQgcGxhY2UgZm9yIHRoaXMgY2hlY2su
+IFRoZXJlZm9yZSBzZW5kaW5nIGFzIFJGQy4KLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2h0dF9yeC5jIHwgNiArKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMo
+KykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5j
+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwppbmRleCA1M2YxMDk1
+ZGU4ZmYuLmNlMGExNmViYjhiYiAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway9odHRfcnguYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0
+dF9yeC5jCkBAIC0xMjg1LDYgKzEyODUsMTIgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3Byb2Nlc3Nf
+cngoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IpCiAKIAlzdGF0dXMgPSBJ
+RUVFODAyMTFfU0tCX1JYQ0Ioc2tiKTsKIAorCWlmIChhci0+bW9uaXRvciAmJiAhKGFyLT5maWx0
+ZXJfZmxhZ3MgJiBGSUZfRkNTRkFJTCkgJiYKKwkgICAgc3RhdHVzLT5mbGFnICYgUlhfRkxBR19G
+QUlMRURfRkNTX0NSQykgeworCQlkZXZfa2ZyZWVfc2tiX2FueShza2IpOworCQlyZXR1cm47CisJ
+fQorCiAJYXRoMTBrX2RiZyhhciwgQVRIMTBLX0RCR19EQVRBLAogCQkgICAicnggc2tiICVwSyBs
+ZW4gJXUgcGVlciAlcE0gJXMgJXMgc24gJXUgJXMlcyVzJXMlcyVzICVzcmF0ZV9pZHggJXUgdmh0
+X25zcyAldSBmcmVxICV1IGJhbmQgJXUgZmxhZyAweCV4IGZjcy1lcnIgJWkgbWljLWVyciAlaSBh
+bXNkdS1tb3JlICVpXG4iLAogCQkgICBza2IsCi0tIAoyLjI0LjAucmMyCgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
