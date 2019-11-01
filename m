@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQ6kA-0004Kp-Nq
- for ath10k@lists.infradead.org; Thu, 31 Oct 2019 09:27:52 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v6] ath10k: enable napi on RX path for sdio
-References: <20191014114753.7459-1-wgong@codeaurora.org>
-Date: Thu, 31 Oct 2019 11:27:46 +0200
-In-Reply-To: <20191014114753.7459-1-wgong@codeaurora.org> (Wen Gong's message
- of "Mon, 14 Oct 2019 19:47:53 +0800")
-Message-ID: <87tv7p1cz1.fsf@kamboji.qca.qualcomm.com>
+ id 1iQPfz-0002gL-Ut
+ for ath10k@lists.infradead.org; Fri, 01 Nov 2019 05:40:49 +0000
+Received: by mail-pg1-x543.google.com with SMTP id u23so5786326pgo.0
+ for <ath10k@lists.infradead.org>; Thu, 31 Oct 2019 22:40:44 -0700 (PDT)
+From: Ikjoon Jang <ikjn@chromium.org>
+Subject: [PATCH] ath10k: disable cpuidle during downloading firmware.
+Date: Fri,  1 Nov 2019 13:40:35 +0800
+Message-Id: <20191101054035.42101-1-ikjn@chromium.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,46 +22,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, "David S . Miller" <davem@davemloft.net>, Ikjoon Jang <ikjn@chromium.org>, Kalle Valo <kvalo@codeaurora.org>
 
-Wen Gong <wgong@codeaurora.org> writes:
+Downloading ath10k firmware needs a large number of IOs and
+cpuidle's miss predictions make it worse. In the worst case,
+resume time can be three times longer than the average on sdio.
 
-> For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
-> of tcp data from remote, then it will have many small length packets
-> on TX path of sdio bus, then it reduce the RX packets's bandwidth of
-> tcp.
->
-> This patch enable napi on RX path, then the RX packet of tcp will not
-> feed to tcp stack immeditely from mac80211 since GRO is enabled by
-> default, it will feed to tcp stack after napi complete, if rx bundle
-> is enabled, then it will feed to tcp stack one time for each bundle
-> of RX. For example, RX bundle size is 32, then tcp stack will receive
-> one large length packet, its length is neary 1500*32, then tcp stack
-> will send a tcp ack for this large packet, this will reduce the tcp
-> acks ratio from 1/2 to 1/32. This results in significant performance
-> improvement for tcp RX.
->
-> Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
-> with this patch. The cpu usage has no obvious difference with and
-> without NAPI.
+This patch disables cpuidle during firmware downloading by
+applying PM_QOS_CPU_DMA_LATENCY in ath10k_download_fw().
 
-I have not done thorough review yet, but few quick questions:
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-This adds a new skb queue ar->htt.rx_indication_head to RX path, but on
-one of your earlier patches you also add another skb queue
-ar_sdio->rx_head. Is it really necessary to have two separate queues in
-RX path? Sounds like extra complexity to me.
-
-The way I have understood that NAPI is used as a mechanism to disable
-interrupts on the device and gain throughput from that. But in your
-patch the poll function ath10k_sdio_napi_poll() doesn't touch the
-hardware at all, it just processes packets from
-ar->htt.rx_indication_head queue until budget runs out. I'm no NAPI
-expert so I can't claim it's wrong, but at least it feels odd to me.
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 36c62d66c19e..4f76ba5d78a9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -11,6 +11,7 @@
+ #include <linux/property.h>
+ #include <linux/dmi.h>
+ #include <linux/ctype.h>
++#include <linux/pm_qos.h>
+ #include <asm/byteorder.h>
+ 
+ #include "core.h"
+@@ -1027,6 +1028,7 @@ static int ath10k_download_fw(struct ath10k *ar)
+ 	u32 address, data_len;
+ 	const void *data;
+ 	int ret;
++	struct pm_qos_request latency_qos;
+ 
+ 	address = ar->hw_params.patch_load_addr;
+ 
+@@ -1060,8 +1062,14 @@ static int ath10k_download_fw(struct ath10k *ar)
+ 			    ret);
+ 	}
+ 
+-	return ath10k_bmi_fast_download(ar, address,
+-					data, data_len);
++	memset(&latency_qos, 0, sizeof(latency_qos));
++	pm_qos_add_request(&latency_qos, PM_QOS_CPU_DMA_LATENCY, 0);
++
++	ret = ath10k_bmi_fast_download(ar, address, data, data_len);
++
++	pm_qos_remove_request(&latency_qos);
++
++	return ret;
+ }
+ 
+ void ath10k_core_free_board_files(struct ath10k *ar)
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.24.0.rc1.363.gb1bccd3e3d-goog
+
 
 _______________________________________________
 ath10k mailing list
