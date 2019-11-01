@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQRYt-0006DZ-Kl
- for ath10k@lists.infradead.org; Fri, 01 Nov 2019 07:41:38 +0000
+ id 1iQRa4-0006NI-Oq
+ for ath10k@lists.infradead.org; Fri, 01 Nov 2019 07:42:50 +0000
 MIME-Version: 1.0
-Date: Fri, 01 Nov 2019 15:41:34 +0800
+Date: Fri, 01 Nov 2019 15:42:47 +0800
 From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v6 2/3] ath10k: change max RX bundle size from 8 to 32 for
- sdio
-In-Reply-To: <87y2x11dsr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v6 3/3] ath10k: add workqueue for RX path of sdio
+In-Reply-To: <8736f92sfx.fsf@kamboji.qca.qualcomm.com>
 References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
- <1569402639-31720-3-git-send-email-wgong@codeaurora.org>
- <87h83ysbjy.fsf@kamboji.qca.qualcomm.com>
- <73e2d996575023b14c24665b2607a5b3@codeaurora.org>
- <87y2x11dsr.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <dbc1ae9bbe59904910b7fe9a6bb67c9b@codeaurora.org>
+ <1569402639-31720-4-git-send-email-wgong@codeaurora.org>
+ <8736f92sfx.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <3f3641ad49a2664d346558760e38b404@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +20,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2019-10-31 17:09, Kalle Valo wrote:
-
->> I will test the 3 patches.
-> 
-> Did you have a chance to test them? Do note that I did one minor change
-> today:
-Kalle,
-Yes, I will test the 7 patches together later.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=28da1fe7a3ffa5c55c52328c21165d9efdf2e94c
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOS0xMC0zMSAxNzowOCwgS2FsbGUgVmFsbyB3cm90ZToK44CBPiBJIGp1c3QgcmVhbGlz
+ZWQgdGhhdCB0aGlzIGlzIFJYIHBhdGggc28gd2Ugc2hvdWxkIHVzZSAKQVRIMTBLX1NLQl9SWENC
+KCkKPiBpbnN0ZWFkLiBJIG1hZGUgdGhlIGNoYW5nZSBiZWxvdyB0byB0aGlzIGNvbW1pdCBpbiBw
+ZW5kaW5nIGJyYW5jaDoKPiAKSSB3aWxsIHRlc3Qgd2l0aCB0aGUgbmV3IHBhdGNoIHRvZ2V0aGVy
+IHdpdGggb3RoZXIgcGVyZm9ybWFuY2UgcGF0Y2hlcy4KPiBodHRwczovL2dpdC5rZXJuZWwub3Jn
+L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9rdmFsby9hdGguZ2l0L2NvbW1pdC8/aD1wZW5kaW5n
+JmlkPTI4ZGExZmU3YTNmZmE1YzU1YzUyMzI4YzIxMTY1ZDllZmRmMmU5NGMKPiAKPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiBiL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4gaW5kZXggYWY2OGViNWQwNzc2Li5jNTQw
+N2Y1MDgwYjIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9j
+b3JlLmgKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+IEBA
+IC0xMjQsNiArMTI0LDcgQEAgc3RydWN0IGF0aDEwa19za2JfY2Igewo+ICBzdHJ1Y3QgYXRoMTBr
+X3NrYl9yeGNiIHsKPiAgCWRtYV9hZGRyX3QgcGFkZHI7Cj4gIAlzdHJ1Y3QgaGxpc3Rfbm9kZSBo
+bGlzdDsKPiArCXU4IGVpZDsKPiAgfTsKPiAKPiAgc3RhdGljIGlubGluZSBzdHJ1Y3QgYXRoMTBr
+X3NrYl9jYiAqQVRIMTBLX1NLQl9DQihzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3NkaW8uYwo+IGIvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmMKPiBpbmRleCBjMzQ2Mzc4ODEyMTkuLmM3ZDA5YjA3
+YTM4MiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3NkaW8u
+Ywo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc2Rpby5jCj4gQEAgLTQx
+OSw3ICs0MTksNyBAQCBzdGF0aWMgaW50Cj4gYXRoMTBrX3NkaW9fbWJveF9yeF9wcm9jZXNzX3Bh
+Y2tldHMoc3RydWN0IGF0aDEwayAqYXIsCj4gIAlzdHJ1Y3QgYXRoMTBrX2h0YyAqaHRjID0gJmFy
+LT5odGM7Cj4gIAlzdHJ1Y3QgYXRoMTBrX3NkaW9fcnhfZGF0YSAqcGt0Owo+ICAJc3RydWN0IGF0
+aDEwa19odGNfZXAgKmVwOwo+IC0Jc3RydWN0IGF0aDEwa19za2JfY2IgKmNiOwo+ICsJc3RydWN0
+IGF0aDEwa19za2JfcnhjYiAqY2I7Cj4gIAllbnVtIGF0aDEwa19odGNfZXBfaWQgaWQ7Cj4gIAlp
+bnQgcmV0LCBpLCAqbl9sb29rYWhlYWRfbG9jYWw7Cj4gIAl1MzIgKmxvb2thaGVhZHNfbG9jYWw7
+Cj4gQEAgLTQ2Niw3ICs0NjYsNyBAQCBzdGF0aWMgaW50Cj4gYXRoMTBrX3NkaW9fbWJveF9yeF9w
+cm9jZXNzX3BhY2tldHMoc3RydWN0IGF0aDEwayAqYXIsCj4gIAkJCWdvdG8gb3V0Owo+IAo+ICAJ
+CWlmICghcGt0LT50cmFpbGVyX29ubHkpIHsKPiAtCQkJY2IgPSBBVEgxMEtfU0tCX0NCKHBrdC0+
+c2tiKTsKPiArCQkJY2IgPSBBVEgxMEtfU0tCX1JYQ0IocGt0LT5za2IpOwo+ICAJCQljYi0+ZWlk
+ID0gaWQ7Cj4gCj4gIAkJCXNrYl9xdWV1ZV90YWlsKCZhcl9zZGlvLT5yeF9oZWFkLCBwa3QtPnNr
+Yik7Cj4gQEAgLTEzMzMsMTQgKzEzMzMsMTQgQEAgc3RhdGljIHZvaWQKPiBhdGgxMGtfcnhfaW5k
+aWNhdGlvbl9hc3luY193b3JrKHN0cnVjdCB3b3JrX3N0cnVjdCAqd29yaykKPiAgCQkJCQkJICAg
+YXN5bmNfd29ya19yeCk7Cj4gIAlzdHJ1Y3QgYXRoMTBrICphciA9IGFyX3NkaW8tPmFyOwo+ICAJ
+c3RydWN0IGF0aDEwa19odGNfZXAgKmVwOwo+IC0Jc3RydWN0IGF0aDEwa19za2JfY2IgKmNiOwo+
+ICsJc3RydWN0IGF0aDEwa19za2JfcnhjYiAqY2I7Cj4gIAlzdHJ1Y3Qgc2tfYnVmZiAqc2tiOwo+
+IAo+ICAJd2hpbGUgKHRydWUpIHsKPiAgCQlza2IgPSBza2JfZGVxdWV1ZSgmYXJfc2Rpby0+cnhf
+aGVhZCk7Cj4gIAkJaWYgKCFza2IpCj4gIAkJCWJyZWFrOwo+IC0JCWNiID0gQVRIMTBLX1NLQl9D
+Qihza2IpOwo+ICsJCWNiID0gQVRIMTBLX1NLQl9SWENCKHNrYik7Cj4gIAkJZXAgPSAmYXItPmh0
+Yy5lbmRwb2ludFtjYi0+ZWlkXTsKPiAgCQllcC0+ZXBfb3BzLmVwX3J4X2NvbXBsZXRlKGFyLCBz
+a2IpOwo+ICAJfQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
