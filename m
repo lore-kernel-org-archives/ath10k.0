@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQZ8Z-0002SP-54
- for ath10k@lists.infradead.org; Fri, 01 Nov 2019 15:46:56 +0000
-Subject: Re: [RFC PATCH] ath10k: fix RX of frames with broken FCS in monitor
- mode
-References: <20191101111138.9086-1-linus.luessing@c0d3.blue>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <8d256f92-a74b-1670-4493-8e36f402548b@candelatech.com>
-Date: Fri, 1 Nov 2019 08:46:53 -0700
+Received: from mail-oi1-x230.google.com ([2607:f8b0:4864:20::230])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iQaKo-00009Q-En
+ for ath10k@lists.infradead.org; Fri, 01 Nov 2019 17:03:39 +0000
+Received: by mail-oi1-x230.google.com with SMTP id n16so8749873oig.2
+ for <ath10k@lists.infradead.org>; Fri, 01 Nov 2019 10:03:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191101111138.9086-1-linus.luessing@c0d3.blue>
-Content-Language: en-US
+From: Tom Psyborg <pozega.tomislav@gmail.com>
+Date: Fri, 1 Nov 2019 18:03:36 +0100
+Message-ID: <CAKR_QVJ2eHrESLOEqiKxbjr0SoZh3oJydtgcebBOXSpspbquWA@mail.gmail.com>
+Subject: [RFC] ath10k: interface combination with monitor
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +18,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Linus_L=c3=bcssing?= <linus.luessing@c0d3.blue>, ath10k@lists.infradead.org
-Cc: =?UTF-8?Q?Linus_L=c3=bcssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>
+To: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>
 
-T24gMTEvMS8xOSA0OjExIEFNLCBMaW51cyBMw7xzc2luZyB3cm90ZToKPiBGcm9tOiBMaW51cyBM
-w7xzc2luZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgo+IAo+IFNvIGZhciwgZnJhbWVzIHdlcmUg
-Zm9yd2FyZGVkIHJlZ2FyZGxlc3Mgb2YgdGhlIEZDUyBjb3JyZWN0bmVzcyBsZWFkaW5nCj4gdG8g
-dXNlcnNwYWNlIGFwcGxpY2F0aW9ucyBsaXN0ZW5pbmcgb24gdGhlIG1vbml0b3IgbW9kZSBpbnRl
-cmZhY2UgdG8KPiByZWNlaXZlIHBvdGVudGlhbGx5IGJyb2tlbiBmcmFtZXMsIGV2ZW4gd2l0aCB0
-aGUgImZjc2ZhaWwiIGZsYWcgdW5zZXQuCj4gCj4gQnkgZGVmYXVsdCwgd2l0aCB0aGUgImZjc2Zh
-aWwiIGZsYWcgb2YgYSBtb25pdG9yIG1vZGUgaW50ZXJmYWNlCj4gdW5zZXQsIGZyYW1lcyB3aXRo
-IEZDUyBlcnJvcnMgc2hvdWxkIGJlIGRyb3BwZWQuIFdpdGggdGhpcyBwYXRjaCwgdGhlCj4gZmNz
-ZmFpbCBmbGFnIGlzIHRha2VuIGludG8gYWNjb3VudCBjb3JyZWN0bHkuCj4gCj4gU2lnbmVkLW9m
-Zi1ieTogTGludXMgTMO8c3NpbmcgPGxsQHNpbW9ud3VuZGVybGljaC5kZT4KPiAtLS0KPiBUaGlz
-IHdhcyB0ZXN0ZWQgb24gYW4gT3BlbiBNZXNoIEE0MSBkZXZpY2UsIGZlYXR1cmluZyBhIFFDQTQw
-MTkuIEFuZAo+IHdpdGggdGhpcyBmaXJtd2FyZToKPiAKPiBodHRwczovL3d3dy5jYW5kZWxhdGVj
-aC5jb20vZG93bmxvYWRzL2F0aDEway00MDE5LTEwLTRiL2Zpcm13YXJlLTUtY3QtZnVsbC1jb21t
-dW5pdHktMTIuYmluLWxlZGUuMDExCj4gCj4gQnV0IGZyb20gbG9va2luZyBhdCB0aGUgY29kZSBp
-dCBzZWVtcyB0aGF0IHRoZSB2YW5pbGxhIGF0aDEwayBoYXMgdGhlCj4gc2FtZSBpc3N1ZSwgdGhl
-cmVmb3JlIHN1Ym1pdHRpbmcgaXQgaGVyZS4KPiAKPiBJJ20gYWxzbyBub3QgdGhhdCBmYW1pbGlh
-ciB3aXRoIHRoZSBhdGgxMGsgY29kZSB5ZXQuIFNvIG5vdCAxMDAlIHN1cmUgaWYKPiBpdCdzIHRo
-ZSByaWdodCBwbGFjZSBmb3IgdGhpcyBjaGVjay4gVGhlcmVmb3JlIHNlbmRpbmcgYXMgUkZDLgo+
-IC0tLQo+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYyB8IDYgKysr
-KysrCj4gICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMgYi9kcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCj4gaW5kZXggNTNmMTA5NWRlOGZmLi5jZTBhMTZl
-YmI4YmIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRf
-cnguYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMKPiBA
-QCAtMTI4NSw2ICsxMjg1LDEyIEBAIHN0YXRpYyB2b2lkIGF0aDEwa19wcm9jZXNzX3J4KHN0cnVj
-dCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+ICAgCj4gICAJc3RhdHVzID0gSUVF
-RTgwMjExX1NLQl9SWENCKHNrYik7Cj4gICAKPiArCWlmIChhci0+bW9uaXRvciAmJiAhKGFyLT5m
-aWx0ZXJfZmxhZ3MgJiBGSUZfRkNTRkFJTCkgJiYKPiArCSAgICBzdGF0dXMtPmZsYWcgJiBSWF9G
-TEFHX0ZBSUxFRF9GQ1NfQ1JDKSB7Cj4gKwkJZGV2X2tmcmVlX3NrYl9hbnkoc2tiKTsKPiArCQly
-ZXR1cm47Cj4gKwl9CgpNYXliZSB3b3J0aCBhZGRpbmcgYSBjb3VudGVyIGxpa2UgJ3J4X2Ryb3Bf
-Y3JjJyB0byB0aGUgYXRoMTBrX2RlYnVnIHN0cnVjdCBhbmQgaW5jcmVtZW50IGl0IGhlcmUKYW5k
-IGFsc28gc2hvdyBpbiBkZWJ1Z2ZzIGFuZC9vciBldGh0b29sIHN0YXRzPwoKQW5kLCBtYXliZSBu
-byBjaGVjayBmb3IgYXItPm1vbml0b3IsIGluIGNhc2Ugc29tZWhvdyB0aGUgZnJhbWUgaXMgc3Rp
-bGwgcmVjZWl2ZWQKd2l0aCBiYWQgQ1JDIGV2ZW4gd2l0aG91dCBtb25pdG9yIG1vZGU/CgpUaGFu
-a3MsCkJlbgoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVs
-YSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi
+
+Is there a way to run monitor mode interface independent on STA/AP
+interface presence or their state?
+I am using airodump-ng/airmon-ng and I've noticed that while mon
+interface is brought up airodump-ng is unable to find any beacons
+unless sta interface is brought down. That is with QCA9880 devices,
+while with QCA9377 airodump-ng only finds beacons if the sta interface
+is associated to an AP.
+Does this need firmware change to work or driver changes are sufficient?
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
