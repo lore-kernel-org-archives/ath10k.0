@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x231.google.com ([2607:f8b0:4864:20::231])
+Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQbfn-0004Fa-D2
- for ath10k@lists.infradead.org; Fri, 01 Nov 2019 18:29:24 +0000
-Received: by mail-oi1-x231.google.com with SMTP id i185so8936813oif.9
- for <ath10k@lists.infradead.org>; Fri, 01 Nov 2019 11:29:22 -0700 (PDT)
+ id 1iRHvC-00059F-Rq
+ for ath10k@lists.infradead.org; Sun, 03 Nov 2019 15:36:09 +0000
+Received: by mail-oi1-x241.google.com with SMTP id l202so12069794oig.1
+ for <ath10k@lists.infradead.org>; Sun, 03 Nov 2019 07:36:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <bb62015e-d097-f54c-56ce-000d0b18a5ac@candelatech.com>
-References: <CAKR_QVJ2eHrESLOEqiKxbjr0SoZh3oJydtgcebBOXSpspbquWA@mail.gmail.com>
- <bb62015e-d097-f54c-56ce-000d0b18a5ac@candelatech.com>
+In-Reply-To: <8c6d531f6474faf4df55f90185466774@codeaurora.org>
+References: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
+ <d6cfd945-7bab-a01d-0157-e0e1802f66e3@eero.com>
+ <8c6d531f6474faf4df55f90185466774@codeaurora.org>
 From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Fri, 1 Nov 2019 19:29:21 +0100
-Message-ID: <CAKR_QVK8EUnL-dUt9K-1H6Ah7=ZTxs=Eq=gwvk5R_zeEQX0eeQ@mail.gmail.com>
-Subject: Re: [RFC] ath10k: interface combination with monitor
+Date: Sun, 3 Nov 2019 16:36:03 +0100
+Message-ID: <CAKR_QV+Qh_ErYduYoD8=u_i-y=cbKSJkkajtKxsJ5ML8-Z79EQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] Revert "ath10k: fix DMA related firmware crashes on
+ multiple devices"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +27,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: zhichen@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, Peter Oh <peter.oh@eero.com>, ath10k@lists.infradead.org
 
-Tried this fw: https://www.candelatech.com/downloads/firmware-2-ct-full-community-21.bin
-Used ath10k driver as there is no ct driver for 5.4 yet.
-
-Same as with QCA firmware
-
-On 01/11/2019, Ben Greear <greearb@candelatech.com> wrote:
-> On 11/1/19 10:03 AM, Tom Psyborg wrote:
->> Hi
+On 30/10/2019, zhichen@codeaurora.org <zhichen@codeaurora.org> wrote:
+> On 2019-10-23 01:16, Peter Oh wrote:
 >>
->> Is there a way to run monitor mode interface independent on STA/AP
->> interface presence or their state?
->> I am using airodump-ng/airmon-ng and I've noticed that while mon
->> interface is brought up airodump-ng is unable to find any beacons
->> unless sta interface is brought down. That is with QCA9880 devices,
->> while with QCA9377 airodump-ng only finds beacons if the sta interface
->> is associated to an AP.
->> Does this need firmware change to work or driver changes are sufficient?
+>> How can you say value 0 (I believe it's 64 bytes) DMA burst size
+>> causes the symptom and 1 fixes it?
 >>
+>> Peter
 >
-> I would expect it to work.  Have you tried -ct firmware on 9880 in this
-> manner?
+> Confirmed from HW team that the configuration controls AXI burst size of
+> the RD/WR access to the HOST MEM.
+> 0-	No split , RAW read/write transfer size from MAC is put out on bus as
+> burst length.
+> 1-	Split at 256 byte boundary
+> 2,3- Reserved
 >
-> Thanks,
-> Ben
+> That's why we see issue with value 0.
 >
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
+> Zhi
 >
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 >
+
+is this true for both wave1 and wave2 ? at least per this commit
+message: ath10k: Fix DMA burst size
+it's suppose to be:
+
+0 - 128B max (not sure if this means 128B static, or any size between 0 and 128)
+1 - 256B
 
 _______________________________________________
 ath10k mailing list
