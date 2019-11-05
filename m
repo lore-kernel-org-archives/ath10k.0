@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.aperture-lab.de ([138.201.29.205])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iRyRp-0004Np-0D
- for ath10k@lists.infradead.org; Tue, 05 Nov 2019 13:00:38 +0000
-Date: Tue, 5 Nov 2019 14:00:19 +0100
-From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: Re: [RFC PATCH] ath10k: fix RX of frames with broken FCS in monitor
+ id 1iS21y-0002KI-Tz
+ for ath10k@lists.infradead.org; Tue, 05 Nov 2019 16:50:12 +0000
+From: =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: [PATCH net-next] ath10k: fix RX of frames with broken FCS in monitor
  mode
-Message-ID: <20191105125152.GB10238@otheros>
-References: <20191101111138.9086-1-linus.luessing@c0d3.blue>
- <8d256f92-a74b-1670-4493-8e36f402548b@candelatech.com>
+Date: Tue,  5 Nov 2019 17:49:32 +0100
+Message-Id: <20191105164932.11799-1-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8d256f92-a74b-1670-4493-8e36f402548b@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +17,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Linus =?utf-8?Q?L=C3=BCssing?= <ll@simonwunderlich.de>, ath10k@lists.infradead.org, Simon Wunderlich <sw@simonwunderlich.de>
+To: ath10k@lists.infradead.org
+Cc: =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Ben Greear <greearb@candelatech.com>, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-On Fri, Nov 01, 2019 at 08:46:53AM -0700, Ben Greear wrote:
-> > diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> > index 53f1095de8ff..ce0a16ebb8bb 100644
-> > --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> > +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> > @@ -1285,6 +1285,12 @@ static void ath10k_process_rx(struct ath10k *ar, struct sk_buff *skb)
-> >   	status = IEEE80211_SKB_RXCB(skb);
-> > +	if (ar->monitor && !(ar->filter_flags & FIF_FCSFAIL) &&
-> > +	    status->flag & RX_FLAG_FAILED_FCS_CRC) {
-> > +		dev_kfree_skb_any(skb);
-> > +		return;
-> > +	}
-> 
-> Maybe worth adding a counter like 'rx_drop_crc' to the ath10k_debug struct and increment it here
-> and also show in debugfs and/or ethtool stats?
-
-Ok.
-
-> 
-> And, maybe no check for ar->monitor, in case somehow the frame is still received
-> with bad CRC even without monitor mode?
-
-I think ath9k is also checking for "ah->is_monitoring" here:
-
-https://elixir.bootlin.com/linux/v5.3.8/source/drivers/net/wireless/ath/ath9k/common.c#L96
-
-And I didn't want to divert from this. Should I remove it anyway?
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RnJvbTogTGludXMgTMO8c3NpbmcgPGxsQHNpbW9ud3VuZGVybGljaC5kZT4KClNvIGZhciwgZnJh
+bWVzIHdlcmUgZm9yd2FyZGVkIHJlZ2FyZGxlc3Mgb2YgdGhlIEZDUyBjb3JyZWN0bmVzcyBsZWFk
+aW5nCnRvIHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMgbGlzdGVuaW5nIG9uIHRoZSBtb25pdG9yIG1v
+ZGUgaW50ZXJmYWNlIHRvCnJlY2VpdmUgcG90ZW50aWFsbHkgYnJva2VuIGZyYW1lcywgZXZlbiB3
+aXRoIHRoZSAiZmNzZmFpbCIgZmxhZyB1bnNldC4KCkJ5IGRlZmF1bHQsIHdpdGggdGhlICJmY3Nm
+YWlsIiBmbGFnIG9mIGEgbW9uaXRvciBtb2RlIGludGVyZmFjZQp1bnNldCwgZnJhbWVzIHdpdGgg
+RkNTIGVycm9ycyBzaG91bGQgYmUgZHJvcHBlZC4gV2l0aCB0aGlzIHBhdGNoLCB0aGUKZmNzZmFp
+bCBmbGFnIGlzIHRha2VuIGludG8gYWNjb3VudCBjb3JyZWN0bHkuCgpDYzogU2ltb24gV3VuZGVy
+bGljaCA8c3dAc2ltb253dW5kZXJsaWNoLmRlPgpTaWduZWQtb2ZmLWJ5OiBMaW51cyBMw7xzc2lu
+ZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgotLS0KVGhpcyB3YXMgdGVzdGVkIG9uIGFuIE9wZW4g
+TWVzaCBBNDEgZGV2aWNlLCBmZWF0dXJpbmcgYSBRQ0E0MDE5LiBBbmQKd2l0aCB0aGlzIGZpcm13
+YXJlOgoKaHR0cHM6Ly93d3cuY2FuZGVsYXRlY2guY29tL2Rvd25sb2Fkcy9hdGgxMGstNDAxOS0x
+MC00Yi9maXJtd2FyZS01LWN0LWZ1bGwtY29tbXVuaXR5LTEyLmJpbi1sZWRlLjAxMQoKQnV0IGZy
+b20gbG9va2luZyBhdCB0aGUgY29kZSBpdCBzZWVtcyB0aGF0IHRoZSB2YW5pbGxhIGF0aDEwayBo
+YXMgdGhlCnNhbWUgaXNzdWUsIHRoZXJlZm9yZSBzdWJtaXR0aW5nIGl0IGhlcmUuCgpDaGFuZ2Vs
+b2cgUkZDLT52MToKCiogcmVtb3ZlZCAiYXItPm1vbml0b3IiIGNoZWNrCiogYWRkZWQgYSBkZWJ1
+ZyBjb3VudGVyCgotLS0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oICAg
+fCAgMSArCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMgIHwgIDIgKysK
+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMgfCAxMCArKysrKysrKysr
+CiAzIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvY29yZS5oCmluZGV4IDRkN2RiMDdkYjZiYS4uNzg3MDY1YTllYjNmIDEwMDY0NAot
+LS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAorKysgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaApAQCAtMTE3MSw2ICsxMTcxLDcgQEAgc3Ry
+dWN0IGF0aDEwayB7CiAKIAlzdHJ1Y3QgewogCQkvKiBwcm90ZWN0ZWQgYnkgZGF0YV9sb2NrICov
+CisJCXUzMiByeF9jcmNfZXJyX2Ryb3A7CiAJCXUzMiBmd19jcmFzaF9jb3VudGVyOwogCQl1MzIg
+Zndfd2FybV9yZXNldF9jb3VudGVyOwogCQl1MzIgZndfY29sZF9yZXNldF9jb3VudGVyOwpkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jIGIvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCmluZGV4IGJkMmI1NjI4Zjg1MC4uNWU0
+Y2QyOTY2ZTZmIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2Rl
+YnVnLmMKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCkBAIC0x
+MDk0LDYgKzEwOTQsNyBAQCBzdGF0aWMgY29uc3QgY2hhciBhdGgxMGtfZ3N0cmluZ3Nfc3RhdHNb
+XVtFVEhfR1NUUklOR19MRU5dID0gewogCSJkX3J0c19nb29kIiwKIAkiZF90eF9wb3dlciIsIC8q
+IGluIC41IGRiTSBJIHRoaW5rICovCiAJImRfcnhfY3JjX2VyciIsIC8qIGZjc19iYWQgKi8KKwki
+ZF9yeF9jcmNfZXJyX2Ryb3AiLCAvKiBmcmFtZSB3aXRoIEZDUyBlcnJvciwgZHJvcHBlZCBsYXRl
+IGluIGtlcm5lbCAqLwogCSJkX25vX2JlYWNvbiIsCiAJImRfdHhfbXBkdXNfcXVldWVkIiwKIAki
+ZF90eF9tc2R1X3F1ZXVlZCIsCkBAIC0xMTkzLDYgKzExOTQsNyBAQCB2b2lkIGF0aDEwa19kZWJ1
+Z19nZXRfZXRfc3RhdHMoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCiAJZGF0YVtpKytdID0gcGRl
+dl9zdGF0cy0+cnRzX2dvb2Q7CiAJZGF0YVtpKytdID0gcGRldl9zdGF0cy0+Y2hhbl90eF9wb3dl
+cjsKIAlkYXRhW2krK10gPSBwZGV2X3N0YXRzLT5mY3NfYmFkOworCWRhdGFbaSsrXSA9IGFyLT5z
+dGF0cy5yeF9jcmNfZXJyX2Ryb3A7CiAJZGF0YVtpKytdID0gcGRldl9zdGF0cy0+bm9fYmVhY29u
+czsKIAlkYXRhW2krK10gPSBwZGV2X3N0YXRzLT5tcGR1X2VucXVlZDsKIAlkYXRhW2krK10gPSBw
+ZGV2X3N0YXRzLT5tc2R1X2VucXVlZDsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvaHR0X3J4LmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0
+dF9yeC5jCmluZGV4IDUzZjEwOTVkZThmZi4uMTQ5NzI4NTg4ZTgwIDEwMDY0NAotLS0gYS9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCisrKyBiL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMKQEAgLTEyODUsNiArMTI4NSwxNiBAQCBzdGF0aWMg
+dm9pZCBhdGgxMGtfcHJvY2Vzc19yeChzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYg
+KnNrYikKIAogCXN0YXR1cyA9IElFRUU4MDIxMV9TS0JfUlhDQihza2IpOwogCisJaWYgKCEoYXIt
+PmZpbHRlcl9mbGFncyAmIEZJRl9GQ1NGQUlMKSAmJgorCSAgICBzdGF0dXMtPmZsYWcgJiBSWF9G
+TEFHX0ZBSUxFRF9GQ1NfQ1JDKSB7CisJCXNwaW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7CisJ
+CWFyLT5zdGF0cy5yeF9jcmNfZXJyX2Ryb3ArKzsKKwkJc3Bpbl91bmxvY2tfYmgoJmFyLT5kYXRh
+X2xvY2spOworCisJCWRldl9rZnJlZV9za2JfYW55KHNrYik7CisJCXJldHVybjsKKwl9CisKIAlh
+dGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX0RBVEEsCiAJCSAgICJyeCBza2IgJXBLIGxlbiAldSBw
+ZWVyICVwTSAlcyAlcyBzbiAldSAlcyVzJXMlcyVzJXMgJXNyYXRlX2lkeCAldSB2aHRfbnNzICV1
+IGZyZXEgJXUgYmFuZCAldSBmbGFnIDB4JXggZmNzLWVyciAlaSBtaWMtZXJyICVpIGFtc2R1LW1v
+cmUgJWlcbiIsCiAJCSAgIHNrYiwKLS0gCjIuMjQuMC5yYzIKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
