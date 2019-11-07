@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
- helo=us-smtp-1.mimecast.com)
+Received: from mail.aperture-lab.de ([2a01:4f8:171:314c::100:a1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSfRX-0002RF-AA
- for ath10k@lists.infradead.org; Thu, 07 Nov 2019 10:55:12 +0000
-Received: by mail-ed1-f70.google.com with SMTP id j21so1105690edv.20
- for <ath10k@lists.infradead.org>; Thu, 07 Nov 2019 02:55:07 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v6 0/4] Add Airtime Queue Limits (AQL) to mac80211
-In-Reply-To: <CA+iem5s6jDNR+yA21UB_zJiZeVxix_QaO6RYw6sN69j2859zFw@mail.gmail.com>
-References: <157182473951.150713.7978051149956899705.stgit@toke.dk>
- <CA+iem5s6jDNR+yA21UB_zJiZeVxix_QaO6RYw6sN69j2859zFw@mail.gmail.com>
-Date: Thu, 07 Nov 2019 11:55:05 +0100
-Message-ID: <874kzggdme.fsf@toke.dk>
+ id 1iSiNz-00037r-Hp
+ for ath10k@lists.infradead.org; Thu, 07 Nov 2019 14:03:45 +0000
+Date: Thu, 7 Nov 2019 15:03:31 +0100
+From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: Re: [PATCH net-next] ath10k: fix RX of frames with broken FCS in
+ monitor mode
+Message-ID: <20191107140149.GB19482@otheros>
+References: <20191105164932.11799-1-linus.luessing@c0d3.blue>
+ <927cea69-7afc-5c35-df8d-9813392e8928@candelatech.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <927cea69-7afc-5c35-df8d-9813392e8928@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +25,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Linus =?utf-8?Q?L=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-Kan Yan <kyan@google.com> writes:
+On Tue, Nov 05, 2019 at 09:19:20AM -0800, Ben Greear wrote:
+> Thanks for adding the counter.  Since it us u32, I doubt you need the spin lock
+> below?
 
-> Patchset v6 works for me with ath10k driver.  AQL does its job as
-> expected and tests show very significant reduction in latency in
-> congested environment. The txq stuck issue in patchset v4 got fixed.
+Ok, I can remove the spin-lock.
 
-Awesome! Thank you for testing!
+Just for clarification though, if I recall correctly then an increment operator
+is not guaranteed to work atomically. But you think it's unlikely
+to race with a concurrent ++ and therefore it's fine for just a debug counter?
+(and if it were racing, it'd just be a missed +1)
 
-> However, the device's total pending airtime count still underflows
-> sometimes. Even though it doesn't cause apparent side effect, there is
-> some issue with the pending airtime update and needs further
-> debugging.
+Or is there another mechanism that avoids concurrency in the
+ath10k RX path?
 
-Huh, it *under*flows? That's... interesting. Cloned SKBs? Or maybe the
-tx_time_est field is being set in some other place?
 
-Could I get you to add a dump_stack() to the underflow test so we can
-get an idea of where that happens?
-
--Toke
-
+> 
+> --Ben
+> 
+> > +	if (!(ar->filter_flags & FIF_FCSFAIL) &&
+> > +	    status->flag & RX_FLAG_FAILED_FCS_CRC) {
+> > +		spin_lock_bh(&ar->data_lock);
+> > +		ar->stats.rx_crc_err_drop++;
+> > +		spin_unlock_bh(&ar->data_lock);
+> > +
+> > +		dev_kfree_skb_any(skb);
+> > +		return;
+> > +	}
+> > +
+> >   	ath10k_dbg(ar, ATH10K_DBG_DATA,
+> >   		   "rx skb %pK len %u peer %pM %s %s sn %u %s%s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
+> >   		   skb,
+> > 
+> 
+> 
+> -- 
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+> 
 
 _______________________________________________
 ath10k mailing list
