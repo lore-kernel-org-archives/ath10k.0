@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSaSJ-0007mT-57
- for ath10k@lists.infradead.org; Thu, 07 Nov 2019 05:35:40 +0000
+ id 1iSb43-0003XM-8W
+ for ath10k@lists.infradead.org; Thu, 07 Nov 2019 06:14:40 +0000
+Received: by mail-lj1-x244.google.com with SMTP id g3so843388ljl.11
+ for <ath10k@lists.infradead.org>; Wed, 06 Nov 2019 22:14:34 -0800 (PST)
 MIME-Version: 1.0
-Date: Thu, 07 Nov 2019 13:35:37 +0800
-From: zhichen@codeaurora.org
-Subject: Re: [PATCH RFC] Revert "ath10k: fix DMA related firmware crashes on
- multiple devices"
-In-Reply-To: <CAKR_QVL9QLE72y0HBD_miLYAD4qx73u3FK33=oNCHp_S8H6JOw@mail.gmail.com>
-References: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
- <CAKR_QVLDFBVMDDP4mPYVNdpT9TA3podNeQMpVJQwE7A5eG=0kA@mail.gmail.com>
- <9bb484b94c43f7c9aa08345ad89d7b2c@codeaurora.org>
- <CAKR_QVL9QLE72y0HBD_miLYAD4qx73u3FK33=oNCHp_S8H6JOw@mail.gmail.com>
-Message-ID: <a60168b26275f4400434e72fabac244b@codeaurora.org>
+References: <157182473951.150713.7978051149956899705.stgit@toke.dk>
+In-Reply-To: <157182473951.150713.7978051149956899705.stgit@toke.dk>
+From: Kan Yan <kyan@google.com>
+Date: Wed, 6 Nov 2019 22:14:20 -0800
+Message-ID: <CA+iem5s6jDNR+yA21UB_zJiZeVxix_QaO6RYw6sN69j2859zFw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] Add Airtime Queue Limits (AQL) to mac80211
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +20,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tom Psyborg <pozega.tomislav@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-On 2019-11-06 18:01, Tom Psyborg wrote:
-> On 30/10/2019, zhichen@codeaurora.org <zhichen@codeaurora.org> wrote:
->> On 2019-10-22 18:07, Tom Psyborg wrote:
->> 
->>> What about main and 10x firmware branch?
->> 
->> There is no code changes in firmware. It's a configuration change of
->> host memory access.
->> 
->> Zhi
->> 
-> 
-> Please change it for main and 10x branch too. Dumping hw1.0 regs with
-> QCA driver shows DMA burst value set to 1
-
-Looks some old chips have different definitions of DMA burst size. We 
-are discussing internally to change it for 10.4 only because we only 
-tested 10.4.  On the other hand we are waiting for HW team to explain 
-the differences.
-
-Zhi
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UGF0Y2hzZXQgdjYgd29ya3MgZm9yIG1lIHdpdGggYXRoMTBrIGRyaXZlci4gIEFRTCBkb2VzIGl0
+cyBqb2IgYXMKZXhwZWN0ZWQgYW5kIHRlc3RzIHNob3cgdmVyeSBzaWduaWZpY2FudCByZWR1Y3Rp
+b24gaW4gbGF0ZW5jeSBpbgpjb25nZXN0ZWQgZW52aXJvbm1lbnQuIFRoZSB0eHEgc3R1Y2sgaXNz
+dWUgaW4gcGF0Y2hzZXQgdjQgZ290IGZpeGVkLgoKSG93ZXZlciwgdGhlIGRldmljZSdzIHRvdGFs
+IHBlbmRpbmcgYWlydGltZSBjb3VudCBzdGlsbCB1bmRlcmZsb3dzCnNvbWV0aW1lcy4gRXZlbiB0
+aG91Z2ggaXQgZG9lc24ndCBjYXVzZSBhcHBhcmVudCBzaWRlIGVmZmVjdCwgdGhlcmUgaXMKc29t
+ZSBpc3N1ZSB3aXRoIHRoZSBwZW5kaW5nIGFpcnRpbWUgdXBkYXRlIGFuZCBuZWVkcyBmdXJ0aGVy
+CmRlYnVnZ2luZy4KClJlZ2FyZHMsCkthbgoKCk9uIFdlZCwgT2N0IDIzLCAyMDE5IGF0IDI6NTkg
+QU0gVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+IHdyb3RlOgo+Cj4g
+VGhpcyBzZXJpZXMgaXMgYSBmaXJzdCBhdHRlbXB0IGF0IHBvcnRpbmcgdGhlIEFpcnRpbWUgUXVl
+dWUgTGltaXRzIGNvbmNlcHQgZnJvbQo+IHRoZSBvdXQtb2YtdHJlZSBhdGgxMGsgaW1wbGVtZW50
+YXRpb25bMF0gdG8gbWFjODAyMTEuIFRoaXMgdmVyc2lvbiB0YWtlcyBLYW4ncwo+IHBhdGNoIHRv
+IGRvIHRoZSB0aHJvdHRsaW5nIGluIG1hYzgwMjExLCBhbmQgcmVwbGFjZXMgdGhlIGRyaXZlciBB
+UEkgd2l0aCB0aGUKPiBtZWNoYW5pc20gZnJvbSB0aGUgcHJldmlvdXMgdmVyc2lvbiBvZiBteSBz
+ZXJpZXMsIHdoaWNoIGluc3RlYWQgY2FsY3VsYXRlZCB0aGUKPiBleHBlY3RlZCBhaXJ0aW1lIGF0
+IGRlcXVldWUgdGltZSBpbnNpZGUgbWFjODAyMTEsIHN0b3JpbmcgaXQgaW4gdGhlIFNLQiBjYgo+
+IGZpZWxkLgo+Cj4gVGhpcyBzZXJpZXMgYWxzbyBpbXBvcnRzIEZlbGl4JyBhaXJ0aW1lIGNhbGN1
+bGF0aW9uIGNvZGUgZnJvbSBtdDc2IGludG8KPiBtYWM4MDIxMSwgYWRqdXN0aW5nIHRoZSBBUEkg
+c28gaXQgY2FuIGJlIHVzZWQgZnJvbSBUWCBkZXF1ZXVlLCBieSBleHRyYWN0aW5nIHRoZQo+IGxh
+dGVzdCBUWCByYXRlIGZyb20gdGhlIHR4X3N0YXRzIHN0cnVjdHVyZSBrZXB0IGZvciBlYWNoIHN0
+YXRpb24uCj4KPiBBcyBiZWZvcmUsIEkndmUgb25seSBjb21waWxlIHRlc3RlZCB0aGlzIChsYWNr
+aW5nIHRoZSBwcm9wZXIgaGFyZHdhcmUgdG8gZG8gbW9yZQo+IHRlc3RpbmcpLiBTbyBJJ20gaG9w
+aW5nIHNvbWVvbmUgd2l0aCBhIHByb3BlciB0ZXN0aW5nIHNldHVwIGNhbiB0YWtlIHRoZSB3aG9s
+ZQo+IHRoaW5nIGZvciBhIHNwaW4uLi4gOikKPgo+IFRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFi
+bGUgaW4gbXkgZ2l0IHJlcG8gaGVyZToKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
+bGludXgva2VybmVsL2dpdC90b2tlL2xpbnV4LmdpdC9sb2cvP2g9bWFjODAyMTEtYXFsLTA2Cj4K
+PiBDaGFuZ2Vsb2c6Cj4KPiB2NjoKPiAgIC0gRml4IHN0YSBsb29rdXAgaW4gaWVlZTgwMjExX3Jl
+cG9ydF91c2VkX3NrYigpLgo+ICAgLSBNb3ZlIGNhbGwgdG8gaWVlZTgwMjExX3N0YV91cGRhdGVf
+cGVuZGluZ19haXJ0aW1lKCkgdG8gYSBiaXQgbGF0ZXIgaW4KPiAgICAgX19pZWVlODAyMTFfdHhf
+c3RhdHVzKCkKPiB2NToKPiAgIC0gQWRkIG1pc3NpbmcgZXhwb3J0IG9mIGllZWU4MDIxMV9jYWxj
+X3J4X2FpcnRpbWUoKSBhbmQgbWFrZQo+ICAgICBpZWVlODAyMTFfY2FsY190eF9haXJ0aW1lX3Jh
+dGUoKSBzdGF0aWMgKGtidWlsZGJvdCkuCj4gICAtIFVzZSBza2JfZ2V0X3F1ZXVlX21hcHBpbmco
+KSB0byBnZXQgdGhlIEFDIGZyb20gdGhlIHNrYi4KPiAgIC0gVGFrZSBiYXNpYyByYXRlIGNvbmZp
+Z3VyYXRpb24gZm9yIHRoZSBCU1MgaW50byBhY2NvdW50IHdoZW4gY2FsY3VsYXRpbmcKPiAgICAg
+bXVsdGljYXN0IHJhdGUuCj4gdjQ6Cj4gICAtIEZpeCBjYWxjdWxhdGlvbiB0aGF0IGNsYW1wcyB0
+aGUgbWF4aW11bSBhaXJ0aW1lIHRvIGZpdCBpbnRvIDEwIGJpdHMKPiAgIC0gSW5jb3Jwb3JhdGUg
+UmljaCBCcm93bidzIG5pdHMgZm9yIHRoZSBjb21taXQgbWVzc2FnZSBpbiBLYW4ncyBwYXRjaAo+
+ICAgLSBBZGQgZmV3ZXIgbG9jYWwgdmFyaWFibGVzIHRvIGllZWU4MDIxMV90eF9kZXF1ZXVlKCkK
+PiB2MzoKPiAgIC0gTW92ZSB0aGUgdHhfdGltZV9lc3QgZmllbGQgc28gaXQncyBzaGFyZWQgd2l0
+aCBhY2tfZnJhbWVfaWQsIGFuZCB1c2UgdW5pdHMKPiAgICAgb2YgNHVzIGZvciB0aGUgdmFsdWUg
+c3RvcmVkIGluIGl0Lgo+ICAgLSBNb3ZlIHRoZSBhZGRpdGlvbiBvZiB0aGUgRXRoZXJuZXQgaGVh
+ZGVyIHNpemUgaW50byBpZWVlODAyMTFfY2FsY19leHBlY3RlZF90eF9haXJ0aW1lKCkKPiB2MjoK
+PiAgIC0gSW50ZWdyYXRlIEthbidzIGFwcHJvYWNoIHRvIGFpcnRpbWUgdGhyb3R0bGluZy4KPiAg
+IC0gSG9wZWZ1bGx5IGZpeCB0aGUgY2Igc3RydWN0IGFsaWdubWVudCBvbiBiaWctZW5kaWFuIGFy
+Y2hpdGVjdHVyZXMuCj4KPiAtLS0KPgo+IEthbiBZYW4gKDEpOgo+ICAgICAgIG1hYzgwMjExOiBJ
+bXBsZW1lbnQgQWlydGltZS1iYXNlZCBRdWV1ZSBMaW1pdCAoQVFMKQo+Cj4gVG9rZSBIw7hpbGFu
+ZC1Kw7hyZ2Vuc2VuICgzKToKPiAgICAgICBtYWM4MDIxMTogU2hyaW5rIHRoZSBzaXplIG9mIGFj
+a19mcmFtZV9pZCB0byBtYWtlIHJvb20gZm9yIHR4X3RpbWVfZXN0Cj4gICAgICAgbWFjODAyMTE6
+IEltcG9ydCBhaXJ0aW1lIGNhbGN1bGF0aW9uIGNvZGUgZnJvbSBtdDc2Cj4gICAgICAgbWFjODAy
+MTE6IFVzZSBBaXJ0aW1lLWJhc2VkIFF1ZXVlIExpbWl0cyAoQVFMKSBvbiBwYWNrZXQgZGVxdWV1
+ZQo+Cj4KPiAgaW5jbHVkZS9uZXQvY2ZnODAyMTEuaCAgICAgfCAgICA3ICsKPiAgaW5jbHVkZS9u
+ZXQvbWFjODAyMTEuaCAgICAgfCAgIDQ1ICsrKysrCj4gIG5ldC9tYWM4MDIxMS9NYWtlZmlsZSAg
+ICAgIHwgICAgMwo+ICBuZXQvbWFjODAyMTEvYWlydGltZS5jICAgICB8ICAzOTAgKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgbmV0L21hYzgwMjExL2NmZy5j
+ICAgICAgICAgfCAgICAyCj4gIG5ldC9tYWM4MDIxMS9kZWJ1Z2ZzLmMgICAgIHwgICA3OCArKysr
+KysrKysKPiAgbmV0L21hYzgwMjExL2RlYnVnZnNfc3RhLmMgfCAgIDQzICsrKystCj4gIG5ldC9t
+YWM4MDIxMS9pZWVlODAyMTFfaS5oIHwgICAgOCArCj4gIG5ldC9tYWM4MDIxMS9tYWluLmMgICAg
+ICAgIHwgICAgOSArCj4gIG5ldC9tYWM4MDIxMS9zdGFfaW5mby5jICAgIHwgICAzMiArKysrCj4g
+IG5ldC9tYWM4MDIxMS9zdGFfaW5mby5oICAgIHwgICAgOCArCj4gIG5ldC9tYWM4MDIxMS9zdGF0
+dXMuYyAgICAgIHwgICAzMyArKysrCj4gIG5ldC9tYWM4MDIxMS90eC5jICAgICAgICAgIHwgICA2
+OSArKysrKysrLQo+ICAxMyBmaWxlcyBjaGFuZ2VkLCA3MDkgaW5zZXJ0aW9ucygrKSwgMTggZGVs
+ZXRpb25zKC0pCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBuZXQvbWFjODAyMTEvYWlydGltZS5jCj4K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
