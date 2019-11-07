@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.aperture-lab.de ([2a01:4f8:171:314c::100:a1])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSiNz-00037r-Hp
- for ath10k@lists.infradead.org; Thu, 07 Nov 2019 14:03:45 +0000
-Date: Thu, 7 Nov 2019 15:03:31 +0100
-From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSjdt-0004ep-Ud
+ for ath10k@lists.infradead.org; Thu, 07 Nov 2019 15:24:15 +0000
 Subject: Re: [PATCH net-next] ath10k: fix RX of frames with broken FCS in
  monitor mode
-Message-ID: <20191107140149.GB19482@otheros>
 References: <20191105164932.11799-1-linus.luessing@c0d3.blue>
  <927cea69-7afc-5c35-df8d-9813392e8928@candelatech.com>
+ <20191107140149.GB19482@otheros>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <6ca7e338-d14d-49f6-f51c-600856b59767@candelatech.com>
+Date: Thu, 7 Nov 2019 07:24:06 -0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <927cea69-7afc-5c35-df8d-9813392e8928@candelatech.com>
+In-Reply-To: <20191107140149.GB19482@otheros>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +22,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Linus =?utf-8?Q?L=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: =?UTF-8?Q?Linus_L=c3=bcssing?= <linus.luessing@c0d3.blue>
+Cc: =?UTF-8?Q?Linus_L=c3=bcssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-On Tue, Nov 05, 2019 at 09:19:20AM -0800, Ben Greear wrote:
-> Thanks for adding the counter.  Since it us u32, I doubt you need the spin lock
-> below?
-
-Ok, I can remove the spin-lock.
-
-Just for clarification though, if I recall correctly then an increment operator
-is not guaranteed to work atomically. But you think it's unlikely
-to race with a concurrent ++ and therefore it's fine for just a debug counter?
-(and if it were racing, it'd just be a missed +1)
-
-Or is there another mechanism that avoids concurrency in the
-ath10k RX path?
-
-
-> 
-> --Ben
-> 
-> > +	if (!(ar->filter_flags & FIF_FCSFAIL) &&
-> > +	    status->flag & RX_FLAG_FAILED_FCS_CRC) {
-> > +		spin_lock_bh(&ar->data_lock);
-> > +		ar->stats.rx_crc_err_drop++;
-> > +		spin_unlock_bh(&ar->data_lock);
-> > +
-> > +		dev_kfree_skb_any(skb);
-> > +		return;
-> > +	}
-> > +
-> >   	ath10k_dbg(ar, ATH10K_DBG_DATA,
-> >   		   "rx skb %pK len %u peer %pM %s %s sn %u %s%s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
-> >   		   skb,
-> > 
-> 
-> 
-> -- 
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
-> 
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAxMS8wNy8yMDE5IDA2OjAzIEFNLCBMaW51cyBMw7xzc2luZyB3cm90ZToKPiBPbiBUdWUs
+IE5vdiAwNSwgMjAxOSBhdCAwOToxOToyMEFNIC0wODAwLCBCZW4gR3JlZWFyIHdyb3RlOgo+PiBU
+aGFua3MgZm9yIGFkZGluZyB0aGUgY291bnRlci4gIFNpbmNlIGl0IHVzIHUzMiwgSSBkb3VidCB5
+b3UgbmVlZCB0aGUgc3BpbiBsb2NrCj4+IGJlbG93Pwo+Cj4gT2ssIEkgY2FuIHJlbW92ZSB0aGUg
+c3Bpbi1sb2NrLgo+Cj4gSnVzdCBmb3IgY2xhcmlmaWNhdGlvbiB0aG91Z2gsIGlmIEkgcmVjYWxs
+IGNvcnJlY3RseSB0aGVuIGFuIGluY3JlbWVudCBvcGVyYXRvcgo+IGlzIG5vdCBndWFyYW50ZWVk
+IHRvIHdvcmsgYXRvbWljYWxseS4gQnV0IHlvdSB0aGluayBpdCdzIHVubGlrZWx5Cj4gdG8gcmFj
+ZSB3aXRoIGEgY29uY3VycmVudCArKyBhbmQgdGhlcmVmb3JlIGl0J3MgZmluZSBmb3IganVzdCBh
+IGRlYnVnIGNvdW50ZXI/Cj4gKGFuZCBpZiBpdCB3ZXJlIHJhY2luZywgaXQnZCBqdXN0IGJlIGEg
+bWlzc2VkICsxKQoKSSB0aGluayBpdCBpcyBmaW5lIHRvIGJlIG9mZi1ieS1vbmUsIGFuZCB1MzIg
+aXMgYXRvbWljIHNvIHlvdSB3b3VsZCBuZXZlciByZWFkIGEgcmVhbGx5CndlaXJkIG51bWJlciwg
+bGlrZSB5b3UgY2FuIGlmIHU2NCBpcyBub24tYXRvbWljYWxseSBiZWluZyBpbmNyZW1lbnRlZC4K
+ClRoYW5rcywKQmVuCgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpD
+YW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
