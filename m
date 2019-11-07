@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from mail-vs1-xe41.google.com ([2607:f8b0:4864:20::e41])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSV1N-0002KS-Pv
- for ath10k@lists.infradead.org; Wed, 06 Nov 2019 23:47:31 +0000
-Received: by mail-pf1-x444.google.com with SMTP id p26so467885pfq.8
- for <ath10k@lists.infradead.org>; Wed, 06 Nov 2019 15:47:29 -0800 (PST)
-From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: [PATCH] ath10k: Handle "invalid" BDFs for msm8998 devices
-Date: Wed,  6 Nov 2019 15:47:12 -0800
-Message-Id: <20191106234712.2380-1-jeffrey.l.hugo@gmail.com>
+ id 1iSZEB-00065C-WF
+ for ath10k@lists.infradead.org; Thu, 07 Nov 2019 04:17:01 +0000
+Received: by mail-vs1-xe41.google.com with SMTP id y129so393629vsc.6
+ for <ath10k@lists.infradead.org>; Wed, 06 Nov 2019 20:16:56 -0800 (PST)
+MIME-Version: 1.0
+References: <20191101054035.42101-1-ikjn@chromium.org>
+ <87y2ws3lvh.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87y2ws3lvh.fsf@kamboji.qca.qualcomm.com>
+From: Ikjoon Jang <ikjn@chromium.org>
+Date: Thu, 7 Nov 2019 12:16:45 +0800
+Message-ID: <CAATdQgDhYWgHkujo9m1iUrhSu1Bt9A4C8eS82TD=W22_eaF80g@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: disable cpuidle during downloading firmware.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,53 +21,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net
-Cc: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
 
-When the BDF download QMI message has the end field set to 1, it signals
-the end of the transfer, and triggers the firmware to do a CRC check.  The
-BDFs for msm8998 devices fail this check, yet the firmware is happy to
-still use the BDF.  It appears that this error is not caught by the
-downstream drive by concidence, therefore there are production devices
-in the field where this issue needs to be handled otherwise we cannot
-support wifi on them.  So, attempt to detect this scenario as best we can
-and treat it as non-fatal.
+On Thu, Nov 7, 2019 at 2:23 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Ikjoon Jang <ikjn@chromium.org> writes:
+>
+> > Downloading ath10k firmware needs a large number of IOs and
+> > cpuidle's miss predictions make it worse. In the worst case,
+> > resume time can be three times longer than the average on sdio.
+> >
+> > This patch disables cpuidle during firmware downloading by
+> > applying PM_QOS_CPU_DMA_LATENCY in ath10k_download_fw().
+> >
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>
+> On what hardware and firmware versions did you test this? I'll add that
+> to the commit log.
+>
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#guidelines
 
-Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
----
- drivers/net/wireless/ath/ath10k/qmi.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Thank you for sharing it.
+It's QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00029
+on ARMv8 multi cluster platform.
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index eb618a2652db..5ff8cfc93778 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -265,10 +265,13 @@ static int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
- 			goto out;
- 
- 		if (resp.resp.result != QMI_RESULT_SUCCESS_V01) {
--			ath10k_err(ar, "failed to download board data file: %d\n",
--				   resp.resp.error);
--			ret = -EINVAL;
--			goto out;
-+			if (!(req->end == 1 &&
-+			      resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
-+				ath10k_err(ar, "failed to download board data file: %d\n",
-+					   resp.resp.error);
-+				ret = -EINVAL;
-+				goto out;
-+			}
- 		}
- 
- 		remaining -= req->data_len;
--- 
-2.17.1
-
+>
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
