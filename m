@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
+ helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSfNV-00005J-VG
- for ath10k@lists.infradead.org; Thu, 07 Nov 2019 10:51:04 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: add NL80211_FEATURE_ND_RANDOM_MAC_ADDR for NLO
-Date: Thu,  7 Nov 2019 18:50:47 +0800
-Message-Id: <20191107105047.24084-1-wgong@codeaurora.org>
+ id 1iSfRX-0002RF-AA
+ for ath10k@lists.infradead.org; Thu, 07 Nov 2019 10:55:12 +0000
+Received: by mail-ed1-f70.google.com with SMTP id j21so1105690edv.20
+ for <ath10k@lists.infradead.org>; Thu, 07 Nov 2019 02:55:07 -0800 (PST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v6 0/4] Add Airtime Queue Limits (AQL) to mac80211
+In-Reply-To: <CA+iem5s6jDNR+yA21UB_zJiZeVxix_QaO6RYw6sN69j2859zFw@mail.gmail.com>
+References: <157182473951.150713.7978051149956899705.stgit@toke.dk>
+ <CA+iem5s6jDNR+yA21UB_zJiZeVxix_QaO6RYw6sN69j2859zFw@mail.gmail.com>
+Date: Thu, 07 Nov 2019 11:55:05 +0100
+Message-ID: <874kzggdme.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,39 +26,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kan Yan <kyan@google.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-Add NL80211_FEATURE_ND_RANDOM_MAC_ADDR for NLO will enable the random
-mac address for netdetect case.
-iw command:
-iw phy0 wowlan enable net-detect net-detect
-randomize=AA:7B:A1:AC:B2:41/FF:FF:FF:FF:FF:FF interval 5000 delay 30
-freqs 2412 matches ssid foo.
-After suspend, DUT will send probe request with mac AA:7B:A1:AC:B2:41.
+Kan Yan <kyan@google.com> writes:
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00029.
+> Patchset v6 works for me with ath10k driver.  AQL does its job as
+> expected and tests show very significant reduction in latency in
+> congested environment. The txq stuck issue in patchset v4 got fixed.
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
+Awesome! Thank you for testing!
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e8bdb2ba9b18..753a6a174106 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8911,6 +8911,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 			WMI_PNO_MAX_SCHED_SCAN_PLAN_INT;
- 		ar->hw->wiphy->max_sched_scan_plan_iterations =
- 			WMI_PNO_MAX_SCHED_SCAN_PLAN_ITRNS;
-+		ar->hw->wiphy->features |= NL80211_FEATURE_ND_RANDOM_MAC_ADDR;
- 	}
- 
- 	ar->hw->vif_data_size = sizeof(struct ath10k_vif);
--- 
-2.23.0
+> However, the device's total pending airtime count still underflows
+> sometimes. Even though it doesn't cause apparent side effect, there is
+> some issue with the pending airtime update and needs further
+> debugging.
+
+Huh, it *under*flows? That's... interesting. Cloned SKBs? Or maybe the
+tx_time_est field is being set in some other place?
+
+Could I get you to add a dump_stack() to the underflow test so we can
+get an idea of where that happens?
+
+-Toke
 
 
 _______________________________________________
