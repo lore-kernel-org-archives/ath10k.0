@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vs1-xe41.google.com ([2607:f8b0:4864:20::e41])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSZEB-00065C-WF
- for ath10k@lists.infradead.org; Thu, 07 Nov 2019 04:17:01 +0000
-Received: by mail-vs1-xe41.google.com with SMTP id y129so393629vsc.6
- for <ath10k@lists.infradead.org>; Wed, 06 Nov 2019 20:16:56 -0800 (PST)
+ id 1iSaSJ-0007mT-57
+ for ath10k@lists.infradead.org; Thu, 07 Nov 2019 05:35:40 +0000
 MIME-Version: 1.0
-References: <20191101054035.42101-1-ikjn@chromium.org>
- <87y2ws3lvh.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87y2ws3lvh.fsf@kamboji.qca.qualcomm.com>
-From: Ikjoon Jang <ikjn@chromium.org>
-Date: Thu, 7 Nov 2019 12:16:45 +0800
-Message-ID: <CAATdQgDhYWgHkujo9m1iUrhSu1Bt9A4C8eS82TD=W22_eaF80g@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: disable cpuidle during downloading firmware.
+Date: Thu, 07 Nov 2019 13:35:37 +0800
+From: zhichen@codeaurora.org
+Subject: Re: [PATCH RFC] Revert "ath10k: fix DMA related firmware crashes on
+ multiple devices"
+In-Reply-To: <CAKR_QVL9QLE72y0HBD_miLYAD4qx73u3FK33=oNCHp_S8H6JOw@mail.gmail.com>
+References: <1571734629-18028-1-git-send-email-zhichen@codeaurora.org>
+ <CAKR_QVLDFBVMDDP4mPYVNdpT9TA3podNeQMpVJQwE7A5eG=0kA@mail.gmail.com>
+ <9bb484b94c43f7c9aa08345ad89d7b2c@codeaurora.org>
+ <CAKR_QVL9QLE72y0HBD_miLYAD4qx73u3FK33=oNCHp_S8H6JOw@mail.gmail.com>
+Message-ID: <a60168b26275f4400434e72fabac244b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
+To: Tom Psyborg <pozega.tomislav@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, Nov 7, 2019 at 2:23 AM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Ikjoon Jang <ikjn@chromium.org> writes:
->
-> > Downloading ath10k firmware needs a large number of IOs and
-> > cpuidle's miss predictions make it worse. In the worst case,
-> > resume time can be three times longer than the average on sdio.
-> >
-> > This patch disables cpuidle during firmware downloading by
-> > applying PM_QOS_CPU_DMA_LATENCY in ath10k_download_fw().
-> >
-> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
->
-> On what hardware and firmware versions did you test this? I'll add that
-> to the commit log.
->
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#guidelines
+On 2019-11-06 18:01, Tom Psyborg wrote:
+> On 30/10/2019, zhichen@codeaurora.org <zhichen@codeaurora.org> wrote:
+>> On 2019-10-22 18:07, Tom Psyborg wrote:
+>> 
+>>> What about main and 10x firmware branch?
+>> 
+>> There is no code changes in firmware. It's a configuration change of
+>> host memory access.
+>> 
+>> Zhi
+>> 
+> 
+> Please change it for main and 10x branch too. Dumping hw1.0 regs with
+> QCA driver shows DMA burst value set to 1
 
-Thank you for sharing it.
-It's QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00029
-on ARMv8 multi cluster platform.
+Looks some old chips have different definitions of DMA burst size. We 
+are discussing internally to change it for 10.4 only because we only 
+tested 10.4.  On the other hand we are waiting for HW team to explain 
+the differences.
 
->
-> --
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Zhi
 
 _______________________________________________
 ath10k mailing list
