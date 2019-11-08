@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT2aT-0006yV-Vk
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:37:59 +0000
+ id 1iT2ap-00077I-1o
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:38:20 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 003/205] ath10k: fix kernel panic by moving pci
- flush after napi_disable
-Date: Fri,  8 Nov 2019 06:34:30 -0500
-Message-Id: <20191108113752.12502-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 023/205] ath10k: skip resetting rx filter for
+ WCN3990
+Date: Fri,  8 Nov 2019 06:34:50 -0500
+Message-Id: <20191108113752.12502-23-sashal@kernel.org>
 In-Reply-To: <20191108113752.12502-1-sashal@kernel.org>
 References: <20191108113752.12502-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,89 +24,174 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Tamizh chelvam <tamizhr@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Tamizh chelvam <tamizhr@codeaurora.org>
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-[ Upstream commit bd1d395070cca4f42a93e520b0597274789274a4 ]
+[ Upstream commit 58da3b42307061b71f2dcce2bd1185d578a3aa53 ]
 
-When continuously running wifi up/down sequence, the napi poll
-can be scheduled after the CE buffers being freed by ath10k_pci_flush
+WCN3990 has the MAC_PCU_ADDR1 configured properly
+and hence it will not send spurious ack frames
+during boot up.
 
-Steps:
-  In a certain condition, during wifi down below scenario might occur.
+Hence the reset_rx_filter workaround is not needed
+for WCN3990. Add a hw_param to indicate if hardware rx
+filter reset is needed and skip the reset_rx_filter for
+WCN3990.
 
-ath10k_stop->ath10k_hif_stop->napi_schedule->ath10k_pci_flush->napi_poll(napi_synchronize).
+Tested HW: WCN3990
+Tested FW: WLAN.HL.2.0-01188-QCAHLSWMTPLZ-1
 
-In the above scenario, CE buffer entries will be freed up and become NULL in
-ath10k_pci_flush. And the napi_poll has been invoked after the flush process
-and it will try to get the skb from the CE buffer entry and perform some action on that.
-Since the CE buffer already cleaned by pci flush this action will create NULL
-pointer dereference and trigger below kernel panic.
-
-Unable to handle kernel NULL pointer dereference at virtual address 0000005c
-PC is at ath10k_pci_htt_rx_cb+0x64/0x3ec [ath10k_pci]
-ath10k_pci_htt_rx_cb [ath10k_pci]
-ath10k_ce_per_engine_service+0x74/0xc4 [ath10k_pci]
-ath10k_ce_per_engine_service [ath10k_pci]
-ath10k_ce_per_engine_service_any+0x74/0x80 [ath10k_pci]
-ath10k_ce_per_engine_service_any [ath10k_pci]
-ath10k_pci_napi_poll+0x48/0xec [ath10k_pci]
-ath10k_pci_napi_poll [ath10k_pci]
-net_rx_action+0xac/0x160
-net_rx_action
-__do_softirq+0xdc/0x208
-__do_softirq
-irq_exit+0x84/0xe0
-irq_exit
-__handle_domain_irq+0x80/0xa0
-__handle_domain_irq
-gic_handle_irq+0x38/0x5c
-gic_handle_irq
-__irq_usr+0x44/0x60
-
-Tested on QCA4019 and firmware version 10.4.3.2.1.1-00010
-
-Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c | 4 ++--
- drivers/net/wireless/ath/ath10k/pci.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 17 ++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/hw.h   |  5 +++++
+ 2 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index c9bd0e2b5db7e..be90c9e9e5bc1 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -655,10 +655,10 @@ static void ath10k_ahb_hif_stop(struct ath10k *ar)
- 	ath10k_ahb_irq_disable(ar);
- 	synchronize_irq(ar_ahb->irq);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5210cffb53440..7e64fe426a055 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -91,6 +91,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+@@ -124,6 +125,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -157,6 +159,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -189,6 +192,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -221,6 +225,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -253,6 +258,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -288,6 +294,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -326,6 +333,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -369,6 +377,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -411,6 +420,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -443,6 +453,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -477,6 +488,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -516,6 +528,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
++		.hw_filter_reset_required = true,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -540,6 +553,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.per_ce_irq = true,
+ 		.shadow_reg_support = true,
+ 		.rri_on_ddr = true,
++		.hw_filter_reset_required = false,
+ 	},
+ };
  
--	ath10k_pci_flush(ar);
--
- 	napi_synchronize(&ar->napi);
- 	napi_disable(&ar->napi);
+@@ -2406,7 +2420,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	 * possible to implicitly make it correct by creating a dummy vdev and
+ 	 * then deleting it.
+ 	 */
+-	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
++	if (ar->hw_params.hw_filter_reset_required &&
++	    mode == ATH10K_FIRMWARE_MODE_NORMAL) {
+ 		status = ath10k_core_reset_rx_filter(ar);
+ 		if (status) {
+ 			ath10k_err(ar,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 977f79ebb4fd5..fac58c3c576a2 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -589,6 +589,11 @@ struct ath10k_hw_params {
+ 
+ 	/* Number of bytes to be the offset for each FFT sample */
+ 	int spectral_bin_offset;
 +
-+	ath10k_pci_flush(ar);
- }
++	/* targets which require hw filter reset during boot up,
++	 * to avoid it sending spurious acks.
++	 */
++	bool hw_filter_reset_required;
+ };
  
- static int ath10k_ahb_hif_power_up(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index af2cf55c4c1e6..97fa5c74f2fe7 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2068,9 +2068,9 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
- 
- 	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_irq_sync(ar);
--	ath10k_pci_flush(ar);
- 	napi_synchronize(&ar->napi);
- 	napi_disable(&ar->napi);
-+	ath10k_pci_flush(ar);
- 
- 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
- 	WARN_ON(ar_pci->ps_wake_refcount > 0);
+ struct htt_rx_desc;
 -- 
 2.20.1
 
