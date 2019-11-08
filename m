@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT2iY-0005lO-Vn
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:46:20 +0000
+ id 1iT2jv-0006MY-BQ
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:47:44 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 24/64] ath10k: wmi: disable softirq's while
+Subject: [PATCH AUTOSEL 4.4 17/44] ath10k: wmi: disable softirq's while
  calling ieee80211_rx
-Date: Fri,  8 Nov 2019 06:45:05 -0500
-Message-Id: <20191108114545.15351-24-sashal@kernel.org>
-In-Reply-To: <20191108114545.15351-1-sashal@kernel.org>
-References: <20191108114545.15351-1-sashal@kernel.org>
+Date: Fri,  8 Nov 2019 06:46:53 -0500
+Message-Id: <20191108114721.15944-17-sashal@kernel.org>
+In-Reply-To: <20191108114721.15944-1-sashal@kernel.org>
+References: <20191108114721.15944-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -55,10 +55,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index bbfe7be214e12..c208fed048554 100644
+index b867875aa6e66..f7ce99f67b5c5 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2384,7 +2384,8 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+@@ -2294,7 +2294,8 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
  		   status->freq, status->band, status->signal,
  		   status->rate_idx);
  
