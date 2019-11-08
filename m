@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT020-0001KD-38
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:54:13 +0000
+ id 1iT0QN-0003R3-Md
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 09:19:24 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: enable firmware log by default for sdio
+Date: Fri,  8 Nov 2019 17:19:14 +0800
+Message-Id: <20191108091914.16785-1-wgong@codeaurora.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: disable cpuidle during downloading firmware.
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191101054035.42101-1-ikjn@chromium.org>
-References: <20191101054035.42101-1-ikjn@chromium.org>
-Message-Id: <20191108085411.B30B460DA6@smtp.codeaurora.org>
-Date: Fri,  8 Nov 2019 08:54:11 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +20,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ikjoon Jang <ikjn@chromium.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Ikjoon Jang <ikjn@chromium.org> wrote:
+On SDIO chips the firmware log does not impact performance. To make it
+easier to debug firmware problems keep it enabled on the firmware.
 
-> Downloading ath10k firmware needs a large number of IOs and
-> cpuidle's miss predictions make it worse. In the worst case,
-> resume time can be three times longer than the average on sdio.
-> 
-> This patch disables cpuidle during firmware downloading by
-> applying PM_QOS_CPU_DMA_LATENCY in ath10k_download_fw().
-> 
-> Tested-on: QCA9880
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00029
-> 
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-3b58d6a599ba ath10k: disable cpuidle during downloading firmware
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 36c62d66c19e..25b484580944 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -713,18 +713,6 @@ static int ath10k_init_sdio(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Explicitly set fwlog prints to zero as target may turn it on
+-	 * based on scratch registers.
+-	 */
+-	ret = ath10k_bmi_read32(ar, hi_option_flag, &param);
+-	if (ret)
+-		return ret;
+-
+-	param |= HI_OPTION_DISABLE_DBGLOG;
+-	ret = ath10k_bmi_write32(ar, hi_option_flag, param);
+-	if (ret)
+-		return ret;
+-
+ 	return 0;
+ }
+ 
 -- 
-https://patchwork.kernel.org/patch/11222331/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.23.0
 
 
 _______________________________________________
