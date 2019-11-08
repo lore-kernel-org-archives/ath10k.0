@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSzsy-0003uh-5j
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:44:53 +0000
+ id 1iT020-0001KD-38
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:54:13 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix potential issue of peer stats allocation
+Subject: Re: [PATCH] ath10k: disable cpuidle during downloading firmware.
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1572486133-23516-1-git-send-email-zhichen@codeaurora.org>
-References: <1572486133-23516-1-git-send-email-zhichen@codeaurora.org>
-Message-Id: <20191108084451.DB0846087D@smtp.codeaurora.org>
-Date: Fri,  8 Nov 2019 08:44:51 +0000 (UTC)
+In-Reply-To: <20191101054035.42101-1-ikjn@chromium.org>
+References: <20191101054035.42101-1-ikjn@chromium.org>
+Message-Id: <20191108085411.B30B460DA6@smtp.codeaurora.org>
+Date: Fri,  8 Nov 2019 08:54:11 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zhi Chen <zhichen@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ikjoon Jang <ikjn@chromium.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S . Miller" <davem@davemloft.net>
 
-Zhi Chen <zhichen@codeaurora.org> wrote:
+Ikjoon Jang <ikjn@chromium.org> wrote:
 
-> STA number was not restored if OOM happened.
+> Downloading ath10k firmware needs a large number of IOs and
+> cpuidle's miss predictions make it worse. In the worst case,
+> resume time can be three times longer than the average on sdio.
 > 
-> Tested: QCA9984 with firmware ver 10.4-3.9.0.1-00018
-> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+> This patch disables cpuidle during firmware downloading by
+> applying PM_QOS_CPU_DMA_LATENCY in ath10k_download_fw().
+> 
+> Tested-on: QCA9880
+> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00029
+> 
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-402838a05def ath10k: fix potential issue of peer stats allocation
+3b58d6a599ba ath10k: disable cpuidle during downloading firmware
 
 -- 
-https://patchwork.kernel.org/patch/11220555/
+https://patchwork.kernel.org/patch/11222331/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
