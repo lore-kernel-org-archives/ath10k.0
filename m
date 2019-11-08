@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSzrN-0003jF-Kn
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:43:15 +0000
+ id 1iSzsy-0003uh-5j
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:44:53 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix get invalid tx rate for Mesh metric
+Subject: Re: [PATCH] ath10k: fix potential issue of peer stats allocation
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1572329537-27728-1-git-send-email-miaoqing@codeaurora.org>
-References: <1572329537-27728-1-git-send-email-miaoqing@codeaurora.org>
-Message-Id: <20191108084313.420DE6087D@smtp.codeaurora.org>
-Date: Fri,  8 Nov 2019 08:43:13 +0000 (UTC)
+In-Reply-To: <1572486133-23516-1-git-send-email-zhichen@codeaurora.org>
+References: <1572486133-23516-1-git-send-email-zhichen@codeaurora.org>
+Message-Id: <20191108084451.DB0846087D@smtp.codeaurora.org>
+Date: Fri,  8 Nov 2019 08:44:51 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Miaoqing Pan <miaoqing@codeaurora.org>
-Cc: Hou Bao Hou <houbao@codeaurora.org>, Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Zhi Chen <zhichen@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Miaoqing Pan <miaoqing@codeaurora.org> wrote:
+Zhi Chen <zhichen@codeaurora.org> wrote:
 
-> ath10k does not provide transmit rate info per MSDU
-> in tx completion, mark that as -1 so mac80211
-> will ignore the rates. This fixes mac80211 update Mesh
-> link metric with invalid transmit rate info.
+> STA number was not restored if OOM happened.
 > 
-> Tested HW: QCA9984
-> Tested FW: 10.4-3.9.0.2-00035
-> 
-> Signed-off-by: Hou Bao Hou <houbao@codeaurora.org>
-> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
-> Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+> Tested: QCA9984 with firmware ver 10.4-3.9.0.1-00018
+> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-05a11003a565 ath10k: fix get invalid tx rate for Mesh metric
+402838a05def ath10k: fix potential issue of peer stats allocation
 
 -- 
-https://patchwork.kernel.org/patch/11217003/
+https://patchwork.kernel.org/patch/11220555/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
