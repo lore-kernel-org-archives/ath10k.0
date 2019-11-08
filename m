@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]
+ helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT1sa-0002X8-1o
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 10:52:37 +0000
-Message-ID: <fadb0452c72b2e64ef5577b4b0fdf9c2ada49430.camel@sipsolutions.net>
-Subject: Re: [PATCH V9 2/3] mac80211: add hw 80211 encapsulation offloading
- support
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 08 Nov 2019 11:52:32 +0100
-In-Reply-To: <20191029091304.7330-3-john@phrozen.org>
-References: <20191029091304.7330-1-john@phrozen.org>
- <20191029091304.7330-3-john@phrozen.org>
+ id 1iT1va-0004Z7-R3
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 10:55:44 +0000
+Received: by mail-lj1-f199.google.com with SMTP id r5so1173508ljj.7
+ for <ath10k@lists.infradead.org>; Fri, 08 Nov 2019 02:55:38 -0800 (PST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v6 2/4] mac80211: Import airtime calculation code from mt76
+In-Reply-To: <42266e95f45d5772e04c9c016bd6179ea14ffefa.camel@sipsolutions.net>
+References: <157182473951.150713.7978051149956899705.stgit@toke.dk>
+ <157182474174.150713.17459330922820192258.stgit@toke.dk>
+ <42266e95f45d5772e04c9c016bd6179ea14ffefa.camel@sipsolutions.net>
+Date: Fri, 08 Nov 2019 11:55:35 +0100
+Message-ID: <87d0e2fxi0.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,132 +23,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: John Crispin <john@phrozen.org>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Kan Yan <kyan@google.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-FWIW, I applied the first patch since it's just some preparation.
-
-Couple of questions on this.
-
-> +/**
-> + * ieee80211_set_hw_80211_encap - enable hardware encapsulation offloading.
-> + *
-> + * This function is used to notify mac80211 that a vif can be passed raw 802.3.
-> + * The driver needs to then handle the 802.11 encapsulation inside the hardware
-> + * or firmware.
-> + *
-> + * The driver should call this function during the creation of the vif instance.
-
-You state this, here ("during creation"), and that makes sense given the
-fact that you redirect the ops, and I don't know how the network stack
-behaves. Hard to imagine it could do much with it other than dereference
-and then both pointers are valid, but still ...
-
-Or did you mean this only because of the locking?
-
-> +bool ieee80211_set_hw_80211_encap(struct ieee80211_vif *vif, bool enable)
-> +{
-> +	struct ieee80211_sub_if_data *sdata = vif_to_sdata(vif);
-> +	struct ieee80211_local *local = sdata->local;
-> +	struct ieee80211_sub_if_data *iter;
-> +	struct ieee80211_key *key;
-> +
-> +	sdata_assert_lock(sdata);
-
-that is required here?
-
-> +	mutex_lock(&local->iflist_mtx);
-> +	list_for_each_entry(iter, &local->interfaces, list) {
-> +		if (vif->type == NL80211_IFTYPE_MONITOR)
-> +			__ieee80211_set_hw_80211_encap(iter, false);
-> +		else if (iter->vif.type == NL80211_IFTYPE_MONITOR)
-> +			enable = false;
-
-(side note - maybe some debug messages in these cases would be useful?)
-
-> +++ b/net/mac80211/key.c
-> @@ -176,6 +176,10 @@ static int ieee80211_key_enable_hw_accel(struct ieee80211_key *key)
->  		}
->  	}
->  
-> +	/* TKIP countermeasures don't work in encap offload mode */
-> +	if (key->conf.cipher == WLAN_CIPHER_SUITE_TKIP)
-> +		ieee80211_set_hw_80211_encap(&sdata->vif, false);
-
-But now here we're long in operation already, and could suddenly reset
-this. Is that valid from the network stack's POV?
-
-Also, minor detail ;-)
-
-This will deadlock if it actually has to disable hwaccel because inside
-it you re-acquire the key_mtx you already hold here. I think inside of
-the function you can just bypass all the checks that set enable=false if
-it's already false anyway, and then you don't have that issue? Or just
-call __ieee80211_set_hw_80211_encap() and duplicate the test for doing
-nothing in there ...
-
-> @@ -202,6 +206,9 @@ static int ieee80211_key_enable_hw_accel(struct ieee80211_key *key)
->  			  key->conf.keyidx,
->  			  sta ? sta->sta.addr : bcast_addr, ret);
->  
-> +	if (sdata->hw_80211_encap)
-> +		return -EINVAL;
-
-If this is a valid scenario and the driver didn't anyway say it doesn't
-want software crypto, should this switch back to non-hwaccel? OTOH, if
-that happens in the middle of the connection (GTK rekeying or such?) for
-some reason, probably everything breaks left and right ... I guess it's
-better this way.
-
-> @@ -2875,7 +2876,8 @@ void ieee80211_check_fast_xmit(struct sta_info *sta)
->  	struct ieee80211_chanctx_conf *chanctx_conf;
->  	__le16 fc;
->  
-> -	if (!ieee80211_hw_check(&local->hw, SUPPORT_FAST_XMIT))
-> +	if (!ieee80211_hw_check(&local->hw, SUPPORT_FAST_XMIT) ||
-> +	    sdata->hw_80211_encap)
->  		return;
-
-Not sure I understand this - we're not treating the offload as fast-
-xmit? Couldn't we bypass more by doing so?
-
-Might be good to add a comment here either way.
-
-Actually, we don't get here with a packet whose TX will be offloaded, do
-we? Does this even matter?
-
-> +	rcu_read_lock();
-> +
-> +	if (ieee80211_lookup_ra_sta(sdata, skb, &sta))
-> +		goto out_free;
-> +
-> +	ieee80211_8023_xmit(sdata, dev, sta, skb);
-> +
-> +	goto out;
-> +
-> +out_free:
-> +	kfree_skb(skb);
-
-You only use that label once, and you don't really need any?
-
-if (lookup())
-	kfree_skb(skb);
-else
-	ieee80211_8023_xmit();
-
-rcu_read_unlock;
-return NETDEV_TX_OK;
-
-is equivalent, no?
-
-johannes
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBX
+ZWQsIDIwMTktMTAtMjMgYXQgMTE6NTkgKzAyMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
+cm90ZToKPj4gRnJvbTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+
+Cj4+IAo+PiBGZWxpeCByZWNlbnRseSBhZGRlZCBjb2RlIHRvIGNhbGN1bGF0ZSBhaXJ0aW1lIG9m
+IHBhY2tldHMgdG8gdGhlIG10NzYKPj4gZHJpdmVyLiBJbXBvcnQgdGhpcyBpbnRvIG1hYzgwMjEx
+IHNvIHdlIGNhbiB1c2UgaXQgZm9yIGFpcnRpbWUgcXVldWUgbGltaXQKPj4gY2FsY3VsYXRpb25z
+IGxhdGVyLgo+PiAKPj4gVGhlIGFpcnRpbWUuYyBmaWxlIGlzIGNvcGllZCB2ZXJiYXRpbSBmcm9t
+IHRoZSBtdDc2IGRyaXZlciwgYW5kIGFkanVzdGVkIHRvCj4+IHVzZSBtYWM4MDIxMSBkYXRhIHN0
+cnVjdHVyZXMgaW5zdGVhZCAod2hpY2ggaXMgZmFpcmx5IHN0cmFpZ2h0IGZvcndhcmQpLgo+PiBU
+aGUgcGVyLXJhdGUgVFggcmF0ZSBjYWxjdWxhdGlvbiBpcyBzcGxpdCBvdXQgdG8gaXRzIG93bgo+
+PiBmdW5jdGlvbiAoaWVlZTgwMjExX2NhbGNfdHhfYWlydGltZV9yYXRlKCkpIHNvIGl0IGNhbiBi
+ZSB1c2VkIGRpcmVjdGx5IGZvcgo+PiB0aGUgQVFMIGNhbGN1bGF0aW9ucyBhZGRlZCBpbiBhIHN1
+YnNlcXVlbnQgcGF0Y2guCj4KPiBBbnkgd2F5IGl0IGNvdWxkIGJlIGV4cG9zZWQgYnkgbWFjODAy
+MTEgYmFjayB0byB0aGUgZHJpdmVycywgcGVyaGFwcywgdG8KPiBzaGFyZSBpdD8KCkRpZG4ndCBJ
+IGFscmVhZHkgZXhwb3J0IHNvbWUgb2YgdGhlIGZ1bmN0aW9ucz8gTXkgaW50ZW50aW9uIHdhcyB0
+byBkbwp0aGF0LCBjZXJ0YWlubHksIGFuZCB0byBwYXRjaCBtdDc2IHRvIHN3aXRjaCB0byB1c2lu
+ZyB0aGVtIG9uY2UgdGhlCnRyZWVzIGhhdmUgY29udmVyZ2VkLi4uCgo+PiBUaGUgb25seSB0aGlu
+ZyB0aGF0IGl0IHdhcyBub3QgcG9zc2libGUgdG8gcG9ydCBkaXJlY3RseSB3YXMgdGhlIGJpdCB0
+aGF0Cj4+IHJlYWQgdGhlIGludGVybmFsIGRyaXZlciBmbGFncyBvZiBzdHJ1Y3QgaWVlZTgwMjEx
+X3JhdGUgdG8gZGV0ZXJtaW5lCj4+IHdoZXRoZXIgYSByYXRlIGlzIHVzaW5nIENDSyBvciBPRkRN
+IGVuY29kaW5nLiBJbnN0ZWFkLCBqdXN0IGxvb2sgYXQgdGhlCj4+IHJhdGUgaW5kZXgsIHNpbmNl
+IGF0IGxlYXN0IG10NzYgYW5kIGF0aDEwayBib3RoIHNlZW0gdG8gaGF2ZSB0aGUgc2FtZQo+PiBu
+dW1iZXIgb2YgQ0NLIHJhdGVzICg0KSBpbiB0aGVpciB0YWJsZXMuCj4KPiBUaGlzIGlzIGhpZ2hs
+eSBxdWVzdGlvbmFibGUgLi4uCj4KPj4gKwlzd2l0Y2ggKHN0YXR1cy0+ZW5jb2RpbmcpIHsKPj4g
+KwljYXNlIFJYX0VOQ19MRUdBQ1k6Cj4+ICsJCWlmIChXQVJOX09OX09OQ0Uoc3RhdHVzLT5iYW5k
+ID4gTkw4MDIxMV9CQU5EXzVHSFopKQo+PiArCQkJcmV0dXJuIDA7Cj4+ICsKPj4gKwkJc2JhbmQg
+PSBody0+d2lwaHktPmJhbmRzW3N0YXR1cy0+YmFuZF07Cj4+ICsJCWlmICghc2JhbmQgfHwgc3Rh
+dHVzLT5yYXRlX2lkeCA+IHNiYW5kLT5uX2JpdHJhdGVzKQo+PiArCQkJcmV0dXJuIDA7Cj4+ICsK
+Pj4gKwkJcmF0ZSA9ICZzYmFuZC0+Yml0cmF0ZXNbc3RhdHVzLT5yYXRlX2lkeF07Cj4+ICsJCWNj
+ayA9IChzdGF0dXMtPnJhdGVfaWR4IDwgQ0NLX05VTV9SQVRFUyk7CgpIZWgsIHllYWggdGhpcyBk
+aWQgZmVlbCBsaWtlIGEgaGFjayB0byBtZSBhcyB3ZWxsIDspCgo+IFdoeSBub3QKPgo+IAljY2sg
+PSByYXRlLT5mbGFncyAmIElFRUU4MDIxMV9SQVRFX01BTkRBVE9SWV9COwo+Cj4gSSBtZWFuIC4u
+IHdlIGtub3cgdGhhdCBJRUVFODAyMTFfUkFURV9NQU5EQVRPUllfQiByYXRlcyBhcmUgZXhhY3Rs
+eSB0aGUKPiBDQ0sgcmF0ZXMsIGFuZCB0aGF0J3Mgbm90IHJlYWxseSBnb2luZyB0byBjaGFuZ2U/
+Cj4KPiBBbHRlcm5hdGl2ZWx5LCB3ZSBjb3VsZCBkbwo+Cj4gCWNjayA9IHNiYW5kLT5iYW5kID09
+IE5MODAyMTFfQkFORF8yR0haICYmCj4gCSAgICAgICEocmF0ZS0+ZmxhZ3MgJiBJRUVFODAyMTFf
+UkFURV9FUlBfRyk7Cj4KPiBvciBldmVuCj4KPiAJY2NrID0gcmF0ZS0+Yml0cmF0ZSA9PSAxMCB8
+fCByYXRlLT5iaXRyYXRlID09IDIwIHx8Cj4gCSAgICAgIHJhdGUtPmJpdHJhdGUgPT0gNTUgfHwg
+cmF0ZS0+Yml0cmF0ZSA9PSAxMTA7CgpJIGFtIGZpbmUgd2l0aCBlaXRoZXIgb2YgdGhvc2U7IEkg
+anVzdCB3YXNuJ3Qgc3VyZSB3aGF0IGFzc3VtcHRpb25zIEkKY291bGQgYWN0dWFsbHkgbWFrZSBo
+ZXJlLiBJIGd1ZXNzIEknbGwganVzdCBwaWNrIG9uZSA6KQoKPj4gKwlkZWZhdWx0Ogo+PiArCQlX
+QVJOX09OX09OQ0UoMSk7Cj4KPiBZb3UgY2FuJ3QgZG8gdGhhdCBpbiBtYWM4MDIxMSBlaXRoZXIu
+IFRoYXQgbWlnaHQgYmUgZmluZSBmb3IgbXQ3NiwgYnV0Cj4gbWFjODAyMTEgYWxyZWFkeSBzdXBw
+b3J0cyBIRS4KCkdvb2QgcG9pbnQsIHdpbGwgZml4LgoKLVRva2UKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
