@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT2ft-0003OW-RK
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:43:35 +0000
+ id 1iT2gT-0003bm-ET
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:44:10 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 016/103] ath10k: limit available channels via DT
- ieee80211-freq-limit
-Date: Fri,  8 Nov 2019 06:41:41 -0500
-Message-Id: <20191108114310.14363-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 042/103] ath10k: wmi: disable softirq's while
+ calling ieee80211_rx
+Date: Fri,  8 Nov 2019 06:42:07 -0500
+Message-Id: <20191108114310.14363-42-sashal@kernel.org>
 In-Reply-To: <20191108114310.14363-1-sashal@kernel.org>
 References: <20191108114310.14363-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,48 +24,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-[ Upstream commit 34d5629d2ca89d847b7040762b87964c696c14da ]
+[ Upstream commit 37f62c0d5822f631b786b29a1b1069ab714d1a28 ]
 
-Tri-band devices (1x 2.4GHz + 2x 5GHz) often incorporate special filters in
-the RX and TX path. These filtered channel can in theory still be used by
-the hardware but the signal strength is reduced so much that it makes no
-sense.
+This is done in order not to trig the below warning in
+ieee80211_rx_napi:
 
-There is already a DT property to limit the available channels but ath10k
-has to manually call this functionality to limit the currrently set wiphy
-channels further.
+WARN_ON_ONCE(softirq_count() == 0);
 
-Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+ieee80211_rx_napi requires that softirq's are disabled during
+execution.
+
+The High latency bus drivers (SDIO and USB) sometimes call the wmi
+ep_rx_complete callback from non softirq context, resulting in a trigger
+of the above warning.
+
+Calling ieee80211_rx_ni with softirq's already disabled (e.g., from
+softirq context) should be safe as the local_bh_disable and
+local_bh_enable functions (called from ieee80211_rx_ni) are fully
+reentrant.
+
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58a3c42c4aedb..8c4bb56c262f6 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -17,6 +17,7 @@
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index ab8eb9cdfda0f..4d6c2986c40dd 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2414,7 +2414,8 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		   status->freq, status->band, status->signal,
+ 		   status->rate_idx);
  
- #include "mac.h"
+-	ieee80211_rx(ar->hw, skb);
++	ieee80211_rx_ni(ar->hw, skb);
++
+ 	return 0;
+ }
  
-+#include <net/cfg80211.h>
- #include <net/mac80211.h>
- #include <linux/etherdevice.h>
- #include <linux/acpi.h>
-@@ -8174,6 +8175,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ar->hw->wiphy->bands[NL80211_BAND_5GHZ] = band;
- 	}
- 
-+	wiphy_read_of_freq_limits(ar->hw->wiphy);
- 	ath10k_mac_setup_ht_vht_cap(ar);
- 
- 	ar->hw->wiphy->interface_modes =
 -- 
 2.20.1
 
