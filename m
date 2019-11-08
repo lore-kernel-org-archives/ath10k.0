@@ -2,17 +2,17 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT1xo-0004qt-Ik
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 10:58:01 +0000
-Message-ID: <4ce4c199522ef112362efb8db8823e31d5c41944.camel@sipsolutions.net>
-Subject: Re: [PATCH v6 2/4] mac80211: Import airtime calculation code from mt76
+ id 1iT1zK-0005GK-Bn
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 10:59:36 +0000
+Message-ID: <f395a9a971ca1a0d0438fca10dfb160c421caa7a.camel@sipsolutions.net>
+Subject: Re: [PATCH v6 3/4] mac80211: Implement Airtime-based Queue Limit (AQL)
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 08 Nov 2019 11:57:54 +0100
-In-Reply-To: <87d0e2fxi0.fsf@toke.dk>
+Date: Fri, 08 Nov 2019 11:59:28 +0100
+In-Reply-To: <87a796fxgd.fsf@toke.dk>
 References: <157182473951.150713.7978051149956899705.stgit@toke.dk>
- <157182474174.150713.17459330922820192258.stgit@toke.dk>
- <42266e95f45d5772e04c9c016bd6179ea14ffefa.camel@sipsolutions.net>
- <87d0e2fxi0.fsf@toke.dk>
+ <157182474287.150713.12867638269538730397.stgit@toke.dk>
+ <1a2eb096119c9029e67caf797564d6511c8803a7.camel@sipsolutions.net>
+ <87a796fxgd.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,26 +29,23 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
 Cc: Kan Yan <kyan@google.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-T24gRnJpLCAyMDE5LTExLTA4IGF0IDExOjU1ICswMTAwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
+T24gRnJpLCAyMDE5LTExLTA4IGF0IDExOjU2ICswMTAwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
 ZW4gd3JvdGU6Cj4gSm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3Jp
 dGVzOgo+IAo+ID4gT24gV2VkLCAyMDE5LTEwLTIzIGF0IDExOjU5ICswMjAwLCBUb2tlIEjDuGls
-YW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4gPiA+IEZyb206IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNl
-biA8dG9rZUByZWRoYXQuY29tPgo+ID4gPiAKPiA+ID4gRmVsaXggcmVjZW50bHkgYWRkZWQgY29k
-ZSB0byBjYWxjdWxhdGUgYWlydGltZSBvZiBwYWNrZXRzIHRvIHRoZSBtdDc2Cj4gPiA+IGRyaXZl
-ci4gSW1wb3J0IHRoaXMgaW50byBtYWM4MDIxMSBzbyB3ZSBjYW4gdXNlIGl0IGZvciBhaXJ0aW1l
-IHF1ZXVlIGxpbWl0Cj4gPiA+IGNhbGN1bGF0aW9ucyBsYXRlci4KPiA+ID4gCj4gPiA+IFRoZSBh
-aXJ0aW1lLmMgZmlsZSBpcyBjb3BpZWQgdmVyYmF0aW0gZnJvbSB0aGUgbXQ3NiBkcml2ZXIsIGFu
-ZCBhZGp1c3RlZCB0bwo+ID4gPiB1c2UgbWFjODAyMTEgZGF0YSBzdHJ1Y3R1cmVzIGluc3RlYWQg
-KHdoaWNoIGlzIGZhaXJseSBzdHJhaWdodCBmb3J3YXJkKS4KPiA+ID4gVGhlIHBlci1yYXRlIFRY
-IHJhdGUgY2FsY3VsYXRpb24gaXMgc3BsaXQgb3V0IHRvIGl0cyBvd24KPiA+ID4gZnVuY3Rpb24g
-KGllZWU4MDIxMV9jYWxjX3R4X2FpcnRpbWVfcmF0ZSgpKSBzbyBpdCBjYW4gYmUgdXNlZCBkaXJl
-Y3RseSBmb3IKPiA+ID4gdGhlIEFRTCBjYWxjdWxhdGlvbnMgYWRkZWQgaW4gYSBzdWJzZXF1ZW50
-IHBhdGNoLgo+ID4gCj4gPiBBbnkgd2F5IGl0IGNvdWxkIGJlIGV4cG9zZWQgYnkgbWFjODAyMTEg
-YmFjayB0byB0aGUgZHJpdmVycywgcGVyaGFwcywgdG8KPiA+IHNoYXJlIGl0Pwo+IAo+IERpZG4n
-dCBJIGFscmVhZHkgZXhwb3J0IHNvbWUgb2YgdGhlIGZ1bmN0aW9ucz8gTXkgaW50ZW50aW9uIHdh
-cyB0byBkbwo+IHRoYXQsIGNlcnRhaW5seSwgYW5kIHRvIHBhdGNoIG10NzYgdG8gc3dpdGNoIHRv
-IHVzaW5nIHRoZW0gb25jZSB0aGUKPiB0cmVlcyBoYXZlIGNvbnZlcmdlZC4uLgoKWWVhaCwgSSB0
-aGluayB5b3UgZGlkLiBTb3VuZHMgZ29vZC4KCmpvaGFubmVzCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+YW5kLUrDuHJnZW5zZW4gd3JvdGU6Cj4gPiA+ICAKPiA+ID4gK3ZvaWQgaWVlZTgwMjExX3N0YV91
+cGRhdGVfcGVuZGluZ19haXJ0aW1lKHN0cnVjdCBpZWVlODAyMTFfbG9jYWwgKmxvY2FsLAo+ID4g
+PiArCQkJCQkgIHN0cnVjdCBzdGFfaW5mbyAqc3RhLCB1OCBhYywKPiA+ID4gKwkJCQkJICB1MTYg
+dHhfYWlydGltZSwgYm9vbCB0eF9jb21wbGV0ZWQpCj4gPiA+ICt7Cj4gPiA+ICsJc3Bpbl9sb2Nr
+X2JoKCZsb2NhbC0+YWN0aXZlX3R4cV9sb2NrW2FjXSk7Cj4gPiA+ICsJaWYgKHR4X2NvbXBsZXRl
+ZCkgewo+ID4gPiArCQlpZiAoc3RhKSB7Cj4gPiA+ICsJCQlpZiAoV0FSTl9PTkNFKHN0YS0+YWly
+dGltZVthY10uYXFsX3R4X3BlbmRpbmcgPCB0eF9haXJ0aW1lLAo+ID4gPiArCQkJCSAgICAgICJU
+WFEgcGVuZGluZyBhaXJ0aW1lIHVuZGVyZmxvdzogJXUsICV1IiwKPiA+ID4gKwkJCQkgICAgICBz
+dGEtPmFpcnRpbWVbYWNdLmFxbF90eF9wZW5kaW5nLCB0eF9haXJ0aW1lKSkKPiA+IAo+ID4gTWF5
+YmUgYWRkIHRoZSBTVEEvQUMgdG8gdGhlIG1lc3NhZ2U/Cj4gCj4gQ2FuIGRvLiBBbnkgaWRlYSB3
+aHkgd2UgbWlnaHQgYmUgc2VlaW5nIHVuZGVyZmxvd3MgKGFzIEthbiByZXBvcnRlZCk/CgpObywg
+SSByZWFsbHkgaGF2ZSBubyBpZGVhLiBUaGUgc2hpZnRpbmcgbG9va2VkIE9LIHRvIG1lLCB0aG91
+Z2ggSSBkaWRuJ3QKcmV2aWV3IGl0IGNhcmVmdWxseSBlbm91Z2ggdG8gc2F5IEkndmUgcmVhbGx5
+IGxvb2tlZCBhdCBhbGwgcGxhY2VzIC4uLgoKam9oYW5uZXMKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
