@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSznk-00026S-TV
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:39:30 +0000
+ id 1iSzrN-0003jF-Kn
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2019 08:43:15 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] dt: bindings: add dt entry flag to skip SCM call for
- msa region
+Subject: Re: [PATCH] ath10k: fix get invalid tx rate for Mesh metric
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191023094014.28683-2-govinds@codeaurora.org>
-References: <20191023094014.28683-2-govinds@codeaurora.org>
-Message-Id: <20191108083928.8BA2C60A1B@smtp.codeaurora.org>
-Date: Fri,  8 Nov 2019 08:39:28 +0000 (UTC)
+In-Reply-To: <1572329537-27728-1-git-send-email-miaoqing@codeaurora.org>
+References: <1572329537-27728-1-git-send-email-miaoqing@codeaurora.org>
+Message-Id: <20191108084313.420DE6087D@smtp.codeaurora.org>
+Date: Fri,  8 Nov 2019 08:43:13 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Miaoqing Pan <miaoqing@codeaurora.org>
+Cc: Hou Bao Hou <houbao@codeaurora.org>, Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Miaoqing Pan <miaoqing@codeaurora.org> wrote:
 
-> Add boolean context flag to disable SCM call for statically
-> mapped msa region.
+> ath10k does not provide transmit rate info per MSDU
+> in tx completion, mark that as -1 so mac80211
+> will ignore the rates. This fixes mac80211 update Mesh
+> link metric with invalid transmit rate info.
 > 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Tested HW: QCA9984
+> Tested FW: 10.4-3.9.0.2-00035
+> 
+> Signed-off-by: Hou Bao Hou <houbao@codeaurora.org>
+> Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+> Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-I was wondering why there are no review comments from DT folks and then
-noticed that you didn't CC the devicetree list. Please resend (as v2)
-and CC devicetree list.
+Patch applied to ath-next branch of ath.git, thanks.
 
-2 patches set to Changes Requested.
-
-11206177 [1/2] dt: bindings: add dt entry flag to skip SCM call for msa region
-11206179 [2/2] ath10k: Don't call SCM interface for statically mapped msa region
+05a11003a565 ath10k: fix get invalid tx rate for Mesh metric
 
 -- 
-https://patchwork.kernel.org/patch/11206177/
+https://patchwork.kernel.org/patch/11217003/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
