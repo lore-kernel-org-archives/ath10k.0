@@ -1,16 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT2jv-0006MY-BQ
- for ath10k@lists.infradead.org; Fri, 08 Nov 2019 11:47:44 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 17/44] ath10k: wmi: disable softirq's while
- calling ieee80211_rx
-Date: Fri,  8 Nov 2019 06:46:53 -0500
-Message-Id: <20191108114721.15944-17-sashal@kernel.org>
-In-Reply-To: <20191108114721.15944-1-sashal@kernel.org>
-References: <20191108114721.15944-1-sashal@kernel.org>
+ id 1iTFSn-0005qt-QH
+ for ath10k@lists.infradead.org; Sat, 09 Nov 2019 01:22:55 +0000
+Received: by mail-lf1-x143.google.com with SMTP id o65so2161595lff.13
+ for <ath10k@lists.infradead.org>; Fri, 08 Nov 2019 17:22:53 -0800 (PST)
 MIME-Version: 1.0
+References: <157182473951.150713.7978051149956899705.stgit@toke.dk>
+ <157182474287.150713.12867638269538730397.stgit@toke.dk>
+ <1a2eb096119c9029e67caf797564d6511c8803a7.camel@sipsolutions.net>
+ <87a796fxgd.fsf@toke.dk>
+ <f395a9a971ca1a0d0438fca10dfb160c421caa7a.camel@sipsolutions.net>
+ <874kzefwt3.fsf@toke.dk>
+ <300bf0146db6c0d5890699b3911d35174d28c9c0.camel@sipsolutions.net>
+In-Reply-To: <300bf0146db6c0d5890699b3911d35174d28c9c0.camel@sipsolutions.net>
+From: Kan Yan <kyan@google.com>
+Date: Fri, 8 Nov 2019 17:22:38 -0800
+Message-ID: <CA+iem5saT0ntxnSV1ZatFuRRcaBzivkQ_MU66ZdV1kfb1dC6Qg@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] mac80211: Implement Airtime-based Queue Limit (AQL)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,60 +26,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-
-[ Upstream commit 37f62c0d5822f631b786b29a1b1069ab714d1a28 ]
-
-This is done in order not to trig the below warning in
-ieee80211_rx_napi:
-
-WARN_ON_ONCE(softirq_count() == 0);
-
-ieee80211_rx_napi requires that softirq's are disabled during
-execution.
-
-The High latency bus drivers (SDIO and USB) sometimes call the wmi
-ep_rx_complete callback from non softirq context, resulting in a trigger
-of the above warning.
-
-Calling ieee80211_rx_ni with softirq's already disabled (e.g., from
-softirq context) should be safe as the local_bh_disable and
-local_bh_enable functions (called from ieee80211_rx_ni) are fully
-reentrant.
-
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index b867875aa6e66..f7ce99f67b5c5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2294,7 +2294,8 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 		   status->freq, status->band, status->signal,
- 		   status->rate_idx);
- 
--	ieee80211_rx(ar->hw, skb);
-+	ieee80211_rx_ni(ar->hw, skb);
-+
- 	return 0;
- }
- 
--- 
-2.20.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SXQgaXMgbW9zdCBsaWtlbHkganVzdCBpbnN1ZmZpY2llbnQgbG9ja2luZy4gYWN0aXZlX3R4cV9s
+b2NrIGlzIHBlcgpBQywgY2FuJ3QgcHJvdGVjdCBsb2NhbC0+YXFsX3RvdGFsX3BlbmRpbmdfYWly
+dGltZSBhZ2FpbnN0IHJhY2luZwpjb25kaXRpb25zOgp2b2lkIGllZWU4MDIxMV9zdGFfdXBkYXRl
+X3BlbmRpbmdfYWlydGltZSguLi4pCnsKICAgICAgICBzcGluX2xvY2tfYmgoJmxvY2FsLT5hY3Rp
+dmVfdHhxX2xvY2tbYWNdKTsKICAgICAgICAuLi4KICAgICAgICBsb2NhbC0+YXFsX3RvdGFsX3Bl
+bmRpbmdfYWlydGltZSAtPSB0eF9haXJ0aW1lOwogICAgICAgIC4uLgogICAgICAgIHNwaW5fdW5s
+b2NrX2JoKCZsb2NhbC0+YWN0aXZlX3R4cV9sb2NrW2FjXSk7Cn0KCkFmdGVyIGNoYW5naW5nIGl0
+IHRvIGF0b21pY190LCBubyBtb3JlIGFxbF90b3RhbF9wZW5kaW5nX2FpcnRpbWUKdW5kZXJmbG93
+IHNvIGZhciA6KS4gVXNpbmcgYXRvbWljIG9wZXJhdGlvbiBzaG91bGQgYWxzbyBoZWxwIHJlZHVj
+ZQpDUFUgb3ZlcmhlYWQgZHVlIHRvIGxvY2sgY29udGVudGlvbiwgYXMKaWVlZTgwMjExX3N0YV91
+cGRhdGVfcGVuZGluZ19haXJ0aW1lKCkgaXMgb2Z0ZW4gY2FsbGVkIGZyb20gdGhlIHR4CmNvbXBs
+ZXRpb24gcm91dGluZSB0cmlnZ2VyZWQgYnkgaW50ZXJydXB0cywgb2Z0ZW4gaW4gYSBkaWZmZXJl
+bnQgY29yZQp0aGFuIHdoZXJlIF9faWVlZTgwMjExX3NjaGVkdWxlX3R4cSgpIGlzIHJ1bm5pbmcu
+CgpJIHdpbGwgcG9zdCBhIG5ldyB2ZXJzaW9uIGEgYml0IGxhdGVyIGlmIHRoZSB0ZXN0IGdvZXMg
+d2VsbC4KClJlZ2FyZHMsCkthbgoKCk9uIEZyaSwgTm92IDgsIDIwMTkgYXQgMzoxNyBBTSBKb2hh
+bm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0PiB3cm90ZToKPgo+IE9uIEZyaSwg
+MjAxOS0xMS0wOCBhdCAxMjoxMCArMDEwMCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3Rl
+Ogo+Cj4gPiBSaWdodCwgYnVnZ2VyLiBJIHdhcyB0aGlua2luZyBtYXliZSB0aGVyZSdzIGEgY2Fz
+ZSB3aGVyZSBza2JzIGNhbiBiZQo+ID4gY2xvbmVkIChhbmQgcmV0YWluIHRoZSB0eF90aW1lX2Vz
+dCBmaWVsZCkgYW5kIHRoZW4gcmVsZWFzZWQgdHdpY2U/Cj4KPiBUaGV5IGNvdWxkIGJlIGNsb25l
+ZCwgYnV0IEkgZG9uJ3Qgc2VlIGhvdyB0aGF0J2QgYmUgd2hpbGUgKmluc2lkZSogdGhlCj4gc3Rh
+Y2sgYW5kIHRoZW4gdGhleSBnZXQgcmVwb3J0ZWQgdHdpY2UgLSB1bmxlc3MgdGhlIGRyaXZlciBk
+aWQgc29tZXRoaW5nCj4gbGlrZSB0aGF0Pwo+Cj4gSSBtZWFuLCBUQ1Agc3VyZWx5IGRvZXMgdGhh
+dCBmb3IgZXhhbXBsZSwgYnV0IGl0J3MgYmVmb3JlIHdlIGV2ZW4gZ2V0IHRvCj4gbWFjODAyMTEu
+Cj4KPiA+IE9yCj4gPiBtYXliZSBzb21ld2hlcmUgdGhhdCBzdGVwcyBvbiB0aGUgc2tiLT5jYiBm
+aWVsZCBpbiBzb21lIG90aGVyIHdheT8KPiA+IENvdWxkbid0IGZpbmQgYW55dGhpbmcgb2J2aW91
+cyBvbiBhIGZpcnN0IHBlcnVzYWwgb2YgdGhlIFRYIHBhdGggY29kZSwKPiA+IGJ1dCBtYXliZSB5
+b3UgY291bGQgdGhpbmsgb2Ygc29tZXRoaW5nPwo+Cj4gTm8sIHNvcnJ5LiBCdXQgSSBhbHNvIGRp
+ZG4ndCBhY3R1YWxseSBsb29rIGF0IHRoZSBkcml2ZXIgYXQgYWxsLgo+Cj4gPiBPdGhlcndpc2Ug
+SSBndWVzcyB3ZSdsbCBiZSBmb3JjZWQgdG8gZ28gYW5kIGRvIHNvbWUgYWN0dWFsLAo+ID4gb2xk
+LWZhc2hpb25lZCBkZWJ1Z2dpbmcgOykKPgo+IDopCj4KPiBqb2hhbm5lcwo+CgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
