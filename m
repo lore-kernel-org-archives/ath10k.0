@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU5uU-00085I-Fz
- for ath10k@lists.infradead.org; Mon, 11 Nov 2019 09:22:59 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k:mac: disassoc dbg msg after return check
-References: <20191111083040.16824-1-eduardoabinader@gmail.com>
- <87lfsmssny.fsf@kamboji.qca.qualcomm.com>
- <CAGoNHni94JihdS-XovcC_zZ9YkMhSeoupfsMn2ioh9koA0EwmQ@mail.gmail.com>
-Date: Mon, 11 Nov 2019 11:22:50 +0200
-In-Reply-To: <CAGoNHni94JihdS-XovcC_zZ9YkMhSeoupfsMn2ioh9koA0EwmQ@mail.gmail.com>
- (Eduardo Abinader's message of "Mon, 11 Nov 2019 10:14:27 +0100")
-Message-ID: <87h83asr6d.fsf@kamboji.qca.qualcomm.com>
+ id 1iU7EN-0005vl-8A
+ for ath10k@lists.infradead.org; Mon, 11 Nov 2019 10:47:36 +0000
 MIME-Version: 1.0
+Date: Mon, 11 Nov 2019 18:47:32 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v6 3/3] ath10k: add workqueue for RX path of sdio
+In-Reply-To: <3f3641ad49a2664d346558760e38b404@codeaurora.org>
+References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
+ <1569402639-31720-4-git-send-email-wgong@codeaurora.org>
+ <8736f92sfx.fsf@kamboji.qca.qualcomm.com>
+ <3f3641ad49a2664d346558760e38b404@codeaurora.org>
+Message-ID: <70f8f208f631a2a2c7337f45b873a16e@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +21,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eduardo Abinader <eduardoabinader@gmail.com>
+To: Kalle Valo <kvalo@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Eduardo Abinader <eduardoabinader@gmail.com> writes:
-
-> On Mon, 11 Nov 2019 at 09:50, Kalle Valo <kvalo@codeaurora.org> wrote:
->
->> Eduardo Abinader <eduardoabinader@gmail.com> writes:
->>
->> > Signed-off-by: Eduardo Abinader <eduardoabinader@gmail.com>
->>
->> No empty commit logs, please.
->>
->> > --- a/drivers/net/wireless/ath/ath10k/mac.c
->> > +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> > @@ -6786,13 +6786,13 @@ static int ath10k_sta_state(struct ieee80211_hw
->> *hw,
->> >               /*
->> >                * Disassociation.
->> >                */
->> > -             ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM
->> disassociated\n",
->> > -                        sta->addr);
->> > -
->> >               ret = ath10k_station_disassoc(ar, vif, sta);
->> >               if (ret)
->> >                       ath10k_warn(ar, "failed to disassociate station:
->> %pM vdev %i: %i\n",
->> >                                   sta->addr, arvif->vdev_id, ret);
->> > +             else
->> > +                     ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM
->> disassociated\n",
->> > +                        sta->addr);
->>
->> I don't understand, how is this better?
->>
->
-> Either one msg or the other? I think a bit cleaner log.
-
-I don't see it that way, the else branch makes the code harder to read
-and for consistency it's better to always print the debug log.
-
-> --000000000000b3b5a805970e8f8f
-> Content-Type: text/html; charset="UTF-8"
-> Content-Transfer-Encoding: quoted-printable
-
-Please don't use HTML, I think the mailing lists drop all HTML mail
-automatically.
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxOS0xMS0wMSAxNTo0MiwgV2VuIEdvbmcgd3JvdGU6Cj4gT24gMjAxOS0xMC0zMSAxNzow
+OCwgS2FsbGUgVmFsbyB3cm90ZToKPiDjgIE+IEkganVzdCByZWFsaXNlZCB0aGF0IHRoaXMgaXMg
+UlggcGF0aCBzbyB3ZSBzaG91bGQgdXNlIAo+IEFUSDEwS19TS0JfUlhDQigpCj4+IGluc3RlYWQu
+IEkgbWFkZSB0aGUgY2hhbmdlIGJlbG93IHRvIHRoaXMgY29tbWl0IGluIHBlbmRpbmcgYnJhbmNo
+Ogo+PiAKPiBJIHdpbGwgdGVzdCB3aXRoIHRoZSBuZXcgcGF0Y2ggdG9nZXRoZXIgd2l0aCBvdGhl
+ciBwZXJmb3JtYW5jZSBwYXRjaGVzLgpIaSBLYWxsZSwgSSBoYXZlIHRlc3RlZCB3aXRoIHRoZSBw
+YXRjaGVzIG9mIHBlbmRpbmcgYnJhbmNoLCBpdCBpcyAKc3VjY2Vzcy4KcmVzdWx0IGlzIHNhbWUg
+d2l0aCB0aGUgcHVibGljIHJldmlldyB3aGljaCBJIHRlc3RlZCBiZWZvcmUuCgp0aGUgcGF0Y2hl
+cyBJIHRlc3RlZCBvbiBwZW5kaW5nIGJyYW5jaDoKCmF0aDEwazogZW5hYmxlIGFsdCBkYXRhIG9m
+IFRYIHBhdGggZm9yIHNkaW8KYXRoMTBrOiBhZGQgaHR0IFRYIGJ1bmRsZSBmb3Igc2RpbwphdGgx
+MGs6IGRpc2FibGUgVFggY29tcGxldGUgaW5kaWNhdGlvbiBvZiBodHQgZm9yIHNkaW8KYXRoMTBr
+OiBlbmFibGUgbmFwaSBvbiBSWCBwYXRoIGZvciBzZGlvCmF0aDEwazogc2RpbzogcmVtb3ZlIHN0
+cnVjdCBhdGgxMGtfc2Rpb19yeF9kYXRhOjpzdGF0dXMKYXRoMTBrOiBzZGlvOiBjb3NtZXRpYyBj
+bGVhbnVwCmF0aDEwazogYWRkIHdvcmtxdWV1ZSBmb3IgUlggcGF0aCBvZiBzZGlvCmF0aDEwazog
+Y2hhbmdlIG1heCBSWCBidW5kbGUgc2l6ZSBmcm9tIDggdG8gMzIgZm9yIHNkaW8KYXRoMTBrOiBl
+bmFibGUgUlggYnVuZGxlIHJlY2VpdmUgZm9yIHNkaW8KCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
