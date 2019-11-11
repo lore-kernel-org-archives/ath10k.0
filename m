@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU562-0005xh-S9
- for ath10k@lists.infradead.org; Mon, 11 Nov 2019 08:30:52 +0000
-Received: by mail-wr1-x442.google.com with SMTP id e6so13643401wrw.1
- for <ath10k@lists.infradead.org>; Mon, 11 Nov 2019 00:30:48 -0800 (PST)
-From: Eduardo Abinader <eduardoabinader@gmail.com>
-Subject: [PATCH] ath10k:mac: disassoc dbg msg after return check
-Date: Mon, 11 Nov 2019 09:30:40 +0100
-Message-Id: <20191111083040.16824-1-eduardoabinader@gmail.com>
+ id 1iU5PK-0004oE-4j
+ for ath10k@lists.infradead.org; Mon, 11 Nov 2019 08:50:47 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k:mac: disassoc dbg msg after return check
+References: <20191111083040.16824-1-eduardoabinader@gmail.com>
+Date: Mon, 11 Nov 2019 10:50:41 +0200
+In-Reply-To: <20191111083040.16824-1-eduardoabinader@gmail.com> (Eduardo
+ Abinader's message of "Mon, 11 Nov 2019 09:30:40 +0100")
+Message-ID: <87lfsmssny.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,38 +23,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Eduardo Abinader <eduardoabinader@gmail.com>, ath10k@lists.infradead.org, kvalo@codeaurora.org
+To: Eduardo Abinader <eduardoabinader@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Signed-off-by: Eduardo Abinader <eduardoabinader@gmail.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Eduardo Abinader <eduardoabinader@gmail.com> writes:
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5e3450cfb07b..038d5c27bed7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6786,13 +6786,13 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		/*
- 		 * Disassociation.
- 		 */
--		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM disassociated\n",
--			   sta->addr);
--
- 		ret = ath10k_station_disassoc(ar, vif, sta);
- 		if (ret)
- 			ath10k_warn(ar, "failed to disassociate station: %pM vdev %i: %i\n",
- 				    sta->addr, arvif->vdev_id, ret);
-+		else
-+			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM disassociated\n",
-+			   sta->addr);
- 	}
- exit:
- 	mutex_unlock(&ar->conf_mutex);
+> Signed-off-by: Eduardo Abinader <eduardoabinader@gmail.com>
+
+No empty commit logs, please.
+
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -6786,13 +6786,13 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+>  		/*
+>  		 * Disassociation.
+>  		 */
+> -		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM disassociated\n",
+> -			   sta->addr);
+> -
+>  		ret = ath10k_station_disassoc(ar, vif, sta);
+>  		if (ret)
+>  			ath10k_warn(ar, "failed to disassociate station: %pM vdev %i: %i\n",
+>  				    sta->addr, arvif->vdev_id, ret);
+> +		else
+> +			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM disassociated\n",
+> +			   sta->addr);
+
+I don't understand, how is this better?
+
 -- 
-2.20.1
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
