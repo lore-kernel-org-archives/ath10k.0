@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU1GP-0007CW-6d
- for ath10k@lists.infradead.org; Mon, 11 Nov 2019 04:25:18 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 1/2] dt: bindings: add dt entry flag to skip SCM call for
- msa region
-Date: Mon, 11 Nov 2019 09:55:07 +0530
-Message-Id: <20191111042508.12628-2-govinds@codeaurora.org>
-In-Reply-To: <20191111042508.12628-1-govinds@codeaurora.org>
-References: <20191111042508.12628-1-govinds@codeaurora.org>
+ id 1iU562-0005xh-S9
+ for ath10k@lists.infradead.org; Mon, 11 Nov 2019 08:30:52 +0000
+Received: by mail-wr1-x442.google.com with SMTP id e6so13643401wrw.1
+ for <ath10k@lists.infradead.org>; Mon, 11 Nov 2019 00:30:48 -0800 (PST)
+From: Eduardo Abinader <eduardoabinader@gmail.com>
+Subject: [PATCH] ath10k:mac: disassoc dbg msg after return check
+Date: Mon, 11 Nov 2019 09:30:40 +0100
+Message-Id: <20191111083040.16824-1-eduardoabinader@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,39 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: devicetree@vger.kernel.org, Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: linux-wireless@vger.kernel.org
+Cc: Eduardo Abinader <eduardoabinader@gmail.com>, ath10k@lists.infradead.org, kvalo@codeaurora.org
 
-Add boolean context flag to disable SCM call for statically
-mapped msa region.
-
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Signed-off-by: Eduardo Abinader <eduardoabinader@gmail.com>
 ---
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt          | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 017128394a3e..7ba22918bab7 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -88,6 +88,9 @@ Optional properties:
- 		    of the host capability QMI request
- - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
- 
-+- qcom,msa_fixed_perm: Boolean context flag to disable SCM call for statically
-+		       mapped msa region.
-+
- Example (to supply PCI based wifi block details):
- 
- In this example, the node is defined as child node of the PCI controller.
-@@ -185,4 +188,5 @@ wifi@18000000 {
- 		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
- 		memory-region = <&wifi_msa_mem>;
- 		iommus = <&apps_smmu 0x0040 0x1>;
-+		qcom,msa_fixed_perm;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5e3450cfb07b..038d5c27bed7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6786,13 +6786,13 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 		/*
+ 		 * Disassociation.
+ 		 */
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM disassociated\n",
+-			   sta->addr);
+-
+ 		ret = ath10k_station_disassoc(ar, vif, sta);
+ 		if (ret)
+ 			ath10k_warn(ar, "failed to disassociate station: %pM vdev %i: %i\n",
+ 				    sta->addr, arvif->vdev_id, ret);
++		else
++			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac sta %pM disassociated\n",
++			   sta->addr);
+ 	}
+ exit:
+ 	mutex_unlock(&ar->conf_mutex);
 -- 
-2.22.0
+2.20.1
 
 
 _______________________________________________
