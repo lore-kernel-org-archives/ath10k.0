@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
+Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUYSD-0002a3-Li
- for ath10k@lists.infradead.org; Tue, 12 Nov 2019 15:51:43 +0000
-Received: by mail-qt1-x841.google.com with SMTP id l24so20204663qtp.10
- for <ath10k@lists.infradead.org>; Tue, 12 Nov 2019 07:51:40 -0800 (PST)
+ id 1iUYUV-0003K2-GN
+ for ath10k@lists.infradead.org; Tue, 12 Nov 2019 15:54:05 +0000
+Received: by mail-io1-xd43.google.com with SMTP id q83so19256658iod.1
+ for <ath10k@lists.infradead.org>; Tue, 12 Nov 2019 07:54:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20191106231650.1580-1-jeffrey.l.hugo@gmail.com>
- <20191112084225.casuncbo7z54vu4g@netronome.com>
-In-Reply-To: <20191112084225.casuncbo7z54vu4g@netronome.com>
+References: <20191106234712.2380-1-jeffrey.l.hugo@gmail.com>
+ <20191112090444.ak2xu67eawfgpdgb@netronome.com>
+In-Reply-To: <20191112090444.ak2xu67eawfgpdgb@netronome.com>
 From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date: Tue, 12 Nov 2019 08:51:28 -0700
-Message-ID: <CAOCk7NpNgtTSus2KtBMe=jGLFyBumVfRVxKxtHoEDUEt2-6tqQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix qmi init error handling
+Date: Tue, 12 Nov 2019 08:53:51 -0700
+Message-ID: <CAOCk7NoXv2-8GO=VYS8dNPJF6sj=S3RbkfqQGW0kvvVmR8V1kw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Handle "invalid" BDFs for msm8998 devices
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +28,64 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Simon Horman <simon.horman@netronome.com>
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, MSM <linux-arm-msm@vger.kernel.org>, davem@davemloft.net, kvalo@codeaurora.org
 
-On Tue, Nov 12, 2019 at 1:42 AM Simon Horman <simon.horman@netronome.com> wrote:
+On Tue, Nov 12, 2019 at 2:04 AM Simon Horman <simon.horman@netronome.com> wrote:
 >
-> On Wed, Nov 06, 2019 at 03:16:50PM -0800, Jeffrey Hugo wrote:
-> > When ath10k_qmi_init() fails, the error handling does not free the irq
-> > resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
-> > (re-)register irqs which are already registered.
+> On Wed, Nov 06, 2019 at 03:47:12PM -0800, Jeffrey Hugo wrote:
+> > When the BDF download QMI message has the end field set to 1, it signals
+> > the end of the transfer, and triggers the firmware to do a CRC check.  The
+> > BDFs for msm8998 devices fail this check, yet the firmware is happy to
+> > still use the BDF.  It appears that this error is not caught by the
+> > downstream drive by concidence, therefore there are production devices
+> > in the field where this issue needs to be handled otherwise we cannot
+> > support wifi on them.  So, attempt to detect this scenario as best we can
+> > and treat it as non-fatal.
 > >
-> > Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
 > > Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 > > ---
-> >  drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  drivers/net/wireless/ath/ath10k/qmi.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
 > >
-> > diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> > index fc15a0037f0e..f2a0b7aaad3b 100644
-> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> > @@ -1729,7 +1729,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
-> >       ret = ath10k_qmi_init(ar, msa_size);
-> >       if (ret) {
-> >               ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
-> > -             goto err_core_destroy;
-> > +             goto err_free_irq;
-> >       }
+> > diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> > index eb618a2652db..5ff8cfc93778 100644
+> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> > @@ -265,10 +265,13 @@ static int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
+> >                       goto out;
+> >
+> >               if (resp.resp.result != QMI_RESULT_SUCCESS_V01) {
+> > -                     ath10k_err(ar, "failed to download board data file: %d\n",
+> > -                                resp.resp.error);
+> > -                     ret = -EINVAL;
+> > -                     goto out;
+> > +                     if (!(req->end == 1 &&
+> > +                           resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
 >
-> From a casual examination of the code this seems like a step in the right
-> direction. But does this error path also need to call ath10k_hw_power_off() ?
+> Would it make sense to combine the inner and outer condition,
+> something like this (completely untested) ?
 
-It probably should.  I don't see any fatal errors from the step being
-skipped, although it might silence some regulator warnings about being
-left on.  Unlikely to be observed by most folks as I was initing the
-driver pretty early to debug some things.  Looks like Kalle already
-picked up this patch though, so I guess your suggestion would need to
-be a follow up.
+I guess, make sense from what perspective?  Looks like the assembly
+ends up being the same, so it would be down to "readability" which is
+subjective - I personally don't see a major advantage to one way or
+the other.  It does look like Kalle already picked up this patch, so
+I'm guessing that if folks feel your suggestion is superior, then it
+would need to be a follow on.
+
+>
+>                 if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+>                     !(req->end == 1 &&
+>                       resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
+>
+> > +                             ath10k_err(ar, "failed to download board data file: %d\n",
+> > +                                        resp.resp.error);
+> > +                             ret = -EINVAL;
+> > +                             goto out;
+> > +                     }
+> >               }
+> >
+> >               remaining -= req->data_len;
+> > --
+> > 2.17.1
+> >
 
 _______________________________________________
 ath10k mailing list
