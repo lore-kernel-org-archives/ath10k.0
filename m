@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUS6T-0000T9-SY
- for ath10k@lists.infradead.org; Tue, 12 Nov 2019 09:04:51 +0000
-Received: by mail-wm1-x343.google.com with SMTP id b17so2053614wmj.2
- for <ath10k@lists.infradead.org>; Tue, 12 Nov 2019 01:04:48 -0800 (PST)
-Date: Tue, 12 Nov 2019 10:04:45 +0100
-From: Simon Horman <simon.horman@netronome.com>
-Subject: Re: [PATCH] ath10k: Handle "invalid" BDFs for msm8998 devices
-Message-ID: <20191112090444.ak2xu67eawfgpdgb@netronome.com>
-References: <20191106234712.2380-1-jeffrey.l.hugo@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191106234712.2380-1-jeffrey.l.hugo@gmail.com>
+ id 1iUUcM-0006o4-Eb
+ for ath10k@lists.infradead.org; Tue, 12 Nov 2019 11:45:55 +0000
+From: Yu Wang <yyuwang@codeaurora.org>
+Subject: [PATCH 0/2] ath10k: correct tx bitrate for QCA6174/QCA9377/QCA9888
+Date: Tue, 12 Nov 2019 19:45:46 +0800
+Message-Id: <1573559148-4844-1-git-send-email-yyuwang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +15,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 03:47:12PM -0800, Jeffrey Hugo wrote:
-> When the BDF download QMI message has the end field set to 1, it signals
-> the end of the transfer, and triggers the firmware to do a CRC check.  The
-> BDFs for msm8998 devices fail this check, yet the firmware is happy to
-> still use the BDF.  It appears that this error is not caught by the
-> downstream drive by concidence, therefore there are production devices
-> in the field where this issue needs to be handled otherwise we cannot
-> support wifi on them.  So, attempt to detect this scenario as best we can
-> and treat it as non-fatal.
-> 
-> Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath10k/qmi.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-> index eb618a2652db..5ff8cfc93778 100644
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -265,10 +265,13 @@ static int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
->  			goto out;
->  
->  		if (resp.resp.result != QMI_RESULT_SUCCESS_V01) {
-> -			ath10k_err(ar, "failed to download board data file: %d\n",
-> -				   resp.resp.error);
-> -			ret = -EINVAL;
-> -			goto out;
-> +			if (!(req->end == 1 &&
-> +			      resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
+Tx bitrate got by command 'iw wlan0 link' is incorrect.
+These 2 patches will fix the issue.
 
-Would it make sense to combine the inner and outer condition,
-something like this (completely untested) ?
+Yu Wang (2):
+  ath10k: add ppdu stats support for QCA6174/QCA9377
+  ath10k: correct legacy rate in tx stats
 
-		if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
-		    !(req->end == 1 &&
-		      resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
+ drivers/net/wireless/ath/ath10k/htt.c     |   2 +
+ drivers/net/wireless/ath/ath10k/htt.h     |  30 ++++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c  | 113 ++++++++++++++++++++++--------
+ drivers/net/wireless/ath/ath10k/mac.c     |  13 ----
+ drivers/net/wireless/ath/ath10k/mac.h     |  11 +++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  15 +++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  42 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |   3 +
+ drivers/net/wireless/ath/ath10k/wmi.c     |  46 ++++++++++++
+ 9 files changed, 232 insertions(+), 43 deletions(-)
 
-> +				ath10k_err(ar, "failed to download board data file: %d\n",
-> +					   resp.resp.error);
-> +				ret = -EINVAL;
-> +				goto out;
-> +			}
->  		}
->  
->  		remaining -= req->data_len;
-> -- 
-> 2.17.1
-> 
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
