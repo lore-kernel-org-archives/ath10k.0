@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iURkq-0008Dd-Bn
- for ath10k@lists.infradead.org; Tue, 12 Nov 2019 08:42:29 +0000
-Received: by mail-wr1-x444.google.com with SMTP id w9so10707495wrr.0
- for <ath10k@lists.infradead.org>; Tue, 12 Nov 2019 00:42:27 -0800 (PST)
-Date: Tue, 12 Nov 2019 09:42:25 +0100
+ id 1iUS6T-0000T9-SY
+ for ath10k@lists.infradead.org; Tue, 12 Nov 2019 09:04:51 +0000
+Received: by mail-wm1-x343.google.com with SMTP id b17so2053614wmj.2
+ for <ath10k@lists.infradead.org>; Tue, 12 Nov 2019 01:04:48 -0800 (PST)
+Date: Tue, 12 Nov 2019 10:04:45 +0100
 From: Simon Horman <simon.horman@netronome.com>
-Subject: Re: [PATCH] ath10k: Fix qmi init error handling
-Message-ID: <20191112084225.casuncbo7z54vu4g@netronome.com>
-References: <20191106231650.1580-1-jeffrey.l.hugo@gmail.com>
+Subject: Re: [PATCH] ath10k: Handle "invalid" BDFs for msm8998 devices
+Message-ID: <20191112090444.ak2xu67eawfgpdgb@netronome.com>
+References: <20191106234712.2380-1-jeffrey.l.hugo@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191106231650.1580-1-jeffrey.l.hugo@gmail.com>
+In-Reply-To: <20191106234712.2380-1-jeffrey.l.hugo@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +28,51 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, davem@davemloft.net, kvalo@codeaurora.org
 
-On Wed, Nov 06, 2019 at 03:16:50PM -0800, Jeffrey Hugo wrote:
-> When ath10k_qmi_init() fails, the error handling does not free the irq
-> resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
-> (re-)register irqs which are already registered.
+On Wed, Nov 06, 2019 at 03:47:12PM -0800, Jeffrey Hugo wrote:
+> When the BDF download QMI message has the end field set to 1, it signals
+> the end of the transfer, and triggers the firmware to do a CRC check.  The
+> BDFs for msm8998 devices fail this check, yet the firmware is happy to
+> still use the BDF.  It appears that this error is not caught by the
+> downstream drive by concidence, therefore there are production devices
+> in the field where this issue needs to be handled otherwise we cannot
+> support wifi on them.  So, attempt to detect this scenario as best we can
+> and treat it as non-fatal.
 > 
-> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
 > Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 > ---
->  drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/wireless/ath/ath10k/qmi.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index fc15a0037f0e..f2a0b7aaad3b 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -1729,7 +1729,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
->  	ret = ath10k_qmi_init(ar, msa_size);
->  	if (ret) {
->  		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
-> -		goto err_core_destroy;
-> +		goto err_free_irq;
->  	}
-
-From a casual examination of the code this seems like a step in the right
-direction. But does this error path also need to call ath10k_hw_power_off() ?
-
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index eb618a2652db..5ff8cfc93778 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -265,10 +265,13 @@ static int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
+>  			goto out;
 >  
->  	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+>  		if (resp.resp.result != QMI_RESULT_SUCCESS_V01) {
+> -			ath10k_err(ar, "failed to download board data file: %d\n",
+> -				   resp.resp.error);
+> -			ret = -EINVAL;
+> -			goto out;
+> +			if (!(req->end == 1 &&
+> +			      resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
+
+Would it make sense to combine the inner and outer condition,
+something like this (completely untested) ?
+
+		if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+		    !(req->end == 1 &&
+		      resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
+
+> +				ath10k_err(ar, "failed to download board data file: %d\n",
+> +					   resp.resp.error);
+> +				ret = -EINVAL;
+> +				goto out;
+> +			}
+>  		}
+>  
+>  		remaining -= req->data_len;
 > -- 
 > 2.17.1
 > 
