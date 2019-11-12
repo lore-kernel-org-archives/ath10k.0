@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUPBN-0007qv-WE
- for ath10k@lists.infradead.org; Tue, 12 Nov 2019 05:57:43 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: remove the max_sched_scan_reqs value
-Date: Tue, 12 Nov 2019 13:57:28 +0800
-Message-Id: <20191112055728.28847-1-wgong@codeaurora.org>
+ id 1iURkq-0008Dd-Bn
+ for ath10k@lists.infradead.org; Tue, 12 Nov 2019 08:42:29 +0000
+Received: by mail-wr1-x444.google.com with SMTP id w9so10707495wrr.0
+ for <ath10k@lists.infradead.org>; Tue, 12 Nov 2019 00:42:27 -0800 (PST)
+Date: Tue, 12 Nov 2019 09:42:25 +0100
+From: Simon Horman <simon.horman@netronome.com>
+Subject: Re: [PATCH] ath10k: Fix qmi init error handling
+Message-ID: <20191112084225.casuncbo7z54vu4g@netronome.com>
+References: <20191106231650.1580-1-jeffrey.l.hugo@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191106231650.1580-1-jeffrey.l.hugo@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +25,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, davem@davemloft.net, kvalo@codeaurora.org
 
-ath10k do not support NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, if
-set max_sched_scan_reqs to a non zero value, then nl80211_add_commands_unsplit
-will set a SCHED_SCAN attribute, some application tool will use this attribute
-to check mac random support, when it check SCHED_SCAN has set and not
-set NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, it will report mac random
-not support.
+On Wed, Nov 06, 2019 at 03:16:50PM -0800, Jeffrey Hugo wrote:
+> When ath10k_qmi_init() fails, the error handling does not free the irq
+> resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
+> (re-)register irqs which are already registered.
+> 
+> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+> Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index fc15a0037f0e..f2a0b7aaad3b 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1729,7 +1729,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+>  	ret = ath10k_qmi_init(ar, msa_size);
+>  	if (ret) {
+>  		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
+> -		goto err_core_destroy;
+> +		goto err_free_irq;
+>  	}
 
-Remove the max_sched_scan_reqs value will pass the application tool's
-check and pass test case of random mac address.
+From a casual examination of the code this seems like a step in the right
+direction. But does this error path also need to call ath10k_hw_power_off() ?
 
-testd with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00017-QCARMSWP-1.
-
-Fixes: ce834e280f2f875 ("ath10k: support NET_DETECT WoWLAN feature")
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e8bdb2ba9b18..9aa499b0527e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8902,7 +8902,6 @@ int ath10k_mac_register(struct ath10k *ar)
- 	ar->hw->wiphy->max_scan_ie_len = WLAN_SCAN_PARAMS_MAX_IE_LEN;
- 
- 	if (test_bit(WMI_SERVICE_NLO, ar->wmi.svc_map)) {
--		ar->hw->wiphy->max_sched_scan_reqs = 1;
- 		ar->hw->wiphy->max_sched_scan_ssids = WMI_PNO_MAX_SUPP_NETWORKS;
- 		ar->hw->wiphy->max_match_sets = WMI_PNO_MAX_SUPP_NETWORKS;
- 		ar->hw->wiphy->max_sched_scan_ie_len = WMI_PNO_MAX_IE_LENGTH;
--- 
-2.23.0
-
+>  
+>  	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+> -- 
+> 2.17.1
+> 
 
 _______________________________________________
 ath10k mailing list
