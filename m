@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUjTl-0002qE-4H
- for ath10k@lists.infradead.org; Wed, 13 Nov 2019 03:38:02 +0000
+ id 1iUkij-00063x-BU
+ for ath10k@lists.infradead.org; Wed, 13 Nov 2019 04:57:34 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Fix qmi init error handling
+References: <20191106231650.1580-1-jeffrey.l.hugo@gmail.com>
+ <20191112084225.casuncbo7z54vu4g@netronome.com>
+ <CAOCk7NpNgtTSus2KtBMe=jGLFyBumVfRVxKxtHoEDUEt2-6tqQ@mail.gmail.com>
+Date: Wed, 13 Nov 2019 06:57:25 +0200
+In-Reply-To: <CAOCk7NpNgtTSus2KtBMe=jGLFyBumVfRVxKxtHoEDUEt2-6tqQ@mail.gmail.com>
+ (Jeffrey Hugo's message of "Tue, 12 Nov 2019 08:51:28 -0700")
+Message-ID: <87d0dws79m.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Wed, 13 Nov 2019 11:37:57 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v6 3/3] ath10k: add workqueue for RX path of sdio
-In-Reply-To: <87r22ewqi6.fsf@codeaurora.org>
-References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
- <1569402639-31720-4-git-send-email-wgong@codeaurora.org>
- <8736f92sfx.fsf@kamboji.qca.qualcomm.com>
- <3f3641ad49a2664d346558760e38b404@codeaurora.org>
- <70f8f208f631a2a2c7337f45b873a16e@codeaurora.org>
- <87r22ewqi6.fsf@codeaurora.org>
-Message-ID: <ee6539c50cff626968984df3b511a5a8@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +21,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc: Simon Horman <simon.horman@netronome.com>, linux-wireless@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, netdev@vger.kernel.org, MSM <linux-arm-msm@vger.kernel.org>, davem@davemloft.net
 
-T24gMjAxOS0xMS0xMSAyMDoyMywgS2FsbGUgVmFsbyB3cm90ZToKPiBXZW4gR29uZyA8d2dvbmdA
-Y29kZWF1cm9yYS5vcmc+IHdyaXRlczoKPiAKPj4gT24gMjAxOS0xMS0wMSAxNTo0MiwgV2VuIEdv
-bmcgd3JvdGU6Cj4+PiBPbiAyMDE5LTEwLTMxIDE3OjA4LCBLYWxsZSBWYWxvIHdyb3RlOgo+Pj4g
-44CBPiBJIGp1c3QgcmVhbGlzZWQgdGhhdCB0aGlzIGlzIFJYIHBhdGggc28gd2Ugc2hvdWxkIHVz
-ZQo+Pj4gQVRIMTBLX1NLQl9SWENCKCkKPj4+PiBpbnN0ZWFkLiBJIG1hZGUgdGhlIGNoYW5nZSBi
-ZWxvdyB0byB0aGlzIGNvbW1pdCBpbiBwZW5kaW5nIGJyYW5jaDoKPj4+PiAKPj4+IEkgd2lsbCB0
-ZXN0IHdpdGggdGhlIG5ldyBwYXRjaCB0b2dldGhlciB3aXRoIG90aGVyIHBlcmZvcm1hbmNlIAo+
-Pj4gcGF0Y2hlcy4KPj4gSGkgS2FsbGUsIEkgaGF2ZSB0ZXN0ZWQgd2l0aCB0aGUgcGF0Y2hlcyBv
-ZiBwZW5kaW5nIGJyYW5jaCwgaXQgaXMKPj4gc3VjY2Vzcy4KPj4gcmVzdWx0IGlzIHNhbWUgd2l0
-aCB0aGUgcHVibGljIHJldmlldyB3aGljaCBJIHRlc3RlZCBiZWZvcmUuCj4+IAo+PiB0aGUgcGF0
-Y2hlcyBJIHRlc3RlZCBvbiBwZW5kaW5nIGJyYW5jaDoKPj4gCj4+IGF0aDEwazogZW5hYmxlIGFs
-dCBkYXRhIG9mIFRYIHBhdGggZm9yIHNkaW8KPj4gYXRoMTBrOiBhZGQgaHR0IFRYIGJ1bmRsZSBm
-b3Igc2Rpbwo+PiBhdGgxMGs6IGRpc2FibGUgVFggY29tcGxldGUgaW5kaWNhdGlvbiBvZiBodHQg
-Zm9yIHNkaW8KPj4gYXRoMTBrOiBlbmFibGUgbmFwaSBvbiBSWCBwYXRoIGZvciBzZGlvCj4+IGF0
-aDEwazogc2RpbzogcmVtb3ZlIHN0cnVjdCBhdGgxMGtfc2Rpb19yeF9kYXRhOjpzdGF0dXMKPj4g
-YXRoMTBrOiBzZGlvOiBjb3NtZXRpYyBjbGVhbnVwCj4+IGF0aDEwazogYWRkIHdvcmtxdWV1ZSBm
-b3IgUlggcGF0aCBvZiBzZGlvCj4+IGF0aDEwazogY2hhbmdlIG1heCBSWCBidW5kbGUgc2l6ZSBm
-cm9tIDggdG8gMzIgZm9yIHNkaW8KPj4gYXRoMTBrOiBlbmFibGUgUlggYnVuZGxlIHJlY2VpdmUg
-Zm9yIHNkaW8KPiAKPiBWZXJ5IGdvb2QsIHRoYW5rcyBmb3IgdGVzdGluZy4KSGkgS2FsbGUsCgp0
-aGlzIHBhdGNoIHdpbGwgdHJpZ2dlciBjb25uZWN0IGZhaWwgZm9yIFBTSyBtb2RlIEFQOgphdGgx
-MGs6IGFkZCB3b3JrcXVldWUgZm9yIFJYIHBhdGggb2Ygc2RpbwoKSSBoYXZlIHNlbnQgcGF0Y2gg
-dG8gZml4IGl0OgphdGgxMGs6IGNsZWFyIGllZWU4MDIxMV9yeF9zdGF0dXMgZm9yIHNkaW8KCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Jeffrey Hugo <jeffrey.l.hugo@gmail.com> writes:
+
+> On Tue, Nov 12, 2019 at 1:42 AM Simon Horman <simon.horman@netronome.com> wrote:
+>>
+>> On Wed, Nov 06, 2019 at 03:16:50PM -0800, Jeffrey Hugo wrote:
+>> > When ath10k_qmi_init() fails, the error handling does not free the irq
+>> > resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
+>> > (re-)register irqs which are already registered.
+>> >
+>> > Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+>> > Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+>> > ---
+>> >  drivers/net/wireless/ath/ath10k/snoc.c | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+>> > index fc15a0037f0e..f2a0b7aaad3b 100644
+>> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
+>> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+>> > @@ -1729,7 +1729,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+>> >       ret = ath10k_qmi_init(ar, msa_size);
+>> >       if (ret) {
+>> >               ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
+>> > -             goto err_core_destroy;
+>> > +             goto err_free_irq;
+>> >       }
+>>
+>> From a casual examination of the code this seems like a step in the right
+>> direction. But does this error path also need to call ath10k_hw_power_off() ?
+>
+> It probably should.  I don't see any fatal errors from the step being
+> skipped, although it might silence some regulator warnings about being
+> left on.  Unlikely to be observed by most folks as I was initing the
+> driver pretty early to debug some things.  Looks like Kalle already
+> picked up this patch though, so I guess your suggestion would need to
+> be a follow up.
+
+Actually it's only in the pending branch, which means that the patch can
+be changed or a new version can be submitted:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#patch_flow
+
+The easiest way to check the state of a wireless patch is from
+patchwork:
+
+https://patchwork.kernel.org/patch/11231325/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#checking_state_of_patches_from_patchwork
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
