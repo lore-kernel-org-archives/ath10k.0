@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUhth-0007FW-OA
- for ath10k@lists.infradead.org; Wed, 13 Nov 2019 01:56:43 +0000
+ id 1iUhwf-0000P8-UB
+ for ath10k@lists.infradead.org; Wed, 13 Nov 2019 01:59:47 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 013/115] ath10k: fix vdev-start timeout on error
-Date: Tue, 12 Nov 2019 20:54:40 -0500
-Message-Id: <20191113015622.11592-13-sashal@kernel.org>
-In-Reply-To: <20191113015622.11592-1-sashal@kernel.org>
-References: <20191113015622.11592-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 08/68] ath10k: fix vdev-start timeout on error
+Date: Tue, 12 Nov 2019 20:58:32 -0500
+Message-Id: <20191113015932.12655-8-sashal@kernel.org>
+In-Reply-To: <20191113015932.12655-1-sashal@kernel.org>
+References: <20191113015932.12655-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -48,10 +48,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  4 files changed, 25 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 949ebb3e967bb..be9ec265dfe55 100644
+index 90c0c4a7175db..414153cd57845 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -881,6 +881,7 @@ struct ath10k {
+@@ -811,6 +811,7 @@ struct ath10k {
  
  	struct completion install_key_done;
  
@@ -60,10 +60,10 @@ index 949ebb3e967bb..be9ec265dfe55 100644
  
  	struct workqueue_struct *workqueue;
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58a3c42c4aedb..259ef6a0d1740 100644
+index 1588fe8110d00..2294ba311c47a 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -954,7 +954,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+@@ -947,7 +947,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
  	if (time_left == 0)
  		return -ETIMEDOUT;
  
@@ -73,10 +73,10 @@ index 58a3c42c4aedb..259ef6a0d1740 100644
  
  static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ab8eb9cdfda0f..c29e908c97317 100644
+index bbfe7be214e12..68d324e6fcb45 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3132,18 +3132,31 @@ void ath10k_wmi_event_vdev_start_resp(struct ath10k *ar, struct sk_buff *skb)
+@@ -3102,18 +3102,31 @@ void ath10k_wmi_event_vdev_start_resp(struct ath10k *ar, struct sk_buff *skb)
  {
  	struct wmi_vdev_start_ev_arg arg = {};
  	int ret;
@@ -112,10 +112,10 @@ index ab8eb9cdfda0f..c29e908c97317 100644
  }
  
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index d0e05aa437e36..947b74c64fec0 100644
+index 9b8562ff66987..cce028ea9b57d 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6480,11 +6480,17 @@ struct wmi_ch_info_ev_arg {
+@@ -6248,11 +6248,17 @@ struct wmi_ch_info_ev_arg {
  	__le32 rx_frame_count;
  };
  
