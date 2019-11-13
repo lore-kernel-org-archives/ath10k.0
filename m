@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUukn-0000QS-L7
- for ath10k@lists.infradead.org; Wed, 13 Nov 2019 15:40:22 +0000
-Received: by mail-pf1-x443.google.com with SMTP id n13so1923722pff.1
- for <ath10k@lists.infradead.org>; Wed, 13 Nov 2019 07:40:21 -0800 (PST)
+ id 1iUur4-0002hb-UP
+ for ath10k@lists.infradead.org; Wed, 13 Nov 2019 15:46:52 +0000
+Received: by mail-pf1-x443.google.com with SMTP id p24so1927233pfn.4
+ for <ath10k@lists.infradead.org>; Wed, 13 Nov 2019 07:46:50 -0800 (PST)
 From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: [PATCH v2] ath10k: Fix qmi init error handling
-Date: Wed, 13 Nov 2019 07:40:16 -0800
-Message-Id: <20191113154016.42836-1-jeffrey.l.hugo@gmail.com>
+Subject: [PATCH v2] ath10k: Handle "invalid" BDFs for msm8998 devices
+Date: Wed, 13 Nov 2019 07:46:46 -0800
+Message-Id: <20191113154646.43048-1-jeffrey.l.hugo@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +25,47 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@codeaurora.org, davem@davemloft.net
 Cc: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org
 
-When ath10k_qmi_init() fails, the error handling does not free the irq
-resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
-(re-)register irqs which are already registered.
+When the BDF download QMI message has the end field set to 1, it signals
+the end of the transfer, and triggers the firmware to do a CRC check.  The
+BDFs for msm8998 devices fail this check, yet the firmware is happy to
+still use the BDF.  It appears that this error is not caught by the
+downstream drive by concidence, therefore there are production devices
+in the field where this issue needs to be handled otherwise we cannot
+support wifi on them.  So, attempt to detect this scenario as best we can
+and treat it as non-fatal.
 
-Fix this by doing a power off since we just powered on the hardware, and
-freeing the irqs as error handling.
-
-Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
 Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
 
 v2:
--Call power_off() as well
+-tweak conditional nesting
+-add comment in code to clarify
 
- drivers/net/wireless/ath/ath10k/snoc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/qmi.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index cd22c8654aa9..50b3d443ad37 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1563,13 +1563,16 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 	ret = ath10k_qmi_init(ar, msa_size);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
--		goto err_core_destroy;
-+		goto err_power_off;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 637f83ef65f8..6df2d3ac5474 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -279,7 +279,15 @@ static int ath10k_qmi_bdf_dnld_send_sync(struct ath10k_qmi *qmi)
+ 		if (ret < 0)
+ 			goto out;
  
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
- 
- 	return 0;
- 
-+err_power_off:
-+	ath10k_hw_power_off(ar);
-+
- err_free_irq:
- 	ath10k_snoc_free_irq(ar);
- 
+-		if (resp.resp.result != QMI_RESULT_SUCCESS_V01) {
++		/* end = 1 triggers a CRC check on the BDF.  If this fails, we
++		 * get a QMI_ERR_MALFORMED_MSG_V01 error, but the FW is still
++		 * willing to use the BDF.  For some platforms, all the valid
++		 * released BDFs fail this CRC check, so attempt to detect this
++		 * scenario and treat it as non-fatal.
++		 */
++		if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
++		    !(req->end == 1 &&
++		      resp.resp.result == QMI_ERR_MALFORMED_MSG_V01)) {
+ 			ath10k_err(ar, "failed to download board data file: %d\n",
+ 				   resp.resp.error);
+ 			ret = -EINVAL;
 -- 
 2.17.1
 
