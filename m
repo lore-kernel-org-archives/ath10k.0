@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iV9mP-0005Zc-He
- for ath10k@lists.infradead.org; Thu, 14 Nov 2019 07:43:02 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: add cleanup in ath10k_sta_state()
-References: <1565903072-3948-1-git-send-email-wenwen@cs.uga.edu>
- <20191113192821.GA3441686@builder>
-Date: Thu, 14 Nov 2019 09:42:52 +0200
-In-Reply-To: <20191113192821.GA3441686@builder> (Bjorn Andersson's message of
- "Wed, 13 Nov 2019 11:28:21 -0800")
-Message-ID: <87eeyax5s3.fsf@codeaurora.org>
+ id 1iVDAI-000313-I4
+ for ath10k@lists.infradead.org; Thu, 14 Nov 2019 11:19:56 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: report rssi of each chain to mac80211 for sdio
+Date: Thu, 14 Nov 2019 19:19:31 +0800
+Message-Id: <20191114111931.27800-1-wgong@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,39 +20,168 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Wenwen Wang <wenwen@cs.uga.edu>, govinds@codeaurora.org, jeffrey.l.hugo@gmail.com, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, "David S. Miller" <davem@davemloft.net>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Bjorn Andersson <bjorn.andersson@linaro.org> writes:
+iw command only show rssi without each chain's rssi on sdio
+iw wlan0 station dump
+Station a0:40:a0:93:3e:de (on wlan0)
+signal:         -82 dBm
+signal avg:     -82 dBm
 
-> On Thu 15 Aug 14:04 PDT 2019, Wenwen Wang wrote:
->
->> If 'sta->tdls' is false, no cleanup is executed, leading to memory/resource
->> leaks, e.g., 'arsta->tx_stats'. To fix this issue, perform cleanup before
->> go to the 'exit' label.
->> 
->
-> Unfortunately this patch consistently crashes all my msm8998, sdm845 and
-> qcs404 devices (running ath10k_snoc).  Upon trying to join a network the
-> WiFi firmware crashes with the following:
->
-> [  124.315286] wlan0: authenticate with 70:3a:cb:4d:34:f3
-> [  124.334051] wlan0: send auth to 70:3a:cb:4d:34:f3 (try 1/3)
-> [  124.338828] wlan0: authenticated
-> [  124.342470] wlan0: associate with 70:3a:cb:4d:34:f3 (try 1/3)
-> [  124.347223] wlan0: RX AssocResp from 70:3a:cb:4d:34:f3 (capab=0x1011 status=0 aid=2)
-> [ 124.402535] qcom-q6v5-mss 4080000.remoteproc: fatal error received:
-> err_qdi.c:456:EF:wlan_process:1:cmnos_thread.c:3900:Asserted in
-> wlan_vdev.c:_wlan_vdev_up:3219
->
-> Can we please revert it for v5.5?
+after this patch, it will show each chain's rssi on sdio
+Station a0:40:a0:93:3e:de (on wlan0)
+signal:         -82 [-84, -88] dBm
+signal avg:     -82 [-84, -87] dBm
 
-Yes, let's revert it. And thanks for sending the patch to do that:
+For QCA6174 PCIe, the ppdu have the correct rssi of each chain, it
+indicate rssi of rx data by ath10k_htt_rx_h_signal. For sdio chip, the
+rssi of each chain stored in rx management reported by firmware, the
+ath10k_wmi_tlv_op_pull_mgmt_rx_ev which used for tlv wmi will get the
+rssi of each chain and stored them in wmi_mgmt_rx_ev_arg, then indicate
+them to mac80211. For non-tlv wmi chip, it will not get the rssi of each
+chain and not indicate to mac80211, for non-tlv wmi chip, this patch will
+not have impact. For tlv wmi chip, if the rssi of chain in mgmt is valid,
+it will be indicate to mac80211, tested with QCA6174 PCIe/SDIO, the rssi
+of 2 chain in mgmt is valid.
 
-https://patchwork.kernel.org/patch/11242743/
+rssi of chains in mgmt of QCA6174 SDIO:
+92096.652780: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[0]:70
+92096.657324: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[1]:68
+92096.662009: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[2]:128
+92096.666647: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[3]:128
 
+rssi of chains in mgmt of QCA6174 PCIe:
+[ 1581.049816] ath10k_pci 0000:02:00.0: mgmt rssi[0]:17
+[ 1581.049818] ath10k_pci 0000:02:00.0: mgmt rssi[1]:22
+[ 1581.049821] ath10k_pci 0000:02:00.0: mgmt rssi[2]:128
+[ 1581.049823] ath10k_pci 0000:02:00.0: mgmt rssi[3]:128
+
+after apply this patch, the iw's rssi of PCIe do not changed, result is
+same with before.
+
+iw wlan0 station dump of QCA6174 PCIe:
+Station 6c:e8:73:b8:92:dc (on wlan0)
+        signal:         -70 [-77, -72] dBm
+        signal avg:     -69 [-78, -72] dBm
+
+iw wlan-5000mhz station dump of QCA9984 PCIe
+connected with 2 client which has 2 chain:
+Station 70:48:0f:1f:1a:b2 (on wlan-5000mhz)
+        signal:         -47 [-55, -48, -87, -88] dBm
+        signal avg:     -42 [-50, -43, -83, -86] dBm
+Station ac:c1:ee:39:e3:83 (on wlan-5000mhz)
+        signal:         -43 [-46, -45, -79, -84] dBm
+        signal avg:     -43 [-46, -46, -82, -83] dBm
+
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
+Tested with QCA9984 PCIe with firmware 10.4-3.9.0.2-00040.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |  1 -
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  5 ++++-
+ drivers/net/wireless/ath/ath10k/wmi.c     | 18 ++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h     |  2 ++
+ 4 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d95b63f133ab..941c8e6a4f45 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2236,7 +2236,6 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+ 	qos = ieee80211_is_data_qos(hdr->frame_control);
+ 	rx_status = IEEE80211_SKB_RXCB(skb);
+-	rx_status->chains |= BIT(0);
+ 	if (rx->ppdu.combined_rssi == 0) {
+ 		/* SDIO firmware does not provide signal */
+ 		rx_status->signal = 0;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 69a1ec53df29..213d02e7981f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -841,7 +841,7 @@ static int ath10k_wmi_tlv_op_pull_mgmt_rx_ev(struct ath10k *ar,
+ 	const struct wmi_tlv_mgmt_rx_ev *ev;
+ 	const u8 *frame;
+ 	u32 msdu_len;
+-	int ret;
++	int ret, i;
+ 
+ 	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
+ 	if (IS_ERR(tb)) {
+@@ -865,6 +865,9 @@ static int ath10k_wmi_tlv_op_pull_mgmt_rx_ev(struct ath10k *ar,
+ 	arg->phy_mode = ev->phy_mode;
+ 	arg->rate = ev->rate;
+ 
++	for (i = 0; i < ARRAY_SIZE(ev->rssi); i++)
++		arg->rssi[i] = ev->rssi[i];
++
+ 	msdu_len = __le32_to_cpu(arg->buf_len);
+ 
+ 	if (skb->len < (frame - skb->data) + msdu_len) {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 9f564e2b7a14..13f7531d945d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2463,10 +2463,10 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	u32 rx_status;
+ 	u32 channel;
+ 	u32 phy_mode;
+-	u32 snr;
++	u32 snr, rssi;
+ 	u32 rate;
+ 	u16 fc;
+-	int ret;
++	int ret, i;
+ 
+ 	ret = ath10k_wmi_pull_mgmt_rx(ar, skb, &arg);
+ 	if (ret) {
+@@ -2525,6 +2525,20 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 	status->freq = ieee80211_channel_to_frequency(channel, status->band);
+ 	status->signal = snr + ATH10K_DEFAULT_NOISE_FLOOR;
++
++	BUILD_BUG_ON(ARRAY_SIZE(status->chain_signal) != ARRAY_SIZE(arg.rssi));
++
++	for (i = 0; i < ARRAY_SIZE(status->chain_signal); i++) {
++		status->chains &= ~BIT(i);
++		rssi = __le32_to_cpu(arg.rssi[i]);
++		ath10k_dbg(ar, ATH10K_DBG_MGMT, "mgmt rssi[%d]:%d\n", i, arg.rssi[i]);
++
++		if (rssi != ATH10K_INVALID_RSSI && rssi != 0) {
++			status->chain_signal[i] = ATH10K_DEFAULT_NOISE_FLOOR + rssi;
++			status->chains |= BIT(i);
++		}
++	}
++
+ 	status->rate_idx = ath10k_mac_bitrate_to_idx(sband, rate / 100);
+ 
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 74adce1dd3a9..972d53d77654 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6786,6 +6786,7 @@ struct wmi_peer_delete_resp_ev_arg {
+ 	struct wmi_mac_addr peer_addr;
+ };
+ 
++#define WMI_MGMT_RX_NUM_RSSI 4
+ struct wmi_mgmt_rx_ev_arg {
+ 	__le32 channel;
+ 	__le32 snr;
+@@ -6794,6 +6795,7 @@ struct wmi_mgmt_rx_ev_arg {
+ 	__le32 buf_len;
+ 	__le32 status; /* %WMI_RX_STATUS_ */
+ 	struct wmi_mgmt_rx_ext_info ext_info;
++	__le32 rssi[WMI_MGMT_RX_NUM_RSSI];
+ };
+ 
+ struct wmi_ch_info_ev_arg {
 -- 
-Kalle Valo
+2.23.0
+
 
 _______________________________________________
 ath10k mailing list
