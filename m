@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iV7F8-0002Ql-2L
- for ath10k@lists.infradead.org; Thu, 14 Nov 2019 05:00:31 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v2] ath10k: remove the max_sched_scan_reqs value
-Date: Thu, 14 Nov 2019 13:00:01 +0800
-Message-Id: <20191114050001.4658-1-wgong@codeaurora.org>
+ id 1iV9mP-0005Zc-He
+ for ath10k@lists.infradead.org; Thu, 14 Nov 2019 07:43:02 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: add cleanup in ath10k_sta_state()
+References: <1565903072-3948-1-git-send-email-wenwen@cs.uga.edu>
+ <20191113192821.GA3441686@builder>
+Date: Thu, 14 Nov 2019 09:42:52 +0200
+In-Reply-To: <20191113192821.GA3441686@builder> (Bjorn Andersson's message of
+ "Wed, 13 Nov 2019 11:28:21 -0800")
+Message-ID: <87eeyax5s3.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,49 +24,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Wenwen Wang <wenwen@cs.uga.edu>, govinds@codeaurora.org, jeffrey.l.hugo@gmail.com, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, "David S. Miller" <davem@davemloft.net>
 
-The struct cfg80211_wowlan of NET_DETECT WoWLAN feature share the same
-struct cfg80211_sched_scan_request together with scheduled scan request
-feature, and max_sched_scan_reqs of wiphy is only used for sched scan,
-and ath10k does not support scheduled scan request feature, so ath10k
-does not set flag NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, but ath10k
-set max_sched_scan_reqs of wiphy to a non zero value 1, then function
-nl80211_add_commands_unsplit of cfg80211 will set it support command
-NL80211_CMD_START_SCHED_SCAN because max_sched_scan_reqs is a non zero
-value, but actually ath10k not support it, then it leads a mismatch result
-for sched scan of cfg80211, then application shill found the mismatch and
-stop running case of MAC random address scan and then the case fail.
+Bjorn Andersson <bjorn.andersson@linaro.org> writes:
 
-After remove max_sched_scan_reqs value, it keeps match for sched scan and
-case of MAC random address scan pass.
+> On Thu 15 Aug 14:04 PDT 2019, Wenwen Wang wrote:
+>
+>> If 'sta->tdls' is false, no cleanup is executed, leading to memory/resource
+>> leaks, e.g., 'arsta->tx_stats'. To fix this issue, perform cleanup before
+>> go to the 'exit' label.
+>> 
+>
+> Unfortunately this patch consistently crashes all my msm8998, sdm845 and
+> qcs404 devices (running ath10k_snoc).  Upon trying to join a network the
+> WiFi firmware crashes with the following:
+>
+> [  124.315286] wlan0: authenticate with 70:3a:cb:4d:34:f3
+> [  124.334051] wlan0: send auth to 70:3a:cb:4d:34:f3 (try 1/3)
+> [  124.338828] wlan0: authenticated
+> [  124.342470] wlan0: associate with 70:3a:cb:4d:34:f3 (try 1/3)
+> [  124.347223] wlan0: RX AssocResp from 70:3a:cb:4d:34:f3 (capab=0x1011 status=0 aid=2)
+> [ 124.402535] qcom-q6v5-mss 4080000.remoteproc: fatal error received:
+> err_qdi.c:456:EF:wlan_process:1:cmnos_thread.c:3900:Asserted in
+> wlan_vdev.c:_wlan_vdev_up:3219
+>
+> Can we please revert it for v5.5?
 
-Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
-Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
+Yes, let's revert it. And thanks for sending the patch to do that:
 
-Fixes: ce834e280f2f875 ("ath10k: support NET_DETECT WoWLAN feature")
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
-v2: change commit log
- drivers/net/wireless/ath/ath10k/mac.c | 1 -
- 1 file changed, 1 deletion(-)
+https://patchwork.kernel.org/patch/11242743/
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e8bdb2ba9b18..9aa499b0527e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8902,7 +8902,6 @@ int ath10k_mac_register(struct ath10k *ar)
- 	ar->hw->wiphy->max_scan_ie_len = WLAN_SCAN_PARAMS_MAX_IE_LEN;
- 
- 	if (test_bit(WMI_SERVICE_NLO, ar->wmi.svc_map)) {
--		ar->hw->wiphy->max_sched_scan_reqs = 1;
- 		ar->hw->wiphy->max_sched_scan_ssids = WMI_PNO_MAX_SUPP_NETWORKS;
- 		ar->hw->wiphy->max_match_sets = WMI_PNO_MAX_SUPP_NETWORKS;
- 		ar->hw->wiphy->max_sched_scan_ie_len = WMI_PNO_MAX_IE_LENGTH;
 -- 
-2.23.0
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
