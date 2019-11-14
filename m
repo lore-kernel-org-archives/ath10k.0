@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iV2B9-0005ez-Lm
- for ath10k@lists.infradead.org; Wed, 13 Nov 2019 23:36:05 +0000
-Received: by mail-pf1-x442.google.com with SMTP id x28so2748159pfo.6
- for <ath10k@lists.infradead.org>; Wed, 13 Nov 2019 15:36:03 -0800 (PST)
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH] ath10k: qmi: Sleep for a while before assigning MSA memory
-Date: Wed, 13 Nov 2019 15:35:58 -0800
-Message-Id: <20191113233558.4040259-1-bjorn.andersson@linaro.org>
+ id 1iV7F8-0002Ql-2L
+ for ath10k@lists.infradead.org; Thu, 14 Nov 2019 05:00:31 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v2] ath10k: remove the max_sched_scan_reqs value
+Date: Thu, 14 Nov 2019 13:00:01 +0800
+Message-Id: <20191114050001.4658-1-wgong@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,37 +20,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
-Cc: govinds@codeaurora.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Unless we sleep for a while before transitioning the MSA memory to WLAN
-the MPSS.AT.4.0.c2-01184-SDM845_GEN_PACK-1 firmware triggers a security
-violation fairly reliably. Unforutnately recovering from this failure
-always results in the entire system freezing.
+The struct cfg80211_wowlan of NET_DETECT WoWLAN feature share the same
+struct cfg80211_sched_scan_request together with scheduled scan request
+feature, and max_sched_scan_reqs of wiphy is only used for sched scan,
+and ath10k does not support scheduled scan request feature, so ath10k
+does not set flag NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, but ath10k
+set max_sched_scan_reqs of wiphy to a non zero value 1, then function
+nl80211_add_commands_unsplit of cfg80211 will set it support command
+NL80211_CMD_START_SCHED_SCAN because max_sched_scan_reqs is a non zero
+value, but actually ath10k not support it, then it leads a mismatch result
+for sched scan of cfg80211, then application shill found the mismatch and
+stop running case of MAC random address scan and then the case fail.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+After remove max_sched_scan_reqs value, it keeps match for sched scan and
+case of MAC random address scan pass.
+
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
+Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
+
+Fixes: ce834e280f2f875 ("ath10k: support NET_DETECT WoWLAN feature")
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/qmi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+v2: change commit log
+ drivers/net/wireless/ath/ath10k/mac.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 637f83ef65f8..a0ba07b85362 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -773,6 +773,13 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
- 	if (ret)
- 		return;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e8bdb2ba9b18..9aa499b0527e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8902,7 +8902,6 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ar->hw->wiphy->max_scan_ie_len = WLAN_SCAN_PARAMS_MAX_IE_LEN;
  
-+	/*
-+	 * HACK: sleep for a while inbetween receiving the msa info response
-+	 * and the XPU update to prevent SDM845 from crashing due to a security
-+	 * violation, when running MPSS.AT.4.0.c2-01184-SDM845_GEN_PACK-1.
-+	 */
-+	msleep(20);
-+
- 	ret = ath10k_qmi_setup_msa_permissions(qmi);
- 	if (ret)
- 		return;
+ 	if (test_bit(WMI_SERVICE_NLO, ar->wmi.svc_map)) {
+-		ar->hw->wiphy->max_sched_scan_reqs = 1;
+ 		ar->hw->wiphy->max_sched_scan_ssids = WMI_PNO_MAX_SUPP_NETWORKS;
+ 		ar->hw->wiphy->max_match_sets = WMI_PNO_MAX_SUPP_NETWORKS;
+ 		ar->hw->wiphy->max_sched_scan_ie_len = WMI_PNO_MAX_IE_LENGTH;
 -- 
 2.23.0
 
