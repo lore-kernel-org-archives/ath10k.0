@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x333.google.com ([2607:f8b0:4864:20::333])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iVNxn-00080w-6N
- for ath10k@lists.infradead.org; Thu, 14 Nov 2019 22:51:44 +0000
-Received: by mail-ot1-x333.google.com with SMTP id m15so6385241otq.7
- for <ath10k@lists.infradead.org>; Thu, 14 Nov 2019 14:51:42 -0800 (PST)
+ id 1iVVYe-0000Sr-8d
+ for ath10k@lists.infradead.org; Fri, 15 Nov 2019 06:58:18 +0000
 MIME-Version: 1.0
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Thu, 14 Nov 2019 23:51:41 +0100
-Message-ID: <CAKR_QVLaRKOc0OapvhppCZzYYO+w8h8t+B1amiWGGEiH6FmnjQ@mail.gmail.com>
-Subject: [BUG] ath10k: CPU scaling related performance issue
+Subject: Re: [PATCH] ath10k: Revert "ath10k: add cleanup in ath10k_sta_state()"
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20191113202644.3673049-1-bjorn.andersson@linaro.org>
+References: <20191113202644.3673049-1-bjorn.andersson@linaro.org>
+Message-Id: <20191115065815.59CF46013C@smtp.codeaurora.org>
+Date: Fri, 15 Nov 2019 06:58:15 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: wenwen@cs.uga.edu, jeffrey.l.hugo@gmail.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 
-network topology:
-80211g uplink - 30Mbps is brought into litebeam-5AC that is running AP
-(WDS) mode on 5GHz radio. client device is a laptop (dualcore 2.4GHz)
-running QCA9880 card on ubuntu 10.04 with kernel 4.9.
+Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
 
-description:
-booting ubuntu defaults to performance governor (personal
-modification), opening speedtest.net upon boot and measuring
-throughput gets me about 25Mbps download speed.
-setting lowest CPU scaling freq of both cores (600MHz) and repeating
-the speedtest gets about 29-30Mbps in download. i have verified these
-speed differences while downloading several iso files.
+> This reverts commit 334f5b61a6f29834e881923b98d1e27e5ce9620d.
+> 
+> This caused ath10k_snoc on Qualcomm MSM8998, SDM845 and QCS404 platforms to
+> trigger an assert in the firmware:
+> 
+> err_qdi.c:456:EF:wlan_process:1:cmnos_thread.c:3900:Asserted in wlan_vdev.c:_wlan_vdev_up:3219
+> 
+> Revert the offending commit for now.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-confirmation:
-identical results have been observed on a live booted ubuntu 19.10
-identical results have been observed on ubuntu 10.04, but using
-ethernet connection from archer c7 that was connected in client mode
-to litebeam5
+Patch applied to ath-next branch of ath.git, thanks.
 
-ruled out so far:
--using regular AP-STA instead of APWDS-STAWDS interfaces does not change a thing
--switching to Ben's CT driver and firmware had no impact, the bug is
-present with it too
--using different card QCA9862/QCA9880 behavior is the same
+f4fe2e53349f ath10k: Revert "ath10k: add cleanup in ath10k_sta_state()"
+
+-- 
+https://patchwork.kernel.org/patch/11242743/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
