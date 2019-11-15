@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail.aperture-lab.de ([138.201.29.205])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iVXVQ-00009x-7B
- for ath10k@lists.infradead.org; Fri, 15 Nov 2019 09:03:05 +0000
-From: Zhi Chen <zhichen@codeaurora.org>
-Subject: [PATCH RFC,
- v2] Revert "ath10k: fix DMA related firmware crashes on multiple
- devices"
-Date: Fri, 15 Nov 2019 17:02:53 +0800
-Message-Id: <1573808573-12159-1-git-send-email-zhichen@codeaurora.org>
+ id 1iVZHS-0000Ue-8i
+ for ath10k@lists.infradead.org; Fri, 15 Nov 2019 10:56:48 +0000
+From: =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: [PATCH net-next v2] ath10k: fix RX of frames with broken FCS in
+ monitor mode
+Date: Fri, 15 Nov 2019 11:56:12 +0100
+Message-Id: <20191115105612.8531-1-linus.luessing@c0d3.blue>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,50 +17,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Zhi Chen <zhichen@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Ben Greear <greearb@candelatech.com>, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
-PCIe hung issue was observed on multiple platforms. The issue was reproduced
-when DUT was configured as AP and associated with 50+ STAs.
-
-With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
-issue happened. It broke PCIe spec and caused PCIe stuck.
-
-Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
-         QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
-         Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
-
-Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
----
-v2: revert 10.4 only because old chips have different AXI RD/WR CFG
----
- drivers/net/wireless/ath/ath10k/hw.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 35a3623..59a9a58 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -813,7 +813,7 @@ ath10k_is_rssi_enable(struct ath10k_hw_params *hw,
- 
- #define TARGET_10_4_TX_DBG_LOG_SIZE		1024
- #define TARGET_10_4_NUM_WDS_ENTRIES		32
--#define TARGET_10_4_DMA_BURST_SIZE		0
-+#define TARGET_10_4_DMA_BURST_SIZE		1
- #define TARGET_10_4_MAC_AGGR_DELIM		0
- #define TARGET_10_4_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK 1
- #define TARGET_10_4_VOW_CONFIG			0
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RnJvbTogTGludXMgTMO8c3NpbmcgPGxsQHNpbW9ud3VuZGVybGljaC5kZT4KClNvIGZhciwgZnJh
+bWVzIHdlcmUgZm9yd2FyZGVkIHJlZ2FyZGxlc3Mgb2YgdGhlIEZDUyBjb3JyZWN0bmVzcyBsZWFk
+aW5nCnRvIHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMgbGlzdGVuaW5nIG9uIHRoZSBtb25pdG9yIG1v
+ZGUgaW50ZXJmYWNlIHRvCnJlY2VpdmUgcG90ZW50aWFsbHkgYnJva2VuIGZyYW1lcywgZXZlbiB3
+aXRoIHRoZSAiZmNzZmFpbCIgZmxhZyB1bnNldC4KCkJ5IGRlZmF1bHQsIHdpdGggdGhlICJmY3Nm
+YWlsIiBmbGFnIG9mIGEgbW9uaXRvciBtb2RlIGludGVyZmFjZQp1bnNldCwgZnJhbWVzIHdpdGgg
+RkNTIGVycm9ycyBzaG91bGQgYmUgZHJvcHBlZC4gV2l0aCB0aGlzIHBhdGNoLCB0aGUKZmNzZmFp
+bCBmbGFnIGlzIHRha2VuIGludG8gYWNjb3VudCBjb3JyZWN0bHkuCgpDYzogU2ltb24gV3VuZGVy
+bGljaCA8c3dAc2ltb253dW5kZXJsaWNoLmRlPgpTaWduZWQtb2ZmLWJ5OiBMaW51cyBMw7xzc2lu
+ZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgotLS0KVGhpcyB3YXMgdGVzdGVkIG9uIGFuIE9wZW4g
+TWVzaCBBNDEgZGV2aWNlLCBmZWF0dXJpbmcgYSBRQ0E0MDE5LiBBbmQKd2l0aCB0aGlzIGZpcm13
+YXJlOgoKaHR0cHM6Ly93d3cuY2FuZGVsYXRlY2guY29tL2Rvd25sb2Fkcy9hdGgxMGstNDAxOS0x
+MC00Yi9maXJtd2FyZS01LWN0LWZ1bGwtY29tbXVuaXR5LTEyLmJpbi1sZWRlLjAxMQoKQnV0IGZy
+b20gbG9va2luZyBhdCB0aGUgY29kZSBpdCBzZWVtcyB0aGF0IHRoZSB2YW5pbGxhIGF0aDEwayBo
+YXMgdGhlCnNhbWUgaXNzdWUsIHRoZXJlZm9yZSBzdWJtaXR0aW5nIGl0IGhlcmUuCgpDaGFuZ2Vs
+b2cgdjI6CgoqIHJlbW92ZWQgdGhlIHNwaW5sb2NrIGFzIG9ubHkgYSAzMiBiaXQgc3RhdGlzdGlj
+cyBjb3VudGVyIGlzCiAgaW5jcmVtZW50ZWQKCkNoYW5nZWxvZyBSRkMtPnYxOgoKKiByZW1vdmVk
+ICJhci0+bW9uaXRvciIgY2hlY2sKKiBhZGRlZCBhIGRlYnVnIGNvdW50ZXIKCi0tLQoKIGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oICAgfCAxICsKIGRyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYyAgfCAyICsrCiBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2h0dF9yeC5jIHwgNyArKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDEwIGluc2Vy
+dGlvbnMoKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2Nv
+cmUuaCBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCmluZGV4IGFmNjhl
+YjVkMDc3Ni4uZDQ0NTQ4MmZhOTQ1IDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2NvcmUuaAorKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2Nv
+cmUuaApAQCAtMTE4MCw2ICsxMTgwLDcgQEAgc3RydWN0IGF0aDEwayB7CiAKIAlzdHJ1Y3Qgewog
+CQkvKiBwcm90ZWN0ZWQgYnkgZGF0YV9sb2NrICovCisJCXUzMiByeF9jcmNfZXJyX2Ryb3A7CiAJ
+CXUzMiBmd19jcmFzaF9jb3VudGVyOwogCQl1MzIgZndfd2FybV9yZXNldF9jb3VudGVyOwogCQl1
+MzIgZndfY29sZF9yZXNldF9jb3VudGVyOwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway9kZWJ1Zy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9k
+ZWJ1Zy5jCmluZGV4IGJkMmI1NjI4Zjg1MC4uNWU0Y2QyOTY2ZTZmIDEwMDY0NAotLS0gYS9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMKKysrIGIvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCkBAIC0xMDk0LDYgKzEwOTQsNyBAQCBzdGF0aWMgY29u
+c3QgY2hhciBhdGgxMGtfZ3N0cmluZ3Nfc3RhdHNbXVtFVEhfR1NUUklOR19MRU5dID0gewogCSJk
+X3J0c19nb29kIiwKIAkiZF90eF9wb3dlciIsIC8qIGluIC41IGRiTSBJIHRoaW5rICovCiAJImRf
+cnhfY3JjX2VyciIsIC8qIGZjc19iYWQgKi8KKwkiZF9yeF9jcmNfZXJyX2Ryb3AiLCAvKiBmcmFt
+ZSB3aXRoIEZDUyBlcnJvciwgZHJvcHBlZCBsYXRlIGluIGtlcm5lbCAqLwogCSJkX25vX2JlYWNv
+biIsCiAJImRfdHhfbXBkdXNfcXVldWVkIiwKIAkiZF90eF9tc2R1X3F1ZXVlZCIsCkBAIC0xMTkz
+LDYgKzExOTQsNyBAQCB2b2lkIGF0aDEwa19kZWJ1Z19nZXRfZXRfc3RhdHMoc3RydWN0IGllZWU4
+MDIxMV9odyAqaHcsCiAJZGF0YVtpKytdID0gcGRldl9zdGF0cy0+cnRzX2dvb2Q7CiAJZGF0YVtp
+KytdID0gcGRldl9zdGF0cy0+Y2hhbl90eF9wb3dlcjsKIAlkYXRhW2krK10gPSBwZGV2X3N0YXRz
+LT5mY3NfYmFkOworCWRhdGFbaSsrXSA9IGFyLT5zdGF0cy5yeF9jcmNfZXJyX2Ryb3A7CiAJZGF0
+YVtpKytdID0gcGRldl9zdGF0cy0+bm9fYmVhY29uczsKIAlkYXRhW2krK10gPSBwZGV2X3N0YXRz
+LT5tcGR1X2VucXVlZDsKIAlkYXRhW2krK10gPSBwZGV2X3N0YXRzLT5tc2R1X2VucXVlZDsKZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMgYi9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCmluZGV4IDlmMGU3YjQ5NDNlYy4u
+ODEzOWM5Y2VhMWQ4IDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2h0dF9yeC5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMK
+QEAgLTEyODUsNiArMTI4NSwxMyBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfcHJvY2Vzc19yeChzdHJ1
+Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikKIAogCXN0YXR1cyA9IElFRUU4MDIx
+MV9TS0JfUlhDQihza2IpOwogCisJaWYgKCEoYXItPmZpbHRlcl9mbGFncyAmIEZJRl9GQ1NGQUlM
+KSAmJgorCSAgICBzdGF0dXMtPmZsYWcgJiBSWF9GTEFHX0ZBSUxFRF9GQ1NfQ1JDKSB7CisJCWFy
+LT5zdGF0cy5yeF9jcmNfZXJyX2Ryb3ArKzsKKwkJZGV2X2tmcmVlX3NrYl9hbnkoc2tiKTsKKwkJ
+cmV0dXJuOworCX0KKwogCWF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfREFUQSwKIAkJICAgInJ4
+IHNrYiAlcEsgbGVuICV1IHBlZXIgJXBNICVzICVzIHNuICV1ICVzJXMlcyVzJXMlcyAlc3JhdGVf
+aWR4ICV1IHZodF9uc3MgJXUgZnJlcSAldSBiYW5kICV1IGZsYWcgMHgleCBmY3MtZXJyICVpIG1p
+Yy1lcnIgJWkgYW1zZHUtbW9yZSAlaVxuIiwKIAkJICAgc2tiLAotLSAKMi4yNC4wLnJjMgoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
