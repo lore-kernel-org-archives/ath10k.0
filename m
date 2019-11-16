@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iW0IX-0002UZ-QP
- for ath10k@lists.infradead.org; Sat, 16 Nov 2019 15:47:43 +0000
+ id 1iW0Ly-0005kY-V6
+ for ath10k@lists.infradead.org; Sat, 16 Nov 2019 15:51:16 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 011/150] ath10k: allocate small size dma memory
- in ath10k_pci_diag_write_mem
-Date: Sat, 16 Nov 2019 10:45:09 -0500
-Message-Id: <20191116154729.9573-11-sashal@kernel.org>
-In-Reply-To: <20191116154729.9573-1-sashal@kernel.org>
-References: <20191116154729.9573-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 08/99] ath10k: allocate small size dma memory in
+ ath10k_pci_diag_write_mem
+Date: Sat, 16 Nov 2019 10:49:31 -0500
+Message-Id: <20191116155103.10971-8-sashal@kernel.org>
+In-Reply-To: <20191116155103.10971-1-sashal@kernel.org>
+References: <20191116155103.10971-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -53,11 +53,11 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d790ea20b95d9..89fbd03db2987 100644
+index 25b8d501d437e..176cf4fef6296 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
 @@ -1039,10 +1039,9 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
  	int ret = 0;
  	u32 *buf;
 -	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
