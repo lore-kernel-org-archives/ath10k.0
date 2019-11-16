@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]
- helo=us-smtp-1.mimecast.com)
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]
+ helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iVwft-0006di-RE
- for ath10k@lists.infradead.org; Sat, 16 Nov 2019 11:55:35 +0000
-Received: by mail-lj1-f198.google.com with SMTP id x24so2122878ljj.4
- for <ath10k@lists.infradead.org>; Sat, 16 Nov 2019 03:55:26 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH v9 4/4] mac80211: Use Airtime-based Queue Limits (AQL) on
- packet dequeue
-In-Reply-To: <CA+iem5tF+TN-osfGxu=EU5Xt1Uq+PcKgBVaoAmZY3a3JzS5JzQ@mail.gmail.com>
-References: <157382403672.580235.12525941420808058808.stgit@toke.dk>
- <157382404118.580235.14216392299709793599.stgit@toke.dk>
- <CA+iem5tF+TN-osfGxu=EU5Xt1Uq+PcKgBVaoAmZY3a3JzS5JzQ@mail.gmail.com>
-Date: Sat, 16 Nov 2019 12:55:23 +0100
-Message-ID: <87y2wgjas4.fsf@toke.dk>
+ id 1iVwhf-0006of-QO
+ for ath10k@lists.infradead.org; Sat, 16 Nov 2019 11:57:25 +0000
+Received: by mail-lf1-f70.google.com with SMTP id m2so3970938lfo.20
+ for <ath10k@lists.infradead.org>; Sat, 16 Nov 2019 03:57:20 -0800 (PST)
+Subject: [PATCH v10 0/4] Add Airtime Queue Limits (AQL) to mac80211
+From: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Date: Sat, 16 Nov 2019 12:57:16 +0100
+Message-ID: <157390543688.662247.3735146484299260207.stgit@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,60 +19,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kan Yan <kyan@google.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Kan Yan <kyan@google.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Kevin Hayes <kevinhayes@google.com>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Lorenzo Bianconi <lorenzo@kernel.org>, Felix Fietkau <nbd@nbd.name>
 
-Kan Yan <kyan@google.com> writes:
-
->> +static inline u16
->> +ieee80211_info_set_tx_time_est(struct ieee80211_tx_info *info, u16 tx_time_est)
->> +{
->> +       /* We only have 10 bits in tx_time_est, so store airtime
->> +        * in increments of 4us and clamp the maximum to 2**12-1
->> +        */
->> +       info->tx_time_est = min_t(u16, tx_time_est, 4095) >> 2;
->> +       return info->tx_time_est;
->> +}
->> +
->> +static inline u16
->> +ieee80211_info_get_tx_time_est(struct ieee80211_tx_info *info)
->> +{
->> +       return info->tx_time_est << 2;
->> +}
->> +
->
-> set_tx_time_est() returns airtime in different units (4us) than
-> get_tx_time_est(), this will cause the pending_airtime out of whack.
-
-Huh, you're quite right; oops! I meant to shift that back before
-returning. Will fix.
-
-> Given the fact that AQL is only tested in very limited platforms,
-> should we set the default to disabled by removing this change in the
-> next update?
->
-> -       local->airtime_flags = AIRTIME_USE_TX | AIRTIME_USE_RX;
-> +
-> +       local->airtime_flags = AIRTIME_USE_TX |
-> +                              AIRTIME_USE_RX |
-> +                              AIRTIME_USE_AQL;
-> +       local->aql_threshold = IEEE80211_AQL_THRESHOLD;
-> +       atomic_set(&local->aql_total_pending_airtime, 0);
-
-Well, we have the whole -rc series to get more testing in if we merge it
-as-is. It's up to the maintainers, of course, but I would be in favour
-of merging as-is, then optionally backing out the default before the
-final release if problems do turn up. But I would hope that the limits
-are sufficiently conservative that it would not result in any problems :)
-
--Toke
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhpcyBzZXJpZXMgaXMgYSBmaXJzdCBhdHRlbXB0IGF0IHBvcnRpbmcgdGhlIEFpcnRpbWUgUXVl
+dWUgTGltaXRzIGNvbmNlcHQgZnJvbQp0aGUgb3V0LW9mLXRyZWUgYXRoMTBrIGltcGxlbWVudGF0
+aW9uWzBdIHRvIG1hYzgwMjExLiBUaGlzIHZlcnNpb24gdGFrZXMgS2FuJ3MKcGF0Y2ggdG8gZG8g
+dGhlIHRocm90dGxpbmcgaW4gbWFjODAyMTEsIGFuZCByZXBsYWNlcyB0aGUgZHJpdmVyIEFQSSB3
+aXRoIHRoZQptZWNoYW5pc20gZnJvbSB0aGUgcHJldmlvdXMgdmVyc2lvbiBvZiBteSBzZXJpZXMs
+IHdoaWNoIGluc3RlYWQgY2FsY3VsYXRlZCB0aGUKZXhwZWN0ZWQgYWlydGltZSBhdCBkZXF1ZXVl
+IHRpbWUgaW5zaWRlIG1hYzgwMjExLCBzdG9yaW5nIGl0IGluIHRoZSBTS0IgY2IKZmllbGQuCgpU
+aGlzIHNlcmllcyBhbHNvIGltcG9ydHMgRmVsaXgnIGFpcnRpbWUgY2FsY3VsYXRpb24gY29kZSBm
+cm9tIG10NzYgaW50bwptYWM4MDIxMSwgYWRqdXN0aW5nIHRoZSBBUEkgc28gaXQgY2FuIGJlIHVz
+ZWQgZnJvbSBUWCBkZXF1ZXVlLCBieSBleHRyYWN0aW5nIHRoZQpsYXRlc3QgVFggcmF0ZSBmcm9t
+IHRoZSB0eF9zdGF0cyBzdHJ1Y3R1cmUga2VwdCBmb3IgZWFjaCBzdGF0aW9uLgoKQXMgYmVmb3Jl
+LCBJJ3ZlIG9ubHkgY29tcGlsZSB0ZXN0ZWQgdGhpcyAobGFja2luZyB0aGUgcHJvcGVyIGhhcmR3
+YXJlIHRvIGRvIG1vcmUKdGVzdGluZyksIGJ1dCBLYW4gaGFzIHRlc3RlZCBpbiBvbiB0aGUgUUNB
+OTk4NCBwbGF0Zm9ybS4KClRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgaW4gbXkgZ2l0IHJl
+cG8gaGVyZToKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
+dG9rZS9saW51eC5naXQvbG9nLz9oPW1hYzgwMjExLWFxbC0xMAoKWzBdIGh0dHBzOi8vY2hyb21p
+dW0tcmV2aWV3Lmdvb2dsZXNvdXJjZS5jb20vYy9jaHJvbWl1bW9zL3RoaXJkX3BhcnR5L2tlcm5l
+bC8rLzE3MDMxMDUvNwoKQ2hhbmdlbG9nOgoKdjEwOgogIC0gRml4IHJldHVybiB2YWx1ZSBmcm9t
+IGllZWU4MDIxMV9pbmZvX3NldF90eF90aW1lX2VzdCgpCgp2OToKICAtIFVzZSBhdG9taWNfc3Vi
+X3JldHVybigpIGluc3RlYWQgb2Ygc2VwYXJhdGUgYXRvbWljX3N1YigpIGFuZCBhdG9taWNfcmVh
+ZCgpCiAgLSBBZGQgZ2V0dGVyL3NldHRlciBmb3IgdHhfdGltZV9lc3QKICAtIFVzZSBnZXRfc3Rh
+X2luZm9fYnlfYWRkcnMoKSB0byBmaW5kIHRoZSBzdGF0aW9uIGluCiAgICBpZWVlODAyMTFfcmVw
+b3J0X3VzZWRfc2tiKCkKICAtIEludGVncmF0ZSBldmVyeXRoaW5nIGJhY2sgaW50byBvbmUgc2Vy
+aWVzCgp2ODoKICAtIEluY2x1ZGVzIFRva2UncyB2NyB2ZXJzaW9uIG9mICJtYWM4MDIxMTogSW1w
+b3J0IGFpcnRpbWUgY2FsY3VsYXRpb24gY29kZSBmcm9tIG10NzYiCiAgLSBEb24ndCBjbG9iYmVy
+IHN0YSdzIGN1c3RvbWl6ZWQgcXVldWUgbGltaXQgd2hlbiBjb25maWd1cmluZyB0aGUgZGVmYXVs
+dCB2aWEgZGVidWdmcwogIC0gRml4IGEgcmFjaW5nIGNvbmRpdGlvbiB3aGVuIHJlc2V0IGFxbF90
+eF9wZW5kaW5nLgoKdjc6CiAgLSBGaXggYXFsX3RvdGFsX3BlbmRpbmdfYWlydGltZSB1bmRlcmZs
+b3cgZHVlIHRvIGluc3VmZmljaWVudCBsb2NraW5nLgoKdjY6CiAgLSBGaXggc3RhIGxvb2t1cCBp
+biBpZWVlODAyMTFfcmVwb3J0X3VzZWRfc2tiKCkuCiAgLSBNb3ZlIGNhbGwgdG8gaWVlZTgwMjEx
+X3N0YV91cGRhdGVfcGVuZGluZ19haXJ0aW1lKCkgdG8gYSBiaXQgbGF0ZXIgaW4KICAgIF9faWVl
+ZTgwMjExX3R4X3N0YXR1cygpIAp2NToKICAtIEFkZCBtaXNzaW5nIGV4cG9ydCBvZiBpZWVlODAy
+MTFfY2FsY19yeF9haXJ0aW1lKCkgYW5kIG1ha2UKICAgIGllZWU4MDIxMV9jYWxjX3R4X2FpcnRp
+bWVfcmF0ZSgpIHN0YXRpYyAoa2J1aWxkYm90KS4KICAtIFVzZSBza2JfZ2V0X3F1ZXVlX21hcHBp
+bmcoKSB0byBnZXQgdGhlIEFDIGZyb20gdGhlIHNrYi4KICAtIFRha2UgYmFzaWMgcmF0ZSBjb25m
+aWd1cmF0aW9uIGZvciB0aGUgQlNTIGludG8gYWNjb3VudCB3aGVuIGNhbGN1bGF0aW5nCiAgICBt
+dWx0aWNhc3QgcmF0ZS4KdjQ6CiAgLSBGaXggY2FsY3VsYXRpb24gdGhhdCBjbGFtcHMgdGhlIG1h
+eGltdW0gYWlydGltZSB0byBmaXQgaW50byAxMCBiaXRzCiAgLSBJbmNvcnBvcmF0ZSBSaWNoIEJy
+b3duJ3Mgbml0cyBmb3IgdGhlIGNvbW1pdCBtZXNzYWdlIGluIEthbidzIHBhdGNoCiAgLSBBZGQg
+ZmV3ZXIgbG9jYWwgdmFyaWFibGVzIHRvIGllZWU4MDIxMV90eF9kZXF1ZXVlKCkKdjM6CiAgLSBN
+b3ZlIHRoZSB0eF90aW1lX2VzdCBmaWVsZCBzbyBpdCdzIHNoYXJlZCB3aXRoIGFja19mcmFtZV9p
+ZCwgYW5kIHVzZSB1bml0cwogICAgb2YgNHVzIGZvciB0aGUgdmFsdWUgc3RvcmVkIGluIGl0Lgog
+IC0gTW92ZSB0aGUgYWRkaXRpb24gb2YgdGhlIEV0aGVybmV0IGhlYWRlciBzaXplIGludG8gaWVl
+ZTgwMjExX2NhbGNfZXhwZWN0ZWRfdHhfYWlydGltZSgpCnYyOgogIC0gSW50ZWdyYXRlIEthbidz
+IGFwcHJvYWNoIHRvIGFpcnRpbWUgdGhyb3R0bGluZy4KICAtIEhvcGVmdWxseSBmaXggdGhlIGNi
+IHN0cnVjdCBhbGlnbm1lbnQgb24gYmlnLWVuZGlhbiBhcmNoaXRlY3R1cmVzLgoKLS0tCgpLYW4g
+WWFuICgxKToKICAgICAgbWFjODAyMTE6IEltcGxlbWVudCBBaXJ0aW1lLWJhc2VkIFF1ZXVlIExp
+bWl0IChBUUwpCgpUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gKDMpOgogICAgICBtYWM4MDIxMTog
+QWRkIG5ldyBzdGFfaW5mbyBnZXR0ZXIgYnkgc3RhL3ZpZiBhZGRycwogICAgICBtYWM4MDIxMTog
+SW1wb3J0IGFpcnRpbWUgY2FsY3VsYXRpb24gY29kZSBmcm9tIG10NzYKICAgICAgbWFjODAyMTE6
+IFVzZSBBaXJ0aW1lLWJhc2VkIFF1ZXVlIExpbWl0cyAoQVFMKSBvbiBwYWNrZXQgZGVxdWV1ZQoK
+CiBpbmNsdWRlL25ldC9jZmc4MDIxMS5oICAgICB8ICAgIDcgKwogaW5jbHVkZS9uZXQvbWFjODAy
+MTEuaCAgICAgfCAgIDU3ICsrKysKIG5ldC9tYWM4MDIxMS9NYWtlZmlsZSAgICAgIHwgICAgMyAK
+IG5ldC9tYWM4MDIxMS9haXJ0aW1lLmMgICAgIHwgIDU5NyArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKwogbmV0L21hYzgwMjExL2RlYnVnZnMuYyAgICAgfCAgIDg1
+ICsrKysrKwogbmV0L21hYzgwMjExL2RlYnVnZnNfc3RhLmMgfCAgIDQzICsrLQogbmV0L21hYzgw
+MjExL2llZWU4MDIxMV9pLmggfCAgICA4ICsKIG5ldC9tYWM4MDIxMS9tYWluLmMgICAgICAgIHwg
+ICAxMCArCiBuZXQvbWFjODAyMTEvc3RhX2luZm8uYyAgICB8ICAgNTggKysrKwogbmV0L21hYzgw
+MjExL3N0YV9pbmZvLmggICAgfCAgIDExICsKIG5ldC9tYWM4MDIxMS9zdGF0dXMuYyAgICAgIHwg
+ICAzNiArKy0KIG5ldC9tYWM4MDIxMS90eC5jICAgICAgICAgIHwgICA2NSArKysrKwogMTIgZmls
+ZXMgY2hhbmdlZCwgOTU3IGluc2VydGlvbnMoKyksIDIzIGRlbGV0aW9ucygtKQogY3JlYXRlIG1v
+ZGUgMTAwNjQ0IG5ldC9tYWM4MDIxMS9haXJ0aW1lLmMKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
