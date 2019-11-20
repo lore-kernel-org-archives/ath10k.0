@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x22b.google.com ([2607:f8b0:4864:20::22b])
+Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iX1g6-0007be-RY
- for ath10k@lists.infradead.org; Tue, 19 Nov 2019 11:28:17 +0000
-Received: by mail-oi1-x22b.google.com with SMTP id y194so18586128oie.4
- for <ath10k@lists.infradead.org>; Tue, 19 Nov 2019 03:28:13 -0800 (PST)
+ id 1iXJTS-0005v2-Gs
+ for ath10k@lists.infradead.org; Wed, 20 Nov 2019 06:28:23 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v2 3/3] mmc: core: Re-work HW reset for SDIO cards
+References: <20191109103046.26445-1-ulf.hansson@linaro.org>
+ <20191109103046.26445-4-ulf.hansson@linaro.org>
+ <CAD=FV=VHReD5qnvcQLHvfgKHnHLbfDLZHwXtY-LV5uy_VCYpPA@mail.gmail.com>
+ <CAPDyKFrCyJBz2=RzKPxqn0FSEq500=dEDsTUWYZeoFKWvSRAdA@mail.gmail.com>
+Date: Wed, 20 Nov 2019 06:28:19 +0000
+In-Reply-To: <CAPDyKFrCyJBz2=RzKPxqn0FSEq500=dEDsTUWYZeoFKWvSRAdA@mail.gmail.com>
+ (Ulf Hansson's message of "Tue, 12 Nov 2019 13:19:55 +0100")
+Message-ID: <0101016e877f56b2-1dd9e926-2170-4c9d-bb4b-0116d39e5f96-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKR_QVLaRKOc0OapvhppCZzYYO+w8h8t+B1amiWGGEiH6FmnjQ@mail.gmail.com>
-References: <CAKR_QVLaRKOc0OapvhppCZzYYO+w8h8t+B1amiWGGEiH6FmnjQ@mail.gmail.com>
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Tue, 19 Nov 2019 12:28:12 +0100
-Message-ID: <CAKR_QVKxoy+2Nt0SB42nm2Js-V4Cy8PdqEO3w2-xJUt7yR8bJQ@mail.gmail.com>
-Subject: Re: [BUG] ath10k: CPU scaling related performance issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +26,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>
+To: Ulf Hansson <ulf.hansson@linaro.org>, Wen Gong <wgong@codeaurora.org>
+Cc: Tony Lindgren <tony@atomide.com>, linux-wireless <linux-wireless@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, Linux MMC List <linux-mmc@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, Matthias Kaehlcke <mka@chromium.org>, Eyal Reizer <eyalreizer@gmail.com>
 
-quick update:
++ wen, ath10k
 
-could not reproduce this on another machine; setting all cores to
-lowest state (1.40GHz) and measuring at speedtest gives about 25Mbps
-(ubuntu 19.10 live boot defaults), same rate is measured on win10 or
-any other ubuntu version with ondemand governor
+Ulf Hansson <ulf.hansson@linaro.org> writes:
 
-the machine this has been discovered on is compaq 6735b (it is running
-turion x2 ZM87 CPU)
-i can reproduce download results difference with ath10k card
-connecting to an ath9k 2.4GHz AP directly (without litebeam as bridge)
-
-one more thing discovered: while testing this on ISP's bandwidth test
-site the dl speed increase was only reproducible when loading SSL
-version of the site
-
-On 14/11/2019, Tom Psyborg <pozega.tomislav@gmail.com> wrote:
-> network topology:
-> 80211g uplink - 30Mbps is brought into litebeam-5AC that is running AP
-> (WDS) mode on 5GHz radio. client device is a laptop (dualcore 2.4GHz)
-> running QCA9880 card on ubuntu 10.04 with kernel 4.9.
+> On Tue, 12 Nov 2019 at 01:33, Doug Anderson <dianders@chromium.org> wrote:
+>>
+>> Hi,
+>>
+>> On Sat, Nov 9, 2019 at 2:31 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>> >
+>> > diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+>> > index 6f8342702c73..abf8f5eb0a1c 100644
+>> > --- a/drivers/mmc/core/core.c
+>> > +++ b/drivers/mmc/core/core.c
+>> > @@ -1469,8 +1469,7 @@ void mmc_detach_bus(struct mmc_host *host)
+>> >         mmc_bus_put(host);
+>> >  }
+>> >
+>> > -static void _mmc_detect_change(struct mmc_host *host, unsigned long delay,
+>> > -                               bool cd_irq)
+>> > +void _mmc_detect_change(struct mmc_host *host, unsigned long delay, bool cd_irq)
+>> >  {
+>> >         /*
+>> >          * If the device is configured as wakeup, we prevent a new sleep for
+>> > @@ -2129,7 +2128,7 @@ int mmc_hw_reset(struct mmc_host *host)
+>> >         ret = host->bus_ops->hw_reset(host);
+>> >         mmc_bus_put(host);
+>> >
+>> > -       if (ret)
+>> > +       if (ret < 0)
+>> >                 pr_warn("%s: tried to HW reset card, got error %d\n",
+>> >                         mmc_hostname(host), ret);
+>>
+>> Other callers besides marvell need to be updated?  In theory only SDIO
+>> should have positive return values so I guess we don't care about the
+>> caller in drivers/mmc/core/block.c, right?
 >
-> description:
-> booting ubuntu defaults to performance governor (personal
-> modification), opening speedtest.net upon boot and measuring
-> throughput gets me about 25Mbps download speed.
-> setting lowest CPU scaling freq of both cores (600MHz) and repeating
-> the speedtest gets about 29-30Mbps in download. i have verified these
-> speed differences while downloading several iso files.
+> Correct, but maybe I should add some more information about that in a
+> function header of mmc_hw_reset(). Let me consider doing that as a
+> change on top.
 >
-> confirmation:
-> identical results have been observed on a live booted ubuntu 19.10
-> identical results have been observed on ubuntu 10.04, but using
-> ethernet connection from archer c7 that was connected in client mode
-> to litebeam5
+>>  What about:
+>>
+>> drivers/net/wireless/ath/ath10k/sdio.c
+>>
+>> ...I guess I don't know if there is more than one function probed
+>> there.  Maybe there's not and thus we're fine here too?
 >
-> ruled out so far:
-> -using regular AP-STA instead of APWDS-STAWDS interfaces does not change a
-> thing
-> -switching to Ben's CT driver and firmware had no impact, the bug is
-> present with it too
-> -using different card QCA9862/QCA9880 behavior is the same
+> Well, honestly I don't know.
 >
+> In any case, that would mean the driver is broken anyways and needs to
+> be fixed. At least that's my approach to doing this change.
+
+Wen, does QCA6174 or QCA9377 SDIO devices have other SDIO functions, for
+example bluetooth? I'm just wondering how should we handle this in
+ath10k.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
