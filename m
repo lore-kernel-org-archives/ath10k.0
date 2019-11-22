@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186])
+Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iXi6f-0000Ic-Rt
- for ath10k@lists.infradead.org; Thu, 21 Nov 2019 08:46:31 +0000
+ id 1iY5VJ-0000mn-Rk
+ for ath10k@lists.infradead.org; Fri, 22 Nov 2019 09:45:32 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH RFC,
+ v2] Revert "ath10k: fix DMA related firmware crashes on multiple
+ devices"
+References: <1573808573-12159-1-git-send-email-zhichen@codeaurora.org>
+Date: Fri, 22 Nov 2019 09:45:27 +0000
+In-Reply-To: <1573808573-12159-1-git-send-email-zhichen@codeaurora.org> (Zhi
+ Chen's message of "Fri, 15 Nov 2019 17:02:53 +0800")
+Message-ID: <0101016e9280880c-721d1923-ec22-463b-8945-d219f88c915b-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-Date: Thu, 21 Nov 2019 08:46:27 +0000
-From: govinds@codeaurora.org
-Subject: Re: [PATCH v2 1/2] dt: bindings: add dt entry flag to skip SCM call
- for msa region
-In-Reply-To: <20191114191640.GA8426@bogus>
-References: <20191111042508.12628-1-govinds@codeaurora.org>
- <20191111042508.12628-2-govinds@codeaurora.org>
- <20191114191640.GA8426@bogus>
-Message-ID: <0101016e8d2426fc-31499903-e1a0-44b3-83eb-73ba4f4a8b4a-000000@us-west-2.amazonses.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +21,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Zhi Chen <zhichen@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Rob,
+Zhi Chen <zhichen@codeaurora.org> writes:
 
-On 2019-11-15 00:46, Rob Herring wrote:
-> On Mon, Nov 11, 2019 at 09:55:07AM +0530, Govind Singh wrote:
->> Add boolean context flag to disable SCM call for statically
->> mapped msa region.
-> 
-> Can't this be implied by the compatible string?
-> 
+> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
+> PCIe hung issue was observed on multiple platforms. The issue was reproduced
+> when DUT was configured as AP and associated with 50+ STAs.
+>
+> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
+> issue happened. It broke PCIe spec and caused PCIe stuck.
+>
+> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
+>          QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
+>          Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
+>
+> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+> ---
 
-same soc compatible will be used in older TZ vs new TZ.
-Due to this reason I added this.
+All comments under --- line is not added to the git repository.
 
->> 
->> Signed-off-by: Govind Singh <govinds@codeaurora.org>
->> ---
->>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt          | 4 
->> ++++
->>  1 file changed, 4 insertions(+)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt 
->> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> index 017128394a3e..7ba22918bab7 100644
->> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> @@ -88,6 +88,9 @@ Optional properties:
->>  		    of the host capability QMI request
->>  - qcom,xo-cal-data: xo cal offset to be configured in xo trim 
->> register.
->> 
->> +- qcom,msa_fixed_perm: Boolean context flag to disable SCM call for 
->> statically
->> +		       mapped msa region.
->> +
-> 
-> s/_/-/
-> 
->>  Example (to supply PCI based wifi block details):
->> 
->>  In this example, the node is defined as child node of the PCI 
->> controller.
->> @@ -185,4 +188,5 @@ wifi@18000000 {
->>  		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
->>  		memory-region = <&wifi_msa_mem>;
->>  		iommus = <&apps_smmu 0x0040 0x1>;
->> +		qcom,msa_fixed_perm;
->>  };
->> --
->> 2.22.0
->> 
+> v2: revert 10.4 only because old chips have different AXI RD/WR CFG
 
-BR,
-Govind
+So you should also mention this in the commit log so it gets properly
+archived.
+
+And in the next version please remove RFC, as it seems we are reaching a
+consensus that is the right approach. Or are there any comments?
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
