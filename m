@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
+Received: from a27-56.smtp-out.us-west-2.amazonses.com ([54.240.27.56])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY5VJ-0000mn-Rk
- for ath10k@lists.infradead.org; Fri, 22 Nov 2019 09:45:32 +0000
+ id 1iY5lv-0005i3-CC
+ for ath10k@lists.infradead.org; Fri, 22 Nov 2019 10:02:40 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH RFC,
- v2] Revert "ath10k: fix DMA related firmware crashes on multiple
- devices"
-References: <1573808573-12159-1-git-send-email-zhichen@codeaurora.org>
-Date: Fri, 22 Nov 2019 09:45:27 +0000
-In-Reply-To: <1573808573-12159-1-git-send-email-zhichen@codeaurora.org> (Zhi
- Chen's message of "Fri, 15 Nov 2019 17:02:53 +0800")
-Message-ID: <0101016e9280880c-721d1923-ec22-463b-8945-d219f88c915b-000000@us-west-2.amazonses.com>
+Subject: Re: [PATCH v6 3/3] ath10k: add workqueue for RX path of sdio
+References: <1569402639-31720-1-git-send-email-wgong@codeaurora.org>
+ <1569402639-31720-4-git-send-email-wgong@codeaurora.org>
+ <8736f92sfx.fsf@kamboji.qca.qualcomm.com>
+ <3f3641ad49a2664d346558760e38b404@codeaurora.org>
+ <70f8f208f631a2a2c7337f45b873a16e@codeaurora.org>
+ <87r22ewqi6.fsf@codeaurora.org>
+ <ee6539c50cff626968984df3b511a5a8@codeaurora.org>
+Date: Fri, 22 Nov 2019 10:02:35 +0000
+In-Reply-To: <ee6539c50cff626968984df3b511a5a8@codeaurora.org> (Wen Gong's
+ message of "Wed, 13 Nov 2019 11:37:57 +0800")
+Message-ID: <0101016e92903924-6cb9c71f-eaec-45ae-a239-8281c59fd89a-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,43 +25,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zhi Chen <zhichen@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Zhi Chen <zhichen@codeaurora.org> writes:
-
-> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
-> PCIe hung issue was observed on multiple platforms. The issue was reproduced
-> when DUT was configured as AP and associated with 50+ STAs.
->
-> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
-> issue happened. It broke PCIe spec and caused PCIe stuck.
->
-> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
->          QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
->          Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
->
-> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
-> ---
-
-All comments under --- line is not added to the git repository.
-
-> v2: revert 10.4 only because old chips have different AXI RD/WR CFG
-
-So you should also mention this in the commit log so it gets properly
-archived.
-
-And in the next version please remove RFC, as it seems we are reaching a
-consensus that is the right approach. Or are there any comments?
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+V2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+IE9uIDIwMTktMTEtMTEg
+MjA6MjMsIEthbGxlIFZhbG8gd3JvdGU6Cj4+IFdlbiBHb25nIDx3Z29uZ0Bjb2RlYXVyb3JhLm9y
+Zz4gd3JpdGVzOgo+Pgo+Pj4gT24gMjAxOS0xMS0wMSAxNTo0MiwgV2VuIEdvbmcgd3JvdGU6Cj4+
+Pj4gT24gMjAxOS0xMC0zMSAxNzowOCwgS2FsbGUgVmFsbyB3cm90ZToKPj4+PiDjgIE+IEkganVz
+dCByZWFsaXNlZCB0aGF0IHRoaXMgaXMgUlggcGF0aCBzbyB3ZSBzaG91bGQgdXNlCj4+Pj4gQVRI
+MTBLX1NLQl9SWENCKCkKPj4+Pj4gaW5zdGVhZC4gSSBtYWRlIHRoZSBjaGFuZ2UgYmVsb3cgdG8g
+dGhpcyBjb21taXQgaW4gcGVuZGluZyBicmFuY2g6Cj4+Pj4+Cj4+Pj4gSSB3aWxsIHRlc3Qgd2l0
+aCB0aGUgbmV3IHBhdGNoIHRvZ2V0aGVyIHdpdGggb3RoZXIgcGVyZm9ybWFuY2UKPj4+PiBwYXRj
+aGVzLgo+Pj4gSGkgS2FsbGUsIEkgaGF2ZSB0ZXN0ZWQgd2l0aCB0aGUgcGF0Y2hlcyBvZiBwZW5k
+aW5nIGJyYW5jaCwgaXQgaXMKPj4+IHN1Y2Nlc3MuCj4+PiByZXN1bHQgaXMgc2FtZSB3aXRoIHRo
+ZSBwdWJsaWMgcmV2aWV3IHdoaWNoIEkgdGVzdGVkIGJlZm9yZS4KPj4+Cj4+PiB0aGUgcGF0Y2hl
+cyBJIHRlc3RlZCBvbiBwZW5kaW5nIGJyYW5jaDoKPj4+Cj4+PiBhdGgxMGs6IGVuYWJsZSBhbHQg
+ZGF0YSBvZiBUWCBwYXRoIGZvciBzZGlvCj4+PiBhdGgxMGs6IGFkZCBodHQgVFggYnVuZGxlIGZv
+ciBzZGlvCj4+PiBhdGgxMGs6IGRpc2FibGUgVFggY29tcGxldGUgaW5kaWNhdGlvbiBvZiBodHQg
+Zm9yIHNkaW8KPj4+IGF0aDEwazogZW5hYmxlIG5hcGkgb24gUlggcGF0aCBmb3Igc2Rpbwo+Pj4g
+YXRoMTBrOiBzZGlvOiByZW1vdmUgc3RydWN0IGF0aDEwa19zZGlvX3J4X2RhdGE6OnN0YXR1cwo+
+Pj4gYXRoMTBrOiBzZGlvOiBjb3NtZXRpYyBjbGVhbnVwCj4+PiBhdGgxMGs6IGFkZCB3b3JrcXVl
+dWUgZm9yIFJYIHBhdGggb2Ygc2Rpbwo+Pj4gYXRoMTBrOiBjaGFuZ2UgbWF4IFJYIGJ1bmRsZSBz
+aXplIGZyb20gOCB0byAzMiBmb3Igc2Rpbwo+Pj4gYXRoMTBrOiBlbmFibGUgUlggYnVuZGxlIHJl
+Y2VpdmUgZm9yIHNkaW8KPj4KPj4gVmVyeSBnb29kLCB0aGFua3MgZm9yIHRlc3RpbmcuCj4KPiB0
+aGlzIHBhdGNoIHdpbGwgdHJpZ2dlciBjb25uZWN0IGZhaWwgZm9yIFBTSyBtb2RlIEFQOgo+IGF0
+aDEwazogYWRkIHdvcmtxdWV1ZSBmb3IgUlggcGF0aCBvZiBzZGlvCj4KPiBJIGhhdmUgc2VudCBw
+YXRjaCB0byBmaXggaXQ6Cj4gYXRoMTBrOiBjbGVhciBpZWVlODAyMTFfcnhfc3RhdHVzIGZvciBz
+ZGlvCgpHb29kIGNhdGNoISBCdXQgYXMgdGhpcyBwYXRjaCBpcyBub3QgeWV0IGFwcGxpZWQgSSBm
+aXhlZCB0aGlzIHBhdGNoCmluc3RlYWQgd2l0aCB0aGlzOgoKLS0tIGEvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9odHRfcnguYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2h0dF9yeC5jCkBAIC0yMjM1LDcgKzIyMzUsMTAgQEAgc3RhdGljIGJvb2wgYXRoMTBr
+X2h0dF9yeF9wcm9jX3J4X2luZF9obChzdHJ1Y3QgYXRoMTBrX2h0dCAqaHR0LAogCiAgICAgICAg
+aGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopc2tiLT5kYXRhOwogICAgICAgIHFvcyA9IGll
+ZWU4MDIxMV9pc19kYXRhX3FvcyhoZHItPmZyYW1lX2NvbnRyb2wpOworCiAgICAgICAgcnhfc3Rh
+dHVzID0gSUVFRTgwMjExX1NLQl9SWENCKHNrYik7CisgICAgICAgbWVtc2V0KHJ4X3N0YXR1cywg
+MCwgc2l6ZW9mKCpyeF9zdGF0dXMpKTsKKwogICAgICAgIHJ4X3N0YXR1cy0+Y2hhaW5zIHw9IEJJ
+VCgwKTsKICAgICAgICBpZiAocngtPnBwZHUuY29tYmluZWRfcnNzaSA9PSAwKSB7CiAgICAgICAg
+ICAgICAgICAvKiBTRElPIGZpcm13YXJlIGRvZXMgbm90IHByb3ZpZGUgc2lnbmFsICovCgotLSAK
+aHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0
+aW9uL3N1Ym1pdHRpbmdwYXRjaGVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
