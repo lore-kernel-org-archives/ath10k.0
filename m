@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
+Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZDFq-00040p-Sc
- for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:14:12 +0000
+ id 1iZE7x-0008Qe-4O
+ for ath10k@lists.infradead.org; Mon, 25 Nov 2019 13:10:06 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH] ath10k: move non-fatal warn logs to dbg level
+Date: Mon, 25 Nov 2019 13:10:00 +0000
+Message-ID: <0101016ea2aee33d-d5d92d04-d737-42be-8e94-c964dec2fc8f-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v2] ath10k: fix RX of frames with broken FCS in
- monitor mode
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191115105612.8531-1-linus.luessing@c0d3.blue>
-References: <20191115105612.8531-1-linus.luessing@c0d3.blue>
-Message-ID: <0101016ea27bbb36-28d87d93-198a-4e07-abb4-fe4efc2b9614-000000@us-west-2.amazonses.com>
-Date: Mon, 25 Nov 2019 12:14:08 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +16,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?q?Linus_L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Cc: =?utf-8?q?Linus_L?==?utf-8?q?=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, "David S . Miller" <davem@davemloft.net>
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-TGludXMgTMO8c3Npbmcgd3JvdGU6Cgo+IFNvIGZhciwgZnJhbWVzIHdlcmUgZm9yd2FyZGVkIHJl
-Z2FyZGxlc3Mgb2YgdGhlIEZDUyBjb3JyZWN0bmVzcyBsZWFkaW5nCj4gdG8gdXNlcnNwYWNlIGFw
-cGxpY2F0aW9ucyBsaXN0ZW5pbmcgb24gdGhlIG1vbml0b3IgbW9kZSBpbnRlcmZhY2UgdG8KPiBy
-ZWNlaXZlIHBvdGVudGlhbGx5IGJyb2tlbiBmcmFtZXMsIGV2ZW4gd2l0aCB0aGUgImZjc2ZhaWwi
-IGZsYWcgdW5zZXQuCj4gCj4gQnkgZGVmYXVsdCwgd2l0aCB0aGUgImZjc2ZhaWwiIGZsYWcgb2Yg
-YSBtb25pdG9yIG1vZGUgaW50ZXJmYWNlCj4gdW5zZXQsIGZyYW1lcyB3aXRoIEZDUyBlcnJvcnMg
-c2hvdWxkIGJlIGRyb3BwZWQuIFdpdGggdGhpcyBwYXRjaCwgdGhlCj4gZmNzZmFpbCBmbGFnIGlz
-IHRha2VuIGludG8gYWNjb3VudCBjb3JyZWN0bHkuCj4gCj4gVGVzdGVkLW9uOiBRQ0E0MDE5IGZp
-cm13YXJlLTUtY3QtZnVsbC1jb21tdW5pdHktMTIuYmluLWxlZGUuMDExCj4gCj4gQ2M6IFNpbW9u
-IFd1bmRlcmxpY2ggPHN3QHNpbW9ud3VuZGVybGljaC5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBMaW51
-cyBMw7xzc2luZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgo+IFNpZ25lZC1vZmYtYnk6IEthbGxl
-IFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPgoKUGF0Y2ggYXBwbGllZCB0byBhdGgtbmV4dCBi
-cmFuY2ggb2YgYXRoLmdpdCwgdGhhbmtzLgoKZWEwYzNlMmE0NzAyIGF0aDEwazogZml4IFJYIG9m
-IGZyYW1lcyB3aXRoIGJyb2tlbiBGQ1MgaW4gbW9uaXRvciBtb2RlCgotLSAKaHR0cHM6Ly9wYXRj
-aHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTI0NjA0NS8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5r
-ZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+During driver load below warn logs are printed in the console if
+firmware doesn't support some optional HTC services, ex:pktlog.
+It is likely some older fw version may not support PKTLOG HTC
+service as legacy fw uses HTC DATA service  for pktlog.
+Move this log to debug level to remove un-necessary warn message
+on console.
+
+htc.c:803:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
+htc.c:881:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
+
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 28daed5981a1..367b762632d1 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -809,8 +809,8 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 						&ep->ul_pipe_id,
+ 						&ep->dl_pipe_id);
+ 	if (status) {
+-		ath10k_warn(ar, "unsupported HTC service id: %d\n",
+-			    ep->service_id);
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "unsupported HTC service id: %d\n",
++			   ep->service_id);
+ 		return status;
+ 	}
+ 
+@@ -887,8 +887,8 @@ static bool ath10k_htc_pktlog_svc_supported(struct ath10k *ar)
+ 						&ul_pipe_id,
+ 						&dl_pipe_id);
+ 	if (status) {
+-		ath10k_warn(ar, "unsupported HTC service id: %d\n",
+-			    ATH10K_HTC_SVC_ID_HTT_LOG_MSG);
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "unsupported HTC pktlog service id: %d\n",
++			   ATH10K_HTC_SVC_ID_HTT_LOG_MSG);
+ 
+ 		return false;
+ 	}
+-- 
+2.22.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
