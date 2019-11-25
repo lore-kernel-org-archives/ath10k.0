@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-21.smtp-out.us-west-2.amazonses.com ([54.240.27.21])
+Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZD4w-0000Cn-V8
- for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:02:56 +0000
+ id 1iZDD9-0003EU-Ie
+ for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:11:25 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Fix qmi init error handling
+Subject: Re: [PATCH v2] ath10k: Handle "invalid" BDFs for msm8998 devices
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191113154016.42836-1-jeffrey.l.hugo@gmail.com>
-References: <20191113154016.42836-1-jeffrey.l.hugo@gmail.com>
-Message-ID: <0101016ea2716693-2c1d0904-0688-4154-be0b-505808ecbe9c-000000@us-west-2.amazonses.com>
-Date: Mon, 25 Nov 2019 12:02:51 +0000
+In-Reply-To: <20191113154646.43048-1-jeffrey.l.hugo@gmail.com>
+References: <20191113154646.43048-1-jeffrey.l.hugo@gmail.com>
+Message-ID: <0101016ea2792d45-af2dde52-a758-4098-9731-63174a2c44f3-000000@us-west-2.amazonses.com>
+Date: Mon, 25 Nov 2019 12:11:20 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +27,25 @@ Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.ke
 
 Jeffrey Hugo <jeffrey.l.hugo@gmail.com> wrote:
 
-> When ath10k_qmi_init() fails, the error handling does not free the irq
-> resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
-> (re-)register irqs which are already registered.
+> When the BDF download QMI message has the end field set to 1, it signals
+> the end of the transfer, and triggers the firmware to do a CRC check.  The
+> BDFs for msm8998 devices fail this check, yet the firmware is happy to
+> still use the BDF.  It appears that this error is not caught by the
+> downstream drive by concidence, therefore there are production devices
+> in the field where this issue needs to be handled otherwise we cannot
+> support wifi on them.  So, attempt to detect this scenario as best we can
+> and treat it as non-fatal.
 > 
-> Fix this by doing a power off since we just powered on the hardware, and
-> freeing the irqs as error handling.
-> 
-> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
 > Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-f8a595a87e93 ath10k: Fix qmi init error handling
+319c2b71041f ath10k: Handle "invalid" BDFs for msm8998 devices
 
 -- 
-https://patchwork.kernel.org/patch/11242133/
+https://patchwork.kernel.org/patch/11242143/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
