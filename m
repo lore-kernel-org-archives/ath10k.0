@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-187.smtp-out.us-west-2.amazonses.com ([54.240.27.187])
+Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZDEG-0003Oi-4d
- for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:12:33 +0000
+ id 1iZDFq-00040p-Sc
+ for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:14:12 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: report rssi of each chain to mac80211 for sdio
+Subject: Re: [PATCH net-next v2] ath10k: fix RX of frames with broken FCS in
+ monitor mode
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191114111931.27800-1-wgong@codeaurora.org>
-References: <20191114111931.27800-1-wgong@codeaurora.org>
-Message-ID: <0101016ea27a3af5-72e6fd2d-ac20-4c33-b7e8-ea307700a9b3-000000@us-west-2.amazonses.com>
-Date: Mon, 25 Nov 2019 12:12:29 +0000
+In-Reply-To: <20191115105612.8531-1-linus.luessing@c0d3.blue>
+References: <20191115105612.8531-1-linus.luessing@c0d3.blue>
+Message-ID: <0101016ea27bbb36-28d87d93-198a-4e07-abb4-fe4efc2b9614-000000@us-west-2.amazonses.com>
+Date: Mon, 25 Nov 2019 12:14:08 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,84 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: =?utf-8?q?Linus_L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Cc: =?utf-8?q?Linus_L?==?utf-8?q?=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, "David S . Miller" <davem@davemloft.net>
 
-Wen Gong <wgong@codeaurora.org> wrote:
-
-> iw command only show rssi without each chain's rssi on sdio
-> iw wlan0 station dump
-> Station a0:40:a0:93:3e:de (on wlan0)
-> signal:         -82 dBm
-> signal avg:     -82 dBm
-> 
-> after this patch, it will show each chain's rssi on sdio
-> Station a0:40:a0:93:3e:de (on wlan0)
-> signal:         -82 [-84, -88] dBm
-> signal avg:     -82 [-84, -87] dBm
-> 
-> For QCA6174 PCIe, the ppdu have the correct rssi of each chain, it
-> indicate rssi of rx data by ath10k_htt_rx_h_signal. For sdio chip, the
-> rssi of each chain stored in rx management reported by firmware, the
-> ath10k_wmi_tlv_op_pull_mgmt_rx_ev which used for tlv wmi will get the
-> rssi of each chain and stored them in wmi_mgmt_rx_ev_arg, then indicate
-> them to mac80211. For non-tlv wmi chip, it will not get the rssi of each
-> chain and not indicate to mac80211, for non-tlv wmi chip, this patch will
-> not have impact. For tlv wmi chip, if the rssi of chain in mgmt is valid,
-> it will be indicate to mac80211, tested with QCA6174 PCIe/SDIO, the rssi
-> of 2 chain in mgmt is valid.
-> 
-> rssi of chains in mgmt of QCA6174 SDIO:
-> 92096.652780: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[0]:70
-> 92096.657324: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[1]:68
-> 92096.662009: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[2]:128
-> 92096.666647: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[3]:128
-> 
-> rssi of chains in mgmt of QCA6174 PCIe:
-> [ 1581.049816] ath10k_pci 0000:02:00.0: mgmt rssi[0]:17
-> [ 1581.049818] ath10k_pci 0000:02:00.0: mgmt rssi[1]:22
-> [ 1581.049821] ath10k_pci 0000:02:00.0: mgmt rssi[2]:128
-> [ 1581.049823] ath10k_pci 0000:02:00.0: mgmt rssi[3]:128
-> 
-> after apply this patch, the iw's rssi of PCIe do not changed, result is
-> same with before.
-> 
-> iw wlan0 station dump of QCA6174 PCIe:
-> Station 6c:e8:73:b8:92:dc (on wlan0)
->         signal:         -70 [-77, -72] dBm
->         signal avg:     -69 [-78, -72] dBm
-> 
-> iw wlan-5000mhz station dump of QCA9984 PCIe
-> connected with 2 client which has 2 chain:
-> Station 70:48:0f:1f:1a:b2 (on wlan-5000mhz)
->         signal:         -47 [-55, -48, -87, -88] dBm
->         signal avg:     -42 [-50, -43, -83, -86] dBm
-> Station ac:c1:ee:39:e3:83 (on wlan-5000mhz)
->         signal:         -43 [-46, -45, -79, -84] dBm
->         signal avg:     -43 [-46, -46, -82, -83] dBm
-> 
-> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00017-QCARMSWP-1.
-> Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
-> Tested with QCA9984 PCIe with firmware 10.4-3.9.0.2-00040.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-7005eafc1f1c ath10k: report rssi of each chain to mac80211 for sdio
-
--- 
-https://patchwork.kernel.org/patch/11243567/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+TGludXMgTMO8c3Npbmcgd3JvdGU6Cgo+IFNvIGZhciwgZnJhbWVzIHdlcmUgZm9yd2FyZGVkIHJl
+Z2FyZGxlc3Mgb2YgdGhlIEZDUyBjb3JyZWN0bmVzcyBsZWFkaW5nCj4gdG8gdXNlcnNwYWNlIGFw
+cGxpY2F0aW9ucyBsaXN0ZW5pbmcgb24gdGhlIG1vbml0b3IgbW9kZSBpbnRlcmZhY2UgdG8KPiBy
+ZWNlaXZlIHBvdGVudGlhbGx5IGJyb2tlbiBmcmFtZXMsIGV2ZW4gd2l0aCB0aGUgImZjc2ZhaWwi
+IGZsYWcgdW5zZXQuCj4gCj4gQnkgZGVmYXVsdCwgd2l0aCB0aGUgImZjc2ZhaWwiIGZsYWcgb2Yg
+YSBtb25pdG9yIG1vZGUgaW50ZXJmYWNlCj4gdW5zZXQsIGZyYW1lcyB3aXRoIEZDUyBlcnJvcnMg
+c2hvdWxkIGJlIGRyb3BwZWQuIFdpdGggdGhpcyBwYXRjaCwgdGhlCj4gZmNzZmFpbCBmbGFnIGlz
+IHRha2VuIGludG8gYWNjb3VudCBjb3JyZWN0bHkuCj4gCj4gVGVzdGVkLW9uOiBRQ0E0MDE5IGZp
+cm13YXJlLTUtY3QtZnVsbC1jb21tdW5pdHktMTIuYmluLWxlZGUuMDExCj4gCj4gQ2M6IFNpbW9u
+IFd1bmRlcmxpY2ggPHN3QHNpbW9ud3VuZGVybGljaC5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBMaW51
+cyBMw7xzc2luZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgo+IFNpZ25lZC1vZmYtYnk6IEthbGxl
+IFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPgoKUGF0Y2ggYXBwbGllZCB0byBhdGgtbmV4dCBi
+cmFuY2ggb2YgYXRoLmdpdCwgdGhhbmtzLgoKZWEwYzNlMmE0NzAyIGF0aDEwazogZml4IFJYIG9m
+IGZyYW1lcyB3aXRoIGJyb2tlbiBGQ1MgaW4gbW9uaXRvciBtb2RlCgotLSAKaHR0cHM6Ly9wYXRj
+aHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTI0NjA0NS8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5r
+ZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
