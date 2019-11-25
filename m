@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18])
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZCvE-0004ml-GS
- for ath10k@lists.infradead.org; Mon, 25 Nov 2019 11:52:55 +0000
+ id 1iZCwo-0004yi-VU
+ for ath10k@lists.infradead.org; Mon, 25 Nov 2019 11:54:32 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: correct the tlv len of
- ath10k_wmi_tlv_op_gen_config_pno_start
+Subject: Re: [PATCH] ath10k: add large size for BMI download data for SDIO
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191107093031.24131-1-wgong@codeaurora.org>
-References: <20191107093031.24131-1-wgong@codeaurora.org>
-Message-ID: <0101016ea2683bf1-d3eb71cd-3511-4c90-a46a-f6e42d02656f-000000@us-west-2.amazonses.com>
-Date: Mon, 25 Nov 2019 11:52:50 +0000
+In-Reply-To: <20191107100809.17982-1-wgong@codeaurora.org>
+References: <20191107100809.17982-1-wgong@codeaurora.org>
+Message-ID: <0101016ea269b8df-d13c2173-799f-4f69-a1e7-43709bb9a2c2-000000@us-west-2.amazonses.com>
+Date: Mon, 25 Nov 2019 11:54:28 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +27,24 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> wrote:
 
-> the tlv len is set to the total len of the wmi cmd, it will trigger
-> firmware crash, correct the tlv len.
+> Download firmware time cost of SDIO is too long, it is about 480ms,
+> add large size 2048 bytes for BMI download for SDIO chip, its time
+> cost will reduced to 240ms.
+> 
+> This will optimize the download firmware time cost.
 > 
 > Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00017-QCARMSWP-1 and QCA6174
-> PCIE with firmware WLAN.RM.4.4.1-00110-QCARMSWPZ-1.
+> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
 > 
-> Fixes: ce834e280f2f875 ("ath10k: support NET_DETECT WoWLAN feature")
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-e01cc82c4d1e ath10k: correct the tlv len of ath10k_wmi_tlv_op_gen_config_pno_start
+d58f466a5dee ath10k: add large size for BMI download data for SDIO
 
 -- 
-https://patchwork.kernel.org/patch/11232379/
+https://patchwork.kernel.org/patch/11232449/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
