@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
+Received: from a27-187.smtp-out.us-west-2.amazonses.com ([54.240.27.187])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZDD9-0003EU-Ie
- for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:11:25 +0000
+ id 1iZDEG-0003Oi-4d
+ for ath10k@lists.infradead.org; Mon, 25 Nov 2019 12:12:33 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Handle "invalid" BDFs for msm8998 devices
+Subject: Re: [PATCH] ath10k: report rssi of each chain to mac80211 for sdio
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191113154646.43048-1-jeffrey.l.hugo@gmail.com>
-References: <20191113154646.43048-1-jeffrey.l.hugo@gmail.com>
-Message-ID: <0101016ea2792d45-af2dde52-a758-4098-9731-63174a2c44f3-000000@us-west-2.amazonses.com>
-Date: Mon, 25 Nov 2019 12:11:20 +0000
+In-Reply-To: <20191114111931.27800-1-wgong@codeaurora.org>
+References: <20191114111931.27800-1-wgong@codeaurora.org>
+Message-ID: <0101016ea27a3af5-72e6fd2d-ac20-4c33-b7e8-ea307700a9b3-000000@us-west-2.amazonses.com>
+Date: Mon, 25 Nov 2019 12:12:29 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, davem@davemloft.net
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Jeffrey Hugo <jeffrey.l.hugo@gmail.com> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> When the BDF download QMI message has the end field set to 1, it signals
-> the end of the transfer, and triggers the firmware to do a CRC check.  The
-> BDFs for msm8998 devices fail this check, yet the firmware is happy to
-> still use the BDF.  It appears that this error is not caught by the
-> downstream drive by concidence, therefore there are production devices
-> in the field where this issue needs to be handled otherwise we cannot
-> support wifi on them.  So, attempt to detect this scenario as best we can
-> and treat it as non-fatal.
+> iw command only show rssi without each chain's rssi on sdio
+> iw wlan0 station dump
+> Station a0:40:a0:93:3e:de (on wlan0)
+> signal:         -82 dBm
+> signal avg:     -82 dBm
 > 
-> Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> after this patch, it will show each chain's rssi on sdio
+> Station a0:40:a0:93:3e:de (on wlan0)
+> signal:         -82 [-84, -88] dBm
+> signal avg:     -82 [-84, -87] dBm
+> 
+> For QCA6174 PCIe, the ppdu have the correct rssi of each chain, it
+> indicate rssi of rx data by ath10k_htt_rx_h_signal. For sdio chip, the
+> rssi of each chain stored in rx management reported by firmware, the
+> ath10k_wmi_tlv_op_pull_mgmt_rx_ev which used for tlv wmi will get the
+> rssi of each chain and stored them in wmi_mgmt_rx_ev_arg, then indicate
+> them to mac80211. For non-tlv wmi chip, it will not get the rssi of each
+> chain and not indicate to mac80211, for non-tlv wmi chip, this patch will
+> not have impact. For tlv wmi chip, if the rssi of chain in mgmt is valid,
+> it will be indicate to mac80211, tested with QCA6174 PCIe/SDIO, the rssi
+> of 2 chain in mgmt is valid.
+> 
+> rssi of chains in mgmt of QCA6174 SDIO:
+> 92096.652780: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[0]:70
+> 92096.657324: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[1]:68
+> 92096.662009: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[2]:128
+> 92096.666647: ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 rssi[3]:128
+> 
+> rssi of chains in mgmt of QCA6174 PCIe:
+> [ 1581.049816] ath10k_pci 0000:02:00.0: mgmt rssi[0]:17
+> [ 1581.049818] ath10k_pci 0000:02:00.0: mgmt rssi[1]:22
+> [ 1581.049821] ath10k_pci 0000:02:00.0: mgmt rssi[2]:128
+> [ 1581.049823] ath10k_pci 0000:02:00.0: mgmt rssi[3]:128
+> 
+> after apply this patch, the iw's rssi of PCIe do not changed, result is
+> same with before.
+> 
+> iw wlan0 station dump of QCA6174 PCIe:
+> Station 6c:e8:73:b8:92:dc (on wlan0)
+>         signal:         -70 [-77, -72] dBm
+>         signal avg:     -69 [-78, -72] dBm
+> 
+> iw wlan-5000mhz station dump of QCA9984 PCIe
+> connected with 2 client which has 2 chain:
+> Station 70:48:0f:1f:1a:b2 (on wlan-5000mhz)
+>         signal:         -47 [-55, -48, -87, -88] dBm
+>         signal avg:     -42 [-50, -43, -83, -86] dBm
+> Station ac:c1:ee:39:e3:83 (on wlan-5000mhz)
+>         signal:         -43 [-46, -45, -79, -84] dBm
+>         signal avg:     -43 [-46, -46, -82, -83] dBm
+> 
+> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+> Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
+> Tested with QCA9984 PCIe with firmware 10.4-3.9.0.2-00040.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-319c2b71041f ath10k: Handle "invalid" BDFs for msm8998 devices
+7005eafc1f1c ath10k: report rssi of each chain to mac80211 for sdio
 
 -- 
-https://patchwork.kernel.org/patch/11242143/
+https://patchwork.kernel.org/patch/11243567/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
