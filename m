@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10])
+Received: from a27-21.smtp-out.us-west-2.amazonses.com ([54.240.27.21])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZE7x-0008Qe-4O
- for ath10k@lists.infradead.org; Mon, 25 Nov 2019 13:10:06 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: move non-fatal warn logs to dbg level
-Date: Mon, 25 Nov 2019 13:10:00 +0000
-Message-ID: <0101016ea2aee33d-d5d92d04-d737-42be-8e94-c964dec2fc8f-000000@us-west-2.amazonses.com>
+ id 1iZWzP-00058J-Hg
+ for ath10k@lists.infradead.org; Tue, 26 Nov 2019 09:18:32 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: drop the TX packet which size exceed credit size for
+ sdio
+Date: Tue, 26 Nov 2019 09:18:27 +0000
+Message-ID: <0101016ea70141b4-8bba1ff2-ed89-438b-bc8a-faf94f91686f-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,51 +22,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
 
-During driver load below warn logs are printed in the console if
-firmware doesn't support some optional HTC services, ex:pktlog.
-It is likely some older fw version may not support PKTLOG HTC
-service as legacy fw uses HTC DATA service  for pktlog.
-Move this log to debug level to remove un-necessary warn message
-on console.
+sdio chip use DMA buffer to receive TX packet from ath10k, and it has
+limitation of each buffer, if the packet size exceed the credit size,
+it will trigger error in firmware.
 
-htc.c:803:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
-htc.c:881:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
+Tested with QCA6174 SDIO with firmware
+WLAN.RMH.4.4.1-00017-QCARMSWP-1.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+this patch depens on the patch "ath10k: add htt TX bundle for sdio"
+ drivers/net/wireless/ath/ath10k/htc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 28daed5981a1..367b762632d1 100644
+index 03c358cd16d4..51addcc654a0 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -809,8 +809,8 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 						&ep->ul_pipe_id,
- 						&ep->dl_pipe_id);
- 	if (status) {
--		ath10k_warn(ar, "unsupported HTC service id: %d\n",
--			    ep->service_id);
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT, "unsupported HTC service id: %d\n",
-+			   ep->service_id);
- 		return status;
- 	}
+@@ -846,6 +846,11 @@ int ath10k_htc_send_hl(struct ath10k_htc *htc,
+ 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+ 	struct ath10k *ar = htc->ar;
  
-@@ -887,8 +887,8 @@ static bool ath10k_htc_pktlog_svc_supported(struct ath10k *ar)
- 						&ul_pipe_id,
- 						&dl_pipe_id);
- 	if (status) {
--		ath10k_warn(ar, "unsupported HTC service id: %d\n",
--			    ATH10K_HTC_SVC_ID_HTT_LOG_MSG);
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT, "unsupported HTC pktlog service id: %d\n",
-+			   ATH10K_HTC_SVC_ID_HTT_LOG_MSG);
++	if (sizeof(struct ath10k_htc_hdr) + skb->len > ep->tx_credit_size) {
++		ath10k_dbg(ar, ATH10K_DBG_HTC, "tx exceed max len %d\n", skb->len);
++		return -ENOMEM;
++	}
++
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC, "htc send hl: eid:%d, bundle:%d, tx count:%d, len:%d\n",
+ 		   eid, ep->bundle_tx, skb_queue_len(&ep->tx_req_head), skb->len);
  
- 		return false;
- 	}
 -- 
-2.22.0
+2.23.0
 
 
 _______________________________________________
