@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-21.smtp-out.us-west-2.amazonses.com ([54.240.27.21])
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZWzP-00058J-Hg
- for ath10k@lists.infradead.org; Tue, 26 Nov 2019 09:18:32 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: drop the TX packet which size exceed credit size for
- sdio
-Date: Tue, 26 Nov 2019 09:18:27 +0000
-Message-ID: <0101016ea70141b4-8bba1ff2-ed89-438b-bc8a-faf94f91686f-000000@us-west-2.amazonses.com>
+ id 1iZXGt-0005Av-Nc
+ for ath10k@lists.infradead.org; Tue, 26 Nov 2019 09:36:37 +0000
 MIME-Version: 1.0
+Date: Tue, 26 Nov 2019 09:36:33 +0000
+From: wgong@codeaurora.org
+Subject: RE: [EXT] [PATCH] ath10k: enable firmware log by default for sdio
+Message-ID: <0101016ea711d28f-004d7903-92c1-4c30-9b75-6c05d5ade612-000000@us-west-2.amazonses.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,45 +16,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-sdio chip use DMA buffer to receive TX packet from ath10k, and it has
-limitation of each buffer, if the packet size exceed the credit size,
-it will trigger error in firmware.
+> -----Original Message-----
+> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
+> Sent: Friday, November 8, 2019 5:19 PM
+> To: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Subject: [EXT] [PATCH] ath10k: enable firmware log by default for sdio
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+Hi Kalle,
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
-this patch depens on the patch "ath10k: add htt TX bundle for sdio"
- drivers/net/wireless/ath/ath10k/htc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 03c358cd16d4..51addcc654a0 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -846,6 +846,11 @@ int ath10k_htc_send_hl(struct ath10k_htc *htc,
- 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
- 	struct ath10k *ar = htc->ar;
- 
-+	if (sizeof(struct ath10k_htc_hdr) + skb->len > ep->tx_credit_size) {
-+		ath10k_dbg(ar, ATH10K_DBG_HTC, "tx exceed max len %d\n", skb->len);
-+		return -ENOMEM;
-+	}
-+
- 	ath10k_dbg(ar, ATH10K_DBG_HTC, "htc send hl: eid:%d, bundle:%d, tx count:%d, len:%d\n",
- 		   eid, ep->bundle_tx, skb_queue_len(&ep->tx_req_head), skb->len);
- 
--- 
-2.23.0
-
+I found this patch has removed from pending branch, and not in ath-next 
+branch.
+It is in pending branch before.
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=497363abab79eac916f2e2c6f9ab2b9bb4aa4b11
 
 _______________________________________________
 ath10k mailing list
