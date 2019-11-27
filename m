@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
+Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZnYE-0003N2-RU
- for ath10k@lists.infradead.org; Wed, 27 Nov 2019 02:59:38 +0000
+ id 1iZnrT-00013T-1j
+ for ath10k@lists.infradead.org; Wed, 27 Nov 2019 03:19:30 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: set max mtu to 1500 for sdio chip
-Date: Wed, 27 Nov 2019 02:59:29 +0000
-Message-ID: <0101016eaacca93c-357e80e9-f3e0-44e6-b441-ceaf9183880f-000000@us-west-2.amazonses.com>
+Subject: [PATCH] ath10k: set WMI_PEER_AUTHORIZE after a firmware crash
+Date: Wed, 27 Nov 2019 03:19:24 +0000
+Message-ID: <0101016eaadee369-fd09e9d4-d13b-4547-a4fe-0039577ad4b8-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,32 +23,40 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-For sdio chip, the max credit size in firmware is 1556, the 1556
-include payload, ieee80211 header, htt header, htc header. So it
-need to set the max mtu to 1500 to forbidden TX packet which exceed
-1500 form application.
+After the firmware crashes ath10k recovers via ieee80211_reconfig(),
+which eventually leads to firmware configuration and including the
+encryption keys. However, because there is no new auth/assoc and
+4-way-handshake, and firmware set the authorize flag after
+4-way-handshake, so the authorize flag in firmware is not set in
+firmware without 4-way-handshake. This will lead to a failure of data
+transmission after recovery done when using encrypted connections like
+WPA-PSK. Set authorize flag after installing keys to firmware will fix
+the issue.
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+This was noticed by testing firmware crashing using simulate_fw_crash
+debugfs file.
+
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 60849ab8088f..8aa8ebc1d8e9 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2185,6 +2185,8 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	bus_params.chip_id = 0;
- 	bus_params.hl_msdu_ids = true;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ae84f8e4e7dd..0829582c0d50 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6329,6 +6329,9 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 	if (sta && sta->tdls)
+ 		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
+ 					  ar->wmi.peer_param->authorize, 1);
++	else if (sta && cmd == SET_KEY && (key->flags & IEEE80211_KEY_FLAG_PAIRWISE))
++		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, peer_addr,
++					  ar->wmi.peer_param->authorize, 1);
  
-+	ar->hw->max_mtu = ETH_DATA_LEN;
-+
- 	ret = ath10k_core_register(ar, &bus_params);
- 	if (ret) {
- 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
+ exit:
+ 	mutex_unlock(&ar->conf_mutex);
 -- 
 2.23.0
 
