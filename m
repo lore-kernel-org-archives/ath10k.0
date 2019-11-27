@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10])
+Received: from a27-187.smtp-out.us-west-2.amazonses.com ([54.240.27.187])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZo4v-0005Jy-Tf
- for ath10k@lists.infradead.org; Wed, 27 Nov 2019 03:33:25 +0000
+ id 1iZqQz-0005cF-E7
+ for ath10k@lists.infradead.org; Wed, 27 Nov 2019 06:04:18 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: change log level for mpdu status of sdio chip
-Date: Wed, 27 Nov 2019 03:33:13 +0000
-Message-ID: <0101016eaaeb8952-5f5470e8-6cf3-4017-b658-b9866b4985ef-000000@us-west-2.amazonses.com>
+Subject: [PATCH] ath10k: enable wow feature for sdio chip
+Date: Wed, 27 Nov 2019 06:04:14 +0000
+Message-ID: <0101016eab75cdd3-92ce3745-4eea-4fcb-b829-d9d30d9713cb-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,32 +23,60 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Change log level from warn to dbg level of mpdu status
-of sdio chip.
+sdio does not support wow, this patch is to enable it. When system enter
+sleep state, if wowlan is enabled, then sdio chip will keep power if
+platform support keep power, after resume, it will not need to re-load
+firmware again.
 
 Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00007-QCARMSWP-1.
+WLAN.RMH.4.4.1-00029.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 4490ffb53d24..283ffac56b1a 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2203,8 +2203,8 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
- 	    HTT_RX_IND_MPDU_STATUS_OK &&
- 	    mpdu_ranges->mpdu_range_status !=
- 	    HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR) {
--		ath10k_warn(ar, "MPDU range status: %d\n",
--			    mpdu_ranges->mpdu_range_status);
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt mpdu_range_status %d\n",
-+			   mpdu_ranges->mpdu_range_status);
- 		goto err;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 60849ab8088f..bd94dbb23741 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -1889,7 +1889,7 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
  
+ static int ath10k_sdio_hif_suspend(struct ath10k *ar)
+ {
+-	return -EOPNOTSUPP;
++	return 0;
+ }
+ 
+ static int ath10k_sdio_hif_resume(struct ath10k *ar)
+@@ -2040,7 +2040,26 @@ static const struct ath10k_hif_ops ath10k_sdio_hif_ops = {
+  */
+ static int ath10k_sdio_pm_suspend(struct device *device)
+ {
+-	return 0;
++	struct sdio_func *func = dev_to_sdio_func(device);
++	struct ath10k_sdio *ar_sdio = sdio_get_drvdata(func);
++	struct ath10k *ar = ar_sdio->ar;
++	mmc_pm_flag_t pm_flag, pm_caps;
++	int ret;
++
++	if (!device_may_wakeup(ar->dev))
++		return 0;
++
++	pm_flag = MMC_PM_KEEP_POWER;
++
++	ret = sdio_set_host_pm_flags(func, pm_flag);
++	if (ret) {
++		pm_caps = sdio_get_host_pm_caps(func);
++		ath10k_warn(ar, "failed to set sdio host pm flags (0x%x, 0x%x): %d\n",
++			    pm_flag, pm_caps, ret);
++		return ret;
++	}
++
++	return ret;
+ }
+ 
+ static int ath10k_sdio_pm_resume(struct device *device)
 -- 
 2.23.0
 
