@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-187.smtp-out.us-west-2.amazonses.com ([54.240.27.187])
+Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZqQz-0005cF-E7
- for ath10k@lists.infradead.org; Wed, 27 Nov 2019 06:04:18 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: enable wow feature for sdio chip
-Date: Wed, 27 Nov 2019 06:04:14 +0000
-Message-ID: <0101016eab75cdd3-92ce3745-4eea-4fcb-b829-d9d30d9713cb-000000@us-west-2.amazonses.com>
+ id 1iZzYP-0005yN-NO
+ for ath10k@lists.infradead.org; Wed, 27 Nov 2019 15:48:35 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: move non-fatal warn logs to dbg level
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <0101016ea2aee542-7e69e860-2ad6-4897-959f-e934f1a459bb-000000@us-west-2.amazonses.com>
+References: <0101016ea2aee542-7e69e860-2ad6-4897-959f-e934f1a459bb-000000@us-west-2.amazonses.com>
+Message-ID: <0101016ead8cb6e9-5c4cd3d9-9a7c-4fe8-bbbb-5a3a67a4b481-000000@us-west-2.amazonses.com>
+Date: Wed, 27 Nov 2019 15:48:30 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,65 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-sdio does not support wow, this patch is to enable it. When system enter
-sleep state, if wowlan is enabled, then sdio chip will keep power if
-platform support keep power, after resume, it will not need to re-load
-firmware again.
+Govind Singh <govinds@codeaurora.org> wrote:
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00029.
+> During driver load below warn logs are printed in the console if
+> firmware doesn't support some optional HTC services, ex:pktlog.
+> It is likely some older fw version may not support PKTLOG HTC
+> service as legacy fw uses HTC DATA service  for pktlog.
+> Move this log to debug level to remove un-necessary warn message
+> on console.
+> 
+> htc.c:803:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
+> htc.c:881:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+Patch applied to ath-next branch of ath.git, thanks.
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 60849ab8088f..bd94dbb23741 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1889,7 +1889,7 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
- 
- static int ath10k_sdio_hif_suspend(struct ath10k *ar)
- {
--	return -EOPNOTSUPP;
-+	return 0;
- }
- 
- static int ath10k_sdio_hif_resume(struct ath10k *ar)
-@@ -2040,7 +2040,26 @@ static const struct ath10k_hif_ops ath10k_sdio_hif_ops = {
-  */
- static int ath10k_sdio_pm_suspend(struct device *device)
- {
--	return 0;
-+	struct sdio_func *func = dev_to_sdio_func(device);
-+	struct ath10k_sdio *ar_sdio = sdio_get_drvdata(func);
-+	struct ath10k *ar = ar_sdio->ar;
-+	mmc_pm_flag_t pm_flag, pm_caps;
-+	int ret;
-+
-+	if (!device_may_wakeup(ar->dev))
-+		return 0;
-+
-+	pm_flag = MMC_PM_KEEP_POWER;
-+
-+	ret = sdio_set_host_pm_flags(func, pm_flag);
-+	if (ret) {
-+		pm_caps = sdio_get_host_pm_caps(func);
-+		ath10k_warn(ar, "failed to set sdio host pm flags (0x%x, 0x%x): %d\n",
-+			    pm_flag, pm_caps, ret);
-+		return ret;
-+	}
-+
-+	return ret;
- }
- 
- static int ath10k_sdio_pm_resume(struct device *device)
+ef39ac1b0d9f ath10k: move non-fatal warn logs to dbg level
+
 -- 
-2.23.0
+https://patchwork.kernel.org/patch/11260371/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
