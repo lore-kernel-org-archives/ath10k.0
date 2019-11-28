@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
+Received: from a27-56.smtp-out.us-west-2.amazonses.com ([54.240.27.56])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZzYP-0005yN-NO
- for ath10k@lists.infradead.org; Wed, 27 Nov 2019 15:48:35 +0000
+ id 1iaH4V-0007Rn-AM
+ for ath10k@lists.infradead.org; Thu, 28 Nov 2019 10:30:52 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v8 0/4] ath10k: improve throughout of TX of sdio
+Date: Thu, 28 Nov 2019 10:30:48 +0000
+Message-ID: <0101016eb19035ea-74bf2162-2007-43fb-a070-ff9e30de6cf9-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: move non-fatal warn logs to dbg level
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <0101016ea2aee542-7e69e860-2ad6-4897-959f-e934f1a459bb-000000@us-west-2.amazonses.com>
-References: <0101016ea2aee542-7e69e860-2ad6-4897-959f-e934f1a459bb-000000@us-west-2.amazonses.com>
-Message-ID: <0101016ead8cb6e9-5c4cd3d9-9a7c-4fe8-bbbb-5a3a67a4b481-000000@us-west-2.amazonses.com>
-Date: Wed, 27 Nov 2019 15:48:30 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +20,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Govind Singh <govinds@codeaurora.org> wrote:
+v8: split out patch "change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024"
+from "disable TX complete indication of htt for sdio". merge patch
+"ath10k: clean bundle tx queue of htt tx stop for sdio" into
+"add htt TX bundle for sdio"
 
-> During driver load below warn logs are printed in the console if
-> firmware doesn't support some optional HTC services, ex:pktlog.
-> It is likely some older fw version may not support PKTLOG HTC
-> service as legacy fw uses HTC DATA service  for pktlog.
-> Move this log to debug level to remove un-necessary warn message
-> on console.
-> 
-> htc.c:803:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
-> htc.c:881:  ath10k_warn(ar, "unsupported HTC service id: %d\n",
-> 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+v7: change a few code style to meet ath10k-check script
 
-Patch applied to ath-next branch of ath.git, thanks.
+v6: remove module parameters disable_tx_comp and alt_data
+this is 3 patches of the 7 patches from ath10k: improve throughout of tcp/udp TX/RX of sdio
 
-ef39ac1b0d9f ath10k: move non-fatal warn logs to dbg level
+v5: change ath10k_htc_setup_tx_req to add check bundle_tx
+to forbidden init 2 times
+
+v4: add macro ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK
+
+v3: change some code style
+
+v2: change some code style
+
+The bottleneck of throughout on sdio chip is the bus bandwidth, to the
+patches are all to increase the use ratio of sdio bus.
+
+These patches only affect sdio bus chip, explanation is mentioned in each
+patch's commit log.
+
+Wen Gong (4):
+  ath10k: disable TX complete indication of htt for sdio
+  ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024
+  ath10k: add htt TX bundle for sdio
+  ath10k: enable alt data of TX path for sdio
+
+ drivers/net/wireless/ath/ath10k/core.c   |  27 +-
+ drivers/net/wireless/ath/ath10k/core.h   |   4 +-
+ drivers/net/wireless/ath/ath10k/hif.h    |   9 +
+ drivers/net/wireless/ath/ath10k/htc.c    | 394 +++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/htc.h    |  40 ++-
+ drivers/net/wireless/ath/ath10k/htt.c    |  13 +
+ drivers/net/wireless/ath/ath10k/htt.h    |  17 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  35 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  39 ++-
+ drivers/net/wireless/ath/ath10k/hw.h     |   2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c   |  23 ++
+ drivers/net/wireless/ath/ath10k/sdio.h   |   3 +-
+ 12 files changed, 553 insertions(+), 53 deletions(-)
 
 -- 
-https://patchwork.kernel.org/patch/11260371/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.23.0
 
 
 _______________________________________________
