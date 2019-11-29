@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
+Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iaH4b-0007Tp-Hp
- for ath10k@lists.infradead.org; Thu, 28 Nov 2019 10:30:59 +0000
+ id 1iaan9-0001gF-3e
+ for ath10k@lists.infradead.org; Fri, 29 Nov 2019 07:34:16 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v8 4/4] ath10k: enable alt data of TX path for sdio
-Date: Thu, 28 Nov 2019 10:30:55 +0000
-Message-ID: <0101016eb19050db-ba212898-69c6-417b-a0b3-417f6a7b3dfb-000000@us-west-2.amazonses.com>
-In-Reply-To: <20191128103030.6429-1-wgong@codeaurora.org>
-References: <20191128103030.6429-1-wgong@codeaurora.org>
+Subject: [PATCH] ath: add support for special 0x0 regulatory domain
+Date: Fri, 29 Nov 2019 07:34:09 +0000
+Message-ID: <0101016eb614d48f-c13bb166-f01f-41ed-b12b-332bb69e5f06-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,119 +23,50 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-The default credit size is 1792 bytes, but the IP mtu is 1500 bytes,
-then it has about 290 bytes's waste for each data packet on sdio
-transfer path for TX bundle, it will reduce the transmission utilization
-ratio for data packet.
+Some sdio chips of rome QCA6174's regulatory domain code of EEPROM is
+empty, then ath_is_world_regd will return false for this case, and
+it will lead function __ath_reg_dyn_country not work, thus the regdomain
+will not update for NL80211_REGDOM_SET_BY_COUNTRY_IE type, it result
+ath10k set the same regdomain/reg_5ghz_ctl/reg_2ghz_ctl to firmware,
+then the tx power will not changed with different regdomain's AP. The
+regulatory domain code of EEPROM of some QCA6174 PCIE chip is 0x6c, it
+means world wide regdomain, for this chip, it does not have the issue.
 
-This patch enable the small credit size in firmware, firmware will use
-the new credit size 1556 bytes, it will increase the transmission
-utilization ratio for data packet on TX patch. It results in significant
-performance improvement on TX path.
-
-This patch only effect sdio chip, it will not effect PCI, SNOC etc.
+For empty reulatory domain code chip, set it to world regulatory domain
+in functio ath_regd_sanitize, then it will fix the issue.
 
 Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+WLAN.RMH.4.4.1-00029.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c |  8 ++++----
- drivers/net/wireless/ath/ath10k/htc.c  | 12 ++++++++++--
- drivers/net/wireless/ath/ath10k/htc.h  | 13 +++++++++++--
- 3 files changed, 25 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/regd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index fd35c7c93c30..f31203434997 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -697,10 +697,10 @@ static int ath10k_init_sdio(struct ath10k *ar, enum ath10k_firmware_mode mode)
+diff --git a/drivers/net/wireless/ath/regd.c b/drivers/net/wireless/ath/regd.c
+index 20f4f8ea9f89..bee9110b91f3 100644
+--- a/drivers/net/wireless/ath/regd.c
++++ b/drivers/net/wireless/ath/regd.c
+@@ -666,14 +666,14 @@ ath_regd_init_wiphy(struct ath_regulatory *reg,
  
- 	param |= HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET;
- 
--	/* Alternate credit size of 1544 as used by SDIO firmware is
--	 * not big enough for mac80211 / native wifi frames. disable it
--	 */
--	param &= ~HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
-+	if (mode == ATH10K_FIRMWARE_MODE_NORMAL)
-+		param |= HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
-+	else
-+		param &= ~HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
- 
- 	if (mode == ATH10K_FIRMWARE_MODE_UTF)
- 		param &= ~HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET;
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 8eac8cbc606c..995bc0236c43 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -957,12 +957,16 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 	 */
- 	if (htc->control_resp_len >=
- 	    sizeof(msg->hdr) + sizeof(msg->ready_ext)) {
-+		htc->alt_data_credit_size =
-+			__le16_to_cpu(msg->ready_ext.reserved) &
-+			ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK;
- 		htc->max_msgs_per_htc_bundle =
- 			min_t(u8, msg->ready_ext.max_msgs_per_htc_bundle,
- 			      HTC_HOST_MAX_MSG_PER_RX_BUNDLE);
- 		ath10k_dbg(ar, ATH10K_DBG_HTC,
--			   "Extended ready message. RX bundle size: %d\n",
--			   htc->max_msgs_per_htc_bundle);
-+			   "Extended ready message. RX bundle size: %d, alt size:%d\n",
-+			   htc->max_msgs_per_htc_bundle,
-+			   htc->alt_data_credit_size);
- 	}
- 
- 	INIT_WORK(&ar->bundle_tx_work, ath10k_htc_bundle_tx_work);
-@@ -1114,6 +1118,10 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 	ep->tx_credits = tx_alloc;
- 	ep->tx_credit_size = htc->target_credit_size;
- 
-+	if (conn_req->service_id == ATH10K_HTC_SVC_ID_HTT_DATA_MSG &&
-+	    htc->alt_data_credit_size != 0)
-+		ep->tx_credit_size = htc->alt_data_credit_size;
-+
- 	/* copy all the callbacks */
- 	ep->ep_ops = conn_req->ep_ops;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 77ec6499f9c3..337eb3f86b8d 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -100,6 +100,8 @@ enum ath10k_htc_conn_flags {
- #define ATH10K_HTC_CONN_FLAGS_RECV_ALLOC_LSB  8
- };
- 
-+#define ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK 0xFFF
-+
- enum ath10k_htc_conn_svc_status {
- 	ATH10K_HTC_CONN_SVC_STATUS_SUCCESS      = 0,
- 	ATH10K_HTC_CONN_SVC_STATUS_NOT_FOUND    = 1,
-@@ -136,8 +138,14 @@ struct ath10k_htc_ready_extended {
- 	struct ath10k_htc_ready base;
- 	u8 htc_version; /* @enum ath10k_htc_version */
- 	u8 max_msgs_per_htc_bundle;
--	u8 pad0;
--	u8 pad1;
-+	union {
-+		__le16 reserved;
-+		struct {
-+			u8 pad0;
-+			u8 pad1;
-+		} __packed;
-+	} __packed;
-+
- } __packed;
- 
- struct ath10k_htc_conn_svc {
-@@ -374,6 +382,7 @@ struct ath10k_htc {
- 	int total_transmit_credits;
- 	int target_credit_size;
- 	u8 max_msgs_per_htc_bundle;
-+	int alt_data_credit_size;
- };
- 
- int ath10k_htc_init(struct ath10k *ar);
+ /*
+  * Some users have reported their EEPROM programmed with
+- * 0x8000 set, this is not a supported regulatory domain
+- * but since we have more than one user with it we need
+- * a solution for them. We default to 0x64, which is the
+- * default Atheros world regulatory domain.
++ * 0x8000 or 0x0 set, this is not a supported regulatory
++ * domain but since we have more than one user with it we
++ * need a solution for them. We default to 0x64, which is
++ * the default Atheros world regulatory domain.
+  */
+ static void ath_regd_sanitize(struct ath_regulatory *reg)
+ {
+-	if (reg->current_rd != COUNTRY_ERD_FLAG)
++	if (reg->current_rd != COUNTRY_ERD_FLAG && reg->current_rd != 0)
+ 		return;
+ 	printk(KERN_DEBUG "ath: EEPROM regdomain sanitized\n");
+ 	reg->current_rd = 0x64;
 -- 
 2.23.0
 
