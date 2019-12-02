@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186])
+Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ibiVQ-0003Q7-Nl
- for ath10k@lists.infradead.org; Mon, 02 Dec 2019 10:00:40 +0000
+ id 1ibicD-0005dD-5n
+ for ath10k@lists.infradead.org; Mon, 02 Dec 2019 10:07:38 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v6] ath10k: enable napi on RX path for sdio
+Subject: Re: [PATCH] ath10k: change bundle count for max rx bundle for sdio
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191014114753.7459-1-wgong@codeaurora.org>
-References: <20191014114753.7459-1-wgong@codeaurora.org>
-Message-ID: <0101016ec60df3c7-ee61b7de-3557-4084-8145-15e3fd562161-000000@us-west-2.amazonses.com>
-Date: Mon, 2 Dec 2019 10:00:33 +0000
+In-Reply-To: <0101016ea72cd3fc-d998517d-4033-4659-b1f8-2b6dd2717682-000000@us-west-2.amazonses.com>
+References: <0101016ea72cd3fc-d998517d-4033-4659-b1f8-2b6dd2717682-000000@us-west-2.amazonses.com>
+Message-ID: <0101016ec614610c-2702f676-611d-4d34-b5e5-cb4f665a87aa-000000@us-west-2.amazonses.com>
+Date: Mon, 2 Dec 2019 10:07:34 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,76 +27,37 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> wrote:
 
-> For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
-> of tcp data from remote, then it will have many small length packets
-> on TX path of sdio bus, then it reduce the RX packets's bandwidth of
-> tcp.
+> For max bundle size 32, the bundle mask is not same with 8/16.
+> Change it to match the max bundle size of htc. Otherwise it
+> will not match with firmware, for example, when bundle count
+> is 17, then flags of ath10k_htc_hdr is 0x4, if without this
+> patch, it will be considered as non-bundled packet because it
+> does not have mask 0xF0, then trigger error message later:
+> payload length 56747 exceeds max htc length: 4088.
 > 
-> This patch enable napi on RX path, then the RX packet of tcp will not
-> feed to tcp stack immeditely from mac80211 since GRO is enabled by
-> default, it will feed to tcp stack after napi complete, if rx bundle
-> is enabled, then it will feed to tcp stack one time for each bundle
-> of RX. For example, RX bundle size is 32, then tcp stack will receive
-> one large length packet, its length is neary 1500*32, then tcp stack
-> will send a tcp ack for this large packet, this will reduce the tcp
-> acks ratio from 1/2 to 1/32. This results in significant performance
-> improvement for tcp RX.
+> htc->max_msgs_per_htc_bundle is the min value of
+> HTC_HOST_MAX_MSG_PER_RX_BUNDLE and
+> msg->ready_ext.max_msgs_per_htc_bundle of ath10k_htc_wait_target,
+> it will be sent to firmware later in ath10k_htc_start, then
+> firmware will use it as the final max rx bundle count, in
+> WLAN.RMH.4.4.1-00029, msg->ready_ext.max_msgs_per_htc_bundle
+> is 32, it is same with HTC_HOST_MAX_MSG_PER_RX_BUNDLE, so the
+> final max rx bundle count will be set to 32 in firmware.
 > 
-> Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
-> with this patch. The cpu usage has no obvious difference with and
-> without NAPI.
+> This patch only effect sdio chips.
 > 
-> call stack for each RX packet on GRO path:
-> (skb length is about 1500 bytes)
->   skb_gro_receive ([kernel.kallsyms])
->   tcp4_gro_receive ([kernel.kallsyms])
->   inet_gro_receive ([kernel.kallsyms])
->   dev_gro_receive ([kernel.kallsyms])
->   napi_gro_receive ([kernel.kallsyms])
->   ieee80211_deliver_skb ([mac80211])
->   ieee80211_rx_handlers ([mac80211])
->   ieee80211_prepare_and_rx_handle ([mac80211])
->   ieee80211_rx_napi ([mac80211])
->   ath10k_htt_rx_proc_rx_ind_hl ([ath10k_core])
->   ath10k_htt_rx_pktlog_completion_handler ([ath10k_core])
->   ath10k_sdio_napi_poll ([ath10k_sdio])
->   net_rx_action ([kernel.kallsyms])
->   softirqentry_text_start ([kernel.kallsyms])
->   do_softirq ([kernel.kallsyms])
-> 
-> call stack for napi complete and send tcp ack from tcp stack:
-> (skb length is about 1500*32 bytes)
->  _tcp_ack_snd_check ([kernel.kallsyms])
->  tcp_v4_do_rcv ([kernel.kallsyms])
->  tcp_v4_rcv ([kernel.kallsyms])
->  local_deliver_finish ([kernel.kallsyms])
->  ip_local_deliver ([kernel.kallsyms])
->  ip_rcv_finish ([kernel.kallsyms])
->  ip_rcv ([kernel.kallsyms])
->  netif_receive_skb_core ([kernel.kallsyms])
->  netif_receive_skb_one_core([kernel.kallsyms])
->  netif_receive_skb ([kernel.kallsyms])
->  netif_receive_skb_internal ([kernel.kallsyms])
->  napi_gro_complete ([kernel.kallsyms])
->  napi_gro_flush ([kernel.kallsyms])
->  napi_complete_done ([kernel.kallsyms])
->  ath10k_sdio_napi_poll ([ath10k_sdio])
->  net_rx_action ([kernel.kallsyms])
->  __softirqentry_text_start ([kernel.kallsyms])
->  do_softirq ([kernel.kallsyms])
-> 
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
 > 
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Fixes: 224776520ead69e ("ath10k: change max RX bundle size from 8 to 32 for sdio")
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-cfee8793a74d ath10k: enable napi on RX path for sdio
+4a9912451630 ath10k: change bundle count for max rx bundle for sdio
 
 -- 
-https://patchwork.kernel.org/patch/11188393/
+https://patchwork.kernel.org/patch/11261779/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
