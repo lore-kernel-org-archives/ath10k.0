@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
+Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ibhOU-000724-43
- for ath10k@lists.infradead.org; Mon, 02 Dec 2019 08:49:23 +0000
-Subject: RE: [PATCH v7 0/3] ath10k: improve throughout of TX of sdio
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Mon, 2 Dec 2019 08:49:04 +0000
-Message-ID: <5a0a6348feea46ae93c055189168d41f@aptaiexm02f.ap.qualcomm.com>
-References: <20191018072750.10372-1-wgong@codeaurora.org>
-In-Reply-To: <20191018072750.10372-1-wgong@codeaurora.org>
-Content-Language: en-US
+ id 1ibiVQ-0003Q7-Nl
+ for ath10k@lists.infradead.org; Mon, 02 Dec 2019 10:00:40 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH v6] ath10k: enable napi on RX path for sdio
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20191014114753.7459-1-wgong@codeaurora.org>
+References: <20191014114753.7459-1-wgong@codeaurora.org>
+Message-ID: <0101016ec60df3c7-ee61b7de-3557-4084-8145-15e3fd562161-000000@us-west-2.amazonses.com>
+Date: Mon, 2 Dec 2019 10:00:33 +0000
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +22,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-> -----Original Message-----
-> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
-> Sent: Friday, October 18, 2019 3:28 PM
-> To: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Subject: [EXT] [PATCH v7 0/3] ath10k: improve throughout of TX of sdio
+Wen Gong <wgong@codeaurora.org> wrote:
+
+> For tcp RX, the quantity of tcp acks to remote is 1/2 of the quantity
+> of tcp data from remote, then it will have many small length packets
+> on TX path of sdio bus, then it reduce the RX packets's bandwidth of
+> tcp.
 > 
-V8 sent:
-https://patchwork.kernel.org/cover/11265701/
-[v8,0/4] ath10k: improve throughout of TX of sdio 
-[v8,1/4] ath10k: disable TX complete indication of htt for sdio  
-[v8,2/4] ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024  
-[v8,3/4] ath10k: add htt TX bundle for sdio  
-[v8,4/4] ath10k: enable alt data of TX path for sdio
+> This patch enable napi on RX path, then the RX packet of tcp will not
+> feed to tcp stack immeditely from mac80211 since GRO is enabled by
+> default, it will feed to tcp stack after napi complete, if rx bundle
+> is enabled, then it will feed to tcp stack one time for each bundle
+> of RX. For example, RX bundle size is 32, then tcp stack will receive
+> one large length packet, its length is neary 1500*32, then tcp stack
+> will send a tcp ack for this large packet, this will reduce the tcp
+> acks ratio from 1/2 to 1/32. This results in significant performance
+> improvement for tcp RX.
+> 
+> Tcp rx throughout is 240Mbps without this patch, and it arrive 390Mbps
+> with this patch. The cpu usage has no obvious difference with and
+> without NAPI.
+> 
+> call stack for each RX packet on GRO path:
+> (skb length is about 1500 bytes)
+>   skb_gro_receive ([kernel.kallsyms])
+>   tcp4_gro_receive ([kernel.kallsyms])
+>   inet_gro_receive ([kernel.kallsyms])
+>   dev_gro_receive ([kernel.kallsyms])
+>   napi_gro_receive ([kernel.kallsyms])
+>   ieee80211_deliver_skb ([mac80211])
+>   ieee80211_rx_handlers ([mac80211])
+>   ieee80211_prepare_and_rx_handle ([mac80211])
+>   ieee80211_rx_napi ([mac80211])
+>   ath10k_htt_rx_proc_rx_ind_hl ([ath10k_core])
+>   ath10k_htt_rx_pktlog_completion_handler ([ath10k_core])
+>   ath10k_sdio_napi_poll ([ath10k_sdio])
+>   net_rx_action ([kernel.kallsyms])
+>   softirqentry_text_start ([kernel.kallsyms])
+>   do_softirq ([kernel.kallsyms])
+> 
+> call stack for napi complete and send tcp ack from tcp stack:
+> (skb length is about 1500*32 bytes)
+>  _tcp_ack_snd_check ([kernel.kallsyms])
+>  tcp_v4_do_rcv ([kernel.kallsyms])
+>  tcp_v4_rcv ([kernel.kallsyms])
+>  local_deliver_finish ([kernel.kallsyms])
+>  ip_local_deliver ([kernel.kallsyms])
+>  ip_rcv_finish ([kernel.kallsyms])
+>  ip_rcv ([kernel.kallsyms])
+>  netif_receive_skb_core ([kernel.kallsyms])
+>  netif_receive_skb_one_core([kernel.kallsyms])
+>  netif_receive_skb ([kernel.kallsyms])
+>  netif_receive_skb_internal ([kernel.kallsyms])
+>  napi_gro_complete ([kernel.kallsyms])
+>  napi_gro_flush ([kernel.kallsyms])
+>  napi_complete_done ([kernel.kallsyms])
+>  ath10k_sdio_napi_poll ([ath10k_sdio])
+>  net_rx_action ([kernel.kallsyms])
+>  __softirqentry_text_start ([kernel.kallsyms])
+>  do_softirq ([kernel.kallsyms])
+> 
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+cfee8793a74d ath10k: enable napi on RX path for sdio
+
+-- 
+https://patchwork.kernel.org/patch/11188393/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
