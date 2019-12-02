@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ibisK-0003Pq-HR
- for ath10k@lists.infradead.org; Mon, 02 Dec 2019 10:24:18 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath: add support for special 0x0 regulatory domain
-References: <0101016eb614d832-1f2459b1-1555-4ce7-8f90-5704d201bc10-000000@us-west-2.amazonses.com>
- <20191202100833.0C1B9C433CB@smtp.codeaurora.org>
- <82cf5270f491b1e40640eab23a3b9fb7@codeaurora.org>
-Date: Mon, 2 Dec 2019 10:24:14 +0000
-In-Reply-To: <82cf5270f491b1e40640eab23a3b9fb7@codeaurora.org>
- (wgong@codeaurora.org's message of "Mon, 02 Dec 2019 18:14:51 +0800")
-Message-ID: <0101016ec623a065-20e7f12b-df17-441e-aa96-5c279489704e-000000@us-west-2.amazonses.com>
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ibqGL-0002ew-Cr
+ for ath10k@lists.infradead.org; Mon, 02 Dec 2019 18:17:34 +0000
+Subject: Re: [PATCH] ath10k: set WMI_PEER_AUTHORIZE after a firmware crash
+References: <0101016eaadee57a-54500c6d-4751-423f-8bab-5acd8fad2175-000000@us-west-2.amazonses.com>
+ <0101016eb61d9520-b0306a23-c9b9-4b57-b708-9f80ac47eef1-000000@us-west-2.amazonses.com>
+ <CAMrEMU-VOYeHO2F5AjyWJLqgEVq5HOUHZkMJqGio1qovFPo8ug@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <b5404ac0-1be1-229f-a9e3-8033cdf7eea9@candelatech.com>
+Date: Mon, 2 Dec 2019 10:17:30 -0800
 MIME-Version: 1.0
+In-Reply-To: <CAMrEMU-VOYeHO2F5AjyWJLqgEVq5HOUHZkMJqGio1qovFPo8ug@mail.gmail.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +22,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: wgong@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Justin Capella <justincapella@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-wgong@codeaurora.org writes:
+On 12/1/19 8:45 PM, Justin Capella wrote:
+> Are there security concerns here? Was the peer known to be authorized
+> beforehand? Would it be better to just trash the peer in the event of
+> a fw crash?
 
-> On 2019-12-02 18:08, Kalle Valo wrote:
+I think you should completely re-associate the peer(s) when firmware
+crashes.  The driver does not cache all possible changes, so it cannot
+exactly rebuild the config to the previous state.
+
+Thanks,
+Ben
+
+> 
+> On Thu, Nov 28, 2019 at 11:46 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>>
 >> Wen Gong <wgong@codeaurora.org> wrote:
 >>
->>> Some sdio chips of rome QCA6174's regulatory domain code of EEPROM is
->>> empty, then ath_is_world_regd will return false for this case, and
->>> it will lead function __ath_reg_dyn_country not work, thus the
->>> regdomain
->>> will not update for NL80211_REGDOM_SET_BY_COUNTRY_IE type, it result
->>> ath10k set the same regdomain/reg_5ghz_ctl/reg_2ghz_ctl to firmware,
->>> then the tx power will not changed with different regdomain's AP. The
->>> regulatory domain code of EEPROM of some QCA6174 PCIE chip is 0x6c, it
->>> means world wide regdomain, for this chip, it does not have the issue.
+>>> After the firmware crashes ath10k recovers via ieee80211_reconfig(),
+>>> which eventually leads to firmware configuration and including the
+>>> encryption keys. However, because there is no new auth/assoc and
+>>> 4-way-handshake, and firmware set the authorize flag after
+>>> 4-way-handshake, so the authorize flag in firmware is not set in
+>>> firmware without 4-way-handshake. This will lead to a failure of data
+>>> transmission after recovery done when using encrypted connections like
+>>> WPA-PSK. Set authorize flag after installing keys to firmware will fix
+>>> the issue.
 >>>
->>> For empty reulatory domain code chip, set it to world regulatory
->>> domain
->>> in functio ath_regd_sanitize, then it will fix the issue.
+>>> This was noticed by testing firmware crashing using simulate_fw_crash
+>>> debugfs file.
 >>>
->>> Tested with QCA6174 SDIO with firmware
->>> WLAN.RMH.4.4.1-00029.
+>>> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
 >>>
 >>> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 >>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 >>
 >> Patch applied to ath-next branch of ath.git, thanks.
 >>
->> 2dc016599cfa ath: add support for special 0x0 regulatory domain
-> But I did not see it in ath-next now.
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/log/drivers/net/wireless/ath?h=ath-next
-> is it has some delay?
+>> 382e51c139ef ath10k: set WMI_PEER_AUTHORIZE after a firmware crash
+>>
+>> --
+>> https://patchwork.kernel.org/patch/11263357/
+>>
+>> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>>
+> 
 
-Yes, it takes some time for me to apply other patches, merge branches,
-servers sync etc. If you don't see the commit in the repository in 2
-hours from me sending the "applied" mail, then do let me know as
-something might be wrong. But before that just wait patiently :)
-
-But now the commit is there:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=2dc016599cfa9672a147528ca26d70c3654a5423
 
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
