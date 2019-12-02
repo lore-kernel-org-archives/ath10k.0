@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
+Received: from alexa-out-tai-01.qualcomm.com ([103.229.16.226])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ibdaN-0008LG-Kv
- for ath10k@lists.infradead.org; Mon, 02 Dec 2019 04:45:26 +0000
-Received: by mail-oi1-x241.google.com with SMTP id a124so7545808oii.13
- for <ath10k@lists.infradead.org>; Sun, 01 Dec 2019 20:45:23 -0800 (PST)
+ id 1ibhOU-000724-43
+ for ath10k@lists.infradead.org; Mon, 02 Dec 2019 08:49:23 +0000
+Subject: RE: [PATCH v7 0/3] ath10k: improve throughout of TX of sdio
+From: Wen Gong <wgong@qti.qualcomm.com>
+Date: Mon, 2 Dec 2019 08:49:04 +0000
+Message-ID: <5a0a6348feea46ae93c055189168d41f@aptaiexm02f.ap.qualcomm.com>
+References: <20191018072750.10372-1-wgong@codeaurora.org>
+In-Reply-To: <20191018072750.10372-1-wgong@codeaurora.org>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <0101016eaadee57a-54500c6d-4751-423f-8bab-5acd8fad2175-000000@us-west-2.amazonses.com>
- <0101016eb61d9520-b0306a23-c9b9-4b57-b708-9f80ac47eef1-000000@us-west-2.amazonses.com>
-In-Reply-To: <0101016eb61d9520-b0306a23-c9b9-4b57-b708-9f80ac47eef1-000000@us-west-2.amazonses.com>
-From: Justin Capella <justincapella@gmail.com>
-Date: Sun, 1 Dec 2019 20:45:08 -0800
-Message-ID: <CAMrEMU-VOYeHO2F5AjyWJLqgEVq5HOUHZkMJqGio1qovFPo8ug@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: set WMI_PEER_AUTHORIZE after a firmware crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +23,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Are there security concerns here? Was the peer known to be authorized
-beforehand? Would it be better to just trash the peer in the event of
-a fw crash?
-
-On Thu, Nov 28, 2019 at 11:46 PM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Wen Gong <wgong@codeaurora.org> wrote:
->
-> > After the firmware crashes ath10k recovers via ieee80211_reconfig(),
-> > which eventually leads to firmware configuration and including the
-> > encryption keys. However, because there is no new auth/assoc and
-> > 4-way-handshake, and firmware set the authorize flag after
-> > 4-way-handshake, so the authorize flag in firmware is not set in
-> > firmware without 4-way-handshake. This will lead to a failure of data
-> > transmission after recovery done when using encrypted connections like
-> > WPA-PSK. Set authorize flag after installing keys to firmware will fix
-> > the issue.
-> >
-> > This was noticed by testing firmware crashing using simulate_fw_crash
-> > debugfs file.
-> >
-> > Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00007-QCARMSWP-1.
-> >
-> > Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->
-> Patch applied to ath-next branch of ath.git, thanks.
->
-> 382e51c139ef ath10k: set WMI_PEER_AUTHORIZE after a firmware crash
->
-> --
-> https://patchwork.kernel.org/patch/11263357/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
->
+> -----Original Message-----
+> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
+> Sent: Friday, October 18, 2019 3:28 PM
+> To: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Subject: [EXT] [PATCH v7 0/3] ath10k: improve throughout of TX of sdio
+> 
+V8 sent:
+https://patchwork.kernel.org/cover/11265701/
+[v8,0/4] ath10k: improve throughout of TX of sdio 
+[v8,1/4] ath10k: disable TX complete indication of htt for sdio  
+[v8,2/4] ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024  
+[v8,3/4] ath10k: add htt TX bundle for sdio  
+[v8,4/4] ath10k: enable alt data of TX path for sdio
 
 _______________________________________________
 ath10k mailing list
