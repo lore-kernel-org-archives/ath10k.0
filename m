@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieo2p-00047P-TK
- for ath10k@lists.infradead.org; Tue, 10 Dec 2019 22:31:54 +0000
+ id 1ieo5B-0005ex-7U
+ for ath10k@lists.infradead.org; Tue, 10 Dec 2019 22:34:18 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 64/91] ath10k: fix get invalid tx rate for Mesh
+Subject: [PATCH AUTOSEL 4.4 51/71] ath10k: fix get invalid tx rate for Mesh
  metric
-Date: Tue, 10 Dec 2019 17:30:08 -0500
-Message-Id: <20191210223035.14270-64-sashal@kernel.org>
-In-Reply-To: <20191210223035.14270-1-sashal@kernel.org>
-References: <20191210223035.14270-1-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 17:32:56 -0500
+Message-Id: <20191210223316.14988-51-sashal@kernel.org>
+In-Reply-To: <20191210223316.14988-1-sashal@kernel.org>
+References: <20191210223316.14988-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -48,10 +48,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 9852c5d51139e..beeb6be06939b 100644
+index 6d1105ab4592b..f9d0f8372e3fd 100644
 --- a/drivers/net/wireless/ath/ath10k/txrx.c
 +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -99,6 +99,8 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+@@ -96,6 +96,8 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
  
  	info = IEEE80211_SKB_CB(msdu);
  	memset(&info->status, 0, sizeof(info->status));
@@ -59,7 +59,7 @@ index 9852c5d51139e..beeb6be06939b 100644
 +
  	trace_ath10k_txrx_tx_unref(ar, tx_done->msdu_id);
  
- 	if (tx_done->status == HTT_TX_COMPL_STATE_DISCARD) {
+ 	if (tx_done->discard) {
 -- 
 2.20.1
 
