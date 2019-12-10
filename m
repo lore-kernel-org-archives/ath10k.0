@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ien0n-0007gT-F4
- for ath10k@lists.infradead.org; Tue, 10 Dec 2019 21:25:43 +0000
+ id 1ien7V-0001iY-U5
+ for ath10k@lists.infradead.org; Tue, 10 Dec 2019 21:32:39 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.3 024/292] ath10k: fix backtrace on coredump
-Date: Tue, 10 Dec 2019 16:20:43 -0500
-Message-Id: <20191210212511.11392-24-sashal@kernel.org>
-In-Reply-To: <20191210212511.11392-1-sashal@kernel.org>
-References: <20191210212511.11392-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 013/177] ath10k: fix backtrace on coredump
+Date: Tue, 10 Dec 2019 16:29:37 -0500
+Message-Id: <20191210213221.11921-13-sashal@kernel.org>
+In-Reply-To: <20191210213221.11921-1-sashal@kernel.org>
+References: <20191210213221.11921-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -63,10 +63,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index b6d2932383cf6..1cfe75a2d0c3a 100644
+index 4d28063052fec..385b84f24322d 100644
 --- a/drivers/net/wireless/ath/ath10k/coredump.c
 +++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -1208,9 +1208,11 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
+@@ -1105,9 +1105,11 @@ static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar)
  		dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
  		dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_RAM_DATA);
  		dump_tlv->tlv_len = cpu_to_le32(crash_data->ramdump_buf_len);
@@ -80,8 +80,8 @@ index b6d2932383cf6..1cfe75a2d0c3a 100644
 +		}
  	}
  
- 	mutex_unlock(&ar->dump_mutex);
-@@ -1257,6 +1259,9 @@ int ath10k_coredump_register(struct ath10k *ar)
+ 	spin_unlock_bh(&ar->data_lock);
+@@ -1154,6 +1156,9 @@ int ath10k_coredump_register(struct ath10k *ar)
  	if (test_bit(ATH10K_FW_CRASH_DUMP_RAM_DATA, &ath10k_coredump_mask)) {
  		crash_data->ramdump_buf_len = ath10k_coredump_get_ramdump_size(ar);
  
