@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ienbK-00005N-7H
- for ath10k@lists.infradead.org; Tue, 10 Dec 2019 22:03:27 +0000
+ id 1iencn-0000rm-GY
+ for ath10k@lists.infradead.org; Tue, 10 Dec 2019 22:04:58 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 020/130] ath10k: fix offchannel tx failure when
- no ath10k_mac_tx_frm_has_freq
-Date: Tue, 10 Dec 2019 17:01:11 -0500
-Message-Id: <20191210220301.13262-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 097/130] ath10k: fix get invalid tx rate for Mesh
+ metric
+Date: Tue, 10 Dec 2019 17:02:28 -0500
+Message-Id: <20191210220301.13262-97-sashal@kernel.org>
 In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
 References: <20191210220301.13262-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,120 +24,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Antonio Quartulli <antonio.quartulli@kaiwoo.ai>, Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, Miaoqing Pan <miaoqing@codeaurora.org>, netdev@vger.kernel.org, Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Hou Bao Hou <houbao@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Ben Greear <greearb@candelatech.com>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-[ Upstream commit cc6df017e55764ffef9819dd9554053182535ffd ]
+[ Upstream commit 05a11003a56507023f18d3249a4d4d119c0a3e9c ]
 
-Offchannel management frames were failing:
+ath10k does not provide transmit rate info per MSDU
+in tx completion, mark that as -1 so mac80211
+will ignore the rates. This fixes mac80211 update Mesh
+link metric with invalid transmit rate info.
 
-[18099.253732] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
-[18102.293686] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
-[18105.333653] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
-[18108.373712] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3780
-[18111.413687] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e36c0
-[18114.453726] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3f00
-[18117.493773] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e36c0
-[18120.533631] ath10k_pci 0000:01:00.0: timed out waiting for offchannel skb cf0e3f00
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00035
 
-This bug appears to have been added between 4.0 (which works for us),
-and 4.4, which does not work.
-
-I think this is because the tx-offchannel logic gets in a loop when
-ath10k_mac_tx_frm_has_freq(ar) is false, so pkt is never actually
-sent to the firmware for transmit.
-
-This patch fixes the problem on 4.9 for me, and now HS20 clients
-can work again with my firmware.
-
-Antonio: tested with 10.4-3.5.3-00057 on QCA4019 and QCA9888
-
-Signed-off-by: Ben Greear <greearb@candelatech.com>
-Tested-by: Antonio Quartulli <antonio.quartulli@kaiwoo.ai>
-[kvalo@codeaurora.org: improve commit log, remove unneeded parenthesis]
+Signed-off-by: Hou Bao Hou <houbao@codeaurora.org>
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/txrx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index dff34448588f0..ea47ad4b2343b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3627,7 +3627,7 @@ static int ath10k_mac_tx(struct ath10k *ar,
- 			 struct ieee80211_vif *vif,
- 			 enum ath10k_hw_txrx_mode txmode,
- 			 enum ath10k_mac_tx_path txpath,
--			 struct sk_buff *skb)
-+			 struct sk_buff *skb, bool noque_offchan)
- {
- 	struct ieee80211_hw *hw = ar->hw;
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-@@ -3655,10 +3655,10 @@ static int ath10k_mac_tx(struct ath10k *ar,
- 		}
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index d4986f626c35c..9999c8c40269d 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -100,6 +100,8 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
  
--	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
-+	if (!noque_offchan && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
--			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %pK\n",
--				   skb);
-+			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %pK len %d\n",
-+				   skb, skb->len);
+ 	info = IEEE80211_SKB_CB(msdu);
+ 	memset(&info->status, 0, sizeof(info->status));
++	info->status.rates[0].idx = -1;
++
+ 	trace_ath10k_txrx_tx_unref(ar, tx_done->msdu_id);
  
- 			skb_queue_tail(&ar->offchan_tx_queue, skb);
- 			ieee80211_queue_work(hw, &ar->offchan_tx_work);
-@@ -3720,8 +3720,8 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 
- 		mutex_lock(&ar->conf_mutex);
- 
--		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK\n",
--			   skb);
-+		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK len %d\n",
-+			   skb, skb->len);
- 
- 		hdr = (struct ieee80211_hdr *)skb->data;
- 		peer_addr = ieee80211_get_DA(hdr);
-@@ -3767,7 +3767,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 		txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
- 
--		ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
-+		ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, true);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to transmit offchannel frame: %d\n",
- 				    ret);
-@@ -3777,8 +3777,8 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		time_left =
- 		wait_for_completion_timeout(&ar->offchan_tx_completed, 3 * HZ);
- 		if (time_left == 0)
--			ath10k_warn(ar, "timed out waiting for offchannel skb %pK\n",
--				    skb);
-+			ath10k_warn(ar, "timed out waiting for offchannel skb %pK, len: %d\n",
-+				    skb, skb->len);
- 
- 		if (!peer && tmp_peer_created) {
- 			ret = ath10k_peer_delete(ar, vdev_id, peer_addr);
-@@ -3957,7 +3957,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 	}
- 
--	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
-+	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, false);
- 	if (unlikely(ret)) {
- 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
- 
-@@ -4239,7 +4239,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 	}
- 
--	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
-+	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, false);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
- 		if (is_htt) {
+ 	if (tx_done->status == HTT_TX_COMPL_STATE_DISCARD) {
 -- 
 2.20.1
 
