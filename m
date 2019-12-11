@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifBSl-0002Jt-AC
+ id 1ifBSl-0002Js-AB
  for ath10k@lists.infradead.org; Wed, 11 Dec 2019 23:32:13 +0000
-Received: by mail-ot1-x342.google.com with SMTP id h20so441226otn.5
+Received: by mail-ot1-x342.google.com with SMTP id 77so431677oty.6
  for <ath10k@lists.infradead.org>; Wed, 11 Dec 2019 15:32:11 -0800 (PST)
 MIME-Version: 1.0
 In-Reply-To: <CADe2dM7GWv2mGak-XyvKz6sWj5Tb7i-P_oRvQtEo5B9N_mEnyg@mail.gmail.com>
 References: <CADe2dM7GWv2mGak-XyvKz6sWj5Tb7i-P_oRvQtEo5B9N_mEnyg@mail.gmail.com>
 From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Thu, 12 Dec 2019 00:32:10 +0100
-Message-ID: <CAKR_QVLD8+Y+8zWpRjSR7BQiRpgebjSj-SVu+e5XG0UVZaaQ9g@mail.gmail.com>
+Date: Thu, 12 Dec 2019 00:32:09 +0100
+Message-ID: <CAKR_QVK9_7oUyFYR_FbmJLwEYPpGjc+tPu2SEL4-WO6M-oJzfA@mail.gmail.com>
 Subject: Re: Cannot bring up SDIO based 9377 (dma_alloc_coherent() fails)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
