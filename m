@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifiva-0000F7-L7
- for ath10k@lists.infradead.org; Fri, 13 Dec 2019 11:16:12 +0000
-Received: by mail-oi1-x235.google.com with SMTP id v10so715336oiv.12
- for <ath10k@lists.infradead.org>; Fri, 13 Dec 2019 03:16:10 -0800 (PST)
+ id 1ifq1n-0004ek-O5
+ for ath10k@lists.infradead.org; Fri, 13 Dec 2019 18:51:08 +0000
+Date: Fri, 13 Dec 2019 21:50:50 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] mmc: core: Re-work HW reset for SDIO cards
+Message-ID: <20191213185050.m6iku7defq44syrl@kili.mountain>
 MIME-Version: 1.0
-From: Justin Capella <justincapella@gmail.com>
-Date: Fri, 13 Dec 2019 03:15:57 -0800
-Message-ID: <CAMrEMU9Mz+0RNmmGQHic_cWPf45LHeK3Mzcy6a=GuYkvgdN+RQ@mail.gmail.com>
-Subject: qca988x fw crash/unrecoverable pcie errors causes error loop
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +21,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: linux-wireless@vger.kernel.org
+To: ulf.hansson@linaro.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Paste: http://ix.io/24hJ
+Hello Ulf Hansson,
 
-I think a station went out of range, and somehow that crashed the fw,
-but when it tried to recover it was unable to read CE, and so fails to
-recover, eventually an correctable PCI error occurred but *80211_ in
-an attempt to reconfig is trying to stop all interfaces, which
-includes stopping aggregation for the peers...
+The patch 2ac55d5e5ec9: "mmc: core: Re-work HW reset for SDIO cards"
+from Oct 17, 2019, leads to the following static checker warning:
+
+	drivers/net/wireless/ath/ath10k/sdio.c:1521 ath10k_sdio_hif_power_down()
+	warn: 'ret' can be either negative or positive
+
+drivers/net/wireless/ath/ath10k/sdio.c
+  1495  static void ath10k_sdio_hif_power_down(struct ath10k *ar)
+  1496  {
+  1497          struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+  1498          int ret;
+  1499  
+  1500          if (ar_sdio->is_disabled)
+  1501                  return;
+  1502  
+  1503          ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio power off\n");
+  1504  
+  1505          /* Disable the card */
+  1506          sdio_claim_host(ar_sdio->func);
+  1507  
+  1508          ret = sdio_disable_func(ar_sdio->func);
+  1509          if (ret) {
+  1510                  ath10k_warn(ar, "unable to disable sdio function: %d\n", ret);
+  1511                  sdio_release_host(ar_sdio->func);
+  1512                  return;
+  1513          }
+  1514  
+  1515          ret = mmc_hw_reset(ar_sdio->func->card->host);
+  1516          if (ret)
+
+It used to be that mmc_hw_reset() return negative error codes or zero
+but now it returns 1 on certain success paths.
+
+  1517                  ath10k_warn(ar, "unable to reset sdio: %d\n", ret);
+  1518  
+  1519          sdio_release_host(ar_sdio->func);
+  1520  
+  1521          ar_sdio->is_disabled = true;
+  1522  }
+
+
+regards,
+dan carpenter
 
 _______________________________________________
 ath10k mailing list
