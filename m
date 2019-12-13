@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp2120.oracle.com ([141.146.126.78])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifq1n-0004ek-O5
- for ath10k@lists.infradead.org; Fri, 13 Dec 2019 18:51:08 +0000
-Date: Fri, 13 Dec 2019 21:50:50 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] mmc: core: Re-work HW reset for SDIO cards
-Message-ID: <20191213185050.m6iku7defq44syrl@kili.mountain>
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ifsu6-0001gy-Fg
+ for ath10k@lists.infradead.org; Fri, 13 Dec 2019 21:55:20 +0000
+Subject: Re: [PATCH] ath10k: Fix setting txpower to zero.
+References: <20191212171409.21041-1-greearb@candelatech.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <a56bee1a-e3b9-2999-f643-d10ebe5d4726@candelatech.com>
+Date: Fri, 13 Dec 2019 13:55:17 -0800
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <20191212171409.21041-1-greearb@candelatech.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,58 +20,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ulf.hansson@linaro.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
 
-Hello Ulf Hansson,
+On 12/12/19 9:14 AM, greearb@candelatech.com wrote:
+> From: Ben Greear <greearb@candelatech.com>
+> 
+> Do not ignore 0 txpower setting unless the vif is of type p2p.
 
-The patch 2ac55d5e5ec9: "mmc: core: Re-work HW reset for SDIO cards"
-from Oct 17, 2019, leads to the following static checker warning:
+My patch has problems I think:  secondary stations also have un-init
+txpower when they are first built and start scanning.
 
-	drivers/net/wireless/ath/ath10k/sdio.c:1521 ath10k_sdio_hif_power_down()
-	warn: 'ret' can be either negative or positive
+So, I'm going to try setting txpower to -1 in mac80211 and use that
+to mean 'unset'.
 
-drivers/net/wireless/ath/ath10k/sdio.c
-  1495  static void ath10k_sdio_hif_power_down(struct ath10k *ar)
-  1496  {
-  1497          struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-  1498          int ret;
-  1499  
-  1500          if (ar_sdio->is_disabled)
-  1501                  return;
-  1502  
-  1503          ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio power off\n");
-  1504  
-  1505          /* Disable the card */
-  1506          sdio_claim_host(ar_sdio->func);
-  1507  
-  1508          ret = sdio_disable_func(ar_sdio->func);
-  1509          if (ret) {
-  1510                  ath10k_warn(ar, "unable to disable sdio function: %d\n", ret);
-  1511                  sdio_release_host(ar_sdio->func);
-  1512                  return;
-  1513          }
-  1514  
-  1515          ret = mmc_hw_reset(ar_sdio->func->card->host);
-  1516          if (ret)
+Thanks,
+Ben
 
-It used to be that mmc_hw_reset() return negative error codes or zero
-but now it returns 1 on certain success paths.
+> 
+> This should fix regression in:
+> 
+> commit 88407beb1b1462f706a1950a355fd086e1c450b6
+> Author: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> Date:   Tue Dec 13 14:55:19 2016 -0800
+> 
+>      ath10k: fix incorrect txpower set by P2P_DEVICE interface
+> 
+> Tested (without p2p in use) on 9984 with ath10k-ct firmware, but I don't think
+> this is firmware specific.
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/mac.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 289d03da14b2..1c5e1b5570f8 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5902,11 +5902,18 @@ static int ath10k_mac_txpower_recalc(struct ath10k *ar)
+>   {
+>   	struct ath10k_vif *arvif;
+>   	int ret, txpower = -1;
+> +	int p2p_st;
+> +
+> +	p2p_st = ath10k_wmi_get_vdev_subtype(ar, WMI_VDEV_SUBTYPE_P2P_DEVICE);
+>   
+>   	lockdep_assert_held(&ar->conf_mutex);
+>   
+>   	list_for_each_entry(arvif, &ar->arvifs, list) {
+> -		if (arvif->txpower <= 0)
+> +		/* p2p may not initialize txpower, and we should ignore it
+> +		 * in that case.
+> +		 */
+> +		if ((arvif->txpower < 0) ||
+> +		    ((arvif->txpower == 0) && (arvif->vdev_subtype == p2p_st)))
+>   			continue;
+>   
+>   		if (txpower == -1)
+> 
 
-  1517                  ath10k_warn(ar, "unable to reset sdio: %d\n", ret);
-  1518  
-  1519          sdio_release_host(ar_sdio->func);
-  1520  
-  1521          ar_sdio->is_disabled = true;
-  1522  }
 
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-regards,
-dan carpenter
 
 _______________________________________________
 ath10k mailing list
