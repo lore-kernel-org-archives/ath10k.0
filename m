@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]
+ helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifhiB-0003gR-F7
- for ath10k@lists.infradead.org; Fri, 13 Dec 2019 09:58:16 +0000
-Message-ID: <fd7b4cb48f3510d81d227ae8020c3b6c46f4a4b0.camel@sipsolutions.net>
-Subject: Re: [PATCH 4/4] mac80211: Sync airtime weight sum with per AC
- synced sta airtime weight together
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 13 Dec 2019 10:58:09 +0100
-In-Reply-To: <1576221593-1086-5-git-send-email-yiboz@codeaurora.org>
- (sfid-20191213_082437_402312_070F042E)
+ id 1ifhqi-0008CU-FM
+ for ath10k@lists.infradead.org; Fri, 13 Dec 2019 10:07:05 +0000
+Received: by mail-lf1-f70.google.com with SMTP id d7so296017lfk.9
+ for <ath10k@lists.infradead.org>; Fri, 13 Dec 2019 02:06:56 -0800 (PST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH V4 0/4] Enable virtual time-based airtime scheduler
+ support on ath10k
+In-Reply-To: <CAMrEMU_w7dj5RVNmkVoCjU1o_FEEXn9oA7XCBwFQ+j2EQkck4Q@mail.gmail.com>
 References: <1576221593-1086-1-git-send-email-yiboz@codeaurora.org>
- <1576221593-1086-5-git-send-email-yiboz@codeaurora.org>
- (sfid-20191213_082437_402312_070F042E)
+ <CAMrEMU_w7dj5RVNmkVoCjU1o_FEEXn9oA7XCBwFQ+j2EQkck4Q@mail.gmail.com>
+Date: Fri, 13 Dec 2019 11:06:53 +0100
+Message-ID: <8736doedz6.fsf@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,22 +27,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org
+To: Justin Capella <justincapella@gmail.com>, Yibo Zhao <yiboz@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
 
+Justin Capella <justincapella@gmail.com> writes:
 
-I'm going to assume that Toke will review all of this and there will be
-changes, so you'd resend anyway ...
+> Would it make sense to consider skb->priority / QoS in the Access
+> Classifier selection?
 
-> - * @airtime_weight: station weight for airtime fairness calculation purposes
-> + * @airtime_weight: station per-AC weight for airtime fairness calculation
-> + * purposes
+Erm, what? Not sure I understand what you're asking here...
 
-If you do, please replace the "*<space>purposes" by "*<tab>purposes" :-)
-
-(otherwise I can just fix that myself too, but ...)
-
-johannes
+-Toke
 
 
 _______________________________________________
