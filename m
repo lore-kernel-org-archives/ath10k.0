@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]
- helo=us-smtp-1.mimecast.com)
+Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifhqi-0008CU-FM
- for ath10k@lists.infradead.org; Fri, 13 Dec 2019 10:07:05 +0000
-Received: by mail-lf1-f70.google.com with SMTP id d7so296017lfk.9
- for <ath10k@lists.infradead.org>; Fri, 13 Dec 2019 02:06:56 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH V4 0/4] Enable virtual time-based airtime scheduler
- support on ath10k
-In-Reply-To: <CAMrEMU_w7dj5RVNmkVoCjU1o_FEEXn9oA7XCBwFQ+j2EQkck4Q@mail.gmail.com>
-References: <1576221593-1086-1-git-send-email-yiboz@codeaurora.org>
- <CAMrEMU_w7dj5RVNmkVoCjU1o_FEEXn9oA7XCBwFQ+j2EQkck4Q@mail.gmail.com>
-Date: Fri, 13 Dec 2019 11:06:53 +0100
-Message-ID: <8736doedz6.fsf@toke.dk>
+ id 1ifiva-0000F7-L7
+ for ath10k@lists.infradead.org; Fri, 13 Dec 2019 11:16:12 +0000
+Received: by mail-oi1-x235.google.com with SMTP id v10so715336oiv.12
+ for <ath10k@lists.infradead.org>; Fri, 13 Dec 2019 03:16:10 -0800 (PST)
 MIME-Version: 1.0
+From: Justin Capella <justincapella@gmail.com>
+Date: Fri, 13 Dec 2019 03:15:57 -0800
+Message-ID: <CAMrEMU9Mz+0RNmmGQHic_cWPf45LHeK3Mzcy6a=GuYkvgdN+RQ@mail.gmail.com>
+Subject: qca988x fw crash/unrecoverable pcie errors causes error loop
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +22,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Justin Capella <justincapella@gmail.com>, Yibo Zhao <yiboz@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org
 
-Justin Capella <justincapella@gmail.com> writes:
+Paste: http://ix.io/24hJ
 
-> Would it make sense to consider skb->priority / QoS in the Access
-> Classifier selection?
-
-Erm, what? Not sure I understand what you're asking here...
-
--Toke
-
+I think a station went out of range, and somehow that crashed the fw,
+but when it tried to recover it was unable to read CE, and so fails to
+recover, eventually an correctable PCI error occurred but *80211_ in
+an attempt to reconfig is trying to stop all interfaces, which
+includes stopping aggregation for the peers...
 
 _______________________________________________
 ath10k mailing list
