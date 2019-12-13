@@ -2,17 +2,18 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifhgI-0002vX-Sf
- for ath10k@lists.infradead.org; Fri, 13 Dec 2019 09:56:20 +0000
-Message-ID: <94471b2381bee394f9708eae8ba47129f3facd03.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/4] mac80211: fix issue in loop scenario
+ id 1ifhiB-0003gR-F7
+ for ath10k@lists.infradead.org; Fri, 13 Dec 2019 09:58:16 +0000
+Message-ID: <fd7b4cb48f3510d81d227ae8020c3b6c46f4a4b0.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/4] mac80211: Sync airtime weight sum with per AC
+ synced sta airtime weight together
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 13 Dec 2019 10:56:12 +0100
-In-Reply-To: <1576221593-1086-3-git-send-email-yiboz@codeaurora.org>
- (sfid-20191213_082426_564220_0827923D)
+Date: Fri, 13 Dec 2019 10:58:09 +0100
+In-Reply-To: <1576221593-1086-5-git-send-email-yiboz@codeaurora.org>
+ (sfid-20191213_082437_402312_070F042E)
 References: <1576221593-1086-1-git-send-email-yiboz@codeaurora.org>
- <1576221593-1086-3-git-send-email-yiboz@codeaurora.org>
- (sfid-20191213_082426_564220_0827923D)
+ <1576221593-1086-5-git-send-email-yiboz@codeaurora.org>
+ (sfid-20191213_082437_402312_070F042E)
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,20 +30,17 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
 Cc: ath10k@lists.infradead.org
 
-On Fri, 2019-12-13 at 15:19 +0800, Yibo Zhao wrote:
-> In a loop txqs dequeue scenario, if the first txq in the rbtree gets
-> removed from rbtree immediately in the ieee80211_return_txq(), the
-> loop will break soon in the ieee80211_next_txq() due to schedule_pos
-> not leading to the second txq in the rbtree. Thus update schedule_pos
-> to previous node once the node of schedule_pos is either removed from
-> rbtree or move to other location in rbtree due to airtime update.
 
-For my understanding - this is a fix to the first patch in the series?
+I'm going to assume that Toke will review all of this and there will be
+changes, so you'd resend anyway ...
 
-I guess you didn't squash it because that's Toke's patch or something?
+> - * @airtime_weight: station weight for airtime fairness calculation purposes
+> + * @airtime_weight: station per-AC weight for airtime fairness calculation
+> + * purposes
 
-I tend to think you still should, and annotate the changes, but I wanted
-to understand it first.
+If you do, please replace the "*<space>purposes" by "*<tab>purposes" :-)
+
+(otherwise I can just fix that myself too, but ...)
 
 johannes
 
