@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1igolS-0000Jc-RS
- for ath10k@lists.infradead.org; Mon, 16 Dec 2019 11:42:16 +0000
-From: Tamizh Chelvam <tamizhr@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Add support to read btcoex related data from DT
-Date: Mon, 16 Dec 2019 17:10:15 +0530
-Message-Id: <1576496415-23064-2-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1576496415-23064-1-git-send-email-tamizhr@codeaurora.org>
-References: <1576496415-23064-1-git-send-email-tamizhr@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1igyWu-000230-Az
+ for ath10k@lists.infradead.org; Mon, 16 Dec 2019 22:07:53 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Per-chain rssi should sum the secondary channels
+Date: Mon, 16 Dec 2019 14:07:47 -0800
+Message-Id: <20191216220747.887-1-greearb@candelatech.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,176 +17,132 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, Tamizh Chelvam <tamizhr@codeaurora.org>
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>
 
-BTCOEX feature is not supported by all QCA4019 chipsets.
-Since btcoex enabled by default in firmware, host needs to
-enable COEX support depends on the hardware. Enabling it
-by default in unsupported hardware will cause some
-feature disabled in hardware.
-This patch will read btcoex_support flag and
-wlan priority gpio pin number from DT. Depends on the
-btcoex_support flag value host will expose BTCOEX support
-and wlan priority gpio pin number to target.
+From: Ben Greear <greearb@candelatech.com>
 
-Testing:
-	* Tested HW : QCA4019
-	* Tested FW : 10.4-3.2.1.1-00017
+This makes per-chain RSSI be more consistent between HT20, HT40, HT80.
+Instead of doing precise log math for adding dbm, I did a rough estimate,
+it seems to work good enough.
 
-Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+Tested on ath10k-ct 9984 firmware.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c  | 44 ++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h  |  9 +++++++
- drivers/net/wireless/ath/ath10k/debug.c |  3 +++
- drivers/net/wireless/ath/ath10k/mac.c   |  3 ++-
- drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
- 5 files changed, 58 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c  | 64 ++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/rx_desc.h |  3 +-
+ 2 files changed, 60 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5ec16ce..f9434bc 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2119,6 +2119,40 @@ static int ath10k_download_cal_data(struct ath10k *ar)
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 13f652b622df..034d4ace228d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1167,6 +1167,44 @@ static bool ath10k_htt_rx_h_channel(struct ath10k *ar,
+ 	return true;
  }
  
-+static void ath10k_core_fetch_btcoex_dt(struct ath10k *ar)
-+{
-+	struct device_node *node;
-+	u32 coex_support = 0;
-+	int ret;
++static int ath10k_sum_sigs_2(int a, int b) {
++	int diff;
 +
-+	node = ar->dev->of_node;
-+	if (!node)
-+		goto out;
++	if (b == 0x80)
++		return a;
 +
-+	ret = of_property_read_u32(node, "qcom,coexist-support", &coex_support);
-+	if (ret) {
-+		ar->coex_support = ATH10K_DT_COEX_NOT_FOUND;
-+		goto out;
++	if (a >= b) {
++		diff = a - b;
++		if (diff == 0)
++			return a + 3;
++		else if (diff == 1)
++			return a + 2;
++		else if (diff == 2)
++			return a + 1;
++		return a;
 +	}
-+
-+	if (coex_support) {
-+		ar->coex_support = ATH10K_DT_COEX_SUPPORTED;
-+	} else {
-+		ar->coex_support = ATH10K_DT_COEX_NOT_SUPPORTED;
-+		ar->coex_gpio_pin = -1;
-+		goto out;
++	else {
++		diff = b - a;
++		if (diff == 0)
++			return b + 3;
++		else if (diff == 1)
++			return b + 2;
++		else if (diff == 2)
++			return b + 1;
++		return b;
 +	}
-+
-+	ret = of_property_read_u32(node, "qcom,coexist-gpio-pin",
-+				   &ar->coex_gpio_pin);
-+	if (ret)
-+		ar->coex_gpio_pin = -1;
-+
-+out:
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot coex_support %d coex_gpio_pin %d\n",
-+		   ar->coex_support, ar->coex_gpio_pin);
 +}
 +
- static int ath10k_init_uart(struct ath10k *ar)
- {
- 	int ret;
-@@ -2696,14 +2730,22 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (test_bit(WMI_SERVICE_BSS_CHANNEL_INFO_64, ar->wmi.svc_map))
- 			val |= WMI_10_4_BSS_CHANNEL_INFO_64;
- 
-+		ath10k_core_fetch_btcoex_dt(ar);
++static int ath10k_sum_sigs(int p20, int e20, int e40, int e80) {
++	/* Hacky attempt at summing dbm without resorting to log(10) business */
++	if (e40 != 0x80) {
++		return ath10k_sum_sigs_2(ath10k_sum_sigs_2(p20, e20), ath10k_sum_sigs_2(e40, e80));
++	}
++	else {
++		return ath10k_sum_sigs_2(p20, e20);
++	}
++}
 +
- 		/* 10.4 firmware supports BT-Coex without reloading firmware
- 		 * via pdev param. To support Bluetooth coexistence pdev param,
- 		 * WMI_COEX_GPIO_SUPPORT of extended resource config should be
- 		 * enabled always.
-+		 *
-+		 * We can still enable BTCOEX if firmware has the support
-+		 * eventhough btceox_support value is
-+		 * ATH10K_DT_BTCOEX_NOT_FOUND
- 		 */
+ static void ath10k_htt_rx_h_signal(struct ath10k *ar,
+ 				   struct ieee80211_rx_status *status,
+ 				   struct htt_rx_desc *rxd)
+@@ -1177,18 +1215,32 @@ static void ath10k_htt_rx_h_signal(struct ath10k *ar,
+ 		status->chains &= ~BIT(i);
+ 
+ 		if (rxd->ppdu_start.rssi_chains[i].pri20_mhz != 0x80) {
+-			status->chain_signal[i] = ATH10K_DEFAULT_NOISE_FLOOR +
+-				rxd->ppdu_start.rssi_chains[i].pri20_mhz;
++			status->chain_signal[i] = ATH10K_DEFAULT_NOISE_FLOOR
++				+ ath10k_sum_sigs(rxd->ppdu_start.rssi_chains[i].pri20_mhz,
++						  rxd->ppdu_start.rssi_chains[i].ext20_mhz,
++						  rxd->ppdu_start.rssi_chains[i].ext40_mhz,
++						  rxd->ppdu_start.rssi_chains[i].ext80_mhz);
++			//ath10k_warn(ar, "rx-h-sig, chain[%i] pri20: %d ext20: %d  ext40: %d  ext80: %d\n",
++			//	    i, rxd->ppdu_start.rssi_chains[i].pri20_mhz, rxd->ppdu_start.rssi_chains[i].ext20_mhz,
++			//	    rxd->ppdu_start.rssi_chains[i].ext40_mhz, rxd->ppdu_start.rssi_chains[i].ext80_mhz);
+ 
+ 			status->chains |= BIT(i);
+ 		}
+ 	}
+ 
+ 	/* FIXME: Get real NF */
+-	status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
+-			 rxd->ppdu_start.rssi_comb;
+-	/* ath10k_warn(ar, "rx-h-sig, signal: %d  chains: 0x%x  chain[0]: %d  chain[1]: %d  chan[2]: %d\n",
+-                       status->signal, status->chains, status->chain_signal[0], status->chain_signal[1], status->chain_signal[2]); */
++	if (rxd->ppdu_start.rssi_comb_ht != 0x80) {
++		status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++			rxd->ppdu_start.rssi_comb_ht;
++	}
++	else {
++		status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++			rxd->ppdu_start.rssi_comb;
++	}
 +
- 		if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map) &&
- 		    test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
--			     ar->running_fw->fw_file.fw_features))
-+			     ar->running_fw->fw_file.fw_features) &&
-+		    ar->coex_support != ATH10K_DT_COEX_NOT_SUPPORTED)
- 			val |= WMI_10_4_COEX_GPIO_SUPPORT;
++	//ath10k_warn(ar, "rx-h-sig, signal: %d  chains: 0x%x  chain[0]: %d  chain[1]: %d  chain[2]: %d chain[3]: %d\n",
++	//	    status->signal, status->chains, status->chain_signal[0],
++	//	    status->chain_signal[1], status->chain_signal[2], status->chain_signal[3]);
+ 	status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
+ }
  
- 		if (test_bit(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 5101bf2..90f437a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -875,6 +875,12 @@ enum ath10k_tx_pause_reason {
- 	ATH10K_TX_PAUSE_MAX,
- };
- 
-+enum ath10k_dt_coex_support_flag {
-+	ATH10K_DT_COEX_NOT_FOUND,
-+	ATH10K_DT_COEX_SUPPORTED,
-+	ATH10K_DT_COEX_NOT_SUPPORTED,
-+};
-+
- struct ath10k_fw_file {
- 	const struct firmware *firmware;
- 
-@@ -1222,6 +1228,9 @@ struct ath10k {
- 	struct ath10k_bus_params bus_param;
- 	struct completion peer_delete_done;
- 
-+	enum ath10k_dt_coex_support_flag coex_support;
-+	int coex_gpio_pin;
-+
- 	/* must be last */
- 	u8 drv_priv[0] __aligned(sizeof(void *));
- };
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index e000677..bb452a1 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1978,6 +1978,9 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 	if (strtobool(buf, &val) != 0)
- 		return -EINVAL;
- 
-+	if (ar->coex_support == ATH10K_DT_COEX_NOT_SUPPORTED)
-+		return -EOPNOTSUPP;
-+
- 	mutex_lock(&ar->conf_mutex);
- 
- 	if (ar->state != ATH10K_STATE_ON &&
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 767c7bf..63c22653 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4982,7 +4982,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	param = ar->wmi.pdev_param->enable_btcoex;
- 	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map) &&
- 	    test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
--		     ar->running_fw->fw_file.fw_features)) {
-+		     ar->running_fw->fw_file.fw_features) &&
-+	    ar->coex_support != ATH10K_DT_COEX_NOT_SUPPORTED) {
- 		ret = ath10k_wmi_pdev_set_param(ar, param, 0);
- 		if (ret) {
- 			ath10k_warn(ar,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 13f7531..4684aa75 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -8787,7 +8787,7 @@ static int ath10k_wmi_10_4_op_get_vdev_subtype(struct ath10k *ar,
- 	cmd = (struct wmi_ext_resource_config_10_4_cmd *)skb->data;
- 	cmd->host_platform_config = __cpu_to_le32(type);
- 	cmd->fw_feature_bitmap = __cpu_to_le32(fw_feature_bitmap);
--	cmd->wlan_gpio_priority = __cpu_to_le32(-1);
-+	cmd->wlan_gpio_priority = __cpu_to_le32(ar->coex_gpio_pin);
- 	cmd->coex_version = __cpu_to_le32(WMI_NO_COEX_VERSION_SUPPORT);
- 	cmd->coex_gpio_pin1 = __cpu_to_le32(-1);
- 	cmd->coex_gpio_pin2 = __cpu_to_le32(-1);
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index dec1582005b9..6b44677474dd 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -726,7 +726,8 @@ struct rx_ppdu_start {
+ 		u8 ext80_mhz;
+ 	} rssi_chains[4];
+ 	u8 rssi_comb;
+-	__le16 rsvd0;
++	u8 rsvd0; /* first two bits are bandwidth, other 6 are reserved */
++	u8 rssi_comb_ht;
+ 	u8 info0; /* %RX_PPDU_START_INFO0_ */
+ 	__le32 info1; /* %RX_PPDU_START_INFO1_ */
+ 	__le32 info2; /* %RX_PPDU_START_INFO2_ */
 -- 
-1.9.1
+2.20.1
+
 
 _______________________________________________
 ath10k mailing list
