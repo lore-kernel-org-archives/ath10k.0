@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail25.static.mailgun.info ([104.130.122.25])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihDcb-00008N-Iy
- for ath10k@lists.infradead.org; Tue, 17 Dec 2019 14:14:48 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2 1/2] dt: bindings: add dt entry flag to skip SCM call
- for msa region
-References: <20191111042508.12628-1-govinds@codeaurora.org>
- <20191111042508.12628-2-govinds@codeaurora.org>
- <20191114191640.GA8426@bogus>
- <0101016e8d2426fc-31499903-e1a0-44b3-83eb-73ba4f4a8b4a-000000@us-west-2.amazonses.com>
-Date: Tue, 17 Dec 2019 16:14:36 +0200
-In-Reply-To: <0101016e8d2426fc-31499903-e1a0-44b3-83eb-73ba4f4a8b4a-000000@us-west-2.amazonses.com>
- (govinds@codeaurora.org's message of "Thu, 21 Nov 2019 08:46:27
- +0000")
-Message-ID: <87pngnavjn.fsf@kamboji.qca.qualcomm.com>
+ id 1ihDmO-0004iN-0D
+ for ath10k@lists.infradead.org; Tue, 17 Dec 2019 14:24:53 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Fix some typo in some warning messages
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20191204055235.11989-1-christophe.jaillet@wanadoo.fr>
+References: <20191204055235.11989-1-christophe.jaillet@wanadoo.fr>
+Message-Id: <20191217142449.4E4A6C433A2@smtp.codeaurora.org>
+Date: Tue, 17 Dec 2019 14:24:49 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +22,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: govinds@codeaurora.org
-Cc: Rob Herring <robh@kernel.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: kernel-janitors@vger.kernel.org, alexandre.torgue@st.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, mcoquelin.stm32@gmail.com, davem@davemloft.net, linux-arm-kernel@lists.infradead.org
 
-govinds@codeaurora.org writes:
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-> On 2019-11-15 00:46, Rob Herring wrote:
->> On Mon, Nov 11, 2019 at 09:55:07AM +0530, Govind Singh wrote:
->>> Add boolean context flag to disable SCM call for statically
->>> mapped msa region.
->>
->> Can't this be implied by the compatible string?
->>
->
-> same soc compatible will be used in older TZ vs new TZ.
-> Due to this reason I added this.
+> Fix some typo:
+>   s/to to/to/
+>   s/even/event/
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-So what should we do? Rob, any suggestions?
+Patch applied to ath-next branch of ath.git, thanks.
 
-Full patch here:
-
-https://patchwork.kernel.org/patch/11236535/
+a67bcec3569f ath10k: Fix some typo in some warning messages
 
 -- 
+https://patchwork.kernel.org/patch/11272159/
+
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
