@@ -1,15 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail25.static.mailgun.info ([104.130.122.25])
+Received: from mail.codm.de ([185.95.212.174] helo=tera.codm.de)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihDmO-0004iN-0D
- for ath10k@lists.infradead.org; Tue, 17 Dec 2019 14:24:53 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fix some typo in some warning messages
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191204055235.11989-1-christophe.jaillet@wanadoo.fr>
-References: <20191204055235.11989-1-christophe.jaillet@wanadoo.fr>
-Message-Id: <20191217142449.4E4A6C433A2@smtp.codeaurora.org>
-Date: Tue, 17 Dec 2019 14:24:49 +0000 (UTC)
+ id 1ihDwP-0002cs-7j
+ for ath10k@lists.infradead.org; Tue, 17 Dec 2019 14:35:14 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by tera.codm.de (Postfix) with ESMTP id 06F723CF002
+ for <ath10k@lists.infradead.org>; Tue, 17 Dec 2019 15:35:12 +0100 (CET)
+Received: from tera.codm.de ([127.0.0.1])
+ by localhost (tera.codm.de [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id dlmDkrxYVHtR for <ath10k@lists.infradead.org>;
+ Tue, 17 Dec 2019 15:35:11 +0100 (CET)
+Received: from dustins-mbp.codm.de (b2b-130-180-91-5.unitymedia.biz
+ [130.180.91.5]) (Authenticated sender: dustin.utecht@codm.de)
+ by tera.codm.de (Postfix) with ESMTPSA id 47A673CF001
+ for <ath10k@lists.infradead.org>; Tue, 17 Dec 2019 15:35:11 +0100 (CET)
+From: Dustin Utecht <dustin.utecht@codm.de>
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
+Subject: Re: Re: ath10k: wmi service ready event not received using QCA 9377
+Message-Id: <EF17BB1E-1DB6-4AF8-8064-6FD8C16DABA4@codm.de>
+Date: Tue, 17 Dec 2019 15:35:11 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +31,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: kernel-janitors@vger.kernel.org, alexandre.torgue@st.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, mcoquelin.stm32@gmail.com, davem@davemloft.net, linux-arm-kernel@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
-
-> Fix some typo:
->   s/to to/to/
->   s/even/event/
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-a67bcec3569f ath10k: Fix some typo in some warning messages
-
--- 
-https://patchwork.kernel.org/patch/11272159/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Are there any news about that ?
 
 _______________________________________________
 ath10k mailing list
