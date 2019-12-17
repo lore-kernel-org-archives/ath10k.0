@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]
- helo=us-smtp-1.mimecast.com)
+Received: from mail25.static.mailgun.info ([104.130.122.25])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihEe9-0003xi-Sv
- for ath10k@lists.infradead.org; Tue, 17 Dec 2019 15:20:28 +0000
-Received: by mail-lf1-f70.google.com with SMTP id d6so1043621lfl.3
- for <ath10k@lists.infradead.org>; Tue, 17 Dec 2019 07:20:17 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH 4/4] mac80211: Sync airtime weight sum with per AC synced
- sta airtime weight together
-In-Reply-To: <fd7b4cb48f3510d81d227ae8020c3b6c46f4a4b0.camel@sipsolutions.net>
-References: <1576221593-1086-1-git-send-email-yiboz@codeaurora.org>
- <1576221593-1086-5-git-send-email-yiboz@codeaurora.org>
- <fd7b4cb48f3510d81d227ae8020c3b6c46f4a4b0.camel@sipsolutions.net>
-Date: Tue, 17 Dec 2019 16:20:14 +0100
-Message-ID: <87v9qf6ksx.fsf@toke.dk>
+ id 1ihEnY-0006Xv-Kf
+ for ath10k@lists.infradead.org; Tue, 17 Dec 2019 15:30:10 +0000
 MIME-Version: 1.0
+Subject: Re: [RESEND] ath10k: add tx hw 802.11 encapusaltion offloading support
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20191216092207.31032-1-john@phrozen.org>
+References: <20191216092207.31032-1-john@phrozen.org>
+Message-Id: <20191217152959.C2B40C447A0@smtp.codeaurora.org>
+Date: Tue, 17 Dec 2019 15:29:59 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +22,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org
+To: John Crispin <john@phrozen.org>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Johannes Berg <johannes@sipsolutions.net> writes:
+John Crispin <john@phrozen.org> wrote:
 
-> I'm going to assume that Toke will review all of this and there will be
-> changes, so you'd resend anyway ...
+> This patch adds support for ethernet rxtx mode to the driver. The feature
+> is enabled via a new module parameter. If enabled to driver will enable
+> the feature on a per vif basis if all other requirements were met.
+> 
+> Testing on a IPQ4019 based hardware shows a increase in TCP throughput
+> of ~20% when the feature is enabled.
+> 
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+> Signed-off-by: John Crispin <john@phrozen.org>
 
-Yeah, this series doesn't even apply in its current form. I'll try to
-fix that, and do a few other updates that are needed while I'm at it.
-And to answer your question in the other email, yeah, this should
-probably be squashed to a single patch...
+Depends on:
 
--Toke
+50ff477a8639 mac80211: add 802.11 encapsulation offloading support
 
+Currently in mac80211-next.
+
+Patch set to Awaiting Upstream.
+
+-- 
+https://patchwork.kernel.org/patch/11293627/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
