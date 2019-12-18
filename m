@@ -1,28 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from userp2130.oracle.com ([156.151.31.86])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihQaX-0004a1-2d
- for ath10k@lists.infradead.org; Wed, 18 Dec 2019 04:05:31 +0000
-Subject: Re: [PATCH] ath10k: Per-chain rssi should sum the secondary channels
-References: <20191216220747.887-1-greearb@candelatech.com>
- <a2af03e9-8b53-b297-467b-d0f07b8a002b@newmedia-net.de>
- <b5d63d96-4ba6-bbab-bf1c-a61c6c437f37@newmedia-net.de>
- <80700614-679a-336e-bd9a-e88622e75c9a@candelatech.com>
- <4775d91a-9719-46f8-b0f2-979b8d86cf9f@newmedia-net.de>
- <CAMrEMU-vGB8uR-JZbD2vj4vXgWNHfFqcbsqB=gOqBBDZWGkzQA@mail.gmail.com>
- <11290a30-46e8-638e-4110-86e6b2eb3d3f@candelatech.com>
- <CAKR_QV+xNbAzzw12x3Ku49bHnERTxYRAK8AfUSwp_uOgNMbY4Q@mail.gmail.com>
- <a95e7f6d-1cb8-3188-aea4-233dce6f9330@candelatech.com>
- <CAKR_QVL0P4qYidtqLwhhacCOpx2iq+4RRhTXbGhfRnf2PUj5tA@mail.gmail.com>
- <CAKR_QV+KV1dR_QKjANL34DGJuyf3OSN8J6gs3bqcmiRCCzkdXA@mail.gmail.com>
- <5e3f22d1-b8ba-d756-a15c-1e7ae56c1dad@newmedia-net.de>
- <8eae96cd-a94e-abc1-4750-73f931d657d6@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <9431f1a2-a44e-9b81-72b0-9a703e1841ac@newmedia-net.de>
-Date: Wed, 18 Dec 2019 05:05:08 +0100
+ id 1ihRtw-0006aM-2g
+ for ath10k@lists.infradead.org; Wed, 18 Dec 2019 05:29:37 +0000
+Date: Wed, 18 Dec 2019 08:27:21 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [bug report] mmc: core: Re-work HW reset for SDIO cards
+Message-ID: <20191218052721.GC2524@kadam>
+References: <20191213185050.m6iku7defq44syrl@kili.mountain>
+ <CAPDyKFoKvhGDuQ+C0Sp2N3==CXiMWfpcrT28+dQ2+Nq_UPaXYQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8eae96cd-a94e-abc1-4750-73f931d657d6@candelatech.com>
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFoKvhGDuQ+C0Sp2N3==CXiMWfpcrT28+dQ2+Nq_UPaXYQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,100 +20,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Tom Psyborg <pozega.tomislav@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>, Justin Capella <justincapella@gmail.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-CkFtIDE4LjEyLjIwMTkgdW0gMDM6Mzcgc2NocmllYiBCZW4gR3JlZWFyOgo+Cj4KPiBPbiAxMi8x
-Ny8yMDE5IDA2OjEyIFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4gaSBkb250IGtu
-b3cgd2hhdCB5b3Ugd2FudCB0byBjb21wYXJlIGhlcmUuCj4+Cj4+IDEuIHlvdSBjb21wYXJlIDIg
-ZGlmZmVyZW50IHdpZmkgY2hpcHNldHMuIGJvdGggaGF2ZSBkaWZmZXJlbnQgCj4+IHNlbnNpdGl0
-aXZ5IGFuZCBvdmVyYWxsIG91dHB1dCBwb3dlciBzcGVjCj4+Cj4+IDIuIGJvdGggaGF2ZSBkaWZm
-ZXJlbnQgYW1vdW50IG9mIGFudGVubmEgY2hhaW5zLiB3aGljaCBkb2VzIG1ha2UgYSAKPj4gZGlm
-ZmVyZW5jZSBpbiBpbnB1dCBzZW5zaXRpdml0eQo+Pgo+PiAzLiB0aGUgcGF0Y2ggYmVuIG1hZGUg
-aGFzIG5vIGVmZmVjdCBvbiBxY2E5ODgwIGNoaXBzZXRzLiBpdCBvbmx5IAo+PiB0YWtlcyBlZmZl
-Y3Qgb24gMTAuNCBiYXNlZCBjaGlwc2V0cyBsaWtlIDk5ODQKPgo+IFRoZSBwYXJ0IG9mIG15IHBh
-dGNoIHRoYXQgc3VtcyBzZWNvbmRhcnkgZnJlcXVlbmNpZXMgc2hvdWxkIGFwcGx5IHRvIAo+IHdh
-dmUtMSBhcyB3ZWxsLCBidXQgSSBoYXZlCj4gbm90IHZlcmlmaWVkIHRoYXQgeWV0Lgp5ZWFoLiBy
-aWdodC4gc29ycnkgaSB3YXMganVzdCBsb29raW5nIGF0IHRvdGFsIHNpZ25hbCBzdW0gd2hpY2gg
-dXNlcyAKcnNzaV9jb21iX2h0Cj4KPgo+PiBhYm91dCBub2lzZSBmbG9vcnMgaW4gZ2VuZXJhbC4g
-bm9pc2UgZmxvb3JzIG9mIC0xMDggYXJlIGJvZ3VzLiB0aGVyZSAKPj4gaXMgYSBwaHlzaWNhbCBs
-aW1pdCBhIG5vaXNlIGxldmVsIGNhbiBiZS4KPj4gc2luY2UgZHJpdmVycyBsaWtlIGF0aDlrIGFy
-ZSBkb2luZyBhIGN5Y2xpYyBjYWxpYnJhdGlvbiwgdGhlIG5vaXNlIAo+PiB2YWx1ZSBtaWdodCBp
-bmRlZWQgY2hhbmdlLiBidXQgdGhpcyBjYWxpYnJhdGlvbiBpcwo+PiBub3QgcnVubmluZyBpbiBy
-ZWFsdGltZS4gaXRzIGN5Y2xpYy4gaSdtIG5vdCBhd2FyZSBpZiBjaGlwc2V0cyBsaWtlIAo+PiBx
-Y2E5ODh4IGFyZSBnb2luZyB0aGUgc2FtZSB3YXksIGJ1dCBzaW5jZSBxY2E5ODh4Cj4+IGhhcyBz
-aW1lIHNpbWlsYXJpZXMgd2l0aCBhdGg5ayBjaGlwc2V0cyB1bmxpa2UgdGhlIG5ld2VyIDk5ODQg
-Cj4+IHZhcmlhbnRzLCBpdCBjb3VsZCBiZS4gdGhlIDMwIHNlY29uZHMgbWVudGlvbmVkCj4+IGlu
-IHRoZSBidWcgcmVwb3J0IGZpdHMgdG8gbXkgZXhwZWN0YXRpb25zIG9mIHRoZSBlYXJseSBub2lz
-ZWZsb29yIAo+PiBjYWxpYnJhdGlvbiB3aGljaCBoYXMgYSBzaG9ydCBkZWxheSBhbmQgYWZ0ZXIg
-c3VjY2Vzcwo+PiB0dXJuaW5nIHRvIHVzZSBhIGxvbmcgZGVsYXkuIGFueXdheS4gaW4gdGhpcyBl
-YXJseSBjYWxpYnJhdGlvbiBwaGFzZSAKPj4gc2lnbmFscyBtaWdodCBjaGFuZ2UgYW5kIHdpbGwg
-c3RhYmlsaXplIGFmdGVyLiB0aGlzIGlzbnQgYSBpc3N1ZQo+PiBzaW5jZSB5b3VyIGNvbm5lY3Rp
-b24gd2lsbCB3b3JrIGFueXdheSBldmVuIGlmIGl0IG1pZ2h0IHRha2UgYSBsaXR0bGUgCj4+IGJp
-dCBsb25nZXIgaWYgeW91IGhhdmUgcG9vciBzaWduYWwgbGV2ZWxzCj4+Cj4+IEBiZW4uIGFtIGkg
-d3Jvbmcgb3Igd2hhdCBkbyB0aGluaz8KPgo+IEkgZG9uJ3Qga25vdyBlbm91Z2ggYWJvdXQgaG93
-IHRoZSBub2lzZSBmbG9vciBjYWxjdWxhdGlvbnMgYXJlIGRvbmUgb3IgCj4gaG93IHRoZSBhcHBs
-eSB0byBzZXR0aW5ncwo+IHRvIGtub3cgdGhlIGFuc3dlci4KPgo+IEkgd2lsbCBiZSBoYXBweSBp
-biBnZW5lcmFsIGlmIGF0aDEwayB3YXZlLTEsIHdhdmUtMiwgYW5kIGF0aDlrIHJlcG9ydCAKPiBz
-aW1pbGFyIFJTU0kgZm9yIHNpbWlsYXIKPiBzZXR1cHMuCnRoYXQgd2lsbCBub3Qgd29yay4geW91
-IGNvbXBhcmUgZGlmZmVyZW50IGNoaXBzZXRzIGFuZCBkZXBlbmRpbmcgb24gdGhlIAppbXBsZW1l
-bnRhdGlvbiBieSB0aGUgY2FyZCB2ZW5kb3IKcmYgc2Vuc2l0aXZpdHkgY2FuIGJlIHZlcnkgZGlm
-ZmVudC4gdGhlIHNhbWUgZ29lcyBmb3Igb3V0cHV0IHBvd2VyLiBzb21lIAp2ZW5kb3JzIGFyZSB1
-c2luZyBhZGRpdGlvbmFsIHJmIGFtcHMKZm9yIGVuaGFuY2luZyBvdXRwdXQgcG93ZXIgKHViaXF1
-aXRpIGlzIGJlc3QgZXhhbXBsZSBoZXJlKS4gdGhpcyB0aGVzZSAKYW1wcyBhbHNvIG1heSBoYXZl
-IGluZmx1ZW5jZSB0byBzZW5zaXRpdml0eS4Kb24gdGhlc2UgY2FyZHMgeW91IHNldCAxMCBkYiBv
-dXRwdXQgcG93ZXIsIGJ1dCBpbiBmYWN0IGl0IG91dHB1dHMgMTggZGIuIApzbyB0aGVyZSBpcyBh
-IGJpYXMgb2Zmc2V0IG9uIHRoZXNlIGNhcmRzIG9yIGRldmljZXMuICh0aGUgb2Zmc2V0IGlzIApk
-ZXBlbmRpbmcgb24gdGhlIGRldmljZSBtb2RlbCkKCndoYXQgeW91IG1lYXN1cmUgaXMgd2hhdCB0
-aGUgY2hpcCByZWNlaXZlcywgYnV0IG5vdCB3aGF0IHdhcyBsb3N0IG9uIHRoZSAKcGNiIGxheW91
-dC4gKG9yIHdhcyBldmVuIGdlbmVyYXRlZCBpbiBjYXNlIG9mIG5vaXNlKQphbmQgd2hlbiBpdCBj
-b21lcyB0byBjYWxpYnJhdGlvbiBkYXRhLiBjb3JyZWN0IHdvdWxkIGJlIGlmIGVhY2ggCmluZGl2
-aWR1YWwgY2FyZCBpcyBjYWxpYnJhdGVkIGJlZm9yZSBzaGlwbWVudC4gaW4gcmVhbGl0eSBtYW51
-ZmFjdHVyZXMKYXJlIGRvaW5nIGNhbGlicmF0aW9uIG9uIGEgc2luZ2xlIHJlZmVyZW5jZSBjYXJk
-IGFuZCBjbG9uZSBpdCBvbiBhbGwgCmZvbGxvd2luZyBjYXJkcyB0byBzYXZlIHRpbWUuIHRoZSBy
-ZXN1bHQgZGVwZW5kcyBvbiBkYXkgb3Igd2VlayBvZiAKcHJvZHVjdGlvbgphbmQgY3VycmVudCBw
-b3NpdGlvbiBvZiB0aGUgbW9vbiBhbmQgc3VuLiBlcnJvcnMgb2YgKy0gMiBkYiBhcmUgY29tbW9u
-IApoZXJlLiAodGhpcyBpcyBub3QgYSBmYWN0IGZvciBhbGwgY2FyZCBvciBkZXZpY2UgdmVuZG9y
-cykKCj4KPiBJZiB5b3UgbG9vayBhdCB0aGUgdHgtcmF0ZS1wb3dlciB0YWJsZSBpbiBhdGgxMGss
-IGZvciBpbnN0YW5jZSwgeW91IAo+IGNhbiBzZWUgZGlmZmVyZW50IE1DUyBhcmUgdHJhbnNtaXR0
-ZWQKPiBhdCBkaWZmZXJlbnQgc2lnbmFsIGxldmVscy7CoCBTbywgc29tZSBjaGFuZ2UgZnJvbSBp
-bml0aWFsIGNvbmRpdGlvbnMgCj4gbWlnaHQgYmUgYmVjYXVzZSBoaWdoZXIgTUNTIGlzCj4gYmVp
-bmcgdHJhbnNtaXR0ZWQgYWZ0ZXIgcmF0ZS1jdHJsIHNjYWxlcyB1cD8KeWVzLiB0aGlzIGlzIG1v
-ZHVsYXRpb24gcmVsYXRlZC4gYXMgaGlnaGVyIHRoZSByYXRlIGdvZXMgYXMgbG93ZXIgdGhlIApw
-b3dlciB3aWxsIGJlLiB0aGF0cyBwcmluY2libGUgb2YgUUFNLgphbmQgdGhlIHJhdGUgY29udHJv
-bCBpdHNlbGYgaXNudCBzaWduYWwgYnV0IGVycm9yIHJhdGUgYmFzZWQuIHNvIGhpZ2ggCnBhY2tl
-dCBsb3NzIHRyaWdnZXJzIHRoZSByYXRlIGNvbnRyb2wgdG8gbG93ZXIgdGhlIHJhdGUgd2hpY2gg
-cmVzdWx0cwppbiBpbmNyZWFzZWQgb3V0cHV0IHBvd2VyIGFuZCB2aWNlIHZlcnNhLiBidXQgYXMg
-bWVudGlvbmVkLiBhdCBjYXJkIApzdGFydHVwIGEgbm9pc2UgZmxvb3IgY2FsaWJyYXRpb24gc3Rh
-cnRzIHdoaWNoIG1heSBzdWNjZWVkIG9yIGZhaWwuCmlmIGl0IHN1Y2NlZWRzIGl0IHdpbGwgdHVy
-biBpbnRvIGEgbG9uZyBkZWxheSBwaGFzZS4gc28gY3ljbGljIApjYWxpYnJhdGlvbi4gdGhlIGNh
-bGlicmF0aW9uIHRpbWUgaXMgZXhhY3RseSAzMCBzZWNvbmRzIChtaW5pbXVtKSBhbmQgaWYgCml0
-IGZhaWxzIGl0IGNhbgpleGNlZWQgdG8gNjAgc2Vjb25kcy4gYWZ0ZXIgdGhhdCB0aW1lIGl0IHdp
-bGwgc2xlZXAgZm9yIDMwMCBzZWNvbmRzIGFuZCAKd2lsbCBjaGVjayBmb3IgcmVjYWxpYnJhdGlv
-biBjb25kaXRpb25zLiAodGhlcmUgYXJlIHJ1bGVzIGxpa2UgaGlnaCAKbm9pc2UgZmxvb3IgY2hh
-bmdlcyBldGMuKQphIHJlY2FsaWJyYXRpb24gaXMgYWxzbyB0cmlnZ2VyZWQgYXQgY2hhbm5lbCBj
-aGFuZ2VzwqAgYW5kIGlmIGNoaXBzZXQgCnRlbXBlcmF0dXJlIGNoYW5nZXMgYXQgYSBjZXJ0YWlu
-IGxldmVsLgpmcm9tIHdoYXQgaSBoYXZlIHNlZW4gdGhlIHByb2NlZHVyZSBpbiB0aGUgcWNhOTg4
-MCBmaXJtd2FyZSBpcyBleGFjdGx5IAp0aGUgc2FtZSBhcyBpbiBhdGg5ay4KYW55d2F5LiB3aGls
-ZSB0aGlzIGNhbGlicmF0aW9uIGlzIHJ1bm5pbmcsIHRoZSBzaWduYWwgYW5kIG5vaXNlIGZsb29y
-IAptaWdodCBiZSB1bnN0YWJsZSBvciBldmVuIGJvZ3VzIHVudGlsIHRoaXMgaXMgZmluaXNoZWQg
-YW5kIHJhdGUgY29udHJvbCAKbWlnaHQgbm90IGJlIG9wdGltYWwKdW5kZXIgc3RyZXNzIGNvbmRp
-dGlvbnMgbGlrZSBsb25nIHJhbmdlIGxpbmtzIHdpdGggbG93IHNpZ25hbHMuIHdpdGggCnN0YW5k
-YXJkIHdpZmkgdXNhZ2UgeW91IHNob3VsZCBub3Qgbm90aWNlIGl0IHRoYXQgbXVjaCBzaW5jZSBz
-aWduYWwgdG8gCm5vaXNlIHJhdGlvIGlzIGhpZ2ggZW5vdWdoIGFueXdheQoKCj4KPiBMb3RzIG9m
-IG1vdmluZyBwYXJ0cy4uLgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4+Cj4+IFNlYmFzdGlhbgo+Pgo+
-PiBBbSAxOC4xMi4yMDE5IHVtIDAwOjM3IHNjaHJpZWIgVG9tIFBzeWJvcmc6Cj4+PiBhbHNvIG5v
-dGljZWQgbm93IHRoYXQgdGhlIG5vaXNlIGZsb29yIGNoYW5nZXMgd2l0aCBzaWduYWwgc3RyZW5n
-dGggYXMKPj4+IGRlc2NyaWJlZCBpbiB0aGlzIGJ1ZyByZXBvcnQ6Cj4+PiBodHRwczovL3d3dy5t
-YWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzExNTUzLmh0bWwK
-Pj4+Cj4+PiBhZnRlciB3aWZpIHJlc3RhcnQKPj4+Cj4+PiBpd2luZm86Cj4+Pgo+Pj4gc2lnbmFs
-OiAtNTlkQm0gbm9pc2U6IC0xMDhkQm0KPj4+Cj4+PiB0aGVuIGdvZXMgdG8KPj4+Cj4+PiBzaWdu
-YWw6IC01MmRCbSBub2lzZTogLTEwM2RCbQo+Pj4KPj4+IGFuZCBmaW5hbGx5IGRyb3BzIHRvCj4+
-Pgo+Pj4gc2lnbmFsOiAtNTlkQm0gbm9pc2U6IC0xMDNkQm0KPj4+Cj4+Cj4KCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+On Tue, Dec 17, 2019 at 08:54:47AM +0100, Ulf Hansson wrote:
+> + Kalle
+> 
+> On Fri, 13 Dec 2019 at 19:51, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > Hello Ulf Hansson,
+> >
+> > The patch 2ac55d5e5ec9: "mmc: core: Re-work HW reset for SDIO cards"
+> > from Oct 17, 2019, leads to the following static checker warning:
+> >
+> >         drivers/net/wireless/ath/ath10k/sdio.c:1521 ath10k_sdio_hif_power_down()
+> >         warn: 'ret' can be either negative or positive
+> 
+> Thanks for reporting!
+> 
+> >
+> > drivers/net/wireless/ath/ath10k/sdio.c
+> >   1495  static void ath10k_sdio_hif_power_down(struct ath10k *ar)
+> >   1496  {
+> >   1497          struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+> >   1498          int ret;
+> >   1499
+> >   1500          if (ar_sdio->is_disabled)
+> >   1501                  return;
+> >   1502
+> >   1503          ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio power off\n");
+> >   1504
+> >   1505          /* Disable the card */
+> >   1506          sdio_claim_host(ar_sdio->func);
+> >   1507
+> >   1508          ret = sdio_disable_func(ar_sdio->func);
+> >   1509          if (ret) {
+> >   1510                  ath10k_warn(ar, "unable to disable sdio function: %d\n", ret);
+> >   1511                  sdio_release_host(ar_sdio->func);
+> >   1512                  return;
+> >   1513          }
+> >   1514
+> >   1515          ret = mmc_hw_reset(ar_sdio->func->card->host);
+> >   1516          if (ret)
+> >
+> > It used to be that mmc_hw_reset() return negative error codes or zero
+> > but now it returns 1 on certain success paths.
+> 
+> Correct.
+> 
+> I was actually looking into this while changing the behaviour of
+> mmc_hw_reset(). However I decided to leave this as is.
+> 
+> The main reason is, that mmc_hw_reset() is not going to power down the
+> card. It's hard power cycle, so I am kind of surprised that is being
+> used at all in this path. This in combination of expecting the value
+> from mmc_hw_reset() to never be 1 here, seemed like a good idea to
+> preserve the logging of the warning message.
+> 
+> To silent the static checker tool from warning, we could check
+> explicitly for "1". Is that something you want me to do?
+
+I feel like checking for 1 would be more readable for humans as well.
+
+Or we could just leave it as-is.  I'm not likely to ever publish this
+static checker warning.
+
+regards,
+dan carpenter
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
