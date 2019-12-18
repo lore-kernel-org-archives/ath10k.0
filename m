@@ -1,17 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from userp2130.oracle.com ([156.151.31.86])
+Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihRtw-0006aM-2g
- for ath10k@lists.infradead.org; Wed, 18 Dec 2019 05:29:37 +0000
-Date: Wed, 18 Dec 2019 08:27:21 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [bug report] mmc: core: Re-work HW reset for SDIO cards
-Message-ID: <20191218052721.GC2524@kadam>
-References: <20191213185050.m6iku7defq44syrl@kili.mountain>
- <CAPDyKFoKvhGDuQ+C0Sp2N3==CXiMWfpcrT28+dQ2+Nq_UPaXYQ@mail.gmail.com>
+ id 1ihUKl-0007OO-Qr
+ for ath10k@lists.infradead.org; Wed, 18 Dec 2019 08:05:29 +0000
+Received: by mail-ot1-x343.google.com with SMTP id c22so1362588otj.13
+ for <ath10k@lists.infradead.org>; Wed, 18 Dec 2019 00:05:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFoKvhGDuQ+C0Sp2N3==CXiMWfpcrT28+dQ2+Nq_UPaXYQ@mail.gmail.com>
+References: <20191216220747.887-1-greearb@candelatech.com>
+ <a2af03e9-8b53-b297-467b-d0f07b8a002b@newmedia-net.de>
+ <b5d63d96-4ba6-bbab-bf1c-a61c6c437f37@newmedia-net.de>
+ <80700614-679a-336e-bd9a-e88622e75c9a@candelatech.com>
+ <4775d91a-9719-46f8-b0f2-979b8d86cf9f@newmedia-net.de>
+ <CAMrEMU-vGB8uR-JZbD2vj4vXgWNHfFqcbsqB=gOqBBDZWGkzQA@mail.gmail.com>
+ <11290a30-46e8-638e-4110-86e6b2eb3d3f@candelatech.com>
+ <CAKR_QV+xNbAzzw12x3Ku49bHnERTxYRAK8AfUSwp_uOgNMbY4Q@mail.gmail.com>
+ <a95e7f6d-1cb8-3188-aea4-233dce6f9330@candelatech.com>
+ <CAKR_QVL0P4qYidtqLwhhacCOpx2iq+4RRhTXbGhfRnf2PUj5tA@mail.gmail.com>
+ <CAKR_QV+KV1dR_QKjANL34DGJuyf3OSN8J6gs3bqcmiRCCzkdXA@mail.gmail.com>
+ <5e3f22d1-b8ba-d756-a15c-1e7ae56c1dad@newmedia-net.de>
+ <8eae96cd-a94e-abc1-4750-73f931d657d6@candelatech.com>
+ <9431f1a2-a44e-9b81-72b0-9a703e1841ac@newmedia-net.de>
+In-Reply-To: <9431f1a2-a44e-9b81-72b0-9a703e1841ac@newmedia-net.de>
+From: Justin Capella <justincapella@gmail.com>
+Date: Wed, 18 Dec 2019 00:05:12 -0800
+Message-ID: <CAMrEMU8UrY9F++ut88to0AxKJXHTi9cwUs8uGOmN=k0ymcH0FA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Per-chain rssi should sum the secondary channels
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,74 +37,150 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Tom Psyborg <pozega.tomislav@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-On Tue, Dec 17, 2019 at 08:54:47AM +0100, Ulf Hansson wrote:
-> + Kalle
-> 
-> On Fri, 13 Dec 2019 at 19:51, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > Hello Ulf Hansson,
-> >
-> > The patch 2ac55d5e5ec9: "mmc: core: Re-work HW reset for SDIO cards"
-> > from Oct 17, 2019, leads to the following static checker warning:
-> >
-> >         drivers/net/wireless/ath/ath10k/sdio.c:1521 ath10k_sdio_hif_power_down()
-> >         warn: 'ret' can be either negative or positive
-> 
-> Thanks for reporting!
-> 
-> >
-> > drivers/net/wireless/ath/ath10k/sdio.c
-> >   1495  static void ath10k_sdio_hif_power_down(struct ath10k *ar)
-> >   1496  {
-> >   1497          struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-> >   1498          int ret;
-> >   1499
-> >   1500          if (ar_sdio->is_disabled)
-> >   1501                  return;
-> >   1502
-> >   1503          ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio power off\n");
-> >   1504
-> >   1505          /* Disable the card */
-> >   1506          sdio_claim_host(ar_sdio->func);
-> >   1507
-> >   1508          ret = sdio_disable_func(ar_sdio->func);
-> >   1509          if (ret) {
-> >   1510                  ath10k_warn(ar, "unable to disable sdio function: %d\n", ret);
-> >   1511                  sdio_release_host(ar_sdio->func);
-> >   1512                  return;
-> >   1513          }
-> >   1514
-> >   1515          ret = mmc_hw_reset(ar_sdio->func->card->host);
-> >   1516          if (ret)
-> >
-> > It used to be that mmc_hw_reset() return negative error codes or zero
-> > but now it returns 1 on certain success paths.
-> 
-> Correct.
-> 
-> I was actually looking into this while changing the behaviour of
-> mmc_hw_reset(). However I decided to leave this as is.
-> 
-> The main reason is, that mmc_hw_reset() is not going to power down the
-> card. It's hard power cycle, so I am kind of surprised that is being
-> used at all in this path. This in combination of expecting the value
-> from mmc_hw_reset() to never be 1 here, seemed like a good idea to
-> preserve the logging of the warning message.
-> 
-> To silent the static checker tool from warning, we could check
-> explicitly for "1". Is that something you want me to do?
+Don't mean to steal your thread here, but since it's being discussed--
+is there something that can be done to provide more accurate/precise
+data? Use of the default is widespread so not a reason to hold back
+the patch imo, but with a proposed pcap-ng capture information block
+they would become more accessible and maybe there will be increased
+interest in real values.
 
-I feel like checking for 1 would be more readable for humans as well.
+Anyway to fill out IEEE80211_RADIOTAP_DBM_ANT{SIGNAL,NOISE}?
 
-Or we could just leave it as-is.  I'm not likely to ever publish this
-static checker warning.
+I recall from another thread that there isn't currently periodic
+calibration but the floor could change with environment too.
 
-regards,
-dan carpenter
-
+On Tue, Dec 17, 2019 at 8:05 PM Sebastian Gottschall
+<s.gottschall@newmedia-net.de> wrote:
+>
+>
+> Am 18.12.2019 um 03:37 schrieb Ben Greear:
+> >
+> >
+> > On 12/17/2019 06:12 PM, Sebastian Gottschall wrote:
+> >> i dont know what you want to compare here.
+> >>
+> >> 1. you compare 2 different wifi chipsets. both have different
+> >> sensititivy and overall output power spec
+> >>
+> >> 2. both have different amount of antenna chains. which does make a
+> >> difference in input sensitivity
+> >>
+> >> 3. the patch ben made has no effect on qca9880 chipsets. it only
+> >> takes effect on 10.4 based chipsets like 9984
+> >
+> > The part of my patch that sums secondary frequencies should apply to
+> > wave-1 as well, but I have
+> > not verified that yet.
+> yeah. right. sorry i was just looking at total signal sum which uses
+> rssi_comb_ht
+> >
+> >
+> >> about noise floors in general. noise floors of -108 are bogus. there
+> >> is a physical limit a noise level can be.
+> >> since drivers like ath9k are doing a cyclic calibration, the noise
+> >> value might indeed change. but this calibration is
+> >> not running in realtime. its cyclic. i'm not aware if chipsets like
+> >> qca988x are going the same way, but since qca988x
+> >> has sime similaries with ath9k chipsets unlike the newer 9984
+> >> variants, it could be. the 30 seconds mentioned
+> >> in the bug report fits to my expectations of the early noisefloor
+> >> calibration which has a short delay and after success
+> >> turning to use a long delay. anyway. in this early calibration phase
+> >> signals might change and will stabilize after. this isnt a issue
+> >> since your connection will work anyway even if it might take a little
+> >> bit longer if you have poor signal levels
+> >>
+> >> @ben. am i wrong or what do think?
+> >
+> > I don't know enough about how the noise floor calculations are done or
+> > how the apply to settings
+> > to know the answer.
+> >
+> > I will be happy in general if ath10k wave-1, wave-2, and ath9k report
+> > similar RSSI for similar
+> > setups.
+> that will not work. you compare different chipsets and depending on the
+> implementation by the card vendor
+> rf sensitivity can be very diffent. the same goes for output power. some
+> vendors are using additional rf amps
+> for enhancing output power (ubiquiti is best example here). this these
+> amps also may have influence to sensitivity.
+> on these cards you set 10 db output power, but in fact it outputs 18 db.
+> so there is a bias offset on these cards or devices. (the offset is
+> depending on the device model)
+>
+> what you measure is what the chip receives, but not what was lost on the
+> pcb layout. (or was even generated in case of noise)
+> and when it comes to calibration data. correct would be if each
+> individual card is calibrated before shipment. in reality manufactures
+> are doing calibration on a single reference card and clone it on all
+> following cards to save time. the result depends on day or week of
+> production
+> and current position of the moon and sun. errors of +- 2 db are common
+> here. (this is not a fact for all card or device vendors)
+>
+> >
+> > If you look at the tx-rate-power table in ath10k, for instance, you
+> > can see different MCS are transmitted
+> > at different signal levels.  So, some change from initial conditions
+> > might be because higher MCS is
+> > being transmitted after rate-ctrl scales up?
+> yes. this is modulation related. as higher the rate goes as lower the
+> power will be. thats princible of QAM.
+> and the rate control itself isnt signal but error rate based. so high
+> packet loss triggers the rate control to lower the rate which results
+> in increased output power and vice versa. but as mentioned. at card
+> startup a noise floor calibration starts which may succeed or fail.
+> if it succeeds it will turn into a long delay phase. so cyclic
+> calibration. the calibration time is exactly 30 seconds (minimum) and if
+> it fails it can
+> exceed to 60 seconds. after that time it will sleep for 300 seconds and
+> will check for recalibration conditions. (there are rules like high
+> noise floor changes etc.)
+> a recalibration is also triggered at channel changes  and if chipset
+> temperature changes at a certain level.
+> from what i have seen the procedure in the qca9880 firmware is exactly
+> the same as in ath9k.
+> anyway. while this calibration is running, the signal and noise floor
+> might be unstable or even bogus until this is finished and rate control
+> might not be optimal
+> under stress conditions like long range links with low signals. with
+> standard wifi usage you should not notice it that much since signal to
+> noise ratio is high enough anyway
+>
+>
+> >
+> > Lots of moving parts...
+> >
+> > Thanks,
+> > Ben
+> >
+> >>
+> >> Sebastian
+> >>
+> >> Am 18.12.2019 um 00:37 schrieb Tom Psyborg:
+> >>> also noticed now that the noise floor changes with signal strength as
+> >>> described in this bug report:
+> >>> https://www.mail-archive.com/ath10k@lists.infradead.org/msg11553.html
+> >>>
+> >>> after wifi restart
+> >>>
+> >>> iwinfo:
+> >>>
+> >>> signal: -59dBm noise: -108dBm
+> >>>
+> >>> then goes to
+> >>>
+> >>> signal: -52dBm noise: -103dBm
+> >>>
+> >>> and finally drops to
+> >>>
+> >>> signal: -59dBm noise: -103dBm
+> >>>
+> >>
+> >
 
 _______________________________________________
 ath10k mailing list
