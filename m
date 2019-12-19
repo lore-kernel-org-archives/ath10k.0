@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihvRc-00052v-R2
- for ath10k@lists.infradead.org; Thu, 19 Dec 2019 13:02:22 +0000
+ id 1ihveG-00026E-IX
+ for ath10k@lists.infradead.org; Thu, 19 Dec 2019 13:15:25 +0000
+Received: by mail-ed1-x544.google.com with SMTP id f8so4844603edv.2
+ for <ath10k@lists.infradead.org>; Thu, 19 Dec 2019 05:15:22 -0800 (PST)
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH 0/2] ath10k: pci: Two PCI related fixups
+Date: Thu, 19 Dec 2019 13:15:37 +0000
+Message-Id: <20191219131539.1003793-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH,
- v3] Revert "ath10k: fix DMA related firmware crashes on multiple
- devices"
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <0101016ef916f2e7-28683312-1d0b-4c2e-b967-c13c3e45ce31-000000@us-west-2.amazonses.com>
-References: <0101016ef916f2e7-28683312-1d0b-4c2e-b967-c13c3e45ce31-000000@us-west-2.amazonses.com>
-Message-Id: <20191219130215.A627AC433CB@smtp.codeaurora.org>
-Date: Thu, 19 Dec 2019 13:02:15 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zhi Chen <zhichen@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: kvalo@codeaurora.org, akolli@codeaurora.org, ath10k@lists.infradead.org
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, linux-wireless@vger.kernel.org
 
-Zhi Chen <zhichen@codeaurora.org> wrote:
+This set addresses two issues one a contrived but real corner-case crash
+scenario and the other a simple typo.
 
-> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
-> PCIe hung issue was observed on multiple platforms. The issue was 
-> reproduced
-> when DUT was configured as AP and associated with 50+ STAs.
-> 
-> For QCA9984/QCA9888, the DMA_BURST_SIZE register controls the AXI burst 
-> size
-> of the RD/WR access to the HOST MEM.
-> 0 - No split , RAW read/write transfer size from MAC is put out on bus
->      as burst length
-> 1 - Split at 256 byte boundary
-> 2,3 - Reserved
-> 
-> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary 
-> when
-> issue happened. It broke PCIe spec and caused PCIe stuck. So revert
-> the default value from 0 to 1.
-> 
-> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
->           QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
->           Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
-> 
-> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+Debugging on a QCS405 which has an ath10k attached to PCIe its been found
+that a loop similar to the below [1] will cause.
 
-Fails to apply:
+1. A significant slow-down in the time it takes an individual ioread32()
+   to complete.
+2. A secure watchdog bite.
 
-error: patch failed: drivers/net/wireless/ath/ath10k/hw.h:813
-error: drivers/net/wireless/ath/ath10k/hw.h: patch does not apply
-stg import: Diff does not apply cleanly
+This is as a result of the restart routine and the dump register routine
+running in parallel and a period of time during restart where dumping
+registers is unstable.
 
-Patch set to Changes Requested.
+The second patch is a simple fix to an apparent copy/paste error describing
+the behavior of a similar dump function.
+
+[1] Reset method
+while $1
+do
+echo hw-restart > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
+echo hard >  /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
+done;
+
+Bryan O'Donoghue (2):
+  ath10k: pci: Only dump ATH10K_MEM_REGION_TYPE_IOREG when safe
+  ath10k: pci: Fix comment on ath10k_pci_dump_memory_sram
+
+ drivers/net/wireless/ath/ath10k/pci.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
 -- 
-https://patchwork.kernel.org/patch/11287143/
+2.24.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
