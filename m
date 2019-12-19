@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihveG-00026E-IX
- for ath10k@lists.infradead.org; Thu, 19 Dec 2019 13:15:25 +0000
-Received: by mail-ed1-x544.google.com with SMTP id f8so4844603edv.2
- for <ath10k@lists.infradead.org>; Thu, 19 Dec 2019 05:15:22 -0800 (PST)
+ id 1ihvn0-00047K-Js
+ for ath10k@lists.infradead.org; Thu, 19 Dec 2019 13:24:27 +0000
+Received: by mail-ed1-x543.google.com with SMTP id f8so4869743edv.2
+ for <ath10k@lists.infradead.org>; Thu, 19 Dec 2019 05:24:25 -0800 (PST)
 From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: [PATCH 0/2] ath10k: pci: Two PCI related fixups
-Date: Thu, 19 Dec 2019 13:15:37 +0000
-Message-Id: <20191219131539.1003793-1-bryan.odonoghue@linaro.org>
+Subject: [PATCH 2/2] ath10k: pci: Fix comment on ath10k_pci_dump_memory_sram
+Date: Thu, 19 Dec 2019 13:15:39 +0000
+Message-Id: <20191219131539.1003793-3-bryan.odonoghue@linaro.org>
+In-Reply-To: <20191219131539.1003793-1-bryan.odonoghue@linaro.org>
+References: <20191219131539.1003793-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,37 +27,29 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@codeaurora.org, akolli@codeaurora.org, ath10k@lists.infradead.org
 Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, linux-wireless@vger.kernel.org
 
-This set addresses two issues one a contrived but real corner-case crash
-scenario and the other a simple typo.
+The description of ath10k_pci_dump_memory_sram() is inaccurate, an error
+can never be returned, it is always the length. Update the comment to
+reflect.
 
-Debugging on a QCS405 which has an ath10k attached to PCIe its been found
-that a loop similar to the below [1] will cause.
+Fixes: 219cc084c6706 ("ath10k: add memory dump support QCA9984")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1. A significant slow-down in the time it takes an individual ioread32()
-   to complete.
-2. A secure watchdog bite.
-
-This is as a result of the restart routine and the dump register routine
-running in parallel and a period of time during restart where dumping
-registers is unstable.
-
-The second patch is a simple fix to an apparent copy/paste error describing
-the behavior of a similar dump function.
-
-[1] Reset method
-while $1
-do
-echo hw-restart > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
-echo hard >  /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
-done;
-
-Bryan O'Donoghue (2):
-  ath10k: pci: Only dump ATH10K_MEM_REGION_TYPE_IOREG when safe
-  ath10k: pci: Fix comment on ath10k_pci_dump_memory_sram
-
- drivers/net/wireless/ath/ath10k/pci.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 4822a65f6f3c..ded7a220a4aa 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1578,7 +1578,7 @@ static int ath10k_pci_set_ram_config(struct ath10k *ar, u32 config)
+ 	return 0;
+ }
+ 
+-/* if an error happened returns < 0, otherwise the length */
++/* Always returns the length */
+ static int ath10k_pci_dump_memory_sram(struct ath10k *ar,
+ 				       const struct ath10k_mem_region *region,
+ 				       u8 *buf)
 -- 
 2.24.0
 
