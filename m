@@ -1,18 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.w1.fi ([212.71.239.96] helo=li674-96.members.linode.com)
+Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihy2X-0008Ic-5Q
- for ath10k@lists.infradead.org; Thu, 19 Dec 2019 15:48:38 +0000
-Date: Thu, 19 Dec 2019 17:48:28 +0200
-From: Jouni Malinen <j@w1.fi>
-Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
-Message-ID: <20191219154828.GA12287@w1.fi>
+ id 1ii0b1-0005wG-1s
+ for ath10k@lists.infradead.org; Thu, 19 Dec 2019 18:32:24 +0000
+Received: by mail-qt1-x841.google.com with SMTP id k40so5860932qtk.8
+ for <ath10k@lists.infradead.org>; Thu, 19 Dec 2019 10:32:21 -0800 (PST)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com.
+ [209.85.160.180])
+ by smtp.gmail.com with ESMTPSA id 206sm1941830qkf.132.2019.12.19.10.32.18
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 19 Dec 2019 10:32:18 -0800 (PST)
+Received: by mail-qt1-f180.google.com with SMTP id e12so5889162qto.2
+ for <ath10k@lists.infradead.org>; Thu, 19 Dec 2019 10:32:18 -0800 (PST)
+MIME-Version: 1.0
 References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
  <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
  <1576748692.7758.17.camel@realtek.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1576748692.7758.17.camel@realtek.com>
+ <20191219154828.GA12287@w1.fi>
+In-Reply-To: <20191219154828.GA12287@w1.fi>
+From: Brian Norris <briannorris@chromium.org>
+Date: Thu, 19 Dec 2019 10:32:06 -0800
+Message-ID: <CA+ASDXMTYLGbEkBPHSqtyitMEvY5o_MjU0s+NoWdnN_ORy1gDw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,88 +31,97 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pkshih <pkshih@realtek.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+To: Jouni Malinen <j@w1.fi>
+Cc: Pkshih <pkshih@realtek.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Dec 19, 2019 at 09:44:52AM +0000, Pkshih wrote:
-> On Wed, 2019-12-18 at 17:48 +0200, Kalle Valo wrote:
-> > diff --git a/include/uapi/nl80211-vnd-qca.h b/include/uapi/nl80211-vnd-qca.h
-> > + * NOTE: The authoritative place for definition of QCA_NL80211_VENDOR_ID,
-> > + * vendor subcmd definitions prefixed with QCA_NL80211_VENDOR_SUBCMD, and
-> > + * qca_wlan_vendor_attr is open source file src/common/qca-vendor.h in
-> > + * git://w1.fi/srv/git/hostap.git; the values here are just a copy of that
-
-> > + * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND: Optional (u32) value to
-> > + *	indicate for which band this specification applies. Valid
-> > + *	values are enumerated in enum %nl80211_band (although not all
-> > + *	bands may be supported by a given device). If the attribute is
-> 
-> Can we define separated enum to address four 5G sub-bands, likes
-> 
-> enum nl80211_sar_band {
-> 	NL80211_SAR_BAND_2G,
-> 	NL80211_SAR_BAND_5G_BAND1,
-> 	NL80211_SAR_BAND_5G_BAND2,
-> 	NL80211_SAR_BAND_5G_BAND3,
-> 	NL80211_SAR_BAND_5G_BAND4,
-> };
-
-Please note that the vendor subcmd and attributes used here are already
-deployed and in use as a kernel interface. As such, the existing
-attributes cannot really be modified; if anything else would be needed,
-that would need to be defined as a new attribute and/or command.
-
-> I think this vendor command can be a generic nl80211 command, because
-> we need SAR
-> power limit as well.
-
-This was discussed during the 2019 wireless workshop. The conclusion
-from that discussion was that while there is clear need for SAR power
-limits for various devices and multiple vendors/drivers, it did not look
-clear that a single common interface could be defined cleanly taken into
-account the differences in the ways vendors have designed the mechanism
-in driver and firmware implementations. As such, vendor specific
-commands were identified as the approach.
-
-> > + * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT: Required (u32)
-> > + *	value to specify the actual power limit value in units of 0.5
-> > + *	dBm (i.e., a value of 11 represents 5.5 dBm).
-> 
-> Can we have higher precision, in unit of 0.125?
-
-This existing attribute cannot be modified, i.e., a new one would need
-to be added if a different precision is needed. As far as the specific
-need for the vendor command defined here is concerned, 0.5 dB unit is
-sufficient.
-
-> > + * These attributes are used with %QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS
-> > + * and %QCA_NL80211_VENDOR_SUBCMD_GET_SAR_LIMITS.
-> > + */
-> > +enum qca_vendor_attr_sar_limits {
-> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_INVALID = 0,
-> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC = 3,
-> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND = 4,
-> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT = 7,
-> 
-> Why these enum aren't continual?
-> The reason may be because QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SELECT and something
-> me
-> ntioned in above paragraph but missing in this enum?
-
-This patch does not include all the assigned values (see hostap.git for
-full details if desired), i.e., all the values are actually assigned,
-but the proposed use case for ath10k does not need the values that were
-left out from this header file that is a copy of the authoritative
-definition of the vendor attributes.
-
--- 
-Jouni Malinen                                            PGP id EFC895FA
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVGh1LCBEZWMgMTksIDIwMTkgYXQgNzo0OCBBTSBKb3VuaSBNYWxpbmVuIDxqQHcxLmZpPiB3
+cm90ZToKPiBPbiBUaHUsIERlYyAxOSwgMjAxOSBhdCAwOTo0NDo1MkFNICswMDAwLCBQa3NoaWgg
+d3JvdGU6Cj4gPiBPbiBXZWQsIDIwMTktMTItMTggYXQgMTc6NDggKzAyMDAsIEthbGxlIFZhbG8g
+d3JvdGU6Cj4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvbmw4MDIxMS12bmQtcWNhLmgg
+Yi9pbmNsdWRlL3VhcGkvbmw4MDIxMS12bmQtcWNhLmgKPiA+ID4gKyAqIE5PVEU6IFRoZSBhdXRo
+b3JpdGF0aXZlIHBsYWNlIGZvciBkZWZpbml0aW9uIG9mIFFDQV9OTDgwMjExX1ZFTkRPUl9JRCwK
+PiA+ID4gKyAqIHZlbmRvciBzdWJjbWQgZGVmaW5pdGlvbnMgcHJlZml4ZWQgd2l0aCBRQ0FfTkw4
+MDIxMV9WRU5ET1JfU1VCQ01ELCBhbmQKPiA+ID4gKyAqIHFjYV93bGFuX3ZlbmRvcl9hdHRyIGlz
+IG9wZW4gc291cmNlIGZpbGUgc3JjL2NvbW1vbi9xY2EtdmVuZG9yLmggaW4KPiA+ID4gKyAqIGdp
+dDovL3cxLmZpL3Nydi9naXQvaG9zdGFwLmdpdDsgdGhlIHZhbHVlcyBoZXJlIGFyZSBqdXN0IGEg
+Y29weSBvZiB0aGF0CgpCeSB0aGUgd2F5LCBJIHdvbmRlciAtLSB3aHkgaGF2ZSB0aGlzIHN0YXRl
+bWVudD8gVGhhdCdzIG5vdCBob3cgSQpyZWNhbGwgYW55IG90aGVyIHBpZWNlIG9mIGtlcm5lbCBk
+ZXZlbG9wbWVudCBldmVyIHdvcmtpbmc7IHVwc3RyZWFtCkxpbnV4IGRlZmluZXMgdGhlIHVwc3Ry
+ZWFtIExpbnV4IEFQSSwgbm90IHNvbWUgYXJiaXRyYXJ5IHVzZXIgc3BhY2UKcHJvamVjdC4gVGhp
+cyBzdGF0ZW1lbnQgY291bGQgYmUgdXNlZnVsIGZvciBzYXlpbmcsICJkb24ndCBzdG9tcCBvbgp0
+aG9zZSBjb21tYW5kIG51bWJlcnMgcGxlYXNlLCIgYnV0IHRoZSByZXNwb25zZSBzaG91bGQgcHJv
+YmFibHkgYmUgdG8KZ28gb3V0IGFuZCBkZWZpbmUgYSB0b3RhbGx5IG5ldyB2ZW5kb3IgSUQgb3Ig
+c29tZXRoaW5nLiAoU2VlIGJlbG93LikKCj4gPiA+ICsgKiBAUUNBX1dMQU5fVkVORE9SX0FUVFJf
+U0FSX0xJTUlUU19TUEVDX0JBTkQ6IE9wdGlvbmFsICh1MzIpIHZhbHVlIHRvCj4gPiA+ICsgKiBp
+bmRpY2F0ZSBmb3Igd2hpY2ggYmFuZCB0aGlzIHNwZWNpZmljYXRpb24gYXBwbGllcy4gVmFsaWQK
+PiA+ID4gKyAqIHZhbHVlcyBhcmUgZW51bWVyYXRlZCBpbiBlbnVtICVubDgwMjExX2JhbmQgKGFs
+dGhvdWdoIG5vdCBhbGwKPiA+ID4gKyAqIGJhbmRzIG1heSBiZSBzdXBwb3J0ZWQgYnkgYSBnaXZl
+biBkZXZpY2UpLiBJZiB0aGUgYXR0cmlidXRlIGlzCj4gPgo+ID4gQ2FuIHdlIGRlZmluZSBzZXBh
+cmF0ZWQgZW51bSB0byBhZGRyZXNzIGZvdXIgNUcgc3ViLWJhbmRzLCBsaWtlcwo+ID4KPiA+IGVu
+dW0gbmw4MDIxMV9zYXJfYmFuZCB7Cj4gPiAgICAgICBOTDgwMjExX1NBUl9CQU5EXzJHLAo+ID4g
+ICAgICAgTkw4MDIxMV9TQVJfQkFORF81R19CQU5EMSwKPiA+ICAgICAgIE5MODAyMTFfU0FSX0JB
+TkRfNUdfQkFORDIsCj4gPiAgICAgICBOTDgwMjExX1NBUl9CQU5EXzVHX0JBTkQzLAo+ID4gICAg
+ICAgTkw4MDIxMV9TQVJfQkFORF81R19CQU5ENCwKPiA+IH07Cj4KPiBQbGVhc2Ugbm90ZSB0aGF0
+IHRoZSB2ZW5kb3Igc3ViY21kIGFuZCBhdHRyaWJ1dGVzIHVzZWQgaGVyZSBhcmUgYWxyZWFkeQo+
+IGRlcGxveWVkIGFuZCBpbiB1c2UgYXMgYSBrZXJuZWwgaW50ZXJmYWNlLiBBcyBzdWNoLCB0aGUg
+ZXhpc3RpbmcKPiBhdHRyaWJ1dGVzIGNhbm5vdCByZWFsbHkgYmUgbW9kaWZpZWQ7IGlmIGFueXRo
+aW5nIGVsc2Ugd291bGQgYmUgbmVlZGVkLAo+IHRoYXQgd291bGQgbmVlZCB0byBiZSBkZWZpbmVk
+IGFzIGEgbmV3IGF0dHJpYnV0ZSBhbmQvb3IgY29tbWFuZC4KCkNsYXJpZmljYXRpb246IHlvdSdy
+ZSB0YWxraW5nIGFib3V0IG91dC1vZi10cmVlIGRyaXZlcnMsIHdoaWNoIHJlYWxseQpoYXZlIG5v
+IHJlbGV2YW5jZSBpbiB1cHN0cmVhbSBkaXNjdXNzaW9uLCBleGNlcHQgcG9zc2libHkgYXMgZXhh
+bXBsZXMuCkkgZG9uJ3QgdGhpbmsgaXQncyBldmVyIGJlZW4gYSB2YWxpZCBhcHByb2FjaCB0byBk
+aWN0YXRlIHVwc3RyZWFtCmtlcm5lbCBkZXNpZ24gYmFzZWQgc2ltcGx5IG9uICJ3aGF0ICR2ZW5k
+b3IgYWxyZWFkeSBpbXBsZW1lbnRlZCBmb3IKQW5kcm9pZC4iCgpNYXliZSBpdCdzIGEgYmV0dGVy
+IGlkZWEgdG8ganVzdCB1c2UgZGlmZmVyZW50IGNvbW1hbmQgbnVtYmVycyAob3IKdmVuZG9yIElE
+PykgaGVyZSwgdG8gYXZvaWQgc3RvbXBpbmcgb24gZWFjaCBvdGhlcnMnIGltcGxlbWVudGF0aW9u
+CmNob2ljZXMuIE90aGVyd2lzZSwgaXQgc291bmRzIGxpa2Ugb3VyIG9ubHkgY2hvaWNlIGhlcmUg
+aXMgdG8gY29weQp5b3VyIEFuZHJvaWQgZHJpdmVyIHZlcmJhdGltLCBvciBnZXQgbG9zdC4KCj4g
+PiBJIHRoaW5rIHRoaXMgdmVuZG9yIGNvbW1hbmQgY2FuIGJlIGEgZ2VuZXJpYyBubDgwMjExIGNv
+bW1hbmQsIGJlY2F1c2UKPiA+IHdlIG5lZWQgU0FSCj4gPiBwb3dlciBsaW1pdCBhcyB3ZWxsLgo+
+Cj4gVGhpcyB3YXMgZGlzY3Vzc2VkIGR1cmluZyB0aGUgMjAxOSB3aXJlbGVzcyB3b3Jrc2hvcC4g
+VGhlIGNvbmNsdXNpb24KPiBmcm9tIHRoYXQgZGlzY3Vzc2lvbiB3YXMgdGhhdCB3aGlsZSB0aGVy
+ZSBpcyBjbGVhciBuZWVkIGZvciBTQVIgcG93ZXIKPiBsaW1pdHMgZm9yIHZhcmlvdXMgZGV2aWNl
+cyBhbmQgbXVsdGlwbGUgdmVuZG9ycy9kcml2ZXJzLCBpdCBkaWQgbm90IGxvb2sKPiBjbGVhciB0
+aGF0IGEgc2luZ2xlIGNvbW1vbiBpbnRlcmZhY2UgY291bGQgYmUgZGVmaW5lZCBjbGVhbmx5IHRh
+a2VuIGludG8KPiBhY2NvdW50IHRoZSBkaWZmZXJlbmNlcyBpbiB0aGUgd2F5cyB2ZW5kb3JzIGhh
+dmUgZGVzaWduZWQgdGhlIG1lY2hhbmlzbQo+IGluIGRyaXZlciBhbmQgZmlybXdhcmUgaW1wbGVt
+ZW50YXRpb25zLiBBcyBzdWNoLCB2ZW5kb3Igc3BlY2lmaWMKPiBjb21tYW5kcyB3ZXJlIGlkZW50
+aWZpZWQgYXMgdGhlIGFwcHJvYWNoLgoKW2NpdGF0aW9uIG5lZWRlZF0KSSB3YXMgaW4gdGhhdCB3
+b3Jrc2hvcCwgYW5kIHdoaWxlIEkgcmVjYWxsIHRoZSBhc3NlcnRpb24sIEkgZG9uJ3QKcmVjYWxs
+IGFueSBldmlkZW5jZSBbMV0uIEluIGZhY3QsIEkndmUgd2F0Y2hlZCAob2ZmLWxpc3QpIFdlbiBH
+b25nCnByb3Bvc2Ugc2V2ZXJhbCB2YXJpYXRpb25zIG9mIHRoaXMgZXhhY3Qgc2FtZSBBUEkgYWxv
+bmcgdGhlIHdheSAoaGludCwKSSdtIHRoZSBvbmUgcmVxdWVzdGluZyBoZSB1cHN0cmVhbSB0aGlz
+KSwgYW5kIGl0J3MgY2xlYXIgdGhlcmUncwoqc29tZSogZmxleGliaWxpdHkgaW4gdGhlIEFQSS4g
+SWYsIGZvciBleGFtcGxlLCB0aGUgZHJpdmVyIGF0dGVtcHRlZAp0byBwcm92aWRlIGEgbGlzdCBv
+ZiBmcmVxdWVuY3kgYmFuZHMgaXQgc3VwcG9ydHMgY29udHJvbGxpbmcgVFggcG93ZXIKZm9yLCB0
+aGF0IHdvdWxkIGdvIGEgbG9uZyB3YXkgdG93YXJkIHNoYXJpbmcgdGhpcyBBUEkgYmV0d2VlbiBk
+cml2ZXJzLgoKQW5vdGhlciBoaW50OiB0aGlzIGlzIGV4YWN0bHkgd2h5IFBrc2hpaCBpcyBzcGVh
+a2luZyB1cCBoZXJlIC0tIEknbQpmaWVsZGluZyByZXF1ZXN0cyBmcm9tIGhpbSBhbmQgaGlzIGVt
+cGxveWVyIG9uIGltcGxlbWVudGluZyB0aGUgc2FtZQpmZWF0dXJlLCBhbmQgaGlzIEFQSSBpcyBz
+dGFydGluZyB0byBsb29rIGFuIGF3ZnVsIGxvdCBsaWtlIHlvdXJzLiBTbyBJCnN1Z2dlc3RlZCBo
+ZSByZXZpZXcgdGhpcyBwcm9wb3NhbCB0byBzZWUgd2hlcmUgYW5kIHdoeSB0aGV5IGRpZmZlci4K
+CkFueXdheSwgSSBkb24ndCByZWFsbHkgb2JqZWN0IHdpdGggc3RhcnRpbmcgb3V0IHdpdGggYQpR
+dWFsY29tbS1zcGVjaWZpYyBhbmQgYSBSZWFsdGVrLXNwZWNpZmljIHZlbmRvciBjb21tYW5kIHRv
+IGltcGxlbWVudApuZWFybHkgdGhlIHNhbWUgZmVhdHVyZSwgYnV0IEknZCBwcmVmZXIgaWYgcGVv
+cGxlIGRpZCBlbmdhZ2UgaW4gc29tZQpoZWFsdGh5IGRpc2N1c3Npb24gYWJvdXQgd2h5IHRoZXkg
+Y2FuJ3Qgc2hhcmUgYW4gQVBJLCB3aXRoIHRoZSBob3Blcwp0aGF0IG1heWJlIHRoZXkgY2FuIGNv
+bnZlcmdlIHNvbWVkYXkuIEluIGZhY3QsIHRoYXQncyBleGFjdGx5IHdoYXQgdGhlCldpa2kgc2F5
+cyBhYm91dCB0aGlzOgoKaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxv
+cGVycy9kb2N1bWVudGF0aW9uL25sODAyMTEjdmVuZG9yLXNwZWNpZmljX2FwaQoKIlRoZSBnb2Fs
+IHdpdGggdGhlc2UgcnVsZXMgaXMgdG8gZW5hYmxlIHVzZSBvZiB2ZW5kb3IgY29tbWFuZHMgaW4g
+YQpmYXNoaW9uIHRoYXQgaXMgdHJhbnNwYXJlbnQgZW5vdWdoIHRvIGFsbG93IGxhdGVyIHJldXNl
+IGJ5IG90aGVyCmNvbXBvbmVudHMgd2l0aCBzaW1pbGFyIG5lZWRzLCBhbmQgdGhlbiBwb3RlbnRp
+YWxseSBkZWZpbmluZyDigJxyZWFs4oCdCm5sODAyMTEgQVBJIGZvciB0aGUgdXNlIGNhc2UgaW4g
+cXVlc3Rpb24uIgoKUmVnYXJkcywKQnJpYW4KClsxXSBUaGUgY2xvc2VzdCB0aGluZyB0byBldmlk
+ZW5jZSBJJ3ZlIHNlZW4gaXMgdGhhdCBjZXJ0YWluICR2ZW5kb3JzCmRlY2lkZSB0aGV5IGRvbid0
+IHdhbnQgdG8gZ2l2ZSB1c2VyIHNwYWNlIGFueSBjb250cm9sIGF0IGFsbCBvdmVyIHRoZQpTQVIg
+cG93ZXIgdGFibGVzLCBmb3IgJHJlYXNvbnMuIEJ1dCBzdWNoICR2ZW5kb3JzIHNob3VsZCBub3Qg
+cmVhbGx5CmhhdmUgYW55IHNheSBpbiBpbXBsZW1lbnRpbmcgdXNlciBzcGFjZSBBUElzIGZvciB0
+aG9zZSAkdmVuZG9ycyB0aGF0CmRvIHByb3ZpZGUgc3VjaCBjb250cm9sLgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
