@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+Received: from mail.w1.fi ([212.71.239.96] helo=li674-96.members.linode.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihwxh-0007G1-Q9
- for ath10k@lists.infradead.org; Thu, 19 Dec 2019 14:39:34 +0000
-Received: by mail-ot1-x342.google.com with SMTP id b18so7504261otp.0
- for <ath10k@lists.infradead.org>; Thu, 19 Dec 2019 06:39:32 -0800 (PST)
+ id 1ihy2X-0008Ic-5Q
+ for ath10k@lists.infradead.org; Thu, 19 Dec 2019 15:48:38 +0000
+Date: Thu, 19 Dec 2019 17:48:28 +0200
+From: Jouni Malinen <j@w1.fi>
+Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+Message-ID: <20191219154828.GA12287@w1.fi>
+References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
+ <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
+ <1576748692.7758.17.camel@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <000eaa2a-4798-a855-93a9-c9679b8860c8@newmedia-net.de>
-References: <20191216092207.31032-1-john@phrozen.org>
- <20191217153000.76AB1C4479C@smtp.codeaurora.org>
- <CAKR_QVJVfqid8i5PXj3Yg8VJjht=MF2fZg+twkLgEkKuMB2bbQ@mail.gmail.com>
- <CAKR_QVJ1PhCHfAO5Rp6pm-wjAO-HcZiq-9Lw67FzBFO5jjYtbA@mail.gmail.com>
- <d24c7821-4e5e-28b5-5d1d-f076cfd762fc@newmedia-net.de>
- <CAKR_QVLKfoo15EqszGSZ9zf6YnfEkih9=PeB0d92k3i0SJZfxQ@mail.gmail.com>
- <000eaa2a-4798-a855-93a9-c9679b8860c8@newmedia-net.de>
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Thu, 19 Dec 2019 15:39:31 +0100
-Message-ID: <CAKR_QV+Le2zRvnGz4EiMKtXY8HTzH9eru86n6kN+5A9XSF7y3A@mail.gmail.com>
-Subject: Re: [RESEND] ath10k: add tx hw 802.11 encapusaltion offloading support
+Content-Disposition: inline
+In-Reply-To: <1576748692.7758.17.camel@realtek.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +25,82 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Pkshih <pkshih@realtek.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
 
-in core.c there is also needed ethernetmode check in
-ath10k_core_init_firmware_features
+On Thu, Dec 19, 2019 at 09:44:52AM +0000, Pkshih wrote:
+> On Wed, 2019-12-18 at 17:48 +0200, Kalle Valo wrote:
+> > diff --git a/include/uapi/nl80211-vnd-qca.h b/include/uapi/nl80211-vnd-qca.h
+> > + * NOTE: The authoritative place for definition of QCA_NL80211_VENDOR_ID,
+> > + * vendor subcmd definitions prefixed with QCA_NL80211_VENDOR_SUBCMD, and
+> > + * qca_wlan_vendor_attr is open source file src/common/qca-vendor.h in
+> > + * git://w1.fi/srv/git/hostap.git; the values here are just a copy of that
 
-ar->wmi.rx_decap_mode = ATH10K_HW_TXRX_NATIVE_WIFI
+> > + * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND: Optional (u32) value to
+> > + *	indicate for which band this specification applies. Valid
+> > + *	values are enumerated in enum %nl80211_band (although not all
+> > + *	bands may be supported by a given device). If the attribute is
+> 
+> Can we define separated enum to address four 5G sub-bands, likes
+> 
+> enum nl80211_sar_band {
+> 	NL80211_SAR_BAND_2G,
+> 	NL80211_SAR_BAND_5G_BAND1,
+> 	NL80211_SAR_BAND_5G_BAND2,
+> 	NL80211_SAR_BAND_5G_BAND3,
+> 	NL80211_SAR_BAND_5G_BAND4,
+> };
 
-replace with
+Please note that the vendor subcmd and attributes used here are already
+deployed and in use as a kernel interface. As such, the existing
+attributes cannot really be modified; if anything else would be needed,
+that would need to be defined as a new attribute and/or command.
 
-if (ethernetmode)
-	ar->wmi.rx_decap_mode = ATH10K_HW_TXRX_ETHERNET
-else
-	ar->wmi.rx_decap_mode = ATH10K_HW_TXRX_NATIVE_WIFI
+> I think this vendor command can be a generic nl80211 command, because
+> we need SAR
+> power limit as well.
 
-QSDK driver sets it like that when using eth mode
+This was discussed during the 2019 wireless workshop. The conclusion
+from that discussion was that while there is clear need for SAR power
+limits for various devices and multiple vendors/drivers, it did not look
+clear that a single common interface could be defined cleanly taken into
+account the differences in the ways vendors have designed the mechanism
+in driver and firmware implementations. As such, vendor specific
+commands were identified as the approach.
+
+> > + * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT: Required (u32)
+> > + *	value to specify the actual power limit value in units of 0.5
+> > + *	dBm (i.e., a value of 11 represents 5.5 dBm).
+> 
+> Can we have higher precision, in unit of 0.125?
+
+This existing attribute cannot be modified, i.e., a new one would need
+to be added if a different precision is needed. As far as the specific
+need for the vendor command defined here is concerned, 0.5 dB unit is
+sufficient.
+
+> > + * These attributes are used with %QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS
+> > + * and %QCA_NL80211_VENDOR_SUBCMD_GET_SAR_LIMITS.
+> > + */
+> > +enum qca_vendor_attr_sar_limits {
+> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_INVALID = 0,
+> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC = 3,
+> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND = 4,
+> > +	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT = 7,
+> 
+> Why these enum aren't continual?
+> The reason may be because QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SELECT and something
+> me
+> ntioned in above paragraph but missing in this enum?
+
+This patch does not include all the assigned values (see hostap.git for
+full details if desired), i.e., all the values are actually assigned,
+but the proposed use case for ath10k does not need the values that were
+left out from this header file that is a copy of the authoritative
+definition of the vendor attributes.
+
+-- 
+Jouni Malinen                                            PGP id EFC895FA
 
 _______________________________________________
 ath10k mailing list
