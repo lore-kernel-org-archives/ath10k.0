@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihtHv-0000tW-Ks
- for ath10k@lists.infradead.org; Thu, 19 Dec 2019 10:44:15 +0000
-Subject: Re: [RESEND] ath10k: add tx hw 802.11 encapusaltion offloading support
-References: <20191216092207.31032-1-john@phrozen.org>
- <20191217153000.76AB1C4479C@smtp.codeaurora.org>
- <CAKR_QVJVfqid8i5PXj3Yg8VJjht=MF2fZg+twkLgEkKuMB2bbQ@mail.gmail.com>
- <CAKR_QVJ1PhCHfAO5Rp6pm-wjAO-HcZiq-9Lw67FzBFO5jjYtbA@mail.gmail.com>
- <d24c7821-4e5e-28b5-5d1d-f076cfd762fc@newmedia-net.de>
- <CAKR_QVLKfoo15EqszGSZ9zf6YnfEkih9=PeB0d92k3i0SJZfxQ@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-Message-ID: <000eaa2a-4798-a855-93a9-c9679b8860c8@newmedia-net.de>
-Date: Thu, 19 Dec 2019 11:44:04 +0100
+ id 1ihvRc-00052v-R2
+ for ath10k@lists.infradead.org; Thu, 19 Dec 2019 13:02:22 +0000
 MIME-Version: 1.0
-In-Reply-To: <CAKR_QVLKfoo15EqszGSZ9zf6YnfEkih9=PeB0d92k3i0SJZfxQ@mail.gmail.com>
+Subject: Re: [PATCH,
+ v3] Revert "ath10k: fix DMA related firmware crashes on multiple
+ devices"
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <0101016ef916f2e7-28683312-1d0b-4c2e-b967-c13c3e45ce31-000000@us-west-2.amazonses.com>
+References: <0101016ef916f2e7-28683312-1d0b-4c2e-b967-c13c3e45ce31-000000@us-west-2.amazonses.com>
+Message-Id: <20191219130215.A627AC433CB@smtp.codeaurora.org>
+Date: Thu, 19 Dec 2019 13:02:15 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +20,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tom Psyborg <pozega.tomislav@gmail.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Zhi Chen <zhichen@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Zhi Chen <zhichen@codeaurora.org> wrote:
 
-> no way. check that you applied code correctly and enabled ethernetmode
-> parameter. iperf or ping also wouldn't start from wired machine in
-> ethernetmode unless pinged from wireless machine first
-let me verify this again. maybe i'm wrong.
->
+> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
+> PCIe hung issue was observed on multiple platforms. The issue was 
+> reproduced
+> when DUT was configured as AP and associated with 50+ STAs.
+> 
+> For QCA9984/QCA9888, the DMA_BURST_SIZE register controls the AXI burst 
+> size
+> of the RD/WR access to the HOST MEM.
+> 0 - No split , RAW read/write transfer size from MAC is put out on bus
+>      as burst length
+> 1 - Split at 256 byte boundary
+> 2,3 - Reserved
+> 
+> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary 
+> when
+> issue happened. It broke PCIe spec and caused PCIe stuck. So revert
+> the default value from 0 to 1.
+> 
+> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
+>           QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
+>           Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
+> 
+> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+
+Fails to apply:
+
+error: patch failed: drivers/net/wireless/ath/ath10k/hw.h:813
+error: drivers/net/wireless/ath/ath10k/hw.h: patch does not apply
+stg import: Diff does not apply cleanly
+
+Patch set to Changes Requested.
+
+-- 
+https://patchwork.kernel.org/patch/11287143/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
