@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x243.google.com ([2607:f8b0:4864:20::243])
+Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ik8NB-0002TQ-A4
- for ath10k@lists.infradead.org; Wed, 25 Dec 2019 15:14:54 +0000
-Received: by mail-oi1-x243.google.com with SMTP id i1so8123077oie.8
- for <ath10k@lists.infradead.org>; Wed, 25 Dec 2019 07:14:52 -0800 (PST)
+ id 1ikFZ3-0004xp-OJ
+ for ath10k@lists.infradead.org; Wed, 25 Dec 2019 22:55:39 +0000
+Received: by mail-ot1-x342.google.com with SMTP id b18so8646624otp.0
+ for <ath10k@lists.infradead.org>; Wed, 25 Dec 2019 14:55:35 -0800 (PST)
 MIME-Version: 1.0
 References: <20191225120002.11163-1-wgong@codeaurora.org>
- <20191225120002.11163-2-wgong@codeaurora.org>
-In-Reply-To: <20191225120002.11163-2-wgong@codeaurora.org>
+ <20191225120002.11163-3-wgong@codeaurora.org>
+In-Reply-To: <20191225120002.11163-3-wgong@codeaurora.org>
 From: Justin Capella <justincapella@gmail.com>
-Date: Wed, 25 Dec 2019 07:14:38 -0800
-Message-ID: <CAMrEMU-p3+HRZYW6TzXwZSwhxj9oJ9JW1Rg=ZysJ3fr0rm45Ng@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ath10k: add refcount for ath10k_core_restart
+Date: Wed, 25 Dec 2019 14:56:01 -0800
+Message-ID: <CAMrEMU9ZVV-yotvH2Odn+sb1HiiL_tN_GASSeSnhAOzCUjLZ7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ath10k: start recovery process when payload length
+ exceeds max htc length for sdio
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +29,66 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
 
-This does not only effect SDIO.
+Does the SDIO bus require addresses to be word aligned like the PCI
+bus does? I'm thinking of how netdev alloc uses skb_push to ensure
+that the payload is aligned.
 
-Why a semaphore / count? Could the conf_mutex be held earlier, or
-perhaps change the state to ATH10K_STATE_RESTARTING first?
-ath10k_reconfig_complete is also called in mac.c when channel is changed so
+
+>> if (ar->state == ATH10K_STATE_ON)
+
+What about the other STATEs: RESTARTED/ING
+
+The value you mentioned 57005, is 0xDEAD is that a special case?
+Perhaps a result of fw crash? Maybe a lookahead gone wong? I see its
+the WMI PEER ALIVE/DEAD indicator but I'm not sure why it would be
+trailer of the other
 
 On Wed, Dec 25, 2019 at 4:01 AM Wen Gong <wgong@codeaurora.org> wrote:
 >
-> When it has more than one restart_work queued meanwhile, the 2nd
-> restart_work is very esay to break the 1st restart work and lead
-> recovery fail.
+> When simulate random transfer fail for sdio write and read, it happened
+> "payload length exceeds max htc length" and recovery later sometimes.
 >
-> Add a ref count to allow only one restart work running untill
-> device successfully recovered.
+> Test steps:
+> 1. Add config and update kernel:
+> CONFIG_FAIL_MMC_REQUEST=y
+> CONFIG_FAULT_INJECTION=y
+> CONFIG_FAULT_INJECTION_DEBUG_FS=y
+>
+> 2. Run simulate fail:
+> cd /sys/kernel/debug/mmc1/fail_mmc_request
+> echo 10 > probability
+> echo 10 > times # repeat until hitting issues
+>
+> 3. It happened payload length exceeds max htc length.
+> [  199.935506] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
+> ....
+> [  264.990191] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
+>
+> 4. after some time, such as 60 seconds, it start recovery which triggered
+> by wmi command timeout for periodic scan.
+> [  269.229232] ieee80211 phy0: Hardware restart was requested
+> [  269.734693] ath10k_sdio mmc1:0001:1: device successfully recovered
+>
+> The simulate fail of sdio is not a real sdio transter fail, it only
+> set an error status in mmc_should_fail_request after the transfer end,
+> actually the transfer is success, then sdio_io_rw_ext_helper will
+> return error status and stop transfer the left data. For example,
+> the really RX len is 286 bytes, then it will split to 2 blocks in
+> sdio_io_rw_ext_helper, one is 256 bytes, left is 30 bytes, if the
+> first 256 bytes get an error status by mmc_should_fail_request,then
+> the left 30 bytes will not read in this RX operation. Then when the
+> next RX arrive, the left 30 bytes will be considered as the header
+> of the read, the top 4 bytes of the 30 bytes will be considered as
+> lookaheads, but actually the 4 bytes is not the lookaheads, so the len
+> from this lookaheads is not correct, it exceeds max htc length 4088
+> sometimes. When happened exceeds, the buffer chain is not matched between
+> firmware and ath10k, then it need to start recovery ASAP. Recently then
+> recovery will be started by wmi command timeout, but it will be long time
+> later, for example, it is 60+ seconds later from the periodic scan, if
+> it does not have periodic scan, it will be longer.
+>
+> Start recovery when it happened "payload length exceeds max htc length"
+> will be reasonable.
 >
 > This patch only effect sdio chips.
 >
@@ -49,55 +96,26 @@ On Wed, Dec 25, 2019 at 4:01 AM Wen Gong <wgong@codeaurora.org> wrote:
 >
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > ---
->  drivers/net/wireless/ath/ath10k/core.c | 8 ++++++++
->  drivers/net/wireless/ath/ath10k/core.h | 2 ++
->  drivers/net/wireless/ath/ath10k/mac.c  | 1 +
->  3 files changed, 11 insertions(+)
+>  drivers/net/wireless/ath/ath10k/sdio.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 91f131b87efc..4e0e8c86bdd4 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -2199,6 +2199,14 @@ static void ath10k_core_restart(struct work_struct *work)
->  {
->         struct ath10k *ar = container_of(work, struct ath10k, restart_work);
->         int ret;
-> +       int restart_count;
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 7b894dcaad2e..78f431609493 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -557,6 +557,12 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+>                                     le16_to_cpu(htc_hdr->len),
+>                                     ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
+>                         ret = -ENOMEM;
 > +
-> +       restart_count = atomic_inc_and_test(&ar->restart_count);
-> +       if (restart_count > 1) {
-> +               ath10k_warn(ar, "can not restart, count: %d\n", restart_count);
-> +               atomic_dec(&ar->restart_count);
-> +               return;
-> +       }
->
->         set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index e57b2e7235e3..810c99f2dc0e 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -982,6 +982,8 @@ struct ath10k {
->         /* protected by conf_mutex */
->         u8 ps_state_enable;
->
-> +       atomic_t restart_count;
+> +                       if (ar->state == ATH10K_STATE_ON) {
+> +                               queue_work(ar->workqueue, &ar->restart_work);
+> +                               ath10k_warn(ar, "exceeds length, start recovery\n");
+> +                       }
 > +
->         bool nlo_enabled;
->         bool p2p;
+>                         goto err;
+>                 }
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 3856edba7915..bc1574145e66 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -7208,6 +7208,7 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
->                 ath10k_info(ar, "device successfully recovered\n");
->                 ar->state = ATH10K_STATE_ON;
->                 ieee80211_wake_queues(ar->hw);
-> +               atomic_dec(&ar->restart_count);
->         }
->
->         mutex_unlock(&ar->conf_mutex);
 > --
 > 2.23.0
 
