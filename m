@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ikFZ3-0004xp-OJ
- for ath10k@lists.infradead.org; Wed, 25 Dec 2019 22:55:39 +0000
-Received: by mail-ot1-x342.google.com with SMTP id b18so8646624otp.0
- for <ath10k@lists.infradead.org>; Wed, 25 Dec 2019 14:55:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20191225120002.11163-1-wgong@codeaurora.org>
- <20191225120002.11163-3-wgong@codeaurora.org>
-In-Reply-To: <20191225120002.11163-3-wgong@codeaurora.org>
-From: Justin Capella <justincapella@gmail.com>
-Date: Wed, 25 Dec 2019 14:56:01 -0800
-Message-ID: <CAMrEMU9ZVV-yotvH2Odn+sb1HiiL_tN_GASSeSnhAOzCUjLZ7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: start recovery process when payload length
+ id 1ikMme-0008JI-7O
+ for ath10k@lists.infradead.org; Thu, 26 Dec 2019 06:38:09 +0000
+Subject: RE: [PATCH] ath10k: start recovery process when payload length
  exceeds max htc length for sdio
+From: Wen Gong <wgong@qti.qualcomm.com>
+Date: Thu, 26 Dec 2019 06:37:56 +0000
+Message-ID: <02596d5969ab4edabe0b725379bc26a2@aptaiexm02f.ap.qualcomm.com>
+References: <20191220070021.12103-1-wgong@codeaurora.org>
+In-Reply-To: <20191220070021.12103-1-wgong@codeaurora.org>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,98 +24,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Does the SDIO bus require addresses to be word aligned like the PCI
-bus does? I'm thinking of how netdev alloc uses skb_push to ensure
-that the payload is aligned.
-
-
->> if (ar->state == ATH10K_STATE_ON)
-
-What about the other STATEs: RESTARTED/ING
-
-The value you mentioned 57005, is 0xDEAD is that a special case?
-Perhaps a result of fw crash? Maybe a lookahead gone wong? I see its
-the WMI PEER ALIVE/DEAD indicator but I'm not sure why it would be
-trailer of the other
-
-On Wed, Dec 25, 2019 at 4:01 AM Wen Gong <wgong@codeaurora.org> wrote:
->
-> When simulate random transfer fail for sdio write and read, it happened
-> "payload length exceeds max htc length" and recovery later sometimes.
->
-> Test steps:
-> 1. Add config and update kernel:
-> CONFIG_FAIL_MMC_REQUEST=y
-> CONFIG_FAULT_INJECTION=y
-> CONFIG_FAULT_INJECTION_DEBUG_FS=y
->
-> 2. Run simulate fail:
-> cd /sys/kernel/debug/mmc1/fail_mmc_request
-> echo 10 > probability
-> echo 10 > times # repeat until hitting issues
->
-> 3. It happened payload length exceeds max htc length.
-> [  199.935506] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
-> ....
-> [  264.990191] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
->
-> 4. after some time, such as 60 seconds, it start recovery which triggered
-> by wmi command timeout for periodic scan.
-> [  269.229232] ieee80211 phy0: Hardware restart was requested
-> [  269.734693] ath10k_sdio mmc1:0001:1: device successfully recovered
->
-> The simulate fail of sdio is not a real sdio transter fail, it only
-> set an error status in mmc_should_fail_request after the transfer end,
-> actually the transfer is success, then sdio_io_rw_ext_helper will
-> return error status and stop transfer the left data. For example,
-> the really RX len is 286 bytes, then it will split to 2 blocks in
-> sdio_io_rw_ext_helper, one is 256 bytes, left is 30 bytes, if the
-> first 256 bytes get an error status by mmc_should_fail_request,then
-> the left 30 bytes will not read in this RX operation. Then when the
-> next RX arrive, the left 30 bytes will be considered as the header
-> of the read, the top 4 bytes of the 30 bytes will be considered as
-> lookaheads, but actually the 4 bytes is not the lookaheads, so the len
-> from this lookaheads is not correct, it exceeds max htc length 4088
-> sometimes. When happened exceeds, the buffer chain is not matched between
-> firmware and ath10k, then it need to start recovery ASAP. Recently then
-> recovery will be started by wmi command timeout, but it will be long time
-> later, for example, it is 60+ seconds later from the periodic scan, if
-> it does not have periodic scan, it will be longer.
->
-> Start recovery when it happened "payload length exceeds max htc length"
-> will be reasonable.
->
-> This patch only effect sdio chips.
->
-> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
->
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/sdio.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-> index 7b894dcaad2e..78f431609493 100644
-> --- a/drivers/net/wireless/ath/ath10k/sdio.c
-> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-> @@ -557,6 +557,12 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
->                                     le16_to_cpu(htc_hdr->len),
->                                     ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
->                         ret = -ENOMEM;
-> +
-> +                       if (ar->state == ATH10K_STATE_ON) {
-> +                               queue_work(ar->workqueue, &ar->restart_work);
-> +                               ath10k_warn(ar, "exceeds length, start recovery\n");
-> +                       }
-> +
->                         goto err;
->                 }
->
-> --
-> 2.23.0
+> -----Original Message-----
+> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
+> Sent: Friday, December 20, 2019 3:00 PM
+> To: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Subject: [EXT] [PATCH] ath10k: start recovery process when payload length
+> exceeds max htc length for sdio
+V2 sent: https://patchwork.kernel.org/patch/11310185/
 
 _______________________________________________
 ath10k mailing list
