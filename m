@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1il3zC-0006H1-4X
- for ath10k@lists.infradead.org; Sat, 28 Dec 2019 04:46:00 +0000
-Received: by mail-ot1-x343.google.com with SMTP id a15so38773374otf.1
- for <ath10k@lists.infradead.org>; Fri, 27 Dec 2019 20:45:53 -0800 (PST)
+ id 1iler7-0005pU-VQ
+ for ath10k@lists.infradead.org; Sun, 29 Dec 2019 20:08:07 +0000
+Received: by mail-lf1-x144.google.com with SMTP id 9so23990597lfq.10
+ for <ath10k@lists.infradead.org>; Sun, 29 Dec 2019 12:08:04 -0800 (PST)
+Received: from lenovo ([185.55.65.12])
+ by smtp.gmail.com with ESMTPSA id a21sm17704858lfg.44.2019.12.29.12.07.58
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sun, 29 Dec 2019 12:07:59 -0800 (PST)
+From: <jakub@conclusive.pl>
+Subject: BD-SDMAC support?
+Date: Sun, 29 Dec 2019 21:07:58 +0100
+Message-ID: <016501d5be83$aaea1b40$00be51c0$@conclusive.pl>
 MIME-Version: 1.0
-References: <20191216092207.31032-1-john@phrozen.org>
-In-Reply-To: <20191216092207.31032-1-john@phrozen.org>
-From: Justin Capella <justincapella@gmail.com>
-Date: Fri, 27 Dec 2019 20:45:40 -0800
-Message-ID: <CAMrEMU8u94KQ2jzLv+yRomBP4PjzPehaMo_G3vqCvULEWwG35g@mail.gmail.com>
-Subject: Re: [RESEND] ath10k: add tx hw 802.11 encapusaltion offloading support
+Content-Language: pl
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,407 +28,135 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: John Crispin <john@phrozen.org>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-I think this may be a case for module_param_cb where the mode is an
-enum, that way you can enforce the mutual exclusion when the param is
-being set.
+Hi all,
 
-This leaves the module parameters unchanged/potentially conflicting,
-is that going to cause a problem?
+I'm trying to get the Boundary Devices BD-SDMAC module to work with ath10k.
+It's an SDIO module based on Silex SX-SDPAC SIP which in turn is based on a
+QCA9733 chip.
 
-+       if (ethernetmode && rawmode) {
-+               ath10k_err(ar, "ethernet and raw mode cannot co-exist\n");
-+               status = -EINVAL;
-+               goto err;
-+       }
+I'm using an ARMv7 board with mainline Linux 5.4.0 kernel. I have made two
+attempts to make it work:
 
-Would setting this before the firmware has been brought up cause any
-false assumptions later on? Maybe move to init_firmware_features like
-rawmode?
+Attempt #1: I modified mainline kernel sources by adding an entry in
+drivers/net/wireless/ath/ath10k/core.c for QCA9377_HW_1_1_DEV_VERSION and
+ATH10K_BUS_SDIO. I have used firmware files from the following source:
+https://github.com/boundarydevices/qca-firmware/tree/bd-sdmac-ath10k (also
+tried creating one with ath10k-fwencoder with identical result).
 
-+       ar->ethernetmode = ethernetmode;
+Here's how it went:
 
-Also it seems other parts of code may make assumptions if about raw
-mode and SW crypt, I noticed at least one more in
-ath10k_core_init_firmware_features in addition to what Tom mentioned--
-in the ATH10K_CRYPT_MODE_SW case rawmode bit is being set. There was
-also an interesting comment about aggregation and raw mode, maybe
-interest... They also are checking for firmware support for rawmode,
-is there an equivalent feature bit that could be checked for
-ethernetmode?
+# modprobe ath10k_sdio
+ath10k_sdio mmc0:0001:1: WARNING: ath10k SDIO support is work-in-progress,
+problems may arise!
+ath10k_sdio mmc0:0001:1: qca9377 hw1.1 target 0x05020001 chip_id 0x00000000
+sub 0000:0000
+ath10k_sdio mmc0:0001:1: kconfig debug 1 debugfs 1 tracing 0 dfs 0 testmode
+0
+ath10k_sdio mmc0:0001:1: firmware ver WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5
+features ignore-otp crc32 7746e551
+ath10k_sdio mmc0:0001:1: board_file api 1 bmi_id N/A crc32 78c48ff6
+ath10k_sdio mmc0:0001:1: hif write32 not supported
+ath10k_sdio mmc0:0001:1: failed to write to address 0x874: -110
+ath10k_sdio mmc0:0001:1: failed to write 0x299fd5df to mbox window data
+address: -110
+ath10k_sdio mmc0:0001:1: failed to download the only 14248 bytes segment to
+address:0x980000: -110
+ath10k_sdio mmc0:0001:1: hif write32 not supported
+ath10k_sdio mmc0:0001:1: failed to download firmware via diag interface:-110
+ath10k_sdio mmc0:0001:1: failed to upload firmware via diag ce, trying BMI:
+-110
+ath10k_sdio mmc0:0001:1: failed to read from address 0x850: -16
+ath10k_sdio mmc0:0001:1: unable to decrement the command credit count
+register: -16
+ath10k_sdio mmc0:0001:1: unable to Start LZ Stream to the device
+ath10k_sdio mmc0:0001:1: could not init core (-16)
+ath10k_sdio mmc0:0001:1: unable to disable sdio function: -5
+ath10k_sdio mmc0:0001:1: could not probe fw (-16)
 
-+       if (cb->flags & ATH10K_SKB_F_HW_80211_ENCAP)
-+               return skb->priority % IEEE80211_QOS_CTL_TID_MASK;
+Attempt #2: I modified mainline kernel sources by copying the whole
+drivers/net/wireless/ath subtree from
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git repository,
+branch ath10k-pending-sdio-usb. Used firmware is the same as in attempt #1.
 
-Should this be & IEEE80211_QOS_CTL_TID_MASK even though it is same
-value with little endian? Also, don't take my word for it, but I have
-some memory that this value gets used some place where MAX_AC is used,
-which I think is 4 / smaller, so I'm wondering if this might wind up
-causing out of bounds r/w....
+Here's how it went:
 
-The name divergence from IEEE80211_TX_CTRL_HW_80211_ENCAP was
-confusing to me, but I'm newb.
+# modprobe ath10k_sdio
+ath10k_sdio mmc0:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id
+0x00000000 sub 0000:0000
+ath10k_sdio mmc0:0001:1: kconfig debug 1 debugfs 1 tracing 0 dfs 0 testmode
+0
+ath10k_sdio mmc0:0001:1: firmware ver WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5
+features ignore-otp crc32 7746e551
+ath10k_sdio mmc0:0001:1: board_file api 1 bmi_id N/A crc32 78c48ff6
+ath10k_sdio mmc0:0001:1: unsupported HTC service id: 1536
+ath10k_sdio mmc0:0001:1: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 32
+raw 0 hwcrypto 1
+8<--- cut here ---
+Unable to handle kernel paging request at virtual address d000c520
+pgd = 57792e48
+[d000c520] *pgd=00000000
+Internal error: Oops: 5 [#1] ARM
+Modules linked in: ath10k_sdio ath10k_core ath [last unloaded: ath10k_sdio]
+CPU: 0 PID: 91 Comm: irq/20-mmc0 Tainted: G           O      5.4.0 #1
+Hardware name: Atmel SAMA5
+PC is at __dma_page_dev_to_cpu+0xdc/0x11c
+LR is at 0x60070093
+pc : [<c010ef88>]    lr : [<60070093>]    psr: 60070093
+sp : cf471ec0  ip : cfdfb000  fp : 00000000
+r10: 00000002  r9 : 00000001  r8 : d000c520
+r7 : c0b45c58  r6 : c0b05f00  r5 : 00001f00  r4 : 00020000
+r3 : 000108a9  r2 : 000308aa  r1 : 000308aa  r0 : d08aaf00
+Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 10c53c7d  Table: 2f300059  DAC: 00000051
+Process irq/20-mmc0 (pid: 91, stack limit = 0x24331e0c)
+Stack: (0xcf471ec0 to 0xcf472000)
+1ec0: c0112010 c013e068 cfbd5d4c 00000001 c010f00c c0800548 cd88d410
+c010edc8
+1ee0: 00000000 c0132ff8 cd918018 cf45eb40 cfbd5d94 00000000 20070013
+cfbd5d5c
+1f00: c010ed70 c0b35e6d c08fa484 c055b3b8 00000000 fd831c39 cf45eb40
+cd809b00
+1f20: cd809b00 00000001 c0148e9c c0b03208 c0b35e6d c055b408 cf455f80
+c0148eb8
+1f40: cf455f80 ffffe000 cd809b00 c0149148 cf460e40 00000000 c0148f48
+fd831c39
+1f60: ffffe000 cf460e80 cf460e40 00000000 cf470000 cf455f80 c0149024
+cd827d20
+1f80: cf460e58 c0132888 00000000 cf460e80 c013274c 00000000 00000000
+00000000
+1fa0: 00000000 00000000 00000000 c01010e8 00000000 00000000 00000000
+00000000
+1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+1fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000
+00000000
+[<c010ef88>] (__dma_page_dev_to_cpu) from [<c010edc8>]
+(arm_dma_unmap_sg+0x58/0x74)
+[<c010edc8>] (arm_dma_unmap_sg) from [<c055b3b8>]
+(sdhci_request_done+0x218/0x258)
+[<c055b3b8>] (sdhci_request_done) from [<c055b408>]
+(sdhci_thread_irq+0x10/0x60)
+[<c055b408>] (sdhci_thread_irq) from [<c0148eb8>] (irq_thread_fn+0x1c/0x78)
+[<c0148eb8>] (irq_thread_fn) from [<c0149148>] (irq_thread+0x124/0x1d0)
+[<c0149148>] (irq_thread) from [<c0132888>] (kthread+0x13c/0x144)
+[<c0132888>] (kthread) from [<c01010e8>] (ret_from_fork+0x14/0x2c)
+Exception stack(0xcf471fb0 to 0xcf471ff8)
+1fa0:                                     00000000 00000000 00000000
+00000000
+1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+Code: e596e000 e043300e e10fe000 f10c0080 (e79c0283) 
+---[ end trace 6974be2855b1941d ]---
+genirq: exiting task "irq/20-mmc0" (91) is an active IRQ thread (irq 20)
 
-The changes in ath10k_mac_tx_h_fill_cb have a return-- so no other
-flags can be set, maybe this is intentional, but I notice that if the
-vif is type monitor there may be some confusion where
-ATH10K_HW_TXRX_RAW is being returned in one place but the added return
-is bypassing flags related to rawmode.
+Any ideas what to try next or how to debug either issue?
 
+Thanks!
+Jakub
 
-+                       ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt,
-+                                                            is_presp);
-+                       if (ret) {
-+                               ath10k_dbg(ar, ATH10K_DBG_MAC, "failed
-to increase tx mgmt pending count: %d, dropping\n",
-+                                          ret);
-+                               ath10k_htt_tx_dec_pending(htt);
-
-I think the dec maybe should not be happening here
-
-
-On Mon, Dec 16, 2019, 1:23 AM John Crispin <john@phrozen.org> wrote:
->
-> This patch adds support for ethernet rxtx mode to the driver. The feature
-> is enabled via a new module parameter. If enabled to driver will enable
-> the feature on a per vif basis if all other requirements were met.
->
-> Testing on a IPQ4019 based hardware shows a increase in TCP throughput
-> of ~20% when the feature is enabled.
->
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-> Signed-off-by: John Crispin <john@phrozen.org>
-> ---
-> Resending as Johannes has merged the mac80211 part, which means we can now
-> also merge the driver support patches.
->
->  drivers/net/wireless/ath/ath10k/core.c   | 11 ++++
->  drivers/net/wireless/ath/ath10k/core.h   |  3 +
->  drivers/net/wireless/ath/ath10k/htt_tx.c | 24 +++++---
->  drivers/net/wireless/ath/ath10k/mac.c    | 75 +++++++++++++++++++-----
->  drivers/net/wireless/ath/ath10k/txrx.c   | 11 +++-
->  5 files changed, 99 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 5ec16ce19b69..99d3d74c0033 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -34,6 +34,7 @@ static bool uart_print;
->  static bool skip_otp;
->  static bool rawmode;
->  static bool fw_diag_log;
-> +static bool ethernetmode;
->
->  unsigned long ath10k_coredump_mask = BIT(ATH10K_FW_CRASH_DUMP_REGISTERS) |
->                                      BIT(ATH10K_FW_CRASH_DUMP_CE_DATA);
-> @@ -46,6 +47,7 @@ module_param(skip_otp, bool, 0644);
->  module_param(rawmode, bool, 0644);
->  module_param(fw_diag_log, bool, 0644);
->  module_param_named(coredump_mask, ath10k_coredump_mask, ulong, 0444);
-> +module_param(ethernetmode, bool, 0644);
->
->  MODULE_PARM_DESC(debug_mask, "Debugging mask");
->  MODULE_PARM_DESC(uart_print, "Uart target debugging");
-> @@ -54,6 +56,7 @@ MODULE_PARM_DESC(cryptmode, "Crypto mode: 0-hardware, 1-software");
->  MODULE_PARM_DESC(rawmode, "Use raw 802.11 frame datapath");
->  MODULE_PARM_DESC(coredump_mask, "Bitfield of what to include in firmware crash file");
->  MODULE_PARM_DESC(fw_diag_log, "Diag based fw log debugging");
-> +MODULE_PARM_DESC(ethernetmode, "Use ethernet frame datapath");
->
->  static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->         {
-> @@ -3030,6 +3033,14 @@ static void ath10k_core_register_work(struct work_struct *work)
->         /* peer stats are enabled by default */
->         set_bit(ATH10K_FLAG_PEER_STATS, &ar->dev_flags);
->
-> +       if (ethernetmode && rawmode) {
-> +               ath10k_err(ar, "ethernet and raw mode cannot co-exist\n");
-> +               status = -EINVAL;
-> +               goto err;
-> +       }
-> +
-> +       ar->ethernetmode = ethernetmode;
-> +
->         status = ath10k_core_probe_fw(ar);
->         if (status) {
->                 ath10k_err(ar, "could not probe fw (%d)\n", status);
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 5101bf2b5b15..fe0affbc9d29 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -109,6 +109,7 @@ enum ath10k_skb_flags {
->         ATH10K_SKB_F_MGMT = BIT(3),
->         ATH10K_SKB_F_QOS = BIT(4),
->         ATH10K_SKB_F_RAW_TX = BIT(5),
-> +       ATH10K_SKB_F_HW_80211_ENCAP = BIT(6),
->  };
->
->  struct ath10k_skb_cb {
-> @@ -1222,6 +1223,8 @@ struct ath10k {
->         struct ath10k_bus_params bus_param;
->         struct completion peer_delete_done;
->
-> +       bool ethernetmode;
-> +
->         /* must be last */
->         u8 drv_priv[0] __aligned(sizeof(void *));
->  };
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-> index a182c0944cc7..0ca0705fe69a 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-> @@ -1144,6 +1144,10 @@ static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
->         struct ieee80211_hdr *hdr = (void *)skb->data;
->         struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
->
-> +       /* Firmware takes care of tid classification for ethernet format */
-> +       if (cb->flags & ATH10K_SKB_F_HW_80211_ENCAP)
-> +               return skb->priority % IEEE80211_QOS_CTL_TID_MASK;
-> +
->         if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
->                 return HTT_DATA_TX_EXT_TID_MGMT;
->         else if (cb->flags & ATH10K_SKB_F_QOS)
-> @@ -1378,15 +1382,17 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
->         txbuf_paddr = htt->txbuf.paddr +
->                       (sizeof(struct ath10k_htt_txbuf_32) * msdu_id);
->
-> -       if ((ieee80211_is_action(hdr->frame_control) ||
-> -            ieee80211_is_deauth(hdr->frame_control) ||
-> -            ieee80211_is_disassoc(hdr->frame_control)) &&
-> -            ieee80211_has_protected(hdr->frame_control)) {
-> -               skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-> -       } else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
-> -                  txmode == ATH10K_HW_TXRX_RAW &&
-> -                  ieee80211_has_protected(hdr->frame_control)) {
-> -               skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-> +       if (!(info->control.flags & IEEE80211_TX_CTRL_HW_80211_ENCAP)) {
-> +               if ((ieee80211_is_action(hdr->frame_control) ||
-> +                    ieee80211_is_deauth(hdr->frame_control) ||
-> +                    ieee80211_is_disassoc(hdr->frame_control)) &&
-> +                   ieee80211_has_protected(hdr->frame_control)) {
-> +                       skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-> +               } else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
-> +                          txmode == ATH10K_HW_TXRX_RAW &&
-> +                          ieee80211_has_protected(hdr->frame_control)) {
-> +                       skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-> +               }
->         }
->
->         skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 767c7bf16975..a7a6a8330d6a 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -3427,12 +3427,16 @@ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
->                            struct sk_buff *skb)
->  {
->         const struct ieee80211_hdr *hdr = (void *)skb->data;
-> +       struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
->         const struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
->         __le16 fc = hdr->frame_control;
->
->         if (!vif || vif->type == NL80211_IFTYPE_MONITOR)
->                 return ATH10K_HW_TXRX_RAW;
->
-> +       if (tx_info->control.flags & IEEE80211_TX_CTRL_HW_80211_ENCAP)
-> +               return ATH10K_HW_TXRX_ETHERNET;
-> +
->         if (ieee80211_is_mgmt(fc))
->                 return ATH10K_HW_TXRX_MGMT;
->
-> @@ -3585,6 +3589,15 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
->                         ieee80211_is_data_qos(hdr->frame_control);
->
->         cb->flags = 0;
-> +       cb->vif = vif;
-> +       cb->txq = txq;
-> +       cb->airtime_est = airtime;
-> +
-> +       if (info->control.flags & IEEE80211_TX_CTRL_HW_80211_ENCAP) {
-> +               cb->flags |= ATH10K_SKB_F_HW_80211_ENCAP;
-> +               return;
-> +       }
-> +
->         if (!ath10k_tx_h_use_hwcrypto(vif, skb))
->                 cb->flags |= ATH10K_SKB_F_NO_HWCRYPT;
->
-> @@ -3603,10 +3616,6 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
->                 cb->flags |= ATH10K_SKB_F_NO_HWCRYPT;
->                 cb->flags |= ATH10K_SKB_F_RAW_TX;
->         }
-> -
-> -       cb->vif = vif;
-> -       cb->txq = txq;
-> -       cb->airtime_est = airtime;
->  }
->
->  bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
-> @@ -3716,6 +3725,9 @@ static int ath10k_mac_tx(struct ath10k *ar,
->         const struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
->         int ret;
->
-> +       if (info->control.flags & IEEE80211_TX_CTRL_HW_80211_ENCAP)
-> +               goto skip_encap;
-> +
->         /* We should disable CCK RATE due to P2P */
->         if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
->                 ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
-> @@ -3739,6 +3751,7 @@ static int ath10k_mac_tx(struct ath10k *ar,
->                 }
->         }
->
-> +skip_encap:
->         if (!noque_offchan && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
->                 if (!ath10k_mac_tx_frm_has_freq(ar)) {
->                         ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %pK len %d\n",
-> @@ -3788,6 +3801,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
->         int ret;
->         unsigned long time_left;
->         bool tmp_peer_created = false;
-> +       struct ieee80211_tx_info *info;
->
->         /* FW requirement: We must create a peer before FW will send out
->          * an offchannel frame. Otherwise the frame will be stuck and
-> @@ -3807,8 +3821,14 @@ void ath10k_offchan_tx_work(struct work_struct *work)
->                 ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK len %d\n",
->                            skb, skb->len);
->
-> -               hdr = (struct ieee80211_hdr *)skb->data;
-> -               peer_addr = ieee80211_get_DA(hdr);
-> +               info = IEEE80211_SKB_CB(skb);
-> +
-> +               if (info->control.flags & IEEE80211_TX_CTRL_HW_80211_ENCAP) {
-> +                       peer_addr = skb->data;
-> +               } else {
-> +                       hdr = (struct ieee80211_hdr *)skb->data;
-> +                       peer_addr = ieee80211_get_DA(hdr);
-> +               }
->
->                 spin_lock_bh(&ar->data_lock);
->                 vdev_id = ar->scan.vdev_id;
-> @@ -4338,7 +4358,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
->         struct ieee80211_vif *vif = info->control.vif;
->         struct ieee80211_sta *sta = control->sta;
->         struct ieee80211_txq *txq = NULL;
-> -       struct ieee80211_hdr *hdr = (void *)skb->data;
-> +       struct ieee80211_hdr *hdr;
->         enum ath10k_hw_txrx_mode txmode;
->         enum ath10k_mac_tx_path txpath;
->         bool is_htt;
-> @@ -4369,14 +4389,20 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
->                         return;
->                 }
->
-> -               ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
-> -               if (ret) {
-> -                       ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
-> -                                  ret);
-> -                       ath10k_htt_tx_dec_pending(htt);
-> -                       spin_unlock_bh(&ar->htt.tx_lock);
-> -                       ieee80211_free_txskb(ar->hw, skb);
-> -                       return;
-> +               if (is_mgmt) {
-> +                       hdr = (struct ieee80211_hdr *)skb->data;
-> +                       is_presp = ieee80211_is_probe_resp(hdr->frame_control);
-> +
-> +                       ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt,
-> +                                                            is_presp);
-> +                       if (ret) {
-> +                               ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
-> +                                          ret);
-> +                               ath10k_htt_tx_dec_pending(htt);
-> +                               spin_unlock_bh(&ar->htt.tx_lock);
-> +                               ieee80211_free_txskb(ar->hw, skb);
-> +                               return;
-> +                       }
->                 }
->                 spin_unlock_bh(&ar->htt.tx_lock);
->         }
-> @@ -5209,10 +5235,12 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
->  static int ath10k_add_interface(struct ieee80211_hw *hw,
->                                 struct ieee80211_vif *vif)
->  {
-> +       struct wireless_dev *wdev = ieee80211_vif_to_wdev(vif);
->         struct ath10k *ar = hw->priv;
->         struct ath10k_vif *arvif = (void *)vif->drv_priv;
->         struct ath10k_peer *peer;
->         enum wmi_sta_powersave_param param;
-> +       int hw_encap = 0;
->         int ret = 0;
->         u32 value;
->         int bit;
-> @@ -5304,6 +5332,21 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
->                 break;
->         }
->
-> +       switch (vif->type) {
-> +       case NL80211_IFTYPE_STATION:
-> +       case NL80211_IFTYPE_AP_VLAN:
-> +               if (wdev->netdev->ieee80211_ptr->use_4addr)
-> +                       break;
-> +       /* fall through */
-> +       case NL80211_IFTYPE_AP:
-> +               hw_encap = 1;
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +
-> +       ieee80211_set_hw_80211_encap(vif, ar->ethernetmode & hw_encap);
-> +
->         /* Using vdev_id as queue number will make it very easy to do per-vif
->          * tx queue locking. This shouldn't wrap due to interface combinations
->          * but do a modulo for correctness sake and prevent using offchannel tx
-> @@ -8883,6 +8926,8 @@ int ath10k_mac_register(struct ath10k *ar)
->         ieee80211_hw_set(ar->hw, QUEUE_CONTROL);
->         ieee80211_hw_set(ar->hw, SUPPORTS_TX_FRAG);
->         ieee80211_hw_set(ar->hw, REPORTS_LOW_ACK);
-> +       if (ar->ethernetmode)
-> +               ieee80211_hw_set(ar->hw, SUPPORTS_80211_ENCAP);
->
->         if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags))
->                 ieee80211_hw_set(ar->hw, SW_CRYPTO_CONTROL);
-> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-> index 39abf8b12903..1d8a6c2571a1 100644
-> --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> @@ -50,6 +50,8 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
->         struct ath10k_skb_cb *skb_cb;
->         struct ath10k_txq *artxq;
->         struct sk_buff *msdu;
-> +       struct ieee80211_vif *vif;
-> +       u8 flags;
->
->         ath10k_dbg(ar, ATH10K_DBG_HTT,
->                    "htt tx completion msdu_id %u status %d\n",
-> @@ -78,6 +80,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
->                 artxq->num_fw_queued--;
->         }
->
-> +       flags = skb_cb->flags;
-> +       vif = skb_cb->vif;
-> +
->         ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
->         ath10k_htt_tx_dec_pending(htt);
->         if (htt->num_pending_tx == 0)
-> @@ -123,7 +128,11 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
->                 info->status.is_valid_ack_signal = true;
->         }
->
-> -       ieee80211_tx_status(htt->ar->hw, msdu);
-> +       if (flags & ATH10K_SKB_F_HW_80211_ENCAP)
-> +               ieee80211_tx_status_8023(htt->ar->hw, vif, msdu);
-> +       else
-> +               ieee80211_tx_status(htt->ar->hw, msdu);
-> +
->         /* we do not own the msdu anymore */
->
->         return 0;
-> --
-> 2.20.1
->
 
 _______________________________________________
 ath10k mailing list
