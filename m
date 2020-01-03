@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail25.static.mailgun.info ([104.130.122.25])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1inNFb-0000Bm-Lk
- for ath10k@lists.infradead.org; Fri, 03 Jan 2020 13:44:29 +0000
+ id 1inNFa-0000BZ-Ef
+ for ath10k@lists.infradead.org; Fri, 03 Jan 2020 13:44:28 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3 1/2] dt: bindings: add dt entry flag to skip SCM call for
- msa region
-Date: Fri,  3 Jan 2020 19:14:13 +0530
-Message-Id: <20200103134414.15457-2-govinds@codeaurora.org>
-In-Reply-To: <20200103134414.15457-1-govinds@codeaurora.org>
-References: <20200103134414.15457-1-govinds@codeaurora.org>
+Subject: [PATCH v3 0/2] Don't call SCM interface for statically mapped msa
+ region
+Date: Fri,  3 Jan 2020 19:14:12 +0530
+Message-Id: <20200103134414.15457-1-govinds@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,34 +24,25 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: robh@kernel.org, devicetree@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Add boolean context flag to disable SCM call for statically
-mapped msa region.
+For some targets ex: SC7180/QCS404, SCM permissions for MSA region is
+statically configured in TrustZone fw. Add SCM call disable option
+for such targets to avoid duplicate permissions.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt          | 4 ++++
- 1 file changed, 4 insertions(+)
+Change since v2:
+   rename flag to "qcom,msa-fixed-perm".
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 017128394a3e..633366dc33da 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -88,6 +88,9 @@ Optional properties:
- 		    of the host capability QMI request
- - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
- 
-+- qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
-+		       mapped msa region.
-+
- Example (to supply PCI based wifi block details):
- 
- In this example, the node is defined as child node of the PCI controller.
-@@ -185,4 +188,5 @@ wifi@18000000 {
- 		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
- 		memory-region = <&wifi_msa_mem>;
- 		iommus = <&apps_smmu 0x0040 0x1>;
-+		qcom,msa-fixed-perm;
- };
+Change since v1:
+    Added devicetree list for review.
+
+Govind Singh (2):
+  dt: bindings: add dt entry flag to skip SCM call for msa region
+  ath10k: Don't call SCM interface for statically mapped msa region
+
+ .../devicetree/bindings/net/wireless/qcom,ath10k.txt     | 4 ++++
+ drivers/net/wireless/ath/ath10k/qmi.c                    | 9 +++++++++
+ drivers/net/wireless/ath/ath10k/qmi.h                    | 1 +
+ 3 files changed, 14 insertions(+)
+
 -- 
 2.22.0
 
