@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail25.static.mailgun.info ([104.130.122.25])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1inNFc-0000By-0m
- for ath10k@lists.infradead.org; Fri, 03 Jan 2020 13:44:30 +0000
+ id 1inNFb-0000Bm-Lk
+ for ath10k@lists.infradead.org; Fri, 03 Jan 2020 13:44:29 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v3 2/2] ath10k: Don't call SCM interface for statically mapped
+Subject: [PATCH v3 1/2] dt: bindings: add dt entry flag to skip SCM call for
  msa region
-Date: Fri,  3 Jan 2020 19:14:14 +0530
-Message-Id: <20200103134414.15457-3-govinds@codeaurora.org>
+Date: Fri,  3 Jan 2020 19:14:13 +0530
+Message-Id: <20200103134414.15457-2-govinds@codeaurora.org>
 In-Reply-To: <20200103134414.15457-1-govinds@codeaurora.org>
 References: <20200103134414.15457-1-govinds@codeaurora.org>
 MIME-Version: 1.0
@@ -26,65 +26,34 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: robh@kernel.org, devicetree@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-For some targets ex: QCS404, SCM permissions for MSA region is
-statically configured in TrustZone fw. Add SCM call disable option
-for such targets to avoid duplicate permissions.
-
-Testing: Tested on WCN3990 HW
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+Add boolean context flag to disable SCM call for statically
+mapped msa region.
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/qmi.c | 9 +++++++++
- drivers/net/wireless/ath/ath10k/qmi.h | 1 +
- 2 files changed, 10 insertions(+)
+ .../devicetree/bindings/net/wireless/qcom,ath10k.txt          | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 637f83ef65f8..1b91de70c8d6 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -84,6 +84,9 @@ static int ath10k_qmi_setup_msa_permissions(struct ath10k_qmi *qmi)
- 	int ret;
- 	int i;
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 017128394a3e..633366dc33da 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -88,6 +88,9 @@ Optional properties:
+ 		    of the host capability QMI request
+ - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
  
-+	if (qmi->msa_fixed_perm)
-+		return 0;
++- qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
++		       mapped msa region.
 +
- 	for (i = 0; i < qmi->nr_mem_region; i++) {
- 		ret = ath10k_qmi_map_msa_permission(qmi, &qmi->mem_region[i]);
- 		if (ret)
-@@ -102,6 +105,9 @@ static void ath10k_qmi_remove_msa_permission(struct ath10k_qmi *qmi)
- {
- 	int i;
+ Example (to supply PCI based wifi block details):
  
-+	if (qmi->msa_fixed_perm)
-+		return;
-+
- 	for (i = 0; i < qmi->nr_mem_region; i++)
- 		ath10k_qmi_unmap_msa_permission(qmi, &qmi->mem_region[i]);
- }
-@@ -1018,6 +1024,9 @@ static int ath10k_qmi_setup_msa_resources(struct ath10k_qmi *qmi, u32 msa_size)
- 		qmi->msa_mem_size = msa_size;
- 	}
- 
-+	if (of_property_read_bool(dev->of_node, "qcom,msa-fixed-perm"))
-+		qmi->msa_fixed_perm = true;
-+
- 	ath10k_dbg(ar, ATH10K_DBG_QMI, "msa pa: %pad , msa va: 0x%p\n",
- 		   &qmi->msa_pa,
- 		   qmi->msa_va);
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.h b/drivers/net/wireless/ath/ath10k/qmi.h
-index 40aafb875ed0..dc257375f161 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.h
-+++ b/drivers/net/wireless/ath/ath10k/qmi.h
-@@ -104,6 +104,7 @@ struct ath10k_qmi {
- 	bool fw_ready;
- 	char fw_build_timestamp[MAX_TIMESTAMP_LEN + 1];
- 	struct ath10k_qmi_cal_data cal_data[MAX_NUM_CAL_V01];
-+	bool msa_fixed_perm;
+ In this example, the node is defined as child node of the PCI controller.
+@@ -185,4 +188,5 @@ wifi@18000000 {
+ 		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+ 		memory-region = <&wifi_msa_mem>;
+ 		iommus = <&apps_smmu 0x0040 0x1>;
++		qcom,msa-fixed-perm;
  };
- 
- int ath10k_qmi_wlan_enable(struct ath10k *ar,
 -- 
 2.22.0
 
