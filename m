@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ioPyV-0006Ge-K5
- for ath10k@lists.infradead.org; Mon, 06 Jan 2020 10:51:09 +0000
+ id 1ioiGu-0004aZ-S9
+ for ath10k@lists.infradead.org; Tue, 07 Jan 2020 06:23:22 +0000
 From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 Subject: [PATCH] ath10k: avoid consecutive OTP download to reduce boot time
-Date: Mon,  6 Jan 2020 16:21:05 +0530
-Message-Id: <1578307865-25090-1-git-send-email-mkenna@codeaurora.org>
+Date: Tue,  7 Jan 2020 11:53:15 +0530
+Message-Id: <1578378195-25780-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,7 +21,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Vikas Patel <vikpatel@codeaurora.org>
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Vikas Patel <vikpatel@codeaurora.org>, linux-wireless@vger.kernel.org
 
 From: Vikas Patel <vikpatel@codeaurora.org>
 
