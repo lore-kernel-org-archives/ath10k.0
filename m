@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38])
+Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ip1ww-0004aa-Ij
- for ath10k@lists.infradead.org; Wed, 08 Jan 2020 03:24:04 +0000
-Subject: RE: [PATCH v3 0/2] start recovery process when payload length
- overflow for sdio
-From: Wen Gong <wgong@qti.qualcomm.com>
-Date: Wed, 8 Jan 2020 03:23:57 +0000
-Message-ID: <CH2PR02MB66484ED5F29338E0E4408758843E0@CH2PR02MB6648.namprd02.prod.outlook.com>
-References: <20191231092806.6247-1-wgong@codeaurora.org>
-In-Reply-To: <20191231092806.6247-1-wgong@codeaurora.org>
-Content-Language: en-US
+ id 1ip8qX-0003wn-JX
+ for ath10k@lists.infradead.org; Wed, 08 Jan 2020 10:45:54 +0000
+Received: by mail-oi1-x242.google.com with SMTP id c77so2212980oib.7
+ for <ath10k@lists.infradead.org>; Wed, 08 Jan 2020 02:45:52 -0800 (PST)
 MIME-Version: 1.0
+References: <1576221593-1086-1-git-send-email-yiboz@codeaurora.org>
+ <1576221593-1086-4-git-send-email-yiboz@codeaurora.org>
+In-Reply-To: <1576221593-1086-4-git-send-email-yiboz@codeaurora.org>
+From: Justin Capella <justincapella@gmail.com>
+Date: Wed, 8 Jan 2020 02:46:31 -0800
+Message-ID: <CAMrEMU8qoD=-45sePbp+W+F+5mQmviMQaZjzXe_Ph2cNjan+OA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mac80211: fix low throughput in multi-clients
+ situation
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +26,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Yibo Zhao <yiboz@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
 
-> -----Original Message-----
-> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Wen Gong
-> Sent: Tuesday, December 31, 2019 5:28 PM
-> To: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Subject: [EXT] [PATCH v3 0/2] start recovery process when payload length
-> overflow for sdio
->
+Is there a risk of division by zero?
 
-V4 sent:
-https://patchwork.kernel.org/cover/11322579/
-https://patchwork.kernel.org/patch/11322581/
-https://patchwork.kernel.org/patch/11322583/
-
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+I'm curious about IEEE80211_AIRTIME_QUANTUM in this multiple sta
+scenario, should weight maybe be the depth of the queue or something
+like that? Using real time delta I assume is not performant?
 
 _______________________________________________
 ath10k mailing list
