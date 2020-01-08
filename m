@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail25.static.mailgun.info ([104.130.122.25])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ioiqm-0002Mu-QC
- for ath10k@lists.infradead.org; Tue, 07 Jan 2020 07:00:26 +0000
+ id 1ip1tE-00047l-Vy
+ for ath10k@lists.infradead.org; Wed, 08 Jan 2020 03:20:15 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v4 0/2] start recovery process when payload length overflow
+ for sdio
+Date: Wed,  8 Jan 2020 11:19:55 +0800
+Message-Id: <20200108031957.22308-1-wgong@codeaurora.org>
 MIME-Version: 1.0
-Date: Tue, 07 Jan 2020 12:30:19 +0530
-From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Subject: Re: [PATCH] ath10k: avoid consecutive OTP download to reduce boot time
-In-Reply-To: <1578378195-25780-1-git-send-email-mkenna@codeaurora.org>
-References: <1578378195-25780-1-git-send-email-mkenna@codeaurora.org>
-Message-ID: <f1b4007f9d7e882c4ed2db67dc64cc96@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,84 +17,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Vikas Patel <vikpatel@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
 
-On 2020-01-07 11:53, Maharaja Kennadyrajan wrote:
+when it happened payload length exceeds max htc length, start recovery process
 
-[Maha]: Please ignore/drop this duplicate patch as I sent it already.
-Regret for inconvenience caused.
+v4: add atomic_dec(&ar->restart_count) if state is not on
 
+v3: change atomic_inc_and_test to atomic_add_return, remove check of ATH10K_STATE_ON
 
-> From: Vikas Patel <vikpatel@codeaurora.org>
-> 
-> Currently, OTP is downloaded twice in case of "pre-cal-dt"
-> and "pre-cal-file" to fetch the board ID and takes around
-> ~2 sec more boot uptime.
-> 
-> First OTP download happens in "ath10k_core_probe_fw" and
-> second in ath10k_core_start. First boot does not need OTP
-> download in core start when valid board id acquired.
-> 
-> The second OTP download is required upon core stop/start.
-> 
-> This patch skips the OTP download when first OTP download
-> has acquired a valid board id. This patch also marks board
-> id invalid in "ath10k_core_stop", which will force the OTP
-> download in ath10k_core_start and fetches valid board id.
-> 
-> Tested HW: QCA9984
-> Tested FW: 10.4-3.6-00104
-> 
-> Signed-off-by: Vikas Patel <vikpatel@codeaurora.org>
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c
-> b/drivers/net/wireless/ath/ath10k/core.c
-> index 5ec16ce..8fef991 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -874,6 +874,13 @@ static int
-> ath10k_core_get_board_id_from_otp(struct ath10k *ar)
->  		return -ENODATA;
->  	}
-> 
-> +	if (ar->id.bmi_ids_valid) {
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> +			   "boot already acquired valid otp board id,skip download,
-> board_id %d chip_id %d\n",
-> +			   ar->id.bmi_board_id, ar->id.bmi_chip_id);
-> +		goto skip_otp_download;
-> +	}
-> +
->  	ath10k_dbg(ar, ATH10K_DBG_BOOT,
->  		   "boot upload otp to 0x%x len %zd for board id\n",
->  		   address, ar->normal_mode_fw.fw_file.otp_len);
-> @@ -921,6 +928,8 @@ static int
-> ath10k_core_get_board_id_from_otp(struct ath10k *ar)
->  	ar->id.bmi_board_id = board_id;
->  	ar->id.bmi_chip_id = chip_id;
-> 
-> +skip_otp_download:
-> +
->  	return 0;
->  }
-> 
-> @@ -2863,6 +2872,8 @@ void ath10k_core_stop(struct ath10k *ar)
->  	ath10k_htt_tx_stop(&ar->htt);
->  	ath10k_htt_rx_free(&ar->htt);
->  	ath10k_wmi_detach(ar);
-> +
-> +	ar->id.bmi_ids_valid = false;
->  }
->  EXPORT_SYMBOL(ath10k_core_stop);
+v2: add "add refcount for ath10k_core_restart" and remove ar_sdio->can_recovery
+
+Wen Gong (2):
+  ath10k: add refcount for ath10k_core_restart
+  ath10k: start recovery process when payload length exceeds max htc
+    length for sdio
+
+ drivers/net/wireless/ath/ath10k/core.c | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/mac.c  |  1 +
+ drivers/net/wireless/ath/ath10k/sdio.c |  4 ++++
+ 4 files changed, 20 insertions(+)
+
+-- 
+2.23.0
 
 _______________________________________________
 ath10k mailing list
