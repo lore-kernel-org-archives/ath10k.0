@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1is8gR-0005TZ-7d
- for ath10k@lists.infradead.org; Thu, 16 Jan 2020 17:11:56 +0000
+ id 1is8xa-0006nl-7I
+ for ath10k@lists.infradead.org; Thu, 16 Jan 2020 17:29:36 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 548/671] ath10k: adjust skb length in
+Subject: [PATCH AUTOSEL 4.14 299/371] ath10k: adjust skb length in
  ath10k_sdio_mbox_rx_packet
-Date: Thu, 16 Jan 2020 12:03:06 -0500
-Message-Id: <20200116170509.12787-285-sashal@kernel.org>
-In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
-References: <20200116170509.12787-1-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:22:51 -0500
+Message-Id: <20200116172403.18149-242-sashal@kernel.org>
+In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
+References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -64,7 +64,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 21 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 686759b5613f..0ecaba824fb2 100644
+index 0a1248ebccf5..f49b21b137c1 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
 @@ -392,16 +392,11 @@ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
@@ -85,7 +85,7 @@ index 686759b5613f..0ecaba824fb2 100644
  
  		eid = pipe_id_to_eid(htc_hdr->eid);
  
-@@ -638,13 +633,31 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
+@@ -635,13 +630,31 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
  {
  	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
  	struct sk_buff *skb = pkt->skb;
