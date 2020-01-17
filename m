@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1is9fm-0006wh-Qi
- for ath10k@lists.infradead.org; Thu, 16 Jan 2020 18:15:29 +0000
-Date: Fri, 17 Jan 2020 02:14:00 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- ed89e0f380addd22d249a5afafbad3eedd552a80
-Message-ID: <5e20a7e8.CHgNQxGLvPROvfKI%lkp@intel.com>
+ id 1isLuj-00073q-OK
+ for ath10k@lists.infradead.org; Fri, 17 Jan 2020 07:19:34 +0000
 MIME-Version: 1.0
+Date: Thu, 16 Jan 2020 23:19:21 -0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v4 1/2] ath10k: add refcount for ath10k_core_restart
+In-Reply-To: <55ab2d64e78d51a9da587f276899e08b@codeaurora.org>
+References: <20200108031957.22308-1-wgong@codeaurora.org>
+ <20200108031957.22308-2-wgong@codeaurora.org>
+ <CAMrEMU-UTtxJ-eMoNEBONXJCTpaZCcGc8Mu34wqQNXkpVz=gJA@mail.gmail.com>
+ <55ab2d64e78d51a9da587f276899e08b@codeaurora.org>
+Message-ID: <a1950ee2cb8dd9fc10e7d31bf18c9c95@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,176 +21,209 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Justin Capella <justincapella@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: ed89e0f380addd22d249a5afafbad3eedd552a80  ath11k: fix up some error paths
+On 2020-01-10 02:29, Wen Gong wrote:
+> On 2020-01-08 20:02, Justin Capella wrote:
+>> I think this might break the "wedged" state.
+>> 
+>> Would simply not taking action unless STATE ON avoid the problems with
+>> multiple calls to _restart? ie:
+>> 
+> 
+> ath10k_core_restart is one part of the recovery process,
+> after ath10k_core_restart, it has other things do in 
+> mac80211/ath10k...,
+> it need to make sure all the recovery 
+> finished(ath10k_reconfig_complete),
+> then the next recovery can start from ath10k_core_restart.
 
-elapsed time: 761m
+Here is some log for the 2 recovery run meanwhile and failed.
+It means if 2 recovery run meanwhile, recovery will easy failed.
 
-configs tested: 148
-configs skipped: 0
+log steps:
+1. simulate crash and then firmware crash and enter ath10k_core_restart 
+with state=ATH10K_STATE_ON
+2. it happened "exceeds length, start recovery" and queued the 2nd 
+recovery
+3. mac80211 start to recovery ath10k and state changed from 
+ATH10K_STATE_RESTARTING to ATH10K_STATE_RESTARTED
+4. enter ath10k_core_restart for 2nd recovery and state changed from 
+ATH10K_STATE_RESTARTED to ATH10K_STATE_WEDGED
+5. mac80211 start to drv_add_interface but failed because 
+ath10k_htc_send return -ECOMM for ATH10K_STATE_WEDGED
+6. mac80211 start to ieee80211_handle_reconfig_failure because 
+drv_add_interface failed so the recovery failed.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-parisc                            allnoconfig
-parisc                            allyesonfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-x86_64               randconfig-b001-20200116
-x86_64               randconfig-b002-20200116
-x86_64               randconfig-b003-20200116
-i386                 randconfig-b001-20200116
-i386                 randconfig-b002-20200116
-i386                 randconfig-b003-20200116
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-alpha                randconfig-a001-20200116
-m68k                 randconfig-a001-20200116
-mips                 randconfig-a001-20200116
-nds32                randconfig-a001-20200116
-parisc               randconfig-a001-20200116
-riscv                randconfig-a001-20200116
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-i386                             alldefconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64               randconfig-d001-20200116
-x86_64               randconfig-d002-20200116
-x86_64               randconfig-d003-20200116
-i386                 randconfig-d001-20200116
-i386                 randconfig-d002-20200116
-i386                 randconfig-d003-20200116
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                               rhel-7.6
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-x86_64               randconfig-a001-20200116
-x86_64               randconfig-a002-20200116
-x86_64               randconfig-a003-20200116
-i386                 randconfig-a001-20200116
-i386                 randconfig-a002-20200116
-i386                 randconfig-a003-20200116
-arc                  randconfig-a001-20200116
-arm                  randconfig-a001-20200116
-arm64                randconfig-a001-20200116
-ia64                 randconfig-a001-20200116
-powerpc              randconfig-a001-20200116
-sparc                randconfig-a001-20200116
-arc                  randconfig-a001-20200117
-arm                  randconfig-a001-20200117
-arm64                randconfig-a001-20200117
-ia64                 randconfig-a001-20200117
-powerpc              randconfig-a001-20200117
-sparc                randconfig-a001-20200117
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-x86_64               randconfig-d001-20200117
-x86_64               randconfig-d002-20200117
-x86_64               randconfig-d003-20200117
-i386                 randconfig-d001-20200117
-i386                 randconfig-d002-20200117
-i386                 randconfig-d003-20200117
-alpha                randconfig-a001-20200117
-m68k                 randconfig-a001-20200117
-mips                 randconfig-a001-20200117
-nds32                randconfig-a001-20200117
-parisc               randconfig-a001-20200117
-riscv                randconfig-a001-20200117
-x86_64               randconfig-e001-20200117
-x86_64               randconfig-e002-20200117
-x86_64               randconfig-e003-20200117
-i386                 randconfig-e001-20200117
-i386                 randconfig-e002-20200117
-i386                 randconfig-e003-20200117
+kworker/0:1 13360 [000]  2889.292173:            ath10k:ath10k_log_err: 
+ath10k_sdio mmc1:0001:1 firmware register dump:
+kworker/u16:3 11486 [001]  2889.292686:           
+ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 ath10k_core_restart => 
+state :1
+kworker/0:1 13360 [000]  2889.292760:           ath10k:ath10k_log_warn: 
+ath10k_sdio mmc1:0001:1 payload length 57005 exceeds max htc length: 
+4088
+kworker/0:1 13360 [000]  2889.292805:           ath10k:ath10k_log_warn: 
+ath10k_sdio mmc1:0001:1 exceeds length, start recovery
+kworker/1:3 14712 [001]  2889.850142:            ath10k:ath10k_log_dbg: 
+ath10k_sdio mmc1:0001:1 wmi tlv init
+kworker/1:3 14712 [001]  2889.866953:            ath10k:ath10k_log_dbg: 
+ath10k_sdio mmc1:0001:1 wmi tlv scan prob req oui
+kworker/u16:3 11486 [001]  2889.888801:           
+ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 ath10k_core_restart => 2 
+state :3
+kworker/u16:3 11486 [001]  2889.888808:           
+ath10k:ath10k_log_warn: ath10k_sdio mmc1:0001:1 device is wedged, will 
+not restart
+kworker/1:3 14712 [001]  2889.889220:           ath10k:ath10k_log_warn: 
+ath10k_sdio mmc1:0001:1 ath10k_add_interface => state :4
+kworker/1:3 14712 [001]  2889.889229:            ath10k:ath10k_log_dbg: 
+ath10k_sdio mmc1:0001:1 mac create vdev 0 map f
+kworker/1:3 14712 [001]  2889.889240:            ath10k:ath10k_log_dbg: 
+ath10k_sdio mmc1:0001:1 mac vdev create 0 (add interface) type 2 subtype 
+0 bcnmode per-skb
+kworker/1:3 14712 [001]  2889.889247:            ath10k:ath10k_log_dbg: 
+ath10k_sdio mmc1:0001:1 wmi tlv vdev create
+kworker/1:3 14712 [001]  2889.889252:            ath10k:ath10k_wmi_cmd: 
+ath10k_sdio mmc1:0001:1 id 20481 len 28
+kworker/1:3 14712 [001]  2889.889260:           ath10k:ath10k_log_warn: 
+ath10k_sdio mmc1:0001:1 failed to create WMI vdev 0: -70
 
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+ieee80211_reconfig will ieee80211_handle_reconfig_failure because 
+drv_add_interface failed.
+so the recovery failed.
+
+detail log for fail
+[ 2889.410150] ieee80211 phy0: Hardware restart was requested
+[ 2889.889281] drv_add_interface ret:-70
+[ 2889.889310] ------------[ cut here ]------------
+[ 2889.889547] WARNING: CPU: 1 PID: 14712 at 
+/mnt/host/source/src/third_party/kernel/v4.19/net/mac80211/util.c:2072 
+ieee80211_reconfig+0x189c/0x19a4 [mac80211]
+[ 2889.889559] Modules linked in: rfcomm uinput cros_ec_rpmsg mtk_dip 
+mtk_vcodec_enc mtk_seninf mtk_vcodec_dec mtk_mdp3 mtk_fd mtk_cam_isp 
+mtk_vcodec_common videobuf2_dma_contig videobuf2_memops v4l2_mem2mem 
+videobuf2_v4l2 videobuf2_common hci_uart btqca bluetooth 
+hid_google_hammer ecdh_generic ov8856 dw9768 mtk_scp mtk_rpmsg ov02a10 
+rpmsg_core v4l2_fwnode mtk_scp_ipi nf_nat_tftp nf_conntrack_tftp 
+nf_nat_ftp nf_conntrack_ftp esp6 ah6 xfrm6_mode_tunnel 
+xfrm6_mode_transport xfrm4_mode_tunnel xfrm4_mode_transport ip6t_REJECT 
+ip6t_ipv6header ipt_MASQUERADE fuse iio_trig_sysfs cros_ec_sensors_ring 
+cros_ec_light_prox cros_ec_sensors cros_ec_sensors_sync 
+industrialio_triggered_buffer kfifo_buf cros_ec_sensors_core ath10k_sdio 
+ath10k_core ath mac80211 lzo_rle lzo_compress zram cfg80211 ax88179_178a 
+usbnet mii
+[ 2889.889689]  joydev
+[ 2889.889709] CPU: 1 PID: 14712 Comm: kworker/1:3 Tainted: G        W   
+       4.19.95 #139
+[ 2889.889720] Hardware name: MediaTek krane sku176 board (DT)
+[ 2889.889776] Workqueue: events_freezable ieee80211_restart_work 
+[mac80211]
+[ 2889.889792] pstate: 60000005 (nZCv daif -PAN -UAO)
+[ 2889.889849] pc : ieee80211_reconfig+0x189c/0x19a4 [mac80211]
+[ 2889.889908] lr : ieee80211_reconfig+0x189c/0x19a4 [mac80211]
+[ 2889.889918] sp : ffffff8012743cc0
+[ 2889.889927] x29: ffffff8012743d40 x28: ffffffa381e11f40
+[ 2889.889941] x27: ffffffa381ad4018 x26: 0000000000000000
+[ 2889.889954] x25: 00000000ffffffba x24: 0000000000000004
+[ 2889.889968] x23: ffffffe3b52a2210 x22: ffffffe3c3ae12b8
+[ 2889.889981] x21: ffffffe3c3ae12b8 x20: ffffffe3b4e80900
+[ 2889.889995] x19: ffffffe3c3ae0800 x18: 000000000003b900
+[ 2889.890008] x17: 000000000000003c x16: ffffffa3815c1540
+[ 2889.890021] x15: 0000000000000006 x14: ffff001000000600
+[ 2889.890034] x13: 00000000002ae45c x12: 0000000000000000
+[ 2889.890047] x11: 0000000000000001 x10: 0000000000000007
+[ 2889.890061] x9 : c6cfad4ea7c13400 x8 : c6cfad4ea7c13400
+[ 2889.890074] x7 : 0000000000000000 x6 : ffffffa381f6cd0c
+[ 2889.890087] x5 : 0000000000000000 x4 : 0000000000000000
+[ 2889.890100] x3 : 000000000003e2a1 x2 : fffffffffffff704
+[ 2889.890113] x1 : 0000000000000000 x0 : 0000000000000024
+[ 2889.890127] Call trace:
+[ 2889.890185]  ieee80211_reconfig+0x189c/0x19a4 [mac80211]
+[ 2889.890236]  ieee80211_restart_work+0xa0/0xd0 [mac80211]
+[ 2889.890258]  process_one_work+0x210/0x418
+[ 2889.890273]  worker_thread+0x234/0x3dc
+[ 2889.890288]  kthread+0x120/0x130
+[ 2889.890303]  ret_from_fork+0x10/0x18
+[ 2889.890314] ---[ end trace d605ce58e22a44f2 ]---
+[ 2889.898956] wlan0: deauthenticating from c4:04:15:3b:e0:38 by local 
+choice (Reason: 3=DEAUTH_LEAVING)
+[ 2889.898995] ------------[ cut here ]------------
+[ 2889.899006] wlan0:  Failed check-sdata-in-driver check, flags: 0x0
+[ 2889.899289] WARNING: CPU: 1 PID: 14712 at 
+/mnt/host/source/src/third_party/kernel/v4.19/net/mac80211/driver-ops.h:19 
+ieee80211_bss_info_change_notify+0x23c/0x24c [mac80211]
+[ 2889.899303] Modules linked in: rfcomm uinput cros_ec_rpmsg mtk_dip 
+mtk_vcodec_enc mtk_seninf mtk_vcodec_dec mtk_mdp3 mtk_fd mtk_cam_isp 
+mtk_vcodec_common videobuf2_dma_contig videobuf2_memops v4l2_mem2mem 
+videobuf2_v4l2 videobuf2_common hci_uart btqca bluetooth 
+hid_google_hammer ecdh_generic ov8856 dw9768 mtk_scp mtk_rpmsg ov02a10 
+rpmsg_core v4l2_fwnode mtk_scp_ipi nf_nat_tftp nf_conntrack_tftp 
+nf_nat_ftp nf_conntrack_ftp esp6 ah6 xfrm6_mode_tunnel 
+xfrm6_mode_transport xfrm4_mode_tunnel xfrm4_mode_transport ip6t_REJECT 
+ip6t_ipv6header ipt_MASQUERADE fuse iio_trig_sysfs cros_ec_sensors_ring 
+cros_ec_light_prox cros_ec_sensors cros_ec_sensors_sync 
+industrialio_triggered_buffer kfifo_buf cros_ec_sensors_core ath10k_sdio 
+ath10k_core ath mac80211 lzo_rle lzo_compress zram cfg80211 ax88179_178a 
+usbnet mii
+[ 2889.899438]  joydev
+[ 2889.899475] CPU: 1 PID: 14712 Comm: kworker/1:3 Tainted: G        W   
+       4.19.95 #139
+[ 2889.899486] Hardware name: MediaTek krane sku176 board (DT)
+[ 2889.899545] Workqueue: events_freezable ieee80211_restart_work 
+[mac80211]
+[ 2889.899561] pstate: 60000005 (nZCv daif -PAN -UAO)
+[ 2889.899612] pc : ieee80211_bss_info_change_notify+0x23c/0x24c 
+[mac80211]
+[ 2889.899664] lr : ieee80211_bss_info_change_notify+0x23c/0x24c 
+[mac80211]
+[ 2889.899674] sp : ffffff8012743820
+[ 2889.899686] x29: ffffff8012743860 x28: ffffffa381e11f40
+[ 2889.899700] x27: ffffffa381ad4018 x26: 0000000000000000
+[ 2889.899712] x25: 0000000000000000 x24: 00000000000000c0
+[ 2889.899725] x23: 0000000000000003 x22: ffffff80127438fc
+[ 2889.899738] x21: ffffffe3b4e80900 x20: 0000000000020000
+[ 2889.899751] x19: ffffffe3c3ae0800 x18: 000000000003c500
+[ 2889.899764] x17: 000000000000003c x16: ffffffa3815c1540
+[ 2889.899776] x15: 0000000000000006 x14: ffff001000000600
+[ 2889.899789] x13: 00000000002ae46e x12: 0000000000000000
+[ 2889.899802] x11: 0000000000000000 x10: 0000000000000000
+[ 2889.899814] x9 : c6cfad4ea7c13400 x8 : c6cfad4ea7c13400
+[ 2889.899827] x7 : 0000000000000000 x6 : ffffffa381f6cd1e
+[ 2889.899840] x5 : 0000000000000000 x4 : 0000000000000000
+[ 2889.899857] x3 : 000000000003d73b x2 : ffffffe3fff05918
+[ 2889.899870] x1 : ffffffe3ffefca08 x0 : 0000000000000036
+[ 2889.899883] Call trace:
+[ 2889.899935]  ieee80211_bss_info_change_notify+0x23c/0x24c [mac80211]
+[ 2889.899996]  ieee80211_recalc_ps_vif+0x3c/0x48 [mac80211]
+[ 2889.900060]  ieee80211_set_disassoc+0x84/0x43c [mac80211]
+[ 2889.900142]  ieee80211_mgd_deauth+0x4e0/0x574 [mac80211]
+[ 2889.900201]  ieee80211_deauth+0x24/0x30 [mac80211]
+[ 2889.900285]  cfg80211_mlme_deauth+0x198/0x26c [cfg80211]
+[ 2889.900337]  cfg80211_mlme_down+0x70/0x98 [cfg80211]
+[ 2889.900393]  cfg80211_disconnect+0x214/0x250 [cfg80211]
+[ 2889.900441]  __cfg80211_leave+0xc8/0x14c [cfg80211]
+[ 2889.900489]  cfg80211_netdev_notifier_call+0x41c/0x668 [cfg80211]
+[ 2889.900515]  raw_notifier_call_chain+0x48/0x70
+[ 2889.900540]  call_netdevice_notifiers_info+0x40/0x74
+[ 2889.900556]  __dev_close_many+0x6c/0x11c
+[ 2889.900572]  dev_close_many+0x70/0x100
+[ 2889.900587]  dev_close+0x4c/0x80
+[ 2889.900636]  cfg80211_shutdown_all_interfaces+0x50/0xcc [cfg80211]
+[ 2889.900697]  ieee80211_handle_reconfig_failure+0x90/0x9c [mac80211]
+[ 2889.900761]  ieee80211_reconfig+0x18dc/0x19a4 [mac80211]
+[ 2889.900815]  ieee80211_restart_work+0xa0/0xd0 [mac80211]
+[ 2889.900835]  process_one_work+0x210/0x418
+[ 2889.900855]  worker_thread+0x234/0x3dc
+[ 2889.900871]  kthread+0x120/0x130
+[ 2889.900890]  ret_from_fork+0x10/0x18
+[ 2889.900905] ---[ end trace d605ce58e22a44f3 ]---
 
 _______________________________________________
 ath10k mailing list
