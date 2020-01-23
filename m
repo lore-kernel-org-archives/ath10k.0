@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iulqM-0002cL-Tz
- for ath10k@lists.infradead.org; Thu, 23 Jan 2020 23:25:00 +0000
-Received: by mail-pj1-x1041.google.com with SMTP id d5so175631pjz.5
- for <ath10k@lists.infradead.org>; Thu, 23 Jan 2020 15:24:58 -0800 (PST)
+ id 1iulv5-00048j-TO
+ for ath10k@lists.infradead.org; Thu, 23 Jan 2020 23:29:53 +0000
+Received: by mail-pf1-x441.google.com with SMTP id x6so150591pfo.10
+ for <ath10k@lists.infradead.org>; Thu, 23 Jan 2020 15:29:45 -0800 (PST)
 From: Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH] ath10k: Add newlines to printk messages
-Date: Thu, 23 Jan 2020 15:24:56 -0800
-Message-Id: <20200123232456.36197-1-swboyd@chromium.org>
+Subject: [PATCH] ath10k: Use device_get_match_data() to simplify code
+Date: Thu, 23 Jan 2020 15:29:44 -0800
+Message-Id: <20200123232944.39247-1-swboyd@chromium.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,45 +25,43 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Some printks in here don't have newlines at the end, meaning the log
-will be sort of hard to read. Add newlines.
+Use device_get_match_data() here to simplify the code a bit.
 
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 7e85c4916e7f..19a4d053d1de 100644
+index 19a4d053d1de..88900f0399f5 100644
 --- a/drivers/net/wireless/ath/ath10k/snoc.c
 +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -582,7 +582,7 @@ static void ath10k_snoc_process_rx_cb(struct ath10k_ce_pipe *ce_state,
- 				 max_nbytes, DMA_FROM_DEVICE);
+@@ -1466,7 +1466,6 @@ MODULE_DEVICE_TABLE(of, ath10k_snoc_dt_match);
+ static int ath10k_snoc_probe(struct platform_device *pdev)
+ {
+ 	const struct ath10k_snoc_drv_priv *drv_data;
+-	const struct of_device_id *of_id;
+ 	struct ath10k_snoc *ar_snoc;
+ 	struct device *dev;
+ 	struct ath10k *ar;
+@@ -1474,14 +1473,13 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 	int ret;
+ 	u32 i;
  
- 		if (unlikely(max_nbytes < nbytes)) {
--			ath10k_warn(ar, "rxed more than expected (nbytes %d, max %d)",
-+			ath10k_warn(ar, "rxed more than expected (nbytes %d, max %d)\n",
- 				    nbytes, max_nbytes);
- 			dev_kfree_skb_any(skb);
- 			continue;
-@@ -1201,7 +1201,7 @@ static int ath10k_snoc_request_irq(struct ath10k *ar)
- 				  irqflags, ce_name[id], ar);
- 		if (ret) {
- 			ath10k_err(ar,
--				   "failed to register IRQ handler for CE %d: %d",
-+				   "failed to register IRQ handler for CE %d: %d\n",
- 				   id, ret);
- 			goto err_irq;
- 		}
-@@ -1485,7 +1485,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+-	of_id = of_match_device(ath10k_snoc_dt_match, &pdev->dev);
+-	if (!of_id) {
++	dev = &pdev->dev;
++	drv_data = device_get_match_data(dev);
++	if (!drv_data) {
+ 		dev_err(&pdev->dev, "failed to find matching device tree id\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	drv_data = of_id->data;
+-	dev = &pdev->dev;
  
  	ret = dma_set_mask_and_coherent(dev, drv_data->dma_mask);
  	if (ret) {
--		dev_err(dev, "failed to set dma mask: %d", ret);
-+		dev_err(dev, "failed to set dma mask: %d\n", ret);
- 		return ret;
- 	}
- 
 -- 
 Sent by a computer, using git, on the internet
 
