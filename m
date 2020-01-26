@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ivfHa-0007Ox-Ga
- for ath10k@lists.infradead.org; Sun, 26 Jan 2020 10:36:47 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v3 1/2] dt: bindings: add dt entry flag to skip SCM call
- for msa region
+ id 1iviqg-000825-Vy
+ for ath10k@lists.infradead.org; Sun, 26 Jan 2020 14:25:16 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200103134414.15457-2-govinds@codeaurora.org>
-References: <20200103134414.15457-2-govinds@codeaurora.org>
-Message-Id: <20200126103645.79D13C43383@smtp.codeaurora.org>
-Date: Sun, 26 Jan 2020 10:36:45 +0000 (UTC)
+Subject: Re: [PATCH] ath10k: Use device_get_match_data() to simplify code
+References: <20200123232944.39247-1-swboyd@chromium.org>
+ <CAMrEMU-e55q7uvd220+1kuYJ4Xa-4ckz5CvYezCj2ahn_K8t9w@mail.gmail.com>
+Date: Sun, 26 Jan 2020 16:25:07 +0200
+In-Reply-To: <CAMrEMU-e55q7uvd220+1kuYJ4Xa-4ckz5CvYezCj2ahn_K8t9w@mail.gmail.com>
+ (Justin Capella's message of "Sat, 25 Jan 2020 20:18:40 -0800")
+Message-ID: <87o8uqcn24.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +24,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: robh@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
+To: Justin Capella <justincapella@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Stephen Boyd <swboyd@chromium.org>
 
-Govind Singh <govinds@codeaurora.org> wrote:
+Justin Capella <justincapella@gmail.com> writes:
 
-> Add boolean context flag to disable SCM call for statically
-> mapped msa region.
-> 
-> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Maybe use dev here as well?
+>
+>>                 dev_err(&pdev->dev, "failed to find matching device tree id\n");
 
-2 patches applied to ath-next branch of ath.git, thanks.
+I changed that. And also fixed a checkpatch warning:
 
-6ca71a10aee8 dt: bindings: add dt entry flag to skip SCM call for msa region
-ab000ea6a393 ath10k: Don't call SCM interface for statically mapped msa region
+drivers/net/wireless/ath/ath10k/snoc.c:1483: Please don't use multiple blank lines
 
 -- 
-https://patchwork.kernel.org/patch/11316913/
-
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
