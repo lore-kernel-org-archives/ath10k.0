@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ivfFm-0005oR-RW
- for ath10k@lists.infradead.org; Sun, 26 Jan 2020 10:34:56 +0000
+ id 1ivfHa-0007Ox-Ga
+ for ath10k@lists.infradead.org; Sun, 26 Jan 2020 10:36:47 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH,
- v4] Revert "ath10k: fix DMA related firmware crashes on multiple
- devices"
+Subject: Re: [PATCH v3 1/2] dt: bindings: add dt entry flag to skip SCM call
+ for msa region
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
-References: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
-Message-Id: <20200126103452.C3709C43383@smtp.codeaurora.org>
-Date: Sun, 26 Jan 2020 10:34:52 +0000 (UTC)
+In-Reply-To: <20200103134414.15457-2-govinds@codeaurora.org>
+References: <20200103134414.15457-2-govinds@codeaurora.org>
+Message-Id: <20200126103645.79D13C43383@smtp.codeaurora.org>
+Date: Sun, 26 Jan 2020 10:36:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zhi Chen <zhichen@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: robh@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
 
-Zhi Chen <zhichen@codeaurora.org> wrote:
+Govind Singh <govinds@codeaurora.org> wrote:
 
-> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
-> PCIe hung issue was observed on multiple platforms. The issue was reproduced
-> when DUT was configured as AP and associated with 50+ STAs.
+> Add boolean context flag to disable SCM call for statically
+> mapped msa region.
 > 
-> For QCA9984/QCA9888, the DMA_BURST_SIZE register controls the AXI burst size
-> of the RD/WR access to the HOST MEM.
-> 0 - No split , RAW read/write transfer size from MAC is put out on bus
->     as burst length
-> 1 - Split at 256 byte boundary
-> 2,3 - Reserved
-> 
-> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
-> issue happened. It broke PCIe spec and caused PCIe stuck. So revert
-> the default value from 0 to 1.
-> 
-> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
->          QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
->          Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
-> 
-> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Acked-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-a1769bb68a85 Revert "ath10k: fix DMA related firmware crashes on multiple devices"
+6ca71a10aee8 dt: bindings: add dt entry flag to skip SCM call for msa region
+ab000ea6a393 ath10k: Don't call SCM interface for statically mapped msa region
 
 -- 
-https://patchwork.kernel.org/patch/11331293/
+https://patchwork.kernel.org/patch/11316913/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
