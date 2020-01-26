@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail25.static.mailgun.info ([104.130.122.25])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iviv8-0008Jl-SG
- for ath10k@lists.infradead.org; Sun, 26 Jan 2020 14:29:52 +0000
+ id 1ivizx-0001RS-D1
+ for ath10k@lists.infradead.org; Sun, 26 Jan 2020 14:34:51 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Add newlines to printk messages
+Subject: Re: [PATCH] ath10k: Use device_get_match_data() to simplify code
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200123232456.36197-1-swboyd@chromium.org>
-References: <20200123232456.36197-1-swboyd@chromium.org>
-Message-Id: <20200126142949.885F1C43383@smtp.codeaurora.org>
-Date: Sun, 26 Jan 2020 14:29:49 +0000 (UTC)
+In-Reply-To: <20200123232944.39247-1-swboyd@chromium.org>
+References: <20200123232944.39247-1-swboyd@chromium.org>
+Message-Id: <20200126143448.31621C433A2@smtp.codeaurora.org>
+Date: Sun, 26 Jan 2020 14:34:48 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +27,17 @@ Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.ke
 
 Stephen Boyd <swboyd@chromium.org> wrote:
 
-> Some printks in here don't have newlines at the end, meaning the log
-> will be sort of hard to read. Add newlines.
+> Use device_get_match_data() here to simplify the code a bit.
 > 
 > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-79a4b788451d ath10k: Add newlines to printk messages
+fa43e99dd4b7 ath10k: Use device_get_match_data() to simplify code
 
 -- 
-https://patchwork.kernel.org/patch/11349347/
+https://patchwork.kernel.org/patch/11349353/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
