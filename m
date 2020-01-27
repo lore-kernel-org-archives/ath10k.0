@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ivizx-0001RS-D1
- for ath10k@lists.infradead.org; Sun, 26 Jan 2020 14:34:51 +0000
+ id 1iw9JQ-0000a7-1l
+ for ath10k@lists.infradead.org; Mon, 27 Jan 2020 18:40:41 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Use device_get_match_data() to simplify code
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200123232944.39247-1-swboyd@chromium.org>
-References: <20200123232944.39247-1-swboyd@chromium.org>
-Message-Id: <20200126143448.31621C433A2@smtp.codeaurora.org>
-Date: Sun, 26 Jan 2020 14:34:48 +0000 (UTC)
+In-Reply-To: <20191223054855.3020665-1-bjorn.andersson@linaro.org>
+References: <20191223054855.3020665-1-bjorn.andersson@linaro.org>
+From: Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH 0/2] ath10k: Enable QDSS clock on sm8150
+Date: Mon, 27 Jan 2020 10:40:36 -0800
+Message-Id: <20200127184037.3BFB620CC7@mail.kernel.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +22,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Stephen Boyd <swboyd@chromium.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org
 
-Stephen Boyd <swboyd@chromium.org> wrote:
+Quoting Bjorn Andersson (2019-12-22 21:48:53)
+> On SM8150 the WiFi firmware depends on the QDSS clock ticking, or the system
+> will reset due to an NoC error. So this adds an optional clock to the ath10k
+> binding and makes sure it's enabled while the WiFi firmware needs it.
 
-> Use device_get_match_data() here to simplify the code a bit.
-> 
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Hopefully this isn't a requirement in production firmware? Seems
+wasteful to keep the debug clk enabled in the field when nobody is
+debugging anything.
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-fa43e99dd4b7 ath10k: Use device_get_match_data() to simplify code
-
--- 
-https://patchwork.kernel.org/patch/11349353/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
