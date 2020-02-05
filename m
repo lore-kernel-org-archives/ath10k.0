@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail25.static.mailgun.info ([104.130.122.25])
+Received: from mail-wm1-f66.google.com ([209.85.128.66])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izF5n-0006F2-W3
- for ath10k@lists.infradead.org; Wed, 05 Feb 2020 07:27:27 +0000
-From: Yingying Tang <yintang@codeaurora.org>
-Subject: [PATCH] ath10k: fix unsupported chip reset debugs file write
-Date: Wed,  5 Feb 2020 15:27:24 +0800
-Message-Id: <1580887644-21061-1-git-send-email-yintang@codeaurora.org>
+ id 1izOnZ-00030m-Ux
+ for ath10k@lists.infradead.org; Wed, 05 Feb 2020 17:49:15 +0000
+Received: by mail-wm1-f66.google.com with SMTP id t14so3874699wmi.5
+ for <ath10k@lists.infradead.org>; Wed, 05 Feb 2020 09:49:13 -0800 (PST)
+Date: Wed, 5 Feb 2020 17:49:10 +0000
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCHv2 1/2] dt-bindings: ath10k: Add new dt entries to
+ identify coex support
+Message-ID: <20200205174910.GA29218@bogus>
+References: <1580152736-18654-1-git-send-email-tamizhr@codeaurora.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1580152736-18654-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,96 +22,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Tamizh Chelvam <tamizhr@codeaurora.org>
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Before this change, after writing "warm_hw_reset" debugfs file, host
-will send chip reset command to FW even though FW do not support this
-service getting a warning print.
+On Tue, 28 Jan 2020 00:48:55 +0530, Tamizh Chelvam wrote:
+> This adds new dt entries qcom,coexist-support and qcom,coexist-gpio-pin
+> which will be used by ath10k driver to identify coex support
+> of a hardware and notify wifi firmware the gpio pin number.
+> This pin number information is needed for the hardware QCA4019.
+> 
+> Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-Though there is no FW impact before this change, this patch restricts
-chip reset command sent to FW only if FW advertises the support via WMI
-service bit.
-
-Removed the redundant check and ath10k_warn() print as well.
-
-New version FW will report chip reset service bit to host. Host allow user
-to trigger WLAN chip reset only when fw report this service bit.
-
-For older NON-TLV FW, since it do not report chip reset service bit, host
-will not send chip reset command. For older TLV FW, since it report chip
-reset service bit, host will send chip reset command.
-
-Tested HW:  QCA9984, WCN3990
-
-QCA9984 FW version: WLAN.BL.3.9.0.2-00042-S-1
-
-Signed-off-by: Yingying Tang <yintang@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/debug.c | 9 ++++-----
- drivers/net/wireless/ath/ath10k/wmi.h   | 8 ++++++++
- 2 files changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 32d967a..4cec1a85 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2365,9 +2365,6 @@ static ssize_t ath10k_write_warm_hw_reset(struct file *file,
- 		goto exit;
- 	}
- 
--	if (!(test_bit(WMI_SERVICE_RESET_CHIP, ar->wmi.svc_map)))
--		ath10k_warn(ar, "wmi service for reset chip is not available\n");
--
- 	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pdev_reset,
- 					WMI_RST_MODE_WARM_RESET);
- 
-@@ -2603,8 +2600,10 @@ int ath10k_debug_register(struct ath10k *ar)
- 				    ar->debug.debugfs_phy, ar,
- 				    &fops_tpc_stats_final);
- 
--	debugfs_create_file("warm_hw_reset", 0600, ar->debug.debugfs_phy, ar,
--			    &fops_warm_hw_reset);
-+	if (test_bit(WMI_SERVICE_RESET_CHIP, ar->wmi.svc_map))
-+		debugfs_create_file("warm_hw_reset", 0600,
-+				    ar->debug.debugfs_phy, ar,
-+				    &fops_warm_hw_reset);
- 
- 	debugfs_create_file("ps_state_enable", 0600, ar->debug.debugfs_phy, ar,
- 			    &fops_ps_state_enable);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e1c40bb..d753924 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -367,6 +367,12 @@ enum wmi_10_4_service {
- 	WMI_10_4_SERVICE_RTT_RESPONDER_ROLE,
- 	WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
- 	WMI_10_4_SERVICE_REPORT_AIRTIME,
-+	WMI_10_4_SERVICE_TX_PWR_PER_PEER,
-+	WMI_10_4_SERVICE_FETCH_PEER_TX_PN,
-+	WMI_10_4_SERVICE_MULTIPLE_VDEV_RESTART,
-+	WMI_10_4_SERVICE_ENHANCED_RADIO_COUNTERS,
-+	WMI_10_4_SERVICE_QINQ_SUPPORT,
-+	WMI_10_4_SERVICE_RESET_CHIP,
- };
- 
- static inline char *wmi_service_name(enum wmi_service service_id)
-@@ -818,6 +824,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_PER_PACKET_SW_ENCRYPT, len);
- 	SVCMAP(WMI_10_4_SERVICE_REPORT_AIRTIME,
- 	       WMI_SERVICE_REPORT_AIRTIME, len);
-+	SVCMAP(WMI_10_4_SERVICE_RESET_CHIP,
-+	       WMI_SERVICE_RESET_CHIP, len);
- }
- 
- #undef SVCMAP
--- 
-1.9.1
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 _______________________________________________
 ath10k mailing list
