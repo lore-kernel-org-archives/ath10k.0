@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.aperture-lab.de ([138.201.29.205])
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izQ5I-0004Db-JA
- for ath10k@lists.infradead.org; Wed, 05 Feb 2020 19:11:38 +0000
-From: =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [PATCH] ath10k: increase rx buffer size to 2048
-Date: Wed,  5 Feb 2020 20:10:43 +0100
-Message-Id: <20200205191043.21913-1-linus.luessing@c0d3.blue>
+ id 1j1PaN-0000oH-WA
+ for ath10k@lists.infradead.org; Tue, 11 Feb 2020 07:03:57 +0000
+Received: by mail-pf1-x441.google.com with SMTP id p14so5019795pfn.4
+ for <ath10k@lists.infradead.org>; Mon, 10 Feb 2020 23:03:54 -0800 (PST)
+Subject: Re: [PATCH v8 1/4] ath10k: disable TX complete indication of htt for
+ sdio
+References: <20191128103030.6429-1-wgong@codeaurora.org>
+ <0101016eb1903db0-ef7063b4-0f42-4a01-8886-327541e6c1a4-000000@us-west-2.amazonses.com>
+From: Pi-Hsun Shih <pihsun@chromium.org>
+Message-ID: <76bce8e3-e05b-ace6-3edd-54f522be3fe6@chromium.org>
+Date: Tue, 11 Feb 2020 15:03:51 +0800
 MIME-Version: 1.0
+In-Reply-To: <0101016eb1903db0-ef7063b4-0f42-4a01-8886-327541e6c1a4-000000@us-west-2.amazonses.com>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,39 +23,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Ben Greear <greearb@candelatech.com>, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-RnJvbTogTGludXMgTMO8c3NpbmcgPGxsQHNpbW9ud3VuZGVybGljaC5kZT4KCkJlZm9yZSwgb25s
-eSBmcmFtZXMgd2l0aCBhIG1heGltdW0gc2l6ZSBvZiAxNTI4IGJ5dGVzIGNvdWxkIGJlCnRyYW5z
-bWl0dGVkIGJldHdlZW4gdHdvIDgwMi4xMXMgbm9kZXMuCgpGb3IgYmF0bWFuLWFkdiBmb3IgaW5z
-dGFuY2UsIHdoaWNoIGFkZHMgaXRzIG93biBoZWFkZXIgdG8gZWFjaCBmcmFtZSwKd2UgdHlwaWNh
-bGx5IG5lZWQgYW4gTVRVIG9mIGF0IGxlYXN0IDE1MzIgYnl0ZXMgdG8gYmUgYWJsZSB0byB0cmFu
-c21pdAp3aXRob3V0IGZyYWdtZW50YXRpb24uCgpUaGlzIHBhdGNoIG5vdyBpbmNyZWFzZXMgdGhl
-IG1heG1pbXVtIGZyYW1lIHNpemUgZnJvbSAxNTI4IHRvIDE2NTYKYnl0ZXMuCgpUZXN0ZWQgd2l0
-aCB0d28gYXRoMTBrIGRldmljZXMgaW4gODAyLjExcyBtb2RlLCBhcyB3ZWxsIGFzIHdpdGgKYmF0
-bWFuLWFkdiBvbiB0b3Agb2YgODAyLjExcyB3aXRoIGZvcndhcmRpbmcgZGlzYWJsZWQuCgpGaXgg
-b3JpZ2luYWxseSBmb3VuZCBhbmQgZGV2ZWxvcGVkIGJ5IEJlbiBHcmVlYXIuCgpMaW5rOiBodHRw
-czovL2dpdGh1Yi5jb20vZ3JlZWFyYi9hdGgxMGstY3QvaXNzdWVzLzg5Ckxpbms6IGh0dHBzOi8v
-Z2l0aHViLmNvbS9ncmVlYXJiL2F0aDEway1jdC9jb21taXQvOWU1YWIyNTAyN2UwOTcxZmEyNGNj
-ZjkzMzczMzI0YzA4YzRlOTkyZApDYzogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+ClNpZ25lZC1vZmYtYnk6IExpbnVzIEzDvHNzaW5nIDxsbEBzaW1vbnd1bmRlcmxpY2guZGU+
-Ci0tLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHQuaCB8IDIgKy0KIDEgZmls
-ZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0LmggYi9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2h0dC5oCmluZGV4IDRhMTI1NjRmYzMwZS4uNmEyYjVlMTBlNTY4IDEwMDY0
-NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dC5oCisrKyBiL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0LmgKQEAgLTIyMjAsNyArMjIyMCw3IEBAIHN0
-cnVjdCBodHRfcnhfY2hhbl9pbmZvIHsKICAqIFNob3VsZCBiZTogc2l6ZW9mKHN0cnVjdCBodHRf
-aG9zdF9yeF9kZXNjKSArIG1heCByeCBNU0RVIHNpemUsCiAgKiByb3VuZGVkIHVwIHRvIGEgY2Fj
-aGUgbGluZSBzaXplLgogICovCi0jZGVmaW5lIEhUVF9SWF9CVUZfU0laRSAxOTIwCisjZGVmaW5l
-IEhUVF9SWF9CVUZfU0laRSAyMDQ4CiAjZGVmaW5lIEhUVF9SWF9NU0RVX1NJWkUgKEhUVF9SWF9C
-VUZfU0laRSAtIChpbnQpc2l6ZW9mKHN0cnVjdCBodHRfcnhfZGVzYykpCiAKIC8qIFJlZmlsbCBh
-IGJ1bmNoIG9mIFJYIGJ1ZmZlcnMgZm9yIGVhY2ggcmVmaWxsIHJvdW5kIHNvIHRoYXQgRlcvSFcg
-Y2FuIGhhbmRsZQotLSAKMi4yNS4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+On 11/28/19 6:30 PM, Wen Gong wrote:
+> ...
+> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+> index a182c0944cc7..c6c4b2a4d20f 100644
+> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
+> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+> @@ -543,7 +543,35 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+>   
+>   void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+>   {
+> +	struct ath10k_htt *htt = &ar->htt;
+> +	struct htt_tx_done tx_done = {0};
+> +	struct htt_cmd_hdr *htt_hdr;
+> +	struct htt_data_tx_desc *desc_hdr;
+> +	u16 flags1;
+> +
+>   	dev_kfree_skb_any(skb);
+> +
+> +	if (!htt->disable_tx_comp)
+> +		return;
+> +
+> +	htt_hdr = (struct htt_cmd_hdr *)skb->data;
+
+skb is already freed on the above line (dev_kfree_skb_any) but is still 
+used here, should the dev_kfree_skb_any be moved to the end of this 
+function?
+
+> +	if (htt_hdr->msg_type != HTT_H2T_MSG_TYPE_TX_FRM)
+> +		return;
+> +
+> +	desc_hdr = (struct htt_data_tx_desc *)
+> +		(skb->data + sizeof(*htt_hdr));
+> +	flags1 = __le16_to_cpu(desc_hdr->flags1);
+> +
+> +	ath10k_dbg(ar, ATH10K_DBG_HTT,
+> +		   "htt tx complete msdu id:%u ,flags1:%x\n",
+> +		   __le16_to_cpu(desc_hdr->id), flags1);
+> +
+> +	if (flags1 & HTT_DATA_TX_DESC_FLAGS1_TX_COMPLETE)
+> +		return;
+> +
+> +	tx_done.status = HTT_TX_COMPL_STATE_ACK;
+> +	tx_done.msdu_id = __le16_to_cpu(desc_hdr->id);
+> +	ath10k_txrx_tx_unref(&ar->htt, &tx_done);
+>   }
+>   
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
