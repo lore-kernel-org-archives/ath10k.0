@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail25.static.mailgun.info ([104.130.122.25])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1ROY-0001dR-AX
- for ath10k@lists.infradead.org; Tue, 11 Feb 2020 08:59:51 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH] ath10k: fix few checkpatch warnings
-Date: Tue, 11 Feb 2020 10:59:38 +0200
-Message-Id: <1581411578-26388-1-git-send-email-kvalo@codeaurora.org>
+ id 1j1S7h-0008My-NV
+ for ath10k@lists.infradead.org; Tue, 11 Feb 2020 09:46:33 +0000
+MIME-Version: 1.0
+Date: Tue, 11 Feb 2020 17:46:25 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v8 1/4] ath10k: disable TX complete indication of htt for
+ sdio
+In-Reply-To: <76bce8e3-e05b-ace6-3edd-54f522be3fe6@chromium.org>
+References: <20191128103030.6429-1-wgong@codeaurora.org>
+ <0101016eb1903db0-ef7063b4-0f42-4a01-8886-327541e6c1a4-000000@us-west-2.amazonses.com>
+ <76bce8e3-e05b-ace6-3edd-54f522be3fe6@chromium.org>
+Message-ID: <25fd4f59b39c56b2fee208713c7cbc57@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,63 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Pi-Hsun Shih <pihsun@chromium.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Fix warnings which were recently introduced:
-
-drivers/net/wireless/ath/ath10k/ahb.c:462: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/ahb.c:470: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/sdio.c:697: space prohibited before that close parenthesis ')'
-
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/ahb.c  | 4 ++--
- drivers/net/wireless/ath/ath10k/sdio.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index ed87bc00f2aa..342a7e58018a 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -459,7 +459,7 @@ static int ath10k_ahb_resource_init(struct ath10k *ar)
- 	ar_ahb->mem_len = resource_size(res);
- 
- 	ar_ahb->gcc_mem = ioremap(ATH10K_GCC_REG_BASE,
--					  ATH10K_GCC_REG_SIZE);
-+				  ATH10K_GCC_REG_SIZE);
- 	if (!ar_ahb->gcc_mem) {
- 		ath10k_err(ar, "gcc mem ioremap error\n");
- 		ret = -ENOMEM;
-@@ -467,7 +467,7 @@ static int ath10k_ahb_resource_init(struct ath10k *ar)
- 	}
- 
- 	ar_ahb->tcsr_mem = ioremap(ATH10K_TCSR_REG_BASE,
--					   ATH10K_TCSR_REG_SIZE);
-+				   ATH10K_TCSR_REG_SIZE);
- 	if (!ar_ahb->tcsr_mem) {
- 		ath10k_err(ar, "tcsr mem ioremap error\n");
- 		ret = -ENOMEM;
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index e5316b911e1d..2e9d78222153 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -694,7 +694,7 @@ static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
- 		htc_hdr = (struct ath10k_htc_hdr *)(ar_sdio->vsg_buffer + pkt_offset);
- 		pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
- 
--		if (pkt->act_len > pkt->alloc_len ) {
-+		if (pkt->act_len > pkt->alloc_len) {
- 			ret = -EINVAL;
- 			goto err;
- 		}
--- 
-2.7.4
+On 2020-02-11 15:03, Pi-Hsun Shih wrote:
+> Hi,
+> 
+> On 11/28/19 6:30 PM, Wen Gong wrote:
+>> ...
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c 
+>> b/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> index a182c0944cc7..c6c4b2a4d20f 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> @@ -543,7 +543,35 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+>>     void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff 
+>> *skb)
+>>   {
+>> +	struct ath10k_htt *htt = &ar->htt;
+>> +	struct htt_tx_done tx_done = {0};
+>> +	struct htt_cmd_hdr *htt_hdr;
+>> +	struct htt_data_tx_desc *desc_hdr;
+>> +	u16 flags1;
+>> +
+>>   	dev_kfree_skb_any(skb);
+>> +
+>> +	if (!htt->disable_tx_comp)
+>> +		return;
+>> +
+>> +	htt_hdr = (struct htt_cmd_hdr *)skb->data;
+> 
+> skb is already freed on the above line (dev_kfree_skb_any) but is
+> still used here, should the dev_kfree_skb_any be moved to the end of
+> this function?
+> 
+skb will not freed on the above line, please see this patch
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/drivers/net/wireless/ath/ath10k?h=ath-next&id=30382dd1cf3a141bfaa568ee183c1892090fa79a
 
 _______________________________________________
 ath10k mailing list
