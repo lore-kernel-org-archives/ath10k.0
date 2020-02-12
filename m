@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1n0g-0000RM-AH
- for ath10k@lists.infradead.org; Wed, 12 Feb 2020 08:04:40 +0000
+ id 1j1n0d-0000QH-0l
+ for ath10k@lists.infradead.org; Wed, 12 Feb 2020 08:04:37 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v9 2/4] ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64
- to 1024
-Date: Wed, 12 Feb 2020 16:04:13 +0800
-Message-Id: <20200212080415.31265-3-wgong@codeaurora.org>
-In-Reply-To: <20200212080415.31265-1-wgong@codeaurora.org>
-References: <20200212080415.31265-1-wgong@codeaurora.org>
+Subject: [PATCH v9 0/4] ath10k: improve throughout of TX of sdio
+Date: Wed, 12 Feb 2020 16:04:11 +0800
+Message-Id: <20200212080415.31265-1-wgong@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,41 +23,53 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-sdio bus bandwidth is low, sometimes for high performance TX test,
-it will lack of ath10k_sdio_bus_request, it will print message:
-ath10k_sdio mmc1:0001:1: unable to allocate bus request for async request
+v9: change ath10k_htt_htc_tx_complete to fix the use-after-free panic
 
-change the num from 64 to 1024 will not happen it.
+v8: split out patch "change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024"
+from "disable TX complete indication of htt for sdio". merge patch
+"ath10k: clean bundle tx queue of htt tx stop for sdio" into
+"add htt TX bundle for sdio"
 
-Tested with QCA6174 SDIO with firmware
-WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+v7: change a few code style to meet ath10k-check script
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/sdio.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v6: remove module parameters disable_tx_comp and alt_data
+this is 3 patches of the 7 patches from ath10k: improve throughout of tcp/udp TX/RX of sdio
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index 33195f49acab..1c987494ad22 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -37,7 +37,7 @@
- 	(ATH10K_SDIO_MAX_BUFFER_SIZE - sizeof(struct ath10k_htc_hdr))
- 
- #define ATH10K_HIF_MBOX_NUM_MAX                 4
--#define ATH10K_SDIO_BUS_REQUEST_MAX_NUM         64
-+#define ATH10K_SDIO_BUS_REQUEST_MAX_NUM         1024
- 
- #define ATH10K_SDIO_HIF_COMMUNICATION_TIMEOUT_HZ (100 * HZ)
- 
-@@ -98,6 +98,7 @@
- #define ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_OFF 0xFFFEFFFF
- #define ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_ON 0x10000
- 
-+/* TODO: remove this and use skb->cb instead, much cleaner approach */
- struct ath10k_sdio_bus_request {
- 	struct list_head list;
- 
+v5: change ath10k_htc_setup_tx_req to add check bundle_tx
+to forbidden init 2 times
+
+v4: add macro ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK
+
+v3: change some code style
+
+v2: change some code style
+
+The bottleneck of throughout on sdio chip is the bus bandwidth, to the
+patches are all to increase the use ratio of sdio bus.
+
+These patches only affect sdio bus chip, explanation is mentioned in each
+patch's commit log.
+
+Wen Gong (4):
+  ath10k: disable TX complete indication of htt for sdio
+  ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024
+  ath10k: add htt TX bundle for sdio
+  ath10k: enable alt data of TX path for sdio
+
+ drivers/net/wireless/ath/ath10k/core.c   |  27 +-
+ drivers/net/wireless/ath/ath10k/core.h   |   4 +-
+ drivers/net/wireless/ath/ath10k/hif.h    |   9 +
+ drivers/net/wireless/ath/ath10k/htc.c    | 394 +++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/htc.h    |  40 ++-
+ drivers/net/wireless/ath/ath10k/htt.c    |  13 +
+ drivers/net/wireless/ath/ath10k/htt.h    |  17 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  35 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  43 ++-
+ drivers/net/wireless/ath/ath10k/hw.h     |   2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c   |  23 ++
+ drivers/net/wireless/ath/ath10k/sdio.h   |   3 +-
+ 12 files changed, 557 insertions(+), 53 deletions(-)
+
 -- 
 2.23.0
 
