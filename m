@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2CmK-00034d-Da
- for ath10k@lists.infradead.org; Thu, 13 Feb 2020 11:35:34 +0000
+ id 1j2FFf-0002Em-MP
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2020 14:14:01 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: add retry mechanism for ath10k_start
-References: <20200120025609.6060-1-wgong@codeaurora.org>
-Date: Thu, 13 Feb 2020 13:35:27 +0200
-In-Reply-To: <20200120025609.6060-1-wgong@codeaurora.org> (Wen Gong's message
- of "Mon, 20 Jan 2020 10:56:09 +0800")
-Message-ID: <87mu9mwwhs.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: avoid consecutive OTP download to reduce boot time
+References: <1578378195-25780-1-git-send-email-mkenna@codeaurora.org>
+ <f1b4007f9d7e882c4ed2db67dc64cc96@codeaurora.org>
+Date: Thu, 13 Feb 2020 16:13:51 +0200
+In-Reply-To: <f1b4007f9d7e882c4ed2db67dc64cc96@codeaurora.org> (Maharaja
+ Kennadyrajan's message of "Tue, 07 Jan 2020 12:30:19 +0530")
+Message-ID: <87pnei7exs.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,53 +24,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: Vikas Patel <vikpatel@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> writes:
+Maharaja Kennadyrajan <mkenna@codeaurora.org> writes:
 
-> When simulate random transfer fail for sdio write and read, it happened
-> "Could not init core: -110" and then wlan up fail.
+> On 2020-01-07 11:53, Maharaja Kennadyrajan wrote:
 >
-> Test steps:
-> 1. Add config and update kernel:
-> CONFIG_FAIL_MMC_REQUEST=y
-> CONFIG_FAULT_INJECTION=y
-> CONFIG_FAULT_INJECTION_DEBUG_FS=y
->
-> 2. Run simulate fail:
-> cd /sys/kernel/debug/mmc1/fail_mmc_request
-> echo 100 > probability
-> echo 1000 > interval
-> echo 1 > times && enter system suspend
-> press power button to wakeup system
->
-> 3. It happened Could not init core: -110.
-> [   66.432068] ath10k_sdio mmc1:0001:1: unable to send the bmi data to the device: -110
-> [   66.440012] ath10k_sdio mmc1:0001:1: unable to write to the device
-> [   66.453375] ath10k_sdio mmc1:0001:1: Could not init core: -110
+> [Maha]: Please ignore/drop this duplicate patch as I sent it already.
+> Regret for inconvenience caused.
 
-[...]
-
-> Add retry mechanism for ath10k_start to make sure wlan up success.
-
-I'm not convinved about this. ath10k assumes that SDIO bus works
-reliably and there's no data loss. In my opinion if the SDIO is not
-working reliably we should fail immediately with a clear error message
-for the user, instead of having an unstable connection. And I understand
-from the logs that ath10k fails cleanly in this simulated failure.
-
-So what you do here is ignore the assumption that the SDIO bus should
-always work reliably and add a workaround by trying to restart the
-firmware multiple times, and hope that by luck it works during one of 10
-retry attempts. But then what? Isn't the WLAN connection flaky as SDIO
-bus is not reliable? So if we were to follow that design logic,
-shouldn't we add retries for _all_ ath10k SDIO transactions? But that
-would make ath10k even more complex as it is.
-
-Because I think this patch makes things worse for the user, so I would
-like to understand the real life use case this patch is trying to fix
-and how it would help the user.
+Are you sure I should drop this? In the first patch I think you forgot
+to CC linux-wireless and that's why I didn't see it. But this second
+patch was CCed to linux-wireless and I see it on patchwork. So my plan
+is to put this back to my queue, please let me know if I have
+misunderstood.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
