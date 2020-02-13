@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2FNG-0005OS-RH
- for ath10k@lists.infradead.org; Thu, 13 Feb 2020 14:21:52 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix unsupported chip reset debugs file write
+ id 1j2HCf-00065J-UQ
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2020 16:19:03 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1580887644-21061-1-git-send-email-yintang@codeaurora.org>
-References: <1580887644-21061-1-git-send-email-yintang@codeaurora.org>
-Message-Id: <20200213142146.1FC37C4479C@smtp.codeaurora.org>
-Date: Thu, 13 Feb 2020 14:21:46 +0000 (UTC)
+Subject: Re: [RESEND] ath10k: add tx hw 802.11 encapusaltion offloading support
+References: <20191216092207.31032-1-john@phrozen.org>
+ <20191217153000.76AB1C4479C@smtp.codeaurora.org>
+ <CAKR_QVJVfqid8i5PXj3Yg8VJjht=MF2fZg+twkLgEkKuMB2bbQ@mail.gmail.com>
+Date: Thu, 13 Feb 2020 18:18:56 +0200
+In-Reply-To: <CAKR_QVJVfqid8i5PXj3Yg8VJjht=MF2fZg+twkLgEkKuMB2bbQ@mail.gmail.com>
+ (Tom Psyborg's message of "Wed, 18 Dec 2019 21:14:34 +0100")
+Message-ID: <87mu9mv4sv.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +25,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yingying Tang <yintang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Tom Psyborg <pozega.tomislav@gmail.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>
 
-Yingying Tang <yintang@codeaurora.org> wrote:
+Tom Psyborg <pozega.tomislav@gmail.com> writes:
 
-> Before this change, after writing "warm_hw_reset" debugfs file, host
-> will send chip reset command to FW even though FW do not support this
-> service getting a warning print.
-> 
-> Though there is no FW impact before this change, this patch restricts
-> chip reset command sent to FW only if FW advertises the support via WMI
-> service bit.
-> 
-> Removed the redundant check and ath10k_warn() print as well.
-> 
-> New version FW will report chip reset service bit to host. Host allow user
-> to trigger WLAN chip reset only when fw report this service bit.
-> 
-> For older NON-TLV FW, since it do not report chip reset service bit, host
-> will not send chip reset command. For older TLV FW, since it report chip
-> reset service bit, host will send chip reset command.
-> 
-> Tested HW:  QCA9984, WCN3990
-> 
-> QCA9984 FW version: WLAN.BL.3.9.0.2-00042-S-1
-> 
-> Signed-off-by: Yingying Tang <yintang@codeaurora.org>
+> On 17/12/2019, Kalle Valo <kvalo@codeaurora.org> wrote:
+>> John Crispin <john@phrozen.org> wrote:
+>>
+>>> This patch adds support for ethernet rxtx mode to the driver. The feature
+>>> is enabled via a new module parameter. If enabled to driver will enable
+>>> the feature on a per vif basis if all other requirements were met.
+>>>
+>>> Testing on a IPQ4019 based hardware shows a increase in TCP throughput
+>>> of ~20% when the feature is enabled.
+>>>
+>>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+>>> Signed-off-by: John Crispin <john@phrozen.org>
+>>
+>> Depends on:
+>>
+>> 50ff477a8639 mac80211: add 802.11 encapsulation offloading support
+>>
+>> Currently in mac80211-next.
+>>
+>> Patch set to Awaiting Upstream.
+>>
+>> --
+>> https://patchwork.kernel.org/patch/11293627/
+>>
+>> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>>
+>
+> the changeset is missing support for 64bit targets in htt_tx.c
 
-Fails to apply:
-
-error: patch failed: drivers/net/wireless/ath/ath10k/wmi.h:367
-error: drivers/net/wireless/ath/ath10k/wmi.h: patch does not apply
-stg import: Diff does not apply cleanly
-
-Patch set to Changes Requested.
+A very good point. Doesn't this break with WCN3990 then?
 
 -- 
-https://patchwork.kernel.org/patch/11365857/
-
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
