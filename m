@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2dDA-0001DG-Mp
- for ath10k@lists.infradead.org; Fri, 14 Feb 2020 15:49:02 +0000
+ id 1j2dFJ-0004GM-S3
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2020 15:51:15 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.5 004/542] ath10k: Fix qmi init error handling
-Date: Fri, 14 Feb 2020 10:39:56 -0500
-Message-Id: <20200214154854.6746-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 107/542] ath10k: Correct the DMA direction for
+ management tx buffers
+Date: Fri, 14 Feb 2020 10:41:39 -0500
+Message-Id: <20200214154854.6746-107-sashal@kernel.org>
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -23,49 +24,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-[ Upstream commit f8a595a87e93a33a10879f4b856be818d2f53c84 ]
+[ Upstream commit 6ba8b3b6bd772f575f7736c8fd893c6981fcce16 ]
 
-When ath10k_qmi_init() fails, the error handling does not free the irq
-resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
-(re-)register irqs which are already registered.
+The management packets, send to firmware via WMI, are
+mapped using the direction DMA_TO_DEVICE. Currently in
+case of wmi cleanup, these buffers are being unmapped
+using an incorrect DMA direction. This can cause unwanted
+behavior when the host driver is handling a restart
+of the wlan firmware.
 
-Fix this by doing a power off since we just powered on the hardware, and
-freeing the irqs as error handling.
+We might see a trace like below
 
-Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+[<ffffff8008098b18>] __dma_inv_area+0x28/0x58
+[<ffffff8001176734>] ath10k_wmi_mgmt_tx_clean_up_pending+0x60/0xb0 [ath10k_core]
+[<ffffff80088c7c50>] idr_for_each+0x78/0xe4
+[<ffffff80011766a4>] ath10k_wmi_detach+0x4c/0x7c [ath10k_core]
+[<ffffff8001163d7c>] ath10k_core_stop+0x58/0x68 [ath10k_core]
+[<ffffff800114fb74>] ath10k_halt+0xec/0x13c [ath10k_core]
+[<ffffff8001165110>] ath10k_core_restart+0x11c/0x1a8 [ath10k_core]
+[<ffffff80080c36bc>] process_one_work+0x16c/0x31c
+
+Fix the incorrect DMA direction during the wmi
+management tx buffer cleanup.
+
+Tested HW: WCN3990
+Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+
+Fixes: dc405152bb6 ("ath10k: handle mgmt tx completion event")
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 16177497bba76..7e85c4916e7f5 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1563,13 +1563,16 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 	ret = ath10k_qmi_init(ar, msa_size);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
--		goto err_core_destroy;
-+		goto err_power_off;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 9f564e2b7a148..214d65108b294 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -9476,7 +9476,7 @@ static int ath10k_wmi_mgmt_tx_clean_up_pending(int msdu_id, void *ptr,
  
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+ 	msdu = pkt_addr->vaddr;
+ 	dma_unmap_single(ar->dev, pkt_addr->paddr,
+-			 msdu->len, DMA_FROM_DEVICE);
++			 msdu->len, DMA_TO_DEVICE);
+ 	ieee80211_free_txskb(ar->hw, msdu);
  
  	return 0;
- 
-+err_power_off:
-+	ath10k_hw_power_off(ar);
-+
- err_free_irq:
- 	ath10k_snoc_free_irq(ar);
- 
 -- 
 2.20.1
 
