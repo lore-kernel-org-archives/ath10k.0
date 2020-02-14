@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2Wgw-0001vw-97
- for ath10k@lists.infradead.org; Fri, 14 Feb 2020 08:51:20 +0000
-From: Yingying Tang <yintang@codeaurora.org>
-Subject: [PATCH v2] ath10k: fix unsupported chip reset debugs file write
-Date: Fri, 14 Feb 2020 16:51:18 +0800
-Message-Id: <1581670278-5682-1-git-send-email-yintang@codeaurora.org>
+ id 1j2dDA-0001DG-Mp
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2020 15:49:02 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 004/542] ath10k: Fix qmi init error handling
+Date: Fri, 14 Feb 2020 10:39:56 -0500
+Message-Id: <20200214154854.6746-4-sashal@kernel.org>
+In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
+References: <20200214154854.6746-1-sashal@kernel.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,95 +18,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Before this change, after writing "warm_hw_reset" debugfs file, host
-will send chip reset command to FW even though FW do not support this
-service getting a warning print.
+From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 
-Though there is no FW impact before this change, this patch restricts
-chip reset command sent to FW only if FW advertises the support via WMI
-service bit.
+[ Upstream commit f8a595a87e93a33a10879f4b856be818d2f53c84 ]
 
-Removed the redundant check and ath10k_warn() print as well.
+When ath10k_qmi_init() fails, the error handling does not free the irq
+resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
+(re-)register irqs which are already registered.
 
-New version FW will report chip reset service bit to host. Host allow user
-to trigger WLAN chip reset only when fw report this service bit.
+Fix this by doing a power off since we just powered on the hardware, and
+freeing the irqs as error handling.
 
-For older NON-TLV FW, since it do not report chip reset service bit, host
-will not send chip reset command. For older TLV FW, since it report chip
-reset service bit, host will send chip reset command.
-
-Tested HW:  QCA9984, WCN3990
-
-QCA9984 FW version: WLAN.BL.3.9.0.2-00042-S-1
-
-Signed-off-by: Yingying Tang <yintang@codeaurora.org>
+Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 9 ++++-----
- drivers/net/wireless/ath/ath10k/wmi.h   | 7 +++++++
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 3894b77..f811e69 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2373,9 +2373,6 @@ static ssize_t ath10k_write_warm_hw_reset(struct file *file,
- 		goto exit;
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 16177497bba76..7e85c4916e7f5 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1563,13 +1563,16 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 	ret = ath10k_qmi_init(ar, msa_size);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
+-		goto err_core_destroy;
++		goto err_power_off;
  	}
  
--	if (!(test_bit(WMI_SERVICE_RESET_CHIP, ar->wmi.svc_map)))
--		ath10k_warn(ar, "wmi service for reset chip is not available\n");
--
- 	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pdev_reset,
- 					WMI_RST_MODE_WARM_RESET);
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
  
-@@ -2650,8 +2647,10 @@ int ath10k_debug_register(struct ath10k *ar)
- 				    ar->debug.debugfs_phy, ar,
- 				    &fops_tpc_stats_final);
+ 	return 0;
  
--	debugfs_create_file("warm_hw_reset", 0600, ar->debug.debugfs_phy, ar,
--			    &fops_warm_hw_reset);
-+	if (test_bit(WMI_SERVICE_RESET_CHIP, ar->wmi.svc_map))
-+		debugfs_create_file("warm_hw_reset", 0600,
-+				    ar->debug.debugfs_phy, ar,
-+				    &fops_warm_hw_reset);
++err_power_off:
++	ath10k_hw_power_off(ar);
++
+ err_free_irq:
+ 	ath10k_snoc_free_irq(ar);
  
- 	debugfs_create_file("ps_state_enable", 0600, ar->debug.debugfs_phy, ar,
- 			    &fops_ps_state_enable);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 972d53d..6df4157 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -371,6 +371,11 @@ enum wmi_10_4_service {
- 	WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT,
- 	WMI_10_4_SERVICE_REPORT_AIRTIME,
- 	WMI_10_4_SERVICE_TX_PWR_PER_PEER,
-+	WMI_10_4_SERVICE_FETCH_PEER_TX_PN,
-+	WMI_10_4_SERVICE_MULTIPLE_VDEV_RESTART,
-+	WMI_10_4_SERVICE_ENHANCED_RADIO_COUNTERS,
-+	WMI_10_4_SERVICE_QINQ_SUPPORT,
-+	WMI_10_4_SERVICE_RESET_CHIP,
- };
- 
- static inline char *wmi_service_name(enum wmi_service service_id)
-@@ -827,6 +832,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_REPORT_AIRTIME, len);
- 	SVCMAP(WMI_10_4_SERVICE_TX_PWR_PER_PEER,
- 	       WMI_SERVICE_TX_PWR_PER_PEER, len);
-+	SVCMAP(WMI_10_4_SERVICE_RESET_CHIP,
-+	       WMI_SERVICE_RESET_CHIP, len);
- }
- 
- #undef SVCMAP
 -- 
-1.9.1
+2.20.1
+
 
 _______________________________________________
 ath10k mailing list
