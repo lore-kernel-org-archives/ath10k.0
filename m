@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2dXt-0002gY-3o
- for ath10k@lists.infradead.org; Fri, 14 Feb 2020 16:10:26 +0000
+ id 1j2daB-0004rK-89
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2020 16:12:48 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 405/459] ath10k: pci: Only dump
- ATH10K_MEM_REGION_TYPE_IOREG when safe
-Date: Fri, 14 Feb 2020 11:00:55 -0500
-Message-Id: <20200214160149.11681-405-sashal@kernel.org>
-In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
-References: <20200214160149.11681-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 046/252] ath10k: Correct the DMA direction for
+ management tx buffers
+Date: Fri, 14 Feb 2020 11:08:21 -0500
+Message-Id: <20200214161147.15842-46-sashal@kernel.org>
+In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
+References: <20200214161147.15842-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,73 +24,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-[ Upstream commit d239380196c4e27a26fa4bea73d2bf994c14ec2d ]
+[ Upstream commit 6ba8b3b6bd772f575f7736c8fd893c6981fcce16 ]
 
-ath10k_pci_dump_memory_reg() will try to access memory of type
-ATH10K_MEM_REGION_TYPE_IOREG however, if a hardware restart is in progress
-this can crash a system.
+The management packets, send to firmware via WMI, are
+mapped using the direction DMA_TO_DEVICE. Currently in
+case of wmi cleanup, these buffers are being unmapped
+using an incorrect DMA direction. This can cause unwanted
+behavior when the host driver is handling a restart
+of the wlan firmware.
 
-Individual ioread32() time has been observed to jump from 15-20 ticks to >
-80k ticks followed by a secure-watchdog bite and a system reset.
+We might see a trace like below
 
-Work around this corner case by only issuing the read transaction when the
-driver state is ATH10K_STATE_ON.
+[<ffffff8008098b18>] __dma_inv_area+0x28/0x58
+[<ffffff8001176734>] ath10k_wmi_mgmt_tx_clean_up_pending+0x60/0xb0 [ath10k_core]
+[<ffffff80088c7c50>] idr_for_each+0x78/0xe4
+[<ffffff80011766a4>] ath10k_wmi_detach+0x4c/0x7c [ath10k_core]
+[<ffffff8001163d7c>] ath10k_core_stop+0x58/0x68 [ath10k_core]
+[<ffffff800114fb74>] ath10k_halt+0xec/0x13c [ath10k_core]
+[<ffffff8001165110>] ath10k_core_restart+0x11c/0x1a8 [ath10k_core]
+[<ffffff80080c36bc>] process_one_work+0x16c/0x31c
 
-Tested-on: QCA9988 PCI 10.4-3.9.0.2-00044
+Fix the incorrect DMA direction during the wmi
+management tx buffer cleanup.
 
-Fixes: 219cc084c6706 ("ath10k: add memory dump support QCA9984")
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Tested HW: WCN3990
+Tested FW: WLAN.HL.3.1-00784-QCAHLSWMTPLZ-1
+
+Fixes: dc405152bb6 ("ath10k: handle mgmt tx completion event")
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 347bb92e4130d..0a727502d14c5 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1604,11 +1604,22 @@ static int ath10k_pci_dump_memory_reg(struct ath10k *ar,
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	u32 i;
-+	int ret;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	if (ar->state != ATH10K_STATE_ON) {
-+		ath10k_warn(ar, "Skipping pci_dump_memory_reg invalid state\n");
-+		ret = -EIO;
-+		goto done;
-+	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0f6ff7a78e49d..3372dfa0deccf 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -9193,7 +9193,7 @@ static int ath10k_wmi_mgmt_tx_clean_up_pending(int msdu_id, void *ptr,
  
- 	for (i = 0; i < region->len; i += 4)
- 		*(u32 *)(buf + i) = ioread32(ar_pci->mem + region->start + i);
+ 	msdu = pkt_addr->vaddr;
+ 	dma_unmap_single(ar->dev, pkt_addr->paddr,
+-			 msdu->len, DMA_FROM_DEVICE);
++			 msdu->len, DMA_TO_DEVICE);
+ 	ieee80211_free_txskb(ar->hw, msdu);
  
--	return region->len;
-+	ret = region->len;
-+done:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
- }
- 
- /* if an error happened returns < 0, otherwise the length */
-@@ -1704,7 +1715,11 @@ static void ath10k_pci_dump_memory(struct ath10k *ar,
- 			count = ath10k_pci_dump_memory_sram(ar, current_region, buf);
- 			break;
- 		case ATH10K_MEM_REGION_TYPE_IOREG:
--			count = ath10k_pci_dump_memory_reg(ar, current_region, buf);
-+			ret = ath10k_pci_dump_memory_reg(ar, current_region, buf);
-+			if (ret < 0)
-+				break;
-+
-+			count = ret;
- 			break;
- 		default:
- 			ret = ath10k_pci_dump_memory_generic(ar, current_region, buf);
+ 	return 0;
 -- 
 2.20.1
 
