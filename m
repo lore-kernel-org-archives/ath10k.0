@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2dMn-00041C-QC
- for ath10k@lists.infradead.org; Fri, 14 Feb 2020 15:59:00 +0000
+ id 1j2dPe-0008UN-KE
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2020 16:01:55 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.5 471/542] ath10k: pci: Only dump
- ATH10K_MEM_REGION_TYPE_IOREG when safe
-Date: Fri, 14 Feb 2020 10:47:43 -0500
-Message-Id: <20200214154854.6746-471-sashal@kernel.org>
-In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
-References: <20200214154854.6746-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 003/459] ath10k: Fix qmi init error handling
+Date: Fri, 14 Feb 2020 10:54:13 -0500
+Message-Id: <20200214160149.11681-3-sashal@kernel.org>
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,73 +23,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 
-[ Upstream commit d239380196c4e27a26fa4bea73d2bf994c14ec2d ]
+[ Upstream commit f8a595a87e93a33a10879f4b856be818d2f53c84 ]
 
-ath10k_pci_dump_memory_reg() will try to access memory of type
-ATH10K_MEM_REGION_TYPE_IOREG however, if a hardware restart is in progress
-this can crash a system.
+When ath10k_qmi_init() fails, the error handling does not free the irq
+resources, which causes an issue if we EPROBE_DEFER as we'll attempt to
+(re-)register irqs which are already registered.
 
-Individual ioread32() time has been observed to jump from 15-20 ticks to >
-80k ticks followed by a secure-watchdog bite and a system reset.
+Fix this by doing a power off since we just powered on the hardware, and
+freeing the irqs as error handling.
 
-Work around this corner case by only issuing the read transaction when the
-driver state is ATH10K_STATE_ON.
-
-Tested-on: QCA9988 PCI 10.4-3.9.0.2-00044
-
-Fixes: 219cc084c6706 ("ath10k: add memory dump support QCA9984")
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index bb44f5a0941b9..4822a65f6f3c2 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1604,11 +1604,22 @@ static int ath10k_pci_dump_memory_reg(struct ath10k *ar,
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	u32 i;
-+	int ret;
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index fc15a0037f0e6..63607c3b8e818 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1729,13 +1729,16 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 	ret = ath10k_qmi_init(ar, msa_size);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
+-		goto err_core_destroy;
++		goto err_power_off;
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+ 
+ 	return 0;
+ 
++err_power_off:
++	ath10k_hw_power_off(ar);
 +
-+	mutex_lock(&ar->conf_mutex);
-+	if (ar->state != ATH10K_STATE_ON) {
-+		ath10k_warn(ar, "Skipping pci_dump_memory_reg invalid state\n");
-+		ret = -EIO;
-+		goto done;
-+	}
+ err_free_irq:
+ 	ath10k_snoc_free_irq(ar);
  
- 	for (i = 0; i < region->len; i += 4)
- 		*(u32 *)(buf + i) = ioread32(ar_pci->mem + region->start + i);
- 
--	return region->len;
-+	ret = region->len;
-+done:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
- }
- 
- /* if an error happened returns < 0, otherwise the length */
-@@ -1704,7 +1715,11 @@ static void ath10k_pci_dump_memory(struct ath10k *ar,
- 			count = ath10k_pci_dump_memory_sram(ar, current_region, buf);
- 			break;
- 		case ATH10K_MEM_REGION_TYPE_IOREG:
--			count = ath10k_pci_dump_memory_reg(ar, current_region, buf);
-+			ret = ath10k_pci_dump_memory_reg(ar, current_region, buf);
-+			if (ret < 0)
-+				break;
-+
-+			count = ret;
- 			break;
- 		default:
- 			ret = ath10k_pci_dump_memory_generic(ar, current_region, buf);
 -- 
 2.20.1
 
