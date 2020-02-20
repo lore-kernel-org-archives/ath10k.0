@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mars.blocktrron.ovh ([51.254.112.43] helo=mail.blocktrron.ovh)
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat
- Linux)) id 1j4XTS-0000wi-6t
- for ath10k@lists.infradead.org; Wed, 19 Feb 2020 22:05:44 +0000
-Subject: Re: Management rate-control on IPQ4019
-References: <20543d04-7847-8a4f-7882-78c2f42c98c0@david-bauer.net>
- <5E4C41F3.2000500@candelatech.com>
- <40026add-c28a-da90-f17a-feeb8379c544@david-bauer.net>
- <5E4D0DFA.3080409@candelatech.com>
-From: David Bauer <mail@david-bauer.net>
-Message-ID: <f449c08f-f59f-3543-3580-3ab132e55984@david-bauer.net>
-Date: Wed, 19 Feb 2020 23:05:35 +0100
-MIME-Version: 1.0
-In-Reply-To: <5E4D0DFA.3080409@candelatech.com>
-Content-Language: en-US
+Received: from mail26.static.mailgun.info ([104.130.122.26])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j4d1X-0008DH-7d
+ for ath10k@lists.infradead.org; Thu, 20 Feb 2020 04:01:17 +0000
+From: Yibo Zhao <yiboz@codeaurora.org>
+Subject: [PATCH] ath10k: fix not registering airtime of 11a station with WMM
+ disable
+Date: Thu, 20 Feb 2020 12:03:25 +0800
+Message-Id: <1582171405-27236-1-git-send-email-yiboz@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +16,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Yibo Zhao <yiboz@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Hello Ben
+The tid of 11a station with WMM disable reported by FW is 0x10 in
+tx completion. The tid 16 is mapped to a NULL txq since buffer
+MMPDU capbility is not supported. Then 11a station's airtime will
+not be registered due to NULL txq check. As a results, airtime of
+11a station keeps unchanged in debugfs system.
 
-On 2/19/20 11:29 AM, Ben Greear wrote:
-> Ok, maybe so.=A0 I compile all of the wave-2 targets from the same firmwa=
-re source,
-> but maybe upstream 4019 firmware lags others for one reason or another.
+Mask the tid along with IEEE80211_QOS_CTL_TID_MASK to make it in
+the valid range.
 
-I've just came around to test ath10k-ct with ct firmware (OpenWrt snapshot =
-from today).
-Beacon Frames are sent out at 6Mbit/s when legacy_rates is set to 0 for the=
- radio.
+Hardwares tested : QCA9984
+Firmwares tested : 10.4-3.10-00047
 
-Replacing your firmware with the one from Qualcomm (ath10k-ct + non-ct firm=
-ware) shows the
-old picture. Management Frames are sent out at 1Mbit/s rate with this combi=
-nation.
+Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-So this definitely seems to be a firmware bug. Hopefully QCA will address t=
-his in an upcoming
-release for users of their firmware.
-
-Best wishes
-David
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 38a5814..f883f2a 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2744,7 +2744,8 @@ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
+ 			continue;
+ 		}
+ 
+-		tid = FIELD_GET(HTT_TX_PPDU_DUR_INFO0_TID_MASK, info0);
++		tid = FIELD_GET(HTT_TX_PPDU_DUR_INFO0_TID_MASK, info0) &
++						IEEE80211_QOS_CTL_TID_MASK;
+ 		tx_duration = __le32_to_cpu(ppdu_dur->tx_duration);
+ 
+ 		ieee80211_sta_register_airtime(peer->sta, tid, tx_duration, 0);
+-- 
+1.9.1
 
 _______________________________________________
 ath10k mailing list
