@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j742a-0002uJ-2i
- for ath10k@lists.infradead.org; Wed, 26 Feb 2020 21:16:25 +0000
-Received: by mail-wm1-x344.google.com with SMTP id p17so914773wma.1
- for <ath10k@lists.infradead.org>; Wed, 26 Feb 2020 13:16:23 -0800 (PST)
-MIME-Version: 1.0
-References: <CAG2Q2vUH95JyMqOELtU4=uU3nO5jr2+806KiO+T1-tNdBZ=DYw@mail.gmail.com>
- <CAG2Q2vU3spU6VOdGAF5beWmgG1eaWuVm3pc+gzcnhaTUHvX+yw@mail.gmail.com>
- <CAMrEMU8DtaKMFqZexurzWZD8iB4YX3CmF7vq2XsaDoD=OC-eoA@mail.gmail.com>
-In-Reply-To: <CAMrEMU8DtaKMFqZexurzWZD8iB4YX3CmF7vq2XsaDoD=OC-eoA@mail.gmail.com>
-From: Cale Collins <ccollins@gateworks.com>
-Date: Wed, 26 Feb 2020 13:15:45 -0800
-Message-ID: <CAG2Q2vWzOEEoJHJsBH_Pxg=Gab4ehmW9cuH4zYCadxnS=BUCgA@mail.gmail.com>
-Subject: Re: ath10k_pci rawmode = 1 requires support from firmware
+ id 1j8jVz-0000hf-Av
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2020 11:45:41 +0000
+Received: by mail-lf1-x144.google.com with SMTP id p5so1402000lfc.7
+ for <ath10k@lists.infradead.org>; Mon, 02 Mar 2020 03:45:35 -0800 (PST)
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH RFT] ath10k: add QCA9377 sdio hw_param item
+From: Christian Hewitt <christianshewitt@gmail.com>
+In-Reply-To: <1569507867-19547-1-git-send-email-kvalo@codeaurora.org>
+Date: Mon, 2 Mar 2020 15:45:30 +0400
+Message-Id: <7BB79E29-0ACF-45FB-B802-E4B2F5CA0DFE@gmail.com>
+References: <1569507867-19547-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,122 +24,113 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Justin Capella <justincapella@gmail.com>, Rick Winscot <Rwinscot@kcftech.com>, Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
-
-Hello Justin and Kalle,
-
-Justin thank you very much for the reply, sorry it took me so long to
-get back to you but I wanted to do more testing based on your
-recommendations before I wrote.
-
-I tried numerous versions of the firmware-6.bin file from the
-linux-firmware git, and the repo you linked.  I have been hitting the
-same issue with nearly every version of firmware I try.  I included
-the output from WLAN.RM.4.4.1-00140-QCARMSWPZ-1, but the exact same
-applies to WLAN.RMH.4.4.1-00042.  Under normal circumstances I would
-try to bisect this, but I can't because I don't have a "good"
-(working) version of the firmware.
-
-I'm doing this on behalf of one of our clients Rick Winscot, I added
-him to this thread so he can offer his insight.
-
-Here's the output from my testing with WLAN.RM.4.4.1-00140-QCARMSWPZ-1:
-
-root@bionic-newport:~# ls /sys/class/net/
-can0  eth0  eth1  lo
-root@bionic-newport:~# dmesg |grep ath10k
-[    0.000000] Kernel command line: cma=64M coherent_pool=16M
-net.ifnames=0 ath10k_core.rawmode=1 root=/dev/mmcblk0p2 rw rootwait
-console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000
-[   12.356854] ath10k_pci 0001:58:00.0: pci irq msi oper_irq_mode 2
-irq_mode 0 reset_mode 0
-[   12.762070] ath10k_pci 0001:58:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0001:58:00.0.bin failed with error -2
-[   12.762132] ath10k_pci 0001:58:00.0: Direct firmware load for
-ath10k/cal-pci-0001:58:00.0.bin failed with error -2
-[   12.779272] ath10k_pci 0001:58:00.0: qca6174 hw3.2 target
-0x05030000 chip_id 0x00340aff sub 168c:3363
-[   12.779280] ath10k_pci 0001:58:00.0: kconfig debug 0 debugfs 1
-tracing 0 dfs 0 testmode 0
-[   12.780635] ath10k_pci 0001:58:00.0: firmware ver
-WLAN.RM.4.4.1-00140-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp
-crc32 29eb8ca1
-[   12.858884] ath10k_pci 0001:58:00.0: board_file api 2 bmi_id N/A
-crc32 4ac0889b
-[   12.858894] ath10k_pci 0001:58:00.0: rawmode = 1 requires support
-from firmware
-[   12.866282] ath10k_pci 0001:58:00.0: fatal problem with firmware
-features: -22
-[   12.873670] ath10k_pci 0001:58:00.0: could not probe fw (-22)
-
-root@bionic-newport:~# ls /sys/class/net/
-can0  eth0  eth1  lo  wlan0
-root@bionic-newport:~# dmesg |grep ath10k
-[   11.981606] ath10k_pci 0001:58:00.0: pci irq msi oper_irq_mode 2
-irq_mode 0 reset_mode 0
-[   12.310158] ath10k_pci 0001:58:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0001:58:00.0.bin failed with error -2
-[   12.310206] ath10k_pci 0001:58:00.0: Direct firmware load for
-ath10k/cal-pci-0001:58:00.0.bin failed with error -2
-[   12.349306] ath10k_pci 0001:58:00.0: qca6174 hw3.2 target
-0x05030000 chip_id 0x00340aff sub 168c:3363
-[   12.349314] ath10k_pci 0001:58:00.0: kconfig debug 0 debugfs 1
-tracing 0 dfs 0 testmode 0
-[   12.350682] ath10k_pci 0001:58:00.0: firmware ver
-WLAN.RM.4.4.1-00140-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp
-crc32 29eb8ca1
-[   12.432281] ath10k_pci 0001:58:00.0: board_file api 2 bmi_id N/A
-crc32 4ac0889b
-[   12.978328] ath10k_pci 0001:58:00.0: Unknown eventid: 3
-[   12.994313] ath10k_pci 0001:58:00.0: Unknown eventid: 118809
-[   12.997236] ath10k_pci 0001:58:00.0: Unknown eventid: 90118
-[   12.997886] ath10k_pci 0001:58:00.0: htt-ver 3.60 wmi-op 4 htt-op 3
-cal otp max-sta 32 raw 0 hwcrypto 1
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 
-root@bionic-newport:~# iw phy phy0 interface add mesh0 type mp
-root@bionic-newport:~# iw mesh0 info
-Interface mesh0
-    ifindex 6
-    wdev 0x2
-    addr 94:92:d2:00:04:04
-    type mesh point
-    wiphy 0
-    txpower 0.00 dBm
-root@bionic-newport:~# iw dev mesh0 set freq 5745 80 5775
-root@bionic-newport:~# ifconfig mesh0 192.168.1.10
-SIOCSIFFLAGS: Invalid argument
-root@bionic-newport:~# dmesg |grep ath10k
-[   11.981606] ath10k_pci 0001:58:00.0: pci irq msi oper_irq_mode 2
-irq_mode 0 reset_mode 0
-[   12.310158] ath10k_pci 0001:58:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0001:58:00.0.bin failed with error -2
-[   12.310206] ath10k_pci 0001:58:00.0: Direct firmware load for
-ath10k/cal-pci-0001:58:00.0.bin failed with error -2
-[   12.349306] ath10k_pci 0001:58:00.0: qca6174 hw3.2 target
-0x05030000 chip_id 0x00340aff sub 168c:3363
-[   12.349314] ath10k_pci 0001:58:00.0: kconfig debug 0 debugfs 1
-tracing 0 dfs 0 testmode 0
-[   12.350682] ath10k_pci 0001:58:00.0: firmware ver
-WLAN.RM.4.4.1-00140-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp
-crc32 29eb8ca1
-[   12.432281] ath10k_pci 0001:58:00.0: board_file api 2 bmi_id N/A
-crc32 4ac0889b
-[   12.978328] ath10k_pci 0001:58:00.0: Unknown eventid: 3
-[   12.994313] ath10k_pci 0001:58:00.0: Unknown eventid: 118809
-[   12.997236] ath10k_pci 0001:58:00.0: Unknown eventid: 90118
-[   12.997886] ath10k_pci 0001:58:00.0: htt-ver 3.60 wmi-op 4 htt-op 3
-cal otp max-sta 32 raw 0 hwcrypto 1
-[  256.819171] ath10k_pci 0001:58:00.0: Unknown eventid: 3
-[  256.834413] ath10k_pci 0001:58:00.0: Unknown eventid: 118809
-[  256.837352] ath10k_pci 0001:58:00.0: Unknown eventid: 90118
-[  256.884876] ath10k_pci 0001:58:00.0: must load driver with
-rawmode=1 to add mesh interfaces
+> On 26 Sep 2019, at 6:24 pm, Kalle Valo <kvalo@codeaurora.org> wrote:
+> 
+> From: Erik Stromdahl <erik.stromdahl@gmail.com>
+> 
+> Add hardware parameters for QCA9377 sdio devices, it's now properly supported.
+> 
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> ---
+> 
+> I don't have any working QCA9377 SDIO hardware so I would appreciate any
+> test reports. This should apply cleanly to ath.git master branch (at least to
+> tag ath-201909230832):
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/log/?h=master
+> 
+> drivers/net/wireless/ath/ath10k/core.c | 27 +++++++++++++++++++++++++++
+> drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+> 2 files changed, 30 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 36c62d66c19e..e5572d4b6ae9 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -539,6 +539,33 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+> 		.tx_stats_over_pktlog = false,
+> 	},
+> 	{
+> +		.id = QCA9377_HW_1_1_DEV_VERSION,
+> +		.dev_id = QCA9377_1_0_DEVICE_ID,
+> +		.bus = ATH10K_BUS_SDIO,
+> +		.name = "qca9377 hw1.1 sdio",
+> +		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
+> +		.uart_pin = 19,
+> +		.otp_exe_param = 0,
+> +		.channel_counters_freq_hz = 88000,
+> +		.max_probe_resp_desc_thres = 0,
+> +		.cal_data_len = 8124,
+> +		.fw = {
+> +			.dir = QCA9377_HW_1_0_FW_DIR,
+> +			.board = QCA9377_HW_1_0_BOARD_DATA_FILE,
+> +			.board_size = QCA9377_BOARD_DATA_SZ,
+> +			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+> +		},
+> +		.hw_ops = &qca6174_ops,
+> +		.hw_clk = qca6174_clk,
+> +		.target_cpu_freq = 176000000,
+> +		.decap_align_bytes = 4,
+> +		.n_cipher_suites = 8,
+> +		.num_peers = TARGET_QCA9377_HL_NUM_PEERS,
+> +		.ast_skid_limit = 0x10,
+> +		.num_wds_entries = 0x20,
+> +		.uart_pin_workaround = true,
+> +	},
+> +	{
+> 		.id = QCA4019_HW_1_0_DEV_VERSION,
+> 		.dev_id = 0,
+> 		.bus = ATH10K_BUS_AHB,
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 2ae57c1de7b5..ddb1d23ec6de 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -768,6 +768,9 @@ ath10k_is_rssi_enable(struct ath10k_hw_params *hw,
+> #define TARGET_HL_TLV_AST_SKID_LIMIT		16
+> #define TARGET_HL_TLV_NUM_WDS_ENTRIES		2
+> 
+> +/* Target specific defines for QCA9377 high latency firmware */
+> +#define TARGET_QCA9377_HL_NUM_PEERS		15
+> +
+> /* Diagnostic Window */
+> #define CE_DIAG_PIPE	7
+> 
 
-Mahalo,
+Tested and working fine using Linux 5.6-rc3 and SDIO firmware from [1].
 
-Cale Collins
+[    5.391369] ath10k_sdio mmc2:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id 0x00000000 sub 0000:0000
+[    5.391379] ath10k_sdio mmc2:0001:1: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+[    5.391632] ath10k_sdio mmc2:0001:1: firmware ver WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5 features ignore-otp crc32 7746e551
+[    5.624198] ath10k_sdio mmc2:0001:1: failed to fetch board data for bus=sdio,vendor=0271,device=0701,subsystem-vendor=0000,subsystem-device=0000 from ath10k/QCA9377/hw1.0/board-2.bin
+[    5.624473] ath10k_sdio mmc2:0001:1: board_file api 1 bmi_id N/A crc32 544289f7
+[    6.775882] ath10k_sdio mmc2:0001:1: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+[    6.854066] ath: EEPROM regdomain sanitized
+[    6.854073] ath: EEPROM regdomain: 0x64
+[    6.854075] ath: EEPROM indicates we should expect a direct regpair map
+[    6.854082] ath: Country alpha2 being used: 00
+[    6.854083] ath: Regpair used: 0x64
+[    8.444189] ath: EEPROM regdomain: 0x8114
+[    8.444194] ath: EEPROM indicates we should expect a country code
+[    8.444196] ath: doing EEPROM country->regdmn map search
+[    8.444198] ath: country maps to regdmn code: 0x37
+[    8.444201] ath: Country alpha2 being used: DE
+[    8.444203] ath: Regpair used: 0x37
+[    8.444206] ath: regdomain 0x8114 dynamically updated by country element
+
+The test device is an Amlogic S905D STB device from O2.cz that I have just submitted a working device-tree for [2].
+
+If you need a QCA9377 test device, I have a duplicate/spare of the box and would be happy to post it.
+
+Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+
+[1] https://github.com/chewitt/qca-firmware
+[2] https://patchwork.kernel.org/project/linux-amlogic/list/?series=249525
+
 
 _______________________________________________
 ath10k mailing list
