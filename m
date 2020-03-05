@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j9aGG-0000Lg-91
- for ath10k@lists.infradead.org; Wed, 04 Mar 2020 20:04:58 +0000
-Date: Wed, 4 Mar 2020 21:04:43 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-Subject: [ath6kl:pending 21/34]
- drivers/net/wireless/ath/ath11k/dp_rx.c:3078:5-11:
- WARNING: Unsigned expression compared with zero: buf_id < 0 (fwd)
-Message-ID: <alpine.DEB.2.21.2003042103370.3192@hadrien>
+ id 1j9jMd-0003AF-JP
+ for ath10k@lists.infradead.org; Thu, 05 Mar 2020 05:48:09 +0000
+Date: Thu, 05 Mar 2020 13:48:01 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD REGRESSION
+ 8098994ce0e3684547d874966af5d4c27c11f855
+Message-ID: <5e609291.gCVffljTWoubHhvM%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,165 +21,232 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Cc: kbuild-all@lists.01.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 8098994ce0e3684547d874966af5d4c27c11f855  ath9k: Handle txpower changes even when TPC is disabled
 
-Please check on the use of buf_id on line 3078.  Idr_alloc returns an int,
-not an unsigned value.
+Regressions in current branch:
 
-julia
+drivers/net/wireless/ath/ath11k/dp_rx.c:3078:5-11: WARNING: Unsigned expression compared with zero: buf_id < 0
 
----------- Forwarded message ----------
-Date: Wed, 4 Mar 2020 21:19:46 +0800
-From: kbuild test robot <lkp@intel.com>
-To: kbuild@lists.01.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [ath6kl:pending 21/34]
-    drivers/net/wireless/ath/ath11k/dp_rx.c:3078:5-11: WARNING: Unsigned
-    expression compared with zero: buf_id < 0
+Error ids grouped by kconfigs:
 
-CC: kbuild-all@lists.01.org
-CC: Kalle Valo <kvalo@codeaurora.org>
-CC: ath10k@lists.infradead.org
-TO: Manikanta Pubbisetty <mpubbise@codeaurora.org>
-CC: Kalle Valo <kvalo@codeaurora.org>
+recent_errors
+`-- x86_64-allyesconfig
+    `-- drivers-net-wireless-ath-ath11k-dp_rx.c:WARNING:Unsigned-expression-compared-with-zero:buf_id
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-head:   8098994ce0e3684547d874966af5d4c27c11f855
-commit: 481e5890884c05226b129e9cae2dca58b22c1a4f [21/34] ath11k: handle RX fragments
-:::::: branch date: 8 hours ago
-:::::: commit date: 3 weeks ago
+elapsed time: 1443m
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+configs tested: 205
+configs skipped: 0
 
->> drivers/net/wireless/ath/ath11k/dp_rx.c:3078:5-11: WARNING: Unsigned expression compared with zero: buf_id < 0
-
-# https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=481e5890884c05226b129e9cae2dca58b22c1a4f
-git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-git remote update ath6kl
-git checkout 481e5890884c05226b129e9cae2dca58b22c1a4f
-vim +3078 drivers/net/wireless/ath/ath11k/dp_rx.c
-
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3023
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3024  static int ath11k_dp_rx_h_defrag_reo_reinject(struct ath11k *ar, struct dp_rx_tid *rx_tid,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3025  					      struct sk_buff *defrag_skb)
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3026  {
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3027  	struct ath11k_base *ab = ar->ab;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3028  	struct ath11k_pdev_dp *dp = &ar->dp;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3029  	struct dp_rxdma_ring *rx_refill_ring = &dp->rx_refill_buf_ring;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3030  	struct hal_rx_desc *rx_desc = (struct hal_rx_desc *)defrag_skb->data;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3031  	struct hal_reo_entrance_ring *reo_ent_ring;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3032  	struct hal_reo_dest_ring *reo_dest_ring;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3033  	struct dp_link_desc_bank *link_desc_banks;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3034  	struct hal_rx_msdu_link *msdu_link;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3035  	struct hal_rx_msdu_details *msdu0;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3036  	struct hal_srng *srng;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3037  	dma_addr_t paddr;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3038  	u32 desc_bank, msdu_info, mpdu_info;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3039  	u32 dst_idx, buf_id, cookie;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3040  	u32 *msdu_len_offset;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3041  	int ret;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3042
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3043  	link_desc_banks = ab->dp.link_desc_banks;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3044  	reo_dest_ring = rx_tid->dst_ring_desc;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3045
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3046  	ath11k_hal_rx_reo_ent_paddr_get(ab, reo_dest_ring, &paddr, &desc_bank);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3047  	msdu_link = (struct hal_rx_msdu_link *)(link_desc_banks[desc_bank].vaddr +
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3048  			(paddr - link_desc_banks[desc_bank].paddr));
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3049  	msdu0 = &msdu_link->msdu_link[0];
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3050  	dst_idx = FIELD_GET(RX_MSDU_DESC_INFO0_REO_DEST_IND, msdu0->rx_msdu_info.info0);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3051  	memset(msdu0, 0, sizeof(*msdu0));
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3052
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3053  	msdu_info = FIELD_PREP(RX_MSDU_DESC_INFO0_FIRST_MSDU_IN_MPDU, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3054  		    FIELD_PREP(RX_MSDU_DESC_INFO0_LAST_MSDU_IN_MPDU, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3055  		    FIELD_PREP(RX_MSDU_DESC_INFO0_MSDU_CONTINUATION, 0) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3056  		    FIELD_PREP(RX_MSDU_DESC_INFO0_MSDU_LENGTH,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3057  			       defrag_skb->len - HAL_RX_DESC_SIZE) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3058  		    FIELD_PREP(RX_MSDU_DESC_INFO0_REO_DEST_IND, dst_idx) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3059  		    FIELD_PREP(RX_MSDU_DESC_INFO0_VALID_SA, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3060  		    FIELD_PREP(RX_MSDU_DESC_INFO0_VALID_DA, 1);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3061  	msdu0->rx_msdu_info.info0 = msdu_info;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3062
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3063  	/* change msdu len in hal rx desc */
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3064  	msdu_len_offset = (u32 *)&rx_desc->msdu_start;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3065  	*msdu_len_offset &= ~(RX_MSDU_START_INFO1_MSDU_LENGTH);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3066  	*msdu_len_offset |= defrag_skb->len - HAL_RX_DESC_SIZE;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3067
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3068  	paddr = dma_map_single(ab->dev, defrag_skb->data,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3069  			       defrag_skb->len + skb_tailroom(defrag_skb),
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3070  			       DMA_FROM_DEVICE);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3071  	if (dma_mapping_error(ab->dev, paddr))
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3072  		return -ENOMEM;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3073
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3074  	spin_lock_bh(&rx_refill_ring->idr_lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3075  	buf_id = idr_alloc(&rx_refill_ring->bufs_idr, defrag_skb, 0,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3076  			   rx_refill_ring->bufs_max * 3, GFP_ATOMIC);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3077  	spin_unlock_bh(&rx_refill_ring->idr_lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14 @3078  	if (buf_id < 0) {
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3079  		ret = -ENOMEM;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3080  		goto err_unmap_dma;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3081  	}
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3082
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3083  	ATH11K_SKB_RXCB(defrag_skb)->paddr = paddr;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3084  	cookie = FIELD_PREP(DP_RXDMA_BUF_COOKIE_PDEV_ID, dp->mac_id) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3085  		 FIELD_PREP(DP_RXDMA_BUF_COOKIE_BUF_ID, buf_id);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3086
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3087  	ath11k_hal_rx_buf_addr_info_set(msdu0, paddr, cookie, HAL_RX_BUF_RBM_SW3_BM);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3088
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3089  	/* Fill mpdu details into reo entrace ring */
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3090  	srng = &ab->hal.srng_list[ab->dp.reo_reinject_ring.ring_id];
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3091
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3092  	spin_lock_bh(&srng->lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3093  	ath11k_hal_srng_access_begin(ab, srng);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3094
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3095  	reo_ent_ring = (struct hal_reo_entrance_ring *)
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3096  			ath11k_hal_srng_src_get_next_entry(ab, srng);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3097  	if (!reo_ent_ring) {
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3098  		ath11k_hal_srng_access_end(ab, srng);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3099  		spin_unlock_bh(&srng->lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3100  		ret = -ENOSPC;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3101  		goto err_free_idr;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3102  	}
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3103  	memset(reo_ent_ring, 0, sizeof(*reo_ent_ring));
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3104
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3105  	ath11k_hal_rx_reo_ent_paddr_get(ab, reo_dest_ring, &paddr, &desc_bank);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3106  	ath11k_hal_rx_buf_addr_info_set(reo_ent_ring, paddr, desc_bank,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3107  					HAL_RX_BUF_RBM_WBM_IDLE_DESC_LIST);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3108
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3109  	mpdu_info = FIELD_PREP(RX_MPDU_DESC_INFO0_MSDU_COUNT, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3110  		    FIELD_PREP(RX_MPDU_DESC_INFO0_SEQ_NUM, rx_tid->cur_sn) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3111  		    FIELD_PREP(RX_MPDU_DESC_INFO0_FRAG_FLAG, 0) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3112  		    FIELD_PREP(RX_MPDU_DESC_INFO0_VALID_SA, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3113  		    FIELD_PREP(RX_MPDU_DESC_INFO0_VALID_DA, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3114  		    FIELD_PREP(RX_MPDU_DESC_INFO0_RAW_MPDU, 1) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3115  		    FIELD_PREP(RX_MPDU_DESC_INFO0_VALID_PN, 1);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3116
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3117  	reo_ent_ring->rx_mpdu_info.info0 = mpdu_info;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3118  	reo_ent_ring->rx_mpdu_info.meta_data = reo_dest_ring->rx_mpdu_info.meta_data;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3119  	reo_ent_ring->queue_addr_lo = reo_dest_ring->queue_addr_lo;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3120  	reo_ent_ring->info0 = FIELD_PREP(HAL_REO_ENTR_RING_INFO0_QUEUE_ADDR_HI,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3121  					 FIELD_GET(HAL_REO_DEST_RING_INFO0_QUEUE_ADDR_HI,
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3122  						   reo_dest_ring->info0)) |
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3123  			      FIELD_PREP(HAL_REO_ENTR_RING_INFO0_DEST_IND, dst_idx);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3124  	ath11k_hal_srng_access_end(ab, srng);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3125  	spin_unlock_bh(&srng->lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3126
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3127  	return 0;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3128
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3129  err_free_idr:
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3130  	spin_lock_bh(&rx_refill_ring->idr_lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3131  	idr_remove(&rx_refill_ring->bufs_idr, buf_id);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3132  	spin_unlock_bh(&rx_refill_ring->idr_lock);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3133  err_unmap_dma:
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3134  	dma_unmap_single(ab->dev, paddr, defrag_skb->len + skb_tailroom(defrag_skb),
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3135  			 DMA_FROM_DEVICE);
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3136  	return ret;
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3137  }
-481e5890884c05 Manikanta Pubbisetty 2020-02-14  3138
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+m68k                             allmodconfig
+s390                             alldefconfig
+csky                                defconfig
+mips                              allnoconfig
+ia64                                defconfig
+powerpc                             defconfig
+sparc64                             defconfig
+parisc                generic-64bit_defconfig
+riscv                             allnoconfig
+ia64                             allmodconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+alpha                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+x86_64               randconfig-a001-20200304
+x86_64               randconfig-a002-20200304
+x86_64               randconfig-a003-20200304
+i386                 randconfig-a001-20200304
+i386                 randconfig-a002-20200304
+i386                 randconfig-a003-20200304
+x86_64               randconfig-a001-20200305
+x86_64               randconfig-a002-20200305
+x86_64               randconfig-a003-20200305
+i386                 randconfig-a001-20200305
+i386                 randconfig-a002-20200305
+i386                 randconfig-a003-20200305
+alpha                randconfig-a001-20200304
+m68k                 randconfig-a001-20200304
+mips                 randconfig-a001-20200304
+nds32                randconfig-a001-20200304
+parisc               randconfig-a001-20200304
+riscv                randconfig-a001-20200304
+alpha                randconfig-a001-20200305
+m68k                 randconfig-a001-20200305
+mips                 randconfig-a001-20200305
+nds32                randconfig-a001-20200305
+parisc               randconfig-a001-20200305
+riscv                randconfig-a001-20200305
+c6x                  randconfig-a001-20200304
+h8300                randconfig-a001-20200304
+microblaze           randconfig-a001-20200304
+nios2                randconfig-a001-20200304
+sparc64              randconfig-a001-20200304
+c6x                  randconfig-a001-20200305
+h8300                randconfig-a001-20200305
+microblaze           randconfig-a001-20200305
+nios2                randconfig-a001-20200305
+sparc64              randconfig-a001-20200305
+csky                 randconfig-a001-20200304
+openrisc             randconfig-a001-20200304
+s390                 randconfig-a001-20200304
+sh                   randconfig-a001-20200304
+xtensa               randconfig-a001-20200304
+x86_64               randconfig-b002-20200304
+x86_64               randconfig-b001-20200304
+i386                 randconfig-b001-20200304
+i386                 randconfig-b003-20200304
+i386                 randconfig-b002-20200304
+x86_64               randconfig-b003-20200304
+x86_64               randconfig-b001-20200305
+x86_64               randconfig-b002-20200305
+x86_64               randconfig-b003-20200305
+i386                 randconfig-b001-20200305
+i386                 randconfig-b002-20200305
+i386                 randconfig-b003-20200305
+x86_64               randconfig-c001-20200305
+x86_64               randconfig-c002-20200305
+x86_64               randconfig-c003-20200305
+i386                 randconfig-c001-20200305
+i386                 randconfig-c002-20200305
+i386                 randconfig-c003-20200305
+x86_64               randconfig-c001-20200304
+x86_64               randconfig-c002-20200304
+x86_64               randconfig-c003-20200304
+i386                 randconfig-c001-20200304
+i386                 randconfig-c002-20200304
+i386                 randconfig-c003-20200304
+x86_64               randconfig-d001-20200304
+x86_64               randconfig-d002-20200304
+x86_64               randconfig-d003-20200304
+i386                 randconfig-d001-20200304
+i386                 randconfig-d002-20200304
+i386                 randconfig-d003-20200304
+x86_64               randconfig-e001-20200304
+x86_64               randconfig-e002-20200304
+x86_64               randconfig-e003-20200304
+i386                 randconfig-e001-20200304
+i386                 randconfig-e002-20200304
+i386                 randconfig-e003-20200304
+x86_64               randconfig-e001-20200305
+x86_64               randconfig-e002-20200305
+x86_64               randconfig-e003-20200305
+i386                 randconfig-e001-20200305
+i386                 randconfig-e002-20200305
+i386                 randconfig-e003-20200305
+i386                 randconfig-f003-20200304
+x86_64               randconfig-f001-20200304
+i386                 randconfig-f001-20200304
+i386                 randconfig-f002-20200304
+x86_64               randconfig-f002-20200304
+x86_64               randconfig-f003-20200304
+x86_64               randconfig-g001-20200304
+x86_64               randconfig-g002-20200304
+x86_64               randconfig-g003-20200304
+i386                 randconfig-g001-20200304
+i386                 randconfig-g002-20200304
+i386                 randconfig-g003-20200304
+i386                 randconfig-h001-20200304
+x86_64               randconfig-h002-20200304
+x86_64               randconfig-h001-20200304
+x86_64               randconfig-h003-20200304
+i386                 randconfig-h003-20200304
+i386                 randconfig-h002-20200304
+x86_64               randconfig-h001-20200305
+x86_64               randconfig-h002-20200305
+x86_64               randconfig-h003-20200305
+i386                 randconfig-h001-20200305
+i386                 randconfig-h002-20200305
+i386                 randconfig-h003-20200305
+arc                  randconfig-a001-20200304
+arm                  randconfig-a001-20200304
+arm64                randconfig-a001-20200304
+ia64                 randconfig-a001-20200304
+powerpc              randconfig-a001-20200304
+sparc                randconfig-a001-20200304
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                              allnoconfig
+s390                                defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
