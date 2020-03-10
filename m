@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBWvZ-0002Dn-PR
- for ath10k@lists.infradead.org; Tue, 10 Mar 2020 04:55:39 +0000
-Date: Tue, 10 Mar 2020 12:54:43 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 25e1c630673abfa3af24ed83060a004d7d4d7475
-Message-ID: <5e671d93.YWAcOpuH8S0kueRq%lkp@intel.com>
+ id 1jBcff-0000ne-Av
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2020 11:03:37 +0000
+Date: Tue, 10 Mar 2020 14:03:13 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [ath6kl:pending 32/34] drivers/net/wireless/ath/ath11k/mac.c:2431
+ ath11k_mac_op_set_key() error: we previously assumed 'peer' could be null
+ (see line 2406)
+Message-ID: <20200310110313.GC11561@kadam>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,175 +23,152 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: kbuild@lists.01.org, Sriram R <srirrama@codeaurora.org>
+Cc: Tamizh Chelvam Raja <tamizhr@codeaurora.org>, kbuild-all@lists.01.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 25e1c630673abfa3af24ed83060a004d7d4d7475  Merge branch 'pending' into master-pending
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+head:   8098994ce0e3684547d874966af5d4c27c11f855
+commit: a0ad1ebe9632f7077f8a827ea23fa1508383c6b0 [32/34] ath11k: Perform per-msdu rx processing
 
-elapsed time: 8590m
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-configs tested: 155
-configs skipped: 0
+smatch warnings:
+drivers/net/wireless/ath/ath11k/mac.c:2431 ath11k_mac_op_set_key() error: we previously assumed 'peer' could be null (see line 2406)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+# https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=a0ad1ebe9632f7077f8a827ea23fa1508383c6b0
+git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+git remote update ath6kl
+git checkout a0ad1ebe9632f7077f8a827ea23fa1508383c6b0
+vim +/peer +2431 drivers/net/wireless/ath/ath11k/mac.c
 
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-m68k                             allmodconfig
-sparc64                             defconfig
-sh                               allmodconfig
-m68k                       m5475evb_defconfig
-parisc                           allyesconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-arm                              allmodconfig
-arm64                            allmodconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-alpha                randconfig-a001-20200305
-m68k                 randconfig-a001-20200305
-mips                 randconfig-a001-20200305
-nds32                randconfig-a001-20200305
-parisc               randconfig-a001-20200305
-riscv                randconfig-a001-20200305
-alpha                randconfig-a001-20200304
-m68k                 randconfig-a001-20200304
-mips                 randconfig-a001-20200304
-nds32                randconfig-a001-20200304
-parisc               randconfig-a001-20200304
-riscv                randconfig-a001-20200304
-c6x                  randconfig-a001-20200305
-h8300                randconfig-a001-20200305
-microblaze           randconfig-a001-20200305
-nios2                randconfig-a001-20200305
-sparc64              randconfig-a001-20200305
-microblaze           randconfig-a001-20200304
-csky                 randconfig-a001-20200305
-openrisc             randconfig-a001-20200305
-s390                 randconfig-a001-20200305
-sh                   randconfig-a001-20200305
-xtensa               randconfig-a001-20200305
-x86_64               randconfig-e001-20200305
-x86_64               randconfig-e002-20200305
-x86_64               randconfig-e003-20200305
-i386                 randconfig-e001-20200305
-i386                 randconfig-e002-20200305
-i386                 randconfig-e003-20200305
-i386                 randconfig-e001-20200304
-i386                 randconfig-e003-20200304
-x86_64               randconfig-e002-20200304
-x86_64               randconfig-e001-20200304
-x86_64               randconfig-e003-20200304
-i386                 randconfig-e002-20200304
-x86_64               randconfig-f001-20200305
-x86_64               randconfig-f002-20200305
-x86_64               randconfig-f003-20200305
-i386                 randconfig-f001-20200305
-i386                 randconfig-f002-20200305
-i386                 randconfig-f003-20200305
-i386                 randconfig-f003-20200304
-x86_64               randconfig-f001-20200304
-i386                 randconfig-f001-20200304
-i386                 randconfig-f002-20200304
-x86_64               randconfig-f002-20200304
-x86_64               randconfig-f003-20200304
-x86_64               randconfig-g001-20200307
-x86_64               randconfig-g002-20200307
-x86_64               randconfig-g003-20200307
-i386                 randconfig-g001-20200307
-i386                 randconfig-g002-20200307
-i386                 randconfig-g003-20200307
-i386                 randconfig-h001-20200304
-x86_64               randconfig-h002-20200304
-x86_64               randconfig-h001-20200304
-x86_64               randconfig-h003-20200304
-i386                 randconfig-h003-20200304
-i386                 randconfig-h002-20200304
-arc                  randconfig-a001-20200305
-arm                  randconfig-a001-20200305
-arm64                randconfig-a001-20200305
-ia64                 randconfig-a001-20200305
-powerpc              randconfig-a001-20200305
-sparc                randconfig-a001-20200305
-arc                  randconfig-a001-20200304
-ia64                 randconfig-a001-20200304
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
+5c65159f28953 Kalle Valo           2019-11-23  2320  static int ath11k_mac_op_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+d5c65159f28953 Kalle Valo           2019-11-23  2321  				 struct ieee80211_vif *vif, struct ieee80211_sta *sta,
+d5c65159f28953 Kalle Valo           2019-11-23  2322  				 struct ieee80211_key_conf *key)
+d5c65159f28953 Kalle Valo           2019-11-23  2323  {
+d5c65159f28953 Kalle Valo           2019-11-23  2324  	struct ath11k *ar = hw->priv;
+d5c65159f28953 Kalle Valo           2019-11-23  2325  	struct ath11k_base *ab = ar->ab;
+d5c65159f28953 Kalle Valo           2019-11-23  2326  	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+d5c65159f28953 Kalle Valo           2019-11-23  2327  	struct ath11k_peer *peer;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2328  	struct ath11k_sta *arsta;
+d5c65159f28953 Kalle Valo           2019-11-23  2329  	const u8 *peer_addr;
+d5c65159f28953 Kalle Valo           2019-11-23  2330  	int ret = 0;
+d5c65159f28953 Kalle Valo           2019-11-23  2331  	u32 flags = 0;
+d5c65159f28953 Kalle Valo           2019-11-23  2332  
+d5c65159f28953 Kalle Valo           2019-11-23  2333  	/* BIP needs to be done in software */
+d5c65159f28953 Kalle Valo           2019-11-23  2334  	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC ||
+d5c65159f28953 Kalle Valo           2019-11-23  2335  	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_128 ||
+d5c65159f28953 Kalle Valo           2019-11-23  2336  	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_256 ||
+d5c65159f28953 Kalle Valo           2019-11-23  2337  	    key->cipher == WLAN_CIPHER_SUITE_BIP_CMAC_256)
+d5c65159f28953 Kalle Valo           2019-11-23  2338  		return 1;
+d5c65159f28953 Kalle Valo           2019-11-23  2339  
+d5c65159f28953 Kalle Valo           2019-11-23  2340  	if (key->keyidx > WMI_MAX_KEY_INDEX)
+d5c65159f28953 Kalle Valo           2019-11-23  2341  		return -ENOSPC;
+d5c65159f28953 Kalle Valo           2019-11-23  2342  
+d5c65159f28953 Kalle Valo           2019-11-23  2343  	mutex_lock(&ar->conf_mutex);
+d5c65159f28953 Kalle Valo           2019-11-23  2344  
+d5c65159f28953 Kalle Valo           2019-11-23  2345  	if (sta)
+d5c65159f28953 Kalle Valo           2019-11-23  2346  		peer_addr = sta->addr;
+d5c65159f28953 Kalle Valo           2019-11-23  2347  	else if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
+d5c65159f28953 Kalle Valo           2019-11-23  2348  		peer_addr = vif->bss_conf.bssid;
+d5c65159f28953 Kalle Valo           2019-11-23  2349  	else
+d5c65159f28953 Kalle Valo           2019-11-23  2350  		peer_addr = vif->addr;
+d5c65159f28953 Kalle Valo           2019-11-23  2351  
+d5c65159f28953 Kalle Valo           2019-11-23  2352  	key->hw_key_idx = key->keyidx;
+d5c65159f28953 Kalle Valo           2019-11-23  2353  
+d5c65159f28953 Kalle Valo           2019-11-23  2354  	/* the peer should not disappear in mid-way (unless FW goes awry) since
+d5c65159f28953 Kalle Valo           2019-11-23  2355  	 * we already hold conf_mutex. we just make sure its there now.
+d5c65159f28953 Kalle Valo           2019-11-23  2356  	 */
+d5c65159f28953 Kalle Valo           2019-11-23  2357  	spin_lock_bh(&ab->base_lock);
+d5c65159f28953 Kalle Valo           2019-11-23  2358  	peer = ath11k_peer_find(ab, arvif->vdev_id, peer_addr);
+d5c65159f28953 Kalle Valo           2019-11-23  2359  	spin_unlock_bh(&ab->base_lock);
+d5c65159f28953 Kalle Valo           2019-11-23  2360  
+d5c65159f28953 Kalle Valo           2019-11-23  2361  	if (!peer) {
+d5c65159f28953 Kalle Valo           2019-11-23  2362  		if (cmd == SET_KEY) {
+d5c65159f28953 Kalle Valo           2019-11-23  2363  			ath11k_warn(ab, "cannot install key for non-existent peer %pM\n",
+d5c65159f28953 Kalle Valo           2019-11-23  2364  				    peer_addr);
+d5c65159f28953 Kalle Valo           2019-11-23  2365  			ret = -EOPNOTSUPP;
+d5c65159f28953 Kalle Valo           2019-11-23  2366  			goto exit;
+d5c65159f28953 Kalle Valo           2019-11-23  2367  		} else {
+d5c65159f28953 Kalle Valo           2019-11-23  2368  			/* if the peer doesn't exist there is no key to disable
+d5c65159f28953 Kalle Valo           2019-11-23  2369  			 * anymore
+d5c65159f28953 Kalle Valo           2019-11-23  2370  			 */
+d5c65159f28953 Kalle Valo           2019-11-23  2371  			goto exit;
+d5c65159f28953 Kalle Valo           2019-11-23  2372  		}
+d5c65159f28953 Kalle Valo           2019-11-23  2373  	}
+d5c65159f28953 Kalle Valo           2019-11-23  2374  
+d5c65159f28953 Kalle Valo           2019-11-23  2375  	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE)
+d5c65159f28953 Kalle Valo           2019-11-23  2376  		flags |= WMI_KEY_PAIRWISE;
+d5c65159f28953 Kalle Valo           2019-11-23  2377  	else
+d5c65159f28953 Kalle Valo           2019-11-23  2378  		flags |= WMI_KEY_GROUP;
+d5c65159f28953 Kalle Valo           2019-11-23  2379  
+d5c65159f28953 Kalle Valo           2019-11-23  2380  	ret = ath11k_install_key(arvif, key, cmd, peer_addr, flags);
+d5c65159f28953 Kalle Valo           2019-11-23  2381  	if (ret) {
+d5c65159f28953 Kalle Valo           2019-11-23  2382  		ath11k_warn(ab, "ath11k_install_key failed (%d)\n", ret);
+d5c65159f28953 Kalle Valo           2019-11-23  2383  		goto exit;
+d5c65159f28953 Kalle Valo           2019-11-23  2384  	}
+d5c65159f28953 Kalle Valo           2019-11-23  2385  
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2386  	ret = ath11k_dp_peer_rx_pn_replay_config(arvif, peer_addr, cmd, key);
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2387  	if (ret) {
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2388  		ath11k_warn(ab, "failed to offload PN replay detection %d\n", ret);
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2389  		goto exit;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2390  	}
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2391  
+d5c65159f28953 Kalle Valo           2019-11-23  2392  	spin_lock_bh(&ab->base_lock);
+d5c65159f28953 Kalle Valo           2019-11-23  2393  	peer = ath11k_peer_find(ab, arvif->vdev_id, peer_addr);
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2394  	if (peer && cmd == SET_KEY) {
+d5c65159f28953 Kalle Valo           2019-11-23  2395  		peer->keys[key->keyidx] = key;
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2396  		if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE)
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2397  			peer->ucast_keyidx = key->keyidx;
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2398  		else
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2399  			peer->mcast_keyidx = key->keyidx;
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2400  	} else if (peer && cmd == DISABLE_KEY) {
+d5c65159f28953 Kalle Valo           2019-11-23  2401  		peer->keys[key->keyidx] = NULL;
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2402  		if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE)
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2403  			peer->ucast_keyidx = 0;
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2404  		else
+481e5890884c05 Manikanta Pubbisetty 2020-02-14  2405  			peer->mcast_keyidx = 0;
+481e5890884c05 Manikanta Pubbisetty 2020-02-14 @2406  	} else if (!peer)
+d5c65159f28953 Kalle Valo           2019-11-23  2407  		/* impossible unless FW goes crazy */
+d5c65159f28953 Kalle Valo           2019-11-23  2408  		ath11k_warn(ab, "peer %pM disappeared!\n", peer_addr);
+
+return?
+
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2409  
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2410  	if (sta) {
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2411  		arsta = (struct ath11k_sta *)sta->drv_priv;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2412  
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2413  		switch (key->cipher) {
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2414  		case WLAN_CIPHER_SUITE_TKIP:
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2415  		case WLAN_CIPHER_SUITE_CCMP:
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2416  		case WLAN_CIPHER_SUITE_CCMP_256:
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2417  		case WLAN_CIPHER_SUITE_GCMP:
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2418  		case WLAN_CIPHER_SUITE_GCMP_256:
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2419  			if (cmd == SET_KEY)
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2420  				arsta->pn_type = HAL_PN_TYPE_WPA;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2421  			else
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2422  				arsta->pn_type = HAL_PN_TYPE_NONE;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2423  			break;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2424  		default:
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2425  			arsta->pn_type = HAL_PN_TYPE_NONE;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2426  			break;
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2427  		}
+4ba8cd524555a1 Manikanta Pubbisetty 2020-02-14  2428  	}
+a0ad1ebe9632f7 Sriram R             2020-02-17  2429  
+a0ad1ebe9632f7 Sriram R             2020-02-17  2430  	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE)
+a0ad1ebe9632f7 Sriram R             2020-02-17 @2431  		peer->sec_type = ath11k_dp_tx_get_encrypt_type(key->cipher);
+                                                                ^^^^^^^^^^^^^^
+
+a0ad1ebe9632f7 Sriram R             2020-02-17  2432  	else
+a0ad1ebe9632f7 Sriram R             2020-02-17  2433  		peer->sec_type_grp = ath11k_dp_tx_get_encrypt_type(key->cipher);
+a0ad1ebe9632f7 Sriram R             2020-02-17  2434  
+d5c65159f28953 Kalle Valo           2019-11-23  2435  	spin_unlock_bh(&ab->base_lock);
+d5c65159f28953 Kalle Valo           2019-11-23  2436  
+d5c65159f28953 Kalle Valo           2019-11-23  2437  exit:
+d5c65159f28953 Kalle Valo           2019-11-23  2438  	mutex_unlock(&ar->conf_mutex);
+d5c65159f28953 Kalle Valo           2019-11-23  2439  	return ret;
+d5c65159f28953 Kalle Valo           2019-11-23  2440  }
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
