@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC4RW-0000LZ-Hr
- for ath10k@lists.infradead.org; Wed, 11 Mar 2020 16:42:53 +0000
+ id 1jC4VD-0001yT-LH
+ for ath10k@lists.infradead.org; Wed, 11 Mar 2020 16:46:41 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: fix unsupported chip reset debugs file write
+Subject: Re: [PATCH] ath10k: fix not registering airtime of 11a station with
+ WMM disable
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1581670278-5682-1-git-send-email-yintang@codeaurora.org>
-References: <1581670278-5682-1-git-send-email-yintang@codeaurora.org>
-Message-Id: <20200311164242.536E8C433BA@smtp.codeaurora.org>
-Date: Wed, 11 Mar 2020 16:42:42 +0000 (UTC)
+In-Reply-To: <1582171405-27236-1-git-send-email-yiboz@codeaurora.org>
+References: <1582171405-27236-1-git-send-email-yiboz@codeaurora.org>
+Message-Id: <20200311164636.82D46C433BA@smtp.codeaurora.org>
+Date: Wed, 11 Mar 2020 16:46:36 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yingying Tang <yintang@codeaurora.org>
+To: Yibo Zhao <yiboz@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yingying Tang <yintang@codeaurora.org> wrote:
+Yibo Zhao <yiboz@codeaurora.org> wrote:
 
-> Before this change, after writing "warm_hw_reset" debugfs file, host
-> will send chip reset command to FW even though FW do not support this
-> service getting a warning print.
+> The tid of 11a station with WMM disable reported by FW is 0x10 in
+> tx completion. The tid 16 is mapped to a NULL txq since buffer
+> MMPDU capbility is not supported. Then 11a station's airtime will
+> not be registered due to NULL txq check. As a results, airtime of
+> 11a station keeps unchanged in debugfs system.
 > 
-> Though there is no FW impact before this change, this patch restricts
-> chip reset command sent to FW only if FW advertises the support via WMI
-> service bit.
+> Mask the tid along with IEEE80211_QOS_CTL_TID_MASK to make it in
+> the valid range.
 > 
-> Removed the redundant check and ath10k_warn() print as well.
+> Hardwares tested : QCA9984
+> Firmwares tested : 10.4-3.10-00047
 > 
-> New version FW will report chip reset service bit to host. Host allow user
-> to trigger WLAN chip reset only when fw report this service bit.
-> 
-> For older NON-TLV FW, since it do not report chip reset service bit, host
-> will not send chip reset command. For older TLV FW, since it report chip
-> reset service bit, host will send chip reset command.
-> 
-> Tested HW:  QCA9984, WCN3990
-> 
-> QCA9984 FW version: WLAN.BL.3.9.0.2-00042-S-1
-> 
-> Signed-off-by: Yingying Tang <yintang@codeaurora.org>
+> Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-bbdc8c5abbd4 ath10k: fix unsupported chip reset debugs file write
+f9680c75d187 ath10k: fix not registering airtime of 11a station with WMM disable
 
 -- 
-https://patchwork.kernel.org/patch/11381921/
+https://patchwork.kernel.org/patch/11393223/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
