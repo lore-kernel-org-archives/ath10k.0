@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jCEQT-0004dV-5g
- for ath10k@lists.infradead.org; Thu, 12 Mar 2020 03:22:26 +0000
-Date: Thu, 12 Mar 2020 11:21:40 +0800
+ id 1jCEQT-0004db-94
+ for ath10k@lists.infradead.org; Thu, 12 Mar 2020 03:22:27 +0000
+Date: Thu, 12 Mar 2020 11:21:51 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 968ae2caad0782db5dbbabb560d3cdefd2945d38
-Message-ID: <5e69aac4.1syOyG89VDo2E0tA%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 1b6e207a96a9033b6483e63c0dc6c200c725061a
+Message-ID: <5e69aacf.N84z2WDmFF8eE5EC%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 968ae2caad0782db5dbbabb560d3cdefd2945d38  ath9k: Handle txpower changes even when TPC is disabled
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 1b6e207a96a9033b6483e63c0dc6c200c725061a  ath5k: Use scnprintf() for avoiding potential buffer overflow
 
 elapsed time: 487m
 
-configs tested: 163
+configs tested: 174
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -41,23 +41,24 @@ arm                              allyesconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
 arm64                            allyesconfig
-arm                         at91_dt_defconfig
 arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
 arm                          exynos_defconfig
 arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
 arm                           sunxi_defconfig
-arm64                               defconfig
+arm                        multi_v7_defconfig
 sparc                            allyesconfig
 microblaze                    nommu_defconfig
 sparc64                          allyesconfig
 sh                            titan_defconfig
 riscv                          rv32_defconfig
 s390                          debug_defconfig
+m68k                       m5475evb_defconfig
 i386                              allnoconfig
-i386                             alldefconfig
 i386                             allyesconfig
+i386                             alldefconfig
 i386                                defconfig
 ia64                             alldefconfig
 ia64                             allmodconfig
@@ -76,18 +77,17 @@ alpha                               defconfig
 csky                                defconfig
 nds32                             allnoconfig
 nds32                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
 h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
 m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
+h8300                    h8300h-sim_defconfig
 m68k                           sun3_defconfig
-arc                              allyesconfig
+m68k                          multi_defconfig
+powerpc                             defconfig
 arc                                 defconfig
+arc                              allyesconfig
 microblaze                      mmu_defconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
 mips                           32r2_defconfig
@@ -98,9 +98,9 @@ mips                             allyesconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
 parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
 parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
 x86_64               randconfig-a001-20200311
 x86_64               randconfig-a002-20200311
 x86_64               randconfig-a003-20200311
@@ -113,11 +113,16 @@ mips                 randconfig-a001-20200311
 nds32                randconfig-a001-20200311
 parisc               randconfig-a001-20200311
 riscv                randconfig-a001-20200311
-c6x                  randconfig-a001-20200311
+alpha                randconfig-a001-20200312
+m68k                 randconfig-a001-20200312
+mips                 randconfig-a001-20200312
+nds32                randconfig-a001-20200312
+parisc               randconfig-a001-20200312
 h8300                randconfig-a001-20200311
-microblaze           randconfig-a001-20200311
-nios2                randconfig-a001-20200311
 sparc64              randconfig-a001-20200311
+c6x                  randconfig-a001-20200311
+nios2                randconfig-a001-20200311
+microblaze           randconfig-a001-20200311
 c6x                  randconfig-a001-20200312
 h8300                randconfig-a001-20200312
 microblaze           randconfig-a001-20200312
@@ -170,10 +175,16 @@ x86_64               randconfig-h003-20200311
 i386                 randconfig-h001-20200311
 i386                 randconfig-h002-20200311
 i386                 randconfig-h003-20200311
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
+arc                  randconfig-a001-20200311
+arm                  randconfig-a001-20200311
+arm64                randconfig-a001-20200311
+ia64                 randconfig-a001-20200311
+powerpc              randconfig-a001-20200311
+sparc                randconfig-a001-20200311
 riscv                             allnoconfig
+riscv                            allyesconfig
 riscv                               defconfig
+riscv                    nommu_virt_defconfig
 riscv                            allmodconfig
 s390                             alldefconfig
 s390                             allmodconfig
@@ -181,10 +192,10 @@ s390                              allnoconfig
 s390                             allyesconfig
 s390                                defconfig
 s390                       zfcpdump_defconfig
-sh                          rsk7269_defconfig
 sh                               allmodconfig
-sh                  sh7785lcr_32bit_defconfig
 sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
 sparc                               defconfig
 sparc64                          allmodconfig
 sparc64                           allnoconfig
