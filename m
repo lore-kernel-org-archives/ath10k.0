@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC4ab-0004HU-PG
- for ath10k@lists.infradead.org; Wed, 11 Mar 2020 16:52:16 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH RFT] ath10k: add QCA9377 sdio hw_param item
-References: <1569507867-19547-1-git-send-email-kvalo@codeaurora.org>
- <7BB79E29-0ACF-45FB-B802-E4B2F5CA0DFE@gmail.com>
- <03d244cd-3205-6c95-c43e-99bc0135b50a@gmail.com>
-Date: Wed, 11 Mar 2020 18:52:05 +0200
-In-Reply-To: <03d244cd-3205-6c95-c43e-99bc0135b50a@gmail.com> (Erik
- Stromdahl's message of "Wed, 4 Mar 2020 18:51:57 +0100")
-Message-ID: <87imjaomve.fsf@kamboji.qca.qualcomm.com>
+ id 1jCEQT-0004dV-5g
+ for ath10k@lists.infradead.org; Thu, 12 Mar 2020 03:22:26 +0000
+Date: Thu, 12 Mar 2020 11:21:40 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 968ae2caad0782db5dbbabb560d3cdefd2945d38
+Message-ID: <5e69aac4.1syOyG89VDo2E0tA%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,75 +21,187 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless@vger.kernel.org, Christian Hewitt <christianshewitt@gmail.com>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 968ae2caad0782db5dbbabb560d3cdefd2945d38  ath9k: Handle txpower changes even when TPC is disabled
 
-> On 3/2/20 12:45 PM, Christian Hewitt wrote:
->>
->>> On 26 Sep 2019, at 6:24 pm, Kalle Valo <kvalo@codeaurora.org> wrote:
->>>
->>> From: Erik Stromdahl <erik.stromdahl@gmail.com>
->>>
->>> Add hardware parameters for QCA9377 sdio devices, it's now properly supported.
->>>
->>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
->>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+elapsed time: 487m
 
-[...]
+configs tested: 163
+configs skipped: 0
 
->> Tested and working fine using Linux 5.6-rc3 and SDIO firmware from [1].
->>
->> [ 5.391369] ath10k_sdio mmc2:0001:1: qca9377 hw1.1 sdio target
->> 0x05020001 chip_id 0x00000000 sub 0000:0000
->> [ 5.391379] ath10k_sdio mmc2:0001:1: kconfig debug 0 debugfs 0
->> tracing 0 dfs 0 testmode 0
->> [ 5.391632] ath10k_sdio mmc2:0001:1: firmware ver
->> WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5 features ignore-otp crc32
->> 7746e551
->> [ 5.624198] ath10k_sdio mmc2:0001:1: failed to fetch board data for
->> bus=sdio,vendor=0271,device=0701,subsystem-vendor=0000,subsystem-device=0000
->> from ath10k/QCA9377/hw1.0/board-2.bin
->> [    5.624473] ath10k_sdio mmc2:0001:1: board_file api 1 bmi_id N/A crc32 544289f7
->> [ 6.775882] ath10k_sdio mmc2:0001:1: htt-ver 3.32 wmi-op 4 htt-op 3
->> cal otp max-sta 32 raw 0 hwcrypto 1
->> [    6.854066] ath: EEPROM regdomain sanitized
->> [    6.854073] ath: EEPROM regdomain: 0x64
->> [    6.854075] ath: EEPROM indicates we should expect a direct regpair map
->> [    6.854082] ath: Country alpha2 being used: 00
->> [    6.854083] ath: Regpair used: 0x64
->> [    8.444189] ath: EEPROM regdomain: 0x8114
->> [    8.444194] ath: EEPROM indicates we should expect a country code
->> [    8.444196] ath: doing EEPROM country->regdmn map search
->> [    8.444198] ath: country maps to regdmn code: 0x37
->> [    8.444201] ath: Country alpha2 being used: DE
->> [    8.444203] ath: Regpair used: 0x37
->> [    8.444206] ath: regdomain 0x8114 dynamically updated by country element
->>
->> The test device is an Amlogic S905D STB device from O2.cz that I
->> have just submitted a working device-tree for [2].
->>
->> If you need a QCA9377 test device, I have a duplicate/spare of the
->> box and would be happy to post it.
->>
->> Tested-by: Christian Hewitt <christianshewitt@gmail.com>
->>
->> [1] https://github.com/chewitt/qca-firmware
->> [2] https://patchwork.kernel.org/project/linux-amlogic/list/?series=249525
->>
->
-> I have received a lot of questions lately about this patch (why it has
-> not been integrated).
-> It is actually the only missing piece in order to have working QCA9377
-> support on mainline.
->
-> Unless there is a good reason not to add it, I think it should be integrated.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks for testing, I applied it now.
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+microblaze                    nommu_defconfig
+sparc64                          allyesconfig
+sh                            titan_defconfig
+riscv                          rv32_defconfig
+s390                          debug_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200311
+x86_64               randconfig-a002-20200311
+x86_64               randconfig-a003-20200311
+i386                 randconfig-a001-20200311
+i386                 randconfig-a002-20200311
+i386                 randconfig-a003-20200311
+alpha                randconfig-a001-20200311
+m68k                 randconfig-a001-20200311
+mips                 randconfig-a001-20200311
+nds32                randconfig-a001-20200311
+parisc               randconfig-a001-20200311
+riscv                randconfig-a001-20200311
+c6x                  randconfig-a001-20200311
+h8300                randconfig-a001-20200311
+microblaze           randconfig-a001-20200311
+nios2                randconfig-a001-20200311
+sparc64              randconfig-a001-20200311
+c6x                  randconfig-a001-20200312
+h8300                randconfig-a001-20200312
+microblaze           randconfig-a001-20200312
+nios2                randconfig-a001-20200312
+sparc64              randconfig-a001-20200312
+csky                 randconfig-a001-20200311
+openrisc             randconfig-a001-20200311
+s390                 randconfig-a001-20200311
+sh                   randconfig-a001-20200311
+xtensa               randconfig-a001-20200311
+x86_64               randconfig-b001-20200311
+x86_64               randconfig-b002-20200311
+x86_64               randconfig-b003-20200311
+i386                 randconfig-b001-20200311
+i386                 randconfig-b002-20200311
+i386                 randconfig-b003-20200311
+x86_64               randconfig-c001-20200311
+x86_64               randconfig-c002-20200311
+x86_64               randconfig-c003-20200311
+i386                 randconfig-c001-20200311
+i386                 randconfig-c002-20200311
+i386                 randconfig-c003-20200311
+x86_64               randconfig-d001-20200311
+x86_64               randconfig-d002-20200311
+x86_64               randconfig-d003-20200311
+i386                 randconfig-d001-20200311
+i386                 randconfig-d002-20200311
+i386                 randconfig-d003-20200311
+x86_64               randconfig-e001-20200311
+x86_64               randconfig-e002-20200311
+x86_64               randconfig-e003-20200311
+i386                 randconfig-e001-20200311
+i386                 randconfig-e002-20200311
+i386                 randconfig-e003-20200311
+x86_64               randconfig-f001-20200311
+x86_64               randconfig-f002-20200311
+x86_64               randconfig-f003-20200311
+i386                 randconfig-f001-20200311
+i386                 randconfig-f002-20200311
+i386                 randconfig-f003-20200311
+x86_64               randconfig-g001-20200311
+x86_64               randconfig-g002-20200311
+x86_64               randconfig-g003-20200311
+i386                 randconfig-g001-20200311
+i386                 randconfig-g002-20200311
+i386                 randconfig-g003-20200311
+x86_64               randconfig-h001-20200311
+x86_64               randconfig-h002-20200311
+x86_64               randconfig-h003-20200311
+i386                 randconfig-h001-20200311
+i386                 randconfig-h002-20200311
+i386                 randconfig-h003-20200311
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                             defconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
