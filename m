@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEERF-00082p-48
- for ath10k@lists.infradead.org; Tue, 17 Mar 2020 15:47:31 +0000
-Date: Tue, 17 Mar 2020 23:46:50 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- beb2f77297b0b7640e20ca2894104c87e21f5a47
-Message-ID: <5e70f0ea.UjIdCy2LLpkPo+bK%lkp@intel.com>
+ id 1jEFU5-0003oj-Cd
+ for ath10k@lists.infradead.org; Tue, 17 Mar 2020 16:54:31 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
+ <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
+ <1576748692.7758.17.camel@realtek.com> <20191219154828.GA12287@w1.fi>
+ <CA+ASDXMTYLGbEkBPHSqtyitMEvY5o_MjU0s+NoWdnN_ORy1gDw@mail.gmail.com>
+ <20191219185522.GA16010@w1.fi>
+ <CA+ASDXNOxkrZTxL0Jo4ONR2YtL83BVc_w-rBXc6ggBLdwUpDZw@mail.gmail.com>
+Date: Tue, 17 Mar 2020 18:54:21 +0200
+In-Reply-To: <CA+ASDXNOxkrZTxL0Jo4ONR2YtL83BVc_w-rBXc6ggBLdwUpDZw@mail.gmail.com>
+ (Brian Norris's message of "Thu, 19 Dec 2019 15:40:43 -0800")
+Message-ID: <871rpqly6a.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,187 +28,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Jouni Malinen <j@w1.fi>, Pkshih <pkshih@realtek.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: beb2f77297b0b7640e20ca2894104c87e21f5a47  ath11k: add handling for BSS color
+Brian Norris <briannorris@chromium.org> writes:
 
-elapsed time: 484m
+>> > > This was discussed during the 2019 wireless workshop. The conclusion
+>> > > from that discussion was that while there is clear need for SAR power
+>> > > limits for various devices and multiple vendors/drivers, it did not look
+>> > > clear that a single common interface could be defined cleanly taken into
+>> > > account the differences in the ways vendors have designed the mechanism
+>> > > in driver and firmware implementations. As such, vendor specific
+>> > > commands were identified as the approach.
+>> >
+>> > [citation needed]
+>>
+>> I'm not aware of any publicly available meeting minutes that covered the
+>> details for that discussion. My personal notes indicate that there were
+>> at least two vendors indicating existence of vendor specific commands
+>> for configuring SAR parameters, a discussion about the parameters used
+>> for this being different, and a conclusion that this would be an example
+>> kernel interface where a generic nl80211 interface may not be achievable
+>> and a vendor specific interface would be more likely. This discussion
+>> resulted in the discussion on how to use vendor specific nl80211
+>> commands/attributes in upstream drivers and the eventual documentation
+>> of that in the location you noted.
+>
+> Hmm, I actually think I was only around for the pre-discussion, in
+> which y'all suggested you might later meet to decide what eventually
+> became [1]. So maybe I missed some specific examples that would
+> provide the [citation] I requested.
+>
+> That being said, I have personally fielded out-of-tree SAR
+> implementations from 4 different vendors:
+>
+> (a) Two of them (this ath10k proposal, roughly; and Realtek's) employ
+> exactly the same concept: N frequency ranges, each with associated
+> power limits.
+> (b) Two of them (Intel/variant-of-iwiwifi and Marvell/mwifiex) utilize
+> a platform-specific (BIOS or Device Tree) mechanism for enumerating
+> power tables, and the nl80211 API simply takes an index N (e.g., 0 or
+> 1), so user space can say "switch to mode N"
+>
+> Unfortunately, for (b), I think there are enough reasons to think they
+> won't share an API similar to (a) (for Marvell, their
+> platform-specific tables are large undocumented blobs -- I have a
+> feeling if we already had a common API for (a), they *could* have
+> implemented some translation in a nicer way in their driver, but they
+> haven't chosen to do that work and probably won't be convinced to do
+> so).
+>
+> But that still means there's some hope for (a).
+>
+> Anyway, I am happy that there's a documented policy for vendor APIs
+> [1], and I'm happy to see this proposal out here. I just want to see a
+> critical eye put to this particular proposal if possible, to see if we
+> can improve its flexibility (either now, or in a later version of a
+> QCA vendor command, or even in a common nl80211-proper command).
+>
+> So to put a little different spin on Pkshih's request: is there any
+> value in making this particular ath10k proposal a little more generic
+> (e.g., more granularity or flexibility in frequency bands, or more
+> precision in power limits), such that other vendors might implement
+> the same thing? Or would it be better to let each vendor implement
+> their similar-looking APIs (i.e., (a); or maybe even (b)) on their
+> own, and only later look at sharing?
 
-configs tested: 163
-configs skipped: 0
+The downside of accepting SAR vendor commands to upstream is that (in
+theory) that should be supported a long time:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  4. The newly proposed API shall be subject to stable API rules.
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-mips                              allnoconfig
-h8300                       h8s-sim_defconfig
-nds32                             allnoconfig
-powerpc                       ppc64_defconfig
-s390                          debug_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                             defconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200317
-x86_64               randconfig-a002-20200317
-x86_64               randconfig-a003-20200317
-i386                 randconfig-a001-20200317
-i386                 randconfig-a002-20200317
-i386                 randconfig-a003-20200317
-alpha                randconfig-a001-20200317
-m68k                 randconfig-a001-20200317
-mips                 randconfig-a001-20200317
-nds32                randconfig-a001-20200317
-parisc               randconfig-a001-20200317
-riscv                randconfig-a001-20200317
-c6x                  randconfig-a001-20200317
-h8300                randconfig-a001-20200317
-microblaze           randconfig-a001-20200317
-nios2                randconfig-a001-20200317
-sparc64              randconfig-a001-20200317
-xtensa               randconfig-a001-20200317
-openrisc             randconfig-a001-20200317
-csky                 randconfig-a001-20200317
-sh                   randconfig-a001-20200317
-s390                 randconfig-a001-20200317
-x86_64               randconfig-b001-20200317
-x86_64               randconfig-b002-20200317
-x86_64               randconfig-b003-20200317
-i386                 randconfig-b001-20200317
-i386                 randconfig-b002-20200317
-i386                 randconfig-b003-20200317
-x86_64               randconfig-c001-20200317
-x86_64               randconfig-c002-20200317
-x86_64               randconfig-c003-20200317
-i386                 randconfig-c001-20200317
-i386                 randconfig-c002-20200317
-i386                 randconfig-c003-20200317
-x86_64               randconfig-d001-20200317
-i386                 randconfig-d001-20200317
-i386                 randconfig-d003-20200317
-i386                 randconfig-d002-20200317
-x86_64               randconfig-d003-20200317
-x86_64               randconfig-d002-20200317
-x86_64               randconfig-e001-20200317
-x86_64               randconfig-e002-20200317
-x86_64               randconfig-e003-20200317
-i386                 randconfig-e001-20200317
-i386                 randconfig-e002-20200317
-i386                 randconfig-e003-20200317
-x86_64               randconfig-f001-20200317
-x86_64               randconfig-f002-20200317
-x86_64               randconfig-f003-20200317
-i386                 randconfig-f001-20200317
-i386                 randconfig-f002-20200317
-i386                 randconfig-f003-20200317
-x86_64               randconfig-g001-20200317
-x86_64               randconfig-g002-20200317
-x86_64               randconfig-g003-20200317
-i386                 randconfig-g001-20200317
-i386                 randconfig-g002-20200317
-i386                 randconfig-g003-20200317
-x86_64               randconfig-h001-20200317
-x86_64               randconfig-h002-20200317
-x86_64               randconfig-h003-20200317
-i386                 randconfig-h001-20200317
-i386                 randconfig-h002-20200317
-i386                 randconfig-h003-20200317
-arc                  randconfig-a001-20200317
-ia64                 randconfig-a001-20200317
-arm                  randconfig-a001-20200317
-arm64                randconfig-a001-20200317
-sparc                randconfig-a001-20200317
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
+  https://wireless.wiki.kernel.org/en/developers/documentation/nl80211#vendor-specific_api
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+So if sometime in the future we add a generic command the driver would
+need to support both vendor and generic commands. So, IF it makes sense
+to implement a generic command, I would rather have a generic command
+implemented from the beginning and drop the SAR vendor command patches
+altogether.
+
+For me either solutions are good enough, I'm not familiar enough with
+all the different SAR user space interfaces to make a good decision.
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
