@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEERE-00082a-Fs
+ id 1jEERE-00082c-QK
  for ath10k@lists.infradead.org; Tue, 17 Mar 2020 15:47:30 +0000
-Date: Tue, 17 Mar 2020 23:46:48 +0800
+Date: Tue, 17 Mar 2020 23:46:53 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 55c76889bb361c499436c01c117e1d3163c5e0c9
-Message-ID: <5e70f0e8.kKBu7V8POQ5BAlvp%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 0af4160761bd5e959e3fb83c675efd3410b0c14e
+Message-ID: <5e70f0ed.iSsB6DZLI4QNnYLV%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 55c76889bb361c499436c01c117e1d3163c5e0c9  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 0af4160761bd5e959e3fb83c675efd3410b0c14e  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 483m
+elapsed time: 484m
 
-configs tested: 157
+configs tested: 153
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -66,8 +67,8 @@ i386                                defconfig
 ia64                             alldefconfig
 ia64                              allnoconfig
 ia64                                defconfig
-arm                              allmodconfig
 arm64                            allmodconfig
+arm                              allmodconfig
 c6x                              allyesconfig
 c6x                        evmc6678_defconfig
 nios2                         10m50_defconfig
@@ -76,25 +77,25 @@ openrisc                    or1ksim_defconfig
 openrisc                 simple_smp_defconfig
 xtensa                       common_defconfig
 xtensa                          iss_defconfig
-nds32                               defconfig
-csky                                defconfig
 alpha                               defconfig
+csky                                defconfig
+nds32                               defconfig
 h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                             allmodconfig
 m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
 m68k                          multi_defconfig
+powerpc                             defconfig
 arc                              allyesconfig
 microblaze                      mmu_defconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
-mips                         64r6el_defconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
 parisc                            allnoconfig
 parisc                generic-32bit_defconfig
 parisc                generic-64bit_defconfig
@@ -110,11 +111,6 @@ nds32                randconfig-a001-20200317
 m68k                 randconfig-a001-20200317
 parisc               randconfig-a001-20200317
 mips                 randconfig-a001-20200317
-h8300                randconfig-a001-20200317
-sparc64              randconfig-a001-20200317
-c6x                  randconfig-a001-20200317
-nios2                randconfig-a001-20200317
-microblaze           randconfig-a001-20200317
 xtensa               randconfig-a001-20200317
 openrisc             randconfig-a001-20200317
 csky                 randconfig-a001-20200317
@@ -160,12 +156,13 @@ arc                  randconfig-a001-20200317
 ia64                 randconfig-a001-20200317
 arm                  randconfig-a001-20200317
 arm64                randconfig-a001-20200317
-powerpc              randconfig-a001-20200317
 sparc                randconfig-a001-20200317
+powerpc              randconfig-a001-20200317
 riscv                             allnoconfig
 riscv                            allyesconfig
 riscv                               defconfig
 riscv                    nommu_virt_defconfig
+riscv                            allmodconfig
 s390                       zfcpdump_defconfig
 s390                          debug_defconfig
 s390                             allyesconfig
@@ -182,9 +179,9 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-um                                  defconfig
-um                             i386_defconfig
 um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
 x86_64                              fedora-25
 x86_64                                  kexec
 x86_64                                    lkp
