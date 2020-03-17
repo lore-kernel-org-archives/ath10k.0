@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jE5wG-00009h-VI
- for ath10k@lists.infradead.org; Tue, 17 Mar 2020 06:42:59 +0000
-From: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
-Subject: ath10k: Fill GCMP MIC length for PMF
-Date: Tue, 17 Mar 2020 11:58:19 +0530
-Message-Id: <1584426499-27819-1-git-send-email-ssreeela@codeaurora.org>
+ id 1jE7U0-0008Oz-HS
+ for ath10k@lists.infradead.org; Tue, 17 Mar 2020 08:21:56 +0000
+MIME-Version: 1.0
+Subject: Re: ath10k: Fill GCMP MIC length for PMF
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1584426499-27819-1-git-send-email-ssreeela@codeaurora.org>
+References: <1584426499-27819-1-git-send-email-ssreeela@codeaurora.org>
+Message-Id: <20200317082136.9817CC432C2@smtp.codeaurora.org>
+Date: Tue, 17 Mar 2020 08:21:36 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,175 +18,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Yingying Tang <yintang@codeaurora.org>, Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
+Cc: Yingying Tang <yintang@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Yingying Tang <yintang@codeaurora.org>
+Sowmiya Sree Elavalagan <ssreeela@codeaurora.org> wrote:
 
-GCMP MIC length is not filled for GCMP/GCMP-256 cipher suites in
-PMF enabled case. Due to mismatch in MIC length, deauth/disassoc frames
-are unencrypted.
-This patch fills proper MIC length for GCMP/GCMP-256 cipher suites.
+> From: Yingying Tang <yintang@codeaurora.org>
+> 
+> GCMP MIC length is not filled for GCMP/GCMP-256 cipher suites in
+> PMF enabled case. Due to mismatch in MIC length, deauth/disassoc frames
+> are unencrypted.
+> This patch fills proper MIC length for GCMP/GCMP-256 cipher suites.
+> 
+> Tested HW: QCA9984, QCA9888
+> Tested FW: 10.4-3.6-00104
+> 
+> Signed-off-by: Yingying Tang <yintang@codeaurora.org>
+> Signed-off-by: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
 
-Tested HW: QCA9984, QCA9888
-Tested FW: 10.4-3.6-00104
+Failed to build:
 
-Signed-off-by: Yingying Tang <yintang@codeaurora.org>
-Signed-off-by: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
----
+drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_tx_h_fill_cb':
+drivers/net/wireless/ath/ath10k/mac.c:3611:6: error: 'sta' undeclared (first use in this function); did you mean 'stat'?
+  if (sta) {
+      ^~~
+      stat
+drivers/net/wireless/ath/ath10k/mac.c:3611:6: note: each undeclared identifier is reported only once for each function it appears in
+drivers/net/wireless/ath/ath10k/mac.c:3612:3: error: 'arsta' undeclared (first use in this function)
+   arsta = (struct ath10k_sta *)sta->drv_priv;
+   ^~~~~
+make[5]: *** [drivers/net/wireless/ath/ath10k/mac.o] Error 1
+make[5]: *** Waiting for unfinished jobs....
+make[4]: *** [drivers/net/wireless/ath/ath10k] Error 2
+make[3]: *** [drivers/net/wireless/ath] Error 2
+make[2]: *** [drivers/net/wireless] Error 2
+make[1]: *** [drivers/net] Error 2
+make: *** [drivers] Error 2
 
- drivers/net/wireless/ath/ath10k/core.h   |  2 ++
- drivers/net/wireless/ath/ath10k/htt_tx.c | 12 +++++++++++-
- drivers/net/wireless/ath/ath10k/mac.c    | 19 ++++++++++++++++---
- drivers/net/wireless/ath/ath10k/wmi.c    | 17 +++++++++++++++--
- 4 files changed, 44 insertions(+), 6 deletions(-)
+Patch set to Changes Requested.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index edf314e..bd8ef57 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -119,6 +119,7 @@ struct ath10k_skb_cb {
- 	u16 airtime_est;
- 	struct ieee80211_vif *vif;
- 	struct ieee80211_txq *txq;
-+	u32 ucast_cipher;
- } __packed;
- 
- struct ath10k_skb_rxcb {
-@@ -504,6 +505,7 @@ struct ath10k_sta {
- 	struct work_struct update_wk;
- 	u64 rx_duration;
- 	struct ath10k_htt_tx_stats *tx_stats;
-+	u32 ucast_cipher;
- 
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	/* protected by conf_mutex */
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index a182c09..e9d12ea 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -1163,6 +1163,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	int len = 0;
- 	int msdu_id = -1;
- 	int res;
-+	const u8 *peer_addr;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
- 
- 	len += sizeof(cmd->hdr);
-@@ -1178,7 +1179,16 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	     ieee80211_is_deauth(hdr->frame_control) ||
- 	     ieee80211_is_disassoc(hdr->frame_control)) &&
- 	     ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		peer_addr = hdr->addr1;
-+		if (is_multicast_ether_addr(peer_addr)) {
-+			skb_put(msdu, sizeof(struct ieee80211_mmie_16));
-+		} else {
-+			if (skb_cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP ||
-+			    skb_cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP_256)
-+				skb_put(msdu, IEEE80211_GCMP_MIC_LEN);
-+			else
-+				skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		}
- 	}
- 
- 	txdesc = ath10k_htc_alloc_skb(ar, len);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 23d9830..81e148e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -258,6 +258,7 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 	case WLAN_CIPHER_SUITE_GCMP:
- 	case WLAN_CIPHER_SUITE_GCMP_256:
- 		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_AES_GCM];
-+		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV_MGMT;
- 		break;
- 	case WLAN_CIPHER_SUITE_BIP_GMAC_128:
- 	case WLAN_CIPHER_SUITE_BIP_GMAC_256:
-@@ -3607,6 +3608,12 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
- 	cb->vif = vif;
- 	cb->txq = txq;
- 	cb->airtime_est = airtime;
-+	if (sta) {
-+		arsta = (struct ath10k_sta *)sta->drv_priv;
-+		spin_lock_bh(&ar->data_lock);
-+		cb->ucast_cipher = arsta->ucast_cipher;
-+		spin_unlock_bh(&ar->data_lock);
-+	}
- }
- 
- bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
-@@ -6197,6 +6204,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- {
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	struct ath10k_sta *arsta;
- 	struct ath10k_peer *peer;
- 	const u8 *peer_addr;
- 	bool is_wep = key->cipher == WLAN_CIPHER_SUITE_WEP40 ||
-@@ -6221,12 +6229,17 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 
- 	mutex_lock(&ar->conf_mutex);
- 
--	if (sta)
-+	if (sta) {
-+		arsta = (struct ath10k_sta *)sta->drv_priv;
- 		peer_addr = sta->addr;
--	else if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
-+		spin_lock_bh(&ar->data_lock);
-+		arsta->ucast_cipher = key->cipher;
-+		spin_unlock_bh(&ar->data_lock);
-+	} else if (arvif->vdev_type == WMI_VDEV_TYPE_STA) {
- 		peer_addr = vif->bss_conf.bssid;
--	else
-+	} else {
- 		peer_addr = vif->addr;
-+	}
- 
- 	key->hw_key_idx = key->keyidx;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index e76e365..2ea77bb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1926,6 +1926,7 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 	u32 vdev_id;
- 	u32 buf_len = msdu->len;
- 	u16 fc;
-+	const u8 *peer_addr;
- 
- 	hdr = (struct ieee80211_hdr *)msdu->data;
- 	fc = le16_to_cpu(hdr->frame_control);
-@@ -1946,8 +1947,20 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 	     ieee80211_is_deauth(hdr->frame_control) ||
- 	     ieee80211_is_disassoc(hdr->frame_control)) &&
- 	     ieee80211_has_protected(hdr->frame_control)) {
--		len += IEEE80211_CCMP_MIC_LEN;
--		buf_len += IEEE80211_CCMP_MIC_LEN;
-+		peer_addr = hdr->addr1;
-+		if (is_multicast_ether_addr(peer_addr)) {
-+			len += sizeof(struct ieee80211_mmie_16);
-+			buf_len += sizeof(struct ieee80211_mmie_16);
-+		} else {
-+			if (cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP ||
-+			    cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP_256) {
-+				len += IEEE80211_GCMP_MIC_LEN;
-+				buf_len += IEEE80211_GCMP_MIC_LEN;
-+			} else {
-+				len += IEEE80211_CCMP_MIC_LEN;
-+				buf_len += IEEE80211_CCMP_MIC_LEN;
-+			}
-+		}
- 	}
- 
- 	len = round_up(len, 4);
 -- 
-1.9.1
+https://patchwork.kernel.org/patch/11441863/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
