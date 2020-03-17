@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jE7U0-0008Oz-HS
- for ath10k@lists.infradead.org; Tue, 17 Mar 2020 08:21:56 +0000
+ id 1jEERE-00082a-Fs
+ for ath10k@lists.infradead.org; Tue, 17 Mar 2020 15:47:30 +0000
+Date: Tue, 17 Mar 2020 23:46:48 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 55c76889bb361c499436c01c117e1d3163c5e0c9
+Message-ID: <5e70f0e8.kKBu7V8POQ5BAlvp%lkp@intel.com>
 MIME-Version: 1.0
-Subject: Re: ath10k: Fill GCMP MIC length for PMF
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1584426499-27819-1-git-send-email-ssreeela@codeaurora.org>
-References: <1584426499-27819-1-git-send-email-ssreeela@codeaurora.org>
-Message-Id: <20200317082136.9817CC432C2@smtp.codeaurora.org>
-Date: Tue, 17 Mar 2020 08:21:36 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +20,181 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
-Cc: Yingying Tang <yintang@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Sowmiya Sree Elavalagan <ssreeela@codeaurora.org> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 55c76889bb361c499436c01c117e1d3163c5e0c9  Add localversion-wireless-testing-ath
 
-> From: Yingying Tang <yintang@codeaurora.org>
-> 
-> GCMP MIC length is not filled for GCMP/GCMP-256 cipher suites in
-> PMF enabled case. Due to mismatch in MIC length, deauth/disassoc frames
-> are unencrypted.
-> This patch fills proper MIC length for GCMP/GCMP-256 cipher suites.
-> 
-> Tested HW: QCA9984, QCA9888
-> Tested FW: 10.4-3.6-00104
-> 
-> Signed-off-by: Yingying Tang <yintang@codeaurora.org>
-> Signed-off-by: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
+elapsed time: 483m
 
-Failed to build:
+configs tested: 157
+configs skipped: 0
 
-drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_tx_h_fill_cb':
-drivers/net/wireless/ath/ath10k/mac.c:3611:6: error: 'sta' undeclared (first use in this function); did you mean 'stat'?
-  if (sta) {
-      ^~~
-      stat
-drivers/net/wireless/ath/ath10k/mac.c:3611:6: note: each undeclared identifier is reported only once for each function it appears in
-drivers/net/wireless/ath/ath10k/mac.c:3612:3: error: 'arsta' undeclared (first use in this function)
-   arsta = (struct ath10k_sta *)sta->drv_priv;
-   ^~~~~
-make[5]: *** [drivers/net/wireless/ath/ath10k/mac.o] Error 1
-make[5]: *** Waiting for unfinished jobs....
-make[4]: *** [drivers/net/wireless/ath/ath10k] Error 2
-make[3]: *** [drivers/net/wireless/ath] Error 2
-make[2]: *** [drivers/net/wireless] Error 2
-make[1]: *** [drivers/net] Error 2
-make: *** [drivers] Error 2
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Patch set to Changes Requested.
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+mips                              allnoconfig
+h8300                       h8s-sim_defconfig
+nds32                             allnoconfig
+arc                                 defconfig
+microblaze                    nommu_defconfig
+m68k                           sun3_defconfig
+riscv                          rv32_defconfig
+ia64                             allmodconfig
+s390                                defconfig
+ia64                             allyesconfig
+mips                             allyesconfig
+parisc                           allyesconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                              allnoconfig
+ia64                                defconfig
+arm                              allmodconfig
+arm64                            allmodconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                         64r6el_defconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200317
+x86_64               randconfig-a002-20200317
+x86_64               randconfig-a003-20200317
+i386                 randconfig-a001-20200317
+i386                 randconfig-a002-20200317
+i386                 randconfig-a003-20200317
+riscv                randconfig-a001-20200317
+alpha                randconfig-a001-20200317
+nds32                randconfig-a001-20200317
+m68k                 randconfig-a001-20200317
+parisc               randconfig-a001-20200317
+mips                 randconfig-a001-20200317
+h8300                randconfig-a001-20200317
+sparc64              randconfig-a001-20200317
+c6x                  randconfig-a001-20200317
+nios2                randconfig-a001-20200317
+microblaze           randconfig-a001-20200317
+xtensa               randconfig-a001-20200317
+openrisc             randconfig-a001-20200317
+csky                 randconfig-a001-20200317
+sh                   randconfig-a001-20200317
+s390                 randconfig-a001-20200317
+x86_64               randconfig-b001-20200317
+x86_64               randconfig-b002-20200317
+x86_64               randconfig-b003-20200317
+i386                 randconfig-b001-20200317
+i386                 randconfig-b002-20200317
+i386                 randconfig-b003-20200317
+x86_64               randconfig-d001-20200317
+i386                 randconfig-d001-20200317
+i386                 randconfig-d003-20200317
+i386                 randconfig-d002-20200317
+x86_64               randconfig-d003-20200317
+x86_64               randconfig-d002-20200317
+x86_64               randconfig-e001-20200317
+x86_64               randconfig-e002-20200317
+x86_64               randconfig-e003-20200317
+i386                 randconfig-e001-20200317
+i386                 randconfig-e002-20200317
+i386                 randconfig-e003-20200317
+x86_64               randconfig-f001-20200317
+x86_64               randconfig-f002-20200317
+x86_64               randconfig-f003-20200317
+i386                 randconfig-f001-20200317
+i386                 randconfig-f002-20200317
+i386                 randconfig-f003-20200317
+x86_64               randconfig-g001-20200317
+x86_64               randconfig-g002-20200317
+x86_64               randconfig-g003-20200317
+i386                 randconfig-g001-20200317
+i386                 randconfig-g002-20200317
+i386                 randconfig-g003-20200317
+x86_64               randconfig-h001-20200317
+x86_64               randconfig-h002-20200317
+x86_64               randconfig-h003-20200317
+i386                 randconfig-h001-20200317
+i386                 randconfig-h002-20200317
+i386                 randconfig-h003-20200317
+arc                  randconfig-a001-20200317
+ia64                 randconfig-a001-20200317
+arm                  randconfig-a001-20200317
+arm64                randconfig-a001-20200317
+powerpc              randconfig-a001-20200317
+sparc                randconfig-a001-20200317
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
--- 
-https://patchwork.kernel.org/patch/11441863/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
