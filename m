@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEZUG-0006WJ-V4
- for ath10k@lists.infradead.org; Wed, 18 Mar 2020 14:16:04 +0000
-From: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
-Subject: [PATCH v2] ath10k: Fill GCMP MIC length for PMF
-Date: Wed, 18 Mar 2020 19:45:11 +0530
-Message-Id: <1584540911-4267-1-git-send-email-ssreeela@codeaurora.org>
+ id 1jEvip-0004WI-7B
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2020 14:00:32 +0000
+Date: Thu, 19 Mar 2020 21:59:31 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS b6ebf372b102a166baaa467a9df5e398a7b338be
+Message-ID: <5e737ac3.ePOmNnmevv3iTR9x%lkp@intel.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,209 +16,180 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Yingying Tang <yintang@codeaurora.org>, Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-From: Yingying Tang <yintang@codeaurora.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: b6ebf372b102a166baaa467a9df5e398a7b338be  Add localversion-wireless-testing-ath
 
-GCMP MIC length is not filled for GCMP/GCMP-256 cipher suites in
-PMF enabled case. Due to mismatch in MIC length, deauth/disassoc frames
-are unencrypted.
-This patch fills proper MIC length for GCMP/GCMP-256 cipher suites.
+elapsed time: 1012m
 
-Tested HW: QCA9984, QCA9888
-Tested FW: 10.4-3.6-00104
+configs tested: 152
+configs skipped: 0
 
-Signed-off-by: Yingying Tang <yintang@codeaurora.org>
-Co-developed-by: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
-Signed-off-by: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+microblaze                      mmu_defconfig
+um                                  defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200318
+x86_64               randconfig-a002-20200318
+x86_64               randconfig-a003-20200318
+i386                 randconfig-a001-20200318
+i386                 randconfig-a002-20200318
+i386                 randconfig-a003-20200318
+alpha                randconfig-a001-20200318
+m68k                 randconfig-a001-20200318
+mips                 randconfig-a001-20200318
+nds32                randconfig-a001-20200318
+parisc               randconfig-a001-20200318
+riscv                randconfig-a001-20200318
+c6x                  randconfig-a001-20200318
+h8300                randconfig-a001-20200318
+microblaze           randconfig-a001-20200318
+nios2                randconfig-a001-20200318
+sparc64              randconfig-a001-20200318
+csky                 randconfig-a001-20200318
+openrisc             randconfig-a001-20200318
+s390                 randconfig-a001-20200318
+sh                   randconfig-a001-20200318
+xtensa               randconfig-a001-20200318
+x86_64               randconfig-b001-20200318
+x86_64               randconfig-b002-20200318
+x86_64               randconfig-b003-20200318
+i386                 randconfig-b001-20200318
+i386                 randconfig-b002-20200318
+i386                 randconfig-b003-20200318
+x86_64               randconfig-c001-20200318
+x86_64               randconfig-c002-20200318
+x86_64               randconfig-c003-20200318
+i386                 randconfig-c001-20200318
+i386                 randconfig-c002-20200318
+i386                 randconfig-c003-20200318
+x86_64               randconfig-d001-20200318
+x86_64               randconfig-d002-20200318
+x86_64               randconfig-d003-20200318
+i386                 randconfig-d001-20200318
+i386                 randconfig-d002-20200318
+i386                 randconfig-d003-20200318
+x86_64               randconfig-e001-20200318
+x86_64               randconfig-e002-20200318
+x86_64               randconfig-e003-20200318
+i386                 randconfig-e001-20200318
+i386                 randconfig-e002-20200318
+i386                 randconfig-e003-20200318
+x86_64               randconfig-f001-20200318
+x86_64               randconfig-f002-20200318
+x86_64               randconfig-f003-20200318
+i386                 randconfig-f001-20200318
+i386                 randconfig-f002-20200318
+i386                 randconfig-f003-20200318
+x86_64               randconfig-h001-20200318
+x86_64               randconfig-h002-20200318
+x86_64               randconfig-h003-20200318
+i386                 randconfig-h001-20200318
+i386                 randconfig-h002-20200318
+i386                 randconfig-h003-20200318
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                            allmodconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
 ---
- drivers/net/wireless/ath/ath10k/core.h   |  2 ++
- drivers/net/wireless/ath/ath10k/htt_tx.c | 12 +++++++++++-
- drivers/net/wireless/ath/ath10k/mac.c    | 25 ++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.c    | 17 +++++++++++++++--
- 4 files changed, 48 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index edf314e..bd8ef57 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -119,6 +119,7 @@ struct ath10k_skb_cb {
- 	u16 airtime_est;
- 	struct ieee80211_vif *vif;
- 	struct ieee80211_txq *txq;
-+	u32 ucast_cipher;
- } __packed;
- 
- struct ath10k_skb_rxcb {
-@@ -504,6 +505,7 @@ struct ath10k_sta {
- 	struct work_struct update_wk;
- 	u64 rx_duration;
- 	struct ath10k_htt_tx_stats *tx_stats;
-+	u32 ucast_cipher;
- 
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	/* protected by conf_mutex */
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index a182c09..e9d12ea 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -1163,6 +1163,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	int len = 0;
- 	int msdu_id = -1;
- 	int res;
-+	const u8 *peer_addr;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
- 
- 	len += sizeof(cmd->hdr);
-@@ -1178,7 +1179,16 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	     ieee80211_is_deauth(hdr->frame_control) ||
- 	     ieee80211_is_disassoc(hdr->frame_control)) &&
- 	     ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		peer_addr = hdr->addr1;
-+		if (is_multicast_ether_addr(peer_addr)) {
-+			skb_put(msdu, sizeof(struct ieee80211_mmie_16));
-+		} else {
-+			if (skb_cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP ||
-+			    skb_cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP_256)
-+				skb_put(msdu, IEEE80211_GCMP_MIC_LEN);
-+			else
-+				skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		}
- 	}
- 
- 	txdesc = ath10k_htc_alloc_skb(ar, len);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 23d9830..2d03b8d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -258,6 +258,7 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 	case WLAN_CIPHER_SUITE_GCMP:
- 	case WLAN_CIPHER_SUITE_GCMP_256:
- 		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_AES_GCM];
-+		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV_MGMT;
- 		break;
- 	case WLAN_CIPHER_SUITE_BIP_GMAC_128:
- 	case WLAN_CIPHER_SUITE_BIP_GMAC_256:
-@@ -3576,6 +3577,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
- static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
- 				    struct ieee80211_vif *vif,
- 				    struct ieee80211_txq *txq,
-+				    struct ieee80211_sta *sta,
- 				    struct sk_buff *skb, u16 airtime)
- {
- 	struct ieee80211_hdr *hdr = (void *)skb->data;
-@@ -3583,6 +3585,7 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
- 	const struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	bool is_data = ieee80211_is_data(hdr->frame_control) ||
- 			ieee80211_is_data_qos(hdr->frame_control);
-+	struct ath10k_sta *arsta;
- 
- 	cb->flags = 0;
- 	if (!ath10k_tx_h_use_hwcrypto(vif, skb))
-@@ -3607,6 +3610,12 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
- 	cb->vif = vif;
- 	cb->txq = txq;
- 	cb->airtime_est = airtime;
-+	if (sta) {
-+		arsta = (struct ath10k_sta *)sta->drv_priv;
-+		spin_lock_bh(&ar->data_lock);
-+		cb->ucast_cipher = arsta->ucast_cipher;
-+		spin_unlock_bh(&ar->data_lock);
-+	}
- }
- 
- bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
-@@ -4078,7 +4087,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 	}
- 
- 	airtime = ath10k_mac_update_airtime(ar, txq, skb);
--	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb, airtime);
-+	ath10k_mac_tx_h_fill_cb(ar, vif, txq, sta, skb, airtime);
- 
- 	skb_len = skb->len;
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
-@@ -4348,7 +4357,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 	u16 airtime;
- 
- 	airtime = ath10k_mac_update_airtime(ar, txq, skb);
--	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb, airtime);
-+	ath10k_mac_tx_h_fill_cb(ar, vif, txq, sta, skb, airtime);
- 
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 	txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
-@@ -6197,6 +6206,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- {
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	struct ath10k_sta *arsta;
- 	struct ath10k_peer *peer;
- 	const u8 *peer_addr;
- 	bool is_wep = key->cipher == WLAN_CIPHER_SUITE_WEP40 ||
-@@ -6221,12 +6231,17 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 
- 	mutex_lock(&ar->conf_mutex);
- 
--	if (sta)
-+	if (sta) {
-+		arsta = (struct ath10k_sta *)sta->drv_priv;
- 		peer_addr = sta->addr;
--	else if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
-+		spin_lock_bh(&ar->data_lock);
-+		arsta->ucast_cipher = key->cipher;
-+		spin_unlock_bh(&ar->data_lock);
-+	} else if (arvif->vdev_type == WMI_VDEV_TYPE_STA) {
- 		peer_addr = vif->bss_conf.bssid;
--	else
-+	} else {
- 		peer_addr = vif->addr;
-+	}
- 
- 	key->hw_key_idx = key->keyidx;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index e76e365..2ea77bb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1926,6 +1926,7 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 	u32 vdev_id;
- 	u32 buf_len = msdu->len;
- 	u16 fc;
-+	const u8 *peer_addr;
- 
- 	hdr = (struct ieee80211_hdr *)msdu->data;
- 	fc = le16_to_cpu(hdr->frame_control);
-@@ -1946,8 +1947,20 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 	     ieee80211_is_deauth(hdr->frame_control) ||
- 	     ieee80211_is_disassoc(hdr->frame_control)) &&
- 	     ieee80211_has_protected(hdr->frame_control)) {
--		len += IEEE80211_CCMP_MIC_LEN;
--		buf_len += IEEE80211_CCMP_MIC_LEN;
-+		peer_addr = hdr->addr1;
-+		if (is_multicast_ether_addr(peer_addr)) {
-+			len += sizeof(struct ieee80211_mmie_16);
-+			buf_len += sizeof(struct ieee80211_mmie_16);
-+		} else {
-+			if (cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP ||
-+			    cb->ucast_cipher == WLAN_CIPHER_SUITE_GCMP_256) {
-+				len += IEEE80211_GCMP_MIC_LEN;
-+				buf_len += IEEE80211_GCMP_MIC_LEN;
-+			} else {
-+				len += IEEE80211_CCMP_MIC_LEN;
-+				buf_len += IEEE80211_CCMP_MIC_LEN;
-+			}
-+		}
- 	}
- 
- 	len = round_up(len, 4);
--- 
-1.9.1
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
