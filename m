@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEvip-0004WI-7B
- for ath10k@lists.infradead.org; Thu, 19 Mar 2020 14:00:32 +0000
-Date: Thu, 19 Mar 2020 21:59:31 +0800
+ id 1jEvik-0004Uf-Ge
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2020 14:00:28 +0000
+Date: Thu, 19 Mar 2020 21:59:34 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS b6ebf372b102a166baaa467a9df5e398a7b338be
-Message-ID: <5e737ac3.ePOmNnmevv3iTR9x%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ acc79d981c1462b22a7a2cb0d39725f8c01fc425
+Message-ID: <5e737ac6.wsJwUbFXLZaLlSoi%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: b6ebf372b102a166baaa467a9df5e398a7b338be  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: acc79d981c1462b22a7a2cb0d39725f8c01fc425  ath11k: Perform per-msdu rx processing
 
-elapsed time: 1012m
+elapsed time: 1013m
 
 configs tested: 152
 configs skipped: 0
@@ -62,14 +63,14 @@ ia64                             allmodconfig
 ia64                              allnoconfig
 ia64                             allyesconfig
 ia64                                defconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
 c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
 openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
 alpha                               defconfig
 csky                                defconfig
 nds32                             allnoconfig
@@ -180,12 +181,12 @@ sparc64                          allyesconfig
 sparc64                             defconfig
 um                           x86_64_defconfig
 um                             i386_defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
 x86_64                              fedora-25
 x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
