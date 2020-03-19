@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEvik-0004Uf-Ge
- for ath10k@lists.infradead.org; Thu, 19 Mar 2020 14:00:28 +0000
-Date: Thu, 19 Mar 2020 21:59:34 +0800
+ id 1jEvis-0004WS-Mr
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2020 14:00:36 +0000
+Date: Thu, 19 Mar 2020 21:59:36 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- acc79d981c1462b22a7a2cb0d39725f8c01fc425
-Message-ID: <5e737ac6.wsJwUbFXLZaLlSoi%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 78fa6be82052fe65de326a00de4e1ee35129a06d
+Message-ID: <5e737ac8.1rY6sQEozNnJMT0r%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: acc79d981c1462b22a7a2cb0d39725f8c01fc425  ath11k: Perform per-msdu rx processing
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 78fa6be82052fe65de326a00de4e1ee35129a06d  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 1013m
+elapsed time: 1012m
 
 configs tested: 152
 configs skipped: 0
@@ -82,13 +82,13 @@ m68k                             allmodconfig
 m68k                       m5475evb_defconfig
 m68k                          multi_defconfig
 m68k                           sun3_defconfig
-arc                              allyesconfig
 arc                                 defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
+arc                              allyesconfig
 powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
 mips                           32r2_defconfig
 mips                         64r6el_defconfig
 mips                             allmodconfig
@@ -169,11 +169,11 @@ s390                             allyesconfig
 s390                          debug_defconfig
 s390                                defconfig
 s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
 sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
+sh                               allmodconfig
 sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
 sparc                               defconfig
 sparc64                          allmodconfig
 sparc64                           allnoconfig
