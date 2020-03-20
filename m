@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jFQBA-0005S2-Pg
- for ath10k@lists.infradead.org; Fri, 20 Mar 2020 22:31:50 +0000
-Date: Sat, 21 Mar 2020 06:31:27 +0800
+ id 1jFQBF-0005SH-NC
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2020 22:31:55 +0000
+Date: Sat, 21 Mar 2020 06:31:29 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- d5de21d3a111447381e56dda4c594ba762d17d18
-Message-ID: <5e75443f.2rewruNXIrE52gTq%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 43c51de9d0c65007fa7dfb604a1bee378a3fedc2
+Message-ID: <5e754441.DPvDNXTkJ4MqV3or%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: d5de21d3a111447381e56dda4c594ba762d17d18  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 43c51de9d0c65007fa7dfb604a1bee378a3fedc2  ath10k: Fill GCMP MIC length for PMF
 
 elapsed time: 482m
 
@@ -41,14 +41,14 @@ arm                              allyesconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
 arm64                            allyesconfig
-arm                         at91_dt_defconfig
 arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
 arm                          exynos_defconfig
 arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
 arm                           sunxi_defconfig
-arm64                               defconfig
+arm                        multi_v7_defconfig
 ia64                             allyesconfig
 nds32                             allnoconfig
 parisc                generic-64bit_defconfig
@@ -64,24 +64,24 @@ powerpc                             defconfig
 i386                             alldefconfig
 i386                             allyesconfig
 i386                                defconfig
-ia64                             alldefconfig
 ia64                              allnoconfig
+ia64                             alldefconfig
 c6x                              allyesconfig
 nios2                         10m50_defconfig
 nios2                         3c120_defconfig
 openrisc                    or1ksim_defconfig
 openrisc                 simple_smp_defconfig
 xtensa                       common_defconfig
-nds32                               defconfig
-csky                                defconfig
 alpha                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
+csky                                defconfig
+nds32                               defconfig
 h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
+h8300                     edosk2674_defconfig
 m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
 m68k                           sun3_defconfig
+m68k                          multi_defconfig
 arc                              allyesconfig
 microblaze                      mmu_defconfig
 microblaze                    nommu_defconfig
@@ -195,9 +195,9 @@ sparc64                          allmodconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                             defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
 um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
 x86_64                              fedora-25
 x86_64                                  kexec
 x86_64                                    lkp
