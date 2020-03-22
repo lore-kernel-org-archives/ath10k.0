@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jG8qF-0000QB-3u
- for ath10k@lists.infradead.org; Sun, 22 Mar 2020 22:13:12 +0000
-Date: Mon, 23 Mar 2020 06:12:03 +0800
+ id 1jG99i-0006ko-Uc
+ for ath10k@lists.infradead.org; Sun, 22 Mar 2020 22:33:20 +0000
+Date: Mon, 23 Mar 2020 06:32:21 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 54b6a78e59cc07a00f8c696c2df17e587f9788cc
-Message-ID: <5e77e2b3.Z+87koFDIj0s/DgT%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 5bc4a8084c1f5919707053b991fa2700e3d37635
+Message-ID: <5e77e775.s2bXsYF+Zri1PqZY%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 54b6a78e59cc07a00f8c696c2df17e587f9788cc  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 5bc4a8084c1f5919707053b991fa2700e3d37635  Add localversion-wireless-testing-ath
 
-elapsed time: 481m
+elapsed time: 501m
 
-configs tested: 157
+configs tested: 155
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -41,30 +40,23 @@ arm64                            allmodconfig
 arm                              allmodconfig
 arm64                             allnoconfig
 arm                               allnoconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
 sparc                            allyesconfig
 nds32                               defconfig
 s390                             allmodconfig
 s390                       zfcpdump_defconfig
 c6x                              allyesconfig
 um                                  defconfig
+arc                                 defconfig
 sh                               allmodconfig
 i386                              allnoconfig
 i386                             alldefconfig
 i386                             allyesconfig
 i386                                defconfig
-ia64                             alldefconfig
 ia64                             allmodconfig
+ia64                                defconfig
 ia64                              allnoconfig
 ia64                             allyesconfig
-ia64                                defconfig
+ia64                             alldefconfig
 nios2                         3c120_defconfig
 nios2                         10m50_defconfig
 c6x                        evmc6678_defconfig
@@ -82,7 +74,6 @@ m68k                             allmodconfig
 m68k                       m5475evb_defconfig
 m68k                          multi_defconfig
 m68k                           sun3_defconfig
-arc                                 defconfig
 arc                              allyesconfig
 powerpc                             defconfig
 powerpc                       ppc64_defconfig
@@ -107,11 +98,11 @@ x86_64               randconfig-a002-20200322
 x86_64               randconfig-a001-20200322
 i386                 randconfig-a003-20200322
 x86_64               randconfig-a003-20200322
+alpha                randconfig-a001-20200322
+m68k                 randconfig-a001-20200322
 mips                 randconfig-a001-20200322
 nds32                randconfig-a001-20200322
-m68k                 randconfig-a001-20200322
 parisc               randconfig-a001-20200322
-alpha                randconfig-a001-20200322
 riscv                randconfig-a001-20200322
 c6x                  randconfig-a001-20200322
 h8300                randconfig-a001-20200322
@@ -134,24 +125,30 @@ x86_64               randconfig-c003-20200322
 i386                 randconfig-c001-20200322
 i386                 randconfig-c002-20200322
 i386                 randconfig-c003-20200322
-x86_64               randconfig-d001-20200322
-x86_64               randconfig-d002-20200322
-x86_64               randconfig-d003-20200322
+i386                 randconfig-d003-20200322
 i386                 randconfig-d001-20200322
 i386                 randconfig-d002-20200322
-i386                 randconfig-d003-20200322
+x86_64               randconfig-d001-20200322
+x86_64               randconfig-d003-20200322
+x86_64               randconfig-d002-20200322
+x86_64               randconfig-e001-20200322
+x86_64               randconfig-e002-20200322
+x86_64               randconfig-e003-20200322
+i386                 randconfig-e001-20200322
+i386                 randconfig-e002-20200322
+i386                 randconfig-e003-20200322
 x86_64               randconfig-f001-20200322
 x86_64               randconfig-f002-20200322
 x86_64               randconfig-f003-20200322
 i386                 randconfig-f001-20200322
 i386                 randconfig-f002-20200322
 i386                 randconfig-f003-20200322
-i386                 randconfig-g003-20200322
+x86_64               randconfig-g001-20200322
 x86_64               randconfig-g002-20200322
+x86_64               randconfig-g003-20200322
 i386                 randconfig-g001-20200322
 i386                 randconfig-g002-20200322
-x86_64               randconfig-g001-20200322
-x86_64               randconfig-g003-20200322
+i386                 randconfig-g003-20200322
 x86_64               randconfig-h002-20200322
 x86_64               randconfig-h003-20200322
 i386                 randconfig-h003-20200322
@@ -186,12 +183,12 @@ sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                           x86_64_defconfig
 um                             i386_defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
 x86_64                              fedora-25
 x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
