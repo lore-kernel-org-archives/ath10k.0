@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGiUt-0006jx-R4
- for ath10k@lists.infradead.org; Tue, 24 Mar 2020 12:17:33 +0000
+ id 1jGici-0001vg-Mf
+ for ath10k@lists.infradead.org; Tue, 24 Mar 2020 12:25:38 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: QCA6174 - failed to fetch board data
-References: <b10a2a73-b6a2-8ed5-95f9-600b7c7710db@gmail.com>
-Date: Tue, 24 Mar 2020 14:17:25 +0200
-In-Reply-To: <b10a2a73-b6a2-8ed5-95f9-600b7c7710db@gmail.com> (Tim Klicks's
- message of "Thu, 19 Mar 2020 19:43:38 +0100")
-Message-ID: <87blom7xre.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add retry mechanism for ath10k_start
+References: <20200120025609.6060-1-wgong@codeaurora.org>
+ <87mu9mwwhs.fsf@kamboji.qca.qualcomm.com>
+ <576c72fed4a15a13989dde163d77ed8c@codeaurora.org>
+Date: Tue, 24 Mar 2020 14:25:30 +0200
+In-Reply-To: <576c72fed4a15a13989dde163d77ed8c@codeaurora.org> (Wen Gong's
+ message of "Fri, 14 Feb 2020 10:41:52 +0800")
+Message-ID: <877dza7xdx.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,37 +25,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tim Klicks <tim.klicks@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Tim Klicks <tim.klicks@gmail.com> writes:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> I am running Fedora 31 on my Redmibook 14 and I am facing a problem
-> regarding the wifi.
-> The wifi is not working when using any linux-firmware package provided.
-> Neither the one coming via the official update channel nor cloning the
-> git repo and using the master branch is helping.
-> The only way to get it to work was by following this Gentoo Linux KB
-> article:
-> https://wiki.gentoo.org/wiki/Qualcomm_Atheros_QCA6174
-> Which is pointing to this github pull request:
-> https://github.com/kvalo/ath10k-firmware/pull/3
+> On 2020-02-13 19:35, Kalle Valo wrote:
+>>
+>> I'm not convinved about this. ath10k assumes that SDIO bus works
+>> reliably and there's no data loss. In my opinion if the SDIO is not
+>> working reliably we should fail immediately with a clear error message
+>> for the user, instead of having an unstable connection. And I
+>> understand
+>> from the logs that ath10k fails cleanly in this simulated failure.
+>>
+>> So what you do here is ignore the assumption that the SDIO bus should
+>> always work reliably and add a workaround by trying to restart the
+>> firmware multiple times, and hope that by luck it works during one
+>> of 10
+>> retry attempts. But then what? Isn't the WLAN connection flaky as SDIO
+>> bus is not reliable? So if we were to follow that design logic,
+>> shouldn't we add retries for _all_ ath10k SDIO transactions? But that
+>> would make ath10k even more complex as it is.
 >
-> Although wifi is working with this workaround, could you please check
-> how much work it would be to integrate this fix into the mainline
-> package?
+> for other SDIO transfer, like data tx/rx, if it fail, the upper stack
+> has error mechanism to handle the fail.
 
-Sorry, no time to check the details on your problem but if this is about
-a missing board file please submit them using these instructions:
+Handle the fail is different from retrying. I'm all that all error cases
+need to be gracefully handled and bailed out with a clear error, but I
+have not seen any logic that mac80211 or driver should retry
+transmissions to firmware because of hardware errors. Just as an
+example, if there is data loss on the PCI/SDIO bus I don't think the
+ath10k credit handling will work for long.
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
+> but for ath10k_start, if it fails, especailly for recovery, then it can
+> not recovery again, because cfg80211_shutdown_all_interfaces, and it
+> need
+> to reboot system to recovery wlan by test.
+>>
+>> Because I think this patch makes things worse for the user, so I would
+>> like to understand the real life use case this patch is trying to fix
+>> and how it would help the user.
+>
+> sometimes it has recovery/suspend/resume test case, it need to make sure
+> ath10k_start success, otherwise wlan will can not recovery unless reboot
+> system.
 
-Do note that I have like 20 board file submissions pending, but I'll get
-to them eventually.
-
-I don't deal with pull requests as it's very hard to diff binary file
-changes, I wish I could disable the pull request feature on github
-altogether but have not figured out how to do that.
+If this works 99% of the time and 1% is failing then you should find the
+root cause for that 1% case and fix that. The bug might be in ath10k, in
+SDIO controller driver or maybe even somewhere else.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
