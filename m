@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from mail-co1nam11on2109.outbound.protection.outlook.com
+ ([40.107.220.109] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGnWs-0008Ud-9P
- for ath10k@lists.infradead.org; Tue, 24 Mar 2020 17:39:55 +0000
-Received: by mail-wm1-x344.google.com with SMTP id 26so3058704wmk.1
- for <ath10k@lists.infradead.org>; Tue, 24 Mar 2020 10:39:53 -0700 (PDT)
+ id 1jGtpT-0000Hv-9v
+ for ath10k@lists.infradead.org; Wed, 25 Mar 2020 00:23:32 +0000
+From: Dawei Chen <dchen@silexamerica.com>
+Subject: ath10k-QCA9377-3 utf.bin file for regulatory compliance testing
+Date: Wed, 25 Mar 2020 00:23:26 +0000
+Message-ID: <BY5PR19MB411465B4C8BD623EC90097CECACE0@BY5PR19MB4114.namprd19.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <CAG2Q2vXt3af3ATRnFNW8bA2BbaQ47fLsS1dL1iJ6JGQg=kbJSQ@mail.gmail.com>
- <87ftdy7y3b.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87ftdy7y3b.fsf@kamboji.qca.qualcomm.com>
-From: Cale Collins <ccollins@gateworks.com>
-Date: Tue, 24 Mar 2020 10:39:16 -0700
-Message-ID: <CAG2Q2vWuGMooJJ+yiU+gBPBOubbokkLuC9JUJSf0jiF9stAFKg@mail.gmail.com>
-Subject: Re: ath10k_pci rawmode = 1 requires support from firmware
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +18,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello Kalle,
+Hi,
 
-Ultimately I ended up using the 5.4 kernel and
-firmware-6.bin_WLAN.RM.4.4.1.c3-00038. This firmware didn't work with
-"iw" and required custom building "wpa_supplicant" with
-"CONFIG_MESH=y" enabled in the .config.
+I would like to setup RF tests for a QCA9377-3 WiFi radio module for regula=
+tory compliance.
 
-I apologize for leaving the thread hanging, I was vacillating if this
-information would be prudent or considered a regression. I'm glad to
-do further testing (with the latest mainline kernel) if you need.
+I see the ath10k firmware files from the website below.=A0=A0
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA9377/hw1.0
 
-Best regards,
+However, I don't see the utf.bin (test mode) firmware file.
+Where and how would one obtain the test mode firmware for the corresponding=
+ ath10k firmware?=A0
 
-Cale Collins
+Any feedback will be appreciated.
+
+Thank you very much,
+
+Dawei Chen
 
 _______________________________________________
 ath10k mailing list
