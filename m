@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jH3mF-0000Yc-AF
- for ath10k@lists.infradead.org; Wed, 25 Mar 2020 11:00:54 +0000
-From: <pillair@codeaurora.org>
-References: <1585054044-18667-2-git-send-email-pillair@codeaurora.org>
- <20200324141404.C9A7FC432C2@smtp.codeaurora.org>
-In-Reply-To: <20200324141404.C9A7FC432C2@smtp.codeaurora.org>
-Subject: RE: [PATCH 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
- wifi node
-Date: Wed, 25 Mar 2020 16:30:25 +0530
-Message-ID: <000001d60294$9abcfb20$d036f160$@codeaurora.org>
-MIME-Version: 1.0
-Content-Language: en-us
+ id 1jH3nN-0000lF-1T
+ for ath10k@lists.infradead.org; Wed, 25 Mar 2020 11:02:04 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v2 3/3] ath10k: Add support for targets without trustzone
+Date: Wed, 25 Mar 2020 16:31:40 +0530
+Message-Id: <1585134100-5944-4-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1585134100-5944-1-git-send-email-pillair@codeaurora.org>
+References: <1585134100-5944-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,147 +17,206 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Kalle Valo' <kvalo@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Kalle,
+Add the support to attach and map iommu
+domain for targets which do not have the
+support of TrustZone.
 
-I had tested it on a slightly older ath10k tree, and missed a few cleanup while rebasing it on the ath10k tree tip.
-I have now fixed these build errors and will send out v2 for this patchset.
+Tested HW: WCN3990
+Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
-Thanks,
-Rakesh Pillai.
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 118 ++++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/snoc.h |   7 ++
+ 2 files changed, 124 insertions(+), 1 deletion(-)
 
-> -----Original Message-----
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Sent: Tuesday, March 24, 2020 7:44 PM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Rakesh Pillai
-> <pillair@codeaurora.org>
-> Subject: Re: [PATCH 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
-> wifi node
-> 
-> Rakesh Pillai <pillair@codeaurora.org> wrote:
-> 
-> > Add a wifi-firmware subnode for the wifi node.
-> > This wifi-firmware subnode is needed for the
-> > targets which do not support TrustZone.
-> >
-> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> 
-> Fails to build and has warnings. How did you test this?
-> 
-> drivers/net/wireless/ath/ath10k/qmi.c: In function
-> 'ath10k_qmi_msa_mem_info_send_sync_msg':
-> drivers/net/wireless/ath/ath10k/qmi.c:160:23: error: 'struct ath10k_qmi' has
-> no member named 'msa_pa'
->   max_mapped_addr = qmi->msa_pa + qmi->msa_mem_size;
->                        ^~
-> drivers/net/wireless/ath/ath10k/qmi.c:160:37: error: 'struct ath10k_qmi' has
-> no member named 'msa_mem_size'
->   max_mapped_addr = qmi->msa_pa + qmi->msa_mem_size;
->                                      ^~
-> drivers/net/wireless/ath/ath10k/qmi.c:163:41: error: 'struct ath10k_qmi' has
-> no member named 'msa_mem_size'
->    if (resp.mem_region_info[i].size > qmi->msa_mem_size ||
->                                          ^~
-> drivers/net/wireless/ath/ath10k/qmi.c:165:48: error: 'struct ath10k_qmi' has
-> no member named 'msa_pa'
->        resp.mem_region_info[i].region_addr < qmi->msa_pa ||
->                                                 ^~
-> make[5]: *** [drivers/net/wireless/ath/ath10k/qmi.o] Error 1
-> make[5]: *** Waiting for unfinished jobs....
-> In file included from ./include/linux/byteorder/little_endian.h:5,
->                  from ./arch/x86/include/uapi/asm/byteorder.h:5,
->                  from ./include/asm-generic/bitops/le.h:6,
->                  from ./arch/x86/include/asm/bitops.h:395,
->                  from ./include/linux/bitops.h:29,
->                  from ./include/linux/kernel.h:12,
->                  from ./include/linux/clk.h:13,
->                  from drivers/net/wireless/ath/ath10k/snoc.c:6:
-> drivers/net/wireless/ath/ath10k/snoc.c: In function
-> 'ath10k_msa_dump_memory':
-> drivers/net/wireless/ath/ath10k/snoc.c:1424:54: error: 'struct ath10k_qmi'
-> has no member named 'msa_va'
->   hdr->start = cpu_to_le32((unsigned long)ar_snoc->qmi->msa_va);
->                                                       ^~
-> ./include/uapi/linux/byteorder/little_endian.h:33:51: note: in definition of
-> macro '__cpu_to_le32'
->  #define __cpu_to_le32(x) ((__force __le32)(__u32)(x))
->                                                    ^
-> drivers/net/wireless/ath/ath10k/snoc.c:1424:15: note: in expansion of macro
-> 'cpu_to_le32'
->   hdr->start = cpu_to_le32((unsigned long)ar_snoc->qmi->msa_va);
->                ^~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/snoc.c:1425:40: error: 'struct ath10k_qmi'
-> has no member named 'msa_mem_size'
->   hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
->                                         ^~
-> ./include/uapi/linux/byteorder/little_endian.h:33:51: note: in definition of
-> macro '__cpu_to_le32'
->  #define __cpu_to_le32(x) ((__force __le32)(__u32)(x))
->                                                    ^
-> drivers/net/wireless/ath/ath10k/snoc.c:1425:16: note: in expansion of macro
-> 'cpu_to_le32'
->   hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
->                 ^~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/snoc.c:1427:40: error: 'struct ath10k_qmi'
-> has no member named 'msa_mem_size'
->   if (current_region->len < ar_snoc->qmi->msa_mem_size) {
->                                         ^~
-> drivers/net/wireless/ath/ath10k/snoc.c:1428:27: error: 'struct ath10k_qmi'
-> has no member named 'msa_va'
->    memcpy(buf, ar_snoc->qmi->msa_va, current_region->len);
->                            ^~
-> drivers/net/wireless/ath/ath10k/snoc.c:1430:41: error: 'struct ath10k_qmi'
-> has no member named 'msa_mem_size'
->         current_region->len, ar_snoc->qmi->msa_mem_size);
->                                          ^~
-> drivers/net/wireless/ath/ath10k/snoc.c:1432:27: error: 'struct ath10k_qmi'
-> has no member named 'msa_va'
->    memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
->                            ^~
-> drivers/net/wireless/ath/ath10k/snoc.c:1432:49: error: 'struct ath10k_qmi'
-> has no member named 'msa_mem_size'
->    memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
->                                                  ^~
-> drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_fw_deinit':
-> drivers/net/wireless/ath/ath10k/snoc.c:1593:14: error: assignment of read-
-> only variable 'mapped_size'
->   mapped_size = ar_snoc->fw.mapped_mem_size;
->               ^
-> drivers/net/wireless/ath/ath10k/snoc.c:1599:46: warning: format '%d'
-> expects argument of type 'int', but argument 3 has type 'size_t' {aka 'long
-> unsigned int'} [-Wformat=]
->    ath10k_err(ar, "failed to unmap firmware: %d\n",
->                                              ~^
->                                              %ld
->        unmapped_size);
->        ~~~~~~~~~~~~~
-> make[5]: *** [drivers/net/wireless/ath/ath10k/snoc.o] Error 1
-> make[4]: *** [drivers/net/wireless/ath/ath10k] Error 2
-> make[3]: *** [drivers/net/wireless/ath] Error 2
-> make[2]: *** [drivers/net/wireless] Error 2
-> make[1]: *** [drivers/net] Error 2
-> make: *** [drivers] Error 2
-> 
-> 3 patches set to Changes Requested.
-> 
-> 11455345 [1/3] dt-bindings: ath10k: Add wifi-firmware subnode for wifi node
-> 11455351 [2/3] ath10k: Setup the msa resources before qmi init
-> 11455353 [3/3] ath10k: Add support for targets without trustzone
-> 
-> --
-> https://patchwork.kernel.org/patch/11455345/
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
-> atches
-
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 3633ea5..7a7e79b 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -12,6 +12,7 @@
+ #include <linux/property.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/of_address.h>
++#include <linux/iommu.h>
+ 
+ #include "ce.h"
+ #include "coredump.h"
+@@ -1499,6 +1500,111 @@ static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
+ 	return 0;
+ }
+ 
++static int ath10k_fw_init(struct ath10k *ar)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	struct device *host_dev = &ar_snoc->dev->dev;
++	struct platform_device_info info;
++	struct iommu_domain *iommu_dom;
++	struct platform_device *pdev;
++	struct device_node *node;
++	int ret;
++
++	node = of_get_child_by_name(host_dev->of_node, "wifi-firmware");
++	if (!node) {
++		ar_snoc->use_tz = true;
++		return 0;
++	}
++
++	memset(&info, 0, sizeof(info));
++	info.fwnode = &node->fwnode;
++	info.parent = host_dev;
++	info.name = node->name;
++	info.dma_mask = DMA_BIT_MASK(32);
++
++	pdev = platform_device_register_full(&info);
++	if (IS_ERR(pdev)) {
++		of_node_put(node);
++		return PTR_ERR(pdev);
++	}
++
++	pdev->dev.of_node = node;
++
++	ret = of_dma_configure(&pdev->dev, node, true);
++	if (ret) {
++		ath10k_err(ar, "dma configure fail: %d\n", ret);
++		goto err_unregister;
++	}
++
++	ar_snoc->fw.dev = &pdev->dev;
++
++	iommu_dom = iommu_domain_alloc(&platform_bus_type);
++	if (!iommu_dom) {
++		ath10k_err(ar, "failed to allocate iommu domain\n");
++		ret = -ENOMEM;
++		goto err_unregister;
++	}
++
++	ret = iommu_attach_device(iommu_dom, ar_snoc->fw.dev);
++	if (ret) {
++		ath10k_err(ar, "could not attach device: %d\n", ret);
++		goto err_iommu_free;
++	}
++
++	ar_snoc->fw.iommu_domain = iommu_dom;
++	ar_snoc->fw.fw_start_addr = ar->msa.paddr;
++
++	ret = iommu_map(iommu_dom, ar_snoc->fw.fw_start_addr,
++			ar->msa.paddr, ar->msa.mem_size,
++			IOMMU_READ | IOMMU_WRITE);
++	if (ret) {
++		ath10k_err(ar, "failed to map firmware region: %d\n", ret);
++		goto err_iommu_detach;
++	}
++
++	of_node_put(node);
++
++	return 0;
++
++err_iommu_detach:
++	iommu_detach_device(iommu_dom, ar_snoc->fw.dev);
++
++err_iommu_free:
++	iommu_domain_free(iommu_dom);
++
++err_unregister:
++	platform_device_unregister(pdev);
++	of_node_put(node);
++
++	return ret;
++}
++
++static int ath10k_fw_deinit(struct ath10k *ar)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	const size_t mapped_size = ar_snoc->fw.mapped_mem_size;
++	struct iommu_domain *iommu;
++	size_t unmapped_size;
++
++	if (ar_snoc->use_tz)
++		return 0;
++
++	iommu = ar_snoc->fw.iommu_domain;
++
++	unmapped_size = iommu_unmap(iommu, ar_snoc->fw.fw_start_addr,
++				    mapped_size);
++	if (unmapped_size != mapped_size)
++		ath10k_err(ar, "failed to unmap firmware: %zu\n",
++			   unmapped_size);
++
++	iommu_detach_device(iommu, ar_snoc->fw.dev);
++	iommu_domain_free(iommu);
++
++	platform_device_unregister(to_platform_device(ar_snoc->fw.dev));
++
++	return 0;
++}
++
+ static const struct of_device_id ath10k_snoc_dt_match[] = {
+ 	{ .compatible = "qcom,wcn3990-wifi",
+ 	 .data = &drv_priv,
+@@ -1607,16 +1713,25 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 		goto err_power_off;
+ 	}
+ 
++	ret = ath10k_fw_init(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to initialize firmware: %d\n", ret);
++		goto err_power_off;
++	}
++
+ 	ret = ath10k_qmi_init(ar, msa_size);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n", ret);
+-		goto err_power_off;
++		goto err_fw_deinit;
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+ 
+ 	return 0;
+ 
++err_fw_deinit:
++	ath10k_fw_deinit(ar);
++
+ err_power_off:
+ 	ath10k_hw_power_off(ar);
+ 
+@@ -1648,6 +1763,7 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+ 
+ 	ath10k_core_unregister(ar);
+ 	ath10k_hw_power_off(ar);
++	ath10k_fw_deinit(ar);
+ 	ath10k_snoc_free_irq(ar);
+ 	ath10k_snoc_release_resource(ar);
+ 	ath10k_qmi_deinit(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index c05df45..18e19fb 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -55,6 +55,13 @@ struct regulator_bulk_data;
+ struct ath10k_snoc {
+ 	struct platform_device *dev;
+ 	struct ath10k *ar;
++	unsigned int use_tz;
++	struct video_firmware {
++		struct device *dev;
++		dma_addr_t fw_start_addr;
++		struct iommu_domain *iommu_domain;
++		size_t mapped_mem_size;
++	} fw;
+ 	void __iomem *mem;
+ 	dma_addr_t mem_pa;
+ 	struct ath10k_snoc_target_info target_info;
+-- 
+2.7.4
 
 _______________________________________________
 ath10k mailing list
