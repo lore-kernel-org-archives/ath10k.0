@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jH1Et-0006F1-0a
- for ath10k@lists.infradead.org; Wed, 25 Mar 2020 08:18:16 +0000
-Date: Wed, 25 Mar 2020 16:17:12 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 39f1f4fc590acf87f3fd8c7fb7274689356fe6db
-Message-ID: <5e7b1388.7aM1LzLv24RteOYJ%lkp@intel.com>
+ id 1jH3mF-0000Yc-AF
+ for ath10k@lists.infradead.org; Wed, 25 Mar 2020 11:00:54 +0000
+From: <pillair@codeaurora.org>
+References: <1585054044-18667-2-git-send-email-pillair@codeaurora.org>
+ <20200324141404.C9A7FC432C2@smtp.codeaurora.org>
+In-Reply-To: <20200324141404.C9A7FC432C2@smtp.codeaurora.org>
+Subject: RE: [PATCH 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
+ wifi node
+Date: Wed, 25 Mar 2020 16:30:25 +0530
+Message-ID: <000001d60294$9abcfb20$d036f160$@codeaurora.org>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,190 +25,143 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: 'Kalle Valo' <kvalo@codeaurora.org>
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 39f1f4fc590acf87f3fd8c7fb7274689356fe6db  ath10k: enable alt data of TX path for sdio
+Hi Kalle,
 
-elapsed time: 866m
+I had tested it on a slightly older ath10k tree, and missed a few cleanup while rebasing it on the ath10k tree tip.
+I have now fixed these build errors and will send out v2 for this patchset.
 
-configs tested: 166
-configs skipped: 0
+Thanks,
+Rakesh Pillai.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> -----Original Message-----
+> From: Kalle Valo <kvalo@codeaurora.org>
+> Sent: Tuesday, March 24, 2020 7:44 PM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Rakesh Pillai
+> <pillair@codeaurora.org>
+> Subject: Re: [PATCH 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
+> wifi node
+> 
+> Rakesh Pillai <pillair@codeaurora.org> wrote:
+> 
+> > Add a wifi-firmware subnode for the wifi node.
+> > This wifi-firmware subnode is needed for the
+> > targets which do not support TrustZone.
+> >
+> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> 
+> Fails to build and has warnings. How did you test this?
+> 
+> drivers/net/wireless/ath/ath10k/qmi.c: In function
+> 'ath10k_qmi_msa_mem_info_send_sync_msg':
+> drivers/net/wireless/ath/ath10k/qmi.c:160:23: error: 'struct ath10k_qmi' has
+> no member named 'msa_pa'
+>   max_mapped_addr = qmi->msa_pa + qmi->msa_mem_size;
+>                        ^~
+> drivers/net/wireless/ath/ath10k/qmi.c:160:37: error: 'struct ath10k_qmi' has
+> no member named 'msa_mem_size'
+>   max_mapped_addr = qmi->msa_pa + qmi->msa_mem_size;
+>                                      ^~
+> drivers/net/wireless/ath/ath10k/qmi.c:163:41: error: 'struct ath10k_qmi' has
+> no member named 'msa_mem_size'
+>    if (resp.mem_region_info[i].size > qmi->msa_mem_size ||
+>                                          ^~
+> drivers/net/wireless/ath/ath10k/qmi.c:165:48: error: 'struct ath10k_qmi' has
+> no member named 'msa_pa'
+>        resp.mem_region_info[i].region_addr < qmi->msa_pa ||
+>                                                 ^~
+> make[5]: *** [drivers/net/wireless/ath/ath10k/qmi.o] Error 1
+> make[5]: *** Waiting for unfinished jobs....
+> In file included from ./include/linux/byteorder/little_endian.h:5,
+>                  from ./arch/x86/include/uapi/asm/byteorder.h:5,
+>                  from ./include/asm-generic/bitops/le.h:6,
+>                  from ./arch/x86/include/asm/bitops.h:395,
+>                  from ./include/linux/bitops.h:29,
+>                  from ./include/linux/kernel.h:12,
+>                  from ./include/linux/clk.h:13,
+>                  from drivers/net/wireless/ath/ath10k/snoc.c:6:
+> drivers/net/wireless/ath/ath10k/snoc.c: In function
+> 'ath10k_msa_dump_memory':
+> drivers/net/wireless/ath/ath10k/snoc.c:1424:54: error: 'struct ath10k_qmi'
+> has no member named 'msa_va'
+>   hdr->start = cpu_to_le32((unsigned long)ar_snoc->qmi->msa_va);
+>                                                       ^~
+> ./include/uapi/linux/byteorder/little_endian.h:33:51: note: in definition of
+> macro '__cpu_to_le32'
+>  #define __cpu_to_le32(x) ((__force __le32)(__u32)(x))
+>                                                    ^
+> drivers/net/wireless/ath/ath10k/snoc.c:1424:15: note: in expansion of macro
+> 'cpu_to_le32'
+>   hdr->start = cpu_to_le32((unsigned long)ar_snoc->qmi->msa_va);
+>                ^~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/snoc.c:1425:40: error: 'struct ath10k_qmi'
+> has no member named 'msa_mem_size'
+>   hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
+>                                         ^~
+> ./include/uapi/linux/byteorder/little_endian.h:33:51: note: in definition of
+> macro '__cpu_to_le32'
+>  #define __cpu_to_le32(x) ((__force __le32)(__u32)(x))
+>                                                    ^
+> drivers/net/wireless/ath/ath10k/snoc.c:1425:16: note: in expansion of macro
+> 'cpu_to_le32'
+>   hdr->length = cpu_to_le32(ar_snoc->qmi->msa_mem_size);
+>                 ^~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/snoc.c:1427:40: error: 'struct ath10k_qmi'
+> has no member named 'msa_mem_size'
+>   if (current_region->len < ar_snoc->qmi->msa_mem_size) {
+>                                         ^~
+> drivers/net/wireless/ath/ath10k/snoc.c:1428:27: error: 'struct ath10k_qmi'
+> has no member named 'msa_va'
+>    memcpy(buf, ar_snoc->qmi->msa_va, current_region->len);
+>                            ^~
+> drivers/net/wireless/ath/ath10k/snoc.c:1430:41: error: 'struct ath10k_qmi'
+> has no member named 'msa_mem_size'
+>         current_region->len, ar_snoc->qmi->msa_mem_size);
+>                                          ^~
+> drivers/net/wireless/ath/ath10k/snoc.c:1432:27: error: 'struct ath10k_qmi'
+> has no member named 'msa_va'
+>    memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
+>                            ^~
+> drivers/net/wireless/ath/ath10k/snoc.c:1432:49: error: 'struct ath10k_qmi'
+> has no member named 'msa_mem_size'
+>    memcpy(buf, ar_snoc->qmi->msa_va, ar_snoc->qmi->msa_mem_size);
+>                                                  ^~
+> drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_fw_deinit':
+> drivers/net/wireless/ath/ath10k/snoc.c:1593:14: error: assignment of read-
+> only variable 'mapped_size'
+>   mapped_size = ar_snoc->fw.mapped_mem_size;
+>               ^
+> drivers/net/wireless/ath/ath10k/snoc.c:1599:46: warning: format '%d'
+> expects argument of type 'int', but argument 3 has type 'size_t' {aka 'long
+> unsigned int'} [-Wformat=]
+>    ath10k_err(ar, "failed to unmap firmware: %d\n",
+>                                              ~^
+>                                              %ld
+>        unmapped_size);
+>        ~~~~~~~~~~~~~
+> make[5]: *** [drivers/net/wireless/ath/ath10k/snoc.o] Error 1
+> make[4]: *** [drivers/net/wireless/ath/ath10k] Error 2
+> make[3]: *** [drivers/net/wireless/ath] Error 2
+> make[2]: *** [drivers/net/wireless] Error 2
+> make[1]: *** [drivers/net] Error 2
+> make: *** [drivers] Error 2
+> 
+> 3 patches set to Changes Requested.
+> 
+> 11455345 [1/3] dt-bindings: ath10k: Add wifi-firmware subnode for wifi node
+> 11455351 [2/3] ath10k: Setup the msa resources before qmi init
+> 11455353 [3/3] ath10k: Add support for targets without trustzone
+> 
+> --
+> https://patchwork.kernel.org/patch/11455345/
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
+> atches
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-parisc                generic-64bit_defconfig
-powerpc                       ppc64_defconfig
-s390                             alldefconfig
-sparc                               defconfig
-nds32                               defconfig
-i386                                defconfig
-m68k                       m5475evb_defconfig
-alpha                               defconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                              allnoconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                             allnoconfig
-csky                                defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-i386                 randconfig-a002-20200324
-x86_64               randconfig-a002-20200324
-i386                 randconfig-a001-20200324
-x86_64               randconfig-a001-20200324
-i386                 randconfig-a003-20200324
-x86_64               randconfig-a003-20200324
-mips                 randconfig-a001-20200324
-nds32                randconfig-a001-20200324
-m68k                 randconfig-a001-20200324
-parisc               randconfig-a001-20200324
-alpha                randconfig-a001-20200324
-riscv                randconfig-a001-20200324
-c6x                  randconfig-a001-20200324
-h8300                randconfig-a001-20200324
-microblaze           randconfig-a001-20200324
-nios2                randconfig-a001-20200324
-sparc64              randconfig-a001-20200324
-csky                 randconfig-a001-20200324
-openrisc             randconfig-a001-20200324
-s390                 randconfig-a001-20200324
-xtensa               randconfig-a001-20200324
-x86_64               randconfig-b001-20200324
-x86_64               randconfig-b002-20200324
-x86_64               randconfig-b003-20200324
-i386                 randconfig-b001-20200324
-i386                 randconfig-b002-20200324
-i386                 randconfig-b003-20200324
-x86_64               randconfig-c001-20200324
-x86_64               randconfig-c002-20200324
-x86_64               randconfig-c003-20200324
-i386                 randconfig-c001-20200324
-i386                 randconfig-c002-20200324
-i386                 randconfig-c003-20200324
-x86_64               randconfig-d001-20200324
-x86_64               randconfig-d002-20200324
-x86_64               randconfig-d003-20200324
-i386                 randconfig-d001-20200324
-i386                 randconfig-d002-20200324
-i386                 randconfig-d003-20200324
-x86_64               randconfig-e001-20200324
-i386                 randconfig-e002-20200324
-i386                 randconfig-e003-20200324
-x86_64               randconfig-e002-20200324
-i386                 randconfig-e001-20200324
-x86_64               randconfig-f001-20200324
-x86_64               randconfig-f002-20200324
-x86_64               randconfig-f003-20200324
-i386                 randconfig-f001-20200324
-i386                 randconfig-f002-20200324
-i386                 randconfig-f003-20200324
-i386                 randconfig-f001-20200325
-i386                 randconfig-f003-20200325
-i386                 randconfig-f002-20200325
-x86_64               randconfig-f002-20200325
-x86_64               randconfig-f003-20200325
-x86_64               randconfig-f001-20200325
-i386                 randconfig-g003-20200324
-x86_64               randconfig-g002-20200324
-i386                 randconfig-g001-20200324
-i386                 randconfig-g002-20200324
-x86_64               randconfig-g001-20200324
-x86_64               randconfig-g003-20200324
-x86_64               randconfig-h001-20200324
-x86_64               randconfig-h002-20200324
-x86_64               randconfig-h003-20200324
-i386                 randconfig-h001-20200324
-i386                 randconfig-h002-20200324
-i386                 randconfig-h003-20200324
-arm                  randconfig-a001-20200324
-arm64                randconfig-a001-20200324
-ia64                 randconfig-a001-20200324
-arc                  randconfig-a001-20200324
-sparc                randconfig-a001-20200324
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
