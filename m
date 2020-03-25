@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jH7U2-0007tS-J7
- for ath10k@lists.infradead.org; Wed, 25 Mar 2020 14:58:26 +0000
+ id 1jHA1z-0006O2-BG
+ for ath10k@lists.infradead.org; Wed, 25 Mar 2020 17:41:35 +0000
 From: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
-Subject: [PATCH] ath10k: enable VHT160 and VHT80+80 modes
-Date: Wed, 25 Mar 2020 20:26:09 +0530
-Message-Id: <1585148169-2320-1-git-send-email-ssreeela@codeaurora.org>
-MIME-Version: 1.0
+Subject: [PATCH] ath10k: enable radar detection in secondary segment
+Date: Wed, 25 Mar 2020 23:10:41 +0530
+Message-Id: <1585158041-11740-1-git-send-email-ssreeela@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,154 +15,176 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Lei Wang <leiwa@codeaurora.org>, Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>, Rick Wu <rwu@codeaurora.org>, linux-wireless@vger.kernel.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Lei Wang <leiwa@codeaurora.org>, Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>, linux-wireless@vger.kernel.org
 
-RnJvbTogTGVpIFdhbmcgPGxlaXdhQGNvZGVhdXJvcmEub3JnPgoKU2V0IHJpZ2h0IGNoYW5uZWwg
-ZnJlcXVlbmNpZXMgaW4gVkhUMTYwIG1vZGUgYWNjb3JkaW5nIHRvIHRoZSBWSFQxNjAKaW50ZXJv
-cGVyYWJpbGl0eSB3b3JrYXJvdW5kIGFkZGVkIGFzIHBhcnQgb2YgSUVFRSBTdGQgODAyLjEx4oSi
-LTIwMTYgaW4KIlRhYmxlIDktMjUy4oCUVkhUIE9wZXJhdGlvbiBJbmZvcm1hdGlvbiBzdWJmaWVs
-ZHMiLCBiYW5kX2NlbnRlcl9mcmVxMgpjb3JyZXNwb25kcyB0byBDQ0ZTMSBpbiBUYWJsZSA5LTI1
-My4gUHJldmlvdXMgaW1wbGVtZW50YXRpb24KKGJhbmRfY2VudGVyX2ZyZXEyID0gMCBmb3IgVkhU
-MTYwKSBpcyBvbmx5IGRlcHJlY2F0ZWQuCgpFbmFibGUgVkhUODArODAgbW9kZSBhbmQgc2V0IHRo
-ZSBwcm9wZXIgcGVlciBSWCBuc3MgdmFsdWUgZm9yIFZIVDE2MCBhbmQKVkhUODArODAgbW9kZS4K
-CkJhc2VkIG9uIHBhdGNoZXMgYnkgU2ViYXN0aWFuIEdvdHRzY2hhbGw6CgpodHRwczovL2xrbWwu
-a2VybmVsLm9yZy9yLzIwMTgwNzA0MDk1NDQ0LjY2Mi0xLXMuZ290dHNjaGFsbEBkZC13cnQuY29t
-CgpodHRwczovL2xrbWwua2VybmVsLm9yZy9yLzIwMTgwNzA0MTIwNTE5LjY0NzktMS1zLmdvdHRz
-Y2hhbGxAZGQtd3J0LmNvbQoKVGVzdGVkOiBxY2E5OTg0IHdpdGggZmlybXdhcmUgdmVyIDEwLjQt
-My4xMC0wMDA0NwoKQ28tZGV2ZWxvcGVkLWJ5OiBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0
-c2NoYWxsQGRkLXdydC5jb20+ClNpZ25lZC1vZmYtYnk6IFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxz
-LmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KQ28tZGV2ZWxvcGVkLWJ5OiBSaWNrIFd1IDxyd3VAY29k
-ZWF1cm9yYS5vcmc+ClNpZ25lZC1vZmYtYnk6IFJpY2sgV3UgPHJ3dUBjb2RlYXVyb3JhLm9yZz4K
-U2lnbmVkLW9mZi1ieTogTGVpIFdhbmcgPGxlaXdhQGNvZGVhdXJvcmEub3JnPgpTaWduZWQtb2Zm
-LWJ5OiBTb3dtaXlhIFNyZWUgRWxhdmFsYWdhbiA8c3NyZWVlbGFAY29kZWF1cm9yYS5vcmc+Ci0t
-LQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyB8IDg0ICsrKysrKysrKysr
-KysrKysrKysrKysrKystLS0tLS0tLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L3dtaS5jIHwgMjMgKysrKysrLS0tLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
-bWkuaCB8ICA1ICsrLQogMyBmaWxlcyBjaGFuZ2VkLCA4MCBpbnNlcnRpb25zKCspLCAzMiBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
-Yy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwppbmRleCA4MWUxNDhl
-Li43YzJlMzk2IDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
-Yy5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKQEAgLTI1MDUs
-NiArMjUwNSwzMCBAQCBzdGF0aWMgaW50IGF0aDEwa19wZWVyX2Fzc29jX3Fvc19hcChzdHJ1Y3Qg
-YXRoMTBrICphciwKIAlyZXR1cm4gdHhfbWNzX3NldDsKIH0KIAorc3RhdGljIHUzMiBnZXRfMTYw
-bWh6X25zc19mcm9tX21heHJhdGUoaW50IHJhdGUpCit7CisJdTMyIG5zczsKKworCXN3aXRjaCAo
-cmF0ZSkgeworCWNhc2UgNzgwOgorCQluc3MgPSAxOworCQlicmVhazsKKwljYXNlIDE1NjA6CisJ
-CW5zcyA9IDI7CisJCWJyZWFrOworCWNhc2UgMjEwNjoKKwkJbnNzID0gMzsgLyogbm90IHN1cHBv
-cnQgTUNTOSBmcm9tIHNwZWMqLworCQlicmVhazsKKwljYXNlIDMxMjA6CisJCW5zcyA9IDQ7CisJ
-CWJyZWFrOworCWRlZmF1bHQ6CisJCSBuc3MgPSAwOworCX0KKworCXJldHVybiBuc3M7Cit9CisK
-IHN0YXRpYyB2b2lkIGF0aDEwa19wZWVyX2Fzc29jX2hfdmh0KHN0cnVjdCBhdGgxMGsgKmFyLAog
-CQkJCSAgICBzdHJ1Y3QgaWVlZTgwMjExX3ZpZiAqdmlmLAogCQkJCSAgICBzdHJ1Y3QgaWVlZTgw
-MjExX3N0YSAqc3RhLApAQCAtMjUxMiw2ICsyNTM2LDcgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3Bl
-ZXJfYXNzb2NfaF92aHQoc3RydWN0IGF0aDEwayAqYXIsCiB7CiAJY29uc3Qgc3RydWN0IGllZWU4
-MDIxMV9zdGFfdmh0X2NhcCAqdmh0X2NhcCA9ICZzdGEtPnZodF9jYXA7CiAJc3RydWN0IGF0aDEw
-a192aWYgKmFydmlmID0gKHZvaWQgKil2aWYtPmRydl9wcml2OworCXN0cnVjdCBhdGgxMGtfaHdf
-cGFyYW1zICpodyA9ICZhci0+aHdfcGFyYW1zOwogCXN0cnVjdCBjZmc4MDIxMV9jaGFuX2RlZiBk
-ZWY7CiAJZW51bSBubDgwMjExX2JhbmQgYmFuZDsKIAljb25zdCB1MTYgKnZodF9tY3NfbWFzazsK
-QEAgLTI1NzgsMjIgKzI2MDMsMzggQEAgc3RhdGljIHZvaWQgYXRoMTBrX3BlZXJfYXNzb2NfaF92
-aHQoc3RydWN0IGF0aDEwayAqYXIsCiAJYXJnLT5wZWVyX3ZodF9yYXRlcy50eF9tY3Nfc2V0ID0g
-YXRoMTBrX3BlZXJfYXNzb2NfaF92aHRfbGltaXQoCiAJCV9fbGUxNl90b19jcHUodmh0X2NhcC0+
-dmh0X21jcy50eF9tY3NfbWFwKSwgdmh0X21jc19tYXNrKTsKIAotCWF0aDEwa19kYmcoYXIsIEFU
-SDEwS19EQkdfTUFDLCAibWFjIHZodCBwZWVyICVwTSBtYXhfbXBkdSAlZCBmbGFncyAweCV4XG4i
-LAotCQkgICBzdGEtPmFkZHIsIGFyZy0+cGVlcl9tYXhfbXBkdSwgYXJnLT5wZWVyX2ZsYWdzKTsK
-KwkvKiBDb25maWd1cmUgYmFuZHdpZHRoLU5TUyBtYXBwaW5nIHRvIEZXCisJICogZm9yIHRoZSBj
-aGlwJ3MgdHggY2hhaW5zIHNldHRpbmcgb24gMTYwTWh6IGJ3CisJICovCisJaWYgKGFyZy0+cGVl
-cl9waHltb2RlID09IE1PREVfMTFBQ19WSFQxNjAgfHwKKwkgICAgYXJnLT5wZWVyX3BoeW1vZGUg
-PT0gTU9ERV8xMUFDX1ZIVDgwXzgwKSB7CisJCXUzMiByeF9uc3M7CisJCXUzMiBtYXhfcmF0ZTsK
-IAotCWlmIChhcmctPnBlZXJfdmh0X3JhdGVzLnJ4X21heF9yYXRlICYmCi0JICAgIChzdGEtPnZo
-dF9jYXAuY2FwICYgSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIX01BU0spKSB7Ci0J
-CXN3aXRjaCAoYXJnLT5wZWVyX3ZodF9yYXRlcy5yeF9tYXhfcmF0ZSkgewotCQljYXNlIDE1NjA6
-Ci0JCQkvKiBNdXN0IGJlIDJ4MiBhdCAxNjBNaHogaXMgYWxsIGl0IGNhbiBkby4gKi8KLQkJCWFy
-Zy0+cGVlcl9id19yeG5zc19vdmVycmlkZSA9IDI7Ci0JCQlicmVhazsKLQkJY2FzZSA3ODA6Ci0J
-CQkvKiBDYW4gb25seSBkbyAxeDEgYXQgMTYwTWh6IChMb25nIEd1YXJkIEludGVydmFsKSAqLwot
-CQkJYXJnLT5wZWVyX2J3X3J4bnNzX292ZXJyaWRlID0gMTsKLQkJCWJyZWFrOworCQltYXhfcmF0
-ZSA9IGFyZy0+cGVlcl92aHRfcmF0ZXMucnhfbWF4X3JhdGU7CisJCXJ4X25zcyA9IGdldF8xNjBt
-aHpfbnNzX2Zyb21fbWF4cmF0ZShtYXhfcmF0ZSk7CisKKwkJaWYgKHJ4X25zcyA9PSAwKQorCQkJ
-cnhfbnNzID0gYXJnLT5wZWVyX251bV9zcGF0aWFsX3N0cmVhbXM7CisJCWVsc2UKKwkJCXJ4X25z
-cyA9IG1pbihhcmctPnBlZXJfbnVtX3NwYXRpYWxfc3RyZWFtcywgcnhfbnNzKTsKKworCQltYXhf
-cmF0ZSA9IGh3LT52aHQxNjBfbWNzX3R4X2hpZ2hlc3Q7CisJCXJ4X25zcyA9IG1pbihyeF9uc3Ms
-IGdldF8xNjBtaHpfbnNzX2Zyb21fbWF4cmF0ZShtYXhfcmF0ZSkpOworCisJCWFyZy0+cGVlcl9i
-d19yeG5zc19vdmVycmlkZSA9CisJCQlGSUVMRF9QUkVQKFdNSV9QRUVSX05TU19NQVBfRU5BQkxF
-LCAxKSB8CisJCQlGSUVMRF9QUkVQKFdNSV9QRUVSX05TU18xNjBNSFpfTUFTSywgKHJ4X25zcyAt
-IDEpKTsKKworCQlpZiAoYXJnLT5wZWVyX3BoeW1vZGUgPT0gTU9ERV8xMUFDX1ZIVDgwXzgwKSB7
-CisJCQlhcmctPnBlZXJfYndfcnhuc3Nfb3ZlcnJpZGUgfD0KKwkJCUZJRUxEX1BSRVAoV01JX1BF
-RVJfTlNTXzgwXzgwTUhaX01BU0ssIChyeF9uc3MgLSAxKSk7CiAJCX0KIAl9CisJYXRoMTBrX2Ri
-ZyhhciwgQVRIMTBLX0RCR19NQUMsCisJCSAgICJtYWMgdmh0IHBlZXIgJXBNIG1heF9tcGR1ICVk
-IGZsYWdzIDB4JXggcGVlcl9yeF9uc3Nfb3ZlcnJpZGUgMHgleFxuIiwKKwkJICAgc3RhLT5hZGRy
-LCBhcmctPnBlZXJfbWF4X21wZHUsCisJCSAgIGFyZy0+cGVlcl9mbGFncywgYXJnLT5wZWVyX2J3
-X3J4bnNzX292ZXJyaWRlKTsKIH0KIAogc3RhdGljIHZvaWQgYXRoMTBrX3BlZXJfYXNzb2NfaF9x
-b3Moc3RydWN0IGF0aDEwayAqYXIsCkBAIC0yNzQ1LDkgKzI3ODYsOSBAQCBzdGF0aWMgaW50IGF0
-aDEwa19wZWVyX2Fzc29jX3ByZXBhcmUoc3RydWN0IGF0aDEwayAqYXIsCiAJYXRoMTBrX3BlZXJf
-YXNzb2NfaF9jcnlwdG8oYXIsIHZpZiwgc3RhLCBhcmcpOwogCWF0aDEwa19wZWVyX2Fzc29jX2hf
-cmF0ZXMoYXIsIHZpZiwgc3RhLCBhcmcpOwogCWF0aDEwa19wZWVyX2Fzc29jX2hfaHQoYXIsIHZp
-Ziwgc3RhLCBhcmcpOworCWF0aDEwa19wZWVyX2Fzc29jX2hfcGh5bW9kZShhciwgdmlmLCBzdGEs
-IGFyZyk7CiAJYXRoMTBrX3BlZXJfYXNzb2NfaF92aHQoYXIsIHZpZiwgc3RhLCBhcmcpOwogCWF0
-aDEwa19wZWVyX2Fzc29jX2hfcW9zKGFyLCB2aWYsIHN0YSwgYXJnKTsKLQlhdGgxMGtfcGVlcl9h
-c3NvY19oX3BoeW1vZGUoYXIsIHZpZiwgc3RhLCBhcmcpOwogCiAJcmV0dXJuIDA7CiB9CkBAIC00
-NTYxLDEzICs0NjAyLDYgQEAgc3RhdGljIHN0cnVjdCBpZWVlODAyMTFfc3RhX3ZodF9jYXAgYXRo
-MTBrX2NyZWF0ZV92aHRfY2FwKHN0cnVjdCBhdGgxMGsgKmFyKQogCQl2aHRfY2FwLmNhcCB8PSB2
-YWw7CiAJfQogCi0JLyogQ3VycmVudGx5IHRoZSBmaXJtd2FyZSBzZWVtcyB0byBiZSBidWdneSwg
-ZG9uJ3QgZW5hYmxlIDgwKzgwCi0JICogbW9kZSB1bnRpbCB0aGF0J3MgcmVzb2x2ZWQuCi0JICov
-Ci0JaWYgKChhci0+dmh0X2NhcF9pbmZvICYgSUVFRTgwMjExX1ZIVF9DQVBfU0hPUlRfR0lfMTYw
-KSAmJgotCSAgICAoYXItPnZodF9jYXBfaW5mbyAmIElFRUU4MDIxMV9WSFRfQ0FQX1NVUFBfQ0hB
-Tl9XSURUSF9NQVNLKSA9PSAwKQotCQl2aHRfY2FwLmNhcCB8PSBJRUVFODAyMTFfVkhUX0NBUF9T
-VVBQX0NIQU5fV0lEVEhfMTYwTUhaOwotCiAJbWNzX21hcCA9IDA7CiAJZm9yIChpID0gMDsgaSA8
-IDg7IGkrKykgewogCQlpZiAoKGkgPCBhci0+bnVtX3JmX2NoYWlucykgJiYgKGFyLT5jZmdfdHhf
-Y2hhaW5tYXNrICYgQklUKGkpKSkKQEAgLTg2MjMsNyArODY1Nyw5IEBAIHZvaWQgYXRoMTBrX21h
-Y19kZXN0cm95KHN0cnVjdCBhdGgxMGsgKmFyKQogCQkucmFkYXJfZGV0ZWN0X3dpZHRocyA9CUJJ
-VChOTDgwMjExX0NIQU5fV0lEVEhfMjBfTk9IVCkgfAogCQkJCQlCSVQoTkw4MDIxMV9DSEFOX1dJ
-RFRIXzIwKSB8CiAJCQkJCUJJVChOTDgwMjExX0NIQU5fV0lEVEhfNDApIHwKLQkJCQkJQklUKE5M
-ODAyMTFfQ0hBTl9XSURUSF84MCksCisJCQkJCUJJVChOTDgwMjExX0NIQU5fV0lEVEhfODApIHwK
-KwkJCQkJQklUKE5MODAyMTFfQ0hBTl9XSURUSF84MFA4MCkgfAorCQkJCQlCSVQoTkw4MDIxMV9D
-SEFOX1dJRFRIXzE2MCksCiAjZW5kaWYKIAl9LAogfTsKQEAgLTg2NDEsNyArODY3Nyw5IEBAIHZv
-aWQgYXRoMTBrX21hY19kZXN0cm95KHN0cnVjdCBhdGgxMGsgKmFyKQogCQkucmFkYXJfZGV0ZWN0
-X3dpZHRocyA9ICBCSVQoTkw4MDIxMV9DSEFOX1dJRFRIXzIwX05PSFQpIHwKIAkJCQkJQklUKE5M
-ODAyMTFfQ0hBTl9XSURUSF8yMCkgfAogCQkJCQlCSVQoTkw4MDIxMV9DSEFOX1dJRFRIXzQwKSB8
-Ci0JCQkJCUJJVChOTDgwMjExX0NIQU5fV0lEVEhfODApLAorCQkJCQlCSVQoTkw4MDIxMV9DSEFO
-X1dJRFRIXzgwKSB8CisJCQkJCUJJVChOTDgwMjExX0NIQU5fV0lEVEhfODBQODApIHwKKwkJCQkJ
-QklUKE5MODAyMTFfQ0hBTl9XSURUSF8xNjApLAogI2VuZGlmCiAJfSwKIH07CmRpZmYgLS1naXQg
-YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jIGIvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway93bWkuYwppbmRleCAyZWE3N2JiLi5kYjZmNGM3IDEwMDY0NAotLS0g
-YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCisrKyBiL2RyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKQEAgLTE3MTQsMTIgKzE3MTQsMjMgQEAgdm9pZCBh
-dGgxMGtfd21pX3B1dF93bWlfY2hhbm5lbChzdHJ1Y3Qgd21pX2NoYW5uZWwgKmNoLAogCWlmIChh
-cmctPmNoYW5fcmFkYXIpCiAJCWZsYWdzIHw9IFdNSV9DSEFOX0ZMQUdfREZTOwogCisJY2gtPmJh
-bmRfY2VudGVyX2ZyZXEyID0gMDsKIAljaC0+bWh6ID0gX19jcHVfdG9fbGUzMihhcmctPmZyZXEp
-OwogCWNoLT5iYW5kX2NlbnRlcl9mcmVxMSA9IF9fY3B1X3RvX2xlMzIoYXJnLT5iYW5kX2NlbnRl
-cl9mcmVxMSk7CiAJaWYgKGFyZy0+bW9kZSA9PSBNT0RFXzExQUNfVkhUODBfODApCiAJCWNoLT5i
-YW5kX2NlbnRlcl9mcmVxMiA9IF9fY3B1X3RvX2xlMzIoYXJnLT5iYW5kX2NlbnRlcl9mcmVxMik7
-Ci0JZWxzZQotCQljaC0+YmFuZF9jZW50ZXJfZnJlcTIgPSAwOworCisJaWYgKGFyZy0+bW9kZSA9
-PSBNT0RFXzExQUNfVkhUMTYwKSB7CisJCWlmIChhcmctPmZyZXEgPiBhcmctPmJhbmRfY2VudGVy
-X2ZyZXExKQorCQkJY2gtPmJhbmRfY2VudGVyX2ZyZXExID0KKwkJCQlfX2NwdV90b19sZTMyKGFy
-Zy0+YmFuZF9jZW50ZXJfZnJlcTEgKyA0MCk7CisJCWVsc2UKKwkJCWNoLT5iYW5kX2NlbnRlcl9m
-cmVxMSA9CisJCQkJX19jcHVfdG9fbGUzMihhcmctPmJhbmRfY2VudGVyX2ZyZXExIC0gNDApOwor
-CisJCWNoLT5iYW5kX2NlbnRlcl9mcmVxMiA9IF9fY3B1X3RvX2xlMzIoYXJnLT5iYW5kX2NlbnRl
-cl9mcmVxMSk7CisJfQorCiAJY2gtPm1pbl9wb3dlciA9IGFyZy0+bWluX3Bvd2VyOwogCWNoLT5t
-YXhfcG93ZXIgPSBhcmctPm1heF9wb3dlcjsKIAljaC0+cmVnX3Bvd2VyID0gYXJnLT5tYXhfcmVn
-X3Bvd2VyOwpAQCAtNzYyOCwxMiArNzYzOSw4IEBAIHZvaWQgYXRoMTBrX3dtaV9zdGFydF9zY2Fu
-X2luaXQoc3RydWN0IGF0aDEwayAqYXIsCiAJc3RydWN0IHdtaV8xMF80X3BlZXJfYXNzb2NfY29t
-cGxldGVfY21kICpjbWQgPSBidWY7CiAKIAlhdGgxMGtfd21pX3BlZXJfYXNzb2NfZmlsbF8xMF8y
-KGFyLCBidWYsIGFyZyk7Ci0JaWYgKGFyZy0+cGVlcl9id19yeG5zc19vdmVycmlkZSkKLQkJY21k
-LT5wZWVyX2J3X3J4bnNzX292ZXJyaWRlID0KLQkJCV9fY3B1X3RvX2xlMzIoKGFyZy0+cGVlcl9i
-d19yeG5zc19vdmVycmlkZSAtIDEpIHwKLQkJCQkgICAgICBCSVQoUEVFUl9CV19SWE5TU19PVkVS
-UklERV9PRkZTRVQpKTsKLQllbHNlCi0JCWNtZC0+cGVlcl9id19yeG5zc19vdmVycmlkZSA9IDA7
-CisJY21kLT5wZWVyX2J3X3J4bnNzX292ZXJyaWRlID0KKwkJX19jcHVfdG9fbGUzMihhcmctPnBl
-ZXJfYndfcnhuc3Nfb3ZlcnJpZGUpOwogfQogCiBzdGF0aWMgaW50CmRpZmYgLS1naXQgYS9kcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway93bWkuaAppbmRleCA5NzJkNTNkLi5mNzIyZWVmMyAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAorKysgYi9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL3dtaS5oCkBAIC02NTAxLDcgKzY1MDEsMTAgQEAgc3RydWN0IHdtaV8x
-MF8yX3BlZXJfYXNzb2NfY29tcGxldGVfY21kIHsKIAlfX2xlMzIgaW5mbzA7IC8qIFdNSV9QRUVS
-X0FTU09DX0lORk8wXyAqLwogfSBfX3BhY2tlZDsKIAotI2RlZmluZSBQRUVSX0JXX1JYTlNTX09W
-RVJSSURFX09GRlNFVCAgMzEKKy8qIE5TUyBNYXBwaW5nIHRvIEZXICovCisjZGVmaW5lIFdNSV9Q
-RUVSX05TU19NQVBfRU5BQkxFCUJJVCgzMSkKKyNkZWZpbmUgV01JX1BFRVJfTlNTXzE2ME1IWl9N
-QVNLCUdFTk1BU0soMiwgMCkKKyNkZWZpbmUgV01JX1BFRVJfTlNTXzgwXzgwTUhaX01BU0sJR0VO
-TUFTSyg1LCAzKQogCiBzdHJ1Y3Qgd21pXzEwXzRfcGVlcl9hc3NvY19jb21wbGV0ZV9jbWQgewog
-CXN0cnVjdCB3bWlfMTBfMl9wZWVyX2Fzc29jX2NvbXBsZXRlX2NtZCBjbWQ7Ci0tIAoxLjkuMQoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Lei Wang <leiwa@codeaurora.org>
+
+Enable radar detection in secondary segment for VHT160 and VHT80+80 mode
+on DFS channels. Otherwise, when injecting radar pulse in the secondary
+segment, the DUT can't detect radar pulse.
+
+Tested: qca9984 with firmware ver 10.4-3.10-00047
+
+Signed-off-by: Lei Wang <leiwa@codeaurora.org>
+Signed-off-by: Sowmiya Sree Elavalagan <ssreeela@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  6 ++---
+ drivers/net/wireless/ath/ath10k/wmi.c     | 39 ++++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/wmi.h     |  5 ++--
+ 3 files changed, 34 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 4e68deb..e1ab900f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2123,7 +2123,7 @@ static int ath10k_wmi_tlv_op_get_vdev_subtype(struct ath10k *ar,
+ 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_CHANNEL);
+ 	tlv->len = __cpu_to_le16(sizeof(*ch));
+ 	ch = (void *)tlv->value;
+-	ath10k_wmi_put_wmi_channel(ch, &arg->channel);
++	ath10k_wmi_put_wmi_channel(ar, ch, &arg->channel);
+ 
+ 	ptr += sizeof(*tlv);
+ 	ptr += sizeof(*ch);
+@@ -2763,7 +2763,7 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ 		tlv->len = __cpu_to_le16(sizeof(*ci));
+ 		ci = (void *)tlv->value;
+ 
+-		ath10k_wmi_put_wmi_channel(ci, ch);
++		ath10k_wmi_put_wmi_channel(ar, ci, ch);
+ 
+ 		chans += sizeof(*tlv);
+ 		chans += sizeof(*ci);
+@@ -3450,7 +3450,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 		tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_CHANNEL);
+ 		tlv->len = __cpu_to_le16(sizeof(*chan));
+ 		chan = (void *)tlv->value;
+-		ath10k_wmi_put_wmi_channel(chan, &chan_arg[i]);
++		ath10k_wmi_put_wmi_channel(ar, chan, &chan_arg[i]);
+ 
+ 		ptr += sizeof(*tlv);
+ 		ptr += sizeof(*chan);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index db6f4c7..4a3a698 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1694,10 +1694,11 @@
+ 	.bw160 = WMI_10_2_PEER_160MHZ,
+ };
+ 
+-void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
++void ath10k_wmi_put_wmi_channel(struct ath10k *ar, struct wmi_channel *ch,
+ 				const struct wmi_channel_arg *arg)
+ {
+ 	u32 flags = 0;
++	struct ieee80211_channel *chan = NULL;
+ 
+ 	memset(ch, 0, sizeof(*ch));
+ 
+@@ -1717,20 +1718,36 @@ void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
+ 	ch->band_center_freq2 = 0;
+ 	ch->mhz = __cpu_to_le32(arg->freq);
+ 	ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1);
+-	if (arg->mode == MODE_11AC_VHT80_80)
++	if (arg->mode == MODE_11AC_VHT80_80) {
+ 		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq2);
++		chan = ieee80211_get_channel(ar->hw->wiphy,
++					     arg->band_center_freq2 - 10);
++	}
+ 
+ 	if (arg->mode == MODE_11AC_VHT160) {
+-		if (arg->freq > arg->band_center_freq1)
+-			ch->band_center_freq1 =
+-				__cpu_to_le32(arg->band_center_freq1 + 40);
+-		else
+-			ch->band_center_freq1 =
+-				__cpu_to_le32(arg->band_center_freq1 - 40);
++		u32 band_center_freq1;
++		u32 band_center_freq2;
++
++		if (arg->freq > arg->band_center_freq1) {
++			band_center_freq1 = arg->band_center_freq1 + 40;
++			band_center_freq2 = arg->band_center_freq1 - 40;
++		} else {
++			band_center_freq1 = arg->band_center_freq1 - 40;
++			band_center_freq2 = arg->band_center_freq1 + 40;
++		}
+ 
++		ch->band_center_freq1 =
++					__cpu_to_le32(band_center_freq1);
++		/* Minus 10 to get a defined 5G channel frequency*/
++		chan = ieee80211_get_channel(ar->hw->wiphy,
++					     band_center_freq2 - 10);
++		/* The center frequency of the entire VHT160 */
+ 		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq1);
+ 	}
+ 
++	if (chan && chan->flags & IEEE80211_CHAN_RADAR)
++		flags |= WMI_CHAN_FLAG_DFS_CFREQ2;
++
+ 	ch->min_power = arg->min_power;
+ 	ch->max_power = arg->max_power;
+ 	ch->reg_power = arg->max_reg_power;
+@@ -7176,7 +7193,7 @@ void ath10k_wmi_start_scan_init(struct ath10k *ar,
+ 		memcpy(cmd->ssid.ssid, arg->ssid, arg->ssid_len);
+ 	}
+ 
+-	ath10k_wmi_put_wmi_channel(&cmd->chan, &arg->channel);
++	ath10k_wmi_put_wmi_channel(ar, &cmd->chan, &arg->channel);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+ 		   "wmi vdev %s id 0x%x flags: 0x%0X, freq %d, mode %d, ch_flags: 0x%0X, max_power: %d\n",
+@@ -7548,7 +7565,7 @@ void ath10k_wmi_start_scan_init(struct ath10k *ar,
+ 		ch = &arg->channels[i];
+ 		ci = &cmd->chan_info[i];
+ 
+-		ath10k_wmi_put_wmi_channel(ci, ch);
++		ath10k_wmi_put_wmi_channel(ar, ci, ch);
+ 	}
+ 
+ 	return skb;
+@@ -8952,7 +8969,7 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 
+ 	for (i = 0; i < cap->peer_chan_len; i++) {
+ 		chan = (struct wmi_channel *)&peer_cap->peer_chan_list[i];
+-		ath10k_wmi_put_wmi_channel(chan, &chan_arg[i]);
++		ath10k_wmi_put_wmi_channel(ar, chan, &chan_arg[i]);
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 5ba0c9a..2090707 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2094,7 +2094,8 @@ enum wmi_channel_change_cause {
+ 
+ /* Indicate reason for channel switch */
+ #define WMI_CHANNEL_CHANGE_CAUSE_CSA (1 << 13)
+-
++/* DFS required on channel for 2nd segment of VHT160 and VHT80+80*/
++#define WMI_CHAN_FLAG_DFS_CFREQ2  (1 << 15)
+ #define WMI_MAX_SPATIAL_STREAM        3 /* default max ss */
+ 
+ /* HT Capabilities*/
+@@ -7351,7 +7352,7 @@ void ath10k_wmi_put_start_scan_common(struct wmi_start_scan_common *cmn,
+ 				      const struct wmi_start_scan_arg *arg);
+ void ath10k_wmi_set_wmm_param(struct wmi_wmm_params *params,
+ 			      const struct wmi_wmm_params_arg *arg);
+-void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
++void ath10k_wmi_put_wmi_channel(struct ath10k *ar, struct wmi_channel *ch,
+ 				const struct wmi_channel_arg *arg);
+ int ath10k_wmi_start_scan_verify(const struct wmi_start_scan_arg *arg);
+ 
+-- 
+1.9.1
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
