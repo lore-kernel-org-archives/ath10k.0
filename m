@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHTnM-0002cB-SG
- for ath10k@lists.infradead.org; Thu, 26 Mar 2020 14:47:50 +0000
+ id 1jHXTu-00056M-NH
+ for ath10k@lists.infradead.org; Thu, 26 Mar 2020 18:43:56 +0000
+Date: Fri, 27 Mar 2020 02:43:23 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD REGRESSION
+ 607feadb839096e57561769d355799c129a5c676
+Message-ID: <5e7cf7cb.XWEEMKoyjLty2jmy%lkp@intel.com>
 MIME-Version: 1.0
-Date: Thu, 26 Mar 2020 20:17:39 +0530
-From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Subject: Re: [PATCH] ath11k: add pktlog checksum in trace events to support
- pktlog
-In-Reply-To: <1585234044-30362-1-git-send-email-mkenna@codeaurora.org>
-References: <1585234044-30362-1-git-send-email-mkenna@codeaurora.org>
-Message-ID: <6a4d557a6bb5ef9f9f243c01e67be090@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,193 +17,197 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 607feadb839096e57561769d355799c129a5c676  ath10k: enable alt data of TX path for sdio
 
-Please ignore this patch. Sent to wrong mailing list. Regret for the 
-inconvenience caused.
+Regressions in current branch:
 
-Regards,
-Maha
+(void *)msdu->data + HAL_RX_DESC_SIZE, hdr_len);
+drivers/net/wireless/ath/ath11k/dp_rx.c:1015:20: warning: The scope of the variable 'rx_tid' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/dp_rx.c:2951:49: warning: '(void*)msdu->data+(sizeof(struct hal_rx_desc))' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. [arithOperationsOnVoidPointer]
+drivers/net/wireless/ath/ath11k/dp_rx.c:2962:22: warning: The scope of the variable 'rx_desc' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3153:6: warning: The scope of the variable 'cmp' can be reduced. [variableScope]
+memmove((void *)msdu->data + HAL_RX_DESC_SIZE + crypto_len,
+msdu_link = (struct hal_rx_msdu_link *)(link_desc_banks[desc_bank].vaddr +
+struct dp_rx_tid *rx_tid;
+struct hal_rx_desc *rx_desc;
 
+Error ids grouped by kconfigs:
 
-On 2020-03-26 20:17, Maharaja Kennadyrajan wrote:
-> Pktlog data are different among the chipset & chipset versions.
-> As part of enhancing the user space script to decode the pktlog
-> trace events generated, it is desirable to know which chipset or
-> which chipset version has provided the events and thereby decode
-> the pktlogs appropriately.
-> 
-> Pktlog checksum helps to determine the chipset variant which is
-> given by the firmware in the struct wmi_ready_event.
-> 
-> Pktlog checksums are computed during the firmware build.
-> So, adding that pktlog checksum in the pklog trace events.
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath11k/core.h  |  1 +
->  drivers/net/wireless/ath/ath11k/dp_rx.c |  3 ++-
->  drivers/net/wireless/ath/ath11k/trace.h | 12 ++++++++----
->  drivers/net/wireless/ath/ath11k/wmi.c   | 21 +++++++++++++--------
->  drivers/net/wireless/ath/ath11k/wmi.h   |  8 +++++++-
->  5 files changed, 31 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath11k/core.h
-> b/drivers/net/wireless/ath/ath11k/core.h
-> index 6e7b8ec..a1e29f3 100644
-> --- a/drivers/net/wireless/ath/ath11k/core.h
-> +++ b/drivers/net/wireless/ath/ath11k/core.h
-> @@ -650,6 +650,7 @@ struct ath11k_base {
->  		/* protected by data_lock */
->  		u32 fw_crash_counter;
->  	} stats;
-> +	u32 pktlog_defs_checksum;
->  };
-> 
->  struct ath11k_fw_stats_pdev {
-> diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c
-> b/drivers/net/wireless/ath/ath11k/dp_rx.c
-> index f74a0e7..a3f2c76 100644
-> --- a/drivers/net/wireless/ath/ath11k/dp_rx.c
-> +++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
-> @@ -1491,7 +1491,8 @@ static void ath11k_htt_pktlog(struct ath11k_base
-> *ab, struct sk_buff *skb)
->  		return;
->  	}
-> 
-> -	trace_ath11k_htt_pktlog(ar, data->payload, hdr->size);
-> +	trace_ath11k_htt_pktlog(ar, data->payload, hdr->size,
-> +				ar->ab->pktlog_defs_checksum);
->  }
-> 
->  static void ath11k_htt_backpressure_event_handler(struct ath11k_base 
-> *ab,
-> diff --git a/drivers/net/wireless/ath/ath11k/trace.h
-> b/drivers/net/wireless/ath/ath11k/trace.h
-> index 8700a62..66d0aae 100644
-> --- a/drivers/net/wireless/ath/ath11k/trace.h
-> +++ b/drivers/net/wireless/ath/ath11k/trace.h
-> @@ -21,14 +21,16 @@
->  #define TRACE_SYSTEM ath11k
-> 
->  TRACE_EVENT(ath11k_htt_pktlog,
-> -	    TP_PROTO(struct ath11k *ar, const void *buf, u16 buf_len),
-> +	    TP_PROTO(struct ath11k *ar, const void *buf, u16 buf_len,
-> +		     u32 pktlog_checksum),
-> 
-> -	TP_ARGS(ar, buf, buf_len),
-> +	TP_ARGS(ar, buf, buf_len, pktlog_checksum),
-> 
->  	TP_STRUCT__entry(
->  		__string(device, dev_name(ar->ab->dev))
->  		__string(driver, dev_driver_string(ar->ab->dev))
->  		__field(u16, buf_len)
-> +		__field(u32, pktlog_checksum)
->  		__dynamic_array(u8, pktlog, buf_len)
->  	),
-> 
-> @@ -36,14 +38,16 @@
->  		__assign_str(device, dev_name(ar->ab->dev));
->  		__assign_str(driver, dev_driver_string(ar->ab->dev));
->  		__entry->buf_len = buf_len;
-> +		__entry->pktlog_checksum = pktlog_checksum;
->  		memcpy(__get_dynamic_array(pktlog), buf, buf_len);
->  	),
-> 
->  	TP_printk(
-> -		"%s %s size %hu",
-> +		"%s %s size %hu pktlog_checksum %d",
->  		__get_str(driver),
->  		__get_str(device),
-> -		__entry->buf_len
-> +		__entry->buf_len,
-> +		__entry->pktlog_checksum
->  	 )
->  );
-> 
-> diff --git a/drivers/net/wireless/ath/ath11k/wmi.c
-> b/drivers/net/wireless/ath/ath11k/wmi.c
-> index e7ce369..ad88efe 100644
-> --- a/drivers/net/wireless/ath/ath11k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath11k/wmi.c
-> @@ -87,8 +87,8 @@ struct wmi_tlv_rdy_parse {
->  		= { .min_len = sizeof(struct wmi_pdev_bss_chan_info_event) },
->  	[WMI_TAG_VDEV_INSTALL_KEY_COMPLETE_EVENT]
->  		= { .min_len = sizeof(struct wmi_vdev_install_key_compl_event) },
-> -	[WMI_TAG_READY_EVENT]
-> -		= {.min_len = sizeof(struct wmi_ready_event) },
-> +	[WMI_TAG_READY_EVENT] = {
-> +		.min_len = sizeof(struct wmi_ready_event_min) },
->  	[WMI_TAG_SERVICE_AVAILABLE_EVENT]
->  		= {.min_len = sizeof(struct wmi_service_available_event) },
->  	[WMI_TAG_PEER_ASSOC_CONF_EVENT]
-> @@ -4851,7 +4851,7 @@ static int ath11k_wmi_tlv_rdy_parse(struct
-> ath11k_base *ab, u16 tag, u16 len,
->  				    const void *ptr, void *data)
->  {
->  	struct wmi_tlv_rdy_parse *rdy_parse = data;
-> -	struct wmi_ready_event *fixed_param;
-> +	struct wmi_ready_event fixed_param;
->  	struct wmi_mac_addr *addr_list;
->  	struct ath11k_pdev *pdev;
->  	u32 num_mac_addr;
-> @@ -4859,11 +4859,16 @@ static int ath11k_wmi_tlv_rdy_parse(struct
-> ath11k_base *ab, u16 tag, u16 len,
-> 
->  	switch (tag) {
->  	case WMI_TAG_READY_EVENT:
-> -		fixed_param = (struct wmi_ready_event *)ptr;
-> -		ab->wlan_init_status = fixed_param->status;
-> -		rdy_parse->num_extra_mac_addr = fixed_param->num_extra_mac_addr;
-> -
-> -		ether_addr_copy(ab->mac_addr, fixed_param->mac_addr.addr);
-> +		memset(&fixed_param, 0, sizeof(fixed_param));
-> +		memcpy(&fixed_param, (struct wmi_ready_event *)ptr,
-> +		       min_t(u16, sizeof(fixed_param), len));
-> +		ab->wlan_init_status = fixed_param.ready_event_min.status;
-> +		rdy_parse->num_extra_mac_addr =
-> +			fixed_param.ready_event_min.num_extra_mac_addr;
-> +
-> +		ether_addr_copy(ab->mac_addr,
-> +				fixed_param.ready_event_min.mac_addr.addr);
-> +		ab->pktlog_defs_checksum = fixed_param.pktlog_defs_checksum;
->  		ab->wmi_ready = true;
->  		break;
->  	case WMI_TAG_ARRAY_FIXED_STRUCT:
-> diff --git a/drivers/net/wireless/ath/ath11k/wmi.h
-> b/drivers/net/wireless/ath/ath11k/wmi.h
-> index 510f9c6..58f9098 100644
-> --- a/drivers/net/wireless/ath/ath11k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath11k/wmi.h
-> @@ -2345,7 +2345,7 @@ struct wmi_mac_addr {
->  	} __packed;
->  } __packed;
-> 
-> -struct wmi_ready_event {
-> +struct wmi_ready_event_min {
->  	struct wmi_abi_version fw_abi_vers;
->  	struct wmi_mac_addr mac_addr;
->  	u32 status;
-> @@ -2355,6 +2355,12 @@ struct wmi_ready_event {
->  	u32 num_extra_peers;
->  } __packed;
-> 
-> +struct wmi_ready_event {
-> +	struct wmi_ready_event_min ready_event_min;
-> +	u32 max_ast_index;
-> +	u32 pktlog_defs_checksum;
-> +} __packed;
-> +
->  struct wmi_service_available_event {
->  	u32 wmi_service_segment_offset;
->  	u32 wmi_service_segment_bitmap[WMI_SERVICE_SEGMENT_BM_SIZE32];
+recent_errors
+`-- x86_64-allyesconfig
+    |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
+    |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
+    |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
+    |-- struct-dp_rx_tid-rx_tid
+    `-- struct-hal_rx_desc-rx_desc
+
+elapsed time: 484m
+
+configs tested: 146
+configs skipped: 0
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+um                             i386_defconfig
+mips                             allmodconfig
+powerpc                             defconfig
+riscv                               defconfig
+um                                  defconfig
+c6x                        evmc6678_defconfig
+riscv                    nommu_virt_defconfig
+s390                             alldefconfig
+nds32                               defconfig
+riscv                          rv32_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+c6x                              allyesconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200326
+x86_64               randconfig-a002-20200326
+x86_64               randconfig-a003-20200326
+i386                 randconfig-a001-20200326
+i386                 randconfig-a002-20200326
+i386                 randconfig-a003-20200326
+mips                 randconfig-a001-20200326
+nds32                randconfig-a001-20200326
+m68k                 randconfig-a001-20200326
+parisc               randconfig-a001-20200326
+alpha                randconfig-a001-20200326
+riscv                randconfig-a001-20200326
+h8300                randconfig-a001-20200326
+microblaze           randconfig-a001-20200326
+nios2                randconfig-a001-20200326
+c6x                  randconfig-a001-20200326
+sparc64              randconfig-a001-20200326
+csky                 randconfig-a001-20200326
+openrisc             randconfig-a001-20200326
+s390                 randconfig-a001-20200326
+xtensa               randconfig-a001-20200326
+sh                   randconfig-a001-20200326
+x86_64               randconfig-c003-20200326
+x86_64               randconfig-c001-20200326
+i386                 randconfig-c002-20200326
+x86_64               randconfig-c002-20200326
+i386                 randconfig-c003-20200326
+i386                 randconfig-c001-20200326
+x86_64               randconfig-e001-20200326
+x86_64               randconfig-e002-20200326
+x86_64               randconfig-e003-20200326
+i386                 randconfig-e001-20200326
+i386                 randconfig-e002-20200326
+i386                 randconfig-e003-20200326
+x86_64               randconfig-f001-20200326
+x86_64               randconfig-f002-20200326
+x86_64               randconfig-f003-20200326
+i386                 randconfig-f001-20200326
+i386                 randconfig-f002-20200326
+i386                 randconfig-f003-20200326
+x86_64               randconfig-h001-20200326
+x86_64               randconfig-h002-20200326
+x86_64               randconfig-h003-20200326
+i386                 randconfig-h001-20200326
+i386                 randconfig-h002-20200326
+i386                 randconfig-h003-20200326
+arc                  randconfig-a001-20200326
+arm                  randconfig-a001-20200326
+arm64                randconfig-a001-20200326
+ia64                 randconfig-a001-20200326
+powerpc              randconfig-a001-20200326
+sparc                randconfig-a001-20200326
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
