@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHn7C-0004Th-Nk
- for ath10k@lists.infradead.org; Fri, 27 Mar 2020 11:25:34 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: enable VHT160 and VHT80+80 modes
-References: <1585148169-2320-1-git-send-email-ssreeela@codeaurora.org>
- <20200326095907.5326BC433BA@smtp.codeaurora.org>
- <812e84a585ed3aeda9aa54f7d2b14e93@codeaurora.org>
-Date: Fri, 27 Mar 2020 13:25:10 +0200
-In-Reply-To: <812e84a585ed3aeda9aa54f7d2b14e93@codeaurora.org>
- (ssreeela@codeaurora.org's message of "Thu, 26 Mar 2020 18:45:06
- +0530")
-Message-ID: <87bloi2g6h.fsf@kamboji.qca.qualcomm.com>
+ id 1jHy6J-0005Xo-Up
+ for ath10k@lists.infradead.org; Fri, 27 Mar 2020 23:09:21 +0000
+Date: Sat, 28 Mar 2020 07:09:04 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ a607b14dc19a842b90d269e6c751c6f60a28fc3c
+Message-ID: <5e7e8790.IMj4yw1cmLs4f0iI%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,58 +17,188 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ssreeela@codeaurora.org
-Cc: Lei Wang <leiwa@codeaurora.org>, Rick Wu <rwu@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-c3NyZWVlbGFAY29kZWF1cm9yYS5vcmcgd3JpdGVzOgoKPiBPbiAyMDIwLTAzLTI2IDE1OjI5LCBL
-YWxsZSBWYWxvIHdyb3RlOgo+PiBTb3dtaXlhIFNyZWUgRWxhdmFsYWdhbiA8c3NyZWVlbGFAY29k
-ZWF1cm9yYS5vcmc+IHdyb3RlOgo+Pgo+Pj4gRnJvbTogTGVpIFdhbmcgPGxlaXdhQGNvZGVhdXJv
-cmEub3JnPgo+Pj4KPj4+IFNldCByaWdodCBjaGFubmVsIGZyZXF1ZW5jaWVzIGluIFZIVDE2MCBt
-b2RlIGFjY29yZGluZyB0byB0aGUgVkhUMTYwCj4+PiBpbnRlcm9wZXJhYmlsaXR5IHdvcmthcm91
-bmQgYWRkZWQgYXMgcGFydCBvZiBJRUVFIFN0ZCA4MDIuMTHihKItMjAxNiBpbgo+Pj4gIlRhYmxl
-IDktMjUy4oCUVkhUIE9wZXJhdGlvbiBJbmZvcm1hdGlvbiBzdWJmaWVsZHMiLCBiYW5kX2NlbnRl
-cl9mcmVxMgo+Pj4gY29ycmVzcG9uZHMgdG8gQ0NGUzEgaW4gVGFibGUgOS0yNTMuIFByZXZpb3Vz
-IGltcGxlbWVudGF0aW9uCj4+PiAoYmFuZF9jZW50ZXJfZnJlcTIgPSAwIGZvciBWSFQxNjApIGlz
-IG9ubHkgZGVwcmVjYXRlZC4KPj4+Cj4+PiBFbmFibGUgVkhUODArODAgbW9kZSBhbmQgc2V0IHRo
-ZSBwcm9wZXIgcGVlciBSWCBuc3MgdmFsdWUgZm9yCj4+PiBWSFQxNjAgYW5kCj4+PiBWSFQ4MCs4
-MCBtb2RlLgo+Pj4KPj4+IEJhc2VkIG9uIHBhdGNoZXMgYnkgU2ViYXN0aWFuIEdvdHRzY2hhbGw6
-Cj4+Pgo+Pj4gaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDE4MDcwNDA5NTQ0NC42NjItMS1z
-LmdvdHRzY2hhbGxAZGQtd3J0LmNvbQo+Pj4KPj4+IGh0dHBzOi8vbGttbC5rZXJuZWwub3JnL3Iv
-MjAxODA3MDQxMjA1MTkuNjQ3OS0xLXMuZ290dHNjaGFsbEBkZC13cnQuY29tCj4+Pgo+Pj4gVGVz
-dGVkOiBxY2E5OTg0IHdpdGggZmlybXdhcmUgdmVyIDEwLjQtMy4xMC0wMDA0Nwo+Pj4KPj4+IENv
-LWRldmVsb3BlZC1ieTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQu
-Y29tPgo+Pj4gU2lnbmVkLW9mZi1ieTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFs
-bEBkZC13cnQuY29tPgo+Pj4gQ28tZGV2ZWxvcGVkLWJ5OiBSaWNrIFd1IDxyd3VAY29kZWF1cm9y
-YS5vcmc+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBSaWNrIFd1IDxyd3VAY29kZWF1cm9yYS5vcmc+Cj4+
-PiBTaWduZWQtb2ZmLWJ5OiBMZWkgV2FuZyA8bGVpd2FAY29kZWF1cm9yYS5vcmc+Cj4+PiBTaWdu
-ZWQtb2ZmLWJ5OiBTb3dtaXlhIFNyZWUgRWxhdmFsYWdhbiA8c3NyZWVlbGFAY29kZWF1cm9yYS5v
-cmc+Cj4+Cj4+IEZhaWxzIHRvIGJ1aWxkIG9uIEdDQyA4LjEuIERpZCB5b3UgdGVzdCB0aGlzPwo+
-Pgo+PiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gLi9pbmNsdWRlL2FzbS1nZW5lcmljL2J1Zy5oOjUs
-Cj4+ICAgICAgICAgICAgICAgICAgZnJvbSAuL2FyY2gveDg2L2luY2x1ZGUvYXNtL2J1Zy5oOjgz
-LAo+PiAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L2J1Zy5oOjUsCj4+ICAg
-ICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1ZGUvbmV0L21hYzgwMjExLmg6MTYsCj4+ICAgICAg
-ICAgICAgICAgICAgZnJvbSBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5oOjEw
-LAo+PiAgICAgICAgICAgICAgICAgIGZyb20gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9tYWMuYzo4Ogo+PiBJbiBmdW5jdGlvbiAnYXRoMTBrX3BlZXJfYXNzb2NfaF92aHQnLAo+PiAg
-ICAgaW5saW5lZCBmcm9tICdhdGgxMGtfcGVlcl9hc3NvY19wcmVwYXJlJyBhdAo+PiBkcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jOjI3OTA6MjoKPj4gLi9pbmNsdWRlL2xpbnV4
-L2NvbXBpbGVyLmg6MzUwOjM4OiBlcnJvcjogY2FsbCB0bwo+PiAnX19jb21waWxldGltZV9hc3Nl
-cnRfMjYzMScgZGVjbGFyZWQgd2l0aCBhdHRyaWJ1dGUgZXJyb3I6CgpbLi4uXQoKPiBJIGNoZWNr
-ZWQgdGhlIGJ1aWxkLiBCdWlsZCB3YXMgc3VjY2Vzc2Z1bCB3aXRoIEdDQyB2ZXJzaW9uIDQuOC4K
-PiBXaWxsIGZpeCB0aGUgZXJyb3IgYW5kIHVwZGF0ZSB0aGUgcGF0Y2guCgpHcmVhdCwgdGhhbmtz
-LiBIZXJlJ3MgaG93IEkgaW5zdGFsbGVkIEdDQyA4LjEgZnJvbSBjcm9zc3Rvb2w6CgpsaXN0aW5n
-czogaHR0cHM6Ly93d3cua2VybmVsLm9yZy9wdWIvdG9vbHMvY3Jvc3N0b29sLwoKd2dldCBodHRw
-czovL3d3dy5rZXJuZWwub3JnL3B1Yi90b29scy9jcm9zc3Rvb2wvZmlsZXMvYmluL3g4Nl82NC84
-LjEuMC94ODZfNjQtZ2NjLTguMS4wLW5vbGliYy14ODZfNjQtbGludXgudGFyLnh6CnB1c2hkIC9v
-cHQvY3Jvc3MvCnRhciAteGYgfi90bXAvY3Jvc3N0b29sL3g4Nl82NC1nY2MtOC4xLjAtbm9saWJj
-LXg4Nl82NC1saW51eC50YXIueHoKCkluIHRvcCBsZXZlbCBjcmVhdGUgR05VTWFrZWZpbGU6CgpD
-Uk9TU19DT01QSUxFPS9vcHQvY3Jvc3MvZ2NjLTguMS4wLW5vbGliYy94ODZfNjQtbGludXgvYmlu
-L3g4Nl82NC1saW51eC0KaW5jbHVkZSBNYWtlZmlsZQoKLS0gCmh0dHBzOi8vd2lyZWxlc3Mud2lr
-aS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hl
-cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: a607b14dc19a842b90d269e6c751c6f60a28fc3c  Merge branch 'pending' into master-pending
+
+elapsed time: 480m
+
+configs tested: 158
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+sh                            titan_defconfig
+sh                               allmodconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+microblaze                    nommu_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200327
+x86_64               randconfig-a002-20200327
+x86_64               randconfig-a003-20200327
+i386                 randconfig-a001-20200327
+i386                 randconfig-a002-20200327
+i386                 randconfig-a003-20200327
+alpha                randconfig-a001-20200327
+m68k                 randconfig-a001-20200327
+mips                 randconfig-a001-20200327
+nds32                randconfig-a001-20200327
+parisc               randconfig-a001-20200327
+riscv                randconfig-a001-20200327
+c6x                  randconfig-a001-20200327
+h8300                randconfig-a001-20200327
+microblaze           randconfig-a001-20200327
+nios2                randconfig-a001-20200327
+sparc64              randconfig-a001-20200327
+csky                 randconfig-a001-20200327
+openrisc             randconfig-a001-20200327
+s390                 randconfig-a001-20200327
+sh                   randconfig-a001-20200327
+xtensa               randconfig-a001-20200327
+x86_64               randconfig-b001-20200327
+x86_64               randconfig-b002-20200327
+x86_64               randconfig-b003-20200327
+i386                 randconfig-b001-20200327
+i386                 randconfig-b002-20200327
+i386                 randconfig-b003-20200327
+x86_64               randconfig-c001-20200327
+x86_64               randconfig-c002-20200327
+x86_64               randconfig-c003-20200327
+i386                 randconfig-c001-20200327
+i386                 randconfig-c002-20200327
+i386                 randconfig-c003-20200327
+x86_64               randconfig-d001-20200327
+x86_64               randconfig-d002-20200327
+x86_64               randconfig-d003-20200327
+i386                 randconfig-d001-20200327
+i386                 randconfig-d002-20200327
+i386                 randconfig-d003-20200327
+x86_64               randconfig-e001-20200327
+x86_64               randconfig-e002-20200327
+x86_64               randconfig-e003-20200327
+i386                 randconfig-e001-20200327
+i386                 randconfig-e002-20200327
+i386                 randconfig-e003-20200327
+x86_64               randconfig-f001-20200327
+x86_64               randconfig-f002-20200327
+x86_64               randconfig-f003-20200327
+i386                 randconfig-f001-20200327
+i386                 randconfig-f002-20200327
+i386                 randconfig-f003-20200327
+x86_64               randconfig-h001-20200327
+x86_64               randconfig-h002-20200327
+x86_64               randconfig-h003-20200327
+i386                 randconfig-h001-20200327
+i386                 randconfig-h002-20200327
+i386                 randconfig-h003-20200327
+arm                  randconfig-a001-20200327
+arm64                randconfig-a001-20200327
+ia64                 randconfig-a001-20200327
+powerpc              randconfig-a001-20200327
+sparc                randconfig-a001-20200327
+arc                  randconfig-a001-20200327
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
