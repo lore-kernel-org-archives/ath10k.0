@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHlLP-00065b-7x
- for ath10k@lists.infradead.org; Fri, 27 Mar 2020 09:32:04 +0000
-Received: by mail-wm1-x343.google.com with SMTP id g62so11566313wme.1
- for <ath10k@lists.infradead.org>; Fri, 27 Mar 2020 02:32:01 -0700 (PDT)
-From: Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH] ath10k: enable advertising support for channels 32, 68 and 98
-Date: Fri, 27 Mar 2020 10:31:47 +0100
-Message-Id: <20200327093147.189390-1-robert.marko@sartura.hr>
+ id 1jHn7C-0004Th-Nk
+ for ath10k@lists.infradead.org; Fri, 27 Mar 2020 11:25:34 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: enable VHT160 and VHT80+80 modes
+References: <1585148169-2320-1-git-send-email-ssreeela@codeaurora.org>
+ <20200326095907.5326BC433BA@smtp.codeaurora.org>
+ <812e84a585ed3aeda9aa54f7d2b14e93@codeaurora.org>
+Date: Fri, 27 Mar 2020 13:25:10 +0200
+In-Reply-To: <812e84a585ed3aeda9aa54f7d2b14e93@codeaurora.org>
+ (ssreeela@codeaurora.org's message of "Thu, 26 Mar 2020 18:45:06
+ +0530")
+Message-ID: <87bloi2g6h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,63 +22,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Robert Marko <robert.marko@sartura.hr>, Luka Perkov <luka.perkov@sartura.hr>
+To: ssreeela@codeaurora.org
+Cc: Lei Wang <leiwa@codeaurora.org>, Rick Wu <rwu@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Enable advertising support for 5G channels: 32, 68 and 96.
-These channels are legal and available for use in ETSI countries.
-So lets advertise these and they will be available in accordance with the regulatory domain used.
-
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
- drivers/net/wireless/ath/ath10k/core.h | 2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 5101bf2b5b15..480efaa1278c 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -37,7 +37,7 @@
- #define WMI_READY_TIMEOUT (5 * HZ)
- #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
- #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
--#define ATH10K_NUM_CHANS 41
-+#define ATH10K_NUM_CHANS 44
- #define ATH10K_MAX_5G_CHAN 173
- 
- /* Antenna noise floor */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7fee35ff966b..f98422427b27 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8363,6 +8363,7 @@ static const struct ieee80211_channel ath10k_2ghz_channels[] = {
- };
- 
- static const struct ieee80211_channel ath10k_5ghz_channels[] = {
-+	CHAN5G(32, 5160, 0),
- 	CHAN5G(36, 5180, 0),
- 	CHAN5G(40, 5200, 0),
- 	CHAN5G(44, 5220, 0),
-@@ -8371,6 +8372,8 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- 	CHAN5G(56, 5280, 0),
- 	CHAN5G(60, 5300, 0),
- 	CHAN5G(64, 5320, 0),
-+	CHAN5G(68, 5340, 0),
-+	CHAN5G(96, 5480, 0),
- 	CHAN5G(100, 5500, 0),
- 	CHAN5G(104, 5520, 0),
- 	CHAN5G(108, 5540, 0),
--- 
-2.26.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+c3NyZWVlbGFAY29kZWF1cm9yYS5vcmcgd3JpdGVzOgoKPiBPbiAyMDIwLTAzLTI2IDE1OjI5LCBL
+YWxsZSBWYWxvIHdyb3RlOgo+PiBTb3dtaXlhIFNyZWUgRWxhdmFsYWdhbiA8c3NyZWVlbGFAY29k
+ZWF1cm9yYS5vcmc+IHdyb3RlOgo+Pgo+Pj4gRnJvbTogTGVpIFdhbmcgPGxlaXdhQGNvZGVhdXJv
+cmEub3JnPgo+Pj4KPj4+IFNldCByaWdodCBjaGFubmVsIGZyZXF1ZW5jaWVzIGluIFZIVDE2MCBt
+b2RlIGFjY29yZGluZyB0byB0aGUgVkhUMTYwCj4+PiBpbnRlcm9wZXJhYmlsaXR5IHdvcmthcm91
+bmQgYWRkZWQgYXMgcGFydCBvZiBJRUVFIFN0ZCA4MDIuMTHihKItMjAxNiBpbgo+Pj4gIlRhYmxl
+IDktMjUy4oCUVkhUIE9wZXJhdGlvbiBJbmZvcm1hdGlvbiBzdWJmaWVsZHMiLCBiYW5kX2NlbnRl
+cl9mcmVxMgo+Pj4gY29ycmVzcG9uZHMgdG8gQ0NGUzEgaW4gVGFibGUgOS0yNTMuIFByZXZpb3Vz
+IGltcGxlbWVudGF0aW9uCj4+PiAoYmFuZF9jZW50ZXJfZnJlcTIgPSAwIGZvciBWSFQxNjApIGlz
+IG9ubHkgZGVwcmVjYXRlZC4KPj4+Cj4+PiBFbmFibGUgVkhUODArODAgbW9kZSBhbmQgc2V0IHRo
+ZSBwcm9wZXIgcGVlciBSWCBuc3MgdmFsdWUgZm9yCj4+PiBWSFQxNjAgYW5kCj4+PiBWSFQ4MCs4
+MCBtb2RlLgo+Pj4KPj4+IEJhc2VkIG9uIHBhdGNoZXMgYnkgU2ViYXN0aWFuIEdvdHRzY2hhbGw6
+Cj4+Pgo+Pj4gaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDE4MDcwNDA5NTQ0NC42NjItMS1z
+LmdvdHRzY2hhbGxAZGQtd3J0LmNvbQo+Pj4KPj4+IGh0dHBzOi8vbGttbC5rZXJuZWwub3JnL3Iv
+MjAxODA3MDQxMjA1MTkuNjQ3OS0xLXMuZ290dHNjaGFsbEBkZC13cnQuY29tCj4+Pgo+Pj4gVGVz
+dGVkOiBxY2E5OTg0IHdpdGggZmlybXdhcmUgdmVyIDEwLjQtMy4xMC0wMDA0Nwo+Pj4KPj4+IENv
+LWRldmVsb3BlZC1ieTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQu
+Y29tPgo+Pj4gU2lnbmVkLW9mZi1ieTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFs
+bEBkZC13cnQuY29tPgo+Pj4gQ28tZGV2ZWxvcGVkLWJ5OiBSaWNrIFd1IDxyd3VAY29kZWF1cm9y
+YS5vcmc+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBSaWNrIFd1IDxyd3VAY29kZWF1cm9yYS5vcmc+Cj4+
+PiBTaWduZWQtb2ZmLWJ5OiBMZWkgV2FuZyA8bGVpd2FAY29kZWF1cm9yYS5vcmc+Cj4+PiBTaWdu
+ZWQtb2ZmLWJ5OiBTb3dtaXlhIFNyZWUgRWxhdmFsYWdhbiA8c3NyZWVlbGFAY29kZWF1cm9yYS5v
+cmc+Cj4+Cj4+IEZhaWxzIHRvIGJ1aWxkIG9uIEdDQyA4LjEuIERpZCB5b3UgdGVzdCB0aGlzPwo+
+Pgo+PiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gLi9pbmNsdWRlL2FzbS1nZW5lcmljL2J1Zy5oOjUs
+Cj4+ICAgICAgICAgICAgICAgICAgZnJvbSAuL2FyY2gveDg2L2luY2x1ZGUvYXNtL2J1Zy5oOjgz
+LAo+PiAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L2J1Zy5oOjUsCj4+ICAg
+ICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1ZGUvbmV0L21hYzgwMjExLmg6MTYsCj4+ICAgICAg
+ICAgICAgICAgICAgZnJvbSBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5oOjEw
+LAo+PiAgICAgICAgICAgICAgICAgIGZyb20gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9tYWMuYzo4Ogo+PiBJbiBmdW5jdGlvbiAnYXRoMTBrX3BlZXJfYXNzb2NfaF92aHQnLAo+PiAg
+ICAgaW5saW5lZCBmcm9tICdhdGgxMGtfcGVlcl9hc3NvY19wcmVwYXJlJyBhdAo+PiBkcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jOjI3OTA6MjoKPj4gLi9pbmNsdWRlL2xpbnV4
+L2NvbXBpbGVyLmg6MzUwOjM4OiBlcnJvcjogY2FsbCB0bwo+PiAnX19jb21waWxldGltZV9hc3Nl
+cnRfMjYzMScgZGVjbGFyZWQgd2l0aCBhdHRyaWJ1dGUgZXJyb3I6CgpbLi4uXQoKPiBJIGNoZWNr
+ZWQgdGhlIGJ1aWxkLiBCdWlsZCB3YXMgc3VjY2Vzc2Z1bCB3aXRoIEdDQyB2ZXJzaW9uIDQuOC4K
+PiBXaWxsIGZpeCB0aGUgZXJyb3IgYW5kIHVwZGF0ZSB0aGUgcGF0Y2guCgpHcmVhdCwgdGhhbmtz
+LiBIZXJlJ3MgaG93IEkgaW5zdGFsbGVkIEdDQyA4LjEgZnJvbSBjcm9zc3Rvb2w6CgpsaXN0aW5n
+czogaHR0cHM6Ly93d3cua2VybmVsLm9yZy9wdWIvdG9vbHMvY3Jvc3N0b29sLwoKd2dldCBodHRw
+czovL3d3dy5rZXJuZWwub3JnL3B1Yi90b29scy9jcm9zc3Rvb2wvZmlsZXMvYmluL3g4Nl82NC84
+LjEuMC94ODZfNjQtZ2NjLTguMS4wLW5vbGliYy14ODZfNjQtbGludXgudGFyLnh6CnB1c2hkIC9v
+cHQvY3Jvc3MvCnRhciAteGYgfi90bXAvY3Jvc3N0b29sL3g4Nl82NC1nY2MtOC4xLjAtbm9saWJj
+LXg4Nl82NC1saW51eC50YXIueHoKCkluIHRvcCBsZXZlbCBjcmVhdGUgR05VTWFrZWZpbGU6CgpD
+Uk9TU19DT01QSUxFPS9vcHQvY3Jvc3MvZ2NjLTguMS4wLW5vbGliYy94ODZfNjQtbGludXgvYmlu
+L3g4Nl82NC1saW51eC0KaW5jbHVkZSBNYWtlZmlsZQoKLS0gCmh0dHBzOi8vd2lyZWxlc3Mud2lr
+aS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hl
+cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
