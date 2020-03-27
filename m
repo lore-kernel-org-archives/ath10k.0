@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHy6J-0005Xo-Up
- for ath10k@lists.infradead.org; Fri, 27 Mar 2020 23:09:21 +0000
-Date: Sat, 28 Mar 2020 07:09:04 +0800
+ id 1jHy7F-0006ro-1d
+ for ath10k@lists.infradead.org; Fri, 27 Mar 2020 23:10:18 +0000
+Date: Sat, 28 Mar 2020 07:09:07 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- a607b14dc19a842b90d269e6c751c6f60a28fc3c
-Message-ID: <5e7e8790.IMj4yw1cmLs4f0iI%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD REGRESSION
+ 36332b8f9975bbd686bde4d6ee23d02ed177d9a8
+Message-ID: <5e7e8793.n5TEc0dzh+RWK3Ir%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,16 +24,67 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: a607b14dc19a842b90d269e6c751c6f60a28fc3c  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 36332b8f9975bbd686bde4d6ee23d02ed177d9a8  ath10k: enable alt data of TX path for sdio
+
+Regressions in current branch:
+
+(void *)msdu->data + HAL_RX_DESC_SIZE, hdr_len);
+drivers/net/wireless/ath/ath11k/dp_rx.c:1010:20: warning: The scope of the variable 'rx_tid' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3002:49: warning: '(void*)msdu->data+(sizeof(struct hal_rx_desc))' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. [arithOperationsOnVoidPointer]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3013:22: warning: The scope of the variable 'rx_desc' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3204:6: warning: The scope of the variable 'cmp' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/hal.c:1138:19: warning: The scope of the variable 'srng' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/hal.c:1139:29: warning: The scope of the variable 'irq_grp' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/hal.c:1140:25: warning: The scope of the variable 'ce_pipe' can be reduced. [variableScope]
+memmove((void *)msdu->data + HAL_RX_DESC_SIZE + crypto_len,
+msdu_link = (struct hal_rx_msdu_link *)(link_desc_banks[desc_bank].vaddr +
+struct ath11k_ce_pipe *ce_pipe;
+struct ath11k_ext_irq_grp *irq_grp;
+struct dp_rx_tid *rx_tid;
+struct hal_rx_desc *rx_desc;
+struct hal_srng *srng;
+
+Error ids grouped by kconfigs:
+
+recent_errors
+|-- i386-allmodconfig
+|   |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-ce_pipe-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-irq_grp-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-srng-can-be-reduced.-variableScope
+|   |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
+|   |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
+|   |-- struct-ath11k_ce_pipe-ce_pipe
+|   |-- struct-ath11k_ext_irq_grp-irq_grp
+|   |-- struct-dp_rx_tid-rx_tid
+|   |-- struct-hal_rx_desc-rx_desc
+|   `-- struct-hal_srng-srng
+`-- x86_64-allyesconfig
+    |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-ce_pipe-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-irq_grp-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-srng-can-be-reduced.-variableScope
+    |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
+    |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
+    |-- struct-ath11k_ce_pipe-ce_pipe
+    |-- struct-ath11k_ext_irq_grp-irq_grp
+    |-- struct-dp_rx_tid-rx_tid
+    |-- struct-hal_rx_desc-rx_desc
+    `-- struct-hal_srng-srng
 
 elapsed time: 480m
 
-configs tested: 158
+configs tested: 162
 configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
 arm                              allmodconfig
 arm                               allnoconfig
@@ -54,7 +105,10 @@ sh                            titan_defconfig
 sh                               allmodconfig
 riscv                            allmodconfig
 riscv                             allnoconfig
+um                                  defconfig
+um                           x86_64_defconfig
 microblaze                    nommu_defconfig
+sparc64                          allyesconfig
 i386                              allnoconfig
 i386                             alldefconfig
 i386                             allyesconfig
@@ -113,16 +167,16 @@ mips                 randconfig-a001-20200327
 nds32                randconfig-a001-20200327
 parisc               randconfig-a001-20200327
 riscv                randconfig-a001-20200327
-c6x                  randconfig-a001-20200327
 h8300                randconfig-a001-20200327
-microblaze           randconfig-a001-20200327
 nios2                randconfig-a001-20200327
+c6x                  randconfig-a001-20200327
 sparc64              randconfig-a001-20200327
+microblaze           randconfig-a001-20200327
+s390                 randconfig-a001-20200327
+xtensa               randconfig-a001-20200327
 csky                 randconfig-a001-20200327
 openrisc             randconfig-a001-20200327
-s390                 randconfig-a001-20200327
 sh                   randconfig-a001-20200327
-xtensa               randconfig-a001-20200327
 x86_64               randconfig-b001-20200327
 x86_64               randconfig-b002-20200327
 x86_64               randconfig-b003-20200327
@@ -153,6 +207,12 @@ x86_64               randconfig-f003-20200327
 i386                 randconfig-f001-20200327
 i386                 randconfig-f002-20200327
 i386                 randconfig-f003-20200327
+x86_64               randconfig-g001-20200327
+x86_64               randconfig-g002-20200327
+x86_64               randconfig-g003-20200327
+i386                 randconfig-g001-20200327
+i386                 randconfig-g002-20200327
+i386                 randconfig-g003-20200327
 x86_64               randconfig-h001-20200327
 x86_64               randconfig-h002-20200327
 x86_64               randconfig-h003-20200327
@@ -163,8 +223,6 @@ arm                  randconfig-a001-20200327
 arm64                randconfig-a001-20200327
 ia64                 randconfig-a001-20200327
 powerpc              randconfig-a001-20200327
-sparc                randconfig-a001-20200327
-arc                  randconfig-a001-20200327
 riscv                            allyesconfig
 riscv                               defconfig
 riscv                    nommu_virt_defconfig
@@ -182,17 +240,14 @@ sh                                allnoconfig
 sparc                               defconfig
 sparc64                          allmodconfig
 sparc64                           allnoconfig
-sparc64                          allyesconfig
 sparc64                             defconfig
-um                           x86_64_defconfig
 um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
 x86_64                              fedora-25
 x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
