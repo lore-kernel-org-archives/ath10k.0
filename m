@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHXTv-00056Y-6X
- for ath10k@lists.infradead.org; Thu, 26 Mar 2020 18:43:56 +0000
-Date: Fri, 27 Mar 2020 02:43:21 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 5ea4ed9d20beb2890c1f396cb4cba21bd6ae5439
-Message-ID: <5e7cf7c9.OMeU8bQKKf+qPHNf%lkp@intel.com>
+ id 1jHlLP-00065b-7x
+ for ath10k@lists.infradead.org; Fri, 27 Mar 2020 09:32:04 +0000
+Received: by mail-wm1-x343.google.com with SMTP id g62so11566313wme.1
+ for <ath10k@lists.infradead.org>; Fri, 27 Mar 2020 02:32:01 -0700 (PDT)
+From: Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH] ath10k: enable advertising support for channels 32, 68 and 98
+Date: Fri, 27 Mar 2020 10:31:47 +0100
+Message-Id: <20200327093147.189390-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,170 +22,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Robert Marko <robert.marko@sartura.hr>, Luka Perkov <luka.perkov@sartura.hr>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 5ea4ed9d20beb2890c1f396cb4cba21bd6ae5439  Merge branch 'pending' into master-pending
+Enable advertising support for 5G channels: 32, 68 and 96.
+These channels are legal and available for use in ETSI countries.
+So lets advertise these and they will be available in accordance with the regulatory domain used.
 
-elapsed time: 484m
-
-configs tested: 146
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-um                             i386_defconfig
-mips                             allmodconfig
-powerpc                             defconfig
-riscv                               defconfig
-um                                  defconfig
-c6x                        evmc6678_defconfig
-riscv                    nommu_virt_defconfig
-s390                             alldefconfig
-nds32                               defconfig
-riscv                          rv32_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200326
-x86_64               randconfig-a002-20200326
-x86_64               randconfig-a003-20200326
-i386                 randconfig-a001-20200326
-i386                 randconfig-a002-20200326
-i386                 randconfig-a003-20200326
-alpha                randconfig-a001-20200326
-m68k                 randconfig-a001-20200326
-mips                 randconfig-a001-20200326
-nds32                randconfig-a001-20200326
-parisc               randconfig-a001-20200326
-riscv                randconfig-a001-20200326
-h8300                randconfig-a001-20200326
-microblaze           randconfig-a001-20200326
-nios2                randconfig-a001-20200326
-c6x                  randconfig-a001-20200326
-sparc64              randconfig-a001-20200326
-csky                 randconfig-a001-20200326
-openrisc             randconfig-a001-20200326
-s390                 randconfig-a001-20200326
-xtensa               randconfig-a001-20200326
-sh                   randconfig-a001-20200326
-x86_64               randconfig-c001-20200326
-x86_64               randconfig-c002-20200326
-x86_64               randconfig-c003-20200326
-i386                 randconfig-c001-20200326
-i386                 randconfig-c002-20200326
-i386                 randconfig-c003-20200326
-x86_64               randconfig-e001-20200326
-x86_64               randconfig-e002-20200326
-x86_64               randconfig-e003-20200326
-i386                 randconfig-e001-20200326
-i386                 randconfig-e002-20200326
-i386                 randconfig-e003-20200326
-x86_64               randconfig-f001-20200326
-x86_64               randconfig-f002-20200326
-x86_64               randconfig-f003-20200326
-i386                 randconfig-f001-20200326
-i386                 randconfig-f002-20200326
-i386                 randconfig-f003-20200326
-x86_64               randconfig-h001-20200326
-x86_64               randconfig-h002-20200326
-x86_64               randconfig-h003-20200326
-i386                 randconfig-h001-20200326
-i386                 randconfig-h002-20200326
-i386                 randconfig-h003-20200326
-arc                  randconfig-a001-20200326
-arm                  randconfig-a001-20200326
-arm64                randconfig-a001-20200326
-ia64                 randconfig-a001-20200326
-powerpc              randconfig-a001-20200326
-sparc                randconfig-a001-20200326
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                           x86_64_defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 5101bf2b5b15..480efaa1278c 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -37,7 +37,7 @@
+ #define WMI_READY_TIMEOUT (5 * HZ)
+ #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
+ #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
+-#define ATH10K_NUM_CHANS 41
++#define ATH10K_NUM_CHANS 44
+ #define ATH10K_MAX_5G_CHAN 173
+ 
+ /* Antenna noise floor */
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7fee35ff966b..f98422427b27 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8363,6 +8363,7 @@ static const struct ieee80211_channel ath10k_2ghz_channels[] = {
+ };
+ 
+ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
++	CHAN5G(32, 5160, 0),
+ 	CHAN5G(36, 5180, 0),
+ 	CHAN5G(40, 5200, 0),
+ 	CHAN5G(44, 5220, 0),
+@@ -8371,6 +8372,8 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ 	CHAN5G(56, 5280, 0),
+ 	CHAN5G(60, 5300, 0),
+ 	CHAN5G(64, 5320, 0),
++	CHAN5G(68, 5340, 0),
++	CHAN5G(96, 5480, 0),
+ 	CHAN5G(100, 5500, 0),
+ 	CHAN5G(104, 5520, 0),
+ 	CHAN5G(108, 5540, 0),
+-- 
+2.26.0
+
 
 _______________________________________________
 ath10k mailing list
