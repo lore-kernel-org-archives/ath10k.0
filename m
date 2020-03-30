@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHy7F-0006ro-1d
- for ath10k@lists.infradead.org; Fri, 27 Mar 2020 23:10:18 +0000
-Date: Sat, 28 Mar 2020 07:09:07 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD REGRESSION
- 36332b8f9975bbd686bde4d6ee23d02ed177d9a8
-Message-ID: <5e7e8793.n5TEc0dzh+RWK3Ir%lkp@intel.com>
+ id 1jIqdI-0002hp-Sb
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2020 09:23:03 +0000
 MIME-Version: 1.0
+Date: Mon, 30 Mar 2020 14:52:53 +0530
+From: ssreeela@codeaurora.org
+Subject: Re: [PATCH] ath10k: enable VHT160 and VHT80+80 modes
+In-Reply-To: <87bloi2g6h.fsf@kamboji.qca.qualcomm.com>
+References: <1585148169-2320-1-git-send-email-ssreeela@codeaurora.org>
+ <20200326095907.5326BC433BA@smtp.codeaurora.org>
+ <812e84a585ed3aeda9aa54f7d2b14e93@codeaurora.org>
+ <87bloi2g6h.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <158d2bdf5027a494d14cfdd6134b9c6f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,243 +21,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+Cc: Lei Wang <leiwa@codeaurora.org>, Rick Wu <rwu@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 36332b8f9975bbd686bde4d6ee23d02ed177d9a8  ath10k: enable alt data of TX path for sdio
-
-Regressions in current branch:
-
-(void *)msdu->data + HAL_RX_DESC_SIZE, hdr_len);
-drivers/net/wireless/ath/ath11k/dp_rx.c:1010:20: warning: The scope of the variable 'rx_tid' can be reduced. [variableScope]
-drivers/net/wireless/ath/ath11k/dp_rx.c:3002:49: warning: '(void*)msdu->data+(sizeof(struct hal_rx_desc))' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. [arithOperationsOnVoidPointer]
-drivers/net/wireless/ath/ath11k/dp_rx.c:3013:22: warning: The scope of the variable 'rx_desc' can be reduced. [variableScope]
-drivers/net/wireless/ath/ath11k/dp_rx.c:3204:6: warning: The scope of the variable 'cmp' can be reduced. [variableScope]
-drivers/net/wireless/ath/ath11k/hal.c:1138:19: warning: The scope of the variable 'srng' can be reduced. [variableScope]
-drivers/net/wireless/ath/ath11k/hal.c:1139:29: warning: The scope of the variable 'irq_grp' can be reduced. [variableScope]
-drivers/net/wireless/ath/ath11k/hal.c:1140:25: warning: The scope of the variable 'ce_pipe' can be reduced. [variableScope]
-memmove((void *)msdu->data + HAL_RX_DESC_SIZE + crypto_len,
-msdu_link = (struct hal_rx_msdu_link *)(link_desc_banks[desc_bank].vaddr +
-struct ath11k_ce_pipe *ce_pipe;
-struct ath11k_ext_irq_grp *irq_grp;
-struct dp_rx_tid *rx_tid;
-struct hal_rx_desc *rx_desc;
-struct hal_srng *srng;
-
-Error ids grouped by kconfigs:
-
-recent_errors
-|-- i386-allmodconfig
-|   |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
-|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
-|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
-|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
-|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
-|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-ce_pipe-can-be-reduced.-variableScope
-|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-irq_grp-can-be-reduced.-variableScope
-|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-srng-can-be-reduced.-variableScope
-|   |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
-|   |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
-|   |-- struct-ath11k_ce_pipe-ce_pipe
-|   |-- struct-ath11k_ext_irq_grp-irq_grp
-|   |-- struct-dp_rx_tid-rx_tid
-|   |-- struct-hal_rx_desc-rx_desc
-|   `-- struct-hal_srng-srng
-`-- x86_64-allyesconfig
-    |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
-    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
-    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
-    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
-    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
-    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-ce_pipe-can-be-reduced.-variableScope
-    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-irq_grp-can-be-reduced.-variableScope
-    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-srng-can-be-reduced.-variableScope
-    |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
-    |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
-    |-- struct-ath11k_ce_pipe-ce_pipe
-    |-- struct-ath11k_ext_irq_grp-irq_grp
-    |-- struct-dp_rx_tid-rx_tid
-    |-- struct-hal_rx_desc-rx_desc
-    `-- struct-hal_srng-srng
-
-elapsed time: 480m
-
-configs tested: 162
-configs skipped: 0
-
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-sh                            titan_defconfig
-sh                               allmodconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-um                                  defconfig
-um                           x86_64_defconfig
-microblaze                    nommu_defconfig
-sparc64                          allyesconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200327
-x86_64               randconfig-a002-20200327
-x86_64               randconfig-a003-20200327
-i386                 randconfig-a001-20200327
-i386                 randconfig-a002-20200327
-i386                 randconfig-a003-20200327
-alpha                randconfig-a001-20200327
-m68k                 randconfig-a001-20200327
-mips                 randconfig-a001-20200327
-nds32                randconfig-a001-20200327
-parisc               randconfig-a001-20200327
-riscv                randconfig-a001-20200327
-h8300                randconfig-a001-20200327
-nios2                randconfig-a001-20200327
-c6x                  randconfig-a001-20200327
-sparc64              randconfig-a001-20200327
-microblaze           randconfig-a001-20200327
-s390                 randconfig-a001-20200327
-xtensa               randconfig-a001-20200327
-csky                 randconfig-a001-20200327
-openrisc             randconfig-a001-20200327
-sh                   randconfig-a001-20200327
-x86_64               randconfig-b001-20200327
-x86_64               randconfig-b002-20200327
-x86_64               randconfig-b003-20200327
-i386                 randconfig-b001-20200327
-i386                 randconfig-b002-20200327
-i386                 randconfig-b003-20200327
-x86_64               randconfig-c001-20200327
-x86_64               randconfig-c002-20200327
-x86_64               randconfig-c003-20200327
-i386                 randconfig-c001-20200327
-i386                 randconfig-c002-20200327
-i386                 randconfig-c003-20200327
-x86_64               randconfig-d001-20200327
-x86_64               randconfig-d002-20200327
-x86_64               randconfig-d003-20200327
-i386                 randconfig-d001-20200327
-i386                 randconfig-d002-20200327
-i386                 randconfig-d003-20200327
-x86_64               randconfig-e001-20200327
-x86_64               randconfig-e002-20200327
-x86_64               randconfig-e003-20200327
-i386                 randconfig-e001-20200327
-i386                 randconfig-e002-20200327
-i386                 randconfig-e003-20200327
-x86_64               randconfig-f001-20200327
-x86_64               randconfig-f002-20200327
-x86_64               randconfig-f003-20200327
-i386                 randconfig-f001-20200327
-i386                 randconfig-f002-20200327
-i386                 randconfig-f003-20200327
-x86_64               randconfig-g001-20200327
-x86_64               randconfig-g002-20200327
-x86_64               randconfig-g003-20200327
-i386                 randconfig-g001-20200327
-i386                 randconfig-g002-20200327
-i386                 randconfig-g003-20200327
-x86_64               randconfig-h001-20200327
-x86_64               randconfig-h002-20200327
-x86_64               randconfig-h003-20200327
-i386                 randconfig-h001-20200327
-i386                 randconfig-h002-20200327
-i386                 randconfig-h003-20200327
-arm                  randconfig-a001-20200327
-arm64                randconfig-a001-20200327
-ia64                 randconfig-a001-20200327
-powerpc              randconfig-a001-20200327
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                             defconfig
-um                             i386_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAyMC0wMy0yNyAxNjo1NSwgS2FsbGUgVmFsbyB3cm90ZToKPiBzc3JlZWVsYUBjb2RlYXVy
+b3JhLm9yZyB3cml0ZXM6Cj4gCj4+IE9uIDIwMjAtMDMtMjYgMTU6MjksIEthbGxlIFZhbG8gd3Jv
+dGU6Cj4+PiBTb3dtaXlhIFNyZWUgRWxhdmFsYWdhbiA8c3NyZWVlbGFAY29kZWF1cm9yYS5vcmc+
+IHdyb3RlOgo+Pj4gCj4+Pj4gRnJvbTogTGVpIFdhbmcgPGxlaXdhQGNvZGVhdXJvcmEub3JnPgo+
+Pj4+IAo+Pj4+IFNldCByaWdodCBjaGFubmVsIGZyZXF1ZW5jaWVzIGluIFZIVDE2MCBtb2RlIGFj
+Y29yZGluZyB0byB0aGUgVkhUMTYwCj4+Pj4gaW50ZXJvcGVyYWJpbGl0eSB3b3JrYXJvdW5kIGFk
+ZGVkIGFzIHBhcnQgb2YgSUVFRSBTdGQgODAyLjEx4oSiLTIwMTYgCj4+Pj4gaW4KPj4+PiAiVGFi
+bGUgOS0yNTLigJRWSFQgT3BlcmF0aW9uIEluZm9ybWF0aW9uIHN1YmZpZWxkcyIsIGJhbmRfY2Vu
+dGVyX2ZyZXEyCj4+Pj4gY29ycmVzcG9uZHMgdG8gQ0NGUzEgaW4gVGFibGUgOS0yNTMuIFByZXZp
+b3VzIGltcGxlbWVudGF0aW9uCj4+Pj4gKGJhbmRfY2VudGVyX2ZyZXEyID0gMCBmb3IgVkhUMTYw
+KSBpcyBvbmx5IGRlcHJlY2F0ZWQuCj4+Pj4gCj4+Pj4gRW5hYmxlIFZIVDgwKzgwIG1vZGUgYW5k
+IHNldCB0aGUgcHJvcGVyIHBlZXIgUlggbnNzIHZhbHVlIGZvcgo+Pj4+IFZIVDE2MCBhbmQKPj4+
+PiBWSFQ4MCs4MCBtb2RlLgo+Pj4+IAo+Pj4+IEJhc2VkIG9uIHBhdGNoZXMgYnkgU2ViYXN0aWFu
+IEdvdHRzY2hhbGw6Cj4+Pj4gCj4+Pj4gaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDE4MDcw
+NDA5NTQ0NC42NjItMS1zLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQo+Pj4+IAo+Pj4+IGh0dHBzOi8v
+bGttbC5rZXJuZWwub3JnL3IvMjAxODA3MDQxMjA1MTkuNjQ3OS0xLXMuZ290dHNjaGFsbEBkZC13
+cnQuY29tCj4+Pj4gCj4+Pj4gVGVzdGVkOiBxY2E5OTg0IHdpdGggZmlybXdhcmUgdmVyIDEwLjQt
+My4xMC0wMDA0Nwo+Pj4+IAo+Pj4+IENvLWRldmVsb3BlZC1ieTogU2ViYXN0aWFuIEdvdHRzY2hh
+bGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPgo+Pj4+IFNpZ25lZC1vZmYtYnk6IFNlYmFzdGlh
+biBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KPj4+PiBDby1kZXZlbG9wZWQt
+Ynk6IFJpY2sgV3UgPHJ3dUBjb2RlYXVyb3JhLm9yZz4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBSaWNr
+IFd1IDxyd3VAY29kZWF1cm9yYS5vcmc+Cj4+Pj4gU2lnbmVkLW9mZi1ieTogTGVpIFdhbmcgPGxl
+aXdhQGNvZGVhdXJvcmEub3JnPgo+Pj4+IFNpZ25lZC1vZmYtYnk6IFNvd21peWEgU3JlZSBFbGF2
+YWxhZ2FuIDxzc3JlZWVsYUBjb2RlYXVyb3JhLm9yZz4KPj4+IAo+Pj4gRmFpbHMgdG8gYnVpbGQg
+b24gR0NDIDguMS4gRGlkIHlvdSB0ZXN0IHRoaXM/Cj4+PiAKPj4+IEluIGZpbGUgaW5jbHVkZWQg
+ZnJvbSAuL2luY2x1ZGUvYXNtLWdlbmVyaWMvYnVnLmg6NSwKPj4+ICAgICAgICAgICAgICAgICAg
+ZnJvbSAuL2FyY2gveDg2L2luY2x1ZGUvYXNtL2J1Zy5oOjgzLAo+Pj4gICAgICAgICAgICAgICAg
+ICBmcm9tIC4vaW5jbHVkZS9saW51eC9idWcuaDo1LAo+Pj4gICAgICAgICAgICAgICAgICBmcm9t
+IC4vaW5jbHVkZS9uZXQvbWFjODAyMTEuaDoxNiwKPj4+ICAgICAgICAgICAgICAgICAgZnJvbSBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5oOjEwLAo+Pj4gICAgICAgICAgICAg
+ICAgICBmcm9tIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmM6ODoKPj4+IElu
+IGZ1bmN0aW9uICdhdGgxMGtfcGVlcl9hc3NvY19oX3ZodCcsCj4+PiAgICAgaW5saW5lZCBmcm9t
+ICdhdGgxMGtfcGVlcl9hc3NvY19wcmVwYXJlJyBhdAo+Pj4gZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9tYWMuYzoyNzkwOjI6Cj4+PiAuL2luY2x1ZGUvbGludXgvY29tcGlsZXIuaDoz
+NTA6Mzg6IGVycm9yOiBjYWxsIHRvCj4+PiAnX19jb21waWxldGltZV9hc3NlcnRfMjYzMScgZGVj
+bGFyZWQgd2l0aCBhdHRyaWJ1dGUgZXJyb3I6Cj4gCj4gWy4uLl0KPiAKPj4gSSBjaGVja2VkIHRo
+ZSBidWlsZC4gQnVpbGQgd2FzIHN1Y2Nlc3NmdWwgd2l0aCBHQ0MgdmVyc2lvbiA0LjguCj4+IFdp
+bGwgZml4IHRoZSBlcnJvciBhbmQgdXBkYXRlIHRoZSBwYXRjaC4KPiAKPiBHcmVhdCwgdGhhbmtz
+LiBIZXJlJ3MgaG93IEkgaW5zdGFsbGVkIEdDQyA4LjEgZnJvbSBjcm9zc3Rvb2w6Cj4gCj4gbGlz
+dGluZ3M6IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvcHViL3Rvb2xzL2Nyb3NzdG9vbC8KPiAKPiB3
+Z2V0Cj4gaHR0cHM6Ly93d3cua2VybmVsLm9yZy9wdWIvdG9vbHMvY3Jvc3N0b29sL2ZpbGVzL2Jp
+bi94ODZfNjQvOC4xLjAveDg2XzY0LWdjYy04LjEuMC1ub2xpYmMteDg2XzY0LWxpbnV4LnRhci54
+ego+IHB1c2hkIC9vcHQvY3Jvc3MvCj4gdGFyIC14ZiB+L3RtcC9jcm9zc3Rvb2wveDg2XzY0LWdj
+Yy04LjEuMC1ub2xpYmMteDg2XzY0LWxpbnV4LnRhci54ego+IAo+IEluIHRvcCBsZXZlbCBjcmVh
+dGUgR05VTWFrZWZpbGU6Cj4gCj4gQ1JPU1NfQ09NUElMRT0vb3B0L2Nyb3NzL2djYy04LjEuMC1u
+b2xpYmMveDg2XzY0LWxpbnV4L2Jpbi94ODZfNjQtbGludXgtCj4gaW5jbHVkZSBNYWtlZmlsZQoK
+VGhhbmtzIGZvciB0aGUgaW5mby4gV2lsbCBjaGVjayB0aGUgYnVpbGQgd2l0aCBHQ0MgOC4xIGFu
+ZCByZXNlbmQuCgpSZWdhcmRzLApTb3dtaXlhIFNyZWUKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
