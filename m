@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-il1-f193.google.com ([209.85.166.193])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJOcw-000646-9s
- for ath10k@lists.infradead.org; Tue, 31 Mar 2020 21:40:55 +0000
-Received: by mail-il1-f193.google.com with SMTP id k29so20969517ilg.0
- for <ath10k@lists.infradead.org>; Tue, 31 Mar 2020 14:40:54 -0700 (PDT)
-Date: Tue, 31 Mar 2020 15:40:51 -0600
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: ath10k: Add wifi-firmware subnode
- for wifi node
-Message-ID: <20200331214051.GA2053@bogus>
-References: <1585134100-5944-1-git-send-email-pillair@codeaurora.org>
- <1585134100-5944-2-git-send-email-pillair@codeaurora.org>
+ id 1jJX8L-0001bS-UZ
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2020 06:45:55 +0000
+Date: Wed, 01 Apr 2020 14:44:41 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 308208021bfcf3b4b44253836a500e94e8c14f4b
+Message-ID: <5e843859.p4VBHx3L/UaSgk8P%lkp@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1585134100-5944-2-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +21,200 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Wed, Mar 25, 2020 at 04:31:38PM +0530, Rakesh Pillai wrote:
-> Add a wifi-firmware subnode for the wifi node.
-> This wifi-firmware subnode is needed for the
-> targets which do not support TrustZone.
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
->  .../devicetree/bindings/net/wireless/qcom,ath10k.txt       | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index 71bf91f..65ee68e 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -96,6 +96,17 @@ Optional properties:
->  - qcom,coexist-gpio-pin : gpio pin number  information to support coex
->  			  which will be used by wifi firmware.
->  
-> +* Subnodes
-> +The ath10k wifi node can contain one optional firmware subnode.
-> +Firmware subnode is needed when the platform does not have TustZone.
-> +The firmware subnode must have:
-> +
-> +- iommus:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: A list of phandle and IOMMU specifier pairs.
-> +
-> +
->  Example (to supply PCI based wifi block details):
->  
->  In this example, the node is defined as child node of the PCI controller.
-> @@ -196,4 +207,7 @@ wifi@18000000 {
->  		memory-region = <&wifi_msa_mem>;
->  		iommus = <&apps_smmu 0x0040 0x1>;
->  		qcom,msa-fixed-perm;
-> +		wifi-firmware {
-> +			iommus = <&apps_iommu 0xc22 0x1>;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 308208021bfcf3b4b44253836a500e94e8c14f4b  Merge branch 'pending' into master-pending
 
-Why can't you just add a 2nd entry to the existing 'iommus' property? 
+elapsed time: 1148m
 
-A driver doing of_dma_configure() is generally not the right thing to 
-do.
+configs tested: 176
+configs skipped: 0
 
-Rob
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+i386                                defconfig
+m68k                             allmodconfig
+mips                      malta_kvm_defconfig
+s390                                defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+h8300                    h8300h-sim_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200331
+x86_64               randconfig-a002-20200331
+x86_64               randconfig-a003-20200331
+i386                 randconfig-a001-20200331
+i386                 randconfig-a002-20200331
+i386                 randconfig-a003-20200331
+riscv                randconfig-a001-20200331
+m68k                 randconfig-a001-20200331
+parisc               randconfig-a001-20200331
+alpha                randconfig-a001-20200331
+nds32                randconfig-a001-20200331
+mips                 randconfig-a001-20200331
+c6x                  randconfig-a001-20200331
+h8300                randconfig-a001-20200331
+microblaze           randconfig-a001-20200331
+nios2                randconfig-a001-20200331
+sparc64              randconfig-a001-20200331
+csky                 randconfig-a001-20200331
+s390                 randconfig-a001-20200331
+xtensa               randconfig-a001-20200331
+openrisc             randconfig-a001-20200331
+sh                   randconfig-a001-20200331
+x86_64               randconfig-b003-20200331
+i386                 randconfig-b003-20200331
+i386                 randconfig-b002-20200331
+i386                 randconfig-b001-20200331
+x86_64               randconfig-b002-20200331
+x86_64               randconfig-b001-20200331
+x86_64               randconfig-c001-20200401
+x86_64               randconfig-c002-20200401
+x86_64               randconfig-c003-20200401
+i386                 randconfig-c001-20200401
+i386                 randconfig-c002-20200401
+i386                 randconfig-c003-20200401
+x86_64               randconfig-c001-20200331
+x86_64               randconfig-c002-20200331
+x86_64               randconfig-c003-20200331
+i386                 randconfig-c001-20200331
+i386                 randconfig-c002-20200331
+i386                 randconfig-c003-20200331
+x86_64               randconfig-d001-20200331
+x86_64               randconfig-d002-20200331
+x86_64               randconfig-d003-20200331
+i386                 randconfig-d001-20200331
+i386                 randconfig-d002-20200331
+i386                 randconfig-d003-20200331
+x86_64               randconfig-e001-20200331
+x86_64               randconfig-e002-20200331
+x86_64               randconfig-e003-20200331
+i386                 randconfig-e001-20200331
+i386                 randconfig-e002-20200331
+i386                 randconfig-e003-20200331
+x86_64               randconfig-f001-20200401
+x86_64               randconfig-f002-20200401
+x86_64               randconfig-f003-20200401
+i386                 randconfig-f001-20200401
+i386                 randconfig-f002-20200401
+i386                 randconfig-f003-20200401
+x86_64               randconfig-g001-20200331
+x86_64               randconfig-g002-20200331
+x86_64               randconfig-g003-20200331
+i386                 randconfig-g001-20200331
+i386                 randconfig-g002-20200331
+i386                 randconfig-g003-20200331
+x86_64               randconfig-h001-20200331
+x86_64               randconfig-h002-20200331
+x86_64               randconfig-h003-20200331
+i386                 randconfig-h001-20200331
+i386                 randconfig-h002-20200331
+i386                 randconfig-h003-20200331
+arc                  randconfig-a001-20200401
+arm                  randconfig-a001-20200401
+arm64                randconfig-a001-20200401
+ia64                 randconfig-a001-20200401
+powerpc              randconfig-a001-20200401
+sparc                randconfig-a001-20200401
+arc                  randconfig-a001-20200331
+arm                  randconfig-a001-20200331
+arm64                randconfig-a001-20200331
+ia64                 randconfig-a001-20200331
+powerpc              randconfig-a001-20200331
+sparc                randconfig-a001-20200331
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
