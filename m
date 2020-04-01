@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJXMv-00082r-IG
- for ath10k@lists.infradead.org; Wed, 01 Apr 2020 07:00:59 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH] ath10k: increase rx buffer size to 2048
-Date: Wed, 01 Apr 2020 09:00:49 +0200
-Message-ID: <3300912.TRQvxCK2vZ@bentobox>
-In-Reply-To: <20200205191043.21913-1-linus.luessing@c0d3.blue>
-References: <20200205191043.21913-1-linus.luessing@c0d3.blue>
+ id 1jJXqG-0002kK-0M
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2020 07:31:20 +0000
+From: <pillair@codeaurora.org>
+References: <1585134100-5944-1-git-send-email-pillair@codeaurora.org>
+ <1585134100-5944-2-git-send-email-pillair@codeaurora.org>
+ <20200331214051.GA2053@bogus>
+In-Reply-To: <20200331214051.GA2053@bogus>
+Subject: RE: [PATCH v2 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
+ wifi node
+Date: Wed, 1 Apr 2020 13:00:50 +0530
+Message-ID: <002001d607f7$7bc8ebd0$735ac370$@codeaurora.org>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,82 +22,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5620324936941332504=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Linus =?ISO-8859-1?Q?L=FCssing?= <linus.luessing@c0d3.blue>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Ben Greear <greearb@candelatech.com>, "David S . Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, Linus =?ISO-8859-1?Q?L=FCssing?= <ll@simonwunderlich.de>
+To: 'Rob Herring' <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
---===============5620324936941332504==
-Content-Type: multipart/signed; boundary="nextPart1800025.TbuEdfJRpj"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Hi Rob,
+Comments inline.
 
---nextPart1800025.TbuEdfJRpj
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Wednesday, April 1, 2020 3:11 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v2 1/3] dt-bindings: ath10k: Add wifi-firmware subnode
+> for wifi node
+> 
+> On Wed, Mar 25, 2020 at 04:31:38PM +0530, Rakesh Pillai wrote:
+> > Add a wifi-firmware subnode for the wifi node.
+> > This wifi-firmware subnode is needed for the
+> > targets which do not support TrustZone.
+> >
+> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> > ---
+> >  .../devicetree/bindings/net/wireless/qcom,ath10k.txt       | 14
+> ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> >
+> > diff --git
+> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> > index 71bf91f..65ee68e 100644
+> > --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> > +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> > @@ -96,6 +96,17 @@ Optional properties:
+> >  - qcom,coexist-gpio-pin : gpio pin number  information to support coex
+> >  			  which will be used by wifi firmware.
+> >
+> > +* Subnodes
+> > +The ath10k wifi node can contain one optional firmware subnode.
+> > +Firmware subnode is needed when the platform does not have TustZone.
+> > +The firmware subnode must have:
+> > +
+> > +- iommus:
+> > +	Usage: required
+> > +	Value type: <prop-encoded-array>
+> > +	Definition: A list of phandle and IOMMU specifier pairs.
+> > +
+> > +
+> >  Example (to supply PCI based wifi block details):
+> >
+> >  In this example, the node is defined as child node of the PCI
+controller.
+> > @@ -196,4 +207,7 @@ wifi@18000000 {
+> >  		memory-region = <&wifi_msa_mem>;
+> >  		iommus = <&apps_smmu 0x0040 0x1>;
+> >  		qcom,msa-fixed-perm;
+> > +		wifi-firmware {
+> > +			iommus = <&apps_iommu 0xc22 0x1>;
+> 
+> Why can't you just add a 2nd entry to the existing 'iommus' property?
+> 
+> A driver doing of_dma_configure() is generally not the right thing to
+> do.
 
-On Wednesday, 5 February 2020 20:10:43 CEST Linus L=FCssing wrote:
-> From: Linus L=FCssing <ll@simonwunderlich.de>
->=20
-> Before, only frames with a maximum size of 1528 bytes could be
-> transmitted between two 802.11s nodes.
->=20
-> For batman-adv for instance, which adds its own header to each frame,
-> we typically need an MTU of at least 1532 bytes to be able to transmit
-> without fragmentation.
->=20
-> This patch now increases the maxmimum frame size from 1528 to 1656
-> bytes.
-[...]
+The SIDs mentioned in the wifi-firmware node will be belonging to the
+firmware and not any HLOS.
+In other targets with TZ, the hypervisor takes care of configuring the SIDs
+(for its master).
+In this target (sc7180 IDP) we are not having TZ (no hypervisor), hence
+these need to be configured by HLOS.
+The wifi-firmware node is added in-order to differentiate the SID between
+driver and firmware.
 
-@Kalle, I saw that this patch was marked as deferred [1] but I couldn't fin=
-d=20
-any mail why it was done so. It seems like this currently creates real worl=
-d=20
-problems - so would be nice if you could explain shortly what is currently=
-=20
-blocking its acceptance.
+This is same as the approach followed by Venus video driver in the below
+patch
+https://patchwork.kernel.org/patch/11315765/ 
 
-Kind regards,
-	Sven
-
-[1] https://patchwork.kernel.org/patch/11367055/
---nextPart1800025.TbuEdfJRpj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl6EPCEACgkQXYcKB8Em
-e0YRxA//YxxFkrb3+3MfksBJzKvpwPudQje1PeGas/4ofeiU8BeEaEGPbE5psITT
-FNUyVMxVf9VceV10aWdFwVNB4pr6BNhp8ENaZC1mM+ysv4qx2GGdFizlDSmctk6S
-KUEeE7sGWPMF8GsVmKFOm91xDWZJPQkz39dYrrOF/n8z0A/PpSVVj9GU1+qWh1uY
-wpTi1FBpQ22mt1+lLtkzd79iWR88tUEq6+kSb6c9iGRHwFzAKsWH2ztHiz1XJKUL
-JuslEzrgknh22OKVuMDFeHERdTV20QxFouTv4jJNAT7++TWrOOscqLmyAHApkzxS
-LUasYj1cIAUIOhiB26luknCi2nshgSqo3pX98brWOc5k7oOAip2dj3ZP7SKTTCDx
-bm/oTQEjvH6tx/ejTssiObbCNE2eNVk2NKSiIPQ43f/7TUQLKOx0MwKZP0Oze1AO
-nNPz04GP75RJManuczRyBRZ9RVHfS4V/yiD1EDvT3NQpmg9bJrfWyo7gpFAVL8mx
-BXHiaDmaXbRAlK4DrBR/ozjYXlGddNVBJQ9JTdk1PM0BOoTnRjMj/Gs1ZIvtKb8R
-mlfJYXEu4D9tIi1XlRAOmMZ/VYlE33T198Pb5ia6r6g4qlqiVpZc/h+ktfB/BkWH
-SqRSuL6vw7oCbxefi5oF2T0HEVU3K3hvvATa0R6A2xQgtkz/pXQ=
-=1DtW
------END PGP SIGNATURE-----
-
---nextPart1800025.TbuEdfJRpj--
-
-
-
-
-
---===============5620324936941332504==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> 
+> Rob
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5620324936941332504==--
