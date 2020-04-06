@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jKLSV-00022x-AN
- for ath10k@lists.infradead.org; Fri, 03 Apr 2020 12:30:05 +0000
-Received: by mail-qt1-x831.google.com with SMTP id y25so6205942qtv.7
- for <ath10k@lists.infradead.org>; Fri, 03 Apr 2020 05:30:02 -0700 (PDT)
+ id 1jLUPX-0002h8-1x
+ for ath10k@lists.infradead.org; Mon, 06 Apr 2020 16:15:46 +0000
 MIME-Version: 1.0
-References: <CAJoWQ3eRgEv0x=t0=2nHqyY5FkCpzWz4A6qgFPN3RuJ3cDjFug@mail.gmail.com>
-In-Reply-To: <CAJoWQ3eRgEv0x=t0=2nHqyY5FkCpzWz4A6qgFPN3RuJ3cDjFug@mail.gmail.com>
-From: Bogdan Dziedzic <bogibzik@gmail.com>
-Date: Fri, 3 Apr 2020 23:30:14 +1100
-Message-ID: <CAJoWQ3dPC9=xHrtOjSj6BMQwZVvRO1xrtrfgja76FYmrxywBeA@mail.gmail.com>
-Subject: Re: failed to build .ko for ath10k against master
+Subject: Re: [PATCH] ath10k: Fix the race condition in firmware dump work queue
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1585213077-28439-1-git-send-email-mkenna@codeaurora.org>
+References: <1585213077-28439-1-git-send-email-mkenna@codeaurora.org>
+Message-Id: <20200406161524.5C6C9C43637@smtp.codeaurora.org>
+Date: Mon,  6 Apr 2020 16:15:24 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +22,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Cc: Govindaraj Saminathan <gsamin@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
 
-performed steps:
-git show
-commit 5bc4a8084c1f5919707053b991fa2700e3d37635 (HEAD, tag:
- ath-202003221023, origin/master, origin/HEAD, ma
+> There is a race condition, when the user writes 'hw-restart' and
+> 'hard' in the simulate_fw_crash debugfs file without any delay.
+> In the above scenario, the firmware dump work queue(scheduled by
+> 'hard') should be handled gracefully, while the target is in the
+> 'hw-restart'.
+> 
+> Tested HW: QCA9984
+> Tested FW: 10.4-3.9.0.2-00044
+> 
+> Co-developed-by: Govindaraj Saminathan <gsamin@codeaurora.org>
+> Signed-off-by: Govindaraj Saminathan <gsamin@codeaurora.org>
+> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
+Patch applied to ath-next branch of ath.git, thanks.
 
-# make ARCH=arm64
-CROSS_COMPILE=../../toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-
- defconfig
+3d1c60460fb2 ath10k: Fix the race condition in firmware dump work queue
 
-# make ARCH=arm64
-CROSS_COMPILE=../../toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-
- scripts prepare
+-- 
+https://patchwork.kernel.org/patch/11459703/
 
-# make ARCH=arm64
-CROSS_COMPILE=../../toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-
--C . M=drivers/net/wireless/ath
-...
-  LD [M]  drivers/net/wireless/ath/ath10k/ath10k_snoc.o
-  MODPOST 4 modules
-ERROR: "qmi_add_lookup"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "qmi_handle_release"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "qmi_txn_init" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko]
-undefined!
-ERROR: "qmi_txn_cancel"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "qmi_txn_wait" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko]
-undefined!
-ERROR: "qmi_send_request"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "qcom_scm_assign_mem"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "qmi_handle_init"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "qmi_response_type_v01_ei"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "is_vmalloc_addr"
-[drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-ERROR: "is_vmalloc_addr"
-[drivers/net/wireless/ath/ath10k/ath10k_pci.ko] undefined!
-ERROR: "is_vmalloc_addr"
-[drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
-scripts/Makefile.modpost:93: recipe for target '__modpost' failed
-make[1]: *** [__modpost] Error 1
-Makefile:1596: recipe for target 'modules' failed
-make: *** [modules] Error 2
-make: Leaving directory
-
-Similar the build fails with my 'oldconfig' from 5.5.0 and all options
-selected as 'no' or default.
-
-I've bumped here as I'm after Erik Stromdahl's work on QCA9377 sdio
-with the latest commit  6e51b0e4913ca2c93059f73ca477ca30ea95b6a0
-
-Cheers,
-Bo
-
-
-On Fri, 3 Apr 2020 at 23:27, Bogdan Dziedzic <bogibzik@gmail.com> wrote:
->
-> performed steps:
-> git show
-> commit 5bc4a8084c1f5919707053b991fa2700e3d37635 (HEAD, tag:
->  ath-202003221023, origin/master, origin/HEAD, ma
->
-> # make ARCH=arm64 CROSS_COMPILE=../../toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-  defconfig
->
-> # make ARCH=arm64 CROSS_COMPILE=../../toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-  scripts prepare
->
-> # make ARCH=arm64 CROSS_COMPILE=../../toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- -C . M=drivers/net/wireless/ath
-> ...
->   LD [M]  drivers/net/wireless/ath/ath10k/ath10k_snoc.o
->   MODPOST 4 modules
-> ERROR: "qmi_add_lookup" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_handle_release" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_txn_init" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_txn_cancel" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_txn_wait" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_send_request" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qcom_scm_assign_mem" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_handle_init" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "qmi_response_type_v01_ei" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "is_vmalloc_addr" [drivers/net/wireless/ath/ath10k/ath10k_snoc.ko] undefined!
-> ERROR: "is_vmalloc_addr" [drivers/net/wireless/ath/ath10k/ath10k_pci.ko] undefined!
-> ERROR: "is_vmalloc_addr" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
-> scripts/Makefile.modpost:93: recipe for target '__modpost' failed
-> make[1]: *** [__modpost] Error 1
-> Makefile:1596: recipe for target 'modules' failed
-> make: *** [modules] Error 2
-> make: Leaving directory
->
-> Similar the build fails with my 'oldconfig' from 5.5.0 and all options selected as 'no' or default.
->
-> I've bumped here as I'm after Erik Stromdahl's work on QCA9377 sdio with the latest commit  6e51b0e4913ca2c93059f73ca477ca30ea95b6a0
->
-> Cheers,
-> Bo
->
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
