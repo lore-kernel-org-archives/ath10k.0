@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLe6l-0002kT-Vg
- for ath10k@lists.infradead.org; Tue, 07 Apr 2020 02:37:01 +0000
-Date: Tue, 07 Apr 2020 10:36:30 +0800
+ id 1jLe6m-0002kS-3N
+ for ath10k@lists.infradead.org; Tue, 07 Apr 2020 02:37:02 +0000
+Date: Tue, 07 Apr 2020 10:36:38 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 795def8b14ffa334881264823444eaab4d1879c3
-Message-ID: <5e8be72e.DYPBZSFqtDMoy0x3%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ a5fc5ce2eae760b41f43fb07e882db85cba2e080
+Message-ID: <5e8be736.FSILJUHa7IdwvvAC%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,66 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 795def8b14ffa334881264823444eaab4d1879c3  ath10k: enable radar detection in secondary segment
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: a5fc5ce2eae760b41f43fb07e882db85cba2e080  ath10k: enable alt data of TX path for sdio
 
-elapsed time: 484m
+Error/Warning in current branch:
 
-configs tested: 193
+(void *)msdu->data + HAL_RX_DESC_SIZE, hdr_len);
+drivers/net/wireless/ath/ath11k/dp_rx.c:1010:20: warning: The scope of the variable 'rx_tid' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3002:49: warning: '(void*)msdu->data+(sizeof(struct hal_rx_desc))' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. [arithOperationsOnVoidPointer]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3013:22: warning: The scope of the variable 'rx_desc' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/dp_rx.c:3204:6: warning: The scope of the variable 'cmp' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/hal.c:1138:19: warning: The scope of the variable 'srng' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/hal.c:1139:29: warning: The scope of the variable 'irq_grp' can be reduced. [variableScope]
+drivers/net/wireless/ath/ath11k/hal.c:1140:25: warning: The scope of the variable 'ce_pipe' can be reduced. [variableScope]
+memmove((void *)msdu->data + HAL_RX_DESC_SIZE + crypto_len,
+msdu_link = (struct hal_rx_msdu_link *)(link_desc_banks[desc_bank].vaddr +
+struct ath11k_ce_pipe *ce_pipe;
+struct ath11k_ext_irq_grp *irq_grp;
+struct dp_rx_tid *rx_tid;
+struct hal_rx_desc *rx_desc;
+struct hal_srng *srng;
+
+Error/Warning ids grouped by kconfigs:
+
+recent_errors
+|-- i386-allmodconfig
+|   |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-ce_pipe-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-irq_grp-can-be-reduced.-variableScope
+|   |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-srng-can-be-reduced.-variableScope
+|   |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
+|   |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
+|   |-- struct-ath11k_ce_pipe-ce_pipe
+|   |-- struct-ath11k_ext_irq_grp-irq_grp
+|   |-- struct-dp_rx_tid-rx_tid
+|   |-- struct-hal_rx_desc-rx_desc
+|   `-- struct-hal_srng-srng
+`-- x86_64-allyesconfig
+    |-- (void-)msdu-data-HAL_RX_DESC_SIZE-hdr_len)
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:(void-)msdu-data-(sizeof(struct-hal_rx_desc))-is-of-type-void-.-When-using-void-pointers-in-calculations-the-behaviour-is-undefined.-arithOperationsOnVo
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-cmp-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_desc-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-dp_rx.c:warning:The-scope-of-the-variable-rx_tid-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-ce_pipe-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-irq_grp-can-be-reduced.-variableScope
+    |-- drivers-net-wireless-ath-ath11k-hal.c:warning:The-scope-of-the-variable-srng-can-be-reduced.-variableScope
+    |-- memmove((void-)msdu-data-HAL_RX_DESC_SIZE-crypto_len
+    |-- msdu_link-(struct-hal_rx_msdu_link-)(link_desc_banks-desc_bank-.vaddr
+    |-- struct-ath11k_ce_pipe-ce_pipe
+    |-- struct-ath11k_ext_irq_grp-irq_grp
+    |-- struct-dp_rx_tid-rx_tid
+    |-- struct-hal_rx_desc-rx_desc
+    `-- struct-hal_srng-srng
+
+elapsed time: 483m
+
+configs tested: 187
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -50,18 +104,21 @@ arm                        shmobile_defconfig
 arm                           sunxi_defconfig
 arm64                               defconfig
 sparc                            allyesconfig
+arc                                 defconfig
+ia64                              allnoconfig
+parisc                            allnoconfig
+powerpc                           allnoconfig
 ia64                                defconfig
 powerpc                             defconfig
-mips                              allnoconfig
 i386                              allnoconfig
 ia64                             alldefconfig
 sh                  sh7785lcr_32bit_defconfig
-i386                             alldefconfig
+mips                              allnoconfig
 i386                             allyesconfig
-i386                              debian-10.3
+i386                             alldefconfig
 i386                                defconfig
+i386                              debian-10.3
 ia64                             allmodconfig
-ia64                              allnoconfig
 ia64                             allyesconfig
 c6x                              allyesconfig
 c6x                        evmc6678_defconfig
@@ -83,19 +140,16 @@ m68k                       m5475evb_defconfig
 m68k                          multi_defconfig
 m68k                           sun3_defconfig
 arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
 mips                           32r2_defconfig
 mips                         64r6el_defconfig
 mips                             allmodconfig
 mips                             allyesconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
-parisc                            allnoconfig
 parisc                           allyesconfig
 parisc                generic-32bit_defconfig
 parisc                generic-64bit_defconfig
@@ -113,18 +167,18 @@ riscv                randconfig-a001-20200406
 sparc64              randconfig-a001-20200406
 h8300                randconfig-a001-20200406
 nios2                randconfig-a001-20200406
-c6x                  randconfig-a001-20200406
 microblaze           randconfig-a001-20200406
+c6x                  randconfig-a001-20200406
 c6x                  randconfig-a001-20200407
 h8300                randconfig-a001-20200407
 microblaze           randconfig-a001-20200407
 nios2                randconfig-a001-20200407
 sparc64              randconfig-a001-20200407
-s390                 randconfig-a001-20200406
-xtensa               randconfig-a001-20200406
 csky                 randconfig-a001-20200406
 openrisc             randconfig-a001-20200406
+s390                 randconfig-a001-20200406
 sh                   randconfig-a001-20200406
+xtensa               randconfig-a001-20200406
 x86_64               randconfig-b001-20200406
 x86_64               randconfig-b002-20200406
 x86_64               randconfig-b003-20200406
@@ -137,30 +191,24 @@ x86_64               randconfig-c003-20200407
 i386                 randconfig-c001-20200407
 i386                 randconfig-c002-20200407
 i386                 randconfig-c003-20200407
-x86_64               randconfig-c001-20200406
-x86_64               randconfig-c002-20200406
-x86_64               randconfig-c003-20200406
-i386                 randconfig-c001-20200406
-i386                 randconfig-c002-20200406
-i386                 randconfig-c003-20200406
 x86_64               randconfig-d001-20200406
 x86_64               randconfig-d002-20200406
 x86_64               randconfig-d003-20200406
 i386                 randconfig-d001-20200406
 i386                 randconfig-d002-20200406
 i386                 randconfig-d003-20200406
-x86_64               randconfig-e001-20200407
-x86_64               randconfig-e002-20200407
-x86_64               randconfig-e003-20200407
-i386                 randconfig-e001-20200407
-i386                 randconfig-e002-20200407
-i386                 randconfig-e003-20200407
 x86_64               randconfig-e001-20200406
 x86_64               randconfig-e002-20200406
 x86_64               randconfig-e003-20200406
 i386                 randconfig-e001-20200406
 i386                 randconfig-e002-20200406
 i386                 randconfig-e003-20200406
+x86_64               randconfig-f001-20200407
+x86_64               randconfig-f002-20200407
+x86_64               randconfig-f003-20200407
+i386                 randconfig-f001-20200407
+i386                 randconfig-f002-20200407
+i386                 randconfig-f003-20200407
 x86_64               randconfig-f001-20200406
 x86_64               randconfig-f002-20200406
 x86_64               randconfig-f003-20200406
@@ -173,12 +221,12 @@ x86_64               randconfig-g003-20200407
 i386                 randconfig-g001-20200407
 i386                 randconfig-g002-20200407
 i386                 randconfig-g003-20200407
-x86_64               randconfig-g001-20200406
-x86_64               randconfig-g002-20200406
 x86_64               randconfig-g003-20200406
+i386                 randconfig-g003-20200406
+x86_64               randconfig-g002-20200406
 i386                 randconfig-g001-20200406
 i386                 randconfig-g002-20200406
-i386                 randconfig-g003-20200406
+x86_64               randconfig-g001-20200406
 x86_64               randconfig-h001-20200406
 x86_64               randconfig-h002-20200406
 x86_64               randconfig-h003-20200406
@@ -203,25 +251,25 @@ riscv                            allyesconfig
 riscv                               defconfig
 riscv                    nommu_virt_defconfig
 riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
 s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
 sh                               allmodconfig
 sh                                allnoconfig
 sh                          rsk7269_defconfig
 sh                            titan_defconfig
 sparc                               defconfig
-sparc64                          allmodconfig
+sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
-sparc64                             defconfig
-um                                  defconfig
-um                             i386_defconfig
+sparc64                          allmodconfig
 um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
 x86_64                              fedora-25
 x86_64                                  kexec
 x86_64                                    lkp
