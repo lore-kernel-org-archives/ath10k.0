@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLe6k-0002il-Qz
- for ath10k@lists.infradead.org; Tue, 07 Apr 2020 02:37:00 +0000
-Date: Tue, 07 Apr 2020 10:36:36 +0800
+ id 1jLe6l-0002kT-Vg
+ for ath10k@lists.infradead.org; Tue, 07 Apr 2020 02:37:01 +0000
+Date: Tue, 07 Apr 2020 10:36:30 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- ba19fa606a190cebb4814943b54a9b2db124beb1
-Message-ID: <5e8be734.h3jkGZGm/XcWMUog%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 795def8b14ffa334881264823444eaab4d1879c3
+Message-ID: <5e8be72e.DYPBZSFqtDMoy0x3%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: ba19fa606a190cebb4814943b54a9b2db124beb1  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 795def8b14ffa334881264823444eaab4d1879c3  ath10k: enable radar detection in secondary segment
 
 elapsed time: 484m
 
-configs tested: 181
+configs tested: 193
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -50,20 +50,18 @@ arm                        shmobile_defconfig
 arm                           sunxi_defconfig
 arm64                               defconfig
 sparc                            allyesconfig
-arc                                 defconfig
-ia64                              allnoconfig
-parisc                            allnoconfig
 ia64                                defconfig
 powerpc                             defconfig
-ia64                             alldefconfig
-sh                  sh7785lcr_32bit_defconfig
 mips                              allnoconfig
 i386                              allnoconfig
+ia64                             alldefconfig
+sh                  sh7785lcr_32bit_defconfig
 i386                             alldefconfig
 i386                             allyesconfig
 i386                              debian-10.3
 i386                                defconfig
 ia64                             allmodconfig
+ia64                              allnoconfig
 ia64                             allyesconfig
 c6x                              allyesconfig
 c6x                        evmc6678_defconfig
@@ -85,17 +83,19 @@ m68k                       m5475evb_defconfig
 m68k                          multi_defconfig
 m68k                           sun3_defconfig
 arc                              allyesconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
+arc                                 defconfig
 microblaze                      mmu_defconfig
 microblaze                    nommu_defconfig
 powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
 mips                           32r2_defconfig
 mips                         64r6el_defconfig
 mips                             allmodconfig
 mips                             allyesconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
+parisc                            allnoconfig
 parisc                           allyesconfig
 parisc                generic-32bit_defconfig
 parisc                generic-64bit_defconfig
@@ -113,8 +113,8 @@ riscv                randconfig-a001-20200406
 sparc64              randconfig-a001-20200406
 h8300                randconfig-a001-20200406
 nios2                randconfig-a001-20200406
-microblaze           randconfig-a001-20200406
 c6x                  randconfig-a001-20200406
+microblaze           randconfig-a001-20200406
 c6x                  randconfig-a001-20200407
 h8300                randconfig-a001-20200407
 microblaze           randconfig-a001-20200407
@@ -137,12 +137,24 @@ x86_64               randconfig-c003-20200407
 i386                 randconfig-c001-20200407
 i386                 randconfig-c002-20200407
 i386                 randconfig-c003-20200407
+x86_64               randconfig-c001-20200406
+x86_64               randconfig-c002-20200406
+x86_64               randconfig-c003-20200406
+i386                 randconfig-c001-20200406
+i386                 randconfig-c002-20200406
+i386                 randconfig-c003-20200406
 x86_64               randconfig-d001-20200406
 x86_64               randconfig-d002-20200406
 x86_64               randconfig-d003-20200406
 i386                 randconfig-d001-20200406
 i386                 randconfig-d002-20200406
 i386                 randconfig-d003-20200406
+x86_64               randconfig-e001-20200407
+x86_64               randconfig-e002-20200407
+x86_64               randconfig-e003-20200407
+i386                 randconfig-e001-20200407
+i386                 randconfig-e002-20200407
+i386                 randconfig-e003-20200407
 x86_64               randconfig-e001-20200406
 x86_64               randconfig-e002-20200406
 x86_64               randconfig-e003-20200406
@@ -161,12 +173,12 @@ x86_64               randconfig-g003-20200407
 i386                 randconfig-g001-20200407
 i386                 randconfig-g002-20200407
 i386                 randconfig-g003-20200407
-x86_64               randconfig-g003-20200406
-i386                 randconfig-g003-20200406
+x86_64               randconfig-g001-20200406
 x86_64               randconfig-g002-20200406
+x86_64               randconfig-g003-20200406
 i386                 randconfig-g001-20200406
 i386                 randconfig-g002-20200406
-x86_64               randconfig-g001-20200406
+i386                 randconfig-g003-20200406
 x86_64               randconfig-h001-20200406
 x86_64               randconfig-h002-20200406
 x86_64               randconfig-h003-20200406
@@ -207,9 +219,9 @@ sparc64                          allmodconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                             defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
 um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
 x86_64                              fedora-25
 x86_64                                  kexec
 x86_64                                    lkp
