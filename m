@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLhPt-0003IB-Js
- for ath10k@lists.infradead.org; Tue, 07 Apr 2020 06:09:03 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v9 1/4] ath10k: disable TX complete indication of htt for
- sdio
-References: <20200212080415.31265-2-wgong@codeaurora.org>
- <20200407054431.6B2A0C433BA@smtp.codeaurora.org>
- <84039fe1187e3ec7546edd4f9fe5600a@codeaurora.org>
-Date: Tue, 07 Apr 2020 09:08:46 +0300
-In-Reply-To: <84039fe1187e3ec7546edd4f9fe5600a@codeaurora.org> (Wen Gong's
- message of "Tue, 07 Apr 2020 14:04:58 +0800")
-Message-ID: <87mu7nx1xt.fsf@kamboji.qca.qualcomm.com>
+ id 1jLs74-0007P2-3p
+ for ath10k@lists.infradead.org; Tue, 07 Apr 2020 17:34:15 +0000
+Date: Wed, 08 Apr 2020 01:33:51 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 24a48bc80f7d4d4905c511a92ea157b8fd434c83
+Message-ID: <5e8cb97f.GU+NDRfe3shVCgKi%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,49 +20,164 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 24a48bc80f7d4d4905c511a92ea157b8fd434c83  Add localversion-wireless-testing-ath
 
-> On 2020-04-07 13:44, Kalle Valo wrote:
->
->> This has new warnings:
->>
->> drivers/net/wireless/ath/ath10k/htt_tx.c: In function
->> 'ath10k_htt_htc_tx_complete':
->> drivers/net/wireless/ath/ath10k/htt_tx.c:566:30: warning: 'msg_type'
->> may be used uninitialized in this function [-Wmaybe-uninitialized]
->> drivers/net/wireless/ath/ath10k/htt_tx.c:573:6: warning: 'flags1' may
->> be used uninitialized in this function [-Wmaybe-uninitialized]
->> drivers/net/wireless/ath/ath10k/htt_tx.c:577:42: warning: 'desc_hdr'
->> may be used uninitialized in this function [-Wmaybe-uninitialized]
->>
->
-> I already run ath10k-check, but not see these warnings.
-> my gcc: gcc (Ubuntu 4.8.4-2ubuntu1~14.04.4) 4.8.4
-> so is it because my gcc too version too low?
+elapsed time: 713m
 
-Most likely, I'm using 9.2 from crosstool:
+configs tested: 140
+configs skipped: 0
 
-x86_64-linux-gcc (GCC) 9.2.0
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-crosstool is a handy way to install GCC for kernel compilations, here
-are my notes:
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+riscv                            allyesconfig
+s390                                defconfig
+arc                                 defconfig
+microblaze                    nommu_defconfig
+sh                          rsk7269_defconfig
+ia64                             allmodconfig
+xtensa                       common_defconfig
+ia64                                defconfig
+s390                             alldefconfig
+powerpc                             defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             alldefconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+x86_64               randconfig-a003-20200407
+i386                 randconfig-a002-20200407
+x86_64               randconfig-a002-20200407
+x86_64               randconfig-a001-20200407
+i386                 randconfig-a001-20200407
+i386                 randconfig-a003-20200407
+alpha                randconfig-a001-20200407
+m68k                 randconfig-a001-20200407
+nds32                randconfig-a001-20200407
+parisc               randconfig-a001-20200407
+riscv                randconfig-a001-20200407
+c6x                  randconfig-a001-20200407
+h8300                randconfig-a001-20200407
+microblaze           randconfig-a001-20200407
+nios2                randconfig-a001-20200407
+sparc64              randconfig-a001-20200407
+csky                 randconfig-a001-20200407
+openrisc             randconfig-a001-20200407
+s390                 randconfig-a001-20200407
+sh                   randconfig-a001-20200407
+xtensa               randconfig-a001-20200407
+x86_64               randconfig-b001-20200407
+x86_64               randconfig-b002-20200407
+x86_64               randconfig-b003-20200407
+i386                 randconfig-b001-20200407
+i386                 randconfig-b002-20200407
+i386                 randconfig-b003-20200407
+x86_64               randconfig-d001-20200407
+x86_64               randconfig-d002-20200407
+x86_64               randconfig-d003-20200407
+i386                 randconfig-d001-20200407
+i386                 randconfig-d002-20200407
+i386                 randconfig-d003-20200407
+x86_64               randconfig-f001-20200407
+x86_64               randconfig-f002-20200407
+x86_64               randconfig-f003-20200407
+i386                 randconfig-f001-20200407
+i386                 randconfig-f002-20200407
+i386                 randconfig-f003-20200407
+x86_64               randconfig-g003-20200407
+i386                 randconfig-g003-20200407
+x86_64               randconfig-g002-20200407
+i386                 randconfig-g001-20200407
+i386                 randconfig-g002-20200407
+x86_64               randconfig-g001-20200407
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
-listings: https://www.kernel.org/pub/tools/crosstool/
-
-wget https://www.kernel.org/pub/tools/crosstool/files/bin/x86_64/8.1.0/x86_64-gcc-8.1.0-nolibc-x86_64-linux.tar.xz
-pushd /opt/cross/
-tar -xf ~/tmp/crosstool/x86_64-gcc-8.1.0-nolibc-x86_64-linux.tar.xz
-
-In top level create GNUMakefile:
-
-CROSS_COMPILE=/opt/cross/gcc-8.1.0-nolibc/x86_64-linux/bin/x86_64-linux-
-include Makefile
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
