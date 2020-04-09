@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMYY1-0005N5-Uy
- for ath10k@lists.infradead.org; Thu, 09 Apr 2020 14:52:58 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v9 1/4] ath10k: disable TX complete indication of htt for
- sdio
+ id 1jMYZ6-0005Vz-73
+ for ath10k@lists.infradead.org; Thu, 09 Apr 2020 14:54:03 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200212080415.31265-2-wgong@codeaurora.org>
-References: <20200212080415.31265-2-wgong@codeaurora.org>
-Message-Id: <20200409145248.B7D3AC433BA@smtp.codeaurora.org>
-Date: Thu,  9 Apr 2020 14:52:48 +0000 (UTC)
+Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
+References: <20200212080415.31265-1-wgong@codeaurora.org>
+ <20200212080415.31265-4-wgong@codeaurora.org>
+Date: Thu, 09 Apr 2020 17:53:29 +0300
+In-Reply-To: <20200212080415.31265-4-wgong@codeaurora.org> (Wen Gong's message
+ of "Wed, 12 Feb 2020 16:04:14 +0800")
+Message-ID: <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +27,59 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> For sdio chip, it is high latency bus, all the TX packet's content will
-> be tranferred from HOST memory to firmware memory via sdio bus, then it
-> need much more memory in firmware than low latency bus chip, for low
-> latency chip, such as PCI-E, it only need to transfer the TX descriptor
-> via PCI-E bus to firmware memory. For sdio chip, reduce the complexity of
-> TX logic will help TX efficiency since its memory is limited, and it will
-> reduce the TX circle's time of each packet and then firmware will have more
-> memory for TX since TX complete also need memeory.
-> 
-> This patch disable TX complete indication from firmware for htt data
-> packet, it will not have TX complete indication from firmware to ath10k.
-> It will cut the cost of bus bandwidth of TX complete and make the TX
-> logic of firmware simpler, it results in significant performance
+> The transmission utilization ratio for sdio bus for small packet is
+> slow, because the space and time cost for sdio bus is same for large
+> length packet and small length packet. So the speed of data for large
+> length packet is higher than small length.
+>
+> Test result of different length of data:
+>
+> data packet(byte)   cost time(us)   calculated rate(Mbps)
+>       256               28                73
+>       512               33               124
+>      1024               35               234
+>      1792               45               318
+>     14336              168               682
+>     28672              333               688
+>     57344              660               695
+>
+> This patch change the TX packet from single packet to a large length
+> bundle packet, max size is 32, it results in significant performance
 > improvement on TX path.
-> 
-> Udp TX throughout is 130Mbps without this patch, and it arrives
-> 400Mbps with this patch.
-> 
-> The downside of this patch is the command "iw wlan0 station dump" will
-> show 0 for "tx retries" and "tx failed" since all tx packet's status
-> is success.
-> 
+>
 > This patch only effect sdio chip, it will not effect PCI, SNOC etc.
-> 
+> It only enable bundle for sdio chip.
+>
 > Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00017-QCARMSWPZ-1
-> 
+> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+>
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+[...]
 
-d81686d33356 ath10k: disable TX complete indication of htt for sdio
-c61a74837043 ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -3208,6 +3208,11 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+>  	if (!ar->workqueue_aux)
+>  		goto err_free_wq;
+>  
+> +	ar->workqueue_tx_complete =
+> +		create_singlethread_workqueue("ath10k_tx_complete_wq");
+> +	if (!ar->workqueue_tx_complete)
+> +		goto err_free_aux_wq;
+
+We already have three threads:
+
+ath/ath10k/core.c:      ar->workqueue = create_singlethread_workqueue("ath10k_wq");
+ath/ath10k/core.c:      ar->workqueue_aux = create_singlethread_workqueue("ath10k_aux_wq");
+ath/ath10k/sdio.c:      ar_sdio->workqueue = create_singlethread_workqueue("ath10k_sdio_wq");
+
+Do we really need a fourth one? For example, why can't we use
+ar->workqueue_aux?
 
 -- 
-https://patchwork.kernel.org/patch/11377827/
-
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
