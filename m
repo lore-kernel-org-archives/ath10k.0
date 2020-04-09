@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMYZ6-0005Vz-73
- for ath10k@lists.infradead.org; Thu, 09 Apr 2020 14:54:03 +0000
+ id 1jMYkq-0007BR-Fr
+ for ath10k@lists.infradead.org; Thu, 09 Apr 2020 15:06:14 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
 Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
 References: <20200212080415.31265-1-wgong@codeaurora.org>
  <20200212080415.31265-4-wgong@codeaurora.org>
-Date: Thu, 09 Apr 2020 17:53:29 +0300
+Date: Thu, 09 Apr 2020 18:05:45 +0300
 In-Reply-To: <20200212080415.31265-4-wgong@codeaurora.org> (Wen Gong's message
  of "Wed, 12 Feb 2020 16:04:14 +0800")
-Message-ID: <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87pncgu2ba.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -59,25 +59,29 @@ Wen Gong <wgong@codeaurora.org> writes:
 
 [...]
 
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -3208,6 +3208,11 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
->  	if (!ar->workqueue_aux)
->  		goto err_free_wq;
->  
-> +	ar->workqueue_tx_complete =
-> +		create_singlethread_workqueue("ath10k_tx_complete_wq");
-> +	if (!ar->workqueue_tx_complete)
-> +		goto err_free_aux_wq;
+> +	if (ep->tx_credits < credits) {
+> +		ath10k_dbg(ar, ATH10K_DBG_HTC,
+> +			   "htc insufficient credits ep %d required %d available %d consume %d\n",
+> +			   eid, credits, ep->tx_credits, consume);
+> +		ret = -EAGAIN;
+> +		goto unlock;
+> +	}
+> +
+> +	if (consume) {
+> +		ep->tx_credits -= credits;
+> +		ath10k_dbg(ar, ATH10K_DBG_HTC,
+> +			   "htc ep %d consumed %d credits (total %d)\n",
 
-We already have three threads:
+"htc ep %d consumed %d credits total %d\n"
 
-ath/ath10k/core.c:      ar->workqueue = create_singlethread_workqueue("ath10k_wq");
-ath/ath10k/core.c:      ar->workqueue_aux = create_singlethread_workqueue("ath10k_aux_wq");
-ath/ath10k/sdio.c:      ar_sdio->workqueue = create_singlethread_workqueue("ath10k_sdio_wq");
+[...]
 
-Do we really need a fourth one? For example, why can't we use
-ar->workqueue_aux?
+> +	ath10k_dbg(ar, ATH10K_DBG_HTC, "bundle skb: len:%d\n", bundle_skb->len);
+
+"htc bundle skb len %d\n"
+
+In other words, start with "htc" and don't use colons or parenthesis.
+This applies to most of debug messages in this patch.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
