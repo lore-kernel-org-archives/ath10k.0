@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMY3l-0000yU-CR
- for ath10k@lists.infradead.org; Thu, 09 Apr 2020 14:21:39 +0000
+ id 1jMYY1-0005N5-Uy
+ for ath10k@lists.infradead.org; Thu, 09 Apr 2020 14:52:58 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] ath10k: correct legacy rate in tx stats
+Subject: Re: [PATCH v9 1/4] ath10k: disable TX complete indication of htt for
+ sdio
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <0101016e82883ded-63f88383-cd90-4cb0-b9bb-3dd6a1e9f4e9-000000@us-west-2.amazonses.com>
-References: <0101016e82883ded-63f88383-cd90-4cb0-b9bb-3dd6a1e9f4e9-000000@us-west-2.amazonses.com>
-Message-Id: <20200409142136.5490EC433BA@smtp.codeaurora.org>
-Date: Thu,  9 Apr 2020 14:21:36 +0000 (UTC)
+In-Reply-To: <20200212080415.31265-2-wgong@codeaurora.org>
+References: <20200212080415.31265-2-wgong@codeaurora.org>
+Message-Id: <20200409145248.B7D3AC433BA@smtp.codeaurora.org>
+Date: Thu,  9 Apr 2020 14:52:48 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +23,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yu Wang <yyuwang@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yu Wang <yyuwang@codeaurora.org> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> When working in station mode, after connected to a legacy
-> AP, 11g only, for example, the tx bitrate is incorrect in
-> output of command 'iw wlan0 link'.
+> For sdio chip, it is high latency bus, all the TX packet's content will
+> be tranferred from HOST memory to firmware memory via sdio bus, then it
+> need much more memory in firmware than low latency bus chip, for low
+> latency chip, such as PCI-E, it only need to transfer the TX descriptor
+> via PCI-E bus to firmware memory. For sdio chip, reduce the complexity of
+> TX logic will help TX efficiency since its memory is limited, and it will
+> reduce the TX circle's time of each packet and then firmware will have more
+> memory for TX since TX complete also need memeory.
 > 
-> That's because the legacy tx bitrate value reported by
-> firmware is not well handled:
-> For QCA6174, the value represents rate index, but treated
-> as a real rate;
-> For QCA9888, the value is real rate, with unit 'Mbps', but
-> treated as '100kbps'.
+> This patch disable TX complete indication from firmware for htt data
+> packet, it will not have TX complete indication from firmware to ath10k.
+> It will cut the cost of bus bandwidth of TX complete and make the TX
+> logic of firmware simpler, it results in significant performance
+> improvement on TX path.
 > 
-> To fix this issue:
-> 1. Translate the rate index to real rate for QCA6174;
-> 2. Translate the rate from 'Mbps' to 'kbps' for QCA9888.
+> Udp TX throughout is 130Mbps without this patch, and it arrives
+> 400Mbps with this patch.
 > 
-> Tested with:
-> QCA6174 PCIe with firmware WLAN.RM.4.4.1.c3-00031.
-> QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
-> QCA9888 PCIe with firmware 10.4-3.9.0.2-00040.
+> The downside of this patch is the command "iw wlan0 station dump" will
+> show 0 for "tx retries" and "tx failed" since all tx packet's status
+> is success.
 > 
-> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+> This patch only effect sdio chip, it will not effect PCI, SNOC etc.
+> 
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00017-QCARMSWPZ-1
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-My comments don't seem to go to patchwork, so trying again:
+2 patches applied to ath-next branch of ath.git, thanks.
 
-What about QCA988X and WCN3990, how do they behave? Does this patch
-break those?
-
-> +	cck = (preamble == WMI_RATE_PREAMBLE_CCK);
-> +	hw_rate = ATH10K_HW_LEGACY_RATE(*ratecode);
-> +	for (i = 0; i < sband->n_bitrates; i++) {
-> +		bitrates = &sband->bitrates[i];
-> +		if (ath10k_mac_bitrate_is_cck(bitrates->bitrate) != cck)
-> +			continue;
-> +
-> +		if (bitrates->hw_value == hw_rate ||
-> +		    (bitrates->flags & IEEE80211_RATE_SHORT_PREAMBLE &&
-> +		     bitrates->hw_value_short == hw_rate)) {
-> +			bitrate = bitrates->bitrate;
-> +
-> +			/* The bitrate will be recovered in
-> +			 * ath10k_update_per_peer_tx_stats().
-> +			 */
-> +			if (bitrate == 55)
-> +				bitrate = 60;
-> +
-> +			bitrate = bitrate / 10;
-
-Here you use magic value 60 but in ath10k_update_per_peer_tx_stats() you
-use magic value 50:
-
-> +		/* from 1Mbps to 100Kbps */
-> +		rate = rate * 10;
-> +		if (rate == 50)
-> +			rate = 55;
-
-Am I missing something or how is this supposed to work?
+d81686d33356 ath10k: disable TX complete indication of htt for sdio
+c61a74837043 ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024
 
 -- 
-https://patchwork.kernel.org/patch/11251001/
+https://patchwork.kernel.org/patch/11377827/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
