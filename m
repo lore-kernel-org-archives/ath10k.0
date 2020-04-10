@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMkQa-0000jc-Sg
- for ath10k@lists.infradead.org; Fri, 10 Apr 2020 03:34:02 +0000
-Date: Fri, 10 Apr 2020 11:33:41 +0800
+ id 1jMkQe-0000jd-4L
+ for ath10k@lists.infradead.org; Fri, 10 Apr 2020 03:34:06 +0000
+Date: Fri, 10 Apr 2020 11:33:43 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 8b7006320b7cbf7ae13553cc66104814d1a8edc7
-Message-ID: <5e8fe915.Ac87LY9vmqoQm+r1%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ c61a748370438ca1ae8389071664b2520f16820c
+Message-ID: <5e8fe917.M/9S46FKnP+fSC6U%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 8b7006320b7cbf7ae13553cc66104814d1a8edc7  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: c61a748370438ca1ae8389071664b2520f16820c  ath10k: change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024
 
 elapsed time: 480m
 
-configs tested: 200
+configs tested: 212
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -49,6 +50,7 @@ arm                        shmobile_defconfig
 arm                           sunxi_defconfig
 arm64                               defconfig
 sparc                            allyesconfig
+openrisc                    or1ksim_defconfig
 s390                              allnoconfig
 nds32                             allnoconfig
 riscv                            allmodconfig
@@ -66,7 +68,6 @@ c6x                              allyesconfig
 c6x                        evmc6678_defconfig
 nios2                         10m50_defconfig
 nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
 openrisc                 simple_smp_defconfig
 xtensa                       common_defconfig
 xtensa                          iss_defconfig
@@ -143,6 +144,12 @@ x86_64               randconfig-b003-20200409
 i386                 randconfig-b001-20200409
 i386                 randconfig-b002-20200409
 i386                 randconfig-b003-20200409
+x86_64               randconfig-b001-20200410
+x86_64               randconfig-b002-20200410
+x86_64               randconfig-b003-20200410
+i386                 randconfig-b001-20200410
+i386                 randconfig-b002-20200410
+i386                 randconfig-b003-20200410
 x86_64               randconfig-c001-20200409
 x86_64               randconfig-c002-20200409
 x86_64               randconfig-c003-20200409
@@ -197,6 +204,12 @@ x86_64               randconfig-h003-20200409
 i386                 randconfig-h001-20200409
 i386                 randconfig-h002-20200409
 i386                 randconfig-h003-20200409
+arc                  randconfig-a001-20200409
+arm                  randconfig-a001-20200409
+arm64                randconfig-a001-20200409
+ia64                 randconfig-a001-20200409
+powerpc              randconfig-a001-20200409
+sparc                randconfig-a001-20200409
 arc                  randconfig-a001-20200410
 arm                  randconfig-a001-20200410
 arm64                randconfig-a001-20200410
