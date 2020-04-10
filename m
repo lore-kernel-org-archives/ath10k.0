@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMkQb-0000jd-0B
+ id 1jMkQc-0000jc-OK
  for ath10k@lists.infradead.org; Fri, 10 Apr 2020 03:34:04 +0000
-Date: Fri, 10 Apr 2020 11:33:50 +0800
+Date: Fri, 10 Apr 2020 11:33:46 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 77fa0ee9473acc8337885485f7081d3880b94285
-Message-ID: <5e8fe91e./uobii8DjiXjt+WN%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 5fcfe0e76a91b942bee42d0754a233d7429d2e14
+Message-ID: <5e8fe91a.p9DoMStXTJrveVK+%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 77fa0ee9473acc8337885485f7081d3880b94285  ath11k: add tx hw 802.11 encapusaltion offloading support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 5fcfe0e76a91b942bee42d0754a233d7429d2e14  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 480m
 
-configs tested: 206
+configs tested: 200
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -41,14 +41,14 @@ arm                              allyesconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
 arm64                            allyesconfig
-arm                           efm32_defconfig
 arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
+arm                           efm32_defconfig
 arm                          exynos_defconfig
 arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
 sparc                            allyesconfig
 s390                              allnoconfig
 nds32                             allnoconfig
@@ -97,9 +97,9 @@ mips                             allyesconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
 parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
 parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
 x86_64               randconfig-a001-20200409
 x86_64               randconfig-a002-20200409
 x86_64               randconfig-a003-20200409
@@ -118,12 +118,6 @@ mips                 randconfig-a001-20200409
 nds32                randconfig-a001-20200409
 parisc               randconfig-a001-20200409
 riscv                randconfig-a001-20200409
-mips                 randconfig-a001-20200410
-nds32                randconfig-a001-20200410
-m68k                 randconfig-a001-20200410
-riscv                randconfig-a001-20200410
-alpha                randconfig-a001-20200410
-parisc               randconfig-a001-20200410
 c6x                  randconfig-a001-20200410
 h8300                randconfig-a001-20200410
 microblaze           randconfig-a001-20200410
@@ -134,16 +128,16 @@ h8300                randconfig-a001-20200409
 microblaze           randconfig-a001-20200409
 nios2                randconfig-a001-20200409
 sparc64              randconfig-a001-20200409
-s390                 randconfig-a001-20200410
-xtensa               randconfig-a001-20200410
-sh                   randconfig-a001-20200410
-openrisc             randconfig-a001-20200410
-csky                 randconfig-a001-20200410
 csky                 randconfig-a001-20200409
 openrisc             randconfig-a001-20200409
 s390                 randconfig-a001-20200409
 sh                   randconfig-a001-20200409
 xtensa               randconfig-a001-20200409
+csky                 randconfig-a001-20200410
+openrisc             randconfig-a001-20200410
+s390                 randconfig-a001-20200410
+sh                   randconfig-a001-20200410
+xtensa               randconfig-a001-20200410
 x86_64               randconfig-b001-20200409
 x86_64               randconfig-b002-20200409
 x86_64               randconfig-b003-20200409
@@ -210,10 +204,10 @@ arm64                randconfig-a001-20200410
 ia64                 randconfig-a001-20200410
 powerpc              randconfig-a001-20200410
 sparc                randconfig-a001-20200410
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
+riscv                            allyesconfig
 riscv                               defconfig
+riscv                    nommu_virt_defconfig
 riscv                          rv32_defconfig
 s390                             alldefconfig
 s390                             allmodconfig
