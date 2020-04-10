@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMkQc-0000jc-OK
- for ath10k@lists.infradead.org; Fri, 10 Apr 2020 03:34:04 +0000
-Date: Fri, 10 Apr 2020 11:33:46 +0800
+ id 1jMkQa-0000jc-Sg
+ for ath10k@lists.infradead.org; Fri, 10 Apr 2020 03:34:02 +0000
+Date: Fri, 10 Apr 2020 11:33:41 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 5fcfe0e76a91b942bee42d0754a233d7429d2e14
-Message-ID: <5e8fe91a.p9DoMStXTJrveVK+%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 8b7006320b7cbf7ae13553cc66104814d1a8edc7
+Message-ID: <5e8fe915.Ac87LY9vmqoQm+r1%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +23,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 5fcfe0e76a91b942bee42d0754a233d7429d2e14  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 8b7006320b7cbf7ae13553cc66104814d1a8edc7  Add localversion-wireless-testing-ath
 
 elapsed time: 480m
 
