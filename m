@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jMkQa-0000jg-VK
- for ath10k@lists.infradead.org; Fri, 10 Apr 2020 03:34:02 +0000
-Date: Fri, 10 Apr 2020 11:33:48 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 3c9e4faab7cfc5844c9c0190a8f8638db05dcd7c
-Message-ID: <5e8fe91c.sl1lQGqBUzLa7B/H%lkp@intel.com>
+ id 1jMmw3-0003LW-N2
+ for ath10k@lists.infradead.org; Fri, 10 Apr 2020 06:14:42 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v10 0/2] ath10k: improve throughout of TX of sdio 
+Date: Fri, 10 Apr 2020 14:13:58 +0800
+Message-Id: <20200410061400.14231-1-wgong@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,224 +20,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 3c9e4faab7cfc5844c9c0190a8f8638db05dcd7c  Merge branch 'pending' into master-pending
+v10: change ath10k_dbg log format
 
-elapsed time: 480m
+v9: change ath10k_htt_htc_tx_complete to fix the use-after-free panic
 
-configs tested: 200
-configs skipped: 0
+v8: split out patch "change ATH10K_SDIO_BUS_REQUEST_MAX_NUM from 64 to 1024"
+from "disable TX complete indication of htt for sdio". merge patch
+"ath10k: clean bundle tx queue of htt tx stop for sdio" into
+"add htt TX bundle for sdio"
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+v7: change a few code style to meet ath10k-check script
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-s390                              allnoconfig
-nds32                             allnoconfig
-riscv                            allmodconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200409
-x86_64               randconfig-a002-20200409
-x86_64               randconfig-a003-20200409
-i386                 randconfig-a001-20200409
-i386                 randconfig-a002-20200409
-i386                 randconfig-a003-20200409
-x86_64               randconfig-a001-20200410
-x86_64               randconfig-a002-20200410
-x86_64               randconfig-a003-20200410
-i386                 randconfig-a001-20200410
-i386                 randconfig-a002-20200410
-i386                 randconfig-a003-20200410
-alpha                randconfig-a001-20200409
-m68k                 randconfig-a001-20200409
-mips                 randconfig-a001-20200409
-nds32                randconfig-a001-20200409
-parisc               randconfig-a001-20200409
-riscv                randconfig-a001-20200409
-c6x                  randconfig-a001-20200410
-h8300                randconfig-a001-20200410
-microblaze           randconfig-a001-20200410
-nios2                randconfig-a001-20200410
-sparc64              randconfig-a001-20200410
-c6x                  randconfig-a001-20200409
-h8300                randconfig-a001-20200409
-microblaze           randconfig-a001-20200409
-nios2                randconfig-a001-20200409
-sparc64              randconfig-a001-20200409
-csky                 randconfig-a001-20200409
-openrisc             randconfig-a001-20200409
-s390                 randconfig-a001-20200409
-sh                   randconfig-a001-20200409
-xtensa               randconfig-a001-20200409
-csky                 randconfig-a001-20200410
-openrisc             randconfig-a001-20200410
-s390                 randconfig-a001-20200410
-sh                   randconfig-a001-20200410
-xtensa               randconfig-a001-20200410
-x86_64               randconfig-b001-20200409
-x86_64               randconfig-b002-20200409
-x86_64               randconfig-b003-20200409
-i386                 randconfig-b001-20200409
-i386                 randconfig-b002-20200409
-i386                 randconfig-b003-20200409
-x86_64               randconfig-c001-20200409
-x86_64               randconfig-c002-20200409
-x86_64               randconfig-c003-20200409
-i386                 randconfig-c001-20200409
-i386                 randconfig-c002-20200409
-i386                 randconfig-c003-20200409
-x86_64               randconfig-d001-20200410
-x86_64               randconfig-d002-20200410
-x86_64               randconfig-d003-20200410
-i386                 randconfig-d001-20200410
-i386                 randconfig-d002-20200410
-i386                 randconfig-d003-20200410
-x86_64               randconfig-d001-20200409
-x86_64               randconfig-d002-20200409
-x86_64               randconfig-d003-20200409
-i386                 randconfig-d001-20200409
-i386                 randconfig-d002-20200409
-i386                 randconfig-d003-20200409
-x86_64               randconfig-e001-20200410
-x86_64               randconfig-e002-20200410
-x86_64               randconfig-e003-20200410
-i386                 randconfig-e001-20200410
-i386                 randconfig-e002-20200410
-i386                 randconfig-e003-20200410
-x86_64               randconfig-e001-20200409
-x86_64               randconfig-e002-20200409
-x86_64               randconfig-e003-20200409
-i386                 randconfig-e001-20200409
-i386                 randconfig-e002-20200409
-i386                 randconfig-e003-20200409
-x86_64               randconfig-f001-20200409
-x86_64               randconfig-f002-20200409
-x86_64               randconfig-f003-20200409
-i386                 randconfig-f001-20200409
-i386                 randconfig-f002-20200409
-i386                 randconfig-f003-20200409
-x86_64               randconfig-g001-20200409
-x86_64               randconfig-g002-20200409
-x86_64               randconfig-g003-20200409
-i386                 randconfig-g001-20200409
-i386                 randconfig-g002-20200409
-i386                 randconfig-g003-20200409
-x86_64               randconfig-g001-20200410
-x86_64               randconfig-g002-20200410
-x86_64               randconfig-g003-20200410
-i386                 randconfig-g001-20200410
-i386                 randconfig-g002-20200410
-i386                 randconfig-g003-20200410
-x86_64               randconfig-h001-20200409
-x86_64               randconfig-h002-20200409
-x86_64               randconfig-h003-20200409
-i386                 randconfig-h001-20200409
-i386                 randconfig-h002-20200409
-i386                 randconfig-h003-20200409
-arc                  randconfig-a001-20200410
-arm                  randconfig-a001-20200410
-arm64                randconfig-a001-20200410
-ia64                 randconfig-a001-20200410
-powerpc              randconfig-a001-20200410
-sparc                randconfig-a001-20200410
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
+v6: remove module parameters disable_tx_comp and alt_data
+this is 3 patches of the 7 patches from ath10k: improve throughout of tcp/udp TX/RX of sdio
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v5: change ath10k_htc_setup_tx_req to add check bundle_tx
+to forbidden init 2 times
+
+v4: add macro ATH10K_HTC_MSG_READY_EXT_ALT_DATA_MASK
+
+v3: change some code style
+
+v2: change some code style
+
+The bottleneck of throughout on sdio chip is the bus bandwidth, to the
+patches are all to increase the use ratio of sdio bus.
+
+These patches only affect sdio bus chip, explanation is mentioned in each
+patch's commit log.
+
+Wen Gong (2):
+  ath10k: add htt TX bundle for sdio
+  ath10k: enable alt data of TX path for sdio
+
+ drivers/net/wireless/ath/ath10k/core.c   |  22 +-
+ drivers/net/wireless/ath/ath10k/core.h   |   4 +-
+ drivers/net/wireless/ath/ath10k/htc.c    | 384 +++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/htc.h    |  37 ++-
+ drivers/net/wireless/ath/ath10k/htt.c    |   8 +
+ drivers/net/wireless/ath/ath10k/htt.h    |   4 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   1 +
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   8 +-
+ 8 files changed, 423 insertions(+), 45 deletions(-)
+
+-- 
+2.23.0
 
 _______________________________________________
 ath10k mailing list
