@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jNPAq-000510-3X
- for ath10k@lists.infradead.org; Sat, 11 Apr 2020 23:04:33 +0000
+ id 1jNPCB-0008NG-Iw
+ for ath10k@lists.infradead.org; Sat, 11 Apr 2020 23:05:52 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 032/149] ath10k: fix not registering airtime of
- 11a station with WMM disable
-Date: Sat, 11 Apr 2020 19:01:49 -0400
-Message-Id: <20200411230347.22371-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 098/149] ath10k: start recovery process when read
+ int status fail for sdio
+Date: Sat, 11 Apr 2020 19:02:55 -0400
+Message-Id: <20200411230347.22371-98-sashal@kernel.org>
 In-Reply-To: <20200411230347.22371-1-sashal@kernel.org>
 References: <20200411230347.22371-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,45 +24,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Yibo Zhao <yiboz@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Yibo Zhao <yiboz@codeaurora.org>
+From: Wen Gong <wgong@codeaurora.org>
 
-[ Upstream commit f9680c75d187f2d5b9288c02f7a432041d4447b4 ]
+[ Upstream commit 37b7ecb75627699e96750db1e0c5ac56224245df ]
 
-The tid of 11a station with WMM disable reported by FW is 0x10 in
-tx completion. The tid 16 is mapped to a NULL txq since buffer
-MMPDU capbility is not supported. Then 11a station's airtime will
-not be registered due to NULL txq check. As a results, airtime of
-11a station keeps unchanged in debugfs system.
+When running simulate crash stress test, it happened
+"failed to read from address 0x800: -110".
 
-Mask the tid along with IEEE80211_QOS_CTL_TID_MASK to make it in
-the valid range.
+Test steps:
+1. Run command continuous
+echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
 
-Hardwares tested : QCA9984
-Firmwares tested : 10.4-3.10-00047
+2. error happened and it did not begin recovery for long time.
+[74377.334846] ath10k_sdio mmc1:0001:1: simulating soft firmware crash
+[74378.378217] ath10k_sdio mmc1:0001:1: failed to read from address 0x800: -110
+[74378.378371] ath10k_sdio mmc1:0001:1: failed to process pending SDIO interrupts: -110
 
-Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
+It has sdio errors since it can not read MBOX_HOST_INT_STATUS_ADDRESS,
+then it has to do recovery process to recovery ath10k.
+
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 38a5814cf345d..f883f2a724dd9 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2744,7 +2744,8 @@ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
- 			continue;
- 		}
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 9208291aaca3d..8b640a78f7ca4 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -953,8 +953,11 @@ static int ath10k_sdio_mbox_read_int_status(struct ath10k *ar,
+ 	 */
+ 	ret = ath10k_sdio_read(ar, MBOX_HOST_INT_STATUS_ADDRESS,
+ 			       irq_proc_reg, sizeof(*irq_proc_reg));
+-	if (ret)
++	if (ret) {
++		queue_work(ar->workqueue, &ar->restart_work);
++		ath10k_warn(ar, "read int status fail, start recovery\n");
+ 		goto out;
++	}
  
--		tid = FIELD_GET(HTT_TX_PPDU_DUR_INFO0_TID_MASK, info0);
-+		tid = FIELD_GET(HTT_TX_PPDU_DUR_INFO0_TID_MASK, info0) &
-+						IEEE80211_QOS_CTL_TID_MASK;
- 		tx_duration = __le32_to_cpu(ppdu_dur->tx_duration);
- 
- 		ieee80211_sta_register_airtime(peer->sta, tid, tx_duration, 0);
+ 	/* Update only those registers that are enabled */
+ 	*host_int_status = irq_proc_reg->host_int_status &
 -- 
 2.20.1
 
