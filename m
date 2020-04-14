@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
+Received: from sonic307-56.consmr.mail.ne1.yahoo.com ([66.163.190.31])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOEBA-0001Lu-MH
- for ath10k@lists.infradead.org; Tue, 14 Apr 2020 05:32:14 +0000
-Subject: RE: [PATCH v2 2/2] ath10k: correct legacy rate in tx stats
-From: Yu Wang <yyuwang@qti.qualcomm.com>
-Date: Tue, 14 Apr 2020 05:32:04 +0000
-Message-ID: <MWHPR02MB2496EE78C46698CE3E6101EB98DA0@MWHPR02MB2496.namprd02.prod.outlook.com>
-References: <0101016e82883ded-63f88383-cd90-4cb0-b9bb-3dd6a1e9f4e9-000000@us-west-2.amazonses.com>
- <20200409142136.5490EC433BA@smtp.codeaurora.org>
-In-Reply-To: <20200409142136.5490EC433BA@smtp.codeaurora.org>
-Content-Language: en-US
+ id 1jOFxm-00056h-63
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2020 07:26:31 +0000
+From: Nicola Mori <nicolamori@aol.com>
+Subject: Killer WiFi card keeps disconnecting due to latest firmware
+Message-ID: <b07a7ea1-7ab2-8ce3-95d7-6726e7708749@aol.com>
+Date: Tue, 14 Apr 2020 09:26:16 +0200
 MIME-Version: 1.0
+Content-Language: en-US
+References: <b07a7ea1-7ab2-8ce3-95d7-6726e7708749.ref@aol.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,75 +18,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "kvalo@codeaurora.org" <kvalo@codeaurora.org>, Yu Wang <yyuwang@codeaurora.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogYXRoMTBrIDxhdGgxMGst
-Ym91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnPiBPbiBCZWhhbGYgT2YgS2FsbGUgVmFsbw0KPiBT
-ZW50OiBUaHVyc2RheSwgQXByaWwgOSwgMjAyMCAxMDoyMiBQTQ0KPiBUbzogWXUgV2FuZyA8eXl1
-d2FuZ0Bjb2RlYXVyb3JhLm9yZz4NCj4gQ2M6IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9y
-ZzsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogW0VYVF0gUmU6IFtQQVRD
-SCB2MiAyLzJdIGF0aDEwazogY29ycmVjdCBsZWdhY3kgcmF0ZSBpbiB0eCBzdGF0cw0KPg0KPiBZ
-dSBXYW5nIDx5eXV3YW5nQGNvZGVhdXJvcmEub3JnPiB3cm90ZToNCj4NCj4gPiBXaGVuIHdvcmtp
-bmcgaW4gc3RhdGlvbiBtb2RlLCBhZnRlciBjb25uZWN0ZWQgdG8gYSBsZWdhY3kgQVAsIDExZw0K
-PiA+IG9ubHksIGZvciBleGFtcGxlLCB0aGUgdHggYml0cmF0ZSBpcyBpbmNvcnJlY3QgaW4gb3V0
-cHV0IG9mIGNvbW1hbmQNCj4gPiAnaXcgd2xhbjAgbGluaycuDQo+ID4NCj4gPiBUaGF0J3MgYmVj
-YXVzZSB0aGUgbGVnYWN5IHR4IGJpdHJhdGUgdmFsdWUgcmVwb3J0ZWQgYnkgZmlybXdhcmUgaXMg
-bm90DQo+ID4gd2VsbCBoYW5kbGVkOg0KPiA+IEZvciBRQ0E2MTc0LCB0aGUgdmFsdWUgcmVwcmVz
-ZW50cyByYXRlIGluZGV4LCBidXQgdHJlYXRlZCBhcyBhIHJlYWwNCj4gPiByYXRlOyBGb3IgUUNB
-OTg4OCwgdGhlIHZhbHVlIGlzIHJlYWwgcmF0ZSwgd2l0aCB1bml0ICdNYnBzJywgYnV0DQo+ID4g
-dHJlYXRlZCBhcyAnMTAwa2JwcycuDQo+ID4NCj4gPiBUbyBmaXggdGhpcyBpc3N1ZToNCj4gPiAx
-LiBUcmFuc2xhdGUgdGhlIHJhdGUgaW5kZXggdG8gcmVhbCByYXRlIGZvciBRQ0E2MTc0OyAyLiBU
-cmFuc2xhdGUgdGhlDQo+ID4gcmF0ZSBmcm9tICdNYnBzJyB0byAna2JwcycgZm9yIFFDQTk4ODgu
-DQo+ID4NCj4gPiBUZXN0ZWQgd2l0aDoNCj4gPiBRQ0E2MTc0IFBDSWUgd2l0aCBmaXJtd2FyZSBX
-TEFOLlJNLjQuNC4xLmMzLTAwMDMxLg0KPiA+IFFDQTYxNzQgU0RJTyB3aXRoIGZpcm13YXJlIFdM
-QU4uUk1ILjQuNC4xLTAwMDI5Lg0KPiA+IFFDQTk4ODggUENJZSB3aXRoIGZpcm13YXJlIDEwLjQt
-My45LjAuMi0wMDA0MC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFl1IFdhbmcgPHl5dXdhbmdA
-Y29kZWF1cm9yYS5vcmc+DQo+ID4gU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9AY29k
-ZWF1cm9yYS5vcmc+DQo+DQo+IE15IGNvbW1lbnRzIGRvbid0IHNlZW0gdG8gZ28gdG8gcGF0Y2h3
-b3JrLCBzbyB0cnlpbmcgYWdhaW46DQo+DQo+IFdoYXQgYWJvdXQgUUNBOTg4WCBhbmQgV0NOMzk5
-MCwgaG93IGRvIHRoZXkgYmVoYXZlPyBEb2VzIHRoaXMgcGF0Y2gNCj4gYnJlYWsgdGhvc2U/DQpT
-aW5jZSBIVFRfVDJIX01TR19UWVBFX1BQRFVfU1RBVFNfSU5EIGlzIGEgbmV3bHkgYWRkZWQgbWVz
-c2FnZSwgc3VwcG9zZSBpdCdzIHdvbid0IGJyZWFrIHRoZSBvdGhlciBmdW5jdGlvbnMuDQpJIGRv
-buKAmXQgaGF2ZSBlbnZpcm9ubWVudCB0byB2ZXJpZnkgdGhlIHBhdGNoIHdpdGggUUNBOTg4WCBh
-bmQgV0NOMzk5MC4NCkNhbiBhbnlvbmUgaGVscCBvbiB0aGlzPw0KDQo+DQo+ID4gK2NjayA9IChw
-cmVhbWJsZSA9PSBXTUlfUkFURV9QUkVBTUJMRV9DQ0spOw0KPiA+ICtod19yYXRlID0gQVRIMTBL
-X0hXX0xFR0FDWV9SQVRFKCpyYXRlY29kZSk7DQo+ID4gK2ZvciAoaSA9IDA7IGkgPCBzYmFuZC0+
-bl9iaXRyYXRlczsgaSsrKSB7DQo+ID4gK2JpdHJhdGVzID0gJnNiYW5kLT5iaXRyYXRlc1tpXTsN
-Cj4gPiAraWYgKGF0aDEwa19tYWNfYml0cmF0ZV9pc19jY2soYml0cmF0ZXMtPmJpdHJhdGUpICE9
-IGNjaykNCj4gPiArY29udGludWU7DQo+ID4gKw0KPiA+ICtpZiAoYml0cmF0ZXMtPmh3X3ZhbHVl
-ID09IGh3X3JhdGUgfHwNCj4gPiArICAgIChiaXRyYXRlcy0+ZmxhZ3MgJiBJRUVFODAyMTFfUkFU
-RV9TSE9SVF9QUkVBTUJMRSAmJg0KPiA+ICsgICAgIGJpdHJhdGVzLT5od192YWx1ZV9zaG9ydCA9
-PSBod19yYXRlKSkgew0KPiA+ICtiaXRyYXRlID0gYml0cmF0ZXMtPmJpdHJhdGU7DQo+ID4gKw0K
-PiA+ICsvKiBUaGUgYml0cmF0ZSB3aWxsIGJlIHJlY292ZXJlZCBpbg0KPiA+ICsgKiBhdGgxMGtf
-dXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkuDQo+ID4gKyAqLw0KPiA+ICtpZiAoYml0cmF0ZSA9
-PSA1NSkNCj4gPiArYml0cmF0ZSA9IDYwOw0KPiA+ICsNCj4gPiArYml0cmF0ZSA9IGJpdHJhdGUg
-LyAxMDsNCj4NCj4gSGVyZSB5b3UgdXNlIG1hZ2ljIHZhbHVlIDYwIGJ1dCBpbiBhdGgxMGtfdXBk
-YXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkgeW91IHVzZQ0KPiBtYWdpYyB2YWx1ZSA1MDoNCj4NCj4g
-PiArLyogZnJvbSAxTWJwcyB0byAxMDBLYnBzICovDQo+ID4gK3JhdGUgPSByYXRlICogMTA7DQo+
-ID4gK2lmIChyYXRlID09IDUwKQ0KPiA+ICtyYXRlID0gNTU7DQo+DQo+IEFtIEkgbWlzc2luZyBz
-b21ldGhpbmcgb3IgaG93IGlzIHRoaXMgc3VwcG9zZWQgdG8gd29yaz8NCkluIGV4aXN0aW5nIGNv
-ZGUsIGF0aDEwa191cGRhdGVfcGVyX3BlZXJfdHhfc3RhdHMoKSB3aWxsIGNoZWNrIHRoZSBiaXRy
-YXRlIGFuZCBjb252ZXJ0IDZfQ0NLIHRvIDUoaW4gdGhlIGNvbW1lbnQ6IEZXIHNlbmRzIENDSyBy
-YXRlIDUuNU1icHMgYXMgNiksIGFuZCB0aGVuIDUgd2lsbCBiZSByZWNvdmVyZWQgdG8gNTUuDQpU
-aGF0J3Mgd2h5IHdlIG5lZWQgdG8gY29udmVydCBiaXRyYXRlIDU1IHRvIDYgd2hlbiBwcm9jZXNz
-aW5nIFBQRFVfU1RBVFMuDQoNCmlmICh0eHJhdGUuZmxhZ3MgPT0gV01JX1JBVEVfUFJFQU1CTEVf
-Q0NLIHx8DQp0eHJhdGUuZmxhZ3MgPT0gV01JX1JBVEVfUFJFQU1CTEVfT0ZETSkgew0KcmF0ZSA9
-IEFUSDEwS19IV19MRUdBQ1lfUkFURShwZWVyX3N0YXRzLT5yYXRlY29kZSk7DQovKiBUaGlzIGlz
-IGhhY2t5LCBGVyBzZW5kcyBDQ0sgcmF0ZSA1LjVNYnBzIGFzIDYgKi8NCmlmIChyYXRlID09IDYg
-JiYgdHhyYXRlLmZsYWdzID09IFdNSV9SQVRFX1BSRUFNQkxFX0NDSykNCnJhdGUgPSA1Ow0KcmF0
-ZV9pZHggPSBhdGgxMGtfZ2V0X2xlZ2FjeV9yYXRlX2lkeChhciwgcmF0ZSk7DQppZiAocmF0ZV9p
-ZHggPCAwKQ0KcmV0dXJuOw0KDQovKiBmcm9tIDFNYnBzIHRvIDEwMEticHMgKi8NCnJhdGUgPSBy
-YXRlICogMTA7DQppZiAocmF0ZSA9PSA1MCkNCnJhdGUgPSA1NTsNCj4NCj4gLS0NCj4gaHR0cHM6
-Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTI1MTAwMS8NCj4NCj4gaHR0cHM6Ly93aXJl
-bGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL3N1Ym1pdHRp
-bmdwYXRjaA0KPiBlcw0KPg0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXw0KPiBhdGgxMGsgbWFpbGluZyBsaXN0DQo+IGF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi, I have an issue with the WiFi card in my laptop, that keeps 
+disconnecting from the network in a strange way: randomly every 1-2 
+hours I can't access web pages or even ping the gateway, but existing 
+connections (like existing ssh sessions or Zoom videoconferences) 
+continue to work. The only solution is to restart the network connection.
+
+The fix for me has been to downgrade the firmware by removing 
+/usr/lib/firmware/ath10k/QCA6174/hw3.0/firmware-6.bin so that 
+/usr/lib/firmware/ath10k/QCA6174/hw3.0/firmware-4.bin is used; with 
+this, I have no issues.
+
+The problem is described in details in this Archlinux forum thread:
+
+   https://bbs.archlinux.org/viewtopic.php?pid=1898028
+
+I can provide additional information if needed.
+Thanks,
+
+Nicola
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
