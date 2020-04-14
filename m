@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOGe1-0003et-L1
- for ath10k@lists.infradead.org; Tue, 14 Apr 2020 08:10:12 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
-References: <20200212080415.31265-1-wgong@codeaurora.org>
- <20200212080415.31265-4-wgong@codeaurora.org>
- <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
- <185d31c2e6f8792beb240f2c74d26463@codeaurora.org>
-Date: Tue, 14 Apr 2020 11:10:00 +0300
-In-Reply-To: <185d31c2e6f8792beb240f2c74d26463@codeaurora.org> (Wen Gong's
- message of "Thu, 09 Apr 2020 23:40:41 +0800")
-Message-ID: <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com>
+ id 1jOHJZ-0006AU-6T
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2020 08:53:06 +0000
+Received: by mail-io1-xd43.google.com with SMTP id s18so9052012ioe.10
+ for <ath10k@lists.infradead.org>; Tue, 14 Apr 2020 01:53:04 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <MWHPR02MB2496EE78C46698CE3E6101EB98DA0@MWHPR02MB2496.namprd02.prod.outlook.com>
+References: <0101016e82883ded-63f88383-cd90-4cb0-b9bb-3dd6a1e9f4e9-000000@us-west-2.amazonses.com>
+ <20200409142136.5490EC433BA@smtp.codeaurora.org>
+ <MWHPR02MB2496EE78C46698CE3E6101EB98DA0@MWHPR02MB2496.namprd02.prod.outlook.com>
+From: Tom Psyborg <pozega.tomislav@gmail.com>
+Date: Tue, 14 Apr 2020 10:53:02 +0200
+Message-ID: <CAKR_QVJX719-F7pF2FdjY0Q_uMbvN0-Uo0ac6u7FAWyfci_TAw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ath10k: correct legacy rate in tx stats
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +22,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Yu Wang <yyuwang@qti.qualcomm.com>
+Cc: Yu Wang <yyuwang@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
 
-Wen Gong <wgong@codeaurora.org> writes:
-
-> On 2020-04-09 22:53, Kalle Valo wrote:
->> Wen Gong <wgong@codeaurora.org> writes:
->>
->>> +	ar->workqueue_tx_complete =
->>> +		create_singlethread_workqueue("ath10k_tx_complete_wq");
->>> +	if (!ar->workqueue_tx_complete)
->>> +		goto err_free_aux_wq;
->>
->> We already have three threads:
->>
->> ath/ath10k/core.c:      ar->workqueue =
->> create_singlethread_workqueue("ath10k_wq");
->> ath/ath10k/core.c:      ar->workqueue_aux =
->> create_singlethread_workqueue("ath10k_aux_wq");
->> ath/ath10k/sdio.c:      ar_sdio->workqueue =
->> create_singlethread_workqueue("ath10k_sdio_wq");
->>
->> Do we really need a fourth one? For example, why can't we use
->> ar->workqueue_aux?
->
-> For tcp test, it has 4 thread work meanwhile:
-> tx_bundle_skbs(ar->workqueue),
-> rx_indication(ar->workqueue_aux),
-> sdio_async_tx_request(ar_sdio->workqueue),
-> tx_bundle_complete(ar->workqueue_tx_complete)
->
-> It has 4+ cpu/core in system, if reduced to 3 threads, then tcp
-> throughput will drop. only when it only has 1/2/3 cpu/core in system,
-> then reduced to 3 threads will not drop.
-
-How much does it drop? Please add the justification (with numbers) for
-the new thread to the commit log, so that the reason is properly
-documented.
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQvMDQvMjAyMCwgWXUgV2FuZyA8eXl1d2FuZ0BxdGkucXVhbGNvbW0uY29tPiB3cm90ZToK
+Pgo+Cj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IGF0aDEwayA8YXRoMTBr
+LWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZz4gT24gQmVoYWxmIE9mIEthbGxlIFZhbG8KPj4g
+U2VudDogVGh1cnNkYXksIEFwcmlsIDksIDIwMjAgMTA6MjIgUE0KPj4gVG86IFl1IFdhbmcgPHl5
+dXdhbmdAY29kZWF1cm9yYS5vcmc+Cj4+IENjOiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5v
+cmc7IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IFN1YmplY3Q6IFtFWFRdIFJlOiBbUEFU
+Q0ggdjIgMi8yXSBhdGgxMGs6IGNvcnJlY3QgbGVnYWN5IHJhdGUgaW4gdHggc3RhdHMKPj4KPj4g
+WXUgV2FuZyA8eXl1d2FuZ0Bjb2RlYXVyb3JhLm9yZz4gd3JvdGU6Cj4+Cj4+ID4gV2hlbiB3b3Jr
+aW5nIGluIHN0YXRpb24gbW9kZSwgYWZ0ZXIgY29ubmVjdGVkIHRvIGEgbGVnYWN5IEFQLCAxMWcK
+Pj4gPiBvbmx5LCBmb3IgZXhhbXBsZSwgdGhlIHR4IGJpdHJhdGUgaXMgaW5jb3JyZWN0IGluIG91
+dHB1dCBvZiBjb21tYW5kCj4+ID4gJ2l3IHdsYW4wIGxpbmsnLgo+PiA+Cj4+ID4gVGhhdCdzIGJl
+Y2F1c2UgdGhlIGxlZ2FjeSB0eCBiaXRyYXRlIHZhbHVlIHJlcG9ydGVkIGJ5IGZpcm13YXJlIGlz
+IG5vdAo+PiA+IHdlbGwgaGFuZGxlZDoKPj4gPiBGb3IgUUNBNjE3NCwgdGhlIHZhbHVlIHJlcHJl
+c2VudHMgcmF0ZSBpbmRleCwgYnV0IHRyZWF0ZWQgYXMgYSByZWFsCj4+ID4gcmF0ZTsgRm9yIFFD
+QTk4ODgsIHRoZSB2YWx1ZSBpcyByZWFsIHJhdGUsIHdpdGggdW5pdCAnTWJwcycsIGJ1dAo+PiA+
+IHRyZWF0ZWQgYXMgJzEwMGticHMnLgo+PiA+Cj4+ID4gVG8gZml4IHRoaXMgaXNzdWU6Cj4+ID4g
+MS4gVHJhbnNsYXRlIHRoZSByYXRlIGluZGV4IHRvIHJlYWwgcmF0ZSBmb3IgUUNBNjE3NDsgMi4g
+VHJhbnNsYXRlIHRoZQo+PiA+IHJhdGUgZnJvbSAnTWJwcycgdG8gJ2ticHMnIGZvciBRQ0E5ODg4
+Lgo+PiA+Cj4+ID4gVGVzdGVkIHdpdGg6Cj4+ID4gUUNBNjE3NCBQQ0llIHdpdGggZmlybXdhcmUg
+V0xBTi5STS40LjQuMS5jMy0wMDAzMS4KPj4gPiBRQ0E2MTc0IFNESU8gd2l0aCBmaXJtd2FyZSBX
+TEFOLlJNSC40LjQuMS0wMDAyOS4KPj4gPiBRQ0E5ODg4IFBDSWUgd2l0aCBmaXJtd2FyZSAxMC40
+LTMuOS4wLjItMDAwNDAuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBZdSBXYW5nIDx5eXV3YW5n
+QGNvZGVhdXJvcmEub3JnPgo+PiA+IFNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQGNv
+ZGVhdXJvcmEub3JnPgo+Pgo+PiBNeSBjb21tZW50cyBkb24ndCBzZWVtIHRvIGdvIHRvIHBhdGNo
+d29yaywgc28gdHJ5aW5nIGFnYWluOgo+Pgo+PiBXaGF0IGFib3V0IFFDQTk4OFggYW5kIFdDTjM5
+OTAsIGhvdyBkbyB0aGV5IGJlaGF2ZT8gRG9lcyB0aGlzIHBhdGNoCj4+IGJyZWFrIHRob3NlPwo+
+IFNpbmNlIEhUVF9UMkhfTVNHX1RZUEVfUFBEVV9TVEFUU19JTkQgaXMgYSBuZXdseSBhZGRlZCBt
+ZXNzYWdlLCBzdXBwb3NlIGl0J3MKPiB3b24ndCBicmVhayB0aGUgb3RoZXIgZnVuY3Rpb25zLgo+
+IEkgZG9u4oCZdCBoYXZlIGVudmlyb25tZW50IHRvIHZlcmlmeSB0aGUgcGF0Y2ggd2l0aCBRQ0E5
+ODhYIGFuZCBXQ04zOTkwLgo+IENhbiBhbnlvbmUgaGVscCBvbiB0aGlzPwo+Cj4+Cj4+ID4gK2Nj
+ayA9IChwcmVhbWJsZSA9PSBXTUlfUkFURV9QUkVBTUJMRV9DQ0spOwo+PiA+ICtod19yYXRlID0g
+QVRIMTBLX0hXX0xFR0FDWV9SQVRFKCpyYXRlY29kZSk7Cj4+ID4gK2ZvciAoaSA9IDA7IGkgPCBz
+YmFuZC0+bl9iaXRyYXRlczsgaSsrKSB7Cj4+ID4gK2JpdHJhdGVzID0gJnNiYW5kLT5iaXRyYXRl
+c1tpXTsKPj4gPiAraWYgKGF0aDEwa19tYWNfYml0cmF0ZV9pc19jY2soYml0cmF0ZXMtPmJpdHJh
+dGUpICE9IGNjaykKPj4gPiArY29udGludWU7Cj4+ID4gKwo+PiA+ICtpZiAoYml0cmF0ZXMtPmh3
+X3ZhbHVlID09IGh3X3JhdGUgfHwKPj4gPiArICAgIChiaXRyYXRlcy0+ZmxhZ3MgJiBJRUVFODAy
+MTFfUkFURV9TSE9SVF9QUkVBTUJMRSAmJgo+PiA+ICsgICAgIGJpdHJhdGVzLT5od192YWx1ZV9z
+aG9ydCA9PSBod19yYXRlKSkgewo+PiA+ICtiaXRyYXRlID0gYml0cmF0ZXMtPmJpdHJhdGU7Cj4+
+ID4gKwo+PiA+ICsvKiBUaGUgYml0cmF0ZSB3aWxsIGJlIHJlY292ZXJlZCBpbgo+PiA+ICsgKiBh
+dGgxMGtfdXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkuCj4+ID4gKyAqLwo+PiA+ICtpZiAoYml0
+cmF0ZSA9PSA1NSkKPj4gPiArYml0cmF0ZSA9IDYwOwo+PiA+ICsKPj4gPiArYml0cmF0ZSA9IGJp
+dHJhdGUgLyAxMDsKPj4KPj4gSGVyZSB5b3UgdXNlIG1hZ2ljIHZhbHVlIDYwIGJ1dCBpbiBhdGgx
+MGtfdXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkgeW91Cj4+IHVzZQo+PiBtYWdpYyB2YWx1ZSA1
+MDoKPj4KPj4gPiArLyogZnJvbSAxTWJwcyB0byAxMDBLYnBzICovCj4+ID4gK3JhdGUgPSByYXRl
+ICogMTA7Cj4+ID4gK2lmIChyYXRlID09IDUwKQo+PiA+ICtyYXRlID0gNTU7Cj4+Cj4+IEFtIEkg
+bWlzc2luZyBzb21ldGhpbmcgb3IgaG93IGlzIHRoaXMgc3VwcG9zZWQgdG8gd29yaz8KPiBJbiBl
+eGlzdGluZyBjb2RlLCBhdGgxMGtfdXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkgd2lsbCBjaGVj
+ayB0aGUgYml0cmF0ZQo+IGFuZCBjb252ZXJ0IDZfQ0NLIHRvIDUoaW4gdGhlIGNvbW1lbnQ6IEZX
+IHNlbmRzIENDSyByYXRlIDUuNU1icHMgYXMgNiksIGFuZAo+IHRoZW4gNSB3aWxsIGJlIHJlY292
+ZXJlZCB0byA1NS4KPiBUaGF0J3Mgd2h5IHdlIG5lZWQgdG8gY29udmVydCBiaXRyYXRlIDU1IHRv
+IDYgd2hlbiBwcm9jZXNzaW5nIFBQRFVfU1RBVFMuCj4KPiBpZiAodHhyYXRlLmZsYWdzID09IFdN
+SV9SQVRFX1BSRUFNQkxFX0NDSyB8fAo+IHR4cmF0ZS5mbGFncyA9PSBXTUlfUkFURV9QUkVBTUJM
+RV9PRkRNKSB7Cj4gcmF0ZSA9IEFUSDEwS19IV19MRUdBQ1lfUkFURShwZWVyX3N0YXRzLT5yYXRl
+Y29kZSk7Cj4gLyogVGhpcyBpcyBoYWNreSwgRlcgc2VuZHMgQ0NLIHJhdGUgNS41TWJwcyBhcyA2
+ICovCj4gaWYgKHJhdGUgPT0gNiAmJiB0eHJhdGUuZmxhZ3MgPT0gV01JX1JBVEVfUFJFQU1CTEVf
+Q0NLKQo+IHJhdGUgPSA1Owo+IHJhdGVfaWR4ID0gYXRoMTBrX2dldF9sZWdhY3lfcmF0ZV9pZHgo
+YXIsIHJhdGUpOwo+IGlmIChyYXRlX2lkeCA8IDApCj4gcmV0dXJuOwo+Cj4gLyogZnJvbSAxTWJw
+cyB0byAxMDBLYnBzICovCj4gcmF0ZSA9IHJhdGUgKiAxMDsKPiBpZiAocmF0ZSA9PSA1MCkKPiBy
+YXRlID0gNTU7Cj4+Cj4+IC0tCj4+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gv
+MTEyNTEwMDEvCj4+Cj4+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVs
+b3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2gKPj4gZXMKPj4KPj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gYXRoMTBrIG1haWxpbmcg
+bGlzdAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsKPgoKSGkKCkkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgYXJlIHlvdSBmaXhp
+bmcgdGhpcyBpbiBkcml2ZXIgd2hlbiB0aGUgY29tbWVudApjbGVhcmx5IHNheXMgIkZXIHNlbmRz
+IENDSyByYXRlIDUuNU1icHMgYXMgNiIKU2hvdWxkbid0IGEgcHJvcGVyIHdheSBiZSB0byBmaXgg
+dGhpcyBpbiBmaXJtd2FyZT8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
