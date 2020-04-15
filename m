@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOHJZ-0006AU-6T
- for ath10k@lists.infradead.org; Tue, 14 Apr 2020 08:53:06 +0000
-Received: by mail-io1-xd43.google.com with SMTP id s18so9052012ioe.10
- for <ath10k@lists.infradead.org>; Tue, 14 Apr 2020 01:53:04 -0700 (PDT)
+ id 1jOWAf-0003an-0s
+ for ath10k@lists.infradead.org; Wed, 15 Apr 2020 00:44:54 +0000
+Date: Wed, 15 Apr 2020 08:43:50 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 498e2357e10da64ed13861a9a2a80bb6acbdc214
+Message-ID: <5e9658c6.sD4cjsNn+hkSMl/a%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR02MB2496EE78C46698CE3E6101EB98DA0@MWHPR02MB2496.namprd02.prod.outlook.com>
-References: <0101016e82883ded-63f88383-cd90-4cb0-b9bb-3dd6a1e9f4e9-000000@us-west-2.amazonses.com>
- <20200409142136.5490EC433BA@smtp.codeaurora.org>
- <MWHPR02MB2496EE78C46698CE3E6101EB98DA0@MWHPR02MB2496.namprd02.prod.outlook.com>
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Tue, 14 Apr 2020 10:53:02 +0200
-Message-ID: <CAKR_QVJX719-F7pF2FdjY0Q_uMbvN0-Uo0ac6u7FAWyfci_TAw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: correct legacy rate in tx stats
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,82 +16,165 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yu Wang <yyuwang@qti.qualcomm.com>
-Cc: Yu Wang <yyuwang@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-T24gMTQvMDQvMjAyMCwgWXUgV2FuZyA8eXl1d2FuZ0BxdGkucXVhbGNvbW0uY29tPiB3cm90ZToK
-Pgo+Cj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IGF0aDEwayA8YXRoMTBr
-LWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZz4gT24gQmVoYWxmIE9mIEthbGxlIFZhbG8KPj4g
-U2VudDogVGh1cnNkYXksIEFwcmlsIDksIDIwMjAgMTA6MjIgUE0KPj4gVG86IFl1IFdhbmcgPHl5
-dXdhbmdAY29kZWF1cm9yYS5vcmc+Cj4+IENjOiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5v
-cmc7IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IFN1YmplY3Q6IFtFWFRdIFJlOiBbUEFU
-Q0ggdjIgMi8yXSBhdGgxMGs6IGNvcnJlY3QgbGVnYWN5IHJhdGUgaW4gdHggc3RhdHMKPj4KPj4g
-WXUgV2FuZyA8eXl1d2FuZ0Bjb2RlYXVyb3JhLm9yZz4gd3JvdGU6Cj4+Cj4+ID4gV2hlbiB3b3Jr
-aW5nIGluIHN0YXRpb24gbW9kZSwgYWZ0ZXIgY29ubmVjdGVkIHRvIGEgbGVnYWN5IEFQLCAxMWcK
-Pj4gPiBvbmx5LCBmb3IgZXhhbXBsZSwgdGhlIHR4IGJpdHJhdGUgaXMgaW5jb3JyZWN0IGluIG91
-dHB1dCBvZiBjb21tYW5kCj4+ID4gJ2l3IHdsYW4wIGxpbmsnLgo+PiA+Cj4+ID4gVGhhdCdzIGJl
-Y2F1c2UgdGhlIGxlZ2FjeSB0eCBiaXRyYXRlIHZhbHVlIHJlcG9ydGVkIGJ5IGZpcm13YXJlIGlz
-IG5vdAo+PiA+IHdlbGwgaGFuZGxlZDoKPj4gPiBGb3IgUUNBNjE3NCwgdGhlIHZhbHVlIHJlcHJl
-c2VudHMgcmF0ZSBpbmRleCwgYnV0IHRyZWF0ZWQgYXMgYSByZWFsCj4+ID4gcmF0ZTsgRm9yIFFD
-QTk4ODgsIHRoZSB2YWx1ZSBpcyByZWFsIHJhdGUsIHdpdGggdW5pdCAnTWJwcycsIGJ1dAo+PiA+
-IHRyZWF0ZWQgYXMgJzEwMGticHMnLgo+PiA+Cj4+ID4gVG8gZml4IHRoaXMgaXNzdWU6Cj4+ID4g
-MS4gVHJhbnNsYXRlIHRoZSByYXRlIGluZGV4IHRvIHJlYWwgcmF0ZSBmb3IgUUNBNjE3NDsgMi4g
-VHJhbnNsYXRlIHRoZQo+PiA+IHJhdGUgZnJvbSAnTWJwcycgdG8gJ2ticHMnIGZvciBRQ0E5ODg4
-Lgo+PiA+Cj4+ID4gVGVzdGVkIHdpdGg6Cj4+ID4gUUNBNjE3NCBQQ0llIHdpdGggZmlybXdhcmUg
-V0xBTi5STS40LjQuMS5jMy0wMDAzMS4KPj4gPiBRQ0E2MTc0IFNESU8gd2l0aCBmaXJtd2FyZSBX
-TEFOLlJNSC40LjQuMS0wMDAyOS4KPj4gPiBRQ0E5ODg4IFBDSWUgd2l0aCBmaXJtd2FyZSAxMC40
-LTMuOS4wLjItMDAwNDAuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBZdSBXYW5nIDx5eXV3YW5n
-QGNvZGVhdXJvcmEub3JnPgo+PiA+IFNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQGNv
-ZGVhdXJvcmEub3JnPgo+Pgo+PiBNeSBjb21tZW50cyBkb24ndCBzZWVtIHRvIGdvIHRvIHBhdGNo
-d29yaywgc28gdHJ5aW5nIGFnYWluOgo+Pgo+PiBXaGF0IGFib3V0IFFDQTk4OFggYW5kIFdDTjM5
-OTAsIGhvdyBkbyB0aGV5IGJlaGF2ZT8gRG9lcyB0aGlzIHBhdGNoCj4+IGJyZWFrIHRob3NlPwo+
-IFNpbmNlIEhUVF9UMkhfTVNHX1RZUEVfUFBEVV9TVEFUU19JTkQgaXMgYSBuZXdseSBhZGRlZCBt
-ZXNzYWdlLCBzdXBwb3NlIGl0J3MKPiB3b24ndCBicmVhayB0aGUgb3RoZXIgZnVuY3Rpb25zLgo+
-IEkgZG9u4oCZdCBoYXZlIGVudmlyb25tZW50IHRvIHZlcmlmeSB0aGUgcGF0Y2ggd2l0aCBRQ0E5
-ODhYIGFuZCBXQ04zOTkwLgo+IENhbiBhbnlvbmUgaGVscCBvbiB0aGlzPwo+Cj4+Cj4+ID4gK2Nj
-ayA9IChwcmVhbWJsZSA9PSBXTUlfUkFURV9QUkVBTUJMRV9DQ0spOwo+PiA+ICtod19yYXRlID0g
-QVRIMTBLX0hXX0xFR0FDWV9SQVRFKCpyYXRlY29kZSk7Cj4+ID4gK2ZvciAoaSA9IDA7IGkgPCBz
-YmFuZC0+bl9iaXRyYXRlczsgaSsrKSB7Cj4+ID4gK2JpdHJhdGVzID0gJnNiYW5kLT5iaXRyYXRl
-c1tpXTsKPj4gPiAraWYgKGF0aDEwa19tYWNfYml0cmF0ZV9pc19jY2soYml0cmF0ZXMtPmJpdHJh
-dGUpICE9IGNjaykKPj4gPiArY29udGludWU7Cj4+ID4gKwo+PiA+ICtpZiAoYml0cmF0ZXMtPmh3
-X3ZhbHVlID09IGh3X3JhdGUgfHwKPj4gPiArICAgIChiaXRyYXRlcy0+ZmxhZ3MgJiBJRUVFODAy
-MTFfUkFURV9TSE9SVF9QUkVBTUJMRSAmJgo+PiA+ICsgICAgIGJpdHJhdGVzLT5od192YWx1ZV9z
-aG9ydCA9PSBod19yYXRlKSkgewo+PiA+ICtiaXRyYXRlID0gYml0cmF0ZXMtPmJpdHJhdGU7Cj4+
-ID4gKwo+PiA+ICsvKiBUaGUgYml0cmF0ZSB3aWxsIGJlIHJlY292ZXJlZCBpbgo+PiA+ICsgKiBh
-dGgxMGtfdXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkuCj4+ID4gKyAqLwo+PiA+ICtpZiAoYml0
-cmF0ZSA9PSA1NSkKPj4gPiArYml0cmF0ZSA9IDYwOwo+PiA+ICsKPj4gPiArYml0cmF0ZSA9IGJp
-dHJhdGUgLyAxMDsKPj4KPj4gSGVyZSB5b3UgdXNlIG1hZ2ljIHZhbHVlIDYwIGJ1dCBpbiBhdGgx
-MGtfdXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkgeW91Cj4+IHVzZQo+PiBtYWdpYyB2YWx1ZSA1
-MDoKPj4KPj4gPiArLyogZnJvbSAxTWJwcyB0byAxMDBLYnBzICovCj4+ID4gK3JhdGUgPSByYXRl
-ICogMTA7Cj4+ID4gK2lmIChyYXRlID09IDUwKQo+PiA+ICtyYXRlID0gNTU7Cj4+Cj4+IEFtIEkg
-bWlzc2luZyBzb21ldGhpbmcgb3IgaG93IGlzIHRoaXMgc3VwcG9zZWQgdG8gd29yaz8KPiBJbiBl
-eGlzdGluZyBjb2RlLCBhdGgxMGtfdXBkYXRlX3Blcl9wZWVyX3R4X3N0YXRzKCkgd2lsbCBjaGVj
-ayB0aGUgYml0cmF0ZQo+IGFuZCBjb252ZXJ0IDZfQ0NLIHRvIDUoaW4gdGhlIGNvbW1lbnQ6IEZX
-IHNlbmRzIENDSyByYXRlIDUuNU1icHMgYXMgNiksIGFuZAo+IHRoZW4gNSB3aWxsIGJlIHJlY292
-ZXJlZCB0byA1NS4KPiBUaGF0J3Mgd2h5IHdlIG5lZWQgdG8gY29udmVydCBiaXRyYXRlIDU1IHRv
-IDYgd2hlbiBwcm9jZXNzaW5nIFBQRFVfU1RBVFMuCj4KPiBpZiAodHhyYXRlLmZsYWdzID09IFdN
-SV9SQVRFX1BSRUFNQkxFX0NDSyB8fAo+IHR4cmF0ZS5mbGFncyA9PSBXTUlfUkFURV9QUkVBTUJM
-RV9PRkRNKSB7Cj4gcmF0ZSA9IEFUSDEwS19IV19MRUdBQ1lfUkFURShwZWVyX3N0YXRzLT5yYXRl
-Y29kZSk7Cj4gLyogVGhpcyBpcyBoYWNreSwgRlcgc2VuZHMgQ0NLIHJhdGUgNS41TWJwcyBhcyA2
-ICovCj4gaWYgKHJhdGUgPT0gNiAmJiB0eHJhdGUuZmxhZ3MgPT0gV01JX1JBVEVfUFJFQU1CTEVf
-Q0NLKQo+IHJhdGUgPSA1Owo+IHJhdGVfaWR4ID0gYXRoMTBrX2dldF9sZWdhY3lfcmF0ZV9pZHgo
-YXIsIHJhdGUpOwo+IGlmIChyYXRlX2lkeCA8IDApCj4gcmV0dXJuOwo+Cj4gLyogZnJvbSAxTWJw
-cyB0byAxMDBLYnBzICovCj4gcmF0ZSA9IHJhdGUgKiAxMDsKPiBpZiAocmF0ZSA9PSA1MCkKPiBy
-YXRlID0gNTU7Cj4+Cj4+IC0tCj4+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gv
-MTEyNTEwMDEvCj4+Cj4+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVs
-b3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2gKPj4gZXMKPj4KPj4gX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gYXRoMTBrIG1haWxpbmcg
-bGlzdAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsKPgoKSGkKCkkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgYXJlIHlvdSBmaXhp
-bmcgdGhpcyBpbiBkcml2ZXIgd2hlbiB0aGUgY29tbWVudApjbGVhcmx5IHNheXMgIkZXIHNlbmRz
-IENDSyByYXRlIDUuNU1icHMgYXMgNiIKU2hvdWxkbid0IGEgcHJvcGVyIHdheSBiZSB0byBmaXgg
-dGhpcyBpbiBmaXJtd2FyZT8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 498e2357e10da64ed13861a9a2a80bb6acbdc214  Add localversion-wireless-testing-ath
+
+elapsed time: 658m
+
+configs tested: 135
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+um                           x86_64_defconfig
+powerpc                             defconfig
+m68k                       m5475evb_defconfig
+sh                  sh7785lcr_32bit_defconfig
+riscv                             allnoconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+c6x                  randconfig-a001-20200414
+h8300                randconfig-a001-20200414
+microblaze           randconfig-a001-20200414
+nios2                randconfig-a001-20200414
+sparc64              randconfig-a001-20200414
+csky                 randconfig-a001-20200414
+openrisc             randconfig-a001-20200414
+s390                 randconfig-a001-20200414
+sh                   randconfig-a001-20200414
+xtensa               randconfig-a001-20200414
+csky                 randconfig-a001-20200415
+openrisc             randconfig-a001-20200415
+s390                 randconfig-a001-20200415
+sh                   randconfig-a001-20200415
+xtensa               randconfig-a001-20200415
+x86_64               randconfig-b001-20200414
+x86_64               randconfig-b002-20200414
+x86_64               randconfig-b003-20200414
+i386                 randconfig-b001-20200414
+i386                 randconfig-b002-20200414
+i386                 randconfig-b003-20200414
+x86_64               randconfig-c001-20200414
+x86_64               randconfig-c002-20200414
+x86_64               randconfig-c003-20200414
+i386                 randconfig-c001-20200414
+i386                 randconfig-c002-20200414
+i386                 randconfig-c003-20200414
+x86_64               randconfig-h001-20200414
+x86_64               randconfig-h002-20200414
+x86_64               randconfig-h003-20200414
+i386                 randconfig-h001-20200414
+i386                 randconfig-h002-20200414
+i386                 randconfig-h003-20200414
+arc                  randconfig-a001-20200414
+arm                  randconfig-a001-20200414
+arm64                randconfig-a001-20200414
+ia64                 randconfig-a001-20200414
+powerpc              randconfig-a001-20200414
+sparc                randconfig-a001-20200414
+riscv                            allmodconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                                  defconfig
+um                             i386_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
