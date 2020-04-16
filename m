@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jP338-00045K-OD
- for ath10k@lists.infradead.org; Thu, 16 Apr 2020 11:51:22 +0000
+ id 1jP3cV-0006Ke-HX
+ for ath10k@lists.infradead.org; Thu, 16 Apr 2020 12:27:55 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH v2 2/4] ath10k: improve power save performance for sdio
-Date: Thu, 16 Apr 2020 14:50:57 +0300
-Message-Id: <1587037859-28873-3-git-send-email-kvalo@codeaurora.org>
-In-Reply-To: <1587037859-28873-1-git-send-email-kvalo@codeaurora.org>
-References: <1587037859-28873-1-git-send-email-kvalo@codeaurora.org>
+Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
+References: <20200212080415.31265-1-wgong@codeaurora.org>
+ <20200212080415.31265-4-wgong@codeaurora.org>
+ <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
+ <185d31c2e6f8792beb240f2c74d26463@codeaurora.org>
+ <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 16 Apr 2020 15:27:30 +0300
+In-Reply-To: <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Tue, 14 Apr 2020 11:10:00 +0300")
+Message-ID: <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,262 +23,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Wen Gong <wgong@codeaurora.org>
+Kalle Valo <kvalo@codeaurora.org> writes:
 
-This patch is to set register to allow the mbox enter sleep status
-if it does not have tx traffic and wakeup it if tx traffic arrive.
-After mbox enter sleep status, the soc will enter sleep status by
-firmware, this will save power. The power consume drops from about
-90mW to about 10mW with this patch.
+> Wen Gong <wgong@codeaurora.org> writes:
+>
+>> On 2020-04-09 22:53, Kalle Valo wrote:
+>>> Wen Gong <wgong@codeaurora.org> writes:
+>>>
+>>>> +	ar->workqueue_tx_complete =
+>>>> +		create_singlethread_workqueue("ath10k_tx_complete_wq");
+>>>> +	if (!ar->workqueue_tx_complete)
+>>>> +		goto err_free_aux_wq;
+>>>
+>>> We already have three threads:
+>>>
+>>> ath/ath10k/core.c:      ar->workqueue =
+>>> create_singlethread_workqueue("ath10k_wq");
+>>> ath/ath10k/core.c:      ar->workqueue_aux =
+>>> create_singlethread_workqueue("ath10k_aux_wq");
+>>> ath/ath10k/sdio.c:      ar_sdio->workqueue =
+>>> create_singlethread_workqueue("ath10k_sdio_wq");
+>>>
+>>> Do we really need a fourth one? For example, why can't we use
+>>> ar->workqueue_aux?
+>>
+>> For tcp test, it has 4 thread work meanwhile:
+>> tx_bundle_skbs(ar->workqueue),
+>> rx_indication(ar->workqueue_aux),
+>> sdio_async_tx_request(ar_sdio->workqueue),
+>> tx_bundle_complete(ar->workqueue_tx_complete)
+>>
+>> It has 4+ cpu/core in system, if reduced to 3 threads, then tcp
+>> throughput will drop. only when it only has 1/2/3 cpu/core in system,
+>> then reduced to 3 threads will not drop.
+>
+> How much does it drop? Please add the justification (with numbers) for
+> the new thread to the commit log, so that the reason is properly
+> documented.
 
-This patch only effect sdio chip.
+I see that you already submitted v10. If you can give the numbers I can
+add them to the commit log.
 
-Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 130 ++++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/sdio.h |  16 ++++
- 2 files changed, 119 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 184b3545324e..1626976293c7 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1361,23 +1361,117 @@ static void ath10k_rx_indication_async_work(struct work_struct *work)
- 		napi_schedule(&ar->napi);
- }
- 
-+static int ath10k_sdio_read_rtc_state(struct ath10k_sdio *ar_sdio, unsigned char *state)
-+{
-+	struct ath10k *ar = ar_sdio->ar;
-+	unsigned char rtc_state = 0;
-+	int ret = 0;
-+
-+	rtc_state = sdio_f0_readb(ar_sdio->func, ATH10K_CIS_RTC_STATE_ADDR, &ret);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to read rtc state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	*state = rtc_state & 0x3;
-+
-+	return ret;
-+}
-+
-+static int ath10k_sdio_hif_set_mbox_sleep(struct ath10k *ar, bool enable_sleep)
-+{
-+	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	u32 val;
-+	int retry = ATH10K_CIS_READ_RETRY, ret = 0;
-+	unsigned char rtc_state = 0;
-+
-+	sdio_claim_host(ar_sdio->func);
-+
-+	ret = ath10k_sdio_read32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL, &val);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to read fifo/chip control register: %d\n",
-+			    ret);
-+		goto release;
-+	}
-+
-+	if (enable_sleep) {
-+		val &= ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_OFF;
-+		ar_sdio->mbox_state = SDIO_MBOX_SLEEP_STATE;
-+	} else {
-+		val |= ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_ON;
-+		ar_sdio->mbox_state = SDIO_MBOX_AWAKE_STATE;
-+	}
-+
-+	ret = ath10k_sdio_write32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL, val);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to write to FIFO_TIMEOUT_AND_CHIP_CONTROL: %d",
-+			    ret);
-+	}
-+
-+	if (!enable_sleep) {
-+		do {
-+			udelay(ATH10K_CIS_READ_WAIT_4_RTC_CYCLE_IN_US);
-+			ret = ath10k_sdio_read_rtc_state(ar_sdio, &rtc_state);
-+
-+			if (ret) {
-+				ath10k_warn(ar, "failed to disable mbox sleep: %d", ret);
-+				break;
-+			}
-+
-+			ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio read rtc state: %d\n",
-+				   rtc_state);
-+
-+			if (rtc_state == ATH10K_CIS_RTC_STATE_ON)
-+				break;
-+
-+			udelay(ATH10K_CIS_XTAL_SETTLE_DURATION_IN_US);
-+			retry--;
-+		} while (retry > 0);
-+	}
-+
-+release:
-+	sdio_release_host(ar_sdio->func);
-+
-+	return ret;
-+}
-+
-+static void ath10k_sdio_sleep_timer_handler(struct timer_list *t)
-+{
-+	struct ath10k_sdio *ar_sdio = from_timer(ar_sdio, t, sleep_timer);
-+
-+	ar_sdio->mbox_state = SDIO_MBOX_REQUEST_TO_SLEEP_STATE;
-+	queue_work(ar_sdio->workqueue, &ar_sdio->wr_async_work);
-+}
-+
- static void ath10k_sdio_write_async_work(struct work_struct *work)
- {
- 	struct ath10k_sdio *ar_sdio = container_of(work, struct ath10k_sdio,
- 						   wr_async_work);
- 	struct ath10k *ar = ar_sdio->ar;
- 	struct ath10k_sdio_bus_request *req, *tmp_req;
-+	struct ath10k_mbox_info *mbox_info = &ar_sdio->mbox_info;
- 
- 	spin_lock_bh(&ar_sdio->wr_async_lock);
- 
- 	list_for_each_entry_safe(req, tmp_req, &ar_sdio->wr_asyncq, list) {
- 		list_del(&req->list);
- 		spin_unlock_bh(&ar_sdio->wr_async_lock);
-+
-+		if (req->address >= mbox_info->htc_addr &&
-+		    ar_sdio->mbox_state == SDIO_MBOX_SLEEP_STATE) {
-+			ath10k_sdio_hif_set_mbox_sleep(ar, false);
-+			mod_timer(&ar_sdio->sleep_timer, jiffies +
-+				  msecs_to_jiffies(ATH10K_MIN_SLEEP_INACTIVITY_TIME_MS));
-+		}
-+
- 		__ath10k_sdio_write_async(ar, req);
- 		spin_lock_bh(&ar_sdio->wr_async_lock);
- 	}
- 
- 	spin_unlock_bh(&ar_sdio->wr_async_lock);
-+
-+	if (ar_sdio->mbox_state == SDIO_MBOX_REQUEST_TO_SLEEP_STATE)
-+		ath10k_sdio_hif_set_mbox_sleep(ar, true);
- }
- 
- static int ath10k_sdio_prep_async_req(struct ath10k *ar, u32 addr,
-@@ -1517,6 +1611,9 @@ static void ath10k_sdio_hif_power_down(struct ath10k *ar)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio power off\n");
- 
-+	del_timer_sync(&ar_sdio->sleep_timer);
-+	ath10k_sdio_hif_set_mbox_sleep(ar, true);
-+
- 	/* Disable the card */
- 	sdio_claim_host(ar_sdio->func);
- 
-@@ -1617,33 +1714,6 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
- 	return ret;
- }
- 
--static int ath10k_sdio_hif_set_mbox_sleep(struct ath10k *ar, bool enable_sleep)
--{
--	u32 val;
--	int ret;
--
--	ret = ath10k_sdio_read32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL, &val);
--	if (ret) {
--		ath10k_warn(ar, "failed to read fifo/chip control register: %d\n",
--			    ret);
--		return ret;
--	}
--
--	if (enable_sleep)
--		val &= ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_OFF;
--	else
--		val |= ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_ON;
--
--	ret = ath10k_sdio_write32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL, val);
--	if (ret) {
--		ath10k_warn(ar, "failed to write to FIFO_TIMEOUT_AND_CHIP_CONTROL: %d",
--			    ret);
--		return ret;
--	}
--
--	return 0;
--}
--
- /* HIF diagnostics */
- 
- static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
-@@ -1749,6 +1819,8 @@ static int ath10k_sdio_hif_start_post(struct ath10k *ar)
- 		ar_sdio->swap_mbox = false;
- 	}
- 
-+	ath10k_sdio_hif_set_mbox_sleep(ar, true);
-+
- 	return 0;
- }
- 
-@@ -2076,6 +2148,8 @@ static int ath10k_sdio_pm_suspend(struct device *device)
- 	if (!device_may_wakeup(ar->dev))
- 		return 0;
- 
-+	ath10k_sdio_hif_set_mbox_sleep(ar, true);
-+
- 	pm_flag = MMC_PM_KEEP_POWER;
- 
- 	ret = sdio_set_host_pm_flags(func, pm_flag);
-@@ -2239,6 +2313,8 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_free_wq;
- 	}
- 
-+	timer_setup(&ar_sdio->sleep_timer, ath10k_sdio_sleep_timer_handler, 0);
-+
- 	return 0;
- 
- err_free_wq:
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index 1c987494ad22..29523600887d 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -98,6 +98,20 @@
- #define ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_OFF 0xFFFEFFFF
- #define ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_ON 0x10000
- 
-+enum sdio_mbox_state {
-+	SDIO_MBOX_UNKNOWN_STATE = 0,
-+	SDIO_MBOX_REQUEST_TO_SLEEP_STATE = 1,
-+	SDIO_MBOX_SLEEP_STATE = 2,
-+	SDIO_MBOX_AWAKE_STATE = 3,
-+};
-+
-+#define ATH10K_CIS_READ_WAIT_4_RTC_CYCLE_IN_US	125
-+#define ATH10K_CIS_RTC_STATE_ADDR		0x1138
-+#define ATH10K_CIS_RTC_STATE_ON			0x01
-+#define ATH10K_CIS_XTAL_SETTLE_DURATION_IN_US	1500
-+#define ATH10K_CIS_READ_RETRY			10
-+#define ATH10K_MIN_SLEEP_INACTIVITY_TIME_MS	50
-+
- /* TODO: remove this and use skb->cb instead, much cleaner approach */
- struct ath10k_sdio_bus_request {
- 	struct list_head list;
-@@ -218,6 +232,8 @@ struct ath10k_sdio {
- 	spinlock_t wr_async_lock;
- 
- 	struct work_struct async_work_rx;
-+	struct timer_list sleep_timer;
-+	enum sdio_mbox_state mbox_state;
- };
- 
- static inline struct ath10k_sdio *ath10k_sdio_priv(struct ath10k *ar)
 -- 
-2.7.4
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
