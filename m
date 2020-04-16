@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jP3cV-0006Ke-HX
- for ath10k@lists.infradead.org; Thu, 16 Apr 2020 12:27:55 +0000
+ id 1jP3gu-0002Xx-4g
+ for ath10k@lists.infradead.org; Thu, 16 Apr 2020 12:32:25 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
-References: <20200212080415.31265-1-wgong@codeaurora.org>
- <20200212080415.31265-4-wgong@codeaurora.org>
- <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
- <185d31c2e6f8792beb240f2c74d26463@codeaurora.org>
- <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 16 Apr 2020 15:27:30 +0300
-In-Reply-To: <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Tue, 14 Apr 2020 11:10:00 +0300")
-Message-ID: <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Compex WLE600VX AP mode 5GHz doesn't work since kernel 5.6
+References: <5971a327-d11a-35e6-8295-8dfb8ae3a434@yandex.ru>
+Date: Thu, 16 Apr 2020 15:32:16 +0300
+In-Reply-To: <5971a327-d11a-35e6-8295-8dfb8ae3a434@yandex.ru> (svp's message
+ of "Sun, 12 Apr 2020 12:10:15 +0300")
+Message-ID: <87k12fr4q7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,49 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: svp <svpm@yandex.ru>
+Cc: ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+svp <svpm@yandex.ru> writes:
 
-> Wen Gong <wgong@codeaurora.org> writes:
->
->> On 2020-04-09 22:53, Kalle Valo wrote:
->>> Wen Gong <wgong@codeaurora.org> writes:
->>>
->>>> +	ar->workqueue_tx_complete =
->>>> +		create_singlethread_workqueue("ath10k_tx_complete_wq");
->>>> +	if (!ar->workqueue_tx_complete)
->>>> +		goto err_free_aux_wq;
->>>
->>> We already have three threads:
->>>
->>> ath/ath10k/core.c:      ar->workqueue =
->>> create_singlethread_workqueue("ath10k_wq");
->>> ath/ath10k/core.c:      ar->workqueue_aux =
->>> create_singlethread_workqueue("ath10k_aux_wq");
->>> ath/ath10k/sdio.c:      ar_sdio->workqueue =
->>> create_singlethread_workqueue("ath10k_sdio_wq");
->>>
->>> Do we really need a fourth one? For example, why can't we use
->>> ar->workqueue_aux?
->>
->> For tcp test, it has 4 thread work meanwhile:
->> tx_bundle_skbs(ar->workqueue),
->> rx_indication(ar->workqueue_aux),
->> sdio_async_tx_request(ar_sdio->workqueue),
->> tx_bundle_complete(ar->workqueue_tx_complete)
->>
->> It has 4+ cpu/core in system, if reduced to 3 threads, then tcp
->> throughput will drop. only when it only has 1/2/3 cpu/core in system,
->> then reduced to 3 threads will not drop.
->
-> How much does it drop? Please add the justification (with numbers) for
-> the new thread to the commit log, so that the reason is properly
-> documented.
+> I need help with my softAP installation.
+> Compex WLE600VX miniPCIe card can't start at 5GHz AP mode after update
+> to kernel 5.6 on ArchLinux
+> With kernel 5.5.x and LTS all is OK
+> Some logs and details is in this ArchLinux forum topic
+> https://bbs.archlinux.org/viewtopic.php?id=254535
 
-I see that you already submitted v10. If you can give the numbers I can
-add them to the commit log.
+So if I read the link correctly this commit causes the regression (which
+was introduced in v5.6-rc1):
+
+commit 2dc016599cfa9672a147528ca26d70c3654a5423
+Author:     Wen Gong <wgong@codeaurora.org>
+AuthorDate: Fri Nov 29 07:34:09 2019 +0000
+Commit:     Kalle Valo <kvalo@codeaurora.org>
+CommitDate: Mon Dec 2 12:08:01 2019 +0200
+
+    ath: add support for special 0x0 regulatory domain
+
+Wen, please take a look. Should I revert this commit? Regressions are
+not ok.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
