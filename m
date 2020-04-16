@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jP3jS-0003fl-Vf
- for ath10k@lists.infradead.org; Thu, 16 Apr 2020 12:35:11 +0000
+ id 1jP3nV-0006Tw-7c
+ for ath10k@lists.infradead.org; Thu, 16 Apr 2020 12:39:17 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Killer WiFi card keeps disconnecting due to latest firmware
-References: <b07a7ea1-7ab2-8ce3-95d7-6726e7708749.ref@aol.com>
- <b07a7ea1-7ab2-8ce3-95d7-6726e7708749@aol.com>
-Date: Thu, 16 Apr 2020 15:34:54 +0300
-In-Reply-To: <b07a7ea1-7ab2-8ce3-95d7-6726e7708749@aol.com> (Nicola Mori's
- message of "Tue, 14 Apr 2020 09:26:16 +0200")
-Message-ID: <87ftd3r4lt.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: improve power save performance for sdio
+References: <0101016ed9241282-73dd8b35-e2e5-4f37-9b50-cf2fb6524dfc-000000@us-west-2.amazonses.com>
+Date: Thu, 16 Apr 2020 15:38:48 +0300
+In-Reply-To: <0101016ed9241282-73dd8b35-e2e5-4f37-9b50-cf2fb6524dfc-000000@us-west-2.amazonses.com>
+ (Wen Gong's message of "Fri, 6 Dec 2019 02:57:30 +0000")
+Message-ID: <877dyfr4fb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,29 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicola Mori <nicolamori@aol.com>
-Cc: ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Nicola Mori <nicolamori@aol.com> writes:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> Hi, I have an issue with the WiFi card in my laptop, that keeps
-> disconnecting from the network in a strange way: randomly every 1-2 
-> hours I can't access web pages or even ping the gateway, but existing
-> connections (like existing ssh sessions or Zoom videoconferences)
-> continue to work. The only solution is to restart the network
-> connection.
+> This patch is to set register to allow the mbox enter sleep status
+> if it does not have tx traffic and wakeup it if tx traffic arrive.
+> After mbox enter sleep status, the soc will enter sleep status by
+> firmware, this will save power. The power consume drops from about
+> 90mW to about 10mW with this patch.
 >
-> The fix for me has been to downgrade the firmware by removing
-> /usr/lib/firmware/ath10k/QCA6174/hw3.0/firmware-6.bin so that
-> /usr/lib/firmware/ath10k/QCA6174/hw3.0/firmware-4.bin is used; with
-> this, I have no issues.
+> This patch only effect sdio chip.
+>
+> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
+>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 
-These firmware filenames tell nothing to me (-6 and -4 are just
-interface version numbers), I need the exact firmware versions of which
-works and which doesn't. 'dmesg | grep ath10k' is the best way to get
-them.
+[...]
 
-Also adding Wen to the loop.
+> +static inline int ath10k_hif_set_mbox_sleep(struct ath10k *ar, bool enable_sleep)
+> +{
+> +	if (ar->hif.ops->set_mbox_sleep)
+> +		return ar->hif.ops->set_mbox_sleep(ar, enable_sleep);
+> +	return 0;
+> +}
+
+I don't think we need to add another hif op for this. I sent v2 which
+uses existing op.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
