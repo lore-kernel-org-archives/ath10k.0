@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPLM3-00056z-He
- for ath10k@lists.infradead.org; Fri, 17 Apr 2020 07:24:07 +0000
+ id 1jPo3C-00063p-BD
+ for ath10k@lists.infradead.org; Sat, 18 Apr 2020 14:02:33 +0000
 MIME-Version: 1.0
-Date: Fri, 17 Apr 2020 15:23:44 +0800
+Date: Sat, 18 Apr 2020 22:02:24 +0800
 From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH] ath10k: improve power save performance for sdio
-In-Reply-To: <87y2quponn.fsf@kamboji.qca.qualcomm.com>
-References: <0101016ed9241282-73dd8b35-e2e5-4f37-9b50-cf2fb6524dfc-000000@us-west-2.amazonses.com>
- <877dyfr4fb.fsf@kamboji.qca.qualcomm.com>
- <b9f680d57a6fbc9ac59dc5fc281d0af3@codeaurora.org>
- <87y2quponn.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <ffdecd6a9db5b96d6c791fc04108b163@codeaurora.org>
+Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
+In-Reply-To: <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
+References: <20200212080415.31265-1-wgong@codeaurora.org>
+ <20200212080415.31265-4-wgong@codeaurora.org>
+ <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
+ <185d31c2e6f8792beb240f2c74d26463@codeaurora.org>
+ <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com>
+ <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <27ca9f2bf63807d501cfb29d8f55f904@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +30,30 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 2020-04-17 15:17, Kalle Valo wrote:
-> Wen Gong <wgong@codeaurora.org> writes:
+On 2020-04-16 20:27, Kalle Valo wrote:
+> Kalle Valo <kvalo@codeaurora.org> writes:
 > 
->> On 2020-04-16 20:38, Kalle Valo wrote:
->>> Wen Gong <wgong@codeaurora.org> writes:
->>> 
->> 
->>> 
->>>> +static inline int ath10k_hif_set_mbox_sleep(struct ath10k *ar,
->>>> bool enable_sleep)
->>>> +{
->>>> +	if (ar->hif.ops->set_mbox_sleep)
->>>> +		return ar->hif.ops->set_mbox_sleep(ar, enable_sleep);
->>>> +	return 0;
->>>> +}
->>> 
->>> I don't think we need to add another hif op for this. I sent v2 which
->>> uses existing op.
->> 
->> Yes, I see it. but I see it removed ath10k_hif_set_mbox_sleep in
->> ath10k_core_start, expected it will not effect the patch's power save.
-> 
-> So the idea is that the same functionality is still there as with your
-> version, the callpath is just a bit different:
-> 
-> ath10k_core_start()
->     -> ath10k_hif_start_post()
->         -> ath10k_sdio_hif_start_post()
->             -> ath10k_sdio_set_mbox_sleep()
-> 
-> But please do double check that I didn't miss anything.
-yes, I see this now, so it not miss in v2.
-@@ -1749,6 +1819,8 @@  static int ath10k_sdio_hif_start_post(struct 
-ath10k *ar)
-  		ar_sdio->swap_mbox = false;
-  	}
 
-+	ath10k_sdio_hif_set_mbox_sleep(ar, true);
-+
-  	return 0;
-  }
+>> How much does it drop? Please add the justification (with numbers) for
+>> the new thread to the commit log, so that the reason is properly
+>> documented.
+> 
+> I see that you already submitted v10. If you can give the numbers I can
+> add them to the commit log.
+
+I tested for VHT80 mode for 3 thread config:
+result:
+                                      TCP-RX    TCP-TX    UDP-RX    
+UDP-TX
+use workqueue_tx_complete(Mbps)        423       357       448       412
+change it to ar->workqueue(Mbps)       410       360       449       414
+change it to ar->workqueue_aux(Mbps)   405       339       446       401
+
+each thread role:
+tx_bundle_skbs(ar->workqueue),
+rx_indication(ar->workqueue_aux),
+sdio_async_tx_request(ar_sdio->workqueue),
+tx_bundle_complete(ar->workqueue_tx_complete)
 
 _______________________________________________
 ath10k mailing list
