@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail4.protonmail.ch ([185.70.40.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPo3C-00063p-BD
- for ath10k@lists.infradead.org; Sat, 18 Apr 2020 14:02:33 +0000
+ id 1jQDuD-0008Rd-Ii
+ for ath10k@lists.infradead.org; Sun, 19 Apr 2020 17:38:59 +0000
+Date: Sun, 19 Apr 2020 17:38:38 +0000
+From: ".wav" <waveletlet@protonmail.com>
+Subject: QCA6174 invalid regulatory domain/country code 0x5f
+Message-ID: <L0Ph_KQQrcTNur56PzXeMPNAy127JcCZLJ7i2f2fSypD3tz7g9xQpX87Oy5zMr9g5E453svb2n31jX7rmRJSMTeqC2yytDSm9qmJ61eQnIA=@protonmail.com>
 MIME-Version: 1.0
-Date: Sat, 18 Apr 2020 22:02:24 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
-In-Reply-To: <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
-References: <20200212080415.31265-1-wgong@codeaurora.org>
- <20200212080415.31265-4-wgong@codeaurora.org>
- <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
- <185d31c2e6f8792beb240f2c74d26463@codeaurora.org>
- <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com>
- <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <27ca9f2bf63807d501cfb29d8f55f904@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +16,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Reply-To: ".wav" <waveletlet@protonmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 2020-04-16 20:27, Kalle Valo wrote:
-> Kalle Valo <kvalo@codeaurora.org> writes:
-> 
-
->> How much does it drop? Please add the justification (with numbers) for
->> the new thread to the commit log, so that the reason is properly
->> documented.
-> 
-> I see that you already submitted v10. If you can give the numbers I can
-> add them to the commit log.
-
-I tested for VHT80 mode for 3 thread config:
-result:
-                                      TCP-RX    TCP-TX    UDP-RX    
-UDP-TX
-use workqueue_tx_complete(Mbps)        423       357       448       412
-change it to ar->workqueue(Mbps)       410       360       449       414
-change it to ar->workqueue_aux(Mbps)   405       339       446       401
-
-each thread role:
-tx_bundle_skbs(ar->workqueue),
-rx_indication(ar->workqueue_aux),
-sdio_async_tx_request(ar_sdio->workqueue),
-tx_bundle_complete(ar->workqueue_tx_complete)
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGF2aW5nIHRoZSB3aWZpLWJyZWFraW5nIGVycm9yIG1lbnRpb25lZCBpbiB0aGUgc3ViamVjdCB3
+aXRoIFF1YWxjb21tIEF0aGVyb3MgUUNBNjE3NCA4MDIuMTFhYyBXaXJlbGVzcyBOZXR3b3JrIEFk
+YXB0ZXIgWzE2OGM6MDAzZV0gKHJldiAzMikgKGluIGEgU2Ftc3VuZyBHYWxheHkgQm9vayBpZiB0
+aGF0J3MgcmVsZXZhbnQpLgoKZG1lc2cgb3V0cHV0OgpbIDQ4NzcuOTc1NDY0XSBhdGgxMGtfcGNp
+IDAwMDA6MDE6MDAuMDogcGNpIGlycSBtc2kgb3Blcl9pcnFfbW9kZSAyIGlycV9tb2RlIDAgcmVz
+ZXRfbW9kZSAwClsgNDg3OC4yNTA0NDFdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJtd2Fy
+ZTogZmFpbGVkIHRvIGxvYWQgYXRoMTBrL3ByZS1jYWwtcGNpLTAwMDA6MDE6MDAuMC5iaW4gKC0y
+KQpbIDQ4NzguMjUwNDczXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmlybXdhcmU6IGZhaWxl
+ZCB0byBsb2FkIGF0aDEway9jYWwtcGNpLTAwMDA6MDE6MDAuMC5iaW4gKC0yKQpbIDQ4NzguMjc1
+Mzc4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmlybXdhcmU6IGRpcmVjdC1sb2FkaW5nIGZp
+cm13YXJlIGF0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTYuYmluClsgNDg3OC4yNzUzOTld
+IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBxY2E2MTc0IGh3My4yIHRhcmdldCAweDA1MDMwMDAw
+IGNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMTQ0ZDpjMTUwClsgNDg3OC4yNzU0MDRdIGF0aDEwa19w
+Y2kgMDAwMDowMTowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMg
+MCB0ZXN0bW9kZSAwClsgNDg3OC4yNzcyNjddIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJt
+d2FyZSB2ZXIgV0xBTi5STS40LjQuMS0wMDE1MS1RQ0FSTVNXUFotMiBhcGkgNiBmZWF0dXJlcyB3
+b3dsYW4saWdub3JlLW90cCxtZnAgY3JjMzIgNjQxNjBkMTMKWyA0ODc4LjM3NDA3NF0gYXRoMTBr
+X3BjaSAwMDAwOjAxOjAwLjA6IGZpcm13YXJlOiBkaXJlY3QtbG9hZGluZyBmaXJtd2FyZSBhdGgx
+MGsvUUNBNjE3NC9odzMuMC9ib2FyZC0yLmJpbgpbIDQ4NzguMzc1NjU2XSBhdGgxMGtfcGNpIDAw
+MDA6MDE6MDAuMDogYm9hcmRfZmlsZSBhcGkgMiBibWlfaWQgTi9BIGNyYzMyIGU3NDg0N2RjClsg
+NDg3OC40NDgwNjVdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiB1bnN1cHBvcnRlZCBIVEMgc2Vy
+dmljZSBpZDogMTUzNgpbIDQ4NzguNDY2OTU2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogaHR0
+LXZlciAzLjYwIHdtaS1vcCA0IGh0dC1vcCAzIGNhbCBvdHAgbWF4LXN0YSAzMiByYXcgMCBod2Ny
+eXB0byAxClsgNDg3OC41NTQxMDFdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHg1ZgpbIDQ4Nzgu
+NTU0MTA1XSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgd2Ugc2hvdWxkIGV4cGVjdCBhIGRpcmVjdCBy
+ZWdwYWlyIG1hcApbIDQ4NzguNTU0MTA4XSBhdGg6IGludmFsaWQgcmVndWxhdG9yeSBkb21haW4v
+Y291bnRyeSBjb2RlIDB4NWYKWyA0ODc4LjU1NDExMF0gYXRoOiBJbnZhbGlkIEVFUFJPTSBjb250
+ZW50cwpbIDQ4NzguNTU0MTI2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRvIGlu
+aXRpYWxpc2UgcmVndWxhdG9yeTogLTIyClsgNDg3OC41NTQxMzVdIGF0aDEwa19wY2kgMDAwMDow
+MTowMC4wOiBjb3VsZCBub3QgcmVnaXN0ZXIgdG8gbWFjODAyMTEgKC0yMikKCgpXaXRoIHRoZSBm
+b2xsb3dpbmcgcGF0Y2ggKHN1Z2dlc3RlZCBvbiB0aGlzIGxpc3QgaW4gMjAxNyBieSBSeWFuIEhz
+dSksIHRoZSB3aWZpIHdvcmtzLgoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9yZWdkX2NvbW1vbi5oIGIvcmVnZF9jb21tb24uaAppbmRleCBjNGJkMjZlLi45MDA0NTJmIDEw
+MDY0NAotLS0gYS8uLi9saW51eC1rZXJuZWwtd2lmaS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+cmVnZF9jb21tb24uaAorKysgYi9yZWdkX2NvbW1vbi5oCkBAIC03Niw2ICs3Niw3IEBAIGVudW0g
+RW51bVJkIHsKwqDCoMKgwqDCoMKgwqAgQVBMN19GQ0NBID0gMHg1QywKwqDCoMKgwqDCoMKgwqAg
+QVBMOF9XT1JMRCA9IDB4NUQsCsKgwqDCoMKgwqDCoMKgIEFQTDlfV09STEQgPSAweDVFLAorwqDC
+oMKgwqDCoMKgIEFQTDEwX1dPUkxEID0gMHg1RiwKCsKgwqDCoMKgwqDCoMKgIFdPUjBfV09STEQg
+PSAweDYwLArCoMKgwqDCoMKgwqDCoCBXT1IxX1dPUkxEID0gMHg2MSwKQEAgLTIwNCw2ICsyMDUs
+NyBAQCBzdGF0aWMgc3RydWN0IHJlZ19kbW5fcGFpcl9tYXBwaW5nIHJlZ0RvbWFpblBhaXJzW10g
+PSB7CsKgwqDCoMKgwqDCoMKgIHtBUEw2X1dPUkxELCBDVExfRVRTSSwgQ1RMX0VUU0l9LArCoMKg
+wqDCoMKgwqDCoCB7QVBMOF9XT1JMRCwgQ1RMX0VUU0ksIENUTF9FVFNJfSwKwqDCoMKgwqDCoMKg
+wqAge0FQTDlfV09STEQsIENUTF9FVFNJLCBDVExfRVRTSX0sCivCoMKgwqDCoMKgwqAge0FQTDEw
+X1dPUkxELCBDVExfRVRTSSwgQ1RMX0VUU0l9LAoKwqDCoMKgwqDCoMKgwqAge0FQTDNfRkNDQSwg
+Q1RMX0ZDQywgQ1RMX0ZDQ30sCsKgwqDCoMKgwqDCoMKgIHtBUEw3X0ZDQ0EsIENUTF9GQ0MsIENU
+TF9GQ0N9LApAQCAtNDIzLDcgKzQyNSw3IEBAIHN0YXRpYyBzdHJ1Y3QgY291bnRyeV9jb2RlX3Rv
+X2VudW1fcmQgYWxsQ291bnRyaWVzW10gPSB7CsKgwqDCoMKgwqDCoMKgIHtDVFJZX0tBWkFLSFNU
+QU4sIE5VTEwxX1dPUkxELCAiS1oifSwKwqDCoMKgwqDCoMKgwqAge0NUUllfS0VOWUEsIEFQTDFf
+V09STEQsICJLRSJ9LArCoMKgwqDCoMKgwqDCoCB7Q1RSWV9LT1JFQV9OT1JUSCwgQVBMOV9XT1JM
+RCwgIktQIn0sCi3CoMKgwqDCoMKgwqAge0NUUllfS09SRUFfUk9DLCBBUEw5X1dPUkxELCAiS1Ii
+fSwKK8KgwqDCoMKgwqDCoCB7Q1RSWV9LT1JFQV9ST0MsIEFQTDEwX1dPUkxELCAiS1IifSwKwqDC
+oMKgwqDCoMKgwqAge0NUUllfS09SRUFfUk9DMiwgQVBMMl9XT1JMRCwgIksyIn0sCsKgwqDCoMKg
+wqDCoMKgIHtDVFJZX0tPUkVBX1JPQzMsIEFQTDlfV09STEQsICJLMyJ9LArCoMKgwqDCoMKgwqDC
+oCB7Q1RSWV9LVVdBSVQsIEVUU0kzX1dPUkxELCAiS1cifSwKCgpBZnRlciBwYXRjaGluZyBJIHN0
+aWxsIGhhdmUgdGhlICJmYWlsZWQgdG8gbG9hZCBwcmUtY2FsLXBjaS4uLi9jYWwtcGNpLi4uIiBl
+cnJvcnMgYW5kIHRoZSAidW5zdXBwb3J0ZWQgSFRDIHNlcnZpY2UgaWQ6IDE1MzYiIHdhcm5pbmcs
+IGJ1dCB3aWZpIHdvcmtzLgoKSXMgdGhlcmUgYW55IHJlYXNvbiB0aGlzIHBhdGNoIHdhcyBuZXZl
+ciBtZXJnZWQgaW4gdG8gdGhlIGF0aDEwayBrZXJuZWwgbW9kdWxlPyBJdCdkIGJlIG5pY2UgdG8g
+bm90IGhhdmUgdG8gbWFudWFsbHkgcmVidWlsZCBpdCBldmVyeSBrZXJuZWwgdXBkYXRlLgoKQ2hl
+ZXJzLAoud2F2CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
