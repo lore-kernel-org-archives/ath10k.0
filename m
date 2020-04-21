@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQrVq-0006La-Sn
- for ath10k@lists.infradead.org; Tue, 21 Apr 2020 11:56:29 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v9 3/4] ath10k: add htt TX bundle for sdio
-References: <20200212080415.31265-1-wgong@codeaurora.org>
- <20200212080415.31265-4-wgong@codeaurora.org>
- <87tv1su2vq.fsf@kamboji.qca.qualcomm.com>
- <185d31c2e6f8792beb240f2c74d26463@codeaurora.org>
- <87h7xmtrmv.fsf@kamboji.qca.qualcomm.com>
- <87o8rrr4y5.fsf@kamboji.qca.qualcomm.com>
- <27ca9f2bf63807d501cfb29d8f55f904@codeaurora.org>
-Date: Tue, 21 Apr 2020 14:56:13 +0300
-In-Reply-To: <27ca9f2bf63807d501cfb29d8f55f904@codeaurora.org> (Wen Gong's
- message of "Sat, 18 Apr 2020 22:02:24 +0800")
-Message-ID: <871rohoxwi.fsf@kamboji.qca.qualcomm.com>
+ id 1jQrdu-0002nA-R1
+ for ath10k@lists.infradead.org; Tue, 21 Apr 2020 12:04:49 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 1/4] ath10k: rename ath10k_hif_swap_mailbox() to
+ ath10k_hif_start_post()
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1587037859-28873-2-git-send-email-kvalo@codeaurora.org>
+References: <1587037859-28873-2-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20200421120440.8F26BC433BA@smtp.codeaurora.org>
+Date: Tue, 21 Apr 2020 12:04:40 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> writes:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> On 2020-04-16 20:27, Kalle Valo wrote:
->> Kalle Valo <kvalo@codeaurora.org> writes:
->>
->
->>> How much does it drop? Please add the justification (with numbers) for
->>> the new thread to the commit log, so that the reason is properly
->>> documented.
->>
->> I see that you already submitted v10. If you can give the numbers I can
->> add them to the commit log.
->
-> I tested for VHT80 mode for 3 thread config:
-> result:
->                                      TCP-RX    TCP-TX    UDP-RX
-> UDP-TX
-> use workqueue_tx_complete(Mbps)        423       357       448       412
-> change it to ar->workqueue(Mbps)       410       360       449       414
-> change it to ar->workqueue_aux(Mbps)   405       339       446       401
+> Convert ath10k_hif_swap_mailbox() to a more generic op so that bus drivers can
+> do more than just swap the mailbox, for example set power save settings like in
+> the following sdio patch.
+> 
+> No functional changes, compile tested only.
+> 
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Thanks, I added the table to the commit log.
+4 patches applied to ath-next branch of ath.git, thanks.
+
+557e171434eb ath10k: rename ath10k_hif_swap_mailbox() to ath10k_hif_start_post()
+22f28076b6c3 ath10k: improve power save performance for sdio
+589217632103 ath10k: sdio: remove _hif_ prefix from functions not part of hif interface
+96c64857983f ath10k: hif: make send_complete_check op optional
 
 -- 
+https://patchwork.kernel.org/patch/11492849/
+
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
