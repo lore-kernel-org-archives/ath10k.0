@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQrdu-0002nA-R1
- for ath10k@lists.infradead.org; Tue, 21 Apr 2020 12:04:49 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/4] ath10k: rename ath10k_hif_swap_mailbox() to
- ath10k_hif_start_post()
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1587037859-28873-2-git-send-email-kvalo@codeaurora.org>
-References: <1587037859-28873-2-git-send-email-kvalo@codeaurora.org>
-Message-Id: <20200421120440.8F26BC433BA@smtp.codeaurora.org>
-Date: Tue, 21 Apr 2020 12:04:40 +0000 (UTC)
+ id 1jQy52-0005Tv-BI
+ for ath10k@lists.infradead.org; Tue, 21 Apr 2020 18:57:13 +0000
+From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+Subject: [PATCH] ath10k: Fix the invalid tx/rx chainmask configuration
+Date: Wed, 22 Apr 2020 00:28:32 +0530
+Message-Id: <1587495512-29813-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +15,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+The driver is allowing the invalid tx/rx chainmask configuration
+(other than 1,3,7,15) set by the user. It causes the firmware
+crash due to the invalid chainmask values.
 
-> Convert ath10k_hif_swap_mailbox() to a more generic op so that bus drivers can
-> do more than just swap the mailbox, for example set power save settings like in
-> the following sdio patch.
-> 
-> No functional changes, compile tested only.
-> 
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Hence, reject the invalid chainmask values in the driver by not
+sending the pdev set command to the firmware.
 
-4 patches applied to ath-next branch of ath.git, thanks.
+Tested hardware: QCA9888
+Tested firmware: 10.4-3.10-00047
 
-557e171434eb ath10k: rename ath10k_hif_swap_mailbox() to ath10k_hif_start_post()
-22f28076b6c3 ath10k: improve power save performance for sdio
-589217632103 ath10k: sdio: remove _hif_ prefix from functions not part of hif interface
-96c64857983f ath10k: hif: make send_complete_check op optional
+Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a59a7a5..a9f91a1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4529,17 +4529,18 @@ static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
+ 	return 0;
+ }
+ 
+-static void ath10k_check_chain_mask(struct ath10k *ar, u32 cm, const char *dbg)
++static bool ath10k_check_chain_mask(struct ath10k *ar, u32 cm, const char *dbg)
+ {
+ 	/* It is not clear that allowing gaps in chainmask
+ 	 * is helpful.  Probably it will not do what user
+ 	 * is hoping for, so warn in that case.
+ 	 */
+ 	if (cm == 15 || cm == 7 || cm == 3 || cm == 1 || cm == 0)
+-		return;
++		return true;
+ 
+-	ath10k_warn(ar, "mac %s antenna chainmask may be invalid: 0x%x.  Suggested values: 15, 7, 3, 1 or 0.\n",
++	ath10k_warn(ar, "mac %s antenna chainmask is invalid: 0x%x.  Suggested values: 15, 7, 3, 1 or 0.\n",
+ 		    dbg, cm);
++	return false;
+ }
+ 
+ static int ath10k_mac_get_vht_cap_bf_sts(struct ath10k *ar)
+@@ -4722,11 +4723,15 @@ static void ath10k_mac_setup_ht_vht_cap(struct ath10k *ar)
+ static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
+ {
+ 	int ret;
++	bool is_valid_tx_chain_mask, is_valid_rx_chain_mask;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+-	ath10k_check_chain_mask(ar, tx_ant, "tx");
+-	ath10k_check_chain_mask(ar, rx_ant, "rx");
++	is_valid_tx_chain_mask = ath10k_check_chain_mask(ar, tx_ant, "tx");
++	is_valid_rx_chain_mask = ath10k_check_chain_mask(ar, rx_ant, "rx");
++
++	if (!is_valid_tx_chain_mask || !is_valid_rx_chain_mask)
++		return -EINVAL;
+ 
+ 	ar->cfg_tx_chainmask = tx_ant;
+ 	ar->cfg_rx_chainmask = rx_ant;
 -- 
-https://patchwork.kernel.org/patch/11492849/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+1.9.1
 
 _______________________________________________
 ath10k mailing list
