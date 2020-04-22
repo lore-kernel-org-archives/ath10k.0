@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQy52-0005Tv-BI
- for ath10k@lists.infradead.org; Tue, 21 Apr 2020 18:57:13 +0000
-From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Subject: [PATCH] ath10k: Fix the invalid tx/rx chainmask configuration
-Date: Wed, 22 Apr 2020 00:28:32 +0530
-Message-Id: <1587495512-29813-1-git-send-email-mkenna@codeaurora.org>
+ id 1jR97I-0004Re-2T
+ for ath10k@lists.infradead.org; Wed, 22 Apr 2020 06:44:22 +0000
+MIME-Version: 1.0
+Subject: Re: [PATCH v10 1/2] ath10k: add htt TX bundle for sdio
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200410061400.14231-2-wgong@codeaurora.org>
+References: <20200410061400.14231-2-wgong@codeaurora.org>
+Message-Id: <20200422064402.E7238C433F2@smtp.codeaurora.org>
+Date: Wed, 22 Apr 2020 06:44:02 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,75 +18,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-The driver is allowing the invalid tx/rx chainmask configuration
-(other than 1,3,7,15) set by the user. It causes the firmware
-crash due to the invalid chainmask values.
+Wen Gong <wgong@codeaurora.org> wrote:
 
-Hence, reject the invalid chainmask values in the driver by not
-sending the pdev set command to the firmware.
+> The transmission utilization ratio for sdio bus for small packet is
+> slow, because the space and time cost for sdio bus is same for large
+> length packet and small length packet. So the speed of data for large
+> length packet is higher than small length.
+> 
+> Test result of different length of data:
+> 
+> data packet(byte)   cost time(us)   calculated rate(Mbps)
+>       256               28                73
+>       512               33               124
+>      1024               35               234
+>      1792               45               318
+>     14336              168               682
+>     28672              333               688
+>     57344              660               695
+> 
+> This patch change the TX packet from single packet to a large length
+> bundle packet, max size is 32, it results in significant performance
+> improvement on TX path.
+> 
+> Also there's a fourth thread "ath10k_tx_complete_wq" added to ath10k as it
+> improves TCP RX throughput (values in Mbps):
+> 
+>                                        TCP-RX    TCP-TX    UDP-RX      UDP-TX
+> use workqueue_tx_complete              423       357       448         412
+> change it to ar->workqueue             410       360       449         414
+> change it to ar->workqueue_aux         405       339       446         401
+> 
+> This patch only effect sdio chip, it will not effect PCI, SNOC etc.
+> It only enable bundle for sdio chip.
+> 
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Tested hardware: QCA9888
-Tested firmware: 10.4-3.10-00047
+2 patches applied to ath-next branch of ath.git, thanks.
 
-Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+c8334512f3dd ath10k: add htt TX bundle for sdio
+2f918ea98606 ath10k: enable alt data of TX path for sdio
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a59a7a5..a9f91a1 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4529,17 +4529,18 @@ static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
- 	return 0;
- }
- 
--static void ath10k_check_chain_mask(struct ath10k *ar, u32 cm, const char *dbg)
-+static bool ath10k_check_chain_mask(struct ath10k *ar, u32 cm, const char *dbg)
- {
- 	/* It is not clear that allowing gaps in chainmask
- 	 * is helpful.  Probably it will not do what user
- 	 * is hoping for, so warn in that case.
- 	 */
- 	if (cm == 15 || cm == 7 || cm == 3 || cm == 1 || cm == 0)
--		return;
-+		return true;
- 
--	ath10k_warn(ar, "mac %s antenna chainmask may be invalid: 0x%x.  Suggested values: 15, 7, 3, 1 or 0.\n",
-+	ath10k_warn(ar, "mac %s antenna chainmask is invalid: 0x%x.  Suggested values: 15, 7, 3, 1 or 0.\n",
- 		    dbg, cm);
-+	return false;
- }
- 
- static int ath10k_mac_get_vht_cap_bf_sts(struct ath10k *ar)
-@@ -4722,11 +4723,15 @@ static void ath10k_mac_setup_ht_vht_cap(struct ath10k *ar)
- static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
- {
- 	int ret;
-+	bool is_valid_tx_chain_mask, is_valid_rx_chain_mask;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
--	ath10k_check_chain_mask(ar, tx_ant, "tx");
--	ath10k_check_chain_mask(ar, rx_ant, "rx");
-+	is_valid_tx_chain_mask = ath10k_check_chain_mask(ar, tx_ant, "tx");
-+	is_valid_rx_chain_mask = ath10k_check_chain_mask(ar, rx_ant, "rx");
-+
-+	if (!is_valid_tx_chain_mask || !is_valid_rx_chain_mask)
-+		return -EINVAL;
- 
- 	ar->cfg_tx_chainmask = tx_ant;
- 	ar->cfg_rx_chainmask = rx_ant;
 -- 
-1.9.1
+https://patchwork.kernel.org/patch/11482769/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
