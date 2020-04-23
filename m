@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jRVQr-0000gi-OL
- for ath10k@lists.infradead.org; Thu, 23 Apr 2020 06:34:02 +0000
+ id 1jRVuP-00009u-UQ
+ for ath10k@lists.infradead.org; Thu, 23 Apr 2020 07:04:31 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Remove ATH10K_STATE_RESTARTED in simulate fw
- crash
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1555059170-11988-1-git-send-email-wgong@codeaurora.org>
-References: <1555059170-11988-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20200423063353.208E9C433CB@smtp.codeaurora.org>
-Date: Thu, 23 Apr 2020 06:33:53 +0000 (UTC)
+Date: Thu, 23 Apr 2020 15:04:26 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: Compex WLE600VX AP mode 5GHz doesn't work since kernel 5.6
+In-Reply-To: <87k12fr4q7.fsf@kamboji.qca.qualcomm.com>
+References: <5971a327-d11a-35e6-8295-8dfb8ae3a434@yandex.ru>
+ <87k12fr4q7.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <9cc7efbb3c9b29e4553a427e6f58725f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +19,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: svp <svpm@yandex.ru>, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
-
-> When test simulate firmware crash, it is easy to trigger error.
-> command:
-> echo soft > /sys/kernel/debug/ieee80211/phyxx/ath10k/simulate_fw_crash.
+On 2020-04-16 20:32, Kalle Valo wrote:
+> svp <svpm@yandex.ru> writes:
 > 
-> If input more than two times continuously, then it will have error.
-> Error message:
-> ath10k_pci 0000:02:00.0: failed to set vdev 1 RX wake policy: -108
-> ath10k_pci 0000:02:00.0: device is wedged, will not restart
+>> I need help with my softAP installation.
+>> Compex WLE600VX miniPCIe card can't start at 5GHz AP mode after update
+>> to kernel 5.6 on ArchLinux
+>> With kernel 5.5.x and LTS all is OK
+>> Some logs and details is in this ArchLinux forum topic
+>> https://bbs.archlinux.org/viewtopic.php?id=254535
 > 
-> It is because the state has not changed to ATH10K_STATE_ON immediately,
-> then it will have more than two simulate crash process running meanwhile,
-> and complete/wakeup some field twice, it destroy the normal recovery
-> process.
+> So if I read the link correctly this commit causes the regression 
+> (which
+> was introduced in v5.6-rc1):
 > 
-> add flag wait-ready for this command:
-> echo soft wait-ready > /sys/kernel/debug/ieee80211/phyxx/ath10k/simulate_fw_crash
+> commit 2dc016599cfa9672a147528ca26d70c3654a5423
+> Author:     Wen Gong <wgong@codeaurora.org>
+> AuthorDate: Fri Nov 29 07:34:09 2019 +0000
+> Commit:     Kalle Valo <kvalo@codeaurora.org>
+> CommitDate: Mon Dec 2 12:08:01 2019 +0200
 > 
-> Tested with QCA6174 PCI with firmware
-> WLAN.RM.4.4.1-00109-QCARMSWPZ-1, but this will also affect QCA9377 PCI.
-> It's not a regression with new firmware releases.
+>     ath: add support for special 0x0 regulatory domain
 > 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-
-I'm dropping this as I suspect the real bug is somewhere else and this
-is just a workaround.
-
-Patch set to Changes Requested.
-
--- 
-https://patchwork.kernel.org/patch/10897587/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Wen, please take a look. Should I revert this commit? Regressions are
+> not ok.
+Yes, please revert it.
 
 _______________________________________________
 ath10k mailing list
