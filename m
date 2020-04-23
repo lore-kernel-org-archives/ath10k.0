@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jRTrL-0007uL-JP
- for ath10k@lists.infradead.org; Thu, 23 Apr 2020 04:53:15 +0000
+ id 1jRTua-0002Z6-8E
+ for ath10k@lists.infradead.org; Thu, 23 Apr 2020 04:56:33 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fix the invalid tx/rx chainmask configuration
+Subject: Re: [PATCH v2] ath10k: drop the TX packet which size exceed credit
+ size for sdio
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1587495512-29813-1-git-send-email-mkenna@codeaurora.org>
-References: <1587495512-29813-1-git-send-email-mkenna@codeaurora.org>
-Message-Id: <20200423045259.26118C433BA@smtp.codeaurora.org>
-Date: Thu, 23 Apr 2020 04:52:59 +0000 (UTC)
+In-Reply-To: <20200422084719.3479-1-wgong@codeaurora.org>
+References: <20200422084719.3479-1-wgong@codeaurora.org>
+Message-Id: <20200423045628.D682FC433CB@smtp.codeaurora.org>
+Date: Thu, 23 Apr 2020 04:56:28 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +23,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> The driver is allowing the invalid tx/rx chainmask configuration
-> (other than 1,3,7,15) set by the user. It causes the firmware
-> crash due to the invalid chainmask values.
+> sdio chip use DMA buffer to receive TX packet from ath10k, and it has
+> limitation of each buffer, if the packet size exceed the credit size,
+> it will trigger error in firmware.
 > 
-> Hence, reject the invalid chainmask values in the driver by not
-> sending the pdev set command to the firmware.
+> Tested with QCA6174 SDIO with firmware
+> WLAN.RMH.4.4.1-00017-QCARMSWP-1.
 > 
-> Tested hardware: QCA9888
-> Tested firmware: 10.4-3.10-00047
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-aac392d8553f ath10k: Fix the invalid tx/rx chainmask configuration
+8347784d6f5f ath10k: drop the TX packet which size exceed credit size for sdio
 
 -- 
-https://patchwork.kernel.org/patch/11502099/
+https://patchwork.kernel.org/patch/11503309/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
