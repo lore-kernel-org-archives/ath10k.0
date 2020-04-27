@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSvtv-0004DO-3D
- for ath10k@lists.infradead.org; Mon, 27 Apr 2020 05:01:53 +0000
+ id 1jSvuS-0004DO-Fx
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2020 05:02:25 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: enable rx duration report default for wmi tlv
+Subject: Re: [PATCH] ath10k: add statistics of tx retries and tx failed when tx
+ complete disable
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200423022758.5365-1-wgong@codeaurora.org>
-References: <20200423022758.5365-1-wgong@codeaurora.org>
-Message-Id: <20200427050145.6B036C433F2@smtp.codeaurora.org>
-Date: Mon, 27 Apr 2020 05:01:45 +0000 (UTC)
+In-Reply-To: <20200423024134.10601-1-wgong@codeaurora.org>
+References: <20200423024134.10601-1-wgong@codeaurora.org>
+Message-Id: <20200427050223.078CBC433F2@smtp.codeaurora.org>
+Date: Mon, 27 Apr 2020 05:02:23 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +28,36 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> wrote:
 
-> When run command "iw dev wlan0 station dump", the rx duration is 0.
-> When firmware indicate WMI_UPDATE_STATS_EVENTID, extended flag of
-> statsis not set by default, so firmware do not report rx duration.
+> When tx complete is disabled, all tx status will be set with status
+> HTT_TX_COMPL_STATE_ACK and indicate to mac80211 by ieee80211_tx_status,
+> then it does not have the statistics for retries and failed packets.
+> count of tx retries and tx failed of command "iw wlan0 station dump"
+> are both 0. If tx complete is not disabled, then firmware report the
+> tx status and ath10k indicate the status to mac80211, then mac80211
+> save the statistics and command "iw wlan0 station dump" show them.
 > 
-> one sample:
-> localhost # iw wlan0 station dump
+> for example:
+> localhost ~ # iw dev wlan0 station dump
+> Station 3c:28:6d:96:fd:69 (on wlan0)
+> 	inactive time:	5 ms
+> 	rx bytes:	1325012
+> 	rx packets:	6477
+> 	tx bytes:	85264
+> 	tx packets:	518
+> 	tx retries:	0
+> 	tx failed:	0
+> 
+> This patch only effect chips with tx complete disabled, e.g. SDIO.
+> 
+> with this patch, output of command "iw dev wlan0 station dump":
 > Station c4:04:15:5d:97:22 (on wlan0)
->         inactive time:  48 ms
->         rx bytes:       21670
->         rx packets:     147
->         tx bytes:       11529
->         tx packets:     100
->         tx retries:     88
->         tx failed:      36
->         beacon loss:    1
->         beacon rx:      31
->         rx drop misc:   47
->         signal:         -72 [-74, -75] dBm
->         signal avg:     -71 [-74, -75] dBm
->         beacon signal avg:      -71 dBm
->         tx bitrate:     54.0 MBit/s MCS 3 40MHz
->         rx bitrate:     1.0 MBit/s
-> 	rx duration:    0 us
-> 
-> This patch enable firmware's extened flag of stats by setting flag
-> WMI_TLV_STAT_PEER_EXTD of ar->fw_stats_req_mask which is set in
-> ath10k_core_init_firmware_features via WMI_REQUEST_STATS_CMDID.
-> 
-> After apply this patch, rx duration show value with the command:
-> Station c4:04:15:5d:97:22 (on wlan0)
->         inactive time:  883 ms
->         rx bytes:       44289
->         rx packets:     265
->         tx bytes:       10838
->         tx packets:     93
->         tx retries:     899
->         tx failed:      103
->         beacon loss:    0
->         beacon rx:      78
->         rx drop misc:   46
->         signal:         -71 [-74, -76] dBm
->         signal avg:     -70 [-74, -76] dBm
->         beacon signal avg:      -70 dBm
->         tx bitrate:     54.0 MBit/s MCS 3 40MHz
->         rx bitrate:     1.0 MBit/s
->         rx duration:    358004 us
-> 
-> This patch do not have side effect for all chips, because function
-> ath10k_debug_fw_stats_request is already exported to debugfs
-> "fw_stats" and WMI_REQUEST_STATS_CMDID is safely sent after condition
-> checked by ath10k_peer_stats_enabled in ath10k_sta_statistics.
+>         inactive time:  608 ms
+>         rx bytes:       180366
+>         rx packets:     991
+>         tx bytes:       98765577
+>         tx packets:     64624
+>         tx retries:     14682
+>         tx failed:      47086
 > 
 > Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
 > 
@@ -86,10 +66,10 @@ Wen Gong <wgong@codeaurora.org> wrote:
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-4913e675630e ath10k: enable rx duration report default for wmi tlv
+59a022cc14cf ath10k: add statistics of tx retries and tx failed when tx complete disable
 
 -- 
-https://patchwork.kernel.org/patch/11504895/
+https://patchwork.kernel.org/patch/11504903/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
