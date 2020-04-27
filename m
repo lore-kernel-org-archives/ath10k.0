@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSvuS-0004DO-Fx
- for ath10k@lists.infradead.org; Mon, 27 Apr 2020 05:02:25 +0000
+ id 1jSwCz-0000Sw-1R
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2020 05:21:34 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add statistics of tx retries and tx failed when tx
- complete disable
+Subject: Re: [PATCH 1/4] ath10k: enable firmware peer stats info for wmi tlv
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200423024134.10601-1-wgong@codeaurora.org>
-References: <20200423024134.10601-1-wgong@codeaurora.org>
-Message-Id: <20200427050223.078CBC433F2@smtp.codeaurora.org>
-Date: Mon, 27 Apr 2020 05:02:23 +0000 (UTC)
+In-Reply-To: <20200423091856.24297-2-wgong@codeaurora.org>
+References: <20200423091856.24297-2-wgong@codeaurora.org>
+Message-Id: <20200427052130.EEF2BC433F2@smtp.codeaurora.org>
+Date: Mon, 27 Apr 2020 05:21:30 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +27,34 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Wen Gong <wgong@codeaurora.org> wrote:
 
-> When tx complete is disabled, all tx status will be set with status
-> HTT_TX_COMPL_STATE_ACK and indicate to mac80211 by ieee80211_tx_status,
-> then it does not have the statistics for retries and failed packets.
-> count of tx retries and tx failed of command "iw wlan0 station dump"
-> are both 0. If tx complete is not disabled, then firmware report the
-> tx status and ath10k indicate the status to mac80211, then mac80211
-> save the statistics and command "iw wlan0 station dump" show them.
+> For wmi tlv type, firmware disable peer stats info by default, after
+> enable it, firmware will report WMI_TLV_PEER_STATS_INFO_EVENTID if
+> ath10k send WMI_TLV_REQUEST_PEER_STATS_INFO_CMDID to firmware.
 > 
-> for example:
-> localhost ~ # iw dev wlan0 station dump
-> Station 3c:28:6d:96:fd:69 (on wlan0)
-> 	inactive time:	5 ms
-> 	rx bytes:	1325012
-> 	rx packets:	6477
-> 	tx bytes:	85264
-> 	tx packets:	518
-> 	tx retries:	0
-> 	tx failed:	0
-> 
-> This patch only effect chips with tx complete disabled, e.g. SDIO.
-> 
-> with this patch, output of command "iw dev wlan0 station dump":
-> Station c4:04:15:5d:97:22 (on wlan0)
->         inactive time:  608 ms
->         rx bytes:       180366
->         rx packets:     991
->         tx bytes:       98765577
->         tx packets:     64624
->         tx retries:     14682
->         tx failed:      47086
+> Enable it will only set a flag in firmware, firmware will not report
+> it without receive request WMI command.
 > 
 > Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
 > 
 > Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+Fails to apply, please rebase.
 
-59a022cc14cf ath10k: add statistics of tx retries and tx failed when tx complete disable
+error: patch failed: drivers/net/wireless/ath/ath10k/core.h:502
+error: drivers/net/wireless/ath/ath10k/core.h: patch does not apply
+error: patch failed: drivers/net/wireless/ath/ath10k/mac.c:8326
+error: drivers/net/wireless/ath/ath10k/mac.c: patch does not apply
+stg import: Diff does not apply cleanly
+
+4 patches set to Changes Requested.
+
+11505367 [1/4] ath10k: enable firmware peer stats info for wmi tlv
+11505377 [2/4] ath10k: add rx bitrate report for SDIO
+11505371 [3/4] ath10k: add bitrate parse for peer stats info
+11505369 [4/4] ath10k: correct tx bitrate of iw for SDIO
 
 -- 
-https://patchwork.kernel.org/patch/11504903/
+https://patchwork.kernel.org/patch/11505367/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
