@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSyl9-0008AG-Dr
- for ath10k@lists.infradead.org; Mon, 27 Apr 2020 08:05:00 +0000
+ id 1jSyl9-0008AL-Dr
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2020 08:05:01 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v2 4/4] ath10k: correct tx bitrate of iw for SDIO
-Date: Mon, 27 Apr 2020 16:04:16 +0800
-Message-Id: <20200427080416.8265-5-wgong@codeaurora.org>
+Subject: [PATCH v2 1/4] ath10k: enable firmware peer stats info for wmi tlv
+Date: Mon, 27 Apr 2020 16:04:13 +0800
+Message-Id: <20200427080416.8265-2-wgong@codeaurora.org>
 In-Reply-To: <20200427080416.8265-1-wgong@codeaurora.org>
 References: <20200427080416.8265-1-wgong@codeaurora.org>
 MIME-Version: 1.0
@@ -25,90 +25,75 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-For legacy mode, tx bitrate not show correct sometimes, for example:
-iw wlan0 link
-Connected to 8c:21:0a:b3:5a:64 (on wlan0)
-        SSID: tplinkgw
-        freq: 2462
-        RX: 19672 bytes (184 packets)
-        TX: 9851 bytes (87 packets)
-        signal: -51 dBm
-        rx bitrate: 54.0 MBit/s
-        tx bitrate: 2.8 MBit/s
+For wmi tlv type, firmware disable peer stats info by default, after
+enable it, firmware will report WMI_TLV_PEER_STATS_INFO_EVENTID if
+ath10k send WMI_TLV_REQUEST_PEER_STATS_INFO_CMDID to firmware.
 
-This patch use the tx bitrate info from WMI_TLV_PEER_STATS_INFO_EVENTID
-report from firmware, and tx bitrate show correct.
-
-iw wlan0 link
-Connected to 8c:21:0a:b3:5a:64 (on wlan0)
-        SSID: tplinkgw
-        freq: 2462
-        RX: 13973 bytes (120 packets)
-        TX: 6737 bytes (57 packets)
-        signal: -52 dBm
-        rx bitrate: 54.0 MBit/s
-        tx bitrate: 54.0 MBit/s
-
-This patch only effect SDIO chip, ath10k_mac_sta_get_peer_stats_info
-has check for bitrate_statistics of hw_params, it is enabled only for
-"qca6174 hw3.2 sdio".
+Enable it will only set a flag in firmware, firmware will not report
+it without receive request WMI command.
 
 Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
 
 Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.h    |  2 ++
- drivers/net/wireless/ath/ath10k/mac.c     | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 ++
- 3 files changed, 14 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c     | 5 +++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 1 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 1 +
+ drivers/net/wireless/ath/ath10k/wmi.h     | 1 +
+ 4 files changed, 8 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1700bf59e8fa..ad6ef8d492c8 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -526,6 +526,8 @@ struct ath10k_sta {
- 
- 	u32 rx_rate_code;
- 	u32 rx_bitrate_kbps;
-+	u32 tx_rate_code;
-+	u32 tx_bitrate_kbps;
- 	struct work_struct update_wk;
- 	u64 rx_duration;
- 	struct ath10k_htt_tx_stats *tx_stats;
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 38fc8cb3aac9..0b7d510d2725 100644
+index a1147ccc09bf..0fb082c9d04b 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8502,6 +8502,16 @@ static void ath10k_mac_sta_get_peer_stats_info(struct ath10k *ar,
- 		arsta->rx_rate_code = 0;
- 		arsta->rx_bitrate_kbps = 0;
- 	}
-+
-+	if (arsta->tx_rate_code != 0 && arsta->tx_bitrate_kbps != 0) {
-+		ath10k_mac_parse_bitrate(ar, arsta->tx_rate_code,
-+					 arsta->tx_bitrate_kbps,
-+					 &sinfo->txrate);
-+
-+		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
-+		arsta->tx_rate_code = 0;
-+		arsta->tx_bitrate_kbps = 0;
-+	}
- }
+@@ -2959,6 +2959,11 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
+ 	arvif->aid = bss_conf->aid;
+ 	ether_addr_copy(arvif->bssid, bss_conf->bssid);
  
- static void ath10k_sta_statistics(struct ieee80211_hw *hw,
++	ret = ath10k_wmi_pdev_set_param(ar,
++					ar->wmi.pdev_param->peer_stats_info_enable, 1);
++	if (ret)
++		ath10k_warn(ar, "failed to enable peer stats info: %d\n", ret);
++
+ 	ret = ath10k_wmi_vdev_up(ar, arvif->vdev_id, arvif->aid, arvif->bssid);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to set vdev %d up: %d\n",
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index eec1f1f27dec..9187b62b331c 100644
+index e1ab900f2662..27aaa48615d2 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -249,6 +249,8 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 	arsta = (struct ath10k_sta *)sta->drv_priv;
- 	arsta->rx_rate_code = __le32_to_cpu(stat->last_rx_rate_code);
- 	arsta->rx_bitrate_kbps = __le32_to_cpu(stat->last_rx_bitrate_kbps);
-+	arsta->tx_rate_code = __le32_to_cpu(stat->last_tx_rate_code);
-+	arsta->tx_bitrate_kbps = __le32_to_cpu(stat->last_tx_bitrate_kbps);
+@@ -4269,6 +4269,7 @@ static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
+ 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
+ 	.rfkill_config = WMI_TLV_PDEV_PARAM_HW_RFKILL_CONFIG,
+ 	.rfkill_enable = WMI_TLV_PDEV_PARAM_RFKILL_ENABLE,
++	.peer_stats_info_enable = WMI_TLV_PDEV_PARAM_PEER_STATS_INFO_ENABLE,
+ };
  
- 	return 0;
- }
+ static struct wmi_peer_param_map wmi_tlv_peer_param_map = {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 4972dc12991c..cd400b19a64d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -451,6 +451,7 @@ enum wmi_tlv_pdev_param {
+ 	WMI_TLV_PDEV_PARAM_VDEV_RATE_STATS_UPDATE_PERIOD,
+ 	WMI_TLV_PDEV_PARAM_TXPOWER_REASON_NONE,
+ 	WMI_TLV_PDEV_PARAM_TXPOWER_REASON_SAR,
++	WMI_TLV_PDEV_PARAM_PEER_STATS_INFO_ENABLE = 0x8b,
+ 	WMI_TLV_PDEV_PARAM_TXPOWER_REASON_MAX,
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 209070714d1a..46740e16f3ce 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3798,6 +3798,7 @@ struct wmi_pdev_param_map {
+ 	u32 enable_btcoex;
+ 	u32 rfkill_config;
+ 	u32 rfkill_enable;
++	u32 peer_stats_info_enable;
+ };
+ 
+ #define WMI_PDEV_PARAM_UNSUPPORTED 0
 -- 
 2.23.0
 
