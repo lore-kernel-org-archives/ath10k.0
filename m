@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTRCq-0000Lt-SK
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 14:27:30 +0000
-Subject: Re: [PATCH] ath10k: increase rx buffer size to 2048
-References: <20200205191043.21913-1-linus.luessing@c0d3.blue>
- <3300912.TRQvxCK2vZ@bentobox> <3097447.aZuNXRJysd@sven-edge>
- <87blnblsyv.fsf@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <db0f12d8-0604-70fa-81ad-5c1060eb0c6e@candelatech.com>
-Date: Tue, 28 Apr 2020 07:27:24 -0700
+Received: from mail-ot1-f67.google.com ([209.85.210.67])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jTSZo-000393-5f
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 15:55:17 +0000
+Received: by mail-ot1-f67.google.com with SMTP id 72so33466187otu.1
+ for <ath10k@lists.infradead.org>; Tue, 28 Apr 2020 08:55:15 -0700 (PDT)
+Date: Tue, 28 Apr 2020 10:55:13 -0500
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 1/3] dt-bindings: ath10k: Add wifi-firmware subnode
+ for wifi node
+Message-ID: <20200428155513.GA29618@bogus>
+References: <1586971906-20985-1-git-send-email-pillair@codeaurora.org>
+ <1586971906-20985-2-git-send-email-pillair@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <87blnblsyv.fsf@codeaurora.org>
+Content-Disposition: inline
+In-Reply-To: <1586971906-20985-2-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +23,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Sven Eckelmann <sven@narfation.org>
-Cc: =?UTF-8?Q?Linus_L=c3=bcssing?= <linus.luessing@c0d3.blue>, Simon Wunderlich <sw@simonwunderlich.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, mail@adrianschmutzler.de, "David S . Miller" <davem@davemloft.net>, =?UTF-8?Q?Linus_L=c3=bcssing?= <ll@simonwunderlich.de>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-CgpPbiAwNC8yOC8yMDIwIDA1OjAxIEFNLCBLYWxsZSBWYWxvIHdyb3RlOgo+IFN2ZW4gRWNrZWxt
-YW5uIDxzdmVuQG5hcmZhdGlvbi5vcmc+IHdyaXRlczoKPgo+PiBPbiBXZWRuZXNkYXksIDEgQXBy
-aWwgMjAyMCAwOTowMDo0OSBDRVNUIFN2ZW4gRWNrZWxtYW5uIHdyb3RlOgo+Pj4gT24gV2VkbmVz
-ZGF5LCA1IEZlYnJ1YXJ5IDIwMjAgMjA6MTA6NDMgQ0VTVCBMaW51cyBMw7xzc2luZyB3cm90ZToK
-Pj4+PiBGcm9tOiBMaW51cyBMw7xzc2luZyA8bGxAc2ltb253dW5kZXJsaWNoLmRlPgo+Pj4+Cj4+
-Pj4gQmVmb3JlLCBvbmx5IGZyYW1lcyB3aXRoIGEgbWF4aW11bSBzaXplIG9mIDE1MjggYnl0ZXMg
-Y291bGQgYmUKPj4+PiB0cmFuc21pdHRlZCBiZXR3ZWVuIHR3byA4MDIuMTFzIG5vZGVzLgo+Pj4+
-Cj4+Pj4gRm9yIGJhdG1hbi1hZHYgZm9yIGluc3RhbmNlLCB3aGljaCBhZGRzIGl0cyBvd24gaGVh
-ZGVyIHRvIGVhY2ggZnJhbWUsCj4+Pj4gd2UgdHlwaWNhbGx5IG5lZWQgYW4gTVRVIG9mIGF0IGxl
-YXN0IDE1MzIgYnl0ZXMgdG8gYmUgYWJsZSB0byB0cmFuc21pdAo+Pj4+IHdpdGhvdXQgZnJhZ21l
-bnRhdGlvbi4KPj4+Pgo+Pj4+IFRoaXMgcGF0Y2ggbm93IGluY3JlYXNlcyB0aGUgbWF4bWltdW0g
-ZnJhbWUgc2l6ZSBmcm9tIDE1MjggdG8gMTY1Ngo+Pj4+IGJ5dGVzLgo+Pj4gWy4uLl0KPj4+Cj4+
-PiBAS2FsbGUsIEkgc2F3IHRoYXQgdGhpcyBwYXRjaCB3YXMgbWFya2VkIGFzIGRlZmVycmVkIFsx
-XSBidXQgSSBjb3VsZG4ndCBmaW5kCj4+PiBhbnkgbWFpbCB3aHkgaXQgd2FzIGRvbmUgc28uIEl0
-IHNlZW1zIGxpa2UgdGhpcyBjdXJyZW50bHkgY3JlYXRlcyByZWFsIHdvcmxkCj4+PiBwcm9ibGVt
-cyAtIHNvIHdvdWxkIGJlIG5pY2UgaWYgeW91IGNvdWxkIGV4cGxhaW4gc2hvcnRseSB3aGF0IGlz
-IGN1cnJlbnRseQo+Pj4gYmxvY2tpbmcgaXRzIGFjY2VwdGFuY2UuCj4+Cj4+IFBpbmc/Cj4KPiBT
-b3JyeSBmb3IgdGhlIGRlbGF5LCBteSBwbGFuIHdhcyB0byBmaXJzdCB3cml0ZSBzb21lIGRvY3Vt
-ZW50YXRpb24gYWJvdXQKPiBkaWZmZXJlbnQgaGFyZHdhcmUgZmFtaWxpZXMgYnV0IGhhdmVuJ3Qg
-bWFuYWdlZCB0byBkbyB0aGF0IHlldC4KPgo+IE15IHByb2JsZW0gd2l0aCB0aGlzIHBhdGNoIGlz
-IHRoYXQgSSBkb24ndCBrbm93IHdoYXQgaGFyZHdhcmUgYW5kCj4gZmlybXdhcmUgdmVyc2lvbnMg
-d2VyZSB0ZXN0ZWQsIHNvIGl0IG5lZWRzIGFuYWx5c2lzIGJlZm9yZSBJIGZlZWwgc2FmZQo+IHRv
-IGFwcGx5IGl0LiBUaGUgYXRoMTBrIGhhcmR3YXJlIGZhbWlsaWVzIGFyZSB2ZXJ5IGRpZmZlcmVu
-dCB0aGF0IGV2ZW4KPiBpZiBhIHBhdGNoIHdvcmtzIHBlcmZlY3RseSBvbiBvbmUgYXRoMTBrIGhh
-cmR3YXJlIGl0IGNvdWxkIHN0aWxsIGJyZWFrCj4gYmFkbHkgb24gYW5vdGhlciBvbmUuCj4KPiBX
-aGF0IG1ha2VzIG1lIGZhc3RlciB0byBhcHBseSBhdGgxMGsgcGF0Y2hlcyBpcyB0byBoYXZlIGNv
-bXByZWhlbnNpdmUKPiBhbmFseXNpcyBpbiB0aGUgY29tbWl0IGxvZy4gVGhpcyBzaG93cyBtZSB0
-aGUgcGF0Y2ggYXV0aG9yIGhhcwo+IGNvbnNpZGVyZWQgYWJvdXQgYWxsIGhhcmR3YXJlIGZhbWls
-aWVzLCBub3QganVzdCB0aGUgb25lIGhlIGlzIHRlc3RpbmcKPiBvbiwgYW5kIHRoYXQgSSBkb24n
-dCBuZWVkIHRvIGRvIHRoZSBhbmFseXNpcyBteXNlbGYuCgpJdCBoYXMgYmVlbiBpbiBhdGgxMGst
-Y3QgZm9yIGEgd2hpbGUsIGFuZCB0aGF0IGhhcyBzb21lIGZhaXJseSB3aWRlIGNvdmVyYWdlCmlu
-IE9wZW5XcnQsIHNvIGxpa2VseSBpZiB0aGVyZSB3ZXJlIHByb2JsZW1zIHdlIHdvdWxkIGhhdmUg
-c2VlbiBpdCBhbHJlYWR5LgoKSSBkaWQgbm90IG1ha2UgYW55IHNwZWNpZmljIGNoYW5nZXMgdG8g
-ZmlybXdhcmUgdG8gc3VwcG9ydCB0aGlzLCBzbyB1cHN0cmVhbQpmaXJtd2FyZSBzaG91bGQgYmVo
-YXZlIHNpbWlsYXJseS4KClNlZW1zIGxpa2UgdXBzdHJlYW0gYXRoMTBrIGNvdWxkIHJlYWxseSBi
-ZW5lZml0IGZyb20gaGF2aW5nIHNvbWUgdGVzdCBiZWRzCnNvIHlvdSBjYW4gYWN0dWFsbHkgdGVz
-dCBjb2RlIG9uIGRpZmZlcmVudCBjaGlwcyBhbmQgaGF2ZSBjb25maWRlbmNlCmluIHlvdXIgY2hh
-bmdlcyEKClRoYW5rcywKQmVuCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20K
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Wed, 15 Apr 2020 23:01:44 +0530, Rakesh Pillai wrote:
+> Add a wifi-firmware subnode for the wifi node.
+> This wifi-firmware subnode is needed for the
+> targets which do not support TrustZone.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt       | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
