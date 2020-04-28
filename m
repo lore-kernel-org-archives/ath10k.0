@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from tynnyri.adurom.net ([51.15.11.48])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTOep-0004rB-HQ
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 11:44:15 +0000
-Date: Tue, 28 Apr 2020 19:43:09 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS be3d3488dcd480c333104b8f0db4918cb43d01cf
-Message-ID: <5ea816cd.T8gLhFbgNbO2ly9y%lkp@intel.com>
+ id 1jTOwB-0002dn-RA
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 12:02:09 +0000
+From: Kalle Valo <kvalo@adurom.com>
+Subject: Re: Poor link speeds and signal strength on Qualcomm QCA 9377
+References: <CALY5VB38LT_FNRj5mdvgSJ0YVb6fHyOSM5dJfN8Kdzsuk5wTvA@mail.gmail.com>
+Date: Tue, 28 Apr 2020 14:59:47 +0300
+In-Reply-To: <CALY5VB38LT_FNRj5mdvgSJ0YVb6fHyOSM5dJfN8Kdzsuk5wTvA@mail.gmail.com>
+ (Arvind Bakshi's message of "Sat, 25 Apr 2020 05:39:08 +0530")
+Message-ID: <87blnbizws.fsf@tynnyri.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,190 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
+To: Arvind Bakshi <arvindbakshicool@gmail.com>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: be3d3488dcd480c333104b8f0db4918cb43d01cf  Add localversion-wireless-testing-ath
+Arvind Bakshi <arvindbakshicool@gmail.com> writes:
 
-elapsed time: 1445m
+> Getting 1 mbps link speed and average signal strength, even on
+> standing next to router on every linux distro whereas windows 10 gives
+> 150 mbps link speeds and excellent signal strength even standing quite
+> far off from router. Tested on Fedora 30/31 and ubuntu 18.04/20.04.
+> Turning off wireless power management : sudo iwconfig wlan0 power off
+> doesn't make a difference.
+> Turning off all power saving options using TLP also doesn't make a difference.
+> Software (OS, Firmware version, kernel, driver, etc)
+> Tested on Fedora 30/31 and ubuntu 18.04 LTS
+> Wifi card: Qualcomm QCA 9377
+> Device: Dell Vostro 3468 (shipped with ubuntu 16.04)
+>
+> Hardware (NIC chipset, platform, etc)
+> Qualcomm QCA 9377
 
-configs tested: 166
-configs skipped: 0
+My first guess is a problem with calibration data, for example using
+wrong board data file (which are device specific). Unfortunately I don't
+know what would be the correct board data file for your device, ath10k
+is supposed to choose it automatically but we don't always have all
+board data files available.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-mips                      loongson3_defconfig
-ia64                             alldefconfig
-powerpc                             defconfig
-ia64                                defconfig
-s390                          debug_defconfig
-sparc64                          allmodconfig
-microblaze                    nommu_defconfig
-riscv                             allnoconfig
-csky                                defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                        generic_defconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-ia64                             allyesconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-powerpc                           allnoconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                            ar7_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-mips                malta_kvm_guest_defconfig
-mips                         tb0287_defconfig
-mips                       capcella_defconfig
-mips                           ip32_defconfig
-mips                  decstation_64_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-parisc               randconfig-a001-20200427
-alpha                randconfig-a001-20200427
-mips                 randconfig-a001-20200427
-m68k                 randconfig-a001-20200427
-riscv                randconfig-a001-20200427
-nds32                randconfig-a001-20200427
-nios2                randconfig-a001-20200427
-c6x                  randconfig-a001-20200427
-h8300                randconfig-a001-20200427
-sparc64              randconfig-a001-20200427
-microblaze           randconfig-a001-20200427
-sh                   randconfig-a001-20200427
-csky                 randconfig-a001-20200427
-xtensa               randconfig-a001-20200427
-openrisc             randconfig-a001-20200427
-i386                 randconfig-b002-20200427
-x86_64               randconfig-b001-20200427
-i386                 randconfig-b001-20200427
-i386                 randconfig-b003-20200427
-x86_64               randconfig-b002-20200427
-x86_64               randconfig-b003-20200427
-i386                 randconfig-c002-20200427
-i386                 randconfig-c001-20200427
-x86_64               randconfig-c002-20200427
-x86_64               randconfig-c001-20200427
-i386                 randconfig-c003-20200427
-x86_64               randconfig-c003-20200427
-i386                 randconfig-a003-20200427
-i386                 randconfig-a001-20200427
-i386                 randconfig-a002-20200427
-x86_64               randconfig-a002-20200427
-x86_64               randconfig-d001-20200427
-x86_64               randconfig-d002-20200427
-i386                 randconfig-d002-20200427
-i386                 randconfig-d001-20200427
-x86_64               randconfig-d003-20200427
-i386                 randconfig-d003-20200427
-i386                 randconfig-e003-20200427
-x86_64               randconfig-e002-20200427
-x86_64               randconfig-e003-20200427
-i386                 randconfig-e002-20200427
-i386                 randconfig-e001-20200427
-x86_64               randconfig-e001-20200427
-i386                 randconfig-g003-20200427
-i386                 randconfig-g001-20200427
-x86_64               randconfig-g001-20200427
-i386                 randconfig-g002-20200427
-x86_64               randconfig-g003-20200427
-i386                 randconfig-h003-20200427
-x86_64               randconfig-h002-20200427
-i386                 randconfig-h002-20200427
-i386                 randconfig-h001-20200427
-sparc                randconfig-a001-20200427
-ia64                 randconfig-a001-20200427
-arm                  randconfig-a001-20200427
-arm64                randconfig-a001-20200427
-arc                  randconfig-a001-20200427
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
