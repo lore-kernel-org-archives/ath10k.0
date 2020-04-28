@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jT9iw-0001UU-8t
- for ath10k@lists.infradead.org; Mon, 27 Apr 2020 19:47:29 +0000
-Date: Tue, 28 Apr 2020 03:46:39 +0800
+ id 1jTFZL-00024P-ET
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 02:01:57 +0000
+Date: Tue, 28 Apr 2020 10:01:10 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- b1670eba5ccf8b7f00fd9a87337dc75892d586e8
-Message-ID: <5ea7369f.ksPeqb8WfoSgog85%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 59a022cc14cf84c6405efc1571045683c258a1f5
+Message-ID: <5ea78e66.j094feGU7WaGgs1g%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: b1670eba5ccf8b7f00fd9a87337dc75892d586e8  ath10k: remove the max_sched_scan_reqs value
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 59a022cc14cf84c6405efc1571045683c258a1f5  ath10k: add statistics of tx retries and tx failed when tx complete disable
 
-elapsed time: 489m
+elapsed time: 864m
 
 configs tested: 166
 configs skipped: 0
@@ -50,6 +50,8 @@ arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
 sparc                            allyesconfig
+powerpc                             defconfig
+ia64                                defconfig
 i386                             alldefconfig
 h8300                    h8300h-sim_defconfig
 mips                      loongson3_defconfig
@@ -58,21 +60,26 @@ s390                          debug_defconfig
 sparc64                          allmodconfig
 csky                                defconfig
 microblaze                    nommu_defconfig
+nios2                         3c120_defconfig
+ia64                         bigsur_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                              debian-10.3
 ia64                             allmodconfig
-ia64                                defconfig
 ia64                              allnoconfig
 ia64                        generic_defconfig
 ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
 ia64                             allyesconfig
 ia64                             alldefconfig
 nds32                               defconfig
 nds32                             allnoconfig
 alpha                               defconfig
-nios2                         3c120_defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
 nios2                         10m50_defconfig
 c6x                        evmc6678_defconfig
 xtensa                          iss_defconfig
@@ -80,15 +87,8 @@ c6x                              allyesconfig
 xtensa                       common_defconfig
 openrisc                 simple_smp_defconfig
 openrisc                    or1ksim_defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
 arc                                 defconfig
 arc                              allyesconfig
-powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
 microblaze                      mmu_defconfig
