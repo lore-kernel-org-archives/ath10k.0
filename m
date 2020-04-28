@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTFZL-00024P-ET
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 02:01:57 +0000
-Date: Tue, 28 Apr 2020 10:01:10 +0800
+ id 1jTFZF-00022P-9l
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 02:01:50 +0000
+Date: Tue, 28 Apr 2020 10:01:13 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 59a022cc14cf84c6405efc1571045683c258a1f5
-Message-ID: <5ea78e66.j094feGU7WaGgs1g%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 2041314af2bb256b69dddb797d68cc2bbe0233da
+Message-ID: <5ea78e69.3RL5m1BMk19Enb7p%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 59a022cc14cf84c6405efc1571045683c258a1f5  ath10k: add statistics of tx retries and tx failed when tx complete disable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 2041314af2bb256b69dddb797d68cc2bbe0233da  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 864m
 
@@ -60,8 +60,6 @@ s390                          debug_defconfig
 sparc64                          allmodconfig
 csky                                defconfig
 microblaze                    nommu_defconfig
-nios2                         3c120_defconfig
-ia64                         bigsur_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                              debian-10.3
@@ -69,8 +67,13 @@ ia64                             allmodconfig
 ia64                              allnoconfig
 ia64                        generic_defconfig
 ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
 ia64                             allyesconfig
 ia64                             alldefconfig
+xtensa                          iss_defconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
 nds32                               defconfig
 nds32                             allnoconfig
 alpha                               defconfig
@@ -80,13 +83,10 @@ m68k                       m5475evb_defconfig
 m68k                             allmodconfig
 m68k                           sun3_defconfig
 m68k                          multi_defconfig
+nios2                         3c120_defconfig
 nios2                         10m50_defconfig
 c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
 c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
 arc                                 defconfig
 arc                              allyesconfig
 powerpc                       ppc64_defconfig
