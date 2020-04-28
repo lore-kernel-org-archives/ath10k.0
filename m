@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTFZF-00022P-9l
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 02:01:50 +0000
-Date: Tue, 28 Apr 2020 10:01:13 +0800
+ id 1jTJrk-0001U1-F9
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 06:37:14 +0000
+Date: Tue, 28 Apr 2020 14:36:57 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 2041314af2bb256b69dddb797d68cc2bbe0233da
-Message-ID: <5ea78e69.3RL5m1BMk19Enb7p%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ b0a246d52dd0fcc80ec985c71af62997109786d7
+Message-ID: <5ea7cf09.Mwq6sww8rhDQf5Rr%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 2041314af2bb256b69dddb797d68cc2bbe0233da  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: b0a246d52dd0fcc80ec985c71af62997109786d7  carl9170: remove P2P_GO support
 
-elapsed time: 864m
+elapsed time: 483m
 
-configs tested: 166
+configs tested: 206
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -50,56 +50,50 @@ arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
 sparc                            allyesconfig
-powerpc                             defconfig
-ia64                                defconfig
-i386                             alldefconfig
-h8300                    h8300h-sim_defconfig
-mips                      loongson3_defconfig
-i386                                defconfig
-s390                          debug_defconfig
-sparc64                          allmodconfig
-csky                                defconfig
-microblaze                    nommu_defconfig
+arc                                 defconfig
+mips                         tb0287_defconfig
+ia64                             alldefconfig
+sparc64                             defconfig
+mips                  decstation_64_defconfig
+s390                                defconfig
 i386                              allnoconfig
 i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
 i386                              debian-10.3
 ia64                             allmodconfig
+ia64                                defconfig
 ia64                              allnoconfig
 ia64                        generic_defconfig
 ia64                          tiger_defconfig
 ia64                         bigsur_defconfig
 ia64                             allyesconfig
-ia64                             alldefconfig
-xtensa                          iss_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
 xtensa                       common_defconfig
 openrisc                 simple_smp_defconfig
 openrisc                    or1ksim_defconfig
+xtensa                          iss_defconfig
 nds32                               defconfig
 nds32                             allnoconfig
+csky                                defconfig
 alpha                               defconfig
 h8300                       h8s-sim_defconfig
 h8300                     edosk2674_defconfig
 m68k                       m5475evb_defconfig
 m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
 m68k                           sun3_defconfig
 m68k                          multi_defconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-arc                                 defconfig
 arc                              allyesconfig
+powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
 microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
 powerpc                           allnoconfig
-mips                malta_kvm_guest_defconfig
-mips                         tb0287_defconfig
-mips                       capcella_defconfig
-mips                           ip32_defconfig
-mips                  decstation_64_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
 mips                            ar7_defconfig
@@ -108,11 +102,22 @@ mips                         64r6el_defconfig
 mips                              allnoconfig
 mips                           32r2_defconfig
 mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
 parisc                            allnoconfig
 parisc                generic-64bit_defconfig
 parisc                generic-32bit_defconfig
 parisc                           allyesconfig
 parisc                           allmodconfig
+parisc               randconfig-a001-20200428
+m68k                 randconfig-a001-20200428
+alpha                randconfig-a001-20200428
+nds32                randconfig-a001-20200428
+riscv                randconfig-a001-20200428
 parisc               randconfig-a001-20200427
 alpha                randconfig-a001-20200427
 mips                 randconfig-a001-20200427
@@ -124,26 +129,56 @@ c6x                  randconfig-a001-20200427
 h8300                randconfig-a001-20200427
 sparc64              randconfig-a001-20200427
 microblaze           randconfig-a001-20200427
+nios2                randconfig-a001-20200428
+h8300                randconfig-a001-20200428
+c6x                  randconfig-a001-20200428
+sparc64              randconfig-a001-20200428
+microblaze           randconfig-a001-20200428
+sh                   randconfig-a001-20200428
+csky                 randconfig-a001-20200428
+s390                 randconfig-a001-20200428
+xtensa               randconfig-a001-20200428
+openrisc             randconfig-a001-20200428
 sh                   randconfig-a001-20200427
 csky                 randconfig-a001-20200427
 xtensa               randconfig-a001-20200427
 openrisc             randconfig-a001-20200427
+x86_64               randconfig-a001-20200428
+i386                 randconfig-a003-20200428
+x86_64               randconfig-a003-20200428
+i386                 randconfig-a002-20200428
+i386                 randconfig-a001-20200428
+x86_64               randconfig-a002-20200428
 i386                 randconfig-b002-20200427
 x86_64               randconfig-b001-20200427
 i386                 randconfig-b001-20200427
 i386                 randconfig-b003-20200427
 x86_64               randconfig-b002-20200427
 x86_64               randconfig-b003-20200427
+i386                 randconfig-b002-20200428
+i386                 randconfig-b001-20200428
+i386                 randconfig-b003-20200428
+x86_64               randconfig-b002-20200428
 i386                 randconfig-c002-20200427
 i386                 randconfig-c001-20200427
 x86_64               randconfig-c002-20200427
 x86_64               randconfig-c001-20200427
 i386                 randconfig-c003-20200427
 x86_64               randconfig-c003-20200427
+i386                 randconfig-c002-20200428
+i386                 randconfig-c001-20200428
+x86_64               randconfig-c001-20200428
+i386                 randconfig-c003-20200428
+x86_64               randconfig-c003-20200428
 i386                 randconfig-a003-20200427
 i386                 randconfig-a001-20200427
 i386                 randconfig-a002-20200427
 x86_64               randconfig-a002-20200427
+x86_64               randconfig-d001-20200428
+i386                 randconfig-d002-20200428
+i386                 randconfig-d001-20200428
+x86_64               randconfig-d003-20200428
+i386                 randconfig-d003-20200428
 x86_64               randconfig-d001-20200427
 x86_64               randconfig-d002-20200427
 i386                 randconfig-d002-20200427
@@ -170,6 +205,11 @@ ia64                 randconfig-a001-20200427
 arm                  randconfig-a001-20200427
 arm64                randconfig-a001-20200427
 arc                  randconfig-a001-20200427
+sparc                randconfig-a001-20200428
+ia64                 randconfig-a001-20200428
+powerpc              randconfig-a001-20200428
+arm64                randconfig-a001-20200428
+arc                  randconfig-a001-20200428
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
@@ -177,20 +217,20 @@ riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 s390                       zfcpdump_defconfig
+s390                          debug_defconfig
 s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
 s390                             alldefconfig
-s390                                defconfig
 sh                          rsk7269_defconfig
 sh                               allmodconfig
 sh                            titan_defconfig
 sh                  sh7785lcr_32bit_defconfig
 sh                                allnoconfig
 sparc                               defconfig
-sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
+sparc64                          allmodconfig
 um                           x86_64_defconfig
 um                             i386_defconfig
 um                                  defconfig
