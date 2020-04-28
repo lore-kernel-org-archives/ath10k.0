@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTMgn-0003Nn-ET
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 09:38:11 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH net-next] ath10k: fix possible memory leak in
- ath10k_bmi_lz_data_large()
-References: <20200427104348.13570-1-weiyongjun1@huawei.com>
-Date: Tue, 28 Apr 2020 12:37:47 +0300
-In-Reply-To: <20200427104348.13570-1-weiyongjun1@huawei.com> (Wei Yongjun's
- message of "Mon, 27 Apr 2020 10:43:48 +0000")
-Message-ID: <87ftcoeys4.fsf@kamboji.qca.qualcomm.com>
+ id 1jTMrz-00057n-E7
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 09:49:43 +0000
 MIME-Version: 1.0
+Date: Tue, 28 Apr 2020 17:49:27 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v2 1/4] ath10k: enable firmware peer stats info for wmi tlv
+In-Reply-To: <87k120eyyl.fsf@kamboji.qca.qualcomm.com>
+References: <20200427080416.8265-2-wgong@codeaurora.org>
+ <20200428091303.089AEC433D2@smtp.codeaurora.org>
+ <87k120eyyl.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <2c0d03590f2ecf55aaff86e760232807@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +20,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wei Yongjun <weiyongjun1@huawei.com> writes:
-
-> 'cmd' is malloced in ath10k_bmi_lz_data_large() and should be freed
-> before leaving from the error handling cases, otherwise it will cause
-> memory leak.
->
-> Fixes: d58f466a5dee ("ath10k: add large size for BMI download data for SDIO")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/net/wireless/ath/ath10k/bmi.c | 1 +
->  1 file changed, 1 insertion(+)
-
-Please don't add "net-next" to wireless-driver patches (ath10k, ath11k
-etc), because we use different trees. You can add "-next" or
-"wireless-driver-next" if you want, but even that is not necessary as I
-apply patches to -next by default.
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+On 2020-04-28 17:33, Kalle Valo wrote:
+> Kalle Valo <kvalo@codeaurora.org> writes:
+> 
+>> Wen Gong <wgong@codeaurora.org> wrote:
+>> 
+>>> For wmi tlv type, firmware disable peer stats info by default, after
+>>> enable it, firmware will report WMI_TLV_PEER_STATS_INFO_EVENTID if
+>>> ath10k send WMI_TLV_REQUEST_PEER_STATS_INFO_CMDID to firmware.
+>>> 
+>>> Enable it will only set a flag in firmware, firmware will not report
+>>> it without receive request WMI command.
+>>> 
+>>> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
+>>> 
+>>> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+>>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>> 
+>> 4 patches applied to ath-next branch of ath.git, thanks.
+>> 
+>> 2289bef25e32 ath10k: enable firmware peer stats info for wmi tlv
+>> 0f7cb26830a6 ath10k: add rx bitrate report for SDIO
+>> 3344b99d69ab ath10k: add bitrate parse for peer stats info
+>> 4cc02c7c1494 ath10k: correct tx bitrate of iw for SDIO
+> 
+> I think these caused a new warning which I missed:
+> 
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34: warning: incorrect
+> type in assignment (different base types)
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34:    expected
+> restricted __le32 [usertype] reset_after_request
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34:    got unsigned int
+> [usertype] reset
+ok. I will give new patch to fix the 3 warning.
+> 
+> Please send a followup patch to fix that.
 
 _______________________________________________
 ath10k mailing list
