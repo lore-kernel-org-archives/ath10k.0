@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTZkE-0001V8-Le
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 23:34:32 +0000
-Date: Wed, 29 Apr 2020 07:34:16 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 768d63c544960377acd4fdcb65a457e2dd3d0a5e
-Message-ID: <5ea8bd78.LCNCeaKDh7G3RdCq%lkp@intel.com>
+ id 1jTZx4-0002UU-5y
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 23:47:47 +0000
+Received: by mail-ej1-x632.google.com with SMTP id nv1so105445ejb.0
+ for <ath10k@lists.infradead.org>; Tue, 28 Apr 2020 16:47:45 -0700 (PDT)
 MIME-Version: 1.0
+From: Girish Mahadevan <girish_mahadevan@trimble.com>
+Date: Tue, 28 Apr 2020 17:47:32 -0600
+Message-ID: <CADe2dM7GrXQLOVZVzpJwMRsBwtb=o3anVdDOi5muAhPg0Cd+0Q@mail.gmail.com>
+Subject: ath10k: QCA9377: wlan0 unusable after Beacon loss
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,185 +22,96 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 768d63c544960377acd4fdcb65a457e2dd3d0a5e  Merge branch 'ath-next' into ath-qca
+Hi,
 
-elapsed time: 584m
+We have an SDIO based QCA-9377 part (Silex SDMAC) connected to a
+beagleboard-x15 . We're running on 5.4 kernel with the ath10k firmware
+from
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA9377/hw1.0/untested
 
-configs tested: 161
-configs skipped: 0
+ath10k related messages in dmesg:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[   10.830774] ath10k_sdio mmc0:0001:1: WARNING: ath10k SDIO support
+is work-in-progress, problems may arise!
+[   10.974043] ath10k_sdio mmc0:0001:1: qca9377 hw1.1 sdio target
+0x05020001 chip_id 0x00000000 sub 0000:0000
+[   11.026423] ath10k_sdio mmc0:0001:1: kconfig debug 1 debugfs 1
+tracing 0 dfs 0 testmode 1
+[   11.092972] ath10k_sdio mmc0:0001:1: firmware ver
+WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5 features ignore-otp crc32
+7746e551
+[   11.337277] ath10k_sdio mmc0:0001:1: board_file api 1 bmi_id N/A
+crc32 544289f7
+[   12.780555] ath10k_sdio mmc0:0001:1: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   12.981311] ath: EEPROM regdomain: 0x0
+[   12.981315] ath: EEPROM indicates default country code should be used
+[   12.981318] ath: doing EEPROM country->regdmn map search
+[   12.981323] ath: country maps to regdmn code: 0x3a
+[   12.981326] ath: Country alpha2 being used: US
+[   12.981329] ath: Regpair used: 0x3a
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-mips                       capcella_defconfig
-microblaze                      mmu_defconfig
-mips                         tb0287_defconfig
-m68k                             allmodconfig
-ia64                             allmodconfig
-mips                           ip32_defconfig
-powerpc                           allnoconfig
-i386                             allyesconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                        generic_defconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-microblaze                    nommu_defconfig
-mips                malta_kvm_guest_defconfig
-mips                  decstation_64_defconfig
-mips                      loongson3_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                            ar7_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-parisc               randconfig-a001-20200428
-m68k                 randconfig-a001-20200428
-alpha                randconfig-a001-20200428
-nds32                randconfig-a001-20200428
-riscv                randconfig-a001-20200428
-nios2                randconfig-a001-20200428
-h8300                randconfig-a001-20200428
-c6x                  randconfig-a001-20200428
-sparc64              randconfig-a001-20200428
-microblaze           randconfig-a001-20200428
-sh                   randconfig-a001-20200428
-csky                 randconfig-a001-20200428
-s390                 randconfig-a001-20200428
-xtensa               randconfig-a001-20200428
-openrisc             randconfig-a001-20200428
-x86_64               randconfig-a001-20200428
-i386                 randconfig-a003-20200428
-x86_64               randconfig-a003-20200428
-i386                 randconfig-a002-20200428
-i386                 randconfig-a001-20200428
-x86_64               randconfig-a002-20200428
-i386                 randconfig-c002-20200428
-i386                 randconfig-c001-20200428
-x86_64               randconfig-c001-20200428
-i386                 randconfig-c003-20200428
-x86_64               randconfig-c003-20200428
-x86_64               randconfig-d001-20200428
-i386                 randconfig-d002-20200428
-i386                 randconfig-d001-20200428
-x86_64               randconfig-d003-20200428
-i386                 randconfig-d003-20200428
-x86_64               randconfig-f002-20200428
-i386                 randconfig-f002-20200428
-i386                 randconfig-f003-20200428
-x86_64               randconfig-f003-20200428
-i386                 randconfig-f001-20200428
-x86_64               randconfig-f001-20200428
-i386                 randconfig-g003-20200428
-x86_64               randconfig-g001-20200428
-i386                 randconfig-g001-20200428
-x86_64               randconfig-g002-20200428
-i386                 randconfig-g002-20200428
-x86_64               randconfig-g003-20200428
-x86_64               randconfig-h001-20200428
-i386                 randconfig-h003-20200428
-x86_64               randconfig-h003-20200428
-x86_64               randconfig-h002-20200428
-i386                 randconfig-h001-20200428
-i386                 randconfig-h002-20200428
-ia64                 randconfig-a001-20200428
-powerpc              randconfig-a001-20200428
-arm64                randconfig-a001-20200428
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+I am able to connect to an AP successfully:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+root@viper-x15:~# wpa_supplicant -Dnl80211 -c /etc/wpa_supplicant.conf
+-i wlan0 &
+[1] 481
+root@viper-x15:~# Successfully initialized wpa_supplicant
+[   54.700660] NOHZ: local_softirq_pending 08
+[   54.704887] NOHZ: local_softirq_pending 08
+[   54.709067] NOHZ: local_softirq_pending 08
+[   54.730663] NOHZ: local_softirq_pending 08
+[   54.750793] NOHZ: local_softirq_pending 08
+[   54.760772] NOHZ: local_softirq_pending 08
+[   54.780651] NOHZ: local_softirq_pending 08
+[   54.800676] NOHZ: local_softirq_pending 08
+[   54.804844] NOHZ: local_softirq_pending 08
+[   54.809007] NOHZ: local_softirq_pending 08
+wlan0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+wlan0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+wlan0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+wlan0: SME: Trying to authenticate with e8:fc:af:fa:37:db (SSID=[
+57.382022] wlan0: authenticate with e8:fc:af:fa:37:db
+'wcoair24G' freq=2437 MHz)
+[   57.480769] wlan0: send auth to e8:fc:af:fa:37:db (try 1/3)
+[   57.490835] wlan0: authenticated
+wlan0: Trying to associate with e8:fc:af:fa:37:db (SSID='wcoair24G'
+freq=2437 MHz)
+[   57.510518] wlan0: associate with e8:fc:af:fa:37:db (try 1/3)
+[   57.530659] wlan0: RX AssocResp from e8:fc:af:fa:37:db (capab=0x411
+status=0 aid=1)
+[   57.538362] wlan0: AP has invalid WMM params (AIFSN=1 for ACI 2), will use 2
+[   57.545656] wlan0: AP has invalid WMM params (AIFSN=1 for ACI 3), will use 2
+[   57.700884] wlan0: associated
+wlan0: Associated with e8:fc:af:fa:37:db
+wlan0: CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+[   57.765046] cryptd: max_cpu_qlen set to 1000
+wlan0: WPA: Key negotiation completed with e8:fc:af:fa:37:db [PT[
+57.821389] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+K=CCMP GTK=CCMP]
+wlan0: CTRL-EVENT-CONNECTED - Connection to e8:fc:af:fa:37:db
+completed [id=1 id_str=]
+
+However, if the AP goes away suddenly, I see these messages,
+
+root@viper-x15:~# wlan0: CTRL-EVENT-BEACON-LOSS
+root@viper-x15:~# wlan0: CTRL-EVENT-BEACON-LOSS
+[  144.650538] ath10k_sdio mmc0:0001:1: wmi command 20489 timeout,
+restarting hardware
+[  144.658242] ath10k_sdio mmc0:0001:1: failed to install key for vdev
+0 peer e8:fc:af:fa:37:db: -11
+[  144.667586] wlan0: failed to remove key (0, e8:fc:af:fa:37:db) from
+hardware (-11)
+[  147.690529] ath10k_sdio mmc0:0001:1: sdio irq disable request timed out
+
+After this wlan0 is unusable, a reboot is needed.
+
+Has anyone seen this ? Is this a known issue ?
+
+Best Regards
+Girish
 
 _______________________________________________
 ath10k mailing list
