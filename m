@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTY9J-0001hw-Pj
- for ath10k@lists.infradead.org; Tue, 28 Apr 2020 21:52:19 +0000
-Date: Wed, 29 Apr 2020 05:51:36 +0800
+ id 1jTZkE-0001V8-Le
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2020 23:34:32 +0000
+Date: Wed, 29 Apr 2020 07:34:16 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- c14039cfc85fb00cb2d0a86536dff50c8ec4f1ae
-Message-ID: <5ea8a568.POnpkjigIzeLo6Ov%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 768d63c544960377acd4fdcb65a457e2dd3d0a5e
+Message-ID: <5ea8bd78.LCNCeaKDh7G3RdCq%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: c14039cfc85fb00cb2d0a86536dff50c8ec4f1ae  carl9170: remove P2P_GO support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 768d63c544960377acd4fdcb65a457e2dd3d0a5e  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 481m
+elapsed time: 584m
 
-configs tested: 167
+configs tested: 161
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -50,21 +50,20 @@ arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
 sparc                            allyesconfig
-um                             i386_defconfig
-m68k                             allmodconfig
 mips                       capcella_defconfig
 microblaze                      mmu_defconfig
 mips                         tb0287_defconfig
+m68k                             allmodconfig
 ia64                             allmodconfig
 mips                           ip32_defconfig
 powerpc                           allnoconfig
 i386                             allyesconfig
-ia64                              allnoconfig
 i386                              allnoconfig
 i386                             alldefconfig
 i386                                defconfig
 i386                              debian-10.3
 ia64                                defconfig
+ia64                              allnoconfig
 ia64                        generic_defconfig
 ia64                          tiger_defconfig
 ia64                         bigsur_defconfig
@@ -94,6 +93,11 @@ powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
 microblaze                    nommu_defconfig
+mips                malta_kvm_guest_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
 mips                            ar7_defconfig
@@ -102,11 +106,6 @@ mips                         64r6el_defconfig
 mips                              allnoconfig
 mips                           32r2_defconfig
 mips                             allmodconfig
-mips                malta_kvm_guest_defconfig
-mips                  decstation_64_defconfig
-mips                      loongson3_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
 parisc                            allnoconfig
 parisc                generic-64bit_defconfig
 parisc                generic-32bit_defconfig
@@ -133,10 +132,6 @@ x86_64               randconfig-a003-20200428
 i386                 randconfig-a002-20200428
 i386                 randconfig-a001-20200428
 x86_64               randconfig-a002-20200428
-i386                 randconfig-b002-20200428
-i386                 randconfig-b001-20200428
-i386                 randconfig-b003-20200428
-x86_64               randconfig-b002-20200428
 i386                 randconfig-c002-20200428
 i386                 randconfig-c001-20200428
 x86_64               randconfig-c001-20200428
@@ -165,11 +160,9 @@ x86_64               randconfig-h003-20200428
 x86_64               randconfig-h002-20200428
 i386                 randconfig-h001-20200428
 i386                 randconfig-h002-20200428
-sparc                randconfig-a001-20200428
 ia64                 randconfig-a001-20200428
 powerpc              randconfig-a001-20200428
 arm64                randconfig-a001-20200428
-arc                  randconfig-a001-20200428
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
@@ -194,6 +187,7 @@ sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                           x86_64_defconfig
+um                             i386_defconfig
 um                                  defconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
