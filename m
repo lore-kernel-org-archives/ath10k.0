@@ -1,18 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-il1-x144.google.com ([2607:f8b0:4864:20::144])
+Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTtLZ-0002fU-1T
- for ath10k@lists.infradead.org; Wed, 29 Apr 2020 20:30:22 +0000
-Received: by mail-il1-x144.google.com with SMTP id b18so3810389ilf.2
- for <ath10k@lists.infradead.org>; Wed, 29 Apr 2020 13:30:19 -0700 (PDT)
+ id 1jTtTQ-0006Vq-O4
+ for ath10k@lists.infradead.org; Wed, 29 Apr 2020 20:38:29 +0000
+Received: by mail-pj1-x1041.google.com with SMTP id t40so1229421pjb.3
+ for <ath10k@lists.infradead.org>; Wed, 29 Apr 2020 13:38:28 -0700 (PDT)
+Received: from [10.211.55.7] ([112.209.193.0])
+ by smtp.gmail.com with ESMTPSA id d203sm1724828pfd.79.2020.04.29.13.38.26
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 29 Apr 2020 13:38:27 -0700 (PDT)
+References: <20200312082047.487DAC433D2@smtp.codeaurora.org>
+Subject: Re: Re: [PATCH] Allow qca988x family to support ack rssi of tx data
+ packets.
+From: John Deere <24601deerej@gmail.com>
+Message-ID: <9827dda3-7a4a-5e10-071a-c7b4e4044572@gmail.com>
+Date: Thu, 30 Apr 2020 04:38:24 +0800
 MIME-Version: 1.0
-In-Reply-To: <87blnbizws.fsf@tynnyri.adurom.net>
-References: <CALY5VB38LT_FNRj5mdvgSJ0YVb6fHyOSM5dJfN8Kdzsuk5wTvA@mail.gmail.com>
- <87blnbizws.fsf@tynnyri.adurom.net>
-From: Tom Psyborg <pozega.tomislav@gmail.com>
-Date: Wed, 29 Apr 2020 22:30:18 +0200
-Message-ID: <CAKR_QV+yETmzf5Fgfbx_g8RxdfDbT0Uikvt8mUtstT0N0-p7hQ@mail.gmail.com>
-Subject: Re: Poor link speeds and signal strength on Qualcomm QCA 9377
+In-Reply-To: <20200312082047.487DAC433D2@smtp.codeaurora.org>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +27,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@adurom.com>
-Cc: ath10k@lists.infradead.org, Arvind Bakshi <arvindbakshicool@gmail.com>
+To: ath10k@lists.infradead.org
 
-On 28/04/2020, Kalle Valo <kvalo@adurom.com> wrote:
-> Arvind Bakshi <arvindbakshicool@gmail.com> writes:
->
->> Getting 1 mbps link speed and average signal strength, even on
->> standing next to router on every linux distro whereas windows 10 gives
->> 150 mbps link speeds and excellent signal strength even standing quite
->> far off from router. Tested on Fedora 30/31 and ubuntu 18.04/20.04.
->> Turning off wireless power management : sudo iwconfig wlan0 power off
->> doesn't make a difference.
->> Turning off all power saving options using TLP also doesn't make a
->> difference.
->> Software (OS, Firmware version, kernel, driver, etc)
->> Tested on Fedora 30/31 and ubuntu 18.04 LTS
->> Wifi card: Qualcomm QCA 9377
->> Device: Dell Vostro 3468 (shipped with ubuntu 16.04)
->>
->> Hardware (NIC chipset, platform, etc)
->> Qualcomm QCA 9377
->
-> My first guess is a problem with calibration data, for example using
-> wrong board data file (which are device specific). Unfortunately I don't
-> know what would be the correct board data file for your device, ath10k
-> is supposed to choose it automatically but we don't always have all
-> board data files available.
->
-> --
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
+Hello,
 
-There's nothing wrong with calibration data. Board and firmware
-checksums are the same as on my system. Probably kernel problem
-again..
+ > Firmwares tested : 10.4-3.9.0.1-00036
+
+The firmware above is unavailable anywhere.
+
+This patch doesn't seem to work on the latest publicly available 
+firmware, 10.2.4-1.0-00047.
+
+Best regards,
+
+John
 
 _______________________________________________
 ath10k mailing list
