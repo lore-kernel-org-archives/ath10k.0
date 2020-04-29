@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTvHo-0006cm-F0
- for ath10k@lists.infradead.org; Wed, 29 Apr 2020 22:34:38 +0000
-Date: Thu, 30 Apr 2020 06:34:08 +0800
+ id 1jTvI3-0006k2-Av
+ for ath10k@lists.infradead.org; Wed, 29 Apr 2020 22:34:53 +0000
+Date: Thu, 30 Apr 2020 06:34:04 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- f667c308e5a20dee873210ee55bcdb485c8be572
-Message-ID: <5eaa00e0.yOi0ZxrBMGxRhLdl%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 084f4a0687c6590fdd5c4ee3471f94f1979aa321
+Message-ID: <5eaa00dc.DtGY0KeaxdTJWH3M%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: f667c308e5a20dee873210ee55bcdb485c8be572  ath10k: Add support for targets without trustzone
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 084f4a0687c6590fdd5c4ee3471f94f1979aa321  Merge branch 'pending' into master-pending
 
 elapsed time: 481m
 
-configs tested: 194
+configs tested: 184
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -51,19 +51,17 @@ arm64                             allnoconfig
 arm                               allnoconfig
 sparc                            allyesconfig
 s390                                defconfig
+i386                                defconfig
 ia64                        generic_defconfig
 m68k                          multi_defconfig
-sparc                               defconfig
-sh                  sh7785lcr_32bit_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                             alldefconfig
-i386                                defconfig
 i386                              debian-10.3
-ia64                          tiger_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
+ia64                          tiger_defconfig
 ia64                         bigsur_defconfig
 ia64                             allyesconfig
 ia64                             alldefconfig
@@ -90,6 +88,8 @@ arc                                 defconfig
 arc                              allyesconfig
 microblaze                      mmu_defconfig
 microblaze                    nommu_defconfig
+powerpc                             defconfig
+powerpc                           allnoconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
 mips                            ar7_defconfig
@@ -112,83 +112,71 @@ parisc                generic-32bit_defconfig
 parisc                           allyesconfig
 parisc                           allmodconfig
 powerpc                      chrp32_defconfig
-powerpc                             defconfig
 powerpc                       holly_defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
-powerpc                           allnoconfig
 powerpc                  mpc866_ads_defconfig
 powerpc                    amigaone_defconfig
 powerpc                    adder875_defconfig
 powerpc                     ep8248e_defconfig
 powerpc                          g5_defconfig
 powerpc                     mpc512x_defconfig
-parisc               randconfig-a001-20200430
-mips                 randconfig-a001-20200430
-m68k                 randconfig-a001-20200430
-riscv                randconfig-a001-20200430
-alpha                randconfig-a001-20200430
-nds32                randconfig-a001-20200430
 parisc               randconfig-a001-20200429
 m68k                 randconfig-a001-20200429
 alpha                randconfig-a001-20200429
 mips                 randconfig-a001-20200429
 nds32                randconfig-a001-20200429
 riscv                randconfig-a001-20200429
+parisc               randconfig-a001-20200430
+mips                 randconfig-a001-20200430
+m68k                 randconfig-a001-20200430
+riscv                randconfig-a001-20200430
+alpha                randconfig-a001-20200430
+nds32                randconfig-a001-20200430
 nios2                randconfig-a001-20200429
 h8300                randconfig-a001-20200429
 c6x                  randconfig-a001-20200429
 sparc64              randconfig-a001-20200429
 microblaze           randconfig-a001-20200429
-microblaze           randconfig-a001-20200430
-nios2                randconfig-a001-20200430
-h8300                randconfig-a001-20200430
-c6x                  randconfig-a001-20200430
-sparc64              randconfig-a001-20200430
 sh                   randconfig-a001-20200429
 csky                 randconfig-a001-20200429
+s390                 randconfig-a001-20200429
+xtensa               randconfig-a001-20200429
+openrisc             randconfig-a001-20200429
 s390                 randconfig-a001-20200430
 xtensa               randconfig-a001-20200430
 csky                 randconfig-a001-20200430
 openrisc             randconfig-a001-20200430
 sh                   randconfig-a001-20200430
-s390                 randconfig-a001-20200429
-xtensa               randconfig-a001-20200429
-openrisc             randconfig-a001-20200429
-i386                 randconfig-b002-20200429
-i386                 randconfig-b001-20200429
-x86_64               randconfig-b001-20200429
-i386                 randconfig-b003-20200429
-x86_64               randconfig-b002-20200429
-x86_64               randconfig-b003-20200429
-x86_64               randconfig-c001-20200430
-i386                 randconfig-c001-20200430
-i386                 randconfig-c002-20200430
-x86_64               randconfig-c002-20200430
-x86_64               randconfig-c003-20200430
-i386                 randconfig-c003-20200430
+i386                 randconfig-b001-20200430
+i386                 randconfig-b002-20200430
+x86_64               randconfig-b001-20200430
+i386                 randconfig-b003-20200430
+x86_64               randconfig-b002-20200430
+x86_64               randconfig-b003-20200430
+i386                 randconfig-c002-20200429
+i386                 randconfig-c001-20200429
+x86_64               randconfig-c002-20200429
+x86_64               randconfig-c001-20200429
+i386                 randconfig-c003-20200429
+x86_64               randconfig-c003-20200429
+x86_64               randconfig-d002-20200430
+x86_64               randconfig-d001-20200430
+i386                 randconfig-d001-20200430
+i386                 randconfig-d003-20200430
+i386                 randconfig-d002-20200430
+x86_64               randconfig-d003-20200430
 x86_64               randconfig-d001-20200428
 i386                 randconfig-d002-20200428
 i386                 randconfig-d001-20200428
 x86_64               randconfig-d003-20200428
 i386                 randconfig-d003-20200428
-x86_64               randconfig-d001-20200429
-x86_64               randconfig-d002-20200429
-i386                 randconfig-d002-20200429
-i386                 randconfig-d001-20200429
-x86_64               randconfig-d003-20200429
-i386                 randconfig-d003-20200429
-x86_64               randconfig-e002-20200429
-i386                 randconfig-e003-20200429
-i386                 randconfig-e002-20200429
-x86_64               randconfig-e003-20200429
-i386                 randconfig-e001-20200429
-x86_64               randconfig-e001-20200429
-i386                 randconfig-f002-20200429
-i386                 randconfig-f003-20200429
-x86_64               randconfig-f003-20200429
-i386                 randconfig-f001-20200429
-x86_64               randconfig-f001-20200429
+x86_64               randconfig-e002-20200430
+i386                 randconfig-e003-20200430
+x86_64               randconfig-e003-20200430
+i386                 randconfig-e002-20200430
+x86_64               randconfig-e001-20200430
+i386                 randconfig-e001-20200430
 x86_64               randconfig-h001-20200429
 i386                 randconfig-h003-20200429
 x86_64               randconfig-h003-20200429
@@ -214,7 +202,9 @@ s390                             alldefconfig
 sh                          rsk7269_defconfig
 sh                               allmodconfig
 sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
 sh                                allnoconfig
+sparc                               defconfig
 sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
