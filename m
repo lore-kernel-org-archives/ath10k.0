@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+Received: from mail-il1-x144.google.com ([2607:f8b0:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTpSh-0001CE-Kn
- for ath10k@lists.infradead.org; Wed, 29 Apr 2020 16:21:28 +0000
-Received: by mail-wm1-x343.google.com with SMTP id u127so2696647wmg.1
- for <ath10k@lists.infradead.org>; Wed, 29 Apr 2020 09:21:26 -0700 (PDT)
+ id 1jTtLZ-0002fU-1T
+ for ath10k@lists.infradead.org; Wed, 29 Apr 2020 20:30:22 +0000
+Received: by mail-il1-x144.google.com with SMTP id b18so3810389ilf.2
+ for <ath10k@lists.infradead.org>; Wed, 29 Apr 2020 13:30:19 -0700 (PDT)
 MIME-Version: 1.0
-From: Amit Pundir <amit.pundir@linaro.org>
-Date: Wed, 29 Apr 2020 21:50:48 +0530
-Message-ID: <CAMi1Hd1ReJnYsw3Rg6ECGM-7zzciRqJvJGUm3tuYtHhmGipnZA@mail.gmail.com>
-Subject: Ath10k reboot regression with v5.7-rc1 on dragonboard 845c
+In-Reply-To: <87blnbizws.fsf@tynnyri.adurom.net>
+References: <CALY5VB38LT_FNRj5mdvgSJ0YVb6fHyOSM5dJfN8Kdzsuk5wTvA@mail.gmail.com>
+ <87blnbizws.fsf@tynnyri.adurom.net>
+From: Tom Psyborg <pozega.tomislav@gmail.com>
+Date: Wed, 29 Apr 2020 22:30:18 +0200
+Message-ID: <CAKR_QV+yETmzf5Fgfbx_g8RxdfDbT0Uikvt8mUtstT0N0-p7hQ@mail.gmail.com>
+Subject: Re: Poor link speeds and signal strength on Qualcomm QCA 9377
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +25,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Kalle Valo <kvalo@adurom.com>
+Cc: ath10k@lists.infradead.org, Arvind Bakshi <arvindbakshicool@gmail.com>
 
-Hi,
+On 28/04/2020, Kalle Valo <kvalo@adurom.com> wrote:
+> Arvind Bakshi <arvindbakshicool@gmail.com> writes:
+>
+>> Getting 1 mbps link speed and average signal strength, even on
+>> standing next to router on every linux distro whereas windows 10 gives
+>> 150 mbps link speeds and excellent signal strength even standing quite
+>> far off from router. Tested on Fedora 30/31 and ubuntu 18.04/20.04.
+>> Turning off wireless power management : sudo iwconfig wlan0 power off
+>> doesn't make a difference.
+>> Turning off all power saving options using TLP also doesn't make a
+>> difference.
+>> Software (OS, Firmware version, kernel, driver, etc)
+>> Tested on Fedora 30/31 and ubuntu 18.04 LTS
+>> Wifi card: Qualcomm QCA 9377
+>> Device: Dell Vostro 3468 (shipped with ubuntu 16.04)
+>>
+>> Hardware (NIC chipset, platform, etc)
+>> Qualcomm QCA 9377
+>
+> My first guess is a problem with calibration data, for example using
+> wrong board data file (which are device specific). Unfortunately I don't
+> know what would be the correct board data file for your device, ath10k
+> is supposed to choose it automatically but we don't always have all
+> board data files available.
+>
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
 
-I see a reboot regression with v5.7-rc1 on Dragonboard 845c
-(wcn3990/ath10k_snoc) running AOSP. "reboot" or "reboot bootloader"
-commands do not work as expected when the board is connected to WiFi
-AP. I see "ath10k_snoc 18800000.wifi: firmware crashed"... dump in
-dmesg and board reboots into usb debug/crash mode. I do not see this
-reboot regression when the board is not connected to WiFi.
-
-It started with qrtr-ns migration from userspace to kernel which
-landed in v5.7-rc1. I didn't run into this reboot issue when I was
-running qrtr-ns userspace tool. According to Mani, in-kernel qrtr-ns
-just live long enough to catch modem shutdown requests and advertise
-it to the modem, unlike the userspace tool. Which seem to be the case
-here. I further narrowed it down to ath10k_qmi_remove_msa_permission()
-call in ath10k shutdown path. If I comment out that function call then
-the reboot command works as expected.
-
-Any thoughts as to what might be going wrong? I do not understand
-qrtr/ath10k/qmi to see how msa permissions are getting mapped-unmapped
-here. I'd be happy to help debug things.
-
-Regards,
-Amit Pundir
+There's nothing wrong with calibration data. Board and firmware
+checksums are the same as on my system. Probably kernel problem
+again..
 
 _______________________________________________
 ath10k mailing list
