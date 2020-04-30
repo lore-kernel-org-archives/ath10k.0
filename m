@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTvI3-0006k2-Av
- for ath10k@lists.infradead.org; Wed, 29 Apr 2020 22:34:53 +0000
-Date: Thu, 30 Apr 2020 06:34:04 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 084f4a0687c6590fdd5c4ee3471f94f1979aa321
-Message-ID: <5eaa00dc.DtGY0KeaxdTJWH3M%lkp@intel.com>
+ id 1jU0c0-0008Hj-Rh
+ for ath10k@lists.infradead.org; Thu, 30 Apr 2020 04:15:50 +0000
+Subject: RE: Ath10k reboot regression with v5.7-rc1 on dragonboard 845c
+From: Govind Singh <govinds@qti.qualcomm.com>
+Date: Thu, 30 Apr 2020 04:15:42 +0000
+Message-ID: <DM5PR02MB38935D19B8733C543FDC8BA09CAA0@DM5PR02MB3893.namprd02.prod.outlook.com>
+References: <CAMi1Hd1ReJnYsw3Rg6ECGM-7zzciRqJvJGUm3tuYtHhmGipnZA@mail.gmail.com>
+In-Reply-To: <CAMi1Hd1ReJnYsw3Rg6ECGM-7zzciRqJvJGUm3tuYtHhmGipnZA@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,208 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Amit Pundir <amit.pundir@linaro.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>, John Stultz <john.stultz@linaro.org>, "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 084f4a0687c6590fdd5c4ee3471f94f1979aa321  Merge branch 'pending' into master-pending
+Hi Amit,
+Seems del_server is being notified early due to qrtr-ns migration from userspace to kernel prior remote(modem + wifi) actually went down.
+As per of del_server we are removing the MSA permission via SCM call, but remote(wifi user pd in modem Q6) is still accessing the region.
 
-elapsed time: 481m
+BR,
+Govind
 
-configs tested: 184
-configs skipped: 0
+-----Original Message-----
+From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Amit Pundir
+Sent: Wednesday, April 29, 2020 9:51 PM
+To: ath10k@lists.infradead.org
+Cc: bjorn.andersson@linaro.org; John Stultz <john.stultz@linaro.org>; manivannan.sadhasivam@linaro.org
+Subject: [EXT] Ath10k reboot regression with v5.7-rc1 on dragonboard 845c
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi,
 
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-s390                                defconfig
-i386                                defconfig
-ia64                        generic_defconfig
-m68k                          multi_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-m68k                       bvme6000_defconfig
-m68k                           sun3_defconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-xtensa                          iss_defconfig
-h8300                    h8300h-sim_defconfig
-xtensa                       common_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                             defconfig
-powerpc                           allnoconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                            ar7_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-mips                malta_kvm_guest_defconfig
-mips                         tb0287_defconfig
-mips                       capcella_defconfig
-mips                           ip32_defconfig
-mips                  decstation_64_defconfig
-mips                      loongson3_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                      chrp32_defconfig
-powerpc                       holly_defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                    amigaone_defconfig
-powerpc                    adder875_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                          g5_defconfig
-powerpc                     mpc512x_defconfig
-parisc               randconfig-a001-20200429
-m68k                 randconfig-a001-20200429
-alpha                randconfig-a001-20200429
-mips                 randconfig-a001-20200429
-nds32                randconfig-a001-20200429
-riscv                randconfig-a001-20200429
-parisc               randconfig-a001-20200430
-mips                 randconfig-a001-20200430
-m68k                 randconfig-a001-20200430
-riscv                randconfig-a001-20200430
-alpha                randconfig-a001-20200430
-nds32                randconfig-a001-20200430
-nios2                randconfig-a001-20200429
-h8300                randconfig-a001-20200429
-c6x                  randconfig-a001-20200429
-sparc64              randconfig-a001-20200429
-microblaze           randconfig-a001-20200429
-sh                   randconfig-a001-20200429
-csky                 randconfig-a001-20200429
-s390                 randconfig-a001-20200429
-xtensa               randconfig-a001-20200429
-openrisc             randconfig-a001-20200429
-s390                 randconfig-a001-20200430
-xtensa               randconfig-a001-20200430
-csky                 randconfig-a001-20200430
-openrisc             randconfig-a001-20200430
-sh                   randconfig-a001-20200430
-i386                 randconfig-b001-20200430
-i386                 randconfig-b002-20200430
-x86_64               randconfig-b001-20200430
-i386                 randconfig-b003-20200430
-x86_64               randconfig-b002-20200430
-x86_64               randconfig-b003-20200430
-i386                 randconfig-c002-20200429
-i386                 randconfig-c001-20200429
-x86_64               randconfig-c002-20200429
-x86_64               randconfig-c001-20200429
-i386                 randconfig-c003-20200429
-x86_64               randconfig-c003-20200429
-x86_64               randconfig-d002-20200430
-x86_64               randconfig-d001-20200430
-i386                 randconfig-d001-20200430
-i386                 randconfig-d003-20200430
-i386                 randconfig-d002-20200430
-x86_64               randconfig-d003-20200430
-x86_64               randconfig-d001-20200428
-i386                 randconfig-d002-20200428
-i386                 randconfig-d001-20200428
-x86_64               randconfig-d003-20200428
-i386                 randconfig-d003-20200428
-x86_64               randconfig-e002-20200430
-i386                 randconfig-e003-20200430
-x86_64               randconfig-e003-20200430
-i386                 randconfig-e002-20200430
-x86_64               randconfig-e001-20200430
-i386                 randconfig-e001-20200430
-x86_64               randconfig-h001-20200429
-i386                 randconfig-h003-20200429
-x86_64               randconfig-h003-20200429
-i386                 randconfig-h002-20200429
-i386                 randconfig-h001-20200429
-sparc                randconfig-a001-20200429
-ia64                 randconfig-a001-20200429
-powerpc              randconfig-a001-20200429
-arm                  randconfig-a001-20200429
-arc                  randconfig-a001-20200429
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+I see a reboot regression with v5.7-rc1 on Dragonboard 845c
+(wcn3990/ath10k_snoc) running AOSP. "reboot" or "reboot bootloader"
+commands do not work as expected when the board is connected to WiFi AP. I see "ath10k_snoc 18800000.wifi: firmware crashed"... dump in dmesg and board reboots into usb debug/crash mode. I do not see this reboot regression when the board is not connected to WiFi.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+It started with qrtr-ns migration from userspace to kernel which landed in v5.7-rc1. I didn't run into this reboot issue when I was running qrtr-ns userspace tool. According to Mani, in-kernel qrtr-ns just live long enough to catch modem shutdown requests and advertise it to the modem, unlike the userspace tool. Which seem to be the case here. I further narrowed it down to ath10k_qmi_remove_msa_permission()
+call in ath10k shutdown path. If I comment out that function call then the reboot command works as expected.
+
+Any thoughts as to what might be going wrong? I do not understand qrtr/ath10k/qmi to see how msa permissions are getting mapped-unmapped here. I'd be happy to help debug things.
+
+Regards,
+Amit Pundir
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
