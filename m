@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVXEN-0003Nu-MX
- for ath10k@lists.infradead.org; Mon, 04 May 2020 09:17:45 +0000
+ id 1jVZfx-0008HE-9l
+ for ath10k@lists.infradead.org; Mon, 04 May 2020 11:54:23 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] Allow qca988x family to support ack rssi of tx data
- packets.
-References: <20200312082047.487DAC433D2@smtp.codeaurora.org>
- <9827dda3-7a4a-5e10-071a-c7b4e4044572@gmail.com>
- <87y2qde08w.fsf@kamboji.qca.qualcomm.com>
- <6355ca22-f09a-5091-fc52-7a7e8f554323@gmail.com>
-Date: Mon, 04 May 2020 12:17:38 +0300
-In-Reply-To: <6355ca22-f09a-5091-fc52-7a7e8f554323@gmail.com> (John Deere's
- message of "Thu, 30 Apr 2020 22:16:59 +0800")
-Message-ID: <87pnbkdpot.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 04/15] ath10k: fix gcc-10 zero-length-bounds warnings
+References: <20200430213101.135134-1-arnd@arndb.de>
+ <20200430213101.135134-5-arnd@arndb.de>
+ <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com>
+Date: Mon, 04 May 2020 14:54:13 +0300
+In-Reply-To: <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com> (Gustavo A.
+ R. Silva's message of "Thu, 30 Apr 2020 16:45:32 -0500")
+Message-ID: <87368flxui.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,48 +25,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: John Deere <24601deerej@gmail.com>
-Cc: Yibo Zhao <yiboz@codeaurora.org>, ath10k@lists.infradead.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
 
-(Fixing top posting and adding Yibo)
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> writes:
 
-John Deere <24601deerej@gmail.com> writes:
-
-> On 4/30/20 6:28 PM, Kalle Valo wrote:
->> John Deere <24601deerej@gmail.com> writes:
->>
->>> Hello,
->>>
->>>> Firmwares tested : 10.4-3.9.0.1-00036
->>>
->>> The firmware above is unavailable anywhere.
->>
->> It's here:
->>
->> https://github.com/kvalo/ath10k-firmware/blob/master/QCA9984/hw1.0/3.9.0.1/firmware-5.bin_10.4-3.9.0.1-00036
+> Hi Arnd,
 >
-> That is for the QCA9884, not the QCA9887 as listed in the hardware tested.
+> On 4/30/20 16:30, Arnd Bergmann wrote:
+>> gcc-10 started warning about out-of-bounds access for zero-length
+>> arrays:
+>> 
+>> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
+>>                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
+>> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
+>> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
+>>  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
+>>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
+>>  1676 |  struct htt_tx_fetch_record records[0];
+>>       |                             ^~~~~~~
+>> 
+>> The structure was already converted to have a flexible-array member in
+>> the past, but there are two zero-length members in the end and only
+>> one of them can be a flexible-array member.
+>> 
+>> Swap the two around to avoid the warning, as 'resp_ids' is not accessed
+>> in a way that causes a warning.
+>> 
+>> Fixes: 3ba225b506a2 ("treewide: Replace zero-length array with flexible-array member")
+>> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/htt.h | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+>> index e7096a73c6ca..7621f0a3dc77 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt.h
+>> +++ b/drivers/net/wireless/ath/ath10k/htt.h
+>> @@ -1673,8 +1673,8 @@ struct htt_tx_fetch_ind {
+>>  	__le32 token;
+>>  	__le16 num_resp_ids;
+>>  	__le16 num_records;
+>> -	struct htt_tx_fetch_record records[0];
+>> -	__le32 resp_ids[]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+>> +	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+>> +	struct htt_tx_fetch_record records[];
+>>  } __packed;
+>>  
+>>  static inline void *
+>> 
+>
+> The treewide patch is an experimental change and, as this change only applies
+> to my -next tree, I will carry this patch in it, so other people don't have
+> to worry about this at all.
 
-Good point, I missed that. Thanks for pointing it out.
-
-So we are talking about this commit:
-
-commit 5637c4ca961bc72ae3cce4bd5cbcecb5b8e32a54
-Author:     Yibo Zhao <yiboz@codeaurora.org>
-AuthorDate: Wed Mar 11 19:23:29 2020 +0200
-Commit:     Kalle Valo <kvalo@codeaurora.org>
-CommitDate: Thu Mar 12 10:20:02 2020 +0200
-
-    ath10k: allow qca988x family to support ack rssi of tx data packets.
-    
-    Hardwares tested : QCA9887
-    Firmwares tested : 10.4-3.9.0.1-00036
-    
-    Signed-off-by: Yibo Zhao <yiboz@codeaurora.org>
-    Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Yibo, we don't have 10.4 firmware for QCA9887 so the commit log doesn't
-make sense. How did you test this on QCA9887?
+Gustavo, why do you have ath10k patches in your tree? I prefer that
+ath10k patches go through my ath.git tree so that they are reviewed and
+tested.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
