@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Subject: Re: [PATCH 1/2] ath10k: use cumulative survey statistics
-References: <20200504154122.91862-1-markus.theil@tu-ilmenau.de>
- <f772b7bf0eac31516a4e28719c1938f2@codeaurora.org>
- <323b4d4f-a967-cf63-6f5a-04f53802c50a@candelatech.com>
- <4b03993ba81a8e9ebb1203c0b8aa90f6@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <9044aa57-ceb2-fecd-e220-eb8b7c0db4b5@candelatech.com>
-Date: Mon, 4 May 2020 17:02:42 -0700
+Received: from mga12.intel.com ([192.55.52.136])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jVlNm-00084m-RK
+ for ath10k@lists.infradead.org; Tue, 05 May 2020 00:24:24 +0000
+Date: Tue, 05 May 2020 08:23:49 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 657680cc86ca4b5d49b5bb313b1320fb8439528c
+Message-ID: <5eb0b215.kvVo4eEwCniIcQO+%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <4b03993ba81a8e9ebb1203c0b8aa90f6@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,51 +17,238 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>, ath10k@lists.infradead.org, ath11k@lists.infradead.org, kvalo@codeaurora.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 657680cc86ca4b5d49b5bb313b1320fb8439528c  ath11k: add DBG_MAC prints to track vdev events
 
+elapsed time: 509m
 
-On 05/04/2020 04:52 PM, Rajkumar Manoharan wrote:
-> On 2020-05-04 16:49, Ben Greear wrote:
->> On 05/04/2020 04:46 PM, Rajkumar Manoharan wrote:
->>> On 2020-05-04 08:41, Markus Theil wrote:
->>>> ath10k currently reports survey results for the last interval between each
->>>> invocation of NL80211_CMD_GET_SURVEY. For concurrent invocations, this
->>>> can lead to unexpectedly small results, e.g. when hostapd uses survey
->>>> data and iw survey dump is invoked in parallel. Fix this by returning
->>>> cumulative results, that don't depend on the last invocation. Other
->>>> drivers, e.g. ath9k or mt76 also use this behavior.
->>>>
->>>> Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
->>>>
->>>
->>> IIRC this was fixed a while ago by below patch. Somehow it never landed in ath.git.
->>> Simple one line change is enough.
->>>
->>> https://patchwork.kernel.org/patch/10550707/
->>>
->>> -Rajkumar
->>
->> Have you tested this with wave-1?  Lots of older, at least, firmware
->> has brokenness in this area.
->>
-> Yes. It was tested in wave-1 as well. Venkat replied to your comment on original change.
+configs tested: 210
+configs skipped: 0
 
-Ahh, sorry I missed that.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Hopefully no one is using the broken firmware anymore then!
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+arc                              allyesconfig
+ia64                        generic_defconfig
+mips                            ar7_defconfig
+riscv                             allnoconfig
+parisc                           allmodconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                       common_defconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+powerpc                      chrp32_defconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+powerpc                     mpc512x_defconfig
+m68k                 randconfig-a001-20200505
+mips                 randconfig-a001-20200505
+nds32                randconfig-a001-20200505
+parisc               randconfig-a001-20200505
+alpha                randconfig-a001-20200505
+riscv                randconfig-a001-20200505
+m68k                 randconfig-a001-20200503
+mips                 randconfig-a001-20200503
+nds32                randconfig-a001-20200503
+alpha                randconfig-a001-20200503
+parisc               randconfig-a001-20200503
+riscv                randconfig-a001-20200503
+h8300                randconfig-a001-20200503
+nios2                randconfig-a001-20200503
+microblaze           randconfig-a001-20200503
+c6x                  randconfig-a001-20200503
+sparc64              randconfig-a001-20200503
+s390                 randconfig-a001-20200504
+xtensa               randconfig-a001-20200504
+sh                   randconfig-a001-20200504
+openrisc             randconfig-a001-20200504
+csky                 randconfig-a001-20200504
+s390                 randconfig-a001-20200505
+xtensa               randconfig-a001-20200505
+sh                   randconfig-a001-20200505
+openrisc             randconfig-a001-20200505
+csky                 randconfig-a001-20200505
+s390                 randconfig-a001-20200430
+xtensa               randconfig-a001-20200430
+csky                 randconfig-a001-20200430
+openrisc             randconfig-a001-20200430
+sh                   randconfig-a001-20200430
+s390                 randconfig-a001-20200502
+xtensa               randconfig-a001-20200502
+sh                   randconfig-a001-20200502
+openrisc             randconfig-a001-20200502
+csky                 randconfig-a001-20200502
+i386                 randconfig-b003-20200503
+x86_64               randconfig-b002-20200503
+i386                 randconfig-b001-20200503
+x86_64               randconfig-b003-20200503
+x86_64               randconfig-b001-20200503
+i386                 randconfig-b002-20200503
+x86_64               randconfig-c002-20200502
+i386                 randconfig-c002-20200502
+i386                 randconfig-c001-20200502
+i386                 randconfig-c003-20200502
+x86_64               randconfig-c001-20200503
+x86_64               randconfig-c002-20200503
+i386                 randconfig-c002-20200503
+x86_64               randconfig-c003-20200503
+i386                 randconfig-c001-20200503
+i386                 randconfig-c003-20200503
+x86_64               randconfig-d001-20200503
+i386                 randconfig-d003-20200503
+x86_64               randconfig-d003-20200503
+i386                 randconfig-d001-20200503
+x86_64               randconfig-d002-20200503
+i386                 randconfig-d002-20200503
+x86_64               randconfig-e003-20200503
+x86_64               randconfig-e002-20200503
+i386                 randconfig-e003-20200503
+x86_64               randconfig-e001-20200503
+i386                 randconfig-e002-20200503
+i386                 randconfig-e001-20200503
+i386                 randconfig-f003-20200503
+x86_64               randconfig-f002-20200503
+i386                 randconfig-f001-20200503
+i386                 randconfig-f002-20200503
+i386                 randconfig-f003-20200505
+x86_64               randconfig-f001-20200505
+x86_64               randconfig-f003-20200505
+i386                 randconfig-f001-20200505
+i386                 randconfig-f002-20200505
+x86_64               randconfig-g003-20200503
+i386                 randconfig-g003-20200503
+i386                 randconfig-g002-20200503
+x86_64               randconfig-g001-20200503
+i386                 randconfig-g001-20200503
+x86_64               randconfig-a003-20200505
+x86_64               randconfig-a001-20200505
+i386                 randconfig-a001-20200505
+i386                 randconfig-a003-20200505
+i386                 randconfig-a002-20200505
+ia64                 randconfig-a001-20200503
+arm64                randconfig-a001-20200503
+arc                  randconfig-a001-20200503
+arm                  randconfig-a001-20200503
+sparc                randconfig-a001-20200503
+ia64                 randconfig-a001-20200505
+powerpc              randconfig-a001-20200505
+arm                  randconfig-a001-20200505
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
---Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
