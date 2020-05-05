@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVs5z-0004Z1-79
- for ath10k@lists.infradead.org; Tue, 05 May 2020 07:34:39 +0000
+ id 1jVs6h-0004Z1-CM
+ for ath10k@lists.infradead.org; Tue, 05 May 2020 07:35:16 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Avoid override CE5 configuration for QCA99X0
- chipsets
+Subject: Re: [PATCH v2] ath10k: remove the max_sched_scan_reqs value
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
-References: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
-Message-Id: <20200505073422.BFA51C433BA@smtp.codeaurora.org>
-Date: Tue,  5 May 2020 07:34:22 +0000 (UTC)
+In-Reply-To: <20191114050001.4658-1-wgong@codeaurora.org>
+References: <20191114050001.4658-1-wgong@codeaurora.org>
+Message-Id: <20200505073510.09023C433F2@smtp.codeaurora.org>
+Date: Tue,  5 May 2020 07:35:10 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> As the exisiting CE configurations are defined in global, there
-> are the chances of QCA99X0 family chipsets CE configurations
-> are getting changed by the ath10k_pci_override_ce_config()
-> function.
+> The struct cfg80211_wowlan of NET_DETECT WoWLAN feature share the same
+> struct cfg80211_sched_scan_request together with scheduled scan request
+> feature, and max_sched_scan_reqs of wiphy is only used for sched scan,
+> and ath10k does not support scheduled scan request feature, so ath10k
+> does not set flag NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, but ath10k
+> set max_sched_scan_reqs of wiphy to a non zero value 1, then function
+> nl80211_add_commands_unsplit of cfg80211 will set it support command
+> NL80211_CMD_START_SCHED_SCAN because max_sched_scan_reqs is a non zero
+> value, but actually ath10k not support it, then it leads a mismatch result
+> for sched scan of cfg80211, then application shill found the mismatch and
+> stop running case of MAC random address scan and then the case fail.
 > 
-> The override will be hit and CE5 configurations will be changed,
-> when the user bring up the QCA99X0 chipsets along with QCA6174
-> or QCA9377 chipset. (Bring up QCA99X0 family chipsets after
-> QCA6174 or QCA9377).
+> After remove max_sched_scan_reqs value, it keeps match for sched scan and
+> case of MAC random address scan pass.
 > 
-> Hence, fixing this issue by moving the global CE configuration
-> to radio specific CE configuration.
+> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
+> Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
 > 
-> Tested hardware: QCA9888 & QCA6174
-> Tested firmware: 10.4-3.10-00047 & WLAN.RM.4.4.1.c3-00058
-> 
-> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+> Fixes: ce834e280f2f875 ("ath10k: support NET_DETECT WoWLAN feature")
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-521fc37be3d8 ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
+d431f8939c14 ath10k: remove the max_sched_scan_reqs value
 
 -- 
-https://patchwork.kernel.org/patch/11505695/
+https://patchwork.kernel.org/patch/11243015/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
