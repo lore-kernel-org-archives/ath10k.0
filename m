@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVs6h-0004Z1-CM
- for ath10k@lists.infradead.org; Tue, 05 May 2020 07:35:16 +0000
+ id 1jVs89-00086X-W2
+ for ath10k@lists.infradead.org; Tue, 05 May 2020 07:36:44 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: remove the max_sched_scan_reqs value
+Subject: Re: [PATCH v3 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
+ wifi node
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20191114050001.4658-1-wgong@codeaurora.org>
-References: <20191114050001.4658-1-wgong@codeaurora.org>
-Message-Id: <20200505073510.09023C433F2@smtp.codeaurora.org>
-Date: Tue,  5 May 2020 07:35:10 +0000 (UTC)
+In-Reply-To: <1586971906-20985-2-git-send-email-pillair@codeaurora.org>
+References: <1586971906-20985-2-git-send-email-pillair@codeaurora.org>
+Message-Id: <20200505073625.1F1B5C433BA@smtp.codeaurora.org>
+Date: Tue,  5 May 2020 07:36:25 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +23,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> The struct cfg80211_wowlan of NET_DETECT WoWLAN feature share the same
-> struct cfg80211_sched_scan_request together with scheduled scan request
-> feature, and max_sched_scan_reqs of wiphy is only used for sched scan,
-> and ath10k does not support scheduled scan request feature, so ath10k
-> does not set flag NL80211_FEATURE_SCHED_SCAN_RANDOM_MAC_ADDR, but ath10k
-> set max_sched_scan_reqs of wiphy to a non zero value 1, then function
-> nl80211_add_commands_unsplit of cfg80211 will set it support command
-> NL80211_CMD_START_SCHED_SCAN because max_sched_scan_reqs is a non zero
-> value, but actually ath10k not support it, then it leads a mismatch result
-> for sched scan of cfg80211, then application shill found the mismatch and
-> stop running case of MAC random address scan and then the case fail.
+> Add a wifi-firmware subnode for the wifi node.
+> This wifi-firmware subnode is needed for the
+> targets which do not support TrustZone.
 > 
-> After remove max_sched_scan_reqs value, it keeps match for sched scan and
-> case of MAC random address scan pass.
-> 
-> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
-> Tested with QCA6174 PCIe with firmware WLAN.RM.4.4.1-00110-QCARMSWP-1.
-> 
-> Fixes: ce834e280f2f875 ("ath10k: support NET_DETECT WoWLAN feature")
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Acked-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+3 patches applied to ath-next branch of ath.git, thanks.
 
-d431f8939c14 ath10k: remove the max_sched_scan_reqs value
+85325c24d5d2 dt-bindings: ath10k: Add wifi-firmware subnode for wifi node
+727fec790ead ath10k: Setup the msa resources before qmi init
+1423f4327331 ath10k: Add support for targets without trustzone
 
 -- 
-https://patchwork.kernel.org/patch/11243015/
+https://patchwork.kernel.org/patch/11491759/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
