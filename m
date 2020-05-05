@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVpcx-0002H8-HJ
- for ath10k@lists.infradead.org; Tue, 05 May 2020 04:56:22 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 04/15] ath10k: fix gcc-10 zero-length-bounds warnings
-References: <20200430213101.135134-1-arnd@arndb.de>
- <20200430213101.135134-5-arnd@arndb.de>
- <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com>
- <87368flxui.fsf@codeaurora.org>
- <69f5c551-01ab-3b90-01a1-42514cd58f60@embeddedor.com>
-Date: Tue, 05 May 2020 07:56:03 +0300
-In-Reply-To: <69f5c551-01ab-3b90-01a1-42514cd58f60@embeddedor.com> (Gustavo A.
- R. Silva's message of "Mon, 4 May 2020 11:09:21 -0500")
-Message-ID: <87d07jdlp8.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath11k: use cumulative survey statistics
+References: <20200504154122.91862-1-markus.theil@tu-ilmenau.de>
+ <20200504154122.91862-2-markus.theil@tu-ilmenau.de>
+ <85fa2d5f9183b3a12c5283b800f3750f@codeaurora.org>
+From: Markus Theil <markus.theil@tu-ilmenau.de>
+Message-ID: <c786e982-fcd6-2368-6b2f-f09b265654d6@tu-ilmenau.de>
+Date: Tue, 5 May 2020 08:53:24 +0200
 MIME-Version: 1.0
+In-Reply-To: <85fa2d5f9183b3a12c5283b800f3750f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,83 +16,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, ath11k@lists.infradead.org
 
-"Gustavo A. R. Silva" <gustavo@embeddedor.com> writes:
-
-> On 5/4/20 06:54, Kalle Valo wrote:
->> "Gustavo A. R. Silva" <gustavo@embeddedor.com> writes:
->> 
->>> Hi Arnd,
->>>
->>> On 4/30/20 16:30, Arnd Bergmann wrote:
->>>> gcc-10 started warning about out-of-bounds access for zero-length
->>>> arrays:
->>>>
->>>> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
->>>>                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
->>>> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
->>>> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
->>>>  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
->>>>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
->>>>  1676 |  struct htt_tx_fetch_record records[0];
->>>>       |                             ^~~~~~~
->>>>
->>>> The structure was already converted to have a flexible-array member in
->>>> the past, but there are two zero-length members in the end and only
->>>> one of them can be a flexible-array member.
->>>>
->>>> Swap the two around to avoid the warning, as 'resp_ids' is not accessed
->>>> in a way that causes a warning.
->>>>
->>>> Fixes: 3ba225b506a2 ("treewide: Replace zero-length array with flexible-array member")
->>>> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
->>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>> ---
->>>>  drivers/net/wireless/ath/ath10k/htt.h | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
->>>> index e7096a73c6ca..7621f0a3dc77 100644
->>>> --- a/drivers/net/wireless/ath/ath10k/htt.h
->>>> +++ b/drivers/net/wireless/ath/ath10k/htt.h
->>>> @@ -1673,8 +1673,8 @@ struct htt_tx_fetch_ind {
->>>>  	__le32 token;
->>>>  	__le16 num_resp_ids;
->>>>  	__le16 num_records;
->>>> -	struct htt_tx_fetch_record records[0];
->>>> -	__le32 resp_ids[]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
->>>> +	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
->>>> +	struct htt_tx_fetch_record records[];
->>>>  } __packed;
->>>>  
->>>>  static inline void *
->>>>
->>>
->>> The treewide patch is an experimental change and, as this change only applies
->>> to my -next tree, I will carry this patch in it, so other people don't have
->>> to worry about this at all.
->> 
->> Gustavo, why do you have ath10k patches in your tree? I prefer that
->> ath10k patches go through my ath.git tree so that they are reviewed and
->> tested.
->> 
->
-> I just wanted to test out a mechanical change. I will remove it from my tree
-> now and will send a patch to you so you can apply it to your ath.git tree.
-
-Great, thanks.
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMDUuMDUuMjAyMCB1bSAwMTozNyBzY2hyaWViIFJhamt1bWFyIE1hbm9oYXJhbjoKPiBPbiAy
+MDIwLTA1LTA0IDA4OjQxLCBNYXJrdXMgVGhlaWwgd3JvdGU6Cj4+IGF0aDExayBjdXJyZW50bHkg
+cmVwb3J0cyBzdXJ2ZXkgcmVzdWx0cyBmb3IgdGhlIGxhc3QgaW50ZXJ2YWwgYmV0d2VlbiAKPj4g
+ZWFjaAo+PiBpbnZvY2F0aW9uIG9mIE5MODAyMTFfQ01EX0dFVF9TVVJWRVkuIEZvciBjb25jdXJy
+ZW50IGludm9jYXRpb25zLCB0aGlzCj4+IGNhbiBsZWFkIHRvIHVuZXhwZWN0ZWRseSBzbWFsbCBy
+ZXN1bHRzLCBlLmcuIHdoZW4gaG9zdGFwZCB1c2VzIHN1cnZleQo+PiBkYXRhIGFuZCBpdyBzdXJ2
+ZXkgZHVtcCBpcyBpbnZva2VkIGluIHBhcmFsbGVsLiBGaXggdGhpcyBieSByZXR1cm5pbmcKPj4g
+Y3VtdWxhdGl2ZSByZXN1bHRzLCB0aGF0IGRvbid0IGRlcGVuZCBvbiB0aGUgbGFzdCBpbnZvY2F0
+aW9uLiBPdGhlcgo+PiBkcml2ZXJzLCBlLmcuIGF0aDlrIG9yIG10NzYgYWxzbyB1c2UgdGhpcyBi
+ZWhhdmlvci4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWFya3VzIFRoZWlsIDxtYXJrdXMudGhlaWxA
+dHUtaWxtZW5hdS5kZT4KPj4gLS0tCj4+IMKgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEx
+ay93bWkuYyB8IDIwICsrKysrKysrKystLS0tLS0tLS0tCj4+IMKgMSBmaWxlIGNoYW5nZWQsIDEw
+IGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDExay93bWkuYwo+PiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMWsvd21pLmMKPj4gaW5kZXggYzJhOTcyMzc3Njg3Li4zMjJkZGZkYTViZmQgMTAw
+NjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMWsvd21pLmMKPj4gKysr
+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDExay93bWkuYwo+PiBAQCAtNTYxMCwxNiAr
+NTYxMCwxNiBAQCBhdGgxMWtfcGRldl9ic3NfY2hhbl9pbmZvX2V2ZW50KHN0cnVjdAo+PiBhdGgx
+MWtfYmFzZSAqYWIsIHN0cnVjdCBza19idWZmICpza2IpCj4+Cj4+IMKgwqDCoMKgIHN1cnZleSA9
+ICZhci0+c3VydmV5W2lkeF07Cj4+Cj4+IC3CoMKgwqAgc3VydmV5LT5ub2lzZcKgwqDCoMKgID0g
+YnNzX2NoX2luZm9fZXYubm9pc2VfZmxvb3I7Cj4+IC3CoMKgwqAgc3VydmV5LT50aW1lwqDCoMKg
+wqDCoCA9IGRpdl91NjQodG90YWwsIGNjX2ZyZXFfaHopOwo+PiAtwqDCoMKgIHN1cnZleS0+dGlt
+ZV9idXN5ID0gZGl2X3U2NChidXN5LCBjY19mcmVxX2h6KTsKPj4gLcKgwqDCoCBzdXJ2ZXktPnRp
+bWVfcnjCoMKgID0gZGl2X3U2NChyeF9ic3MsIGNjX2ZyZXFfaHopOwo+PiAtwqDCoMKgIHN1cnZl
+eS0+dGltZV90eMKgwqAgPSBkaXZfdTY0KHR4LCBjY19mcmVxX2h6KTsKPj4gLcKgwqDCoCBzdXJ2
+ZXktPmZpbGxlZMKgwqAgfD0gKFNVUlZFWV9JTkZPX05PSVNFX0RCTSB8Cj4+IC3CoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTVVJWRVlfSU5GT19USU1FIHwKPj4gLcKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNVUlZFWV9JTkZPX1RJTUVfQlVTWSB8Cj4+IC3CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTVVJWRVlfSU5GT19USU1FX1JYIHwKPj4gLcKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNVUlZFWV9JTkZPX1RJTUVfVFgpOwo+PiArwqDC
+oMKgIHN1cnZleS0+bm9pc2XCoMKgwqDCoMKgID0gYnNzX2NoX2luZm9fZXYubm9pc2VfZmxvb3I7
+Cj4+ICvCoMKgwqAgc3VydmV5LT50aW1lwqDCoMKgwqDCoCArPSBkaXZfdTY0KHRvdGFsLCBjY19m
+cmVxX2h6KTsKPj4gK8KgwqDCoCBzdXJ2ZXktPnRpbWVfYnVzeSArPSBkaXZfdTY0KGJ1c3ksIGNj
+X2ZyZXFfaHopOwo+PiArwqDCoMKgIHN1cnZleS0+dGltZV9yeMKgwqAgKz0gZGl2X3U2NChyeF9i
+c3MsIGNjX2ZyZXFfaHopOwo+PiArwqDCoMKgIHN1cnZleS0+dGltZV90eMKgwqAgKz0gZGl2X3U2
+NCh0eCwgY2NfZnJlcV9oeik7Cj4+ICvCoMKgwqAgc3VydmV5LT5maWxsZWTCoMKgwqAgfD0gKFNV
+UlZFWV9JTkZPX05PSVNFX0RCTSB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIFNVUlZFWV9JTkZPX1RJTUUgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBTVVJWRVlfSU5GT19USU1FX0JVU1kgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBTVVJWRVlfSU5GT19USU1FX1JYIHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgU1VSVkVZX0lORk9fVElNRV9UWCk7Cj4KPiBNYXJrdXMsCj4KPiBJdCBk
+ZXBlbmRzIG9uIHR5cGUgb2Ygc3VydmV5IHJlcXVlc3QgaXMgZ2l2ZW4gdG8gZmlybXdhcmUuIElu
+IGF0aDExaywgCj4gZmlybXdhcmUgcmVwb3J0cwo+IGFjY3VtdWxhdGVkIHZhbHVlcy4gU28gdGhl
+IGFib3ZlIGFkZGl0aW9uIGlzIHdyb25nIGFuZCByZXBvcnQgZG91YmxlIAo+IHZhbHVlLiBIYXZl
+IHlvdQo+IHRlc3RlZCB0aGlzIGNoYW5nZT8KPgo+IC1SYWprdW1hcgpPaywgc28gcGxlYXNlIGRy
+b3AgYm90aCBvZiBteSBwYXRjaGVzLiBNeSBhc3N1bXB0aW9ucyB3ZXJlIGluY29tcGxldGUgCmFu
+ZCB0b28gaHVtYmxlLiBJIGp1c3QgYXNzdW1lZCwgYXRoMTBrIGFuZCBhdGgxMWsgYm90aCB1c2Ug
+aW5jcmVtZW50YWwgCnN1cnZleXMuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
