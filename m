@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH 1/2] ath10k: use cumulative survey statistics
-Date: Tue, 05 May 2020 09:49:46 +0200
-Message-ID: <1845755.pTfhzBy2qg@bentobox>
-In-Reply-To: <2335594.cnkAv9Vaq7@bentobox>
-References: <20200504154122.91862-1-markus.theil@tu-ilmenau.de>
- <f772b7bf0eac31516a4e28719c1938f2@codeaurora.org>
- <2335594.cnkAv9Vaq7@bentobox>
+Received: from mail27.static.mailgun.info ([104.130.122.27])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jVsMS-00025i-S4
+ for ath10k@lists.infradead.org; Tue, 05 May 2020 07:51:30 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Replace zero-length array with flexible-array
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200504201108.GA32136@embeddedor>
+References: <20200504201108.GA32136@embeddedor>
+Message-Id: <20200505075126.C6D62C433D2@smtp.codeaurora.org>
+Date: Tue,  5 May 2020 07:51:26 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,74 +18,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3406996777522705258=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath11k@lists.infradead.org
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>, ath10k@lists.infradead.org, kvalo@codeaurora.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
 
---===============3406996777522705258==
-Content-Type: multipart/signed; boundary="nextPart4024693.4Mujkspm9b"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
 
---nextPart4024693.4Mujkspm9b
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Tuesday, 5 May 2020 09:01:34 CEST Sven Eckelmann wrote:
-> On Tuesday, 5 May 2020 01:46:12 CEST Rajkumar Manoharan wrote:
-> [...]
-> > IIRC this was fixed a while ago by below patch. Somehow it never landed 
-> > in ath.git.
-> > Simple one line change is enough.
-> > 
-> > https://patchwork.kernel.org/patch/10550707/
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
 > 
-> Because it doesn't work for everything. Remember that 10.2.4.x overflows all 
-> the time (14-30s) because it used only 31 bit for the counters.
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
 > 
-> But feel free to point me to the firmware version which fixed this.
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-See also https://patchwork.kernel.org/patch/9701459/
+Fails to apply, please rebase on top of ath.git master branch.
 
-Kind regards,
-	Sven
---nextPart4024693.4Mujkspm9b
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+error: patch failed: drivers/net/wireless/ath/ath10k/pci.h:182
+error: drivers/net/wireless/ath/ath10k/pci.h: patch does not apply
+stg import: Diff does not apply cleanly
 
------BEGIN PGP SIGNATURE-----
+Patch set to Changes Requested.
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl6xGpoACgkQXYcKB8Em
-e0ZzCRAAgqYCt2mvPP4dcDSuLObeeqnrlCg1zGaJJZTOYiTbGbBOFPKRKKWoX/PG
-manCnusFGFRHSpoGC94W89wlOJ6EW9x2RMy7ylws0z15iOzziE6faiE9XNuczjQw
-+NVHZthe6xgWq5iORv2+zGtVqPPjvzoVcObZyyTdWtYmnVEb/Vo5W0g713/ha42K
-IHfFLbcwdW3OjVFEd88hEt6sOaMeM86ZmZql6cox23CNzYfG76BcNUvgta7l2Tr1
-MvpLrattlWdTP+6uWabdIdJp2IDKFj9DeEQrvUUuIlQJO1lbiZSBK+/jMqv0buNS
-dImQBdrJZElVL7LW0hqgYHesekgpigVOt4gWd/mZfJlH6dtzW8hp/btxonCzecfd
-DUJchzFPJv4LfAswoWEr/Uw3MYwi7W0pdcbKCJQbzchHgMfO2mtWX6BvfdU5Pvl3
-V5tmKzNbpJIZTFUKh0mFqsceBRXU/fYWU9S3IuAuFmPzTnew4YeBKQj/xhHmduhx
-dXF6IQU69fM2hKUQWZV9NCxmCzHXhytChza4JeQpGhXKM8bQ4sH7yuMWrSlKJ7VU
-D14XlUppGsOW8uKK6VNl76DfFpWqs76bZs95npCX0u188PwTTTAGpbqaizZjXZ5q
-OWF98ErpHvU88aaLjKsYNmUOj6pXyRCfADeukZnuXHKUWSyf3jw=
-=8mIN
------END PGP SIGNATURE-----
+-- 
+https://patchwork.kernel.org/patch/11527635/
 
---nextPart4024693.4Mujkspm9b--
-
-
-
-
-
---===============3406996777522705258==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3406996777522705258==--
