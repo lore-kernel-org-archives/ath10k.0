@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVlNm-00084m-RK
- for ath10k@lists.infradead.org; Tue, 05 May 2020 00:24:24 +0000
-Date: Tue, 05 May 2020 08:23:49 +0800
+ id 1jVmSg-0003Nk-CV
+ for ath10k@lists.infradead.org; Tue, 05 May 2020 01:33:32 +0000
+Date: Tue, 05 May 2020 09:33:00 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 657680cc86ca4b5d49b5bb313b1320fb8439528c
-Message-ID: <5eb0b215.kvVo4eEwCniIcQO+%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ f67211fa324660ac4dc2d5b57412ab8c2e826090
+Message-ID: <5eb0c24c.mMv7Li46bZkOYGTZ%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,23 +24,17 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 657680cc86ca4b5d49b5bb313b1320fb8439528c  ath11k: add DBG_MAC prints to track vdev events
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: f67211fa324660ac4dc2d5b57412ab8c2e826090  ath11k: fix resource unavailability for htt stats after peer stats display
 
-elapsed time: 509m
+elapsed time: 577m
 
-configs tested: 210
+configs tested: 203
 configs skipped: 0
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
 arm                           efm32_defconfig
 arm                         at91_dt_defconfig
 arm                        shmobile_defconfig
@@ -49,10 +43,15 @@ arm                          exynos_defconfig
 arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
 sparc                            allyesconfig
 arc                              allyesconfig
 ia64                        generic_defconfig
-mips                            ar7_defconfig
 riscv                             allnoconfig
 parisc                           allmodconfig
 i386                              allnoconfig
@@ -92,6 +91,7 @@ microblaze                      mmu_defconfig
 microblaze                    nommu_defconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
 mips                             allyesconfig
 mips                         64r6el_defconfig
 mips                              allnoconfig
@@ -109,30 +109,30 @@ parisc                            allnoconfig
 parisc                generic-64bit_defconfig
 parisc                generic-32bit_defconfig
 parisc                           allyesconfig
-powerpc                      chrp32_defconfig
-powerpc                             defconfig
-powerpc                       holly_defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-powerpc                           allnoconfig
 powerpc                  mpc866_ads_defconfig
 powerpc                    amigaone_defconfig
 powerpc                    adder875_defconfig
 powerpc                     ep8248e_defconfig
 powerpc                          g5_defconfig
 powerpc                     mpc512x_defconfig
-m68k                 randconfig-a001-20200505
-mips                 randconfig-a001-20200505
-nds32                randconfig-a001-20200505
-parisc               randconfig-a001-20200505
-alpha                randconfig-a001-20200505
-riscv                randconfig-a001-20200505
+powerpc                      chrp32_defconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
 m68k                 randconfig-a001-20200503
 mips                 randconfig-a001-20200503
 nds32                randconfig-a001-20200503
 alpha                randconfig-a001-20200503
 parisc               randconfig-a001-20200503
 riscv                randconfig-a001-20200503
+m68k                 randconfig-a001-20200505
+mips                 randconfig-a001-20200505
+nds32                randconfig-a001-20200505
+parisc               randconfig-a001-20200505
+alpha                randconfig-a001-20200505
+riscv                randconfig-a001-20200505
 h8300                randconfig-a001-20200503
 nios2                randconfig-a001-20200503
 microblaze           randconfig-a001-20200503
@@ -143,21 +143,16 @@ xtensa               randconfig-a001-20200504
 sh                   randconfig-a001-20200504
 openrisc             randconfig-a001-20200504
 csky                 randconfig-a001-20200504
-s390                 randconfig-a001-20200505
-xtensa               randconfig-a001-20200505
-sh                   randconfig-a001-20200505
-openrisc             randconfig-a001-20200505
-csky                 randconfig-a001-20200505
 s390                 randconfig-a001-20200430
 xtensa               randconfig-a001-20200430
 csky                 randconfig-a001-20200430
 openrisc             randconfig-a001-20200430
 sh                   randconfig-a001-20200430
-s390                 randconfig-a001-20200502
-xtensa               randconfig-a001-20200502
-sh                   randconfig-a001-20200502
-openrisc             randconfig-a001-20200502
-csky                 randconfig-a001-20200502
+s390                 randconfig-a001-20200505
+xtensa               randconfig-a001-20200505
+sh                   randconfig-a001-20200505
+openrisc             randconfig-a001-20200505
+csky                 randconfig-a001-20200505
 i386                 randconfig-b003-20200503
 x86_64               randconfig-b002-20200503
 i386                 randconfig-b001-20200503
@@ -168,12 +163,6 @@ x86_64               randconfig-c002-20200502
 i386                 randconfig-c002-20200502
 i386                 randconfig-c001-20200502
 i386                 randconfig-c003-20200502
-x86_64               randconfig-c001-20200503
-x86_64               randconfig-c002-20200503
-i386                 randconfig-c002-20200503
-x86_64               randconfig-c003-20200503
-i386                 randconfig-c001-20200503
-i386                 randconfig-c003-20200503
 x86_64               randconfig-d001-20200503
 i386                 randconfig-d003-20200503
 x86_64               randconfig-d003-20200503
@@ -195,16 +184,20 @@ x86_64               randconfig-f001-20200505
 x86_64               randconfig-f003-20200505
 i386                 randconfig-f001-20200505
 i386                 randconfig-f002-20200505
-x86_64               randconfig-g003-20200503
-i386                 randconfig-g003-20200503
-i386                 randconfig-g002-20200503
-x86_64               randconfig-g001-20200503
-i386                 randconfig-g001-20200503
 x86_64               randconfig-a003-20200505
 x86_64               randconfig-a001-20200505
 i386                 randconfig-a001-20200505
 i386                 randconfig-a003-20200505
 i386                 randconfig-a002-20200505
+x86_64               randconfig-g003-20200503
+i386                 randconfig-g003-20200503
+i386                 randconfig-g002-20200503
+x86_64               randconfig-g001-20200503
+i386                 randconfig-g001-20200503
+i386                 randconfig-g003-20200505
+i386                 randconfig-g002-20200505
+i386                 randconfig-g001-20200505
+x86_64               randconfig-g002-20200505
 ia64                 randconfig-a001-20200503
 arm64                randconfig-a001-20200503
 arc                  randconfig-a001-20200503
