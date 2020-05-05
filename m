@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVs89-00086X-W2
- for ath10k@lists.infradead.org; Tue, 05 May 2020 07:36:44 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: Re: [PATCH 1/2] ath10k: use cumulative survey statistics
+Date: Tue, 05 May 2020 09:49:46 +0200
+Message-ID: <1845755.pTfhzBy2qg@bentobox>
+In-Reply-To: <2335594.cnkAv9Vaq7@bentobox>
+References: <20200504154122.91862-1-markus.theil@tu-ilmenau.de>
+ <f772b7bf0eac31516a4e28719c1938f2@codeaurora.org>
+ <2335594.cnkAv9Vaq7@bentobox>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 1/3] dt-bindings: ath10k: Add wifi-firmware subnode for
- wifi node
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1586971906-20985-2-git-send-email-pillair@codeaurora.org>
-References: <1586971906-20985-2-git-send-email-pillair@codeaurora.org>
-Message-Id: <20200505073625.1F1B5C433BA@smtp.codeaurora.org>
-Date: Tue,  5 May 2020 07:36:25 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +16,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3406996777522705258=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: ath11k@lists.infradead.org
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>, ath10k@lists.infradead.org, kvalo@codeaurora.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+--===============3406996777522705258==
+Content-Type: multipart/signed; boundary="nextPart4024693.4Mujkspm9b"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-> Add a wifi-firmware subnode for the wifi node.
-> This wifi-firmware subnode is needed for the
-> targets which do not support TrustZone.
+--nextPart4024693.4Mujkspm9b
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Tuesday, 5 May 2020 09:01:34 CEST Sven Eckelmann wrote:
+> On Tuesday, 5 May 2020 01:46:12 CEST Rajkumar Manoharan wrote:
+> [...]
+> > IIRC this was fixed a while ago by below patch. Somehow it never landed 
+> > in ath.git.
+> > Simple one line change is enough.
+> > 
+> > https://patchwork.kernel.org/patch/10550707/
 > 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Because it doesn't work for everything. Remember that 10.2.4.x overflows all 
+> the time (14-30s) because it used only 31 bit for the counters.
+> 
+> But feel free to point me to the firmware version which fixed this.
 
-3 patches applied to ath-next branch of ath.git, thanks.
+See also https://patchwork.kernel.org/patch/9701459/
 
-85325c24d5d2 dt-bindings: ath10k: Add wifi-firmware subnode for wifi node
-727fec790ead ath10k: Setup the msa resources before qmi init
-1423f4327331 ath10k: Add support for targets without trustzone
+Kind regards,
+	Sven
+--nextPart4024693.4Mujkspm9b
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
--- 
-https://patchwork.kernel.org/patch/11491759/
+-----BEGIN PGP SIGNATURE-----
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl6xGpoACgkQXYcKB8Em
+e0ZzCRAAgqYCt2mvPP4dcDSuLObeeqnrlCg1zGaJJZTOYiTbGbBOFPKRKKWoX/PG
+manCnusFGFRHSpoGC94W89wlOJ6EW9x2RMy7ylws0z15iOzziE6faiE9XNuczjQw
++NVHZthe6xgWq5iORv2+zGtVqPPjvzoVcObZyyTdWtYmnVEb/Vo5W0g713/ha42K
+IHfFLbcwdW3OjVFEd88hEt6sOaMeM86ZmZql6cox23CNzYfG76BcNUvgta7l2Tr1
+MvpLrattlWdTP+6uWabdIdJp2IDKFj9DeEQrvUUuIlQJO1lbiZSBK+/jMqv0buNS
+dImQBdrJZElVL7LW0hqgYHesekgpigVOt4gWd/mZfJlH6dtzW8hp/btxonCzecfd
+DUJchzFPJv4LfAswoWEr/Uw3MYwi7W0pdcbKCJQbzchHgMfO2mtWX6BvfdU5Pvl3
+V5tmKzNbpJIZTFUKh0mFqsceBRXU/fYWU9S3IuAuFmPzTnew4YeBKQj/xhHmduhx
+dXF6IQU69fM2hKUQWZV9NCxmCzHXhytChza4JeQpGhXKM8bQ4sH7yuMWrSlKJ7VU
+D14XlUppGsOW8uKK6VNl76DfFpWqs76bZs95npCX0u188PwTTTAGpbqaizZjXZ5q
+OWF98ErpHvU88aaLjKsYNmUOj6pXyRCfADeukZnuXHKUWSyf3jw=
+=8mIN
+-----END PGP SIGNATURE-----
+
+--nextPart4024693.4Mujkspm9b--
+
+
+
+
+
+--===============3406996777522705258==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3406996777522705258==--
