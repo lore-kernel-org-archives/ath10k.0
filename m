@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVtDt-0000cf-6Q
- for ath10k@lists.infradead.org; Tue, 05 May 2020 08:46:43 +0000
-Received: by mail-wr1-x432.google.com with SMTP id h9so1739563wrt.0
- for <ath10k@lists.infradead.org>; Tue, 05 May 2020 01:46:39 -0700 (PDT)
-Received: from neumann (ip-217-105-26-61.ip.prioritytelecom.net.
- [217.105.26.61])
- by smtp.gmail.com with ESMTPSA id s12sm2498870wmc.7.2020.05.05.01.46.36
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 May 2020 01:46:36 -0700 (PDT)
-Message-ID: <0655c3a1466f133a727ab24aec9bb3df81b25d34.camel@gmail.com>
-Subject: Killer WiFi card keeps disconnecting due to latest firmware
-From: Elia Geretto <elia.f.geretto@gmail.com>
-Date: Tue, 05 May 2020 10:46:35 +0200
+Subject: Re: [PATCH 1/2] ath10k: use cumulative survey statistics
+References: <20200504154122.91862-1-markus.theil@tu-ilmenau.de>
+ <f772b7bf0eac31516a4e28719c1938f2@codeaurora.org>
+ <2335594.cnkAv9Vaq7@bentobox> <1845755.pTfhzBy2qg@bentobox>
+From: Markus Theil <markus.theil@tu-ilmenau.de>
+Message-ID: <46ab4ffd-b512-de43-40bb-f35989d228b9@tu-ilmenau.de>
+Date: Tue, 5 May 2020 17:37:27 +0200
 MIME-Version: 1.0
+In-Reply-To: <1845755.pTfhzBy2qg@bentobox>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,69 +17,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sven Eckelmann <sven@narfation.org>, ath11k@lists.infradead.org
+Cc: linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rajkumar Manoharan <rmanohar@codeaurora.org>, kvalo@codeaurora.org
 
-Hi,
+On 5/5/20 9:49 AM, Sven Eckelmann wrote:
+> On Tuesday, 5 May 2020 09:01:34 CEST Sven Eckelmann wrote:
+>> On Tuesday, 5 May 2020 01:46:12 CEST Rajkumar Manoharan wrote:
+>> [...]
+>>> IIRC this was fixed a while ago by below patch. Somehow it never landed =
 
-I am experiencing the same problem that Nicola Mori reported on 14th
-April. The thread I am referring to is the one with the same subject as
-this email.
+>>> in ath.git.
+>>> Simple one line change is enough.
+>>>
+>>> https://patchwork.kernel.org/patch/10550707/
+>> Because it doesn't work for everything. Remember that 10.2.4.x overflows=
+ all =
 
-From what I can understand, Kalle Valo and Wen Gong are trying to
-reproduce the problem, but they had difficulties retrieving the correct
-hardware. Since I can reproduce the issue with a different router,
-probably easier to retrieve, I thought I would dump the information
-here.
+>> the time (14-30s) because it used only 31 bit for the counters.
+>>
+>> But feel free to point me to the firmware version which fixed this.
+> See also https://patchwork.kernel.org/patch/9701459/
+>
+> Kind regards,
+> 	Sven
 
-I have the exact same laptop as Nicola Mori, an XPS 15 9570 and I am
-running Fedora 31 (kernel 5.6.8).
+This patch already fixes the problem for me. I tested it on QCA988X hw
+with firmware 10.2.4.
 
-The wifi card is reported as:
+[=A0=A0 10.350919] ath10k_pci 0000:04:00.0: qca988x hw2.0 target 0x4100016c
+chip_id 0x043222ff sub 0000:0000
+[=A0=A0 10.350930] ath10k_pci 0000:04:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 0
+[=A0=A0 10.351803] ath10k_pci 0000:04:00.0: firmware ver 10.2.4-1.0-00047
+api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 35bd9258
+[=A0=A0 10.385617] ath10k_pci 0000:04:00.0: board_file api 1 bmi_id N/A
+crc32 bebc7c08
+[=A0=A0 11.536818] ath10k_pci 0000:04:00.0: htt-ver 2.1 wmi-op 5 htt-op 2
+cal otp max-sta 128 raw 0 hwcrypto 1
 
-3b:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter (rev 32)
-	Subsystem: Bigfoot Networks, Inc. Device 1535
-	Kernel driver in use: ath10k_pci
-	Kernel modules: ath10k_pci
+I also did not see the 31 bit overflow after a small amount of seconds.
 
-I have tried switching in and out a couple of firmwares with API 6 and
-I can reproduce the problem with all the versions I tested:
-
-WLAN.RM.4.4.1-00128-QCARMSWPZ-1
-WLAN.RM.4.4.1-00132-QCARMSWP-1
-WLAN.RM.4.4.1-00140-QCARMSWPZ-1 (default one on Fedora 31)
-WLAN.RM.4.4.1-00151-QCARMSWPZ-2
-
-Regarding the router, it is a Linksys E2500 v3, with firmware 3.0.05
-(latest). I use both 2.4 GHz and 5 GHz wireless, with the same SSID.
-
-As for the information regarding the wifi settings:
-- Channel: Auto (DFS)
-- Channel width: Auto (20 MHz or 40 MHz)
-- Encryption: WPA2-Personal
-
-Regarding reproduction, I would like to add that the issue happens
-quite rarely. Using my laptop the whole day at max 4 meters from the
-router, it happens only once or twice a day.
-
-In addition, when I am unable to start new connections, and
-applications like Zoom are still running perfectly, I can work around
-the issue not only by disabling and re-enabling the wifi, but also
-pinging my laptop from another device in the network. To clarify, when
-I am experiencing the issue, if I ping my laptop from my phone, it
-starts working correctly again.
-
-I am not sure if this is related, but it happens often, but not
-exclusively, when I am using Zoom for videoconferencing. However, I
-cannot confirm that it is the cause.
-
-Feel free to contact me for any additional information you may need.
+Survey data from wlp4s0
+=A0=A0=A0 frequency:=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 2412 MHz [in use]
+=A0=A0=A0 noise:=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 -65 dBm
+=A0=A0=A0 channel active time:=A0=A0=A0 =A0=A0=A0 5370225 ms
+=A0=A0=A0 channel busy time:=A0=A0=A0 =A0=A0=A0 924199 ms
+=A0=A0=A0 channel receive time:=A0=A0=A0 =A0=A0=A0 140 ms
+=A0=A0=A0 channel transmit time:=A0=A0=A0 =A0=A0=A0 0 ms
 
 Kind regards,
-Elia Geretto
+Markus
 
 
 _______________________________________________
