@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jW8Y6-0000dl-3I
- for ath10k@lists.infradead.org; Wed, 06 May 2020 01:08:35 +0000
-Date: Wed, 06 May 2020 09:08:10 +0800
+ id 1jW8Y7-0000dl-Q9
+ for ath10k@lists.infradead.org; Wed, 06 May 2020 01:08:37 +0000
+Date: Wed, 06 May 2020 09:08:02 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 0fb34c839827df13d4b891dbf486c5f430595e33
-Message-ID: <5eb20dfa.5YVCv7cZquyIpNyk%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 644ce88037d68acbaedad854697b6e16dd362123
+Message-ID: <5eb20df2.V3tPj19TWUugT7sU%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 0fb34c839827df13d4b891dbf486c5f430595e33  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 644ce88037d68acbaedad854697b6e16dd362123  Add localversion-wireless-testing-ath
 
 elapsed time: 844m
 
-configs tested: 200
+configs tested: 195
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -60,9 +59,9 @@ ia64                             allyesconfig
 powerpc                           allnoconfig
 i386                                defconfig
 mips                      loongson3_defconfig
+i386                              allnoconfig
 i386                             allyesconfig
 i386                              debian-10.3
-i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -191,11 +190,6 @@ x86_64               randconfig-a001-20200505
 i386                 randconfig-a001-20200505
 i386                 randconfig-a003-20200505
 i386                 randconfig-a002-20200505
-x86_64               randconfig-g003-20200503
-i386                 randconfig-g003-20200503
-i386                 randconfig-g002-20200503
-x86_64               randconfig-g001-20200503
-i386                 randconfig-g001-20200503
 i386                 randconfig-g003-20200505
 i386                 randconfig-g002-20200505
 i386                 randconfig-g001-20200505
