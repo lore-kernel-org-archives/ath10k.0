@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWDqC-0000Qs-DR
- for ath10k@lists.infradead.org; Wed, 06 May 2020 06:47:37 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH] ath10k: fix __le32 warning in
- ath10k_wmi_tlv_op_gen_request_peer_stats_info()
-Date: Wed,  6 May 2020 09:47:29 +0300
-Message-Id: <1588747649-18051-1-git-send-email-kvalo@codeaurora.org>
+ id 1jWSkZ-0003mL-A3
+ for ath10k@lists.infradead.org; Wed, 06 May 2020 22:42:48 +0000
+Date: Thu, 07 May 2020 06:42:33 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 07b1a202183db53fa4c6bc2379abf53cc1669b2d
+Message-ID: <5eb33d59.rKex/0YgXSHX2SVx%lkp@intel.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,49 +16,173 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-From: Wen Gong <wgong@codeaurora.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 07b1a202183db53fa4c6bc2379abf53cc1669b2d  Add localversion-wireless-testing-ath
 
-Sparse warned:
+elapsed time: 482m
 
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34: warning: incorrect
-type in assignment (different base types)
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34:    expected
-restricted __le32 [usertype] reset_after_request
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34:    got unsigned int
-[usertype] reset
+configs tested: 145
+configs skipped: 0
 
-Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Fixes: 0f7cb26830a6 ("ath10k: add rx bitrate report for SDIO")
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+riscv                               defconfig
+alpha                            allyesconfig
+m68k                                defconfig
+powerpc                           allnoconfig
+ia64                             alldefconfig
+m68k                           sun3_defconfig
+sparc64                          allmodconfig
+c6x                               allnoconfig
+nds32                               defconfig
+csky                             allyesconfig
+s390                                defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+m68k                          multi_defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                       allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          alldefconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+m68k                 randconfig-a001-20200506
+mips                 randconfig-a001-20200506
+nds32                randconfig-a001-20200506
+parisc               randconfig-a001-20200506
+alpha                randconfig-a001-20200506
+riscv                randconfig-a001-20200506
+h8300                randconfig-a001-20200506
+nios2                randconfig-a001-20200506
+microblaze           randconfig-a001-20200506
+c6x                  randconfig-a001-20200506
+sparc64              randconfig-a001-20200506
+s390                 randconfig-a001-20200506
+xtensa               randconfig-a001-20200506
+sh                   randconfig-a001-20200506
+openrisc             randconfig-a001-20200506
+csky                 randconfig-a001-20200506
+xtensa               randconfig-a001-20200507
+sh                   randconfig-a001-20200507
+openrisc             randconfig-a001-20200507
+csky                 randconfig-a001-20200507
+x86_64               randconfig-a003-20200506
+x86_64               randconfig-a001-20200506
+x86_64               randconfig-a002-20200506
+i386                 randconfig-a001-20200506
+i386                 randconfig-a002-20200506
+i386                 randconfig-a003-20200506
+x86_64               randconfig-c002-20200507
+x86_64               randconfig-c001-20200507
+i386                 randconfig-c002-20200507
+i386                 randconfig-c003-20200507
+x86_64               randconfig-c003-20200507
+i386                 randconfig-c001-20200507
+i386                 randconfig-e003-20200506
+x86_64               randconfig-e003-20200506
+x86_64               randconfig-e001-20200506
+i386                 randconfig-e002-20200506
+i386                 randconfig-e001-20200506
+i386                 randconfig-f003-20200506
+x86_64               randconfig-f001-20200506
+x86_64               randconfig-f003-20200506
+x86_64               randconfig-f002-20200506
+i386                 randconfig-f001-20200506
+i386                 randconfig-f002-20200506
+x86_64               randconfig-g003-20200506
+i386                 randconfig-g003-20200506
+i386                 randconfig-g002-20200506
+x86_64               randconfig-g001-20200506
+i386                 randconfig-g001-20200506
+x86_64               randconfig-g002-20200506
+i386                 randconfig-h002-20200506
+i386                 randconfig-h001-20200506
+i386                 randconfig-h003-20200506
+x86_64               randconfig-h002-20200506
+x86_64               randconfig-h003-20200506
+x86_64               randconfig-h001-20200506
+ia64                 randconfig-a001-20200506
+arm64                randconfig-a001-20200506
+arc                  randconfig-a001-20200506
+powerpc              randconfig-a001-20200506
+arm                  randconfig-a001-20200506
+sparc                randconfig-a001-20200506
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                               allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index afa03cb3aaf5..932266d1111b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3010,7 +3010,7 @@ ath10k_wmi_tlv_op_gen_request_peer_stats_info(struct ath10k *ar,
- 	if (type == WMI_REQUEST_ONE_PEER_STATS_INFO)
- 		ether_addr_copy(cmd->peer_macaddr.addr, addr);
- 
--	cmd->reset_after_request = reset;
-+	cmd->reset_after_request = __cpu_to_le32(reset);
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv request peer stats info\n");
- 	return skb;
- }
--- 
-2.7.4
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
