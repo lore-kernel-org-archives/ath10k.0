@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWSkZ-0003mN-Of
- for ath10k@lists.infradead.org; Wed, 06 May 2020 22:42:50 +0000
-Date: Thu, 07 May 2020 06:42:37 +0800
+ id 1jWSlY-0004Nd-NS
+ for ath10k@lists.infradead.org; Wed, 06 May 2020 22:43:50 +0000
+Date: Thu, 07 May 2020 06:42:46 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 14dd3a71ccb7081d5d4959370794bbabc3258b34
-Message-ID: <5eb33d5d.QCNZj9EdtBE2R0w6%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ b64c4513f038dcf288321f563afee37dac631941
+Message-ID: <5eb33d66.hiZShl86URsn8Vmo%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 14dd3a71ccb7081d5d4959370794bbabc3258b34  ath11k: Replace zero-length array with flexible-array
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: b64c4513f038dcf288321f563afee37dac631941  ath10k: fix __le32 warning in ath10k_wmi_tlv_op_gen_request_peer_stats_info()
 
-elapsed time: 483m
+elapsed time: 482m
 
 configs tested: 155
 configs skipped: 0
@@ -49,6 +49,7 @@ riscv                               defconfig
 parisc                           allyesconfig
 alpha                            allyesconfig
 powerpc                           allnoconfig
+m68k                                defconfig
 c6x                               allnoconfig
 s390                             alldefconfig
 ia64                             alldefconfig
@@ -67,7 +68,6 @@ ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
 m68k                          multi_defconfig
-m68k                                defconfig
 nds32                             allnoconfig
 csky                                defconfig
 alpha                               defconfig
@@ -128,17 +128,17 @@ xtensa               randconfig-a001-20200507
 sh                   randconfig-a001-20200507
 openrisc             randconfig-a001-20200507
 csky                 randconfig-a001-20200507
-i386                 randconfig-b003-20200506
-i386                 randconfig-b001-20200506
-x86_64               randconfig-b001-20200506
-x86_64               randconfig-b003-20200506
-i386                 randconfig-b002-20200506
 x86_64               randconfig-a003-20200506
 x86_64               randconfig-a001-20200506
 x86_64               randconfig-a002-20200506
 i386                 randconfig-a001-20200506
 i386                 randconfig-a002-20200506
 i386                 randconfig-a003-20200506
+i386                 randconfig-b003-20200506
+i386                 randconfig-b001-20200506
+x86_64               randconfig-b001-20200506
+x86_64               randconfig-b003-20200506
+i386                 randconfig-b002-20200506
 i386                 randconfig-e003-20200506
 x86_64               randconfig-e003-20200506
 x86_64               randconfig-e001-20200506
