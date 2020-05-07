@@ -1,14 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from smtprelay0170.hostedemail.com ([216.40.44.170]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWSlY-0004Nd-NS
- for ath10k@lists.infradead.org; Wed, 06 May 2020 22:43:50 +0000
-Date: Thu, 07 May 2020 06:42:46 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- b64c4513f038dcf288321f563afee37dac631941
-Message-ID: <5eb33d66.hiZShl86URsn8Vmo%lkp@intel.com>
-MIME-Version: 1.0
+ id 1jWULB-00047O-8G
+ for ath10k@lists.infradead.org; Thu, 07 May 2020 00:24:42 +0000
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5A2242C12
+ for <ath10k@lists.infradead.org>; Thu,  7 May 2020 00:24:39 +0000 (UTC)
+Received: from [192.168.43.16] (c-174-50-105-153.hsd1.ga.comcast.net
+ [174.50.105.153]) (Authenticated sender: nick@marriott.org)
+ by omf17.hostedemail.com (Postfix) with ESMTPA
+ for <ath10k@lists.infradead.org>; Thu,  7 May 2020 00:24:38 +0000 (UTC)
+From: Nick Marriott <nick@marriott.org>
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: Re: Compex WLE600VX AP mode 5GHz doesn't work since kernel 5.6
+Message-Id: <D188D5DB-87A5-4588-BFB0-6E8CC4EBD781@marriott.org>
+Date: Wed, 6 May 2020 20:24:37 -0400
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,185 +25,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: b64c4513f038dcf288321f563afee37dac631941  ath10k: fix __le32 warning in ath10k_wmi_tlv_op_gen_request_peer_stats_info()
-
-elapsed time: 482m
-
-configs tested: 155
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-riscv                               defconfig
-parisc                           allyesconfig
-alpha                            allyesconfig
-powerpc                           allnoconfig
-m68k                                defconfig
-c6x                               allnoconfig
-s390                             alldefconfig
-ia64                             alldefconfig
-m68k                           sun3_defconfig
-powerpc                             defconfig
-sparc64                          allmodconfig
-nds32                               defconfig
-csky                             allyesconfig
-s390                                defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-m68k                          multi_defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-microblaze                       allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-openrisc                         allyesconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          alldefconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-m68k                 randconfig-a001-20200506
-mips                 randconfig-a001-20200506
-nds32                randconfig-a001-20200506
-parisc               randconfig-a001-20200506
-alpha                randconfig-a001-20200506
-riscv                randconfig-a001-20200506
-m68k                 randconfig-a001-20200507
-mips                 randconfig-a001-20200507
-nds32                randconfig-a001-20200507
-parisc               randconfig-a001-20200507
-alpha                randconfig-a001-20200507
-riscv                randconfig-a001-20200507
-h8300                randconfig-a001-20200506
-nios2                randconfig-a001-20200506
-microblaze           randconfig-a001-20200506
-c6x                  randconfig-a001-20200506
-sparc64              randconfig-a001-20200506
-h8300                randconfig-a001-20200507
-nios2                randconfig-a001-20200507
-microblaze           randconfig-a001-20200507
-c6x                  randconfig-a001-20200507
-sparc64              randconfig-a001-20200507
-s390                 randconfig-a001-20200506
-xtensa               randconfig-a001-20200506
-sh                   randconfig-a001-20200506
-openrisc             randconfig-a001-20200506
-csky                 randconfig-a001-20200506
-xtensa               randconfig-a001-20200507
-sh                   randconfig-a001-20200507
-openrisc             randconfig-a001-20200507
-csky                 randconfig-a001-20200507
-x86_64               randconfig-a003-20200506
-x86_64               randconfig-a001-20200506
-x86_64               randconfig-a002-20200506
-i386                 randconfig-a001-20200506
-i386                 randconfig-a002-20200506
-i386                 randconfig-a003-20200506
-i386                 randconfig-b003-20200506
-i386                 randconfig-b001-20200506
-x86_64               randconfig-b001-20200506
-x86_64               randconfig-b003-20200506
-i386                 randconfig-b002-20200506
-i386                 randconfig-e003-20200506
-x86_64               randconfig-e003-20200506
-x86_64               randconfig-e001-20200506
-i386                 randconfig-e002-20200506
-i386                 randconfig-e001-20200506
-i386                 randconfig-f003-20200506
-x86_64               randconfig-f001-20200506
-x86_64               randconfig-f003-20200506
-x86_64               randconfig-f002-20200506
-i386                 randconfig-f001-20200506
-i386                 randconfig-f002-20200506
-x86_64               randconfig-g003-20200506
-i386                 randconfig-g003-20200506
-i386                 randconfig-g002-20200506
-x86_64               randconfig-g001-20200506
-i386                 randconfig-g001-20200506
-x86_64               randconfig-g002-20200506
-i386                 randconfig-h002-20200506
-i386                 randconfig-h001-20200506
-i386                 randconfig-h003-20200506
-x86_64               randconfig-h002-20200506
-x86_64               randconfig-h003-20200506
-x86_64               randconfig-h001-20200506
-ia64                 randconfig-a001-20200506
-arm64                randconfig-a001-20200506
-arc                  randconfig-a001-20200506
-powerpc              randconfig-a001-20200506
-arm                  randconfig-a001-20200506
-sparc                randconfig-a001-20200506
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-um                               allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SeKAmW0gaGF2aW5nIHRoZSBzYW1lIGlzc3VlIHdpdGggdGhlIHJlZyBkb20gb24gbXkgY29tcGV4
+IGNhcmQgb24gS2VybmVsIDUuNiwgcHJldmVudGluZyBpdCBmcm9tIHdvcmtpbmcgYXMgYW4gQVAu
+ICBUaGUgaXNzdWUgaXMgc3RpbGwgcHJlc2VudCBvbiA1LjYuMTAgb24gRmVkb3JhLgpBbnkgaWRl
+YSBob3cgbG9uZyBpdCB3aWxsIHRha2UgdG8gZ2V0IHRoZSBwYXRjaCByZXZlcnRlZD8KClRoYW5r
+cyBtdWNoIQoKCk9uIDIwMjAtMDQtMTYgMjA6MzIsIEthbGxlIFZhbG8gd3JvdGU6Cj4gc3ZwIDxz
+dnBtIGF0IHlhbmRleC5ydT4gd3JpdGVzOgo+IAo+PiBJIG5lZWQgaGVscCB3aXRoIG15IHNvZnRB
+UCBpbnN0YWxsYXRpb24uCj4+IENvbXBleCBXTEU2MDBWWCBtaW5pUENJZSBjYXJkIGNhbid0IHN0
+YXJ0IGF0IDVHSHogQVAgbW9kZSBhZnRlciB1cGRhdGUKPj4gdG8ga2VybmVsIDUuNiBvbiBBcmNo
+TGludXgKPj4gV2l0aCBrZXJuZWwgNS41LnggYW5kIExUUyBhbGwgaXMgT0sKPj4gU29tZSBsb2dz
+IGFuZCBkZXRhaWxzIGlzIGluIHRoaXMgQXJjaExpbnV4IGZvcnVtIHRvcGljCj4+IGh0dHBzOi8v
+YmJzLmFyY2hsaW51eC5vcmcvdmlld3RvcGljLnBocD9pZD0yNTQ1MzUKPiAKPiBTbyBpZiBJIHJl
+YWQgdGhlIGxpbmsgY29ycmVjdGx5IHRoaXMgY29tbWl0IGNhdXNlcyB0aGUgcmVncmVzc2lvbiAK
+PiAod2hpY2gKPiB3YXMgaW50cm9kdWNlZCBpbiB2NS42LXJjMSk6Cj4gCj4gY29tbWl0IDJkYzAx
+NjU5OWNmYTk2NzJhMTQ3NTI4Y2EyNmQ3MGMzNjU0YTU0MjMKPiBBdXRob3I6ICAgICBXZW4gR29u
+ZyA8d2dvbmcgYXQgY29kZWF1cm9yYS5vcmc+Cj4gQXV0aG9yRGF0ZTogRnJpIE5vdiAyOSAwNzoz
+NDowOSAyMDE5ICswMDAwCj4gQ29tbWl0OiAgICAgS2FsbGUgVmFsbyA8a3ZhbG8gYXQgY29kZWF1
+cm9yYS5vcmc+Cj4gQ29tbWl0RGF0ZTogTW9uIERlYyAyIDEyOjA4OjAxIDIwMTkgKzAyMDAKPiAK
+PiAgICAgYXRoOiBhZGQgc3VwcG9ydCBmb3Igc3BlY2lhbCAweDAgcmVndWxhdG9yeSBkb21haW4K
+PiAKPiBXZW4sIHBsZWFzZSB0YWtlIGEgbG9vay4gU2hvdWxkIEkgcmV2ZXJ0IHRoaXMgY29tbWl0
+PyBSZWdyZXNzaW9ucyBhcmUKPiBub3Qgb2suClllcywgcGxlYXNlIHJldmVydCBpdC4KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
