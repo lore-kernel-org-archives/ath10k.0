@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway30.websitewelcome.com ([192.185.148.2])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWXrB-0000eJ-JZ
- for ath10k@lists.infradead.org; Thu, 07 May 2020 04:09:59 +0000
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
- by gateway30.websitewelcome.com (Postfix) with ESMTP id 0625BB217
- for <ath10k@lists.infradead.org>; Wed,  6 May 2020 23:09:36 -0500 (CDT)
-Subject: Re: [PATCH] ath10k: Replace zero-length array with flexible-array
-References: <20200504201108.GA32136@embeddedor>
- <20200505075126.86A73C432C2@smtp.codeaurora.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <b61af6d1-7ea8-a3a0-cb76-23d16b8ca321@embeddedor.com>
-Date: Wed, 6 May 2020 23:13:58 -0500
+ id 1jWZTW-00033E-0r
+ for ath10k@lists.infradead.org; Thu, 07 May 2020 05:53:42 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH] ath10k: Remove experimental tag from ath10k Kconfig
+Date: Thu,  7 May 2020 11:23:24 +0530
+Message-Id: <20200507055324.15564-1-govinds@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200505075126.86A73C432C2@smtp.codeaurora.org>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +20,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Kalle,
+ath10k(sdio/snoc) is no longer experimental.
+Remove experimental tag for SDIO/SNOC from ath10k Kconfig.
 
-On 5/5/20 02:51, Kalle Valo wrote:
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/Kconfig | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> 
-> Fails to apply, please rebase on top of ath.git master branch.
-> 
-> error: patch failed: drivers/net/wireless/ath/ath10k/pci.h:182
-> error: drivers/net/wireless/ath/ath10k/pci.h: patch does not apply
-> stg import: Diff does not apply cleanly
-> 
-> Patch set to Changes Requested.
-> 
-
-Sorry for the late reply. I've had some troubles with my email
-settings and LKML, recently.
-
-I've just sent v2:
-
-https://lore.kernel.org/lkml/20200507041127.GA31587@embeddedor/
-
-Thanks
---
-Gustavo
+diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+index 6b3ff02a373d..b99fd0eff994 100644
+--- a/drivers/net/wireless/ath/ath10k/Kconfig
++++ b/drivers/net/wireless/ath/ath10k/Kconfig
+@@ -28,11 +28,10 @@ config ATH10K_AHB
+ 	  This module adds support for AHB bus
+ 
+ config ATH10K_SDIO
+-	tristate "Atheros ath10k SDIO support (EXPERIMENTAL)"
++	tristate "Atheros ath10k SDIO support"
+ 	depends on ATH10K && MMC
+ 	---help---
+-	  This module adds experimental support for SDIO/MMC bus. Currently
+-	  work in progress and will not fully work.
++	  This module adds support for SDIO/MMC bus.
+ 
+ config ATH10K_USB
+ 	tristate "Atheros ath10k USB support (EXPERIMENTAL)"
+@@ -42,7 +41,7 @@ config ATH10K_USB
+ 	  work in progress and will not fully work.
+ 
+ config ATH10K_SNOC
+-	tristate "Qualcomm ath10k SNOC support (EXPERIMENTAL)"
++	tristate "Qualcomm ath10k SNOC support"
+ 	depends on ATH10K
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	select QCOM_QMI_HELPERS
+-- 
+2.22.0
 
 _______________________________________________
 ath10k mailing list
