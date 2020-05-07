@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0170.hostedemail.com ([216.40.44.170]
- helo=smtprelay.hostedemail.com)
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWULB-00047O-8G
- for ath10k@lists.infradead.org; Thu, 07 May 2020 00:24:42 +0000
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
- [216.40.38.60])
- by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5A2242C12
- for <ath10k@lists.infradead.org>; Thu,  7 May 2020 00:24:39 +0000 (UTC)
-Received: from [192.168.43.16] (c-174-50-105-153.hsd1.ga.comcast.net
- [174.50.105.153]) (Authenticated sender: nick@marriott.org)
- by omf17.hostedemail.com (Postfix) with ESMTPA
- for <ath10k@lists.infradead.org>; Thu,  7 May 2020 00:24:38 +0000 (UTC)
-From: Nick Marriott <nick@marriott.org>
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: Re: Compex WLE600VX AP mode 5GHz doesn't work since kernel 5.6
-Message-Id: <D188D5DB-87A5-4588-BFB0-6E8CC4EBD781@marriott.org>
-Date: Wed, 6 May 2020 20:24:37 -0400
+ id 1jWWJO-0004oo-5n
+ for ath10k@lists.infradead.org; Thu, 07 May 2020 02:31:02 +0000
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Subject: [PATCHv3] ath10k : Fix channel survey dump
+Date: Thu,  7 May 2020 08:00:34 +0530
+Message-Id: <1588818634-10624-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +15,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>
 
-SeKAmW0gaGF2aW5nIHRoZSBzYW1lIGlzc3VlIHdpdGggdGhlIHJlZyBkb20gb24gbXkgY29tcGV4
-IGNhcmQgb24gS2VybmVsIDUuNiwgcHJldmVudGluZyBpdCBmcm9tIHdvcmtpbmcgYXMgYW4gQVAu
-ICBUaGUgaXNzdWUgaXMgc3RpbGwgcHJlc2VudCBvbiA1LjYuMTAgb24gRmVkb3JhLgpBbnkgaWRl
-YSBob3cgbG9uZyBpdCB3aWxsIHRha2UgdG8gZ2V0IHRoZSBwYXRjaCByZXZlcnRlZD8KClRoYW5r
-cyBtdWNoIQoKCk9uIDIwMjAtMDQtMTYgMjA6MzIsIEthbGxlIFZhbG8gd3JvdGU6Cj4gc3ZwIDxz
-dnBtIGF0IHlhbmRleC5ydT4gd3JpdGVzOgo+IAo+PiBJIG5lZWQgaGVscCB3aXRoIG15IHNvZnRB
-UCBpbnN0YWxsYXRpb24uCj4+IENvbXBleCBXTEU2MDBWWCBtaW5pUENJZSBjYXJkIGNhbid0IHN0
-YXJ0IGF0IDVHSHogQVAgbW9kZSBhZnRlciB1cGRhdGUKPj4gdG8ga2VybmVsIDUuNiBvbiBBcmNo
-TGludXgKPj4gV2l0aCBrZXJuZWwgNS41LnggYW5kIExUUyBhbGwgaXMgT0sKPj4gU29tZSBsb2dz
-IGFuZCBkZXRhaWxzIGlzIGluIHRoaXMgQXJjaExpbnV4IGZvcnVtIHRvcGljCj4+IGh0dHBzOi8v
-YmJzLmFyY2hsaW51eC5vcmcvdmlld3RvcGljLnBocD9pZD0yNTQ1MzUKPiAKPiBTbyBpZiBJIHJl
-YWQgdGhlIGxpbmsgY29ycmVjdGx5IHRoaXMgY29tbWl0IGNhdXNlcyB0aGUgcmVncmVzc2lvbiAK
-PiAod2hpY2gKPiB3YXMgaW50cm9kdWNlZCBpbiB2NS42LXJjMSk6Cj4gCj4gY29tbWl0IDJkYzAx
-NjU5OWNmYTk2NzJhMTQ3NTI4Y2EyNmQ3MGMzNjU0YTU0MjMKPiBBdXRob3I6ICAgICBXZW4gR29u
-ZyA8d2dvbmcgYXQgY29kZWF1cm9yYS5vcmc+Cj4gQXV0aG9yRGF0ZTogRnJpIE5vdiAyOSAwNzoz
-NDowOSAyMDE5ICswMDAwCj4gQ29tbWl0OiAgICAgS2FsbGUgVmFsbyA8a3ZhbG8gYXQgY29kZWF1
-cm9yYS5vcmc+Cj4gQ29tbWl0RGF0ZTogTW9uIERlYyAyIDEyOjA4OjAxIDIwMTkgKzAyMDAKPiAK
-PiAgICAgYXRoOiBhZGQgc3VwcG9ydCBmb3Igc3BlY2lhbCAweDAgcmVndWxhdG9yeSBkb21haW4K
-PiAKPiBXZW4sIHBsZWFzZSB0YWtlIGEgbG9vay4gU2hvdWxkIEkgcmV2ZXJ0IHRoaXMgY29tbWl0
-PyBSZWdyZXNzaW9ucyBhcmUKPiBub3Qgb2suClllcywgcGxlYXNlIHJldmVydCBpdC4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Channel active/busy time are showing incorrect(less than previous or
+sometimes zero) for successive survey dump command.
+
+example:
+Survey data from wlan0
+	frequency:                      5180 MHz [in use]
+	channel active time:            54995 ms
+	channel busy time:              432 ms
+	channel receive time:           0 ms
+	channel transmit time:          59 ms
+Survey data from wlan0
+	frequency:                      5180 MHz [in use]
+	channel active time:            32592 ms
+	channel busy time:              254 ms
+	channel receive time:           0 ms
+	channel transmit time:          0 ms
+
+This patch fix this issue by assigning 'wmi_bss_survey_req_type'
+as 'WMI_BSS_SURVEY_REQ_TYPE_READ' which accumulate survey data in
+FW and send survey data to driver upon the driver request. Wrap around
+is taken care by FW.
+
+hardware used : QCA9984
+firmware ver  : ver 10.4-3.5.3-00057
+
+hardware used : QCA988X
+firmware ver  : 10.2.4-1.0-00047
+
+Tested-by: Markus Theil <markus.theil@tu-ilmenau.de>
+Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+---
+v3:
+ * Rebased on TOT and added Tested-by
+
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a1147cc..9330b52 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7275,7 +7275,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
+ 				  struct ieee80211_channel *channel)
+ {
+ 	int ret;
+-	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
++	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
