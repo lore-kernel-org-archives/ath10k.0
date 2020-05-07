@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWWJO-0004oo-5n
- for ath10k@lists.infradead.org; Thu, 07 May 2020 02:31:02 +0000
+ id 1jWWpO-0000gL-C5
+ for ath10k@lists.infradead.org; Thu, 07 May 2020 03:04:06 +0000
 From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Subject: [PATCHv3] ath10k : Fix channel survey dump
-Date: Thu,  7 May 2020 08:00:34 +0530
-Message-Id: <1588818634-10624-1-git-send-email-vnaralas@codeaurora.org>
+Subject: [PATCHv4] ath10k : Fix channel survey dump
+Date: Thu,  7 May 2020 08:33:32 +0530
+Message-Id: <1588820612-15884-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,7 +21,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>
+Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org
 
 Channel active/busy time are showing incorrect(less than previous or
 sometimes zero) for successive survey dump command.
@@ -52,9 +52,11 @@ hardware used : QCA988X
 firmware ver  : 10.2.4-1.0-00047
 
 Tested-by: Markus Theil <markus.theil@tu-ilmenau.de>
-Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
 Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 ---
+v4:
+ * updated signed-off-by
+
 v3:
  * Rebased on TOT and added Tested-by
 
@@ -76,7 +78,6 @@ index a1147cc..9330b52 100644
  
 -- 
 2.7.4
-
 
 _______________________________________________
 ath10k mailing list
