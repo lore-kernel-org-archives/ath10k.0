@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX9ZJ-0005Vp-32
+ id 1jX9ZH-0005VZ-DV
  for ath10k@lists.infradead.org; Fri, 08 May 2020 20:26:03 +0000
-Date: Sat, 09 May 2020 04:25:34 +0800
+Date: Sat, 09 May 2020 04:25:36 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- cd6ea9e6495d14456c507e14b43cd02837f3c6ca
-Message-ID: <5eb5c03e.Am/lGDKbGANd2Oln%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 1c174ab15ba3d21ddb541fc1671c5b6db06d6f2c
+Message-ID: <5eb5c040.xodxADbnehe8SFrv%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,24 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: cd6ea9e6495d14456c507e14b43cd02837f3c6ca  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 1c174ab15ba3d21ddb541fc1671c5b6db06d6f2c  ath10k: remove experimental tag from SDIO and SNOC busses in Kconfig
+
+Warning in current branch:
+
+drivers/net/wireless/ath/ath11k/debug_htt_stats.c:4613:2-8: preceding lock on line 4604
+
+Warning ids grouped by kconfigs:
+
+recent_errors
+|-- i386-allmodconfig
+|   `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
+|-- m68k-allyesconfig
+|   `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
+|-- sparc-allyesconfig
+|   `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
+`-- x86_64-allyesconfig
+    `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
 
 elapsed time: 594m
 
