@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pj1-f65.google.com ([209.85.216.65])
+Received: from mout.kundenserver.de ([217.72.192.73])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXHMu-0002pu-0D
- for ath10k@lists.infradead.org; Sat, 09 May 2020 04:45:45 +0000
-Received: by mail-pj1-f65.google.com with SMTP id k7so234490pjs.5
- for <ath10k@lists.infradead.org>; Fri, 08 May 2020 21:45:43 -0700 (PDT)
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 12/15] ath10k: use new module_firmware_crashed()
-Date: Sat,  9 May 2020 04:35:49 +0000
-Message-Id: <20200509043552.8745-13-mcgrof@kernel.org>
-In-Reply-To: <20200509043552.8745-1-mcgrof@kernel.org>
-References: <20200509043552.8745-1-mcgrof@kernel.org>
+ id 1jXOGY-0004Uz-EO
+ for ath10k@lists.infradead.org; Sat, 09 May 2020 12:07:40 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH net-next 2/2] ath10k: fix ath10k_pci struct layout
+Date: Sat,  9 May 2020 14:06:33 +0200
+Message-Id: <20200509120707.188595-2-arnd@arndb.de>
+In-Reply-To: <20200509120707.188595-1-arnd@arndb.de>
+References: <20200509120707.188595-1-arnd@arndb.de>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,81 +22,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: jeyu@kernel.org
-Cc: linux-wireless@vger.kernel.org, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com, ath10k@lists.infradead.org, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org, davem@davemloft.net
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
 
-This makes use of the new module_firmware_crashed() to help
-annotate when firmware for device drivers crash. When firmware
-crashes devices can sometimes become unresponsive, and recovery
-sometimes requires a driver unload / reload and in the worst cases
-a reboot.
+gcc-10 correctly points out a bug with a zero-length array in
+struct ath10k_pci:
 
-Using a taint flag allows us to annotate when this happens clearly.
+drivers/net/wireless/ath/ath10k/ahb.c: In function 'ath10k_ahb_remove':
+drivers/net/wireless/ath/ath10k/ahb.c:30:9: error: array subscript 0 is outside the bounds of an interior zero-length array 'struct ath10k_ahb[0]' [-Werror=zero-length-bounds]
+   30 |  return &((struct ath10k_pci *)ar->drv_priv)->ahb[0];
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from drivers/net/wireless/ath/ath10k/ahb.c:13:
+drivers/net/wireless/ath/ath10k/pci.h:185:20: note: while referencing 'ahb'
+  185 |  struct ath10k_ahb ahb[0];
+      |                    ^~~
 
-Cc: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+The last addition to the struct ignored the comments and added
+new members behind the array that must remain last.
+
+Change it to a flexible-array member and move it last again to
+make it work correctly, prevent the same thing from happening
+again (all compilers warn about flexible-array members in the
+middle of a struct) and get it to build without warnings.
+
+Fixes: 521fc37be3d8 ("ath10k: Avoid override CE5 configuration for QCA99X0 chipsets")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/wireless/ath/ath10k/pci.c  | 2 ++
- drivers/net/wireless/ath/ath10k/sdio.c | 2 ++
- drivers/net/wireless/ath/ath10k/snoc.c | 1 +
- 3 files changed, 5 insertions(+)
+ drivers/net/wireless/ath/ath10k/pci.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 1d941d53fdc9..6bd0f3b518b9 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1767,6 +1767,7 @@ static void ath10k_pci_fw_dump_work(struct work_struct *work)
- 		scnprintf(guid, sizeof(guid), "n/a");
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index e3cbd259a2dc..862d0901c5b8 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -178,15 +178,16 @@ struct ath10k_pci {
+ 	 */
+ 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
  
- 	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
-+	module_firmware_crashed();
- 	ath10k_print_driver_info(ar);
- 	ath10k_pci_dump_registers(ar, crash_data);
- 	ath10k_ce_dump_registers(ar, crash_data);
-@@ -2837,6 +2838,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar,
- 	if (ret) {
- 		if (ath10k_pci_has_fw_crashed(ar)) {
- 			ath10k_warn(ar, "firmware crashed during chip reset\n");
-+			module_firmware_crashed();
- 			ath10k_pci_fw_crashed_clear(ar);
- 			ath10k_pci_fw_crashed_dump(ar);
- 		}
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index e2aff2254a40..d34ad289380f 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -794,6 +794,7 @@ static int ath10k_sdio_mbox_proc_dbg_intr(struct ath10k *ar)
++	struct ce_attr *attr;
++	struct ce_pipe_config *pipe_config;
++	struct ce_service_to_pipe *serv_to_pipe;
++
+ 	/* Keep this entry in the last, memory for struct ath10k_ahb is
+ 	 * allocated (ahb support enabled case) in the continuation of
+ 	 * this struct.
+ 	 */
+-	struct ath10k_ahb ahb[0];
++	struct ath10k_ahb ahb[];
  
- 	/* TODO: Add firmware crash handling */
- 	ath10k_warn(ar, "firmware crashed\n");
-+	module_firmware_crashed();
+-	struct ce_attr *attr;
+-	struct ce_pipe_config *pipe_config;
+-	struct ce_service_to_pipe *serv_to_pipe;
+ };
  
- 	/* read counter to clear the interrupt, the debug error interrupt is
- 	 * counter 0.
-@@ -915,6 +916,7 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
- 	if (cpu_int_status & MBOX_CPU_STATUS_ENABLE_ASSERT_MASK) {
- 		ath10k_err(ar, "firmware crashed!\n");
- 		queue_work(ar->workqueue, &ar->restart_work);
-+		module_firmware_crashed();
- 	}
- 	return ret;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 354d49b1cd45..7cfc123c345c 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1451,6 +1451,7 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
- 		scnprintf(guid, sizeof(guid), "n/a");
- 
- 	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
-+	module_firmware_crashed();
- 	ath10k_print_driver_info(ar);
- 	ath10k_msa_dump_memory(ar, crash_data);
- 	mutex_unlock(&ar->dump_mutex);
+ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
 -- 
-2.25.1
+2.26.0
 
 
 _______________________________________________
