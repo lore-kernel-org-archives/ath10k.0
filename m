@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mail-pg1-f194.google.com ([209.85.215.194])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX9ZH-0005VZ-DV
- for ath10k@lists.infradead.org; Fri, 08 May 2020 20:26:03 +0000
-Date: Sat, 09 May 2020 04:25:36 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 1c174ab15ba3d21ddb541fc1671c5b6db06d6f2c
-Message-ID: <5eb5c040.xodxADbnehe8SFrv%lkp@intel.com>
+ id 1jXHDs-00055L-03
+ for ath10k@lists.infradead.org; Sat, 09 May 2020 04:36:25 +0000
+Received: by mail-pg1-f194.google.com with SMTP id f23so1192662pgj.4
+ for <ath10k@lists.infradead.org>; Fri, 08 May 2020 21:36:22 -0700 (PDT)
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 13/15] ath6kl: use new module_firmware_crashed()
+Date: Sat,  9 May 2020 04:35:50 +0000
+Message-Id: <20200509043552.8745-14-mcgrof@kernel.org>
+In-Reply-To: <20200509043552.8745-1-mcgrof@kernel.org>
+References: <20200509043552.8745-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,132 +24,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
+To: jeyu@kernel.org
+Cc: linux-wireless@vger.kernel.org, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com, ath10k@lists.infradead.org, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org, davem@davemloft.net
+
+This makes use of the new module_firmware_crashed() to help
+annotate when firmware for device drivers crash. When firmware
+crashes devices can sometimes become unresponsive, and recovery
+sometimes requires a driver unload / reload and in the worst cases
+a reboot.
+
+Using a taint flag allows us to annotate when this happens clearly.
+
+Cc: linux-wireless@vger.kernel.org
 Cc: ath10k@lists.infradead.org
-
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 1c174ab15ba3d21ddb541fc1671c5b6db06d6f2c  ath10k: remove experimental tag from SDIO and SNOC busses in Kconfig
-
-Warning in current branch:
-
-drivers/net/wireless/ath/ath11k/debug_htt_stats.c:4613:2-8: preceding lock on line 4604
-
-Warning ids grouped by kconfigs:
-
-recent_errors
-|-- i386-allmodconfig
-|   `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
-|-- m68k-allyesconfig
-|   `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
-|-- sparc-allyesconfig
-|   `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
-`-- x86_64-allyesconfig
-    `-- drivers-net-wireless-ath-ath11k-debug_htt_stats.c:preceding-lock-on-line
-
-elapsed time: 594m
-
-configs tested: 92
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-parisc                              defconfig
-parisc                            allnoconfig
-s390                                defconfig
-c6x                              allyesconfig
-alpha                            allyesconfig
-nds32                               defconfig
-powerpc                             defconfig
-sparc64                             defconfig
-um                                  defconfig
-alpha                               defconfig
-arc                              allyesconfig
-mips                             allyesconfig
-ia64                                defconfig
-sh                                allnoconfig
-s390                             allyesconfig
-microblaze                        allnoconfig
-c6x                               allnoconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-openrisc                         allyesconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-microblaze                       allyesconfig
-sh                               allmodconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20200508
-i386                 randconfig-a004-20200508
-i386                 randconfig-a003-20200508
-i386                 randconfig-a002-20200508
-i386                 randconfig-a001-20200508
-i386                 randconfig-a006-20200508
-i386                 randconfig-a012-20200508
-i386                 randconfig-a014-20200508
-i386                 randconfig-a016-20200508
-i386                 randconfig-a011-20200508
-i386                 randconfig-a013-20200508
-i386                 randconfig-a015-20200508
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                              allnoconfig
-s390                             allmodconfig
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/net/wireless/ath/ath6kl/hif.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath6kl/hif.c b/drivers/net/wireless/ath/ath6kl/hif.c
+index d1942537ea10..cfd838607544 100644
+--- a/drivers/net/wireless/ath/ath6kl/hif.c
++++ b/drivers/net/wireless/ath/ath6kl/hif.c
+@@ -120,6 +120,7 @@ static int ath6kl_hif_proc_dbg_intr(struct ath6kl_device *dev)
+ 	int ret;
+ 
+ 	ath6kl_warn("firmware crashed\n");
++	module_firmware_crashed();
+ 
+ 	/*
+ 	 * read counter to clear the interrupt, the debug error interrupt is
+-- 
+2.25.1
+
 
 _______________________________________________
 ath10k mailing list
