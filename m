@@ -1,26 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([217.72.192.75])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jY8mS-0005Oj-FA
- for ath10k@lists.infradead.org; Mon, 11 May 2020 13:47:42 +0000
-Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N1Ok1-1j5vTV0T63-012r7x for <ath10k@lists.infradead.org>; Mon, 11 May
- 2020 15:47:38 +0200
-Received: by mail-qk1-f182.google.com with SMTP id a136so775856qkg.6
- for <ath10k@lists.infradead.org>; Mon, 11 May 2020 06:47:37 -0700 (PDT)
+ id 1jYFpO-0000nU-8u
+ for ath10k@lists.infradead.org; Mon, 11 May 2020 21:19:12 +0000
+Date: Tue, 12 May 2020 05:18:57 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 7a6c99c4004baae4c431d430964ffbdf84360295
+Message-ID: <5eb9c141.HtajuN4MD3xnp76I%lkp@intel.com>
 MIME-Version: 1.0
-References: <20200509120707.188595-1-arnd@arndb.de>
- <20200509154818.GB27779@embeddedor>
- <87zhae4r35.fsf@kamboji.qca.qualcomm.com>
- <CAK8P3a2i-jqY8FnY_Tu41VDxQGqHHKRCyJ5U-GQbNmrqa=n0GQ@mail.gmail.com>
- <87mu6e4nyy.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87mu6e4nyy.fsf@kamboji.qca.qualcomm.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 11 May 2020 15:47:20 +0200
-Message-ID: <CAK8P3a2Qu6Byo5bddd1ECwRB1qiTXpYuV55_i_2CUw+J5zqtfQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] ath10k: fix gcc-10 zero-length-bounds
- warnings
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +21,123 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, Networking <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, ath10k@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+Cc: ath10k@lists.infradead.org
 
-On Mon, May 11, 2020 at 3:10 PM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Arnd Bergmann <arnd@arndb.de> writes:
->
-> > On Mon, May 11, 2020 at 2:03 PM Kalle Valo <kvalo@codeaurora.org> wrote:
-> >> "Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
-> >
-> >> >
-> >> > This treewide patch no longer contains changes for ath10k. I removed them
-> >> > since Monday (05/04/2020). So, this "Fixes" tag does not apply.
-> >
-> > Oops, I forgot to update the changelog trext when rebasing.
-> >
-> >> Ok, I'll remove it. Also I'll take these to my ath.git tree, not to
-> >> net-next.
-> >
-> > Thanks a lot!
->
-> Weird, I had a conflict with this patch but couldn't figure out why.
-> Anyway, I fixed it in my pending branch and please double check:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=c3e5221f3c3ddabc76a33ff08440ff1dc664998d
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 7a6c99c4004baae4c431d430964ffbdf84360295  Add localversion-wireless-testing-ath
 
-Looks good to me. It may have been an artifact on my side, as I
-have applied and later reverted Gustavo's patch on the same branch.
+elapsed time: 483m
 
-     Arnd
+configs tested: 100
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+c6x                               allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+openrisc                            defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200511
+i386                 randconfig-a005-20200511
+i386                 randconfig-a003-20200511
+i386                 randconfig-a001-20200511
+i386                 randconfig-a004-20200511
+i386                 randconfig-a002-20200511
+x86_64               randconfig-a016-20200511
+x86_64               randconfig-a012-20200511
+x86_64               randconfig-a014-20200511
+i386                 randconfig-a012-20200511
+i386                 randconfig-a016-20200511
+i386                 randconfig-a014-20200511
+i386                 randconfig-a011-20200511
+i386                 randconfig-a013-20200511
+i386                 randconfig-a015-20200511
+x86_64               randconfig-a005-20200511
+x86_64               randconfig-a003-20200511
+x86_64               randconfig-a006-20200511
+x86_64               randconfig-a004-20200511
+x86_64               randconfig-a001-20200511
+x86_64               randconfig-a002-20200511
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
