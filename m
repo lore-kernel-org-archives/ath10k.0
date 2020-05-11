@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jY7NA-0004NK-KC
- for ath10k@lists.infradead.org; Mon, 11 May 2020 12:17:32 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH net-next 2/2] ath10k: fix ath10k_pci struct layout
-References: <20200509120707.188595-1-arnd@arndb.de>
- <20200509120707.188595-2-arnd@arndb.de>
- <87v9l24qz6.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 11 May 2020 15:17:12 +0300
-In-Reply-To: <87v9l24qz6.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Mon, 11 May 2020 15:05:01 +0300")
-Message-ID: <87r1vq4qev.fsf@kamboji.qca.qualcomm.com>
+ id 1jY7bF-0007Rm-6W
+ for ath10k@lists.infradead.org; Mon, 11 May 2020 12:32:02 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Skip handling del_server during driver exit
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1588663061-12138-1-git-send-email-pillair@codeaurora.org>
+References: <1588663061-12138-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20200511123159.C3936C58A02@smtp.codeaurora.org>
+Date: Mon, 11 May 2020 12:31:59 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> Arnd Bergmann <arnd@arndb.de> writes:
->
->> gcc-10 correctly points out a bug with a zero-length array in
->> struct ath10k_pci:
->>
->> drivers/net/wireless/ath/ath10k/ahb.c: In function 'ath10k_ahb_remove':
->> drivers/net/wireless/ath/ath10k/ahb.c:30:9: error: array subscript 0
->> is outside the bounds of an interior zero-length array 'struct
->> ath10k_ahb[0]' [-Werror=zero-length-bounds]
->>    30 |  return &((struct ath10k_pci *)ar->drv_priv)->ahb[0];
->>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> In file included from drivers/net/wireless/ath/ath10k/ahb.c:13:
->> drivers/net/wireless/ath/ath10k/pci.h:185:20: note: while referencing 'ahb'
->>   185 |  struct ath10k_ahb ahb[0];
->>       |                    ^~~
->>
->> The last addition to the struct ignored the comments and added
->> new members behind the array that must remain last.
->>
->> Change it to a flexible-array member and move it last again to
->> make it work correctly, prevent the same thing from happening
->> again (all compilers warn about flexible-array members in the
->> middle of a struct) and get it to build without warnings.
->
-> Very good find, thanks! This bug would cause all sort of strange memory
-> corruption issues.
+> The qmi infrastructure sends the client a del_server
+> event when the client releases its qmi handle. This
+> is not the msg indicating the actual qmi server exiting.
+> In such cases the del_server msg should not be processed,
+> since the wifi firmware does not reset its qmi state.
+> 
+> Hence skip the processing of del_server event when the
+> driver is unloading.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-This motivated me to switch to using GCC 10.x and I noticed that you had
-already upgraded crosstool so it was a trivial thing to do, awesome :)
+Patch applied to ath-next branch of ath.git, thanks.
 
-https://mirrors.edge.kernel.org/pub/tools/crosstool/
-
-I use crosstool like this using GNUmakefile:
-
-CROSS_COMPILE=/opt/cross/gcc-10.1.0-nolibc/x86_64-linux/bin/x86_64-linux-
-include Makefile
-
-I think it's handy trick and would be good to mention that in the
-crosstool main page. That way I could just point people to the crosstool
-main page when they are using ancient compilers and would need to
-upgrade.
+7c6d67b136ce ath10k: Skip handling del_server during driver exit
 
 -- 
+https://patchwork.kernel.org/patch/11528317/
+
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
