@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jY7cJ-0007sh-O1
- for ath10k@lists.infradead.org; Mon, 11 May 2020 12:33:09 +0000
+ id 1jY7do-0008FL-P3
+ for ath10k@lists.infradead.org; Mon, 11 May 2020 12:34:42 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: Remove msdu from idr when management pkt send
- fails
+Subject: Re: [PATCH] ath10k: fix __le32 warning in
+ ath10k_wmi_tlv_op_gen_request_peer_stats_info()
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1588667015-25490-1-git-send-email-pillair@codeaurora.org>
-References: <1588667015-25490-1-git-send-email-pillair@codeaurora.org>
-Message-Id: <20200511123305.46C87C43637@smtp.codeaurora.org>
-Date: Mon, 11 May 2020 12:33:05 +0000 (UTC)
+In-Reply-To: <1588747649-18051-1-git-send-email-kvalo@codeaurora.org>
+References: <1588747649-18051-1-git-send-email-kvalo@codeaurora.org>
+Message-Id: <20200511123439.2CDE0C43636@smtp.codeaurora.org>
+Date: Mon, 11 May 2020 12:34:39 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> Currently when the sending of any management pkt
-> via wmi command fails, the packet is being unmapped
-> freed in the error handling. But the idr entry added,
-> which is used to track these packet is not getting removed.
+> Sparse warned:
 > 
-> Hence, during unload, in wmi cleanup, all the entries
-> in IDR are removed and the corresponding buffer is
-> attempted to be freed. This can cause a situation where
-> one packet is attempted to be freed twice.
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34: warning: incorrect
+> type in assignment (different base types)
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34:    expected
+> restricted __le32 [usertype] reset_after_request
+> drivers/net/wireless/ath/ath10k/wmi-tlv.c:3013:34:    got unsigned int
+> [usertype] reset
 > 
-> Fix this error by rmeoving the msdu from the idr
-> list when the sending of a management packet over
-> wmi fails.
+> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00042.
 > 
-> Tested HW: WCN3990
-> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> 
-> Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Fixes: 0f7cb26830a6 ("ath10k: add rx bitrate report for SDIO")
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-c730c477176a ath10k: Remove msdu from idr when management pkt send fails
+e47210f72a68 ath10k: fix __le32 warning in ath10k_wmi_tlv_op_gen_request_peer_stats_info()
 
 -- 
-https://patchwork.kernel.org/patch/11528409/
+https://patchwork.kernel.org/patch/11530437/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
