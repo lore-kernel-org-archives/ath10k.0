@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYFpO-0000nT-7Q
- for ath10k@lists.infradead.org; Mon, 11 May 2020 21:19:12 +0000
-Date: Tue, 12 May 2020 05:18:59 +0800
+ id 1jYFpN-0000nS-QC
+ for ath10k@lists.infradead.org; Mon, 11 May 2020 21:19:11 +0000
+Date: Tue, 12 May 2020 05:19:02 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 4d0f3604c4d181b98104024c837f0e81912f55ef
-Message-ID: <5eb9c143.//4f+23beAcrSOFc%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ d387210237eeb6469f407bfc3c1fb46450a97eb7
+Message-ID: <5eb9c146.dOGhL9cBUY797ZWp%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 4d0f3604c4d181b98104024c837f0e81912f55ef  ath10k: remove experimental tag from SDIO and SNOC busses in Kconfig
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: d387210237eeb6469f407bfc3c1fb46450a97eb7  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 483m
 
@@ -90,12 +90,6 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-x86_64               randconfig-a005-20200511
-x86_64               randconfig-a003-20200511
-x86_64               randconfig-a006-20200511
-x86_64               randconfig-a004-20200511
-x86_64               randconfig-a001-20200511
-x86_64               randconfig-a002-20200511
 i386                 randconfig-a006-20200511
 i386                 randconfig-a005-20200511
 i386                 randconfig-a003-20200511
@@ -111,6 +105,12 @@ i386                 randconfig-a014-20200511
 i386                 randconfig-a011-20200511
 i386                 randconfig-a013-20200511
 i386                 randconfig-a015-20200511
+x86_64               randconfig-a005-20200511
+x86_64               randconfig-a003-20200511
+x86_64               randconfig-a006-20200511
+x86_64               randconfig-a004-20200511
+x86_64               randconfig-a001-20200511
+x86_64               randconfig-a002-20200511
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
