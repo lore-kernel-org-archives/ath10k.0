@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jY7bF-0007Rm-6W
- for ath10k@lists.infradead.org; Mon, 11 May 2020 12:32:02 +0000
+ id 1jY7cJ-0007sh-O1
+ for ath10k@lists.infradead.org; Mon, 11 May 2020 12:33:09 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Skip handling del_server during driver exit
+Subject: Re: [PATCH v2] ath10k: Remove msdu from idr when management pkt send
+ fails
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1588663061-12138-1-git-send-email-pillair@codeaurora.org>
-References: <1588663061-12138-1-git-send-email-pillair@codeaurora.org>
-Message-Id: <20200511123159.C3936C58A02@smtp.codeaurora.org>
-Date: Mon, 11 May 2020 12:31:59 +0000 (UTC)
+In-Reply-To: <1588667015-25490-1-git-send-email-pillair@codeaurora.org>
+References: <1588667015-25490-1-git-send-email-pillair@codeaurora.org>
+Message-Id: <20200511123305.46C87C43637@smtp.codeaurora.org>
+Date: Mon, 11 May 2020 12:33:05 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +28,33 @@ Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.i
 
 Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> The qmi infrastructure sends the client a del_server
-> event when the client releases its qmi handle. This
-> is not the msg indicating the actual qmi server exiting.
-> In such cases the del_server msg should not be processed,
-> since the wifi firmware does not reset its qmi state.
+> Currently when the sending of any management pkt
+> via wmi command fails, the packet is being unmapped
+> freed in the error handling. But the idr entry added,
+> which is used to track these packet is not getting removed.
 > 
-> Hence skip the processing of del_server event when the
-> driver is unloading.
+> Hence, during unload, in wmi cleanup, all the entries
+> in IDR are removed and the corresponding buffer is
+> attempted to be freed. This can cause a situation where
+> one packet is attempted to be freed twice.
+> 
+> Fix this error by rmeoving the msdu from the idr
+> list when the sending of a management packet over
+> wmi fails.
 > 
 > Tested HW: WCN3990
 > Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 > 
-> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+> Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
 > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-7c6d67b136ce ath10k: Skip handling del_server during driver exit
+c730c477176a ath10k: Remove msdu from idr when management pkt send fails
 
 -- 
-https://patchwork.kernel.org/patch/11528317/
+https://patchwork.kernel.org/patch/11528409/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
