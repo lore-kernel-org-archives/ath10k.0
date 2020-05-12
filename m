@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYXqe-0004mn-KN
- for ath10k@lists.infradead.org; Tue, 12 May 2020 16:33:42 +0000
-Date: Wed, 13 May 2020 00:32:56 +0800
+ id 1jYYUj-0000jq-Aa
+ for ath10k@lists.infradead.org; Tue, 12 May 2020 17:15:07 +0000
+Date: Wed, 13 May 2020 01:14:40 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 104f3d95d8d633ceebcef811c5c7c3ba56bedc7f
-Message-ID: <5ebacfb8.8a4qKOCgUUShTwyQ%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 530d13da64f2b4cdef96abb28c322a8db488268d
+Message-ID: <5ebad980.eGXDyIhjwKuERB1R%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 104f3d95d8d633ceebcef811c5c7c3ba56bedc7f  wil6210: Replace zero-length array with flexible-array
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 530d13da64f2b4cdef96abb28c322a8db488268d  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 482m
+elapsed time: 523m
 
-configs tested: 112
-configs skipped: 4
+configs tested: 100
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -43,27 +43,13 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
-sparc                            allyesconfig
 m68k                             allyesconfig
-m68k                        stmark2_defconfig
-arm                       aspeed_g4_defconfig
-h8300                     edosk2674_defconfig
-sh                           se7751_defconfig
-i386                                defconfig
-arm                           tegra_defconfig
-sh                            hp6xx_defconfig
-arm64                            alldefconfig
-arm                        vexpress_defconfig
-m68k                        m5272c3_defconfig
 sh                             sh03_defconfig
 riscv                            allyesconfig
 arm                         lpc32xx_defconfig
-sh                            titan_defconfig
-arc                           tb10x_defconfig
-powerpc                         wii_defconfig
-s390                                defconfig
 i386                              allnoconfig
 i386                             allyesconfig
+i386                                defconfig
 i386                              debian-10.3
 ia64                             allmodconfig
 ia64                                defconfig
@@ -130,7 +116,9 @@ riscv                            allmodconfig
 s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
+s390                                defconfig
 x86_64                              defconfig
+sparc                            allyesconfig
 sparc                               defconfig
 sparc64                             defconfig
 sparc64                           allnoconfig
