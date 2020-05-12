@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYPQS-00056h-K5
- for ath10k@lists.infradead.org; Tue, 12 May 2020 07:34:10 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH net-next 1/2] ath10k: fix gcc-10 zero-length-bounds
- warnings
+ id 1jYQF4-0003ct-OH
+ for ath10k@lists.infradead.org; Tue, 12 May 2020 08:26:26 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200509120707.188595-1-arnd@arndb.de>
-References: <20200509120707.188595-1-arnd@arndb.de>
-Message-Id: <20200512073342.A422DC44791@smtp.codeaurora.org>
-Date: Tue, 12 May 2020 07:33:42 +0000 (UTC)
+Subject: Re: [ath6kl:pending 21/24]
+ drivers/net/wireless/ath/ath11k/pci.c:49:34: warning: Local variable
+ 'msi_config' shadows outer variable [shadowVariable]
+References: <202005121153.gLRyf9Tw%lkp@intel.com>
+Date: Tue, 12 May 2020 11:26:06 +0300
+In-Reply-To: <202005121153.gLRyf9Tw%lkp@intel.com> (kbuild test robot's
+ message of "Tue, 12 May 2020 11:11:56 +0800")
+Message-ID: <87sgg536g1.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +25,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
+To: kbuild test robot <lkp@intel.com>
+Cc: Govind Singh <govinds@codeaurora.org>, kbuild-all@lists.01.org, ath11k@lists.infradead.org, ath10k@lists.infradead.org
 
-Arnd Bergmann <arnd@arndb.de> wrote:
++ ath11k
 
-> gcc-10 started warning about out-of-bounds access for zero-length
-> arrays:
-> 
-> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
->                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
-> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
-> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
->  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
->  1676 |  struct htt_tx_fetch_record records[0];
->       |                             ^~~~~~~
-> 
-> Make records[] a flexible array member to allow this, moving it behind
-> the other zero-length member that is not accessed in a way that gcc
-> warns about.
-> 
-> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+kbuild test robot <lkp@intel.com> writes:
 
-2 patches applied to ath-next branch of ath.git, thanks.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+> head:   6303acc5b03a5fc3bf6cf5fa072ae0dc9aaa5dd0
+> commit: 398a800c183de17a49a5779550e72fbc3ba1e592 [21/24] ath11k: Add msi config init for QCA6390
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+>
+> cppcheck warnings: (new ones prefixed by >>)
+>
+>>> drivers/net/wireless/ath/ath11k/pci.c:49:34: warning: Local variable 'msi_config' shadows outer variable [shadowVariable]
+>     const struct ath11k_msi_config *msi_config;
+>                                     ^
+>    drivers/net/wireless/ath/ath11k/pci.c:23:39: note: Shadowed declaration
+>    static const struct ath11k_msi_config msi_config = {
+>                                          ^
+>    drivers/net/wireless/ath/ath11k/pci.c:49:34: note: Shadow variable
+>     const struct ath11k_msi_config *msi_config;
 
-9f12bebd512c ath10k: fix gcc-10 zero-length-bounds warnings
-32221df6765b ath10k: fix ath10k_pci struct layout
+I fixed this in the pending branch by changing renaming the static
+variable to ath11k_msi_config:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=76bce5bd3875bd3d8329a69057e2d63064d90b09
 
 -- 
-https://patchwork.kernel.org/patch/11538233/
-
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
