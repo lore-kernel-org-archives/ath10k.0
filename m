@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYaUu-0001o2-GQ
+ id 1jYaUu-0001o1-PW
  for ath10k@lists.infradead.org; Tue, 12 May 2020 19:23:26 +0000
-Date: Wed, 13 May 2020 03:22:35 +0800
+Date: Wed, 13 May 2020 03:22:37 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 101d78d87e4a16cd888f34fd1b19f517942fb516
-Message-ID: <5ebaf77b.cEi4jQjrWv6bBuN2%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ d7cf44952da2a880988973784cdbe5385c352013
+Message-ID: <5ebaf77d.gFJJhov1Ox6RcVT4%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 101d78d87e4a16cd888f34fd1b19f517942fb516  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: d7cf44952da2a880988973784cdbe5385c352013  wcn36xx: Replace zero-length array with flexible-array
 
 elapsed time: 484m
 
-configs tested: 116
+configs tested: 119
 configs skipped: 6
 
 The following configs have been built successfully.
@@ -64,6 +64,10 @@ m68k                        m5272c3_defconfig
 sh                             sh03_defconfig
 riscv                            allyesconfig
 arm                         lpc32xx_defconfig
+sh                            titan_defconfig
+arc                           tb10x_defconfig
+powerpc                         wii_defconfig
+s390                                defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                              debian-10.3
@@ -133,7 +137,6 @@ riscv                            allmodconfig
 s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
-s390                                defconfig
 x86_64                              defconfig
 sparc                               defconfig
 sparc64                             defconfig
