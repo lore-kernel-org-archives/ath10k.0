@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYQF4-0003ct-OH
- for ath10k@lists.infradead.org; Tue, 12 May 2020 08:26:26 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [ath6kl:pending 21/24]
- drivers/net/wireless/ath/ath11k/pci.c:49:34: warning: Local variable
- 'msi_config' shadows outer variable [shadowVariable]
-References: <202005121153.gLRyf9Tw%lkp@intel.com>
-Date: Tue, 12 May 2020 11:26:06 +0300
-In-Reply-To: <202005121153.gLRyf9Tw%lkp@intel.com> (kbuild test robot's
- message of "Tue, 12 May 2020 11:11:56 +0800")
-Message-ID: <87sgg536g1.fsf@kamboji.qca.qualcomm.com>
+ id 1jYXqd-0004mn-2u
+ for ath10k@lists.infradead.org; Tue, 12 May 2020 16:33:40 +0000
+Date: Wed, 13 May 2020 00:32:53 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS bf86f050c21a9c0cdc22b732c1236db907bdb31c
+Message-ID: <5ebacfb5.e/gTRSDq6bKm7FIn%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,39 +20,140 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>
-Cc: Govind Singh <govinds@codeaurora.org>, kbuild-all@lists.01.org, ath11k@lists.infradead.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-+ ath11k
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: bf86f050c21a9c0cdc22b732c1236db907bdb31c  Add localversion-wireless-testing-ath
 
-kbuild test robot <lkp@intel.com> writes:
+elapsed time: 481m
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   6303acc5b03a5fc3bf6cf5fa072ae0dc9aaa5dd0
-> commit: 398a800c183de17a49a5779550e72fbc3ba1e592 [21/24] ath11k: Add msi config init for QCA6390
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
->
-> cppcheck warnings: (new ones prefixed by >>)
->
->>> drivers/net/wireless/ath/ath11k/pci.c:49:34: warning: Local variable 'msi_config' shadows outer variable [shadowVariable]
->     const struct ath11k_msi_config *msi_config;
->                                     ^
->    drivers/net/wireless/ath/ath11k/pci.c:23:39: note: Shadowed declaration
->    static const struct ath11k_msi_config msi_config = {
->                                          ^
->    drivers/net/wireless/ath/ath11k/pci.c:49:34: note: Shadow variable
->     const struct ath11k_msi_config *msi_config;
+configs tested: 116
+configs skipped: 6
 
-I fixed this in the pending branch by changing renaming the static
-variable to ath11k_msi_config:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=76bce5bd3875bd3d8329a69057e2d63064d90b09
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+m68k                        stmark2_defconfig
+arm                  colibri_pxa300_defconfig
+c6x                        evmc6457_defconfig
+powerpc                     powernv_defconfig
+mips                 decstation_r4k_defconfig
+arm                       aspeed_g4_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     ep8248e_defconfig
+openrisc                    or1ksim_defconfig
+h8300                     edosk2674_defconfig
+sh                           se7751_defconfig
+i386                                defconfig
+arm                           tegra_defconfig
+sh                            hp6xx_defconfig
+arm64                            alldefconfig
+arm                        vexpress_defconfig
+m68k                        m5272c3_defconfig
+sh                             sh03_defconfig
+riscv                            allyesconfig
+arm                         lpc32xx_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200512
+i386                 randconfig-a005-20200512
+i386                 randconfig-a003-20200512
+i386                 randconfig-a001-20200512
+i386                 randconfig-a004-20200512
+i386                 randconfig-a002-20200512
+x86_64               randconfig-a016-20200512
+x86_64               randconfig-a012-20200512
+x86_64               randconfig-a015-20200512
+x86_64               randconfig-a013-20200512
+x86_64               randconfig-a014-20200512
+x86_64               randconfig-a011-20200512
+i386                 randconfig-a012-20200512
+i386                 randconfig-a016-20200512
+i386                 randconfig-a014-20200512
+i386                 randconfig-a011-20200512
+i386                 randconfig-a013-20200512
+i386                 randconfig-a015-20200512
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
