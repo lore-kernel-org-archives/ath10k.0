@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYXqd-0004mn-2u
- for ath10k@lists.infradead.org; Tue, 12 May 2020 16:33:40 +0000
-Date: Wed, 13 May 2020 00:32:53 +0800
+ id 1jYXqe-0004mn-KN
+ for ath10k@lists.infradead.org; Tue, 12 May 2020 16:33:42 +0000
+Date: Wed, 13 May 2020 00:32:56 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS bf86f050c21a9c0cdc22b732c1236db907bdb31c
-Message-ID: <5ebacfb5.e/gTRSDq6bKm7FIn%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 104f3d95d8d633ceebcef811c5c7c3ba56bedc7f
+Message-ID: <5ebacfb8.8a4qKOCgUUShTwyQ%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: bf86f050c21a9c0cdc22b732c1236db907bdb31c  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 104f3d95d8d633ceebcef811c5c7c3ba56bedc7f  wil6210: Replace zero-length array with flexible-array
 
-elapsed time: 481m
+elapsed time: 482m
 
-configs tested: 116
-configs skipped: 6
+configs tested: 112
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -45,14 +46,7 @@ arm64                             allnoconfig
 sparc                            allyesconfig
 m68k                             allyesconfig
 m68k                        stmark2_defconfig
-arm                  colibri_pxa300_defconfig
-c6x                        evmc6457_defconfig
-powerpc                     powernv_defconfig
-mips                 decstation_r4k_defconfig
 arm                       aspeed_g4_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                     ep8248e_defconfig
-openrisc                    or1ksim_defconfig
 h8300                     edosk2674_defconfig
 sh                           se7751_defconfig
 i386                                defconfig
@@ -64,6 +58,10 @@ m68k                        m5272c3_defconfig
 sh                             sh03_defconfig
 riscv                            allyesconfig
 arm                         lpc32xx_defconfig
+sh                            titan_defconfig
+arc                           tb10x_defconfig
+powerpc                         wii_defconfig
+s390                                defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                              debian-10.3
@@ -132,7 +130,6 @@ riscv                            allmodconfig
 s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
-s390                                defconfig
 x86_64                              defconfig
 sparc                               defconfig
 sparc64                             defconfig
