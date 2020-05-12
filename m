@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYKiY-0003Qb-Mq
- for ath10k@lists.infradead.org; Tue, 12 May 2020 02:32:28 +0000
-Date: Tue, 12 May 2020 10:32:18 +0800
+ id 1jYLCo-0006QU-5G
+ for ath10k@lists.infradead.org; Tue, 12 May 2020 03:03:45 +0000
+Date: Tue, 12 May 2020 11:03:08 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 7e7fdfc8c7aeed1ab278db1f6fb5acd1ed69fba4
-Message-ID: <5eba0ab2.RN6nxrj4sHw+0iIr%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 6303acc5b03a5fc3bf6cf5fa072ae0dc9aaa5dd0
+Message-ID: <5eba11ec./F2BxApVg1Hw6M3d%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 7e7fdfc8c7aeed1ab278db1f6fb5acd1ed69fba4  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 6303acc5b03a5fc3bf6cf5fa072ae0dc9aaa5dd0  wil6210: Replace zero-length array with flexible-array
 
-elapsed time: 484m
+elapsed time: 480m
 
-configs tested: 103
+configs tested: 106
 configs skipped: 1
 
 The following configs have been built successfully.
@@ -95,6 +95,9 @@ i386                 randconfig-a003-20200511
 i386                 randconfig-a001-20200511
 i386                 randconfig-a004-20200511
 i386                 randconfig-a002-20200511
+x86_64               randconfig-a016-20200511
+x86_64               randconfig-a012-20200511
+x86_64               randconfig-a014-20200511
 i386                 randconfig-a012-20200511
 i386                 randconfig-a016-20200511
 i386                 randconfig-a014-20200511
@@ -132,12 +135,12 @@ um                                allnoconfig
 um                               allyesconfig
 um                                  defconfig
 x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
 x86_64                         rhel-7.2-clear
 x86_64                                    lkp
 x86_64                              fedora-25
 x86_64                                  kexec
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
