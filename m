@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mail26.static.mailgun.info ([104.130.122.26])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYLLa-0004NS-KN
- for ath10k@lists.infradead.org; Tue, 12 May 2020 03:12:48 +0000
-Date: Tue, 12 May 2020 11:11:56 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending 21/24] drivers/net/wireless/ath/ath11k/pci.c:49:34:
- warning: Local variable 'msi_config' shadows outer variable [shadowVariable]
-Message-ID: <202005121153.gLRyf9Tw%lkp@intel.com>
+ id 1jYPQS-00056h-K5
+ for ath10k@lists.infradead.org; Tue, 12 May 2020 07:34:10 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+Subject: Re: [PATCH net-next 1/2] ath10k: fix gcc-10 zero-length-bounds
+ warnings
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200509120707.188595-1-arnd@arndb.de>
+References: <20200509120707.188595-1-arnd@arndb.de>
+Message-Id: <20200512073342.A422DC44791@smtp.codeaurora.org>
+Date: Tue, 12 May 2020 07:33:42 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,90 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: kbuild-all@lists.01.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, Wen Gong <wgong@codeaurora.org>, "David S. Miller" <davem@davemloft.net>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-head:   6303acc5b03a5fc3bf6cf5fa072ae0dc9aaa5dd0
-commit: 398a800c183de17a49a5779550e72fbc3ba1e592 [21/24] ath11k: Add msi config init for QCA6390
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
+> gcc-10 started warning about out-of-bounds access for zero-length
+> arrays:
+> 
+> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
+>                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
+> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
+> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
+>  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
+>  1676 |  struct htt_tx_fetch_record records[0];
+>       |                             ^~~~~~~
+> 
+> Make records[] a flexible array member to allow this, moving it behind
+> the other zero-length member that is not accessed in a way that gcc
+> warns about.
+> 
+> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
+2 patches applied to ath-next branch of ath.git, thanks.
 
-cppcheck warnings: (new ones prefixed by >>)
+9f12bebd512c ath10k: fix gcc-10 zero-length-bounds warnings
+32221df6765b ath10k: fix ath10k_pci struct layout
 
->> drivers/net/wireless/ath/ath11k/pci.c:49:34: warning: Local variable 'msi_config' shadows outer variable [shadowVariable]
-    const struct ath11k_msi_config *msi_config;
-                                    ^
-   drivers/net/wireless/ath/ath11k/pci.c:23:39: note: Shadowed declaration
-   static const struct ath11k_msi_config msi_config = {
-                                         ^
-   drivers/net/wireless/ath/ath11k/pci.c:49:34: note: Shadow variable
-    const struct ath11k_msi_config *msi_config;
-                                    ^
+-- 
+https://patchwork.kernel.org/patch/11538233/
 
-vim +/msi_config +49 drivers/net/wireless/ath/ath11k/pci.c
-
-    45	
-    46	static int ath11k_pci_enable_msi(struct ath11k_pci *ab_pci)
-    47	{
-    48		struct ath11k_base *ab = ab_pci->ab;
-  > 49		const struct ath11k_msi_config *msi_config;
-    50		struct msi_desc *msi_desc;
-    51		int num_vectors;
-    52		int ret;
-    53	
-    54		ret = ath11k_pci_get_msi_assignment(ab_pci);
-    55		if (ret) {
-    56			ath11k_err(ab, "failed to get MSI assignment, err = %d\n", ret);
-    57			goto out;
-    58		}
-    59	
-    60		msi_config = ab_pci->msi_config;
-    61		if (!msi_config) {
-    62			ath11k_err(ab, "msi_config is NULL!\n");
-    63			ret = -EINVAL;
-    64			goto out;
-    65		}
-    66	
-    67		num_vectors = pci_alloc_irq_vectors(ab_pci->pdev,
-    68						    msi_config->total_vectors,
-    69						    msi_config->total_vectors,
-    70						    PCI_IRQ_MSI);
-    71		if (num_vectors != msi_config->total_vectors) {
-    72			ath11k_err(ab, "failed to get enough MSI vectors (%d), available vectors = %d",
-    73				   msi_config->total_vectors, num_vectors);
-    74			if (num_vectors >= 0)
-    75				ret = -EINVAL;
-    76			goto reset_msi_config;
-    77		}
-    78	
-    79		msi_desc = irq_get_msi_desc(ab_pci->pdev->irq);
-    80		if (!msi_desc) {
-    81			ath11k_err(ab, "msi_desc is NULL!\n");
-    82			ret = -EINVAL;
-    83			goto free_msi_vector;
-    84		}
-    85	
-    86		ab_pci->msi_ep_base_data = msi_desc->msg.data;
-    87	
-    88		ath11k_dbg(ab, ATH11K_DBG_PCI, "msi base data is %d\n", ab_pci->msi_ep_base_data);
-    89	
-    90		return 0;
-    91	
-    92	free_msi_vector:
-    93		pci_free_irq_vectors(ab_pci->pdev);
-    94	reset_msi_config:
-    95		ab_pci->msi_config = NULL;
-    96	out:
-    97		return ret;
-    98	}
-    99	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
