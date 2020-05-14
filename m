@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZ2zO-0007B8-RW
- for ath10k@lists.infradead.org; Thu, 14 May 2020 01:48:48 +0000
-Date: Thu, 14 May 2020 09:47:48 +0800
+ id 1jZ2zH-00076A-Rd
+ for ath10k@lists.infradead.org; Thu, 14 May 2020 01:48:41 +0000
+Date: Thu, 14 May 2020 09:47:46 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- ec431188b4197aaccfbc6e6ece4fb88f79723635
-Message-ID: <5ebca344.J+AQqUPFWkw3H5FM%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS d43a155ee0b2ec13e234c629013fc6c53f3dd071
+Message-ID: <5ebca342.ka54w6Ionorbrscy%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +23,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: ec431188b4197aaccfbc6e6ece4fb88f79723635  wcn36xx: Replace zero-length array with flexible-array
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: d43a155ee0b2ec13e234c629013fc6c53f3dd071  Add localversion-wireless-testing-ath
 
-elapsed time: 483m
+elapsed time: 482m
 
-configs tested: 151
-configs skipped: 10
+configs tested: 145
+configs skipped: 14
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -48,19 +47,14 @@ m68k                             allyesconfig
 h8300                     edosk2674_defconfig
 mips                     decstation_defconfig
 sh                          rsk7201_defconfig
-m68k                          amiga_defconfig
-mips                malta_qemu_32r6_defconfig
-parisc                              defconfig
-i386                              allnoconfig
+sh                          sdk7786_defconfig
+arm                            hisi_defconfig
+arm                          exynos_defconfig
+arm                            mps2_defconfig
 s390                       zfcpdump_defconfig
 m68k                       m5249evb_defconfig
 m68k                          sun3x_defconfig
 sh                           se7619_defconfig
-mips                        qi_lb60_defconfig
-arc                        nsim_700_defconfig
-arm                         lubbock_defconfig
-arm                          tango4_defconfig
-sh                            shmin_defconfig
 mips                           mtx1_defconfig
 riscv                    nommu_virt_defconfig
 mips                        nlm_xlr_defconfig
@@ -80,6 +74,9 @@ mips                      pic32mzda_defconfig
 mips                  mips_paravirt_defconfig
 riscv                          rv32_defconfig
 powerpc                      ppc44x_defconfig
+arm                        shmobile_defconfig
+powerpc                    gamecube_defconfig
+sh                           se7343_defconfig
 arm                         at91_dt_defconfig
 sh                           se7724_defconfig
 arc                             nps_defconfig
@@ -96,6 +93,7 @@ arm                         shannon_defconfig
 nios2                            alldefconfig
 sh                   secureedge5410_defconfig
 arm                      footbridge_defconfig
+i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
@@ -130,6 +128,7 @@ mips                             allyesconfig
 mips                              allnoconfig
 mips                             allmodconfig
 parisc                            allnoconfig
+parisc                              defconfig
 parisc                           allyesconfig
 parisc                           allmodconfig
 powerpc                             defconfig
@@ -143,12 +142,6 @@ i386                 randconfig-a003-20200513
 i386                 randconfig-a001-20200513
 i386                 randconfig-a004-20200513
 i386                 randconfig-a002-20200513
-x86_64               randconfig-a012-20200514
-x86_64               randconfig-a016-20200514
-x86_64               randconfig-a015-20200514
-x86_64               randconfig-a013-20200514
-x86_64               randconfig-a014-20200514
-x86_64               randconfig-a011-20200514
 i386                 randconfig-a012-20200513
 i386                 randconfig-a016-20200513
 i386                 randconfig-a014-20200513
