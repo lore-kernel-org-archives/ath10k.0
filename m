@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]
  helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZoBP-0001MY-9D
- for ath10k@lists.infradead.org; Sat, 16 May 2020 04:12:21 +0000
-Date: Sat, 16 May 2020 00:11:55 -0400
+ id 1jZoCA-0001Te-MJ
+ for ath10k@lists.infradead.org; Sat, 16 May 2020 04:13:08 +0000
+Date: Sat, 16 May 2020 00:12:43 -0400
 From: Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-Message-ID: <20200516041155.GL3182@x1-fbsd>
+Subject: Re: [PATCH v2 13/15] ath6kl: use new module_firmware_crashed()
+Message-ID: <20200516041243.GM3182@x1-fbsd>
 References: <20200515212846.1347-1-mcgrof@kernel.org>
- <20200515212846.1347-13-mcgrof@kernel.org>
+ <20200515212846.1347-14-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200515212846.1347-13-mcgrof@kernel.org>
+In-Reply-To: <20200515212846.1347-14-mcgrof@kernel.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,7 +28,7 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: linux-wireless@vger.kernel.org, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com, ath10k@lists.infradead.org, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, jeyu@kernel.org, akpm@linux-foundation.org, davem@davemloft.net
 
-On Fri, May 15, 2020 at 09:28:43PM +0000, Luis Chamberlain wrote:
+On Fri, May 15, 2020 at 09:28:44PM +0000, Luis Chamberlain wrote:
 > This makes use of the new module_firmware_crashed() to help
 > annotate when firmware for device drivers crash. When firmware
 > crashes devices can sometimes become unresponsive, and recovery
@@ -42,63 +42,21 @@ On Fri, May 15, 2020 at 09:28:43PM +0000, Luis Chamberlain wrote:
 > Cc: Kalle Valo <kvalo@codeaurora.org>
 > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
->  drivers/net/wireless/ath/ath10k/pci.c  | 2 ++
->  drivers/net/wireless/ath/ath10k/sdio.c | 2 ++
->  drivers/net/wireless/ath/ath10k/snoc.c | 1 +
->  3 files changed, 5 insertions(+)
+>  drivers/net/wireless/ath/ath6kl/hif.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-> index 1d941d53fdc9..6bd0f3b518b9 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -1767,6 +1767,7 @@ static void ath10k_pci_fw_dump_work(struct work_struct *work)
->  		scnprintf(guid, sizeof(guid), "n/a");
+> diff --git a/drivers/net/wireless/ath/ath6kl/hif.c b/drivers/net/wireless/ath/ath6kl/hif.c
+> index d1942537ea10..cfd838607544 100644
+> --- a/drivers/net/wireless/ath/ath6kl/hif.c
+> +++ b/drivers/net/wireless/ath/ath6kl/hif.c
+> @@ -120,6 +120,7 @@ static int ath6kl_hif_proc_dbg_intr(struct ath6kl_device *dev)
+>  	int ret;
 >  
->  	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
-> +	module_firmware_crashed();
->  	ath10k_print_driver_info(ar);
->  	ath10k_pci_dump_registers(ar, crash_data);
->  	ath10k_ce_dump_registers(ar, crash_data);
-> @@ -2837,6 +2838,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar,
->  	if (ret) {
->  		if (ath10k_pci_has_fw_crashed(ar)) {
->  			ath10k_warn(ar, "firmware crashed during chip reset\n");
-> +			module_firmware_crashed();
->  			ath10k_pci_fw_crashed_clear(ar);
->  			ath10k_pci_fw_crashed_dump(ar);
->  		}
-> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-> index e2aff2254a40..d34ad289380f 100644
-> --- a/drivers/net/wireless/ath/ath10k/sdio.c
-> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-> @@ -794,6 +794,7 @@ static int ath10k_sdio_mbox_proc_dbg_intr(struct ath10k *ar)
->  
->  	/* TODO: Add firmware crash handling */
->  	ath10k_warn(ar, "firmware crashed\n");
+>  	ath6kl_warn("firmware crashed\n");
 > +	module_firmware_crashed();
 >  
->  	/* read counter to clear the interrupt, the debug error interrupt is
->  	 * counter 0.
-> @@ -915,6 +916,7 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
->  	if (cpu_int_status & MBOX_CPU_STATUS_ENABLE_ASSERT_MASK) {
->  		ath10k_err(ar, "firmware crashed!\n");
->  		queue_work(ar->workqueue, &ar->restart_work);
-> +		module_firmware_crashed();
->  	}
->  	return ret;
->  }
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index 354d49b1cd45..7cfc123c345c 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -1451,6 +1451,7 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
->  		scnprintf(guid, sizeof(guid), "n/a");
->  
->  	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
-> +	module_firmware_crashed();
->  	ath10k_print_driver_info(ar);
->  	ath10k_msa_dump_memory(ar, crash_data);
->  	mutex_unlock(&ar->dump_mutex);
+>  	/*
+>  	 * read counter to clear the interrupt, the debug error interrupt is
 > -- 
 > 2.26.2
 > 
