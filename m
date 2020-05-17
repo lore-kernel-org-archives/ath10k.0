@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ja90B-0004he-8Y
- for ath10k@lists.infradead.org; Sun, 17 May 2020 02:26:08 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id t40so3004684pjb.3
- for <ath10k@lists.infradead.org>; Sat, 16 May 2020 19:26:06 -0700 (PDT)
+ id 1ja909-0004h7-J8
+ for ath10k@lists.infradead.org; Sun, 17 May 2020 02:26:07 +0000
+Received: by mail-pg1-x543.google.com with SMTP id b8so2969892pgi.11
+ for <ath10k@lists.infradead.org>; Sat, 16 May 2020 19:26:00 -0700 (PDT)
 Subject: Re: [PATCHv4] ath10k : Fix channel survey dump
 References: <1588820612-15884-1-git-send-email-vnaralas@codeaurora.org>
 From: John Deere <24601deerej@gmail.com>
-Message-ID: <bee1439c-de98-dbf0-ee82-88620ecc560a@gmail.com>
-Date: Sun, 17 May 2020 10:26:04 +0800
+Message-ID: <edbb46d6-d7c1-7317-fc1f-cb06bc850c8a@gmail.com>
+Date: Sun, 17 May 2020 10:25:56 +0800
 MIME-Version: 1.0
 In-Reply-To: <1588820612-15884-1-git-send-email-vnaralas@codeaurora.org>
 Content-Language: en-US
