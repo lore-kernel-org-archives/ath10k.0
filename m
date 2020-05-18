@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pj1-f67.google.com ([209.85.216.67])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jalvV-0002dc-Co
- for ath10k@lists.infradead.org; Mon, 18 May 2020 19:59:54 +0000
-Received: by mail-pj1-f67.google.com with SMTP id k7so327568pjs.5
- for <ath10k@lists.infradead.org>; Mon, 18 May 2020 12:59:53 -0700 (PDT)
-Date: Mon, 18 May 2020 19:59:50 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
+ id 1jam4F-0008NB-7g
+ for ath10k@lists.infradead.org; Mon, 18 May 2020 20:08:56 +0000
+Message-ID: <bb0b9a2da99c16a28c1dbee93d08abfa2aecdc8b.camel@sipsolutions.net>
 Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-Message-ID: <20200518195950.GP11244@42.do-not-panic.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 18 May 2020 22:07:49 +0200
+In-Reply-To: <20200518195950.GP11244@42.do-not-panic.com>
+ (sfid-20200518_215954_551733_20DE2085)
 References: <20200515212846.1347-13-mcgrof@kernel.org>
  <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
  <20200518165154.GH11244@42.do-not-panic.com>
@@ -19,9 +20,9 @@ References: <20200515212846.1347-13-mcgrof@kernel.org>
  <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
  <20200518190930.GO11244@42.do-not-panic.com>
  <e3d978c8fa6a4075f12e843548d41e2c8ab537d1.camel@sipsolutions.net>
+ <20200518195950.GP11244@42.do-not-panic.com>
+ (sfid-20200518_215954_551733_20DE2085)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e3d978c8fa6a4075f12e843548d41e2c8ab537d1.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,112 +35,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, Ben Greear <greearb@candelatech.com>, bhe@redhat.com, ath10k@lists.infradead.org, Steve deRosier <derosier@gmail.com>, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, Kalle Valo <kvalo@codeaurora.org>, Network Development <netdev@vger.kernel.org>, schlad@suse.de, LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org, akpm@linux-foundation.org, "David S. Miller" <davem@davemloft.net>
 
-On Mon, May 18, 2020 at 09:25:09PM +0200, Johannes Berg wrote:
-> On Mon, 2020-05-18 at 19:09 +0000, Luis Chamberlain wrote:
+On Mon, 2020-05-18 at 19:59 +0000, Luis Chamberlain wrote:
+
+> > Err, no. Those two are most definitely related. Have you looked at (most
+> > or some or whatever) staging drivers recently? Those contain all kinds
+> > of garbage that might do whatever with your kernel.
 > 
-> > > Unfortunately a "taint" is interpreted by many users as: "your kernel
-> > > is really F#*D up, you better do something about it right now."
-> > > Assuming they're paying attention at all in the first place of course.
-> > 
-> > Taint historically has been used and still is today to help rule out
-> > whether or not you get support, or how you get support.
-> > 
-> > For instance, a staging driver is not supported by some upstream
-> > developers, but it will be by those who help staging and Greg. TAINT_CRAP
-> > cannot be even more clear.
-> > 
-> > So, no, it is not just about "hey your kernel is messed up", there are
-> > clear support boundaries being drawn.
+> No, I stay away :)
+
+:)
+
+> > That's all fine, I just don't think it's appropriate to pretend that
+> > your kernel is now 'tainted' (think about the meaning of that word) when
+> > the firmware of some random device crashed.
 > 
-> Err, no. Those two are most definitely related. Have you looked at (most
-> or some or whatever) staging drivers recently? Those contain all kinds
-> of garbage that might do whatever with your kernel.
+> If the firmware crash *does* require driver remove / addition again,
+> or a reboot, would you think that this is a situation that merits a taint?
 
-No, I stay away :)
+Not really. In my experience, that's more likely a hardware issue (card
+not properly seated, for example) that a bus reset happens to "fix".
 
-> Of course that's not a completely clear boundary, maybe you can find a
-> driver in staging that's perfect code just not written to kernel style?
-> But I find that hard to believe, in most cases.
+> > It's pretty clear, but even then, first of all I doubt this is the case
+> > for many of the places that you've sprinkled the annotation on,
 > 
-> So no, it's really not about "[a] staging driver is not supported" vs.
-> "your kernel is messed up". The very fact that you loaded one of those
-> things might very well have messed up your kernel entirely.
+> We can remove it, for this driver I can vouch for its location as it did
+> reach a state where I required a reboot. And its not the first time this
+> has happened. This got me thinking about the bigger picture of the lack
+> of proper way to address these cases in the kernel, and how the user is
+> left dumbfounded.
+
+Fair, so the driver is still broken wrt. recovery here. I still don't
+think that's a situation where e.g. the system should say "hey you have
+a taint here, if your graphics go bad now you should not report that
+bug" (which is effectively what the single taint bit does).
+
+> > and secondly it actually hides useful information.
 > 
-> > These days though, I think we all admit, that firmware crashes can use
-> > a better generic infrastructure for ensuring that clearly affecting-user
-> > experience issues. This patch is about that *when and if these happen*,
-> > we annotate it in the kernel for support pursposes.
-> 
-> That's all fine, I just don't think it's appropriate to pretend that
-> your kernel is now 'tainted' (think about the meaning of that word) when
-> the firmware of some random device crashed.
+> What is it hiding?
 
-If the firmware crash *does* require driver remove / addition again,
-or a reboot, would you think that this is a situation that merits a taint?
+Most importantly, which device crashed. Secondarily I'd say how many
+times (*).
 
-> > Recovery without affecting user experience would be great, the taint is
-> > *not* for those cases. The taint definition has:
-> > 
-> > + 18) ``Q`` used by device drivers to annotate that the device driver's firmware
-> > +     has crashed and the device's operation has been severely affected. The    
-> > +     device may be left in a crippled state, requiring full driver removal /   
-> > +     addition, system reboot, or it is unclear how long recovery will take.
-> > 
-> > Let me know if this is not clear.
-> 
-> It's pretty clear, but even then, first of all I doubt this is the case
-> for many of the places that you've sprinkled the annotation on,
+The information "firmware crashed" is really only useful in relation to
+the device. If your graphics firmware crashed, yeah, well, you probably
+won't even see this. If your USB wifi firmware crashed? Not really
+interesting, you'll anyway just unplug. In fact it's very hard for a USB
+driver (short of arbitrary memory corruption) to significantly mess up
+the system.
 
-We can remove it, for this driver I can vouch for its location as it did
-reach a state where I required a reboot. And its not the first time this
-has happened. This got me thinking about the bigger picture of the lack
-of proper way to address these cases in the kernel, and how the user is
-left dumbfounded.
+johannes
 
-> and secondly it actually hides useful information.
-
-What is it hiding?
-
-> Regardless of the support issue, I think this hiding of information is
-> also problematic.
-> 
-> I really think we'd all be better off if you just made a sysfs file (I
-> mistyped debugfs in some other email, sorry, apparently you didn't see
-> the correction in time) that listed which device(s) crashed and how many
-> times. 
-
-Ah yes, count. The taint does not address count.
-
-> That would actually be useful. Because honestly, if a random
-> device crashed for some random reason, that's pretty much a non-event.
-> If it keeps happening, then we might even want to know about it.
-
-True.
-
-> You can obviously save the contents of this file into your bug reports
-> automatically and act accordingly, but I think you'll find that this is
-> far more useful than saying "TAINT_FIRMWARE_CRASHED" so I'll ignore this
-> report.
-
-Absolutely.
-
-> Yeah, that might be reasonable thing if the bug report is about
-> slow wifi *and* you see that ath10k firmware crashed every 10 seconds,
-> but if it just crashed once a few days earlier it's of no importance to
-> the system anymore ... And certainly a reasonable driver (which I
-> believe ath10k to be) would _not_ randomly start corrupting memory
-> because its firmware crashed. Which really is what tainting the kernel
-> is about.
-
-I still see it as a support thing too. But discussing this further is
-pointless as I agree that taint does not cover count and that it is
-important.
+(*) though if it crashed only once, was that because it was wedged
+enough to be unusable afterwards, or because everything was fine?
 
 
-  Luis
 
 _______________________________________________
 ath10k mailing list
