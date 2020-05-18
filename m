@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1janWJ-0007VP-7l
- for ath10k@lists.infradead.org; Mon, 18 May 2020 21:42:03 +0000
-Date: Tue, 19 May 2020 05:41:34 +0800
+ id 1janWL-0007Vc-S1
+ for ath10k@lists.infradead.org; Mon, 18 May 2020 21:42:05 +0000
+Date: Tue, 19 May 2020 05:41:35 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 78893c5e594eff141dfdc580a6172ac7ab3236fb
-Message-ID: <5ec3010e.K23kzhua20wjl7zn%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ c0b7fe994cc176435df41dfc953b06df94d8adc9
+Message-ID: <5ec3010f.B9CVAIfiJAWMuF2O%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 78893c5e594eff141dfdc580a6172ac7ab3236fb  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: c0b7fe994cc176435df41dfc953b06df94d8adc9  ath11k: Fix some resource leaks in error path in 'ath11k_thermal_register()'
 
 elapsed time: 483m
 
-configs tested: 106
-configs skipped: 4
+configs tested: 111
+configs skipped: 5
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -39,10 +39,10 @@ arm                                 defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                               allnoconfig
+arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
-arm64                            allyesconfig
 sparc                            allyesconfig
 m68k                             allyesconfig
 mips                             allyesconfig
@@ -50,16 +50,21 @@ powerpc                      tqm8xx_defconfig
 arm                       omap2plus_defconfig
 sh                         apsh4a3a_defconfig
 mips                   sb1250_swarm_defconfig
+s390                          debug_defconfig
+sh                         ap325rxa_defconfig
+c6x                                 defconfig
+h8300                    h8300h-sim_defconfig
+arm                            u300_defconfig
 c6x                        evmc6457_defconfig
 arm                           corgi_defconfig
 mips                     cu1000-neo_defconfig
 mips                           xway_defconfig
 arm                          ixp4xx_defconfig
 arm                            mps2_defconfig
-mips                     decstation_defconfig
-arm                          iop32x_defconfig
-mips                       lemote2f_defconfig
-powerpc                      ppc44x_defconfig
+mips                           gcw0_defconfig
+ia64                        generic_defconfig
+powerpc                  storcenter_defconfig
+arm                       multi_v4t_defconfig
 i386                                defconfig
 i386                              debian-10.3
 i386                              allnoconfig
