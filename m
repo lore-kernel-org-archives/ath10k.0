@@ -1,13 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1janWL-0007Vc-S1
- for ath10k@lists.infradead.org; Mon, 18 May 2020 21:42:05 +0000
-Date: Tue, 19 May 2020 05:41:35 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- c0b7fe994cc176435df41dfc953b06df94d8adc9
-Message-ID: <5ec3010f.B9CVAIfiJAWMuF2O%lkp@intel.com>
+ id 1jao41-0002Xu-L9
+ for ath10k@lists.infradead.org; Mon, 18 May 2020 22:16:50 +0000
+Date: Mon, 18 May 2020 15:16:45 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
+Message-ID: <20200518151645.4693cf30@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200518212202.GR11244@42.do-not-panic.com>
+References: <abf22ef3-93cb-61a4-0af2-43feac6d7930@candelatech.com>
+ <20200518171801.GL11244@42.do-not-panic.com>
+ <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
+ <20200518190930.GO11244@42.do-not-panic.com>
+ <e3d978c8fa6a4075f12e843548d41e2c8ab537d1.camel@sipsolutions.net>
+ <20200518132828.553159d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <8d7a3bed242ac9d3ec55a4c97e008081230f1f6d.camel@sipsolutions.net>
+ <20200518133521.6052042e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <d81601b17065d7dc3b78bf8d68faf0fbfdb8c936.camel@sipsolutions.net>
+ <20200518134643.685fcb0e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200518212202.GR11244@42.do-not-panic.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,135 +32,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, Ben Greear <greearb@candelatech.com>, bhe@redhat.com, ath10k@lists.infradead.org, Steve deRosier <derosier@gmail.com>, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@codeaurora.org>, Network Development <netdev@vger.kernel.org>, schlad@suse.de, LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org, akpm@linux-foundation.org, "David S. Miller" <davem@davemloft.net>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: c0b7fe994cc176435df41dfc953b06df94d8adc9  ath11k: Fix some resource leaks in error path in 'ath11k_thermal_register()'
+On Mon, 18 May 2020 21:22:02 +0000 Luis Chamberlain wrote:
+> Indeed my issue with devlink is that it did not seem generic enough for
+> all devices which use firmware and for which firmware can crash. Support
+> should not have to be "add devlink support" + "now use this new hook",
+> but rather a very lighweight devlink_crash(device) call we can sprinkly
+> with only the device as a functional requirement.
 
-elapsed time: 483m
-
-configs tested: 111
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-mips                             allyesconfig
-powerpc                      tqm8xx_defconfig
-arm                       omap2plus_defconfig
-sh                         apsh4a3a_defconfig
-mips                   sb1250_swarm_defconfig
-s390                          debug_defconfig
-sh                         ap325rxa_defconfig
-c6x                                 defconfig
-h8300                    h8300h-sim_defconfig
-arm                            u300_defconfig
-c6x                        evmc6457_defconfig
-arm                           corgi_defconfig
-mips                     cu1000-neo_defconfig
-mips                           xway_defconfig
-arm                          ixp4xx_defconfig
-arm                            mps2_defconfig
-mips                           gcw0_defconfig
-ia64                        generic_defconfig
-powerpc                  storcenter_defconfig
-arm                       multi_v4t_defconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a016-20200518
-x86_64               randconfig-a012-20200518
-x86_64               randconfig-a015-20200518
-x86_64               randconfig-a013-20200518
-x86_64               randconfig-a011-20200518
-x86_64               randconfig-a014-20200518
-i386                 randconfig-a012-20200518
-i386                 randconfig-a014-20200518
-i386                 randconfig-a016-20200518
-i386                 randconfig-a011-20200518
-i386                 randconfig-a015-20200518
-i386                 randconfig-a013-20200518
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+We can provide a lightweight devlink_crash(device) which only generates
+the notification, without the need to register the health reporter or a
+devlink instance upfront. But then we loose the ability to control the
+recovery, count errors, etc. So I'd think that's not the direction we
+want to go in.
 
 _______________________________________________
 ath10k mailing list
