@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb5oC-0002yo-7u
- for ath10k@lists.infradead.org; Tue, 19 May 2020 17:13:41 +0000
-Date: Wed, 20 May 2020 01:13:03 +0800
+ id 1jb8Ac-0001Dl-RW
+ for ath10k@lists.infradead.org; Tue, 19 May 2020 19:45:00 +0000
+Date: Wed, 20 May 2020 03:44:23 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 0cffeeded030294b7e3327a5a1d96e45992b6a78
-Message-ID: <5ec4139f.c/XDaVHginH9wxFL%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 25ca180ad380a0c7286442a922e7fbcc6a9f6083
+Message-ID: <5ec43717.9tIg+joI5LH9wxqc%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 0cffeeded030294b7e3327a5a1d96e45992b6a78  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 25ca180ad380a0c7286442a922e7fbcc6a9f6083  ath11k: Fix some resource leaks in error path in 'ath11k_thermal_register()'
 
-elapsed time: 526m
+elapsed time: 678m
 
-configs tested: 113
-configs skipped: 5
+configs tested: 119
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -43,28 +43,42 @@ arm                                 defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                               allnoconfig
+sparc                            allyesconfig
 mips                             allyesconfig
+m68k                             allyesconfig
 arm                     davinci_all_defconfig
 sh                          r7780mp_defconfig
 ia64                                defconfig
 arm                           sunxi_defconfig
-arm                       omap2plus_defconfig
-sh                           se7722_defconfig
-powerpc64                           defconfig
-riscv                          rv32_defconfig
-arc                        nsimosci_defconfig
-arm                         shannon_defconfig
-sh                                  defconfig
-mips                        nlm_xlp_defconfig
-sh                           se7721_defconfig
-xtensa                    xip_kc705_defconfig
+powerpc                      chrp32_defconfig
+sh                          polaris_defconfig
+powerpc                       ppc64_defconfig
+openrisc                         allyesconfig
+arc                        vdk_hs38_defconfig
+sh                           se7751_defconfig
+arm                       netwinder_defconfig
+arm                          iop32x_defconfig
+mips                          ath25_defconfig
+mips                         tb0287_defconfig
 powerpc                      mgcoge_defconfig
-mips                             allmodconfig
-mips                      maltasmvp_defconfig
-i386                             allyesconfig
+um                           x86_64_defconfig
+powerpc                  storcenter_defconfig
+sh                            shmin_defconfig
+nds32                            alldefconfig
+m68k                          hp300_defconfig
+sh                        sh7785lcr_defconfig
+m68k                          multi_defconfig
+arm                          pxa3xx_defconfig
+powerpc                         wii_defconfig
+powerpc                      tqm8xx_defconfig
+arm                        shmobile_defconfig
+arm                           stm32_defconfig
+powerpc                       holly_defconfig
+mips                         tb0226_defconfig
+i386                              allnoconfig
 i386                                defconfig
 i386                              debian-10.3
-i386                              allnoconfig
+i386                             allyesconfig
 ia64                             allmodconfig
 ia64                              allnoconfig
 ia64                             allyesconfig
@@ -72,13 +86,11 @@ m68k                             allmodconfig
 m68k                              allnoconfig
 m68k                           sun3_defconfig
 m68k                                defconfig
-m68k                             allyesconfig
 nios2                               defconfig
 nios2                            allyesconfig
 openrisc                            defconfig
 c6x                              allyesconfig
 c6x                               allnoconfig
-openrisc                         allyesconfig
 nds32                               defconfig
 nds32                             allnoconfig
 csky                             allyesconfig
@@ -95,6 +107,7 @@ sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
 mips                              allnoconfig
+mips                             allmodconfig
 parisc                            allnoconfig
 parisc                              defconfig
 parisc                           allyesconfig
@@ -110,12 +123,6 @@ i386                 randconfig-a001-20200519
 i386                 randconfig-a003-20200519
 i386                 randconfig-a004-20200519
 i386                 randconfig-a002-20200519
-i386                 randconfig-a012-20200519
-i386                 randconfig-a014-20200519
-i386                 randconfig-a016-20200519
-i386                 randconfig-a011-20200519
-i386                 randconfig-a015-20200519
-i386                 randconfig-a013-20200519
 x86_64               randconfig-a003-20200519
 x86_64               randconfig-a005-20200519
 x86_64               randconfig-a004-20200519
@@ -131,16 +138,15 @@ s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
 x86_64                              defconfig
-sparc                            allyesconfig
 sparc                               defconfig
 sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-um                               allmodconfig
 um                                allnoconfig
-um                               allyesconfig
 um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
