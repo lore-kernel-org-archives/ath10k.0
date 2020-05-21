@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from achernar.uberspace.de ([95.143.172.237])
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbU1x-0001A5-IW
- for ath10k@lists.infradead.org; Wed, 20 May 2020 19:05:31 +0000
-Subject: Re: [OpenWrt-Devel] [PATCH v13] ath10k: add LED and GPIO controlling
- support for various chipsets
-References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
- <2468724.JaAZLprVu6@bentobox>
- <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
- <90f5adcb-488e-96e2-001e-7bf8d175dec6@ironai.com>
- <4df82bd4-cab4-55e2-7885-df86d22aed63@dd-wrt.com>
-From: Vincent Wiemann <vincent.wiemann@ironai.com>
-Message-ID: <8038d6a0-fa60-3fe9-a2f3-721ec2e365e9@ironai.com>
-Date: Wed, 20 May 2020 21:05:16 +0200
+ id 1jbmfx-0003ji-V7
+ for ath10k@lists.infradead.org; Thu, 21 May 2020 15:00:04 +0000
+Received: by mail-wm1-x342.google.com with SMTP id u12so1880444wmd.3
+ for <ath10k@lists.infradead.org>; Thu, 21 May 2020 08:00:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4df82bd4-cab4-55e2-7885-df86d22aed63@dd-wrt.com>
-Content-Language: en-US
+References: <CAMi1Hd1ReJnYsw3Rg6ECGM-7zzciRqJvJGUm3tuYtHhmGipnZA@mail.gmail.com>
+ <DM5PR02MB38935D19B8733C543FDC8BA09CAA0@DM5PR02MB3893.namprd02.prod.outlook.com>
+ <20200430053934.GA9449@Mani-XPS-13-9360>
+ <SN6PR02MB462255CF0672F6BC80DB266A91AA0@SN6PR02MB4622.namprd02.prod.outlook.com>
+ <DM5PR02MB3893EABAD0ABCCB5F6374DAC9CAA0@DM5PR02MB3893.namprd02.prod.outlook.com>
+ <a2bc877e49d3679b847eef9db4852367@codeaurora.org>
+In-Reply-To: <a2bc877e49d3679b847eef9db4852367@codeaurora.org>
+From: Amit Pundir <amit.pundir@linaro.org>
+Date: Thu, 21 May 2020 20:29:23 +0530
+Message-ID: <CAMi1Hd2xDPbbDr4hB1mNgp_Y0sKHLLauS7uYdJjHMWC5C3+QWQ@mail.gmail.com>
+Subject: Re: Ath10k reboot regression with v5.7-rc1 on dragonboard 845c
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,120 +25,171 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Sven Eckelmann <sven@narfation.org>, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Ansuel Smith <ansuelsmth@gmail.com>, openwrt-devel@lists.openwrt.org
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
+To: govinds@codeaurora.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, ath10k@lists.infradead.org, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-SGkgU2ViYXN0aWFuLAoKT24gMjAuMDUuMjAgMTU6MDAsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdy
-b3RlOgo+IAo+IEFtIDIwLjA1LjIwMjAgdW0gMTI6NDAgc2NocmllYiBWaW5jZW50IFdpZW1hbm46
-Cj4+IEhpIFNlYmFzdGlhbiwKPj4KPj4gSSBkb24ndCBrbm93IHdoeSBpdCB3YXMgZHJvcHBlZCwg
-YnV0IEkgY2FuIHNheSB0aGF0IHRoZSBMRUQgY29udHJvbCBjb2RlIHdhcyBraW5kIG9mCj4+IGFu
-bm95aW5nIG1lLiBFdmVuIHdoZW4gdGhlIExFRCB3YXMgdHVybmVkIG9mLCBpdCAiZmxpY2tlcmVk
-IiB3aGVuIGl0IHdhcyBzZXQgZGlzYWJsZWQuCj4+IFVuZm9ydHVuYXRlbHkgSSBkaWRuJ3QgaGF2
-ZSB0aW1lIHRvIGxvb2sgaW50byBpdCwgeWV0LgoKPiB0aGUgbGVkIGNvZGUgd2lsbCBqdXN0IGJl
-IHVzZWQgaWYgeW91IHNldCBhIHRyaWdnZXIuIG90aGVyd2lzZSBpdCBkb2VzbnQgdG91Y2ggdGhl
-IGdwaW9zLgo+IHRoZSBjb2RlIGl0c2VsZiB3YXMgd3JpdHRlbiB0byBtYWtlIHVzZSBvZiB0aGUg
-bGVkJ3MgYnVpbHRpbiB0byBzZXZlcmFsIHJvdXRlcnMuIGlmIHlvdSBkb250IHNldCBhIGxlZCB0
-cmlnZ2VyLCBub3RoaW5nIHdpbGwgaGFwcGVuCj4gCgpUaGFuayB5b3UgZm9yIHlvdXIgcXVpY2sg
-cmVzcG9uc2UuLi4gSSdsbCB0cnkgdG8gcmVwcm9kdWNlIHRoZSBpc3N1ZSB3aXRob3V0IHlvdXIg
-cGF0Y2guCk1heWJlIGl0J3MgdW5yZWxhdGVkIGFuZCBhIGZpcm13YXJlLXNwZWNpZmljIGlzc3Vl
-IChvZmZpY2lhbCBRQ0E5ODg3KS4KCk9uZSB0aGluZyBJJ3ZlIHNlZW4gd2l0aCB5b3VyIHBhdGNo
-IGlzIHRoYXQgaWYgSSBzZXQgdGhlIGF0aDEwayBHUElPICJzdGVhZHkgb24iIGl0IHNvbWV0aW1l
-cwoocXVpdGUgcmFuZG9tbHkpIHR1cm5zIGl0IG9mZiBmb3IgYSBmcmFjdGlvbiBvZiBhIHNlY29u
-ZC4gSXQgaGFwcGVucyBhYm91dCAzIHRpbWVzIGEgbWludXRlLgpJdCdzIG5vdCBhIGJpZyBkZWFs
-LiBCdXQgbWF5YmUgaXQncyByZWxhdGVkIHRvIHRoZSBmbGlja2VyaW5nCkkndmUgb2JzZXJ2ZWQg
-YW5kIHBvc3NpYmx5IGFsc28gYSBmaXJtd2FyZSBpc3N1ZS4uLgoKQmVzdCwKClZpbmNlbnQKCgo+
-PiBCZXN0LAo+Pgo+PiBWaW5jZW50Cj4+Cj4+IE9uIDIwLjA1LjIwIDA5OjM5LCBTZWJhc3RpYW4g
-R290dHNjaGFsbCB3cm90ZToKPj4+IHRoaXMgY29kZSBpcyBub3QgaW4gdXNlIGluIGl0cyBvcmln
-aW5hbCBmb3JtIGZvciBpcHE0MDE5Lgo+Pj4gaSBoYXZlIHNlZW4gdGhhdCBoaXMgcGF0Y2ggaXMg
-YWxzbyBkcm9wcGVkIGZyb20gYXRoLmdpdCBidXQgaXMgc3RpbGwgaW4gdXNlIGJ5IG9wZW53cnQu
-Cj4+PiBjb3VsZCBzb21vbmUgY2xhcmlmeSB0aGUgc3RhdGUgaGVyZSBhbmQgd2h5IGl0IHdhcyBk
-cm9wcGVkPwo+Pj4gdGhlIG9yaWdpbmFsIHBhdGNoIGkgd3JvdGUgZG9lcyBleGNsdWRlIHRoZSBz
-b2MgY2hpcHNldHMsIGJ1dCB0aGUgcGF0Y2ggd2FzIGxhdGVyIHJlb3JnYW5pemVkIGFuZCBzb21l
-IHBhcnQgaGF2ZSBiZWVuIHJld3JpdHRlbgo+Pj4gc28gaSdtIG5vdCBzdXJlIGlmIGl0IGNvdmVy
-cyB0aGUgc2NlbmFyaW8gbWVudGlvbmVkIGhlcmUsIHdoaWNoIGkgZGlkIHRha2UgY2FyZSBvZgo+
-Pj4KPj4+IFNlYmFzdGlhbgo+Pj4KPj4+IEFtIDI2LjAyLjIwMTkgdW0gMTA6MTYgc2NocmllYiBT
-dmVuIEVja2VsbWFubjoKPj4+PiBPbiBGcmlkYXksIDYgQXByaWwgMjAxOCAxNzoxNzo1NSBDRVQg
-S2FsbGUgVmFsbyB3cm90ZToKPj4+Pj4gRnJvbTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290
-dHNjaGFsbEBuZXdtZWRpYS1uZXQuZGU+Cj4+Pj4+Cj4+Pj4+IEFkZHMgTEVEIGFuZCBHUElPIENv
-bnRyb2wgc3VwcG9ydCBmb3IgOTg4eCwgOTg4NywgOTg4OCwgOTl4MCwgOTk4NCBiYXNlZAo+Pj4+
-PiBjaGlwc2V0cyB3aXRoIG9uIGNoaXBzZXQgY29ubmVjdGVkIGxlZCdzIHVzaW5nIFdNSSBGaXJt
-d2FyZSBBUEkuwqAgVGhlIExFRAo+Pj4+PiBkZXZpY2Ugd2lsbCBnZXQgYXZhaWxhYmxlIG5hbWVk
-IGFzICJhdGgxMGstcGh5WCIgYXQgc3lzZnMgYW5kIGNhbiBiZSBjb250cm9sbGVkCj4+Pj4+IHdp
-dGggdmFyaW91cyB0cmlnZ2Vycy7CoCBhZGRzIGFsc28gZGVidWdmcyBpbnRlcmZhY2UgZm9yIGdw
-aW8gY29udHJvbC4KPj4+Pj4KPj4+Pj4gU2lnbmVkLW9mZi1ieTogU2ViYXN0aWFuIEdvdHRzY2hh
-bGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPgo+Pj4+PiBSZXZpZXdlZC1ieTogU3RldmUgZGVS
-b3NpZXIgPGRlcm9zaWVyQGNhbC1zaWVycmEuY29tPgo+Pj4+PiBba3ZhbG86IG1ham9yIHJlb3Jn
-IGFuZCBjbGVhbnVwXQo+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2Rl
-YXVyb3JhLm9yZz4KPj4+PiBUaGlzIHBhdGNoIHdhcyBpbXBvcnRlZCB0byBPcGVuV3J0IGluIGNv
-bW1pdCA2MWQ1N2EyZjg4YjkgKCJtYWM4MDIxMTogYXRoMTBrCj4+Pj4gYWRkIGxlZHMgc3VwcG9y
-dCIpIGFuZCBicm9rZSB0aGUgMTFzIHN1cHBvcnQgZm9yIElQUTQwMTkgYW5kIFFDQTQwMTkgKDVH
-SHopCj4+Pj4gZmlybXdhcmUgdmVyc2lvbnMgMTAuNC0zLjUuMy0wMDA1MywgMTAuNC0zLjUuMy0w
-MDA1NywgMTAuNC0zLjYtMDAxNDA6Cj4+Pj4KPj4+PiDCoMKgwqDCoMKgIFvCoCAyMjEuNjIwODAz
-XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogd21pIGNvbW1hbmQgMzY5NjcgdGltZW91dCwgcmVz
-dGFydGluZyBoYXJkd2FyZQo+Pj4+IMKgwqDCoMKgwqAgW8KgIDIyMS43NDQwNTZdIGllZWU4MDIx
-MSBwaHkwOiBIYXJkd2FyZSByZXN0YXJ0IHdhcyByZXF1ZXN0ZWQKPj4+PiDCoMKgwqDCoMKgIFvC
-oCAyMjUuMTMwODI5XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRvIHJlY2VpdmUg
-Y29udHJvbCByZXNwb25zZSBjb21wbGV0aW9uLCBwb2xsaW5nLi4KPj4+PiDCoMKgwqDCoMKgIFvC
-oCAyMjYuMTcwODI0XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU2VydmljZSBjb25uZWN0IHRp
-bWVvdXQKPj4+PiDCoMKgwqDCoMKgIFvCoCAyMjYuMTcwODcxXSBhdGgxMGtfcGNpIDAwMDA6MDE6
-MDAuMDogZmFpbGVkIHRvIGNvbm5lY3QgaHR0ICgtMTEwKQo+Pj4+IMKgwqDCoMKgwqAgW8KgIDIy
-Ni4yNTIyNDhdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBDb3VsZCBub3QgaW5pdCBjb3JlOiAt
-MTEwCj4+Pj4KPj4+PiBUaGlzIHdhcyB0ZXN0ZWQgb24gYW4gQTYyIHdpdGggZm9sbG93aW5nIHdp
-cmVsZXNzIGNvbmZpZzoKPj4+Pgo+Pj4+IMKgwqDCoMKgwqAgY29uZmlnIHdpZmktZGV2aWNlICdy
-YWRpbzAnCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIHR5cGUgJ21hYzgw
-MjExJwo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiBjaGFubmVsICczNicK
-Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gaHdtb2RlICcxMWEnCj4+Pj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIHBhdGggJ3NvYy80MDAwMDAwMC5wY2kv
-cGNpMDAwMDowMC8wMDAwOjAwOjAwLjAvMDAwMDowMTowMC4wJwo+Pj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIG9wdGlvbiBodG1vZGUgJ1ZIVDgwJwo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIG9wdGlvbiBkaXNhYmxlZCAnMCcKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBvcHRpb24gY291bnRyeSBVUwo+Pj4+IMKgwqDCoMKgwqAgwqDCoMKgwqAgY29uZmlnIHdp
-ZmktZGV2aWNlICdyYWRpbzEnCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9u
-IHR5cGUgJ21hYzgwMjExJwo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiBj
-aGFubmVsICcxMScKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gaHdtb2Rl
-ICcxMWcnCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIHBhdGggJ3BsYXRm
-b3JtL3NvYy9hMDAwMDAwLndpZmknCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0
-aW9uIGh0bW9kZSAnSFQyMCcKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24g
-ZGlzYWJsZWQgJzAnCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIGNvdW50
-cnkgVVMKPj4+PiDCoMKgwqDCoMKgIMKgwqDCoMKgIGNvbmZpZyB3aWZpLWRldmljZSAncmFkaW8y
-Jwo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiB0eXBlICdtYWM4MDIxMScK
-Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gY2hhbm5lbCAnMTQ5Jwo+Pj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiBod21vZGUgJzExYScKPj4+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gcGF0aCAncGxhdGZvcm0vc29jL2E4MDAwMDAu
-d2lmaScKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gaHRtb2RlICdWSFQ4
-MCcKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gZGlzYWJsZWQgJzAnCj4+
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIGNvdW50cnkgVVMKPj4+PiDCoMKg
-wqDCoMKgIMKgwqDCoMKgIGNvbmZpZyB3aWZpLWlmYWNlICdtZXNoMCcKPj4+PiDCoMKgwqDCoMKg
-wqDCoMKgwqAgb3B0aW9uIGRldmljZSAncmFkaW8wJwo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBv
-cHRpb24gaWZuYW1lICdtZXNoMCcKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIG5ldHdv
-cmsgJ253aV9tZXNoMCcKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIG1vZGUgJ21lc2gn
-Cj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiBtZXNoX2lkICdUZXN0TWVzaCcKPj4+PiDC
-oMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIG1lc2hfZndkaW5nICcxJwo+Pj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCBvcHRpb24gZW5jcnlwdGlvbiAnbm9uZScKPj4+PiDCoMKgwqDCoMKgIMKgwqDCoMKg
-IGNvbmZpZyB3aWZpLWlmYWNlICdtZXNoMScKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9u
-IGRldmljZSAncmFkaW8xJwo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBvcHRpb24gaWZuYW1lICdt
-ZXNoMScKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIG5ldHdvcmsgJ253aV9tZXNoMScK
-Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIG1vZGUgJ21lc2gnCj4+Pj4gwqDCoMKgwqDC
-oMKgwqDCoMKgIG9wdGlvbiBtZXNoX2lkICdUZXN0TWVzaCcKPj4+PiDCoMKgwqDCoMKgwqDCoMKg
-wqAgb3B0aW9uIGVuY3J5cHRpb24gJ25vbmUnCj4+Pj4gwqDCoMKgwqDCoCDCoMKgwqDCoCDCoMKg
-wqDCoCBjb25maWcgd2lmaS1pZmFjZSAnbWVzaDInCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIG9w
-dGlvbiBkZXZpY2UgJ3JhZGlvMicKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9uIGlmbmFt
-ZSAnbWVzaDInCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiBuZXR3b3JrICdud2lfbWVz
-aDInCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIG9wdGlvbiBtb2RlICdtZXNoJwo+Pj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoCBvcHRpb24gbWVzaF9pZCAnVGVzdE1lc2gnCj4+Pj4gwqDCoMKgwqDCoMKg
-wqDCoMKgIG9wdGlvbiBtZXNoX2Z3ZGluZyAnMScKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0
-aW9uIGVuY3J5cHRpb24gJ25vbmUKPj4+Pgo+Pj4+IEtpbmQgcmVnYXJkcywKPj4+PiDCoMKgwqDC
-oMKgU3Zlbgo+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KPj4+IG9wZW53cnQtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+PiBvcGVud3J0LWRldmVsQGxpc3Rz
-Lm9wZW53cnQub3JnCj4+PiBodHRwczovL2xpc3RzLm9wZW53cnQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vb3BlbndydC1kZXZlbAo+Pj4KPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+IG9wZW53cnQtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gb3BlbndydC1k
-ZXZlbEBsaXN0cy5vcGVud3J0Lm9yZwo+IGh0dHBzOi8vbGlzdHMub3BlbndydC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9vcGVud3J0LWRldmVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+Hi Govind, Rakesh,
+
+On Thu, 30 Apr 2020 at 17:59, <govinds@codeaurora.org> wrote:
+>
+> On 2020-04-30 15:57, Govind Singh wrote:
+> > -----Original Message-----
+> > From: Rakesh Pillai <pillair@qti.qualcomm.com>
+> > Sent: Thursday, April 30, 2020 12:26 PM
+> > To: manivannan.sadhasivam@linaro.org; Govind Singh
+> > <govinds@qti.qualcomm.com>
+> > Cc: Amit Pundir <amit.pundir@linaro.org>; John Stultz
+> > <john.stultz@linaro.org>; ath10k@lists.infradead.org;
+> > bjorn.andersson@linaro.org
+> > Subject: RE: [EXT] Re: Ath10k reboot regression with v5.7-rc1 on
+> > dragonboard 845c
+> >
+> > Hi Mani,
+> >
+> > Reply inline
+> >
+> >
+> > Thanks,
+> > Rakesh Pillai
+> >
+> >> -----Original Message-----
+> >> From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of
+> >> Manivannan Sadhasivam
+> >> Sent: Thursday, April 30, 2020 11:10 AM
+> >> To: Govind Singh <govinds@qti.qualcomm.com>
+> >> Cc: Amit Pundir <amit.pundir@linaro.org>; John Stultz
+> >> <john.stultz@linaro.org>; ath10k@lists.infradead.org;
+> >> bjorn.andersson@linaro.org
+> >> Subject: [EXT] Re: Ath10k reboot regression with v5.7-rc1 on
+> >> dragonboard 845c
+> >>
+> >> Hi Govind,
+> >>
+> >> On Thu, Apr 30, 2020 at 04:15:42AM +0000, Govind Singh wrote:
+> >> > Hi Amit,
+> >> > Seems del_server is being notified early due to qrtr-ns migration
+> >> > from
+> >> userspace to kernel prior remote(modem + wifi) actually went down.
+> >>
+> >> Sorry I don't get this. In-kernel NS just receives DEL_SERVER message
+> >> from remote endpoint and it removes the entry for it and broadcasts to
+> >> all observers.
+> >>
+> >> I think the issue is (as Bjorn suspected), previously we didn't catch
+> >> the DEL_SERVER message from modem during shutdown/reboot but now we
+> >> are able to do because NS is still running.
+>
+> Yes, with user space qrtr-ns DEL_SERVER is not revived as NS might have
+> been
+> terminated during reboot prior catching this from modem.
+>
+>
+> >> > As per of del_server we are removing the MSA permission via SCM
+> >> > call, but
+> >> remote(wifi user pd in modem Q6) is still accessing the region.
+> >> >
+> >>
+> >> This looks odd. Why should the remote send DEL_SERVER if it is still
+> >> accessing the region? Or if that's the expected behavior, we
+> >> shouldn't remove the MSA permission at this point in ath10k?
+>
+> Probably modem graceful shutdown is not happening in reboot case causing
+> this issue as we don't see
+> this issue in normal driver recovery due to FW error fatal, there also
+> we have same code flow.
+> Earlier we tried to register reboot
+> notifier(devm_register_reboot_notifier) and skip the del_server for
+> such cases, but we didn't posted patch as we never hit that case and its
+> WAR.
+>
+> Probably we can have another qmi_ops->BYE to indicate this scenario if
+> graceful shutdown is not happening or
+> msa map/unmap can be moved in probe/remove as most of the targets except
+> APQ/MSM8998 are using MSA carve-out region.
+>
+>
+> >
+> > As a part of ath10k driver unload, when we release the qmi handle, The
+> > ath10k qmi client receives a SERVER_EXIT (which has not been initiated
+> > from modem/wlan).
+> > In server_exit processing we unmap the MSA permissions.
+> >
+> > I am fixing this, to not handle the SERVER_EXIT if we have released
+> > the qmi handle.
+> >
+>
+> This is reboot case, your changes seems specific to rmmod case where qmi
+> is indicating false del server due
+> to qmi handle release.
+>
+
+Any updates on this? I'm happy to take a swing at any
+intermediate/in-progress solution available if it is helpful.
+
+Regards,
+Amit Pundir
+
+> >
+> >>
+> >> Thanks,
+> >> Mani
+> >>
+> >> > BR,
+> >> > Govind
+> >> >
+> >> > -----Original Message-----
+> >> > From: ath10k <ath10k-bounces@lists.infradead.org> On Behalf Of Amit
+> >> Pundir
+> >> > Sent: Wednesday, April 29, 2020 9:51 PM
+> >> > To: ath10k@lists.infradead.org
+> >> > Cc: bjorn.andersson@linaro.org; John Stultz
+> >> > <john.stultz@linaro.org>;
+> >> manivannan.sadhasivam@linaro.org
+> >> > Subject: [EXT] Ath10k reboot regression with v5.7-rc1 on dragonboard
+> >> > 845c
+> >> >
+> >> > Hi,
+> >> >
+> >> > I see a reboot regression with v5.7-rc1 on Dragonboard 845c
+> >> > (wcn3990/ath10k_snoc) running AOSP. "reboot" or "reboot bootloader"
+> >> > commands do not work as expected when the board is connected to WiFi
+> >> AP. I see "ath10k_snoc 18800000.wifi: firmware crashed"... dump in
+> >> dmesg and board reboots into usb debug/crash mode. I do not see this
+> >> reboot regression when the board is not connected to WiFi.
+> >> >
+> >> > It started with qrtr-ns migration from userspace to kernel which
+> >> > landed in
+> >> v5.7-rc1. I didn't run into this reboot issue when I was running
+> >> qrtr-ns userspace tool. According to Mani, in-kernel qrtr-ns just live
+> >> long enough to catch modem shutdown requests and advertise it to the
+> >> modem, unlike the userspace tool. Which seem to be the case here. I
+> >> further narrowed it down to ath10k_qmi_remove_msa_permission()
+> >> > call in ath10k shutdown path. If I comment out that function call
+> >> > then the
+> >> reboot command works as expected.
+> >> >
+> >> > Any thoughts as to what might be going wrong? I do not understand
+> >> qrtr/ath10k/qmi to see how msa permissions are getting mapped-unmapped
+> >> here. I'd be happy to help debug things.
+> >> >
+> >> > Regards,
+> >> > Amit Pundir
+> >> >
+> >> > _______________________________________________
+> >> > ath10k mailing list
+> >> > ath10k@lists.infradead.org
+> >> > http://lists.infradead.org/mailman/listinfo/ath10k
+> >>
+> >> _______________________________________________
+> >> ath10k mailing list
+> >> ath10k@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
