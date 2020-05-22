@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Subject: Re: [PATCH 05/11] mmc: sdio: Move SDIO IDs from btmtksdio driver to
- common include file
-References: <20200522144412.19712-1-pali@kernel.org>
- <20200522144412.19712-6-pali@kernel.org>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <804fbad7-11ba-8d8b-d58e-3eb4e5cf2b41@gmail.com>
-Date: Fri, 22 May 2020 17:02:11 +0200
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jcBIk-0004yy-Un
+ for ath10k@lists.infradead.org; Fri, 22 May 2020 17:17:44 +0000
+Date: Fri, 22 May 2020 10:17:38 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
+Message-ID: <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200522052046.GY11244@42.do-not-panic.com>
+References: <20200519010530.GS11244@42.do-not-panic.com>
+ <20200519211531.3702593-1-kuba@kernel.org>
+ <20200522052046.GY11244@42.do-not-panic.com>
 MIME-Version: 1.0
-In-Reply-To: <20200522144412.19712-6-pali@kernel.org>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +20,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Cc: brcm80211-dev-list.pdl@broadcom.com, libertas-dev@lists.infradead.org, Xinming Hu <huxinming820@gmail.com>, Sean Wang <sean.wang@mediatek.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Amitkumar Karwar <amitkarwar@gmail.com>, =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>, Ganapathi Bhat <ganapathi.bhat@nxp.com>, ath10k@lists.infradead.org, Mauro Carvalho Chehab <mchehab@kernel.org>, brcm80211-dev-list@cypress.com, Kalle Valo <kvalo@codeaurora.org>, b43-dev@lists.infradead.org
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: linux-wireless@vger.kernel.org, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, greearb@candelatech.com, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, derosier@gmail.com, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, johannes@sipsolutions.net, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, jeyu@kernel.org, akpm@linux-foundation.org, davem@davemloft.net
 
-CgpPbiAyMi8wNS8yMDIwIDE2OjQ0LCBQYWxpIFJvaMOhciB3cm90ZToKPiBEZWZpbmUgYXBwcm9w
-cmlhdGUgbWFjcm8gbmFtZXMgZm9yIGNvbnNpc3RlbmN5IHdpdGggb3RoZXIgbWFjcm9zLgo+IAo+
-IFNpZ25lZC1vZmYtYnk6IFBhbGkgUm9ow6FyIDxwYWxpQGtlcm5lbC5vcmc+CgpSZXZpZXdlZC1i
-eTogTWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4KCj4gLS0tCj4gIGRy
-aXZlcnMvYmx1ZXRvb3RoL2J0bXRrc2Rpby5jIHwgNCArKy0tCj4gIGluY2x1ZGUvbGludXgvbW1j
-L3NkaW9faWRzLmggIHwgMiArKwo+ICAyIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwg
-MiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ibHVldG9vdGgvYnRtdGtz
-ZGlvLmMgYi9kcml2ZXJzL2JsdWV0b290aC9idG10a3NkaW8uYwo+IGluZGV4IDUxOTc4OGM0NDJj
-YS4uYmZmMDk1YmUyZjk3IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvYmx1ZXRvb3RoL2J0bXRrc2Rp
-by5jCj4gKysrIGIvZHJpdmVycy9ibHVldG9vdGgvYnRtdGtzZGlvLmMKPiBAQCAtNTEsOSArNTEs
-OSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGJ0bXRrc2Rpb19kYXRhIG10NzY2OF9kYXRhID0gewo+
-ICB9Owo+ICAKPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzZGlvX2RldmljZV9pZCBidG10a3NkaW9f
-dGFibGVbXSA9IHsKPiAtCXtTRElPX0RFVklDRShTRElPX1ZFTkRPUl9JRF9NRURJQVRFSywgMHg3
-NjYzKSwKPiArCXtTRElPX0RFVklDRShTRElPX1ZFTkRPUl9JRF9NRURJQVRFSywgU0RJT19ERVZJ
-Q0VfSURfTUVESUFURUtfTVQ3NjYzKSwKPiAgCSAuZHJpdmVyX2RhdGEgPSAoa2VybmVsX3Vsb25n
-X3QpJm10NzY2M19kYXRhIH0sCj4gLQl7U0RJT19ERVZJQ0UoU0RJT19WRU5ET1JfSURfTUVESUFU
-RUssIDB4NzY2OCksCj4gKwl7U0RJT19ERVZJQ0UoU0RJT19WRU5ET1JfSURfTUVESUFURUssIFNE
-SU9fREVWSUNFX0lEX01FRElBVEVLX01UNzY2OCksCj4gIAkgLmRyaXZlcl9kYXRhID0gKGtlcm5l
-bF91bG9uZ190KSZtdDc2NjhfZGF0YSB9LAo+ICAJeyB9CS8qIFRlcm1pbmF0aW5nIGVudHJ5ICov
-Cj4gIH07Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbW1jL3NkaW9faWRzLmggYi9pbmNs
-dWRlL2xpbnV4L21tYy9zZGlvX2lkcy5oCj4gaW5kZXggMTIzN2UxMDQ4ZDA2Li5jOWFjYTU3ZDRk
-ZWEgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9tbWMvc2Rpb19pZHMuaAo+ICsrKyBiL2lu
-Y2x1ZGUvbGludXgvbW1jL3NkaW9faWRzLmgKPiBAQCAtODAsNiArODAsOCBAQAo+ICAjZGVmaW5l
-IFNESU9fREVWSUNFX0lEX01BUlZFTExfODk4N19CVAkJMHg5MTRhCj4gIAo+ICAjZGVmaW5lIFNE
-SU9fVkVORE9SX0lEX01FRElBVEVLCQkJMHgwMzdhCj4gKyNkZWZpbmUgU0RJT19ERVZJQ0VfSURf
-TUVESUFURUtfTVQ3NjYzCQkweDc2NjMKPiArI2RlZmluZSBTRElPX0RFVklDRV9JRF9NRURJQVRF
-S19NVDc2NjgJCTB4NzY2OAo+ICAKPiAgI2RlZmluZSBTRElPX1ZFTkRPUl9JRF9TSUFOTwkJCTB4
-MDM5YQo+ICAjZGVmaW5lIFNESU9fREVWSUNFX0lEX1NJQU5PX05PVkFfQjAJCTB4MDIwMQo+IAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Fri, 22 May 2020 05:20:46 +0000 Luis Chamberlain wrote:
+> > diff --git a/net/core/Makefile b/net/core/Makefile
+> > index 3e2c378e5f31..6f1513781c17 100644
+> > --- a/net/core/Makefile
+> > +++ b/net/core/Makefile
+> > @@ -31,7 +31,7 @@ obj-$(CONFIG_LWTUNNEL_BPF) += lwt_bpf.o
+> >  obj-$(CONFIG_BPF_STREAM_PARSER) += sock_map.o
+> >  obj-$(CONFIG_DST_CACHE) += dst_cache.o
+> >  obj-$(CONFIG_HWBM) += hwbm.o
+> > -obj-$(CONFIG_NET_DEVLINK) += devlink.o
+> > +obj-$(CONFIG_NET_DEVLINK) += devlink.o devlink_simple_fw_reporter.o  
+> 
+> This was looking super sexy up to here. This is networking specific.
+> We want something generic for *anything* that requests firmware.
+
+You can't be serious. It's network specific because of how the Kconfig
+is named?
+
+Working for a company operating large data centers I would strongly
+prefer if we didn't have ten different ways of reporting firmware
+problems in the fleet.
+
+> I'm afraid this won't work for something generic. I don't think its
+> throw-away work though, the idea to provide a generic interface to
+> dump firmware through netlink might be nice for networking, or other
+> things.
+> 
+> But I have a feeling we'll want something still more generic than this.
+
+Please be specific. Saying generic a lot is not helpful. The code (as
+you can see in this patch) is in no way network specific. Or are you
+saying there are machines out there running without netlink sockets?
+
+> So networking may want to be aware that a firmware crash happened as
+> part of this network device health thing, but firmware crashing is a
+> generic thing.
+> 
+> I have now extended my patch set to include uvents and I am more set on
+> that we need the taint now more than ever.
+
+Please expect my nack if you're trying to add this to networking
+drivers.
+
+The irony is you have a problem with a networking device and all the
+devices your initial set touched are networking. Two of the drivers 
+you touched either have or will soon have devlink health reporters
+implemented.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
