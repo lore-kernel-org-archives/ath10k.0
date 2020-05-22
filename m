@@ -1,25 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
+Received: from mail-pf1-f196.google.com ([209.85.210.196])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbzze-0007k2-FQ
- for ath10k@lists.infradead.org; Fri, 22 May 2020 05:13:16 +0000
-Received: by mail-vs1-xe44.google.com with SMTP id 62so5412546vsi.2
- for <ath10k@lists.infradead.org>; Thu, 21 May 2020 22:13:13 -0700 (PDT)
+ id 1jc070-0004jO-9e
+ for ath10k@lists.infradead.org; Fri, 22 May 2020 05:20:52 +0000
+Received: by mail-pf1-f196.google.com with SMTP id x2so4695324pfx.7
+ for <ath10k@lists.infradead.org>; Thu, 21 May 2020 22:20:49 -0700 (PDT)
+Date: Fri, 22 May 2020 05:20:46 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
+Message-ID: <20200522052046.GY11244@42.do-not-panic.com>
+References: <20200519010530.GS11244@42.do-not-panic.com>
+ <20200519211531.3702593-1-kuba@kernel.org>
 MIME-Version: 1.0
-References: <20200515212846.1347-1-mcgrof@kernel.org>
- <20200515212846.1347-13-mcgrof@kernel.org>
- <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
- <7306323c35e6f44d7c569e689b48f380f80da5e5.camel@sipsolutions.net>
- <CA+ASDXOg9oKeMJP1Mf42oCMMM3sVe0jniaWowbXVuaYZ=ZpDjQ@mail.gmail.com>
- <20200519140212.GT11244@42.do-not-panic.com>
- <CA+ASDXMUHOcvJ_7UWgyANMxSz15Ji7TcLDXVCtSPa+fOr=+FGA@mail.gmail.com>
- <CANUX_P1pnV46gOo0aL6QV0b+49ubB7C5nuUOuOfoT7aOM+ye9w@mail.gmail.com>
- <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
-In-Reply-To: <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
-From: Emmanuel Grumbach <egrumbach@gmail.com>
-Date: Fri, 22 May 2020 08:12:59 +0300
-Message-ID: <CANUX_P2thzh9oB4KkrAoyT6H-E6MDFUNQ_p0e9QZtScgMuKm7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
+Content-Disposition: inline
+In-Reply-To: <20200519211531.3702593-1-kuba@kernel.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +26,229 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: aquini@redhat.com, peterz@infradead.org, Daniel Vetter <daniel.vetter@ffwll.ch>, mchehab+samsung@kernel.org, will@kernel.org, schlad@suse.de, bhe@redhat.com, ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, gpiccoli@canonical.com, Steven Rostedt <rostedt@goodmis.org>, cai@lca.pw, tglx@linutronix.de, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Kalle Valo <kvalo@codeaurora.org>, "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org, Johannes Berg <johannes@sipsolutions.net>, "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-wireless@vger.kernel.org, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, greearb@candelatech.com, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, derosier@gmail.com, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, johannes@sipsolutions.net, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, jeyu@kernel.org, akpm@linux-foundation.org, davem@davemloft.net
 
->
-> On Tue, May 19, 2020 at 10:37 PM Emmanuel Grumbach <egrumbach@gmail.com> wrote:
-> > So I believe we already have this uevent, it is the devcoredump. All
-> > we need is to add the unique id.
->
-> I think there are a few reasons that devcoredump doesn't satisfy what
-> either Luis or I want.
->
-> 1) it can be disabled entirely [1], for good reasons (e.g., think of
-> non-${CHIP_VENDOR} folks, who can't (and don't want to) do anything
-> with the opaque dumps provided by closed-source firmware)
+On Tue, May 19, 2020 at 02:15:30PM -0700, Jakub Kicinski wrote:
+> Add infra for creating devlink instances for a device to report
 
-Ok, if all you're interested into is the information that this event
-happen (as opposed to report a bug and providing the data), then I
-agree. True, not everybody want or can enable devcoredump. I am just a
-bit concerned that we may end up with two interface that notify the
-same event basically. The ideal maybe would be to be able to
-optionally reduce the content of the devoredump to nothing more that
-is already in the dmesg output. But then, it is not what it is meant
-to be: namely, a core dump..
+Thanks for doing this series as a PoC, counter to the module_firmware_crash()
+which I proposed to taint the kernel with a firmware crash flag to the kernel
+and module.
 
-> 2) not all drivers necessarily have a useful dump to provide when
-> there's a crash; look at the rest of Luis's series to see the kinds of
-> drivers-with-firmware that are crashing, some of which aren't dumping
-> anything
+For those not famliar about devlink:
 
-Fair enouh.
+https://lwn.net/Articles/677967/
+https://www.kernel.org/doc/html/latest/networking/devlink/index.html
 
-> 3) for those that do support devcoredump, it may be used for purposes
-> that are not "crashes" -- e.g., some provide debugfs or other knobs to
-> initiate dumps, for diagnostic or debugging purposes
+The github page also is now 404 as Jiri merged that stuff into iproute2:
 
-Not sure I really think we need to care about those cases, but you
-already have 2 good arguments :)
+git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
 
->
-> Brian
->
-> [1] devcd_disabled
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/devcoredump.c?h=v5.6#n22
+> fw crashes. This patch expects the devlink instance to be registered
+> at probe time. I belive to be the cleanest. We can also add a devm
+> version of the helpers, so that we don't have to do the clean up.
+> Or we can go even further and register the devlink instance only
+> once error has happened (for the first time, then we can just
+> find out if already registered by traversing the list like we
+> do here).
+> 
+> With the patch applied and a sample driver converted we get:
+> 
+> $ devlink dev
+> pci/0000:07:00.0
+> 
+> Then monitor for errors:
+> 
+> $ devlink mon health
+> [health,status] pci/0000:07:00.0:
+>   reporter fw
+>     state error error 1 recover 0
+> [health,status] pci/0000:07:00.0:
+>   reporter fw
+>     state error error 2 recover 0
+> 
+> These are the events I triggered on purpose. One can also inspect
+> the health of all devices capable of reporting fw errors:
+> 
+> $ devlink health
+> pci/0000:07:00.0:
+>   reporter fw
+>     state error error 7 recover 0
+> 
+> Obviously drivers may upgrade to the full devlink health API
+> which includes state dump, state dump auto-collect and automatic
+> error recovery control.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+>  include/linux/devlink.h               |  11 +++
+>  net/core/Makefile                     |   2 +-
+>  net/core/devlink_simple_fw_reporter.c | 101 ++++++++++++++++++++++++++
+>  3 files changed, 113 insertions(+), 1 deletion(-)
+>  create mode 100644 include/linux/devlink.h
+>  create mode 100644 net/core/devlink_simple_fw_reporter.c
+> 
+> diff --git a/include/linux/devlink.h b/include/linux/devlink.h
+> new file mode 100644
+> index 000000000000..2b73987eefca
+> --- /dev/null
+> +++ b/include/linux/devlink.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +#ifndef _LINUX_DEVLINK_H_
+> +#define _LINUX_DEVLINK_H_
+> +
+> +struct device;
+> +
+> +void devlink_simple_fw_reporter_prepare(struct device *dev);
+> +void devlink_simple_fw_reporter_cleanup(struct device *dev);
+> +void devlink_simple_fw_reporter_report_crash(struct device *dev);
+> +
+> +#endif
+> diff --git a/net/core/Makefile b/net/core/Makefile
+> index 3e2c378e5f31..6f1513781c17 100644
+> --- a/net/core/Makefile
+> +++ b/net/core/Makefile
+> @@ -31,7 +31,7 @@ obj-$(CONFIG_LWTUNNEL_BPF) += lwt_bpf.o
+>  obj-$(CONFIG_BPF_STREAM_PARSER) += sock_map.o
+>  obj-$(CONFIG_DST_CACHE) += dst_cache.o
+>  obj-$(CONFIG_HWBM) += hwbm.o
+> -obj-$(CONFIG_NET_DEVLINK) += devlink.o
+> +obj-$(CONFIG_NET_DEVLINK) += devlink.o devlink_simple_fw_reporter.o
+
+This was looking super sexy up to here. This is networking specific.
+We want something generic for *anything* that requests firmware.
+
+I'm afraid this won't work for something generic. I don't think its
+throw-away work though, the idea to provide a generic interface to
+dump firmware through netlink might be nice for networking, or other
+things.
+
+But I have a feeling we'll want something still more generic than this.
+
+So networking may want to be aware that a firmware crash happened as
+part of this network device health thing, but firmware crashing is a
+generic thing.
+
+I have now extended my patch set to include uvents and I am more set on
+that we need the taint now more than ever.
+
+  Luis
+
+>  obj-$(CONFIG_GRO_CELLS) += gro_cells.o
+>  obj-$(CONFIG_FAILOVER) += failover.o
+>  obj-$(CONFIG_BPF_SYSCALL) += bpf_sk_storage.o
+> diff --git a/net/core/devlink_simple_fw_reporter.c b/net/core/devlink_simple_fw_reporter.c
+> new file mode 100644
+> index 000000000000..48dde9123c3c
+> --- /dev/null
+> +++ b/net/core/devlink_simple_fw_reporter.c
+> @@ -0,0 +1,101 @@
+> +#include <linux/devlink.h>
+> +#include <linux/list.h>
+> +#include <linux/mutex.h>
+> +#include <net/devlink.h>
+> +
+> +struct devlink_simple_fw_reporter {
+> +	struct list_head list;
+> +	struct devlink_health_reporter *reporter;
+> +};
+> +
+> +
+> +static LIST_HEAD(devlink_simple_fw_reporters);
+> +static DEFINE_MUTEX(devlink_simple_fw_reporters_mutex);
+> +
+> +static const struct devlink_health_reporter_ops simple_devlink_health = {
+> +	.name = "fw",
+> +};
+> +
+> +static const struct devlink_ops simple_devlink_ops = {
+> +};
+> +
+> +static struct devlink_simple_fw_reporter *
+> +devlink_simple_fw_reporter_find_for_dev(struct device *dev)
+> +{
+> +	struct devlink_simple_fw_reporter *simple_devlink, *ret = NULL;
+> +	struct devlink *devlink;
+> +
+> +	mutex_lock(&devlink_simple_fw_reporters_mutex);
+> +	list_for_each_entry(simple_devlink, &devlink_simple_fw_reporters,
+> +			    list) {
+> +		devlink = priv_to_devlink(simple_devlink);
+> +		if (devlink->dev == dev) {
+> +			ret = simple_devlink;
+> +			break;
+> +		}
+> +	}
+> +	mutex_unlock(&devlink_simple_fw_reporters_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +void devlink_simple_fw_reporter_report_crash(struct device *dev)
+> +{
+> +	struct devlink_simple_fw_reporter *simple_devlink;
+> +
+> +	simple_devlink = devlink_simple_fw_reporter_find_for_dev(dev);
+> +	if (!simple_devlink)
+> +		return;
+> +
+> +	devlink_health_report(simple_devlink->reporter, "firmware crash", NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(devlink_simple_fw_reporter_report_crash);
+> +
+> +void devlink_simple_fw_reporter_prepare(struct device *dev)
+> +{
+> +	struct devlink_simple_fw_reporter *simple_devlink;
+> +	struct devlink *devlink;
+> +
+> +	devlink = devlink_alloc(&simple_devlink_ops,
+> +				sizeof(struct devlink_simple_fw_reporter));
+> +	if (!devlink)
+> +		return;
+> +
+> +	if (devlink_register(devlink, dev))
+> +		goto err_free;
+> +
+> +	simple_devlink = devlink_priv(devlink);
+> +	simple_devlink->reporter =
+> +		devlink_health_reporter_create(devlink, &simple_devlink_health,
+> +					       0, NULL);
+> +	if (IS_ERR(simple_devlink->reporter))
+> +		goto err_unregister;
+> +
+> +	mutex_lock(&devlink_simple_fw_reporters_mutex);
+> +	list_add_tail(&simple_devlink->list, &devlink_simple_fw_reporters);
+> +	mutex_unlock(&devlink_simple_fw_reporters_mutex);
+> +
+> +	return;
+> +
+> +err_unregister:
+> +	devlink_unregister(devlink);
+> +err_free:
+> +	devlink_free(devlink);
+> +}
+> +EXPORT_SYMBOL_GPL(devlink_simple_fw_reporter_prepare);
+> +
+> +void devlink_simple_fw_reporter_cleanup(struct device *dev)
+> +{
+> +	struct devlink_simple_fw_reporter *simple_devlink;
+> +	struct devlink *devlink;
+> +
+> +	simple_devlink = devlink_simple_fw_reporter_find_for_dev(dev);
+> +	if (!simple_devlink)
+> +		return;
+> +
+> +	devlink = priv_to_devlink(simple_devlink);
+> +	devlink_health_reporter_destroy(simple_devlink->reporter);
+> +	devlink_unregister(devlink);
+> +	devlink_free(devlink);
+> +}
+> +EXPORT_SYMBOL_GPL(devlink_simple_fw_reporter_cleanup);
+> -- 
+> 2.25.4
+> 
 
 _______________________________________________
 ath10k mailing list
