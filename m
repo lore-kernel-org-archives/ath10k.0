@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ua1-x944.google.com ([2607:f8b0:4864:20::944])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd7L0-000249-VO
- for ath10k@lists.infradead.org; Mon, 25 May 2020 07:15:57 +0000
-Received: by mail-ua1-x944.google.com with SMTP id r9so1123982ual.1
- for <ath10k@lists.infradead.org>; Mon, 25 May 2020 00:15:53 -0700 (PDT)
+ id 1jd95R-0007qy-Ir
+ for ath10k@lists.infradead.org; Mon, 25 May 2020 09:07:59 +0000
+Date: Mon, 25 May 2020 12:07:49 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
+Message-ID: <20200525090749.GJ1634618@smile.fi.intel.com>
+References: <20200519010530.GS11244@42.do-not-panic.com>
+ <20200519211531.3702593-1-kuba@kernel.org>
+ <20200522052046.GY11244@42.do-not-panic.com>
+ <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
+ <20200522215145.GC11244@42.do-not-panic.com>
+ <CALLGbR+QPcECtJbYmzztV_Qysc5qtwujT_qc785zvhZMCH50fg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200522144412.19712-1-pali@kernel.org>
-In-Reply-To: <20200522144412.19712-1-pali@kernel.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 25 May 2020 09:15:16 +0200
-Message-ID: <CAPDyKFqwrtJy2Ss0_KcBtpGP78d_BePTGJp01KtfuOaQqiwiHg@mail.gmail.com>
-Subject: Re: [PATCH 00/11] mmc: sdio: Move SDIO IDs from drivers to common
- include file
+Content-Disposition: inline
+In-Reply-To: <CALLGbR+QPcECtJbYmzztV_Qysc5qtwujT_qc785zvhZMCH50fg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +25,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc: brcm80211-dev-list.pdl@broadcom.com, libertas-dev@lists.infradead.org, Xinming Hu <huxinming820@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Amitkumar Karwar <amitkarwar@gmail.com>, =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>, Ganapathi Bhat <ganapathi.bhat@nxp.com>, ath10k@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, brcm80211-dev-list <brcm80211-dev-list@cypress.com>, Kalle Valo <kvalo@codeaurora.org>, b43-dev@lists.infradead.org
+To: Steve deRosier <derosier@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, aquini@redhat.com, peterz@infradead.org, Daniel Vetter <daniel.vetter@ffwll.ch>, mchehab+samsung@kernel.org, will@kernel.org, Ben Greear <greearb@candelatech.com>, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com, Jakub Kicinski <kuba@kernel.org>, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, Kees Cook <keescook@chromium.org>, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@codeaurora.org>, Network Development <netdev@vger.kernel.org>, schlad@suse.de, LKML <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org, akpm@linux-foundation.org, "David S. Miller" <davem@davemloft.net>
 
-T24gRnJpLCAyMiBNYXkgMjAyMCBhdCAxNjo0NSwgUGFsaSBSb2jDoXIgPHBhbGlAa2VybmVsLm9y
-Zz4gd3JvdGU6Cj4KPiBNb3N0IFNESU8gSURzIGFyZSBkZWZpbmVkIGluIHRoZSBjb21tb24gaW5j
-bHVkZSBmaWxlIGxpbnV4L21tYy9zZGlvX2lkcy5oLgo+IEJ1dCBzb21lIGRyaXZlcnMgZGVmaW5l
-IElEcyBsb2NhbGx5IG9yIGRvIG5vdCB1c2UgZXhpc3RpbmcgbWFjcm9zIGZyb20gdGhlCj4gY29t
-bW9uIGluY2x1ZGUgZmlsZS4KPgo+IFRoaXMgcGF0Y2ggc2VyaWVzIGZpeGVzIGFib3ZlIGluY29u
-c2lzdGVuY3kuIEl0IGRlZmluZXMgbWlzc2luZyBtYWNybyBuYW1lcwo+IGFuZCBtb3ZlcyBhbGwg
-cmVtYWluaW5nIFNESU8gSURzIGZyb20gZHJpdmVycyB0byB0aGUgY29tbW9uIGluY2x1ZGUgZmls
-ZS4KPiBBbHNvIHNvbWUgbWFjcm8gbmFtZXMgYXJlIGNoYW5nZWQgdG8gZm9sbG93IGV4aXN0aW5n
-IG5hbWluZyBjb252ZW50aW9ucy4KClRoYW5rcyAtIGEgbmljZSBjbGVhbnVwIQoKSSBndWVzcyB0
-aGlzIGlzIGJlc3QgcXVldWVkIHZpYSBteSBtbWMgdHJlZSwgdW5sZXNzIGJsdWV0b290aC93aXJl
-bGVzcwptYWludGFpbmVycyB0aGluayB0aGVyZSBhcmUgc29tZSBwcm9ibGVtcyB3aXRoIHRoYXQu
-IEkgd2lsbCB3YWl0IGZvcgphbiBhY2sgZnJvbSB0aGVtIGJlZm9yZSBhcHBseWluZy4KCktpbmQg
-cmVnYXJkcwpVZmZlCgo+Cj4gUGFsaSBSb2jDoXIgKDExKToKPiAgIG1tYzogc2RpbzogRml4IG1h
-Y3JvIG5hbWUgZm9yIE1hcnZlbGwgZGV2aWNlIHdpdGggSUQgMHg5MTM0Cj4gICBtbWM6IHNkaW86
-IENoYW5nZSBtYWNybyBuYW1lcyBmb3IgTWFydmVsbCA4Njg4IG1vZHVsZXMKPiAgIG1tYzogc2Rp
-bzogTW92ZSBTRElPIElEcyBmcm9tIG13aWZpZXggZHJpdmVyIHRvIGNvbW1vbiBpbmNsdWRlIGZp
-bGUKPiAgIG1tYzogc2RpbzogTW92ZSBTRElPIElEcyBmcm9tIGJ0bXJ2bCBkcml2ZXIgdG8gY29t
-bW9uIGluY2x1ZGUgZmlsZQo+ICAgbW1jOiBzZGlvOiBNb3ZlIFNESU8gSURzIGZyb20gYnRtdGtz
-ZGlvIGRyaXZlciB0byBjb21tb24gaW5jbHVkZSBmaWxlCj4gICBtbWM6IHNkaW86IE1vdmUgU0RJ
-TyBJRHMgZnJvbSBzbXNzZGlvIGRyaXZlciB0byBjb21tb24gaW5jbHVkZSBmaWxlCj4gICBtbWM6
-IHNkaW86IE1vdmUgU0RJTyBJRHMgZnJvbSBhdGg2a2wgZHJpdmVyIHRvIGNvbW1vbiBpbmNsdWRl
-IGZpbGUKPiAgIG1tYzogc2RpbzogTW92ZSBTRElPIElEcyBmcm9tIGF0aDEwayBkcml2ZXIgdG8g
-Y29tbW9uIGluY2x1ZGUgZmlsZQo+ICAgbW1jOiBzZGlvOiBNb3ZlIFNESU8gSURzIGZyb20gYjQz
-LXNkaW8gZHJpdmVyIHRvIGNvbW1vbiBpbmNsdWRlIGZpbGUKPiAgIG1tYzogc2RpbzogRml4IEN5
-cHJlc3MgU0RJTyBJRHMgbWFjcm9zIGluIGNvbW1vbiBpbmNsdWRlIGZpbGUKPiAgIG1tYzogc2Rp
-bzogU29ydCBhbGwgU0RJTyBJRHMgaW4gY29tbW9uIGluY2x1ZGUgZmlsZQo+Cj4gIGRyaXZlcnMv
-Ymx1ZXRvb3RoL2J0bXJ2bF9zZGlvLmMgICAgICAgICAgICAgICB8IDE4ICsrLS0KPiAgZHJpdmVy
-cy9ibHVldG9vdGgvYnRtdGtzZGlvLmMgICAgICAgICAgICAgICAgIHwgIDQgKy0KPiAgZHJpdmVy
-cy9tZWRpYS9tbWMvc2lhbm8vc21zc2Rpby5jICAgICAgICAgICAgIHwgMTAgKy0KPiAgZHJpdmVy
-cy9tbWMvY29yZS9xdWlya3MuaCAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmMgICAgICAgIHwgMjUgKystLS0KPiAgZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmggICAgICAgIHwgIDggLS0KPiAgZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDZrbC9oaWYuaCAgICAgICAgIHwgIDYgLS0KPiAgZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDZrbC9zZGlvLmMgICAgICAgIHwgMTcgKystLQo+ICBk
-cml2ZXJzL25ldC93aXJlbGVzcy9icm9hZGNvbS9iNDMvc2Rpby5jICAgICAgfCAgNCArLQo+ICAu
-Li4vYnJvYWRjb20vYnJjbTgwMjExL2JyY21mbWFjL2JjbXNkaC5jICAgICAgfCAgNiArLQo+ICAu
-Li4vYnJvYWRjb20vYnJjbTgwMjExL2JyY21mbWFjL3NkaW8uYyAgICAgICAgfCAgNCArLQo+ICAu
-Li4vbmV0L3dpcmVsZXNzL21hcnZlbGwvbGliZXJ0YXMvaWZfc2Rpby5jICAgfCAgMiArLQo+ICBk
-cml2ZXJzL25ldC93aXJlbGVzcy9tYXJ2ZWxsL213aWZpZXgvc2Rpby5jICAgfCAzOCArKy0tLS0t
-LQo+ICBpbmNsdWRlL2xpbnV4L21tYy9zZGlvX2lkcy5oICAgICAgICAgICAgICAgICAgfCA5NCAr
-KysrKysrKysrKysrKy0tLS0tCj4gIDE0IGZpbGVzIGNoYW5nZWQsIDEyMCBpbnNlcnRpb25zKCsp
-LCAxMTggZGVsZXRpb25zKC0pCj4KPiAtLQo+IDIuMjAuMQo+CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+On Fri, May 22, 2020 at 04:23:55PM -0700, Steve deRosier wrote:
+> On Fri, May 22, 2020 at 2:51 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+
+> I had to go RTFM re: kernel taints because it has been a very long
+> time since I looked at them. It had always seemed to me that most were
+> caused by "kernel-unfriendly" user actions.  The most famous of course
+> is loading proprietary modules, out-of-tree modules, forced module
+> loads, etc...  Honestly, I had forgotten the large variety of uses of
+> the taint flags. For anyone who hasn't looked at taints recently, I
+> recommend: https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html
+> 
+> In light of this I don't object to setting a taint on this anymore.
+> I'm a little uneasy, but I've softened on it now, and now I feel it
+> depends on implementation.
+> 
+> Specifically, I don't think we should set a taint flag when a driver
+> easily handles a routine firmware crash and is confident that things
+> have come up just fine again. In other words, triggering the taint in
+> every driver module where it spits out a log comment that it had a
+> firmware crash and had to recover seems too much. Sure, firmware
+> shouldn't crash, sure it should be open source so we can fix it,
+> whatever...
+
+While it may sound idealistic the firmware for the end-user, and even for mere
+kernel developer like me, is a complete blackbox which has more access than
+root user in the kernel. We have tons of firmwares and each of them potentially
+dangerous beast. As a user I really care about my data and privacy (hacker can
+oops a firmware in order to set a specific vector attack). So, tainting kernel
+is _a least_ we can do there, the strict rules would be to reboot immediately.
+
+> those sort of wishful comments simply ignore reality and
+> our ability to affect effective change.
+
+We can encourage users not to buy cheap crap for the starter.
+
+> A lot of WiFi firmware crashes
+> and for well-known cases the drivers handle them well. And in some
+> cases, not so well and that should be a place the driver should detect
+> and thus raise a red flag.  If a WiFi firmware crash can bring down
+> the kernel, there's either a major driver bug or some very funky
+> hardware crap going on. That sort of thing we should be able to
+> detect, mark with a taint (or something), and fix if within our sphere
+> of influence. I guess what it comes down to me is how aggressive we
+> are about setting the flag.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
