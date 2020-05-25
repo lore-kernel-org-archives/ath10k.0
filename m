@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from dvalin.narfation.org ([213.160.73.56])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd95R-0007qy-Ir
- for ath10k@lists.infradead.org; Mon, 25 May 2020 09:07:59 +0000
-Date: Mon, 25 May 2020 12:07:49 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
-Message-ID: <20200525090749.GJ1634618@smile.fi.intel.com>
-References: <20200519010530.GS11244@42.do-not-panic.com>
- <20200519211531.3702593-1-kuba@kernel.org>
- <20200522052046.GY11244@42.do-not-panic.com>
- <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
- <20200522215145.GC11244@42.do-not-panic.com>
- <CALLGbR+QPcECtJbYmzztV_Qysc5qtwujT_qc785zvhZMCH50fg@mail.gmail.com>
+ id 1jd9JN-0005JJ-Fo
+ for ath10k@lists.infradead.org; Mon, 25 May 2020 09:22:28 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
+ various chipsets
+Date: Mon, 25 May 2020 11:22:13 +0200
+Message-ID: <3608947.bSrYYtX6KI@bentobox>
+In-Reply-To: <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
+References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
+ <2468724.JaAZLprVu6@bentobox>
+ <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CALLGbR+QPcECtJbYmzztV_Qysc5qtwujT_qc785zvhZMCH50fg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +21,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8211223660415021630=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steve deRosier <derosier@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, aquini@redhat.com, peterz@infradead.org, Daniel Vetter <daniel.vetter@ffwll.ch>, mchehab+samsung@kernel.org, will@kernel.org, Ben Greear <greearb@candelatech.com>, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com, Jakub Kicinski <kuba@kernel.org>, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, Kees Cook <keescook@chromium.org>, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@codeaurora.org>, Network Development <netdev@vger.kernel.org>, schlad@suse.de, LKML <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org, akpm@linux-foundation.org, "David S. Miller" <davem@davemloft.net>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, openwrt-devel@lists.openwrt.org, Ansuel Smith <ansuelsmth@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
 
-On Fri, May 22, 2020 at 04:23:55PM -0700, Steve deRosier wrote:
-> On Fri, May 22, 2020 at 2:51 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+--===============8211223660415021630==
+Content-Type: multipart/signed; boundary="nextPart2460714.mtjQ6OgbZm"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-> I had to go RTFM re: kernel taints because it has been a very long
-> time since I looked at them. It had always seemed to me that most were
-> caused by "kernel-unfriendly" user actions.  The most famous of course
-> is loading proprietary modules, out-of-tree modules, forced module
-> loads, etc...  Honestly, I had forgotten the large variety of uses of
-> the taint flags. For anyone who hasn't looked at taints recently, I
-> recommend: https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html
-> 
-> In light of this I don't object to setting a taint on this anymore.
-> I'm a little uneasy, but I've softened on it now, and now I feel it
-> depends on implementation.
-> 
-> Specifically, I don't think we should set a taint flag when a driver
-> easily handles a routine firmware crash and is confident that things
-> have come up just fine again. In other words, triggering the taint in
-> every driver module where it spits out a log comment that it had a
-> firmware crash and had to recover seems too much. Sure, firmware
-> shouldn't crash, sure it should be open source so we can fix it,
-> whatever...
+--nextPart2460714.mtjQ6OgbZm
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-While it may sound idealistic the firmware for the end-user, and even for mere
-kernel developer like me, is a complete blackbox which has more access than
-root user in the kernel. We have tons of firmwares and each of them potentially
-dangerous beast. As a user I really care about my data and privacy (hacker can
-oops a firmware in order to set a specific vector attack). So, tainting kernel
-is _a least_ we can do there, the strict rules would be to reboot immediately.
+On Wednesday, 20 May 2020 09:39:45 CEST Sebastian Gottschall wrote:
+[...]
+> could somone clarify the state here and why it was dropped?
+> the original patch i wrote does exclude the soc chipsets, but the patch 
+> was later reorganized and some part have been rewritten
+> so i'm not sure if it covers the scenario mentioned here, which i did 
+[...]
+> > This patch was imported to OpenWrt in commit 61d57a2f88b9 ("mac80211: ath10k
+> > add leds support") and broke the 11s support for IPQ4019 and QCA4019 (5GHz)
+> > firmware versions 10.4-3.5.3-00053, 10.4-3.5.3-00057, 10.4-3.6-00140:
 
-> those sort of wishful comments simply ignore reality and
-> our ability to affect effective change.
+Just noticed that there was a copy and paste error in my message. The 5GHz was 
+an QCA9888 [1,2] and not an QCA4019. Otherwise the _pci error wouldn't have made 
+any sense.
 
-We can encourage users not to buy cheap crap for the starter.
+And I can only say at the moment (remember that this was observer 14 months 
+ago), that it could be reproduced easily on IPQ40xx with an QCA9888 and the 
+given config running OpenWrt reboot-9440-g0f89c17b57. The diffconfig (seed) of 
+the installation was:
 
-> A lot of WiFi firmware crashes
-> and for well-known cases the drivers handle them well. And in some
-> cases, not so well and that should be a place the driver should detect
-> and thus raise a red flag.  If a WiFi firmware crash can bring down
-> the kernel, there's either a major driver bug or some very funky
-> hardware crap going on. That sort of thing we should be able to
-> detect, mark with a taint (or something), and fix if within our sphere
-> of influence. I guess what it comes down to me is how aggressive we
-> are about setting the flag.
+    CONFIG_TARGET_ipq40xx=y
+    CONFIG_TARGET_ipq40xx_generic=y
+    CONFIG_TARGET_ipq40xx_generic_DEVICE_openmesh_a62=y
+    CONFIG_ATH10K_LEDS=y
+    CONFIG_PACKAGE_ath10k-firmware-qca4019=y
+    # CONFIG_PACKAGE_ath10k-firmware-qca4019-ct is not set
+    CONFIG_PACKAGE_ath10k-firmware-qca9888=y
+    # CONFIG_PACKAGE_ath10k-firmware-qca9888-ct is not set
+    CONFIG_PACKAGE_kmod-ath10k=y
+    # CONFIG_PACKAGE_kmod-ath10k-ct is not set
+    # CONFIG_PACKAGE_kmod-hwmon-core is not set
 
--- 
-With Best Regards,
-Andy Shevchenko
+And it still can with this OpenWrt version. But it doesn't seem to happen with 
+the most recent OpenWrt reboot-13353-gb1604b744b. But there are nearly 4000 
+commits inbetween. So no idea what changed (just a timing thing or an actual 
+fix - no idea).
+
+Btw. the wireless config was given in the original mail [2,3]
+
+Kind regards,
+	Sven
+
+[1] https://openwrt.org/toh/hwdata/open-mesh/open-mesh_a62
+[2] https://patchwork.kernel.org/patch/10723033/#22502191
+[3] https://patchwork.kernel.org/patch/10327075/#22502179
+--nextPart2460714.mtjQ6OgbZm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl7LjkUACgkQXYcKB8Em
+e0YH8xAAg6aeHEscaqQ7cvLRA1v9ipqIz4bNIUte+dpOzinFIIAVW5bHwYVF0GZT
+L2Ft9lIMLrSLuFZ/PKNlqnS2Ke+ReB2796DYGAY4rw2glSr3A4YH9/IsOwJgXHp3
+tvS6sxdWDyBHXiYS+WkviGdwyyZX+GR3qgJLOagO8dbN/vEZARMTPmyKaP3YDOcC
+RghlJq+1wJGaKdaOG9BE3s4bh5puSg/czAKtYKPgHXYJBJFWIziLuhUYYSAOhLy6
+VbHr6d45nymssAQqtoUK0pnccLUI6V3JXGhmmH/yVs1aayE4txjvMPEj5aP3ZP6d
+2WRa+812FKwLnXOpRIfFgpx6WSElAk+QShbAzqwJ9HFn/dYfm2HOjui6oqU8xD04
+fHbMF4CA9p4zue4t4ClDYTKURqzutg7wLva/vKVN/ovyu0ZQKM+9o/nJu6wkth9g
+hUQllRdH9nWJiJvGlzWzYVxrMmDDa4Gvi3socbZ6zuCbIWLFWNsNsU77WKf7Od+Q
+dEPoRFEyyz7yeEQCWl+AMY20PjdGdWWG+JYHx89+/aIDyLhp3K1BHDpSToe86aCG
+8PiGV48W6NI79IqEoVeyQtenTAmpj0bizdQw5frylK2XDA7ofnEhU4+W8V8Cv9QF
+ARACuJMgtl1FbLS8jWOJP2KAFYOG8upZWbIu3bASQnJ5s9LWvYg=
+=B32t
+-----END PGP SIGNATURE-----
+
+--nextPart2460714.mtjQ6OgbZm--
 
 
+
+
+
+--===============8211223660415021630==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============8211223660415021630==--
