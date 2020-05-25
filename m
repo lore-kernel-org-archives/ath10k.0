@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdFbB-0002Vj-OP
- for ath10k@lists.infradead.org; Mon, 25 May 2020 16:05:12 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
- various chipsets
-Date: Mon, 25 May 2020 18:04:49 +0200
-Message-ID: <3445075.COMLMNsY4U@bentobox>
-In-Reply-To: <3608947.bSrYYtX6KI@bentobox>
-References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
- <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
- <3608947.bSrYYtX6KI@bentobox>
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jdGbG-0008DD-24
+ for ath10k@lists.infradead.org; Mon, 25 May 2020 17:09:19 +0000
+Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
+References: <20200519010530.GS11244@42.do-not-panic.com>
+ <20200519211531.3702593-1-kuba@kernel.org>
+ <20200522052046.GY11244@42.do-not-panic.com>
+ <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
+ <20200522215145.GC11244@42.do-not-panic.com>
+ <CALLGbR+QPcECtJbYmzztV_Qysc5qtwujT_qc785zvhZMCH50fg@mail.gmail.com>
+ <20200525090749.GJ1634618@smile.fi.intel.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <e453d720-bfe7-5f4f-e422-a7cfb9bce833@candelatech.com>
+Date: Mon, 25 May 2020 10:08:58 -0700
 MIME-Version: 1.0
+In-Reply-To: <20200525090749.GJ1634618@smile.fi.intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +26,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3556680905596267618=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, openwrt-devel@lists.openwrt.org, Ansuel Smith <ansuelsmth@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
-
---===============3556680905596267618==
-Content-Type: multipart/signed; boundary="nextPart3096809.FUlXiXFBBX"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart3096809.FUlXiXFBBX
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Monday, 25 May 2020 11:22:13 CEST Sven Eckelmann wrote:
-[...]
-> And it still can with this OpenWrt version. But it doesn't seem to happen with 
-> the most recent OpenWrt reboot-13353-gb1604b744b. But there are nearly 4000 
-> commits inbetween. So no idea what changed (just a timing thing or an actual 
-> fix - no idea).
-
-Seems like there is a fix which solves some lost interrupt problems for 
-IPQ40xx. Without this change, I see the reported problem. And with the patch, 
-it is gone. Or in commits:
-
-* creates timeout problems: 46b949a067e5 ("ipq40xx: enlarge PCIe BAR size")
-* works fine: 18e942b6c4e5 ("ipq40xx: fix pcie msi IRQ trigger level")
-
-If you look in the git logs [1], you can see that the working commit is a 
-child of the broken one. So at least from my point of view, my initial report 
-is no blocker anymore for Sebastian's patch (or Kalle's version of it).
-
-Btw. OpenWrt is automatically assigning a trigger (phy*tpt) for these LEDs.
-
-Kind regards,
-	Sven
-
-[1] https://git.openwrt.org/?p=openwrt/openwrt.git;a=log;h=18e942b6c4e51a5a717a121697a63f3f98d93b19
---nextPart3096809.FUlXiXFBBX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl7L7KEACgkQXYcKB8Em
-e0YDExAAvLYXS4zpbkE17T7xWf7LcteEbclolX0FYft3zOSe7xE0wjqT2N9n6yhk
-F9WF/jJdWnGgxDHOqGUSbK3OYBGTzO5f4ZTRwIa1ag0gQtdqwshPPrkjU3L/0+DN
-kCyNZ5qfvgAlwzEo8sfvNiorKi6GexqEDgy5AUDZYVmSIJ3kFtiM4Llovn/ouPj9
-AEg/JwopaB/ZkhVTyzTtiRz4dJbMSEcWPn6f47SK2NMY4+GJLkg4bUJdSZ1NVmVT
-W0VzRUdX3zYIx+HAdmtoTj2OO4PnWcdi4m94eRVnvjgOwaa2DTPx/Y7wH45zJGnP
-IQdXGs8GuDHTKoJWtMGGPqmOt4mqc4amdOZb9Dq63c4IMKDrwwwSsGi8HaQQyjJq
-ChI2EmDNuKIZ8mIwLxpTv3hAZaol/iCkvVPaLBVJc8wH9rdHO/O1G5CimoZqGu9d
-3umD+laVmJvzZe1FzKLRGfa57w2W9BSnqq3WQM7/UQC03NZeQjuPEV7mY0VxyEQi
-GNEsm3zU5IWwsQxSkNbSZC+KypHYhZL/sm/ES7ubhZkkMlJeFnOnFxjgavr1lNmq
-GCUOFSeiklgfV3Sf2aPwFdxDRusACEaaVujFu4h6qzI+U5Ob66vsam0q+RW1XIpm
-t82QMQhLTDK7zfZr9PQvFaFf4B/9vRpg3jxWmRPjDfwTb7b3Cwk=
-=Ahpg
------END PGP SIGNATURE-----
-
---nextPart3096809.FUlXiXFBBX--
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Steve deRosier <derosier@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, aquini@redhat.com, peterz@infradead.org, Daniel Vetter <daniel.vetter@ffwll.ch>, mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>, mingo@redhat.com, Jakub Kicinski <kuba@kernel.org>, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, Kees Cook <keescook@chromium.org>, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, akpm@linux-foundation.org, Kalle Valo <kvalo@codeaurora.org>, Network Development <netdev@vger.kernel.org>, schlad@suse.de, LKML <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org, Johannes Berg <johannes@sipsolutions.net>, "David S. Miller" <davem@davemloft.net>
 
 
 
+On 05/25/2020 02:07 AM, Andy Shevchenko wrote:
+> On Fri, May 22, 2020 at 04:23:55PM -0700, Steve deRosier wrote:
+>> On Fri, May 22, 2020 at 2:51 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+>> I had to go RTFM re: kernel taints because it has been a very long
+>> time since I looked at them. It had always seemed to me that most were
+>> caused by "kernel-unfriendly" user actions.  The most famous of course
+>> is loading proprietary modules, out-of-tree modules, forced module
+>> loads, etc...  Honestly, I had forgotten the large variety of uses of
+>> the taint flags. For anyone who hasn't looked at taints recently, I
+>> recommend: https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html
+>>
+>> In light of this I don't object to setting a taint on this anymore.
+>> I'm a little uneasy, but I've softened on it now, and now I feel it
+>> depends on implementation.
+>>
+>> Specifically, I don't think we should set a taint flag when a driver
+>> easily handles a routine firmware crash and is confident that things
+>> have come up just fine again. In other words, triggering the taint in
+>> every driver module where it spits out a log comment that it had a
+>> firmware crash and had to recover seems too much. Sure, firmware
+>> shouldn't crash, sure it should be open source so we can fix it,
+>> whatever...
+>
+> While it may sound idealistic the firmware for the end-user, and even for mere
+> kernel developer like me, is a complete blackbox which has more access than
+> root user in the kernel. We have tons of firmwares and each of them potentially
+> dangerous beast. As a user I really care about my data and privacy (hacker can
+> oops a firmware in order to set a specific vector attack). So, tainting kernel
+> is _a least_ we can do there, the strict rules would be to reboot immediately.
+>
+>> those sort of wishful comments simply ignore reality and
+>> our ability to affect effective change.
+>
+> We can encourage users not to buy cheap crap for the starter.
+
+There is no stable wifi firmware for any price.
+
+There is also no obvious feedback from even name-brand NICs like ath10k or AX200
+when you report a crash.
+
+That said, at least in my experience with ath10k-ct, the OS normally recovers fine
+from firmware crashes.  ath10k already reports full crash reports on udev, so
+easy for user-space to notice and report bug reports upstream if it cares to.  Probably
+other NICs do the same, and if not, they certainly could.
+
+Thanks,
+Ben
 
 
---===============3556680905596267618==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3556680905596267618==--
