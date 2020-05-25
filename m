@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail26.static.mailgun.info ([104.130.122.26])
+Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdBfT-0001TO-NS
- for ath10k@lists.infradead.org; Mon, 25 May 2020 11:53:22 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: add SDIO firmware for QCA9377 WiFi
-References: <20200524135933.1623-1-christianshewitt@gmail.com>
- <CA+5PVA5K0naJRhBvmDmArkBWQBCuA6p2yP+pYPMr3dZ47q53aQ@mail.gmail.com>
- <37BB0344-C9EB-41F5-87E7-D66DA45A488E@gmail.com>
-Date: Mon, 25 May 2020 14:53:10 +0300
-In-Reply-To: <37BB0344-C9EB-41F5-87E7-D66DA45A488E@gmail.com> (Christian
- Hewitt's message of "Mon, 25 May 2020 09:09:35 +0400")
-Message-ID: <871rn89qop.fsf@codeaurora.org>
+ id 1jdFbB-0002Vj-OP
+ for ath10k@lists.infradead.org; Mon, 25 May 2020 16:05:12 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
+ various chipsets
+Date: Mon, 25 May 2020 18:04:49 +0200
+Message-ID: <3445075.COMLMNsY4U@bentobox>
+In-Reply-To: <3608947.bSrYYtX6KI@bentobox>
+References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
+ <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
+ <3608947.bSrYYtX6KI@bentobox>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,43 +21,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3556680905596267618=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Hewitt <christianshewitt@gmail.com>
-Cc: Josh Boyer <jwboyer@kernel.org>, Linux Wireless <linux-wireless@vger.kernel.org>, Linux Firmware <linux-firmware@kernel.org>, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, John Crispin <john@phrozen.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, openwrt-devel@lists.openwrt.org, Ansuel Smith <ansuelsmth@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
 
-Q2hyaXN0aWFuIEhld2l0dCA8Y2hyaXN0aWFuc2hld2l0dEBnbWFpbC5jb20+IHdyaXRlczoKCj4+
-IE9uIDI0IE1heSAyMDIwLCBhdCA4OjM0IHBtLCBKb3NoIEJveWVyIDxqd2JveWVyQGtlcm5lbC5v
-cmc+IHdyb3RlOgo+PiAKPj4gT24gU3VuLCBNYXkgMjQsIDIwMjAgYXQgOTo1OSBBTSBDaHJpc3Rp
-YW4gSGV3aXR0Cj4+IDxjaHJpc3RpYW5zaGV3aXR0QGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiAKPj4+
-IFRoaXMgY29tbWl0IGFkZHMgdGhlIFNESU8gZmlybXdhcmUgZm9yIGF0aDEway9RQ0E5Mzc3IGNh
-cmRzLiBUaGUgZmlsZQo+Pj4gaXMgZnJvbSB0aGUgQm91bmRhcnkgRGV2aWNlcyByZXBvIFsxXSBh
-bmQgaGFzIHRoZSBzYW1lIGxpY2Vuc2UgYXMgdGhlCj4+PiBleGlzdGluZyBmaXJtd2FyZS01LmJp
-biBmaWxlLiBTdXBwb3J0IGZvciBRQ0E5Mzc3IFdpRmkgd2FzIG1lcmdlZCBmb3IKPj4+IExpbnV4
-IDUuNyBbMl0uCj4+PiAKPj4+IFsxXSBodHRwczovL2dpdGh1Yi5jb20vYm91bmRhcnlkZXZpY2Vz
-L3FjYS1maXJtd2FyZS90cmVlL2JkLXNkbWFjLWF0aDEwawo+Pj4gWzJdCj4+PiBodHRwczovL2dp
-dGh1Yi5jb20vdG9ydmFsZHMvbGludXgvY29tbWl0LzZlNTFiMGU0OTEzY2EyYzkzMDU5ZjczY2E0
-NzdjYTMwZWE5NWI2YTAKPj4gCj4+IFRoYXQgcmVwbyBnb3QgaXQgZnJvbSBLYWxsZSdzIHVudGVz
-dGVkIHJlcG8sIGFuZCBkaWRuJ3QgY2Fycnkgb3ZlciB0aGUKPj4gU2lnbmVkLW9mZi1ieS4gIFlv
-dSBkaWRuJ3QgY2Fycnkgb3ZlciB0aGUgU2lnbmVkLW9mZi1ieSBmcm9tIHRoZSByZXBvCj4+IHlv
-dSBnb3QgaXQgZnJvbS4gIDMgbGV2ZWxzIG9mIGluZGlyZWN0aW9uIHRvIGluY2x1ZGUgYSBmaWxl
-IHdpdGggYQo+PiBnaWFudCBub3RpY2UgZnJvbSBhbiB1bnRlc3RlZCBzb3VyY2VzIGlzIGEgYml0
-IHRvbyBtdWNoIGZvciBtZSB0byBmZWVsCj4+IGNvbWZvcnRhYmxlIHdpdGguCj4KPiBBcG9sb2dp
-ZXMgSm9zaCwgSSBoYXZlIGJlZW4gdXNpbmcgbXkgb3duIHJlcGFjayBvZiB0aGUgQm91bmRhcnkg
-RGV2aWNlcwo+IHJlcG8gYW5kIGhhZCBjb21wbGV0ZWx5IGZvcmdvdHRlbiBLYWxsZeKAmXMgcmVw
-byBleGlzdGVkIGFuZCB3YXMgdGhlCj4gb3JpZ2luYWwgc291cmNlIG9mIHRoZSBmaWxlLgo+Cj4+
-IEthbGxlLCBpcyB0aGVyZSBhIHJlYXNvbiB5b3UgZGlkbid0IHNlbmQgdGhpcyB1cHN0cmVhbSAz
-IHllYXJzIGFnbz8KPgo+IFNESU8gc3VwcG9ydCBpcyBhIHJlbGF0aXZlbHkgcmVjZW50IGFkZGl0
-aW9uIHRvIHRoZSBhdGgxMGsgZHJpdmVyIGFuZAo+IHRoZSBjb21taXQgbWVzc2FnZSBpbiB0aGlz
-IFJGVCBbMV0gcHJvYmFibHkgZXhwbGFpbnMgd2h5IGhpcyByZXBvIGhhcwo+IGl0IGRlc2NyaWJl
-ZCBhcyB1bnRlc3RlZC4KPgo+IEnigJltIGhhcHB5IHRvIHN1Ym1pdCB2MiB3aXRoIGNvcnJlY3Rl
-ZCByZWZlcmVuY2VzIG9yIGxldCBLYWxsZSBoYW5kbGUKPiB0aGUgc3VibWlzc2lvbiwgd2hpY2hl
-dmVyIGlzIGJlc3Qgb3IgZWFzaWVzdCBpcyBmaW5lIHdpdGggbWUuCgpJJ2xsIGluY2x1ZGUgdGhl
-IFFDQTkzNzcgU0RJTyBpbWFnZSBpbiBteSBuZXh0IHB1bGwgcmVxdWVzdCB0byBKb3NoLgpJJ2xs
-IGFsc28gaGF2ZSBRQ0E2MTc0IFNESU8gaW1hZ2VzIHBlbmRpbmcuCgotLSAKaHR0cHM6Ly93aXJl
-bGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL3N1Ym1pdHRp
-bmdwYXRjaGVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+--===============3556680905596267618==
+Content-Type: multipart/signed; boundary="nextPart3096809.FUlXiXFBBX"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart3096809.FUlXiXFBBX
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Monday, 25 May 2020 11:22:13 CEST Sven Eckelmann wrote:
+[...]
+> And it still can with this OpenWrt version. But it doesn't seem to happen with 
+> the most recent OpenWrt reboot-13353-gb1604b744b. But there are nearly 4000 
+> commits inbetween. So no idea what changed (just a timing thing or an actual 
+> fix - no idea).
+
+Seems like there is a fix which solves some lost interrupt problems for 
+IPQ40xx. Without this change, I see the reported problem. And with the patch, 
+it is gone. Or in commits:
+
+* creates timeout problems: 46b949a067e5 ("ipq40xx: enlarge PCIe BAR size")
+* works fine: 18e942b6c4e5 ("ipq40xx: fix pcie msi IRQ trigger level")
+
+If you look in the git logs [1], you can see that the working commit is a 
+child of the broken one. So at least from my point of view, my initial report 
+is no blocker anymore for Sebastian's patch (or Kalle's version of it).
+
+Btw. OpenWrt is automatically assigning a trigger (phy*tpt) for these LEDs.
+
+Kind regards,
+	Sven
+
+[1] https://git.openwrt.org/?p=openwrt/openwrt.git;a=log;h=18e942b6c4e51a5a717a121697a63f3f98d93b19
+--nextPart3096809.FUlXiXFBBX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl7L7KEACgkQXYcKB8Em
+e0YDExAAvLYXS4zpbkE17T7xWf7LcteEbclolX0FYft3zOSe7xE0wjqT2N9n6yhk
+F9WF/jJdWnGgxDHOqGUSbK3OYBGTzO5f4ZTRwIa1ag0gQtdqwshPPrkjU3L/0+DN
+kCyNZ5qfvgAlwzEo8sfvNiorKi6GexqEDgy5AUDZYVmSIJ3kFtiM4Llovn/ouPj9
+AEg/JwopaB/ZkhVTyzTtiRz4dJbMSEcWPn6f47SK2NMY4+GJLkg4bUJdSZ1NVmVT
+W0VzRUdX3zYIx+HAdmtoTj2OO4PnWcdi4m94eRVnvjgOwaa2DTPx/Y7wH45zJGnP
+IQdXGs8GuDHTKoJWtMGGPqmOt4mqc4amdOZb9Dq63c4IMKDrwwwSsGi8HaQQyjJq
+ChI2EmDNuKIZ8mIwLxpTv3hAZaol/iCkvVPaLBVJc8wH9rdHO/O1G5CimoZqGu9d
+3umD+laVmJvzZe1FzKLRGfa57w2W9BSnqq3WQM7/UQC03NZeQjuPEV7mY0VxyEQi
+GNEsm3zU5IWwsQxSkNbSZC+KypHYhZL/sm/ES7ubhZkkMlJeFnOnFxjgavr1lNmq
+GCUOFSeiklgfV3Sf2aPwFdxDRusACEaaVujFu4h6qzI+U5Ob66vsam0q+RW1XIpm
+t82QMQhLTDK7zfZr9PQvFaFf4B/9vRpg3jxWmRPjDfwTb7b3Cwk=
+=Ahpg
+-----END PGP SIGNATURE-----
+
+--nextPart3096809.FUlXiXFBBX--
+
+
+
+
+
+--===============3556680905596267618==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3556680905596267618==--
