@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.as201155.net ([185.84.6.188])
+Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdbWU-0007bH-Py
- for ath10k@lists.infradead.org; Tue, 26 May 2020 15:29:48 +0000
-Subject: Re: [PATCH] ath10k: Avoid override CE5 configuration for QCA99X0
- chipsets
-References: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
- <20200505073422.BFA51C433BA@smtp.codeaurora.org>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <63ec6f30-ee3b-c412-7c56-46d447b17c8e@dd-wrt.com>
-Date: Tue, 26 May 2020 17:29:24 +0200
+ id 1jdzN9-0008TV-De
+ for ath10k@lists.infradead.org; Wed, 27 May 2020 16:57:45 +0000
+Received: by mail-pj1-x1044.google.com with SMTP id k2so723977pjs.2
+ for <ath10k@lists.infradead.org>; Wed, 27 May 2020 09:57:42 -0700 (PDT)
+From: Brian Norris <briannorris@chromium.org>
+Subject: [PATCH] Revert "ath: add support for special 0x0 regulatory domain"
+Date: Wed, 27 May 2020 09:57:18 -0700
+Message-Id: <20200527165718.129307-1-briannorris@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20200505073422.BFA51C433BA@smtp.codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +18,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>
 
-Am 05.05.2020 um 09:34 schrieb Kalle Valo:
+This reverts commit 2dc016599cfa9672a147528ca26d70c3654a5423.
 
-> Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
->
->> As the exisiting CE configurations are defined in global, there
->> are the chances of QCA99X0 family chipsets CE configurations
->> are getting changed by the ath10k_pci_override_ce_config()
->> function.
->>
->> The override will be hit and CE5 configurations will be changed,
->> when the user bring up the QCA99X0 chipsets along with QCA6174
->> or QCA9377 chipset. (Bring up QCA99X0 family chipsets after
->> QCA6174 or QCA9377).
->>
->> Hence, fixing this issue by moving the global CE configuration
->> to radio specific CE configuration.
->>
->> Tested hardware: QCA9888 & QCA6174
->> Tested firmware: 10.4-3.10-00047 & WLAN.RM.4.4.1.c3-00058
->>
->> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> Patch applied to ath-next branch of ath.git, thanks.
->
-> 521fc37be3d8 ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
-this patch will crash on ipq4019 devices. i reverted it and it worked again
+Users are reporting regressions in regulatory domain detection and
+channel availability.
+
+The problem this was trying to resolve was fixed in firmware anyway:
+
+    QCA6174 hw3.0: sdio-4.4.1: add firmware.bin_WLAN.RMH.4.4.1-00042
+    https://github.com/kvalo/ath10k-firmware/commit/4d382787f0efa77dba40394e0bc604f8eff82552
+
+Link: https://bbs.archlinux.org/viewtopic.php?id=254535
+Link: http://lists.infradead.org/pipermail/ath10k/2020-April/014871.html
+Link: http://lists.infradead.org/pipermail/ath10k/2020-May/015152.html
+Fixes: 2dc016599cfa ("ath: add support for special 0x0 regulatory domain")
+Cc: <stable@vger.kernel.org>
+Cc: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+ drivers/net/wireless/ath/regd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/regd.c b/drivers/net/wireless/ath/regd.c
+index bee9110b91f3..20f4f8ea9f89 100644
+--- a/drivers/net/wireless/ath/regd.c
++++ b/drivers/net/wireless/ath/regd.c
+@@ -666,14 +666,14 @@ ath_regd_init_wiphy(struct ath_regulatory *reg,
+ 
+ /*
+  * Some users have reported their EEPROM programmed with
+- * 0x8000 or 0x0 set, this is not a supported regulatory
+- * domain but since we have more than one user with it we
+- * need a solution for them. We default to 0x64, which is
+- * the default Atheros world regulatory domain.
++ * 0x8000 set, this is not a supported regulatory domain
++ * but since we have more than one user with it we need
++ * a solution for them. We default to 0x64, which is the
++ * default Atheros world regulatory domain.
+  */
+ static void ath_regd_sanitize(struct ath_regulatory *reg)
+ {
+-	if (reg->current_rd != COUNTRY_ERD_FLAG && reg->current_rd != 0)
++	if (reg->current_rd != COUNTRY_ERD_FLAG)
+ 		return;
+ 	printk(KERN_DEBUG "ath: EEPROM regdomain sanitized\n");
+ 	reg->current_rd = 0x64;
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
 
 _______________________________________________
 ath10k mailing list
