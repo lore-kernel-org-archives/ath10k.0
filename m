@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeHFF-0008EH-BZ
- for ath10k@lists.infradead.org; Thu, 28 May 2020 12:02:49 +0000
-Received: by mail-lj1-x22c.google.com with SMTP id e4so10561740ljn.4
- for <ath10k@lists.infradead.org>; Thu, 28 May 2020 05:02:44 -0700 (PDT)
+From: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Subject: RE: [EXT] [PATCH 04/11] mmc: sdio: Move SDIO IDs from btmrvl driver
+ to common include file
+Date: Thu, 28 May 2020 12:27:59 +0000
+Message-ID: <VI1PR04MB4366DC81FF6F107CDA1A658B8F8E0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+References: <20200522144412.19712-1-pali@kernel.org>
+ <20200522144412.19712-5-pali@kernel.org>
+In-Reply-To: <20200522144412.19712-5-pali@kernel.org>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <20200527165718.129307-1-briannorris@chromium.org>
-In-Reply-To: <20200527165718.129307-1-briannorris@chromium.org>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Thu, 28 May 2020 22:02:31 +1000
-Message-ID: <CAGRGNgX5n=0OEi7hMrmgVZGD=orGpgvkyLrhmXVKSFYdBJ+eUw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
- domain"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +21,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: stable@vger.kernel.org, linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+To: =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Cc: "brcm80211-dev-list.pdl@broadcom.com" <brcm80211-dev-list.pdl@broadcom.com>, "libertas-dev@lists.infradead.org" <libertas-dev@lists.infradead.org>, Xinming Hu <huxinming820@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Amitkumar Karwar <amitkarwar@gmail.com>, =?utf-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>, Kalle Valo <kvalo@codeaurora.org>, "b43-dev@lists.infradead.org" <b43-dev@lists.infradead.org>
 
-Hi Brian,
+Hi Pali,
 
-On Thu, May 28, 2020 at 5:18 AM Brian Norris <briannorris@chromium.org> wrote:
->
-> This reverts commit 2dc016599cfa9672a147528ca26d70c3654a5423.
->
-> Users are reporting regressions in regulatory domain detection and
-> channel availability.
->
-> The problem this was trying to resolve was fixed in firmware anyway:
+> Define appropriate macro names for consistency with other Marvell macros.
+> 
+Thanks for the change;
 
-Should we tell the user their firmware needs to be upgraded if it
-reports this regulatory domain instead of completely dropping support
-for it?
-
-Thanks,
-
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
-
+Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
