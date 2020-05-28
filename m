@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 From: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-Subject: RE: [EXT] [PATCH 04/11] mmc: sdio: Move SDIO IDs from btmrvl driver
+Subject: RE: [EXT] [PATCH 03/11] mmc: sdio: Move SDIO IDs from mwifiex driver
  to common include file
-Date: Thu, 28 May 2020 12:27:59 +0000
-Message-ID: <VI1PR04MB4366DC81FF6F107CDA1A658B8F8E0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+Date: Thu, 28 May 2020 12:29:59 +0000
+Message-ID: <VI1PR04MB43660A0A5C5E2FE1E08608298F8E0@VI1PR04MB4366.eurprd04.prod.outlook.com>
 References: <20200522144412.19712-1-pali@kernel.org>
- <20200522144412.19712-5-pali@kernel.org>
-In-Reply-To: <20200522144412.19712-5-pali@kernel.org>
+ <20200522144412.19712-4-pali@kernel.org>
+In-Reply-To: <20200522144412.19712-4-pali@kernel.org>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -26,9 +26,11 @@ Cc: "brcm80211-dev-list.pdl@broadcom.com" <brcm80211-dev-list.pdl@broadcom.com>,
 
 Hi Pali,
 
-> Define appropriate macro names for consistency with other Marvell macros.
+> Add _WLAN suffix to macro names for consistency with other Marvell macros.
+> These IDs represents wlan function of combo bt/wlan cards. Other functions
+> of these cards have different IDs.
 > 
-Thanks for the change;
+OK, thanks for the cleanup change;
 
 Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
 _______________________________________________
