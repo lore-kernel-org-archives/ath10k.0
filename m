@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1je94e-0002Pv-5V
- for ath10k@lists.infradead.org; Thu, 28 May 2020 03:19:18 +0000
-Date: Thu, 28 May 2020 09:33:33 +0800
+ id 1je9Bb-0001Yp-AA
+ for ath10k@lists.infradead.org; Thu, 28 May 2020 03:26:29 +0000
+Date: Thu, 28 May 2020 11:25:58 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup 28/63]
- drivers/net/wireless/ath/ath11k/pci.c:275:6: warning: no previous prototype
- for 'ath11k_pci_get_msi_address'
-Message-ID: <202005280930.uvQbgmmi%lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup 48/63]
+ drivers/net/wireless/ath/ath11k/dp.c:124:5: warning: no previous prototype
+ for 'ath11k_dp_srng_calculate_msi_group'
+Message-ID: <202005281155.xTKLyxZF%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ibTvN161/egqYuK8"
+Content-Type: multipart/mixed; boundary="VbJkn9YxBvnuCH5J"
 Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,23 +22,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
+To: Carl Huang <cjhuang@codeaurora.org>
 Cc: kbuild-all@lists.01.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
 
---ibTvN161/egqYuK8
+--VbJkn9YxBvnuCH5J
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-qca6390-bringup
 head:   7f2aca90d49b9d6d85a7d712421e1d02ce4bba2f
-commit: 16e4df3e1f00fa1fc6ec22927cb5e84b2c6e75a7 [28/63] ath11k: configure copy engine msi address in CE srng
+commit: f2748890bfc292723a15221b8c7b40f50d6d9b76 [48/63] ath11k: enable DP interrupt setup for QCA6390
 config: ia64-allmodconfig (attached as .config)
 compiler: ia64-linux-gcc (GCC) 9.3.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout 16e4df3e1f00fa1fc6ec22927cb5e84b2c6e75a7
+        git checkout f2748890bfc292723a15221b8c7b40f50d6d9b76
         # save the attached .config to linux build tree
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
 
@@ -47,130 +47,95 @@ Reported-by: kbuild test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-<< In file included from drivers/net/wireless/ath/ath11k/pci.c:12:
->> drivers/net/wireless/ath/ath11k/pci.c:275:6: warning: no previous prototype for 'ath11k_pci_get_msi_address' [-Wmissing-prototypes]
-275 | void ath11k_pci_get_msi_address(struct ath11k_base *ab, u32 *msi_addr_lo,
-|      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-<< In file included from drivers/net/wireless/ath/ath11k/pci.c:12:
->> drivers/net/wireless/ath/ath11k/pci.c:321:5: warning: no previous prototype for 'ath11k_get_user_msi_assignment' [-Wmissing-prototypes]
-321 | int ath11k_get_user_msi_assignment(struct ath11k_base *ab, char *user_name,
-|     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:431:5: warning: no previous prototype for 'ath11k_pci_qca6x90_powerup' [-Wmissing-prototypes]
-431 | int ath11k_pci_qca6x90_powerup(struct ath11k_pci *ab_pci)
-|     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:436:6: warning: no previous prototype for 'ath11k_pci_qca6x90_powerdown' [-Wmissing-prototypes]
-436 | void ath11k_pci_qca6x90_powerdown(struct ath11k_pci *ab_pci)
-|      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:768:5: warning: no previous prototype for 'ath11k_pci_init' [-Wmissing-prototypes]
-768 | int ath11k_pci_init(void)
-|     ^~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:781:6: warning: no previous prototype for 'ath11k_pci_exit' [-Wmissing-prototypes]
-781 | void ath11k_pci_exit(void)
-|      ^~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c: In function 'ath11k_pci_probe':
-drivers/net/wireless/ath/ath11k/pci.c:645:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-645 |   hw_rev = ATH11K_HW_QCA6290;
-|   ~~~~~~~^~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:646:2: note: here
-646 |  case QCA6390_DEVICE_ID:
-|  ^~~~
-In file included from drivers/net/wireless/ath/ath11k/pci.c:12:
-At top level:
-drivers/net/wireless/ath/ath11k/hif.h:75:17: warning: 'ath11k_host2rxdma_ring_mask' defined but not used [-Wunused-const-variable=]
-75 | static const u8 ath11k_host2rxdma_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:69:17: warning: 'ath11k_rxdma2host_ring_mask' defined but not used [-Wunused-const-variable=]
-69 | static const u8 ath11k_rxdma2host_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:65:17: warning: 'ath11k_reo_status_ring_mask' defined but not used [-Wunused-const-variable=]
-65 | static const u8 ath11k_reo_status_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:61:17: warning: 'ath11k_rx_wbm_rel_ring_mask' defined but not used [-Wunused-const-variable=]
-61 | static const u8 ath11k_rx_wbm_rel_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:57:17: warning: 'ath11k_rx_err_ring_mask' defined but not used [-Wunused-const-variable=]
-57 | static const u8 ath11k_rx_err_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:49:17: warning: 'ath11k_rx_ring_mask' defined but not used [-Wunused-const-variable=]
-49 | static const u8 ath11k_rx_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:42:17: warning: 'rx_mon_status_ring_mask' defined but not used [-Wunused-const-variable=]
-42 | static const u8 rx_mon_status_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/hif.h:36:17: warning: 'ath11k_tx_ring_mask' defined but not used [-Wunused-const-variable=]
-36 | static const u8 ath11k_tx_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
-|                 ^~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath11k/dp.c:124:5: warning: no previous prototype for 'ath11k_dp_srng_calculate_msi_group' [-Wmissing-prototypes]
+124 | int ath11k_dp_srng_calculate_msi_group(struct ath11k_base *ab,
+|     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-vim +/ath11k_pci_get_msi_address +275 drivers/net/wireless/ath/ath11k/pci.c
+vim +/ath11k_dp_srng_calculate_msi_group +124 drivers/net/wireless/ath/ath11k/dp.c
 
-   274	
- > 275	void ath11k_pci_get_msi_address(struct ath11k_base *ab, u32 *msi_addr_lo,
-   276					u32 *msi_addr_hi)
-   277	{
-   278		struct pci_dev *pci_dev = to_pci_dev(ab->dev);
-   279	
-   280		pci_read_config_dword(pci_dev, pci_dev->msi_cap + PCI_MSI_ADDRESS_LO,
-   281				      msi_addr_lo);
-   282	
-   283		pci_read_config_dword(pci_dev, pci_dev->msi_cap + PCI_MSI_ADDRESS_HI,
-   284				      msi_addr_hi);
-   285	}
-   286	
-   287	int ath11k_pci_get_user_msi_assignment(struct ath11k_pci *ab_pci, char *user_name,
-   288					       int *num_vectors, u32 *user_base_data,
-   289					       u32 *base_vector)
-   290	{
-   291		struct ath11k_base *ab = ab_pci->ab;
-   292		struct ath11k_msi_config *msi_config;
-   293		int idx;
-   294	
-   295		msi_config = ab_pci->msi_config;
-   296		if (!msi_config) {
-   297			ath11k_err(ab, "MSI is not supported.\n");
-   298			return -EINVAL;
-   299		}
-   300	
-   301		for (idx = 0; idx < msi_config->total_users; idx++) {
-   302			if (strcmp(user_name, msi_config->users[idx].name) == 0) {
-   303				*num_vectors = msi_config->users[idx].num_vectors;
-   304				*user_base_data = msi_config->users[idx].base_vector
-   305					+ ab_pci->msi_ep_base_data;
-   306				*base_vector = msi_config->users[idx].base_vector;
-   307	
-   308				ath11k_dbg(ab, ATH11K_DBG_PCI, "Assign MSI to user: %s, num_vectors: %d, user_base_data: %u, base_vector: %u\n",
-   309					   user_name, *num_vectors, *user_base_data,
-   310					   *base_vector);
-   311	
-   312				return 0;
-   313			}
-   314		}
-   315	
-   316		ath11k_err(ab, "Failed to find MSI assignment for %s!\n", user_name);
-   317	
-   318		return -EINVAL;
-   319	}
-   320	
- > 321	int ath11k_get_user_msi_assignment(struct ath11k_base *ab, char *user_name,
-   322					   int *num_vectors, u32 *user_base_data,
-   323					   u32 *base_vector)
-   324	{
-   325		struct ath11k_pci *ab_pci = ath11k_pci_priv(ab);
-   326	
-   327		return ath11k_pci_get_user_msi_assignment(ab_pci, user_name, num_vectors, user_base_data,
-   328							 base_vector);
-   329	}
-   330	
+   123	
+ > 124	int ath11k_dp_srng_calculate_msi_group(struct ath11k_base *ab,
+   125					       enum hal_ring_type type, int ring_num)
+   126	{
+   127		const u8 *grp_mask;
+   128	
+   129		switch (type) {
+   130		case HAL_WBM2SW_RELEASE:
+   131			if (ring_num < 3) {
+   132				grp_mask = &ab->ring_mask.tx_ring_mask[0];
+   133			}
+   134			else if (ring_num == 3) {
+   135				grp_mask = &ab->ring_mask.rx_wbm_rel_ring_mask[0];
+   136				ring_num = 0;
+   137			} else {
+   138				return -ENOENT;
+   139			}
+   140		break;
+   141	
+   142		case HAL_REO_EXCEPTION:
+   143			grp_mask = &ab->ring_mask.rx_err_ring_mask[0];
+   144		break;
+   145	
+   146		case HAL_REO_DST:
+   147			grp_mask = &ab->ring_mask.rx_ring_mask[0];
+   148		break;
+   149	
+   150		case HAL_REO_STATUS:
+   151			grp_mask = &ab->ring_mask.reo_status_ring_mask[0];
+   152		break;
+   153	
+   154		case HAL_RXDMA_MONITOR_STATUS:
+   155		case HAL_RXDMA_MONITOR_DST:
+   156			grp_mask = &ab->ring_mask.rx_mon_status_ring_mask[0];
+   157		break;
+   158	
+   159		case HAL_RXDMA_DST:
+   160			grp_mask = &ab->ring_mask.rxdma2host_ring_mask[0];
+   161		break;
+   162	
+   163		case HAL_RXDMA_BUF:
+   164			grp_mask = &ab->ring_mask.host2rxdma_ring_mask[0];
+   165		break;
+   166	
+   167		case HAL_RXDMA_MONITOR_BUF:
+   168			return -ENOENT;
+   169		break;
+   170	
+   171		case HAL_TCL_DATA:
+   172		case HAL_TCL_CMD:
+   173		case HAL_REO_CMD:
+   174		case HAL_SW2WBM_RELEASE:
+   175		case HAL_WBM_IDLE_LINK:
+   176			return -ENOENT;
+   177		break;
+   178	
+   179		case HAL_TCL_STATUS:
+   180		case HAL_REO_REINJECT:
+   181			return -ENOENT;
+   182		break;
+   183	
+   184		case HAL_CE_SRC:
+   185		case HAL_CE_DST:
+   186		case HAL_CE_DST_STATUS:
+   187		default:
+   188			return -ENOENT;
+   189		break;
+   190		}
+   191	
+   192		return ath11k_dp_srng_find_ring_in_mask(ring_num, grp_mask);
+   193	}
+   194	
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---ibTvN161/egqYuK8
+--VbJkn9YxBvnuCH5J
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICMj/zl4AAy5jb25maWcAlDxdc9u2su/9FZr0pX1oj7/ipveOH0AQlHBEEgwBylJeOK6j
+H4sICHMgz14AAy5jb25maWcAlDxdc9u2su/9FZr0pX1oj7/ipveOH0AQlHBEEgwBylJeOK6j
 pJ7Gdq4sn3Nyfv3dBb8WIEilnc7E3F0sgcV+A9SPP/y4YK/H58e748P93Zcv3xaf90/7w91x
 /3Hx6eHL/n8XsVrkyixELM2vQJw+PL3+5x8Pd9dXi7e//vbr2S+H+6vFen942n9Z8OenTw+f
 X2H0w/PTDz/+AP//CMDHr8Do8D8LHPTLFxz/y+f7+8VPS85/Xvz+6+WvZ0DIVZ7IZc15LXUN
@@ -1243,7 +1208,7 @@ CWy8UIqMJSHTRvLsYDVw4TQ53n+vc9pBbnkxyxjDDcbVcEc9Vlj3vtTKufWWPZxs0m+v3Dc3
 9JxgdS8dCI6PQHImIZ2GmDGYkp82mRm+I1PQ5mPZ2SeyXRmoffN1rctMogDYESGPLprOM7rW
 pIBr1RRsAV9T5UGNx0Qo0v8/VAtKyzCTAwA=
 
---ibTvN161/egqYuK8
+--VbJkn9YxBvnuCH5J
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1254,4 +1219,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---ibTvN161/egqYuK8--
+--VbJkn9YxBvnuCH5J--
