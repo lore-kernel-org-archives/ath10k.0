@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeL5F-0001s9-49
- for ath10k@lists.infradead.org; Thu, 28 May 2020 16:08:42 +0000
-Date: Fri, 29 May 2020 00:08:29 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: [RFC PATCH ath6kl] ath11k: ath11k_mac_id_to_pdev_id_ipq8074() can be
- static
-Message-ID: <20200528160829.GA50950@3f49cb9714f8>
-References: <202005290059.xMptJizM%lkp@intel.com>
+ id 1jeO63-00076F-1z
+ for ath10k@lists.infradead.org; Thu, 28 May 2020 19:21:46 +0000
+Received: by mail-pg1-x544.google.com with SMTP id j21so48627pgb.7
+ for <ath10k@lists.infradead.org>; Thu, 28 May 2020 12:21:40 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] ath10k: Remove ath10k_qmi_register_service_notifier()
+ declaration
+Date: Thu, 28 May 2020 12:21:09 -0700
+Message-Id: <20200528122105.1.I31937dce728b441fd72cbe23447bc4710fd56ddb@changeid>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202005290059.xMptJizM%lkp@intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +23,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
-Cc: kbuild-all@lists.01.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Govind Singh <govinds@codeaurora.org>, linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, netdev@vger.kernel.org, Niklas Cassel <niklas.cassel@linaro.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
 
+The ath10k/qmi.h header file contains a declaration for the function
+ath10k_qmi_register_service_notifier().  This function doesn't exist.
+Remove the declaration.
 
-Fixes: f4e7ef9fc04c ("ath11k: setup QCA6390 rings for both rxdmas")
-Signed-off-by: kbuild test robot <lkp@intel.com>
+This patch is a no-op and was just found by code inspection.
+
+Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- hw.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/hw.c b/drivers/net/wireless/ath/ath11k/hw.c
-index 65cae23d39481..1f59867b67b02 100644
---- a/drivers/net/wireless/ath/ath11k/hw.c
-+++ b/drivers/net/wireless/ath/ath11k/hw.c
-@@ -205,22 +205,22 @@ static void ath11k_init_wmi_config_ipq8074(struct ath11k_base *ab,
- 	config->twt_ap_sta_count = 1000;
- }
- 
--int ath11k_mac_id_to_pdev_id_ipq8074(int mac_id)
-+static int ath11k_mac_id_to_pdev_id_ipq8074(int mac_id)
- {
- 	return mac_id;
- }
- 
--int ath11k_mac_id_to_srng_id_ipq8074(int mac_id)
-+static int ath11k_mac_id_to_srng_id_ipq8074(int mac_id)
- {
- 	return 0;
- }
- 
--int ath11k_mac_id_to_pdev_id_qca6x90(int mac_id)
-+static int ath11k_mac_id_to_pdev_id_qca6x90(int mac_id)
- {
- 	return 0;
- }
- 
--int ath11k_mac_id_to_srng_id_qca6x90(int mac_id)
-+static int ath11k_mac_id_to_srng_id_qca6x90(int mac_id)
- {
- 	return mac_id;
- }
+ drivers/net/wireless/ath/ath10k/qmi.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.h b/drivers/net/wireless/ath/ath10k/qmi.h
+index dc257375f161..e03581182919 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.h
++++ b/drivers/net/wireless/ath/ath10k/qmi.h
+@@ -112,7 +112,6 @@ int ath10k_qmi_wlan_enable(struct ath10k *ar,
+ 			   enum wlfw_driver_mode_enum_v01 mode,
+ 			   const char *version);
+ int ath10k_qmi_wlan_disable(struct ath10k *ar);
+-int ath10k_qmi_register_service_notifier(struct notifier_block *nb);
+ int ath10k_qmi_init(struct ath10k *ar, u32 msa_size);
+ int ath10k_qmi_deinit(struct ath10k *ar);
+ int ath10k_qmi_set_fw_log_mode(struct ath10k *ar, u8 fw_log_mode);
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
 
 _______________________________________________
 ath10k mailing list
