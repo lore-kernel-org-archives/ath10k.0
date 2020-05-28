@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 From: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-Subject: RE: [EXT] [PATCH 03/11] mmc: sdio: Move SDIO IDs from mwifiex driver
- to common include file
-Date: Thu, 28 May 2020 12:29:59 +0000
-Message-ID: <VI1PR04MB43660A0A5C5E2FE1E08608298F8E0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+Subject: RE: [EXT] [PATCH 02/11] mmc: sdio: Change macro names for Marvell
+ 8688 modules
+Date: Thu, 28 May 2020 12:32:43 +0000
+Message-ID: <VI1PR04MB43668C45F20EECE78179ECB78F8E0@VI1PR04MB4366.eurprd04.prod.outlook.com>
 References: <20200522144412.19712-1-pali@kernel.org>
- <20200522144412.19712-4-pali@kernel.org>
-In-Reply-To: <20200522144412.19712-4-pali@kernel.org>
+ <20200522144412.19712-3-pali@kernel.org>
+In-Reply-To: <20200522144412.19712-3-pali@kernel.org>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -26,11 +26,11 @@ Cc: "brcm80211-dev-list.pdl@broadcom.com" <brcm80211-dev-list.pdl@broadcom.com>,
 
 Hi Pali,
 
-> Add _WLAN suffix to macro names for consistency with other Marvell macros.
-> These IDs represents wlan function of combo bt/wlan cards. Other functions
-> of these cards have different IDs.
+> Add underscore as separator in Marvell 8688 macro names for better
+> readability and consistency.
 > 
-OK, thanks for the cleanup change;
+
+Thanks for the change;
 
 Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
 _______________________________________________
