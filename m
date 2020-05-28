@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1je5Ja-0007GZ-Ud
- for ath10k@lists.infradead.org; Wed, 27 May 2020 23:18:29 +0000
-Date: Thu, 28 May 2020 07:17:53 +0800
+ id 1je94e-0002Pv-5V
+ for ath10k@lists.infradead.org; Thu, 28 May 2020 03:19:18 +0000
+Date: Thu, 28 May 2020 09:33:33 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup 21/63]
- drivers/net/wireless/ath/ath11k/mhi.c:296:5: warning: no previous prototype
- for 'ath11k_pci_set_mhi_state'
-Message-ID: <202005280749.id8EdGKN%lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup 28/63]
+ drivers/net/wireless/ath/ath11k/pci.c:275:6: warning: no previous prototype
+ for 'ath11k_pci_get_msi_address'
+Message-ID: <202005280930.uvQbgmmi%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0F1p//8PRICkK4MW"
+Content-Type: multipart/mixed; boundary="ibTvN161/egqYuK8"
 Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,19 +26,19 @@ To: Govind Singh <govinds@codeaurora.org>
 Cc: kbuild-all@lists.01.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
 
---0F1p//8PRICkK4MW
+--ibTvN161/egqYuK8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-qca6390-bringup
 head:   7f2aca90d49b9d6d85a7d712421e1d02ce4bba2f
-commit: 7c68d0727f44d0f8df4e6c133fffe6aa8670f59f [21/63] ath11k: Register mhi controller device for qca6x90
+commit: 16e4df3e1f00fa1fc6ec22927cb5e84b2c6e75a7 [28/63] ath11k: configure copy engine msi address in CE srng
 config: ia64-allmodconfig (attached as .config)
 compiler: ia64-linux-gcc (GCC) 9.3.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout 7c68d0727f44d0f8df4e6c133fffe6aa8670f59f
+        git checkout 16e4df3e1f00fa1fc6ec22927cb5e84b2c6e75a7
         # save the attached .config to linux build tree
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
 
@@ -47,34 +47,35 @@ Reported-by: kbuild test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
->> drivers/net/wireless/ath/ath11k/mhi.c:296:5: warning: no previous prototype for 'ath11k_pci_set_mhi_state' [-Wmissing-prototypes]
-296 | int ath11k_pci_set_mhi_state(struct ath11k_pci *ab_pci,
-|     ^~~~~~~~~~~~~~~~~~~~~~~~
---
->> drivers/net/wireless/ath/ath11k/pci.c:81:5: warning: no previous prototype for 'ath11k_pci_qca6x90_powerup' [-Wmissing-prototypes]
-81 | int ath11k_pci_qca6x90_powerup(struct ath11k_pci *ab_pci)
+<< In file included from drivers/net/wireless/ath/ath11k/pci.c:12:
+>> drivers/net/wireless/ath/ath11k/pci.c:275:6: warning: no previous prototype for 'ath11k_pci_get_msi_address' [-Wmissing-prototypes]
+275 | void ath11k_pci_get_msi_address(struct ath11k_base *ab, u32 *msi_addr_lo,
+|      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+<< In file included from drivers/net/wireless/ath/ath11k/pci.c:12:
+>> drivers/net/wireless/ath/ath11k/pci.c:321:5: warning: no previous prototype for 'ath11k_get_user_msi_assignment' [-Wmissing-prototypes]
+321 | int ath11k_get_user_msi_assignment(struct ath11k_base *ab, char *user_name,
+|     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/wireless/ath/ath11k/pci.c:431:5: warning: no previous prototype for 'ath11k_pci_qca6x90_powerup' [-Wmissing-prototypes]
+431 | int ath11k_pci_qca6x90_powerup(struct ath11k_pci *ab_pci)
 |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/wireless/ath/ath11k/pci.c:86:6: warning: no previous prototype for 'ath11k_pci_qca6x90_powerdown' [-Wmissing-prototypes]
-86 | void ath11k_pci_qca6x90_powerdown(struct ath11k_pci *ab_pci)
+drivers/net/wireless/ath/ath11k/pci.c:436:6: warning: no previous prototype for 'ath11k_pci_qca6x90_powerdown' [-Wmissing-prototypes]
+436 | void ath11k_pci_qca6x90_powerdown(struct ath11k_pci *ab_pci)
 |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:362:5: warning: no previous prototype for 'ath11k_pci_init' [-Wmissing-prototypes]
-362 | int ath11k_pci_init(void)
+drivers/net/wireless/ath/ath11k/pci.c:768:5: warning: no previous prototype for 'ath11k_pci_init' [-Wmissing-prototypes]
+768 | int ath11k_pci_init(void)
 |     ^~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:375:6: warning: no previous prototype for 'ath11k_pci_exit' [-Wmissing-prototypes]
-375 | void ath11k_pci_exit(void)
+drivers/net/wireless/ath/ath11k/pci.c:781:6: warning: no previous prototype for 'ath11k_pci_exit' [-Wmissing-prototypes]
+781 | void ath11k_pci_exit(void)
 |      ^~~~~~~~~~~~~~~
 drivers/net/wireless/ath/ath11k/pci.c: In function 'ath11k_pci_probe':
-drivers/net/wireless/ath/ath11k/pci.c:280:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-280 |   hw_rev = ATH11K_HW_QCA6290;
+drivers/net/wireless/ath/ath11k/pci.c:645:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+645 |   hw_rev = ATH11K_HW_QCA6290;
 |   ~~~~~~~^~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/ath11k/pci.c:281:2: note: here
-281 |  case QCA6390_DEVICE_ID:
+drivers/net/wireless/ath/ath11k/pci.c:646:2: note: here
+646 |  case QCA6390_DEVICE_ID:
 |  ^~~~
-At top level:
-drivers/net/wireless/ath/ath11k/pci.c:265:36: warning: 'ath11k_pci_hif_ops' defined but not used [-Wunused-const-variable=]
-265 | static const struct ath11k_hif_ops ath11k_pci_hif_ops = {
-|                                    ^~~~~~~~~~~~~~~~~~
 In file included from drivers/net/wireless/ath/ath11k/pci.c:12:
+At top level:
 drivers/net/wireless/ath/ath11k/hif.h:75:17: warning: 'ath11k_host2rxdma_ring_mask' defined but not used [-Wunused-const-variable=]
 75 | static const u8 ath11k_host2rxdma_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
 |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,79 +101,76 @@ drivers/net/wireless/ath/ath11k/hif.h:36:17: warning: 'ath11k_tx_ring_mask' defi
 36 | static const u8 ath11k_tx_ring_mask[ATH11K_EXT_IRQ_GRP_NUM_MAX] = {
 |                 ^~~~~~~~~~~~~~~~~~~
 
-vim +/ath11k_pci_set_mhi_state +296 drivers/net/wireless/ath/ath11k/mhi.c
+vim +/ath11k_pci_get_msi_address +275 drivers/net/wireless/ath/ath11k/pci.c
 
-   295	
- > 296	int ath11k_pci_set_mhi_state(struct ath11k_pci *ab_pci,
-   297				     enum ath11k_mhi_state mhi_state)
-   298	{
-   299		struct ath11k_base *ab = ab_pci->ab;
-   300		int ret;
-   301	
-   302		ret = ath11k_pci_check_mhi_state_bit(ab_pci, mhi_state);
-   303		if (ret)
-   304			goto out;
-   305	
-   306		ath11k_dbg(ab, ATH11K_DBG_PCI, "setting mhi state: %s(%d)\n",
-   307			   ath11k_mhi_state_to_str(mhi_state), mhi_state);
-   308	
-   309		switch (mhi_state) {
-   310		case ATH11K_MHI_INIT:
-   311			ret = mhi_prepare_for_power_up(ab_pci->mhi_ctrl);
-   312			break;
-   313		case ATH11K_MHI_DEINIT:
-   314			mhi_unprepare_after_power_down(ab_pci->mhi_ctrl);
-   315			ret = 0;
-   316			break;
-   317		case ATH11K_MHI_POWER_ON:
-   318			ret = mhi_async_power_up(ab_pci->mhi_ctrl);
-   319			break;
-   320		case ATH11K_MHI_POWER_OFF:
-   321			mhi_power_down(ab_pci->mhi_ctrl, true);
-   322			ret = 0;
-   323			break;
-   324		case ATH11K_MHI_FORCE_POWER_OFF:
-   325			mhi_power_down(ab_pci->mhi_ctrl, false);
-   326			ret = 0;
-   327			break;
-   328		case ATH11K_MHI_SUSPEND:
-   329			break;
-   330		case ATH11K_MHI_RESUME:
-   331			break;
-   332		case ATH11K_MHI_TRIGGER_RDDM:
-   333			ret = mhi_force_rddm_mode(ab_pci->mhi_ctrl);
-   334			break;
-   335		case ATH11K_MHI_RDDM_DONE:
-   336			break;
-   337		default:
-   338			ath11k_err(ab, "unhandled MHI state (%d)\n", mhi_state);
-   339			ret = -EINVAL;
-   340		}
-   341	
-   342		if (ret)
-   343			goto out;
-   344	
-   345		ath11k_pci_set_mhi_state_bit(ab_pci, mhi_state);
-   346	
-   347		return 0;
-   348	
-   349	out:
-   350		ath11k_err(ab, "failed to set mhi state: %s(%d)\n",
-   351			   ath11k_mhi_state_to_str(mhi_state), mhi_state);
-   352		return ret;
-   353	}
-   354	
+   274	
+ > 275	void ath11k_pci_get_msi_address(struct ath11k_base *ab, u32 *msi_addr_lo,
+   276					u32 *msi_addr_hi)
+   277	{
+   278		struct pci_dev *pci_dev = to_pci_dev(ab->dev);
+   279	
+   280		pci_read_config_dword(pci_dev, pci_dev->msi_cap + PCI_MSI_ADDRESS_LO,
+   281				      msi_addr_lo);
+   282	
+   283		pci_read_config_dword(pci_dev, pci_dev->msi_cap + PCI_MSI_ADDRESS_HI,
+   284				      msi_addr_hi);
+   285	}
+   286	
+   287	int ath11k_pci_get_user_msi_assignment(struct ath11k_pci *ab_pci, char *user_name,
+   288					       int *num_vectors, u32 *user_base_data,
+   289					       u32 *base_vector)
+   290	{
+   291		struct ath11k_base *ab = ab_pci->ab;
+   292		struct ath11k_msi_config *msi_config;
+   293		int idx;
+   294	
+   295		msi_config = ab_pci->msi_config;
+   296		if (!msi_config) {
+   297			ath11k_err(ab, "MSI is not supported.\n");
+   298			return -EINVAL;
+   299		}
+   300	
+   301		for (idx = 0; idx < msi_config->total_users; idx++) {
+   302			if (strcmp(user_name, msi_config->users[idx].name) == 0) {
+   303				*num_vectors = msi_config->users[idx].num_vectors;
+   304				*user_base_data = msi_config->users[idx].base_vector
+   305					+ ab_pci->msi_ep_base_data;
+   306				*base_vector = msi_config->users[idx].base_vector;
+   307	
+   308				ath11k_dbg(ab, ATH11K_DBG_PCI, "Assign MSI to user: %s, num_vectors: %d, user_base_data: %u, base_vector: %u\n",
+   309					   user_name, *num_vectors, *user_base_data,
+   310					   *base_vector);
+   311	
+   312				return 0;
+   313			}
+   314		}
+   315	
+   316		ath11k_err(ab, "Failed to find MSI assignment for %s!\n", user_name);
+   317	
+   318		return -EINVAL;
+   319	}
+   320	
+ > 321	int ath11k_get_user_msi_assignment(struct ath11k_base *ab, char *user_name,
+   322					   int *num_vectors, u32 *user_base_data,
+   323					   u32 *base_vector)
+   324	{
+   325		struct ath11k_pci *ab_pci = ath11k_pci_priv(ab);
+   326	
+   327		return ath11k_pci_get_user_msi_assignment(ab_pci, user_name, num_vectors, user_base_data,
+   328							 base_vector);
+   329	}
+   330	
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---0F1p//8PRICkK4MW
+--ibTvN161/egqYuK8
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICKjdzl4AAy5jb25maWcAlDxdc9u2su/9FZr0pX1oj7/ipveOH0AQlHBEEgwBylJeOK6j
+H4sICMj/zl4AAy5jb25maWcAlDxdc9u2su/9FZr0pX1oj7/ipveOH0AQlHBEEgwBylJeOK6j
 pJ7Gdq4sn3Nyfv3dBb8WIEilnc7E3F0sgcV+A9SPP/y4YK/H58e748P93Zcv3xaf90/7w91x
 /3Hx6eHL/n8XsVrkyixELM2vQJw+PL3+5x8Pd9dXi7e//vbr2S+H+6vFen942n9Z8OenTw+f
 X2H0w/PTDz/+AP//CMDHr8Do8D8LHPTLFxz/y+f7+8VPS85/Xvz+6+WvZ0DIVZ7IZc15LXUN
@@ -1245,7 +1243,7 @@ CWy8UIqMJSHTRvLsYDVw4TQ53n+vc9pBbnkxyxjDDcbVcEc9Vlj3vtTKufWWPZxs0m+v3Dc3
 9JxgdS8dCI6PQHImIZ2GmDGYkp82mRm+I1PQ5mPZ2SeyXRmoffN1rctMogDYESGPLprOM7rW
 pIBr1RRsAV9T5UGNx0Qo0v8/VAtKyzCTAwA=
 
---0F1p//8PRICkK4MW
+--ibTvN161/egqYuK8
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1256,4 +1254,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---0F1p//8PRICkK4MW--
+--ibTvN161/egqYuK8--
