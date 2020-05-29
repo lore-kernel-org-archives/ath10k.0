@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeO63-00076F-1z
- for ath10k@lists.infradead.org; Thu, 28 May 2020 19:21:46 +0000
-Received: by mail-pg1-x544.google.com with SMTP id j21so48627pgb.7
- for <ath10k@lists.infradead.org>; Thu, 28 May 2020 12:21:40 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] ath10k: Remove ath10k_qmi_register_service_notifier()
- declaration
-Date: Thu, 28 May 2020 12:21:09 -0700
-Message-Id: <20200528122105.1.I31937dce728b441fd72cbe23447bc4710fd56ddb@changeid>
+From: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Subject: RE: [EXT] [PATCH 01/11] mmc: sdio: Fix macro name for Marvell device
+ with ID 0x9134
+Date: Fri, 29 May 2020 03:28:59 +0000
+Message-ID: <VI1PR04MB43668C84D84103D8F8B3EA428F8F0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+References: <20200522144412.19712-1-pali@kernel.org>
+ <20200522144412.19712-2-pali@kernel.org>
+In-Reply-To: <20200522144412.19712-2-pali@kernel.org>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +21,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, netdev@vger.kernel.org, Niklas Cassel <niklas.cassel@linaro.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Cc: "brcm80211-dev-list.pdl@broadcom.com" <brcm80211-dev-list.pdl@broadcom.com>, "libertas-dev@lists.infradead.org" <libertas-dev@lists.infradead.org>, Xinming Hu <huxinming820@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Amitkumar Karwar <amitkarwar@gmail.com>, =?utf-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>, Kalle Valo <kvalo@codeaurora.org>, "b43-dev@lists.infradead.org" <b43-dev@lists.infradead.org>
 
-The ath10k/qmi.h header file contains a declaration for the function
-ath10k_qmi_register_service_notifier().  This function doesn't exist.
-Remove the declaration.
+HI Pali,
 
-This patch is a no-op and was just found by code inspection.
-
-Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/net/wireless/ath/ath10k/qmi.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.h b/drivers/net/wireless/ath/ath10k/qmi.h
-index dc257375f161..e03581182919 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.h
-+++ b/drivers/net/wireless/ath/ath10k/qmi.h
-@@ -112,7 +112,6 @@ int ath10k_qmi_wlan_enable(struct ath10k *ar,
- 			   enum wlfw_driver_mode_enum_v01 mode,
- 			   const char *version);
- int ath10k_qmi_wlan_disable(struct ath10k *ar);
--int ath10k_qmi_register_service_notifier(struct notifier_block *nb);
- int ath10k_qmi_init(struct ath10k *ar, u32 msa_size);
- int ath10k_qmi_deinit(struct ath10k *ar);
- int ath10k_qmi_set_fw_log_mode(struct ath10k *ar, u8 fw_log_mode);
--- 
-2.27.0.rc0.183.gde8f92d652-goog
+> Kernel quirks for SDIO devices are
+> matched against device ID from SDIO Common CIS. Therefore device ID used
+> in quirk is correct, just has misleading name.
 
 
+OK, understood. Thanks for the change.
+Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
