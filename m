@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeh1U-00007X-6h
- for ath10k@lists.infradead.org; Fri, 29 May 2020 15:34:18 +0000
+ id 1jeh42-0003Lc-Fk
+ for ath10k@lists.infradead.org; Fri, 29 May 2020 15:36:56 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
- various chipsets
-References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
- <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
- <3608947.bSrYYtX6KI@bentobox> <3445075.COMLMNsY4U@bentobox>
-Date: Fri, 29 May 2020 18:34:07 +0300
-In-Reply-To: <3445075.COMLMNsY4U@bentobox> (Sven Eckelmann's message of "Mon, 
- 25 May 2020 18:04:49 +0200")
-Message-ID: <87k10usqkw.fsf@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Avoid override CE5 configuration for QCA99X0
+ chipsets
+References: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
+ <20200505073422.BFA51C433BA@smtp.codeaurora.org>
+ <63ec6f30-ee3b-c412-7c56-46d447b17c8e@dd-wrt.com>
+Date: Fri, 29 May 2020 18:36:48 +0300
+In-Reply-To: <63ec6f30-ee3b-c412-7c56-46d447b17c8e@dd-wrt.com> (Sebastian
+ Gottschall's message of "Tue, 26 May 2020 17:29:24 +0200")
+Message-ID: <87ftbisqgf.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,31 +26,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@narfation.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, John Crispin <john@phrozen.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, openwrt-devel@lists.openwrt.org, Ansuel Smith <ansuelsmth@gmail.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sven Eckelmann <sven@narfation.org> writes:
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-> On Monday, 25 May 2020 11:22:13 CEST Sven Eckelmann wrote:
-> [...]
->> And it still can with this OpenWrt version. But it doesn't seem to happen with 
->> the most recent OpenWrt reboot-13353-gb1604b744b. But there are nearly 4000 
->> commits inbetween. So no idea what changed (just a timing thing or an actual 
->> fix - no idea).
+> Am 05.05.2020 um 09:34 schrieb Kalle Valo:
 >
-> Seems like there is a fix which solves some lost interrupt problems for 
-> IPQ40xx. Without this change, I see the reported problem. And with the patch, 
-> it is gone. Or in commits:
+>> Maharaja Kennadyrajan <mkenna@codeaurora.org> wrote:
+>>
+>>> As the exisiting CE configurations are defined in global, there
+>>> are the chances of QCA99X0 family chipsets CE configurations
+>>> are getting changed by the ath10k_pci_override_ce_config()
+>>> function.
+>>>
+>>> The override will be hit and CE5 configurations will be changed,
+>>> when the user bring up the QCA99X0 chipsets along with QCA6174
+>>> or QCA9377 chipset. (Bring up QCA99X0 family chipsets after
+>>> QCA6174 or QCA9377).
+>>>
+>>> Hence, fixing this issue by moving the global CE configuration
+>>> to radio specific CE configuration.
+>>>
+>>> Tested hardware: QCA9888 & QCA6174
+>>> Tested firmware: 10.4-3.10-00047 & WLAN.RM.4.4.1.c3-00058
+>>>
+>>> Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
+>>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 >
-> * creates timeout problems: 46b949a067e5 ("ipq40xx: enlarge PCIe BAR size")
-> * works fine: 18e942b6c4e5 ("ipq40xx: fix pcie msi IRQ trigger level")
+>> Patch applied to ath-next branch of ath.git, thanks.
+>>
+>> 521fc37be3d8 ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
 >
-> If you look in the git logs [1], you can see that the working commit is a 
-> child of the broken one. So at least from my point of view, my initial report 
-> is no blocker anymore for Sebastian's patch (or Kalle's version of it).
+> this patch will crash on ipq4019 devices. i reverted it and it worked again
 
-Great. If the patch is good to take can someone rebase the latest
-version and resubmit, please?
+Yeah, that patch is buggy but this should fix it:
+
+commit 32221df6765b3773ff1af37c77f8531ebc48f246
+Author:     Arnd Bergmann <arnd@arndb.de>
+AuthorDate: Sat May 9 14:06:33 2020 +0200
+Commit:     Kalle Valo <kvalo@codeaurora.org>
+CommitDate: Tue May 12 10:33:13 2020 +0300
+
+    ath10k: fix ath10k_pci struct layout
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
