@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-Subject: RE: [EXT] [PATCH 01/11] mmc: sdio: Fix macro name for Marvell device
- with ID 0x9134
-Date: Fri, 29 May 2020 03:28:59 +0000
-Message-ID: <VI1PR04MB43668C84D84103D8F8B3EA428F8F0@VI1PR04MB4366.eurprd04.prod.outlook.com>
-References: <20200522144412.19712-1-pali@kernel.org>
- <20200522144412.19712-2-pali@kernel.org>
-In-Reply-To: <20200522144412.19712-2-pali@kernel.org>
-Content-Language: en-US
+Received: from m43-7.mailgun.net ([69.72.43.7])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jeh1U-00007X-6h
+ for ath10k@lists.infradead.org; Fri, 29 May 2020 15:34:18 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v13] ath10k: add LED and GPIO controlling support for
+ various chipsets
+References: <1523027875-5143-1-git-send-email-kvalo@codeaurora.org>
+ <b23e65cf-4be7-72db-7955-32eae196953e@dd-wrt.com>
+ <3608947.bSrYYtX6KI@bentobox> <3445075.COMLMNsY4U@bentobox>
+Date: Fri, 29 May 2020 18:34:07 +0300
+In-Reply-To: <3445075.COMLMNsY4U@bentobox> (Sven Eckelmann's message of "Mon, 
+ 25 May 2020 18:04:49 +0200")
+Message-ID: <87k10usqkw.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,18 +26,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Cc: "brcm80211-dev-list.pdl@broadcom.com" <brcm80211-dev-list.pdl@broadcom.com>, "libertas-dev@lists.infradead.org" <libertas-dev@lists.infradead.org>, Xinming Hu <huxinming820@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Amitkumar Karwar <amitkarwar@gmail.com>, =?utf-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>, Kalle Valo <kvalo@codeaurora.org>, "b43-dev@lists.infradead.org" <b43-dev@lists.infradead.org>
+To: Sven Eckelmann <sven@narfation.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, John Crispin <john@phrozen.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, openwrt-devel@lists.openwrt.org, Ansuel Smith <ansuelsmth@gmail.com>
 
-HI Pali,
+Sven Eckelmann <sven@narfation.org> writes:
 
-> Kernel quirks for SDIO devices are
-> matched against device ID from SDIO Common CIS. Therefore device ID used
-> in quirk is correct, just has misleading name.
+> On Monday, 25 May 2020 11:22:13 CEST Sven Eckelmann wrote:
+> [...]
+>> And it still can with this OpenWrt version. But it doesn't seem to happen with 
+>> the most recent OpenWrt reboot-13353-gb1604b744b. But there are nearly 4000 
+>> commits inbetween. So no idea what changed (just a timing thing or an actual 
+>> fix - no idea).
+>
+> Seems like there is a fix which solves some lost interrupt problems for 
+> IPQ40xx. Without this change, I see the reported problem. And with the patch, 
+> it is gone. Or in commits:
+>
+> * creates timeout problems: 46b949a067e5 ("ipq40xx: enlarge PCIe BAR size")
+> * works fine: 18e942b6c4e5 ("ipq40xx: fix pcie msi IRQ trigger level")
+>
+> If you look in the git logs [1], you can see that the working commit is a 
+> child of the broken one. So at least from my point of view, my initial report 
+> is no blocker anymore for Sebastian's patch (or Kalle's version of it).
 
+Great. If the patch is good to take can someone rebase the latest
+version and resubmit, please?
 
-OK, understood. Thanks for the change.
-Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
