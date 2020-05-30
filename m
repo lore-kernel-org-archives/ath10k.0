@@ -1,19 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jemqA-0000z0-Dq
- for ath10k@lists.infradead.org; Fri, 29 May 2020 21:46:59 +0000
-Received: from [192.168.254.4] (unknown [50.34.197.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail3.candelatech.com (Postfix) with ESMTPSA id 4481313C2B0
- for <ath10k@lists.infradead.org>; Fri, 29 May 2020 14:46:57 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: Potential issue with htt flags
-Message-ID: <d8b142d3-74e9-4695-5eb9-b5307867045b@candelatech.com>
-Date: Fri, 29 May 2020 14:46:56 -0700
+Received: from mail.as201155.net ([185.84.6.188])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jevsq-00041s-Jc
+ for ath10k@lists.infradead.org; Sat, 30 May 2020 07:26:22 +0000
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]:57275
+ helo=webmail.newmedia-net.de)
+ by mail.as201155.net with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
+ (Exim 4.82_1-5b7a7c0-XX) (envelope-from <s.gottschall@dd-wrt.com>)
+ id 1jevsj-0001Tq-36
+ for ath10k@lists.infradead.org; Sat, 30 May 2020 09:26:14 +0200
+Subject: Re: [PATCH] ath10k: Avoid override CE5 configuration for QCA99X0
+ chipsets
+References: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
+ <20200505073422.BFA51C433BA@smtp.codeaurora.org>
+ <63ec6f30-ee3b-c412-7c56-46d447b17c8e@dd-wrt.com>
+ <87ftbisqgf.fsf@codeaurora.org>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <19bf39e9-cee5-109f-d68f-5cbf576cc871@dd-wrt.com>
+Date: Sat, 30 May 2020 09:26:12 +0200
 MIME-Version: 1.0
+In-Reply-To: <87ftbisqgf.fsf@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +32,25 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-While porting forward my patches to 5.7 , I noticed this:
-
-#define HTT_TX_CMPL_FLAG_DATA_RSSI		BIT(0)
-#define HTT_TX_CMPL_FLAG_PPID_PRESENT		BIT(1)
-#define HTT_TX_CMPL_FLAG_PA_PRESENT		BIT(2)
-#define HTT_TX_CMPL_FLAG_PPDU_DURATION_PRESENT	BIT(3)
-
-#define HTT_TX_DATA_RSSI_ENABLE_WCN3990 BIT(3)
-#define HTT_TX_DATA_APPEND_RETRIES BIT(0)
-#define HTT_TX_DATA_APPEND_TIMESTAMP BIT(1)
-
-
-Both of these are used against 'flags2', but as you see, some bits are defined to different
-things.  In particular usage in,:
-
-static int ath10k_get_htt_tx_data_rssi_pad(struct htt_resp *resp)
-
-looks suspicious to me.
-
-Maybe that ath10k_get_htt_tx_data_rssi_pad should be labeled specific for one particular
-chipset?
-
-I didn't look further, but maybe whoever added this could take a look?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+> Yeah, that patch is buggy but this should fix it:
+>
+> commit 32221df6765b3773ff1af37c77f8531ebc48f246
+> Author:     Arnd Bergmann <arnd@arndb.de>
+> AuthorDate: Sat May 9 14:06:33 2020 +0200
+> Commit:     Kalle Valo <kvalo@codeaurora.org>
+> CommitDate: Tue May 12 10:33:13 2020 +0300
+>
+>      ath10k: fix ath10k_pci struct layout
+this patch seem to be totally unrelated to the crash issue, the patch 
+was already part of the test tree while testing.
+the crash is caused by ar_pci->pipe_config beeing NULL on ipq4019 chipsets.
+originally pipe_config is allocated by ath10k_pci_probe. but 
+ath10k_pci_probe is never used for ahb chipsets
+so the code must fix ath10k_ahb_probe to allocate these fields, or a 
+more generic solution must be found
+>
 
 _______________________________________________
 ath10k mailing list
