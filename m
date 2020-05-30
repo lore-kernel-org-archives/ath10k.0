@@ -1,25 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.as201155.net ([185.84.6.188])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jevsq-00041s-Jc
- for ath10k@lists.infradead.org; Sat, 30 May 2020 07:26:22 +0000
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]:57275
- helo=webmail.newmedia-net.de)
- by mail.as201155.net with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
- (Exim 4.82_1-5b7a7c0-XX) (envelope-from <s.gottschall@dd-wrt.com>)
- id 1jevsj-0001Tq-36
- for ath10k@lists.infradead.org; Sat, 30 May 2020 09:26:14 +0200
-Subject: Re: [PATCH] ath10k: Avoid override CE5 configuration for QCA99X0
- chipsets
-References: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
- <20200505073422.BFA51C433BA@smtp.codeaurora.org>
- <63ec6f30-ee3b-c412-7c56-46d447b17c8e@dd-wrt.com>
- <87ftbisqgf.fsf@codeaurora.org>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <19bf39e9-cee5-109f-d68f-5cbf576cc871@dd-wrt.com>
-Date: Sat, 30 May 2020 09:26:12 +0200
+ id 1jf2K8-0006Q8-Pb
+ for ath10k@lists.infradead.org; Sat, 30 May 2020 14:18:58 +0000
 MIME-Version: 1.0
-In-Reply-To: <87ftbisqgf.fsf@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Remove ath10k_qmi_register_service_notifier()
+ declaration
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200528122105.1.I31937dce728b441fd72cbe23447bc4710fd56ddb@changeid>
+References: <20200528122105.1.I31937dce728b441fd72cbe23447bc4710fd56ddb@changeid>
+Message-Id: <20200530141844.4FA7DC43391@smtp.codeaurora.org>
+Date: Sat, 30 May 2020 14:18:44 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +19,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Govind Singh <govinds@codeaurora.org>, linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, netdev@vger.kernel.org, Niklas Cassel <niklas.cassel@linaro.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
 
-> Yeah, that patch is buggy but this should fix it:
->
-> commit 32221df6765b3773ff1af37c77f8531ebc48f246
-> Author:     Arnd Bergmann <arnd@arndb.de>
-> AuthorDate: Sat May 9 14:06:33 2020 +0200
-> Commit:     Kalle Valo <kvalo@codeaurora.org>
-> CommitDate: Tue May 12 10:33:13 2020 +0300
->
->      ath10k: fix ath10k_pci struct layout
-this patch seem to be totally unrelated to the crash issue, the patch 
-was already part of the test tree while testing.
-the crash is caused by ar_pci->pipe_config beeing NULL on ipq4019 chipsets.
-originally pipe_config is allocated by ath10k_pci_probe. but 
-ath10k_pci_probe is never used for ahb chipsets
-so the code must fix ath10k_ahb_probe to allocate these fields, or a 
-more generic solution must be found
->
+Douglas Anderson <dianders@chromium.org> wrote:
+
+> The ath10k/qmi.h header file contains a declaration for the function
+> ath10k_qmi_register_service_notifier().  This function doesn't exist.
+> Remove the declaration.
+> 
+> This patch is a no-op and was just found by code inspection.
+> 
+> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+23cc6bb5a2e6 ath10k: Remove ath10k_qmi_register_service_notifier() declaration
+
+-- 
+https://patchwork.kernel.org/patch/11576663/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
