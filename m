@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfcqn-0007Ip-MY
- for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:19:07 +0000
-Date: Mon, 01 Jun 2020 13:18:31 +0800
+ id 1jfcqn-0007Ij-V3
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:19:08 +0000
+Date: Mon, 01 Jun 2020 13:18:13 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 4ab49aa54f5a8b51e1aefbe364da3a66487fcbfb
-Message-ID: <5ed48fa7.Db+jvOTjn+4ymKPS%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 2615e7a28775555493507511137eac79dcc1f4d7
+Message-ID: <5ed48f95.3l9bMjdOI7ecH+zm%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,24 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 4ab49aa54f5a8b51e1aefbe364da3a66487fcbfb  ath11k: clear DCM max constellation tx value
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 2615e7a28775555493507511137eac79dcc1f4d7  Merge branch 'pending' into master-pending
+
+i386-tinyconfig vmlinux size:
+
+======================================================================
+ TOTAL  TEXT                                                          
+======================================================================
+     0     0  d1cd2ab6ac6e Merge branch 'ath-next'                    
+    +4     0  8656af701da1 Add localversion-wireless-testing-ath      
+  +178  +178  2615e7a28775 Merge branch 'pending' into master-pending 
+  +182  +178  4ec710af297c..2615e7a28775 (ALL COMMITS)                
+======================================================================
 
 elapsed time: 3707m
 
-configs tested: 141
-configs skipped: 4
+configs tested: 120
+configs skipped: 5
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -52,13 +63,13 @@ powerpc                      pasemi_defconfig
 sparc                       sparc64_defconfig
 mips                  decstation_64_defconfig
 mips                          ath79_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                       aspeed_g5_defconfig
+mips                        maltaup_defconfig
+arc                             nps_defconfig
 sh                          rsk7269_defconfig
+mips                             allyesconfig
 ia64                        generic_defconfig
-arm                             pxa_defconfig
-c6x                        evmc6678_defconfig
-m68k                        m5407c3_defconfig
-sh                               j2_defconfig
-arm                        multi_v7_defconfig
 arm                         ebsa110_defconfig
 arm                            lart_defconfig
 sh                         microdev_defconfig
@@ -79,6 +90,11 @@ s390                       zfcpdump_defconfig
 s390                             allyesconfig
 arm                       cns3420vb_defconfig
 arm                        spear3xx_defconfig
+sh                          landisk_defconfig
+mips                      fuloong2e_defconfig
+s390                              allnoconfig
+xtensa                           alldefconfig
+arm                          lpd270_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -111,7 +127,6 @@ arc                              allyesconfig
 sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
-mips                             allyesconfig
 mips                              allnoconfig
 mips                             allmodconfig
 parisc                            allnoconfig
@@ -122,41 +137,16 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a004-20200531
-i386                 randconfig-a003-20200531
-i386                 randconfig-a006-20200531
-i386                 randconfig-a002-20200531
-i386                 randconfig-a005-20200531
-i386                 randconfig-a001-20200531
 i386                 randconfig-a004-20200529
 i386                 randconfig-a001-20200529
 i386                 randconfig-a002-20200529
 i386                 randconfig-a006-20200529
 i386                 randconfig-a003-20200529
 i386                 randconfig-a005-20200529
-x86_64               randconfig-a011-20200531
-x86_64               randconfig-a016-20200531
-x86_64               randconfig-a012-20200531
-x86_64               randconfig-a014-20200531
-x86_64               randconfig-a013-20200531
-x86_64               randconfig-a015-20200531
-i386                 randconfig-a013-20200531
-i386                 randconfig-a012-20200531
-i386                 randconfig-a015-20200531
-i386                 randconfig-a011-20200531
-i386                 randconfig-a016-20200531
-i386                 randconfig-a014-20200531
-x86_64               randconfig-a002-20200529
-x86_64               randconfig-a006-20200529
-x86_64               randconfig-a005-20200529
-x86_64               randconfig-a001-20200529
-x86_64               randconfig-a004-20200529
-x86_64               randconfig-a003-20200529
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
-s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
 sparc                            allyesconfig
@@ -167,8 +157,8 @@ sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                               allmodconfig
 um                                allnoconfig
-um                               allyesconfig
 um                                  defconfig
+um                               allyesconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
