@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfcnB-00064r-Mf
- for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:15:23 +0000
-Date: Mon, 01 Jun 2020 13:14:14 +0800
+ id 1jfcoM-0006lX-CI
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:16:35 +0000
+Date: Mon, 01 Jun 2020 13:15:52 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS d65d83eb94663b62061155dd36f19fe82fd4828a
-Message-ID: <5ed48ea6.2UDPZPTvkoKDQvKZ%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 16b321b3ffda5a753bd549330f1dbb7868f682ac
+Message-ID: <5ed48f08.yK6kpOZUs1vF44pl%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,34 +24,25 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: d65d83eb94663b62061155dd36f19fe82fd4828a  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 16b321b3ffda5a753bd549330f1dbb7868f682ac  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 2083m
+elapsed time: 2085m
 
-configs tested: 86
-configs skipped: 2
+configs tested: 98
+configs skipped: 1
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
 arm                                 defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                               allnoconfig
-powerpc                      mgcoge_defconfig
-nds32                             allnoconfig
-s390                              allnoconfig
-arm                         vf610m4_defconfig
-arm                          pxa168_defconfig
-c6x                         dsk6455_defconfig
-riscv                    nommu_virt_defconfig
-sh                        apsh4ad0a_defconfig
-sh                           se7343_defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -71,6 +63,7 @@ c6x                              allyesconfig
 c6x                               allnoconfig
 openrisc                         allyesconfig
 nds32                               defconfig
+nds32                             allnoconfig
 csky                             allyesconfig
 csky                                defconfig
 alpha                               defconfig
@@ -91,16 +84,36 @@ parisc                            allnoconfig
 parisc                              defconfig
 parisc                           allyesconfig
 parisc                           allmodconfig
-powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a004-20200531
+i386                 randconfig-a003-20200531
+i386                 randconfig-a006-20200531
+i386                 randconfig-a002-20200531
+i386                 randconfig-a005-20200531
+i386                 randconfig-a001-20200531
+x86_64               randconfig-a011-20200531
+x86_64               randconfig-a016-20200531
+x86_64               randconfig-a012-20200531
+x86_64               randconfig-a014-20200531
+x86_64               randconfig-a013-20200531
+x86_64               randconfig-a015-20200531
+i386                 randconfig-a013-20200531
+i386                 randconfig-a012-20200531
+i386                 randconfig-a015-20200531
+i386                 randconfig-a011-20200531
+i386                 randconfig-a016-20200531
+i386                 randconfig-a014-20200531
+x86_64               randconfig-a002-20200529
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
 s390                             allyesconfig
+s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
 sparc                            allyesconfig
@@ -109,10 +122,10 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
 um                               allmodconfig
+um                                allnoconfig
 um                               allyesconfig
+um                                  defconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
