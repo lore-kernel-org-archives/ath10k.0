@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfcoM-0006lX-CI
- for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:16:35 +0000
-Date: Mon, 01 Jun 2020 13:15:52 +0800
+ id 1jfcoS-0006ot-B1
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:16:41 +0000
+Date: Mon, 01 Jun 2020 13:15:14 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 16b321b3ffda5a753bd549330f1dbb7868f682ac
-Message-ID: <5ed48f08.yK6kpOZUs1vF44pl%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 37b76986ebd72aae2c613b94b805e67eaea558b6
+Message-ID: <5ed48ee2.iBl+gZGkPMdeqG+9%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 16b321b3ffda5a753bd549330f1dbb7868f682ac  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 37b76986ebd72aae2c613b94b805e67eaea558b6  ath11k: clear DCM max constellation tx value
 
-elapsed time: 2085m
+elapsed time: 2086m
 
-configs tested: 98
+configs tested: 91
 configs skipped: 1
 
 The following configs have been built successfully.
@@ -89,12 +89,6 @@ powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
 powerpc                             defconfig
-i386                 randconfig-a004-20200531
-i386                 randconfig-a003-20200531
-i386                 randconfig-a006-20200531
-i386                 randconfig-a002-20200531
-i386                 randconfig-a005-20200531
-i386                 randconfig-a001-20200531
 x86_64               randconfig-a011-20200531
 x86_64               randconfig-a016-20200531
 x86_64               randconfig-a012-20200531
@@ -107,7 +101,6 @@ i386                 randconfig-a015-20200531
 i386                 randconfig-a011-20200531
 i386                 randconfig-a016-20200531
 i386                 randconfig-a014-20200531
-x86_64               randconfig-a002-20200529
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
