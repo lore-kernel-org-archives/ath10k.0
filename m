@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfcoS-0006ot-B1
- for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:16:41 +0000
-Date: Mon, 01 Jun 2020 13:15:14 +0800
+ id 1jfcqn-0007Ip-MY
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:19:07 +0000
+Date: Mon, 01 Jun 2020 13:18:31 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 37b76986ebd72aae2c613b94b805e67eaea558b6
-Message-ID: <5ed48ee2.iBl+gZGkPMdeqG+9%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 4ab49aa54f5a8b51e1aefbe364da3a66487fcbfb
+Message-ID: <5ed48fa7.Db+jvOTjn+4ymKPS%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 37b76986ebd72aae2c613b94b805e67eaea558b6  ath11k: clear DCM max constellation tx value
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 4ab49aa54f5a8b51e1aefbe364da3a66487fcbfb  ath11k: clear DCM max constellation tx value
 
-elapsed time: 2086m
+elapsed time: 3707m
 
-configs tested: 91
-configs skipped: 1
+configs tested: 141
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -43,13 +43,48 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
+arm                          pxa3xx_defconfig
+arm                         palmz72_defconfig
+sh                            shmin_defconfig
+ia64                            zx1_defconfig
+riscv                          rv32_defconfig
+powerpc                      pasemi_defconfig
+sparc                       sparc64_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+sh                          rsk7269_defconfig
+ia64                        generic_defconfig
+arm                             pxa_defconfig
+c6x                        evmc6678_defconfig
+m68k                        m5407c3_defconfig
+sh                               j2_defconfig
+arm                        multi_v7_defconfig
+arm                         ebsa110_defconfig
+arm                            lart_defconfig
+sh                         microdev_defconfig
+x86_64                              defconfig
+arm                          badge4_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                    adder875_defconfig
+mips                            ar7_defconfig
+ia64                              allnoconfig
+arm                        keystone_defconfig
+arm                           viper_defconfig
+powerpc                             defconfig
+arc                           tb10x_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                mpc7448_hpc2_defconfig
+xtensa                              defconfig
+s390                       zfcpdump_defconfig
+s390                             allyesconfig
+arm                       cns3420vb_defconfig
+arm                        spear3xx_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
 ia64                             allmodconfig
 ia64                                defconfig
-ia64                              allnoconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                              allnoconfig
@@ -71,7 +106,6 @@ alpha                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 h8300                            allmodconfig
-xtensa                              defconfig
 arc                                 defconfig
 arc                              allyesconfig
 sh                               allmodconfig
@@ -88,7 +122,18 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
+i386                 randconfig-a004-20200531
+i386                 randconfig-a003-20200531
+i386                 randconfig-a006-20200531
+i386                 randconfig-a002-20200531
+i386                 randconfig-a005-20200531
+i386                 randconfig-a001-20200531
+i386                 randconfig-a004-20200529
+i386                 randconfig-a001-20200529
+i386                 randconfig-a002-20200529
+i386                 randconfig-a006-20200529
+i386                 randconfig-a003-20200529
+i386                 randconfig-a005-20200529
 x86_64               randconfig-a011-20200531
 x86_64               randconfig-a016-20200531
 x86_64               randconfig-a012-20200531
@@ -101,11 +146,16 @@ i386                 randconfig-a015-20200531
 i386                 randconfig-a011-20200531
 i386                 randconfig-a016-20200531
 i386                 randconfig-a014-20200531
+x86_64               randconfig-a002-20200529
+x86_64               randconfig-a006-20200529
+x86_64               randconfig-a005-20200529
+x86_64               randconfig-a001-20200529
+x86_64               randconfig-a004-20200529
+x86_64               randconfig-a003-20200529
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
-s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
