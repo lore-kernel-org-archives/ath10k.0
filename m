@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qv1-f52.google.com ([209.85.219.52])
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfbze-0000om-IR
- for ath10k@lists.infradead.org; Mon, 01 Jun 2020 04:24:11 +0000
-Received: by mail-qv1-f52.google.com with SMTP id g7so3869583qvx.11
- for <ath10k@lists.infradead.org>; Sun, 31 May 2020 21:24:08 -0700 (PDT)
+ id 1jfcnB-00064r-Mf
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2020 05:15:23 +0000
+Date: Mon, 01 Jun 2020 13:14:14 +0800
+From: kbuild test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS d65d83eb94663b62061155dd36f19fe82fd4828a
+Message-ID: <5ed48ea6.2UDPZPTvkoKDQvKZ%lkp@intel.com>
 MIME-Version: 1.0
-References: <75f092e3-b667-341a-e810-61edd8f089ac@candelatech.com>
-In-Reply-To: <75f092e3-b667-341a-e810-61edd8f089ac@candelatech.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Sun, 31 May 2020 21:23:55 -0700
-Message-ID: <CAJ-Vmo=-w=mvKB8=8g+jn3sE6vwJLOfq0SarMpeJq8OdgMApuQ@mail.gmail.com>
-Subject: Re: Un-recoverable ath10k 4019 NIC lockup.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +20,110 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Wed, 27 May 2020 at 11:30, Ben Greear <greearb@candelatech.com> wrote:
->
-> While doing a torture test on OpenWrt using ath10k-ct drivers/firmware, the 5Ghz AP fell off the
-> air.  After debugging, I found this in the console logs.
->
-> I am guessing that the only way to recover in this case would be to reboot, but in case someone else
-> has ideas on additional ways to kick the 4019 chip to have it start responding again, please let me know.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: d65d83eb94663b62061155dd36f19fe82fd4828a  Add localversion-wireless-testing-ath
 
+elapsed time: 2083m
 
-Hm, i haven't looked at the Dakota datasheet in a while; does the
-platform support or ath10k actually power off/on the core fully, or
-just the RTC/MAC/PHY path?
+configs tested: 86
+configs skipped: 2
 
-Chances are there's a reset controller somewhere that lets you put the
-bus and tensilia cores in reset..
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+powerpc                      mgcoge_defconfig
+nds32                             allnoconfig
+s390                              allnoconfig
+arm                         vf610m4_defconfig
+arm                          pxa168_defconfig
+c6x                         dsk6455_defconfig
+riscv                    nommu_virt_defconfig
+sh                        apsh4ad0a_defconfig
+sh                           se7343_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-
--adrian
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
