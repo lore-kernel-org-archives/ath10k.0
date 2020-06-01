@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfmqY-0004FQ-3P
+ id 1jfmqY-0004FP-2e
  for ath10k@lists.infradead.org; Mon, 01 Jun 2020 15:59:31 +0000
-Date: Mon, 01 Jun 2020 23:58:56 +0800
+Date: Mon, 01 Jun 2020 23:58:54 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 43b5ac634bb35b39065cf1edf47b216722cc8227
-Message-ID: <5ed525c0.fjGtIO6JLvNaexHM%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 6fe1ed81020e3ee70da97bc7932c45df281cd6a7
+Message-ID: <5ed525be.zAVM5LZIDd1bSUDg%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,21 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 43b5ac634bb35b39065cf1edf47b216722cc8227  ath11k: Add support for 6g scan hint
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 6fe1ed81020e3ee70da97bc7932c45df281cd6a7  Merge branch 'pending' into master-pending
+
+i386-tinyconfig vmlinux size:
+
++-------+------------------------------------+---------------------------------------------------------+
+| DELTA |               SYMBOL               |                         COMMIT                          |
++-------+------------------------------------+---------------------------------------------------------+
+|  +220 | TOTAL                              | b2a5ac927378..6fe1ed81020e (ALL COMMITS)                |
+|  +216 | TOTAL                              | 6fe1ed81020e Merge branch 'pending' into master-pending |
+|  +217 | TEXT                               | 6fe1ed81020e Merge branch 'pending' into master-pending |
+|  +136 | arch/x86/events/zhaoxin/built-in.* | 7f69bf1ddcc3 Merge branch 'ath-next'                    |
+|  +109 | copy_xstate_to_kernel()            | 6fe1ed81020e Merge branch 'pending' into master-pending |
+|   +96 | copy_part()                        | 6fe1ed81020e Merge branch 'pending' into master-pending |
++-------+------------------------------------+---------------------------------------------------------+
 
 elapsed time: 481m
 
