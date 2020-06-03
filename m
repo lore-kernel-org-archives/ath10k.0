@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgQIp-0001kr-JQ
- for ath10k@lists.infradead.org; Wed, 03 Jun 2020 10:07:23 +0000
-MIME-Version: 1.0
-Date: Wed, 03 Jun 2020 15:37:10 +0530
-From: govinds@codeaurora.org
-Subject: Re: [PATCH] wireless: ath10k: Return early in
- ath10k_qmi_event_server_exit() to avoid hard crash on reboot
-In-Reply-To: <20200603002715.GA5349@Mani-XPS-13-9360>
-References: <20200602052533.15048-1-john.stultz@linaro.org>
- <CA+ASDXMbNvbBdsC11dzUPX7RkMFYhJev2npPsRD_SnGQB+1hag@mail.gmail.com>
- <CALAqxLVA1ZQjwEdbX5KGbSyLnMBAzm9PoN_Ta_Z7rBf4w3GOvQ@mail.gmail.com>
- <CA+ASDXPddgOvEX___unx7N2YsQctsZN+1vkwPbi8Ab_zfwFfzw@mail.gmail.com>
- <20200603002715.GA5349@Mani-XPS-13-9360>
-Message-ID: <4e0642b9882c41f4c10963b265bf6d9f@codeaurora.org>
+ id 1jgTXC-0000LD-Da
+ for ath10k@lists.infradead.org; Wed, 03 Jun 2020 13:34:23 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH] ath10k: Move msa region map/unmap to init/deinit path
+Date: Wed,  3 Jun 2020 19:03:51 +0530
+Message-Id: <1591191231-31917-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +15,92 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Amit Pundir <amit.pundir@linaro.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, lkml <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Sibi Sankar <sibis@codeaurora.org>, Niklas Cassel <niklas.cassel@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Hi Mani,
+With kernel qrtr switch from user space qrtr, fw crash is seen
+during reboot. During reboot modem rproc shutdown causes wlan qmi
+service exit and msa region gets unmapped. Since pdev is not suspended
+hw still accessing the msa region and this results in  fw crash as
+msa region is unmapped.
 
-On 2020-06-03 05:57, Manivannan Sadhasivam wrote:
-> On Tue, Jun 02, 2020 at 01:04:26PM -0700, Brian Norris wrote:
->> On Tue, Jun 2, 2020 at 12:40 PM John Stultz <john.stultz@linaro.org> 
->> wrote:
->> > On Tue, Jun 2, 2020 at 12:16 PM Brian Norris <briannorris@chromium.org> wrote:
->> > > On Mon, Jun 1, 2020 at 10:25 PM John Stultz <john.stultz@linaro.org> wrote:
->> > > >
->> > > > Ever since 5.7-rc1, if we call
->> > > > ath10k_qmi_remove_msa_permission(), the db845c hard crashes on
->> > > > reboot, resulting in the device getting stuck in the usb crash
->> > > > debug mode and not coming back up wihthout a hard power off.
->> > > >
->> > > > This hack avoids the issue by returning early in
->> > > > ath10k_qmi_event_server_exit().
->> > > >
->> > > > A better solution is very much desired!
->> > >
->> > > Any chance you can bisect what caused this? There are a lot of
->> > > non-ath10k pieces involved in this stuff.
->> >
->> > Amit had spent some work on chasing it down to the in kernel qrtr-ns
->> > work, and reported it here:
->> >   https://lists.infradead.org/pipermail/ath10k/2020-April/014970.html
->> >
->> > But that discussion seemingly stalled out, so I came up with this hack
->> > to workaround it for us.
->> 
->> If I'm reading it right, then that means we should revert this stuff
->> from v5.7-rc1:
->> 
->> 0c2204a4ad71 net: qrtr: Migrate nameservice to kernel from userspace
->> 
->> At least, until people can resolve the tail end of that thread. New
->> features (ath11k, etc.) are not a reason to break existing features
->> (ath10k/wcn3990).
-> 
-> I don't agree with this. If you read through the replies to the bug 
-> report,
-> it is clear that NS migration uncovered a corner case or even a bug. So 
-> we
-> should try to fix that indeed.
-> 
-> Govind: Did you get chance to work on fixing this issue?
-> 
+Decouple msa mapping from wlan qmi server arrive/exit to init/deinit
+path.
 
-I have done basic testing by moving msa map/unmap from qmi service 
-callbacks to init/de-init path.
-I will send patch for review.
-Reason for del_server needs to investigated from rproc side.
+Testing is pending with "0c2204a4ad71 net: qrtr: Migrate nameservice
+to kernel from userspace", only regression sanity performed with user space
+qrtr on QCS404/SC7180.
 
-> Thanks,
-> Mani
-> 
->> 
->> Brian
+Fixes: 0c2204a4ad71 net: qrtr: Migrate nameservice to kernel from userspace
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/qmi.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-Thanks,
-Govind
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 5ae829b46c3d..8b1291e28ba2 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -796,22 +796,16 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+ 	 */
+ 	msleep(20);
+ 
+-	ret = ath10k_qmi_setup_msa_permissions(qmi);
+-	if (ret)
+-		return;
+-
+ 	ret = ath10k_qmi_msa_ready_send_sync_msg(qmi);
+ 	if (ret)
+-		goto err_setup_msa;
++		return;
+ 
+ 	ret = ath10k_qmi_cap_send_sync_msg(qmi);
+ 	if (ret)
+-		goto err_setup_msa;
++		return;
+ 
+ 	return;
+ 
+-err_setup_msa:
+-	ath10k_qmi_remove_msa_permission(qmi);
+ }
+ 
+ static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
+@@ -854,7 +848,6 @@ static void ath10k_qmi_event_server_exit(struct ath10k_qmi *qmi)
+ 	struct ath10k *ar = qmi->ar;
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+-	ath10k_qmi_remove_msa_permission(qmi);
+ 	ath10k_core_free_board_files(ar);
+ 	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
+ 		ath10k_snoc_fw_crashed_dump(ar);
+@@ -1046,6 +1039,10 @@ int ath10k_qmi_init(struct ath10k *ar, u32 msa_size)
+ 	if (ret)
+ 		goto err_qmi_lookup;
+ 
++	ret = ath10k_qmi_setup_msa_permissions(qmi);
++	if (ret)
++		goto err_qmi_lookup;
++
+ 	return 0;
+ 
+ err_qmi_lookup:
+@@ -1064,6 +1061,7 @@ int ath10k_qmi_deinit(struct ath10k *ar)
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 	struct ath10k_qmi *qmi = ar_snoc->qmi;
+ 
++	ath10k_qmi_remove_msa_permission(qmi);
+ 	qmi_handle_release(&qmi->qmi_hdl);
+ 	cancel_work_sync(&qmi->event_work);
+ 	destroy_workqueue(qmi->event_wq);
+-- 
+2.22.0
+
 
 _______________________________________________
 ath10k mailing list
