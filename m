@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jhLjT-0001IH-7Z
- for ath10k@lists.infradead.org; Fri, 05 Jun 2020 23:26:40 +0000
-Date: Sat, 06 Jun 2020 07:26:11 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
- 6f57a4d38b4e79c1d97a251040e7cb354da9778d
-Message-ID: <5edad493.jIuBHymrecgGgWt2%lkp@intel.com>
+ id 1jhbQf-0004x2-TP
+ for ath10k@lists.infradead.org; Sat, 06 Jun 2020 16:12:20 +0000
 MIME-Version: 1.0
+Date: Sat, 06 Jun 2020 21:42:02 +0530
+From: Govind Singh <govinds@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Move msa region map/unmap to init/deinit path
+In-Reply-To: <1591191231-31917-1-git-send-email-govinds@codeaurora.org>
+References: <1591191231-31917-1-git-send-email-govinds@codeaurora.org>
+Message-ID: <3e092e58b3c2055933141ae3b698a5c0@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,154 +18,99 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, manivannan.sadhasivam@linaro.org, sibis@codeaurora.org
+Cc: linux-wireless@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
-branch HEAD: 6f57a4d38b4e79c1d97a251040e7cb354da9778d  HACK: ath11k: get board file from QCA6390 directory
+Pls ignore this WAR as it does not fix all cases.
 
-elapsed time: 485m
+On 2020-06-03 19:03, Govind Singh wrote:
+> With kernel qrtr switch from user space qrtr, fw crash is seen
+> during reboot. During reboot modem rproc shutdown causes wlan qmi
+> service exit and msa region gets unmapped. Since pdev is not suspended
+> hw still accessing the msa region and this results in  fw crash as
+> msa region is unmapped.
+> 
+> Decouple msa mapping from wlan qmi server arrive/exit to init/deinit
+> path.
+> 
+> Testing is pending with "0c2204a4ad71 net: qrtr: Migrate nameservice
+> to kernel from userspace", only regression sanity performed with user 
+> space
+> qrtr on QCS404/SC7180.
+> 
+> Fixes: 0c2204a4ad71 net: qrtr: Migrate nameservice to kernel from 
+> userspace
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/qmi.c | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c
+> b/drivers/net/wireless/ath/ath10k/qmi.c
+> index 5ae829b46c3d..8b1291e28ba2 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -796,22 +796,16 @@ static void
+> ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+>  	 */
+>  	msleep(20);
+> 
+> -	ret = ath10k_qmi_setup_msa_permissions(qmi);
+> -	if (ret)
+> -		return;
+> -
+>  	ret = ath10k_qmi_msa_ready_send_sync_msg(qmi);
 
-configs tested: 126
-configs skipped: 6
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-powerpc                          allyesconfig
-m68k                       m5475evb_defconfig
-nios2                         10m50_defconfig
-mips                      malta_kvm_defconfig
-m68k                        mvme147_defconfig
-arm                          imote2_defconfig
-powerpc                     mpc5200_defconfig
-arc                        vdk_hs38_defconfig
-sh                           se7724_defconfig
-powerpc                     mpc512x_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                           ip28_defconfig
-sparc64                             defconfig
-arm                         s5pv210_defconfig
-mips                           ip32_defconfig
-sh                          polaris_defconfig
-mips                        jmr3927_defconfig
-arm                           spitz_defconfig
-m68k                         apollo_defconfig
-csky                                defconfig
-arm                        magician_defconfig
-arm                        spear3xx_defconfig
-mips                         tb0287_defconfig
-ia64                        generic_defconfig
-arc                             nps_defconfig
-s390                             alldefconfig
-h8300                               defconfig
-i386                              allnoconfig
-sh                          urquell_defconfig
-arc                     haps_hs_smp_defconfig
-arm                          ep93xx_defconfig
-c6x                               allnoconfig
-sh                           cayman_defconfig
-powerpc                      mgcoge_defconfig
-mips                      bmips_stb_defconfig
-arm                              alldefconfig
-powerpc                      pasemi_defconfig
-arc                    vdk_hs38_smp_defconfig
-s390                              allnoconfig
-arm                         lpc32xx_defconfig
-riscv                             allnoconfig
-mips                          ath79_defconfig
-mips                     loongson1c_defconfig
-arm                          pxa910_defconfig
-arc                     nsimosci_hs_defconfig
-alpha                            alldefconfig
-arm                        mvebu_v5_defconfig
-mips                        qi_lb60_defconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-xtensa                              defconfig
-h8300                            allmodconfig
-h8300                            allyesconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20200605
-x86_64               randconfig-a001-20200605
-x86_64               randconfig-a006-20200605
-x86_64               randconfig-a003-20200605
-x86_64               randconfig-a004-20200605
-x86_64               randconfig-a005-20200605
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  	if (ret)
+> -		goto err_setup_msa;
+> +		return;
+> 
+>  	ret = ath10k_qmi_cap_send_sync_msg(qmi);
+>  	if (ret)
+> -		goto err_setup_msa;
+> +		return;
+> 
+>  	return;
+> 
+> -err_setup_msa:
+> -	ath10k_qmi_remove_msa_permission(qmi);
+>  }
+> 
+>  static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
+> @@ -854,7 +848,6 @@ static void ath10k_qmi_event_server_exit(struct
+> ath10k_qmi *qmi)
+>  	struct ath10k *ar = qmi->ar;
+>  	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> 
+> -	ath10k_qmi_remove_msa_permission(qmi);
+>  	ath10k_core_free_board_files(ar);
+>  	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
+>  		ath10k_snoc_fw_crashed_dump(ar);
+> @@ -1046,6 +1039,10 @@ int ath10k_qmi_init(struct ath10k *ar, u32 
+> msa_size)
+>  	if (ret)
+>  		goto err_qmi_lookup;
+> 
+> +	ret = ath10k_qmi_setup_msa_permissions(qmi);
+> +	if (ret)
+> +		goto err_qmi_lookup;
+> +
+>  	return 0;
+> 
+>  err_qmi_lookup:
+> @@ -1064,6 +1061,7 @@ int ath10k_qmi_deinit(struct ath10k *ar)
+>  	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>  	struct ath10k_qmi *qmi = ar_snoc->qmi;
+> 
+> +	ath10k_qmi_remove_msa_permission(qmi);
+>  	qmi_handle_release(&qmi->qmi_hdl);
+>  	cancel_work_sync(&qmi->event_work);
+>  	destroy_workqueue(qmi->event_wq);
 
 _______________________________________________
 ath10k mailing list
