@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiR7h-0003Ih-0X
- for ath10k@lists.infradead.org; Mon, 08 Jun 2020 23:24:12 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 068/106] ath10k: Remove msdu from idr when
- management pkt send fails
-Date: Mon,  8 Jun 2020 19:22:00 -0400
-Message-Id: <20200608232238.3368589-68-sashal@kernel.org>
-In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
-References: <20200608232238.3368589-1-sashal@kernel.org>
+ id 1jiRvH-0005OI-Fz
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2020 00:15:25 +0000
+Date: Tue, 09 Jun 2020 01:33:46 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 132d04765d2a4aca6d30f6f8b7648bf3e2d91449
+Message-ID: <5ede767a.J2Fr6phdE0o/ebei%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,126 +21,190 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-From: Rakesh Pillai <pillair@codeaurora.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 132d04765d2a4aca6d30f6f8b7648bf3e2d91449  HACK: ath11k: workaround for pktlog handling on QCA6390
 
-[ Upstream commit c730c477176ad4af86d9aae4d360a7ad840b073a ]
+elapsed time: 483m
 
-Currently when the sending of any management pkt
-via wmi command fails, the packet is being unmapped
-freed in the error handling. But the idr entry added,
-which is used to track these packet is not getting removed.
+configs tested: 166
+configs skipped: 15
 
-Hence, during unload, in wmi cleanup, all the entries
-in IDR are removed and the corresponding buffer is
-attempted to be freed. This can cause a situation where
-one packet is attempted to be freed twice.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Fix this error by rmeoving the msdu from the idr
-list when the sending of a management packet over
-wmi fails.
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+m68k                         amcore_defconfig
+mips                       rbtx49xx_defconfig
+um                                  defconfig
+sh                     magicpanelr2_defconfig
+powerpc                      ep88xc_defconfig
+sh                ecovec24-romimage_defconfig
+sparc64                          allmodconfig
+powerpc                  mpc885_ads_defconfig
+mips                           xway_defconfig
+arm                       cns3420vb_defconfig
+m68k                          sun3x_defconfig
+sparc                       sparc32_defconfig
+riscv                          rv32_defconfig
+arm                           h3600_defconfig
+powerpc                    mvme5100_defconfig
+openrisc                 simple_smp_defconfig
+arm                           efm32_defconfig
+arm                        vexpress_defconfig
+xtensa                          iss_defconfig
+mips                  decstation_64_defconfig
+sh                           cayman_defconfig
+sh                           se7705_defconfig
+mips                     decstation_defconfig
+csky                             allyesconfig
+arm                              zx_defconfig
+mips                        nlm_xlr_defconfig
+sh                             shx3_defconfig
+c6x                        evmc6678_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                        mvebu_v5_defconfig
+arm                          iop32x_defconfig
+arm                            mps2_defconfig
+openrisc                         allyesconfig
+openrisc                            defconfig
+sh                           se7619_defconfig
+mips                  cavium_octeon_defconfig
+nds32                               defconfig
+sparc64                             defconfig
+sh                           se7343_defconfig
+mips                         tb0226_defconfig
+h8300                    h8300h-sim_defconfig
+arc                          axs101_defconfig
+sh                           se7724_defconfig
+arm                       aspeed_g5_defconfig
+arm                            dove_defconfig
+xtensa                           alldefconfig
+arm                         shannon_defconfig
+um                                allnoconfig
+arm                         socfpga_defconfig
+arc                                 defconfig
+sh                   sh7724_generic_defconfig
+powerpc                    amigaone_defconfig
+arc                        nsim_700_defconfig
+arm                          exynos_defconfig
+arm                            qcom_defconfig
+sh                             espt_defconfig
+powerpc                     mpc512x_defconfig
+arm                     davinci_all_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                            xcep_defconfig
+arm                         mv78xx0_defconfig
+c6x                        evmc6457_defconfig
+m68k                        mvme16x_defconfig
+s390                             allmodconfig
+ia64                      gensparse_defconfig
+arm                            zeus_defconfig
+sh                           se7206_defconfig
+sh                          rsk7203_defconfig
+sh                          polaris_defconfig
+arm                       omap2plus_defconfig
+i386                             alldefconfig
+parisc                generic-32bit_defconfig
+arm                          ep93xx_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200607
+i386                 randconfig-a006-20200607
+i386                 randconfig-a002-20200607
+i386                 randconfig-a005-20200607
+i386                 randconfig-a004-20200607
+i386                 randconfig-a003-20200607
+i386                 randconfig-a014-20200608
+i386                 randconfig-a011-20200608
+i386                 randconfig-a015-20200608
+i386                 randconfig-a016-20200608
+i386                 randconfig-a012-20200608
+i386                 randconfig-a013-20200608
+i386                 randconfig-a014-20200607
+i386                 randconfig-a015-20200607
+i386                 randconfig-a011-20200607
+i386                 randconfig-a016-20200607
+i386                 randconfig-a012-20200607
+i386                 randconfig-a013-20200607
+x86_64               randconfig-a002-20200607
+x86_64               randconfig-a001-20200607
+x86_64               randconfig-a006-20200607
+x86_64               randconfig-a003-20200607
+x86_64               randconfig-a004-20200607
+x86_64               randconfig-a005-20200607
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1588667015-25490-1-git-send-email-pillair@codeaurora.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     |  3 +++
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 15 +++++++++++++++
- 3 files changed, 28 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a09d7a07e90a..81af403c19c2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3852,6 +3852,9 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 			if (ret) {
- 				ath10k_warn(ar, "failed to transmit management frame by ref via WMI: %d\n",
- 					    ret);
-+				/* remove this msdu from idr tracking */
-+				ath10k_wmi_cleanup_mgmt_tx_send(ar, skb);
-+
- 				dma_unmap_single(ar->dev, paddr, skb->len,
- 						 DMA_TO_DEVICE);
- 				ieee80211_free_txskb(ar->hw, skb);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 7fd63bbf8e24..b6cd33fa79f8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -139,6 +139,7 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_mgmt_tx_send)(struct ath10k *ar,
- 					    struct sk_buff *skb,
- 					    dma_addr_t paddr);
-+	int (*cleanup_mgmt_tx_send)(struct ath10k *ar, struct sk_buff *msdu);
- 	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u64 module_enable,
- 					  u32 log_level);
- 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
-@@ -431,6 +432,15 @@ ath10k_wmi_get_txbf_conf_scheme(struct ath10k *ar)
- 	return ar->wmi.ops->get_txbf_conf_scheme(ar);
- }
- 
-+static inline int
-+ath10k_wmi_cleanup_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu)
-+{
-+	if (!ar->wmi.ops->cleanup_mgmt_tx_send)
-+		return -EOPNOTSUPP;
-+
-+	return ar->wmi.ops->cleanup_mgmt_tx_send(ar, msdu);
-+}
-+
- static inline int
- ath10k_wmi_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 			dma_addr_t paddr)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 248decb494c2..7f435fa29f75 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2638,6 +2638,18 @@ ath10k_wmi_tlv_op_gen_request_stats(struct ath10k *ar, u32 stats_mask)
- 	return skb;
- }
- 
-+static int
-+ath10k_wmi_tlv_op_cleanup_mgmt_tx_send(struct ath10k *ar,
-+				       struct sk_buff *msdu)
-+{
-+	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
-+	struct ath10k_wmi *wmi = &ar->wmi;
-+
-+	idr_remove(&wmi->mgmt_pending_tx, cb->msdu_id);
-+
-+	return 0;
-+}
-+
- static int
- ath10k_wmi_mgmt_tx_alloc_msdu_id(struct ath10k *ar, struct sk_buff *skb,
- 				 dma_addr_t paddr)
-@@ -2710,6 +2722,8 @@ ath10k_wmi_tlv_op_gen_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 	if (desc_id < 0)
- 		goto err_free_skb;
- 
-+	cb->msdu_id = desc_id;
-+
- 	ptr = (void *)skb->data;
- 	tlv = ptr;
- 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_MGMT_TX_CMD);
-@@ -3949,6 +3963,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_force_fw_hang = ath10k_wmi_tlv_op_gen_force_fw_hang,
- 	/* .gen_mgmt_tx = not implemented; HTT is used */
- 	.gen_mgmt_tx_send = ath10k_wmi_tlv_op_gen_mgmt_tx_send,
-+	.cleanup_mgmt_tx_send = ath10k_wmi_tlv_op_cleanup_mgmt_tx_send,
- 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
- 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
