@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiQu9-000269-VO
- for ath10k@lists.infradead.org; Mon, 08 Jun 2020 23:10:14 +0000
+ id 1jiR2a-0005IO-6a
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2020 23:18:54 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 184/274] ath10k: Skip handling del_server during
- driver exit
-Date: Mon,  8 Jun 2020 19:04:37 -0400
-Message-Id: <20200608230607.3361041-184-sashal@kernel.org>
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 002/175] ath10k: Fix the race condition in
+ firmware dump work queue
+Date: Mon,  8 Jun 2020 19:15:55 -0400
+Message-Id: <20200608231848.3366970-2-sashal@kernel.org>
+In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
+References: <20200608231848.3366970-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,96 +24,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, Govindaraj Saminathan <gsamin@codeaurora.org>, Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Rakesh Pillai <pillair@codeaurora.org>
+From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 
-[ Upstream commit 7c6d67b136ceb0aebc7a3153b300e925ed915daf ]
+[ Upstream commit 3d1c60460fb2823a19ead9e6ec8f184dd7271aa7 ]
 
-The qmi infrastructure sends the client a del_server
-event when the client releases its qmi handle. This
-is not the msg indicating the actual qmi server exiting.
-In such cases the del_server msg should not be processed,
-since the wifi firmware does not reset its qmi state.
+There is a race condition, when the user writes 'hw-restart' and
+'hard' in the simulate_fw_crash debugfs file without any delay.
+In the above scenario, the firmware dump work queue(scheduled by
+'hard') should be handled gracefully, while the target is in the
+'hw-restart'.
 
-Hence skip the processing of del_server event when the
-driver is unloading.
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00044
 
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Co-developed-by: Govindaraj Saminathan <gsamin@codeaurora.org>
+Signed-off-by: Govindaraj Saminathan <gsamin@codeaurora.org>
+Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1588663061-12138-1-git-send-email-pillair@codeaurora.org
+Link: https://lore.kernel.org/r/1585213077-28439-1-git-send-email-mkenna@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/qmi.c | 13 ++++++++++++-
- drivers/net/wireless/ath/ath10k/qmi.h |  6 ++++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 85dce43c5439..7abdef8d6b9b 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -961,7 +961,16 @@ static void ath10k_qmi_del_server(struct qmi_handle *qmi_hdl,
- 		container_of(qmi_hdl, struct ath10k_qmi, qmi_hdl);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 0a727502d14c..fd49d3419e79 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2074,6 +2074,7 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 	ath10k_pci_irq_sync(ar);
+ 	napi_synchronize(&ar->napi);
+ 	napi_disable(&ar->napi);
++	cancel_work_sync(&ar_pci->dump_work);
  
- 	qmi->fw_ready = false;
--	ath10k_qmi_driver_event_post(qmi, ATH10K_QMI_EVENT_SERVER_EXIT, NULL);
-+
-+	/*
-+	 * The del_server event is to be processed only if coming from
-+	 * the qmi server. The qmi infrastructure sends del_server, when
-+	 * any client releases the qmi handle. In this case do not process
-+	 * this del_server event.
-+	 */
-+	if (qmi->state == ATH10K_QMI_STATE_INIT_DONE)
-+		ath10k_qmi_driver_event_post(qmi, ATH10K_QMI_EVENT_SERVER_EXIT,
-+					     NULL);
- }
- 
- static struct qmi_ops ath10k_qmi_ops = {
-@@ -1091,6 +1100,7 @@ int ath10k_qmi_init(struct ath10k *ar, u32 msa_size)
- 	if (ret)
- 		goto err_qmi_lookup;
- 
-+	qmi->state = ATH10K_QMI_STATE_INIT_DONE;
- 	return 0;
- 
- err_qmi_lookup:
-@@ -1109,6 +1119,7 @@ int ath10k_qmi_deinit(struct ath10k *ar)
- 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 	struct ath10k_qmi *qmi = ar_snoc->qmi;
- 
-+	qmi->state = ATH10K_QMI_STATE_DEINIT;
- 	qmi_handle_release(&qmi->qmi_hdl);
- 	cancel_work_sync(&qmi->event_work);
- 	destroy_workqueue(qmi->event_wq);
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.h b/drivers/net/wireless/ath/ath10k/qmi.h
-index dc257375f161..b59720524224 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.h
-+++ b/drivers/net/wireless/ath/ath10k/qmi.h
-@@ -83,6 +83,11 @@ struct ath10k_qmi_driver_event {
- 	void *data;
- };
- 
-+enum ath10k_qmi_state {
-+	ATH10K_QMI_STATE_INIT_DONE,
-+	ATH10K_QMI_STATE_DEINIT,
-+};
-+
- struct ath10k_qmi {
- 	struct ath10k *ar;
- 	struct qmi_handle qmi_hdl;
-@@ -105,6 +110,7 @@ struct ath10k_qmi {
- 	char fw_build_timestamp[MAX_TIMESTAMP_LEN + 1];
- 	struct ath10k_qmi_cal_data cal_data[MAX_NUM_CAL_V01];
- 	bool msa_fixed_perm;
-+	enum ath10k_qmi_state state;
- };
- 
- int ath10k_qmi_wlan_enable(struct ath10k *ar,
+ 	/* Most likely the device has HTT Rx ring configured. The only way to
+ 	 * prevent the device from accessing (and possible corrupting) host
 -- 
 2.25.1
 
