@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiFhe-00014H-Cs
- for ath10k@lists.infradead.org; Mon, 08 Jun 2020 11:12:34 +0000
+ id 1jiFml-0004EY-41
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2020 11:17:50 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Avoid override CE5 configuration for QCA99X0
- chipsets
-References: <1587649759-14381-1-git-send-email-mkenna@codeaurora.org>
- <20200505073422.BFA51C433BA@smtp.codeaurora.org>
- <63ec6f30-ee3b-c412-7c56-46d447b17c8e@dd-wrt.com>
- <87ftbisqgf.fsf@codeaurora.org>
- <19bf39e9-cee5-109f-d68f-5cbf576cc871@dd-wrt.com>
-Date: Mon, 08 Jun 2020 14:12:17 +0300
-In-Reply-To: <19bf39e9-cee5-109f-d68f-5cbf576cc871@dd-wrt.com> (Sebastian
- Gottschall's message of "Sat, 30 May 2020 09:26:12 +0200")
-Message-ID: <87blltke0e.fsf@codeaurora.org>
+Subject: Re: [PATCH] wireless: ath10k: Return early in
+ ath10k_qmi_event_server_exit() to avoid hard crash on reboot
+References: <20200602052533.15048-1-john.stultz@linaro.org>
+Date: Mon, 08 Jun 2020 14:17:31 +0300
+In-Reply-To: <20200602052533.15048-1-john.stultz@linaro.org> (John Stultz's
+ message of "Tue, 2 Jun 2020 05:25:33 +0000")
+Message-ID: <877dwhkdro.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,31 +24,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Maharaja Kennadyrajan <mkenna@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: John Stultz <john.stultz@linaro.org>
+Cc: Amit Pundir <amit.pundir@linaro.org>, Govind Singh <govinds@codeaurora.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, lkml <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Niklas Cassel <niklas.cassel@linaro.org>
 
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+John Stultz <john.stultz@linaro.org> writes:
 
->> Yeah, that patch is buggy but this should fix it:
->>
->> commit 32221df6765b3773ff1af37c77f8531ebc48f246
->> Author:     Arnd Bergmann <arnd@arndb.de>
->> AuthorDate: Sat May 9 14:06:33 2020 +0200
->> Commit:     Kalle Valo <kvalo@codeaurora.org>
->> CommitDate: Tue May 12 10:33:13 2020 +0300
->>
->>      ath10k: fix ath10k_pci struct layout
-> this patch seem to be totally unrelated to the crash issue, the patch
-> was already part of the test tree while testing.
-> the crash is caused by ar_pci->pipe_config beeing NULL on ipq4019 chipsets.
-> originally pipe_config is allocated by ath10k_pci_probe. but
-> ath10k_pci_probe is never used for ahb chipsets
-> so the code must fix ath10k_ahb_probe to allocate these fields, or a
-> more generic solution must be found
+> Ever since 5.7-rc1, if we call
+> ath10k_qmi_remove_msa_permission(), the db845c hard crashes on
+> reboot, resulting in the device getting stuck in the usb crash
+> debug mode and not coming back up wihthout a hard power off.
+>
+> This hack avoids the issue by returning early in
+> ath10k_qmi_event_server_exit().
+>
+> A better solution is very much desired!
+>
+> Feedback and suggestions welcome!
+>
+> Cc: Rakesh Pillai <pillair@qti.qualcomm.com>
+> Cc: Govind Singh <govinds@codeaurora.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Niklas Cassel <niklas.cassel@linaro.org>
+> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Cc: Amit Pundir <amit.pundir@linaro.org>
+> Cc: Brian Norris <briannorris@chromium.org>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: ath10k@lists.infradead.org
+> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-Maharaja, please investigate. It seems your patch caused a regression:
-
-521fc37be3d8 ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
+Just so you know: as you didn't CC linux-wireless it's not on patchwork
+and hence not on my radar. But hopefully we find a better solution to
+fix this.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
