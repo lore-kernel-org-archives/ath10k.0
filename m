@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mail27.static.mailgun.info ([104.130.122.27])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiXfn-0006Mt-Ep
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 06:23:49 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Acquire tx_lock in tx error paths
+ id 1jict4-0003dU-9s
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2020 11:57:55 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200604105901.1.I5b8b0c7ee0d3e51a73248975a9da61401b8f3900@changeid>
-References: <20200604105901.1.I5b8b0c7ee0d3e51a73248975a9da61401b8f3900@changeid>
-Message-Id: <20200609062336.3D4BAC4339C@smtp.codeaurora.org>
-Date: Tue,  9 Jun 2020 06:23:36 +0000 (UTC)
+Subject: Re: [PATCH] ath10k: enable advertising support for channels 32,
+ 68 and 98
+References: <20200327093147.189390-1-robert.marko@sartura.hr>
+Date: Tue, 09 Jun 2020 14:57:39 +0300
+In-Reply-To: <20200327093147.189390-1-robert.marko@sartura.hr> (Robert Marko's
+ message of "Fri, 27 Mar 2020 10:31:47 +0100")
+Message-ID: <87y2owmoy4.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +24,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Evan Green <evgreen@chromium.org>
-Cc: Govind Singh <govinds@qti.qualcomm.com>, kuabhs@google.com.org, sujitka@chromium.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>, ath10k@lists.infradead.org
 
-Evan Green <evgreen@chromium.org> wrote:
+Robert Marko <robert.marko@sartura.hr> writes:
 
-> ath10k_htt_tx_free_msdu_id() has a lockdep assertion that htt->tx_lock
-> is held. Acquire the lock in a couple of error paths when calling that
-> function to ensure this condition is met.
-> 
-> Fixes: 6421969f248fd ("ath10k: refactor tx pending management")
-> Fixes: e62ee5c381c59 ("ath10k: Add support for htt_data_tx_desc_64 descriptor")
-> Signed-off-by: Evan Green <evgreen@chromium.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Enable advertising support for 5G channels: 32, 68 and 96.
+> These channels are legal and available for use in ETSI countries.
+> So lets advertise these and they will be available in accordance with the regulatory domain used.
+>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
 
-Patch applied to ath-next branch of ath.git, thanks.
+What's the use case for this? I was told that the IEEE standard does not
+define these channels, that's why I'm asking for more information.
 
-a738e766e3ed ath10k: Acquire tx_lock in tx error paths
+On what hardware and firmware did you test this? It might be that not
+all hardware or firmware support this.
+
+There was a concern if this slows down scanning due to more channels
+being scanned, but I haven't analysed that yet. Did you measure that?
+
+Also please CC linux-wireless on ath10k patches. Otherwise patchwork
+won't see them and it won't be on my radar:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
 
 -- 
-https://patchwork.kernel.org/patch/11588229/
-
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
