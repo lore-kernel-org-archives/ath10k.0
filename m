@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jig8J-0001j2-4K
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:25:48 +0000
-Date: Tue, 09 Jun 2020 23:25:37 +0800
+ id 1jig8J-0001j8-SI
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:25:49 +0000
+Date: Tue, 09 Jun 2020 23:25:33 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- ffa84ded165069300d39410bd2a8695bd2589c97
-Message-ID: <5edfa9f1.tvbij7nj4U40yLbE%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ fd72b4c363df3fb6820371e38848143e213826a4
+Message-ID: <5edfa9ed.gOVifnj0DYDlNrLy%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,19 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: ffa84ded165069300d39410bd2a8695bd2589c97  ath11k: Add bdf-addr in hw_params
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: fd72b4c363df3fb6820371e38848143e213826a4  Merge branch 'pending' into master-pending
+
+i386-tinyconfig vmlinux size:
+
+============================================================================================================
+ TOTAL  TEXT  copy_xstate_to_kernel()  copy_part()                                                          
+============================================================================================================
+  +216  +217                     +109          +96  dde2209f0066 Merge branch 'ath-next'                    
+    +4     0                        0            0  1318a212e716 Add localversion-wireless-testing-ath      
+     0     0                        0            0  fd72b4c363df Merge branch 'pending' into master-pending 
+  +220  +217                     +109          +96  b2a5ac927378..fd72b4c363df (ALL COMMITS)                
+============================================================================================================
 
 elapsed time: 485m
 
