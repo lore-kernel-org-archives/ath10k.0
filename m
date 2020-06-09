@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from perceval.ideasonboard.com ([213.167.242.64])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jideE-000116-JX
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 12:46:36 +0000
-From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: [PATCH 05/17] drivers: net: Fix trivial spelling
-Date: Tue,  9 Jun 2020 13:45:58 +0100
-Message-Id: <20200609124610.3445662-6-kieran.bingham+renesas@ideasonboard.com>
-In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+ id 1jig3Q-0006gS-3A
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:20:45 +0000
+Date: Tue, 09 Jun 2020 23:20:20 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 31c013f3c568b96f16d58e52a50d98b85506685e
+Message-ID: <5edfa8b4.a+y2aLBpoi6CDSLK%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,77 +21,188 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Wenwen Wang <wenwen@cs.uga.edu>, Jiri Kosina <trivial@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, Michael Ellerman <mpe@ellerman.id.au>, Martin Habets <mhabets@solarflare.com>, "open list:NETWORKING DRIVERS WIRELESS" <linux-wireless@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, Ard Biesheuvel <ardb@kernel.org>, linux-renesas-soc@vger.kernel.org, Eric Dumazet <edumazet@google.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Alexey Dobriyan <adobriyan@gmail.com>, Colin Ian King <colin.king@canonical.com>, Dan Carpenter <dan.carpenter@oracle.com>, Jakub Kicinski <kuba@kernel.org>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, Shannon Nelson <snelson@pensando.io>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-The word 'descriptor' is misspelled throughout the tree.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 31c013f3c568b96f16d58e52a50d98b85506685e  Merge branch 'ath-next' into ath-qca
 
-Fix it up accordingly:
-    decriptors -> descriptors
+elapsed time: 480m
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+configs tested: 164
+configs skipped: 12
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+m68k                         amcore_defconfig
+mips                       rbtx49xx_defconfig
+um                                  defconfig
+sh                     magicpanelr2_defconfig
+powerpc                      ep88xc_defconfig
+sh                ecovec24-romimage_defconfig
+arm                           h3600_defconfig
+powerpc                    mvme5100_defconfig
+openrisc                 simple_smp_defconfig
+sparc                            allyesconfig
+sh                           se7705_defconfig
+mips                     decstation_defconfig
+arm                              zx_defconfig
+mips                        nlm_xlr_defconfig
+sh                             shx3_defconfig
+c6x                        evmc6678_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                        mvebu_v5_defconfig
+arm                          iop32x_defconfig
+arm                            mps2_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                          moxart_defconfig
+arc                         haps_hs_defconfig
+m68k                            mac_defconfig
+arm                        oxnas_v6_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                         tb0219_defconfig
+m68k                        mvme16x_defconfig
+mips                          malta_defconfig
+arc                          axs101_defconfig
+sh                           se7724_defconfig
+arm                       aspeed_g5_defconfig
+mips                           xway_defconfig
+arm                            dove_defconfig
+xtensa                           alldefconfig
+arm                         shannon_defconfig
+um                                allnoconfig
+arm                         socfpga_defconfig
+sh                   sh7724_generic_defconfig
+arm                            qcom_defconfig
+sh                             espt_defconfig
+powerpc                          allmodconfig
+powerpc                     mpc512x_defconfig
+arm                     davinci_all_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                            xcep_defconfig
+arm                         mv78xx0_defconfig
+c6x                        evmc6457_defconfig
+ia64                      gensparse_defconfig
+arm                       omap2plus_defconfig
+i386                             alldefconfig
+parisc                generic-32bit_defconfig
+arm                          ep93xx_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200607
+i386                 randconfig-a006-20200607
+i386                 randconfig-a002-20200607
+i386                 randconfig-a005-20200607
+i386                 randconfig-a004-20200607
+i386                 randconfig-a003-20200607
+i386                 randconfig-a001-20200609
+i386                 randconfig-a002-20200609
+i386                 randconfig-a006-20200609
+i386                 randconfig-a005-20200609
+i386                 randconfig-a003-20200609
+i386                 randconfig-a004-20200609
+x86_64               randconfig-a011-20200608
+x86_64               randconfig-a016-20200608
+x86_64               randconfig-a012-20200608
+x86_64               randconfig-a014-20200608
+x86_64               randconfig-a013-20200608
+x86_64               randconfig-a015-20200608
+i386                 randconfig-a014-20200607
+i386                 randconfig-a015-20200607
+i386                 randconfig-a011-20200607
+i386                 randconfig-a016-20200607
+i386                 randconfig-a012-20200607
+i386                 randconfig-a013-20200607
+i386                 randconfig-a014-20200608
+i386                 randconfig-a011-20200608
+i386                 randconfig-a015-20200608
+i386                 randconfig-a016-20200608
+i386                 randconfig-a012-20200608
+i386                 randconfig-a013-20200608
+x86_64               randconfig-a002-20200607
+x86_64               randconfig-a001-20200607
+x86_64               randconfig-a006-20200607
+x86_64               randconfig-a003-20200607
+x86_64               randconfig-a004-20200607
+x86_64               randconfig-a005-20200607
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
- drivers/net/wan/lmc/lmc_main.c        | 2 +-
- drivers/net/wireless/ath/ath10k/usb.c | 2 +-
- drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
- drivers/net/wireless/cisco/airo.c     | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wan/lmc/lmc_main.c b/drivers/net/wan/lmc/lmc_main.c
-index a20f467ca48a..842def21e089 100644
---- a/drivers/net/wan/lmc/lmc_main.c
-+++ b/drivers/net/wan/lmc/lmc_main.c
-@@ -2063,7 +2063,7 @@ static void lmc_driver_timeout(struct net_device *dev, unsigned int txqueue)
-     /*
-      * Chip seems to have locked up
-      * Reset it
--     * This whips out all our decriptor
-+     * This whips out all our descriptor
-      * table and starts from scartch
-      */
- 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index b7daf344d012..05a620ff6fe2 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -824,7 +824,7 @@ static int ath10k_usb_setup_pipe_resources(struct ath10k *ar,
- 
- 	ath10k_dbg(ar, ATH10K_DBG_USB, "usb setting up pipes using interface\n");
- 
--	/* walk decriptors and setup pipes */
-+	/* walk descriptors and setup pipes */
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		endpoint = &iface_desc->endpoint[i].desc;
- 
-diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wireless/ath/ath6kl/usb.c
-index 53b66e9434c9..5372e948e761 100644
---- a/drivers/net/wireless/ath/ath6kl/usb.c
-+++ b/drivers/net/wireless/ath/ath6kl/usb.c
-@@ -311,7 +311,7 @@ static int ath6kl_usb_setup_pipe_resources(struct ath6kl_usb *ar_usb)
- 
- 	ath6kl_dbg(ATH6KL_DBG_USB, "setting up USB Pipes using interface\n");
- 
--	/* walk decriptors and setup pipes */
-+	/* walk descriptors and setup pipes */
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		endpoint = &iface_desc->endpoint[i].desc;
- 
-diff --git a/drivers/net/wireless/cisco/airo.c b/drivers/net/wireless/cisco/airo.c
-index 827bb6d74815..e3ad77666ba8 100644
---- a/drivers/net/wireless/cisco/airo.c
-+++ b/drivers/net/wireless/cisco/airo.c
-@@ -2450,7 +2450,7 @@ static void mpi_unmap_card(struct pci_dev *pci)
- 
- /*************************************************************
-  *  This routine assumes that descriptors have been setup .
-- *  Run at insmod time or after reset  when the decriptors
-+ *  Run at insmod time or after reset when the descriptors
-  *  have been initialized . Returns 0 if all is well nz
-  *  otherwise . Does not allocate memory but sets up card
-  *  using previously allocated descriptors.
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
