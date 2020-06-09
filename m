@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jigNv-0004rp-Jp
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:41:57 +0000
-Date: Tue, 09 Jun 2020 23:41:44 +0800
+ id 1jigTl-0000l5-5Y
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:47:58 +0000
+Date: Tue, 09 Jun 2020 23:47:02 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 1318a212e716ce576233ab7a17722938b34497cd
-Message-ID: <5edfadb8.AE7o6Qq1/EfqJoJq%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 1141215c745b152da6cb632f3532f7384ced8410
+Message-ID: <5edfaef6.hY36ocYsSQrkz4Tp%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,23 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 1318a212e716ce576233ab7a17722938b34497cd  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 1141215c745b152da6cb632f3532f7384ced8410  ath: fix wiki website url
 
-i386-tinyconfig vmlinux size:
+elapsed time: 507m
 
-=======================================================================================================
- TOTAL  TEXT  copy_xstate_to_kernel()  copy_part()                                                     
-=======================================================================================================
-  +216  +217                     +109          +96  dde2209f0066 Merge branch 'ath-next'               
-    +4     0                        0            0  1318a212e716 Add localversion-wireless-testing-ath 
-  +220  +217                     +109          +96  b2a5ac927378..1318a212e716 (ALL COMMITS)           
-=======================================================================================================
-
-elapsed time: 501m
-
-configs tested: 173
-configs skipped: 13
+configs tested: 155
+configs skipped: 12
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -69,11 +60,6 @@ arm                           h3600_defconfig
 powerpc                    mvme5100_defconfig
 openrisc                 simple_smp_defconfig
 sparc                            allyesconfig
-arm                           efm32_defconfig
-arm                        vexpress_defconfig
-xtensa                          iss_defconfig
-mips                  decstation_64_defconfig
-sh                           cayman_defconfig
 sh                           se7705_defconfig
 mips                     decstation_defconfig
 arm                              zx_defconfig
@@ -88,7 +74,6 @@ sh                 kfr2r09-romimage_defconfig
 arm                          moxart_defconfig
 arc                         haps_hs_defconfig
 m68k                            mac_defconfig
-c6x                               allnoconfig
 arm                        oxnas_v6_defconfig
 arm                    vt8500_v6_v7_defconfig
 mips                         tb0219_defconfig
@@ -106,12 +91,6 @@ sh                   sh7724_generic_defconfig
 arc                            hsdk_defconfig
 m68k                        m5272c3_defconfig
 m68k                        stmark2_defconfig
-nios2                            alldefconfig
-nios2                         10m50_defconfig
-mips                 pnx8335_stb225_defconfig
-ia64                                defconfig
-mips                      malta_kvm_defconfig
-c6x                         dsk6455_defconfig
 arm                            qcom_defconfig
 sh                             espt_defconfig
 powerpc                          allmodconfig
@@ -122,26 +101,12 @@ arm                            xcep_defconfig
 arm                         mv78xx0_defconfig
 c6x                        evmc6457_defconfig
 ia64                      gensparse_defconfig
-h8300                       h8s-sim_defconfig
-mips                            ar7_defconfig
-powerpc                          g5_defconfig
-m68k                       bvme6000_defconfig
-arm                       omap2plus_defconfig
-i386                             alldefconfig
-s390                              allnoconfig
-parisc                generic-32bit_defconfig
-arm                          ep93xx_defconfig
-s390                                defconfig
-xtensa                         virt_defconfig
-powerpc                 mpc8272_ads_defconfig
-c6x                                 defconfig
-mips                         cobalt_defconfig
-mips                        nlm_xlp_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
 ia64                             allmodconfig
+ia64                                defconfig
 ia64                              allnoconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
@@ -153,6 +118,7 @@ nios2                               defconfig
 nios2                            allyesconfig
 openrisc                            defconfig
 c6x                              allyesconfig
+c6x                               allnoconfig
 openrisc                         allyesconfig
 nds32                               defconfig
 nds32                             allnoconfig
@@ -198,12 +164,19 @@ i386                 randconfig-a011-20200607
 i386                 randconfig-a016-20200607
 i386                 randconfig-a012-20200607
 i386                 randconfig-a013-20200607
+x86_64               randconfig-a002-20200607
+x86_64               randconfig-a001-20200607
+x86_64               randconfig-a006-20200607
+x86_64               randconfig-a004-20200607
+x86_64               randconfig-a005-20200607
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
 s390                             allyesconfig
+s390                              allnoconfig
 s390                             allmodconfig
+s390                                defconfig
 sparc                               defconfig
 sparc64                             defconfig
 sparc64                           allnoconfig
