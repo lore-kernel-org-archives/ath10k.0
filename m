@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jig48-0006od-4V
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:21:29 +0000
-Received: by mail-pg1-x542.google.com with SMTP id s10so10493563pgm.0
- for <ath10k@lists.infradead.org>; Tue, 09 Jun 2020 08:21:27 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] ath10k: Wait until copy complete is actually done before
- completing
-Date: Tue,  9 Jun 2020 08:20:58 -0700
-Message-Id: <20200609082015.1.Ife398994e5a0a6830e4d4a16306ef36e0144e7ba@changeid>
+ id 1jig8J-0001j2-4K
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:25:48 +0000
+Date: Tue, 09 Jun 2020 23:25:37 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ ffa84ded165069300d39410bd2a8695bd2589c97
+Message-ID: <5edfa9f1.tvbij7nj4U40yLbE%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,94 +21,166 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org
-Cc: saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, pillair@codeaurora.org, netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, kuabhs@google.com
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On wcn3990 we have "per_ce_irq = true".  That makes the
-ath10k_ce_interrupt_summary() function always return 0xfff. The
-ath10k_ce_per_engine_service_any() function will see this and think
-that _all_ copy engines have an interrupt.  Without checking, the
-ath10k_ce_per_engine_service() assumes that if it's called that the
-"copy complete" (cc) interrupt fired.  This combination seems bad.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: ffa84ded165069300d39410bd2a8695bd2589c97  ath11k: Add bdf-addr in hw_params
 
-Let's add a check to make sure that the "copy complete" interrupt
-actually fired in ath10k_ce_per_engine_service().
+elapsed time: 485m
 
-This might fix a hard-to-reproduce failure where it appears that the
-copy complete handlers run before the copy is really complete.
-Specifically a symptom was that we were seeing this on a Qualcomm
-sc7180 board:
-  arm-smmu 15000000.iommu: Unhandled context fault:
-  fsr=0x402, iova=0x7fdd45780, fsynr=0x30003, cbfrsynra=0xc1, cb=10
+configs tested: 142
+configs skipped: 6
 
-Even on platforms that don't have wcn3990 this still seems like it
-would be a sane thing to do.  Specifically the current IRQ handler
-comments indicate that there might be other misc interrupt sources
-firing that need to be cleared.  If one of those sources was the one
-that caused the IRQ handler to be called it would also be important to
-double-check that the interrupt we cared about actually fired.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+powerpc                  mpc885_ads_defconfig
+mips                           xway_defconfig
+arm                       cns3420vb_defconfig
+m68k                          sun3x_defconfig
+sparc                       sparc32_defconfig
+riscv                          rv32_defconfig
+arm                           h3600_defconfig
+sparc                            allyesconfig
+powerpc                    mvme5100_defconfig
+openrisc                 simple_smp_defconfig
+c6x                        evmc6678_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                        mvebu_v5_defconfig
+arm                          iop32x_defconfig
+arm                            mps2_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                          moxart_defconfig
+arc                         haps_hs_defconfig
+m68k                            mac_defconfig
+c6x                               allnoconfig
+arm                        oxnas_v6_defconfig
+arm                         shannon_defconfig
+um                                allnoconfig
+arm                         socfpga_defconfig
+sh                   sh7724_generic_defconfig
+nios2                            alldefconfig
+nios2                         10m50_defconfig
+mips                 pnx8335_stb225_defconfig
+ia64                                defconfig
+mips                      malta_kvm_defconfig
+c6x                         dsk6455_defconfig
+arm                            qcom_defconfig
+sh                             espt_defconfig
+powerpc                          allmodconfig
+powerpc                     mpc512x_defconfig
+arm                     davinci_all_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                            xcep_defconfig
+arm                         mv78xx0_defconfig
+sh                     magicpanelr2_defconfig
+c6x                        evmc6457_defconfig
+m68k                        mvme16x_defconfig
+ia64                      gensparse_defconfig
+h8300                       h8s-sim_defconfig
+mips                            ar7_defconfig
+powerpc                          g5_defconfig
+m68k                       bvme6000_defconfig
+arm                       omap2plus_defconfig
+i386                             alldefconfig
+s390                              allnoconfig
+parisc                generic-32bit_defconfig
+arm                          ep93xx_defconfig
+s390                                defconfig
+xtensa                         virt_defconfig
+powerpc                 mpc8272_ads_defconfig
+c6x                                 defconfig
+mips                         cobalt_defconfig
+mips                        nlm_xlp_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20200607
+i386                 randconfig-a006-20200607
+i386                 randconfig-a002-20200607
+i386                 randconfig-a005-20200607
+i386                 randconfig-a004-20200607
+i386                 randconfig-a003-20200607
+i386                 randconfig-a014-20200607
+i386                 randconfig-a015-20200607
+i386                 randconfig-a011-20200607
+i386                 randconfig-a016-20200607
+i386                 randconfig-a012-20200607
+i386                 randconfig-a013-20200607
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
-
- drivers/net/wireless/ath/ath10k/ce.c | 30 +++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 294fbc1e89ab..ffdd4b995f33 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -481,6 +481,15 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
- 	ath10k_ce_write32(ar, ce_ctrl_addr + wm_regs->addr, mask);
- }
- 
-+static inline bool ath10k_ce_engine_int_status_check(struct ath10k *ar,
-+						     u32 ce_ctrl_addr,
-+						     unsigned int mask)
-+{
-+	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
-+
-+	return ath10k_ce_read32(ar, ce_ctrl_addr + wm_regs->addr) & mask;
-+}
-+
- /*
-  * Guts of ath10k_ce_send.
-  * The caller takes responsibility for any needed locking.
-@@ -1301,19 +1310,22 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
- 
- 	spin_lock_bh(&ce->ce_lock);
- 
--	/* Clear the copy-complete interrupts that will be handled here. */
--	ath10k_ce_engine_int_status_clear(ar, ctrl_addr,
--					  wm_regs->cc_mask);
-+	if (ath10k_ce_engine_int_status_check(ar, ctrl_addr,
-+					      wm_regs->cc_mask)) {
-+		/* Clear before handling */
-+		ath10k_ce_engine_int_status_clear(ar, ctrl_addr,
-+						  wm_regs->cc_mask);
- 
--	spin_unlock_bh(&ce->ce_lock);
-+		spin_unlock_bh(&ce->ce_lock);
- 
--	if (ce_state->recv_cb)
--		ce_state->recv_cb(ce_state);
-+		if (ce_state->recv_cb)
-+			ce_state->recv_cb(ce_state);
- 
--	if (ce_state->send_cb)
--		ce_state->send_cb(ce_state);
-+		if (ce_state->send_cb)
-+			ce_state->send_cb(ce_state);
- 
--	spin_lock_bh(&ce->ce_lock);
-+		spin_lock_bh(&ce->ce_lock);
-+	}
- 
- 	/*
- 	 * Misc CE interrupts are not being handled, but still need
--- 
-2.27.0.278.ge193c7cf3a9-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
