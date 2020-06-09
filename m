@@ -1,16 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail27.static.mailgun.info ([104.130.122.27])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jict4-0003dU-9s
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 11:57:55 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: enable advertising support for channels 32,
- 68 and 98
-References: <20200327093147.189390-1-robert.marko@sartura.hr>
-Date: Tue, 09 Jun 2020 14:57:39 +0300
-In-Reply-To: <20200327093147.189390-1-robert.marko@sartura.hr> (Robert Marko's
- message of "Fri, 27 Mar 2020 10:31:47 +0100")
-Message-ID: <87y2owmoy4.fsf@codeaurora.org>
+From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Subject: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
+Date: Tue,  9 Jun 2020 13:45:53 +0100
+Message-Id: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,34 +16,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>, ath10k@lists.infradead.org
+To: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org, linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, linux-mtd@lists.infradead.org, ath10k@lists.infradead.org, linux-input@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
 
-Robert Marko <robert.marko@sartura.hr> writes:
+I wouldn't normally go through spelling fixes, but I caught sight of
+this typo twice, and then foolishly grepped the tree for it, and saw how
+pervasive it was.
 
-> Enable advertising support for 5G channels: 32, 68 and 96.
-> These channels are legal and available for use in ETSI countries.
-> So lets advertise these and they will be available in accordance with the regulatory domain used.
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
+so here I am ... fixing a typo globally... but with an addition in
+scripts/spelling.txt so it shouldn't re-appear ;-)
 
-What's the use case for this? I was told that the IEEE standard does not
-define these channels, that's why I'm asking for more information.
+Cc: linux-arm-kernel@lists.infradead.org (moderated list:TI DAVINCI MACHINE SUPPORT)
+Cc: linux-kernel@vger.kernel.org (open list)
+Cc: linux-pm@vger.kernel.org (open list:DEVICE FREQUENCY EVENT (DEVFREQ-EVENT))
+Cc: linux-gpio@vger.kernel.org (open list:GPIO SUBSYSTEM)
+Cc: dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+Cc: linux-rdma@vger.kernel.org (open list:HFI1 DRIVER)
+Cc: linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)...)
+Cc: linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
+Cc: netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Cc: ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
+Cc: linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
+Cc: linux-scsi@vger.kernel.org (open list:IBM Power Virtual FC Device Drivers)
+Cc: linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+Cc: linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
+Cc: virtualization@lists.linux-foundation.org (open list:VIRTIO CORE AND NET DRIVERS)
+Cc: linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
 
-On what hardware and firmware did you test this? It might be that not
-all hardware or firmware support this.
 
-There was a concern if this slows down scanning due to more channels
-being scanned, but I haven't analysed that yet. Did you measure that?
+Kieran Bingham (17):
+  arch: arm: mach-davinci: Fix trivial spelling
+  drivers: infiniband: Fix trivial spelling
+  drivers: gpio: Fix trivial spelling
+  drivers: mtd: nand: raw: Fix trivial spelling
+  drivers: net: Fix trivial spelling
+  drivers: scsi: Fix trivial spelling
+  drivers: usb: Fix trivial spelling
+  drivers: gpu: drm: Fix trivial spelling
+  drivers: regulator: Fix trivial spelling
+  drivers: input: joystick: Fix trivial spelling
+  drivers: infiniband: Fix trivial spelling
+  drivers: devfreq: Fix trivial spelling
+  include: dynamic_debug.h: Fix trivial spelling
+  kernel: trace: Fix trivial spelling
+  mm: Fix trivial spelling
+  regulator: gpio: Fix trivial spelling
+  scripts/spelling.txt: Add descriptors correction
 
-Also please CC linux-wireless on ath10k patches. Otherwise patchwork
-won't see them and it won't be on my radar:
-
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
+ arch/arm/mach-davinci/board-da830-evm.c  | 2 +-
+ drivers/devfreq/devfreq-event.c          | 4 ++--
+ drivers/gpio/TODO                        | 2 +-
+ drivers/gpu/drm/drm_dp_helper.c          | 2 +-
+ drivers/infiniband/hw/hfi1/iowait.h      | 2 +-
+ drivers/infiniband/hw/hfi1/ipoib_tx.c    | 2 +-
+ drivers/infiniband/hw/hfi1/verbs_txreq.h | 2 +-
+ drivers/input/joystick/spaceball.c       | 2 +-
+ drivers/mtd/nand/raw/mxc_nand.c          | 2 +-
+ drivers/mtd/nand/raw/nand_bbt.c          | 2 +-
+ drivers/net/wan/lmc/lmc_main.c           | 2 +-
+ drivers/net/wireless/ath/ath10k/usb.c    | 2 +-
+ drivers/net/wireless/ath/ath6kl/usb.c    | 2 +-
+ drivers/net/wireless/cisco/airo.c        | 2 +-
+ drivers/regulator/fixed.c                | 2 +-
+ drivers/regulator/gpio-regulator.c       | 2 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c           | 2 +-
+ drivers/scsi/ibmvscsi/ibmvscsi.c         | 2 +-
+ drivers/scsi/qla2xxx/qla_inline.h        | 2 +-
+ drivers/scsi/qla2xxx/qla_iocb.c          | 6 +++---
+ drivers/usb/core/of.c                    | 2 +-
+ include/drm/drm_dp_helper.h              | 2 +-
+ include/linux/dynamic_debug.h            | 2 +-
+ kernel/trace/trace_events.c              | 2 +-
+ mm/balloon_compaction.c                  | 4 ++--
+ scripts/spelling.txt                     | 1 +
+ 26 files changed, 30 insertions(+), 29 deletions(-)
 
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
+
 
 _______________________________________________
 ath10k mailing list
