@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jigTl-0000l5-5Y
- for ath10k@lists.infradead.org; Tue, 09 Jun 2020 15:47:58 +0000
-Date: Tue, 09 Jun 2020 23:47:02 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 1141215c745b152da6cb632f3532f7384ced8410
-Message-ID: <5edfaef6.hY36ocYsSQrkz4Tp%lkp@intel.com>
+ id 1jizgM-0001Oq-W3
+ for ath10k@lists.infradead.org; Wed, 10 Jun 2020 12:18:16 +0000
+Received: by mail-ot1-x342.google.com with SMTP id u23so1495968otq.10
+ for <ath10k@lists.infradead.org>; Wed, 10 Jun 2020 05:18:13 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200327093147.189390-1-robert.marko@sartura.hr>
+ <87y2owmoy4.fsf@codeaurora.org>
+In-Reply-To: <87y2owmoy4.fsf@codeaurora.org>
+From: Robert Marko <robert.marko@sartura.hr>
+Date: Wed, 10 Jun 2020 14:18:02 +0200
+Message-ID: <CA+HBbNGkzq-sndJwYoifZWNSOYyEMGhuuSJbuGiTVQwALgRnpQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: enable advertising support for channels 32, 68
+ and 98
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,178 +27,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+Cc: Luka Perkov <luka.perkov@sartura.hr>, ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 1141215c745b152da6cb632f3532f7384ced8410  ath: fix wiki website url
-
-elapsed time: 507m
-
-configs tested: 155
-configs skipped: 12
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-m68k                         amcore_defconfig
-mips                       rbtx49xx_defconfig
-um                                  defconfig
-sh                     magicpanelr2_defconfig
-powerpc                      ep88xc_defconfig
-sh                ecovec24-romimage_defconfig
-sparc64                          allmodconfig
-powerpc                  mpc885_ads_defconfig
-mips                           xway_defconfig
-arm                       cns3420vb_defconfig
-m68k                          sun3x_defconfig
-sparc                       sparc32_defconfig
-riscv                          rv32_defconfig
-arm                           h3600_defconfig
-powerpc                    mvme5100_defconfig
-openrisc                 simple_smp_defconfig
-sparc                            allyesconfig
-sh                           se7705_defconfig
-mips                     decstation_defconfig
-arm                              zx_defconfig
-mips                        nlm_xlr_defconfig
-sh                             shx3_defconfig
-c6x                        evmc6678_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                        mvebu_v5_defconfig
-arm                          iop32x_defconfig
-arm                            mps2_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                          moxart_defconfig
-arc                         haps_hs_defconfig
-m68k                            mac_defconfig
-arm                        oxnas_v6_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                         tb0219_defconfig
-m68k                        mvme16x_defconfig
-mips                          malta_defconfig
-arc                          axs101_defconfig
-sh                           se7724_defconfig
-arm                       aspeed_g5_defconfig
-arm                            dove_defconfig
-xtensa                           alldefconfig
-arm                         shannon_defconfig
-um                                allnoconfig
-arm                         socfpga_defconfig
-sh                   sh7724_generic_defconfig
-arc                            hsdk_defconfig
-m68k                        m5272c3_defconfig
-m68k                        stmark2_defconfig
-arm                            qcom_defconfig
-sh                             espt_defconfig
-powerpc                          allmodconfig
-powerpc                     mpc512x_defconfig
-arm                     davinci_all_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                            xcep_defconfig
-arm                         mv78xx0_defconfig
-c6x                        evmc6457_defconfig
-ia64                      gensparse_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a001-20200607
-i386                 randconfig-a006-20200607
-i386                 randconfig-a002-20200607
-i386                 randconfig-a005-20200607
-i386                 randconfig-a004-20200607
-i386                 randconfig-a003-20200607
-i386                 randconfig-a001-20200609
-i386                 randconfig-a002-20200609
-i386                 randconfig-a006-20200609
-i386                 randconfig-a005-20200609
-i386                 randconfig-a003-20200609
-i386                 randconfig-a004-20200609
-i386                 randconfig-a014-20200607
-i386                 randconfig-a015-20200607
-i386                 randconfig-a011-20200607
-i386                 randconfig-a016-20200607
-i386                 randconfig-a012-20200607
-i386                 randconfig-a013-20200607
-x86_64               randconfig-a002-20200607
-x86_64               randconfig-a001-20200607
-x86_64               randconfig-a006-20200607
-x86_64               randconfig-a004-20200607
-x86_64               randconfig-a005-20200607
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Tue, Jun 9, 2020 at 1:58 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Robert Marko <robert.marko@sartura.hr> writes:
+>
+> > Enable advertising support for 5G channels: 32, 68 and 96.
+> > These channels are legal and available for use in ETSI countries.
+> > So lets advertise these and they will be available in accordance with the regulatory domain used.
+> >
+> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > Cc: Luka Perkov <luka.perkov@sartura.hr>
+>
+> What's the use case for this? I was told that the IEEE standard does not
+> define these channels, that's why I'm asking for more information.
+The primary use case is to enable more of the spectrum to be used, since in
+ETSI countries it's legal.
+Even 5GHz is getting pretty crowded in cities.
+>
+> On what hardware and firmware did you test this? It might be that not
+> all hardware or firmware support this.
+It's tested on IPQ4018, 10.4-3.6-00140 FW if I remember correctly as
+some time has passed.
+If HW does not support it then BDF-s and caldata should disable it?
+>
+> There was a concern if this slows down scanning due to more channels
+> being scanned, but I haven't analysed that yet. Did you measure that?
+No, I have not thought of that.
+Even if it does, I don't think that 3 channels more would drastically
+increase scan time.
+>
+> Also please CC linux-wireless on ath10k patches. Otherwise patchwork
+> won't see them and it won't be on my radar:
+Thanks, completely forgot to do it.
+>
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
+>
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
