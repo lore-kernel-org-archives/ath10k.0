@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jizgM-0001Oq-W3
- for ath10k@lists.infradead.org; Wed, 10 Jun 2020 12:18:16 +0000
-Received: by mail-ot1-x342.google.com with SMTP id u23so1495968otq.10
- for <ath10k@lists.infradead.org>; Wed, 10 Jun 2020 05:18:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200327093147.189390-1-robert.marko@sartura.hr>
- <87y2owmoy4.fsf@codeaurora.org>
-In-Reply-To: <87y2owmoy4.fsf@codeaurora.org>
-From: Robert Marko <robert.marko@sartura.hr>
-Date: Wed, 10 Jun 2020 14:18:02 +0200
-Message-ID: <CA+HBbNGkzq-sndJwYoifZWNSOYyEMGhuuSJbuGiTVQwALgRnpQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: enable advertising support for channels 32, 68
- and 98
+ id 1jjGaG-0001HX-Fk
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2020 06:21:07 +0000
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Subject: [PATCH] ath10k: fix retry packets update in station dump
+Date: Thu, 11 Jun 2020 11:50:46 +0530
+Message-Id: <1591856446-26977-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +15,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Luka Perkov <luka.perkov@sartura.hr>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org
 
-On Tue, Jun 9, 2020 at 1:58 PM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Robert Marko <robert.marko@sartura.hr> writes:
->
-> > Enable advertising support for 5G channels: 32, 68 and 96.
-> > These channels are legal and available for use in ETSI countries.
-> > So lets advertise these and they will be available in accordance with the regulatory domain used.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
->
-> What's the use case for this? I was told that the IEEE standard does not
-> define these channels, that's why I'm asking for more information.
-The primary use case is to enable more of the spectrum to be used, since in
-ETSI countries it's legal.
-Even 5GHz is getting pretty crowded in cities.
->
-> On what hardware and firmware did you test this? It might be that not
-> all hardware or firmware support this.
-It's tested on IPQ4018, 10.4-3.6-00140 FW if I remember correctly as
-some time has passed.
-If HW does not support it then BDF-s and caldata should disable it?
->
-> There was a concern if this slows down scanning due to more channels
-> being scanned, but I haven't analysed that yet. Did you measure that?
-No, I have not thought of that.
-Even if it does, I don't think that 3 channels more would drastically
-increase scan time.
->
-> Also please CC linux-wireless on ath10k patches. Otherwise patchwork
-> won't see them and it won't be on my radar:
-Thanks, completely forgot to do it.
->
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
->
-> --
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+When tx status enabled, retry count is updated from tx completion status.
+which is not working as expected due to firmware limitation where
+firmware can not provide per MSDU rate statistics from tx completion
+status. Due to this tx retry count is always 0 in station dump.
+
+Fix this issue by updating the retry packet count from per peer
+statistics. This patch will not break on SDIO devices since, this retry
+count is already updating from peer statistics for SDIO devices.
+
+HW used: QCA9984
+FW version: 10.4-3.6-00104
+
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d787cbe..cac05e7 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -3575,12 +3575,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+ 	}
+ 
+ 	if (ar->htt.disable_tx_comp) {
+-		arsta->tx_retries += peer_stats->retry_pkts;
+ 		arsta->tx_failed += peer_stats->failed_pkts;
+-		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
+-			   arsta->tx_retries, arsta->tx_failed);
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
++			   arsta->tx_failed);
+ 	}
+ 
++	arsta->tx_retries += peer_stats->retry_pkts;
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
++
+ 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
+ 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
+ 						    rate_idx);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 919d155..d9d4b15 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8547,12 +8547,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
+ 
+ 	if (ar->htt.disable_tx_comp) {
+-		sinfo->tx_retries = arsta->tx_retries;
+-		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
+ 		sinfo->tx_failed = arsta->tx_failed;
+ 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
+ 	}
+ 
++	sinfo->tx_retries = arsta->tx_retries;
++	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
++
+ 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
+ }
+ 
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
