@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from smail.rz.tu-ilmenau.de ([141.24.186.67])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jjGaG-0001HX-Fk
- for ath10k@lists.infradead.org; Thu, 11 Jun 2020 06:21:07 +0000
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Subject: [PATCH] ath10k: fix retry packets update in station dump
-Date: Thu, 11 Jun 2020 11:50:46 +0530
-Message-Id: <1591856446-26977-1-git-send-email-vnaralas@codeaurora.org>
+ id 1jjKQD-00068o-KE
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2020 10:27:01 +0000
+Subject: Re: [PATCH] ath10k: fix retry packets update in station dump
+References: <1591856446-26977-1-git-send-email-vnaralas@codeaurora.org>
+From: Markus Theil <markus.theil@tu-ilmenau.de>
+Message-ID: <eaf47825-bf7a-e3aa-d0dc-42cf4aa5c9f1@tu-ilmenau.de>
+Date: Thu, 11 Jun 2020 12:26:46 +0200
+MIME-Version: 1.0
+In-Reply-To: <1591856446-26977-1-git-send-email-vnaralas@codeaurora.org>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,76 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Venkateswara Naralasetty <vnaralas@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-When tx status enabled, retry count is updated from tx completion status.
-which is not working as expected due to firmware limitation where
-firmware can not provide per MSDU rate statistics from tx completion
-status. Due to this tx retry count is always 0 in station dump.
+On 6/11/20 8:20 AM, Venkateswara Naralasetty wrote:
+> When tx status enabled, retry count is updated from tx completion status.
+> which is not working as expected due to firmware limitation where
+> firmware can not provide per MSDU rate statistics from tx completion
+> status. Due to this tx retry count is always 0 in station dump.
+>
+> Fix this issue by updating the retry packet count from per peer
+> statistics. This patch will not break on SDIO devices since, this retry
+> count is already updating from peer statistics for SDIO devices.
+>
+> HW used: QCA9984
+> FW version: 10.4-3.6-00104
 
-Fix this issue by updating the retry packet count from per peer
-statistics. This patch will not break on SDIO devices since, this retry
-count is already updating from peer statistics for SDIO devices.
+Thanks a lot for this patch! I tested it on the following HW, where it
+also works.
 
-HW used: QCA9984
-FW version: 10.4-3.6-00104
+HW: QCA9882
+FW: 10.2.4-1.0-00047
 
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
- drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
- 2 files changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d787cbe..cac05e7 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3575,12 +3575,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
- 	}
- 
- 	if (ar->htt.disable_tx_comp) {
--		arsta->tx_retries += peer_stats->retry_pkts;
- 		arsta->tx_failed += peer_stats->failed_pkts;
--		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
--			   arsta->tx_retries, arsta->tx_failed);
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
-+			   arsta->tx_failed);
- 	}
- 
-+	arsta->tx_retries += peer_stats->retry_pkts;
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
-+
- 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
- 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
- 						    rate_idx);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 919d155..d9d4b15 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8547,12 +8547,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
- 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
- 
- 	if (ar->htt.disable_tx_comp) {
--		sinfo->tx_retries = arsta->tx_retries;
--		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
- 		sinfo->tx_failed = arsta->tx_failed;
- 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
- 	}
- 
-+	sinfo->tx_retries = arsta->tx_retries;
-+	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
-+
- 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
- }
- 
--- 
-2.7.4
+Markus
 
 
 _______________________________________________
