@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smail.rz.tu-ilmenau.de ([141.24.186.67])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jjLxj-0005Tu-9Y
- for ath10k@lists.infradead.org; Thu, 11 Jun 2020 12:05:40 +0000
-Subject: Re: [PATCH] ath10k: enable advertising support for channels 32, 68
- and 98
-From: Markus Theil <markus.theil@tu-ilmenau.de>
-References: <20200327093147.189390-1-robert.marko@sartura.hr>
- <1f5bab38-4c77-6858-ed02-f52c71ee11fe@tu-ilmenau.de>
-Message-ID: <4ad21411-2948-ea8a-5335-0d286dc98825@tu-ilmenau.de>
-Date: Thu, 11 Jun 2020 14:05:37 +0200
+ id 1jjb1X-0003TI-Ro
+ for ath10k@lists.infradead.org; Fri, 12 Jun 2020 04:10:37 +0000
+Date: Fri, 12 Jun 2020 12:10:13 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 9327e9a2e02a1cf10e61b548f841decce81bc877
+Message-ID: <5ee30025.9RBCUkjw3zchOaFo%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1f5bab38-4c77-6858-ed02-f52c71ee11fe@tu-ilmenau.de>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +21,140 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Robert Marko <robert.marko@sartura.hr>, ath10k@lists.infradead.org
-Cc: Luka Perkov <luka.perkov@sartura.hr>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On 6/11/20 1:29 PM, Markus Theil wrote:
-> On 3/27/20 10:31 AM, Robert Marko wrote:
->> Enable advertising support for 5G channels: 32, 68 and 96.
->> These channels are legal and available for use in ETSI countries.
->> So lets advertise these and they will be available in accordance with the regulatory domain used.
->>
->> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
->> Cc: Luka Perkov <luka.perkov@sartura.hr>
->> ---
->>  drivers/net/wireless/ath/ath10k/core.h | 2 +-
->>  drivers/net/wireless/ath/ath10k/mac.c  | 3 +++
->>  2 files changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
->> index 5101bf2b5b15..480efaa1278c 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.h
->> +++ b/drivers/net/wireless/ath/ath10k/core.h
->> @@ -37,7 +37,7 @@
->>  #define WMI_READY_TIMEOUT (5 * HZ)
->>  #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
->>  #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
->> -#define ATH10K_NUM_CHANS 41
->> +#define ATH10K_NUM_CHANS 44
->>  #define ATH10K_MAX_5G_CHAN 173
->>  
->>  /* Antenna noise floor */
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index 7fee35ff966b..f98422427b27 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -8363,6 +8363,7 @@ static const struct ieee80211_channel ath10k_2ghz_channels[] = {
->>  };
->>  
->>  static const struct ieee80211_channel ath10k_5ghz_channels[] = {
->> +	CHAN5G(32, 5160, 0),
->>  	CHAN5G(36, 5180, 0),
->>  	CHAN5G(40, 5200, 0),
->>  	CHAN5G(44, 5220, 0),
->> @@ -8371,6 +8372,8 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
->>  	CHAN5G(56, 5280, 0),
->>  	CHAN5G(60, 5300, 0),
->>  	CHAN5G(64, 5320, 0),
->> +	CHAN5G(68, 5340, 0),
->> +	CHAN5G(96, 5480, 0),
->>  	CHAN5G(100, 5500, 0),
->>  	CHAN5G(104, 5520, 0),
->>  	CHAN5G(108, 5540, 0),
-> Hi, your patch is incomplete. Mgmt frames cannot be received on channel 32, because of the following lines in wmi.c:
->
-> 	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
-> 	 * MODE_11B. This means phy_mode is not a reliable source for the band
-> 	 * of mgmt rx.
-> 	 */
-> 	if (channel >= 1 && channel <= 14) {
-> 		status->band = NL80211_BAND_2GHZ;
-> 	} else if (channel >= 36 && channel <= ATH10K_MAX_5G_CHAN) {
-> 		status->band = NL80211_BAND_5GHZ;
-> 	} else {
-> 		/* Shouldn't happen unless list of advertised channels to
-> 		 * mac80211 has been changed.
-> 		 */
-> 		WARN_ON_ONCE(1);
-> 		dev_kfree_skb(skb);
-> 		return 0;
-> 	}
->
-> Have you tested this patch?
-I've tested your patch (changed 36 to 32 in wmi.c). And channel 32 does
-not work for me, even with that change.
-Nevertheless, I was able to use channels 68 and 96 between two ath10k
-cards in AP and STA mode. I do not know,
-why channel 32 does not work.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 9327e9a2e02a1cf10e61b548f841decce81bc877  Merge branch 'ath-next' into ath-qca
 
+elapsed time: 1374m
 
+configs tested: 116
+configs skipped: 5
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                  colibri_pxa300_defconfig
+arm                       imx_v4_v5_defconfig
+xtensa                         virt_defconfig
+mips                            ar7_defconfig
+arm                            mmp2_defconfig
+m68k                            mac_defconfig
+mips                     loongson1b_defconfig
+arm                       imx_v6_v7_defconfig
+m68k                             allyesconfig
+sh                     magicpanelr2_defconfig
+m68k                        mvme16x_defconfig
+riscv                            alldefconfig
+powerpc                      ppc64e_defconfig
+mips                            gpr_defconfig
+i386                              allnoconfig
+mips                           ip27_defconfig
+sh                               alldefconfig
+xtensa                              defconfig
+arm                         socfpga_defconfig
+c6x                              alldefconfig
+arm                        spear3xx_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a006-20200611
+i386                 randconfig-a002-20200611
+i386                 randconfig-a001-20200611
+i386                 randconfig-a004-20200611
+i386                 randconfig-a005-20200611
+i386                 randconfig-a003-20200611
+x86_64               randconfig-a015-20200611
+x86_64               randconfig-a011-20200611
+x86_64               randconfig-a016-20200611
+x86_64               randconfig-a012-20200611
+x86_64               randconfig-a014-20200611
+x86_64               randconfig-a013-20200611
+i386                 randconfig-a015-20200611
+i386                 randconfig-a011-20200611
+i386                 randconfig-a014-20200611
+i386                 randconfig-a013-20200611
+i386                 randconfig-a016-20200611
+i386                 randconfig-a012-20200611
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
