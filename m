@@ -1,10 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
-Date: Mon, 15 Jun 2020 23:59:55 -0400
-Message-Id: <159227986422.24883.1110692977647896521.b4-ty@oracle.com>
-In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jl3br-0006xh-29
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2020 04:54:08 +0000
+Date: Tue, 16 Jun 2020 12:54:01 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ cd924b92f26a9ecbee509eca31096daa65cfaac0
+Message-ID: <5ee85069.tcR1jDxHPXslQlFw%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,27 +21,125 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kieran Bingham <kieran.bingham@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc: linux-scsi@vger.kernel.org, "Martin K . Petersen" <martin.petersen@oracle.com>, linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, linux-gpio@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org, linux-renesas-soc@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, ath10k@lists.infradead.org, linux-input@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Tue, 9 Jun 2020 13:45:53 +0100, Kieran Bingham wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: cd924b92f26a9ecbee509eca31096daa65cfaac0  Merge branch 'pending' into master-pending
 
-> I wouldn't normally go through spelling fixes, but I caught sight of
-> this typo twice, and then foolishly grepped the tree for it, and saw how
-> pervasive it was.
-> 
-> so here I am ... fixing a typo globally... but with an addition in
-> scripts/spelling.txt so it shouldn't re-appear ;-)
-> 
-> [...]
+elapsed time: 481m
 
-Applied to 5.9/scsi-queue, thanks!
+configs tested: 101
+configs skipped: 1
 
-[06/17] scsi: Fix trivial spelling
-        https://git.kernel.org/mkp/scsi/c/0a19a725c0ed
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                         axm55xx_defconfig
+mips                         bigsur_defconfig
+mips                      bmips_stb_defconfig
+c6x                              allyesconfig
+sh                            migor_defconfig
+arm                             pxa_defconfig
+um                           x86_64_defconfig
+mips                      pic32mzda_defconfig
+arm                       versatile_defconfig
+ia64                      gensparse_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200615
+i386                 randconfig-a002-20200615
+i386                 randconfig-a001-20200615
+i386                 randconfig-a004-20200615
+i386                 randconfig-a005-20200615
+i386                 randconfig-a003-20200615
+i386                 randconfig-a015-20200615
+i386                 randconfig-a011-20200615
+i386                 randconfig-a014-20200615
+i386                 randconfig-a013-20200615
+i386                 randconfig-a016-20200615
+i386                 randconfig-a012-20200615
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
