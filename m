@@ -1,10 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Tue, 16 Jun 2020 00:41:15 +0100
-From: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-Subject: Re: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
-Message-Id: <159226447507.27673.16785893373246037922.b4-ty@kernel.org>
+Received: from mga18.intel.com ([134.134.136.126])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jl0HP-0000Yi-RP
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2020 01:20:49 +0000
+Date: Tue, 16 Jun 2020 09:20:12 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 01e34233c6456ff61f2caab450860f1462acf78e
+Message-ID: <5ee81e4c.SKJJU3DukFDlqbAm%lkp@intel.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -13,53 +17,135 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc: linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org, linux-mm@kvack.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, linux-pm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Tue, 9 Jun 2020 13:45:53 +0100, Kieran Bingham wrote:
-> I wouldn't normally go through spelling fixes, but I caught sight of
-> this typo twice, and then foolishly grepped the tree for it, and saw how
-> pervasive it was.
-> 
-> so here I am ... fixing a typo globally... but with an addition in
-> scripts/spelling.txt so it shouldn't re-appear ;-)
-> 
-> [...]
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 01e34233c6456ff61f2caab450860f1462acf78e  ath11k: fix wmi peer flags in peer assoc command
 
-Applied to
+elapsed time: 480m
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+configs tested: 107
+configs skipped: 1
 
-Thanks!
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-[1/2] regulator: Fix trivial spelling
-      commit: d3f3723387f97118c337689fc73e4199fb4331ce
-[2/2] regulator: gpio: Fix trivial spelling
-      commit: 1f0b740004f09d2f1b716fd6c2fdca81004ded05
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                         axm55xx_defconfig
+mips                         bigsur_defconfig
+mips                      bmips_stb_defconfig
+c6x                              allyesconfig
+sh                            migor_defconfig
+arm                             pxa_defconfig
+um                           x86_64_defconfig
+mips                      pic32mzda_defconfig
+arm                       versatile_defconfig
+ia64                      gensparse_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200615
+i386                 randconfig-a002-20200615
+i386                 randconfig-a001-20200615
+i386                 randconfig-a004-20200615
+i386                 randconfig-a005-20200615
+i386                 randconfig-a003-20200615
+x86_64               randconfig-a015-20200615
+x86_64               randconfig-a011-20200615
+x86_64               randconfig-a016-20200615
+x86_64               randconfig-a012-20200615
+x86_64               randconfig-a014-20200615
+x86_64               randconfig-a013-20200615
+i386                 randconfig-a015-20200615
+i386                 randconfig-a011-20200615
+i386                 randconfig-a014-20200615
+i386                 randconfig-a013-20200615
+i386                 randconfig-a016-20200615
+i386                 randconfig-a012-20200615
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
