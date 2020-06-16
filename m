@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jl0NK-0003IL-TL
+ id 1jl0NK-0003IK-TK
  for ath10k@lists.infradead.org; Tue, 16 Jun 2020 01:26:56 +0000
-Date: Tue, 16 Jun 2020 09:26:05 +0800
+Date: Tue, 16 Jun 2020 09:26:12 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 10414e66868f28bcf344d085cff9c15ccaeb652a
-Message-ID: <5ee81fad.QKCfqEUH+ho/p+Na%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 6c835c29c1f2c83c3eaf7fd5236324c30f116263
+Message-ID: <5ee81fb4.GpVfd2CBnSEylX6T%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 10414e66868f28bcf344d085cff9c15ccaeb652a  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 6c835c29c1f2c83c3eaf7fd5236324c30f116263  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 485m
 
-configs tested: 101
+configs tested: 113
 configs skipped: 1
 
 The following configs have been built successfully.
@@ -52,10 +53,10 @@ um                           x86_64_defconfig
 mips                      pic32mzda_defconfig
 arm                       versatile_defconfig
 ia64                      gensparse_defconfig
+i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
-i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -103,6 +104,18 @@ i386                 randconfig-a001-20200615
 i386                 randconfig-a004-20200615
 i386                 randconfig-a005-20200615
 i386                 randconfig-a003-20200615
+i386                 randconfig-a006-20200616
+i386                 randconfig-a002-20200616
+i386                 randconfig-a001-20200616
+i386                 randconfig-a004-20200616
+i386                 randconfig-a005-20200616
+i386                 randconfig-a003-20200616
+x86_64               randconfig-a015-20200615
+x86_64               randconfig-a011-20200615
+x86_64               randconfig-a016-20200615
+x86_64               randconfig-a012-20200615
+x86_64               randconfig-a014-20200615
+x86_64               randconfig-a013-20200615
 i386                 randconfig-a015-20200615
 i386                 randconfig-a011-20200615
 i386                 randconfig-a014-20200615
@@ -125,8 +138,8 @@ sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                               allmodconfig
 um                                allnoconfig
-um                                  defconfig
 um                               allyesconfig
+um                                  defconfig
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
 x86_64                               rhel-8.3
