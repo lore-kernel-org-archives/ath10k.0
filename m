@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jlIo6-0002yh-3p
+ id 1jlIo5-0002yf-Mu
  for ath10k@lists.infradead.org; Tue, 16 Jun 2020 21:07:47 +0000
-Date: Wed, 17 Jun 2020 05:06:43 +0800
+Date: Wed, 17 Jun 2020 05:06:45 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 91885ac638c6efed06a9d47774c08b063edb4dce
-Message-ID: <5ee93463.i4aXT7yz9oBSqYFR%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 93a5b668806c1d868f7f9f0438321006200c049f
+Message-ID: <5ee93465.wu3SpzcGgugIIL0K%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 91885ac638c6efed06a9d47774c08b063edb4dce  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 93a5b668806c1d868f7f9f0438321006200c049f  ath11k: rename default board file
 
-elapsed time: 484m
+elapsed time: 485m
 
-configs tested: 101
-configs skipped: 1
+configs tested: 108
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -47,11 +48,18 @@ mips                         bigsur_defconfig
 mips                      bmips_stb_defconfig
 c6x                              allyesconfig
 sh                            migor_defconfig
+sh                   secureedge5410_defconfig
+mips                       capcella_defconfig
+sparc64                          alldefconfig
+arm                         s3c2410_defconfig
+arc                          axs103_defconfig
 arm                             pxa_defconfig
 um                           x86_64_defconfig
 mips                      pic32mzda_defconfig
 arm                       versatile_defconfig
 ia64                      gensparse_defconfig
+powerpc                      pasemi_defconfig
+arm                       cns3420vb_defconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
