@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jl3br-0006xh-29
- for ath10k@lists.infradead.org; Tue, 16 Jun 2020 04:54:08 +0000
-Date: Tue, 16 Jun 2020 12:54:01 +0800
+ id 1jl3cn-0007pf-O9
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2020 04:55:08 +0000
+Date: Tue, 16 Jun 2020 12:54:03 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- cd924b92f26a9ecbee509eca31096daa65cfaac0
-Message-ID: <5ee85069.tcR1jDxHPXslQlFw%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 96b87ee2d3fc1482c2340f6f77752a72b1d5ff2d
+Message-ID: <5ee8506b.SOyXSVpzJVnOgt5N%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: cd924b92f26a9ecbee509eca31096daa65cfaac0  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 96b87ee2d3fc1482c2340f6f77752a72b1d5ff2d  ath11k: Add bdf-addr in hw_params
 
 elapsed time: 481m
 
-configs tested: 101
+configs tested: 107
 configs skipped: 1
 
 The following configs have been built successfully.
@@ -53,10 +53,10 @@ um                           x86_64_defconfig
 mips                      pic32mzda_defconfig
 arm                       versatile_defconfig
 ia64                      gensparse_defconfig
+i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
-i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -104,6 +104,12 @@ i386                 randconfig-a001-20200615
 i386                 randconfig-a004-20200615
 i386                 randconfig-a005-20200615
 i386                 randconfig-a003-20200615
+x86_64               randconfig-a015-20200615
+x86_64               randconfig-a011-20200615
+x86_64               randconfig-a016-20200615
+x86_64               randconfig-a012-20200615
+x86_64               randconfig-a014-20200615
+x86_64               randconfig-a013-20200615
 i386                 randconfig-a015-20200615
 i386                 randconfig-a011-20200615
 i386                 randconfig-a014-20200615
