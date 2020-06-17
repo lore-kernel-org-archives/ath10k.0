@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jlKLN-0002F8-Id
- for ath10k@lists.infradead.org; Tue, 16 Jun 2020 22:46:14 +0000
-Date: Tue, 16 Jun 2020 17:51:32 -0500
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] ath10k: wmi: Use struct_size() helper in
- ath10k_wmi_alloc_skb()
-Message-ID: <20200616225132.GA19873@embeddedor>
+ id 1jlRM9-0003jK-If
+ for ath10k@lists.infradead.org; Wed, 17 Jun 2020 06:15:31 +0000
+Date: Wed, 17 Jun 2020 14:14:36 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 78f5e44bea7b3c93f4919277827c5e937e02881f
+Message-ID: <5ee9b4cc.DKdv0P7ssMOQ2l6D%lkp@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,125 +21,148 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes. Also, remove unnecessary
-variable _len_.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 78f5e44bea7b3c93f4919277827c5e937e02881f  ath11k: add raw mode and software crypto support
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+elapsed time: 721m
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+configs tested: 124
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                         axm55xx_defconfig
+mips                         bigsur_defconfig
+mips                      bmips_stb_defconfig
+c6x                              allyesconfig
+sh                            migor_defconfig
+arm                             pxa_defconfig
+um                           x86_64_defconfig
+mips                      pic32mzda_defconfig
+arm                       versatile_defconfig
+ia64                      gensparse_defconfig
+powerpc                      pasemi_defconfig
+arm                       cns3420vb_defconfig
+xtensa                              defconfig
+sh                          urquell_defconfig
+mips                           mtx1_defconfig
+mips                       capcella_defconfig
+mips                  mips_paravirt_defconfig
+mips                      pistachio_defconfig
+mips                   sb1250_swarm_defconfig
+mips                           ip28_defconfig
+mips                           ip27_defconfig
+c6x                        evmc6678_defconfig
+arm                       netwinder_defconfig
+sh                           se7721_defconfig
+arm                         ebsa110_defconfig
+powerpc                     mpc512x_defconfig
+sh                        sh7757lcr_defconfig
+arm                           sunxi_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200615
+i386                 randconfig-a002-20200615
+i386                 randconfig-a001-20200615
+i386                 randconfig-a004-20200615
+i386                 randconfig-a005-20200615
+i386                 randconfig-a003-20200615
+x86_64               randconfig-a015-20200615
+x86_64               randconfig-a011-20200615
+x86_64               randconfig-a016-20200615
+x86_64               randconfig-a012-20200615
+x86_64               randconfig-a014-20200615
+x86_64               randconfig-a013-20200615
+i386                 randconfig-a015-20200615
+i386                 randconfig-a011-20200615
+i386                 randconfig-a014-20200615
+i386                 randconfig-a013-20200615
+i386                 randconfig-a016-20200615
+i386                 randconfig-a012-20200615
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 32 +++++++--------------------
- 1 file changed, 8 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a81a1ab2de19..b89681394a15 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6551,7 +6551,7 @@ static struct sk_buff *ath10k_wmi_op_gen_init(struct ath10k *ar)
- 	struct wmi_init_cmd *cmd;
- 	struct sk_buff *buf;
- 	struct wmi_resource_config config = {};
--	u32 len, val;
-+	u32 val;
- 
- 	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
- 	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS);
-@@ -6603,10 +6603,7 @@ static struct sk_buff *ath10k_wmi_op_gen_init(struct ath10k *ar)
- 	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
- 	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
- 
--	len = sizeof(*cmd) +
--	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
--
--	buf = ath10k_wmi_alloc_skb(ar, len);
-+	buf = ath10k_wmi_alloc_skb(ar, struct_size(cmd, mem_chunks.items, ar->wmi.num_mem_chunks));
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -6624,7 +6621,7 @@ static struct sk_buff *ath10k_wmi_10_1_op_gen_init(struct ath10k *ar)
- 	struct wmi_init_cmd_10x *cmd;
- 	struct sk_buff *buf;
- 	struct wmi_resource_config_10x config = {};
--	u32 len, val;
-+	u32 val;
- 
- 	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
- 	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
-@@ -6668,10 +6665,7 @@ static struct sk_buff *ath10k_wmi_10_1_op_gen_init(struct ath10k *ar)
- 	config.num_msdu_desc = __cpu_to_le32(TARGET_10X_NUM_MSDU_DESC);
- 	config.max_frag_entries = __cpu_to_le32(TARGET_10X_MAX_FRAG_ENTRIES);
- 
--	len = sizeof(*cmd) +
--	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
--
--	buf = ath10k_wmi_alloc_skb(ar, len);
-+	buf = ath10k_wmi_alloc_skb(ar, struct_size(cmd, mem_chunks.items, ar->wmi.num_mem_chunks));
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -6689,7 +6683,7 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
- 	struct wmi_init_cmd_10_2 *cmd;
- 	struct sk_buff *buf;
- 	struct wmi_resource_config_10x config = {};
--	u32 len, val, features;
-+	u32 val, features;
- 
- 	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
- 	config.num_peer_keys = __cpu_to_le32(TARGET_10X_NUM_PEER_KEYS);
-@@ -6741,10 +6735,7 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
- 	config.num_msdu_desc = __cpu_to_le32(TARGET_10X_NUM_MSDU_DESC);
- 	config.max_frag_entries = __cpu_to_le32(TARGET_10X_MAX_FRAG_ENTRIES);
- 
--	len = sizeof(*cmd) +
--	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
--
--	buf = ath10k_wmi_alloc_skb(ar, len);
-+	buf = ath10k_wmi_alloc_skb(ar, struct_size(cmd, mem_chunks.items, ar->wmi.num_mem_chunks));
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -6776,7 +6767,6 @@ static struct sk_buff *ath10k_wmi_10_4_op_gen_init(struct ath10k *ar)
- 	struct wmi_init_cmd_10_4 *cmd;
- 	struct sk_buff *buf;
- 	struct wmi_resource_config_10_4 config = {};
--	u32 len;
- 
- 	config.num_vdevs = __cpu_to_le32(ar->max_num_vdevs);
- 	config.num_peers = __cpu_to_le32(ar->max_num_peers);
-@@ -6838,10 +6828,7 @@ static struct sk_buff *ath10k_wmi_10_4_op_gen_init(struct ath10k *ar)
- 	config.iphdr_pad_config = __cpu_to_le32(TARGET_10_4_IPHDR_PAD_CONFIG);
- 	config.qwrap_config = __cpu_to_le32(TARGET_10_4_QWRAP_CONFIG);
- 
--	len = sizeof(*cmd) +
--	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
--
--	buf = ath10k_wmi_alloc_skb(ar, len);
-+	buf = ath10k_wmi_alloc_skb(ar, struct_size(cmd, mem_chunks.items, ar->wmi.num_mem_chunks));
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -7549,12 +7536,9 @@ ath10k_wmi_op_gen_scan_chan_list(struct ath10k *ar,
- 	struct sk_buff *skb;
- 	struct wmi_channel_arg *ch;
- 	struct wmi_channel *ci;
--	int len;
- 	int i;
- 
--	len = sizeof(*cmd) + arg->n_channels * sizeof(struct wmi_channel);
--
--	skb = ath10k_wmi_alloc_skb(ar, len);
-+	skb = ath10k_wmi_alloc_skb(ar, struct_size(cmd, chan_info, arg->n_channels));
- 	if (!skb)
- 		return ERR_PTR(-EINVAL);
- 
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
