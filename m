@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jlRM9-0003jK-If
+ id 1jlRM9-0003jJ-Ia
  for ath10k@lists.infradead.org; Wed, 17 Jun 2020 06:15:31 +0000
-Date: Wed, 17 Jun 2020 14:14:36 +0800
+Date: Wed, 17 Jun 2020 14:14:41 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 78f5e44bea7b3c93f4919277827c5e937e02881f
-Message-ID: <5ee9b4cc.DKdv0P7ssMOQ2l6D%lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS WITH WARNING
+ 682bd79bb8fe637b426947462daa7bdf155b198a
+Message-ID: <5ee9b4d1.uUpcsNf1V6RwPyVB%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,16 +24,187 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 78f5e44bea7b3c93f4919277827c5e937e02881f  ath11k: add raw mode and software crypto support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 682bd79bb8fe637b426947462daa7bdf155b198a  ath11k: reset MHI during power down and power up
+
+Warning in current branch:
+
+drivers/net/wireless/ath/ath11k/pci.c:1078:21: warning: variable 'ar_pci' set but not used [-Wunused-but-set-variable]
+drivers/net/wireless/ath/ath11k/pci.c:362:6: warning: no previous prototype for 'ath11k_pci_soc_global_reset' [-Wmissing-prototypes]
+drivers/net/wireless/ath/ath11k/pci.c:389:6: warning: no previous prototype for 'ath11k_pci_clear_dbg_registers' [-Wmissing-prototypes]
+drivers/net/wireless/ath/ath11k/pci.c:419:6: warning: no previous prototype for 'ath11k_pci_force_wake' [-Wmissing-prototypes]
+drivers/net/wireless/ath/ath11k/pci.c:425:6: warning: no previous prototype for 'ath11k_pci_force_wake_release' [-Wmissing-prototypes]
+drivers/net/wireless/ath/ath11k/pci.c:431:6: warning: no previous prototype for 'ath11k_pci_sw_reset' [-Wmissing-prototypes]
+
+Warning ids grouped by kconfigs:
+
+recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- arc-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- arm-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- arm-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- arm64-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- arm64-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- i386-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- i386-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- ia64-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- ia64-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- mips-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- mips-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- parisc-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- parisc-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- powerpc-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- powerpc-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- riscv-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- riscv-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- sparc-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- sparc64-allmodconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+|-- sparc64-allyesconfig
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+|   |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
+`-- xtensa-allyesconfig
+    |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_clear_dbg_registers
+    |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake
+    |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_force_wake_release
+    |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_soc_global_reset
+    |-- drivers-net-wireless-ath-ath11k-pci.c:warning:no-previous-prototype-for-ath11k_pci_sw_reset
+    `-- drivers-net-wireless-ath-ath11k-pci.c:warning:variable-ar_pci-set-but-not-used
 
 elapsed time: 721m
 
-configs tested: 124
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+configs tested: 99
+configs skipped: 2
 
 arm                                 defconfig
 arm                              allyesconfig
@@ -46,31 +217,16 @@ arm64                             allnoconfig
 arm                         axm55xx_defconfig
 mips                         bigsur_defconfig
 mips                      bmips_stb_defconfig
-c6x                              allyesconfig
 sh                            migor_defconfig
 arm                             pxa_defconfig
 um                           x86_64_defconfig
 mips                      pic32mzda_defconfig
 arm                       versatile_defconfig
 ia64                      gensparse_defconfig
-powerpc                      pasemi_defconfig
-arm                       cns3420vb_defconfig
-xtensa                              defconfig
-sh                          urquell_defconfig
-mips                           mtx1_defconfig
-mips                       capcella_defconfig
-mips                  mips_paravirt_defconfig
-mips                      pistachio_defconfig
-mips                   sb1250_swarm_defconfig
-mips                           ip28_defconfig
-mips                           ip27_defconfig
-c6x                        evmc6678_defconfig
-arm                       netwinder_defconfig
-sh                           se7721_defconfig
-arm                         ebsa110_defconfig
-powerpc                     mpc512x_defconfig
-sh                        sh7757lcr_defconfig
-arm                           sunxi_defconfig
+m68k                          hp300_defconfig
+powerpc                    mvme5100_defconfig
+sh                          r7785rp_defconfig
+arm                        magician_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -87,6 +243,7 @@ m68k                             allyesconfig
 nios2                               defconfig
 nios2                            allyesconfig
 openrisc                            defconfig
+c6x                              allyesconfig
 c6x                               allnoconfig
 openrisc                         allyesconfig
 nds32                               defconfig
@@ -98,6 +255,7 @@ alpha                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 h8300                            allmodconfig
+xtensa                              defconfig
 arc                                 defconfig
 arc                              allyesconfig
 sh                               allmodconfig
@@ -115,18 +273,6 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a006-20200615
-i386                 randconfig-a002-20200615
-i386                 randconfig-a001-20200615
-i386                 randconfig-a004-20200615
-i386                 randconfig-a005-20200615
-i386                 randconfig-a003-20200615
-x86_64               randconfig-a015-20200615
-x86_64               randconfig-a011-20200615
-x86_64               randconfig-a016-20200615
-x86_64               randconfig-a012-20200615
-x86_64               randconfig-a014-20200615
-x86_64               randconfig-a013-20200615
 i386                 randconfig-a015-20200615
 i386                 randconfig-a011-20200615
 i386                 randconfig-a014-20200615
@@ -147,9 +293,9 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-um                               allmodconfig
 um                                allnoconfig
 um                                  defconfig
+um                               allmodconfig
 um                               allyesconfig
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
