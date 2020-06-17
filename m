@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jlRMB-0003jK-BS
- for ath10k@lists.infradead.org; Wed, 17 Jun 2020 06:15:32 +0000
-Date: Wed, 17 Jun 2020 14:14:33 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 5801c5baace2da5048cf6ebb79f2cce11f781aba
-Message-ID: <5ee9b4c9./FBbgVEGzuimFJjv%lkp@intel.com>
+ id 1jlTNs-0002x3-8c
+ for ath10k@lists.infradead.org; Wed, 17 Jun 2020 08:25:27 +0000
 MIME-Version: 1.0
+Date: Wed, 17 Jun 2020 16:25:17 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [v2,08/13] ath10k: bring back the WMI path for mgmt frames
+Message-ID: <88b587e85324b50a23a20676c7088d0c@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,141 +16,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: bartosz.markowski@tieto.com, ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 5801c5baace2da5048cf6ebb79f2cce11f781aba  Merge branch 'pending' into master-pending
+> +
+> +			skb_queue_tail(&ar->wmi_mgmt_tx_queue, skb);
+> +			ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
+https://patchwork.kernel.org/patch/2947291/
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e00d31a0fb74c36f3b174ff0d4914cf09016e6f)
 
-elapsed time: 721m
-
-configs tested: 113
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                         axm55xx_defconfig
-mips                         bigsur_defconfig
-mips                      bmips_stb_defconfig
-c6x                              allyesconfig
-sh                            migor_defconfig
-powerpc                      pasemi_defconfig
-arm                       cns3420vb_defconfig
-xtensa                              defconfig
-sh                          urquell_defconfig
-mips                           mtx1_defconfig
-mips                       capcella_defconfig
-mips                  mips_paravirt_defconfig
-mips                      pistachio_defconfig
-mips                   sb1250_swarm_defconfig
-mips                           ip28_defconfig
-mips                           ip27_defconfig
-c6x                        evmc6678_defconfig
-arm                       netwinder_defconfig
-sh                           se7721_defconfig
-arm                         ebsa110_defconfig
-powerpc                     mpc512x_defconfig
-sh                        sh7757lcr_defconfig
-arm                           sunxi_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a006-20200615
-i386                 randconfig-a002-20200615
-i386                 randconfig-a001-20200615
-i386                 randconfig-a004-20200615
-i386                 randconfig-a005-20200615
-i386                 randconfig-a003-20200615
-i386                 randconfig-a015-20200615
-i386                 randconfig-a011-20200615
-i386                 randconfig-a014-20200615
-i386                 randconfig-a013-20200615
-i386                 randconfig-a016-20200615
-i386                 randconfig-a012-20200615
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Do you know why this patch used ieee80211_queue_work, not use "struct 
+workqueue_struct *workqueue" of ath10k?
 
 _______________________________________________
 ath10k mailing list
