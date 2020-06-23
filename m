@@ -1,25 +1,54 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from mail29.static.mailgun.info ([104.130.122.29])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jnhPf-0001Ri-Qk
+ for ath10k@lists.infradead.org; Tue, 23 Jun 2020 11:48:43 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [v2,08/13] ath10k: bring back the WMI path for mgmt frames
+References: <88b587e85324b50a23a20676c7088d0c@codeaurora.org>
+ <12d316171b15203f0242a13d5c690687@codeaurora.org>
+Date: Tue, 23 Jun 2020 14:48:05 +0300
+In-Reply-To: <12d316171b15203f0242a13d5c690687@codeaurora.org> (Wen Gong's
+ message of "Thu, 18 Jun 2020 12:09:47 +0800")
+Message-ID: <87sgemdmve.fsf@codeaurora.org>
 MIME-Version: 1.0
+List-Id: <ath10k.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
+ <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/ath10k/>
+List-Post: <mailto:ath10k@lists.infradead.org>
+List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
+ <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: Mailman privacy alert
-From: ath10k-bounces@lists.infradead.org
-Message-ID: <mailman.0.1592912717.1391.ath10k@lists.infradead.org>
-Date: Tue, 23 Jun 2020 07:45:17 -0400
-List-Id: <ath10k.lists.infradead.org>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@adurom.com
+To: Wen Gong <wgong@codeaurora.org>
+Cc: ath10k@lists.infradead.org, bartosz.markowski@tieto.com
 
-An attempt was made to subscribe your address to the mailing list
-ath10k@lists.infradead.org.  You are already subscribed to this mailing list.
+Wen Gong <wgong@codeaurora.org> writes:
 
-Note that the list membership is not public, so it is possible that a bad
-person was trying to probe the list for its membership.  This would be a
-privacy violation if we let them do this, but we didn't.
+> On 2020-06-17 16:25, Wen Gong wrote:
+>>> +
+>>> +			skb_queue_tail(&ar->wmi_mgmt_tx_queue, skb);
+>>> +			ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
+>> https://patchwork.kernel.org/patch/2947291/
+>> (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e00d31a0fb74c36f3b174ff0d4914cf09016e6f)
+>>
+>> Do you know why this patch used ieee80211_queue_work, not use "struct
+>> workqueue_struct *workqueue" of ath10k?
+>
+> No one know it?
 
-If you submitted the subscription request and forgot that you were already
-subscribed to the list, then you can ignore this message.  If you suspect that
-an attempt is being made to covertly discover whether you are a member of this
-list, and you are worried about your privacy, then feel free to send a message
-to the list administrator at ath10k-owner@lists.infradead.org.
+This is a patch from 7 years ago, it's quite difficult to remember
+anything else than what's in the commit log. And I don't think the email
+address for Bartosz works anymore.
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
