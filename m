@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jnqDK-0000yk-49
- for ath10k@lists.infradead.org; Tue, 23 Jun 2020 21:12:19 +0000
-Date: Wed, 24 Jun 2020 05:11:17 +0800
+ id 1jnqDF-0000yh-Ss
+ for ath10k@lists.infradead.org; Tue, 23 Jun 2020 21:12:15 +0000
+Date: Wed, 24 Jun 2020 05:11:14 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- a9bf090932032bd259672814670df701ecb3ff51
-Message-ID: <5ef26ff5.YJ2PS36BHQduR486%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 07170aa6071e0bf59518c3a0101bfbb813f0271c
+Message-ID: <5ef26ff2.ZmIhLAiFy/J4L03p%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +23,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: a9bf090932032bd259672814670df701ecb3ff51  ath11k: remove define ATH11K_QMI_DEFAULT_CAL_FILE_NAME
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 07170aa6071e0bf59518c3a0101bfbb813f0271c  Add localversion-wireless-testing-ath
 
 elapsed time: 725m
 
@@ -161,10 +160,10 @@ sparc                               defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
 um                               allmodconfig
+um                                allnoconfig
 um                               allyesconfig
+um                                  defconfig
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
 x86_64                               rhel-8.3
