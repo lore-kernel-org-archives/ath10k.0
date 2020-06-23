@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jnqDF-0000yh-Ss
- for ath10k@lists.infradead.org; Tue, 23 Jun 2020 21:12:15 +0000
-Date: Wed, 24 Jun 2020 05:11:14 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 07170aa6071e0bf59518c3a0101bfbb813f0271c
-Message-ID: <5ef26ff2.ZmIhLAiFy/J4L03p%lkp@intel.com>
-MIME-Version: 1.0
+ id 1jnr8N-0007sw-DL
+ for ath10k@lists.infradead.org; Tue, 23 Jun 2020 22:11:16 +0000
+Received: by mail-qt1-x842.google.com with SMTP id j10so114125qtq.11
+ for <ath10k@lists.infradead.org>; Tue, 23 Jun 2020 15:11:12 -0700 (PDT)
+From: Zekun Shen <bruceshenzk@gmail.com>
+Subject: [PATCH] net: ath10k: fix OOB: __ath10k_htt_rx_ring_fill_n
+Date: Tue, 23 Jun 2020 18:11:05 -0400
+Message-Id: <20200623221105.3486-1-bruceshenzk@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,166 +17,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+Cc: security@kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Zekun Shen <bruceshenzk@gmail.com>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 07170aa6071e0bf59518c3a0101bfbb813f0271c  Add localversion-wireless-testing-ath
+The idx in __ath10k_htt_rx_ring_fill_n function lives in
+consistent dma region writable by the device. Malfunctional
+or malicious device could manipulate such idx to have a OOB
+write. Either by
+    htt->rx_ring.netbufs_ring[idx] = skb;
+or by
+    ath10k_htt_set_paddrs_ring(htt, paddr, idx);
 
-elapsed time: 725m
+The idx can also be negative as it's signed, giving a large
+memory space to write to.
 
-configs tested: 138
-configs skipped: 10
+It's possibly exploitable by corruptting a legit pointer with
+a skb pointer. And then fill skb with payload as rougue object.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-powerpc                      mgcoge_defconfig
-sh                ecovec24-romimage_defconfig
-arm                        mvebu_v7_defconfig
-arm                        multi_v5_defconfig
-mips                malta_kvm_guest_defconfig
-sh                          rsk7203_defconfig
-arc                         haps_hs_defconfig
-xtensa                          iss_defconfig
-riscv                               defconfig
-arm                          lpd270_defconfig
-h8300                     edosk2674_defconfig
-sh                           se7722_defconfig
-nios2                            alldefconfig
-m68k                            q40_defconfig
-arm                            pleb_defconfig
-arm                           h3600_defconfig
-sh                          sdk7780_defconfig
-x86_64                              defconfig
-ia64                             allyesconfig
-mips                           ip28_defconfig
-alpha                            alldefconfig
-arc                             nps_defconfig
-arm                      integrator_defconfig
-arm                      tct_hammer_defconfig
-mips                        omega2p_defconfig
-powerpc                          g5_defconfig
-c6x                         dsk6455_defconfig
-arm                          tango4_defconfig
-powerpc                      ppc44x_defconfig
-m68k                             allyesconfig
-mips                           ip27_defconfig
-m68k                         amcore_defconfig
-powerpc                    gamecube_defconfig
-arc                          axs101_defconfig
-arc                              allyesconfig
-mips                     cu1000-neo_defconfig
-sparc                            alldefconfig
-sparc64                             defconfig
-mips                        nlm_xlr_defconfig
-sh                        sh7757lcr_defconfig
-arm                        multi_v7_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc8272_ads_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-arm                        clps711x_defconfig
-parisc                              defconfig
-sh                     sh7710voipgw_defconfig
-arm                            mps2_defconfig
-sh                          rsk7264_defconfig
-mips                          malta_defconfig
-mips                    maltaup_xpa_defconfig
-alpha                               defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200623
-i386                 randconfig-a002-20200623
-i386                 randconfig-a003-20200623
-i386                 randconfig-a001-20200623
-i386                 randconfig-a005-20200623
-i386                 randconfig-a004-20200623
-i386                 randconfig-a013-20200623
-i386                 randconfig-a016-20200623
-i386                 randconfig-a012-20200623
-i386                 randconfig-a014-20200623
-i386                 randconfig-a015-20200623
-i386                 randconfig-a011-20200623
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-
+Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Part of the log here. Sometimes it appears as UAF when writing 
+to a freed memory by chance.
+
+ [   15.594376] BUG: unable to handle page fault for address: ffff887f5c1804f0
+ [   15.595483] #PF: supervisor write access in kernel mode
+ [   15.596250] #PF: error_code(0x0002) - not-present page
+ [   15.597013] PGD 0 P4D 0
+ [   15.597395] Oops: 0002 [#1] SMP KASAN PTI
+ [   15.597967] CPU: 0 PID: 82 Comm: kworker/u2:2 Not tainted 5.6.0 #69
+ [   15.598843] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+ BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+ [   15.600438] Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
+ [   15.601389] RIP: 0010:__ath10k_htt_rx_ring_fill_n 
+ (linux/drivers/net/wireless/ath/ath10k/htt_rx.c:173) ath10k_core
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d787cbead..4e411b33a 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -142,6 +142,14 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
+ 	BUILD_BUG_ON(HTT_RX_RING_FILL_LEVEL >= HTT_RX_RING_SIZE / 2);
+ 
+ 	idx = __le32_to_cpu(*htt->rx_ring.alloc_idx.vaddr);
++
++	if (idx < 0 || idx >= htt->rx_ring.size) {
++		ath10k_err(htt->ar, "idx OOB, firmware malfunctioning?\n");
++		idx &= htt->rx_ring.size_mask;
++		ret = -ENOMEM;
++		goto fail;
++	}
++
+ 	while (num > 0) {
+ 		skb = dev_alloc_skb(HTT_RX_BUF_SIZE + HTT_RX_DESC_ALIGN);
+ 		if (!skb) {
+-- 
+2.17.1
+
 
 _______________________________________________
 ath10k mailing list
