@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jnqDF-0000yg-Sp
- for ath10k@lists.infradead.org; Tue, 23 Jun 2020 21:12:15 +0000
-Date: Wed, 24 Jun 2020 05:11:20 +0800
+ id 1jnqDK-0000yk-49
+ for ath10k@lists.infradead.org; Tue, 23 Jun 2020 21:12:19 +0000
+Date: Wed, 24 Jun 2020 05:11:17 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- b225ad9fb7dad4fc44022e9a4c46cbd8766395bd
-Message-ID: <5ef26ff8.FKkIhCeELHr4xhW5%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ a9bf090932032bd259672814670df701ecb3ff51
+Message-ID: <5ef26ff5.YJ2PS36BHQduR486%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: b225ad9fb7dad4fc44022e9a4c46cbd8766395bd  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: a9bf090932032bd259672814670df701ecb3ff51  ath11k: remove define ATH11K_QMI_DEFAULT_CAL_FILE_NAME
 
 elapsed time: 725m
 
-configs tested: 127
-configs skipped: 7
+configs tested: 138
+configs skipped: 10
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -43,6 +43,10 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
+powerpc                      mgcoge_defconfig
+sh                ecovec24-romimage_defconfig
+arm                        mvebu_v7_defconfig
+arm                        multi_v5_defconfig
 mips                malta_kvm_guest_defconfig
 sh                          rsk7203_defconfig
 arc                         haps_hs_defconfig
@@ -58,12 +62,23 @@ arm                           h3600_defconfig
 sh                          sdk7780_defconfig
 x86_64                              defconfig
 ia64                             allyesconfig
+mips                           ip28_defconfig
+alpha                            alldefconfig
+arc                             nps_defconfig
+arm                      integrator_defconfig
+arm                      tct_hammer_defconfig
 mips                        omega2p_defconfig
 powerpc                          g5_defconfig
 c6x                         dsk6455_defconfig
 arm                          tango4_defconfig
 powerpc                      ppc44x_defconfig
 m68k                             allyesconfig
+mips                           ip27_defconfig
+m68k                         amcore_defconfig
+powerpc                    gamecube_defconfig
+arc                          axs101_defconfig
+arc                              allyesconfig
+mips                     cu1000-neo_defconfig
 sparc                            alldefconfig
 sparc64                             defconfig
 mips                        nlm_xlr_defconfig
@@ -77,6 +92,10 @@ arm                        clps711x_defconfig
 parisc                              defconfig
 sh                     sh7710voipgw_defconfig
 arm                            mps2_defconfig
+sh                          rsk7264_defconfig
+mips                          malta_defconfig
+mips                    maltaup_xpa_defconfig
+alpha                               defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -98,14 +117,12 @@ nds32                               defconfig
 nds32                             allnoconfig
 csky                             allyesconfig
 csky                                defconfig
-alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 h8300                            allmodconfig
 xtensa                              defconfig
 arc                                 defconfig
-arc                              allyesconfig
 sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
@@ -126,12 +143,6 @@ i386                 randconfig-a003-20200623
 i386                 randconfig-a001-20200623
 i386                 randconfig-a005-20200623
 i386                 randconfig-a004-20200623
-x86_64               randconfig-a012-20200623
-x86_64               randconfig-a011-20200623
-x86_64               randconfig-a013-20200623
-x86_64               randconfig-a014-20200623
-x86_64               randconfig-a015-20200623
-x86_64               randconfig-a016-20200623
 i386                 randconfig-a013-20200623
 i386                 randconfig-a016-20200623
 i386                 randconfig-a012-20200623
