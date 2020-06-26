@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jospR-0000Lm-MM
- for ath10k@lists.infradead.org; Fri, 26 Jun 2020 18:11:58 +0000
+ id 1jospP-0000Lm-7f
+ for ath10k@lists.infradead.org; Fri, 26 Jun 2020 18:11:56 +0000
 From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: Skip wait for delete response if firmware is down
-Date: Fri, 26 Jun 2020 23:41:40 +0530
-Message-Id: <1593195100-24654-3-git-send-email-pillair@codeaurora.org>
+Subject: [PATCH 1/2] ath10k: Pause the tx queues when firmware is down
+Date: Fri, 26 Jun 2020 23:41:39 +0530
+Message-Id: <1593195100-24654-2-git-send-email-pillair@codeaurora.org>
 In-Reply-To: <1593195100-24654-1-git-send-email-pillair@codeaurora.org>
 References: <1593195100-24654-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,108 +25,134 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Currently the driver waits for response from the
-firmware for all the delete cmds, eg: vdev_delete,
-peer delete. If the firmware is down, these wait
-will always timeout and return an error.
-
-Also during subsytems recovery, any attempt to
-send a WMI cmd to the FW will return the -ESHUTDOWN
-status, which when returned to mac80211, can cause
-unnecessary warnings to be printed on to the console,
+When the FW goes down, the transmission of
+packets cannot be done. Currently we are not
+pausing the tx queues, hence there will be too
+many attempts to trasmit packets and each of
+them resulting in failure and thereby logging
+unwanted failure messages onto the console,
 as shown below
 
-[ 2559.529565] Call trace:
-[ 2559.532214]  __sta_info_destroy_part2+0x160/0x168 [mac80211]
-[ 2559.538157]  __sta_info_flush+0x124/0x180 [mac80211]
-[ 2559.543402]  ieee80211_set_disassoc+0x130/0x2c0 [mac80211]
-[ 2559.549172]  ieee80211_mgd_deauth+0x238/0x25c [mac80211]
-[ 2559.554764]  ieee80211_deauth+0x24/0x30 [mac80211]
-[ 2559.559860]  cfg80211_mlme_deauth+0x258/0x2b0 [cfg80211]
-[ 2559.565446]  nl80211_deauthenticate+0xe4/0x110 [cfg80211]
-[ 2559.571064]  genl_rcv_msg+0x3a0/0x440
-[ 2559.574888]  netlink_rcv_skb+0xb4/0x11c
-[ 2559.578877]  genl_rcv+0x34/0x48
-[ 2559.582162]  netlink_unicast+0x14c/0x1e4
-[ 2559.586235]  netlink_sendmsg+0x2f0/0x360
-[ 2559.590317]  sock_sendmsg+0x44/0x5c
-[ 2559.593951]  ____sys_sendmsg+0x1c8/0x290
-[ 2559.598029]  ___sys_sendmsg+0xa8/0xfc
-[ 2559.601840]  __sys_sendmsg+0x8c/0xd0
-[ 2559.605572]  __arm64_compat_sys_sendmsg+0x2c/0x38
-[ 2559.610468]  el0_svc_common+0xa8/0x160
-[ 2559.614372]  el0_svc_compat_handler+0x2c/0x38
-[ 2559.618905]  el0_svc_compat+0x8/0x10
+[   60.842192] ath10k_snoc 18800000.wifi: failed to transmit packet, dropping: -108
+[   60.850181] ath10k_snoc 18800000.wifi: failed to submit frame: -108
+[   60.857058] ath10k_snoc 18800000.wifi: failed to push frame: -108
+[   60.936217] ath10k_snoc 18800000.wifi: failed to transmit packet, dropping: -108
+[   60.944496] ath10k_snoc 18800000.wifi: failed to submit frame: -108
+[   60.951265] ath10k_snoc 18800000.wifi: failed to push frame: -108
+[   61.976589] ath10k_snoc 18800000.wifi: failed to transmit packet, dropping: -108
 
-Skip the wait for delete response from the
-firmware if the firmware is down. Also return
-success to the mac80211 calls when the peer delete
-cmd fails with return status -ESHUTDOWN.
+Stop the tx queues when the wlan firmware is
+down and also remove the unwanted duplicate/extra
+logging in the packet transmission path.
 
 Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
 Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 18 ++++++++++--------
+ drivers/net/wireless/ath/ath10k/snoc.c |  3 +++
+ 3 files changed, 14 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 62b1502..040053a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -900,6 +900,7 @@ static inline const char *ath10k_scan_state_str(enum ath10k_scan_state state)
+ 
+ enum ath10k_tx_pause_reason {
+ 	ATH10K_TX_PAUSE_Q_FULL,
++	ATH10K_TX_PAUSE_FW_DOWN,
+ 	ATH10K_TX_PAUSE_MAX,
+ };
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index dc7befc..7ac6549 100644
+index 3e38962..dc7befc 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -701,7 +701,8 @@ static void ath10k_wait_for_peer_delete_done(struct ath10k *ar, u32 vdev_id,
- 	unsigned long time_left;
- 	int ret;
+@@ -3348,6 +3348,7 @@ void ath10k_mac_tx_lock(struct ath10k *ar, int reason)
+ 	ar->tx_paused |= BIT(reason);
+ 	ieee80211_stop_queues(ar->hw);
+ }
++EXPORT_SYMBOL(ath10k_mac_tx_lock);
  
--	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
-+	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map) &&
-+	    test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
- 		ret = ath10k_wait_for_peer_deleted(ar, vdev_id, addr);
- 		if (ret) {
- 			ath10k_warn(ar, "failed wait for peer deleted");
-@@ -841,7 +842,8 @@ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- 	if (ret)
- 		return ret;
+ static void ath10k_mac_tx_unlock_iter(void *data, u8 *mac,
+ 				      struct ieee80211_vif *vif)
+@@ -3378,6 +3379,7 @@ void ath10k_mac_tx_unlock(struct ath10k *ar, int reason)
  
--	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
-+	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map) &&
-+	    test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
- 		unsigned long time_left;
+ 	ieee80211_wake_queue(ar->hw, ar->hw->offchannel_tx_hw_queue);
+ }
++EXPORT_SYMBOL(ath10k_mac_tx_unlock);
  
- 		time_left = wait_for_completion_timeout
-@@ -5673,7 +5675,8 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to delete WMI vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
--	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
-+	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map) &&
-+	    test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
- 		time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
- 							ATH10K_VDEV_DELETE_TIMEOUT_HZ);
- 		if (time_left == 0) {
-@@ -6110,6 +6113,11 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
- 		goto exit;
+ void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason)
+ {
+@@ -3748,11 +3750,8 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
+ 		break;
  	}
  
-+	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
-+		ret = -ESHUTDOWN;
-+		goto exit;
-+	}
-+
- 	spin_lock_bh(&ar->data_lock);
- 	switch (ar->scan.state) {
- 	case ATH10K_SCAN_IDLE:
-@@ -6758,7 +6766,9 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		}
+-	if (ret) {
+-		ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
+-			    ret);
++	if (ret)
+ 		ieee80211_free_txskb(ar->hw, skb);
+-	}
  
- 		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
--		if (ret)
+ 	return ret;
+ }
+@@ -3806,10 +3805,8 @@ static int ath10k_mac_tx(struct ath10k *ar,
+ 	}
+ 
+ 	ret = ath10k_mac_tx_submit(ar, txmode, txpath, skb);
+-	if (ret) {
+-		ath10k_warn(ar, "failed to submit frame: %d\n", ret);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	return 0;
+ }
+@@ -4441,7 +4438,12 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 
+ 	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, false);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
 +		if (ret == -ESHUTDOWN)
-+			ret = 0;
-+		else if (ret)
- 			ath10k_warn(ar, "failed to delete peer %pM for vdev %d: %i\n",
- 				    sta->addr, arvif->vdev_id, ret);
++			ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to transmit frame: %d\n",
++				   ret);
++		else
++			ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
++
+ 		if (is_htt) {
+ 			spin_lock_bh(&ar->htt.tx_lock);
+ 			ath10k_htt_tx_dec_pending(htt);
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 407a074..8440e64 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -20,6 +20,7 @@
+ #include "hif.h"
+ #include "htc.h"
+ #include "snoc.h"
++#include "mac.h"
  
+ #define ATH10K_SNOC_RX_POST_RETRY_MS 50
+ #define CE_POLL_PIPE 4
+@@ -1296,6 +1297,7 @@ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+ 	switch (type) {
+ 	case ATH10K_QMI_EVENT_FW_READY_IND:
+ 		if (test_bit(ATH10K_SNOC_FLAG_REGISTERED, &ar_snoc->flags)) {
++			ath10k_mac_tx_unlock(ar, ATH10K_TX_PAUSE_FW_DOWN);
+ 			queue_work(ar->workqueue, &ar->restart_work);
+ 			break;
+ 		}
+@@ -1313,6 +1315,7 @@ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+ 	case ATH10K_QMI_EVENT_FW_DOWN_IND:
+ 		set_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags);
+ 		set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
++		ath10k_mac_tx_lock(ar, ATH10K_TX_PAUSE_FW_DOWN);
+ 		break;
+ 	default:
+ 		ath10k_err(ar, "invalid fw indication: %llx\n", type);
 -- 
 2.7.4
 
