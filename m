@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1josXG-0006cT-Bz
- for ath10k@lists.infradead.org; Fri, 26 Jun 2020 17:53:13 +0000
+ id 1josff-000834-T9
+ for ath10k@lists.infradead.org; Fri, 26 Jun 2020 18:01:52 +0000
 From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Register shutdown handler
-Date: Fri, 26 Jun 2020 23:23:01 +0530
-Message-Id: <1593193981-30161-1-git-send-email-pillair@codeaurora.org>
+Subject: [PATCH 0/2] ath10k: Add chain-1 voltage regulator voting
+Date: Fri, 26 Jun 2020 23:31:40 +0530
+Message-Id: <1593194502-13164-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +20,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, devicetree@vger.kernel.org
 Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-As a part of device shutdown the smmu driver will be
-stopped and henceforth any IOVA address translation
-will not be done. The wlan driver, being one of the
-smmu driver consumer, should stop all the dma related
-activity as a part of shutdown, and thereby ensuring
-that no dma activity is done once the smmu driver
-shuts down.
+Add the support to vote for the chain-1
+voltage regulator for WCN3990. This is
+added as an optional property.
 
-During the device shutdown, the smmu calls shutdown
-for all its consumers in order to indicate them to
-stop all their dma activities.
+Rakesh Pillai (2):
+  dt: bindings: Add new regulator as optional property for WCN3990
+  ath10k: Add support for chain1 regulator supply voting
 
-Register the shutdown handler to stop the wlan
-driver and avoid any dma operations.
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 4 +++-
+ drivers/net/wireless/ath/ath10k/snoc.c                         | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 354d49b..645ed5f 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1772,9 +1772,18 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static void ath10k_snoc_shutdown(struct platform_device *pdev)
-+{
-+	struct ath10k *ar = platform_get_drvdata(pdev);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc shutdown\n");
-+	ath10k_snoc_remove(pdev);
-+}
-+
- static struct platform_driver ath10k_snoc_driver = {
- 	.probe  = ath10k_snoc_probe,
- 	.remove = ath10k_snoc_remove,
-+	.shutdown =  ath10k_snoc_shutdown,
- 	.driver = {
- 		.name   = "ath10k_snoc",
- 		.of_match_table = ath10k_snoc_dt_match,
 -- 
 2.7.4
 
