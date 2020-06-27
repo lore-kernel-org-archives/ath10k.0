@@ -1,27 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk1-x743.google.com ([2607:f8b0:4864:20::743])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jowH7-0006hq-86
- for ath10k@lists.infradead.org; Fri, 26 Jun 2020 21:52:46 +0000
-Received: by mail-qk1-x743.google.com with SMTP id z63so10168775qkb.8
- for <ath10k@lists.infradead.org>; Fri, 26 Jun 2020 14:52:44 -0700 (PDT)
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com.
- [209.85.219.49])
- by smtp.gmail.com with ESMTPSA id t138sm4360681qka.15.2020.06.26.14.52.42
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 26 Jun 2020 14:52:42 -0700 (PDT)
-Received: by mail-qv1-f49.google.com with SMTP id m9so5179957qvx.5
- for <ath10k@lists.infradead.org>; Fri, 26 Jun 2020 14:52:42 -0700 (PDT)
+ id 1jp1Bh-0002fZ-Sn
+ for ath10k@lists.infradead.org; Sat, 27 Jun 2020 03:07:31 +0000
+Date: Sat, 27 Jun 2020 11:06:36 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 32a8a23aa81167f019062fe16664de35e49398c1
+Message-ID: <5ef6b7bc.GyDHuXE81fKhGAqw%lkp@intel.com>
 MIME-Version: 1.0
-References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
- <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
-In-Reply-To: <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
-From: Brian Norris <briannorris@chromium.org>
-Date: Fri, 26 Jun 2020 14:52:30 -0700
-Message-ID: <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +21,127 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rakesh Pillai <pillair@codeaurora.org>, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>, LKML <linux-kernel@vger.kernel.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Fri, Jun 26, 2020 at 2:49 PM Doug Anderson <dianders@chromium.org> wrote:
-> I should also note that, while I'm not terribly familiar with Kalle's
-> workflow, I would have expected to see him in the "To:" list.  I've
-> added him, but it's possible he'll need you to repost the patch with
-> him in the "To:" list.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 32a8a23aa81167f019062fe16664de35e49398c1  HACK: ath11k: disable L1 to prevent device entering low power state
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#who_to_address
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
+elapsed time: 724m
 
-Patchwork is his patch queue, so I don't think you need to address him directly.
+configs tested: 103
+configs skipped: 7
 
-Brian
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                               defconfig
+arc                     haps_hs_smp_defconfig
+s390                             allyesconfig
+powerpc                          g5_defconfig
+mips                        jmr3927_defconfig
+sh                           se7751_defconfig
+arm                       imx_v6_v7_defconfig
+arm                            xcep_defconfig
+arm                      pxa255-idp_defconfig
+arm                          tango4_defconfig
+h8300                            allyesconfig
+arm                            lart_defconfig
+m68k                          atari_defconfig
+arm                        mini2440_defconfig
+arm                          pxa168_defconfig
+arc                                 defconfig
+arm                             pxa_defconfig
+arm                         lpc18xx_defconfig
+mips                           ip27_defconfig
+arm                     eseries_pxa_defconfig
+mips                      loongson3_defconfig
+i386                             alldefconfig
+sh                           se7724_defconfig
+mips                     loongson1b_defconfig
+parisc                            allnoconfig
+arm                         bcm2835_defconfig
+powerpc                       ppc64_defconfig
+sh                  sh7785lcr_32bit_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
