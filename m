@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jrjs1-0004v1-2s
- for ath10k@lists.infradead.org; Sat, 04 Jul 2020 15:14:27 +0000
+ id 1jrjs2-0004v3-0n
+ for ath10k@lists.infradead.org; Sat, 04 Jul 2020 15:14:30 +0000
 From: Tamizh Chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv2 0/4] ath10k: Add support for TID specific configuration
-Date: Sat,  4 Jul 2020 20:43:30 +0530
-Message-Id: <1593875614-5683-1-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv2 2/4] ath10k: Move rate mask validation function up in the
+ file
+Date: Sat,  4 Jul 2020 20:43:32 +0530
+Message-Id: <1593875614-5683-3-git-send-email-tamizhr@codeaurora.org>
+In-Reply-To: <1593875614-5683-1-git-send-email-tamizhr@codeaurora.org>
+References: <1593875614-5683-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +26,214 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Tamizh Chelvam <tamizhr@codeaurora.org>
 
-Add TID specific configuration for noack, retry count, aggregation, Tx rate
-and RTS_CTS control. Here if noack is enabled for the TID then aggregation
-should be disabled and Tx rate should be and retry count will be 0.
-Also add support for reset TID configuration.
+This patch does not have any functional changes.
 
+Tested-on: QCA9984 hw1.0 PCI 10.4-3.9.0.2-00021
 
-Tamizh Chelvam (4):
-  ath10k: Add wmi command support for station specific TID config
-  ath10k: Move rate mask validation function up in the file
-  ath10k: Add new api to support TID specific configuration
-  ath10k: Add new api to support reset TID config
+Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 174 +++++++++++++++++-----------------
+ 1 file changed, 87 insertions(+), 87 deletions(-)
 
-v2:
-
- * Fixed warnings reported by kernel test robot <lkp@intel.com>
-
- drivers/net/wireless/ath/ath10k/core.c    |   4 +
- drivers/net/wireless/ath/ath10k/core.h    |  20 +
- drivers/net/wireless/ath/ath10k/mac.c     | 837 ++++++++++++++++++++++++++----
- drivers/net/wireless/ath/ath10k/txrx.c    |  11 +-
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  19 +
- drivers/net/wireless/ath/ath10k/wmi.c     |  35 ++
- drivers/net/wireless/ath/ath10k/wmi.h     |  72 +++
- 7 files changed, 905 insertions(+), 93 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3e38962..7023ccf 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6602,6 +6602,93 @@ static int ath10k_sta_set_txpwr(struct ieee80211_hw *hw,
+ 	return ret;
+ }
+ 
++static bool
++ath10k_mac_bitrate_mask_has_single_rate(struct ath10k *ar,
++					enum nl80211_band band,
++					const struct cfg80211_bitrate_mask *mask,
++					int *vht_num_rates)
++{
++	int num_rates = 0;
++	int i, tmp;
++
++	num_rates += hweight32(mask->control[band].legacy);
++
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++)
++		num_rates += hweight8(mask->control[band].ht_mcs[i]);
++
++	*vht_num_rates = 0;
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
++		tmp = hweight16(mask->control[band].vht_mcs[i]);
++		num_rates += tmp;
++		*vht_num_rates += tmp;
++	}
++
++	return num_rates == 1;
++}
++
++static int
++ath10k_mac_bitrate_mask_get_single_rate(struct ath10k *ar,
++					enum nl80211_band band,
++					const struct cfg80211_bitrate_mask *mask,
++					u8 *rate, u8 *nss, bool vht_only)
++{
++	int rate_idx;
++	int i;
++	u16 bitrate;
++	u8 preamble;
++	u8 hw_rate;
++
++	if (vht_only)
++		goto next;
++
++	if (hweight32(mask->control[band].legacy) == 1) {
++		rate_idx = ffs(mask->control[band].legacy) - 1;
++
++		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
++			rate_idx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
++
++		hw_rate = ath10k_wmi_legacy_rates[rate_idx].hw_value;
++		bitrate = ath10k_wmi_legacy_rates[rate_idx].bitrate;
++
++		if (ath10k_mac_bitrate_is_cck(bitrate))
++			preamble = WMI_RATE_PREAMBLE_CCK;
++		else
++			preamble = WMI_RATE_PREAMBLE_OFDM;
++
++		*nss = 1;
++		*rate = preamble << 6 |
++			(*nss - 1) << 4 |
++			hw_rate << 0;
++
++		return 0;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++) {
++		if (hweight8(mask->control[band].ht_mcs[i]) == 1) {
++			*nss = i + 1;
++			*rate = WMI_RATE_PREAMBLE_HT << 6 |
++				(*nss - 1) << 4 |
++				(ffs(mask->control[band].ht_mcs[i]) - 1);
++
++			return 0;
++		}
++	}
++
++next:
++	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
++		if (hweight16(mask->control[band].vht_mcs[i]) == 1) {
++			*nss = i + 1;
++			*rate = WMI_RATE_PREAMBLE_VHT << 6 |
++				(*nss - 1) << 4 |
++				(ffs(mask->control[band].vht_mcs[i]) - 1);
++
++			return 0;
++		}
++	}
++
++	return -EINVAL;
++}
++
+ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			    struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta,
+@@ -7352,30 +7439,6 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ }
+ 
+ static bool
+-ath10k_mac_bitrate_mask_has_single_rate(struct ath10k *ar,
+-					enum nl80211_band band,
+-					const struct cfg80211_bitrate_mask *mask,
+-					int *vht_num_rates)
+-{
+-	int num_rates = 0;
+-	int i, tmp;
+-
+-	num_rates += hweight32(mask->control[band].legacy);
+-
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++)
+-		num_rates += hweight8(mask->control[band].ht_mcs[i]);
+-
+-	*vht_num_rates = 0;
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
+-		tmp = hweight16(mask->control[band].vht_mcs[i]);
+-		num_rates += tmp;
+-		*vht_num_rates += tmp;
+-	}
+-
+-	return num_rates == 1;
+-}
+-
+-static bool
+ ath10k_mac_bitrate_mask_get_single_nss(struct ath10k *ar,
+ 				       enum nl80211_band band,
+ 				       const struct cfg80211_bitrate_mask *mask,
+@@ -7424,69 +7487,6 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ 	return true;
+ }
+ 
+-static int
+-ath10k_mac_bitrate_mask_get_single_rate(struct ath10k *ar,
+-					enum nl80211_band band,
+-					const struct cfg80211_bitrate_mask *mask,
+-					u8 *rate, u8 *nss, bool vht_only)
+-{
+-	int rate_idx;
+-	int i;
+-	u16 bitrate;
+-	u8 preamble;
+-	u8 hw_rate;
+-
+-	if (vht_only)
+-		goto next;
+-
+-	if (hweight32(mask->control[band].legacy) == 1) {
+-		rate_idx = ffs(mask->control[band].legacy) - 1;
+-
+-		if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
+-			rate_idx += ATH10K_MAC_FIRST_OFDM_RATE_IDX;
+-
+-		hw_rate = ath10k_wmi_legacy_rates[rate_idx].hw_value;
+-		bitrate = ath10k_wmi_legacy_rates[rate_idx].bitrate;
+-
+-		if (ath10k_mac_bitrate_is_cck(bitrate))
+-			preamble = WMI_RATE_PREAMBLE_CCK;
+-		else
+-			preamble = WMI_RATE_PREAMBLE_OFDM;
+-
+-		*nss = 1;
+-		*rate = preamble << 6 |
+-			(*nss - 1) << 4 |
+-			hw_rate << 0;
+-
+-		return 0;
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].ht_mcs); i++) {
+-		if (hweight8(mask->control[band].ht_mcs[i]) == 1) {
+-			*nss = i + 1;
+-			*rate = WMI_RATE_PREAMBLE_HT << 6 |
+-				(*nss - 1) << 4 |
+-				(ffs(mask->control[band].ht_mcs[i]) - 1);
+-
+-			return 0;
+-		}
+-	}
+-
+-next:
+-	for (i = 0; i < ARRAY_SIZE(mask->control[band].vht_mcs); i++) {
+-		if (hweight16(mask->control[band].vht_mcs[i]) == 1) {
+-			*nss = i + 1;
+-			*rate = WMI_RATE_PREAMBLE_VHT << 6 |
+-				(*nss - 1) << 4 |
+-				(ffs(mask->control[band].vht_mcs[i]) - 1);
+-
+-			return 0;
+-		}
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static int ath10k_mac_set_fixed_rate_params(struct ath10k_vif *arvif,
+ 					    u8 rate, u8 nss, u8 sgi, u8 ldpc)
+ {
 -- 
 1.9.1
 
