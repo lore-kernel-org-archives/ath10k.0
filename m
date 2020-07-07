@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jrjs0-0004uv-GL
- for ath10k@lists.infradead.org; Sat, 04 Jul 2020 15:14:28 +0000
-From: Tamizh Chelvam <tamizhr@codeaurora.org>
-Subject: [PATCHv2 1/4] ath10k: Add wmi command support for station specific
- TID config
-Date: Sat,  4 Jul 2020 20:43:31 +0530
-Message-Id: <1593875614-5683-2-git-send-email-tamizhr@codeaurora.org>
-In-Reply-To: <1593875614-5683-1-git-send-email-tamizhr@codeaurora.org>
-References: <1593875614-5683-1-git-send-email-tamizhr@codeaurora.org>
+ id 1jsrEm-0007am-Je
+ for ath10k@lists.infradead.org; Tue, 07 Jul 2020 17:18:33 +0000
+Received: by mail-pl1-x644.google.com with SMTP id 72so6432964ple.0
+ for <ath10k@lists.infradead.org>; Tue, 07 Jul 2020 10:18:31 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] ath10k: Keep track of which interrupts fired, don't poll them
+Date: Tue,  7 Jul 2020 10:17:34 -0700
+Message-Id: <20200707101712.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,223 +18,278 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Tamizh Chelvam <tamizhr@codeaurora.org>
+To: kvalo@codeaurora.org, ath10k@lists.infradead.org
+Cc: saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, linux-kernel@vger.kernel.org, pillair@codeaurora.org, netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, kuabhs@google.com
 
-This patch adds WMI interface to configure station specific
-TID configuration . Host needs to send station's MAC address
-along with TID number and its configuration to target through
-WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID.
+If we have a per CE (Copy Engine) IRQ then we have no summary
+register.  Right now the code generates a summary register by
+iterating over all copy engines and seeing if they have an interrupt
+pending.
 
-WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT flag is added to advertise
-this support.
+This has a problem.  Specifically if _none_ if the Copy Engines have
+an interrupt pending then they might go into low power mode and
+reading from their address space will cause a full system crash.  This
+was seen to happen when two interrupts went off at nearly the same
+time.  Both were handled by a single call of ath10k_snoc_napi_poll()
+but, because there were two interrupts handled and thus two calls to
+napi_schedule() there was still a second call to
+ath10k_snoc_napi_poll() which ran with no interrupts pending.
 
-Tested-on: QCA9984 hw1.0 PCI 10.4-3.9.0.2-00021
+Instead of iterating over all the copy engines, let's just keep track
+of the IRQs that fire.  Then we can effectively generate our own
+summary without ever needing to read the Copy Engines.
 
-Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
+Tested-on: WCN3990 SNOC WLAN.HL.3.2.2-00490-QCAHLSWMTPL-1
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 19 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c     | 32 +++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 52 +++++++++++++++++++++++++++++++
- 3 files changed, 103 insertions(+)
+This patch continues work to try to squash all instances of the crash
+we've been seeing while reading CE registers and hopefully this patch
+addresses the true root of the issue.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 0dd484f..fc9e3ae 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -224,6 +224,8 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_bb_timing)
- 			(struct ath10k *ar,
- 			 const struct wmi_bb_timing_cfg_arg *arg);
-+	struct sk_buff *(*gen_per_peer_per_tid_cfg)(struct ath10k *ar,
-+				const struct wmi_per_peer_per_tid_cfg_arg *arg);
- 
- };
- 
-@@ -1656,4 +1658,21 @@ struct wmi_ops {
- 	return ath10k_wmi_cmd_send(ar, skb,
- 				   ar->wmi.cmd->set_bb_timing_cmdid);
- }
-+
-+static inline int
-+ath10k_wmi_set_per_peer_per_tid_cfg(struct ath10k *ar,
-+				const struct wmi_per_peer_per_tid_cfg_arg *arg)
-+{
-+	struct sk_buff *skb;
-+
-+	if (!ar->wmi.ops->gen_per_peer_per_tid_cfg)
-+		return -EOPNOTSUPP;
-+
-+	skb = ar->wmi.ops->gen_per_peer_per_tid_cfg(ar, arg);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	return ath10k_wmi_cmd_send(ar, skb,
-+				   ar->wmi.cmd->per_peer_per_tid_config_cmdid);
-+}
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a81a1ab..4316551 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -740,6 +740,7 @@
- 	.tdls_peer_update_cmdid = WMI_10_4_TDLS_PEER_UPDATE_CMDID,
- 	.tdls_set_offchan_mode_cmdid = WMI_10_4_TDLS_SET_OFFCHAN_MODE_CMDID,
- 	.radar_found_cmdid = WMI_10_4_RADAR_FOUND_CMDID,
-+	.per_peer_per_tid_config_cmdid = WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID,
- };
- 
- static struct wmi_peer_param_map wmi_peer_param_map = {
-@@ -9005,6 +9006,36 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+The first patch that attempted to address these problems landed as
+commit 8f9ed93d09a9 ("ath10k: Wait until copy complete is actually
+done before completing").  After that Rakesh Pillai posted ("ath10k:
+Add interrupt summary based CE processing") [1] and this patch is
+based atop that one.  Both of those patches significantly reduced the
+instances of problems but didn't fully eliminate them.  Crossing my
+fingers that they're all gone now.
+
+[1] https://lore.kernel.org/r/1593193967-29897-1-git-send-email-pillair@codeaurora.org
+
+ drivers/net/wireless/ath/ath10k/ce.c   | 84 ++++++++++----------------
+ drivers/net/wireless/ath/ath10k/ce.h   | 14 ++---
+ drivers/net/wireless/ath/ath10k/snoc.c | 18 ++++--
+ drivers/net/wireless/ath/ath10k/snoc.h |  1 +
+ 4 files changed, 51 insertions(+), 66 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 1e16f263854a..84ec80c6d08f 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -481,38 +481,6 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+ 	ath10k_ce_write32(ar, ce_ctrl_addr + wm_regs->addr, mask);
  }
  
- static struct sk_buff *
-+ath10k_wmi_10_4_gen_per_peer_per_tid_cfg(struct ath10k *ar,
-+				const struct wmi_per_peer_per_tid_cfg_arg *arg)
-+{
-+	struct wmi_peer_per_tid_cfg_cmd *cmd;
-+	struct sk_buff *skb;
-+
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	memset(skb->data, 0, sizeof(*cmd));
-+
-+	cmd = (struct wmi_peer_per_tid_cfg_cmd *)skb->data;
-+	cmd->vdev_id = cpu_to_le32(arg->vdev_id);
-+	ether_addr_copy(cmd->peer_macaddr.addr, arg->peer_macaddr.addr);
-+	cmd->tid = cpu_to_le32(arg->tid);
-+	cmd->ack_policy = cpu_to_le32(arg->ack_policy);
-+	cmd->aggr_control = cpu_to_le32(arg->aggr_control);
-+	cmd->rate_control = cpu_to_le32(arg->rate_ctrl);
-+	cmd->retry_count = cpu_to_le32(arg->retry_count);
-+	cmd->rcode_flags = cpu_to_le32(arg->rcode_flags);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi noack tid %d vdev id %d ack_policy %d aggr %u rate_ctrl %u rcflag %u retry_count %d mac_addr %pM\n",
-+		   arg->tid, arg->vdev_id, arg->ack_policy, arg->aggr_control, arg->rate_ctrl,
-+		   arg->rcode_flags, arg->retry_count, arg->peer_macaddr.addr);
-+	return skb;
-+}
-+
-+static struct sk_buff *
- ath10k_wmi_op_gen_echo(struct ath10k *ar, u32 value)
- {
- 	struct wmi_echo_cmd *cmd;
-@@ -9413,6 +9444,7 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	.gen_pdev_get_tpc_table_cmdid =
- 			ath10k_wmi_10_4_op_gen_pdev_get_tpc_table_cmdid,
- 	.gen_radar_found = ath10k_wmi_10_4_gen_radar_found,
-+	.gen_per_peer_per_tid_cfg = ath10k_wmi_10_4_gen_per_peer_per_tid_cfg,
- 
- 	/* shared with 10.2 */
- 	.pull_echo_ev = ath10k_wmi_op_pull_echo_ev,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 511144b..7fed735 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -203,6 +203,7 @@ enum wmi_service {
- 	WMI_SERVICE_SYNC_DELETE_CMDS,
- 	WMI_SERVICE_TX_PWR_PER_PEER,
- 	WMI_SERVICE_SUPPORT_EXTEND_ADDRESS,
-+	WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT,
- 
- 	/* Remember to add the new value to wmi_service_name()! */
- 
-@@ -503,6 +504,7 @@ static inline char *wmi_service_name(enum wmi_service service_id)
- 	SVCSTR(WMI_SERVICE_SYNC_DELETE_CMDS);
- 	SVCSTR(WMI_SERVICE_TX_PWR_PER_PEER);
- 	SVCSTR(WMI_SERVICE_SUPPORT_EXTEND_ADDRESS);
-+	SVCSTR(WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT);
- 
- 	case WMI_SERVICE_MAX:
- 		return NULL;
-@@ -834,6 +836,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_TX_PWR_PER_PEER, len);
- 	SVCMAP(WMI_10_4_SERVICE_RESET_CHIP,
- 	       WMI_SERVICE_RESET_CHIP, len);
-+	SVCMAP(WMI_10_4_SERVICE_PEER_TID_CONFIGS_SUPPORT,
-+	       WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT, len);
- }
- 
- #undef SVCMAP
-@@ -1036,6 +1040,7 @@ struct wmi_cmd_map {
- 	u32 tdls_set_offchan_mode_cmdid;
- 	u32 radar_found_cmdid;
- 	u32 set_bb_timing_cmdid;
-+	u32 per_peer_per_tid_config_cmdid;
- };
- 
+-static bool ath10k_ce_engine_int_status_check(struct ath10k *ar, u32 ce_ctrl_addr,
+-					      unsigned int mask)
+-{
+-	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
+-
+-	return ath10k_ce_read32(ar, ce_ctrl_addr + wm_regs->addr) & mask;
+-}
+-
+-u32 ath10k_ce_gen_interrupt_summary(struct ath10k *ar)
+-{
+-	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
+-	struct ath10k_ce_pipe *ce_state;
+-	struct ath10k_ce *ce;
+-	u32 irq_summary = 0;
+-	u32 ctrl_addr;
+-	u32 ce_id;
+-
+-	ce = ath10k_ce_priv(ar);
+-
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+-		ce_state = &ce->ce_states[ce_id];
+-		ctrl_addr = ce_state->ctrl_addr;
+-		if (ath10k_ce_engine_int_status_check(ar, ctrl_addr,
+-						      wm_regs->cc_mask)) {
+-			irq_summary |= BIT(ce_id);
+-		}
+-	}
+-
+-	return irq_summary;
+-}
+-EXPORT_SYMBOL(ath10k_ce_gen_interrupt_summary);
+-
  /*
-@@ -1877,6 +1882,8 @@ enum wmi_10_4_cmd_id {
- 	WMI_10_4_PDEV_SET_BRIDGE_MACADDR_CMDID,
- 	WMI_10_4_ATF_GROUP_WMM_AC_CONFIG_REQUEST_CMDID,
- 	WMI_10_4_RADAR_FOUND_CMDID,
-+	WMI_10_4_PEER_CFR_CAPTURE_CMDID,
-+	WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID,
- 	WMI_10_4_PDEV_UTF_CMDID = WMI_10_4_END_CMDID - 1,
+  * Guts of ath10k_ce_send.
+  * The caller takes responsibility for any needed locking.
+@@ -1399,45 +1367,55 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state)
+ 	ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+ }
+ 
+-int ath10k_ce_disable_interrupts(struct ath10k *ar)
++void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 	struct ath10k_ce_pipe *ce_state;
+ 	u32 ctrl_addr;
+-	int ce_id;
+ 
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+-		ce_state  = &ce->ce_states[ce_id];
+-		if (ce_state->attr_flags & CE_ATTR_POLL)
+-			continue;
++	ce_state  = &ce->ce_states[ce_id];
++	if (ce_state->attr_flags & CE_ATTR_POLL)
++		return;
+ 
+-		ctrl_addr = ath10k_ce_base_address(ar, ce_id);
++	ctrl_addr = ath10k_ce_base_address(ar, ce_id);
+ 
+-		ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
+-		ath10k_ce_error_intr_disable(ar, ctrl_addr);
+-		ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+-	}
++	ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
++	ath10k_ce_error_intr_disable(ar, ctrl_addr);
++	ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
++}
++EXPORT_SYMBOL(ath10k_ce_disable_interrupt);
+ 
+-	return 0;
++void ath10k_ce_disable_interrupts(struct ath10k *ar)
++{
++	int ce_id;
++
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++		ath10k_ce_disable_interrupt(ar, ce_id);
+ }
+ EXPORT_SYMBOL(ath10k_ce_disable_interrupts);
+ 
+-void ath10k_ce_enable_interrupts(struct ath10k *ar)
++void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+-	int ce_id;
+ 	struct ath10k_ce_pipe *ce_state;
+ 
++	ce_state  = &ce->ce_states[ce_id];
++	if (ce_state->attr_flags & CE_ATTR_POLL)
++		return;
++
++	ath10k_ce_per_engine_handler_adjust(ce_state);
++}
++EXPORT_SYMBOL(ath10k_ce_enable_interrupt);
++
++void ath10k_ce_enable_interrupts(struct ath10k *ar)
++{
++	int ce_id;
++
+ 	/* Enable interrupts for copy engine that
+ 	 * are not using polling mode.
+ 	 */
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+-		ce_state  = &ce->ce_states[ce_id];
+-		if (ce_state->attr_flags & CE_ATTR_POLL)
+-			continue;
+-
+-		ath10k_ce_per_engine_handler_adjust(ce_state);
+-	}
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++		ath10k_ce_enable_interrupt(ar, ce_id);
+ }
+ EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index a440aaf74aa4..666ce384a1d8 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -255,12 +255,13 @@ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
+ /*==================CE Interrupt Handlers====================*/
+ void ath10k_ce_per_engine_service_any(struct ath10k *ar);
+ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id);
+-int ath10k_ce_disable_interrupts(struct ath10k *ar);
++void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id);
++void ath10k_ce_disable_interrupts(struct ath10k *ar);
++void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id);
+ void ath10k_ce_enable_interrupts(struct ath10k *ar);
+ void ath10k_ce_dump_registers(struct ath10k *ar,
+ 			      struct ath10k_fw_crash_data *crash_data);
+ 
+-u32 ath10k_ce_gen_interrupt_summary(struct ath10k *ar);
+ void ath10k_ce_alloc_rri(struct ath10k *ar);
+ void ath10k_ce_free_rri(struct ath10k *ar);
+ 
+@@ -376,12 +377,9 @@ static inline u32 ath10k_ce_interrupt_summary(struct ath10k *ar)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 
+-	if (!ar->hw_params.per_ce_irq)
+-		return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
+-			ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
+-			CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
+-	else
+-		return ath10k_ce_gen_interrupt_summary(ar);
++	return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
++		ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
++		CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
+ }
+ 
+ /* Host software's Copy Engine configuration. */
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 354d49b1cd45..2fc4dcbab70a 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2018 The Linux Foundation. All rights reserved.
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -1158,7 +1159,9 @@ static irqreturn_t ath10k_snoc_per_engine_handler(int irq, void *arg)
+ 		return IRQ_HANDLED;
+ 	}
+ 
+-	ath10k_snoc_irq_disable(ar);
++	ath10k_ce_disable_interrupt(ar, ce_id);
++	set_bit(ce_id, ar_snoc->pending_ce_irqs);
++
+ 	napi_schedule(&ar->napi);
+ 
+ 	return IRQ_HANDLED;
+@@ -1167,20 +1170,25 @@ static irqreturn_t ath10k_snoc_per_engine_handler(int irq, void *arg)
+ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
+ {
+ 	struct ath10k *ar = container_of(ctx, struct ath10k, napi);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 	int done = 0;
++	int ce_id;
+ 
+ 	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
+ 		napi_complete(ctx);
+ 		return done;
+ 	}
+ 
+-	ath10k_ce_per_engine_service_any(ar);
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++		if (test_and_clear_bit(ce_id, ar_snoc->pending_ce_irqs)) {
++			ath10k_ce_per_engine_service(ar, ce_id);
++			ath10k_ce_enable_interrupt(ar, ce_id);
++		}
++
+ 	done = ath10k_htt_txrx_compl_task(ar, budget);
+ 
+-	if (done < budget) {
++	if (done < budget)
+ 		napi_complete(ctx);
+-		ath10k_snoc_irq_enable(ar);
+-	}
+ 
+ 	return done;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index a3dd06f6ac62..5095d1893681 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -78,6 +78,7 @@ struct ath10k_snoc {
+ 	unsigned long flags;
+ 	bool xo_cal_supported;
+ 	u32 xo_cal_data;
++	DECLARE_BITMAP(pending_ce_irqs, CE_COUNT_MAX);
  };
  
-@@ -7220,6 +7227,51 @@ struct wmi_tdls_peer_event {
- 	__le32 vdev_id;
- } __packed;
- 
-+enum wmi_tid_aggr_control_conf {
-+	WMI_TID_CONFIG_AGGR_CONTROL_IGNORE,
-+	WMI_TID_CONFIG_AGGR_CONTROL_ENABLE,
-+	WMI_TID_CONFIG_AGGR_CONTROL_DISABLE,
-+};
-+
-+enum wmi_noack_tid_conf {
-+	WMI_NOACK_TID_CONFIG_IGNORE_ACK_POLICY,
-+	WMI_PEER_TID_CONFIG_ACK,
-+	WMI_PEER_TID_CONFIG_NOACK,
-+};
-+
-+enum wmi_tid_rate_ctrl_conf {
-+	WMI_TID_CONFIG_RATE_CONTROL_IGNORE,
-+	WMI_TID_CONFIG_RATE_CONTROL_AUTO,
-+	WMI_TID_CONFIG_RATE_CONTROL_FIXED_RATE,
-+	WMI_TID_CONFIG_RATE_CONTROL_DEFAULT_LOWEST_RATE,
-+};
-+
-+struct wmi_per_peer_per_tid_cfg_arg {
-+	u32 vdev_id;
-+	struct wmi_mac_addr peer_macaddr;
-+	u32 tid;
-+	enum wmi_noack_tid_conf ack_policy;
-+	enum wmi_tid_aggr_control_conf aggr_control;
-+	u8 rate_ctrl;
-+	u32 retry_count;
-+	u32 rcode_flags;
-+};
-+
-+struct wmi_peer_per_tid_cfg_cmd {
-+	__le32 vdev_id;
-+	struct wmi_mac_addr peer_macaddr;
-+	__le32 tid;
-+
-+	/* see enum wmi_noack_tid_conf */
-+	__le32 ack_policy;
-+	/* see enum wmi_tid_aggr_control_conf */
-+	__le32 aggr_control;
-+	/* see enum wmi_tid_rate_ctrl_conf */
-+	__le32 rate_control;
-+	__le32 rcode_flags;
-+	__le32 retry_count;
-+} __packed;
-+
- enum wmi_txbf_conf {
- 	WMI_TXBF_CONF_UNSUPPORTED,
- 	WMI_TXBF_CONF_BEFORE_ASSOC,
+ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
 -- 
-1.9.1
+2.27.0.383.g050319c2ae-goog
 
 
 _______________________________________________
