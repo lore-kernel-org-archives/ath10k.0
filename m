@@ -1,29 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk1-xa44.google.com ([2607:f8b0:4864:20::a44])
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jtYNq-0006tZ-Hi
- for ath10k@lists.infradead.org; Thu, 09 Jul 2020 15:22:48 +0000
-Received: by mail-vk1-xa44.google.com with SMTP id t187so529383vke.5
- for <ath10k@lists.infradead.org>; Thu, 09 Jul 2020 08:22:46 -0700 (PDT)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com.
- [209.85.221.177])
- by smtp.gmail.com with ESMTPSA id k187sm424843vkk.26.2020.07.09.08.22.42
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 09 Jul 2020 08:22:43 -0700 (PDT)
-Received: by mail-vk1-f177.google.com with SMTP id e10so520854vkm.10
- for <ath10k@lists.infradead.org>; Thu, 09 Jul 2020 08:22:42 -0700 (PDT)
+ id 1jtYNQ-0006pm-G5
+ for ath10k@lists.infradead.org; Thu, 09 Jul 2020 15:22:21 +0000
+Received: by mail-pf1-x441.google.com with SMTP id j20so1163015pfe.5
+ for <ath10k@lists.infradead.org>; Thu, 09 Jul 2020 08:22:20 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH v2 2/2] ath10k: Get rid of "per_ce_irq" hw param
+Date: Thu,  9 Jul 2020 08:21:05 -0700
+Message-Id: <20200709082024.v2.2.I083faa4e62e69f863311c89ae5eb28ec5a229b70@changeid>
+In-Reply-To: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+References: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
 MIME-Version: 1.0
-References: <20200707101712.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
- <CA+ASDXMXtwdV4BNL1GSj8DY-3z8-dZ=1hP8Xv_R-AjKvJs0NMw@mail.gmail.com>
- <CAD=FV=WU2dUFtG4W6o574DRN9VV+u_B5-ThqV3BogjztBibyLQ@mail.gmail.com>
- <CA+ASDXOwFnCcMC9g11FSVLvj2nepArJyihGvx3SU-XqySoJruw@mail.gmail.com>
-In-Reply-To: <CA+ASDXOwFnCcMC9g11FSVLvj2nepArJyihGvx3SU-XqySoJruw@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 9 Jul 2020 08:22:28 -0700
-Message-ID: <CAD=FV=WUpHGoLm+NG-_eGsVKO7X+SLObFCoQVBSCNEa6KRmpmA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Keep track of which interrupts fired,
- don't poll them
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,61 +24,149 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Rakesh Pillai <pillair@codeaurora.org>, "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, Abhishek Kumar <kuabhs@google.com>
+To: kvalo@codeaurora.org, ath10k@lists.infradead.org
+Cc: saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, linux-kernel@vger.kernel.org, pillair@codeaurora.org, netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, kuabhs@google.com
 
-Hi,
+As of the patch ("ath10k: Keep track of which interrupts fired, don't
+poll them") we now have no users of this hardware parameter.  Remove
+it.
 
-On Wed, Jul 8, 2020 at 4:40 PM Brian Norris <briannorris@chromium.org> wrote:
->
-> On Wed, Jul 8, 2020 at 4:14 PM Doug Anderson <dianders@chromium.org> wrote:
-> > On Wed, Jul 8, 2020 at 4:03 PM Brian Norris <briannorris@chromium.org> wrote:
-> > > If I'm reading correctly, you're removing the only remaining use of
-> > > 'per_ce_irq'. Should we kill the field entirely?
-> >
-> > Ah, you are indeed correct!  I hadn't noticed that.  Unless I hear
-> > otherwise, I'll send a v2 tomorrow that removes the field entirely.
->
-> A healthy middle ground might put that in a patch 2, so it's easily
-> dropped if desired. *shrug*
+Suggested-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Sure, sounds like a plan.
+Changes in v2:
+- Patch ("ath10k: Get rid of "per_ce_irq" hw param") new for v2.
 
+ drivers/net/wireless/ath/ath10k/core.c | 13 -------------
+ drivers/net/wireless/ath/ath10k/hw.h   |  3 ---
+ 2 files changed, 16 deletions(-)
 
-> > > Or perhaps we should
-> > > leave some kind of WARN_ON() (BUG_ON()?) if this function is called
-> > > erroneously with per_ce_irq==true? But I suppose this driver is full
-> > > of landmines if the CE API is used incorrectly.
-> >
-> > Yeah, I originally had a WARN_ON() here and then took it out because
-> > it seemed like extra overhead and, as you said, someone writing the
-> > code has to know how the API works already I think.  ...but I'll add
-> > it back in if people want.
->
-> I believe WARN_ON() and friends have a built-in unlikely(), so it
-> shouldn't have much overhead. But I don't really mind either way.
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 22b6937ac225..9104496a5125 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -119,7 +119,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -155,7 +154,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -220,7 +218,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -255,7 +252,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -290,7 +286,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -328,7 +323,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -369,7 +363,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -417,7 +410,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -462,7 +454,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -497,7 +488,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -534,7 +524,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -603,7 +592,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+-		.per_ce_irq = false,
+ 		.shadow_reg_support = false,
+ 		.rri_on_ddr = false,
+ 		.hw_filter_reset_required = true,
+@@ -631,7 +619,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = TARGET_HL_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL_DUAL_MAC,
+-		.per_ce_irq = true,
+ 		.shadow_reg_support = true,
+ 		.rri_on_ddr = true,
+ 		.hw_filter_reset_required = false,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index f16edcb9f326..c6ded21f5ed6 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -593,9 +593,6 @@ struct ath10k_hw_params {
+ 	/* Target rx ring fill level */
+ 	u32 rx_ring_fill_level;
+ 
+-	/* target supporting per ce IRQ */
+-	bool per_ce_irq;
+-
+ 	/* target supporting shadow register for ce write */
+ 	bool shadow_reg_support;
+ 
+-- 
+2.27.0.383.g050319c2ae-goog
 
-Since you don't feel strongly, leaving it off.
-
-
-> > > Do you need to clear this map if the interface goes down or if there's
-> > > a firmware crash? Right now, I don't think there's a guarantee that
-> > > we'll run through a NAPI poll in those cases, which is the only place
-> > > you clear the map, and if the hardware/firmware has been reset, the
-> > > state map is probably not valid.
-> >
-> > Seems like a good idea.  Is the right place at the start of
-> > ath10k_snoc_hif_start()?
->
-> Either there or in .power_down()/.power_up(). I think either would be
-> equally correct, but I'm not entirely sure if the semantic difference
-> is meaningful for this.
-
-Will choose ath10k_snoc_hif_start() since it's where napi_enable() is
-and ath10k_snoc_irq_enable() are and those are related.
-
-
--Doug
 
 _______________________________________________
 ath10k mailing list
