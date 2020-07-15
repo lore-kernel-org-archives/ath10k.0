@@ -1,9 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from perceval.ideasonboard.com ([213.167.242.64])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jvgtL-0004ZU-2c
+ for ath10k@lists.infradead.org; Wed, 15 Jul 2020 12:52:07 +0000
+Subject: Re: [PATCH 05/17] drivers: net: Fix trivial spelling
+References: <20200609124610.3445662-6-kieran.bingham+renesas@ideasonboard.com>
+ <20200715102209.C9012C433A1@smtp.codeaurora.org>
 From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: [PATCH v2 0/8] spelling.txt: /decriptors/descriptors/
-Date: Wed, 15 Jul 2020 13:48:31 +0100
-Message-Id: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com>
+Message-ID: <f32e309f-a214-87c3-68fe-66882b949794@ideasonboard.com>
+Date: Wed, 15 Jul 2020 13:52:01 +0100
 MIME-Version: 1.0
+In-Reply-To: <20200715102209.C9012C433A1@smtp.codeaurora.org>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -12,59 +20,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: trivial@kernel.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-mm@kvack.org, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Wenwen Wang <wenwen@cs.uga.edu>, Jiri Kosina <trivial@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, Michael Ellerman <mpe@ellerman.id.au>, Martin Habets <mhabets@solarflare.com>, open list <linux-kernel@vger.kernel.org>, Kieran Bingham <kieran.bingham@ideasonboard.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, Ard Biesheuvel <ardb@kernel.org>, linux-renesas-soc@vger.kernel.org, Eric Dumazet <edumazet@google.com>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>, Colin Ian King <colin.king@canonical.com>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>, Shannon Nelson <snelson@pensando.io>, "David S. Miller" <davem@davemloft.net>, Dan Carpenter <dan.carpenter@oracle.com>
 
-I wouldn't normally go through spelling fixes, but I caught sight of
-this typo twice, and then foolishly grepped the tree for it, and saw how
-pervasive it was.
+Hi Kalle,
 
-so here I am ... fixing a typo globally... but with an addition in
-scripts/spelling.txt so it shouldn't re-appear ;-)
+On 15/07/2020 11:22, Kalle Valo wrote:
+> Kieran Bingham <kieran.bingham+renesas@ideasonboard.com> wrote:
+> 
+>> The word 'descriptor' is misspelled throughout the tree.
+>>
+>> Fix it up accordingly:
+>>     decriptors -> descriptors
+>>
+>> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> I recommend splitting wan and wireless changes to separate patches as I
+> cannot take changes to wan subsystem.
+> 
+> Patch set to Changes Requested.
 
-V2: Posting before the merge windows close to pick up the last few
-non-merged patches, and ideally - to get the actaul spelling.txt entry
-picked up, and this time including trivial@kernel.org to let these get
-head through that tree if required.
+Thanks, I've split this and resent the remaining outstanding patches.
 
-Cc: trivial@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org (moderated list:ARM SUB-ARCHITECTURES)
-Cc: linux-kernel@vger.kernel.org (open list)
-Cc: linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)...)
-Cc: netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Cc: ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
-Cc: linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
-Cc: virtualization@lists.linux-foundation.org (open list:VIRTIO BALLOON)
-Cc: linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+--
+Kieran
 
-Kieran Bingham (17):
-  arch: arm: mach-davinci: Fix trivial spelling
-  drivers: input: joystick: Fix trivial spelling
-  drivers: net: wan: Fix trivial spelling
-  drivers: net: wireless: Fix trivial spelling
-  include: dynamic_debug.h: Fix trivial spelling
-  kernel: trace: Fix trivial spelling
-  mm/balloon_compaction: Fix trivial spelling
-  scripts/spelling.txt: Add descriptors correction
 
- arch/arm/mach-davinci/board-da830-evm.c | 2 +-
- drivers/input/joystick/spaceball.c      | 2 +-
- drivers/net/wan/lmc/lmc_main.c          | 2 +-
- drivers/net/wireless/ath/ath10k/usb.c   | 2 +-
- drivers/net/wireless/ath/ath6kl/usb.c   | 2 +-
- drivers/net/wireless/cisco/airo.c       | 2 +-
- include/linux/dynamic_debug.h           | 2 +-
- kernel/trace/trace_events.c             | 2 +-
- mm/balloon_compaction.c                 | 4 ++--
- scripts/spelling.txt                    | 2 ++
- 10 files changed, 12 insertions(+), 10 deletions(-)
-
--- 
-2.25.1
 
 
 _______________________________________________
