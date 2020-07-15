@@ -1,14 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from perceval.ideasonboard.com ([213.167.242.64])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvgqE-0003nV-By
- for ath10k@lists.infradead.org; Wed, 15 Jul 2020 12:48:55 +0000
 From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: [PATCH v2 4/8] drivers: net: wireless: Fix trivial spelling
-Date: Wed, 15 Jul 2020 13:48:35 +0100
-Message-Id: <20200715124839.252822-5-kieran.bingham+renesas@ideasonboard.com>
-In-Reply-To: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com>
+Subject: [PATCH v2 0/8] spelling.txt: /decriptors/descriptors/
+Date: Wed, 15 Jul 2020 13:48:31 +0100
+Message-Id: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,59 +17,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: trivial@kernel.org
-Cc: Wenwen Wang <wenwen@cs.uga.edu>, Michael Ellerman <mpe@ellerman.id.au>, "open list:NETWORKING DRIVERS WIRELESS" <linux-wireless@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, Alexey Dobriyan <adobriyan@gmail.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Dan Carpenter <dan.carpenter@oracle.com>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-mm@kvack.org, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-The word 'descriptor' is misspelled throughout the tree.
+I wouldn't normally go through spelling fixes, but I caught sight of
+this typo twice, and then foolishly grepped the tree for it, and saw how
+pervasive it was.
 
-Fix it up accordingly:
-    decriptors -> descriptors
+so here I am ... fixing a typo globally... but with an addition in
+scripts/spelling.txt so it shouldn't re-appear ;-)
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
----
- drivers/net/wireless/ath/ath10k/usb.c | 2 +-
- drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
- drivers/net/wireless/cisco/airo.c     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+V2: Posting before the merge windows close to pick up the last few
+non-merged patches, and ideally - to get the actaul spelling.txt entry
+picked up, and this time including trivial@kernel.org to let these get
+head through that tree if required.
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index b7daf344d012..05a620ff6fe2 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -824,7 +824,7 @@ static int ath10k_usb_setup_pipe_resources(struct ath10k *ar,
- 
- 	ath10k_dbg(ar, ATH10K_DBG_USB, "usb setting up pipes using interface\n");
- 
--	/* walk decriptors and setup pipes */
-+	/* walk descriptors and setup pipes */
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		endpoint = &iface_desc->endpoint[i].desc;
- 
-diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wireless/ath/ath6kl/usb.c
-index 53b66e9434c9..5372e948e761 100644
---- a/drivers/net/wireless/ath/ath6kl/usb.c
-+++ b/drivers/net/wireless/ath/ath6kl/usb.c
-@@ -311,7 +311,7 @@ static int ath6kl_usb_setup_pipe_resources(struct ath6kl_usb *ar_usb)
- 
- 	ath6kl_dbg(ATH6KL_DBG_USB, "setting up USB Pipes using interface\n");
- 
--	/* walk decriptors and setup pipes */
-+	/* walk descriptors and setup pipes */
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		endpoint = &iface_desc->endpoint[i].desc;
- 
-diff --git a/drivers/net/wireless/cisco/airo.c b/drivers/net/wireless/cisco/airo.c
-index 827bb6d74815..e3ad77666ba8 100644
---- a/drivers/net/wireless/cisco/airo.c
-+++ b/drivers/net/wireless/cisco/airo.c
-@@ -2450,7 +2450,7 @@ static void mpi_unmap_card(struct pci_dev *pci)
- 
- /*************************************************************
-  *  This routine assumes that descriptors have been setup .
-- *  Run at insmod time or after reset  when the decriptors
-+ *  Run at insmod time or after reset when the descriptors
-  *  have been initialized . Returns 0 if all is well nz
-  *  otherwise . Does not allocate memory but sets up card
-  *  using previously allocated descriptors.
+Cc: trivial@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org (moderated list:ARM SUB-ARCHITECTURES)
+Cc: linux-kernel@vger.kernel.org (open list)
+Cc: linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)...)
+Cc: netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Cc: ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
+Cc: linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
+Cc: virtualization@lists.linux-foundation.org (open list:VIRTIO BALLOON)
+Cc: linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+
+Kieran Bingham (17):
+  arch: arm: mach-davinci: Fix trivial spelling
+  drivers: input: joystick: Fix trivial spelling
+  drivers: net: wan: Fix trivial spelling
+  drivers: net: wireless: Fix trivial spelling
+  include: dynamic_debug.h: Fix trivial spelling
+  kernel: trace: Fix trivial spelling
+  mm/balloon_compaction: Fix trivial spelling
+  scripts/spelling.txt: Add descriptors correction
+
+ arch/arm/mach-davinci/board-da830-evm.c | 2 +-
+ drivers/input/joystick/spaceball.c      | 2 +-
+ drivers/net/wan/lmc/lmc_main.c          | 2 +-
+ drivers/net/wireless/ath/ath10k/usb.c   | 2 +-
+ drivers/net/wireless/ath/ath6kl/usb.c   | 2 +-
+ drivers/net/wireless/cisco/airo.c       | 2 +-
+ include/linux/dynamic_debug.h           | 2 +-
+ kernel/trace/trace_events.c             | 2 +-
+ mm/balloon_compaction.c                 | 4 ++--
+ scripts/spelling.txt                    | 2 ++
+ 10 files changed, 12 insertions(+), 10 deletions(-)
+
 -- 
 2.25.1
 
