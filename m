@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvxXq-0000CT-6V
- for ath10k@lists.infradead.org; Thu, 16 Jul 2020 06:39:03 +0000
+ id 1jw0Im-0007eT-79
+ for ath10k@lists.infradead.org; Thu, 16 Jul 2020 09:35:42 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
-References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
- <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
- <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
-Date: Thu, 16 Jul 2020 09:38:32 +0300
-In-Reply-To: <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
- (Brian Norris's message of "Fri, 26 Jun 2020 14:52:30 -0700")
-Message-ID: <871rlcx8uv.fsf@codeaurora.org>
+Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
+ <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
+ <1576748692.7758.17.camel@realtek.com> <20191219154828.GA12287@w1.fi>
+ <CA+ASDXMTYLGbEkBPHSqtyitMEvY5o_MjU0s+NoWdnN_ORy1gDw@mail.gmail.com>
+ <20191219185522.GA16010@w1.fi>
+ <CA+ASDXNOxkrZTxL0Jo4ONR2YtL83BVc_w-rBXc6ggBLdwUpDZw@mail.gmail.com>
+ <871rpqly6a.fsf@kamboji.qca.qualcomm.com>
+ <e8908eafd8e6050eef8782c6a7019e318d14f65f.camel@sipsolutions.net>
+ <CA+ASDXMf7iXuE9hQ-XitPPfvXP0EK5FchJLCu2+5Ag=ZC=0H0w@mail.gmail.com>
+Date: Thu, 16 Jul 2020 12:35:20 +0300
+In-Reply-To: <CA+ASDXMf7iXuE9hQ-XitPPfvXP0EK5FchJLCu2+5Ag=ZC=0H0w@mail.gmail.com>
+ (Brian Norris's message of "Mon, 1 Jun 2020 18:32:31 -0700")
+Message-ID: <87lfjjx0o7.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,22 +32,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Brian Norris <briannorris@chromium.org>
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: Jouni Malinen <j@w1.fi>, Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Pkshih <pkshih@realtek.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Brian Norris <briannorris@chromium.org> writes:
 
-> On Fri, Jun 26, 2020 at 2:49 PM Doug Anderson <dianders@chromium.org> wrote:
->> I should also note that, while I'm not terribly familiar with Kalle's
->> workflow, I would have expected to see him in the "To:" list.  I've
->> added him, but it's possible he'll need you to repost the patch with
->> him in the "To:" list.
+> Really, I could live with per-vendor APIs. My primary goal is to get
+> these upstream in some form, so vendors can stop using things like
+> this as a reason for shipping us non-upstream code, and so we can
+> reduce the delta between upstream and Chrome OS kernels.
 >
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#who_to_address
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
->
-> Patchwork is his patch queue, so I don't think you need to address him directly.
+> I also think that, for the cases that warrant it (i.e., the option 2
+> -- Realtek and Qualcomm cases, so far), it would be good to have a
+> common API, but that's a somewhat secondary concern for me.
 
-Yup, I take all patches from patchwork so no need to Cc me.
+So to me it feels like the best solution forward is to go with the
+vendor API, do you agree? We can, of course, later switch to the common
+API if we manage to create one which is usable for everyone.
+
+> Also, Kalle had some concerns about stable ABI questions: shouldn't we
+> bake in some kind of "check for support" feature to these kinds of
+> APIs [3]? That would help ease transition, if we do start with a
+> vendor API and move to a common one in the future.
+
+Yeah, that sounds like a good idea but I don't think that should block
+these patches.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
