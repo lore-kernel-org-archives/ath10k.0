@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jw2NS-00058s-6p
- for ath10k@lists.infradead.org; Thu, 16 Jul 2020 11:48:39 +0000
-From: "Rakesh Pillai" <pillair@codeaurora.org>
-References: <1593238973-23237-1-git-send-email-pillair@codeaurora.org>
- <926301ed-e27f-0d8f-0177-6484bfffa40c@candelatech.com>
- <000201d64d0a$b3d39d10$1b7ad730$@codeaurora.org>
- <859a8ffb-6108-81f3-b379-4a0adfa064fe@candelatech.com>
-In-Reply-To: <859a8ffb-6108-81f3-b379-4a0adfa064fe@candelatech.com>
-Subject: RE: [PATCH] ath10k: Add history for tracking certain events
-Date: Thu, 16 Jul 2020 17:18:22 +0530
-Message-ID: <008501d65b67$0743a0c0$15cae240$@codeaurora.org>
+ id 1jw4zs-0008RR-FP
+ for ath10k@lists.infradead.org; Thu, 16 Jul 2020 14:36:30 +0000
+Date: Thu, 16 Jul 2020 22:35:24 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 36704fc513bcb56baec56ad5902dd5551cb2a475
+Message-ID: <5f1065ac.g4Sxkm0S1IvJNvL5%lkp@intel.com>
 MIME-Version: 1.0
-Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,103 +21,157 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 36704fc513bcb56baec56ad5902dd5551cb2a475  wcn36xx: Fix software-driven scan
 
+elapsed time: 1361m
 
-> -----Original Message-----
-> From: Ben Greear <greearb@candelatech.com>
-> Sent: Sunday, June 28, 2020 10:56 PM
-> To: Rakesh Pillai <pillair@codeaurora.org>; ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ath10k: Add history for tracking certain events
-> 
-> 
-> 
-> On 06/27/2020 10:12 PM, Rakesh Pillai wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Ben Greear <greearb@candelatech.com>
-> >> Sent: Saturday, June 27, 2020 8:58 PM
-> >> To: Rakesh Pillai <pillair@codeaurora.org>; ath10k@lists.infradead.org
-> >> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org
-> >> Subject: Re: [PATCH] ath10k: Add history for tracking certain events
-> >>
-> >>
-> >>
-> >> On 06/26/2020 11:22 PM, Rakesh Pillai wrote:
-> >>> For debugging many issues, a history of the
-> >>> below mentioned events can help get an idea
-> >>> of what exactly was going on just before any
-> >>> issue occurred in the system. These event
-> >>> history will be collected only when the host
-> >>> driver is run in debug mode (i.e. with the
-> >>> config ATH10K_DEBUG enabled).
-> >>
-> >> This should be disabled by default unless user specifically pokes some
-> >> debugfs
-> >> value to turn it on so that it does not impact performance.
-> >
-> > Hi Ben,
-> > This history is enabled only if the user compiles the kernel with
-> > ATH10K_DEBUG.
-> > Making it runtime, adds a lot of "if" conditions for this history
-record.
-> > Do you suggest to add support to enable/disable it runtime even in
-> > ATH10K_DEBUG ?
-> 
-> Yes, because you are adding lots of locks/unlocks.  That is way more
-> expensive
-> than an if statement.  You can add an 'unlikely' to the if check as well,
-so
-> compiler will optimize for this feature not being enabled.
+configs tested: 133
+configs skipped: 6
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Hi Ben,
-I missed this mail somehow.
-Yes sure, I will make the necessary changes and upload a new patchset.
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arc                          axs101_defconfig
+c6x                        evmc6457_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                    gamecube_defconfig
+arm                          lpd270_defconfig
+i386                             allyesconfig
+mips                          malta_defconfig
+riscv                               defconfig
+c6x                        evmc6474_defconfig
+riscv                    nommu_k210_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                       mainstone_defconfig
+arm                      tct_hammer_defconfig
+powerpc                        cell_defconfig
+powerpc                       holly_defconfig
+mips                       capcella_defconfig
+sparc                       sparc32_defconfig
+sh                            shmin_defconfig
+arm                        clps711x_defconfig
+arm                           corgi_defconfig
+riscv                            allyesconfig
+arm                         orion5x_defconfig
+mips                           ip28_defconfig
+ia64                              allnoconfig
+powerpc                     pseries_defconfig
+powerpc64                        alldefconfig
+mips                      maltasmvp_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20200715
+x86_64               randconfig-a006-20200715
+x86_64               randconfig-a002-20200715
+x86_64               randconfig-a001-20200715
+x86_64               randconfig-a003-20200715
+x86_64               randconfig-a004-20200715
+i386                 randconfig-a001-20200716
+i386                 randconfig-a005-20200716
+i386                 randconfig-a002-20200716
+i386                 randconfig-a006-20200716
+i386                 randconfig-a003-20200716
+i386                 randconfig-a004-20200716
+i386                 randconfig-a001-20200715
+i386                 randconfig-a005-20200715
+i386                 randconfig-a002-20200715
+i386                 randconfig-a006-20200715
+i386                 randconfig-a003-20200715
+i386                 randconfig-a004-20200715
+x86_64               randconfig-a012-20200716
+x86_64               randconfig-a011-20200716
+x86_64               randconfig-a016-20200716
+x86_64               randconfig-a014-20200716
+x86_64               randconfig-a013-20200716
+x86_64               randconfig-a015-20200716
+i386                 randconfig-a016-20200716
+i386                 randconfig-a011-20200716
+i386                 randconfig-a015-20200716
+i386                 randconfig-a012-20200716
+i386                 randconfig-a013-20200716
+i386                 randconfig-a014-20200716
+i386                 randconfig-a016-20200715
+i386                 randconfig-a011-20200715
+i386                 randconfig-a015-20200715
+i386                 randconfig-a012-20200715
+i386                 randconfig-a013-20200715
+i386                 randconfig-a014-20200715
+riscv                             allnoconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
 
-Thanks,
-Rakesh Pillai.
-
-
-> 
-> Thanks,
-> Ben
-> 
-> >
-> >>
-> >> Thanks,
-> >> Ben
-> >>
-> >>>
-> >>> Add history for tracking the below events
-> >>> - register read
-> >>> - register write
-> >>> - IRQ trigger
-> >>> - IRQ Enable
-> >>> - IRQ Disable
-> >>> - NAPI poll
-> >>> - CE service
-> >>> - WMI cmd
-> >>> - WMI event
-> >>> - WMI tx completion
-> >>>
-> >>> This will help in debugging any crash or any
-> >>> improper behaviour.
-> >>
-> >>
-> >> --
-> >> Ben Greear <greearb@candelatech.com>
-> >> Candela Technologies Inc  http://www.candelatech.com
-> >
-> 
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
