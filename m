@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvv0k-0001J5-JE
- for ath10k@lists.infradead.org; Thu, 16 Jul 2020 03:56:43 +0000
-Date: Thu, 16 Jul 2020 11:55:05 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 6bd9b238e27d889ed438884a0c048701af2493fe
-Message-ID: <5f0fcf99.fIwiZ9mB9mJWxyji%lkp@intel.com>
+ id 1jvxXq-0000CT-6V
+ for ath10k@lists.infradead.org; Thu, 16 Jul 2020 06:39:03 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
+ <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
+ <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+Date: Thu, 16 Jul 2020 09:38:32 +0300
+In-Reply-To: <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+ (Brian Norris's message of "Fri, 26 Jun 2020 14:52:30 -0700")
+Message-ID: <871rlcx8uv.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,114 +26,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 6bd9b238e27d889ed438884a0c048701af2493fe  Merge branch 'pending' into master-pending
+Brian Norris <briannorris@chromium.org> writes:
 
-elapsed time: 720m
+> On Fri, Jun 26, 2020 at 2:49 PM Doug Anderson <dianders@chromium.org> wrote:
+>> I should also note that, while I'm not terribly familiar with Kalle's
+>> workflow, I would have expected to see him in the "To:" list.  I've
+>> added him, but it's possible he'll need you to repost the patch with
+>> him in the "To:" list.
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#who_to_address
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
+>
+> Patchwork is his patch queue, so I don't think you need to address him directly.
 
-configs tested: 90
-configs skipped: 4
+Yup, I take all patches from patchwork so no need to Cc me.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arc                          axs101_defconfig
-c6x                        evmc6457_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                    gamecube_defconfig
-arm                          lpd270_defconfig
-mips                          malta_defconfig
-riscv                               defconfig
-c6x                        evmc6474_defconfig
-arm                        clps711x_defconfig
-arm                           corgi_defconfig
-riscv                            allyesconfig
-arm                         orion5x_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a016-20200715
-i386                 randconfig-a011-20200715
-i386                 randconfig-a015-20200715
-i386                 randconfig-a012-20200715
-i386                 randconfig-a013-20200715
-i386                 randconfig-a014-20200715
-riscv                             allnoconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
