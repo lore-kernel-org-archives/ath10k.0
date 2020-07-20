@@ -1,35 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jw93x-0006TV-9q
- for ath10k@lists.infradead.org; Thu, 16 Jul 2020 18:56:58 +0000
-Received: by mail-qt1-x841.google.com with SMTP id u12so5712109qth.12
- for <ath10k@lists.infradead.org>; Thu, 16 Jul 2020 11:56:55 -0700 (PDT)
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com.
- [209.85.160.182])
- by smtp.gmail.com with ESMTPSA id o21sm8938018qtt.25.2020.07.16.11.56.51
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 16 Jul 2020 11:56:51 -0700 (PDT)
-Received: by mail-qt1-f182.google.com with SMTP id k18so5722765qtm.10
- for <ath10k@lists.infradead.org>; Thu, 16 Jul 2020 11:56:51 -0700 (PDT)
+ id 1jxZJg-0002Ag-Bq
+ for ath10k@lists.infradead.org; Mon, 20 Jul 2020 17:11:10 +0000
 MIME-Version: 1.0
-References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
- <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
- <1576748692.7758.17.camel@realtek.com>
- <20191219154828.GA12287@w1.fi>
- <CA+ASDXMTYLGbEkBPHSqtyitMEvY5o_MjU0s+NoWdnN_ORy1gDw@mail.gmail.com>
- <20191219185522.GA16010@w1.fi>
- <CA+ASDXNOxkrZTxL0Jo4ONR2YtL83BVc_w-rBXc6ggBLdwUpDZw@mail.gmail.com>
- <871rpqly6a.fsf@kamboji.qca.qualcomm.com>
- <e8908eafd8e6050eef8782c6a7019e318d14f65f.camel@sipsolutions.net>
- <CA+ASDXMf7iXuE9hQ-XitPPfvXP0EK5FchJLCu2+5Ag=ZC=0H0w@mail.gmail.com>
- <87lfjjx0o7.fsf@codeaurora.org>
-In-Reply-To: <87lfjjx0o7.fsf@codeaurora.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Thu, 16 Jul 2020 11:56:39 -0700
-Message-ID: <CA+ASDXOAzPuOn_rMsRj4t56kC-TgoG0p5WhSTPJjB8xTTq5kfg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+Subject: Re: [PATCH] net: ath10k: fix OOB: __ath10k_htt_rx_ring_fill_n
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200623221105.3486-1-bruceshenzk@gmail.com>
+References: <20200623221105.3486-1-bruceshenzk@gmail.com>
+Message-Id: <20200720171035.C5974C433C6@smtp.codeaurora.org>
+Date: Mon, 20 Jul 2020 17:10:35 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -42,58 +22,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Jouni Malinen <j@w1.fi>, Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Pkshih <pkshih@realtek.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Zekun Shen <bruceshenzk@gmail.com>
+Cc: security@kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
 
-On Thu, Jul 16, 2020 at 2:35 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> Brian Norris <briannorris@chromium.org> writes:
-> > Really, I could live with per-vendor APIs. My primary goal is to get
-> > these upstream in some form, so vendors can stop using things like
-> > this as a reason for shipping us non-upstream code, and so we can
-> > reduce the delta between upstream and Chrome OS kernels.
-> >
-> > I also think that, for the cases that warrant it (i.e., the option 2
-> > -- Realtek and Qualcomm cases, so far), it would be good to have a
-> > common API, but that's a somewhat secondary concern for me.
->
-> So to me it feels like the best solution forward is to go with the
-> vendor API, do you agree? We can, of course, later switch to the common
-> API if we manage to create one which is usable for everyone.
+Zekun Shen <bruceshenzk@gmail.com> wrote:
 
-That's fine with me. That's pretty much what I said in my first email:
+> The idx in __ath10k_htt_rx_ring_fill_n function lives in
+> consistent dma region writable by the device. Malfunctional
+> or malicious device could manipulate such idx to have a OOB
+> write. Either by
+>     htt->rx_ring.netbufs_ring[idx] = skb;
+> or by
+>     ath10k_htt_set_paddrs_ring(htt, paddr, idx);
+> 
+> The idx can also be negative as it's signed, giving a large
+> memory space to write to.
+> 
+> It's possibly exploitable by corruptting a legit pointer with
+> a skb pointer. And then fill skb with payload as rougue object.
+> 
+> Part of the log here. Sometimes it appears as UAF when writing
+> to a freed memory by chance.
+> 
+>  [   15.594376] BUG: unable to handle page fault for address: ffff887f5c1804f0
+>  [   15.595483] #PF: supervisor write access in kernel mode
+>  [   15.596250] #PF: error_code(0x0002) - not-present page
+>  [   15.597013] PGD 0 P4D 0
+>  [   15.597395] Oops: 0002 [#1] SMP KASAN PTI
+>  [   15.597967] CPU: 0 PID: 82 Comm: kworker/u2:2 Not tainted 5.6.0 #69
+>  [   15.598843] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>  BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+>  [   15.600438] Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
+>  [   15.601389] RIP: 0010:__ath10k_htt_rx_ring_fill_n
+>  (linux/drivers/net/wireless/ath/ath10k/htt_rx.c:173) ath10k_core
+> 
+> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-"Anyway, I don't really object with starting out with a
-Qualcomm-specific and a Realtek-specific vendor command to implement
-nearly the same feature, but I'd prefer if people did engage in some
-healthy discussion about why they can't share an API, with the hopes
-that maybe they can converge someday."
+Patch applied to ath-next branch of ath.git, thanks.
 
-I think we've had some healthy (though very protracted) discussion,
-and I don't think I've seen anyone bring up anything I wasn't already
-aware of that would prevent eventual consolidation. As long as we
-acknowledge those things (item 2 at
-https://wireless.wiki.kernel.org/en/developers/documentation/nl80211#vendor-specific_api),
-I'm happy.
+bad60b8d1a71 ath10k: check idx validity in __ath10k_htt_rx_ring_fill_n()
 
-> > Also, Kalle had some concerns about stable ABI questions: shouldn't we
-> > bake in some kind of "check for support" feature to these kinds of
-> > APIs [3]? That would help ease transition, if we do start with a
-> > vendor API and move to a common one in the future.
->
-> Yeah, that sounds like a good idea but I don't think that should block
-> these patches.
+-- 
+https://patchwork.kernel.org/patch/11621899/
 
-OK, well it was your concern first, IIRC :)
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-So what's next? A v2 that only needs a bit of updated description
-about "why a vendor API"? And Realtek can feel free to submit this [1]
-shortly?
-
-Thanks,
-Brian
-
-[1] Series: rtw88: Add SAR implementation
-https://patchwork.kernel.org/project/linux-wireless/list/?series=238219&state=*
 
 _______________________________________________
 ath10k mailing list
