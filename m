@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxvqu-0000Ul-2h
- for ath10k@lists.infradead.org; Tue, 21 Jul 2020 17:14:54 +0000
+ id 1jxvr2-0000XM-Aa
+ for ath10k@lists.infradead.org; Tue, 21 Jul 2020 17:15:01 +0000
 From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [RFC 0/7] Add support to process rx packets in thread
-Date: Tue, 21 Jul 2020 22:44:19 +0530
-Message-Id: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
+Subject: [RFC 4/7] ath10k: Do not exhaust budget on process tx completion
+Date: Tue, 21 Jul 2020 22:44:23 +0530
+Message-Id: <1595351666-28193-5-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
+References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +25,54 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, evgreen@chromium.org, dianders@chromium.org, Rakesh Pillai <pillair@codeaurora.org>, kuba@kernel.org, johannes@sipsolutions.net, davem@davemloft.net, kvalo@codeaurora.org
 
-NAPI gets scheduled on the CPU core which got the
-interrupt. The linux scheduler cannot move it to a
-different core, even if the CPU on which NAPI is running
-is heavily loaded. This can lead to degraded wifi
-performance when running traffic at peak data rates.
+Currently the entire NAPI budget is marked as exhausted
+if any tx completion is processed.
+In scenarios of bi-directional traffic, this leads to a
+situation where the irqs are never enabled and the NAPI
+is rescheuled again and again.
 
-A thread on the other hand can be moved to different
-CPU cores, if the one on which its running is heavily
-loaded. During high incoming data traffic, this gives
-better performance, since the thread can be moved to a
-less loaded or sometimes even a more powerful CPU core
-to account for the required CPU performance in order
-to process the incoming packets.
+Increase the work done quota by the number of tx completions
+which are processed in the NAPI context.
 
-This patch series adds the support to use a high priority
-thread to process the incoming packets, as opposed to
-everything being done in NAPI context.
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
-The rx thread can be enabled by using a module parameter
-when loading the ath10k_snoc module.
-
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
-This patch series is dependent on the below patch series
-https://patchwork.kernel.org/project/ath10k/list/?series=315759
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-Rakesh Pillai (7):
-  mac80211: Add check for napi handle before WARN_ON
-  ath10k: Add support to process rx packet in thread
-  ath10k: Add module param to enable rx thread
-  ath10k: Do not exhaust budget on process tx completion
-  ath10k: Handle the rx packet processing in thread
-  ath10k: Add deliver to stack from thread context
-  ath10k: Handle rx thread suspend and resume
-
- drivers/net/wireless/ath/ath10k/core.c   |  64 +++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h   |  33 ++++++++++
- drivers/net/wireless/ath/ath10k/htt.h    |   2 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |  66 ++++++++++++++-----
- drivers/net/wireless/ath/ath10k/snoc.c   | 105 ++++++++++++++++++++++++++++++-
- net/mac80211/rx.c                        |   2 +-
- 6 files changed, 253 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index cac05e7..a4a6618 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -4077,21 +4077,18 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ 	/* Deliver received data after processing data from hardware */
+ 	quota = ath10k_htt_rx_deliver_msdu(ar, quota, budget);
+ 
+-	/* From NAPI documentation:
+-	 *  The napi poll() function may also process TX completions, in which
+-	 *  case if it processes the entire TX ring then it should count that
+-	 *  work as the rest of the budget.
+-	 */
+-	if ((quota < budget) && !kfifo_is_empty(&htt->txdone_fifo))
+-		quota = budget;
+-
+ 	/* kfifo_get: called only within txrx_tasklet so it's neatly serialized.
+ 	 * From kfifo_get() documentation:
+ 	 *  Note that with only one concurrent reader and one concurrent writer,
+ 	 *  you don't need extra locking to use these macro.
+ 	 */
+-	while (kfifo_get(&htt->txdone_fifo, &tx_done))
++	while (kfifo_get(&htt->txdone_fifo, &tx_done)) {
+ 		ath10k_txrx_tx_unref(htt, &tx_done);
++		quota++;
++	}
++
++	if (quota > budget)
++		resched_napi = true;
+ 
+ 	ath10k_mac_tx_push_pending(ar);
+ 
 -- 
 2.7.4
 
