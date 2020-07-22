@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyEIM-0001LV-VV
- for ath10k@lists.infradead.org; Wed, 22 Jul 2020 12:56:29 +0000
-Message-ID: <0dbdef912f9d61521011f638200fd451a3530568.camel@sipsolutions.net>
-Subject: Re: [RFC 1/7] mac80211: Add check for napi handle before WARN_ON
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 22 Jul 2020 14:56:00 +0200
-In-Reply-To: <1595351666-28193-2-git-send-email-pillair@codeaurora.org>
+Received: from nbd.name ([2a01:4f8:221:3d45::2])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jyEMN-0002fY-KB
+ for ath10k@lists.infradead.org; Wed, 22 Jul 2020 13:00:36 +0000
+Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
 References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <1595351666-28193-2-git-send-email-pillair@codeaurora.org>
+ <1595351666-28193-3-git-send-email-pillair@codeaurora.org>
+ <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
+ <d79ae05e-e75a-de2f-f2e3-bc73637e1501@nbd.name>
+ <04d7301d5ad7555a0377c7df530ad8522fc00f77.camel@sipsolutions.net>
+From: Felix Fietkau <nbd@nbd.name>
+Message-ID: <1f2726ff-8ba9-5278-0ec6-b80be475ea98@nbd.name>
+Date: Wed, 22 Jul 2020 15:00:30 +0200
 MIME-Version: 1.0
+In-Reply-To: <04d7301d5ad7555a0377c7df530ad8522fc00f77.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +27,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, evgreen@chromium.org, dianders@chromium.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+To: Johannes Berg <johannes@sipsolutions.net>, Rajkumar Manoharan <rmanohar@codeaurora.org>, Rakesh Pillai <pillair@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, evgreen@chromium.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
 
-On Tue, 2020-07-21 at 22:44 +0530, Rakesh Pillai wrote:
-> The function ieee80211_rx_napi can be now called
-> from a thread context as well, with napi context
-> being NULL.
+On 2020-07-22 14:55, Johannes Berg wrote:
+> On Wed, 2020-07-22 at 14:27 +0200, Felix Fietkau wrote:
 > 
-> Hence add the napi context check before giving out
-> a warning for softirq count being 0.
+>> I'm considering testing a different approach (with mt76 initially):
+>> - Add a mac80211 rx function that puts processed skbs into a list
+>> instead of handing them to the network stack directly.
 > 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
->  net/mac80211/rx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-> index a88ab6f..1e703f1 100644
-> --- a/net/mac80211/rx.c
-> +++ b/net/mac80211/rx.c
-> @@ -4652,7 +4652,7 @@ void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *pubsta,
->  	struct ieee80211_supported_band *sband;
->  	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
->  
-> -	WARN_ON_ONCE(softirq_count() == 0);
-> +	WARN_ON_ONCE(napi && softirq_count() == 0);
+> Would this be *after* all the mac80211 processing, i.e. in place of the
+> rx-up-to-stack?
+Yes, it would run all the rx handlers normally and then put the
+resulting skbs into a list instead of calling netif_receive_skb or
+napi_gro_frags.
 
-FWIW, I'm pretty sure this is incorrect - we make assumptions on
-softirqs being disabled in mac80211 for serialization and in place of
-some locking, I believe.
-
-johannes
-
+- Felix
 
 _______________________________________________
 ath10k mailing list
