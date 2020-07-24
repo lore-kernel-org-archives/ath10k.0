@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jz6Ay-00009R-L8
- for ath10k@lists.infradead.org; Fri, 24 Jul 2020 22:28:26 +0000
-Received: by mail-wm1-x342.google.com with SMTP id 184so9499184wmb.0
- for <ath10k@lists.infradead.org>; Fri, 24 Jul 2020 15:28:24 -0700 (PDT)
-Subject: Re: [RFC 0/7] Add support to process rx packets in thread
+ id 1jz6rC-00056S-NI
+ for ath10k@lists.infradead.org; Fri, 24 Jul 2020 23:12:03 +0000
+Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
 References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <20200721172514.GT1339445@lunn.ch>
- <f6d93d76-9e59-c257-9318-31c71df28018@gmail.com>
- <002e01d6611e$0d8ac640$28a052c0$@codeaurora.org>
- <fdedf787-1bb0-601c-0959-6f1bfb38e5d7@gmail.com>
- <000201d66182$8989a3b0$9c9ceb10$@codeaurora.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <80490faa-f9e8-3bac-a645-7458b9d6aa62@gmail.com>
-Date: Fri, 24 Jul 2020 15:28:03 -0700
+ <1595351666-28193-3-git-send-email-pillair@codeaurora.org>
+ <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
+ <003001d6611e$9afa0cc0$d0ee2640$@codeaurora.org>
+From: Jacob Keller <jacob.e.keller@intel.com>
+Message-ID: <0d9baad4-fba7-d362-41b7-f0b37446c5ef@intel.com>
+Date: Fri, 24 Jul 2020 16:11:57 -0700
 MIME-Version: 1.0
-In-Reply-To: <000201d66182$8989a3b0$9c9ceb10$@codeaurora.org>
+In-Reply-To: <003001d6611e$9afa0cc0$d0ee2640$@codeaurora.org>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,85 +26,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>, 'Andrew Lunn' <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, evgreen@chromium.org, kuba@kernel.org, johannes@sipsolutions.net, davem@davemloft.net, kvalo@codeaurora.org
+To: Rakesh Pillai <pillair@codeaurora.org>, 'Rajkumar Manoharan' <rmanohar@codeaurora.org>
+Cc: linux-wireless-owner@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, evgreen@chromium.org, kuba@kernel.org, johannes@sipsolutions.net, davem@davemloft.net, kvalo@codeaurora.org
 
-On 7/23/20 11:20 PM, Rakesh Pillai wrote:
-> 
-> 
->> -----Original Message-----
->> From: Florian Fainelli <f.fainelli@gmail.com>
->> Sent: Friday, July 24, 2020 12:33 AM
->> To: Rakesh Pillai <pillair@codeaurora.org>; 'Andrew Lunn'
->> <andrew@lunn.ch>
->> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
->> kernel@vger.kernel.org; kvalo@codeaurora.org; johannes@sipsolutions.net;
->> davem@davemloft.net; kuba@kernel.org; netdev@vger.kernel.org;
->> dianders@chromium.org; evgreen@chromium.org
->> Subject: Re: [RFC 0/7] Add support to process rx packets in thread
->>
->> On 7/23/20 11:21 AM, Rakesh Pillai wrote:
->>>
->>>
->>>> -----Original Message-----
->>>> From: Florian Fainelli <f.fainelli@gmail.com>
->>>> Sent: Tuesday, July 21, 2020 11:35 PM
->>>> To: Andrew Lunn <andrew@lunn.ch>; Rakesh Pillai
->> <pillair@codeaurora.org>
->>>> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
->>>> kernel@vger.kernel.org; kvalo@codeaurora.org;
->> johannes@sipsolutions.net;
->>>> davem@davemloft.net; kuba@kernel.org; netdev@vger.kernel.org;
->>>> dianders@chromium.org; evgreen@chromium.org
->>>> Subject: Re: [RFC 0/7] Add support to process rx packets in thread
->>>>
->>>> On 7/21/20 10:25 AM, Andrew Lunn wrote:
->>>>> On Tue, Jul 21, 2020 at 10:44:19PM +0530, Rakesh Pillai wrote:
->>>>>> NAPI gets scheduled on the CPU core which got the
->>>>>> interrupt. The linux scheduler cannot move it to a
->>>>>> different core, even if the CPU on which NAPI is running
->>>>>> is heavily loaded. This can lead to degraded wifi
->>>>>> performance when running traffic at peak data rates.
->>>>>>
->>>>>> A thread on the other hand can be moved to different
->>>>>> CPU cores, if the one on which its running is heavily
->>>>>> loaded. During high incoming data traffic, this gives
->>>>>> better performance, since the thread can be moved to a
->>>>>> less loaded or sometimes even a more powerful CPU core
->>>>>> to account for the required CPU performance in order
->>>>>> to process the incoming packets.
->>>>>>
->>>>>> This patch series adds the support to use a high priority
->>>>>> thread to process the incoming packets, as opposed to
->>>>>> everything being done in NAPI context.
->>>>>
->>>>> I don't see why this problem is limited to the ath10k driver. I expect
->>>>> it applies to all drivers using NAPI. So shouldn't you be solving this
->>>>> in the NAPI core? Allow a driver to request the NAPI core uses a
->>>>> thread?
->>>>
->>>> What's more, you should be able to configure interrupt affinity to steer
->>>> RX processing onto a desired CPU core, is not that working for you
->>>> somehow?
->>>
->>> Hi Florian,
->>> Yes, the affinity of IRQ does work for me.
->>> But the affinity of IRQ does not happen runtime based on load.
->>
->> It can if you also run irqbalance.
-> 
-> 
-> Hi Florian,
-> 
-> Is it some kernel feature ?  Sorry I am not aware of this ?
-> I know it can be done in userspace.
 
-The kernel interface is /proc/<irq>/smp_affinity and the users-space
-implementation resides here:
 
-https://github.com/Irqbalance/irqbalance
--- 
-Florian
+On 7/23/2020 11:25 AM, Rakesh Pillai wrote:
+> Hi Rajkumar,
+> In linux, the IRQs are directed to the first core which is booted.
+> I see that all the IRQs are getting routed to CORE0 even if its heavily
+> loaded.
+> 
+
+You should be able to configure the initial IRQ setup so that they don't
+all go on CPU 0 when you create the IRQ. That obviously doesn't help the
+case of wanting scheduler to dynamically move the processing around to
+other CPUs though.
 
 _______________________________________________
 ath10k mailing list
