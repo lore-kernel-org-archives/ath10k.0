@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail3-165.sinamail.sina.com.cn ([202.108.3.165])
- by merlin.infradead.org with smtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jzJFW-0005jr-3h
- for ath10k@lists.infradead.org; Sat, 25 Jul 2020 12:26:00 +0000
-From: Hillf Danton <hdanton@sina.com>
+Received: from mail.as201155.net ([185.84.6.188])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jzKr6-0004rD-69
+ for ath10k@lists.infradead.org; Sat, 25 Jul 2020 14:08:53 +0000
 Subject: Re: [RFC 0/7] Add support to process rx packets in thread
-Date: Sat, 25 Jul 2020 20:25:01 +0800
-Message-Id: <20200725122501.15000-1-hdanton@sina.com>
-In-Reply-To: <8359a849-2b8a-c842-a501-c6cb6966e345@dd-wrt.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
  <20200721172514.GT1339445@lunn.ch> <20200725081633.7432-1-hdanton@sina.com>
+ <8359a849-2b8a-c842-a501-c6cb6966e345@dd-wrt.com>
+Message-ID: <2e443640-c051-2209-8d78-06a8e5944305@dd-wrt.com>
+Date: Sat, 25 Jul 2020 16:08:41 +0200
 MIME-Version: 1.0
+In-Reply-To: <8359a849-2b8a-c842-a501-c6cb6966e345@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,274 +20,218 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Hillf Danton <hdanton@sina.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "dianders@chromium.org" <dianders@chromium.org>, David Laight <David.Laight@ACULAB.COM>, Rakesh Pillai <pillair@codeaurora.org>, "evgreen@chromium.org" <evgreen@chromium.org>, "kuba@kernel.org" <kuba@kernel.org>, Markus Elfring <Markus.Elfring@web.de>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, Paolo Abeni <pabeni@redhat.com>, "davem@davemloft.net" <davem@davemloft.net>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+To: Hillf Danton <hdanton@sina.com>, David Laight <David.Laight@ACULAB.COM>, Andrew Lunn <andrew@lunn.ch>, Rakesh Pillai <pillair@codeaurora.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "dianders@chromium.org" <dianders@chromium.org>, Markus Elfring <Markus.Elfring@web.de>, "evgreen@chromium.org" <evgreen@chromium.org>, "kuba@kernel.org" <kuba@kernel.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "davem@davemloft.net" <davem@davemloft.net>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
 
-
-On Sat, 25 Jul 2020 12:38:00 +0200 Sebastian Gottschall wrote:
-> you may consider this
-> 
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1142611.html 
-> <https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1142611.html>
-
-Thanks very much for your link.
-
-> years ago someone already wanted to bring this feature upstream, but it 
-> was denied. i already tested this patch the last 2 days and it worked so 
-> far (with some little modifications)
-> so such a solution existed already and may be considered here
-
-I don't see outstanding difference in principle from Paolo's work in
-2016 except for the use of kthread_create() and friends because kworker 
-made use of them even before 2016. This is a simpler one as shown by
-the diff stat in his cover letter.
-
-Paolo, feel free to correct me if I misread anything.
-
-Finally I don't see the need to add sysfs attr, given CONFIG_THREADED_NAPI
-in this work.
-
-BTW let us know if anyone has plans to pick up the 2016 RFC.
-
-Hillf
-
-Paolo Abeni (2):
-  net: implement threaded-able napi poll loop support
-  net: add sysfs attribute to control napi threaded mode
-
- include/linux/netdevice.h |   4 ++
- net/core/dev.c            | 113 ++++++++++++++++++++++++++++++++++++++++++++++
- net/core/net-sysfs.c      | 102 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 219 insertions(+)
-> 
-> Sebastian
-> 
-> 
-> someone
-> 
-> Am 25.07.2020 um 10:16 schrieb Hillf Danton:
-> > On Wed, 22 Jul 2020 09:12:42 +0000 David Laight wrote:
-> >>> On 21 July 2020 18:25 Andrew Lunn wrote:
-> >>>
-> >>> On Tue, Jul 21, 2020 at 10:44:19PM +0530, Rakesh Pillai wrote:
-> >>>> NAPI gets scheduled on the CPU core which got the
-> >>>> interrupt. The linux scheduler cannot move it to a
-> >>>> different core, even if the CPU on which NAPI is running
-> >>>> is heavily loaded. This can lead to degraded wifi
-> >>>> performance when running traffic at peak data rates.
-> >>>>
-> >>>> A thread on the other hand can be moved to different
-> >>>> CPU cores, if the one on which its running is heavily
-> >>>> loaded. During high incoming data traffic, this gives
-> >>>> better performance, since the thread can be moved to a
-> >>>> less loaded or sometimes even a more powerful CPU core
-> >>>> to account for the required CPU performance in order
-> >>>> to process the incoming packets.
-> >>>>
-> >>>> This patch series adds the support to use a high priority
-> >>>> thread to process the incoming packets, as opposed to
-> >>>> everything being done in NAPI context.
-> >>> I don't see why this problem is limited to the ath10k driver. I expect
-> >>> it applies to all drivers using NAPI. So shouldn't you be solving this
-> >>> in the NAPI core? Allow a driver to request the NAPI core uses a
-> >>> thread?
-> >> It's not just NAPI the problem is with the softint processing.
-> >> I suspect a lot of systems would work better if it ran as
-> >> a (highish priority) kernel thread.
-> > Hi folks
-> >
-> > Below is a minimunm poc implementation I can imagine on top of workqueue
-> > to make napi threaded. Thoughts are appreciated.
-> >
-> >> I've had to remove the main locks from a multi-threaded application
-> >> and replace them with atomic counters.
-> >> Consider what happens when the threads remove items from a shared
-> >> work list.
-> >> The code looks like:
-> >> 	mutex_enter();
-> >> 	remove_item_from_list();
-> >> 	mutex_exit().
-> >> The mutex is only held for a few instructions, so while you'd expect
-> >> the cache line to be 'hot' you wouldn't get real contention.
-> >> However the following scenarios happen:
-> >> 1) An ethernet interrupt happens while the mutex is held.
-> >>     This stops the other threads until all the softint processing
-> >>     has finished.
-> >> 2) An ethernet interrupt (and softint) runs on a thread that is
-> >>     waiting for the mutex.
-> >>     (Or on the cpu that the thread's processor affinity ties it to.)
-> >>     In this case the 'fair' (ticket) mutex code won't let any other
-> >>     thread acquire the mutex.
-> >>     So again everything stops until the softints all complete.
-> >>
-> >> The second one is also a problem when trying to wake up all
-> >> the threads (eg after adding a lot of items to the list).
-> >> The ticket locks force them to wake in order, but
-> >> sometimes the 'thundering herd' would work better.
-> >>
-> >> IIRC this is actually worse for processes running under the RT
-> >> scheduler (without CONFIG_PREEMPT) because the they are almost
-> >> always scheduled on the same cpu they ran on last.
-> >> If it is busy, but cannot be pre-empted, they are not moved
-> >> to an idle cpu.
-> >>     
-> >> To confound things there is a very broken workaround for broken
-> >> hardware in the driver for the e1000 interface on (at least)
-> >> Ivy Bridge cpu that can cause the driver to spin for a very
-> >> long time (IIRC milliseconds) whenever it has to write to a
-> >> MAC register (ie on every transmit setup).
-> >>
-> >> 	David
-> >>
-> >> -
-> >> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> >> Registration No: 1397386 (Wales)
-> >>
-> >>
-> > To make napi threaded, if either irq or softirq thread is entirely ruled
-> > out, add napi::work that will be queued on a highpri workqueue. It is
-> > actually a unbound one to facilitate scheduler to catter napi loads on to
-> > idle CPU cores. What users need to do with the threaded napi
-> > is s/netif_napi_add/netif_threaded_napi_add/ and no more.
-> >
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -338,6 +338,9 @@ struct napi_struct {
-> >   	struct list_head	dev_list;
-> >   	struct hlist_node	napi_hash_node;
-> >   	unsigned int		napi_id;
-> > +#ifdef CONFIG_THREADED_NAPI
-> > +	struct work_struct	work;
-> > +#endif
-> >   };
-> >   
-> >   enum {
-> > @@ -2234,6 +2237,19 @@ static inline void *netdev_priv(const st
-> >   void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
-> >   		    int (*poll)(struct napi_struct *, int), int weight);
-> >   
-> > +#ifdef CONFIG_THREADED_NAPI
-> > +void netif_threaded_napi_add(struct net_device *dev, struct napi_struct *napi,
-> > +		    int (*poll)(struct napi_struct *, int), int weight);
-> > +#else
-> > +static inline void netif_threaded_napi_add(struct net_device *dev,
-> > +					struct napi_struct *napi,
-> > +					int (*poll)(struct napi_struct *, int),
-> > +					int weight)
-> > +{
-> > +	netif_napi_add(dev, napi, poll, weight);
-> > +}
-> > +#endif
-> > +
-> >   /**
-> >    *	netif_tx_napi_add - initialize a NAPI context
-> >    *	@dev:  network device
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -6277,6 +6277,61 @@ static int process_backlog(struct napi_s
-> >   	return work;
-> >   }
-> >   
-> > +#ifdef CONFIG_THREADED_NAPI
-> > +/* unbound highpri workqueue for threaded napi */
-> > +static struct workqueue_struct *napi_workq;
-> > +
-> > +static void napi_workfn(struct work_struct *work)
-> > +{
-> > +	struct napi_struct *n = container_of(work, struct napi_struct, work);
-> > +
-> > +	for (;;) {
-> > +		if (!test_bit(NAPI_STATE_SCHED, &n->state))
-> > +			return;
-> > +
-> > +		if (n->poll(n, n->weight) < n->weight)
-> > +			return;
-> > +
-> > +		if (need_resched()) {
-> > +			/*
-> > +			 * have to pay for the latency of task switch even if
-> > +			 * napi is scheduled
-> > +			 */
-> > +			if (test_bit(NAPI_STATE_SCHED, &n->state))
-> > +				queue_work(napi_workq, work);
-> > +			return;
-> > +		}
-> > +	}
-> > +}
-> > +
-> > +void netif_threaded_napi_add(struct net_device *dev,
-> > +				struct napi_struct *napi,
-> > +				int (*poll)(struct napi_struct *, int),
-> > +				int weight)
-> > +{
-> > +	netif_napi_add(dev, napi, poll, weight);
-> > +	INIT_WORK(&napi->work, napi_workfn);
-> > +}
-> > +
-> > +static inline bool is_threaded_napi(struct napi_struct *n)
-> > +{
-> > +	return n->work.func == napi_workfn;
-> > +}
-> > +
-> > +static inline void threaded_napi_sched(struct napi_struct *n)
-> > +{
-> > +	if (is_threaded_napi(n))
-> > +		queue_work(napi_workq, &n->work);
-> > +	else
-> > +		____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> > +}
-> > +#else
-> > +static inline void threaded_napi_sched(struct napi_struct *n)
-> > +{
-> > +	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> > +}
-> > +#endif
-> > +
-> >   /**
-> >    * __napi_schedule - schedule for receive
-> >    * @n: entry to schedule
-> > @@ -6289,7 +6344,7 @@ void __napi_schedule(struct napi_struct
-> >   	unsigned long flags;
-> >   
-> >   	local_irq_save(flags);
-> > -	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> > +	threaded_napi_sched(n);
-> >   	local_irq_restore(flags);
-> >   }
-> >   EXPORT_SYMBOL(__napi_schedule);
-> > @@ -6335,7 +6390,7 @@ EXPORT_SYMBOL(napi_schedule_prep);
-> >    */
-> >   void __napi_schedule_irqoff(struct napi_struct *n)
-> >   {
-> > -	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> > +	threaded_napi_sched(n);
-> >   }
-> >   EXPORT_SYMBOL(__napi_schedule_irqoff);
-> >   
-> > @@ -10685,6 +10740,10 @@ static int __init net_dev_init(void)
-> >   		sd->backlog.weight = weight_p;
-> >   	}
-> >   
-> > +#ifdef CONFIG_THREADED_NAPI
-> > +	napi_workq = alloc_workqueue("napi_workq", WQ_UNBOUND | WQ_HIGHPRI,
-> > +					    WQ_UNBOUND_MAX_ACTIVE);
-> > +#endif
-> >   	dev_boot_phase = 0;
-> >   
-> >   	/* The loopback device is special if any other network devices
-> >
-> >
-> > _______________________________________________
-> > ath10k mailing list
-> > ath10k@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/ath10k
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CkFtIDI1LjA3LjIwMjAgdW0gMTQ6MjUgc2NocmllYiBIaWxsZiBEYW50b246Cj4gT24gU2F0LCAy
+NSBKdWwgMjAyMCAxMjozODowMCArMDIwMCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4g
+eW91IG1heSBjb25zaWRlciB0aGlzCj4+Cj4+IGh0dHBzOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20v
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZy9tc2cxMTQyNjExLmh0bWwgCj4+Cj4+IDxodHRw
+czovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2xpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcvbXNn
+MTE0MjYxMS5odG1sPiAKPj4KPiBUaGFua3MgdmVyeSBtdWNoIGZvciB5b3VyIGxpbmsuCj4KPj4g
+eWVhcnMgYWdvIHNvbWVvbmUgYWxyZWFkeSB3YW50ZWQgdG8gYnJpbmcgdGhpcyBmZWF0dXJlIHVw
+c3RyZWFtLCBidXQgaXQKPj4gd2FzIGRlbmllZC4gaSBhbHJlYWR5IHRlc3RlZCB0aGlzIHBhdGNo
+IHRoZSBsYXN0IDIgZGF5cyBhbmQgaXQgd29ya2VkIHNvCj4+IGZhciAod2l0aCBzb21lIGxpdHRs
+ZSBtb2RpZmljYXRpb25zKQo+PiBzbyBzdWNoIGEgc29sdXRpb24gZXhpc3RlZCBhbHJlYWR5IGFu
+ZCBtYXkgYmUgY29uc2lkZXJlZCBoZXJlCj4gSSBkb24ndCBzZWUgb3V0c3RhbmRpbmcgZGlmZmVy
+ZW5jZSBpbiBwcmluY2lwbGUgZnJvbSBQYW9sbydzIHdvcmsgaW4KPiAyMDE2IGV4Y2VwdCBmb3Ig
+dGhlIHVzZSBvZiBrdGhyZWFkX2NyZWF0ZSgpIGFuZCBmcmllbmRzIGJlY2F1c2Uga3dvcmtlcgo+
+IG1hZGUgdXNlIG9mIHRoZW0gZXZlbiBiZWZvcmUgMjAxNi4gVGhpcyBpcyBhIHNpbXBsZXIgb25l
+IGFzIHNob3duIGJ5Cj4gdGhlIGRpZmYgc3RhdCBpbiBoaXMgY292ZXIgbGV0dGVyLgppIGFncmVl
+LiBpIGp1c3QgY2FuIHNheSB0aGF0IGkgdGVzdGVkIHRoaXMgcGF0Y2ggcmVjZW50bHkgZHVlIHRo
+aXMgCmRpc2N1c3Npb24gaGVyZS4gYW5kIGl0IGNhbiBiZSBjaGFuZ2VkIGJ5IHN5c2ZzLiBidXQg
+aXQgZG9lc250IHdvcmsgZm9yCndpZmkgZHJpdmVycyB3aGljaCBhcmUgbWFpbmx5IHVzaW5nIGR1
+bW15IG5ldGRldiBkZXZpY2VzLiBmb3IgdGhpcyBpIAptYWRlIGEgc21hbGwgcGF0Y2ggdG8gZ2V0
+IHRoZW0gd29ya2luZyB1c2luZyBuYXBpX3NldF90aHJlYWRlZCBtYW51YWxseSAKaGFyZGNvZGVk
+IGluIHRoZSBkcml2ZXJzLiAoc2VlIHBhdGNoIGJlbGxvdykKaSBhbHNvIHRlc3RlZCB2YXJpb3Vz
+IG5ldHdvcmtpbmcgZHJpdmVycy4gb25lIHRoaW5nIGkgbm90aWNlIGRvZXNudCAKd29yay4gc29t
+ZSBuYXBpIGNvZGUgaXMgdXNlZCBmb3IgdHggcG9sbGluZy4gc28gZnJvbSBteSBleHBlcmllbmNl
+IHRoaXMgCmNvbmNlcHQganVzdCB3b3JrcyBnb29kIGZvciByeCB3aXRoIHRoZSBtb3N0IGRyaXZl
+cnMuCnNvIGZhciBpIHRlc3RlZCBtdDc2LCBhdGgxMGsgYW5kIHNvbWUgc29jIGV0aGVybmV0IGNo
+aXBzZXRzIHdpdGggZ29vZCAKc3VjY2Vzcy4gb24gYXRoMTBrIGkgaGFkIGFib3V0IDEwIC0gMjAl
+IHBlcmZvcm1hbmNlIGdhaW4gb24gbXVsdGljb3JlIApzeXN0ZW1zLiB1c2luZyBzdGFuZGFyZCBp
+cGVyZjMgd2l0aCA0IHBhcmFsbGVsIHN0cmVhbXMuCgotNTQzOSw3ICs1NDQxLDcgQEAgaW50IG5h
+cGlfc2V0X3RocmVhZGVkKHN0cnVjdCBuYXBpX3N0cnVjdCAqbiwgYm9vbAogwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGNsZWFyX2JpdChOQVBJX1NUQVRFX1RIUkVBREVELCAmbi0+c3Rh
+dGUpOwoKIMKgwqDCoMKgwqDCoMKgIC8qIGlmIHRoZSBkZXZpY2UgaXMgaW5pdGlhbGl6aW5nLCBu
+b3RoaW5nIHRvZG8gKi8KLcKgwqDCoMKgwqDCoCBpZiAodGVzdF9iaXQoX19MSU5LX1NUQVRFX1NU
+QVJULCAmbi0+ZGV2LT5zdGF0ZSkpCivCoMKgwqDCoMKgwqAgaWYgKHRlc3RfYml0KF9fTElOS19T
+VEFURV9TVEFSVCwgJm4tPmRldi0+c3RhdGUpICYmIApuLT5kZXYtPnJlZ19zdGF0ZSAhPSBORVRS
+RUdfRFVNTVkpCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIDA7CgogwqDC
+oMKgwqDCoMKgwqAgbmFwaV90aHJlYWRfc3RvcChuKQo7CgoKPgo+IFBhb2xvLCBmZWVsIGZyZWUg
+dG8gY29ycmVjdCBtZSBpZiBJIG1pc3JlYWQgYW55dGhpbmcuCj4KPiBGaW5hbGx5IEkgZG9uJ3Qg
+c2VlIHRoZSBuZWVkIHRvIGFkZCBzeXNmcyBhdHRyLCBnaXZlbiAKPiBDT05GSUdfVEhSRUFERURf
+TkFQSQo+IGluIHRoaXMgd29yay4KPgo+IEJUVyBsZXQgdXMga25vdyBpZiBhbnlvbmUgaGFzIHBs
+YW5zIHRvIHBpY2sgdXAgdGhlIDIwMTYgUkZDLgo+Cj4gSGlsbGYKPgo+IFBhb2xvIEFiZW5pICgy
+KToKPiDCoMKgIG5ldDogaW1wbGVtZW50IHRocmVhZGVkLWFibGUgbmFwaSBwb2xsIGxvb3Agc3Vw
+cG9ydAo+IMKgwqAgbmV0OiBhZGQgc3lzZnMgYXR0cmlidXRlIHRvIGNvbnRyb2wgbmFwaSB0aHJl
+YWRlZCBtb2RlCj4KPiDCoCBpbmNsdWRlL2xpbnV4L25ldGRldmljZS5oIHzCoMKgIDQgKysKPiDC
+oCBuZXQvY29yZS9kZXYuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAxMTMgCj4gKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+IMKgIG5ldC9jb3JlL25ldC1z
+eXNmcy5jwqDCoMKgwqDCoCB8IDEwMiAKPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKwo+IMKgIDMgZmlsZXMgY2hhbmdlZCwgMjE5IGluc2VydGlvbnMoKykKPj4gU2Vi
+YXN0aWFuCj4+Cj4+Cj4+IHNvbWVvbmUKPj4KPj4gQW0gMjUuMDcuMjAyMCB1bSAxMDoxNiBzY2hy
+aWViIEhpbGxmIERhbnRvbjoKPj4+IE9uIFdlZCwgMjIgSnVsIDIwMjAgMDk6MTI6NDIgKzAwMDAg
+RGF2aWQgTGFpZ2h0IHdyb3RlOgo+Pj4+PiBPbiAyMSBKdWx5IDIwMjAgMTg6MjUgQW5kcmV3IEx1
+bm4gd3JvdGU6Cj4+Pj4+Cj4+Pj4+IE9uIFR1ZSwgSnVsIDIxLCAyMDIwIGF0IDEwOjQ0OjE5UE0g
+KzA1MzAsIFJha2VzaCBQaWxsYWkgd3JvdGU6Cj4+Pj4+PiBOQVBJIGdldHMgc2NoZWR1bGVkIG9u
+IHRoZSBDUFUgY29yZSB3aGljaCBnb3QgdGhlCj4+Pj4+PiBpbnRlcnJ1cHQuIFRoZSBsaW51eCBz
+Y2hlZHVsZXIgY2Fubm90IG1vdmUgaXQgdG8gYQo+Pj4+Pj4gZGlmZmVyZW50IGNvcmUsIGV2ZW4g
+aWYgdGhlIENQVSBvbiB3aGljaCBOQVBJIGlzIHJ1bm5pbmcKPj4+Pj4+IGlzIGhlYXZpbHkgbG9h
+ZGVkLiBUaGlzIGNhbiBsZWFkIHRvIGRlZ3JhZGVkIHdpZmkKPj4+Pj4+IHBlcmZvcm1hbmNlIHdo
+ZW4gcnVubmluZyB0cmFmZmljIGF0IHBlYWsgZGF0YSByYXRlcy4KPj4+Pj4+Cj4+Pj4+PiBBIHRo
+cmVhZCBvbiB0aGUgb3RoZXIgaGFuZCBjYW4gYmUgbW92ZWQgdG8gZGlmZmVyZW50Cj4+Pj4+PiBD
+UFUgY29yZXMsIGlmIHRoZSBvbmUgb24gd2hpY2ggaXRzIHJ1bm5pbmcgaXMgaGVhdmlseQo+Pj4+
+Pj4gbG9hZGVkLiBEdXJpbmcgaGlnaCBpbmNvbWluZyBkYXRhIHRyYWZmaWMsIHRoaXMgZ2l2ZXMK
+Pj4+Pj4+IGJldHRlciBwZXJmb3JtYW5jZSwgc2luY2UgdGhlIHRocmVhZCBjYW4gYmUgbW92ZWQg
+dG8gYQo+Pj4+Pj4gbGVzcyBsb2FkZWQgb3Igc29tZXRpbWVzIGV2ZW4gYSBtb3JlIHBvd2VyZnVs
+IENQVSBjb3JlCj4+Pj4+PiB0byBhY2NvdW50IGZvciB0aGUgcmVxdWlyZWQgQ1BVIHBlcmZvcm1h
+bmNlIGluIG9yZGVyCj4+Pj4+PiB0byBwcm9jZXNzIHRoZSBpbmNvbWluZyBwYWNrZXRzLgo+Pj4+
+Pj4KPj4+Pj4+IFRoaXMgcGF0Y2ggc2VyaWVzIGFkZHMgdGhlIHN1cHBvcnQgdG8gdXNlIGEgaGln
+aCBwcmlvcml0eQo+Pj4+Pj4gdGhyZWFkIHRvIHByb2Nlc3MgdGhlIGluY29taW5nIHBhY2tldHMs
+IGFzIG9wcG9zZWQgdG8KPj4+Pj4+IGV2ZXJ5dGhpbmcgYmVpbmcgZG9uZSBpbiBOQVBJIGNvbnRl
+eHQuCj4+Pj4+IEkgZG9uJ3Qgc2VlIHdoeSB0aGlzIHByb2JsZW0gaXMgbGltaXRlZCB0byB0aGUg
+YXRoMTBrIGRyaXZlci4gSSAKPj4+Pj4gZXhwZWN0Cj4+Pj4+IGl0IGFwcGxpZXMgdG8gYWxsIGRy
+aXZlcnMgdXNpbmcgTkFQSS4gU28gc2hvdWxkbid0IHlvdSBiZSBzb2x2aW5nIAo+Pj4+PiB0aGlz
+Cj4+Pj4+IGluIHRoZSBOQVBJIGNvcmU/IEFsbG93IGEgZHJpdmVyIHRvIHJlcXVlc3QgdGhlIE5B
+UEkgY29yZSB1c2VzIGEKPj4+Pj4gdGhyZWFkPwo+Pj4+IEl0J3Mgbm90IGp1c3QgTkFQSSB0aGUg
+cHJvYmxlbSBpcyB3aXRoIHRoZSBzb2Z0aW50IHByb2Nlc3NpbmcuCj4+Pj4gSSBzdXNwZWN0IGEg
+bG90IG9mIHN5c3RlbXMgd291bGQgd29yayBiZXR0ZXIgaWYgaXQgcmFuIGFzCj4+Pj4gYSAoaGln
+aGlzaCBwcmlvcml0eSkga2VybmVsIHRocmVhZC4KPj4+IEhpIGZvbGtzCj4+Pgo+Pj4gQmVsb3cg
+aXMgYSBtaW5pbXVubSBwb2MgaW1wbGVtZW50YXRpb24gSSBjYW4gaW1hZ2luZSBvbiB0b3Agb2Yg
+Cj4+PiB3b3JrcXVldWUKPj4+IHRvIG1ha2UgbmFwaSB0aHJlYWRlZC4gVGhvdWdodHMgYXJlIGFw
+cHJlY2lhdGVkLgo+Pj4KPj4+PiBJJ3ZlIGhhZCB0byByZW1vdmUgdGhlIG1haW4gbG9ja3MgZnJv
+bSBhIG11bHRpLXRocmVhZGVkIGFwcGxpY2F0aW9uCj4+Pj4gYW5kIHJlcGxhY2UgdGhlbSB3aXRo
+IGF0b21pYyBjb3VudGVycy4KPj4+PiBDb25zaWRlciB3aGF0IGhhcHBlbnMgd2hlbiB0aGUgdGhy
+ZWFkcyByZW1vdmUgaXRlbXMgZnJvbSBhIHNoYXJlZAo+Pj4+IHdvcmsgbGlzdC4KPj4+PiBUaGUg
+Y29kZSBsb29rcyBsaWtlOgo+Pj4+IMKgwqDCoMKgbXV0ZXhfZW50ZXIoKTsKPj4+PiDCoMKgwqDC
+oHJlbW92ZV9pdGVtX2Zyb21fbGlzdCgpOwo+Pj4+IMKgwqDCoMKgbXV0ZXhfZXhpdCgpLgo+Pj4+
+IFRoZSBtdXRleCBpcyBvbmx5IGhlbGQgZm9yIGEgZmV3IGluc3RydWN0aW9ucywgc28gd2hpbGUg
+eW91J2QgZXhwZWN0Cj4+Pj4gdGhlIGNhY2hlIGxpbmUgdG8gYmUgJ2hvdCcgeW91IHdvdWxkbid0
+IGdldCByZWFsIGNvbnRlbnRpb24uCj4+Pj4gSG93ZXZlciB0aGUgZm9sbG93aW5nIHNjZW5hcmlv
+cyBoYXBwZW46Cj4+Pj4gMSkgQW4gZXRoZXJuZXQgaW50ZXJydXB0IGhhcHBlbnMgd2hpbGUgdGhl
+IG11dGV4IGlzIGhlbGQuCj4+Pj4gwqDCoMKgwqAgVGhpcyBzdG9wcyB0aGUgb3RoZXIgdGhyZWFk
+cyB1bnRpbCBhbGwgdGhlIHNvZnRpbnQgcHJvY2Vzc2luZwo+Pj4+IMKgwqDCoMKgIGhhcyBmaW5p
+c2hlZC4KPj4+PiAyKSBBbiBldGhlcm5ldCBpbnRlcnJ1cHQgKGFuZCBzb2Z0aW50KSBydW5zIG9u
+IGEgdGhyZWFkIHRoYXQgaXMKPj4+PiDCoMKgwqDCoCB3YWl0aW5nIGZvciB0aGUgbXV0ZXguCj4+
+Pj4gwqDCoMKgwqAgKE9yIG9uIHRoZSBjcHUgdGhhdCB0aGUgdGhyZWFkJ3MgcHJvY2Vzc29yIGFm
+ZmluaXR5IHRpZXMgaXQgdG8uKQo+Pj4+IMKgwqDCoMKgIEluIHRoaXMgY2FzZSB0aGUgJ2ZhaXIn
+ICh0aWNrZXQpIG11dGV4IGNvZGUgd29uJ3QgbGV0IGFueSBvdGhlcgo+Pj4+IMKgwqDCoMKgIHRo
+cmVhZCBhY3F1aXJlIHRoZSBtdXRleC4KPj4+PiDCoMKgwqDCoCBTbyBhZ2FpbiBldmVyeXRoaW5n
+IHN0b3BzIHVudGlsIHRoZSBzb2Z0aW50cyBhbGwgY29tcGxldGUuCj4+Pj4KPj4+PiBUaGUgc2Vj
+b25kIG9uZSBpcyBhbHNvIGEgcHJvYmxlbSB3aGVuIHRyeWluZyB0byB3YWtlIHVwIGFsbAo+Pj4+
+IHRoZSB0aHJlYWRzIChlZyBhZnRlciBhZGRpbmcgYSBsb3Qgb2YgaXRlbXMgdG8gdGhlIGxpc3Qp
+Lgo+Pj4+IFRoZSB0aWNrZXQgbG9ja3MgZm9yY2UgdGhlbSB0byB3YWtlIGluIG9yZGVyLCBidXQK
+Pj4+PiBzb21ldGltZXMgdGhlICd0aHVuZGVyaW5nIGhlcmQnIHdvdWxkIHdvcmsgYmV0dGVyLgo+
+Pj4+Cj4+Pj4gSUlSQyB0aGlzIGlzIGFjdHVhbGx5IHdvcnNlIGZvciBwcm9jZXNzZXMgcnVubmlu
+ZyB1bmRlciB0aGUgUlQKPj4+PiBzY2hlZHVsZXIgKHdpdGhvdXQgQ09ORklHX1BSRUVNUFQpIGJl
+Y2F1c2UgdGhlIHRoZXkgYXJlIGFsbW9zdAo+Pj4+IGFsd2F5cyBzY2hlZHVsZWQgb24gdGhlIHNh
+bWUgY3B1IHRoZXkgcmFuIG9uIGxhc3QuCj4+Pj4gSWYgaXQgaXMgYnVzeSwgYnV0IGNhbm5vdCBi
+ZSBwcmUtZW1wdGVkLCB0aGV5IGFyZSBub3QgbW92ZWQKPj4+PiB0byBhbiBpZGxlIGNwdS4KPj4+
+PiDCoMKgwqDCoCBUbyBjb25mb3VuZCB0aGluZ3MgdGhlcmUgaXMgYSB2ZXJ5IGJyb2tlbiB3b3Jr
+YXJvdW5kIGZvciBicm9rZW4KPj4+PiBoYXJkd2FyZSBpbiB0aGUgZHJpdmVyIGZvciB0aGUgZTEw
+MDAgaW50ZXJmYWNlIG9uIChhdCBsZWFzdCkKPj4+PiBJdnkgQnJpZGdlIGNwdSB0aGF0IGNhbiBj
+YXVzZSB0aGUgZHJpdmVyIHRvIHNwaW4gZm9yIGEgdmVyeQo+Pj4+IGxvbmcgdGltZSAoSUlSQyBt
+aWxsaXNlY29uZHMpIHdoZW5ldmVyIGl0IGhhcyB0byB3cml0ZSB0byBhCj4+Pj4gTUFDIHJlZ2lz
+dGVyIChpZSBvbiBldmVyeSB0cmFuc21pdCBzZXR1cCkuCj4+Pj4KPj4+PiDCoMKgwqDCoERhdmlk
+Cj4+Pj4KPj4+PiAtCj4+Pj4gUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
+YWQsIE1vdW50IEZhcm0sIE1pbHRvbiAKPj4+PiBLZXluZXMsIE1LMSAxUFQsIFVLCj4+Pj4gUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykKPj4+Pgo+Pj4+Cj4+PiBUbyBtYWtlIG5hcGkg
+dGhyZWFkZWQsIGlmIGVpdGhlciBpcnEgb3Igc29mdGlycSB0aHJlYWQgaXMgZW50aXJlbHkgCj4+
+PiBydWxlZAo+Pj4gb3V0LCBhZGQgbmFwaTo6d29yayB0aGF0IHdpbGwgYmUgcXVldWVkIG9uIGEg
+aGlnaHByaSB3b3JrcXVldWUuIEl0IGlzCj4+PiBhY3R1YWxseSBhIHVuYm91bmQgb25lIHRvIGZh
+Y2lsaXRhdGUgc2NoZWR1bGVyIHRvIGNhdHRlciBuYXBpIGxvYWRzIAo+Pj4gb24gdG8KPj4+IGlk
+bGUgQ1BVIGNvcmVzLiBXaGF0IHVzZXJzIG5lZWQgdG8gZG8gd2l0aCB0aGUgdGhyZWFkZWQgbmFw
+aQo+Pj4gaXMgcy9uZXRpZl9uYXBpX2FkZC9uZXRpZl90aHJlYWRlZF9uYXBpX2FkZC8gYW5kIG5v
+IG1vcmUuCj4+Pgo+Pj4gLS0tIGEvaW5jbHVkZS9saW51eC9uZXRkZXZpY2UuaAo+Pj4gKysrIGIv
+aW5jbHVkZS9saW51eC9uZXRkZXZpY2UuaAo+Pj4gQEAgLTMzOCw2ICszMzgsOSBAQCBzdHJ1Y3Qg
+bmFwaV9zdHJ1Y3Qgewo+Pj4gwqDCoMKgwqDCoMKgIHN0cnVjdCBsaXN0X2hlYWTCoMKgwqAgZGV2
+X2xpc3Q7Cj4+PiDCoMKgwqDCoMKgwqAgc3RydWN0IGhsaXN0X25vZGXCoMKgwqAgbmFwaV9oYXNo
+X25vZGU7Cj4+PiDCoMKgwqDCoMKgwqAgdW5zaWduZWQgaW50wqDCoMKgwqDCoMKgwqAgbmFwaV9p
+ZDsKPj4+ICsjaWZkZWYgQ09ORklHX1RIUkVBREVEX05BUEkKPj4+ICvCoMKgwqAgc3RydWN0IHdv
+cmtfc3RydWN0wqDCoMKgIHdvcms7Cj4+PiArI2VuZGlmCj4+PiDCoMKgIH07Cj4+PiDCoMKgIMKg
+wqAgZW51bSB7Cj4+PiBAQCAtMjIzNCw2ICsyMjM3LDE5IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCAq
+bmV0ZGV2X3ByaXYoY29uc3Qgc3QKPj4+IMKgwqAgdm9pZCBuZXRpZl9uYXBpX2FkZChzdHJ1Y3Qg
+bmV0X2RldmljZSAqZGV2LCBzdHJ1Y3QgbmFwaV9zdHJ1Y3QgCj4+PiAqbmFwaSwKPj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW50ICgqcG9sbCkoc3RydWN0IG5hcGlfc3RydWN0ICos
+IGludCksIGludCB3ZWlnaHQpOwo+Pj4gwqDCoCArI2lmZGVmIENPTkZJR19USFJFQURFRF9OQVBJ
+Cj4+PiArdm9pZCBuZXRpZl90aHJlYWRlZF9uYXBpX2FkZChzdHJ1Y3QgbmV0X2RldmljZSAqZGV2
+LCBzdHJ1Y3QgCj4+PiBuYXBpX3N0cnVjdCAqbmFwaSwKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGludCAoKnBvbGwpKHN0cnVjdCBuYXBpX3N0cnVjdCAqLCBpbnQpLCBpbnQgd2VpZ2h0KTsK
+Pj4+ICsjZWxzZQo+Pj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBuZXRpZl90aHJlYWRlZF9uYXBpX2Fk
+ZChzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHN0cnVjdCBuYXBpX3N0cnVjdCAqbmFwaSwKPj4+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnQgKCpwb2xsKShzdHJ1Y3QgbmFwaV9zdHJ1Y3Qg
+KiwgaW50KSwKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnQg
+d2VpZ2h0KQo+Pj4gK3sKPj4+ICvCoMKgwqAgbmV0aWZfbmFwaV9hZGQoZGV2LCBuYXBpLCBwb2xs
+LCB3ZWlnaHQpOwo+Pj4gK30KPj4+ICsjZW5kaWYKPj4+ICsKPj4+IMKgwqAgLyoqCj4+PiDCoMKg
+wqAgKsKgwqDCoCBuZXRpZl90eF9uYXBpX2FkZCAtIGluaXRpYWxpemUgYSBOQVBJIGNvbnRleHQK
+Pj4+IMKgwqDCoCAqwqDCoMKgIEBkZXY6wqAgbmV0d29yayBkZXZpY2UKPj4+IC0tLSBhL25ldC9j
+b3JlL2Rldi5jCj4+PiArKysgYi9uZXQvY29yZS9kZXYuYwo+Pj4gQEAgLTYyNzcsNiArNjI3Nyw2
+MSBAQCBzdGF0aWMgaW50IHByb2Nlc3NfYmFja2xvZyhzdHJ1Y3QgbmFwaV9zCj4+PiDCoMKgwqDC
+oMKgwqAgcmV0dXJuIHdvcms7Cj4+PiDCoMKgIH0KPj4+IMKgwqAgKyNpZmRlZiBDT05GSUdfVEhS
+RUFERURfTkFQSQo+Pj4gKy8qIHVuYm91bmQgaGlnaHByaSB3b3JrcXVldWUgZm9yIHRocmVhZGVk
+IG5hcGkgKi8KPj4+ICtzdGF0aWMgc3RydWN0IHdvcmtxdWV1ZV9zdHJ1Y3QgKm5hcGlfd29ya3E7
+Cj4+PiArCj4+PiArc3RhdGljIHZvaWQgbmFwaV93b3JrZm4oc3RydWN0IHdvcmtfc3RydWN0ICp3
+b3JrKQo+Pj4gK3sKPj4+ICvCoMKgwqAgc3RydWN0IG5hcGlfc3RydWN0ICpuID0gY29udGFpbmVy
+X29mKHdvcmssIHN0cnVjdCBuYXBpX3N0cnVjdCwgCj4+PiB3b3JrKTsKPj4+ICsKPj4+ICvCoMKg
+wqAgZm9yICg7Oykgewo+Pj4gK8KgwqDCoMKgwqDCoMKgIGlmICghdGVzdF9iaXQoTkFQSV9TVEFU
+RV9TQ0hFRCwgJm4tPnN0YXRlKSkKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybjsK
+Pj4+ICsKPj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAobi0+cG9sbChuLCBuLT53ZWlnaHQpIDwgbi0+
+d2VpZ2h0KQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuOwo+Pj4gKwo+Pj4gK8Kg
+wqDCoMKgwqDCoMKgIGlmIChuZWVkX3Jlc2NoZWQoKSkgewo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgLyoKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBoYXZlIHRvIHBheSBmb3Ig
+dGhlIGxhdGVuY3kgb2YgdGFzayBzd2l0Y2ggZXZlbiBpZgo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAqIG5hcGkgaXMgc2NoZWR1bGVkCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ICovCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAodGVzdF9iaXQoTkFQSV9TVEFURV9T
+Q0hFRCwgJm4tPnN0YXRlKSkKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcXVl
+dWVfd29yayhuYXBpX3dvcmtxLCB3b3JrKTsKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJl
+dHVybjsKPj4+ICvCoMKgwqDCoMKgwqDCoCB9Cj4+PiArwqDCoMKgIH0KPj4+ICt9Cj4+PiArCj4+
+PiArdm9pZCBuZXRpZl90aHJlYWRlZF9uYXBpX2FkZChzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LAo+
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgbmFwaV9zdHJ1Y3QgKm5h
+cGksCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGludCAoKnBvbGwpKHN0cnVj
+dCBuYXBpX3N0cnVjdCAqLCBpbnQpLAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBpbnQgd2VpZ2h0KQo+Pj4gK3sKPj4+ICvCoMKgwqAgbmV0aWZfbmFwaV9hZGQoZGV2LCBuYXBp
+LCBwb2xsLCB3ZWlnaHQpOwo+Pj4gK8KgwqDCoCBJTklUX1dPUksoJm5hcGktPndvcmssIG5hcGlf
+d29ya2ZuKTsKPj4+ICt9Cj4+PiArCj4+PiArc3RhdGljIGlubGluZSBib29sIGlzX3RocmVhZGVk
+X25hcGkoc3RydWN0IG5hcGlfc3RydWN0ICpuKQo+Pj4gK3sKPj4+ICvCoMKgwqAgcmV0dXJuIG4t
+PndvcmsuZnVuYyA9PSBuYXBpX3dvcmtmbjsKPj4+ICt9Cj4+PiArCj4+PiArc3RhdGljIGlubGlu
+ZSB2b2lkIHRocmVhZGVkX25hcGlfc2NoZWQoc3RydWN0IG5hcGlfc3RydWN0ICpuKQo+Pj4gK3sK
+Pj4+ICvCoMKgwqAgaWYgKGlzX3RocmVhZGVkX25hcGkobikpCj4+PiArwqDCoMKgwqDCoMKgwqAg
+cXVldWVfd29yayhuYXBpX3dvcmtxLCAmbi0+d29yayk7Cj4+PiArwqDCoMKgIGVsc2UKPj4+ICvC
+oMKgwqDCoMKgwqDCoCBfX19fbmFwaV9zY2hlZHVsZSh0aGlzX2NwdV9wdHIoJnNvZnRuZXRfZGF0
+YSksIG4pOwo+Pj4gK30KPj4+ICsjZWxzZQo+Pj4gK3N0YXRpYyBpbmxpbmUgdm9pZCB0aHJlYWRl
+ZF9uYXBpX3NjaGVkKHN0cnVjdCBuYXBpX3N0cnVjdCAqbikKPj4+ICt7Cj4+PiArwqDCoMKgIF9f
+X19uYXBpX3NjaGVkdWxlKHRoaXNfY3B1X3B0cigmc29mdG5ldF9kYXRhKSwgbik7Cj4+PiArfQo+
+Pj4gKyNlbmRpZgo+Pj4gKwo+Pj4gwqDCoCAvKioKPj4+IMKgwqDCoCAqIF9fbmFwaV9zY2hlZHVs
+ZSAtIHNjaGVkdWxlIGZvciByZWNlaXZlCj4+PiDCoMKgwqAgKiBAbjogZW50cnkgdG8gc2NoZWR1
+bGUKPj4+IEBAIC02Mjg5LDcgKzYzNDQsNyBAQCB2b2lkIF9fbmFwaV9zY2hlZHVsZShzdHJ1Y3Qg
+bmFwaV9zdHJ1Y3QKPj4+IMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBsb25nIGZsYWdzOwo+Pj4gwqDC
+oCDCoMKgwqDCoMKgwqAgbG9jYWxfaXJxX3NhdmUoZmxhZ3MpOwo+Pj4gLcKgwqDCoCBfX19fbmFw
+aV9zY2hlZHVsZSh0aGlzX2NwdV9wdHIoJnNvZnRuZXRfZGF0YSksIG4pOwo+Pj4gK8KgwqDCoCB0
+aHJlYWRlZF9uYXBpX3NjaGVkKG4pOwo+Pj4gwqDCoMKgwqDCoMKgIGxvY2FsX2lycV9yZXN0b3Jl
+KGZsYWdzKTsKPj4+IMKgwqAgfQo+Pj4gwqDCoCBFWFBPUlRfU1lNQk9MKF9fbmFwaV9zY2hlZHVs
+ZSk7Cj4+PiBAQCAtNjMzNSw3ICs2MzkwLDcgQEAgRVhQT1JUX1NZTUJPTChuYXBpX3NjaGVkdWxl
+X3ByZXApOwo+Pj4gwqDCoMKgICovCj4+PiDCoMKgIHZvaWQgX19uYXBpX3NjaGVkdWxlX2lycW9m
+ZihzdHJ1Y3QgbmFwaV9zdHJ1Y3QgKm4pCj4+PiDCoMKgIHsKPj4+IC3CoMKgwqAgX19fX25hcGlf
+c2NoZWR1bGUodGhpc19jcHVfcHRyKCZzb2Z0bmV0X2RhdGEpLCBuKTsKPj4+ICvCoMKgwqAgdGhy
+ZWFkZWRfbmFwaV9zY2hlZChuKTsKPj4+IMKgwqAgfQo+Pj4gwqDCoCBFWFBPUlRfU1lNQk9MKF9f
+bmFwaV9zY2hlZHVsZV9pcnFvZmYpOwo+Pj4gwqDCoCBAQCAtMTA2ODUsNiArMTA3NDAsMTAgQEAg
+c3RhdGljIGludCBfX2luaXQgbmV0X2Rldl9pbml0KHZvaWQpCj4+PiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBzZC0+YmFja2xvZy53ZWlnaHQgPSB3ZWlnaHRfcDsKPj4+IMKgwqDCoMKgwqDCoCB9Cj4+
+PiDCoMKgICsjaWZkZWYgQ09ORklHX1RIUkVBREVEX05BUEkKPj4+ICvCoMKgwqAgbmFwaV93b3Jr
+cSA9IGFsbG9jX3dvcmtxdWV1ZSgibmFwaV93b3JrcSIsIFdRX1VOQk9VTkQgfCAKPj4+IFdRX0hJ
+R0hQUkksCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBXUV9VTkJPVU5EX01BWF9BQ1RJVkUpOwo+Pj4gKyNlbmRpZgo+Pj4gwqDCoMKgwqDCoMKgIGRl
+dl9ib290X3BoYXNlID0gMDsKPj4+IMKgwqAgwqDCoMKgwqDCoMKgIC8qIFRoZSBsb29wYmFjayBk
+ZXZpY2UgaXMgc3BlY2lhbCBpZiBhbnkgb3RoZXIgbmV0d29yayAKPj4+IGRldmljZXMKPj4+Cj4+
+Pgo+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+
+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+CgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
