@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.as201155.net ([185.84.6.188])
+Received: from nbd.name ([2a01:4f8:221:3d45::2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jzMJA-0003qy-Bi
- for ath10k@lists.infradead.org; Sat, 25 Jul 2020 15:41:57 +0000
+ id 1jzOQb-0001IR-Dg
+ for ath10k@lists.infradead.org; Sat, 25 Jul 2020 17:57:46 +0000
+From: Felix Fietkau <nbd@nbd.name>
 Subject: Re: [RFC 0/7] Add support to process rx packets in thread
 References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
  <20200721172514.GT1339445@lunn.ch> <20200725081633.7432-1-hdanton@sina.com>
- <8359a849-2b8a-c842-a501-c6cb6966e345@dd-wrt.com>
- <20200725145728.10556-1-hdanton@sina.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <2664182a-1d03-998d-8eff-8478174a310a@dd-wrt.com>
-Date: Sat, 25 Jul 2020 17:41:48 +0200
+Message-ID: <a50ebfba-9733-48db-c90b-5fc106e67f29@nbd.name>
+Date: Sat, 25 Jul 2020 19:57:23 +0200
 MIME-Version: 1.0
-In-Reply-To: <20200725145728.10556-1-hdanton@sina.com>
+In-Reply-To: <20200725081633.7432-1-hdanton@sina.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +20,179 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Hillf Danton <hdanton@sina.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "dianders@chromium.org" <dianders@chromium.org>, David Laight <David.Laight@ACULAB.COM>, Rakesh Pillai <pillair@codeaurora.org>, "evgreen@chromium.org" <evgreen@chromium.org>, "kuba@kernel.org" <kuba@kernel.org>, Markus Elfring <Markus.Elfring@web.de>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "davem@davemloft.net" <davem@davemloft.net>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+To: Hillf Danton <hdanton@sina.com>, David Laight <David.Laight@ACULAB.COM>, Andrew Lunn <andrew@lunn.ch>, Rakesh Pillai <pillair@codeaurora.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "dianders@chromium.org" <dianders@chromium.org>, Markus Elfring <Markus.Elfring@web.de>, "evgreen@chromium.org" <evgreen@chromium.org>, "kuba@kernel.org" <kuba@kernel.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "davem@davemloft.net" <davem@davemloft.net>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
 
-Cj4+IGkgYWdyZWUuIGkganVzdCBjYW4gc2F5IHRoYXQgaSB0ZXN0ZWQgdGhpcyBwYXRjaCByZWNl
-bnRseSBkdWUgdGhpcwo+PiBkaXNjdXNzaW9uIGhlcmUuIGFuZCBpdCBjYW4gYmUgY2hhbmdlZCBi
-eSBzeXNmcy4gYnV0IGl0IGRvZXNudCB3b3JrIGZvcgo+PiB3aWZpIGRyaXZlcnMgd2hpY2ggYXJl
-IG1haW5seSB1c2luZyBkdW1teSBuZXRkZXYgZGV2aWNlcy4gZm9yIHRoaXMgaQo+PiBtYWRlIGEg
-c21hbGwgcGF0Y2ggdG8gZ2V0IHRoZW0gd29ya2luZyB1c2luZyBuYXBpX3NldF90aHJlYWRlZCBt
-YW51YWxseQo+PiBoYXJkY29kZWQgaW4gdGhlIGRyaXZlcnMuIChzZWUgcGF0Y2ggYmVsbG93KQo+
-IEJ5IENPTkZJR19USFJFQURFRF9OQVBJLCB0aGVyZSBpcyBubyBuZWVkIHRvIGNvbnNpZGVyIHdo
-YXQgeW91IGRpZCBoZXJlCj4gaW4gdGhlIG5hcGkgY29yZSBiZWNhdXNlIGRldmljZSBkcml2ZXJz
-IGtub3cgYmV0dGVyIGFuZCBhcmUgcmVzcG9uc2libGUKPiBmb3IgaXQgYmVmb3JlIGNhbGxpbmcg
-bmFwaV9zY2hlZHVsZShuKS4KeWVhaC4gYnV0IHRoYXQgYXBwcm9hY2ggd2lsbCBub3Qgd29yayBm
-b3Igc29tZSBjYXNlcy4gc29tZSBzdHVwaWQgCmRyaXZlcnMgYXJlIHVzaW5nIGxvY2tpbmcgY29u
-dGV4dCBpbiB0aGUgbmFwaSBwb2xsIGZ1bmN0aW9uLgppbiB0aGF0IGNhc2UgdGhlIHBlcmZvcm1h
-bmNlIHdpbGwgcnVudG8gc2hpdC4gaSBkaXNjb3ZlcmVkIHRoaXMgd2l0aCB0aGUgCm12bmV0YSBl
-dGggZHJpdmVyIChtYXJ2ZWxsKSBhbmQgbXQ3NiB0eCBwb2xsaW5nIChyeMKgIHdvcmtzKQpmb3Ig
-bXZuZXRhIGlzIHdpbGwgY2F1c2UgdmVyeSBoaWdoIGxhdGVuY2llcyBhbmQgcGFja2V0IGRyb3Bz
-LiBmb3IgbXQ3NiAKaXQgY2F1c2VzIHBhY2tldCBzdG9wLiBkb2VzbnQgd29yayBzaW1wbHkgKG9u
-IGFsbCBjYXNlcyBubyBjcmFzaGVzKQpzbyB0aGUgdGhyZWFkaW5nIHdpbGwgb25seSB3b3JrIGZv
-ciBkcml2ZXJzIHdoaWNoIGFyZSBjb21wYXRpYmxlIHdpdGggCnRoYXQgYXBwcm9hY2guIGl0IGNh
-bm5vdCBiZSB1c2VkIGFzIGRyb3AgaW4gcmVwbGFjZW1lbnQgZnJvbSBteSBwb2ludCBvZiAKdmll
-dy4KaXRzIGFsbCBhIHF1ZXN0aW9uIG9mIHRoZSBkcml2ZXIgZGVzaWduCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+On 2020-07-25 10:16, Hillf Danton wrote:
+> Hi folks
+> 
+> Below is a minimunm poc implementation I can imagine on top of workqueue
+> to make napi threaded. Thoughts are appreciated.
+Hi Hillf,
+
+For some reason I don't see your mails on linux-wireless/netdev.
+I've cleaned up your implementation a bit and I ran some tests with mt76
+on an mt7621 embedded board. The results look pretty nice, performance
+is a lot more consistent in my tests now.
+
+Here are the changes that I've made compared to your version:
+
+- remove the #ifdef, I think it's unnecessary
+- add a state bit for threaded NAPI
+- make netif_threaded_napi_add inline
+- run queue_work outside of local_irq_save/restore (it does that
+internally already)
+
+If you don't mind, I'd like to propose this to netdev soon. Can I have
+your Signed-off-by for that?
+
+Thanks,
+
+- Felix
+
+---
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -347,6 +347,7 @@ struct napi_struct {
+ 	struct list_head	dev_list;
+ 	struct hlist_node	napi_hash_node;
+ 	unsigned int		napi_id;
++	struct work_struct	work;
+ };
+ 
+ enum {
+@@ -357,6 +358,7 @@ enum {
+ 	NAPI_STATE_HASHED,	/* In NAPI hash (busy polling possible) */
+ 	NAPI_STATE_NO_BUSY_POLL,/* Do not add in napi_hash, no busy polling */
+ 	NAPI_STATE_IN_BUSY_POLL,/* sk_busy_loop() owns this NAPI */
++	NAPI_STATE_THREADED,	/* Use threaded NAPI */
+ };
+ 
+ enum {
+@@ -367,6 +369,7 @@ enum {
+ 	NAPIF_STATE_HASHED	 = BIT(NAPI_STATE_HASHED),
+ 	NAPIF_STATE_NO_BUSY_POLL = BIT(NAPI_STATE_NO_BUSY_POLL),
+ 	NAPIF_STATE_IN_BUSY_POLL = BIT(NAPI_STATE_IN_BUSY_POLL),
++	NAPIF_STATE_THREADED	 = BIT(NAPI_STATE_THREADED),
+ };
+ 
+ enum gro_result {
+@@ -2315,6 +2318,26 @@ static inline void *netdev_priv(const struct net_device *dev)
+ void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+ 		    int (*poll)(struct napi_struct *, int), int weight);
+ 
++/**
++ *	netif_threaded_napi_add - initialize a NAPI context
++ *	@dev:  network device
++ *	@napi: NAPI context
++ *	@poll: polling function
++ *	@weight: default weight
++ *
++ * This variant of netif_napi_add() should be used from drivers using NAPI
++ * with CPU intensive poll functions.
++ * This will schedule polling from a high priority workqueue that
++ */
++static inline void netif_threaded_napi_add(struct net_device *dev,
++					   struct napi_struct *napi,
++					   int (*poll)(struct napi_struct *, int),
++					   int weight)
++{
++	set_bit(NAPI_STATE_THREADED, &napi->state);
++	netif_napi_add(dev, napi, poll, weight);
++}
++
+ /**
+  *	netif_tx_napi_add - initialize a NAPI context
+  *	@dev:  network device
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -158,6 +158,7 @@ static DEFINE_SPINLOCK(offload_lock);
+ struct list_head ptype_base[PTYPE_HASH_SIZE] __read_mostly;
+ struct list_head ptype_all __read_mostly;	/* Taps */
+ static struct list_head offload_base __read_mostly;
++static struct workqueue_struct *napi_workq;
+ 
+ static int netif_rx_internal(struct sk_buff *skb);
+ static int call_netdevice_notifiers_info(unsigned long val,
+@@ -6286,6 +6287,11 @@ void __napi_schedule(struct napi_struct *n)
+ {
+ 	unsigned long flags;
+ 
++	if (test_bit(NAPI_STATE_THREADED, &n->state)) {
++		queue_work(napi_workq, &n->work);
++		return;
++	}
++
+ 	local_irq_save(flags);
+ 	____napi_schedule(this_cpu_ptr(&softnet_data), n);
+ 	local_irq_restore(flags);
+@@ -6333,6 +6339,11 @@ EXPORT_SYMBOL(napi_schedule_prep);
+  */
+ void __napi_schedule_irqoff(struct napi_struct *n)
+ {
++	if (test_bit(NAPI_STATE_THREADED, &n->state)) {
++		queue_work(napi_workq, &n->work);
++		return;
++	}
++
+ 	____napi_schedule(this_cpu_ptr(&softnet_data), n);
+ }
+ EXPORT_SYMBOL(__napi_schedule_irqoff);
+@@ -6601,6 +6612,29 @@ static void init_gro_hash(struct napi_struct *napi)
+ 	napi->gro_bitmask = 0;
+ }
+ 
++static void napi_workfn(struct work_struct *work)
++{
++	struct napi_struct *n = container_of(work, struct napi_struct, work);
++
++	for (;;) {
++		if (!test_bit(NAPI_STATE_SCHED, &n->state))
++			return;
++
++		if (n->poll(n, n->weight) < n->weight)
++			return;
++
++		if (need_resched()) {
++			/*
++			 * have to pay for the latency of task switch even if
++			 * napi is scheduled
++			 */
++			if (test_bit(NAPI_STATE_SCHED, &n->state))
++				queue_work(napi_workq, work);
++			return;
++		}
++	}
++}
++
+ void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+ 		    int (*poll)(struct napi_struct *, int), int weight)
+ {
+@@ -6621,6 +6655,7 @@ void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+ #ifdef CONFIG_NETPOLL
+ 	napi->poll_owner = -1;
+ #endif
++	INIT_WORK(&napi->work, napi_workfn);
+ 	set_bit(NAPI_STATE_SCHED, &napi->state);
+ 	napi_hash_add(napi);
+ }
+@@ -10676,6 +10711,10 @@ static int __init net_dev_init(void)
+ 		sd->backlog.weight = weight_p;
+ 	}
+ 
++	napi_workq = alloc_workqueue("napi_workq", WQ_UNBOUND | WQ_HIGHPRI,
++				     WQ_UNBOUND_MAX_ACTIVE);
++	BUG_ON(!napi_workq);
++
+ 	dev_boot_phase = 0;
+ 
+ 	/* The loopback device is special if any other network devices
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
