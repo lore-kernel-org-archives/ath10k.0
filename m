@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jzjQz-0006sr-IN
- for ath10k@lists.infradead.org; Sun, 26 Jul 2020 16:23:36 +0000
-From: "Rakesh Pillai" <pillair@codeaurora.org>
-References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>		
- <1595351666-28193-2-git-send-email-pillair@codeaurora.org>	
- <0dbdef912f9d61521011f638200fd451a3530568.camel@sipsolutions.net>	
- <003201d6611e$c54a1c90$4fde55b0$@codeaurora.org>
- <ce380ea1fd1f5db40a92f67673f070a1f88eee50.camel@sipsolutions.net> 
-In-Reply-To: 
-Subject: RE: [RFC 1/7] mac80211: Add check for napi handle before WARN_ON
-Date: Sun, 26 Jul 2020 21:49:51 +0530
-Message-ID: <000e01d66368$9a6ece70$cf4c6b50$@codeaurora.org>
+ id 1jzu1p-0006Mc-Ge
+ for ath10k@lists.infradead.org; Mon, 27 Jul 2020 03:42:18 +0000
+Date: Mon, 27 Jul 2020 11:41:13 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 20bc0ea7f0d3ea61945cac2ff0bb840eb1191a7d
+Message-ID: <5f1e4cd9.AMWfb7RiLNWstV54%lkp@intel.com>
 MIME-Version: 1.0
-Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,82 +21,98 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Johannes Berg' <johannes@sipsolutions.net>, ath10k@lists.infradead.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, evgreen@chromium.org, dianders@chromium.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 20bc0ea7f0d3ea61945cac2ff0bb840eb1191a7d  Merge branch 'pending' into master-pending
 
+elapsed time: 2642m
 
-> -----Original Message-----
-> From: Rakesh Pillai <pillair@codeaurora.org>
-> Sent: Friday, July 24, 2020 11:51 AM
-> To: 'Johannes Berg' <johannes@sipsolutions.net>;
-> 'ath10k@lists.infradead.org' <ath10k@lists.infradead.org>
-> Cc: 'linux-wireless@vger.kernel.org' <linux-wireless@vger.kernel.org>;
-> 'linux-kernel@vger.kernel.org' <linux-kernel@vger.kernel.org>;
-> 'kvalo@codeaurora.org' <kvalo@codeaurora.org>; 'davem@davemloft.net'
-> <davem@davemloft.net>; 'kuba@kernel.org' <kuba@kernel.org>;
-> 'netdev@vger.kernel.org' <netdev@vger.kernel.org>;
-> 'dianders@chromium.org' <dianders@chromium.org>;
-> 'evgreen@chromium.org' <evgreen@chromium.org>
-> Subject: RE: [RFC 1/7] mac80211: Add check for napi handle before
-> WARN_ON
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Johannes Berg <johannes@sipsolutions.net>
-> > Sent: Friday, July 24, 2020 1:37 AM
-> > To: Rakesh Pillai <pillair@codeaurora.org>; ath10k@lists.infradead.org
-> > Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > kvalo@codeaurora.org; davem@davemloft.net; kuba@kernel.org;
-> > netdev@vger.kernel.org; dianders@chromium.org;
-> evgreen@chromium.org
-> > Subject: Re: [RFC 1/7] mac80211: Add check for napi handle before
-> > WARN_ON
-> >
-> > On Thu, 2020-07-23 at 23:56 +0530, Rakesh Pillai wrote:
-> >
-> > > > > -	WARN_ON_ONCE(softirq_count() == 0);
-> > > > > +	WARN_ON_ONCE(napi && softirq_count() == 0);
-> > > >
-> > > > FWIW, I'm pretty sure this is incorrect - we make assumptions on
-> > > > softirqs being disabled in mac80211 for serialization and in place of
-> > > > some locking, I believe.
-> > > >
-> > >
-> > > I checked this, but let me double confirm.
-> > > But after this change, no packet is submitted from driver in a softirq
-> > context.
-> > > So ideally this should take care of serialization.
-> >
-> > I'd guess that we have some reliance on BHs already being disabled, for
-> > things like u64 sync updates, or whatnot. I mean, we did "rx_ni()" for a
-> > reason ... Maybe lockdep can help catch some of the issues.
-> >
-> > But couldn't you be in a thread and have BHs disabled too?
-> 
-> This would ideally beat the purpose and possibly hurt the other subsystems
-> running on the same core.
-> 
+configs tested: 74
+configs skipped: 1
 
-Hi Johannes,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-We do have the usage of napi_gro_receive and netif_receive_skb in mac80211.
-                /* deliver to local stack */
-                if (rx->napi)
-                        napi_gro_receive(rx->napi, skb);
-                else
-                        netif_receive_skb(skb);
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
 
-
-Also all the rx_handlers are called under the " rx->local->rx_path_lock" lock.
-Is the BH disable still required ?
-
-
-> >
-> > johannes
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
