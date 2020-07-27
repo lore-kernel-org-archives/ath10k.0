@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jzu1p-0006Mc-Ge
- for ath10k@lists.infradead.org; Mon, 27 Jul 2020 03:42:18 +0000
-Date: Mon, 27 Jul 2020 11:41:13 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 20bc0ea7f0d3ea61945cac2ff0bb840eb1191a7d
-Message-ID: <5f1e4cd9.AMWfb7RiLNWstV54%lkp@intel.com>
-MIME-Version: 1.0
+ id 1jzuaD-0000hS-Iy
+ for ath10k@lists.infradead.org; Mon, 27 Jul 2020 04:17:56 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH v2 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+Date: Mon, 27 Jul 2020 12:17:37 +0800
+Message-Id: <1595823458-3926-2-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1595823458-3926-1-git-send-email-wgong@codeaurora.org>
+References: <1595823458-3926-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,102 +17,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 20bc0ea7f0d3ea61945cac2ff0bb840eb1191a7d  Merge branch 'pending' into master-pending
+The vendor commands is to add API for user to configure dynamic SAR
+power limits, it will not replace the existing power control
+functionality, it is to make more convenient to configure power.
 
-elapsed time: 2642m
+For different chips and drivers, they has different configuration, such
+as dBm units, 5G Hz subbands, valid range, etc. so user space can not
+know what configuration should be used. If use a common API for all
+chips and drivers, then it need a reporting API too, so drivers can
+tell what configuration it support. Recently it is better to use this
+vendor-cmd for different chips and drivers.
 
-configs tested: 74
-configs skipped: 1
+An example of usage(wlan0 is the wireless interface dev name):
+iw dev wlan0 vendor send 0x1374 0x92 0x2C 0x00 0x03 0x00 0x14 0x00 0x01
+0x00 0x08 0x00 0x07 0x00 0x22 0x00 0x00 0x00 0x08 0x00 0x04 0x00 0x00
+0x00 0x00 0x00 0x14 0x00 0x02 0x00 0x08 0x00 0x07 0x00 0x11 0x00 0x00
+0x00 0x08 0x00 0x04 0x00 0x01 0x00 0x00 0x00
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+means of bytes:
+0x1374: vendor id
+0x92: vendor subcmd id
+0x22: 2.4G power limit
+0x11: 5G power limit
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
 
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/uapi/nl80211-vnd-qca.h | 68 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 include/uapi/nl80211-vnd-qca.h
+
+diff --git a/include/uapi/nl80211-vnd-qca.h b/include/uapi/nl80211-vnd-qca.h
+new file mode 100644
+index 000000000000..482c9409a2c0
+--- /dev/null
++++ b/include/uapi/nl80211-vnd-qca.h
+@@ -0,0 +1,68 @@
++/* SPDX-License-Identifier: ISC */
++/*
++ * Copyright (c) 2019 The Linux Foundation. All rights reserved.
++ */
++
++#ifndef _UAPI_NL80211_VND_QCA_H
++#define _UAPI_NL80211_VND_QCA_H
++
++/* Vendor id to be used in vendor specific command and events to user space
++ * NOTE: The authoritative place for definition of QCA_NL80211_VENDOR_ID,
++ * vendor subcmd definitions prefixed with QCA_NL80211_VENDOR_SUBCMD, and
++ * qca_wlan_vendor_attr is open source file src/common/qca-vendor.h in
++ * git://w1.fi/srv/git/hostap.git; the values here are just a copy of that
++ */
++#define QCA_NL80211_VENDOR_ID 0x001374
++
++/**
++ * enum qca_nl80211_vendor_subcmds - QCA nl80211 vendor command identifiers
++ *
++ *@QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS and is used to retrieve the
++ *	settings currently in use. The attributes returned by this command are
++ *	defined by enum qca_vendor_attr_sar_limits.
++ */
++enum qca_nl80211_vendor_subcmds {
++	QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS = 146,
++	};
++
++/**
++ * enum qca_vendor_attr_sar_limits - Attributes for SAR power limits
++ *
++ * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC: Nested array of SAR power
++ *	limit specifications. The number of specifications is
++ *	specified by @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_NUM_SPECS. Each
++ *	specification contains a set of
++ *	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_* attributes. A
++ *	specification is uniquely identified by the attributes
++ *	%QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND and always
++ *	contains as a payload the attribute
++ *	%QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT.
++ *
++ * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND: Optional (u32) value to
++ *	indicate for which band this specification applies. Valid
++ *	values are enumerated in enum %nl80211_band (although not all
++ *	bands may be supported by a given device). If the attribute is
++ *	not supplied then the specification will be applied to all
++ *	supported bands.
++ *
++ * @QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT: Required (u32)
++ *	value to specify the actual power limit value in units of 0.5
++ *	dBm (i.e., a value of 11 represents 5.5 dBm).
++ *	This is required, when %QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SELECT is
++ *	%QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SELECT_USER.
++ *
++ * These attributes are used with %QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS
++ * and %QCA_NL80211_VENDOR_SUBCMD_GET_SAR_LIMITS.
++ */
++enum qca_vendor_attr_sar_limits {
++	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_INVALID = 0,
++	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC = 3,
++	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_BAND = 4,
++	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_SPEC_POWER_LIMIT = 7,
++
++	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_AFTER_LAST,
++	QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_MAX =
++		QCA_WLAN_VENDOR_ATTR_SAR_LIMITS_AFTER_LAST - 1
++};
++
++#endif /* _UAPI_NL80211_VND_QCA_H_ */
+-- 
+2.23.0
+
 
 _______________________________________________
 ath10k mailing list
