@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k0j18-0006Z6-VU
- for ath10k@lists.infradead.org; Wed, 29 Jul 2020 10:09:01 +0000
-Date: Wed, 29 Jul 2020 18:08:22 +0800
+ id 1k0mw9-0004Ez-0P
+ for ath10k@lists.infradead.org; Wed, 29 Jul 2020 14:20:06 +0000
+Date: Wed, 29 Jul 2020 22:18:59 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 3d9352e6b7bb95c174e390c73c7eecdafcc833c2
-Message-ID: <5f214a96.k5kXf785zc4aJSmv%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 6e47f7a4c304a65af9c5c83c88a44557214367f2
+Message-ID: <5f218553.+NxGE7XcUqQlOB7K%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,21 +24,21 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 3d9352e6b7bb95c174e390c73c7eecdafcc833c2  ath5k: Replace HTTP links with HTTPS ones
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 6e47f7a4c304a65af9c5c83c88a44557214367f2  Merge branch 'pending' into master-pending
 
-elapsed time: 725m
+elapsed time: 976m
 
-configs tested: 69
+configs tested: 51
 configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
+arm                              allyesconfig
 arm                                 defconfig
 arm64                            allyesconfig
 arm64                               defconfig
-arm                              allyesconfig
 arm                              allmodconfig
 arm                          prima2_defconfig
 arm                      footbridge_defconfig
@@ -72,28 +72,10 @@ sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
+powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a003-20200728
-i386                 randconfig-a004-20200728
-i386                 randconfig-a005-20200728
-i386                 randconfig-a002-20200728
-i386                 randconfig-a006-20200728
-i386                 randconfig-a001-20200728
-x86_64               randconfig-a014-20200728
-x86_64               randconfig-a012-20200728
-x86_64               randconfig-a015-20200728
-x86_64               randconfig-a016-20200728
-x86_64               randconfig-a013-20200728
-x86_64               randconfig-a011-20200728
-i386                 randconfig-a016-20200728
-i386                 randconfig-a012-20200728
-i386                 randconfig-a013-20200728
-i386                 randconfig-a014-20200728
-i386                 randconfig-a011-20200728
-i386                 randconfig-a015-20200728
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
