@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k17rS-0004uy-KN
- for ath10k@lists.infradead.org; Thu, 30 Jul 2020 12:40:52 +0000
-Message-ID: <446c9e45b5e904fa747c3d727a2c39ee904789e0.camel@sipsolutions.net>
-Subject: Re: [RFC 1/7] mac80211: Add check for napi handle before WARN_ON
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 30 Jul 2020 14:40:21 +0200
-In-Reply-To: <000e01d66368$9a6ece70$cf4c6b50$@codeaurora.org>
-References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <1595351666-28193-2-git-send-email-pillair@codeaurora.org>
- <0dbdef912f9d61521011f638200fd451a3530568.camel@sipsolutions.net>
- <003201d6611e$c54a1c90$4fde55b0$@codeaurora.org>
- <ce380ea1fd1f5db40a92f67673f070a1f88eee50.camel@sipsolutions.net>
- <000e01d66368$9a6ece70$cf4c6b50$@codeaurora.org>
+Received: from mail-am6eur05on2120.outbound.protection.outlook.com
+ ([40.107.22.120] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k180d-0006NY-EB
+ for ath10k@lists.infradead.org; Thu, 30 Jul 2020 12:50:08 +0000
+From: =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+Subject: [PATCH] Revert "ath: add support for special 0x0 regulatory domain"
+Date: Thu, 30 Jul 2020 14:49:23 +0200
+Message-Id: <20200730124923.271429-1-alsi@bang-olufsen.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,37 +17,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, evgreen@chromium.org, dianders@chromium.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: "Luis R . Rodriguez" <mcgrof@kernel.org>, Wen Gong <wgong@codeaurora.org>, linux-wireless@vger.kernel.org, =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>
 
-On Sun, 2020-07-26 at 21:49 +0530, Rakesh Pillai wrote:
-
-> We do have the usage of napi_gro_receive and netif_receive_skb in mac80211.
->                 /* deliver to local stack */
->                 if (rx->napi)
->                         napi_gro_receive(rx->napi, skb);
->                 else
->                         netif_receive_skb(skb);
-> 
-> 
-> Also all the rx_handlers are called under the " rx->local->rx_path_lock" lock.
-> Is the BH disable still required ?
-
-I tend to think so, but you're welcome to show that it's not. The lock
-serves a different purpose.
-
-TBH, I don't have all of this in my head at all times either, so please
-do your own work and analyse why it may or may not be necessary. But
-without any such analysis I'm not going to take patches that change it.
-
-johannes
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhpcyByZXZlcnRzIGNvbW1pdCAyZGMwMTY1OTljZmE5NjcyYTE0NzUyOGNhMjZkNzBjMzY1NGE1
+NDIzLgoKUGVyIEF0aGVyb3MgZG9jdW1lbnRhdGlvbiB0byBtYW51ZmFjdHVyZXJzLCB0aGUgRUVQ
+Uk9NIHJlZ3VsYXRvcnkgZG9tYWluCmNvZGUgMHgwIG11c3QgYWx3YXlzIG1hcCB0byAiVVMiLiBJ
+biBwYXJ0aWN1bGFyLCBpdCBzaG91bGQgbm90IG1hcCB0byBhCmN1c3RvbSB3b3JsZCByZWd1bGF0
+b3J5IGRvbWFpbi4gRm9yIHJlZmVyZW5jZXMsIHNlZSBbMV0gYW5kIFsyXSBiZWxvdy4KRnVydGhl
+cm1vcmUsIF9fYXRoX3JlZ2RfaW5pdCgpIGhhcyBhIHNwZWNpZmljIGNvbmRpdGlvbiB0byBzZXQg
+dGhlCmNvdW50cnkgY29kZSB0byAiVVMiIGluIHRoaXMgY2FzZSwgd2hpY2ggZW1pdHMgdGhlIGZv
+bGxvd2luZyBsb2cKbWVzc2FnZToKClsgICAgNy44MTQzMDddIGF0aDogRUVQUk9NIGluZGljYXRl
+cyBkZWZhdWx0IGNvdW50cnkgY29kZSBzaG91bGQgYmUgdXNlZAoKVGhlIHBhdGNoIGJlaW5nIHJl
+dmVydGVkIG1pc3Rha2VubHkgbWFwcyAweDAgdG8gdGhlIGN1c3RvbSB3b3JsZApyZWd1bGF0b3J5
+IGRvbWFpbiAweDY0IC0gdGhlIG1vc3QgcmVzdHJpY3RpdmUgb2YgdGhlIHdvcmxkIHJlZ3VsYXRv
+cnkKZG9tYWlucy4gVGhlIHByZW1pc2Ugb2YgdGhlIHBhdGNoIGlzIHRoYXQgaW4gdGhlIGNhc2Ug
+b2YgRUVQUk9NCnJlZ3VsYXRvcnkgZG9tYWluIGNvZGUgMHgwLCBhdGhfaXNfd29ybGRfcmVnZCgp
+IHNob3VsZCByZXR1cm4gdHJ1ZS4gQnV0LAphcyBzdGF0ZWQgYWJvdmUsIDB4MCBzaG91bGQgbm90
+IG1hcCB0byBhIHdvcmxkIHJlZ3VsYXRvcnkgZG9tYWluLCBhbmQgc28KdGhlIGZ1bmN0aW9uIHNo
+b3VsZCByZXR1cm4gZmFsc2UuIFRoZSBvcmlnaW5hbCBiZWhhdmlvdXIsIHdoZXJlYnkKTkw4MDIx
+MV9SRUdET01fU0VUX0JZX0NPVU5UUllfSUUgaXMgaWdub3JlZCwgd2FzIGNvcnJlY3QgYWNjb3Jk
+aW5nIHRvCnRoZSBtYW51ZmFjdHVyZXIncyBpbnRlbnQgYW5kIHNob3VsZCBub3QgaGF2ZSBiZWVu
+IGNoYW5nZWQuCgpbMV0gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMv
+ZHJpdmVycy9hdGgjdGhlXzB4MF9yZWd1bGF0b3J5X2RvbWFpbgpbMl0gaHR0cDovL2FydGljbGUu
+Z21hbmUub3JnL2dtYW5lLmxpbnV4Lmtlcm5lbC53aXJlbGVzcy5nZW5lcmFsLzM4NDEwCgpGaXhl
+czogMmRjMDE2NTk5Y2ZhICgiYXRoOiBhZGQgc3VwcG9ydCBmb3Igc3BlY2lhbCAweDAgcmVndWxh
+dG9yeSBkb21haW4iKQpDYzogV2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPgpDYzogTHVp
+cyBSLiBSb2RyaWd1ZXogPG1jZ3JvZkBrZXJuZWwub3JnPgpDYzogbGludXgtd2lyZWxlc3NAdmdl
+ci5rZXJuZWwub3JnClRlc3RlZC1vbjogUUNBOTg4MCBodzIuMCBQQ0kgMTAuMi40LTEuMC0wMDA0
+NwpTaWduZWQtb2ZmLWJ5OiBBbHZpbiDFoGlwcmFnYSA8YWxzaUBiYW5nLW9sdWZzZW4uZGs+Ci0t
+LQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL3JlZ2QuYyB8IDEwICsrKysrLS0tLS0KIDEgZmls
+ZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL3JlZ2QuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9yZWdkLmMKaW5kZXggYmVlOTExMGI5MWYzLi4yMGY0ZjhlYTlmODkgMTAwNjQ0Ci0tLSBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9yZWdkLmMKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL3JlZ2QuYwpAQCAtNjY2LDE0ICs2NjYsMTQgQEAgYXRoX3JlZ2RfaW5pdF93aXBoeShzdHJ1
+Y3QgYXRoX3JlZ3VsYXRvcnkgKnJlZywKIAogLyoKICAqIFNvbWUgdXNlcnMgaGF2ZSByZXBvcnRl
+ZCB0aGVpciBFRVBST00gcHJvZ3JhbW1lZCB3aXRoCi0gKiAweDgwMDAgb3IgMHgwIHNldCwgdGhp
+cyBpcyBub3QgYSBzdXBwb3J0ZWQgcmVndWxhdG9yeQotICogZG9tYWluIGJ1dCBzaW5jZSB3ZSBo
+YXZlIG1vcmUgdGhhbiBvbmUgdXNlciB3aXRoIGl0IHdlCi0gKiBuZWVkIGEgc29sdXRpb24gZm9y
+IHRoZW0uIFdlIGRlZmF1bHQgdG8gMHg2NCwgd2hpY2ggaXMKLSAqIHRoZSBkZWZhdWx0IEF0aGVy
+b3Mgd29ybGQgcmVndWxhdG9yeSBkb21haW4uCisgKiAweDgwMDAgc2V0LCB0aGlzIGlzIG5vdCBh
+IHN1cHBvcnRlZCByZWd1bGF0b3J5IGRvbWFpbgorICogYnV0IHNpbmNlIHdlIGhhdmUgbW9yZSB0
+aGFuIG9uZSB1c2VyIHdpdGggaXQgd2UgbmVlZAorICogYSBzb2x1dGlvbiBmb3IgdGhlbS4gV2Ug
+ZGVmYXVsdCB0byAweDY0LCB3aGljaCBpcyB0aGUKKyAqIGRlZmF1bHQgQXRoZXJvcyB3b3JsZCBy
+ZWd1bGF0b3J5IGRvbWFpbi4KICAqLwogc3RhdGljIHZvaWQgYXRoX3JlZ2Rfc2FuaXRpemUoc3Ry
+dWN0IGF0aF9yZWd1bGF0b3J5ICpyZWcpCiB7Ci0JaWYgKHJlZy0+Y3VycmVudF9yZCAhPSBDT1VO
+VFJZX0VSRF9GTEFHICYmIHJlZy0+Y3VycmVudF9yZCAhPSAwKQorCWlmIChyZWctPmN1cnJlbnRf
+cmQgIT0gQ09VTlRSWV9FUkRfRkxBRykKIAkJcmV0dXJuOwogCXByaW50ayhLRVJOX0RFQlVHICJh
+dGg6IEVFUFJPTSByZWdkb21haW4gc2FuaXRpemVkXG4iKTsKIAlyZWctPmN1cnJlbnRfcmQgPSAw
+eDY0OwotLSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
