@@ -1,13 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-am6eur05on2120.outbound.protection.outlook.com
- ([40.107.22.120] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k180d-0006NY-EB
- for ath10k@lists.infradead.org; Thu, 30 Jul 2020 12:50:08 +0000
-From: =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-Subject: [PATCH] Revert "ath: add support for special 0x0 regulatory domain"
-Date: Thu, 30 Jul 2020 14:49:23 +0200
-Message-Id: <20200730124923.271429-1-alsi@bang-olufsen.dk>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k18Rl-0007EU-MW
+ for ath10k@lists.infradead.org; Thu, 30 Jul 2020 13:18:12 +0000
+Message-ID: <b17c0e5ad80050df4da85653d413a71cfcc37629.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 30 Jul 2020 15:17:57 +0200
+In-Reply-To: <CA+ASDXMf7iXuE9hQ-XitPPfvXP0EK5FchJLCu2+5Ag=ZC=0H0w@mail.gmail.com>
+ (sfid-20200602_033247_740183_F75D1728)
+References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
+ <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
+ <1576748692.7758.17.camel@realtek.com> <20191219154828.GA12287@w1.fi>
+ <CA+ASDXMTYLGbEkBPHSqtyitMEvY5o_MjU0s+NoWdnN_ORy1gDw@mail.gmail.com>
+ <20191219185522.GA16010@w1.fi>
+ <CA+ASDXNOxkrZTxL0Jo4ONR2YtL83BVc_w-rBXc6ggBLdwUpDZw@mail.gmail.com>
+ <871rpqly6a.fsf@kamboji.qca.qualcomm.com>
+ <e8908eafd8e6050eef8782c6a7019e318d14f65f.camel@sipsolutions.net>
+ <CA+ASDXMf7iXuE9hQ-XitPPfvXP0EK5FchJLCu2+5Ag=ZC=0H0w@mail.gmail.com>
+ (sfid-20200602_033247_740183_F75D1728)
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -17,59 +29,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: "Luis R . Rodriguez" <mcgrof@kernel.org>, Wen Gong <wgong@codeaurora.org>, linux-wireless@vger.kernel.org, =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+To: Brian Norris <briannorris@chromium.org>
+Cc: Jouni Malinen <j@w1.fi>, Pkshih <pkshih@realtek.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>
 
-VGhpcyByZXZlcnRzIGNvbW1pdCAyZGMwMTY1OTljZmE5NjcyYTE0NzUyOGNhMjZkNzBjMzY1NGE1
-NDIzLgoKUGVyIEF0aGVyb3MgZG9jdW1lbnRhdGlvbiB0byBtYW51ZmFjdHVyZXJzLCB0aGUgRUVQ
-Uk9NIHJlZ3VsYXRvcnkgZG9tYWluCmNvZGUgMHgwIG11c3QgYWx3YXlzIG1hcCB0byAiVVMiLiBJ
-biBwYXJ0aWN1bGFyLCBpdCBzaG91bGQgbm90IG1hcCB0byBhCmN1c3RvbSB3b3JsZCByZWd1bGF0
-b3J5IGRvbWFpbi4gRm9yIHJlZmVyZW5jZXMsIHNlZSBbMV0gYW5kIFsyXSBiZWxvdy4KRnVydGhl
-cm1vcmUsIF9fYXRoX3JlZ2RfaW5pdCgpIGhhcyBhIHNwZWNpZmljIGNvbmRpdGlvbiB0byBzZXQg
-dGhlCmNvdW50cnkgY29kZSB0byAiVVMiIGluIHRoaXMgY2FzZSwgd2hpY2ggZW1pdHMgdGhlIGZv
-bGxvd2luZyBsb2cKbWVzc2FnZToKClsgICAgNy44MTQzMDddIGF0aDogRUVQUk9NIGluZGljYXRl
-cyBkZWZhdWx0IGNvdW50cnkgY29kZSBzaG91bGQgYmUgdXNlZAoKVGhlIHBhdGNoIGJlaW5nIHJl
-dmVydGVkIG1pc3Rha2VubHkgbWFwcyAweDAgdG8gdGhlIGN1c3RvbSB3b3JsZApyZWd1bGF0b3J5
-IGRvbWFpbiAweDY0IC0gdGhlIG1vc3QgcmVzdHJpY3RpdmUgb2YgdGhlIHdvcmxkIHJlZ3VsYXRv
-cnkKZG9tYWlucy4gVGhlIHByZW1pc2Ugb2YgdGhlIHBhdGNoIGlzIHRoYXQgaW4gdGhlIGNhc2Ug
-b2YgRUVQUk9NCnJlZ3VsYXRvcnkgZG9tYWluIGNvZGUgMHgwLCBhdGhfaXNfd29ybGRfcmVnZCgp
-IHNob3VsZCByZXR1cm4gdHJ1ZS4gQnV0LAphcyBzdGF0ZWQgYWJvdmUsIDB4MCBzaG91bGQgbm90
-IG1hcCB0byBhIHdvcmxkIHJlZ3VsYXRvcnkgZG9tYWluLCBhbmQgc28KdGhlIGZ1bmN0aW9uIHNo
-b3VsZCByZXR1cm4gZmFsc2UuIFRoZSBvcmlnaW5hbCBiZWhhdmlvdXIsIHdoZXJlYnkKTkw4MDIx
-MV9SRUdET01fU0VUX0JZX0NPVU5UUllfSUUgaXMgaWdub3JlZCwgd2FzIGNvcnJlY3QgYWNjb3Jk
-aW5nIHRvCnRoZSBtYW51ZmFjdHVyZXIncyBpbnRlbnQgYW5kIHNob3VsZCBub3QgaGF2ZSBiZWVu
-IGNoYW5nZWQuCgpbMV0gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMv
-ZHJpdmVycy9hdGgjdGhlXzB4MF9yZWd1bGF0b3J5X2RvbWFpbgpbMl0gaHR0cDovL2FydGljbGUu
-Z21hbmUub3JnL2dtYW5lLmxpbnV4Lmtlcm5lbC53aXJlbGVzcy5nZW5lcmFsLzM4NDEwCgpGaXhl
-czogMmRjMDE2NTk5Y2ZhICgiYXRoOiBhZGQgc3VwcG9ydCBmb3Igc3BlY2lhbCAweDAgcmVndWxh
-dG9yeSBkb21haW4iKQpDYzogV2VuIEdvbmcgPHdnb25nQGNvZGVhdXJvcmEub3JnPgpDYzogTHVp
-cyBSLiBSb2RyaWd1ZXogPG1jZ3JvZkBrZXJuZWwub3JnPgpDYzogbGludXgtd2lyZWxlc3NAdmdl
-ci5rZXJuZWwub3JnClRlc3RlZC1vbjogUUNBOTg4MCBodzIuMCBQQ0kgMTAuMi40LTEuMC0wMDA0
-NwpTaWduZWQtb2ZmLWJ5OiBBbHZpbiDFoGlwcmFnYSA8YWxzaUBiYW5nLW9sdWZzZW4uZGs+Ci0t
-LQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL3JlZ2QuYyB8IDEwICsrKysrLS0tLS0KIDEgZmls
-ZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL3JlZ2QuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9yZWdkLmMKaW5kZXggYmVlOTExMGI5MWYzLi4yMGY0ZjhlYTlmODkgMTAwNjQ0Ci0tLSBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9yZWdkLmMKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL3JlZ2QuYwpAQCAtNjY2LDE0ICs2NjYsMTQgQEAgYXRoX3JlZ2RfaW5pdF93aXBoeShzdHJ1
-Y3QgYXRoX3JlZ3VsYXRvcnkgKnJlZywKIAogLyoKICAqIFNvbWUgdXNlcnMgaGF2ZSByZXBvcnRl
-ZCB0aGVpciBFRVBST00gcHJvZ3JhbW1lZCB3aXRoCi0gKiAweDgwMDAgb3IgMHgwIHNldCwgdGhp
-cyBpcyBub3QgYSBzdXBwb3J0ZWQgcmVndWxhdG9yeQotICogZG9tYWluIGJ1dCBzaW5jZSB3ZSBo
-YXZlIG1vcmUgdGhhbiBvbmUgdXNlciB3aXRoIGl0IHdlCi0gKiBuZWVkIGEgc29sdXRpb24gZm9y
-IHRoZW0uIFdlIGRlZmF1bHQgdG8gMHg2NCwgd2hpY2ggaXMKLSAqIHRoZSBkZWZhdWx0IEF0aGVy
-b3Mgd29ybGQgcmVndWxhdG9yeSBkb21haW4uCisgKiAweDgwMDAgc2V0LCB0aGlzIGlzIG5vdCBh
-IHN1cHBvcnRlZCByZWd1bGF0b3J5IGRvbWFpbgorICogYnV0IHNpbmNlIHdlIGhhdmUgbW9yZSB0
-aGFuIG9uZSB1c2VyIHdpdGggaXQgd2UgbmVlZAorICogYSBzb2x1dGlvbiBmb3IgdGhlbS4gV2Ug
-ZGVmYXVsdCB0byAweDY0LCB3aGljaCBpcyB0aGUKKyAqIGRlZmF1bHQgQXRoZXJvcyB3b3JsZCBy
-ZWd1bGF0b3J5IGRvbWFpbi4KICAqLwogc3RhdGljIHZvaWQgYXRoX3JlZ2Rfc2FuaXRpemUoc3Ry
-dWN0IGF0aF9yZWd1bGF0b3J5ICpyZWcpCiB7Ci0JaWYgKHJlZy0+Y3VycmVudF9yZCAhPSBDT1VO
-VFJZX0VSRF9GTEFHICYmIHJlZy0+Y3VycmVudF9yZCAhPSAwKQorCWlmIChyZWctPmN1cnJlbnRf
-cmQgIT0gQ09VTlRSWV9FUkRfRkxBRykKIAkJcmV0dXJuOwogCXByaW50ayhLRVJOX0RFQlVHICJh
-dGg6IEVFUFJPTSByZWdkb21haW4gc2FuaXRpemVkXG4iKTsKIAlyZWctPmN1cnJlbnRfcmQgPSAw
-eDY0OwotLSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Mon, 2020-06-01 at 18:32 -0700, Brian Norris wrote:
+> I haven't quite reached the 3 month lag on the prior replies here :)
+
+But I did, almost ;-)
+
+> I do want to see this question resolved somehow, or else we'll be
+> dragging along out-of-tree patches for...(counts on fingers)...4
+> different nl80211 APIs for the same feature, and a driver-detecting
+> user space for it.
+
+Right.
+
+> I think I was half-hoping that we'd get to chat at
+> netdev about this, but that's not happening any time soon. (Topic for
+> another day: does a "wireless workshop" still happen at a virtual-only
+> conference?)
+
+Yes, but only a short 1.5hr video call I guess. I'm not even sure what
+to do there yet.
+
+[snip]
+
+Thanks for the overview!
+
+> Also, Kalle had some concerns about stable ABI questions: shouldn't we
+> bake in some kind of "check for support" feature to these kinds of
+> APIs [3]? That would help ease transition, if we do start with a
+> vendor API and move to a common one in the future. Given the nature of
+> this feature, I wouldn't expect there will be a large variety of users
+> making use of the APIs -- and I, for one, would be happy to migrate my
+> user space over some period of time, as needed.
+
+We do that? We list out the available vendor APIs, and in most cases
+(perhaps not the one you've noticed there) we also list out the
+availability of real nl80211 APIs in some way.
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
