@@ -2,25 +2,19 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k18Xk-0007XZ-8W
- for ath10k@lists.infradead.org; Thu, 30 Jul 2020 13:24:24 +0000
-Message-ID: <c3ef60c2263a6840d21f6a797ad3ffb685a728b8.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] nl80211: vendor-cmd: qca: add dynamic SAR power limits
+ id 1k194A-000174-Tu
+ for ath10k@lists.infradead.org; Thu, 30 Jul 2020 13:57:54 +0000
+Message-ID: <943c5eaf12bc9e92e817fb9818ebd65038f5fb54.camel@sipsolutions.net>
+Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 30 Jul 2020 15:24:11 +0200
-In-Reply-To: <87y2n9clhj.fsf@codeaurora.org>
-References: <1576684108-30177-1-git-send-email-kvalo@codeaurora.org>
- <1576684108-30177-2-git-send-email-kvalo@codeaurora.org>
- <1576748692.7758.17.camel@realtek.com> <20191219154828.GA12287@w1.fi>
- <CA+ASDXMTYLGbEkBPHSqtyitMEvY5o_MjU0s+NoWdnN_ORy1gDw@mail.gmail.com>
- <20191219185522.GA16010@w1.fi>
- <CA+ASDXNOxkrZTxL0Jo4ONR2YtL83BVc_w-rBXc6ggBLdwUpDZw@mail.gmail.com>
- <871rpqly6a.fsf@kamboji.qca.qualcomm.com>
- <e8908eafd8e6050eef8782c6a7019e318d14f65f.camel@sipsolutions.net>
- <CA+ASDXMf7iXuE9hQ-XitPPfvXP0EK5FchJLCu2+5Ag=ZC=0H0w@mail.gmail.com>
- <87lfjjx0o7.fsf@codeaurora.org>
- <CA+ASDXOAzPuOn_rMsRj4t56kC-TgoG0p5WhSTPJjB8xTTq5kfg@mail.gmail.com>
- <87y2n9clhj.fsf@codeaurora.org>
+Date: Thu, 30 Jul 2020 15:56:25 +0200
+In-Reply-To: <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20200519010530.GS11244@42.do-not-panic.com>
+ <20200519211531.3702593-1-kuba@kernel.org>
+ <20200522052046.GY11244@42.do-not-panic.com>
+ <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
+ <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -34,42 +28,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Brian Norris <briannorris@chromium.org>
-Cc: Jouni Malinen <j@w1.fi>, Pkshih <pkshih@realtek.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-wireless@vger.kernel.org, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, greearb@candelatech.com, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, derosier@gmail.com, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org, akpm@linux-foundation.org, davem@davemloft.net
 
-On Fri, 2020-07-24 at 12:26 +0300, Kalle Valo wrote:
+Hi,
 
-> > > So to me it feels like the best solution forward is to go with the
-> > > vendor API, do you agree? We can, of course, later switch to the common
-> > > API if we manage to create one which is usable for everyone.
+Sorry ... long delay.
 
-But why wouldn't we try that now, while we have it all in our heads (in
-a way ... even if this discussion drags out forever)?
-
-I mean, the range-based approach ought to work, and if we define it as a
-nested attribute list or so, we can even later add more attributes to it
-(chain limits, whatnot) without any backward compatibility concerns.
-
-So what is it that we _cannot_ do in a more common way today?
-
-> > I think we've had some healthy (though very protracted) discussion,
-> > and I don't think I've seen anyone bring up anything I wasn't already
-> > aware of that would prevent eventual consolidation. As long as we
-> > acknowledge those things (item 2 at
-> > https://wireless.wiki.kernel.org/en/developers/documentation/nl80211#vendor-specific_api),
-> > I'm happy.
+> > The reason I'm asking is that it's starting to sound like we really
+> > ought to be implementing devlink, but we've got a bunch of
+> > infrastructure that uses the devcoredump, and it'll take time
+> > (significantly so) to change all that...
 > 
-> Good, I was just checking that we all are on the same page.
+> In devlink world pure FW core dumps are exposed by devlink regions.
+> An API allowing reading device memory, registers, etc., but also 
+> creating dumps of memory regions when things go wrong. It should be
+> a fairly straightforward migration.
 
-But are we? ;-)
+Right. We also have regions (various memory pieces, registers, ...).
 
-I don't really see anything in the new proposal [1] that really explains
-why the common API that we've sort of vaguely outlined in this thread
-couldn't work? It just speaks of technical difficulties ("need a
-reporting API too"), but should we let that stop us?
+One issue might be that for devlink we wouldn't want to expose these as
+a single blob, I guess, but for devcoredump we already have a custom
+format to glue all the things together. Since it seems unlikely that
+anyone else would want to use the *iwlwifi* format to glue things
+together, we'd have to do something there.
 
-[1] https://patchwork.kernel.org/patch/11686317/
+But perhaps that could be a matter of providing a "glue things into a
+devcoredump" function that would have a reasonable default but could be
+overridden by the driver for those migration cases.
 
+> Devlink health is more targeted, the dump is supposed to contain only
+> relevant information, selected and formatted by the driver. When device
+> misbehaves driver reads the relevant registers and FW state and creates
+> a formatted state dump. I believe each element of the dump must fit
+> into a netlink message (but there may be multiple elements, see
+> devlink_fmsg_prepare_skb()).
+
+That wouldn't help for our big memory dumps, but OK.
+
+> We should be able to convert dl-regions dumps and dl-health dumps into
+> devcoredumps, but since health reporters are supposed to be more
+> targeted there's usually multiple of them per device.
+
+Right.
+
+> Conversely devcoredumps can be trivially exposed as dl-region dumps,
+> but I believe dl-health would require driver changes to format the
+> information appropriately.
+
+Agree.
+
+Anyway, thanks. I'll put it on my list of things to look at ... not too
+hopeful that will be soon, given how long it even took me to get back to
+this email :)
 
 johannes
 
