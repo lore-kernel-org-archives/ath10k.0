@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k0mw9-0004Ez-0P
- for ath10k@lists.infradead.org; Wed, 29 Jul 2020 14:20:06 +0000
-Date: Wed, 29 Jul 2020 22:18:59 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 6e47f7a4c304a65af9c5c83c88a44557214367f2
-Message-ID: <5f218553.+NxGE7XcUqQlOB7K%lkp@intel.com>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k17rS-0004uy-KN
+ for ath10k@lists.infradead.org; Thu, 30 Jul 2020 12:40:52 +0000
+Message-ID: <446c9e45b5e904fa747c3d727a2c39ee904789e0.camel@sipsolutions.net>
+Subject: Re: [RFC 1/7] mac80211: Add check for napi handle before WARN_ON
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 30 Jul 2020 14:40:21 +0200
+In-Reply-To: <000e01d66368$9a6ece70$cf4c6b50$@codeaurora.org>
+References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
+ <1595351666-28193-2-git-send-email-pillair@codeaurora.org>
+ <0dbdef912f9d61521011f638200fd451a3530568.camel@sipsolutions.net>
+ <003201d6611e$c54a1c90$4fde55b0$@codeaurora.org>
+ <ce380ea1fd1f5db40a92f67673f070a1f88eee50.camel@sipsolutions.net>
+ <000e01d66368$9a6ece70$cf4c6b50$@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,75 +28,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, evgreen@chromium.org, dianders@chromium.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 6e47f7a4c304a65af9c5c83c88a44557214367f2  Merge branch 'pending' into master-pending
+On Sun, 2020-07-26 at 21:49 +0530, Rakesh Pillai wrote:
 
-elapsed time: 976m
+> We do have the usage of napi_gro_receive and netif_receive_skb in mac80211.
+>                 /* deliver to local stack */
+>                 if (rx->napi)
+>                         napi_gro_receive(rx->napi, skb);
+>                 else
+>                         netif_receive_skb(skb);
+> 
+> 
+> Also all the rx_handlers are called under the " rx->local->rx_path_lock" lock.
+> Is the BH disable still required ?
 
-configs tested: 51
-configs skipped: 2
+I tend to think so, but you're welcome to show that it's not. The lock
+serves a different purpose.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+TBH, I don't have all of this in my head at all times either, so please
+do your own work and analyse why it may or may not be necessary. But
+without any such analysis I'm not going to take patches that change it.
 
-arm                              allyesconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                          prima2_defconfig
-arm                      footbridge_defconfig
-mips                        nlm_xlr_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+johannes
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
