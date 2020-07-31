@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.adapt-ip.com ([173.164.178.19] helo=web.adapt-ip.com)
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k1O28-0008Jy-3n
- for ath10k@lists.infradead.org; Fri, 31 Jul 2020 05:56:45 +0000
-From: Thomas Pedersen <thomas@adapt-ip.com>
-Subject: [PATCH mac80211-next] ath10k: fix unhandled switch value warning
-Date: Thu, 30 Jul 2020 22:56:36 -0700
-Message-Id: <20200731055636.795173-1-thomas@adapt-ip.com>
-MIME-Version: 1.0
+ id 1k1RbG-0003lo-Cr
+ for ath10k@lists.infradead.org; Fri, 31 Jul 2020 09:45:16 +0000
+From: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Subject: [PATCH] ath10k: enable transmit data ack RSSI for QCA9884
+Date: Fri, 31 Jul 2020 15:14:16 +0530
+Message-Id: <20200731094416.5172-1-murugana@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,70 +15,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Thomas Pedersen <thomas@adapt-ip.com>, sfr@canb.auug.org.au, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: stable@vger.kernel.org
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Abhishek Ambure <aambure@codeaurora.org>, Sathishkumar Muruganandam <murugana@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-Cited commit introduced the following warnings:
+From: Abhishek Ambure <aambure@codeaurora.org>
 
-drivers/net/wireless/ath/ath10k/mac.c: In function 'chan_to_phymode':
-drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
-  558 |   switch (chandef->width) {
-      |   ^~~~~~
-drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
-  581 |   switch (chandef->width) {
-      |   ^~~~~~
-drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
-drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
+commit cc78dc3b790619aa05f22a86a9152986bd73698c upstream.
 
-Fix them by making the existing invalid channel width
-cases the default, as the introduced channel widths
-currently don't make sense in 2 or 5GHz either.
+This commit fixes the regression caused by
+commit 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
+in linux-5.4.y branch.
 
-Fixes: e5cb3d34a66d ("nl80211: S1G band and channel definitions")
-Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+ath10k_is_rssi_enable() always returns 0 for QCA9984 and this will cause
+the ppdu_info_offset to hold invalid value in ath10k_htt_rx_tx_compl_ind().
+
+This leads to CE corruption for HTC endpoints to cause WMI command failures
+with insufficient HTC credits. Below warnings are seen due to beacon
+command failure in QCA9984.
+
+[  675.939638] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped old beacon
+[  675.947828] ath10k_pci 0000:04:00.0: SWBA overrun on vdev 1, skipped old beacon
+
+Tested HW: QCA9984
+Tested FW: 10.4-3.10-00047
+Tested Kernel version: 5.4.22
+
+Fixes: 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
+Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+[kvalo@codeaurora.org: improve commit log]
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/hw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 919d15584d4a..3c0c33a9f30c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -568,11 +568,7 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
- 		case NL80211_CHAN_WIDTH_40:
- 			phymode = MODE_11NG_HT40;
- 			break;
--		case NL80211_CHAN_WIDTH_5:
--		case NL80211_CHAN_WIDTH_10:
--		case NL80211_CHAN_WIDTH_80:
--		case NL80211_CHAN_WIDTH_80P80:
--		case NL80211_CHAN_WIDTH_160:
-+		default:
- 			phymode = MODE_UNKNOWN;
- 			break;
- 		}
-@@ -597,8 +593,7 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
- 		case NL80211_CHAN_WIDTH_80P80:
- 			phymode = MODE_11AC_VHT80_80;
- 			break;
--		case NL80211_CHAN_WIDTH_5:
--		case NL80211_CHAN_WIDTH_10:
-+		default:
- 			phymode = MODE_UNKNOWN;
- 			break;
- 		}
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index c415e971735b..004af89a02b8 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -1145,6 +1145,7 @@ static bool ath10k_qca99x0_rx_desc_msdu_limit_error(struct htt_rx_desc *rxd)
+ const struct ath10k_hw_ops qca99x0_ops = {
+ 	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
+ 	.rx_desc_get_msdu_limit_error = ath10k_qca99x0_rx_desc_msdu_limit_error,
++	.is_rssi_enable = ath10k_htt_tx_rssi_enable,
+ };
+ 
+ const struct ath10k_hw_ops qca6174_ops = {
 -- 
-2.27.0
+2.17.1
 
 
 _______________________________________________
