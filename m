@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k194A-000174-Tu
- for ath10k@lists.infradead.org; Thu, 30 Jul 2020 13:57:54 +0000
-Message-ID: <943c5eaf12bc9e92e817fb9818ebd65038f5fb54.camel@sipsolutions.net>
-Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 30 Jul 2020 15:56:25 +0200
-In-Reply-To: <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20200519010530.GS11244@42.do-not-panic.com>
- <20200519211531.3702593-1-kuba@kernel.org>
- <20200522052046.GY11244@42.do-not-panic.com>
- <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
- <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Received: from mail.adapt-ip.com ([173.164.178.19] helo=web.adapt-ip.com)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k1O28-0008Jy-3n
+ for ath10k@lists.infradead.org; Fri, 31 Jul 2020 05:56:45 +0000
+From: Thomas Pedersen <thomas@adapt-ip.com>
+Subject: [PATCH mac80211-next] ath10k: fix unhandled switch value warning
+Date: Thu, 30 Jul 2020 22:56:36 -0700
+Message-Id: <20200731055636.795173-1-thomas@adapt-ip.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,61 +20,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org, aquini@redhat.com, peterz@infradead.org, daniel.vetter@ffwll.ch, mchehab+samsung@kernel.org, will@kernel.org, greearb@candelatech.com, bhe@redhat.com, briannorris@chromium.org, ath10k@lists.infradead.org, derosier@gmail.com, tiwai@suse.de, mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com, jiri@resnulli.us, keescook@chromium.org, arnd@arndb.de, gpiccoli@canonical.com, rostedt@goodmis.org, cai@lca.pw, tglx@linutronix.de, andriy.shevchenko@linux.intel.com, kvalo@codeaurora.org, netdev@vger.kernel.org, schlad@suse.de, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org, akpm@linux-foundation.org, davem@davemloft.net
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Thomas Pedersen <thomas@adapt-ip.com>, sfr@canb.auug.org.au, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Hi,
+Cited commit introduced the following warnings:
 
-Sorry ... long delay.
+drivers/net/wireless/ath/ath10k/mac.c: In function 'chan_to_phymode':
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
+  558 |   switch (chandef->width) {
+      |   ^~~~~~
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
+  581 |   switch (chandef->width) {
+      |   ^~~~~~
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
 
-> > The reason I'm asking is that it's starting to sound like we really
-> > ought to be implementing devlink, but we've got a bunch of
-> > infrastructure that uses the devcoredump, and it'll take time
-> > (significantly so) to change all that...
-> 
-> In devlink world pure FW core dumps are exposed by devlink regions.
-> An API allowing reading device memory, registers, etc., but also 
-> creating dumps of memory regions when things go wrong. It should be
-> a fairly straightforward migration.
+Fix them by making the existing invalid channel width
+cases the default, as the introduced channel widths
+currently don't make sense in 2 or 5GHz either.
 
-Right. We also have regions (various memory pieces, registers, ...).
+Fixes: e5cb3d34a66d ("nl80211: S1G band and channel definitions")
+Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-One issue might be that for devlink we wouldn't want to expose these as
-a single blob, I guess, but for devcoredump we already have a custom
-format to glue all the things together. Since it seems unlikely that
-anyone else would want to use the *iwlwifi* format to glue things
-together, we'd have to do something there.
-
-But perhaps that could be a matter of providing a "glue things into a
-devcoredump" function that would have a reasonable default but could be
-overridden by the driver for those migration cases.
-
-> Devlink health is more targeted, the dump is supposed to contain only
-> relevant information, selected and formatted by the driver. When device
-> misbehaves driver reads the relevant registers and FW state and creates
-> a formatted state dump. I believe each element of the dump must fit
-> into a netlink message (but there may be multiple elements, see
-> devlink_fmsg_prepare_skb()).
-
-That wouldn't help for our big memory dumps, but OK.
-
-> We should be able to convert dl-regions dumps and dl-health dumps into
-> devcoredumps, but since health reporters are supposed to be more
-> targeted there's usually multiple of them per device.
-
-Right.
-
-> Conversely devcoredumps can be trivially exposed as dl-region dumps,
-> but I believe dl-health would require driver changes to format the
-> information appropriately.
-
-Agree.
-
-Anyway, thanks. I'll put it on my list of things to look at ... not too
-hopeful that will be soon, given how long it even took me to get back to
-this email :)
-
-johannes
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 919d15584d4a..3c0c33a9f30c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -568,11 +568,7 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
+ 		case NL80211_CHAN_WIDTH_40:
+ 			phymode = MODE_11NG_HT40;
+ 			break;
+-		case NL80211_CHAN_WIDTH_5:
+-		case NL80211_CHAN_WIDTH_10:
+-		case NL80211_CHAN_WIDTH_80:
+-		case NL80211_CHAN_WIDTH_80P80:
+-		case NL80211_CHAN_WIDTH_160:
++		default:
+ 			phymode = MODE_UNKNOWN;
+ 			break;
+ 		}
+@@ -597,8 +593,7 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
+ 		case NL80211_CHAN_WIDTH_80P80:
+ 			phymode = MODE_11AC_VHT80_80;
+ 			break;
+-		case NL80211_CHAN_WIDTH_5:
+-		case NL80211_CHAN_WIDTH_10:
++		default:
+ 			phymode = MODE_UNKNOWN;
+ 			break;
+ 		}
+-- 
+2.27.0
 
 
 _______________________________________________
