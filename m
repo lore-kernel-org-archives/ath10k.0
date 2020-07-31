@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k1RbG-0003lo-Cr
- for ath10k@lists.infradead.org; Fri, 31 Jul 2020 09:45:16 +0000
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Subject: [PATCH] ath10k: enable transmit data ack RSSI for QCA9884
-Date: Fri, 31 Jul 2020 15:14:16 +0530
-Message-Id: <20200731094416.5172-1-murugana@codeaurora.org>
+ id 1k1ZlC-0003at-C0
+ for ath10k@lists.infradead.org; Fri, 31 Jul 2020 18:28:09 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v2 3/3] ath10k: Add debugfs support to enable event history
+Date: Fri, 31 Jul 2020 23:57:22 +0530
+Message-Id: <1596220042-2778-4-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1596220042-2778-1-git-send-email-pillair@codeaurora.org>
+References: <1596220042-2778-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +22,99 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: stable@vger.kernel.org
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Abhishek Ambure <aambure@codeaurora.org>, Sathishkumar Muruganandam <murugana@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
 
-From: Abhishek Ambure <aambure@codeaurora.org>
+Add the support to enable/disable the recording of
+debug events history.
 
-commit cc78dc3b790619aa05f22a86a9152986bd73698c upstream.
+The enable/disable of the history from debugfs will
+not make any affect if its not enabled via module
+parameter.
 
-This commit fixes the regression caused by
-commit 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
-in linux-5.4.y branch.
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
-ath10k_is_rssi_enable() always returns 0 for QCA9984 and this will cause
-the ppdu_info_offset to hold invalid value in ath10k_htt_rx_tx_compl_ind().
-
-This leads to CE corruption for HTC endpoints to cause WMI command failures
-with insufficient HTC credits. Below warnings are seen due to beacon
-command failure in QCA9984.
-
-[  675.939638] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped old beacon
-[  675.947828] ath10k_pci 0000:04:00.0: SWBA overrun on vdev 1, skipped old beacon
-
-Tested HW: QCA9984
-Tested FW: 10.4-3.10-00047
-Tested Kernel version: 5.4.22
-
-Fixes: 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
-Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
-Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
-[kvalo@codeaurora.org: improve commit log]
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/hw.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/debug.c | 56 +++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index c415e971735b..004af89a02b8 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -1145,6 +1145,7 @@ static bool ath10k_qca99x0_rx_desc_msdu_limit_error(struct htt_rx_desc *rxd)
- const struct ath10k_hw_ops qca99x0_ops = {
- 	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
- 	.rx_desc_get_msdu_limit_error = ath10k_qca99x0_rx_desc_msdu_limit_error,
-+	.is_rssi_enable = ath10k_htt_tx_rssi_enable,
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 5d08652..6785fae 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -610,6 +610,59 @@ static const struct file_operations fops_simulate_fw_crash = {
+ 	.llseek = default_llseek,
  };
  
- const struct ath10k_hw_ops qca6174_ops = {
++static ssize_t ath10k_read_history_enable(struct file *file,
++					  char __user *user_buf,
++					  size_t count, loff_t *ppos)
++{
++	const char buf[] =
++		"To enable recording of certain event history, write to this file with the enable mask\n"
++		"BIT(0): Enable Reg Access history\n"
++		"	- Register write events\n"
++		"	- Register read events\n"
++		"BIT(1): Enable CE events history\n"
++		"	- ATH10K_IRQ_TRIGGER event\n"
++		"	- ATH10K_NAPI_POLL event\n"
++		"	- ATH10K_CE_SERVICE event\n"
++		"	- ATH10K_NAPI_COMPLETE event\n"
++		"	- ATH10K_NAPI_RESCHED event\n"
++		"	- ATH10K_IRQ_SUMMARY event\n"
++		"BIT(2): Enable WMI CMD history\n"
++		"	- WMI CMD event\n"
++		"	- WMI CMD TX completion event\n"
++		"BIT(3): Enable WMI events history\n"
++		"	- WMI Events event\n";
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
++}
++
++static ssize_t ath10k_write_history_enable(struct file *file,
++					   const char __user *user_buf,
++					   size_t count, loff_t *ppos)
++{
++	u32 history_enable_mask;
++	int i, ret;
++
++	ret = kstrtou32_from_user(user_buf, count, 0, &history_enable_mask);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < ATH10K_HISTORY_MAX; i++)
++		if (history_enable_mask & BIT(i))
++			set_bit(i, &ath10k_history_enable_mask);
++		else
++			clear_bit(i, &ath10k_history_enable_mask);
++
++	return count;
++}
++
++static const struct file_operations fops_history_enable = {
++	.read = ath10k_read_history_enable,
++	.write = ath10k_write_history_enable,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ static ssize_t ath10k_read_chip_id(struct file *file, char __user *user_buf,
+ 				   size_t count, loff_t *ppos)
+ {
+@@ -2658,6 +2711,9 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("reset_htt_stats", 0200, ar->debug.debugfs_phy, ar,
+ 			    &fops_reset_htt_stats);
+ 
++	debugfs_create_file("history_enable", 0644, ar->debug.debugfs_phy, ar,
++			    &fops_history_enable);
++
+ 	return 0;
+ }
+ 
 -- 
-2.17.1
+2.7.4
 
 
 _______________________________________________
