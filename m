@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k1k0N-0003S9-NN
- for ath10k@lists.infradead.org; Sat, 01 Aug 2020 05:24:24 +0000
-Received: by mail-qv1-xf44.google.com with SMTP id o2so15116166qvk.6
- for <ath10k@lists.infradead.org>; Fri, 31 Jul 2020 22:24:21 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3]
-References: <1596220042-2778-1-git-send-email-pillair@codeaurora.org>
- <c6c5b3c5-f862-9cee-6863-24f666cc28f5@gmail.com>
- <000701d667c2$0782fe70$1688fb50$@codeaurora.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e96d720c-5a60-7535-b615-c186bc14b38f@gmail.com>
-Date: Fri, 31 Jul 2020 22:24:17 -0700
+ id 1k1orU-0000SM-Ks
+ for ath10k@lists.infradead.org; Sat, 01 Aug 2020 10:35:33 +0000
+Date: Sat, 1 Aug 2020 12:35:09 +0200
+From: Greg KH <greg@kroah.com>
+Subject: Re: [PATCH] ath10k: enable transmit data ack RSSI for QCA9884
+Message-ID: <20200801103509.GB3046974@kroah.com>
+References: <20200731094416.5172-1-murugana@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <000701d667c2$0782fe70$1688fb50$@codeaurora.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20200731094416.5172-1-murugana@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +23,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Abhishek Ambure <aambure@codeaurora.org>, stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
 
-
-
-On 7/31/2020 10:10 PM, Rakesh Pillai wrote:
+On Fri, Jul 31, 2020 at 03:14:16PM +0530, Sathishkumar Muruganandam wrote:
+> From: Abhishek Ambure <aambure@codeaurora.org>
 > 
+> commit cc78dc3b790619aa05f22a86a9152986bd73698c upstream.
 > 
->> -----Original Message-----
->> From: Florian Fainelli <f.fainelli@gmail.com>
->> Sent: Saturday, August 1, 2020 12:17 AM
->> To: Rakesh Pillai <pillair@codeaurora.org>; ath10k@lists.infradead.org
->> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
->> kvalo@codeaurora.org; davem@davemloft.net; kuba@kernel.org;
->> netdev@vger.kernel.org
->> Subject: Re: [PATCH v2 0/3]
->>
->> On 7/31/20 11:27 AM, Rakesh Pillai wrote:
->>> The history recording will be compiled only if
->>> ATH10K_DEBUG is enabled, and also enabled via
->>> the module parameter. Once the history recording
->>> is enabled via module parameter, it can be enabled
->>> or disabled runtime via debugfs.
->>
->> Why not use trace prints and retrieving them via the function tracer?
->> This seems very ad-hoc.
+> This commit fixes the regression caused by
+> commit 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
+> in linux-5.4.y branch.
 > 
-> Tracing needs to be enabled to capture the events.
-> But these events can be turned on in some kind of a debug build and capture the history to help us debug in case there is a crash.
-> It wont even allocate memory if not enabled via module parameter.
+> ath10k_is_rssi_enable() always returns 0 for QCA9984 and this will cause
+> the ppdu_info_offset to hold invalid value in ath10k_htt_rx_tx_compl_ind().
+> 
+> This leads to CE corruption for HTC endpoints to cause WMI command failures
+> with insufficient HTC credits. Below warnings are seen due to beacon
+> command failure in QCA9984.
+> 
+> [  675.939638] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped old beacon
+> [  675.947828] ath10k_pci 0000:04:00.0: SWBA overrun on vdev 1, skipped old beacon
+> 
+> Tested HW: QCA9984
+> Tested FW: 10.4-3.10-00047
+> Tested Kernel version: 5.4.22
+> 
+> Fixes: 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
+> Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+> [kvalo@codeaurora.org: improve commit log]
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/hw.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-I would suggest researching what other drivers do and also considering
-the benefits, for someone doing system analysis of plugging into the
-kernel's general tracing mechanism to have all information in the same
-place and just do filtering on the record/report side.
--- 
-Florian
+Now queued up, thanks.
+
+greg k-h
 
 _______________________________________________
 ath10k mailing list
