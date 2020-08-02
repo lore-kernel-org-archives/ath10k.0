@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21])
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
+ helo=smtp.smtpout.orange.fr)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k1orU-0000SM-Ks
- for ath10k@lists.infradead.org; Sat, 01 Aug 2020 10:35:33 +0000
-Date: Sat, 1 Aug 2020 12:35:09 +0200
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH] ath10k: enable transmit data ack RSSI for QCA9884
-Message-ID: <20200801103509.GB3046974@kroah.com>
-References: <20200731094416.5172-1-murugana@codeaurora.org>
+ id 1k2D0j-0001yq-K9
+ for ath10k@lists.infradead.org; Sun, 02 Aug 2020 12:22:42 +0000
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ath10k: Fix the size used in a 'dma_free_coherent()' call in
+ an error handling path
+Date: Sun,  2 Aug 2020 14:22:27 +0200
+Message-Id: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200731094416.5172-1-murugana@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Cc: Balaji Pothunoori <bpothuno@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Abhishek Ambure <aambure@codeaurora.org>, stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
+To: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org, pillair@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-On Fri, Jul 31, 2020 at 03:14:16PM +0530, Sathishkumar Muruganandam wrote:
-> From: Abhishek Ambure <aambure@codeaurora.org>
-> 
-> commit cc78dc3b790619aa05f22a86a9152986bd73698c upstream.
-> 
-> This commit fixes the regression caused by
-> commit 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
-> in linux-5.4.y branch.
-> 
-> ath10k_is_rssi_enable() always returns 0 for QCA9984 and this will cause
-> the ppdu_info_offset to hold invalid value in ath10k_htt_rx_tx_compl_ind().
-> 
-> This leads to CE corruption for HTC endpoints to cause WMI command failures
-> with insufficient HTC credits. Below warnings are seen due to beacon
-> command failure in QCA9984.
-> 
-> [  675.939638] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped old beacon
-> [  675.947828] ath10k_pci 0000:04:00.0: SWBA overrun on vdev 1, skipped old beacon
-> 
-> Tested HW: QCA9984
-> Tested FW: 10.4-3.10-00047
-> Tested Kernel version: 5.4.22
-> 
-> Fixes: 6ddc3860a566 ("ath10k: add support for ack rssi value of data tx packets")
-> Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
-> Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
-> [kvalo@codeaurora.org: improve commit log]
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/hw.c | 1 +
->  1 file changed, 1 insertion(+)
+Update the size used in 'dma_free_coherent()' in order to match the one
+used in the corresponding 'dma_alloc_coherent()'.
 
-Now queued up, thanks.
+Fixes: 1863008369ae ("ath10k: fix shadow register implementation for WCN3990")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch looks obvious to me, but commit 1863008369ae looks also simple.
+So it is surprising that such a "typo" slipped in.
+---
+ drivers/net/wireless/ath/ath10k/ce.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 294fbc1e89ab..e6e0284e4783 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1555,7 +1555,7 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
+ 		ret = ath10k_ce_alloc_shadow_base(ar, src_ring, nentries);
+ 		if (ret) {
+ 			dma_free_coherent(ar->dev,
+-					  (nentries * sizeof(struct ce_desc_64) +
++					  (nentries * sizeof(struct ce_desc) +
+ 					   CE_DESC_RING_ALIGN),
+ 					  src_ring->base_addr_owner_space_unaligned,
+ 					  base_addr);
+-- 
+2.25.1
+
 
 _______________________________________________
 ath10k mailing list
