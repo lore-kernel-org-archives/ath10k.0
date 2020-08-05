@@ -1,10 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Message-ID: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gc29jOiBxbWk6IGFsbG93IHVzZXIgdG8gc2V0IGhhbmRsZSB3cSB0byBoaXByaW8=?=
-In-Reply-To: <20200727204521.GB229995@builder.lan>
+Received: from mail-il1-x143.google.com ([2607:f8b0:4864:20::143])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k3JtK-000775-B7
+ for ath10k@lists.infradead.org; Wed, 05 Aug 2020 13:55:39 +0000
+Received: by mail-il1-x143.google.com with SMTP id e16so2726805ilc.12
+ for <ath10k@lists.infradead.org>; Wed, 05 Aug 2020 06:55:34 -0700 (PDT)
+Subject: Re: [PATCH] soc: qmi: allow user to set handle wq to hiprio
+References: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
+From: Alex Elder <elder@ieee.org>
+Message-ID: <5c6123f2-1a65-8615-9d5d-3bb1d25818b2@ieee.org>
+Date: Wed, 5 Aug 2020 08:55:30 -0500
 MIME-Version: 1.0
-From: =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date: Sun, 2 Aug 2020 21:14:47 +0800 (GMT+08:00)
+In-Reply-To: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -13,57 +21,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
+To: =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>, Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc: ohad@wizery.com, linux-wireless@vger.kernel.org, alsa-devel@alsa-project.org, elder@kernel.org, linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, ath11k@lists.infradead.org, agross@kernel.org, srinivas.kandagatla@linaro.org, sibis@codeaurora.org, netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
 
-
->> Currently the qmi_handle is initialized single threaded and strictly
->> ordered with the active set to 1. This is pretty simple and safe but
->> sometimes ineffency. So it is better to allow user to decide whether
->> a high priority workqueue should be used.
->
->Can you please describe a scenario where this is needed/desired and
->perhaps also comment on why this is not always desired?
->
-
-Well, one scenario is that when the AP wants to check the status of the
-subsystems and the whole QMI data path. It first sends out an indication
-which asks the subsystems to report their status. After the subsystems send
-responses to the AP, the responses then are queued on the workqueue of
-the QMI handler. Actually the AP is configured to do the check in a specific
-interval regularly. And it check the report counts within a specific delay after
-it sends out the related indication. When the AP has been under a heavy
-load for long, the reports are queue their without CPU resource to update
-the report counts within the specific delay. As a result, the thread that checks
-the report counts takes it misleadingly that the QMI data path or the subsystems
-are crashed.
-
-The patch can really resolve the problem mentioned abolve.
-
-For narmal situations, it is enough to just use normal priority QMI workqueue.
-
->Regards,
->Bjorn
->
->> 
->> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
->> ---
->>  drivers/net/ipa/ipa_qmi.c             | 4 ++--
->>  drivers/net/wireless/ath/ath10k/qmi.c | 2 +-
->>  drivers/net/wireless/ath/ath11k/qmi.c | 2 +-
->>  drivers/remoteproc/qcom_sysmon.c      | 2 +-
->>  drivers/slimbus/qcom-ngd-ctrl.c       | 4 ++--
->>  drivers/soc/qcom/pdr_interface.c      | 4 ++--
->>  drivers/soc/qcom/qmi_interface.c      | 9 +++++++--
->>  include/linux/soc/qcom/qmi.h          | 3 ++-
->>  samples/qmi/qmi_sample_client.c       | 4 ++--
->>  9 files changed, 20 insertions(+), 14 deletions(-)
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOC8yLzIwIDg6MTQgQU0sIOeOi+aWh+iZjiB3cm90ZToKPiAKPj4+IEN1cnJlbnRseSB0aGUg
+cW1pX2hhbmRsZSBpcyBpbml0aWFsaXplZCBzaW5nbGUgdGhyZWFkZWQgYW5kIHN0cmljdGx5Cj4+
+PiBvcmRlcmVkIHdpdGggdGhlIGFjdGl2ZSBzZXQgdG8gMS4gVGhpcyBpcyBwcmV0dHkgc2ltcGxl
+IGFuZCBzYWZlIGJ1dAo+Pj4gc29tZXRpbWVzIGluZWZmZW5jeS4gU28gaXQgaXMgYmV0dGVyIHRv
+IGFsbG93IHVzZXIgdG8gZGVjaWRlIHdoZXRoZXIKPj4+IGEgaGlnaCBwcmlvcml0eSB3b3JrcXVl
+dWUgc2hvdWxkIGJlIHVzZWQuCj4+Cj4+IENhbiB5b3UgcGxlYXNlIGRlc2NyaWJlIGEgc2NlbmFy
+aW8gd2hlcmUgdGhpcyBpcyBuZWVkZWQvZGVzaXJlZCBhbmQKPj4gcGVyaGFwcyBhbHNvIGNvbW1l
+bnQgb24gd2h5IHRoaXMgaXMgbm90IGFsd2F5cyBkZXNpcmVkPwo+Pgo+IAo+IFdlbGwsIG9uZSBz
+Y2VuYXJpbyBpcyB0aGF0IHdoZW4gdGhlIEFQIHdhbnRzIHRvIGNoZWNrIHRoZSBzdGF0dXMgb2Yg
+dGhlCj4gc3Vic3lzdGVtcyBhbmQgdGhlIHdob2xlIFFNSSBkYXRhIHBhdGguIEl0IGZpcnN0IHNl
+bmRzIG91dCBhbiBpbmRpY2F0aW9uCj4gd2hpY2ggYXNrcyB0aGUgc3Vic3lzdGVtcyB0byByZXBv
+cnQgdGhlaXIgc3RhdHVzLiBBZnRlciB0aGUgc3Vic3lzdGVtcyBzZW5kCj4gcmVzcG9uc2VzIHRv
+IHRoZSBBUCwgdGhlIHJlc3BvbnNlcyB0aGVuIGFyZSBxdWV1ZWQgb24gdGhlIHdvcmtxdWV1ZSBv
+Zgo+IHRoZSBRTUkgaGFuZGxlci4gQWN0dWFsbHkgdGhlIEFQIGlzIGNvbmZpZ3VyZWQgdG8gZG8g
+dGhlIGNoZWNrIGluIGEgc3BlY2lmaWMKPiBpbnRlcnZhbCByZWd1bGFybHkuIEFuZCBpdCBjaGVj
+ayB0aGUgcmVwb3J0IGNvdW50cyB3aXRoaW4gYSBzcGVjaWZpYyBkZWxheSBhZnRlcgo+IGl0IHNl
+bmRzIG91dCB0aGUgcmVsYXRlZCBpbmRpY2F0aW9uLiBXaGVuIHRoZSBBUCBoYXMgYmVlbiB1bmRl
+ciBhIGhlYXZ5Cj4gbG9hZCBmb3IgbG9uZywgdGhlIHJlcG9ydHMgYXJlIHF1ZXVlIHRoZWlyIHdp
+dGhvdXQgQ1BVIHJlc291cmNlIHRvIHVwZGF0ZQo+IHRoZSByZXBvcnQgY291bnRzIHdpdGhpbiB0
+aGUgc3BlY2lmaWMgZGVsYXkuIEFzIGEgcmVzdWx0LCB0aGUgdGhyZWFkIHRoYXQgY2hlY2tzCj4g
+dGhlIHJlcG9ydCBjb3VudHMgdGFrZXMgaXQgbWlzbGVhZGluZ2x5IHRoYXQgdGhlIFFNSSBkYXRh
+IHBhdGggb3IgdGhlIHN1YnN5c3RlbXMKPiBhcmUgY3Jhc2hlZC4KPiAKPiBUaGUgcGF0Y2ggY2Fu
+IHJlYWxseSByZXNvbHZlIHRoZSBwcm9ibGVtIG1lbnRpb25lZCBhYm9sdmUuCgpJcyBpdCB5b3Vy
+IGludGVudGlvbiB0byBzdWJtaXQgY29kZSB0aGF0IGFjdHVhbGx5IGRvZXMgd2hhdCB5b3UgZGVz
+Y3JpYmUKYWJvdmU/ICBJZiBzbywgdGhlbiAoYXMgRGF2aWQgc2FpZCkgeW91IHNob3VsZCBwcm9w
+b3NlIHRoaXMgY2hhbmdlIGF0CnRoZSB0aW1lIGl0IHdpbGwgYmUgbmVlZGVkLS13aGljaCBpcyBh
+dCB0aGUgdGltZSB5b3Ugc2VuZCB0aGF0IG5ldwpjb2RlIG91dCBmb3IgcmV2aWV3LgoKRXZlbiBp
+biB0aGF0IGNhc2UsIEkgZG9uJ3QgYmVsaWV2ZSB1c2luZyBhIGhpZ2ggcHJpb3JpdHkgd29ya3F1
+ZXVlCndvdWxkIGd1YXJhbnRlZSB0aGUgaW1wcm92ZWQgYmVoYXZpb3IgeW91IHRoaW5rIHRoaXMg
+d291bGQgcHJvdmlkZS4KCkluIGNhc2UgaXQgd2Fzbid0IGNsZWFyIGFscmVhZHksIHRoaXMgY2hh
+bmdlIHdvbid0IGJlIGFjY2VwdGVkCmF0IHRoaXMgdGltZSAoZGVzcGl0ZSB5b3VyIGV4cGxhbmF0
+aW9uIGFib3ZlKS4KCgkJCQkJCS1BbGV4Cgo+IAo+IEZvciBuYXJtYWwgc2l0dWF0aW9ucywgaXQg
+aXMgZW5vdWdoIHRvIGp1c3QgdXNlIG5vcm1hbCBwcmlvcml0eSBRTUkgd29ya3F1ZXVlLgo+IAo+
+PiBSZWdhcmRzLAo+PiBCam9ybgo+Pgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFdhbmcgV2VuaHUg
+PHdlbmh1LndhbmdAdml2by5jb20+Cj4+PiAtLS0KPj4+ICBkcml2ZXJzL25ldC9pcGEvaXBhX3Ft
+aS5jICAgICAgICAgICAgIHwgNCArKy0tCj4+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9xbWkuYyB8IDIgKy0KPj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTFrL3Ft
+aS5jIHwgMiArLQo+Pj4gIGRyaXZlcnMvcmVtb3RlcHJvYy9xY29tX3N5c21vbi5jICAgICAgfCAy
+ICstCj4+PiAgZHJpdmVycy9zbGltYnVzL3Fjb20tbmdkLWN0cmwuYyAgICAgICB8IDQgKystLQo+
+Pj4gIGRyaXZlcnMvc29jL3Fjb20vcGRyX2ludGVyZmFjZS5jICAgICAgfCA0ICsrLS0KPj4+ICBk
+cml2ZXJzL3NvYy9xY29tL3FtaV9pbnRlcmZhY2UuYyAgICAgIHwgOSArKysrKysrLS0KPj4+ICBp
+bmNsdWRlL2xpbnV4L3NvYy9xY29tL3FtaS5oICAgICAgICAgIHwgMyArKy0KPj4+ICBzYW1wbGVz
+L3FtaS9xbWlfc2FtcGxlX2NsaWVudC5jICAgICAgIHwgNCArKy0tCj4+PiAgOSBmaWxlcyBjaGFu
+Z2VkLCAyMCBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKPiAKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
