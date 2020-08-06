@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-il1-x143.google.com ([2607:f8b0:4864:20::143])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k3JtK-000775-B7
- for ath10k@lists.infradead.org; Wed, 05 Aug 2020 13:55:39 +0000
-Received: by mail-il1-x143.google.com with SMTP id e16so2726805ilc.12
- for <ath10k@lists.infradead.org>; Wed, 05 Aug 2020 06:55:34 -0700 (PDT)
-Subject: Re: [PATCH] soc: qmi: allow user to set handle wq to hiprio
-References: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
-From: Alex Elder <elder@ieee.org>
-Message-ID: <5c6123f2-1a65-8615-9d5d-3bb1d25818b2@ieee.org>
-Date: Wed, 5 Aug 2020 08:55:30 -0500
+ id 1k3W5v-0008Ir-F5
+ for ath10k@lists.infradead.org; Thu, 06 Aug 2020 02:57:30 +0000
+From: "Rakesh Pillai" <pillair@codeaurora.org>
+References: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
+Subject: RE: [PATCH] ath10k: Fix the size used in a 'dma_free_coherent()' call
+ in an error handling path
+Date: Thu, 6 Aug 2020 08:27:07 +0530
+Message-ID: <002101d66b9d$497721b0$dc656510$@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
-Content-Language: en-US
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +20,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>, Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: ohad@wizery.com, linux-wireless@vger.kernel.org, alsa-devel@alsa-project.org, elder@kernel.org, linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, ath11k@lists.infradead.org, agross@kernel.org, srinivas.kandagatla@linaro.org, sibis@codeaurora.org, netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+To: 'Christophe JAILLET' <christophe.jaillet@wanadoo.fr>, kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gOC8yLzIwIDg6MTQgQU0sIOeOi+aWh+iZjiB3cm90ZToKPiAKPj4+IEN1cnJlbnRseSB0aGUg
-cW1pX2hhbmRsZSBpcyBpbml0aWFsaXplZCBzaW5nbGUgdGhyZWFkZWQgYW5kIHN0cmljdGx5Cj4+
-PiBvcmRlcmVkIHdpdGggdGhlIGFjdGl2ZSBzZXQgdG8gMS4gVGhpcyBpcyBwcmV0dHkgc2ltcGxl
-IGFuZCBzYWZlIGJ1dAo+Pj4gc29tZXRpbWVzIGluZWZmZW5jeS4gU28gaXQgaXMgYmV0dGVyIHRv
-IGFsbG93IHVzZXIgdG8gZGVjaWRlIHdoZXRoZXIKPj4+IGEgaGlnaCBwcmlvcml0eSB3b3JrcXVl
-dWUgc2hvdWxkIGJlIHVzZWQuCj4+Cj4+IENhbiB5b3UgcGxlYXNlIGRlc2NyaWJlIGEgc2NlbmFy
-aW8gd2hlcmUgdGhpcyBpcyBuZWVkZWQvZGVzaXJlZCBhbmQKPj4gcGVyaGFwcyBhbHNvIGNvbW1l
-bnQgb24gd2h5IHRoaXMgaXMgbm90IGFsd2F5cyBkZXNpcmVkPwo+Pgo+IAo+IFdlbGwsIG9uZSBz
-Y2VuYXJpbyBpcyB0aGF0IHdoZW4gdGhlIEFQIHdhbnRzIHRvIGNoZWNrIHRoZSBzdGF0dXMgb2Yg
-dGhlCj4gc3Vic3lzdGVtcyBhbmQgdGhlIHdob2xlIFFNSSBkYXRhIHBhdGguIEl0IGZpcnN0IHNl
-bmRzIG91dCBhbiBpbmRpY2F0aW9uCj4gd2hpY2ggYXNrcyB0aGUgc3Vic3lzdGVtcyB0byByZXBv
-cnQgdGhlaXIgc3RhdHVzLiBBZnRlciB0aGUgc3Vic3lzdGVtcyBzZW5kCj4gcmVzcG9uc2VzIHRv
-IHRoZSBBUCwgdGhlIHJlc3BvbnNlcyB0aGVuIGFyZSBxdWV1ZWQgb24gdGhlIHdvcmtxdWV1ZSBv
-Zgo+IHRoZSBRTUkgaGFuZGxlci4gQWN0dWFsbHkgdGhlIEFQIGlzIGNvbmZpZ3VyZWQgdG8gZG8g
-dGhlIGNoZWNrIGluIGEgc3BlY2lmaWMKPiBpbnRlcnZhbCByZWd1bGFybHkuIEFuZCBpdCBjaGVj
-ayB0aGUgcmVwb3J0IGNvdW50cyB3aXRoaW4gYSBzcGVjaWZpYyBkZWxheSBhZnRlcgo+IGl0IHNl
-bmRzIG91dCB0aGUgcmVsYXRlZCBpbmRpY2F0aW9uLiBXaGVuIHRoZSBBUCBoYXMgYmVlbiB1bmRl
-ciBhIGhlYXZ5Cj4gbG9hZCBmb3IgbG9uZywgdGhlIHJlcG9ydHMgYXJlIHF1ZXVlIHRoZWlyIHdp
-dGhvdXQgQ1BVIHJlc291cmNlIHRvIHVwZGF0ZQo+IHRoZSByZXBvcnQgY291bnRzIHdpdGhpbiB0
-aGUgc3BlY2lmaWMgZGVsYXkuIEFzIGEgcmVzdWx0LCB0aGUgdGhyZWFkIHRoYXQgY2hlY2tzCj4g
-dGhlIHJlcG9ydCBjb3VudHMgdGFrZXMgaXQgbWlzbGVhZGluZ2x5IHRoYXQgdGhlIFFNSSBkYXRh
-IHBhdGggb3IgdGhlIHN1YnN5c3RlbXMKPiBhcmUgY3Jhc2hlZC4KPiAKPiBUaGUgcGF0Y2ggY2Fu
-IHJlYWxseSByZXNvbHZlIHRoZSBwcm9ibGVtIG1lbnRpb25lZCBhYm9sdmUuCgpJcyBpdCB5b3Vy
-IGludGVudGlvbiB0byBzdWJtaXQgY29kZSB0aGF0IGFjdHVhbGx5IGRvZXMgd2hhdCB5b3UgZGVz
-Y3JpYmUKYWJvdmU/ICBJZiBzbywgdGhlbiAoYXMgRGF2aWQgc2FpZCkgeW91IHNob3VsZCBwcm9w
-b3NlIHRoaXMgY2hhbmdlIGF0CnRoZSB0aW1lIGl0IHdpbGwgYmUgbmVlZGVkLS13aGljaCBpcyBh
-dCB0aGUgdGltZSB5b3Ugc2VuZCB0aGF0IG5ldwpjb2RlIG91dCBmb3IgcmV2aWV3LgoKRXZlbiBp
-biB0aGF0IGNhc2UsIEkgZG9uJ3QgYmVsaWV2ZSB1c2luZyBhIGhpZ2ggcHJpb3JpdHkgd29ya3F1
-ZXVlCndvdWxkIGd1YXJhbnRlZSB0aGUgaW1wcm92ZWQgYmVoYXZpb3IgeW91IHRoaW5rIHRoaXMg
-d291bGQgcHJvdmlkZS4KCkluIGNhc2UgaXQgd2Fzbid0IGNsZWFyIGFscmVhZHksIHRoaXMgY2hh
-bmdlIHdvbid0IGJlIGFjY2VwdGVkCmF0IHRoaXMgdGltZSAoZGVzcGl0ZSB5b3VyIGV4cGxhbmF0
-aW9uIGFib3ZlKS4KCgkJCQkJCS1BbGV4Cgo+IAo+IEZvciBuYXJtYWwgc2l0dWF0aW9ucywgaXQg
-aXMgZW5vdWdoIHRvIGp1c3QgdXNlIG5vcm1hbCBwcmlvcml0eSBRTUkgd29ya3F1ZXVlLgo+IAo+
-PiBSZWdhcmRzLAo+PiBCam9ybgo+Pgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFdhbmcgV2VuaHUg
-PHdlbmh1LndhbmdAdml2by5jb20+Cj4+PiAtLS0KPj4+ICBkcml2ZXJzL25ldC9pcGEvaXBhX3Ft
-aS5jICAgICAgICAgICAgIHwgNCArKy0tCj4+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9xbWkuYyB8IDIgKy0KPj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTFrL3Ft
-aS5jIHwgMiArLQo+Pj4gIGRyaXZlcnMvcmVtb3RlcHJvYy9xY29tX3N5c21vbi5jICAgICAgfCAy
-ICstCj4+PiAgZHJpdmVycy9zbGltYnVzL3Fjb20tbmdkLWN0cmwuYyAgICAgICB8IDQgKystLQo+
-Pj4gIGRyaXZlcnMvc29jL3Fjb20vcGRyX2ludGVyZmFjZS5jICAgICAgfCA0ICsrLS0KPj4+ICBk
-cml2ZXJzL3NvYy9xY29tL3FtaV9pbnRlcmZhY2UuYyAgICAgIHwgOSArKysrKysrLS0KPj4+ICBp
-bmNsdWRlL2xpbnV4L3NvYy9xY29tL3FtaS5oICAgICAgICAgIHwgMyArKy0KPj4+ICBzYW1wbGVz
-L3FtaS9xbWlfc2FtcGxlX2NsaWVudC5jICAgICAgIHwgNCArKy0tCj4+PiAgOSBmaWxlcyBjaGFu
-Z2VkLCAyMCBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKPiAKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+
+
+> -----Original Message-----
+> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Sent: Sunday, August 2, 2020 5:52 PM
+> To: kvalo@codeaurora.org; davem@davemloft.net; kuba@kernel.org;
+> pillair@codeaurora.org
+> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kernel-
+> janitors@vger.kernel.org; Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr>
+> Subject: [PATCH] ath10k: Fix the size used in a 'dma_free_coherent()' call
+in
+> an error handling path
+> 
+> Update the size used in 'dma_free_coherent()' in order to match the one
+> used in the corresponding 'dma_alloc_coherent()'.
+> 
+> Fixes: 1863008369ae ("ath10k: fix shadow register implementation for
+> WCN3990")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> This patch looks obvious to me, but commit 1863008369ae looks also simple.
+> So it is surprising that such a "typo" slipped in.
+
+Reviewed-by: Rakesh Pillai <pillair@codeaurora.org> 
+
+> ---
+>  drivers/net/wireless/ath/ath10k/ce.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.c
+> b/drivers/net/wireless/ath/ath10k/ce.c
+> index 294fbc1e89ab..e6e0284e4783 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.c
+> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+> @@ -1555,7 +1555,7 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar,
+> unsigned int ce_id,
+>  		ret = ath10k_ce_alloc_shadow_base(ar, src_ring, nentries);
+>  		if (ret) {
+>  			dma_free_coherent(ar->dev,
+> -					  (nentries * sizeof(struct
+> ce_desc_64) +
+> +					  (nentries * sizeof(struct ce_desc)
++
+>  					   CE_DESC_RING_ALIGN),
+>  					  src_ring-
+> >base_addr_owner_space_unaligned,
+>  					  base_addr);
+> --
+> 2.25.1
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
