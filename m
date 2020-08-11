@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smail.rz.tu-ilmenau.de ([141.24.186.67])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5X6u-0005wg-E7
- for ath10k@lists.infradead.org; Tue, 11 Aug 2020 16:26:49 +0000
-Received: from [141.24.19.7] (unknown [141.24.19.7])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by smail.rz.tu-ilmenau.de (Postfix) with ESMTPSA id 7015C580061
- for <ath10k@lists.infradead.org>; Tue, 11 Aug 2020 18:26:44 +0200 (CEST)
-From: Markus Theil <markus.theil@tu-ilmenau.de>
-Subject: Maximum MTU for ath10k devices
-Message-ID: <681fd699-9ec5-968a-f9f9-2a1fed8b53e5@tu-ilmenau.de>
-Date: Tue, 11 Aug 2020 18:26:44 +0200
+ id 1k5dS9-0001gb-0a
+ for ath10k@lists.infradead.org; Tue, 11 Aug 2020 23:13:10 +0000
+Date: Wed, 12 Aug 2020 07:12:04 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 4933484477c12f27b64673f3e9e407537f0afea0
+Message-ID: <5f3325c4.fw0MhM8XcOzyTEhA%lkp@intel.com>
 MIME-Version: 1.0
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +21,102 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-I tried to use a MTU larger than 1500 and smaller than 2304 Byte, for
-example 1600, with two ath10k devices (QCA9888) and was not able to get
-any ping through. Do these cards support ethernet frames larger than
-1500 Byte?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 4933484477c12f27b64673f3e9e407537f0afea0  HACK: ath11k: disable L1 to prevent device entering low power state
 
-Kernel was Linux 5.7, firmware ver 10.4-3.9.0.2-00086.
+elapsed time: 721m
 
-Regards,
-Markus
+configs tested: 78
+configs skipped: 4
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                          atari_defconfig
+openrisc                            defconfig
+sh                        sh7763rdp_defconfig
+arm                      pxa255-idp_defconfig
+mips                        qi_lb60_defconfig
+m68k                          sun3x_defconfig
+m68k                           sun3_defconfig
+powerpc                     skiroot_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                      ppc6xx_defconfig
+ia64                         bigsur_defconfig
+arm                          pxa168_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200811
+i386                 randconfig-a001-20200811
+i386                 randconfig-a002-20200811
+i386                 randconfig-a003-20200811
+i386                 randconfig-a006-20200811
+i386                 randconfig-a004-20200811
+x86_64               randconfig-a006-20200811
+x86_64               randconfig-a001-20200811
+x86_64               randconfig-a003-20200811
+x86_64               randconfig-a005-20200811
+x86_64               randconfig-a004-20200811
+x86_64               randconfig-a002-20200811
+i386                 randconfig-a016-20200811
+i386                 randconfig-a011-20200811
+i386                 randconfig-a015-20200811
+i386                 randconfig-a013-20200811
+i386                 randconfig-a012-20200811
+i386                 randconfig-a014-20200811
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
