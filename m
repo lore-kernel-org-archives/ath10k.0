@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5dS9-0001gb-0a
- for ath10k@lists.infradead.org; Tue, 11 Aug 2020 23:13:10 +0000
-Date: Wed, 12 Aug 2020 07:12:04 +0800
+ id 1k5kOy-0004mh-5i
+ for ath10k@lists.infradead.org; Wed, 12 Aug 2020 06:38:21 +0000
+Date: Wed, 12 Aug 2020 14:37:22 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
- 4933484477c12f27b64673f3e9e407537f0afea0
-Message-ID: <5f3325c4.fw0MhM8XcOzyTEhA%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 0c25c8a4499b52bcc49f85160129737fa1787c2d
+Message-ID: <5f338e22.ji82h3hzjdhn4XQi%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
-branch HEAD: 4933484477c12f27b64673f3e9e407537f0afea0  HACK: ath11k: disable L1 to prevent device entering low power state
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 0c25c8a4499b52bcc49f85160129737fa1787c2d  Merge branch 'pending' into master-pending
 
-elapsed time: 721m
+elapsed time: 720m
 
-configs tested: 78
-configs skipped: 4
+configs tested: 79
+configs skipped: 1
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -40,18 +40,19 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-m68k                          atari_defconfig
-openrisc                            defconfig
-sh                        sh7763rdp_defconfig
-arm                      pxa255-idp_defconfig
-mips                        qi_lb60_defconfig
-m68k                          sun3x_defconfig
-m68k                           sun3_defconfig
-powerpc                     skiroot_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                      ppc6xx_defconfig
-ia64                         bigsur_defconfig
-arm                          pxa168_defconfig
+arm                            xcep_defconfig
+mips                          ath25_defconfig
+sh                           se7619_defconfig
+powerpc                        cell_defconfig
+m68k                          multi_defconfig
+i386                             alldefconfig
+c6x                         dsk6455_defconfig
+mips                          malta_defconfig
+m68k                       bvme6000_defconfig
+arm                          iop32x_defconfig
+m68k                          hp300_defconfig
+sh                           se7206_defconfig
+arm                           stm32_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -85,18 +86,18 @@ powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a005-20200811
-i386                 randconfig-a001-20200811
-i386                 randconfig-a002-20200811
-i386                 randconfig-a003-20200811
-i386                 randconfig-a006-20200811
-i386                 randconfig-a004-20200811
 x86_64               randconfig-a006-20200811
 x86_64               randconfig-a001-20200811
 x86_64               randconfig-a003-20200811
 x86_64               randconfig-a005-20200811
 x86_64               randconfig-a004-20200811
 x86_64               randconfig-a002-20200811
+i386                 randconfig-a005-20200811
+i386                 randconfig-a001-20200811
+i386                 randconfig-a002-20200811
+i386                 randconfig-a003-20200811
+i386                 randconfig-a006-20200811
+i386                 randconfig-a004-20200811
 i386                 randconfig-a016-20200811
 i386                 randconfig-a011-20200811
 i386                 randconfig-a015-20200811
