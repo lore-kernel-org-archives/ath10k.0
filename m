@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5kOy-0004mh-5i
- for ath10k@lists.infradead.org; Wed, 12 Aug 2020 06:38:21 +0000
-Date: Wed, 12 Aug 2020 14:37:22 +0800
+ id 1k5kP1-0004n3-Px
+ for ath10k@lists.infradead.org; Wed, 12 Aug 2020 06:38:24 +0000
+Date: Wed, 12 Aug 2020 14:37:24 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 0c25c8a4499b52bcc49f85160129737fa1787c2d
-Message-ID: <5f338e22.ji82h3hzjdhn4XQi%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 7688ec9e08cf44645a4aff810cc376c263a21f3d
+Message-ID: <5f338e24.SLogtDL1nA5tf3Tl%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 0c25c8a4499b52bcc49f85160129737fa1787c2d  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 7688ec9e08cf44645a4aff810cc376c263a21f3d  ath10k: change to do napi_enable and napi_disable when insmod and rmmod for sdio
 
 elapsed time: 720m
 
-configs tested: 79
-configs skipped: 1
+configs tested: 99
+configs skipped: 6
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -45,14 +45,30 @@ mips                          ath25_defconfig
 sh                           se7619_defconfig
 powerpc                        cell_defconfig
 m68k                          multi_defconfig
+riscv                            allyesconfig
+arm                         axm55xx_defconfig
+powerpc                     ep8248e_defconfig
+arc                        nsim_700_defconfig
+arm                            hisi_defconfig
+arm                  colibri_pxa270_defconfig
 i386                             alldefconfig
 c6x                         dsk6455_defconfig
 mips                          malta_defconfig
 m68k                       bvme6000_defconfig
 arm                          iop32x_defconfig
+arm                        clps711x_defconfig
+s390                             allyesconfig
+arm                         lubbock_defconfig
+arm                          badge4_defconfig
+mips                      maltaaprp_defconfig
+arm                          pxa3xx_defconfig
+sh                         microdev_defconfig
+powerpc                      ppc44x_defconfig
 m68k                          hp300_defconfig
 sh                           se7206_defconfig
 arm                           stm32_defconfig
+arm                       mainstone_defconfig
+sh                            shmin_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -73,7 +89,6 @@ h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
-s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
@@ -82,10 +97,10 @@ sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
-powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+powerpc                             defconfig
 x86_64               randconfig-a006-20200811
 x86_64               randconfig-a001-20200811
 x86_64               randconfig-a003-20200811
@@ -104,7 +119,12 @@ i386                 randconfig-a015-20200811
 i386                 randconfig-a013-20200811
 i386                 randconfig-a012-20200811
 i386                 randconfig-a014-20200811
-riscv                            allyesconfig
+i386                 randconfig-a016-20200812
+i386                 randconfig-a011-20200812
+i386                 randconfig-a013-20200812
+i386                 randconfig-a015-20200812
+i386                 randconfig-a012-20200812
+i386                 randconfig-a014-20200812
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
