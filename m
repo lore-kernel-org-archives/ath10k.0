@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5kP1-0004n3-Px
- for ath10k@lists.infradead.org; Wed, 12 Aug 2020 06:38:24 +0000
-Date: Wed, 12 Aug 2020 14:37:24 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 7688ec9e08cf44645a4aff810cc376c263a21f3d
-Message-ID: <5f338e24.SLogtDL1nA5tf3Tl%lkp@intel.com>
+ id 1k5mEu-0003xU-BF
+ for ath10k@lists.infradead.org; Wed, 12 Aug 2020 08:36:05 +0000
+Date: Wed, 12 Aug 2020 10:36:00 +0200
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+Subject: Re: CVE-2020-3702: Firmware updates for ath9k and ath10k chips
+Message-ID: <20200812083600.6zxdf5pfktdzggd6@pali>
+References: <20200810090126.mtu3uocpcjg5se5e@pali>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200810090126.mtu3uocpcjg5se5e@pali>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,129 +19,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 7688ec9e08cf44645a4aff810cc376c263a21f3d  ath10k: change to do napi_enable and napi_disable when insmod and rmmod for sdio
-
-elapsed time: 720m
-
-configs tested: 99
-configs skipped: 6
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                            xcep_defconfig
-mips                          ath25_defconfig
-sh                           se7619_defconfig
-powerpc                        cell_defconfig
-m68k                          multi_defconfig
-riscv                            allyesconfig
-arm                         axm55xx_defconfig
-powerpc                     ep8248e_defconfig
-arc                        nsim_700_defconfig
-arm                            hisi_defconfig
-arm                  colibri_pxa270_defconfig
-i386                             alldefconfig
-c6x                         dsk6455_defconfig
-mips                          malta_defconfig
-m68k                       bvme6000_defconfig
-arm                          iop32x_defconfig
-arm                        clps711x_defconfig
-s390                             allyesconfig
-arm                         lubbock_defconfig
-arm                          badge4_defconfig
-mips                      maltaaprp_defconfig
-arm                          pxa3xx_defconfig
-sh                         microdev_defconfig
-powerpc                      ppc44x_defconfig
-m68k                          hp300_defconfig
-sh                           se7206_defconfig
-arm                           stm32_defconfig
-arm                       mainstone_defconfig
-sh                            shmin_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-x86_64               randconfig-a006-20200811
-x86_64               randconfig-a001-20200811
-x86_64               randconfig-a003-20200811
-x86_64               randconfig-a005-20200811
-x86_64               randconfig-a004-20200811
-x86_64               randconfig-a002-20200811
-i386                 randconfig-a005-20200811
-i386                 randconfig-a001-20200811
-i386                 randconfig-a002-20200811
-i386                 randconfig-a003-20200811
-i386                 randconfig-a006-20200811
-i386                 randconfig-a004-20200811
-i386                 randconfig-a016-20200811
-i386                 randconfig-a011-20200811
-i386                 randconfig-a015-20200811
-i386                 randconfig-a013-20200811
-i386                 randconfig-a012-20200811
-i386                 randconfig-a014-20200811
-i386                 randconfig-a016-20200812
-i386                 randconfig-a011-20200812
-i386                 randconfig-a013-20200812
-i386                 randconfig-a015-20200812
-i386                 randconfig-a012-20200812
-i386                 randconfig-a014-20200812
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uZGF5IDEwIEF1Z3VzdCAyMDIwIDExOjAxOjI2IFBhbGkgUm9ow6FyIHdyb3RlOgo+IEhl
+bGxvIQo+IAo+IEVTRVQgZW5naW5lZXJzIG9uIHRoZWlyIGJsb2cgcHVibGlzaGVkIHNvbWUgaW5m
+b3JtYXRpb24gYWJvdXQgbmV3Cj4gc2VjdXJpdHkgdnVsbmVyYWJpbGl0eSBDVkUtMjAyMC0zNzAy
+IGluIGF0aDlrIHdpZmkgY2FyZHM6Cj4gaHR0cHM6Ly93d3cud2VsaXZlc2VjdXJpdHkuY29tLzIw
+MjAvMDgvMDYvYmV5b25kLWtyMDBrLWV2ZW4tbW9yZS13aWZpLWNoaXBzLXZ1bG5lcmFibGUtZWF2
+ZXNkcm9wcGluZy8KPiAKPiBBY2NvcmRpbmcgdG8gUXVhbGNvbW0gc2VjdXJpdHkgYnVsbGV0aW4g
+dGhpcyBDVkUtMjAyMC0zNzAyIGFmZmVjdHMgYWxzbwo+IHNvbWUgUXVhbGNvbW0gSVBRIGNoaXBz
+IHdoaWNoIGFyZSBoYW5kbGVkIGJ5IGF0aDEwayBkcml2ZXI6Cj4gaHR0cHM6Ly93d3cucXVhbGNv
+bW0uY29tL2NvbXBhbnkvcHJvZHVjdC1zZWN1cml0eS9idWxsZXRpbnMvYXVndXN0LTIwMjAtc2Vj
+dXJpdHktYnVsbGV0aW4jX2N2ZS0yMDIwLTM3MDIKPiAKPiBLYWxsZSwgY291bGQgeW91IG9yIG90
+aGVyIHBlb3BsZSBmcm9tIFF1YWxjb21tIHByb3ZpZGUgdXBkYXRlZCBhbmQgZml4ZWQKPiB2ZXJz
+aW9uIG9mIGF0aDlrIGFuZCBhdGgxMGsgZmlybXdhcmVzIGluIGxpbnV4LWZpcm13YXJlIGdpdCBy
+ZXBvc2l0b3J5Pwo+IAo+IEFjY29yZGluZyB0byBRdWFsY29tbSBzZWN1cml0eSBidWxsZXRpbiB0
+aGlzIGlzc3VlIGhhcyBDcml0aWNhbCBzZWN1cml0eQo+IHJhdGluZywgc28gSSB0aGluayBmaXhl
+ZCBmaXJtd2FyZSBmaWxlcyBzaG91bGQgYmUgdXBkYXRlZCBhbHNvIGluIHN0YWJsZQo+IHJlbGVh
+c2VzIG9mIGxpbnV4IGRpc3RyaWJ1dGlvbnMuCgpIZWxsbyEKClF1YWxjb21tIGhhcyBhbHJlYWR5
+IHNlbnQgZm9sbG93aW5nIHN0YXRlbWVudCB0byBtZWRpYToKCiAgICBRdWFsY29tbSBoYXMgYWxy
+ZWFkeSBtYWRlIG1pdGlnYXRpb25zIGF2YWlsYWJsZSB0byBPRU1zIGluIE1heSAyMDIwLAogICAg
+YW5kIHdlIGVuY291cmFnZSBlbmQgdXNlcnMgdG8gdXBkYXRlIHRoZWlyIGRldmljZXMgYXMgcGF0
+Y2hlcyBoYXZlCiAgICBiZWNvbWUgYXZhaWxhYmxlIGZyb20gT0VNcy4KCkFuZCBiYXNlZCBvbiBp
+bmZvcm1hdGlvbiBmcm9tIEVTRVQgYmxvZyBwb3N0LCBRdWFsY29tbSdzIHByb3ByaWV0YXJ5CmRy
+aXZlciBmb3IgdGhlc2Ugd2lmaSBjYXJkcyBpcyBmaXhlZCBzaW5jZSBRdWFsY29tbSBKdWx5IHJl
+bGVhc2UuCgpDb3VsZCBzb21lYm9keSByZWFjdCBhbmQgcHJvdmlkZSBzb21lIGRldGFpbHMgd2hl
+biBmaXhlcyB3b3VsZCBiZQphdmFpbGFibGUgZm9yIGF0aDlrIGFuZCBhdGgxMGsgTGludXggZHJp
+dmVycz8gQW5kIHdoYXQgaXMgY3VycmVudCBzdGF0ZQpvZiB0aGlzIGlzc3VlIGZvciBMaW51eD8K
+CkknbSBsb29raW5nIGF0IGF0aDlrIGFuZCBhdGgxMGsgZ2l0IHRyZWVzIFsxXSBbMl0gWzNdIGFu
+ZCBJIGRvIG5vdCBzZWUKdGhlcmUgYW55IGNoYW5nZSB3aGljaCBjb3VsZCBiZSByZWxhdGVkIHRv
+IENWRS0yMDIwLTM3MDIuCgpCYXNlZCBvbiBFU0VUIHRlc3RzLCB3aWZpIGNhcmRzIHdoaWNoIHVz
+ZSBhdGg5ayBkcml2ZXIgKG9wZW5zb3VyY2UsIG5vdAp0aGF0IFF1YWxjb21tIHByb3ByaWV0YXJ5
+KSBhcmUgc3RpbGwgdnVsbmVyYWJsZS4KCgpbMV0gLSBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1
+Yi9zY20vbGludXgva2VybmVsL2dpdC9maXJtd2FyZS9saW51eC1maXJtd2FyZS5naXQvbG9nL2F0
+aDEwawpbMl0gLSBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
+dC9rdmFsby9hdGguZ2l0L2xvZy9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrP2g9bWFz
+dGVyLXBlbmRpbmcKWzNdIC0gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
+cm5lbC9naXQva3ZhbG8vYXRoLmdpdC9sb2cvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDlr
+P2g9bWFzdGVyLXBlbmRpbmcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
