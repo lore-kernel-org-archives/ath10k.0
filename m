@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5qVw-0000an-OB
- for ath10k@lists.infradead.org; Wed, 12 Aug 2020 13:09:57 +0000
-Received: by mail-pf1-x436.google.com with SMTP id 74so991213pfx.13
- for <ath10k@lists.infradead.org>; Wed, 12 Aug 2020 06:09:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANczwAH=3UvKNnN3Zhkbdizi8vf0vUFkNNFEX-op0gr8Stj5LQ@mail.gmail.com>
- <7bdee5c8-c271-0902-510c-d8a41b7ec4b8@candelatech.com>
- <CANczwAH0TT9oeTjLem8cZo=eLAVimeJcDCDCuV4DeySUn4zxKg@mail.gmail.com>
- <6765404f-887d-d89e-af4a-6acca22be992@candelatech.com>
- <CANczwAF6C08nbtAjmYvu2WA9TEMH1APgd0DMhkGZin8C7C16_g@mail.gmail.com>
- <f1904788-283a-585b-23dc-74a57cc10161@candelatech.com>
-In-Reply-To: <f1904788-283a-585b-23dc-74a57cc10161@candelatech.com>
-From: Ahmed Zaki <anzaki@gmail.com>
-Date: Wed, 12 Aug 2020 15:09:18 +0200
-Message-ID: <CANczwAHDPm2YXshfi623RidO0DxH1=uVTNs_pwm_UCwR-rhhug@mail.gmail.com>
-Subject: Re: WMM not working for mcast packets on ath10k
+ id 1k69ov-0005uW-9U
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2020 09:46:54 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH 0/3] ath10k: correct tx/rx bitrate for QCA6174 PCIe and SDIO
+Date: Thu, 13 Aug 2020 17:47:06 +0800
+Message-Id: <1597312029-32348-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +15,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-T24gVHVlLCAxMSBBdWcgMjAyMCBhdCAxNjo0MCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
-dGVjaC5jb20+IHdyb3RlOgo+Cj4gT24gOC8xMS8yMCA3OjM2IEFNLCBBaG1lZCBaYWtpIHdyb3Rl
-Ogo+ID4gT24gVHVlLCAxMSBBdWcgMjAyMCBhdCAxNjowMSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBj
-YW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+ID4+Cj4gPj4gT24gOC8xMS8yMCA1OjIyIEFNLCBBaG1l
-ZCBaYWtpIHdyb3RlOgo+ID4+PiBPbiBUdWUsIDExIEF1ZyAyMDIwIGF0IDAxOjA1LCBCZW4gR3Jl
-ZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4gPj4+Pgo+ID4+Pj4gT24gOC8x
-MC8yMCAzOjA4IFBNLCBBaG1lZCBaYWtpIHdyb3RlOgo+ID4+Pj4+IEhlbGxvLAo+ID4+Pj4+Cj4g
-Pj4+Pj4gSSBoYXZlIDIgYXRoMTBrIGRldmljZXMgc2V0IGluIE1lc2ggUG9pbnQgbW9kZS4gV2hl
-biBJIHVzZSBpcHRhYmxlcycKPiA+Pj4+PiBEU0NQIHRhcmdldCB0byBzZXQgdGhlIFdNTSBBQyBm
-b3Igc29tZSB0cmFmZmljIHBvcnRzIHRvIFZPLCB0aGUgcnVsZXMKPiA+Pj4+PiB3b3JrIGZpbmUg
-YnV0IG9ubHkgZm9yIHVuaWNhc3QgcGFja2V0cy4gQWxsIGJyb2FkY2FzdCBvbiB0aGUgdGFyZ2V0
-Cj4gPj4+Pj4gVURQIHBvcnRzIGdvZXMgb3V0IGFzIEJFLCBhbmQgbm90IFZPLgo+ID4+Pj4+Cj4g
-Pj4+Pj4gV2l0aCBzb21lIGF0aDEwayBkZWJ1Z2dpbmcgZW5hYmxlZCwgaXQgc2VlbXMgdGhhdCB0
-aGUgaHR0IGlzIGluZGVlZAo+ID4+Pj4+IHNlbmRpbmcgdGhlIHR4IGRlc2NyaXB0b3Igd2l0aCB0
-aGUgY29ycmVjdCB0aWQgKDYpIHNldC4KPiA+Pj4+Pgo+ID4+Pj4+IElzIHRoaXMgdGhlIGludGVu
-ZGVkIGJlaGF2aW9yIGZvciBzb21lIHJlYXNvbj8gSWYgbm90LCBpcyB0aGVyZSBhbnkKPiA+Pj4+
-PiBtb3JlIGRlYnVnZ2luZyBvbiB0aGUgVFggcGF0aCB0aGF0IEkgY2FuIGRvPwo+ID4+Pj4KPiA+
-Pj4+IEkgZG9uJ3QgdGhpbmsgdGhhdCBXTU0gbWFrZXMgc2Vuc2UgZm9yIGJjYXN0IGZyYW1lcyBz
-aW5jZSB0aGV5IGdvIG91dCBvbgo+ID4+Pj4gYSBzcGVjaWFsIFRJRCB0aGF0IGRvZXMgbm90IGRv
-IGFnZ3JlZ2F0aW9uIG9yIHBlciBwZWVyIFFvUyBzZXR0aW5ncy4KPiA+Pj4KPiA+Pj4gSSBnZXQg
-dGhhdCwgYnV0IHdlIHdhbnQgdG8gZ2l2ZSBzb21lIFdNTSBwcmlvcml0eSB0byBiY2FzdCBhcyB0
-aGV5IHRlbmQgdG8gaGF2ZQo+ID4+PiBoaWdoZXIgcHJvYmFiaWxpdHkgb2YgbG9zcyB1bmRlciBo
-aWdoIG5ldHdvcmsgbG9hZHMuCj4gPj4+Cj4gPj4+IFRoYXQgc3BlY2lhbCBUSUQgdGhhdCB5b3Ug
-bWVudGlvbmVkLCBpcyBpdCBzZXQgaW4gdGhlIGF0aDEwayBmdz8KPiA+Pj4gQmVjYXVzZSBJIHRy
-YWNlZCB0aGUKPiA+Pj4gaHR0IGFuZCBpdCBpcyBzZW5kaW5nIHRoZSBpbnRlbmRlZCB0aWQgaW4g
-dGhlIHR4YnVmIGZsYWdzLCBidXQgYmNhc3QKPiA+Pj4gc3RpbGwgY29tZSAwIChCRSkgb24gYWly
-Lgo+ID4+PiBPciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nIGluIHRoZSBkcml2ZXI/Cj4gPj4+Cj4g
-Pj4+IFRoYW5rcyBhZ2FpbiBmb3IgaGVscC4KPiA+Pgo+ID4+IE1heWJlIHlvdSBjYW4gY29udmVy
-dCBiY2FzdCB0byB1bmljYXN0IGluIHRoZSBkcml2ZXIvbWFjODAyMTE/ICBUaGVyZSBhcmUgbm8g
-cmV0cmllcwo+ID4+IG9yIHByb3BlciByYXRlLWN0cmwgZm9yIGJjYXN0IGVpdGhlciwgc28gSSBk
-b24ndCB0aGluayB5b3UgY2FuIGdldCBncmVhdCBwZXJmb3JtYW5jZQo+ID4+IGZvciBiY2FzdC4K
-PiA+Pgo+ID4KPiA+IFRoZSBiY2FzdCB0aGF0IHdlIHdhbnQgdG8gc2VuZCB3aXRoIGhpZ2hlciBX
-TU0gYXJlIGtpbmQgb2YgS0VFUEFMSVZFUywKPiA+IHNtYWxsIGFuZAo+ID4gaW5mcmVxdWVudCBi
-dXQgaW1wb3J0YW50IGZvciBuZXR3b3JrIHN0YWJpbGl0eS4gU28sIHdlIGRvIG5vdCBjYXJlCj4g
-PiBhYm91dCBhZ2dyZWdhdGlvbiwgcmF0ZS1jdHJsCj4gPiBvciBoaWdoZXIgTUNTLCBqdXN0IGxv
-d2VyIHByb2JhYmlsaXR5IG9mIGJlaW5nIG1pc3NlZC4gVGhleSBhcmUsIGJ5Cj4gPiBkZXNpZ24s
-IHNlbnQgdG8gYWxsCj4gPiBuZWlnaGJvcnMgYW5kIGNhbm5vdCBiZSBzZW50IGFzIHVuaWNhc3Qu
-Cj4gPgo+ID4gU29ycnkgdG8gYXNrIGFnYWluLCBidXQgd2l0aG91dCBhY2Nlc3MgdG8gdGhlIGZ3
-IEkgY2Fubm90IGtub3cgdGhlCj4gPiBhbnN3ZXIgdG8gdGhpczogYXJlIHlvdSBhd2FyZQo+ID4g
-b2YgYW55dGhpbmcgaW4gdGhlIGZ3IHRoYXQgY2FuIG92ZXJyaWRlIHRoZSB0aWQgc2VudCBmcm9t
-IHRoZSBkcml2ZXIKPiA+IGlmIHRoZSBkZXN0aW5hdGlvbiBpcyBiY2FzdD8KPgo+IFRoZXJlIGlz
-IG5vIHdheSB0byBwdXQgYmNhc3QgZnJhbWVzIG9uIHRoZSBoaWdoIHByaW9yaXR5IHF1ZXVlcy4K
-PiBJZiB5b3UgcnVuIGEgc25pZmZlciBuZWFyIHRoZSB0cmFuc21pdHRlciwgZG8geW91IGFjdHVh
-bGx5IHNlZSB0aGF0Cj4geW91ciBiY2FzdCBmcmFtZXMgYXJlIGRyb3BwZWQgYmVmb3JlIGJlaW5n
-IHB1dCBvbiBhaXI/Cj4KPiBUaGUgYXRoMTBrIGRyaXZlciBwcm9iYWJseSBoYXMgc29tZSB0eCBz
-dGF0dXMgdGhhdCBpbmRpY2F0ZXMgd2hldGhlciBpdAo+IHdhcyBkcm9wcGVkIGJlZm9yZSBiZWlu
-ZyBwdXQgb24gYWlyIGFzIHdlbGwuLi5oYXZlIHlvdSBjaGVja2VkIHRoYXQ/Cj4KPiBZb3UgY2Fu
-IHNlbmQgeW91ciBmcmFtZXMgbW9yZSBvZnRlbiBpZiB5b3Ugd2FudCBiZXR0ZXIgY2hhbmNlIG9m
-IHNvbWUKPiBvZiB0aGVtIGdldHRpbmcgdGhyb3VnaC4KPgoKWWVzLCB0aGUgc25pZmZlciBzaG93
-cyB0aGUgcGFja2V0cyBvbiBhaXIgd2l0aCBCRSBhbmQgdGlkIDAsIGFsdGhvdWdoCmZvciB0aGUg
-c2FtZSBwYWNrZXRzIHRoZSBhdGgxMGsgZGVidWdnaW5nIHNob3dzIHRoZSBpbnRlbmRlZCB0aWQu
-CkRlYnVnZ2luZyBsb2dzIGRvIG5vdCBzaG93IGFueXRoaW5nIGJlaW5nIGRyb3BwZWQuCgpJIHdh
-cyBhYmxlIHRvIGJ1bXAgdGhlIFdNTSBBQyBmb3IgYnJvYWRjYXN0IHdpdGggdGhlIGF0aDlrLCBi
-dXQgaXQKc2VlbXMgdGhhdOKAmXMgbm90IGRvYWJsZSB3aXRoIGF0aDEwayBmaXJtd2FyZS4KClRo
-YW5rcyBmb3IgeW91ciBoZWxwIHRob3VnaC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+iw wlan0 station dump not show the correct tx/rx bitrate of QCA6174
+PCIe and SDIO, it is because it has 1 check for WMI_SERVICE_PEER_STATS
+and 1 return for empty arsta->txrate, so change to pass the check and
+remove the return, then iw wlan0 station dump show correct tx/rx bitrate
+for QCA6174 SDIO.
+
+After that, set true for supports_peer_stats_info of QCA6174 PCIe, then
+it show same correct tx/rx bitrate.
+
+Wen Gong (3):
+  ath10k: add wmi service peer stat info for wmi tlv
+  ath10k: remove return for NL80211_STA_INFO_TX_BITRATE
+  ath10k: enable supports_peer_stats_info for QCA6174 PCI devices
+
+ drivers/net/wireless/ath/ath10k/core.c    |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c     | 21 ++++++++++-----------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  2 ++
+ 3 files changed, 13 insertions(+), 11 deletions(-)
+
+-- 
+2.23.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
