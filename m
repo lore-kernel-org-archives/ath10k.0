@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from mail-il1-x142.google.com ([2607:f8b0:4864:20::142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6chn-0005qx-ML
- for ath10k@lists.infradead.org; Fri, 14 Aug 2020 16:37:27 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v4 2/2] ath10k: add fw coredump for sdio when firmware
- assert
-References: <1569310030-834-1-git-send-email-wgong@codeaurora.org>
- <1569310030-834-3-git-send-email-wgong@codeaurora.org>
-Date: Fri, 14 Aug 2020 19:36:42 +0300
-In-Reply-To: <1569310030-834-3-git-send-email-wgong@codeaurora.org> (Wen
- Gong's message of "Tue, 24 Sep 2019 15:27:10 +0800")
-Message-ID: <87mu2xkwv9.fsf@codeaurora.org>
+ id 1k6cku-0006MH-Hp
+ for ath10k@lists.infradead.org; Fri, 14 Aug 2020 16:40:37 +0000
+Received: by mail-il1-x142.google.com with SMTP id c6so8924851ilo.13
+ for <ath10k@lists.infradead.org>; Fri, 14 Aug 2020 09:40:34 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
+References: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
+From: Tom Psyborg <pozega.tomislav@gmail.com>
+Date: Fri, 14 Aug 2020 18:40:32 +0200
+Message-ID: <CAKR_QVLYeY5g8kuGwCPBj+aRMmE_yAUYx593vW1-UGYZGZnH3w@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix the status check and wrong return
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,155 +24,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Zhang Shengju <zhangshengju@cmss.chinamobile.com>, davem@davemloft.net, kvalo@codeaurora.org
 
-Wen Gong <wgong@codeaurora.org> writes:
-
-> When firmware assert, it need coredump to analyze, this patch will
-> collect the register and memory info for sdio chip.
+On 14/08/2020, Tang Bin <tangbin@cmss.chinamobile.com> wrote:
+> In the function ath10k_ahb_clock_init(), devm_clk_get() doesn't
+> return NULL. Thus use IS_ERR() and PTR_ERR() to validate
+> the returned value instead of IS_ERR_OR_NULL().
 >
-> The coredump configuration is different between PCIE and SDIO for
-> the same reversion, so this patch add bus type to distinguish PCIE
-> and SDIO chip for coredump.
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/ahb.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 >
-> It has 2 type to dump firmware: fastdump and slowdump. Fastdump is
-> not support in old version firmware, if this, ath10k will select
-> slowdump for it. If firmware support fastdump, ath10k will select
-> fastdump for it. Version WLAN.RMH.4.4.1-00017-QCARMSWPZ-2 of
-> firmware begin to support fastdump.
+> diff --git a/drivers/net/wireless/ath/ath10k/ahb.c
+> b/drivers/net/wireless/ath/ath10k/ahb.c
+> index ed87bc00f..ea669af6a 100644
+> --- a/drivers/net/wireless/ath/ath10k/ahb.c
+> +++ b/drivers/net/wireless/ath/ath10k/ahb.c
+> @@ -87,24 +87,24 @@ static int ath10k_ahb_clock_init(struct ath10k *ar)
+>  	dev = &ar_ahb->pdev->dev;
 >
-> For slow dump, ath10k_sdio_hif_diag_read can not be used, the diag
-> window has a limit value, it is 4 bytes and the dump's buffer length
-> is larger than it, it will trigger error. So this patch add
-> ath10k_sdio_read_mem to read 4 bytes for each time.
+>  	ar_ahb->cmd_clk = devm_clk_get(dev, "wifi_wcss_cmd");
+> -	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk)) {
+> +	if (IS_ERR(ar_ahb->cmd_clk)) {
+>  		ath10k_err(ar, "failed to get cmd clk: %ld\n",
+>  			   PTR_ERR(ar_ahb->cmd_clk));
+> -		return ar_ahb->cmd_clk ? PTR_ERR(ar_ahb->cmd_clk) : -ENODEV;
+> +		return PTR_ERR(ar_ahb->cmd_clk);
+>  	}
 >
-> Tested with QCA6174 SDIO with firmware
-> WLAN.RMH.4.4.1-00018-QCARMSWP-1.
+>  	ar_ahb->ref_clk = devm_clk_get(dev, "wifi_wcss_ref");
+> -	if (IS_ERR_OR_NULL(ar_ahb->ref_clk)) {
+> +	if (IS_ERR(ar_ahb->ref_clk)) {
+>  		ath10k_err(ar, "failed to get ref clk: %ld\n",
+>  			   PTR_ERR(ar_ahb->ref_clk));
+> -		return ar_ahb->ref_clk ? PTR_ERR(ar_ahb->ref_clk) : -ENODEV;
+> +		return PTR_ERR(ar_ahb->ref_clk);
+>  	}
 >
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+>  	ar_ahb->rtc_clk = devm_clk_get(dev, "wifi_wcss_rtc");
+> -	if (IS_ERR_OR_NULL(ar_ahb->rtc_clk)) {
+> +	if (IS_ERR(ar_ahb->rtc_clk)) {
+>  		ath10k_err(ar, "failed to get rtc clk: %ld\n",
+>  			   PTR_ERR(ar_ahb->rtc_clk));
+> -		return ar_ahb->rtc_clk ? PTR_ERR(ar_ahb->rtc_clk) : -ENODEV;
+> +		return PTR_ERR(ar_ahb->rtc_clk);
+>  	}
+>
+>  	return 0;
+> --
+> 2.20.1.windows.1
+>
+>
+>
+>
 
-I did some changes in the pending branch, please check:
+Hi
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=de03e26479e2cf5f3e1753bda517f44910457036
-
-Also please send dmesg output from a firmware crash, I'll add it to the
-commit log as an example.
-
-> +static void ath10k_sdio_check_fw_reg(struct ath10k *ar, u32 *fast_dump)
-> +{
-> +	u32 param;
-> +
-> +	ath10k_sdio_read_host_interest_value(ar, HI_ITEM(hi_option_flag2), &param);
-> +
-> +	*fast_dump = ((param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW)
-> +			     == HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW);
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio hi_option_flag2 %x\n", param);
-> +}
-
-I renamed this ath10k_sdio_is_fast_dump_supported() which returns a
-boolean. Also I changed all fast_dump variables to a boolean.
-
-> +static void ath10k_sdio_dump_memory(struct ath10k *ar,
-> +				    struct ath10k_fw_crash_data *crash_data,
-> +				    u32 fast_dump)
-> +{
-> +	const struct ath10k_hw_mem_layout *mem_layout;
-> +	const struct ath10k_mem_region *current_region;
-> +	struct ath10k_dump_ram_data_hdr *hdr;
-> +	u32 count;
-> +	size_t buf_len;
-> +	int ret, i;
-> +	u8 *buf;
-> +
-> +	if (!crash_data)
-> +		return;
-> +
-> +	mem_layout = ath10k_coredump_get_mem_layout(ar);
-> +	if (!mem_layout)
-> +		return;
-> +
-> +	current_region = &mem_layout->region_table.regions[0];
-> +
-> +	buf = crash_data->ramdump_buf;
-> +	buf_len = crash_data->ramdump_buf_len;
-> +
-> +	memset(buf, 0, buf_len);
-> +
-> +	for (i = 0; i < mem_layout->region_table.size; i++) {
-> +		count = 0;
-> +
-> +		if (current_region->len > buf_len) {
-> +			ath10k_warn(ar, "memory region %s size %d is larger that remaining ramdump buffer size %zu\n",
-> +				    current_region->name,
-> +				    current_region->len,
-> +				    buf_len);
-> +			break;
-> +		}
-> +
-> +		/* Reserve space for the header. */
-> +		hdr = (void *)buf;
-> +		buf += sizeof(*hdr);
-> +		buf_len -= sizeof(*hdr);
-> +
-> +		ret = ath10k_sdio_dump_memory_generic(ar, current_region, buf, fast_dump);
-> +
-> +		ath10k_err(ar, "dump mem, name:%s, type:%d, start:0x%x, len:0x%x, size:%d, ret:0x%x\n",
-> +			   current_region->name,
-> +			   current_region->type,
-> +			   current_region->start,
-> +			   current_region->len,
-> +			   current_region->section_table.size,
-> +			   ret);
-
-This error print looks like a debug message, so I removed it. If you
-need it, let me know.
-
-> +void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
-> +{
-> +	struct ath10k_fw_crash_data *crash_data;
-> +	char guid[UUID_STRING_LEN + 1];
-> +	u32 fast_dump = 0;
-> +
-> +	ath10k_err(ar, "begin fw dump\n");
-
-This also looks like a debug message so I removed it.
-
-> +	ath10k_sdio_check_fw_reg(ar, &fast_dump);
-> +
-> +	if (fast_dump)
-> +		ar->bmi.done_sent = false;
-
-I did some refactoring in patch "ath10k: move enable_pll_clk call to
-ath10k_core_start()" (submitted separately) so that I could change this
-to ath10k_bmi_start().
-
-> --- a/drivers/net/wireless/ath/ath10k/targaddrs.h
-> +++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
-> @@ -334,6 +334,16 @@ struct host_interest {
->  #define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_FW_ACK (1 << 17)
->  
->  /*
-> + * If both SDIO_CRASH_DUMP_ENHANCEMENT_HOST and SDIO_CRASH_DUMP_ENHANCEMENT_FW
-> + * flags are set, then crashdump upload will be done using the BMI host/target
-> + * communication channel.
-> + */
-> +/* HOST to support using BMI dump FW memory when hit assert */
-> +#define HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_HOST 0x400
-
-Added empty line here.
-
-> +/* FW to support using BMI dump FW memory when hit assert */
-> +#define HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW   0x800
-> +
-> +/*
->   * CONSOLE FLAGS
->   *
->   * Bit Range  Meaning
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+You should've include which HW/FW combination you tested this on
 
 _______________________________________________
 ath10k mailing list
