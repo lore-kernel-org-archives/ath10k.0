@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6Utf-0006Dn-6W
- for ath10k@lists.infradead.org; Fri, 14 Aug 2020 08:17:09 +0000
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Subject: [PATCH] ath10k: fix VHT NSS calculation when STBC is enabled
-Date: Fri, 14 Aug 2020 13:46:11 +0530
-Message-Id: <1597392971-3897-1-git-send-email-murugana@codeaurora.org>
+Received: from cmccmta1.chinamobile.com ([221.176.66.79])
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k6b1c-0001Ki-N3
+ for ath10k@lists.infradead.org; Fri, 14 Aug 2020 14:49:48 +0000
+From: Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] ath10k: fix the status check and wrong return
+Date: Fri, 14 Aug 2020 22:48:44 +0800
+Message-Id: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,59 +16,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Sathishkumar Muruganandam <murugana@codeaurora.org>, linux-wireless@vger.kernel.org
+To: kvalo@codeaurora.org, davem@davemloft.net
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Zhang Shengju <zhangshengju@cmss.chinamobile.com>
 
-When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
-calculation for SU case.
+In the function ath10k_ahb_clock_init(), devm_clk_get() doesn't
+return NULL. Thus use IS_ERR() and PTR_ERR() to validate
+the returned value instead of IS_ERR_OR_NULL().
 
-Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
-in radiotap header on monitor mode capture.
-
-Tested-on: QCA9984 10.4-3.10-00047
-
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/ahb.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 69ad4ca1a87c..a00498338b1c 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -949,6 +949,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 	u8 preamble = 0;
- 	u8 group_id;
- 	u32 info1, info2, info3;
-+	u32 stbc, nsts_su;
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index ed87bc00f..ea669af6a 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -87,24 +87,24 @@ static int ath10k_ahb_clock_init(struct ath10k *ar)
+ 	dev = &ar_ahb->pdev->dev;
  
- 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
- 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -993,11 +994,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		 */
- 		bw = info2 & 3;
- 		sgi = info3 & 1;
-+		stbc = (info2 >> 3) & 1;
- 		group_id = (info2 >> 4) & 0x3F;
+ 	ar_ahb->cmd_clk = devm_clk_get(dev, "wifi_wcss_cmd");
+-	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk)) {
++	if (IS_ERR(ar_ahb->cmd_clk)) {
+ 		ath10k_err(ar, "failed to get cmd clk: %ld\n",
+ 			   PTR_ERR(ar_ahb->cmd_clk));
+-		return ar_ahb->cmd_clk ? PTR_ERR(ar_ahb->cmd_clk) : -ENODEV;
++		return PTR_ERR(ar_ahb->cmd_clk);
+ 	}
  
- 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
- 			mcs = (info3 >> 4) & 0x0F;
--			nss = ((info2 >> 10) & 0x07) + 1;
-+			nsts_su = ((info2 >> 10) & 0x07);
-+			if (stbc)
-+				nss = (nsts_su >> 2) + 1;
-+			else
-+				nss = (nsts_su + 1);
- 		} else {
- 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
- 			 * so it's impossible to decode MCS. Also since
+ 	ar_ahb->ref_clk = devm_clk_get(dev, "wifi_wcss_ref");
+-	if (IS_ERR_OR_NULL(ar_ahb->ref_clk)) {
++	if (IS_ERR(ar_ahb->ref_clk)) {
+ 		ath10k_err(ar, "failed to get ref clk: %ld\n",
+ 			   PTR_ERR(ar_ahb->ref_clk));
+-		return ar_ahb->ref_clk ? PTR_ERR(ar_ahb->ref_clk) : -ENODEV;
++		return PTR_ERR(ar_ahb->ref_clk);
+ 	}
+ 
+ 	ar_ahb->rtc_clk = devm_clk_get(dev, "wifi_wcss_rtc");
+-	if (IS_ERR_OR_NULL(ar_ahb->rtc_clk)) {
++	if (IS_ERR(ar_ahb->rtc_clk)) {
+ 		ath10k_err(ar, "failed to get rtc clk: %ld\n",
+ 			   PTR_ERR(ar_ahb->rtc_clk));
+-		return ar_ahb->rtc_clk ? PTR_ERR(ar_ahb->rtc_clk) : -ENODEV;
++		return PTR_ERR(ar_ahb->rtc_clk);
+ 	}
+ 
+ 	return 0;
 -- 
-2.7.4
+2.20.1.windows.1
+
+
 
 
 _______________________________________________
