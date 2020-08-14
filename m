@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6dJT-0002KZ-0u
- for ath10k@lists.infradead.org; Fri, 14 Aug 2020 17:16:24 +0000
+ id 1k6dMa-0002T8-PI
+ for ath10k@lists.infradead.org; Fri, 14 Aug 2020 17:19:37 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH mac80211-next] ath10k: fix unhandled switch value warning
-References: <20200731055636.795173-1-thomas@adapt-ip.com>
-Date: Fri, 14 Aug 2020 20:15:53 +0300
-In-Reply-To: <20200731055636.795173-1-thomas@adapt-ip.com> (Thomas Pedersen's
- message of "Thu, 30 Jul 2020 22:56:36 -0700")
-Message-ID: <87lfih87xy.fsf@tynnyri.adurom.net>
+Subject: Re: [PATCH v4 1/2] ath10k: add refcount for ath10k_core_restart
+References: <20200108031957.22308-1-wgong@codeaurora.org>
+ <20200108031957.22308-2-wgong@codeaurora.org>
+Date: Fri, 14 Aug 2020 20:19:19 +0300
+In-Reply-To: <20200108031957.22308-2-wgong@codeaurora.org> (Wen Gong's message
+ of "Wed, 8 Jan 2020 11:19:56 +0800")
+Message-ID: <87imdlkuw8.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,45 +24,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Thomas Pedersen <thomas@adapt-ip.com>
-Cc: sfr@canb.auug.org.au, Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Thomas Pedersen <thomas@adapt-ip.com> writes:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> Cited commit introduced the following warnings:
+> When it has more than one restart_work queued meanwhile, the 2nd
+> restart_work is very esay to break the 1st restart work and lead
+> recovery fail.
 >
-> drivers/net/wireless/ath/ath10k/mac.c: In function 'chan_to_phymode':
-> drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration
-> value 'NL80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
->   558 |   switch (chandef->width) {
->       |   ^~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration
-> value 'NL80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration
-> value 'NL80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration
-> value 'NL80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration
-> value 'NL80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration
-> value 'NL80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
->   581 |   switch (chandef->width) {
->       |   ^~~~~~
-> drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
-> drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
+> Add a ref count to allow only one restart work running untill
+> device successfully recovered.
 >
-> Fix them by making the existing invalid channel width
-> cases the default, as the introduced channel widths
-> currently don't make sense in 2 or 5GHz either.
+> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
 >
-> Fixes: e5cb3d34a66d ("nl80211: S1G band and channel definitions")
-> Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 13 +++++++++++++
+>  drivers/net/wireless/ath/ath10k/core.h |  2 ++
+>  drivers/net/wireless/ath/ath10k/mac.c  |  1 +
+>  3 files changed, 16 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 91f131b87efc..0e31846e6c89 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2199,6 +2199,14 @@ static void ath10k_core_restart(struct work_struct *work)
+>  {
+>  	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+>  	int ret;
+> +	int restart_count;
+> +
+> +	restart_count = atomic_add_return(1, &ar->restart_count);
+> +	if (restart_count > 1) {
+> +		ath10k_warn(ar, "can not restart, count: %d\n", restart_count);
+> +		atomic_dec(&ar->restart_count);
+> +		return;
+> +	}
 
-I assume Johannes takes this so:
+I have been thinking a different approach for this. I think another
+option is to have a function like this:
 
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
+ath10k_core_firmware_crashed()
+{
+        queue_work(ar->workqueue, &ar->restart_work);
+}
+
+In patch 1 we would convert all existing callers to call that
+function instead of queue_work() directly.
+
+In patch 2 we would add a new flag to enum ath10k_dev_flags, or maybe
+should actually use existing ATH10K_FLAG_CRASH_FLUSH? Don't know yet
+which one is better. Now the function would do:
+
+ath10k_core_firmware_crashed()
+{
+        if (test_bit(flag))
+                return
+
+        set_bit(flag)                                
+	queue_work(ar->workqueue, &ar->restart_work);
+}
+
+That way restart_work queue would be called only one time.
+
+Though I'm not sure how ATH10K_STATE_WEDGED would behave after this
+change, it might get broken. Ah, actually I think even this patch breaks
+the WEDGED state. This firmware restart is tricky, difficult to say what
+is the best approach. Michal, are you reading? :) Any ideas?
+
+And after looking more about this patch I don't see the need for the new
+ar->restart_count atomic variable. Checking for ATH10K_FLAG_CRASH_FLUSH
+would do the same thing AFAICS.
+
+And related to this, (in a separate patch) I think we should utilise
+ATH10K_FLAG_CRASH_FLUSH more. For example in ath10k_wmi_cmd_send() to
+not even try to send a WMI command if the flag is set. Basically all
+hardware access should be disabled except what is needed to restart the
+firmware.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
