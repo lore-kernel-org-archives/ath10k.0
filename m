@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6No1-0008BS-CI
- for ath10k@lists.infradead.org; Fri, 14 Aug 2020 00:42:50 +0000
-Date: Fri, 14 Aug 2020 08:41:48 +0800
+ id 1k6PQc-00085Z-QX
+ for ath10k@lists.infradead.org; Fri, 14 Aug 2020 02:26:47 +0000
+Date: Fri, 14 Aug 2020 10:25:57 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- abde6854f66829c7a2a576aac22c143d9eaffeed
-Message-ID: <5f35ddcc.+ZXpnHAMODRcPcrC%lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 3e087f384cf817170ca13ff92c0a5f41625a9d47
+Message-ID: <5f35f635.Naev/hGCy65jJZm0%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: abde6854f66829c7a2a576aac22c143d9eaffeed  ath10k: enable supports_peer_stats_info for QCA6174 PCI devices
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 3e087f384cf817170ca13ff92c0a5f41625a9d47  HACK: ath11k: disable L1 to prevent device entering low power state
 
-elapsed time: 721m
+elapsed time: 722m
 
-configs tested: 153
+configs tested: 151
 configs skipped: 7
 
 The following configs have been built successfully.
@@ -45,11 +45,8 @@ arm                           stm32_defconfig
 powerpc                       ppc64_defconfig
 m68k                       m5275evb_defconfig
 arm                        vexpress_defconfig
-arm                            xcep_defconfig
-mips                          ath25_defconfig
-sh                           se7619_defconfig
-powerpc                        cell_defconfig
-m68k                          multi_defconfig
+alpha                            alldefconfig
+arm                          badge4_defconfig
 m68k                          atari_defconfig
 openrisc                            defconfig
 sh                        sh7763rdp_defconfig
@@ -86,6 +83,7 @@ sh                          urquell_defconfig
 mips                      pic32mzda_defconfig
 arm                           viper_defconfig
 arm                     davinci_all_defconfig
+arm                            xcep_defconfig
 arm                          simpad_defconfig
 arc                             nps_defconfig
 arm                     am200epdkit_defconfig
