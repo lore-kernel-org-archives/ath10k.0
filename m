@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6No1-0008BT-4c
+ id 1k6No1-0008BS-CI
  for ath10k@lists.infradead.org; Fri, 14 Aug 2020 00:42:50 +0000
-Date: Fri, 14 Aug 2020 08:41:46 +0800
+Date: Fri, 14 Aug 2020 08:41:48 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- f0d798d8db833956b7fc80c08b303c221e68c72d
-Message-ID: <5f35ddca.DtjCk1553zM15CBD%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ abde6854f66829c7a2a576aac22c143d9eaffeed
+Message-ID: <5f35ddcc.+ZXpnHAMODRcPcrC%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: f0d798d8db833956b7fc80c08b303c221e68c72d  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: abde6854f66829c7a2a576aac22c143d9eaffeed  ath10k: enable supports_peer_stats_info for QCA6174 PCI devices
 
 elapsed time: 721m
 
