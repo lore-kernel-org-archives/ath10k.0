@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7cK9-0005Qm-Pi
- for ath10k@lists.infradead.org; Mon, 17 Aug 2020 10:25:07 +0000
+ id 1k7cKx-0005fc-LB
+ for ath10k@lists.infradead.org; Mon, 17 Aug 2020 10:26:01 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] ath10k: Use fallthrough pseudo-keyword
+Subject: Re: [PATCH] ath10k: Fix the size used in a 'dma_free_coherent()' call
+ in an error handling path
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200727193821.GA981@embeddedor>
-References: <20200727193821.GA981@embeddedor>
-Message-Id: <20200817102457.0606BC43387@smtp.codeaurora.org>
-Date: Mon, 17 Aug 2020 10:24:57 +0000 (UTC)
+In-Reply-To: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
+References: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
+Message-Id: <20200817102538.BB16BC43391@smtp.codeaurora.org>
+Date: Mon, 17 Aug 2020 10:25:38 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: kernel-janitors@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, pillair@codeaurora.org, kuba@kernel.org, davem@davemloft.net
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-> fall-through markings when it is the case.
+> Update the size used in 'dma_free_coherent()' in order to match the one
+> used in the corresponding 'dma_alloc_coherent()'.
 > 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Fixes: 1863008369ae ("ath10k: fix shadow register implementation for WCN3990")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-1885c0f76dc0 ath10k: Use fallthrough pseudo-keyword
+454530a9950b ath10k: Fix the size used in a 'dma_free_coherent()' call in an error handling path
 
 -- 
-https://patchwork.kernel.org/patch/11687453/
+https://patchwork.kernel.org/patch/11696383/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
