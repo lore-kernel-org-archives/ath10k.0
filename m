@@ -1,16 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6qGu-0006Ip-Rg
- for ath10k@lists.infradead.org; Sat, 15 Aug 2020 07:06:37 +0000
+ id 1k7b6P-0006yX-G7
+ for ath10k@lists.infradead.org; Mon, 17 Aug 2020 09:07:00 +0000
+Received: by mail-wr1-x441.google.com with SMTP id f7so14191057wrw.1
+ for <ath10k@lists.infradead.org>; Mon, 17 Aug 2020 02:06:46 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: correct the array index from mcs index for HT mode
- for QCA6174
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1597392294-13124-1-git-send-email-wgong@codeaurora.org>
-References: <1597392294-13124-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20200815070628.9FE80C433C6@smtp.codeaurora.org>
-Date: Sat, 15 Aug 2020 07:06:28 +0000 (UTC)
+References: <20200602052533.15048-1-john.stultz@linaro.org>
+ <CA+ASDXMbNvbBdsC11dzUPX7RkMFYhJev2npPsRD_SnGQB+1hag@mail.gmail.com>
+ <CALAqxLVA1ZQjwEdbX5KGbSyLnMBAzm9PoN_Ta_Z7rBf4w3GOvQ@mail.gmail.com>
+ <CA+ASDXPddgOvEX___unx7N2YsQctsZN+1vkwPbi8Ab_zfwFfzw@mail.gmail.com>
+ <20200603002715.GA5349@Mani-XPS-13-9360> <87zh9diyam.fsf@codeaurora.org>
+In-Reply-To: <87zh9diyam.fsf@codeaurora.org>
+From: Amit Pundir <amit.pundir@linaro.org>
+Date: Mon, 17 Aug 2020 14:36:09 +0530
+Message-ID: <CAMi1Hd3FBRrwysMX6NLhKzjDukm-YPooR7LX64i=HJHDD8_Dvw@mail.gmail.com>
+Subject: Re: [PATCH] wireless: ath10k: Return early in
+ ath10k_qmi_event_server_exit() to avoid hard crash on reboot
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +29,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Govind Singh <govinds@codeaurora.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, lkml <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Sibi Sankar <sibis@codeaurora.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Niklas Cassel <niklas.cassel@linaro.org>
 
-Wen Gong <wgong@codeaurora.org> wrote:
+On Mon, 8 Jun 2020 at 17:07, Kalle Valo <kvalo@codeaurora.org> wrote:
+> > I don't agree with this. If you read through the replies to the bug report,
+> > it is clear that NS migration uncovered a corner case or even a bug. So we
+> > should try to fix that indeed.
+>
+> I'm with Mani, we should try to fix ath10k instead. Hopefully we can
+> find a fix soon.
 
-> The mcs index of HT mode is 0 to 31, please refer http://mcsindex.com/.
-> Its spatial stream(Nss) number is from 1 to 4, mcs index is 0~7 for
-> Nss=1, 8~15 for Nss=2, 16~23 for Nss=3 and 24~31 is for Nss=4.
-> 
-> The mcs is reported from firmware in wmi_tlv_peer_stats_info of
-> event WMI_TLV_PEER_STATS_INFO_EVENTID, its range is from 0~15 for
-> QCA6174 SDIO and PCIe. It is for both Nss=1 and Nss=2, and it has 2
-> rate table supported_ht_mcs_rate_nss1 and supported_ht_mcs_rate_nss2
-> in ath10k, they are for Nss=1 and Nss=2, each table has 8 rates.
-> 
-> It need to find the matched row number with the mcs index, for example,
-> mcs index is 2, it is <=7, so it is Nss=1, and match row 2 in table of
-> Nss=1. If mcs index is 12, it is >= 8 and <= 15, so it is Nss=2, it
-> match row 4(12-8) in table of Nss=2. If mcs index is >=16, it is for
-> Nss=3/4, it need to add rate table, so it is not support in current
-> ath10k.
-> 
-> This patch is to find the row number in rate table of Nss=1 or Nss=2
-> with the mcs index reported from firmware.
-> 
-> This patch only effect the chips which supports_peer_stats_info of its
-> hw_params is true, it is true only for QCA6174 currently.
-> 
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00048
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Hi Team,
 
-Patch applied to ath-next branch of ath.git, thanks.
+Any updates on this? I can reproduce this hard crash on v5.9-rc1 as well.
 
-db04b755edaa ath10k: correct the array index from mcs index for HT mode for QCA6174
+It is not a blocker for us because we switched to a userspace
+workaround, where we do not wait for modem to shutdown gracefully and
+SIGKILL it instead, during the shutdown/reboot process. But I'm happy
+to take a swing at any intermediate/in-progress solution available.
 
--- 
-https://patchwork.kernel.org/patch/11713809/
+Regards,
+Amit Pundir
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+>
+> Forcing QCA6390 users to use the userspace qrtr-ns would be bad user
+> experience, I really would want to avoid that.
+>
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
