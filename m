@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cmccmta3.chinamobile.com ([221.176.66.81])
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7qev-0006hq-W1
- for ath10k@lists.infradead.org; Tue, 18 Aug 2020 01:43:57 +0000
-Subject: Re: [PATCH] ath10k: fix the status check and wrong return
+Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k7tR4-0002yG-6A
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2020 04:41:23 +0000
+Received: by mail-qv1-xf44.google.com with SMTP id y11so8959480qvl.4
+ for <ath10k@lists.infradead.org>; Mon, 17 Aug 2020 21:41:19 -0700 (PDT)
+MIME-Version: 1.0
 References: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
  <87y2mdjqkx.fsf@codeaurora.org>
-From: Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
-Date: Tue, 18 Aug 2020 09:42:03 +0800
-MIME-Version: 1.0
-In-Reply-To: <87y2mdjqkx.fsf@codeaurora.org>
+ <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
+In-Reply-To: <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Mon, 17 Aug 2020 21:40:42 -0700
+Message-ID: <CALLGbRL95niReU+e1+5pO_byHdoWNuzBtHr_iz_HTAU0KwV2eg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix the status check and wrong return
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +22,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-SGkgS2FsbGWjugoK1NogMjAyMC84LzE3IDIyOjI2LCBLYWxsZSBWYWxvINC0tcA6Cj4+IEluIHRo
-ZSBmdW5jdGlvbiBhdGgxMGtfYWhiX2Nsb2NrX2luaXQoKSwgZGV2bV9jbGtfZ2V0KCkgZG9lc24n
-dAo+PiByZXR1cm4gTlVMTC4gVGh1cyB1c2UgSVNfRVJSKCkgYW5kIFBUUl9FUlIoKSB0byB2YWxp
-ZGF0ZQo+PiB0aGUgcmV0dXJuZWQgdmFsdWUgaW5zdGVhZCBvZiBJU19FUlJfT1JfTlVMTCgpLgo+
-IFdoeT8gV2hhdCdzIHRoZSBiZW5lZml0IG9mIHRoaXMgcGF0Y2g/IE9yIHdoYXQgaGFybSBkb2Vz
-Cj4gSVNfRVJSX09SX05VTEwoKSBjcmVhdGU/CgpUaGFua3MgZm9yIHlvdSByZXBseSwgdGhlIGJl
-bmVmaXQgb2YgdGhpcyBwYXRjaCBpcyBzaW1wbGlmeSB0aGUgY29kZSwgCmJlY2F1c2UgaW4KCnRo
-aXMgZnVuY3Rpb24sIEkgZG9uJ3QgdGhpbmsgdGhlIHNpdHVhdGlvbiBvZiAnZGV2bV9jbGtfZ2V0
-KCkgcmV0dXJuIApOVUxMJyBleGlzdHMuCgpTbyBwbGVhc2UgdGhpbmsgYWJvdXQgaXQsIHRoYW5r
-cy4KCgpUYW5nIEJpbgoKPgo+PiBTaWduZWQtb2ZmLWJ5OiBaaGFuZyBTaGVuZ2p1IDx6aGFuZ3No
-ZW5nanVAY21zcy5jaGluYW1vYmlsZS5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFRhbmcgQmluIDx0
-YW5nYmluQGNtc3MuY2hpbmFtb2JpbGUuY29tPgo+PiAtLS0KPj4gICBkcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2FoYi5jIHwgMTIgKysrKysrLS0tLS0tCj4+ICAgMSBmaWxlIGNoYW5n
-ZWQsIDYgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYWhiLmMgYi9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2FoYi5jCj4+IGluZGV4IGVkODdiYzAwZi4uZWE2NjlhZjZhIDEwMDY0NAo+
-PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2FoYi5jCj4+ICsrKyBiL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYWhiLmMKPj4gQEAgLTg3LDI0ICs4NywyNCBA
-QCBzdGF0aWMgaW50IGF0aDEwa19haGJfY2xvY2tfaW5pdChzdHJ1Y3QgYXRoMTBrICphcikKPj4g
-ICAJZGV2ID0gJmFyX2FoYi0+cGRldi0+ZGV2Owo+PiAgIAo+PiAgIAlhcl9haGItPmNtZF9jbGsg
-PSBkZXZtX2Nsa19nZXQoZGV2LCAid2lmaV93Y3NzX2NtZCIpOwo+PiAtCWlmIChJU19FUlJfT1Jf
-TlVMTChhcl9haGItPmNtZF9jbGspKSB7Cj4+ICsJaWYgKElTX0VSUihhcl9haGItPmNtZF9jbGsp
-KSB7Cj4+ICAgCQlhdGgxMGtfZXJyKGFyLCAiZmFpbGVkIHRvIGdldCBjbWQgY2xrOiAlbGRcbiIs
-Cj4+ICAgCQkJICAgUFRSX0VSUihhcl9haGItPmNtZF9jbGspKTsKPj4gLQkJcmV0dXJuIGFyX2Fo
-Yi0+Y21kX2NsayA/IFBUUl9FUlIoYXJfYWhiLT5jbWRfY2xrKSA6IC1FTk9ERVY7Cj4+ICsJCXJl
-dHVybiBQVFJfRVJSKGFyX2FoYi0+Y21kX2Nsayk7Cj4+ICAgCX0KPiBkZXZtX2Nsa19nZXQoKSBj
-YW4gcmV0dXJuIE5VTEwgaWYgQ09ORklHX0hBVkVfQ0xLIGlzIGRpc2FibGVkOgo+Cj4gc3RhdGlj
-IGlubGluZSBzdHJ1Y3QgY2xrICpkZXZtX2Nsa19nZXQoc3RydWN0IGRldmljZSAqZGV2LCBjb25z
-dCBjaGFyICppZCkKPiB7Cj4gCXJldHVybiBOVUxMOwo+IH0KPgoKCgpfX19fX19fX19fX19fX19f
+T24gTW9uLCBBdWcgMTcsIDIwMjAgYXQgNjo0MyBQTSBUYW5nIEJpbiA8dGFuZ2JpbkBjbXNzLmNo
+aW5hbW9iaWxlLmNvbT4gd3JvdGU6Cj4KPiBIaSBLYWxsZe+8mgo+Cj4g5ZyoIDIwMjAvOC8xNyAy
+MjoyNiwgS2FsbGUgVmFsbyDlhpnpgZM6Cj4gPj4gSW4gdGhlIGZ1bmN0aW9uIGF0aDEwa19haGJf
+Y2xvY2tfaW5pdCgpLCBkZXZtX2Nsa19nZXQoKSBkb2Vzbid0Cj4gPj4gcmV0dXJuIE5VTEwuIFRo
+dXMgdXNlIElTX0VSUigpIGFuZCBQVFJfRVJSKCkgdG8gdmFsaWRhdGUKPiA+PiB0aGUgcmV0dXJu
+ZWQgdmFsdWUgaW5zdGVhZCBvZiBJU19FUlJfT1JfTlVMTCgpLgo+ID4gV2h5PyBXaGF0J3MgdGhl
+IGJlbmVmaXQgb2YgdGhpcyBwYXRjaD8gT3Igd2hhdCBoYXJtIGRvZXMKPiA+IElTX0VSUl9PUl9O
+VUxMKCkgY3JlYXRlPwo+Cj4gVGhhbmtzIGZvciB5b3UgcmVwbHksIHRoZSBiZW5lZml0IG9mIHRo
+aXMgcGF0Y2ggaXMgc2ltcGxpZnkgdGhlIGNvZGUsCj4gYmVjYXVzZSBpbgo+Cj4gdGhpcyBmdW5j
+dGlvbiwgSSBkb24ndCB0aGluayB0aGUgc2l0dWF0aW9uIG9mICdkZXZtX2Nsa19nZXQoKSByZXR1
+cm4KPiBOVUxMJyBleGlzdHMuCj4KCkkgYWRtaXQgSSdtIG5vdCBsb29raW5nIGF0IEhFQUQsIGJ1
+dCBhdCBsZWFzdCBpbiB0aGUgdHdvIHZlcnNpb25zIEkndmUKZ290IGNoZWNrZWQgb3V0LCBkZXZt
+X2Nsa19nZXQoKSBjYW4gdGhlb3JldGljYWxseSByZXR1cm4gTlVMTC4gVGhpcwpmZWVscyBsaWtl
+IGEgZ3JhdHVpdG91cyBjaGFuZ2UgYW55d2F5LCBidXQgaW4gYW55IGNhc2UgaXQncyB3cm9uZyBh
+bmQKY291bGQgY2F1c2Ugd3JvbmcgYmVoYXZpb3IuCgotIFN0ZXZlCgpfX19fX19fX19fX19fX19f
 X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
 a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
 bGlzdGluZm8vYXRoMTBrCg==
