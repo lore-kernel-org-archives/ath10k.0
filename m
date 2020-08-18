@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7g76-0006IQ-Nx
- for ath10k@lists.infradead.org; Mon, 17 Aug 2020 14:27:58 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
+Received: from cmccmta3.chinamobile.com ([221.176.66.81])
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k7qev-0006hq-W1
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2020 01:43:57 +0000
 Subject: Re: [PATCH] ath10k: fix the status check and wrong return
 References: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
-Date: Mon, 17 Aug 2020 17:26:54 +0300
-In-Reply-To: <20200814144844.1920-1-tangbin@cmss.chinamobile.com> (Tang Bin's
- message of "Fri, 14 Aug 2020 22:48:44 +0800")
-Message-ID: <87y2mdjqkx.fsf@codeaurora.org>
+ <87y2mdjqkx.fsf@codeaurora.org>
+From: Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
+Date: Tue, 18 Aug 2020 09:42:03 +0800
 MIME-Version: 1.0
+In-Reply-To: <87y2mdjqkx.fsf@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +19,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tang Bin <tangbin@cmss.chinamobile.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, davem@davemloft.net, Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 
-Tang Bin <tangbin@cmss.chinamobile.com> writes:
-
-> In the function ath10k_ahb_clock_init(), devm_clk_get() doesn't
-> return NULL. Thus use IS_ERR() and PTR_ERR() to validate
-> the returned value instead of IS_ERR_OR_NULL().
-
-Why? What's the benefit of this patch? Or what harm does
-IS_ERR_OR_NULL() create?
-
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  drivers/net/wireless/ath/ath10k/ahb.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-> index ed87bc00f..ea669af6a 100644
-> --- a/drivers/net/wireless/ath/ath10k/ahb.c
-> +++ b/drivers/net/wireless/ath/ath10k/ahb.c
-> @@ -87,24 +87,24 @@ static int ath10k_ahb_clock_init(struct ath10k *ar)
->  	dev = &ar_ahb->pdev->dev;
->  
->  	ar_ahb->cmd_clk = devm_clk_get(dev, "wifi_wcss_cmd");
-> -	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk)) {
-> +	if (IS_ERR(ar_ahb->cmd_clk)) {
->  		ath10k_err(ar, "failed to get cmd clk: %ld\n",
->  			   PTR_ERR(ar_ahb->cmd_clk));
-> -		return ar_ahb->cmd_clk ? PTR_ERR(ar_ahb->cmd_clk) : -ENODEV;
-> +		return PTR_ERR(ar_ahb->cmd_clk);
->  	}
-
-devm_clk_get() can return NULL if CONFIG_HAVE_CLK is disabled:
-
-static inline struct clk *devm_clk_get(struct device *dev, const char *id)
-{
-	return NULL;
-}
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgS2FsbGWjugoK1NogMjAyMC84LzE3IDIyOjI2LCBLYWxsZSBWYWxvINC0tcA6Cj4+IEluIHRo
+ZSBmdW5jdGlvbiBhdGgxMGtfYWhiX2Nsb2NrX2luaXQoKSwgZGV2bV9jbGtfZ2V0KCkgZG9lc24n
+dAo+PiByZXR1cm4gTlVMTC4gVGh1cyB1c2UgSVNfRVJSKCkgYW5kIFBUUl9FUlIoKSB0byB2YWxp
+ZGF0ZQo+PiB0aGUgcmV0dXJuZWQgdmFsdWUgaW5zdGVhZCBvZiBJU19FUlJfT1JfTlVMTCgpLgo+
+IFdoeT8gV2hhdCdzIHRoZSBiZW5lZml0IG9mIHRoaXMgcGF0Y2g/IE9yIHdoYXQgaGFybSBkb2Vz
+Cj4gSVNfRVJSX09SX05VTEwoKSBjcmVhdGU/CgpUaGFua3MgZm9yIHlvdSByZXBseSwgdGhlIGJl
+bmVmaXQgb2YgdGhpcyBwYXRjaCBpcyBzaW1wbGlmeSB0aGUgY29kZSwgCmJlY2F1c2UgaW4KCnRo
+aXMgZnVuY3Rpb24sIEkgZG9uJ3QgdGhpbmsgdGhlIHNpdHVhdGlvbiBvZiAnZGV2bV9jbGtfZ2V0
+KCkgcmV0dXJuIApOVUxMJyBleGlzdHMuCgpTbyBwbGVhc2UgdGhpbmsgYWJvdXQgaXQsIHRoYW5r
+cy4KCgpUYW5nIEJpbgoKPgo+PiBTaWduZWQtb2ZmLWJ5OiBaaGFuZyBTaGVuZ2p1IDx6aGFuZ3No
+ZW5nanVAY21zcy5jaGluYW1vYmlsZS5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFRhbmcgQmluIDx0
+YW5nYmluQGNtc3MuY2hpbmFtb2JpbGUuY29tPgo+PiAtLS0KPj4gICBkcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL2FoYi5jIHwgMTIgKysrKysrLS0tLS0tCj4+ICAgMSBmaWxlIGNoYW5n
+ZWQsIDYgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYWhiLmMgYi9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL2FoYi5jCj4+IGluZGV4IGVkODdiYzAwZi4uZWE2NjlhZjZhIDEwMDY0NAo+
+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2FoYi5jCj4+ICsrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYWhiLmMKPj4gQEAgLTg3LDI0ICs4NywyNCBA
+QCBzdGF0aWMgaW50IGF0aDEwa19haGJfY2xvY2tfaW5pdChzdHJ1Y3QgYXRoMTBrICphcikKPj4g
+ICAJZGV2ID0gJmFyX2FoYi0+cGRldi0+ZGV2Owo+PiAgIAo+PiAgIAlhcl9haGItPmNtZF9jbGsg
+PSBkZXZtX2Nsa19nZXQoZGV2LCAid2lmaV93Y3NzX2NtZCIpOwo+PiAtCWlmIChJU19FUlJfT1Jf
+TlVMTChhcl9haGItPmNtZF9jbGspKSB7Cj4+ICsJaWYgKElTX0VSUihhcl9haGItPmNtZF9jbGsp
+KSB7Cj4+ICAgCQlhdGgxMGtfZXJyKGFyLCAiZmFpbGVkIHRvIGdldCBjbWQgY2xrOiAlbGRcbiIs
+Cj4+ICAgCQkJICAgUFRSX0VSUihhcl9haGItPmNtZF9jbGspKTsKPj4gLQkJcmV0dXJuIGFyX2Fo
+Yi0+Y21kX2NsayA/IFBUUl9FUlIoYXJfYWhiLT5jbWRfY2xrKSA6IC1FTk9ERVY7Cj4+ICsJCXJl
+dHVybiBQVFJfRVJSKGFyX2FoYi0+Y21kX2Nsayk7Cj4+ICAgCX0KPiBkZXZtX2Nsa19nZXQoKSBj
+YW4gcmV0dXJuIE5VTEwgaWYgQ09ORklHX0hBVkVfQ0xLIGlzIGRpc2FibGVkOgo+Cj4gc3RhdGlj
+IGlubGluZSBzdHJ1Y3QgY2xrICpkZXZtX2Nsa19nZXQoc3RydWN0IGRldmljZSAqZGV2LCBjb25z
+dCBjaGFyICppZCkKPiB7Cj4gCXJldHVybiBOVUxMOwo+IH0KPgoKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
