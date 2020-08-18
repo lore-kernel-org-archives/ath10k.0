@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7tR4-0002yG-6A
- for ath10k@lists.infradead.org; Tue, 18 Aug 2020 04:41:23 +0000
-Received: by mail-qv1-xf44.google.com with SMTP id y11so8959480qvl.4
- for <ath10k@lists.infradead.org>; Mon, 17 Aug 2020 21:41:19 -0700 (PDT)
+ id 1k7x9R-0007QV-Vt
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2020 08:39:31 +0000
 MIME-Version: 1.0
-References: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
- <87y2mdjqkx.fsf@codeaurora.org>
- <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
-In-Reply-To: <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
-From: Steve deRosier <derosier@gmail.com>
-Date: Mon, 17 Aug 2020 21:40:42 -0700
-Message-ID: <CALLGbRL95niReU+e1+5pO_byHdoWNuzBtHr_iz_HTAU0KwV2eg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix the status check and wrong return
+Date: Tue, 18 Aug 2020 16:39:04 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v4 1/2] ath10k: add refcount for ath10k_core_restart
+In-Reply-To: <87imdlkuw8.fsf@codeaurora.org>
+References: <20200108031957.22308-1-wgong@codeaurora.org>
+ <20200108031957.22308-2-wgong@codeaurora.org>
+ <87imdlkuw8.fsf@codeaurora.org>
+Message-ID: <b5a894f46ce01d89a0887d63296fd139@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +20,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tang Bin <tangbin@cmss.chinamobile.com>
-Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gTW9uLCBBdWcgMTcsIDIwMjAgYXQgNjo0MyBQTSBUYW5nIEJpbiA8dGFuZ2JpbkBjbXNzLmNo
-aW5hbW9iaWxlLmNvbT4gd3JvdGU6Cj4KPiBIaSBLYWxsZe+8mgo+Cj4g5ZyoIDIwMjAvOC8xNyAy
-MjoyNiwgS2FsbGUgVmFsbyDlhpnpgZM6Cj4gPj4gSW4gdGhlIGZ1bmN0aW9uIGF0aDEwa19haGJf
-Y2xvY2tfaW5pdCgpLCBkZXZtX2Nsa19nZXQoKSBkb2Vzbid0Cj4gPj4gcmV0dXJuIE5VTEwuIFRo
-dXMgdXNlIElTX0VSUigpIGFuZCBQVFJfRVJSKCkgdG8gdmFsaWRhdGUKPiA+PiB0aGUgcmV0dXJu
-ZWQgdmFsdWUgaW5zdGVhZCBvZiBJU19FUlJfT1JfTlVMTCgpLgo+ID4gV2h5PyBXaGF0J3MgdGhl
-IGJlbmVmaXQgb2YgdGhpcyBwYXRjaD8gT3Igd2hhdCBoYXJtIGRvZXMKPiA+IElTX0VSUl9PUl9O
-VUxMKCkgY3JlYXRlPwo+Cj4gVGhhbmtzIGZvciB5b3UgcmVwbHksIHRoZSBiZW5lZml0IG9mIHRo
-aXMgcGF0Y2ggaXMgc2ltcGxpZnkgdGhlIGNvZGUsCj4gYmVjYXVzZSBpbgo+Cj4gdGhpcyBmdW5j
-dGlvbiwgSSBkb24ndCB0aGluayB0aGUgc2l0dWF0aW9uIG9mICdkZXZtX2Nsa19nZXQoKSByZXR1
-cm4KPiBOVUxMJyBleGlzdHMuCj4KCkkgYWRtaXQgSSdtIG5vdCBsb29raW5nIGF0IEhFQUQsIGJ1
-dCBhdCBsZWFzdCBpbiB0aGUgdHdvIHZlcnNpb25zIEkndmUKZ290IGNoZWNrZWQgb3V0LCBkZXZt
-X2Nsa19nZXQoKSBjYW4gdGhlb3JldGljYWxseSByZXR1cm4gTlVMTC4gVGhpcwpmZWVscyBsaWtl
-IGEgZ3JhdHVpdG91cyBjaGFuZ2UgYW55d2F5LCBidXQgaW4gYW55IGNhc2UgaXQncyB3cm9uZyBh
-bmQKY291bGQgY2F1c2Ugd3JvbmcgYmVoYXZpb3IuCgotIFN0ZXZlCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+On 2020-08-15 01:19, Kalle Valo wrote:
+> Wen Gong <wgong@codeaurora.org> writes:
+> 
+...
+>> diff --git a/drivers/net/wireless/ath/ath10k/core.c 
+>> b/drivers/net/wireless/ath/ath10k/core.c
+>> index 91f131b87efc..0e31846e6c89 100644
+>> --- a/drivers/net/wireless/ath/ath10k/core.c
+>> +++ b/drivers/net/wireless/ath/ath10k/core.c
+>> @@ -2199,6 +2199,14 @@ static void ath10k_core_restart(struct 
+>> work_struct *work)
+>>  {
+>>  	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+>>  	int ret;
+>> +	int restart_count;
+>> +
+>> +	restart_count = atomic_add_return(1, &ar->restart_count);
+>> +	if (restart_count > 1) {
+>> +		ath10k_warn(ar, "can not restart, count: %d\n", restart_count);
+>> +		atomic_dec(&ar->restart_count);
+>> +		return;
+>> +	}
+> 
+> I have been thinking a different approach for this. I think another
+> option is to have a function like this:
+> 
+> ath10k_core_firmware_crashed()
+> {
+>         queue_work(ar->workqueue, &ar->restart_work);
+> }
+> 
+> In patch 1 we would convert all existing callers to call that
+> function instead of queue_work() directly.
+> 
+> In patch 2 we would add a new flag to enum ath10k_dev_flags, or maybe
+> should actually use existing ATH10K_FLAG_CRASH_FLUSH? Don't know yet
+> which one is better. Now the function would do:
+> 
+> ath10k_core_firmware_crashed()
+> {
+>         if (test_bit(flag))
+>                 return
+> 
+>         set_bit(flag)
+> 	queue_work(ar->workqueue, &ar->restart_work);
+> }
+> 
+> That way restart_work queue would be called only one time.
+> 
+This is not muti-thread-safe, for example, if 2 thread entered to the 
+test_bit(flag) meanwhile
+and both check pass, then it will have 2 restart.
+
+atomic_add_return is muti-thread-safe, if 2 thread entered it, only 1 
+thread can pass
+the check, another will fail and return.
+
+The "payload length exceeds max htc length for sdio" happened many times 
+in a very short time,
+so I add this check for it.
+
+> Though I'm not sure how ATH10K_STATE_WEDGED would behave after this
+> change, it might get broken. Ah, actually I think even this patch 
+> breaks
+> the WEDGED state. This firmware restart is tricky, difficult to say 
+> what
+> is the best approach. Michal, are you reading? :) Any ideas?
+> 
+> And after looking more about this patch I don't see the need for the 
+> new
+> ar->restart_count atomic variable. Checking for ATH10K_FLAG_CRASH_FLUSH
+> would do the same thing AFAICS.
+> 
+> And related to this, (in a separate patch) I think we should utilise
+> ATH10K_FLAG_CRASH_FLUSH more. For example in ath10k_wmi_cmd_send() to
+> not even try to send a WMI command if the flag is set. Basically all
+> hardware access should be disabled except what is needed to restart the
+> firmware.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
