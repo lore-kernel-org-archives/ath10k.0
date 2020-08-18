@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7yEp-0007Yj-5b
- for ath10k@lists.infradead.org; Tue, 18 Aug 2020 09:49:04 +0000
+ id 1k7yFk-0007qB-JY
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2020 09:50:05 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Register shutdown handler
+Subject: Re: [PATCH] ath10k: fix VHT NSS calculation when STBC is enabled
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1593193981-30161-1-git-send-email-pillair@codeaurora.org>
-References: <1593193981-30161-1-git-send-email-pillair@codeaurora.org>
-Message-Id: <20200818094901.03C7BC43387@smtp.codeaurora.org>
-Date: Tue, 18 Aug 2020 09:49:01 +0000 (UTC)
+In-Reply-To: <1597392971-3897-1-git-send-email-murugana@codeaurora.org>
+References: <1597392971-3897-1-git-send-email-murugana@codeaurora.org>
+Message-Id: <20200818094943.A74A4C43395@smtp.codeaurora.org>
+Date: Tue, 18 Aug 2020 09:49:43 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+Sathishkumar Muruganandam <murugana@codeaurora.org> wrote:
 
-> As a part of device shutdown the smmu driver will be
-> stopped and henceforth any IOVA address translation
-> will not be done. The wlan driver, being one of the
-> smmu driver consumer, should stop all the dma related
-> activity as a part of shutdown, and thereby ensuring
-> that no dma activity is done once the smmu driver
-> shuts down.
+> When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
+> calculation for SU case.
 > 
-> During the device shutdown, the smmu calls shutdown
-> for all its consumers in order to indicate them to
-> stop all their dma activities.
+> Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
+> in radiotap header on monitor mode capture.
 > 
-> Register the shutdown handler to stop the wlan
-> driver and avoid any dma operations.
+> Tested-on: QCA9984 10.4-3.10-00047
 > 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-caf275463d37 ath10k: Register shutdown handler
+99f41b8e43b8 ath10k: fix VHT NSS calculation when STBC is enabled
 
 -- 
-https://patchwork.kernel.org/patch/11628291/
+https://patchwork.kernel.org/patch/11713837/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
