@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7x9R-0007QV-Vt
- for ath10k@lists.infradead.org; Tue, 18 Aug 2020 08:39:31 +0000
+ id 1k7xcR-0002i4-Er
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2020 09:09:30 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: fix the status check and wrong return
+References: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
+ <87y2mdjqkx.fsf@codeaurora.org>
+ <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
+Date: Tue, 18 Aug 2020 12:08:42 +0300
+In-Reply-To: <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com> (Tang
+ Bin's message of "Tue, 18 Aug 2020 09:42:03 +0800")
+Message-ID: <87lficjp7p.fsf@codeaurora.org>
 MIME-Version: 1.0
-Date: Tue, 18 Aug 2020 16:39:04 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] ath10k: add refcount for ath10k_core_restart
-In-Reply-To: <87imdlkuw8.fsf@codeaurora.org>
-References: <20200108031957.22308-1-wgong@codeaurora.org>
- <20200108031957.22308-2-wgong@codeaurora.org>
- <87imdlkuw8.fsf@codeaurora.org>
-Message-ID: <b5a894f46ce01d89a0887d63296fd139@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,93 +21,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, davem@davemloft.net, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On 2020-08-15 01:19, Kalle Valo wrote:
-> Wen Gong <wgong@codeaurora.org> writes:
-> 
-...
->> diff --git a/drivers/net/wireless/ath/ath10k/core.c 
->> b/drivers/net/wireless/ath/ath10k/core.c
->> index 91f131b87efc..0e31846e6c89 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.c
->> +++ b/drivers/net/wireless/ath/ath10k/core.c
->> @@ -2199,6 +2199,14 @@ static void ath10k_core_restart(struct 
->> work_struct *work)
->>  {
->>  	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
->>  	int ret;
->> +	int restart_count;
->> +
->> +	restart_count = atomic_add_return(1, &ar->restart_count);
->> +	if (restart_count > 1) {
->> +		ath10k_warn(ar, "can not restart, count: %d\n", restart_count);
->> +		atomic_dec(&ar->restart_count);
->> +		return;
->> +	}
-> 
-> I have been thinking a different approach for this. I think another
-> option is to have a function like this:
-> 
-> ath10k_core_firmware_crashed()
-> {
->         queue_work(ar->workqueue, &ar->restart_work);
-> }
-> 
-> In patch 1 we would convert all existing callers to call that
-> function instead of queue_work() directly.
-> 
-> In patch 2 we would add a new flag to enum ath10k_dev_flags, or maybe
-> should actually use existing ATH10K_FLAG_CRASH_FLUSH? Don't know yet
-> which one is better. Now the function would do:
-> 
-> ath10k_core_firmware_crashed()
-> {
->         if (test_bit(flag))
->                 return
-> 
->         set_bit(flag)
-> 	queue_work(ar->workqueue, &ar->restart_work);
-> }
-> 
-> That way restart_work queue would be called only one time.
-> 
-This is not muti-thread-safe, for example, if 2 thread entered to the 
-test_bit(flag) meanwhile
-and both check pass, then it will have 2 restart.
-
-atomic_add_return is muti-thread-safe, if 2 thread entered it, only 1 
-thread can pass
-the check, another will fail and return.
-
-The "payload length exceeds max htc length for sdio" happened many times 
-in a very short time,
-so I add this check for it.
-
-> Though I'm not sure how ATH10K_STATE_WEDGED would behave after this
-> change, it might get broken. Ah, actually I think even this patch 
-> breaks
-> the WEDGED state. This firmware restart is tricky, difficult to say 
-> what
-> is the best approach. Michal, are you reading? :) Any ideas?
-> 
-> And after looking more about this patch I don't see the need for the 
-> new
-> ar->restart_count atomic variable. Checking for ATH10K_FLAG_CRASH_FLUSH
-> would do the same thing AFAICS.
-> 
-> And related to this, (in a separate patch) I think we should utilise
-> ATH10K_FLAG_CRASH_FLUSH more. For example in ath10k_wmi_cmd_send() to
-> not even try to send a WMI command if the flag is set. Basically all
-> hardware access should be disabled except what is needed to restart the
-> firmware.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGFuZyBCaW4gPHRhbmdiaW5AY21zcy5jaGluYW1vYmlsZS5jb20+IHdyaXRlczoKCj4g5ZyoIDIw
+MjAvOC8xNyAyMjoyNiwgS2FsbGUgVmFsbyDlhpnpgZM6Cj4+PiBJbiB0aGUgZnVuY3Rpb24gYXRo
+MTBrX2FoYl9jbG9ja19pbml0KCksIGRldm1fY2xrX2dldCgpIGRvZXNuJ3QKPj4+IHJldHVybiBO
+VUxMLiBUaHVzIHVzZSBJU19FUlIoKSBhbmQgUFRSX0VSUigpIHRvIHZhbGlkYXRlCj4+PiB0aGUg
+cmV0dXJuZWQgdmFsdWUgaW5zdGVhZCBvZiBJU19FUlJfT1JfTlVMTCgpLgo+PiBXaHk/IFdoYXQn
+cyB0aGUgYmVuZWZpdCBvZiB0aGlzIHBhdGNoPyBPciB3aGF0IGhhcm0gZG9lcwo+PiBJU19FUlJf
+T1JfTlVMTCgpIGNyZWF0ZT8KPgo+IFRoYW5rcyBmb3IgeW91IHJlcGx5LCB0aGUgYmVuZWZpdCBv
+ZiB0aGlzIHBhdGNoIGlzIHNpbXBsaWZ5IHRoZSBjb2RlLAo+IGJlY2F1c2UgaW4KPgo+IHRoaXMg
+ZnVuY3Rpb24sIEkgZG9uJ3QgdGhpbmsgdGhlIHNpdHVhdGlvbiBvZiAnZGV2bV9jbGtfZ2V0KCkg
+cmV0dXJuCj4gTlVMTCcgZXhpc3RzLgo+Cj4gU28gcGxlYXNlIHRoaW5rIGFib3V0IGl0LCB0aGFu
+a3MuCgpJIHRoaW5rIHlvdSBtaXNzZWQgbXkgY29tbWVudCBiZWxvdzoKCj4+IGRldm1fY2xrX2dl
+dCgpIGNhbiByZXR1cm4gTlVMTCBpZiBDT05GSUdfSEFWRV9DTEsgaXMgZGlzYWJsZWQ6Cj4+Cj4+
+IHN0YXRpYyBpbmxpbmUgc3RydWN0IGNsayAqZGV2bV9jbGtfZ2V0KHN0cnVjdCBkZXZpY2UgKmRl
+diwgY29uc3QgY2hhciAqaWQpCj4+IHsKPj4gCXJldHVybiBOVUxMOwo+PiB9CgpTbyBJIHRoaW5r
+IHRoaXMgcGF0Y2gganVzdCBjcmVhdGVzIGEgbmV3IGJ1ZyBhbmQgZG9lcyBub3QgaW1wcm92ZQph
+bnl0aGluZy4KCi0tIApodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi9kZXZlbG9w
+ZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGluZ3BhdGNoZXMKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
