@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8CHs-0006TM-QH
+ id 1k8CHs-0006TN-QU
  for ath10k@lists.infradead.org; Wed, 19 Aug 2020 00:49:10 +0000
-Date: Wed, 19 Aug 2020 08:48:52 +0800
+Date: Wed, 19 Aug 2020 08:47:59 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 45b6467afc71b6e19e4ffe264c448409add56f84
-Message-ID: <5f3c76f4.SC/IUbkzVoFM8ui8%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ ac13b16e24f7b6de5b3f3b24b994fdf2a71610bd
+Message-ID: <5f3c76bf.SIYivHVlo8uLLKL6%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 45b6467afc71b6e19e4ffe264c448409add56f84  wcn36xx: Fix software-driven scan
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: ac13b16e24f7b6de5b3f3b24b994fdf2a71610bd  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 868m
+elapsed time: 867m
 
 configs tested: 66
 configs skipped: 1
@@ -35,9 +35,9 @@ configs skipped: 1
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
+arm64                               defconfig
 arm                                 defconfig
 arm64                            allyesconfig
-arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 ia64                             allmodconfig
@@ -69,10 +69,10 @@ sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
-powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+powerpc                             defconfig
 i386                 randconfig-a005-20200818
 i386                 randconfig-a002-20200818
 i386                 randconfig-a001-20200818
