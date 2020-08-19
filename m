@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8QhJ-00048g-QM
- for ath10k@lists.infradead.org; Wed, 19 Aug 2020 16:12:26 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v4 2/2] ath10k: add fw coredump for sdio when firmware
- assert
-References: <1569310030-834-1-git-send-email-wgong@codeaurora.org>
- <1569310030-834-3-git-send-email-wgong@codeaurora.org>
- <87mu2xkwv9.fsf@codeaurora.org>
- <103b604e367a150850d4e8fe179c727f@codeaurora.org>
-Date: Wed, 19 Aug 2020 19:00:50 +0300
-In-Reply-To: <103b604e367a150850d4e8fe179c727f@codeaurora.org> (Wen Gong's
- message of "Tue, 18 Aug 2020 17:23:05 +0800")
-Message-ID: <87tuwyiq19.fsf@codeaurora.org>
+ id 1k8S15-0001eF-M1
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2020 17:36:52 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH v4 1/2] ath10k: add bus type for each layout of coredump
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1569310030-834-2-git-send-email-wgong@codeaurora.org>
+References: <1569310030-834-2-git-send-email-wgong@codeaurora.org>
+Message-Id: <20200819173649.B3A7AC433CA@smtp.codeaurora.org>
+Date: Wed, 19 Aug 2020 17:36:49 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +25,26 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Wen Gong <wgong@codeaurora.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> writes:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> On 2020-08-15 00:36, Kalle Valo wrote:
->> Wen Gong <wgong@codeaurora.org> writes:
->>
->> I did some changes in the pending branch, please check:
->>
-> I compared this patch with patch in pending branch, it is OK for me.
+> For some hw version, it has more than one bus type, it need to add bus
+> type to distinguish different chip.
+> 
+> Tested-on: QCA6174 SDIO WLAN.RMH.4.4.1-00018-QCARMSWP-1
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Great, thanks for testing.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-I also did some changes to the commit log and added an example output of
-a firmware crash.
-
-> [ 1378.680788] ath10k_sdio mmc1:0001:1: check fw reg : 400
-
-But I could not find this message anywhere in upstream ath10k so I
-assumed it's from an out-of-tree patch and removed it from the example.
+c796d513c6ae ath10k: add bus type for each layout of coredump
+3c45f21af84e ath10k: sdio: add firmware coredump support
 
 -- 
+https://patchwork.kernel.org/patch/11158043/
+
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
