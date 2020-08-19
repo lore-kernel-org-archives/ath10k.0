@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8QaW-0003Nr-ER
- for ath10k@lists.infradead.org; Wed, 19 Aug 2020 16:05:21 +0000
+ id 1k8QhJ-00048g-QM
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2020 16:12:26 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [ath6kl:pending 106/110]
- drivers/net/wireless/ath/ath10k/mac.c:3033:6-25: duplicated argument to && or
- || (fwd)
-References: <alpine.DEB.2.22.394.2008191259580.2481@hadrien>
-Date: Wed, 19 Aug 2020 19:05:13 +0300
-In-Reply-To: <alpine.DEB.2.22.394.2008191259580.2481@hadrien> (Julia Lawall's
- message of "Wed, 19 Aug 2020 13:00:59 +0200 (CEST)")
-Message-ID: <87pn7mipty.fsf@codeaurora.org>
+Subject: Re: [PATCH v4 2/2] ath10k: add fw coredump for sdio when firmware
+ assert
+References: <1569310030-834-1-git-send-email-wgong@codeaurora.org>
+ <1569310030-834-3-git-send-email-wgong@codeaurora.org>
+ <87mu2xkwv9.fsf@codeaurora.org>
+ <103b604e367a150850d4e8fe179c727f@codeaurora.org>
+Date: Wed, 19 Aug 2020 19:00:50 +0300
+In-Reply-To: <103b604e367a150850d4e8fe179c727f@codeaurora.org> (Wen Gong's
+ message of "Tue, 18 Aug 2020 17:23:05 +0800")
+Message-ID: <87tuwyiq19.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,49 +27,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: kbuild-all@lists.01.org, ath10k@lists.infradead.org, Tamizh Chelvam <tamizhr@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Julia Lawall <julia.lawall@inria.fr> writes:
+Wen Gong <wgong@codeaurora.org> writes:
 
-> On line 3033 there are two occurrences of arvif->rate_ctrl[i]
->
-> julia
->
-> ---------- Forwarded message ----------
-> Date: Wed, 19 Aug 2020 09:21:21 +0800
-> From: kernel test robot <lkp@intel.com>
-> To: kbuild@lists.01.org
-> Cc: lkp@intel.com, Julia Lawall <julia.lawall@lip6.fr>
-> Subject: [ath6kl:pending 106/110]
->     drivers/net/wireless/ath/ath10k/mac.c:3033:6-25: duplicated argument to &&
->     or ||
->
-> CC: kbuild-all@lists.01.org
-> CC: Kalle Valo <kvalo@codeaurora.org>
-> CC: ath10k@lists.infradead.org
-> TO: Tamizh Chelvam <tamizhr@codeaurora.org>
-> CC: Kalle Valo <kvalo@codeaurora.org>
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   45b6467afc71b6e19e4ffe264c448409add56f84
-> commit: cd275e8765b99d313c06d867af6e3fcc90484cfb [106/110] ath10k: Add
-> new api to support TID specific configuration
-> :::::: branch date: 15 hours ago
-> :::::: commit date: 15 hours ago
-> config: x86_64-randconfig-c004-20200818 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
->
->
-> coccinelle warnings: (new ones prefixed by >>)
->
->>> drivers/net/wireless/ath/ath10k/mac.c:3033:6-25: duplicated argument to && or ||
+> On 2020-08-15 00:36, Kalle Valo wrote:
+>> Wen Gong <wgong@codeaurora.org> writes:
+>>
+>> I did some changes in the pending branch, please check:
+>>
+> I compared this patch with patch in pending branch, it is OK for me.
 
-Good catch. I fixed this in the pending branch.
+Great, thanks for testing.
+
+I also did some changes to the commit log and added an example output of
+a firmware crash.
+
+> [ 1378.680788] ath10k_sdio mmc1:0001:1: check fw reg : 400
+
+But I could not find this message anywhere in upstream ath10k so I
+assumed it's from an out-of-tree patch and removed it from the example.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
