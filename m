@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8CRr-0007DD-KY
- for ath10k@lists.infradead.org; Wed, 19 Aug 2020 00:59:28 +0000
-Date: Wed, 19 Aug 2020 08:58:24 +0800
+ id 1k8FBk-0005Wc-3K
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2020 03:55:02 +0000
+Date: Wed, 19 Aug 2020 11:53:57 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 5630059327d0eb21618529592ac90e300aaaa230
-Message-ID: <5f3c7930.gWdFc5pST8AppayO%lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ d17737bdbed8137ea0bf021f63643d1fb04286a4
+Message-ID: <5f3ca255.EyhQ667YxxabWoSA%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 5630059327d0eb21618529592ac90e300aaaa230  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: d17737bdbed8137ea0bf021f63643d1fb04286a4  HACK: ath11k: force ELF format board file for PCI devices
 
-elapsed time: 878m
+elapsed time: 722m
 
 configs tested: 66
 configs skipped: 1
