@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7yWu-0001WQ-Oo
- for ath10k@lists.infradead.org; Tue, 18 Aug 2020 10:07:47 +0000
+ id 1k8CHt-0006TO-Hj
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2020 00:49:11 +0000
+Date: Wed, 19 Aug 2020 08:48:43 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 970253f1f378434f72e3c19c71eca1e1a40e3362
+Message-ID: <5f3c76eb.iH+UcLwX7spG9Ff+%lkp@intel.com>
 MIME-Version: 1.0
-Date: Tue, 18 Aug 2020 15:36:38 +0530
-From: Tamizh Chelvam <tamizhr@codeaurora.org>
-Subject: Re: [PATCHv2 3/4] ath10k: Add new api to support TID specific
- configuration
-In-Reply-To: <20200817141934.733A0C433CB@smtp.codeaurora.org>
-References: <1593875614-5683-4-git-send-email-tamizhr@codeaurora.org>
- <20200817141934.733A0C433CB@smtp.codeaurora.org>
-Message-ID: <942a13405902460498184ef799f30581@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,83 +17,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: ath10k@lists.infradead.org
 
-Hi Kalle,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 970253f1f378434f72e3c19c71eca1e1a40e3362  Merge branch 'pending' into master-pending
 
-> 
->> This patch add ops for set_tid_config to support TID
->> specific configuration. Station specific TID configuration
->> will have more priority than vif specific TID configuration.
->> WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT service flag introduced
->> to notify host for TID config support. And RTS_CTS extended tid
->> configuration support advertised through the service flag
->> WMI_10_4_SERVICE_EXT_PEER_TID_CONFIGS_SUPPORT.
->> 
->> TID specific noack configuration requires
->> aggregation should be disabled and rate for the data TID packets
->> should be basic rates. So, if the TID already configured
->> with noack policy then driver will ignore the aggregation
->> or TX rate related configuration for the same data TID.
->> 
->> In TX rate configuration should be applied with highest
->> preamble configuration(HT rates should not be applied
->> for the station which supports vht rates).
->> 
->> Tested-on: QCA9984 hw1.0 PCI 10.4-3.9.0.2-00021
->> 
->> Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> 
-> There few checkpatch warnings which I fixed and also I did some 
-> whitespace
-> changes to improve readability. Others were trivial but please check 
-> carefully
-> this change and let me know if it's ok:
-> 
-Thanks for the cleanup. Change looks good to me.
+elapsed time: 868m
 
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -7089,6 +7089,7 @@ static void ath10k_sta_tid_cfg_wk(struct 
-> work_struct *wk)
->         bool config_apply;
->         int ret, i;
->         u32 changed;
-> +       u8 nss;
-> 
->         arsta = container_of(wk, struct ath10k_sta, tid_config_wk);
->         sta = container_of((void *)arsta, struct ieee80211_sta, 
-> drv_priv);
-> @@ -7138,9 +7139,12 @@ static void ath10k_sta_tid_cfg_wk(struct 
-> work_struct *wk)
-> 
->                 if (changed & (BIT(NL80211_TID_CONFIG_ATTR_TX_RATE) |
->                     BIT(NL80211_TID_CONFIG_ATTR_TX_RATE_TYPE))) {
-> -                       if (arvif->rate_ctrl[i] >
-> WMI_TID_CONFIG_RATE_CONTROL_AUTO &&
-> -                           ath10k_mac_validate_rate_mask(ar, sta,
-> arvif->rate_code[i],
-> -
-> ATH10K_HW_NSS(arvif->rate_code[i]))) {
-> +                       nss = ATH10K_HW_NSS(arvif->rate_code[i]);
-> +                       ret = ath10k_mac_validate_rate_mask(ar, sta,
-> +                                                           
-> arvif->rate_code[i],
-> +                                                           nss);
-> +                       if (ret &&
-> +                           arvif->rate_ctrl[i] >
-> WMI_TID_CONFIG_RATE_CONTROL_AUTO) {
->                                 arg.rate_ctrl = 0;
->                                 arg.rcode_flags = 0;
->                         }
+configs tested: 66
+configs skipped: 1
 
-Tamizh.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200818
+i386                 randconfig-a002-20200818
+i386                 randconfig-a001-20200818
+i386                 randconfig-a006-20200818
+i386                 randconfig-a003-20200818
+i386                 randconfig-a004-20200818
+x86_64               randconfig-a013-20200818
+x86_64               randconfig-a016-20200818
+x86_64               randconfig-a012-20200818
+x86_64               randconfig-a011-20200818
+x86_64               randconfig-a014-20200818
+x86_64               randconfig-a015-20200818
+i386                 randconfig-a016-20200818
+i386                 randconfig-a011-20200818
+i386                 randconfig-a015-20200818
+i386                 randconfig-a013-20200818
+i386                 randconfig-a012-20200818
+i386                 randconfig-a014-20200818
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
