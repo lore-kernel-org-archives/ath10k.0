@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8dwe-0002OE-Bj
- for ath10k@lists.infradead.org; Thu, 20 Aug 2020 06:21:05 +0000
-Date: Thu, 20 Aug 2020 14:20:53 +0800
+ id 1k8dwf-0002OF-JW
+ for ath10k@lists.infradead.org; Thu, 20 Aug 2020 06:21:07 +0000
+Date: Thu, 20 Aug 2020 14:20:48 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 7cdcc832632673f6f91995863604af95ed4bc353
-Message-ID: <5f3e1645.waAHsErG6Z7XLghS%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 3c45f21af84eb05a355919abc80cf70a3a681cee
+Message-ID: <5f3e1640.BtFY+jPzxwB5qHGR%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 7cdcc832632673f6f91995863604af95ed4bc353  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 3c45f21af84eb05a355919abc80cf70a3a681cee  ath10k: sdio: add firmware coredump support
 
 elapsed time: 723m
 
-configs tested: 83
+configs tested: 89
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -108,6 +108,12 @@ i386                 randconfig-a015-20200818
 i386                 randconfig-a013-20200818
 i386                 randconfig-a012-20200818
 i386                 randconfig-a014-20200818
+i386                 randconfig-a016-20200819
+i386                 randconfig-a011-20200819
+i386                 randconfig-a015-20200819
+i386                 randconfig-a013-20200819
+i386                 randconfig-a012-20200819
+i386                 randconfig-a014-20200819
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
