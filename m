@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-7.mailgun.net ([69.72.43.7])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8S15-0001eF-M1
- for ath10k@lists.infradead.org; Wed, 19 Aug 2020 17:36:52 +0000
+ id 1k8dwk-0002S6-F9
+ for ath10k@lists.infradead.org; Thu, 20 Aug 2020 06:21:11 +0000
+Date: Thu, 20 Aug 2020 14:20:46 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 248337586a5095dce4515a8d24acd207d9054bbb
+Message-ID: <5f3e163e.bAd5V92Qqrld7lOy%lkp@intel.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 1/2] ath10k: add bus type for each layout of coredump
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1569310030-834-2-git-send-email-wgong@codeaurora.org>
-References: <1569310030-834-2-git-send-email-wgong@codeaurora.org>
-Message-Id: <20200819173649.B3A7AC433CA@smtp.codeaurora.org>
-Date: Wed, 19 Aug 2020 17:36:49 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +20,113 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 248337586a5095dce4515a8d24acd207d9054bbb  Add localversion-wireless-testing-ath
 
-> For some hw version, it has more than one bus type, it need to add bus
-> type to distinguish different chip.
-> 
-> Tested-on: QCA6174 SDIO WLAN.RMH.4.4.1-00018-QCARMSWP-1
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+elapsed time: 722m
 
-2 patches applied to ath-next branch of ath.git, thanks.
+configs tested: 89
+configs skipped: 3
 
-c796d513c6ae ath10k: add bus type for each layout of coredump
-3c45f21af84e ath10k: sdio: add firmware coredump support
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-https://patchwork.kernel.org/patch/11158043/
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          pcm027_defconfig
+arm                        mvebu_v7_defconfig
+arm                          pxa168_defconfig
+powerpc                     skiroot_defconfig
+powerpc                     powernv_defconfig
+sh                         ap325rxa_defconfig
+arc                 nsimosci_hs_smp_defconfig
+microblaze                      mmu_defconfig
+arm                         vf610m4_defconfig
+arm                           h5000_defconfig
+mips                        nlm_xlp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200818
+i386                 randconfig-a001-20200818
+i386                 randconfig-a006-20200818
+i386                 randconfig-a003-20200818
+i386                 randconfig-a004-20200818
+i386                 randconfig-a002-20200818
+x86_64               randconfig-a013-20200818
+x86_64               randconfig-a016-20200818
+x86_64               randconfig-a012-20200818
+x86_64               randconfig-a011-20200818
+x86_64               randconfig-a014-20200818
+x86_64               randconfig-a015-20200818
+x86_64               randconfig-a015-20200820
+x86_64               randconfig-a012-20200820
+x86_64               randconfig-a016-20200820
+x86_64               randconfig-a014-20200820
+x86_64               randconfig-a011-20200820
+x86_64               randconfig-a013-20200820
+i386                 randconfig-a016-20200818
+i386                 randconfig-a011-20200818
+i386                 randconfig-a015-20200818
+i386                 randconfig-a013-20200818
+i386                 randconfig-a012-20200818
+i386                 randconfig-a014-20200818
+i386                 randconfig-a016-20200819
+i386                 randconfig-a011-20200819
+i386                 randconfig-a015-20200819
+i386                 randconfig-a013-20200819
+i386                 randconfig-a012-20200819
+i386                 randconfig-a014-20200819
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
