@@ -1,21 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yb1-xb43.google.com ([2607:f8b0:4864:20::b43])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8iBU-0008GY-5m
- for ath10k@lists.infradead.org; Thu, 20 Aug 2020 10:52:41 +0000
-Received: by mail-yb1-xb43.google.com with SMTP id p191so900223ybg.0
- for <ath10k@lists.infradead.org>; Thu, 20 Aug 2020 03:52:39 -0700 (PDT)
+ id 1k8lhT-0006Qm-I2
+ for ath10k@lists.infradead.org; Thu, 20 Aug 2020 14:37:56 +0000
 MIME-Version: 1.0
+Date: Thu, 20 Aug 2020 22:37:50 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [RFC] ath10k: change to do napi_enable and napi_disable when
+ insmod and rmmod for sdio
+In-Reply-To: <CABPxzYK6wd8FGaM9tb_PYroARJ8RCjJ0Y-nVxY3AoubrfSbZ4w@mail.gmail.com>
 References: <20200214035555.24762-1-wgong@codeaurora.org>
  <878se9iup3.fsf@codeaurora.org>
  <CABPxzYK4kYvBAvYxk6rs-PHM==vBaHQTm3dCCh_+Z+KOB+c6qA@mail.gmail.com>
  <b7e0e8dfe9a4ee0cb92c6c0f153c7bc2@codeaurora.org>
-In-Reply-To: <b7e0e8dfe9a4ee0cb92c6c0f153c7bc2@codeaurora.org>
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Thu, 20 Aug 2020 16:22:27 +0530
-Message-ID: <CABPxzYK6wd8FGaM9tb_PYroARJ8RCjJ0Y-nVxY3AoubrfSbZ4w@mail.gmail.com>
-Subject: Re: [RFC] ath10k: change to do napi_enable and napi_disable when
- insmod and rmmod for sdio
+ <CABPxzYK6wd8FGaM9tb_PYroARJ8RCjJ0Y-nVxY3AoubrfSbZ4w@mail.gmail.com>
+Message-ID: <dcc45384935dca14ac6ab31ec1123414@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +23,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
+To: Krishna Chaitanya <chaitanya.mgit@gmail.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>
 
-On Thu, Aug 20, 2020 at 3:45 PM Wen Gong <wgong@codeaurora.org> wrote:
->
-> On 2020-08-20 17:19, Krishna Chaitanya wrote:
-> ...
-> >> > diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-> >> > index 7b894dcaad2e..b71499b171c6 100644
-> >> > --- a/drivers/net/wireless/ath/ath10k/sdio.c
-> >> > +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-> >> > @@ -1756,8 +1756,6 @@ static int ath10k_sdio_hif_start(struct ath10k *ar)
-> >> >       struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-> >> >       int ret;
-> >> >
-> >> > -     napi_enable(&ar->napi);
-> >> > -
-> >> >       /* Sleep 20 ms before HIF interrupts are disabled.
-> >> >        * This will give target plenty of time to process the BMI done
-> >> >        * request before interrupts are disabled.
-> >> > @@ -1884,7 +1882,6 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
-> >> >       spin_unlock_bh(&ar_sdio->wr_async_lock);
-> >> >
-> >> >       napi_synchronize(&ar->napi);
-> >> > -     napi_disable(&ar->napi);
-> >> >  }
-> >> >
-> >> >  #ifdef CONFIG_PM
-> >> > @@ -2121,6 +2118,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
-> >> >
-> >> >       netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll,
-> >> >                      ATH10K_NAPI_BUDGET);
-> >> > +     napi_enable(&ar->napi);
-> >> >
-> >> >       ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> >> >                  "sdio new func %d vendor 0x%x device 0x%x block 0x%x/0x%x\n",
-> >> > @@ -2235,6 +2233,7 @@ static void ath10k_sdio_remove(struct sdio_func *func)
-> >> >
-> >> >       ath10k_core_unregister(ar);
-> >> >
-> >> > +     napi_disable(&ar->napi);
-> >> >       netif_napi_del(&ar->napi);
-> >> >
-> >> >       ath10k_core_destroy(ar);
-> >>
-> >> I'm not really convinced that this is the right fix, but I'm no NAPI
-> >> expert. Can anyone else help?
-> > Calling napi_disable() twice can lead to hangs, but moving NAPI from
-> > start/stop to
-> > the probe isn't the right approach as the datapath is tied to
-> > start/stop.
-> >
-> > Maybe check the state of NAPI before disable?
-> >
-> >  if (test_bit(NAPI_STATE_SCHED, &ar->napi.napi.state))
-> >   napi_disable(&ar->napi)
-> > or maintain napi_state like this
-> > https://patchwork.kernel.org/patch/10249365/
-> it is better to use above link's patch.
-> napi.state is controlled by napi API, it is better ath10k not know it.
-Sure, but IMHO just canceling the async rx work should solve the issue.
-
-> > Also, the most common cause for such issues (1st
-> > napi_synchronize/napi_disable hang)
-> > is that napi_poll is being scheduled, so, you might want to check that
-> > napi_schedule isn't
-> > called after stop.
-> >
-> > cd ath10k; git log --grep=napi shows plenty of such issues. the one
-> > that matches closest is
-> > c2cac2f74ab4bcf0db0dcf3a612f1e5b52d145c8, so, it could just be a
-> > regression.
-> This above commit's scene is not same with this patch.
-> It is hang for only do 1 simulate crash of the commit, this patch is
-> doing simulate crash and rmmod meanwhile.
-yes, it is the closest one I could find.
+On 2020-08-20 18:52, Krishna Chaitanya wrote:
+> On Thu, Aug 20, 2020 at 3:45 PM Wen Gong <wgong@codeaurora.org> wrote:
+>> 
+>> On 2020-08-20 17:19, Krishna Chaitanya wrote:
+...
+>> >> I'm not really convinced that this is the right fix, but I'm no NAPI
+>> >> expert. Can anyone else help?
+>> > Calling napi_disable() twice can lead to hangs, but moving NAPI from
+>> > start/stop to
+>> > the probe isn't the right approach as the datapath is tied to
+>> > start/stop.
+>> >
+>> > Maybe check the state of NAPI before disable?
+>> >
+>> >  if (test_bit(NAPI_STATE_SCHED, &ar->napi.napi.state))
+>> >   napi_disable(&ar->napi)
+>> > or maintain napi_state like this
+>> > https://patchwork.kernel.org/patch/10249365/
+>> it is better to use above link's patch.
+>> napi.state is controlled by napi API, it is better ath10k not know it.
+> Sure, but IMHO just canceling the async rx work should solve the issue.
+Oh no, canceling the async rx work will not solve this issue, rx worker
+ath10k_rx_indication_async_work call napi_schedule, after napi_complete,
+the NAPI_STATE_SCHED will clear.
+The issue of this patch is because 2 thread called to hif_stop and
+NAPI_STATE_SCHED not clear.
+...
 
 _______________________________________________
 ath10k mailing list
