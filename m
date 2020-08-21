@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8yi3-0002Ow-QR
- for ath10k@lists.infradead.org; Fri, 21 Aug 2020 04:31:30 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH v5] ath10k: add atomic protection for device recovery
-Date: Fri, 21 Aug 2020 12:31:28 +0800
-Message-Id: <1597984288-4141-1-git-send-email-wgong@codeaurora.org>
+ id 1k91Jb-0006pj-G3
+ for ath10k@lists.infradead.org; Fri, 21 Aug 2020 07:18:20 +0000
+Mime-Version: 1.0
+Message-Id: <57432cce-3966-4a11-9e61-7876d2f6c345@www.fastmail.com>
+In-Reply-To: <0765166b-aaf8-49f4-b7e6-cbed301aa4a6@www.fastmail.com>
+References: <0765166b-aaf8-49f4-b7e6-cbed301aa4a6@www.fastmail.com>
+Date: Fri, 21 Aug 2020 16:17:52 +0900
+From: =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>
+Subject: =?UTF-8?Q?Re:_ath10k-firmware:_QCA6174A_hw3.2:_Add_Killer_Networking/Sur?=
+ =?UTF-8?Q?face_Go_specific_board?=
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,205 +19,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
+Cc: kvalo@codeaurora.org
 
-When it has more than one restart_work queued meanwhile, the 2nd
-restart_work is very easy to break the 1st restart work and lead
-recovery fail.
-
-Add a flag to allow only one restart work running untill
-device successfully recovered.
-
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
-v5: change ref count to BIT dev flag, change all 
-queue_work(ar->workqueue, &ar->restart_work) to ath10k_core_start_recovery
-
-v4: add atomic_dec(&ar->restart_count) if state is not on
-
-v3: change atomic_inc_and_test to atomic_add_return, remove check of ATH10K_STATE_ON
-
-v2: add "add refcount for ath10k_core_restart" and remove ar_sdio->can_recovery
- drivers/net/wireless/ath/ath10k/core.c  | 11 +++++++++++
- drivers/net/wireless/ath/ath10k/core.h  |  4 ++++
- drivers/net/wireless/ath/ath10k/debug.c |  6 +++---
- drivers/net/wireless/ath/ath10k/mac.c   |  1 +
- drivers/net/wireless/ath/ath10k/pci.c   |  2 +-
- drivers/net/wireless/ath/ath10k/sdio.c  |  6 +++---
- drivers/net/wireless/ath/ath10k/snoc.c  |  2 +-
- drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
- 8 files changed, 25 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index cfffd20df0cc..a9c3cbb400be 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2277,6 +2277,17 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 	return 0;
- }
- 
-+void ath10k_core_start_recovery(struct ath10k *ar)
-+{
-+	if (test_and_set_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags)) {
-+		ath10k_warn(ar, "already restarting\n");
-+		return;
-+	}
-+
-+	queue_work(ar->workqueue, &ar->restart_work);
-+}
-+EXPORT_SYMBOL(ath10k_core_start_recovery);
-+
- static void ath10k_core_restart(struct work_struct *work)
- {
- 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 5c18f6c20462..347137ab7c09 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -837,6 +837,9 @@ enum ath10k_dev_flags {
- 
- 	/* Per Station statistics service */
- 	ATH10K_FLAG_PEER_STATS,
-+
-+	/* Indicates that ath10k device is during recovery process and not complete */
-+	ATH10K_FLAG_RESTARTING,
- };
- 
- enum ath10k_cal_mode {
-@@ -1291,6 +1294,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		      const struct ath10k_fw_components *fw_components);
- int ath10k_wait_for_suspend(struct ath10k *ar, u32 suspend_opt);
- void ath10k_core_stop(struct ath10k *ar);
-+void ath10k_core_start_recovery(struct ath10k *ar);
- int ath10k_core_register(struct ath10k *ar,
- 			 const struct ath10k_bus_params *bus_params);
- void ath10k_core_unregister(struct ath10k *ar);
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index e8250a665433..6b6dde513bab 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -583,7 +583,7 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
- 		ret = ath10k_debug_fw_assert(ar);
- 	} else if (!strcmp(buf, "hw-restart")) {
- 		ath10k_info(ar, "user requested hw restart\n");
--		queue_work(ar->workqueue, &ar->restart_work);
-+		ath10k_core_start_recovery(ar);
- 		ret = 0;
- 	} else {
- 		ret = -EINVAL;
-@@ -2005,7 +2005,7 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 		}
- 	} else {
- 		ath10k_info(ar, "restarting firmware due to btcoex change");
--		queue_work(ar->workqueue, &ar->restart_work);
-+		ath10k_core_start_recovery(ar);
- 	}
- 
- 	if (val)
-@@ -2136,7 +2136,7 @@ static ssize_t ath10k_write_peer_stats(struct file *file,
- 
- 	ath10k_info(ar, "restarting firmware due to Peer stats change");
- 
--	queue_work(ar->workqueue, &ar->restart_work);
-+	ath10k_core_start_recovery(ar);
- 	ret = count;
- 
- exit:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 82b4bf5ba612..9980011feea8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7268,6 +7268,7 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
- 		ath10k_info(ar, "device successfully recovered\n");
- 		ar->state = ATH10K_STATE_ON;
- 		ieee80211_wake_queues(ar->hw);
-+		clear_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags);
- 	}
- 
- 	mutex_unlock(&ar->conf_mutex);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 36426efdb2ea..a21b44ea04ab 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1774,7 +1774,7 @@ static void ath10k_pci_fw_dump_work(struct work_struct *work)
- 
- 	mutex_unlock(&ar->dump_mutex);
- 
--	queue_work(ar->workqueue, &ar->restart_work);
-+	ath10k_core_start_recovery(ar);
- }
- 
- static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 81ddaafb6721..eef96dd1e1ff 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -561,7 +561,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
- 			ret = -ENOMEM;
- 
--			queue_work(ar->workqueue, &ar->restart_work);
-+			ath10k_core_start_recovery(ar);
- 			ath10k_warn(ar, "exceeds length, start recovery\n");
- 
- 			goto err;
-@@ -960,7 +960,7 @@ static int ath10k_sdio_mbox_read_int_status(struct ath10k *ar,
- 	ret = ath10k_sdio_read(ar, MBOX_HOST_INT_STATUS_ADDRESS,
- 			       irq_proc_reg, sizeof(*irq_proc_reg));
- 	if (ret) {
--		queue_work(ar->workqueue, &ar->restart_work);
-+		ath10k_core_start_recovery(ar);
- 		ath10k_warn(ar, "read int status fail, start recovery\n");
- 		goto out;
- 	}
-@@ -2501,7 +2501,7 @@ void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
- 
- 	ath10k_sdio_enable_intrs(ar);
- 
--	queue_work(ar->workqueue, &ar->restart_work);
-+	ath10k_core_start_recovery(ar);
- }
- 
- static int ath10k_sdio_probe(struct sdio_func *func,
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 645ed5f63ef8..9ab696f758bd 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1295,7 +1295,7 @@ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
- 	switch (type) {
- 	case ATH10K_QMI_EVENT_FW_READY_IND:
- 		if (test_bit(ATH10K_SNOC_FLAG_REGISTERED, &ar_snoc->flags)) {
--			queue_work(ar->workqueue, &ar->restart_work);
-+			ath10k_core_start_recovery(ar);
- 			break;
- 		}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a81a1ab2de19..c6be27ad7543 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1936,7 +1936,7 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 	if (ret == -EAGAIN) {
- 		ath10k_warn(ar, "wmi command %d timeout, restarting hardware\n",
- 			    cmd_id);
--		queue_work(ar->workqueue, &ar->restart_work);
-+		ath10k_core_start_recovery(ar);
- 	}
- 
- 	return ret;
--- 
-2.23.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgS2FsbGUsIGFyZSB5b3Ugc3RpbGwgdGFraW5nIGJvYXJkIGZpbGUgc3VibWlzc2lvbnM/IEkg
+c2F3IHRoYXQgbm8gbmV3bHkgc3VibWl0dGVkIGJvYXJkIGZpbGVzIHdlcmUgbWVyZ2VkIGluIDIw
+MjAuCgpCbGHFvgoKT24gVGh1LCAyIEFwciAyMDIwLCBhdCAwNDo0OSwgQmxhxb4gSHJhc3RuaWsg
+d3JvdGU6Cj4gKiBkZXNjcmlwdGlvbiBmb3Igd2hhdCBoYXJkd2FyZSB0aGlzIGlzOgo+IAo+ICAg
+LSBpdCBpcyBhIFFDQTYxNzRBIGJhc2VkIHJhZGlvIHVzZWQgZm9yIHdpLWZpIGluIFN1cmZhY2Ug
+R28gYW5kIAo+IHZhcmlvdXMgb3RoZXIgbGFwdG9wcwo+IAo+ICogb3JpZ2luIG9mIHRoZSBib2Fy
+ZCBmaWxlIChkaWQgeW91IGNyZWF0ZSBpdCB5b3Vyc2VsZiBvciB3aGVyZSB5b3UKPiAgIGRvd25s
+b2FkZWQpCj4gCj4gICAtIFRha2VuIGZyb20gS2lsbGVyIE5ldHdvcmtpbmcncyB3ZWJzaXRlOgo+
+ICAgICAKPiBodHRwczovL3N1cHBvcnQua2lsbGVybmV0d29ya2luZy5jb20va25vd2xlZGdlLWJh
+c2UvaW5zdGFsbGluZy10aGUta2lsbGVyLXdpcmVsZXNzLWFjLTE1MzUtaW4tc3RlYW1vcy8KPiAK
+PiAgICAgaHR0cHM6Ly9zdXBwb3J0LmtpbGxlcm5ldHdvcmtpbmcuY29tL0sxNTM1X0RlYmlhbi9i
+b2FyZC5iaW4KPiAKPiAqIGlkcyB0byBiZSB1c2VkIHdpdGggdGhlIGJvYXJkIGZpbGUgKEFUSDEw
+S19CRF9JRV9CT0FSRF9OQU1FIGluIGF0aDEwaykKPiAKPiAgIC0gUUNBNjE3NCBodzMuMgo+IAo+
+ICAgICArIAo+IGJ1cz1wY2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lzdGVtLXZlbmRv
+cj0xNjhjLHN1YnN5c3RlbS1kZXZpY2U9MzM3MAo+ICAgICAgIHNoYTI1NnN1bToKPiAgICAgICBl
+NzliODBlMjI0M2M2MmY0MWZiYWYxY2M5Mjg0NWNlZmIxMTAxOWIwYTZkMWM5MTQ4OGNmNDNmZDYz
+ZGNmODVjCj4gCj4gU29tZSBtb3JlIGluZm9ybWF0aW9uOgo+IAo+IEl0J3MgYmVlbiBhIHZlcnkg
+Y29tbW9uIHdvcmthcm91bmQgdGhhdCdzIHNwcmVhZCBvdXQgYnkgd29yZCBvZiBtb3V0aC4gSSdt
+IG5vdAo+IHN1cmUgd2h5IG5vYm9keSB1cHN0cmVhbWVkIGl0IHlldC4KPiAKPiBodHRwczovL2dp
+dGh1Yi5jb20vbGludXgtc3VyZmFjZS9saW51eC1zdXJmYWNlL3dpa2kvU3VyZmFjZS1Hbwo+IAo+
+IEhlcmUncyB0aGUgb3V0cHV0IGZyb20gdGhlIGRyaXZlciB3aXRob3V0IHRoZSBib2FyZDoKPiAK
+PiBbIDI4LjUxNzc4OF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHBjaSBpcnEgbXNpIG9wZXJf
+aXJxX21vZGUgMiAKPiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+IFsgMjguNzk3NDA5XSBhdGgx
+MGtfcGNpIDAwMDA6MDE6MDAuMDogcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCAKPiBj
+aGlwX2lkIDB4MDAzNDBhZmYgc3ViIDE2OGM6MzM3MAo+IFsgMjguNzk3NDE0XSBhdGgxMGtfcGNp
+IDAwMDA6MDE6MDAuMDoga2NvbmZpZyBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nIAo+IDEgZGZz
+IDAgdGVzdG1vZGUgMAo+IFsgMjguNzk4MzUwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmly
+bXdhcmUgdmVyIAo+IFdMQU4uUk0uNC40LjEtMDAwNzktUUNBUk1TV1BaLTEgYXBpIDYgZmVhdHVy
+ZXMgd293bGFuLGlnbm9yZS1vdHAgY3JjMzIgCj4gZmQ4NjliZWIKPiBbIDI4Ljg2OTEyNF0gYXRo
+MTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZhaWxlZCB0byBmZXRjaCBib2FyZCBkYXRhIGZvciAKPiBi
+dXM9cGNpLHZlbmRvcj0xNjhjLGRldmljZT0wMDNlLHN1YnN5c3RlbS12ZW5kb3I9MTY4YyxzdWJz
+eXN0ZW0tZGV2aWNlPTMzNzAgZnJvbSBhdGgxMGsvUUNBNjE3NC9odzMuMC9ib2FyZC0yLmJpbgo+
+IFsgMjguODY5NDc1XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBi
+bWlfaWQgTi9BIGNyYzMyIAo+IGVkNWY4NDlhCj4gWyAyOC45NDg4NDldIGF0aDEwa19wY2kgMDAw
+MDowMTowMC4wOiB1bnN1cHBvcnRlZCBIVEMgc2VydmljZSBpZDogMTUzNgo+IFsgMjguOTY3Njg3
+XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogaHR0LXZlciAzLjQ3IHdtaS1vcCA0IGh0dC1vcCAz
+IAo+IGNhbCBvdHAgbWF4LXN0YSAzMiByYXcgMCBod2NyeXB0byAxCj4gWyAzMi4xMTE4MTVdIGF0
+aDEwa19wY2kgMDAwMDowMTowMC4wOiB3bWkgY29tbWFuZCAxNjM4OSB0aW1lb3V0LCAKPiByZXN0
+YXJ0aW5nIGhhcmR3YXJlCj4gWyAzNS4xODM3OThdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiB3
+bWkgY29tbWFuZCA2OTYzMyB0aW1lb3V0LCAKPiByZXN0YXJ0aW5nIGhhcmR3YXJlCj4gWyAzNS4x
+ODM4MDNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBjb3VsZCBub3Qgc3VzcGVuZCB0YXJnZXQg
+KC0xMSkKPiBbIDM1LjI4NzQ5MV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjAgd2xwMXMwOiByZW5h
+bWVkIGZyb20gd2xhbjAKPiBbIDM1LjMwMzgzMl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGNh
+bm5vdCByZXN0YXJ0IGEgZGV2aWNlIHRoYXQgCj4gaGFzbid0IGJlZW4gc3RhcnRlZAo+IFsgMzUu
+NTc5NDk4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogdW5zdXBwb3J0ZWQgSFRDIHNlcnZpY2Ug
+aWQ6IDE1MzYKPiBbIDM4Ljc2NzgzMl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHdtaSBjb21t
+YW5kIDE2Mzg3IHRpbWVvdXQsIAo+IHJlc3RhcnRpbmcgaGFyZHdhcmUKPiBbIDM4Ljc2Nzg0MF0g
+YXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZhaWxlZCB0byBlbmFibGUgUE1GIFFPUzogLTExCj4g
+WyAzOC43NjgzNzNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBjb3VsZCBub3Qgc3VzcGVuZCB0
+YXJnZXQgKC0xMDgpCj4gWyAzOC44NDk1MjVdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBjYW5u
+b3QgcmVzdGFydCBhIGRldmljZSB0aGF0IAo+IGhhc24ndCBiZWVuIHN0YXJ0ZWQKPiBbIDM5LjA5
+MDU5M10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHVuc3VwcG9ydGVkIEhUQyBzZXJ2aWNlIGlk
+OiAxNTM2Cj4gWyA0Mi4zNTE5NjBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBodHQgdmVyc2lv
+biByZXF1ZXN0IHRpbWVkIG91dAo+IFsgNDIuMzUxOTY2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAu
+MDogZmFpbGVkIHRvIHNldHVwIGh0dDogLTExMAo+IFsgNDIuNDMzOTA5XSBhdGgxMGtfcGNpIDAw
+MDA6MDE6MDAuMDogQ291bGQgbm90IGluaXQgY29yZTogLTExMAo+IFsgNDIuNjYyODkyXSBhdGgx
+MGtfcGNpIDAwMDA6MDE6MDAuMDogdW5zdXBwb3J0ZWQgSFRDIHNlcnZpY2UgaWQ6IDE1MzYKPiBb
+IDQ1LjkzNTg4N10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZhaWxlZCB0byBwaW5nIGZpcm13
+YXJlOiAtMTEwCj4gWyA0NS45MzU4OTZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQg
+dG8gcmVzZXQgcnggZmlsdGVyOiAtMTEwCj4gWyA0Ni4wMTY5MzhdIGF0aDEwa19wY2kgMDAwMDow
+MTowMC4wOiBDb3VsZCBub3QgaW5pdCBjb3JlOiAtMTEwCj4gWyA1Ni4yMzg3MTNdIGF0aDEwa19w
+Y2kgMDAwMDowMTowMC4wOiB1bnN1cHBvcnRlZCBIVEMgc2VydmljZSBpZDogMTUzNgo+IFsgNTku
+NTAzODM4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogd21pIGNvbW1hbmQgMTYzODcgdGltZW91
+dCwgCj4gcmVzdGFydGluZyBoYXJkd2FyZQo+IFsgNTkuNTAzODQ1XSBhdGgxMGtfcGNpIDAwMDA6
+MDE6MDAuMDogZmFpbGVkIHRvIGVuYWJsZSBQTUYgUU9TOiAtMTEKPiBbIDU5LjUwNDI1N10gYXRo
+MTBrX3BjaSAwMDAwOjAxOjAwLjA6IGNvdWxkIG5vdCBzdXNwZW5kIHRhcmdldCAoLTEwOCkKPiBb
+IDU5LjU4NDg2NV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGNhbm5vdCByZXN0YXJ0IGEgZGV2
+aWNlIHRoYXQgCj4gaGFzbid0IGJlZW4gc3RhcnRlZAo+IFsgNTkuODEwOTQwXSBhdGgxMGtfcGNp
+IDAwMDA6MDE6MDAuMDogdW5zdXBwb3J0ZWQgSFRDIHNlcnZpY2UgaWQ6IDE1MzYKPiBbIDYyLjgz
+MTg2OF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGh0dCB2ZXJzaW9uIHJlcXVlc3QgdGltZWQg
+b3V0Cj4gWyA2Mi44MzE4NzRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8gc2V0
+dXAgaHR0OiAtMTEwCj4gWyA2Mi45MTQwMTBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBDb3Vs
+ZCBub3QgaW5pdCBjb3JlOiAtMTEwCj4gCj4gSGVyZSdzIHRoZSBvdXRwdXQgYWZ0ZXIgdGhlIGJv
+YXJkIGZpbGVzIGFyZSBzd2FwcGVkOgo+IAo+IFsgMjIuMjY1NjQwXSBhdGgxMGtfcGNpIDAwMDA6
+MDE6MDAuMDogcGNpIGlycSBtc2kgb3Blcl9pcnFfbW9kZSAyIAo+IGlycV9tb2RlIDAgcmVzZXRf
+bW9kZSAwCj4gWyAyMi41NTY4NjldIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBxY2E2MTc0IGh3
+My4yIHRhcmdldCAweDA1MDMwMDAwIAo+IGNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMTY4YzozMzcw
+Cj4gWyAyMi41NTY4NzVdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBrY29uZmlnIGRlYnVnIDAg
+ZGVidWdmcyAxIHRyYWNpbmcgCj4gMSBkZnMgMCB0ZXN0bW9kZSAwCj4gWyAyMi41NTc3NzNdIGF0
+aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJtd2FyZSB2ZXIgCj4gV0xBTi5STS40LjQuMS0wMDA3
+OS1RQ0FSTVNXUFotMSBhcGkgNiBmZWF0dXJlcyB3b3dsYW4saWdub3JlLW90cCBjcmMzMiAKPiBm
+ZDg2OWJlYgo+IFsgMjIuNjMwMTQ0XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogYm9hcmRfZmls
+ZSBhcGkgMSBibWlfaWQgTi9BIGNyYzMyIAo+IDcwYzM4YTI5Cj4gWyAyMi43MjI4OTBdIGF0aDEw
+a19wY2kgMDAwMDowMTowMC4wOiB1bnN1cHBvcnRlZCBIVEMgc2VydmljZSBpZDogMTUzNgo+IFsg
+MjIuNzQyNjU3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogaHR0LXZlciAzLjQ3IHdtaS1vcCA0
+IGh0dC1vcCAzIAo+IGNhbCBvdHAgbWF4LXN0YSAzMiByYXcgMCBod2NyeXB0byAxCj4gWyAyMi45
+OTYzNzFdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wIHdscDFzMDogcmVuYW1lZCBmcm9tIHdsYW4w
+Cj4gWyAyNC41MzU2MjRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiB1bnN1cHBvcnRlZCBIVEMg
+c2VydmljZSBpZDogMTUzNgo+IAo+IEhlcmUncyBzb21lIG1vcmUgZGlzY3Vzc2lvbiBvbiBob3cg
+dGhlIEtpbGxlciBib2FyZCB3YXMgZm91bmQ6Cj4gCj4gaHR0cHM6Ly9idWd6aWxsYS5yZWRoYXQu
+Y29tL3Nob3dfYnVnLmNnaT9pZD0xNjUxNzc5I2MxCj4gCj4gSXQncyBsaWtlbHkgdGhhdCB0aGlz
+IGFsc28gZml4ZXMgd2lmaSBvbiBTdXJmYWNlIExhcHRvcCAzIEFNRCBzaW5jZSB1c2VycyBoYXZl
+Cj4gYmVlbiB1c2luZyBhbiBpZGVudGljYWwgd29ya2Fyb3VuZC4KPiAKPiBOb3RlOiBJdCdzIGFs
+c28gcmVjb21tZW5kZWQgdG8gZW5hYmxlIGlnbm9yZS1vdHAgZm9yIHRoaXMgYm9hcmQuIE5vdCBz
+dXJlIGlmIGl0Cj4gYWN0dWFsbHkgaGVscHMgb3Igbm90IHRob3VnaC4KPiAKPiBBdHRhY2htZW50
+czoKPiAqIGJvYXJkLmJpbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
