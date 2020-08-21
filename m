@@ -1,30 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8x3u-0006k7-Fk
- for ath10k@lists.infradead.org; Fri, 21 Aug 2020 02:45:53 +0000
-MIME-Version: 1.0
-Date: Fri, 21 Aug 2020 10:45:20 +0800
+ id 1k8yi3-0002Ow-QR
+ for ath10k@lists.infradead.org; Fri, 21 Aug 2020 04:31:30 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [RFC] ath10k: change to do napi_enable and napi_disable when
- insmod and rmmod for sdio
-In-Reply-To: <c69abe52-ccd1-ac73-8691-d87f5ed8be76@candelatech.com>
-References: <20200214035555.24762-1-wgong@codeaurora.org>
- <878se9iup3.fsf@codeaurora.org>
- <CABPxzYK4kYvBAvYxk6rs-PHM==vBaHQTm3dCCh_+Z+KOB+c6qA@mail.gmail.com>
- <b7e0e8dfe9a4ee0cb92c6c0f153c7bc2@codeaurora.org>
- <CABPxzYK6wd8FGaM9tb_PYroARJ8RCjJ0Y-nVxY3AoubrfSbZ4w@mail.gmail.com>
- <dcc45384935dca14ac6ab31ec1123414@codeaurora.org>
- <CABPxzYLu_81h+aWWeNKRyH=CJ=+waB3zmT41BTZ9Mo733PqErQ@mail.gmail.com>
- <acb2bd58-2f95-e09c-9575-b45c0e2aeb70@candelatech.com>
- <CABPxzY+tPos8ByT76hU1ngoxwYcBHaRpFMCKGQJcc_ssoqGNSw@mail.gmail.com>
- <47c1b1e0-afc4-b9b4-5fc0-4636d8b3b981@candelatech.com>
- <CABPxzYLD-M5wpWF6r=K=8YTosSfjctmaaBPCyBP72q-mY0PTcw@mail.gmail.com>
- <CABPxzYLOZf9Fu5O3Rt_mVcXeFLuuFAsqyvd7jiCVvJ0x2BN-+g@mail.gmail.com>
- <dd8cb5db-f164-c235-1f39-cd78ea97f8be@candelatech.com>
- <CABPxzY+uyy_Yc0mHb7sJGxxUE5__Z8SpywodAv2YCM8D89waHw@mail.gmail.com>
- <c69abe52-ccd1-ac73-8691-d87f5ed8be76@candelatech.com>
-Message-ID: <f58ad98479e54a5bbe8b6561563d8cc7@codeaurora.org>
+Subject: [PATCH v5] ath10k: add atomic protection for device recovery
+Date: Fri, 21 Aug 2020 12:31:28 +0800
+Message-Id: <1597984288-4141-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,138 +15,203 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Krishna Chaitanya <chaitanya.mgit@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-On 2020-08-21 04:59, Ben Greear wrote:
-> On 8/20/20 1:15 PM, Krishna Chaitanya wrote:
->> On Thu, Aug 20, 2020 at 11:23 PM Ben Greear <greearb@candelatech.com> 
->> wrote:
->>> 
->>> On 8/20/20 10:42 AM, Krishna Chaitanya wrote:
->>>> On Thu, Aug 20, 2020 at 11:11 PM Krishna Chaitanya
->>>> <chaitanya.mgit@gmail.com> wrote:
->>>>> 
->>>>> On Thu, Aug 20, 2020 at 10:38 PM Ben Greear 
->>>>> <greearb@candelatech.com> wrote:
->>>>>> 
->>>>>> On 8/20/20 10:00 AM, Krishna Chaitanya wrote:
->>>>>>> On Thu, Aug 20, 2020 at 10:02 PM Ben Greear 
->>>>>>> <greearb@candelatech.com> wrote:
->>>>>>>> 
->>>>>>>> On 8/20/20 9:08 AM, Krishna Chaitanya wrote:
->>>>>>>>> On Thu, Aug 20, 2020 at 8:07 PM Wen Gong <wgong@codeaurora.org> 
->>>>>>>>> wrote:
->>>>>>>>>> 
->>>>>>>>>> On 2020-08-20 18:52, Krishna Chaitanya wrote:
->>>>>>>>>>> On Thu, Aug 20, 2020 at 3:45 PM Wen Gong 
->>>>>>>>>>> <wgong@codeaurora.org> wrote:
->>>>>>>>>>>> 
->>>>>>>>>>>> On 2020-08-20 17:19, Krishna Chaitanya wrote:
->>>>>>>>>> ...
->>>>>>>>>>>>>> I'm not really convinced that this is the right fix, but 
->>>>>>>>>>>>>> I'm no NAPI
->>>>>>>>>>>>>> expert. Can anyone else help?
->>>>>>>>>>>>> Calling napi_disable() twice can lead to hangs, but moving 
->>>>>>>>>>>>> NAPI from
->>>>>>>>>>>>> start/stop to
->>>>>>>>>>>>> the probe isn't the right approach as the datapath is tied 
->>>>>>>>>>>>> to
->>>>>>>>>>>>> start/stop.
->>>>>>>>>>>>> 
->>>>>>>>>>>>> Maybe check the state of NAPI before disable?
->>>>>>>>>>>>> 
->>>>>>>>>>>>>      if (test_bit(NAPI_STATE_SCHED, &ar->napi.napi.state))
->>>>>>>>>>>>>       napi_disable(&ar->napi)
->>>>>>>>>>>>> or maintain napi_state like this
->>>>>>>>>>>>> https://patchwork.kernel.org/patch/10249365/
->>>>>>>>>>>> it is better to use above link's patch.
->>>>>>>>>>>> napi.state is controlled by napi API, it is better ath10k 
->>>>>>>>>>>> not know it.
->>>>>>>>>>> Sure, but IMHO just canceling the async rx work should solve 
->>>>>>>>>>> the issue.
->>>>>>>>>> Oh no, canceling the async rx work will not solve this issue, 
->>>>>>>>>> rx worker
->>>>>>>>>> ath10k_rx_indication_async_work call napi_schedule, after 
->>>>>>>>>> napi_complete,
->>>>>>>>>> the NAPI_STATE_SCHED will clear.
->>>>>>>>>> The issue of this patch is because 2 thread called to hif_stop 
->>>>>>>>>> and
->>>>>>>>>> NAPI_STATE_SCHED not clear.
->>>>>>>>> That fix is still valid and good to have.
->>>>>>>>> 
->>>>>>>>> ndev_stop being called twice is typical scenarios (stop vs 
->>>>>>>>> rmmod), so
->>>>>>>>>      just checking the netdev_flags for IFF_UP and returning 
->>>>>>>>> from hif_Stop
->>>>>>>>> should suffice, no?
->>>>>>>> 
->>>>>>>> My approach to fix this problem was to add a boolean in ath10k 
->>>>>>>> as to whether
->>>>>>>> it had napi enabled or not, and then check that before trying to 
->>>>>>>> enable/disable
->>>>>>>> it again.  Seems to work fine, and cleaner in my mind than 
->>>>>>>> checking internal
->>>>>>>> napi flags.
->>>>>>> A much simpler approach is just to check for IFF_UP and skip NAPI 
->>>>>>> (and others)
->>>>>>> in the hif_stop no? (provided proper RTNL locking is done if 
->>>>>>> hif_stop
->>>>>>> is being called
->>>>>>> internally as well).
->>>>>>> 
->>>>>> 
->>>>>> I'm not sure, but I think the driver should be internally 
->>>>>> consistent and not
->>>>>> spend a lot of time trying to guess about interactions with 
->>>>>> objects higher
->>>>>> in the stack.
->>>>> Fair enough, the network interface state is a basic thing 
->>>>> controlled
->>>>> by the driver,
->>>>> so, should be okay to use. Anyways, the in-driver approach has more 
->>>>> control.
->>>>>> 
->>>>>> Here is my original patch to fix this, it is not complex.
->>>>>> 
->>>>>> https://patchwork.kernel.org/patch/10249363/
->>>>> Sure, I have shared your patch above :).
->>>> Sent a bit early, any idea why this wasn't upstreamed earlier?
->>> 
->>> No, one comment from Michal indicated maybe there were more problems 
->>> lurking
->>> in this area, but he seemed to be OK with the patch over all.  After 
->>> that,
->>> it was just ignored.
->>> 
->> Now might be a good time to push for it :)
->> 
-> 
-> It is generally a waste of time in my experience.  Kalle is the
-> maintainer and should
-> be seeing any of this he cares to see.  If he likes the patch, he can
-> apply it or
-> something similar.  If you have a reproducible test case, see if the 
-> patch fixes
-> things, that might help it be accepted.
-I have 2 cmd, each one can reproduce the hang.
-echo soft > 
-/sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash;sleep 
-0.05;ifconfig wlan0 down
-echo soft > 
-/sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash;rmmod 
-ath10k_sdio
-and with the my patch, it fix the hang. Change of my patch is similar 
-with your
-patch(https://patchwork.kernel.org/patch/10249365/), so it should also 
-fix the hang with your patch.
-> 
-> Thanks,
-> Ben
+When it has more than one restart_work queued meanwhile, the 2nd
+restart_work is very easy to break the 1st restart work and lead
+recovery fail.
+
+Add a flag to allow only one restart work running untill
+device successfully recovered.
+
+Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+v5: change ref count to BIT dev flag, change all 
+queue_work(ar->workqueue, &ar->restart_work) to ath10k_core_start_recovery
+
+v4: add atomic_dec(&ar->restart_count) if state is not on
+
+v3: change atomic_inc_and_test to atomic_add_return, remove check of ATH10K_STATE_ON
+
+v2: add "add refcount for ath10k_core_restart" and remove ar_sdio->can_recovery
+ drivers/net/wireless/ath/ath10k/core.c  | 11 +++++++++++
+ drivers/net/wireless/ath/ath10k/core.h  |  4 ++++
+ drivers/net/wireless/ath/ath10k/debug.c |  6 +++---
+ drivers/net/wireless/ath/ath10k/mac.c   |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c   |  2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c  |  6 +++---
+ drivers/net/wireless/ath/ath10k/snoc.c  |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
+ 8 files changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index cfffd20df0cc..a9c3cbb400be 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2277,6 +2277,17 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++void ath10k_core_start_recovery(struct ath10k *ar)
++{
++	if (test_and_set_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags)) {
++		ath10k_warn(ar, "already restarting\n");
++		return;
++	}
++
++	queue_work(ar->workqueue, &ar->restart_work);
++}
++EXPORT_SYMBOL(ath10k_core_start_recovery);
++
+ static void ath10k_core_restart(struct work_struct *work)
+ {
+ 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 5c18f6c20462..347137ab7c09 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -837,6 +837,9 @@ enum ath10k_dev_flags {
+ 
+ 	/* Per Station statistics service */
+ 	ATH10K_FLAG_PEER_STATS,
++
++	/* Indicates that ath10k device is during recovery process and not complete */
++	ATH10K_FLAG_RESTARTING,
+ };
+ 
+ enum ath10k_cal_mode {
+@@ -1291,6 +1294,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		      const struct ath10k_fw_components *fw_components);
+ int ath10k_wait_for_suspend(struct ath10k *ar, u32 suspend_opt);
+ void ath10k_core_stop(struct ath10k *ar);
++void ath10k_core_start_recovery(struct ath10k *ar);
+ int ath10k_core_register(struct ath10k *ar,
+ 			 const struct ath10k_bus_params *bus_params);
+ void ath10k_core_unregister(struct ath10k *ar);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index e8250a665433..6b6dde513bab 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -583,7 +583,7 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 		ret = ath10k_debug_fw_assert(ar);
+ 	} else if (!strcmp(buf, "hw-restart")) {
+ 		ath10k_info(ar, "user requested hw restart\n");
+-		queue_work(ar->workqueue, &ar->restart_work);
++		ath10k_core_start_recovery(ar);
+ 		ret = 0;
+ 	} else {
+ 		ret = -EINVAL;
+@@ -2005,7 +2005,7 @@ static ssize_t ath10k_write_btcoex(struct file *file,
+ 		}
+ 	} else {
+ 		ath10k_info(ar, "restarting firmware due to btcoex change");
+-		queue_work(ar->workqueue, &ar->restart_work);
++		ath10k_core_start_recovery(ar);
+ 	}
+ 
+ 	if (val)
+@@ -2136,7 +2136,7 @@ static ssize_t ath10k_write_peer_stats(struct file *file,
+ 
+ 	ath10k_info(ar, "restarting firmware due to Peer stats change");
+ 
+-	queue_work(ar->workqueue, &ar->restart_work);
++	ath10k_core_start_recovery(ar);
+ 	ret = count;
+ 
+ exit:
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 82b4bf5ba612..9980011feea8 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7268,6 +7268,7 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
+ 		ath10k_info(ar, "device successfully recovered\n");
+ 		ar->state = ATH10K_STATE_ON;
+ 		ieee80211_wake_queues(ar->hw);
++		clear_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags);
+ 	}
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 36426efdb2ea..a21b44ea04ab 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1774,7 +1774,7 @@ static void ath10k_pci_fw_dump_work(struct work_struct *work)
+ 
+ 	mutex_unlock(&ar->dump_mutex);
+ 
+-	queue_work(ar->workqueue, &ar->restart_work);
++	ath10k_core_start_recovery(ar);
+ }
+ 
+ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 81ddaafb6721..eef96dd1e1ff 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -561,7 +561,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
+ 			ret = -ENOMEM;
+ 
+-			queue_work(ar->workqueue, &ar->restart_work);
++			ath10k_core_start_recovery(ar);
+ 			ath10k_warn(ar, "exceeds length, start recovery\n");
+ 
+ 			goto err;
+@@ -960,7 +960,7 @@ static int ath10k_sdio_mbox_read_int_status(struct ath10k *ar,
+ 	ret = ath10k_sdio_read(ar, MBOX_HOST_INT_STATUS_ADDRESS,
+ 			       irq_proc_reg, sizeof(*irq_proc_reg));
+ 	if (ret) {
+-		queue_work(ar->workqueue, &ar->restart_work);
++		ath10k_core_start_recovery(ar);
+ 		ath10k_warn(ar, "read int status fail, start recovery\n");
+ 		goto out;
+ 	}
+@@ -2501,7 +2501,7 @@ void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
+ 
+ 	ath10k_sdio_enable_intrs(ar);
+ 
+-	queue_work(ar->workqueue, &ar->restart_work);
++	ath10k_core_start_recovery(ar);
+ }
+ 
+ static int ath10k_sdio_probe(struct sdio_func *func,
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 645ed5f63ef8..9ab696f758bd 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1295,7 +1295,7 @@ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+ 	switch (type) {
+ 	case ATH10K_QMI_EVENT_FW_READY_IND:
+ 		if (test_bit(ATH10K_SNOC_FLAG_REGISTERED, &ar_snoc->flags)) {
+-			queue_work(ar->workqueue, &ar->restart_work);
++			ath10k_core_start_recovery(ar);
+ 			break;
+ 		}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index a81a1ab2de19..c6be27ad7543 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1936,7 +1936,7 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
+ 	if (ret == -EAGAIN) {
+ 		ath10k_warn(ar, "wmi command %d timeout, restarting hardware\n",
+ 			    cmd_id);
+-		queue_work(ar->workqueue, &ar->restart_work);
++		ath10k_core_start_recovery(ar);
+ 	}
+ 
+ 	return ret;
+-- 
+2.23.0
+
 
 _______________________________________________
 ath10k mailing list
