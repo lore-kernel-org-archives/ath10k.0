@@ -1,22 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yb1-xb41.google.com ([2607:f8b0:4864:20::b41])
+Received: from mail-vs1-xe43.google.com ([2607:f8b0:4864:20::e43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAASN-0008FP-Ux
- for ath10k@lists.infradead.org; Mon, 24 Aug 2020 11:16:08 +0000
-Received: by mail-yb1-xb41.google.com with SMTP id u6so4948700ybf.1
- for <ath10k@lists.infradead.org>; Mon, 24 Aug 2020 04:16:07 -0700 (PDT)
+ id 1kAMEl-0007mc-Cl
+ for ath10k@lists.infradead.org; Mon, 24 Aug 2020 23:50:52 +0000
+Received: by mail-vs1-xe43.google.com with SMTP id b16so5062290vsl.6
+ for <ath10k@lists.infradead.org>; Mon, 24 Aug 2020 16:50:48 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com.
+ [209.85.217.43])
+ by smtp.gmail.com with ESMTPSA id c193sm1635565vke.11.2020.08.24.16.50.45
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 24 Aug 2020 16:50:45 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id r7so5412681vsq.5
+ for <ath10k@lists.infradead.org>; Mon, 24 Aug 2020 16:50:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <1598243612-4627-1-git-send-email-wgong@codeaurora.org>
- <CABPxzYLjys+cXXRM5J680ZOs+6VrYt=_3rWv-gqkCod=-A1VrA@mail.gmail.com>
- <fd98989a87f2a50655dc95bdcd535c0d@codeaurora.org>
- <CABPxzYKvPwtQwxMfRcv9jT+d92ErhYGR91SKBH86T3Rd2QH9Qg@mail.gmail.com>
- <2d6362ce85956d0f7df2e596b89a7028@codeaurora.org>
-In-Reply-To: <2d6362ce85956d0f7df2e596b89a7028@codeaurora.org>
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Mon, 24 Aug 2020 16:45:54 +0530
-Message-ID: <CABPxzY+Fc22ke1ygRnDs0Uds0a7n=792QN8ALXciDrnx9SQuqQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: add flag to protect napi operation to avoid
- dead loop hang for SDIO
+References: <1593194502-13164-1-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1593194502-13164-1-git-send-email-pillair@codeaurora.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 24 Aug 2020 16:50:33 -0700
+Message-ID: <CAD=FV=WTnULQs5skJiXfp+srsx5e8DeqW3uu2SEDVGoEmP2O1g@mail.gmail.com>
+Subject: Re: [PATCH 0/2] ath10k: Add chain-1 voltage regulator voting
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,57 +32,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Rakesh Pillai <pillair@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On Mon, Aug 24, 2020 at 4:15 PM Wen Gong <wgong@codeaurora.org> wrote:
+Hi,
+
+On Fri, Jun 26, 2020 at 11:02 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
 >
-> On 2020-08-24 18:03, Krishna Chaitanya wrote:
-> > On Mon, Aug 24, 2020 at 3:10 PM Wen Gong <wgong@codeaurora.org> wrote:
-> >>
-> >> On 2020-08-24 16:35, Krishna Chaitanya wrote:
-> >> > On Mon, Aug 24, 2020 at 10:03 AM Wen Gong <wgong@codeaurora.org> wrote:
-> >> >>
-> >> >> It happened "Kernel panic - not syncing: hung_task: blocked tasks"
-> >> >> when
-> >> >> test simulate crash and ifconfig down/rmmod meanwhile.
-> >> >>
-> >> ...
-> >> >>
-> >> >>  #ifdef CONFIG_PM
-> >> > Even though your DUT is SDIO based we should be doing this in general
-> >> > for all, no?
-> >> > core_restart + hif_stop is common to all.
-> >> this patch does not have core_restart.
-> > I was referring to the combination which is causing the issue.
-> >
-> >> I dit not hit the issue for others bus(PCIe,SNOC...), so I can not
-> >> change them with a
-> >> assumption they also have this issue.
-> > But that doesn't make sense, the combination is being hit for others
-> > also.
-> > (they should also endup calling napi_disable twice?) or they are using
-> > some other check to avoid this (doesn't appear so from a quick look at
-> > the
-> > code).
-> Because I only use SDIO, I did not use others BUS, so I did not hit the
-> issue
-> on other BUS.
-I understand, my point was based on the description the issue looks independent
-of the BUS type, so, the fix should also be generic. I understand that
-your testing
-is only focused on SDIO, but we should have a generic fix and probably use
-communities help to get it tested rather than fixing SDIO only.
-> >
-> > So, I am back to my initial guess that the SDIO specific async_rx_work
-> > is
-> > causing/aggravating this issue.
-> the commit log of this patch has explain the reason, it is not caused by
-> the
-> async_rx_work and I have started the "ath10k: cancel rx worker in
-> hif_stop for SDIO"
-> for async_rx_work.
-Sure.
+> Add the support to vote for the chain-1
+> voltage regulator for WCN3990. This is
+> added as an optional property.
+>
+> Rakesh Pillai (2):
+>   dt: bindings: Add new regulator as optional property for WCN3990
+>   ath10k: Add support for chain1 regulator supply voting
+>
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 4 +++-
+>  drivers/net/wireless/ath/ath10k/snoc.c                         | 1 +
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+
+This series is marked as "Awaiting Upstream" in patchwork.  I don't
+see anything blocking it landing now.
+
+-Doug
 
 _______________________________________________
 ath10k mailing list
