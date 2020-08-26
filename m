@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAwkw-0000y8-0Q
- for ath10k@lists.infradead.org; Wed, 26 Aug 2020 14:50:34 +0000
+ id 1kAwo9-0002Zb-59
+ for ath10k@lists.infradead.org; Wed, 26 Aug 2020 14:54:02 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] ath10k: Keep track of which interrupts fired,
- don't poll them
+Subject: Re: [PATCHv2 1/4] ath10k: Add wmi command support for station specific
+ TID config
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
-References: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
-Message-Id: <20200826145011.EDBBDC43395@smtp.codeaurora.org>
-Date: Wed, 26 Aug 2020 14:50:11 +0000 (UTC)
+In-Reply-To: <1593875614-5683-2-git-send-email-tamizhr@codeaurora.org>
+References: <1593875614-5683-2-git-send-email-tamizhr@codeaurora.org>
+Message-Id: <20200826145335.8C49BC43395@smtp.codeaurora.org>
+Date: Wed, 26 Aug 2020 14:53:35 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Douglas Anderson <dianders@chromium.org>
-Cc: saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, pillair@codeaurora.org, netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, kuabhs@google.com
+To: Tamizh Chelvam <tamizhr@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Douglas Anderson <dianders@chromium.org> wrote:
+Tamizh Chelvam <tamizhr@codeaurora.org> wrote:
 
-> If we have a per CE (Copy Engine) IRQ then we have no summary
-> register.  Right now the code generates a summary register by
-> iterating over all copy engines and seeing if they have an interrupt
-> pending.
+> This patch adds WMI interface to configure station specific
+> TID configuration . Host needs to send station's MAC address
+> along with TID number and its configuration to target through
+> WMI_10_4_PER_PEER_PER_TID_CONFIG_CMDID.
 > 
-> This has a problem.  Specifically if _none_ if the Copy Engines have
-> an interrupt pending then they might go into low power mode and
-> reading from their address space will cause a full system crash.  This
-> was seen to happen when two interrupts went off at nearly the same
-> time.  Both were handled by a single call of ath10k_snoc_napi_poll()
-> but, because there were two interrupts handled and thus two calls to
-> napi_schedule() there was still a second call to
-> ath10k_snoc_napi_poll() which ran with no interrupts pending.
+> WMI_SERVICE_PEER_TID_CONFIGS_SUPPORT flag is added to advertise
+> this support.
 > 
-> Instead of iterating over all the copy engines, let's just keep track
-> of the IRQs that fire.  Then we can effectively generate our own
-> summary without ever needing to read the Copy Engines.
+> Tested-on: QCA9984 hw1.0 PCI 10.4-3.9.0.2-00021
 > 
-> Tested-on: WCN3990 SNOC WLAN.HL.3.2.2-00490-QCAHLSWMTPL-1
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
-> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-My main concern of this patch is that there's no info how it works on other
-hardware families. For example, QCA9984 is very different from WCN3990. The
-best would be if someone can provide a Tested-on tags for other hardware (even
-some of them).
+4 patches applied to ath-next branch of ath.git, thanks.
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#hardware_families
+5d582be0bc66 ath10k: Add wmi command support for station specific TID config
+1c0b3fbd6eb4 ath10k: Move rate mask validation function up in the file
+7b2531d93bac ath10k: Add new api to support TID specific configuration
+2ca6a1dd83e1 ath10k: Add new api to support reset TID config
 
 -- 
-https://patchwork.kernel.org/patch/11654625/
+https://patchwork.kernel.org/patch/11643791/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
