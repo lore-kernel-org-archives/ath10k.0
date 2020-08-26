@@ -1,27 +1,37 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vs1-xe43.google.com ([2607:f8b0:4864:20::e43])
+Received: from mail-vk1-f193.google.com ([209.85.221.193])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAwuH-0006B2-Ql
- for ath10k@lists.infradead.org; Wed, 26 Aug 2020 15:00:18 +0000
-Received: by mail-vs1-xe43.google.com with SMTP id b16so1099424vsl.6
- for <ath10k@lists.infradead.org>; Wed, 26 Aug 2020 08:00:08 -0700 (PDT)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com.
- [209.85.221.177])
- by smtp.gmail.com with ESMTPSA id l84sm436067vkl.36.2020.08.26.08.00.05
+ id 1kAwos-0002t8-CK
+ for ath10k@lists.infradead.org; Wed, 26 Aug 2020 14:54:49 +0000
+Received: by mail-vk1-f193.google.com with SMTP id s81so492447vkb.3
+ for <ath10k@lists.infradead.org>; Wed, 26 Aug 2020 07:54:32 -0700 (PDT)
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com.
+ [209.85.217.47])
+ by smtp.gmail.com with ESMTPSA id k12sm413191vke.4.2020.08.26.07.54.29
  for <ath10k@lists.infradead.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 26 Aug 2020 08:00:05 -0700 (PDT)
-Received: by mail-vk1-f177.google.com with SMTP id k1so492479vkb.7
- for <ath10k@lists.infradead.org>; Wed, 26 Aug 2020 08:00:05 -0700 (PDT)
+ Wed, 26 Aug 2020 07:54:29 -0700 (PDT)
+Received: by mail-vs1-f47.google.com with SMTP id o184so1095433vsc.0
+ for <ath10k@lists.infradead.org>; Wed, 26 Aug 2020 07:54:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
- <20200826145011.C4E48C43387@smtp.codeaurora.org>
-In-Reply-To: <20200826145011.C4E48C43387@smtp.codeaurora.org>
+References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
+ <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
+ <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+ <871rlcx8uv.fsf@codeaurora.org>
+ <CALhWmc1PbTKhrkaPn9yfpx3gZHAMuR-bPY=4_o4wQHv_H5D9dA@mail.gmail.com>
+ <CALhWmc3i9Z+KiG1cJNvpSWNsiFhOa5jBw=XfcFz_gKwi_5QibA@mail.gmail.com>
+ <CALhWmc1B0+SONV6_AF+nUzgxZdekPD3sZuhrsmwVQx1Q-cgT_g@mail.gmail.com>
+ <CALhWmc0qF5stKRcikjwbeFmE-32hNCDazgQdqTMidUyt7u-T1Q@mail.gmail.com>
+ <CALhWmc0JtQZE5CfLPb1WnwhE9wCYsjE-53kYWbwtFCs1k7FrCQ@mail.gmail.com>
+ <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
+ <000201d65f51$83d2ac60$8b780520$@codeaurora.org>
+ <877dtlcvs1.fsf@codeaurora.org>
+In-Reply-To: <877dtlcvs1.fsf@codeaurora.org>
 From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 26 Aug 2020 07:59:52 -0700
-Message-ID: <CAD=FV=Uu4dnzeTB+DfecO5uZSJWjq4qbi4=Uwgy-QwPphLApBw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ath10k: Keep track of which interrupts fired,
- don't poll them
+Date: Wed, 26 Aug 2020 07:54:17 -0700
+Message-ID: <CAD=FV=XMPZhS6NHGcxTu5DWbsg5PvL=8Je2JyQF=zX-hY3R0Lw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,58 +45,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Rakesh Pillai <pillair@codeaurora.org>, netdev <netdev@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Abhishek Kumar <kuabhs@google.com>
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Peter Oh <peter.oh@eero.com>, Rakesh Pillai <pillair@codeaurora.org>
 
 Hi,
 
-On Wed, Aug 26, 2020 at 7:51 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+On Wed, Aug 26, 2020 at 7:44 AM Kalle Valo <kvalo@codeaurora.org> wrote:
 >
-> Douglas Anderson <dianders@chromium.org> wrote:
+> (Guys, PLEASE edit your quotes. These long emails my use of patchwork
+> horrible.)
 >
-> > If we have a per CE (Copy Engine) IRQ then we have no summary
-> > register.  Right now the code generates a summary register by
-> > iterating over all copy engines and seeing if they have an interrupt
-> > pending.
-> >
-> > This has a problem.  Specifically if _none_ if the Copy Engines have
-> > an interrupt pending then they might go into low power mode and
-> > reading from their address space will cause a full system crash.  This
-> > was seen to happen when two interrupts went off at nearly the same
-> > time.  Both were handled by a single call of ath10k_snoc_napi_poll()
-> > but, because there were two interrupts handled and thus two calls to
-> > napi_schedule() there was still a second call to
-> > ath10k_snoc_napi_poll() which ran with no interrupts pending.
-> >
-> > Instead of iterating over all the copy engines, let's just keep track
-> > of the IRQs that fire.  Then we can effectively generate our own
-> > summary without ever needing to read the Copy Engines.
-> >
-> > Tested-on: WCN3990 SNOC WLAN.HL.3.2.2-00490-QCAHLSWMTPL-1
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
-> > Reviewed-by: Brian Norris <briannorris@chromium.org>
-> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> "Rakesh Pillai" <pillair@codeaurora.org> writes:
 >
-> My main concern of this patch is that there's no info how it works on other
-> hardware families. For example, QCA9984 is very different from WCN3990. The
-> best would be if someone can provide a Tested-on tags for other hardware (even
-> some of them).
+> >> -----Original Message-----
+> >> From: Peter Oh <peter.oh@eero.com>
+> >> Sent: Tuesday, July 21, 2020 7:03 AM
+> >> To: Kalle Valo <kvalo@codeaurora.org>
+> >> Cc: Brian Norris <briannorris@chromium.org>; Doug Anderson
+> >> <dianders@chromium.org>; linux-wireless <linux-
+> >> wireless@vger.kernel.org>; Rakesh Pillai <pillair@codeaurora.org>; ath10k
+> >> <ath10k@lists.infradead.org>; LKML <linux-kernel@vger.kernel.org>
+> >> Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+> >>
+> >> I'll take my word back.
+> >> It's not this patch problem, but by others.
+> >> I have 2 extra patches before the 3 patches so my system looks like
+> >>
+> >> backports from ath.git 5.6-rc1 + linux kernel 4.4 (similar to OpenWrt)
+> >> On top of the working system, I cherry-picked these 5.
+> >>
+> >> #1.
+> >> ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
+> >> ath.git commit 521fc37be3d879561ca5ab42d64719cf94116af0
+> >> #2.
+> >> ath10k: Fix NULL pointer dereference in AHB device probe
+> >> wireless-drivers.git commit 1cfd3426ef989b83fa6176490a38777057e57f6c
+> >> #3.
+> >> ath10k: Add interrupt summary based CE processing
+> >> https://patchwork.kernel.org/patch/11628299/
+> >
+> > This patch is applicable only for snoc target WCN3990, since there is
+> > a check for per_ce_irq. For PCI targets, per_ce_irq is false, and
+> > hence follows a different path.
+>
+> This information should be in the commit log. But I have a patch in the
+> pending branch which removes per_ce_irq:
+>
+> [v2,2/2] ath10k: Get rid of "per_ce_irq" hw param
+>
+> https://patchwork.kernel.org/patch/11654621/
+>
+> So how will multilple hardware support work then?
 
-I simply don't have access to any other Atheros hardware.  Hopefully
-others on this thread do, though?  ...but, if nothing else, I believe
-code inspection shows that the only places that are affected by the
-changes here are:
+In theory my patches and Rakesh's patches could be squashed.  His
+patch made things marginally better but still didn't really address
+the root cause.  When addressing the root cause, I ended up deleting
+most of the code that he introduced.  I think it'd be fine to just
+apply all 3 patches (Rakesh's plus my 2) and the end result will be
+good, but if desired either Rakesh or I could post a squashed series.
 
-* Wifi devices that use "snoc.c".  The only compatible string listed
-in "snoc.c" is wcn3990.
 
-* Wifi devices that set "per_ce_irq" to true.  The only place in the
-table where this is set to true is wcn3990.
+> In theory I like the patch but there's no information in the patch if
+> this works or breaks other hardware, especially QCA9884 or QCA6174 PCI
+> devices. I really need some kind of assurance that this works with all
+> ath10k devices, not just WCN3990 which you are working on.
+>
+> I have written about this in the wiki:
+>
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#hardware_families
 
-While it is certainly possible that I messed up and somehow affected
-other WiFi devices, the common bits of code in "ce.c" and "ce.h" are
-fairly easy to validate so hopefully they look OK?
+The end result is that it should only affect "wcn3990-wifi", which is
+what this was tested on.  Specifically you can see that "snoc.c" only
+includes one compatible string: "qcom,wcn3990-wifi".  You can also see
+that the only place that has "per_ce_irq" set to true is
+"WCN3990_HW_1_0_DEV_VERSION".
+
+
 
 -Doug
 
