@@ -1,37 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk1-f193.google.com ([209.85.221.193])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAwos-0002t8-CK
- for ath10k@lists.infradead.org; Wed, 26 Aug 2020 14:54:49 +0000
-Received: by mail-vk1-f193.google.com with SMTP id s81so492447vkb.3
- for <ath10k@lists.infradead.org>; Wed, 26 Aug 2020 07:54:32 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com.
- [209.85.217.47])
- by smtp.gmail.com with ESMTPSA id k12sm413191vke.4.2020.08.26.07.54.29
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 26 Aug 2020 07:54:29 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id o184so1095433vsc.0
- for <ath10k@lists.infradead.org>; Wed, 26 Aug 2020 07:54:29 -0700 (PDT)
+ id 1kBBO6-0006TN-15
+ for ath10k@lists.infradead.org; Thu, 27 Aug 2020 06:27:54 +0000
+Date: Thu, 27 Aug 2020 14:26:49 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 2ca6a1dd83e15d4aa99fbcc0046a33249f5239d4
+Message-ID: <5f475229.HIxZzXZi7SNjlKND%lkp@intel.com>
 MIME-Version: 1.0
-References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
- <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
- <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
- <871rlcx8uv.fsf@codeaurora.org>
- <CALhWmc1PbTKhrkaPn9yfpx3gZHAMuR-bPY=4_o4wQHv_H5D9dA@mail.gmail.com>
- <CALhWmc3i9Z+KiG1cJNvpSWNsiFhOa5jBw=XfcFz_gKwi_5QibA@mail.gmail.com>
- <CALhWmc1B0+SONV6_AF+nUzgxZdekPD3sZuhrsmwVQx1Q-cgT_g@mail.gmail.com>
- <CALhWmc0qF5stKRcikjwbeFmE-32hNCDazgQdqTMidUyt7u-T1Q@mail.gmail.com>
- <CALhWmc0JtQZE5CfLPb1WnwhE9wCYsjE-53kYWbwtFCs1k7FrCQ@mail.gmail.com>
- <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
- <000201d65f51$83d2ac60$8b780520$@codeaurora.org>
- <877dtlcvs1.fsf@codeaurora.org>
-In-Reply-To: <877dtlcvs1.fsf@codeaurora.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 26 Aug 2020 07:54:17 -0700
-Message-ID: <CAD=FV=XMPZhS6NHGcxTu5DWbsg5PvL=8Je2JyQF=zX-hY3R0Lw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -45,83 +22,163 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Peter Oh <peter.oh@eero.com>, Rakesh Pillai <pillair@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 2ca6a1dd83e15d4aa99fbcc0046a33249f5239d4  ath10k: Add new api to support reset TID config
 
-On Wed, Aug 26, 2020 at 7:44 AM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> (Guys, PLEASE edit your quotes. These long emails my use of patchwork
-> horrible.)
->
-> "Rakesh Pillai" <pillair@codeaurora.org> writes:
->
-> >> -----Original Message-----
-> >> From: Peter Oh <peter.oh@eero.com>
-> >> Sent: Tuesday, July 21, 2020 7:03 AM
-> >> To: Kalle Valo <kvalo@codeaurora.org>
-> >> Cc: Brian Norris <briannorris@chromium.org>; Doug Anderson
-> >> <dianders@chromium.org>; linux-wireless <linux-
-> >> wireless@vger.kernel.org>; Rakesh Pillai <pillair@codeaurora.org>; ath10k
-> >> <ath10k@lists.infradead.org>; LKML <linux-kernel@vger.kernel.org>
-> >> Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
-> >>
-> >> I'll take my word back.
-> >> It's not this patch problem, but by others.
-> >> I have 2 extra patches before the 3 patches so my system looks like
-> >>
-> >> backports from ath.git 5.6-rc1 + linux kernel 4.4 (similar to OpenWrt)
-> >> On top of the working system, I cherry-picked these 5.
-> >>
-> >> #1.
-> >> ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
-> >> ath.git commit 521fc37be3d879561ca5ab42d64719cf94116af0
-> >> #2.
-> >> ath10k: Fix NULL pointer dereference in AHB device probe
-> >> wireless-drivers.git commit 1cfd3426ef989b83fa6176490a38777057e57f6c
-> >> #3.
-> >> ath10k: Add interrupt summary based CE processing
-> >> https://patchwork.kernel.org/patch/11628299/
-> >
-> > This patch is applicable only for snoc target WCN3990, since there is
-> > a check for per_ce_irq. For PCI targets, per_ce_irq is false, and
-> > hence follows a different path.
->
-> This information should be in the commit log. But I have a patch in the
-> pending branch which removes per_ce_irq:
->
-> [v2,2/2] ath10k: Get rid of "per_ce_irq" hw param
->
-> https://patchwork.kernel.org/patch/11654621/
->
-> So how will multilple hardware support work then?
+elapsed time: 724m
 
-In theory my patches and Rakesh's patches could be squashed.  His
-patch made things marginally better but still didn't really address
-the root cause.  When addressing the root cause, I ended up deleting
-most of the code that he introduced.  I think it'd be fine to just
-apply all 3 patches (Rakesh's plus my 2) and the end result will be
-good, but if desired either Rakesh or I could post a squashed series.
+configs tested: 140
+configs skipped: 8
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> In theory I like the patch but there's no information in the patch if
-> this works or breaks other hardware, especially QCA9884 or QCA6174 PCI
-> devices. I really need some kind of assurance that this works with all
-> ath10k devices, not just WCN3990 which you are working on.
->
-> I have written about this in the wiki:
->
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#hardware_families
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                        workpad_defconfig
+mips                        maltaup_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                        oxnas_v6_defconfig
+sh                        edosk7705_defconfig
+powerpc                     pseries_defconfig
+arm                        mvebu_v7_defconfig
+c6x                        evmc6472_defconfig
+arm                       multi_v4t_defconfig
+arm                          simpad_defconfig
+sh                          lboxre2_defconfig
+m68k                            q40_defconfig
+arm                              zx_defconfig
+mips                        jmr3927_defconfig
+sh                        sh7757lcr_defconfig
+arc                      axs103_smp_defconfig
+sh                        edosk7760_defconfig
+m68k                          atari_defconfig
+sh                        sh7763rdp_defconfig
+c6x                        evmc6474_defconfig
+mips                      malta_kvm_defconfig
+mips                           jazz_defconfig
+arm                        multi_v5_defconfig
+riscv                            allmodconfig
+m68k                         apollo_defconfig
+sh                ecovec24-romimage_defconfig
+sh                        apsh4ad0a_defconfig
+arm                       spear13xx_defconfig
+arm                        trizeps4_defconfig
+arc                                 defconfig
+m68k                       m5249evb_defconfig
+arm                         palmz72_defconfig
+m68k                          multi_defconfig
+ia64                          tiger_defconfig
+mips                         cobalt_defconfig
+sh                           se7722_defconfig
+sh                   sh7770_generic_defconfig
+mips                         tb0226_defconfig
+powerpc                     skiroot_defconfig
+arm                         lpc18xx_defconfig
+sh                          urquell_defconfig
+mips                         bigsur_defconfig
+ia64                            zx1_defconfig
+arm                      integrator_defconfig
+arm                            zeus_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                          ixp4xx_defconfig
+openrisc                    or1ksim_defconfig
+arc                          axs103_defconfig
+powerpc                         wii_defconfig
+m68k                        stmark2_defconfig
+mips                             allyesconfig
+alpha                               defconfig
+sh                                  defconfig
+arc                    vdk_hs38_smp_defconfig
+arc                             nps_defconfig
+arm                  colibri_pxa270_defconfig
+mips                         rt305x_defconfig
+xtensa                generic_kc705_defconfig
+ia64                        generic_defconfig
+x86_64                           alldefconfig
+arm                         lubbock_defconfig
+powerpc                  storcenter_defconfig
+ia64                      gensparse_defconfig
+arm                           viper_defconfig
+mips                malta_kvm_guest_defconfig
+mips                        bcm47xx_defconfig
+sh                            shmin_defconfig
+sh                     sh7710voipgw_defconfig
+mips                  cavium_octeon_defconfig
+nios2                         10m50_defconfig
+arm                            mmp2_defconfig
+m68k                       m5275evb_defconfig
+m68k                           sun3_defconfig
+sh                          sdk7786_defconfig
+mips                       rbtx49xx_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                         orion5x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a002-20200826
+i386                 randconfig-a004-20200826
+i386                 randconfig-a003-20200826
+i386                 randconfig-a005-20200826
+i386                 randconfig-a006-20200826
+i386                 randconfig-a001-20200826
+x86_64               randconfig-a015-20200826
+x86_64               randconfig-a016-20200826
+x86_64               randconfig-a012-20200826
+x86_64               randconfig-a014-20200826
+x86_64               randconfig-a011-20200826
+x86_64               randconfig-a013-20200826
+i386                 randconfig-a013-20200826
+i386                 randconfig-a012-20200826
+i386                 randconfig-a011-20200826
+i386                 randconfig-a016-20200826
+i386                 randconfig-a015-20200826
+i386                 randconfig-a014-20200826
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-The end result is that it should only affect "wcn3990-wifi", which is
-what this was tested on.  Specifically you can see that "snoc.c" only
-includes one compatible string: "qcom,wcn3990-wifi".  You can also see
-that the only place that has "per_ce_irq" set to true is
-"WCN3990_HW_1_0_DEV_VERSION".
-
-
-
--Doug
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
