@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBBO6-0006TN-15
+ id 1kBBO4-0006TR-BN
  for ath10k@lists.infradead.org; Thu, 27 Aug 2020 06:27:54 +0000
-Date: Thu, 27 Aug 2020 14:26:49 +0800
+Date: Thu, 27 Aug 2020 14:26:57 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 2ca6a1dd83e15d4aa99fbcc0046a33249f5239d4
-Message-ID: <5f475229.HIxZzXZi7SNjlKND%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 9a22e6ade97a6e10ee1973865420da0e3263205a
+Message-ID: <5f475231.MFyXhAgI9UkmpHxM%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 2ca6a1dd83e15d4aa99fbcc0046a33249f5239d4  ath10k: Add new api to support reset TID config
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 9a22e6ade97a6e10ee1973865420da0e3263205a  Merge branch 'pending' into master-pending
 
-elapsed time: 724m
+elapsed time: 723m
 
-configs tested: 140
-configs skipped: 8
+configs tested: 131
+configs skipped: 7
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -55,11 +55,6 @@ m68k                            q40_defconfig
 arm                              zx_defconfig
 mips                        jmr3927_defconfig
 sh                        sh7757lcr_defconfig
-arc                      axs103_smp_defconfig
-sh                        edosk7760_defconfig
-m68k                          atari_defconfig
-sh                        sh7763rdp_defconfig
-c6x                        evmc6474_defconfig
 mips                      malta_kvm_defconfig
 mips                           jazz_defconfig
 arm                        multi_v5_defconfig
@@ -89,18 +84,20 @@ powerpc                 mpc8272_ads_defconfig
 arm                          ixp4xx_defconfig
 openrisc                    or1ksim_defconfig
 arc                          axs103_defconfig
-powerpc                         wii_defconfig
-m68k                        stmark2_defconfig
+m68k                             allmodconfig
+arm                            qcom_defconfig
+sh                          kfr2r09_defconfig
+mips                          rb532_defconfig
+arm                            dove_defconfig
+mips                          ath25_defconfig
 mips                             allyesconfig
+powerpc                         wii_defconfig
 alpha                               defconfig
+m68k                        stmark2_defconfig
 sh                                  defconfig
 arc                    vdk_hs38_smp_defconfig
 arc                             nps_defconfig
 arm                  colibri_pxa270_defconfig
-mips                         rt305x_defconfig
-xtensa                generic_kc705_defconfig
-ia64                        generic_defconfig
-x86_64                           alldefconfig
 arm                         lubbock_defconfig
 powerpc                  storcenter_defconfig
 ia64                      gensparse_defconfig
@@ -109,11 +106,6 @@ mips                malta_kvm_guest_defconfig
 mips                        bcm47xx_defconfig
 sh                            shmin_defconfig
 sh                     sh7710voipgw_defconfig
-mips                  cavium_octeon_defconfig
-nios2                         10m50_defconfig
-arm                            mmp2_defconfig
-m68k                       m5275evb_defconfig
-m68k                           sun3_defconfig
 sh                          sdk7786_defconfig
 mips                       rbtx49xx_defconfig
 sh                  sh7785lcr_32bit_defconfig
@@ -121,7 +113,6 @@ arm                         orion5x_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
-m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
