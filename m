@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr60112.outbound.protection.outlook.com
- ([40.107.6.112] helo=EUR04-DB3-obe.outbound.protection.outlook.com)
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBF6j-0006SO-OI
- for ath10k@lists.infradead.org; Thu, 27 Aug 2020 10:26:16 +0000
-Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
- domain"
-References: <20200730124923.271429-1-alsi@bang-olufsen.dk>
- <c21bfe94-2de8-8178-7762-5a9b068a0e4a@bang-olufsen.dk>
- <87r1rsbdnx.fsf@codeaurora.org>
-From: =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>
-Message-ID: <3a7cfd9b-200d-ac98-9e48-9cbaf50b9c47@bang-olufsen.dk>
-Date: Thu, 27 Aug 2020 12:25:49 +0200
-In-Reply-To: <87r1rsbdnx.fsf@codeaurora.org>
-Content-Language: en-US
+ id 1kBQrY-0003Sp-WA
+ for ath10k@lists.infradead.org; Thu, 27 Aug 2020 22:59:21 +0000
+Date: Fri, 28 Aug 2020 06:59:04 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 9e67b1e3bc176b1d6c7cf17f924ff30369ac6a6a
+Message-ID: <5f483ab8.pQx9QxkrupN+m61E%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,63 +16,137 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: "Luis R . Rodriguez" <mcgrof@kernel.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-T24gOC8yNy8yMCAxMjoxMiBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPiBBbHZpbiDFoGlwcmFnYSA8
-YWxzaUBiYW5nLW9sdWZzZW4uZGs+IHdyaXRlczoKPiAKPj4gSGkgS2FsbGUsCj4+Cj4+IE9uIDcv
-MzAvMjAgMjo0OSBQTSwgQWx2aW4gxaBpcHJhZ2Egd3JvdGU6Cj4+PiBUaGlzIHJldmVydHMgY29t
-bWl0IDJkYzAxNjU5OWNmYTk2NzJhMTQ3NTI4Y2EyNmQ3MGMzNjU0YTU0MjMuCj4+Pgo+Pj4gUGVy
-IEF0aGVyb3MgZG9jdW1lbnRhdGlvbiB0byBtYW51ZmFjdHVyZXJzLCB0aGUgRUVQUk9NIHJlZ3Vs
-YXRvcnkgZG9tYWluCj4+PiBjb2RlIDB4MCBtdXN0IGFsd2F5cyBtYXAgdG8gIlVTIi4gSW4gcGFy
-dGljdWxhciwgaXQgc2hvdWxkIG5vdCBtYXAgdG8gYQo+Pj4gY3VzdG9tIHdvcmxkIHJlZ3VsYXRv
-cnkgZG9tYWluLiBGb3IgcmVmZXJlbmNlcywgc2VlIFsxXSBhbmQgWzJdIGJlbG93Lgo+Pj4gRnVy
-dGhlcm1vcmUsIF9fYXRoX3JlZ2RfaW5pdCgpIGhhcyBhIHNwZWNpZmljIGNvbmRpdGlvbiB0byBz
-ZXQgdGhlCj4+PiBjb3VudHJ5IGNvZGUgdG8gIlVTIiBpbiB0aGlzIGNhc2UsIHdoaWNoIGVtaXRz
-IHRoZSBmb2xsb3dpbmcgbG9nCj4+PiBtZXNzYWdlOgo+Pj4KPj4+IFsgICAgNy44MTQzMDddIGF0
-aDogRUVQUk9NIGluZGljYXRlcyBkZWZhdWx0IGNvdW50cnkgY29kZSBzaG91bGQgYmUgdXNlZAo+
-Pj4KPj4+IFRoZSBwYXRjaCBiZWluZyByZXZlcnRlZCBtaXN0YWtlbmx5IG1hcHMgMHgwIHRvIHRo
-ZSBjdXN0b20gd29ybGQKPj4+IHJlZ3VsYXRvcnkgZG9tYWluIDB4NjQgLSB0aGUgbW9zdCByZXN0
-cmljdGl2ZSBvZiB0aGUgd29ybGQgcmVndWxhdG9yeQo+Pj4gZG9tYWlucy4gVGhlIHByZW1pc2Ug
-b2YgdGhlIHBhdGNoIGlzIHRoYXQgaW4gdGhlIGNhc2Ugb2YgRUVQUk9NCj4+PiByZWd1bGF0b3J5
-IGRvbWFpbiBjb2RlIDB4MCwgYXRoX2lzX3dvcmxkX3JlZ2QoKSBzaG91bGQgcmV0dXJuIHRydWUu
-IEJ1dCwKPj4+IGFzIHN0YXRlZCBhYm92ZSwgMHgwIHNob3VsZCBub3QgbWFwIHRvIGEgd29ybGQg
-cmVndWxhdG9yeSBkb21haW4sIGFuZCBzbwo+Pj4gdGhlIGZ1bmN0aW9uIHNob3VsZCByZXR1cm4g
-ZmFsc2UuIFRoZSBvcmlnaW5hbCBiZWhhdmlvdXIsIHdoZXJlYnkKPj4+IE5MODAyMTFfUkVHRE9N
-X1NFVF9CWV9DT1VOVFJZX0lFIGlzIGlnbm9yZWQsIHdhcyBjb3JyZWN0IGFjY29yZGluZyB0bwo+
-Pj4gdGhlIG1hbnVmYWN0dXJlcidzIGludGVudCBhbmQgc2hvdWxkIG5vdCBoYXZlIGJlZW4gY2hh
-bmdlZC4KPj4+Cj4+PiBbMV0gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNl
-cnMvZHJpdmVycy9hdGgjdGhlXzB4MF9yZWd1bGF0b3J5X2RvbWFpbgo+Pj4gWzJdIGh0dHA6Ly9h
-cnRpY2xlLmdtYW5lLm9yZy9nbWFuZS5saW51eC5rZXJuZWwud2lyZWxlc3MuZ2VuZXJhbC8zODQx
-MAo+Pj4KPj4+IEZpeGVzOiAyZGMwMTY1OTljZmEgKCJhdGg6IGFkZCBzdXBwb3J0IGZvciBzcGVj
-aWFsIDB4MCByZWd1bGF0b3J5IGRvbWFpbiIpCj4+PiBDYzogV2VuIEdvbmcgPHdnb25nQGNvZGVh
-dXJvcmEub3JnPgo+Pj4gQ2M6IEx1aXMgUi4gUm9kcmlndWV6IDxtY2dyb2ZAa2VybmVsLm9yZz4K
-Pj4+IENjOiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmcKPj4+IFRlc3RlZC1vbjogUUNB
-OTg4MCBodzIuMCBQQ0kgMTAuMi40LTEuMC0wMDA0Nwo+Pj4gU2lnbmVkLW9mZi1ieTogQWx2aW4g
-xaBpcHJhZ2EgPGFsc2lAYmFuZy1vbHVmc2VuLmRrPgo+Pj4gLS0tCj4+PiAgICBkcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvcmVnZC5jIHwgMTAgKysrKystLS0tLQo+Pj4gICAgMSBmaWxlIGNoYW5n
-ZWQsIDUgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPj4KPj4gRG8geW91IGhhdmUgYW55
-IGZlZWRiYWNrIG9uIHRoaXMgcGF0Y2g/IE5vIHByb2JsZW0gaWYgeW91IHNpbXBseSBoYXZlCj4+
-IG5vdCBsb29rZWQgeWV0IC0gSSBhbSBub3Qgc3VyZSB3aGF0IGtpbmQgb2YgbGVhZCB0aW1lIHRv
-IGV4cGVjdCBvbiB0aGUKPj4gbGlzdC4gQnV0IHdpdGhvdXQgdGhlIHBhdGNoLCBhIChjb3JyZWN0
-bHkpIHByb2dyYW1tZWQgMHgwIChVUykgY2FyZAo+PiB3aWxsIG5vdCBiZSBhYmxlIHRvIG9wZXJh
-dGUgb24gNUdIeiBjaGFubmVscyB3aXRob3V0IHNvbWUgaGFja2luZy4gSQo+PiBoYXZlIGNpdGVk
-IHNvbWUgcmVmZXJlbmNlcyB0byBqdXN0aWZ5IHJldmVydGluZyB0aGlzIHBhdGNoLCBzbyBJIHdv
-dWxkCj4+IGxpa2UgdG8ga25vdyBpZiBhbnl0aGluZyBmdXJ0aGVyIHNob3VsZCBiZSBkb25lIHRv
-IGdldCB0aGlzIGludG8KPj4gZnV0dXJlIGtlcm5lbHM/Cj4+Cj4+IEkgd29uZGVyIGFsc28gaWYg
-V2VuIEdvbmcgY291bGQgY29tbWVudCwgd2hvc2UgcGF0Y2ggSSBhbSByZXZlcnRpbmcgaW4KPj4g
-dGhlIGZpcnN0IHBsYWNlLiBNYXliZSB0aGVyZSBpcyBzb21ldGhpbmcgSSBhbSBtaXNzaW5nPwo+
-IAo+IEknbSB3b3JraW5nIG9uIGl0LCBJIGp1c3QgbmVlZCB0byBjaGVjayBzb21ldGhpbmcgaW50
-ZXJuYWxseSBmaXJzdC4KPiAKPiBCVFcsIEJyaWFuIHN1Ym1pdHRlZCBhbiBpZGVudGljYWwgcmV2
-ZXJ0IGZpcnN0IHNvIEknbSBwbGFubmluZyB0byB1c2UKPiBoaXMgcGF0Y2ggaW5zdGVhZCBvZiB5
-b3VyczoKPiAKPiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExNTczNTg1LwoK
-SGkgS2FsbGUsCgpUaGFuayB5b3UgZm9yIHRoZSB1cGRhdGUsIGdsYWQgdG8gaGVhciBpdC4gU29y
-cnkgdGhhdCBJIGRpZCBub3Qgbm90aWNlIApCcmlhbidzIHBhdGNoIC0gSSBndWVzcyB5b3UgY2Fu
-IGNsb3NlIG15IG9uZSBvbiBwYXRjaHdvcmsgdGhlbi4KCktpbmQgcmVnYXJkcywKQWx2aW4KCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 9e67b1e3bc176b1d6c7cf17f924ff30369ac6a6a  Add localversion-wireless-testing-ath
+
+elapsed time: 725m
+
+configs tested: 107
+configs skipped: 10
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                    nommu_k210_defconfig
+mips                     decstation_defconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                              ul2_defconfig
+sh                ecovec24-romimage_defconfig
+arm                      pxa255-idp_defconfig
+mips                           ip32_defconfig
+sh                           se7721_defconfig
+powerpc                         ps3_defconfig
+arm                             rpc_defconfig
+sh                            shmin_defconfig
+arm                         s3c2410_defconfig
+m68k                        m5272c3_defconfig
+sh                            migor_defconfig
+arm                        multi_v7_defconfig
+mips                         mpc30x_defconfig
+powerpc                      ppc40x_defconfig
+parisc                           allyesconfig
+powerpc                     mpc5200_defconfig
+mips                           ip22_defconfig
+sh                          rsk7269_defconfig
+sh                         apsh4a3a_defconfig
+microblaze                      mmu_defconfig
+microblaze                          defconfig
+arc                           tb10x_defconfig
+sparc64                          alldefconfig
+sh                        sh7757lcr_defconfig
+mips                      maltaaprp_defconfig
+nios2                         3c120_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                          iop32x_defconfig
+arm                       versatile_defconfig
+arm                         at91_dt_defconfig
+sh                          kfr2r09_defconfig
+arm                          pcm027_defconfig
+powerpc                      ppc6xx_defconfig
+nds32                            alldefconfig
+c6x                         dsk6455_defconfig
+arm                         lpc32xx_defconfig
+riscv                               defconfig
+powerpc                      tqm8xx_defconfig
+arm                       aspeed_g4_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20200827
+x86_64               randconfig-a002-20200827
+x86_64               randconfig-a001-20200827
+x86_64               randconfig-a005-20200827
+x86_64               randconfig-a006-20200827
+x86_64               randconfig-a004-20200827
+i386                 randconfig-a002-20200827
+i386                 randconfig-a004-20200827
+i386                 randconfig-a003-20200827
+i386                 randconfig-a005-20200827
+i386                 randconfig-a006-20200827
+i386                 randconfig-a001-20200827
+i386                 randconfig-a013-20200827
+i386                 randconfig-a012-20200827
+i386                 randconfig-a011-20200827
+i386                 randconfig-a016-20200827
+i386                 randconfig-a015-20200827
+i386                 randconfig-a014-20200827
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
