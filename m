@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mail29.static.mailgun.info ([104.130.122.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBUhi-00044R-Rk
- for ath10k@lists.infradead.org; Fri, 28 Aug 2020 03:05:27 +0000
-Date: Fri, 28 Aug 2020 11:04:49 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 392dc88047718a20c355102df22c3946f4b5d9e3
-Message-ID: <5f487451.ysNshP6Ip4EddKxw%lkp@intel.com>
+ id 1kBZCm-0000L0-Dj
+ for ath10k@lists.infradead.org; Fri, 28 Aug 2020 07:53:52 +0000
 MIME-Version: 1.0
+Date: Fri, 28 Aug 2020 15:53:06 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [for-next][PATCH 2/2] tracing: Use temp buffer when filtering
+ events
+In-Reply-To: <20160504135241.308454993@goodmis.org>
+References: <20160504135202.422290539@goodmis.org>
+ <20160504135241.308454993@goodmis.org>
+Message-ID: <b504b3d7e989cae108669a0cd3072454@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,127 +20,156 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel-owner@vger.kernel.org, tientzu@google.com, abhishekpandit@google.com, drinkcat@google.com, Alexei Starovoitov <ast@kernel.org>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, ath11k@lists.infradead.org, briannorris@google.com, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 392dc88047718a20c355102df22c3946f4b5d9e3  Merge branch 'pending' into master-pending
+On 2016-05-04 21:52, Steven Rostedt wrote:
+> From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+> 
+> Filtering of events requires the data to be written to the ring buffer
+> before it can be decided to filter or not. This is because the 
+> parameters of
+> the filter are based on the result that is written to the ring buffer 
+> and
+> not on the parameters that are passed into the trace functions.
+> 
+> The ftrace ring buffer is optimized for writing into the ring buffer 
+> and
+> committing. The discard procedure used when filtering decides the event
+> should be discarded is much more heavy weight. Thus, using a temporary
+> filter when filtering events can speed things up drastically.
+> 
+> Without a temp buffer we have:
+> 
+>  # trace-cmd start -p nop
+>  # perf stat -r 10 hackbench 50
+>        0.790706626 seconds time elapsed ( +-  0.71% )
+> 
+>  # trace-cmd start -e all
+>  # perf stat -r 10 hackbench 50
+>        1.566904059 seconds time elapsed ( +-  0.27% )
+> 
+>  # trace-cmd start -e all -f 'common_preempt_count==20'
+>  # perf stat -r 10 hackbench 50
+>        1.690598511 seconds time elapsed ( +-  0.19% )
+> 
+>  # trace-cmd start -e all -f 'common_preempt_count!=20'
+>  # perf stat -r 10 hackbench 50
+>        1.707486364 seconds time elapsed ( +-  0.30% )
+> 
+> The first run above is without any tracing, just to get a based figure.
+> hackbench takes ~0.79 seconds to run on the system.
+> 
+> The second run enables tracing all events where nothing is filtered. 
+> This
+> increases the time by 100% and hackbench takes 1.57 seconds to run.
+> 
+> The third run filters all events where the preempt count will equal 
+> "20"
+> (this should never happen) thus all events are discarded. This takes 
+> 1.69
+> seconds to run. This is 10% slower than just committing the events!
+> 
+> The last run enables all events and filters where the filter will 
+> commit all
+> events, and this takes 1.70 seconds to run. The filtering overhead is
+> approximately 10%. Thus, the discard and commit of an event from the 
+> ring
+> buffer may be about the same time.
+> 
+> With this patch, the numbers change:
+> 
+>  # trace-cmd start -p nop
+>  # perf stat -r 10 hackbench 50
+>        0.778233033 seconds time elapsed ( +-  0.38% )
+> 
+>  # trace-cmd start -e all
+>  # perf stat -r 10 hackbench 50
+>        1.582102692 seconds time elapsed ( +-  0.28% )
+> 
+>  # trace-cmd start -e all -f 'common_preempt_count==20'
+>  # perf stat -r 10 hackbench 50
+>        1.309230710 seconds time elapsed ( +-  0.22% )
+> 
+>  # trace-cmd start -e all -f 'common_preempt_count!=20'
+>  # perf stat -r 10 hackbench 50
+>        1.786001924 seconds time elapsed ( +-  0.20% )
+> 
+> The first run is again the base with no tracing.
+> 
+> The second run is all tracing with no filtering. It is a little slower, 
+> but
+> that may be well within the noise.
+> 
+> The third run shows that discarding all events only took 1.3 seconds. 
+> This
+> is a speed up of 23%! The discard is much faster than even the commit.
+> 
+> The one downside is shown in the last run. Events that are not 
+> discarded by
+> the filter will take longer to add, this is due to the extra copy of 
+> the
+> event.
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace.c               | 154 
+> +++++++++++++++++++++++++++++++++++--
+>  kernel/trace/trace.h               |  19 ++++-
+>  kernel/trace/trace_events.c        |  10 +++
+>  kernel/trace/trace_events_filter.c |  10 +++
+>  4 files changed, 185 insertions(+), 8 deletions(-)
+> 
+...
+> @@ -1695,8 +1820,23 @@ trace_event_buffer_lock_reserve(struct
+> ring_buffer **current_rb,
+>  			  unsigned long flags, int pc)
+>  {
+>  	struct ring_buffer_event *entry;
+> +	int val;
+> 
+>  	*current_rb = trace_file->tr->trace_buffer.buffer;
+> +
+> +	if ((trace_file->flags &
+> +	     (EVENT_FILE_FL_SOFT_DISABLED | EVENT_FILE_FL_FILTERED)) &&
+> +	    (entry = this_cpu_read(trace_buffered_event))) {
+> +		/* Try to use the per cpu buffer first */
+> +		val = this_cpu_inc_return(trace_buffered_event_cnt);
+> +		if (val == 1) {
+> +			trace_event_setup(entry, type, flags, pc);
+> +			entry->array[0] = len;
+> +			return entry;
+> +		}
+> +		this_cpu_dec(trace_buffered_event_cnt);
+> +	}
+> +
+>  	entry = trace_buffer_lock_reserve(*current_rb,
+>  					 type, len, flags, pc);
+>  	/*
+this patch commit id is : 0fc1b09ff1ff404ddf753f5ffa5cd0adc8fdcdc9 which 
+has upstream.
 
-elapsed time: 723m
+how much size is the per cpu buffer?
+seems it is initilized in trace_buffered_event_enable,
+it is only 1 page size as below:
+void trace_buffered_event_enable(void)
+{
+...
+	for_each_tracing_cpu(cpu) {
+		page = alloc_pages_node(cpu_to_node(cpu),
+					GFP_KERNEL | __GFP_NORETRY, 0);
+If the size of buffer to trace is more than 1 page, such as 46680, then 
+it trigger kernel crash/panic in my case while run trace-cmd.
+After debugging, the trace_file->flags in 
+trace_event_buffer_lock_reserve is 0x40b while run trace-cmd, and it is 
+0x403 while collecting ftrace log.
 
-configs tested: 99
-configs skipped: 10
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                ecovec24-romimage_defconfig
-arm                      pxa255-idp_defconfig
-mips                           ip32_defconfig
-sh                           se7721_defconfig
-sparc                               defconfig
-mips                         bigsur_defconfig
-sh                   sh7770_generic_defconfig
-arm                          iop32x_defconfig
-c6x                              alldefconfig
-arm                          pxa168_defconfig
-sh                            shmin_defconfig
-arm                         s3c2410_defconfig
-m68k                        m5272c3_defconfig
-sh                            migor_defconfig
-arm                        multi_v7_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                      pmac32_defconfig
-sparc64                          alldefconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                        sh7763rdp_defconfig
-arm                         orion5x_defconfig
-mips                         mpc30x_defconfig
-powerpc                      ppc40x_defconfig
-parisc                           allyesconfig
-arm                    vt8500_v6_v7_defconfig
-arc                              allyesconfig
-sh                             sh03_defconfig
-arm                         mv78xx0_defconfig
-arm                         at91_dt_defconfig
-sh                          kfr2r09_defconfig
-arm                          pcm027_defconfig
-powerpc                      ppc6xx_defconfig
-nds32                            alldefconfig
-c6x                         dsk6455_defconfig
-arm                         lpc32xx_defconfig
-riscv                               defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-x86_64               randconfig-a003-20200827
-x86_64               randconfig-a002-20200827
-x86_64               randconfig-a001-20200827
-x86_64               randconfig-a005-20200827
-x86_64               randconfig-a006-20200827
-x86_64               randconfig-a004-20200827
-i386                 randconfig-a002-20200827
-i386                 randconfig-a004-20200827
-i386                 randconfig-a003-20200827
-i386                 randconfig-a005-20200827
-i386                 randconfig-a006-20200827
-i386                 randconfig-a001-20200827
-i386                 randconfig-a013-20200827
-i386                 randconfig-a012-20200827
-i386                 randconfig-a011-20200827
-i386                 randconfig-a016-20200827
-i386                 randconfig-a015-20200827
-i386                 randconfig-a014-20200827
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Is it have any operation to disable this patch dynamically?
 
 _______________________________________________
 ath10k mailing list
