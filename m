@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBZCm-0000L0-Dj
- for ath10k@lists.infradead.org; Fri, 28 Aug 2020 07:53:52 +0000
-MIME-Version: 1.0
-Date: Fri, 28 Aug 2020 15:53:06 +0800
+ id 1kBdOi-0002hA-7J
+ for ath10k@lists.infradead.org; Fri, 28 Aug 2020 12:22:29 +0000
 From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [for-next][PATCH 2/2] tracing: Use temp buffer when filtering
- events
-In-Reply-To: <20160504135241.308454993@goodmis.org>
-References: <20160504135202.422290539@goodmis.org>
- <20160504135241.308454993@goodmis.org>
-Message-ID: <b504b3d7e989cae108669a0cd3072454@codeaurora.org>
+Subject: [PATCH v3] ath10k: add flag to protect napi operation to avoid dead
+ loop hang
+Date: Fri, 28 Aug 2020 20:22:28 +0800
+Message-Id: <1598617348-2325-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,156 +16,376 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel-owner@vger.kernel.org, tientzu@google.com, abhishekpandit@google.com, drinkcat@google.com, Alexei Starovoitov <ast@kernel.org>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, ath11k@lists.infradead.org, briannorris@google.com, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-On 2016-05-04 21:52, Steven Rostedt wrote:
-> From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
-> 
-> Filtering of events requires the data to be written to the ring buffer
-> before it can be decided to filter or not. This is because the 
-> parameters of
-> the filter are based on the result that is written to the ring buffer 
-> and
-> not on the parameters that are passed into the trace functions.
-> 
-> The ftrace ring buffer is optimized for writing into the ring buffer 
-> and
-> committing. The discard procedure used when filtering decides the event
-> should be discarded is much more heavy weight. Thus, using a temporary
-> filter when filtering events can speed things up drastically.
-> 
-> Without a temp buffer we have:
-> 
->  # trace-cmd start -p nop
->  # perf stat -r 10 hackbench 50
->        0.790706626 seconds time elapsed ( +-  0.71% )
-> 
->  # trace-cmd start -e all
->  # perf stat -r 10 hackbench 50
->        1.566904059 seconds time elapsed ( +-  0.27% )
-> 
->  # trace-cmd start -e all -f 'common_preempt_count==20'
->  # perf stat -r 10 hackbench 50
->        1.690598511 seconds time elapsed ( +-  0.19% )
-> 
->  # trace-cmd start -e all -f 'common_preempt_count!=20'
->  # perf stat -r 10 hackbench 50
->        1.707486364 seconds time elapsed ( +-  0.30% )
-> 
-> The first run above is without any tracing, just to get a based figure.
-> hackbench takes ~0.79 seconds to run on the system.
-> 
-> The second run enables tracing all events where nothing is filtered. 
-> This
-> increases the time by 100% and hackbench takes 1.57 seconds to run.
-> 
-> The third run filters all events where the preempt count will equal 
-> "20"
-> (this should never happen) thus all events are discarded. This takes 
-> 1.69
-> seconds to run. This is 10% slower than just committing the events!
-> 
-> The last run enables all events and filters where the filter will 
-> commit all
-> events, and this takes 1.70 seconds to run. The filtering overhead is
-> approximately 10%. Thus, the discard and commit of an event from the 
-> ring
-> buffer may be about the same time.
-> 
-> With this patch, the numbers change:
-> 
->  # trace-cmd start -p nop
->  # perf stat -r 10 hackbench 50
->        0.778233033 seconds time elapsed ( +-  0.38% )
-> 
->  # trace-cmd start -e all
->  # perf stat -r 10 hackbench 50
->        1.582102692 seconds time elapsed ( +-  0.28% )
-> 
->  # trace-cmd start -e all -f 'common_preempt_count==20'
->  # perf stat -r 10 hackbench 50
->        1.309230710 seconds time elapsed ( +-  0.22% )
-> 
->  # trace-cmd start -e all -f 'common_preempt_count!=20'
->  # perf stat -r 10 hackbench 50
->        1.786001924 seconds time elapsed ( +-  0.20% )
-> 
-> The first run is again the base with no tracing.
-> 
-> The second run is all tracing with no filtering. It is a little slower, 
-> but
-> that may be well within the noise.
-> 
-> The third run shows that discarding all events only took 1.3 seconds. 
-> This
-> is a speed up of 23%! The discard is much faster than even the commit.
-> 
-> The one downside is shown in the last run. Events that are not 
-> discarded by
-> the filter will take longer to add, this is due to the extra copy of 
-> the
-> event.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace.c               | 154 
-> +++++++++++++++++++++++++++++++++++--
->  kernel/trace/trace.h               |  19 ++++-
->  kernel/trace/trace_events.c        |  10 +++
->  kernel/trace/trace_events_filter.c |  10 +++
->  4 files changed, 185 insertions(+), 8 deletions(-)
-> 
-...
-> @@ -1695,8 +1820,23 @@ trace_event_buffer_lock_reserve(struct
-> ring_buffer **current_rb,
->  			  unsigned long flags, int pc)
->  {
->  	struct ring_buffer_event *entry;
-> +	int val;
-> 
->  	*current_rb = trace_file->tr->trace_buffer.buffer;
-> +
-> +	if ((trace_file->flags &
-> +	     (EVENT_FILE_FL_SOFT_DISABLED | EVENT_FILE_FL_FILTERED)) &&
-> +	    (entry = this_cpu_read(trace_buffered_event))) {
-> +		/* Try to use the per cpu buffer first */
-> +		val = this_cpu_inc_return(trace_buffered_event_cnt);
-> +		if (val == 1) {
-> +			trace_event_setup(entry, type, flags, pc);
-> +			entry->array[0] = len;
-> +			return entry;
-> +		}
-> +		this_cpu_dec(trace_buffered_event_cnt);
-> +	}
-> +
->  	entry = trace_buffer_lock_reserve(*current_rb,
->  					 type, len, flags, pc);
->  	/*
-this patch commit id is : 0fc1b09ff1ff404ddf753f5ffa5cd0adc8fdcdc9 which 
-has upstream.
+It happened "Kernel panic - not syncing: hung_task: blocked tasks" when
+test simulate crash and ifconfig down/rmmod meanwhile.
 
-how much size is the per cpu buffer?
-seems it is initilized in trace_buffered_event_enable,
-it is only 1 page size as below:
-void trace_buffered_event_enable(void)
+Test steps:
+
+1.Test commands, either can reproduce the hang for PCIe, SDIO and SNOC.
+echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash;sleep 0.05;ifconfig wlan0 down
+echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash;rmmod ath10k_sdio
+echo hw-restart > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash;rmmod ath10k_pci
+
+2. dmesg:
+[ 5622.548630] ath10k_sdio mmc1:0001:1: simulating soft firmware crash
+[ 5622.655995] ieee80211 phy0: Hardware restart was requested
+[ 5776.355164] INFO: task shill:1572 blocked for more than 122 seconds.
+[ 5776.355687] INFO: task kworker/1:2:24437 blocked for more than 122 seconds.
+[ 5776.359812] Kernel panic - not syncing: hung_task: blocked tasks
+[ 5776.359836] CPU: 1 PID: 55 Comm: khungtaskd Tainted: G        W         4.19.86 #137
+[ 5776.359846] Hardware name: MediaTek krane sku176 board (DT)
+[ 5776.359855] Call trace:
+[ 5776.359868]  dump_backtrace+0x0/0x170
+[ 5776.359881]  show_stack+0x20/0x2c
+[ 5776.359896]  dump_stack+0xd4/0x10c
+[ 5776.359916]  panic+0x12c/0x29c
+[ 5776.359937]  hung_task_panic+0x0/0x50
+[ 5776.359953]  kthread+0x120/0x130
+[ 5776.359965]  ret_from_fork+0x10/0x18
+[ 5776.359986] SMP: stopping secondary CPUs
+[ 5776.360012] Kernel Offset: 0x141ea00000 from 0xffffff8008000000
+[ 5776.360026] CPU features: 0x0,2188200c
+[ 5776.360035] Memory Limit: none
+
+command "ifconfig wlan0 down" or "rmmod ath10k_sdio" will be blocked
+callstack of ifconfig:
+[<0>] __switch_to+0x120/0x13c
+[<0>] msleep+0x28/0x38
+[<0>] ath10k_sdio_hif_stop+0x24c/0x294 [ath10k_sdio]
+[<0>] ath10k_core_stop+0x50/0x78 [ath10k_core]
+[<0>] ath10k_halt+0x120/0x178 [ath10k_core]
+[<0>] ath10k_stop+0x4c/0x8c [ath10k_core]
+[<0>] drv_stop+0xe0/0x1e4 [mac80211]
+[<0>] ieee80211_stop_device+0x48/0x54 [mac80211]
+[<0>] ieee80211_do_stop+0x678/0x6f8 [mac80211]
+[<0>] ieee80211_stop+0x20/0x30 [mac80211]
+[<0>] __dev_close_many+0xb8/0x11c
+[<0>] __dev_change_flags+0xe0/0x1d0
+[<0>] dev_change_flags+0x30/0x6c
+[<0>] devinet_ioctl+0x370/0x564
+[<0>] inet_ioctl+0xdc/0x304
+[<0>] sock_do_ioctl+0x50/0x288
+[<0>] compat_sock_ioctl+0x1b4/0x1aac
+[<0>] __se_compat_sys_ioctl+0x100/0x26fc
+[<0>] __arm64_compat_sys_ioctl+0x20/0x2c
+[<0>] el0_svc_common+0xa4/0x154
+[<0>] el0_svc_compat_handler+0x2c/0x38
+[<0>] el0_svc_compat+0x8/0x18
+[<0>] 0xffffffffffffffff
+
+callstack of rmmod:
+[<0>] __switch_to+0x120/0x13c
+[<0>] msleep+0x28/0x38
+[<0>] ath10k_sdio_hif_stop+0x294/0x31c [ath10k_sdio]
+[<0>] ath10k_core_stop+0x50/0x78 [ath10k_core]
+[<0>] ath10k_halt+0x120/0x178 [ath10k_core]
+[<0>] ath10k_stop+0x4c/0x8c [ath10k_core]
+[<0>] drv_stop+0xe0/0x1e4 [mac80211]
+[<0>] ieee80211_stop_device+0x48/0x54 [mac80211]
+[<0>] ieee80211_do_stop+0x678/0x6f8 [mac80211]
+[<0>] ieee80211_stop+0x20/0x30 [mac80211]
+[<0>] __dev_close_many+0xb8/0x11c
+[<0>] dev_close_many+0x70/0x100
+[<0>] dev_close+0x4c/0x80
+[<0>] cfg80211_shutdown_all_interfaces+0x50/0xcc [cfg80211]
+[<0>] ieee80211_remove_interfaces+0x58/0x1a0 [mac80211]
+[<0>] ieee80211_unregister_hw+0x40/0x100 [mac80211]
+[<0>] ath10k_mac_unregister+0x1c/0x44 [ath10k_core]
+[<0>] ath10k_core_unregister+0x38/0x7c [ath10k_core]
+[<0>] ath10k_sdio_remove+0x8c/0xd0 [ath10k_sdio]
+[<0>] sdio_bus_remove+0x48/0x108
+[<0>] device_release_driver_internal+0x138/0x1ec
+[<0>] driver_detach+0x6c/0xa8
+[<0>] bus_remove_driver+0x78/0xa8
+[<0>] driver_unregister+0x30/0x50
+[<0>] sdio_unregister_driver+0x28/0x34
+[<0>] cleanup_module+0x14/0x6bc [ath10k_sdio]
+[<0>] __arm64_sys_delete_module+0x1e0/0x22c
+[<0>] el0_svc_common+0xa4/0x154
+[<0>] el0_svc_compat_handler+0x2c/0x38
+[<0>] el0_svc_compat+0x8/0x18
+[<0>] 0xffffffffffffffff
+
+SNOC:
+[  647.156863] Call trace:
+[  647.162166] [<ffffff80080855a4>] __switch_to+0x120/0x13c
+[  647.164512] [<ffffff800899d8b8>] __schedule+0x5ec/0x798
+[  647.170062] [<ffffff800899dad8>] schedule+0x74/0x94
+[  647.175050] [<ffffff80089a0848>] schedule_timeout+0x314/0x42c
+[  647.179874] [<ffffff80089a0a14>] schedule_timeout_uninterruptible+0x34/0x40
+[  647.185780] [<ffffff80082a494>] msleep+0x28/0x38
+[  647.192546] [<ffffff800117ec4c>] ath10k_snoc_hif_stop+0x4c/0x1e0 [ath10k_snoc]
+[  647.197439] [<ffffff80010dfbd8>] ath10k_core_stop+0x50/0x7c [ath10k_core]
+[  647.204652] [<ffffff80010c8f48>] ath10k_halt+0x114/0x16c [ath10k_core]
+[  647.211420] [<ffffff80010cad68>] ath10k_stop+0x4c/0x88 [ath10k_core]
+[  647.217865] [<ffffff8000fdbf54>] drv_stop+0x110/0x244 [mac80211]
+[  647.224367] [<ffffff80010147ac>] ieee80211_stop_device+0x48/0x54 [mac80211]
+[  647.230359] [<ffffff8000ff3eec>] ieee80211_do_stop+0x6a4/0x73c [mac80211]
+[  647.237033] [<ffffff8000ff4500>] ieee80211_stop+0x20/0x30 [mac80211]
+[  647.243942] [<ffffff80087e39b8>] __dev_close_many+0xa0/0xfc
+[  647.250435] [<ffffff80087e3888>] dev_close_many+0x70/0x100
+[  647.255651] [<ffffff80087e3a60>] dev_close+0x4c/0x80
+[  647.261244] [<ffffff8000f1ba54>] cfg80211_shutdown_all_interfaces+0x44/0xcc [cfg80211]
+[  647.266383] [<ffffff8000ff3fdc>] ieee80211_remove_interfaces+0x58/0x1b4 [mac80211]
+[  647.274128] [<ffffff8000fda540>] ieee80211_unregister_hw+0x50/0x120 [mac80211]
+[  647.281659] [<ffffff80010ca314>] ath10k_mac_unregister+0x1c/0x44 [ath10k_core]
+[  647.288839] [<ffffff80010dfc94>] ath10k_core_unregister+0x48/0x90 [ath10k_core]
+[  647.296027] [<ffffff800117e598>] ath10k_snoc_remove+0x5c/0x150 [ath10k_snoc]
+[  647.303229] [<ffffff80085625fc>] platform_drv_remove+0x28/0x50
+[  647.310517] [<ffffff80085601a4>] device_release_driver_internal+0x114/0x1b8
+[  647.316257] [<ffffff80085602e4>] driver_detach+0x6c/0xa8
+[  647.323021] [<ffffff800855e5b8>] bus_remove_driver+0x78/0xa8
+[  647.328571] [<ffffff800856107c>] driver_unregister+0x30/0x50
+[  647.334213] [<ffffff8008562674>] platform_driver_unregister+0x1c/0x28
+[  647.339876] [<ffffff800117fefc>] cleanup_module+0x1c/0x120 [ath10k_snoc]
+[  647.346196] [<ffffff8008143ab8>] SyS_delete_module+0x1dc/0x22c
+
+PCIe:
+[  615.392770] rmmod           D    0  3523   3458 0x00000080
+[  615.392777] Call Trace:
+[  615.392784]  __schedule+0x617/0x7d3
+[  615.392791]  ? __mod_timer+0x263/0x35c
+[  615.392797]  schedule+0x62/0x72
+[  615.392803]  schedule_timeout+0x8d/0xf3
+[  615.392809]  ? run_local_timers+0x6b/0x6b
+[  615.392814]  msleep+0x1b/0x22
+[  615.392824]  ath10k_pci_hif_stop+0x68/0xd6 [ath10k_pci]
+[  615.392844]  ath10k_core_stop+0x44/0x67 [ath10k_core]
+[  615.392859]  ath10k_halt+0x102/0x153 [ath10k_core]
+[  615.392873]  ath10k_stop+0x38/0x75 [ath10k_core]
+[  615.392893]  drv_stop+0x9a/0x13c [mac80211]
+[  615.392915]  ieee80211_do_stop+0x772/0x7cd [mac80211]
+[  615.392937]  ieee80211_stop+0x1a/0x1e [mac80211]
+[  615.392945]  __dev_close_many+0x9e/0xf0
+[  615.392952]  dev_close_many+0x62/0xe8
+[  615.392958]  dev_close+0x54/0x7d
+[  615.392975]  cfg80211_shutdown_all_interfaces+0x6e/0xa5 [cfg80211]
+[  615.393021]  ieee80211_remove_interfaces+0x52/0x1aa [mac80211]
+[  615.393049]  ieee80211_unregister_hw+0x54/0x136 [mac80211]
+[  615.393068]  ath10k_mac_unregister+0x19/0x4a [ath10k_core]
+[  615.393091]  ath10k_core_unregister+0x39/0x7e [ath10k_core]
+[  615.393104]  ath10k_pci_remove+0x3d/0x7f [ath10k_pci]
+[  615.393117]  pci_device_remove+0x41/0xa6
+[  615.393129]  device_release_driver_internal+0x123/0x1ec
+[  615.393140]  driver_detach+0x60/0x90
+[  615.393152]  bus_remove_driver+0x72/0x9f
+[  615.393164]  pci_unregister_driver+0x1e/0x87
+[  615.393177]  SyS_delete_module+0x1d7/0x277
+[  615.393188]  do_syscall_64+0x6b/0xf7
+[  615.393199]  entry_SYSCALL_64_after_hwframe+0x41/0xa6
+
+The test command run simulate_fw_crash firstly and it call into
+ath10k_sdio_hif_stop from ath10k_core_restart, then napi_disable
+is called and bit NAPI_STATE_SCHED is set. After that, function
+ath10k_sdio_hif_stop is called again from ath10k_stop by command
+"ifconfig wlan0 down" or "rmmod ath10k_sdio", then command blocked.
+
+It is blocked by napi_synchronize, napi_disable will set bit with
+NAPI_STATE_SCHED, and then napi_synchronize will enter dead loop
+becuase bit NAPI_STATE_SCHED is set by napi_disable.
+
+function of napi_synchronize
+static inline void napi_synchronize(const struct napi_struct *n)
 {
-...
-	for_each_tracing_cpu(cpu) {
-		page = alloc_pages_node(cpu_to_node(cpu),
-					GFP_KERNEL | __GFP_NORETRY, 0);
-If the size of buffer to trace is more than 1 page, such as 46680, then 
-it trigger kernel crash/panic in my case while run trace-cmd.
-After debugging, the trace_file->flags in 
-trace_event_buffer_lock_reserve is 0x40b while run trace-cmd, and it is 
-0x403 while collecting ftrace log.
+	if (IS_ENABLED(CONFIG_SMP))
+		while (test_bit(NAPI_STATE_SCHED, &n->state))
+			msleep(1);
+	else
+		barrier();
+}
 
-Is it have any operation to disable this patch dynamically?
+function of napi_disable
+void napi_disable(struct napi_struct *n)
+{
+	might_sleep();
+	set_bit(NAPI_STATE_DISABLE, &n->state);
+
+	while (test_and_set_bit(NAPI_STATE_SCHED, &n->state))
+		msleep(1);
+	while (test_and_set_bit(NAPI_STATE_NPSVC, &n->state))
+		msleep(1);
+
+	hrtimer_cancel(&n->timer);
+
+	clear_bit(NAPI_STATE_DISABLE, &n->state);
+}
+
+Add flag for it avoid the hang and crash.
+
+Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+Tested-on: WCN3990 hw1.0 SNOC hw1.0 WLAN.HL.3.1-01307.1-QCAHLSWMTPL-2
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+v3: change all bus type
+
+v2: change to use flag 
+ drivers/net/wireless/ath/ath10k/ahb.c  |  5 ++---
+ drivers/net/wireless/ath/ath10k/core.c | 20 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h |  3 +++
+ drivers/net/wireless/ath/ath10k/pci.c  |  7 ++++---
+ drivers/net/wireless/ath/ath10k/sdio.c |  5 ++---
+ drivers/net/wireless/ath/ath10k/snoc.c |  5 ++---
+ 6 files changed, 33 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index 05a61975c83f..869524852fba 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -626,7 +626,7 @@ static int ath10k_ahb_hif_start(struct ath10k *ar)
+ {
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot ahb hif start\n");
+ 
+-	napi_enable(&ar->napi);
++	ath10k_core_napi_enable(ar);
+ 	ath10k_ce_enable_interrupts(ar);
+ 	ath10k_pci_enable_legacy_irq(ar);
+ 
+@@ -644,8 +644,7 @@ static void ath10k_ahb_hif_stop(struct ath10k *ar)
+ 	ath10k_ahb_irq_disable(ar);
+ 	synchronize_irq(ar_ahb->irq);
+ 
+-	napi_synchronize(&ar->napi);
+-	napi_disable(&ar->napi);
++	ath10k_core_napi_sync_disable(ar);
+ 
+ 	ath10k_pci_flush(ar);
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index cfffd20df0cc..7e52fd14659d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2277,6 +2277,26 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++void ath10k_core_napi_enable(struct ath10k *ar)
++{
++	if (ar->napi_enabled)
++		return;
++
++	napi_enable(&ar->napi);
++	ar->napi_enabled = true;
++}
++EXPORT_SYMBOL(ath10k_core_napi_enable);
++
++void ath10k_core_napi_sync_disable(struct ath10k *ar)
++{
++	if (ar->napi_enabled) {
++		napi_synchronize(&ar->napi);
++		napi_disable(&ar->napi);
++		ar->napi_enabled = false;
++	}
++}
++EXPORT_SYMBOL(ath10k_core_napi_sync_disable);
++
+ static void ath10k_core_restart(struct work_struct *work)
+ {
+ 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 5c18f6c20462..efb26420cc20 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1230,6 +1230,7 @@ struct ath10k {
+ 	/* NAPI */
+ 	struct net_device napi_dev;
+ 	struct napi_struct napi;
++	bool napi_enabled;
+ 
+ 	struct work_struct set_coverage_class_work;
+ 	/* protected by conf_mutex */
+@@ -1276,6 +1277,8 @@ static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
+ 
+ extern unsigned long ath10k_coredump_mask;
+ 
++void ath10k_core_napi_sync_disable(struct ath10k *ar);
++void ath10k_core_napi_enable(struct ath10k *ar);
+ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 				  enum ath10k_bus bus,
+ 				  enum ath10k_hw_rev hw_rev,
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 36426efdb2ea..7786accc5f96 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1958,7 +1958,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
+ 
+-	napi_enable(&ar->napi);
++	ath10k_core_napi_enable(ar);
+ 
+ 	ath10k_pci_irq_enable(ar);
+ 	ath10k_pci_rx_post(ar);
+@@ -2075,8 +2075,9 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 
+ 	ath10k_pci_irq_disable(ar);
+ 	ath10k_pci_irq_sync(ar);
+-	napi_synchronize(&ar->napi);
+-	napi_disable(&ar->napi);
++
++	ath10k_core_napi_sync_disable(ar);
++
+ 	cancel_work_sync(&ar_pci->dump_work);
+ 
+ 	/* Most likely the device has HTT Rx ring configured. The only way to
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 81ddaafb6721..8834f118ef77 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -1859,7 +1859,7 @@ static int ath10k_sdio_hif_start(struct ath10k *ar)
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+ 	int ret;
+ 
+-	napi_enable(&ar->napi);
++	ath10k_core_napi_enable(ar);
+ 
+ 	/* Sleep 20 ms before HIF interrupts are disabled.
+ 	 * This will give target plenty of time to process the BMI done
+@@ -1986,8 +1986,7 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
+ 
+ 	spin_unlock_bh(&ar_sdio->wr_async_lock);
+ 
+-	napi_synchronize(&ar->napi);
+-	napi_disable(&ar->napi);
++	ath10k_core_napi_sync_disable(ar);
+ }
+ 
+ #ifdef CONFIG_PM
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 645ed5f63ef8..d54438c01df8 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -913,8 +913,7 @@ static void ath10k_snoc_hif_stop(struct ath10k *ar)
+ 	if (!test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
+ 		ath10k_snoc_irq_disable(ar);
+ 
+-	napi_synchronize(&ar->napi);
+-	napi_disable(&ar->napi);
++	ath10k_core_napi_sync_disable(ar);
+ 	ath10k_snoc_buffer_cleanup(ar);
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif stop\n");
+ }
+@@ -923,7 +922,7 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ {
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+-	napi_enable(&ar->napi);
++	ath10k_core_napi_enable(ar);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
+ 
+-- 
+2.23.0
+
 
 _______________________________________________
 ath10k mailing list
