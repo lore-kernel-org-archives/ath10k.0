@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kCxXL-0005zR-EY
+ id 1kCxXL-0005zQ-DR
  for ath10k@lists.infradead.org; Tue, 01 Sep 2020 04:04:48 +0000
-Date: Tue, 01 Sep 2020 12:03:50 +0800
+Date: Tue, 01 Sep 2020 12:03:59 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- e96eecdb290af89e3aca05df835d6123c8947bee
-Message-ID: <5f4dc826.6qb1pJF3/9LJpe2P%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 6e912a142861325912d88c8d3b9474b912b6188c
+Message-ID: <5f4dc82f.eHdcJBuQikufHSnv%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: e96eecdb290af89e3aca05df835d6123c8947bee  ath10k: wmi: Use struct_size() helper in ath10k_wmi_alloc_skb()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 6e912a142861325912d88c8d3b9474b912b6188c  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 721m
 
@@ -40,45 +40,46 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                         s3c6400_defconfig
-m68k                          sun3x_defconfig
-ia64                            zx1_defconfig
+xtensa                         virt_defconfig
+sh                          polaris_defconfig
+powerpc                 mpc8272_ads_defconfig
+arc                      axs103_smp_defconfig
+powerpc                     ep8248e_defconfig
+arm                            u300_defconfig
 sh                           se7751_defconfig
 arm                           u8500_defconfig
 parisc                generic-32bit_defconfig
 m68k                        mvme147_defconfig
 powerpc                          allmodconfig
-arm                            u300_defconfig
-powerpc                      pmac32_defconfig
 arc                                 defconfig
+m68k                          sun3x_defconfig
+powerpc                      pmac32_defconfig
 parisc                           allyesconfig
-mips                       capcella_defconfig
-powerpc                      ppc6xx_defconfig
 arm                            qcom_defconfig
 arc                            hsdk_defconfig
 mips                        jmr3927_defconfig
 sh                            shmin_defconfig
 arm                      jornada720_defconfig
 sh                          lboxre2_defconfig
+mips                         tb0219_defconfig
+m68k                        m5407c3_defconfig
+mips                        bcm47xx_defconfig
+openrisc                    or1ksim_defconfig
 mips                      malta_kvm_defconfig
 sh                         microdev_defconfig
 mips                      bmips_stb_defconfig
 arm                            mps2_defconfig
+powerpc                     powernv_defconfig
+m68k                             allyesconfig
 nios2                               defconfig
 arm                       imx_v6_v7_defconfig
 mips                           rs90_defconfig
-i386                             alldefconfig
-powerpc                      ppc64e_defconfig
-arm                            hisi_defconfig
-nios2                         3c120_defconfig
-powerpc                    adder875_defconfig
-sh                            titan_defconfig
-m68k                            mac_defconfig
-mips                           gcw0_defconfig
-arm                         bcm2835_defconfig
-arm                         s5pv210_defconfig
-powerpc                         wii_defconfig
-sh                        sh7757lcr_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                      ep88xc_defconfig
+arm                            lart_defconfig
+sh                          r7785rp_defconfig
+arm                        keystone_defconfig
+xtensa                          iss_defconfig
 sh                               alldefconfig
 arm                           stm32_defconfig
 ia64                             allmodconfig
@@ -86,7 +87,6 @@ ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
-m68k                             allyesconfig
 arc                              allyesconfig
 nds32                             allnoconfig
 c6x                              allyesconfig
@@ -107,9 +107,9 @@ sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
+powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
 i386                 randconfig-a001-20200831
 i386                 randconfig-a002-20200831
 i386                 randconfig-a004-20200831
