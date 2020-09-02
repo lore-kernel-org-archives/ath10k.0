@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kDGpf-0003z0-1E
- for ath10k@lists.infradead.org; Wed, 02 Sep 2020 00:41:00 +0000
-Date: Wed, 02 Sep 2020 08:40:42 +0800
+ id 1kDGxU-0004qg-QK
+ for ath10k@lists.infradead.org; Wed, 02 Sep 2020 00:49:05 +0000
+Date: Wed, 02 Sep 2020 08:48:29 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 7f86551665121931ecd6d327e019e7a69782bfcd
-Message-ID: <5f4eea0a.Z3dsj9kF6TE6tsZZ%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS e4c950b77a4d3fa9f4e43ad47eb8243f845dd17b
+Message-ID: <5f4eebdd.kenJf+OGVNNsqVG4%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 7f86551665121931ecd6d327e019e7a69782bfcd  ath10k: Get rid of "per_ce_irq" hw param
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: e4c950b77a4d3fa9f4e43ad47eb8243f845dd17b  Add localversion-wireless-testing-ath
 
-elapsed time: 720m
+elapsed time: 727m
 
-configs tested: 109
+configs tested: 105
 configs skipped: 5
 
 The following configs have been built successfully.
@@ -41,19 +40,13 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-sh                               alldefconfig
-sh                             sh03_defconfig
-sh                             espt_defconfig
-ia64                          tiger_defconfig
-arm                            xcep_defconfig
+s390                       zfcpdump_defconfig
+arm                             pxa_defconfig
+arm                          gemini_defconfig
+microblaze                    nommu_defconfig
 arm                        spear6xx_defconfig
 sh                        apsh4ad0a_defconfig
 ia64                            zx1_defconfig
-riscv                    nommu_k210_defconfig
-um                           x86_64_defconfig
-sh                            shmin_defconfig
-arm                       multi_v4t_defconfig
-arm                        spear3xx_defconfig
 powerpc                  mpc866_ads_defconfig
 mips                        omega2p_defconfig
 sh                            titan_defconfig
@@ -64,17 +57,19 @@ powerpc                     pq2fads_defconfig
 m68k                        mvme16x_defconfig
 mips                      loongson3_defconfig
 i386                                defconfig
-arm                        shmobile_defconfig
-arm                       imx_v6_v7_defconfig
-sh                ecovec24-romimage_defconfig
-arm                           stm32_defconfig
-arm                       spear13xx_defconfig
+s390                          debug_defconfig
+mips                         tb0219_defconfig
+sh                     sh7710voipgw_defconfig
+mips                         tb0287_defconfig
+mips                     cu1000-neo_defconfig
+mips                          malta_defconfig
+powerpc                    gamecube_defconfig
 sh                          kfr2r09_defconfig
 c6x                                 defconfig
 arm                       aspeed_g5_defconfig
-x86_64                              defconfig
 sh                            migor_defconfig
 m68k                        stmark2_defconfig
+x86_64                              defconfig
 arm                            qcom_defconfig
 mips                          rm200_defconfig
 arc                         haps_hs_defconfig
@@ -113,12 +108,6 @@ powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-x86_64               randconfig-a004-20200901
-x86_64               randconfig-a006-20200901
-x86_64               randconfig-a003-20200901
-x86_64               randconfig-a005-20200901
-x86_64               randconfig-a001-20200901
-x86_64               randconfig-a002-20200901
 i386                 randconfig-a004-20200901
 i386                 randconfig-a005-20200901
 i386                 randconfig-a006-20200901
@@ -131,6 +120,12 @@ i386                 randconfig-a011-20200901
 i386                 randconfig-a013-20200901
 i386                 randconfig-a014-20200901
 i386                 randconfig-a012-20200901
+x86_64               randconfig-a004-20200901
+x86_64               randconfig-a006-20200901
+x86_64               randconfig-a003-20200901
+x86_64               randconfig-a005-20200901
+x86_64               randconfig-a001-20200901
+x86_64               randconfig-a002-20200901
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                            allmodconfig
