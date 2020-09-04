@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kDaB1-0000rM-0o
- for ath10k@lists.infradead.org; Wed, 02 Sep 2020 21:20:20 +0000
-Date: Thu, 03 Sep 2020 05:19:51 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 228ffaa48514a9c1664150bc2262e3580d6e66f9
-Message-ID: <5f500c77.Q38PbDMb1almznlr%lkp@intel.com>
+ id 1kEEla-0002t7-4C
+ for ath10k@lists.infradead.org; Fri, 04 Sep 2020 16:40:47 +0000
+From: "Rakesh Pillai" <pillair@codeaurora.org>
+References: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>
+ <87y2ls4lbf.fsf@codeaurora.org>
+In-Reply-To: <87y2ls4lbf.fsf@codeaurora.org>
+Subject: RE: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+Date: Fri, 4 Sep 2020 16:40:41 +0000
+Message-ID: <0101017459fdd62b-791355e4-ea88-4142-96a7-06849bcd7b09-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,150 +24,103 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: 'Kalle Valo' <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 228ffaa48514a9c1664150bc2262e3580d6e66f9  Add localversion-wireless-testing-ath
+Hi Kalle,
 
-elapsed time: 720m
 
-configs tested: 123
-configs skipped: 11
+> -----Original Message-----
+> From: Kalle Valo <kvalo@codeaurora.org>
+> Sent: Wednesday, September 2, 2020 2:17 PM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+> 
+> Rakesh Pillai <pillair@codeaurora.org> writes:
+> 
+> > Board Data File (BDF) is loaded upon driver boot-up procedure.
+> > The right board data file is identified using bus and qmi-board-id.
+> >
+> > The problem, however, can occur when the (default) board data
+> > file cannot fulfill with the vendor requirements and it is
+> > necessary to use a different board data file.
+> >
+> > Add the support to get the variant field from DTSI and
+> > use tht information to load the vendor specific BDF.
+> >
+> > The device tree requires addition strings to define the variant name
+> >
+> >     wifi@a000000 {
+> >             status = "okay";
+> >             qcom,ath10k-calibration-variant = "xyz-v2";
+> >     };
+> >
+> >     wifi@a800000 {
+> >             status = "okay";
+> >             qcom,ath10k-calibration-variant = "xyz-v1";
+> >     };
+> >
+> > This would create the boarddata identifiers for the board-2.bin search
+> >
+> >  *  bus=snoc,qmi-board-id=16,qmi-chip-id=0,variant=xyz-v1
+> >  *  bus=snoc,qmi-board-id=17,qmi-chip-id=0,variant=xyz-v2
+> 
+> You mention nothing about qmi-chip-id in the commit log. Please document
+> what it is and also give some examples what kind of values there can be.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                     davinci_all_defconfig
-arm                      pxa255-idp_defconfig
-sh                           sh2007_defconfig
-mips                           ci20_defconfig
-mips                         rt305x_defconfig
-nios2                            alldefconfig
-sh                          polaris_defconfig
-arm                          gemini_defconfig
-arc                        nsim_700_defconfig
-arm                       imx_v4_v5_defconfig
-sh                           se7712_defconfig
-mips                          rb532_defconfig
-sh                            hp6xx_defconfig
-arm                           h5000_defconfig
-arm                           sunxi_defconfig
-sh                           se7721_defconfig
-m68k                          hp300_defconfig
-powerpc                          alldefconfig
-um                             i386_defconfig
-mips                      loongson3_defconfig
-mips                           ip28_defconfig
-openrisc                         alldefconfig
-arm                          iop32x_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                      tqm8xx_defconfig
-c6x                              alldefconfig
-sh                         ecovec24_defconfig
-arm                          collie_defconfig
-m68k                          multi_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                          moxart_defconfig
-arm                       netwinder_defconfig
-mips                            gpr_defconfig
-arm                           sama5_defconfig
-sh                ecovec24-romimage_defconfig
-sh                           se7724_defconfig
-arm                         mv78xx0_defconfig
-microblaze                      mmu_defconfig
-riscv                          rv32_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-x86_64               randconfig-a004-20200901
-x86_64               randconfig-a006-20200901
-x86_64               randconfig-a003-20200901
-x86_64               randconfig-a005-20200901
-x86_64               randconfig-a001-20200901
-x86_64               randconfig-a002-20200901
-i386                 randconfig-a004-20200901
-i386                 randconfig-a005-20200901
-i386                 randconfig-a006-20200901
-i386                 randconfig-a002-20200901
-i386                 randconfig-a001-20200901
-i386                 randconfig-a003-20200901
-i386                 randconfig-a016-20200902
-i386                 randconfig-a015-20200902
-i386                 randconfig-a011-20200902
-i386                 randconfig-a013-20200902
-i386                 randconfig-a014-20200902
-i386                 randconfig-a012-20200902
-i386                 randconfig-a016-20200903
-i386                 randconfig-a015-20200903
-i386                 randconfig-a011-20200903
-i386                 randconfig-a013-20200903
-i386                 randconfig-a014-20200903
-i386                 randconfig-a012-20200903
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Let me add a bit more details about the chip-id and send v2 for this change.
 
-clang tested configs:
-x86_64               randconfig-a013-20200901
-x86_64               randconfig-a016-20200901
-x86_64               randconfig-a011-20200901
-x86_64               randconfig-a012-20200901
-x86_64               randconfig-a015-20200901
-x86_64               randconfig-a014-20200901
-x86_64               randconfig-a004-20200902
-x86_64               randconfig-a006-20200902
-x86_64               randconfig-a003-20200902
-x86_64               randconfig-a005-20200902
-x86_64               randconfig-a001-20200902
-x86_64               randconfig-a002-20200902
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> > @@ -576,6 +576,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct
+> ath10k_qmi *qmi)
+> >  	if (resp->chip_info_valid) {
+> >  		qmi->chip_info.chip_id = resp->chip_info.chip_id;
+> >  		qmi->chip_info.chip_family = resp->chip_info.chip_family;
+> > +	} else {
+> > +		qmi->chip_info.chip_id = 0xFF;
+> >  	}
+> 
+> So you hard code chip_id to 0xff if it's not valid. Is it 100%
+> guaranteed that there never will be a chip id with 0xff?
+
+0x0 and 0xff are invalid chip id and are are not used.
+If the chip_id read fails, we fallback to the default board data.
+0xff is used to go to the default board data (Also this is in alignment with
+the current implementation of board_id)
+
+Does that make sense ?
+
+
+> 
+> >
+> >  	if (resp->board_info_valid)
+> > @@ -817,12 +819,18 @@ static void
+> ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+> >  static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
+> >  {
+> >  	struct ath10k *ar = qmi->ar;
+> > +	int ret;
+> >
+> >  	ar->hif.bus = ATH10K_BUS_SNOC;
+> >  	ar->id.qmi_ids_valid = true;
+> >  	ar->id.qmi_board_id = qmi->board_info.board_id;
+> > +	ar->id.qmi_chip_id = qmi->chip_info.chip_id;
+> 
+> To me a safer, and cleaner, option would be to have
+> ar->id.qmi_chip_id_valid, and only add qmi-chip-id=%x to the board id if
+> qmi_chip_id_valid is true. That way there's not this magic 0xff value
+> hardcoded anywhere.
+> 
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
+> atches
+
 
 _______________________________________________
 ath10k mailing list
