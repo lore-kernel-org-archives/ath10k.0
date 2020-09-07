@@ -1,24 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18])
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFJkj-0004Q4-NM
- for ath10k@lists.infradead.org; Mon, 07 Sep 2020 16:12:22 +0000
+ id 1kFJqF-0007F8-DW
+ for ath10k@lists.infradead.org; Mon, 07 Sep 2020 16:18:08 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] wireless: ath10k: Return early in
- ath10k_qmi_event_server_exit() to avoid hard crash on reboot
-References: <20200602052533.15048-1-john.stultz@linaro.org>
- <CA+ASDXMbNvbBdsC11dzUPX7RkMFYhJev2npPsRD_SnGQB+1hag@mail.gmail.com>
- <CALAqxLVA1ZQjwEdbX5KGbSyLnMBAzm9PoN_Ta_Z7rBf4w3GOvQ@mail.gmail.com>
- <CA+ASDXPddgOvEX___unx7N2YsQctsZN+1vkwPbi8Ab_zfwFfzw@mail.gmail.com>
- <20200603002715.GA5349@Mani-XPS-13-9360>
- <87zh9diyam.fsf@codeaurora.org>
- <CAMi1Hd3FBRrwysMX6NLhKzjDukm-YPooR7LX64i=HJHDD8_Dvw@mail.gmail.com>
- <87ft876ify.fsf@codeaurora.org>
- <8577175552c24b83c80eced09d54e0b3@codeaurora.org>
-Date: Mon, 7 Sep 2020 16:12:18 +0000
-In-Reply-To: <8577175552c24b83c80eced09d54e0b3@codeaurora.org> (Govind Singh's
- message of "Fri, 28 Aug 2020 18:37:11 +0530")
-Message-ID: <010101746956ec9d-98eed29f-b3ca-49f2-9b71-c529a99a9e2e-000000@us-west-2.amazonses.com>
+Subject: Re: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+References: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>
+ <87y2ls4lbf.fsf@codeaurora.org>
+ <0101017459fdd62b-791355e4-ea88-4142-96a7-06849bcd7b09-000000@us-west-2.amazonses.com>
+Date: Mon, 7 Sep 2020 16:17:59 +0000
+In-Reply-To: <0101017459fdd62b-791355e4-ea88-4142-96a7-06849bcd7b09-000000@us-west-2.amazonses.com>
+ (Rakesh Pillai's message of "Fri, 4 Sep 2020 16:40:41 +0000")
+Message-ID: <01010174695c1fa6-770a2b69-2007-4966-8c03-fd7cbf4ce4aa-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,50 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@codeaurora.org>
-Cc: Amit Pundir <amit.pundir@linaro.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, lkml <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Sibi Sankar <sibis@codeaurora.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Niklas Cassel <niklas.cassel@linaro.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Govind Singh <govinds@codeaurora.org> writes:
+"Rakesh Pillai" <pillair@codeaurora.org> writes:
 
-> On 2020-08-28 18:22, Kalle Valo wrote:
->> Amit Pundir <amit.pundir@linaro.org> writes:
->>
->>> On Mon, 8 Jun 2020 at 17:07, Kalle Valo <kvalo@codeaurora.org> wrote:
->>>> > I don't agree with this. If you read through the replies to the bug report,
->>>> > it is clear that NS migration uncovered a corner case or even a bug. So we
->>>> > should try to fix that indeed.
->>>>
->>>> I'm with Mani, we should try to fix ath10k instead. Hopefully we can
->>>> find a fix soon.
->>>
->>> Hi Team,
->>>
->>> Any updates on this? I can reproduce this hard crash on v5.9-rc1 as
->>> well.
->>>
->>> It is not a blocker for us because we switched to a userspace
->>> workaround, where we do not wait for modem to shutdown gracefully and
->>> SIGKILL it instead, during the shutdown/reboot process. But I'm happy
->>> to take a swing at any intermediate/in-progress solution available.
->>
->> Govind submitted this patch and later he asked to drop it, but I think
->> it would be a good idea to test it anyway:
->>
->> ath10k: Move msa region map/unmap to init/deinit path
->>
->> https://lkml.kernel.org/r/1591191231-31917-1-git-send-email-govinds@codeaurora.org
->>
->> (patchwork is down so I cannot give a patchwork link)
+>> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
+>> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+>> > @@ -576,6 +576,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct
+>> ath10k_qmi *qmi)
+>> >  	if (resp->chip_info_valid) {
+>> >  		qmi->chip_info.chip_id = resp->chip_info.chip_id;
+>> >  		qmi->chip_info.chip_family = resp->chip_info.chip_family;
+>> > +	} else {
+>> > +		qmi->chip_info.chip_id = 0xFF;
+>> >  	}
+>> 
+>> So you hard code chip_id to 0xff if it's not valid. Is it 100%
+>> guaranteed that there never will be a chip id with 0xff?
 >
-> This patchwork is not fixing the issue and changing MSA mapping
-> sequence is major design change. This issue is only seen with DB845
-> which uses SCM call, newer targets QCS404/SC7180/SM8150 will not have
-> this issue as MSA mapping is hard-coded in TZ. Probably changes in qmi
-> layer to give different indication for this scenario and changes in FW
-> is required to mitigate this issue gracefully.
+> 0x0 and 0xff are invalid chip id and are are not used.
+> If the chip_id read fails, we fallback to the default board data.
+> 0xff is used to go to the default board data (Also this is in alignment with
+> the current implementation of board_id)
+>
+> Does that make sense ?
 
-Oh, bad news :/ Can anyone look at that in detail? Even a quick hack
-patch would get this forward.
+I'm a bit hesitant, over the years I have seen cases so many cases where
+"foo is not used anywhere" and later that foo is actually used
+somewhere. 0xff means that there's only 254 different values, but I
+guess there are not that many chip ids? So a chip id is very different
+from a board id, right?
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
