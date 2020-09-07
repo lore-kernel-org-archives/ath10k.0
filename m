@@ -1,16 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
+Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFJit-0003p8-9o
- for ath10k@lists.infradead.org; Mon, 07 Sep 2020 16:10:28 +0000
+ id 1kFJkj-0004Q4-NM
+ for ath10k@lists.infradead.org; Mon, 07 Sep 2020 16:12:22 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 0/2] ath10k: Add chain-1 voltage regulator voting
-References: <1593194502-13164-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=WTnULQs5skJiXfp+srsx5e8DeqW3uu2SEDVGoEmP2O1g@mail.gmail.com>
-Date: Mon, 7 Sep 2020 16:10:24 +0000
-In-Reply-To: <CAD=FV=WTnULQs5skJiXfp+srsx5e8DeqW3uu2SEDVGoEmP2O1g@mail.gmail.com>
- (Doug Anderson's message of "Mon, 24 Aug 2020 16:50:33 -0700")
-Message-ID: <0101017469552d42-e1d0ceb7-dbf3-4222-aa86-781067bc7ea6-000000@us-west-2.amazonses.com>
+Subject: Re: [PATCH] wireless: ath10k: Return early in
+ ath10k_qmi_event_server_exit() to avoid hard crash on reboot
+References: <20200602052533.15048-1-john.stultz@linaro.org>
+ <CA+ASDXMbNvbBdsC11dzUPX7RkMFYhJev2npPsRD_SnGQB+1hag@mail.gmail.com>
+ <CALAqxLVA1ZQjwEdbX5KGbSyLnMBAzm9PoN_Ta_Z7rBf4w3GOvQ@mail.gmail.com>
+ <CA+ASDXPddgOvEX___unx7N2YsQctsZN+1vkwPbi8Ab_zfwFfzw@mail.gmail.com>
+ <20200603002715.GA5349@Mani-XPS-13-9360>
+ <87zh9diyam.fsf@codeaurora.org>
+ <CAMi1Hd3FBRrwysMX6NLhKzjDukm-YPooR7LX64i=HJHDD8_Dvw@mail.gmail.com>
+ <87ft876ify.fsf@codeaurora.org>
+ <8577175552c24b83c80eced09d54e0b3@codeaurora.org>
+Date: Mon, 7 Sep 2020 16:12:18 +0000
+In-Reply-To: <8577175552c24b83c80eced09d54e0b3@codeaurora.org> (Govind Singh's
+ message of "Fri, 28 Aug 2020 18:37:11 +0530")
+Message-ID: <010101746956ec9d-98eed29f-b3ca-49f2-9b71-c529a99a9e2e-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,31 +32,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Rakesh Pillai <pillair@codeaurora.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Govind Singh <govinds@codeaurora.org>
+Cc: Amit Pundir <amit.pundir@linaro.org>, Rakesh Pillai <pillair@qti.qualcomm.com>, Brian Norris <briannorris@chromium.org>, lkml <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Sibi Sankar <sibis@codeaurora.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Niklas Cassel <niklas.cassel@linaro.org>
 
-Doug Anderson <dianders@chromium.org> writes:
+Govind Singh <govinds@codeaurora.org> writes:
 
-> Hi,
+> On 2020-08-28 18:22, Kalle Valo wrote:
+>> Amit Pundir <amit.pundir@linaro.org> writes:
+>>
+>>> On Mon, 8 Jun 2020 at 17:07, Kalle Valo <kvalo@codeaurora.org> wrote:
+>>>> > I don't agree with this. If you read through the replies to the bug report,
+>>>> > it is clear that NS migration uncovered a corner case or even a bug. So we
+>>>> > should try to fix that indeed.
+>>>>
+>>>> I'm with Mani, we should try to fix ath10k instead. Hopefully we can
+>>>> find a fix soon.
+>>>
+>>> Hi Team,
+>>>
+>>> Any updates on this? I can reproduce this hard crash on v5.9-rc1 as
+>>> well.
+>>>
+>>> It is not a blocker for us because we switched to a userspace
+>>> workaround, where we do not wait for modem to shutdown gracefully and
+>>> SIGKILL it instead, during the shutdown/reboot process. But I'm happy
+>>> to take a swing at any intermediate/in-progress solution available.
+>>
+>> Govind submitted this patch and later he asked to drop it, but I think
+>> it would be a good idea to test it anyway:
+>>
+>> ath10k: Move msa region map/unmap to init/deinit path
+>>
+>> https://lkml.kernel.org/r/1591191231-31917-1-git-send-email-govinds@codeaurora.org
+>>
+>> (patchwork is down so I cannot give a patchwork link)
 >
-> On Fri, Jun 26, 2020 at 11:02 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->>
->> Add the support to vote for the chain-1
->> voltage regulator for WCN3990. This is
->> added as an optional property.
->>
->> Rakesh Pillai (2):
->>   dt: bindings: Add new regulator as optional property for WCN3990
->>   ath10k: Add support for chain1 regulator supply voting
->>
->>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 4 +++-
->>  drivers/net/wireless/ath/ath10k/snoc.c                         | 1 +
->>  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> This series is marked as "Awaiting Upstream" in patchwork.  I don't
-> see anything blocking it landing now.
+> This patchwork is not fixing the issue and changing MSA mapping
+> sequence is major design change. This issue is only seen with DB845
+> which uses SCM call, newer targets QCS404/SC7180/SM8150 will not have
+> this issue as MSA mapping is hard-coded in TZ. Probably changes in qmi
+> layer to give different indication for this scenario and changes in FW
+> is required to mitigate this issue gracefully.
 
-Thanks, moved it to New state now.
+Oh, bad news :/ Can anyone look at that in detail? Even a quick hack
+patch would get this forward.
 
 -- 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
