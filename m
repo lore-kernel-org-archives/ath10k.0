@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFWCd-0006U8-J9
- for ath10k@lists.infradead.org; Tue, 08 Sep 2020 05:30:00 +0000
-Date: Tue, 08 Sep 2020 13:29:41 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 4019509b34e08c19f749938ffe88d128e112a51e
-Message-ID: <5f5716c5.qn8LnPAKEOnxU/sB%lkp@intel.com>
-MIME-Version: 1.0
+ id 1kFWMb-0006yr-8K
+ for ath10k@lists.infradead.org; Tue, 08 Sep 2020 05:40:18 +0000
+Mime-Version: 1.0
+Message-Id: <f895fa06-5bd9-4e6b-89a5-c90160ec98d9@www.fastmail.com>
+In-Reply-To: <01010174693c2bdf-ffe2599c-6ea4-4244-bcab-3fe6746d679c-000000@us-west-2.amazonses.com>
+References: <0765166b-aaf8-49f4-b7e6-cbed301aa4a6@www.fastmail.com>
+ <57432cce-3966-4a11-9e61-7876d2f6c345@www.fastmail.com>
+ <01010174693c2bdf-ffe2599c-6ea4-4244-bcab-3fe6746d679c-000000@us-west-2.amazonses.com>
+Date: Tue, 08 Sep 2020 14:39:47 +0900
+From: =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>
+Subject: =?UTF-8?Q?Re:_ath10k-firmware:_QCA6174A_hw3.2:_Add_Killer_Networking/Sur?=
+ =?UTF-8?Q?face_Go_specific_board?=
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,155 +21,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 4019509b34e08c19f749938ffe88d128e112a51e  Merge branch 'pending' into master-pending
-
-elapsed time: 723m
-
-configs tested: 122
-configs skipped: 7
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                     ep8248e_defconfig
-xtensa                              defconfig
-arm                          pxa910_defconfig
-arm                        spear3xx_defconfig
-powerpc                     powernv_defconfig
-arc                         haps_hs_defconfig
-arm                       netwinder_defconfig
-mips                           ci20_defconfig
-powerpc                     mpc5200_defconfig
-h8300                     edosk2674_defconfig
-sh                          urquell_defconfig
-sh                        apsh4ad0a_defconfig
-c6x                        evmc6472_defconfig
-xtensa                           alldefconfig
-powerpc                      ppc64e_defconfig
-mips                       capcella_defconfig
-arm                         assabet_defconfig
-riscv                          rv32_defconfig
-arm                         nhk8815_defconfig
-sh                          sdk7786_defconfig
-arm                             ezx_defconfig
-mips                       lemote2f_defconfig
-mips                             allyesconfig
-arm                           spitz_defconfig
-arm                          ep93xx_defconfig
-arm                       versatile_defconfig
-sh                          r7785rp_defconfig
-openrisc                 simple_smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20200907
-x86_64               randconfig-a004-20200907
-x86_64               randconfig-a005-20200907
-x86_64               randconfig-a001-20200907
-x86_64               randconfig-a002-20200907
-i386                 randconfig-a004-20200908
-i386                 randconfig-a006-20200908
-i386                 randconfig-a002-20200908
-i386                 randconfig-a001-20200908
-i386                 randconfig-a003-20200908
-i386                 randconfig-a005-20200908
-i386                 randconfig-a004-20200907
-i386                 randconfig-a005-20200907
-i386                 randconfig-a006-20200907
-i386                 randconfig-a002-20200907
-i386                 randconfig-a003-20200907
-i386                 randconfig-a001-20200907
-x86_64               randconfig-a013-20200908
-x86_64               randconfig-a016-20200908
-x86_64               randconfig-a011-20200908
-x86_64               randconfig-a015-20200908
-x86_64               randconfig-a014-20200908
-i386                 randconfig-a016-20200908
-i386                 randconfig-a015-20200908
-i386                 randconfig-a011-20200908
-i386                 randconfig-a013-20200908
-i386                 randconfig-a014-20200908
-i386                 randconfig-a012-20200908
-i386                 randconfig-a016-20200907
-i386                 randconfig-a015-20200907
-i386                 randconfig-a011-20200907
-i386                 randconfig-a013-20200907
-i386                 randconfig-a014-20200907
-i386                 randconfig-a012-20200907
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20200908
-x86_64               randconfig-a006-20200908
-x86_64               randconfig-a003-20200908
-x86_64               randconfig-a001-20200908
-x86_64               randconfig-a005-20200908
-x86_64               randconfig-a002-20200908
-x86_64               randconfig-a013-20200907
-x86_64               randconfig-a011-20200907
-x86_64               randconfig-a016-20200907
-x86_64               randconfig-a012-20200907
-x86_64               randconfig-a015-20200907
-x86_64               randconfig-a014-20200907
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QWxyaWdodCwgdW5kZXJzdGFuZGFibGUhIFRoYW5rIHlvdSBmb3IgZm9sbG93aW5nIHVwLgoKQmxh
+xb4KCk9uIFR1ZSwgOCBTZXAgMjAyMCwgYXQgMDA6NDMsIEthbGxlIFZhbG8gd3JvdGU6Cj4gQmxh
+xb4gSHJhc3RuaWsgPGJsYXpAbXh4bi5pbz4gd3JpdGVzOgo+IAo+ID4gSGkgS2FsbGUsIGFyZSB5
+b3Ugc3RpbGwgdGFraW5nIGJvYXJkIGZpbGUgc3VibWlzc2lvbnM/IEkgc2F3IHRoYXQgbm8KPiA+
+IG5ld2x5IHN1Ym1pdHRlZCBib2FyZCBmaWxlcyB3ZXJlIG1lcmdlZCBpbiAyMDIwLgo+IAo+IEkg
+YW0sIGl0J3MganVzdCB0aGF0IHRoZXkgYXJlIGN1cnJlbnRseSBvbiB0aGUgYm90dG9tIG9mIG15
+IHRvZG8gbGlzdCA6Lwo+IAo+IC0tIAo+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3Jn
+L2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwo+CgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
