@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFhji-0000BP-MX
- for ath10k@lists.infradead.org; Tue, 08 Sep 2020 17:48:55 +0000
-Subject: Re: [PATCH,v4] Revert "ath10k: fix DMA related firmware crashes on
- multiple devices"
-References: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <79a88865-6df5-e7a4-deb6-6025cc9d87e4@candelatech.com>
-Date: Tue, 8 Sep 2020 10:48:49 -0700
+Received: from mga14.intel.com ([192.55.52.115])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kFjLQ-0003vm-Rr
+ for ath10k@lists.infradead.org; Tue, 08 Sep 2020 19:31:58 +0000
+Date: Wed, 09 Sep 2020 03:31:42 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 70a9cfb15bbe04852a7f5372949f5f140543445a
+Message-ID: <5f57dc1e.Cf9hx1DymvgZE2G0%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
-Content-Language: en-MW
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +17,185 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zhi Chen <zhichen@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 70a9cfb15bbe04852a7f5372949f5f140543445a  Merge branch 'pending' into master-pending
 
-Just FYI:  I added this patch to my ath10k-ct driver, and a user reported it causes
-regressions on his particular 9888 system when using ath10k-ct wave-2 firmware:
+elapsed time: 723m
 
-[   21.204868] ath10k_pci 0000:00:00.0: qca9888 hw2.0 target 0x01000000 chip_id 0x00000000 sub 0000:0000
-[   21.214437] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 0
-[   21.233298] ath10k_pci 0000:00:00.0: firmware ver 10.4b-ct-9888-tH-13-8c5b2baa2 api 5 features 
-mfp,peer-flow-ctrl,txstatus-noack,wmi-10.x-CT,ratemask-CT,regdump-CT,txrate-CT,flush-all-CT,pingpong-CT,ch-regs-CT,nop-CT,htt-mgt-CT,set-special-CT,no-bmiss-CT,tx-rc-CT,cust-stats-CT,txrate2-CT,beacon-cb-CT,wmi-block-ack-CT,wmi-bcn-rc-CT 
-crc32 a00b5f36
-[   21.596684] ath10k_pci 0000:00:00.0: board_file api 2 bmi_id 0:20 crc32 5bb32c02[   23.546156] ath10k_pci 0000:00:00.0: unsupported HTC service id: 1536
+configs tested: 154
+configs skipped: 11
 
-I'll revert this for the 9888 chipset (at least) in my driver, possibly you need to do similar.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://github.com/greearb/ath10k-ct/issues/153
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         bigsur_defconfig
+x86_64                           alldefconfig
+h8300                               defconfig
+mips                      maltasmvp_defconfig
+mips                           ip27_defconfig
+arm                   milbeaut_m10v_defconfig
+arc                              alldefconfig
+m68k                        m5272c3_defconfig
+mips                 decstation_r4k_defconfig
+arm                         ebsa110_defconfig
+arm                             mxs_defconfig
+sh                              ul2_defconfig
+microblaze                      mmu_defconfig
+microblaze                          defconfig
+arm                      jornada720_defconfig
+arm                         lpc18xx_defconfig
+m68k                       m5208evb_defconfig
+mips                        bcm47xx_defconfig
+xtensa                              defconfig
+c6x                        evmc6457_defconfig
+m68k                            q40_defconfig
+sh                        sh7763rdp_defconfig
+alpha                            alldefconfig
+mips                malta_qemu_32r6_defconfig
+mips                      bmips_stb_defconfig
+sh                          lboxre2_defconfig
+mips                       capcella_defconfig
+arm                         assabet_defconfig
+riscv                          rv32_defconfig
+arm                         nhk8815_defconfig
+powerpc                     powernv_defconfig
+arm                            lart_defconfig
+csky                             alldefconfig
+arm                         lubbock_defconfig
+arm                          badge4_defconfig
+arm                          pxa910_defconfig
+nios2                               defconfig
+mips                     cu1000-neo_defconfig
+powerpc                      ppc6xx_defconfig
+mips                             allyesconfig
+sh                          sdk7786_defconfig
+arm                             ezx_defconfig
+mips                       lemote2f_defconfig
+arm                       aspeed_g4_defconfig
+mips                         mpc30x_defconfig
+mips                       bmips_be_defconfig
+mips                          ath25_defconfig
+mips                           ip22_defconfig
+arm                           spitz_defconfig
+arm                          ep93xx_defconfig
+arm                       versatile_defconfig
+sh                          r7785rp_defconfig
+openrisc                 simple_smp_defconfig
+arm                        spear6xx_defconfig
+powerpc                    gamecube_defconfig
+s390                       zfcpdump_defconfig
+arm                       mainstone_defconfig
+powerpc                      ppc64e_defconfig
+sh                            shmin_defconfig
+mips                           ci20_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200907
+x86_64               randconfig-a004-20200907
+x86_64               randconfig-a003-20200907
+x86_64               randconfig-a005-20200907
+x86_64               randconfig-a001-20200907
+x86_64               randconfig-a002-20200907
+i386                 randconfig-a004-20200907
+i386                 randconfig-a005-20200907
+i386                 randconfig-a006-20200907
+i386                 randconfig-a002-20200907
+i386                 randconfig-a003-20200907
+i386                 randconfig-a001-20200907
+i386                 randconfig-a004-20200908
+i386                 randconfig-a005-20200908
+i386                 randconfig-a006-20200908
+i386                 randconfig-a002-20200908
+i386                 randconfig-a001-20200908
+i386                 randconfig-a003-20200908
+x86_64               randconfig-a013-20200908
+x86_64               randconfig-a016-20200908
+x86_64               randconfig-a011-20200908
+x86_64               randconfig-a012-20200908
+x86_64               randconfig-a015-20200908
+x86_64               randconfig-a014-20200908
+i386                 randconfig-a016-20200908
+i386                 randconfig-a015-20200908
+i386                 randconfig-a011-20200908
+i386                 randconfig-a013-20200908
+i386                 randconfig-a014-20200908
+i386                 randconfig-a012-20200908
+i386                 randconfig-a016-20200907
+i386                 randconfig-a015-20200907
+i386                 randconfig-a011-20200907
+i386                 randconfig-a013-20200907
+i386                 randconfig-a014-20200907
+i386                 randconfig-a012-20200907
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Thanks,
-Ben
+clang tested configs:
+x86_64               randconfig-a004-20200908
+x86_64               randconfig-a006-20200908
+x86_64               randconfig-a003-20200908
+x86_64               randconfig-a001-20200908
+x86_64               randconfig-a005-20200908
+x86_64               randconfig-a002-20200908
+x86_64               randconfig-a013-20200907
+x86_64               randconfig-a011-20200907
+x86_64               randconfig-a016-20200907
+x86_64               randconfig-a012-20200907
+x86_64               randconfig-a015-20200907
+x86_64               randconfig-a014-20200907
 
-On 1/13/20 8:35 PM, Zhi Chen wrote:
-> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
-> PCIe hung issue was observed on multiple platforms. The issue was reproduced
-> when DUT was configured as AP and associated with 50+ STAs.
-> 
-> For QCA9984/QCA9888, the DMA_BURST_SIZE register controls the AXI burst size
-> of the RD/WR access to the HOST MEM.
-> 0 - No split , RAW read/write transfer size from MAC is put out on bus
->      as burst length
-> 1 - Split at 256 byte boundary
-> 2,3 - Reserved
-> 
-> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
-> issue happened. It broke PCIe spec and caused PCIe stuck. So revert
-> the default value from 0 to 1.
-> 
-> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
->           QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
->           Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
-> 
-> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
-> ---
-> v2: restored 10.2 register configuration
-> v3: modified commit message
-> v4: resolved conflicts
-> ---
->   drivers/net/wireless/ath/ath10k/hw.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-> index 21b7a2a..775fd62 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -816,7 +816,7 @@ ath10k_is_rssi_enable(struct ath10k_hw_params *hw,
->   
->   #define TARGET_10_4_TX_DBG_LOG_SIZE		1024
->   #define TARGET_10_4_NUM_WDS_ENTRIES		32
-> -#define TARGET_10_4_DMA_BURST_SIZE		0
-> +#define TARGET_10_4_DMA_BURST_SIZE		1
->   #define TARGET_10_4_MAC_AGGR_DELIM		0
->   #define TARGET_10_4_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK 1
->   #define TARGET_10_4_VOW_CONFIG			0
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
