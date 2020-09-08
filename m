@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFV27-00009a-A7
- for ath10k@lists.infradead.org; Tue, 08 Sep 2020 04:15:04 +0000
+ id 1kFWCc-0006U9-VN
+ for ath10k@lists.infradead.org; Tue, 08 Sep 2020 05:30:00 +0000
+Date: Tue, 08 Sep 2020 13:29:44 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 586f8e6779fa75ade112cb48606794e034e0ff1d
+Message-ID: <5f5716c8.yeRaJ3EwtLKT07vV%lkp@intel.com>
 MIME-Version: 1.0
-Date: Tue, 8 Sep 2020 04:15:00 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v5] ath10k: add atomic protection for device recovery
-In-Reply-To: <1597984288-4141-1-git-send-email-wgong@codeaurora.org>
-References: <1597984288-4141-1-git-send-email-wgong@codeaurora.org>
-Message-ID: <010101746bec91d6-f3b174b9-c663-49d1-babe-2917383e618c-000000@us-west-2.amazonses.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +17,163 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On 2020-08-21 12:31, Wen Gong wrote:
-v6 sent.
-https://patchwork.kernel.org/patch/11762445/
-[v6] ath10k: add atomic protection for device recovery
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 586f8e6779fa75ade112cb48606794e034e0ff1d  ath11k: fix uninitialized return in ath11k_spectral_process_data()
+
+elapsed time: 722m
+
+configs tested: 132
+configs skipped: 10
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                           ip27_defconfig
+arm                   milbeaut_m10v_defconfig
+alpha                               defconfig
+arc                              alldefconfig
+m68k                        m5272c3_defconfig
+mips                 decstation_r4k_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                     ep8248e_defconfig
+xtensa                              defconfig
+arm                          pxa910_defconfig
+arm                        spear3xx_defconfig
+powerpc                     powernv_defconfig
+arc                         haps_hs_defconfig
+arm                       netwinder_defconfig
+mips                           ci20_defconfig
+powerpc                     mpc5200_defconfig
+h8300                     edosk2674_defconfig
+sh                          urquell_defconfig
+sh                        apsh4ad0a_defconfig
+c6x                        evmc6472_defconfig
+xtensa                           alldefconfig
+powerpc                      ppc64e_defconfig
+mips                       capcella_defconfig
+arm                         assabet_defconfig
+riscv                          rv32_defconfig
+arm                         nhk8815_defconfig
+arm                      pxa255-idp_defconfig
+arm                  colibri_pxa270_defconfig
+nios2                               defconfig
+mips                     cu1000-neo_defconfig
+powerpc                      ppc6xx_defconfig
+mips                             allyesconfig
+sh                          sdk7786_defconfig
+arm                             ezx_defconfig
+mips                       lemote2f_defconfig
+arm                           spitz_defconfig
+arm                          ep93xx_defconfig
+arm                       versatile_defconfig
+sh                          r7785rp_defconfig
+openrisc                 simple_smp_defconfig
+s390                       zfcpdump_defconfig
+arm                       mainstone_defconfig
+sh                            shmin_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200907
+x86_64               randconfig-a004-20200907
+x86_64               randconfig-a005-20200907
+x86_64               randconfig-a001-20200907
+x86_64               randconfig-a002-20200907
+i386                 randconfig-a004-20200908
+i386                 randconfig-a005-20200908
+i386                 randconfig-a006-20200908
+i386                 randconfig-a002-20200908
+i386                 randconfig-a001-20200908
+i386                 randconfig-a003-20200908
+i386                 randconfig-a004-20200907
+i386                 randconfig-a005-20200907
+i386                 randconfig-a006-20200907
+i386                 randconfig-a002-20200907
+i386                 randconfig-a003-20200907
+i386                 randconfig-a001-20200907
+x86_64               randconfig-a013-20200908
+x86_64               randconfig-a016-20200908
+x86_64               randconfig-a011-20200908
+x86_64               randconfig-a015-20200908
+x86_64               randconfig-a014-20200908
+i386                 randconfig-a016-20200907
+i386                 randconfig-a015-20200907
+i386                 randconfig-a011-20200907
+i386                 randconfig-a013-20200907
+i386                 randconfig-a014-20200907
+i386                 randconfig-a012-20200907
+i386                 randconfig-a016-20200908
+i386                 randconfig-a011-20200908
+i386                 randconfig-a013-20200908
+i386                 randconfig-a012-20200908
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20200908
+x86_64               randconfig-a006-20200908
+x86_64               randconfig-a003-20200908
+x86_64               randconfig-a001-20200908
+x86_64               randconfig-a005-20200908
+x86_64               randconfig-a002-20200908
+x86_64               randconfig-a013-20200907
+x86_64               randconfig-a011-20200907
+x86_64               randconfig-a016-20200907
+x86_64               randconfig-a012-20200907
+x86_64               randconfig-a015-20200907
+x86_64               randconfig-a014-20200907
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
