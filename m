@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFWbc-00082L-Nz
- for ath10k@lists.infradead.org; Tue, 08 Sep 2020 05:55:50 +0000
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kFhji-0000BP-MX
+ for ath10k@lists.infradead.org; Tue, 08 Sep 2020 17:48:55 +0000
+Subject: Re: [PATCH,v4] Revert "ath10k: fix DMA related firmware crashes on
+ multiple devices"
+References: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <79a88865-6df5-e7a4-deb6-6025cc9d87e4@candelatech.com>
+Date: Tue, 8 Sep 2020 10:48:49 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] ath10k: allow dynamic SAR power limits to be
- configured
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1595823458-3926-3-git-send-email-wgong@codeaurora.org>
-References: <1595823458-3926-3-git-send-email-wgong@codeaurora.org>
-Message-ID: <010101746c48d05e-6c913ae9-09f9-41d1-a1fc-214f3d204041-000000@us-west-2.amazonses.com>
-Date: Tue, 8 Sep 2020 05:55:45 +0000
+In-Reply-To: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
+Content-Language: en-MW
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +21,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Zhi Chen <zhichen@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Hello,
 
-> Add support for a vendor command for STATION, the command
-> QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS which is already defined in
-> git://w1.fi/hostap.git (src/command/qca-vendor.h). This allows user
-> space to configure power limits for 2.4 GHz and 5 GHz bands.
-> 
-> ath10k set pdev parameter WMI_PDEV_PARAM_TXPOWER_LIMIT2G and
-> WMI_PDEV_PARAM_TXPOWER_LIMIT5G to firmware, the 2 value will
-> be used as one input source to affect the tx power.
-> 
-> When QCA_NL80211_VENDOR_SUBCMD_SET_SAR_LIMITS set to ath10k, it will
-> be saved the 2.4G and 5G limit value, If STATION is connected meanwhile,
-> then the 2.4G and 5G WMI command will be set to firmware, otherwise
-> it will not set to firmware at this moment. When STATION connect
-> next time, it will set to firmware.
-> 
-> Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Just FYI:  I added this patch to my ath10k-ct driver, and a user reported it causes
+regressions on his particular 9888 system when using ath10k-ct wave-2 firmware:
 
-The plan is to have a common API for SAR limits, not use vendor API.
+[   21.204868] ath10k_pci 0000:00:00.0: qca9888 hw2.0 target 0x01000000 chip_id 0x00000000 sub 0000:0000
+[   21.214437] ath10k_pci 0000:00:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 0
+[   21.233298] ath10k_pci 0000:00:00.0: firmware ver 10.4b-ct-9888-tH-13-8c5b2baa2 api 5 features 
+mfp,peer-flow-ctrl,txstatus-noack,wmi-10.x-CT,ratemask-CT,regdump-CT,txrate-CT,flush-all-CT,pingpong-CT,ch-regs-CT,nop-CT,htt-mgt-CT,set-special-CT,no-bmiss-CT,tx-rc-CT,cust-stats-CT,txrate2-CT,beacon-cb-CT,wmi-block-ack-CT,wmi-bcn-rc-CT 
+crc32 a00b5f36
+[   21.596684] ath10k_pci 0000:00:00.0: board_file api 2 bmi_id 0:20 crc32 5bb32c02[   23.546156] ath10k_pci 0000:00:00.0: unsupported HTC service id: 1536
 
-Patch set to Rejected.
+I'll revert this for the 9888 chipset (at least) in my driver, possibly you need to do similar.
+
+https://github.com/greearb/ath10k-ct/issues/153
+
+Thanks,
+Ben
+
+On 1/13/20 8:35 PM, Zhi Chen wrote:
+> This reverts commit 76d164f582150fd0259ec0fcbc485470bcd8033e.
+> PCIe hung issue was observed on multiple platforms. The issue was reproduced
+> when DUT was configured as AP and associated with 50+ STAs.
+> 
+> For QCA9984/QCA9888, the DMA_BURST_SIZE register controls the AXI burst size
+> of the RD/WR access to the HOST MEM.
+> 0 - No split , RAW read/write transfer size from MAC is put out on bus
+>      as burst length
+> 1 - Split at 256 byte boundary
+> 2,3 - Reserved
+> 
+> With PCIe protocol analyzer, we can see DMA Read crossing 4KB boundary when
+> issue happened. It broke PCIe spec and caused PCIe stuck. So revert
+> the default value from 0 to 1.
+> 
+> Tested:  IPQ8064 + QCA9984 with firmware 10.4-3.10-00047
+>           QCS404 + QCA9984 with firmware 10.4-3.9.0.2--00044
+>           Synaptics AS370 + QCA9888  with firmware 10.4-3.9.0.2--00040
+> 
+> Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
+> ---
+> v2: restored 10.2 register configuration
+> v3: modified commit message
+> v4: resolved conflicts
+> ---
+>   drivers/net/wireless/ath/ath10k/hw.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 21b7a2a..775fd62 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -816,7 +816,7 @@ ath10k_is_rssi_enable(struct ath10k_hw_params *hw,
+>   
+>   #define TARGET_10_4_TX_DBG_LOG_SIZE		1024
+>   #define TARGET_10_4_NUM_WDS_ENTRIES		32
+> -#define TARGET_10_4_DMA_BURST_SIZE		0
+> +#define TARGET_10_4_DMA_BURST_SIZE		1
+>   #define TARGET_10_4_MAC_AGGR_DELIM		0
+>   #define TARGET_10_4_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK 1
+>   #define TARGET_10_4_VOW_CONFIG			0
+> 
+
 
 -- 
-https://patchwork.kernel.org/patch/11686327/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
