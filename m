@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kG6Wr-0003Im-3L
- for ath10k@lists.infradead.org; Wed, 09 Sep 2020 20:17:18 +0000
-Date: Thu, 10 Sep 2020 04:17:08 +0800
+ id 1kG6Wz-0003Ke-ST
+ for ath10k@lists.infradead.org; Wed, 09 Sep 2020 20:17:27 +0000
+Date: Thu, 10 Sep 2020 04:17:06 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 00c578c77ee7571c5d1c3bbee575d71707865f7c
-Message-ID: <5f593844.KakEbtEnp545TwW5%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 1dd974d9bfa2af5061cfe72a60329dfd7ffae014
+Message-ID: <5f593842.+lpODtfzvdOflAKd%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 00c578c77ee7571c5d1c3bbee575d71707865f7c  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 1dd974d9bfa2af5061cfe72a60329dfd7ffae014  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 724m
 
-configs tested: 153
-configs skipped: 17
+configs tested: 128
+configs skipped: 14
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -42,14 +42,10 @@ arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                             mxs_defconfig
-arm                            zeus_defconfig
-powerpc                 linkstation_defconfig
-sparc64                             defconfig
-h8300                       h8s-sim_defconfig
-mips                      fuloong2e_defconfig
-sh                         apsh4a3a_defconfig
-arm                      footbridge_defconfig
-sh                         ecovec24_defconfig
+powerpc                     mpc5200_defconfig
+sh                   sh7724_generic_defconfig
+c6x                              allyesconfig
+arm                          simpad_defconfig
 c6x                        evmc6678_defconfig
 arm                        vexpress_defconfig
 c6x                        evmc6472_defconfig
@@ -57,42 +53,29 @@ i386                             allyesconfig
 mips                malta_kvm_guest_defconfig
 sh                            shmin_defconfig
 powerpc                        cell_defconfig
-powerpc                     powernv_defconfig
-powerpc                      mgcoge_defconfig
-arm                        neponset_defconfig
-m68k                        stmark2_defconfig
 mips                      loongson3_defconfig
 arm                          lpd270_defconfig
 mips                         cobalt_defconfig
 sh                     magicpanelr2_defconfig
-arm                       mainstone_defconfig
-mips                           mtx1_defconfig
-sh                          r7785rp_defconfig
-arc                           tb10x_defconfig
-arm                        spear3xx_defconfig
 arm                           sama5_defconfig
 arm                       netwinder_defconfig
 microblaze                      mmu_defconfig
 sh                           se7721_defconfig
-sparc                       sparc64_defconfig
-arm                          badge4_defconfig
-arm                            dove_defconfig
-arm                         lpc18xx_defconfig
-mips                           jazz_defconfig
-m68k                       m5249evb_defconfig
-arm                         assabet_defconfig
-arc                          axs101_defconfig
-mips                       bmips_be_defconfig
-powerpc                     mpc83xx_defconfig
-m68k                           sun3_defconfig
+mips                  cavium_octeon_defconfig
+sh                         microdev_defconfig
+mips                            gpr_defconfig
+sh                          lboxre2_defconfig
+powerpc                       maple_defconfig
+arm                          gemini_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                       ppc64_defconfig
+arm                           spitz_defconfig
+sh                           sh2007_defconfig
+mips                        jmr3927_defconfig
+powerpc                      ppc64e_defconfig
 powerpc                     mpc512x_defconfig
-sh                        sh7757lcr_defconfig
-s390                             allyesconfig
-arm                        cerfcube_defconfig
-sh                             shx3_defconfig
 mips                         bigsur_defconfig
 s390                                defconfig
-m68k                                defconfig
 arm                    vt8500_v6_v7_defconfig
 arm                  colibri_pxa300_defconfig
 xtensa                generic_kc705_defconfig
@@ -101,24 +84,18 @@ um                            kunit_defconfig
 nios2                         3c120_defconfig
 arm                       aspeed_g5_defconfig
 mips                           rs90_defconfig
-arm                        clps711x_defconfig
-arc                        vdk_hs38_defconfig
-openrisc                         alldefconfig
 sh                         ap325rxa_defconfig
 arm                        mvebu_v7_defconfig
 arm                       spear13xx_defconfig
 openrisc                 simple_smp_defconfig
 arm                          collie_defconfig
-sh                           se7750_defconfig
 arm                         hackkit_defconfig
-arm                          gemini_defconfig
-sh                         microdev_defconfig
-arm                          ixp4xx_defconfig
 nds32                               defconfig
 arm                      tct_hammer_defconfig
 powerpc                           allnoconfig
 powerpc                  mpc885_ads_defconfig
 mips                           ip28_defconfig
+sh                         apsh4a3a_defconfig
 sh                          landisk_defconfig
 arc                     haps_hs_smp_defconfig
 arm                           tegra_defconfig
@@ -126,18 +103,12 @@ sparc                               defconfig
 parisc                generic-32bit_defconfig
 arm                         s5pv210_defconfig
 h8300                               defconfig
-sh                           se7206_defconfig
-xtensa                    xip_kc705_defconfig
-mips                          rb532_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
+m68k                                defconfig
 m68k                             allyesconfig
 m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
 nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
@@ -147,9 +118,13 @@ h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
+s390                             allyesconfig
 parisc                           allyesconfig
 sparc                            allyesconfig
 i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                             defconfig
