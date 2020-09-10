@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGMIY-000366-UY
- for ath10k@lists.infradead.org; Thu, 10 Sep 2020 13:07:38 +0000
-Received: by mail-wr1-x441.google.com with SMTP id j2so6633978wrx.7
- for <ath10k@lists.infradead.org>; Thu, 10 Sep 2020 06:07:33 -0700 (PDT)
-References: <87wo251d5n.fsf@linaro.org> <875z9hlhfe.fsf@codeaurora.org>
-From: Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-Subject: Re: ath10k regression on 5.8.0 on Dell XPS?
-In-reply-to: <875z9hlhfe.fsf@codeaurora.org>
-Date: Thu, 10 Sep 2020 14:07:30 +0100
-Message-ID: <87d02tpyp9.fsf@linaro.org>
+ id 1kGMMa-00045m-5l
+ for ath10k@lists.infradead.org; Thu, 10 Sep 2020 13:11:45 +0000
+From: "Rakesh Pillai" <pillair@codeaurora.org>
+References: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>	<87y2ls4lbf.fsf@codeaurora.org>	<0101017459fdd62b-791355e4-ea88-4142-96a7-06849bcd7b09-000000@us-west-2.amazonses.com>
+ <87k0x51rz3.fsf@codeaurora.org>
+In-Reply-To: <87k0x51rz3.fsf@codeaurora.org>
+Subject: RE: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+Date: Thu, 10 Sep 2020 13:11:39 +0000
+Message-ID: <0101017478249b99-fc94cd2c-c680-410a-8762-fd0ef9bdce04-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,149 +20,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: 'Kalle Valo' <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-CkthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEub3JnPiB3cml0ZXM6Cgo+IEFsZXggQmVubsOp
-ZSA8YWxleC5iZW5uZWVAbGluYXJvLm9yZz4gd3JpdGVzOgo+Cj4+IEhpLAo+Pgo+PiBJbiBhdHRl
-bXB0aW5nIHRvIGZpeCBhIHNvbWV3aGF0IGludGVybWl0dGVudCBibHVldG9vdGggc3RhcnR1cCBv
-biBteQo+PiBEZWxsIFhQUzE1IDk1NjAgSSB1cGdyYWRlZCB0aGUga2VybmVsIHRvIDUuOC4wIGFu
-ZCBsb3N0IGFsbCBjb25uZWN0aXZpdHkKPj4gKHdpcmVsZXNzIGFuZCBibHVldG9vdGgpLiBJIGhh
-ZCBkZWJ1Z2dpbmcgdHVybmVkIG9uIHNvIGdvdCBhIGxvZyBmdWxsIG9mCj4+IGNvbXBsYWludHMg
-YXMgdGhlIGRyaXZlciB0cmllZCB0byBzdGFydHVwOgo+Pgo+PiAgIFsgICAgMC4wMDAwMDBdIG1p
-Y3JvY29kZTogbWljcm9jb2RlIHVwZGF0ZWQgZWFybHkgdG8gcmV2aXNpb24gMHhkNiwgZGF0ZSA9
-IDIwMjAtMDQtMjMKPj4gICBbICAgIDAuMDAwMDAwXSBMaW51eCB2ZXJzaW9uIDUuOC4wIChhbGV4
-QHJvZ3VlKSAoZ2NjIChVYnVudHUgOS4zLjAtMTB1YnVudHUyKSA5LjMuMCwgR05VIGxkIChHTlUg
-QmludXRpbHMgZm9yIFVidW50dSkgMi4zNCkgIzI3IFNNUCBNb24gQXVnIDEwIDIyOjMxOjAxIEJT
-VCAyMDIwCj4+ICAgWyAgICAwLjAwMDAwMF0gQ29tbWFuZCBsaW5lOiBCT09UX0lNQUdFPS92bWxp
-bnV6LTUuOC4wIHJvb3Q9L2Rldi9tYXBwZXIvdmd1YnVudHUtcm9vdCBybyBtb2Rlc2V0PTEgZW5h
-YmxlX2ZiYz0xIGVuYWJsZV9ndWM9MyBxdWlldCBzcGxhc2ggdnQuaGFuZG9mZj03Cj4+ICAgWyAg
-ICAwLjAwMDAwMF0gS0VSTkVMIHN1cHBvcnRlZCBjcHVzOgo+PiAgIFsgICAgMC4wMDAwMDBdICAg
-SW50ZWwgR2VudWluZUludGVsCj4+ICAgPHNuaXA+Cj4+ICAgWyAgIDE1LjMyNjUzOF0gc3lzdGVt
-ZFsxXTogUmVhY2hlZCB0YXJnZXQgQ29udGFpbmVycy4KPj4gICBbICAgMTUuMzI3MTAyXSBzeXN0
-ZW1kWzFdOiBTdGFydGVkIEpvdXJuYWwgU2VydmljZS4KPj4gICBbICAgMTUuMzM0Njc1XSBzeXN0
-ZW1kLWpvdXJuYWxkWzU4M106IFJlY2VpdmVkIGNsaWVudCByZXF1ZXN0IHRvIGZsdXNoIHJ1bnRp
-bWUgam91cm5hbC4KPj4gICBbICAgMTUuNjIxMzc1XSBtZWlfaGRjcCAwMDAwOjAwOjE2LjAtYjYz
-OGFiN2UtOTRlMi00ZWEyLWE1NTItZDFjNTRiNjI3ZjA0OiBib3VuZCAwMDAwOjAwOjAyLjAgKG9w
-cyBpOTE1X2hkY3BfY29tcG9uZW50X29wcyBbaTkxNV0pCj4+ICAgWyAgIDE1LjY0Mzc2Ml0gYXRo
-MTBrX3BjaSAwMDAwOjAyOjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+PiAg
-IFsgICAxNS42NDU1NDNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBwY2kgaXJxIG1zaSBvcGVy
-X2lycV9tb2RlIDIgaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPj4gICBbICAgMTUuNzMyODY1XSBp
-bnB1dDogRExMMDdCRTowMSAwNkNCOjdBMTMgTW91c2UgYXMgL2RldmljZXMvcGNpMDAwMDowMC8w
-MDAwOjAwOjE1LjEvaTJjX2Rlc2lnbndhcmUuMS9pMmMtMS9pMmMtRExMMDdCRTowMS8wMDE4OjA2
-Q0I6N0ExMy4wMDAxL2lucHV0L2lucHV0MjEKPj4gICBbICAgMTUuNzMyOTY1XSBpbnB1dDogRExM
-MDdCRTowMSAwNkNCOjdBMTMgVG91Y2hwYWQgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAw
-OjE1LjEvaTJjX2Rlc2lnbndhcmUuMS9pMmMtMS9pMmMtRExMMDdCRTowMS8wMDE4OjA2Q0I6N0Ex
-My4wMDAxL2lucHV0L2lucHV0MjIKPj4gICBbICAgMTUuNzMzMDQzXSBoaWQtbXVsdGl0b3VjaCAw
-MDE4OjA2Q0I6N0ExMy4wMDAxOiBpbnB1dCxoaWRyYXcwOiBJMkMgSElEIHYxLjAwIE1vdXNlIFtE
-TEwwN0JFOjAxIDA2Q0I6N0ExM10gb24gaTJjLURMTDA3QkU6MDEKPj4gICBbICAgMTUuOTIzNjAy
-XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAw
-MCBjaGlwX2lkIDB4MDAzNDBhZmYgc3ViIDFhNTY6MTUzNQo+PiAgIFsgICAxNS45MjM2MDRdIGF0
-aDEwa19wY2kgMDAwMDowMjowMC4wOiBrY29uZmlnIGRlYnVnIDEgZGVidWdmcyAxIHRyYWNpbmcg
-MSBkZnMgMCB0ZXN0bW9kZSAwCj4+ICAgWyAgIDE1LjkyNDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IGZpcm13YXJlIHZlciBXTEFOLlJNLjQuNC4xLTAwMTQwLVFDQVJNU1dQWi0xIGFwaSA2
-IGZlYXR1cmVzIHdvd2xhbixpZ25vcmUtb3RwLG1mcCBjcmMzMiAyOWViOGNhMQo+PiAgIFsgICAx
-NS45NjIzMDhdIEVYVDQtZnMgKG52bWUwbjFwMik6IG1vdW50ZWQgZmlsZXN5c3RlbSB3aXRoIG9y
-ZGVyZWQgZGF0YSBtb2RlLiBPcHRzOiAobnVsbCkKPj4gICBbICAgMTUuOTg5NDI1XSBhdGgxMGtf
-cGNpIDAwMDA6MDI6MDAuMDogYm9hcmRfZmlsZSBhcGkgMiBibWlfaWQgTi9BIGNyYzMyIDRhYzA4
-ODliCj4+ICAgWyAgIDE2LjA4MTE4OV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGh0dC12ZXIg
-My42MCB3bWktb3AgNCBodHQtb3AgMyBjYWwgb3RwIG1heC1zdGEgMzIgcmF3IDAgaHdjcnlwdG8g
-MQo+PiAgIFsgICAxNi4xNjE5MjRdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHg2Ywo+PiAgIFsg
-ICAxNi4xNjE5MjVdIGF0aDogRUVQUk9NIGluZGljYXRlcyB3ZSBzaG91bGQgZXhwZWN0IGEgZGly
-ZWN0IHJlZ3BhaXIgbWFwCj4+ICAgWyAgIDE2LjE2MTkyN10gYXRoOiBDb3VudHJ5IGFscGhhMiBi
-ZWluZyB1c2VkOiAwMAo+PiAgIFsgICAxNi4xNjE5MjddIGF0aDogUmVncGFpciB1c2VkOiAweDZj
-Cj4+ICAgWyAgIDE2LjE2NjQzNl0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjAgd2xwMnMwOiByZW5h
-bWVkIGZyb20gd2xhbjAKPj4gICBbICAgMTYuMjAzNTc3XSBhdWRpdDogdHlwZT0xNDAwIGF1ZGl0
-KDE1OTcwOTUyODQuMTI0OjIpOiBhcHBhcm1vcj0iU1RBVFVTIiBvcGVyYXRpb249InByb2ZpbGVf
-bG9hZCIgcHJvZmlsZT0idW5jb25maW5lZCIgbmFtZT0ibGlicmVvZmZpY2Utc2VuZGRvYyIgcGlk
-PTg5NyBjb21tPSJhcHBhcm1vcl9wYXJzZXIiCj4+ICAgWyAgIDE2LjIwNTM3OV0gYXVkaXQ6IHR5
-cGU9MTQwMCBhdWRpdCgxNTk3MDk1Mjg0LjEyODozKTogYXBwYXJtb3I9IlNUQVRVUyIgb3BlcmF0
-aW9uPSJwcm9maWxlX2xvYWQiIHByb2ZpbGU9InVuY29uZmluZWQiIG5hbWU9ImxzYl9yZWxlYXNl
-IiBwaWQ9ODkzIGNvbW09ImFwcGFybW9yX3BhcnNlciIKPj4gICBbICAgMTYuMjYwNzYyXSBhdWRp
-dDogdHlwZT0xNDAwIGF1ZGl0KDE1OTcwOTUyODQuMTg0OjQpOiBhcHBhcm1vcj0iU1RBVFVTIiBv
-cGVyYXRpb249InByb2ZpbGVfbG9hZCIgcHJvZmlsZT0idW5jb25maW5lZCIgbmFtZT0ibGlidmly
-dGQiIHBpZD04OTIgY29tbT0iYXBwYXJtb3JfcGFyc2VyIgo+PiAgIFsgICAxNi4yNjE4OTRdIGF1
-ZGl0OiB0eXBlPTE0MDAgYXVkaXQoMTU5NzA5NTI4NC4xODQ6NSk6IGFwcGFybW9yPSJTVEFUVVMi
-IG9wZXJhdGlvbj0icHJvZmlsZV9sb2FkIiBwcm9maWxlPSJ1bmNvbmZpbmVkIiBuYW1lPSJsaWJ2
-aXJ0ZC8vcWVtdV9icmlkZ2VfaGVscGVyIiBwaWQ9ODkyIGNvbW09ImFwcGFybW9yX3BhcnNlciIK
-Pj4gICBbICAgMTYuMjcyMTI4XSBhdWRpdDogdHlwZT0xNDAwIGF1ZGl0KDE1OTcwOTUyODQuMTky
-OjYpOiBhcHBhcm1vcj0iU1RBVFVTIiBvcGVyYXRpb249InByb2ZpbGVfbG9hZCIgcHJvZmlsZT0i
-dW5jb25maW5lZCIgbmFtZT0iL3Vzci9zYmluL2N1cHMtYnJvd3NlZCIgcGlkPTg5MSBjb21tPSJh
-cHBhcm1vcl9wYXJzZXIiCj4+ICAgWyAgIDE2LjI5OTA3MF0gYXVkaXQ6IHR5cGU9MTQwMCBhdWRp
-dCgxNTk3MDk1Mjg0LjIyMDo3KTogYXBwYXJtb3I9IlNUQVRVUyIgb3BlcmF0aW9uPSJwcm9maWxl
-X2xvYWQiIHByb2ZpbGU9InVuY29uZmluZWQiIG5hbWU9Ii91c3Ivc2Jpbi90Y3BkdW1wIiBwaWQ9
-ODk1IGNvbW09ImFwcGFybW9yX3BhcnNlciIKPj4gICBbICAgMTYuMzEzNzE4XSBhdWRpdDogdHlw
-ZT0xNDAwIGF1ZGl0KDE1OTcwOTUyODQuMjM2OjgpOiBhcHBhcm1vcj0iU1RBVFVTIiBvcGVyYXRp
-b249InByb2ZpbGVfbG9hZCIgcHJvZmlsZT0idW5jb25maW5lZCIgbmFtZT0ibnZpZGlhX21vZHBy
-b2JlIiBwaWQ9OTA3IGNvbW09ImFwcGFybW9yX3BhcnNlciIKPj4gICBbICAgMTYuMzE0ODY1XSBh
-dWRpdDogdHlwZT0xNDAwIGF1ZGl0KDE1OTcwOTUyODQuMjM2OjkpOiBhcHBhcm1vcj0iU1RBVFVT
-IiBvcGVyYXRpb249InByb2ZpbGVfbG9hZCIgcHJvZmlsZT0idW5jb25maW5lZCIgbmFtZT0ibnZp
-ZGlhX21vZHByb2JlLy9rbW9kIiBwaWQ9OTA3IGNvbW09ImFwcGFybW9yX3BhcnNlciIKPj4gICBb
-ICAgMTYuMzI5OTgxXSBhdWRpdDogdHlwZT0xNDAwIGF1ZGl0KDE1OTcwOTUyODQuMjUyOjEwKTog
-YXBwYXJtb3I9IlNUQVRVUyIgb3BlcmF0aW9uPSJwcm9maWxlX2xvYWQiIHByb2ZpbGU9InVuY29u
-ZmluZWQiIG5hbWU9ImlwcHVzYnhkIiBwaWQ9OTEzIGNvbW09ImFwcGFybW9yX3BhcnNlciIKPj4g
-ICBbICAgMTYuMzU5NTAxXSBhdWRpdDogdHlwZT0xNDAwIGF1ZGl0KDE1OTcwOTUyODQuMjgwOjEx
-KTogYXBwYXJtb3I9IlNUQVRVUyIgb3BlcmF0aW9uPSJwcm9maWxlX2xvYWQiIHByb2ZpbGU9InVu
-Y29uZmluZWQiIG5hbWU9ImxpYnJlb2ZmaWNlLW9vcHNsYXNoIiBwaWQ9OTE0IGNvbW09ImFwcGFy
-bW9yX3BhcnNlciIKPj4gICBbICAgMTcuMzUyNjUwXSBBZGRpbmcgMTAwMzUxNmsgc3dhcCBvbiAv
-ZGV2L21hcHBlci92Z3VidW50dS1zd2FwXzEuICBQcmlvcml0eTotMiBleHRlbnRzOjEgYWNyb3Nz
-OjEwMDM1MTZrIFNTRlMKPj4gICBbICAgMjEuOTcyNjE3XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAu
-MDogZmFpbGVkIHRvIHJlY2VpdmUgY29udHJvbCByZXNwb25zZSBjb21wbGV0aW9uLCBwb2xsaW5n
-Li4KPj4gICBbICAgMjIuMDAzMjc3XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogZmFpbGVkIHRv
-IHdha2UgdGFyZ2V0IGZvciB3cml0ZTMyIG9mIDB4MDAwMDAwMDEgYXQgMHgwMDAzNDQzMDogLTEx
-MAo+PiAgIFsgICAyMi4wMzQwODhdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWlsZWQgdG8g
-d2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDM0NDQ0OiAtMTEwCj4+ICAgWyAgIDIyLjA2
-NDc3Nl0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Ig
-d3JpdGUzMiBvZiAweDAwMDAwMDFlIGF0IDB4MDAwMzQ0MzA6IC0xMTAKPj4gICBbICAgMjIuMDk1
-NTY0XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciB3
-cml0ZTMyIG9mIDB4MDAwMDAwMDEgYXQgMHgwMDAzNDgzMDogLTExMAo+PiAgIFsgICAyMi4xMjYx
-MjVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdy
-aXRlMzIgb2YgMHgwMDAwMDAwMSBhdCAweDAwMDM1NDMwOiAtMTEwCj4+ICAgWyAgIDIyLjE1Njgy
-N10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgcmVh
-ZDMyIGF0IDB4MDAwMzU0NDQ6IC0xMTAKPj4gICBbICAgMjIuMTg3NDYzXSBhdGgxMGtfcGNpIDAw
-MDA6MDI6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciB3cml0ZTMyIG9mIDB4MDAwMDAw
-MWUgYXQgMHgwMDAzNTQzMDogLTExMAo+PiAgIFsgICAyMi4yMTgyMDJdIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHgwMDAwMDAx
-ZSBhdCAweDAwMDM0ODMwOiAtMTEwCj4+ICAgWyAgIDIyLjI0ODc3OF0gYXRoMTBrX3BjaSAwMDAw
-OjAyOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Igd3JpdGUzMiBvZiAweDAwMDAwMDAx
-IGF0IDB4MDAwMzRjMzA6IC0xMTAKPj4gICBbICAgMjIuODc4MTUyXSByZmtpbGw6IGlucHV0IGhh
-bmRsZXIgZGlzYWJsZWQKPj4gICBbICAgMjMuNjY4OTA0XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAu
-MDogY3RsX3Jlc3AgbmV2ZXIgY2FtZSBpbiAoLTExMCkKPj4gICBbICAgMjMuNjY4OTE4XSBhdGgx
-MGtfcGNpIDAwMDA6MDI6MDAuMDogZmFpbGVkIHRvIGNvbm5lY3QgdG8gSFRDOiAtMTEwCj4+ICAg
-WyAgIDI2Ljk4NDEyMl0gYXRoMTBrX3dhcm46IDEwNCBjYWxsYmFja3Mgc3VwcHJlc3NlZAo+PiAg
-IFsgICAyNi45ODQxMjRdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWlsZWQgdG8gd2FrZSB0
-YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDA4OiAtMTEwCj4+ICAgWyAgIDI3LjAyMDQ5OV0g
-YXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMy
-IGF0IDB4MDAwM2EwMDA6IC0xMTAKPj4gICBbICAgMjcuMDUxMTgzXSBhdGgxMGtfcGNpIDAwMDA6
-MDI6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciB3cml0ZTMyIG9mIDB4ZmZmZmY3ZmYg
-YXQgMHgwMDAzYTAwMDogLTExMAo+PiAgIFsgICAyNy4wODM3MTJdIGF0aDEwa19wY2kgMDAwMDow
-MjowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDAwODAwOiAt
-MTEwCj4+ICAgWyAgIDI3LjEyMDE4NF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0
-byB3YWtlIHRhcmdldCBmb3Igd3JpdGUzMiBvZiAweGZmZmZmZmZmIGF0IDB4MDAwMDA4MDA6IC0x
-MTAKPj4gICBbICAgMjcuMTU2NTU1XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogZmFpbGVkIHRv
-IHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAwMDgwMDogLTExMAo+PiAgIFsgICAyNy4y
-MDkzMjJdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9y
-IHJlYWQzMiBhdCAweDAwMDAwODAwOiAtMTEwCj4+ICAgWyAgIDI3LjI0NTczMV0gYXRoMTBrX3Bj
-aSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Igd3JpdGUzMiBvZiAweGZm
-ZmZmZmZmIGF0IDB4MDAwMDA4MDA6IC0xMTAKPj4gICBbICAgMjcuMjgyMTM1XSBhdGgxMGtfcGNp
-IDAwMDA6MDI6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAw
-MDgwMDogLTExMAo+PiAgIFsgICAyNy4zNDExODRdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBm
-YWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHgwMDAwMDAwMCBhdCAweDAwMDNh
-MDI4OiAtMTEwCj4+ICAgWyAgIDMxLjk4OTk2OV0gYXRoMTBrX3dhcm46IDEyNyBjYWxsYmFja3Mg
-c3VwcHJlc3NlZAo+PiAgIDxzbmlwPgo+Pgo+PiBhbmQgc28gb24gKGZ1bGwgZG1lc2cgaW4gYXR0
-YWNobWVudCkuIFJlYm9vdGluZyB0byA1LjcuMTQgcmVzdG9yZWQgd2lmaS4KPgo+IEhvdyBtYW55
-IHRpbWVzIGRpZCB5b3UgdHJ5IHY1LjggYW5kIGhvdyBtYW55IHRpbWVzIGRpZCB5b3Ugc2VlIHRo
-aXMKPiBwcm9ibGVtIG9uIHRob3NlIHRyaWVzPyBKdXN0IHRyeWluZyB0byB1bmRlcnN0YW5kIGlm
-IHRoaXMgYSByYW5kb20KPiBwcm9ibGVtIG9yIGEgY29uc2lzdGVudCBwcm9ibGVtLgoKQXBvbG9n
-aWVzIGZvciB0aGUgbGF0ZSByZXBseSAtIGl0IHNlZW1zIHRvIGJlIGEgdHJhbnNpZW50IHByb2Js
-ZW0gYWZ0ZXIKYSBjb2xkIHJlYm9vdC4gSSBoYXZlIHNpbmNlIG1hbmFnZWQgdG8gYm9vdCB1cCB3
-aXRoIHRoZSBsYXRlc3Qga2VybmVsCmFuZCBnZXQgV2lGaSBhbHRob3VnaCBzb21ldGltZXMgdGhl
-IGNoYW5uZWwgZHJvcHMgb3V0IHVudGlsIEkgcmVjb25uZWN0CnRvIGEgbmV3IEFQLiBUaGlzIHNl
-ZW1zIHRvIGJlIGEgZGlmZmVyZW50IHByb2JsZW0gdGhvdWdoLiAKCi0tIApBbGV4IEJlbm7DqWUK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+
+> -----Original Message-----
+> From: Kalle Valo <kvalo@codeaurora.org>
+> Sent: Monday, September 7, 2020 9:48 PM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+> ath10k@lists.infradead.org
+> Subject: Re: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+> 
+> "Rakesh Pillai" <pillair@codeaurora.org> writes:
+> 
+> >> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> >> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> >> > @@ -576,6 +576,8 @@ static int
+> ath10k_qmi_cap_send_sync_msg(struct
+> >> ath10k_qmi *qmi)
+> >> >  	if (resp->chip_info_valid) {
+> >> >  		qmi->chip_info.chip_id = resp->chip_info.chip_id;
+> >> >  		qmi->chip_info.chip_family =
+resp->chip_info.chip_family;
+> >> > +	} else {
+> >> > +		qmi->chip_info.chip_id = 0xFF;
+> >> >  	}
+> >>
+> >> So you hard code chip_id to 0xff if it's not valid. Is it 100%
+> >> guaranteed that there never will be a chip id with 0xff?
+> >
+> > 0x0 and 0xff are invalid chip id and are are not used.
+> > If the chip_id read fails, we fallback to the default board data.
+> > 0xff is used to go to the default board data (Also this is in alignment
+with
+> > the current implementation of board_id)
+> >
+> > Does that make sense ?
+> 
+> I'm a bit hesitant, over the years I have seen cases so many cases where
+> "foo is not used anywhere" and later that foo is actually used
+> somewhere. 0xff means that there's only 254 different values, but I
+> guess there are not that many chip ids? So a chip id is very different
+> from a board id, right?
+
+Yes that's correct.
+Chip id is already being used in case of qca6174 (pci bus)
+We are bringing this to snoc bus chipset (WCN3990)
+
+> 
+> --
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
+> atches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
