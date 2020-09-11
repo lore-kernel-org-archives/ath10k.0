@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGMMa-00045m-5l
- for ath10k@lists.infradead.org; Thu, 10 Sep 2020 13:11:45 +0000
-From: "Rakesh Pillai" <pillair@codeaurora.org>
-References: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>	<87y2ls4lbf.fsf@codeaurora.org>	<0101017459fdd62b-791355e4-ea88-4142-96a7-06849bcd7b09-000000@us-west-2.amazonses.com>
- <87k0x51rz3.fsf@codeaurora.org>
-In-Reply-To: <87k0x51rz3.fsf@codeaurora.org>
-Subject: RE: [PATCH] ath10k: Use bdf calibration variant for snoc targets
-Date: Thu, 10 Sep 2020 13:11:39 +0000
-Message-ID: <0101017478249b99-fc94cd2c-c680-410a-8762-fd0ef9bdce04-000000@us-west-2.amazonses.com>
+ id 1kGdLT-0006GZ-98
+ for ath10k@lists.infradead.org; Fri, 11 Sep 2020 07:19:44 +0000
+Date: Fri, 11 Sep 2020 15:19:15 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ f2ac9281c034ac5917879b6712ec987219b88bfb
+Message-ID: <5f5b24f3.nuY1MXEgeVFRpzfJ%lkp@intel.com>
 MIME-Version: 1.0
-Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +21,143 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Kalle Valo' <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: f2ac9281c034ac5917879b6712ec987219b88bfb  Merge branch 'pending' into master-pending
 
+elapsed time: 723m
 
-> -----Original Message-----
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Sent: Monday, September 7, 2020 9:48 PM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
-> ath10k@lists.infradead.org
-> Subject: Re: [PATCH] ath10k: Use bdf calibration variant for snoc targets
-> 
-> "Rakesh Pillai" <pillair@codeaurora.org> writes:
-> 
-> >> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> >> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> >> > @@ -576,6 +576,8 @@ static int
-> ath10k_qmi_cap_send_sync_msg(struct
-> >> ath10k_qmi *qmi)
-> >> >  	if (resp->chip_info_valid) {
-> >> >  		qmi->chip_info.chip_id = resp->chip_info.chip_id;
-> >> >  		qmi->chip_info.chip_family =
-resp->chip_info.chip_family;
-> >> > +	} else {
-> >> > +		qmi->chip_info.chip_id = 0xFF;
-> >> >  	}
-> >>
-> >> So you hard code chip_id to 0xff if it's not valid. Is it 100%
-> >> guaranteed that there never will be a chip id with 0xff?
-> >
-> > 0x0 and 0xff are invalid chip id and are are not used.
-> > If the chip_id read fails, we fallback to the default board data.
-> > 0xff is used to go to the default board data (Also this is in alignment
-with
-> > the current implementation of board_id)
-> >
-> > Does that make sense ?
-> 
-> I'm a bit hesitant, over the years I have seen cases so many cases where
-> "foo is not used anywhere" and later that foo is actually used
-> somewhere. 0xff means that there's only 254 different values, but I
-> guess there are not that many chip ids? So a chip id is very different
-> from a board id, right?
+configs tested: 116
+configs skipped: 4
 
-Yes that's correct.
-Chip id is already being used in case of qca6174 (pci bus)
-We are bringing this to snoc bus chipset (WCN3990)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> --
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
-> atches
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         cm_x300_defconfig
+powerpc                       maple_defconfig
+openrisc                         alldefconfig
+sh                            titan_defconfig
+ia64                        generic_defconfig
+arm                     davinci_all_defconfig
+sh                         apsh4a3a_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                       cns3420vb_defconfig
+sparc64                             defconfig
+arm                           efm32_defconfig
+arm                       aspeed_g4_defconfig
+mips                         tb0226_defconfig
+mips                          ath79_defconfig
+arm                      integrator_defconfig
+mips                           ip22_defconfig
+arm                            zeus_defconfig
+sh                                  defconfig
+powerpc                    mvme5100_defconfig
+arm                        cerfcube_defconfig
+arc                          axs101_defconfig
+nios2                         3c120_defconfig
+powerpc                     powernv_defconfig
+sh                ecovec24-romimage_defconfig
+ia64                            zx1_defconfig
+s390                       zfcpdump_defconfig
+powerpc                     akebono_defconfig
+arm                         at91_dt_defconfig
+mips                       capcella_defconfig
+mips                         rt305x_defconfig
+sh                          kfr2r09_defconfig
+mips                            e55_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a004-20200911
+i386                 randconfig-a006-20200911
+i386                 randconfig-a001-20200911
+i386                 randconfig-a003-20200911
+i386                 randconfig-a002-20200911
+i386                 randconfig-a005-20200911
+i386                 randconfig-a004-20200909
+i386                 randconfig-a005-20200909
+i386                 randconfig-a006-20200909
+i386                 randconfig-a002-20200909
+i386                 randconfig-a001-20200909
+i386                 randconfig-a003-20200909
+i386                 randconfig-a004-20200910
+i386                 randconfig-a006-20200910
+i386                 randconfig-a001-20200910
+i386                 randconfig-a003-20200910
+i386                 randconfig-a002-20200910
+i386                 randconfig-a005-20200910
+x86_64               randconfig-a014-20200911
+x86_64               randconfig-a011-20200911
+x86_64               randconfig-a012-20200911
+x86_64               randconfig-a016-20200911
+x86_64               randconfig-a015-20200911
+x86_64               randconfig-a013-20200911
+i386                 randconfig-a015-20200911
+i386                 randconfig-a014-20200911
+i386                 randconfig-a011-20200911
+i386                 randconfig-a013-20200911
+i386                 randconfig-a016-20200911
+i386                 randconfig-a012-20200911
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a004-20200911
+x86_64               randconfig-a006-20200911
+x86_64               randconfig-a003-20200911
+x86_64               randconfig-a002-20200911
+x86_64               randconfig-a005-20200911
+x86_64               randconfig-a001-20200911
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
