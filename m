@@ -1,14 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail.lysator.liu.se ([2001:6b0:17:f0a0::3])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGtjA-00012z-K5
- for ath10k@lists.infradead.org; Sat, 12 Sep 2020 00:49:18 +0000
-Date: Sat, 12 Sep 2020 08:48:35 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- d7f8447aa69cbdf8ee81fa9e2a76cbb85be4bf9d
-Message-ID: <5f5c1ae3.bkovnNMHBjyjdFp1%lkp@intel.com>
+ id 1kHopd-00025p-FA
+ for ath10k@lists.infradead.org; Mon, 14 Sep 2020 13:47:46 +0000
+Received: from mail.lysator.liu.se (localhost [127.0.0.1])
+ by mail.lysator.liu.se (Postfix) with ESMTP id A438740032
+ for <ath10k@lists.infradead.org>; Mon, 14 Sep 2020 15:47:41 +0200 (CEST)
+Received: from sara.hytechdrive.se (h-170-152-149.A163.priv.bahnhof.se
+ [81.170.152.149])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.lysator.liu.se (Postfix) with ESMTPSA id 0C5B740032
+ for <ath10k@lists.infradead.org>; Mon, 14 Sep 2020 15:47:41 +0200 (CEST)
+Date: Mon, 14 Sep 2020 15:47:40 +0200 (CEST)
+From: =?UTF-8?Q?Peter_=C3=85strand?= <astrand@lysator.liu.se>
+Subject: Meshed WiFi with QCA9377 (USB/SDIO)
+Message-ID: <alpine.LRH.2.23.451.2009141438290.19926@sara.hytechdrive.se>
 MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ BOUNDARY="-1437493864-779028220-1600087637=:19926"
+Content-ID: <alpine.LRH.2.23.451.2009141454260.19926@sara.hytechdrive.se>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,167 +28,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: d7f8447aa69cbdf8ee81fa9e2a76cbb85be4bf9d  Merge branch 'ath-next' into ath-qca
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-elapsed time: 721m
+---1437493864-779028220-1600087637=:19926
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
+Content-ID: <alpine.LRH.2.23.451.2009141454261.19926@sara.hytechdrive.se>
 
-configs tested: 134
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi. We are designing an IOT system from scratch and want to select a WiFi 
+module that works well with 80211s. ath9k is apparently tried and tested, 
+but mostly covers older modules which are no longer available. We are 
+evaluating ath10k and in particular QCA9377. Does that sound like a good 
+choice, or do you have any other recommendations?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                            lart_defconfig
-powerpc                      ppc64e_defconfig
-arm                           omap1_defconfig
-powerpc                      acadia_defconfig
-arm                        trizeps4_defconfig
-xtensa                    xip_kc705_defconfig
-mips                         db1xxx_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                      ppc6xx_defconfig
-sh                   sh7770_generic_defconfig
-s390                          debug_defconfig
-arm                             rpc_defconfig
-mips                       capcella_defconfig
-arm                         assabet_defconfig
-c6x                        evmc6472_defconfig
-mips                      maltasmvp_defconfig
-powerpc                    amigaone_defconfig
-powerpc                      pasemi_defconfig
-arm                         at91_dt_defconfig
-sh                               alldefconfig
-m68k                        mvme16x_defconfig
-powerpc                        warp_defconfig
-powerpc                    sam440ep_defconfig
-arc                          axs101_defconfig
-sh                          rsk7264_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     akebono_defconfig
-sparc                       sparc64_defconfig
-arm                            hisi_defconfig
-arm                     am200epdkit_defconfig
-mips                            e55_defconfig
-arm                           efm32_defconfig
-arm                              zx_defconfig
-mips                          malta_defconfig
-arc                             nps_defconfig
-arm                     eseries_pxa_defconfig
-arm                        mvebu_v5_defconfig
-sh                           sh2007_defconfig
-mips                           ci20_defconfig
-arc                        vdk_hs38_defconfig
-arm                          gemini_defconfig
-arc                            hsdk_defconfig
-powerpc                        icon_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                 mpc85xx_cds_defconfig
-nios2                         3c120_defconfig
-powerpc                     powernv_defconfig
-sh                ecovec24-romimage_defconfig
-arm                       cns3420vb_defconfig
-ia64                            zx1_defconfig
-arm                         socfpga_defconfig
-powerpc                      pmac32_defconfig
-sh                           se7722_defconfig
-powerpc64                           defconfig
-powerpc                 mpc836x_rdk_defconfig
-m68k                       m5249evb_defconfig
-riscv                          rv32_defconfig
-c6x                        evmc6474_defconfig
-sh                          lboxre2_defconfig
-powerpc                      pcm030_defconfig
-mips                          rm200_defconfig
-riscv                            alldefconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20200911
-i386                 randconfig-a006-20200911
-i386                 randconfig-a001-20200911
-i386                 randconfig-a003-20200911
-i386                 randconfig-a002-20200911
-i386                 randconfig-a005-20200911
-x86_64               randconfig-a014-20200911
-x86_64               randconfig-a011-20200911
-x86_64               randconfig-a012-20200911
-x86_64               randconfig-a016-20200911
-x86_64               randconfig-a015-20200911
-x86_64               randconfig-a013-20200911
-i386                 randconfig-a015-20200911
-i386                 randconfig-a014-20200911
-i386                 randconfig-a011-20200911
-i386                 randconfig-a013-20200911
-i386                 randconfig-a016-20200911
-i386                 randconfig-a012-20200911
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-a004-20200911
-x86_64               randconfig-a006-20200911
-x86_64               randconfig-a003-20200911
-x86_64               randconfig-a002-20200911
-x86_64               randconfig-a005-20200911
-x86_64               randconfig-a001-20200911
+For the final board, we are planning to use QCA9377-3 (SDIO). As I 
+understand it, this should work with Linux 5.7 and later? We will test 
+using https://wireless.murata.com/type-1pj.html soon.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+In the mean time, I tried to test QCA9377-7 (USB) using 
+https://www.8devices.com/products/blue-bean unfortunately without success. 
+I started out with Linux 5.7 and modified usb.c:
+
+--- usb.c.org	2020-09-14 11:58:10.905346540 +0200
++++ usb.c	2020-09-14 15:39:51.555416792 +0200
+@@ -1083,6 +1083,7 @@
+  /* table of devices that work with this driver */
+  static struct usb_device_id ath10k_usb_ids[] = {
+  	{USB_DEVICE(0x13b1, 0x0042)}, /* Linksys WUSB6100M */
++	{USB_DEVICE(0x0cf3, 0xe500)}, /* 8devices BLUE bean */
+  	{ /* Terminating entry */ },
+  };
+
+Unfortunately this did not work: ath10k_usb is loaded but, but no net 
+device is created. No error messages; nothing. Firmware package is Debian 
+10 firmware-atheros 20190114-2. I also noticed 
+http://lists.infradead.org/pipermail/ath10k/2017-December/010672.html and 
+as far as I can tell, this was never merged.
+
+
+Br,
+Peter Åstrand
+---1437493864-779028220-1600087637=:19926
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+---1437493864-779028220-1600087637=:19926--
