@@ -1,12 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+Received: from mail.lysator.liu.se ([130.236.254.3])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kI6BM-0006iT-PA
- for ath10k@lists.infradead.org; Tue, 15 Sep 2020 08:19:21 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v2] ath10k: Use bdf calibration variant for snoc targets
-Date: Tue, 15 Sep 2020 13:49:08 +0530
-Message-Id: <1600157948-2042-1-git-send-email-pillair@codeaurora.org>
+ id 1kI6Qk-0000wR-GF
+ for ath10k@lists.infradead.org; Tue, 15 Sep 2020 08:35:18 +0000
+Received: from mail.lysator.liu.se (localhost [127.0.0.1])
+ by mail.lysator.liu.se (Postfix) with ESMTP id 458A640035
+ for <ath10k@lists.infradead.org>; Tue, 15 Sep 2020 10:35:07 +0200 (CEST)
+Received: from sara.hytechdrive.se (h-170-152-149.A163.priv.bahnhof.se
+ [81.170.152.149])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.lysator.liu.se (Postfix) with ESMTPSA id 7D65840035
+ for <ath10k@lists.infradead.org>; Tue, 15 Sep 2020 10:35:06 +0200 (CEST)
+Date: Tue, 15 Sep 2020 10:35:06 +0200 (CEST)
+From: =?UTF-8?Q?Peter_=C3=85strand?= <astrand@lysator.liu.se>
+Subject: Re: Meshed WiFi with QCA9377 (USB/SDIO)
+In-Reply-To: <alpine.LRH.2.23.451.2009141438290.19926@sara.hytechdrive.se>
+Message-ID: <alpine.LRH.2.23.451.2009150957420.8223@sara.hytechdrive.se>
+References: <alpine.LRH.2.23.451.2009141438290.19926@sara.hytechdrive.se>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,160 +27,99 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Board Data File (BDF) is loaded upon driver boot-up procedure.
-The right board data file is identified using bus and qmi-board-id.
+> Hi. We are designing an IOT system from scratch and want to select a WiFi 
+> module that works well with 80211s. ath9k is apparently tried and tested, but 
+> mostly covers older modules which are no longer available. We are evaluating 
+> ath10k and in particular QCA9377. Does that sound like a good choice, or do 
+> you have any other recommendations?
+>
+>
+> For the final board, we are planning to use QCA9377-3 (SDIO). As I understand 
+> it, this should work with Linux 5.7 and later? We will test using 
+> https://wireless.murata.com/type-1pj.html soon.
 
-The problem, however, can occur when the (default) board data
-file cannot fulfill with the vendor requirements and it is
-necessary to use a different board data file.
+I have tested with 1PJ now, even using kernel 5.8.9. "iw list" shows a lot 
+of information, but "wlan0" is down and it is not possible to bring it up:
 
-Also using the chip_id for identifying the board data helps
-in dealing with different variants of the board data file based
-on the RF card. If the chip_id is not programmed, a default value
-of 0xff will be used for parsing the board data file.
+[   48.954598] mmc0: Internal clock never stabilised.
+[   48.954604] mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+[   48.954618] mmc0: sdhci: Sys addr:  0x00000000 | Version:  0x0000c001
+[   48.954631] mmc0: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
+[   48.954643] mmc0: sdhci: Argument:  0x00000000 | Trn mode: 0x00000000
+[   48.954656] mmc0: sdhci: Present:   0x01f70000 | Host ctl: 0x00000000
+[   48.954668] mmc0: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
+[   48.954680] mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00001003
+[   48.954691] mmc0: sdhci: Timeout:   0x00000000 | Int stat: 0x00000000
+[   48.954704] mmc0: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
+[   48.954716] mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[   48.954729] mmc0: sdhci: Caps:      0x21e608b2 | Caps_1:   0x00002077
+[   48.954741] mmc0: sdhci: Cmd:       0x00000000 | Max curr: 0x00000064
+[   48.954753] mmc0: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x00000000
+[   48.954764] mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+[   48.954771] mmc0: sdhci: Host ctl2: 0x00000000
+[   48.954773] mmc0: sdhci: ============================================
 
-Add the support to get the variant field from DTSI and
-use this information along with the chip_id to load the vendor
-specific BDF.
+Then:
 
-The device tree requires addition strings to define the variant name
+[   49.054418] mmc0: queuing unknown CIS tuple 0x80 (1 bytes)
+[   49.054553] mmc0: queuing unknown CIS tuple 0x81 (1 bytes)
+[   49.054686] mmc0: queuing unknown CIS tuple 0x82 (1 bytes)
+[   49.054731] mmc0: new high speed SDIO card at address 0001
+[   49.126083] ath10k_sdio mmc0:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id 0x00000000 sub 0000:0000
+[   49.126087] ath10k_sdio mmc0:0001:1: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+[   49.127074] ath10k_sdio mmc0:0001:1: firmware ver WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5 features ignore-otp crc32 7746e551
+[   49.273737] ath10k_sdio mmc0:0001:1: failed to fetch board data for bus=sdio,vendor=0271,device=0701,subsystem-vendor=0000,subsystem-device=0000 from ath10k/QCA9377/hw1.0/board-2.bin
+[   49.274018] ath10k_sdio mmc0:0001:1: board_file api 1 bmi_id N/A crc32 544289f7
+[   50.385004] ath10k_sdio mmc0:0001:1: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+[   51.393850] ath10k_sdio mmc0:0001:1: suspend timed out - target pause event never came
+[   54.561851] ath10k_sdio mmc0:0001:1: sdio irq disable request timed out
 
-    wifi@a000000 {
-            status = "okay";
-            qcom,ath10k-calibration-variant = "xyz-v2";
-    };
+And more errors:
 
-    wifi@a800000 {
-            status = "okay";
-            qcom,ath10k-calibration-variant = "xyz-v1";
-    };
+[   60.450124] ath10k_sdio mmc0:0001:1: failed to write to address 0x12ff5: -110
+[   60.450146] ath10k_sdio mmc0:0001:1: failed to write skb to 0x12ff5 asynchronously: -110
+[   60.450440] ath10k_sdio mmc0:0001:1: failed to write to address 0x1c7e8: -110
+[   60.450459] ath10k_sdio mmc0:0001:1: failed to write skb to 0x1c7e8 asynchronously: -110
+[   60.451043] ath10k_sdio mmc0:0001:1: failed to write to address 0x828: -110
+[   60.451058] ath10k_sdio mmc0:0001:1: failed to write skb to 0x828 asynchronously: -110
+[   60.451205] ath10k_sdio mmc0:0001:1: failed to read from address 0x868: -110
+[   60.451210] ath10k_sdio mmc0:0001:1: failed to read fifo/chip control register: -110
+[   60.451388] ath10k_sdio mmc0:0001:1: failed to read from address 0x868: -110
+[   60.451393] ath10k_sdio mmc0:0001:1: failed to read fifo/chip control register: -110
 
-This would create the boarddata identifiers for the board-2.bin search
+And:
 
- *  bus=snoc,qmi-board-id=16,qmi-chip-id=0,variant=xyz-v1
- *  bus=snoc,qmi-board-id=17,qmi-chip-id=0,variant=xyz-v2
+[   60.584617] ath: EEPROM regdomain sanitized
+[   60.584618] ath: EEPROM regdomain: 0x64
+[   60.584619] ath: EEPROM indicates we should expect a direct regpair map
+[   60.584622] ath: Country alpha2 being used: 00
+[   60.584624] ath: Regpair used: 0x64
+[   61.977071] ath10k_sdio mmc0:0001:1: settings HTC version failed
+[   61.977080] ath10k_sdio mmc0:0001:1: Could not init core: -22
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+Any ideas?
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-Changes from v1:
-- Updated the commit text to add details about chip_id used for
-  loading bdf.
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 18 +++++++++++++-----
- drivers/net/wireless/ath/ath10k/core.h |  2 ++
- drivers/net/wireless/ath/ath10k/qmi.c  |  8 ++++++++
- 3 files changed, 23 insertions(+), 5 deletions(-)
+I have used firmware from 
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA9377/hw1.0/untested
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5f4e121..d73ad60 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1022,7 +1022,7 @@ static int ath10k_core_check_smbios(struct ath10k *ar)
- 	return 0;
- }
- 
--static int ath10k_core_check_dt(struct ath10k *ar)
-+int ath10k_core_check_dt(struct ath10k *ar)
- {
- 	struct device_node *node;
- 	const char *variant = NULL;
-@@ -1043,6 +1043,7 @@ static int ath10k_core_check_dt(struct ath10k *ar)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath10k_core_check_dt);
- 
- static int ath10k_download_fw(struct ath10k *ar)
- {
-@@ -1437,10 +1438,17 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
- 	}
- 
- 	if (ar->id.qmi_ids_valid) {
--		scnprintf(name, name_len,
--			  "bus=%s,qmi-board-id=%x",
--			  ath10k_bus_str(ar->hif.bus),
--			  ar->id.qmi_board_id);
-+		if (with_variant && ar->id.bdf_ext[0] != '\0')
-+			scnprintf(name, name_len,
-+				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
-+				  ath10k_bus_str(ar->hif.bus),
-+				  ar->id.qmi_board_id, ar->id.qmi_chip_id,
-+				  variant);
-+		else
-+			scnprintf(name, name_len,
-+				  "bus=%s,qmi-board-id=%x",
-+				  ath10k_bus_str(ar->hif.bus),
-+				  ar->id.qmi_board_id);
- 		goto out;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 4cf5bd4..b50ab9e 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1076,6 +1076,7 @@ struct ath10k {
- 		bool bmi_ids_valid;
- 		bool qmi_ids_valid;
- 		u32 qmi_board_id;
-+		u32 qmi_chip_id;
- 		u8 bmi_board_id;
- 		u8 bmi_eboard_id;
- 		u8 bmi_chip_id;
-@@ -1315,6 +1316,7 @@ int ath10k_core_register(struct ath10k *ar,
- 			 const struct ath10k_bus_params *bus_params);
- void ath10k_core_unregister(struct ath10k *ar);
- int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type);
-+int ath10k_core_check_dt(struct ath10k *ar);
- void ath10k_core_free_board_files(struct ath10k *ar);
- 
- #endif /* _CORE_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 5468a41..ae6b1f4 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -576,6 +576,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
- 	if (resp->chip_info_valid) {
- 		qmi->chip_info.chip_id = resp->chip_info.chip_id;
- 		qmi->chip_info.chip_family = resp->chip_info.chip_family;
-+	} else {
-+		qmi->chip_info.chip_id = 0xFF;
- 	}
- 
- 	if (resp->board_info_valid)
-@@ -817,12 +819,18 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
- static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
- {
- 	struct ath10k *ar = qmi->ar;
-+	int ret;
- 
- 	ar->hif.bus = ATH10K_BUS_SNOC;
- 	ar->id.qmi_ids_valid = true;
- 	ar->id.qmi_board_id = qmi->board_info.board_id;
-+	ar->id.qmi_chip_id = qmi->chip_info.chip_id;
- 	ar->hw_params.fw.dir = WCN3990_HW_1_0_FW_DIR;
- 
-+	ret = ath10k_core_check_dt(ar);
-+	if (ret)
-+		ath10k_dbg(ar, ATH10K_DBG_QMI, "DT bdf variant name not set.\n");
-+
- 	return ath10k_core_fetch_board_file(qmi->ar, ATH10K_BD_IE_BOARD);
- }
- 
--- 
-2.7.4
+I have also been provided with these files (which I suppose are designed 
+for qcacld):
 
+1PJ-bdwlan30-20190527.bin
+rampatch_tlv_tf_1.1.tlv
+silicon_QDART-1PJ_20190527.bin
+
+Does that help?
+
+Best regards,
+Peter Astrand
 
 _______________________________________________
 ath10k mailing list
