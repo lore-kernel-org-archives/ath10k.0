@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIH7Y-00072h-VT
- for ath10k@lists.infradead.org; Tue, 15 Sep 2020 20:00:12 +0000
-Subject: Re: [PATCH,v4] Revert "ath10k: fix DMA related firmware crashes on
- multiple devices"
-From: Ben Greear <greearb@candelatech.com>
-References: <1578976521-6104-1-git-send-email-zhichen@codeaurora.org>
- <79a88865-6df5-e7a4-deb6-6025cc9d87e4@candelatech.com>
- <01010174709bb20f-026d2835-333e-43b0-aaa7-5f1ff46332b1-000000@us-west-2.amazonses.com>
- <9389929a-cd65-6ed8-3a17-2826ef7b0a2f@candelatech.com>
-Message-ID: <c7397776-b1f2-a0dc-d8f3-2db2dc1fb6b3@candelatech.com>
-Date: Tue, 15 Sep 2020 13:00:05 -0700
+Received: from mga17.intel.com ([192.55.52.151])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kIVqJ-0007ck-CZ
+ for ath10k@lists.infradead.org; Wed, 16 Sep 2020 11:43:20 +0000
+Date: Wed, 16 Sep 2020 19:42:50 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ cd12af39345715a38f2e1644b9ac79835c64b472
+Message-ID: <5f61fa3a.9gnF8IlruwOiDdRu%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <9389929a-cd65-6ed8-3a17-2826ef7b0a2f@candelatech.com>
-Content-Language: en-MW
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +17,157 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zhi Chen <zhichen@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-SGVsbG8gWmhpLAoKRG8geW91IGtub3cgb2YgYW55IHdheXMgdG8gZGV0ZWN0IGluIHRoZSBkcml2
-ZXIgd2hhdCBwbGF0Zm9ybXMgbmVlZCB5b3VyIHBhdGNoIGFuZCB3aGF0IG9uZXMKYnJlYWsgd2l0
-aCBpdD8gIE90aGVyd2lzZSwgd2UncmUgc3R1Y2sgd2l0aCBleHRlcm5hbCBjb25maWcgKHdoaWNo
-IGlzIHdoYXQgSSBhZGRlZApzbyBmYXIgYXMgd29yay1hcm91bmQpLgoKVGhhbmtzLApCZW4KCk9u
-IDkvOC8yMCA5OjAyIFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+IFBsZWFzZSBzZWUgdGhpcyBidWcg
-cmVwb3J0LCBhbmQgZmVlbCBmcmVlIHRvIGFzayB0aGUgcmVwb3J0ZXIgZm9yIG1vcmUgZGV0YWls
-cyBpZiB5b3UKPiBkb24ndCBmaW5kIGV2ZXJ5dGhpbmcgeW91IG5lZWQgdGhlcmUuwqAgU2VlbXMg
-YSBiYXNpYyBwaW5nIHRlc3QgcmVwcm9kdWNlcyBwYWNrZXQgbG9zcwo+IGluIHRoZWlyIGNhc2Uu
-Li4KPiAKPiAgwqBodHRwczovL2dpdGh1Yi5jb20vZ3JlZWFyYi9hdGgxMGstY3QvaXNzdWVzLzE1
-Mwo+IAo+IEkgZG9uJ3QgYWN0dWFsbHkgaGF2ZSB0aGUgcGxhdGZvcm0gaW4gcXVlc3Rpb24uCj4g
-Cj4gVGhhbmtzLAo+IEJlbgo+IAo+IE9uIDkvOC8yMCA3OjA0IFBNLCBaaGkgQ2hlbiB3cm90ZToK
-Pj4gSGkgQmVuLAo+PiDCoMKgIFRoYW5rcyBmb3IgeW91ciBpbmZvcm1hdGlvbi4gVGhlIERNQSBp
-c3N1ZSBpcyBob3N0IHJlbGF0ZWQuIFdlIG5ldmVyIGhpdCB0aGlzIGlzc3VlIHdpdGggWDg2IHBs
-YXRmb3JtLiBBbmQgaXQgd2FzIG9ubHkgc2VlbiBpbiBzdHJlc3MgY2FzZXMgd2l0aCA1MCsgCj4+
-IFNUQXMoYXNzb2NpYXRpb24gYW5kIGRpc2Fzc29jaWF0aW9uIHJlcGVhdGVkbHkpLiBXaGF0J3Mg
-dGhlIGhvc3QgcGxhdGZvcm0geW91IGFyZSB1c2luZz8gQW5kIGhvdyB3YXMgdGhlIGlzc3VlIHJl
-cHJvZHVjZWQ/Cj4+Cj4+IFRoYW5rcywKPj4gWmhpCj4+Cj4+IE9uIDIwMjAtMDktMDkgMDE6NDgs
-IEJlbiBHcmVlYXIgd3JvdGU6Cj4+PiBIZWxsbywKPj4+Cj4+PiBKdXN0IEZZSTrCoCBJIGFkZGVk
-IHRoaXMgcGF0Y2ggdG8gbXkgYXRoMTBrLWN0IGRyaXZlciwgYW5kIGEgdXNlcgo+Pj4gcmVwb3J0
-ZWQgaXQgY2F1c2VzCj4+PiByZWdyZXNzaW9ucyBvbiBoaXMgcGFydGljdWxhciA5ODg4IHN5c3Rl
-bSB3aGVuIHVzaW5nIGF0aDEway1jdCB3YXZlLTIgZmlybXdhcmU6Cj4+Pgo+Pj4gW8KgwqAgMjEu
-MjA0ODY4XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcWNhOTg4OCBodzIuMCB0YXJnZXQKPj4+
-IDB4MDEwMDAwMDAgY2hpcF9pZCAweDAwMDAwMDAwIHN1YiAwMDAwOjAwMDAKPj4+IFvCoMKgIDIx
-LjIxNDQzN10gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2Zz
-IDEKPj4+IHRyYWNpbmcgMCBkZnMgMSB0ZXN0bW9kZSAwCj4+PiBbwqDCoCAyMS4yMzMyOThdIGF0
-aDEwa19wY2kgMDAwMDowMDowMC4wOiBmaXJtd2FyZSB2ZXIKPj4+IDEwLjRiLWN0LTk4ODgtdEgt
-MTMtOGM1YjJiYWEyIGFwaSA1IGZlYXR1cmVzCj4+PiBtZnAscGVlci1mbG93LWN0cmwsdHhzdGF0
-dXMtbm9hY2ssd21pLTEwLngtQ1QscmF0ZW1hc2stQ1QscmVnZHVtcC1DVCx0eHJhdGUtQ1QsZmx1
-c2gtYWxsLUNULHBpbmdwb25nLUNULGNoLXJlZ3MtQ1Qsbm9wLUNULGh0dC1tZ3QtQ1Qsc2V0LXNw
-ZWNpYWwtQ1Qsbm8tYm1pc3MtQ1QsdHgtcmMtQ1QsY3VzdC1zdGF0cy1DVCx0eHJhdGUyLUNULGJl
-YWNvbi1jYi1DVCx3bWktYmxvY2stYWNrLUNULHdtaS1iY24tcmMtQ1QgCj4+Pgo+Pj4gY3JjMzIg
-YTAwYjVmMzYKPj4+IFvCoMKgIDIxLjU5NjY4NF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGJv
-YXJkX2ZpbGUgYXBpIDIgYm1pX2lkIDA6MjAKPj4+IGNyYzMyIDViYjMyYzAyW8KgwqAgMjMuNTQ2
-MTU2XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogdW5zdXBwb3J0ZWQgSFRDCj4+PiBzZXJ2aWNl
-IGlkOiAxNTM2Cj4+Pgo+Pj4gSSdsbCByZXZlcnQgdGhpcyBmb3IgdGhlIDk4ODggY2hpcHNldCAo
-YXQgbGVhc3QpIGluIG15IGRyaXZlciwKPj4+IHBvc3NpYmx5IHlvdSBuZWVkIHRvIGRvIHNpbWls
-YXIuCj4+Pgo+Pj4gaHR0cHM6Ly9naXRodWIuY29tL2dyZWVhcmIvYXRoMTBrLWN0L2lzc3Vlcy8x
-NTMKPj4+Cj4+PiBUaGFua3MsCj4+PiBCZW4KPj4+Cj4+PiBPbiAxLzEzLzIwIDg6MzUgUE0sIFpo
-aSBDaGVuIHdyb3RlOgo+Pj4+IFRoaXMgcmV2ZXJ0cyBjb21taXQgNzZkMTY0ZjU4MjE1MGZkMDI1
-OWVjMGZjYmM0ODU0NzBiY2Q4MDMzZS4KPj4+PiBQQ0llIGh1bmcgaXNzdWUgd2FzIG9ic2VydmVk
-IG9uIG11bHRpcGxlIHBsYXRmb3Jtcy4gVGhlIGlzc3VlIHdhcyByZXByb2R1Y2VkCj4+Pj4gd2hl
-biBEVVQgd2FzIGNvbmZpZ3VyZWQgYXMgQVAgYW5kIGFzc29jaWF0ZWQgd2l0aCA1MCsgU1RBcy4K
-Pj4+Pgo+Pj4+IEZvciBRQ0E5OTg0L1FDQTk4ODgsIHRoZSBETUFfQlVSU1RfU0laRSByZWdpc3Rl
-ciBjb250cm9scyB0aGUgQVhJIGJ1cnN0IHNpemUKPj4+PiBvZiB0aGUgUkQvV1IgYWNjZXNzIHRv
-IHRoZSBIT1NUIE1FTS4KPj4+PiAwIC0gTm8gc3BsaXQgLCBSQVcgcmVhZC93cml0ZSB0cmFuc2Zl
-ciBzaXplIGZyb20gTUFDIGlzIHB1dCBvdXQgb24gYnVzCj4+Pj4gwqDCoMKgwqAgYXMgYnVyc3Qg
-bGVuZ3RoCj4+Pj4gMSAtIFNwbGl0IGF0IDI1NiBieXRlIGJvdW5kYXJ5Cj4+Pj4gMiwzIC0gUmVz
-ZXJ2ZWQKPj4+Pgo+Pj4+IFdpdGggUENJZSBwcm90b2NvbCBhbmFseXplciwgd2UgY2FuIHNlZSBE
-TUEgUmVhZCBjcm9zc2luZyA0S0IgYm91bmRhcnkgd2hlbgo+Pj4+IGlzc3VlIGhhcHBlbmVkLiBJ
-dCBicm9rZSBQQ0llIHNwZWMgYW5kIGNhdXNlZCBQQ0llIHN0dWNrLiBTbyByZXZlcnQKPj4+PiB0
-aGUgZGVmYXVsdCB2YWx1ZSBmcm9tIDAgdG8gMS4KPj4+Pgo+Pj4+IFRlc3RlZDrCoCBJUFE4MDY0
-ICsgUUNBOTk4NCB3aXRoIGZpcm13YXJlIDEwLjQtMy4xMC0wMDA0Nwo+Pj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCBRQ1M0MDQgKyBRQ0E5OTg0IHdpdGggZmlybXdhcmUgMTAuNC0zLjkuMC4yLS0wMDA0
-NAo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBTeW5hcHRpY3MgQVMzNzAgKyBRQ0E5ODg4wqAgd2l0
-aCBmaXJtd2FyZSAxMC40LTMuOS4wLjItLTAwMDQwCj4+Pj4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBa
-aGkgQ2hlbiA8emhpY2hlbkBjb2RlYXVyb3JhLm9yZz4KPj4+PiAtLS0KPj4+PiB2MjogcmVzdG9y
-ZWQgMTAuMiByZWdpc3RlciBjb25maWd1cmF0aW9uCj4+Pj4gdjM6IG1vZGlmaWVkIGNvbW1pdCBt
-ZXNzYWdlCj4+Pj4gdjQ6IHJlc29sdmVkIGNvbmZsaWN0cwo+Pj4+IC0tLQo+Pj4+IMKgIGRyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaCB8IDIgKy0KPj4+PiDCoCAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPj4+Pgo+Pj4+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmggYi9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2h3LmgKPj4+PiBpbmRleCAyMWI3YTJhLi43NzVmZDYyIDEwMDY0NAo+
-Pj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaAo+Pj4+ICsrKyBi
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaAo+Pj4+IEBAIC04MTYsNyArODE2
-LDcgQEAgYXRoMTBrX2lzX3Jzc2lfZW5hYmxlKHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zICpodywK
-Pj4+PiDCoMKgwqAgI2RlZmluZSBUQVJHRVRfMTBfNF9UWF9EQkdfTE9HX1NJWkXCoMKgwqDCoMKg
-wqDCoCAxMDI0Cj4+Pj4gwqAgI2RlZmluZSBUQVJHRVRfMTBfNF9OVU1fV0RTX0VOVFJJRVPCoMKg
-wqDCoMKgwqDCoCAzMgo+Pj4+IC0jZGVmaW5lIFRBUkdFVF8xMF80X0RNQV9CVVJTVF9TSVpFwqDC
-oMKgwqDCoMKgwqAgMAo+Pj4+ICsjZGVmaW5lIFRBUkdFVF8xMF80X0RNQV9CVVJTVF9TSVpFwqDC
-oMKgwqDCoMKgwqAgMQo+Pj4+IMKgICNkZWZpbmUgVEFSR0VUXzEwXzRfTUFDX0FHR1JfREVMSU3C
-oMKgwqDCoMKgwqDCoCAwCj4+Pj4gwqAgI2RlZmluZSBUQVJHRVRfMTBfNF9SWF9TS0lQX0RFRlJB
-R19USU1FT1VUX0RVUF9ERVRFQ1RJT05fQ0hFQ0sgMQo+Pj4+IMKgICNkZWZpbmUgVEFSR0VUXzEw
-XzRfVk9XX0NPTkZJR8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMAo+Pj4+Cj4+Cj4gCj4gCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: cd12af39345715a38f2e1644b9ac79835c64b472  ath11k: fix AP mode for QCA6390
+
+elapsed time: 1158m
+
+configs tested: 124
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         socfpga_defconfig
+sh                          r7785rp_defconfig
+s390                             alldefconfig
+mips                        nlm_xlp_defconfig
+microblaze                    nommu_defconfig
+sh                           se7780_defconfig
+i386                             alldefconfig
+powerpc                     tqm5200_defconfig
+m68k                        m5407c3_defconfig
+powerpc                       holly_defconfig
+mips                      maltaaprp_defconfig
+powerpc                      ep88xc_defconfig
+arm                              zx_defconfig
+h8300                            alldefconfig
+microblaze                          defconfig
+sh                   rts7751r2dplus_defconfig
+mips                      maltasmvp_defconfig
+arm                         shannon_defconfig
+arm                         ebsa110_defconfig
+arm                          gemini_defconfig
+arc                           tb10x_defconfig
+powerpc                     tqm8560_defconfig
+xtensa                    xip_kc705_defconfig
+arm                        spear6xx_defconfig
+mips                           jazz_defconfig
+powerpc                     rainier_defconfig
+powerpc                      ppc64e_defconfig
+arm                         lpc18xx_defconfig
+mips                     loongson1c_defconfig
+sh                   secureedge5410_defconfig
+mips                  decstation_64_defconfig
+powerpc                     pq2fads_defconfig
+sh                          rsk7269_defconfig
+mips                         db1xxx_defconfig
+powerpc                       ppc64_defconfig
+mips                          rb532_defconfig
+powerpc                     powernv_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                          pcm027_defconfig
+powerpc                       eiger_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      katmai_defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                         wii_defconfig
+arm                          exynos_defconfig
+ia64                         bigsur_defconfig
+powerpc                      chrp32_defconfig
+sh                          landisk_defconfig
+mips                            ar7_defconfig
+mips                        jmr3927_defconfig
+mips                       lemote2f_defconfig
+ia64                                defconfig
+ia64                             allyesconfig
+ia64                             allmodconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+nios2                            allyesconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200916
+x86_64               randconfig-a004-20200916
+x86_64               randconfig-a003-20200916
+x86_64               randconfig-a002-20200916
+x86_64               randconfig-a001-20200916
+x86_64               randconfig-a005-20200916
+i386                 randconfig-a004-20200916
+i386                 randconfig-a006-20200916
+i386                 randconfig-a003-20200916
+i386                 randconfig-a001-20200916
+i386                 randconfig-a002-20200916
+i386                 randconfig-a005-20200916
+i386                 randconfig-a015-20200916
+i386                 randconfig-a014-20200916
+i386                 randconfig-a011-20200916
+i386                 randconfig-a013-20200916
+i386                 randconfig-a016-20200916
+i386                 randconfig-a012-20200916
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20200916
+x86_64               randconfig-a011-20200916
+x86_64               randconfig-a016-20200916
+x86_64               randconfig-a012-20200916
+x86_64               randconfig-a015-20200916
+x86_64               randconfig-a013-20200916
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
