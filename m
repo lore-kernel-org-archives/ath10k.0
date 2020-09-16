@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIYUR-0005dt-Ts
- for ath10k@lists.infradead.org; Wed, 16 Sep 2020 14:32:57 +0000
-Date: Wed, 16 Sep 2020 22:31:46 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 39b494a1585d1a05f9eaa1b27fef2228e77ddef6
-Message-ID: <5f6221d2.RE15dPg0qNuhRNuA%lkp@intel.com>
+ id 1kIam8-0003Yv-Lb
+ for ath10k@lists.infradead.org; Wed, 16 Sep 2020 16:59:21 +0000
+Received: by mail-wr1-x443.google.com with SMTP id s12so7629181wrw.11
+ for <ath10k@lists.infradead.org>; Wed, 16 Sep 2020 09:59:20 -0700 (PDT)
+From: Alex Dewar <alex.dewar90@gmail.com>
+Subject: [PATCH v2] ath10k: sdio: remove redundant check in for loop
+Date: Wed, 16 Sep 2020 17:57:49 +0100
+Message-Id: <20200916165748.20927-1-alex.dewar90@gmail.com>
+In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,143 +24,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Alex Dewar <alex.dewar90@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 39b494a1585d1a05f9eaa1b27fef2228e77ddef6  Merge branch 'pending' into master-pending
+The for loop checks whether cur_section is NULL on every iteration, but
+we know it can never be NULL as there is another check towards the
+bottom of the loop body. Refactor to avoid this unnecessary check.
 
-elapsed time: 1194m
+Also, increment the variable i inline for clarity
 
-configs tested: 116
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         socfpga_defconfig
-sh                          r7785rp_defconfig
-s390                             alldefconfig
-mips                        nlm_xlp_defconfig
-microblaze                    nommu_defconfig
-sh                           se7780_defconfig
-powerpc                      ep88xc_defconfig
-arm                              zx_defconfig
-h8300                            alldefconfig
-microblaze                          defconfig
-sh                   rts7751r2dplus_defconfig
-mips                      maltasmvp_defconfig
-arm                         shannon_defconfig
-arm                         ebsa110_defconfig
-arm                          gemini_defconfig
-arc                           tb10x_defconfig
-powerpc                     tqm8560_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                     tqm5200_defconfig
-arm                        spear6xx_defconfig
-mips                           jazz_defconfig
-powerpc                     rainier_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                     pq2fads_defconfig
-sh                          rsk7269_defconfig
-mips                         db1xxx_defconfig
-powerpc                       ppc64_defconfig
-mips                          rb532_defconfig
-powerpc                     powernv_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          pcm027_defconfig
-powerpc                       eiger_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      katmai_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                         wii_defconfig
-arm                          exynos_defconfig
-ia64                         bigsur_defconfig
-powerpc                      chrp32_defconfig
-sh                          landisk_defconfig
-mips                            ar7_defconfig
-mips                        jmr3927_defconfig
-mips                       lemote2f_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20200916
-x86_64               randconfig-a004-20200916
-x86_64               randconfig-a003-20200916
-x86_64               randconfig-a002-20200916
-x86_64               randconfig-a001-20200916
-x86_64               randconfig-a005-20200916
-i386                 randconfig-a004-20200916
-i386                 randconfig-a006-20200916
-i386                 randconfig-a003-20200916
-i386                 randconfig-a001-20200916
-i386                 randconfig-a002-20200916
-i386                 randconfig-a005-20200916
-i386                 randconfig-a015-20200916
-i386                 randconfig-a014-20200916
-i386                 randconfig-a011-20200916
-i386                 randconfig-a013-20200916
-i386                 randconfig-a016-20200916
-i386                 randconfig-a012-20200916
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-
-clang tested configs:
-x86_64               randconfig-a014-20200916
-x86_64               randconfig-a011-20200916
-x86_64               randconfig-a016-20200916
-x86_64               randconfig-a012-20200916
-x86_64               randconfig-a015-20200916
-x86_64               randconfig-a013-20200916
-
+Addresses-Coverity: 1496984 ("Null pointer dereferences)
+Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v2: refactor in the manner suggested by Saeed
+
+ drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 81ddaafb6721..486886c74e6a 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+ 	}
+ 
+ 	count = 0;
+-
+-	for (i = 0; cur_section; i++) {
++	i = 0;
++	for (; cur_section; cur_section = next_section) {
+ 		section_size = cur_section->end - cur_section->start;
+ 
+ 		if (section_size <= 0) {
+@@ -2318,7 +2318,7 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+ 			break;
+ 		}
+ 
+-		if ((i + 1) == mem_region->section_table.size) {
++		if (++i == mem_region->section_table.size) {
+ 			/* last section */
+ 			next_section = NULL;
+ 			skip_size = 0;
+@@ -2361,12 +2361,6 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+ 		}
+ 
+ 		count += skip_size;
+-
+-		if (!next_section)
+-			/* this was the last section */
+-			break;
+-
+-		cur_section = next_section;
+ 	}
+ 
+ 	return count;
+-- 
+2.28.0
+
 
 _______________________________________________
 ath10k mailing list
