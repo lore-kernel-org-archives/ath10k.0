@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIam8-0003Yv-Lb
- for ath10k@lists.infradead.org; Wed, 16 Sep 2020 16:59:21 +0000
-Received: by mail-wr1-x443.google.com with SMTP id s12so7629181wrw.11
- for <ath10k@lists.infradead.org>; Wed, 16 Sep 2020 09:59:20 -0700 (PDT)
+ id 1kIam3-0003Xa-MD
+ for ath10k@lists.infradead.org; Wed, 16 Sep 2020 16:59:16 +0000
+Received: by mail-wm1-x344.google.com with SMTP id z9so3797821wmk.1
+ for <ath10k@lists.infradead.org>; Wed, 16 Sep 2020 09:59:13 -0700 (PDT)
+Subject: Re: [PATCH] ath10k: sdio: remove reduntant check in for loop
+References: <20200914191925.24192-1-alex.dewar90@gmail.com>
+ <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
 From: Alex Dewar <alex.dewar90@gmail.com>
-Subject: [PATCH v2] ath10k: sdio: remove redundant check in for loop
-Date: Wed, 16 Sep 2020 17:57:49 +0100
-Message-Id: <20200916165748.20927-1-alex.dewar90@gmail.com>
-In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+Message-ID: <57efff54-7aa4-8220-c705-1fdf35b0099e@gmail.com>
+Date: Wed, 16 Sep 2020 17:59:11 +0100
 MIME-Version: 1.0
+In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Alex Dewar <alex.dewar90@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
+To: Saeed Mahameed <saeedm@nvidia.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "kuba@kernel.org" <kuba@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
 
-The for loop checks whether cur_section is NULL on every iteration, but
-we know it can never be NULL as there is another check towards the
-bottom of the loop body. Refactor to avoid this unnecessary check.
+[snip]
+> 'i' is only referenced once inside the loop to check boundary,
+>
+> the loop is actually iterating over cur_section, so i would make it
+> clear in the loop statement, e.g.:
+> Remove the break condition and the cur_section assignment at the end of
+> the loop and use the loop statement to do it for you
+>
+> for (; cur_section; cur_section = next_section)
+>
+>
+>>   		section_size = cur_section->end - cur_section->start;
+>>   
+>>   		if (section_size <= 0) {
+>> @@ -2318,7 +2318,7 @@ static int
+>> ath10k_sdio_dump_memory_section(struct ath10k *ar,
+>>   			break;
+>>   		}
+>>   
+>> -		if ((i + 1) == mem_region->section_table.size) {
+> And for i you can just increment it inline:
+> if (++i == ...)
 
-Also, increment the variable i inline for clarity
+Good suggestions! I've sent a v2 with these changes.
 
-Addresses-Coverity: 1496984 ("Null pointer dereferences)
-Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
-v2: refactor in the manner suggested by Saeed
-
- drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 81ddaafb6721..486886c74e6a 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
- 	}
- 
- 	count = 0;
--
--	for (i = 0; cur_section; i++) {
-+	i = 0;
-+	for (; cur_section; cur_section = next_section) {
- 		section_size = cur_section->end - cur_section->start;
- 
- 		if (section_size <= 0) {
-@@ -2318,7 +2318,7 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
- 			break;
- 		}
- 
--		if ((i + 1) == mem_region->section_table.size) {
-+		if (++i == mem_region->section_table.size) {
- 			/* last section */
- 			next_section = NULL;
- 			skip_size = 0;
-@@ -2361,12 +2361,6 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
- 		}
- 
- 		count += skip_size;
--
--		if (!next_section)
--			/* this was the last section */
--			break;
--
--		cur_section = next_section;
- 	}
- 
- 	return count;
--- 
-2.28.0
+>      
+>
+>> +		if (i == mem_region->section_table.size) {
+>>   			/* last section */
+>>   			next_section = NULL;
+>>   			skip_size = 0;
 
 
 _______________________________________________
