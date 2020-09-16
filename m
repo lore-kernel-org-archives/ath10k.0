@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIY87-00022L-77
- for ath10k@lists.infradead.org; Wed, 16 Sep 2020 14:09:52 +0000
-Date: Wed, 16 Sep 2020 22:08:57 +0800
+ id 1kIYUR-0005dt-Ts
+ for ath10k@lists.infradead.org; Wed, 16 Sep 2020 14:32:57 +0000
+Date: Wed, 16 Sep 2020 22:31:46 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- af748db3d1a4a02cfb5b70715604c5561a710cc6
-Message-ID: <5f621c79.QTQ+FOGUFiSYFCxr%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 39b494a1585d1a05f9eaa1b27fef2228e77ddef6
+Message-ID: <5f6221d2.RE15dPg0qNuhRNuA%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: af748db3d1a4a02cfb5b70715604c5561a710cc6  ath10k: add atomic protection for device recovery
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 39b494a1585d1a05f9eaa1b27fef2228e77ddef6  Merge branch 'pending' into master-pending
 
-elapsed time: 1171m
+elapsed time: 1194m
 
 configs tested: 116
 configs skipped: 2
@@ -36,11 +36,11 @@ The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
-arm                              allmodconfig
 arm                                 defconfig
 arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
+arm                              allmodconfig
 arm                         socfpga_defconfig
 sh                          r7785rp_defconfig
 s390                             alldefconfig
@@ -142,10 +142,10 @@ riscv                               defconfig
 riscv                            allmodconfig
 x86_64                                   rhel
 x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
 x86_64                              defconfig
-x86_64                               rhel-8.3
 x86_64                                  kexec
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
 
 clang tested configs:
 x86_64               randconfig-a014-20200916
