@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIam3-0003Xa-MD
- for ath10k@lists.infradead.org; Wed, 16 Sep 2020 16:59:16 +0000
-Received: by mail-wm1-x344.google.com with SMTP id z9so3797821wmk.1
- for <ath10k@lists.infradead.org>; Wed, 16 Sep 2020 09:59:13 -0700 (PDT)
-Subject: Re: [PATCH] ath10k: sdio: remove reduntant check in for loop
-References: <20200914191925.24192-1-alex.dewar90@gmail.com>
- <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-From: Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <57efff54-7aa4-8220-c705-1fdf35b0099e@gmail.com>
-Date: Wed, 16 Sep 2020 17:59:11 +0100
+ id 1kIi3X-0004fD-VA
+ for ath10k@lists.infradead.org; Thu, 17 Sep 2020 00:45:49 +0000
+Received: by mail-lf1-x141.google.com with SMTP id b12so219628lfp.9
+ for <ath10k@lists.infradead.org>; Wed, 16 Sep 2020 17:45:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-Content-Language: en-US
+References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+ <20200916165748.20927-1-alex.dewar90@gmail.com>
+In-Reply-To: <20200916165748.20927-1-alex.dewar90@gmail.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Thu, 17 Sep 2020 10:45:33 +1000
+Message-ID: <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +21,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Saeed Mahameed <saeedm@nvidia.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "kuba@kernel.org" <kuba@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+To: Alex Dewar <alex.dewar90@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-[snip]
-> 'i' is only referenced once inside the loop to check boundary,
->
-> the loop is actually iterating over cur_section, so i would make it
-> clear in the loop statement, e.g.:
-> Remove the break condition and the cur_section assignment at the end of
-> the loop and use the loop statement to do it for you
->
-> for (; cur_section; cur_section = next_section)
->
->
->>   		section_size = cur_section->end - cur_section->start;
->>   
->>   		if (section_size <= 0) {
->> @@ -2318,7 +2318,7 @@ static int
->> ath10k_sdio_dump_memory_section(struct ath10k *ar,
->>   			break;
->>   		}
->>   
->> -		if ((i + 1) == mem_region->section_table.size) {
-> And for i you can just increment it inline:
-> if (++i == ...)
+Hi Alex,
 
-Good suggestions! I've sent a v2 with these changes.
-
->      
+On Thu, Sep 17, 2020 at 3:09 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
 >
->> +		if (i == mem_region->section_table.size) {
->>   			/* last section */
->>   			next_section = NULL;
->>   			skip_size = 0;
+> The for loop checks whether cur_section is NULL on every iteration, but
+> we know it can never be NULL as there is another check towards the
+> bottom of the loop body. Refactor to avoid this unnecessary check.
+>
+> Also, increment the variable i inline for clarity
 
+Comments below.
+
+> Addresses-Coverity: 1496984 ("Null pointer dereferences)
+> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+> v2: refactor in the manner suggested by Saeed
+>
+>  drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
+>  1 file changed, 3 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 81ddaafb6721..486886c74e6a 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+>         }
+>
+>         count = 0;
+> -
+> -       for (i = 0; cur_section; i++) {
+> +       i = 0;
+> +       for (; cur_section; cur_section = next_section) {
+
+You can have multiple statements in each section of a for() if you need to, e.g.
+
+for (i = 1; cur_section; cur_section = next_section, i++) {
+
+which means that the increment of i isn't hidden deep in the function body.
+
+
+That said, this function is a mess. Something (approximately) like
+this might be more readable:
+
+prev_end = memregion->start;
+for (i = 0; i < mem_region->section_table.size; i++) {
+    cur_section = &mem_region->section_table.sections[i];
+
+    // fail if prev_end is greater than cur_section->start - message
+from line 2329 and 2294
+    // check section size - from line 2315
+
+    skip_size = cur_section->start - prev_end;
+
+    // check buffer size - from line 2339 - needs to account for the
+skip size too.
+    // fill in the skip size amount - from line 2358 and 2304
+    // ath10k_sdio_read_mem - from line 2346
+
+    prev_end = cur_section->end;
+}
+
+Thanks,
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
 
 _______________________________________________
 ath10k mailing list
