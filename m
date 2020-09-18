@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJ5qh-0006EF-MZ
- for ath10k@lists.infradead.org; Fri, 18 Sep 2020 02:10:11 +0000
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kJ5u8-0001FE-Fb
+ for ath10k@lists.infradead.org; Fri, 18 Sep 2020 02:13:43 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 102/206] ath10k: use kzalloc to read for
+Subject: [PATCH AUTOSEL 4.14 061/127] ath10k: use kzalloc to read for
  ath10k_sdio_hif_diag_read
-Date: Thu, 17 Sep 2020 22:06:18 -0400
-Message-Id: <20200918020802.2065198-102-sashal@kernel.org>
-In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
-References: <20200918020802.2065198-1-sashal@kernel.org>
+Date: Thu, 17 Sep 2020 22:11:14 -0400
+Message-Id: <20200918021220.2066485-61-sashal@kernel.org>
+In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
+References: <20200918021220.2066485-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -120,10 +120,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 0ecaba824fb28..0cdaecb0e28a9 100644
+index f49b21b137c13..fef313099e08a 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1567,23 +1567,33 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
+@@ -1564,23 +1564,33 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
  				     size_t buf_len)
  {
  	int ret;
