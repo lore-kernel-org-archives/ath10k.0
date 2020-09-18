@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJKqy-0003mf-14
- for ath10k@lists.infradead.org; Fri, 18 Sep 2020 18:11:24 +0000
-Received: by mail-wr1-x443.google.com with SMTP id o5so6505536wrn.13
- for <ath10k@lists.infradead.org>; Fri, 18 Sep 2020 11:11:23 -0700 (PDT)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,
+From: <ansuelsmth@gmail.com>
+References: <20200918162928.14335-1-ansuelsmth@gmail.com>
+ <20200918162928.14335-2-ansuelsmth@gmail.com>
+ <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+In-Reply-To: <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+Subject: R: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
  ath10k-pre-calibration-data-mtd
-Date: Fri, 18 Sep 2020 20:11:03 +0200
-Message-Id: <20200918181104.98-2-ansuelsmth@gmail.com>
-In-Reply-To: <20200918181104.98-1-ansuelsmth@gmail.com>
-References: <20200918181104.98-1-ansuelsmth@gmail.com>
+Date: Fri, 18 Sep 2020 20:31:18 +0200
+Message-ID: <000001d68de9$e7916450$b6b42cf0$@gmail.com>
 MIME-Version: 1.0
+Content-Language: it
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +18,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Ansuel Smith <ansuelsmth@gmail.com>
+To: 'Christian Lamparter' <chunkeey@gmail.com>, 'Kalle Valo' <kvalo@codeaurora.org>
+Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, 'Bartosz Golaszewski' <bgolaszewski@baylibre.com>, 'Srinivas Kandagatla' <srinivas.kandagatla@linaro.org>, 'Rob Herring' <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, 'Jakub Kicinski' <kuba@kernel.org>, "'David S. Miller'" <davem@davemloft.net>
 
-Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-define from where the driver will load the pre-cal data in the defined
-mtd partition.
-
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index b61c2d5a0..568364243 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -15,9 +15,9 @@ and also uses most of the properties defined in this doc (except
- "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
- to carry pre calibration data.
- 
--In general, entry "qcom,ath10k-pre-calibration-data" and
--"qcom,ath10k-calibration-data" conflict with each other and only one
--can be provided per device.
-+In general, entry "qcom,ath10k-pre-calibration-data",
-+"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-data" conflict with
-+each other and only one can be provided per device.
- 
- SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
- 
-@@ -63,6 +63,12 @@ Optional properties:
- 				 hw versions.
- - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
- 				     the length can vary between hw versions.
-+- qcom,ath10k-pre-calibration-data-mtd :
-+	Usage: optional
-+	Value type: <phandle offset size>
-+	Definition: pre calibration data read from mtd partition. Take 3 value, the
-+		    mtd to read data from, the offset in the mtd partition and the
-+		    size of data to read.
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" are "vdd-0.8-cx-mx",
- 			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
--- 
-2.27.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Cgo+IC0tLS0tTWVzc2FnZ2lvIG9yaWdpbmFsZS0tLS0tCj4gRGE6IENocmlzdGlhbiBMYW1wYXJ0
+ZXIgPGNodW5rZWV5QGdtYWlsLmNvbT4KPiBJbnZpYXRvOiB2ZW5lcmTDrCAxOCBzZXR0ZW1icmUg
+MjAyMCAxODo1NAo+IEE6IEFuc3VlbCBTbWl0aCA8YW5zdWVsc210aEBnbWFpbC5jb20+OyBLYWxs
+ZSBWYWxvCj4gPGt2YWxvQGNvZGVhdXJvcmEub3JnPgo+IENjOiBkZXZpY2V0cmVlQHZnZXIua2Vy
+bmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgtCj4gd2lyZWxlc3NAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOwo+IGF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnOyBEYXZpZCBTLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBSb2IK
+PiBIZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJu
+ZWwub3JnPjsgbGludXgtCj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IFNyaW5pdmFzIEthbmRh
+Z2F0bGEKPiA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPjsgQmFydG9zeiBHb2xhc3pl
+d3NraQo+IDxiZ29sYXN6ZXdza2lAYmF5bGlicmUuY29tPgo+IE9nZ2V0dG86IFJlOiBbUEFUQ0gg
+Mi8yXSBkdDogYmluZGluZ3M6IGF0aDEwazogRG9jdW1lbnQgcWNvbSwgYXRoMTBrLQo+IHByZS1j
+YWxpYnJhdGlvbi1kYXRhLW10ZAo+IAo+IE9uIDIwMjAtMDktMTggMTg6MjksIEFuc3VlbCBTbWl0
+aCB3cm90ZToKPiA+IERvY3VtZW50IHVzZSBvZiBxY29tLGF0aDEway1wcmUtY2FsaWJyYXRpb24t
+ZGF0YS1tdGQgYmluZGluZ3MgdXNlZCB0bwo+ID4gZGVmaW5lIGZyb20gd2hlcmUgdGhlIGRyaXZl
+ciB3aWxsIGxvYWQgdGhlIHByZS1jYWwgZGF0YSBpbiB0aGUgZGVmaW5lZAo+ID4gbXRkIHBhcnRp
+dGlvbi4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBBbnN1ZWwgU21pdGggPGFuc3VlbHNtdGhAZ21h
+aWwuY29tPgo+IAo+IFE6IERvZXNuJ3QgbXRkIG5vdyBjb21lIHdpdGggbnZtZW0gc3VwcG9ydCBm
+cm9tIHRoZSBnZXQgZ28/IFNvCj4gdGhlIE1BQy1BZGRyZXNzZXMgYW5kIHByZS1jYWxkYXRhIGNv
+dWxkIGJlIHNwZWNpZmllZCBhcyBhCj4gbnZtZW0tbm9kZSBpbiB0aGUgZGV2aWNldHJlZT8gSSBy
+ZW1lbWJlciBzZWVpbmcgdGhhdCB0aGlzIHdhcwo+IHdvcmtlZCBvbiBvciB3YXMgdGhpcyBtdGQt
+Pm52bWVtIGRyb3BwZWQ/Cj4gCj4gQ2hlZXJzLAo+IENocmlzdGlhbgoKU29ycnkgYSBsb3QgZm9y
+IHRoZSBkb3VibGUgZW1haWwuLi4gSSB0aGluayBJIGZvdW5kIHdoYXQgeW91IGFyZSB0YWxraW5n
+IGFib3V0LgpJdCBsb29rcyBsaWtlIHRoZSBjb2RlIHdhcyBtZXJnZWQgYnV0IG5vdCB0aGUgZG9j
+dW1lbnRhdGlvbi4KV2lsbCBkbyBzb21lIHRlc3QgYW5kIGNoZWNrIGlmIHRoaXMgd29ya3MuCgpU
+aGlzIHNob3VsZCBiZSB0aGUgcmVsYXRlZCBwYXRjaC4KaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJz
+Lm9yZy9wcm9qZWN0L2xpbnV4LW10ZC9wYXRjaC8xNTIxOTMzODk5LTM2Mi00LWdpdC1zZW5kLWVt
+YWlsLWFsYmV1QGZyZWUuZnIvCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
