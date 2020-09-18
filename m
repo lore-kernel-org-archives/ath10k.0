@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJKqv-0003mD-0W
- for ath10k@lists.infradead.org; Fri, 18 Sep 2020 18:11:21 +0000
-Received: by mail-wr1-x442.google.com with SMTP id g4so6519348wrs.5
- for <ath10k@lists.infradead.org>; Fri, 18 Sep 2020 11:11:20 -0700 (PDT)
+ id 1kJKqy-0003mf-14
+ for ath10k@lists.infradead.org; Fri, 18 Sep 2020 18:11:24 +0000
+Received: by mail-wr1-x443.google.com with SMTP id o5so6505536wrn.13
+ for <ath10k@lists.infradead.org>; Fri, 18 Sep 2020 11:11:23 -0700 (PDT)
 From: Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v2 1/2] ath10k: Introduce download cal from mtd
-Date: Fri, 18 Sep 2020 20:11:02 +0200
-Message-Id: <20200918181104.98-1-ansuelsmth@gmail.com>
+Subject: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,
+ ath10k-pre-calibration-data-mtd
+Date: Fri, 18 Sep 2020 20:11:03 +0200
+Message-Id: <20200918181104.98-2-ansuelsmth@gmail.com>
+In-Reply-To: <20200918181104.98-1-ansuelsmth@gmail.com>
+References: <20200918181104.98-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,163 +28,45 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Ansuel Smith <ansuelsmth@gmail.com>
 
-Most of routers that have the ath10k wifi chip integrated in the Soc
-have the pre-cal data stored in the art (or equivalent) mtd partition.
-Introduce a new function to directly extract and use it based on what is
-set in the dt if the system have mtd support.
-Pre-cal file have still priority to everything else.
-
-Tested-on: QCA9984 hw1.0 PCI 10.4
+Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
+define from where the driver will load the pre-cal data in the defined
+mtd partition.
 
 Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
-v2:
-* Fix missing condition for cal_mode in transposing source to ath repo
+ .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
- drivers/net/wireless/ath/ath10k/core.c | 80 +++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h |  3 +
- 2 files changed, 81 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5f4e12196..d35abd16a 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -13,6 +13,7 @@
- #include <linux/ctype.h>
- #include <linux/pm_qos.h>
- #include <asm/byteorder.h>
-+#include <linux/mtd/mtd.h>
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index b61c2d5a0..568364243 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -15,9 +15,9 @@ and also uses most of the properties defined in this doc (except
+ "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
+ to carry pre calibration data.
  
- #include "core.h"
- #include "mac.h"
-@@ -918,7 +919,8 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
- 	}
+-In general, entry "qcom,ath10k-pre-calibration-data" and
+-"qcom,ath10k-calibration-data" conflict with each other and only one
+-can be provided per device.
++In general, entry "qcom,ath10k-pre-calibration-data",
++"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-data" conflict with
++each other and only one can be provided per device.
  
- 	if (ar->cal_mode == ATH10K_PRE_CAL_MODE_DT ||
--	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE)
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE ||
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_MTD)
- 		bmi_board_id_param = BMI_PARAM_GET_FLASH_BOARD_ID;
- 	else
- 		bmi_board_id_param = BMI_PARAM_GET_EEPROM_BOARD_ID;
-@@ -1680,7 +1682,8 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
  
- 	/* As of now pre-cal is valid for 10_4 variants */
- 	if (ar->cal_mode == ATH10K_PRE_CAL_MODE_DT ||
--	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE)
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE ||
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_MTD)
- 		bmi_otp_exe_param = BMI_PARAM_FLASH_SECTION_ALL;
- 
- 	ret = ath10k_bmi_execute(ar, address, bmi_otp_exe_param, &result);
-@@ -1701,6 +1704,69 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_download_cal_mtd(struct ath10k *ar)
-+{
-+#ifdef CONFIG_MTD
-+	struct device_node *node, *mtd_node = NULL;
-+	struct mtd_info *mtd;
-+	const __be32 *list;
-+	u32 offset, size;
-+	const char *part;
-+	phandle phandle;
-+	size_t retlen;
-+	char *file;
-+	int ret;
-+
-+	node = ar->dev->of_node;
-+	if (!node)
-+		return -ENOENT;
-+
-+	list = of_get_property(node, "qcom,ath10k-pre-calibration-data-mtd", &size);
-+	if (!list || (size != (3 * sizeof(*list))))
-+		return -EINVAL;
-+
-+	phandle = be32_to_cpup(list++);
-+	if (phandle)
-+		mtd_node = of_find_node_by_phandle(phandle);
-+
-+	if (!mtd_node)
-+		return -ENODEV;
-+
-+	part = of_get_property(mtd_node, "label", NULL);
-+	if (!part)
-+		part = mtd_node->name;
-+
-+	mtd = get_mtd_device_nm(part);
-+	if (IS_ERR(mtd))
-+		return -ENODEV;
-+
-+	offset = be32_to_cpup(list++);
-+	size = be32_to_cpup(list);
-+
-+	file = kzalloc(size, GFP_KERNEL);
-+	if (!file)
-+		return -ENOMEM;
-+
-+	ret = mtd_read(mtd, offset, size, &retlen, file);
-+	put_mtd_device(mtd);
-+
-+	ret = ath10k_download_board_data(ar, file, size);
-+	if (ret) {
-+		ath10k_err(ar, "failed to download cal_file data: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cal file downloaded\n");
-+
-+	return 0;
-+
-+err:
-+	kfree(file);
-+	return ret;
-+#endif
-+	return -EOPNOTSUPP;
-+}
-+
- static int ath10k_download_cal_file(struct ath10k *ar,
- 				    const struct firmware *file)
- {
-@@ -2047,6 +2113,16 @@ static int ath10k_core_pre_cal_download(struct ath10k *ar)
- 		goto success;
- 	}
- 
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+		   "boot did not find a pre calibration file, try MTD next: %d\n",
-+		   ret);
-+
-+	ret = ath10k_download_cal_mtd(ar);
-+	if (ret == 0) {
-+		ar->cal_mode = ATH10K_PRE_CAL_MODE_MTD;
-+		goto success;
-+	}
-+
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot did not find a pre calibration file, try DT next: %d\n",
- 		   ret);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 4cf5bd489..3ca158605 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -864,6 +864,7 @@ enum ath10k_cal_mode {
- 	ATH10K_CAL_MODE_OTP,
- 	ATH10K_CAL_MODE_DT,
- 	ATH10K_PRE_CAL_MODE_FILE,
-+	ATH10K_PRE_CAL_MODE_MTD,
- 	ATH10K_PRE_CAL_MODE_DT,
- 	ATH10K_CAL_MODE_EEPROM,
- };
-@@ -886,6 +887,8 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
- 		return "dt";
- 	case ATH10K_PRE_CAL_MODE_FILE:
- 		return "pre-cal-file";
-+	case ATH10K_PRE_CAL_MODE_MTD:
-+		return "pre-cal-mtd";
- 	case ATH10K_PRE_CAL_MODE_DT:
- 		return "pre-cal-dt";
- 	case ATH10K_CAL_MODE_EEPROM:
+@@ -63,6 +63,12 @@ Optional properties:
+ 				 hw versions.
+ - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
+ 				     the length can vary between hw versions.
++- qcom,ath10k-pre-calibration-data-mtd :
++	Usage: optional
++	Value type: <phandle offset size>
++	Definition: pre calibration data read from mtd partition. Take 3 value, the
++		    mtd to read data from, the offset in the mtd partition and the
++		    size of data to read.
+ - <supply-name>-supply: handle to the regulator device tree node
+ 			   optional "supply-name" are "vdd-0.8-cx-mx",
+ 			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
 -- 
 2.27.0
 
