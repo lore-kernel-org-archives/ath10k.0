@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x341.google.com ([2607:f8b0:4864:20::341])
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIwPX-00005E-Av
- for ath10k@lists.infradead.org; Thu, 17 Sep 2020 16:05:28 +0000
-Received: by mail-ot1-x341.google.com with SMTP id g96so2366963otb.12
- for <ath10k@lists.infradead.org>; Thu, 17 Sep 2020 09:05:25 -0700 (PDT)
-Date: Thu, 17 Sep 2020 11:05:13 -0500
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi
- Poco F1
-Message-ID: <20200917160513.GO1893@yoga>
-References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+ id 1kJ5iJ-0001lo-0z
+ for ath10k@lists.infradead.org; Fri, 18 Sep 2020 02:01:28 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 012/330] ath10k: fix memory leak for
+ tpc_stats_final
+Date: Thu, 17 Sep 2020 21:55:52 -0400
+Message-Id: <20200918020110.2063155-12-sashal@kernel.org>
+In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
+References: <20200918020110.2063155-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,78 +23,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Amit Pundir <amit.pundir@linaro.org>
-Cc: lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, David S Miller <davem@davemloft.net>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, Miaoqing Pan <miaoqing@codeaurora.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Thu 17 Sep 02:41 CDT 2020, Amit Pundir wrote:
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-> message in ath10k_qmi_host_cap_send_sync(), but we can still
-> bring up WiFi services successfully on AOSP if we ignore it.
-> 
-> We suspect either the host cap is not implemented or there
-> may be firmware specific issues. Firmware version is
-> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
-> 
-> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-> quirk, then the host capability request does get accepted,
-> but we run into fatal "msa info req rejected" error and
-> WiFi interface doesn't come up.
-> 
+[ Upstream commit 486a8849843455298d49e694cca9968336ce2327 ]
 
-What happens if you skip sending the host-cap message? I had one
-firmware version for which I implemented a
-"qcom,snoc-host-cap-skip-quirk".
+The memory of ar->debug.tpc_stats_final is reallocated every debugfs
+reading, it should be freed in ath10k_debug_destroy() for the last
+allocation.
 
-But testing showed that the link was pretty unusable - pushing any real
-amount of data would cause it to silently stop working - and I realized
-that I could use the linux-firmware wlanmdsp.mbn instead, which works
-great on all my devices...
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00035
 
-> Attempts are being made to debug the failure reasons but no
-> luck so far. Hence this device specific workaround instead
-> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-> linux-firmware project but it didn't help and neither did
-> building board-2.bin file from stock bdwlan* files.
-> 
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/debug.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-"Didn't work" as in the wlanmdsp.mbn from linux-firmware failed to load
-or some laer problem?
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 40baf25ac99f3..04c50a26a4f47 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2532,6 +2532,7 @@ void ath10k_debug_destroy(struct ath10k *ar)
+ 	ath10k_debug_fw_stats_reset(ar);
+ 
+ 	kfree(ar->debug.tpc_stats);
++	kfree(ar->debug.tpc_stats_final);
+ }
+ 
+ int ath10k_debug_register(struct ath10k *ar)
+-- 
+2.25.1
 
-Regards,
-Bjorn
-
-> This workaround will be removed once we have a viable fix.
-> Thanks to postmarketOS guys for catching this.
-> 
-> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> ---
-> Device-tree for Xiaomi Poco F1(Beryllium) got merged in
-> qcom/arm64-for-5.10 last week
-> https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?id=77809cf74a8c
-> 
->  drivers/net/wireless/ath/ath10k/qmi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-> index 0dee1353d395..37c5350eb8b1 100644
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
->  
->  	/* older FW didn't support this request, which is not fatal */
->  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
-> -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-> +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-> +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
->  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
->  		ret = -EINVAL;
->  		goto out;
-> -- 
-> 2.7.4
-> 
 
 _______________________________________________
 ath10k mailing list
