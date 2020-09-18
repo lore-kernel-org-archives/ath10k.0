@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Subject: Re: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
- ath10k-pre-calibration-data-mtd
+From: <ansuelsmth@gmail.com>
 References: <20200918162928.14335-1-ansuelsmth@gmail.com>
  <20200918162928.14335-2-ansuelsmth@gmail.com>
-From: Christian Lamparter <chunkeey@gmail.com>
-Message-ID: <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
-Date: Fri, 18 Sep 2020 18:53:35 +0200
+ <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+In-Reply-To: <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+Subject: R: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
+ ath10k-pre-calibration-data-mtd
+Date: Fri, 18 Sep 2020 20:08:55 +0200
+Message-ID: <018e01d68de6$c72edce0$558c96a0$@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918162928.14335-2-ansuelsmth@gmail.com>
-Content-Language: de-DE
+Content-Language: it
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,29 +18,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ansuel Smith <ansuelsmth@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: 'Christian Lamparter' <chunkeey@gmail.com>, 'Kalle Valo' <kvalo@codeaurora.org>
+Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, 'Bartosz Golaszewski' <bgolaszewski@baylibre.com>, 'Srinivas Kandagatla' <srinivas.kandagatla@linaro.org>, 'Rob Herring' <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, 'Jakub Kicinski' <kuba@kernel.org>, "'David S. Miller'" <davem@davemloft.net>
 
-On 2020-09-18 18:29, Ansuel Smith wrote:
-> Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-> define from where the driver will load the pre-cal data in the defined
-> mtd partition.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-
-Q: Doesn't mtd now come with nvmem support from the get go? So
-the MAC-Addresses and pre-caldata could be specified as a
-nvmem-node in the devicetree? I remember seeing that this was
-worked on or was this mtd->nvmem dropped?
-
-Cheers,
-Christian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Cgo+IC0tLS0tTWVzc2FnZ2lvIG9yaWdpbmFsZS0tLS0tCj4gRGE6IENocmlzdGlhbiBMYW1wYXJ0
+ZXIgPGNodW5rZWV5QGdtYWlsLmNvbT4KPiBJbnZpYXRvOiB2ZW5lcmTDrCAxOCBzZXR0ZW1icmUg
+MjAyMCAxODo1NAo+IEE6IEFuc3VlbCBTbWl0aCA8YW5zdWVsc210aEBnbWFpbC5jb20+OyBLYWxs
+ZSBWYWxvCj4gPGt2YWxvQGNvZGVhdXJvcmEub3JnPgo+IENjOiBkZXZpY2V0cmVlQHZnZXIua2Vy
+bmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgtCj4gd2lyZWxlc3NAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOwo+IGF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnOyBEYXZpZCBTLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBSb2IK
+PiBIZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJu
+ZWwub3JnPjsgbGludXgtCj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IFNyaW5pdmFzIEthbmRh
+Z2F0bGEKPiA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPjsgQmFydG9zeiBHb2xhc3pl
+d3NraQo+IDxiZ29sYXN6ZXdza2lAYmF5bGlicmUuY29tPgo+IE9nZ2V0dG86IFJlOiBbUEFUQ0gg
+Mi8yXSBkdDogYmluZGluZ3M6IGF0aDEwazogRG9jdW1lbnQgcWNvbSwgYXRoMTBrLQo+IHByZS1j
+YWxpYnJhdGlvbi1kYXRhLW10ZAo+IAo+IE9uIDIwMjAtMDktMTggMTg6MjksIEFuc3VlbCBTbWl0
+aCB3cm90ZToKPiA+IERvY3VtZW50IHVzZSBvZiBxY29tLGF0aDEway1wcmUtY2FsaWJyYXRpb24t
+ZGF0YS1tdGQgYmluZGluZ3MgdXNlZCB0bwo+ID4gZGVmaW5lIGZyb20gd2hlcmUgdGhlIGRyaXZl
+ciB3aWxsIGxvYWQgdGhlIHByZS1jYWwgZGF0YSBpbiB0aGUgZGVmaW5lZAo+ID4gbXRkIHBhcnRp
+dGlvbi4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBBbnN1ZWwgU21pdGggPGFuc3VlbHNtdGhAZ21h
+aWwuY29tPgo+IAo+IFE6IERvZXNuJ3QgbXRkIG5vdyBjb21lIHdpdGggbnZtZW0gc3VwcG9ydCBm
+cm9tIHRoZSBnZXQgZ28/IFNvCj4gdGhlIE1BQy1BZGRyZXNzZXMgYW5kIHByZS1jYWxkYXRhIGNv
+dWxkIGJlIHNwZWNpZmllZCBhcyBhCj4gbnZtZW0tbm9kZSBpbiB0aGUgZGV2aWNldHJlZT8gSSBy
+ZW1lbWJlciBzZWVpbmcgdGhhdCB0aGlzIHdhcwo+IHdvcmtlZCBvbiBvciB3YXMgdGhpcyBtdGQt
+Pm52bWVtIGRyb3BwZWQ/Cj4gCj4gQ2hlZXJzLAo+IENocmlzdGlhbgoKQ2FuIHlvdSBnaXZlIG1l
+IHNvbWUgZXhhbXBsZSB3aGVyZSB0aGlzIGlzIHVzZWQ/IEkgY2FuJ3QgZmluZCBhbnkgcmVmZXJl
+bmNlLgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
