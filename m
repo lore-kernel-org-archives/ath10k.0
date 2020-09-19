@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Subject: Re: R: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
- ath10k-pre-calibration-data-mtd
-References: <20200918162928.14335-1-ansuelsmth@gmail.com>
- <20200918162928.14335-2-ansuelsmth@gmail.com>
- <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
- <000001d68de9$e7916450$b6b42cf0$@gmail.com>
+Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kJeOy-0003A3-TO
+ for ath10k@lists.infradead.org; Sat, 19 Sep 2020 15:03:49 +0000
+Received: by mail-ej1-x635.google.com with SMTP id e23so11972072eja.3
+ for <ath10k@lists.infradead.org>; Sat, 19 Sep 2020 08:03:48 -0700 (PDT)
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Linksys MR8300 specific BDFs
+References: <1182738771.2553046.1600182130121.ref@mail.yahoo.com>
+ <1182738771.2553046.1600182130121@mail.yahoo.com>
 From: Christian Lamparter <chunkeey@gmail.com>
-Message-ID: <ea0efd8f-6dd4-8b46-caeb-d49240882cb2@gmail.com>
-Date: Fri, 18 Sep 2020 20:55:27 +0200
+Message-ID: <349e8cab-263b-03c2-db06-0aa31d980eea@gmail.com>
+Date: Sat, 19 Sep 2020 17:03:45 +0200
 MIME-Version: 1.0
-In-Reply-To: <000001d68de9$e7916450$b6b42cf0$@gmail.com>
+In-Reply-To: <1182738771.2553046.1600182130121@mail.yahoo.com>
 Content-Language: de-DE
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,52 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ansuelsmth@gmail.com, 'Kalle Valo' <kvalo@codeaurora.org>
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, 'Bartosz Golaszewski' <bgolaszewski@baylibre.com>, 'Srinivas Kandagatla' <srinivas.kandagatla@linaro.org>, 'Rob Herring' <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, 'Jakub Kicinski' <kuba@kernel.org>, "'David S. Miller'" <davem@davemloft.net>
+To: Hans Geiblinger <cybrnook2002@yahoo.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjAyMC0wOS0xOCAyMDozMSwgYW5zdWVsc210aEBnbWFpbC5jb20gd3JvdGU6Cj4gCj4gCj4+
-IC0tLS0tTWVzc2FnZ2lvIG9yaWdpbmFsZS0tLS0tCj4+IERhOiBDaHJpc3RpYW4gTGFtcGFydGVy
-IDxjaHVua2VleUBnbWFpbC5jb20+Cj4+IEludmlhdG86IHZlbmVyZMOsIDE4IHNldHRlbWJyZSAy
-MDIwIDE4OjU0Cj4+IEE6IEFuc3VlbCBTbWl0aCA8YW5zdWVsc210aEBnbWFpbC5jb20+OyBLYWxs
-ZSBWYWxvCj4+IDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz4KPj4gQ2M6IGRldmljZXRyZWVAdmdlci5r
-ZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC0KPj4gd2lyZWxlc3NAdmdl
-ci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOwo+PiBhdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZzsgRGF2aWQgUy4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0Pjsg
-Um9iCj4+IEhlcnJpbmcgPHJvYmgrZHRAa2VybmVsLm9yZz47IEpha3ViIEtpY2luc2tpIDxrdWJh
-QGtlcm5lbC5vcmc+OyBsaW51eC0KPj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IFNyaW5pdmFz
-IEthbmRhZ2F0bGEKPj4gPHNyaW5pdmFzLmthbmRhZ2F0bGFAbGluYXJvLm9yZz47IEJhcnRvc3og
-R29sYXN6ZXdza2kKPj4gPGJnb2xhc3pld3NraUBiYXlsaWJyZS5jb20+Cj4+IE9nZ2V0dG86IFJl
-OiBbUEFUQ0ggMi8yXSBkdDogYmluZGluZ3M6IGF0aDEwazogRG9jdW1lbnQgcWNvbSwgYXRoMTBr
-LQo+PiBwcmUtY2FsaWJyYXRpb24tZGF0YS1tdGQKPj4KPj4gT24gMjAyMC0wOS0xOCAxODoyOSwg
-QW5zdWVsIFNtaXRoIHdyb3RlOgo+Pj4gRG9jdW1lbnQgdXNlIG9mIHFjb20sYXRoMTBrLXByZS1j
-YWxpYnJhdGlvbi1kYXRhLW10ZCBiaW5kaW5ncyB1c2VkIHRvCj4+PiBkZWZpbmUgZnJvbSB3aGVy
-ZSB0aGUgZHJpdmVyIHdpbGwgbG9hZCB0aGUgcHJlLWNhbCBkYXRhIGluIHRoZSBkZWZpbmVkCj4+
-PiBtdGQgcGFydGl0aW9uLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEFuc3VlbCBTbWl0aCA8YW5z
-dWVsc210aEBnbWFpbC5jb20+Cj4+Cj4+IFE6IERvZXNuJ3QgbXRkIG5vdyBjb21lIHdpdGggbnZt
-ZW0gc3VwcG9ydCBmcm9tIHRoZSBnZXQgZ28/IFNvCj4+IHRoZSBNQUMtQWRkcmVzc2VzIGFuZCBw
-cmUtY2FsZGF0YSBjb3VsZCBiZSBzcGVjaWZpZWQgYXMgYQo+PiBudm1lbS1ub2RlIGluIHRoZSBk
-ZXZpY2V0cmVlPyBJIHJlbWVtYmVyIHNlZWluZyB0aGF0IHRoaXMgd2FzCj4+IHdvcmtlZCBvbiBv
-ciB3YXMgdGhpcyBtdGQtPm52bWVtIGRyb3BwZWQ/Cj4+Cj4+IENoZWVycywKPj4gQ2hyaXN0aWFu
-Cj4gCj4gU29ycnkgYSBsb3QgZm9yIHRoZSBkb3VibGUgZW1haWwuLi4gSSB0aGluayBJIGZvdW5k
-IHdoYXQgeW91IGFyZSB0YWxraW5nIGFib3V0Lgo+IEl0IGxvb2tzIGxpa2UgdGhlIGNvZGUgd2Fz
-IG1lcmdlZCBidXQgbm90IHRoZSBkb2N1bWVudGF0aW9uLgo+IFdpbGwgZG8gc29tZSB0ZXN0IGFu
-ZCBjaGVjayBpZiB0aGlzIHdvcmtzLgo+IAo+IFRoaXMgc2hvdWxkIGJlIHRoZSByZWxhdGVkIHBh
-dGNoLgo+IGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eC1tdGQvcGF0
-Y2gvMTUyMTkzMzg5OS0zNjItNC1naXQtc2VuZC1lbWFpbC1hbGJldUBmcmVlLmZyLwo+IAoKV2Vs
-bCwgSSBndWVzcyB0aGUgdmVyc2lvbiB0aGF0IHdhcyBtZXJnZWQ6Cgp8Y29tbWl0IGM0ZGZhMjVh
-YjMwN2EyNzdlYWZhNzA2N2NkOTI3ZmJlNGQ5YmU0YmEKfEF1dGhvcjogQWxiYW4gQmVkZWwgPGFs
-YmV1QGZyZWUuZnI+CnxEYXRlOiAgIFR1ZSBOb3YgMTMgMTU6MDE6MTAgMjAxOCArMDEwMAp8Cnwg
-ICAgbXRkOiBhZGQgc3VwcG9ydCBmb3IgcmVhZGluZyBNVEQgZGV2aWNlcyB2aWEgdGhlIG52bWVt
-IEFQSQp8CnwgICAgQWxsb3cgZHJpdmVycyB0aGF0IHVzZSB0aGUgbnZtZW0gQVBJIHRvIHJlYWQg
-ZGF0YSBzdG9yZWQgb24gTVREIGRldmljZXMuCnwgICAgRm9yIHRoaXMgdGhlIG10ZCBkZXZpY2Vz
-IGFyZSByZWdpc3RlcmVkIGFzIHJlYWQtb25seSBOVk1FTSBwcm92aWRlcnMuCnwKfCA+Pj5XZSBk
-b24ndCBzdXBwb3J0IGRldmljZSB0cmVlIHN5c3RlbXMgZm9yIG5vdy48PDwKCmFuc3dlcnMgdGhp
-cy4gU29ycnkgZm9yIHRoZSBub2lzZS4gWWVlLCB0aGlzIGxpa2VseSBpc24ndCBnb2luZyB0byB3
-b3JrCmFzIGl0IGlzIHN0aWxsIGRpc2FibGVkIG9uIHB1cnBvc2UuCgpSZWdhcmRzLApDaHJpc3Rp
-YW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hello,
+
+On 2020-09-15 17:02, Hans Geiblinger wrote:
+> The support for this device is currently being added into OpenWrt. This AP requires
+> two special BDFs to get the Wi-Fi PHYs working (correctly).
+> 
+> * description for what hardware this is:
+> 
+>    - it is a IPQ4019 based board
+>    - one QCA40xx radio is used as 2.4GHz radio
+>    - one QCA40xx radio is used as 5GHz radio
+> 
+> * origin of the board file (did you create it yourself or where you
+>    downloaded)
+> 
+>    - boarddata files were taken from OEM LinksysFW_MR8300_1.1.7.201281_prod.img
+> 
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+> 
+>    - QCA4019 hw1.0
+> 
+>      +bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-mr8300-v0-fcc
+>        SHA256: 0A8E9DBBD12A87AEDACA743B21756014F80C91FB4D1AB7FF7D1E7F059398522B
+>      +bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-mr8300-v0-fcc
+>        SHA256: A6DAF207C79BC6E0106ECD5231B5F127A36ED0A1AF5B324C5949CC07DA3CC925
+Please use the md5sums: <https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles>
+(Initially the checksums were sha256, but the tools already had the md5sum integrated.
+ From what I know Kalle uses the checksum just to check that nothing got corrupted when
+importing the mails)
+
+> * attach the actual board file (board.bin)
+> 
+>    - All eight bin files have been included. For OpenWRT we will be using the "fcc" variant.
+
+you might as well only post the fcc variants in that case.
+
+>    - The name of the files are equal to the id string in the board-2.bin
+>      (minus the ".bin")
+
+Cheers,
+Christian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
