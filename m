@@ -1,19 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from mail.lysator.liu.se ([2001:6b0:17:f0a0::3])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKJDq-0004uq-Vm
- for ath10k@lists.infradead.org; Mon, 21 Sep 2020 10:39:04 +0000
-Received: by mail-wm1-x342.google.com with SMTP id k18so12076901wmj.5
- for <ath10k@lists.infradead.org>; Mon, 21 Sep 2020 03:39:01 -0700 (PDT)
+ id 1kKN1q-0006hG-Nl
+ for ath10k@lists.infradead.org; Mon, 21 Sep 2020 14:42:57 +0000
+Received: from mail.lysator.liu.se (localhost [127.0.0.1])
+ by mail.lysator.liu.se (Postfix) with ESMTP id ED74D40009
+ for <ath10k@lists.infradead.org>; Mon, 21 Sep 2020 16:42:40 +0200 (CEST)
+Received: from sara.hytechdrive.se (h-170-152-149.A163.priv.bahnhof.se
+ [81.170.152.149])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.lysator.liu.se (Postfix) with ESMTPSA id 3D45E40009
+ for <ath10k@lists.infradead.org>; Mon, 21 Sep 2020 16:42:40 +0200 (CEST)
+Date: Mon, 21 Sep 2020 16:42:40 +0200 (CEST)
+From: =?UTF-8?Q?Peter_=C3=85strand?= <astrand@lysator.liu.se>
+Subject: Re: Meshed WiFi with QCA9377 (USB/SDIO)
+In-Reply-To: <alpine.LRH.2.23.451.2009180928250.29354@sara.hytechdrive.se>
+Message-ID: <alpine.LRH.2.23.451.2009211638410.6177@sara.hytechdrive.se>
+References: <alpine.LRH.2.23.451.2009141438290.19926@sara.hytechdrive.se>
+ <alpine.LRH.2.23.451.2009180928250.29354@sara.hytechdrive.se>
 MIME-Version: 1.0
-References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
- <20200917160513.GO1893@yoga>
-In-Reply-To: <20200917160513.GO1893@yoga>
-From: Amit Pundir <amit.pundir@linaro.org>
-Date: Mon, 21 Sep 2020 16:08:24 +0530
-Message-ID: <CAMi1Hd0S+hOLL0X8=_1KGG0G7u0bt66H6=yN=LuuX+FJb8+-4g@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco
- F1
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,130 +28,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k <ath10k@lists.infradead.org>, David S Miller <davem@davemloft.net>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-On Thu, 17 Sep 2020 at 21:35, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Thu 17 Sep 02:41 CDT 2020, Amit Pundir wrote:
->
-> > Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-> > phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-> > message in ath10k_qmi_host_cap_send_sync(), but we can still
-> > bring up WiFi services successfully on AOSP if we ignore it.
-> >
-> > We suspect either the host cap is not implemented or there
-> > may be firmware specific issues. Firmware version is
-> > QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
-> >
-> > qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-> > quirk, then the host capability request does get accepted,
-> > but we run into fatal "msa info req rejected" error and
-> > WiFi interface doesn't come up.
-> >
->
-> What happens if you skip sending the host-cap message? I had one
-> firmware version for which I implemented a
-> "qcom,snoc-host-cap-skip-quirk".
->
-> But testing showed that the link was pretty unusable - pushing any real
-> amount of data would cause it to silently stop working - and I realized
-> that I could use the linux-firmware wlanmdsp.mbn instead, which works
-> great on all my devices...
 
-I skipped the ath10k_qmi_host_cap_send_sync block altogether
-(if that is what you meant by qcom,snoc-host-cap-skip-quirk) and
-so far did not run into any issues with youtube auto-playback loop
-(3+ hours and counting). Does that count as a valid use case?
-Otherwise let me know how could I reproduce a reasonable test
-setup?
+On Fri, 18 Sep 2020, Peter Astrand wrote:
 
->
-> > Attempts are being made to debug the failure reasons but no
-> > luck so far. Hence this device specific workaround instead
-> > of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-> > Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-> > linux-firmware project but it didn't help and neither did
-> > building board-2.bin file from stock bdwlan* files.
-> >
->
-> "Didn't work" as in the wlanmdsp.mbn from linux-firmware failed to load
-> or some laer problem?
+> Will try SDIO based RED bean as soon as it arrives.
 
-While using the wlanmdsp.mbn from linux-firmware, I run into
-the following crash 4 times before tqftpserv service gets killed
-eventually:
+With 5.9.0-rc5-wt-ath+ (master) and firmware and board file generated from 
+https://github.com/8devices/qcacld-2.0/tree/CNSS.LEA.NRT_3.0/firmware_bin/sdio, 
+the firmware crashes as below:
 
-[   46.504502] qcom-q6v5-mss 4080000.remoteproc: fatal error received:
-dog_virtual_root.c:89:User-PD grace timer expired for wlan_process
-(ASID: 1)
-[   46.504527] remoteproc remoteproc0: crash detected in
-4080000.remoteproc: type fatal error
-[   46.504558] remoteproc remoteproc0: handling crash #1 in 4080000.remoteproc
-[   46.504563] remoteproc remoteproc0: recovering 4080000.remoteproc
-[   56.542400] 4080000.remoteproc:glink-edge: intent request timed out
-[   56.644617] qcom-q6v5-mss 4080000.remoteproc: port failed halt
-[   56.652321] remoteproc remoteproc0: stopped remote processor
-4080000.remoteproc
-[   59.017963] qcom-q6v5-mss 4080000.remoteproc: MBA booted without
-debug policy, loading mpss
-[   61.514552] remoteproc remoteproc0: remote processor
-4080000.remoteproc is now up
-<.... snip ....>
-[  214.161946] failed to send del client cmd
-[  214.161952] failed while handling packet from 1:16689
-[  214.185826] failed to send del client cmd
-[  214.185832] failed while handling packet from 1:16688
-[  214.201951] failed to send del client cmd
-<.... snip ....>
-[  219.682148] failed to send del client cmd
-[  219.682154] failed while handling packet from 1:16394
-[  219.714707] init: Service 'tqftpserv' (pid 321) received signal 6
-oneshot service took 215.852005 seconds in background
-[  219.714754] init: Sending signal 9 to service 'tqftpserv' (pid 321)
-process group...
 
-Regards,
-Amit Pundir
+[ 2413.397804] sdio_read_cis: 1 callbacks suppressed
+[ 2413.397807] mmc0: queuing unknown CIS tuple 0x01 (3 bytes)
+[ 2413.400926] mmc0: queuing unknown CIS tuple 0x1a (5 bytes)
+[ 2413.402180] mmc0: queuing unknown CIS tuple 0x1b (8 bytes)
+[ 2413.402431] mmc0: queuing unknown CIS tuple 0x14 (0 bytes)
+[ 2413.422846] mmc0: Internal clock never stabilised.
+[ 2413.422850] mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+[ 2413.422859] mmc0: sdhci: Sys addr:  0x00000000 | Version:  0x0000c001
+[ 2413.422870] mmc0: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
+[ 2413.422879] mmc0: sdhci: Argument:  0x80002603 | Trn mode: 0x00000000
+[ 2413.422890] mmc0: sdhci: Present:   0x01ff0000 | Host ctl: 0x00000004
+[ 2413.422901] mmc0: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
+[ 2413.422912] mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00000003
+[ 2413.422919] mmc0: sdhci: Timeout:   0x00000000 | Int stat: 0x00000000
+[ 2413.422929] mmc0: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
+[ 2413.422940] mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[ 2413.422952] mmc0: sdhci: Caps:      0x21e608b2 | Caps_1:   0x00002077
+[ 2413.422962] mmc0: sdhci: Cmd:       0x0000341a | Max curr: 0x00000064
+[ 2413.422971] mmc0: sdhci: Resp[0]:   0x00001003 | Resp[1]:  0x00000000
+[ 2413.422982] mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+[ 2413.422988] mmc0: sdhci: Host ctl2: 0x00000000
+[ 2413.422989] mmc0: sdhci: ============================================
+[ 2413.443025] mmc0: Internal clock never stabilised.
+[ 2413.443029] mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+[ 2413.443042] mmc0: sdhci: Sys addr:  0x00000000 | Version:  0x0000c001
+[ 2413.443053] mmc0: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
+[ 2413.443064] mmc0: sdhci: Argument:  0x80002603 | Trn mode: 0x00000000
+[ 2413.443076] mmc0: sdhci: Present:   0x01ff0000 | Host ctl: 0x00000004
+[ 2413.443087] mmc0: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
+[ 2413.443098] mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00000003
+[ 2413.443109] mmc0: sdhci: Timeout:   0x00000000 | Int stat: 0x00000000
+[ 2413.443120] mmc0: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
+[ 2413.443131] mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[ 2413.443142] mmc0: sdhci: Caps:      0x21e608b2 | Caps_1:   0x00002077
+[ 2413.443154] mmc0: sdhci: Cmd:       0x0000341a | Max curr: 0x00000064
+[ 2413.443165] mmc0: sdhci: Resp[0]:   0x00001003 | Resp[1]:  0x00000000
+[ 2413.443175] mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+[ 2413.443182] mmc0: sdhci: Host ctl2: 0x00000000
+[ 2413.443182] mmc0: sdhci: ============================================
+[ 2413.446176] mmc0: queuing unknown CIS tuple 0x80 (1 bytes)
+[ 2413.446323] mmc0: queuing unknown CIS tuple 0x81 (1 bytes)
+[ 2413.446458] mmc0: queuing unknown CIS tuple 0x82 (1 bytes)
+[ 2413.446509] mmc0: new high speed SDIO card at address 0001
+[ 2413.476637] ath10k_sdio mmc0:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id 0x00000000 sub 0000:0000
+[ 2413.476639] ath10k_sdio mmc0:0001:1: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+[ 2413.477069] ath10k_sdio mmc0:0001:1: firmware ver  api 5 features ignore-otp crc32 21a4f95a
+[ 2413.628310] ath10k_sdio mmc0:0001:1: board_file api 2 bmi_id N/A crc32 91463f7b
+[ 2414.205864] ath10k_sdio mmc0:0001:1: firmware crashed! (guid 74234224-1314-444d-842d-2ebb7b0c9aee)
+[ 2414.205870] ath10k_sdio mmc0:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id 0x00000000 sub 0000:0000
+[ 2414.205871] ath10k_sdio mmc0:0001:1: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+[ 2414.206311] ath10k_sdio mmc0:0001:1: firmware ver 1.0.0.591 api 5 features ignore-otp crc32 21a4f95a
+[ 2414.206318] ath10k_sdio mmc0:0001:1: board_file api 2 bmi_id N/A crc32 91463f7b
+[ 2414.206320] ath10k_sdio mmc0:0001:1: htt-ver 0.0 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
 
->
-> Regards,
-> Bjorn
->
-> > This workaround will be removed once we have a viable fix.
-> > Thanks to postmarketOS guys for catching this.
-> >
-> > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> > ---
-> > Device-tree for Xiaomi Poco F1(Beryllium) got merged in
-> > qcom/arm64-for-5.10 last week
-> > https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?id=77809cf74a8c
-> >
-> >  drivers/net/wireless/ath/ath10k/qmi.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-> > index 0dee1353d395..37c5350eb8b1 100644
-> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> > @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
-> >
-> >       /* older FW didn't support this request, which is not fatal */
-> >       if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
-> > -         resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-> > +         resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-> > +         !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
-> >               ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
-> >               ret = -EINVAL;
-> >               goto out;
-> > --
-> > 2.7.4
-> >
+Any suggestions?
+
+Br,
+Peter
 
 _______________________________________________
 ath10k mailing list
