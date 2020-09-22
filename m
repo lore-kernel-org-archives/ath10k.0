@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga12.intel.com ([192.55.52.136])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKpO2-0000Jq-0O
- for ath10k@lists.infradead.org; Tue, 22 Sep 2020 20:59:43 +0000
-Date: Wed, 23 Sep 2020 04:59:31 +0800
+ id 1kKpOy-0000Op-LV
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2020 21:00:43 +0000
+Date: Wed, 23 Sep 2020 04:59:36 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS f8b20191f24161e79aeb695302842dc81c9d5f3b
-Message-ID: <5f6a65b3.i3h3RDsE5OwIVwz9%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ aec5dc941ab92c91235588e38c09ef032e344999
+Message-ID: <5f6a65b8.R0bSqTwvanbVTS5w%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: f8b20191f24161e79aeb695302842dc81c9d5f3b  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: aec5dc941ab92c91235588e38c09ef032e344999  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 723m
 
-configs tested: 157
+configs tested: 165
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -40,6 +41,11 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+sh                           se7712_defconfig
+arm                        mvebu_v5_defconfig
+arm                        mvebu_v7_defconfig
+arm                          lpd270_defconfig
+sh                        sh7757lcr_defconfig
 xtensa                         virt_defconfig
 powerpc                     asp8347_defconfig
 arc                        nsim_700_defconfig
@@ -94,6 +100,9 @@ mips                  maltasmvp_eva_defconfig
 mips                           xway_defconfig
 arm                           u8500_defconfig
 sh                          lboxre2_defconfig
+mips                       bmips_be_defconfig
+powerpc                     tqm8548_defconfig
+arm                           sunxi_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
