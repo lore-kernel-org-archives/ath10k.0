@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKXvF-0000pM-TT
- for ath10k@lists.infradead.org; Tue, 22 Sep 2020 02:20:52 +0000
-Date: Tue, 22 Sep 2020 10:20:03 +0800
+ id 1kKXvG-0000pL-6K
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2020 02:20:53 +0000
+Date: Tue, 22 Sep 2020 10:20:09 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS f0c697f758edf2e631b5719b94eae74188a78b6b
-Message-ID: <5f695f53.uWmj2KX62aGOHOON%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ d1e11d5f21675077b10c4205d93b59f67e2f0269
+Message-ID: <5f695f59.JTn8CfeV7K2b4bL4%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: f0c697f758edf2e631b5719b94eae74188a78b6b  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: d1e11d5f21675077b10c4205d93b59f67e2f0269  wcn36xx: Remove dead code in wcn36xx_smd_config_bss()
 
-elapsed time: 721m
+elapsed time: 722m
 
-configs tested: 121
+configs tested: 120
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -53,11 +54,6 @@ xtensa                          iss_defconfig
 powerpc                  mpc866_ads_defconfig
 arm                        clps711x_defconfig
 ia64                            zx1_defconfig
-arm                  colibri_pxa300_defconfig
-mips                      malta_kvm_defconfig
-mips                            ar7_defconfig
-arc                        nsim_700_defconfig
-sh                            hp6xx_defconfig
 arm                          exynos_defconfig
 sh                           se7343_defconfig
 powerpc                     tqm8540_defconfig
@@ -70,6 +66,10 @@ c6x                        evmc6474_defconfig
 x86_64                              defconfig
 sh                          landisk_defconfig
 mips                     loongson1b_defconfig
+mips                       bmips_be_defconfig
+powerpc                     tqm8548_defconfig
+arm                           sunxi_defconfig
+powerpc                      makalu_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
