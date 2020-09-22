@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKXvJ-0000pJ-PB
- for ath10k@lists.infradead.org; Tue, 22 Sep 2020 02:20:55 +0000
-Date: Tue, 22 Sep 2020 10:20:14 +0800
+ id 1kKXvG-0000pJ-1Y
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2020 02:20:53 +0000
+Date: Tue, 22 Sep 2020 10:20:11 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- eddc738a6d162c90b1b832f85b78091702cb7838
-Message-ID: <5f695f5e.xE18TkVAzENbh+Ac%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 7703910bf59a59e41bca8b7ce974a56ec443d724
+Message-ID: <5f695f5b.XKZgqms0k94h60XT%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: eddc738a6d162c90b1b832f85b78091702cb7838  ath10k: add atomic protection for device recovery
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 7703910bf59a59e41bca8b7ce974a56ec443d724  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 721m
 
-configs tested: 120
+configs tested: 126
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,6 +41,17 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                         s3c6400_defconfig
+arm                          prima2_defconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
+mips                      maltasmvp_defconfig
+sh                     magicpanelr2_defconfig
+sh                           se7712_defconfig
+arm                        mvebu_v5_defconfig
+arm                        mvebu_v7_defconfig
+arm                          lpd270_defconfig
+sh                        sh7757lcr_defconfig
 arm                     eseries_pxa_defconfig
 arm                            xcep_defconfig
 powerpc                      acadia_defconfig
@@ -64,12 +75,13 @@ arm                      footbridge_defconfig
 mips                        nlm_xlr_defconfig
 c6x                        evmc6474_defconfig
 x86_64                              defconfig
+sh                   sh7724_generic_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                        cerfcube_defconfig
+xtensa                  cadence_csp_defconfig
 sh                          landisk_defconfig
 mips                     loongson1b_defconfig
-mips                       bmips_be_defconfig
-powerpc                     tqm8548_defconfig
-arm                           sunxi_defconfig
-powerpc                      makalu_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -114,12 +126,6 @@ i386                 randconfig-a003-20200921
 i386                 randconfig-a004-20200921
 i386                 randconfig-a005-20200921
 i386                 randconfig-a001-20200921
-i386                 randconfig-a002-20200920
-i386                 randconfig-a006-20200920
-i386                 randconfig-a003-20200920
-i386                 randconfig-a004-20200920
-i386                 randconfig-a005-20200920
-i386                 randconfig-a001-20200920
 x86_64               randconfig-a011-20200921
 x86_64               randconfig-a013-20200921
 x86_64               randconfig-a014-20200921
