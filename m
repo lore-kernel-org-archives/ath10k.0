@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKpOy-0000Oo-DT
- for ath10k@lists.infradead.org; Tue, 22 Sep 2020 21:00:43 +0000
-Date: Wed, 23 Sep 2020 04:59:40 +0800
+ id 1kKpOx-0000On-Si
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2020 21:00:44 +0000
+Date: Wed, 23 Sep 2020 04:59:41 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- bbf147a626f6b3be3892b71436d961e304488ad6
-Message-ID: <5f6a65bc.2MB/s1ys1TzQT9UP%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 55dc2060f5674874a6c37b680bf6396629e05f99
+Message-ID: <5f6a65bd.u+Clf4lZ9iq5U+ti%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: bbf147a626f6b3be3892b71436d961e304488ad6  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 55dc2060f5674874a6c37b680bf6396629e05f99  ath10k: add atomic protection for device recovery
 
 elapsed time: 723m
 
-configs tested: 157
+configs tested: 152
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,6 +41,11 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                     eseries_pxa_defconfig
+arm                            xcep_defconfig
+powerpc                      acadia_defconfig
+mips                 decstation_r4k_defconfig
+arc                     nsimosci_hs_defconfig
 xtensa                         virt_defconfig
 powerpc                     asp8347_defconfig
 arc                        nsim_700_defconfig
@@ -56,15 +61,6 @@ m68k                            q40_defconfig
 arm                      tct_hammer_defconfig
 arc                            hsdk_defconfig
 xtensa                          iss_defconfig
-sh                      rts7751r2d1_defconfig
-sh                          sdk7786_defconfig
-mips                          rb532_defconfig
-arm                         lpc32xx_defconfig
-mips                            e55_defconfig
-um                            kunit_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                        clps711x_defconfig
-ia64                            zx1_defconfig
 powerpc                      tqm8xx_defconfig
 sh                        edosk7760_defconfig
 powerpc                      arches_defconfig
@@ -90,11 +86,10 @@ arm                            pleb_defconfig
 x86_64                              defconfig
 mips                        nlm_xlr_defconfig
 c6x                        evmc6474_defconfig
-mips                         tb0219_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                           xway_defconfig
-arm                           u8500_defconfig
-sh                          lboxre2_defconfig
+powerpc                  mpc866_ads_defconfig
+m68k                       m5249evb_defconfig
+arm                          ep93xx_defconfig
+mips                           ip32_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
