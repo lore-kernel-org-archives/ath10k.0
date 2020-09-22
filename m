@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKXvG-0000pL-6K
- for ath10k@lists.infradead.org; Tue, 22 Sep 2020 02:20:53 +0000
-Date: Tue, 22 Sep 2020 10:20:09 +0800
+ id 1kKXvF-0000pE-Kz
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2020 02:20:52 +0000
+Date: Tue, 22 Sep 2020 10:20:13 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- d1e11d5f21675077b10c4205d93b59f67e2f0269
-Message-ID: <5f695f59.JTn8CfeV7K2b4bL4%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 84c8f9b0720a50e37fffc6764d27846d084d5d06
+Message-ID: <5f695f5d.y93myAlqfKw8WTCE%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: d1e11d5f21675077b10c4205d93b59f67e2f0269  wcn36xx: Remove dead code in wcn36xx_smd_config_bss()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 84c8f9b0720a50e37fffc6764d27846d084d5d06  Merge branch 'pending' into master-pending
 
-elapsed time: 722m
+elapsed time: 721m
 
 configs tested: 120
 configs skipped: 2
