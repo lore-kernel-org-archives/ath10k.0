@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mail-io1-f67.google.com ([209.85.166.67])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKzZg-000077-D9
- for ath10k@lists.infradead.org; Wed, 23 Sep 2020 07:52:25 +0000
-Date: Wed, 23 Sep 2020 15:51:55 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
- e0789ea5aef36ddf35f38f3d16162bcdb5f6bcea
-Message-ID: <5f6afe9b.m5UbFT9lMal5RRq4%lkp@intel.com>
+ id 1kLBqM-0001zh-PO
+ for ath10k@lists.infradead.org; Wed, 23 Sep 2020 20:58:27 +0000
+Received: by mail-io1-f67.google.com with SMTP id z13so978996iom.8
+ for <ath10k@lists.infradead.org>; Wed, 23 Sep 2020 13:58:26 -0700 (PDT)
+Date: Wed, 23 Sep 2020 14:58:24 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 2/2] dt: bindings: ath10k: Document
+ qcom,ath10k-pre-calibration-data-mtd
+Message-ID: <20200923205824.GA1290651@bogus>
+References: <20200918181104.98-1-ansuelsmth@gmail.com>
+ <20200918181104.98-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200918181104.98-2-ansuelsmth@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,189 +27,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
-branch HEAD: e0789ea5aef36ddf35f38f3d16162bcdb5f6bcea  HACK: ath11k: disable L1 to prevent device entering low power state
+On Fri, Sep 18, 2020 at 08:11:03PM +0200, Ansuel Smith wrote:
+> Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
+> define from where the driver will load the pre-cal data in the defined
+> mtd partition.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index b61c2d5a0..568364243 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -15,9 +15,9 @@ and also uses most of the properties defined in this doc (except
+>  "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
+>  to carry pre calibration data.
+>  
+> -In general, entry "qcom,ath10k-pre-calibration-data" and
+> -"qcom,ath10k-calibration-data" conflict with each other and only one
+> -can be provided per device.
+> +In general, entry "qcom,ath10k-pre-calibration-data",
+> +"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-data" conflict with
+> +each other and only one can be provided per device.
+>  
+>  SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
+>  
+> @@ -63,6 +63,12 @@ Optional properties:
+>  				 hw versions.
+>  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
+>  				     the length can vary between hw versions.
+> +- qcom,ath10k-pre-calibration-data-mtd :
 
-elapsed time: 879m
+mtd is a Linuxism.
 
-configs tested: 162
-configs skipped: 2
+> +	Usage: optional
+> +	Value type: <phandle offset size>
+> +	Definition: pre calibration data read from mtd partition. Take 3 value, the
+> +		    mtd to read data from, the offset in the mtd partition and the
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The phandle is the mtd or partition?
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                            allyesconfig
-arm64                               defconfig
-nios2                         3c120_defconfig
-powerpc                     tqm8555_defconfig
-arm                          iop32x_defconfig
-ia64                         bigsur_defconfig
-sh                     magicpanelr2_defconfig
-h8300                     edosk2674_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                            lart_defconfig
-powerpc                        warp_defconfig
-ia64                                defconfig
-riscv                    nommu_virt_defconfig
-powerpc                       maple_defconfig
-sh                             sh03_defconfig
-mips                          rm200_defconfig
-mips                       bmips_be_defconfig
-powerpc                   currituck_defconfig
-mips                           gcw0_defconfig
-sh                           se7722_defconfig
-arm                      tct_hammer_defconfig
-powerpc                       ebony_defconfig
-arm                          tango4_defconfig
-powerpc                 mpc834x_mds_defconfig
-c6x                        evmc6457_defconfig
-arm                           sama5_defconfig
-x86_64                           alldefconfig
-arm                         s5pv210_defconfig
-arm                       mainstone_defconfig
-sh                          rsk7269_defconfig
-sh                               alldefconfig
-arm                         shannon_defconfig
-arc                          axs101_defconfig
-nios2                            alldefconfig
-powerpc                      mgcoge_defconfig
-arm                        multi_v5_defconfig
-sh                             shx3_defconfig
-arc                     haps_hs_smp_defconfig
-powerpc                        fsp2_defconfig
-arm                         cm_x300_defconfig
-powerpc                  mpc866_ads_defconfig
-sh                           se7206_defconfig
-arm                        shmobile_defconfig
-mips                      bmips_stb_defconfig
-mips                        bcm63xx_defconfig
-powerpc                      ep88xc_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                       cns3420vb_defconfig
-h8300                    h8300h-sim_defconfig
-riscv                            allmodconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                          r7780mp_defconfig
-mips                       capcella_defconfig
-mips                          rb532_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                       imx_v4_v5_defconfig
-arm                         ebsa110_defconfig
-arm                     am200epdkit_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                        m5407c3_defconfig
-sh                   secureedge5410_defconfig
-sh                        dreamcast_defconfig
-arm                           efm32_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8313_rdb_defconfig
-m68k                       m5249evb_defconfig
-powerpc                      cm5200_defconfig
-mips                   sb1250_swarm_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200921
-i386                 randconfig-a006-20200921
-i386                 randconfig-a003-20200921
-i386                 randconfig-a004-20200921
-i386                 randconfig-a005-20200921
-i386                 randconfig-a001-20200921
-i386                 randconfig-a002-20200923
-i386                 randconfig-a006-20200923
-i386                 randconfig-a003-20200923
-i386                 randconfig-a004-20200923
-i386                 randconfig-a005-20200923
-i386                 randconfig-a001-20200923
-i386                 randconfig-a002-20200922
-i386                 randconfig-a006-20200922
-i386                 randconfig-a003-20200922
-i386                 randconfig-a004-20200922
-i386                 randconfig-a005-20200922
-i386                 randconfig-a001-20200922
-x86_64               randconfig-a011-20200923
-x86_64               randconfig-a013-20200923
-x86_64               randconfig-a014-20200923
-x86_64               randconfig-a015-20200923
-x86_64               randconfig-a012-20200923
-x86_64               randconfig-a016-20200923
-i386                 randconfig-a012-20200923
-i386                 randconfig-a014-20200923
-i386                 randconfig-a016-20200923
-i386                 randconfig-a013-20200923
-i386                 randconfig-a011-20200923
-i386                 randconfig-a015-20200923
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Maybe you should be using nvmem binding here.
 
-clang tested configs:
-x86_64               randconfig-a005-20200923
-x86_64               randconfig-a003-20200923
-x86_64               randconfig-a004-20200923
-x86_64               randconfig-a002-20200923
-x86_64               randconfig-a006-20200923
-x86_64               randconfig-a001-20200923
-x86_64               randconfig-a011-20200922
-x86_64               randconfig-a013-20200922
-x86_64               randconfig-a014-20200922
-x86_64               randconfig-a015-20200922
-x86_64               randconfig-a012-20200922
-x86_64               randconfig-a016-20200922
-x86_64               randconfig-a011-20200920
-x86_64               randconfig-a013-20200920
-x86_64               randconfig-a014-20200920
-x86_64               randconfig-a015-20200920
-x86_64               randconfig-a012-20200920
-x86_64               randconfig-a016-20200920
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +		    size of data to read.
+>  - <supply-name>-supply: handle to the regulator device tree node
+>  			   optional "supply-name" are "vdd-0.8-cx-mx",
+>  			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
+> -- 
+> 2.27.0
+> 
 
 _______________________________________________
 ath10k mailing list
