@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from z5.mailgun.us ([104.130.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLU5v-00045P-Ok
- for ath10k@lists.infradead.org; Thu, 24 Sep 2020 16:27:44 +0000
+ id 1kLU9F-0004N2-1q
+ for ath10k@lists.infradead.org; Thu, 24 Sep 2020 16:31:10 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
-References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
- <20200916165748.20927-1-alex.dewar90@gmail.com>
- <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
-Date: Thu, 24 Sep 2020 19:27:36 +0300
-In-Reply-To: <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
- (Julian Calaby's message of "Thu, 17 Sep 2020 10:45:33 +1000")
-Message-ID: <87h7rnnnrb.fsf@codeaurora.org>
+Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco
+ F1
+References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+Date: Thu, 24 Sep 2020 19:31:02 +0300
+In-Reply-To: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org> (Amit
+ Pundir's message of "Thu, 17 Sep 2020 13:11:41 +0530")
+Message-ID: <87d02bnnll.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,74 +24,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Julian Calaby <julian.calaby@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Alex Dewar <alex.dewar90@gmail.com>
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, David S Miller <davem@davemloft.net>, lkml <linux-kernel@vger.kernel.org>
 
-Julian Calaby <julian.calaby@gmail.com> writes:
+Amit Pundir <amit.pundir@linaro.org> writes:
 
-> On Thu, Sep 17, 2020 at 3:09 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
->>
->> The for loop checks whether cur_section is NULL on every iteration, but
->> we know it can never be NULL as there is another check towards the
->> bottom of the loop body. Refactor to avoid this unnecessary check.
->>
->> Also, increment the variable i inline for clarity
+> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> message in ath10k_qmi_host_cap_send_sync(), but we can still
+> bring up WiFi services successfully on AOSP if we ignore it.
 >
-> Comments below.
+> We suspect either the host cap is not implemented or there
+> may be firmware specific issues. Firmware version is
+> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
 >
->> Addresses-Coverity: 1496984 ("Null pointer dereferences)
->> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
->> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> ---
->> v2: refactor in the manner suggested by Saeed
->>
->>  drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
->>  1 file changed, 3 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
->> index 81ddaafb6721..486886c74e6a 100644
->> --- a/drivers/net/wireless/ath/ath10k/sdio.c
->> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
->> @@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
->>         }
->>
->>         count = 0;
->> -
->> -       for (i = 0; cur_section; i++) {
->> +       i = 0;
->> +       for (; cur_section; cur_section = next_section) {
+> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> quirk, then the host capability request does get accepted,
+> but we run into fatal "msa info req rejected" error and
+> WiFi interface doesn't come up.
 >
-> You can have multiple statements in each section of a for() if you need to, e.g.
+> Attempts are being made to debug the failure reasons but no
+> luck so far. Hence this device specific workaround instead
+> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> linux-firmware project but it didn't help and neither did
+> building board-2.bin file from stock bdwlan* files.
 >
-> for (i = 1; cur_section; cur_section = next_section, i++) {
+> This workaround will be removed once we have a viable fix.
+> Thanks to postmarketOS guys for catching this.
 >
-> which means that the increment of i isn't hidden deep in the function body.
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 
-Yeah, I was thinking the same. But I'll apply this patch anyway, it's
-still an improvement.
+Bjorn, is this ok to take?
 
-> That said, this function is a mess. Something (approximately) like
-> this might be more readable:
->
-> prev_end = memregion->start;
-> for (i = 0; i < mem_region->section_table.size; i++) {
->     cur_section = &mem_region->section_table.sections[i];
->
->     // fail if prev_end is greater than cur_section->start - message
-> from line 2329 and 2294
->     // check section size - from line 2315
->
->     skip_size = cur_section->start - prev_end;
->
->     // check buffer size - from line 2339 - needs to account for the
-> skip size too.
->     // fill in the skip size amount - from line 2358 and 2304
->     // ath10k_sdio_read_mem - from line 2346
->
->     prev_end = cur_section->end;
-> }
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+>  
+>  	/* older FW didn't support this request, which is not fatal */
+>  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+> -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
+> +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
+> +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
+>  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
 
-I agree. Anyone can come up with a patch?
+ath10k-check complained about a too long line, so in the pending branch
+I moved the comment before the if statement.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
