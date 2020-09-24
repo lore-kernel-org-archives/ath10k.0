@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from z5.mailgun.us ([104.130.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLBwA-0002qG-BO
- for ath10k@lists.infradead.org; Wed, 23 Sep 2020 21:04:27 +0000
-Received: by mail-wm1-x344.google.com with SMTP id e2so1454680wme.1
- for <ath10k@lists.infradead.org>; Wed, 23 Sep 2020 14:04:24 -0700 (PDT)
-From: <ansuelsmth@gmail.com>
-References: <20200918181104.98-1-ansuelsmth@gmail.com>
- <20200918181104.98-2-ansuelsmth@gmail.com> <20200923205824.GA1290651@bogus>
-In-Reply-To: <20200923205824.GA1290651@bogus>
-Subject: RE: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,
- ath10k-pre-calibration-data-mtd
-Date: Wed, 23 Sep 2020 23:04:20 +0200
-Message-ID: <019801d691ed$1bc26650$534732f0$@gmail.com>
+ id 1kLU5v-00045P-Ok
+ for ath10k@lists.infradead.org; Thu, 24 Sep 2020 16:27:44 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
+References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+ <20200916165748.20927-1-alex.dewar90@gmail.com>
+ <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
+Date: Thu, 24 Sep 2020 19:27:36 +0300
+In-Reply-To: <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
+ (Julian Calaby's message of "Thu, 17 Sep 2020 10:45:33 +1000")
+Message-ID: <87h7rnnnrb.fsf@codeaurora.org>
 MIME-Version: 1.0
-Content-Language: it
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,92 +25,79 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Rob Herring' <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, 'Jakub Kicinski' <kuba@kernel.org>, "'David S. Miller'" <davem@davemloft.net>, 'Kalle Valo' <kvalo@codeaurora.org>
+To: Julian Calaby <julian.calaby@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Alex Dewar <alex.dewar90@gmail.com>
 
+Julian Calaby <julian.calaby@gmail.com> writes:
 
+> On Thu, Sep 17, 2020 at 3:09 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
+>>
+>> The for loop checks whether cur_section is NULL on every iteration, but
+>> we know it can never be NULL as there is another check towards the
+>> bottom of the loop body. Refactor to avoid this unnecessary check.
+>>
+>> Also, increment the variable i inline for clarity
+>
+> Comments below.
+>
+>> Addresses-Coverity: 1496984 ("Null pointer dereferences)
+>> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
+>> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+>> ---
+>> v2: refactor in the manner suggested by Saeed
+>>
+>>  drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
+>>  1 file changed, 3 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+>> index 81ddaafb6721..486886c74e6a 100644
+>> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+>> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+>> @@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+>>         }
+>>
+>>         count = 0;
+>> -
+>> -       for (i = 0; cur_section; i++) {
+>> +       i = 0;
+>> +       for (; cur_section; cur_section = next_section) {
+>
+> You can have multiple statements in each section of a for() if you need to, e.g.
+>
+> for (i = 1; cur_section; cur_section = next_section, i++) {
+>
+> which means that the increment of i isn't hidden deep in the function body.
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Wednesday, September 23, 2020 10:58 PM
-> To: Ansuel Smith <ansuelsmth@gmail.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>; David S. Miller
-> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-
-> wireless@vger.kernel.org; netdev@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
-> ath10k@lists.infradead.org
-> Subject: Re: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,ath10k-
-> pre-calibration-data-mtd
-> 
-> On Fri, Sep 18, 2020 at 08:11:03PM +0200, Ansuel Smith wrote:
-> > Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-> > define from where the driver will load the pre-cal data in the defined
-> > mtd partition.
-> >
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> >
-> > diff --git
-> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> > index b61c2d5a0..568364243 100644
-> > --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> > +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> > @@ -15,9 +15,9 @@ and also uses most of the properties defined in this
-> doc (except
-> >  "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-
-> data"
-> >  to carry pre calibration data.
-> >
-> > -In general, entry "qcom,ath10k-pre-calibration-data" and
-> > -"qcom,ath10k-calibration-data" conflict with each other and only one
-> > -can be provided per device.
-> > +In general, entry "qcom,ath10k-pre-calibration-data",
-> > +"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-
-> data" conflict with
-> > +each other and only one can be provided per device.
-> >
-> >  SNOC based devices (i.e. wcn3990) uses compatible string
-> "qcom,wcn3990-wifi".
-> >
-> > @@ -63,6 +63,12 @@ Optional properties:
-> >  				 hw versions.
-> >  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
-> >  				     the length can vary between hw
-versions.
-> > +- qcom,ath10k-pre-calibration-data-mtd :
-> 
-> mtd is a Linuxism.
-> 
-> > +	Usage: optional
-> > +	Value type: <phandle offset size>
-> > +	Definition: pre calibration data read from mtd partition. Take 3
-> value, the
-> > +		    mtd to read data from, the offset in the mtd partition
-and
-> the
-> 
-> The phandle is the mtd or partition?
-> 
-> Maybe you should be using nvmem binding here.
-> 
+Yeah, I was thinking the same. But I'll apply this patch anyway, it's
+still an improvement.
 
-The phandle is to the mtd.
-You are right about nvmem... Problem is that nvmem for mtd is still not
-supported. I already sent a patch to fix this in the mtd mailing list but
-I'm waiting for review...
-If that will be accepted, I can convert this patch to use nvmem api.
+> That said, this function is a mess. Something (approximately) like
+> this might be more readable:
+>
+> prev_end = memregion->start;
+> for (i = 0; i < mem_region->section_table.size; i++) {
+>     cur_section = &mem_region->section_table.sections[i];
+>
+>     // fail if prev_end is greater than cur_section->start - message
+> from line 2329 and 2294
+>     // check section size - from line 2315
+>
+>     skip_size = cur_section->start - prev_end;
+>
+>     // check buffer size - from line 2339 - needs to account for the
+> skip size too.
+>     // fill in the skip size amount - from line 2358 and 2304
+>     // ath10k_sdio_read_mem - from line 2346
+>
+>     prev_end = cur_section->end;
+> }
 
-> > +		    size of data to read.
-> >  - <supply-name>-supply: handle to the regulator device tree node
-> >  			   optional "supply-name" are "vdd-0.8-cx-mx",
-> >  			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
-> > --
-> > 2.27.0
-> >
+I agree. Anyone can come up with a patch?
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
