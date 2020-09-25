@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLgqm-0007EV-DK
- for ath10k@lists.infradead.org; Fri, 25 Sep 2020 06:04:57 +0000
-Date: Fri, 25 Sep 2020 14:04:42 +0800
+ id 1kLhE8-0006u0-OL
+ for ath10k@lists.infradead.org; Fri, 25 Sep 2020 06:29:06 +0000
+Date: Fri, 25 Sep 2020 14:28:16 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- ee331202792d88080cf1b1961656793c0b8a416b
-Message-ID: <5f6d887a.i0g2R6ZHUixwi94a%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 7ae4919d326ee1934c256dcb75fa09e84bcc0a4c
+Message-ID: <5f6d8e00.EPzK4b2RR+lOwUFY%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: ee331202792d88080cf1b1961656793c0b8a416b  ath11k: Move non-fatal warn logs to dbg level
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 7ae4919d326ee1934c256dcb75fa09e84bcc0a4c  Merge branch 'pending' into master-pending
 
-elapsed time: 785m
+elapsed time: 809m
 
-configs tested: 126
+configs tested: 131
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -50,6 +50,11 @@ mips                  maltasmvp_eva_defconfig
 m68k                         apollo_defconfig
 mips                      bmips_stb_defconfig
 arc                     nsimosci_hs_defconfig
+sh                ecovec24-romimage_defconfig
+arm                      footbridge_defconfig
+arm                           h5000_defconfig
+powerpc                     tqm8540_defconfig
+arc                          axs103_defconfig
 powerpc                      tqm8xx_defconfig
 arm                         bcm2835_defconfig
 arm                           stm32_defconfig
