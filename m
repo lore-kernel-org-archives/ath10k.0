@@ -1,14 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLhE8-0006u0-OL
- for ath10k@lists.infradead.org; Fri, 25 Sep 2020 06:29:06 +0000
-Date: Fri, 25 Sep 2020 14:28:16 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 7ae4919d326ee1934c256dcb75fa09e84bcc0a4c
-Message-ID: <5f6d8e00.EPzK4b2RR+lOwUFY%lkp@intel.com>
+ id 1kLpYh-0006Eu-Fk
+ for ath10k@lists.infradead.org; Fri, 25 Sep 2020 15:22:52 +0000
+Received: by mail-ot1-x344.google.com with SMTP id c2so2625652otp.7
+ for <ath10k@lists.infradead.org>; Fri, 25 Sep 2020 08:22:49 -0700 (PDT)
+Date: Fri, 25 Sep 2020 10:22:45 -0500
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi
+ Poco F1
+Message-ID: <20200925152245.GD2510@yoga>
+References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+ <20200917160513.GO1893@yoga>
+ <CAMi1Hd0S+hOLL0X8=_1KGG0G7u0bt66H6=yN=LuuX+FJb8+-4g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAMi1Hd0S+hOLL0X8=_1KGG0G7u0bt66H6=yN=LuuX+FJb8+-4g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,158 +28,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k <ath10k@lists.infradead.org>, David S Miller <davem@davemloft.net>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 7ae4919d326ee1934c256dcb75fa09e84bcc0a4c  Merge branch 'pending' into master-pending
+On Mon 21 Sep 05:38 CDT 2020, Amit Pundir wrote:
 
-elapsed time: 809m
+> On Thu, 17 Sep 2020 at 21:35, Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Thu 17 Sep 02:41 CDT 2020, Amit Pundir wrote:
+> >
+> > > Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> > > phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> > > message in ath10k_qmi_host_cap_send_sync(), but we can still
+> > > bring up WiFi services successfully on AOSP if we ignore it.
+> > >
+> > > We suspect either the host cap is not implemented or there
+> > > may be firmware specific issues. Firmware version is
+> > > QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+> > >
+> > > qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> > > quirk, then the host capability request does get accepted,
+> > > but we run into fatal "msa info req rejected" error and
+> > > WiFi interface doesn't come up.
+> > >
+> >
+> > What happens if you skip sending the host-cap message? I had one
+> > firmware version for which I implemented a
+> > "qcom,snoc-host-cap-skip-quirk".
+> >
+> > But testing showed that the link was pretty unusable - pushing any real
+> > amount of data would cause it to silently stop working - and I realized
+> > that I could use the linux-firmware wlanmdsp.mbn instead, which works
+> > great on all my devices...
+> 
+> I skipped the ath10k_qmi_host_cap_send_sync block altogether
+> (if that is what you meant by qcom,snoc-host-cap-skip-quirk) and
+> so far did not run into any issues with youtube auto-playback loop
+> (3+ hours and counting). Does that count as a valid use case?
+> Otherwise let me know how could I reproduce a reasonable test
+> setup?
+> 
 
-configs tested: 131
-configs skipped: 3
+Iirc I was able to get an IP but browsing the web would be enough
+traffic to stop (without any visible faults from the driver).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So your test sounds good I would like to see a host-cap-skip quirk,
+rather than a conditional on the machine compatible.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7203_defconfig
-nios2                         10m50_defconfig
-powerpc               mpc834x_itxgp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                       holly_defconfig
-mips                  maltasmvp_eva_defconfig
-m68k                         apollo_defconfig
-mips                      bmips_stb_defconfig
-arc                     nsimosci_hs_defconfig
-sh                ecovec24-romimage_defconfig
-arm                      footbridge_defconfig
-arm                           h5000_defconfig
-powerpc                     tqm8540_defconfig
-arc                          axs103_defconfig
-powerpc                      tqm8xx_defconfig
-arm                         bcm2835_defconfig
-arm                           stm32_defconfig
-arm                          collie_defconfig
-mips                         cobalt_defconfig
-arm                        clps711x_defconfig
-powerpc                      ppc64e_defconfig
-xtensa                  audio_kc705_defconfig
-h8300                            alldefconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                   motionpro_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 linkstation_defconfig
-powerpc                     sbc8548_defconfig
-sh                             shx3_defconfig
-arm                           efm32_defconfig
-powerpc                     akebono_defconfig
-sh                         apsh4a3a_defconfig
-sh                           se7712_defconfig
-sh                        sh7757lcr_defconfig
-sh                      rts7751r2d1_defconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-mips                        bcm47xx_defconfig
-mips                         tb0226_defconfig
-m68k                          hp300_defconfig
-sparc                       sparc32_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                        workpad_defconfig
-powerpc                     ep8248e_defconfig
-mips                       capcella_defconfig
-riscv                          rv32_defconfig
-powerpc                     ppa8548_defconfig
-x86_64                              defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200924
-i386                 randconfig-a006-20200924
-i386                 randconfig-a003-20200924
-i386                 randconfig-a004-20200924
-i386                 randconfig-a005-20200924
-i386                 randconfig-a001-20200924
-i386                 randconfig-a002-20200923
-i386                 randconfig-a006-20200923
-i386                 randconfig-a003-20200923
-i386                 randconfig-a004-20200923
-i386                 randconfig-a005-20200923
-i386                 randconfig-a001-20200923
-i386                 randconfig-a002-20200925
-i386                 randconfig-a006-20200925
-i386                 randconfig-a003-20200925
-i386                 randconfig-a004-20200925
-i386                 randconfig-a005-20200925
-i386                 randconfig-a001-20200925
-x86_64               randconfig-a011-20200925
-x86_64               randconfig-a013-20200925
-x86_64               randconfig-a014-20200925
-x86_64               randconfig-a015-20200925
-x86_64               randconfig-a012-20200925
-x86_64               randconfig-a016-20200925
-i386                 randconfig-a012-20200925
-i386                 randconfig-a014-20200925
-i386                 randconfig-a016-20200925
-i386                 randconfig-a013-20200925
-i386                 randconfig-a011-20200925
-i386                 randconfig-a015-20200925
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> >
+> > > Attempts are being made to debug the failure reasons but no
+> > > luck so far. Hence this device specific workaround instead
+> > > of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> > > Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> > > linux-firmware project but it didn't help and neither did
+> > > building board-2.bin file from stock bdwlan* files.
+> > >
+> >
+> > "Didn't work" as in the wlanmdsp.mbn from linux-firmware failed to load
+> > or some laer problem?
+> 
+> While using the wlanmdsp.mbn from linux-firmware, I run into
+> the following crash 4 times before tqftpserv service gets killed
+> eventually:
+> 
+> [   46.504502] qcom-q6v5-mss 4080000.remoteproc: fatal error received:
+> dog_virtual_root.c:89:User-PD grace timer expired for wlan_process
+> (ASID: 1)
 
-clang tested configs:
-x86_64               randconfig-a005-20200925
-x86_64               randconfig-a002-20200925
-x86_64               randconfig-a006-20200925
-x86_64               randconfig-a001-20200925
-x86_64               randconfig-a003-20200925
-x86_64               randconfig-a004-20200925
+It loaded, but doesn't seem to come up properly. We can try to debug
+this further, but I think getting the quirk in will be useful - as there
+seems to be a generation of firmware that has this particular behavior.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Bjorn
 
 _______________________________________________
 ath10k mailing list
