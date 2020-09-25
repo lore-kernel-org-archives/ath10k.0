@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLYAN-0002SZ-19
- for ath10k@lists.infradead.org; Thu, 24 Sep 2020 20:48:36 +0000
-Date: Fri, 25 Sep 2020 04:47:58 +0800
+ id 1kLgqm-0007EV-DK
+ for ath10k@lists.infradead.org; Fri, 25 Sep 2020 06:04:57 +0000
+Date: Fri, 25 Sep 2020 14:04:42 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
- 96e377e2a3b286a63484ebec99d5a7724c5f7df2
-Message-ID: <5f6d05fe.KZOkSJNST/mwIp53%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ ee331202792d88080cf1b1961656793c0b8a416b
+Message-ID: <5f6d887a.i0g2R6ZHUixwi94a%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
-branch HEAD: 96e377e2a3b286a63484ebec99d5a7724c5f7df2  HACK: ath11k: disable L1 to prevent device entering low power state
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: ee331202792d88080cf1b1961656793c0b8a416b  ath11k: Move non-fatal warn logs to dbg level
 
-elapsed time: 725m
+elapsed time: 785m
 
 configs tested: 126
-configs skipped: 2
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -41,67 +41,63 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-powerpc                    sam440ep_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                    klondike_defconfig
-arm                       imx_v6_v7_defconfig
-sh                        sh7757lcr_defconfig
-i386                             alldefconfig
-arm                        mini2440_defconfig
-mips                         tb0226_defconfig
-m68k                           sun3_defconfig
-microblaze                          defconfig
-s390                                defconfig
 sh                          rsk7203_defconfig
-powerpc                 mpc8313_rdb_defconfig
-sparc                            alldefconfig
-arm                           h5000_defconfig
-arm                          ixp4xx_defconfig
-arm                     davinci_all_defconfig
-m68k                       m5275evb_defconfig
-powerpc                     tqm8548_defconfig
-arm                         nhk8815_defconfig
-powerpc                     ep8248e_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      ppc6xx_defconfig
-sh                           se7619_defconfig
-ia64                             allyesconfig
-sh                          rsk7264_defconfig
-arm                        neponset_defconfig
-powerpc                      makalu_defconfig
-arm                            qcom_defconfig
-sh                          r7780mp_defconfig
-powerpc                       ebony_defconfig
-xtensa                    smp_lx200_defconfig
-m68k                        m5272c3_defconfig
-arm                       aspeed_g4_defconfig
-arm                         axm55xx_defconfig
-m68k                            q40_defconfig
+nios2                         10m50_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                        mvme16x_defconfig
+powerpc                       holly_defconfig
+mips                  maltasmvp_eva_defconfig
+m68k                         apollo_defconfig
+mips                      bmips_stb_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                      tqm8xx_defconfig
+arm                         bcm2835_defconfig
+arm                           stm32_defconfig
+arm                          collie_defconfig
+mips                         cobalt_defconfig
+arm                        clps711x_defconfig
+powerpc                      ppc64e_defconfig
+xtensa                  audio_kc705_defconfig
+h8300                            alldefconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                   motionpro_defconfig
+sh                          kfr2r09_defconfig
+powerpc                 linkstation_defconfig
+powerpc                     sbc8548_defconfig
+sh                             shx3_defconfig
+arm                           efm32_defconfig
+powerpc                     akebono_defconfig
+sh                         apsh4a3a_defconfig
 sh                           se7712_defconfig
-powerpc                      cm5200_defconfig
-m68k                        mvme147_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                     kmeter1_defconfig
-riscv                             allnoconfig
-c6x                              allyesconfig
-sh                          polaris_defconfig
-sh                ecovec24-romimage_defconfig
-csky                                defconfig
-sh                          lboxre2_defconfig
-nds32                             allnoconfig
-arm                    vt8500_v6_v7_defconfig
-sh                         microdev_defconfig
-mips                            gpr_defconfig
-arm                      integrator_defconfig
+sh                        sh7757lcr_defconfig
+sh                      rts7751r2d1_defconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+mips                        bcm47xx_defconfig
+mips                         tb0226_defconfig
+m68k                          hp300_defconfig
+sparc                       sparc32_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                        workpad_defconfig
+powerpc                     ep8248e_defconfig
+mips                       capcella_defconfig
+riscv                          rv32_defconfig
+powerpc                     ppa8548_defconfig
+x86_64                              defconfig
 ia64                             allmodconfig
 ia64                                defconfig
+ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
+csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
@@ -111,6 +107,7 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
+s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
@@ -132,38 +129,41 @@ i386                 randconfig-a003-20200923
 i386                 randconfig-a004-20200923
 i386                 randconfig-a005-20200923
 i386                 randconfig-a001-20200923
-x86_64               randconfig-a011-20200923
-x86_64               randconfig-a013-20200923
-x86_64               randconfig-a014-20200923
-x86_64               randconfig-a015-20200923
-x86_64               randconfig-a012-20200923
-x86_64               randconfig-a016-20200923
-i386                 randconfig-a012-20200923
-i386                 randconfig-a014-20200923
-i386                 randconfig-a016-20200923
-i386                 randconfig-a013-20200923
-i386                 randconfig-a011-20200923
-i386                 randconfig-a015-20200923
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
+i386                 randconfig-a002-20200925
+i386                 randconfig-a006-20200925
+i386                 randconfig-a003-20200925
+i386                 randconfig-a004-20200925
+i386                 randconfig-a005-20200925
+i386                 randconfig-a001-20200925
+x86_64               randconfig-a011-20200925
+x86_64               randconfig-a013-20200925
+x86_64               randconfig-a014-20200925
+x86_64               randconfig-a015-20200925
+x86_64               randconfig-a012-20200925
+x86_64               randconfig-a016-20200925
+i386                 randconfig-a012-20200925
+i386                 randconfig-a014-20200925
+i386                 randconfig-a016-20200925
+i386                 randconfig-a013-20200925
+i386                 randconfig-a011-20200925
+i386                 randconfig-a015-20200925
 riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
 riscv                               defconfig
-riscv                          rv32_defconfig
 riscv                            allmodconfig
 x86_64                                   rhel
 x86_64                           allyesconfig
 x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                                  kexec
 
 clang tested configs:
-x86_64               randconfig-a006-20200923
-x86_64               randconfig-a005-20200923
-x86_64               randconfig-a003-20200923
-x86_64               randconfig-a004-20200923
-x86_64               randconfig-a002-20200923
-x86_64               randconfig-a001-20200923
+x86_64               randconfig-a005-20200925
+x86_64               randconfig-a002-20200925
+x86_64               randconfig-a006-20200925
+x86_64               randconfig-a001-20200925
+x86_64               randconfig-a003-20200925
+x86_64               randconfig-a004-20200925
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
