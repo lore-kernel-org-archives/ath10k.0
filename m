@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLpdP-0007Bo-TU
- for ath10k@lists.infradead.org; Fri, 25 Sep 2020 15:27:44 +0000
-Received: by mail-oi1-x244.google.com with SMTP id z26so3134112oih.12
- for <ath10k@lists.infradead.org>; Fri, 25 Sep 2020 08:27:43 -0700 (PDT)
-Date: Fri, 25 Sep 2020 10:27:39 -0500
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi
- Poco F1
-Message-ID: <20200925152739.GE2510@yoga>
-References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
- <87d02bnnll.fsf@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87d02bnnll.fsf@codeaurora.org>
+ id 1kLsTi-0004p1-E4
+ for ath10k@lists.infradead.org; Fri, 25 Sep 2020 18:29:55 +0000
+Received: by mail-pf1-x443.google.com with SMTP id z18so4015888pfg.0
+ for <ath10k@lists.infradead.org>; Fri, 25 Sep 2020 11:29:51 -0700 (PDT)
+From: Amit Pundir <amit.pundir@linaro.org>
+Subject: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI
+ requests
+Date: Fri, 25 Sep 2020 23:59:41 +0530
+Message-Id: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +18,117 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Amit Pundir <amit.pundir@linaro.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, David S Miller <davem@davemloft.net>
+To: Kalle Valo <kvalo@codeaurora.org>, David S Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>, John Stultz <john.stultz@linaro.org>, Sumit Semwal <sumit.semwal@linaro.org>
 
-On Thu 24 Sep 11:31 CDT 2020, Kalle Valo wrote:
+There are firmware versions which do not support host capability
+QMI request. We suspect either the host cap is not implemented or
+there may be firmware specific issues, but apparently there seem
+to be a generation of firmware that has this particular behavior.
 
-> Amit Pundir <amit.pundir@linaro.org> writes:
-> 
-> > Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-> > phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-> > message in ath10k_qmi_host_cap_send_sync(), but we can still
-> > bring up WiFi services successfully on AOSP if we ignore it.
-> >
-> > We suspect either the host cap is not implemented or there
-> > may be firmware specific issues. Firmware version is
-> > QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
-> >
-> > qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-> > quirk, then the host capability request does get accepted,
-> > but we run into fatal "msa info req rejected" error and
-> > WiFi interface doesn't come up.
-> >
-> > Attempts are being made to debug the failure reasons but no
-> > luck so far. Hence this device specific workaround instead
-> > of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-> > Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-> > linux-firmware project but it didn't help and neither did
-> > building board-2.bin file from stock bdwlan* files.
-> >
-> > This workaround will be removed once we have a viable fix.
-> > Thanks to postmarketOS guys for catching this.
-> >
-> > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> 
-> Bjorn, is this ok to take?
-> 
+For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
+"QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
 
-As I wrote in the answer to Amit I think we should introduce a generic
-quirk to skip host_cap instead.
+If we do not skip the host cap QMI request on Poco F1, then we
+get a QMI_ERR_MALFORMED_MSG_V01 error message in the
+ath10k_qmi_host_cap_send_sync(). But this error message is not
+fatal to the firmware nor to the ath10k driver and we can still
+bring up the WiFi services successfully if we just ignore it.
 
-So if you pick this up (which is an ok short term workaround) I think we
-should revert it once we have a generic mechanism.
+Hence introducing this DeviceTree quirk to skip host capability
+QMI request for the firmware versions which do not support this
+feature.
 
-Regards,
-Bjorn
+Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+---
+ .../devicetree/bindings/net/wireless/qcom,ath10k.txt        |  5 +++++
+ drivers/net/wireless/ath/ath10k/qmi.c                       | 13 ++++++++++---
+ drivers/net/wireless/ath/ath10k/snoc.c                      |  3 +++
+ drivers/net/wireless/ath/ath10k/snoc.h                      |  1 +
+ 4 files changed, 19 insertions(+), 3 deletions(-)
 
-> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> > @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
-> >  
-> >  	/* older FW didn't support this request, which is not fatal */
-> >  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
-> > -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-> > +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-> > +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
-> >  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
-> 
-> ath10k-check complained about a too long line, so in the pending branch
-> I moved the comment before the if statement.
-> 
-> -- 
-> https://patchwork.kernel.org/project/linux-wireless/list/
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 65ee68efd574..135c7ecd4487 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -86,6 +86,11 @@ Optional properties:
+ 	Value type: <empty>
+ 	Definition: Quirk specifying that the firmware expects the 8bit version
+ 		    of the host capability QMI request
++- qcom,snoc-host-cap-skip-quirk:
++	Usage: Optional
++	Value type: <empty>
++	Definition: Quirk specifying that the firmware wants to skip the host
++		    capability QMI request
+ - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
+ 
+ - qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 5468a41e928e..5adff7695e18 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -770,6 +770,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
+ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+ {
+ 	struct ath10k *ar = qmi->ar;
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 	int ret;
+ 
+ 	ret = ath10k_qmi_ind_register_send_sync_msg(qmi);
+@@ -781,9 +782,15 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+ 		return;
+ 	}
+ 
+-	ret = ath10k_qmi_host_cap_send_sync(qmi);
+-	if (ret)
+-		return;
++	/*
++	 * Skip the host capability request for the firmware versions which
++	 * do not support this feature.
++	 */
++	if (!test_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags)) {
++		ret = ath10k_qmi_host_cap_send_sync(qmi);
++		if (ret)
++			return;
++	}
+ 
+ 	ret = ath10k_qmi_msa_mem_info_send_sync_msg(qmi);
+ 	if (ret)
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 354d49b1cd45..4efbf1339c80 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1281,6 +1281,9 @@ static void ath10k_snoc_quirks_init(struct ath10k *ar)
+ 
+ 	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-8bit-quirk"))
+ 		set_bit(ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK, &ar_snoc->flags);
++
++	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-skip-quirk"))
++		set_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags);
+ }
+ 
+ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index a3dd06f6ac62..2a0045f0af7e 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -47,6 +47,7 @@ enum ath10k_snoc_flags {
+ 	ATH10K_SNOC_FLAG_UNREGISTERING,
+ 	ATH10K_SNOC_FLAG_RECOVERY,
+ 	ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK,
++	ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK,
+ };
+ 
+ struct clk_bulk_data;
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
