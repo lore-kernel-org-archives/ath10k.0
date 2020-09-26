@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kMAPj-000435-Qy
- for ath10k@lists.infradead.org; Sat, 26 Sep 2020 13:39:01 +0000
-Date: Sat, 26 Sep 2020 21:38:08 +0800
+ id 1kMAkA-0007Z4-SE
+ for ath10k@lists.infradead.org; Sat, 26 Sep 2020 14:00:09 +0000
+Date: Sat, 26 Sep 2020 21:59:48 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 924f49f9ccc7dacdbb753d7df2c026188192cacb
-Message-ID: <5f6f4440.O3Yu+X/uCRPXelUN%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 5f032a3d6d826b35acd15c741a5e07fdcc731488
+Message-ID: <5f6f4954.c5p8g99A1MN6UV6H%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 924f49f9ccc7dacdbb753d7df2c026188192cacb  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 5f032a3d6d826b35acd15c741a5e07fdcc731488  ath11k: Move non-fatal warn logs to dbg level
 
-elapsed time: 903m
+elapsed time: 925m
 
 configs tested: 158
 configs skipped: 2
@@ -103,10 +103,10 @@ ia64                                defconfig
 mips                        jmr3927_defconfig
 sparc                       sparc64_defconfig
 arm                       aspeed_g4_defconfig
+csky                                defconfig
 powerpc                     ksi8560_defconfig
 arm                            mps2_defconfig
 um                            kunit_defconfig
-csky                                defconfig
 powerpc               mpc834x_itxgp_defconfig
 sparc                            alldefconfig
 arc                           tb10x_defconfig
