@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from z5.mailgun.us ([104.130.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNAHv-0004Xp-Fy
- for ath10k@lists.infradead.org; Tue, 29 Sep 2020 07:43:04 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
-References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
- <20200916165748.20927-1-alex.dewar90@gmail.com>
- <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
- <87h7rnnnrb.fsf@codeaurora.org>
- <20200927105828.522fabbpyxx2mt3n@medion>
-Date: Tue, 29 Sep 2020 10:42:56 +0300
-In-Reply-To: <20200927105828.522fabbpyxx2mt3n@medion> (Alex Dewar's message of
- "Sun, 27 Sep 2020 11:58:28 +0100")
-Message-ID: <87wo0ddo5b.fsf@codeaurora.org>
+ id 1kNB0r-0002QC-7w
+ for ath10k@lists.infradead.org; Tue, 29 Sep 2020 08:29:32 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco
+ F1
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+Message-Id: <20200929082900.67355C433C8@smtp.codeaurora.org>
+Date: Tue, 29 Sep 2020 08:29:00 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +23,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alex Dewar <alex.dewar90@gmail.com>
-Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "David S. Miller" <davem@davemloft.net>
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, David S Miller <davem@davemloft.net>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Sumit Semwal <sumit.semwal@linaro.org>, lkml <linux-kernel@vger.kernel.org>
 
-Alex Dewar <alex.dewar90@gmail.com> writes:
+Amit Pundir <amit.pundir@linaro.org> wrote:
 
->> I agree. Anyone can come up with a patch?
->
-> Hi Kalle,
->
-> I was thinking of having a go at this. Have you applied the v2 of this
-> patch yet though? I couldn't see it in wireless-drivers-next. I just
-> don't want to have to rebase the patch if you were going to apply this
-> v2.
+> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> message in ath10k_qmi_host_cap_send_sync(), but we can still
+> bring up WiFi services successfully on AOSP if we ignore it.
+> 
+> We suspect either the host cap is not implemented or there
+> may be firmware specific issues. Firmware version is
+> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+> 
+> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> quirk, then the host capability request does get accepted,
+> but we run into fatal "msa info req rejected" error and
+> WiFi interface doesn't come up.
+> 
+> Attempts are being made to debug the failure reasons but no
+> luck so far. Hence this device specific workaround instead
+> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> linux-firmware project but it didn't help and neither did
+> building board-2.bin file from stock bdwlan* files.
+> 
+> This workaround will be removed once we have a viable fix.
+> Thanks to postmarketOS guys for catching this.
+> 
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-I have not applied this yet. It's in my pending branch but I can easily
-drop it. Just let me know what you prefer.
+Dropped per discussion.
+
+Patch set to Changes Requested.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+https://patchwork.kernel.org/patch/11781801/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
