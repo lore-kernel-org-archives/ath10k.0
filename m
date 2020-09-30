@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNUjl-0001zS-SW
- for ath10k@lists.infradead.org; Wed, 30 Sep 2020 05:33:11 +0000
-Date: Wed, 30 Sep 2020 13:32:57 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 33722636dbd054d9c8dbf9f08c442efc8933105e
-Message-ID: <5f741889.dJxytwmXnSLZJ0eJ%lkp@intel.com>
+ id 1kNa06-0001Pg-EQ
+ for ath10k@lists.infradead.org; Wed, 30 Sep 2020 11:10:23 +0000
+Received: by mail-wr1-x443.google.com with SMTP id t10so1335728wrv.1
+ for <ath10k@lists.infradead.org>; Wed, 30 Sep 2020 04:10:20 -0700 (PDT)
 MIME-Version: 1.0
+References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
+ <20200929190817.GA968845@bogus>
+In-Reply-To: <20200929190817.GA968845@bogus>
+From: Amit Pundir <amit.pundir@linaro.org>
+Date: Wed, 30 Sep 2020 16:39:43 +0530
+Message-ID: <CAMi1Hd1NhPipHMWFjGu6MMJDNRNndmvYrEt-5sFowYJPwtJdxw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI
+ requests
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,163 +26,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: dt <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k <ath10k@lists.infradead.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, David S Miller <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 33722636dbd054d9c8dbf9f08c442efc8933105e  ath11k: Use GFP_ATOMIC instead of GFP_KERNEL in idr_alloc
+On Wed, 30 Sep 2020 at 00:38, Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Sep 25, 2020 at 11:59:41PM +0530, Amit Pundir wrote:
+> > There are firmware versions which do not support host capability
+> > QMI request. We suspect either the host cap is not implemented or
+> > there may be firmware specific issues, but apparently there seem
+> > to be a generation of firmware that has this particular behavior.
+> >
+> > For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
+> > "QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
+> >
+> > If we do not skip the host cap QMI request on Poco F1, then we
+> > get a QMI_ERR_MALFORMED_MSG_V01 error message in the
+> > ath10k_qmi_host_cap_send_sync(). But this error message is not
+> > fatal to the firmware nor to the ath10k driver and we can still
+> > bring up the WiFi services successfully if we just ignore it.
+> >
+> > Hence introducing this DeviceTree quirk to skip host capability
+> > QMI request for the firmware versions which do not support this
+> > feature.
+>
+> So if you change the WiFi firmware, you may force a DT change too. Those
+> are pretty independent things otherwise.
 
-elapsed time: 720m
+This is a valid concern and I'm not sure about the other devices, but
+on PocoF1 I have tried all the three released firmware version updates:
 
-configs tested: 136
-configs skipped: 2
+WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+WLAN.HL.2.0.c3-00445-QCAHLSWMTPLZ-1
+WLAN.HL.2.0.c3-00534-QCAHLSWMTPLZ-1
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+and none of them works without this skip host-cap patch or equivalent
+hack. PocoF1 is already 2+ years old device and sadly I do not expect
+any major vendor update coming its way.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                           h3600_defconfig
-powerpc                          g5_defconfig
-arm                       spear13xx_defconfig
-mips                           ip22_defconfig
-arm                         nhk8815_defconfig
-ia64                        generic_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                      pmac32_defconfig
-powerpc64                        alldefconfig
-sh                        sh7785lcr_defconfig
-riscv                            alldefconfig
-arm                           viper_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                     tqm8541_defconfig
-sh                        sh7763rdp_defconfig
-mips                    maltaup_xpa_defconfig
-sh                         ap325rxa_defconfig
-arm                        spear6xx_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                 mpc837x_mds_defconfig
-microblaze                          defconfig
-arc                        vdk_hs38_defconfig
-mips                             allmodconfig
-mips                      pic32mzda_defconfig
-mips                       lemote2f_defconfig
-mips                 decstation_r4k_defconfig
-mips                malta_kvm_guest_defconfig
-h8300                     edosk2674_defconfig
-mips                         tb0219_defconfig
-sh                          r7780mp_defconfig
-m68k                       m5249evb_defconfig
-mips                       capcella_defconfig
-sh                   sh7770_generic_defconfig
-csky                                defconfig
-arm                          ep93xx_defconfig
-arm                           h5000_defconfig
-sh                           se7780_defconfig
-arm                         ebsa110_defconfig
-c6x                                 defconfig
-sh                      rts7751r2d1_defconfig
-alpha                            alldefconfig
-m68k                            q40_defconfig
-sh                           se7712_defconfig
-mips                     loongson1c_defconfig
-xtensa                         virt_defconfig
-sparc64                             defconfig
-powerpc                      ppc6xx_defconfig
-arm                      pxa255-idp_defconfig
-arm                          iop32x_defconfig
-sh                           sh2007_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200929
-i386                 randconfig-a002-20200929
-i386                 randconfig-a003-20200929
-i386                 randconfig-a004-20200929
-i386                 randconfig-a005-20200929
-i386                 randconfig-a001-20200929
-i386                 randconfig-a003-20200930
-i386                 randconfig-a002-20200930
-i386                 randconfig-a006-20200930
-i386                 randconfig-a005-20200930
-i386                 randconfig-a004-20200930
-i386                 randconfig-a001-20200930
-x86_64               randconfig-a011-20200929
-x86_64               randconfig-a013-20200929
-x86_64               randconfig-a015-20200929
-x86_64               randconfig-a014-20200929
-x86_64               randconfig-a016-20200929
-x86_64               randconfig-a012-20200929
-i386                 randconfig-a012-20200929
-i386                 randconfig-a016-20200929
-i386                 randconfig-a014-20200929
-i386                 randconfig-a013-20200929
-i386                 randconfig-a015-20200929
-i386                 randconfig-a011-20200929
-i386                 randconfig-a011-20200930
-i386                 randconfig-a015-20200930
-i386                 randconfig-a012-20200930
-i386                 randconfig-a014-20200930
-i386                 randconfig-a016-20200930
-i386                 randconfig-a013-20200930
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+>
+> Why can't you just always ignore this error? If you can't deal with this
+> entirely in the driver, then it should be part of the WiFi firmware so
+> it's always in sync.
 
-clang tested configs:
-x86_64               randconfig-a005-20200929
-x86_64               randconfig-a003-20200929
-x86_64               randconfig-a004-20200929
-x86_64               randconfig-a002-20200929
-x86_64               randconfig-a006-20200929
-x86_64               randconfig-a001-20200929
+I don't know the technical details of the ath10k/qmi driver, but I'm
+OK if we just ignore the return value of
+ath10k_qmi_host_cap_send_sync() and move along.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Amit Pundir
+
+>
+> Rob
 
 _______________________________________________
 ath10k mailing list
