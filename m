@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNUjl-0001zB-Sf
+ id 1kNUjl-0001zS-SW
  for ath10k@lists.infradead.org; Wed, 30 Sep 2020 05:33:11 +0000
-Date: Wed, 30 Sep 2020 13:32:55 +0800
+Date: Wed, 30 Sep 2020 13:32:57 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- e53240e2b174e8b42610ff00497423b986c8f7a9
-Message-ID: <5f741887.vyz54ocwNgkLJdUN%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 33722636dbd054d9c8dbf9f08c442efc8933105e
+Message-ID: <5f741889.dJxytwmXnSLZJ0eJ%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: e53240e2b174e8b42610ff00497423b986c8f7a9  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 33722636dbd054d9c8dbf9f08c442efc8933105e  ath11k: Use GFP_ATOMIC instead of GFP_KERNEL in idr_alloc
 
 elapsed time: 720m
 
-configs tested: 138
+configs tested: 136
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,11 +41,6 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-powerpc                      pcm030_defconfig
-arm                        shmobile_defconfig
-mips                         db1xxx_defconfig
-sh                          sdk7780_defconfig
-powerpc                 mpc8560_ads_defconfig
 arm                           h3600_defconfig
 powerpc                          g5_defconfig
 arm                       spear13xx_defconfig
@@ -59,14 +54,16 @@ sh                        sh7785lcr_defconfig
 riscv                            alldefconfig
 arm                           viper_defconfig
 powerpc                 mpc834x_mds_defconfig
-arm                            zeus_defconfig
-arm                     davinci_all_defconfig
-openrisc                            defconfig
-arc                          axs103_defconfig
 powerpc                      tqm8xx_defconfig
 powerpc                     tqm8541_defconfig
 sh                        sh7763rdp_defconfig
 mips                    maltaup_xpa_defconfig
+sh                         ap325rxa_defconfig
+arm                        spear6xx_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                 mpc837x_mds_defconfig
+microblaze                          defconfig
 arc                        vdk_hs38_defconfig
 mips                             allmodconfig
 mips                      pic32mzda_defconfig
@@ -85,10 +82,11 @@ arm                           h5000_defconfig
 sh                           se7780_defconfig
 arm                         ebsa110_defconfig
 c6x                                 defconfig
-powerpc                      chrp32_defconfig
-arm                          simpad_defconfig
-m68k                        stmark2_defconfig
-arm                      jornada720_defconfig
+sh                      rts7751r2d1_defconfig
+alpha                            alldefconfig
+m68k                            q40_defconfig
+sh                           se7712_defconfig
+mips                     loongson1c_defconfig
 xtensa                         virt_defconfig
 sparc64                             defconfig
 powerpc                      ppc6xx_defconfig
