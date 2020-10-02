@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kO82Y-0002Em-MK
- for ath10k@lists.infradead.org; Thu, 01 Oct 2020 23:31:12 +0000
-Date: Fri, 02 Oct 2020 07:30:42 +0800
+ id 1kO8xn-0006G9-Re
+ for ath10k@lists.infradead.org; Fri, 02 Oct 2020 00:30:22 +0000
+Date: Fri, 02 Oct 2020 08:29:57 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 7fa9a716e50b3a03604ebd019aa3c95b8c0ba593
-Message-ID: <5f7666a2.YzA3ff1tejTdRdr6%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ d995f20642c278b840a3468b7041ca039cba1f93
+Message-ID: <5f767485.dCYcSK++YA4WgUAx%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,10 +24,10 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 7fa9a716e50b3a03604ebd019aa3c95b8c0ba593  wcn36xx: Advertise beacon filtering support in bmps
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: d995f20642c278b840a3468b7041ca039cba1f93  Merge branch 'pending' into master-pending
 
-elapsed time: 722m
+elapsed time: 781m
 
 configs tested: 122
 configs skipped: 2
@@ -41,10 +41,10 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                          gemini_defconfig
 mips                malta_qemu_32r6_defconfig
 mips                          malta_defconfig
 arm                              alldefconfig
-arm                          gemini_defconfig
 mips                malta_kvm_guest_defconfig
 um                           x86_64_defconfig
 sh                           se7724_defconfig
@@ -90,7 +90,6 @@ sh                        sh7785lcr_defconfig
 sh                          rsk7203_defconfig
 sh                   sh7724_generic_defconfig
 sh                             espt_defconfig
-csky                                defconfig
 arm                          iop32x_defconfig
 powerpc                 mpc837x_rdb_defconfig
 ia64                             allmodconfig
@@ -104,6 +103,7 @@ nds32                             allnoconfig
 c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
+csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
