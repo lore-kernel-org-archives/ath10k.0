@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPtJz-0006yT-Bu
+ id 1kPtJz-0006yQ-BI
  for ath10k@lists.infradead.org; Tue, 06 Oct 2020 20:12:28 +0000
-Date: Wed, 07 Oct 2020 04:11:30 +0800
+Date: Wed, 07 Oct 2020 04:11:28 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 2bfc598f6903343908a91c584fe3a36204fd4acb
-Message-ID: <5f7ccf72.Tshz4XiGZyDkYOMP%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ ae146b8ff29042bee0540fc4f5cab752d0404ec4
+Message-ID: <5f7ccf70.pTPGTRjPrS8z58cI%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 2bfc598f6903343908a91c584fe3a36204fd4acb  ath10k: Introduce a devicetree quirk to skip host cap QMI requests
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: ae146b8ff29042bee0540fc4f5cab752d0404ec4  Merge branch 'pending' into master-pending
 
 elapsed time: 726m
 
-configs tested: 196
+configs tested: 201
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -104,8 +104,8 @@ arm                         lpc18xx_defconfig
 powerpc                     ppa8548_defconfig
 m68k                            q40_defconfig
 sh                          r7780mp_defconfig
-sparc                               defconfig
 sparc64                             defconfig
+sparc                               defconfig
 sh                         apsh4a3a_defconfig
 arm                        multi_v5_defconfig
 xtensa                           alldefconfig
@@ -126,6 +126,11 @@ arm                         mv78xx0_defconfig
 mips                            e55_defconfig
 mips                 decstation_r4k_defconfig
 sh                        edosk7705_defconfig
+nios2                            alldefconfig
+m68k                       m5208evb_defconfig
+powerpc                       eiger_defconfig
+mips                         tb0226_defconfig
+mips                        nlm_xlr_defconfig
 sh                           se7722_defconfig
 sh                   secureedge5410_defconfig
 m68k                        m5272c3_defconfig
