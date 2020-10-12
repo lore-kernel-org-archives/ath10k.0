@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([134.134.136.65])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kRmVk-0006cs-Vm
+ id 1kRmVk-0006cw-Vl
  for ath10k@lists.infradead.org; Mon, 12 Oct 2020 01:20:26 +0000
-Date: Mon, 12 Oct 2020 09:19:45 +0800
+Date: Mon, 12 Oct 2020 09:19:43 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 61aec00fdf8182169a6b5d5d342d646596550a3c
-Message-ID: <5f83af31.TezPqg6jA+57fdXq%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ fd70f0ab5e15afb771316670ba3c06448193d314
+Message-ID: <5f83af2f.L2fIRfrJJeYundII%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 61aec00fdf8182169a6b5d5d342d646596550a3c  ath10k: Introduce a devicetree quirk to skip host cap QMI requests
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: fd70f0ab5e15afb771316670ba3c06448193d314  Merge branch 'pending' into master-pending
 
 elapsed time: 721m
 
-configs tested: 96
+configs tested: 93
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,23 +41,21 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                         socfpga_defconfig
-arm                            qcom_defconfig
-powerpc                 xes_mpc85xx_defconfig
-parisc                generic-32bit_defconfig
-arm                         s5pv210_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                     akebono_defconfig
-mips                           ip28_defconfig
 powerpc                    ge_imp3a_defconfig
-arc                            hsdk_defconfig
-arm                         orion5x_defconfig
-powerpc                         ps3_defconfig
-arm                            lart_defconfig
+sh                          polaris_defconfig
+powerpc                          allyesconfig
 powerpc                     taishan_defconfig
-powerpc                        warp_defconfig
-mips                      maltasmvp_defconfig
-arm                          collie_defconfig
+mips                      loongson3_defconfig
+sh                   sh7724_generic_defconfig
+c6x                        evmc6472_defconfig
+sh                           se7619_defconfig
+sh                            migor_defconfig
+arm                         nhk8815_defconfig
+mips                         tb0287_defconfig
+c6x                        evmc6457_defconfig
+arm                       mainstone_defconfig
+mips                     cu1000-neo_defconfig
+microblaze                    nommu_defconfig
 sh                      rts7751r2d1_defconfig
 sh                          rsk7269_defconfig
 m68k                          atari_defconfig
@@ -69,6 +67,10 @@ ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -86,15 +88,16 @@ i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
-powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+x86_64               randconfig-a004-20201011
+x86_64               randconfig-a002-20201011
+x86_64               randconfig-a006-20201011
+x86_64               randconfig-a001-20201011
+x86_64               randconfig-a003-20201011
+x86_64               randconfig-a005-20201011
 i386                 randconfig-a005-20201011
 i386                 randconfig-a006-20201011
 i386                 randconfig-a001-20201011
@@ -107,12 +110,6 @@ i386                 randconfig-a013-20201011
 i386                 randconfig-a012-20201011
 i386                 randconfig-a011-20201011
 i386                 randconfig-a014-20201011
-x86_64               randconfig-a004-20201011
-x86_64               randconfig-a002-20201011
-x86_64               randconfig-a006-20201011
-x86_64               randconfig-a001-20201011
-x86_64               randconfig-a003-20201011
-x86_64               randconfig-a005-20201011
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
