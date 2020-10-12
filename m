@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQ4l1-0002RA-HQ
- for ath10k@lists.infradead.org; Wed, 07 Oct 2020 08:25:08 +0000
-Date: Wed, 7 Oct 2020 10:25:02 +0200
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Subject: Re: CVE-2020-3702: Firmware updates for ath9k and ath10k chips
-Message-ID: <20201007082502.3da6rw2bkudilqaq@pali>
-References: <20200810090126.mtu3uocpcjg5se5e@pali>
- <20200812083600.6zxdf5pfktdzggd6@pali> <87lfik1av8.fsf@toke.dk>
- <20200812092334.GA17878@w1.fi>
+ id 1kRmVk-0006cs-Vm
+ for ath10k@lists.infradead.org; Mon, 12 Oct 2020 01:20:26 +0000
+Date: Mon, 12 Oct 2020 09:19:45 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 61aec00fdf8182169a6b5d5d342d646596550a3c
+Message-ID: <5f83af31.TezPqg6jA+57fdXq%lkp@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200812092334.GA17878@w1.fi>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +17,129 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jouni Malinen <j@w1.fi>
-Cc: Kalle Valo <kvalo@codeaurora.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-T24gV2VkbmVzZGF5IDEyIEF1Z3VzdCAyMDIwIDEyOjIzOjM0IEpvdW5pIE1hbGluZW4gd3JvdGU6
-Cj4gT24gV2VkLCBBdWcgMTIsIDIwMjAgYXQgMTE6MTc6NDdBTSArMDIwMCwgVG9rZSBIw7hpbGFu
-ZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+ID4gUGFsaSBSb2jDoXIgPHBhbGlAa2VybmVsLm9yZz4gd3Jp
-dGVzOgo+ID4gPiBDb3VsZCBzb21lYm9keSByZWFjdCBhbmQgcHJvdmlkZSBzb21lIGRldGFpbHMg
-d2hlbiBmaXhlcyB3b3VsZCBiZQo+ID4gPiBhdmFpbGFibGUgZm9yIGF0aDlrIGFuZCBhdGgxMGsg
-TGludXggZHJpdmVycz8gQW5kIHdoYXQgaXMgY3VycmVudCBzdGF0ZQo+ID4gPiBvZiB0aGlzIGlz
-c3VlIGZvciBMaW51eD8KPiA+ID4KPiA+ID4gSSdtIGxvb2tpbmcgYXQgYXRoOWsgYW5kIGF0aDEw
-ayBnaXQgdHJlZXMgWzFdIFsyXSBbM10gYW5kIEkgZG8gbm90IHNlZQo+ID4gPiB0aGVyZSBhbnkg
-Y2hhbmdlIHdoaWNoIGNvdWxkIGJlIHJlbGF0ZWQgdG8gQ1ZFLTIwMjAtMzcwMi4KPiA+IAo+ID4g
-SG93IGFib3V0IHRoZXNlLCBmcm9tIE1hcmNoOgo+ID4gCj4gPiBhMDc2MWEzMDE3NDYgKCJtYWM4
-MDIxMTogZHJvcCBkYXRhIGZyYW1lcyB3aXRob3V0IGtleSBvbiBlbmNyeXB0ZWQgbGlua3MiKQo+
-ID4gY2UyZTFjYTcwMzA3ICgibWFjODAyMTE6IENoZWNrIHBvcnQgYXV0aG9yaXphdGlvbiBpbiB0
-aGUgaWVlZTgwMjExX3R4X2RlcXVldWUoKSBjYXNlIikKPiA+IGIxNjc5OGY1YjkwNyAoIm1hYzgw
-MjExOiBtYXJrIHN0YXRpb24gdW5hdXRob3JpemVkIGJlZm9yZSBrZXkgcmVtb3ZhbCIpCj4gCj4g
-VGhvc2UgY292ZXIgbW9zdCBvZiB0aGUgaWRlbnRpZmllZCBpc3N1ZXMgZm9yIGRyaXZlcnMgdXNp
-bmcgbWFjODAyMTEKPiAoZS5nLiwgYXRoOWsgYW5kIGF0aDEwazsgdGhvdWdoLCBJIGRvbid0IHJl
-bWVtYmVyIHdoZXRoZXIgSSBhY3R1YWxseQo+IGV2ZXIgbWFuYWdlZCB0byByZXByb2R1Y2UgdGhp
-cyB3aXRoIGF0aDEwayBpbiBwcmFjdGljZSkuIEkgaGF2ZSBjb3VwbGUKPiBvZiBhZGRpdGlvbmFs
-IGF0aDlrLXNwZWNpZmljIHBhdGNoZXMgdGhhdCBjb3ZlciBhZGRpdGlvbmFsIGxvd2VyIGxheWVy
-Cj4gcGF0aHMgZm9yIHRoaXMuIEkgaG9wZSB0byBnZXQgdGhvc2Ugb3V0IGFmdGVyIGNvbmZpcm1p
-bmcgdGhleSB3b3JrIHdpdGgKPiB0aGUgY3VycmVudCBrZXJuZWwgdHJlZSBzbmFwc2hvdC4KCkhl
-bGxvISBDb3VsZCB5b3UgcGxlYXNlIHNoYXJlIHlvdXIgYXRoOWsgcGF0Y2hlcyB3aGljaCBhZGRy
-ZXNzIHRoaXMgaXNzdWU/CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 61aec00fdf8182169a6b5d5d342d646596550a3c  ath10k: Introduce a devicetree quirk to skip host cap QMI requests
+
+elapsed time: 721m
+
+configs tested: 96
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         socfpga_defconfig
+arm                            qcom_defconfig
+powerpc                 xes_mpc85xx_defconfig
+parisc                generic-32bit_defconfig
+arm                         s5pv210_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                     akebono_defconfig
+mips                           ip28_defconfig
+powerpc                    ge_imp3a_defconfig
+arc                            hsdk_defconfig
+arm                         orion5x_defconfig
+powerpc                         ps3_defconfig
+arm                            lart_defconfig
+powerpc                     taishan_defconfig
+powerpc                        warp_defconfig
+mips                      maltasmvp_defconfig
+arm                          collie_defconfig
+sh                      rts7751r2d1_defconfig
+sh                          rsk7269_defconfig
+m68k                          atari_defconfig
+arm                         assabet_defconfig
+powerpc                     kilauea_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201011
+i386                 randconfig-a006-20201011
+i386                 randconfig-a001-20201011
+i386                 randconfig-a003-20201011
+i386                 randconfig-a004-20201011
+i386                 randconfig-a002-20201011
+i386                 randconfig-a016-20201011
+i386                 randconfig-a015-20201011
+i386                 randconfig-a013-20201011
+i386                 randconfig-a012-20201011
+i386                 randconfig-a011-20201011
+i386                 randconfig-a014-20201011
+x86_64               randconfig-a004-20201011
+x86_64               randconfig-a002-20201011
+x86_64               randconfig-a006-20201011
+x86_64               randconfig-a001-20201011
+x86_64               randconfig-a003-20201011
+x86_64               randconfig-a005-20201011
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a016-20201011
+x86_64               randconfig-a015-20201011
+x86_64               randconfig-a012-20201011
+x86_64               randconfig-a013-20201011
+x86_64               randconfig-a014-20201011
+x86_64               randconfig-a011-20201011
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
