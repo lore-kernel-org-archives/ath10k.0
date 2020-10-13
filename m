@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kSCI4-0000nl-9a
- for ath10k@lists.infradead.org; Tue, 13 Oct 2020 04:52:01 +0000
-Date: Tue, 13 Oct 2020 12:51:43 +0800
+ id 1kSCIv-0000qH-Kt
+ for ath10k@lists.infradead.org; Tue, 13 Oct 2020 04:52:54 +0000
+Date: Tue, 13 Oct 2020 12:51:45 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 6292d4671dbb1cdbb3687416d7beed856dcffc02
-Message-ID: <5f85325f.B0hWUmuFcQdnSRW5%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ b6b9af81a3887deb621a4ab132d5cd8fd9beb441
+Message-ID: <5f853261.kLNP53KLKqdXLl6G%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 6292d4671dbb1cdbb3687416d7beed856dcffc02  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: b6b9af81a3887deb621a4ab132d5cd8fd9beb441  ath11k: fix ZERO address in probe request
 
 elapsed time: 720m
 
