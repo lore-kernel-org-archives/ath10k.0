@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUEGE-000849-G5
- for ath10k@lists.infradead.org; Sun, 18 Oct 2020 19:22:31 +0000
+ id 1kUEHt-0000ZU-Nd
+ for ath10k@lists.infradead.org; Sun, 18 Oct 2020 19:24:16 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.8 101/101] ath10k: check idx validity in
+Subject: [PATCH AUTOSEL 5.4 80/80] ath10k: check idx validity in
  __ath10k_htt_rx_ring_fill_n()
-Date: Sun, 18 Oct 2020 15:20:26 -0400
-Message-Id: <20201018192026.4053674-101-sashal@kernel.org>
-In-Reply-To: <20201018192026.4053674-1-sashal@kernel.org>
-References: <20201018192026.4053674-1-sashal@kernel.org>
+Date: Sun, 18 Oct 2020 15:22:31 -0400
+Message-Id: <20201018192231.4054535-80-sashal@kernel.org>
+In-Reply-To: <20201018192231.4054535-1-sashal@kernel.org>
+References: <20201018192231.4054535-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -68,7 +68,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d787cbead56ab..215ade6faf328 100644
+index 9f0e7b4943ec6..8ca0a808a644d 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
 @@ -142,6 +142,14 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
