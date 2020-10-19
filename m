@@ -1,24 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway31.websitewelcome.com ([192.185.143.234])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUY9x-0003uM-Uk
- for ath10k@lists.infradead.org; Mon, 19 Oct 2020 16:37:23 +0000
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
- by gateway31.websitewelcome.com (Postfix) with ESMTP id C58A820BA401
- for <ath10k@lists.infradead.org>;
- Mon, 19 Oct 2020 11:32:35 -0500 (CDT)
-Subject: Re: [PATCH] wireless: remove unneeded break
-References: <20201019150507.20574-1-trix@redhat.com>
- <b31478ea-979a-1c9c-65db-32325233a715@gmail.com>
- <859112e91c3d221dc599e381dbaecb90dd6467a1.camel@perches.com>
- <fb38b96a-b666-1a6d-211d-b79278a8d878@embeddedor.com>
- <5964d734e81c198421bb7f6516dabcad37c1740d.camel@perches.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <715ddf72-978c-a525-0625-ea740a104f2a@embeddedor.com>
-Date: Mon, 19 Oct 2020 11:38:25 -0500
+ id 1kUb37-00085R-A4
+ for ath10k@lists.infradead.org; Mon, 19 Oct 2020 19:42:32 +0000
+Received: by mail-pl1-x643.google.com with SMTP id p11so326146pld.5
+ for <ath10k@lists.infradead.org>; Mon, 19 Oct 2020 12:42:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5964d734e81c198421bb7f6516dabcad37c1740d.camel@perches.com>
-Content-Language: en-US
+References: <20201017160928.12698-1-trix@redhat.com>
+ <20201018054332.GB593954@kroah.com>
+In-Reply-To: <20201018054332.GB593954@kroah.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Mon, 19 Oct 2020 12:42:15 -0700
+Message-ID: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+Subject: Re: [RFC] treewide: cleanup unreachable breaks
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +25,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>, Christian Lamparter <chunkeey@gmail.com>, trix@redhat.com, kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, ath9k-devel@qca.qualcomm.com, johannes.berg@intel.com, emmanuel.grumbach@intel.com, luciano.coelho@intel.com, linuxwifi@intel.com, chunkeey@googlemail.com, pkshih@realtek.com, sara.sharon@intel.com, tova.mussai@intel.com, nathan.errera@intel.com, lior2.cohen@intel.com, john@phrozen.org, shaul.triebitz@intel.com, shahar.s.matityahu@intel.com, Larry.Finger@lwfinger.net, zhengbin13@huawei.com, christophe.jaillet@wanadoo.fr, yanaijie@huawei.com, saurav.girepunje@gmail.com
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+To: Tom Rix <trix@redhat.com>
+Cc: alsa-devel@alsa-project.org, clang-built-linux <clang-built-linux@googlegroups.com>, Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org, storagedev@microchip.com, dri-devel <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, keyrings@vger.kernel.org, linux-mtd@lists.infradead.org, ath10k@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net, linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm <linux-nvdimm@lists.01.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org, industrypack-devel@lists.sourceforge.net, linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org, MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org, linux-serial@vger.kernel.org, linux-nfc@lists.01.org, linux-pm@vger.kernel.org, linux-can@vger.kernel.org, linux-block@vger.kernel.org, linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org, linux-amlogic@lists.infradead.org, openipmi-developer@lists.sourceforge.net, platform-driver-x86@vger.kernel.org, linux-integrity@vger.kernel.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org, George Burgess <gbiv@google.com>, Network Development <netdev@vger.kernel.org>, linux-usb@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-security-module@vger.kernel.org, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com, bpf <bpf@vger.kernel.org>, ocfs2-devel@oss.oracle.com, linux-power@fi.rohmeurope.com
 
+On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+> > From: Tom Rix <trix@redhat.com>
+> >
+> > This is a upcoming change to clean up a new warning treewide.
+> > I am wondering if the change could be one mega patch (see below) or
+> > normal patch per file about 100 patches or somewhere half way by collecting
+> > early acks.
+>
+> Please break it up into one-patch-per-subsystem, like normal, and get it
+> merged that way.
+>
+> Sending us a patch, without even a diffstat to review, isn't going to
+> get you very far...
 
+Tom,
+If you're able to automate this cleanup, I suggest checking in a
+script that can be run on a directory.  Then for each subsystem you
+can say in your commit "I ran scripts/fix_whatever.py on this subdir."
+ Then others can help you drive the tree wide cleanup.  Then we can
+enable -Wunreachable-code-break either by default, or W=2 right now
+might be a good idea.
 
-On 10/19/20 11:20, Joe Perches wrote:
-> On Mon, 2020-10-19 at 10:54 -0500, Gustavo A. R. Silva wrote:
->> On 10/19/20 10:21, Joe Perches wrote:
->>> On Mon, 2020-10-19 at 17:14 +0200, Christian Lamparter wrote:
->>>> On 19/10/2020 17:05, trix@redhat.com wrote:
->>>>> From: Tom Rix <trix@redhat.com>
->>>>>
->>>>> A break is not needed if it is preceded by a return or goto
->>>>>
->>>>> Signed-off-by: Tom Rix <trix@redhat.com>
->>>>> diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
-> []
->>>>> @@ -870,7 +870,6 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
->>>>>   			} else {
->>>>>   				goto good_eeprom;
->>>>>   			}
->>>>> -			break;
->>>> Won't the compiler (gcc) now complain about a missing fallthrough annotation?
->>
->> Clang would definitely complain about this.
-> 
-> As far as I can tell, clang 10.0.0 doesn't complain.
+Ah, George (gbiv@, cc'ed), did an analysis recently of
+`-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
+`-Wunreachable-code-return` for Android userspace.  From the review:
+```
+Spoilers: of these, it seems useful to turn on
+-Wunreachable-code-loop-increment and -Wunreachable-code-return by
+default for Android
+...
+While these conventions about always having break arguably became
+obsolete when we enabled -Wfallthrough, my sample turned up zero
+potential bugs caught by this warning, and we'd need to put a lot of
+effort into getting a clean tree. So this warning doesn't seem to be
+worth it.
+```
+Looks like there's an order of magnitude of `-Wunreachable-code-break`
+than the other two.
 
-Oh, yeah. I didn't see the other "goto err;" in the if clause above. Clang doesn't
-complain because there is actually no chance of any implicit fall-through.
-
---
-Gustavo
+We probably should add all 3 to W=2 builds (wrapped in cc-option).
+I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
+follow up on.
+-- 
+Thanks,
+~Nick Desaulniers
 
 _______________________________________________
 ath10k mailing list
