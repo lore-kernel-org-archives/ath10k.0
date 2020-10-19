@@ -1,21 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway34.websitewelcome.com ([192.185.150.107])
+Received: from gateway31.websitewelcome.com ([192.185.143.234])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUXR1-0006Oi-IP
- for ath10k@lists.infradead.org; Mon, 19 Oct 2020 15:50:57 +0000
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
- by gateway34.websitewelcome.com (Postfix) with ESMTP id 05A0C88A15B
+ id 1kUY9x-0003uM-Uk
+ for ath10k@lists.infradead.org; Mon, 19 Oct 2020 16:37:23 +0000
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+ by gateway31.websitewelcome.com (Postfix) with ESMTP id C58A820BA401
  for <ath10k@lists.infradead.org>;
- Mon, 19 Oct 2020 10:50:40 -0500 (CDT)
+ Mon, 19 Oct 2020 11:32:35 -0500 (CDT)
 Subject: Re: [PATCH] wireless: remove unneeded break
 References: <20201019150507.20574-1-trix@redhat.com>
  <b31478ea-979a-1c9c-65db-32325233a715@gmail.com>
  <859112e91c3d221dc599e381dbaecb90dd6467a1.camel@perches.com>
+ <fb38b96a-b666-1a6d-211d-b79278a8d878@embeddedor.com>
+ <5964d734e81c198421bb7f6516dabcad37c1740d.camel@perches.com>
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <fb38b96a-b666-1a6d-211d-b79278a8d878@embeddedor.com>
-Date: Mon, 19 Oct 2020 10:54:29 -0500
+Message-ID: <715ddf72-978c-a525-0625-ea740a104f2a@embeddedor.com>
+Date: Mon, 19 Oct 2020 11:38:25 -0500
 MIME-Version: 1.0
-In-Reply-To: <859112e91c3d221dc599e381dbaecb90dd6467a1.camel@perches.com>
+In-Reply-To: <5964d734e81c198421bb7f6516dabcad37c1740d.camel@perches.com>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -34,58 +36,34 @@ Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.ke
 
 
 
-On 10/19/20 10:21, Joe Perches wrote:
-> On Mon, 2020-10-19 at 17:14 +0200, Christian Lamparter wrote:
->> On 19/10/2020 17:05, trix@redhat.com wrote:
->>> From: Tom Rix <trix@redhat.com>
->>>
->>> A break is not needed if it is preceded by a return or goto
->>>
->>> Signed-off-by: Tom Rix <trix@redhat.com>
->>> diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
->>> index 5bd35c147e19..3ca9d26df174 100644
->>> --- a/drivers/net/wireless/intersil/p54/eeprom.c
->>> +++ b/drivers/net/wireless/intersil/p54/eeprom.c
->>> @@ -870,7 +870,6 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
->>>   			} else {
->>>   				goto good_eeprom;
->>>   			}
->>> -			break;
->> Won't the compiler (gcc) now complain about a missing fallthrough annotation?
-
-Clang would definitely complain about this.
-
->>>   		default:
->>>   			break;
->>>   		}
+On 10/19/20 11:20, Joe Perches wrote:
+> On Mon, 2020-10-19 at 10:54 -0500, Gustavo A. R. Silva wrote:
+>> On 10/19/20 10:21, Joe Perches wrote:
+>>> On Mon, 2020-10-19 at 17:14 +0200, Christian Lamparter wrote:
+>>>> On 19/10/2020 17:05, trix@redhat.com wrote:
+>>>>> From: Tom Rix <trix@redhat.com>
+>>>>>
+>>>>> A break is not needed if it is preceded by a return or goto
+>>>>>
+>>>>> Signed-off-by: Tom Rix <trix@redhat.com>
+>>>>> diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
+> []
+>>>>> @@ -870,7 +870,6 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
+>>>>>   			} else {
+>>>>>   				goto good_eeprom;
+>>>>>   			}
+>>>>> -			break;
+>>>> Won't the compiler (gcc) now complain about a missing fallthrough annotation?
+>>
+>> Clang would definitely complain about this.
 > 
-> No, though the code would be clearer like:
-> ---
-> diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
-> index 5bd35c147e19..233fa072d96d 100644
-> --- a/drivers/net/wireless/intersil/p54/eeprom.c
-> +++ b/drivers/net/wireless/intersil/p54/eeprom.c
-> @@ -867,10 +867,8 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
->  					 "test!\n");
->  				err = -ENOMSG;
->  				goto err;
-> -			} else {
-> -				goto good_eeprom;
->  			}
-> -			break;
-> +			goto good_eeprom;
->  		default:
->  			break;
->  		}
-> 
-> 
+> As far as I can tell, clang 10.0.0 doesn't complain.
 
-This is much better because it'd avoid any complain from Clang.
+Oh, yeah. I didn't see the other "goto err;" in the if clause above. Clang doesn't
+complain because there is actually no chance of any implicit fall-through.
 
 --
 Gustavo
-
-
 
 _______________________________________________
 ath10k mailing list
