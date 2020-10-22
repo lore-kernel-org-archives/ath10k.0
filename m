@@ -1,12 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Message-ID: <3bc5c2e3b3edc22a4d167ec807ecdaaf8dcda76d.camel@perches.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-From: Joe Perches <joe@perches.com>
-Date: Tue, 20 Oct 2020 11:42:42 -0700
-In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-References: <20201017160928.12698-1-trix@redhat.com>
- <20201018054332.GB593954@kroah.com>
- <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: [PULL] ath10k & ath11k firmware 20201022
+Date: Thu, 22 Oct 2020 08:23:01 +0000
+Message-ID: <BYAPR02MB4567892AD5957F360C01E73F921D0@BYAPR02MB4567.namprd02.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,62 +17,131 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>
-Cc: alsa-devel@alsa-project.org, clang-built-linux <clang-built-linux@googlegroups.com>, Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org, storagedev@microchip.com, dri-devel <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, keyrings@vger.kernel.org, linux-mtd@lists.infradead.org, ath10k@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net, linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm <linux-nvdimm@lists.01.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org, industrypack-devel@lists.sourceforge.net, linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org, MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org, linux-serial@vger.kernel.org, linux-nfc@lists.01.org, linux-pm@vger.kernel.org, linux-can@vger.kernel.org, linux-block@vger.kernel.org, linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org, linux-amlogic@lists.infradead.org, openipmi-developer@lists.sourceforge.net, platform-driver-x86@vger.kernel.org, linux-integrity@vger.kernel.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org, George Burgess <gbiv@google.com>, Network Development <netdev@vger.kernel.org>, linux-usb@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-security-module@vger.kernel.org, "open list:HARDWARE RANDOM NUMBER
- GENERATOR CORE" <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com, bpf <bpf@vger.kernel.org>, ocfs2-devel@oss.oracle.com, linux-power@fi.rohmeurope.com
+To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, 2020-10-19 at 12:42 -0700, Nick Desaulniers wrote:
-> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > > From: Tom Rix <trix@redhat.com>
-> > > 
-> > > This is a upcoming change to clean up a new warning treewide.
-> > > I am wondering if the change could be one mega patch (see below) or
-> > > normal patch per file about 100 patches or somewhere half way by collecting
-> > > early acks.
-> > 
-> > Please break it up into one-patch-per-subsystem, like normal, and get it
-> > merged that way.
-> > 
-> > Sending us a patch, without even a diffstat to review, isn't going to
-> > get you very far...
-> 
-> Tom,
-> If you're able to automate this cleanup, I suggest checking in a
-> script that can be run on a directory.  Then for each subsystem you
-> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
->  Then others can help you drive the tree wide cleanup.  Then we can
-> enable -Wunreachable-code-break either by default, or W=2 right now
-> might be a good idea.
-> 
-> Ah, George (gbiv@, cc'ed), did an analysis recently of
-> `-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
-> `-Wunreachable-code-return` for Android userspace.  From the review:
-> ```
-> Spoilers: of these, it seems useful to turn on
-> -Wunreachable-code-loop-increment and -Wunreachable-code-return by
-> default for Android
-> ...
-> While these conventions about always having break arguably became
-> obsolete when we enabled -Wfallthrough, my sample turned up zero
-> potential bugs caught by this warning, and we'd need to put a lot of
-> effort into getting a clean tree. So this warning doesn't seem to be
-> worth it.
-> ```
-> Looks like there's an order of magnitude of `-Wunreachable-code-break`
-> than the other two.
-> 
-> We probably should add all 3 to W=2 builds (wrapped in cc-option).
-> I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
-> follow up on.
+Hi linux-firmware maintainers,
 
-I suggest using W=1 as people that are doing cleanups
-generally use that and not W=123 or any other style.
+here's a pull request for ath10k and ath11k drivers. For ath10k there is a firmware for new hardware QCA6174 hw3.0 SDIO. For ath11k there are firmwares for new hardware IPQ8074 hw2.0, IPQ6018 hw1.0 and QCA6390 hw2.0. And also few updates for existing hardware.
 
-Every other use of W= is still quite noisy and these
-code warnings are relatively trivially to fix up.
+I did not include QCA9377 SDIO firmware as I saw Christian submitted a patch adding that.
 
+Please let me know if there are any problems.
 
+Kalle
+
+The following changes since commit 58d41d0facca2478d3e45f6321224361519aee96:
+
+  ice: Add comms package file for Intel E800 series driver (2020-10-05 08:09:03 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20201022
+
+for you to fetch changes up to 60cb7a28a5dce0b7da88498ee752d30b692090ba:
+
+  ath11k: QCA6390 hw2.0: add to WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1 (2020-10-22 11:06:49 +0300)
+
+----------------------------------------------------------------
+Kalle Valo (11):
+      ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+      ath10k: QCA6174 hw3.0: update board-2.bin
+      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00131
+      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00131
+      ath10k: QCA6174 hw3.0: add firmware-sdio-6.bin version WLAN.RMH.4.4.1-00077
+      ath11k: IPQ6018 hw1.0: add board-2.bin
+      ath11k: IPQ6018 hw1.0: add to WLAN.HK.2.1.0.1-01238-QCAHKSWPL_SILICONZ-2
+      ath11k: IPQ8074 hw2.0: add board-2.bin
+      ath11k: IPQ8074 hw2.0: add to WLAN.HK.2.1.0.1-01238-QCAHKSWPL_SILICONZ-2
+      ath11k: QCA6390 hw2.0: add board-2.bin
+      ath11k: QCA6390 hw2.0: add to WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
+
+ WHENCE                                             |   57 +-
+ ath10k/QCA6174/hw3.0/board-2.bin                   |  Bin 584036 -> 633360 bytes
+ ath10k/QCA6174/hw3.0/firmware-6.bin                |  Bin 700988 -> 702844 bytes
+ ath10k/QCA6174/hw3.0/firmware-sdio-6.bin           |  Bin 0 -> 604416 bytes
+ .../hw3.0/notice_ath10k_firmware-sdio-6.txt        | 1352 ++++++++++++++
+ ath10k/QCA9888/hw2.0/firmware-5.bin                |  Bin 688140 -> 691292 bytes
+ ath10k/QCA9984/hw1.0/firmware-5.bin                |  Bin 675948 -> 679288 bytes
+ ath11k/IPQ6018/hw1.0/Notice.txt                    |  786 ++++++++
+ ath11k/IPQ6018/hw1.0/board-2.bin                   |  Bin 0 -> 787208 bytes
+ ath11k/IPQ6018/hw1.0/m3_fw.b00                     |  Bin 0 -> 148 bytes
+ ath11k/IPQ6018/hw1.0/m3_fw.b01                     |  Bin 0 -> 6712 bytes
+ ath11k/IPQ6018/hw1.0/m3_fw.b02                     |  Bin 0 -> 294912 bytes
+ ath11k/IPQ6018/hw1.0/m3_fw.flist                   |    3 +
+ ath11k/IPQ6018/hw1.0/m3_fw.mdt                     |  Bin 0 -> 6860 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b00                     |  Bin 0 -> 340 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b01                     |  Bin 0 -> 7000 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b02                     |  Bin 0 -> 4696 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b03                     |  Bin 0 -> 2357712 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b04                     |  Bin 0 -> 370560 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b05                     |  Bin 0 -> 175588 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b07                     |  Bin 0 -> 8936 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.b08                     |  Bin 0 -> 409914 bytes
+ ath11k/IPQ6018/hw1.0/q6_fw.flist                   |    8 +
+ ath11k/IPQ6018/hw1.0/q6_fw.mdt                     |  Bin 0 -> 7340 bytes
+ ath11k/IPQ8074/hw2.0/Notice.txt                    |  786 ++++++++
+ ath11k/IPQ8074/hw2.0/board-2.bin                   |  Bin 0 -> 1311380 bytes
+ ath11k/IPQ8074/hw2.0/m3_fw.b00                     |  Bin 0 -> 148 bytes
+ ath11k/IPQ8074/hw2.0/m3_fw.b01                     |  Bin 0 -> 136 bytes
+ ath11k/IPQ8074/hw2.0/m3_fw.b02                     |  Bin 0 -> 327680 bytes
+ ath11k/IPQ8074/hw2.0/m3_fw.flist                   |    3 +
+ ath11k/IPQ8074/hw2.0/m3_fw.mdt                     |  Bin 0 -> 284 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b00                     |  Bin 0 -> 340 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b01                     |  Bin 0 -> 328 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b02                     |  Bin 0 -> 4696 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b03                     |  Bin 0 -> 2589264 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b04                     |  Bin 0 -> 985504 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b05                     |  Bin 0 -> 387076 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b07                     |  Bin 0 -> 7048 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.b08                     |  Bin 0 -> 424524 bytes
+ ath11k/IPQ8074/hw2.0/q6_fw.flist                   |    8 +
+ ath11k/IPQ8074/hw2.0/q6_fw.mdt                     |  Bin 0 -> 668 bytes
+ ath11k/QCA6390/hw2.0/Notice.txt                    | 1971 ++++++++++++++++++++
+ ath11k/QCA6390/hw2.0/amss.bin                      |  Bin 0 -> 3609456 bytes
+ ath11k/QCA6390/hw2.0/board-2.bin                   |  Bin 0 -> 58016 bytes
+ ath11k/QCA6390/hw2.0/m3.bin                        |  Bin 0 -> 266684 bytes
+ 45 files changed, 4971 insertions(+), 3 deletions(-)
+ create mode 100644 ath10k/QCA6174/hw3.0/firmware-sdio-6.bin
+ create mode 100644 ath10k/QCA6174/hw3.0/notice_ath10k_firmware-sdio-6.txt
+ create mode 100644 ath11k/IPQ6018/hw1.0/Notice.txt
+ create mode 100644 ath11k/IPQ6018/hw1.0/board-2.bin
+ create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b00
+ create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b01
+ create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b02
+ create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.flist
+ create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.mdt
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b00
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b01
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b02
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b03
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b04
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b05
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b07
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b08
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.flist
+ create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.mdt
+ create mode 100644 ath11k/IPQ8074/hw2.0/Notice.txt
+ create mode 100644 ath11k/IPQ8074/hw2.0/board-2.bin
+ create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b00
+ create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b01
+ create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b02
+ create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.flist
+ create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.mdt
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b00
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b01
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b02
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b03
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b04
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b05
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b07
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b08
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.flist
+ create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.mdt
+ create mode 100644 ath11k/QCA6390/hw2.0/Notice.txt
+ create mode 100644 ath11k/QCA6390/hw2.0/amss.bin
+ create mode 100644 ath11k/QCA6390/hw2.0/board-2.bin
+ create mode 100644 ath11k/QCA6390/hw2.0/m3.bin
 
 _______________________________________________
 ath10k mailing list
