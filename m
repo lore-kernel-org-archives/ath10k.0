@@ -1,9 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PULL] ath10k & ath11k firmware 20201022
-Date: Thu, 22 Oct 2020 08:23:01 +0000
-Message-ID: <BYAPR02MB4567892AD5957F360C01E73F921D0@BYAPR02MB4567.namprd02.prod.outlook.com>
-Content-Language: en-US
+Received: from caillette.gueux.org ([2a0e:c400:ff:f010:ffff:ffff:ffff:ffff])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kVeHP-0006v1-41
+ for ath10k@lists.infradead.org; Thu, 22 Oct 2020 17:21:36 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by caillette.gueux.org (Postfix) with ESMTP id B8A815E00A5
+ for <ath10k@lists.infradead.org>; Thu, 22 Oct 2020 19:21:23 +0200 (CEST)
+Received: from caillette.gueux.org ([127.0.0.1])
+ by localhost (caillette.gueux.org [127.0.0.1]) (amavisd-new, port 10044)
+ with LMTP id rF2gu_MvTi2r for <ath10k@lists.infradead.org>;
+ Thu, 22 Oct 2020 19:21:16 +0200 (CEST)
+Received: from localhost.localdomain (unknown [192.168.5.148])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256 client-signature RSA-PSS (1024 bits) client-digest SHA256)
+ (Client CN "F????lix Sipma", Issuer "F????lix Sipma" (not verified))
+ (Authenticated sender: gueux)
+ by caillette.gueux.org (Postfix) with ESMTPSA id 5843C5E00A4
+ for <ath10k@lists.infradead.org>; Thu, 22 Oct 2020 19:21:16 +0200 (CEST)
+Date: Thu, 22 Oct 2020 19:21:13 +0200
+From: =?utf-8?B?RsOpbGl4?= Sipma <felix+kernel@gueux.org>
+Subject: [PATCH] Revert "ath: add support for special 0x0 regulatory domain"
+Message-ID: <20201022172113.GA1367233@capeo.gueux.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -13,137 +31,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1764058202245037011=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Hi linux-firmware maintainers,
 
-here's a pull request for ath10k and ath11k drivers. For ath10k there is a firmware for new hardware QCA6174 hw3.0 SDIO. For ath11k there are firmwares for new hardware IPQ8074 hw2.0, IPQ6018 hw1.0 and QCA6390 hw2.0. And also few updates for existing hardware.
+--===============1764058202245037011==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
 
-I did not include QCA9377 SDIO firmware as I saw Christian submitted a patch adding that.
 
-Please let me know if there are any problems.
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Kalle
+Hello,
 
-The following changes since commit 58d41d0facca2478d3e45f6321224361519aee96:
+Sorry if I break the thread, I'm not subscribed and do not have access=20
+to the message-id.
 
-  ice: Add comms package file for Intel E800 series driver (2020-10-05 08:09:03 -0400)
+I noticed the last message about this issue was on August:
+https://lists.infradead.org/pipermail/ath10k/2020-August/011785.html
 
-are available in the git repository at:
+I got caught by this bug, too. I use a Compex wle900vx (qca988x).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20201022
+Is there something preventing=20
+https://patchwork.kernel.org/project/ath10k/patch/20200527165718.129307-1-b=
+riannorris@chromium.org/
+=66rom being merged?
 
-for you to fetch changes up to 60cb7a28a5dce0b7da88498ee752d30b692090ba:
+Regards,
 
-  ath11k: QCA6390 hw2.0: add to WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1 (2020-10-22 11:06:49 +0300)
+--=20
+F=C3=A9lix
 
-----------------------------------------------------------------
-Kalle Valo (11):
-      ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-      ath10k: QCA6174 hw3.0: update board-2.bin
-      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00131
-      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00131
-      ath10k: QCA6174 hw3.0: add firmware-sdio-6.bin version WLAN.RMH.4.4.1-00077
-      ath11k: IPQ6018 hw1.0: add board-2.bin
-      ath11k: IPQ6018 hw1.0: add to WLAN.HK.2.1.0.1-01238-QCAHKSWPL_SILICONZ-2
-      ath11k: IPQ8074 hw2.0: add board-2.bin
-      ath11k: IPQ8074 hw2.0: add to WLAN.HK.2.1.0.1-01238-QCAHKSWPL_SILICONZ-2
-      ath11k: QCA6390 hw2.0: add board-2.bin
-      ath11k: QCA6390 hw2.0: add to WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
 
- WHENCE                                             |   57 +-
- ath10k/QCA6174/hw3.0/board-2.bin                   |  Bin 584036 -> 633360 bytes
- ath10k/QCA6174/hw3.0/firmware-6.bin                |  Bin 700988 -> 702844 bytes
- ath10k/QCA6174/hw3.0/firmware-sdio-6.bin           |  Bin 0 -> 604416 bytes
- .../hw3.0/notice_ath10k_firmware-sdio-6.txt        | 1352 ++++++++++++++
- ath10k/QCA9888/hw2.0/firmware-5.bin                |  Bin 688140 -> 691292 bytes
- ath10k/QCA9984/hw1.0/firmware-5.bin                |  Bin 675948 -> 679288 bytes
- ath11k/IPQ6018/hw1.0/Notice.txt                    |  786 ++++++++
- ath11k/IPQ6018/hw1.0/board-2.bin                   |  Bin 0 -> 787208 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.b00                     |  Bin 0 -> 148 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.b01                     |  Bin 0 -> 6712 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.b02                     |  Bin 0 -> 294912 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.flist                   |    3 +
- ath11k/IPQ6018/hw1.0/m3_fw.mdt                     |  Bin 0 -> 6860 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b00                     |  Bin 0 -> 340 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b01                     |  Bin 0 -> 7000 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b02                     |  Bin 0 -> 4696 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b03                     |  Bin 0 -> 2357712 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b04                     |  Bin 0 -> 370560 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b05                     |  Bin 0 -> 175588 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b07                     |  Bin 0 -> 8936 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b08                     |  Bin 0 -> 409914 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.flist                   |    8 +
- ath11k/IPQ6018/hw1.0/q6_fw.mdt                     |  Bin 0 -> 7340 bytes
- ath11k/IPQ8074/hw2.0/Notice.txt                    |  786 ++++++++
- ath11k/IPQ8074/hw2.0/board-2.bin                   |  Bin 0 -> 1311380 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.b00                     |  Bin 0 -> 148 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.b01                     |  Bin 0 -> 136 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.b02                     |  Bin 0 -> 327680 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.flist                   |    3 +
- ath11k/IPQ8074/hw2.0/m3_fw.mdt                     |  Bin 0 -> 284 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b00                     |  Bin 0 -> 340 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b01                     |  Bin 0 -> 328 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b02                     |  Bin 0 -> 4696 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b03                     |  Bin 0 -> 2589264 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b04                     |  Bin 0 -> 985504 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b05                     |  Bin 0 -> 387076 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b07                     |  Bin 0 -> 7048 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b08                     |  Bin 0 -> 424524 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.flist                   |    8 +
- ath11k/IPQ8074/hw2.0/q6_fw.mdt                     |  Bin 0 -> 668 bytes
- ath11k/QCA6390/hw2.0/Notice.txt                    | 1971 ++++++++++++++++++++
- ath11k/QCA6390/hw2.0/amss.bin                      |  Bin 0 -> 3609456 bytes
- ath11k/QCA6390/hw2.0/board-2.bin                   |  Bin 0 -> 58016 bytes
- ath11k/QCA6390/hw2.0/m3.bin                        |  Bin 0 -> 266684 bytes
- 45 files changed, 4971 insertions(+), 3 deletions(-)
- create mode 100644 ath10k/QCA6174/hw3.0/firmware-sdio-6.bin
- create mode 100644 ath10k/QCA6174/hw3.0/notice_ath10k_firmware-sdio-6.txt
- create mode 100644 ath11k/IPQ6018/hw1.0/Notice.txt
- create mode 100644 ath11k/IPQ6018/hw1.0/board-2.bin
- create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b00
- create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b01
- create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b02
- create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.flist
- create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.mdt
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b00
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b01
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b02
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b03
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b04
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b05
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b07
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b08
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.flist
- create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.mdt
- create mode 100644 ath11k/IPQ8074/hw2.0/Notice.txt
- create mode 100644 ath11k/IPQ8074/hw2.0/board-2.bin
- create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b00
- create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b01
- create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b02
- create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.flist
- create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.mdt
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b00
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b01
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b02
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b03
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b04
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b05
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b07
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b08
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.flist
- create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.mdt
- create mode 100644 ath11k/QCA6390/hw2.0/Notice.txt
- create mode 100644 ath11k/QCA6390/hw2.0/amss.bin
- create mode 100644 ath11k/QCA6390/hw2.0/board-2.bin
- create mode 100644 ath11k/QCA6390/hw2.0/m3.bin
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQR6zeIsS8L0XLQfqiQBpfxHUdFE8AUCX5G/hQAKCRABpfxHUdFE
+8GMdAPoDbLpfPQlhHxGVEZEEE0Xj4WDsI9jf5BXBTSD13iTyYAEAg1iUHndAslec
+82rc0H1ChSFawhRZBKqQcZSmUrs5Lwo=
+=sVaG
+-----END PGP SIGNATURE-----
+
+--OXfL5xGRrasGEqWY--
+
+
+--===============1764058202245037011==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============1764058202245037011==--
