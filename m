@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCFE-0000r0-M7
- for ath10k@lists.infradead.org; Mon, 26 Oct 2020 23:49:46 +0000
+ id 1kXCFL-0000un-Pj
+ for ath10k@lists.infradead.org; Mon, 26 Oct 2020 23:50:00 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.9 030/147] ath10k: fix retry packets update in
- station dump
-Date: Mon, 26 Oct 2020 19:47:08 -0400
-Message-Id: <20201026234905.1022767-30-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 036/147] ath10k: fix VHT NSS calculation when STBC
+ is enabled
+Date: Mon, 26 Oct 2020 19:47:14 -0400
+Message-Id: <20201026234905.1022767-36-sashal@kernel.org>
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
 MIME-Version: 1.0
@@ -24,75 +24,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, Venkateswara Naralasetty <vnaralas@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Sathishkumar Muruganandam <murugana@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+From: Sathishkumar Muruganandam <murugana@codeaurora.org>
 
-[ Upstream commit 67b927f9820847d30e97510b2f00cd142b9559b6 ]
+[ Upstream commit 99f41b8e43b8b4b31262adb8ac3e69088fff1289 ]
 
-When tx status enabled, retry count is updated from tx completion status.
-which is not working as expected due to firmware limitation where
-firmware can not provide per MSDU rate statistics from tx completion
-status. Due to this tx retry count is always 0 in station dump.
+When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
+calculation for SU case.
 
-Fix this issue by updating the retry packet count from per peer
-statistics. This patch will not break on SDIO devices since, this retry
-count is already updating from peer statistics for SDIO devices.
+Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
+in radiotap header on monitor mode capture.
 
-Tested-on: QCA9984 PCI 10.4-3.6-00104
-Tested-on: QCA9882 PCI 10.2.4-1.0-00047
+Tested-on: QCA9984 10.4-3.10-00047
 
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1591856446-26977-1-git-send-email-vnaralas@codeaurora.org
+Link: https://lore.kernel.org/r/1597392971-3897-1-git-send-email-murugana@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
- drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d787cbead56ab..cac05e7bb6b07 100644
+index cac05e7bb6b07..65fbc5957f94d 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3575,12 +3575,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
- 	}
+@@ -941,6 +941,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 	u8 preamble = 0;
+ 	u8 group_id;
+ 	u32 info1, info2, info3;
++	u32 stbc, nsts_su;
  
- 	if (ar->htt.disable_tx_comp) {
--		arsta->tx_retries += peer_stats->retry_pkts;
- 		arsta->tx_failed += peer_stats->failed_pkts;
--		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
--			   arsta->tx_retries, arsta->tx_failed);
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
-+			   arsta->tx_failed);
- 	}
+ 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
+ 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
+@@ -985,11 +986,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 		 */
+ 		bw = info2 & 3;
+ 		sgi = info3 & 1;
++		stbc = (info2 >> 3) & 1;
+ 		group_id = (info2 >> 4) & 0x3F;
  
-+	arsta->tx_retries += peer_stats->retry_pkts;
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
-+
- 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
- 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
- 						    rate_idx);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3c0c33a9f30cb..cc7208076ba4c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8542,12 +8542,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
- 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
- 
- 	if (ar->htt.disable_tx_comp) {
--		sinfo->tx_retries = arsta->tx_retries;
--		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
- 		sinfo->tx_failed = arsta->tx_failed;
- 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
- 	}
- 
-+	sinfo->tx_retries = arsta->tx_retries;
-+	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
-+
- 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
- }
- 
+ 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
+ 			mcs = (info3 >> 4) & 0x0F;
+-			nss = ((info2 >> 10) & 0x07) + 1;
++			nsts_su = ((info2 >> 10) & 0x07);
++			if (stbc)
++				nss = (nsts_su >> 2) + 1;
++			else
++				nss = (nsts_su + 1);
+ 		} else {
+ 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
+ 			 * so it's impossible to decode MCS. Also since
 -- 
 2.25.1
 
