@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kWeJW-0002Nx-9i
- for ath10k@lists.infradead.org; Sun, 25 Oct 2020 11:35:55 +0000
-Received: by mail-ed1-x541.google.com with SMTP id dn5so6468878edb.10
- for <ath10k@lists.infradead.org>; Sun, 25 Oct 2020 04:35:53 -0700 (PDT)
-Received: from [192.168.87.104] (p5b0298fc.dip0.t-ipconnect.de. [91.2.152.252])
- by smtp.gmail.com with ESMTPSA id ok21sm3928891ejb.96.2020.10.25.04.35.50
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 25 Oct 2020 04:35:51 -0700 (PDT)
-From: Tim Klicks <tim.klicks@gmail.com>
-Subject: ath10k-firmware: QCA6174 hw3.0: Add additional board-bin file
-Message-ID: <9d7a403d-61be-d8ca-57e5-7d5a1c412fb4@gmail.com>
-Date: Sun, 25 Oct 2020 12:35:50 +0100
+ id 1kX8qH-0007IK-Ai
+ for ath10k@lists.infradead.org; Mon, 26 Oct 2020 20:11:47 +0000
+Date: Tue, 27 Oct 2020 04:10:44 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 832b4d71e20e396862f0b1ef99d101816096b49b
+Message-ID: <5f972d44.rlGqI1KbqV8mtgxL%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------DA33BA46E083434A792C9DA2"
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,231 +17,163 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-This is a multi-part message in MIME format.
---------------DA33BA46E083434A792C9DA2
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: 8bit
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 832b4d71e20e396862f0b1ef99d101816096b49b  Merge branch 'pending' into master-pending
 
-Hi,
+elapsed time: 724m
 
-Unfortunately I am new to submitting bin files - please excuse if 
-anything is not matching or missing and correct me if anything is missing.
+configs tested: 130
+configs skipped: 2
 
-Following 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles here 
-is what I think is needed.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-* description for what hardware this is:
-According to 'lspci -vvv'
-- Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter (rev 32)
-   - Subsystem: Lite-On Communications Inc Device 0847
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+nds32                            alldefconfig
+arm                     davinci_all_defconfig
+arm                         hackkit_defconfig
+powerpc                      acadia_defconfig
+um                            kunit_defconfig
+m68k                          atari_defconfig
+arm                           stm32_defconfig
+alpha                            allyesconfig
+arm                            dove_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                        bcm63xx_defconfig
+mips                         tb0287_defconfig
+mips                        workpad_defconfig
+m68k                         amcore_defconfig
+arm                          badge4_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      ppc6xx_defconfig
+m68k                       bvme6000_defconfig
+arm                            zeus_defconfig
+mips                         mpc30x_defconfig
+arm                         s3c2410_defconfig
+sh                           se7780_defconfig
+arm                  colibri_pxa300_defconfig
+arm                         ebsa110_defconfig
+sparc64                             defconfig
+mips                         tb0226_defconfig
+powerpc                     tqm8540_defconfig
+arm                          collie_defconfig
+powerpc                     pq2fads_defconfig
+sh                           se7751_defconfig
+arm                      footbridge_defconfig
+ia64                             alldefconfig
+nds32                               defconfig
+m68k                         apollo_defconfig
+sh                             shx3_defconfig
+powerpc                      makalu_defconfig
+arm                          pxa3xx_defconfig
+mips                         tb0219_defconfig
+arc                                 defconfig
+powerpc                          g5_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                     tqm8541_defconfig
+sh                          polaris_defconfig
+arm                             rpc_defconfig
+mips                          rb532_defconfig
+openrisc                    or1ksim_defconfig
+mips                  cavium_octeon_defconfig
+ia64                        generic_defconfig
+powerpc                     pseries_defconfig
+arm                           sunxi_defconfig
+sh                   secureedge5410_defconfig
+powerpc                      ppc40x_defconfig
+mips                         rt305x_defconfig
+sh                          rsk7203_defconfig
+arm64                            alldefconfig
+sh                        dreamcast_defconfig
+ia64                      gensparse_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20201026
+i386                 randconfig-a003-20201026
+i386                 randconfig-a005-20201026
+i386                 randconfig-a001-20201026
+i386                 randconfig-a006-20201026
+i386                 randconfig-a004-20201026
+x86_64               randconfig-a011-20201026
+x86_64               randconfig-a013-20201026
+x86_64               randconfig-a016-20201026
+x86_64               randconfig-a015-20201026
+x86_64               randconfig-a012-20201026
+x86_64               randconfig-a014-20201026
+i386                 randconfig-a016-20201026
+i386                 randconfig-a015-20201026
+i386                 randconfig-a014-20201026
+i386                 randconfig-a012-20201026
+i386                 randconfig-a013-20201026
+i386                 randconfig-a011-20201026
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-* origin of the board file (did you create it yourself or where you 
-downloaded)
-The board.bin file which is needed to make my WiFi adapter work can be 
-found here:
-- https://github.com/kvalo/ath10k-firmware/pull/3
-Quote:
-   "this is the renamed eeprom_ar6320_3p0_NFA364xp.bin which was was 
-needed to get my killer 1535 working."
---> 
-https://github.com/kvalo/ath10k-firmware/raw/7e56cbb94182a2fdab110cf5bfeded8fd1d44d30/QCA6174/hw3.0/board-2.bin
+clang tested configs:
+x86_64               randconfig-a001-20201026
+x86_64               randconfig-a003-20201026
+x86_64               randconfig-a002-20201026
+x86_64               randconfig-a006-20201026
+x86_64               randconfig-a004-20201026
+x86_64               randconfig-a005-20201026
 
-- Reading the pull request, it was most likely taken from stock firmware 
-image
-
-* ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
-I personally do not know what is meant/needed here, but I suspect that 
-this is meant:
-- QCA6174 hw3.0
-   + 
-bus=pci,vendor=168c,device=003e,subsystem-vendor=11ad,subsystem-device=0847
-   Coming from this journalctl message:
-     - ath10k_pci 0000:01:00.0: failed to fetch board data for 
-bus=pci,vendor=168c,device=003e,subsystem-vendor=11ad,subsystem-device=0847 
-from ath10k/QCA6174/hw3.0/board-2.bin)
-
-* attach the actual board file (board.bin)
-- qca6174-168c-003e.bin
-- md5sum: df5ba1ca92f98bbd9cb537ddc5747011  qca6174-168c-003e.bin
-
-Hope everything is correct. If not, please contact me.
-
-Best regards,
-Tim
-
-
---------------DA33BA46E083434A792C9DA2
-Content-Type: application/octet-stream;
- name="qca6174-168c-003e.bin"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="qca6174-168c-003e.bin"
-
-vB/2wQIBAAN/wgBDAAAAAD9xBAAAQAAEAAAfAAAAAAABAxEGMwAAAAAAAABORkEzNjRBeHAA
-AAAAAAAAAAAAAB4eEQEBAD02Njb39fUgZB4GAAADAsTEOa8CCgAAAAAAAAAAAQAAAAAAAAAA
-AAAAAFxcXFZUUExEOAAAAABqaGViW04ABwAENlm9AAAAAAAAAAADOwECIDwDAgAAAAAAAAAA
-AAAAAAAAAAAAAAADAAAHHHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAApAgkA
-mZkJABAAEAAAAAAABwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHg8A
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAACgEQABAAAAAAACkCCQCZmQkAIAAgAAAAAAADAAARHQAAAPjjjz/4448/+OOPP/jj
-jz8AAAAAFAAAAAAAAAAAAAAoDwAAAO7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0NDQANDQ0ADw8PAA8PDwAQEBAAEBAQABAQEAAQ
-EBAAEBAQABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-GH8WCKQAAAAAAOwAAAAAAKAUUBWoFQAWWBawFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAALCwsLCwzgAAAAAAAAAAAAAAAAAAAAAAAAAAAAC62PacnKAMAHCOoqz/////
-////////AAAAAAAAAAAAAAAAAACYnXBmSD1BGkKwmJ1wZkg+QRpCrfDwkYsAkJBwaEhAQR1C
-tZCRcGlIQkEeQrHw8JGKAJCRcGpIQUEfQrmQk2hjSEU5GTqr8PCRigCQkXBqSEJBIEK6kJRo
-ZUA9ORs6rPDwkIkAIHYYZxBXCEgAOShxIGEYUhBCCDL48ImJACB8GG4QXghOAD8obSBdGE0Q
-PQguAMiJiAAgehhrEFwITAA9IGwYXBBNCD0ALgDoiYgAIHgYaRBZCEkAOyhrIFsYSxA7CCwA
-wImIACB2GGcQWAhIADkgchhjEFQIRAA1APCJiAAgfBhuEF0ITgA/KGogWhhLEDsIKwjQiYgA
-IHoYaxBcCEwAPSBuGF8QUAhAADEI0ImIACB4GGkQWQhKADsobSBcGE0QPQgtCNiJiAAgfRhu
-EF4ITgA/KGogWhhKEDoIKxDYiYgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5AAAAAAAJDBIa
-FyEeKEJGXl6FeJSOm5ieoAAAAAAJFBEgFycYKD9KW156dpCOl5maoAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwrHCJrABwiaKseomirAAAAAAkJCQk
-JCQkJCQkJCAkJCQgJCQkIBYW7syKJKxIwhYW7syKJKxIwhYW7syKJKxIwhYW7syKJKxIwhYW
-qqqKJKpIohYWqqqKJKpIohYWqqqKJKpIohYWqqqKJKpIojMDKwMjAxMDAwMzAysDIwMTAwMD
-MwMrAyMDEwMDAzMDKwMjAxMDAwMREhUXGhxBQkVHSkwxMjU3OjwAAHB1naJwdXqdcHWdonqE
-k5hwdZ2ieoSTmHB1rLhwdaescHWnrHp/naJwdaesen+donB1p6xwdaescHWnrHp/naJwdaes
-en+doiVmJiUfI2QdH2QkHVdiGhUfZCQdV2IaFSBfICEhYyMhImMjIyBiIiAiYyMjIGIiIBZW
-FhYYWBgZGFgYGRhYGBkYWBgZGFgYGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAcHqOonB6jqLe3/Dl3+Lw5tHh9uzY2Ori19Tt5tbU6uTRzujm0tHk4AAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQXGSQoLDByf//////////
-/////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOZ8heQE/
-AT8BPzGgGXYBTAFMAUz4+JGLADmfIXkBQAE/AT8xoRl3AU4BTQFN+PiRiwA5oCF6AUABQAFA
-MaAZdwFNAU0BTfj4kYsAOZohbwE1ATUBNTGXIXoBQQFBAUH4+JGLAEGgKXgJPgEuAS45niF0
-AToBOgE6+PiSiwBBmylyCTcBKAEoOZghbAEyATIBMvj4kosASZgxdxE9CS0JLUGdKXIJNwEn
-CTf4+JKMAEmXMXYROwksCSxBmiluCTMJMwEj+PiSjAA4cDBhKFAgQBgwM3UZYwFUAUgBN9j4
-in4ASH44ZjBWKEYgNjN0GWIBUgFHATbQ+Ip+ADh8MG0oXSBMGDw7fCFjAVEBQAEw6PiKfgBI
-ejhjMFIoQiAyO3AhYAFUAUMBM9D4in4AKHggaRhZEEwIPDt/IWcBVQFEATMI+Ip/ADh3MGco
-ViBGGDY4ezBpKFcgRxg38OCLfwAocSBhGFIQRgg1OHgwZyhVIEUYNRDgin4AKHcgaRhaEE0I
-PTh7MGkoWCBHGDcg6Ip/ADBzKGQgVRhFEDk4eTBnKFYgRRg1EOiKfgAwfSBiGFMQRgg2OHkw
-ZyhVIEQYNSDoi38AMHcoaCBZGEoQPTh4MGYoVSBEGDQY6It+AHB9YGdYX0hPODc4dzBlKFMg
-QhgzwOiMfwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXkA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAeXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAB5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXkAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAHl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eQAJDRUcHCQfKEJHXl99d56N
-s5nFoQAAAAAKDxIdGCYbKj5IWV99dpmPopetoAAAAAAAAAAHDREcGCQbKDtHWV92eJWOpZe1
-oAAAAAAHEQ4dFCQXKDdIU19weIqNmpiknwAAAAAAAAAA7wwMGBwiKDxBXV2EfKOPtJjBnwAA
-AAAC+goRFCAeKDlEVV2BepKPm5eqoQAAAAAAAAAA0wQBAAAAdzkAAPcSdzl3OfcSdzl3OXc5
-AAD3Enc5dzn3Enc5dzmOnZihnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMVGiMoLnJzUxUaIygucnNTFRojKC5yc1MVGiM
-oLnJzSIiIBwiIiAcIiIgHCIiIBwiIiAcIiIgHCIiIBwiIiAcFBTu7nxGzmfkFBTu7nxGzmfk
-FBTu7nxGzmfkFBTu7nxGzmfkFBTu7nxGzmfkFBTu7nxGzmfkFBTu7nxGzmfkFBTu7nxGzmfk
-FBTu7nwmrmfiFBTu7nwmrmfiFBTu7nwmrmfiFBTu7nwmrmfiFBTu7nwmrmfiFBTu7nwmrmfi
-FBTu7nwmrmfiFBTu7nwmrmfiEhLu7q5Y7orlEhLu7q5Y7orlEhLu7q5Y7orlEhLu7q5Y7orl
-EhLu7q5Y7orlEhLu7q5Y7orlEhLu7q5Y7orlEhLu7q5Y7orlAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAQFhgZGx1ARkhJS00wNjg5Oz0AAAAATFxokLS4vcFMXGiQtLi9wU5WXmaOlr/H
-UmKSorLDAABMXGiQtLi9wU5WXmaOlr/HTFBYYIygsLRMUFhgjKCwtE5eZo6WnqauUmKSogAA
-AABMUFhgjKCwtE5eZo6WnqauTFyMkLQAAABMXIyQtAAAAE5WZo6uAAAAUmKSogAAAABMXIyQ
-tAAAAE5WZo6uAAAAWmJeYl0iHmJaYl5iXCIeYloaYh5eYlkiWhhZYGBYAABaYl5iXCIeYloa
-Yh5eYlkiH2BgYGJiYmIgYF9fYmJiYmFhH2JiYmJiYSFiYQAAAAAgYF9fYmJiYmFhH2JiYmJi
-Xl5aWhoAAABdXVpbGwAAAGBgYF1dAAAAYSFeXgAAAABdXVpbGwAAAGBgYF1dAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRojJigrL3JVGiMmKCs
-vcnY09rS2NLb0tbP183czdXL1MzUytHJ1MnPx9LIzsbQxt/b2dLd19XN087OyNjTzsjY0c3G
-1M7LxdPOy8TTzszFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnjEBHhAAAB4QAAAeEQAA
-HhAAAB4QAAConjEB3uDwgN7g8IDe4PCA3tzwgN7c8IBAnhEBIDDMDVSeEQFiFMPwPJ4xAUIE
-Uc5CAlHOQgRRzkICUc5CAlHOKKQRASwINA4spBEBNA4wDjCkEQEsDiwOAKQRAQEfxA9coCMB
-AgAAAAEAAADQnyEBkzvZC5A7GQEUnjEBXlw5AF5cOQBeXDkAXmA5AF5cOQBsYTAAwPa/b8DG
-m2/A9r9vwMabb8DGm29sZTAAwPa/b8DGm2/A9r9vwMabb8DGm28cmCEBJAD+BxgA/gcAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
---------------DA33BA46E083434A792C9DA2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------DA33BA46E083434A792C9DA2--
