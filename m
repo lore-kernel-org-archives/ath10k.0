@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from z5.mailgun.us ([104.130.96.5])
+Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXHMx-0000t1-GQ
- for ath10k@lists.infradead.org; Tue, 27 Oct 2020 05:18:04 +0000
-From: "Rakesh Pillai" <pillair@codeaurora.org>
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
- <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
- <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com>
- <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
- <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
-Subject: RE: [PATCH] ath10k: add option for chip-id based BDF selection
-Date: Tue, 27 Oct 2020 10:47:54 +0530
-Message-ID: <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
-MIME-Version: 1.0
-Content-Language: en-us
+ id 1kXOF0-0004Rj-KE
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2020 12:38:23 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 2/2] ath10k: ath10k_pci_init_irq(): workaround for checkpatch
+ fallthrough warning
+Date: Tue, 27 Oct 2020 14:38:08 +0200
+Message-Id: <1603802288-21158-2-git-send-email-kvalo@codeaurora.org>
+In-Reply-To: <1603802288-21158-1-git-send-email-kvalo@codeaurora.org>
+References: <1603802288-21158-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +18,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Doug Anderson' <dianders@chromium.org>
-Cc: 'Abhishek Kumar' <kuabhs@chromium.org>, 'Brian Norris' <briannorris@chromium.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'LKML' <linux-kernel@vger.kernel.org>, 'ath10k' <ath10k@lists.infradead.org>, 'Kalle Valo' <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogRG91ZyBBbmRlcnNvbiA8ZGlh
-bmRlcnNAY2hyb21pdW0ub3JnPgo+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMjcsIDIwMjAgNDoy
-MSBBTQo+IFRvOiBSYWtlc2ggUGlsbGFpIDxwaWxsYWlyQGNvZGVhdXJvcmEub3JnPgo+IENjOiBB
-Ymhpc2hlayBLdW1hciA8a3VhYmhzQGNocm9taXVtLm9yZz47IEthbGxlIFZhbG8KPiA8a3ZhbG9A
-Y29kZWF1cm9yYS5vcmc+OyBhdGgxMGsgPGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnPjsgTEtN
-TAo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgbGludXgtd2lyZWxlc3MgPGxpbnV4
-LQo+IHdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz47IEJyaWFuIE5vcnJpcyA8YnJpYW5ub3JyaXNA
-Y2hyb21pdW0ub3JnPgo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGF0aDEwazogYWRkIG9wdGlvbiBm
-b3IgY2hpcC1pZCBiYXNlZCBCREYgc2VsZWN0aW9uCj4gCj4gSGksCj4gCj4gT24gU2F0LCBPY3Qg
-MjQsIDIwMjAgYXQgOTo0MCBBTSBSYWtlc2ggUGlsbGFpIDxwaWxsYWlyQGNvZGVhdXJvcmEub3Jn
-PiB3cm90ZToKPiA+Cj4gPiA+ICAgICAgICAgaWYgKGJkX2llX3R5cGUgPT0gQVRIMTBLX0JEX0lF
-X0JPQVJEKSB7Cj4gPiA+ICsgICAgICAgICAgICAgICAvKiBXaXRoIHZhcmlhbnQgYW5kIGNoaXAg
-aWQgKi8KPiA+ID4gICAgICAgICAgICAgICAgIHJldCA9IGF0aDEwa19jb3JlX2NyZWF0ZV9ib2Fy
-ZF9uYW1lKGFyLCBib2FyZG5hbWUsCj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBzaXplb2YoYm9hcmRuYW1lKSwgdHJ1ZSk7Cj4gPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihib2Fy
-ZG5hbWUpLCB0cnVlLCB0cnVlKTsKPiA+Cj4gPiBJbnN0ZWFkIG9mIGFkZGluZyBhIGxvdCBvZiBj
-b2RlIHRvIGdlbmVyYXRlIGEgc2Vjb25kIGZhbGxiYWNrIG5hbWUsIGl0cwo+IGJldHRlciB0byBq
-dXN0IG1vZGlmeSB0aGUgY29uZGl0aW9uIGluc2lkZSB0aGUgZnVuY3Rpb24KPiDigJxhdGgxMGtf
-Y29yZV9jcmVhdGVfYm9hcmRfbmFtZeKAnSB0byBhbGxvdyB0aGUgZ2VuZXJhdGlvbiBvZiBCREYg
-dGFnIHVzaW5nCj4gY2hpcCBpZCwgZXZlbiDigJxpZiBhci0+aWQuYmRmX2V4dFswXSA9PSAnXDAg
-4oCcLgo+ID4KPiA+IFRoaXMgd2lsbCBtYWtlIHN1cmUgdGhhdCB0aGUgdmFyaWFudCBzdHJpbmcg
-aXMgTlVMTCwgYW5kIGp1c3QgYm9hcmQtaWQgYW5kCj4gY2hpcC1pZCBpcyB1c2VkLiBUaGlzIHdp
-bGwgaGVscCBhdm9pZCBtb3N0IG9mIHRoZSBjb2RlIGNoYW5nZXMuCj4gPiBUaGUgY29kZSB3b3Vs
-ZCBsb29rIGFzIHNob3duIGJlbG93Cj4gPgo+ID4gQEAgLTE0OTMsNyArMTQ5Myw3IEBAIHN0YXRp
-YyBpbnQgYXRoMTBrX2NvcmVfY3JlYXRlX2JvYXJkX25hbWUoc3RydWN0Cj4gYXRoMTBrICphciwg
-Y2hhciAqbmFtZSwKPiA+ICAgICAgICAgfQo+ID4KPiA+ICAgICAgICAgaWYgKGFyLT5pZC5xbWlf
-aWRzX3ZhbGlkKSB7Cj4gPiAtICAgICAgICAgICAgICAgaWYgKHdpdGhfdmFyaWFudCAmJiBhci0+
-aWQuYmRmX2V4dFswXSAhPSAnXDAnKQo+ID4gKyAgICAgICAgICAgICAgIGlmICh3aXRoX3Zhcmlh
-bnQpCj4gCj4gV291bGRuJ3QgdGhlIGFib3ZlIGp1c3QgYmUgImlmICh3aXRoX2NoaXBfaWQpIiBp
-bnN0ZWFkPyAgLi4uYnV0IHllYWgsCj4gdGhhdCB3b3VsZCBiZSBhIGNsZWFuZXIgd2F5IHRvIGRv
-IHRoaXMuICBBYmhpc2hlazogZG8geW91IHdhbnQgdG8gcG9zdAo+IGEgdjI/CgoKVGhlIHBhcmFt
-ZXRlciBuYW1lIHBhc3NlZCB0byB0aGlzIGZ1bmN0aW9uIGlzICJ3aXRoX3ZhcmlhbnQiLCBzaW5j
-ZSBvdGhlciBub24tcW1pIHRhcmdldHMgKGVnIFFDQTYxNzQpIHVzZSB0aGlzIGFzIGEgZmxhZyB0
-byBqdXN0IGFkZCB0aGUgdmFyaWFudCBmaWVsZC4KVGhpcyBjYW4gYmUgcmVuYW1lZCB0byBzb21l
-dGhpbmcgbWVhbmluZ2Z1bCBmb3IgYm90aCBxbWkgYW5kIG5vbi1xbWkgdGFyZ2V0cy4KCj4gCj4g
-LURvdWcKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Latest checkpatch complains about use of fall-through comment. But as this is a
+switch statement just reword the comment to workaround the problem.
+
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 36426efdb2ea..8ab262931dce 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3236,7 +3236,7 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
+ 		if (ret == 0)
+ 			return 0;
+ 
+-		/* fall-through */
++		/* MHI failed, try legacy irq next */
+ 	}
+ 
+ 	/* Try legacy irq
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
