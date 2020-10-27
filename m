@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m42-4.mailgun.net ([69.72.42.4])
+Received: from z5.mailgun.us ([104.130.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXQd1-0007EM-1p
- for ath10k@lists.infradead.org; Tue, 27 Oct 2020 15:11:16 +0000
-From: "Rakesh Pillai" <pillair@codeaurora.org>
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
- <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
- <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com>
- <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
- <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
- <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
- <CAD=FV=W1FiHRHeX-sATY_9x33n6P2n3KaoxfiGjvn2mwAm_-BA@mail.gmail.com>
-In-Reply-To: <CAD=FV=W1FiHRHeX-sATY_9x33n6P2n3KaoxfiGjvn2mwAm_-BA@mail.gmail.com>
-Subject: RE: [PATCH] ath10k: add option for chip-id based BDF selection
-Date: Tue, 27 Oct 2020 20:41:05 +0530
-Message-ID: <002c01d6ac73$67a966e0$36fc34a0$@codeaurora.org>
-MIME-Version: 1.0
-Content-Language: en-us
+ id 1kXQpo-00024v-Vs
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2020 15:24:31 +0000
+From: Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] ath10k: Fix the parsing error in service available event
+Date: Tue, 27 Oct 2020 20:34:27 +0530
+Message-Id: <1603811067-23058-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,85 +15,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Doug Anderson' <dianders@chromium.org>
-Cc: 'Abhishek Kumar' <kuabhs@chromium.org>, 'Brian Norris' <briannorris@chromium.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'LKML' <linux-kernel@vger.kernel.org>, 'ath10k' <ath10k@lists.infradead.org>, 'Kalle Valo' <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: kuabhs@chromium.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dianders@chromium.org, Rakesh Pillai <pillair@codeaurora.org>
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogRG91ZyBBbmRlcnNvbiA8ZGlh
-bmRlcnNAY2hyb21pdW0ub3JnPgo+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMjcsIDIwMjAgODoy
-NiBQTQo+IFRvOiBSYWtlc2ggUGlsbGFpIDxwaWxsYWlyQGNvZGVhdXJvcmEub3JnPgo+IENjOiBB
-Ymhpc2hlayBLdW1hciA8a3VhYmhzQGNocm9taXVtLm9yZz47IEthbGxlIFZhbG8KPiA8a3ZhbG9A
-Y29kZWF1cm9yYS5vcmc+OyBhdGgxMGsgPGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnPjsgTEtN
-TAo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgbGludXgtd2lyZWxlc3MgPGxpbnV4
-LQo+IHdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz47IEJyaWFuIE5vcnJpcyA8YnJpYW5ub3JyaXNA
-Y2hyb21pdW0ub3JnPgo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGF0aDEwazogYWRkIG9wdGlvbiBm
-b3IgY2hpcC1pZCBiYXNlZCBCREYgc2VsZWN0aW9uCj4gCj4gSGksCj4gCj4gT24gTW9uLCBPY3Qg
-MjYsIDIwMjAgYXQgMTA6MTggUE0gUmFrZXNoIFBpbGxhaSA8cGlsbGFpckBjb2RlYXVyb3JhLm9y
-Zz4KPiB3cm90ZToKPiA+Cj4gPgo+ID4KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0K
-PiA+ID4gRnJvbTogRG91ZyBBbmRlcnNvbiA8ZGlhbmRlcnNAY2hyb21pdW0ub3JnPgo+ID4gPiBT
-ZW50OiBUdWVzZGF5LCBPY3RvYmVyIDI3LCAyMDIwIDQ6MjEgQU0KPiA+ID4gVG86IFJha2VzaCBQ
-aWxsYWkgPHBpbGxhaXJAY29kZWF1cm9yYS5vcmc+Cj4gPiA+IENjOiBBYmhpc2hlayBLdW1hciA8
-a3VhYmhzQGNocm9taXVtLm9yZz47IEthbGxlIFZhbG8KPiA+ID4gPGt2YWxvQGNvZGVhdXJvcmEu
-b3JnPjsgYXRoMTBrIDxhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZz47IExLTUwKPiA+ID4gPGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBsaW51eC13aXJlbGVzcyA8bGludXgtCj4gPiA+
-IHdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz47IEJyaWFuIE5vcnJpcyA8YnJpYW5ub3JyaXNAY2hy
-b21pdW0ub3JnPgo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIXSBhdGgxMGs6IGFkZCBvcHRpb24g
-Zm9yIGNoaXAtaWQgYmFzZWQgQkRGIHNlbGVjdGlvbgo+ID4gPgo+ID4gPiBIaSwKPiA+ID4KPiA+
-ID4gT24gU2F0LCBPY3QgMjQsIDIwMjAgYXQgOTo0MCBBTSBSYWtlc2ggUGlsbGFpIDxwaWxsYWly
-QGNvZGVhdXJvcmEub3JnPgo+IHdyb3RlOgo+ID4gPiA+Cj4gPiA+ID4gPiAgICAgICAgIGlmIChi
-ZF9pZV90eXBlID09IEFUSDEwS19CRF9JRV9CT0FSRCkgewo+ID4gPiA+ID4gKyAgICAgICAgICAg
-ICAgIC8qIFdpdGggdmFyaWFudCBhbmQgY2hpcCBpZCAqLwo+ID4gPiA+ID4gICAgICAgICAgICAg
-ICAgIHJldCA9IGF0aDEwa19jb3JlX2NyZWF0ZV9ib2FyZF9uYW1lKGFyLCBib2FyZG5hbWUsCj4g
-PiA+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgc2l6ZW9mKGJvYXJkbmFtZSksIHRydWUpOwo+ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZW9mKGJvYXJkbmFtZSksIHRydWUsIHRy
-dWUpOwo+ID4gPiA+Cj4gPiA+ID4gSW5zdGVhZCBvZiBhZGRpbmcgYSBsb3Qgb2YgY29kZSB0byBn
-ZW5lcmF0ZSBhIHNlY29uZCBmYWxsYmFjayBuYW1lLCBpdHMKPiA+ID4gYmV0dGVyIHRvIGp1c3Qg
-bW9kaWZ5IHRoZSBjb25kaXRpb24gaW5zaWRlIHRoZSBmdW5jdGlvbgo+ID4gPiDigJxhdGgxMGtf
-Y29yZV9jcmVhdGVfYm9hcmRfbmFtZeKAnSB0byBhbGxvdyB0aGUgZ2VuZXJhdGlvbiBvZiBCREYg
-dGFnCj4gdXNpbmcKPiA+ID4gY2hpcCBpZCwgZXZlbiDigJxpZiBhci0+aWQuYmRmX2V4dFswXSA9
-PSAnXDAg4oCcLgo+ID4gPiA+Cj4gPiA+ID4gVGhpcyB3aWxsIG1ha2Ugc3VyZSB0aGF0IHRoZSB2
-YXJpYW50IHN0cmluZyBpcyBOVUxMLCBhbmQganVzdCBib2FyZC1pZCBhbmQKPiA+ID4gY2hpcC1p
-ZCBpcyB1c2VkLiBUaGlzIHdpbGwgaGVscCBhdm9pZCBtb3N0IG9mIHRoZSBjb2RlIGNoYW5nZXMu
-Cj4gPiA+ID4gVGhlIGNvZGUgd291bGQgbG9vayBhcyBzaG93biBiZWxvdwo+ID4gPiA+Cj4gPiA+
-ID4gQEAgLTE0OTMsNyArMTQ5Myw3IEBAIHN0YXRpYyBpbnQKPiBhdGgxMGtfY29yZV9jcmVhdGVf
-Ym9hcmRfbmFtZShzdHJ1Y3QKPiA+ID4gYXRoMTBrICphciwgY2hhciAqbmFtZSwKPiA+ID4gPiAg
-ICAgICAgIH0KPiA+ID4gPgo+ID4gPiA+ICAgICAgICAgaWYgKGFyLT5pZC5xbWlfaWRzX3ZhbGlk
-KSB7Cj4gPiA+ID4gLSAgICAgICAgICAgICAgIGlmICh3aXRoX3ZhcmlhbnQgJiYgYXItPmlkLmJk
-Zl9leHRbMF0gIT0gJ1wwJykKPiA+ID4gPiArICAgICAgICAgICAgICAgaWYgKHdpdGhfdmFyaWFu
-dCkKPiA+ID4KPiA+ID4gV291bGRuJ3QgdGhlIGFib3ZlIGp1c3QgYmUgImlmICh3aXRoX2NoaXBf
-aWQpIiBpbnN0ZWFkPyAgLi4uYnV0IHllYWgsCj4gPiA+IHRoYXQgd291bGQgYmUgYSBjbGVhbmVy
-IHdheSB0byBkbyB0aGlzLiAgQWJoaXNoZWs6IGRvIHlvdSB3YW50IHRvIHBvc3QKPiA+ID4gYSB2
-Mj8KPiA+Cj4gPgo+ID4gVGhlIHBhcmFtZXRlciBuYW1lIHBhc3NlZCB0byB0aGlzIGZ1bmN0aW9u
-IGlzICJ3aXRoX3ZhcmlhbnQiLCBzaW5jZSBvdGhlcgo+IG5vbi1xbWkgdGFyZ2V0cyAoZWcgUUNB
-NjE3NCkgdXNlIHRoaXMgYXMgYSBmbGFnIHRvIGp1c3QgYWRkIHRoZSB2YXJpYW50IGZpZWxkLgo+
-ID4gVGhpcyBjYW4gYmUgcmVuYW1lZCB0byBzb21ldGhpbmcgbWVhbmluZ2Z1bCBmb3IgYm90aCBx
-bWkgYW5kIG5vbi1xbWkKPiB0YXJnZXRzLgo+IAo+IEkgdGhpbmsgd2Ugc3RpbGwgbmVlZCBBYmhp
-c2hlaydzIGNoYW5nZSB0byBoYXZlIHR3byBib29sZWFucyBwYXNzZWQgdG8KPiB0aGlzIGZ1bmN0
-aW9uLCB0aG91Z2gsIHJpZ2h0PyAgVGh1cywgaXQnbGwgYmUgY2FsbGVkIDMgdGltZXM6Cj4gCj4g
-KiB3aXRoX2NoaXBfaWQgPSBmYWxzZSwgd2l0aF92YXJpYW50ID0gZmFsc2UKPiAqIHdpdGhfY2hp
-cF9pZCA9IHRydWUsIHdpdGhfdmFyaWFudCA9IHRydWUKPiAqIHdpdGhfY2hpcF9pZCA9IHRydWUs
-IHdpdGhfdmFyaWFudCA9IGZhbHNlCj4gCj4gVGhlIHR3byBjYXNlcyB5b3Ugd2FudCB0byBjb21i
-aW5lIGFyZSBib3RoIHdpdGggIndpdGhfY2hpcF9pZCA9IHRydWUiLAo+IHJpZ2h0PyAgVGhlICJ3
-aXRoX3ZhcmlhbnQiIHZhcmlhYmxlIGJlaW5nIGZhbHNlIHdpbGwgbWFrZSB0aGUgdmFyaWFudAo+
-IHN0cmluZyBlbXB0eS4KCgpJIG1lYW50IHRoYXQgd2UgY2FuIHVzZSB0aGUgNHRoIGFyZ3VtZW50
-IHBhc3NlZCB0byB0aGUgZnVuY3Rpb24gIiBhdGgxMGtfY29yZV9jcmVhdGVfYm9hcmRfbmFtZSIg
-KGN1cnJlbnRseSBuYW1lZCBhcyB3aXRoX3ZhcmlhbnQpIGFzIGFuIGluZGljYXRpb24gdG8gdXNl
-IHRoZSBCREYgbmFtZSB3aXRoIHZhcmlhbnQuCkJ1dCBldmVuIGlmIHdpdGhfdmFyaWFudD10cnVl
-LCB3ZSBhbGxvdyB0aGUgdmFyaWFudCBzdHJpbmcgdG8gYmUgTlVMTCwgdGhlcmVieSBhbGxvd2lu
-ZyB1cyB0byBnZW5lcmF0ZSBhIGJvYXJkbmFtZSB3aXRoIHRoZSBmb3JtYXQgImJ1cz1zbm9jLHFt
-aS1ib2FyZC1pZD0weGFiLHFtaS1jaGlwLWlkPTB4Y2QiCgpUaGUgY29tYmluYXRpb25zIG9mIGFy
-Z3MvdmFyaWFudC1zdHJpbmdzIGZvciBnZW5lcmF0aW5nIGRpZmZlcmVudCBib2FyZCBuYW1lcyB3
-aWxsIGJlIGFzIGZvbGxvd3M6CjEpIHdpdGhfdmFyaWFudD1mYWxzZSAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOiAgICAgICJidXM9c25vYyxxbWkt
-Ym9hcmQtaWQ9MHhhYiIKMikgd2l0aF92YXJpYW50PXRydWUsIHZhcmlhbnRfc3RyaW5nPU5VTEwg
-ICAgICAgICAgICAgICAgOiAgICAgIiBidXM9c25vYyxxbWktYm9hcmQtaWQ9MHhhYixxbWktY2hp
-cC1pZD0weGNkIgozKSB3aXRoX3ZhcmlhbnQ9dHJ1ZSwgdmFyaWFudF9zdHJpbmc9InZhcmlhbnRf
-eHl6IiAgOiAgICAgIiBidXM9c25vYyxxbWktYm9hcmQtaWQ9MHhhYixxbWktY2hpcC1pZD0weGNk
-LHZhcmlhbnQ9dmFyaWFudF94eXoiCgoKVGhpcyB3aWxsIG1pbmltaXplIHRoZSBjb2RlIGNoYW5n
-ZXMuCgo+IAo+IC1Eb3VnCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+The wmi service available event has been
+extended to contain extra 128 bit for new services
+to be indicated by firmware.
+
+Currently the presence of any optional TLVs in
+the wmi service available event leads to a parsing
+error with the below error message:
+ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+
+The wmi service available event parsing should
+not return error for the newly added optional TLV.
+Fix this parsing for service available event message.
+
+Tested-on: WCN3990 hw1.0 SNOC
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 932266d..3b49e29 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1404,9 +1404,12 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
+ 		arg->service_map_ext_len = *(__le32 *)ptr;
+ 		arg->service_map_ext = ptr + sizeof(__le32);
+ 		return 0;
++	case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
++		return 0;
+ 	default:
+ 		break;
+ 	}
++
+ 	return -EPROTO;
+ }
+ 
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
