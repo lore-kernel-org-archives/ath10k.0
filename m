@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCYs-0008J6-04
- for ath10k@lists.infradead.org; Tue, 27 Oct 2020 00:10:10 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 11/46] ath10k: start recovery process when
- payload length exceeds max htc length for sdio
-Date: Mon, 26 Oct 2020 20:09:10 -0400
-Message-Id: <20201027000946.1026923-11-sashal@kernel.org>
-In-Reply-To: <20201027000946.1026923-1-sashal@kernel.org>
-References: <20201027000946.1026923-1-sashal@kernel.org>
+Received: from z5.mailgun.us ([104.130.96.5])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kXHMx-0000t1-GQ
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2020 05:18:04 +0000
+From: "Rakesh Pillai" <pillair@codeaurora.org>
+References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+ <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
+ <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com>
+ <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
+ <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
+Subject: RE: [PATCH] ath10k: add option for chip-id based BDF selection
+Date: Tue, 27 Oct 2020 10:47:54 +0530
+Message-ID: <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,94 +23,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+To: 'Doug Anderson' <dianders@chromium.org>
+Cc: 'Abhishek Kumar' <kuabhs@chromium.org>, 'Brian Norris' <briannorris@chromium.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'LKML' <linux-kernel@vger.kernel.org>, 'ath10k' <ath10k@lists.infradead.org>, 'Kalle Valo' <kvalo@codeaurora.org>
 
-From: Wen Gong <wgong@codeaurora.org>
-
-[ Upstream commit 2fd3c8f34d08af0a6236085f9961866ad92ef9ec ]
-
-When simulate random transfer fail for sdio write and read, it happened
-"payload length exceeds max htc length" and recovery later sometimes.
-
-Test steps:
-1. Add config and update kernel:
-CONFIG_FAIL_MMC_REQUEST=y
-CONFIG_FAULT_INJECTION=y
-CONFIG_FAULT_INJECTION_DEBUG_FS=y
-
-2. Run simulate fail:
-cd /sys/kernel/debug/mmc1/fail_mmc_request
-echo 10 > probability
-echo 10 > times # repeat until hitting issues
-
-3. It happened payload length exceeds max htc length.
-[  199.935506] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
-....
-[  264.990191] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
-
-4. after some time, such as 60 seconds, it start recovery which triggered
-by wmi command timeout for periodic scan.
-[  269.229232] ieee80211 phy0: Hardware restart was requested
-[  269.734693] ath10k_sdio mmc1:0001:1: device successfully recovered
-
-The simulate fail of sdio is not a real sdio transter fail, it only
-set an error status in mmc_should_fail_request after the transfer end,
-actually the transfer is success, then sdio_io_rw_ext_helper will
-return error status and stop transfer the left data. For example,
-the really RX len is 286 bytes, then it will split to 2 blocks in
-sdio_io_rw_ext_helper, one is 256 bytes, left is 30 bytes, if the
-first 256 bytes get an error status by mmc_should_fail_request,then
-the left 30 bytes will not read in this RX operation. Then when the
-next RX arrive, the left 30 bytes will be considered as the header
-of the read, the top 4 bytes of the 30 bytes will be considered as
-lookaheads, but actually the 4 bytes is not the lookaheads, so the len
-from this lookaheads is not correct, it exceeds max htc length 4088
-sometimes. When happened exceeds, the buffer chain is not matched between
-firmware and ath10k, then it need to start recovery ASAP. Recently then
-recovery will be started by wmi command timeout, but it will be long time
-later, for example, it is 60+ seconds later from the periodic scan, if
-it does not have periodic scan, it will be longer.
-
-Start recovery when it happened "payload length exceeds max htc length"
-will be reasonable.
-
-This patch only effect sdio chips.
-
-Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200108031957.22308-3-wgong@codeaurora.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index fef313099e08a..34e8b4344f40a 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -561,6 +561,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 				    le16_to_cpu(htc_hdr->len),
- 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
- 			ret = -ENOMEM;
-+
-+			queue_work(ar->workqueue, &ar->restart_work);
-+			ath10k_warn(ar, "exceeds length, start recovery\n");
-+
- 			goto err;
- 		}
- 
--- 
-2.25.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogRG91ZyBBbmRlcnNvbiA8ZGlh
+bmRlcnNAY2hyb21pdW0ub3JnPgo+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMjcsIDIwMjAgNDoy
+MSBBTQo+IFRvOiBSYWtlc2ggUGlsbGFpIDxwaWxsYWlyQGNvZGVhdXJvcmEub3JnPgo+IENjOiBB
+Ymhpc2hlayBLdW1hciA8a3VhYmhzQGNocm9taXVtLm9yZz47IEthbGxlIFZhbG8KPiA8a3ZhbG9A
+Y29kZWF1cm9yYS5vcmc+OyBhdGgxMGsgPGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnPjsgTEtN
+TAo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgbGludXgtd2lyZWxlc3MgPGxpbnV4
+LQo+IHdpcmVsZXNzQHZnZXIua2VybmVsLm9yZz47IEJyaWFuIE5vcnJpcyA8YnJpYW5ub3JyaXNA
+Y2hyb21pdW0ub3JnPgo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGF0aDEwazogYWRkIG9wdGlvbiBm
+b3IgY2hpcC1pZCBiYXNlZCBCREYgc2VsZWN0aW9uCj4gCj4gSGksCj4gCj4gT24gU2F0LCBPY3Qg
+MjQsIDIwMjAgYXQgOTo0MCBBTSBSYWtlc2ggUGlsbGFpIDxwaWxsYWlyQGNvZGVhdXJvcmEub3Jn
+PiB3cm90ZToKPiA+Cj4gPiA+ICAgICAgICAgaWYgKGJkX2llX3R5cGUgPT0gQVRIMTBLX0JEX0lF
+X0JPQVJEKSB7Cj4gPiA+ICsgICAgICAgICAgICAgICAvKiBXaXRoIHZhcmlhbnQgYW5kIGNoaXAg
+aWQgKi8KPiA+ID4gICAgICAgICAgICAgICAgIHJldCA9IGF0aDEwa19jb3JlX2NyZWF0ZV9ib2Fy
+ZF9uYW1lKGFyLCBib2FyZG5hbWUsCj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBzaXplb2YoYm9hcmRuYW1lKSwgdHJ1ZSk7Cj4gPiA+ICsg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihib2Fy
+ZG5hbWUpLCB0cnVlLCB0cnVlKTsKPiA+Cj4gPiBJbnN0ZWFkIG9mIGFkZGluZyBhIGxvdCBvZiBj
+b2RlIHRvIGdlbmVyYXRlIGEgc2Vjb25kIGZhbGxiYWNrIG5hbWUsIGl0cwo+IGJldHRlciB0byBq
+dXN0IG1vZGlmeSB0aGUgY29uZGl0aW9uIGluc2lkZSB0aGUgZnVuY3Rpb24KPiDigJxhdGgxMGtf
+Y29yZV9jcmVhdGVfYm9hcmRfbmFtZeKAnSB0byBhbGxvdyB0aGUgZ2VuZXJhdGlvbiBvZiBCREYg
+dGFnIHVzaW5nCj4gY2hpcCBpZCwgZXZlbiDigJxpZiBhci0+aWQuYmRmX2V4dFswXSA9PSAnXDAg
+4oCcLgo+ID4KPiA+IFRoaXMgd2lsbCBtYWtlIHN1cmUgdGhhdCB0aGUgdmFyaWFudCBzdHJpbmcg
+aXMgTlVMTCwgYW5kIGp1c3QgYm9hcmQtaWQgYW5kCj4gY2hpcC1pZCBpcyB1c2VkLiBUaGlzIHdp
+bGwgaGVscCBhdm9pZCBtb3N0IG9mIHRoZSBjb2RlIGNoYW5nZXMuCj4gPiBUaGUgY29kZSB3b3Vs
+ZCBsb29rIGFzIHNob3duIGJlbG93Cj4gPgo+ID4gQEAgLTE0OTMsNyArMTQ5Myw3IEBAIHN0YXRp
+YyBpbnQgYXRoMTBrX2NvcmVfY3JlYXRlX2JvYXJkX25hbWUoc3RydWN0Cj4gYXRoMTBrICphciwg
+Y2hhciAqbmFtZSwKPiA+ICAgICAgICAgfQo+ID4KPiA+ICAgICAgICAgaWYgKGFyLT5pZC5xbWlf
+aWRzX3ZhbGlkKSB7Cj4gPiAtICAgICAgICAgICAgICAgaWYgKHdpdGhfdmFyaWFudCAmJiBhci0+
+aWQuYmRmX2V4dFswXSAhPSAnXDAnKQo+ID4gKyAgICAgICAgICAgICAgIGlmICh3aXRoX3Zhcmlh
+bnQpCj4gCj4gV291bGRuJ3QgdGhlIGFib3ZlIGp1c3QgYmUgImlmICh3aXRoX2NoaXBfaWQpIiBp
+bnN0ZWFkPyAgLi4uYnV0IHllYWgsCj4gdGhhdCB3b3VsZCBiZSBhIGNsZWFuZXIgd2F5IHRvIGRv
+IHRoaXMuICBBYmhpc2hlazogZG8geW91IHdhbnQgdG8gcG9zdAo+IGEgdjI/CgoKVGhlIHBhcmFt
+ZXRlciBuYW1lIHBhc3NlZCB0byB0aGlzIGZ1bmN0aW9uIGlzICJ3aXRoX3ZhcmlhbnQiLCBzaW5j
+ZSBvdGhlciBub24tcW1pIHRhcmdldHMgKGVnIFFDQTYxNzQpIHVzZSB0aGlzIGFzIGEgZmxhZyB0
+byBqdXN0IGFkZCB0aGUgdmFyaWFudCBmaWVsZC4KVGhpcyBjYW4gYmUgcmVuYW1lZCB0byBzb21l
+dGhpbmcgbWVhbmluZ2Z1bCBmb3IgYm90aCBxbWkgYW5kIG5vbi1xbWkgdGFyZ2V0cy4KCj4gCj4g
+LURvdWcKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
