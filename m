@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCZk-0002T1-IN
- for ath10k@lists.infradead.org; Tue, 27 Oct 2020 00:11:11 +0000
+ id 1kXCaM-0002iD-Qj
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2020 00:12:00 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 09/30] ath10k: fix VHT NSS calculation when STBC
+Subject: [PATCH AUTOSEL 4.4 07/25] ath10k: fix VHT NSS calculation when STBC
  is enabled
-Date: Mon, 26 Oct 2020 20:10:23 -0400
-Message-Id: <20201027001044.1027349-9-sashal@kernel.org>
-In-Reply-To: <20201027001044.1027349-1-sashal@kernel.org>
-References: <20201027001044.1027349-1-sashal@kernel.org>
+Date: Mon, 26 Oct 2020 20:11:05 -0400
+Message-Id: <20201027001123.1027642-7-sashal@kernel.org>
+In-Reply-To: <20201027001123.1027642-1-sashal@kernel.org>
+References: <20201027001123.1027642-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -47,10 +47,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a3c2180475971..0af144930a2f7 100644
+index a65b5d7f59f44..47ac9aa986dcd 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -612,6 +612,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+@@ -657,6 +657,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
  	u8 preamble = 0;
  	u8 group_id;
  	u32 info1, info2, info3;
@@ -58,7 +58,7 @@ index a3c2180475971..0af144930a2f7 100644
  
  	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
  	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -655,11 +656,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+@@ -700,11 +701,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
  		   TODO check this */
  		bw = info2 & 3;
  		sgi = info3 & 1;
