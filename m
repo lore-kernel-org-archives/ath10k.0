@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCaM-0002iD-Qj
- for ath10k@lists.infradead.org; Tue, 27 Oct 2020 00:12:00 +0000
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kXCYt-0008KC-Ed
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2020 00:10:12 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 07/25] ath10k: fix VHT NSS calculation when STBC
+Subject: [PATCH AUTOSEL 4.14 12/46] ath10k: fix VHT NSS calculation when STBC
  is enabled
-Date: Mon, 26 Oct 2020 20:11:05 -0400
-Message-Id: <20201027001123.1027642-7-sashal@kernel.org>
-In-Reply-To: <20201027001123.1027642-1-sashal@kernel.org>
-References: <20201027001123.1027642-1-sashal@kernel.org>
+Date: Mon, 26 Oct 2020 20:09:11 -0400
+Message-Id: <20201027000946.1026923-12-sashal@kernel.org>
+In-Reply-To: <20201027000946.1026923-1-sashal@kernel.org>
+References: <20201027000946.1026923-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -47,10 +47,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a65b5d7f59f44..47ac9aa986dcd 100644
+index 21642bab485a1..4c6091d6d4a42 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -657,6 +657,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+@@ -614,6 +614,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
  	u8 preamble = 0;
  	u8 group_id;
  	u32 info1, info2, info3;
@@ -58,8 +58,8 @@ index a65b5d7f59f44..47ac9aa986dcd 100644
  
  	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
  	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -700,11 +701,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		   TODO check this */
+@@ -658,11 +659,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 		 */
  		bw = info2 & 3;
  		sgi = info3 & 1;
 +		stbc = (info2 >> 3) & 1;
