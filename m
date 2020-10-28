@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXcyT-0003df-KO
- for ath10k@lists.infradead.org; Wed, 28 Oct 2020 04:22:15 +0000
-Date: Wed, 28 Oct 2020 12:21:48 +0800
+ id 1kXcyS-0003cB-MA
+ for ath10k@lists.infradead.org; Wed, 28 Oct 2020 04:22:13 +0000
+Date: Wed, 28 Oct 2020 12:21:45 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 8d50a98aad2367bc033ed073bab16296aeffaa61
-Message-ID: <5f98f1dc.fE0ekTG3xsadzjDU%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 0f680cf7d40b2049ee12e0d58fd53b315be94eeb
+Message-ID: <5f98f1d9.Q9LD2M3Bw98NTxLQ%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 8d50a98aad2367bc033ed073bab16296aeffaa61  ath9k: revert "ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 0f680cf7d40b2049ee12e0d58fd53b315be94eeb  Merge branch 'pending' into master-pending
 
 elapsed time: 725m
 
-configs tested: 179
+configs tested: 194
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -47,8 +47,8 @@ powerpc                     tqm8560_defconfig
 arm                  colibri_pxa300_defconfig
 arm                          pxa3xx_defconfig
 powerpc                    mvme5100_defconfig
-riscv                    nommu_virt_defconfig
 arm                            mps2_defconfig
+riscv                    nommu_virt_defconfig
 powerpc                     tqm8541_defconfig
 parisc                           alldefconfig
 arm                        spear6xx_defconfig
@@ -60,7 +60,6 @@ arc                      axs103_smp_defconfig
 arm                       cns3420vb_defconfig
 arc                              alldefconfig
 arm                            dove_defconfig
-m68k                                defconfig
 c6x                                 defconfig
 powerpc                     asp8347_defconfig
 c6x                        evmc6474_defconfig
@@ -78,7 +77,6 @@ powerpc                    adder875_defconfig
 m68k                       m5208evb_defconfig
 arm                     am200epdkit_defconfig
 arm                          lpd270_defconfig
-sh                               allmodconfig
 powerpc                      bamboo_defconfig
 powerpc                     kmeter1_defconfig
 powerpc                  iss476-smp_defconfig
@@ -94,6 +92,15 @@ mips                     cu1000-neo_defconfig
 mips                     loongson1c_defconfig
 powerpc                         wii_defconfig
 arm                           h5000_defconfig
+arm                        shmobile_defconfig
+x86_64                           alldefconfig
+sparc                       sparc32_defconfig
+arm                        multi_v5_defconfig
+sh                         ecovec24_defconfig
+sh                           se7750_defconfig
+sh                          rsk7203_defconfig
+nios2                         10m50_defconfig
+mips                    maltaup_xpa_defconfig
 sh                           se7206_defconfig
 arm                          prima2_defconfig
 m68k                       m5249evb_defconfig
@@ -115,25 +122,31 @@ powerpc                 mpc8272_ads_defconfig
 sh                          r7780mp_defconfig
 mips                            ar7_defconfig
 mips                           ip22_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                      pasemi_defconfig
+mips                         bigsur_defconfig
+xtensa                    smp_lx200_defconfig
+arm                          exynos_defconfig
 xtensa                           allyesconfig
 sh                          rsk7264_defconfig
 arm                         vf610m4_defconfig
 nds32                             allnoconfig
 m68k                             alldefconfig
-nios2                         10m50_defconfig
 sh                           se7712_defconfig
 powerpc                     sequoia_defconfig
 powerpc                 mpc837x_rdb_defconfig
-arm                       imx_v6_v7_defconfig
-arm                           u8500_defconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
 mips                           ip28_defconfig
 arm                           spitz_defconfig
+mips                             allyesconfig
+arm                        realview_defconfig
+powerpc                     skiroot_defconfig
+arm                          collie_defconfig
+powerpc                     ppa8548_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
+m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
@@ -144,6 +157,7 @@ csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 arc                                 defconfig
+sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
@@ -152,9 +166,10 @@ i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
-mips                             allyesconfig
+mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
+powerpc                           allnoconfig
 i386                 randconfig-a002-20201026
 i386                 randconfig-a003-20201026
 i386                 randconfig-a005-20201026
