@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
+Received: from caillette.gueux.org ([2a0e:c400:ff:f010:ffff:ffff:ffff:ffff])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kY8AC-0007AD-BY
- for ath10k@lists.infradead.org; Thu, 29 Oct 2020 13:40:25 +0000
-Received: by mail-oi1-x242.google.com with SMTP id k65so3192820oih.8
- for <ath10k@lists.infradead.org>; Thu, 29 Oct 2020 06:40:22 -0700 (PDT)
-Date: Thu, 29 Oct 2020 08:40:17 -0500
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap
- QMI requests
-Message-ID: <20201029134017.GA807@yoga>
-References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
- <20200929190817.GA968845@bogus>
+ id 1kY8Zd-0004Ya-H4
+ for ath10k@lists.infradead.org; Thu, 29 Oct 2020 14:06:42 +0000
+Date: Thu, 29 Oct 2020 15:06:16 +0100
+From: =?utf-8?B?RsOpbGl4?= Sipma <felix+kernel@gueux.org>
+Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
+ domain"
+Message-ID: <20201029140616.GG515433@capeo.gueux.org>
+References: <20201022172113.GA1367233@capeo.gueux.org>
+ <CANe27jKpYm29QOjYOZ_jwHiRxuWx66J+th8-zgbXK4geiCU0_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200929190817.GA968845@bogus>
+In-Reply-To: <CANe27jKpYm29QOjYOZ_jwHiRxuWx66J+th8-zgbXK4geiCU0_Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +20,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1957613018835730743=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: Amit Pundir <amit.pundir@linaro.org>, devicetree@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, Sumit Semwal <sumit.semwal@linaro.org>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, David S Miller <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Jouni Malinen <jkmalinen@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-On Tue 29 Sep 14:08 CDT 2020, Rob Herring wrote:
 
-> On Fri, Sep 25, 2020 at 11:59:41PM +0530, Amit Pundir wrote:
-> > There are firmware versions which do not support host capability
-> > QMI request. We suspect either the host cap is not implemented or
-> > there may be firmware specific issues, but apparently there seem
-> > to be a generation of firmware that has this particular behavior.
-> > 
-> > For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
-> > "QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
-> > 
-> > If we do not skip the host cap QMI request on Poco F1, then we
-> > get a QMI_ERR_MALFORMED_MSG_V01 error message in the
-> > ath10k_qmi_host_cap_send_sync(). But this error message is not
-> > fatal to the firmware nor to the ath10k driver and we can still
-> > bring up the WiFi services successfully if we just ignore it.
-> > 
-> > Hence introducing this DeviceTree quirk to skip host capability
-> > QMI request for the firmware versions which do not support this
-> > feature.
-> 
-> So if you change the WiFi firmware, you may force a DT change too. Those 
-> are pretty independent things otherwise.
-> 
+--===============1957613018835730743==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
+Content-Disposition: inline
 
-Yes and that's not good. But I looked at somehow derive this from
-firmware version numbers etc and it's not working out, so I'm out of
-ideas for alternatives.
 
-> Why can't you just always ignore this error? If you can't deal with this 
-> entirely in the driver, then it should be part of the WiFi firmware so 
-> it's always in sync.
-> 
+--XvKFcGCOAo53UbWW
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Unfortunately the firmware versions I've hit this problem on has gone
-belly up when receiving this request, that's why I asked Amit to add a
-flag to skip it.
+Hi,
 
-That said, in the devices I've hit this I've managed to get newer
-firmware working, which doesn't have either problem.
+Thanks for your detailed answer.
+
+I made a detailed report, with dmesg outputs of different=20
+kernel/firmware-atheros and wireless-regdb combinations at=20
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D970679
+
+Massimo Maggi pointed me to this ath10k issue on the last message.
 
 Regards,
-Bjorn
+
+On 2020-10-22 23:28+0300, Jouni Malinen wrote:
+>What is the exact issue you are seeing?
+>
+>> Is there something preventing
+>>
+>> https://patchwork.kernel.org/project/ath10k/patch/20200527165718.129307-=
+1-briannorris@chromium.org/
+>> from being merged?
+>
+>That seems to have a risk of mapping the default country code (CTRY_DEFAULT
+>is defined to be 0 in regd.h) being mapped to something else than a safe
+>world roaming case and this could have an impact throughout all drivers
+>using the generic ath/regd.c implementation. It looks like the correct
+>thing to do is to map an unexpected value to the safest option instead of
+>allowing this to be mapped to something that could end up enabling
+>incorrect regulatory rules.
+>
+>- Jouni
+
+--=20
+F=C3=A9lix
+
+--XvKFcGCOAo53UbWW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQR6zeIsS8L0XLQfqiQBpfxHUdFE8AUCX5rMVQAKCRABpfxHUdFE
+8NyBAP9KEaIHjMxbkgclX2X15lI0AFboO+oRoNjSG5C+ZfpzmAEA94JQyYAucvym
+2JiFOjBrzjBOe2vVhp/wLQHnr5FmsA4=
+=Hx7v
+-----END PGP SIGNATURE-----
+
+--XvKFcGCOAo53UbWW--
+
+
+--===============1957613018835730743==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============1957613018835730743==--
