@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXzNg-0003UV-3j
- for ath10k@lists.infradead.org; Thu, 29 Oct 2020 04:17:46 +0000
-Date: Thu, 29 Oct 2020 12:17:25 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- c6838e7ebeec22fb99603f58347281c364cf419b
-Message-ID: <5f9a4255.guSABKt+A31cKybf%lkp@intel.com>
+ id 1kY0V6-00070M-AB
+ for ath10k@lists.infradead.org; Thu, 29 Oct 2020 05:29:29 +0000
+From: "Rakesh Pillai" <pillair@codeaurora.org>
+References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+In-Reply-To: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+Subject: RE: [PATCH v2] ath10k: Fix the parsing error in service available
+ event
+Date: Thu, 29 Oct 2020 10:59:17 +0530
+Message-ID: <004501d6adb4$754a9930$5fdfcb90$@codeaurora.org>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,167 +25,128 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: 'Doug Anderson' <dianders@chromium.org>
+Cc: 'Abhishek Kumar' <kuabhs@chromium.org>, 'Brian Norris' <briannorris@chromium.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'LKML' <linux-kernel@vger.kernel.org>, 'ath10k' <ath10k@lists.infradead.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: c6838e7ebeec22fb99603f58347281c364cf419b  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 721m
 
-configs tested: 140
-configs skipped: 2
+> -----Original Message-----
+> From: Doug Anderson <dianders@chromium.org>
+> Sent: Thursday, October 29, 2020 12:15 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: ath10k <ath10k@lists.infradead.org>; linux-wireless <linux-
+> wireless@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>; Abhishek
+> Kumar <kuabhs@chromium.org>; Brian Norris <briannorris@chromium.org>
+> Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available
+> event
+> 
+> Hi,
+> 
+> On Wed, Oct 28, 2020 at 10:01 AM Rakesh Pillai <pillair@codeaurora.org>
+> wrote:
+> >
+> > The wmi service available event has been
+> > extended to contain extra 128 bit for new services
+> > to be indicated by firmware.
+> >
+> > Currently the presence of any optional TLVs in
+> > the wmi service available event leads to a parsing
+> > error with the below error message:
+> > ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+> >
+> > The wmi service available event parsing should
+> > not return error for the newly added optional TLV.
+> > Fix this parsing for service available event message.
+> >
+> > Tested-on: WCN3990 hw1.0 SNOC
+> >
+> > Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT
+> support")
+> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> > ---
+> > Changes from v1:
+> > - Access service_map_ext only if this TLV was sent in service
+> >   available event.
+> > ---
+> >  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
+> >  drivers/net/wireless/ath/ath10k/wmi.c     | 5 +++--
+> >  drivers/net/wireless/ath/ath10k/wmi.h     | 1 +
+> >  3 files changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> > index 932266d..7b58341 100644
+> > --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> > +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> > @@ -1401,13 +1401,15 @@ static int
+> ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
+> >
+> >         switch (tag) {
+> >         case WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT:
+> > +               arg->service_map_ext_valid = true;
+> >                 arg->service_map_ext_len = *(__le32 *)ptr;
+> >                 arg->service_map_ext = ptr + sizeof(__le32);
+> >                 return 0;
+> >         default:
+> >                 break;
+> >         }
+> > -       return -EPROTO;
+> > +
+> > +       return 0;
+> 
+> I notice your v2 now returns 0 for _all_ unknown tags.  v1 just had a
+> special case for "WMI_TLV_TAG_FIRST_ARRAY_ENUM".  I don't have
+> enough
+> experience with this driver to know which is better, but this change
+> wasn't mentioned in the changes from v1.  I guess you had a change of
+> heart and decided this way was better?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Earlier patchset which added a case for " WMI_TLV_TAG_FIRST_ARRAY_ENUM", still returned error if there is any other TLV except for the two cases handled.
+This leaves the possibility of an error when a new TLV gets added to this service_available message.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-openrisc                         alldefconfig
-powerpc                 mpc8272_ads_defconfig
-mips                        maltaup_defconfig
-sh                           se7721_defconfig
-arc                          axs103_defconfig
-arm                          pxa3xx_defconfig
-arm                          prima2_defconfig
-ia64                        generic_defconfig
-mips                          malta_defconfig
-sh                          lboxre2_defconfig
-ia64                                defconfig
-alpha                            alldefconfig
-sh                          r7780mp_defconfig
-arm                            lart_defconfig
-mips                      bmips_stb_defconfig
-arm                        magician_defconfig
-m68k                        mvme147_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                              zx_defconfig
-c6x                         dsk6455_defconfig
-parisc                generic-32bit_defconfig
-powerpc                    gamecube_defconfig
-arm                      integrator_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      chrp32_defconfig
-arc                     haps_hs_smp_defconfig
-m68k                       m5249evb_defconfig
-arm                           tegra_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                 mpc836x_rdk_defconfig
-sh                             sh03_defconfig
-mips                           xway_defconfig
-powerpc                  storcenter_defconfig
-sh                        dreamcast_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                        edosk7760_defconfig
-sh                ecovec24-romimage_defconfig
-riscv                            alldefconfig
-powerpc                     asp8347_defconfig
-powerpc                     mpc512x_defconfig
-arm                         s5pv210_defconfig
-arm                          tango4_defconfig
-arm                          badge4_defconfig
-powerpc                     tqm8540_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                             espt_defconfig
-arm                          ixp4xx_defconfig
-um                            kunit_defconfig
-m68k                          multi_defconfig
-powerpc                    sam440ep_defconfig
-sh                          urquell_defconfig
-powerpc                      walnut_defconfig
-sh                          sdk7780_defconfig
-powerpc                     pseries_defconfig
-sh                              ul2_defconfig
-arm                            zeus_defconfig
-sh                          rsk7264_defconfig
-powerpc                    klondike_defconfig
-ia64                      gensparse_defconfig
-arm                          pxa168_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201028
-i386                 randconfig-a005-20201028
-i386                 randconfig-a003-20201028
-i386                 randconfig-a001-20201028
-i386                 randconfig-a004-20201028
-i386                 randconfig-a006-20201028
-x86_64               randconfig-a011-20201028
-x86_64               randconfig-a013-20201028
-x86_64               randconfig-a016-20201028
-x86_64               randconfig-a015-20201028
-x86_64               randconfig-a012-20201028
-x86_64               randconfig-a014-20201028
-i386                 randconfig-a016-20201028
-i386                 randconfig-a014-20201028
-i386                 randconfig-a015-20201028
-i386                 randconfig-a013-20201028
-i386                 randconfig-a012-20201028
-i386                 randconfig-a011-20201028
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Since we are using the "valid" flag to indicate the validity of a particular tag, we need not return failure in any case. This makes it scalable (and maintains backward compatibility), in case extra TLVs are added to this message in future.
 
-clang tested configs:
-x86_64               randconfig-a001-20201028
-x86_64               randconfig-a002-20201028
-x86_64               randconfig-a003-20201028
-x86_64               randconfig-a006-20201028
-x86_64               randconfig-a005-20201028
-x86_64               randconfig-a004-20201028
-x86_64               randconfig-a001-20201026
-x86_64               randconfig-a003-20201026
-x86_64               randconfig-a002-20201026
-x86_64               randconfig-a006-20201026
-x86_64               randconfig-a004-20201026
-x86_64               randconfig-a005-20201026
+> 
+> 
+> >  }
+> >
+> >  static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
+> > diff --git a/drivers/net/wireless/ath/ath10k/wmi.c
+> b/drivers/net/wireless/ath/ath10k/wmi.c
+> > index 1fa7107..2e4b561 100644
+> > --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> > +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> > @@ -5751,8 +5751,9 @@ void ath10k_wmi_event_service_available(struct
+> ath10k *ar, struct sk_buff *skb)
+> >                             ret);
+> >         }
+> >
+> > -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar-
+> >wmi.svc_map,
+> > -                              __le32_to_cpu(arg.service_map_ext_len));
+> > +       if (arg.service_map_ext_valid)
+> > +               ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar-
+> >wmi.svc_map,
+> > +                                      __le32_to_cpu(arg.service_map_ext_len));
+> 
+> Your new patch still requires the caller to init the
+> "service_map_ext_valid" to false before calling, but I guess there's
+> not a whole lot more we can do because we might be parsing more than
+> one tag.  It does seem nice that at least we now have a validity bit
+> instead of just relying on a non-zero length to be valid.
+> 
+> It might be nice to have a comment saying that it's up to us to init
+> "arg.service_map_ext_valid" to false before calling
+> ath10k_wmi_pull_svc_avail(), but I won't insist.  Maybe that's obvious
+> to everyone but me...
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I will wait for a couple of days, if there are any other comments, to post a v3 addressing all of them together.
+This approach of having a argument initialized to parse TLVs is used for many other wmi events as well.
+
+> 
+> 
+> -Doug
+
 
 _______________________________________________
 ath10k mailing list
