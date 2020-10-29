@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([134.134.136.65])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXzNg-0003UU-3a
+ id 1kXzNg-0003UW-3V
  for ath10k@lists.infradead.org; Thu, 29 Oct 2020 04:17:45 +0000
-Date: Thu, 29 Oct 2020 12:17:22 +0800
+Date: Thu, 29 Oct 2020 12:17:20 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 16f283f0a4bbc4cc84be574882706fa0d244186e
-Message-ID: <5f9a4252.RcmWEYWRz/fXLZcF%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 76ae920b4f0de37acaa23a0313924b9b37e7f5bd
+Message-ID: <5f9a4250.XqmqnHzDZOz9A2QA%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 16f283f0a4bbc4cc84be574882706fa0d244186e  ath11k: remove repeated words in comments and warnings
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 76ae920b4f0de37acaa23a0313924b9b37e7f5bd  Add localversion-wireless-testing-ath
 
-elapsed time: 722m
+elapsed time: 721m
 
-configs tested: 192
+configs tested: 172
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -59,11 +58,6 @@ ia64                                defconfig
 ia64                        generic_defconfig
 mips                          malta_defconfig
 sh                          lboxre2_defconfig
-mips                           gcw0_defconfig
-powerpc                       ebony_defconfig
-sh                   sh7770_generic_defconfig
-c6x                              allyesconfig
-arm                          simpad_defconfig
 arm                        mvebu_v5_defconfig
 m68k                         amcore_defconfig
 arm                        mvebu_v7_defconfig
@@ -95,10 +89,6 @@ powerpc                      bamboo_defconfig
 arm                      pxa255-idp_defconfig
 xtensa                           alldefconfig
 powerpc                     tqm8560_defconfig
-sh                             sh03_defconfig
-mips                           xway_defconfig
-powerpc                  storcenter_defconfig
-sh                        dreamcast_defconfig
 arc                 nsimosci_hs_smp_defconfig
 sh                        edosk7760_defconfig
 sh                ecovec24-romimage_defconfig
@@ -107,12 +97,6 @@ powerpc                     asp8347_defconfig
 powerpc                     mpc512x_defconfig
 mips                       capcella_defconfig
 xtensa                  nommu_kc705_defconfig
-powerpc                     akebono_defconfig
-powerpc                      pcm030_defconfig
-arm                             ezx_defconfig
-powerpc64                        alldefconfig
-powerpc                  iss476-smp_defconfig
-arm                          imote2_defconfig
 arm                         s5pv210_defconfig
 arm                          tango4_defconfig
 arm                          badge4_defconfig
@@ -147,6 +131,7 @@ m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
+c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -173,12 +158,6 @@ i386                 randconfig-a005-20201026
 i386                 randconfig-a001-20201026
 i386                 randconfig-a006-20201026
 i386                 randconfig-a004-20201026
-i386                 randconfig-a002-20201029
-i386                 randconfig-a005-20201029
-i386                 randconfig-a003-20201029
-i386                 randconfig-a001-20201029
-i386                 randconfig-a004-20201029
-i386                 randconfig-a006-20201029
 i386                 randconfig-a002-20201028
 i386                 randconfig-a005-20201028
 i386                 randconfig-a003-20201028
