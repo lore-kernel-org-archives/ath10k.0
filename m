@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga12.intel.com ([192.55.52.136])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXzNg-0003UW-3V
- for ath10k@lists.infradead.org; Thu, 29 Oct 2020 04:17:45 +0000
-Date: Thu, 29 Oct 2020 12:17:20 +0800
+ id 1kXzNg-0003UV-3j
+ for ath10k@lists.infradead.org; Thu, 29 Oct 2020 04:17:46 +0000
+Date: Thu, 29 Oct 2020 12:17:25 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 76ae920b4f0de37acaa23a0313924b9b37e7f5bd
-Message-ID: <5f9a4250.XqmqnHzDZOz9A2QA%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ c6838e7ebeec22fb99603f58347281c364cf419b
+Message-ID: <5f9a4255.guSABKt+A31cKybf%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 76ae920b4f0de37acaa23a0313924b9b37e7f5bd  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: c6838e7ebeec22fb99603f58347281c364cf419b  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 721m
 
-configs tested: 172
+configs tested: 140
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -40,28 +41,17 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-m68k                        m5307c3_defconfig
-c6x                                 defconfig
-s390                             allyesconfig
-arm                          prima2_defconfig
-ia64                          tiger_defconfig
 openrisc                         alldefconfig
 powerpc                 mpc8272_ads_defconfig
 mips                        maltaup_defconfig
 sh                           se7721_defconfig
 arc                          axs103_defconfig
-powerpc                    socrates_defconfig
-powerpc64                           defconfig
-arm                         nhk8815_defconfig
 arm                          pxa3xx_defconfig
-ia64                                defconfig
+arm                          prima2_defconfig
 ia64                        generic_defconfig
 mips                          malta_defconfig
 sh                          lboxre2_defconfig
-arm                        mvebu_v5_defconfig
-m68k                         amcore_defconfig
-arm                        mvebu_v7_defconfig
-mips                       lemote2f_defconfig
+ia64                                defconfig
 alpha                            alldefconfig
 sh                          r7780mp_defconfig
 arm                            lart_defconfig
@@ -80,23 +70,17 @@ arc                     haps_hs_smp_defconfig
 m68k                       m5249evb_defconfig
 arm                           tegra_defconfig
 powerpc                 mpc834x_mds_defconfig
-arm                     davinci_all_defconfig
-mips                     loongson1b_defconfig
-mips                             allyesconfig
-sh                           se7343_defconfig
 powerpc                 mpc836x_rdk_defconfig
-powerpc                      bamboo_defconfig
-arm                      pxa255-idp_defconfig
-xtensa                           alldefconfig
-powerpc                     tqm8560_defconfig
+sh                             sh03_defconfig
+mips                           xway_defconfig
+powerpc                  storcenter_defconfig
+sh                        dreamcast_defconfig
 arc                 nsimosci_hs_smp_defconfig
 sh                        edosk7760_defconfig
 sh                ecovec24-romimage_defconfig
 riscv                            alldefconfig
 powerpc                     asp8347_defconfig
 powerpc                     mpc512x_defconfig
-mips                       capcella_defconfig
-xtensa                  nommu_kc705_defconfig
 arm                         s5pv210_defconfig
 arm                          tango4_defconfig
 arm                          badge4_defconfig
@@ -107,11 +91,6 @@ sh                             espt_defconfig
 arm                          ixp4xx_defconfig
 um                            kunit_defconfig
 m68k                          multi_defconfig
-nds32                            alldefconfig
-um                           x86_64_defconfig
-arm                      tct_hammer_defconfig
-mips                       bmips_be_defconfig
-arm                           viper_defconfig
 powerpc                    sam440ep_defconfig
 sh                          urquell_defconfig
 powerpc                      walnut_defconfig
@@ -142,22 +121,18 @@ h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
+s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
+mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a002-20201026
-i386                 randconfig-a003-20201026
-i386                 randconfig-a005-20201026
-i386                 randconfig-a001-20201026
-i386                 randconfig-a006-20201026
-i386                 randconfig-a004-20201026
 i386                 randconfig-a002-20201028
 i386                 randconfig-a005-20201028
 i386                 randconfig-a003-20201028
@@ -170,12 +145,6 @@ x86_64               randconfig-a016-20201028
 x86_64               randconfig-a015-20201028
 x86_64               randconfig-a012-20201028
 x86_64               randconfig-a014-20201028
-x86_64               randconfig-a011-20201026
-x86_64               randconfig-a013-20201026
-x86_64               randconfig-a016-20201026
-x86_64               randconfig-a015-20201026
-x86_64               randconfig-a012-20201026
-x86_64               randconfig-a014-20201026
 i386                 randconfig-a016-20201028
 i386                 randconfig-a014-20201028
 i386                 randconfig-a015-20201028
