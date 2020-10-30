@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-am6eur05on2137.outbound.protection.outlook.com
- ([40.107.22.137] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYUN8-0008A4-9d
- for ath10k@lists.infradead.org; Fri, 30 Oct 2020 13:23:17 +0000
-From: Alvin Sipraga <ALSI@bang-olufsen.dk>
-Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
- domain"
-Date: Fri, 30 Oct 2020 13:23:08 +0000
-Message-ID: <6a7e3314-6f91-cedb-1ffc-55ae9189dcf4@bang-olufsen.dk>
-References: <20201022172113.GA1367233@capeo.gueux.org>
- <CANe27jKpYm29QOjYOZ_jwHiRxuWx66J+th8-zgbXK4geiCU0_Q@mail.gmail.com>
- <20201029140616.GG515433@capeo.gueux.org>
- <CANe27j+fur52HydqqzLc2hBV3QwC2La8+RTJcV=5W5LkUr=PqQ@mail.gmail.com>
-In-Reply-To: <CANe27j+fur52HydqqzLc2hBV3QwC2La8+RTJcV=5W5LkUr=PqQ@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <E206A6622440BD4A8E08F2D746464DF4@eurprd03.prod.outlook.com>
+ id 1kYbU1-00055s-8T
+ for ath10k@lists.infradead.org; Fri, 30 Oct 2020 20:58:50 +0000
+Received: by mail-pf1-x434.google.com with SMTP id w21so6347310pfc.7
+ for <ath10k@lists.infradead.org>; Fri, 30 Oct 2020 13:58:47 -0700 (PDT)
+From: Abhishek Kumar <kuabhs@chromium.org>
+Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
+ limitations.
+Date: Fri, 30 Oct 2020 20:56:38 +0000
+Message-Id: <20201030205639.1452712-1-kuabhs@chromium.org>
+In-Reply-To: <6649b0c2ff988c2ae8723ea633f86cc12da43d95.camel@sipsolutions.net>
+References: <6649b0c2ff988c2ae8723ea633f86cc12da43d95.camel@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,54 +21,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jouni Malinen <jkmalinen@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, =?utf-8?B?RsOpbGl4IFNpcG1h?= <felix+kernel@gueux.org>
+To: johannes@sipsolutions.net
+Cc: kuabhs@chromium.org, cjhuang@codeaurora.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org
 
-SGksDQoNCk9uIDEwLzMwLzIwIDg6MjAgQU0sIEpvdW5pIE1hbGluZW4gd3JvdGU6DQo+IFNvIHRo
-ZSBpc3N1ZSBpcyBpbiBub3QgYmVpbmcgYWJsZSB0byBvcGVyYXRlIGFuIEFQIG9uIHRoZSA1IEdI
-eiBiYW5kPw0KPiBUaGF0IHNvdW5kcyBsaWtlIHRoZSBleHBlY3RlZCBiZWhhdmlvciBmb3IgYW55
-IGRldmljZSB0aGF0IGhhcyBub3QNCj4gYmVlbiBjYWxpYnJhdGVkIGFuZCBwcm92aXNpb25lZCBm
-b3IgYSBzcGVjaWZpYyBjb3VudHJ5IHdoZXJlDQo+IHJlZ3VsYXRvcnkgcnVsZXMgYWxsb3cgb3Bl
-cmF0aW9uIG9uIHRoZSA1IEdIeiBiYW5kLiBJIHVuZGVyc3RhbmQgdGhhdA0KPiB0aGlzIG1heSBs
-b29rIGxpa2UgYSByZWdyZXNzaW9uIHNpbmNlIHRoZSBjb21taXQgcmVtb3ZlZA0KPiBmdW5jdGlv
-bmFsaXR5LCBidXQgaXQgZmVlbHMgbGlrZSBhIGJ1ZyBmaXggdG8gbWUgc2luY2UgdGhhdA0KPiBm
-dW5jdGlvbmFsaXR5IHNob3VsZCBub3QgaGF2ZSBiZWVuIGVuYWJsZWQgYnkgZGVmYXVsdCBpbiB0
-aGUgZmlyc3QNCj4gcGxhY2UuIFRoZSBnb2FsIGhlcmUgaXMgdG8gYXZvaWQgaW5hcHByb3ByaWF0
-ZSBvcGVyYXRpb24gb24gdGhlIGJhbmQNCj4gd2l0aG91dCBleHBsaWNpdCBjb25maWd1cmF0aW9u
-IHRvIGVuYWJsZSBzdWNoIG9wZXJhdGlvbi4gSW4gQVANCj4gZGV2aWNlcywgdGhlIGRldmljZSBz
-aG91bGQgaGF2ZSBiZWVuIHByb3Zpc2lvbmVkIGZvciBhIHNwZWNpZmljDQo+IGNvdW50cnkgdG8g
-YmUgYWJsZSB0byBlbmZvcmNlIHRoZSBjb3JyZWN0IGZyZXF1ZW5jeSByYW5nZQ0KPiByZXN0cmlj
-dGlvbnMuIFRoZSBzYWZlIGRlZmF1bHQgZm9yIGEgZGV2aWNlIHRoYXQgZG9lcyBub3QgaGF2ZSBz
-dWNoDQo+IGV4cGxpY2l0IGNvbmZpZ3VyYXRpb24gd2l0aGluIHRoZSBXTEFOIGNvbXBvbmVudCBp
-dHNlbGYgaXMgdG8gdXNlIHRoZQ0KPiB3b3JsZCByb2FtaW5nIG1vZGUgd2hpY2ggcHJldmVudHMg
-aW5pdGlhbGl6YXRpb24gb2YgcmFkaWF0aW9uIChpLmUuLA0KPiBkb2VzIG5vdCBhbGxvdyBBUCBt
-b2RlIHRvIGJlIHN0YXJ0ZWQgYnV0IGFsbG93cyBzdGF0aW9uIG1vZGUgb3BlcmF0aW9uDQo+IHRv
-IGNvbm5lY3QgdG8gYW4gYWxyZWFkeSBzdGFydGVkIEFQKSBvbiB0aGUgNSBHSHogYmFuZC4NCg0K
-VGhpcyBleHBsYW5hdGlvbiBtYWtlcyBwZXJmZWN0IHNlbnNlLCBidXQgYXJlIHlvdSBzdXJlIHRo
-YXQgdGhhdCBpcyB3aGF0IA0KdGhlIDB4MCByZWd1bGF0b3J5IGRvbWFpbiBtZWFucz8gRm9yIGV4
-YW1wbGUgdGhlIHBhZ2VzIFsxXVsyXSBzdGF0ZSANCnVuZXF1aXZvY2FsbHkgdGhhdCAweDAgbWVh
-bnMgVVMuDQoNCklmIHdlIGFzc3VtZSAweDAgPSBVUywgZG8geW91IGFncmVlIHRoYXQgYW4gRUVQ
-Uk9NIHByb2dyYW1tZWQgd2l0aCAweDAgDQpzaG91bGQgaW1wbHkgdGhhdCB0aGUgZGV2aWNlIGlz
-IHN1aXRhYmx5IGNhbGlicmF0ZWQgZm9yIG9wZXJhdGlvbiBpbiB0aGUgDQpVbml0ZWQgU3RhdGVz
-LCBhbmQgYXMgc3VjaCBzaG91bGQgcGVybWl0IGluaXRpYXRpbmcgcmFkaWF0aW9uIG9uIHRoZSA1
-IA0KR0h6IGJhbmQgKGV0Yy4pPyBPciBoYXZlIEkgbWlzc2VkIHNvbWV0aGluZz8NCg0KSSBhbHNv
-IHRyaWVkIHRvIGdldCB0aGUgcGF0Y2ggaW4gcXVlc3Rpb24gcmV2ZXJ0ZWQgYmFzZWQgb24gdGhp
-cyANCnJhdGlvbmFsZSwgc2VlIFszXSBmb3IgbW9yZSBpbmZvLiBJIGhvcGUgc29tZWJvZHkgY2Fu
-IGhlbHAgY2xlYXIgdXAgdGhpcyANCm1pc3VuZGVyc3RhbmRpbmcsIHNpbmNlIGl0IHNlZW1zIHRv
-IG1lIHRoYXQgdGhlIG1haW4gaXNzdWUgaXM6IHdoYXQgaXMgDQp0aGUgdHJ1ZSBtZWFuaW5nIG9m
-IDB4MD8NCg0KQnR3LCB0aGUgaGFyZHdhcmUgdGhhdCBGw6lsaXggaXMgcmVmZXJyaW5nIHRvIGRv
-ZXMgaGF2ZSBhbiBGQ0MgSURbNF0gYW5kIA0Kc2VlbXMgdG8gYmUgc3VpdGFibHkgY2VydGlmaWVk
-IGZvciB0aGUgVVMuDQoNCktpbmQgcmVnYXJkcywNCkFsdmluDQoNClsxXSANCmh0dHBzOi8vd2ly
-ZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoI3RoZV8weDBfcmVndWxh
-dG9yeV9kb21haW4NClsyXSANCmh0dHBzOi8vd2ViLmFyY2hpdmUub3JnL3dlYi8yMDE1MDExNzA0
-MDAyMi9odHRwOi8vYXJ0aWNsZS5nbWFuZS5vcmcvZ21hbmUubGludXgua2VybmVsLndpcmVsZXNz
-LmdlbmVyYWwvMzg0MTANClszXSANCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVj
-dC9hdGgxMGsvcGF0Y2gvMjAyMDA3MzAxMjQ5MjMuMjcxNDI5LTEtYWxzaUBiYW5nLW9sdWZzZW4u
-ZGsvDQpbNF0gaHR0cHM6Ly9mY2NpZC5pby9USzRXTEU5MDBWWApfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+From: kuabhs@chromium.org
+
+These patches do not apply cleanly on kernel 5.4. I fixed the merged conflicts
+and verified. I verified these APIs using power_manager in chromeos, the APIs 
+works fine.
+Tested-by: Abhishek Kumar <kuabhs@chromium.org>
+
+-Abhishek
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
