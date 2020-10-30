@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from caillette.gueux.org ([2a0e:c400:ff:f010:ffff:ffff:ffff:ffff])
+Received: from mail-am6eur05on2137.outbound.protection.outlook.com
+ ([40.107.22.137] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYQ7w-0000OS-P7
- for ath10k@lists.infradead.org; Fri, 30 Oct 2020 08:51:19 +0000
-Date: Fri, 30 Oct 2020 09:51:02 +0100
-From: =?utf-8?B?RsOpbGl4?= Sipma <felix+kernel@gueux.org>
+ id 1kYUN8-0008A4-9d
+ for ath10k@lists.infradead.org; Fri, 30 Oct 2020 13:23:17 +0000
+From: Alvin Sipraga <ALSI@bang-olufsen.dk>
 Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
  domain"
-Message-ID: <20201030085102.GA2137481@capeo.gueux.org>
+Date: Fri, 30 Oct 2020 13:23:08 +0000
+Message-ID: <6a7e3314-6f91-cedb-1ffc-55ae9189dcf4@bang-olufsen.dk>
 References: <20201022172113.GA1367233@capeo.gueux.org>
  <CANe27jKpYm29QOjYOZ_jwHiRxuWx66J+th8-zgbXK4geiCU0_Q@mail.gmail.com>
  <20201029140616.GG515433@capeo.gueux.org>
  <CANe27j+fur52HydqqzLc2hBV3QwC2La8+RTJcV=5W5LkUr=PqQ@mail.gmail.com>
-MIME-Version: 1.0
 In-Reply-To: <CANe27j+fur52HydqqzLc2hBV3QwC2La8+RTJcV=5W5LkUr=PqQ@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <E206A6622440BD4A8E08F2D746464DF4@eurprd03.prod.outlook.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,104 +25,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6682602298271472319=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Jouni Malinen <jkmalinen@gmail.com>
-Cc: ath10k@lists.infradead.org
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, =?utf-8?B?RsOpbGl4IFNpcG1h?= <felix+kernel@gueux.org>
 
-
---===============6682602298271472319==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
-Content-Disposition: inline
-
-
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 2020-10-30 09:20+0200, Jouni Malinen wrote:
->On Thu, Oct 29, 2020 at 4:06 PM F=C3=A9lix Sipma <felix+kernel@gueux.org> =
-wrote:
->> I made a detailed report, with dmesg outputs of different
->> kernel/firmware-atheros and wireless-regdb combinations at
->> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D970679
->
->So the issue is in not being able to operate an AP on the 5 GHz band?
-
-Yes, sorry for not being clear about this.
-
->That sounds like the expected behavior for any device that has not
->been calibrated and provisioned for a specific country where
->regulatory rules allow operation on the 5 GHz band. I understand that
->this may look like a regression since the commit removed
->functionality, but it feels like a bug fix to me since that
->functionality should not have been enabled by default in the first
->place. The goal here is to avoid inappropriate operation on the band
->without explicit configuration to enable such operation. In AP
->devices, the device should have been provisioned for a specific
->country to be able to enforce the correct frequency range
->restrictions. The safe default for a device that does not have such
->explicit configuration within the WLAN component itself is to use the
->world roaming mode which prevents initialization of radiation (i.e.,
->does not allow AP mode to be started but allows station mode operation
->to connect to an already started AP) on the 5 GHz band.
-
-So, if I understand well, the new behaviour (non working AP with ac) is=20
-expected, given that the device was not provisioned with the settings=20
-specifics to my zone? And to prevent people from operating an AP with=20
-the wrong settings, we force them to use hardware that is specific to=20
-their zone? If that's the intention, I'm not sure it is very effective:=20
-I can still buy a German wifi card and use it in France. It will=20
-probably suits most of the hardware vendors, though: people moving to=20
-another country are forced to buy new stuff and they can't buy cheaper=20
-stuff abroad, but, seen from another angle, it sounds like planned=20
-obsolescence.
-
-The vendor of my (new) hardware is from Switzerland, and is selling to=20
-(at least) everywhere in Europe, and they sell the same hardware (that=20
-used to work) for everybody. So, now, they are supposed to sell=20
-specific hardware for each country? I think the card was not=20
-provisioned with a specific country (I'm in France, and I tried FR, CH,=20
-US,  ...), so I guess I have to throw it to the bin anyway (and they=20
-should do the same with all their stocks).
-
-I hope I have misunderstood your message, else I have to admit I'm a=20
-little disappointed... Thanks for your explanation, though!
-
-If that's really the intention, is there a workaround for irresponsible=20
-people like me, who just wan't to avoid buying new stuff?
-
-Regards,
-
---=20
-F=C3=A9lix
-
---PEIAKu/WMn1b1Hv9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQR6zeIsS8L0XLQfqiQBpfxHUdFE8AUCX5vT8wAKCRABpfxHUdFE
-8JU6AP9IsnFavN0uwmpJRqYEdltZjwCuHd17p112af5ltXqU3QEAplZcoryKc9NW
-jRADJpdvN4vvTNuBy030L7oxUr6A4wE=
-=U1oy
------END PGP SIGNATURE-----
-
---PEIAKu/WMn1b1Hv9--
-
-
---===============6682602298271472319==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============6682602298271472319==--
+SGksDQoNCk9uIDEwLzMwLzIwIDg6MjAgQU0sIEpvdW5pIE1hbGluZW4gd3JvdGU6DQo+IFNvIHRo
+ZSBpc3N1ZSBpcyBpbiBub3QgYmVpbmcgYWJsZSB0byBvcGVyYXRlIGFuIEFQIG9uIHRoZSA1IEdI
+eiBiYW5kPw0KPiBUaGF0IHNvdW5kcyBsaWtlIHRoZSBleHBlY3RlZCBiZWhhdmlvciBmb3IgYW55
+IGRldmljZSB0aGF0IGhhcyBub3QNCj4gYmVlbiBjYWxpYnJhdGVkIGFuZCBwcm92aXNpb25lZCBm
+b3IgYSBzcGVjaWZpYyBjb3VudHJ5IHdoZXJlDQo+IHJlZ3VsYXRvcnkgcnVsZXMgYWxsb3cgb3Bl
+cmF0aW9uIG9uIHRoZSA1IEdIeiBiYW5kLiBJIHVuZGVyc3RhbmQgdGhhdA0KPiB0aGlzIG1heSBs
+b29rIGxpa2UgYSByZWdyZXNzaW9uIHNpbmNlIHRoZSBjb21taXQgcmVtb3ZlZA0KPiBmdW5jdGlv
+bmFsaXR5LCBidXQgaXQgZmVlbHMgbGlrZSBhIGJ1ZyBmaXggdG8gbWUgc2luY2UgdGhhdA0KPiBm
+dW5jdGlvbmFsaXR5IHNob3VsZCBub3QgaGF2ZSBiZWVuIGVuYWJsZWQgYnkgZGVmYXVsdCBpbiB0
+aGUgZmlyc3QNCj4gcGxhY2UuIFRoZSBnb2FsIGhlcmUgaXMgdG8gYXZvaWQgaW5hcHByb3ByaWF0
+ZSBvcGVyYXRpb24gb24gdGhlIGJhbmQNCj4gd2l0aG91dCBleHBsaWNpdCBjb25maWd1cmF0aW9u
+IHRvIGVuYWJsZSBzdWNoIG9wZXJhdGlvbi4gSW4gQVANCj4gZGV2aWNlcywgdGhlIGRldmljZSBz
+aG91bGQgaGF2ZSBiZWVuIHByb3Zpc2lvbmVkIGZvciBhIHNwZWNpZmljDQo+IGNvdW50cnkgdG8g
+YmUgYWJsZSB0byBlbmZvcmNlIHRoZSBjb3JyZWN0IGZyZXF1ZW5jeSByYW5nZQ0KPiByZXN0cmlj
+dGlvbnMuIFRoZSBzYWZlIGRlZmF1bHQgZm9yIGEgZGV2aWNlIHRoYXQgZG9lcyBub3QgaGF2ZSBz
+dWNoDQo+IGV4cGxpY2l0IGNvbmZpZ3VyYXRpb24gd2l0aGluIHRoZSBXTEFOIGNvbXBvbmVudCBp
+dHNlbGYgaXMgdG8gdXNlIHRoZQ0KPiB3b3JsZCByb2FtaW5nIG1vZGUgd2hpY2ggcHJldmVudHMg
+aW5pdGlhbGl6YXRpb24gb2YgcmFkaWF0aW9uIChpLmUuLA0KPiBkb2VzIG5vdCBhbGxvdyBBUCBt
+b2RlIHRvIGJlIHN0YXJ0ZWQgYnV0IGFsbG93cyBzdGF0aW9uIG1vZGUgb3BlcmF0aW9uDQo+IHRv
+IGNvbm5lY3QgdG8gYW4gYWxyZWFkeSBzdGFydGVkIEFQKSBvbiB0aGUgNSBHSHogYmFuZC4NCg0K
+VGhpcyBleHBsYW5hdGlvbiBtYWtlcyBwZXJmZWN0IHNlbnNlLCBidXQgYXJlIHlvdSBzdXJlIHRo
+YXQgdGhhdCBpcyB3aGF0IA0KdGhlIDB4MCByZWd1bGF0b3J5IGRvbWFpbiBtZWFucz8gRm9yIGV4
+YW1wbGUgdGhlIHBhZ2VzIFsxXVsyXSBzdGF0ZSANCnVuZXF1aXZvY2FsbHkgdGhhdCAweDAgbWVh
+bnMgVVMuDQoNCklmIHdlIGFzc3VtZSAweDAgPSBVUywgZG8geW91IGFncmVlIHRoYXQgYW4gRUVQ
+Uk9NIHByb2dyYW1tZWQgd2l0aCAweDAgDQpzaG91bGQgaW1wbHkgdGhhdCB0aGUgZGV2aWNlIGlz
+IHN1aXRhYmx5IGNhbGlicmF0ZWQgZm9yIG9wZXJhdGlvbiBpbiB0aGUgDQpVbml0ZWQgU3RhdGVz
+LCBhbmQgYXMgc3VjaCBzaG91bGQgcGVybWl0IGluaXRpYXRpbmcgcmFkaWF0aW9uIG9uIHRoZSA1
+IA0KR0h6IGJhbmQgKGV0Yy4pPyBPciBoYXZlIEkgbWlzc2VkIHNvbWV0aGluZz8NCg0KSSBhbHNv
+IHRyaWVkIHRvIGdldCB0aGUgcGF0Y2ggaW4gcXVlc3Rpb24gcmV2ZXJ0ZWQgYmFzZWQgb24gdGhp
+cyANCnJhdGlvbmFsZSwgc2VlIFszXSBmb3IgbW9yZSBpbmZvLiBJIGhvcGUgc29tZWJvZHkgY2Fu
+IGhlbHAgY2xlYXIgdXAgdGhpcyANCm1pc3VuZGVyc3RhbmRpbmcsIHNpbmNlIGl0IHNlZW1zIHRv
+IG1lIHRoYXQgdGhlIG1haW4gaXNzdWUgaXM6IHdoYXQgaXMgDQp0aGUgdHJ1ZSBtZWFuaW5nIG9m
+IDB4MD8NCg0KQnR3LCB0aGUgaGFyZHdhcmUgdGhhdCBGw6lsaXggaXMgcmVmZXJyaW5nIHRvIGRv
+ZXMgaGF2ZSBhbiBGQ0MgSURbNF0gYW5kIA0Kc2VlbXMgdG8gYmUgc3VpdGFibHkgY2VydGlmaWVk
+IGZvciB0aGUgVVMuDQoNCktpbmQgcmVnYXJkcywNCkFsdmluDQoNClsxXSANCmh0dHBzOi8vd2ly
+ZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoI3RoZV8weDBfcmVndWxh
+dG9yeV9kb21haW4NClsyXSANCmh0dHBzOi8vd2ViLmFyY2hpdmUub3JnL3dlYi8yMDE1MDExNzA0
+MDAyMi9odHRwOi8vYXJ0aWNsZS5nbWFuZS5vcmcvZ21hbmUubGludXgua2VybmVsLndpcmVsZXNz
+LmdlbmVyYWwvMzg0MTANClszXSANCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVj
+dC9hdGgxMGsvcGF0Y2gvMjAyMDA3MzAxMjQ5MjMuMjcxNDI5LTEtYWxzaUBiYW5nLW9sdWZzZW4u
+ZGsvDQpbNF0gaHR0cHM6Ly9mY2NpZC5pby9USzRXTEU5MDBWWApfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
