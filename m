@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZr3j-0002yE-87
- for ath10k@lists.infradead.org; Tue, 03 Nov 2020 07:48:52 +0000
-Received: by mail-wm1-x344.google.com with SMTP id v5so11693068wmh.1
- for <ath10k@lists.infradead.org>; Mon, 02 Nov 2020 23:48:49 -0800 (PST)
+ id 1kZw7z-0003RS-2Q
+ for ath10k@lists.infradead.org; Tue, 03 Nov 2020 13:13:37 +0000
 MIME-Version: 1.0
-References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
- <20200929190817.GA968845@bogus> <20201029134017.GA807@yoga>
-In-Reply-To: <20201029134017.GA807@yoga>
-From: Amit Pundir <amit.pundir@linaro.org>
-Date: Tue, 3 Nov 2020 13:18:12 +0530
-Message-ID: <CAMi1Hd20UpNhZm6z5t5Kcy8eTABiAj7X_Gm66QnJspZWSio0Ew@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI
- requests
+Date: Tue, 03 Nov 2020 10:34:47 +0800
+From: Carl Huang <cjhuang@codeaurora.org>
+Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
+ limitations.
+In-Reply-To: <20201031024631.1528113-1-kuabhs@chromium.org>
+References: <20201030205639.1452712-1-kuabhs@chromium.org>
+ <20201031024631.1528113-1-kuabhs@chromium.org>
+Message-ID: <e5302eb0b20339d3f6544652e4034993@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,76 +20,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k <ath10k@lists.infradead.org>, Sumit Semwal <sumit.semwal@linaro.org>, dt <devicetree@vger.kernel.org>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, David S Miller <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: johannes@sipsolutions.net, briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org
 
-Hi Rob, Bjorn, Kalle,
-
-On Thu, 29 Oct 2020 at 19:10, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Tue 29 Sep 14:08 CDT 2020, Rob Herring wrote:
->
-> > On Fri, Sep 25, 2020 at 11:59:41PM +0530, Amit Pundir wrote:
-> > > There are firmware versions which do not support host capability
-> > > QMI request. We suspect either the host cap is not implemented or
-> > > there may be firmware specific issues, but apparently there seem
-> > > to be a generation of firmware that has this particular behavior.
-> > >
-> > > For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
-> > > "QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
-> > >
-> > > If we do not skip the host cap QMI request on Poco F1, then we
-> > > get a QMI_ERR_MALFORMED_MSG_V01 error message in the
-> > > ath10k_qmi_host_cap_send_sync(). But this error message is not
-> > > fatal to the firmware nor to the ath10k driver and we can still
-> > > bring up the WiFi services successfully if we just ignore it.
-> > >
-> > > Hence introducing this DeviceTree quirk to skip host capability
-> > > QMI request for the firmware versions which do not support this
-> > > feature.
-> >
-> > So if you change the WiFi firmware, you may force a DT change too. Those
-> > are pretty independent things otherwise.
-> >
->
-> Yes and that's not good. But I looked at somehow derive this from
-> firmware version numbers etc and it's not working out, so I'm out of
-> ideas for alternatives.
->
-> > Why can't you just always ignore this error? If you can't deal with this
-> > entirely in the driver, then it should be part of the WiFi firmware so
-> > it's always in sync.
-> >
->
-> Unfortunately the firmware versions I've hit this problem on has gone
-> belly up when receiving this request, that's why I asked Amit to add a
-> flag to skip it.
-
-So what is next for this DT quirk?
-
-I'm OK to go back to my previous of_machine_is_compatible()
-device specific hack, for now,
-https://patchwork.kernel.org/project/linux-wireless/patch/1600328501-8832-1-git-send-email-amit.pundir@linaro.org/
-till we have a reasonable fix in place or receive a vendor firmware
-drop which fixes this problem (which I believe is highly unlikely
-though, for this 2+ years old device).
-
-Regards,
-Amit Pundir
-
->
-> That said, in the devices I've hit this I've managed to get newer
-> firmware working, which doesn't have either problem.
->
-> Regards,
-> Bjorn
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAyMC0xMC0zMSAxMDo0NiwgQWJoaXNoZWsgS3VtYXIgd3JvdGU6Cj4gRnJvbToga3VhYmhz
+QGNocm9taXVtLm9yZwo+IAo+IFRoZXJlIGFyZSBmZXcgbW9yZSBhZGRpdGlvbmFsIGNvbW1lbnRz
+IGhlcmUuCj4+ICsgKiBATkw4MDIxMV9DTURfU0VUX1NBUl9TUEVDUzogU0FSIHBvd2VyIGxpbWl0
+YXRpb24gY29uZmlndXJhdGlvbiBpcwo+PiArICogwqAgwqAgcGFzc2VkIHVzaW5nICVOTDgwMjEx
+X0FUVFJfU0FSX1NQRUMuCj4+ICsgKgo+IAo+IFRoaXMgY29tbWFuZCByZXF1aXJlcyBOTDgwMjEx
+X0FUVFJfSUZJTkRFWCwgcHJvYmFibHkgc2hvdWxkIGJlIGJldHRlciAKPiB0byBhZGQKPiB0aGlz
+IGluIHRoZSBjb21tZW50ID8KPiAKUGVyIEpvaGFubmVzJ3MgY29tbWVudHMsIHRoaXMgZXhwbGlj
+aXQgaW5kZXggaXMgbm90IHJlcXVpcmVkLiBBcmUgeW91IApmaW5lCndpdGggaXQ/CgpJbnN0ZWFk
+LCB1c2VyLXNwYWNlIGFwcGxpY2F0aW9uIHJlY29yZHMgdGhlIGFycmF5IGluZGV4IHdoZW4gcXVl
+cnlpbmcgCnRoZSBTQVIKY2FwYWJpbGl0eS4gV2hlbiBzZXQsIHRoZSBuZXN0ZWQgYXJyYXkgaW5k
+ZXggd2lsbCBiZSB1c2VkIHRvIHNldCB0aGUgCnBvd2VyLgpUaGlzIHJlcXVpcmVzIHVzZXItc3Bh
+Y2UgaGFzIGEgc3RyaWN0IG1hcHBpbmcgb2YgaW5kZXguIGFuZCAKTkw4MDIxMV9BVFRSX0lGSU5E
+RVgKaXMgdG8gYmUgcmVtb3ZlZC4KCgo+PiArc3RhdGljIGludAo+PiArbmw4MDIxMV9wdXRfc2Fy
+X3NwZWNzKHN0cnVjdCBjZmc4MDIxMV9yZWdpc3RlcmVkX2RldmljZSAqcmRldiwKPj4gKyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3Qgc2tfYnVmZiAqbXNnKQo+PiArewo+PiAr
+IMKgIMKgIMKgIHN0cnVjdCBubGF0dHIgKnNhcl9jYXBhLCAqc3BlY3MsICpzdWJfZnJlcV9yYW5n
+ZTsKPj4gKyDCoCDCoCDCoCB1OCDCoG51bV9mcmVxX3JhbmdlczsKPj4gKyDCoCDCoCDCoCBpbnQg
+aTsKPj4gKwo+PiArIMKgIMKgIMKgIGlmICghcmRldi0+d2lwaHkuc2FyX2NhcGEpCj4+ICsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIDA7Cj4+ICsKPj4gKyDCoCDCoCDCoCBudW1fZnJlcV9y
+YW5nZXMgPSByZGV2LT53aXBoeS5zYXJfY2FwYS0+bnVtX2ZyZXFfcmFuZ2VzOwo+PiArCj4+ICsg
+wqAgwqAgwqAgc2FyX2NhcGEgPSBubGFfbmVzdF9zdGFydChtc2csIE5MODAyMTFfQVRUUl9TQVJf
+U1BFQyk7Cj4+ICsgwqAgwqAgwqAgaWYgKCFzYXJfY2FwYSkKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCByZXR1cm4gLUVOT1NQQzsKPiAKPiBJIHNlZSBzb21lIHBsYWNlcyBubGFfbmVzdF9zdGFy
+dF9ub2ZsYWcgYmVpbmcgdXNlZCBhbmQgaGVyZSAKPiBubGFfbmVzdF9zdGFydC4KPiBXaGF0cyB0
+aGUgc3BlY2lmaWMgcmVhc29uIHRvIGRvIHRoYXQgPyBJbiB0aGUgbmV3ZXIgS2VybmVsIHZlcnNp
+b25zLCBJIAo+IGJlbGlldmUKPiBubGFfbmVzdF9zdGFydCBpcyBwcmVmZXJyZWQuCj4gClRoaXMg
+d2lsbCBiZSBhZGRyZXNzZWQgaW4gbmV4dCB2ZXJzaW9uLgoKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCBwb3dlciA9IAo+PiBubGFfZ2V0X3U4KHNwZWNbTkw4MDIxMV9TQVJfQVRUUl9TUEVDU19Q
+T1dFUl0pOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHNhcl9zcGVjLT5zdWJfc3BlY3Nbc3Bl
+Y3NdLnBvd2VyID0gcG93ZXI7Cj4+ICsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCAvKiBpZiBO
+TDgwMjExX1NBUl9BVFRSX1NQRUNTX0ZSRVFfUkFOR0VfSU5ERVggaXNuJ3QgCj4+IHByZXNlbnQs
+Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAqIHRoZW4gdGhlIHBvd2VyIGFwcGxpZXMgdG8g
+YWxsIGJhbmRzLiBCdXQgaXQncyBvbmx5IAo+PiB2YWxpZAo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgKiBmb3IgdGhlIGZpcnN0IGVudHJ5Lgo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+Ki8KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoIXNwZWNbTkw4MDIxMV9TQVJfQVRUUl9T
+UEVDU19GUkVRX1JBTkdFX0lOREVYXSkgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIGlmIChzcGVjcykgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIGVyciA9IC1FSU5WQUw7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgZ290byBlcnJvcjsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCB9IGVsc2Ugewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIAo+PiBzYXJfc3BlYy0+c3ViX3NwZWNzW3NwZWNzXS5mcmVxX3Jhbmdl
+X2luZGV4ID0KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBOTDgwMjExX1NBUl9BTExfRlJFUV9STkFHRVM7Cj4+ICsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgc3BlY3MrKzsKPj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+
+IAo+IEhlcmUgSSBzZWUgeW91IGFyZSBhc3NpZ25pbmcgc2FtZSBwb3dlciB0byBhbGwgZnJlcSBi
+YW5kIGlmIGZvciB0aGUgCj4gZmlyc3QgYmFuZAo+IHRoZSBmcmVxIGluZGV4IGlzIG5vdCBwcm92
+aWRlZC4gSXMgdGhlcmUgYW55IHNwZWNpZmljIHJlYXNvbiB0byBvbmx5Cj4gY2hlY2sgdGhlIGZp
+cnN0Cj4gaGVyZSA/IFByb2JhYmx5IHRoaXMgbG9naWMgc2hvdWxkIG1vdmUgaW50byBzcGVjaWZp
+YyBkcml2ZXJzLiBUaG91Z2h0cyAKPiA/Cj4gClRoaXMgbG9naWMgd2lsbCBiZSByZW1vdmVkIHBl
+ciBKb2hhbm5lcydzIGNvbW1lbnRzLgoKUGxlYXNlIHJlYWQgIEpvaGFubmVzJ3MgY29tbWVudHMu
+IElmIHlvdSBhZ3JlZSB3aXRoIGhpbSBhbmQgaGFzIG5vIG90aGVyIAphZHZpY2VzLAp0aGVuIEkg
+d2lsbCBwb3N0IHRoZSBzZWNvbmQgdmVyc2lvbiBvZiBpdC4KCgo+IC1BYmhpc2hlawo+IAo+IAo+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBr
+IG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
