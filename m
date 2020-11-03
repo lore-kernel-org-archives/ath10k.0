@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m42-4.mailgun.net ([69.72.42.4])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZw7z-0003RS-2Q
- for ath10k@lists.infradead.org; Tue, 03 Nov 2020 13:13:37 +0000
-MIME-Version: 1.0
-Date: Tue, 03 Nov 2020 10:34:47 +0800
-From: Carl Huang <cjhuang@codeaurora.org>
+ id 1kZwAI-0003ix-Pe
+ for ath10k@lists.infradead.org; Tue, 03 Nov 2020 13:16:00 +0000
+Message-ID: <aba43fb268fe29aecf84bf7e68629dc0de28d0ad.camel@sipsolutions.net>
 Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
  limitations.
-In-Reply-To: <20201031024631.1528113-1-kuabhs@chromium.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 03 Nov 2020 14:15:34 +0100
+In-Reply-To: <e5302eb0b20339d3f6544652e4034993@codeaurora.org>
 References: <20201030205639.1452712-1-kuabhs@chromium.org>
  <20201031024631.1528113-1-kuabhs@chromium.org>
-Message-ID: <e5302eb0b20339d3f6544652e4034993@codeaurora.org>
+ <e5302eb0b20339d3f6544652e4034993@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,70 +22,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Kumar <kuabhs@chromium.org>
-Cc: johannes@sipsolutions.net, briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org
+To: Carl Huang <cjhuang@codeaurora.org>, Abhishek Kumar <kuabhs@chromium.org>
+Cc: briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org
 
-T24gMjAyMC0xMC0zMSAxMDo0NiwgQWJoaXNoZWsgS3VtYXIgd3JvdGU6Cj4gRnJvbToga3VhYmhz
-QGNocm9taXVtLm9yZwo+IAo+IFRoZXJlIGFyZSBmZXcgbW9yZSBhZGRpdGlvbmFsIGNvbW1lbnRz
-IGhlcmUuCj4+ICsgKiBATkw4MDIxMV9DTURfU0VUX1NBUl9TUEVDUzogU0FSIHBvd2VyIGxpbWl0
-YXRpb24gY29uZmlndXJhdGlvbiBpcwo+PiArICogwqAgwqAgcGFzc2VkIHVzaW5nICVOTDgwMjEx
-X0FUVFJfU0FSX1NQRUMuCj4+ICsgKgo+IAo+IFRoaXMgY29tbWFuZCByZXF1aXJlcyBOTDgwMjEx
-X0FUVFJfSUZJTkRFWCwgcHJvYmFibHkgc2hvdWxkIGJlIGJldHRlciAKPiB0byBhZGQKPiB0aGlz
-IGluIHRoZSBjb21tZW50ID8KPiAKUGVyIEpvaGFubmVzJ3MgY29tbWVudHMsIHRoaXMgZXhwbGlj
-aXQgaW5kZXggaXMgbm90IHJlcXVpcmVkLiBBcmUgeW91IApmaW5lCndpdGggaXQ/CgpJbnN0ZWFk
-LCB1c2VyLXNwYWNlIGFwcGxpY2F0aW9uIHJlY29yZHMgdGhlIGFycmF5IGluZGV4IHdoZW4gcXVl
-cnlpbmcgCnRoZSBTQVIKY2FwYWJpbGl0eS4gV2hlbiBzZXQsIHRoZSBuZXN0ZWQgYXJyYXkgaW5k
-ZXggd2lsbCBiZSB1c2VkIHRvIHNldCB0aGUgCnBvd2VyLgpUaGlzIHJlcXVpcmVzIHVzZXItc3Bh
-Y2UgaGFzIGEgc3RyaWN0IG1hcHBpbmcgb2YgaW5kZXguIGFuZCAKTkw4MDIxMV9BVFRSX0lGSU5E
-RVgKaXMgdG8gYmUgcmVtb3ZlZC4KCgo+PiArc3RhdGljIGludAo+PiArbmw4MDIxMV9wdXRfc2Fy
-X3NwZWNzKHN0cnVjdCBjZmc4MDIxMV9yZWdpc3RlcmVkX2RldmljZSAqcmRldiwKPj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3Qgc2tfYnVmZiAqbXNnKQo+PiArewo+PiAr
-IMKgIMKgIMKgIHN0cnVjdCBubGF0dHIgKnNhcl9jYXBhLCAqc3BlY3MsICpzdWJfZnJlcV9yYW5n
-ZTsKPj4gKyDCoCDCoCDCoCB1OCDCoG51bV9mcmVxX3JhbmdlczsKPj4gKyDCoCDCoCDCoCBpbnQg
-aTsKPj4gKwo+PiArIMKgIMKgIMKgIGlmICghcmRldi0+d2lwaHkuc2FyX2NhcGEpCj4+ICsgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIDA7Cj4+ICsKPj4gKyDCoCDCoCDCoCBudW1fZnJlcV9y
-YW5nZXMgPSByZGV2LT53aXBoeS5zYXJfY2FwYS0+bnVtX2ZyZXFfcmFuZ2VzOwo+PiArCj4+ICsg
-wqAgwqAgwqAgc2FyX2NhcGEgPSBubGFfbmVzdF9zdGFydChtc2csIE5MODAyMTFfQVRUUl9TQVJf
-U1BFQyk7Cj4+ICsgwqAgwqAgwqAgaWYgKCFzYXJfY2FwYSkKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCByZXR1cm4gLUVOT1NQQzsKPiAKPiBJIHNlZSBzb21lIHBsYWNlcyBubGFfbmVzdF9zdGFy
-dF9ub2ZsYWcgYmVpbmcgdXNlZCBhbmQgaGVyZSAKPiBubGFfbmVzdF9zdGFydC4KPiBXaGF0cyB0
-aGUgc3BlY2lmaWMgcmVhc29uIHRvIGRvIHRoYXQgPyBJbiB0aGUgbmV3ZXIgS2VybmVsIHZlcnNp
-b25zLCBJIAo+IGJlbGlldmUKPiBubGFfbmVzdF9zdGFydCBpcyBwcmVmZXJyZWQuCj4gClRoaXMg
-d2lsbCBiZSBhZGRyZXNzZWQgaW4gbmV4dCB2ZXJzaW9uLgoKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCBwb3dlciA9IAo+PiBubGFfZ2V0X3U4KHNwZWNbTkw4MDIxMV9TQVJfQVRUUl9TUEVDU19Q
-T1dFUl0pOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHNhcl9zcGVjLT5zdWJfc3BlY3Nbc3Bl
-Y3NdLnBvd2VyID0gcG93ZXI7Cj4+ICsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCAvKiBpZiBO
-TDgwMjExX1NBUl9BVFRSX1NQRUNTX0ZSRVFfUkFOR0VfSU5ERVggaXNuJ3QgCj4+IHByZXNlbnQs
-Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAqIHRoZW4gdGhlIHBvd2VyIGFwcGxpZXMgdG8g
-YWxsIGJhbmRzLiBCdXQgaXQncyBvbmx5IAo+PiB2YWxpZAo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgKiBmb3IgdGhlIGZpcnN0IGVudHJ5Lgo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-Ki8KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoIXNwZWNbTkw4MDIxMV9TQVJfQVRUUl9T
-UEVDU19GUkVRX1JBTkdFX0lOREVYXSkgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIGlmIChzcGVjcykgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIGVyciA9IC1FSU5WQUw7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgZ290byBlcnJvcjsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCB9IGVsc2Ugewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIAo+PiBzYXJfc3BlYy0+c3ViX3NwZWNzW3NwZWNzXS5mcmVxX3Jhbmdl
-X2luZGV4ID0KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCBOTDgwMjExX1NBUl9BTExfRlJFUV9STkFHRVM7Cj4+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgc3BlY3MrKzsKPj4gKyDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+
-IAo+IEhlcmUgSSBzZWUgeW91IGFyZSBhc3NpZ25pbmcgc2FtZSBwb3dlciB0byBhbGwgZnJlcSBi
-YW5kIGlmIGZvciB0aGUgCj4gZmlyc3QgYmFuZAo+IHRoZSBmcmVxIGluZGV4IGlzIG5vdCBwcm92
-aWRlZC4gSXMgdGhlcmUgYW55IHNwZWNpZmljIHJlYXNvbiB0byBvbmx5Cj4gY2hlY2sgdGhlIGZp
-cnN0Cj4gaGVyZSA/IFByb2JhYmx5IHRoaXMgbG9naWMgc2hvdWxkIG1vdmUgaW50byBzcGVjaWZp
-YyBkcml2ZXJzLiBUaG91Z2h0cyAKPiA/Cj4gClRoaXMgbG9naWMgd2lsbCBiZSByZW1vdmVkIHBl
-ciBKb2hhbm5lcydzIGNvbW1lbnRzLgoKUGxlYXNlIHJlYWQgIEpvaGFubmVzJ3MgY29tbWVudHMu
-IElmIHlvdSBhZ3JlZSB3aXRoIGhpbSBhbmQgaGFzIG5vIG90aGVyIAphZHZpY2VzLAp0aGVuIEkg
-d2lsbCBwb3N0IHRoZSBzZWNvbmQgdmVyc2lvbiBvZiBpdC4KCgo+IC1BYmhpc2hlawo+IAo+IAo+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBr
-IG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+On Tue, 2020-11-03 at 10:34 +0800, Carl Huang wrote:
+> On 2020-10-31 10:46, Abhishek Kumar wrote:
+> > From: kuabhs@chromium.org
+> > 
+> > There are few more additional comments here.
+> > > + * @NL80211_CMD_SET_SAR_SPECS: SAR power limitation configuration is
+> > > + *     passed using %NL80211_ATTR_SAR_SPEC.
+> > > + *
+> > 
+> > This command requires NL80211_ATTR_IFINDEX, probably should be better 
+> > to add
+> > this in the comment ?
+> > 
+> Per Johannes's comments, this explicit index is not required. Are you 
+> fine with it?
+> 
+> Instead, user-space application records the array index when querying 
+> the SAR
+> capability. When set, the nested array index will be used to set the 
+> power.
+> This requires user-space has a strict mapping of index. and 
+> NL80211_ATTR_IFINDEX
+> is to be removed.
+
+Wait, what? The IFINDEX is still required, that identifies the interface
+- though it probably shouldn't be required, this should be per wiphy, so
+you could also use ATTR_WIPHY_IDX?
+
+You're thinking of ... something
+else. NL80211_SAR_ATTR_SPECS_FREQ_RANGE_INDEX perhaps?
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
