@@ -1,28 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kaMu3-0002KM-Hk
- for ath10k@lists.infradead.org; Wed, 04 Nov 2020 17:49:00 +0000
-Received: by mail-lf1-x143.google.com with SMTP id 141so28298814lfn.5
- for <ath10k@lists.infradead.org>; Wed, 04 Nov 2020 09:48:59 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com.
- [209.85.167.44])
- by smtp.gmail.com with ESMTPSA id c17sm576644ljj.133.2020.11.04.09.48.56
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 04 Nov 2020 09:48:57 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id s30so6008004lfc.4
- for <ath10k@lists.infradead.org>; Wed, 04 Nov 2020 09:48:56 -0800 (PST)
-MIME-Version: 1.0
-References: <1600753775-4745-1-git-send-email-cjhuang@codeaurora.org>
- <6649b0c2ff988c2ae8723ea633f86cc12da43d95.camel@sipsolutions.net>
- <d424aa0e80ac55e511ddb33b41d40fea@codeaurora.org>
-In-Reply-To: <d424aa0e80ac55e511ddb33b41d40fea@codeaurora.org>
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kaSCK-0004yi-3Y
+ for ath10k@lists.infradead.org; Wed, 04 Nov 2020 23:28:14 +0000
+Received: by mail-pg1-x544.google.com with SMTP id z24so177484pgk.3
+ for <ath10k@lists.infradead.org>; Wed, 04 Nov 2020 15:28:10 -0800 (PST)
+Date: Wed, 4 Nov 2020 15:27:06 -0800
 From: Brian Norris <briannorris@chromium.org>
-Date: Wed, 4 Nov 2020 09:48:43 -0800
-Message-ID: <CA+ASDXNAXo=p=_MbNXG+Mma37v5b6gAPySsXpNh6CC+L_gLnXQ@mail.gmail.com>
 Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
  limitations.
+Message-ID: <20201104232706.GC3212577@google.com>
+References: <1600753775-4745-1-git-send-email-cjhuang@codeaurora.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1600753775-4745-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,32 +27,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Carl Huang <cjhuang@codeaurora.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, Abhishek Kumar <kuabhs@google.com>
+Cc: linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, kuabhs@google.com
 
-On Wed, Nov 4, 2020 at 12:44 AM Carl Huang <cjhuang@codeaurora.org> wrote:
-> On 2020-09-28 20:36, Johannes Berg wrote:
-> > On Tue, 2020-09-22 at 13:49 +0800, Carl Huang wrote:
-> >> +struct cfg80211_sar_freq_ranges {
-> >> +    u8 index;
-> >
-> > Does an index here make sense?
-> >
-> With agreement from Google, it's OK to remove it.
+Hi Carl,
 
-I'm not sure "Google" is the arbiter of the nl80211 API, even if we
-are the current planned users ;)
+Sorry, I lied; I have a few more notes after spending another day
+looking at this:
 
-But I think I agree with Johannes, that given the other plans (user
-space must send all bands all the time; dropping the "apply to all
-bands" support), an index isn't really necessary in either the user
-space API or the internal representation handed down to drivers. All
-bands should be specified, in order.
+On Tue, Sep 22, 2020 at 01:49:34PM +0800, Carl Huang wrote:
+> --- a/include/net/cfg80211.h
+> +++ b/include/net/cfg80211.h
+> @@ -1663,6 +1663,55 @@ struct station_info {
+> +/**
+> + * @struct cfg80211_sar_chan_ranges - sar frequency ranges
+> + * @index: the index of this range. It's used to specify
+> + *	the frequency range when setting SAR power limitation
+> + * @start_freq:  start channel frequency in kHZ. For example,
+> + *	2.4G channel 1 is represented as 2412000
+> + * @end_freq:    end channel frequency in kHZ
+
+If you accept my comments in nl80211.h, you'll want to change this too.
+
+> + */
+> +struct cfg80211_sar_freq_ranges {
+> +	u8 index;
+> +	u32 start_freq;
+> +	u32 end_freq;
+> +};
+
+> --- a/include/uapi/linux/nl80211.h
+> +++ b/include/uapi/linux/nl80211.h
+
+> + * @NL80211_SAR_ATTR_SPECS_START_FREQ: Required (u32) value to specify the start
+> + *	frequency of this range to register SAR capability to wihpy and the unit
+> + *	is kHZ
+> + *
+> + * @NL80211_SAR_ATTR_SPECS_END_FREQ: Required (u32) value to specify the end frequency
+> + *	of this range to register SAR capability to wiphy and the unit is kHZ
+
+The documentation here isn't clear whether these are center frequencies
+or band edges. The cfg80211 comments do though (center freq). However,
+this is inconsistent with NL80211_ATTR_FREQ_RANGE_START and
+NL80211_ATTR_FREQ_RANGE_END -- I'd suggest being consistent?
+
+> --- a/net/mac80211/cfg.c
+> +++ b/net/mac80211/cfg.c
+
+> @@ -15331,6 +15496,14 @@ static const struct genl_ops nl80211_ops[] = {
+>  		.internal_flags = NL80211_FLAG_NEED_NETDEV |
+>  				  NL80211_FLAG_NEED_RTNL,
+>  	},
+> +	{
+> +		.cmd = NL80211_CMD_SET_SAR_SPECS,
+> +		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+> +		.doit = nl80211_set_sar_specs,
+> +		.flags = GENL_UNS_ADMIN_PERM,
+> +		.internal_flags = NL80211_FLAG_NEED_NETDEV_UP |
+
+Is there a reason this needs to be UP? CMD_SET_WIPHY (which can also
+configure TX power, a little differently) does not. Seems like this
+could just be NL80211_FLAG_NEED_NETDEV -- or maybe not even that, if we
+switch this to a WIPHY command like Johannes noted.
 
 Brian
 
-> >> +    u32 start_freq;
-> >> +    u32 end_freq;
-> >> +};
+> +				  NL80211_FLAG_NEED_RTNL,
+> +	},
+>  };
 
 _______________________________________________
 ath10k mailing list
