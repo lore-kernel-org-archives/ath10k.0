@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m42-4.mailgun.net ([69.72.42.4])
+Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZwMV-0005GL-FI
- for ath10k@lists.infradead.org; Tue, 03 Nov 2020 13:28:44 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: drivers/net/wireless/ath/ath10k/mac.c:9125
- ath10k_mac_op_set_tid_config() error: uninitialized symbol 'ret'.
-References: <20201103100037.GE12347@kadam>
-Date: Tue, 03 Nov 2020 12:09:35 +0200
-In-Reply-To: <20201103100037.GE12347@kadam> (Dan Carpenter's message of "Tue, 
- 3 Nov 2020 13:00:37 +0300")
-Message-ID: <874km6u4yo.fsf@codeaurora.org>
+ id 1ka7Qg-0000bw-0i
+ for ath10k@lists.infradead.org; Wed, 04 Nov 2020 01:17:39 +0000
+Received: by mail-ot1-x342.google.com with SMTP id k3so5997318otp.12
+ for <ath10k@lists.infradead.org>; Tue, 03 Nov 2020 17:17:35 -0800 (PST)
 MIME-Version: 1.0
+References: <20201030205639.1452712-1-kuabhs@chromium.org>
+ <20201031024631.1528113-1-kuabhs@chromium.org>
+ <e5302eb0b20339d3f6544652e4034993@codeaurora.org>
+ <aba43fb268fe29aecf84bf7e68629dc0de28d0ad.camel@sipsolutions.net>
+In-Reply-To: <aba43fb268fe29aecf84bf7e68629dc0de28d0ad.camel@sipsolutions.net>
+From: Abhishek Kumar <kuabhs@google.com>
+Date: Tue, 3 Nov 2020 17:17:22 -0800
+Message-ID: <CAB5ih=PtneRW+sU9KbPNgEM8GvPA1rfa87M41fsL=y=VP71Y5Q@mail.gmail.com>
+Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
+ limitations.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +28,82 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: kbuild-all@lists.01.org, lkp@intel.com, kbuild@lists.01.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Tamizh Chelvam <tamizhr@codeaurora.org>, Dan Carpenter <error27@gmail.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Abhishek Kumar <kuabhs@chromium.org>, briannorris@chromium.org, Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, Doug Anderson <dianders@chromium.org>, ath10k@lists.infradead.org
 
-+ ath10k list
+On Tue, Nov 3, 2020 at 5:15 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Tue, 2020-11-03 at 10:34 +0800, Carl Huang wrote:
+> > On 2020-10-31 10:46, Abhishek Kumar wrote:
+> > > From: kuabhs@chromium.org
+> > >
+> > > There are few more additional comments here.
+> > > > + * @NL80211_CMD_SET_SAR_SPECS: SAR power limitation configuration is
+> > > > + *     passed using %NL80211_ATTR_SAR_SPEC.
+> > > > + *
+> > >
+> > > This command requires NL80211_ATTR_IFINDEX, probably should be better
+> > > to add
+> > > this in the comment ?
+> > >
+> > Per Johannes's comments, this explicit index is not required. Are you
+> > fine with it?
+> >
+> > Instead, user-space application records the array index when querying
+> > the SAR
+> > capability. When set, the nested array index will be used to set the
+> > power.
+> > This requires user-space has a strict mapping of index. and
+> > NL80211_ATTR_IFINDEX
+> > is to be removed.
+>
+> Wait, what? The IFINDEX is still required, that identifies the interface
+> - though it probably shouldn't be required, this should be per wiphy, so
+> you could also use ATTR_WIPHY_IDX?
+>
+> You're thinking of ... something
+> else. NL80211_SAR_ATTR_SPECS_FREQ_RANGE_INDEX perhaps?
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+Yes, probably the index mapping that you are talking about is using
+NL80211_SAR_ATTR_SPECS_FREQ_RANGE_INDEX .
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
-> commit: 7b2531d93bac6bea67e9c7f49901e9e8796d6d57 ath10k: Add new api to support TID specific configuration
-> config: x86_64-randconfig-m031-20201102 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->
-> smatch warnings:
-> drivers/net/wireless/ath/ath10k/mac.c:9125 ath10k_mac_op_set_tid_config() error: uninitialized symbol 'ret'.
->
-> vim +/ret +9125 drivers/net/wireless/ath/ath10k/mac.c
->
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9089  static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9090  					struct ieee80211_vif *vif,
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9091  					struct ieee80211_sta *sta,
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9092  					struct cfg80211_tid_config *tid_config)
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9093  {
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9094  	struct ath10k *ar = hw->priv;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9095  	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9096  	struct ath10k_mac_iter_tid_conf_data data = {};
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9097  	struct wmi_per_peer_per_tid_cfg_arg arg = {};
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9098  	int ret, i;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9099  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9100  	mutex_lock(&ar->conf_mutex);
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9101  	arg.vdev_id = arvif->vdev_id;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9102  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9103  	memset(arvif->tid_conf_changed, 0, sizeof(arvif->tid_conf_changed));
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9104  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9105  	for (i = 0; i < tid_config->n_tid_conf; i++) {
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9106  		ret = ath10k_mac_parse_tid_config(ar, sta, vif,
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9107  						  &tid_config->tid_conf[i],
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9108  						  &arg);
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9109  		if (ret)
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9110  			goto exit;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9111  	}
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9112  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9113  	if (sta)
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9114  		goto exit;
->                                                                 ^^^^^^^^^^
->
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9115  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9116  	ret = 0;
->                                                         ^^^^^^^^
-> Probably just move this to the "int ret = 0;" start of the function?
+I think Johannes has already covered most of the comments. I have one
+last one  mentioned below.
 
-Or preferably before "if (sta)" check. Tamizh, please send a fix.
+> +nl80211_put_sar_specs(struct cfg80211_registered_device *rdev,
+> +                     struct sk_buff *msg)
+> +{
+> +       struct nlattr *sar_capa, *specs, *sub_freq_range;
+> +       u8  num_freq_ranges;
+> +       int i;
+> +
+> +       if (!rdev->wiphy.sar_capa)
+> +               return 0;
+> +
+> +       num_freq_ranges = rdev->wiphy.sar_capa->num_freq_ranges;
+> +
+> +       sar_capa = nla_nest_start(msg, NL80211_ATTR_SAR_SPEC);
+> +       if (!sar_capa)
+> +               return -ENOSPC;
+> +
+> +       if (nla_put_u16(msg, NL80211_SAR_ATTR_TYPE, rdev->wiphy.sar_capa->type))
+> +               goto fail;
 
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9117  	data.curr_vif = vif;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9118  	data.ar = ar;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9119  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9120  	ieee80211_iterate_stations_atomic(hw, ath10k_mac_vif_stations_tid_conf,
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9121  					  &data);
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9122  
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9123  exit:
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9124  	mutex_unlock(&ar->conf_mutex);
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19 @9125  	return ret;
-> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9126  }
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
+The nla_put_u16 NL80211_SAR_ATTR_TYPE here uses u16 whereas in the to
+get this property below it uses nla_get_u32 .  I think this should be
+consistent ?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+> +       if (!tb[NL80211_SAR_ATTR_TYPE])
+> +               return -EINVAL;
+> +
+> +       type = nla_get_u32(tb[NL80211_SAR_ATTR_TYPE]);
+> +
+> +       if (!tb[NL80211_SAR_ATTR_SPECS])
+> +               return -EINVAL;
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+As mentioned above the get and put for NL80211_SAR_ATTR_TYPE is not consistent.
+
+-Abhishek
 
 _______________________________________________
 ath10k mailing list
