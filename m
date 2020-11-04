@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
  by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kaSCK-0004yi-3Y
- for ath10k@lists.infradead.org; Wed, 04 Nov 2020 23:28:14 +0000
-Received: by mail-pg1-x544.google.com with SMTP id z24so177484pgk.3
- for <ath10k@lists.infradead.org>; Wed, 04 Nov 2020 15:28:10 -0800 (PST)
-Date: Wed, 4 Nov 2020 15:27:06 -0800
+ id 1kaS4B-0003kj-Q5
+ for ath10k@lists.infradead.org; Wed, 04 Nov 2020 23:19:53 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id i26so154580pgl.5
+ for <ath10k@lists.infradead.org>; Wed, 04 Nov 2020 15:19:47 -0800 (PST)
+Date: Wed, 4 Nov 2020 15:18:38 -0800
 From: Brian Norris <briannorris@chromium.org>
 Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
  limitations.
-Message-ID: <20201104232706.GC3212577@google.com>
+Message-ID: <20201104231838.GB3212577@google.com>
 References: <1600753775-4745-1-git-send-email-cjhuang@codeaurora.org>
+ <6649b0c2ff988c2ae8723ea633f86cc12da43d95.camel@sipsolutions.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1600753775-4745-1-git-send-email-cjhuang@codeaurora.org>
+In-Reply-To: <6649b0c2ff988c2ae8723ea633f86cc12da43d95.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +27,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carl Huang <cjhuang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, kuabhs@google.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, kuabhs@google.com
 
-Hi Carl,
+On Mon, Sep 28, 2020 at 02:36:09PM +0200, Johannes Berg wrote:
+> > +#define NUM_MAX_NL80211_SAR_FREQ_RANGES 0xfe
+> 
+> but I'm not sure what these are used for in the first place, they seem
+> more like internal implementation details?
 
-Sorry, I lied; I have a few more notes after spending another day
-looking at this:
+I think the MAX value does have some utility in the API -- as mentioned
+in other comments, if we're requiring that user space must SET all
+ranges at the same time, then we need an expected way for user space to
+SET a "don't care" or "MAX" or "null" value for a band. So if there's
+some new band (e.g., 6 GHz?) that user space was not previously aware
+of, it will know to use this placeholder.
 
-On Tue, Sep 22, 2020 at 01:49:34PM +0800, Carl Huang wrote:
-> --- a/include/net/cfg80211.h
-> +++ b/include/net/cfg80211.h
-> @@ -1663,6 +1663,55 @@ struct station_info {
-> +/**
-> + * @struct cfg80211_sar_chan_ranges - sar frequency ranges
-> + * @index: the index of this range. It's used to specify
-> + *	the frequency range when setting SAR power limitation
-> + * @start_freq:  start channel frequency in kHZ. For example,
-> + *	2.4G channel 1 is represented as 2412000
-> + * @end_freq:    end channel frequency in kHZ
-
-If you accept my comments in nl80211.h, you'll want to change this too.
-
-> + */
-> +struct cfg80211_sar_freq_ranges {
-> +	u8 index;
-> +	u32 start_freq;
-> +	u32 end_freq;
-> +};
-
-> --- a/include/uapi/linux/nl80211.h
-> +++ b/include/uapi/linux/nl80211.h
-
-> + * @NL80211_SAR_ATTR_SPECS_START_FREQ: Required (u32) value to specify the start
-> + *	frequency of this range to register SAR capability to wihpy and the unit
-> + *	is kHZ
-> + *
-> + * @NL80211_SAR_ATTR_SPECS_END_FREQ: Required (u32) value to specify the end frequency
-> + *	of this range to register SAR capability to wiphy and the unit is kHZ
-
-The documentation here isn't clear whether these are center frequencies
-or band edges. The cfg80211 comments do though (center freq). However,
-this is inconsistent with NL80211_ATTR_FREQ_RANGE_START and
-NL80211_ATTR_FREQ_RANGE_END -- I'd suggest being consistent?
-
-> --- a/net/mac80211/cfg.c
-> +++ b/net/mac80211/cfg.c
-
-> @@ -15331,6 +15496,14 @@ static const struct genl_ops nl80211_ops[] = {
->  		.internal_flags = NL80211_FLAG_NEED_NETDEV |
->  				  NL80211_FLAG_NEED_RTNL,
->  	},
-> +	{
-> +		.cmd = NL80211_CMD_SET_SAR_SPECS,
-> +		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-> +		.doit = nl80211_set_sar_specs,
-> +		.flags = GENL_UNS_ADMIN_PERM,
-> +		.internal_flags = NL80211_FLAG_NEED_NETDEV_UP |
-
-Is there a reason this needs to be UP? CMD_SET_WIPHY (which can also
-configure TX power, a little differently) does not. Seems like this
-could just be NL80211_FLAG_NEED_NETDEV -- or maybe not even that, if we
-switch this to a WIPHY command like Johannes noted.
+I think that's kind of approximately what the purpose of this was? It's
+not super clear in the documentation, so maybe that should be clarified
+in writing in v2.
 
 Brian
-
-> +				  NL80211_FLAG_NEED_RTNL,
-> +	},
->  };
 
 _______________________________________________
 ath10k mailing list
