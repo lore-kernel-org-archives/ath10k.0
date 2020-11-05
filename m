@@ -1,12 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kaYq1-0007Cg-Ch
- for ath10k@lists.infradead.org; Thu, 05 Nov 2020 06:33:41 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: cancel rx worker in hif_stop for SDIO
-Date: Thu,  5 Nov 2020 14:33:56 +0800
-Message-Id: <1604558036-4056-1-git-send-email-wgong@codeaurora.org>
+ id 1kaakV-0003jc-JX
+ for ath10k@lists.infradead.org; Thu, 05 Nov 2020 08:36:08 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [RFC 1/2] nl80211: add common API to configure SAR power
+ limitations.
+References: <1600753017-4614-1-git-send-email-cjhuang@codeaurora.org>
+ <CA+ASDXM7TcF-zfbktbdSu-fDBuGe0LAgFq3Qt2zaq6efbWJ=sA@mail.gmail.com>
+ <f3be456c4c748f21836279eb4dc16e5e@codeaurora.org>
+ <CA+ASDXNaLvtJyY9_ds9RVL9VTkiYzChsGJS1czhVt-RKitCk5g@mail.gmail.com>
+Date: Thu, 05 Nov 2020 10:35:56 +0200
+In-Reply-To: <CA+ASDXNaLvtJyY9_ds9RVL9VTkiYzChsGJS1czhVt-RKitCk5g@mail.gmail.com>
+ (Brian Norris's message of "Wed, 4 Nov 2020 09:44:55 -0800")
+Message-ID: <877dr0nqtv.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,51 +23,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Carl Huang <cjhuang@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, ath11k@lists.infradead.org, Abhishek Kumar <kuabhs@google.com>
 
-The rx worker of SDIO should be cancelled after disable interrupt, and
-release rx sk_buff in queue, otherwise the rx worker maybe still run
-after hif_stop. And it should be cancelled before napi_synchronize in
-hif_stop, because the rx worker of SDIO will call napi_schedule, it
-should have no napi_schedule before napi_synchronize, otherwise it
-lead napi_synchronize wait untill napi_complete.
+Brian Norris <briannorris@chromium.org> writes:
 
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+> + ath10k
+>
+> [ I realize I replied to the "wrong" RFC v1; I fell trap to Kalle's note:
+>
+> "When you submit a new version mark it as "v2". Otherwise people don't
+> know what's the latest version." ]
+>
+> On Tue, Nov 3, 2020 at 11:32 PM Carl Huang <cjhuang@codeaurora.org> wrote:
+>> On 2020-11-04 10:00, Brian Norris wrote:
+>> > What are the ABI guarantees around a given driver/chip's 'sar_capa'?
+>> > Do we guarantee that if the driver supports N ranges of certain bands,
+>> > that it will always continue to support those bands?
+> ...
+>> For a given chip(at least a QCOM chip), we don't see that the
+>> range will grow or change.
+>
+> That's good to know. But that's not quite the same as an ABI guarantee.
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+I'm not sure if I understood Brian's question correctly, but I have
+concerns on the assumption that frequency ranges never change. For
+example, in ath10k we have a patch[1] under discussion which adds more
+channels and in ath11k we added 6 GHz band after initial ath11k support
+landed. And I would not be surprised if in some boards/platforms a
+certain band is disabled due to cotting costs (no antenna etc). My
+preference is to have a robust interface which would be designed to
+handle these kind of changes.
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 81ddaafb6721..2c619ef8a87c 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1962,9 +1962,15 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
- {
- 	struct ath10k_sdio_bus_request *req, *tmp_req;
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct sk_buff *skb;
- 
- 	ath10k_sdio_irq_disable(ar);
- 
-+	cancel_work_sync(&ar_sdio->async_work_rx);
-+
-+	while (skb = skb_dequeue(&ar_sdio->rx_head))
-+		dev_kfree_skb_any(skb);
-+
- 	cancel_work_sync(&ar_sdio->wr_async_work);
- 
- 	spin_lock_bh(&ar_sdio->wr_async_lock);
+[1] [PATCH] ath10k: enable advertising support for channels 32, 68 and 98
+
 -- 
-2.23.0
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
