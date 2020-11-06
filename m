@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from z5.mailgun.us ([104.130.96.5])
+Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kavtt-0002gf-7y
- for ath10k@lists.infradead.org; Fri, 06 Nov 2020 07:11:10 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
+ id 1kavzO-0003Mq-Lf
+ for ath10k@lists.infradead.org; Fri, 06 Nov 2020 07:16:52 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
-Message-Id: <20201106071107.99524C433C9@smtp.codeaurora.org>
-Date: Fri,  6 Nov 2020 07:11:07 +0000 (UTC)
+Subject: Re: [PATCH] ath10k: Fix the parsing error in service available event
+References: <1603811067-23058-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=XRyeXcE93nZgOy+x5eWcHcKKwbJccuWFkx+cA8tEXwZQ@mail.gmail.com>
+ <003801d6ad41$a1bb8970$e5329c50$@codeaurora.org>
+Date: Fri, 06 Nov 2020 09:16:45 +0200
+In-Reply-To: <003801d6ad41$a1bb8970$e5329c50$@codeaurora.org> (Rakesh Pillai's
+ message of "Wed, 28 Oct 2020 21:17:19 +0530")
+Message-ID: <878sbflztu.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +25,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Kumar <kuabhs@chromium.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: 'Abhishek Kumar' <kuabhs@chromium.org>, 'Brian Norris' <briannorris@chromium.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'Doug Anderson' <dianders@chromium.org>, 'ath10k' <ath10k@lists.infradead.org>, 'LKML' <linux-kernel@vger.kernel.org>
 
-Abhishek Kumar <kuabhs@chromium.org> wrote:
+"Rakesh Pillai" <pillair@codeaurora.org> writes:
 
-> In some devices difference in chip-id should be enough to pick
-> the right BDF. Add another support for chip-id based BDF selection.
-> With this new option, ath10k supports 2 fallback options.
-> 
-> The board name with chip-id as option looks as follows
-> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> 
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Tested-by: Douglas Anderson <dianders@chromium.org>
-> Tested-by: Abhishek Kumar <kuabhs@chromium.org>
+>> > diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+>> b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+>> > index 932266d..3b49e29 100644
+>> > --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+>> > +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+>> > @@ -1404,9 +1404,12 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct
+>> ath10k *ar, u16 tag, u16 len,
+>> >                 arg->service_map_ext_len = *(__le32 *)ptr;
+>> >                 arg->service_map_ext = ptr + sizeof(__le32);
+>> >                 return 0;
+>> > +       case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
+>> > +               return 0;
+>> 
+>> This is at least slightly worrying to me.  If I were calling this
+>> function, I'd expect that if I didn't get back an error that at least
+>> "arg->service_map_ext_len" was filled in.  Seems like you should do:
+>> 
+>> case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
+>>   arg->service_map_ext_len = 0;
+>>   arg->service_map_ext = NULL;
+>>   return 0;
+>> 
+>> ...and maybe add a comment about why you're doing that?
+>> 
+>> At the moment things are working OK because
+>> ath10k_wmi_event_service_available() happens to init the structure to
+>> 0 before calling with:
+>> 
+>>   struct wmi_svc_avail_ev_arg arg = {};
+>> 
+>> ....but it doesn't seem like a great idea to rely on that.
+>> 
+>> That all being said, I'm just a drive-by reviewer and if everyone else
+>> likes it the way it is, feel free to ignore my comments.
+>
+>
+> The TLV TAG " WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT" is the first
+> and a mandatory TLV in the service available event. The subsequent
+> TLVs are optional ones and may or may not be present (based on FW
+> versions).
 
-There were few checkpatch warnings which I fixed:
-
-$ ath10k-check
-drivers/net/wireless/ath/ath10k/core.c:1501: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/core.c:1512: line length of 92 exceeds 90 columns
-drivers/net/wireless/ath/ath10k/core.c:1521: line length of 92 exceeds 90 columns
-
-The first one was also what Doug commented. I also added Tested-on tags,
-thanks for those. The updated patch is in pending branch (soon).
-
-But is this patch ok to take now? I didn't quite get the conclusion of the
-discussion.
+From ath10k point of view never trust what the firmware sends you. Even
+if WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT is a mandatory TLV it
+might be missing for whatever reasons. The same is with buffer lengths
+etc and always confirm what you are receiving from the firmware.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid/
+https://patchwork.kernel.org/project/linux-wireless/list/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
