@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from z5.mailgun.us ([104.130.96.5])
+Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kaw7z-000492-5k
- for ath10k@lists.infradead.org; Fri, 06 Nov 2020 07:25:44 +0000
+ id 1kawFH-0004kq-HK
+ for ath10k@lists.infradead.org; Fri, 06 Nov 2020 07:33:18 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available
- event
-References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
-Date: Fri, 06 Nov 2020 09:25:37 +0200
-In-Reply-To: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
- (Doug Anderson's message of "Wed, 28 Oct 2020 11:44:48 -0700")
-Message-ID: <87wnyzkkum.fsf@codeaurora.org>
+Subject: Re: [PATCH] ath10k: cancel rx worker in hif_stop for SDIO
+References: <1604558036-4056-1-git-send-email-wgong@codeaurora.org>
+Date: Fri, 06 Nov 2020 09:32:58 +0200
+In-Reply-To: <1604558036-4056-1-git-send-email-wgong@codeaurora.org> (Wen
+ Gong's message of "Thu, 5 Nov 2020 14:33:56 +0800")
+Message-ID: <87r1p7kkid.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,46 +23,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Rakesh Pillai <pillair@codeaurora.org>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Doug Anderson <dianders@chromium.org> writes:
+Wen Gong <wgong@codeaurora.org> writes:
 
->>  static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
->> index 1fa7107..2e4b561 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->> @@ -5751,8 +5751,9 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
->>                             ret);
->>         }
->>
->> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
->> -                              __le32_to_cpu(arg.service_map_ext_len));
->> +       if (arg.service_map_ext_valid)
->> +               ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
->> +                                      __le32_to_cpu(arg.service_map_ext_len));
+> The rx worker of SDIO should be cancelled after disable interrupt, and
+> release rx sk_buff in queue, otherwise the rx worker maybe still run
+> after hif_stop. And it should be cancelled before napi_synchronize in
+> hif_stop, because the rx worker of SDIO will call napi_schedule, it
+> should have no napi_schedule before napi_synchronize, otherwise it
+> lead napi_synchronize wait untill napi_complete.
 >
-> Your new patch still requires the caller to init the
-> "service_map_ext_valid" to false before calling, but I guess there's
-> not a whole lot more we can do because we might be parsing more than
-> one tag.  It does seem nice that at least we now have a validity bit
-> instead of just relying on a non-zero length to be valid.
+> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
 >
-> It might be nice to have a comment saying that it's up to us to init
-> "arg.service_map_ext_valid" to false before calling
-> ath10k_wmi_pull_svc_avail(), but I won't insist.  Maybe that's obvious
-> to everyone but me...
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/sdio.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 81ddaafb6721..2c619ef8a87c 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -1962,9 +1962,15 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
+>  {
+>  	struct ath10k_sdio_bus_request *req, *tmp_req;
+>  	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+> +	struct sk_buff *skb;
+>  
+>  	ath10k_sdio_irq_disable(ar);
+>  
+> +	cancel_work_sync(&ar_sdio->async_work_rx);
+> +
+> +	while (skb = skb_dequeue(&ar_sdio->rx_head))
+> +		dev_kfree_skb_any(skb);
 
-It's not obvious to me either. Please add that comment.
+This gives a warning:
 
-BTW, for some reason Doug's response didn't get to patchwork:
+drivers/net/wireless/ath/ath10k/sdio.c: In function 'ath10k_sdio_hif_stop':
+drivers/net/wireless/ath/ath10k/sdio.c:1971:9: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
 
-https://patchwork.kernel.org/project/linux-wireless/patch/1603904469-598-1-git-send-email-pillair@codeaurora.org/
-
-Though I do see it in linux-wireless, so most likely this was a
-temporary glitch in patchwork. But it's just worrisome as nowadays I
-only check the comments in patchwork before I apply the patch.
+Fixed in the pending branch.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
