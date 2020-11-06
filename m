@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from z5.mailgun.us ([104.130.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kavLx-0007Ew-2g
- for ath10k@lists.infradead.org; Fri, 06 Nov 2020 06:36:09 +0000
+ id 1kavtt-0002gf-7y
+ for ath10k@lists.infradead.org; Fri, 06 Nov 2020 07:11:10 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
+Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200916165748.20927-1-alex.dewar90@gmail.com>
-References: <20200916165748.20927-1-alex.dewar90@gmail.com>
-Message-Id: <20201106063600.81C19C433F0@smtp.codeaurora.org>
-Date: Fri,  6 Nov 2020 06:36:00 +0000 (UTC)
+In-Reply-To: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+Message-Id: <20201106071107.99524C433C9@smtp.codeaurora.org>
+Date: Fri,  6 Nov 2020 07:11:07 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alex Dewar <alex.dewar90@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Alex Dewar <alex.dewar90@gmail.com> wrote:
+Abhishek Kumar <kuabhs@chromium.org> wrote:
 
-> The for loop checks whether cur_section is NULL on every iteration, but
-> we know it can never be NULL as there is another check towards the
-> bottom of the loop body. Refactor to avoid this unnecessary check.
+> In some devices difference in chip-id should be enough to pick
+> the right BDF. Add another support for chip-id based BDF selection.
+> With this new option, ath10k supports 2 fallback options.
 > 
-> Also, increment the variable i inline for clarity
+> The board name with chip-id as option looks as follows
+> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
 > 
-> Addresses-Coverity: 1496984 ("Null pointer dereferences)
-> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Tested-by: Douglas Anderson <dianders@chromium.org>
+> Tested-by: Abhishek Kumar <kuabhs@chromium.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+There were few checkpatch warnings which I fixed:
 
-dbeb101d28eb ath10k: sdio: remove redundant check in for loop
+$ ath10k-check
+drivers/net/wireless/ath/ath10k/core.c:1501: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/core.c:1512: line length of 92 exceeds 90 columns
+drivers/net/wireless/ath/ath10k/core.c:1521: line length of 92 exceeds 90 columns
+
+The first one was also what Doug commented. I also added Tested-on tags,
+thanks for those. The updated patch is in pending branch (soon).
+
+But is this patch ok to take now? I didn't quite get the conclusion of the
+discussion.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20200916165748.20927-1-alex.dewar90@gmail.com/
+https://patchwork.kernel.org/project/linux-wireless/patch/20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
