@@ -1,8 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 From: Taehee Yoo <ap420073@gmail.com>
-Subject: [PATCH net v2 12/21] ath11k: set .owner to THIS_MODULE
-Date: Sat,  7 Nov 2020 17:21:43 +0000
-Message-Id: <20201107172152.828-13-ap420073@gmail.com>
+Subject: [PATCH net v2 14/21] wcn36xx: set .owner to THIS_MODULE
+Date: Sat,  7 Nov 2020 17:21:45 +0000
+Message-Id: <20201107172152.828-15-ap420073@gmail.com>
 In-Reply-To: <20201107172152.828-1-ap420073@gmail.com>
 References: <20201107172152.828-1-ap420073@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,7 +25,7 @@ If THIS_MODULE is not set, the module would be removed while debugfs is
 being used.
 It eventually makes kernel panic.
 
-Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
+Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
 Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 ---
 
@@ -33,41 +33,29 @@ v1 -> v2:
  - Change headline
  - Squash patches into per-driver/subsystem
 
- drivers/net/wireless/ath/ath11k/debugfs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/wcn36xx/debug.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath11k/debugfs.c b/drivers/net/wireless/ath/ath11k/debugfs.c
-index 1b914e67d314..bce9f9512833 100644
---- a/drivers/net/wireless/ath/ath11k/debugfs.c
-+++ b/drivers/net/wireless/ath/ath11k/debugfs.c
-@@ -593,7 +593,8 @@ static ssize_t ath11k_read_enable_extd_tx_stats(struct file *file,
- static const struct file_operations fops_extd_tx_stats = {
- 	.read = ath11k_read_enable_extd_tx_stats,
- 	.write = ath11k_write_enable_extd_tx_stats,
--	.open = simple_open
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
- };
- 
- static ssize_t ath11k_write_extd_rx_stats(struct file *file,
-@@ -686,6 +687,7 @@ static const struct file_operations fops_extd_rx_stats = {
- 	.read = ath11k_read_extd_rx_stats,
- 	.write = ath11k_write_extd_rx_stats,
+diff --git a/drivers/net/wireless/ath/wcn36xx/debug.c b/drivers/net/wireless/ath/wcn36xx/debug.c
+index 389b5e7129a6..4b78be5c67e8 100644
+--- a/drivers/net/wireless/ath/wcn36xx/debug.c
++++ b/drivers/net/wireless/ath/wcn36xx/debug.c
+@@ -93,6 +93,7 @@ static const struct file_operations fops_wcn36xx_bmps = {
  	.open = simple_open,
+ 	.read  =       read_file_bool_bmps,
+ 	.write =       write_file_bool_bmps,
 +	.owner = THIS_MODULE,
  };
  
- static int ath11k_fill_bp_stats(struct ath11k_base *ab,
-@@ -1047,7 +1049,8 @@ static ssize_t ath11k_write_simulate_radar(struct file *file,
- 
- static const struct file_operations fops_simulate_radar = {
- 	.write = ath11k_write_simulate_radar,
--	.open = simple_open
-+	.open = simple_open,
+ static ssize_t write_file_dump(struct file *file,
+@@ -134,6 +135,7 @@ static ssize_t write_file_dump(struct file *file,
+ static const struct file_operations fops_wcn36xx_dump = {
+ 	.open = simple_open,
+ 	.write =       write_file_dump,
 +	.owner = THIS_MODULE,
  };
  
- int ath11k_debugfs_register(struct ath11k *ar)
+ #define ADD_FILE(name, mode, fop, priv_data)		\
 -- 
 2.17.1
 
