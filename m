@@ -1,8 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 From: Taehee Yoo <ap420073@gmail.com>
-Subject: [PATCH net v2 08/21] wl1251: set .owner to THIS_MODULE
-Date: Sat,  7 Nov 2020 17:21:39 +0000
-Message-Id: <20201107172152.828-9-ap420073@gmail.com>
+Subject: [PATCH net v2 10/21] iwlegacy: set .owner to THIS_MODULE
+Date: Sat,  7 Nov 2020 17:21:41 +0000
+Message-Id: <20201107172152.828-11-ap420073@gmail.com>
 In-Reply-To: <20201107172152.828-1-ap420073@gmail.com>
 References: <20201107172152.828-1-ap420073@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,8 +25,8 @@ If THIS_MODULE is not set, the module would be removed while debugfs is
 being used.
 It eventually makes kernel panic.
 
-Fixes: 2f01a1f58889 ("wl12xx: add driver")
-Fixes: b7339b1de0f7 ("wl1251: add tx queue status to debugfs")
+Fixes: be663ab67077 ("iwlwifi: split the drivers for agn and legacy devices 3945/4965")
+Fixes: 4bc85c1324aa ("Revert "iwlwifi: split the drivers for agn and legacy devices 3945/4965"")
 Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 ---
 
@@ -34,45 +34,79 @@ v1 -> v2:
  - Change headline
  - Squash patches into per-driver/subsystem
 
- drivers/net/wireless/ti/wl1251/debugfs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/intel/iwlegacy/3945-rs.c | 1 +
+ drivers/net/wireless/intel/iwlegacy/4965-rs.c | 3 +++
+ drivers/net/wireless/intel/iwlegacy/debug.c   | 3 +++
+ 3 files changed, 7 insertions(+)
 
-diff --git a/drivers/net/wireless/ti/wl1251/debugfs.c b/drivers/net/wireless/ti/wl1251/debugfs.c
-index d48746e640cc..0a26cee0f287 100644
---- a/drivers/net/wireless/ti/wl1251/debugfs.c
-+++ b/drivers/net/wireless/ti/wl1251/debugfs.c
-@@ -35,6 +35,7 @@ static const struct file_operations name## _ops = {			\
- 	.read = name## _read,						\
- 	.open = simple_open,						\
- 	.llseek	= generic_file_llseek,					\
-+	.owner = THIS_MODULE,						\
- };
- 
- #define DEBUGFS_ADD(name, parent)					\
-@@ -67,6 +68,7 @@ static const struct file_operations sub## _ ##name## _ops = {		\
- 	.read = sub## _ ##name## _read,					\
- 	.open = simple_open,						\
- 	.llseek	= generic_file_llseek,					\
-+	.owner = THIS_MODULE,						\
- };
- 
- #define DEBUGFS_FWSTATS_ADD(sub, name)				\
-@@ -212,6 +214,7 @@ static const struct file_operations tx_queue_len_ops = {
- 	.read = tx_queue_len_read,
+diff --git a/drivers/net/wireless/intel/iwlegacy/3945-rs.c b/drivers/net/wireless/intel/iwlegacy/3945-rs.c
+index b2478cbe558e..b86e8ddc6f76 100644
+--- a/drivers/net/wireless/intel/iwlegacy/3945-rs.c
++++ b/drivers/net/wireless/intel/iwlegacy/3945-rs.c
+@@ -836,6 +836,7 @@ static const struct file_operations rs_sta_dbgfs_stats_table_ops = {
+ 	.read = il3945_sta_dbgfs_stats_table_read,
  	.open = simple_open,
- 	.llseek = generic_file_llseek,
+ 	.llseek = default_llseek,
 +	.owner = THIS_MODULE,
  };
  
- static ssize_t tx_queue_status_read(struct file *file, char __user *userbuf,
-@@ -234,6 +237,7 @@ static const struct file_operations tx_queue_status_ops = {
- 	.read = tx_queue_status_read,
+ static void
+diff --git a/drivers/net/wireless/intel/iwlegacy/4965-rs.c b/drivers/net/wireless/intel/iwlegacy/4965-rs.c
+index 9a491e5db75b..afe0b2121fc9 100644
+--- a/drivers/net/wireless/intel/iwlegacy/4965-rs.c
++++ b/drivers/net/wireless/intel/iwlegacy/4965-rs.c
+@@ -2669,6 +2669,7 @@ static const struct file_operations rs_sta_dbgfs_scale_table_ops = {
+ 	.read = il4965_rs_sta_dbgfs_scale_table_read,
  	.open = simple_open,
- 	.llseek = generic_file_llseek,
+ 	.llseek = default_llseek,
 +	.owner = THIS_MODULE,
  };
  
- static void wl1251_debugfs_delete_files(struct wl1251 *wl)
+ static ssize_t
+@@ -2714,6 +2715,7 @@ static const struct file_operations rs_sta_dbgfs_stats_table_ops = {
+ 	.read = il4965_rs_sta_dbgfs_stats_table_read,
+ 	.open = simple_open,
+ 	.llseek = default_llseek,
++	.owner = THIS_MODULE,
+ };
+ 
+ static ssize_t
+@@ -2742,6 +2744,7 @@ static const struct file_operations rs_sta_dbgfs_rate_scale_data_ops = {
+ 	.read = il4965_rs_sta_dbgfs_rate_scale_data_read,
+ 	.open = simple_open,
+ 	.llseek = default_llseek,
++	.owner = THIS_MODULE,
+ };
+ 
+ static void
+diff --git a/drivers/net/wireless/intel/iwlegacy/debug.c b/drivers/net/wireless/intel/iwlegacy/debug.c
+index d998a3f1b056..67fae353038c 100644
+--- a/drivers/net/wireless/intel/iwlegacy/debug.c
++++ b/drivers/net/wireless/intel/iwlegacy/debug.c
+@@ -136,6 +136,7 @@ static const struct file_operations il_dbgfs_##name##_ops = {	\
+ 	.read = il_dbgfs_##name##_read,				\
+ 	.open = simple_open,					\
+ 	.llseek = generic_file_llseek,				\
++	.owner = THIS_MODULE,					\
+ };
+ 
+ #define DEBUGFS_WRITE_FILE_OPS(name)				\
+@@ -144,6 +145,7 @@ static const struct file_operations il_dbgfs_##name##_ops = {	\
+ 	.write = il_dbgfs_##name##_write,			\
+ 	.open = simple_open,					\
+ 	.llseek = generic_file_llseek,				\
++	.owner = THIS_MODULE,					\
+ };
+ 
+ #define DEBUGFS_READ_WRITE_FILE_OPS(name)			\
+@@ -154,6 +156,7 @@ static const struct file_operations il_dbgfs_##name##_ops = {	\
+ 	.read = il_dbgfs_##name##_read,				\
+ 	.open = simple_open,					\
+ 	.llseek = generic_file_llseek,				\
++	.owner = THIS_MODULE,					\
+ };
+ 
+ static const char *
 -- 
 2.17.1
 
