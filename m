@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-MIME-Version: 1.0
+Date: Sat, 7 Nov 2020 11:05:22 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net v2 00/21] net: avoid to remove module when its
+ debugfs is being used
+Message-ID: <20201107110522.2a796f1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201107172152.828-1-ap420073@gmail.com>
 References: <20201107172152.828-1-ap420073@gmail.com>
- <20201107172152.828-18-ap420073@gmail.com>
- <175a3cc2738.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-In-Reply-To: <175a3cc2738.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-From: Taehee Yoo <ap420073@gmail.com>
-Date: Sun, 8 Nov 2020 03:16:37 +0900
-Message-ID: <CAMArcTVgw3hN=ffb88hYrOy5jD1W+V1XKDtd_Rs2mkoOSGj5Vw@mail.gmail.com>
-Subject: Re: [PATCH net v2 17/21] brcmfmac: set .owner to THIS_MODULE
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +19,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend Van Spriel <arend.vanspriel@broadcom.com>
-Cc: alex.aring@gmail.com, emmanuel.grumbach@intel.com, chi-hsien.lin@infineon.com, amitkarwar@gmail.com, ganapathi.bhat@nxp.com, Luciano Coelho <luciano.coelho@intel.com>, ath10k@lists.infradead.org, wcn36xx@lists.infradead.org, stefan@datenfreihafen.org, merez@codeaurora.org, stf_xl@wp.pl, pkshih@realtek.com, Nicolai Stange <nstange@suse.de>, chung-hsien.hsu@infineon.com, wright.feng@infineon.com, inaky.perez-gonzalez@intel.com, derosier@gmail.com, David Laight <David.Laight@aculab.com>, b43-dev@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org, johan.hedberg@gmail.com, michael.hennerich@analog.com, marcel@holtmann.org, hante.meuleman@broadcom.com, linux-wimax@intel.com, jukka.rissanen@linux.intel.com, Kalle Valo <kvalo@codeaurora.org>, franky.lin@broadcom.com, huxinming820@gmail.com, Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org, wil6210@qti.qualcomm.com, Johannes Berg <johannes@sipsolutions.net>, Larry Finger <Larry.Finger@lwfinger.net>, linux-wpan@vger.kernel.org, David Miller <davem@davemloft.net>, pizza@shaftnet.org
+To: Taehee Yoo <ap420073@gmail.com>
+Cc: alex.aring@gmail.com, emmanuel.grumbach@intel.com, chi-hsien.lin@infineon.com, amitkarwar@gmail.com, ganapathi.bhat@nxp.com, luciano.coelho@intel.com, ath10k@lists.infradead.org, wcn36xx@lists.infradead.org, stefan@datenfreihafen.org, merez@codeaurora.org, stf_xl@wp.pl, pkshih@realtek.com, nstange@suse.de, chung-hsien.hsu@infineon.com, wright.feng@infineon.com, inaky.perez-gonzalez@intel.com, derosier@gmail.com, David.Laight@aculab.com, b43-dev@lists.infradead.org, ath11k@lists.infradead.org, arend.vanspriel@broadcom.com, johan.hedberg@gmail.com, michael.hennerich@analog.com, marcel@holtmann.org, hante.meuleman@broadcom.com, linux-wimax@intel.com, jukka.rissanen@linux.intel.com, kvalo@codeaurora.org, franky.lin@broadcom.com, huxinming820@gmail.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org, wil6210@qti.qualcomm.com, johannes@sipsolutions.net, Larry.Finger@lwfinger.net, linux-wpan@vger.kernel.org, davem@davemloft.net, pizza@shaftnet.org
 
-On Sun, 8 Nov 2020 at 02:41, Arend Van Spriel
-<arend.vanspriel@broadcom.com> wrote:
->
+On Sat,  7 Nov 2020 17:21:31 +0000 Taehee Yoo wrote:
+> When debugfs file is opened, its module should not be removed until
+> it's closed.
+> Because debugfs internally uses the module's data.
+> So, it could access freed memory.
+> 
+> In order to avoid panic, it just sets .owner to THIS_MODULE.
+> So that all modules will be held when its debugfs file is opened.
 
-Hi Arend,
-Thank you for the review!
+Hm, looks like some of the patches need to be revised because
+.owner is already set in the ops, and a warning gets generated.
 
-> On November 7, 2020 6:25:15 PM Taehee Yoo <ap420073@gmail.com> wrote:
->
-> > If THIS_MODULE is not set, the module would be removed while debugfs is
-> > being used.
-> > It eventually makes kernel panic.
->
-> Is this really a valid concern in the context of debugs? I tend to say it
-> is not. Whenever I am using debugs to debug my driver I make sure to avoid
-> removing it.
+Also it'd be good to mention why Johannes's approach was abandoned.
 
-I think getting rid of every scenario of the kernel panic is the
-first priority thing.
-So I'm sure that trying to avoid kernel panic is always valid even
-in the debugging context.
-
-Thanks a lot!
-Taehee Yoo
+When you repost please separate out all the patches for
+drivers/net/wireless/ and send that to Kalle's wireless drivers tree.
+Patch 1 needs to be split in two. Patches 2 and 3 would go via Johannes.
+The wimax patch needs to go to staging (wimax code has been moved).
+The remaining patches can be posted individually, not as a series.
 
 _______________________________________________
 ath10k mailing list
