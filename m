@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kc9KJ-0004Us-Pl
+ id 1kc9KJ-0004Uq-Q4
  for ath10k@lists.infradead.org; Mon, 09 Nov 2020 15:43:30 +0000
-Date: Mon, 09 Nov 2020 23:42:51 +0800
+Date: Mon, 09 Nov 2020 23:42:47 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- e3e7b8072fa6bb0928b9066cf76e19e6bd2ec663
-Message-ID: <5fa9637b.7oLGGYvn67U6r05k%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ fa7572c2cfe081dff82f884fa05f1b067d4beaaa
+Message-ID: <5fa96377.LU9sjCp6JAGgoGB/%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: e3e7b8072fa6bb0928b9066cf76e19e6bd2ec663  ath11k: Handle errors if peer creation fails
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: fa7572c2cfe081dff82f884fa05f1b067d4beaaa  ath11k: fix ZERO address in probe request
 
-elapsed time: 782m
+elapsed time: 784m
 
-configs tested: 90
+configs tested: 89
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -46,12 +46,6 @@ powerpc                     pseries_defconfig
 m68k                         amcore_defconfig
 arm                         s5pv210_defconfig
 xtensa                  audio_kc705_defconfig
-arm                  colibri_pxa300_defconfig
-arc                          axs101_defconfig
-powerpc                   bluestone_defconfig
-mips                      malta_kvm_defconfig
-powerpc                       holly_defconfig
-sparc                       sparc32_defconfig
 arc                                 defconfig
 mips                      fuloong2e_defconfig
 sh                         microdev_defconfig
@@ -64,6 +58,11 @@ m68k                        m5272c3_defconfig
 c6x                              alldefconfig
 powerpc                      pmac32_defconfig
 arm                          imote2_defconfig
+arc                        vdk_hs38_defconfig
+arm                          pcm027_defconfig
+arm                        realview_defconfig
+mips                          rb532_defconfig
+mips                        nlm_xlr_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
