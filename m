@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kc9KJ-0004Uq-Q4
- for ath10k@lists.infradead.org; Mon, 09 Nov 2020 15:43:30 +0000
-Date: Mon, 09 Nov 2020 23:42:47 +0800
+ id 1kc9KJ-0004Ur-H3
+ for ath10k@lists.infradead.org; Mon, 09 Nov 2020 15:43:29 +0000
+Date: Mon, 09 Nov 2020 23:42:45 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- fa7572c2cfe081dff82f884fa05f1b067d4beaaa
-Message-ID: <5fa96377.LU9sjCp6JAGgoGB/%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS d53aaee03b8e12fe82275fcf35b27b99f98b14cd
+Message-ID: <5fa96375./y+zbp9okqB1TTjo%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: fa7572c2cfe081dff82f884fa05f1b067d4beaaa  ath11k: fix ZERO address in probe request
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: d53aaee03b8e12fe82275fcf35b27b99f98b14cd  Add localversion-wireless-testing-ath
 
-elapsed time: 784m
+elapsed time: 782m
 
-configs tested: 89
+configs tested: 79
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,11 +40,6 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-powerpc                    sam440ep_defconfig
-powerpc                     pseries_defconfig
-m68k                         amcore_defconfig
-arm                         s5pv210_defconfig
-xtensa                  audio_kc705_defconfig
 arc                                 defconfig
 mips                      fuloong2e_defconfig
 sh                         microdev_defconfig
@@ -58,11 +52,6 @@ m68k                        m5272c3_defconfig
 c6x                              alldefconfig
 powerpc                      pmac32_defconfig
 arm                          imote2_defconfig
-arc                        vdk_hs38_defconfig
-arm                          pcm027_defconfig
-arm                        realview_defconfig
-mips                          rb532_defconfig
-mips                        nlm_xlr_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
