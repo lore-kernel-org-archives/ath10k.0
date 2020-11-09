@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from mga17.intel.com ([192.55.52.151])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kc8S6-0007ep-UT
+ for ath10k@lists.infradead.org; Mon, 09 Nov 2020 14:47:28 +0000
+Date: Mon, 09 Nov 2020 22:46:41 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 5251a22077a7292a132d597eed995d32a3f5e753
+Message-ID: <5fa95651.cx08BrPo8BVoibP7%lkp@intel.com>
 MIME-Version: 1.0
-References: <20201107172152.828-1-ap420073@gmail.com>
- <20201107110522.2a796f1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201107110522.2a796f1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From: Taehee Yoo <ap420073@gmail.com>
-Date: Sun, 8 Nov 2020 04:52:55 +0900
-Message-ID: <CAMArcTXNMpjEnVA8sz82CTTnCofqEK+hUSSq27mvjqV6QCiAOQ@mail.gmail.com>
-Subject: Re: [PATCH net v2 00/21] net: avoid to remove module when its debugfs
- is being used
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +21,117 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: alex.aring@gmail.com, emmanuel.grumbach@intel.com, chi-hsien.lin@infineon.com, amitkarwar@gmail.com, ganapathi.bhat@nxp.com, Luciano Coelho <luciano.coelho@intel.com>, ath10k@lists.infradead.org, wcn36xx@lists.infradead.org, stefan@datenfreihafen.org, merez@codeaurora.org, stf_xl@wp.pl, pkshih@realtek.com, Nicolai Stange <nstange@suse.de>, chung-hsien.hsu@infineon.com, wright.feng@infineon.com, inaky.perez-gonzalez@intel.com, derosier@gmail.com, David Laight <David.Laight@aculab.com>, b43-dev@lists.infradead.org, ath11k@lists.infradead.org, Arend Van Spriel <arend.vanspriel@broadcom.com>, johan.hedberg@gmail.com, michael.hennerich@analog.com, marcel@holtmann.org, hante.meuleman@broadcom.com, linux-wimax@intel.com, jukka.rissanen@linux.intel.com, Kalle Valo <kvalo@codeaurora.org>, franky.lin@broadcom.com, huxinming820@gmail.com, Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org, wil6210@qti.qualcomm.com, Johannes Berg <johannes@sipsolutions.net>, Larry Finger <Larry.Finger@lwfinger.net>, linux-wpan@vger.kernel.org, David Miller <davem@davemloft.net>, pizza@shaftnet.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-On Sun, 8 Nov 2020 at 04:05, Jakub Kicinski <kuba@kernel.org> wrote:
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 5251a22077a7292a132d597eed995d32a3f5e753  Merge branch 'ath-next' into ath-qca
 
-Hi Jakub,
-Thank you for the review!
+elapsed time: 726m
 
-> On Sat,  7 Nov 2020 17:21:31 +0000 Taehee Yoo wrote:
-> > When debugfs file is opened, its module should not be removed until
-> > it's closed.
-> > Because debugfs internally uses the module's data.
-> > So, it could access freed memory.
-> >
-> > In order to avoid panic, it just sets .owner to THIS_MODULE.
-> > So that all modules will be held when its debugfs file is opened.
->
-> Hm, looks like some of the patches need to be revised because
-> .owner is already set in the ops, and a warning gets generated.
+configs tested: 90
+configs skipped: 2
 
-Thanks, I found my mistake via patchwork.
-I will fix this problem.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Also it'd be good to mention why Johannes's approach was abandoned.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+powerpc                     pseries_defconfig
+m68k                         amcore_defconfig
+arm                         s5pv210_defconfig
+xtensa                  audio_kc705_defconfig
+mips                  cavium_octeon_defconfig
+m68k                             alldefconfig
+nios2                         10m50_defconfig
+powerpc                     tqm8548_defconfig
+c6x                        evmc6474_defconfig
+sh                          rsk7201_defconfig
+arc                                 defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                            mmp2_defconfig
+arm                          collie_defconfig
+sh                        sh7757lcr_defconfig
+m68k                        m5307c3_defconfig
+arm                             rpc_defconfig
+m68k                        m5272c3_defconfig
+c6x                              alldefconfig
+powerpc                      pmac32_defconfig
+arm                          imote2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a013-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+i386                 randconfig-a012-20201109
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I'm sorry about skipping the explanation of the situation,
-Johannes sent RFC[1], which fixes this problem in the debugfs core logic.
-I tested it and it actually avoids this problem well.
-And I think there would be more discussion.
-So, I thought this series' approach is reasonable right now.
-I think setting .owner to THIS_MODULE is a common behavior and it
-doesn't hurt our logic even if Johannes's approach is merged.
-I'm expecting that both approaches of this series and Johannes are
-doing separately.
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
 
-[1] https://www.spinics.net/lists/linux-wireless/msg204171.html
-
->
-> When you repost please separate out all the patches for
-> drivers/net/wireless/ and send that to Kalle's wireless drivers tree.
-> Patch 1 needs to be split in two. Patches 2 and 3 would go via Johannes.
-> The wimax patch needs to go to staging (wimax code has been moved).
-> The remaining patches can be posted individually, not as a series.
-
-Okay, I will do this.
-
-Thanks a lot!
-Taehee Yoo
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
