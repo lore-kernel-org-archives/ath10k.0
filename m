@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kc9KJ-0004Up-EX
- for ath10k@lists.infradead.org; Mon, 09 Nov 2020 15:43:29 +0000
-Date: Mon, 09 Nov 2020 23:42:49 +0800
+ id 1kc9KJ-0004Us-Pl
+ for ath10k@lists.infradead.org; Mon, 09 Nov 2020 15:43:30 +0000
+Date: Mon, 09 Nov 2020 23:42:51 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- eab77d03b4812cef9c1693406e494acda9824763
-Message-ID: <5fa96379.PfZE7esrEhx0w+Tn%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ e3e7b8072fa6bb0928b9066cf76e19e6bd2ec663
+Message-ID: <5fa9637b.7oLGGYvn67U6r05k%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: eab77d03b4812cef9c1693406e494acda9824763  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: e3e7b8072fa6bb0928b9066cf76e19e6bd2ec663  ath11k: Handle errors if peer creation fails
 
 elapsed time: 782m
 
-configs tested: 73
+configs tested: 90
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,6 +41,17 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+powerpc                     pseries_defconfig
+m68k                         amcore_defconfig
+arm                         s5pv210_defconfig
+xtensa                  audio_kc705_defconfig
+arm                  colibri_pxa300_defconfig
+arc                          axs101_defconfig
+powerpc                   bluestone_defconfig
+mips                      malta_kvm_defconfig
+powerpc                       holly_defconfig
+sparc                       sparc32_defconfig
 arc                                 defconfig
 mips                      fuloong2e_defconfig
 sh                         microdev_defconfig
@@ -109,6 +120,14 @@ x86_64                    rhel-7.6-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
