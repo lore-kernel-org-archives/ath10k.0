@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yb1-xb2d.google.com ([2607:f8b0:4864:20::b2d])
+Received: from mail-il1-x142.google.com ([2607:f8b0:4864:20::142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcTWN-0004tw-PT
- for ath10k@lists.infradead.org; Tue, 10 Nov 2020 13:17:16 +0000
-Received: by mail-yb1-xb2d.google.com with SMTP id c18so11593696ybj.10
- for <ath10k@lists.infradead.org>; Tue, 10 Nov 2020 05:17:13 -0800 (PST)
+ id 1kcXIs-0002VT-OX
+ for ath10k@lists.infradead.org; Tue, 10 Nov 2020 17:19:35 +0000
+Received: by mail-il1-x142.google.com with SMTP id q1so12897475ilt.6
+ for <ath10k@lists.infradead.org>; Tue, 10 Nov 2020 09:19:32 -0800 (PST)
 MIME-Version: 1.0
-From: Amit Pundir <amit.pundir@linaro.org>
-Date: Tue, 10 Nov 2020 18:46:36 +0530
-Message-ID: <CAMi1Hd0tHtTZ=BHeKNv5Nwt6PnUGVwg40BaRjDxNtAEKB_CQEw@mail.gmail.com>
-Subject: ath10k regressions with "failed to extract amsdu: -11"
+References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+ <20201106071107.D7CE3C433C6@smtp.codeaurora.org>
+In-Reply-To: <20201106071107.D7CE3C433C6@smtp.codeaurora.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Tue, 10 Nov 2020 09:19:20 -0800
+Message-ID: <CACTWRwtjvQYUvbWHrajNRkK_sDZRv1hr0kp+o1=6504qv64qKQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +25,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>, Loic Poulain <loic.poulain@linaro.org>
-Cc: John Stultz <john.stultz@linaro.org>, Sumit Semwal <sumit.semwal@linaro.org>, Bjorn Andersson <bjorn.andersson@linaro.org>
+To: Kalle Valo <kvalo@codeaurora.org>, Douglas Anderson <dianders@chromium.org>, Brian Norris <briannorris@chromium.org>, Rakesh Pillai <pillair@codeaurora.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Hi Guys,
+Apologies for the delay, was busy so could not work on V2 . I have
+started working on V2 patch. Will upload by today/tomorrow.
 
-I've been hitting "ath10k_snoc 18800000.wifi: failed to extract
-amsdu: -11" a lot lately on PocoF1 (sdm845) and that or may
-be followup errors make WiFi impossible to use.
+Abhishek
 
-Initially I thought it is a v5.10-rc regression but then I ran into
-this 3 year old bug report
-http://lists.infradead.org/pipermail/ath10k/2017-October/010227.html
-and as it turned out, I'm running into this exact same problem.
-That it happens only when PocoF1 is connected to my recently
-bought WiFi router (TP Link, Archer C6 v2.0, Qualcomm Atheros
-QCA9563 / QCA9886), otherwise WiFi just works fine.
 
-I have been told that I'm not the only one running into this problem,
-but I'm not able to find any solution on the web (though most
-suggest that I should install openwrt on the router instead but that
-is not happening:) Any other suggestions or known workarounds?
-
-Regards,
-Amit Pundir
+On Thu, Nov 5, 2020 at 11:11 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Abhishek Kumar <kuabhs@chromium.org> wrote:
+>
+> > In some devices difference in chip-id should be enough to pick
+> > the right BDF. Add another support for chip-id based BDF selection.
+> > With this new option, ath10k supports 2 fallback options.
+> >
+> > The board name with chip-id as option looks as follows
+> > board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+> >
+> > Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > Tested-by: Douglas Anderson <dianders@chromium.org>
+> > Tested-by: Abhishek Kumar <kuabhs@chromium.org>
+>
+> There were few checkpatch warnings which I fixed:
+>
+> $ ath10k-check
+> drivers/net/wireless/ath/ath10k/core.c:1501: Alignment should match open parenthesis
+> drivers/net/wireless/ath/ath10k/core.c:1512: line length of 92 exceeds 90 columns
+> drivers/net/wireless/ath/ath10k/core.c:1521: line length of 92 exceeds 90 columns
+>
+> The first one was also what Doug commented. I also added Tested-on tags,
+> thanks for those. The updated patch is in pending branch (soon).
+>
+> But is this patch ok to take now? I didn't quite get the conclusion of the
+> discussion.
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/patch/20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
 
 _______________________________________________
 ath10k mailing list
