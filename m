@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kc9KJ-0004Ur-H3
- for ath10k@lists.infradead.org; Mon, 09 Nov 2020 15:43:29 +0000
-Date: Mon, 09 Nov 2020 23:42:45 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS d53aaee03b8e12fe82275fcf35b27b99f98b14cd
-Message-ID: <5fa96375./y+zbp9okqB1TTjo%lkp@intel.com>
+Message-ID: <29adbaa7a7f200589e56566069270c857fcba015.camel@sipsolutions.net>
+Subject: Re: [PATCH net v2 00/21] net: avoid to remove module when its
+ debugfs is being used
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 10 Nov 2020 09:32:49 +0100
+In-Reply-To: <20201107110522.2a796f1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201107172152.828-1-ap420073@gmail.com>
+ <20201107110522.2a796f1d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,106 +20,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Jakub Kicinski <kuba@kernel.org>, Taehee Yoo <ap420073@gmail.com>
+Cc: alex.aring@gmail.com, emmanuel.grumbach@intel.com, chi-hsien.lin@infineon.com, amitkarwar@gmail.com, ganapathi.bhat@nxp.com, luciano.coelho@intel.com, ath10k@lists.infradead.org, wcn36xx@lists.infradead.org, stefan@datenfreihafen.org, merez@codeaurora.org, stf_xl@wp.pl, pkshih@realtek.com, nstange@suse.de, chung-hsien.hsu@infineon.com, wright.feng@infineon.com, inaky.perez-gonzalez@intel.com, derosier@gmail.com, David.Laight@aculab.com, b43-dev@lists.infradead.org, ath11k@lists.infradead.org, arend.vanspriel@broadcom.com, johan.hedberg@gmail.com, michael.hennerich@analog.com, marcel@holtmann.org, hante.meuleman@broadcom.com, linux-wimax@intel.com, kvalo@codeaurora.org, franky.lin@broadcom.com, huxinming820@gmail.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org, wil6210@qti.qualcomm.com, jukka.rissanen@linux.intel.com, Larry.Finger@lwfinger.net, linux-wpan@vger.kernel.org, davem@davemloft.net, pizza@shaftnet.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: d53aaee03b8e12fe82275fcf35b27b99f98b14cd  Add localversion-wireless-testing-ath
+On Sat, 2020-11-07 at 11:05 -0800, Jakub Kicinski wrote:
+> On Sat,  7 Nov 2020 17:21:31 +0000 Taehee Yoo wrote:
+> > When debugfs file is opened, its module should not be removed until
+> > it's closed.
+> > Because debugfs internally uses the module's data.
+> > So, it could access freed memory.
+> > 
+> > In order to avoid panic, it just sets .owner to THIS_MODULE.
+> > So that all modules will be held when its debugfs file is opened.
+> 
+> Hm, looks like some of the patches need to be revised because
+> .owner is already set in the ops, and a warning gets generated.
+> 
+> Also it'd be good to mention why Johannes's approach was abandoned.
 
-elapsed time: 782m
+Well, I had two.
 
-configs tested: 79
-configs skipped: 2
+One was awful, and worked in all cases.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The other was less awful, and didn't work in all cases.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                                 defconfig
-mips                      fuloong2e_defconfig
-sh                         microdev_defconfig
-arm                            mmp2_defconfig
-arm                          collie_defconfig
-sh                        sh7757lcr_defconfig
-m68k                        m5307c3_defconfig
-arm                             rpc_defconfig
-m68k                        m5272c3_defconfig
-c6x                              alldefconfig
-powerpc                      pmac32_defconfig
-arm                          imote2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201109
-i386                 randconfig-a006-20201109
-i386                 randconfig-a005-20201109
-i386                 randconfig-a001-20201109
-i386                 randconfig-a003-20201109
-i386                 randconfig-a002-20201109
-i386                 randconfig-a014-20201109
-i386                 randconfig-a015-20201109
-i386                 randconfig-a013-20201109
-i386                 randconfig-a016-20201109
-i386                 randconfig-a011-20201109
-i386                 randconfig-a012-20201109
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+I think both gave Al Viro hives ;-)
 
-clang tested configs:
-x86_64               randconfig-a012-20201109
-x86_64               randconfig-a015-20201109
-x86_64               randconfig-a013-20201109
-x86_64               randconfig-a011-20201109
-x86_64               randconfig-a014-20201109
-x86_64               randconfig-a016-20201109
+> Patch 1 needs to be split in two. Patches 2 and 3 would go via Johannes.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+FWIW, I'm happy for you to take patches 2 and 3 as well, but I guess if
+patch 1 needs to be split there's a resend coming anyway, so then I'll
+be happy to take the patches 2/3 from a separate set.
+
+johannes
+
+
 
 _______________________________________________
 ath10k mailing list
