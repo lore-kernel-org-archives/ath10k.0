@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kclys-0002wP-Pw
- for ath10k@lists.infradead.org; Wed, 11 Nov 2020 08:59:56 +0000
-Date: Wed, 11 Nov 2020 16:58:59 +0800
+ id 1kclyn-0002v9-MU
+ for ath10k@lists.infradead.org; Wed, 11 Nov 2020 08:59:50 +0000
+Date: Wed, 11 Nov 2020 16:58:54 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 68e23b6581b6ec1f8e1337f7df8332b531063853
-Message-ID: <5faba7d3.xBwP1suGkOBMCq0b%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ d421ae2c434c688405032dbdb007ecd51bd6cef6
+Message-ID: <5faba7ce.m+kpYbAdPo/tOu97%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,60 +24,67 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 68e23b6581b6ec1f8e1337f7df8332b531063853  ath10k: add target IRAM recovery feature support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: d421ae2c434c688405032dbdb007ecd51bd6cef6  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 721m
 
-configs tested: 123
-configs skipped: 2
+configs tested: 134
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
+arm                                 defconfig
 arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                                 defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-powerpc                    amigaone_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                      ppc64e_defconfig
-arm                      pxa255-idp_defconfig
-arm                           efm32_defconfig
-arm                          iop32x_defconfig
-arm                        cerfcube_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                               defconfig
+sh                          rsk7203_defconfig
+mips                           jazz_defconfig
+arm                             rpc_defconfig
+powerpc                     tqm8548_defconfig
+arm                          pxa168_defconfig
+powerpc                    sam440ep_defconfig
+nios2                         10m50_defconfig
+arm                          exynos_defconfig
+xtensa                          iss_defconfig
+powerpc                     skiroot_defconfig
 powerpc                     tqm5200_defconfig
 powerpc                 mpc8313_rdb_defconfig
 sh                         microdev_defconfig
-sh                         apsh4a3a_defconfig
-arm                       netwinder_defconfig
-arm                         mv78xx0_defconfig
-sh                            migor_defconfig
+sh                          landisk_defconfig
+powerpc                       ebony_defconfig
+arm                        vexpress_defconfig
+sh                           se7619_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sparc                            allyesconfig
+mips                           rs90_defconfig
+powerpc                       eiger_defconfig
+arm                          tango4_defconfig
+mips                          ath25_defconfig
 powerpc                   bluestone_defconfig
 sh                         ap325rxa_defconfig
 powerpc                      bamboo_defconfig
 sh                            shmin_defconfig
 powerpc                     tqm8540_defconfig
-mips                        maltaup_defconfig
-arm                        magician_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc836x_mds_defconfig
 mips                  cavium_octeon_defconfig
 mips                     decstation_defconfig
 powerpc                       ppc64_defconfig
 mips                           ip32_defconfig
-powerpc                     skiroot_defconfig
+arm                         ebsa110_defconfig
+powerpc                     redwood_defconfig
+openrisc                            defconfig
+mips                     loongson1c_defconfig
+arm                      footbridge_defconfig
 m68k                            q40_defconfig
 arc                      axs103_smp_defconfig
 x86_64                           alldefconfig
 arm                   milbeaut_m10v_defconfig
 arm                         nhk8815_defconfig
+parisc                              defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -97,12 +104,10 @@ xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
-parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
-sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
@@ -161,6 +166,12 @@ x86_64               randconfig-a004-20201111
 x86_64               randconfig-a002-20201111
 x86_64               randconfig-a006-20201111
 x86_64               randconfig-a001-20201111
+x86_64               randconfig-a015-20201110
+x86_64               randconfig-a011-20201110
+x86_64               randconfig-a014-20201110
+x86_64               randconfig-a013-20201110
+x86_64               randconfig-a016-20201110
+x86_64               randconfig-a012-20201110
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
