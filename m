@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdA04-00049M-CJ
- for ath10k@lists.infradead.org; Thu, 12 Nov 2020 10:38:47 +0000
+ id 1kdAFz-0000N8-Df
+ for ath10k@lists.infradead.org; Thu, 12 Nov 2020 10:55:13 +0000
 MIME-Version: 1.0
-Date: Thu, 12 Nov 2020 18:38:27 +0800
+Date: Thu, 12 Nov 2020 18:55:08 +0800
 From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCHv3 1/2] nl80211: add support for mcs masks
-In-Reply-To: <1327767935-16984-2-git-send-email-siwu@hrz.tu-chemnitz.de>
- (sfid-20120128_172604_145461_197131DD)
-References: <1327767935-16984-1-git-send-email-siwu@hrz.tu-chemnitz.de>
- <1327767935-16984-2-git-send-email-siwu@hrz.tu-chemnitz.de>
- (sfid-20120128_172604_145461_197131DD)
-Message-ID: <b7a64b13d38792a97708675dcd8e5f69@codeaurora.org>
+Subject: Re: [PATCH v2] mac80211: reject/clear user rate mask if not usable
+In-Reply-To: <20170308132022.4216-1-johannes@sipsolutions.net>
+ (sfid-20170308_142122_587641_AAD67C42)
+References: <20170308132022.4216-1-johannes@sipsolutions.net>
+ (sfid-20170308_142122_587641_AAD67C42)
+Message-ID: <07179008e9369bc81e152009ca85191d@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,95 +20,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>, Johannes Berg <johannes@sipsolutions.net>
-Cc: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>, linux-wireless@vger.kernel.org, linville@tuxdriver.com, Simon Wunderlich <siwu@hrz.tu-chemnitz.de>, linux-wireless-owner@vger.kernel.org, ath10k@lists.infradead.org, ath11k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Johannes Berg <johannes.berg@intel.com>, kirtika@google.com, linux-wireless-owner@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, ath11k@lists.infradead.org
 
-On 2012-01-29 00:25, Simon Wunderlich wrote:
-> Allow to set mcs masks through nl80211. We also allow to set MCS
-> rates but no legacy rates (and vice versa).
-> 
-> Signed-off-by: Simon Wunderlich <siwu@hrz.tu-chemnitz.de>
-> Signed-off-by: Mathias Kretschmer 
-> <mathias.kretschmer@fokus.fraunhofer.de>
-> ---
->  include/linux/nl80211.h |    4 +++
->  include/net/cfg80211.h  |    3 +-
->  net/wireless/nl80211.c  |   61 
-> ++++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 65 insertions(+), 3 deletions(-)
-> 
-...
-> @@ -5421,12 +5451,20 @@ static int nl80211_set_tx_bitrate_mask(struct
-> sk_buff *skb,
->  		sband = rdev->wiphy.bands[i];
->  		mask.control[i].legacy =
->  			sband ? (1 << sband->n_bitrates) - 1 : 0;
-> +		if (sband)
-> +			memcpy(mask.control[i].mcs,
-> +			       sband->ht_cap.mcs.rx_mask,
-> +			       sizeof(mask.control[i].mcs));
-when use command: "iw wlan0 set bitrates legacy-5 6", I want to set it 
-fixed in 6M rate.
-this copy mcs rate will add the mcs rate here and condition "if 
-(tb[NL80211_TXRATE_MCS])"
-is false, then mcs rate will not clear and lead a mistake result.
-> +		else
-> +			memset(mask.control[i].mcs, 0,
-> +			       sizeof(mask.control[i].mcs));
->  	}
-> 
->  	/*
->  	 * The nested attribute uses enum nl80211_band as the index. This 
-> maps
->  	 * directly to the enum ieee80211_band values used in cfg80211.
->  	 */
-> +	BUILD_BUG_ON(NL80211_MAX_SUPP_HT_RATES > IEEE80211_HT_MCS_MASK_LEN * 
-> 8);
->  	nla_for_each_nested(tx_rates, info->attrs[NL80211_ATTR_TX_RATES], 
-> rem)
->  	{
->  		enum ieee80211_band band = nla_type(tx_rates);
-> @@ -5442,7 +5480,28 @@ static int nl80211_set_tx_bitrate_mask(struct
-> sk_buff *skb,
->  				sband,
->  				nla_data(tb[NL80211_TXRATE_LEGACY]),
->  				nla_len(tb[NL80211_TXRATE_LEGACY]));
-> -			if (mask.control[band].legacy == 0)
-> +		}
-> +		if (tb[NL80211_TXRATE_MCS]) {
-
-false for "iw wlan0 set bitrates legacy-5 6", so ht_rateset_to_mask will 
-not enter and mcs rate will not clear.
-
-> +			if (!ht_rateset_to_mask(
-> +					sband,
-> +					nla_data(tb[NL80211_TXRATE_MCS]),
-> +					nla_len(tb[NL80211_TXRATE_MCS]),
-> +					mask.control[band].mcs))
-> +				return -EINVAL;
-> +		}
-> +
-> +		if (mask.control[band].legacy == 0) {
-> +			/* don't allow empty legacy rates if HT
-> +			 * is not even supported. */
-> +			if (!rdev->wiphy.bands[band]->ht_cap.ht_supported)
-> +				return -EINVAL;
-> +
-> +			for (i = 0; i < IEEE80211_HT_MCS_MASK_LEN; i++)
-> +				if (mask.control[band].mcs[i])
-> +					break;
-> +
-> +			/* legacy and mcs rates may not be both empty */
-> +			if (i == IEEE80211_HT_MCS_MASK_LEN)
->  				return -EINVAL;
->  		}
->  	}
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxNy0wMy0wOCAyMToyMCwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPiBGcm9tOiBKb2hhbm5l
+cyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KPiAKPiBJZiB0aGUgdXNlciByYXRlIG1h
+c2sgcmVzdWx0cyBpbiBubyAoYmFzaWMpIHJhdGVzIGJlaW5nIHVzYWJsZSwKPiBjbGVhciBpdC4g
+QWxzbywgaWYgd2UncmUgYWxyZWFkeSBvcGVyYXRpbmcgd2hlbiBpdCdzIHNldCwgcmVqZWN0Cj4g
+aXQgaW5zdGVhZC4KPiAKPiBUZWNobmljYWxseSwgc2VsZWN0aW5nIGJhc2ljIHJhdGVzIGFzIHRo
+ZSBjcml0ZXJpb24gaXMgYSBiaXQgdG9vCj4gcmVzdHJpY3RpdmUsIGJ1dCBjYWxjdWxhdGluZyB0
+aGUgdXNhYmxlIHJhdGVzIG92ZXIgYWxsIHN0YXRpb25zCj4gKGUuZy4gaW4gQVAgbW9kZSkgaXMg
+aGFyZGVyLCBhbmQgYWxsIHN0YXRpb25zIG11c3Qgc3VwcG9ydCB0aGUKPiBiYXNpYyByYXRlcy4g
+U2ltaWxhcmx5LCBpbiBjbGllbnQgbW9kZSwgdGhlIGJhc2ljIHJhdGVzIHdpbGwgYmUKPiB1c2Vk
+IGFueXdheSBmb3IgY29udHJvbCBmcmFtZXMuCj4gCj4gVGhpcyBmaXhlcyB0aGUgIm5vIHN1cHBv
+cnRlZCByYXRlcyAoLi4uKSBpbiByYXRlX21hc2sgLi4uIiB3YXJuaW5nCj4gdGhhdCBvY2N1cnMg
+b24gVFggd2hlbiB5b3UndmUgc2VsZWN0ZWQgYSByYXRlIG1hc2sgdGhhdCdzIG5vdAo+IGNvbXBh
+dGlibGUgd2l0aCB0aGUgY29ubmVjdGlvbiAoZS5nLiBhbiBBUCB0aGF0IGVuYWJsZXMgb25seSB0
+aGUKPiByYXRlcyAzNiwgNDgsIDU0IGFuZCB5b3UndmUgc2VsZWN0ZWQgb25seSA2LCA5LCAxMi4p
+Cj4gCj4gUmVwb3J0ZWQtYnk6IEtpcnRpa2EgUnVjaGFuZGFuaSA8a2lydGlrYUBnb29nbGUuY29t
+Pgo+IFNpZ25lZC1vZmYtYnk6IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzLmJlcmdAaW50ZWwuY29t
+Pgo+IC0tLQo+ICBuZXQvbWFjODAyMTEvY2ZnLmMgIHwgMTggKysrKysrKysrKysrKysrKystCj4g
+IG5ldC9tYWM4MDIxMS9tbG1lLmMgfCAgMiArKwo+ICBuZXQvbWFjODAyMTEvcmF0ZS5jIHwgMjcg
+KysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gIG5ldC9tYWM4MDIxMS9yYXRlLmggfCAgMiAr
+Kwo+ICA0IGZpbGVzIGNoYW5nZWQsIDQ4IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAK
+PiBkaWZmIC0tZ2l0IGEvbmV0L21hYzgwMjExL2NmZy5jIGIvbmV0L21hYzgwMjExL2NmZy5jCj4g
+aW5kZXggOWM3NDkwY2IyMjQzLi44YmMzZDM2NjkzNDggMTAwNjQ0Cj4gLS0tIGEvbmV0L21hYzgw
+MjExL2NmZy5jCj4gKysrIGIvbmV0L21hYzgwMjExL2NmZy5jCj4gQEAgLTMsNyArMyw3IEBACj4g
+ICAqCj4gICAqIENvcHlyaWdodCAyMDA2LTIwMTAJSm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lw
+c29sdXRpb25zLm5ldD4KPiAgICogQ29weXJpZ2h0IDIwMTMtMjAxNSAgSW50ZWwgTW9iaWxlIENv
+bW11bmljYXRpb25zIEdtYkgKPiAtICogQ29weXJpZ2h0IChDKSAyMDE1LTIwMTYgSW50ZWwgRGV1
+dHNjaGxhbmQgR21iSAo+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMTUtMjAxNyBJbnRlbCBEZXV0c2No
+bGFuZCBHbWJICj4gICAqCj4gICAqIFRoaXMgZmlsZSBpcyBHUEx2MiBhcyBmb3VuZCBpbiBDT1BZ
+SU5HLgo+ICAgKi8KPiBAQCAtMjA0Miw2ICsyMDQyLDcgQEAgc3RhdGljIGludCBpZWVlODAyMTFf
+Y2hhbmdlX2JzcyhzdHJ1Y3Qgd2lwaHkgCj4gKndpcGh5LAo+ICAJCQkJCSBwYXJhbXMtPmJhc2lj
+X3JhdGVzX2xlbiwKPiAgCQkJCQkgJnNkYXRhLT52aWYuYnNzX2NvbmYuYmFzaWNfcmF0ZXMpOwo+
+ICAJCWNoYW5nZWQgfD0gQlNTX0NIQU5HRURfQkFTSUNfUkFURVM7Cj4gKwkJaWVlZTgwMjExX2No
+ZWNrX3JhdGVfbWFzayhzZGF0YSk7Cj4gIAl9Cj4gCj4gIAlpZiAocGFyYW1zLT5hcF9pc29sYXRl
+ID49IDApIHsKPiBAQCAtMjY4NSw2ICsyNjg2LDIxIEBAIHN0YXRpYyBpbnQgaWVlZTgwMjExX3Nl
+dF9iaXRyYXRlX21hc2soc3RydWN0Cj4gd2lwaHkgKndpcGh5LAo+ICAJCQlyZXR1cm4gcmV0Owo+
+ICAJfQo+IAo+ICsJLyoKPiArCSAqIElmIGFjdGl2ZSB2YWxpZGF0ZSB0aGUgc2V0dGluZyBhbmQg
+cmVqZWN0IGl0IGlmIGl0IGRvZXNuJ3QgbGVhdmUKPiArCSAqIGF0IGxlYXN0IG9uZSBiYXNpYyBy
+YXRlIHVzYWJsZSwgc2luY2Ugd2UgcmVhbGx5IGhhdmUgdG8gYmUgYWJsZQo+ICsJICogdG8gc2Vu
+ZCBzb21ldGhpbmcsIGFuZCBpZiB3ZSdyZSBhbiBBUCB3ZSBoYXZlIHRvIGJlIGFibGUgdG8gZG8K
+PiArCSAqIHNvIGF0IGEgYmFzaWMgcmF0ZSBzbyB0aGF0IGFsbCBjbGllbnRzIGNhbiByZWNlaXZl
+IGl0Lgo+ICsJICovCj4gKwlpZiAocmN1X2FjY2Vzc19wb2ludGVyKHNkYXRhLT52aWYuY2hhbmN0
+eF9jb25mKSAmJgo+ICsJICAgIHNkYXRhLT52aWYuYnNzX2NvbmYuY2hhbmRlZi5jaGFuKSB7Cj4g
+KwkJdTMyIGJhc2ljX3JhdGVzID0gc2RhdGEtPnZpZi5ic3NfY29uZi5iYXNpY19yYXRlczsKPiAr
+CQllbnVtIG5sODAyMTFfYmFuZCBiYW5kID0gc2RhdGEtPnZpZi5ic3NfY29uZi5jaGFuZGVmLmNo
+YW4tPmJhbmQ7Cj4gKwo+ICsJCWlmICghKG1hc2stPmNvbnRyb2xbYmFuZF0ubGVnYWN5ICYgYmFz
+aWNfcmF0ZXMpKQo+ICsJCQlyZXR1cm4gLUVJTlZBTDsKSWYgdXNlciB3YW50IHRvIHVzZSDigJxp
+dyB3bGFuMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgNTTigJ0gdG8gc2V0IGl0IHRvIApmaXhlZCBp
+biA1NE0gYW5kIDU0TSBpcwpub3QgYmFzaWMgcmF0ZSBpbiBBUCdzIGJlY2FvbiBhcyBleGFtcGxl
+IG9mIGJlbG93LCB0aGVuIHRoZSBpdyBjb21tYW5kIAp3aWxsIGZhaWwuCgpUYWc6IFN1cHBvcnRl
+ZCBSYXRlcyA2KEIpLCA5LCAxMihCKSwgMTgsIDI0KEIpLCAzNiwgNDgsIDU0LCBbTWJpdC9zZWNd
+CiAgICAgVGFnIE51bWJlcjogU3VwcG9ydGVkIFJhdGVzICgxKQogICAgIFRhZyBsZW5ndGg6IDgK
+ICAgICBTdXBwb3J0ZWQgUmF0ZXM6IDYoQikgKDB4OGMpCiAgICAgU3VwcG9ydGVkIFJhdGVzOiA5
+ICgweDEyKQogICAgIFN1cHBvcnRlZCBSYXRlczogMTIoQikgKDB4OTgpCiAgICAgU3VwcG9ydGVk
+IFJhdGVzOiAxOCAoMHgyNCkKICAgICBTdXBwb3J0ZWQgUmF0ZXM6IDI0KEIpICgweGIwKQogICAg
+IFN1cHBvcnRlZCBSYXRlczogMzYgKDB4NDgpCiAgICAgU3VwcG9ydGVkIFJhdGVzOiA0OCAoMHg2
+MCkKICAgICBTdXBwb3J0ZWQgUmF0ZXM6IDU0ICgweDZjKQoKPiArCX0KPiArCj4gIAlmb3IgKGkg
+PSAwOyBpIDwgTlVNX05MODAyMTFfQkFORFM7IGkrKykgewo+ICAJCXN0cnVjdCBpZWVlODAyMTFf
+c3VwcG9ydGVkX2JhbmQgKnNiYW5kID0gd2lwaHktPmJhbmRzW2ldOwo+ICAJCWludCBqOwouLi4K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
