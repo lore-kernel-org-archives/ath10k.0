@@ -1,11 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kdhpM-0004uu-Ak
+ for ath10k@lists.infradead.org; Fri, 13 Nov 2020 22:46:18 +0000
+Received: by mail-io1-xd44.google.com with SMTP id p7so11412833ioo.6
+ for <ath10k@lists.infradead.org>; Fri, 13 Nov 2020 14:45:53 -0800 (PST)
 MIME-Version: 1.0
-References: <BYAPR02MB4567172F4913F68EE61C7EAC921A0@BYAPR02MB4567.namprd02.prod.outlook.com>
-In-Reply-To: <BYAPR02MB4567172F4913F68EE61C7EAC921A0@BYAPR02MB4567.namprd02.prod.outlook.com>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Fri, 13 Nov 2020 10:13:18 -0500
-Message-ID: <CA+5PVA5vc-oHRnso3Zo7UByqKx+Eh7KRtc9XgXub_5sqSjdXtw@mail.gmail.com>
-Subject: Re: [PULL] ath10k & ath11k firmware 20201023
+References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+ <87wnyzkkum.fsf@codeaurora.org>
+In-Reply-To: <87wnyzkkum.fsf@codeaurora.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Fri, 13 Nov 2020 14:45:41 -0800
+Message-ID: <CACTWRwu4XeNhUTsKPa2S1hBJ2tawo4Jx5rVFuht4=Gi1WgOvsw@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available
+ event
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,142 +27,87 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>, "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Rakesh Pillai <pillair@codeaurora.org>
 
-Pulled and pushed out.
+Hi All,
 
-josh
+The V2 patch now has good comments and probably spinning off a new V3
+might be a good idea. Here are a few comments to the discussion.
 
-On Fri, Oct 23, 2020 at 11:57 AM Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+In response to Doug's comment
+> case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
+>   arg->service_map_ext_len = 0;
+>   arg->service_map_ext = NULL;
+>   return 0;
+Since the TLV messages are parsed iteratively for each tag, if
+WMI_TLV_TAG_FIRST_ARRAY_ENUM this comes as the last TLV tag then this
+might cause the map_len to be zero even if there is a valid tag like
+WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT , so having a "valid" flag
+seems to be a better and scalable approach.
+
+> > The TLV TAG " WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT" is the first
+> > and a mandatory TLV in the service available event. The subsequent
+> > TLVs are optional ones and may or may not be present (based on FW
+> > versions).
 >
-> Hi linux-firmware maintainers,
+> From ath10k point of view never trust what the firmware sends you. Even
+> if WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT is a mandatory TLV it
+> might be missing for whatever reasons. The same is with buffer lengths
+> etc and always confirm what you are receiving from the firmware.
 >
-> here's a pull request for ath10k and ath11k drivers. For ath10k there is a
-> firmware for new hardware QCA6174 hw3.0 SDIO. For ath11k there are
-> firmwares for new hardware IPQ8074 hw2.0, IPQ6018 hw1.0 and QCA6390
-> hw2.0. And also few updates for existing hardware.
+Looks like the length for each tag is already being validated in
+ath10k_wmi_tlv_iter() and would return error if the length does not
+match against the wmi policy., so I think the tlv message validation
+is already being done. Kalle, Is the expectation here is to do
+anything additional ?
+
+-Abhishek
+
+On Thu, Nov 5, 2020 at 11:25 PM Kalle Valo <kvalo@codeaurora.org> wrote:
 >
-> From previous pull request ath10k-20201022 I fixed the notice files to be
-> valid utf-8 and changed CRLF line endings to LF.
+> Doug Anderson <dianders@chromium.org> writes:
 >
-> Please let me know if there are any problems.
+> >>  static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
+> >> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> >> index 1fa7107..2e4b561 100644
+> >> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> >> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> >> @@ -5751,8 +5751,9 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
+> >>                             ret);
+> >>         }
+> >>
+> >> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+> >> -                              __le32_to_cpu(arg.service_map_ext_len));
+> >> +       if (arg.service_map_ext_valid)
+> >> +               ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+> >> +                                      __le32_to_cpu(arg.service_map_ext_len));
+> >
+> > Your new patch still requires the caller to init the
+> > "service_map_ext_valid" to false before calling, but I guess there's
+> > not a whole lot more we can do because we might be parsing more than
+> > one tag.  It does seem nice that at least we now have a validity bit
+> > instead of just relying on a non-zero length to be valid.
+> >
+> > It might be nice to have a comment saying that it's up to us to init
+> > "arg.service_map_ext_valid" to false before calling
+> > ath10k_wmi_pull_svc_avail(), but I won't insist.  Maybe that's obvious
+> > to everyone but me...
 >
-> Kalle
+> It's not obvious to me either. Please add that comment.
 >
-> The following changes since commit 58d41d0facca2478d3e45f6321224361519aee96:
+> BTW, for some reason Doug's response didn't get to patchwork:
 >
->   ice: Add comms package file for Intel E800 series driver (2020-10-05 08:09:03 -0400)
+> https://patchwork.kernel.org/project/linux-wireless/patch/1603904469-598-1-git-send-email-pillair@codeaurora.org/
 >
-> are available in the git repository at:
+> Though I do see it in linux-wireless, so most likely this was a
+> temporary glitch in patchwork. But it's just worrisome as nowadays I
+> only check the comments in patchwork before I apply the patch.
 >
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20201023
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
 >
-> for you to fetch changes up to d842d8c5892ea1570eacd01cc274436d1c6e676b:
->
->   ath11k: QCA6390 hw2.0: add to WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1 (2020-10-23 18:42:08 +0300)
->
-> ----------------------------------------------------------------
-> Kalle Valo (11):
->       ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00157-QCARMSWPZ-1
->       ath10k: QCA6174 hw3.0: update board-2.bin
->       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00131
->       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00131
->       ath10k: QCA6174 hw3.0: add firmware-sdio-6.bin version WLAN.RMH.4.4.1-00077
->       ath11k: IPQ6018 hw1.0: add board-2.bin
->       ath11k: IPQ6018 hw1.0: add to WLAN.HK.2.1.0.1-01238-QCAHKSWPL_SILICONZ-2
->       ath11k: IPQ8074 hw2.0: add board-2.bin
->       ath11k: IPQ8074 hw2.0: add to WLAN.HK.2.1.0.1-01238-QCAHKSWPL_SILICONZ-2
->       ath11k: QCA6390 hw2.0: add board-2.bin
->       ath11k: QCA6390 hw2.0: add to WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
->
->  WHENCE                                             |   57 +-
->  ath10k/QCA6174/hw3.0/board-2.bin                   |  Bin 584036 -> 633360 bytes
->  ath10k/QCA6174/hw3.0/firmware-6.bin                |  Bin 700988 -> 702844 bytes
->  ath10k/QCA6174/hw3.0/firmware-sdio-6.bin           |  Bin 0 -> 604416 bytes
->  .../hw3.0/notice_ath10k_firmware-sdio-6.txt        | 1352 ++++++++++++++
->  ath10k/QCA9888/hw2.0/firmware-5.bin                |  Bin 688140 -> 691292 bytes
->  ath10k/QCA9984/hw1.0/firmware-5.bin                |  Bin 675948 -> 679288 bytes
->  ath11k/IPQ6018/hw1.0/Notice.txt                    |  786 ++++++++
->  ath11k/IPQ6018/hw1.0/board-2.bin                   |  Bin 0 -> 787208 bytes
->  ath11k/IPQ6018/hw1.0/m3_fw.b00                     |  Bin 0 -> 148 bytes
->  ath11k/IPQ6018/hw1.0/m3_fw.b01                     |  Bin 0 -> 6712 bytes
->  ath11k/IPQ6018/hw1.0/m3_fw.b02                     |  Bin 0 -> 294912 bytes
->  ath11k/IPQ6018/hw1.0/m3_fw.flist                   |    3 +
->  ath11k/IPQ6018/hw1.0/m3_fw.mdt                     |  Bin 0 -> 6860 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b00                     |  Bin 0 -> 340 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b01                     |  Bin 0 -> 7000 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b02                     |  Bin 0 -> 4696 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b03                     |  Bin 0 -> 2357712 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b04                     |  Bin 0 -> 370560 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b05                     |  Bin 0 -> 175588 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b07                     |  Bin 0 -> 8936 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b08                     |  Bin 0 -> 409914 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.flist                   |    8 +
->  ath11k/IPQ6018/hw1.0/q6_fw.mdt                     |  Bin 0 -> 7340 bytes
->  ath11k/IPQ8074/hw2.0/Notice.txt                    |  786 ++++++++
->  ath11k/IPQ8074/hw2.0/board-2.bin                   |  Bin 0 -> 1311380 bytes
->  ath11k/IPQ8074/hw2.0/m3_fw.b00                     |  Bin 0 -> 148 bytes
->  ath11k/IPQ8074/hw2.0/m3_fw.b01                     |  Bin 0 -> 136 bytes
->  ath11k/IPQ8074/hw2.0/m3_fw.b02                     |  Bin 0 -> 327680 bytes
->  ath11k/IPQ8074/hw2.0/m3_fw.flist                   |    3 +
->  ath11k/IPQ8074/hw2.0/m3_fw.mdt                     |  Bin 0 -> 284 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b00                     |  Bin 0 -> 340 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b01                     |  Bin 0 -> 328 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b02                     |  Bin 0 -> 4696 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b03                     |  Bin 0 -> 2589264 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b04                     |  Bin 0 -> 985504 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b05                     |  Bin 0 -> 387076 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b07                     |  Bin 0 -> 7048 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b08                     |  Bin 0 -> 424524 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.flist                   |    8 +
->  ath11k/IPQ8074/hw2.0/q6_fw.mdt                     |  Bin 0 -> 668 bytes
->  ath11k/QCA6390/hw2.0/Notice.txt                    | 1971 ++++++++++++++++++++
->  ath11k/QCA6390/hw2.0/amss.bin                      |  Bin 0 -> 3609456 bytes
->  ath11k/QCA6390/hw2.0/board-2.bin                   |  Bin 0 -> 58016 bytes
->  ath11k/QCA6390/hw2.0/m3.bin                        |  Bin 0 -> 266684 bytes
->  45 files changed, 4971 insertions(+), 3 deletions(-)
->  create mode 100644 ath10k/QCA6174/hw3.0/firmware-sdio-6.bin
->  create mode 100644 ath10k/QCA6174/hw3.0/notice_ath10k_firmware-sdio-6.txt
->  create mode 100644 ath11k/IPQ6018/hw1.0/Notice.txt
->  create mode 100644 ath11k/IPQ6018/hw1.0/board-2.bin
->  create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b00
->  create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b01
->  create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.b02
->  create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.flist
->  create mode 100644 ath11k/IPQ6018/hw1.0/m3_fw.mdt
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b00
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b01
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b02
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b03
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b04
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b05
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b07
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.b08
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.flist
->  create mode 100644 ath11k/IPQ6018/hw1.0/q6_fw.mdt
->  create mode 100644 ath11k/IPQ8074/hw2.0/Notice.txt
->  create mode 100644 ath11k/IPQ8074/hw2.0/board-2.bin
->  create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b00
->  create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b01
->  create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.b02
->  create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.flist
->  create mode 100644 ath11k/IPQ8074/hw2.0/m3_fw.mdt
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b00
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b01
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b02
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b03
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b04
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b05
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b07
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.b08
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.flist
->  create mode 100644 ath11k/IPQ8074/hw2.0/q6_fw.mdt
->  create mode 100644 ath11k/QCA6390/hw2.0/Notice.txt
->  create mode 100644 ath11k/QCA6390/hw2.0/amss.bin
->  create mode 100644 ath11k/QCA6390/hw2.0/board-2.bin
->  create mode 100644 ath11k/QCA6390/hw2.0/m3.bin
->
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
