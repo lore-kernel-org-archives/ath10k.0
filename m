@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1keWEK-0004Mm-16
- for ath10k@lists.infradead.org; Mon, 16 Nov 2020 04:35:05 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v3] ath10k: Fix the parsing error in service available event
-Date: Mon, 16 Nov 2020 10:04:51 +0530
-Message-Id: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
+ id 1keZKU-0006Cr-0i
+ for ath10k@lists.infradead.org; Mon, 16 Nov 2020 07:53:41 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning:
+ Non-boolean value returned from function returning bool
+References: <20201116055212.GA3723@shao2-debian>
+Date: Mon, 16 Nov 2020 09:53:29 +0200
+In-Reply-To: <20201116055212.GA3723@shao2-debian> (kernel test robot's message
+ of "Mon, 16 Nov 2020 13:53:19 +0800")
+Message-ID: <87o8jx20w6.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,97 +20,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: kuabhs@chromium.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dianders@chromium.org, Rakesh Pillai <pillair@codeaurora.org>
+To: kernel test robot <rong.a.chen@intel.com>
+Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Wen Gong <wgong@codeaurora.org>
 
-The wmi service available event has been
-extended to contain extra 128 bit for new services
-to be indicated by firmware.
++ ath10k list
 
-Currently the presence of any optional TLVs in
-the wmi service available event leads to a parsing
-error with the below error message:
-ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+kernel test robot <rong.a.chen@intel.com> writes:
 
-The wmi service available event parsing should
-not return error for the newly added optional TLV.
-Fix this parsing for service available event message.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
+> commit: 3c45f21af84eb05a355919abc80cf70a3a681cee ath10k: sdio: add
+> firmware coredump support
+> compiler: nios2-linux-gcc (GCC) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>
+>
+> cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+>
+>>> drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning: Non-boolean
+> value returned from function returning bool
+> [returnNonBoolInBooleanFunction]
+>     return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
+>     ^
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00720-QCAHLSWMTPL-1
+Is this really a problem? I guess we could change that to "!!(param &
+HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW)" but how is that better and
+does it make any practical difference when
+ath10k_sdio_is_fast_dump_supported() returns a boolean anyway?
 
-Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT support")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-Changes from v2:
-- Add code documentation explaining the necessity of variable
-  initialization for the logic to work.
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
- drivers/net/wireless/ath/ath10k/wmi.c     | 9 +++++++--
- drivers/net/wireless/ath/ath10k/wmi.h     | 1 +
- 3 files changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 932266d..7b58341 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1401,13 +1401,15 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
- 
- 	switch (tag) {
- 	case WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT:
-+		arg->service_map_ext_valid = true;
- 		arg->service_map_ext_len = *(__le32 *)ptr;
- 		arg->service_map_ext = ptr + sizeof(__le32);
- 		return 0;
- 	default:
- 		break;
- 	}
--	return -EPROTO;
-+
-+	return 0;
- }
- 
- static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 1fa7107..37b53af 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5751,8 +5751,13 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
- 			    ret);
- 	}
- 
--	ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
--			       __le32_to_cpu(arg.service_map_ext_len));
-+	/*
-+	 * Initialization of "arg.service_map_ext_valid" to ZERO is necessary
-+	 * for the below logic to work.
-+	 */
-+	if (arg.service_map_ext_valid)
-+		ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
-+				       __le32_to_cpu(arg.service_map_ext_len));
- }
- 
- static int ath10k_wmi_event_temperature(struct ath10k *ar, struct sk_buff *skb)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4898e19..66ecf09 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6917,6 +6917,7 @@ struct wmi_svc_rdy_ev_arg {
- };
- 
- struct wmi_svc_avail_ev_arg {
-+	bool service_map_ext_valid;
- 	__le32 service_map_ext_len;
- 	const __le32 *service_map_ext;
- };
 -- 
-2.7.4
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
