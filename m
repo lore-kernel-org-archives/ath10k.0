@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m42-4.mailgun.net ([69.72.42.4])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1keav2-0003tZ-64
- for ath10k@lists.infradead.org; Mon, 16 Nov 2020 09:35:32 +0000
+ id 1kezAC-0005pz-La
+ for ath10k@lists.infradead.org; Tue, 17 Nov 2020 11:28:45 +0000
+Date: Tue, 17 Nov 2020 19:28:10 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 3fe683eccb0815cd2c2ff53a928a4e7d2517ece0
+Message-ID: <5fb3b3ca.r5rxigimDoH42nTR%lkp@intel.com>
 MIME-Version: 1.0
-Date: Mon, 16 Nov 2020 17:33:34 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning:
- Non-boolean value returned from function returning bool
-In-Reply-To: <87o8jx20w6.fsf@codeaurora.org>
-References: <20201116055212.GA3723@shao2-debian>
- <87o8jx20w6.fsf@codeaurora.org>
-Message-ID: <32eb018069a079fd82e359d0ed4e1b1e@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,103 +17,161 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, kernel test robot <rong.a.chen@intel.com>
+Cc: ath10k@lists.infradead.org
 
-On 2020-11-16 15:53, Kalle Valo wrote:
-> + ath10k list
-> 
-> kernel test robot <rong.a.chen@intel.com> writes:
-> 
->> tree:   
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
->> master
->> head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
->> commit: 3c45f21af84eb05a355919abc80cf70a3a681cee ath10k: sdio: add
->> firmware coredump support
->> compiler: nios2-linux-gcc (GCC) 9.3.0
->> 
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <rong.a.chen@intel.com>
->> 
->> 
->> cppcheck possible warnings: (new ones prefixed by >>, may not real 
->> problems)
->> 
->>>> drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning: Non-boolean
->> value returned from function returning bool
->> [returnNonBoolInBooleanFunction]
->>     return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
->>     ^
-> 
-> Is this really a problem? I guess we could change that to "!!(param &
-> HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW)" but how is that better and
-> does it make any practical difference when
-> ath10k_sdio_is_fast_dump_supported() returns a boolean anyway?
-It should not be a real problem by test before.
-ath10k_sdio_is_fast_dump_supported return true in test before.
-and fast_dump get true from ath10k_sdio_is_fast_dump_supported in 
-ath10k_sdio_fw_crashed_dump.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 3fe683eccb0815cd2c2ff53a928a4e7d2517ece0  ath11k: try to allocate big block of dma memory firstly
 
-the risk maybe like this:
-u32 param in ath10k_sdio_is_fast_dump_supported is 4 bytes, and bool is 
-1 byte.
-if Gcc does not do any convertion from u32 to bool, then the bool value 
-will only
-get the lower byte(byte 0) of the 4 bytes, then maybe get an mistake 
-result.
+elapsed time: 724m
 
-I did a disassemble of sdio.o with/without below change, and dump 
-sdio.o, it have no difference in this place:
-I change send a patch with below change if needed.
-@@ -2231,7 +2231,7 @@ static bool 
-ath10k_sdio_is_fast_dump_supported(struct ath10k *ar)
+configs tested: 130
+configs skipped: 2
 
-         ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio hi_option_flag2 %x\n", 
-param);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--       return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
-+       return !!(param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW);
-  }
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7203_defconfig
+arm                       netwinder_defconfig
+arm                     am200epdkit_defconfig
+m68k                            q40_defconfig
+m68k                       m5475evb_defconfig
+arm                        mini2440_defconfig
+arm                        vexpress_defconfig
+mips                  decstation_64_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                         bigsur_defconfig
+sh                           sh2007_defconfig
+mips                        bcm63xx_defconfig
+arm                        shmobile_defconfig
+openrisc                            defconfig
+sh                         microdev_defconfig
+sh                             espt_defconfig
+powerpc                     tqm8555_defconfig
+arm                            zeus_defconfig
+arm                           omap1_defconfig
+arm                        neponset_defconfig
+mips                           ip22_defconfig
+mips                         tb0219_defconfig
+arc                      axs103_smp_defconfig
+mips                        qi_lb60_defconfig
+m68k                            mac_defconfig
+mips                          ath79_defconfig
+sh                         ecovec24_defconfig
+m68k                          hp300_defconfig
+arm                          gemini_defconfig
+arm                      tct_hammer_defconfig
+mips                        bcm47xx_defconfig
+arm                     eseries_pxa_defconfig
+sh                               alldefconfig
+arm                           h3600_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                     powernv_defconfig
+arm                            mmp2_defconfig
+arm                       cns3420vb_defconfig
+arm                         lpc32xx_defconfig
+ia64                      gensparse_defconfig
+powerpc                    amigaone_defconfig
+sh                           se7724_defconfig
+arc                    vdk_hs38_smp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201116
+x86_64               randconfig-a005-20201116
+x86_64               randconfig-a004-20201116
+x86_64               randconfig-a002-20201116
+x86_64               randconfig-a001-20201116
+x86_64               randconfig-a006-20201116
+i386                 randconfig-a006-20201116
+i386                 randconfig-a005-20201116
+i386                 randconfig-a001-20201116
+i386                 randconfig-a002-20201116
+i386                 randconfig-a004-20201116
+i386                 randconfig-a003-20201116
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a014-20201115
+x86_64               randconfig-a013-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201116
+i386                 randconfig-a014-20201116
+i386                 randconfig-a016-20201116
+i386                 randconfig-a011-20201116
+i386                 randconfig-a015-20201116
+i386                 randconfig-a013-20201116
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-objdump -Sl sdio.o > sdio.o-Sl.txt
+clang tested configs:
+x86_64               randconfig-a003-20201115
+x86_64               randconfig-a005-20201115
+x86_64               randconfig-a004-20201115
+x86_64               randconfig-a002-20201115
+x86_64               randconfig-a001-20201115
+x86_64               randconfig-a006-20201115
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
 
-0000000000002b00 <ath10k_sdio_fw_crashed_dump>:
-void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
-{
-...
-/home/wgong/ath11k/ath-master/ath/drivers/net/wireless/ath/ath10k/sdio.c:2234
-
-	return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
-     2b75:	8b 44 24 44          	mov    0x44(%rsp),%eax
-     2b79:	25 00 08 00 00       	and    $0x800,%eax //"the SF, ZF, and PF 
-flags are set according to the result".ZF will be 0 if true.
-     2b7e:	89 44 24 2c          	mov    %eax,0x2c(%rsp)
-     2b82:	40 0f 95 c5          	setne  %bpl //"Set byte if not equal 
-(ZF=0)".stored the ZF flag to bpl as value of fast_dump.
-ath10k_sdio_fw_crashed_dump():
-/home/wgong/ath11k/ath-master/ath/drivers/net/wireless/ath/ath10k/sdio.c:2483
-	char guid[UUID_STRING_LEN + 1];
-	bool fast_dump;
-
-	fast_dump = ath10k_sdio_is_fast_dump_supported(ar);
-
-	if (fast_dump)
-     2b86:	0f 85 c3 03 00 00    	jne    2f4f 
-<ath10k_sdio_fw_crashed_dump+0x44f> //"Jump near if not equal (ZF=0)"
-...
-/home/wgong/ath11k/ath-master/ath/drivers/net/wireless/ath/ath10k/sdio.c:2499
-	ath10k_sdio_dump_registers(ar, crash_data, fast_dump);
-     2be5:	40 0f b6 d5          	movzbl %bpl,%edx //use the bpl stored as 
-value of fast_dump
-     2be9:	48 89 de             	mov    %rbx,%rsi
-     2bec:	4c 89 ff             	mov    %r15,%rdi
-     2bef:	e8 8c fb ff ff       	callq  2780 <ath10k_sdio_dump_registers>
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
