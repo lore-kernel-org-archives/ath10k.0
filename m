@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Thu, 19 Nov 2020 08:11:20 +0000
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 1/6] relay: allow the use of const callback structs
-Message-ID: <20201119081120.GA6149@infradead.org>
-References: <20201118165320.26829-1-jani.nikula@intel.com>
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kfq8R-0001Dc-La
+ for ath10k@lists.infradead.org; Thu, 19 Nov 2020 20:02:28 +0000
+Received: by mail-wm1-x342.google.com with SMTP id s13so7828333wmh.4
+ for <ath10k@lists.infradead.org>; Thu, 19 Nov 2020 12:02:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201118165320.26829-1-jani.nikula@intel.com>
+References: <20201106100708.4609-1-cjhuang@codeaurora.org>
+ <20201106100708.4609-4-cjhuang@codeaurora.org>
+In-Reply-To: <20201106100708.4609-4-cjhuang@codeaurora.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Thu, 19 Nov 2020 12:02:16 -0800
+Message-ID: <CACTWRwtRfgaHXYMAttNwptHxCA7k6r+G_sC0=oyHZxjYb-GeWA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ath10k: allow dynamic SAR power limits via common API
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jani Nikula <jani.nikula@intel.com>
-Cc: Jens Axboe <axboe@kernel.dk>, intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, linux-block@vger.kernel.org, ath11k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Carl Huang <cjhuang@codeaurora.org>
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, Douglas Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, kuabhs@google.com
 
-> +/*
-> + * rchan_callback wrappers. Call the callbacks if available, otherwise fall back
-> + * to default behaviour.
-> + */
+Hi,
+This patch looks good to me, there is one small nit, If the maintainer
+can take care of it then probably we don't need a new rev.
 
-This adds an overly long line.  That being said this behavior is pretty
-normal for kernel APIs, so I'm not even sure we need it at all.
+> @@ -329,6 +336,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>                 .fw_diag_ce_download = true,
+>                 .tx_stats_over_pktlog = false,
+>                 .supports_peer_stats_info = true,
+> +               .dynamic_sar_support = true,
+>         },
+Orthogonal to this patch, other people might probably differ, I guess
+putting dynamic sar support as a firmware feature capability should be
+more scalable and then we don't need a structure table for each
+firmware. This might hold for other firmware features as well.
 
-> +
-> +/*
-> + * subbuf_start() callback.
-> + */
+> +       ath10k_dbg(ar, ATH10K_DBG_MAC, "mac txpower 2g:%d 5g:%d\n",
+> +                  tx_power_2g, tx_power_5g);
+just a nit: space after colon. This might throw a warning in checkpatch.pl
 
-and this one is for sure completley useless.  Same for all the other
-similar ones.
-
-
-But taking one step back:  All instances implement create_buf_file
-and remove_buf_file, which makes sense as that is the prime aim
-of these methods.  So there is no point in making those optional.
-subbuf_start_callback is overriden by two instances, so making that
-optional totally makes sense.  buf_mapped and buf_unmapped are
-never overriden, so they should be removed entirely.
-
-More importantly there is no case that passes a NULL rchan_callbacks,
-which makes complete sense as it wouldn't even create a file.  So
-remove that case as well and just replace it with a sanity check in
-relay_open().
-
-Please also add a patch to mark all rchan_callbacks instances const
-while you're at it.
+-Abhishek
 
 _______________________________________________
 ath10k mailing list
