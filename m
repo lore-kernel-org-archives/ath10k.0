@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgsmH-0001mO-Vo
- for ath10k@lists.infradead.org; Sun, 22 Nov 2020 17:03:55 +0000
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 1/2] ath10k: Fix an error handling path
-Date: Sun, 22 Nov 2020 18:03:42 +0100
-Message-Id: <20201122170342.1346011-1-christophe.jaillet@wanadoo.fr>
+ id 1kgyyF-00071I-6A
+ for ath10k@lists.infradead.org; Sun, 22 Nov 2020 23:40:40 +0000
+Received: by mail-lj1-x244.google.com with SMTP id p12so16056474ljc.9
+ for <ath10k@lists.infradead.org>; Sun, 22 Nov 2020 15:40:37 -0800 (PST)
+From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH net-next 0/2] net: Constify static qmi structs
+Date: Mon, 23 Nov 2020 00:40:29 +0100
+Message-Id: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,33 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org, erik.stromdahl@gmail.com
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
+Cc: Alex Elder <elder@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Rikard Falkeborn <rikard.falkeborn@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
 
-If 'ath10k_usb_create()' fails, we should release some resources and report
-an error instead of silently continuing.
+Constify a couple of static qmi_ops and qmi_msg_handler structs that are
+never modified. 
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/ath/ath10k/usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+Rikard Falkeborn (2):
+  soc: qcom: ipa: Constify static qmi structs
+  ath10k: Constify static qmi structs
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 05a620ff6fe2..0b47c3a09794 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -997,6 +997,8 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 
- 	ar_usb = ath10k_usb_priv(ar);
- 	ret = ath10k_usb_create(ar, interface);
-+	if (ret)
-+		goto err;
- 	ar_usb->ar = ar;
- 
- 	ar->dev_id = product_id;
+ drivers/net/ipa/ipa_qmi.c             | 8 ++++----
+ drivers/net/wireless/ath/ath10k/qmi.c | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
 -- 
-2.27.0
+2.29.2
 
 
 _______________________________________________
