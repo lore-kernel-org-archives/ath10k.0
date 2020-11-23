@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from z5.mailgun.us ([104.130.96.5])
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kh7TN-0001G6-DH
- for ath10k@lists.infradead.org; Mon, 23 Nov 2020 08:45:24 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] mac80211: change back to return true by default of
- ieee80211_chandef_he_6ghz_oper
-Date: Mon, 23 Nov 2020 16:45:52 +0800
-Message-Id: <1606121152-3452-1-git-send-email-wgong@codeaurora.org>
+ id 1kh95f-0004fD-Dt
+ for ath10k@lists.infradead.org; Mon, 23 Nov 2020 10:29:00 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id k5so2186920plt.6
+ for <ath10k@lists.infradead.org>; Mon, 23 Nov 2020 02:28:57 -0800 (PST)
+From: Amit Pundir <amit.pundir@linaro.org>
+Subject: [PATCH v2] ath10k: qmi: Skip host capability request for Xiaomi Poco
+ F1
+Date: Mon, 23 Nov 2020 15:58:49 +0530
+Message-Id: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +23,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
+To: Kalle Valo <kvalo@codeaurora.org>, David S Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>, John Stultz <john.stultz@linaro.org>, phone-devel@vger.kernel.org, Sumit Semwal <sumit.semwal@linaro.org>, Joel S <jo@jsfamily.in>
 
-The default value is true returned by ieee80211_chandef_he_6ghz_oper,
-change it to true same with before.
+Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+message in ath10k_qmi_host_cap_send_sync(), but we can still
+bring up WiFi services successfully on AOSP if we ignore it.
 
-Fixes: 1d00ce807efa ("mac80211: support S1G association")
+We suspect either the host cap is not implemented or there
+may be firmware specific issues. Firmware version is
+QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
 
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+quirk, then the host capability request does get accepted,
+but we run into fatal "msa info req rejected" error and
+WiFi interface doesn't come up.
+
+Attempts are being made to debug the failure reasons but no
+luck so far. Hence this device specific workaround instead
+of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+linux-firmware project but it didn't help and neither did
+building board-2.bin file from stock bdwlan* files.
+
+This workaround will be removed once we have a viable fix.
+Thanks to postmarketOS guys for catching this.
+
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 ---
- net/mac80211/util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We dropped this workaround last time in the favor of
+a generic dts quirk to skip host cap check. But that
+is under under discussion for a while now,
+https://lkml.org/lkml/2020/9/25/1119, so resending
+this short term workaround for the time being.
 
-diff --git a/net/mac80211/util.c b/net/mac80211/util.c
-index 49342060490f..94e624e9439b 100644
---- a/net/mac80211/util.c
-+++ b/net/mac80211/util.c
-@@ -3455,7 +3455,7 @@ bool ieee80211_chandef_he_6ghz_oper(struct ieee80211_sub_if_data *sdata,
+v2: ath10k-check complained about a too long line last
+    time, so moved the comment to a new line.
+    
+ drivers/net/wireless/ath/ath10k/qmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index ae6b1f402adf..1c58b0ff1d29 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -653,7 +653,9 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
  
- 	*chandef = he_chandef;
- 
--	return false;
-+	return true;
- }
- 
- bool ieee80211_chandef_s1g_oper(const struct ieee80211_s1g_oper_ie *oper,
+ 	/* older FW didn't support this request, which is not fatal */
+ 	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+-	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
++	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
++	    /* Xiaomi Poco F1 workaround */
++	    !of_machine_is_compatible("xiaomi,beryllium")) {
+ 		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+ 		ret = -EINVAL;
+ 		goto out;
 -- 
-2.23.0
+2.7.4
 
 
 _______________________________________________
