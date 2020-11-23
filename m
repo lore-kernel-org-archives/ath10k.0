@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kh2oG-0001O5-43
- for ath10k@lists.infradead.org; Mon, 23 Nov 2020 03:46:37 +0000
+ id 1kh7Nt-0000KW-A6
+ for ath10k@lists.infradead.org; Mon, 23 Nov 2020 08:39:45 +0000
+MIME-Version: 1.0
+Date: Mon, 23 Nov 2020 16:39:32 +0800
 From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH] ath10k: fix a check patch warning
- returnNonBoolInBooleanFunction of sdio.c
-Date: Mon, 23 Nov 2020 11:47:20 +0800
-Message-Id: <1606103240-9868-1-git-send-email-wgong@codeaurora.org>
+Subject: Re: [PATCH v4 14/17] mac80211: support S1G association
+In-Reply-To: <af51dd8e9dea2961546a502d9090d1a7@codeaurora.org>
+References: <20200922022818.15855-1-thomas@adapt-ip.com>
+ <20200922022818.15855-15-thomas@adapt-ip.com>
+ <af51dd8e9dea2961546a502d9090d1a7@codeaurora.org>
+Message-ID: <9d1e20d1124883bd1a2a64c1c62d7975@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,44 +20,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
+To: Thomas Pedersen <thomas@adapt-ip.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath11k@lists.infradead.org, ath10k@lists.infradead.org
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
-drivers/net/wireless/ath/ath10k/sdio.c:2234:2:
-warning: Non-boolean value returned from function returning bool [returnNonBoolInBooleanFunction]
-return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
-
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 2c619ef8a87c..14e2b7f585a5 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2237,7 +2237,7 @@ static bool ath10k_sdio_is_fast_dump_supported(struct ath10k *ar)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio hi_option_flag2 %x\n", param);
- 
--	return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
-+	return !!(param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW);
- }
- 
- static void ath10k_sdio_dump_registers(struct ath10k *ar,
--- 
-2.23.0
-
+add more to know it.
+On 2020-11-23 16:38, Wen Gong wrote:
+> On 2020-09-22 10:28, Thomas Pedersen wrote:
+> ...
+>> @@ -3446,6 +3453,42 @@ bool ieee80211_chandef_he_6ghz_oper(struct
+>> ieee80211_sub_if_data *sdata,
+>> 
+>>  	*chandef = he_chandef;
+>> 
+>> +	return false;
+>> +}
+> This change the "return true" to "return false" by default of
+> ieee80211_chandef_he_6ghz_oper.
+> It should be typo mistake.
+>> +
+>> +bool ieee80211_chandef_s1g_oper(const struct ieee80211_s1g_oper_ie 
+>> *oper,
+>> +				struct cfg80211_chan_def *chandef)
+>> +{
+>> +	u32 oper_freq;
+>> +
+>> +	if (!oper)
+>> +		return false;
+>> +
+>> +	switch (FIELD_GET(S1G_OPER_CH_WIDTH_OPER, oper->ch_width)) {
+>> +	case IEEE80211_S1G_CHANWIDTH_1MHZ:
+>> +		chandef->width = NL80211_CHAN_WIDTH_1;
+>> +		break;
+>> +	case IEEE80211_S1G_CHANWIDTH_2MHZ:
+>> +		chandef->width = NL80211_CHAN_WIDTH_2;
+>> +		break;
+>> +	case IEEE80211_S1G_CHANWIDTH_4MHZ:
+>> +		chandef->width = NL80211_CHAN_WIDTH_4;
+>> +		break;
+>> +	case IEEE80211_S1G_CHANWIDTH_8MHZ:
+>> +		chandef->width = NL80211_CHAN_WIDTH_8;
+>> +		break;
+>> +	case IEEE80211_S1G_CHANWIDTH_16MHZ:
+>> +		chandef->width = NL80211_CHAN_WIDTH_16;
+>> +		break;
+>> +	default:
+>> +		return false;
+>> +	}
+>> +
+>> +	oper_freq = ieee80211_channel_to_freq_khz(oper->oper_ch,
+>> +						  NL80211_BAND_S1GHZ);
+>> +	chandef->center_freq1 = KHZ_TO_MHZ(oper_freq);
+>> +	chandef->freq1_offset = oper_freq % 1000;
+>> +
+>>  	return true;
+>>  }
+>> 
+> ....
 
 _______________________________________________
 ath10k mailing list
