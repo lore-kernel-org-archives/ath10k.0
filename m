@@ -1,15 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kh95f-0004fD-Dt
- for ath10k@lists.infradead.org; Mon, 23 Nov 2020 10:29:00 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id k5so2186920plt.6
- for <ath10k@lists.infradead.org>; Mon, 23 Nov 2020 02:28:57 -0800 (PST)
-From: Amit Pundir <amit.pundir@linaro.org>
-Subject: [PATCH v2] ath10k: qmi: Skip host capability request for Xiaomi Poco
- F1
-Date: Mon, 23 Nov 2020 15:58:49 +0530
-Message-Id: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
+From: Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH 0/9] relay: cleanup and const callbacks, take 2
+Date: Mon, 23 Nov 2020 19:59:20 +0200
+Message-Id: <cover.1606153547.git.jani.nikula@intel.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,69 +12,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, David S Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>, John Stultz <john.stultz@linaro.org>, phone-devel@vger.kernel.org, Sumit Semwal <sumit.semwal@linaro.org>, Joel S <jo@jsfamily.in>
+To: linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, jani.nikula@intel.com, intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, ath10k@lists.infradead.org, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, ath11k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-message in ath10k_qmi_host_cap_send_sync(), but we can still
-bring up WiFi services successfully on AOSP if we ignore it.
+This is v2 of [1], with a number of cleanups added first based on
+Christoph's feedback, making the actual constness patch much smaller and
+cleaner.
 
-We suspect either the host cap is not implemented or there
-may be firmware specific issues. Firmware version is
-QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+I don't know who actually maintains relay, it's not in MAINTAINERS -
+Cc'd Andrew just in case.
 
-qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-quirk, then the host capability request does get accepted,
-but we run into fatal "msa info req rejected" error and
-WiFi interface doesn't come up.
+I'd think it would be simplest to queue patches 5-9 via whichever tree
+the relay patches get merged. They're all one-liners so neglible
+conflict potential.
 
-Attempts are being made to debug the failure reasons but no
-luck so far. Hence this device specific workaround instead
-of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-linux-firmware project but it didn't help and neither did
-building board-2.bin file from stock bdwlan* files.
+BR,
+Jani.
 
-This workaround will be removed once we have a viable fix.
-Thanks to postmarketOS guys for catching this.
 
-Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
----
-We dropped this workaround last time in the favor of
-a generic dts quirk to skip host cap check. But that
-is under under discussion for a while now,
-https://lkml.org/lkml/2020/9/25/1119, so resending
-this short term workaround for the time being.
+[1] http://lore.kernel.org/r/20201118165320.26829-1-jani.nikula@intel.com
 
-v2: ath10k-check complained about a too long line last
-    time, so moved the comment to a new line.
-    
- drivers/net/wireless/ath/ath10k/qmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index ae6b1f402adf..1c58b0ff1d29 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -653,7 +653,9 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
- 
- 	/* older FW didn't support this request, which is not fatal */
- 	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
--	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-+	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-+	    /* Xiaomi Poco F1 workaround */
-+	    !of_machine_is_compatible("xiaomi,beryllium")) {
- 		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
- 		ret = -EINVAL;
- 		goto out;
+Cc: linux-block@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: ath11k@lists.infradead.org
+Cc: ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Cc: intel-gfx@lists.freedesktop.org
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+
+
+Jani Nikula (9):
+  relay: remove unused buf_mapped and buf_unmapped callbacks
+  relay: require non-NULL callbacks in relay_open()
+  relay: make create_buf_file and remove_buf_file callbacks mandatory
+  relay: allow the use of const callback structs
+  drm/i915: make relay callbacks const
+  ath10k: make relay callbacks const
+  ath11k: make relay callbacks const
+  ath9k: make relay callbacks const
+  blktrace: make relay callbacks const
+
+ drivers/gpu/drm/i915/gt/uc/intel_guc_log.c    |   2 +-
+ drivers/net/wireless/ath/ath10k/spectral.c    |   2 +-
+ drivers/net/wireless/ath/ath11k/spectral.c    |   2 +-
+ .../net/wireless/ath/ath9k/common-spectral.c  |   2 +-
+ include/linux/relay.h                         |  29 ++---
+ kernel/relay.c                                | 107 +++---------------
+ kernel/trace/blktrace.c                       |   2 +-
+ 7 files changed, 26 insertions(+), 120 deletions(-)
+
 -- 
-2.7.4
+2.20.1
 
 
 _______________________________________________
