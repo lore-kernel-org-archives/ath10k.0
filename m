@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from m42-4.mailgun.net ([69.72.42.4])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgyyF-00071L-6D
- for ath10k@lists.infradead.org; Sun, 22 Nov 2020 23:40:40 +0000
-Received: by mail-lj1-x244.google.com with SMTP id y10so618947ljc.7
- for <ath10k@lists.infradead.org>; Sun, 22 Nov 2020 15:40:38 -0800 (PST)
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH net-next 2/2] ath10k: Constify static qmi structs
-Date: Mon, 23 Nov 2020 00:40:31 +0100
-Message-Id: <20201122234031.33432-3-rikard.falkeborn@gmail.com>
-In-Reply-To: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
-References: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
-MIME-Version: 1.0
+ id 1kh2oG-0001O5-43
+ for ath10k@lists.infradead.org; Mon, 23 Nov 2020 03:46:37 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH] ath10k: fix a check patch warning
+ returnNonBoolInBooleanFunction of sdio.c
+Date: Mon, 23 Nov 2020 11:47:20 +0800
+Message-Id: <1606103240-9868-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +16,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: Alex Elder <elder@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Rikard Falkeborn <rikard.falkeborn@gmail.com>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-qmi_msg_handler[] and ath10k_qmi_ops are only used as input arguments
-to qmi_handle_init() which accepts const pointers to both qmi_ops and
-qmi_msg_handler. Make them const to allow the compiler to put them in
-read-only memory.
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+drivers/net/wireless/ath/ath10k/sdio.c:2234:2:
+warning: Non-boolean value returned from function returning bool [returnNonBoolInBooleanFunction]
+return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+
+Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/qmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index ae6b1f402adf..07e478f9a808 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -917,7 +917,7 @@ static void ath10k_qmi_msa_ready_ind(struct qmi_handle *qmi_hdl,
- 	ath10k_qmi_driver_event_post(qmi, ATH10K_QMI_EVENT_MSA_READY_IND, NULL);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 2c619ef8a87c..14e2b7f585a5 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2237,7 +2237,7 @@ static bool ath10k_sdio_is_fast_dump_supported(struct ath10k *ar)
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio hi_option_flag2 %x\n", param);
+ 
+-	return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
++	return !!(param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW);
  }
  
--static struct qmi_msg_handler qmi_msg_handler[] = {
-+static const struct qmi_msg_handler qmi_msg_handler[] = {
- 	{
- 		.type = QMI_INDICATION,
- 		.msg_id = QMI_WLFW_FW_READY_IND_V01,
-@@ -981,7 +981,7 @@ static void ath10k_qmi_del_server(struct qmi_handle *qmi_hdl,
- 					     NULL);
- }
- 
--static struct qmi_ops ath10k_qmi_ops = {
-+static const struct qmi_ops ath10k_qmi_ops = {
- 	.new_server = ath10k_qmi_new_server,
- 	.del_server = ath10k_qmi_del_server,
- };
+ static void ath10k_sdio_dump_registers(struct ath10k *ar,
 -- 
-2.29.2
+2.23.0
 
 
 _______________________________________________
