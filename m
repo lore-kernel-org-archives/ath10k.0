@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga12.intel.com ([192.55.52.136])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khTvA-0005Sp-PL
- for ath10k@lists.infradead.org; Tue, 24 Nov 2020 08:43:34 +0000
-Date: Tue, 24 Nov 2020 16:43:17 +0800
+ id 1khTv8-0005Rc-BZ
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2020 08:43:31 +0000
+Date: Tue, 24 Nov 2020 16:43:10 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- a3e9de67935eed02909d2dec29a830bc3134f414
-Message-ID: <5fbcc7a5.xjCpX/xRk+b7jtxN%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 11af6de4799ee6eeae3730f18fd417414d212e2d
+Message-ID: <5fbcc79e.1XRmxvCWFJk0Ouwi%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,13 +24,13 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: a3e9de67935eed02909d2dec29a830bc3134f414  ath11k: dp_rx: fix monitor status dma unmap direction
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: 11af6de4799ee6eeae3730f18fd417414d212e2d  ath11k: Fix the rx_filter flag setting for peer rssi stats
 
 elapsed time: 721m
 
-configs tested: 187
-configs skipped: 2
+configs tested: 197
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -41,6 +41,9 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arc                          axs101_defconfig
+c6x                        evmc6678_defconfig
+mips                          malta_defconfig
 parisc                           alldefconfig
 sh                          kfr2r09_defconfig
 m68k                       m5208evb_defconfig
@@ -73,6 +76,9 @@ arc                            hsdk_defconfig
 mips                       rbtx49xx_defconfig
 m68k                        m5272c3_defconfig
 m68k                        m5307c3_defconfig
+mips                     cu1000-neo_defconfig
+sh                             espt_defconfig
+mips                          ath79_defconfig
 mips                      bmips_stb_defconfig
 m68k                         amcore_defconfig
 powerpc                     tqm8540_defconfig
@@ -105,6 +111,10 @@ powerpc                      makalu_defconfig
 arm                         at91_dt_defconfig
 powerpc                 mpc8315_rdb_defconfig
 arm                         nhk8815_defconfig
+arm                        clps711x_defconfig
+mips                           ip27_defconfig
+arm                              zx_defconfig
+sh                           se7712_defconfig
 arm                       mainstone_defconfig
 powerpc                 xes_mpc85xx_defconfig
 powerpc                 mpc832x_rdb_defconfig
