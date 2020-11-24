@@ -1,13 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH 4/9] relay: allow the use of const callback structs
-In-Reply-To: <20201124094209.GD31963@infradead.org>
-References: <cover.1606153547.git.jani.nikula@intel.com>
- <cc3ff292e4eb4fdc56bee3d690c7b8e39209cd37.1606153547.git.jani.nikula@intel.com>
- <20201124094209.GD31963@infradead.org>
-Date: Tue, 24 Nov 2020 13:56:25 +0200
-Message-ID: <87ft4zm0ie.fsf@intel.com>
+Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1khb9C-0002YD-5E
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2020 16:26:31 +0000
+Received: by mail-vs1-xe44.google.com with SMTP id s123so10730846vsc.0
+ for <ath10k@lists.infradead.org>; Tue, 24 Nov 2020 08:26:29 -0800 (PST)
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com.
+ [209.85.217.54])
+ by smtp.gmail.com with ESMTPSA id i63sm1295210uad.4.2020.11.24.08.26.26
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 24 Nov 2020 08:26:26 -0800 (PST)
+Received: by mail-vs1-f54.google.com with SMTP id l22so11395138vsa.4
+ for <ath10k@lists.infradead.org>; Tue, 24 Nov 2020 08:26:26 -0800 (PST)
 MIME-Version: 1.0
+References: <20201112200906.991086-1-kuabhs@chromium.org>
+ <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
+ <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
+ <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
+In-Reply-To: <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Tue, 24 Nov 2020 08:26:14 -0800
+Message-ID: <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +35,123 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Andrew Morton <akpm@linux-foundation.org>, ath11k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+Cc: Abhishek Kumar <kuabhs@chromium.org>, netdev <netdev@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 
-On Tue, 24 Nov 2020, Christoph Hellwig <hch@infradead.org> wrote:
-> Otherwise this looks good to me:
+Hi,
 
-v3 sent.
+On Tue, Nov 24, 2020 at 1:19 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
+>
+> > -----Original Message-----
+> > From: Doug Anderson <dianders@chromium.org>
+> > Sent: Tuesday, November 24, 2020 6:27 AM
+> > To: Abhishek Kumar <kuabhs@chromium.org>
+> > Cc: Kalle Valo <kvalo@codeaurora.org>; Rakesh Pillai
+> > <pillair@codeaurora.org>; LKML <linux-kernel@vger.kernel.org>; ath10k
+> > <ath10k@lists.infradead.org>; Brian Norris <briannorris@chromium.org>;
+> > linux-wireless <linux-wireless@vger.kernel.org>; David S. Miller
+> > <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; netdev
+> > <netdev@vger.kernel.org>
+> > Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF
+> > selection
+> >
+> > Hi,
+> >
+> > On Thu, Nov 12, 2020 at 12:09 PM Abhishek Kumar <kuabhs@chromium.org>
+> > wrote:
+> > >
+> > > In some devices difference in chip-id should be enough to pick
+> > > the right BDF. Add another support for chip-id based BDF selection.
+> > > With this new option, ath10k supports 2 fallback options.
+> > >
+> > > The board name with chip-id as option looks as follows
+> > > board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+> > >
+> > > Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+> > > Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> > > Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> > > ---
+> > >
+> > > (no changes since v1)
+> >
+> > I think you need to work on the method you're using to generate your
+> > patches.  There are most definitely changes since v1.  You described
+> > them in your cover letter (which you don't really need for a singleton
+> > patch) instead of here.
+> >
+> >
+> > > @@ -1438,12 +1439,17 @@ static int
+> > ath10k_core_create_board_name(struct ath10k *ar, char *name,
+> > >         }
+> > >
+> > >         if (ar->id.qmi_ids_valid) {
+> > > -               if (with_variant && ar->id.bdf_ext[0] != '\0')
+> > > +               if (with_additional_params && ar->id.bdf_ext[0] != '\0')
+> > >                         scnprintf(name, name_len,
+> > >                                   "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
+> > >                                   ath10k_bus_str(ar->hif.bus),
+> > >                                   ar->id.qmi_board_id, ar->id.qmi_chip_id,
+> > >                                   variant);
+> > > +               else if (with_additional_params)
+> > > +                       scnprintf(name, name_len,
+> > > +                                 "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
+> > > +                                 ath10k_bus_str(ar->hif.bus),
+> > > +                                 ar->id.qmi_board_id, ar->id.qmi_chip_id);
+> >
+> > I believe this is exactly opposite of what Rakesh was requesting.
+> > Specifically, he was trying to eliminate the extra scnprintf() but I
+> > think he still agreed that it was a good idea to generate 3 different
+> > strings.  I believe the proper diff to apply to v1 is:
+> >
+> > https://crrev.com/c/255643
 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Wow, I seem to have deleted the last digit from my URL.  Should have been:
 
-Thanks for the reviews, appreciated.
+https://crrev.com/c/2556437
 
-BR,
-Jani.
+> >
+> > -Doug
+>
+> Hi Abhishek/Doug,
+>
+> I missed on reviewing this change. Also I agree with Doug that this is not the change I was looking for.
+>
+> The argument "with_variant" can be renamed to "with_extra_params". There is no need for any new argument to this function.
+> Case 1: with_extra_params=0,  ar->id.bdf_ext[0] = 0             ->   The default name will be used (bus=snoc,qmi_board_id=0xab)
+> Case 2: with_extra_params=1,  ar->id.bdf_ext[0] = 0             ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd
+> Case 3: with_extra_params=1,  ar->id.bdf_ext[0] = "xyz"      ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd,variant=xyz
+>
+> ar->id.bdf_ext[0] depends on the DT entry for variant field.
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+I'm confused about your suggestion.  Maybe you can help clarify.  Are
+you suggesting:
+
+a) Only two calls to ath10k_core_create_board_name()
+
+I'm pretty sure this will fail in some cases.  Specifically consider
+the case where the device tree has a "variant" defined but the BRD
+file only has one entry for (board-id) and one for (board-id +
+chip-id) but no entry for (board-id + chip-id + variant).  If you are
+only making two calls then I don't think you'll pick the right one.
+
+Said another way...
+
+If the device tree has a variant:
+1. We should prefer a BRD entry that has board-id + chip-id + variant
+2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id
+3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id.
+
+...without 3 calls to ath10k_core_create_board_name() we can't handle
+all 3 cases.
+
+
+b) Three calls to ath10k_core_create_board_name() but the caller
+manually whacks "ar->id.bdf_ext[0]" for one of the calls
+
+This doesn't look like it's a clean solution, but maybe I'm missing something.
+
+
+-Doug
 
 _______________________________________________
 ath10k mailing list
