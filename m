@@ -1,26 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ua1-x944.google.com ([2607:f8b0:4864:20::944])
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khMdb-0004gK-RK
- for ath10k@lists.infradead.org; Tue, 24 Nov 2020 00:56:56 +0000
-Received: by mail-ua1-x944.google.com with SMTP id r23so6299791uak.0
- for <ath10k@lists.infradead.org>; Mon, 23 Nov 2020 16:56:54 -0800 (PST)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com.
- [209.85.217.53])
- by smtp.gmail.com with ESMTPSA id u7sm1469088vsj.1.2020.11.23.16.56.51
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 23 Nov 2020 16:56:51 -0800 (PST)
-Received: by mail-vs1-f53.google.com with SMTP id r14so10167892vsa.13
- for <ath10k@lists.infradead.org>; Mon, 23 Nov 2020 16:56:51 -0800 (PST)
+ id 1khTv8-0005Rg-LZ
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2020 08:43:34 +0000
+Date: Tue, 24 Nov 2020 16:43:15 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 931d6d2c447e770e0670710ad645e30ca1323e56
+Message-ID: <5fbcc7a3.+pXzXt1ziX5wa28H%lkp@intel.com>
 MIME-Version: 1.0
-References: <20201112200906.991086-1-kuabhs@chromium.org>
- <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
-In-Reply-To: <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 23 Nov 2020 16:56:38 -0800
-Message-ID: <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,58 +21,226 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Kumar <kuabhs@chromium.org>
-Cc: netdev <netdev@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Rakesh Pillai <pillair@codeaurora.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 931d6d2c447e770e0670710ad645e30ca1323e56  Merge branch 'pending' into master-pending
 
-On Thu, Nov 12, 2020 at 12:09 PM Abhishek Kumar <kuabhs@chromium.org> wrote:
->
-> In some devices difference in chip-id should be enough to pick
-> the right BDF. Add another support for chip-id based BDF selection.
-> With this new option, ath10k supports 2 fallback options.
->
-> The board name with chip-id as option looks as follows
-> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
->
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> ---
->
-> (no changes since v1)
+elapsed time: 721m
 
-I think you need to work on the method you're using to generate your
-patches.  There are most definitely changes since v1.  You described
-them in your cover letter (which you don't really need for a singleton
-patch) instead of here.
+configs tested: 199
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> @@ -1438,12 +1439,17 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
->         }
->
->         if (ar->id.qmi_ids_valid) {
-> -               if (with_variant && ar->id.bdf_ext[0] != '\0')
-> +               if (with_additional_params && ar->id.bdf_ext[0] != '\0')
->                         scnprintf(name, name_len,
->                                   "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
->                                   ath10k_bus_str(ar->hif.bus),
->                                   ar->id.qmi_board_id, ar->id.qmi_chip_id,
->                                   variant);
-> +               else if (with_additional_params)
-> +                       scnprintf(name, name_len,
-> +                                 "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
-> +                                 ath10k_bus_str(ar->hif.bus),
-> +                                 ar->id.qmi_board_id, ar->id.qmi_chip_id);
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                          axs101_defconfig
+c6x                        evmc6678_defconfig
+mips                          malta_defconfig
+parisc                           alldefconfig
+sh                          kfr2r09_defconfig
+m68k                       m5208evb_defconfig
+powerpc                     asp8347_defconfig
+arm                           viper_defconfig
+mips                         cobalt_defconfig
+arc                              allyesconfig
+sh                         microdev_defconfig
+c6x                         dsk6455_defconfig
+powerpc                     tqm8560_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                        keystone_defconfig
+mips                           ip32_defconfig
+arm                            u300_defconfig
+mips                         bigsur_defconfig
+mips                           jazz_defconfig
+powerpc                      pmac32_defconfig
+mips                       lemote2f_defconfig
+mips                      maltasmvp_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                      tqm8xx_defconfig
+m68k                        mvme16x_defconfig
+powerpc                  storcenter_defconfig
+powerpc                      acadia_defconfig
+powerpc                     mpc512x_defconfig
+mips                        vocore2_defconfig
+mips                     loongson1b_defconfig
+arm                           sama5_defconfig
+arc                            hsdk_defconfig
+mips                       rbtx49xx_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                          badge4_defconfig
+powerpc                     stx_gp3_defconfig
+arm                      integrator_defconfig
+m68k                        m5307c3_defconfig
+mips                      bmips_stb_defconfig
+m68k                         amcore_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                     akebono_defconfig
+sh                             shx3_defconfig
+sparc                               defconfig
+sh                           se7750_defconfig
+arm                       imx_v6_v7_defconfig
+sh                          sdk7786_defconfig
+sh                            titan_defconfig
+xtensa                       common_defconfig
+m68k                        stmark2_defconfig
+mips                  cavium_octeon_defconfig
+sh                          landisk_defconfig
+arm                         bcm2835_defconfig
+powerpc                 mpc8272_ads_defconfig
+sh                        edosk7760_defconfig
+mips                        workpad_defconfig
+m68k                       m5475evb_defconfig
+arm                             ezx_defconfig
+powerpc                       eiger_defconfig
+sh                            hp6xx_defconfig
+powerpc                 mpc85xx_cds_defconfig
+m68k                        m5407c3_defconfig
+arm                            lart_defconfig
+m68k                          amiga_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                      makalu_defconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                         nhk8815_defconfig
+arm                       mainstone_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                           h5000_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                           omap1_defconfig
+arm                          pxa168_defconfig
+powerpc                     ksi8560_defconfig
+mips                         rt305x_defconfig
+arc                      axs103_smp_defconfig
+powerpc                      arches_defconfig
+powerpc                      ppc64e_defconfig
+arm                          collie_defconfig
+arm                       omap2plus_defconfig
+arm                     eseries_pxa_defconfig
+sh                          rsk7269_defconfig
+powerpc                      katmai_defconfig
+arm                          exynos_defconfig
+arm                           corgi_defconfig
+powerpc                       ppc64_defconfig
+powerpc                     taishan_defconfig
+mips                           ci20_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                    sam440ep_defconfig
+xtensa                         virt_defconfig
+mips                         tb0226_defconfig
+sh                         ecovec24_defconfig
+xtensa                    xip_kc705_defconfig
+mips                            ar7_defconfig
+arm                     am200epdkit_defconfig
+arm                         orion5x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20201124
+x86_64               randconfig-a003-20201124
+x86_64               randconfig-a004-20201124
+x86_64               randconfig-a005-20201124
+x86_64               randconfig-a001-20201124
+x86_64               randconfig-a002-20201124
+i386                 randconfig-a004-20201123
+i386                 randconfig-a003-20201123
+i386                 randconfig-a002-20201123
+i386                 randconfig-a005-20201123
+i386                 randconfig-a001-20201123
+i386                 randconfig-a006-20201123
+i386                 randconfig-a004-20201124
+i386                 randconfig-a003-20201124
+i386                 randconfig-a002-20201124
+i386                 randconfig-a005-20201124
+i386                 randconfig-a001-20201124
+i386                 randconfig-a006-20201124
+x86_64               randconfig-a015-20201123
+x86_64               randconfig-a011-20201123
+x86_64               randconfig-a014-20201123
+x86_64               randconfig-a016-20201123
+x86_64               randconfig-a012-20201123
+x86_64               randconfig-a013-20201123
+i386                 randconfig-a012-20201123
+i386                 randconfig-a013-20201123
+i386                 randconfig-a011-20201123
+i386                 randconfig-a016-20201123
+i386                 randconfig-a014-20201123
+i386                 randconfig-a015-20201123
+i386                 randconfig-a012-20201124
+i386                 randconfig-a013-20201124
+i386                 randconfig-a011-20201124
+i386                 randconfig-a016-20201124
+i386                 randconfig-a014-20201124
+i386                 randconfig-a015-20201124
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I believe this is exactly opposite of what Rakesh was requesting.
-Specifically, he was trying to eliminate the extra scnprintf() but I
-think he still agreed that it was a good idea to generate 3 different
-strings.  I believe the proper diff to apply to v1 is:
+clang tested configs:
+x86_64               randconfig-a006-20201123
+x86_64               randconfig-a003-20201123
+x86_64               randconfig-a004-20201123
+x86_64               randconfig-a005-20201123
+x86_64               randconfig-a002-20201123
+x86_64               randconfig-a001-20201123
+x86_64               randconfig-a015-20201124
+x86_64               randconfig-a011-20201124
+x86_64               randconfig-a014-20201124
+x86_64               randconfig-a016-20201124
+x86_64               randconfig-a012-20201124
+x86_64               randconfig-a013-20201124
 
-https://crrev.com/c/255643
-
--Doug
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
