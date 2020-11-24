@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khTv8-0005Rg-LZ
+ id 1khTv9-0005Ra-4Q
  for ath10k@lists.infradead.org; Tue, 24 Nov 2020 08:43:34 +0000
-Date: Tue, 24 Nov 2020 16:43:15 +0800
+Date: Tue, 24 Nov 2020 16:43:09 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 931d6d2c447e770e0670710ad645e30ca1323e56
-Message-ID: <5fbcc7a3.+pXzXt1ziX5wa28H%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS dfa39e2e1d971a38e37c5e8945d515b2facae42d
+Message-ID: <5fbcc79d.AG3RuKCcpFgzTody%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 931d6d2c447e770e0670710ad645e30ca1323e56  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: dfa39e2e1d971a38e37c5e8945d515b2facae42d  Add localversion-wireless-testing-ath
 
 elapsed time: 721m
 
-configs tested: 199
+configs tested: 193
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -75,10 +74,6 @@ arm                           sama5_defconfig
 arc                            hsdk_defconfig
 mips                       rbtx49xx_defconfig
 m68k                        m5272c3_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          badge4_defconfig
-powerpc                     stx_gp3_defconfig
-arm                      integrator_defconfig
 m68k                        m5307c3_defconfig
 mips                      bmips_stb_defconfig
 m68k                         amcore_defconfig
@@ -126,16 +121,14 @@ arc                      axs103_smp_defconfig
 powerpc                      arches_defconfig
 powerpc                      ppc64e_defconfig
 arm                          collie_defconfig
-arm                       omap2plus_defconfig
-arm                     eseries_pxa_defconfig
-sh                          rsk7269_defconfig
-powerpc                      katmai_defconfig
-arm                          exynos_defconfig
 arm                           corgi_defconfig
 powerpc                       ppc64_defconfig
 powerpc                     taishan_defconfig
 mips                           ci20_defconfig
 arc                     nsimosci_hs_defconfig
+arm                             pxa_defconfig
+arm                        magician_defconfig
+arm                         assabet_defconfig
 powerpc                    sam440ep_defconfig
 xtensa                         virt_defconfig
 mips                         tb0226_defconfig
@@ -195,9 +188,9 @@ i386                 randconfig-a006-20201124
 x86_64               randconfig-a015-20201123
 x86_64               randconfig-a011-20201123
 x86_64               randconfig-a014-20201123
-x86_64               randconfig-a016-20201123
 x86_64               randconfig-a012-20201123
 x86_64               randconfig-a013-20201123
+x86_64               randconfig-a016-20201123
 i386                 randconfig-a012-20201123
 i386                 randconfig-a013-20201123
 i386                 randconfig-a011-20201123
