@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from z5.mailgun.us ([104.130.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khTv8-0005Rc-BZ
- for ath10k@lists.infradead.org; Tue, 24 Nov 2020 08:43:31 +0000
-Date: Tue, 24 Nov 2020 16:43:10 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 11af6de4799ee6eeae3730f18fd417414d212e2d
-Message-ID: <5fbcc79e.1XRmxvCWFJk0Ouwi%lkp@intel.com>
+ id 1khUTf-0003QR-Sw
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2020 09:19:13 +0000
+From: "Rakesh Pillai" <pillair@codeaurora.org>
+References: <20201112200906.991086-1-kuabhs@chromium.org>
+ <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
+ <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
+Subject: RE: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
+Date: Tue, 24 Nov 2020 14:48:52 +0530
+Message-ID: <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
 MIME-Version: 1.0
+Content-Language: en-us
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,224 +25,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: 'Doug Anderson' <dianders@chromium.org>, 'Abhishek Kumar' <kuabhs@chromium.org>
+Cc: 'netdev' <netdev@vger.kernel.org>, 'Brian Norris' <briannorris@chromium.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, 'LKML' <linux-kernel@vger.kernel.org>, 'ath10k' <ath10k@lists.infradead.org>, 'Jakub Kicinski' <kuba@kernel.org>, "'David S. Miller'" <davem@davemloft.net>, 'Kalle Valo' <kvalo@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 11af6de4799ee6eeae3730f18fd417414d212e2d  ath11k: Fix the rx_filter flag setting for peer rssi stats
 
-elapsed time: 721m
 
-configs tested: 197
-configs skipped: 3
+> -----Original Message-----
+> From: Doug Anderson <dianders@chromium.org>
+> Sent: Tuesday, November 24, 2020 6:27 AM
+> To: Abhishek Kumar <kuabhs@chromium.org>
+> Cc: Kalle Valo <kvalo@codeaurora.org>; Rakesh Pillai
+> <pillair@codeaurora.org>; LKML <linux-kernel@vger.kernel.org>; ath10k
+> <ath10k@lists.infradead.org>; Brian Norris <briannorris@chromium.org>;
+> linux-wireless <linux-wireless@vger.kernel.org>; David S. Miller
+> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; netdev
+> <netdev@vger.kernel.org>
+> Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF
+> selection
+> 
+> Hi,
+> 
+> On Thu, Nov 12, 2020 at 12:09 PM Abhishek Kumar <kuabhs@chromium.org>
+> wrote:
+> >
+> > In some devices difference in chip-id should be enough to pick
+> > the right BDF. Add another support for chip-id based BDF selection.
+> > With this new option, ath10k supports 2 fallback options.
+> >
+> > The board name with chip-id as option looks as follows
+> > board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+> >
+> > Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+> > Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> > Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> > ---
+> >
+> > (no changes since v1)
+> 
+> I think you need to work on the method you're using to generate your
+> patches.  There are most definitely changes since v1.  You described
+> them in your cover letter (which you don't really need for a singleton
+> patch) instead of here.
+> 
+> 
+> > @@ -1438,12 +1439,17 @@ static int
+> ath10k_core_create_board_name(struct ath10k *ar, char *name,
+> >         }
+> >
+> >         if (ar->id.qmi_ids_valid) {
+> > -               if (with_variant && ar->id.bdf_ext[0] != '\0')
+> > +               if (with_additional_params && ar->id.bdf_ext[0] != '\0')
+> >                         scnprintf(name, name_len,
+> >                                   "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
+> >                                   ath10k_bus_str(ar->hif.bus),
+> >                                   ar->id.qmi_board_id, ar->id.qmi_chip_id,
+> >                                   variant);
+> > +               else if (with_additional_params)
+> > +                       scnprintf(name, name_len,
+> > +                                 "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
+> > +                                 ath10k_bus_str(ar->hif.bus),
+> > +                                 ar->id.qmi_board_id, ar->id.qmi_chip_id);
+> 
+> I believe this is exactly opposite of what Rakesh was requesting.
+> Specifically, he was trying to eliminate the extra scnprintf() but I
+> think he still agreed that it was a good idea to generate 3 different
+> strings.  I believe the proper diff to apply to v1 is:
+> 
+> https://crrev.com/c/255643
+> 
+> -Doug
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi Abhishek/Doug,
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                          axs101_defconfig
-c6x                        evmc6678_defconfig
-mips                          malta_defconfig
-parisc                           alldefconfig
-sh                          kfr2r09_defconfig
-m68k                       m5208evb_defconfig
-powerpc                     asp8347_defconfig
-arm                           viper_defconfig
-mips                         cobalt_defconfig
-arc                              allyesconfig
-sh                         microdev_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     tqm8560_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                        keystone_defconfig
-mips                           ip32_defconfig
-arm                            u300_defconfig
-mips                         bigsur_defconfig
-mips                           jazz_defconfig
-powerpc                      pmac32_defconfig
-mips                       lemote2f_defconfig
-mips                      maltasmvp_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                      tqm8xx_defconfig
-m68k                        mvme16x_defconfig
-powerpc                  storcenter_defconfig
-powerpc                      acadia_defconfig
-powerpc                     mpc512x_defconfig
-mips                        vocore2_defconfig
-mips                     loongson1b_defconfig
-arm                           sama5_defconfig
-arc                            hsdk_defconfig
-mips                       rbtx49xx_defconfig
-m68k                        m5272c3_defconfig
-m68k                        m5307c3_defconfig
-mips                     cu1000-neo_defconfig
-sh                             espt_defconfig
-mips                          ath79_defconfig
-mips                      bmips_stb_defconfig
-m68k                         amcore_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                     akebono_defconfig
-sh                             shx3_defconfig
-sparc                               defconfig
-sh                           se7750_defconfig
-arm                       imx_v6_v7_defconfig
-sh                          sdk7786_defconfig
-sh                            titan_defconfig
-xtensa                       common_defconfig
-m68k                        stmark2_defconfig
-mips                  cavium_octeon_defconfig
-sh                          landisk_defconfig
-arm                         bcm2835_defconfig
-powerpc                 mpc8272_ads_defconfig
-sh                        edosk7760_defconfig
-mips                        workpad_defconfig
-m68k                       m5475evb_defconfig
-arm                             ezx_defconfig
-powerpc                       eiger_defconfig
-sh                            hp6xx_defconfig
-powerpc                 mpc85xx_cds_defconfig
-m68k                        m5407c3_defconfig
-arm                            lart_defconfig
-m68k                          amiga_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      ppc40x_defconfig
-powerpc                      makalu_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                         nhk8815_defconfig
-arm                        clps711x_defconfig
-mips                           ip27_defconfig
-arm                              zx_defconfig
-sh                           se7712_defconfig
-arm                       mainstone_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                           h5000_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                           omap1_defconfig
-arm                          pxa168_defconfig
-powerpc                     ksi8560_defconfig
-mips                         rt305x_defconfig
-arc                      axs103_smp_defconfig
-powerpc                      arches_defconfig
-powerpc                      ppc64e_defconfig
-arm                          collie_defconfig
-arm                           corgi_defconfig
-powerpc                       ppc64_defconfig
-powerpc                     taishan_defconfig
-mips                           ci20_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                    sam440ep_defconfig
-xtensa                         virt_defconfig
-mips                         tb0226_defconfig
-sh                         ecovec24_defconfig
-xtensa                    xip_kc705_defconfig
-mips                            ar7_defconfig
-arm                     am200epdkit_defconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20201124
-x86_64               randconfig-a003-20201124
-x86_64               randconfig-a004-20201124
-x86_64               randconfig-a005-20201124
-x86_64               randconfig-a001-20201124
-x86_64               randconfig-a002-20201124
-i386                 randconfig-a004-20201123
-i386                 randconfig-a003-20201123
-i386                 randconfig-a002-20201123
-i386                 randconfig-a005-20201123
-i386                 randconfig-a001-20201123
-i386                 randconfig-a006-20201123
-i386                 randconfig-a004-20201124
-i386                 randconfig-a003-20201124
-i386                 randconfig-a002-20201124
-i386                 randconfig-a005-20201124
-i386                 randconfig-a001-20201124
-i386                 randconfig-a006-20201124
-x86_64               randconfig-a015-20201123
-x86_64               randconfig-a011-20201123
-x86_64               randconfig-a014-20201123
-x86_64               randconfig-a016-20201123
-x86_64               randconfig-a012-20201123
-x86_64               randconfig-a013-20201123
-i386                 randconfig-a012-20201123
-i386                 randconfig-a013-20201123
-i386                 randconfig-a011-20201123
-i386                 randconfig-a016-20201123
-i386                 randconfig-a014-20201123
-i386                 randconfig-a015-20201123
-i386                 randconfig-a012-20201124
-i386                 randconfig-a013-20201124
-i386                 randconfig-a011-20201124
-i386                 randconfig-a016-20201124
-i386                 randconfig-a014-20201124
-i386                 randconfig-a015-20201124
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+I missed on reviewing this change. Also I agree with Doug that this is not the change I was looking for.
 
-clang tested configs:
-x86_64               randconfig-a006-20201123
-x86_64               randconfig-a003-20201123
-x86_64               randconfig-a004-20201123
-x86_64               randconfig-a005-20201123
-x86_64               randconfig-a002-20201123
-x86_64               randconfig-a001-20201123
-x86_64               randconfig-a015-20201124
-x86_64               randconfig-a011-20201124
-x86_64               randconfig-a014-20201124
-x86_64               randconfig-a016-20201124
-x86_64               randconfig-a012-20201124
-x86_64               randconfig-a013-20201124
+The argument "with_variant" can be renamed to "with_extra_params". There is no need for any new argument to this function.
+Case 1: with_extra_params=0,  ar->id.bdf_ext[0] = 0             ->   The default name will be used (bus=snoc,qmi_board_id=0xab)
+Case 2: with_extra_params=1,  ar->id.bdf_ext[0] = 0             ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd
+Case 3: with_extra_params=1,  ar->id.bdf_ext[0] = "xyz"      ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd,variant=xyz
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ar->id.bdf_ext[0] depends on the DT entry for variant field.
+
+Thanks,
+Rakesh Pillai.
+
 
 _______________________________________________
 ath10k mailing list
