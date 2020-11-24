@@ -1,28 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
+Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khb9C-0002YD-5E
- for ath10k@lists.infradead.org; Tue, 24 Nov 2020 16:26:31 +0000
-Received: by mail-vs1-xe44.google.com with SMTP id s123so10730846vsc.0
- for <ath10k@lists.infradead.org>; Tue, 24 Nov 2020 08:26:29 -0800 (PST)
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com.
- [209.85.217.54])
- by smtp.gmail.com with ESMTPSA id i63sm1295210uad.4.2020.11.24.08.26.26
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 24 Nov 2020 08:26:26 -0800 (PST)
-Received: by mail-vs1-f54.google.com with SMTP id l22so11395138vsa.4
- for <ath10k@lists.infradead.org>; Tue, 24 Nov 2020 08:26:26 -0800 (PST)
+ id 1khcSY-0006Mg-6c
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2020 17:50:36 +0000
+Received: by mail-ot1-x342.google.com with SMTP id z24so6150972oto.6
+ for <ath10k@lists.infradead.org>; Tue, 24 Nov 2020 09:50:33 -0800 (PST)
+Date: Tue, 24 Nov 2020 11:50:29 -0600
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH v2] ath10k: qmi: Skip host capability request for Xiaomi
+ Poco F1
+Message-ID: <20201124175029.GF185852@builder.lan>
+References: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
 MIME-Version: 1.0
-References: <20201112200906.991086-1-kuabhs@chromium.org>
- <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
- <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
- <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
-In-Reply-To: <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Tue, 24 Nov 2020 08:26:14 -0800
-Message-ID: <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
+Content-Disposition: inline
+In-Reply-To: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,123 +26,78 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>, netdev <netdev@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>, ath10k@lists.infradead.org, David S Miller <davem@davemloft.net>, John Stultz <john.stultz@linaro.org>, Jakub Kicinski <kuba@kernel.org>, phone-devel@vger.kernel.org, Sumit Semwal <sumit.semwal@linaro.org>, Kalle Valo <kvalo@codeaurora.org>, Joel S <jo@jsfamily.in>
 
-Hi,
+On Mon 23 Nov 04:28 CST 2020, Amit Pundir wrote:
 
-On Tue, Nov 24, 2020 at 1:19 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> > -----Original Message-----
-> > From: Doug Anderson <dianders@chromium.org>
-> > Sent: Tuesday, November 24, 2020 6:27 AM
-> > To: Abhishek Kumar <kuabhs@chromium.org>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>; Rakesh Pillai
-> > <pillair@codeaurora.org>; LKML <linux-kernel@vger.kernel.org>; ath10k
-> > <ath10k@lists.infradead.org>; Brian Norris <briannorris@chromium.org>;
-> > linux-wireless <linux-wireless@vger.kernel.org>; David S. Miller
-> > <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; netdev
-> > <netdev@vger.kernel.org>
-> > Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF
-> > selection
-> >
-> > Hi,
-> >
-> > On Thu, Nov 12, 2020 at 12:09 PM Abhishek Kumar <kuabhs@chromium.org>
-> > wrote:
-> > >
-> > > In some devices difference in chip-id should be enough to pick
-> > > the right BDF. Add another support for chip-id based BDF selection.
-> > > With this new option, ath10k supports 2 fallback options.
-> > >
-> > > The board name with chip-id as option looks as follows
-> > > board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> > >
-> > > Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> > > Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> > > Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> > > ---
-> > >
-> > > (no changes since v1)
-> >
-> > I think you need to work on the method you're using to generate your
-> > patches.  There are most definitely changes since v1.  You described
-> > them in your cover letter (which you don't really need for a singleton
-> > patch) instead of here.
-> >
-> >
-> > > @@ -1438,12 +1439,17 @@ static int
-> > ath10k_core_create_board_name(struct ath10k *ar, char *name,
-> > >         }
-> > >
-> > >         if (ar->id.qmi_ids_valid) {
-> > > -               if (with_variant && ar->id.bdf_ext[0] != '\0')
-> > > +               if (with_additional_params && ar->id.bdf_ext[0] != '\0')
-> > >                         scnprintf(name, name_len,
-> > >                                   "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
-> > >                                   ath10k_bus_str(ar->hif.bus),
-> > >                                   ar->id.qmi_board_id, ar->id.qmi_chip_id,
-> > >                                   variant);
-> > > +               else if (with_additional_params)
-> > > +                       scnprintf(name, name_len,
-> > > +                                 "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
-> > > +                                 ath10k_bus_str(ar->hif.bus),
-> > > +                                 ar->id.qmi_board_id, ar->id.qmi_chip_id);
-> >
-> > I believe this is exactly opposite of what Rakesh was requesting.
-> > Specifically, he was trying to eliminate the extra scnprintf() but I
-> > think he still agreed that it was a good idea to generate 3 different
-> > strings.  I believe the proper diff to apply to v1 is:
-> >
-> > https://crrev.com/c/255643
+> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> message in ath10k_qmi_host_cap_send_sync(), but we can still
+> bring up WiFi services successfully on AOSP if we ignore it.
+> 
+> We suspect either the host cap is not implemented or there
+> may be firmware specific issues. Firmware version is
+> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+> 
+> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> quirk, then the host capability request does get accepted,
+> but we run into fatal "msa info req rejected" error and
+> WiFi interface doesn't come up.
+> 
+> Attempts are being made to debug the failure reasons but no
+> luck so far. Hence this device specific workaround instead
+> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> linux-firmware project but it didn't help and neither did
+> building board-2.bin file from stock bdwlan* files.
+> 
+> This workaround will be removed once we have a viable fix.
+> Thanks to postmarketOS guys for catching this.
+> 
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> ---
+> We dropped this workaround last time in the favor of
+> a generic dts quirk to skip host cap check. But that
+> is under under discussion for a while now,
+> https://lkml.org/lkml/2020/9/25/1119, so resending
+> this short term workaround for the time being.
+> 
 
-Wow, I seem to have deleted the last digit from my URL.  Should have been:
+I still want the quirk, because we have this on other machines as well.
 
-https://crrev.com/c/2556437
+> v2: ath10k-check complained about a too long line last
+>     time, so moved the comment to a new line.
+>     
+>  drivers/net/wireless/ath/ath10k/qmi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index ae6b1f402adf..1c58b0ff1d29 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -653,7 +653,9 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+>  
+>  	/* older FW didn't support this request, which is not fatal */
+>  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+> -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
+> +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
+> +	    /* Xiaomi Poco F1 workaround */
 
-> >
-> > -Doug
->
-> Hi Abhishek/Doug,
->
-> I missed on reviewing this change. Also I agree with Doug that this is not the change I was looking for.
->
-> The argument "with_variant" can be renamed to "with_extra_params". There is no need for any new argument to this function.
-> Case 1: with_extra_params=0,  ar->id.bdf_ext[0] = 0             ->   The default name will be used (bus=snoc,qmi_board_id=0xab)
-> Case 2: with_extra_params=1,  ar->id.bdf_ext[0] = 0             ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd
-> Case 3: with_extra_params=1,  ar->id.bdf_ext[0] = "xyz"      ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd,variant=xyz
->
-> ar->id.bdf_ext[0] depends on the DT entry for variant field.
+If we go with a temporary approach this comment should describe why this
+is here. (And it probably shouldn't be in the middle of the expression
+list in the conditional.
 
-I'm confused about your suggestion.  Maybe you can help clarify.  Are
-you suggesting:
+Regards,
+Bjorn
 
-a) Only two calls to ath10k_core_create_board_name()
-
-I'm pretty sure this will fail in some cases.  Specifically consider
-the case where the device tree has a "variant" defined but the BRD
-file only has one entry for (board-id) and one for (board-id +
-chip-id) but no entry for (board-id + chip-id + variant).  If you are
-only making two calls then I don't think you'll pick the right one.
-
-Said another way...
-
-If the device tree has a variant:
-1. We should prefer a BRD entry that has board-id + chip-id + variant
-2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id
-3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id.
-
-...without 3 calls to ath10k_core_create_board_name() we can't handle
-all 3 cases.
-
-
-b) Three calls to ath10k_core_create_board_name() but the caller
-manually whacks "ar->id.bdf_ext[0]" for one of the calls
-
-This doesn't look like it's a clean solution, but maybe I'm missing something.
-
-
--Doug
+> +	    !of_machine_is_compatible("xiaomi,beryllium")) {
+>  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+>  		ret = -EINVAL;
+>  		goto out;
+> -- 
+> 2.7.4
+> 
 
 _______________________________________________
 ath10k mailing list
