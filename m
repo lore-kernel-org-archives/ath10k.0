@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ki3bi-0006VY-32
- for ath10k@lists.infradead.org; Wed, 25 Nov 2020 22:49:50 +0000
-Date: Wed, 25 Nov 2020 14:49:47 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next 1/2] soc: qcom: ipa: Constify static qmi structs
-Message-ID: <20201125144947.685a0f14@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <ee9dfc18-092e-6a5c-d310-d4ce52db6042@ieee.org>
-References: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
- <20201122234031.33432-2-rikard.falkeborn@gmail.com>
- <ee9dfc18-092e-6a5c-d310-d4ce52db6042@ieee.org>
+ id 1kiJxT-0006dP-Ip
+ for ath10k@lists.infradead.org; Thu, 26 Nov 2020 16:17:24 +0000
+From: Youghandhar Chintala <youghand@codeaurora.org>
+Subject: [PATCH] ath10k: skip the wait for completion to recovery in shutdown
+ path
+Date: Thu, 26 Nov 2020 21:46:56 +0530
+Message-Id: <20201126161656.18802-1-youghand@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,20 +21,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alex Elder <elder@ieee.org>
-Cc: Alex Elder <elder@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Rikard Falkeborn <rikard.falkeborn@gmail.com>, ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: kuabhs@chromium.org, Youghandhar Chintala <youghand@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dianders@chromium.org, pillair@codeaurora.org
 
-On Wed, 25 Nov 2020 15:45:05 -0600 Alex Elder wrote:
-> On 11/22/20 5:40 PM, Rikard Falkeborn wrote:
-> > These are only used as input arguments to qmi_handle_init() which
-> > accepts const pointers to both qmi_ops and qmi_msg_handler. Make them
-> > const to allow the compiler to put them in read-only memory.
-> > 
-> > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>  
-> 
-> Acked-by: Alex Elder <elder@linaro.org>
+Currently in the shutdown callback we wait for recovery to complete
+before freeing up the resources. This can lead to unwanted delay
+during the shutdown and thereby increase the shutdown time.
 
-Applied to net-next, thanks!
+As an attempt to take less time during shutdown, remove the wait for
+recovery completion in the shutdown callback.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+
+Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
+Change-Id: I0474ab7dc3730aaacac888bb9a7acc2fa0e8b4f8
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 84666f72bdfa..15580a91fe98 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+ 
+ 	reinit_completion(&ar->driver_recovery);
+ 
+-	if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+-		wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+-
+ 	set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+ 
+ 	ath10k_core_unregister(ar);
+-- 
+2.26.0
+
 
 _______________________________________________
 ath10k mailing list
