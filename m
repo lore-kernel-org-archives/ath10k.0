@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiJxT-0006dP-Ip
- for ath10k@lists.infradead.org; Thu, 26 Nov 2020 16:17:24 +0000
+ id 1kiKsR-00077A-4h
+ for ath10k@lists.infradead.org; Thu, 26 Nov 2020 17:16:15 +0000
 From: Youghandhar Chintala <youghand@codeaurora.org>
-Subject: [PATCH] ath10k: skip the wait for completion to recovery in shutdown
- path
-Date: Thu, 26 Nov 2020 21:46:56 +0530
-Message-Id: <20201126161656.18802-1-youghand@codeaurora.org>
+Subject: [PATCH v2] ath10k: skip the wait for completion to recovery in
+ shutdown path
+Date: Thu, 26 Nov 2020 22:45:53 +0530
+Message-Id: <20201126171553.2097-1-youghand@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -34,7 +34,9 @@ recovery completion in the shutdown callback.
 Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
 Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
-Change-Id: I0474ab7dc3730aaacac888bb9a7acc2fa0e8b4f8
+---
+Changes from v1:
+-Removed stray change-id text
 ---
  drivers/net/wireless/ath/ath10k/snoc.c | 3 ---
  1 file changed, 3 deletions(-)
