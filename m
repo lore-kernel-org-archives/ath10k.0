@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiTdz-0002Kc-Ok
+ id 1kiTdz-0002Kb-Ni
  for ath10k@lists.infradead.org; Fri, 27 Nov 2020 02:37:57 +0000
-Date: Fri, 27 Nov 2020 10:37:19 +0800
+Date: Fri, 27 Nov 2020 10:37:13 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- fae0385b29679a13523b3d14f570f0fdc46cd48d
-Message-ID: <5fc0665f.Gdld+/u51aMBqpKt%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 2ee0c2163e8d4787e790e9783edc9754f058280b
+Message-ID: <5fc06659.L/oK97gVmmNELwjS%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: fae0385b29679a13523b3d14f570f0fdc46cd48d  ath11k: remove "ath11k_mac_get_ar_vdev_stop_status" references
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 2ee0c2163e8d4787e790e9783edc9754f058280b  Add localversion-wireless-testing-ath
 
-elapsed time: 723m
+elapsed time: 722m
 
-configs tested: 140
+configs tested: 145
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,6 +40,11 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                            zeus_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                         virt_defconfig
+sh                           se7751_defconfig
 h8300                       h8s-sim_defconfig
 powerpc                 mpc834x_itx_defconfig
 sh                          rsk7203_defconfig
@@ -69,6 +73,7 @@ arm                        magician_defconfig
 powerpc                   currituck_defconfig
 powerpc                     tqm8548_defconfig
 sh                            migor_defconfig
+powerpc                     skiroot_defconfig
 powerpc                     mpc5200_defconfig
 powerpc                      chrp32_defconfig
 arm                      tct_hammer_defconfig
@@ -96,7 +101,6 @@ powerpc                 mpc8315_rdb_defconfig
 arm                          pxa3xx_defconfig
 mips                       rbtx49xx_defconfig
 powerpc                     tqm8540_defconfig
-powerpc                     skiroot_defconfig
 arm                        trizeps4_defconfig
 arm                         nhk8815_defconfig
 powerpc                 mpc8272_ads_defconfig
