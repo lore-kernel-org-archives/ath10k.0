@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiTe0-0002Kk-W1
- for ath10k@lists.infradead.org; Fri, 27 Nov 2020 02:37:59 +0000
-Date: Fri, 27 Nov 2020 10:37:25 +0800
+ id 1kiTdz-0002Kc-Ok
+ for ath10k@lists.infradead.org; Fri, 27 Nov 2020 02:37:57 +0000
+Date: Fri, 27 Nov 2020 10:37:19 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 5d9d3fee1c6b7c65e896ef87a604d7ba6743f490
-Message-ID: <5fc06665.Rm8frW8a29KyMlts%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ fae0385b29679a13523b3d14f570f0fdc46cd48d
+Message-ID: <5fc0665f.Gdld+/u51aMBqpKt%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,21 +24,21 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 5d9d3fee1c6b7c65e896ef87a604d7ba6743f490  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
+branch HEAD: fae0385b29679a13523b3d14f570f0fdc46cd48d  ath11k: remove "ath11k_mac_get_ar_vdev_stop_status" references
 
-elapsed time: 722m
+elapsed time: 723m
 
-configs tested: 133
+configs tested: 140
 configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
-arm64                               defconfig
 arm                                 defconfig
 arm64                            allyesconfig
+arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 h8300                       h8s-sim_defconfig
@@ -55,14 +55,20 @@ sh                   sh7724_generic_defconfig
 m68k                        m5307c3_defconfig
 csky                             alldefconfig
 xtensa                          iss_defconfig
-arc                     haps_hs_smp_defconfig
-arm                        mini2440_defconfig
-powerpc                   currituck_defconfig
-sh                           se7343_defconfig
-powerpc                 canyonlands_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      acadia_defconfig
+arc                              allyesconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                     mpc83xx_defconfig
+arm                           viper_defconfig
+s390                                defconfig
 xtensa                    xip_kc705_defconfig
 parisc                generic-32bit_defconfig
 arm                        magician_defconfig
+powerpc                   currituck_defconfig
+powerpc                     tqm8548_defconfig
+sh                            migor_defconfig
 powerpc                     mpc5200_defconfig
 powerpc                      chrp32_defconfig
 arm                      tct_hammer_defconfig
@@ -72,12 +78,15 @@ powerpc                      pasemi_defconfig
 sh                          sdk7786_defconfig
 powerpc                     sequoia_defconfig
 arm                         lpc32xx_defconfig
+powerpc                     akebono_defconfig
+arm                     davinci_all_defconfig
+powerpc                   bluestone_defconfig
+mips                          rb532_defconfig
+mips                           ip32_defconfig
+c6x                        evmc6474_defconfig
 arm                         hackkit_defconfig
 sh                          r7780mp_defconfig
 m68k                        m5407c3_defconfig
-sh                ecovec24-romimage_defconfig
-sh                            titan_defconfig
-arc                    vdk_hs38_smp_defconfig
 powerpc                      arches_defconfig
 x86_64                           alldefconfig
 sh                             shx3_defconfig
@@ -107,7 +116,6 @@ m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
-arc                              allyesconfig
 nds32                             allnoconfig
 c6x                              allyesconfig
 nds32                               defconfig
@@ -122,7 +130,6 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
-s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
