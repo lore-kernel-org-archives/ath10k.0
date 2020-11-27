@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiTdz-0002Kb-Ni
- for ath10k@lists.infradead.org; Fri, 27 Nov 2020 02:37:57 +0000
-Date: Fri, 27 Nov 2020 10:37:13 +0800
+ id 1kiUNR-0000Zj-Oa
+ for ath10k@lists.infradead.org; Fri, 27 Nov 2020 03:24:58 +0000
+Date: Fri, 27 Nov 2020 11:24:10 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 2ee0c2163e8d4787e790e9783edc9754f058280b
-Message-ID: <5fc06659.L/oK97gVmmNELwjS%lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 6f481de563dd108bd3df616c80e60f308b7a48e3
+Message-ID: <5fc0715a.Cmr7jiqiduReshYj%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 2ee0c2163e8d4787e790e9783edc9754f058280b  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 6f481de563dd108bd3df616c80e60f308b7a48e3  ath11k: purge rx pktlog when entering suspend
 
-elapsed time: 722m
+elapsed time: 769m
 
-configs tested: 145
+configs tested: 93
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -37,89 +38,35 @@ More configs may be tested in the coming days.
 gcc tested configs:
 arm                                 defconfig
 arm64                            allyesconfig
-arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                            zeus_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                    ge_imp3a_defconfig
-xtensa                         virt_defconfig
-sh                           se7751_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                          rsk7203_defconfig
-arm                         lubbock_defconfig
-sparc                       sparc32_defconfig
-powerpc                 mpc837x_mds_defconfig
-arc                          axs101_defconfig
-mips                      pic32mzda_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc64                        alldefconfig
-sh                   sh7724_generic_defconfig
-m68k                        m5307c3_defconfig
-csky                             alldefconfig
-xtensa                          iss_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      acadia_defconfig
-arc                              allyesconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                     mpc83xx_defconfig
-arm                           viper_defconfig
-s390                                defconfig
-xtensa                    xip_kc705_defconfig
-parisc                generic-32bit_defconfig
-arm                        magician_defconfig
+arm64                               defconfig
+powerpc                 mpc832x_rdb_defconfig
 powerpc                   currituck_defconfig
-powerpc                     tqm8548_defconfig
+ia64                            zx1_defconfig
+powerpc                     tqm8560_defconfig
+sh                           se7721_defconfig
+arm                          moxart_defconfig
+sh                               alldefconfig
+powerpc                 mpc8272_ads_defconfig
+arm                            dove_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                      bamboo_defconfig
 sh                            migor_defconfig
-powerpc                     skiroot_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      chrp32_defconfig
-arm                      tct_hammer_defconfig
-powerpc                     rainier_defconfig
-m68k                        mvme147_defconfig
+arm                        trizeps4_defconfig
 powerpc                      pasemi_defconfig
 sh                          sdk7786_defconfig
 powerpc                     sequoia_defconfig
 arm                         lpc32xx_defconfig
-powerpc                     akebono_defconfig
-arm                     davinci_all_defconfig
-powerpc                   bluestone_defconfig
-mips                          rb532_defconfig
-mips                           ip32_defconfig
-c6x                        evmc6474_defconfig
-arm                         hackkit_defconfig
-sh                          r7780mp_defconfig
-m68k                        m5407c3_defconfig
-powerpc                      arches_defconfig
-x86_64                           alldefconfig
-sh                             shx3_defconfig
-powerpc                        cell_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                          pxa3xx_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     tqm8540_defconfig
-arm                        trizeps4_defconfig
-arm                         nhk8815_defconfig
-powerpc                 mpc8272_ads_defconfig
-xtensa                              defconfig
-mips                       lemote2f_defconfig
-xtensa                  cadence_csp_defconfig
-mips                     decstation_defconfig
-arc                            hsdk_defconfig
-powerpc                      ppc40x_defconfig
-sh                        dreamcast_defconfig
-arm                       spear13xx_defconfig
-um                            kunit_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
+arc                              allyesconfig
 nds32                             allnoconfig
 c6x                              allyesconfig
 nds32                               defconfig
@@ -134,6 +81,8 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
