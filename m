@@ -1,18 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124])
+Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kk5Dx-0005mR-6Y
- for ath10k@lists.infradead.org; Tue, 01 Dec 2020 12:57:42 +0000
-Received: by mail-qt1-f200.google.com with SMTP id o1so1178474qtp.7
- for <ath10k@lists.infradead.org>; Tue, 01 Dec 2020 04:57:38 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: ath10k: Missing airtime scheduler parts
-In-Reply-To: <3078279.oiGErgHkdL@ripper>
-References: <2631481.BEx9A2HvPv@ripper> <87a6uxx092.fsf@toke.dk>
- <3078279.oiGErgHkdL@ripper>
-Date: Tue, 01 Dec 2020 13:57:34 +0100
-Message-ID: <875z5l3cqp.fsf@toke.dk>
+ id 1kkBRT-0006L2-AG
+ for ath10k@lists.infradead.org; Tue, 01 Dec 2020 19:36:04 +0000
+Received: by mail-ot1-x344.google.com with SMTP id z23so2794816oti.13
+ for <ath10k@lists.infradead.org>; Tue, 01 Dec 2020 11:36:01 -0800 (PST)
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com.
+ [209.85.161.54])
+ by smtp.gmail.com with ESMTPSA id t4sm161150oou.34.2020.12.01.11.35.57
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 01 Dec 2020 11:35:57 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id f8so691447oou.0
+ for <ath10k@lists.infradead.org>; Tue, 01 Dec 2020 11:35:57 -0800 (PST)
 MIME-Version: 1.0
+References: <20201126171553.2097-1-youghand@codeaurora.org>
+In-Reply-To: <20201126171553.2097-1-youghand@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Tue, 1 Dec 2020 11:35:44 -0800
+Message-ID: <CA+ASDXOvnfETrKs2ZbayZsRkUEpUbaeMGRkZNRCXa=M28HHE-w@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in
+ shutdown path
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +29,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@narfation.org>, linux-wireless@vger.kernel.org
-Cc: Yibo Zhao <yiboz@codeaurora.org>, ath10k@lists.infradead.org
+To: Youghandhar Chintala <youghand@codeaurora.org>
+Cc: kuabhs@chromium.org, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Doug Anderson <dianders@chromium.org>, Rakesh Pillai <pillair@codeaurora.org>
 
-U3ZlbiBFY2tlbG1hbm4gPHN2ZW5AbmFyZmF0aW9uLm9yZz4gd3JpdGVzOgoKPiBIaSwKPgo+IHRo
-YW5rcyBmb3IgdGhlIHJlcGx5LiBJIHdpbGwgZm9yd2FyZCB0aGUgaW5mb3JtYXRpb24uCj4KPiBP
-biBUdWVzZGF5LCAxIERlY2VtYmVyIDIwMjAgMTE6NTY6NTcgQ0VUIFRva2UgSMO4aWxhbmQtSsO4
-cmdlbnNlbiB3cm90ZToKPj4gSSBkaWQgcmVjZW50bHkgcmViYXNlIHRoYXQgcGF0Y2ggdG8gdGhl
-IGN1cnJlbnQgbWFjODAyMTEtbmV4dCwgYWN0dWFsbHkuCj4+IFNlbnQgaXQgb2ZmIHRvIEZlbGl4
-IGZvciBzb21lIHRlc3RpbmcsIGJ1dCBpZiB5b3Ugd2FuIHRvIGdpdmUgaXQgYSBnbyBJCj4+IGNh
-biBwb3N0IGl0IHRvIHRoZSBsaXN0IGFzIHdlbGwgCj4KPiBUaGFuayB5b3UgZm9yIHRoZSBvZmZl
-ci4gQnV0IEkgZG91YnQgdGhhdCBJIHdpbGwgZmluZCB0aW1lIGZvciBpdAo+IGJlZm9yZSBuZXh0
-IHllYXIuCgpBbHJpZ2h0LCBmYWlyIGVub3VnaDsgSSdsbCBnaXZlIEZlbGl4IGEgY2hhbmNlIHRv
-IHRlc3QgaXQgZmlyc3QsIHRoZW4uLi4gOikKCi1Ub2tlCgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
+<youghand@codeaurora.org> wrote:
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+>
+>         reinit_completion(&ar->driver_recovery);
+>
+> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+
+Hmm, this is the only instance of waiting for this completion, which
+means that after this patch, 'ar->driver_recovery' is doing exactly
+nothing. Should you instead just remove it completely?
+
+Also, if your patch is correct, it seems like the completion was never
+needed in the first place. You should probably address such a claim in
+the commit message; is there truly no need to wait here? Or was there
+some purpose here, but that purpose was accomplished some other way?
+Or was there a purpose, and that purpose was misguided? It feels to me
+like it is indeed correct to remove this (shutdown should be performed
+promptly; we don't need to delay it just to try to "finish
+recovering"), but it's your job to convince the reader.
+
+Brian
+
+> -
+>         set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+>
+>         ath10k_core_unregister(ar);
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
