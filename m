@@ -1,30 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vs1-xe34.google.com ([2607:f8b0:4864:20::e34])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kjohV-0002Gw-FP
- for ath10k@lists.infradead.org; Mon, 30 Nov 2020 19:19:06 +0000
-Received: by mail-vs1-xe34.google.com with SMTP id q5so4464211vsg.0
- for <ath10k@lists.infradead.org>; Mon, 30 Nov 2020 11:19:01 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com.
- [209.85.222.43])
- by smtp.gmail.com with ESMTPSA id h16sm8144975uaw.7.2020.11.30.11.18.58
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 30 Nov 2020 11:18:58 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id x13so4112075uar.4
- for <ath10k@lists.infradead.org>; Mon, 30 Nov 2020 11:18:58 -0800 (PST)
+ id 1kjxGl-0002Kq-JW
+ for ath10k@lists.infradead.org; Tue, 01 Dec 2020 04:28:04 +0000
+Date: Tue, 01 Dec 2020 12:27:40 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
+ 6244933ddba318b36bb00c48eeb8d63a24a901c2
+Message-ID: <5fc5c63c.1Z4r4xfSf3PqcVv1%lkp@intel.com>
 MIME-Version: 1.0
-References: <20201112200906.991086-1-kuabhs@chromium.org>
- <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
- <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
- <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
- <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
- <002d01d6c2dd$4386d880$ca948980$@codeaurora.org>
-In-Reply-To: <002d01d6c2dd$4386d880$ca948980$@codeaurora.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 30 Nov 2020 11:18:46 -0800
-Message-ID: <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,68 +21,196 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>, netdev <netdev@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
+branch HEAD: 6244933ddba318b36bb00c48eeb8d63a24a901c2  ath11k: peer delete synchronization with firmware
 
-On Tue, Nov 24, 2020 at 7:44 PM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> > > I missed on reviewing this change. Also I agree with Doug that this is not
-> > the change I was looking for.
-> > >
-> > > The argument "with_variant" can be renamed to "with_extra_params".
-> > There is no need for any new argument to this function.
-> > > Case 1: with_extra_params=0,  ar->id.bdf_ext[0] = 0             ->   The default
-> > name will be used (bus=snoc,qmi_board_id=0xab)
-> > > Case 2: with_extra_params=1,  ar->id.bdf_ext[0] = 0             ->
-> > bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd
-> > > Case 3: with_extra_params=1,  ar->id.bdf_ext[0] = "xyz"      ->
-> > bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd,variant=xyz
-> > >
-> > > ar->id.bdf_ext[0] depends on the DT entry for variant field.
-> >
-> > I'm confused about your suggestion.  Maybe you can help clarify.  Are
-> > you suggesting:
-> >
-> > a) Only two calls to ath10k_core_create_board_name()
-> >
-> > I'm pretty sure this will fail in some cases.  Specifically consider
-> > the case where the device tree has a "variant" defined but the BRD
-> > file only has one entry for (board-id) and one for (board-id +
-> > chip-id) but no entry for (board-id + chip-id + variant).  If you are
-> > only making two calls then I don't think you'll pick the right one.
-> >
-> > Said another way...
-> >
-> > If the device tree has a variant:
-> > 1. We should prefer a BRD entry that has board-id + chip-id + variant
-> > 2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id
-> > 3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id.
-> >
-> > ...without 3 calls to ath10k_core_create_board_name() we can't handle
-> > all 3 cases.
->
-> This can be handled by two calls to ath10k_core_create_board_name
-> 1) ath10k_core_create_board_name(ar, boardname, sizeof(boardname), true)   :  As per my suggestions, this can result in two possible board names
->     a) If DT have the "variant" node, it outputs the #1 from your suggestion  (1. We should prefer a BRD entry that has board-id + chip-id + variant)
->     b) If DT does not have the "variant" node, it outputs the #2 from your suggestion (2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id)
->
-> 2) ath10k_core_create_board_name(ar, boardname, sizeof(boardname), false)    :  This is the second call to this function and outputs the #3 from your suggestion (3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id)
+elapsed time: 725m
 
-What I'm trying to say is this.  Imagine that:
+configs tested: 169
+configs skipped: 4
 
-a) the device tree has the "variant" property.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-b) the BRD file has two entries, one for "board-id" (1) and one for
-"board-id + chip-id" (2).  It doesn't have one for "board-id + chip-id
-+ variant" (3).
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm                              allmodconfig
+arm                           sama5_defconfig
+sh                             espt_defconfig
+sh                        edosk7705_defconfig
+arm                      jornada720_defconfig
+mips                      malta_kvm_defconfig
+mips                         db1xxx_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                        neponset_defconfig
+sh                         ecovec24_defconfig
+arm                         cm_x300_defconfig
+mips                           ip27_defconfig
+mips                      pic32mzda_defconfig
+arm                       imx_v6_v7_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                       maple_defconfig
+xtensa                    xip_kc705_defconfig
+sh                         apsh4a3a_defconfig
+c6x                         dsk6455_defconfig
+powerpc                      ppc64e_defconfig
+openrisc                 simple_smp_defconfig
+s390                       zfcpdump_defconfig
+mips                           gcw0_defconfig
+arm                      pxa255-idp_defconfig
+arm                        multi_v7_defconfig
+s390                          debug_defconfig
+powerpc                      ep88xc_defconfig
+arm                       aspeed_g5_defconfig
+arm                            mmp2_defconfig
+sh                   secureedge5410_defconfig
+arm                         lpc32xx_defconfig
+powerpc                     mpc5200_defconfig
+mips                         tb0287_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                 canyonlands_defconfig
+mips                            gpr_defconfig
+arc                        nsimosci_defconfig
+arm                        clps711x_defconfig
+arm                           corgi_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                          r7785rp_defconfig
+powerpc                    sam440ep_defconfig
+mips                        workpad_defconfig
+arm                          gemini_defconfig
+mips                     cu1000-neo_defconfig
+ia64                        generic_defconfig
+powerpc                     kilauea_defconfig
+powerpc                    adder875_defconfig
+sh                               j2_defconfig
+powerpc                      katmai_defconfig
+arc                           tb10x_defconfig
+sh                          polaris_defconfig
+arm                             rpc_defconfig
+x86_64                           alldefconfig
+arm                           h5000_defconfig
+powerpc                        cell_defconfig
+arm                        trizeps4_defconfig
+mips                      fuloong2e_defconfig
+m68k                         apollo_defconfig
+arm                           spitz_defconfig
+arm                         vf610m4_defconfig
+arm                          lpd270_defconfig
+nios2                         10m50_defconfig
+um                           x86_64_defconfig
+powerpc                     skiroot_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                        fsp2_defconfig
+mips                       capcella_defconfig
+powerpc                      ppc44x_defconfig
+arm                          imote2_defconfig
+xtensa                           allyesconfig
+h8300                       h8s-sim_defconfig
+powerpc                   bluestone_defconfig
+powerpc                   lite5200b_defconfig
+m68k                        m5272c3_defconfig
+powerpc                       ebony_defconfig
+arm                       netwinder_defconfig
+powerpc                     tqm8555_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                   motionpro_defconfig
+mips                             allyesconfig
+riscv                               defconfig
+sh                            hp6xx_defconfig
+sh                          lboxre2_defconfig
+arm                             pxa_defconfig
+powerpc                 xes_mpc85xx_defconfig
+xtensa                          iss_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                       multi_v4t_defconfig
+mips                     cu1830-neo_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                     stx_gp3_defconfig
+arm                          simpad_defconfig
+arm                              zx_defconfig
+arm                        realview_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                     kmeter1_defconfig
+mips                      maltasmvp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201130
+i386                 randconfig-a002-20201130
+i386                 randconfig-a003-20201130
+i386                 randconfig-a005-20201130
+i386                 randconfig-a006-20201130
+i386                 randconfig-a001-20201130
+x86_64               randconfig-a014-20201130
+x86_64               randconfig-a015-20201130
+x86_64               randconfig-a016-20201130
+x86_64               randconfig-a011-20201130
+x86_64               randconfig-a012-20201130
+x86_64               randconfig-a013-20201130
+i386                 randconfig-a013-20201130
+i386                 randconfig-a012-20201130
+i386                 randconfig-a011-20201130
+i386                 randconfig-a016-20201130
+i386                 randconfig-a015-20201130
+i386                 randconfig-a014-20201130
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-With your suggestion we'll see the "variant" property in the device
-tree.  That means we'll search for (1) and (3).  (3) isn't there, so
-we'll pick (1).  ...but we really should have picked (2), right?
+clang tested configs:
+x86_64               randconfig-a002-20201130
+x86_64               randconfig-a006-20201130
+x86_64               randconfig-a005-20201130
+x86_64               randconfig-a004-20201130
+x86_64               randconfig-a001-20201130
+x86_64               randconfig-a003-20201130
 
--Doug
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
