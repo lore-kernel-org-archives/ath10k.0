@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
+Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kk19z-0006tI-SM
- for ath10k@lists.infradead.org; Tue, 01 Dec 2020 08:37:22 +0000
-Received: by mail-io1-xd44.google.com with SMTP id i9so803713ioo.2
- for <ath10k@lists.infradead.org>; Tue, 01 Dec 2020 00:37:17 -0800 (PST)
+ id 1kk1Be-00071S-2H
+ for ath10k@lists.infradead.org; Tue, 01 Dec 2020 08:39:02 +0000
+Received: by mail-io1-xd43.google.com with SMTP id z136so799616iof.3
+ for <ath10k@lists.infradead.org>; Tue, 01 Dec 2020 00:39:01 -0800 (PST)
 MIME-Version: 1.0
 References: <20201120085312.4355-1-cjhuang@codeaurora.org>
- <20201120085312.4355-2-cjhuang@codeaurora.org>
- <CA+ASDXMRPRPD0XFJeHTRv3Bc13VFehkyDoYHQfaA0cP-STDOLg@mail.gmail.com>
- <8f0121e9996bad2266a928279e7eb26a@codeaurora.org>
-In-Reply-To: <8f0121e9996bad2266a928279e7eb26a@codeaurora.org>
+ <20201120085312.4355-3-cjhuang@codeaurora.org>
+In-Reply-To: <20201120085312.4355-3-cjhuang@codeaurora.org>
 From: Abhishek Kumar <kuabhs@chromium.org>
-Date: Tue, 1 Dec 2020 00:37:04 -0800
-Message-ID: <CACTWRwt43EJ9njgtJvVEd9vx3Abs7=X6cDrOL4aAqPRMQyJB8A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] nl80211: add common API to configure SAR power
- limitations.
+Date: Tue, 1 Dec 2020 00:38:49 -0800
+Message-ID: <CACTWRwtMJEoDY3hZKYL-w4h0t85vMPpHktHJH8xt51i6EUu52Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] mac80211: add ieee80211_set_sar_specs
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,86 +26,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Carl Huang <cjhuang@codeaurora.org>
-Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, Abhishek Kumar <kuabhs@google.com>
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, Douglas Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>
 
-The V2 patch looks good to me.
-Regarding Brian's comment
-
-> [1] By the way, you aren't checking for duplicates; so users could
-> pass the same index many times, and it's not clear from the API
-> definition what should happen. It seems the current implementation is
-> that you'll just use the last value provided.
-
-I don't think we should be adding any logic in the kernel to check for
-duplicates, but rather userspace should take care of those. As long as
-the data provided abides by the data policy, the kernel should bother.
-But I do agree with Brian's other comment that it might be made more
-clear in comment. If at all a V3 is needed, then we should add that,
-or else it looks fine.
-
+Changes LGTM,
 Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
 
 Thanks
 Abhishek
 
-On Mon, Nov 30, 2020 at 2:10 AM Carl Huang <cjhuang@codeaurora.org> wrote:
+On Fri, Nov 20, 2020 at 12:54 AM Carl Huang <cjhuang@codeaurora.org> wrote:
 >
-> On 2020-11-21 10:42, Brian Norris wrote:
-> > On Fri, Nov 20, 2020 at 12:53 AM Carl Huang <cjhuang@codeaurora.org>
-> > wrote:
-> >>
-> >> NL80211_CMD_SET_SAR_SPECS is added to configure SAR from
-> >> user space. NL80211_ATTR_SAR_SPEC is used to pass the SAR
-> >> power specification when used with NL80211_CMD_SET_SAR_SPECS.
-> >>
-> >> Wireless driver needs to register SAR type, supported frequency
-> >> ranges to wiphy, so user space can query it. The index in
-> >> frequency range is used to specify which sub band the power
-> >> limitation applies to. The SAR type is for compatibility, so later
-> >> other SAR mechanism can be implemented without breaking the user
-> >> space SAR applications.
-> >>
-> >> Normal process is user space quries the SAR capability, and
-> >> gets the index of supported frequency ranges and associates the
-> >> power limitation with this index and sends to kernel.
-> >>
-> >> Here is an example of message send to kernel:
-> >> 8c 00 00 00 08 00 01 00 00 00 00 00 38 00 2b 81
-> >> 08 00 01 00 00 00 00 00 2c 00 02 80 14 00 00 80
-> >> 08 00 02 00 00 00 00 00 08 00 01 00 38 00 00 00
-> >> 14 00 01 80 08 00 02 00 01 00 00 00 08 00 01 00
-> >> 48 00 00 00
-> >>
-> >> NL80211_CMD_SET_SAR_SPECS:  0x8c
-> >> NL80211_ATTR_WIPHY:     0x01(phy idx is 0)
-> >> NL80211_ATTR_SAR_SPEC:  0x812b (NLA_NESTED)
-> >> NL80211_SAR_ATTR_TYPE:  0x00 (NL80211_SAR_TYPE_POWER)
-> >> NL80211_SAR_ATTR_SPECS: 0x8002 (NLA_NESTED)
-> >> freq range 0 power: 0x38 in 0.25dbm unit (14dbm)
-> >> freq range 1 power: 0x48 in 0.25dbm unit (18dbm)
-> >>
-> >> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-> >
-> > I think the API is reasonably clear and usable. I'm a little skeptical
-> > that the complexity related to indexes is absolutely necessary [1],
-> > but at least you make clear what should happen in the case of missing
-> > indexes (treated as "max"). But you've addressed my concerns, I think:
-> >
-> > Reviewed-by: Brian Norris <briannorris@chromium.org>
-> >
-> > I haven't done the most thorough review on the implementation pieces
-> > (and ath10k), but I at least wanted to put my thoughts out there.
-> >
-> > Thanks,
-> > Brian
-> >
-> > [1] By the way, you aren't checking for duplicates; so users could
-> > pass the same index many times, and it's not clear from the API
-> > definition what should happen. It seems the current implementation is
-> > that you'll just use the last value provided.
-> Thanks for the comments.
-> It's right the last value is used.
-> I can describe it more clearly if V3 is needed.
+> This change registers ieee80211_set_sar_specs to
+> mac80211_config_ops, so cfg80211 can call it.
+>
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> ---
+> v2:
+> - rebased on ToT
+>
+>  include/net/mac80211.h |  2 ++
+>  net/mac80211/cfg.c     | 12 ++++++++++++
+>  2 files changed, 14 insertions(+)
+>
+> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+> index 05c7524..3576e34 100644
+> --- a/include/net/mac80211.h
+> +++ b/include/net/mac80211.h
+> @@ -4197,6 +4197,8 @@ struct ieee80211_ops {
+>                                    struct ieee80211_vif *vif);
+>         void (*sta_set_4addr)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+>                               struct ieee80211_sta *sta, bool enabled);
+> +       int (*set_sar_specs)(struct ieee80211_hw *hw,
+> +                            const struct cfg80211_sar_specs *sar);
+>  };
+>
+>  /**
+> diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+> index 7276e66a..f7ff35b 100644
+> --- a/net/mac80211/cfg.c
+> +++ b/net/mac80211/cfg.c
+> @@ -4083,6 +4083,17 @@ static int ieee80211_reset_tid_config(struct wiphy *wiphy,
+>         return ret;
+>  }
+>
+> +static int ieee80211_set_sar_specs(struct wiphy *wiphy,
+> +                                  struct cfg80211_sar_specs *sar)
+> +{
+> +       struct ieee80211_local *local = wiphy_priv(wiphy);
+> +
+> +       if (!local->ops->set_sar_specs)
+> +               return -EOPNOTSUPP;
+> +
+> +       return local->ops->set_sar_specs(&local->hw, sar);
+> +}
+> +
+>  const struct cfg80211_ops mac80211_config_ops = {
+>         .add_virtual_intf = ieee80211_add_iface,
+>         .del_virtual_intf = ieee80211_del_iface,
+> @@ -4186,4 +4197,5 @@ const struct cfg80211_ops mac80211_config_ops = {
+>         .probe_mesh_link = ieee80211_probe_mesh_link,
+>         .set_tid_config = ieee80211_set_tid_config,
+>         .reset_tid_config = ieee80211_reset_tid_config,
+> +       .set_sar_specs = ieee80211_set_sar_specs,
+>  };
+> --
+> 2.7.4
+>
 
 _______________________________________________
 ath10k mailing list
