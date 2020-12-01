@@ -1,14 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kjxGl-0002Kq-JW
- for ath10k@lists.infradead.org; Tue, 01 Dec 2020 04:28:04 +0000
-Date: Tue, 01 Dec 2020 12:27:40 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath11k-qca6390-bringup] BUILD SUCCESS
- 6244933ddba318b36bb00c48eeb8d63a24a901c2
-Message-ID: <5fc5c63c.1Z4r4xfSf3PqcVv1%lkp@intel.com>
+ id 1kk19z-0006tI-SM
+ for ath10k@lists.infradead.org; Tue, 01 Dec 2020 08:37:22 +0000
+Received: by mail-io1-xd44.google.com with SMTP id i9so803713ioo.2
+ for <ath10k@lists.infradead.org>; Tue, 01 Dec 2020 00:37:17 -0800 (PST)
 MIME-Version: 1.0
+References: <20201120085312.4355-1-cjhuang@codeaurora.org>
+ <20201120085312.4355-2-cjhuang@codeaurora.org>
+ <CA+ASDXMRPRPD0XFJeHTRv3Bc13VFehkyDoYHQfaA0cP-STDOLg@mail.gmail.com>
+ <8f0121e9996bad2266a928279e7eb26a@codeaurora.org>
+In-Reply-To: <8f0121e9996bad2266a928279e7eb26a@codeaurora.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Tue, 1 Dec 2020 00:37:04 -0800
+Message-ID: <CACTWRwt43EJ9njgtJvVEd9vx3Abs7=X6cDrOL4aAqPRMQyJB8A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] nl80211: add common API to configure SAR power
+ limitations.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,196 +28,87 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Carl Huang <cjhuang@codeaurora.org>
+Cc: Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, Abhishek Kumar <kuabhs@google.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath11k-qca6390-bringup
-branch HEAD: 6244933ddba318b36bb00c48eeb8d63a24a901c2  ath11k: peer delete synchronization with firmware
+The V2 patch looks good to me.
+Regarding Brian's comment
 
-elapsed time: 725m
+> [1] By the way, you aren't checking for duplicates; so users could
+> pass the same index many times, and it's not clear from the API
+> definition what should happen. It seems the current implementation is
+> that you'll just use the last value provided.
 
-configs tested: 169
-configs skipped: 4
+I don't think we should be adding any logic in the kernel to check for
+duplicates, but rather userspace should take care of those. As long as
+the data provided abides by the data policy, the kernel should bother.
+But I do agree with Brian's other comment that it might be made more
+clear in comment. If at all a V3 is needed, then we should add that,
+or else it looks fine.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                                 defconfig
-arm                              allmodconfig
-arm                           sama5_defconfig
-sh                             espt_defconfig
-sh                        edosk7705_defconfig
-arm                      jornada720_defconfig
-mips                      malta_kvm_defconfig
-mips                         db1xxx_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                        neponset_defconfig
-sh                         ecovec24_defconfig
-arm                         cm_x300_defconfig
-mips                           ip27_defconfig
-mips                      pic32mzda_defconfig
-arm                       imx_v6_v7_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                       maple_defconfig
-xtensa                    xip_kc705_defconfig
-sh                         apsh4a3a_defconfig
-c6x                         dsk6455_defconfig
-powerpc                      ppc64e_defconfig
-openrisc                 simple_smp_defconfig
-s390                       zfcpdump_defconfig
-mips                           gcw0_defconfig
-arm                      pxa255-idp_defconfig
-arm                        multi_v7_defconfig
-s390                          debug_defconfig
-powerpc                      ep88xc_defconfig
-arm                       aspeed_g5_defconfig
-arm                            mmp2_defconfig
-sh                   secureedge5410_defconfig
-arm                         lpc32xx_defconfig
-powerpc                     mpc5200_defconfig
-mips                         tb0287_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                 canyonlands_defconfig
-mips                            gpr_defconfig
-arc                        nsimosci_defconfig
-arm                        clps711x_defconfig
-arm                           corgi_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                          r7785rp_defconfig
-powerpc                    sam440ep_defconfig
-mips                        workpad_defconfig
-arm                          gemini_defconfig
-mips                     cu1000-neo_defconfig
-ia64                        generic_defconfig
-powerpc                     kilauea_defconfig
-powerpc                    adder875_defconfig
-sh                               j2_defconfig
-powerpc                      katmai_defconfig
-arc                           tb10x_defconfig
-sh                          polaris_defconfig
-arm                             rpc_defconfig
-x86_64                           alldefconfig
-arm                           h5000_defconfig
-powerpc                        cell_defconfig
-arm                        trizeps4_defconfig
-mips                      fuloong2e_defconfig
-m68k                         apollo_defconfig
-arm                           spitz_defconfig
-arm                         vf610m4_defconfig
-arm                          lpd270_defconfig
-nios2                         10m50_defconfig
-um                           x86_64_defconfig
-powerpc                     skiroot_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                        fsp2_defconfig
-mips                       capcella_defconfig
-powerpc                      ppc44x_defconfig
-arm                          imote2_defconfig
-xtensa                           allyesconfig
-h8300                       h8s-sim_defconfig
-powerpc                   bluestone_defconfig
-powerpc                   lite5200b_defconfig
-m68k                        m5272c3_defconfig
-powerpc                       ebony_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm8555_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                   motionpro_defconfig
-mips                             allyesconfig
-riscv                               defconfig
-sh                            hp6xx_defconfig
-sh                          lboxre2_defconfig
-arm                             pxa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-xtensa                          iss_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                       multi_v4t_defconfig
-mips                     cu1830-neo_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                     stx_gp3_defconfig
-arm                          simpad_defconfig
-arm                              zx_defconfig
-arm                        realview_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     kmeter1_defconfig
-mips                      maltasmvp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201130
-i386                 randconfig-a002-20201130
-i386                 randconfig-a003-20201130
-i386                 randconfig-a005-20201130
-i386                 randconfig-a006-20201130
-i386                 randconfig-a001-20201130
-x86_64               randconfig-a014-20201130
-x86_64               randconfig-a015-20201130
-x86_64               randconfig-a016-20201130
-x86_64               randconfig-a011-20201130
-x86_64               randconfig-a012-20201130
-x86_64               randconfig-a013-20201130
-i386                 randconfig-a013-20201130
-i386                 randconfig-a012-20201130
-i386                 randconfig-a011-20201130
-i386                 randconfig-a016-20201130
-i386                 randconfig-a015-20201130
-i386                 randconfig-a014-20201130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Thanks
+Abhishek
 
-clang tested configs:
-x86_64               randconfig-a002-20201130
-x86_64               randconfig-a006-20201130
-x86_64               randconfig-a005-20201130
-x86_64               randconfig-a004-20201130
-x86_64               randconfig-a001-20201130
-x86_64               randconfig-a003-20201130
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Mon, Nov 30, 2020 at 2:10 AM Carl Huang <cjhuang@codeaurora.org> wrote:
+>
+> On 2020-11-21 10:42, Brian Norris wrote:
+> > On Fri, Nov 20, 2020 at 12:53 AM Carl Huang <cjhuang@codeaurora.org>
+> > wrote:
+> >>
+> >> NL80211_CMD_SET_SAR_SPECS is added to configure SAR from
+> >> user space. NL80211_ATTR_SAR_SPEC is used to pass the SAR
+> >> power specification when used with NL80211_CMD_SET_SAR_SPECS.
+> >>
+> >> Wireless driver needs to register SAR type, supported frequency
+> >> ranges to wiphy, so user space can query it. The index in
+> >> frequency range is used to specify which sub band the power
+> >> limitation applies to. The SAR type is for compatibility, so later
+> >> other SAR mechanism can be implemented without breaking the user
+> >> space SAR applications.
+> >>
+> >> Normal process is user space quries the SAR capability, and
+> >> gets the index of supported frequency ranges and associates the
+> >> power limitation with this index and sends to kernel.
+> >>
+> >> Here is an example of message send to kernel:
+> >> 8c 00 00 00 08 00 01 00 00 00 00 00 38 00 2b 81
+> >> 08 00 01 00 00 00 00 00 2c 00 02 80 14 00 00 80
+> >> 08 00 02 00 00 00 00 00 08 00 01 00 38 00 00 00
+> >> 14 00 01 80 08 00 02 00 01 00 00 00 08 00 01 00
+> >> 48 00 00 00
+> >>
+> >> NL80211_CMD_SET_SAR_SPECS:  0x8c
+> >> NL80211_ATTR_WIPHY:     0x01(phy idx is 0)
+> >> NL80211_ATTR_SAR_SPEC:  0x812b (NLA_NESTED)
+> >> NL80211_SAR_ATTR_TYPE:  0x00 (NL80211_SAR_TYPE_POWER)
+> >> NL80211_SAR_ATTR_SPECS: 0x8002 (NLA_NESTED)
+> >> freq range 0 power: 0x38 in 0.25dbm unit (14dbm)
+> >> freq range 1 power: 0x48 in 0.25dbm unit (18dbm)
+> >>
+> >> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> >
+> > I think the API is reasonably clear and usable. I'm a little skeptical
+> > that the complexity related to indexes is absolutely necessary [1],
+> > but at least you make clear what should happen in the case of missing
+> > indexes (treated as "max"). But you've addressed my concerns, I think:
+> >
+> > Reviewed-by: Brian Norris <briannorris@chromium.org>
+> >
+> > I haven't done the most thorough review on the implementation pieces
+> > (and ath10k), but I at least wanted to put my thoughts out there.
+> >
+> > Thanks,
+> > Brian
+> >
+> > [1] By the way, you aren't checking for duplicates; so users could
+> > pass the same index many times, and it's not clear from the API
+> > definition what should happen. It seems the current implementation is
+> > that you'll just use the last value provided.
+> Thanks for the comments.
+> It's right the last value is used.
+> I can describe it more clearly if V3 is needed.
 
 _______________________________________________
 ath10k mailing list
