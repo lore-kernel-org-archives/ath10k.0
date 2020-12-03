@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kklbt-0002aX-U5
- for ath10k@lists.infradead.org; Thu, 03 Dec 2020 10:13:15 +0000
-Date: Thu, 03 Dec 2020 18:12:41 +0800
+ id 1kklbu-0002aW-SI
+ for ath10k@lists.infradead.org; Thu, 03 Dec 2020 10:13:17 +0000
+Date: Thu, 03 Dec 2020 18:12:39 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- cd6181ff7e93808fbb7b6330e3ee8bc8d722a9ba
-Message-ID: <5fc8ba19.gdJfVY0Y01SLuijl%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 73ab5855a7cfaa9f487629b5d4858ae7e3f889ba
+Message-ID: <5fc8ba17.ov9CUcGuzhn2q/Qz%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: cd6181ff7e93808fbb7b6330e3ee8bc8d722a9ba  ath11k: dp_rx: fix monitor status dma unmap direction
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: 73ab5855a7cfaa9f487629b5d4858ae7e3f889ba  Add localversion-wireless-testing-ath
 
-elapsed time: 725m
+elapsed time: 724m
 
-configs tested: 189
+configs tested: 203
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,6 +40,12 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                             pxa_defconfig
+arm                           h3600_defconfig
+m68k                       m5275evb_defconfig
+arm                          tango4_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                  nommu_kc705_defconfig
 powerpc                   motionpro_defconfig
 mips                     cu1830-neo_defconfig
 sh                        sh7763rdp_defconfig
@@ -64,6 +69,10 @@ mips                      malta_kvm_defconfig
 arm                           sama5_defconfig
 arm                         mv78xx0_defconfig
 powerpc                     ksi8560_defconfig
+sh                          rsk7264_defconfig
+powerpc                        fsp2_defconfig
+sh                             shx3_defconfig
+sh                        sh7785lcr_defconfig
 powerpc                    adder875_defconfig
 powerpc                     powernv_defconfig
 powerpc                     ep8248e_defconfig
@@ -75,17 +84,20 @@ parisc                generic-32bit_defconfig
 h8300                               defconfig
 arm                         orion5x_defconfig
 powerpc                           allnoconfig
+powerpc                      ep88xc_defconfig
+arm                        mini2440_defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                 mpc836x_mds_defconfig
 powerpc                 mpc836x_rdk_defconfig
 mips                      loongson3_defconfig
 microblaze                          defconfig
-m68k                             alldefconfig
-arc                                 defconfig
-arm                        spear6xx_defconfig
-arm                         assabet_defconfig
-sh                              ul2_defconfig
-xtensa                  nommu_kc705_defconfig
+m68k                         apollo_defconfig
+arm                     am200epdkit_defconfig
+sh                         ecovec24_defconfig
+powerpc                 mpc837x_rdb_defconfig
 h8300                     edosk2674_defconfig
 mips                        bcm47xx_defconfig
+sh                              ul2_defconfig
 arm                        oxnas_v6_defconfig
 mips                        nlm_xlp_defconfig
 nds32                             allnoconfig
@@ -116,7 +128,6 @@ powerpc                 mpc8272_ads_defconfig
 mips                         bigsur_defconfig
 arm                          prima2_defconfig
 arc                           tb10x_defconfig
-m68k                                defconfig
 powerpc                       maple_defconfig
 parisc                           alldefconfig
 um                             i386_defconfig
@@ -124,6 +135,7 @@ powerpc                       ppc64_defconfig
 ia64                         bigsur_defconfig
 powerpc                     tqm8560_defconfig
 arm                       cns3420vb_defconfig
+arm                           omap1_defconfig
 mips                         mpc30x_defconfig
 mips                       rbtx49xx_defconfig
 arm                         s3c2410_defconfig
@@ -132,10 +144,9 @@ arc                     haps_hs_smp_defconfig
 arm                            lart_defconfig
 riscv                    nommu_virt_defconfig
 powerpc                    gamecube_defconfig
-mips                        maltaup_defconfig
-arm                           omap1_defconfig
-mips                           ip32_defconfig
-h8300                    h8300h-sim_defconfig
+arm                           corgi_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 mpc85xx_cds_defconfig
 m68k                       m5208evb_defconfig
 ia64                        generic_defconfig
 mips                       capcella_defconfig
@@ -143,6 +154,7 @@ ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
+m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
@@ -153,6 +165,7 @@ alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
+arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
@@ -172,18 +185,18 @@ x86_64               randconfig-a001-20201202
 x86_64               randconfig-a002-20201202
 x86_64               randconfig-a005-20201202
 x86_64               randconfig-a003-20201202
-i386                 randconfig-a004-20201203
-i386                 randconfig-a005-20201203
-i386                 randconfig-a001-20201203
-i386                 randconfig-a002-20201203
-i386                 randconfig-a006-20201203
-i386                 randconfig-a003-20201203
 i386                 randconfig-a004-20201202
 i386                 randconfig-a005-20201202
 i386                 randconfig-a001-20201202
 i386                 randconfig-a002-20201202
 i386                 randconfig-a006-20201202
 i386                 randconfig-a003-20201202
+i386                 randconfig-a004-20201203
+i386                 randconfig-a005-20201203
+i386                 randconfig-a001-20201203
+i386                 randconfig-a002-20201203
+i386                 randconfig-a006-20201203
+i386                 randconfig-a003-20201203
 x86_64               randconfig-a016-20201203
 x86_64               randconfig-a012-20201203
 x86_64               randconfig-a014-20201203
