@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-15.mailgun.net ([69.72.43.15])
+Received: from so254-31.mailgun.net ([198.61.254.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kklzf-0005rv-Od
- for ath10k@lists.infradead.org; Thu, 03 Dec 2020 10:37:49 +0000
+ id 1kklzY-0005qq-0h
+ for ath10k@lists.infradead.org; Thu, 03 Dec 2020 10:37:41 +0000
 From: Carl Huang <cjhuang@codeaurora.org>
-Subject: [PATCH v4 2/3] mac80211: add ieee80211_set_sar_specs
-Date: Thu,  3 Dec 2020 05:37:27 -0500
-Message-Id: <20201203103728.3034-3-cjhuang@codeaurora.org>
-In-Reply-To: <20201203103728.3034-1-cjhuang@codeaurora.org>
-References: <20201203103728.3034-1-cjhuang@codeaurora.org>
+Subject: [PATCH v4 0/3] add common API to configure SAR
+Date: Thu,  3 Dec 2020 05:37:25 -0500
+Message-Id: <20201203103728.3034-1-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +23,40 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org
 
-This change registers ieee80211_set_sar_specs to
-mac80211_config_ops, so cfg80211 can call it.
+This patchset is to add common API to configure SAR.
+The mechanism is wlan driver registers sar capability
+to wiphy and userspace queries it. Userspace then sets
+power limiation to wlan driver.
 
-Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
----
 v4:
 - add "Reviewed-by:" tag
 
 v3:
-- no change
+- check index duplicates. If index duplicates, returns error
 
 v2:
 - rebased on ToT
-
- include/net/mac80211.h |  2 ++
- net/mac80211/cfg.c     | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
-
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 05c7524..3576e34 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -4197,6 +4197,8 @@ struct ieee80211_ops {
- 				   struct ieee80211_vif *vif);
- 	void (*sta_set_4addr)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			      struct ieee80211_sta *sta, bool enabled);
-+	int (*set_sar_specs)(struct ieee80211_hw *hw,
-+			     const struct cfg80211_sar_specs *sar);
- };
+- fix comments by Johannes and Abhishek
+- change sar_power to s32 and range_index to u32
  
- /**
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 7276e66a..f7ff35b 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -4083,6 +4083,17 @@ static int ieee80211_reset_tid_config(struct wiphy *wiphy,
- 	return ret;
- }
- 
-+static int ieee80211_set_sar_specs(struct wiphy *wiphy,
-+				   struct cfg80211_sar_specs *sar)
-+{
-+	struct ieee80211_local *local = wiphy_priv(wiphy);
-+
-+	if (!local->ops->set_sar_specs)
-+		return -EOPNOTSUPP;
-+
-+	return local->ops->set_sar_specs(&local->hw, sar);
-+}
-+
- const struct cfg80211_ops mac80211_config_ops = {
- 	.add_virtual_intf = ieee80211_add_iface,
- 	.del_virtual_intf = ieee80211_del_iface,
-@@ -4186,4 +4197,5 @@ const struct cfg80211_ops mac80211_config_ops = {
- 	.probe_mesh_link = ieee80211_probe_mesh_link,
- 	.set_tid_config = ieee80211_set_tid_config,
- 	.reset_tid_config = ieee80211_reset_tid_config,
-+	.set_sar_specs = ieee80211_set_sar_specs,
- };
+Carl Huang (3):
+  nl80211: add common API to configure SAR power limitations.
+  mac80211: add ieee80211_set_sar_specs
+  ath10k: allow dynamic SAR power limits via common API
+
+ drivers/net/wireless/ath/ath10k/core.c |  16 +++
+ drivers/net/wireless/ath/ath10k/core.h |   3 +
+ drivers/net/wireless/ath/ath10k/hw.h   |   2 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 225 ++++++++++++++++++++++++---------
+ include/net/cfg80211.h                 |  51 ++++++++
+ include/net/mac80211.h                 |   2 +
+ include/uapi/linux/nl80211.h           | 102 +++++++++++++++
+ net/mac80211/cfg.c                     |  12 ++
+ net/wireless/nl80211.c                 | 185 +++++++++++++++++++++++++++
+ net/wireless/rdev-ops.h                |  12 ++
+ net/wireless/trace.h                   |  19 +++
+ 11 files changed, 570 insertions(+), 59 deletions(-)
+
 -- 
 2.7.4
 
