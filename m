@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from a2.mail.mailgun.net ([198.61.254.61])
+Received: from mail-m965.mail.126.com ([123.126.96.5])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkWvu-0007G8-RJ
- for ath10k@lists.infradead.org; Wed, 02 Dec 2020 18:32:55 +0000
+ id 1kkfQX-0000dX-HW
+ for ath10k@lists.infradead.org; Thu, 03 Dec 2020 03:37:06 +0000
+From: zhouliangya@126.com
+Subject: [PATCH 0/1] ath10k_pci_wait_for_target_init() should relax cpu for
+ other task instead of calling medelay() so that cpu can run other tasks.
+ Signed-off-by: lzhou <lzhou@sonicwall.com> ---
+Date: Thu,  3 Dec 2020 11:36:49 +0800
+Message-Id: <20201203033650.381992-1-zhouliangya@126.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 2/2] ath10k: Constify static qmi structs
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201122234031.33432-3-rikard.falkeborn@gmail.com>
-References: <20201122234031.33432-3-rikard.falkeborn@gmail.com>
-Message-Id: <20201202183253.8FC69C43463@smtp.codeaurora.org>
-Date: Wed,  2 Dec 2020 18:32:53 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +22,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc: Alex Elder <elder@kernel.org>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: ath10k@lists.infradead.org
+Cc: lzhou <zhouliangya@126.com>, linux-wireless@vger.kernel.org
 
-Rikard Falkeborn <rikard.falkeborn@gmail.com> wrote:
+From: lzhou <zhouliangya@126.com>
 
-> qmi_msg_handler[] and ath10k_qmi_ops are only used as input arguments
-> to qmi_handle_init() which accepts const pointers to both qmi_ops and
-> qmi_msg_handler. Make them const to allow the compiler to put them in
-> read-only memory.
-> 
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-ad37a46e8cb5 ath10k: Constify static qmi structs
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201122234031.33432-3-rikard.falkeborn@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
 
 
 _______________________________________________
