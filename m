@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from so254-31.mailgun.net ([198.61.254.31])
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1km7JJ-0007sp-I8
- for ath10k@lists.infradead.org; Mon, 07 Dec 2020 03:35:39 +0000
-From: Wen Gong <wgong@codeaurora.org>
-Subject: [PATCH 2/2] ath10k: pass the ssid info to get the correct bss entity
-Date: Mon,  7 Dec 2020 11:36:35 +0800
-Message-Id: <1607312195-3583-3-git-send-email-wgong@codeaurora.org>
-In-Reply-To: <1607312195-3583-1-git-send-email-wgong@codeaurora.org>
-References: <1607312195-3583-1-git-send-email-wgong@codeaurora.org>
+ id 1kmH87-00017i-3H
+ for ath10k@lists.infradead.org; Mon, 07 Dec 2020 14:04:51 +0000
+Date: Mon, 7 Dec 2020 15:04:38 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+Subject: Re: CVE-2020-3702: Firmware updates for ath9k and ath10k chips
+Message-ID: <20201207140438.as2i7kwquhdxqn53@pali>
+References: <20200810090126.mtu3uocpcjg5se5e@pali>
+ <20200812083600.6zxdf5pfktdzggd6@pali> <87lfik1av8.fsf@toke.dk>
+ <20200812092334.GA17878@w1.fi>
+ <20201007082502.3da6rw2bkudilqaq@pali>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201007082502.3da6rw2bkudilqaq@pali>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,75 +22,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, johannes@sipsolutions.net
-Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
+To: Jouni Malinen <j@w1.fi>
+Cc: Kalle Valo <kvalo@codeaurora.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org
 
-When connect to an AP with WPA mode, ath10k need to set need_ptk_4_way to
-firmware in WMI_PEER_ASSOC_CMD, then the data path is disallow in
-firmware, it will be allowed untill firmware finish the 4 way handshake.
-
-It failed with a test case with below steps:
-1. configure AP with WPA mode with ssid1 SimpleConnect_a_orbvt_ch1,
-   bssid1 and channel 1.
-2. connect to ssid1 and ping success.
-3. wait 10 seconds which is less than
-   IEEE80211_SCAN_RESULT_EXPIRE(30 seconds).
-4. configure AP with OPEN mode with ssid2 SimpleConnect_b_z3a00_ch1,
-   but use same bssid1 and channel 1 of step 1.
-5. disconnect ssid1.
-6. connect to ssid2 and ping fail.
-
-Fail reason:
-When run step 6, ath10k_peer_assoc_h_crypto() called cfg80211_get_bss()
-with bssid and chan info, but ssid1 and ssid2 have the same bssid and
-channel, then there have 2 entry for ssid1 and ssid2 in cfg80211. The
-ssid1's order is before ssid2 in bss_list, and ssid1's age is less than
-the expire time which is IEEE80211_SCAN_RESULT_EXPIRE(30 seconds). Then
-ssid1's entry is selected and ath10k_peer_assoc_h_crypto() parsed it and
-get the rsnie and then need_ptk_4_way is set to firmware, so data path
-is disallowed and it will not receive 4 way handshake for OPEN mode,
-so ping fail in step 6.
-
-This patch is to pass the ssid info to cfg80211_get_bss() as same as
-cfg80211_mlme_assoc() and cfg80211_mlme_auth(), then it will find the
-correct bss entry in above test case, then case success.
-
-For AP mode, the ssid info is filled in ieee80211_start_ap(), for STATION
-mode, it is filled in ieee80211_mgd_assoc(). Tested for both AP/STATION
-mode with QCA6174 hw3.2 PCI, it is success start/connect/ping for
-WPA/OPEN mode.
-
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
-
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 82b4bf5ba612..67cb2efc72d9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2177,7 +2177,8 @@ static void ath10k_peer_assoc_h_crypto(struct ath10k *ar,
- 	if (WARN_ON(ath10k_mac_vif_chan(vif, &def)))
- 		return;
- 
--	bss = cfg80211_get_bss(ar->hw->wiphy, def.chan, info->bssid, NULL, 0,
-+	bss = cfg80211_get_bss(ar->hw->wiphy, def.chan, info->bssid,
-+			       info->ssid_len ? info->ssid : NULL, info->ssid_len,
- 			       IEEE80211_BSS_TYPE_ANY, IEEE80211_PRIVACY_ANY);
- 	if (bss) {
- 		const struct cfg80211_bss_ies *ies;
--- 
-2.23.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gV2VkbmVzZGF5IDA3IE9jdG9iZXIgMjAyMCAxMDoyNTowMiBQYWxpIFJvaMOhciB3cm90ZToK
+PiBPbiBXZWRuZXNkYXkgMTIgQXVndXN0IDIwMjAgMTI6MjM6MzQgSm91bmkgTWFsaW5lbiB3cm90
+ZToKPiA+IE9uIFdlZCwgQXVnIDEyLCAyMDIwIGF0IDExOjE3OjQ3QU0gKzAyMDAsIFRva2UgSMO4
+aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPiA+ID4gUGFsaSBSb2jDoXIgPHBhbGlAa2VybmVsLm9y
+Zz4gd3JpdGVzOgo+ID4gPiA+IENvdWxkIHNvbWVib2R5IHJlYWN0IGFuZCBwcm92aWRlIHNvbWUg
+ZGV0YWlscyB3aGVuIGZpeGVzIHdvdWxkIGJlCj4gPiA+ID4gYXZhaWxhYmxlIGZvciBhdGg5ayBh
+bmQgYXRoMTBrIExpbnV4IGRyaXZlcnM/IEFuZCB3aGF0IGlzIGN1cnJlbnQgc3RhdGUKPiA+ID4g
+PiBvZiB0aGlzIGlzc3VlIGZvciBMaW51eD8KPiA+ID4gPgo+ID4gPiA+IEknbSBsb29raW5nIGF0
+IGF0aDlrIGFuZCBhdGgxMGsgZ2l0IHRyZWVzIFsxXSBbMl0gWzNdIGFuZCBJIGRvIG5vdCBzZWUK
+PiA+ID4gPiB0aGVyZSBhbnkgY2hhbmdlIHdoaWNoIGNvdWxkIGJlIHJlbGF0ZWQgdG8gQ1ZFLTIw
+MjAtMzcwMi4KPiA+ID4gCj4gPiA+IEhvdyBhYm91dCB0aGVzZSwgZnJvbSBNYXJjaDoKPiA+ID4g
+Cj4gPiA+IGEwNzYxYTMwMTc0NiAoIm1hYzgwMjExOiBkcm9wIGRhdGEgZnJhbWVzIHdpdGhvdXQg
+a2V5IG9uIGVuY3J5cHRlZCBsaW5rcyIpCj4gPiA+IGNlMmUxY2E3MDMwNyAoIm1hYzgwMjExOiBD
+aGVjayBwb3J0IGF1dGhvcml6YXRpb24gaW4gdGhlIGllZWU4MDIxMV90eF9kZXF1ZXVlKCkgY2Fz
+ZSIpCj4gPiA+IGIxNjc5OGY1YjkwNyAoIm1hYzgwMjExOiBtYXJrIHN0YXRpb24gdW5hdXRob3Jp
+emVkIGJlZm9yZSBrZXkgcmVtb3ZhbCIpCj4gPiAKPiA+IFRob3NlIGNvdmVyIG1vc3Qgb2YgdGhl
+IGlkZW50aWZpZWQgaXNzdWVzIGZvciBkcml2ZXJzIHVzaW5nIG1hYzgwMjExCj4gPiAoZS5nLiwg
+YXRoOWsgYW5kIGF0aDEwazsgdGhvdWdoLCBJIGRvbid0IHJlbWVtYmVyIHdoZXRoZXIgSSBhY3R1
+YWxseQo+ID4gZXZlciBtYW5hZ2VkIHRvIHJlcHJvZHVjZSB0aGlzIHdpdGggYXRoMTBrIGluIHBy
+YWN0aWNlKS4gSSBoYXZlIGNvdXBsZQo+ID4gb2YgYWRkaXRpb25hbCBhdGg5ay1zcGVjaWZpYyBw
+YXRjaGVzIHRoYXQgY292ZXIgYWRkaXRpb25hbCBsb3dlciBsYXllcgo+ID4gcGF0aHMgZm9yIHRo
+aXMuIEkgaG9wZSB0byBnZXQgdGhvc2Ugb3V0IGFmdGVyIGNvbmZpcm1pbmcgdGhleSB3b3JrIHdp
+dGgKPiA+IHRoZSBjdXJyZW50IGtlcm5lbCB0cmVlIHNuYXBzaG90Lgo+IAo+IEhlbGxvISBDb3Vs
+ZCB5b3UgcGxlYXNlIHNoYXJlIHlvdXIgYXRoOWsgcGF0Y2hlcyB3aGljaCBhZGRyZXNzIHRoaXMg
+aXNzdWU/CgpIZWxsbyEgSGFzIHNvbWVib2R5IGZpeGVzIHRoaXMgc2VjdXJpdHkgaXNzdWUgaW4g
+YXRoOWsgZHJpdmVyPyBBYm91dAo0IG1vbnRocyBwYXNzZWQgYW5kIGlmIHRoaXMgaXNzdWUgaXMg
+bm90IGZpeGVkLCBjb3VsZCB5b3UgcGxlYXNlIHNoYXJlCmF0IGxlYXN0IGluY29tcGxldGUgLyBX
+SVAgcGF0Y2hlcz8gSSB3b3VsZCBsaWtlIHRvIGxvb2sgYXQgaXQgYW5kIGhhdmUKdGhpcyBpc3N1
+ZSBmaW5hbGx5IGZpeGVkLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
