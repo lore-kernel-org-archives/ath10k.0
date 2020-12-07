@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from so254-31.mailgun.net ([198.61.254.31])
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmJ3s-0000kO-Ey
- for ath10k@lists.infradead.org; Mon, 07 Dec 2020 16:08:30 +0000
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix a check patch warning
- returnNonBoolInBooleanFunction of sdio.c
+ id 1kmJ87-0001BV-D5
+ for ath10k@lists.infradead.org; Mon, 07 Dec 2020 16:12:52 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1606103240-9868-1-git-send-email-wgong@codeaurora.org>
-References: <1606103240-9868-1-git-send-email-wgong@codeaurora.org>
-Message-Id: <20201207160811.DE897C43461@smtp.codeaurora.org>
-Date: Mon,  7 Dec 2020 16:08:11 +0000 (UTC)
+Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in
+ shutdown path
+References: <20201126171553.2097-1-youghand@codeaurora.org>
+ <CA+ASDXOvnfETrKs2ZbayZsRkUEpUbaeMGRkZNRCXa=M28HHE-w@mail.gmail.com>
+Date: Mon, 07 Dec 2020 18:12:38 +0200
+In-Reply-To: <CA+ASDXOvnfETrKs2ZbayZsRkUEpUbaeMGRkZNRCXa=M28HHE-w@mail.gmail.com>
+ (Brian Norris's message of "Tue, 1 Dec 2020 11:35:44 -0800")
+Message-ID: <87y2i9egsp.fsf@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +25,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: kuabhs@chromium.org, Youghandhar Chintala <youghand@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, Doug Anderson <dianders@chromium.org>, ath10k <ath10k@lists.infradead.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Rakesh Pillai <pillair@codeaurora.org>
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Brian Norris <briannorris@chromium.org> writes:
 
-> cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
-> drivers/net/wireless/ath/ath10k/sdio.c:2234:2:
-> warning: Non-boolean value returned from function returning bool [returnNonBoolInBooleanFunction]
-> return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
-> 
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
+> <youghand@codeaurora.org> wrote:
+>> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+>> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+>> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+>>
+>>         reinit_completion(&ar->driver_recovery);
+>>
+>> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+>> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+>
+> Hmm, this is the only instance of waiting for this completion, which
+> means that after this patch, 'ar->driver_recovery' is doing exactly
+> nothing. Should you instead just remove it completely?
+>
+> Also, if your patch is correct, it seems like the completion was never
+> needed in the first place. You should probably address such a claim in
+> the commit message; is there truly no need to wait here? Or was there
+> some purpose here, but that purpose was accomplished some other way?
+> Or was there a purpose, and that purpose was misguided? It feels to me
+> like it is indeed correct to remove this (shutdown should be performed
+> promptly; we don't need to delay it just to try to "finish
+> recovering"), but it's your job to convince the reader.
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-7f881a721716 ath10k: fix a check patch warning returnNonBoolInBooleanFunction of sdio.c
+Exactly what I was thinking as well. To me this patch was just looks
+racy and all the commit log says that it's "unwanted delay".
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1606103240-9868-1-git-send-email-wgong@codeaurora.org/
+https://patchwork.kernel.org/project/linux-wireless/list/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
