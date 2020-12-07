@@ -1,32 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vs1-xe41.google.com ([2607:f8b0:4864:20::e41])
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkqcV-0000fd-8U
- for ath10k@lists.infradead.org; Thu, 03 Dec 2020 15:34:12 +0000
-Received: by mail-vs1-xe41.google.com with SMTP id u7so1436645vsq.11
- for <ath10k@lists.infradead.org>; Thu, 03 Dec 2020 07:34:08 -0800 (PST)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com.
- [209.85.217.48])
- by smtp.gmail.com with ESMTPSA id r126sm158474vsr.0.2020.12.03.07.34.05
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 03 Dec 2020 07:34:05 -0800 (PST)
-Received: by mail-vs1-f48.google.com with SMTP id h6so1455736vsr.6
- for <ath10k@lists.infradead.org>; Thu, 03 Dec 2020 07:34:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112200906.991086-1-kuabhs@chromium.org>
- <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
- <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
- <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
- <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
- <002d01d6c2dd$4386d880$ca948980$@codeaurora.org>
- <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
- <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
-In-Reply-To: <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 3 Dec 2020 07:33:52 -0800
-Message-ID: <CAD=FV=VCbjRUxUsmyk=64FLDGU=W41EXh5tdfQr1Lg83T8jiEA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
+ id 1km7JJ-0007sd-DP
+ for ath10k@lists.infradead.org; Mon, 07 Dec 2020 03:35:39 +0000
+From: Wen Gong <wgong@codeaurora.org>
+Subject: [PATCH 1/2] mac80211: save ssid info to ieee80211_bss_conf while assoc
+Date: Mon,  7 Dec 2020 11:36:34 +0800
+Message-Id: <1607312195-3583-2-git-send-email-wgong@codeaurora.org>
+In-Reply-To: <1607312195-3583-1-git-send-email-wgong@codeaurora.org>
+References: <1607312195-3583-1-git-send-email-wgong@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,44 +17,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>, netdev <netdev@vger.kernel.org>, Brian Norris <briannorris@chromium.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org, johannes@sipsolutions.net
+Cc: linux-wireless@vger.kernel.org, wgong@codeaurora.org
 
-Hi,
+The ssid info of ieee80211_bss_conf is filled in ieee80211_start_ap()
+for AP mode. For STATION mode, it is empty, save the info from struct
+ieee80211_mgd_assoc_data, the struct ieee80211_mgd_assoc_data will be
+freed after assoc, so the ssid info of ieee80211_mgd_assoc_data can not
+access after assoc, save ssid info to ieee80211_bss_conf, then ssid info
+can be still access after assoc.
 
-On Thu, Dec 3, 2020 at 3:33 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> > What I'm trying to say is this.  Imagine that:
-> >
-> > a) the device tree has the "variant" property.
-> >
-> > b) the BRD file has two entries, one for "board-id" (1) and one for
-> > "board-id + chip-id" (2).  It doesn't have one for "board-id + chip-id
-> > + variant" (3).
-> >
-> > With your suggestion we'll see the "variant" property in the device
-> > tree.  That means we'll search for (1) and (3).  (3) isn't there, so
-> > we'll pick (1).  ...but we really should have picked (2), right?
->
-> Do we expect board-2.bin to not be populated with the bdf with variant field (if its necessary ?)
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+---
+ net/mac80211/mlme.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The whole fact that there is a fallback to begin with implies that
-there can be a mismatch between the board-2.bin and the device tree
-file.  Once we accept that there can be a mismatch, it seems good to
-try all 3 fallbacks in order.
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index ac870309b911..f3b3cba02be2 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -5364,6 +5364,7 @@ int ieee80211_mgd_assoc(struct ieee80211_sub_if_data *sdata,
+ 	struct ieee80211_mgd_assoc_data *assoc_data;
+ 	const struct cfg80211_bss_ies *beacon_ies;
+ 	struct ieee80211_supported_band *sband;
++	struct ieee80211_bss_conf *bss_conf = &sdata->vif.bss_conf;
+ 	const u8 *ssidie, *ht_ie, *vht_ie;
+ 	int i, err;
+ 	bool override = false;
+@@ -5381,6 +5382,8 @@ int ieee80211_mgd_assoc(struct ieee80211_sub_if_data *sdata,
+ 	}
+ 	memcpy(assoc_data->ssid, ssidie + 2, ssidie[1]);
+ 	assoc_data->ssid_len = ssidie[1];
++	memcpy(bss_conf->ssid, assoc_data->ssid, assoc_data->ssid_len);
++	bss_conf->ssid_len = assoc_data->ssid_len;
+ 	rcu_read_unlock();
+ 
+ 	if (ifmgd->associated) {
+-- 
+2.23.0
 
-
-> Seems fine for me, if we have 2 fallback names if that is needed.
-
-OK, sounds good.  So hopefully Abhishek can post a v3 based on what's
-in <https://crrev.com/c/2556437> and you can confirm you're good with
-it there?
-
--Doug
 
 _______________________________________________
 ath10k mailing list
