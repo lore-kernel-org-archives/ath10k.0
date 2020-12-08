@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-15.mailgun.net ([69.72.43.15])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmYKA-0005ep-63
- for ath10k@lists.infradead.org; Tue, 08 Dec 2020 08:26:21 +0000
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in
- shutdown path
-Date: Tue,  8 Dec 2020 13:55:24 +0530
-Message-Id: <20201208082524.20451-1-saiprakash.ranjan@codeaurora.org>
-In-Reply-To: <20201126171553.2097-1-youghand@codeaurora.org>
-References: <20201126171553.2097-1-youghand@codeaurora.org>
 MIME-Version: 1.0
+Date: Tue, 08 Dec 2020 10:19:52 -0800
+From: Thomas Pedersen <thomas@adapt-ip.com>
+Subject: Re: [PATCH v4 13/17] mac80211: receive and process S1G beacons
+In-Reply-To: <6064b579538afca27c511edeb5400032@codeaurora.org>
+References: <20200922022818.15855-1-thomas@adapt-ip.com>
+ <20200922022818.15855-14-thomas@adapt-ip.com>
+ <6064b579538afca27c511edeb5400032@codeaurora.org>
+Message-ID: <bc3e532c5d21ac5d703de41d4144cf7d@adapt-ip.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +16,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: youghand@codeaurora.org
-Cc: kuabhs@chromium.org, Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, pillair@codeaurora.org
+To: Wen Gong <wgong@codeaurora.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath11k@lists.infradead.org, ath10k@lists.infradead.org
 
-On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
-<youghand@codeaurora.org> wrote:
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
->
->         reinit_completion(&ar->driver_recovery);
->
-> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
-> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+Hi Wen,
 
-You are skipping recovery in ath10k_snoc_remove() which is a remove callback
-and also called in shutdown callback. So that means it is also called when
-you unload the ath10k module and not just when the system reboots/shutdown.
-While it makes sense to not skip recovery in shutdown/reboot sequence because
-the system is going down, it might very well be needed in case of unloading
-the module because we expect the system to be up and stable after unloading
-the ath10k module and we should be able to reload the ath10k module smoothly.
+On 2020-12-07 23:44, Wen Gong wrote:
+> On 2020-09-22 10:28, Thomas Pedersen wrote:
+>> S1G beacons are 802.11 Extension Frames, so the fixed
+>> header part differs from regular beacons.
+>> 
+>> Add a handler to process S1G beacons and abstract out the
+>> fetching of BSSID and element start locations in the
+>> beacon body handler.
+>> 
+>> Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+>> ---
+>>  net/mac80211/ieee80211_i.h |  4 ++
+>>  net/mac80211/iface.c       |  5 +++
+>>  net/mac80211/mlme.c        | 84 
+>> +++++++++++++++++++++++++++++---------
+>>  net/mac80211/rx.c          | 84 
+>> ++++++++++++++++----------------------
+>>  net/mac80211/util.c        | 52 +++++++++++++++++++++++
+>>  5 files changed, 162 insertions(+), 67 deletions(-)
+>> 
+> ...
+>> @@ -1801,7 +1756,8 @@ ieee80211_rx_h_sta_process(struct 
+>> ieee80211_rx_data *rx)
+>>  		}
+>>  	} else if (rx->sdata->vif.type == NL80211_IFTYPE_OCB) {
+>>  		sta->rx_stats.last_rx = jiffies;
+>> -	} else if (!is_multicast_ether_addr(hdr->addr1)) {
+>> +	} else if (!ieee80211_is_s1g_beacon(hdr->frame_control) &&
+>> +		   is_multicast_ether_addr(hdr->addr1)) {
+> is this a typo mistake?
+> it removed ! for is_multicast_ether_addr(!is_multicast_ether_addr ==>
+> is_multicast_ether_addr)
 
-If you remove that now and try to reload the ath10k module, won't that leave
-the system in possibly an inconsistent state because we skipped recovery in
-module remove and then we are trying to load the ath10k module when the
-recovery is not yet complete? In other words, you need to test ath10k module
-load/unload as well in addition to reboot tests to make sure this works as
-expected or else you will need a separate shutdown callback which skips the
-recovery part.
+Yes that does look like a typo, it should be:
+
+	} else if (!ieee80211_is_s1g_beacon(hdr->frame_control) &&
+		   !is_multicast_ether_addr(hdr->addr1)) {
+
+(because is_multicast_ether_addr() evaluates to true for s1g beacons).
+
+Do you have a patch or would you like me to send a fixup?
 
 Thanks,
-Sai
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+thomas
 
 _______________________________________________
 ath10k mailing list
