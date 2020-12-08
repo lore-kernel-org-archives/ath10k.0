@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmXsZ-0002jc-Jx
- for ath10k@lists.infradead.org; Tue, 08 Dec 2020 07:57:49 +0000
+ id 1kmYKA-0005ep-63
+ for ath10k@lists.infradead.org; Tue, 08 Dec 2020 08:26:21 +0000
+From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in
+ shutdown path
+Date: Tue,  8 Dec 2020 13:55:24 +0530
+Message-Id: <20201208082524.20451-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20201126171553.2097-1-youghand@codeaurora.org>
+References: <20201126171553.2097-1-youghand@codeaurora.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] ath10k: add option for chip-id based BDF selection
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-Message-Id: <20201208075745.CFD60C43462@smtp.codeaurora.org>
-Date: Tue,  8 Dec 2020 07:57:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Kumar <kuabhs@chromium.org>
-Cc: netdev@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, pillair@codeaurora.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: youghand@codeaurora.org
+Cc: kuabhs@chromium.org, Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>, briannorris@chromium.org, linux-wireless@vger.kernel.org, dianders@chromium.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, pillair@codeaurora.org
 
-Abhishek Kumar <kuabhs@chromium.org> wrote:
+On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
+<youghand@codeaurora.org> wrote:
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+>
+>         reinit_completion(&ar->driver_recovery);
+>
+> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
 
-> In some devices difference in chip-id should be enough to pick
-> the right BDF. Add another support for chip-id based BDF selection.
-> With this new option, ath10k supports 2 fallback options.
-> 
-> The board name with chip-id as option looks as follows
-> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+You are skipping recovery in ath10k_snoc_remove() which is a remove callback
+and also called in shutdown callback. So that means it is also called when
+you unload the ath10k module and not just when the system reboots/shutdown.
+While it makes sense to not skip recovery in shutdown/reboot sequence because
+the system is going down, it might very well be needed in case of unloading
+the module because we expect the system to be up and stable after unloading
+the ath10k module and we should be able to reload the ath10k module smoothly.
 
-Two new checkpatch (using ath10k-check) warnings:
+If you remove that now and try to reload the ath10k module, won't that leave
+the system in possibly an inconsistent state because we skipped recovery in
+module remove and then we are trying to load the ath10k module when the
+recovery is not yet complete? In other words, you need to test ath10k module
+load/unload as well in addition to reboot tests to make sure this works as
+expected or else you will need a separate shutdown callback which skips the
+recovery part.
 
-drivers/net/wireless/ath/ath10k/core.c:1509: line length of 92 exceeds 90 columns
-drivers/net/wireless/ath/ath10k/core.c:1518: line length of 92 exceeds 90 columns
-
-Fixed those in the pending branch.
-
+Thanks,
+Sai
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
 _______________________________________________
 ath10k mailing list
