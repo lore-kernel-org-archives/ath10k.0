@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmVIM-0004xP-75
- for ath10k@lists.infradead.org; Tue, 08 Dec 2020 05:12:15 +0000
-Date: Tue, 08 Dec 2020 13:11:21 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- 5a5b820d18c76b3a8089c44d63bccd1b52f743a5
-Message-ID: <5fcf0af9.A7PvFIwobgZFbI1P%lkp@intel.com>
+ id 1kmXfq-0001V7-Ls
+ for ath10k@lists.infradead.org; Tue, 08 Dec 2020 07:44:40 +0000
 MIME-Version: 1.0
+Date: Tue, 08 Dec 2020 15:44:33 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v4 13/17] mac80211: receive and process S1G beacons
+In-Reply-To: <20200922022818.15855-14-thomas@adapt-ip.com>
+References: <20200922022818.15855-1-thomas@adapt-ip.com>
+ <20200922022818.15855-14-thomas@adapt-ip.com>
+Message-ID: <6064b579538afca27c511edeb5400032@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,157 +19,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Thomas Pedersen <thomas@adapt-ip.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath11k@lists.infradead.org, ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: 5a5b820d18c76b3a8089c44d63bccd1b52f743a5  ath9k: remove trailing semicolon in macro definition
-
-elapsed time: 745m
-
-configs tested: 126
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      walnut_defconfig
-arm                          simpad_defconfig
-nds32                               defconfig
-powerpc                     tqm8555_defconfig
-arm                         palmz72_defconfig
-arc                          axs103_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           ip28_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                 mpc832x_rdb_defconfig
-c6x                         dsk6455_defconfig
-m68k                        m5272c3_defconfig
-m68k                          hp300_defconfig
-s390                          debug_defconfig
-arm                             ezx_defconfig
-mips                            gpr_defconfig
-microblaze                          defconfig
-microblaze                    nommu_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     powernv_defconfig
-m68k                        mvme16x_defconfig
-arm                           tegra_defconfig
-powerpc                     tqm8540_defconfig
-mips                         rt305x_defconfig
-powerpc                   lite5200b_defconfig
-arm                         mv78xx0_defconfig
-powerpc                   currituck_defconfig
-sparc                       sparc32_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                                  defconfig
-powerpc                      pasemi_defconfig
-arc                         haps_hs_defconfig
-arm                        multi_v5_defconfig
-mips                           ci20_defconfig
-arm                       omap2plus_defconfig
-arm                         lpc18xx_defconfig
-sh                          sdk7780_defconfig
-m68k                       m5275evb_defconfig
-mips                         tb0287_defconfig
-m68k                             alldefconfig
-arm                           omap1_defconfig
-um                            kunit_defconfig
-h8300                       h8s-sim_defconfig
-mips                      bmips_stb_defconfig
-powerpc                        icon_defconfig
-mips                   sb1250_swarm_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201207
-i386                 randconfig-a004-20201207
-i386                 randconfig-a001-20201207
-i386                 randconfig-a002-20201207
-i386                 randconfig-a006-20201207
-i386                 randconfig-a003-20201207
-i386                 randconfig-a004-20201208
-i386                 randconfig-a005-20201208
-i386                 randconfig-a001-20201208
-i386                 randconfig-a002-20201208
-i386                 randconfig-a006-20201208
-i386                 randconfig-a003-20201208
-x86_64               randconfig-a016-20201207
-x86_64               randconfig-a012-20201207
-x86_64               randconfig-a014-20201207
-x86_64               randconfig-a013-20201207
-x86_64               randconfig-a015-20201207
-x86_64               randconfig-a011-20201207
-i386                 randconfig-a014-20201207
-i386                 randconfig-a013-20201207
-i386                 randconfig-a011-20201207
-i386                 randconfig-a015-20201207
-i386                 randconfig-a012-20201207
-i386                 randconfig-a016-20201207
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201207
-x86_64               randconfig-a006-20201207
-x86_64               randconfig-a002-20201207
-x86_64               randconfig-a001-20201207
-x86_64               randconfig-a005-20201207
-x86_64               randconfig-a003-20201207
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On 2020-09-22 10:28, Thomas Pedersen wrote:
+> S1G beacons are 802.11 Extension Frames, so the fixed
+> header part differs from regular beacons.
+> 
+> Add a handler to process S1G beacons and abstract out the
+> fetching of BSSID and element start locations in the
+> beacon body handler.
+> 
+> Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+> ---
+>  net/mac80211/ieee80211_i.h |  4 ++
+>  net/mac80211/iface.c       |  5 +++
+>  net/mac80211/mlme.c        | 84 +++++++++++++++++++++++++++++---------
+>  net/mac80211/rx.c          | 84 ++++++++++++++++----------------------
+>  net/mac80211/util.c        | 52 +++++++++++++++++++++++
+>  5 files changed, 162 insertions(+), 67 deletions(-)
+> 
+...
+> @@ -1801,7 +1756,8 @@ ieee80211_rx_h_sta_process(struct 
+> ieee80211_rx_data *rx)
+>  		}
+>  	} else if (rx->sdata->vif.type == NL80211_IFTYPE_OCB) {
+>  		sta->rx_stats.last_rx = jiffies;
+> -	} else if (!is_multicast_ether_addr(hdr->addr1)) {
+> +	} else if (!ieee80211_is_s1g_beacon(hdr->frame_control) &&
+> +		   is_multicast_ether_addr(hdr->addr1)) {
+is this a typo mistake?
+it removed ! for is_multicast_ether_addr(!is_multicast_ether_addr ==> 
+is_multicast_ether_addr)
+>  		/*
+>  		 * Mesh beacons will update last_rx when if they are found to
+>  		 * match the current local configuration when processed.
+...
 
 _______________________________________________
 ath10k mailing list
