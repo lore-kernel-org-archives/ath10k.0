@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmXfq-0001V7-Ls
- for ath10k@lists.infradead.org; Tue, 08 Dec 2020 07:44:40 +0000
+ id 1kmXsZ-0002jc-Jx
+ for ath10k@lists.infradead.org; Tue, 08 Dec 2020 07:57:49 +0000
 MIME-Version: 1.0
-Date: Tue, 08 Dec 2020 15:44:33 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v4 13/17] mac80211: receive and process S1G beacons
-In-Reply-To: <20200922022818.15855-14-thomas@adapt-ip.com>
-References: <20200922022818.15855-1-thomas@adapt-ip.com>
- <20200922022818.15855-14-thomas@adapt-ip.com>
-Message-ID: <6064b579538afca27c511edeb5400032@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: add option for chip-id based BDF selection
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+Message-Id: <20201208075745.CFD60C43462@smtp.codeaurora.org>
+Date: Tue,  8 Dec 2020 07:57:45 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +18,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Thomas Pedersen <thomas@adapt-ip.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath11k@lists.infradead.org, ath10k@lists.infradead.org
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: netdev@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, pillair@codeaurora.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
 
-On 2020-09-22 10:28, Thomas Pedersen wrote:
-> S1G beacons are 802.11 Extension Frames, so the fixed
-> header part differs from regular beacons.
+Abhishek Kumar <kuabhs@chromium.org> wrote:
+
+> In some devices difference in chip-id should be enough to pick
+> the right BDF. Add another support for chip-id based BDF selection.
+> With this new option, ath10k supports 2 fallback options.
 > 
-> Add a handler to process S1G beacons and abstract out the
-> fetching of BSSID and element start locations in the
-> beacon body handler.
+> The board name with chip-id as option looks as follows
+> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
 > 
-> Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
-> ---
->  net/mac80211/ieee80211_i.h |  4 ++
->  net/mac80211/iface.c       |  5 +++
->  net/mac80211/mlme.c        | 84 +++++++++++++++++++++++++++++---------
->  net/mac80211/rx.c          | 84 ++++++++++++++++----------------------
->  net/mac80211/util.c        | 52 +++++++++++++++++++++++
->  5 files changed, 162 insertions(+), 67 deletions(-)
-> 
-...
-> @@ -1801,7 +1756,8 @@ ieee80211_rx_h_sta_process(struct 
-> ieee80211_rx_data *rx)
->  		}
->  	} else if (rx->sdata->vif.type == NL80211_IFTYPE_OCB) {
->  		sta->rx_stats.last_rx = jiffies;
-> -	} else if (!is_multicast_ether_addr(hdr->addr1)) {
-> +	} else if (!ieee80211_is_s1g_beacon(hdr->frame_control) &&
-> +		   is_multicast_ether_addr(hdr->addr1)) {
-is this a typo mistake?
-it removed ! for is_multicast_ether_addr(!is_multicast_ether_addr ==> 
-is_multicast_ether_addr)
->  		/*
->  		 * Mesh beacons will update last_rx when if they are found to
->  		 * match the current local configuration when processed.
-...
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Two new checkpatch (using ath10k-check) warnings:
+
+drivers/net/wireless/ath/ath10k/core.c:1509: line length of 92 exceeds 90 columns
+drivers/net/wireless/ath/ath10k/core.c:1518: line length of 92 exceeds 90 columns
+
+Fixed those in the pending branch.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
