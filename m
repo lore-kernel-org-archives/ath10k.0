@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmnLY-0007ib-15
- for ath10k@lists.infradead.org; Wed, 09 Dec 2020 00:28:45 +0000
-Date: Wed, 09 Dec 2020 08:27:56 +0800
+ id 1kmnLa-0007ie-Hm
+ for ath10k@lists.infradead.org; Wed, 09 Dec 2020 00:28:48 +0000
+Date: Wed, 09 Dec 2020 08:28:00 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS 9721413e5da4320a2bc1ab0bcbd5da2b9ce84682
-Message-ID: <5fd01a0c.+dTF93b8ceK0BiAS%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 0cf3795fdea35e7da8206d99ecca23b0448d6ec1
+Message-ID: <5fd01a10.scKzKYbtaViIfs0O%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 9721413e5da4320a2bc1ab0bcbd5da2b9ce84682  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 0cf3795fdea35e7da8206d99ecca23b0448d6ec1  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 725m
 
@@ -40,34 +41,30 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-powerpc64                           defconfig
-powerpc                     pseries_defconfig
-powerpc                 mpc834x_mds_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+sh                   secureedge5410_defconfig
+powerpc                  storcenter_defconfig
+microblaze                    nommu_defconfig
 powerpc                     tqm8541_defconfig
 powerpc                 mpc8540_ads_defconfig
 mips                       capcella_defconfig
 sh                          lboxre2_defconfig
-arm                           corgi_defconfig
-c6x                        evmc6678_defconfig
-m68k                         apollo_defconfig
-powerpc                     ep8248e_defconfig
-sh                           se7343_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                 linkstation_defconfig
-arm                        mini2440_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                 canyonlands_defconfig
-sh                           sh2007_defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+sh                             espt_defconfig
+x86_64                           alldefconfig
+mips                        jmr3927_defconfig
+sh                      rts7751r2d1_defconfig
+arm                         axm55xx_defconfig
+powerpc                      arches_defconfig
+mips                        qi_lb60_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -86,6 +83,10 @@ sparc                            allyesconfig
 sparc                               defconfig
 i386                               tinyconfig
 i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
