@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmnLY-0007ic-Aw
- for ath10k@lists.infradead.org; Wed, 09 Dec 2020 00:28:45 +0000
-Date: Wed, 09 Dec 2020 08:27:58 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- e65e8b608f68c154ec8c20467a6b2b25fadecaac
-Message-ID: <5fd01a0e.JnCjmA7fM09nplVw%lkp@intel.com>
+ id 1kmpWh-0008IR-JO
+ for ath10k@lists.infradead.org; Wed, 09 Dec 2020 02:48:25 +0000
 MIME-Version: 1.0
+Date: Wed, 09 Dec 2020 10:48:21 +0800
+From: Wen Gong <wgong@codeaurora.org>
+Subject: Re: [PATCH v4 13/17] mac80211: receive and process S1G beacons
+In-Reply-To: <bc3e532c5d21ac5d703de41d4144cf7d@adapt-ip.com>
+References: <20200922022818.15855-1-thomas@adapt-ip.com>
+ <20200922022818.15855-14-thomas@adapt-ip.com>
+ <6064b579538afca27c511edeb5400032@codeaurora.org>
+ <bc3e532c5d21ac5d703de41d4144cf7d@adapt-ip.com>
+Message-ID: <b64d2f6db4464c9ea53a4e29af8332af@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,121 +21,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Thomas Pedersen <thomas@adapt-ip.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, ath11k@lists.infradead.org, ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: e65e8b608f68c154ec8c20467a6b2b25fadecaac  carl9170: remove trailing semicolon in macro definition
-
-elapsed time: 725m
-
-configs tested: 90
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-alpha                            alldefconfig
-powerpc                     tqm5200_defconfig
-arm                         vf610m4_defconfig
-arm                      integrator_defconfig
-ia64                                defconfig
-sh                           se7712_defconfig
-xtensa                          iss_defconfig
-arm                        multi_v7_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                       capcella_defconfig
-sh                          lboxre2_defconfig
-arm                          prima2_defconfig
-arm                             ezx_defconfig
-ia64                            zx1_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201208
-x86_64               randconfig-a006-20201208
-x86_64               randconfig-a005-20201208
-x86_64               randconfig-a001-20201208
-x86_64               randconfig-a002-20201208
-x86_64               randconfig-a003-20201208
-i386                 randconfig-a004-20201208
-i386                 randconfig-a005-20201208
-i386                 randconfig-a001-20201208
-i386                 randconfig-a002-20201208
-i386                 randconfig-a006-20201208
-i386                 randconfig-a003-20201208
-i386                 randconfig-a013-20201208
-i386                 randconfig-a014-20201208
-i386                 randconfig-a011-20201208
-i386                 randconfig-a015-20201208
-i386                 randconfig-a012-20201208
-i386                 randconfig-a016-20201208
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a016-20201208
-x86_64               randconfig-a012-20201208
-x86_64               randconfig-a013-20201208
-x86_64               randconfig-a014-20201208
-x86_64               randconfig-a015-20201208
-x86_64               randconfig-a011-20201208
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On 2020-12-09 02:19, Thomas Pedersen wrote:
+> Hi Wen,
+> 
+> On 2020-12-07 23:44, Wen Gong wrote:
+>> On 2020-09-22 10:28, Thomas Pedersen wrote:
+>>> S1G beacons are 802.11 Extension Frames, so the fixed
+>>> header part differs from regular beacons.
+>>> 
+>>> Add a handler to process S1G beacons and abstract out the
+>>> fetching of BSSID and element start locations in the
+>>> beacon body handler.
+>>> 
+>>> Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+>>> ---
+>>>  net/mac80211/ieee80211_i.h |  4 ++
+>>>  net/mac80211/iface.c       |  5 +++
+>>>  net/mac80211/mlme.c        | 84 
+>>> +++++++++++++++++++++++++++++---------
+>>>  net/mac80211/rx.c          | 84 
+>>> ++++++++++++++++----------------------
+>>>  net/mac80211/util.c        | 52 +++++++++++++++++++++++
+>>>  5 files changed, 162 insertions(+), 67 deletions(-)
+>>> 
+>> ...
+>>> @@ -1801,7 +1756,8 @@ ieee80211_rx_h_sta_process(struct 
+>>> ieee80211_rx_data *rx)
+>>>  		}
+>>>  	} else if (rx->sdata->vif.type == NL80211_IFTYPE_OCB) {
+>>>  		sta->rx_stats.last_rx = jiffies;
+>>> -	} else if (!is_multicast_ether_addr(hdr->addr1)) {
+>>> +	} else if (!ieee80211_is_s1g_beacon(hdr->frame_control) &&
+>>> +		   is_multicast_ether_addr(hdr->addr1)) {
+>> is this a typo mistake?
+>> it removed ! for is_multicast_ether_addr(!is_multicast_ether_addr ==>
+>> is_multicast_ether_addr)
+> 
+> Yes that does look like a typo, it should be:
+> 
+> 	} else if (!ieee80211_is_s1g_beacon(hdr->frame_control) &&
+> 		   !is_multicast_ether_addr(hdr->addr1)) {
+> 
+> (because is_multicast_ether_addr() evaluates to true for s1g beacons).
+> 
+> Do you have a patch or would you like me to send a fixup?
+Yes, I have a patch for it.
+I will send it.
+> 
+> Thanks,
 
 _______________________________________________
 ath10k mailing list
