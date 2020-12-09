@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmrT8-0005H1-UY
- for ath10k@lists.infradead.org; Wed, 09 Dec 2020 04:52:52 +0000
-Date: Wed, 09 Dec 2020 12:52:23 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 117dc9eb59448fe7305ab18e75c0c8e2462c83f0
-Message-ID: <5fd05807.eRxJVezHpG83e5hA%lkp@intel.com>
+ id 1kmvVA-0000sB-DF
+ for ath10k@lists.infradead.org; Wed, 09 Dec 2020 09:11:13 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: add flag to protect napi operation to avoid
+ dead loop hang
+References: <1598617348-2325-1-git-send-email-wgong@codeaurora.org>
+ <CABPxzYKOCtA0n=bTHXT5VdsTGHcVc5PEvS2-TnGD9XEKCWdrNQ@mail.gmail.com>
+Date: Wed, 09 Dec 2020 11:11:01 +0200
+In-Reply-To: <CABPxzYKOCtA0n=bTHXT5VdsTGHcVc5PEvS2-TnGD9XEKCWdrNQ@mail.gmail.com>
+ (Krishna Chaitanya's message of "Fri, 28 Aug 2020 19:39:11 +0530")
+Message-ID: <87wnxrbaze.fsf@codeaurora.org>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,122 +25,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: 117dc9eb59448fe7305ab18e75c0c8e2462c83f0  Merge branch 'pending' into master-pending
+Krishna Chaitanya <chaitanya.mgit@gmail.com> writes:
 
-elapsed time: 725m
+> On Fri, Aug 28, 2020 at 5:53 PM Wen Gong <wgong@codeaurora.org> wrote:
+>>
+>> It happened "Kernel panic - not syncing: hung_task: blocked tasks" when
+>> test simulate crash and ifconfig down/rmmod meanwhile.
 
-configs tested: 95
-configs skipped: 2
+(editing out hundreds of lines of unnecessary text, please edit your quotes)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> LGTM, except maybe a shorted title "ath10k: Prevent deinitializing NAPI twice".
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-arm                           h3600_defconfig
-sh                         microdev_defconfig
-mips                        maltaup_defconfig
-mips                     cu1830-neo_defconfig
-sh                           se7751_defconfig
-arm                            lart_defconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                           se7721_defconfig
-mips                        omega2p_defconfig
-arm                            dove_defconfig
-mips                          ath79_defconfig
-powerpc                     kmeter1_defconfig
-mips                      maltaaprp_defconfig
-powerpc                      mgcoge_defconfig
-arc                            hsdk_defconfig
-xtensa                              defconfig
-powerpc                      pmac32_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201208
-i386                 randconfig-a005-20201208
-i386                 randconfig-a001-20201208
-i386                 randconfig-a002-20201208
-i386                 randconfig-a006-20201208
-i386                 randconfig-a003-20201208
-x86_64               randconfig-a004-20201208
-x86_64               randconfig-a006-20201208
-x86_64               randconfig-a005-20201208
-x86_64               randconfig-a001-20201208
-x86_64               randconfig-a002-20201208
-x86_64               randconfig-a003-20201208
-i386                 randconfig-a013-20201208
-i386                 randconfig-a014-20201208
-i386                 randconfig-a011-20201208
-i386                 randconfig-a015-20201208
-i386                 randconfig-a012-20201208
-i386                 randconfig-a016-20201208
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Thanks, I fixed the title in the pending branch.
 
-clang tested configs:
-x86_64               randconfig-a016-20201208
-x86_64               randconfig-a012-20201208
-x86_64               randconfig-a013-20201208
-x86_64               randconfig-a014-20201208
-x86_64               randconfig-a015-20201208
-x86_64               randconfig-a011-20201208
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
