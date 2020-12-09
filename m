@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kn7MT-00087N-Ev
+ id 1kn7MT-00087O-9c
  for ath10k@lists.infradead.org; Wed, 09 Dec 2020 21:51:03 +0000
-Date: Thu, 10 Dec 2020 05:50:25 +0800
+Date: Thu, 10 Dec 2020 05:50:21 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- e0a466d296bd862080f7796b41349f9f586272c9
-Message-ID: <5fd146a1.jccPXpF9QIgV+2+i%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ f540bbc67bb7f02c8cefdf37e90ef4d9259550d9
+Message-ID: <5fd1469d.CNaD6Xj7IPfxkP6c%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,8 +24,8 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: e0a466d296bd862080f7796b41349f9f586272c9  ath10k: prevent deinitializing NAPI twice
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: f540bbc67bb7f02c8cefdf37e90ef4d9259550d9  Merge branch 'pending' into master-pending
 
 elapsed time: 725m
 
@@ -41,9 +41,8 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                         socfpga_defconfig
-alpha                            alldefconfig
-powerpc                      makalu_defconfig
+m68k                         apollo_defconfig
+powerpc                     tqm8555_defconfig
 powerpc                   motionpro_defconfig
 mips                           ip28_defconfig
 m68k                        m5407c3_defconfig
@@ -59,12 +58,6 @@ powerpc                     sequoia_defconfig
 c6x                              alldefconfig
 arm                          ixp4xx_defconfig
 sh                          lboxre2_defconfig
-m68k                         apollo_defconfig
-arm                          pcm027_defconfig
-mips                          ath25_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                        oxnas_v6_defconfig
-s390                                defconfig
 sh                           se7751_defconfig
 arm                            mmp2_defconfig
 powerpc                       holly_defconfig
@@ -89,6 +82,12 @@ powerpc                 mpc8540_ads_defconfig
 sh                             shx3_defconfig
 powerpc                      pmac32_defconfig
 mips                          ath79_defconfig
+arm                          prima2_defconfig
+arm                            pleb_defconfig
+powerpc                     pseries_defconfig
+arm                             ezx_defconfig
+powerpc                        icon_defconfig
+arm                              alldefconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -111,6 +110,7 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
+s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
