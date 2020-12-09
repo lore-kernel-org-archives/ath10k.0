@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kn50z-00045k-9l
- for ath10k@lists.infradead.org; Wed, 09 Dec 2020 19:20:43 +0000
-Date: Thu, 10 Dec 2020 03:19:43 +0800
+ id 1kn7MT-00087N-Ev
+ for ath10k@lists.infradead.org; Wed, 09 Dec 2020 21:51:03 +0000
+Date: Thu, 10 Dec 2020 05:50:25 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master] BUILD SUCCESS a2e239540f0bd7bf6b8cd365af587e38f8fd329e
-Message-ID: <5fd1234f.ljpULgdxoGo0SzvE%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ e0a466d296bd862080f7796b41349f9f586272c9
+Message-ID: <5fd146a1.jccPXpF9QIgV+2+i%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: a2e239540f0bd7bf6b8cd365af587e38f8fd329e  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: e0a466d296bd862080f7796b41349f9f586272c9  ath10k: prevent deinitializing NAPI twice
 
-elapsed time: 721m
+elapsed time: 725m
 
-configs tested: 122
+configs tested: 120
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -37,20 +38,12 @@ More configs may be tested in the coming days.
 gcc tested configs:
 arm                                 defconfig
 arm64                            allyesconfig
+arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm64                               defconfig
-h8300                       h8s-sim_defconfig
-arm                         lpc18xx_defconfig
-sh                          rsk7203_defconfig
-arm                            qcom_defconfig
-arm                     eseries_pxa_defconfig
-mips                     loongson1b_defconfig
-m68k                        mvme16x_defconfig
-arc                         haps_hs_defconfig
-c6x                         dsk6455_defconfig
-c6x                        evmc6472_defconfig
-mips                       lemote2f_defconfig
+arm                         socfpga_defconfig
+alpha                            alldefconfig
+powerpc                      makalu_defconfig
 powerpc                   motionpro_defconfig
 mips                           ip28_defconfig
 m68k                        m5407c3_defconfig
@@ -66,6 +59,12 @@ powerpc                     sequoia_defconfig
 c6x                              alldefconfig
 arm                          ixp4xx_defconfig
 sh                          lboxre2_defconfig
+m68k                         apollo_defconfig
+arm                          pcm027_defconfig
+mips                          ath25_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                        oxnas_v6_defconfig
+s390                                defconfig
 sh                           se7751_defconfig
 arm                            mmp2_defconfig
 powerpc                       holly_defconfig
@@ -77,7 +76,11 @@ powerpc                    klondike_defconfig
 arm                       imx_v6_v7_defconfig
 riscv                             allnoconfig
 arm                           tegra_defconfig
+powerpc                     tqm8541_defconfig
 m68k                             alldefconfig
+arm                          ep93xx_defconfig
+arm                        cerfcube_defconfig
+arm                       multi_v4t_defconfig
 mips                         bigsur_defconfig
 arm                        vexpress_defconfig
 arm                          pxa168_defconfig
@@ -86,9 +89,6 @@ powerpc                 mpc8540_ads_defconfig
 sh                             shx3_defconfig
 powerpc                      pmac32_defconfig
 mips                          ath79_defconfig
-powerpc                 xes_mpc85xx_defconfig
-m68k                       bvme6000_defconfig
-sh                           se7619_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -111,7 +111,6 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
-s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
