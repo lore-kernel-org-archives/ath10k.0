@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from so254-31.mailgun.net ([198.61.254.31])
+Received: from szxga07-in.huawei.com ([45.249.212.35])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knBi6-0007EF-Tb
- for ath10k@lists.infradead.org; Thu, 10 Dec 2020 02:29:40 +0000
+ id 1knMVu-0008LH-LC
+ for ath10k@lists.infradead.org; Thu, 10 Dec 2020 14:01:48 +0000
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH wireless -next] wireless/ath10k: simplify the return
+ expression of ath10k_ahb_chip_reset()
+Date: Thu, 10 Dec 2020 22:02:04 +0800
+Message-ID: <20201210140204.1774-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Date: Thu, 10 Dec 2020 10:29:35 +0800
-From: Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH v3] ath10k: add flag to protect napi operation to avoid
- dead loop hang
-In-Reply-To: <8a97f5ba-8eba-d61b-4c92-bdfd08d388ee@candelatech.com>
-References: <1598617348-2325-1-git-send-email-wgong@codeaurora.org>
- <87d02x1rqb.fsf@codeaurora.org>
- <010101746bd17881-819242de-7cbb-4df3-93e2-59473d281155-000000@us-west-2.amazonses.com>
- <87r1nzbadn.fsf@codeaurora.org>
- <8a97f5ba-8eba-d61b-4c92-bdfd08d388ee@candelatech.com>
-Message-ID: <e4b4f4d1fadd4d691729ef422e8732d7@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +17,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Zheng Yongjun <zhengyongjun3@huawei.com>
 
-On 2020-12-09 23:00, Ben Greear wrote:
-> On 12/9/20 1:24 AM, Kalle Valo wrote:
->> Wen Gong <wgong@codeaurora.org> writes:
->> 
->>> On 2020-09-08 00:22, Kalle Valo wrote:
->>> 
->>>> Just like with the recent firmware restart patch, isn't
->>>> ar->napi_enabled
->>>> racy? Wouldn't test_and_set_bit() and test_and_clear_bit() be safer?
->>>> 
->>>> Or are we holding a lock? But then that should be documented with
->>>> lockdep_assert_held().
->>> 
->>> yes, ath10k_hif_start is only called from ath10k_core_start, it has
->>> "lockdep_assert_held(&ar->conf_mutex)", and ath10k_hif_stop is only
->>> called from ath10k_core_stop, it also has
->>> "lockdep_assert_held(&ar->conf_mutex)". then it will not 2 thread 
->>> both
->>> enter ath10k_hif_start/ath10k_hif_stop meanwhile.
->> 
->> Ok, but every function depending on a lock being held should still 
->> call
->> lockdep_assert_held(), that way we can catch the bug if locking 
->> changes
->> later. So it's not enough that ath10k_core_stop() has
->> lockdep_assert_held(), also these napi functions should have it.
->> 
->> I actually decided to switch using ATH10K_FLAG_NAPI_ENABLED with
->> set_bit() & co, simpler locking that way and no lockdep_assert_held()
->> needed anymore. Please check my changes in the pending branch, I have
->> only compile tested them:
->> 
->> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=e0a466d296bd862080f7796b41349f9f586272c9
->> 
-> 
-> Why do you not need locking?  You can't just check a bit is set and
-> then do work and set
-> it later without locking, two concurrent CPU threads can pass the
-> first check and both get into
-> the logic below it?
-> 
-maybe because which I said before:
-ath10k_hif_start is only called from ath10k_core_start, it has
-"lockdep_assert_held(&ar->conf_mutex)", and ath10k_hif_stop is only
-called from ath10k_core_stop, it also has
-"lockdep_assert_held(&ar->conf_mutex)". then it will not 2 thread both
-enter ath10k_hif_start/ath10k_hif_stop meanwhile.
+Simplify the return expression.
 
-> Thanks,
-> Ben
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/wireless/ath/ath10k/ahb.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index 05a61975c83f..0ba31c0bbd24 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -598,16 +598,10 @@ static int ath10k_ahb_prepare_device(struct ath10k *ar)
+ 
+ static int ath10k_ahb_chip_reset(struct ath10k *ar)
+ {
+-	int ret;
+-
+ 	ath10k_ahb_halt_chip(ar);
+ 	ath10k_ahb_clock_disable(ar);
+ 
+-	ret = ath10k_ahb_prepare_device(ar);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return ath10k_ahb_prepare_device(ar);
+ }
+ 
+ static int ath10k_ahb_wake_target_cpu(struct ath10k *ar)
+-- 
+2.22.0
+
 
 _______________________________________________
 ath10k mailing list
