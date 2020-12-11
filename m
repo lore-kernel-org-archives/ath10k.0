@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Thu, 10 Dec 2020 20:58:55 +0100
-From: Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH] dma-mapping: move hint unlikely for dma_mapping_error
- from drivers to core
-Message-ID: <20201210195855.GA11120@kunai>
-References: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
+Received: from mga14.intel.com ([192.55.52.115])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1knYi3-0000VK-L0
+ for ath10k@lists.infradead.org; Fri, 11 Dec 2020 03:03:08 +0000
+Date: Fri, 11 Dec 2020 11:02:23 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 9a84e383ca6f7f7a0d15c127e55c7850cc9a48f7
+Message-ID: <5fd2e13f.j4iW9Yy0sVv4b4Yt%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,78 +17,193 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3982884903028746091=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Kevin Brace <kevinbrace@bracecomputerlab.com>, Shyam Sundar S K <shyam-sundar.s-k@amd.com>, Igor Russkikh <irusskikh@marvell.com>, Iyappan Subramanian <iyappan@os.amperecomputing.com>, GR-everest-linux-l2@marvell.com, Ioana Radulescu <ruxandra.radulescu@nxp.com>, Madalin Bucur <madalin.bucur@nxp.com>, Michal Simek <michal.simek@xilinx.com>, Doug Ledford <dledford@redhat.com>, Murali Karicheri <m-karicheri2@ti.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Jiri Pirko <jiri@resnulli.us>, Jesper Dangaard Brouer <hawk@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>, Arnaud Ebalard <arno@natisbad.org>, Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Guy Tzalik <gtzalik@amazon.com>, Luis Chamberlain <mcgrof@kernel.org>, linux-crypto@vger.kernel.org, Jon Mason <jdmason@kudzu.us>, Shannon Nelson <snelson@pensando.io>, Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, Chris Snook <chris.snook@gmail.com>, Daniele Venzano <venza@brownhat.org>, Zhu Yanjun <zyjzyj2000@gmail.com>, linux-i2c@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>, Jon Olson <jonolson@google.com>, Arthur Kiyanovski <akiyano@amazon.com>, Leon Romanovsky <leon@kernel.org>, "David S. Miller" <davem@davemloft.net>, Boris Pismenny <borisp@nvidia.com>, John Fastabend <john.fastabend@gmail.com>, Rain River <rain.1986.08.12@gmail.com>, Martin Habets <habetsm.xilinx@gmail.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Wingman Kwok <w-kwok2@ti.com>, Sean Wang <sean.wang@mediatek.com>, Claudiu Manoil <claudiu.manoil@nxp.com>, Pensando Drivers <drivers@pensando.io>, Kalle Valo <kvalo@codeaurora.org>, Boris Brezillon <bbrezillon@kernel.org>, Sagi Shahar <sagis@google.com>, Tariq Toukan <tariqt@nvidia.com>, Sudarsana Kalluru <skalluru@marvell.com>, Netanel Belgazal <netanel@amazon.com>, Andreas Larsson <andreas@gaisler.com>, Catherine Sullivan <csully@google.com>, Zaibo Xu <xuzaibo@huawei.com>, Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>, Alexei Starovoitov <ast@kernel.org>, Elie Morisse <syniurge@gmail.com>, Luca Coelho <luciano.coelho@intel.com>, Quan Nguyen <quan@os.amperecomputing.com>, Subbaraya Sundeep <sbhatta@marvell.com>, Jiri Slaby <jirislaby@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, linux-rdma@vger.kernel.org, Srujana Challa <schalla@marvell.com>, ath10k@lists.infradead.org, linux-arm-kernel@lists.infradead.org, ath11k@lists.infradead.org, b43-dev@lists.infradead.org, Jay Cliburn <jcliburn@gmail.com>, Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>, John Crispin <john@phrozen.org>, Michael Chan <michael.chan@broadcom.com>, Salil Mehta <salil.mehta@huawei.com>, Edward Cree <ecree.xilinx@gmail.com>, iommu@lists.linux-foundation.org, wil6210@qti.qualcomm.com, Saeed Bishara <saeedb@amazon.com>, bpf@vger.kernel.org, Geetha sowjanya <gakula@marvell.com>, Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Herbert Xu <herbert@gondor.apana.org.au>, Zorik Machulsky <zorik@amazon.com>, qat-linux@intel.com, Jason Gunthorpe <jgg@ziepe.ca>, Nick Kossifidis <mickflemm@gmail.com>, Jakub Kicinski <kuba@kernel.org>, Nehal Shah <nehal-bakulchandra.shah@amd.com>, Sunil Goutham <sgoutham@marvell.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Ariel Elior <aelior@marvell.com>, Keyur Chudgar <keyur@os.amperecomputing.com>, George Cherian <gcherian@marvell.com>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, netdev@vger.kernel.org, hariprasad <hkelam@marvell.com>, Raju Rangoju <rajur@chelsio.com>, Felix Fietkau <nbd@nbd.name>, Saeed Mahameed <saeedm@nvidia.com>, Larry Finger <Larry.Finger@lwfinger.net>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 9a84e383ca6f7f7a0d15c127e55c7850cc9a48f7  ath11k: Fix incorrect tlvs in scan start command
 
---===============3982884903028746091==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
+elapsed time: 722m
 
+configs tested: 160
+configs skipped: 2
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-On Thu, Dec 10, 2020 at 03:47:50PM +0100, Heiner Kallweit wrote:
-> Zillions of drivers use the unlikely() hint when checking the result of
-> dma_mapping_error(). This is an inline function anyway, so we can move
-> the hint into the function and remove it from drivers.
-> From time to time discussions pop up how effective unlikely() is,
-> and that it should be used only if something is really very unlikely.
-> I think that's the case here.
->=20
-> Patch was created with some help from coccinelle.
->=20
-> @@
-> expression dev, dma_addr;
-> @@
->=20
-> - unlikely(dma_mapping_error(dev, dma_addr))
-> + dma_mapping_error(dev, dma_addr)
->=20
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                        workpad_defconfig
+arm                        shmobile_defconfig
+powerpc                     ep8248e_defconfig
+arm                          pcm027_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                 kfr2r09-romimage_defconfig
+um                             i386_defconfig
+arc                            hsdk_defconfig
+mips                    maltaup_xpa_defconfig
+arm                          ep93xx_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          kfr2r09_defconfig
+sparc                            alldefconfig
+mips                        bcm47xx_defconfig
+microblaze                      mmu_defconfig
+arc                          axs103_defconfig
+arm                     eseries_pxa_defconfig
+arm                      tct_hammer_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                      acadia_defconfig
+sh                             shx3_defconfig
+arm                          imote2_defconfig
+mips                malta_kvm_guest_defconfig
+sh                          sdk7780_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         lubbock_defconfig
+arm                          tango4_defconfig
+mips                           gcw0_defconfig
+powerpc                     asp8347_defconfig
+arm                          simpad_defconfig
+powerpc                         ps3_defconfig
+sh                           se7705_defconfig
+sh                        sh7763rdp_defconfig
+sparc64                          alldefconfig
+h8300                               defconfig
+sh                          rsk7201_defconfig
+mips                           rs90_defconfig
+arm                          collie_defconfig
+openrisc                    or1ksim_defconfig
+mips                        bcm63xx_defconfig
+alpha                            alldefconfig
+sh                         microdev_defconfig
+arm                           u8500_defconfig
+powerpc                        icon_defconfig
+m68k                             alldefconfig
+sh                          r7785rp_defconfig
+sh                   secureedge5410_defconfig
+ia64                          tiger_defconfig
+arm                        mini2440_defconfig
+sh                              ul2_defconfig
+c6x                                 defconfig
+mips                             allyesconfig
+mips                          rb532_defconfig
+sh                           se7343_defconfig
+sh                          urquell_defconfig
+sh                          sdk7786_defconfig
+powerpc                      ppc64e_defconfig
+arm                         palmz72_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                         shannon_defconfig
+sh                               j2_defconfig
+m68k                       m5249evb_defconfig
+arm                       versatile_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                               alldefconfig
+powerpc                      cm5200_defconfig
+powerpc                      ppc40x_defconfig
+mips                          rm200_defconfig
+arm                             mxs_defconfig
+riscv                            alldefconfig
+powerpc                      arches_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc837x_rdb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+sparc                            allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+i386                 randconfig-a001-20201210
+i386                 randconfig-a004-20201210
+i386                 randconfig-a003-20201210
+i386                 randconfig-a002-20201210
+i386                 randconfig-a005-20201210
+i386                 randconfig-a006-20201210
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+x86_64               randconfig-a003-20201210
+x86_64               randconfig-a006-20201210
+x86_64               randconfig-a002-20201210
+x86_64               randconfig-a005-20201210
+x86_64               randconfig-a004-20201210
+x86_64               randconfig-a001-20201210
 
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/SffoACgkQFA3kzBSg
-KbYcjxAAgOE4gHcgEP8+Oex1fposdP2Z4KiWFjIYYWG4fo/Ry9PjDbSGh9Nptht2
-fnsCRcFXFj4oaSXaflBTq6ky4usgo2Gyp9puXbnpyj7P2uEjrqZs1zUFpAWdzMor
-UgiJkW/P2IZjCDfwxE8nn9L0fm8ZfcHWqVohAgDh/9SKsrQCdzlzwvd7vSQ94fXr
-qnYrmc6BF68dxVZx4TV18GddP5qFXYKytQ8pXL51XZEJTI05IGmc2l6hs/B4tKj6
-muxiEFw5Ac0eseMimi4J5YDJJZxWe28onn69mMJYQDzVPqSZRyhSAqCv0EhMg6Vp
-sABbG/eShtxir8A5ZrVRgqCaVyBjPu6pHAxdccHkj4d/6hfvD6F2FDXXaWirAf3i
-A4gsMJAmxtBYV0Lyx0D+fzCFnvUSDDSOEayRJdzotQXVCbLvuWHTp6EXVJFD5mMU
-/o3LApTC1uYQTXfGh1HHanpSEXLXfVgzjuDHRUsVIwemk5JwUAl6fw4oXbMrHYdZ
-v9Inx4U81LGxayz1vGmzbE39AeE7YH/5lH4metjot96RpKa+Gg++mMxUHBPW6Jam
-AOz6I3cKYsn7mPkzAZfDNvhvfgz2vxXcGGULSCdaWnVCJY7FMqe8i98w1z/Ymo7U
-JSXmDUhFS43r0JqUfbR0sRGgLL+kHTEa6I4ZT8UNd9DmTtS0Jmo=
-=4X1P
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
-
-
---===============3982884903028746091==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3982884903028746091==--
