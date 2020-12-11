@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knYi3-0000VK-L0
+ id 1knYi3-0000VQ-Ek
  for ath10k@lists.infradead.org; Fri, 11 Dec 2020 03:03:08 +0000
-Date: Fri, 11 Dec 2020 11:02:23 +0800
+Date: Fri, 11 Dec 2020 11:02:20 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 9a84e383ca6f7f7a0d15c127e55c7850cc9a48f7
-Message-ID: <5fd2e13f.j4iW9Yy0sVv4b4Yt%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ af3d0b29f12bc6d2c2a0d76fc4c26d35d7dc7ed6
+Message-ID: <5fd2e13c.9TG+TziaNkSqa/wL%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 9a84e383ca6f7f7a0d15c127e55c7850cc9a48f7  ath11k: Fix incorrect tlvs in scan start command
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: af3d0b29f12bc6d2c2a0d76fc4c26d35d7dc7ed6  Merge branch 'pending' into master-pending
 
 elapsed time: 722m
 
-configs tested: 160
+configs tested: 156
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -41,11 +41,7 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-mips                        workpad_defconfig
-arm                        shmobile_defconfig
-powerpc                     ep8248e_defconfig
-arm                          pcm027_defconfig
-powerpc                 mpc836x_mds_defconfig
+mips                           ip28_defconfig
 sh                 kfr2r09-romimage_defconfig
 um                             i386_defconfig
 arc                            hsdk_defconfig
