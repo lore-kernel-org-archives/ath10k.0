@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from m43-15.mailgun.net ([69.72.43.15])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knwfz-0007Jk-VV
- for ath10k@lists.infradead.org; Sat, 12 Dec 2020 04:38:39 +0000
+ id 1knyyh-0005Xp-TU
+ for ath10k@lists.infradead.org; Sat, 12 Dec 2020 07:06:05 +0000
+Date: Sat, 12 Dec 2020 15:05:53 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ d6b7e8befe89b5b3ccce3de96e242e73ab0b1ada
+Message-ID: <5fd46bd1.bDDuf61x1y0aKEqW%lkp@intel.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v6] ath10k: add atomic protection for device recovery
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <010101746bead6a0-d5e97c66-dedd-4b92-810e-c2e4840fafc9-000000@us-west-2.amazonses.com>
-References: <010101746bead6a0-d5e97c66-dedd-4b92-810e-c2e4840fafc9-000000@us-west-2.amazonses.com>
-Message-Id: <20201212043827.CECB4C433CA@smtp.codeaurora.org>
-Date: Sat, 12 Dec 2020 04:38:27 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +21,161 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wen Gong <wgong@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: d6b7e8befe89b5b3ccce3de96e242e73ab0b1ada  Merge branch 'pending' into master-pending
 
-> When it has more than one restart_work queued meanwhile, the 2nd
-> restart_work is very easy to break the 1st restart work and lead
-> recovery fail.
-> 
-> Add a flag to allow only one restart work running untill
-> device successfully recovered.
-> 
-> It already has flag ATH10K_FLAG_CRASH_FLUSH, but it can not use this
-> flag again, because it is clear in ath10k_core_start. The function
-> ieee80211_reconfig(called by ieee80211_restart_work) of mac80211 do
-> many things and drv_start(call to ath10k_core_start) is 1st thing,
-> when drv_start complete, it does not mean restart complete. So it
-> add new flag and clear it in ath10k_reconfig_complete, because it
-> is the last thing called from drv_reconfig_complete of function
-> ieee80211_reconfig, after it, the restart process finished.
-> 
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+elapsed time: 723m
 
-Patch applied to ath-next branch of ath.git, thanks.
+configs tested: 134
+configs skipped: 2
 
-5dadbe4e3718 ath10k: add atomic protection for device recovery
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/010101746bead6a0-d5e97c66-dedd-4b92-810e-c2e4840fafc9-000000@us-west-2.amazonses.com/
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 linkstation_defconfig
+sh                         apsh4a3a_defconfig
+arm                           omap1_defconfig
+powerpc                     mpc512x_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+nios2                         3c120_defconfig
+sh                 kfr2r09-romimage_defconfig
+sh                          r7785rp_defconfig
+mips                             allmodconfig
+powerpc                     tqm8548_defconfig
+m68k                           sun3_defconfig
+openrisc                            defconfig
+arm                            pleb_defconfig
+ia64                             allyesconfig
+arm                          collie_defconfig
+arm                           sunxi_defconfig
+parisc                generic-32bit_defconfig
+m68k                       m5275evb_defconfig
+arm                          exynos_defconfig
+sh                           se7343_defconfig
+arm                      integrator_defconfig
+arm                            qcom_defconfig
+sh                          rsk7264_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                        cell_defconfig
+arm                      jornada720_defconfig
+powerpc                     tqm8541_defconfig
+sh                          landisk_defconfig
+powerpc                       holly_defconfig
+powerpc                 mpc832x_rdb_defconfig
+parisc                              defconfig
+xtensa                    smp_lx200_defconfig
+arm                        mvebu_v7_defconfig
+sh                             shx3_defconfig
+arm                         socfpga_defconfig
+arm                          moxart_defconfig
+arm                         s3c6400_defconfig
+arm                       aspeed_g4_defconfig
+arc                         haps_hs_defconfig
+powerpc                        warp_defconfig
+nios2                         10m50_defconfig
+parisc                generic-64bit_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                      bamboo_defconfig
+riscv                               defconfig
+powerpc                     ppa8548_defconfig
+arm                          gemini_defconfig
+sh                             sh03_defconfig
+powerpc                      chrp32_defconfig
+mips                           gcw0_defconfig
+m68k                       bvme6000_defconfig
+powerpc                   currituck_defconfig
+mips                      loongson3_defconfig
+nds32                               defconfig
+parisc                           alldefconfig
+ia64                                defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         assabet_defconfig
+xtensa                         virt_defconfig
+xtensa                generic_kc705_defconfig
+sparc                            allyesconfig
+powerpc                          g5_defconfig
+arm                         mv78xx0_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          simpad_defconfig
+ia64                             allmodconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
