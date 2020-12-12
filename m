@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from so254-31.mailgun.net ([198.61.254.31])
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knwfO-0007EW-L3
- for ath10k@lists.infradead.org; Sat, 12 Dec 2020 04:37:59 +0000
+ id 1knwfz-0007Jk-VV
+ for ath10k@lists.infradead.org; Sat, 12 Dec 2020 04:38:39 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] ath10k: add option for chip-id based BDF selection
+Subject: Re: [PATCH v6] ath10k: add atomic protection for device recovery
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-Message-Id: <20201212043756.73F85C433CA@smtp.codeaurora.org>
-Date: Sat, 12 Dec 2020 04:37:56 +0000 (UTC)
+In-Reply-To: <010101746bead6a0-d5e97c66-dedd-4b92-810e-c2e4840fafc9-000000@us-west-2.amazonses.com>
+References: <010101746bead6a0-d5e97c66-dedd-4b92-810e-c2e4840fafc9-000000@us-west-2.amazonses.com>
+Message-Id: <20201212043827.CECB4C433CA@smtp.codeaurora.org>
+Date: Sat, 12 Dec 2020 04:38:27 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Abhishek Kumar <kuabhs@chromium.org>
-Cc: netdev@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, pillair@codeaurora.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: Wen Gong <wgong@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Abhishek Kumar <kuabhs@chromium.org> wrote:
+Wen Gong <wgong@codeaurora.org> wrote:
 
-> In some devices difference in chip-id should be enough to pick
-> the right BDF. Add another support for chip-id based BDF selection.
-> With this new option, ath10k supports 2 fallback options.
+> When it has more than one restart_work queued meanwhile, the 2nd
+> restart_work is very easy to break the 1st restart work and lead
+> recovery fail.
 > 
-> The board name with chip-id as option looks as follows
-> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+> Add a flag to allow only one restart work running untill
+> device successfully recovered.
 > 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+> It already has flag ATH10K_FLAG_CRASH_FLUSH, but it can not use this
+> flag again, because it is clear in ath10k_core_start. The function
+> ieee80211_reconfig(called by ieee80211_restart_work) of mac80211 do
+> many things and drv_start(call to ath10k_core_start) is 1st thing,
+> when drv_start complete, it does not mean restart complete. So it
+> add new flag and clear it in ath10k_reconfig_complete, because it
+> is the last thing called from drv_reconfig_complete of function
+> ieee80211_reconfig, after it, the restart process finished.
+> 
+> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+> 
+> Signed-off-by: Wen Gong <wgong@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-2bc2b87bb35a ath10k: add option for chip-id based BDF selection
+5dadbe4e3718 ath10k: add atomic protection for device recovery
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid/
+https://patchwork.kernel.org/project/linux-wireless/patch/010101746bead6a0-d5e97c66-dedd-4b92-810e-c2e4840fafc9-000000@us-west-2.amazonses.com/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
