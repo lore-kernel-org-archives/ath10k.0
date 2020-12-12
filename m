@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knyyh-0005Xp-TU
+ id 1knyyi-0005Xq-61
  for ath10k@lists.infradead.org; Sat, 12 Dec 2020 07:06:05 +0000
-Date: Sat, 12 Dec 2020 15:05:53 +0800
+Date: Sat, 12 Dec 2020 15:05:55 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- d6b7e8befe89b5b3ccce3de96e242e73ab0b1ada
-Message-ID: <5fd46bd1.bDDuf61x1y0aKEqW%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 708668e014da9bae2cc44f0f9bb8ef7da37e48b5
+Message-ID: <5fd46bd3.0KgDGhayWKeiOOAn%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: d6b7e8befe89b5b3ccce3de96e242e73ab0b1ada  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 708668e014da9bae2cc44f0f9bb8ef7da37e48b5  ath11k: implement suspend for QCA6390 PCI devices
 
 elapsed time: 723m
 
-configs tested: 134
+configs tested: 136
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -82,6 +82,11 @@ arm                         s3c6400_defconfig
 arm                       aspeed_g4_defconfig
 arc                         haps_hs_defconfig
 powerpc                        warp_defconfig
+parisc                           alldefconfig
+powerpc                    klondike_defconfig
+mips                      loongson3_defconfig
+arm                       spear13xx_defconfig
+arm                        trizeps4_defconfig
 nios2                         10m50_defconfig
 parisc                generic-64bit_defconfig
 arm                        mvebu_v5_defconfig
@@ -94,11 +99,8 @@ powerpc                      chrp32_defconfig
 mips                           gcw0_defconfig
 m68k                       bvme6000_defconfig
 powerpc                   currituck_defconfig
-mips                      loongson3_defconfig
 nds32                               defconfig
-parisc                           alldefconfig
 ia64                                defconfig
-powerpc                    klondike_defconfig
 powerpc                 mpc8560_ads_defconfig
 arm                         assabet_defconfig
 xtensa                         virt_defconfig
