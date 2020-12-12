@@ -1,25 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
+Received: from so254-31.mailgun.net ([198.61.254.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knpXm-0003zi-Bc
- for ath10k@lists.infradead.org; Fri, 11 Dec 2020 21:01:39 +0000
-Received: by mail-ot1-x343.google.com with SMTP id b18so9520920ots.0
- for <ath10k@lists.infradead.org>; Fri, 11 Dec 2020 13:01:35 -0800 (PST)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com.
- [209.85.210.54])
- by smtp.gmail.com with ESMTPSA id c204sm2047971oob.44.2020.12.11.13.01.31
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 11 Dec 2020 13:01:31 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id j20so5022391otq.5
- for <ath10k@lists.infradead.org>; Fri, 11 Dec 2020 13:01:31 -0800 (PST)
+ id 1knwfO-0007EW-L3
+ for ath10k@lists.infradead.org; Sat, 12 Dec 2020 04:37:59 +0000
 MIME-Version: 1.0
-References: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
-In-Reply-To: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Fri, 11 Dec 2020 13:00:00 -0800
-Message-ID: <CA+ASDXN5UF0KM=xV9e8jTa4XxZ5Tu-yb4yvoaw+56GHx8hf8=A@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix error handling in case of CE pipe init failure
+Subject: Re: [PATCH v3] ath10k: add option for chip-id based BDF selection
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+Message-Id: <20201212043756.73F85C433CA@smtp.codeaurora.org>
+Date: Sat, 12 Dec 2020 04:37:56 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@codeaurora.org>
-Cc: kuabhs@chromium.org, Youghandhar Chintala <youghand@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Doug Anderson <dianders@chromium.org>
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: netdev@vger.kernel.org, briannorris@chromium.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, dianders@chromium.org, pillair@codeaurora.org, Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>
 
-On Fri, Dec 11, 2020 at 11:00 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> Currently if the copy engine pipe init fails for snoc based
-> chipsets, the rri is not freed.
->
-> Fix this error handling for copy engine pipe init
-> failure.
->
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
->
-> Fixes: 4945af5b264f ("ath10k: enable SRRI/DRRI support on ddr for WCN3990")
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Abhishek Kumar <kuabhs@chromium.org> wrote:
 
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+> In some devices difference in chip-id should be enough to pick
+> the right BDF. Add another support for chip-id based BDF selection.
+> With this new option, ath10k supports 2 fallback options.
+> 
+> The board name with chip-id as option looks as follows
+> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+2bc2b87bb35a ath10k: add option for chip-id based BDF selection
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
