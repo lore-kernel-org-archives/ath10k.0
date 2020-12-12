@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ko872-00040F-El
- for ath10k@lists.infradead.org; Sat, 12 Dec 2020 16:51:18 +0000
-Date: Sun, 13 Dec 2020 00:50:53 +0800
+ id 1ko872-00040H-LC
+ for ath10k@lists.infradead.org; Sat, 12 Dec 2020 16:51:19 +0000
+Date: Sun, 13 Dec 2020 00:50:57 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-next] BUILD SUCCESS
- d1b0c33850d29b325fb4b26e9b0ea3e473125237
-Message-ID: <5fd4f4ed.OUC4cGcGfCQjvd9a%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 19b3a9e5523c22b46b5185df10bab5aae8d8fc8b
+Message-ID: <5fd4f4f1.U69AT5k1eFXqHWNs%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +24,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-next
-branch HEAD: d1b0c33850d29b325fb4b26e9b0ea3e473125237  ath11k: implement suspend for QCA6390 PCI devices
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: 19b3a9e5523c22b46b5185df10bab5aae8d8fc8b  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 722m
 
-configs tested: 183
+configs tested: 188
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -56,6 +56,11 @@ m68k                       m5275evb_defconfig
 arm                          exynos_defconfig
 sh                           se7343_defconfig
 arm                      integrator_defconfig
+arm                            qcom_defconfig
+sh                          rsk7264_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                        cell_defconfig
+arm                      jornada720_defconfig
 arm                        spear6xx_defconfig
 arm                          iop32x_defconfig
 sh                          lboxre2_defconfig
@@ -64,14 +69,19 @@ sh                          landisk_defconfig
 powerpc                       holly_defconfig
 s390                                defconfig
 powerpc                 mpc832x_rdb_defconfig
+parisc                              defconfig
 xtensa                    smp_lx200_defconfig
 arm                        mvebu_v7_defconfig
 sh                             shx3_defconfig
+arm                          gemini_defconfig
+sh                          rsk7269_defconfig
+sh                        apsh4ad0a_defconfig
+m68k                        m5272c3_defconfig
+mips                   sb1250_swarm_defconfig
 arm                         socfpga_defconfig
 arm                          moxart_defconfig
 arc                                 defconfig
 arm                         s3c6400_defconfig
-mips                     cu1000-neo_defconfig
 arm                       aspeed_g4_defconfig
 arc                         haps_hs_defconfig
 powerpc                        warp_defconfig
@@ -81,7 +91,6 @@ arm                        mvebu_v5_defconfig
 powerpc                      bamboo_defconfig
 powerpc                     ppa8548_defconfig
 riscv                               defconfig
-arm                          gemini_defconfig
 sh                             sh03_defconfig
 nds32                               defconfig
 parisc                           alldefconfig
@@ -104,9 +113,6 @@ mips                      maltaaprp_defconfig
 s390                          debug_defconfig
 powerpc                    ge_imp3a_defconfig
 mips                      bmips_stb_defconfig
-arm                        keystone_defconfig
-ia64                            zx1_defconfig
-m68k                          multi_defconfig
 xtensa                         virt_defconfig
 xtensa                generic_kc705_defconfig
 sparc                            allyesconfig
@@ -143,7 +149,6 @@ alpha                               defconfig
 alpha                            allyesconfig
 h8300                            allyesconfig
 sh                               allmodconfig
-parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
 i386                             allyesconfig
