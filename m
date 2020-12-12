@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ko872-00040H-LC
- for ath10k@lists.infradead.org; Sat, 12 Dec 2020 16:51:19 +0000
-Date: Sun, 13 Dec 2020 00:50:57 +0800
+ id 1ko872-00040G-FI
+ for ath10k@lists.infradead.org; Sat, 12 Dec 2020 16:51:18 +0000
+Date: Sun, 13 Dec 2020 00:50:50 +0800
 From: kernel test robot <lkp@intel.com>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- 19b3a9e5523c22b46b5185df10bab5aae8d8fc8b
-Message-ID: <5fd4f4f1.U69AT5k1eFXqHWNs%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS c4d88eb5ee0816450d7146049182d27e83ef2d86
+Message-ID: <5fd4f4ea.gQPbC5+rm/cDZZxW%lkp@intel.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,12 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
-branch HEAD: 19b3a9e5523c22b46b5185df10bab5aae8d8fc8b  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
+branch HEAD: c4d88eb5ee0816450d7146049182d27e83ef2d86  Add localversion-wireless-testing-ath
 
-elapsed time: 722m
+elapsed time: 721m
 
-configs tested: 188
+configs tested: 185
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -56,11 +55,6 @@ m68k                       m5275evb_defconfig
 arm                          exynos_defconfig
 sh                           se7343_defconfig
 arm                      integrator_defconfig
-arm                            qcom_defconfig
-sh                          rsk7264_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                        cell_defconfig
-arm                      jornada720_defconfig
 arm                        spear6xx_defconfig
 arm                          iop32x_defconfig
 sh                          lboxre2_defconfig
@@ -69,19 +63,14 @@ sh                          landisk_defconfig
 powerpc                       holly_defconfig
 s390                                defconfig
 powerpc                 mpc832x_rdb_defconfig
-parisc                              defconfig
 xtensa                    smp_lx200_defconfig
 arm                        mvebu_v7_defconfig
 sh                             shx3_defconfig
-arm                          gemini_defconfig
-sh                          rsk7269_defconfig
-sh                        apsh4ad0a_defconfig
-m68k                        m5272c3_defconfig
-mips                   sb1250_swarm_defconfig
 arm                         socfpga_defconfig
 arm                          moxart_defconfig
 arc                                 defconfig
 arm                         s3c6400_defconfig
+mips                     cu1000-neo_defconfig
 arm                       aspeed_g4_defconfig
 arc                         haps_hs_defconfig
 powerpc                        warp_defconfig
@@ -91,6 +80,7 @@ arm                        mvebu_v5_defconfig
 powerpc                      bamboo_defconfig
 powerpc                     ppa8548_defconfig
 riscv                               defconfig
+arm                          gemini_defconfig
 sh                             sh03_defconfig
 nds32                               defconfig
 parisc                           alldefconfig
@@ -113,11 +103,16 @@ mips                      maltaaprp_defconfig
 s390                          debug_defconfig
 powerpc                    ge_imp3a_defconfig
 mips                      bmips_stb_defconfig
+arm                        keystone_defconfig
+ia64                            zx1_defconfig
+m68k                          multi_defconfig
 xtensa                         virt_defconfig
 xtensa                generic_kc705_defconfig
 sparc                            allyesconfig
 powerpc                          g5_defconfig
 m68k                       bvme6000_defconfig
+powerpc                      pasemi_defconfig
+sh                           se7619_defconfig
 xtensa                           allyesconfig
 arm                         mv78xx0_defconfig
 sh                  sh7785lcr_32bit_defconfig
@@ -149,6 +144,7 @@ alpha                               defconfig
 alpha                            allyesconfig
 h8300                            allyesconfig
 sh                               allmodconfig
+parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
 i386                             allyesconfig
@@ -183,6 +179,12 @@ x86_64               randconfig-a014-20201209
 x86_64               randconfig-a015-20201209
 x86_64               randconfig-a011-20201209
 x86_64               randconfig-a012-20201212
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
 i386                 randconfig-a014-20201212
 i386                 randconfig-a013-20201212
 i386                 randconfig-a012-20201212
@@ -195,12 +197,6 @@ i386                 randconfig-a012-20201210
 i386                 randconfig-a011-20201210
 i386                 randconfig-a016-20201210
 i386                 randconfig-a015-20201210
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                             allnoconfig
