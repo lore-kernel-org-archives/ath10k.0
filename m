@@ -2,19 +2,19 @@ Return-Path: <SRS0=cltn=FT=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F38AEC4361B
-	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 17:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C584C4361B
+	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 17:25:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9FB5E229C5
-	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 17:22:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FB5E229C5
+	by mail.kernel.org (Postfix) with ESMTPS id 3080C229C5
+	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 17:25:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3080C229C5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,42 +23,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ivFqSP0NoHhED/1+kctS+q8yYCl8HkkyRV5EZGYH75Q=; b=NWGUndMAvASrCqE+AMGGzIiojE
-	Bx29bVfw0kB0SBxdQmC7Ry96dA7iaCQHLSx4xL17enEi9602u7c77PujtJkmawjJ9C5QZRqLqQP/t
-	zyG3RHAw+KPqi/vtwIhZlGVe/ycTBEne1l+0qJMIOyzFmHuTGQdzCQlIwZBpyNoP57cNcz/R1v5g+
-	ni/Z8lQKyFIIh6tJZuRtFDMc63/682wQgXT8s6+4DVYCCZTbnDZlOvFbi/mDv55McdjGRwCCWqdTp
-	6OaNMO9f6PxfRfQiG4K1+ylqSSnhe+/KEgNNRM170cWICplEoSNNJ7VCEFznNo3vXHvlvMZ7upQAX
-	8hBatrag==;
+	bh=/pKV3AUE4TL9P6sfnCqMIbF2bmjk7PzbjWDRp94Mv1E=; b=3eMS39SoYf/4SwSjE/gmghQQYa
+	HNTkUA2Ubdqp5lhn3X1QGJ5XykUtu18L9f7SvE9RGFx9/oQ21O19xK95ADWeS7V6VbkMh1xc1lWAp
+	DdJyb4FMXu+t/Ja67ijcY2CwXnNZnJ6Z8xr5eD+sYaRx/DmVD7SarAe3O00sv0PSMHXK+gQ2hHyfg
+	V5wMLDrkodZsU4T1dk594TNuFbBk5DKIK63yvJWY6CqIHnDPl8agWVRxoYlvqyoIIMZ0pjNnscf7q
+	2W5Lur97uB47pLYxlD0Xkx2niHd+F1d3kT4E9Lv49fyKLOxTThCypFjkIBBZSwzTI2UqUScyEuP+J
+	tTIlD4VQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kpE1G-0004iZ-Mj; Tue, 15 Dec 2020 17:21:50 +0000
+	id 1kpE47-0005Yf-07; Tue, 15 Dec 2020 17:24:47 +0000
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kpE1D-0004hY-Ox
- for ath10k@lists.infradead.org; Tue, 15 Dec 2020 17:21:48 +0000
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
- by alexa-out.qualcomm.com with ESMTP; 15 Dec 2020 09:21:44 -0800
+ id 1kpE43-0005Wz-5T
+ for ath10k@lists.infradead.org; Tue, 15 Dec 2020 17:24:45 +0000
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+ by alexa-out.qualcomm.com with ESMTP; 15 Dec 2020 09:24:42 -0800
 X-QCInternal: smtphost
 Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
- by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 15 Dec 2020 09:21:42 -0800
+ by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 15 Dec 2020 09:24:41 -0800
 X-QCInternal: smtphost
 Received: from youghand-linux.qualcomm.com ([10.206.66.115])
- by ironmsg02-blr.qualcomm.com with ESMTP; 15 Dec 2020 22:51:17 +0530
+ by ironmsg02-blr.qualcomm.com with ESMTP; 15 Dec 2020 22:54:38 +0530
 Received: by youghand-linux.qualcomm.com (Postfix, from userid 2370257)
- id 3B2F120F17; Tue, 15 Dec 2020 22:51:16 +0530 (IST)
+ id 9161820F1A; Tue, 15 Dec 2020 22:54:37 +0530 (IST)
 From: Youghandhar Chintala <youghand@codeaurora.org>
-To: johannes@sipsolutions.net,
-	ath10k@lists.infradead.org
-Subject: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
-Date: Tue, 15 Dec 2020 22:51:13 +0530
-Message-Id: <20201215172113.5038-1-youghand@codeaurora.org>
+To: ath10k@lists.infradead.org
+Subject: [PATCH 3/3] ath10k: Set wiphy flag to trigger sta disconnect on
+ hardware restart
+Date: Tue, 15 Dec 2020 22:54:35 +0530
+Message-Id: <20201215172435.5388-1-youghand@codeaurora.org>
 X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201215_122147_931707_C0D9D761 
-X-CRM114-Status: UNSURE (   8.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201215_122443_949844_08E6476B 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,9 +69,10 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: kuabhs@chromium.org, netdev@vger.kernel.org, briannorris@chromium.org,
+Cc: kuabhs@chromium.org, Youghandhar Chintala <youghand@codeaurora.org>,
+ netdev@vger.kernel.org, briannorris@chromium.org,
  linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- dianders@chromium.org, pillair@codeaurora.org, kuba@kernel.org,
+ dianders@chromium.org, Rakesh Pillai <pillair@codeaurora.org>, kuba@kernel.org,
  davem@davemloft.net, kvalo@codeaurora.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -81,46 +81,191 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 From: Rakesh Pillai <pillair@codeaurora.org>
 
-Currently in case of target hardware restart ,we just reconfig and
-re-enable the security keys and enable the network queues to start
-data traffic back from where it was interrupted.
+Currently after the hardware restart triggered from the driver,
+the station interface connection remains intact, since a disconnect
+trigger is not sent to userspace. This can lead to a problem in
+hardwares where the wifi mac sequence is added by the firmware.
 
-Many ath10k wifi chipsets have sequence numbers for the data
-packets assigned by firmware and the mac sequence number will
-restart from zero after target hardware restart leading to mismatch
-in the sequence number expected by the remote peer vs the sequence
-number of the frame sent by the target firmware.
+After the firmware restart, during subsytem recovery, the firmware
+restarts its wifi mac sequence number. Hence AP to which our device
+is connected will receive frames with a  wifi mac sequence number jump
+to the past, thereby resulting in the AP dropping all these frames,
+until the frame arrives with a wifi mac sequence number which AP was
+expecting.
 
-This mismatch in sequence number will cause out-of-order packets
-on the remote peer and all the frames sent by the device are dropped
-until we reach the sequence number which was sent before we restarted
-the target hardware
+To avoid such frame drops, its better to trigger a station disconnect
+upon the  hardware restart. Indicate this support via a WIPHY flag
+to mac80211, if the hardware params flag mentions the support to
+add wifi mac sequence numbers for TX frames in the firmware.
 
-In order to fix this, we trigger a disconnect in case of hardware
-restart. After this there will be a fresh connection and thereby
-avoiding the dropping of frames by remote peer.
+All the other hardwares, except WCN3990, are not affected by this
+change, since the hardware params flag is not set for any hardware
+except for WCN3990
 
-The right fix would be to pull the entire data path into the host
-which is not feasible or would need lots of complex/inefficient
-datapath changes.
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00048
 
-Rakesh Pillai (1):
-  ath10k: Set wiphy flag to trigger sta disconnect on hardware restart
-
-Youghandhar Chintala (2):
-  cfg80211: Add wiphy flag to trigger STA disconnect after hardware
-    restart
-  mac80211: Add support to trigger sta disconnect on hardware restart
-
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
+---
  drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
  drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
  drivers/net/wireless/ath/ath10k/mac.c  |  3 +++
- include/net/cfg80211.h                 |  4 ++++
- net/mac80211/ieee80211_i.h             |  3 +++
- net/mac80211/mlme.c                    |  9 +++++++++
- net/mac80211/util.c                    | 22 +++++++++++++++++++---
- 7 files changed, 56 insertions(+), 3 deletions(-)
+ 3 files changed, 21 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 796107b..4155f94 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -90,6 +90,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = true,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+@@ -124,6 +125,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = true,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -159,6 +161,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -187,6 +190,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.num_wds_entries = 0x20,
+ 		.uart_pin_workaround = true,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 		.bmi_large_size_download = true,
+ 		.supports_peer_stats_info = true,
+ 	},
+@@ -223,6 +227,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -257,6 +262,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -291,6 +297,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -328,6 +335,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = true,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 		.supports_peer_stats_info = true,
+ 	},
+ 	{
+@@ -369,6 +377,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -416,6 +425,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -460,6 +470,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -494,6 +505,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -530,6 +542,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = true,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -598,6 +611,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = true,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -625,6 +639,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_filter_reset_required = false,
+ 		.fw_diag_ce_download = false,
+ 		.tx_stats_over_pktlog = false,
++		.tx_mac_seq_by_fw = true,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index c6ded21..c146d02 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -623,6 +623,9 @@ struct ath10k_hw_params {
+ 
+ 	/* provides bitrates for sta_statistics using WMI_TLV_PEER_STATS_INFO_EVENTID */
+ 	bool supports_peer_stats_info;
++
++	/* tx mac seq num is added by FW */
++	bool tx_mac_seq_by_fw;
+ };
+ 
+ struct htt_rx_desc;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index dc32c78..6fe9cd6 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -9890,6 +9890,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
+ 		ieee80211_hw_set(ar->hw, SUPPORTS_TDLS_BUFFER_STA);
+ 
++	if (ar->hw_params.tx_mac_seq_by_fw)
++		ar->hw->wiphy->flags |= WIPHY_FLAG_STA_DISCONNECT_ON_HW_RESTART;
++
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
+ 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
 -- 
 2.7.4
 
