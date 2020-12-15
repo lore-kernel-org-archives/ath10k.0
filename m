@@ -2,70 +2,68 @@ Return-Path: <SRS0=cltn=FT=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1290C4361B
-	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 18:23:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B497C4361B
+	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 20:42:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E72C2255F
-	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 18:23:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E72C2255F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=candelatech.com
+	by mail.kernel.org (Postfix) with ESMTPS id EC37B222BB
+	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 20:42:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC37B222BB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Rj4Lz/4Y9ah/k/wxDQiup8ENGyzzhOn0IBlv8iJnTjE=; b=z3qTBCk4NW/YTryZICXWmAcAF
-	UY3pg7jCQu54LhDbkTeGIzxr+RQPv9/rimflc1VERg09gMJxdJP8YkPXyHxYnkjAwlAfjEu/4hI1R
-	gAaf21qBil6ISZvck1GAycqP8mXKGvwe84oHPov8ZYJlU0NFjZL0riZovroGN/+0mqnGx4Q9vDd11
-	IMUcsRV3Rgd15oBW+ST7ukifONLeQGk9+26666JDbGc4WeBND3E0rDW4SIadbF4GdX5xuwx08Bla0
-	a0b0pMtbQ8/1U3ECvNHarnuNFk3liezqd4NtdUR1Xrh6dFAjw5enyR7/87usIupkQ5mRNJI1HCqYs
-	Sug2tev8w==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=l0LSnKGaBrkTjRgGWCbKKLfphUTaOf66CGk/wcu6ySo=; b=cW8IgvchgzvFYA3d+uEQGxZQzJ
+	spz9iMh4TZYzcmI2GHmC59AfnZBfuotD4SzrCyNfZ/wWxU18YFOsaZobdGAzXmyJ6xISk+7H45poy
+	PMHKLN9astyTc5YvZZHThLqLi6yr+4mPdX2nAR9ECQ3S8FXvvs/Dd6LpY0yoY39RhIhcken0XHi0/
+	OGK5QmB2oBlx11hjHvazmHuofOxvug4qWwseRh7QU0H267a+/fh3z1DjOk/qJEZxpn4dQsDlf1VBz
+	dYXIOzRKxFeSY0/qbOgiOH0VmIcj9KAiuDtuMXDY2Qvu805iH2FKfRs9/0mlW2nUwUyx3C09VhfKh
+	+jp0pZSw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kpEz6-0004yw-PP; Tue, 15 Dec 2020 18:23:40 +0000
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kpEz4-0004xj-8A
- for ath10k@lists.infradead.org; Tue, 15 Dec 2020 18:23:39 +0000
-Received: from [192.168.254.6] (unknown [50.46.158.169])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail3.candelatech.com (Postfix) with ESMTPSA id E2A4A13C2B0;
- Tue, 15 Dec 2020 10:23:33 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com E2A4A13C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
- s=default; t=1608056615;
- bh=Rz9XVqzoDiWY4qxrJfScJDMVgdjjFU7rO5iNL7mHVFE=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=OxBC8b8E2ZapsnoHI686TBDWUQyyippu8dpvVVT38aCwUDQctQerrE9M8k8SvwOk/
- 0BOz0fkSABRn9x3dYL+Udq8pzMdeJPOQrJTlJN4Xxn7EagWl3KGXMDhjENo36zxXeY
- D8pI+00hF8hwAbJ5Vv1QjNLIHxLfst5LDyocMOXY=
-Subject: Re: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
-To: Youghandhar Chintala <youghand@codeaurora.org>,
- johannes@sipsolutions.net, ath10k@lists.infradead.org
-References: <20201215172113.5038-1-youghand@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Organization: Candela Technologies
-Message-ID: <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
-Date: Tue, 15 Dec 2020 10:23:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+	id 1kpH8k-0001V4-Fd; Tue, 15 Dec 2020 20:41:46 +0000
+Received: from mga06.intel.com ([134.134.136.31])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kpH8g-0001U6-Ge
+ for ath10k@lists.infradead.org; Tue, 15 Dec 2020 20:41:44 +0000
+IronPort-SDR: gKrhBo6At6PQui2bcEvs2WXtm8F2+6ea31g7A4tLYbgyYYFajIQNNXESXjFYIy3w7zdz/DuJFH
+ X0r8xJdMhEQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="236529987"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; d="scan'208";a="236529987"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2020 12:41:39 -0800
+IronPort-SDR: QtNdvl5/GBRB0nKw+fh5NNyTcx4sSpP/pi32FiGGjCile+GqrWTu900H1o+LojnBKmdnM/djmj
+ 1Xw9ZkFgpNXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; d="scan'208";a="336984815"
+Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
+ by orsmga003.jf.intel.com with ESMTP; 15 Dec 2020 12:41:38 -0800
+Received: from kbuild by a947d92d0467 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1kpH8b-0000vf-US; Tue, 15 Dec 2020 20:41:37 +0000
+Date: Wed, 16 Dec 2020 04:41:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ a3463d190211070bed4d6de9aba0a24500ce9b98
+Message-ID: <5fd91f75.ZgKTQH1RSuIgynx2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201215172113.5038-1-youghand@codeaurora.org>
-Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201215_132338_439933_61AAF104 
-X-CRM114-Status: GOOD (  11.81  )
+X-CRM114-CacheID: sfid-20201215_154142_695365_72600E0C 
+X-CRM114-Status: UNSURE (   6.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,32 +75,200 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: kuabhs@chromium.org, netdev@vger.kernel.org, briannorris@chromium.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- dianders@chromium.org, pillair@codeaurora.org, kuba@kernel.org,
- davem@davemloft.net, kvalo@codeaurora.org
+Cc: ath10k@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 12/15/20 9:21 AM, Youghandhar Chintala wrote:
-> From: Rakesh Pillai <pillair@codeaurora.org>
-> 
-> Currently in case of target hardware restart ,we just reconfig and
-> re-enable the security keys and enable the network queues to start
-> data traffic back from where it was interrupted.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: a3463d190211070bed4d6de9aba0a24500ce9b98  Merge branch 'pending' into master-pending
 
-Are there any known mac80211 radios/drivers that *can* support seamless restarts?
+elapsed time: 725m
 
-If not, then just could always enable this feature in mac80211?
+configs tested: 170
+configs skipped: 3
 
-Thanks,
-Ben
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                        shmobile_defconfig
+sh                ecovec24-romimage_defconfig
+arm                      pxa255-idp_defconfig
+sh                         microdev_defconfig
+sh                           se7712_defconfig
+powerpc                      bamboo_defconfig
+m68k                       m5275evb_defconfig
+powerpc                  iss476-smp_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                     powernv_defconfig
+arm                         assabet_defconfig
+ia64                      gensparse_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc836x_mds_defconfig
+nios2                         10m50_defconfig
+mips                       bmips_be_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                       ebony_defconfig
+riscv                            alldefconfig
+powerpc                     tqm8540_defconfig
+powerpc                      tqm8xx_defconfig
+sparc64                             defconfig
+ia64                            zx1_defconfig
+powerpc                     kmeter1_defconfig
+xtensa                         virt_defconfig
+sh                          sdk7780_defconfig
+sparc                       sparc32_defconfig
+arm                          badge4_defconfig
+xtensa                    xip_kc705_defconfig
+sh                           se7724_defconfig
+arm                            lart_defconfig
+um                             i386_defconfig
+ia64                         bigsur_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                            qcom_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                        sh7785lcr_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                     asp8347_defconfig
+arm                        realview_defconfig
+arm                       netwinder_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                     tqm5200_defconfig
+sh                        sh7763rdp_defconfig
+arm                          collie_defconfig
+arm                      jornada720_defconfig
+sh                           se7722_defconfig
+powerpc                      pcm030_defconfig
+powerpc                    klondike_defconfig
+sh                   secureedge5410_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                  colibri_pxa300_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                        edosk7760_defconfig
+c6x                                 defconfig
+m68k                           sun3_defconfig
+arm                     davinci_all_defconfig
+powerpc                 linkstation_defconfig
+m68k                            mac_defconfig
+powerpc64                        alldefconfig
+arm                           sunxi_defconfig
+arm                            zeus_defconfig
+mips                         tb0287_defconfig
+powerpc                     sequoia_defconfig
+mips                  decstation_64_defconfig
+arm                         vf610m4_defconfig
+arm                       mainstone_defconfig
+c6x                        evmc6678_defconfig
+m68k                          atari_defconfig
+m68k                        m5272c3_defconfig
+arm                        neponset_defconfig
+sh                        dreamcast_defconfig
+arm                           corgi_defconfig
+parisc                           alldefconfig
+mips                      pic32mzda_defconfig
+mips                           xway_defconfig
+arm                         mv78xx0_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201215
+x86_64               randconfig-a006-20201215
+x86_64               randconfig-a002-20201215
+x86_64               randconfig-a005-20201215
+x86_64               randconfig-a004-20201215
+x86_64               randconfig-a001-20201215
+i386                 randconfig-a001-20201214
+i386                 randconfig-a004-20201214
+i386                 randconfig-a003-20201214
+i386                 randconfig-a002-20201214
+i386                 randconfig-a006-20201214
+i386                 randconfig-a005-20201214
+i386                 randconfig-a001-20201215
+i386                 randconfig-a004-20201215
+i386                 randconfig-a003-20201215
+i386                 randconfig-a002-20201215
+i386                 randconfig-a006-20201215
+i386                 randconfig-a005-20201215
+i386                 randconfig-a014-20201215
+i386                 randconfig-a013-20201215
+i386                 randconfig-a012-20201215
+i386                 randconfig-a011-20201215
+i386                 randconfig-a015-20201215
+i386                 randconfig-a016-20201215
+i386                 randconfig-a014-20201214
+i386                 randconfig-a013-20201214
+i386                 randconfig-a012-20201214
+i386                 randconfig-a011-20201214
+i386                 randconfig-a015-20201214
+i386                 randconfig-a016-20201214
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20201214
+x86_64               randconfig-a006-20201214
+x86_64               randconfig-a002-20201214
+x86_64               randconfig-a005-20201214
+x86_64               randconfig-a004-20201214
+x86_64               randconfig-a001-20201214
+x86_64               randconfig-a016-20201215
+x86_64               randconfig-a012-20201215
+x86_64               randconfig-a013-20201215
+x86_64               randconfig-a015-20201215
+x86_64               randconfig-a014-20201215
+x86_64               randconfig-a011-20201215
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
