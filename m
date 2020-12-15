@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B497C4361B
-	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 20:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FB8CC4361B
+	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 20:42:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC37B222BB
-	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 20:42:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC37B222BB
+	by mail.kernel.org (Postfix) with ESMTPS id 09850222BB
+	for <ath10k@archiver.kernel.org>; Tue, 15 Dec 2020 20:42:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09850222BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=l0LSnKGaBrkTjRgGWCbKKLfphUTaOf66CGk/wcu6ySo=; b=cW8IgvchgzvFYA3d+uEQGxZQzJ
-	spz9iMh4TZYzcmI2GHmC59AfnZBfuotD4SzrCyNfZ/wWxU18YFOsaZobdGAzXmyJ6xISk+7H45poy
-	PMHKLN9astyTc5YvZZHThLqLi6yr+4mPdX2nAR9ECQ3S8FXvvs/Dd6LpY0yoY39RhIhcken0XHi0/
-	OGK5QmB2oBlx11hjHvazmHuofOxvug4qWwseRh7QU0H267a+/fh3z1DjOk/qJEZxpn4dQsDlf1VBz
-	dYXIOzRKxFeSY0/qbOgiOH0VmIcj9KAiuDtuMXDY2Qvu805iH2FKfRs9/0mlW2nUwUyx3C09VhfKh
-	+jp0pZSw==;
+	bh=DcPlKoE/bMQsPxtJZEczyHKp8ngOSYvT2l+wy/hUW1s=; b=hE9kRzDtt3wFJF6ZCV+QPOn1ly
+	7GqdrhqeYpHuRaPp3tm3hnO9FePUXZyc8j3H+XAVlYPO+ZWEJ8UrZ3oVnlHpGWyVDrZLM7bZukiPt
+	btMEeCjLD2uV/DQ1zGNhkeoEZLF81ajl/rWQr54kM1S5gkZlg6JiIfNeWYOxsWqKU8+VKV/xIeCai
+	H/k0AyyEtwQYhs0I8rH3TpQWfEX89wgGTCNzK5Z5j9x8Ru9cs3RjrSK1+IUKZSjXGFG/4rLPSv7kw
+	pexKL69OGtAYCIoieJxU8gxpJ9UEgcno3e5mtq8jGPyYHto3hVJg3Qta6SEUNJfaWcz/YqqiLQrTJ
+	Atz3L/Sg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kpH8k-0001V4-Fd; Tue, 15 Dec 2020 20:41:46 +0000
-Received: from mga06.intel.com ([134.134.136.31])
+	id 1kpH8j-0001Up-C8; Tue, 15 Dec 2020 20:41:45 +0000
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kpH8g-0001U6-Ge
+ id 1kpH8g-0001U8-KG
  for ath10k@lists.infradead.org; Tue, 15 Dec 2020 20:41:44 +0000
-IronPort-SDR: gKrhBo6At6PQui2bcEvs2WXtm8F2+6ea31g7A4tLYbgyYYFajIQNNXESXjFYIy3w7zdz/DuJFH
- X0r8xJdMhEQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="236529987"
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; d="scan'208";a="236529987"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2020 12:41:39 -0800
-IronPort-SDR: QtNdvl5/GBRB0nKw+fh5NNyTcx4sSpP/pi32FiGGjCile+GqrWTu900H1o+LojnBKmdnM/djmj
- 1Xw9ZkFgpNXw==
+IronPort-SDR: K8aoBM/zc2RaPv4CC1oSskmcVoGxeLcrzqIB2+mJaqR40bDwvJ6wxcglx6/2SSH4fMQn3BbQ4D
+ UBHcDJQwDjKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="171440078"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; d="scan'208";a="171440078"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2020 12:41:40 -0800
+IronPort-SDR: oUYvSibipMDd0IeqrJ0Qtq/QQ0azX+FrADno3S7iEdMJUDi58TJDGcWVmXdDF6Or6wn7IJLAIf
+ 0Vx/yy4zRY2w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; d="scan'208";a="336984815"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; d="scan'208";a="412142309"
 Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
- by orsmga003.jf.intel.com with ESMTP; 15 Dec 2020 12:41:38 -0800
+ by orsmga001.jf.intel.com with ESMTP; 15 Dec 2020 12:41:38 -0800
 Received: from kbuild by a947d92d0467 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1kpH8b-0000vf-US; Tue, 15 Dec 2020 20:41:37 +0000
-Date: Wed, 16 Dec 2020 04:41:25 +0800
+ id 1kpH8b-0000vc-Ic; Tue, 15 Dec 2020 20:41:37 +0000
+Date: Wed, 16 Dec 2020 04:41:27 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- a3463d190211070bed4d6de9aba0a24500ce9b98
-Message-ID: <5fd91f75.ZgKTQH1RSuIgynx2%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 2fe769592ef6d4ae14260989dcbdbde4bff01cb6
+Message-ID: <5fd91f77.CFnXgm/2MpwilIn1%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201215_154142_695365_72600E0C 
-X-CRM114-Status: UNSURE (   6.83  )
+X-CRM114-CacheID: sfid-20201215_154142_831072_2547113B 
+X-CRM114-Status: UNSURE (   9.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,12 +81,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: a3463d190211070bed4d6de9aba0a24500ce9b98  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 2fe769592ef6d4ae14260989dcbdbde4bff01cb6  ath10k: prevent deinitializing NAPI twice
 
 elapsed time: 725m
 
-configs tested: 170
+configs tested: 173
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -122,10 +122,10 @@ powerpc                      tqm8xx_defconfig
 sparc64                             defconfig
 ia64                            zx1_defconfig
 powerpc                     kmeter1_defconfig
-xtensa                         virt_defconfig
-sh                          sdk7780_defconfig
-sparc                       sparc32_defconfig
-arm                          badge4_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                   motionpro_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                           viper_defconfig
 xtensa                    xip_kc705_defconfig
 sh                           se7724_defconfig
 arm                            lart_defconfig
@@ -139,6 +139,10 @@ xtensa                  cadence_csp_defconfig
 powerpc                     asp8347_defconfig
 arm                        realview_defconfig
 arm                       netwinder_defconfig
+powerpc                         ps3_defconfig
+powerpc                      obs600_defconfig
+sh                   sh7770_generic_defconfig
+mips                        nlm_xlp_defconfig
 powerpc                     pq2fads_defconfig
 powerpc                     tqm5200_defconfig
 sh                        sh7763rdp_defconfig
@@ -169,7 +173,6 @@ c6x                        evmc6678_defconfig
 m68k                          atari_defconfig
 m68k                        m5272c3_defconfig
 arm                        neponset_defconfig
-sh                        dreamcast_defconfig
 arm                           corgi_defconfig
 parisc                           alldefconfig
 mips                      pic32mzda_defconfig
