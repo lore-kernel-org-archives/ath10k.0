@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10D8BC4361B
-	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 22:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30106C4361B
+	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 22:31:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B53D2233FE
-	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 22:26:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B53D2233FE
+	by mail.kernel.org (Postfix) with ESMTPS id DFC172376F
+	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 22:31:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC172376F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,62 +23,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=p+dv0NbRWEUjWxZTAsxajs2nvbPFCkXMkzkr7UhPfOY=; b=iZ8VDPKMLgXCayBFwZdBBgf7V
-	/VDVSMhaitDUdWFv69DC3/cZW8uYzCaCX1mnJq3adfjujEWehrneRjbE/nQ43Oj38E7zL26CUNPyh
-	nMdMfCfEBUzNXuq+kFTXkCfM1ouYXf/VcJ688Z07DQROCD1GTalaRv+N+6KA//wx2KbdTBeihmEKB
-	XIboTNc9S8JxRFUW418xcXvhS7C2Aw660zL82OrvySYPpxSdtYQZ0LghkkY9J2GZmV9ZoLY7LvW38
-	3f908LLhvf7eh9Ra7FLR7Xh60eCsoK3B6bXkZnFL4OXdahdqanv5r5d9Z59xUdHdh5HTMnSTuEJgo
-	WcePNMRjQ==;
+	 bh=1NkfcZTDyxGgQ8ealA/QL45e6zednBK01/EltLSOAhU=; b=bY0H4Wr0fcgRf+nyVF0ODPG80
+	EUluNQyExI3yvHxLZUN6+y7SXTj7+BCEHRcnAvIMlO3YWpBveueycD4xuYiXZTOlDWtAB1Pq6uDI2
+	VBL6EZyX+/7s3vjvERLpGxMskL92c9WcdxePYqDJphpN6camjmJcT0tF6FOADI6CakrgeCWG4jAb0
+	UhFJZbM7bLTr4xYSmxI4gVnhL5goKcK5t2fOpNl01CZQn7NazCjM3OiiCeL5ta0ie1xqklSSTCTW3
+	MIjSSm7Xmc4BtlyAM5rw5dAySrO1UeRaT5EGkt5KNpK1Rjrx/OHIHxQPwUONNmMtm+HY5eib61TS5
+	OfScitfgQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kq1he-0000eS-MA; Thu, 17 Dec 2020 22:24:54 +0000
-Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
+	id 1kq1my-00036j-Sf; Thu, 17 Dec 2020 22:30:24 +0000
+Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kq1hc-0000e7-1Y
- for ath10k@lists.infradead.org; Thu, 17 Dec 2020 22:24:52 +0000
-Received: by mail-pg1-x530.google.com with SMTP id n10so47984pgl.10
- for <ath10k@lists.infradead.org>; Thu, 17 Dec 2020 14:24:49 -0800 (PST)
+ id 1kq1mp-00031s-JF
+ for ath10k@lists.infradead.org; Thu, 17 Dec 2020 22:30:22 +0000
+Received: by mail-pj1-x102b.google.com with SMTP id hk16so211490pjb.4
+ for <ath10k@lists.infradead.org>; Thu, 17 Dec 2020 14:30:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=FddPVaFthL4eYBtEYJxiDk/v9Sz7IGRrAfmIr7YH5kU=;
- b=mBanfuG2gNqY8/e6kX428ecgXtrq1Hhgtgh3Kgr06MX0JL5rZgZBp7qDnL/JS3Kvf3
- mMb1p+oDu23YKrXqkAeKOHYtsmj9SsXdlFR+70RbdS8rsCNJ4qdl5nulZLil4lO0NHTd
- f51qpQQffWSH8R965jLY+KDQBWr2xWYRybSrs=
+ bh=Pf9ckCEVaJ6zRPQluKNLBc+gFVAc92xCjtYHcq1JC/A=;
+ b=mric7Hjj4cDYfT8pldW/fafGOVPxVs+mQFbytAiEFHYJTaxQpPs5WGeRJdQr7BzdVX
+ ihAg41fvq0zIyvX5aFC2MqMexW25taT4H6J7QvZ5mkEdMop5x6mlkPcFpIqq/IlNbkI0
+ 0uIDEzpn4n4iOfw61QNDzjOWwaGBAtx2WH5M0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=FddPVaFthL4eYBtEYJxiDk/v9Sz7IGRrAfmIr7YH5kU=;
- b=e5cQzPqQT472IeiYtg79VUGGeuBy3CHoTL3wqfTr6LYPsRL802LZG9oHcx2mXORP30
- GlamWyCjugEoQ+FYDNX4EoebJsacoBgDy6KtofQ8ffrdymRRmtU8tu38+bHs/G+yed2u
- QZxLB2IEy7J24WCtP33if9azJHVr5BIxGt5jnWCq1E4gn7rfHjuluGeC67T1dCkZA1VQ
- gJDXq06GUZ1+SIEZXc6qpmwiR/EcH24gSzScwRlpHB+2jp2FfaoewueyZLVyhFkgiOt3
- 5O4jTgO5ckGsgIUBDE77ryJWCZA3E0piIXpp8OF1jupcwMI0K2NtbPlLzRccBIn76K8y
- peDA==
-X-Gm-Message-State: AOAM533i+HNoPvxw/tgom6MgwKTnhtV7rWOLafIOaobA2hupT0DAUK2b
- IU94fdoDlzt03Gn2oOIrYiEerLEZGDToYA==
-X-Google-Smtp-Source: ABdhPJwK9wTmnZIHuMjcdHRA37ZdgUOZIdb4Rh734ONEykhvdRCref4kS//ATnPrZU3O1wxVvvqodA==
-X-Received: by 2002:aa7:8486:0:b029:19e:307f:2941 with SMTP id
- u6-20020aa784860000b029019e307f2941mr1008725pfn.26.1608243887595; 
- Thu, 17 Dec 2020 14:24:47 -0800 (PST)
+ bh=Pf9ckCEVaJ6zRPQluKNLBc+gFVAc92xCjtYHcq1JC/A=;
+ b=oDoiZofAHB82/cjjo2VAIOayn2cZp+tkPVgIFfeeYzfr4gWu85hWv1NatugSrTz49k
+ xow5w0bSaD4tSpE8seyNdrI2SxY4iUH5xs6q4JB9yx+zRmPZr2V5DAVWMPmip62417au
+ e8hEWhP/P0fwHUzvdnLhjsVpbooM1u6cUOIxTJ2/M3wTpN1xG15Ok/ykV9A08RH5k4lX
+ LsFiGwb+VDFKn7ElowZ98/wnqKmWTlJQwM+CYl2qkt4s31YOHXr+JnFl2IYmUgzw8nPP
+ g+dVJ3VJ/C+Z6eDVFQAfxtFX77bzlArl+RAEcrA6s7kBwDqFuBjYdDA0go+DHVFs6IFZ
+ sKPQ==
+X-Gm-Message-State: AOAM530s6+FtB1eQz6lMpPxWxgifDrwJSmw42nmN+Pfc2mguJPunbToa
+ w1p/VP9q8xEj44ageoIhF9tQsw==
+X-Google-Smtp-Source: ABdhPJx2cbX0FBjlN0OqPmNj516SIg9lvraV+rd1J5A+Cm3zOrLoueWLJm2ajUoRLZxZZeF3sxFHWA==
+X-Received: by 2002:a17:90a:f311:: with SMTP id
+ ca17mr1312552pjb.180.1608244213043; 
+ Thu, 17 Dec 2020 14:30:13 -0800 (PST)
 Received: from google.com ([2620:15c:202:201:8edc:d4ff:fe53:350d])
- by smtp.gmail.com with ESMTPSA id c205sm6775165pfc.160.2020.12.17.14.24.45
+ by smtp.gmail.com with ESMTPSA id c62sm6779936pfa.116.2020.12.17.14.30.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 17 Dec 2020 14:24:46 -0800 (PST)
-Date: Thu, 17 Dec 2020 14:24:43 -0800
+ Thu, 17 Dec 2020 14:30:12 -0800 (PST)
+Date: Thu, 17 Dec 2020 14:30:09 -0800
 From: Brian Norris <briannorris@chromium.org>
-To: Ben Greear <greearb@candelatech.com>
+To: Youghandhar Chintala <youghand@codeaurora.org>
 Subject: Re: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
-Message-ID: <X9vaqxub2F/8YPT8@google.com>
+Message-ID: <X9vb8TQvjElEtscA@google.com>
 References: <20201215172113.5038-1-youghand@codeaurora.org>
- <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
+In-Reply-To: <20201215172113.5038-1-youghand@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201217_172452_173913_44E5796A 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20201217_173015_694029_A5119635 
+X-CRM114-Status: UNSURE (   9.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,8 +90,7 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: kuabhs@chromium.org, Youghandhar Chintala <youghand@codeaurora.org>,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+Cc: kuabhs@chromium.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
  linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
  dianders@chromium.org, pillair@codeaurora.org, kuba@kernel.org,
  johannes@sipsolutions.net, davem@davemloft.net, kvalo@codeaurora.org
@@ -100,34 +99,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, Dec 15, 2020 at 10:23:33AM -0800, Ben Greear wrote:
-> On 12/15/20 9:21 AM, Youghandhar Chintala wrote:
-> > From: Rakesh Pillai <pillair@codeaurora.org>
-> > 
-> > Currently in case of target hardware restart ,we just reconfig and
-> > re-enable the security keys and enable the network queues to start
-> > data traffic back from where it was interrupted.
-> 
-> Are there any known mac80211 radios/drivers that *can* support seamless restarts?
-> 
-> If not, then just could always enable this feature in mac80211?
+On Tue, Dec 15, 2020 at 10:51:13PM +0530, Youghandhar Chintala wrote:
+> From: Rakesh Pillai <pillair@codeaurora.org>
 
-I'm quite sure that iwlwifi intentionally supports a seamless restart.
-From my experience with dealing with user reports, I don't recall any
-issues where restart didn't function as expected, unless there was some
-deeper underlying failure (e.g., hardware/power failure; driver bugs /
-lockups).
+I meant to mention in my other reply: the threading on this series is
+broken (as in, it doesn't exist). It looks like you're using
+git-send-email (good!), but somehow it doesn't have any In-Reply-To or
+References (bad!). Did you send all your mail in one invocation, or did
+you send them as separate git-send-email commands? Anyway, please
+investigate what when wrong so you can get this right in the future.
 
-I don't have very good stats for ath10k/QCA6174, but it survives
-our testing OK and I again don't recall any user-reported complaints in
-this area. I'd say this is a weaker example though, as I don't have as
-clear of data. (By contrast, ath10k/WCN399x, which Rakesh, et al, are
-patching here, does not pass our tests at all, and clearly fails to
-recover from "seamless" restarts, as noted in patch 3.)
+For one, this affects Patchwork's ability to group patch series (not to
+mention everybody who uses a decent mail reader, with proper threading).
+See for example the lore archive, which only is threading replies to
+this cover letter:
 
-I'd also note that we don't operate in AP mode -- only STA -- and IIRC
-Ben, you've complained about AP mode in the past.
+https://lore.kernel.org/linux-wireless/20201215172113.5038-1-youghand@codeaurora.org/
 
+Regards,
 Brian
 
 _______________________________________________
