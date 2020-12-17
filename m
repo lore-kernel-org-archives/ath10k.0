@@ -1,86 +1,83 @@
-Return-Path: <SRS0=ZqSV=FU=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=w3s1=FV=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36F56C4361B
-	for <ath10k@archiver.kernel.org>; Wed, 16 Dec 2020 11:36:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 639E7C4361B
+	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 06:50:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C36C323343
-	for <ath10k@archiver.kernel.org>; Wed, 16 Dec 2020 11:36:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C36C323343
+	by mail.kernel.org (Postfix) with ESMTPS id 0C90423603
+	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 06:50:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C90423603
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:In-Reply-To:
-	References:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Date:Message-Id:To:References:In-Reply-To:From:
+	Subject:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Lt+Ieb4lXjMORKxR8Sh18ipAqFYkpRO14Nxkt4EdNxE=; b=Lw1biUydgT56X6oEOp2mbeMhv
-	B+cd9TkJxtY2YMMBMRro2sYPSwkP4YiSIF/jSvCChwKUGz1fcxz8hdDIVvJp4yawVe4v9XJEYQxkI
-	RUCz6Za++Lrl/x36uLJiB8ZRzdZEOwAufYm6SGhL/EAknXRWSjmPT1wMQ0QrdktA4CsyVWX6rR5Gw
-	zeOksOLR9eIlGHGGUFSwvRLb8ISJv1gA004T0BY2QIBwr1z7s5C8mS500StNuOVKio0csNmz4ug+Y
-	yscw61C/UIz95ZQ5EWE8yL5F8cjhN3w9xQ1BiGNf7hUNEQ/UhJ+nQmqxyFJYyRVr18fbUnXoaC5Y2
-	JIPudN1TQ==;
+	 bh=yg9ItleE/+aYkUmSZgPMIWOmnacOfGValE42WW0i2zM=; b=izTgH+IOMJIprDr1UIYHJfpwB
+	bFyA++WltyNFeX+GAtMbvLBs8vKsTSS9H2W87sxivGv89ZnnJ4fnIGnMZ8joiLj6Glul/dvy3KPoO
+	MmNnXR02ag9SE2rG29PL/S0dB1bnAlEW0qHVQXUvRHqiy8chjmZikpbXZsIq+CNGj00AVhHUF3NbW
+	y0OdsBSPtl/d+0gHjwJ+rZarpA0AbaOeZaiJgNyBrdyCY0k5RDUZxjQSzsudwImbZ5e6UFNe+bMFV
+	9EbQ1bsxXC4vGw3Doc6K0of/3IFFP2Pq+Lisy+fZBcU90m+HC0zsmiFmGdlaTX8L0vymkgpUNwFpm
+	dZ2bQA65g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kpV5p-0005Ns-8b; Wed, 16 Dec 2020 11:35:41 +0000
+	id 1kpn6d-0001qC-2f; Thu, 17 Dec 2020 06:49:43 +0000
 Received: from so254-31.mailgun.net ([198.61.254.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kpV5j-0005Lt-7d
- for ath10k@lists.infradead.org; Wed, 16 Dec 2020 11:35:37 +0000
+ id 1kpn6Y-0001pd-I4
+ for ath10k@lists.infradead.org; Thu, 17 Dec 2020 06:49:41 +0000
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1608118534; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=hHQtI9K32e1pR5DjxtBhpvWTX4yp5Gz5VV4ep6xNEao=;
- b=Ya6xVjc3SyfL0WxaE2Vwf3KqF8pMIdiVQfWwTX+wAnuh+Y5LSiMwN/OBU4hURHcXQuqwZ5GO
- 28LORparhqVFNhmEQZtJGt0ISUTMumC4R7AYrOrytt7HtI2f6o9AofjUlHYWwY5zWTF1b7+R
- BEZ/jehlSpVjLuMjdtie7OhpYcA=
+ s=smtp; t=1608187780; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=5DvfUupqVLoh/0vLxxTriTZKRuTh4+K/pLTz7gLYYGw=;
+ b=SvPCTyhEDuKbgNOgrQ/AJXtNRxQBqSYqJE2SGlYthmYfK6uht1yZMPQnzzjjnTh5saW08gO3
+ b0rcJH1g8Onb9n0ABTHpv5cz6zvCESvMhd1HI3IrbdMvQ1+0MPKADvP0JXckaGWBIfq9zV9F
+ kOklhSO0bBc6PRwn8WtoKyMQnNY=
 X-Mailgun-Sending-Ip: 198.61.254.31
 X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fd9f1040564dfefcd663ed7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Dec 2020 11:35:32
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5fdaff7393a3d2b1cd89913f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 06:49:23
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 9BBA8C433C6; Wed, 16 Dec 2020 11:35:31 +0000 (UTC)
-Received: from Pillair (unknown [137.97.117.56])
+ id 09157C433ED; Thu, 17 Dec 2020 06:49:23 +0000 (UTC)
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi
+ [88.114.240.156])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: pillair)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id CA757C433CA;
- Wed, 16 Dec 2020 11:35:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA757C433CA
+ (No client certificate requested) (Authenticated sender: kvalo)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BD89C433C6;
+ Thu, 17 Dec 2020 06:49:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9BD89C433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=pillair@codeaurora.org
-From: "Rakesh Pillai" <pillair@codeaurora.org>
-To: "'Ben Greear'" <greearb@candelatech.com>,
- "'Youghandhar Chintala'" <youghand@codeaurora.org>,
- <johannes@sipsolutions.net>, <ath10k@lists.infradead.org>
-References: <20201215172113.5038-1-youghand@codeaurora.org>
- <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
-In-Reply-To: <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
-Subject: RE: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
-Date: Wed, 16 Dec 2020 17:05:22 +0530
-Message-ID: <001901d6d39f$8eecc230$acc64690$@codeaurora.org>
+ spf=fail smtp.mailfrom=kvalo@codeaurora.org
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLNiuGMY1lcuX+3xoocSa3lALz5vQHQNXuRp/2kY0A=
-Content-Language: en-us
+Subject: Re: [PATCH] ath10k: Fix error handling in case of CE pipe init failure
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+References: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+To: Rakesh Pillai <pillair@codeaurora.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201217064923.09157C433ED@smtp.codeaurora.org>
+Date: Thu, 17 Dec 2020 06:49:23 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201216_063535_391398_85449F14 
-X-CRM114-Status: GOOD (  11.14  )
+X-CRM114-CacheID: sfid-20201217_014940_481012_8EB4AC7E 
+X-CRM114-Status: UNSURE (   9.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,35 +89,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: kuabhs@chromium.org, netdev@vger.kernel.org, briannorris@chromium.org,
+Cc: kuabhs@chromium.org, youghand@codeaurora.org, briannorris@chromium.org,
  linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- dianders@chromium.org, kuba@kernel.org, davem@davemloft.net,
- kvalo@codeaurora.org
+ ath10k@lists.infradead.org, dianders@chromium.org,
+ Rakesh Pillai <pillair@codeaurora.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-> From: Ben Greear <greearb@candelatech.com>
+> Currently if the copy engine pipe init fails for snoc based
+> chipsets, the rri is not freed.
 > 
-> On 12/15/20 9:21 AM, Youghandhar Chintala wrote:
-> > From: Rakesh Pillai <pillair@codeaurora.org>
-> >
-> > Currently in case of target hardware restart ,we just reconfig and
-> > re-enable the security keys and enable the network queues to start
-> > data traffic back from where it was interrupted.
+> Fix this error handling for copy engine pipe init
+> failure.
 > 
-> Are there any known mac80211 radios/drivers that *can* support seamless
-> restarts?
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 > 
-> If not, then just could always enable this feature in mac80211?
+> Fixes: 4945af5b264f ("ath10k: enable SRRI/DRRI support on ddr for WCN3990")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-I am not aware of any mac80211 target which can restart in a seamless manner.
-Hence I chose to keep this optional and driver can expose this flag (if needed) based on the hardware capability.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Thanks,
-Rakesh Pillai.
+31561e8557cd ath10k: Fix error handling in case of CE pipe init failure
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1607713210-18320-1-git-send-email-pillair@codeaurora.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
