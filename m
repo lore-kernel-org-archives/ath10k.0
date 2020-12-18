@@ -1,90 +1,69 @@
-Return-Path: <SRS0=w3s1=FV=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=/SRF=FW=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C77B4C4361B
-	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 23:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBA04C4361B
+	for <ath10k@archiver.kernel.org>; Fri, 18 Dec 2020 04:45:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61EAF22D37
-	for <ath10k@archiver.kernel.org>; Thu, 17 Dec 2020 23:19:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61EAF22D37
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7254723A1E
+	for <ath10k@archiver.kernel.org>; Fri, 18 Dec 2020 04:45:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7254723A1E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=mRy6kgq1Pxe8b9USIEqErPwEoFpPA+Aelp2iNEJLMiA=; b=oknmLTbjYPhu9WZ1PzaJxVXk9
-	uQBg18WCC2Ncgro/22ZS+crbh/Hlcmqve1D0g5+eepn+5WTurMHu1ZCnWTt0McMpR9VzB8IcaWK3p
-	Y5Wrs4n0JWcfaDnKlpBlU8m/dOreTKyal9LXbYaCaowY2icp/Ha2w0m8LdMSR2Oj4LPqkOmjXnBvE
-	vy2U/0GtRKLWy4g38bmQuYqLD+aKDiH3FYRs1OW7wjCqLqhJzMv/wCYFeL4sKHat6jSiPSBT5MBaO
-	dgpFct4MHZT17LCHQMfLUaHk6wrzVap/26Tg4M5oitVQIk01DnqR/3tIiF8PLM2+XVFJ3jZ+MuSgY
-	e/jbHPwGg==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=KkwRoOAe/cgFsvk03l6YkChWvE8He7zPBQbETlG0jOE=; b=tBPOA2A2de7V0t4L1D/Kn0vYAF
+	oMUF37PCD/LMpPaXrjF0c+EkKvGjQ8Sh0xaehKMaBK8pKKIr4wXEfh6P+xpwAZhCCAc5igcGo2TCm
+	K0PLDYSg0zkUNQp2cqXyXIjFZ4X3nsvEWx2z2J3ZDSxUzfmJPLU7I6aLewWn8OzzWlsClRgY6Cq6E
+	D/cd9HbgXk62graYC4El1HQhaT9oMoVr2zHHCBnWI2b9+MmGPO5nTBm7CZ8/X0zr0bsLpVrHVqEUx
+	USAA8bF9UCkZqfaOFnXuUztxOS5x+QNcbL7KDiZtybxxM47VbVC2cG+yAW1jmZEsqFFbk3s8zlDfP
+	qRPTTIjg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kq2XR-0006NV-TU; Thu, 17 Dec 2020 23:18:25 +0000
-Received: from mail-oo1-xc34.google.com ([2607:f8b0:4864:20::c34])
+	id 1kq7dh-0002MC-N6; Fri, 18 Dec 2020 04:45:13 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kq2XO-0006N8-QS
- for ath10k@lists.infradead.org; Thu, 17 Dec 2020 23:18:23 +0000
-Received: by mail-oo1-xc34.google.com with SMTP id p72so140524oop.4
- for <ath10k@lists.infradead.org>; Thu, 17 Dec 2020 15:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=bz2IW955KN1kBMML3+o9Rok8vGvt7BDvNsrsFguY/2k=;
- b=V3ch4Q5Jvb7jrGD/wLFLLaLNoGCKNaFt2CkOj1sJE/RvSa66LeG7kudveh8uXYqPO4
- koJwcyXMIN1V+HzOaR9TmhmRfURoeVxrvugXQRsvAOZ9zqZSf92LL/XU+pRn0Hx/bvPD
- idx6f4fUnIGiqbf7HkUhucvt6RjxggQFDgLxE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=bz2IW955KN1kBMML3+o9Rok8vGvt7BDvNsrsFguY/2k=;
- b=XAVnHg6wi1RIKL+X1TnIQ6zzhmy8TvdC5DOh6M2JiMsxsFw5kYaWO5PwF5hreyDi48
- A6t9ws2BjFW312BtpA5sKGkXwRXLAwhzUU4PkYybNqrzA1uj9wRmIASAZkzUyaWTjhjW
- 7s8DxCbMjbOyH6v6gTL9lAD7PwA/tue2TQ60M5hUWxue7uvChUmuTGELfV2cTR0/njRM
- eTowui9OWK8Nld45qXvHHXzi2d8mUqe2KU9s/jxJyjuF+Eb4HObJASRkxVX5MbnB03Mk
- hgiTWXf9FRHflVHBYtEj2APsMFcESc5tGCM2zJyRGw0DEsYjVTWh9jcYYOhZ1EP28IHw
- BvzQ==
-X-Gm-Message-State: AOAM530SGIogleUr34ZjpDdMMk0qXKiMoGElEvR2OTVv6yu5tQ6nTpM6
- gMJiY5+FIMuRVxRlP/9ad0kt+FLwK49fVA==
-X-Google-Smtp-Source: ABdhPJw94Dj5m+WszD3NJ0Hw67NCylUgypxe/F5NB5Hhq7mbdkYDN/mrbh743jTd5JIdQecCRvTiaA==
-X-Received: by 2002:a4a:97a3:: with SMTP id w32mr986366ooi.81.1608247098621;
- Thu, 17 Dec 2020 15:18:18 -0800 (PST)
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com.
- [209.85.167.180])
- by smtp.gmail.com with ESMTPSA id m3sm1559091ots.72.2020.12.17.15.18.17
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 17 Dec 2020 15:18:17 -0800 (PST)
-Received: by mail-oi1-f180.google.com with SMTP id l207so887301oib.4
- for <ath10k@lists.infradead.org>; Thu, 17 Dec 2020 15:18:17 -0800 (PST)
-X-Received: by 2002:aca:af4d:: with SMTP id y74mr1029540oie.105.1608247096801; 
- Thu, 17 Dec 2020 15:18:16 -0800 (PST)
+ id 1kq7dd-0002LQ-Ht
+ for ath10k@lists.infradead.org; Fri, 18 Dec 2020 04:45:11 +0000
+IronPort-SDR: FCGz4q5Gd8jwUxrS7Su4YJ14ea0gSstHg34Rp/zZ1AIVbPXqgzQWxXEj+QXasN/a7Eeikc8Flo
+ ShLqFV87XniQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="162428214"
+X-IronPort-AV: E=Sophos;i="5.78,429,1599548400"; d="scan'208";a="162428214"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Dec 2020 20:45:05 -0800
+IronPort-SDR: FgqoZSewOowddf48aUJcKlqt6/1L7EH1dchzFcptWa1FHcvCoXlCZZC8zv3QU3ciQzWgS6D8gy
+ Zi57Qj9Ry/yw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,429,1599548400"; d="scan'208";a="353754210"
+Received: from lkp-server02.sh.intel.com (HELO c4fb2a2464e8) ([10.239.97.151])
+ by orsmga002.jf.intel.com with ESMTP; 17 Dec 2020 20:45:04 -0800
+Received: from kbuild by c4fb2a2464e8 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1kq7dX-00000V-SW; Fri, 18 Dec 2020 04:45:03 +0000
+Date: Fri, 18 Dec 2020 12:44:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ cbbbf4f251e012280705090bfb0d9b034826babd
+Message-ID: <5fdc33b1.lk2Fa33Bzu3rAI15%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20201215172113.5038-1-youghand@codeaurora.org>
- <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
- <X9vaqxub2F/8YPT8@google.com>
- <6cec8a4c-620f-093d-2739-7eafe89cd79a@candelatech.com>
-In-Reply-To: <6cec8a4c-620f-093d-2739-7eafe89cd79a@candelatech.com>
-From: Brian Norris <briannorris@chromium.org>
-Date: Thu, 17 Dec 2020 15:18:04 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXP+b8bik767LxcN9jV+ETpJ+_4HKH7rvsGgXbAHidFAng@mail.gmail.com>
-Message-ID: <CA+ASDXP+b8bik767LxcN9jV+ETpJ+_4HKH7rvsGgXbAHidFAng@mail.gmail.com>
-Subject: Re: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
-To: Ben Greear <greearb@candelatech.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201217_181822_911722_88512D67 
-X-CRM114-Status: GOOD (  13.28  )
+X-CRM114-CacheID: sfid-20201217_234509_765756_516CDBF6 
+X-CRM114-Status: UNSURE (   8.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,56 +75,202 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: kuabhs@chromium.org, Youghandhar Chintala <youghand@codeaurora.org>,
- "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- ath10k <ath10k@lists.infradead.org>, Doug Anderson <dianders@chromium.org>,
- Rakesh Pillai <pillair@codeaurora.org>, Jakub Kicinski <kuba@kernel.org>,
- Johannes Berg <johannes@sipsolutions.net>,
- "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 17, 2020 at 2:57 PM Ben Greear <greearb@candelatech.com> wrote:
-> On 12/17/20 2:24 PM, Brian Norris wrote:
-> > I'd also note that we don't operate in AP mode -- only STA -- and IIRC
-> > Ben, you've complained about AP mode in the past.
->
-> I complain about all sorts of things, but I'm usually running
-> station mode :)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: cbbbf4f251e012280705090bfb0d9b034826babd  ath11k: pci: disable ASPM L0sLs before downloading firmware
 
-Hehe, fair :) Maybe I'm mixed up.
+elapsed time: 722m
 
-But I do get the feeling that specifically within the ath10k family,
-there are wildly different use cases (mobile, PC, AP) and chips (and
-firmware) that tend to go along with them, and that those use cases
-get a fairly different population of {developers, testers, reporters}.
-So claiming "feature X works" pretty much always has to be couched in
-which chips, firmware, and use case. And there's certainly some wisdom
-in these sections:
+configs tested: 172
+configs skipped: 2
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#hardware_families
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#tested-on_tag
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Do you actually see iwlwifi stations stay associated through
-> firmware crashes?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                          hp300_defconfig
+s390                          debug_defconfig
+xtensa                    smp_lx200_defconfig
+arm                         palmz72_defconfig
+mips                        nlm_xlp_defconfig
+arm                         cm_x300_defconfig
+powerpc                      pasemi_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                     rainier_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                          landisk_defconfig
+arm                        shmobile_defconfig
+m68k                          sun3x_defconfig
+arm                       mainstone_defconfig
+arm                          prima2_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                     mpc512x_defconfig
+s390                       zfcpdump_defconfig
+arm                            mps2_defconfig
+powerpc                 mpc8272_ads_defconfig
+sh                          kfr2r09_defconfig
+mips                      malta_kvm_defconfig
+m68k                        mvme147_defconfig
+arm                         nhk8815_defconfig
+sh                         ap325rxa_defconfig
+parisc                generic-64bit_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     taishan_defconfig
+arm                         assabet_defconfig
+c6x                              alldefconfig
+powerpc                         ps3_defconfig
+mips                malta_kvm_guest_defconfig
+mips                  cavium_octeon_defconfig
+mips                      bmips_stb_defconfig
+mips                       capcella_defconfig
+sh                          r7780mp_defconfig
+mips                         db1xxx_defconfig
+mips                        maltaup_defconfig
+mips                         tb0226_defconfig
+sh                           se7750_defconfig
+arc                      axs103_smp_defconfig
+arc                         haps_hs_defconfig
+powerpc                      ppc6xx_defconfig
+mips                        nlm_xlr_defconfig
+arm                          collie_defconfig
+openrisc                         alldefconfig
+powerpc                      ppc64e_defconfig
+arm                          imote2_defconfig
+powerpc                     redwood_defconfig
+c6x                        evmc6678_defconfig
+c6x                         dsk6455_defconfig
+arm                           viper_defconfig
+powerpc                    amigaone_defconfig
+sh                          rsk7269_defconfig
+h8300                               defconfig
+arm                      jornada720_defconfig
+powerpc                           allnoconfig
+m68k                       m5475evb_defconfig
+mips                           mtx1_defconfig
+sh                          sdk7786_defconfig
+arm                         lpc32xx_defconfig
+arm                          moxart_defconfig
+powerpc                    socrates_defconfig
+arm                          ep93xx_defconfig
+h8300                       h8s-sim_defconfig
+nios2                            alldefconfig
+sh                            hp6xx_defconfig
+arc                     nsimosci_hs_defconfig
+sh                           se7751_defconfig
+powerpc                 linkstation_defconfig
+mips                         bigsur_defconfig
+microblaze                          defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         hackkit_defconfig
+arm64                            alldefconfig
+mips                        jmr3927_defconfig
+powerpc                     tqm8548_defconfig
+um                            kunit_defconfig
+powerpc                     tqm8541_defconfig
+powerpc                 mpc8313_rdb_defconfig
+xtensa                           alldefconfig
+powerpc                      bamboo_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                     ksi8560_defconfig
+ia64                             alldefconfig
+sh                     magicpanelr2_defconfig
+sh                          urquell_defconfig
+sparc64                             defconfig
+arm                        magician_defconfig
+powerpc                     kmeter1_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a003-20201217
+x86_64               randconfig-a006-20201217
+x86_64               randconfig-a002-20201217
+x86_64               randconfig-a005-20201217
+x86_64               randconfig-a004-20201217
+x86_64               randconfig-a001-20201217
+i386                 randconfig-a001-20201217
+i386                 randconfig-a004-20201217
+i386                 randconfig-a003-20201217
+i386                 randconfig-a002-20201217
+i386                 randconfig-a006-20201217
+i386                 randconfig-a005-20201217
+x86_64               randconfig-a016-20201218
+x86_64               randconfig-a013-20201218
+x86_64               randconfig-a012-20201218
+x86_64               randconfig-a015-20201218
+x86_64               randconfig-a014-20201218
+x86_64               randconfig-a011-20201218
+i386                 randconfig-a014-20201217
+i386                 randconfig-a013-20201217
+i386                 randconfig-a012-20201217
+i386                 randconfig-a011-20201217
+i386                 randconfig-a015-20201217
+i386                 randconfig-a016-20201217
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Yes.
+clang tested configs:
+x86_64               randconfig-a016-20201217
+x86_64               randconfig-a012-20201217
+x86_64               randconfig-a013-20201217
+x86_64               randconfig-a015-20201217
+x86_64               randconfig-a014-20201217
+x86_64               randconfig-a011-20201217
 
-> Anyway, happy to hear some have seamless recovery, and in that case,
-> I have no objections to the patch.
-
-OK! I hope I'm not the only one with such results, because then I
-still might question my sanity (and test coverage), but that's still
-my understanding.
-
-BTW, I haven't yet closely reviewed the patch series myself, but I ACK
-the concept.
-
-Brian
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
