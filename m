@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A72C3C3526D
-	for <ath10k@archiver.kernel.org>; Sat, 19 Dec 2020 00:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F9BC4361B
+	for <ath10k@archiver.kernel.org>; Sat, 19 Dec 2020 00:56:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A9D623BA9
-	for <ath10k@archiver.kernel.org>; Sat, 19 Dec 2020 00:55:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A9D623BA9
+	by mail.kernel.org (Postfix) with ESMTPS id 4115323BA7
+	for <ath10k@archiver.kernel.org>; Sat, 19 Dec 2020 00:56:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4115323BA7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,45 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=0LRaBWmwOekqWjNkV/dEyrNhqkat7y+HBDd/at7/PP8=; b=qJ2BXdD3pTzdqzT3S1KV0chJ1I
-	05rFlh6gPp0w2Qrqh7ZWvMNNRMS1XainwBMjFo7xDeYgsQpLvis0IWA/YVozeBN8NySbDHREJtJiN
-	JhIMbD7Y5h23EjaV8HMxB+kjOUdfuNx7ELgpwYfl4gaXtRAcJRYK5yegZXvej0dYsBik+IzpJQ0ul
-	tcEGKms1IfA7c99Ov7gwj2LPbIirA+hnmi8ttN52sn1P2syA8q86FICKYJ0WqlDFMahYltKZ4zE5Z
-	E//Dj/s6YJOGr/yAvqGEF/j9S7DuPvUCbHZbbIQ9pMI6kAMm/B4PvphwWWitq/An6MFbWODg6cpbJ
-	7ibxjXTA==;
+	bh=PhGRMpFqNMn8PV8h+tirWAfWduVhRWaMudlJzmPjOMc=; b=2yI4ylag2exnM7znvsXolZbe/X
+	0DYbNvcFqR8zLMXe/eSKVYzFx4lrjqvc3F3Lzx65IGPc7nvmqYGyHSMd1QBp475PqVRlk1In0H/MY
+	rIA4GZl093kZ6CO+mKtbuae2NorrH14CnzAGrugMnQtfwKSIO4L2D8KICdDWb/HtNiM2rLHKZg61Q
+	hxGaXcX1+4CKbxsQyWztqZc31MIgjSaac8fTg09FI2zh2XjVLVUBTXW8F2pXPtLOeYuBH8iTWu8pT
+	J2H1BE6Hcq8vj5wcOzVVkP0HHD62CqCojmSBK6hDHPKyXtxEirrAWtR4InJDYuOgPwe8Z+d8Tq9KE
+	1Mjqc3Bw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kqQWy-0005Qd-5F; Sat, 19 Dec 2020 00:55:32 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1kqQWx-0005QP-Ji; Sat, 19 Dec 2020 00:55:31 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kqQWs-0005Pi-MG
+ id 1kqQWs-0005Pj-K0
  for ath10k@lists.infradead.org; Sat, 19 Dec 2020 00:55:29 +0000
-IronPort-SDR: +p+9luBv5irABWWP/xODeD2vLXDw/BRcvbov2RfCvKCm6IM7y8y0WhL3J3KcqkMsBpqcobU3CM
- f3CmqWnKQ6ow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="154754209"
-X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; d="scan'208";a="154754209"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+IronPort-SDR: fx5b63b5Dg81trni2FVZfJgcv6ET3e5LDbH1yCSmZagJImqeiDwhIZWmFYsGVHu4npkVrLcHJ7
+ RE91IelSiZCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="172966172"
+X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; d="scan'208";a="172966172"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  18 Dec 2020 16:55:25 -0800
-IronPort-SDR: BFxfC7SQaC11IWw3SftTHoJ7EP9WAhJ7At3/kq3jac5F9AhutLHBO0an6XVYn0MF8DPgIYJkPA
- 4Txyw6Pbda3A==
+IronPort-SDR: dVudP+MblL+wH33lSWX2HKCBWstgaNkKXJsYsGYIayL+WhzNzRm9cqXlVA3VMAV9l/FSYKSXEz
+ uk5GnV41Jjtw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; d="scan'208";a="370856986"
+X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; d="scan'208";a="354316480"
 Received: from lkp-server02.sh.intel.com (HELO c4fb2a2464e8) ([10.239.97.151])
- by orsmga008.jf.intel.com with ESMTP; 18 Dec 2020 16:55:23 -0800
+ by orsmga002.jf.intel.com with ESMTP; 18 Dec 2020 16:55:23 -0800
 Received: from kbuild by c4fb2a2464e8 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1kqQWo-0000Ye-NA; Sat, 19 Dec 2020 00:55:22 +0000
-Date: Sat, 19 Dec 2020 08:55:02 +0800
+ id 1kqQWo-0000Yh-R9; Sat, 19 Dec 2020 00:55:22 +0000
+Date: Sat, 19 Dec 2020 08:55:09 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:master] BUILD SUCCESS 77da2c99eca0380c9b75b6b06211a1d147dd1cab
-Message-ID: <5fdd4f66.AaefLWWbKtWvRPBG%lkp@intel.com>
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ e59bec9a660ad2a4a1cc7f12c905470ae87ae307
+Message-ID: <5fdd4f6d.n0P+sKm4fWe3Yai8%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201218_195526_949490_9F8F3049 
-X-CRM114-Status: UNSURE (   6.79  )
+X-CRM114-CacheID: sfid-20201218_195526_884908_DB260F1F 
+X-CRM114-Status: UNSURE (   8.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -80,12 +81,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master
-branch HEAD: 77da2c99eca0380c9b75b6b06211a1d147dd1cab  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  ath-qca
+branch HEAD: e59bec9a660ad2a4a1cc7f12c905470ae87ae307  Merge branch 'ath-next' into ath-qca
 
 elapsed time: 726m
 
-configs tested: 135
+configs tested: 142
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -102,6 +103,11 @@ m68k                         apollo_defconfig
 arm                        mini2440_defconfig
 powerpc                 canyonlands_defconfig
 powerpc                 mpc834x_mds_defconfig
+powerpc                  mpc885_ads_defconfig
+m68k                          hp300_defconfig
+sh                          landisk_defconfig
+arm                        shmobile_defconfig
+m68k                          sun3x_defconfig
 powerpc                   motionpro_defconfig
 powerpc                      ep88xc_defconfig
 parisc                           alldefconfig
@@ -109,10 +115,12 @@ arm                           omap1_defconfig
 mips                            e55_defconfig
 xtensa                    xip_kc705_defconfig
 powerpc                      ppc40x_defconfig
-powerpc                 mpc836x_rdk_defconfig
-m68k                        mvme147_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                        icon_defconfig
+sh                         ap325rxa_defconfig
+parisc                generic-64bit_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     taishan_defconfig
+arm                         assabet_defconfig
+c6x                              alldefconfig
 powerpc                 mpc8272_ads_defconfig
 powerpc                     tqm8540_defconfig
 mips                           ci20_defconfig
@@ -129,6 +137,12 @@ powerpc               mpc834x_itxgp_defconfig
 powerpc                     sbc8548_defconfig
 mips                    maltaup_xpa_defconfig
 arm                        spear3xx_defconfig
+sh                           se7750_defconfig
+arm                         hackkit_defconfig
+arm64                            alldefconfig
+mips                        jmr3927_defconfig
+powerpc                     tqm8548_defconfig
+um                            kunit_defconfig
 arm                         shannon_defconfig
 sh                         apsh4a3a_defconfig
 arm                          tango4_defconfig
@@ -137,12 +151,6 @@ i386                             alldefconfig
 mips                      fuloong2e_defconfig
 riscv                               defconfig
 arm                            mps2_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                      bamboo_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                     ksi8560_defconfig
-ia64                             alldefconfig
-sh                     magicpanelr2_defconfig
 arm                       cns3420vb_defconfig
 powerpc                     kilauea_defconfig
 sh                          rsk7201_defconfig
