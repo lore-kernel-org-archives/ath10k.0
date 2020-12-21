@@ -2,83 +2,90 @@ Return-Path: <SRS0=1k1S=FZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB399C433DB
-	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 19:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 555D6C433E0
+	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 20:20:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2C63225A9
-	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 19:53:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2C63225A9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id E1164224D1
+	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 20:20:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1164224D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:References:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Oi4eNnhgwSUTSsUmewsvOJXkq7JwqFA8gpIykhM+8yA=; b=e0yhONZ6RoUUs2nOWhG13QtMW
-	0wZnt9z0A9g9VgsAmo+1Xplyu3KCf5Wily/YBYkIprPez095Fs5FSZStgLCSVdHbAoJczRo3uNbVV
-	5z1TqeyUjtdc3P0gDOEgpDDR6rBCVOefbYjWnk2yYOtfWOI4soQ59OvMA5KjYqbA7mfd7mzGCXE/n
-	hNrzruyuM7zqmkIfFStuj3RbM/gMZHoUAsphJIuX4NYjmu2oO9aNKEUnjpzBZSSiELo+sBG+TPozd
-	edmYEhSML+8suCKamvMnWynDu+ik8B4cjkwsr0TKjEHRJdoJ535FyYyf6jEgC1vSWfYpRXjNn74DR
-	WQgAW9YZQ==;
+	 bh=NMJnASVVaopazDAwQTgRI60nomTZ73K+qb61ytfrcP8=; b=0TeRqoYso+bZA8JeI8cGzSXFF
+	kBzwictbbsdrT3pDnZLvmW7OEAPGixmb5Zn1AKU7jfy0NiZ+caueL18AQmcUC+QSSDdT8ucBD7CBw
+	M9UaX4VCTCt36HLGwt/zwEq9Ds2K+M5aOrJ2/KQpOnlOw4JUrBDSX5WJmugu8WBOPEKwNmHs4BhkY
+	FDKk7NtQNTaYK05x+D4E0AvCRVKK9T7ajAXGkcg9c03Xzjjj3juwZsw3wz6rAgFe/B6/QRTAlbSK4
+	4+Xq3/p3Ew5asbgr/1GJaG6t1W8Yh8H2Oa2ahMZBnDH9dLYnt3IuDXQalvtlicyrYub2H8d0hszRE
+	rcRv9a66Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1krRFT-0005Fw-PT; Mon, 21 Dec 2020 19:53:39 +0000
-Received: from m43-15.mailgun.net ([69.72.43.15])
+	id 1krRfV-0007Go-4b; Mon, 21 Dec 2020 20:20:33 +0000
+Received: from mail-oi1-x22e.google.com ([2607:f8b0:4864:20::22e])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1krRFR-0005FP-Fs
- for ath10k@lists.infradead.org; Mon, 21 Dec 2020 19:53:38 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1608580415; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=iPs1eZk0G/knaly+Pu8IDcD6AR0WgxZXKzna114NbZo=;
- b=k0KLznSq2r+phpGEzfFDtSkP4xNVUQFf3CnKb+L6QrVtNUT/PWxsUkQmKTxEEHMdUh7ucS2o
- JDqI25yOas/iy7jWMbFt30MwXFPL5GWsc9xd2UZV9NaJVwpS21SRStcVc8k0XIq6KrSfdIY8
- P0u4p0Vt+wz2eP0UScMLROKFEp8=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fe0fd3d120d248bb5bebafb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 19:53:33
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 58831C43462; Mon, 21 Dec 2020 19:53:32 +0000 (UTC)
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi
- [88.114.240.156])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CE26C43461;
- Mon, 21 Dec 2020 19:53:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6CE26C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From: Kalle Valo <kvalo@codeaurora.org>
-To: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH] ath10k: fix wmi mgmt tx queue full due to race condition
+ id 1krRfS-0007GK-CD
+ for ath10k@lists.infradead.org; Mon, 21 Dec 2020 20:20:32 +0000
+Received: by mail-oi1-x22e.google.com with SMTP id d189so12484310oig.11
+ for <ath10k@lists.infradead.org>; Mon, 21 Dec 2020 12:20:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=D3Dnzn17f9m0v155oO/9OuYuDJ7bDZTltdNjWrzci5E=;
+ b=AkxDwDnuYm53VqC4xV8e11XhP6gdcoAxI4s8RxA+JJO5ImqnyTmaRhj1T/8XCf751u
+ E8s/AHSvjZmFYhJEc1BTk5K/QUdbtx2kFGebwnnw20fny2nRTBNTB634tr4opKqqDrIp
+ RLXtLVTRQ1iOly5RVUhpyM9JPkOdBgGCuvZak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=D3Dnzn17f9m0v155oO/9OuYuDJ7bDZTltdNjWrzci5E=;
+ b=FBtMKRg9OP+6ko55j78nvvkcy7imBHBCsYvR5fFY3pr0jdD4eXFUBWZxv94+QQ0s/I
+ D5ecKoZW3JQlsbJQmlDGQmAqVvv3JulPqwG7QaaVYQA+6k8LnddDnogQ1K2JWJvjOUtB
+ Rx8G+8lewoP/VF0XEOKWDNLdmhb4sYe5oTz67xAlN2Kc5BacfJKjyVvrnZdlL9s0xgOr
+ DPsCIqL7GaUdVsfD1OTZfoES3FyOsC8k7FF0CS5pcvTu5D5Qa8LcPXKbmxqfCeArselZ
+ EeTO3+k7opKRYyFycUjDZwxLojWowhmGhHGHNSmYxjU/QpFipbqeL1mxgVsUvhZKjHm9
+ J1TA==
+X-Gm-Message-State: AOAM530REdjcp8SRmoW/YaHAp8Asqtz3sHVwzTf7NCI88RGxmsfTkABX
+ KPLi9GDmSofzXBERz8slVhbMaqgB+NzMKw==
+X-Google-Smtp-Source: ABdhPJwc3EXcKMZEX44yNcOdErsuRetMNBlsc4lGVOMFM9is9J07S2q2HJPR4/bN5CSntoSszVBNyg==
+X-Received: by 2002:aca:4a84:: with SMTP id
+ x126mr12135880oia.111.1608582024076; 
+ Mon, 21 Dec 2020 12:20:24 -0800 (PST)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com.
+ [209.85.161.44])
+ by smtp.gmail.com with ESMTPSA id t12sm3921999oot.21.2020.12.21.12.20.22
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 21 Dec 2020 12:20:23 -0800 (PST)
+Received: by mail-oo1-f44.google.com with SMTP id i18so2500533ooh.5
+ for <ath10k@lists.infradead.org>; Mon, 21 Dec 2020 12:20:22 -0800 (PST)
+X-Received: by 2002:a05:6820:3d8:: with SMTP id
+ s24mr12808980ooj.52.1608582022154; 
+ Mon, 21 Dec 2020 12:20:22 -0800 (PST)
+MIME-Version: 1.0
 References: <1608515579-1066-1-git-send-email-miaoqing@codeaurora.org>
  <CA+ASDXP8LotnQZNvXYZqfYH8za6rx1DaZmnH21TsO2NmzX+OZA@mail.gmail.com>
-Date: Mon, 21 Dec 2020 21:53:28 +0200
-In-Reply-To: <CA+ASDXP8LotnQZNvXYZqfYH8za6rx1DaZmnH21TsO2NmzX+OZA@mail.gmail.com>
- (Brian Norris's message of "Mon, 21 Dec 2020 11:31:40 -0800")
-Message-ID: <87ft3zndfr.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
+ <87ft3zndfr.fsf@codeaurora.org>
+In-Reply-To: <87ft3zndfr.fsf@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Mon, 21 Dec 2020 12:20:09 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXMK+8aOvtp-QgkXYXw=BZcFdo9H3ZFSXDsee0PFzUO97Q@mail.gmail.com>
+Message-ID: <CA+ASDXMK+8aOvtp-QgkXYXw=BZcFdo9H3ZFSXDsee0PFzUO97Q@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix wmi mgmt tx queue full due to race condition
+To: Kalle Valo <kvalo@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201221_145337_616278_5C696DA5 
-X-CRM114-Status: GOOD (  14.97  )
+X-CRM114-CacheID: sfid-20201221_152030_502940_843FCB00 
+X-CRM114-Status: GOOD (  13.28  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,38 +99,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  ath10k <ath10k@lists.infradead.org>, Miaoqing Pan <miaoqing@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-QnJpYW4gTm9ycmlzIDxicmlhbm5vcnJpc0BjaHJvbWl1bS5vcmc+IHdyaXRlczoKCj4gSGksCj4K
-PiBPbiBTdW4sIERlYyAyMCwgMjAyMCBhdCA1OjUzIFBNIE1pYW9xaW5nIFBhbiA8bWlhb3FpbmdA
-Y29kZWF1cm9yYS5vcmc+IHdyb3RlOgo+Pgo+PiBGYWlsZWQgdG8gdHJhbnNtaXQgd21pIG1hbmFn
-ZW1lbnQgZnJhbWVzOgo+Pgo+PiBbODQ5NzcuODQwODk0XSBhdGgxMGtfc25vYyBhMDAwMDAwLndp
-Zmk6IHdtaSBtZ210IHR4IHF1ZXVlIGlzIGZ1bGwKPj4gWzg0OTc3Ljg0MDkxM10gYXRoMTBrX3Nu
-b2MgYTAwMDAwMC53aWZpOiBmYWlsZWQgdG8gdHJhbnNtaXQgcGFja2V0LCBkcm9wcGluZzogLTI4
-Cj4+IFs4NDk3Ny44NDA5MjRdIGF0aDEwa19zbm9jIGEwMDAwMDAud2lmaTogZmFpbGVkIHRvIHN1
-Ym1pdCBmcmFtZTogLTI4Cj4+IFs4NDk3Ny44NDA5MzJdIGF0aDEwa19zbm9jIGEwMDAwMDAud2lm
-aTogZmFpbGVkIHRvIHRyYW5zbWl0IGZyYW1lOiAtMjgKPj4KPj4gVGhpcyBpc3N1ZSBpcyBjYXVz
-ZWQgYnkgcmFjZSBjb25kaXRpb24gYmV0d2VlbiBza2JfZGVxdWV1ZSBhbmQKPj4gX19za2JfcXVl
-dWVfdGFpbC4gVGhlIHF1ZXVlIG9mIOKAmHdtaV9tZ210X3R4X3F1ZXVl4oCZIGlzIHByb3RlY3Rl
-ZCBieSBhCj4+IGRpZmZlcmVudCBsb2NrOiBhci0+ZGF0YV9sb2NrIHZzIGxpc3QtPmxvY2ssIHRo
-ZSByZXN1bHQgaXMgbm8gcHJvdGVjdGlvbi4KPgo+IE5pY2UgY2F0Y2ghCj4KPj4gLS0tIGEvZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+PiArKysgYi9kcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4+IEBAIC0zNzYzLDIzICszNzYzLDE2IEBAIGJvb2wg
-YXRoMTBrX21hY190eF9mcm1faGFzX2ZyZXEoc3RydWN0IGF0aDEwayAqYXIpCj4+ICBzdGF0aWMg
-aW50IGF0aDEwa19tYWNfdHhfd21pX21nbXQoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19i
-dWZmICpza2IpCj4+ICB7Cj4+ICAgICAgICAgc3RydWN0IHNrX2J1ZmZfaGVhZCAqcSA9ICZhci0+
-d21pX21nbXRfdHhfcXVldWU7Cj4+IC0gICAgICAgaW50IHJldCA9IDA7Cj4+IC0KPj4gLSAgICAg
-ICBzcGluX2xvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwo+Pgo+PiAgICAgICAgIGlmIChza2JfcXVl
-dWVfbGVuKHEpID09IEFUSDEwS19NQVhfTlVNX01HTVRfUEVORElORykgewo+Cj4gSSBiZWxpZXZl
-IHlvdSBzaG91bGQgYmUgc3dpdGNoaW5nIHRoaXMgdG8gdXNlIHNrYl9xdWV1ZV9sZW5fbG9ja2xl
-c3MoKQo+IHRvby4KCldoeSBsb2NrbGVzcz8gKHJlYWRzIGRvY3VtZW50YXRpb24pIEFoLCBpcyBp
-dCBkdWUgdG8gbWVtb3J5CnN5bmNocm9uaXNhdGlvbiBub3cgdGhhdCB3ZSBkb24ndCB0YWtlIHRo
-ZSBkYXRhX2xvY2sgYW55bW9yZT8KCi0tIApodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3By
-b2plY3QvbGludXgtd2lyZWxlc3MvbGlzdC8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwu
-b3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Mon, Dec 21, 2020 at 11:53 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+> Brian Norris <briannorris@chromium.org> writes:
+> > On Sun, Dec 20, 2020 at 5:53 PM Miaoqing Pan <miaoqing@codeaurora.org> wrote:
+> >>         if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
+> >
+> > I believe you should be switching this to use skb_queue_len_lockless()
+> > too.
+>
+> Why lockless? (reads documentation) Ah, is it due to memory
+> synchronisation now that we don't take the data_lock anymore?
+
+As the original post notes, there was no valid locking in the first
+place anyway, but now that we're fully relying on the queue lock, we
+either need to grab that lock, or else otherwise use lock-free-denoted
+methods.
+
+One could say it's about data synchronization, but it's really about
+the lack of memory model -- C didn't have a formal one until
+relatively recently, and the kernel has always blazed its own way
+anyway. You need to annotate *something* about a bare read, otherwise
+it's not safe to do concurrently; either compiler or hardware can do
+nasty things to you. (In practice, it's unlikely this particular case
+will cause a problem for this reason; it's already a somewhat
+imprecise check anyway.)
+
+Brian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
