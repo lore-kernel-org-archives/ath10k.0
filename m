@@ -2,90 +2,71 @@ Return-Path: <SRS0=1k1S=FZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 555D6C433E0
-	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 20:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7046BC433DB
+	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 22:22:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1164224D1
-	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 20:20:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1164224D1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id F366D22B3F
+	for <ath10k@archiver.kernel.org>; Mon, 21 Dec 2020 22:22:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F366D22B3F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=candelatech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=NMJnASVVaopazDAwQTgRI60nomTZ73K+qb61ytfrcP8=; b=0TeRqoYso+bZA8JeI8cGzSXFF
-	kBzwictbbsdrT3pDnZLvmW7OEAPGixmb5Zn1AKU7jfy0NiZ+caueL18AQmcUC+QSSDdT8ucBD7CBw
-	M9UaX4VCTCt36HLGwt/zwEq9Ds2K+M5aOrJ2/KQpOnlOw4JUrBDSX5WJmugu8WBOPEKwNmHs4BhkY
-	FDKk7NtQNTaYK05x+D4E0AvCRVKK9T7ajAXGkcg9c03Xzjjj3juwZsw3wz6rAgFe/B6/QRTAlbSK4
-	4+Xq3/p3Ew5asbgr/1GJaG6t1W8Yh8H2Oa2ahMZBnDH9dLYnt3IuDXQalvtlicyrYub2H8d0hszRE
-	rcRv9a66Q==;
+	 bh=V8dIQJVJSe/nxY+cVlALqcYu4zkyQXSeRzc4ufJ6OHQ=; b=2ITtwvkwsHY+PvabnVkPwwK1q
+	EtG69u+xt9pKrSd6MSSMfSkxyIRr88z2A+eFUZp6psjdwogCnMOUJtl95ZZ8TzG4f/gnbdeG/q3uA
+	DmORGdXJEjb9mm3cLHh9MJYwNCrS2MA01VNziAX5+NRTyLGpuZYVqYteZTnrEY6u4lU018RVEmonT
+	wI+woNFiVRIMw/rhtL6ZXC1lq9Us+Yt2QmBgQqt/uGyyiN9Sx1GVX4VjE17Byzt0kke7diR/tfhgM
+	hLt2VJW+V7NHz3LzkRHRbRK7LEY12warSo90nLAeIdXcHcTnOBt2uYJ13Oh2ivdt8jKEp2Z1SrzRX
+	CmIIkHeiw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1krRfV-0007Go-4b; Mon, 21 Dec 2020 20:20:33 +0000
-Received: from mail-oi1-x22e.google.com ([2607:f8b0:4864:20::22e])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1krRfS-0007GK-CD
- for ath10k@lists.infradead.org; Mon, 21 Dec 2020 20:20:32 +0000
-Received: by mail-oi1-x22e.google.com with SMTP id d189so12484310oig.11
- for <ath10k@lists.infradead.org>; Mon, 21 Dec 2020 12:20:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=D3Dnzn17f9m0v155oO/9OuYuDJ7bDZTltdNjWrzci5E=;
- b=AkxDwDnuYm53VqC4xV8e11XhP6gdcoAxI4s8RxA+JJO5ImqnyTmaRhj1T/8XCf751u
- E8s/AHSvjZmFYhJEc1BTk5K/QUdbtx2kFGebwnnw20fny2nRTBNTB634tr4opKqqDrIp
- RLXtLVTRQ1iOly5RVUhpyM9JPkOdBgGCuvZak=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=D3Dnzn17f9m0v155oO/9OuYuDJ7bDZTltdNjWrzci5E=;
- b=FBtMKRg9OP+6ko55j78nvvkcy7imBHBCsYvR5fFY3pr0jdD4eXFUBWZxv94+QQ0s/I
- D5ecKoZW3JQlsbJQmlDGQmAqVvv3JulPqwG7QaaVYQA+6k8LnddDnogQ1K2JWJvjOUtB
- Rx8G+8lewoP/VF0XEOKWDNLdmhb4sYe5oTz67xAlN2Kc5BacfJKjyVvrnZdlL9s0xgOr
- DPsCIqL7GaUdVsfD1OTZfoES3FyOsC8k7FF0CS5pcvTu5D5Qa8LcPXKbmxqfCeArselZ
- EeTO3+k7opKRYyFycUjDZwxLojWowhmGhHGHNSmYxjU/QpFipbqeL1mxgVsUvhZKjHm9
- J1TA==
-X-Gm-Message-State: AOAM530REdjcp8SRmoW/YaHAp8Asqtz3sHVwzTf7NCI88RGxmsfTkABX
- KPLi9GDmSofzXBERz8slVhbMaqgB+NzMKw==
-X-Google-Smtp-Source: ABdhPJwc3EXcKMZEX44yNcOdErsuRetMNBlsc4lGVOMFM9is9J07S2q2HJPR4/bN5CSntoSszVBNyg==
-X-Received: by 2002:aca:4a84:: with SMTP id
- x126mr12135880oia.111.1608582024076; 
- Mon, 21 Dec 2020 12:20:24 -0800 (PST)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com.
- [209.85.161.44])
- by smtp.gmail.com with ESMTPSA id t12sm3921999oot.21.2020.12.21.12.20.22
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 21 Dec 2020 12:20:23 -0800 (PST)
-Received: by mail-oo1-f44.google.com with SMTP id i18so2500533ooh.5
- for <ath10k@lists.infradead.org>; Mon, 21 Dec 2020 12:20:22 -0800 (PST)
-X-Received: by 2002:a05:6820:3d8:: with SMTP id
- s24mr12808980ooj.52.1608582022154; 
- Mon, 21 Dec 2020 12:20:22 -0800 (PST)
-MIME-Version: 1.0
-References: <1608515579-1066-1-git-send-email-miaoqing@codeaurora.org>
- <CA+ASDXP8LotnQZNvXYZqfYH8za6rx1DaZmnH21TsO2NmzX+OZA@mail.gmail.com>
- <87ft3zndfr.fsf@codeaurora.org>
-In-Reply-To: <87ft3zndfr.fsf@codeaurora.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 21 Dec 2020 12:20:09 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXMK+8aOvtp-QgkXYXw=BZcFdo9H3ZFSXDsee0PFzUO97Q@mail.gmail.com>
-Message-ID: <CA+ASDXMK+8aOvtp-QgkXYXw=BZcFdo9H3ZFSXDsee0PFzUO97Q@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix wmi mgmt tx queue full due to race condition
+	id 1krTYp-0007uE-7p; Mon, 21 Dec 2020 22:21:47 +0000
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1krTYl-0007ta-UP
+ for ath10k@lists.infradead.org; Mon, 21 Dec 2020 22:21:45 +0000
+Received: from [192.168.254.6] (unknown [50.46.158.169])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail3.candelatech.com (Postfix) with ESMTPSA id 2539113C2B0;
+ Mon, 21 Dec 2020 14:21:42 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 2539113C2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+ s=default; t=1608589302;
+ bh=u1kcYItexzSqhZ/LdK+cgKFiRExwyVnWjAL3XOvHJuA=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=EOXB7iDHKaoeaTVuZOuPrO5CYcPhkz6qwxS8sU5bwEb5tCaLbQCQZPDI4PYAEw6GD
+ aPbOarnxWa2oM0+upV4JA8qNF4wkZfwT/BF4gJbTzcMT7d43MleUeTDxFPwTTpxEMM
+ E2WjNVO+yMAO5FTQVa8+41GSAMYIb6tHD1XU8g0U=
+Subject: Re: [PATCH v2] ath10k: Per-chain rssi should sum the secondary
+ channels
 To: Kalle Valo <kvalo@codeaurora.org>
+References: <20191217183343.25585-1-greearb@candelatech.com>
+ <20201221183044.9016DC433C6@smtp.codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <ff0dde53-8483-88c9-3b7a-65e905bca632@candelatech.com>
+Date: Mon, 21 Dec 2020 14:21:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20201221183044.9016DC433C6@smtp.codeaurora.org>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201221_152030_502940_843FCB00 
-X-CRM114-Status: GOOD (  13.28  )
+X-CRM114-CacheID: sfid-20201221_172144_170438_4ECB2716 
+X-CRM114-Status: GOOD (  15.85  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,39 +78,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>,
- ath10k <ath10k@lists.infradead.org>, Miaoqing Pan <miaoqing@codeaurora.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 21, 2020 at 11:53 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> Brian Norris <briannorris@chromium.org> writes:
-> > On Sun, Dec 20, 2020 at 5:53 PM Miaoqing Pan <miaoqing@codeaurora.org> wrote:
-> >>         if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
-> >
-> > I believe you should be switching this to use skb_queue_len_lockless()
-> > too.
->
-> Why lockless? (reads documentation) Ah, is it due to memory
-> synchronisation now that we don't take the data_lock anymore?
+On 12/21/20 10:30 AM, Kalle Valo wrote:
+> greearb@candelatech.com wrote:
+> 
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> This makes per-chain RSSI be more consistent between HT20, HT40, HT80.
+>> Instead of doing precise log math for adding dbm, I did a rough estimate,
+>> it seems to work good enough.
+>>
+>> Tested on ath10k-ct 9984 firmware.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> 
+> Commented out code etc so I assume this is an RFC. Has anyone tested
+> this with upstream firmware?
 
-As the original post notes, there was no valid locking in the first
-place anyway, but now that we're fully relying on the queue lock, we
-either need to grab that lock, or else otherwise use lock-free-denoted
-methods.
+I probably tweaked this patch since sending.  my wave-1 didn't work with this approach,
+and in the end, to get a valid RSSI, I ended up reading the
+per-chain noise-floor periodically and storing that so I could use proper noise-floor
+instead of just -95.  I am not sure upstream firmware can support that, so probably
+not worth adding just the sum logic unless someone can figure out how to get the noise
+floor out of the firmware...
 
-One could say it's about data synchronization, but it's really about
-the lack of memory model -- C didn't have a formal one until
-relatively recently, and the kernel has always blazed its own way
-anyway. You need to annotate *something* about a bare read, otherwise
-it's not safe to do concurrently; either compiler or hardware can do
-nasty things to you. (In practice, it's unlikely this particular case
-will cause a problem for this reason; it's already a somewhat
-imprecise check anyway.)
+Thanks,
+Ben
 
-Brian
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
