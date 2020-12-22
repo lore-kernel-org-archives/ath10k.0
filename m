@@ -2,18 +2,19 @@ Return-Path: <SRS0=CzWf=F2=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CC55C433E0
-	for <ath10k@archiver.kernel.org>; Tue, 22 Dec 2020 18:30:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94913C433DB
+	for <ath10k@archiver.kernel.org>; Tue, 22 Dec 2020 22:38:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD9E322571
-	for <ath10k@archiver.kernel.org>; Tue, 22 Dec 2020 18:30:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD9E322571
+	by mail.kernel.org (Postfix) with ESMTPS id 2DE6722573
+	for <ath10k@archiver.kernel.org>; Tue, 22 Dec 2020 22:38:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DE6722573
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -22,67 +23,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tBApTxhoPXZT4dTqiBTi/RY1kUEuRgnMLfbkAhQHcqw=; b=f7kOS3yBhYCeN1ugc2cUufIaO
-	eSee+/4Lmm3p7zFOaAOD+Y9B7makMntyvVfKseh8BoLNf6Rcn5ugs0EeZrHcLD67SMZL5e4es49fD
-	/6GD05V7/Cl8wHojFvwKlrCQYPdfIiOi8XIwKQ/XfAbvQJw3A9Q9hZ3cy45zSooKCQAgZ2LBK5IjM
-	rC9HDIVNsz/WjPCWX1J9U0GfPW0eYLAyfIAxa+9vzhhvrAM7sXu6KinJgvSdTkOD9sYPA4hxdvXDZ
-	DuA9DwtPZhPqoEOdD/+yKLKgWScEJru76xApwfU4uQq0YWF6xxYZBHv7S50hHnksEA/xIMADgkKek
-	Q8gF1YkEw==;
+	 bh=d1M4m7JTN2WS5I4IyooMmVIaY+4NWWRTiKBx0I23iRs=; b=UPDTa7UKwfa12kbX5ViJoAaBE
+	1WfKeulz6NwdHzMT8cpSNYv0cUY8jk/p+QvVihkfIPoD37G42gvMFxRV7NbM+vSAZrUwfLb8OQdOQ
+	6NjzddU3ytu1u6Dt2bJabREH9j1S7LS0s9kGgXEPtoiT+zyVw+3V5XnGfjH0E6kgD/9furU2KejnR
+	vHQmipbo+bQu+sJYsi+D6PVpt1+GSn7sr97jDFLmC9a9/9asaqjnx8cqWcR6KYLicxNtFoyZX4lna
+	5uxlwAyCtUzfi7kVKaa3gQ5CNayaklBZPbZxry9cJ7qBKOUIGxneZMXsrZ5H5ElztuyD9AUmkZyZ0
+	HExnix1Vw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1krmQr-0003f0-G8; Tue, 22 Dec 2020 18:30:49 +0000
-Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
+	id 1krqHV-00083D-1h; Tue, 22 Dec 2020 22:37:25 +0000
+Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1krmQn-0003dn-JQ
- for ath10k@lists.infradead.org; Tue, 22 Dec 2020 18:30:48 +0000
-Received: by mail-oo1-xc2b.google.com with SMTP id x23so3159038oop.1
- for <ath10k@lists.infradead.org>; Tue, 22 Dec 2020 10:30:45 -0800 (PST)
+ id 1krqHS-00082b-SN
+ for ath10k@lists.infradead.org; Tue, 22 Dec 2020 22:37:23 +0000
+Received: by mail-io1-xd30.google.com with SMTP id 81so13377912ioc.13
+ for <ath10k@lists.infradead.org>; Tue, 22 Dec 2020 14:37:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=0itLImR3OXMMEO2nMZUnHsaK34n3vqmctKRF6DxZOeo=;
- b=DzHTGwBJRfcMldoTOE3/ZKKys4VH2XmEJGt+7pASBis0udsyrXyTv+lcFS+cdZQt3y
- 6uqvEF4rRnQR42e25e/gthsHU9Z/+13t35HSDh6tgf2dMMTkrQJYmlJlUQw7thJ3YD2d
- SGbNxlThuxbV5IkqoXYSYODaJuWYvrUR5aZy8=
+ :cc; bh=djZGsbrkmGA94jAXMOhutdjZdetBTqkQXt4zsACd0OM=;
+ b=Z8Ugi74CxfCPMN3s/HZNn1ukTSQh20jHPmxZYidK/tLBsgUU85LmLkEK9m8Tiva5Du
+ 9cVovmwScoIvz0x072sABbgGW852qliKBHsMYTnzCy4u5UtU/fx0an7c/QOq8EHgQZth
+ S7BTWvhvN8nhQkA6W/noUD1I18PhFFoisCdFQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=0itLImR3OXMMEO2nMZUnHsaK34n3vqmctKRF6DxZOeo=;
- b=nX3MrFZZ/oTQa+GKnd4kaaRMZqzoYfvUdVF09bR3Z4gRlI3SYyrm/KVEdCM4Ojkwh7
- I7L2zfet5W6nMjVJ2QtyzZ6ts7Yg/ZNjAl1WV0ZkQQXB81cztpB3FTZI5spsM0kK7Cvx
- 7HIWVvY7X4dSFOsVPRTOKIRSqpu+/g74NFkBAPgIhsgf0M24ZqBpa8En0JGUQaNOnNUn
- CR7xWy9kB1n9lssw6z53KeMjFxyd2XUZcib1H3C5BppgEJ3IARHhkOMP52/mWnZYyr1x
- 8BrqbNT7jnQsGUk0wYNnS12u0pltHT3Fao67kEIiuJKr/1ibj+O9yt9CO0XugpoQE1T9
- wWzw==
-X-Gm-Message-State: AOAM531Y1iLtP81OYzaAOOXhAsQWN8mPTlWarlsyn1QSUn2V0lwP6y/9
- 03BZCOQ+Jm2dYWEZ6wO7hbGTj0/iJwH7Zw==
-X-Google-Smtp-Source: ABdhPJx/bRXp63ka9FXPMq2jK6TxuCn3WGi+wviPX6wL/hVOhiBOFwSKeuEH7yxqjhDvvZoe5DsIOw==
-X-Received: by 2002:a4a:d126:: with SMTP id n6mr15605553oor.47.1608661843551; 
- Tue, 22 Dec 2020 10:30:43 -0800 (PST)
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com.
- [209.85.210.46])
- by smtp.gmail.com with ESMTPSA id a18sm1775879otf.33.2020.12.22.10.30.42
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 22 Dec 2020 10:30:42 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id j20so12756281otq.5
- for <ath10k@lists.infradead.org>; Tue, 22 Dec 2020 10:30:42 -0800 (PST)
-X-Received: by 2002:a05:6830:1c2d:: with SMTP id
- f13mr16912875ote.365.1608661842057; 
- Tue, 22 Dec 2020 10:30:42 -0800 (PST)
+ bh=djZGsbrkmGA94jAXMOhutdjZdetBTqkQXt4zsACd0OM=;
+ b=ac+xy49OYMT6V7HP9EF8RWfX520n5E4YoUK4iLAzfbGvY1xB6htdFa9MilNfbV6dzT
+ D1aJtr+L9gi6xeBUrsXnBvtp/2T/68gqOGOxwtQ7G3VJcbIl/rKRjMGqyX3yWtej3gkh
+ 8NpLzt6mpgT7+FwCmLqQjUAr1U/V01vBgcdMw/7ICY6E8J6UEeg717IFb1LOnVTMKpaK
+ kFx74in2z3rpkz8ecFhF/jnNo6WX6VEIYMmqPP3yAG7AGdLKriOpaUzppYsSIit3yK9f
+ cY3QzoBGFQldHXkYNhdfHOOAyCd+jnmr6y19SS4ETzb4I8yU4oJbvcv+YpuwYrQ0fN5e
+ 6szA==
+X-Gm-Message-State: AOAM531Yzdzbai1EsK44YXdZZLIt1215MXheYsxSLS7Ankq9VuMLlAQM
+ KMS4a59urhU2VWycZ65PDZikzBFOFxl3vKwgs03IizLmMIt3kRP2
+X-Google-Smtp-Source: ABdhPJzjPE3ifZKjaoRV9kaxRig0JeWpFArkXbVay9Rq/k+MZUU5lRDgK84v6MDTfAop8WyZlSSNI01+2WrWzmEqp2k=
+X-Received: by 2002:a02:a304:: with SMTP id q4mr20446611jai.97.1608676639053; 
+ Tue, 22 Dec 2020 14:37:19 -0800 (PST)
 MIME-Version: 1.0
-References: <0BEB3EB4-E3AF-4236-BACC-E42CE2D094B7@adcubum.com>
- <3a3815a68576f1715fcc6db590099b84@codeaurora.org>
-In-Reply-To: <3a3815a68576f1715fcc6db590099b84@codeaurora.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Tue, 22 Dec 2020 10:30:29 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXP8NoGACT4OBEwMvj9B6KsBYBAwMhxSApb7D-fCvfxwTg@mail.gmail.com>
-Message-ID: <CA+ASDXP8NoGACT4OBEwMvj9B6KsBYBAwMhxSApb7D-fCvfxwTg@mail.gmail.com>
-Subject: Re: [PATCH] ath: add support for special 0x0 regulatory domain
-To: Wen Gong <wgong@codeaurora.org>
+References: <20201215172435.5388-1-youghand@codeaurora.org>
+In-Reply-To: <20201215172435.5388-1-youghand@codeaurora.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Tue, 22 Dec 2020 14:36:58 -0800
+Message-ID: <CACTWRwsM_RJnssBpxDpRSbex4_1T9QDv3+ZT7eLnYsgOgtGFQw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ath10k: Set wiphy flag to trigger sta disconnect on
+ hardware restart
+To: Youghandhar Chintala <youghand@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201222_133045_661645_0996A669 
-X-CRM114-Status: GOOD (  12.66  )
+X-CRM114-CacheID: sfid-20201222_173722_958987_517ABAEE 
+X-CRM114-Status: GOOD (  19.82  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,35 +83,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: Sustek Goran <goran.sustek@adcubum.com>,
- ath10k <ath10k@lists.infradead.org>
+Cc: netdev <netdev@vger.kernel.org>, Brian Norris <briannorris@chromium.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>,
+ Douglas Anderson <dianders@chromium.org>,
+ Rakesh Pillai <pillair@codeaurora.org>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 21, 2020 at 7:43 PM Wen Gong <wgong@codeaurora.org> wrote:
+On Tue, Dec 15, 2020 at 9:24 AM Youghandhar Chintala
+<youghand@codeaurora.org> wrote:
 >
-> On 2020-12-21 05:06, Sustek Goran wrote:
-> > Hi, on my ath10k Chipset,
-> > QCA9984(https://compex.com.sg/shop/wifi-module/802-11ac-wave-2/wle1216v5-20-2/)
-> > afetr this patch i can not longer to initialize my card.
-> >
-> > my dmesg log: So i need to revert this patch! Is my card need
-> > aditional support? Can you please guide what to do for my card to ahve
-> > OOB support in streamline kernels?
-> >
+> From: Rakesh Pillai <pillair@codeaurora.org>
 >
-> If this patch introduce issue to you,
-> I think you can try to revert this patch.
+> Currently after the hardware restart triggered from the driver,
+> the station interface connection remains intact, since a disconnect
+> trigger is not sent to userspace. This can lead to a problem in
+> hardwares where the wifi mac sequence is added by the firmware.
+>
+> After the firmware restart, during subsytem recovery, the firmware
+> restarts its wifi mac sequence number. Hence AP to which our device
+> is connected will receive frames with a  wifi mac sequence number jump
+> to the past, thereby resulting in the AP dropping all these frames,
+> until the frame arrives with a wifi mac sequence number which AP was
+> expecting.
+>
+> To avoid such frame drops, its better to trigger a station disconnect
+> upon the  hardware restart. Indicate this support via a WIPHY flag
+> to mac80211, if the hardware params flag mentions the support to
+> add wifi mac sequence numbers for TX frames in the firmware.
+>
+> All the other hardwares, except WCN3990, are not affected by this
+> change, since the hardware params flag is not set for any hardware
+> except for WCN3990
+>
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00048
+>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
+>  drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+>  drivers/net/wireless/ath/ath10k/mac.c  |  3 +++
+>  3 files changed, 21 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 796107b..4155f94 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -90,6 +90,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>                 .hw_filter_reset_required = true,
+>                 .fw_diag_ce_download = false,
+>                 .tx_stats_over_pktlog = true,
+> +               .tx_mac_seq_by_fw = false,
+Probably orthogonal to this patch, there is a static array maintained
+for different hardware configs and the structure members like
+"tx_mac_seq_by_fw" are initialized. This does not seem to be scalable
+and probably these parameters can be auto populated based on FW
+capabilities and so we don't have to maintain the static array.
+Thoughts?
 
-Kalle is still planning on applying my revert patch someday, I think:
-
-https://patchwork.kernel.org/project/linux-wireless/patch/20200527165718.129307-1-briannorris@chromium.org/
-
-We just have to wait.
-
-Brian
+-Abhishek
 
 _______________________________________________
 ath10k mailing list
