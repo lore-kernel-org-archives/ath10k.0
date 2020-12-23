@@ -2,67 +2,84 @@ Return-Path: <SRS0=2NXS=F3=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5FB1C433E0
-	for <ath10k@archiver.kernel.org>; Wed, 23 Dec 2020 02:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4A5EC433E0
+	for <ath10k@archiver.kernel.org>; Wed, 23 Dec 2020 11:02:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 74FF023433
-	for <ath10k@archiver.kernel.org>; Wed, 23 Dec 2020 02:17:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74FF023433
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8411222240
+	for <ath10k@archiver.kernel.org>; Wed, 23 Dec 2020 11:02:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8411222240
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:References:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JPy6a1493c5aAFIXFhKqYcHnWuthyl6MkDVgDl8ccmM=; b=HT/IYB+OB8kFRQmLmDIlBdTPT
-	bYF17SeYrKtpXZeUa+l+J2H/+oct+WUddXdr/RWJb4FUxKG8pMsJ1a5c8rJSb9Qp88v+Yb7lzLIUk
-	3XpX9ysHq8hxaS8mYeCkpdPghnBUjyNpQVbyKH7PdKQxkM5fgPVx25xvAgx9Yc6KKVltiU0gG3RWK
-	yl3WG6qgHaxQX3HUMo8DmdvbhMYyAw8FuP/3ru4O30YdeZpRn7LNK/1+KCih0ku3RYZcxv9esX5+q
-	O08E/D1TTeEengWjlVC937a/5KS4aupoFAq59oinsQM7883v+Jr+6tr1k4GqPoglycIX+nP9fB/wb
-	kjt4pXWlQ==;
+	 bh=hgaBVIud2Lp5WuMPYZUhkRGej1ZPz7+1sfAhpsxi/vo=; b=rNmFP1o621uGpZ1k/SnHgdjMl
+	+/Wjh0aERPij5OxrKILZ1cALbYwK+hyN46FVcfyIc/gfYkus0tYhrS7l4lAJO5zNvxf9C25ofqPjM
+	IlU1jsR5wXEPwTqbAvOp8fSy5QIqskam024K+fFBN32LXEyOE5wCPLzdLAW4acnxYSxPZtQPmvqze
+	ti6j+m1ZgHP2CvBWqlC49nGjgj+ILesO1WYcx6hERtMYSu/J+v/AvkpwTxKQiGRD7ph8VwjWSuqhH
+	nfXC0AKk72HCFMJEKbPBgeRCRkafNZiLUDC5EyvcRt9wn0GP0tV3zr1bg+8ri8YFUnMRXAY7GZzbO
+	2Otrhp42Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1krtiX-0007Jc-2r; Wed, 23 Dec 2020 02:17:33 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1ks1ue-00087a-Vw; Wed, 23 Dec 2020 11:02:37 +0000
+Received: from so254-31.mailgun.net ([198.61.254.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1krtiU-0007It-Oc
- for ath10k@lists.infradead.org; Wed, 23 Dec 2020 02:17:32 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F4E12337F;
- Wed, 23 Dec 2020 02:17:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1608689850;
- bh=vtedTUleFBXNCwzg4s3bdonFwhcKHWAbDQIhK5MwOZE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DZhEERGS4tySGq/PJVDs8oO8H+YJRhCQ1j3wi0cvE0xLvUplQFNOQ2ZVNI/P63JPn
- ll0Jziby4jdayXARGoBi4FI+t0atDpgB0M2VKOufP+vhD5XHfzg883wSC84AaMoj0e
- tB/eCz3++Jpf71H2WleEzmqQ8MI81V/A4mJKVCpyL4SxLdX7X+MasWNXoUjL3q0c+3
- EgXo5nNQoSVbTong/Q6htMenQd/sHaCvo6Z7UHEPYERmWzYjOs0c44MnbiUqhmpPBk
- uWk6WNkWfyZbgBI1EIibfzwPk6cj56BBILw+DnqrlvY24AwI094nyeHrHEYAdLccO5
- PF3Y9AjqdxmjQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 049/217] ath10k: fix compilation warning
-Date: Tue, 22 Dec 2020 21:13:38 -0500
-Message-Id: <20201223021626.2790791-49-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
-References: <20201223021626.2790791-1-sashal@kernel.org>
+ id 1ks1uc-00086X-4z
+ for ath10k@lists.infradead.org; Wed, 23 Dec 2020 11:02:35 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1608721352; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=31vdJ3aSRlFtlCqQVwpjfiFDrE6xYtTAP4m/pZjBGHA=;
+ b=Cxgu1jKYCoCPOa1WLRA6fneFUZBaEBQJR9Uq7lxXg9Vnucc9dZl474r6NnGBgugr0ctUDuf0
+ L0pba252DREk0zbGdTgQ7IS5DT5uzJB8DbvWefcQLjNtbTjl+MmBEztD1kJpF3shmMk4I2Pw
+ EiBjKiiUZ4vypYa0Pdee0qhkIto=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fe3237eda47198188c99ef8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 11:01:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 5B831C433ED; Wed, 23 Dec 2020 11:01:18 +0000 (UTC)
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi
+ [88.114.240.156])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: kvalo)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id ACF42C433C6;
+ Wed, 23 Dec 2020 11:01:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ACF42C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From: Kalle Valo <kvalo@codeaurora.org>
+To: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath: add support for special 0x0 regulatory domain
+References: <0BEB3EB4-E3AF-4236-BACC-E42CE2D094B7@adcubum.com>
+ <3a3815a68576f1715fcc6db590099b84@codeaurora.org>
+ <CA+ASDXP8NoGACT4OBEwMvj9B6KsBYBAwMhxSApb7D-fCvfxwTg@mail.gmail.com>
+Date: Wed, 23 Dec 2020 13:01:13 +0200
+In-Reply-To: <CA+ASDXP8NoGACT4OBEwMvj9B6KsBYBAwMhxSApb7D-fCvfxwTg@mail.gmail.com>
+ (Brian Norris's message of "Tue, 22 Dec 2020 10:30:29 -0800")
+Message-ID: <87czz06b2e.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201222_211730_907408_FA942949 
-X-CRM114-Status: GOOD (  10.89  )
+X-CRM114-CacheID: sfid-20201223_060234_237824_CBE50579 
+X-CRM114-Status: GOOD (  19.08  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,56 +91,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, kernel test robot <lkp@intel.com>,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>,
- Tamizh Chelvam <tamizhr@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Sustek Goran <goran.sustek@adcubum.com>,
+ ath10k <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Tamizh Chelvam <tamizhr@codeaurora.org>
+Brian Norris <briannorris@chromium.org> writes:
 
-[ Upstream commit b9162645117841978a3fb31546409271e007dd28 ]
+> On Mon, Dec 21, 2020 at 7:43 PM Wen Gong <wgong@codeaurora.org> wrote:
+>>
+>> On 2020-12-21 05:06, Sustek Goran wrote:
+>> > Hi, on my ath10k Chipset,
+>> > QCA9984(https://compex.com.sg/shop/wifi-module/802-11ac-wave-2/wle1216v5-20-2/)
+>> > afetr this patch i can not longer to initialize my card.
+>> >
+>> > my dmesg log: So i need to revert this patch! Is my card need
+>> > aditional support? Can you please guide what to do for my card to ahve
+>> > OOB support in streamline kernels?
+>> >
+>>
+>> If this patch introduce issue to you,
+>> I think you can try to revert this patch.
+>
+> Kalle is still planning on applying my revert patch someday, I think:
+>
+> https://patchwork.kernel.org/project/linux-wireless/patch/20200527165718.129307-1-briannorris@chromium.org/
+>
+> We just have to wait.
 
-This change fixes below compilation warning.
+Actually I don't see how I could apply the revert due to the regulatory
+problems explained by Jouni[1]. We cannot break regulatory rules.
 
-smatch warnings:
- drivers/net/wireless/ath/ath10k/mac.c:9125 ath10k_mac_op_set_tid_config() error: uninitialized symbol 'ret'.
+[1] https://lore.kernel.org/ath10k/CANe27j+fur52HydqqzLc2hBV3QwC2La8+RTJcV=5W5LkUr=PqQ@mail.gmail.com/
 
-No functional changes. Compile tested only.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Tamizh Chelvam <tamizhr@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1604507837-29361-1-git-send-email-tamizhr@codeaurora.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2e3eb5bbe49c8..d62b9edd60666 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -9169,10 +9169,11 @@ static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
- 			goto exit;
- 	}
- 
-+	ret = 0;
-+
- 	if (sta)
- 		goto exit;
- 
--	ret = 0;
- 	arvif->tids_rst = 0;
- 	data.curr_vif = vif;
- 	data.ar = ar;
 -- 
-2.27.0
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
