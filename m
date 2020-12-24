@@ -1,90 +1,71 @@
-Return-Path: <SRS0=2NXS=F3=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ZwL9=F4=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FA7AC433DB
-	for <ath10k@archiver.kernel.org>; Wed, 23 Dec 2020 18:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51234C433E0
+	for <ath10k@archiver.kernel.org>; Thu, 24 Dec 2020 17:08:36 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D98FD22286
-	for <ath10k@archiver.kernel.org>; Wed, 23 Dec 2020 18:20:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D98FD22286
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id F3E6622288
+	for <ath10k@archiver.kernel.org>; Thu, 24 Dec 2020 17:08:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3E6622288
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=candelatech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	To:From:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YBjLY7dHrhWQkmVJgkSeoDRil6AjPPNn8vEhyLa2QRY=; b=rUcpGf/0kR5gpkbCSn+AXSHiF
-	gBXj1iSqYCcG9fnTsicST5udUvpgO901QjIKUIpZa718rogMW8IJPduBytqVnp7nsdjLOiq1iihHT
-	V3e/x/dTIOR1AWx9Ii9SF8lGGVpEaM+T+FZaKGflLebzVozeqOHimRuKVOY9F1U8esNG1YaDRGsx5
-	DQpAFwZGS1nHUBuWOkjq2QrgU/JxDml4vfo3f5dbBNSaC9LfvvVcB9qjHYjMvcWnrA+EFHqRJzWgs
-	FF+iPXBC8MOWJI+FhC3ySaV2/rxJTaojcGwd4Nif7Bh7P6e69mWEVuwYVurnkK9O1Z9eIEiW/RwUb
-	FqgjtK1jw==;
+	 bh=HChvS8dWnjARwf17Br7YcC2CGKApf99+YpLgzpXC0cM=; b=s81tchcDC6d17IF1YtgJ4wI9b
+	TunnX2063BBtHSR+HVZWAKI/F9pyx1JaCWpCYBTZm/lMBiPGZLxec1CItROXkWjng+9m98npgyUzK
+	O20TjkbHlZ7tRgWogJ/k0DNWllzh4sQjLeQu9xKDZ5UpomnR9Sn0kVzT8VhRPt2bduzuQkQswlSye
+	f5+XO4Gk8uxjXGbVn90xAP90Ls2BtJlporIBNcsnqd9ZFil/dH6+66Nr0y6ciNfoW72nBtJbZogcz
+	M3THfvUYBKHlez5p9kxNwcLzBQdgXdPAWwDnjHXnVq5nWiSQvMXCgEsLn9W+QvP1OBvU/Am+BjO3j
+	6YnkYpevA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ks8j3-0005md-9v; Wed, 23 Dec 2020 18:19:05 +0000
-Received: from mail-oi1-x22c.google.com ([2607:f8b0:4864:20::22c])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ks8j0-0005mA-V9
- for ath10k@lists.infradead.org; Wed, 23 Dec 2020 18:19:04 +0000
-Received: by mail-oi1-x22c.google.com with SMTP id l200so19070626oig.9
- for <ath10k@lists.infradead.org>; Wed, 23 Dec 2020 10:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=1VWybfMZ+pFPUSGBU4pWrLKFoY1veqMlXo3rQ/KJ77I=;
- b=kQt/I/CMKoa13asburucitJ7D0kLvONhsW5be2qAfgrFaHhurmFYBOS7WQpyUUu5l4
- VpoZZIVxrGb9D1bt8KngWGkzTbGgJIDdarOu+3M1qt0+83PXZkBguFMP3ovULh89VJIb
- 7mQdUtweCiXbIUY1vmKo1IfqhyhtqPjqx/PBU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=1VWybfMZ+pFPUSGBU4pWrLKFoY1veqMlXo3rQ/KJ77I=;
- b=iln4zNGPsEvwMwBfWliRlMppBeMGKWzQ0OhzcK9Gu+jjUranv9+2F0vqIShg91iJh3
- Ck6xGn2PGn5J+3Z0YsfaTDMx72EJdKsESqa8DtN0qF84l6IIY3bVKk4fBlliOWckG+Om
- h6fqwl10xXeoJCMqT56277e12255MQqmWPufw2xTMPYH6MVDfpIwFPCGTPFal/0YHm3N
- VBWSh/6Kl9OFa+iJ+p+50RFQohjIlplffnJr0Q7Km1KH1pMTQWGuich6tYpDC2NcZnzN
- EkWILgRi5Va0g93tVyvKoN2Q2EcVxZYAJw51aLjdo9I7Ad4yjaDj/8WkNFzY1mtxl4F9
- DfRA==
-X-Gm-Message-State: AOAM530FU9Tf62Ho9jMcddesJEe+6dJNRZSwWGBObFSvVy/5QNbioLd4
- MYc0UIDJ9NILb3N9WjQ0r6xZ5+TIJxpoMw==
-X-Google-Smtp-Source: ABdhPJz6bUKfgMf32GUKN1VbEpvrCUh2juAg/qco28fMrluAgqIMoemKA2iB9gR9A5WLNNBwXlJVvQ==
-X-Received: by 2002:aca:b90a:: with SMTP id j10mr747477oif.70.1608747538733;
- Wed, 23 Dec 2020 10:18:58 -0800 (PST)
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com.
- [209.85.167.170])
- by smtp.gmail.com with ESMTPSA id n13sm5678436otk.58.2020.12.23.10.18.57
- for <ath10k@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 23 Dec 2020 10:18:57 -0800 (PST)
-Received: by mail-oi1-f170.google.com with SMTP id l200so19070492oig.9
- for <ath10k@lists.infradead.org>; Wed, 23 Dec 2020 10:18:57 -0800 (PST)
-X-Received: by 2002:aca:c443:: with SMTP id u64mr681296oif.117.1608747536728; 
- Wed, 23 Dec 2020 10:18:56 -0800 (PST)
+	id 1ksU65-0003JZ-JF; Thu, 24 Dec 2020 17:08:17 +0000
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ksU63-0003J2-GR
+ for ath10k@lists.infradead.org; Thu, 24 Dec 2020 17:08:16 +0000
+Received: from [192.168.254.6] (unknown [50.46.158.169])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail3.candelatech.com (Postfix) with ESMTPSA id 7839313C2B0;
+ Thu, 24 Dec 2020 09:08:13 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 7839313C2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+ s=default; t=1608829693;
+ bh=oCowPKW6aP6ZhyDp64QY45cgY8fT8fWhW+s1yumAXc0=;
+ h=Subject:From:To:References:Date:In-Reply-To:From;
+ b=CZeIwiH0kGcdGDwwmLLGRSf5OVSRjWFxLZSX0sDgC8DvGTUX8xWhYICqF8RGXhX3Q
+ 9Q+DnHZSQhoKQ/dB70T073PIj085ZbDKOUAMAKXk1LPrBWq2+Py7LsbZDydYlC3dB/
+ Y8To0BxNsg8Dn0vEz74tDJrbSXs2b+LKRB93x8U0=
+Subject: Re: skb_cb corruption in ath10k
+From: Ben Greear <greearb@candelatech.com>
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ ath10k <ath10k@lists.infradead.org>
+References: <86170a90-da2f-3227-d7e5-fe9486156705@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <c79bb1d2-3571-4f3f-12a8-bce6701a7241@candelatech.com>
+Date: Thu, 24 Dec 2020 09:08:13 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <0BEB3EB4-E3AF-4236-BACC-E42CE2D094B7@adcubum.com>
- <3a3815a68576f1715fcc6db590099b84@codeaurora.org>
- <CA+ASDXP8NoGACT4OBEwMvj9B6KsBYBAwMhxSApb7D-fCvfxwTg@mail.gmail.com>
- <87czz06b2e.fsf@codeaurora.org>
-In-Reply-To: <87czz06b2e.fsf@codeaurora.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Wed, 23 Dec 2020 10:18:45 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXN6FmPVwXYg+iO7fcgM054g+65A3dDOhedNrG5siFz_UQ@mail.gmail.com>
-Message-ID: <CA+ASDXN6FmPVwXYg+iO7fcgM054g+65A3dDOhedNrG5siFz_UQ@mail.gmail.com>
-Subject: Re: [PATCH] ath: add support for special 0x0 regulatory domain
-To: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <86170a90-da2f-3227-d7e5-fe9486156705@candelatech.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201223_131903_039353_53441BFF 
-X-CRM114-Status: GOOD (  16.78  )
+X-CRM114-CacheID: sfid-20201224_120815_680848_4A2EA9C9 
+X-CRM114-Status: GOOD (  21.57  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,56 +77,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: Sustek Goran <goran.sustek@adcubum.com>,
- ath10k <ath10k@lists.infradead.org>, Wen Gong <wgong@codeaurora.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Dec 23, 2020 at 3:02 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> Brian Norris <briannorris@chromium.org> writes:
-> > Kalle is still planning on applying my revert patch someday, I think:
-> >
-> > https://patchwork.kernel.org/project/linux-wireless/patch/20200527165718.129307-1-briannorris@chromium.org/
-> >
-> > We just have to wait.
->
-> Actually I don't see how I could apply the revert due to the regulatory
-> problems explained by Jouni[1]. We cannot break regulatory rules.
->
-> [1] https://lore.kernel.org/ath10k/CANe27j+fur52HydqqzLc2hBV3QwC2La8+RTJcV=5W5LkUr=PqQ@mail.gmail.com/
-
-Thanks for pointing that out; I hadn't noticed that thread.
-
-I'm not sure I totally agree with Jouni's logic there, but
-(a) I don't have a huge stake in that (because for systems I care
-about, I make sure the hardware gets shipped out with the correct
-module programming) and
-(b) it's probably best if discussion mostly stays on that thread.
-
-But I still can't help myself: that feels like retroactive logic that
-doesn't make sense. Jouni seems to imply that every module ever
-shipped *must* have a programmed country code in order to comply with
-regulations. My understanding is that systems could have been
-compliant without such a country code (for example, shipping a
-non-upstream driver; or enabling CONFIG_ATH_REG_DYNAMIC_USER_REG_HINTS
-and specifying logic from user space; or other creative solutions
-[1]). It's probably not ideal (because mainline Linux now doesn't
-really know what to do), but possible. It unfortunately leaves a
-sticky situation for these users, because they have to figure out how
-to retroactively patch back in the original manufacturer's regulatory
-strategy.
-
-Brian
-
-[1] I am quite familiar with a line of APs that ships this solution
-(i.e., pulling its country code from the Device Tree, because the boot
-flash has information about the country it was provisioned for):
-https://chromium-review.googlesource.com/425619
-I don't know what the module's EEPROM contains, but they're not relying on it.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIvMjEvMjAgMzo1NSBQTSwgQmVuIEdyZWVhciB3cm90ZToKPiBIZWxsbywKPiAKPiBJJ20g
+dHJ5aW5nIHRvIGZpZ3VyZSBvdXQgd2hhdCBjaGFuZ2VkIGluIHRoZSBsYXN0IGZldyBrZXJuZWxz
+IHRoYXQgaXMgbWFraW5nOgo+IAo+IHN0cnVjdCBpZWVlODAyMTFfdHhfaW5mbyAqaW5mbyA9IElF
+RUU4MDIxMV9TS0JfQ0Ioc2tiKTsKPiBpZiAoaW5mby0+Y29udHJvbC5mbGFncyAmIElFRUU4MDIx
+MV9UWF9DVFJMX1JBVEVfSU5KRUNUKQo+ICDCoMKgwqDCoC8qIHdoeSBpcyBjb2RlIGhlcmUgYWxs
+IG9mIGEgc3VkZGVuICovCj4gCj4gaW4gZGF0YSBmcmFtZXMgaW4gYXRoMTBrLAo+IHdoZW4sIHRv
+IHRoZSBiZXN0IG9mIG15IGtub3dsZWRnZSwgbm90aGluZyBzaG91bGQgYmUgc2V0dGluZyB0aGF0
+IHVwIGluIHRoZSBzdGFjay4KPiAKPiBNeSBndWVzcyBpcyB0aGF0IHNvbWV0aGluZyBpcyBzdGVw
+cGluZyBvbiB0aGUgY2IgZmllbGQgc29tZXdoZXJlIGluIGF0aDEwaywKPiBidXQgSSBhbSBub3Qg
+c3VyZSB3aGVyZSB0aGF0IG1pZ2h0IGJlIGF0IHRoaXMgcG9pbnQuCj4gCj4gQW5kIGl0IGFsc28g
+YXBwZWFycyBtYWM4MDIxMSBvciBtYXliZSBzdXBwbGljYW50IGlzIHNldHRpbmcgdGhlIHJhdGUt
+aW5qZWN0IGZsYWcgb24gc29tZSBtZ3QgZnJhbWVzLAo+IGJ1dCBJIHRoaW5rIHRoYXQgaXMgYSBz
+ZXBhcmF0ZSBjb25jZXJuIGF0IHRoaXMgcG9pbnQuCj4gCj4gSWYgYW55b25lIGhhcyBhbnkgaWRl
+YXMgb2YgbGlrZWx5IHBvaW50cywgcGxlYXNlIGxldCBtZSBrbm93LgoKVGhpcyBpc3N1ZSB3YXMg
+bWUgYmVpbmcgY29uZnVzZWQgYWJvdXQgaG93IHRoZSBhdGgxMGsgc2tiX2NiIHNpdHMgaW4KdGhl
+IHNhbWUgbWVtb3J5IGFzIHRoZSBpZWUgc2tiX2NiLiAgSSBqdXN0IG5lZWRlZCB0byByZW9yZGVy
+IHRoZQphdGgxMGstc2tiLWNiIHN0cnVjdCBhIGJpdCB0byBub3QgY2xvYmJlciB0aGUgY29udHJv
+bC5mbGFncyBhcmVhLgoKSSBhbHNvIHNlZSBubyByZWFzb24gbm90IHRvIG5hdHVhbGx5IHBhY2sg
+dGhhdCBzdHVjdCBzbyB0aGF0IHRoZQpwb2ludGVycyBhcmUgOC1ieXRlIGFsaWduZWQuICBBbnkg
+aWRlYSB3aHkgaXQgaXMgZm9yY2UtcGFja2VkCmN1cnJlbnRseSBpbnN0ZWFkIG9mIHVzaW5nIHBy
+b3BlciBwYWRkaW5nPwoKVGhhbmtzLApCZW4KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo=
