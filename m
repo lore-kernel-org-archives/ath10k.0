@@ -2,66 +2,72 @@ Return-Path: <SRS0=hYFH=GI=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 961A0C433E0
-	for <ath10k@archiver.kernel.org>; Tue,  5 Jan 2021 00:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BA78C433E0
+	for <ath10k@archiver.kernel.org>; Tue,  5 Jan 2021 01:02:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FD412255F
-	for <ath10k@archiver.kernel.org>; Tue,  5 Jan 2021 00:25:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FD412255F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=adapt-ip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 25F8622573
+	for <ath10k@archiver.kernel.org>; Tue,  5 Jan 2021 01:02:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25F8622573
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=candelatech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
 	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8zMQ+Pm1Mz28Ke9iNL7QqGng8rRSVC6l15Nq70+Prmc=; b=orbHehy7M8+GFeVxpJR1mTDLb
-	mHxLj8MOkBTulW3WZNvAz1/1ta092i06twoSQFw7LAC7LfuF/ZbswyZnzCpgmtg99zloYsOHmoUNo
-	KA9Uk65EPgEqjhveaO9zR4augQAQlzJImxs2z5ZL8a11JPuO9WJpJyXV3tO18BYI9iG+kkXLJGIaj
-	mOFF/JNHpOQaA0RZ317Gu5rOFDkLbqaxcSQONfxWl+7MQLeZBzcEpjjN4UeQEim/v68ncnsT5ebcT
-	LhA7QtZzE5/mUkouBO8SWtUYKZHTiK5U7XHpXc6ROVT+r1ZUZM5l3ry+abkcb16SsKjBHlvcWmrJz
-	S/2kri4gw==;
+	 bh=sRmHI5fWjDidysOVv7vo/8dDjH1SnaqWlwhpC+EirP4=; b=E6tBuAT7eLJCKgNrYN9uCjYGv
+	tFAMUGDy3wzivM0BDpUQ+8JJoi1ZeeakAbLWyDaEdR+MYPSsYO1I69EcqNoAVL2EukCOw9p+eE63U
+	6w9RuvFubRUlx7FKcddpOnNpvYrFw/Z9GyOP/zea1744X7/sSKpOLnOsyaLgOELj6bxFGtblD/Qgz
+	HS715JMG9oARA6jbzHGTBZMOlkUtZQ/dMEDYb001n37eclRv3z0KnWIqE12cUYP362bMzogs6NsfO
+	QTwgcNa+99fcGlosrgzATC6iPnciN6xzrN4kAFwV0kbs8GJ3YkEBkjSn/dw1dZk9Ezt/PraTilX0j
+	K98ckZ+pg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kwa9x-0007ai-T8; Tue, 05 Jan 2021 00:25:13 +0000
-Received: from mail.adapt-ip.com ([173.164.178.19] helo=web.adapt-ip.com)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwa9t-0007ND-UT
- for ath10k@lists.infradead.org; Tue, 05 Jan 2021 00:25:11 +0000
-Received: from localhost (localhost [127.0.0.1])
- by web.adapt-ip.com (Postfix) with ESMTP id C98184FB575;
- Tue,  5 Jan 2021 00:25:04 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at web.adapt-ip.com
-Received: from web.adapt-ip.com ([127.0.0.1])
- by localhost (web.adapt-ip.com [127.0.0.1]) (amavisd-new, port 10026)
- with LMTP id YNKD848N7Z3Z; Tue,  5 Jan 2021 00:25:01 +0000 (UTC)
-Received: from mail.ibsgaard.io (c-73-223-60-234.hsd1.ca.comcast.net
- [73.223.60.234]) (Authenticated sender: thomas@adapt-ip.com)
- by web.adapt-ip.com (Postfix) with ESMTPSA id DD05D4FB3F3;
- Tue,  5 Jan 2021 00:25:00 +0000 (UTC)
-MIME-Version: 1.0
-Date: Mon, 04 Jan 2021 16:25:00 -0800
-From: Thomas Pedersen <thomas@adapt-ip.com>
-To: Ben Greear <greearb@candelatech.com>
+	id 1kwaiy-0006Ma-U9; Tue, 05 Jan 2021 01:01:24 +0000
+Received: from mail2.candelatech.com ([208.74.158.173]
+ helo=mail3.candelatech.com)
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kwait-0006Ic-C3
+ for ath10k@lists.infradead.org; Tue, 05 Jan 2021 01:01:21 +0000
+Received: from [192.168.254.6] (unknown [50.46.152.101])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail3.candelatech.com (Postfix) with ESMTPSA id 2F25C13C359;
+ Mon,  4 Jan 2021 17:01:16 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 2F25C13C359
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+ s=default; t=1609808476;
+ bh=8uouPfJmxEzF/g181Ay37CCyCQ6IK3/S1E5TKxAqrpo=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=Wu+ze/7Il2zlJBgYcmviW4eD9ZmwFa3y9u94msE0Q3YCwV6Z8P8sNsPK8dpy0z7Li
+ p0jdgGcL1cvgQMQnH/eEAi8YY9gU5YLEzuPdmyWi6iwe39PilYMB3OI1Ujxpb1B640
+ wzqieTFlFuMJ6u3Px/CTtPYcuadIp/eQ3OrmSYdQ=
 Subject: Re: RX rate is wrong in 5.10? (bisected to: mac80211: receive and
  process S1G beacons)
-In-Reply-To: <5dc86950-1672-6900-dad4-3b437f4959c5@candelatech.com>
+To: Thomas Pedersen <thomas@adapt-ip.com>
 References: <584816e2-ed18-3d5e-651e-293637222148@candelatech.com>
  <5dc86950-1672-6900-dad4-3b437f4959c5@candelatech.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <772a3a0517eb4d4cc6cee975e5fde100@adapt-ip.com>
-X-Sender: thomas@adapt-ip.com
+ <772a3a0517eb4d4cc6cee975e5fde100@adapt-ip.com>
+From: Ben Greear <greearb@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <fcb62a2f-a008-2bb6-d5b1-272a4f58febf@candelatech.com>
+Date: Mon, 4 Jan 2021 17:01:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <772a3a0517eb4d4cc6cee975e5fde100@adapt-ip.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210104_192510_139639_F587AE75 
-X-CRM114-Status: GOOD (  16.94  )
+X-CRM114-CacheID: sfid-20210104_200119_567954_334916A1 
+X-CRM114-Status: GOOD (  19.93  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,79 +80,53 @@ List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Cc: linux-wireless@vger.kernel.org, ath10k <ath10k@lists.infradead.org>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Ben,
-
-On 2021-01-04 16:18, Ben Greear wrote:
-> On 1/4/21 8:18 AM, Ben Greear wrote:
->> Hello,
->> 
->> I noticed that RX rate is always 6Mbps when I use -ct firmware and -ct 
->> driver in
->> 5.10, and on stock 5.10.0 driver and stock firmware, rx-rate does not 
->> show up at
->> all in 'iw dev wlan1 station dump'.
->> 
->> I'm using 9984 NIC...
->> 
->> Anyone else see this?
-> 
-> After a bisect, the first bad commit shows this:
-> 
-> commit 09a740ce352e1a1d16b9984115514ba9a4f4704b (refs/bisect/bad)
-> Author: Thomas Pedersen <thomas@adapt-ip.com>
-> Date:   Mon Sep 21 19:28:14 2020 -0700
-> 
->     mac80211: receive and process S1G beacons
-> 
->     S1G beacons are 802.11 Extension Frames, so the fixed
->     header part differs from regular beacons.
-> 
->     Add a handler to process S1G beacons and abstract out the
->     fetching of BSSID and element start locations in the
->     beacon body handler.
-> 
->     Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
->     Link: 
-> https://lore.kernel.org/r/20200922022818.15855-14-thomas@adapt-ip.com
->     [don't rename, small coding style cleanups]
->     Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> 
-> From a glance through the diff, I'm at a loss as to why it causes the
-> symptom.  I manually
-> double-checked the bisect, an it appears correct.
-> 
-> What I see is that in the commit before this, I see a useful rx rate
-> (1.3Gbps for instance)
-> in 'iw dev wlan1 station dump', but in this bad commit, both show
-> 6Mbps rate.  (Tx rate
-> in ath10k is probably broken for other reasons, so I only bisected the
-> rx side issue.)
-> 
-> I'm using ath10k 9984 radio with firmware 10.4-3.9.0.2-00070 in station 
-> mode.
-> 
-> AP is an ath11k Hawkeye...
-> 
-> I'm using a 1Mbps UDP packet 'download' stream to make sure I'm seeing
-> rates for data frames
-> and not just management frames.
-
-Sorry about that.
-
-> Any idea what might be the issue?
-
-It may be fixed by 
-https://patchwork.kernel.org/project/linux-wireless/patch/1607483189-3891-1-git-send-email-wgong@codeaurora.org/
-
--- 
-thomas
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMS80LzIxIDQ6MjUgUE0sIFRob21hcyBQZWRlcnNlbiB3cm90ZToKPiBIaSBCZW4sCj4gCj4g
+T24gMjAyMS0wMS0wNCAxNjoxOCwgQmVuIEdyZWVhciB3cm90ZToKPj4gT24gMS80LzIxIDg6MTgg
+QU0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+PiBIZWxsbywKPj4+Cj4+PiBJIG5vdGljZWQgdGhhdCBS
+WCByYXRlIGlzIGFsd2F5cyA2TWJwcyB3aGVuIEkgdXNlIC1jdCBmaXJtd2FyZSBhbmQgLWN0IGRy
+aXZlciBpbgo+Pj4gNS4xMCwgYW5kIG9uIHN0b2NrIDUuMTAuMCBkcml2ZXIgYW5kIHN0b2NrIGZp
+cm13YXJlLCByeC1yYXRlIGRvZXMgbm90IHNob3cgdXAgYXQKPj4+IGFsbCBpbiAnaXcgZGV2IHds
+YW4xIHN0YXRpb24gZHVtcCcuCj4+Pgo+Pj4gSSdtIHVzaW5nIDk5ODQgTklDLi4uCj4+Pgo+Pj4g
+QW55b25lIGVsc2Ugc2VlIHRoaXM/Cj4+Cj4+IEFmdGVyIGEgYmlzZWN0LCB0aGUgZmlyc3QgYmFk
+IGNvbW1pdCBzaG93cyB0aGlzOgo+Pgo+PiBjb21taXQgMDlhNzQwY2UzNTJlMWExZDE2Yjk5ODQx
+MTU1MTRiYTlhNGY0NzA0YiAocmVmcy9iaXNlY3QvYmFkKQo+PiBBdXRob3I6IFRob21hcyBQZWRl
+cnNlbiA8dGhvbWFzQGFkYXB0LWlwLmNvbT4KPj4gRGF0ZTrCoMKgIE1vbiBTZXAgMjEgMTk6Mjg6
+MTQgMjAyMCAtMDcwMAo+Pgo+PiDCoMKgwqAgbWFjODAyMTE6IHJlY2VpdmUgYW5kIHByb2Nlc3Mg
+UzFHIGJlYWNvbnMKPj4KPj4gwqDCoMKgIFMxRyBiZWFjb25zIGFyZSA4MDIuMTEgRXh0ZW5zaW9u
+IEZyYW1lcywgc28gdGhlIGZpeGVkCj4+IMKgwqDCoCBoZWFkZXIgcGFydCBkaWZmZXJzIGZyb20g
+cmVndWxhciBiZWFjb25zLgo+Pgo+PiDCoMKgwqAgQWRkIGEgaGFuZGxlciB0byBwcm9jZXNzIFMx
+RyBiZWFjb25zIGFuZCBhYnN0cmFjdCBvdXQgdGhlCj4+IMKgwqDCoCBmZXRjaGluZyBvZiBCU1NJ
+RCBhbmQgZWxlbWVudCBzdGFydCBsb2NhdGlvbnMgaW4gdGhlCj4+IMKgwqDCoCBiZWFjb24gYm9k
+eSBoYW5kbGVyLgo+Pgo+PiDCoMKgwqAgU2lnbmVkLW9mZi1ieTogVGhvbWFzIFBlZGVyc2VuIDx0
+aG9tYXNAYWRhcHQtaXAuY29tPgo+PiDCoMKgwqAgTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
+cmcvci8yMDIwMDkyMjAyMjgxOC4xNTg1NS0xNC10aG9tYXNAYWRhcHQtaXAuY29tCj4+IMKgwqDC
+oCBbZG9uJ3QgcmVuYW1lLCBzbWFsbCBjb2Rpbmcgc3R5bGUgY2xlYW51cHNdCj4+IMKgwqDCoCBT
+aWduZWQtb2ZmLWJ5OiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KPj4K
+Pj4gRnJvbSBhIGdsYW5jZSB0aHJvdWdoIHRoZSBkaWZmLCBJJ20gYXQgYSBsb3NzIGFzIHRvIHdo
+eSBpdCBjYXVzZXMgdGhlCj4+IHN5bXB0b20uwqAgSSBtYW51YWxseQo+PiBkb3VibGUtY2hlY2tl
+ZCB0aGUgYmlzZWN0LCBhbiBpdCBhcHBlYXJzIGNvcnJlY3QuCj4+Cj4+IFdoYXQgSSBzZWUgaXMg
+dGhhdCBpbiB0aGUgY29tbWl0IGJlZm9yZSB0aGlzLCBJIHNlZSBhIHVzZWZ1bCByeCByYXRlCj4+
+ICgxLjNHYnBzIGZvciBpbnN0YW5jZSkKPj4gaW4gJ2l3IGRldiB3bGFuMSBzdGF0aW9uIGR1bXAn
+LCBidXQgaW4gdGhpcyBiYWQgY29tbWl0LCBib3RoIHNob3cKPj4gNk1icHMgcmF0ZS7CoCAoVHgg
+cmF0ZQo+PiBpbiBhdGgxMGsgaXMgcHJvYmFibHkgYnJva2VuIGZvciBvdGhlciByZWFzb25zLCBz
+byBJIG9ubHkgYmlzZWN0ZWQgdGhlCj4+IHJ4IHNpZGUgaXNzdWUuKQo+Pgo+PiBJJ20gdXNpbmcg
+YXRoMTBrIDk5ODQgcmFkaW8gd2l0aCBmaXJtd2FyZSAxMC40LTMuOS4wLjItMDAwNzAgaW4gc3Rh
+dGlvbiBtb2RlLgo+Pgo+PiBBUCBpcyBhbiBhdGgxMWsgSGF3a2V5ZS4uLgo+Pgo+PiBJJ20gdXNp
+bmcgYSAxTWJwcyBVRFAgcGFja2V0ICdkb3dubG9hZCcgc3RyZWFtIHRvIG1ha2Ugc3VyZSBJJ20g
+c2VlaW5nCj4+IHJhdGVzIGZvciBkYXRhIGZyYW1lcwo+PiBhbmQgbm90IGp1c3QgbWFuYWdlbWVu
+dCBmcmFtZXMuCj4gCj4gU29ycnkgYWJvdXQgdGhhdC4KPiAKPj4gQW55IGlkZWEgd2hhdCBtaWdo
+dCBiZSB0aGUgaXNzdWU/Cj4gCj4gSXQgbWF5IGJlIGZpeGVkIGJ5IGh0dHBzOi8vcGF0Y2h3b3Jr
+Lmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC13aXJlbGVzcy9wYXRjaC8xNjA3NDgzMTg5LTM4OTEt
+MS1naXQtc2VuZC1lbWFpbC13Z29uZ0Bjb2RlYXVyb3JhLm9yZy8KClllcywgdGhhdCBmaXhlcyBp
+dC4gIExvb2tzIGxpa2UgaXQgaXMgYWxyZWFkeSBpbiA1LjEwLjQgc3RhYmxlLCBzbyBJJ2xsIHVw
+Z3JhZGUgdG8gdGhhdC4KClRoYW5rcyBmb3IgdGhlIHF1aWNrIGhpbnQuCgpUaGFua3MsCkJlbgoK
+LS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xv
+Z2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
