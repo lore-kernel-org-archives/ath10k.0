@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7922EC433E0
-	for <ath10k@archiver.kernel.org>; Tue, 12 Jan 2021 23:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39837C433DB
+	for <ath10k@archiver.kernel.org>; Tue, 12 Jan 2021 23:26:38 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 130EC2312F
-	for <ath10k@archiver.kernel.org>; Tue, 12 Jan 2021 23:26:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130EC2312F
+	by mail.kernel.org (Postfix) with ESMTPS id F29F82312F
+	for <ath10k@archiver.kernel.org>; Tue, 12 Jan 2021 23:26:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F29F82312F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=b05XENgh6CaiRpJPvoIbqy8bwS9WvjhtElDcnWLwSlg=; b=mnMY2zUhmAhZeSeJnq6kXds6rv
-	b1maeibHZ3yH+++mW9yiWqR6WWFgmKxbkBTgKLJoGy4tJLykzd0yPV4iPMKmVlx8MHYOZILHbS9Qk
-	MXNd+aHCN7wX9KOM4TJzsMRHxLQB20O6oceXHuHCTr2Wsj4K0c59WehxPrUQ/gR7LgqVEhvpihlQW
-	dI1yzD2HdHFWbp7x2eC6xivA9dQFU9vsPSb5/zsmkLzLi/l2dHAT+pHlGb8hsYOdSi1/36IMa2/xt
-	hh8Z4LMT0ug5mMBH4ny7ri2asDdTkYZrcVx/1TYUWutVzrzYrBJEjZXgUOYOcUjmLOjFfWXn78BKk
-	KsMm0Mfg==;
+	bh=qpWJThJ4k54iLBC7ZmsEOqddae7BuAWshjtpjNoAyUs=; b=Vlrfsa+8/bR+8IYy9apZ0v4b2s
+	N/GvkYumxtPq4j0VKvX6GRNFAfl68t/V6ApqG5HCGhkaNshP9j/Og8LsPSBmvBlNadbTHzm8oT8U9
+	GacIGoBu1Vx04boxQ8aiW3TheHSdQtAKTPWoIQX/2X29zK3UNg9SLhmjWSu9ROEaC+Q2pUS8Yd2Vd
+	Uhsj97l5FHbr/YhENHZLtGMomsO8JwM15Una0jxcfI5TDMyPpeQgZ2vy8spu6XnbfWr/+GI08feub
+	Erru8GPQ7YwJW0gvZswLncbLZvMZvZWbU5CeSetlk/YGvrc4aRL8x/z3vjocATBwUnmA0MU/C23zu
+	g9MEpUkg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kzT2d-0001wc-6H; Tue, 12 Jan 2021 23:25:35 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1kzT2e-0001x4-11; Tue, 12 Jan 2021 23:25:36 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kzT2a-0001vF-8F
- for ath10k@lists.infradead.org; Tue, 12 Jan 2021 23:25:33 +0000
-IronPort-SDR: 5g2yxdmnuCB0SbAP/y2QKpjmt+OGUe9j+Z7KuL4NC4u6sxCQfv28Icqu14yV18YnxZRVUevlV7
- GK9faO3IjBBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="157898629"
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; d="scan'208";a="157898629"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2021 15:25:30 -0800
-IronPort-SDR: gVCyM3XMI6ReY03F/QxhF/TMABEpRv13Zhp6psO95sPG1G1D7Z9gpi2HiC1XXgmfqxQ95rSu+7
- ZN+LBjCFbV5Q==
+ id 1kzT2b-0001vM-L9
+ for ath10k@lists.infradead.org; Tue, 12 Jan 2021 23:25:34 +0000
+IronPort-SDR: YPH6OnAdrPs/Xfoo4JNxHqRmw+35orrOKBuIc7yi3bwCnhC1jKK1T4KnM1OLbGyPannRjG7LnF
+ K9YD/E+J9cCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="178271268"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; d="scan'208";a="178271268"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jan 2021 15:25:31 -0800
+IronPort-SDR: 4U4Gl2UrzMJDtaxGoVavbPn+LEogJpDbBZ3pqFZrU5aHknpHIfVOsbYZogztBKSM3sAzpphe2G
+ ChMYwE7DLv1Q==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; d="scan'208";a="397526606"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; d="scan'208";a="389317245"
 Received: from lkp-server01.sh.intel.com (HELO 974c6bfa98f0) ([10.239.97.150])
- by fmsmga004.fm.intel.com with ESMTP; 12 Jan 2021 15:25:29 -0800
+ by orsmga007.jf.intel.com with ESMTP; 12 Jan 2021 15:25:29 -0800
 Received: from kbuild by 974c6bfa98f0 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1kzT2X-00001E-4x; Tue, 12 Jan 2021 23:25:29 +0000
-Date: Wed, 13 Jan 2021 07:24:55 +0800
+ id 1kzT2X-00001G-5f; Tue, 12 Jan 2021 23:25:29 +0000
+Date: Wed, 13 Jan 2021 07:24:51 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 4923686b30510b7c1795258da6f67db7f074a2b1
-Message-ID: <5ffe2fc7.ey2L6LDc6L/CNQam%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 8029209d232a398390154cb8d4357a21b63e55d0
+Message-ID: <5ffe2fc3.PyutPgtPhVO/ty2z%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210112_182532_559981_81DE9774 
-X-CRM114-Status: UNSURE (   8.38  )
+X-CRM114-CacheID: sfid-20210112_182533_929910_9EE4D9DC 
+X-CRM114-Status: UNSURE (   8.18  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,12 +81,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
-branch HEAD: 4923686b30510b7c1795258da6f67db7f074a2b1  wcn36xx: Remove unnecessary memset
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
+branch HEAD: 8029209d232a398390154cb8d4357a21b63e55d0  Merge branch 'pending' into master-pending
 
 elapsed time: 726m
 
-configs tested: 164
+configs tested: 165
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -94,10 +94,10 @@ More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
 arm64                            allyesconfig
 arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
 powerpc                     akebono_defconfig
 powerpc                  mpc866_ads_defconfig
 mips                         db1xxx_defconfig
@@ -122,12 +122,6 @@ m68k                       m5475evb_defconfig
 ia64                          tiger_defconfig
 mips                      loongson3_defconfig
 arm                          collie_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                     cu1000-neo_defconfig
-xtensa                          iss_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                     kmeter1_defconfig
-arm                      integrator_defconfig
 m68k                          amiga_defconfig
 mips                        qi_lb60_defconfig
 ia64                         bigsur_defconfig
@@ -147,10 +141,15 @@ powerpc                      arches_defconfig
 arm                             rpc_defconfig
 arc                        nsimosci_defconfig
 m68k                          multi_defconfig
+nios2                         10m50_defconfig
+mips                       rbtx49xx_defconfig
+m68k                            mac_defconfig
+arm                           h5000_defconfig
+mips                           ip32_defconfig
+powerpc                     tqm8560_defconfig
 arm                           corgi_defconfig
 sh                          r7785rp_defconfig
 powerpc                       eiger_defconfig
-m68k                            mac_defconfig
 arm                       spear13xx_defconfig
 sh                                  defconfig
 mips                      malta_kvm_defconfig
@@ -167,6 +166,7 @@ powerpc                    socrates_defconfig
 um                           x86_64_defconfig
 arm                         palmz72_defconfig
 arm                         assabet_defconfig
+powerpc                     stx_gp3_defconfig
 sh                   rts7751r2dplus_defconfig
 sh                           se7722_defconfig
 powerpc                 mpc834x_itx_defconfig
@@ -176,6 +176,7 @@ mips                         cobalt_defconfig
 sh                           se7206_defconfig
 powerpc                  storcenter_defconfig
 sparc64                          alldefconfig
+powerpc                     kmeter1_defconfig
 xtensa                  nommu_kc705_defconfig
 arm                          prima2_defconfig
 arm                           stm32_defconfig
