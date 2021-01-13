@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,T_KAM_HTML_FONT_INVALID,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC39C433E0
-	for <ath10k@archiver.kernel.org>; Wed, 13 Jan 2021 13:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7DB4C433DB
+	for <ath10k@archiver.kernel.org>; Wed, 13 Jan 2021 14:13:53 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80C1B23339
-	for <ath10k@archiver.kernel.org>; Wed, 13 Jan 2021 13:53:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80C1B23339
+	by mail.kernel.org (Postfix) with ESMTPS id 07246233FB
+	for <ath10k@archiver.kernel.org>; Wed, 13 Jan 2021 14:13:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07246233FB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sihovision.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:To:Subject:From:Date:MIME-Version:Content-Type:Cc:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=uO7J2KLgxXMmU8WG8OaDCBGlgezR5GhVE/yvGnrLr2E=; b=REaYavlKdaObIf
-	RBcIFi2wwrx6BR2IebW0q8RVd7uvZ7BbLLPwPjOXTLQaMrUro63EWxwV5jCAS6FMW03TWxt52TS+n
-	8DwWWZsrs+pZEnF7DdWXQsUTfs3wt2C/WGpY2+8+K6dGjUalN8veRFpV5RLNQ9JzbiBeAWEpfNZTv
-	J/krY8fXvVYl9PQCqnAcf5d57dLQLPTPOy5lEIewPa57bQF8DZz5Ltsy1CVDbbFtmOIMzuTFolL8+
-	WXnSujMnEggqjO33N5LVsHX3ESN6MQ4g5XKwryK4g1aC0tU3gjunqUk8ekYLb0fi9j/J8TxvcGE/Z
-	1lEcIvKVkkRNoj/X4B6Q==;
+	List-Owner; bh=LRpBD3rsjVQGE9TgOkOgRjgN9J7OvF9h4712eN3QVdk=; b=0uWo1SkdtVy90t
+	0Y3FGFRelmnmCYpYdaqldqxXye0nzK9ZpHNyi4ZJqNiTwP2jYAxmEQLsKtrZ6rtg1mD9en9eOQUMp
+	DdBn15xN3blqoPbrc3aXzu5A/3CLIqJop4gSoAAJLgsz22JF2KCSZzMYNLVH8uzrT3BpDo5f1HS4b
+	CdDRvTsyxrfBrFXJ4ffNUy8VKahvweyJocIqzc68bK3YAl6b1kVEIiiICT66TgH3jSdnP3NUfS241
+	aTP0BUDjcXTfGdEMeeWlpS6dZghCu2obBthVH3b6izDXWPgBdnx2QCNIT1xB/2TwF+iMwEXXBuD5D
+	0hyayk7RXvo3Qfii1bUA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kzgZM-0001be-Ob; Wed, 13 Jan 2021 13:52:16 +0000
+	id 1kzgtE-0004jg-Aw; Wed, 13 Jan 2021 14:12:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kzgZK-0001bH-SM
- for ath10k@merlin.infradead.org; Wed, 13 Jan 2021 13:52:15 +0000
+ id 1kzgtC-0004ie-Qm
+ for ath10k@merlin.infradead.org; Wed, 13 Jan 2021 14:12:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=In-Reply-To:Message-ID:Reply-To:Sender:
  To:Subject:From:Date:MIME-Version:Content-Type:Cc:Content-Transfer-Encoding:
  Content-ID:Content-Description:References;
- bh=qlGaVSyHusi1RhwIPfHvLOyM6doiMNMKNSAA896WB58=; b=WLdqxDi7I3ZLKwVSIaU4tbWFh9
- t04BJjpECAwObYCYTOI5LHmOtKhb/s7IuY2Wzs8AFM8A7++yGGh496HqZXgAl2W82AOKXZc2iD4bY
- JOkUr9Q0VIBSAQqUJ61rYjTh4x667QGiTIiyfmtYrcydK7RQHnrOJZ6yNpK5cY4TnG0ln6rszgABf
- rI8+ULzpUwXh+GdCOlSDHSlIG91OSdG+DGD/DxgrvfOfJitlE3wBFK6mGa6hD4wFofCfWJtny5Uku
- 9RnUiBBt7JIggjE8AWrCQYLSTaxxA/H+rTGRhkPyZG9pFg8FWv14P2WvGr5k3/W0eBRCN+hXK3rCT
- bZM6s5Mw==;
+ bh=zoW7+D/BuQIyE3uzu1puSfmsGyKC6clPMQ4LN+cPFAM=; b=QElsJYhVKGiVRd/Ou3O9YVe6hQ
+ sZ12twFAIowdG+Xrx40N64zg2Vmw1EKAef7ekPWWOhLDAJjPnv2xdhIEtUoBsg6KBrsFN5+6/S+du
+ 5fkXNa9xHqXrPJPidB9k9xAyO7VLBWDwoIL5++k/xV3o3wCoVtfGQVxDqViN5iyTAw7oHemSDdjgx
+ y8ZHMJMfiH52KbgOyBmKx6YvYv02YI6kQ2UhwN1h3kvuf8rsYFTF1RTU/25/sGx4cJPE79W7JuUsn
+ 1qPpyaFpHmhQyCJuXjsJrKLTwoRGXZ6MKaqiPNjDUppYPfNW3Bl6l4HZnNhlgWj2wXul8KTYHVLzj
+ x2B42J8g==;
 Received: from [119.122.115.227] (helo=mail.port25.com)
  by casper.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
- id 1kzgYj-006JjR-1U
- for ath10k@lists.infradead.org; Wed, 13 Jan 2021 13:51:48 +0000
+ id 1kzgs8-006L1n-Fo
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2021 14:12:03 +0000
 Received: from Donnie (127.0.0.1) by mail.port25.com for
  <ath10k@lists.infradead.org>;
- Wed, 13 Jan 2021 21:45:23 +0800 (envelope-from <sales03@tradepro.net>)
+ Wed, 13 Jan 2021 22:13:12 +0800 (envelope-from <sales07@tradepro.net>)
 Content-Type: multipart/mixed; charset=UTF-8;
- boundary="c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc"
+ boundary="=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH"
 MIME-Version: 1.0
-Date: Wed, 13 Jan 2021 21:45:23 +0800
+Date: Wed, 13 Jan 2021 22:13:12 +0800
 From: "donnie@sihovision.com" <donnie@sihovision.com>
 Subject: Cordless Motherboard Design Industrial Computer
 To: ath10k@lists.infradead.org
-Message-ID: <2021010013214500230504@tradepro.net>
+Message-ID: <2021010013221300120243@tradepro.net>
 X-Mailer: Foxmail 6, 13, 102, 15 [cn]
-In-Reply-To: <2021010013214500230504@tradepro.net>
+In-Reply-To: <2021010013221300120243@tradepro.net>
 X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,7 +81,7 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 This is a multi-part message in MIME format
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: Base64
 Content-Disposition: inline
@@ -93,7 +93,7 @@ X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQpCZXN0IHJlZ2FyZHMsDQpEb25uaWUg
 TmllDQpTSElOSE8gRUxFQ1RST05JQw0Kd3d3LnNpaG92aXNpb24uY29tDQpURUwvV2hhdHNhcHA6
 IDAwODYgMTMxNjM3MzQwMDYNClNreXBlOiBkb25uaWUuc2hpbmhvDQo=
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: Base64
 Content-Disposition: inline
@@ -193,7 +193,7 @@ YWw7IGJhY2tncm91bmQtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTsgLXdlYmtpdC10ZXh0LXN0
 cm9rZS13aWR0aDogMHB4OyI+PC9wPjxwPjxicj48L3A+PC9mb250PjxwPjwvcD48cD48Zm9udCBm
 YWNlPSJBcmlhbCI+PGJyPjwvZm9udD48L3A+DQo8L0JPRFk+PC9odG1sPg0K
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: image/jpeg;
 	name="PPC-1-1.jpg"
 Content-Transfer-Encoding: base64
@@ -1040,7 +1040,7 @@ KKAooooCiiigKKKKAooooCiiigKKKKAooooCiiigKKKKAooooCiiigKKKKAooooCiiigKKKKAooo
 oCiiigKKKKAooooCiiigKKKKAooooCiiigKKKKAooooCiiigKKKKAooooCiiigKKKKAooooCiiig
 KKKKAooooP/Z
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: image/jpeg;
 	name="PPC-1-2.jpg"
 Content-Transfer-Encoding: base64
@@ -1636,7 +1636,7 @@ CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICCtAQEBA
 QEBAQEBAQEBAQEBAQEBAQTbwQZQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE
 BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQVoCAgICAgICAgICD/2Q==
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: image/jpeg;
 	name="PPC-1-3.jpg"
 Content-Transfer-Encoding: base64
@@ -2291,7 +2291,7 @@ ESgRKBEoESgRKBEoESgRKBEoESgRKBEoESgRKBEoESgRKBEoESgRKBEoESgRKBEoESgRKBEoESgR
 KBEoESgRKBEoESgRKBEoCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI
 CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIP//Z
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: image/jpeg;
 	name="PPC-1-4.jpg"
 Content-Transfer-Encoding: base64
@@ -3085,7 +3085,7 @@ gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgigICAgICAgI
 CCSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA
 gICAgICAgICAgICAgICAgICAgICAgICCKAgICAg//9k=
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: image/jpeg;
 	name="logo2.jpg"
 Content-Transfer-Encoding: base64
@@ -3135,7 +3135,7 @@ Zl841b4F/bKvvDAiEuFXSpzgDXC85XSzNwxauq6LMeIUQaERFS6ZiBMs9r5Xb5w7/DIFWgxj3MVv
 FSWEtR0cYStcpjaJo75uQ47R42QwZpcLOcugz/mVF6pf0Rs951uzO9OVeDABIpzTUM1DphBSZNZ4
 DOh0w4/H/9k=
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -3146,6 +3146,6 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---c8NMPx4m711VnHIxrAkj=_MG3iyNKGNxYc--
+--=_burnNIVQ6YkYtHVsoKgq4JfbZdni97GH--
 
 
