@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71B7DC433DB
-	for <ath10k@archiver.kernel.org>; Thu, 14 Jan 2021 20:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4F04C433DB
+	for <ath10k@archiver.kernel.org>; Thu, 14 Jan 2021 20:22:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FB2C23A05
-	for <ath10k@archiver.kernel.org>; Thu, 14 Jan 2021 20:22:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FB2C23A05
+	by mail.kernel.org (Postfix) with ESMTPS id 5737923A53
+	for <ath10k@archiver.kernel.org>; Thu, 14 Jan 2021 20:22:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5737923A53
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=DL7bxu++78Zq6jzuOZeGsnoKKYNFjPXuXfIFOsKrUdw=; b=JaVSLoCnoKeReZb4smPiYEbpWf
-	E7AlGKDdgNIcpsjq9eFsxcNCY9fxqG0KwGbRXr+pDWwRnPp2cgjZBf7Kk0CINiMREFj/aX5JRMEF+
-	QfXz/VPGTfeEWkJaF+h/XrHf67qfvEoXKuREdDeuHkPlTtxCQkEJHFe575Zewq8UAeFhUO1qql27f
-	U5b/Qz2j7V2TMCavvcgtndz3HgJVtKFx8sb4SoXU5B2kYD+zct9BhZrCGBLRQ+sARzVTSwAJeLhqG
-	pRO21FZkz4t1qz/EV6xaIhYab8B1KXZ5K8yeSgC+UyeEGhsJyY8J6CDtOSLZaYCLRwHn2ctXzz0CO
-	rMx3ocJw==;
+	bh=ZvOh7c9uOrlHcySpNj+9fLvxZb/nx95PAa4v19FS8x8=; b=c8GMKSQ0NZtTNtKqGVcsypkmUG
+	MZneRi0BS44xf5oEYZgwmsjKQJ/2y9OetDj/9OF5FZDg5Of8rXVqbvM34X2nSKJ4Mqx5cSFqLGn14
+	M/UYwpkNPqg+VjbcGGP0egDnlZ8NhQMt2j7V1FgQ05VxrpzmZ50WiR35b1w+vdMb/59Cxxk5aC4Ao
+	B+i888rjOJQeQo8kvLJGK5YdSoU2YHnx2XqnFNouCjGHBnGlKBCq8OM0vmZSeclG1n12dzCLjdvIE
+	r7U8V0uhy/3u85LLKrym/3cBtBTAgr1dLXR8IMVkhf36rYT1FWyDs1xJNi5eaGeYpx33m0/VIMl2X
+	AqIKywGA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l097H-0005OO-6n; Thu, 14 Jan 2021 20:21:11 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1l097I-0005On-1w; Thu, 14 Jan 2021 20:21:12 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l097E-0005NM-Gc
+ id 1l097E-0005NN-RV
  for ath10k@lists.infradead.org; Thu, 14 Jan 2021 20:21:10 +0000
-IronPort-SDR: dZsG5FN/Gey9ij6ecHWI981Jp7RLx/EMUx5sNf/qfxTJ91GtsZ3zekMjFQN6uD9KD5N7gIDoKX
- 9x69BU1cTYeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="263230127"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="263230127"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+IronPort-SDR: WwOQXhgCLFKxS0td1f+p7xYGZqgQEtNa7WxvU2RyRfxsXNGG1clJSJD3V+c+Ah/0z3XlXIGKu1
+ GEQs3SP4t8kQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="165524085"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="165524085"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Jan 2021 12:21:06 -0800
-IronPort-SDR: Rgk8hcpgJYfIizmrUH4D7ls3XrpOnjrB0So8pq6RaaYD7yyXa7N+qH8yGLlZ0HWvqIzZiapiv5
- DTQtsE2JFwPA==
+IronPort-SDR: DrY0eB8nylwFd6GzMCPD6QKC7xEioUMPKMOuQah0nDDU0S/3dediTNph0WWKRkqDPaIyo4cM0X
+ ii/PyU8bXn1A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="349273655"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="425057847"
 Received: from lkp-server01.sh.intel.com (HELO d5d1a9a2c6bb) ([10.239.97.150])
- by orsmga003.jf.intel.com with ESMTP; 14 Jan 2021 12:21:05 -0800
+ by orsmga001.jf.intel.com with ESMTP; 14 Jan 2021 12:21:05 -0800
 Received: from kbuild by d5d1a9a2c6bb with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1l097A-00018A-Kb; Thu, 14 Jan 2021 20:21:04 +0000
-Date: Fri, 15 Jan 2021 04:20:51 +0800
+ id 1l097A-000187-I9; Thu, 14 Jan 2021 20:21:04 +0000
+Date: Fri, 15 Jan 2021 04:20:56 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- d617e66ba20de6257b0fd8f2f751a5c871ab9277
-Message-ID: <6000a7a3.7EBwqQ3SLuMTFLkz%lkp@intel.com>
+Subject: [ath6kl:pending] BUILD SUCCESS WITH WARNING
+ 8cb5471ba971dcb8f75bdd39ad21200378ce0e35
+Message-ID: <6000a7a8.WfOemesa7p1KTHJ0%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210114_152108_735035_3A4C4084 
-X-CRM114-Status: UNSURE (   6.19  )
+X-CRM114-CacheID: sfid-20210114_152109_142623_7649BDA5 
+X-CRM114-Status: UNSURE (   8.56  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,16 +81,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  master-pending
-branch HEAD: d617e66ba20de6257b0fd8f2f751a5c871ab9277  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git  pending
+branch HEAD: 8cb5471ba971dcb8f75bdd39ad21200378ce0e35  ath10k: pass the ssid info to get the correct bss entity
+
+Warning in current branch:
+
+drivers/net/wireless/ath/ath10k/mac.c:84:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- arc-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- arm-allmodconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- arm-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- arm64-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- arm64-defconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- c6x-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- h8300-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- i386-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- i386-randconfig-a004-20210114
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- ia64-allmodconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- ia64-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- m68k-allmodconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- m68k-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- microblaze-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- mips-allmodconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- mips-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- nds32-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- nios2-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- parisc-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- powerpc-allmodconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- powerpc-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- riscv-allmodconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- riscv-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- sparc-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+|-- x86_64-allyesconfig
+|   `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
+`-- xtensa-allyesconfig
+    `-- drivers-net-wireless-ath-ath10k-mac.c:warning:static-is-not-at-beginning-of-declaration
 
 elapsed time: 723m
 
-configs tested: 136
+configs tested: 135
 configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
@@ -102,6 +161,7 @@ powerpc                 mpc836x_rdk_defconfig
 powerpc                 mpc8313_rdb_defconfig
 arm                        mvebu_v7_defconfig
 mips                        bcm47xx_defconfig
+riscv                               defconfig
 sh                          rsk7201_defconfig
 mips                  maltasmvp_eva_defconfig
 arm                         s3c6400_defconfig
@@ -118,10 +178,6 @@ sh                          r7780mp_defconfig
 sparc64                             defconfig
 m68k                        stmark2_defconfig
 arc                        nsimosci_defconfig
-powerpc                 mpc8272_ads_defconfig
-m68k                       m5249evb_defconfig
-sh                           se7712_defconfig
-arm                            mmp2_defconfig
 mips                           ip28_defconfig
 m68k                       m5475evb_defconfig
 powerpc                 linkstation_defconfig
@@ -161,6 +217,9 @@ arm                         palmz72_defconfig
 s390                             alldefconfig
 h8300                    h8300h-sim_defconfig
 powerpc                     tqm8540_defconfig
+c6x                         dsk6455_defconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
 x86_64                           alldefconfig
 arm                       spear13xx_defconfig
 ia64                             allmodconfig
@@ -213,7 +272,6 @@ i386                 randconfig-a014-20210114
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                             allnoconfig
-riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 x86_64                                   rhel
