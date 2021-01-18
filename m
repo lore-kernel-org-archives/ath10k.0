@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D077C433DB
-	for <ath10k@archiver.kernel.org>; Mon, 18 Jan 2021 16:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 070B2C433E0
+	for <ath10k@archiver.kernel.org>; Mon, 18 Jan 2021 16:19:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B90220715
-	for <ath10k@archiver.kernel.org>; Mon, 18 Jan 2021 16:17:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B90220715
+	by mail.kernel.org (Postfix) with ESMTPS id B73B520715
+	for <ath10k@archiver.kernel.org>; Mon, 18 Jan 2021 16:19:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B73B520715
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,61 +23,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Date:Message-Id:To:References:In-Reply-To:From:
 	Subject:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iIBc1M5WmWgGkWJZyrf4m5sKpBwTi7FDnJp7UdFCsg0=; b=qm087BvcbRQvfJ1O171chHjxr
-	+2UsPbv378vFaAOW3cZEON3DYywHw+IJJyo89hJn72aV7bO27ioGJQGcdFxfnZGEin/NPl6a1yE/0
-	QSqMbpit50aL4+ifa1mSZcs+MVV0jn2ofeLYL6oSAk7bb0mZpfro+CNLMZ2WFJeilNwJ6u0ctbfyq
-	y3RxgrVGLH0oyKjPe0hgA2VwuZdehUPYgASKvtoOQNI2L/oZQnSyaqkOxtq5qt2/tlz1NmkM9MGEL
-	nr3IgsBmP5j0W5uNrpZIhCiD1zEluf7KnndMpzMTltTTVrAGaANYZ4K1KZ0YTQ6c/PzTktorlTLIL
-	TRm0ewn7Q==;
+	 bh=wqvjm9oi2UyKN8h0+DB5HPBjCFq1QXUe37GMnOZvXBM=; b=KLy2GxrkhANfUH9Ab9L8L9d94
+	jssLu3I4fYPAiu3/Oy+jUCC5meQcGQ6A2EWHtRDRF88ey/5O25uXAoo7RPQWkT3Y1O2tVBWrTVuyR
+	bCQvSbT6VJKHymErli4yUVJt97ijG1LeVg0kE3l7o259apxxWJfBCYPS8AHH411qpp7FXWJ7za7U2
+	anYWpQrq4QT7gVoso4SBTHtHn3vImgLa3Rx6EgdvR3MFe2ns2iMB28FmFoBNMWEC8nYCVizLd/Ld4
+	oZ7w8OdY9UB72KAXGfYXO3Jqx1XfKquKwVxizAZMH09W0TPpzhAEQ5bRZJU0G/NJbwqD8+rnT9TIp
+	leuPEM/rg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l1XDr-0003Xm-Ab; Mon, 18 Jan 2021 16:17:43 +0000
-Received: from m43-15.mailgun.net ([69.72.43.15])
+	id 1l1XF7-0003iE-9J; Mon, 18 Jan 2021 16:19:01 +0000
+Received: from so254-31.mailgun.net ([198.61.254.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l1XDn-0003XA-2x
- for ath10k@lists.infradead.org; Mon, 18 Jan 2021 16:17:41 +0000
+ id 1l1XF4-0003Sq-K7
+ for ath10k@lists.infradead.org; Mon, 18 Jan 2021 16:19:00 +0000
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1610986660; h=Date: Message-Id: Cc: To: References:
+ s=smtp; t=1610986739; h=Date: Message-Id: Cc: To: References:
  In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=etuAVLCbl8EhLfNzaAyYPorHP83mt0E9SPtJ1rEPR1g=;
- b=SMD2pQRWglYrSJi4R/Seruy0fZT13DVjy3T3Rq6Wh1xUj50M2q7FXli3TehAquNUjV88mnGL
- 3agiD3xJu5EbFflWhBK6V06dpy7m6dXYC1KD8U5Ej7vW8Y6aeofm5b7tt2BJTxxxnMTaZ+9t
- gHrmJEZxED27UjI2pmQG2AtXrFM=
-X-Mailgun-Sending-Ip: 69.72.43.15
+ Content-Type: Sender; bh=wm+mxGUuPXxSQ8+371qwzJL6xgBfSdYkvF8BizbmmV8=;
+ b=SNB3rHTBVuki9hE4neCM0Uo+WFluM86J7QClhEAbVV6vOBPnF33fZPziw+R3NBam6uoT8eYB
+ fYhEHarzUCwvUb4LQvYDVu/FHKHwXBhnUpSGrbIlp4gco7XksQZ2AOVy8Z44/jJ4eLHewLM0
+ cQg681152/Hur4dF042E3iCf71w=
+X-Mailgun-Sending-Ip: 198.61.254.31
 X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6005b49a75e5c01cba83cec0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Jan 2021 16:17:30
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6005b4ee1e3bf9b669fbe2d9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Jan 2021 16:18:54
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 3C625C43463; Mon, 18 Jan 2021 16:17:30 +0000 (UTC)
+ id E0CF1C433C6; Mon, 18 Jan 2021 16:18:53 +0000 (UTC)
 Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi
  [88.114.240.156])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id F3220C43462;
- Mon, 18 Jan 2021 16:17:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3220C43462
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id F2104C433CA;
+ Mon, 18 Jan 2021 16:18:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F2104C433CA
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  spf=fail smtp.mailfrom=kvalo@codeaurora.org
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: remove unused struct ath10k::dev_type
+Subject: Re: [PATCH v4 3/3] ath10k: allow dynamic SAR power limits via common
+ API
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1608574994-30706-1-git-send-email-kvalo@codeaurora.org>
-References: <1608574994-30706-1-git-send-email-kvalo@codeaurora.org>
-To: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201203103728.3034-4-cjhuang@codeaurora.org>
+References: <20201203103728.3034-4-cjhuang@codeaurora.org>
+To: Carl Huang <cjhuang@codeaurora.org>
 User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210118161730.3C625C43463@smtp.codeaurora.org>
-Date: Mon, 18 Jan 2021 16:17:30 +0000 (UTC)
+Message-Id: <20210118161853.E0CF1C433C6@smtp.codeaurora.org>
+Date: Mon, 18 Jan 2021 16:18:53 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210118_111740_950111_E9EDDC3E 
-X-CRM114-Status: UNSURE (   7.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210118_111859_788309_EA564C54 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,24 +89,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: briannorris@chromium.org, linux-wireless@vger.kernel.org,
+ dianders@chromium.org, ath10k@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+Carl Huang <cjhuang@codeaurora.org> wrote:
 
-> It's unused so let's get rid of it. Compile tested only, no functional changes.
+> ath10k assigns ath10k_mac_set_sar_specs to ath10k_ops, and
+> this function is called when user space application calls
+> NL80211_CMD_SET_SAR_SPECS. ath10k also registers SAR type,
+> and supported frequency ranges to wiphy so user space can
+> query SAR capabilities.
 > 
+> This SAR power limitation is compared to regulatory txpower
+> and selects the minimal one to set when station is connected.
+> Otherwise, it delays until the station is connected. If the
+> station is disconnected, it returns to regulatory txpower.
+> 
+> This feature is controlled by hw parameter: dynamic_sar_support.
+> 
+> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reported-by: kernel test robot <lkp@intel.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+This added new warnings, I fixed them in the pending branch:
 
-4c239f012f7b ath10k: remove unused struct ath10k::dev_type
+drivers/net/wireless/ath/ath10k/mac.c:84:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+drivers/net/wireless/ath/ath10k/mac.c:89:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1608574994-30706-1-git-send-email-kvalo@codeaurora.org/
+https://patchwork.kernel.org/project/linux-wireless/patch/20201203103728.3034-4-cjhuang@codeaurora.org/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
