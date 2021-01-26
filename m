@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	T_KAM_HTML_FONT_INVALID,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33797C433E0
-	for <ath10k@archiver.kernel.org>; Tue, 26 Jan 2021 19:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFBE4C4332D
+	for <ath10k@archiver.kernel.org>; Tue, 26 Jan 2021 19:54:10 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A77C722B3B
-	for <ath10k@archiver.kernel.org>; Tue, 26 Jan 2021 19:31:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A77C722B3B
+	by mail.kernel.org (Postfix) with ESMTPS id 3682C22A85
+	for <ath10k@archiver.kernel.org>; Tue, 26 Jan 2021 19:54:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3682C22A85
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sihovision.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,32 +24,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:To:Subject:From:Date:MIME-Version:Content-Type:Cc:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=yDlAq9XjoF2MhGABQZb+wQyUTwJQdJJo3DYmTw9wpGs=; b=glKhb4S9i9G0Yu
-	KPE7Q8RXJ/2GZtrr2CseTOnet3KxptLA4lElvKIWnZOGPzDWYyD28X2LlfocCyxIDGXMEWU5v4qKk
-	B7VF84+JJl1OzYjwsrBHvOp26j4ImU+mJEVA82ZmWuR/biMjxyDo7ChNw+zIH8YQOgYQQQuRZxjD9
-	RfyaFw1HVTyvyKj1ZbFcN4Y7Gjil/orJ4+OWw6lk9sVXEm/7ohE74Wifk6bGba0rETtzOKEewSOB1
-	4MK76UuTMu1lMQK4pQEmdEnf9u7XgWzE9IX8CJtF79X4Fc35ASxUCb6OhUpzGlT0XWaqrV5c3ux4o
-	CEkgQB86loIwi8bb3sjg==;
+	List-Owner; bh=bq8Fr8clJnAntFKXuw2mFhmxHUF8YjRqAwzOtikrBzg=; b=OTHVoycmerVcA9
+	YcDIZpoMvMxFoK3iDYjS0G2pRYTabnu8QwRTf2+ZDhTzPDZJRq9b0VpJHNKyeNMH+h1ETYiGT6c7n
+	g2aWqyPBteZsRlh3N6qUaU6KJsKfkVLIpPJj4HxhqrLbJdW+V1iUYFOo4YsVkfiVnaEuLKaSnZXZx
+	dZOZPzwTEGEWkxq+xMLO9FHaMYobDeu3b2cUv/JyPXwDBu7taTPoDIf28a+Uz9NKWI4dCzGkdhAvA
+	L5DTV03M5qeHWTxc6QruU5zmAvzsIZ8IfoeNwz+MFpvrhCVfDb3LAJINj0tJitIZ0ACxDdzIoRK+N
+	FeYr4kJ8hroAq3K021Dg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l4U3P-000438-8R; Tue, 26 Jan 2021 19:31:07 +0000
+	id 1l4UPa-0005hw-Qs; Tue, 26 Jan 2021 19:54:03 +0000
 Received: from [240e:3b4:380c:6470:1489:dd7:1eef:42e0] (helo=mail.port.com)
  by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l4U3G-0003jO-Hj
- for ath10k@lists.infradead.org; Tue, 26 Jan 2021 19:31:05 +0000
+ id 1l4UPS-0005gh-UN
+ for ath10k@lists.infradead.org; Tue, 26 Jan 2021 19:54:01 +0000
 Received: from Donnie (127.0.0.1) by mail.port.com for
  <ath10k@lists.infradead.org>;
- Wed, 27 Jan 2021 03:29:19 +0800 (envelope-from <sales03@tradepro.net>)
+ Wed, 27 Jan 2021 03:56:19 +0800 (envelope-from <sales07@tradepro.net>)
 Content-Type: multipart/mixed; charset=UTF-8;
- boundary="tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3"
+ boundary="B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif"
 MIME-Version: 1.0
-Date: Wed, 27 Jan 2021 03:29:19 +0800
+Date: Wed, 27 Jan 2021 03:56:19 +0800
 From: "donnie@sihovision.com" <donnie@sihovision.com>
 Subject: Best price/quality ratio Industrial Touch Screen Monitor
 To: ath10k@lists.infradead.org
-Message-ID: <2021010027032900190733@tradepro.net>
+Message-ID: <2021010027035600190724@tradepro.net>
 X-Mailer: Foxmail 6, 13, 102, 15 [cn]
-In-Reply-To: <2021010027032900190733@tradepro.net>
+In-Reply-To: <2021010027035600190724@tradepro.net>
 X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -68,7 +68,7 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 This is a multi-part message in MIME format
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: Base64
 Content-Disposition: inline
@@ -80,7 +80,7 @@ QmVzdCByZWdhcmRzLA0KRG9ubmllIE5pZQ0KU0hJTkhPIEVMRUNUUk9OSUMNCnd3dy5zaWhvdmlz
 aW9uLmNvbQ0KVEVML1doYXRzYXBwOiAwMDg2IDEzMTYzNzM0MDA2DQpTa3lwZTogZG9ubmllLnNo
 aW5obw0K
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: Base64
 Content-Disposition: inline
@@ -178,7 +178,7 @@ OyI+PC9wPjxwPjwvcD48L2ZvbnQ+PHA+PC9wPjwvZm9udD48cD48L3A+PC9mb250PjwvZm9udD48
 cD48L3A+PC9mb250PjxwPjxicj48L3A+PHA+PC9wPjxwPjxmb250IGZhY2U9IkFyaWFsIj48YnI+
 PC9mb250PjwvcD4NCg0KPC9CT0RZPjwvaHRtbD4NCg==
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: image/jpeg;
 	name="SL700M-1.jpg"
 Content-Transfer-Encoding: base64
@@ -783,7 +783,7 @@ AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC
 AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC
 AgICAgICAg//2Q==
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: image/jpeg;
 	name="SL700M-2.jpg"
 Content-Transfer-Encoding: base64
@@ -1411,7 +1411,7 @@ QEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBA
 QEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEH/
 2Q==
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: image/jpeg;
 	name="SL700M-3.jpg"
 Content-Transfer-Encoding: base64
@@ -1956,7 +1956,7 @@ AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC
 AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC
 AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIP/9k=
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: image/jpeg;
 	name="SL700M-4.jpg"
 Content-Transfer-Encoding: base64
@@ -2515,7 +2515,7 @@ IiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIg
 IiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIi
 AiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIg//2Q==
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: image/jpeg;
 	name="SL700M-5.jpg"
 Content-Transfer-Encoding: base64
@@ -2826,7 +2826,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAD/2Q==
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: image/jpeg;
 	name="logo2.jpg"
 Content-Transfer-Encoding: base64
@@ -2876,7 +2876,7 @@ Zl841b4F/bKvvDAiEuFXSpzgDXC85XSzNwxauq6LMeIUQaERFS6ZiBMs9r5Xb5w7/DIFWgxj3MVv
 FSWEtR0cYStcpjaJo75uQ47R42QwZpcLOcugz/mVF6pf0Rs951uzO9OVeDABIpzTUM1DphBSZNZ4
 DOh0w4/H/9k=
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -2887,6 +2887,6 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---tj94ms80T286JsaZ58sF1M7=_Jv6iDp1e3--
+--B8UmdzEpPxKvrN30TvZJe=_bBF1MrbElif--
 
 
