@@ -2,70 +2,81 @@ Return-Path: <SRS0=CwSx=HE=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E80FC433DB
-	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 16:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5D6EC433E0
+	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 19:24:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1371D64F72
-	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 16:39:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1371D64F72
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=candelatech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4548D64E49
+	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 19:24:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4548D64E49
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LV9Cm+t8q24NnU3WJVt+SBAxlc42e1tb+1Tvd9nJNCU=; b=e/2X0YCuwj5DaD3O9v4r6wGbh
-	QM8tKmDligIWyUxfLpWDg/rMCTb27v4s4wWKOH67ClLbgQAiiQ53MVo7gsifTjiHaWXLcm90LaCbe
-	Q1KHY9bzlpjdGEN2DFMdLHl8AXGpD8WPT80QRmlhaJB9pqZu0skCIh36DszD9BQNpNdKHg4LS8knL
-	LXMZmAMJ6cymhX0NuPaST6zO7JAa1rtbyxmmadekZPdlpbRh8WnzwKjKreldC/5untn9zKjG47q/F
-	66xZNlNYG0wP0RvV1fBcqnakAnaZT06txNBhHgZi1siX0d/j75uax4NIP7lBDVNS0+mHNe4RawUD3
-	3Zzc3jI2A==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JbRWGYGjZrWsX3mm9BYVvVFTwEcSMHi0lJuOE98VYQo=; b=nIxN/JasajieqwFewl0/M/RBsz
+	bDjBBi5tXZisYyn2FHDqzvRTRVhUDy0V77nR8HDGwi2TXFecEb4kjrlFaef/TKWYaS1mKJgVLJeXK
+	X1nkYfgb0VOqLOkvo+BtEfTsq+uLuORWJWr/X1VvMosYHNuEaGyA6KHbM/1E2Rc5PBrtfpLpGudHu
+	q54DFzIKDX9rkpR+fD3aPGM9c2zwKFfe4g5Gi+StzTicssbnr4CZcRunHzuOKHe4bFvrBkRbZnDJc
+	Cl0T4+VAlNL6j6EVAGof2c9ADDcFUwzwAEzellWs/lb8Euhj652TYQcVu0fwMUyMhUy2aYRQPDK3b
+	Et4uNCxQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l6yhP-00062D-TN; Tue, 02 Feb 2021 16:38:43 +0000
-Received: from mail2.candelatech.com ([208.74.158.173]
- helo=mail3.candelatech.com)
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l6yhN-00061S-0z
- for ath10k@lists.infradead.org; Tue, 02 Feb 2021 16:38:42 +0000
-Received: from [192.168.254.6] (unknown [50.34.172.155])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail3.candelatech.com (Postfix) with ESMTPSA id 29AF713C2B0;
- Tue,  2 Feb 2021 08:38:40 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 29AF713C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
- s=default; t=1612283920;
- bh=Bj6kw0cDCGdGy4rAgAKVuxhREg4NbmEhwx6+QCSeEM8=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=TGi1EEBj4qztXDc7usmD3uyUgdtnT9WIjEqiFnHEKbj8eDjqAFEQyGpZQigiMvdtt
- YrRsrttHFuRN4otnliEBC6ZboUXHnGXdUjBKKko7cyeP+DNJOTRYve/t8gTWkX6/YK
- T4yxvUE3T/Yg6PJ522+hETFw8P94tsSkQp3Bm6sQ=
+	id 1l71HC-00031P-Lc; Tue, 02 Feb 2021 19:23:50 +0000
+Received: from mail-qt1-x82d.google.com ([2607:f8b0:4864:20::82d])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l71H8-00030j-5j
+ for ath10k@lists.infradead.org; Tue, 02 Feb 2021 19:23:47 +0000
+Received: by mail-qt1-x82d.google.com with SMTP id t14so15785312qto.8
+ for <ath10k@lists.infradead.org>; Tue, 02 Feb 2021 11:23:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :content-transfer-encoding;
+ bh=yV15UrZC5/SqOTWpq7od7h+Rj8DsUns3cb01d3xkT5U=;
+ b=f0evjGPPQzbyEJqmAUSJ9738v9TzMU2DzW/1r66ZWHU1BSHrhUSubqSUNbdm4vL9N2
+ FOAnpXfwy4exhgtbcCbqS2y5mJNCyBxEyQI9KfOmO88fduIeFtG7ScP1ijXsHuyC767s
+ KKqmqQf6mgYsbydcfq/RGoWyT+hrSp0gUI5XtwdH1/IaAccI5qE+2eDtsLYCdD4djd26
+ aXeXf/RNUoiM3jiocvyxgmk9/mzeBkIDTC/YNA1Lp6AiD01462kbemuGxOwNP8jaTJ+W
+ qyHq5vjM+eLsP6PBTvL7FCw8m0khKmvhmNoDuw+7n33aJeO7hqjtmE91YsAaoP4tVa7O
+ q7Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:content-transfer-encoding;
+ bh=yV15UrZC5/SqOTWpq7od7h+Rj8DsUns3cb01d3xkT5U=;
+ b=G7rMg46Foh6lGJbJZT89K53y4JI/7o65DzO6j/DTU6UvDDBTh6MgNNT6ovBtmlFVih
+ xNEnpEMOfkLmmbr3nSvPL4QA9mFlnle8QoeBDZ8+m34okogdw+fIULo5A1sgm2Sh92yo
+ kkItSh93OMyPHNIjf5Ft98pkdr9HIiJa7JwmkUDjkqJe2XiVMHJBG09zCUYd35sw06Es
+ qtlqMQspLR70jwtMZz2tZ6ZWd9SrtCM21RBUrK4qA72wnVDdfhydbUCXc5KS4aLMiEn3
+ XfEW/5nXLHf5zy09c62q2TEUdphPBNVA2G32bWf8f8Vtbe0T+2DBxOCbzv89LPOl+O0G
+ 69DA==
+X-Gm-Message-State: AOAM532QQXlcDaolw8gDuZphPWxjT2VQmcGWO028ZiIqtn8lKKvXgyWn
+ ePnl/YIHM2bDOcA+DXwN11LMMDLrkROt+SkuX/kD3Pic
+X-Google-Smtp-Source: ABdhPJzI586xCAN55uBm6z/2OjRUqL0j9R/X0dPncJyBgGpRh+Qdfi/kReksHx3lgoozXZkn2xizF/Y6L2c54IL38BU=
+X-Received: by 2002:ac8:6755:: with SMTP id n21mr21381751qtp.57.1612293822934; 
+ Tue, 02 Feb 2021 11:23:42 -0800 (PST)
+MIME-Version: 1.0
+References: <CAPB66zAYzcqVb2BkTE_JJxiD6r+MeR_LVoW4BPdTBynyeoCFbA@mail.gmail.com>
+ <7e7b8341-7662-8071-aa04-563ad01e170b@candelatech.com>
+In-Reply-To: <7e7b8341-7662-8071-aa04-563ad01e170b@candelatech.com>
+From: nospam forme <nospamforme8675309@gmail.com>
+Date: Tue, 2 Feb 2021 13:23:32 -0600
+Message-ID: <CAPB66zD0M5VdB+xgbE2Ofe8k+PLFyXmFg+9Ug=_b6Szkmd6GrA@mail.gmail.com>
 Subject: Re: bss channel survey timed out and then hardware became unavailable
  on IPQ40xx.
-To: nospam forme <nospamforme8675309@gmail.com>, ath10k@lists.infradead.org
-References: <CAPB66zAYzcqVb2BkTE_JJxiD6r+MeR_LVoW4BPdTBynyeoCFbA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Organization: Candela Technologies
-Message-ID: <7e7b8341-7662-8071-aa04-563ad01e170b@candelatech.com>
-Date: Tue, 2 Feb 2021 08:38:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAPB66zAYzcqVb2BkTE_JJxiD6r+MeR_LVoW4BPdTBynyeoCFbA@mail.gmail.com>
-Content-Language: en-MW
+To: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210202_113841_209266_E2E03A68 
-X-CRM114-Status: GOOD (  16.73  )
+X-CRM114-CacheID: sfid-20210202_142346_275507_098FA2F0 
+X-CRM114-Status: GOOD (  16.60  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,317 +88,263 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2/2/21 8:32 AM, nospam forme wrote:
-> Hi!
-> 
-> I have an IPQ40xx router that occasionally gets "bss channnel survey
-> timed out" and then "hardware became unavailable". Is there a way to
-> prevent this or recover?
-
-I have seen similar while stress-testing an ea8300.  Have not seen it
-on another ipq4019 AP though, running similar tests.
-
-Are you using -ct firmware?
-
-Once the radio hits this case, the AP must be power cycled to
-recover.
-
-Thanks,
-Ben
-
-> 
-> 
-> 
-> Tue Jan 26 18:09:30 2021 kern.warn kernel: [ 241.438212] ath10k_ahb
-> a000000.wifi: bss channel survey timed out
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.478151] ath10k_ahb
-> a000000.wifi: wmi command 36892 timeout, restarting hardware
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.478202] ath10k_ahb
-> a000000.wifi: failed to set dtim period for vdev 0: -11
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.486990] ath10k_ahb
-> a000000.wifi: failed to recalculate rts/cts prot for vdev 0: -108
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.491977] ath10k_ahb
-> a000000.wifi: failed to set cts protection for vdev 0: -108
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.500212] ath10k_ahb
-> a000000.wifi: failed to set erp slot for vdev 0: -108
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.507547] ath10k_ahb
-> a000000.wifi: failed to set preamble for vdev 0: -108
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.514788] ath10k_ahb
-> a000000.wifi: failed to set mgmt tx rate -108
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.534106] ath10k_ahb
-> a000000.wifi: failed to read hi_board_data address: -16
-> 
-> Tue Jan 26 18:09:33 2021 kern.info kernel: [ 244.538921] ieee80211
-> phy0: Hardware restart was requested
-> 
-> Tue Jan 26 18:09:33 2021 kern.warn kernel: [ 244.540296] ath10k_ahb
-> a000000.wifi: failed to send pdev bss chan info request
-> 
-> Tue Jan 26 18:09:33 2021 kern.err kernel: [ 244.548191] ath10k_ahb
-> a000000.wifi: failed to halt axi bus: 0
-> 
-> Tue Jan 26 18:09:34 2021 kern.err kernel: [ 244.721641] ath10k_ahb
-> a000000.wifi: Failed to get pcie state addr: -16
-> 
-> Tue Jan 26 18:09:34 2021 kern.err kernel: [ 244.721684] ath10k_ahb
-> a000000.wifi: failed to setup init config: -16
-> 
-> Tue Jan 26 18:09:34 2021 kern.err kernel: [ 244.727209] ath10k_ahb
-> a000000.wifi: Could not init hif: -16
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.733692] ------------[
-> cut here ]------------
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.739576] WARNING: CPU:
-> 0 PID: 3 at backports-4.19.137-1/net/mac80211/util.c:2046
-> ieee80211_reconfig+0x98/0xb64 [mac80211]
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.744002] Hardware
-> became unavailable during restart.
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.755225] Modules
-> linked in: pppoe ppp_async ath10k_pci ath10k_core ath pppox
-> ppp_generic nf_conntrack_ipv6 mac80211 iptable_nat ipt_REJECT
-> ipt_MASQUERADE ebtable_nat ebtable_filter ebtable_broute cp210x ch341
-> cfg80211 xt_time xt_tcpudp xt_state xt_nat xt_multiport xt_mark xt_mac
-> xt_limit xt_conntrack xt_comment xt_TCPMSS xt_REDIRECT xt_LOG
-> xt_FLOWOFFLOAD wireguard usbserial usbnet slhc nf_reject_ipv4
-> nf_nat_redirect nf_nat_masquerade_ipv4 nf_conntrack_ipv4 nf_nat_ipv4
-> nf_nat nf_log_ipv4 nf_flow_table_hw nf_flow_table nf_defrag_ipv6
-> nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack_netlink nf_conntrack
-> macvlan iptable_mangle iptable_filter ip_tables ebtables ebt_vlan
-> ebt_stp ebt_redirect ebt_pkttype ebt_mark_m ebt_mark ebt_limit ebt_ip6
-> ebt_among ebt_802_3 crc_ccitt compat cdc_acm sch_tbf sch_ingress
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.809148] sch_htb
-> sch_hfsc em_u32 cls_u32 cls_tcindex cls_route cls_matchall cls_fw
-> cls_flow cls_basic act_skbedit act_mirred xt_set ip_set_list_set
-> ip_set_hash_netportnet ip_set_hash_netport ip_set_hash_netnet
-> ip_set_hash_netiface ip_set_hash_net ip_set_hash_mac
-> ip_set_hash_ipportnet ip_set_hash_ipportip ip_set_hash_ipport
-> ip_set_hash_ipmark ip_set_hash_ip ip_set_bitmap_port
-> ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set nfnetlink nf_log_ipv6
-> nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT
-> x_tables nf_reject_ipv6 ip6_udp_tunnel udp_tunnel ip6_tunnel tunnel6
-> tun leds_gpio xhci_plat_hcd xhci_pci xhci_hcd dwc3 dwc3_of_simple
-> ehci_platform ehci_hcd gpio_button_hotplug mii
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.870014] CPU: 0 PID: 3
-> Comm: kworker/0:0 Not tainted 4.14.200 #0
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.892172] Hardware
-> name: Generic DT based system
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.898472] Workqueue:
-> events_freezable ieee80211_restart_work [mac80211]
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.903220] [<c030e3a8>]
-> (unwind_backtrace) from [<c030a8a0>] (show_stack+0x10/0x14)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.910071] [<c030a8a0>]
-> (show_stack) from [<c0721494>] (dump_stack+0x94/0xa8)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.917876] [<c0721494>]
-> (dump_stack) from [<c031dc58>] (__warn+0xe4/0x100)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.924905] [<c031dc58>]
-> (__warn) from [<c031dcac>] (warn_slowpath_fmt+0x38/0x48)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.931867] [<c031dcac>]
-> (warn_slowpath_fmt) from [<bf4b9f24>] (ieee80211_reconfig+0x98/0xb64
-> [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.939620] [<bf4b9f24>]
-> (ieee80211_reconfig [mac80211]) from [<bf4897f0>]
-> (ieee80211_restart_work+0xa8/0xb4 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.949038] [<bf4897f0>]
-> (ieee80211_restart_work [mac80211]) from [<c0333640>]
-> (process_one_work+0x280/0x410)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.959900] [<c0333640>]
-> (process_one_work) from [<c0333b00>] (worker_thread+0x330/0x560)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.969704] [<c0333b00>]
-> (worker_thread) from [<c0338fc0>] (kthread+0x134/0x13c)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.977861] [<c0338fc0>]
-> (kthread) from [<c0307568>] (ret_from_fork+0x14/0x2c)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.985442] ---[ end
-> trace fb0fc35d89e4ff3d ]---
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.992409] ------------[
-> cut here ]------------
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 244.997253] WARNING: CPU:
-> 0 PID: 3 at backports-4.19.137-1/net/mac80211/driver-ops.h:19
-> drv_ampdu_action+0x4c/0x1e8 [mac80211]
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.001767] group-ap2:
-> Failed check-sdata-in-driver check, flags: 0x9
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.012952] Modules
-> linked in: pppoe ppp_async ath10k_pci ath10k_core ath pppox
-> ppp_generic nf_conntrack_ipv6 mac80211 iptable_nat ipt_REJECT
-> ipt_MASQUERADE ebtable_nat ebtable_filter ebtable_broute cp210x ch341
-> cfg80211 xt_time xt_tcpudp xt_state xt_nat xt_multiport xt_mark xt_mac
-> xt_limit xt_conntrack xt_comment xt_TCPMSS xt_REDIRECT xt_LOG
-> xt_FLOWOFFLOAD wireguard usbserial usbnet slhc nf_reject_ipv4
-> nf_nat_redirect nf_nat_masquerade_ipv4 nf_conntrack_ipv4 nf_nat_ipv4
-> nf_nat nf_log_ipv4 nf_flow_table_hw nf_flow_table nf_defrag_ipv6
-> nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack_netlink nf_conntrack
-> macvlan iptable_mangle iptable_filter ip_tables ebtables ebt_vlan
-> ebt_stp ebt_redirect ebt_pkttype ebt_mark_m ebt_mark ebt_limit ebt_ip6
-> ebt_among ebt_802_3 crc_ccitt compat cdc_acm sch_tbf sch_ingress
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.068370] sch_htb
-> sch_hfsc em_u32 cls_u32 cls_tcindex cls_route cls_matchall cls_fw
-> cls_flow cls_basic act_skbedit act_mirred xt_set ip_set_list_set
-> ip_set_hash_netportnet ip_set_hash_netport ip_set_hash_netnet
-> ip_set_hash_netiface ip_set_hash_net ip_set_hash_mac
-> ip_set_hash_ipportnet ip_set_hash_ipportip ip_set_hash_ipport
-> ip_set_hash_ipmark ip_set_hash_ip ip_set_bitmap_port
-> ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set nfnetlink nf_log_ipv6
-> nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT
-> x_tables nf_reject_ipv6 ip6_udp_tunnel udp_tunnel ip6_tunnel tunnel6
-> tun leds_gpio xhci_plat_hcd xhci_pci xhci_hcd dwc3 dwc3_of_simple
-> ehci_platform ehci_hcd gpio_button_hotplug mii
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.129211] CPU: 0 PID: 3
-> Comm: kworker/0:0 Tainted: G W 4.14.200 #0
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.151377] Hardware
-> name: Generic DT based system
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.159057] Workqueue:
-> events_freezable ieee80211_restart_work [mac80211]
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.163640] [<c030e3a8>]
-> (unwind_backtrace) from [<c030a8a0>] (show_stack+0x10/0x14)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.170487] [<c030a8a0>]
-> (show_stack) from [<c0721494>] (dump_stack+0x94/0xa8)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.178296] [<c0721494>]
-> (dump_stack) from [<c031dc58>] (__warn+0xe4/0x100)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.185327] [<c031dc58>]
-> (__warn) from [<c031dcac>] (warn_slowpath_fmt+0x38/0x48)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.192293] [<c031dcac>]
-> (warn_slowpath_fmt) from [<bf48c75c>] (drv_ampdu_action+0x4c/0x1e8
-> [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.199977] [<bf48c75c>]
-> (drv_ampdu_action [mac80211]) from [<bf497e7c>]
-> (___ieee80211_stop_rx_ba_session+0x90/0x138 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.209183] [<bf497e7c>]
-> (___ieee80211_stop_rx_ba_session [mac80211]) from [<bf49640c>]
-> (ieee80211_sta_tear_down_BA_sessions+0x50/0xfc [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.220995] [<bf49640c>]
-> (ieee80211_sta_tear_down_BA_sessions [mac80211]) from [<bf48dad0>]
-> (ieee80211_send_eosp_nullfunc+0x620/0x9a0 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.234018] [<bf48dad0>]
-> (ieee80211_send_eosp_nullfunc [mac80211]) from [<bf49055c>]
-> (__sta_info_flush+0xb8/0x158 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.247041] [<bf49055c>]
-> (__sta_info_flush [mac80211]) from [<bf4a4af8>]
-> (ieee80211_stop_ap+0xe4/0x1f8 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.258327] [<bf4a4af8>]
-> (ieee80211_stop_ap [mac80211]) from [<bf429dac>]
-> (__cfg80211_stop_ap+0x4c/0xd8 [cfg80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.268572] [<bf429dac>]
-> (__cfg80211_stop_ap [cfg80211]) from [<bf402d98>]
-> (cfg80211_leave+0x24/0x30 [cfg80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.278837] [<bf402d98>]
-> (cfg80211_leave [cfg80211]) from [<bf402fb8>]
-> (cfg80211_netdev_notifier_call+0x214/0x534 [cfg80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.289214] [<bf402fb8>]
-> (cfg80211_netdev_notifier_call [cfg80211]) from [<c0339c30>]
-> (notifier_call_chain+0x2c/0x6c)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.300349] [<c0339c30>]
-> (notifier_call_chain) from [<c0339dac>]
-> (raw_notifier_call_chain+0x18/0x20)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.310938] [<c0339dac>]
-> (raw_notifier_call_chain) from [<c06277b0>]
-> (__dev_close_many+0x44/0xc8)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.320140] [<c06277b0>]
-> (__dev_close_many) from [<c0627894>] (dev_close_many+0x60/0xdc)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.328902] [<c0627894>]
-> (dev_close_many) from [<c06298b4>] (dev_close+0x34/0x48)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.337136] [<c06298b4>]
-> (dev_close) from [<bf4028fc>]
-> (cfg80211_shutdown_all_interfaces+0x58/0xa8 [cfg80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.344631] [<bf4028fc>]
-> (cfg80211_shutdown_all_interfaces [cfg80211]) from [<bf4ba61c>]
-> (ieee80211_reconfig+0x790/0xb64 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.354494] [<bf4ba61c>]
-> (ieee80211_reconfig [mac80211]) from [<bf4897f0>]
-> (ieee80211_restart_work+0xa8/0xb4 [mac80211])
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.366483] [<bf4897f0>]
-> (ieee80211_restart_work [mac80211]) from [<c0333640>]
-> (process_one_work+0x280/0x410)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.377258] [<c0333640>]
-> (process_one_work) from [<c0333b00>] (worker_thread+0x330/0x560)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.387062] [<c0333b00>]
-> (worker_thread) from [<c0338fc0>] (kthread+0x134/0x13c)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.395221] [<c0338fc0>]
-> (kthread) from [<c0307568>] (ret_from_fork+0x14/0x2c)
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.402846] ---[ end
-> trace fb0fc35d89e4ff3e ]---
-> 
-> Tue Jan 26 18:09:34 2021 kern.info kernel: [ 245.409750] group-ap2: HW
-> problem - can not stop rx aggregation for 06:ef:c0:01:33:6b tid 0
-> 
-> Tue Jan 26 18:09:34 2021 kern.warn kernel: [ 245.414504] ------------[
-> cut here ]------------
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVHVlLCBGZWIgMiwgMjAyMSBhdCAxMDozOCBBTSBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
+bGF0ZWNoLmNvbT4gd3JvdGU6Cj4KPiBPbiAyLzIvMjEgODozMiBBTSwgbm9zcGFtIGZvcm1lIHdy
+b3RlOgo+ID4gSGkhCj4gPgo+ID4gSSBoYXZlIGFuIElQUTQweHggcm91dGVyIHRoYXQgb2NjYXNp
+b25hbGx5IGdldHMgImJzcyBjaGFubm5lbCBzdXJ2ZXkKPiA+IHRpbWVkIG91dCIgYW5kIHRoZW4g
+ImhhcmR3YXJlIGJlY2FtZSB1bmF2YWlsYWJsZSIuIElzIHRoZXJlIGEgd2F5IHRvCj4gPiBwcmV2
+ZW50IHRoaXMgb3IgcmVjb3Zlcj8KPgo+IEkgaGF2ZSBzZWVuIHNpbWlsYXIgd2hpbGUgc3RyZXNz
+LXRlc3RpbmcgYW4gZWE4MzAwLiAgSGF2ZSBub3Qgc2VlbiBpdAo+IG9uIGFub3RoZXIgaXBxNDAx
+OSBBUCB0aG91Z2gsIHJ1bm5pbmcgc2ltaWxhciB0ZXN0cy4KPgo+IEFyZSB5b3UgdXNpbmcgLWN0
+IGZpcm13YXJlPwo+CgpJIHdhcyBydW5uaW5nOgprbW9kLWF0aDEwayDigJMgNC4xNC4yMDArNC4x
+OS4xMzctMS0yCmF0aDEway1maXJtd2FyZS1xY2E0MDE5IOKAkyAyMDE5MDQxNi0xCgpBbmQgYWxz
+byB0cmllZCB0aGUgbGF0ZXN0IGluIHRoZSAxOS4wNyBicmFuY2ggb2Ygb3BlbndydCBrbW9kLWF0
+aDEwawo0LjE5LjE2MS0xIGJ1dCBoYWQgc2ltaWxhciBzeW1wdG9tcy4gSSB3YXMgbm90IGFibGUg
+dG8gdmVyaWZ5IHRoZSBsb2cuCgpJIGFtIG5vdyB0ZXN0aW5nIHdpdGg6Cmttb2QtYXRoMTBrIOKA
+kyA0LjE0LjIwMCs0LjE5LjEzNy0xLTIKYW5kCmF0aDEway1maXJtd2FyZS1xY2E0MDE5LWN0IOKA
+kyAyMDIwLTA3LTAyLTEKClRoaXMgZ2l2ZXMgYSBsb3Qgb2Y6CmF0aDEwa19haGIgYTAwMDAwMC53
+aWZpOiBJbnZhbGlkIHBlZXIgaWQgMSBwZWVyIHN0YXRzIGJ1ZmZlcgpidXQgaXQgaGFzIG5vdCBo
+YWQgYSBwcm9ibGVtIHlldC4KCgo+IE9uY2UgdGhlIHJhZGlvIGhpdHMgdGhpcyBjYXNlLCB0aGUg
+QVAgbXVzdCBiZSBwb3dlciBjeWNsZWQgdG8KPiByZWNvdmVyLgoKSW4gbXkgY2FzZSBpdCB3aWxs
+IHJlY292ZXIgd2l0aCBhIHJlYm9vdC4KCgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4gPgo+ID4KPiA+
+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjMwIDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDEuNDM4
+MjEyXSBhdGgxMGtfYWhiCj4gPiBhMDAwMDAwLndpZmk6IGJzcyBjaGFubmVsIHN1cnZleSB0aW1l
+ZCBvdXQKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjMzIDIwMjEga2Vybi53YXJuIGtlcm5lbDog
+WyAyNDQuNDc4MTUxXSBhdGgxMGtfYWhiCj4gPiBhMDAwMDAwLndpZmk6IHdtaSBjb21tYW5kIDM2
+ODkyIHRpbWVvdXQsIHJlc3RhcnRpbmcgaGFyZHdhcmUKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5
+OjMzIDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuNDc4MjAyXSBhdGgxMGtfYWhiCj4gPiBh
+MDAwMDAwLndpZmk6IGZhaWxlZCB0byBzZXQgZHRpbSBwZXJpb2QgZm9yIHZkZXYgMDogLTExCj4g
+Pgo+ID4gVHVlIEphbiAyNiAxODowOTozMyAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0LjQ4
+Njk5MF0gYXRoMTBrX2FoYgo+ID4gYTAwMDAwMC53aWZpOiBmYWlsZWQgdG8gcmVjYWxjdWxhdGUg
+cnRzL2N0cyBwcm90IGZvciB2ZGV2IDA6IC0xMDgKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjMz
+IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuNDkxOTc3XSBhdGgxMGtfYWhiCj4gPiBhMDAw
+MDAwLndpZmk6IGZhaWxlZCB0byBzZXQgY3RzIHByb3RlY3Rpb24gZm9yIHZkZXYgMDogLTEwOAo+
+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzMgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NC41
+MDAyMTJdIGF0aDEwa19haGIKPiA+IGEwMDAwMDAud2lmaTogZmFpbGVkIHRvIHNldCBlcnAgc2xv
+dCBmb3IgdmRldiAwOiAtMTA4Cj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozMyAyMDIxIGtlcm4u
+d2FybiBrZXJuZWw6IFsgMjQ0LjUwNzU0N10gYXRoMTBrX2FoYgo+ID4gYTAwMDAwMC53aWZpOiBm
+YWlsZWQgdG8gc2V0IHByZWFtYmxlIGZvciB2ZGV2IDA6IC0xMDgKPiA+Cj4gPiBUdWUgSmFuIDI2
+IDE4OjA5OjMzIDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuNTE0Nzg4XSBhdGgxMGtfYWhi
+Cj4gPiBhMDAwMDAwLndpZmk6IGZhaWxlZCB0byBzZXQgbWdtdCB0eCByYXRlIC0xMDgKPiA+Cj4g
+PiBUdWUgSmFuIDI2IDE4OjA5OjMzIDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuNTM0MTA2
+XSBhdGgxMGtfYWhiCj4gPiBhMDAwMDAwLndpZmk6IGZhaWxlZCB0byByZWFkIGhpX2JvYXJkX2Rh
+dGEgYWRkcmVzczogLTE2Cj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozMyAyMDIxIGtlcm4uaW5m
+byBrZXJuZWw6IFsgMjQ0LjUzODkyMV0gaWVlZTgwMjExCj4gPiBwaHkwOiBIYXJkd2FyZSByZXN0
+YXJ0IHdhcyByZXF1ZXN0ZWQKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjMzIDIwMjEga2Vybi53
+YXJuIGtlcm5lbDogWyAyNDQuNTQwMjk2XSBhdGgxMGtfYWhiCj4gPiBhMDAwMDAwLndpZmk6IGZh
+aWxlZCB0byBzZW5kIHBkZXYgYnNzIGNoYW4gaW5mbyByZXF1ZXN0Cj4gPgo+ID4gVHVlIEphbiAy
+NiAxODowOTozMyAyMDIxIGtlcm4uZXJyIGtlcm5lbDogWyAyNDQuNTQ4MTkxXSBhdGgxMGtfYWhi
+Cj4gPiBhMDAwMDAwLndpZmk6IGZhaWxlZCB0byBoYWx0IGF4aSBidXM6IDAKPiA+Cj4gPiBUdWUg
+SmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi5lcnIga2VybmVsOiBbIDI0NC43MjE2NDFdIGF0aDEw
+a19haGIKPiA+IGEwMDAwMDAud2lmaTogRmFpbGVkIHRvIGdldCBwY2llIHN0YXRlIGFkZHI6IC0x
+Ngo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLmVyciBrZXJuZWw6IFsgMjQ0
+LjcyMTY4NF0gYXRoMTBrX2FoYgo+ID4gYTAwMDAwMC53aWZpOiBmYWlsZWQgdG8gc2V0dXAgaW5p
+dCBjb25maWc6IC0xNgo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLmVyciBr
+ZXJuZWw6IFsgMjQ0LjcyNzIwOV0gYXRoMTBrX2FoYgo+ID4gYTAwMDAwMC53aWZpOiBDb3VsZCBu
+b3QgaW5pdCBoaWY6IC0xNgo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndh
+cm4ga2VybmVsOiBbIDI0NC43MzM2OTJdIC0tLS0tLS0tLS0tLVsKPiA+IGN1dCBoZXJlIF0tLS0t
+LS0tLS0tLS0KPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5l
+bDogWyAyNDQuNzM5NTc2XSBXQVJOSU5HOiBDUFU6Cj4gPiAwIFBJRDogMyBhdCBiYWNrcG9ydHMt
+NC4xOS4xMzctMS9uZXQvbWFjODAyMTEvdXRpbC5jOjIwNDYKPiA+IGllZWU4MDIxMV9yZWNvbmZp
+ZysweDk4LzB4YjY0IFttYWM4MDIxMV0KPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEg
+a2Vybi53YXJuIGtlcm5lbDogWyAyNDQuNzQ0MDAyXSBIYXJkd2FyZQo+ID4gYmVjYW1lIHVuYXZh
+aWxhYmxlIGR1cmluZyByZXN0YXJ0Lgo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBr
+ZXJuLndhcm4ga2VybmVsOiBbIDI0NC43NTUyMjVdIE1vZHVsZXMKPiA+IGxpbmtlZCBpbjogcHBw
+b2UgcHBwX2FzeW5jIGF0aDEwa19wY2kgYXRoMTBrX2NvcmUgYXRoIHBwcG94Cj4gPiBwcHBfZ2Vu
+ZXJpYyBuZl9jb25udHJhY2tfaXB2NiBtYWM4MDIxMSBpcHRhYmxlX25hdCBpcHRfUkVKRUNUCj4g
+PiBpcHRfTUFTUVVFUkFERSBlYnRhYmxlX25hdCBlYnRhYmxlX2ZpbHRlciBlYnRhYmxlX2Jyb3V0
+ZSBjcDIxMHggY2gzNDEKPiA+IGNmZzgwMjExIHh0X3RpbWUgeHRfdGNwdWRwIHh0X3N0YXRlIHh0
+X25hdCB4dF9tdWx0aXBvcnQgeHRfbWFyayB4dF9tYWMKPiA+IHh0X2xpbWl0IHh0X2Nvbm50cmFj
+ayB4dF9jb21tZW50IHh0X1RDUE1TUyB4dF9SRURJUkVDVCB4dF9MT0cKPiA+IHh0X0ZMT1dPRkZM
+T0FEIHdpcmVndWFyZCB1c2JzZXJpYWwgdXNibmV0IHNsaGMgbmZfcmVqZWN0X2lwdjQKPiA+IG5m
+X25hdF9yZWRpcmVjdCBuZl9uYXRfbWFzcXVlcmFkZV9pcHY0IG5mX2Nvbm50cmFja19pcHY0IG5m
+X25hdF9pcHY0Cj4gPiBuZl9uYXQgbmZfbG9nX2lwdjQgbmZfZmxvd190YWJsZV9odyBuZl9mbG93
+X3RhYmxlIG5mX2RlZnJhZ19pcHY2Cj4gPiBuZl9kZWZyYWdfaXB2NCBuZl9jb25udHJhY2tfcnRj
+YWNoZSBuZl9jb25udHJhY2tfbmV0bGluayBuZl9jb25udHJhY2sKPiA+IG1hY3ZsYW4gaXB0YWJs
+ZV9tYW5nbGUgaXB0YWJsZV9maWx0ZXIgaXBfdGFibGVzIGVidGFibGVzIGVidF92bGFuCj4gPiBl
+YnRfc3RwIGVidF9yZWRpcmVjdCBlYnRfcGt0dHlwZSBlYnRfbWFya19tIGVidF9tYXJrIGVidF9s
+aW1pdCBlYnRfaXA2Cj4gPiBlYnRfYW1vbmcgZWJ0XzgwMl8zIGNyY19jY2l0dCBjb21wYXQgY2Rj
+X2FjbSBzY2hfdGJmIHNjaF9pbmdyZXNzCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIx
+IGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0LjgwOTE0OF0gc2NoX2h0Ygo+ID4gc2NoX2hmc2MgZW1f
+dTMyIGNsc191MzIgY2xzX3RjaW5kZXggY2xzX3JvdXRlIGNsc19tYXRjaGFsbCBjbHNfZncKPiA+
+IGNsc19mbG93IGNsc19iYXNpYyBhY3Rfc2tiZWRpdCBhY3RfbWlycmVkIHh0X3NldCBpcF9zZXRf
+bGlzdF9zZXQKPiA+IGlwX3NldF9oYXNoX25ldHBvcnRuZXQgaXBfc2V0X2hhc2hfbmV0cG9ydCBp
+cF9zZXRfaGFzaF9uZXRuZXQKPiA+IGlwX3NldF9oYXNoX25ldGlmYWNlIGlwX3NldF9oYXNoX25l
+dCBpcF9zZXRfaGFzaF9tYWMKPiA+IGlwX3NldF9oYXNoX2lwcG9ydG5ldCBpcF9zZXRfaGFzaF9p
+cHBvcnRpcCBpcF9zZXRfaGFzaF9pcHBvcnQKPiA+IGlwX3NldF9oYXNoX2lwbWFyayBpcF9zZXRf
+aGFzaF9pcCBpcF9zZXRfYml0bWFwX3BvcnQKPiA+IGlwX3NldF9iaXRtYXBfaXBtYWMgaXBfc2V0
+X2JpdG1hcF9pcCBpcF9zZXQgbmZuZXRsaW5rIG5mX2xvZ19pcHY2Cj4gPiBuZl9sb2dfY29tbW9u
+IGlwNnRhYmxlX21hbmdsZSBpcDZ0YWJsZV9maWx0ZXIgaXA2X3RhYmxlcyBpcDZ0X1JFSkVDVAo+
+ID4geF90YWJsZXMgbmZfcmVqZWN0X2lwdjYgaXA2X3VkcF90dW5uZWwgdWRwX3R1bm5lbCBpcDZf
+dHVubmVsIHR1bm5lbDYKPiA+IHR1biBsZWRzX2dwaW8geGhjaV9wbGF0X2hjZCB4aGNpX3BjaSB4
+aGNpX2hjZCBkd2MzIGR3YzNfb2Zfc2ltcGxlCj4gPiBlaGNpX3BsYXRmb3JtIGVoY2lfaGNkIGdw
+aW9fYnV0dG9uX2hvdHBsdWcgbWlpCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtl
+cm4ud2FybiBrZXJuZWw6IFsgMjQ0Ljg3MDAxNF0gQ1BVOiAwIFBJRDogMwo+ID4gQ29tbToga3dv
+cmtlci8wOjAgTm90IHRhaW50ZWQgNC4xNC4yMDAgIzAKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5
+OjM0IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuODkyMTcyXSBIYXJkd2FyZQo+ID4gbmFt
+ZTogR2VuZXJpYyBEVCBiYXNlZCBzeXN0ZW0KPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIw
+MjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuODk4NDcyXSBXb3JrcXVldWU6Cj4gPiBldmVudHNf
+ZnJlZXphYmxlIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsgW21hYzgwMjExXQo+ID4KPiA+IFR1ZSBK
+YW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NC45MDMyMjBdIFs8YzAz
+MGUzYTg+XQo+ID4gKHVud2luZF9iYWNrdHJhY2UpIGZyb20gWzxjMDMwYThhMD5dIChzaG93X3N0
+YWNrKzB4MTAvMHgxNCkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJu
+IGtlcm5lbDogWyAyNDQuOTEwMDcxXSBbPGMwMzBhOGEwPl0KPiA+IChzaG93X3N0YWNrKSBmcm9t
+IFs8YzA3MjE0OTQ+XSAoZHVtcF9zdGFjaysweDk0LzB4YTgpCj4gPgo+ID4gVHVlIEphbiAyNiAx
+ODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0LjkxNzg3Nl0gWzxjMDcyMTQ5ND5d
+Cj4gPiAoZHVtcF9zdGFjaykgZnJvbSBbPGMwMzFkYzU4Pl0gKF9fd2FybisweGU0LzB4MTAwKQo+
+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NC45
+MjQ5MDVdIFs8YzAzMWRjNTg+XQo+ID4gKF9fd2FybikgZnJvbSBbPGMwMzFkY2FjPl0gKHdhcm5f
+c2xvd3BhdGhfZm10KzB4MzgvMHg0OCkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEg
+a2Vybi53YXJuIGtlcm5lbDogWyAyNDQuOTMxODY3XSBbPGMwMzFkY2FjPl0KPiA+ICh3YXJuX3Ns
+b3dwYXRoX2ZtdCkgZnJvbSBbPGJmNGI5ZjI0Pl0gKGllZWU4MDIxMV9yZWNvbmZpZysweDk4LzB4
+YjY0Cj4gPiBbbWFjODAyMTFdKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJu
+Lndhcm4ga2VybmVsOiBbIDI0NC45Mzk2MjBdIFs8YmY0YjlmMjQ+XQo+ID4gKGllZWU4MDIxMV9y
+ZWNvbmZpZyBbbWFjODAyMTFdKSBmcm9tIFs8YmY0ODk3ZjA+XQo+ID4gKGllZWU4MDIxMV9yZXN0
+YXJ0X3dvcmsrMHhhOC8weGI0IFttYWM4MDIxMV0pCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOToz
+NCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0Ljk0OTAzOF0gWzxiZjQ4OTdmMD5dCj4gPiAo
+aWVlZTgwMjExX3Jlc3RhcnRfd29yayBbbWFjODAyMTFdKSBmcm9tIFs8YzAzMzM2NDA+XQo+ID4g
+KHByb2Nlc3Nfb25lX3dvcmsrMHgyODAvMHg0MTApCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOToz
+NCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0Ljk1OTkwMF0gWzxjMDMzMzY0MD5dCj4gPiAo
+cHJvY2Vzc19vbmVfd29yaykgZnJvbSBbPGMwMzMzYjAwPl0gKHdvcmtlcl90aHJlYWQrMHgzMzAv
+MHg1NjApCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6
+IFsgMjQ0Ljk2OTcwNF0gWzxjMDMzM2IwMD5dCj4gPiAod29ya2VyX3RocmVhZCkgZnJvbSBbPGMw
+MzM4ZmMwPl0gKGt0aHJlYWQrMHgxMzQvMHgxM2MpCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOToz
+NCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0Ljk3Nzg2MV0gWzxjMDMzOGZjMD5dCj4gPiAo
+a3RocmVhZCkgZnJvbSBbPGMwMzA3NTY4Pl0gKHJldF9mcm9tX2ZvcmsrMHgxNC8weDJjKQo+ID4K
+PiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NC45ODU0
+NDJdIC0tLVsgZW5kCj4gPiB0cmFjZSBmYjBmYzM1ZDg5ZTRmZjNkIF0tLS0KPiA+Cj4gPiBUdWUg
+SmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDQuOTkyNDA5XSAtLS0t
+LS0tLS0tLS1bCj4gPiBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCj4gPgo+ID4gVHVlIEphbiAyNiAx
+ODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ0Ljk5NzI1M10gV0FSTklORzogQ1BV
+Ogo+ID4gMCBQSUQ6IDMgYXQgYmFja3BvcnRzLTQuMTkuMTM3LTEvbmV0L21hYzgwMjExL2RyaXZl
+ci1vcHMuaDoxOQo+ID4gZHJ2X2FtcGR1X2FjdGlvbisweDRjLzB4MWU4IFttYWM4MDIxMV0KPiA+
+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDUuMDAx
+NzY3XSBncm91cC1hcDI6Cj4gPiBGYWlsZWQgY2hlY2stc2RhdGEtaW4tZHJpdmVyIGNoZWNrLCBm
+bGFnczogMHg5Cj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJu
+ZWw6IFsgMjQ1LjAxMjk1Ml0gTW9kdWxlcwo+ID4gbGlua2VkIGluOiBwcHBvZSBwcHBfYXN5bmMg
+YXRoMTBrX3BjaSBhdGgxMGtfY29yZSBhdGggcHBwb3gKPiA+IHBwcF9nZW5lcmljIG5mX2Nvbm50
+cmFja19pcHY2IG1hYzgwMjExIGlwdGFibGVfbmF0IGlwdF9SRUpFQ1QKPiA+IGlwdF9NQVNRVUVS
+QURFIGVidGFibGVfbmF0IGVidGFibGVfZmlsdGVyIGVidGFibGVfYnJvdXRlIGNwMjEweCBjaDM0
+MQo+ID4gY2ZnODAyMTEgeHRfdGltZSB4dF90Y3B1ZHAgeHRfc3RhdGUgeHRfbmF0IHh0X211bHRp
+cG9ydCB4dF9tYXJrIHh0X21hYwo+ID4geHRfbGltaXQgeHRfY29ubnRyYWNrIHh0X2NvbW1lbnQg
+eHRfVENQTVNTIHh0X1JFRElSRUNUIHh0X0xPRwo+ID4geHRfRkxPV09GRkxPQUQgd2lyZWd1YXJk
+IHVzYnNlcmlhbCB1c2JuZXQgc2xoYyBuZl9yZWplY3RfaXB2NAo+ID4gbmZfbmF0X3JlZGlyZWN0
+IG5mX25hdF9tYXNxdWVyYWRlX2lwdjQgbmZfY29ubnRyYWNrX2lwdjQgbmZfbmF0X2lwdjQKPiA+
+IG5mX25hdCBuZl9sb2dfaXB2NCBuZl9mbG93X3RhYmxlX2h3IG5mX2Zsb3dfdGFibGUgbmZfZGVm
+cmFnX2lwdjYKPiA+IG5mX2RlZnJhZ19pcHY0IG5mX2Nvbm50cmFja19ydGNhY2hlIG5mX2Nvbm50
+cmFja19uZXRsaW5rIG5mX2Nvbm50cmFjawo+ID4gbWFjdmxhbiBpcHRhYmxlX21hbmdsZSBpcHRh
+YmxlX2ZpbHRlciBpcF90YWJsZXMgZWJ0YWJsZXMgZWJ0X3ZsYW4KPiA+IGVidF9zdHAgZWJ0X3Jl
+ZGlyZWN0IGVidF9wa3R0eXBlIGVidF9tYXJrX20gZWJ0X21hcmsgZWJ0X2xpbWl0IGVidF9pcDYK
+PiA+IGVidF9hbW9uZyBlYnRfODAyXzMgY3JjX2NjaXR0IGNvbXBhdCBjZGNfYWNtIHNjaF90YmYg
+c2NoX2luZ3Jlc3MKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtl
+cm5lbDogWyAyNDUuMDY4MzcwXSBzY2hfaHRiCj4gPiBzY2hfaGZzYyBlbV91MzIgY2xzX3UzMiBj
+bHNfdGNpbmRleCBjbHNfcm91dGUgY2xzX21hdGNoYWxsIGNsc19mdwo+ID4gY2xzX2Zsb3cgY2xz
+X2Jhc2ljIGFjdF9za2JlZGl0IGFjdF9taXJyZWQgeHRfc2V0IGlwX3NldF9saXN0X3NldAo+ID4g
+aXBfc2V0X2hhc2hfbmV0cG9ydG5ldCBpcF9zZXRfaGFzaF9uZXRwb3J0IGlwX3NldF9oYXNoX25l
+dG5ldAo+ID4gaXBfc2V0X2hhc2hfbmV0aWZhY2UgaXBfc2V0X2hhc2hfbmV0IGlwX3NldF9oYXNo
+X21hYwo+ID4gaXBfc2V0X2hhc2hfaXBwb3J0bmV0IGlwX3NldF9oYXNoX2lwcG9ydGlwIGlwX3Nl
+dF9oYXNoX2lwcG9ydAo+ID4gaXBfc2V0X2hhc2hfaXBtYXJrIGlwX3NldF9oYXNoX2lwIGlwX3Nl
+dF9iaXRtYXBfcG9ydAo+ID4gaXBfc2V0X2JpdG1hcF9pcG1hYyBpcF9zZXRfYml0bWFwX2lwIGlw
+X3NldCBuZm5ldGxpbmsgbmZfbG9nX2lwdjYKPiA+IG5mX2xvZ19jb21tb24gaXA2dGFibGVfbWFu
+Z2xlIGlwNnRhYmxlX2ZpbHRlciBpcDZfdGFibGVzIGlwNnRfUkVKRUNUCj4gPiB4X3RhYmxlcyBu
+Zl9yZWplY3RfaXB2NiBpcDZfdWRwX3R1bm5lbCB1ZHBfdHVubmVsIGlwNl90dW5uZWwgdHVubmVs
+Ngo+ID4gdHVuIGxlZHNfZ3BpbyB4aGNpX3BsYXRfaGNkIHhoY2lfcGNpIHhoY2lfaGNkIGR3YzMg
+ZHdjM19vZl9zaW1wbGUKPiA+IGVoY2lfcGxhdGZvcm0gZWhjaV9oY2QgZ3Bpb19idXR0b25faG90
+cGx1ZyBtaWkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5l
+bDogWyAyNDUuMTI5MjExXSBDUFU6IDAgUElEOiAzCj4gPiBDb21tOiBrd29ya2VyLzA6MCBUYWlu
+dGVkOiBHIFcgNC4xNC4yMDAgIzAKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vy
+bi53YXJuIGtlcm5lbDogWyAyNDUuMTUxMzc3XSBIYXJkd2FyZQo+ID4gbmFtZTogR2VuZXJpYyBE
+VCBiYXNlZCBzeXN0ZW0KPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJu
+IGtlcm5lbDogWyAyNDUuMTU5MDU3XSBXb3JrcXVldWU6Cj4gPiBldmVudHNfZnJlZXphYmxlIGll
+ZWU4MDIxMV9yZXN0YXJ0X3dvcmsgW21hYzgwMjExXQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6
+MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS4xNjM2NDBdIFs8YzAzMGUzYTg+XQo+ID4g
+KHVud2luZF9iYWNrdHJhY2UpIGZyb20gWzxjMDMwYThhMD5dIChzaG93X3N0YWNrKzB4MTAvMHgx
+NCkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAy
+NDUuMTcwNDg3XSBbPGMwMzBhOGEwPl0KPiA+IChzaG93X3N0YWNrKSBmcm9tIFs8YzA3MjE0OTQ+
+XSAoZHVtcF9zdGFjaysweDk0LzB4YTgpCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIx
+IGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjE3ODI5Nl0gWzxjMDcyMTQ5ND5dCj4gPiAoZHVtcF9z
+dGFjaykgZnJvbSBbPGMwMzFkYzU4Pl0gKF9fd2FybisweGU0LzB4MTAwKQo+ID4KPiA+IFR1ZSBK
+YW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS4xODUzMjddIFs8YzAz
+MWRjNTg+XQo+ID4gKF9fd2FybikgZnJvbSBbPGMwMzFkY2FjPl0gKHdhcm5fc2xvd3BhdGhfZm10
+KzB4MzgvMHg0OCkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtl
+cm5lbDogWyAyNDUuMTkyMjkzXSBbPGMwMzFkY2FjPl0KPiA+ICh3YXJuX3Nsb3dwYXRoX2ZtdCkg
+ZnJvbSBbPGJmNDhjNzVjPl0gKGRydl9hbXBkdV9hY3Rpb24rMHg0Yy8weDFlOAo+ID4gW21hYzgw
+MjExXSkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5lbDog
+WyAyNDUuMTk5OTc3XSBbPGJmNDhjNzVjPl0KPiA+IChkcnZfYW1wZHVfYWN0aW9uIFttYWM4MDIx
+MV0pIGZyb20gWzxiZjQ5N2U3Yz5dCj4gPiAoX19faWVlZTgwMjExX3N0b3BfcnhfYmFfc2Vzc2lv
+bisweDkwLzB4MTM4IFttYWM4MDIxMV0pCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIx
+IGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjIwOTE4M10gWzxiZjQ5N2U3Yz5dCj4gPiAoX19faWVl
+ZTgwMjExX3N0b3BfcnhfYmFfc2Vzc2lvbiBbbWFjODAyMTFdKSBmcm9tIFs8YmY0OTY0MGM+XQo+
+ID4gKGllZWU4MDIxMV9zdGFfdGVhcl9kb3duX0JBX3Nlc3Npb25zKzB4NTAvMHhmYyBbbWFjODAy
+MTFdKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBb
+IDI0NS4yMjA5OTVdIFs8YmY0OTY0MGM+XQo+ID4gKGllZWU4MDIxMV9zdGFfdGVhcl9kb3duX0JB
+X3Nlc3Npb25zIFttYWM4MDIxMV0pIGZyb20gWzxiZjQ4ZGFkMD5dCj4gPiAoaWVlZTgwMjExX3Nl
+bmRfZW9zcF9udWxsZnVuYysweDYyMC8weDlhMCBbbWFjODAyMTFdKQo+ID4KPiA+IFR1ZSBKYW4g
+MjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS4yMzQwMThdIFs8YmY0OGRh
+ZDA+XQo+ID4gKGllZWU4MDIxMV9zZW5kX2Vvc3BfbnVsbGZ1bmMgW21hYzgwMjExXSkgZnJvbSBb
+PGJmNDkwNTVjPl0KPiA+IChfX3N0YV9pbmZvX2ZsdXNoKzB4YjgvMHgxNTggW21hYzgwMjExXSkK
+PiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDUu
+MjQ3MDQxXSBbPGJmNDkwNTVjPl0KPiA+IChfX3N0YV9pbmZvX2ZsdXNoIFttYWM4MDIxMV0pIGZy
+b20gWzxiZjRhNGFmOD5dCj4gPiAoaWVlZTgwMjExX3N0b3BfYXArMHhlNC8weDFmOCBbbWFjODAy
+MTFdKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBb
+IDI0NS4yNTgzMjddIFs8YmY0YTRhZjg+XQo+ID4gKGllZWU4MDIxMV9zdG9wX2FwIFttYWM4MDIx
+MV0pIGZyb20gWzxiZjQyOWRhYz5dCj4gPiAoX19jZmc4MDIxMV9zdG9wX2FwKzB4NGMvMHhkOCBb
+Y2ZnODAyMTFdKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2Vy
+bmVsOiBbIDI0NS4yNjg1NzJdIFs8YmY0MjlkYWM+XQo+ID4gKF9fY2ZnODAyMTFfc3RvcF9hcCBb
+Y2ZnODAyMTFdKSBmcm9tIFs8YmY0MDJkOTg+XQo+ID4gKGNmZzgwMjExX2xlYXZlKzB4MjQvMHgz
+MCBbY2ZnODAyMTFdKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4g
+a2VybmVsOiBbIDI0NS4yNzg4MzddIFs8YmY0MDJkOTg+XQo+ID4gKGNmZzgwMjExX2xlYXZlIFtj
+Zmc4MDIxMV0pIGZyb20gWzxiZjQwMmZiOD5dCj4gPiAoY2ZnODAyMTFfbmV0ZGV2X25vdGlmaWVy
+X2NhbGwrMHgyMTQvMHg1MzQgW2NmZzgwMjExXSkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0
+IDIwMjEga2Vybi53YXJuIGtlcm5lbDogWyAyNDUuMjg5MjE0XSBbPGJmNDAyZmI4Pl0KPiA+IChj
+Zmc4MDIxMV9uZXRkZXZfbm90aWZpZXJfY2FsbCBbY2ZnODAyMTFdKSBmcm9tIFs8YzAzMzljMzA+
+XQo+ID4gKG5vdGlmaWVyX2NhbGxfY2hhaW4rMHgyYy8weDZjKQo+ID4KPiA+IFR1ZSBKYW4gMjYg
+MTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS4zMDAzNDldIFs8YzAzMzljMzA+
+XQo+ID4gKG5vdGlmaWVyX2NhbGxfY2hhaW4pIGZyb20gWzxjMDMzOWRhYz5dCj4gPiAocmF3X25v
+dGlmaWVyX2NhbGxfY2hhaW4rMHgxOC8weDIwKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQg
+MjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS4zMTA5MzhdIFs8YzAzMzlkYWM+XQo+ID4gKHJh
+d19ub3RpZmllcl9jYWxsX2NoYWluKSBmcm9tIFs8YzA2Mjc3YjA+XQo+ID4gKF9fZGV2X2Nsb3Nl
+X21hbnkrMHg0NC8weGM4KQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndh
+cm4ga2VybmVsOiBbIDI0NS4zMjAxNDBdIFs8YzA2Mjc3YjA+XQo+ID4gKF9fZGV2X2Nsb3NlX21h
+bnkpIGZyb20gWzxjMDYyNzg5ND5dIChkZXZfY2xvc2VfbWFueSsweDYwLzB4ZGMpCj4gPgo+ID4g
+VHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjMyODkwMl0g
+WzxjMDYyNzg5ND5dCj4gPiAoZGV2X2Nsb3NlX21hbnkpIGZyb20gWzxjMDYyOThiND5dIChkZXZf
+Y2xvc2UrMHgzNC8weDQ4KQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndh
+cm4ga2VybmVsOiBbIDI0NS4zMzcxMzZdIFs8YzA2Mjk4YjQ+XQo+ID4gKGRldl9jbG9zZSkgZnJv
+bSBbPGJmNDAyOGZjPl0KPiA+IChjZmc4MDIxMV9zaHV0ZG93bl9hbGxfaW50ZXJmYWNlcysweDU4
+LzB4YTggW2NmZzgwMjExXSkKPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi53
+YXJuIGtlcm5lbDogWyAyNDUuMzQ0NjMxXSBbPGJmNDAyOGZjPl0KPiA+IChjZmc4MDIxMV9zaHV0
+ZG93bl9hbGxfaW50ZXJmYWNlcyBbY2ZnODAyMTFdKSBmcm9tIFs8YmY0YmE2MWM+XQo+ID4gKGll
+ZWU4MDIxMV9yZWNvbmZpZysweDc5MC8weGI2NCBbbWFjODAyMTFdKQo+ID4KPiA+IFR1ZSBKYW4g
+MjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS4zNTQ0OTRdIFs8YmY0YmE2
+MWM+XQo+ID4gKGllZWU4MDIxMV9yZWNvbmZpZyBbbWFjODAyMTFdKSBmcm9tIFs8YmY0ODk3ZjA+
+XQo+ID4gKGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsrMHhhOC8weGI0IFttYWM4MDIxMV0pCj4gPgo+
+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjM2NjQ4
+M10gWzxiZjQ4OTdmMD5dCj4gPiAoaWVlZTgwMjExX3Jlc3RhcnRfd29yayBbbWFjODAyMTFdKSBm
+cm9tIFs8YzAzMzM2NDA+XQo+ID4gKHByb2Nlc3Nfb25lX3dvcmsrMHgyODAvMHg0MTApCj4gPgo+
+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjM3NzI1
+OF0gWzxjMDMzMzY0MD5dCj4gPiAocHJvY2Vzc19vbmVfd29yaykgZnJvbSBbPGMwMzMzYjAwPl0g
+KHdvcmtlcl90aHJlYWQrMHgzMzAvMHg1NjApCj4gPgo+ID4gVHVlIEphbiAyNiAxODowOTozNCAy
+MDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjM4NzA2Ml0gWzxjMDMzM2IwMD5dCj4gPiAod29y
+a2VyX3RocmVhZCkgZnJvbSBbPGMwMzM4ZmMwPl0gKGt0aHJlYWQrMHgxMzQvMHgxM2MpCj4gPgo+
+ID4gVHVlIEphbiAyNiAxODowOTozNCAyMDIxIGtlcm4ud2FybiBrZXJuZWw6IFsgMjQ1LjM5NTIy
+MV0gWzxjMDMzOGZjMD5dCj4gPiAoa3RocmVhZCkgZnJvbSBbPGMwMzA3NTY4Pl0gKHJldF9mcm9t
+X2ZvcmsrMHgxNC8weDJjKQo+ID4KPiA+IFR1ZSBKYW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndh
+cm4ga2VybmVsOiBbIDI0NS40MDI4NDZdIC0tLVsgZW5kCj4gPiB0cmFjZSBmYjBmYzM1ZDg5ZTRm
+ZjNlIF0tLS0KPiA+Cj4gPiBUdWUgSmFuIDI2IDE4OjA5OjM0IDIwMjEga2Vybi5pbmZvIGtlcm5l
+bDogWyAyNDUuNDA5NzUwXSBncm91cC1hcDI6IEhXCj4gPiBwcm9ibGVtIC0gY2FuIG5vdCBzdG9w
+IHJ4IGFnZ3JlZ2F0aW9uIGZvciAwNjplZjpjMDowMTozMzo2YiB0aWQgMAo+ID4KPiA+IFR1ZSBK
+YW4gMjYgMTg6MDk6MzQgMjAyMSBrZXJuLndhcm4ga2VybmVsOiBbIDI0NS40MTQ1MDRdIC0tLS0t
+LS0tLS0tLVsKPiA+IGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KPiA+Cj4gPiBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gYXRoMTBrIG1haWxpbmcgbGlz
+dAo+ID4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4gPgo+Cj4KPiAtLQo+IEJlbiBHcmVlYXIg
+PGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0
+cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
