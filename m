@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C06AAC433DB
-	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 02:46:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A332C433E0
+	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 03:41:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 646E564DBA
-	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 02:46:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 646E564DBA
+	by mail.kernel.org (Postfix) with ESMTPS id 98BEC64DA8
+	for <ath10k@archiver.kernel.org>; Tue,  2 Feb 2021 03:41:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98BEC64DA8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,60 +23,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:From:Subject:Mime-Version:Message-Id:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=/C6exl+jROm5kwpOPkQO4Egjf+ythMPciP9kioUwPOg=; b=CvTkizHSSl44Jcu/2blxTRrT1A
-	ak5IGL6CyGIe82IBdaEF8iLtDwyHbrEo6SwzshUKmwun2QGNE6v4+HwHUMjO46ZaiP2Ao33QERyfn
-	KbdbDwQktdYCp/Zqj/8yQY/AP406JwksT7wX8biXOHtAFL5BolmEgWtbQrsAxRFlh9uEmpMma8DEx
-	A5xC1EqlzJ0Sv7ZS57fWM3r480e+nWk4lXxoZ7y9cO0m2Qx5M3qTqgV/0sas7y0UUXCco3rtH9Ha1
-	alSRdEimKqxPLH0Ci8oz5Rqrh9ymcKUHCqFkN9cgFwCiN80KBk4/q8TrtEY9l19Z5Sa9+xEVnOy4H
-	1WHOXw1A==;
+	bh=BYM/Ula6EQtO4wTWZ/JMMHQ1TDz0VKXRV3bz3G+FDHE=; b=DzhxatEcWfAckTiu0it94Bnq6/
+	QxyUOUtc6xmR5U5tf83c4jNdIYFzFPJ7rLRM8EdwfO9NVqKlmVVLe8ccancGHsBxr36s0E9HCR/6x
+	Qzy0WpyfrY+TskT3Hxa401yLAR105S6NkDh+P64J2j1H/Ho8B99IpF1/rnDo5PaSNYniFJ9hh8aFZ
+	6SF7J5V7ecI7QyItikfkWbAV3/YnZ6lKxALydsO8K3XwgeN0NYEHjWMM/hiR2081XtCEajhivCeaW
+	FT0FhXW9nU9TpKKhz5xYbYjJIQqipz5H9JE9VC6wg4u09fm8AGao5klQnCsa8OS9EsO0S9x/jkljE
+	uivJVpbw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l6lgz-0007LO-26; Tue, 02 Feb 2021 02:45:25 +0000
-Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
+	id 1l6mYu-0000ig-Qz; Tue, 02 Feb 2021 03:41:08 +0000
+Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l6lgw-0007L2-Fb
- for ath10k@lists.infradead.org; Tue, 02 Feb 2021 02:45:23 +0000
-Received: by mail-qk1-x74a.google.com with SMTP id 185so14854779qkl.6
- for <ath10k@lists.infradead.org>; Mon, 01 Feb 2021 18:45:20 -0800 (PST)
+ id 1l6mYs-0000hc-CB
+ for ath10k@lists.infradead.org; Tue, 02 Feb 2021 03:41:07 +0000
+Received: by mail-yb1-xb49.google.com with SMTP id f8so19087795ybc.18
+ for <ath10k@lists.infradead.org>; Mon, 01 Feb 2021 19:41:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=sender:date:message-id:mime-version:subject:from:to:cc;
- bh=uITZIRq2V6q5qSCUOLhj43gM7pGs59qTkMOHdBiHBX8=;
- b=gY1tDyWFRuA+U5J8SpkhoZAtl/n+BQZ0jU2IUH2scTEb4ip7k5UGLfgxJPpv955Yu3
- y+1YAECTkbOnp8JEoqqhASRyBzzArynhp12Ha0mMBwTAulG7q0SiqsKNpwNOOD1gddaR
- +3NFolkMuHoMwiU2oOe77Kbrf4ORhdry8Tmb87qBN8VFI25Z+ztQOnDjnwsDVyO2XZIa
- PdIu5rPupfsBdnOPTPIxXP4zgFFY4kxAJBU2Ce2cAald0Zko38i4vfzSermB9qxVK4QD
- I7b22E3s2HubXZwNk1x8oq+Mn5mOXth/A352X4mEm6lJfO8xOv7hSA/hBI+c3BsTEsU2
- 4NHw==
+ h=sender:date:message-id:mime-version:subject:from:to:cc
+ :content-transfer-encoding;
+ bh=D+oCaSH/egr+du/U15EDzXJujV6XfQaQ8BeRYeS+FOw=;
+ b=Z2iGEcqXRzha0hs4uB18on6WXhNOiwH5oIuNWxO7+i9pFgG4yO5+PNFxSpdi2OX1we
+ mejdIp3pPbvVGoWEQF+PhFNM6gKtNqSKTclDzgyIr0M4r25ZhZWlrk1+AwDAFFbmK7gd
+ 5Sr3tHstKgYdbZnTngG8XYBvXNTeToAFoq9H7+dF47qS6NC/pKY5lCR9kYqVNPx2eCKR
+ 6GMTSRnyu661BY4iIzYCW2+gUWl3J9KBu8REjzX7/kGgVjbwsjGvDQSbpbZ6icivZsMx
+ SUT9OD6R9PyTP8VRC3MeM6jLrBUPgeA4KhypXyhaZO51v5/6gh8icG6yyz8pPbBmMGUm
+ 98fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
- :to:cc;
- bh=uITZIRq2V6q5qSCUOLhj43gM7pGs59qTkMOHdBiHBX8=;
- b=bZpFTYc8MdwVHQbReWOmreeNj4HnYVU9uy8EDakpCSZCbRr2n3feMcd7ERsfGB/AZD
- +zkYOxLFYBJwokheY4Jv20XS8RWeu4OaHzhRasj0KSfokE4u2oxS2hX21lF57gcGSv+n
- 8zd50JPZ5Qv/XYWd3JaR9ebgRsMmB0xF1sPcKy8zJdv86XymzV6tjoYq6Aeuwm9xZgmN
- BNk9PGbsGCCcf4k7GBur/fX/ty3q3c3gXS04SbuP/sB8UDVLd3sE/nrNYLVlwK1/tC5B
- HvE6qaX+DvXj0KF3QUa7ox7jr8TYjgPLsUWjF57CpsMSopAICQZQ4uJiLxQ/Ov2M+Dox
- hKJA==
-X-Gm-Message-State: AOAM530xHr5AhKJd/k0W6CYEvY1f7TPhZb2GrPdH3Jo3hJdxU2bG8+Yn
- XAuKtAgiNbc+L3Ue1yElAiJqoCL0oPiYrxZvZZFQlJtE1VczpW9liGZ8OdoHz4gwQpwSu4RuFGn
- MCBA7Mc+RFcVFnIt+k56WPoiFjnyAjjqpCaFR/IiyGj/Sx4o1v8954ZDLmEB66Bam33+BNg==
-X-Google-Smtp-Source: ABdhPJydLxnjH3haxCI9g+KQinhtQamnimB5PgiU1eLyouVWd1b/ZdMwmDL8bJ4OYtbFmYyMYlgLc/uVW6WI
+ :to:cc:content-transfer-encoding;
+ bh=D+oCaSH/egr+du/U15EDzXJujV6XfQaQ8BeRYeS+FOw=;
+ b=SmZjX+X93Q22nGB4m9bqHuRdMcNlnaTOzQlcVXAnFsKVX9STFh3mALeOrgbT620M1X
+ RCxAT/uQfdnEf4IOtvzr/gXRFJn9mqJ0A0DvGbYb9rODSj1Z38vbaViZgyE6Z+FOnKpO
+ G0fNgeUQTWFkJFsclsPohWoiZUQl9LPO7yDnBeWHyrf8dKPJNHHuaBbp/LXIQii/hJoR
+ 7HpdiLgBYWETJ8zHdt5Cq1Mblk2oeTSpxUVXTmozx9dO2OWQbylyarri3gwXjeVLge4I
+ fN3gKrYS0J7qitQleV+XEha+3N9b2+DmIaXMUkOQ1agnOpTxyI5UEwat367EJtvY22x5
+ 7bHQ==
+X-Gm-Message-State: AOAM530PnzOWzKJCV9HLZ8uaL8y+0UcyMKys+q1QGXEH3y/R8WuCLJor
+ a29BKdRWmrC4C/etn/j4sb21WKkcqMVFSHH0p+Z28oRyHQuyVjYf3AwxbQ7Vc0L5kLLYp8T7aX/
+ RePWU++s8q4282ZzgA3skCbmfBcJlo35SD3JolU+bPmTN8+I8a2eGhuBaIIKDuqJML26NZw==
+X-Google-Smtp-Source: ABdhPJw2ETAX1hsONKJlzEjpJMMlOH2itMPuxoZlT4BvLRw3NBtE9/epg4w/92S2E6Cx0SVNqFt2xCUeCq7k
 X-Received: from nandos.syd.corp.google.com
  ([2401:fa00:9:14:243a:8f72:7104:7a64])
- (user=amistry job=sendgmr) by 2002:a0c:b912:: with SMTP id
- u18mr7724925qvf.2.1612233918714; Mon, 01 Feb 2021 18:45:18 -0800 (PST)
-Date: Tue,  2 Feb 2021 13:45:09 +1100
-Message-Id: <20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid>
+ (user=amistry job=sendgmr) by 2002:a25:2d43:: with SMTP id
+ s3mr14022034ybe.33.1612237262751; Mon, 01 Feb 2021 19:41:02 -0800 (PST)
+Date: Tue,  2 Feb 2021 14:40:55 +1100
+Message-Id: <20210202144033.1.I9e556f9fb1110d58c31d04a8a1293995fb8bb678@changeid>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH] ath10k: Fix suspicious RCU usage warning in
- ath10k_wmi_tlv_parse_peer_stats_info()
+Subject: [PATCH] ath10k: Fix lockdep assertion warning in ath10k_sta_statistics
 From: Anand K Mistry <amistry@google.com>
 To: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210201_214522_576741_158D8264 
-X-CRM114-Status: GOOD (  12.21  )
+X-CRM114-CacheID: sfid-20210201_224106_473320_9FEB9E65 
+X-CRM114-Status: GOOD (  11.65  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,85 +97,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The ieee80211_find_sta_by_ifaddr call in
-ath10k_wmi_tlv_parse_peer_stats_info must be called while holding the
-RCU read lock. Otherwise, the following warning will be seen when RCU
-usage checking is enabled:
+ath10k_debug_fw_stats_request just be called with conf_mutex held,
+otherwise the following warning is seen when lock debugging is enabled:
 
-=============================
-WARNING: suspicious RCU usage
-5.10.3 #8 Tainted: G        W
------------------------------
-include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by ksoftirqd/1/16.
-
-stack backtrace:
-CPU: 1 PID: 16 Comm: ksoftirqd/1 Tainted: G        W         5.10.3 #8
+WARNING: CPU: 0 PID: 793 at drivers/net/wireless/ath/ath10k/debug.c:357 ath10k_debug_fw_stats_request+0x12c/0x133 [ath10k_core]
+Modules linked in: snd_hda_codec_hdmi designware_i2s snd_hda_intel snd_intel_dspcfg snd_hda_codec i2c_piix4 snd_hwdep snd_hda_core acpi_als kfifo_buf industrialio snd_soc_max98357a snd_soc_adau7002 snd_soc_acp_da7219mx98357_mach snd_soc_da7219 acp_audio_dma ccm xt_MASQUERADE fuse ath10k_pci ath10k_core lzo_rle ath lzo_compress mac80211 zram cfg80211 r8152 mii joydev
+CPU: 0 PID: 793 Comm: wpa_supplicant Tainted: G        W         5.10.9 #5
 Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.104.0 09/05/2019
+RIP: 0010:ath10k_debug_fw_stats_request+0x12c/0x133 [ath10k_core]
+Code: 1e bb a1 ff ff ff 4c 89 ef 48 c7 c6 d3 31 2e c0 89 da 31 c0 e8 bd f8 ff ff 89 d8 eb 02 31 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b e9 04 ff ff ff 0f 1f 44 00 00 55 48 89 e5 41 56 53 48 89 fb
+RSP: 0018:ffffb2478099f7d0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff9e432700cce0 RCX: 11c85cfd6b8e3b00
+RDX: ffff9e432700cce0 RSI: ffff9e43127c5668 RDI: ffff9e4318deddf0
+RBP: ffffb2478099f7f8 R08: 0000000000000002 R09: 00000003fd7068cc
+R10: ffffffffc01b2749 R11: ffffffffc029efaf R12: ffff9e432700c000
+R13: ffff9e43127c33e0 R14: ffffb2478099f918 R15: ffff9e43127c33e0
+FS:  00007f7ea48e2740(0000) GS:ffff9e432aa00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000059aa799ddf38 CR3: 0000000118de2000 CR4: 00000000001506f0
 Call Trace:
- dump_stack+0xab/0x115
- sta_info_hash_lookup+0x71/0x1e9 [mac80211]
- ? lock_is_held_type+0xe6/0x12f
- ? __kasan_kmalloc+0xfb/0x112
- ieee80211_find_sta_by_ifaddr+0x12/0x61 [mac80211]
- ath10k_wmi_tlv_parse_peer_stats_info+0xbd/0x10b [ath10k_core]
- ath10k_wmi_tlv_iter+0x8b/0x1a1 [ath10k_core]
- ? ath10k_wmi_tlv_iter+0x1a1/0x1a1 [ath10k_core]
- ath10k_wmi_tlv_event_peer_stats_info+0x103/0x13b [ath10k_core]
- ath10k_wmi_tlv_op_rx+0x722/0x80d [ath10k_core]
- ath10k_htc_rx_completion_handler+0x16e/0x1d7 [ath10k_core]
- ath10k_pci_process_rx_cb+0x116/0x22c [ath10k_pci]
- ? ath10k_htc_process_trailer+0x332/0x332 [ath10k_core]
- ? _raw_spin_unlock_irqrestore+0x34/0x61
- ? lockdep_hardirqs_on+0x8e/0x12e
- ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
- ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
- ath10k_pci_napi_poll+0x49/0x141 [ath10k_pci]
- net_rx_action+0x11a/0x347
- __do_softirq+0x2d3/0x539
- run_ksoftirqd+0x4b/0x86
- smpboot_thread_fn+0x1d0/0x2ab
- ? cpu_report_death+0x7f/0x7f
- kthread+0x189/0x191
- ? cpu_report_death+0x7f/0x7f
- ? kthread_blkcg+0x31/0x31
- ret_from_fork+0x22/0x30
+ ath10k_sta_statistics+0x4d/0x270 [ath10k_core]
+ sta_set_sinfo+0x1be/0xaec [mac80211]
+ ieee80211_get_station+0x58/0x76 [mac80211]
+ rdev_get_station+0xf1/0x11e [cfg80211]
+ nl80211_get_station+0x7f/0x146 [cfg80211]
+ genl_rcv_msg+0x32e/0x35e
+ ? nl80211_stop_ap+0x19/0x19 [cfg80211]
+ ? nl80211_get_station+0x146/0x146 [cfg80211]
+ ? genl_rcv+0x19/0x36
+ ? genl_rcv+0x36/0x36
+ netlink_rcv_skb+0x89/0xfb
+ genl_rcv+0x28/0x36
+ netlink_unicast+0x169/0x23b
+ netlink_sendmsg+0x38a/0x402
+ sock_sendmsg+0x72/0x76
+ ____sys_sendmsg+0x153/0x1cc
+ ? copy_msghdr_from_user+0x5d/0x85
+ ___sys_sendmsg+0x7c/0xb5
+ ? lock_acquire+0x181/0x23d
+ ? syscall_trace_enter+0x15e/0x160
+ ? find_held_lock+0x3d/0xb2
+ ? syscall_trace_enter+0x15e/0x160
+ ? sched_clock_cpu+0x15/0xc6
+ __sys_sendmsg+0x62/0x9a
+ do_syscall_64+0x43/0x55
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Fixes: 0f7cb26830a6e ("ath10k: add rx bitrate report for SDIO")
+Fixes: 4913e675630e ("ath10k: enable rx duration report default for wmi tlv")
 
 Signed-off-by: Anand K Mistry <amistry@google.com>
 ---
 
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7b5834157fe5..e6135795719a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -240,8 +240,10 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 		   __le32_to_cpu(stat->last_tx_rate_code),
- 		   __le32_to_cpu(stat->last_tx_bitrate_kbps));
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7d98250380ec..e815aab412d7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -9117,7 +9117,9 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	if (!ath10k_peer_stats_enabled(ar))
+ 		return;
  
-+	rcu_read_lock();
- 	sta = ieee80211_find_sta_by_ifaddr(ar->hw, stat->peer_macaddr.addr, NULL);
- 	if (!sta) {
-+		rcu_read_unlock();
- 		ath10k_warn(ar, "not found station for peer stats\n");
- 		return -EINVAL;
- 	}
-@@ -251,6 +253,7 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 	arsta->rx_bitrate_kbps = __le32_to_cpu(stat->last_rx_bitrate_kbps);
- 	arsta->tx_rate_code = __le32_to_cpu(stat->last_tx_rate_code);
- 	arsta->tx_bitrate_kbps = __le32_to_cpu(stat->last_tx_bitrate_kbps);
-+	rcu_read_unlock();
++	mutex_lock(&ar->conf_mutex);
+ 	ath10k_debug_fw_stats_request(ar);
++	mutex_unlock(&ar->conf_mutex);
  
- 	return 0;
- }
+ 	sinfo->rx_duration = arsta->rx_duration;
+ 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_RX_DURATION);
 -- 
 2.30.0.365.g02bc693789-goog
 
