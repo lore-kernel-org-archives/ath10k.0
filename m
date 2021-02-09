@@ -2,82 +2,88 @@ Return-Path: <SRS0=gWg/=HL=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CE93C433DB
-	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 07:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C94ECC433E0
+	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 08:11:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E4A164E0D
-	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 07:34:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E4A164E0D
+	by mail.kernel.org (Postfix) with ESMTPS id 6F77A64DE0
+	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 08:11:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F77A64DE0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Date:Message-Id:To:References:In-Reply-To:From:
-	Subject:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:References:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=mN2fjhEOvU22lOCbvx0haVUrs0oyGLSgVeUt0Ggp9TI=; b=xbQWy+CMg5HFQMagUPQnDOlAH
-	03SEg+p8f9gtl3A+TfMkqNFUBqpHjrElw89b4S5Dc1CTPmV6n4qf9r3ODsThP0v685imM6HGN9+4K
-	prkC6AVqMxi9YSh3XDfk21ltiQhaRmgfIzGD4mzEVDDlmabiXf92GyPJPDGb0QywDx0DWNfnGrBn1
-	SaonLQlPVSPFCRhvEpGC3LTKBvmYfUVwx9ZfHlQ/G7T5dsdQztmp4whn6egUVvhH+ctRplw9SwEZJ
-	Qb8fTVCcpYzli9+MLU3sJ2jQgH3XEvuzRHCTAGFykQlLwEOUfKk6Y/G+8IDKbVSmssnhSmE0/uf76
-	9A2H9Tlgg==;
+	 bh=CDCgTS85pptSddY7BsOXsXj9HJY6CdLfQ+DrS4prgbg=; b=FKCD6wELvBIgAdlX4PEZdnj7Y
+	6Hlzwqw28HWJKXtVNAS2VD8kTkteJMF5pgJ4R8s+txB0VoEA/AC1+UxSPy4mHO5CQgrAn2DE0S2l6
+	MUsWkGHKKoF6KCBpiLuc4wB6nMxMeZwCVAI18dluhov0jO3bajNYmpDKA5m6IdZ2lzk5IygFn5+Qm
+	3RgLUFKXwIBbiogL5OD8ZMTSHe23R6grMomG9idDsP7ib3Ll2Qhdti8w4CZLUGZjdtM+cFbCmpAQR
+	/iQBmw5Vu8cfQqqacB6wjGSMw79F0m8IOmmQqpGx+cqv/Ew4GjIQx8BNtJuOAgWo6Na9R0i/qaRC+
+	+UEFuHyaw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9NXC-0003n8-3y; Tue, 09 Feb 2021 07:34:06 +0000
+	id 1l9O6w-0008Jz-0n; Tue, 09 Feb 2021 08:11:02 +0000
 Received: from so15.mailgun.net ([198.61.254.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9NX8-0003mb-QI
- for ath10k@lists.infradead.org; Tue, 09 Feb 2021 07:34:04 +0000
+ id 1l9O6r-0008Ix-96
+ for ath10k@lists.infradead.org; Tue, 09 Feb 2021 08:11:01 +0000
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1612856042; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=uLPhv5m60UI7IBZqE1r66mltJyO8pbEkuGp22l+LNdE=;
- b=UzbDBBlOeQ34iPCRjWno1+4fVviceBHAqACg1zuqZxO2YMYMtHiSSykkYo5EuXs0b57nUrFQ
- USf7/cfYM+C1qdY/VQjqC46gWzkuRJpWLcu4XRmtJXLgm36rm07phvTPzTp0aa8E1JPEYVHm
- STDv68XcT5JppFQWaDamsR9Ps6E=
+ s=smtp; t=1612858259; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=5WGte9xt2dXjRFbMOx/ZKB9MKO7A9fu4SSLGKPnadEw=;
+ b=VDNNXvTDGoh9Yc2QhLGv3t289SfRsm8XiAcW0q14JR5+8BLWVYsvu7v0cxh3I94J5UFP2UxJ
+ B3QccGy3inJkf797LrGzspTj3CbJ0U3bMPrb/Rqd5b6GO/75JG/ezMfud2FmEdy11PYCDbyF
+ b/S889mp/+9bIPL3+SDou8MqB24=
 X-Mailgun-Sending-Ip: 198.61.254.15
 X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60223ae981f6c45dcebf49b7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Feb 2021 07:34:01
+ 6022438b81f6c45dced25c09 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Feb 2021 08:10:51
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 2A908C43461; Tue,  9 Feb 2021 07:34:00 +0000 (UTC)
+ id E89F1C433CA; Tue,  9 Feb 2021 08:10:50 +0000 (UTC)
 Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi
  [88.114.240.156])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id D8E33C433C6;
- Tue,  9 Feb 2021 07:33:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D8E33C433C6
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id B1227C433CA;
+ Tue,  9 Feb 2021 08:10:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B1227C433CA
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  spf=fail smtp.mailfrom=kvalo@codeaurora.org
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: change len of trace_ath10k_log_dbg_dump for large
- buffer size
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1612839593-2308-1-git-send-email-wgong@codeaurora.org>
-References: <1612839593-2308-1-git-send-email-wgong@codeaurora.org>
-To: Wen Gong <wgong@codeaurora.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210209073400.2A908C43461@smtp.codeaurora.org>
-Date: Tue,  9 Feb 2021 07:34:00 +0000 (UTC)
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI
+ requests
+References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
+ <20200929190817.GA968845@bogus> <20201029134017.GA807@yoga>
+ <CAMi1Hd20UpNhZm6z5t5Kcy8eTABiAj7X_Gm66QnJspZWSio0Ew@mail.gmail.com>
+ <20201124175146.GG185852@builder.lan> <87sg8heeta.fsf@codeaurora.org>
+ <CAMi1Hd2FN6QQzbKHooVyqQfH1NFTNLt4RwxyVXRf+5DwTc9ojg@mail.gmail.com>
+ <87czxa4grv.fsf@codeaurora.org> <YCF5ZC/WMRefTRcQ@builder.lan>
+Date: Tue, 09 Feb 2021 10:10:44 +0200
+In-Reply-To: <YCF5ZC/WMRefTRcQ@builder.lan> (Bjorn Andersson's message of
+ "Mon, 8 Feb 2021 11:48:20 -0600")
+Message-ID: <87blctveyj.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210209_023403_153377_4E4632D1 
-X-CRM114-Status: GOOD (  23.01  )
+X-CRM114-CacheID: sfid-20210209_031100_031440_49304D48 
+X-CRM114-Status: GOOD (  26.18  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,311 +95,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- wgong@codeaurora.org
+Cc: Amit Pundir <amit.pundir@linaro.org>, Rob Herring <robh@kernel.org>,
+ Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, netdev@vger.kernel.org,
+ linux-wireless@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+ ath10k <ath10k@lists.infradead.org>, Konrad Dybcio <konradybcio@gmail.com>,
+ dt <devicetree@vger.kernel.org>, John Stultz <john.stultz@linaro.org>,
+ Jakub Kicinski <kuba@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ David S Miller <davem@davemloft.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Wen Gong <wgong@codeaurora.org> wrote:
+Bjorn Andersson <bjorn.andersson@linaro.org> writes:
 
-> Kernel panic every time in kernel when running below case:
-> steps:
-> 1. connect to an AP with good signal strength
-> 2. echo 0x7f > /sys/kernel/debug/ieee80211/phy0/ath10k/pktlog_filter
-> 3. echo 0xffff 0 > /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
-> 4. echo 0 > /sys/module/ath10k_core/parameters/debug_mask
-> 5. sudo trace-cmd record  -e ath10k
-> 6. run "iperf -c 192.168.1.1 -u -b 100m -i 1 -t 30"
-> 7. kernel panic immeditely
-> 
-> It always crash at trace_event_raw_event_ath10k_xxx, below is 2 sample:
-> 
-> dmesg 1:
-> [   58.038310] Unable to handle kernel paging request at virtual address 003130393837363d
-> [   58.038325] Mem abort info:
-> [   58.038330]   ESR = 0x96000004
-> [   58.038336]   Exception class = DABT (current EL), IL = 32 bits
-> [   58.038340]   SET = 0, FnV = 0
-> [   58.038345]   EA = 0, S1PTW = 0
-> [   58.038349] Data abort info:
-> [   58.038353]   ISV = 0, ISS = 0x00000004
-> [   58.038358]   CM = 0, WnR = 0
-> [   58.038363] [003130393837363d] address between user and kernel address ranges
-> [   58.038370] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [   58.038377] Modules linked in: rfcomm algif_hash algif_skcipher
-> [   58.038385] Unable to handle kernel paging request at virtual address 003938373635343b
-> [   58.038386]  af_alg uinput cros_ec_rpmsg mtk_dip mtk_mdp3
-> [   58.038395] Mem abort info:
-> [   58.038403]   ESR = 0x96000004
-> [   58.038412]   Exception class = DABT (current EL), IL = 32 bits
-> [   58.038419]   SET = 0, FnV = 0
-> [   58.038427]   EA = 0, S1PTW = 0
-> [   58.038434] Data abort info:
-> [   58.038442]   ISV = 0, ISS = 0x00000004
-> [   58.038449]   CM = 0, WnR = 0
-> [   58.038457] [003938373635343b] address between user and kernel address ranges
-> [   58.038486] Process kworker/u16:1 (pid: 141, stack limit = 0x000000009bd6ba2e)
-> [   58.038496] CPU: 1 PID: 141 Comm: kworker/u16:1 Not tainted 4.19.139 #162
-> [   58.038501] Hardware name: MediaTek krane sku176 board (DT)
-> [   58.038515] Workqueue: ath10k_sdio_wq ath10k_sdio_write_async_work [ath10k_sdio]
-> [   58.038523] pstate: 80000005 (Nzcv daif -PAN -UAO)
-> [   58.038536] pc : filter_match_preds+0x20/0x94
-> [   58.038546] lr : trace_event_buffer_commit+0x150/0x22c
-> [   58.038550] sp : ffffff80088a39f0
-> [   58.038555] x29: ffffff80088a3a20 x28: 000000000000000c
-> [   58.038561] x27: 000000000000000c x26: 0000000000000001
-> [   58.038567] x25: ffffffdfd96ef008 x24: 0000000000000000
-> [   58.038573] x23: 0000000000000000 x22: ffffffe03b006c00
-> [   58.038580] x21: ffffffdfd96ef000 x20: 3231303938373635
-> [   58.038586] x19: ffffffe02de9b160 x18: 0000000000000020
-> [   58.038592] x17: 0000000000100000 x16: ffffffa4e67937f0
-> [   58.038598] x15: 0000000000100000 x14: 0000393837363534
-> [   58.038604] x13: 3332313039383736 x12: 3534333231303938
-> [   58.038611] x11: 3736353433323130 x10: 3938373635343332
-> [   58.038617] x9 : 3130393837363534 x8 : 000000000000040b
-> [   58.038623] x7 : 3534333231303938 x6 : ffffffdfd96fb2d1
-> [   58.038629] x5 : 0000000000000000 x4 : 0000000000000000
-> [   58.038635] x3 : 000000000000c2cd x2 : ffffffffffffffc0
-> [   58.038641] x1 : ffffffdfd96ef008 x0 : ffffffdfd96f7080
-> [   58.038648] Call trace:
-> [   58.038655]  filter_match_preds+0x20/0x94
-> [   58.038661]  trace_event_buffer_commit+0x150/0x22c
-> [   58.038698]  trace_event_raw_event_ath10k_log_dbg_dump+0x208/0x240 [ath10k_core]
-> [   58.038716]  ath10k_dbg_dump+0x1bc/0x21c [ath10k_core]
-> [   58.038724]  ath10k_sdio_write+0xc8/0xe8 [ath10k_sdio]
-> [   58.038730]  ath10k_sdio_write_async_work+0x11c/0x1f4 [ath10k_sdio]
-> [   58.038738]  process_one_work+0x210/0x418
-> [   58.038744]  worker_thread+0x234/0x3dc
-> [   58.038751]  kthread+0x120/0x140
-> [   58.038758]  ret_from_fork+0x10/0x18
-> [   58.038766] Code: 9100c3fd b40002e0 f9400014 b40002b4 (f9400680)
-> [   58.038773] ---[ end trace 8b9d2463f441eb7f ]---
-> [   58.051846] Kernel panic - not syncing: Fatal exception
-> [   58.051864] SMP: stopping secondary CPUs
-> 
-> dmesg 2:
-> [  228.692905] Unable to handle kernel paging request at virtual address 0033323130393837
-> [  228.692913] Mem abort info:
-> [  228.692920]   ESR = 0x96000004
-> [  228.692927]   Exception class = DABT (current EL), IL = 32 bits
-> [  228.692933]   SET = 0, FnV = 0
-> [  228.692938]   EA = 0, S1PTW = 0
-> [  228.692943] Data abort info:
-> [  228.692953]   ISV = 0, ISS = 0x00000004
-> [  228.692965]   CM = 0, WnR = 0
-> [  228.692975] [0033323130393837] address between user and kernel address ranges
-> [  228.692983] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [  228.693078] Process kworker/u16:2 (pid: 144, stack limit = 0x000000009f882493)
-> [  228.693088] CPU: 6 PID: 144 Comm: kworker/u16:2 Tainted: G        W         4.19.139 #162
-> [  228.693095] Hardware name: MediaTek krane sku176 board (DT)
-> [  228.693125] Workqueue: ath10k_tx_complete_wq ath10k_htc_tx_complete_work [ath10k_core]
-> [  228.693137] pstate: 80000005 (Nzcv daif -PAN -UAO)
-> [  228.693152] pc : filter_match_preds+0x38/0x94
-> [  228.693164] lr : trace_event_buffer_commit+0x150/0x22c
-> [  228.693170] sp : ffffff80088b3b20
-> [  228.693175] x29: ffffff80088b3b50 x28: 0000000000000402
-> [  228.693183] x27: fffffff040001f60 x26: ffffff9d4ba34000
-> [  228.693191] x25: fffffff040af5004 x24: 0000000000000000
-> [  228.693198] x23: 0000000000000000 x22: fffffff040af7100
-> [  228.693205] x21: 0000000000000000 x20: fffffff040af7100
-> [  228.693212] x19: fffffff040af5004 x18: 0000000000000000
-> [  228.693219] x17: 000000000000003c x16: ffffff9d4da649d8
-> [  228.693226] x15: 0000000000000006 x14: 3837363534333231
-> [  228.693233] x13: fffffff01514fc00 x12: 0000000000000000
-> [  228.693240] x11: 0000000000000000 x10: fffffff040af5004
-> [  228.693247] x9 : 0000000000000000 x8 : 0000000000000000
-> [  228.693254] x7 : 646b686064ff6e68 x6 : 0000800000000000
-> [  228.693261] x5 : 0000000000000000 x4 : 0000000000000000
-> [  228.693268] x3 : 000000000000002c x2 : 0000000000000000
-> [  228.693275] x1 : fffffff040af5004 x0 : 3433323130393837
-> [  228.693282] Call trace:
-> [  228.693291]  filter_match_preds+0x38/0x94
-> [  228.693299]  trace_event_buffer_commit+0x150/0x22c
-> [  228.693321]  trace_event_raw_event_ath10k_txrx_tx_unref+0x164/0x198 [ath10k_core]
-> [  228.693344]  ath10k_txrx_tx_unref+0x1c0/0x36c [ath10k_core]
-> [  228.693365]  ath10k_htt_htc_tx_complete+0xe4/0x114 [ath10k_core]
-> [  228.693386]  ath10k_htc_notify_tx_completion+0xe4/0x124 [ath10k_core]
-> [  228.693407]  ath10k_htc_tx_complete_work+0xb8/0xf0 [ath10k_core]
-> [  228.693418]  process_one_work+0x210/0x418
-> [  228.693425]  worker_thread+0x234/0x3dc
-> [  228.693433]  kthread+0x120/0x140
-> [  228.693441]  ret_from_fork+0x10/0x18
-> [  228.693451] Code: aa0103f3 aa1f03e8 2a1f03f5 aa1403f6 (f9400009)
-> [  228.693459] ---[ end trace 187b0ae372e7515c ]---
-> [  228.711074] Kernel panic - not syncing: Fatal exception
-> [  228.711086] SMP: stopping secondary CPUs
-> [  228.711254] Kernel Offset: 0x1d45600000 from 0xffffff8008000000
-> [  228.711259] CPU features: 0x0,2188200c
-> [  228.711262] Memory Limit: none
-> 
-> The value of prog in filter_match_preds of kernel/trace/trace_events_filter.c
-> is overwrite to the content of the UDP packets's content like this
-> 0x0039383736353433, it is a invalid address, so crash.
-> 
-> Content of udp tx packets with iperf:
-> 0000   00 03 7f 46 c4 49 40 49 0f 2f f9 09 08 00 45 00   ...F.I@I./....E.
-> 0010   05 da 18 00 40 00 40 11 99 4a c0 a8 01 77 c0 a8   ....@.@..J...w..
-> 0020   01 01 9c 7d 13 89 05 c6 89 a0 00 00 01 8b 5d 69   ...}..........]i
-> 0030   98 9a 00 0a 55 b8 00 00 00 00 00 00 00 01 00 00   ....U...........
-> 0040   13 89 00 00 00 00 00 00 00 00 ff ff f4 48 05 f5   .............H..
-> 0050   e1 00 30 31 32 33 34 35 36 37 38 39 30 31 32 33   ..01234567890123
-> 0060   34 35 36 37 38 39 30 31 32 33 34 35 36 37 38 39   4567890123456789
-> 0070   30 31 32 33 34 35 36 37 38 39 30 31 32 33 34 35   0123456789012345
-> 0080   36 37 38 39 30 31 32 33 34 35 36 37 38 39 30 31   6789012345678901
-> 0090   32 33 34 35 36 37 38 39 30 31 32 33 34 35 36 37   2345678901234567
-> 00a0   38 39 30 31 32 33 34 35 36 37 38 39 30 31 32 33   8901234567890123
-> 00b0   34 35 36 37 38 39 30 31 32 33 34 35 36 37 38 39   4567890123456789
-> ...
-> 05b0   34 35 36 37 38 39 30 31 32 33 34 35 36 37 38 39   4567890123456789
-> 05c0   30 31 32 33 34 35 36 37 38 39 30 31 32 33 34 35   0123456789012345
-> 05d0   36 37 38 39 30 31 32 33 34 35 36 37 38 39 30 31   6789012345678901
-> 05e0   32 33 34 35 36 37 38 39                           23456789
-> 
-> ath10k_htc_send_bundle_skbs allocate skb with size 49792(1556*32), it
-> is bigger than PAGE_SIZE which is normally 4096, then ath10k_sdio_write
-> call ath10k_dbg_dump to trace the large size skb and corrupt the trace
-> data of tracing and lead crash. When disable the TX bundle of SDIO, it
-> does not crash, but TX bundle is for improve throughput, so it is enabled
-> by default. It is useless to call ath10k_dbg_dump to trace the large
-> bundled skb, so this patch trace the top part of large bundled skb.
-> 
-> I also did another try with below change, it is move the ath10k_dbg_dump
-> from ath10k_sdio_write to ath10k_sdio_mbox_rx_fetch_bundle, it also
-> crash immediately when run iperf UDP RX traffic, RX bundle is enabled
-> by default for SDIO, so the virt_pkt_len of ath10k_sdio_mbox_rx_fetch_bundle
-> is large, max value is 57344(1792*32), so it crashed same with upper test.
-> 
-> Change of try:
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-> --- a/drivers/net/wireless/ath/ath10k/sdio.c
-> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-> @@ -336,7 +336,6 @@ static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_
-> 
->         ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio write addr 0x%x buf 0x%p len %zu\n",
->                    addr, buf, len);
-> -       ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL, "sdio write ", buf, len);
-> 
->  out:
->         sdio_release_host(func);
-> @@ -692,6 +691,8 @@ static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
->                 goto err;
->         }
-> 
-> +       ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL, "sdio read vsg", ar_sdio->vsg_buffer, virt_pkt_len);
-> +
->         pkt_offset = 0;
->         for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
->                 pkt = &ar_sdio->rx_pkts[i];
-> 
-> dmesg of try:
-> [  170.621318] Unable to handle kernel paging request at virtual address 0036353433323138
-> [  170.621336] Mem abort info:
-> [  170.621341]   ESR = 0x96000004
-> [  170.621347]   Exception class = DABT (current EL), IL = 32 bits
-> [  170.621352]   SET = 0, FnV = 0
-> [  170.621357]   EA = 0, S1PTW = 0
-> [  170.621362] Data abort info:
-> [  170.621367]   ISV = 0, ISS = 0x00000004
-> [  170.621371]   CM = 0, WnR = 0
-> [  170.621377] [0036353433323138] address between user and kernel address ranges
-> [  170.621385] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [  170.621479] Process kworker/0:1 (pid: 14, stack limit = 0x00000000c6fcfb2a)
-> [  170.621489] CPU: 0 PID: 14 Comm: kworker/0:1 Not tainted 4.19.139 #162
-> [  170.621494] Hardware name: MediaTek krane sku176 board (DT)
-> [  170.621511] Workqueue: events sdio_irq_work
-> [  170.621519] pstate: 80000005 (Nzcv daif -PAN -UAO)
-> [  170.621529] pc : filter_match_preds+0x20/0x94
-> [  170.621540] lr : trace_event_buffer_commit+0x150/0x22c
-> [  170.621545] sp : ffffff80080f37d0
-> [  170.621550] x29: ffffff80080f3800 x28: 000000000000000c
-> [  170.621556] x27: 000000000000000c x26: 0000000000000001
-> [  170.621563] x25: fffffff118eb8008 x24: 0000000000000000
-> [  170.621569] x23: 0000000000000000 x22: fffffff17b007900
-> [  170.621576] x21: fffffff118eb8000 x20: 3736353433323130
-> [  170.621583] x19: fffffff178645790 x18: 0000000000000020
-> [  170.621589] x17: 000000000000003c x16: ffffff91fe3937f0
-> [  170.621596] x15: 0000000000000006 x14: 00000636000ad8b0
-> [  170.621602] x13: 0000000000000000 x12: 0000000000000000
-> [  170.621608] x11: 0000000000000000 x10: 0000000000000000
-> [  170.621615] x9 : 0000000000000000 x8 : 000000000000040b
-> [  170.621621] x7 : 0000000000000000 x6 : fffffff118ec6052
-> [  170.621628] x5 : 0000000000000000 x4 : 0000000000000000
-> [  170.621634] x3 : 000000000000e04e x2 : ffffffffffffffc0
-> [  170.621640] x1 : fffffff118eb8008 x0 : fffffff118ec1f00
-> [  170.621648] Call trace:
-> [  170.621655]  filter_match_preds+0x20/0x94
-> [  170.621662]  trace_event_buffer_commit+0x150/0x22c
-> [  170.621704]  trace_event_raw_event_ath10k_log_dbg_dump+0x208/0x240 [ath10k_core]
-> [  170.621724]  ath10k_dbg_dump+0x1bc/0x21c [ath10k_core]
-> [  170.621734]  ath10k_sdio_readsb+0xdc/0xfc [ath10k_sdio]
-> [  170.621742]  ath10k_sdio_irq_handler+0x6f8/0xca8 [ath10k_sdio]
-> [  170.621749]  process_sdio_pending_irqs+0x60/0x1b4
-> [  170.621756]  sdio_run_irqs+0x34/0x60
-> [  170.621762]  sdio_irq_work+0x1c/0x28
-> [  170.621769]  process_one_work+0x210/0x418
-> [  170.621775]  worker_thread+0x234/0x3dc
-> [  170.621783]  kthread+0x120/0x140
-> [  170.621791]  ret_from_fork+0x10/0x18
-> [  170.621799] Code: 9100c3fd b40002e0 f9400014 b40002b4 (f9400680)
-> [  170.621807] ---[ end trace b52c34b9c8deb8e3 ]---
-> [  170.624123] Unable to handle kernel paging request at virtual address dffd74685cec003c
-> [  170.624134] Mem abort info:
-> [  170.624138]   ESR = 0x96000004
-> [  170.624143]   Exception class = DABT (current EL), IL = 32 bits
-> [  170.624146]   SET = 0, FnV = 0
-> [  170.624150]   EA = 0, S1PTW = 0
-> [  170.624153] Data abort info:
-> [  170.624157]   ISV = 0, ISS = 0x00000004
-> [  170.624160]   CM = 0, WnR = 0
-> [  170.624165] [dffd74685cec003c] address between user and kernel address ranges
-> [  170.634352] Kernel panic - not syncing: Fatal exception
-> [  170.634370] SMP: stopping secondary CPUs
-> [  171.711302] SMP: failed to stop secondary CPUs 0,4
-> [  171.711310] Kernel Offset: 0x11f6200000 from 0xffffff8008000000
-> [  171.711316] CPU features: 0x0,2188200c
-> [  171.711321] Memory Limit: none
-> [  171.723885] SMP: stopping secondary CPUs
-> [  172.800814] SMP: failed to stop secondary CPUs 0,4
-> 
-> trace_event_raw_event_ath10k_log_dbg_dump is generated by compiler, it
-> call trace_event_buffer_reserve got get a struct pointer *entry, its
-> type is trace_event_raw_ath10k_log_dbg_dump which is also generated by
-> compiler, trace_event_buffer_reserve of kernel/trace/trace_events.c
-> call trace_event_buffer_lock_reserve to get ring_buffer_event.
-> 
-> In function trace_event_buffer_lock_reserve of kernel/trace/trace.c,
-> the ring_buffer_time_stamp_abs is false and trace_file->flags is 0x40b
-> which is set bit of EVENT_FILE_FL_FILTERED by debugging, so it use the
-> temp buffer this_cpu_read(trace_buffered_event), and the buffer size
-> is 1 page size which allocatee in trace_buffered_event_enable by
-> alloc_pages_node, and then ath10k pass the buffer size > 1 page trigger
-> overflow and crash.
-> 
-> Based on upper test, try and debugging, pass large buff size to function
-> trace_ath10k_log_dbg_dump cause crash, and it has ath10k_dbg in
-> ath10k_sdio_write to print the length of skb/buffer, it is not necessary
-> to trace all content of the large skb.
-> 
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-> 
-> Signed-off-by: Wen Gong <wgong@codeaurora.org>
+> On Mon 08 Feb 11:21 CST 2021, Kalle Valo wrote:
+>
+>> Amit Pundir <amit.pundir@linaro.org> writes:
+>> 
+>> > Hi Kalle,
+>> >
+>> > On Mon, 7 Dec 2020 at 22:25, Kalle Valo <kvalo@codeaurora.org> wrote:
+>> >>
+>> >> This is firmware version specific, right? There's also enum
+>> >> ath10k_fw_features which is embedded within firmware-N.bin, we could add
+>> >> a new flag there. But that means that a correct firmware-N.bin is needed
+>> >> for each firmware version, not sure if that would work out. Just
+>> >> throwing out ideas here.
+>> >
+>> > Apologies for this late reply. I was out for a while.
+>> 
+>> No worries.
+>> 
+>> > If by that (the firmware version) you mean "QC_IMAGE_VERSION_STRING",
+>> > then that may be a bit tricky. Pocophone F1 use the same firmware
+>> > family version (WLAN.HL.2.0.XXX), used by Dragonboard 845c (which has
+>> > Wi-Fi working upstream).
+>> 
+>> I'm meaning the ath10k firmware meta data we have in firmware-N.bin
+>> (N=2,3,4...) file. A quick summary:
+>> 
+>> Every ath10k firmware release should have firmware-N.bin. The file is
+>> created with this tool:
+>> 
+>> https://github.com/qca/qca-swiss-army-knife/blob/master/tools/scripts/ath10k/ath10k-fwencoder
+>> 
+>> firmware-N.bin contains various metadata, one of those being firmware
+>> feature flags:
+>> 
+>> enum ath10k_fw_features {
+>> 	/* wmi_mgmt_rx_hdr contains extra RSSI information */
+>> 	ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX = 0,
+>> 
+>> 	/* Firmware from 10X branch. Deprecated, don't use in new code. */
+>> 	ATH10K_FW_FEATURE_WMI_10X = 1,
+>> 
+>>         [...]
+>> 
+>> So what you could is add a new flag enum ath10k_fw_features, create a
+>> new firmware-N.bin for your device and enable the flag on the firmware
+>> releases for your device only.
+>> 
+>> I don't know if this is usable, but one solution which came to my mind.
+>
+> It sounds quite reasonable to pass this using firmawre-N.bin instead of
+> DT, however that would imply that we need to find firmware-N.bin in the
+> device-specific directory, where we keep the wlanmdsp.mbn as well - and
+> not under /lib/firmware/ath10k
+>
+> For other devices (e.g. ADSP, modem or wlanmdsp.mbn) we're putting these
+> in e.g. /lib/firmware/qcom/LENOVO/81JL/ and specifies the location using
+> a firmware-name property in DT.
 
-Failed to apply, please rebase.
+Ah, I didn't realise that.
 
-error: patch failed: drivers/net/wireless/ath/ath10k/sdio.c:336
-error: drivers/net/wireless/ath/ath10k/sdio.c: patch does not apply
-stg import: Diff does not apply cleanly
+Actually I would like to have ath10k in control[1] of QMI/rproc firmware
+loading as the firmware releases have different constraints, like the
+issue we are now discussing. Ideally firmware-N.bin would contain all
+firmware files, for example wlanmdsp.mbn, and from the meta data
+ath10k/ath11k would know what version of the firmware interface should
+be used.
 
-Patch set to Changes Requested.
+I remember we discussed this briefly a year or two ago and there was no
+easy solution, but I really wish we could find one. More these kind of
+firmware interface incompatibilities will most likely pop up, also in
+ath11k, so it would be great to find a clean and easily maneagable
+solution.
+
+[1] With control I mean that ath10k/ath11k can choose which firmware
+should be loaded
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1612839593-2308-1-git-send-email-wgong@codeaurora.org/
+https://patchwork.kernel.org/project/linux-wireless/list/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
