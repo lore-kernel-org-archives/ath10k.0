@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D81A8C433DB
-	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 22:59:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39A2EC433E0
+	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 23:04:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 875F064E37
-	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 22:59:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 875F064E37
+	by mail.kernel.org (Postfix) with ESMTPS id E42BE64E3C
+	for <ath10k@archiver.kernel.org>; Tue,  9 Feb 2021 23:04:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42BE64E3C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=iXVa/47fqujLre4FohKAhIDTMGrmtQMFer+hQG5jEgY=; b=mS8ezM6Nbg88FLkXQukvU9TNlf
-	JWofVD+gH2DhVBkz0uQe7rFUJH3HBUUXuYViES75YhF85rSULXcCnS3TgAuWvsp9dHnyawcaaGb6W
-	f0OPi252PjzrK1Q0r6JJ93sqi5KpvLkh1fl5+j6bKOOi7L/qNF8I8jnNPL1/A+qHOuD+nONcVhBie
-	NRFlPjHXPim1ylO2BU3HxdeEMUg0mlXO3+KnS7hyLLG+b1b65OGm5r3M9PiIGZxwSBf/kYS54//Qp
-	BW5qnP+POHBQVVifErljDb7ZNHdgv3wVD9kYX8ss1JTOf3OkS49DcWOwNSKxO9hkMdVsAoUUjMMeW
-	SbR8nUng==;
+	bh=nFW322jr11oYuxAihxbuLEpzzEIKGB7STqReWvFafpo=; b=IsGYF4rX0OwoAJCgJGa7hkzPoR
+	R250lLOUgIV/P/klBvX3QS5r/5lphluZOkksR07Hg6vZJD8/EtmQKE9Tj5dGFuxns6Es4WgHmSoZZ
+	Suyj2UOW6WybnMCbVeDacbi5r05yGWhHKVfGJULvwIJETTTvOzDst6OsBpTVExRaCKLvsq3y1r2qF
+	lsiybai79uDLbil7GYlyFOCMCgq1wF40eujQfeAzlpOc4tVS7VuC14HxaR7mu5pKitk+J0ZPkyPA5
+	uzm2legMRiCXnHwgLOfns+5RRCvd3Nfsbdwz48zClab0H/AWbpoXBApId5pmLBYnELIftdeazFKSg
+	kRFdCqtw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9bye-0005tS-Jw; Tue, 09 Feb 2021 22:59:24 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1l9c3a-0006tt-5U; Tue, 09 Feb 2021 23:04:30 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9bya-0005sm-2V
- for ath10k@lists.infradead.org; Tue, 09 Feb 2021 22:59:21 +0000
-IronPort-SDR: j5BTLNCT5tUy5ScschlSgNLA+mGkWUe7NYia1CIjK5vpVfpDhdd79SB0qTyOy16bbMYF8SKDzB
- ONWaZYjEvnDQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="246040739"
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; d="scan'208";a="246040739"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Feb 2021 14:59:18 -0800
-IronPort-SDR: 98MFv08qLo6u3/uqSNugyY/giXEtyfIR26S+KupRm4E228hmmVu3TW+ZHEyTyPcRj/WvX3W5WQ
- NBDC2dbccz5g==
+ id 1l9c3W-0006rs-RQ
+ for ath10k@lists.infradead.org; Tue, 09 Feb 2021 23:04:28 +0000
+IronPort-SDR: YoRcue69prpV2cayQG4HQsQpHfHn36++mkG6GNDDn88g5HQQWlcVkvL7VFGzVz/+AGGowdDY/k
+ yc4QGOoSxpIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="161726331"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; d="scan'208";a="161726331"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Feb 2021 14:59:22 -0800
+IronPort-SDR: R+8eawqPcI91ispdXlXZIFl9J06+69pqI1CK7/AB+Zcqqz+9/w8LZ0O2oC58MgD7VKCCKnCpex
+ db7zuIJNTMKw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; d="scan'208";a="578213138"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; d="scan'208";a="361091666"
 Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
- by orsmga005.jf.intel.com with ESMTP; 09 Feb 2021 14:59:17 -0800
+ by fmsmga007.fm.intel.com with ESMTP; 09 Feb 2021 14:59:17 -0800
 Received: from kbuild by cd560a204411 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1l9byW-0002Nk-PZ; Tue, 09 Feb 2021 22:59:16 +0000
-Date: Wed, 10 Feb 2021 06:59:14 +0800
+ id 1l9byW-0002NV-Mm; Tue, 09 Feb 2021 22:59:16 +0000
+Date: Wed, 10 Feb 2021 06:59:05 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 4b19583ebdcf050ca59b616640a9e57825cc5ba8
-Message-ID: <602313c2.vNvrttnJFHdu74h6%lkp@intel.com>
+Subject: [ath6kl:ath-next] BUILD SUCCESS
+ 7064e2193cabcdb8faa9008744e6ceb7f86d314d
+Message-ID: <602313b9.xkjvzbzCYYiINAPz%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210209_175920_304417_CC917D5A 
-X-CRM114-Status: UNSURE (   6.38  )
+X-CRM114-CacheID: sfid-20210209_180427_116307_A8749D81 
+X-CRM114-Status: UNSURE (   6.49  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,10 +81,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 4b19583ebdcf050ca59b616640a9e57825cc5ba8  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 7064e2193cabcdb8faa9008744e6ceb7f86d314d  wil6210: Add Support for Extended DMG MCS 12.1
 
-elapsed time: 740m
+elapsed time: 741m
 
 configs tested: 119
 configs skipped: 2
