@@ -2,78 +2,90 @@ Return-Path: <SRS0=izlz=HM=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1FBCC433E0
-	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 02:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C9E8C433DB
+	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 02:14:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B8CB64E42
-	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 02:12:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B8CB64E42
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3869164E42
+	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 02:14:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3869164E42
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=kFSEd8p/pRWm7xwh6saakDbW6fnbK0/LbZ/12+MONxQ=; b=wAQS71TYVogp+LKSaIv9frbmR
-	YpfRNnjzLmWOYwR8J8k950XGJhDg3CeYudzTYlv0GAgEWYceZbQ31n+oXjfXV9BU1IKUQqrLi0bpx
-	ozsmZHALbl9NmlS/6tAtGQmkJIFaM7tY+JpQg+bEAo6z0qyt6C2rnjZAyB+trfcJJ0VS2FczYDIHd
-	ROeko5TIV3haQe/2Dxlau4Zo77oRDzYfxXnxRPdEJtx1rcI9fmRRUE25Y6fFfe/B03/Oi5h2TXVTL
-	Nm3x01JSC7hEQN2HbnSxMnEcNdyZd6RrVdKulG7Czo2D68+PFtJyp8sZTE61FXFc22qFSQ9anmR97
-	cLAI42spA==;
+	 bh=1Lgejzb7Qc329Tyy7M5SD7lZaHS4mV6Tj/iLl7tzErU=; b=aJTgjN+TI7Rm6O2ZQFcUiNfic
+	/8nmvTCfItSDPMKHz+xvNuAFX2GZh4WdKfPL1FdnYjzEAWyD7/8dQopbKZSBvMKkAFjKVEsTBRBv4
+	fvYktEkSBqllgXuYSrSflWS5RzJ7SGM2POcTKrKl010Wy1Decahkp33v6NWwXJRC7VWrXo0a4SFFT
+	nPkRjaHwbMtBgWEJwRp0BUxd0QhC6fpXp91eoXYHrt6ykED90+NbA7A0VAGPk/RHZIbV02ptKRsi/
+	nF9yXrbzfpvjHMnKF1ScoMLqJm/OOIBtlUQtJUOgErnD8HhCAOkzPeh9BEVtKP8Ii4HlOtJUN/VWs
+	V3H6/f0Yw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9ez7-0001Es-EI; Wed, 10 Feb 2021 02:12:05 +0000
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+	id 1l9f1Z-0001Xz-4x; Wed, 10 Feb 2021 02:14:37 +0000
+Received: from mail-ot1-x32b.google.com ([2607:f8b0:4864:20::32b])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9ez2-0001EN-UV
- for ath10k@lists.infradead.org; Wed, 10 Feb 2021 02:12:03 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1612923122; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=rPQJZTrg1mOyXDXVX3wmGnneb1R6HB/8qj87QmbUn3A=;
- b=e18equLH6l+O8o647AsmwbTdNujHIA1Hv3xxtJnS4IEgu9oqJaWLmBZFoef7XdalLioQ6TsY
- 2Yz2UMPlGXQgcedls5KKMGtNwE4HW2tNItR0WMG1IPc8KlhbM2EaH0KEn5SdYC2HY4YsKeM0
- kkwtKVvjIiHmIzaHjmESgOruRg8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 602340e8e4842e912810865f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 02:11:52
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 098E6C43467; Wed, 10 Feb 2021 02:11:52 +0000 (UTC)
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested) (Authenticated sender: wgong)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id BC40FC433ED;
- Wed, 10 Feb 2021 02:11:50 +0000 (UTC)
+ id 1l9f1W-0001XC-DX
+ for ath10k@lists.infradead.org; Wed, 10 Feb 2021 02:14:35 +0000
+Received: by mail-ot1-x32b.google.com with SMTP id o12so411599ote.12
+ for <ath10k@lists.infradead.org>; Tue, 09 Feb 2021 18:14:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=V90/hBn9j2Q6OSCWu59vY+j+BWO0HaCqBFyxV7f5dII=;
+ b=Tbf0oBeJwlih3iqNECCosxvzK25+TpYEKq8jIhO3AsSoqlMdGRxAiX7VUDoWQ/F3ad
+ oiUS959tMexEbBeVhisEZbZT1ELFlbjX4vwqHIFmhgH77fVBsxNiEGnyPN8vbn6sCwNF
+ yWJXS394xwDsVolwIqM3yZeLMbOBwrtDpJXZ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=V90/hBn9j2Q6OSCWu59vY+j+BWO0HaCqBFyxV7f5dII=;
+ b=hCHtQb4cTQS07oZwgLTizQOcXEFKYgHtts+bocCO4SzmRylsmuAb+TIxG0HpFRPl15
+ rmQJb2s9kbXxU8HmC4i35Ek/LliGkUZM4uTkZvUvAj1K+yWRR6CgrsavoGc7HxRy0Cp8
+ YXdkFRxVwcMbfcduqJs13rM20qR8WEqxD4b1H6jZr6aNWN40caWy9KjgA/rixpamttPX
+ Y9r/M3zFDPBM/3BgEadwUHvoHWCsY8GdqZ5d9X8NWKzFWkCtmHkqoaLWu2g0ZzgKRYzH
+ An7exBWkpjUwjra5W3O9mlSfz3nKdGZ2iRGAkVkrbMroORuJitWrSn/nD39r0A/3tBRp
+ mP3Q==
+X-Gm-Message-State: AOAM5328vpc7oLKtC9XSt7wSiSLgEvUfrZ6sNLMds83ihA9qUk5sZJnq
+ EPXlPYa0WvtVE3otQgA7/ztYPi/+tHOkuA==
+X-Google-Smtp-Source: ABdhPJyBbC+OuhqWefJ6jVwxFZ7xGkhOBCkUQo8TU3eJMEj4w2C933Q+0qqfMiJsrIqwRpNDviUB0g==
+X-Received: by 2002:a05:6830:1c61:: with SMTP id
+ s1mr503964otg.149.1612923271484; 
+ Tue, 09 Feb 2021 18:14:31 -0800 (PST)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com.
+ [209.85.167.179])
+ by smtp.gmail.com with ESMTPSA id c17sm98780otp.58.2021.02.09.18.14.30
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 09 Feb 2021 18:14:30 -0800 (PST)
+Received: by mail-oi1-f179.google.com with SMTP id i3so416071oif.1
+ for <ath10k@lists.infradead.org>; Tue, 09 Feb 2021 18:14:30 -0800 (PST)
+X-Received: by 2002:aca:43c3:: with SMTP id q186mr532173oia.77.1612923270018; 
+ Tue, 09 Feb 2021 18:14:30 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 10 Feb 2021 10:11:50 +0800
-From: Wen Gong <wgong@codeaurora.org>
-To: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH] ath10k: change len of trace_ath10k_log_dbg_dump for large
- buffer size
-In-Reply-To: <CA+ASDXN1V2HYA7C6s-q5bQNSxE7L5GCJiqfiJ_67R_hpUn4b_g@mail.gmail.com>
 References: <1612839593-2308-1-git-send-email-wgong@codeaurora.org>
  <CA+ASDXN1V2HYA7C6s-q5bQNSxE7L5GCJiqfiJ_67R_hpUn4b_g@mail.gmail.com>
-Message-ID: <19b6ad684a01718c3823f882581fca36@codeaurora.org>
-X-Sender: wgong@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+ <19b6ad684a01718c3823f882581fca36@codeaurora.org>
+In-Reply-To: <19b6ad684a01718c3823f882581fca36@codeaurora.org>
+From: Brian Norris <briannorris@chromium.org>
+Date: Tue, 9 Feb 2021 18:14:18 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXNYO+w254D2Uh3OSfTGjJEkbOCX=hq+XaWe9DtjbuOy3g@mail.gmail.com>
+Message-ID: <CA+ASDXNYO+w254D2Uh3OSfTGjJEkbOCX=hq+XaWe9DtjbuOy3g@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: change len of trace_ath10k_log_dbg_dump for large
+ buffer size
+To: Wen Gong <wgong@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210209_211202_818922_96B845D9 
-X-CRM114-Status: GOOD (  27.72  )
+X-CRM114-CacheID: sfid-20210209_211434_821938_07A28593 
+X-CRM114-Status: GOOD (  11.32  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,134 +99,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  Steven Rostedt <rostedt@goodmis.org>, ath10k <ath10k@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2021-02-10 03:35, Brian Norris wrote:
-> + Steven Rostedt
-> 
-> Hi Wen,
-> 
-> (Trimming down the description a bit:)
-> 
-> On Mon, Feb 8, 2021 at 6:59 PM Wen Gong <wgong@codeaurora.org> wrote:
->> 
->> Kernel panic every time in kernel when running below case:
->> steps:
->> 1. connect to an AP with good signal strength
->> 2. echo 0x7f > /sys/kernel/debug/ieee80211/phy0/ath10k/pktlog_filter
->> 3. echo 0xffff 0 > /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
->> 4. echo 0 > /sys/module/ath10k_core/parameters/debug_mask
->> 5. sudo trace-cmd record  -e ath10k
->> 6. run "iperf -c 192.168.1.1 -u -b 100m -i 1 -t 30"
->> 7. kernel panic immeditely
->> 
->> It always crash at trace_event_raw_event_ath10k_xxx, below is 2 
->> sample:
-> ...
->> The value of prog in filter_match_preds of 
->> kernel/trace/trace_events_filter.c
->> is overwrite to the content of the UDP packets's content like this
->> 0x0039383736353433, it is a invalid address, so crash.
-> ...
->> ath10k_htc_send_bundle_skbs allocate skb with size 49792(1556*32), it
->> is bigger than PAGE_SIZE which is normally 4096, then 
->> ath10k_sdio_write
->> call ath10k_dbg_dump to trace the large size skb and corrupt the trace
->> data of tracing and lead crash. When disable the TX bundle of SDIO, it
->> does not crash, but TX bundle is for improve throughput, so it is 
->> enabled
->> by default. It is useless to call ath10k_dbg_dump to trace the large
->> bundled skb, so this patch trace the top part of large bundled skb.
-> ...
->> trace_event_raw_event_ath10k_log_dbg_dump is generated by compiler, it
->> call trace_event_buffer_reserve got get a struct pointer *entry, its
->> type is trace_event_raw_ath10k_log_dbg_dump which is also generated by
->> compiler, trace_event_buffer_reserve of kernel/trace/trace_events.c
->> call trace_event_buffer_lock_reserve to get ring_buffer_event.
->> 
->> In function trace_event_buffer_lock_reserve of kernel/trace/trace.c,
->> the ring_buffer_time_stamp_abs is false and trace_file->flags is 0x40b
->> which is set bit of EVENT_FILE_FL_FILTERED by debugging, so it use the
->> temp buffer this_cpu_read(trace_buffered_event), and the buffer size
->> is 1 page size which allocatee in trace_buffered_event_enable by
->> alloc_pages_node, and then ath10k pass the buffer size > 1 page 
->> trigger
->> overflow and crash.
->> 
->> Based on upper test, try and debugging, pass large buff size to 
->> function
->> trace_ath10k_log_dbg_dump cause crash, and it has ath10k_dbg in
->> ath10k_sdio_write to print the length of skb/buffer, it is not 
->> necessary
->> to trace all content of the large skb.
-> 
-> Is this the same issue noted in this thread?
-Hi Norris,
-Yes, but it is not the total same issue.
-> 
-> [for-next][PATCH 2/2] tracing: Use temp buffer when filtering events
-> https://lore.kernel.org/lkml/f16b14066317f6a926b6636df6974966@codeaurora.org/
-> 
-> It seems like we should still try to get that fixed somehow, even if
-> the below change is fine on its own (it probably doesn't make sense to
-> such a large amount of data via tracepoints). It would be unfortunate
-> for next poor soul to hit the same issues, just because they wanted to
-> dump a few KB.
-For ath10k, we do not want to dump content which size > 1024.
-otherwise it will generate a much big file while collecting log, it make 
-us much
-hard to analyze the log.
-so this patch is to dump the top 1024 bytes only,
-its 1st goal is make log smaller.
-its 2nd effect is fix the crash issue,
-> 
-> Brian
-> 
->>  drivers/net/wireless/ath/ath10k/debug.c | 2 +-
->>  drivers/net/wireless/ath/ath10k/debug.h | 2 ++
->>  2 files changed, 3 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/debug.c 
->> b/drivers/net/wireless/ath/ath10k/debug.c
->> index e8250a665433..5433dbdde0e5 100644
->> --- a/drivers/net/wireless/ath/ath10k/debug.c
->> +++ b/drivers/net/wireless/ath/ath10k/debug.c
->> @@ -2718,7 +2718,7 @@ void ath10k_dbg_dump(struct ath10k *ar,
->> 
->>         /* tracing code doesn't like null strings :/ */
->>         trace_ath10k_log_dbg_dump(ar, msg ? msg : "", prefix ? prefix 
->> : "",
->> -                                 buf, len);
->> +                                 buf, min_t(size_t, len, 
->> ATH10K_LOG_DUMP_MAX));
->>  }
->>  EXPORT_SYMBOL(ath10k_dbg_dump);
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/debug.h 
->> b/drivers/net/wireless/ath/ath10k/debug.h
->> index 997c1c80aba7..cec9ba92f28f 100644
->> --- a/drivers/net/wireless/ath/ath10k/debug.h
->> +++ b/drivers/net/wireless/ath/ath10k/debug.h
->> @@ -11,6 +11,8 @@
->>  #include <linux/types.h>
->>  #include "trace.h"
->> 
->> +#define ATH10K_LOG_DUMP_MAX 1024
->> +
->>  enum ath10k_debug_mask {
->>         ATH10K_DBG_PCI          = 0x00000001,
->>         ATH10K_DBG_WMI          = 0x00000002,
->> --
->> 2.23.0
->> 
->> 
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
+On Tue, Feb 9, 2021 at 6:12 PM Wen Gong <wgong@codeaurora.org> wrote:
+> On 2021-02-10 03:35, Brian Norris wrote:
+> so this patch is to dump the top 1024 bytes only,
+> its 1st goal is make log smaller.
+
+Agreed. I wasn't objecting to this patch. I just wanted to highlight
+the second part should probably also be considered as not exclusively
+an ath10k bug:
+
+> its 2nd effect is fix the crash issue,
+
+but I guess if you're not testing the latest upstream, it's a little
+hard to tell for sure whether the crash still exist at all anyway...
+
+Brian
 
 _______________________________________________
 ath10k mailing list
