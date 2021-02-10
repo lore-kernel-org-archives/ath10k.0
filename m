@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7530C433E6
-	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 15:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE7C1C433E0
+	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 16:13:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FB8F64D99
-	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 15:57:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FB8F64D99
+	by mail.kernel.org (Postfix) with ESMTPS id A28BD64E6B
+	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 16:13:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A28BD64E6B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,68 +23,69 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Q4Z4lYqCEIPrrtzWiyjdQ0K0bfTVDaOw/vmizwica1M=; b=e+zldPHXhG9bq1D7sdhmXfPAV
-	Y5s5LIrB4L194XbJYtVv6iKAZvaHUc0Uzt3/jgqLBuU087e9jQt4/QcKs0NrGcGZ9p9aQlCyHQuaP
-	r8QoGvQ0UOcNAYkYMcN0T9sWbiFkWWZhjQzQOKbNEaUfg9whJ0qcV2geCLSxwpEaHq/v87IK2E6SO
-	W2dJtks/GVWRYb71L6pgeSQIKU6S0zkIe0M8WgpLSid34IgjivVlRtDHgGSYHEO3a3YaKBpSYovGW
-	rJubnJbu2XVknaREuskhaSIlxaJM7fdPiPOwJqKy7JI6jgsvON9iX4KZ2fLAMQCEhWGfAQd9gmzPJ
-	Hp0mRc1Ow==;
+	 bh=0agZMXUlExmchsUNIskYD1edJ6BQWcn2t+H8GyFIoFw=; b=Zn9XDHtEKHein4MUBFDqAkiyy
+	amtR7TllfYR2viTDy6mb6lXCXwAZt1C09ZlkMNUGmwC12J9+Krl04OSQFyE5tNXykGfjHcU3JEovn
+	/OQU/UaLVV3dKuM3+PJ4/EU1WRP6vaLfL2TXIFY4oCDeWTRoWWeQGeXcQDOQB75jb0doC38ywRZFz
+	TxngKjZ91fXjq8M4UY+9pR4IzqK11pKJAnf6UxRHSOyqDEJbNis1ew2Lv9l8yXMUsmwPeED8G315T
+	of20R60BI/GEahShoQZJD/TxqKUfsgOLBTWMfWOvcO64hu8gENajOIwb2hiW03V7jaPBPWJxlzku+
+	YTladUZQQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9rrb-0004EP-5g; Wed, 10 Feb 2021 15:57:11 +0000
-Received: from mail-oi1-x233.google.com ([2607:f8b0:4864:20::233])
+	id 1l9s77-0005mx-4t; Wed, 10 Feb 2021 16:13:13 +0000
+Received: from mail-il1-x129.google.com ([2607:f8b0:4864:20::129])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9rrY-0004E1-FQ
- for ath10k@lists.infradead.org; Wed, 10 Feb 2021 15:57:09 +0000
-Received: by mail-oi1-x233.google.com with SMTP id l19so2513150oih.6
- for <ath10k@lists.infradead.org>; Wed, 10 Feb 2021 07:57:07 -0800 (PST)
+ id 1l9s75-0005mZ-0d
+ for ath10k@lists.infradead.org; Wed, 10 Feb 2021 16:13:11 +0000
+Received: by mail-il1-x129.google.com with SMTP id g9so2339904ilc.3
+ for <ath10k@lists.infradead.org>; Wed, 10 Feb 2021 08:13:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=linuxfoundation.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=yBNnyv08MV67kjLVdIyECXp/12nd8XUPVrYdyrWhw80=;
- b=aFtU6sU+k/QSlSdVczSVRwOa0OQYlIlkXqMs8fmabdtJ2KTico+vi2Tvo6qwHZLnym
- awEH55Dkft9hl2Cvo8lXT6HbyykMuW5CWx3rLl8p6rZF+ivhmxX+1PIWk5gsP9IszVJ3
- vGYsSGf8V0ZGchdfQfdsp//KlKjC7PQrLvwQc=
+ bh=Sc0vbOHbxfn9JzOXGmtKhPpSM5gmhu52/wuwtc+m/jk=;
+ b=CQnI1cl/+RKOawcv1Cq/crfluAy6RYgUTGSmnwgRf/BdAc8rwoz1UigSks3ySZ3Bq0
+ XdSK4+gbQO6pBfnb+vvMEFG7JAT4MoYceD9fnSOfyIUTRbFyETH8LbTRcNIdzfUjp3uB
+ Y/2d/s5Tk1iNGW4xM8YKag3uhttUehCoZQ8NM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=yBNnyv08MV67kjLVdIyECXp/12nd8XUPVrYdyrWhw80=;
- b=I2w2lgwNXSOduN1RLC+vzBOaPVse3/Hk99o5scsoRGUkNyU8bmaJqbfbeoPg0Q5HB6
- HtSCn1PjSTdhq12ZvYdV/scq82htZnauvonhXoum3do7VmAVCXQbL1zXyOOM1BLqCJfD
- KPIGJ+8Q1scm2h3xaKlO2MX8OVzLyqg8BaLvC1Jqx9jBKT0KZcQ+ojUkQGJJWWPGLbPN
- td+EAt6wbq3UKP8qlUwWiU1+7KKR7hliGqT6g9vasj9D/Sx/6phXnC4kDmlZwnXawDdU
- VL7z54uPcADsJFR3HMrR0IYXLxQoFOb45BuW7d2B3CVNrimGJGfdYUeCMXHtmZls7S7X
- wPiQ==
-X-Gm-Message-State: AOAM531/BbrxZHcuxfs6c5TeIhz/KlfFN6kGHK5IGa6rSzzEiCj0lx65
- fIMKXqjqQ1DwkwxteFipL/4ncz+hJtpGMA==
-X-Google-Smtp-Source: ABdhPJzXHwwIMWKtGJtYSb8Q3H0yElai/XdDilRjxI2noBBZcfvp6wpRhAliH3x0TRTylvoapvE4PA==
-X-Received: by 2002:a05:6808:10f:: with SMTP id
- b15mr2584739oie.92.1612972626194; 
- Wed, 10 Feb 2021 07:57:06 -0800 (PST)
+ bh=Sc0vbOHbxfn9JzOXGmtKhPpSM5gmhu52/wuwtc+m/jk=;
+ b=TDc7Cqzl1vO0eSHWpYCYbHxWUQncg6A5gVlpyyr8FuiAFdn2R7ZcMDlyA7MmVHVc8H
+ v1Cp0oCsA7PuDIFmxlMUuIn+dQVPr/kGOtehY9FD0vEaxw2TOcgOYEsdXubvJjMcqd0g
+ YUdKCIHlIL7pm+6T4E2Y/lSXG3BBvu9/OLDBVn3/yFggT+mx+4YfB6Pd68Or5KJhHybX
+ Y922LcUdbmOy00vY5YhhP0s58puxNRFFRCUZMH+labS3Z8pXuppGymNrpxqNF8BL40Iu
+ fx1JN5ex+1zSXAJARotY1G+WHg6XoDajyLdqVju6ouA8lddFp1msDGb2j0ilb9m/p6oV
+ oIeA==
+X-Gm-Message-State: AOAM53362luJeVUVtUZR3ZajCXSco/ZAU8J5u2TXnnl6ysO8DV80CV3V
+ 5XLZGBuzIyhJ0v3LG76CDMGaOw==
+X-Google-Smtp-Source: ABdhPJxqFfEGP4eD56gpzU1NU9/JmnxIk/kszmquParxawZ26pe0lwC7X5CNw3qHfJ8ZwuPYQRSp3A==
+X-Received: by 2002:a05:6e02:1bec:: with SMTP id
+ y12mr1694292ilv.214.1612973588981; 
+ Wed, 10 Feb 2021 08:13:08 -0800 (PST)
 Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net.
  [24.9.64.241])
- by smtp.gmail.com with ESMTPSA id r13sm435237oot.41.2021.02.10.07.57.05
+ by smtp.gmail.com with ESMTPSA id i6sm1217646ilq.51.2021.02.10.08.13.08
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 10 Feb 2021 07:57:05 -0800 (PST)
-Subject: Re: [PATCH 4/5] ath10k: detect conf_mutex held ath10k_drain_tx() calls
-To: Kalle Valo <kvalo@codeaurora.org>
+ Wed, 10 Feb 2021 08:13:08 -0800 (PST)
+Subject: Re: [PATCH 5/5] ath10k: reduce invalid ht params rate message noise
+To: Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
 References: <cover.1612915444.git.skhan@linuxfoundation.org>
- <a980abfb143f5240375f3f1046f0f26971c695e6.1612915444.git.skhan@linuxfoundation.org>
- <87lfbwtjls.fsf@codeaurora.org>
+ <76a816d983e6c4d636311738396f97971b5523fb.1612915444.git.skhan@linuxfoundation.org>
+ <5c31f6dadbcc3dcb19239ad2b6106773@codeaurora.org>
+ <87h7mktjgi.fsf@codeaurora.org>
 From: Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d6d8c7b8-f69d-01ef-6d66-8a33ea98920f@linuxfoundation.org>
-Date: Wed, 10 Feb 2021 08:57:04 -0700
+Message-ID: <db4cd172-6121-a0b7-6c3f-f95baae1c1ed@linuxfoundation.org>
+Date: Wed, 10 Feb 2021 09:13:07 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <87lfbwtjls.fsf@codeaurora.org>
+In-Reply-To: <87h7mktjgi.fsf@codeaurora.org>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210210_105708_683637_A559F4E8 
-X-CRM114-Status: GOOD (  22.09  )
+X-CRM114-CacheID: sfid-20210210_111311_133405_60ABFC65 
+X-CRM114-Status: GOOD (  22.24  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,72 +105,96 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2/10/21 1:25 AM, Kalle Valo wrote:
-> Shuah Khan <skhan@linuxfoundation.org> writes:
+On 2/10/21 1:28 AM, Kalle Valo wrote:
+> Wen Gong <wgong@codeaurora.org> writes:
 > 
->> ath10k_drain_tx() must not be called with conf_mutex held as workers can
->> use that also. Add check to detect conf_mutex held calls.
+>> On 2021-02-10 08:42, Shuah Khan wrote:
+>>> ath10k_mac_get_rate_flags_ht() floods dmesg with the following
+>>> messages,
+>>> when it fails to find a match for mcs=7 and rate=1440.
+>>>
+>>> supported_ht_mcs_rate_nss2:
+>>> {7,  {1300, 2700, 1444, 3000} }
+>>>
+>>> ath10k_pci 0000:02:00.0: invalid ht params rate 1440 100kbps nss 2
+>>> mcs 7
+>>>
+>>> dev_warn_ratelimited() isn't helping the noise. Use dev_warn_once()
+>>> instead.
+>>>
+>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>> ---
+>>>   drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
+>>> b/drivers/net/wireless/ath/ath10k/mac.c
+>>> index 3545ce7dce0a..276321f0cfdd 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>> @@ -8970,8 +8970,9 @@ static void ath10k_mac_get_rate_flags_ht(struct
+>>> ath10k *ar, u32 rate, u8 nss, u8
+>>>   		*bw |= RATE_INFO_BW_40;
+>>>   		*flags |= RATE_INFO_FLAGS_SHORT_GI;
+>>>   	} else {
+>>> -		ath10k_warn(ar, "invalid ht params rate %d 100kbps nss %d mcs %d",
+>>> -			    rate, nss, mcs);
+>>> +		dev_warn_once(ar->dev,
+>>> +			      "invalid ht params rate %d 100kbps nss %d mcs %d",
+>>> +			      rate, nss, mcs);
+>>>   	}
+>>>   }
 >>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>> The {7,  {1300, 2700, 1444, 3000} } is a correct value.
+>> The 1440 is report from firmware, its a wrong value, it has fixed in
+>> firmware.
 > 
-> The commit log does not answer to "Why?". How did you find this? What
-> actual problem are you trying to solve?
-> 
-
-I came across the comment block above the ath10k_drain_tx() as I was
-reviewing at conf_mutex holds while I was debugging the conf_mutex
-lock assert in ath10k_debug_fw_stats_request().
-
-My reasoning is that having this will help detect incorrect usages
-of ath10k_drain_tx() while holding conf_mutex which could lead to
-locking problems when async worker routines try to call this routine.
-
->> ---
->>   drivers/net/wireless/ath/ath10k/mac.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index 53f92945006f..3545ce7dce0a 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -4566,6 +4566,7 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
->>   /* Must not be called with conf_mutex held as workers can use that also. */
->>   void ath10k_drain_tx(struct ath10k *ar)
->>   {
->> +	WARN_ON(lockdep_is_held(&ar->conf_mutex));
-> 
-> Empty line after WARN_ON().
+> In what version?
 > 
 
-Will do.
+Here is the info:
 
-> Shouldn't this check debug_locks similarly lockdep_assert_held() does?
+ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 
+0x00340aff sub 17aa:0827
+
+ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00140-QCARMSWPZ-1 
+api 6 features wowlan,ignore-otp,mfp crc32 29eb8ca1
+
+ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 4ac0889b
+
+ath10k_pci 0000:02:00.0: htt-ver 3.60 wmi-op 4 htt-op 3 cal otp max-sta 
+32 raw 0 hwcrypto 1
+
+>> If change it to dev_warn_once, then it will have no chance to find the
+>> other wrong values which report by firmware, and it indicate
+>> a wrong value to mac80211/cfg80211 and lead "iw wlan0 station dump"
+>> get a wrong bitrate.
 > 
-> #define lockdep_assert_held(l)	do {				\
-> 		WARN_ON(debug_locks && !lockdep_is_held(l));	\
-> 	} while (0)
-> 
-> And I suspect you need #ifdef CONFIG_LOCKDEP which should fix the kbuild
-> bot error.
-> 
 
-Yes.
+Agreed.
 
-> But honestly I would prefer to have lockdep_assert_not_held() in
-> include/linux/lockdep.h, much cleaner that way. Also
-> i915_gem_object_lookup_rcu() could then use the same macro.
+> I agree, we should keep this warning. If the firmware still keeps
+> sending invalid rates we should add a specific check to ignore the known
+> invalid values, but not all of them.
 > 
 
-Right. This is the right way to go. That was first instinct and
-decided to have the discussion evolve in that direction. Now that
-it has, I will combine this change with
-include/linux/lockdep.h and add lockdep_assert_not_held()
+Would it be helpful to adjust the default rate limits and set the to
+a higher value instead. It might be difficult to account all possible
+invalid values?
 
-I think we might have other places in the kernel that could use
-lockdep_assert_not_held() in addition to i915_gem_object_lookup_rcu()
+Something like, ath10k_warn_ratelimited() to adjust the
+
+DEFAULT_RATELIMIT_INTERVAL and DEFAULT_RATELIMIT_BURST using
+DEFINE_RATELIMIT_STATE
+
+Let me know if you like this idea. I can send a patch in to do this.
+I will hang on to this firmware version for a little but longer, so
+we have a test case. :)
 
 thanks,
 -- Shuah
+
+
 
 _______________________________________________
 ath10k mailing list
