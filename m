@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46DBCC433E6
-	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 16:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 755FAC433E0
+	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 16:22:53 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA8E864E6B
-	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 16:21:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA8E864E6B
+	by mail.kernel.org (Postfix) with ESMTPS id 2441264E25
+	for <ath10k@archiver.kernel.org>; Wed, 10 Feb 2021 16:22:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2441264E25
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,67 +23,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=xxqzMdfRLlQUJEVxh1tgXDDTluadz2QPharJ80ksGJE=; b=EwBzygjl4fQM+GTZmuK5JbCdX
-	tELYZUAVrigMrgBroGQ0VS3KZa4oE8k7kEmJmymicz8ErmW9fIUW+l/P/ox3ksXRRpYrsRDCPcJ/q
-	vAmXE8VFCLYtfcczgCObhpZaeNdTQxMkBlBQedkL342iUAfnf7KMIsWq6fKT0NX48vG4T/UhJ7OWf
-	h9RBnoqhNOAmlP5UtgPifKZEw0ZVZnAyX144iihm1wmWqFbhraAtBXUD6jxHQEsLP4ri7iwYkmzTh
-	1Di7fCzt5KjUAGB+W6gT3QPpAmihbT4yfw+TPOseRW9ZbKiCwEVXqNIRLjr590IlIigcNKJzlwRiO
-	oXsTR1jtg==;
+	 bh=TP5Vh/VpWObC8Dl0RyuhQTjH4SnEY++DozRFB9D5/8g=; b=RDdPxi6QEqUwXOMprVwIjO2Mh
+	FORs6FjczWisZ1f9Ik5aQ6YERkbm74p9vZsRWAUVrpefRyse6b2q+rfYtWaHbujCT0tqa2yeYvQiE
+	llimlgs2jwq4AV9EtMtEuGXIwESc3JAARlcg0CErsE2wIxotBXdrxW48W1na4iksxZ3X1ueDoXKjq
+	u6Rj2WK1lMhFSdVUIulBtff3f9U/O1xIZYA3rqOTrRadn6JG+Cn5Sk8tpftN9xKNk2BHcZhlkYwRE
+	ZjFg9gQfpH/ZvCAfaRHXcV6bThZSb/ruYFOs2DQASWmR9xhZ8XYDYB6sJaczWhEjvVn4AT1tJVJHy
+	5d5ajc4Dw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9sFC-0006gs-OG; Wed, 10 Feb 2021 16:21:34 +0000
-Received: from mail-il1-x12c.google.com ([2607:f8b0:4864:20::12c])
+	id 1l9sGP-0006r1-P1; Wed, 10 Feb 2021 16:22:49 +0000
+Received: from mail-il1-x133.google.com ([2607:f8b0:4864:20::133])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9sF9-0006fx-Up
- for ath10k@lists.infradead.org; Wed, 10 Feb 2021 16:21:33 +0000
-Received: by mail-il1-x12c.google.com with SMTP id o7so2382749ils.2
- for <ath10k@lists.infradead.org>; Wed, 10 Feb 2021 08:21:31 -0800 (PST)
+ id 1l9sGL-0006pb-TR
+ for ath10k@lists.infradead.org; Wed, 10 Feb 2021 16:22:46 +0000
+Received: by mail-il1-x133.google.com with SMTP id e1so2394532ilu.0
+ for <ath10k@lists.infradead.org>; Wed, 10 Feb 2021 08:22:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=linuxfoundation.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=6yXKjsN1ka+2Uf+fhuWUwyAZEKGHcH+AM6Ok5R7l2IA=;
- b=ZD7qNj0/qiurT5I91xkCFuk2ZPqk+UWwJEOjygOAUvONVgHkt/R4W1QbyBH/rJjtE4
- E+xzQkw98OYFUqAY1C2tcUwClhFAVJ8NUJ/Py2B9JI6QWovPexwMXgU30ajnhhjXFRj7
- m0J4QSN10DdQY4o3tD74Bes+CxwJqY9OCheJk=
+ bh=JSh8ExYxdty8HZ11KujafrMp7iovLQF4x5Wy4WPKtFY=;
+ b=MqBF5ZEr+daNm21Pgbp5M3xc3FrA2e2xhHAo0Dk1bkOF988nmvj/JIs0ba1jcPJ203
+ rl6mzOsv2xikvam4uDDIWkXM2lxulDO5Pw/Sz92l1FqLWb4bICKwNCirxhULXoxgy6w7
+ RnfuncRvRYQFUiRv98y3Apa/O2gIu6jPfC9xo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=6yXKjsN1ka+2Uf+fhuWUwyAZEKGHcH+AM6Ok5R7l2IA=;
- b=fw8HpJkmajKTn9H+t5rp4nwqhK/CS8u2KK46f8D4V+/A72LhvfxUUKFmPwHmezG6rX
- Vadxjnx/WIwXJowaMI0DdxCX1WRAzF3Z1gRlR4LgFmhcPABiQSjihGHkmzHhasVFOz8/
- BHuNcadBirEgOFa9Eps85NJM+O9OGFC4iuwdgByVM6GWgxhVP0kYTHY9NZDW6jBRAdqb
- kVoU3eD2oC7ijf2ftao5Gsmkw9bVZItZ7+9tKsmhUXpVARpF/8PvlzNlPUb/dtA9ufMp
- 4GDs3sQB9ZoAtCW8BPcn2RESF5YE1Z3aAFm9j7bvTcN1SSiUqEaoac+RakPLseCn0IZ/
- xmwg==
-X-Gm-Message-State: AOAM533pFnHp0QCNaqpLLrnTHJ09zCZLIT86Vdk1bCasW5az/0aUW4kz
- rRlUqAiN9ljLE/72ZVpjdZDNKg==
-X-Google-Smtp-Source: ABdhPJwFoPNwp2dKSESSIhUH4JNUpb2aVVXoVj2FhH8+5ai3LgyD1SkadM7uZbq9E23FrecOZnxXiA==
-X-Received: by 2002:a92:b744:: with SMTP id c4mr1725790ilm.175.1612974089545; 
- Wed, 10 Feb 2021 08:21:29 -0800 (PST)
+ bh=JSh8ExYxdty8HZ11KujafrMp7iovLQF4x5Wy4WPKtFY=;
+ b=fSDatAmxb38qPDbQlAClOD1ggsNPsf0oy3CoovIuxlor1YvkK3/ZxxiQnYA66FJJ9q
+ IBHWXlD49VmjfAnsrwgcowqCfXVCQ7WNIU+C5uKo/fhaZN4m0JS7TfHR1+3JoZp7mSvZ
+ KKa6peBVYHB5D8hkm0BotRdCxY5ynYHAMgNnKRddlR0Wl7hgdnTiW3mIQprrbSjGKgQ+
+ xjQ/MwKWZ42pGpsMSnI+BMNnXyHWIpWV7YtsPQs0Xhgoc+s9nhKR3q/U1jXgMM6KrhuJ
+ MK91fM4c8HuVC/oac+fORjMyh+M1mnTj9Vze7m372QtrSi+XEirRXJKHZuYiS9TfHSmf
+ /ujw==
+X-Gm-Message-State: AOAM530ap6MdbqD2rJg2UpyjW7ryyedroIPULfquuu6mPIQam6yV0sr5
+ zo88y5xqyUD8F7vXeqAJNvcUiw==
+X-Google-Smtp-Source: ABdhPJzXyC8AmV48saKbwVck5pzWW/8Ry9H6e0li1SH7HuPENRqrnsNCXgsFgCru0G3RWsdbnHR4Nw==
+X-Received: by 2002:a92:dcc6:: with SMTP id b6mr1836908ilr.295.1612974163736; 
+ Wed, 10 Feb 2021 08:22:43 -0800 (PST)
 Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net.
  [24.9.64.241])
- by smtp.gmail.com with ESMTPSA id g6sm1219735ilf.3.2021.02.10.08.21.28
+ by smtp.gmail.com with ESMTPSA id k11sm1129540iop.45.2021.02.10.08.22.43
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 10 Feb 2021 08:21:29 -0800 (PST)
-Subject: Re: [PATCH 1/5] ath10k: fix conf_mutex lock assert in
- ath10k_debug_fw_stats_request()
+ Wed, 10 Feb 2021 08:22:43 -0800 (PST)
+Subject: Re: [PATCH 2/5] ath10k: fix WARNING: suspicious RCU usage
 To: Kalle Valo <kvalo@codeaurora.org>
-References: <1c38ef6d39ed89a564bc817d964d923ff0676c53.1612915444.git.skhan@linuxfoundation.org>
- <20210210080915.8A81AC433C6@smtp.codeaurora.org>
+References: <23a1333dfb0367cc69e7177a2e373df0b6d42980.1612915444.git.skhan@linuxfoundation.org>
+ <20210210081320.2FBE5C433CA@smtp.codeaurora.org>
 From: Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <627512c6-7008-a1a0-fb04-e7e1d41e8cbe@linuxfoundation.org>
-Date: Wed, 10 Feb 2021 09:21:28 -0700
+Message-ID: <7230c9e5-2632-b77e-c4f9-10eca557a5bb@linuxfoundation.org>
+Date: Wed, 10 Feb 2021 09:22:42 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210210080915.8A81AC433C6@smtp.codeaurora.org>
+In-Reply-To: <20210210081320.2FBE5C433CA@smtp.codeaurora.org>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210210_112132_042282_D17C7364 
-X-CRM114-Status: GOOD (  12.27  )
+X-CRM114-CacheID: sfid-20210210_112245_986534_C5387EAE 
+X-CRM114-Status: GOOD (  17.16  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,94 +102,81 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2/10/21 1:09 AM, Kalle Valo wrote:
+On 2/10/21 1:13 AM, Kalle Valo wrote:
 > Shuah Khan <skhan@linuxfoundation.org> wrote:
 > 
->> ath10k_debug_fw_stats_request() is called ath10k_sta_statistics()
->> without holding conf_mutex. ath10k_debug_fw_stats_request() simply
->> returns when CONFIG_ATH10K_DEBUGFS is disabled.
+>> ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
+>> the resulting pointer is only valid under RCU lock as well.
 >>
->> When CONFIG_ATH10K_DEBUGFS is enabled, ath10k_debug_fw_stats_request()
->> code path isn't protected. This assert is triggered when CONFIG_LOCKDEP
->> and CONFIG_ATH10K_DEBUGFS are enabled.
+>> Fix ath10k_wmi_tlv_parse_peer_stats_info() to hold RCU lock before it
+>> calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
+>> pointer is no longer needed. The log below shows the problem.
 >>
->> All other ath10k_debug_fw_stats_request() callers hold conf_mutex.
->> Fix ath10k_sta_statistics() to do the same.
+>> While at it, fix ath10k_wmi_tlv_op_pull_peer_stats_info() to do the same.
 >>
->> WARNING: CPU: 5 PID: 696 at drivers/net/wireless/ath/ath10k/debug.c:357 ath10k_debug_fw_stats_request+0x29a/0x2d0 [ath10k_core]
->> Modules linked in: rfcomm ccm fuse cmac algif_hash algif_skcipher af_alg bnep binfmt_misc nls_iso8859_1 intel_rapl_msr intel_rapl_common snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hda_core snd_hwdep snd_pcm amdgpu snd_seq_midi snd_seq_midi_event snd_rawmidi edac_mce_amd snd_seq ath10k_pci ath10k_core aesni_intel gpu_sched drm_ttm_helper btusb ttm glue_helper crypto_simd btrtl ath cryptd drm_kms_helper snd_seq_device btbcm snd_timer rapl btintel cec i2c_algo_bit mac80211 bluetooth fb_sys_fops input_leds ecdh_generic snd wmi_bmof syscopyarea ecc serio_raw efi_pstore ccp k10temp sysfillrect soundcore sysimgblt snd_pci_acp3x cfg80211 ipmi_devintf libarc4 ipmi_msghandler mac_hid sch_fq_codel parport_pc ppdev lp parport drm ip_tables x_tables autofs4 hid_generic usbhid hid crc32_pclmul psmouse ahci nvme libahci i2c_piix4 nvme_core r8169 realtek wmi video
->> CPU: 5 PID: 696 Comm: NetworkManager Tainted: G        W         5.11.0-rc7+ #20
+>> =============================
+>> WARNING: suspicious RCU usage
+>> 5.11.0-rc7+ #20 Tainted: G        W
+>> -----------------------------
+>> include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
+>> other info that might help us debug this:
+>>                 rcu_scheduler_active = 2, debug_locks = 1
+>> no locks held by ksoftirqd/5/44.
+>>
+>> stack backtrace:
+>> CPU: 5 PID: 44 Comm: ksoftirqd/5 Tainted: G        W         5.11.0-rc7+ #20
 >> Hardware name: LENOVO 10VGCTO1WW/3130, BIOS M1XKT45A 08/21/2019
->> RIP: 0010:ath10k_debug_fw_stats_request+0x29a/0x2d0 [ath10k_core]
->> Code: 83 c4 10 44 89 f8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 48 8d bf e8 20 00 00 be ff ff ff ff e8 de 2d 47 fa 85 c0 0f 85 8d fd ff ff <0f> 0b e9 86 fd ff ff 41 bf a1 ff ff ff 44 89 fa 48 c7 c6 2c 71 c4
->> RSP: 0018:ffffaffbc124b7d0 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: ffff93d02e4fec70 RCX: 0000000000000001
->> RDX: 0000000000000000 RSI: ffff93d00cba5248 RDI: ffff93d00ab309a0
->> RBP: ffffaffbc124b808 R08: 0000000000000000 R09: ffff93d02e4fec70
->> R10: 0000000000000001 R11: 0000000000000246 R12: ffff93d00cba3160
->> R13: ffff93d00cba3160 R14: ffff93d02e4fe4f0 R15: 0000000000000001
->> FS:  00007f7ce8d50bc0(0000) GS:ffff93d137d40000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007fc3595ad160 CR3: 000000010d492000 CR4: 00000000003506e0
 >> Call Trace:
->>   ? sta_info_get_bss+0xeb/0x1f0 [mac80211]
->>   ath10k_sta_statistics+0x4f/0x280 [ath10k_core]
->>   sta_set_sinfo+0xda/0xd20 [mac80211]
->>   ieee80211_get_station+0x58/0x80 [mac80211]
->>   nl80211_get_station+0xbd/0x340 [cfg80211]
->>   genl_family_rcv_msg_doit+0xe7/0x150
->>   genl_rcv_msg+0xe2/0x1e0
->>   ? nl80211_dump_station+0x3a0/0x3a0 [cfg80211]
->>   ? nl80211_send_station+0xef0/0xef0 [cfg80211]
->>   ? genl_get_cmd+0xd0/0xd0
->>   netlink_rcv_skb+0x55/0x100
->>   genl_rcv+0x29/0x40
->>   netlink_unicast+0x1a8/0x270
->>   netlink_sendmsg+0x253/0x480
->>   sock_sendmsg+0x65/0x70
->>   ____sys_sendmsg+0x219/0x260
->>   ? __import_iovec+0x32/0x170
->>   ___sys_sendmsg+0xb7/0x100
->>   ? end_opal_session+0x39/0xd0
->>   ? __fget_files+0xe0/0x1d0
->>   ? find_held_lock+0x31/0x90
->>   ? __fget_files+0xe0/0x1d0
->>   ? __fget_files+0x103/0x1d0
->>   ? __fget_light+0x32/0x80
->>   __sys_sendmsg+0x5a/0xa0
->>   ? syscall_enter_from_user_mode+0x21/0x60
->>   __x64_sys_sendmsg+0x1f/0x30
->>   do_syscall_64+0x38/0x50
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> RIP: 0033:0x7f7cea2c791d
->> Code: 28 89 54 24 1c 48 89 74 24 10 89 7c 24 08 e8 4a ee ff ff 8b 54 24 1c 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 44 24 08 e8 9e ee ff ff 48
->> RSP: 002b:00007ffedf612a30 EFLAGS: 00000293 ORIG_RAX: 000000000000002e
->> RAX: ffffffffffffffda RBX: 00005618c4cfec00 RCX: 00007f7cea2c791d
->> RDX: 0000000000000000 RSI: 00007ffedf612a80 RDI: 000000000000000b
->> RBP: 00007ffedf612a80 R08: 0000000000000000 R09: 00005618c4e74000
->> R10: 00005618c4da0590 R11: 0000000000000293 R12: 00005618c4cfec00
->> R13: 00005618c4cfe2c0 R14: 00007f7cea32ef80 R15: 00005618c4cff340
->> irq event stamp: 520897
->> hardirqs last  enabled at (520903): [<ffffffffba501cc5>] console_unlock+0x4e5/0x5d0
->> hardirqs last disabled at (520908): [<ffffffffba501c38>] console_unlock+0x458/0x5d0
->> softirqs last  enabled at (520722): [<ffffffffbb201002>] asm_call_irq_on_stack+0x12/0x20
->> softirqs last disabled at (520717): [<ffffffffbb201002>] asm_call_irq_on_stack+0x12/0x20
+>>   dump_stack+0x7d/0x9f
+>>   lockdep_rcu_suspicious+0xdb/0xe5
+>>   __rhashtable_lookup+0x1eb/0x260 [mac80211]
+>>   ieee80211_find_sta_by_ifaddr+0x5b/0xc0 [mac80211]
+>>   ath10k_wmi_tlv_parse_peer_stats_info+0x3e/0x90 [ath10k_core]
+>>   ath10k_wmi_tlv_iter+0x6a/0xc0 [ath10k_core]
+>>   ? ath10k_wmi_tlv_op_pull_mgmt_tx_bundle_compl_ev+0xe0/0xe0 [ath10k_core]
+>>   ath10k_wmi_tlv_op_rx+0x5da/0xda0 [ath10k_core]
+>>   ? trace_hardirqs_on+0x54/0xf0
+>>   ? ath10k_ce_completed_recv_next+0x4e/0x60 [ath10k_core]
+>>   ath10k_wmi_process_rx+0x1d/0x40 [ath10k_core]
+>>   ath10k_htc_rx_completion_handler+0x115/0x180 [ath10k_core]
+>>   ath10k_pci_process_rx_cb+0x149/0x1b0 [ath10k_pci]
+>>   ? ath10k_htc_process_trailer+0x2d0/0x2d0 [ath10k_core]
+>>   ? ath10k_pci_sleep.part.0+0x6a/0x80 [ath10k_pci]
+>>   ath10k_pci_htc_rx_cb+0x15/0x20 [ath10k_pci]
+>>   ath10k_ce_per_engine_service+0x61/0x80 [ath10k_core]
+>>   ath10k_ce_per_engine_service_any+0x7d/0xa0 [ath10k_core]
+>>   ath10k_pci_napi_poll+0x48/0x120 [ath10k_pci]
+>>   net_rx_action+0x136/0x500
+>>   __do_softirq+0xc6/0x459
+>>   ? smpboot_thread_fn+0x2b/0x1f0
+>>   run_ksoftirqd+0x2b/0x60
+>>   smpboot_thread_fn+0x116/0x1f0
+>>   kthread+0x14b/0x170
+>>   ? smpboot_register_percpu_thread+0xe0/0xe0
+>>   ? __kthread_bind_mask+0x70/0x70
+>>   ret_from_fork+0x22/0x30
 >>
 >> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 > 
-> Bad timing, just yesterday I applied an identical patch:
+> Unlucky timing also on this one, it conflicts with a patch I applied yesterday:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=2615e3cdbd9c0e864f5906279c952a309871d225
+> 
+> Can you redo the patch to only change ath10k_wmi_event_tdls_peer()?
 > 
 
-Yes it is.
+Yes. I will send the patch just for ath10k_wmi_event_tdls_peer()
+on top of your patch.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=7df28718928d08034b36168200d67b558ce36f3d
+> error: patch failed: drivers/net/wireless/ath/ath10k/wmi-tlv.c:240
+> error: drivers/net/wireless/ath/ath10k/wmi-tlv.c: patch does not apply
+> stg import: Diff does not apply cleanly
 > 
-
-No worries. I will apply yours to my repo
+> Patch set to Changes Requested.
+> 
 
 thanks,
 -- Shuah
-
 
 _______________________________________________
 ath10k mailing list
