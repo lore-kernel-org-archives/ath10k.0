@@ -2,82 +2,90 @@ Return-Path: <SRS0=C/UJ=HN=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C83ADC433E0
-	for <ath10k@archiver.kernel.org>; Thu, 11 Feb 2021 18:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A74C433DB
+	for <ath10k@archiver.kernel.org>; Thu, 11 Feb 2021 20:54:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7498264E5F
-	for <ath10k@archiver.kernel.org>; Thu, 11 Feb 2021 18:27:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7498264E5F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id F1C1164E33
+	for <ath10k@archiver.kernel.org>; Thu, 11 Feb 2021 20:54:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1C1164E33
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Date:Message-Id:To:References:In-Reply-To:From:
-	Subject:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Z8XkvnvFC/zdklMWTWu4MVuF6UgbPfbzX2WoALQm2Bc=; b=IqgEB5K5RDf0xs0vLiqpMCaob
-	hkOd9aSuzNlnYToi7MgGEbn79Tsh3DPJROLpMKfT8k9OQb4NjZIcTrT4BQIJuu1ydx4stnOh578x3
-	RdeEIeJexvvUQmtcn37dUQNNoeKTNMLjuyrV1zsViOrzOjc2TIIJMM5K05HQm9cCS/qq4aSKej3Be
-	aFRHQnSgFZO8jcUnjJzb+0qlqIMmyRAFu/mu2R6BRwLcEpLToNGZR8LC6MdB58i+ghe8aMN5QGNmp
-	thpUuGLtshbChFJLzBLC6rLeKF2TQBIw6MKGlxKjlQ2v99mFbyq42+Q/XYa0xkioCtHDWoTU/o4rn
-	1M9qI7Kxg==;
+	 bh=MuFUQGF8cz5/Z9kV6CvNOQ3GuHlumOOVE9FwhxNG8Co=; b=VCVnFGu2oRp6legwSFNR1AaRH
+	i50XbqRp/VCBDXOKSieklwxWdxSIfbFbZUECa6cTvjQvHOc5OgsLgh+ywe9J1r43PP6mXOsGmBcV4
+	D+E5BhYtgRF/NG/OhsysSGvSHSBzpxpTZ0uqDjVmSrmDvFPKizsFCZhL0bTT2i5OUCnKa5yvLZ4CX
+	uiZciIfmOUb71l/sEqjM2MRs+Yx5dmF2L3n7zw0S7K9MKQdkdXhUXXt01Lki63mhU7CYw7h500uhH
+	WRan5mq9fPQkT8nUiy9CzLNW+3orRmKpqtc0oX3Vb+4rtpIGq/gyn4COJd5nQJ2l27eb0X+DIWYBs
+	OtoiAch/w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAGg4-0002Lc-Tf; Thu, 11 Feb 2021 18:26:56 +0000
-Received: from mail29.static.mailgun.info ([104.130.122.29])
+	id 1lAIyO-0002q7-0v; Thu, 11 Feb 2021 20:54:00 +0000
+Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAGg1-0002L0-JG
- for ath10k@lists.infradead.org; Thu, 11 Feb 2021 18:26:54 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1613068013; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=XQMYp79ftc2CD2w0g/sVHwqX5MSlVZ7BvVff5QTyZow=;
- b=k8Pp978TMwnhcnlbWHaT15/PYlkA/szkXGHZX7pePTWDRXbFn8tedrj21CSkh8I7a5Lg1bZk
- fJQuc6HE9/9F69ElyxJMU3px/MDtond4EiDr5KhRAoLxzePpBEpAyQNQzH1MxHh0wqKymrnt
- onlDapH7ZPcey7KAmz/Kb7gHPDc=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 602576eb3919dfb455d7bb35 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 18:26:51
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id A636EC43463; Thu, 11 Feb 2021 18:26:50 +0000 (UTC)
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi
- [88.114.240.156])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 08C17C433C6;
- Thu, 11 Feb 2021 18:26:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 08C17C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=kvalo@codeaurora.org
+ id 1lAIyK-0002pS-FR
+ for ath10k@lists.infradead.org; Thu, 11 Feb 2021 20:53:57 +0000
+Received: by mail-io1-xd2b.google.com with SMTP id s24so7158250iob.6
+ for <ath10k@lists.infradead.org>; Thu, 11 Feb 2021 12:53:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linuxfoundation.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=Z6ZG5Dmpcr3dphEuMXhR4ohnjOhh91pyYZOXK8YBBQ8=;
+ b=SwQEk23nQu49/7zGvXpYbPxTTfQhd6o7wAYudESH1lMiZQYROCK9GrzJrOl2Bh84Zl
+ o/RJiF9S+Nv6YIJsJs9mHanLZCn57L0+7WYavg7+z7foM6R7Jd//qEu+5oJIcCnPjXOf
+ xktxquW2pcwEdLVdDtL00ytKmXKh1pNsWBuGs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Z6ZG5Dmpcr3dphEuMXhR4ohnjOhh91pyYZOXK8YBBQ8=;
+ b=fnvuYOXlB1Z6pecuQ2qH9b2NzdQcPwHKoYbgXfQ/WLvePwqmWrSI51WMKBUP0Oiz5F
+ A3KhUUtfo1Tz08irfFWYhC60bzBl3Lvpy2mWmo1r7r/zPcvE0lIm1ZYJqxTNPpaqWQyK
+ oRML2e45wBRDuwExKuR6Ke/NQ1ctUqLqjtmu8OWZC1URW1ki1JOmgFgGnGwP+c2CFvPM
+ FoToVqbG4SeV7Ts/dzwF7WjfIHZ426DIAFNs6qJp2pXJCDMZaH2ISlkhR/1tCWSklmr0
+ rcG2B7FkQf5tWoULqhQSU4YjZEp1FLRXUAUSghda9Mt0acXVLNMtejMwH/WjNgP6q7Sd
+ jrFw==
+X-Gm-Message-State: AOAM533ILE2vqRLEJIMFNhb3j132J3678PiglGf+uUW5331qPOnt7KSy
+ BqlaG11yf2Oia2Wt0xmDM1K0pw==
+X-Google-Smtp-Source: ABdhPJxS+FbWEJCWFiOb19bw5JWTzO423ZZjhYNmsV3ct5XHCjciv+zdMEIgaDhb4egTqrnav0Krmw==
+X-Received: by 2002:a5d:9586:: with SMTP id a6mr7220881ioo.83.1613076832081;
+ Thu, 11 Feb 2021 12:53:52 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net.
+ [24.9.64.241])
+ by smtp.gmail.com with ESMTPSA id h13sm3006905ioe.40.2021.02.11.12.53.51
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 11 Feb 2021 12:53:51 -0800 (PST)
+Subject: Re: [PATCH 4/5] ath10k: detect conf_mutex held ath10k_drain_tx() calls
+To: Kalle Valo <kvalo@codeaurora.org>
+References: <cover.1612915444.git.skhan@linuxfoundation.org>
+ <a980abfb143f5240375f3f1046f0f26971c695e6.1612915444.git.skhan@linuxfoundation.org>
+ <87lfbwtjls.fsf@codeaurora.org>
+ <d6d8c7b8-f69d-01ef-6d66-8a33ea98920f@linuxfoundation.org>
+ <871rdmu9z9.fsf@codeaurora.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f0905d6c-065f-a29c-2c83-77f55e77d36e@linuxfoundation.org>
+Date: Thu, 11 Feb 2021 13:53:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: hold RCU lock when calling
- ieee80211_find_sta_by_ifaddr()
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210210212107.40373-1-skhan@linuxfoundation.org>
-References: <20210210212107.40373-1-skhan@linuxfoundation.org>
-To: Shuah Khan <skhan@linuxfoundation.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210211182650.A636EC43463@smtp.codeaurora.org>
-Date: Thu, 11 Feb 2021 18:26:50 +0000 (UTC)
+In-Reply-To: <871rdmu9z9.fsf@codeaurora.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210211_132653_966927_4880A1AE 
-X-CRM114-Status: GOOD (  10.20  )
+X-CRM114-CacheID: sfid-20210211_155356_640086_2BEFEB1F 
+X-CRM114-Status: GOOD (  24.02  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,36 +100,103 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
  linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
  Shuah Khan <skhan@linuxfoundation.org>, kuba@kernel.org, davem@davemloft.net
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Shuah Khan <skhan@linuxfoundation.org> wrote:
-
-> ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
-> the resulting pointer is only valid under RCU lock as well.
+On 2/11/21 4:20 AM, Kalle Valo wrote:
+> Shuah Khan <skhan@linuxfoundation.org> writes:
 > 
-> Fix ath10k_wmi_tlv_op_pull_peer_stats_info() to hold RCU lock before it
-> calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
-> pointer is no longer needed.
+>> On 2/10/21 1:25 AM, Kalle Valo wrote:
+>>> Shuah Khan <skhan@linuxfoundation.org> writes:
+>>>
+>>>> ath10k_drain_tx() must not be called with conf_mutex held as workers can
+>>>> use that also. Add check to detect conf_mutex held calls.
+>>>>
+>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>
+>>> The commit log does not answer to "Why?". How did you find this? What
+>>> actual problem are you trying to solve?
+>>>
+>>
+>> I came across the comment block above the ath10k_drain_tx() as I was
+>> reviewing at conf_mutex holds while I was debugging the conf_mutex
+>> lock assert in ath10k_debug_fw_stats_request().
+>>
+>> My reasoning is that having this will help detect incorrect usages
+>> of ath10k_drain_tx() while holding conf_mutex which could lead to
+>> locking problems when async worker routines try to call this routine.
 > 
-> This problem was found while reviewing code to debug RCU warn from
-> ath10k_wmi_tlv_parse_peer_stats_info().
+> Ok, makes sense. I prefer having this background info in the commit log,
+> for example "found by code review" or something like that. Or just copy
+> what you wrote above :)
 > 
-> Link: https://lore.kernel.org/linux-wireless/7230c9e5-2632-b77e-c4f9-10eca557a5bb@linuxfoundation.org/
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+Thanks. I will do that.
 
-09078368d516 ath10k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()
+>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>>> @@ -4566,6 +4566,7 @@ static void
+>>>> ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
+>>>>    /* Must not be called with conf_mutex held as workers can use that also. */
+>>>>    void ath10k_drain_tx(struct ath10k *ar)
+>>>>    {
+>>>> +	WARN_ON(lockdep_is_held(&ar->conf_mutex));
+>>>
+>>> Empty line after WARN_ON().
+>>>
+>>
+>> Will do.
+>>
+>>> Shouldn't this check debug_locks similarly lockdep_assert_held() does?
+>>>
+>>> #define lockdep_assert_held(l)	do {				\
+>>> 		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+>>> 	} while (0)
+>>>
+>>> And I suspect you need #ifdef CONFIG_LOCKDEP which should fix the kbuild
+>>> bot error.
+>>>
+>>
+>> Yes.
+>>
+>>> But honestly I would prefer to have lockdep_assert_not_held() in
+>>> include/linux/lockdep.h, much cleaner that way. Also
+>>> i915_gem_object_lookup_rcu() could then use the same macro.
+>>>
+>>
+>> Right. This is the right way to go. That was first instinct and
+>> decided to have the discussion evolve in that direction. Now that
+>> it has, I will combine this change with
+>> include/linux/lockdep.h and add lockdep_assert_not_held()
+>>
+>> I think we might have other places in the kernel that could use
+>> lockdep_assert_not_held() in addition to i915_gem_object_lookup_rcu()
+> 
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210210212107.40373-1-skhan@linuxfoundation.org/
+I looked at i915_gem_object_lookup_rcu(). The following can be replaced
+by lockdep_assert_held().
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+#ifdef CONFIG_LOCKDEP
+         WARN_ON(debug_locks && !lock_is_held(&rcu_lock_map));
+#endif
 
+> Great, thank you. The only problem is that lockdep.h changes have to go
+> via some other tree, I just don't know which :) I think it would be
+> easiest if also the ath10k patch goes via that other tree, I can ack the
+> ath10k changes.
+> 
+> Another option is that I'll apply the ath10k patch after the lockdep.h
+> change has trickled down to my tree, but that usually happens only after
+> the merge window and means weeks of waiting. Either is fine for me.
+> 
+
+I will send the include/linux/lockdep.h and ath10k patch together and
+we will take it from there.
+
+thanks,
+-- Shuah
 
 _______________________________________________
 ath10k mailing list
