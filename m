@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AF2BC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F30C433E0
 	for <ath10k@archiver.kernel.org>; Fri, 12 Feb 2021 20:47:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4819C64DE0
+	by mail.kernel.org (Postfix) with ESMTPS id 47E4064DEC
 	for <ath10k@archiver.kernel.org>; Fri, 12 Feb 2021 20:47:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4819C64DE0
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47E4064DEC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=/zVoeh8dq8zRjSkaIlzXfLQMFydz5BeQl8udj7qe3/Y=; b=0aX4tfzyG5GbaikJlauKj+xZZq
-	ksH8GhKReFZWVIr2JtvSXNImRlhcUGcHUGM8sRZ3WNA+wW10u8CbCn7gnit+kaOeBVglT/adtgKF5
-	A5Hh9MvSIozWzsA/YIjEHTAu52DX8A88s9bde+jCidu70X6t6GfKdikz/C/lLkyhte1Q0ax887ZII
-	9BZfQeEgq8hT+ikhrga62kpLCp4EL0yjWLmHgBYjhtpIU8VWIcY1JdwsSiozZZBX4AMpbqjOlwKKC
-	nTb15HI1rJ/wYrh+ILIq8J/utUZQocghzQbkGBr/FXJdDB6HSXY6Kw4GicSYEqz7MMXLxPGYJeYod
-	vXtaQzhg==;
+	bh=Zp5YH2aFJCPUvDg9IjKVASzDMKftDBaDKrmVxcMB4oU=; b=iSOcTjPBWCvCIxIHEMTStLXBoN
+	InFx4Esul9BKkcRvC3lJJ4Y8mVPFXJm/1VkfuFcDLg0KU/2671YTMwjpGIF+bH4mgWweUo/gANxze
+	22boo/AM1jZ5p2uQDlrr46GtAzg/yWt7qt3shcyfRegVwUwqcA5qjUqIvYje9eVq5NjxRNMHiq2J5
+	ITfcah8rEFh0hCDMhoXB3++LZr8sjFLYDUcX68jcAQMGj/bDqNOM0kV8sCxVQzfD1AIxRL+3x80BK
+	tNaizZkTOlQiua8sgB9nILkm86j2Oo0o6ccOWtl/sHCsP6JZSJrcEAMRCAnJUa6aY7f4MyG3t1Xzx
+	KYQSVOaA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAfL8-0000FZ-Pn; Fri, 12 Feb 2021 20:46:58 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1lAfLC-0000H9-Az; Fri, 12 Feb 2021 20:47:02 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAfL5-0000Dl-UF
- for ath10k@lists.infradead.org; Fri, 12 Feb 2021 20:46:56 +0000
-IronPort-SDR: EPbDsXvtIkOVr2O7FNVa52AuALdQu8n187EcGcJV4d2vXLDUnoKe2eBEY6FiH9xIwNPHLxJa3g
- JnX3e1637kWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="178969423"
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; d="scan'208";a="178969423"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ id 1lAfL6-0000Do-BS
+ for ath10k@lists.infradead.org; Fri, 12 Feb 2021 20:46:58 +0000
+IronPort-SDR: g2BJWN0GfSjgZ7OcKKdlY9Co1+APUupGdT5iIDe0dCMk0zyVLSJn7h9jcBu348pJMGizqI4oJ3
+ gBuZ8YMfvW8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="169604353"
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; d="scan'208";a="169604353"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  12 Feb 2021 12:46:51 -0800
-IronPort-SDR: Qtn7ilHwMxntzJOFXDQo11YrvHckHIj/b10MiOYvnC87npqT+MCmV2KBk6i4A7CfJ2SEUzMAfD
- 9R22vHEJS1Vw==
+IronPort-SDR: NRrOgXeKxE3dK4fVSIy4CCkMd+BtdcrmfSjYZLg3il7PTIutYdj/QYxkAxow4v31RZ/Xq9ERsP
+ FWM8bpyfDuWA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; d="scan'208";a="364219448"
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; d="scan'208";a="579406701"
 Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
- by fmsmga007.fm.intel.com with ESMTP; 12 Feb 2021 12:46:49 -0800
+ by orsmga005.jf.intel.com with ESMTP; 12 Feb 2021 12:46:49 -0800
 Received: from kbuild by cd560a204411 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lAfKz-0004ry-5i; Fri, 12 Feb 2021 20:46:49 +0000
-Date: Sat, 13 Feb 2021 04:46:29 +0800
+ id 1lAfKz-0004rv-4r; Fri, 12 Feb 2021 20:46:49 +0000
+Date: Sat, 13 Feb 2021 04:46:19 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:pending] BUILD SUCCESS
- 32f43e6018076db3801f9d40927529a792469aee
-Message-ID: <6026e925.CLBtzyCWyT+TXtwP%lkp@intel.com>
+Subject: [ath6kl:master] BUILD SUCCESS 38737e6197d32cbd773a9240ddd1dadb495d3754
+Message-ID: <6026e91b.AF55XvdJEMN9xtXO%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210212_154656_139986_F9EF28FC 
-X-CRM114-Status: UNSURE (   7.74  )
+X-CRM114-CacheID: sfid-20210212_154656_586838_A07A1C05 
+X-CRM114-Status: UNSURE (   7.26  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,8 +80,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 32f43e6018076db3801f9d40927529a792469aee  ath9k: fix ath_tx_process_buffer() potential null ptr dereference
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 38737e6197d32cbd773a9240ddd1dadb495d3754  Add localversion-wireless-testing-ath
 
 elapsed time: 724m
 
