@@ -1,20 +1,20 @@
-Return-Path: <SRS0=RJ8i=HQ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=1sN2=HR=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86CA6C433E0
-	for <ath10k@archiver.kernel.org>; Sun, 14 Feb 2021 17:53:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2643C433E0
+	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 10:44:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30D1364DCF
-	for <ath10k@archiver.kernel.org>; Sun, 14 Feb 2021 17:53:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30D1364DCF
+	by mail.kernel.org (Postfix) with ESMTPS id 808DC64E08
+	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 10:44:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 808DC64E08
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,37 +23,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=h3COodG/CvJzO11JGsLK4Hm7CTsYEYJ4NgnZfmn2eUc=; b=eJ03QWhSZzJHIA4Qtg8cQUCkZ
-	oQ0L7CYdd8jKfWLOSoRTfwxiNijdR+2ZdauHsM/D6Cxbmlnb7zVPkEwMNsmeBMUBSY6kUMhpFKQSy
-	KJgWEleG+p1aimnWNUTs3cRIpgokdJr0ooKef3YWqhJ9G/SUbMsRiPcv8bZUM+kii3u/F9mZ78Iyo
-	DkUa+zCUgh1YBWvTLpCGbiRvEt56H4gOOAh8tE1oIJVV3SLhQxdDNvvpTLQGetZFjDflPpU2UMAPB
-	cRimzsIUV6EPZFj9V11Fv5vQ5+M0LYHC8YGAw0EFE64ASDvrGsVEx6I6bA50/jy44HyRh1Ojxtc3Q
-	CdQnn1PVQ==;
+	 bh=y6uhFBb/huwO5Y5iW6uHDUFIkMJVyvwxp2zExSv/V00=; b=2W9p8wtssEP/8OzubCDntl5gO
+	MmIxFbx9vEBJ49qnoZGNHqKTGoq5G0TkzbEkVtPWCCkQz3b8/I6Wo+tU8wxccsAio4I/BPBYbRlcg
+	6xy+774cnEHoZGKod1EseSuAs+PFTwwazRVkNQ2/lUxCYMKguzeSP97JsnbojVIqgPGCpgl5ClaU3
+	wBaJZoSe89I1x5D93+2Jff6clIkqFeMghVjy5Fcuy1nvHZJhVDSsx/Ak3QeUnXci6bKeDx4Na5SdU
+	eAvzL6sli0cxKX9OxidT5IPbuL2dnbxE0paarYDP8tfuRFH1XNgK05L2FI2xfxtnzxx3yoBl1Xa27
+	HOlRDn5sA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lBLZz-0005nG-Vn; Sun, 14 Feb 2021 17:53:08 +0000
+	id 1lBbMR-0006jR-2b; Mon, 15 Feb 2021 10:44:11 +0000
 Received: from j217100.upc-j.chello.nl ([24.132.217.100]
- helo=noisy.programming.kicks-ass.net)
+ helo=worktop.programming.kicks-ass.net)
  by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lBLZx-0005mj-TD; Sun, 14 Feb 2021 17:53:06 +0000
-Received: from hirez.programming.kicks-ass.net
- (hirez.programming.kicks-ass.net [192.168.1.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5E7E13019CE;
- Sun, 14 Feb 2021 18:53:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
- id 2E40320299B4B; Sun, 14 Feb 2021 18:53:01 +0100 (CET)
-Date: Sun, 14 Feb 2021 18:53:01 +0100
+ id 1lBbMN-0006hm-9U; Mon, 15 Feb 2021 10:44:07 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+ id 7CE01981573; Mon, 15 Feb 2021 11:44:02 +0100 (CET)
+Date: Mon, 15 Feb 2021 11:44:02 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: Shuah Khan <skhan@linuxfoundation.org>
 Subject: Re: [PATCH 1/2] lockdep: add lockdep_assert_not_held()
-Message-ID: <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
+Message-ID: <20210215104402.GC4507@worktop.programming.kicks-ass.net>
 References: <cover.1613171185.git.skhan@linuxfoundation.org>
  <37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org>
+ <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org>
+In-Reply-To: <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,18 +68,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 12, 2021 at 04:28:42PM -0700, Shuah Khan wrote:
+On Sun, Feb 14, 2021 at 06:53:01PM +0100, Peter Zijlstra wrote:
+> On Fri, Feb 12, 2021 at 04:28:42PM -0700, Shuah Khan wrote:
+> 
+> > +#define lockdep_assert_not_held(l)	do {			\
+> > +		WARN_ON(debug_locks && lockdep_is_held(l));	\
+> > +	} while (0)
+> > +
+> 
+> This thing isn't as straight forward as you might think, but it'll
+> mostly work.
+> 
+> Notably this thing will misfire when lockdep_off() is employed. It
+> certainyl needs a comment to explain the subtleties.
 
-> +#define lockdep_assert_not_held(l)	do {			\
-> +		WARN_ON(debug_locks && lockdep_is_held(l));	\
-> +	} while (0)
-> +
+I think something like so will work, but please double check.
 
-This thing isn't as straight forward as you might think, but it'll
-mostly work.
-
-Notably this thing will misfire when lockdep_off() is employed. It
-certainyl needs a comment to explain the subtleties.
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index b9e9adec73e8..c8b0d292bf8e 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+ 
+ #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
+ 
+-#define lockdep_assert_held(l)	do {				\
+-		WARN_ON(debug_locks && !lockdep_is_held(l));	\
++#define lockdep_assert_held(l)	do {					\
++		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
+ 	} while (0)
+ 
+-#define lockdep_assert_held_write(l)	do {			\
++#define lockdep_assert_not_held(l)	do {				\
++		WARN_ON(debug_locks && lockdep_is_held(l) == 1));	\
++	} while (0)
++
++#define lockdep_assert_held_write(l)	do {				\
+ 		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
+ 	} while (0)
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c1418b47f625..983ba206f7b2 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5467,7 +5467,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+ 	int ret = 0;
+ 
+ 	if (unlikely(!lockdep_enabled()))
+-		return 1; /* avoid false negative lockdep_assert_held() */
++		return -1; /* avoid false negative lockdep_assert_held() */
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
 
 _______________________________________________
 ath10k mailing list
