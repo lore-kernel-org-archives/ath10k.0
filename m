@@ -7,70 +7,58 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03CA2C4332B
-	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 16:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65906C433DB
+	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 16:11:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC9B264DEB
-	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 16:05:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC9B264DEB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id C2FB364DEB
+	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 16:11:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2FB364DEB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sipsolutions.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=uX0z2d8wjciTl6NOZDIPfNNsfBr2EokRqk+dyJfvcuA=; b=FgLfNZl8qDqty5OwjSZiQJ/aV
-	iggcXtTfGxe29UvSArP+iLqV5qvBDgjxEKHS+Klw7TBhovgZM32kNPWIbQmkK5ZV676Xjfxc11p/A
-	PQZtzhdGwCvdS0vaMVBVRr1WLOJKEvTuzfjBvNJ1o5G5wMXD4J0iJSwPop8JnipZo+FbaZHWvxp7E
-	ql4u0vN+7MreauoN+nCbU1qzgXisOGo3QCuojG19JfGAh0+SVp9PBszSBfQNfKsUU4BAb7DF6BSKd
-	ZjDWHJEDFpCOp2unjinDz6HggcTSwL9uthH/Wwf8uEQOviuZd2+mNiTOgf63B1AZ1XFa2P1ZPf1B1
-	G09nZQHpg==;
+	 bh=Fr7xwXcQHZOYshVdAQDC34KeTTy2kA/Xt1GnZjgvQio=; b=dg0VLAZaRmGACXZQv8EslXvkF
+	fyJvhF5oOgBVfL4kJyAcW/LRWjQ2+5K8oCXtVJtLH9+j4MKfc395R/OGvFrIomxDRdGu+LRSkvwHW
+	OkbiFXlXK9ZlMClHwNji/T5Qeapc9JUnarJ6fdEMebvAdl0UEl6b3ALWx7bsQHW/qTqWeEZU0dlPf
+	n1oFPshicvmjVTO9rlhxDapUgQGU3DS7Ax0qG0XlKPAAy7AP9RMBPDHjnn+KoiOWi1ymeZ7Nr9LS0
+	paLyTtPDcVb63Iai/MbH6SW/FxNC1IshsjslNInljpcg+P5F3LiF1ep+qFa23WQ3DSMxoHf7LcTs8
+	3noxBqRBQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lBgMM-0006qB-Mw; Mon, 15 Feb 2021 16:04:26 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1lBgSs-0008HF-2s; Mon, 15 Feb 2021 16:11:10 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lBgML-0006q0-M7
- for ath10k@merlin.infradead.org; Mon, 15 Feb 2021 16:04:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=ABknkne7Nrn83Z017RdB6TUScjJdC65GnVh/Mnzaro4=; b=OhNLW94ejUS39Nx7GhTuQ7ezdo
- q5Wb7HXw3WDjDr/XnEMyiKNF5Uxs9VTjZBW+3vEUNADCSPX5PvM77kgXHpbL7bgAujmpCQ5cflRMe
- tTgMXTJRBXrL7pptc1mjtI4Jb+Qby+L9ULklOfDMW0Dl/q7eIbus7Trt8VNc+I11PIct7CPbs7t8D
- 0PeT8FwhMlogzUvkCLX9hiAhpOezlGe1hVcHmhsWIwL93pymNLCGpOaHgh+7EqwwQL8oYfRkyi1uW
- igN+zxx/JApi6jslEPnSmi77+yruJVv/f3P68A4EU9er5WeSclCa3/+wZCUuIxe0eSgGCmWJOYPTg
- L2U9YsRQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100]
- helo=noisy.programming.kicks-ass.net)
- by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
- id 1lBgM7-00Fky1-Ex; Mon, 15 Feb 2021 16:04:20 +0000
-Received: from hirez.programming.kicks-ass.net
- (hirez.programming.kicks-ass.net [192.168.1.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 430053007CD;
- Mon, 15 Feb 2021 17:04:10 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
- id 2CD1D20431BC4; Mon, 15 Feb 2021 17:04:10 +0100 (CET)
-Date: Mon, 15 Feb 2021 17:04:10 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Johannes Berg <johannes@sipsolutions.net>
+ id 1lBgSS-000868-Hn
+ for ath10k@lists.infradead.org; Mon, 15 Feb 2021 16:10:45 +0000
+Received: by sipsolutions.net with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
+ id 1lBgSF-003Kql-5a; Mon, 15 Feb 2021 17:10:31 +0100
+Message-ID: <eb819e72fb2d897e603654d44aeda8c6f337453f.camel@sipsolutions.net>
 Subject: Re: [PATCH 1/2] lockdep: add lockdep_assert_not_held()
-Message-ID: <YCqbehyyeUoL0pPT@hirez.programming.kicks-ass.net>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Peter Zijlstra <peterz@infradead.org>
+Date: Mon, 15 Feb 2021 17:10:14 +0100
+In-Reply-To: <YCqbehyyeUoL0pPT@hirez.programming.kicks-ass.net>
 References: <cover.1613171185.git.skhan@linuxfoundation.org>
  <37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org>
  <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
  <20210215104402.GC4507@worktop.programming.kicks-ass.net>
  <79aeb83a288051bd3a2a3f15e5ac42e06f154d48.camel@sipsolutions.net>
+ <YCqbehyyeUoL0pPT@hirez.programming.kicks-ass.net>
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <79aeb83a288051bd3a2a3f15e5ac42e06f154d48.camel@sipsolutions.net>
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210215_111044_604848_DAB0A197 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,52 +79,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 15, 2021 at 02:12:30PM +0100, Johannes Berg wrote:
-> On Mon, 2021-02-15 at 11:44 +0100, Peter Zijlstra wrote:
+On Mon, 2021-02-15 at 17:04 +0100, Peter Zijlstra wrote:
+> On Mon, Feb 15, 2021 at 02:12:30PM +0100, Johannes Berg wrote:
+> > On Mon, 2021-02-15 at 11:44 +0100, Peter Zijlstra wrote:
+> > > I think something like so will work, but please double check.
 > > 
-> > I think something like so will work, but please double check.
+> > Yeah, that looks better.
+> > 
+> > > +++ b/include/linux/lockdep.h
+> > > @@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+> > >  
+> > >  #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
+> > >  
+> > > -#define lockdep_assert_held(l)	do {				\
+> > > -		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+> > > +#define lockdep_assert_held(l)	do {					\
+> > > +		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
+> > >  	} while (0)
+> > 
+> > That doesn't really need to change? It's the same.
 > 
-> Yeah, that looks better.
-> 
-> > +++ b/include/linux/lockdep.h
-> > @@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
-> >  
-> >  #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
-> >  
-> > -#define lockdep_assert_held(l)	do {				\
-> > -		WARN_ON(debug_locks && !lockdep_is_held(l));	\
-> > +#define lockdep_assert_held(l)	do {					\
-> > +		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
-> >  	} while (0)
-> 
-> That doesn't really need to change? It's the same.
+> Correct, but I found it more symmetric vs the not implementation below.
 
-Correct, but I found it more symmetric vs the not implementation below.
+Fair enough. One might argue that you should have an
 
-> > -#define lockdep_assert_held_write(l)	do {			\
-> > +#define lockdep_assert_not_held(l)	do {				\
-> > +		WARN_ON(debug_locks && lockdep_is_held(l) == 1));	\
-> > +	} while (0)
-> > +
-> > +#define lockdep_assert_held_write(l)	do {				\
-> >  		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
-> >  	} while (0)
-> >  
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index c1418b47f625..983ba206f7b2 100644
-> > --- a/kernel/locking/lockdep.
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -5467,7 +5467,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-> >  	int ret = 0;
-> >  
-> >  	if (unlikely(!lockdep_enabled()))
-> > -		return 1; /* avoid false negative lockdep_assert_held() */
-> > +		return -1; /* avoid false negative lockdep_assert_held() */
-> 
-> Maybe add lockdep_assert_not_held() to the comment, to explain the -1
-> (vs non-zero)?
+enum lockdep_lock_state {
+	LOCK_STATE_NOT_HELD, /* 0 now */
+	LOCK_STATE_HELD, /* 1 now */
+	LOCK_STATE_UNKNOWN, /* -1 with your patch but might as well be 2 */
+};
 
-Yeah, or frob a '*' in there.
+:)
+
+johannes
+
 
 _______________________________________________
 ath10k mailing list
