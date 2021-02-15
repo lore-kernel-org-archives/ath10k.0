@@ -7,48 +7,59 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2643C433E0
-	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 10:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E65C6C433E0
+	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 13:13:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 808DC64E08
-	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 10:44:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 808DC64E08
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7A31464DEE
+	for <ath10k@archiver.kernel.org>; Mon, 15 Feb 2021 13:13:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A31464DEE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sipsolutions.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=y6uhFBb/huwO5Y5iW6uHDUFIkMJVyvwxp2zExSv/V00=; b=2W9p8wtssEP/8OzubCDntl5gO
-	MmIxFbx9vEBJ49qnoZGNHqKTGoq5G0TkzbEkVtPWCCkQz3b8/I6Wo+tU8wxccsAio4I/BPBYbRlcg
-	6xy+774cnEHoZGKod1EseSuAs+PFTwwazRVkNQ2/lUxCYMKguzeSP97JsnbojVIqgPGCpgl5ClaU3
-	wBaJZoSe89I1x5D93+2Jff6clIkqFeMghVjy5Fcuy1nvHZJhVDSsx/Ak3QeUnXci6bKeDx4Na5SdU
-	eAvzL6sli0cxKX9OxidT5IPbuL2dnbxE0paarYDP8tfuRFH1XNgK05L2FI2xfxtnzxx3yoBl1Xa27
-	HOlRDn5sA==;
+	 bh=y2ssAPRzz7MqbbQ1Icschy48sam9xjev1+5523uLadI=; b=vfoohp8vZBY+1B5KgEqc0HzxK
+	ebs925KDOwD2KHFk/ppQuq+jb1XllZshCCX6brlc8Xa7gRwaqdu0VyTRd91y/DYbe+mYjb3UssAJs
+	uxjc0bcZ3+PnHpzYX3Z1uhmKBBUVHFtpfpnbz/5aEfVV++O7rdRSfV/5UilkNnFjtHvUtvbL62ltL
+	JU9Nbc3tlPDZGyJ4zYp4VExJNTesvubmeMbGlHrJLAbuY/wVZd5CF3Xh+ZGovZdztfOpnrGz9iBzN
+	KK1AGCvjwKpfTAfdSfMp5+tHDl8p0FL1OLryOAYFbPw516iAg1GvTqfyuBwSrus4O994fbYaJelWl
+	qTYruJIKg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lBbMR-0006jR-2b; Mon, 15 Feb 2021 10:44:11 +0000
-Received: from j217100.upc-j.chello.nl ([24.132.217.100]
- helo=worktop.programming.kicks-ass.net)
- by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lBbMN-0006hm-9U; Mon, 15 Feb 2021 10:44:07 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
- id 7CE01981573; Mon, 15 Feb 2021 11:44:02 +0100 (CET)
-Date: Mon, 15 Feb 2021 11:44:02 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Shuah Khan <skhan@linuxfoundation.org>
+	id 1lBdga-0007yK-L6; Mon, 15 Feb 2021 13:13:08 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1lBdgW-0007wo-BI
+ for ath10k@lists.infradead.org; Mon, 15 Feb 2021 13:13:06 +0000
+Received: by sipsolutions.net with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
+ id 1lBdgE-003Frr-1U; Mon, 15 Feb 2021 14:12:46 +0100
+Message-ID: <79aeb83a288051bd3a2a3f15e5ac42e06f154d48.camel@sipsolutions.net>
 Subject: Re: [PATCH 1/2] lockdep: add lockdep_assert_not_held()
-Message-ID: <20210215104402.GC4507@worktop.programming.kicks-ass.net>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Peter Zijlstra <peterz@infradead.org>, Shuah Khan
+ <skhan@linuxfoundation.org>
+Date: Mon, 15 Feb 2021 14:12:30 +0100
+In-Reply-To: <20210215104402.GC4507@worktop.programming.kicks-ass.net>
+ (sfid-20210215_114645_090502_64B4A89D)
 References: <cover.1613171185.git.skhan@linuxfoundation.org>
  <37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org>
  <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
+ <20210215104402.GC4507@worktop.programming.kicks-ass.net>
+ (sfid-20210215_114645_090502_64B4A89D)
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210215_081304_430874_EE3E5470 
+X-CRM114-Status: GOOD (  14.24  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,58 +79,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Sun, Feb 14, 2021 at 06:53:01PM +0100, Peter Zijlstra wrote:
-> On Fri, Feb 12, 2021 at 04:28:42PM -0700, Shuah Khan wrote:
+On Mon, 2021-02-15 at 11:44 +0100, Peter Zijlstra wrote:
 > 
-> > +#define lockdep_assert_not_held(l)	do {			\
-> > +		WARN_ON(debug_locks && lockdep_is_held(l));	\
-> > +	} while (0)
-> > +
-> 
-> This thing isn't as straight forward as you might think, but it'll
-> mostly work.
-> 
-> Notably this thing will misfire when lockdep_off() is employed. It
-> certainyl needs a comment to explain the subtleties.
+> I think something like so will work, but please double check.
 
-I think something like so will work, but please double check.
+Yeah, that looks better.
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index b9e9adec73e8..c8b0d292bf8e 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
- 
- #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
- 
--#define lockdep_assert_held(l)	do {				\
--		WARN_ON(debug_locks && !lockdep_is_held(l));	\
-+#define lockdep_assert_held(l)	do {					\
-+		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
- 	} while (0)
- 
--#define lockdep_assert_held_write(l)	do {			\
-+#define lockdep_assert_not_held(l)	do {				\
-+		WARN_ON(debug_locks && lockdep_is_held(l) == 1));	\
-+	} while (0)
-+
-+#define lockdep_assert_held_write(l)	do {				\
- 		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
- 	} while (0)
- 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index c1418b47f625..983ba206f7b2 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5467,7 +5467,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
- 	int ret = 0;
- 
- 	if (unlikely(!lockdep_enabled()))
--		return 1; /* avoid false negative lockdep_assert_held() */
-+		return -1; /* avoid false negative lockdep_assert_held() */
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
+> +++ b/include/linux/lockdep.h
+> @@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+>  
+>  #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
+>  
+> -#define lockdep_assert_held(l)	do {				\
+> -		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+> +#define lockdep_assert_held(l)	do {					\
+> +		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
+>  	} while (0)
+
+That doesn't really need to change? It's the same.
+
+> -#define lockdep_assert_held_write(l)	do {			\
+> +#define lockdep_assert_not_held(l)	do {				\
+> +		WARN_ON(debug_locks && lockdep_is_held(l) == 1));	\
+> +	} while (0)
+> +
+> +#define lockdep_assert_held_write(l)	do {				\
+>  		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
+>  	} while (0)
+>  
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index c1418b47f625..983ba206f7b2 100644
+> --- a/kernel/locking/lockdep.
+> +++ b/kernel/locking/lockdep.c
+> @@ -5467,7 +5467,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+>  	int ret = 0;
+>  
+>  	if (unlikely(!lockdep_enabled()))
+> -		return 1; /* avoid false negative lockdep_assert_held() */
+> +		return -1; /* avoid false negative lockdep_assert_held() */
+
+Maybe add lockdep_assert_not_held() to the comment, to explain the -1
+(vs non-zero)?
+
+johannes
+
 
 _______________________________________________
 ath10k mailing list
