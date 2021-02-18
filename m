@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0139C433E6
-	for <ath10k@archiver.kernel.org>; Thu, 18 Feb 2021 22:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BEA0C433E0
+	for <ath10k@archiver.kernel.org>; Thu, 18 Feb 2021 22:11:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FAF964E77
-	for <ath10k@archiver.kernel.org>; Thu, 18 Feb 2021 22:10:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FAF964E77
+	by mail.kernel.org (Postfix) with ESMTPS id E5B3264E77
+	for <ath10k@archiver.kernel.org>; Thu, 18 Feb 2021 22:11:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5B3264E77
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=6IEja+6dnAZkGiYaJy4qPFGyHYjPePdt4mrfQEqF6xY=; b=mf47dpeoxL7oDkDiXC6awBypvY
-	kcln63o9F495YGFNI+hR3/su55AI3KRM2io8A0G+uE3GSAicK3CWB8nvO2Lds53RdWTmKyTtlmfU3
-	fje/8nJfGv56L87o7AKwB5IrqPwu6bVSJqSz7XGd/Eu77nM0WjesyPGuIjHhA3mCqfkGzoaU1uKuJ
-	sx8rgfiPt3EgLDXCk7BwJUi4DqO8RTsZ3CNSvxtUwGyURaYqUQhG4ROV5eMmWlZmUy1fk+XNjMIpc
-	/ZE19dLVOt3YH4g4PByurKTnVh8EmyRpXjrfmtDG3cxav+IAuKE7g6jgUk9v0KIgJJC++mGNMjHhR
-	55X41nvg==;
+	bh=JKQ79T4nplKbrynjIZyQmyQIIMwJ1PRXh0ZFjisW8dI=; b=goBGj+16x7V4tOVSlNcbLVjolq
+	rrkIX+0PcqyPVdJmKJAUd0KdQ6Y0anB/oZ/j10PwnCEND71r7NE6btn5Vj8uYs5Y2EoNPshUgPtUK
+	JbWsD5rEyFpzxlC67CXS7yY/LTo2ZmzloB0IwKrUPvnsJxKPINM0m4SHeJgaoAP5gWC/n5+iap578
+	Y2iio4H9TU36wksewZ9UoSelmzbwH6iUiplwX6WtMfbqQYGEs2J4hz8Y7ctsVZHq/5v6XqI8kUofV
+	XZGP9ZnLVrF2JrXTFmvDV6jCx+IKpKG/JUpk9Jw8DULUsAF5lNdtVzAJXyqYXASoB5xXLX7PaCPe8
+	AZsDyOqA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lCrUz-00020t-Rt; Thu, 18 Feb 2021 22:10:13 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1lCrV1-00021L-L6; Thu, 18 Feb 2021 22:10:15 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lCrUw-0001zh-GN
- for ath10k@lists.infradead.org; Thu, 18 Feb 2021 22:10:11 +0000
-IronPort-SDR: ghpS3ouePpjSdLuiOcSEFt0Zli8pLKxWLUyomH8WRVT9bqd64qRTf4yHW+8mSN1sOjeCdRyo8P
- iL4Ivb6pxP2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="268514558"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="268514558"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ id 1lCrUx-0001zi-0l
+ for ath10k@lists.infradead.org; Thu, 18 Feb 2021 22:10:12 +0000
+IronPort-SDR: i5HVOWuYftNtQIXHg1UJXHw+drGpqIx/e5H93gqpyZwpZuecTZS9d00yJqT1m3r/QC6adNr0+X
+ 2afjE5CLRTrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="171340366"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="171340366"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  18 Feb 2021 14:10:09 -0800
-IronPort-SDR: 3Sn/oGKwDHnPy8zk1aO4zQeg9krAZKSOaBMQItNltsVQIFEPkFbpQPBeuuC1320DnE2tiyaK5j
- pxIkxvEpAfxA==
+IronPort-SDR: 5VlQD5A9cpvY/zg+oO8RbI1T4UhznOuvkSrHLPKPegWZtfyudJ7nYSDO3hDyUHBAcEze9yOcVI
+ 29fHnpNQFWzw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="427490930"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="364987313"
 Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
- by FMSMGA003.fm.intel.com with ESMTP; 18 Feb 2021 14:10:08 -0800
+ by orsmga006.jf.intel.com with ESMTP; 18 Feb 2021 14:10:07 -0800
 Received: from kbuild by cd560a204411 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lCrUt-0009vf-F7; Thu, 18 Feb 2021 22:10:07 +0000
-Date: Fri, 19 Feb 2021 06:09:42 +0800
+ id 1lCrUt-0009vQ-6U; Thu, 18 Feb 2021 22:10:07 +0000
+Date: Fri, 19 Feb 2021 06:09:45 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:ath-qca] BUILD SUCCESS
- f3cbd2b3254bb198d977b323573874ab37a7d533
-Message-ID: <602ee5a6.plj/I3NPOImrHH4h%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 160e4e3f5cf220ca4566d3c2d236c91b00917eda
+Message-ID: <602ee5a9.KCSxplpaZtfFjkIv%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210218_171010_741310_61DE4883 
-X-CRM114-Status: UNSURE (   7.05  )
+X-CRM114-CacheID: sfid-20210218_171011_342464_F58C9256 
+X-CRM114-Status: UNSURE (   6.04  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,12 +81,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: f3cbd2b3254bb198d977b323573874ab37a7d533  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 160e4e3f5cf220ca4566d3c2d236c91b00917eda  Merge branch 'pending' into master-pending
 
 elapsed time: 723m
 
-configs tested: 130
+configs tested: 144
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -98,9 +98,18 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                        multi_v5_defconfig
-arm                            u300_defconfig
-powerpc                        icon_defconfig
+powerpc                     asp8347_defconfig
+arm                        keystone_defconfig
+mips                         mpc30x_defconfig
+mips                        bcm47xx_defconfig
+arm                        trizeps4_defconfig
+powerpc                  iss476-smp_defconfig
+arc                          axs101_defconfig
+mips                             allyesconfig
+sh                             espt_defconfig
+arm                        realview_defconfig
+powerpc                     tqm8548_defconfig
+mips                            e55_defconfig
 arm                         cm_x300_defconfig
 c6x                                 defconfig
 sh                ecovec24-romimage_defconfig
@@ -117,12 +126,6 @@ powerpc                     rainier_defconfig
 arm                        cerfcube_defconfig
 arm                         lpc32xx_defconfig
 arm                         s3c2410_defconfig
-arc                         haps_hs_defconfig
-x86_64                           alldefconfig
-arc                        nsim_700_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                         wii_defconfig
-powerpc                     mpc512x_defconfig
 arm                       imx_v4_v5_defconfig
 arm                     eseries_pxa_defconfig
 mips                           xway_defconfig
@@ -168,7 +171,6 @@ sparc                            allyesconfig
 sparc                               defconfig
 i386                               tinyconfig
 i386                                defconfig
-mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
@@ -179,6 +181,12 @@ x86_64               randconfig-a004-20210218
 x86_64               randconfig-a002-20210218
 x86_64               randconfig-a005-20210218
 x86_64               randconfig-a006-20210218
+i386                 randconfig-a003-20210217
+i386                 randconfig-a005-20210217
+i386                 randconfig-a002-20210217
+i386                 randconfig-a006-20210217
+i386                 randconfig-a001-20210217
+i386                 randconfig-a004-20210217
 i386                 randconfig-a005-20210218
 i386                 randconfig-a003-20210218
 i386                 randconfig-a002-20210218
@@ -225,6 +233,12 @@ x86_64               randconfig-a012-20210216
 x86_64               randconfig-a015-20210216
 x86_64               randconfig-a014-20210216
 x86_64               randconfig-a011-20210216
+x86_64               randconfig-a012-20210218
+x86_64               randconfig-a016-20210218
+x86_64               randconfig-a013-20210218
+x86_64               randconfig-a015-20210218
+x86_64               randconfig-a011-20210218
+x86_64               randconfig-a014-20210218
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
