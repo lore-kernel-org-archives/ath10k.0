@@ -1,94 +1,69 @@
-Return-Path: <SRS0=t6ZP=HY=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=h0BU=HZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E1CC433E0
-	for <ath10k@archiver.kernel.org>; Mon, 22 Feb 2021 20:52:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EE91C433E0
+	for <ath10k@archiver.kernel.org>; Tue, 23 Feb 2021 04:05:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C930464DF3
-	for <ath10k@archiver.kernel.org>; Mon, 22 Feb 2021 20:52:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C930464DF3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id A523E64E3F
+	for <ath10k@archiver.kernel.org>; Tue, 23 Feb 2021 04:05:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A523E64E3F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=F9LpG+7eWp3vt5pNBjwKbhZFD+fjyUHO97TMTKkqkJY=; b=SsPOYtotI2PDxEBmHr+StOLto
-	IZXbS6V/60GtAcepeG5pXxBasXRqBW0hdg40dQl/tRGsDANDokB3HeSciXlsFvrx4YrM73AHhB6+n
-	dlmDkgdDO4wCh7S5mNh1ML0flbDY57TPOiOenx3Qui0MTy+JQWKZJfGX0RTAQD5tuXXUfcTi9W6NH
-	kBJn5OaZB0Cv6vQVscMpV+PvbVcJlWbMUkOqf5SMV+tDLdfiNQ5eN8viem1CXxvtKP13CnMZn6h3b
-	sbubVeh4aur4fh+vOwGvCEWMDhdtHWjCpf8xWfhIfSWKRwBbNKoiSJbowKQEvUHaEvZeBdPv6SD/X
-	qdcsttUfw==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=P2Lh0Qc0QMYFimMxrGMBrs/+B3oy5WomAjEVoADVMGs=; b=jKH38Z1JxAI74rdNDKB7QdIPLC
+	Nd4sX7xHOufxe9V3mxlY5nIr8aBEtC9VQS8VCLwfzB8r0jml+w/Nzs0dnjRpEkFBItyKIOV6QJKUa
+	NN9kI8YHTMcFE2SY4helGZ6gQtkAL9R7weagS/u43NHN+SZr5bduKZaE0OLMs0motIAKj087AJ6N/
+	eW92WVDSSzry+48ZKvDSbzxJrHnOTzuJpsxWcnJH+T9ivQpoiS1Hk9pcUTsTwMw+r5YMLA8RS4iC2
+	ltx0KYEDddH2FiUJottL3hPPjNe1zqPLDzKRDC9Dn473oOcb8pXupaZUyOyveno0veO/wj8S9sPg3
+	jnjty69A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEIBZ-0000Rh-Hy; Mon, 22 Feb 2021 20:52:05 +0000
-Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
+	id 1lEOxD-0005oW-5C; Tue, 23 Feb 2021 04:05:43 +0000
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEIBV-0000R8-Pc
- for ath10k@lists.infradead.org; Mon, 22 Feb 2021 20:52:03 +0000
-Received: by mail-io1-xd30.google.com with SMTP id f6so14755260iop.11
- for <ath10k@lists.infradead.org>; Mon, 22 Feb 2021 12:52:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linuxfoundation.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=kuUm+XwaOMq3E6+R97zywmgPDYZMExhRWYsNZ2tzM1k=;
- b=fshLji8N5sLxudDYL0zctHxlngBXio5EBB4HIyt9yiFXqb1lvBv7Hbg+a7SdaXnU92
- t0Z88p6rhVp/LijwWirktql4JIJkb3Keslasl6Nr4g75JqqmbL+wXydCnu7Ugt6pdfTv
- qTcfLe0SVAhU+urDYqQa/2mcMfm2rDU+5gpBM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=kuUm+XwaOMq3E6+R97zywmgPDYZMExhRWYsNZ2tzM1k=;
- b=G0/BEvmUMzOc98qXRBkTBgwOv9/GZzmNRGZeXeDnyN1+nYXFAEDQ5dBHR8ZMeJ0wYF
- I3DUN7fXyQZdSLImsAD9voLvyaswEgtD1qACwCtcado/OukRT50TYJ3OiQkRtTdEzYaX
- bJcwv7soOggQcG0d4QmsKQnJpVFZ69e91/kXeiLnlzhmGB6HMaC/9ctyNnKgyPiSlFNn
- Yrq94J6Blu7tXG1eF4TFqignmnkeQTxJbASOubaGztOtjlWwqhd+71v8tvRhvRw4Jzoh
- m+Am9zSNA+z9fSG2P6uk88PimP8JAl1zd+31NtxKIUdGkVPNNOoOno3DXcuNotnzyziH
- 6oxA==
-X-Gm-Message-State: AOAM530ptnVmRLBp2g1TMdKpUKzp2Lr2il3D+vaMko7ncNMvskddGOtd
- niqEtrLBHeshVvZjhyfp0YiUOA==
-X-Google-Smtp-Source: ABdhPJwzv6hjO87ytJYuheqlXuPEKrgLDRMEEqLMjH49Kte3lJoKPb495/7/SFdW8rMylcM2rbxG/A==
-X-Received: by 2002:a5e:dd46:: with SMTP id u6mr14196077iop.73.1614027118926; 
- Mon, 22 Feb 2021 12:51:58 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net.
- [24.9.64.241])
- by smtp.gmail.com with ESMTPSA id d12sm12524039ila.71.2021.02.22.12.51.58
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 22 Feb 2021 12:51:58 -0800 (PST)
-Subject: Re: [PATCH 1/2] lockdep: add lockdep_assert_not_held()
-To: Johannes Berg <johannes@sipsolutions.net>,
- Peter Zijlstra <peterz@infradead.org>
-References: <cover.1613171185.git.skhan@linuxfoundation.org>
- <37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org>
- <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
- <20210215104402.GC4507@worktop.programming.kicks-ass.net>
- <79aeb83a288051bd3a2a3f15e5ac42e06f154d48.camel@sipsolutions.net>
- <YCqbehyyeUoL0pPT@hirez.programming.kicks-ass.net>
- <eb819e72fb2d897e603654d44aeda8c6f337453f.camel@sipsolutions.net>
-From: Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <c9293180-3eba-a5f3-b34e-b44ebdd60077@linuxfoundation.org>
-Date: Mon, 22 Feb 2021 13:51:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ id 1lEOx8-0005n0-7O
+ for ath10k@lists.infradead.org; Tue, 23 Feb 2021 04:05:40 +0000
+IronPort-SDR: mze72lKEqUF9rSMFWv8lt/WBV6xVn8hmjcqF1FHP2Sq/FHz3tyHlbL6vP6CiT3HsJpWYP/rYGI
+ hLCp9oWkObmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="246107575"
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; d="scan'208";a="246107575"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Feb 2021 20:05:34 -0800
+IronPort-SDR: 261FJhiQjFlsjoLOlZZMu6i41l5yqIpIUTD6/jDZS6U0iTgRlq/5i2fWDIEPImdDMmoPAis2ab
+ kIQEESlknrFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; d="scan'208";a="366435485"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+ by orsmga006.jf.intel.com with ESMTP; 22 Feb 2021 20:05:33 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1lEOx2-0000tY-DC; Tue, 23 Feb 2021 04:05:32 +0000
+Date: Tue, 23 Feb 2021 12:04:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Subject: [ath6kl:pending] BUILD SUCCESS
+ 7ad53a6106d44ed704a76fa527e42d704aeebcf3
+Message-ID: <60347edc.lGQhVA7TxyHxjNy1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <eb819e72fb2d897e603654d44aeda8c6f337453f.camel@sipsolutions.net>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210222_155201_946890_7D1F2450 
-X-CRM114-Status: GOOD (  15.28  )
+X-CRM114-CacheID: sfid-20210222_230538_921712_7F3DC5F1 
+X-CRM114-Status: UNSURE (   6.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,60 +75,140 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, mingo@redhat.com,
- Shuah Khan <skhan@linuxfoundation.org>, kuba@kernel.org, will@kernel.org,
- davem@davemloft.net, kvalo@codeaurora.org
+Cc: ath10k@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2/15/21 9:10 AM, Johannes Berg wrote:
-> On Mon, 2021-02-15 at 17:04 +0100, Peter Zijlstra wrote:
->> On Mon, Feb 15, 2021 at 02:12:30PM +0100, Johannes Berg wrote:
->>> On Mon, 2021-02-15 at 11:44 +0100, Peter Zijlstra wrote:
->>>> I think something like so will work, but please double check.
->>>
->>> Yeah, that looks better.
->>>
->>>> +++ b/include/linux/lockdep.h
->>>> @@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
->>>>   
->>>>   #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
->>>>   
->>>> -#define lockdep_assert_held(l)	do {				\
->>>> -		WARN_ON(debug_locks && !lockdep_is_held(l));	\
->>>> +#define lockdep_assert_held(l)	do {					\
->>>> +		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
->>>>   	} while (0)
->>>
->>> That doesn't really need to change? It's the same.
->>
->> Correct, but I found it more symmetric vs the not implementation below.
-> 
-> Fair enough. One might argue that you should have an
-> 
-> enum lockdep_lock_state {
-> 	LOCK_STATE_NOT_HELD, /* 0 now */
-> 	LOCK_STATE_HELD, /* 1 now */
-> 	LOCK_STATE_UNKNOWN, /* -1 with your patch but might as well be 2 */
-> };
-> 
-> :)
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 7ad53a6106d44ed704a76fa527e42d704aeebcf3  ath11k: fix AP mode for QCA6390
 
+elapsed time: 726m
 
-Thank you both. Picking this back up. Will send v2 incorporating
-your comments and suggestions.
+configs tested: 110
+configs skipped: 3
 
-thanks,
--- Shuah
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     akebono_defconfig
+x86_64                           alldefconfig
+mips                            gpr_defconfig
+s390                                defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                         ap325rxa_defconfig
+mips                           ip27_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                        bcm63xx_defconfig
+arm                         hackkit_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                     redwood_defconfig
+powerpc64                           defconfig
+mips                          rb532_defconfig
+mips                            e55_defconfig
+m68k                       m5475evb_defconfig
+powerpc                      mgcoge_defconfig
+m68k                          sun3x_defconfig
+arm                        multi_v5_defconfig
+arm                          simpad_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                        sh7763rdp_defconfig
+sh                   secureedge5410_defconfig
+sparc                       sparc64_defconfig
+arm                     am200epdkit_defconfig
+powerpc                      bamboo_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                         tb0226_defconfig
+arm                       multi_v4t_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                   motionpro_defconfig
+s390                          debug_defconfig
+arm                            lart_defconfig
+powerpc                          g5_defconfig
+sh                        sh7785lcr_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20210222
+x86_64               randconfig-a002-20210222
+x86_64               randconfig-a003-20210222
+x86_64               randconfig-a005-20210222
+x86_64               randconfig-a006-20210222
+x86_64               randconfig-a004-20210222
+i386                 randconfig-a005-20210222
+i386                 randconfig-a006-20210222
+i386                 randconfig-a004-20210222
+i386                 randconfig-a003-20210222
+i386                 randconfig-a001-20210222
+i386                 randconfig-a002-20210222
+i386                 randconfig-a013-20210222
+i386                 randconfig-a012-20210222
+i386                 randconfig-a011-20210222
+i386                 randconfig-a014-20210222
+i386                 randconfig-a016-20210222
+i386                 randconfig-a015-20210222
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                      rhel-8.3-kbuiltin
 
+clang tested configs:
+x86_64               randconfig-a015-20210222
+x86_64               randconfig-a011-20210222
+x86_64               randconfig-a012-20210222
+x86_64               randconfig-a016-20210222
+x86_64               randconfig-a014-20210222
+x86_64               randconfig-a013-20210222
 
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
