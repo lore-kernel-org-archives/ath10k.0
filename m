@@ -1,69 +1,69 @@
-Return-Path: <SRS0=h0BU=HZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Mu6E=H2=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6535BC433DB
-	for <ath10k@archiver.kernel.org>; Tue, 23 Feb 2021 20:37:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9CFBC433DB
+	for <ath10k@archiver.kernel.org>; Wed, 24 Feb 2021 12:51:36 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD77C64EC3
-	for <ath10k@archiver.kernel.org>; Tue, 23 Feb 2021 20:37:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD77C64EC3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4E59364F25
+	for <ath10k@archiver.kernel.org>; Wed, 24 Feb 2021 12:51:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E59364F25
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=qfEgnf31P211JIKWwNLvmeU4gHTqKzeLAYaC4jd3vC4=; b=WSUtDXSlLPvM1+c7qEBGgih0i/
-	YTcX2Y4xlsZAnpwOz4yUsQt7tD5aFSFny4ZLl2bkwgA/tl9EH6DKpNz1tHV6UonVIaO9A8RrvT8eH
-	mnY8qfXiSZWk0V6KaJXVGYIbTKXgk9XtBDTXO121xza+9qsuhrUTkyYFCSLCInzgRRLLMR5Hv0Nq/
-	A9cC2qv4CUFJ+6j6a0YulxLIIGwIImgm1/fLkFJVZUA1Vb89OBKSqOfqYNn0SJrda+talMDa74oTT
-	lF0JU94B5QRw54wDZmPzceCmhGpD9LZzedx36Sh9CeEwNsDjGg1fiKWRGe5MD1nM/S1ybqSc+fEoo
-	8oxCXtSw==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=LQz9Fh0YX8bToR8643gUcUdEs8ehEr/OwWxaI5yySF4=; b=ToeH0gtIJ476vaQZrMk/zw9zR
+	GltZw6HcO8QZrXsC+ij9xiksFt2MEG0i1ayRT4Wn43tclOifN70/mOm/JxaWYHYT374I40MwdAZ6j
+	ywdVzxSKS8LP5qxgOX1KXCxZvBZZ9KtdX6X95hQBMYpLxUxShdBu1d7QGq+h2iWsn9xXfzKjSLc6s
+	ufYW5OL4WeuPFaUQQikv7MD6nFE6MzfWGN7+50ZaQTipbdU7WbnLfppCHn5ClZiaMjmc46X0zu9RC
+	8ImEZt3jHoajo3TKAy/4lI9jra+X8+ilxI53+0dhrrzlxoOnvQ3vw4ZLqi9+xBft2vPxjhnpfvWCh
+	ExdUuWJXg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEeQi-0003pn-S5; Tue, 23 Feb 2021 20:37:12 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1lEtd0-0001xS-BB; Wed, 24 Feb 2021 12:50:54 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEeQf-0003ov-T4
- for ath10k@lists.infradead.org; Tue, 23 Feb 2021 20:37:10 +0000
-IronPort-SDR: 1eW+twSHAsHTKKBPuXCFPlbvaDzocbOQQGaqJ9aPkCE2USSy+/bbReZgRUErl0Ii5qE1sO42ny
- 2POxSKObcrPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="164161750"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; d="scan'208";a="164161750"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Feb 2021 12:37:02 -0800
-IronPort-SDR: wyuFV9bscCaqLRXJ0ozFP+PSWdUSKQvf93HJ3EBe5paBLZt5AmBGSCmuIl7gS/CEPfNBOeK132
- U33dIspUam6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; d="scan'208";a="593374048"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
- by fmsmga006.fm.intel.com with ESMTP; 23 Feb 2021 12:37:01 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1lEeQW-0001Xc-FL; Tue, 23 Feb 2021 20:37:00 +0000
-Date: Wed, 24 Feb 2021 04:36:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:pending] BUILD SUCCESS
- d8ca9bba80fc82315abfebaa0fd2f863cf1e7e1a
-Message-ID: <6035673a.IHOuX86wl4beB6vA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1lEtcs-0001vd-N2
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2021 12:50:48 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 063C864F06;
+ Wed, 24 Feb 2021 12:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1614171046;
+ bh=eTYfnCxSmQMZPxjA9DkQiqxmEm/ZElvyZd5jBES6lSQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=cOwic9UN4f120pdAtwr9IY21CYzIQSpcYRN7SNwjFkP1N5WKRqcNYb6HeEeMpctub
+ 7qxJWZrfjPJCyN/yV4fWI5sg2ALIUbtkzP48gnAFHG4YEEoaXVh3C/N+ku6ysAzaIP
+ RHzamOZ+nx9wDjXU/VH8iW0udeIm6WgpxF/U1KIANU5Rvy4Pl/jibTEoMQ4I6A/EK/
+ qoiEw0GOT6YmOnoi4A0Sh1W73ae7YksOLouQO+ouIG2jaM79RIPeh+FxWlwjWUPTwG
+ LYrntQhqDsg0zu/egSI39YACYasOSVMOtt7natUkmbvW1hBUtcQlnO784Km0b6VeEo
+ jN2XjwCa9iWGg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 14/67] ath10k: fix wmi mgmt tx queue full due to
+ race condition
+Date: Wed, 24 Feb 2021 07:49:32 -0500
+Message-Id: <20210224125026.481804-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210224125026.481804-1-sashal@kernel.org>
+References: <20210224125026.481804-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210223_153710_131295_301DC6B2 
-X-CRM114-Status: UNSURE (   5.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210224_075046_987152_15A60D36 
+X-CRM114-Status: GOOD (  13.58  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,173 +75,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Cc: ath10k@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Sasha Levin <sashal@kernel.org>, Miaoqing Pan <miaoqing@codeaurora.org>,
+ netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
+ linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ Kalle Valo <kvalo@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: d8ca9bba80fc82315abfebaa0fd2f863cf1e7e1a  ath11k: add debugfs for TWT debug calls
-
-elapsed time: 721m
-
-configs tested: 141
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         axm55xx_defconfig
-m68k                         amcore_defconfig
-arm                          ep93xx_defconfig
-powerpc                    gamecube_defconfig
-ia64                         bigsur_defconfig
-powerpc                     tqm8560_defconfig
-arc                          axs101_defconfig
-arm                         s3c6400_defconfig
-mips                           jazz_defconfig
-arm                            pleb_defconfig
-xtensa                           alldefconfig
-powerpc                       ebony_defconfig
-s390                             alldefconfig
-powerpc                     tqm8540_defconfig
-sh                            migor_defconfig
-powerpc                      ppc44x_defconfig
-arm                        spear3xx_defconfig
-arm                          moxart_defconfig
-sh                          r7785rp_defconfig
-mips                           xway_defconfig
-mips                        qi_lb60_defconfig
-arm                          pxa910_defconfig
-arc                          axs103_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                       m5475evb_defconfig
-arm                       netwinder_defconfig
-sh                          rsk7203_defconfig
-powerpc                    amigaone_defconfig
-mips                      fuloong2e_defconfig
-arm                        spear6xx_defconfig
-mips                        vocore2_defconfig
-arm                            qcom_defconfig
-arm                            hisi_defconfig
-mips                            gpr_defconfig
-c6x                              alldefconfig
-nios2                         3c120_defconfig
-powerpc                      arches_defconfig
-parisc                generic-64bit_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                        oxnas_v6_defconfig
-openrisc                         alldefconfig
-m68k                        m5307c3_defconfig
-sh                             espt_defconfig
-powerpc                         wii_defconfig
-m68k                                defconfig
-arm                            zeus_defconfig
-nds32                             allnoconfig
-sh                               allmodconfig
-parisc                generic-32bit_defconfig
-openrisc                    or1ksim_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                        mvebu_v5_defconfig
-microblaze                      mmu_defconfig
-xtensa                generic_kc705_defconfig
-arm                         lpc18xx_defconfig
-arc                      axs103_smp_defconfig
-x86_64                           alldefconfig
-ia64                      gensparse_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      walnut_defconfig
-mips                           ip32_defconfig
-sh                        edosk7705_defconfig
-arm                      footbridge_defconfig
-powerpc                     sequoia_defconfig
-arm                        multi_v5_defconfig
-mips                          ath79_defconfig
-mips                      maltaaprp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210223
-i386                 randconfig-a006-20210223
-i386                 randconfig-a004-20210223
-i386                 randconfig-a003-20210223
-i386                 randconfig-a001-20210223
-i386                 randconfig-a002-20210223
-x86_64               randconfig-a015-20210223
-x86_64               randconfig-a011-20210223
-x86_64               randconfig-a012-20210223
-x86_64               randconfig-a016-20210223
-x86_64               randconfig-a014-20210223
-x86_64               randconfig-a013-20210223
-i386                 randconfig-a013-20210223
-i386                 randconfig-a012-20210223
-i386                 randconfig-a011-20210223
-i386                 randconfig-a014-20210223
-i386                 randconfig-a016-20210223
-i386                 randconfig-a015-20210223
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20210223
-x86_64               randconfig-a002-20210223
-x86_64               randconfig-a003-20210223
-x86_64               randconfig-a005-20210223
-x86_64               randconfig-a006-20210223
-x86_64               randconfig-a004-20210223
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RnJvbTogTWlhb3FpbmcgUGFuIDxtaWFvcWluZ0Bjb2RlYXVyb3JhLm9yZz4KClsgVXBzdHJlYW0g
+Y29tbWl0IGI1NTM3OWUzNDNhMzQ3MmMzNWY0YTEyNDU5MDZkYjUxNThjYWI0NTMgXQoKRmFpbGVk
+IHRvIHRyYW5zbWl0IHdtaSBtYW5hZ2VtZW50IGZyYW1lczoKCls4NDk3Ny44NDA4OTRdIGF0aDEw
+a19zbm9jIGEwMDAwMDAud2lmaTogd21pIG1nbXQgdHggcXVldWUgaXMgZnVsbApbODQ5NzcuODQw
+OTEzXSBhdGgxMGtfc25vYyBhMDAwMDAwLndpZmk6IGZhaWxlZCB0byB0cmFuc21pdCBwYWNrZXQs
+IGRyb3BwaW5nOiAtMjgKWzg0OTc3Ljg0MDkyNF0gYXRoMTBrX3Nub2MgYTAwMDAwMC53aWZpOiBm
+YWlsZWQgdG8gc3VibWl0IGZyYW1lOiAtMjgKWzg0OTc3Ljg0MDkzMl0gYXRoMTBrX3Nub2MgYTAw
+MDAwMC53aWZpOiBmYWlsZWQgdG8gdHJhbnNtaXQgZnJhbWU6IC0yOAoKVGhpcyBpc3N1ZSBpcyBj
+YXVzZWQgYnkgcmFjZSBjb25kaXRpb24gYmV0d2VlbiBza2JfZGVxdWV1ZSBhbmQKX19za2JfcXVl
+dWVfdGFpbC4gVGhlIHF1ZXVlIG9mIOKAmHdtaV9tZ210X3R4X3F1ZXVl4oCZIGlzIHByb3RlY3Rl
+ZCBieSBhCmRpZmZlcmVudCBsb2NrOiBhci0+ZGF0YV9sb2NrIHZzIGxpc3QtPmxvY2ssIHRoZSBy
+ZXN1bHQgaXMgbm8gcHJvdGVjdGlvbi4KU28gd2hlbiBhdGgxMGtfbWdtdF9vdmVyX3dtaV90eF93
+b3JrKCkgYW5kIGF0aDEwa19tYWNfdHhfd21pX21nbXQoKQpydW5uaW5nIGNvbmN1cnJlbnRseSBv
+biBkaWZmZXJlbnQgQ1BVcywgdGhlcmUgYXBwZWFyIHRvIGJlIGEgcmFyZSBjb3JuZXIKY2FzZXMg
+d2hlbiB0aGUgcXVldWUgbGVuZ3RoIGlzIDEsCgogIENQVXggKHNrYl9kZXVxdWUpCQkJQ1BVeSAo
+X19za2JfcXVldWVfdGFpbCkKCQkJCQluZXh0PWxpc3QKCQkJCQlwcmV2PWxpc3QKICBzdHJ1Y3Qg
+c2tfYnVmZiAqc2tiID0gc2tiX3BlZWsobGlzdCk7CVdSSVRFX09OQ0UobmV3c2stPm5leHQsIG5l
+eHQpOwogIFdSSVRFX09OQ0UobGlzdC0+cWxlbiwgbGlzdC0+cWxlbiAtIDEpO1dSSVRFX09OQ0Uo
+bmV3c2stPnByZXYsIHByZXYpOwogIG5leHQgICAgICAgPSBza2ItPm5leHQ7CQlXUklURV9PTkNF
+KG5leHQtPnByZXYsIG5ld3NrKTsKICBwcmV2ICAgICAgID0gc2tiLT5wcmV2OwkJV1JJVEVfT05D
+RShwcmV2LT5uZXh0LCBuZXdzayk7CiAgc2tiLT5uZXh0ICA9IHNrYi0+cHJldiA9IE5VTEw7CWxp
+c3QtPnFsZW4rKzsKICBXUklURV9PTkNFKG5leHQtPnByZXYsIHByZXYpOwogIFdSSVRFX09OQ0Uo
+cHJldi0+bmV4dCwgbmV4dCk7CgpJZiB0aGUgaW5zdHJ1Y3Rpb24g4oCYbmV4dCA9IHNrYi0+bmV4
+dOKAmSBpcyBleGVjdXRlZCBiZWZvcmUK4oCYV1JJVEVfT05DRShwcmV2LT5uZXh0LCBuZXdzayni
+gJksIG5ld3NrIHdpbGwgYmUgbG9zdCwgYXMgQ1BVeCBnZXQgdGhlCm9sZCDigJhuZXh04oCZIHBv
+aW50ZXIsIGJ1dCB0aGUgbGVuZ3RoIGlzIHN0aWxsIGFkZGVkIGJ5IG9uZS4gVGhlIGZpbmFsCnJl
+c3VsdCBpcyB0aGUgbGVuZ3RoIG9mIHRoZSBxdWV1ZSB3aWxsIHJlYWNoIHRoZSBtYXhpbXVtIHZh
+bHVlIGJ1dAp0aGUgcXVldWUgaXMgZW1wdHkuCgpTbyByZW1vdmUgYXItPmRhdGFfbG9jaywgYW5k
+IHVzZSAnc2tiX3F1ZXVlX3RhaWwnIGluc3RlYWQgb2YKJ19fc2tiX3F1ZXVlX3RhaWwnIHRvIHBy
+ZXZlbnQgdGhlIHBvdGVudGlhbCByYWNlIGNvbmRpdGlvbi4gQWxzbyBzd2l0Y2gKdG8gdXNlIHNr
+Yl9xdWV1ZV9sZW5fbG9ja2xlc3MsIGluIGNhc2Ugd2UgcXVldWUgYSBmZXcgU0tCcyBzaW11bHRh
+bmVvdXNseS4KClRlc3RlZC1vbjogV0NOMzk5MCBodzEuMCBTTk9DIFdMQU4uSEwuMy4xLmMyLTAw
+MDMzLVFDQUhMU1dNVFBMWi0xCgpTaWduZWQtb2ZmLWJ5OiBNaWFvcWluZyBQYW4gPG1pYW9xaW5n
+QGNvZGVhdXJvcmEub3JnPgpSZXZpZXdlZC1ieTogQnJpYW4gTm9ycmlzIDxicmlhbm5vcnJpc0Bj
+aHJvbWl1bS5vcmc+ClNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQGNvZGVhdXJvcmEu
+b3JnPgpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzE2MDg2MTg4ODctODg1Ny0xLWdp
+dC1zZW5kLWVtYWlsLW1pYW9xaW5nQGNvZGVhdXJvcmEub3JnClNpZ25lZC1vZmYtYnk6IFNhc2hh
+IExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL21hYy5jIHwgMTUgKysrKy0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
+cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL21hYy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
+YWMuYwppbmRleCA3ZDk4MjUwMzgwZWM1Li45MWIxMDA2ZWYyYTI3IDEwMDY0NAotLS0gYS9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvbWFjLmMKQEAgLTM3NjMsMjMgKzM3NjMsMTYgQEAgYm9vbCBhdGgxMGtf
+bWFjX3R4X2ZybV9oYXNfZnJlcShzdHJ1Y3QgYXRoMTBrICphcikKIHN0YXRpYyBpbnQgYXRoMTBr
+X21hY190eF93bWlfbWdtdChzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikK
+IHsKIAlzdHJ1Y3Qgc2tfYnVmZl9oZWFkICpxID0gJmFyLT53bWlfbWdtdF90eF9xdWV1ZTsKLQlp
+bnQgcmV0ID0gMDsKLQotCXNwaW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7CiAKLQlpZiAoc2ti
+X3F1ZXVlX2xlbihxKSA9PSBBVEgxMEtfTUFYX05VTV9NR01UX1BFTkRJTkcpIHsKKwlpZiAoc2ti
+X3F1ZXVlX2xlbl9sb2NrbGVzcyhxKSA+PSBBVEgxMEtfTUFYX05VTV9NR01UX1BFTkRJTkcpIHsK
+IAkJYXRoMTBrX3dhcm4oYXIsICJ3bWkgbWdtdCB0eCBxdWV1ZSBpcyBmdWxsXG4iKTsKLQkJcmV0
+ID0gLUVOT1NQQzsKLQkJZ290byB1bmxvY2s7CisJCXJldHVybiAtRU5PU1BDOwogCX0KIAotCV9f
+c2tiX3F1ZXVlX3RhaWwocSwgc2tiKTsKKwlza2JfcXVldWVfdGFpbChxLCBza2IpOwogCWllZWU4
+MDIxMV9xdWV1ZV93b3JrKGFyLT5odywgJmFyLT53bWlfbWdtdF90eF93b3JrKTsKIAotdW5sb2Nr
+OgotCXNwaW5fdW5sb2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsKLQotCXJldHVybiByZXQ7CisJcmV0
+dXJuIDA7CiB9CiAKIHN0YXRpYyBlbnVtIGF0aDEwa19tYWNfdHhfcGF0aAotLSAKMi4yNy4wCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
