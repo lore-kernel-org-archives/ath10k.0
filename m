@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 869CEC433E0
-	for <ath10k@archiver.kernel.org>; Wed, 24 Feb 2021 12:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C709C433E0
+	for <ath10k@archiver.kernel.org>; Wed, 24 Feb 2021 12:56:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F61264FBF
-	for <ath10k@archiver.kernel.org>; Wed, 24 Feb 2021 12:56:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F61264FBF
+	by mail.kernel.org (Postfix) with ESMTPS id ACEEB64FB3
+	for <ath10k@archiver.kernel.org>; Wed, 24 Feb 2021 12:56:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACEEB64FB3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=L1Kx7VD9oohRGtLhB268LFzsCivDCkMpV7mTax5XY3E=; b=MfRsuiYOS4fclx5W2LfH7IkhA
-	e+Ui+khf1moGgPwUl1Zd0+Bqv3O44J/kEYC6Kvpd+uSJzCkEdA377q9UArFPqYif+MHc8TZlR/alm
-	qo/KmEq1wvrd3K+ivV8NwjFAPCtHsLSuwBKPQs/TPy392jg2RYMnV6Fkj8KAojlpi9rb8miwFd694
-	Qrcm6QXmI9o+zLahF6b56DXs2JQ+zw5vDeCFeAFW4VhLuE5NsWTntWzqNmKNbruJWdz/uRR5R1EqF
-	o+DlV36otOsRwL6m9ArEDN3bExvGgy+Rc1F6PmQn3aX3hLDk4we59cMJiLAyYVfBFFBXzNYuu9jwr
-	zP+knu4Mg==;
+	 bh=vQoRmHA+2yDhjmqiqV/WEYUGVB3PZ+wHg2ROc2Kjd2Y=; b=K+F3GPtwVE4szxYziNg44E85D
+	l42XgP6/b8cEOXiWM9Ljw1bCWsQNQLIpvG+EuQ7YPQQIDiBpdgfbDEnJcl3bNgO9aSqI6NcrM02Ys
+	EBm9EgMr9aQVZECM64mr3HQ9lDZ1AJC9H00kAmc7VPIQrPbVDkNJM2BpfwV8dEoO3BnCBKmUvMESv
+	gWCQmpwq+VwJxxht9TBcxp+zyJrCAhRdhwV0W6IxXyuMsJUIIknEIobDsG3qcp5WdOC9k7T2yZCsh
+	V0bSAdbfeUwYpLPOYdj/iQtgvSQ6/Av4xyIpMe6XFuH32LNfdP9dPp8Jvln3EZi31J9Yr+BmMYV59
+	qsTD7k2vQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEthW-00047s-MD; Wed, 24 Feb 2021 12:55:34 +0000
+	id 1lEtht-0004J3-6R; Wed, 24 Feb 2021 12:55:58 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEthL-00042d-UR
- for ath10k@lists.infradead.org; Wed, 24 Feb 2021 12:55:28 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 436CB64FA8;
- Wed, 24 Feb 2021 12:55:21 +0000 (UTC)
+ id 1lEthl-0004G8-Pd
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2021 12:55:52 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A801764F70;
+ Wed, 24 Feb 2021 12:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614171322;
- bh=/j09jF9iEYwjdNIhhom79bvw1/WY5jtlDWpLUvx87Ms=;
+ s=k20201202; t=1614171348;
+ bh=QU7yexYfUTRLPEatwVmCU0ySXJmlqXH1VLn2wY+/vtw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FsLyeOUIlKyuRqWl8xIpJFLRlzMJQ8o7cGyuVOGWnY8Jn4uEDBkxwFiG0LMQdU+2G
- nbzWhg9z1afp8iFoKs2z/06GqgQsQEn8RBkwooNLwIi8jKbkBZ/BWCrJLfOwVfLCKq
- jA2KjMPTkf8Q3sXwseNq3ik0MLdc0ZgSccObXI5HsEyq6TTPx+sSV3pld5aYwlax9A
- qmvEM4nSH8NQXwJfqCBQG0O+YkNOJl3yrrOsVUKuQ+zZ6/1ihC3moY6mw1+NtFyB+p
- rKrfch4J2n8J0m4J4p5rNiKiQCIZyjz4oyE2Vu4f2EFxIrHgfMfTxIVREfQFQnnzMc
- 1/M/E1fPlD9VA==
+ b=C8O/rzWEz4cWfJKrKKInFNTwtjZHTVZhXTKqvCAj08lVlSg3GxObnO28tmD+qDY4C
+ dPg/6JqVmNGkaCu2Asa7dxEfsS3eLaDBS5SPD4TtexeTt1gcDV0QItgfXtuzyI+n94
+ 2wTvuh/Mya/0IDzUWa34IdQIMg32hc2cA/xJZ8RjxA9pQzH8vo6PTpGvBXx+wqHnB0
+ Yqrhxi+4j/LPEDp4C61VzFDHn3S6HNjnn8YQxTdUJy9uMAoCFmaSBQqJlhsuJJQTFK
+ lLAVdn1TLmjLct63sT0xpKFNRXTHlyjO/qnExDdUYtlh8NUf5m6fs+bsO0T4mBhI3W
+ 63LYfLa6ip+rg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 06/16] ath10k: fix wmi mgmt tx queue full due to
+Subject: [PATCH AUTOSEL 4.9 06/12] ath10k: fix wmi mgmt tx queue full due to
  race condition
-Date: Wed, 24 Feb 2021 07:55:03 -0500
-Message-Id: <20210224125514.483935-6-sashal@kernel.org>
+Date: Wed, 24 Feb 2021 07:55:34 -0500
+Message-Id: <20210224125540.484221-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210224125514.483935-1-sashal@kernel.org>
-References: <20210224125514.483935-1-sashal@kernel.org>
+In-Reply-To: <20210224125540.484221-1-sashal@kernel.org>
+References: <20210224125540.484221-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210224_075524_274108_33756CA2 
+X-CRM114-CacheID: sfid-20210224_075550_024740_D6F6CDF4 
 X-CRM114-Status: GOOD (  13.58  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -125,9 +125,9 @@ IExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
 YXRoMTBrL21hYy5jIHwgMTUgKysrKy0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
 cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJl
 bGVzcy9hdGgvYXRoMTBrL21hYy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
-YWMuYwppbmRleCBiZTQ0MjBmZjUyYjhhLi5hYTViZWM1YTM2NzYxIDEwMDY0NAotLS0gYS9kcml2
+YWMuYwppbmRleCA4YjNmZTg4ZDFjNGU3Li41NjQxODFiYjA5MDZhIDEwMDY0NAotLS0gYS9kcml2
 ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvbWFjLmMKQEAgLTM1NDUsMjMgKzM1NDUsMTYgQEAgYm9vbCBhdGgxMGtf
+ZXNzL2F0aC9hdGgxMGsvbWFjLmMKQEAgLTM0NTIsMjMgKzM0NTIsMTYgQEAgYm9vbCBhdGgxMGtf
 bWFjX3R4X2ZybV9oYXNfZnJlcShzdHJ1Y3QgYXRoMTBrICphcikKIHN0YXRpYyBpbnQgYXRoMTBr
 X21hY190eF93bWlfbWdtdChzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikK
 IHsKIAlzdHJ1Y3Qgc2tfYnVmZl9oZWFkICpxID0gJmFyLT53bWlfbWdtdF90eF9xdWV1ZTsKLQlp
