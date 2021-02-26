@@ -2,83 +2,84 @@ Return-Path: <SRS0=xh5s=H4=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AA1AC433E0
-	for <ath10k@archiver.kernel.org>; Fri, 26 Feb 2021 17:53:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B0ACC433DB
+	for <ath10k@archiver.kernel.org>; Fri, 26 Feb 2021 17:53:21 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A2AA64F17
-	for <ath10k@archiver.kernel.org>; Fri, 26 Feb 2021 17:53:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A2AA64F17
+	by mail.kernel.org (Postfix) with ESMTPS id 3522D64F17
+	for <ath10k@archiver.kernel.org>; Fri, 26 Feb 2021 17:53:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3522D64F17
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Uv3LCiGffn2XUKTEFSOJX3gbs+Uzx8IRAoo6pRj1nGQ=; b=jgnd/k0PM01YdzQdMdbBj20DCt
-	80fRZqO2Q6+PwKpLD97vsDZx6LbJSmie0tWC4sRmyjgXYpjD7UWKH+hP5XUepUnRvvDYeH+RQhi8Y
-	5WWHW+XpTchThyF5ONG42aE5GWMAWjWARAGGOWTAv7ztKi/tJiIlTX12JTXUe1WUjnJRSRWMYEhoV
-	mwqEU2K2EjuHtndVVMZi+T9Uy49IGbQ0hwiIwWDq0P+YT9+dZiLINOP6vRGiI5idTj7YPNyuKBuXv
-	iYq5a7m2c2AFOnWmIjx4TPeIyln4rkvKtSmItwd/+8d6vljyq2iwScREEwTO1iLCvl2Ag22T5PBS8
-	7EbzZsDA==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=68ZjpdOwtDlC9+1uAuNfQ553HPZ5NhkjYotSroVGaRQ=; b=Kk3yWzt2ArnA3Elkm1TiSssQL
+	nCXm9iAs5WNgE7q4vPAjLq9vD11U6F2VCwzYziQHwK41HstlAUkNb97OUTsaFnNIVOwfRi0o5b8lv
+	h82tilaN7ME4P0irwOUGl9CvyMt5mxYL0m4x/DWT+jNhSOjNSrWgpQ6Z1Xc7LEUZwos2MoUvnUGo/
+	+p9byEnLGdrNkXtZyQpAWD1/aJQvbxfMcRZP+fyY7I2cL20xlGUPXkYK0ZO1wW5AWXeaUJldF5zZn
+	xait8tM6sPEJMyBflghyofe3siKY1HnHDVYWI7dVlILTdIHCipyad2cw1StN0mNb50OJw29QZk8y4
+	iIcxsLz1g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lFhHs-00011e-Hg; Fri, 26 Feb 2021 17:52:24 +0000
-Received: from mail-il1-x135.google.com ([2607:f8b0:4864:20::135])
+	id 1lFhHu-00012B-N4; Fri, 26 Feb 2021 17:52:26 +0000
+Received: from mail-il1-x129.google.com ([2607:f8b0:4864:20::129])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lFhHp-0000zU-Ve
- for ath10k@lists.infradead.org; Fri, 26 Feb 2021 17:52:23 +0000
-Received: by mail-il1-x135.google.com with SMTP id h18so8721968ils.2
- for <ath10k@lists.infradead.org>; Fri, 26 Feb 2021 09:52:19 -0800 (PST)
+ id 1lFhHq-0000zW-IU
+ for ath10k@lists.infradead.org; Fri, 26 Feb 2021 17:52:25 +0000
+Received: by mail-il1-x129.google.com with SMTP id q9so8759365ilo.1
+ for <ath10k@lists.infradead.org>; Fri, 26 Feb 2021 09:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=linuxfoundation.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=dY88CmhEdqi8wt/ahIMuuDlu90hzE7DFVh5FsuKso0s=;
- b=GEozSIwSQMHght7BICfIen1ZuqO1Uu8LnD6oos4DAN9zjNzl+T9of+vQKxslcE2Bjl
- B+55kRiyHRj05v6DxQbsCcajyLUzb5WsFfKr2roMoSzknE6EsZ/a5Yc++mYmoMWZoxEj
- pCBOx2bG1l70JBbuNroc8ck/XWt9UWsOLppl0=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=KzQ9OBQajFeaiUpGgz5pU1UyInmaQ1PIgYZOHvN7J2s=;
+ b=QmEx6PMwk5EzxsrPZJ6iRfQ/ny2qMbBfnWObiy0RKj7IzCtCtGd2xn3nfRRPTWrMDn
+ 8qODazbWCshriSjXgg2GqqfyIxkQxBwY1cmWSxb2GEk7YRApPYA3iYuVChku9DJatqOG
+ Rg8jTRSgD/ztSQ1+1eAYv8ZZWPYSsXyi4jNH0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=dY88CmhEdqi8wt/ahIMuuDlu90hzE7DFVh5FsuKso0s=;
- b=G+rdxITmlOUw/kHE7nAJiBIbua4balHN7CbJ3MNCRETSSde8YFOAWd7e45anoleXPD
- F+V159NE/hKyQuxMwsV2+JMdTEfUdMyveex68C5u1FDEAmAVIjMvxZ2jIEcGBhfr5JLp
- 1OTdEB+JlonyQ05hcJy+c9vytdEy/ZERITue/xgTBtvjbcOU3c7X01slEmlnf+WLGi8w
- bLwNtB7PyKWBggt/2xVYdGMryG8BgpyUjZLHgycnTfRr9YrBCRXJeb4L0MZuv96us8DO
- ED5k4cI3e3ZpWcc3n7z/x4i9LvnXZ1E4uogBiZyBpRfQGbOIrm5kzXl4wc/FxHt4bKnI
- 4FDw==
-X-Gm-Message-State: AOAM531zh1dEwZfiXLPoGU/W2rhJF0C++Taa++gTOiPq42JouODhFWHo
- 7SDK/skmRnL7/Gwssyq+fllUxA==
-X-Google-Smtp-Source: ABdhPJyk6Fd7CHK3TK6ZvIe6aA/9gQV5HhrgT8cwxOjO3hwk/x87J2J5g+K3jvzjCy1GS3+/u9qmFg==
-X-Received: by 2002:a05:6e02:881:: with SMTP id
- z1mr3371733ils.288.1614361938177; 
- Fri, 26 Feb 2021 09:52:18 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=KzQ9OBQajFeaiUpGgz5pU1UyInmaQ1PIgYZOHvN7J2s=;
+ b=RIQbkF6mfByUS1llhXgpz6XZ9/AaxNzC6LHgTR44+N//5aDdBC/VLu+LV+dZwP0oW/
+ sMxnIxUt3JCACm2DQt7rpPnUxt2xAHXE0FhiyOky4W74PpZKkxQaKkC4aEopfIIe65HV
+ he1wDWTgVKlQB762Au7MHeUQXZT4rAQ5jE8Fkjjf/i2LZvxZZtgj03ctq3hn5QuQ/D/9
+ m/u4mfxGL/JpjxV5p99oeKeTTUPYkL6rW4xBO3DQedhDJbcAzjIXxGrTI6pesCWSN4nB
+ 6I0f3QXVP8J9INcV2egEXn3eDNfuM/niGwektYT2WuoKkPlSQWqUfdUDN6oWwIWnKoKW
+ BvuQ==
+X-Gm-Message-State: AOAM532FDQJjG1pVEUByvZcRBgFRSLpe5BzTvRNHiJqV3vPA5vsOPBWI
+ E2Bx95ZyuWV6rQsmqKYgeDCRKq24wMNJPg==
+X-Google-Smtp-Source: ABdhPJzKtNZ9DqshtlkVijD2KykbsioNqaOrCP1Wc05drU0Weq1Yrn5ll6pcxxXm1ey3JQd/0u87WQ==
+X-Received: by 2002:a92:cc49:: with SMTP id t9mr3302848ilq.86.1614361939062;
+ Fri, 26 Feb 2021 09:52:19 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net.
  [24.9.64.241])
- by smtp.gmail.com with ESMTPSA id y25sm5594060ioa.5.2021.02.26.09.52.17
+ by smtp.gmail.com with ESMTPSA id y25sm5594060ioa.5.2021.02.26.09.52.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Feb 2021 09:52:17 -0800 (PST)
+ Fri, 26 Feb 2021 09:52:18 -0800 (PST)
 From: Shuah Khan <skhan@linuxfoundation.org>
 To: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
  kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Subject: [PATCH v2 0/3] Add lockdep_assert_not_held()
-Date: Fri, 26 Feb 2021 10:52:12 -0700
-Message-Id: <cover.1614355914.git.skhan@linuxfoundation.org>
+Subject: [PATCH v2 1/3] lockdep: add lockdep_assert_not_held()
+Date: Fri, 26 Feb 2021 10:52:13 -0700
+Message-Id: <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1614355914.git.skhan@linuxfoundation.org>
+References: <cover.1614355914.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210226_125222_132762_FC1FAD16 
-X-CRM114-Status: GOOD (  14.46  )
+X-CRM114-CacheID: sfid-20210226_125222_632984_6CE2CE6B 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,13 +99,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Some kernel functions must not be called holding a specific lock. Doing
-so could lead to locking problems. Currently these routines call
-lock_is_held() to check for lock hold followed by WARN_ON.
-
-Adding a common lockdep interface will help reduce the duplication of this
-logic in the rest of the kernel.
-
+Some kernel functions must be called without holding a specific lock.
 Add lockdep_assert_not_held() to be used in these functions to detect
 incorrect calls while holding a lock.
 
@@ -112,43 +107,66 @@ lockdep_assert_not_held() provides the opposite functionality of
 lockdep_assert_held() which is used to assert calls that require
 holding a specific lock.
 
+Incorporates suggestions from Peter Zijlstra to avoid misfires when
+lockdep_off() is employed.
+
 The need for lockdep_assert_not_held() came up in a discussion on
 ath10k patch. ath10k_drain_tx() and i915_vma_pin_ww() are examples
 of functions that can use lockdep_assert_not_held().
 
 Link: https://lore.kernel.org/lkml/37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org/
 Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+ include/linux/lockdep.h  | 11 ++++++++---
+ kernel/locking/lockdep.c |  5 ++++-
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-This patch series adds lockdep_assert_not_held() and uses it in the
-second patch in ath10k_drain_tx() function.
-
-Patch 1 incorporates suggestions from Peter Zijlstra on v1 series
-to avoid misfires when lockdep_off() is employed.
-
-Patch 2 Johannes Berg's suggestions as it make it easier to read and
-maintain the lock states. These are defines and a enum to avoid changes
-to lock_is_held_type() and lockdep_is_held() return types.
-
-Patch 2 is a separate patch because it adds defines to lockdep.h and
-kernel/locking/lockdep.c now includes lockdep.h - decided make this
-a separate patch just in case issues related to header dependencies
-pop up. I can combine Patches 1&2 if that is preferred.
-
-Patch 3 uses the new interface in ath10k_drain_tx() function. Added
-Kalle Valo's Ack from v1 for this change.
-
-Tested on the mainline from yesterday.
-
-Shuah Khan (3):
-  lockdep: add lockdep_assert_not_held()
-  lockdep: add lockdep lock state defines
-  ath10k: detect conf_mutex held ath10k_drain_tx() calls
-
- drivers/net/wireless/ath/ath10k/mac.c |  2 ++
- include/linux/lockdep.h               | 18 +++++++++++++++---
- kernel/locking/lockdep.c              |  6 +++++-
- 3 files changed, 22 insertions(+), 4 deletions(-)
-
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index b9e9adec73e8..93eb5f797fc1 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -294,8 +294,12 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+ 
+ #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
+ 
+-#define lockdep_assert_held(l)	do {				\
+-		WARN_ON(debug_locks && !lockdep_is_held(l));	\
++#define lockdep_assert_held(l)	do {					\
++		WARN_ON(debug_locks && lockdep_is_held(l) == 0);	\
++	} while (0)
++
++#define lockdep_assert_not_held(l)	do {				\
++		WARN_ON(debug_locks && lockdep_is_held(l) == 1);	\
+ 	} while (0)
+ 
+ #define lockdep_assert_held_write(l)	do {			\
+@@ -384,7 +388,8 @@ extern int lockdep_is_held(const void *);
+ #define lockdep_is_held_type(l, r)		(1)
+ 
+ #define lockdep_assert_held(l)			do { (void)(l); } while (0)
+-#define lockdep_assert_held_write(l)	do { (void)(l); } while (0)
++#define lockdep_assert_not_held(l)		do { (void)(l); } while (0)
++#define lockdep_assert_held_write(l)		do { (void)(l); } while (0)
+ #define lockdep_assert_held_read(l)		do { (void)(l); } while (0)
+ #define lockdep_assert_held_once(l)		do { (void)(l); } while (0)
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index bdaf4829098c..d3299fd85c4a 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5472,7 +5472,10 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+ 	int ret = 0;
+ 
+ 	if (unlikely(!lockdep_enabled()))
+-		return 1; /* avoid false negative lockdep_assert_held() */
++		/* avoid false negative lockdep_assert_not_held()
++		 * and lockdep_assert_held()
++		 */
++		return -1;
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
 -- 
 2.27.0
 
