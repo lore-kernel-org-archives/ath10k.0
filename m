@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6528EC433DB
-	for <ath10k@archiver.kernel.org>; Sat, 27 Feb 2021 08:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A233C433DB
+	for <ath10k@archiver.kernel.org>; Sat, 27 Feb 2021 08:09:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D583164EB7
-	for <ath10k@archiver.kernel.org>; Sat, 27 Feb 2021 08:09:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D583164EB7
+	by mail.kernel.org (Postfix) with ESMTPS id CFD7564E46
+	for <ath10k@archiver.kernel.org>; Sat, 27 Feb 2021 08:09:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD7564E46
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=NtCwVGKfYauleqQ2LtykMl+CpPW2PjqUeB+8KomVMAU=; b=w+uBJ9D+C0wWGeskUkk68WWJYN
-	5JmmsDdBrvHv97wCZtnts2tVOmz39yVoO0itwRcA2W1Nm3TxYoiVq2INbyT1mBep92L8y3koLQ4Mn
-	5zASZOCF2hMXptGMKqez9B0+kL7oQZVi04jLGJV7O4ty+pfauZWspDRGIMfdIxG23tYvtI3s1k+qJ
-	Pn49zB/H83ZCh8Zw5AZf1qrnubzb1qWxaloIWD5AjgXBbw4Y65WOwRdQw2QTBsGkLy85jRi4aNgU1
-	FAhrp5fZgVxKRCYbAxxrQ1W3UFFesJaNpUaOzsNFCDUaPPIcGkJgQcZBpMjtL+FGhJrVPlxoTS14U
-	z4wAlQjg==;
+	bh=yD/zh02NobwS4+Az/5Z20obmMxf2fjyq98qN1KKFpDQ=; b=SGFX45VxCd2n21SXiUjJaf2Pcb
+	Fs/XhMdXB0Dq8/9AZ2duBhrZGaG9i8xNw7AcCsFLus/bnzxmRV35UN285GIYqgO+NQQxnviWklVfy
+	yyBEogPFun0axMlbZQ1SmHxMHS57CeKUrzJ22WgOutMHIGZJXX1D+M6m+ppVgQMIZ5LRQ+FrKVKf4
+	6fLDr2hts6NMK7rUF8sDKKWB2qlHD4SdQYdL1GTLgrQ5FVtiueODW9dvYlbI81BI4KaiPvJfFnglG
+	BJizESJxlbeuFI2Dct8dX1JC4XPHhqsw9d1geCr9cUNM7Q3lLU2fit/FIcIwCVkzIJdAc41gJGtP9
+	TDaeytrQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lFuep-0008Dd-QY; Sat, 27 Feb 2021 08:08:59 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1lFueq-0008Dm-Es; Sat, 27 Feb 2021 08:09:00 +0000
+Received: from mga07.intel.com ([134.134.136.100])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lFuem-0008D3-8b
+ id 1lFuem-0008D4-8w
  for ath10k@lists.infradead.org; Sat, 27 Feb 2021 08:08:57 +0000
-IronPort-SDR: yHhOG8quiLM4iTDJpc5R3LIGPhAeBn3/q8f2ICjFbnrwQLoud5wZfH95SOysTolFy5j622e12G
- CglU/OY8CDwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="165943661"
-X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; d="scan'208";a="165943661"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+IronPort-SDR: LmbFEvVOIRrjuz9NvA+5+CgJVw2RJnAXjtCJOIiqxVdHUImTw9SeRUGN08Kg7Ihtlcjt97BzKq
+ qyelkEyzDGKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="250143304"
+X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; d="scan'208";a="250143304"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  27 Feb 2021 00:08:51 -0800
-IronPort-SDR: Ao3G9P3Dp/wgpeI+quqaO8/rSy5QsKsHyBTJnJYMwHXjOm4m52xcp9mFv4gzLj0zYuGECcmZ+N
- p4/1z+3QgL5A==
+IronPort-SDR: I+/x/SOcG9DNEoq4PhKvyEWT1ruvoVxV/dxkSC2daUDA5brRDitDJP8Hl74lNIuEmvUEOItZX+
+ nrTufdsFkYXw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; d="scan'208";a="516784076"
+X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; d="scan'208";a="443398144"
 Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
- by orsmga004.jf.intel.com with ESMTP; 27 Feb 2021 00:08:50 -0800
+ by orsmga001.jf.intel.com with ESMTP; 27 Feb 2021 00:08:50 -0800
 Received: from kbuild by 16660e54978b with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lFuef-0003d7-IH; Sat, 27 Feb 2021 08:08:49 +0000
-Date: Sat, 27 Feb 2021 16:08:00 +0800
+ id 1lFuef-0003d1-GM; Sat, 27 Feb 2021 08:08:49 +0000
+Date: Sat, 27 Feb 2021 16:07:58 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Subject: [ath6kl:pending] BUILD SUCCESS
- eadf03349865789647680fb7f580b77aea8ed9a5
-Message-ID: <6039fde0.Bp67wC9lTP0xxsM6%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ 28bb866c147d9f7e512508c9483e233231d8d664
+Message-ID: <6039fdde.v9rt7ioWZh+ibiIt%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210227_030856_486054_ECB38CE8 
-X-CRM114-Status: UNSURE (   6.48  )
+X-CRM114-CacheID: sfid-20210227_030856_555140_56E0F097 
+X-CRM114-Status: UNSURE (   7.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,10 +81,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: eadf03349865789647680fb7f580b77aea8ed9a5  ath11k: Add support for STA to handle beacon miss
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 28bb866c147d9f7e512508c9483e233231d8d664  Merge branch 'pending' into master-pending
 
-elapsed time: 726m
+elapsed time: 727m
 
 configs tested: 100
 configs skipped: 2
