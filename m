@@ -6,66 +6,78 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 432AFC433DB
-	for <ath10k@archiver.kernel.org>; Mon,  1 Mar 2021 08:38:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 704C8C433E0
+	for <ath10k@archiver.kernel.org>; Mon,  1 Mar 2021 08:45:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 069EF64DEF
-	for <ath10k@archiver.kernel.org>; Mon,  1 Mar 2021 08:38:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 069EF64DEF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2C45864DF1
+	for <ath10k@archiver.kernel.org>; Mon,  1 Mar 2021 08:45:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C45864DF1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:References:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=y65nJMleL5RChDkcSHNTYpecdYtOxGzxRpJJ4Vqy9cc=; b=tgIeTzKyWmOBD3p4kWnWWX5/3
-	zeZtw0MzfAbKTMBlglQdgsNF2CeSWVyooU+/Rq0i7TpA4dwbw7qKpzMrViBEIK7KhGPEMe++E18Dw
-	hYSOzRzRic2eojruHITCL7ICehGqGwV1Sng0pl5XVA2LYJwOLCzjvcerHD+Jr5J2NSdX7j/nQPH/F
-	i5NtM+FbDvNNT+4N8BZy2Nbum4FgkqnL+Guj3aRHSLMnoBZ1ZN+a9nS94cX57IWyQrBdby8K123LK
-	XSs9WAuQ08Wb2mN1bkvbR9vpMI2d+43sIXW9yk8e+oqia40f0qVSsZtcz9nW3brp8Lgq4gHDl7M7N
-	CK9XQ57Rg==;
+	 bh=LUwM1zZAoBIJmd6xgmjTni4aa7kfdmsmy5M/+lxW8BQ=; b=AMrTrtx9Qqy0LYWld4740IbD/
+	4XdUPtUY3hBWDWQHK5kt8i3lFQpwHluJDOd/RtJ+GT4aVqb9TFZzxH9Pkik52jl2J8t3dZixDsFKt
+	MSy8QQthfY+PgK94+IKQXEKqrbuRbmR4VGxPeHN94dT9EM+6jVZ0rhBj5Xnck6WHOa1bZwQLGcVBp
+	uVzm9VwKGKx/uG9RW3DrW8BPgYfyinYmDM7NPw0MlIrLtPmxHiX/Pxn+XEn0agwZBWa0BJd21zrVO
+	Eifz6DXTm2Yxd1vsSCjm/cYaJxbUb9Q973ya+Epbw+F3knMx1gcsTP6raSsX4T5H+FGz1vmT+o38f
+	V/DKEXirA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lGe4c-0006ye-MZ; Mon, 01 Mar 2021 08:38:38 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1lGeBa-0008Vl-9J; Mon, 01 Mar 2021 08:45:50 +0000
+Received: from m42-2.mailgun.net ([69.72.42.2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lGe4a-0006yW-Ph
- for ath10k@merlin.infradead.org; Mon, 01 Mar 2021 08:38:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=sX04iQ+W/jdAFUfzECen1rbHlQQujm/m2fcunYtptNQ=; b=ZYYzApmDSrC3A3mJrNEFnMMTYl
- Owuvu468Iuob1Pq9iJPfzUjQBKXokwT+Z+rAcEYcI0NNzi05Bg8UDaBAea38MJMFbmvyOOpLc0CgJ
- 2jswcasOIJ64Siu4srdOZA/FyydukB0bkxkBxKF76ZvwoXfog/DVhV+omLsVVa4a6POR6luiRAqps
- y6i+bhXOKa2495dMEX+J/vobKhmrGSmeUwp68RhYCFT0ehH7e9VPF3J51C5BOwM7eI5cXLK2BvdSO
- sJNHqNjDk0B6BgfVye0j5QK22pqMrOfd/xN9yAioufjtRf++r3/NwW4dc0khHx3yLeVq5uxUkKWH2
- +J3y1jCQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100]
- helo=noisy.programming.kicks-ass.net)
- by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
- id 1lGe4K-00FUD5-V9; Mon, 01 Mar 2021 08:38:27 +0000
-Received: from hirez.programming.kicks-ass.net
- (hirez.programming.kicks-ass.net [192.168.1.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18F4D3049DC;
- Mon,  1 Mar 2021 09:38:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
- id ED854201A7CFC; Mon,  1 Mar 2021 09:38:19 +0100 (CET)
-Date: Mon, 1 Mar 2021 09:38:19 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Shuah Khan <skhan@linuxfoundation.org>
+ id 1lGeBU-0008Sz-M2
+ for ath10k@lists.infradead.org; Mon, 01 Mar 2021 08:45:47 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1614588346; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=O3yhFBjQe0kRff0bAX1BbX9HwQn6+fCi8LLDaatQMAw=;
+ b=oYj9VWy4h687Cm6xFbCxKOQL4tYg4vXYeArzPImBMEEw2AxaHbEdK9XHlVOQjocxnQP49RmU
+ 9QiMDxFYrkqNUHuGQ9a+BJKQ/smGA5XZ+xZ4RHkfnrUEKeyDCmUZx57hfZKVKOpzceJ3H1p7
+ G99tmL6Mahl8M5abU0G+XXVMemA=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 603ca9b175e4458f08b79c3a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 08:45:37
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 97D8FC43466; Mon,  1 Mar 2021 08:45:37 +0000 (UTC)
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi
+ [88.114.240.156])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: kvalo)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 8CD2AC433C6;
+ Mon,  1 Mar 2021 08:45:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8CD2AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From: Kalle Valo <kvalo@codeaurora.org>
+To: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v3 0/3] Add lockdep_assert_not_held()
-Message-ID: <YDyn+6N6EfgWJ5GV@hirez.programming.kicks-ass.net>
 References: <cover.1614383025.git.skhan@linuxfoundation.org>
+ <YDyn+6N6EfgWJ5GV@hirez.programming.kicks-ass.net>
+Date: Mon, 01 Mar 2021 10:45:32 +0200
+In-Reply-To: <YDyn+6N6EfgWJ5GV@hirez.programming.kicks-ass.net> (Peter
+ Zijlstra's message of "Mon, 1 Mar 2021 09:38:19 +0100")
+Message-ID: <878s779s9f.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cover.1614383025.git.skhan@linuxfoundation.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210301_034546_325589_B885E5BF 
+X-CRM114-Status: GOOD (  10.92  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,19 +91,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
  linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, mingo@redhat.com,
- kuba@kernel.org, will@kernel.org, davem@davemloft.net, kvalo@codeaurora.org
+ Shuah Khan <skhan@linuxfoundation.org>, kuba@kernel.org, will@kernel.org,
+ davem@davemloft.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 26, 2021 at 05:06:57PM -0700, Shuah Khan wrote:
-> Shuah Khan (3):
->   lockdep: add lockdep_assert_not_held()
->   lockdep: add lockdep lock state defines
->   ath10k: detect conf_mutex held ath10k_drain_tx() calls
+Peter Zijlstra <peterz@infradead.org> writes:
 
-Thanks!
+> On Fri, Feb 26, 2021 at 05:06:57PM -0700, Shuah Khan wrote:
+>> Shuah Khan (3):
+>>   lockdep: add lockdep_assert_not_held()
+>>   lockdep: add lockdep lock state defines
+>>   ath10k: detect conf_mutex held ath10k_drain_tx() calls
+>
+> Thanks!
+
+Via which tree should these go?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
