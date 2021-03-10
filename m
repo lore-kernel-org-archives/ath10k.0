@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3073C433DB
-	for <ath10k@archiver.kernel.org>; Wed, 10 Mar 2021 05:01:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E98EC433E0
+	for <ath10k@archiver.kernel.org>; Wed, 10 Mar 2021 05:01:49 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E0A264FE8
-	for <ath10k@archiver.kernel.org>; Wed, 10 Mar 2021 05:01:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E0A264FE8
+	by mail.kernel.org (Postfix) with ESMTPS id D90E564FA3
+	for <ath10k@archiver.kernel.org>; Wed, 10 Mar 2021 05:01:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D90E564FA3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,47 +23,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=wHhXvmaPUhNRQMVz/DXRPSP6aeSUuN+4RLwMfheBg4A=; b=RXFf0aT/Fd8T1yacxppGz6We91
-	gTviMouLYKAWSaQKpSqpA4pL1EdEccDk53E/xS2tyXn6H7JI3rvHVVERC4iB3/DZPcBhNRpCP74p+
-	p2kaD+qJXtWnHg0E5NEEOr75FRJgMJdRxxHkmUhlinyNocaGViAXdVHIiHqaPxFGRLDR84OB0ay5L
-	I0YYvP7XlBDnFUEUM60kY0mu7OdIcFhxvHJw8SBi/p2WUVfOlYTIBh7jV4SVHqNZpgW+mSJ0wXBML
-	jm/GWAajMfCReDxHlrQc/og38DzS9+HgA4iaSq7XrwSVH3TEHzum87L7peA+b8gkl7QvEeRdyyxKJ
-	N8gpb/Qg==;
+	bh=TGokUNP8pDdae/B2oKjbAi1aIo6ZjkbHidiwW/dN/N8=; b=embmRJf8PBmYqmJrSEsARr8DiY
+	dgEB3vun68ipivI3XcurBuIrGyQarb+CtIRpjUTxN9/RRchvs/AEibnjds6mtHDdFe8EI92FoSdhu
+	yZMEJ9V03I0W92vePMWPHDuKi5UO0tH66u/kokWD486FQ2mdTd5k87HSHqFQ2oZ2srLOt5st5iKZQ
+	tDUOnX5KN0WDfDsyMShqYd+frorUHzcnkzEPlrbN5L7uPzYcArWk28YI2bv3NRiyav/4h0uIKoL1t
+	/Hn0CLj3MHr8xQRFzqLGLT9yfrH9eTIUAxRefU77PU004tvEpM5A9zWJu7Q2gSlUx5fouZD/Pev8b
+	KDEb6ZDg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJqy3-0062OH-2m; Wed, 10 Mar 2021 05:01:07 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1lJqxw-0062Mk-UZ; Wed, 10 Mar 2021 05:01:01 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJqxL-0062I4-KX
- for ath10k@lists.infradead.org; Wed, 10 Mar 2021 05:00:53 +0000
-IronPort-SDR: a6AeJZFLhhiaregQ/ncSiAyqb0rC4+b/iPFX5UgreN+AFun5noyvczr9vZkgAftL+L9ZrjckGu
- 5tQRatUtEcAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175491004"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; d="scan'208";a="175491004"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2021 21:00:16 -0800
-IronPort-SDR: s6fC4BuXO02tvr1aapr7uUe1nUq3VbePdnJ9csggKVX8MRvIY+RLANzeapK/G0VM1m764mwDsF
- Zvl19nf9TYsA==
+ id 1lJqxK-0062I3-Qu
+ for ath10k@lists.infradead.org; Wed, 10 Mar 2021 05:00:47 +0000
+IronPort-SDR: drETEI5FEg7Y12sb/2w9PN/cI+jqyrOYJlElWX3sTwCw4N/OOKghCNCMCPHcTfxfL4g0ojqldS
+ bVzN45JcenRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="186006046"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; d="scan'208";a="186006046"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2021 21:00:17 -0800
+IronPort-SDR: eRBX5KFg8Np7uFaca5+8eBV3+BaAOrzdUZMxseN2q1n4a2hBbduSBnIq4SDEBvEY5HyZ3LzNe2
+ oS5833YofAYw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; d="scan'208";a="588698101"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; d="scan'208";a="376819287"
 Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
- by orsmga005.jf.intel.com with ESMTP; 09 Mar 2021 21:00:15 -0800
+ by fmsmga007.fm.intel.com with ESMTP; 09 Mar 2021 21:00:15 -0800
 Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lJqxC-000222-PM; Wed, 10 Mar 2021 05:00:14 +0000
-Date: Wed, 10 Mar 2021 12:59:26 +0800
+ id 1lJqxC-00021z-NP; Wed, 10 Mar 2021 05:00:14 +0000
+Date: Wed, 10 Mar 2021 12:59:23 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [ath6kl:pending] BUILD SUCCESS
- 643daa594a5dbec6f73430b26fca6856c26ec389
-Message-ID: <6048522e.2xMCDPDf145fckpQ%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ d54eef11fe06e5e3cebe8862a5a9672dcb64e71a
+Message-ID: <6048522b.GymfABQdqPV6wHCo%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210310_050045_843416_00DBCE60 
-X-CRM114-Status: UNSURE (   6.00  )
+X-CRM114-CacheID: sfid-20210310_050044_898900_7F22AD98 
+X-CRM114-Status: UNSURE (   4.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,12 +81,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 643daa594a5dbec6f73430b26fca6856c26ec389  ath11k: update debugfs support for mupltiple radios in PCI bus
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: d54eef11fe06e5e3cebe8862a5a9672dcb64e71a  Merge branch 'pending' into master-pending
 
 elapsed time: 721m
 
-configs tested: 155
+configs tested: 127
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -98,32 +98,27 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-sparc                            allyesconfig
 mips                         db1xxx_defconfig
 powerpc                     tqm8540_defconfig
 powerpc                      ppc44x_defconfig
-mips                         tb0287_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                           jazz_defconfig
-sh                          r7785rp_defconfig
+m68k                          hp300_defconfig
+powerpc                    adder875_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                      ppc40x_defconfig
+mips                      pistachio_defconfig
+powerpc                 mpc837x_rdb_defconfig
 powerpc                     pq2fads_defconfig
 powerpc                      obs600_defconfig
 powerpc                       holly_defconfig
 s390                             allmodconfig
 powerpc                     kmeter1_defconfig
 riscv                          rv32_defconfig
-sh                          landisk_defconfig
-sh                          rsk7264_defconfig
-sh                          r7780mp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                    mvme5100_defconfig
-arm                             pxa_defconfig
-powerpc                     tqm8541_defconfig
-sh                          polaris_defconfig
-powerpc                      ep88xc_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     mpc512x_defconfig
+mips                         rt305x_defconfig
+powerpc                     powernv_defconfig
+sh                           se7751_defconfig
+mips                        maltaup_defconfig
+arm                      pxa255-idp_defconfig
+arm                       multi_v4t_defconfig
 arm                         hackkit_defconfig
 sh                               j2_defconfig
 mips                        omega2p_defconfig
@@ -135,39 +130,14 @@ arm                       cns3420vb_defconfig
 m68k                       m5275evb_defconfig
 h8300                               defconfig
 mips                        bcm63xx_defconfig
-sh                           se7750_defconfig
-arm                     eseries_pxa_defconfig
-sh                               alldefconfig
-powerpc                      katmai_defconfig
-sh                        dreamcast_defconfig
-arm                       omap2plus_defconfig
-arm                      tct_hammer_defconfig
-arm                         lubbock_defconfig
-arm                            hisi_defconfig
-mips                           ip32_defconfig
-sh                          lboxre2_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                            ar7_defconfig
-powerpc                     asp8347_defconfig
-powerpc                         wii_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                         s3c2410_defconfig
-mips                          ath79_defconfig
-arc                      axs103_smp_defconfig
-riscv                            alldefconfig
-m68k                       m5249evb_defconfig
-ia64                      gensparse_defconfig
-i386                             allyesconfig
-m68k                        m5307c3_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                 mpc8313_rdb_defconfig
-xtensa                          iss_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         at91_dt_defconfig
-arm                          pcm027_defconfig
+arm                            xcep_defconfig
+arc                           tb10x_defconfig
 arm                          ep93xx_defconfig
-sh                          rsk7201_defconfig
+powerpc                     stx_gp3_defconfig
+arm                          pxa910_defconfig
+powerpc                        icon_defconfig
 sh                         ap325rxa_defconfig
+mips                           jazz_defconfig
 arm                        multi_v5_defconfig
 m68k                        m5272c3_defconfig
 ia64                             allmodconfig
@@ -192,6 +162,8 @@ parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
 sparc                               defconfig
 i386                               tinyconfig
 i386                                defconfig
