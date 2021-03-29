@@ -1,79 +1,87 @@
-Return-Path: <SRS0=ZFlJ=IZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=NZz8=I3=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D82C433DB
-	for <ath10k@archiver.kernel.org>; Sat, 27 Mar 2021 17:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3A47C433DB
+	for <ath10k@archiver.kernel.org>; Mon, 29 Mar 2021 19:30:10 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E35B6191C
-	for <ath10k@archiver.kernel.org>; Sat, 27 Mar 2021 17:34:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E35B6191C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1A087601FD
+	for <ath10k@archiver.kernel.org>; Mon, 29 Mar 2021 19:30:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A087601FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=mail.ustc.edu.cn
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=IVgHT/LM0lW8OKkTyyRAp+cPD/vAUS5CjjOj65NnS/8=; b=Gg/wsUKLqeyepM+o9/AOpk2Em
-	kOKPN92C5+bHfTGYMiO34+lE+KoepN/R/jVBYnrKO01MyS7DQjSFbC7ZuaBn3m6YWFxzLSa0MelKL
-	KszhEMC6UdrX2F9aHEOalSTWFGgq9Qy9h7M1ARJ2Y3W03TOo4jS8i/+SKy2PGx/r6cTE+05sLXCid
-	wk+9vn2TT39Ui28rx+QnoWf07dsLp3ziJc1xnLNcjkLxS8xDtVobLwF07eWcqeQeRK9VCAtdOJ1UJ
-	mDXmqRvl2kpUUFgc2tA120KIqmm/4BSHmAZ/orM1cc6Zq7+B5mnW/vHZlSQnY9i+3bfJz43UDYlfP
-	2qzuDpv8g==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=0i+nEeYUrHUXKwt26vnEt68j5Fx7xK8efc+j5jZ3lfc=; b=OHfMcZPrrM1jlzvqic8Ogn8qPJ
+	gLy3weMESFma6c9p3X4AJ56zfWb6571VRHOEYXAE5W3EyYaA6x1LNHpuVczYKKJ26gxXk1R1JdChk
+	xRSFTn/qlgH2wv0DvE7ziRx0JQfEm7uLq7NIsHdVtupqlmfOPLIveuBei9Cap2PokSc6B50USIKKE
+	xbNBrcE3ILtNexfmAKmjl0qczJF+VxR0Y9TOypiJdFU6tXRBK6LzdFIdzxazI+TbzmnHDzYGk1v7Z
+	H2ScqUvC2MlFyFAvGQtgvb1d/BwM8yQWHJMxqC4fmGfht7U5KvByVyw+jxunPXmhfMd0n+mU+425J
+	FlRLvtYA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lQCoj-005M6U-2L; Sat, 27 Mar 2021 17:33:45 +0000
-Received: from mail.kernel.org ([198.145.29.99])
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lQCoa-005M5Q-DF
- for ath10k@lists.infradead.org; Sat, 27 Mar 2021 17:33:42 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E9B619AE;
- Sat, 27 Mar 2021 17:33:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616866410;
- bh=oxyLYLefehpWosmb5y5Pli16dqH1dyu9Z35XDlG8ET0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rQXaQob413Eg6E56SJ8wTkqWk9NuTG34Apv0JcwAKGYMjnNn33LGum+D+t7gTyWyH
- lojMX41ea2R9C9cd/yrn/IgxUT1xO4NgYRbw0WRKb55UOEnt/s6rEuRa36wSmop6UB
- wbU6uMoA35DrwNx1QcJrseH9+DbH5aazyNWNn3+l3wSdo7z7/AzxYId1+uUGq13c/A
- rLAIzrW8MvxEZpl5qi0iBXlU6G486nxvTrBMybqIL6N3Op5msIGG6Pk99SQw8gOSaM
- vLXBnUnzLhTDEqR1z/9IEjqJNbkK9fHIRDvmVF1ejmU0RhFCSz7Qk9IZXHDlwiLWpG
- y55ZIdi19uv9w==
-Received: by pali.im (Postfix)
- id 6551195D; Sat, 27 Mar 2021 18:33:27 +0100 (CET)
-Date: Sat, 27 Mar 2021 18:33:27 +0100
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>
-Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
- Bjorn Helgaas <bhelgaas@google.com>, Kalle Valo <kvalo@codeaurora.org>,
- Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>, vtolkm@gmail.com,
- Rob Herring <robh@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-pci@vger.kernel.org, ath10k@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Disallow retraining link for Atheros QCA98xx chips
- on non-Gen1 PCIe bridges
-Message-ID: <20210327173327.tfn4mjq3cvrq33qu@pali>
-References: <20210326124326.21163-1-pali@kernel.org>
- <YF540gjh156QIirA@rocinante> <20210327132959.fwkphna7gg57aove@pali>
- <20210327154213.571aa263@dellmb.labs.office.nic.cz>
+	id 1lQxZL-001FZW-68; Mon, 29 Mar 2021 19:28:59 +0000
+Received: from email6.ustc.edu.cn ([2001:da8:d800::8] helo=ustc.edu.cn)
+ by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
+ id 1lQqb8-000dFH-G0
+ for ath10k@lists.infradead.org; Mon, 29 Mar 2021 12:02:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+ Message-Id:MIME-Version:Content-Transfer-Encoding; bh=R34OrgAceM
+ eMrFV+JCpxaSd85NskDzH5U6NaA8ZXVAg=; b=VcCyTLrornF+2maYRIkk5dSBH1
+ Hp8v9Ry05h93kBjiD4M1tSZSAYGGK9IEM6drQVX05EMqiPb1MPcDRhz/T04h8xn9
+ n5l6oXxLPLJ1cVjS+Z2Oje297UXoOf5+qmOYWTWQ3m27+UW6ccLpOT7UqhwxVwmr
+ Dx9LH6E6MShVH7Q9Y=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+ by newmailweb.ustc.edu.cn (Coremail) with SMTP id
+ LkAmygA3Pkq1wWFg7mVnAA--.201S4; 
+ Mon, 29 Mar 2021 20:01:57 +0800 (CST)
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To: kvalo@codeaurora.org,
+	davem@davemloft.net,
+	kuba@kernel.org
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] wireless: ath10k: Fix a use after free in
+ ath10k_htc_send_bundle
+Date: Mon, 29 Mar 2021 05:01:54 -0700
+Message-Id: <20210329120154.8963-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210327154213.571aa263@dellmb.labs.office.nic.cz>
-User-Agent: NeoMutt/20180716
+X-CM-TRANSID: LkAmygA3Pkq1wWFg7mVnAA--.201S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw4xGr1ktw13KFW5Xry7Jrb_yoWDKwcEga
+ 1kZF1fZ3ykJw17AFy2yF4ftrWIyFyIqFZ5u3sxKrW8XrW3JFZrCrWY93s8Gr9rGrWrZF9x
+ CrnxWryDA3sYgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+ 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+ A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+ Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+ 0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+ 64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+ Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+ YxC7MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+ C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+ wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+ v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+ x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+ DU0xZFpf9x0JUPl1kUUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210327_173338_035399_5B42E68F 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20210329_130224_212682_46BCC9E9 
+X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,22 +93,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-T24gU2F0dXJkYXkgMjcgTWFyY2ggMjAyMSAxNTo0MjoxMyBNYXJlayBCZWjDum4gd3JvdGU6Cj4g
-T24gU2F0LCAyNyBNYXIgMjAyMSAxNDoyOTo1OSArMDEwMAo+IFBhbGkgUm9ow6FyIDxwYWxpQGtl
-cm5lbC5vcmc+IHdyb3RlOgo+IAo+ID4gSSBjYW4gY2hhbmdlIHRoaXMgdG8gJ2lmICghcmV0KScg
-aWYgbmVlZGVkLCBubyBwcm9ibGVtLgo+ID4gCj4gPiBJIHVzZSAnaWYgKCF2YWwpJyBtb3N0bHkg
-Zm9yIGJvb2xlYW4gYW5kIHBvaW50ZXIgdmFyaWFibGVzLiBJZgo+ID4gdmFyaWFibGUgY2FuIGNv
-bnRhaW4gbW9yZSBpbnRlZ2VyIHZhbHVlcyB0aGVuIEkgbG90IG9mIHRpbWVzIEkgdXNlCj4gPiAn
-PT0nLgo+IAo+IENvbXBhcmluZyBpbnRlZ2VyIHZhcmliYWxlcyB3aXRoIGV4cGxpY2l0IGxpdGVy
-YWxzIGlzIHNlbnNpYmxlLCBidXQKPiBpZiBhIGZ1bmN0aW9uIHJldHVybmluZyBpbnRlZ2VyIHJl
-dHVybnMgMCBvbiBzdWNjZXNzIGFuZCBuZWdhdGl2ZSB2YWx1ZQo+IG9uIGVycm9yLCBMaW51eCBr
-ZXJuZWwgaGFzIGEgdHJhZGl0aW9uIG9mIHVzaW5nIGp1c3QKPiAgIGlmICghcmV0KQo+IG9yIAo+
-ICAgaWYgKHJldCkKPiAKPiBNYXJlawoKT2ssIEkgd2lsbCBjaGFuZ2UgaXQuCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+In ath10k_htc_send_bundle, the bundle_skb could be freed by
+dev_kfree_skb_any(bundle_skb). But the bundle_skb is used later
+by bundle_skb->len.
+
+As skb_len = bundle_skb->len, my patch replaces bundle_skb->len to
+skb_len after the bundle_skb was freed.
+
+Fixes: c8334512f3dd1 ("ath10k: add htt TX bundle for sdio")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 0a37be6a7d33..fab398046a3f 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -669,7 +669,7 @@ static int ath10k_htc_send_bundle(struct ath10k_htc_ep *ep,
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC,
+ 		   "bundle tx status %d eid %d req count %d count %d len %d\n",
+-		   ret, ep->eid, skb_queue_len(&ep->tx_req_head), cn, bundle_skb->len);
++		   ret, ep->eid, skb_queue_len(&ep->tx_req_head), cn, skb_len);
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
