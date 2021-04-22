@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C41C43460
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEFC1C433B4
 	for <ath10k@archiver.kernel.org>; Thu, 22 Apr 2021 08:07:50 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 346866145D
-	for <ath10k@archiver.kernel.org>; Thu, 22 Apr 2021 08:07:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 346866145D
+	by mail.kernel.org (Postfix) with ESMTPS id 341446144A
+	for <ath10k@archiver.kernel.org>; Thu, 22 Apr 2021 08:07:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 341446144A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,61 +23,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=7cLFPqyRtSqBLcu4AtHqj7E/NGigEhMUlLZqcPNItdM=; b=TLEiBDA5XttwnYs6DVcKE/V/x8
-	u97SDU8Pkzxdt1h28Cwr18scR2UDgMF0yS7n8V15YfiYZo1/JFbCbHg1iDGRYxY9APz513W56AoaF
-	CmZGEoYih+CDRDk/qlgCqe6GJ3Mts7D12tKwCDJOOiQzp30IlYAWPzxV/aJR+z5M+Nqt3LuQgbLLj
-	l43Nd+VSCAl0Ga68DllXs9fz7RanJZd2qYjIvr/V9PYBM/LpDJrpwRHiZ8/rLh5zqs6XiC38Vvq8s
-	qQh1VBpIjwwPOFcqUTGMs4lqXGq90tKPVqZu7cKKYG3j4pNzKQLhRLON7ULxxji5MppigvUa0yB9R
-	dbJF+uZg==;
+	bh=4gxU+AsFBdr5uPHgXk4Mc2DJ9riaDnXNJrPItYrOnoo=; b=RNeDa1wQRKuEoWbCsem1KYWAS1
+	g0l64gMZi2T6pXGhsMgO498B87BtO+sa2E9a26WJtI4zqR2IzCFZhu7QswAxwM9QWBxUCOKXJsRSc
+	GRN8pYPtyESytxAhOhdjMcN/vHZndPCnhdIS/zubhmdzdg2s023YA4DMmN+wS0vQRgMgfd1SjcRqK
+	6Vu2W6MY6icrAbXj5mBNOANjGBTA3uuoF2wSTEidBwuY3ozfa270cRq3utuosIsjdEfVW38P7CpPK
+	2sfBAXdoQdXTQeY3s9KChljAGafKFDD+6QDVgwCByhhCvw00M69VI/9Lnpy4lejLYFoCnOxkLYhiy
+	wOQozbog==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lZUMB-00GCcA-Fn; Thu, 22 Apr 2021 08:06:39 +0000
+	id 1lZUMH-00GCcc-Ay; Thu, 22 Apr 2021 08:06:45 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lZUM6-00GCbT-NY
- for ath10k@desiato.infradead.org; Thu, 22 Apr 2021 08:06:34 +0000
+ id 1lZUM7-00GCbg-In
+ for ath10k@desiato.infradead.org; Thu, 22 Apr 2021 08:06:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-ID:Content-Description:In-Reply-To:References;
- bh=veYqygrv8t2QjV8IFvfM9no1SM/i6aDENHHcQI3NMlA=; b=fm/sDyqEI3HSwpj1FWyfGnAt3K
- STd1WTkWsP8If35hAkEDX/Ig4KVxiB1rogDY030z8LYYeIJ3RCNG/2qs4/7dAUAyJcoqvcgHkneim
- CgbJGyrjH4rdRljYdM4pJPaeW0jyQ+NlMgPs707dih1SKFW2avliEHaPExigS5HAg3Q4Ya5KPRE1Z
- vJV1ZRc2IeyvL5n20y/Mi9YQkESAf/A/bKmF0XGe31lNpIgpVg99e9sjSVSSvyBT98jfZApoFCleX
- XfAwroGV08PLnoBURt87sRJ+PvmG61rN+KVRi+28MrDvTPTcYaEb5/NNddTLKO+4Y1HdKiF3CVx9C
- suodaCag==;
-Received: from mga17.intel.com ([192.55.52.151])
+ bh=dfFoZKZ7oubQx3/2S8HMKfTiHuyHvdUSFOwqKUuKRwY=; b=hvJpFRdfNi4q0Hglkzp87q5QsU
+ dmLJ/SVoIHr/sMTLAKyBES+sq3dilLyV4q9K5T/G6ZGp2XFWzYzmNkP4y2XQYERi78xqH6SnPq93t
+ P0TMX6IBA2Vk7xeZhqwJtw8xp48JgSsp0vVa69+vtA5HzhKKarbm4mAqlAvXKtZ4siEQ0xDbmA/JW
+ vPniy3ttoXyh++KoKkCX2xOUHUqnPyoH7NLVWqJYNmCM66suMZcVXSAsk2mmAeaWv1ifGmBXuArfm
+ 25Trn5FdCRc6bePM/0q0M8hDkWcYrpB4a/t5c/pC+8ZqtgCJf3+ofpVePNULpS/bY5UKXOwKEZb4O
+ xq6bjipw==;
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lZUM3-00DTZl-Bf
- for ath10k@lists.infradead.org; Thu, 22 Apr 2021 08:06:32 +0000
-IronPort-SDR: rn+BFkfQT4Qj8m+6NlJDxLg8P4BRn/XjiDzo8/wErFYLv+mZd3tvro5jD2cCVYr58CIfp7JVky
- nYWc5KLgUoxg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="175959875"
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; d="scan'208";a="175959875"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Apr 2021 01:06:30 -0700
-IronPort-SDR: CKd1WATyUI/CWFoBMzIhDOowsKzXf8PbdDehp2lZ0qSrSXU/q1ou8kkO+a+znEtHQWA/fdHYGO
- qraW24i7ugug==
+ id 1lZUM4-00DTa5-Cl
+ for ath10k@lists.infradead.org; Thu, 22 Apr 2021 08:06:34 +0000
+IronPort-SDR: LjvNfZz0la7oX0RxoRQ4KEGoCPQ2CAx4kz4qF49DOO/DeWPsyLY8SkbhLD7eaWg48j8+GngZLH
+ OD/eJbdM8SjA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="183331952"
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; d="scan'208";a="183331952"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Apr 2021 01:06:31 -0700
+IronPort-SDR: R+z9GIUFmGg+MOpMtheiNBNLuQOYRpMGC1fBz2pAUu7JTHuT2zidsstC6owueisyNIzAHSSXOg
+ EsvemdVOAv7g==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; d="scan'208";a="453191385"
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; d="scan'208";a="401754600"
 Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
- by FMSMGA003.fm.intel.com with ESMTP; 22 Apr 2021 01:06:28 -0700
+ by orsmga002.jf.intel.com with ESMTP; 22 Apr 2021 01:06:28 -0700
 Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lZUM0-00043Q-9H; Thu, 22 Apr 2021 08:06:28 +0000
-Date: Thu, 22 Apr 2021 16:06:21 +0800
+ id 1lZUM0-00043N-8W; Thu, 22 Apr 2021 08:06:28 +0000
+Date: Thu, 22 Apr 2021 16:06:19 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [ath6kl:pending] BUILD SUCCESS
- 17a073700dae09314100240bd837a3161787dae2
-Message-ID: <60812e7d.NwmDf7p8xfChtWej%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ a891e236e8483da63fd707402fbd0f58921a46ce
+Message-ID: <60812e7b.UW+A6xouSgAs8Fcz%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210422_010631_450903_887CBFA2 
-X-CRM114-Status: UNSURE (   4.90  )
+X-CRM114-CacheID: sfid-20210422_010632_512319_939C6D9B 
+X-CRM114-Status: UNSURE (   6.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,12 +95,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 17a073700dae09314100240bd837a3161787dae2  ath11k: fix warning in ath11k_mhi_config
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: a891e236e8483da63fd707402fbd0f58921a46ce  Merge branch 'pending' into master-pending
 
 elapsed time: 726m
 
-configs tested: 137
+configs tested: 133
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -154,11 +154,6 @@ arm                         lpc18xx_defconfig
 mips                      bmips_stb_defconfig
 arm                        mvebu_v7_defconfig
 xtensa                  nommu_kc705_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      walnut_defconfig
-mips                           mtx1_defconfig
-sparc64                             defconfig
-ia64                            zx1_defconfig
 arm                         lpc32xx_defconfig
 arm                           h5000_defconfig
 powerpc                     tqm8548_defconfig
@@ -170,6 +165,7 @@ mips                        maltaup_defconfig
 mips                        bcm47xx_defconfig
 powerpc                 canyonlands_defconfig
 i386                             alldefconfig
+powerpc                 xes_mpc85xx_defconfig
 arc                      axs103_smp_defconfig
 m68k                         apollo_defconfig
 sh                           sh2007_defconfig
