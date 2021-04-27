@@ -1,73 +1,90 @@
-Return-Path: <SRS0=b4Sx=JU=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=cHsU=JY=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66EE6C433B4
-	for <ath10k@archiver.kernel.org>; Fri, 23 Apr 2021 13:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE464C433B4
+	for <ath10k@archiver.kernel.org>; Tue, 27 Apr 2021 10:57:22 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70DDE61175
-	for <ath10k@archiver.kernel.org>; Fri, 23 Apr 2021 13:42:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70DDE61175
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3E438600CC
+	for <ath10k@archiver.kernel.org>; Tue, 27 Apr 2021 10:57:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E438600CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Qs99BqhU0Rtv3hWbw7jvvqaghab+Uk1QB+eq6rRRAf4=; b=OP3Sz5RF7qZ6O/kDypjbPGE+5g
-	utObWe3EB4l5ml+JXXK9Hi+J66ipOQMxb+gz5SqC0HPOflllWKmmGhum2K8sfdb+jxiTXpW2Uvs5b
-	bBM/jf7/bBvm8BAosnU7ClMTYeB2xh6m1+WS6vRi4jK8uOWhTazGUbV33jefPZ/BL3pwyYr93LkZ0
-	dn1OqH7xqFbyx3X67yfTK2MxNwvi/t5/AyuxcNG8y7Db6BHKBq5WiTxKa6ivxu4KRUFB/vZveMvj5
-	B0dlCmsuHJ0i8eKOStjxUfu0FwPspQyfBGHlPttyL4KIc/oPkApMuhEDuADgq19FkP5//g78rM9Dj
-	EI6/2LYg==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=VDTeFZZO99AMnCbqvzBSoWH5Yizv0jbGlmQbtwzFnZE=; b=bJVkCt9Xu9qOCi+B1apWRThtt
+	Tn9tuuT3Be7qNbmdY0AZK0QCiVk6fqeEy37i8DaugLWcpqKoiZCdgezHtjT37Y/p2FwE8rdWEcpZJ
+	pK0iIzIvwu9GiOkYjD9gioe9gfA+4591GRRQj9kimd7A7BW2RNFGz/e/FphhurK9FfcvaiHVbY5jB
+	tXw0zpSfmsTahMo5z3yCLLXycNq9UNt63YB8Gnf3JF2QBKIBtgWFdrRB2g15s72NwXY5Cmpi7wQ6R
+	FxOfwEELLsdZ8qwdGWf5CCKc4oLEO6Wkpv5psfxzG2QEs0P6maNvLwkrEj16g3OVr/ky850/iPFjz
+	HscOcPPZg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lZw44-001aar-P1; Fri, 23 Apr 2021 13:41:48 +0000
+	id 1lbLO2-001SOA-Vy; Tue, 27 Apr 2021 10:56:15 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lZw40-001aaS-8v; Fri, 23 Apr 2021 13:41:46 +0000
+ id 1lbLO0-001SO3-9T
+ for ath10k@desiato.infradead.org; Tue, 27 Apr 2021 10:56:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=a49NdrbR/z66Jr6mY7jD/2z+Dj3b1ARUac7JGgXfqZs=; b=DChTPcqVApzxV9kZl/lth4b1QG
- hxNcg+C6qvSIBm5AEmX99L4iysQtP1BI2P1QISjrvNsVB/Au5AVyBhOPGTHSCmWwPPcAGdrqGkA/Q
- nehMfVROLcs+3eGFpq0Z7m+4DZhPQu36bXDeVAcd1HXus1Itwg4DtNvrCgEthJQme5Q6FGU4sYrak
- l2xsaqGC3SlARQtDqrXs9jOPCpYvL/JVQxbV45ZCIPdbaxqBF18Hb+DBhUMWaDc4z7eqwJT880dT9
- A39Yxh73QAsddmL9xm5SoS2XOAXZF5NkHrZMhH5jOyXofiMjzJOjReQD4hV/3rojiOI13aB/Wmfn+
- ubD87kCg==;
-Received: from youngberry.canonical.com ([91.189.89.112])
+ Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+ To:From:Sender:Reply-To:Content-ID:Content-Description;
+ bh=ONFpyVuqnbDADAsZ7+CzndkZyfqp9kZB1pMRK+I9e7c=; b=VZfdrdiF/5IpjUvQc8p4rYsxCB
+ mFbfjbprFqN4+QWqdXC7I/cm4S+fnJgR/g1f8Dvc9m+nnC8Odc/ZYgZp6udRdfpF/UFUCiXhcESOF
+ kkG9i+D3clCAkW89SZZkwcm6M15BYXnfkPTYqQTDJlZKpYFQF93yil1iADOrOEyn7At73qHjTI+oC
+ d0rzKrfu+mVrqC5ka5TWxkx6KK9snFl/+H4bHojECjxa3SqKoXC2r8YF16O3NjhtfSVK7Hc++9uae
+ COhs2HxzfAQHQ6m1hfSDpEWlgp8ZOomVW7TXdS1TgZZRjrjKUYsiAhsFdvflxOgVTiitJzWcZ0Pg1
+ TTLqvk4g==;
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lZw3w-00ERau-Uw; Fri, 23 Apr 2021 13:41:42 +0000
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <colin.king@canonical.com>)
- id 1lZw3p-0002wi-8X; Fri, 23 Apr 2021 13:41:33 +0000
-From: Colin King <colin.king@canonical.com>
-To: Kalle Valo <kvalo@codeaurora.org>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ id 1lbLNw-00GfLS-TQ
+ for ath10k@lists.infradead.org; Tue, 27 Apr 2021 10:56:10 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C19613B0;
+ Tue, 27 Apr 2021 10:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1619520966;
+ bh=P3sk/jdvdGbo8a4NLyXLQdNK5bliTYyVm9EmJOM7/24=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=P0GiYa98NeCaeYsF0ydEe3dQhBgPRtgLHlolscO/xEhE49EQ2kv2PdJ8mHsfBRdTO
+ 6N0FFeHx4cfei6d7+taD1dW04B2Y/ywNRhbiSp6UY75t2djMTFQaIpRQHjZekmt99m
+ vqsFPpYGO+1bjiaaXN6BRNsjio9pBIa52KVSdkcP/+ED2rux4NCyvm+NtWqdCwKve0
+ 9WFE5WqGe0O+1ZavAWrnvquqkRI67G4zadr63rYt7u5PCBsoRvm3OELGOph/7RPpQ4
+ 8SWXoSpRiseMimkHG2Rm/Sm02X3ELfzY3TfLbEjPSCAbdbnLMyVahsvUXsUrE8hKz0
+ Jk5Fw/Ec50GbA==
+Received: by pali.im (Postfix)
+ id D2C3B791; Tue, 27 Apr 2021 12:56:00 +0200 (CEST)
+From: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>, Kalle Valo <kvalo@codeaurora.org>,
+ =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+ =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
+Cc: vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-pci@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, ath11k@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ath10k/ath11k: fix spelling mistake "requed" -> "requeued"
-Date: Fri, 23 Apr 2021 14:41:33 +0100
-Message-Id: <20210423134133.339751-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v2] PCI: Disallow retraining link for Atheros chips on
+ non-Gen1 PCIe bridges
+Date: Tue, 27 Apr 2021 12:55:25 +0200
+Message-Id: <20210427105525.23277-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210326124326.21163-1-pali@kernel.org>
+References: <20210326124326.21163-1-pali@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210423_064141_199960_AD0A5263 
-X-CRM114-Status: GOOD (  11.57  )
+X-CRM114-CacheID: sfid-20210427_035609_057417_7E5D24C0 
+X-CRM114-Status: GOOD (  23.22  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,220 +96,169 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Colin Ian King <colin.king@canonical.com>
-
-There are multiple occurrances of the misspelling of requeued in
-the drivers with symbol names and debug text. Fix these.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/core.h              | 2 +-
- drivers/net/wireless/ath/ath10k/debug.c             | 4 ++--
- drivers/net/wireless/ath/ath10k/htt.h               | 4 ++--
- drivers/net/wireless/ath/ath10k/wmi.c               | 6 +++---
- drivers/net/wireless/ath/ath10k/wmi.h               | 8 ++++----
- drivers/net/wireless/ath/ath11k/core.h              | 4 ++--
- drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c | 2 +-
- drivers/net/wireless/ath/ath11k/debugfs_htt_stats.h | 2 +-
- drivers/net/wireless/ath/ath11k/wmi.c               | 4 ++--
- drivers/net/wireless/ath/ath11k/wmi.h               | 4 ++--
- 10 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 648ed36f845f..5aeff2d9f6cf 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -301,7 +301,7 @@ struct ath10k_fw_stats_pdev {
- 	s32 underrun;
- 	u32 hw_paused;
- 	s32 tx_abort;
--	s32 mpdus_requed;
-+	s32 mpdus_requeued;
- 	u32 tx_ko;
- 	u32 data_rc;
- 	u32 self_triggers;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index fd052f6ed019..39378e3f9b2b 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1105,7 +1105,7 @@ static const char ath10k_gstrings_stats[][ETH_GSTRING_LEN] = {
- 	"d_tx_ppdu_reaped",
- 	"d_tx_fifo_underrun",
- 	"d_tx_ppdu_abort",
--	"d_tx_mpdu_requed",
-+	"d_tx_mpdu_requeued",
- 	"d_tx_excessive_retries",
- 	"d_tx_hw_rate",
- 	"d_tx_dropped_sw_retries",
-@@ -1205,7 +1205,7 @@ void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 	data[i++] = pdev_stats->hw_reaped;
- 	data[i++] = pdev_stats->underrun;
- 	data[i++] = pdev_stats->tx_abort;
--	data[i++] = pdev_stats->mpdus_requed;
-+	data[i++] = pdev_stats->mpdus_requeued;
- 	data[i++] = pdev_stats->tx_ko;
- 	data[i++] = pdev_stats->data_rc;
- 	data[i++] = pdev_stats->sw_retry_failure;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 956157946106..4e11ee775b4d 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1282,8 +1282,8 @@ struct htt_dbg_stats_wal_tx_stats {
- 	/* Num PPDUs cleaned up in TX abort */
- 	__le32 tx_abort;
- 
--	/* Num MPDUs requed by SW */
--	__le32 mpdus_requed;
-+	/* Num MPDUs requeued by SW */
-+	__le32 mpdus_requeued;
- 
- 	/* excessive retries */
- 	__le32 tx_ko;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d48b922215eb..f42bf2c8f9e7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2867,7 +2867,7 @@ void ath10k_wmi_pull_pdev_stats_tx(const struct wmi_pdev_stats_tx *src,
- 	dst->hw_reaped = __le32_to_cpu(src->hw_reaped);
- 	dst->underrun = __le32_to_cpu(src->underrun);
- 	dst->tx_abort = __le32_to_cpu(src->tx_abort);
--	dst->mpdus_requed = __le32_to_cpu(src->mpdus_requed);
-+	dst->mpdus_requeued = __le32_to_cpu(src->mpdus_requeued);
- 	dst->tx_ko = __le32_to_cpu(src->tx_ko);
- 	dst->data_rc = __le32_to_cpu(src->data_rc);
- 	dst->self_triggers = __le32_to_cpu(src->self_triggers);
-@@ -2895,7 +2895,7 @@ ath10k_wmi_10_4_pull_pdev_stats_tx(const struct wmi_10_4_pdev_stats_tx *src,
- 	dst->hw_reaped = __le32_to_cpu(src->hw_reaped);
- 	dst->underrun = __le32_to_cpu(src->underrun);
- 	dst->tx_abort = __le32_to_cpu(src->tx_abort);
--	dst->mpdus_requed = __le32_to_cpu(src->mpdus_requed);
-+	dst->mpdus_requeued = __le32_to_cpu(src->mpdus_requeued);
- 	dst->tx_ko = __le32_to_cpu(src->tx_ko);
- 	dst->data_rc = __le32_to_cpu(src->data_rc);
- 	dst->self_triggers = __le32_to_cpu(src->self_triggers);
-@@ -8270,7 +8270,7 @@ ath10k_wmi_fw_pdev_tx_stats_fill(const struct ath10k_fw_stats_pdev *pdev,
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "PPDUs cleaned", pdev->tx_abort);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
--			 "MPDUs requed", pdev->mpdus_requed);
-+			 "MPDUs requeued", pdev->mpdus_requeued);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "Excessive retries", pdev->tx_ko);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index d870f7067cb7..dd980c81793e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4371,8 +4371,8 @@ struct wmi_pdev_stats_tx {
- 	/* Num PPDUs cleaned up in TX abort */
- 	__le32 tx_abort;
- 
--	/* Num MPDUs requed by SW */
--	__le32 mpdus_requed;
-+	/* Num MPDUs requeued by SW */
-+	__le32 mpdus_requeued;
- 
- 	/* excessive retries */
- 	__le32 tx_ko;
-@@ -4444,8 +4444,8 @@ struct wmi_10_4_pdev_stats_tx {
- 	/* Num PPDUs cleaned up in TX abort */
- 	__le32 tx_abort;
- 
--	/* Num MPDUs requed by SW */
--	__le32 mpdus_requed;
-+	/* Num MPDUs requeued by SW */
-+	__le32 mpdus_requeued;
- 
- 	/* excessive retries */
- 	__le32 tx_ko;
-diff --git a/drivers/net/wireless/ath/ath11k/core.h b/drivers/net/wireless/ath/ath11k/core.h
-index 55af982deca7..382df5318b61 100644
---- a/drivers/net/wireless/ath/ath11k/core.h
-+++ b/drivers/net/wireless/ath/ath11k/core.h
-@@ -795,8 +795,8 @@ struct ath11k_fw_stats_pdev {
- 	s32 underrun;
- 	/* Num PPDUs cleaned up in TX abort */
- 	s32 tx_abort;
--	/* Num MPDUs requed by SW */
--	s32 mpdus_requed;
-+	/* Num MPDUs requeued by SW */
-+	s32 mpdus_requeued;
- 	/* excessive retries */
- 	u32 tx_ko;
- 	/* data hw rate code */
-diff --git a/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c b/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
-index ec93f14e6d2a..9e0c90da99d3 100644
---- a/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
-+++ b/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
-@@ -89,7 +89,7 @@ static inline void htt_print_tx_pdev_stats_cmn_tlv(const void *tag_buf,
- 	len += HTT_DBG_OUT(buf + len, buf_len - len, "tx_abort = %u",
- 			   htt_stats_buf->tx_abort);
- 	len += HTT_DBG_OUT(buf + len, buf_len - len, "mpdu_requeued = %u",
--			   htt_stats_buf->mpdu_requed);
-+			   htt_stats_buf->mpdu_requeued);
- 	len += HTT_DBG_OUT(buf + len, buf_len - len, "tx_xretry = %u",
- 			   htt_stats_buf->tx_xretry);
- 	len += HTT_DBG_OUT(buf + len, buf_len - len, "data_rc = %u",
-diff --git a/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.h b/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.h
-index 567a26d485a9..d428f52003a4 100644
---- a/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.h
-+++ b/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.h
-@@ -147,7 +147,7 @@ struct htt_tx_pdev_stats_cmn_tlv {
- 	u32 hw_flush;
- 	u32 hw_filt;
- 	u32 tx_abort;
--	u32 mpdu_requed;
-+	u32 mpdu_requeued;
- 	u32 tx_xretry;
- 	u32 data_rc;
- 	u32 mpdu_dropped_xretry;
-diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
-index 5ca2d80679b6..6c253eae9d06 100644
---- a/drivers/net/wireless/ath/ath11k/wmi.c
-+++ b/drivers/net/wireless/ath/ath11k/wmi.c
-@@ -5235,7 +5235,7 @@ ath11k_wmi_pull_pdev_stats_tx(const struct wmi_pdev_stats_tx *src,
- 	dst->hw_reaped = src->hw_reaped;
- 	dst->underrun = src->underrun;
- 	dst->tx_abort = src->tx_abort;
--	dst->mpdus_requed = src->mpdus_requed;
-+	dst->mpdus_requeued = src->mpdus_requeued;
- 	dst->tx_ko = src->tx_ko;
- 	dst->data_rc = src->data_rc;
- 	dst->self_triggers = src->self_triggers;
-@@ -5505,7 +5505,7 @@ ath11k_wmi_fw_pdev_tx_stats_fill(const struct ath11k_fw_stats_pdev *pdev,
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "PPDUs cleaned", pdev->tx_abort);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
--			 "MPDUs requed", pdev->mpdus_requed);
-+			 "MPDUs requeued", pdev->mpdus_requeued);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
- 			 "Excessive retries", pdev->tx_ko);
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-diff --git a/drivers/net/wireless/ath/ath11k/wmi.h b/drivers/net/wireless/ath/ath11k/wmi.h
-index 3ade1ddd35c9..d35c47e0b19d 100644
---- a/drivers/net/wireless/ath/ath11k/wmi.h
-+++ b/drivers/net/wireless/ath/ath11k/wmi.h
-@@ -4171,8 +4171,8 @@ struct wmi_pdev_stats_tx {
- 	/* Num PPDUs cleaned up in TX abort */
- 	s32 tx_abort;
- 
--	/* Num MPDUs requed by SW */
--	s32 mpdus_requed;
-+	/* Num MPDUs requeued by SW */
-+	s32 mpdus_requeued;
- 
- 	/* excessive retries */
- 	u32 tx_ko;
--- 
-2.30.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QXRoZXJvcyBBUjl4eHggYW5kIFFDQTk4eHggY2hpcHMgZG8gbm90IGJlaGF2ZSBub3Qgb25seSBh
+ZnRlciBhIGJ1cyByZXNldApidXQgYWxzbyBhZnRlciBkb2luZyByZXRyYWluIGxpbmsgd2hlbiBQ
+Q0llIGJyaWRnZSBpcyBub3QgaW4gR0VOMSBtb2RlIGF0CjIuNSBHVC9zIHNwZWVkLgoKUUNBOTg4
+MCBhbmQgUUNBOTg5MCBjaGlwcyB0aHJvdyBhIExpbmsgRG93biBldmVudCBhbmQgY29tcGxldGVs
+eSBkaXNhcHBlYXIKZnJvbSB0aGUgYnVzIGFuZCB0aGVpciBjb25maWcgc3BhY2UgaXMgbm90IGFj
+Y2Vzc2libGUgYWdhaW4uCgpBUjkzOTAgY2hpcCB0aHJvd3MgYSBMaW5rIERvd24gZXZlbnQgZm9s
+bG93ZWQgYnkgTGluayBVcCBldmVudCwgY29uZmlnCnNwYWNlIGlzIGFjY2Vzc2libGUgYWdhaW4s
+IGJ1dCBjb250YWlucyBub25zZW5zZSB2YWx1ZXMuIFBDSSBkZXZpY2UgSUQgaXMKMHhBQkNEIHdo
+aWNoIGluZGljYXRlcyBIVyBidWcgdGhhdCBjaGlwIGl0c2VsZiB3YXMgbm90IGFibGUgdG8gcmVh
+ZCB2YWx1ZXMKZnJvbSBpbnRlcm5hbCBFRVBST00vT1RQLgoKQVI5Mjg3IGNoaXAgdGhyb3dzIGFs
+c28gTGluayBEb3duIGFuZCBMaW5rIFVwIGV2ZW50cywgYWxzbyBoYXMgYWNjZXNzaWJsZQpjb25m
+aWcgc3BhY2UgYW5kIG1vcmVvdmVyIGl0cyBjb25maWcgc3BhY2UgY29udGFpbnMgY29ycmVjdCB2
+YWx1ZXMuIEJ1dAphdGg5ayBkcml2ZXIgY2Fubm90IGluaXRpYWxpemUgY2FyZCBmcm9tIHRoaXMg
+c3RhdGUgYXMgaXQgaXMgdW5hYmxlIHRvCmFjY2VzcyBIVyByZWdpc3RlcnMuIFRoaXMgYWxzbyBp
+bmRpY2F0ZXMgdGhhdCBjaGlwIGlzZWxmIHdhcyBub3QgYWJsZSB0bwpyZWFkIHZhbHVlcyBmcm9t
+IGludGVybmFsIEVFUFJPTS9PVFAuCgpUaGlzIGlzc3VlIHJlbGF0ZWQgdG8gUENJIGRldmljZSBJ
+RCAweEFCQ0QgYW5kIHJlYWRpbmcgaW50ZXJuYWwgRUVQUk9NL09UUAp3YXMgcHJldmlvdXNseSBk
+aXNjdXNzZWQgYXQgYXRoOWstZGV2ZWwgbWFpbGluZyBsaXN0IGluIGZvbGxvd2luZyB0aHJlYWQ6
+CgpodHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDlrLWRldmVsQGxpc3RzLmF0aDlrLm9y
+Zy9tc2cwNzUyOS5odG1sCgpBZnRlciBleHBlcmltZW50cyB3ZSBjb21lIHVwIHdpdGggd29ya2Fy
+b3VuZCB0aGF0IFJldHJhaW4gbGluayBjYW4gYmUKY2FsbGVkIG9ubHkgd2hlbiB1c2luZyBHRU4x
+IFBDSWUgYnJpZGdlIG9yIHdoZW4gUENJZSBicmlkZ2UgaGFzIGZvcmNlZCBsaW5rCnNwZWVkIHRv
+IDIuNSBHVC9zIHZpYSBQQ0lfRVhQX0xOS0NUTDIgcmVnaXN0ZXIuCgpUaGlzIGlzc3VlIHdhcyBy
+ZXByb2R1Y2VkIHdpdGggbW9yZSBjYXJkczogQ29tcGV4IFdMRTkwMFZYIChRQ0E5ODgwIGJhc2Vk
+IC8KZGV2aWNlIElEIDB4MDAzYyksIENvbXBleCBXTEUyMDBOWCAoQVI5Mjg3IGJhc2VkIC8gZGV2
+aWNlIElEIDB4MDAyZSksCiJub25hbWUiIGNhcmQgKFFDQTk4OTAgYmFzZWQgLyBkZXZpY2UgSUQg
+MHgwMDNjKSBhbmQgV2lzdHJvbiBOS1ItRE5YQUgxCihBUjkzOTAgYmFzZWQgLyBkZXZpY2UgSUQg
+MHgwMDMwKSBvbiBBcm1hZGEgMzg1IHdpdGggcGNpLW12ZWJ1LmMgZHJpdmVyIGFuZAphbHNvIG9u
+IEFybWFkYSAzNzIwIHdpdGggcGNpLWFhcmR2YXJrLmMgZHJpdmVyLgoKVG8gd29ya2Fyb3VuZCB0
+aGlzIGlzc3VlLCB0aGlzIGNoYW5nZSBpbnRyb2R1Y2VzIGEgbmV3IFBDSSBxdWlyayBjYWxsZWQK
+UENJX0RFVl9GTEFHU19OT19SRVRSQUlOX0xJTktfV0hFTl9OT1RfR0VOMSB3aGljaCBpcyBlbmFi
+bGVkIGZvciBhbGwKQXRoZXJvcyBjaGlwcyB3aXRoIFBDSV9ERVZfRkxBR1NfTk9fQlVTX1JFU0VU
+IHF1aXJrLCBwbHVzIGFsc28gZm9yIEF0aGVyb3MKY2hpcCBBUjkyODcuCgpXaGVuIHRoaXMgcXVp
+cmsgaXMgc2V0IHRoZW4ga2VybmVsIGRpc2FsbG93cyB0cmlnZ2VyaW5nIFBDSV9FWFBfTE5LQ1RM
+X1JMCmJpdCBpbiBjb25maWcgc3BhY2Ugb2YgUENJZSBCcmlkZ2UgaW4gY2FzZSBQQ0llIEJyaWRn
+ZSBpcyBjYXBhYmxlIG9mIGhpZ2hlcgpzcGVlZCB0aGFuIDIuNSBHVC9zIGFuZCBoaWdoZXIgc3Bl
+ZWQgaXMgYWxyZWFkeSBhbGxvd2VkLiBXaGVuIFBDSWUgQnJpZGdlCmhhcyBhY2Nlc3NpYmxlIExO
+S0NUTDIgcmVnaXN0ZXIgdGhlbiBrZXJuZWwgdHJpZXMgdG8gZm9yY2UgdGFyZ2V0IGxpbmsKc3Bl
+ZWQgdmlhIFBDSV9FWFBfTE5LQ1RMMl9UTFMqIGJpdHMgdG8gMi41IEdUL3MuIEFmdGVyIHRoaXMg
+Y2hhbmdlIGl0IGlzCnBvc3NpYmxlIHRvIHRyaWdnZXIgUENJX0VYUF9MTktDVExfUkwgYml0IHdp
+dGhvdXQgY2F1c2luZyBpc3N1ZXMgb24KcHJvYmxlbWF0aWMgQXRoZXJvcyBjYXJkcy4KCkN1cnJl
+bnRseSBvbmx5IFBDSWUgQVNQTSBrZXJuZWwgY29kZSB0cmlnZ2VycyB0aGlzIFBDSV9FWFBfTE5L
+Q1RMX1JMIGJpdCwKc28gcXVpcmsgY2hlY2sgaXMgYWRkZWQgb25seSBpbnRvIHBjaWUvYXNwbS5j
+IGZpbGUuCgpTaWduZWQtb2ZmLWJ5OiBQYWxpIFJvaMOhciA8cGFsaUBrZXJuZWwub3JnPgpSZXBv
+cnRlZC1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+ClRlc3Rl
+ZC1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+ClRlc3RlZC1i
+eTogTWFyZWsgQmVow7puIDxrYWJlbEBrZXJuZWwub3JnPgpCdWdMaW5rOiBodHRwczovL2xvcmUu
+a2VybmVsLm9yZy9saW51eC1wY2kvODdoN2w4YXhxcC5mc2ZAdG9rZS5kay8KQnVnTGluazogaHR0
+cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD04NDgyMQpCdWdMaW5rOiBo
+dHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTE5MjQ0MQpCdWdMaW5r
+OiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIwOTgzMwpDYzog
+c3RhYmxlQHZnZXIua2VybmVsLm9yZyAjIGM4MDg1MWY2Y2U2M2EgKCJQQ0k6IEFkZCBQQ0lfRVhQ
+X0xOS0NUTDJfVExTKiBtYWNyb3MiKQoKLS0tCkNoYW5nZXMgc2luY2UgdjE6CiogTW92ZSB3aG9s
+ZSBxdWlyayBjb2RlIGludG8gcGNpZV9kb3duZ3JhZGVfbGlua190b19nZW4xKCkgZnVuY3Rpb24K
+KiBSZWZvcm1hdCB0byA4MCBjaGFycyBwZXIgbGluZSB3aGVyZSBwb3NzaWJsZQoqIEFkZCBxdWly
+ayBhbHNvIGZvciBjYXJkcyB3aXRoIEFSOTI4NyBjaGlwIChQQ0kgSUQgMHgwMDJlKQoqIEV4dGVu
+ZCBjb21taXQgbWVzc2FnZSBkZXNjcmlwdGlvbiBhbmQgYWRkIGluZm9ybWF0aW9uIGFib3V0IDB4
+QUJDRAotLS0KIGRyaXZlcnMvcGNpL3BjaWUvYXNwbS5jIHwgNDQgKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysKIGRyaXZlcnMvcGNpL3F1aXJrcy5jICAgIHwgMzcgKysr
+KysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLQogaW5jbHVkZS9saW51eC9wY2kuaCAgICAg
+fCAgMiArKwogMyBmaWxlcyBjaGFuZ2VkLCA3NSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygt
+KQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaWUvYXNwbS5jIGIvZHJpdmVycy9wY2kvcGNp
+ZS9hc3BtLmMKaW5kZXggYWMwNTU3YTMwNWFmLi43MjliMDM4OTU2MmIgMTAwNjQ0Ci0tLSBhL2Ry
+aXZlcnMvcGNpL3BjaWUvYXNwbS5jCisrKyBiL2RyaXZlcnMvcGNpL3BjaWUvYXNwbS5jCkBAIC0x
+OTIsMTIgKzE5Miw1NiBAQCBzdGF0aWMgdm9pZCBwY2llX2Nsa3BtX2NhcF9pbml0KHN0cnVjdCBw
+Y2llX2xpbmtfc3RhdGUgKmxpbmssIGludCBibGFja2xpc3QpCiAJbGluay0+Y2xrcG1fZGlzYWJs
+ZSA9IGJsYWNrbGlzdCA/IDEgOiAwOwogfQogCitzdGF0aWMgaW50IHBjaWVfZG93bmdyYWRlX2xp
+bmtfdG9fZ2VuMShzdHJ1Y3QgcGNpX2RldiAqcGFyZW50KQoreworCXUxNiByZWcxNjsKKwl1MzIg
+cmVnMzI7CisJaW50IHJldDsKKworCS8qIENoZWNrIGlmIGxpbmsgaXMgY2FwYWJsZSBvZiBoaWdo
+ZXIgc3BlZWQgdGhhbiAyLjUgR1QvcyAqLworCXBjaWVfY2FwYWJpbGl0eV9yZWFkX2R3b3JkKHBh
+cmVudCwgUENJX0VYUF9MTktDQVAsICZyZWczMik7CisJaWYgKChyZWczMiAmIFBDSV9FWFBfTE5L
+Q0FQX1NMUykgPD0gUENJX0VYUF9MTktDQVBfU0xTXzJfNUdCKQorCQlyZXR1cm4gMDsKKworCS8q
+IENoZWNrIGlmIGxpbmsgc3BlZWQgY2FuIGJlIGRvd25ncmFkZWQgdG8gMi41IEdUL3MgKi8KKwlw
+Y2llX2NhcGFiaWxpdHlfcmVhZF9kd29yZChwYXJlbnQsIFBDSV9FWFBfTE5LQ0FQMiwgJnJlZzMy
+KTsKKwlpZiAoIShyZWczMiAmIFBDSV9FWFBfTE5LQ0FQMl9TTFNfMl81R0IpKSB7CisJCXBjaV9l
+cnIocGFyZW50LCAiQVNQTTogQnJpZGdlIGRvZXMgbm90IHN1cHBvcnQgY2hhbmdpbmcgTGluayBT
+cGVlZCB0byAyLjUgR1Qvc1xuIik7CisJCXJldHVybiAtRU9QTk9UU1VQUDsKKwl9CisKKwkvKiBG
+b3JjZSBsaW5rIHNwZWVkIHRvIDIuNSBHVC9zICovCisJcmV0ID0gcGNpZV9jYXBhYmlsaXR5X2Ns
+ZWFyX2FuZF9zZXRfd29yZChwYXJlbnQsIFBDSV9FWFBfTE5LQ1RMMiwKKwkJCQkJCSBQQ0lfRVhQ
+X0xOS0NUTDJfVExTLAorCQkJCQkJIFBDSV9FWFBfTE5LQ1RMMl9UTFNfMl81R1QpOworCWlmICgh
+cmV0KSB7CisJCS8qIFZlcmlmeSB0aGF0IG5ldyB2YWx1ZSB3YXMgcmVhbGx5IHNldCAqLworCQlw
+Y2llX2NhcGFiaWxpdHlfcmVhZF93b3JkKHBhcmVudCwgUENJX0VYUF9MTktDVEwyLCAmcmVnMTYp
+OworCQlpZiAoKHJlZzE2ICYgUENJX0VYUF9MTktDVEwyX1RMUykgIT0gUENJX0VYUF9MTktDVEwy
+X1RMU18yXzVHVCkKKwkJCXJldCA9IC1FSU5WQUw7CisJfQorCisJaWYgKHJldCkgeworCQlwY2lf
+ZXJyKHBhcmVudCwgIkFTUE06IENoYW5naW5nIFRhcmdldCBMaW5rIFNwZWVkIHRvIDIuNSBHVC9z
+IGZhaWxlZDogJWRcbiIsIHJldCk7CisJCXJldHVybiByZXQ7CisJfQorCisJcGNpX2luZm8ocGFy
+ZW50LCAiQVNQTTogVGFyZ2V0IExpbmsgU3BlZWQgY2hhbmdlZCB0byAyLjUgR1QvcyBkdWUgdG8g
+cXVpcmtcbiIpOworCXJldHVybiAwOworfQorCiBzdGF0aWMgYm9vbCBwY2llX3JldHJhaW5fbGlu
+ayhzdHJ1Y3QgcGNpZV9saW5rX3N0YXRlICpsaW5rKQogewogCXN0cnVjdCBwY2lfZGV2ICpwYXJl
+bnQgPSBsaW5rLT5wZGV2OwogCXVuc2lnbmVkIGxvbmcgZW5kX2ppZmZpZXM7CiAJdTE2IHJlZzE2
+OwogCisJaWYgKChsaW5rLT5kb3duc3RyZWFtLT5kZXZfZmxhZ3MgJiBQQ0lfREVWX0ZMQUdTX05P
+X1JFVFJBSU5fTElOS19XSEVOX05PVF9HRU4xKSAmJgorCSAgICBwY2llX2Rvd25ncmFkZV9saW5r
+X3RvX2dlbjEocGFyZW50KSkgeworCQlwY2lfZXJyKHBhcmVudCwgIkFTUE06IFJldHJhaW4gTGlu
+ayBhdCBoaWdoZXIgc3BlZWQgaXMgZGlzYWxsb3dlZCBieSBxdWlya1xuIik7CisJCXJldHVybiBm
+YWxzZTsKKwl9CisKIAlwY2llX2NhcGFiaWxpdHlfcmVhZF93b3JkKHBhcmVudCwgUENJX0VYUF9M
+TktDVEwsICZyZWcxNik7CiAJcmVnMTYgfD0gUENJX0VYUF9MTktDVExfUkw7CiAJcGNpZV9jYXBh
+YmlsaXR5X3dyaXRlX3dvcmQocGFyZW50LCBQQ0lfRVhQX0xOS0NUTCwgcmVnMTYpOwpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9wY2kvcXVpcmtzLmMgYi9kcml2ZXJzL3BjaS9xdWlya3MuYwppbmRleCA2
+NTM2NjBlM2JhOWUuLjY4YzVlOGY0ZmY4YyAxMDA2NDQKLS0tIGEvZHJpdmVycy9wY2kvcXVpcmtz
+LmMKKysrIGIvZHJpdmVycy9wY2kvcXVpcmtzLmMKQEAgLTM1NTMsMjMgKzM1NTMsNDQgQEAgc3Rh
+dGljIHZvaWQgbWVsbGFub3hfY2hlY2tfYnJva2VuX2ludHhfbWFza2luZyhzdHJ1Y3QgcGNpX2Rl
+diAqcGRldikKIERFQ0xBUkVfUENJX0ZJWFVQX0ZJTkFMKFBDSV9WRU5ET1JfSURfTUVMTEFOT1gs
+IFBDSV9BTllfSUQsCiAJCQltZWxsYW5veF9jaGVja19icm9rZW5faW50eF9tYXNraW5nKTsKIAot
+c3RhdGljIHZvaWQgcXVpcmtfbm9fYnVzX3Jlc2V0KHN0cnVjdCBwY2lfZGV2ICpkZXYpCitzdGF0
+aWMgdm9pZCBxdWlya19ub19idXNfcmVzZXRfYW5kX25vX3JldHJhaW5fbGluayhzdHJ1Y3QgcGNp
+X2RldiAqZGV2KQogewotCWRldi0+ZGV2X2ZsYWdzIHw9IFBDSV9ERVZfRkxBR1NfTk9fQlVTX1JF
+U0VUOworCWRldi0+ZGV2X2ZsYWdzIHw9IFBDSV9ERVZfRkxBR1NfTk9fQlVTX1JFU0VUIHwKKwkJ
+CSAgUENJX0RFVl9GTEFHU19OT19SRVRSQUlOX0xJTktfV0hFTl9OT1RfR0VOMTsKIH0KIAogLyoK
+LSAqIFNvbWUgQXRoZXJvcyBBUjl4eHggYW5kIFFDQTk4OHggY2hpcHMgZG8gbm90IGJlaGF2ZSBh
+ZnRlciBhIGJ1cyByZXNldC4KKyAqIEF0aGVyb3MgQVI5eHh4IGFuZCBRQ0E5OHh4IGNoaXBzIGRv
+IG5vdCBiZWhhdmUgYWZ0ZXIgYSBidXMgcmVzZXQgYW5kIGFsc28KKyAqIGFmdGVyIHJldHJhaW4g
+bGluayB3aGVuIFBDSWUgYnJpZGdlIGlzIG5vdCBpbiBHRU4xIG1vZGUgYXQgMi41IEdUL3Mgc3Bl
+ZWQuCiAgKiBUaGUgZGV2aWNlIHdpbGwgdGhyb3cgYSBMaW5rIERvd24gZXJyb3Igb24gQUVSLWNh
+cGFibGUgc3lzdGVtcyBhbmQKICAqIHJlZ2FyZGxlc3Mgb2YgQUVSLCBjb25maWcgc3BhY2Ugb2Yg
+dGhlIGRldmljZSBpcyBuZXZlciBhY2Nlc3NpYmxlIGFnYWluCiAgKiBhbmQgdHlwaWNhbGx5IGNh
+dXNlcyB0aGUgc3lzdGVtIHRvIGhhbmcgb3IgcmVzZXQgd2hlbiBhY2Nlc3MgaXMgYXR0ZW1wdGVk
+LgorICogT3IgaWYgY29uZmlnIHNwYWNlIGlzIGFjY2Vzc2libGUgYWdhaW4gdGhlbiBpdCBjb250
+YWlucyBvbmx5IGR1bW15IHZhbHVlcworICogbGlrZSBmaXhlZCBQQ0kgZGV2aWNlIElEIDB4QUJD
+RCBvciB2YWx1ZXMgbm90IGluaXRpYWxpemVkIGF0IGFsbC4KKyAqIFJldHJhaW4gbGluayBjYW4g
+YmUgY2FsbGVkIG9ubHkgd2hlbiB1c2luZyBHRU4xIFBDSWUgYnJpZGdlIG9yIHdoZW4KKyAqIFBD
+SWUgYnJpZGdlIGhhcyBmb3JjZWQgbGluayBzcGVlZCB0byAyLjUgR1QvcyB2aWEgUENJX0VYUF9M
+TktDVEwyIHJlZ2lzdGVyLgorICogVG8gcmVzZXQgdGhlc2UgY2FyZHMgaXQgaXMgcmVxdWlyZWQg
+dG8gZG8gUENJZSBXYXJtIFJlc2V0IHZpYSBQRVJTVCMgcGluLgogICogaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvci8yMDE0MDkyMzIxMDMxOC40OThkYWNiZEBkdWFsYy5tYXlhLm9yZy8KKyAqIGh0
+dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvODdoN2w4YXhxcC5mc2ZAdG9rZS5kay8KKyAqIGh0dHBz
+Oi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vYXRoOWstZGV2ZWxAbGlzdHMuYXRoOWsub3JnL21zZzA3
+NTI5Lmh0bWwKICAqLwotREVDTEFSRV9QQ0lfRklYVVBfSEVBREVSKFBDSV9WRU5ET1JfSURfQVRI
+RVJPUywgMHgwMDMwLCBxdWlya19ub19idXNfcmVzZXQpOwotREVDTEFSRV9QQ0lfRklYVVBfSEVB
+REVSKFBDSV9WRU5ET1JfSURfQVRIRVJPUywgMHgwMDMyLCBxdWlya19ub19idXNfcmVzZXQpOwot
+REVDTEFSRV9QQ0lfRklYVVBfSEVBREVSKFBDSV9WRU5ET1JfSURfQVRIRVJPUywgMHgwMDNjLCBx
+dWlya19ub19idXNfcmVzZXQpOwotREVDTEFSRV9QQ0lfRklYVVBfSEVBREVSKFBDSV9WRU5ET1Jf
+SURfQVRIRVJPUywgMHgwMDMzLCBxdWlya19ub19idXNfcmVzZXQpOwotREVDTEFSRV9QQ0lfRklY
+VVBfSEVBREVSKFBDSV9WRU5ET1JfSURfQVRIRVJPUywgMHgwMDM0LCBxdWlya19ub19idXNfcmVz
+ZXQpOworREVDTEFSRV9QQ0lfRklYVVBfSEVBREVSKFBDSV9WRU5ET1JfSURfQVRIRVJPUywgMHgw
+MDJlLAorCQkJIHF1aXJrX25vX2J1c19yZXNldF9hbmRfbm9fcmV0cmFpbl9saW5rKTsKK0RFQ0xB
+UkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAzMCwKKwkJCSBx
+dWlya19ub19idXNfcmVzZXRfYW5kX25vX3JldHJhaW5fbGluayk7CitERUNMQVJFX1BDSV9GSVhV
+UF9IRUFERVIoUENJX1ZFTkRPUl9JRF9BVEhFUk9TLCAweDAwMzIsCisJCQkgcXVpcmtfbm9fYnVz
+X3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOworREVDTEFSRV9QQ0lfRklYVVBfSEVBREVSKFBD
+SV9WRU5ET1JfSURfQVRIRVJPUywgMHgwMDMzLAorCQkJIHF1aXJrX25vX2J1c19yZXNldF9hbmRf
+bm9fcmV0cmFpbl9saW5rKTsKK0RFQ0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lE
+X0FUSEVST1MsIDB4MDAzNCwKKwkJCSBxdWlya19ub19idXNfcmVzZXRfYW5kX25vX3JldHJhaW5f
+bGluayk7CitERUNMQVJFX1BDSV9GSVhVUF9IRUFERVIoUENJX1ZFTkRPUl9JRF9BVEhFUk9TLCAw
+eDAwM2MsCisJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOworCitz
+dGF0aWMgdm9pZCBxdWlya19ub19idXNfcmVzZXQoc3RydWN0IHBjaV9kZXYgKmRldikKK3sKKwlk
+ZXYtPmRldl9mbGFncyB8PSBQQ0lfREVWX0ZMQUdTX05PX0JVU19SRVNFVDsKK30KIAogLyoKICAq
+IFJvb3QgcG9ydCBvbiBzb21lIENhdml1bSBDTjh4eHggY2hpcHMgZG8gbm90IHN1Y2Nlc3NmdWxs
+eSBjb21wbGV0ZSBhIGJ1cwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9wY2kuaCBiL2luY2x1
+ZGUvbGludXgvcGNpLmgKaW5kZXggODZjNzk5Yzk3Yjc3Li5mZGJmNzI1NGU0YWIgMTAwNjQ0Ci0t
+LSBhL2luY2x1ZGUvbGludXgvcGNpLmgKKysrIGIvaW5jbHVkZS9saW51eC9wY2kuaApAQCAtMjI3
+LDYgKzIyNyw4IEBAIGVudW0gcGNpX2Rldl9mbGFncyB7CiAJUENJX0RFVl9GTEFHU19OT19GTFJf
+UkVTRVQgPSAoX19mb3JjZSBwY2lfZGV2X2ZsYWdzX3QpICgxIDw8IDEwKSwKIAkvKiBEb24ndCB1
+c2UgUmVsYXhlZCBPcmRlcmluZyBmb3IgVExQcyBkaXJlY3RlZCBhdCB0aGlzIGRldmljZSAqLwog
+CVBDSV9ERVZfRkxBR1NfTk9fUkVMQVhFRF9PUkRFUklORyA9IChfX2ZvcmNlIHBjaV9kZXZfZmxh
+Z3NfdCkgKDEgPDwgMTEpLAorCS8qIERvbid0IFJldHJhaW4gTGluayBmb3IgZGV2aWNlIHdoZW4g
+YnJpZGdlIGlzIG5vdCBpbiBHRU4xIG1vZGUgKi8KKwlQQ0lfREVWX0ZMQUdTX05PX1JFVFJBSU5f
+TElOS19XSEVOX05PVF9HRU4xID0gKF9fZm9yY2UgcGNpX2Rldl9mbGFnc190KSAoMSA8PCAxMiks
+CiB9OwogCiBlbnVtIHBjaV9pcnFfcmVyb3V0ZV92YXJpYW50IHsKLS0gCjIuMjAuMQoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
