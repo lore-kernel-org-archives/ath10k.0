@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 224F6C47080
-	for <ath10k@archiver.kernel.org>; Sun, 23 May 2021 13:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65788C4707A
+	for <ath10k@archiver.kernel.org>; Sun, 23 May 2021 13:44:09 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C86D61175
-	for <ath10k@archiver.kernel.org>; Sun, 23 May 2021 13:06:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C86D61175
+	by mail.kernel.org (Postfix) with ESMTPS id 5FC2A6115C
+	for <ath10k@archiver.kernel.org>; Sun, 23 May 2021 13:44:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FC2A6115C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,67 +23,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=cRjGbhWSl4ecPUuCNMmjwwWZ2NaAsssSxtUipPWonn8=; b=JhTWDii/K7hnHxG7lKkWfvn/5j
-	BL6tqwaRY2VANsdeHo92CspK/9/il4cvgnldXkYZH4hsGwYoLChgFIf8TshsNtkgaV2h0fhzQqg1F
-	gQj5VqaQU9QyHOwLMQKJtnIJn9SMbMtjnwdMttznu6HU4D9SEo2TSqwh8tvTrEM8v81E9wQR4THIB
-	kDWuqc5AuhRDoNK2SYO8m6tZvWGZ2sehI2oyflKb5xvFukjw+AsdAx+i6ZUwSdapHpkzvs9yX6qOe
-	negqGAxJF1H8ctgMP2z0D6R+ZINbf+7YCEK2no4AK9mtwZSoeEsrmFMVAezxTccTridvT8mRJXPQ6
-	sEYQQQGw==;
+	bh=seq/wWQOHG2gHUgLQCgDWb1KqQ19aktFnQ21wQIwZDk=; b=ABaR/Cpp3WK3W/AxXEppFs/S4c
+	onJ9s3/CnPzYFU4n2ZIz11PZKFxKOLgqNbu1optSZK+q3P5XnBLhVfFNHiig5rkhgQfFSuiRAsc1a
+	NldzEpH2DQKmjtEscGhqlZnwCjKAjB8KCP/E9vCoheLZPovKiqAweRPIPlt+ZAyVNkbQIlpYygn8F
+	dU6Ono5F04JOCmx2UMoj2zk77EREdHcaqKPhyssXFPnWWRZ+tjc3xbj4BTLiqfD84DuWuVIhwwwEW
+	J1aXQCoPn3nP3Nr9u50Y7wW/C4e+JHRVmlPUsemwoqSLTUzGfB1bWul0iYpfAAt2EIiSDl88qBg70
+	tNA8HYag==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lknnq-004Qi2-EN; Sun, 23 May 2021 13:05:58 +0000
+	id 1lkoOb-004Sl3-Gr; Sun, 23 May 2021 13:43:57 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lknnm-004Qhk-Fq
- for ath10k@desiato.infradead.org; Sun, 23 May 2021 13:05:55 +0000
+ id 1lkoOZ-004Skt-0Q
+ for ath10k@desiato.infradead.org; Sun, 23 May 2021 13:43:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
  Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
  Content-Description:In-Reply-To:References;
- bh=qBvDea/wqLgcImNiORI8825eTLHfspg3cyHZ/9zBBic=; b=UIGveIdIJhP17//Zi21yKcMmOY
- LMSJN3KrmStBxFcrWwQZtD4E1HGbbYQ9ihrAJI9ZJ1Brq+yhbkbFoKpMHAqZxkRDUUeW6uqde1pLq
- rXOsk0xv6CHJ5F3ICw+SGFvQPn9MzI27xMqBvfYYEjQMm4Y9hodkjscQry0RkGxBQrfORlijuAgIv
- UDBEdCSDr+BZsAMBkKE7YMDW1IUh7NsI8WSKwtu051XIYag3r1kEEKihkjuRZQnKJOZlTNSaqWmrn
- qvUPoDlLdDhA6pkFZpYjfMsTeC7ckrvMfZFccXoWDKpx1qhG+RJzUIe4FvNwc5GvZFQCOnWBzs7IY
- fhb4U/tA==;
-Received: from mga03.intel.com ([134.134.136.65])
+ bh=SyUcJS4L0vz1cxzNwWoRBENq4cmm8dC4QpRt7jPY+40=; b=UJtnLlrEd1fKPqnPYTCL0crdJB
+ UbVc+D+BRc6t87i+jz488jYbt9YQjA44biOfrcsYPDySahm1/qf7m9TU3UO6vvVtkdDLUEIPfZTCU
+ OUGDIeA9dzk1tcBy7AByEQicIsO6fwKiJtTwIM7r57IWG0w3juI0s4/xhcsY2X0ZbCxfqFCHAk8Cr
+ FEbVoQYqIZJBMcFkbkNyBUFcBW9tqFS72/iLm86qLMixIy30eGBz0YwXnoHvGwN9WDeCT4ZybhgP2
+ efLnDPGAmHwtT3DDj/pr/forB7sLy4PL9EDezEzihl+JFARUXUQAhpxL+0uEeWZKU1uusZzo4Z4vN
+ 7ulHMnaA==;
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lknnh-000Rku-9E
- for ath10k@lists.infradead.org; Sun, 23 May 2021 13:05:51 +0000
-IronPort-SDR: vwSzJ/SQ/W3PcaysytRuZNTsAcZ7pDErBH/Id2KEeOMouQ6erFVQkp1e0ny/5oYz40sxkf/PVa
- 3Ik7NIVuMKuQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9992"; a="201820540"
+ id 1lkoOU-000SHq-0y
+ for ath10k@lists.infradead.org; Sun, 23 May 2021 13:43:51 +0000
+IronPort-SDR: DgoswHBeX9CPvHBRe6vgcrEmJjBiQYKNj6kANaGoHTL4CJN5riRG6WjpJkoIkzyjjr+4gvwkGD
+ ySONK5SQ7ddg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9992"; a="262992262"
 X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
- d="gz'50?scan'50,208,50";a="201820540"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 May 2021 06:05:45 -0700
-IronPort-SDR: fgFT2eBQQdvPEKtgpa2PB0V/97sUG6xRsjc04fqDZHyse8+S+CcmtNd5FYfbaMPWjlJ4xEBPJh
- PqZZ2SGYWxxA==
+ d="gz'50?scan'50,208,50";a="262992262"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 May 2021 06:43:47 -0700
+IronPort-SDR: mt6brzKNLD4NOHi1OxvZcwfXqKA04rsouq4u/LoSQmUp0rk/StcE5aUdWM5Ptf6DdyWRJmhV8Y
+ nLJVpG4RoofA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
- d="gz'50?scan'50,208,50";a="545138724"
+ d="gz'50?scan'50,208,50";a="475409661"
 Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
- by fmsmga001.fm.intel.com with ESMTP; 23 May 2021 06:05:43 -0700
+ by orsmga001.jf.intel.com with ESMTP; 23 May 2021 06:43:44 -0700
 Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lknna-0000rX-VZ; Sun, 23 May 2021 13:05:42 +0000
-Date: Sun, 23 May 2021 21:05:36 +0800
+ id 1lkoON-0000rs-4p; Sun, 23 May 2021 13:43:43 +0000
+Date: Sun, 23 May 2021 21:43:33 +0800
 From: kernel test robot <lkp@intel.com>
 To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Cc: kbuild-all@lists.01.org, Kalle Valo <kvalo@codeaurora.org>,
  ath10k@lists.infradead.org
-Subject: [ath6kl:pending 16/26]
- drivers/net/wireless/ath/wcn36xx/main.c:1091:23: warning: no previous
- prototype for 'wcn36xx_get_first_vif'
-Message-ID: <202105232135.GqT7BiXu-lkp@intel.com>
+Subject: [ath6kl:pending 21/26]
+ drivers/net/wireless/ath/wcn36xx/main.c:1158:6: warning: no previous
+ prototype for 'wcn36xx_set_rekey_data'
+Message-ID: <202105232132.yHK9rIbR-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="+QahgC5+KEYLbs62"
+Content-Type: multipart/mixed; boundary="+HP7ph2BbKc20aGI"
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210523_060549_592091_0F123F40 
-X-CRM114-Status: GOOD (  13.57  )
+X-CRM114-CacheID: sfid-20210523_064350_246355_753CAE83 
+X-CRM114-Status: GOOD (  11.74  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,22 +99,22 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 
---+QahgC5+KEYLbs62
+--+HP7ph2BbKc20aGI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
 head:   a9cccebc0c3b91c2e5d2033d11def1e6f7fc74d4
-commit: d1f965c7b4068af9420408f308bcc6206158b658 [16/26] wcn36xx: Run suspend for the first ieee80211_vif
+commit: 1d8370dacd1e89cfedac0b1b38e244aa5f3b4cef [21/26] wcn36xx: Add set_rekey_data callback
 config: arc-allyesconfig (attached as .config)
 compiler: arceb-elf-gcc (GCC) 9.3.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=d1f965c7b4068af9420408f308bcc6206158b658
+        # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=1d8370dacd1e89cfedac0b1b38e244aa5f3b4cef
         git remote add ath6kl https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
         git fetch --no-tags ath6kl pending
-        git checkout d1f965c7b4068af9420408f308bcc6206158b658
+        git checkout 1d8370dacd1e89cfedac0b1b38e244aa5f3b4cef
         # save the attached .config to linux build tree
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
 
@@ -123,38 +123,49 @@ Reported-by: kernel test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
->> drivers/net/wireless/ath/wcn36xx/main.c:1091:23: warning: no previous prototype for 'wcn36xx_get_first_vif' [-Wmissing-prototypes]
-    1091 | struct ieee80211_vif *wcn36xx_get_first_vif(struct wcn36xx *wcn)
+   drivers/net/wireless/ath/wcn36xx/main.c:1092:23: warning: no previous prototype for 'wcn36xx_get_first_vif' [-Wmissing-prototypes]
+    1092 | struct ieee80211_vif *wcn36xx_get_first_vif(struct wcn36xx *wcn)
          |                       ^~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/wcn36xx/main.c:1158:6: warning: no previous prototype for 'wcn36xx_set_rekey_data' [-Wmissing-prototypes]
+    1158 | void wcn36xx_set_rekey_data(struct ieee80211_hw *hw,
+         |      ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/wcn36xx/main.c:1243:6: warning: no previous prototype for 'wcn36xx_ipv6_addr_change' [-Wmissing-prototypes]
+    1243 | void wcn36xx_ipv6_addr_change(struct ieee80211_hw *hw,
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~
 
 
-vim +/wcn36xx_get_first_vif +1091 drivers/net/wireless/ath/wcn36xx/main.c
+vim +/wcn36xx_set_rekey_data +1158 drivers/net/wireless/ath/wcn36xx/main.c
 
-  1090	
-> 1091	struct ieee80211_vif *wcn36xx_get_first_vif(struct wcn36xx *wcn)
-  1092	{
-  1093		struct wcn36xx_vif *tmp;
-  1094		struct ieee80211_vif *vif = NULL;
-  1095	
-  1096		list_for_each_entry(tmp, &wcn->vif_list, list) {
-  1097			vif = wcn36xx_priv_to_vif(tmp);
-  1098			if (vif)
-  1099				break;
-  1100		}
-  1101		return vif;
-  1102	}
-  1103	
+  1157	
+> 1158	void wcn36xx_set_rekey_data(struct ieee80211_hw *hw,
+  1159				    struct ieee80211_vif *vif,
+  1160				    struct cfg80211_gtk_rekey_data *data)
+  1161	{
+  1162		struct wcn36xx *wcn = hw->priv;
+  1163		struct wcn36xx_vif *vif_priv = wcn36xx_vif_to_priv(vif);
+  1164	
+  1165		mutex_lock(&wcn->conf_mutex);
+  1166	
+  1167		memcpy(vif_priv->rekey_data.kek, data->kek, NL80211_KEK_LEN);
+  1168		memcpy(vif_priv->rekey_data.kck, data->kck, NL80211_KCK_LEN);
+  1169		vif_priv->rekey_data.replay_ctr =
+  1170			cpu_to_le64(be64_to_cpup((__be64 *)data->replay_ctr));
+  1171		vif_priv->rekey_data.valid = true;
+  1172	
+  1173		mutex_unlock(&wcn->conf_mutex);
+  1174	}
+  1175	
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---+QahgC5+KEYLbs62
+--+HP7ph2BbKc20aGI
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICDFQqmAAAy5jb25maWcAlFxLd9s4st73r9Bxb2YW3fGrddN3jhcgCUpokQRDgJLsDY/i
+H4sICL9ZqmAAAy5jb25maWcAlFxLd9s4st73r9Bxb2YW3fGrddN3jhcgCUpokQRDgJLsDY/i
 KGmfdqwcW57bmV9/q8AXCgDlzCymo68Kr0KhXgD9808/z9jr8fB1d3y43z0+fp992T/tn3fH
 /afZ54fH/b9miZwVUs94IvSvwJw9PL3+/W73fD/77deLq1/Pf3m+v5it9s9P+8dZfHj6/PDl
 FVo/HJ5++vmnWBapWDRx3Kx5pYQsGs23+uYMWu8//rJ//PzLl/v72T8WcfzP2e+/QmdnVhOh
@@ -1417,7 +1428,7 @@ A3ZO0XXcxgf0lSobw9ySGkdhyiUq9pDeWKACXNPQrBrtTBQpKO9szWE78z6hoYOwPdGge1Km
 eYFvZO7E9bMde9qTnbae5c14mYFKxCF0+ABytBxp0iSgzRiPGxJntYgzD6q9XZTWqZf0ZOHd
 AdvkWtnXUezQu0ER7jIu6JrDgFVi9g5f9q2Jwf8CR6+lhUpqBAA=
 
---+QahgC5+KEYLbs62
+--+HP7ph2BbKc20aGI
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1428,5 +1439,5 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---+QahgC5+KEYLbs62--
+--+HP7ph2BbKc20aGI--
 
