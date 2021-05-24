@@ -2,69 +2,87 @@ Return-Path: <SRS0=HTCl=KT=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 658A3C2B9F7
-	for <ath10k@archiver.kernel.org>; Mon, 24 May 2021 23:05:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A9A8C2B9F7
+	for <ath10k@archiver.kernel.org>; Mon, 24 May 2021 23:30:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 272EA6140B
-	for <ath10k@archiver.kernel.org>; Mon, 24 May 2021 23:05:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 272EA6140B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4C5B661026
+	for <ath10k@archiver.kernel.org>; Mon, 24 May 2021 23:30:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C5B661026
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hnISZybqGT6oyNekfG2qFfTrp/o+6ZEGUAX8fYxRols=; b=zq0tm/fwo3ER3E
-	HWMmVdv25QjGNO4heWUuXfpzIp9OWXVdlGSKqgTCxpstl/kj/lPUfgZOOibDg4Wz9hGn9OaGnrVjF
-	LfrgfVkeCFv+glAvKaJnx/W2dec4Chr4VLkvFIDkpF6tXNWI3mT6d8dRY+QzR81grj107wqacI6Hj
-	KKdUSpv1mX1459pEWn4TERk7J5ZCgkvTT0vtGEEDkU+8LJq8LwKDKNUE21+uyZLRjxvNY1TDPnVnS
-	MY+aZpQl9yg6WRtHAsgrpQHCthhtSB9FHpUXIUIZQkSNHjbOQ02ZG4VdxxFJwq12wlXaBpeq0cNJ/
-	wDVpTAgnjFuxzIkot0nQ==;
+	List-Owner; bh=KuQgLz+J6N36llAXoC2+wSO48uBFPyoTxZvH0PFHGBw=; b=iHiibv0a+Q7AA+
+	1myg1yU5wWFy6E5Y0LMM8K0W6aNdxt2wjHioHJNLZH3Xjb4HV8WhiE0DhIKfNoHgOEQ3kcaYb9ygW
+	O7ftLlTn6vXUcJWRB9dDOhyjTL8LR1wx3S0e/nDLEzYF15lmn0LmnUlyT39E3s+tn10kez2nTBDHK
+	is32P/mujm6g/DPRW5H2TlPjNs7NjF1o+yOxutIySMw3ZJY32rNIe0fd+2MQMggM35weLUjtOExHf
+	SLD2rJllq8K9nocWCjcYoyz6xEe6L+RgWw3VH8gTIYwCk9cNL+A7U7CHDGKWZMI7OlwrYIF/xwdim
+	HelQI/okf1RmpLTxnrRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1llJdT-002Gi0-K4; Mon, 24 May 2021 23:05:23 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1llK08-002LFz-5K; Mon, 24 May 2021 23:28:48 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lkxxp-000cM9-Ry
- for ath10k@lists.infradead.org; Sun, 23 May 2021 23:56:59 +0000
-IronPort-SDR: EPeNuI5+e+Iq/KT3BvAHEDnHQ8BGRMVjf3YTP+zksJeJGPA7+PfqLwnyf5keUtcria/ock3n0P
- EzbZPVrjbG6Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="287387610"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; d="scan'208";a="287387610"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 May 2021 16:56:53 -0700
-IronPort-SDR: 3y8SJ0DlT/v8kFLmaMZLIHim3kuEALIMaLzU5vEh9oC+52Q28Aph0/+6IBIkoOouIx64tSeucu
- dlR7Gqtd8hng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; d="scan'208";a="407518591"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
- by fmsmga007.fm.intel.com with ESMTP; 23 May 2021 16:56:52 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1lkxxj-00010p-Fs; Sun, 23 May 2021 23:56:51 +0000
-Date: Mon, 24 May 2021 07:56:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
-Subject: [ath6kl:master-pending] BUILD SUCCESS
- 837c7030f21f33f995308f5248b4d97684a43a5b
-Message-ID: <60aaeb95.a6PhGdW2XupOwN+N%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1ll7sY-000pn9-7f
+ for ath10k@lists.infradead.org; Mon, 24 May 2021 10:32:12 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id t9so5967239ply.6
+ for <ath10k@lists.infradead.org>; Mon, 24 May 2021 03:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1HQTXhEyEl48NQ8gO/DKR6ofXIuEzZCeyByaqxCNn+s=;
+ b=gdirCc4rbzyzRMSS8Q2ippBLX6o0bCtuioQqXULxlLZtVPFIrAlPyyU8D2MI3YiANl
+ K0LfFwhJy9TpAUtgBXg1TVhd8om6dDObA8QfvOduJ2mVH1H0EOk9gT/1FG8j9LeyA1mr
+ 7ijjCEryX4be9LeaKZm/PuodKwni8oZE4f+d/v7SSr8eCN58pqQlobInmqJXd+PaoMGL
+ LPl63I3HsfOAvyAMQ+bvIvxMsb8aXeJGSgsX983DZpjny6/5tPo+MCjjiiW+BcpFoZe1
+ xHEpUbf93au0ZKxxIdfleBDkwaHmmZbDM3cvn3kOkF5qfjYSi6CnwqiU0CP3tO1a9tZu
+ 0P2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1HQTXhEyEl48NQ8gO/DKR6ofXIuEzZCeyByaqxCNn+s=;
+ b=QtAwZYuZhGmfsBT6cr7/kFHMsyp0+iQY44dS+6bVw4adDit5labk+e3mAuYjKPnEuH
+ SH90bjZzFI6lf40X8Z78VCixam5NOtlOR1jU7NIUX39L36tXRUYERI/QHJcZK7sDS/sE
+ loRYoifYXRHJ67McNWaTJnCeEcT2NnDhXCwNxEcJGn4BuNkcnfpzkurGuLknWaEKMo7A
+ Rwdloj0SONAh27M7sIhIlcL1GYhfvEPHFU8uPn1dtm6nIQlpiot7F0igVLZWdCYp85pt
+ gMzpYIaEB3Z4MvHq+KM3N7JWS80JezLYBnMP9awgNA9yHNhi+xmVf1KZt0x358FVk2/W
+ q0dg==
+X-Gm-Message-State: AOAM533qN3mpUYhWrCipDwFfyyAZE3hBhpy3sAYl80UhKO1ddynZHaNM
+ RLX7fxslPwMhn5SWAwm/QEs=
+X-Google-Smtp-Source: ABdhPJxiSeIyCLhUkCqkols+9AmFj6lOQDaEdmksxJXoCeSHhKft9kQ5Vm74tZ0dxX0B3klLgyO8fQ==
+X-Received: by 2002:a17:90a:4493:: with SMTP id
+ t19mr24048707pjg.217.1621852327270; 
+ Mon, 24 May 2021 03:32:07 -0700 (PDT)
+Received: from localhost.localdomain ([140.138.152.65])
+ by smtp.gmail.com with ESMTPSA id j5sm389017pfj.185.2021.05.24.03.32.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 24 May 2021 03:32:06 -0700 (PDT)
+From: Zhijun You <hujy652@gmail.com>
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org, Zhijun You <hujy652@gmail.com>,
+ Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>,
+ John Crispin <john@phrozen.org>
+Subject: [RFC] ath10k: add tx hw 802.11 encapsulation offloading support
+Date: Mon, 24 May 2021 18:31:30 +0800
+Message-Id: <20210524103130.66693-1-hujy652@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210523_165657_967379_1F7C6300 
-X-CRM114-Status: UNSURE (   3.67  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210524_033210_330684_916D98ED 
+X-CRM114-Status: GOOD (  25.21  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,202 +99,392 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 837c7030f21f33f995308f5248b4d97684a43a5b  Merge branch 'pending' into master-pending
+This patch adds support of encap offload for ath10k which uses ethernet
+datapath. The feature is enabled via a new module parmeter.
+If enabled, the driver will enable the feature on a per vif basis if the requirements
+are met.
 
-elapsed time: 722m
+Currently only implement for 32bit target with 3-addr AP and STA mode.
 
-configs tested: 178
-configs skipped: 2
+Improves TCP throughput when the feature is enabled.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Tested-on: QCA9984 firmware version 10.4-3.9.0.2-00131(Netgear R7800)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         rt305x_defconfig
-m68k                       m5249evb_defconfig
-mips                     loongson1c_defconfig
-arm                        mini2440_defconfig
-powerpc                         wii_defconfig
-microblaze                          defconfig
-sh                               j2_defconfig
-arm                            pleb_defconfig
-arm                         lubbock_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7619_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      mgcoge_defconfig
-ia64                        generic_defconfig
-arm                         s5pv210_defconfig
-arm                          pxa168_defconfig
-powerpc                  iss476-smp_defconfig
-h8300                            allyesconfig
-powerpc                      chrp32_defconfig
-arm                         hackkit_defconfig
-openrisc                            defconfig
-openrisc                 simple_smp_defconfig
-arm                            lart_defconfig
-sh                         microdev_defconfig
-mips                       capcella_defconfig
-arm                          lpd270_defconfig
-powerpc                      ppc64e_defconfig
-riscv                    nommu_virt_defconfig
-sh                            shmin_defconfig
-xtensa                           alldefconfig
-mips                      loongson3_defconfig
-arm                         orion5x_defconfig
-arc                          axs101_defconfig
-riscv                    nommu_k210_defconfig
-arm                           stm32_defconfig
-powerpc                       ppc64_defconfig
-arm                           h5000_defconfig
-sh                              ul2_defconfig
-nios2                         3c120_defconfig
-mips                     loongson2k_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                                  defconfig
-m68k                       m5475evb_defconfig
-arm                        spear6xx_defconfig
-um                             i386_defconfig
-xtensa                              defconfig
-sh                        edosk7705_defconfig
-sh                          landisk_defconfig
-arm                      footbridge_defconfig
-xtensa                       common_defconfig
-arm                          collie_defconfig
-sh                          rsk7201_defconfig
-arm                       cns3420vb_defconfig
-m68k                          sun3x_defconfig
-arm                           viper_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                           sh2007_defconfig
-um                            kunit_defconfig
-powerpc                     powernv_defconfig
-sh                          r7780mp_defconfig
-i386                                defconfig
-sh                        sh7757lcr_defconfig
-arc                         haps_hs_defconfig
-sh                   sh7770_generic_defconfig
-mips                        vocore2_defconfig
-arm                         nhk8815_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                   sb1250_swarm_defconfig
-arc                     haps_hs_smp_defconfig
-x86_64                           alldefconfig
-arm                         vf610m4_defconfig
-h8300                               defconfig
-h8300                     edosk2674_defconfig
-powerpc                      pcm030_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                          atari_defconfig
-powerpc                      katmai_defconfig
-sh                     sh7710voipgw_defconfig
-sh                          rsk7203_defconfig
-ia64                          tiger_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                          ath25_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210524
-i386                 randconfig-a002-20210524
-i386                 randconfig-a005-20210524
-i386                 randconfig-a006-20210524
-i386                 randconfig-a004-20210524
-i386                 randconfig-a003-20210524
-i386                 randconfig-a001-20210523
-i386                 randconfig-a005-20210523
-i386                 randconfig-a002-20210523
-i386                 randconfig-a003-20210523
-i386                 randconfig-a004-20210523
-i386                 randconfig-a006-20210523
-x86_64               randconfig-a013-20210523
-x86_64               randconfig-a014-20210523
-x86_64               randconfig-a012-20210523
-x86_64               randconfig-a016-20210523
-x86_64               randconfig-a015-20210523
-x86_64               randconfig-a011-20210523
-i386                 randconfig-a016-20210523
-i386                 randconfig-a011-20210523
-i386                 randconfig-a015-20210523
-i386                 randconfig-a012-20210523
-i386                 randconfig-a014-20210523
-i386                 randconfig-a013-20210523
-x86_64               randconfig-a005-20210524
-x86_64               randconfig-a001-20210524
-x86_64               randconfig-a006-20210524
-x86_64               randconfig-a003-20210524
-x86_64               randconfig-a004-20210524
-x86_64               randconfig-a002-20210524
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210524
-x86_64               randconfig-b001-20210523
-x86_64               randconfig-a006-20210523
-x86_64               randconfig-a001-20210523
-x86_64               randconfig-a005-20210523
-x86_64               randconfig-a003-20210523
-x86_64               randconfig-a004-20210523
-x86_64               randconfig-a002-20210523
-x86_64               randconfig-a013-20210524
-x86_64               randconfig-a012-20210524
-x86_64               randconfig-a014-20210524
-x86_64               randconfig-a016-20210524
-x86_64               randconfig-a015-20210524
-x86_64               randconfig-a011-20210524
-
+Co-developed-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Co-developed-by: John Crispin <john@phrozen.org>
+Signed-off-by: John Crispin <john@phrozen.org>
+Signed-off-by: Zhijun You <hujy652@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+RFC because it's been almost two years since the original patch was
+sent.
+
+Changes since original John Crispin's v10 patch
+* check if the target is 32bit
+* remove the ATH10K_SKB_F_HW_80211_ENCAP flag and use tx_info flag
+instead
+* add ath10k_mac_op_update_vif_offload function for runtime change
+
+Should we use a module param for frame mode like in ath11k instead a
+dedicated param for each datapath and should we try to use
+tx_status_ext()?
+---
+ drivers/net/wireless/ath/ath10k/core.c   | 15 ++++
+ drivers/net/wireless/ath/ath10k/core.h   |  2 +
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 25 ++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 95 ++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/txrx.c   |  8 +-
+ 5 files changed, 110 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2f9be182fbfb..2031c8d4e358 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -34,6 +34,7 @@ static bool uart_print;
+ static bool skip_otp;
+ static bool rawmode;
+ static bool fw_diag_log;
++static bool ethernetmode;
+ 
+ unsigned long ath10k_coredump_mask = BIT(ATH10K_FW_CRASH_DUMP_REGISTERS) |
+ 				     BIT(ATH10K_FW_CRASH_DUMP_CE_DATA);
+@@ -46,6 +47,7 @@ module_param(skip_otp, bool, 0644);
+ module_param(rawmode, bool, 0644);
+ module_param(fw_diag_log, bool, 0644);
+ module_param_named(coredump_mask, ath10k_coredump_mask, ulong, 0444);
++module_param(ethernetmode, bool, 0644);
+ 
+ MODULE_PARM_DESC(debug_mask, "Debugging mask");
+ MODULE_PARM_DESC(uart_print, "Uart target debugging");
+@@ -54,6 +56,7 @@ MODULE_PARM_DESC(cryptmode, "Crypto mode: 0-hardware, 1-software");
+ MODULE_PARM_DESC(rawmode, "Use raw 802.11 frame datapath");
+ MODULE_PARM_DESC(coredump_mask, "Bitfield of what to include in firmware crash file");
+ MODULE_PARM_DESC(fw_diag_log, "Diag based fw log debugging");
++MODULE_PARM_DESC(ethernetmode, "Use ethernet frame datapath");
+ 
+ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+@@ -3281,12 +3284,24 @@ static void ath10k_core_register_work(struct work_struct *work)
+ 	/* peer stats are enabled by default */
+ 	set_bit(ATH10K_FLAG_PEER_STATS, &ar->dev_flags);
+ 
++	if (ethernetmode && rawmode) {
++		ath10k_err(ar, "invalid configuration, ethernet and rawmode data path can not coexist\n");
++		status = -EINVAL;
++		goto err;
++	}
++
+ 	status = ath10k_core_probe_fw(ar);
+ 	if (status) {
+ 		ath10k_err(ar, "could not probe fw (%d)\n", status);
+ 		goto err;
+ 	}
+ 
++	/* Ethernet mode only works for 32bit target */
++	if (!ar->hw_params.target_64bit && ethernetmode)
++		ar->ethernetmode = true;
++	else
++		ar->ethernetmode = false;
++
+ 	status = ath10k_mac_register(ar);
+ 	if (status) {
+ 		ath10k_err(ar, "could not register to mac80211 (%d)\n", status);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 648ed36f845f..f119c04fb5fe 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1298,6 +1298,8 @@ struct ath10k {
+ 	s32 tx_power_2g_limit;
+ 	s32 tx_power_5g_limit;
+ 
++	bool ethernetmode;
++
+ 	/* must be last */
+ 	u8 drv_priv[] __aligned(sizeof(void *));
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index d6b8bdcef416..968d9f63f222 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1188,8 +1188,11 @@ static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
+ {
+ 	struct ieee80211_hdr *hdr = (void *)skb->data;
+ 	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 
+-	if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
++	if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
++		return skb->priority & IEEE80211_QOS_CTL_TID_MASK;
++	else if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
+ 		return HTT_DATA_TX_EXT_TID_MGMT;
+ 	else if (cb->flags & ATH10K_SKB_F_QOS)
+ 		return skb->priority & IEEE80211_QOS_CTL_TID_MASK;
+@@ -1436,15 +1439,17 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+ 	txbuf_paddr = htt->txbuf.paddr +
+ 		      (sizeof(struct ath10k_htt_txbuf_32) * msdu_id);
+ 
+-	if ((ieee80211_is_action(hdr->frame_control) ||
+-	     ieee80211_is_deauth(hdr->frame_control) ||
+-	     ieee80211_is_disassoc(hdr->frame_control)) &&
+-	     ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+-	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+-		   txmode == ATH10K_HW_TXRX_RAW &&
+-		   ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++	if (!(info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)) {
++		if ((ieee80211_is_action(hdr->frame_control) ||
++		     ieee80211_is_deauth(hdr->frame_control) ||
++		     ieee80211_is_disassoc(hdr->frame_control)) &&
++		     ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
++			   txmode == ATH10K_HW_TXRX_RAW &&
++			   ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		}
+ 	}
+ 
+ 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index bb6c5ee43ac0..ee64039c3726 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3703,12 +3703,16 @@ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
+ 			   struct sk_buff *skb)
+ {
+ 	const struct ieee80211_hdr *hdr = (void *)skb->data;
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	const struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+ 	__le16 fc = hdr->frame_control;
+ 
+ 	if (!vif || vif->type == NL80211_IFTYPE_MONITOR)
+ 		return ATH10K_HW_TXRX_RAW;
+ 
++	if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
++		return ATH10K_HW_TXRX_ETHERNET;
++
+ 	if (ieee80211_is_mgmt(fc))
+ 		return ATH10K_HW_TXRX_MGMT;
+ 
+@@ -3866,6 +3870,13 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
+ 	bool noack = false;
+ 
+ 	cb->flags = 0;
++	cb->vif = vif;
++	cb->txq = txq;
++	cb->airtime_est = airtime;
++
++	if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
++		return;
++
+ 	if (!ath10k_tx_h_use_hwcrypto(vif, skb))
+ 		cb->flags |= ATH10K_SKB_F_NO_HWCRYPT;
+ 
+@@ -3904,9 +3915,6 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
+ 		cb->flags |= ATH10K_SKB_F_RAW_TX;
+ 	}
+ 
+-	cb->vif = vif;
+-	cb->txq = txq;
+-	cb->airtime_est = airtime;
+ 	if (sta) {
+ 		arsta = (struct ath10k_sta *)sta->drv_priv;
+ 		spin_lock_bh(&ar->data_lock);
+@@ -4015,6 +4023,9 @@ static int ath10k_mac_tx(struct ath10k *ar,
+ 	const struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+ 	int ret;
+ 
++	if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
++		goto skip_encap;
++
+ 	/* We should disable CCK RATE due to P2P */
+ 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
+ 		ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
+@@ -4038,6 +4049,7 @@ static int ath10k_mac_tx(struct ath10k *ar,
+ 		}
+ 	}
+ 
++skip_encap:
+ 	if (!noque_offchan && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+ 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
+ 			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %pK len %d\n",
+@@ -4087,6 +4099,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 	int ret;
+ 	unsigned long time_left;
+ 	bool tmp_peer_created = false;
++	struct ieee80211_tx_info *info;
+ 
+ 	/* FW requirement: We must create a peer before FW will send out
+ 	 * an offchannel frame. Otherwise the frame will be stuck and
+@@ -4106,8 +4119,13 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK len %d\n",
+ 			   skb, skb->len);
+ 
+-		hdr = (struct ieee80211_hdr *)skb->data;
+-		peer_addr = ieee80211_get_DA(hdr);
++		info = IEEE80211_SKB_CB(skb);
++		if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP) {
++			peer_addr = skb->data;
++		} else {
++			hdr = (struct ieee80211_hdr *)skb->data;
++			peer_addr = ieee80211_get_DA(hdr);
++		}
+ 
+ 		spin_lock_bh(&ar->data_lock);
+ 		vdev_id = ar->scan.vdev_id;
+@@ -4639,7 +4657,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ieee80211_sta *sta = control->sta;
+ 	struct ieee80211_txq *txq = NULL;
+-	struct ieee80211_hdr *hdr = (void *)skb->data;
++	struct ieee80211_hdr *hdr;
+ 	enum ath10k_hw_txrx_mode txmode;
+ 	enum ath10k_mac_tx_path txpath;
+ 	bool is_htt;
+@@ -4659,7 +4677,6 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 
+ 	if (is_htt) {
+ 		spin_lock_bh(&ar->htt.tx_lock);
+-		is_presp = ieee80211_is_probe_resp(hdr->frame_control);
+ 
+ 		ret = ath10k_htt_tx_inc_pending(htt);
+ 		if (ret) {
+@@ -4670,14 +4687,19 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 			return;
+ 		}
+ 
+-		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
+-		if (ret) {
+-			ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
+-				   ret);
+-			ath10k_htt_tx_dec_pending(htt);
+-			spin_unlock_bh(&ar->htt.tx_lock);
+-			ieee80211_free_txskb(ar->hw, skb);
+-			return;
++		if (is_mgmt) {
++			hdr = (struct ieee80211_hdr *)skb->data;
++			is_presp = ieee80211_is_probe_resp(hdr->frame_control);
++
++			ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
++			if (ret) {
++				ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
++					   ret);
++				ath10k_htt_tx_dec_pending(htt);
++				spin_unlock_bh(&ar->htt.tx_lock);
++				ieee80211_free_txskb(ar->hw, skb);
++				return;
++			}
+ 		}
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 	}
+@@ -5441,6 +5463,36 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+ 					 ar->wmi.vdev_param->txbf, value);
+ }
+ 
++static void ath10k_mac_op_update_vif_offload(struct ieee80211_hw *hw,
++					     struct ieee80211_vif *vif)
++{
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif = (void *)vif->drv_priv;
++	u32 vdev_param, param_value;
++	int ret;
++
++	if (!ar->ethernetmode ||
++	    (vif->type != NL80211_IFTYPE_STATION &&
++	     vif->type != NL80211_IFTYPE_AP))
++		vif->offload_flags &= ~IEEE80211_OFFLOAD_ENCAP_ENABLED;
++
++	if (vif->offload_flags & IEEE80211_OFFLOAD_ENCAP_ENABLED)
++		param_value = ATH10K_HW_TXRX_ETHERNET;
++	else
++		param_value = ATH10K_HW_TXRX_NATIVE_WIFI;
++
++	vdev_param = ar->wmi.vdev_param->tx_encap_type;
++	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++					param_value);
++
++	/* 10.X firmware does not support this VDEV parameter. Do not warn */
++	if (ret && ret != -EOPNOTSUPP) {
++		ath10k_warn(ar, "failed to set vdev %i TX encapsulation: %d\n",
++			    arvif->vdev_id, ret);
++		vif->offload_flags &= ~IEEE80211_OFFLOAD_ENCAP_ENABLED;
++	}
++}
++
+ /*
+  * TODO:
+  * Figure out how to handle WMI_VDEV_SUBTYPE_P2P_DEVICE,
+@@ -5634,15 +5686,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 
+ 	arvif->def_wep_key_idx = -1;
+ 
+-	vdev_param = ar->wmi.vdev_param->tx_encap_type;
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+-					ATH10K_HW_TXRX_NATIVE_WIFI);
+-	/* 10.X firmware does not support this VDEV parameter. Do not warn */
+-	if (ret && ret != -EOPNOTSUPP) {
+-		ath10k_warn(ar, "failed to set vdev %i TX encapsulation: %d\n",
+-			    arvif->vdev_id, ret);
+-		goto err_vdev_delete;
+-	}
++	ath10k_mac_op_update_vif_offload(hw, vif);
+ 
+ 	/* Configuring number of spatial stream for monitor interface is causing
+ 	 * target assert in qca9888 and qca6174.
+@@ -9327,6 +9371,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.config				= ath10k_config,
+ 	.add_interface			= ath10k_add_interface,
+ 	.remove_interface		= ath10k_remove_interface,
++	.update_vif_offload		= ath10k_mac_op_update_vif_offload,
+ 	.configure_filter		= ath10k_configure_filter,
+ 	.bss_info_changed		= ath10k_bss_info_changed,
+ 	.set_coverage_class		= ath10k_mac_op_set_coverage_class,
+@@ -9936,6 +9981,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ieee80211_hw_set(ar->hw, QUEUE_CONTROL);
+ 	ieee80211_hw_set(ar->hw, SUPPORTS_TX_FRAG);
+ 	ieee80211_hw_set(ar->hw, REPORTS_LOW_ACK);
++	if (ar->ethernetmode)
++		ieee80211_hw_set(ar->hw, SUPPORTS_TX_ENCAP_OFFLOAD);
+ 
+ 	if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags))
+ 		ieee80211_hw_set(ar->hw, SW_CRYPTO_CONTROL);
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 7c9ea0c073d8..5876381f27cd 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -51,6 +51,7 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	struct ath10k_txq *artxq;
+ 	struct sk_buff *msdu;
+ 	u8 flags;
++	struct ieee80211_vif *vif;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT,
+ 		   "htt tx completion msdu_id %u status %d\n",
+@@ -80,6 +81,8 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	}
+ 
+ 	flags = skb_cb->flags;
++	vif = skb_cb->vif;
++
+ 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+ 	ath10k_htt_tx_dec_pending(htt);
+ 	if (htt->num_pending_tx == 0)
+@@ -130,7 +133,10 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		info->status.is_valid_ack_signal = true;
+ 	}
+ 
+-	ieee80211_tx_status(htt->ar->hw, msdu);
++	if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
++		ieee80211_tx_status_8023(htt->ar->hw, vif, msdu);
++	else
++		ieee80211_tx_status(htt->ar->hw, msdu);
+ 	/* we do not own the msdu anymore */
+ 
+ 	return 0;
+-- 
+2.25.1
+
 
 _______________________________________________
 ath10k mailing list
