@@ -2,60 +2,82 @@ Return-Path: <SRS0=/di5=KU=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E909C2B9F8
-	for <ath10k@archiver.kernel.org>; Tue, 25 May 2021 10:46:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F5BAC2B9F8
+	for <ath10k@archiver.kernel.org>; Tue, 25 May 2021 18:23:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7747610FA
-	for <ath10k@archiver.kernel.org>; Tue, 25 May 2021 10:46:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7747610FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id D49F26108D
+	for <ath10k@archiver.kernel.org>; Tue, 25 May 2021 18:23:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D49F26108D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eD3CagxdQHEcJzVDrts0R977VK5EB0ugfToE6xYDKjY=; b=bq5OY0M+5LjJCO
-	OWfP0/KqKUMa2x37UW6P/qUOQiLcxrj63m/LnnEkaDnY3GrSaKG99nXWOK06Bt0F4kOgnEuRC3+pV
-	cUIu+opWvWJsVeZsDbznREuDwZsVuXqXjyTxI59TJxQWbuXQY2QjYMGj/FMLG45FH2z17YtoJOSLm
-	SEi09rzpPqGBNlKP/jf8zDVst3h6DO1yeNqaIqStb8xHYd/+ijXSL757e60ul5TcHpXhbhasPZID4
-	uj+5vIngbMb0i00uc7U3csoBEsZEWpAxa9F8IAkLQbGv94Hks2Mn7k35RqiswXEGD/iCdqB4HLCPW
-	bEWKwBGT8hXuYWCC/AQw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=j1/ZtGna6pH9/brk/mP7jAzGSI69s5Jok1h1SLNcH+s=; b=OnIANZoyMQWpeC
+	NxZrusCo8GA+Qq4v1vROYNHAq+1Kq7yKW3t6yHD7hzrpxyjw0E8+3GoBkMUm6J2xg7NtfzB1/GazU
+	PfKrOANntjN+AVOI9fNANWsGCKeHSMQPmuGZnuCyRJ4WFRvtYIylMonlKARHfhPcY1Kl5RyWTCywY
+	2p0dl52sbMlnSHHo5Ecl+hmP3zahSRaNA+kBdZk8brLPv5PRh6myX6peo0NHVRU6zhYca43fZHpvn
+	uD/Z6LZsopYvCqKKwAhKch89CjMTUUzx4IQaZVmX7DDPZiqe6brN/a52U3rqmkgLlhX9d1LNh3237
+	MtLDT2AKpw7xyxYDOdXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llUa8-004dE4-Fb; Tue, 25 May 2021 10:46:40 +0000
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36])
+	id 1llbiC-007FBe-0r; Tue, 25 May 2021 18:23:28 +0000
+Received: from mail-ot1-x330.google.com ([2607:f8b0:4864:20::330])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llUa5-004dCO-0J
- for ath10k@lists.infradead.org; Tue, 25 May 2021 10:46:38 +0000
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R551e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04420; MF=yang.lee@linux.alibaba.com;
- NM=1; PH=DS; RN=8; SR=0; TI=SMTPD_---0Ua4PKOY_1621939578; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com
- fp:SMTPD_---0Ua4PKOY_1621939578) by smtp.aliyun-inc.com(127.0.0.1);
- Tue, 25 May 2021 18:46:20 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: davem@davemloft.net
-Cc: kuba@kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] ath10k: Fix an error code in ath10k_add_interface()
-Date: Tue, 25 May 2021 18:46:17 +0800
-Message-Id: <1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+ id 1llbi8-007F8N-Jr
+ for ath10k@lists.infradead.org; Tue, 25 May 2021 18:23:26 +0000
+Received: by mail-ot1-x330.google.com with SMTP id
+ 80-20020a9d08560000b0290333e9d2b247so18939896oty.7
+ for <ath10k@lists.infradead.org>; Tue, 25 May 2021 11:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=S2WhyCFmEK2dc10Zq8+TXhx5jmt5OWZR6RlTvVM/NGM=;
+ b=CdY75ttZgw/iCnJjL3tjBL6YmCMDjB4dNfRMWjOUVYTGuG7gNW22AEOEkm0fxnwl5c
+ kHkYaEqza3R/2kCL/y68Kkjqm7MIjPHtObB2bpfly6Hg9JYsqw/G9l8Co7PKBC42+Xhw
+ o5xYKcJuwGYuzWB91rWxdiKnR+LGs6QZzQWvjq+acKEQXzheFxYBrEo7huwSdCKhwoSG
+ ExEM9Lu84bK4rQRCXviiJ0Id+YlXZpVbUPimCE+7GzB1pSlR0+yx0of3g3lRmHMSYhl8
+ meHViwuhbZRUG5xXo3pgmtMThbs6l48dlc0sX5hYJU4BOYMBQwgLgIQ4VkGI3qTTQF71
+ Mlug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=S2WhyCFmEK2dc10Zq8+TXhx5jmt5OWZR6RlTvVM/NGM=;
+ b=A1sZPeewx6XAUDJi3LNqkk9djOPykIMZmE0g21C+/nUngYqaAldeIAMh66bXp+1IBR
+ vuDwuWar8sy5ssrdSic7fHUC4ZZIaht44HDB3zW5kJAQ/JbGxdCzbH1a5xLXsIRkvnXO
+ Dzg1u2Evir1ceT0zKKv8+HraQ599OQ/KU4mg5dALQBxwsyw9y8CkUBy0OBVUeeSFcPso
+ VhmpM2EoGd2ouBpk9KN3FfeV5FXU8UEPRFFL3bpoOxnOjQ7OnjrJjRYcAKJfekYWOU2v
+ GgVdqTNWs7rWJe2Dqzn4xnEkNvYgJuu0Y7d5yz2CgL6v1JdyI5J9WZHfEHafjSvEZunj
+ P1cA==
+X-Gm-Message-State: AOAM530DfCNQmQ4f6ohHgd2OkiGhWJ4YkGLEcZy8r4tnO8431rl1idlp
+ fMH9Y+qj8fK/k7KNkOMwecU2IGSWZcvI2+EmSWI=
+X-Google-Smtp-Source: ABdhPJxgNPrMv0odRNUIoyCGOnlIXnsjr2xcIBJLk1jOisRjXJHqLCYnMhRdgTpGy4VGdSQyDEM+ISHLIBgP2uAwkhc=
+X-Received: by 2002:a9d:65d1:: with SMTP id z17mr24394481oth.195.1621967003112; 
+ Tue, 25 May 2021 11:23:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210524103130.66693-1-hujy652@gmail.com>
+In-Reply-To: <20210524103130.66693-1-hujy652@gmail.com>
+From: Daniel Lenski <dlenski@gmail.com>
+Date: Tue, 25 May 2021 11:22:45 -0700
+Message-ID: <CAOw_LSHxiHR=Y_LsUmj=oWJwgWOTLsZyDsNrDoachGYMVoRtoQ@mail.gmail.com>
+Subject: Re: [RFC] ath10k: add tx hw 802.11 encapsulation offloading support
+To: Zhijun You <hujy652@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+ Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>,
+ John Crispin <john@phrozen.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210525_034637_219275_0C66AE78 
-X-CRM114-Status: UNSURE (   8.35  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210525_112324_706339_53E3EAEB 
+X-CRM114-Status: GOOD (  27.51  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,44 +89,292 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-When the code execute this if statement, the value of ret is 0. 
-However, we can see from the ath10k_warn() log that the value of 
-ret should be -EINVAL.
+On Mon, May 24, 2021 at 4:30 PM Zhijun You <hujy652@gmail.com> wrote:
+> Currently only implement for 32bit target with 3-addr AP and STA mode.
 
-Clean up smatch warning:
+Any reason this couldn't be implemented for 64bit targets?
+It looks like the 2-line changes to ath10k_htt_tx_32 would simply need
+copying to ath10k_htt_tx_64.
 
-drivers/net/wireless/ath/ath10k/mac.c:5596 ath10k_add_interface() warn:
-missing error code 'ret'
+I could test this on amd64 with QCA9377, if there are no other impediments.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit ccec9038c721 ("ath10k: enable raw encap mode and software
-crypto engine")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5ce4f8d..c272b29 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5592,6 +5592,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 
- 	if (arvif->nohwcrypt &&
- 	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-+		ret = -EINVAL;
- 		ath10k_warn(ar, "cryptmode module param needed for sw crypto\n");
- 		goto err;
- 	}
--- 
-1.8.3.1
-
+Dan
+> @@ -1436,15 +1439,17 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+>         txbuf_paddr = htt->txbuf.paddr +
+>                       (sizeof(struct ath10k_htt_txbuf_32) * msdu_id);
+>
+> -       if ((ieee80211_is_action(hdr->frame_control) ||
+> -            ieee80211_is_deauth(hdr->frame_control) ||
+> -            ieee80211_is_disassoc(hdr->frame_control)) &&
+> -            ieee80211_has_protected(hdr->frame_control)) {
+> -               skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+> -       } else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+> -                  txmode == ATH10K_HW_TXRX_RAW &&
+> -                  ieee80211_has_protected(hdr->frame_control)) {
+> -               skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+> +       if (!(info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)) {
+> +               if ((ieee80211_is_action(hdr->frame_control) ||
+> +                    ieee80211_is_deauth(hdr->frame_control) ||
+> +                    ieee80211_is_disassoc(hdr->frame_control)) &&
+> +                    ieee80211_has_protected(hdr->frame_control)) {
+> +                       skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+> +               } else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+> +                          txmode == ATH10K_HW_TXRX_RAW &&
+> +                          ieee80211_has_protected(hdr->frame_control)) {
+> +                       skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+> +               }
+>         }
+>
+>         skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index bb6c5ee43ac0..ee64039c3726 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -3703,12 +3703,16 @@ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
+>                            struct sk_buff *skb)
+>  {
+>         const struct ieee80211_hdr *hdr = (void *)skb->data;
+> +       struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+>         const struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+>         __le16 fc = hdr->frame_control;
+>
+>         if (!vif || vif->type == NL80211_IFTYPE_MONITOR)
+>                 return ATH10K_HW_TXRX_RAW;
+>
+> +       if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
+> +               return ATH10K_HW_TXRX_ETHERNET;
+> +
+>         if (ieee80211_is_mgmt(fc))
+>                 return ATH10K_HW_TXRX_MGMT;
+>
+> @@ -3866,6 +3870,13 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
+>         bool noack = false;
+>
+>         cb->flags = 0;
+> +       cb->vif = vif;
+> +       cb->txq = txq;
+> +       cb->airtime_est = airtime;
+> +
+> +       if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
+> +               return;
+> +
+>         if (!ath10k_tx_h_use_hwcrypto(vif, skb))
+>                 cb->flags |= ATH10K_SKB_F_NO_HWCRYPT;
+>
+> @@ -3904,9 +3915,6 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
+>                 cb->flags |= ATH10K_SKB_F_RAW_TX;
+>         }
+>
+> -       cb->vif = vif;
+> -       cb->txq = txq;
+> -       cb->airtime_est = airtime;
+>         if (sta) {
+>                 arsta = (struct ath10k_sta *)sta->drv_priv;
+>                 spin_lock_bh(&ar->data_lock);
+> @@ -4015,6 +4023,9 @@ static int ath10k_mac_tx(struct ath10k *ar,
+>         const struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+>         int ret;
+>
+> +       if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
+> +               goto skip_encap;
+> +
+>         /* We should disable CCK RATE due to P2P */
+>         if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
+>                 ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
+> @@ -4038,6 +4049,7 @@ static int ath10k_mac_tx(struct ath10k *ar,
+>                 }
+>         }
+>
+> +skip_encap:
+>         if (!noque_offchan && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+>                 if (!ath10k_mac_tx_frm_has_freq(ar)) {
+>                         ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %pK len %d\n",
+> @@ -4087,6 +4099,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+>         int ret;
+>         unsigned long time_left;
+>         bool tmp_peer_created = false;
+> +       struct ieee80211_tx_info *info;
+>
+>         /* FW requirement: We must create a peer before FW will send out
+>          * an offchannel frame. Otherwise the frame will be stuck and
+> @@ -4106,8 +4119,13 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+>                 ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK len %d\n",
+>                            skb, skb->len);
+>
+> -               hdr = (struct ieee80211_hdr *)skb->data;
+> -               peer_addr = ieee80211_get_DA(hdr);
+> +               info = IEEE80211_SKB_CB(skb);
+> +               if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP) {
+> +                       peer_addr = skb->data;
+> +               } else {
+> +                       hdr = (struct ieee80211_hdr *)skb->data;
+> +                       peer_addr = ieee80211_get_DA(hdr);
+> +               }
+>
+>                 spin_lock_bh(&ar->data_lock);
+>                 vdev_id = ar->scan.vdev_id;
+> @@ -4639,7 +4657,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+>         struct ieee80211_vif *vif = info->control.vif;
+>         struct ieee80211_sta *sta = control->sta;
+>         struct ieee80211_txq *txq = NULL;
+> -       struct ieee80211_hdr *hdr = (void *)skb->data;
+> +       struct ieee80211_hdr *hdr;
+>         enum ath10k_hw_txrx_mode txmode;
+>         enum ath10k_mac_tx_path txpath;
+>         bool is_htt;
+> @@ -4659,7 +4677,6 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+>
+>         if (is_htt) {
+>                 spin_lock_bh(&ar->htt.tx_lock);
+> -               is_presp = ieee80211_is_probe_resp(hdr->frame_control);
+>
+>                 ret = ath10k_htt_tx_inc_pending(htt);
+>                 if (ret) {
+> @@ -4670,14 +4687,19 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+>                         return;
+>                 }
+>
+> -               ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
+> -               if (ret) {
+> -                       ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
+> -                                  ret);
+> -                       ath10k_htt_tx_dec_pending(htt);
+> -                       spin_unlock_bh(&ar->htt.tx_lock);
+> -                       ieee80211_free_txskb(ar->hw, skb);
+> -                       return;
+> +               if (is_mgmt) {
+> +                       hdr = (struct ieee80211_hdr *)skb->data;
+> +                       is_presp = ieee80211_is_probe_resp(hdr->frame_control);
+> +
+> +                       ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
+> +                       if (ret) {
+> +                               ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
+> +                                          ret);
+> +                               ath10k_htt_tx_dec_pending(htt);
+> +                               spin_unlock_bh(&ar->htt.tx_lock);
+> +                               ieee80211_free_txskb(ar->hw, skb);
+> +                               return;
+> +                       }
+>                 }
+>                 spin_unlock_bh(&ar->htt.tx_lock);
+>         }
+> @@ -5441,6 +5463,36 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+>                                          ar->wmi.vdev_param->txbf, value);
+>  }
+>
+> +static void ath10k_mac_op_update_vif_offload(struct ieee80211_hw *hw,
+> +                                            struct ieee80211_vif *vif)
+> +{
+> +       struct ath10k *ar = hw->priv;
+> +       struct ath10k_vif *arvif = (void *)vif->drv_priv;
+> +       u32 vdev_param, param_value;
+> +       int ret;
+> +
+> +       if (!ar->ethernetmode ||
+> +           (vif->type != NL80211_IFTYPE_STATION &&
+> +            vif->type != NL80211_IFTYPE_AP))
+> +               vif->offload_flags &= ~IEEE80211_OFFLOAD_ENCAP_ENABLED;
+> +
+> +       if (vif->offload_flags & IEEE80211_OFFLOAD_ENCAP_ENABLED)
+> +               param_value = ATH10K_HW_TXRX_ETHERNET;
+> +       else
+> +               param_value = ATH10K_HW_TXRX_NATIVE_WIFI;
+> +
+> +       vdev_param = ar->wmi.vdev_param->tx_encap_type;
+> +       ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+> +                                       param_value);
+> +
+> +       /* 10.X firmware does not support this VDEV parameter. Do not warn */
+> +       if (ret && ret != -EOPNOTSUPP) {
+> +               ath10k_warn(ar, "failed to set vdev %i TX encapsulation: %d\n",
+> +                           arvif->vdev_id, ret);
+> +               vif->offload_flags &= ~IEEE80211_OFFLOAD_ENCAP_ENABLED;
+> +       }
+> +}
+> +
+>  /*
+>   * TODO:
+>   * Figure out how to handle WMI_VDEV_SUBTYPE_P2P_DEVICE,
+> @@ -5634,15 +5686,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+>
+>         arvif->def_wep_key_idx = -1;
+>
+> -       vdev_param = ar->wmi.vdev_param->tx_encap_type;
+> -       ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+> -                                       ATH10K_HW_TXRX_NATIVE_WIFI);
+> -       /* 10.X firmware does not support this VDEV parameter. Do not warn */
+> -       if (ret && ret != -EOPNOTSUPP) {
+> -               ath10k_warn(ar, "failed to set vdev %i TX encapsulation: %d\n",
+> -                           arvif->vdev_id, ret);
+> -               goto err_vdev_delete;
+> -       }
+> +       ath10k_mac_op_update_vif_offload(hw, vif);
+>
+>         /* Configuring number of spatial stream for monitor interface is causing
+>          * target assert in qca9888 and qca6174.
+> @@ -9327,6 +9371,7 @@ static const struct ieee80211_ops ath10k_ops = {
+>         .config                         = ath10k_config,
+>         .add_interface                  = ath10k_add_interface,
+>         .remove_interface               = ath10k_remove_interface,
+> +       .update_vif_offload             = ath10k_mac_op_update_vif_offload,
+>         .configure_filter               = ath10k_configure_filter,
+>         .bss_info_changed               = ath10k_bss_info_changed,
+>         .set_coverage_class             = ath10k_mac_op_set_coverage_class,
+> @@ -9936,6 +9981,8 @@ int ath10k_mac_register(struct ath10k *ar)
+>         ieee80211_hw_set(ar->hw, QUEUE_CONTROL);
+>         ieee80211_hw_set(ar->hw, SUPPORTS_TX_FRAG);
+>         ieee80211_hw_set(ar->hw, REPORTS_LOW_ACK);
+> +       if (ar->ethernetmode)
+> +               ieee80211_hw_set(ar->hw, SUPPORTS_TX_ENCAP_OFFLOAD);
+>
+>         if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags))
+>                 ieee80211_hw_set(ar->hw, SW_CRYPTO_CONTROL);
+> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+> index 7c9ea0c073d8..5876381f27cd 100644
+> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+> @@ -51,6 +51,7 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>         struct ath10k_txq *artxq;
+>         struct sk_buff *msdu;
+>         u8 flags;
+> +       struct ieee80211_vif *vif;
+>
+>         ath10k_dbg(ar, ATH10K_DBG_HTT,
+>                    "htt tx completion msdu_id %u status %d\n",
+> @@ -80,6 +81,8 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>         }
+>
+>         flags = skb_cb->flags;
+> +       vif = skb_cb->vif;
+> +
+>         ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+>         ath10k_htt_tx_dec_pending(htt);
+>         if (htt->num_pending_tx == 0)
+> @@ -130,7 +133,10 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>                 info->status.is_valid_ack_signal = true;
+>         }
+>
+> -       ieee80211_tx_status(htt->ar->hw, msdu);
+> +       if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP)
+> +               ieee80211_tx_status_8023(htt->ar->hw, vif, msdu);
+> +       else
+> +               ieee80211_tx_status(htt->ar->hw, msdu);
+>         /* we do not own the msdu anymore */
+>
+>         return 0;
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
