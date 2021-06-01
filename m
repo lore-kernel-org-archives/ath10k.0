@@ -2,57 +2,60 @@ Return-Path: <SRS0=Nlrh=K3=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E1EC4708F
-	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 20:06:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A52FEC4708F
+	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 21:19:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16E0C613CE
-	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 20:06:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16E0C613CE
+	by mail.kernel.org (Postfix) with ESMTPS id 5CBDE610CB
+	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 21:19:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CBDE610CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=D7aE4NELsQbMOpLsdxGLe56QR66TF+nrV9c4BJLMLJo=; b=CG2x9Vm8PdiAhY
-	06usFgfZjCbiV0yzO6uXf505dSar71Nf9KgYQLQmoIp+FUbHGQ73JHyEaYAnIX/x3Nwv2GXnED/Cg
-	ut9/ieh1zaJjVdb5WzNpg4BgiUQLnIvkiw6zwqPTvyvm1o9Z6pzUJIp0O22C+N+f1/JkXiQqeALG0
-	NqKf2PeFRV9hJU9ezfK3mUCyEaYnHTsoQ9IzVQi9o1YDQM9bDmjV0az4SrkHbTNXLWyS6xK9WIkd5
-	PmjHYfI3r6q/KqJx62MvgNF4FbjPi07y5/p/R/iNh/qKsfim06FoP9T1b0lXBiL1lo2KKX87jYXPf
-	7Pl3AuHEAvPj8Pfefikg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=P9qLkt9C8IxffVWEuDeggvQIDrqITWuhVWG01UW9i4g=; b=bNjFTJHBsdAWDW
+	vjiwioB51W5T2GAfefkHJEdMH+KtnRCRpVxTKX2HzWQIKQ9LhumqbP9pM2lM2/UktLA+j2DHdY85Y
+	+GodyNfYPP42aLwkWqGTDFFzvJct2tQUZaiEnwqeF99aQzE8KHTgQ1VUYZz9P4eJwj0QDOVt20sNl
+	ouQZJgcZ2P2dcTl3OsgCxU7M8A1gxO3LQpDBJ0lMizfauwNN9VMdGRBPqTwLAQXJ9AQubGHdKeiIr
+	pF7pVAuoDWvHGN/rftn7vYASmxRrHmP4GjkGFd7pJv1ah/kiYyqfWrP9psygcRLGAyHNRMT2/zss4
+	kbdbXaQuAdeYJuykklPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loAeB-000gNy-E0; Tue, 01 Jun 2021 20:05:55 +0000
+	id 1loBml-000tUg-0O; Tue, 01 Jun 2021 21:18:51 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loAe8-000gMe-8T
- for ath10k@lists.infradead.org; Tue, 01 Jun 2021 20:05:54 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 370C1613C3;
- Tue,  1 Jun 2021 20:05:51 +0000 (UTC)
+ id 1loBmh-000tTD-08
+ for ath10k@lists.infradead.org; Tue, 01 Jun 2021 21:18:49 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEA8F610CB;
+ Tue,  1 Jun 2021 21:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622577951;
- bh=KR8R8Zdxc5/u4M59leRzahXKLRI8a+3iGb05vJUZQP0=;
- h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=HHc9m0JJClL8SS+lv9Clyz0639Zb5EWDNg7+X0TVvsL3Q2NjemD6Wj0e8jkHYTJhe
- fF84VGyijMMCqZ/iUTYJ+N3dSiDHYozfrRIF5NXK97oDNG3w1J6G7OWJAg+0OialyW
- aQWc74JEFjqqIsbQZzk6i2sFAKv12fr3PyivT+T7WD+haYdv6eqjpNvOLeECgqhqD0
- ymhTD2jEncppql0EXK7yFaf3nuoMlbbUQ3wzA98Ft1kLb3npFxBMgbFmUHLdaF1PyZ
- 9vdgTen1Gxe5vEZfIbRHOJJMhnFBWBOHrBR8bWE3OguBTQPTp7weWtBvmManCXk262
- klY67kGZJEDeA==
-Date: Tue, 1 Jun 2021 15:05:49 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+ s=k20201202; t=1622582322;
+ bh=5JfgHNm8NdG/r/d4fEfT+EVpiMWzIp0GDqOKc7BpJVQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=F9rxCDDOBoRUjRr+nWcA8DBjsq+H24EKDSnIF72LWaWdagAhx5d5nXhEBdU+BduEe
+ 462B1rzoOS4ciusYWILQwvLTHtcHjuUEezYPOissbUk4tqGPWDZFil3DvRQWhXVdUP
+ oCV5GosFS7E3S6pDVXijNSJeCalmdsnB9EiyCxFPCPH6ymcbLLj45WwQ1Ho+w5y/+d
+ SG1pk4BiP7wPh6jwq58LnZRWW1Nk2xnjPR5U9Uv7wsWBW0sFDmoF1HLrYIb104r/mf
+ l+y4/NToJz2eDUFpj0MyE/Z6GfnCdGrZ21YSkLhgXoDJhp2T/kLxfhePw1TOUdIZe9
+ rWaoS7a9qQTHw==
+Received: by pali.im (Postfix)
+ id 70854BC7; Tue,  1 Jun 2021 23:18:39 +0200 (CEST)
+Date: Tue, 1 Jun 2021 23:18:39 +0200
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
 Cc: Bjorn Helgaas <bhelgaas@google.com>, Kalle Valo <kvalo@codeaurora.org>,
- Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
- Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+ Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
  Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
  vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
  Ilias Apalodimas <ilias.apalodimas@linaro.org>,
@@ -61,13 +64,16 @@ Cc: Bjorn Helgaas <bhelgaas@google.com>, Kalle Valo <kvalo@codeaurora.org>,
  linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v3] PCI: Disallow retraining link for Atheros chips on
  non-Gen1 PCIe bridges
-Message-ID: <20210601200549.GA1965100@bjorn-Precision-5520>
+Message-ID: <20210601211839.b2jlspy3x6lmt4by@pali>
+References: <20210505163357.16012-1-pali@kernel.org>
+ <20210601200549.GA1965100@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210505163357.16012-1-pali@kernel.org>
+In-Reply-To: <20210601200549.GA1965100@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210601_130552_374482_80BFBD92 
-X-CRM114-Status: GOOD (  56.29  )
+X-CRM114-CacheID: sfid-20210601_141847_119805_FD231458 
+X-CRM114-Status: GOOD (  67.85  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,329 +85,270 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 05, 2021 at 06:33:57PM +0200, Pali Roh=E1r wrote:
-> Atheros AR9xxx and QCA9xxx chips have behaviour issues not only after a
-> bus reset, but also after doing retrain link, if PCIe bridge is not in
-> GEN1 mode (at 2.5 GT/s speed):
-> =
-
-> - QCA9880 and QCA9890 chips throw a Link Down event and completely
->   disappear from the bus and their config space is not accessible
->   afterwards.
-> =
-
-> - QCA9377 chip throws a Link Down event followed by Link Up event, the
->   config space is accessible and PCI device ID is correct. But trying to
->   access chip's I/O space causes Uncorrected (Non-Fatal) AER error,
->   followed by Synchronous external abort 96000210 and Segmentation fault
->   of insmod while loading ath10k_pci.ko module.
-> =
-
-> - AR9390 chip throws a Link Down event followed by Link Up event, config
->   space is accessible, but contains nonsense values. PCI device ID is
->   0xABCD which indicates HW bug that chip itself was not able to read
->   values from internal EEPROM/OTP.
-> =
-
-> - AR9287 chip throws also Link Down and Link Up events, also has
->   accessible config space containing correct values. But ath9k driver
->   fails to initialize card from this state as it is unable to access HW
->   registers. This also indicates that the chip iself is not able to read
->   values from internal EEPROM/OTP.
-> =
-
-> These issues related to PCI device ID 0xABCD and to reading internal
-> EEPROM/OTP were previously discussed at ath9k-devel mailing list in
-> following thread:
-> =
-
->   https://www.mail-archive.com/ath9k-devel@lists.ath9k.org/msg07529.html
-> =
-
-> After experiments we've come up with a solution: it seems that Retrain
-> link can be called only when using GEN1 PCIe bridge or when PCIe bridge
-> link speed is forced to 2.5 GT/s. Applying this workaround fixes all
-> mentioned cards.
-
-I *assume* this means the device was running at > 2.5 GT/s in the
-first place, and when aspm.c retrains the link to configure the common
-clock, we downgrade to 2.5 GT/s, so the device is now slower than it
-used to be?
-
-Is that slower speed acceptable?  Is it better to be slower with ASPM,
-or faster without ASPM?  Or maybe it could be faster *with* ASPM if we
-avoided the common clock config and the retrain?  I think that would
-give up some of the benefit of ASPM, but maybe it would still be
-worthwhile?
-
-If the device was running at > 2.5 GT/s to begin with, obviously there
-is *some* way to get there.  This patch implies that the hardware
-automatically trained to a higher rate after power-on (which I think
-is what PCIe hardware is *supposed* to do) and something prevents that
-from succeeding when we retrain, or maybe BIOS did something different
-than what Linux is doing, or ... something else?
-
-Maybe the device can only retrain to 2.5 GT/s or from the current
-speed to a higher speed.  This sort of experimentation could probably
-be done with setpci.
-
-> This issue was reproduced with more cards:
-> - Compex WLE900VX (QCA9880 based / device ID 0x003c)
-> - QCNFA435 (QCA9377 based / device ID 0x0042)
-> - Compex WLE200NX (AR9287 based / device ID 0x002e)
-> - "noname" card (QCA9890 based / device ID 0x003c)
-> - Wistron NKR-DNXAH1 (AR9390 based / device ID 0x0030)
-> on Armada 385 with pci-mvebu.c driver and also on Armada 3720 with
-> pci-aardvark.c driver.
-> =
-
-> To workaround this issue, this change introduces a new PCI quirk called
-> PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1, which is enabled for all
-> Atheros chips with PCI_DEV_FLAGS_NO_BUS_RESET quirk, and also for Atheros
-> chip AR9287.
-> =
-
-> When this quirk is set, kernel disallows triggering PCI_EXP_LNKCTL_RL
-> bit in config space of PCIe Bridge in the case when PCIe Bridge is
-> capable of higher speed than 2.5 GT/s and this higher speed is already
-> allowed. When PCIe Bridge has accessible LNKCTL2 register, we try to
-> force target link speed to 2.5 GT/s. After this change it is possible
-> to trigger PCI_EXP_LNKCTL_RL bit without issues.
-
-This basically feels like a "it hurts when I do X, so stop doing X"
-patch.  We don't really know what's wrong; we've just determined
-experimentally how to avoid it.
-
-> Currently only PCIe ASPM kernel code triggers this PCI_EXP_LNKCTL_RL bit,
-> so quirk check is added only into pcie/aspm.c file.
-> =
-
-> Signed-off-by: Pali Roh=E1r <pali@kernel.org>
-> Reported-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
-> Tested-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
-> Tested-by: Marek Beh=FAn <kabel@kernel.org>
-> BugLink: https://lore.kernel.org/linux-pci/87h7l8axqp.fsf@toke.dk/
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D84821
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D192441
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D209833
-> Cc: stable@vger.kernel.org # c80851f6ce63a ("PCI: Add PCI_EXP_LNKCTL2_TLS=
-* macros")
-> =
-
-> ---
-> Changes since v1:
-> * Move whole quirk code into pcie_downgrade_link_to_gen1() function
-> * Reformat to 80 chars per line where possible
-> * Add quirk also for cards with AR9287 chip (PCI ID 0x002e)
-> * Extend commit message description and add information about 0xABCD
-> =
-
-> Changes since v2:
-> * Add quirk also for Atheros QCA9377 chip
-> ---
->  drivers/pci/pcie/aspm.c | 44 +++++++++++++++++++++++++++++++++++++++++
->  drivers/pci/quirks.c    | 39 ++++++++++++++++++++++++++++--------
->  include/linux/pci.h     |  2 ++
->  3 files changed, 77 insertions(+), 8 deletions(-)
-> =
-
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index ac0557a305af..729b0389562b 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -192,12 +192,56 @@ static void pcie_clkpm_cap_init(struct pcie_link_st=
-ate *link, int blacklist)
->  	link->clkpm_disable =3D blacklist ? 1 : 0;
->  }
->  =
-
-> +static int pcie_downgrade_link_to_gen1(struct pci_dev *parent)
-> +{
-> +	u16 reg16;
-> +	u32 reg32;
-> +	int ret;
-> +
-> +	/* Check if link is capable of higher speed than 2.5 GT/s */
-> +	pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &reg32);
-> +	if ((reg32 & PCI_EXP_LNKCAP_SLS) <=3D PCI_EXP_LNKCAP_SLS_2_5GB)
-> +		return 0;
-
-I guess this means "if the link is already at 2.5 GT/s, no need to do
-anything."  Right?
-
-> +	/* Check if link speed can be downgraded to 2.5 GT/s */
-> +	pcie_capability_read_dword(parent, PCI_EXP_LNKCAP2, &reg32);
-> +	if (!(reg32 & PCI_EXP_LNKCAP2_SLS_2_5GB)) {
-> +		pci_err(parent, "ASPM: Bridge does not support changing Link Speed to =
-2.5 GT/s\n");
-> +		return -EOPNOTSUPP;
-> +	}
-
-Why is this check needed?  Per PCIe r5.0, sec 8.2.1, all devices must
-support 2.5 GT/s.
-
-> +	/* Force link speed to 2.5 GT/s */
-> +	ret =3D pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL2,
-> +						 PCI_EXP_LNKCTL2_TLS,
-> +						 PCI_EXP_LNKCTL2_TLS_2_5GT);
-> +	if (!ret) {
-> +		/* Verify that new value was really set */
-> +		pcie_capability_read_word(parent, PCI_EXP_LNKCTL2, &reg16);
-> +		if ((reg16 & PCI_EXP_LNKCTL2_TLS) !=3D PCI_EXP_LNKCTL2_TLS_2_5GT)
-> +			ret =3D -EINVAL;
-> +	}
-> +
-> +	if (ret) {
-> +		pci_err(parent, "ASPM: Changing Target Link Speed to 2.5 GT/s failed: =
-%d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	pci_info(parent, "ASPM: Target Link Speed changed to 2.5 GT/s due to qu=
-irk\n");
-> +	return 0;
-> +}
-> +
->  static bool pcie_retrain_link(struct pcie_link_state *link)
->  {
->  	struct pci_dev *parent =3D link->pdev;
->  	unsigned long end_jiffies;
->  	u16 reg16;
->  =
-
-> +	if ((link->downstream->dev_flags & PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_N=
-OT_GEN1) &&
-> +	    pcie_downgrade_link_to_gen1(parent)) {
-
-I assume (correct me if I'm wrong) that this would work equally well
-if we set the *endpoint's* target link speed to 2.5 GT/s instead of
-the upstream bridge's?  I think the log messages would make more sense
-then, since the problem is really with the endpoint, not the parent.
-
-> +		pci_err(parent, "ASPM: Retrain Link at higher speed is disallowed by q=
-uirk\n");
-> +		return false;
-> +	}
-> +
->  	pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &reg16);
->  	reg16 |=3D PCI_EXP_LNKCTL_RL;
->  	pcie_capability_write_word(parent, PCI_EXP_LNKCTL, reg16);
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..4999ad9d08b8 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3553,23 +3553,46 @@ static void mellanox_check_broken_intx_masking(st=
-ruct pci_dev *pdev)
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_MELLANOX, PCI_ANY_ID,
->  			mellanox_check_broken_intx_masking);
->  =
-
-> -static void quirk_no_bus_reset(struct pci_dev *dev)
-> +static void quirk_no_bus_reset_and_no_retrain_link(struct pci_dev *dev)
->  {
-> -	dev->dev_flags |=3D PCI_DEV_FLAGS_NO_BUS_RESET;
-> +	dev->dev_flags |=3D PCI_DEV_FLAGS_NO_BUS_RESET |
-> +			  PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1;
->  }
->  =
-
->  /*
-> - * Some Atheros AR9xxx and QCA988x chips do not behave after a bus reset.
-> + * Atheros AR9xxx and QCA9xxx chips do not behave after a bus reset and =
-also
-> + * after retrain link when PCIe bridge is not in GEN1 mode at 2.5 GT/s s=
-peed.
->   * The device will throw a Link Down error on AER-capable systems and
->   * regardless of AER, config space of the device is never accessible aga=
-in
->   * and typically causes the system to hang or reset when access is attem=
-pted.
-> + * Or if config space is accessible again then it contains only dummy va=
-lues
-> + * like fixed PCI device ID 0xABCD or values not initialized at all.
-> + * Retrain link can be called only when using GEN1 PCIe bridge or when
-> + * PCIe bridge has forced link speed to 2.5 GT/s via PCI_EXP_LNKCTL2 reg=
-ister.
-> + * To reset these cards it is required to do PCIe Warm Reset via PERST# =
-pin.
->   * https://lore.kernel.org/r/20140923210318.498dacbd@dualc.maya.org/
-> + * https://lore.kernel.org/r/87h7l8axqp.fsf@toke.dk/
-> + * https://www.mail-archive.com/ath9k-devel@lists.ath9k.org/msg07529.html
->   */
-> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0030, quirk_no_bus_res=
-et);
-> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032, quirk_no_bus_res=
-et);
-> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_res=
-et);
-> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_res=
-et);
-> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_res=
-et);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x002e,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0030,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0042,
-> +			 quirk_no_bus_reset_and_no_retrain_link);
-> +
-> +static void quirk_no_bus_reset(struct pci_dev *dev)
-> +{
-> +	dev->dev_flags |=3D PCI_DEV_FLAGS_NO_BUS_RESET;
-> +}
->  =
-
->  /*
->   * Root port on some Cavium CN8xxx chips do not successfully complete a =
-bus
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 86c799c97b77..fdbf7254e4ab 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -227,6 +227,8 @@ enum pci_dev_flags {
->  	PCI_DEV_FLAGS_NO_FLR_RESET =3D (__force pci_dev_flags_t) (1 << 10),
->  	/* Don't use Relaxed Ordering for TLPs directed at this device */
->  	PCI_DEV_FLAGS_NO_RELAXED_ORDERING =3D (__force pci_dev_flags_t) (1 << 1=
-1),
-> +	/* Don't Retrain Link for device when bridge is not in GEN1 mode */
-> +	PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1 =3D (__force pci_dev_flags_=
-t) (1 << 12),
-
-I know this is entangled with the existing PCI_DEV_FLAGS_NO_BUS_RESET,
-but unless there's a better reason to use pci_dev_flags, I'd prefer a
-new "unsigned retrain_gen1:1" or similar bit.  =
-
-
-Whatever you do, I'd like to avoid the double negative of "*no*
-retrain when *not* gen1."
-
-It does make me wonder whether the bus reset would work on these
-devices if we set the target link speed back down to 2.5 GT/s.
-
->  };
->  =
-
->  enum pci_irq_reroute_variant {
-> -- =
-
-> 2.20.1
-> =
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8hCgpPbiBUdWVzZGF5IDAxIEp1bmUgMjAyMSAxNTowNTo0OSBCam9ybiBIZWxnYWFzIHdy
+b3RlOgo+IE9uIFdlZCwgTWF5IDA1LCAyMDIxIGF0IDA2OjMzOjU3UE0gKzAyMDAsIFBhbGkgUm9o
+w6FyIHdyb3RlOgo+ID4gQXRoZXJvcyBBUjl4eHggYW5kIFFDQTl4eHggY2hpcHMgaGF2ZSBiZWhh
+dmlvdXIgaXNzdWVzIG5vdCBvbmx5IGFmdGVyIGEKPiA+IGJ1cyByZXNldCwgYnV0IGFsc28gYWZ0
+ZXIgZG9pbmcgcmV0cmFpbiBsaW5rLCBpZiBQQ0llIGJyaWRnZSBpcyBub3QgaW4KPiA+IEdFTjEg
+bW9kZSAoYXQgMi41IEdUL3Mgc3BlZWQpOgo+ID4gCj4gPiAtIFFDQTk4ODAgYW5kIFFDQTk4OTAg
+Y2hpcHMgdGhyb3cgYSBMaW5rIERvd24gZXZlbnQgYW5kIGNvbXBsZXRlbHkKPiA+ICAgZGlzYXBw
+ZWFyIGZyb20gdGhlIGJ1cyBhbmQgdGhlaXIgY29uZmlnIHNwYWNlIGlzIG5vdCBhY2Nlc3NpYmxl
+Cj4gPiAgIGFmdGVyd2FyZHMuCj4gPiAKPiA+IC0gUUNBOTM3NyBjaGlwIHRocm93cyBhIExpbmsg
+RG93biBldmVudCBmb2xsb3dlZCBieSBMaW5rIFVwIGV2ZW50LCB0aGUKPiA+ICAgY29uZmlnIHNw
+YWNlIGlzIGFjY2Vzc2libGUgYW5kIFBDSSBkZXZpY2UgSUQgaXMgY29ycmVjdC4gQnV0IHRyeWlu
+ZyB0bwo+ID4gICBhY2Nlc3MgY2hpcCdzIEkvTyBzcGFjZSBjYXVzZXMgVW5jb3JyZWN0ZWQgKE5v
+bi1GYXRhbCkgQUVSIGVycm9yLAo+ID4gICBmb2xsb3dlZCBieSBTeW5jaHJvbm91cyBleHRlcm5h
+bCBhYm9ydCA5NjAwMDIxMCBhbmQgU2VnbWVudGF0aW9uIGZhdWx0Cj4gPiAgIG9mIGluc21vZCB3
+aGlsZSBsb2FkaW5nIGF0aDEwa19wY2kua28gbW9kdWxlLgo+ID4gCj4gPiAtIEFSOTM5MCBjaGlw
+IHRocm93cyBhIExpbmsgRG93biBldmVudCBmb2xsb3dlZCBieSBMaW5rIFVwIGV2ZW50LCBjb25m
+aWcKPiA+ICAgc3BhY2UgaXMgYWNjZXNzaWJsZSwgYnV0IGNvbnRhaW5zIG5vbnNlbnNlIHZhbHVl
+cy4gUENJIGRldmljZSBJRCBpcwo+ID4gICAweEFCQ0Qgd2hpY2ggaW5kaWNhdGVzIEhXIGJ1ZyB0
+aGF0IGNoaXAgaXRzZWxmIHdhcyBub3QgYWJsZSB0byByZWFkCj4gPiAgIHZhbHVlcyBmcm9tIGlu
+dGVybmFsIEVFUFJPTS9PVFAuCj4gPiAKPiA+IC0gQVI5Mjg3IGNoaXAgdGhyb3dzIGFsc28gTGlu
+ayBEb3duIGFuZCBMaW5rIFVwIGV2ZW50cywgYWxzbyBoYXMKPiA+ICAgYWNjZXNzaWJsZSBjb25m
+aWcgc3BhY2UgY29udGFpbmluZyBjb3JyZWN0IHZhbHVlcy4gQnV0IGF0aDlrIGRyaXZlcgo+ID4g
+ICBmYWlscyB0byBpbml0aWFsaXplIGNhcmQgZnJvbSB0aGlzIHN0YXRlIGFzIGl0IGlzIHVuYWJs
+ZSB0byBhY2Nlc3MgSFcKPiA+ICAgcmVnaXN0ZXJzLiBUaGlzIGFsc28gaW5kaWNhdGVzIHRoYXQg
+dGhlIGNoaXAgaXNlbGYgaXMgbm90IGFibGUgdG8gcmVhZAo+ID4gICB2YWx1ZXMgZnJvbSBpbnRl
+cm5hbCBFRVBST00vT1RQLgo+ID4gCj4gPiBUaGVzZSBpc3N1ZXMgcmVsYXRlZCB0byBQQ0kgZGV2
+aWNlIElEIDB4QUJDRCBhbmQgdG8gcmVhZGluZyBpbnRlcm5hbAo+ID4gRUVQUk9NL09UUCB3ZXJl
+IHByZXZpb3VzbHkgZGlzY3Vzc2VkIGF0IGF0aDlrLWRldmVsIG1haWxpbmcgbGlzdCBpbgo+ID4g
+Zm9sbG93aW5nIHRocmVhZDoKPiA+IAo+ID4gICBodHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29t
+L2F0aDlrLWRldmVsQGxpc3RzLmF0aDlrLm9yZy9tc2cwNzUyOS5odG1sCj4gPiAKPiA+IEFmdGVy
+IGV4cGVyaW1lbnRzIHdlJ3ZlIGNvbWUgdXAgd2l0aCBhIHNvbHV0aW9uOiBpdCBzZWVtcyB0aGF0
+IFJldHJhaW4KPiA+IGxpbmsgY2FuIGJlIGNhbGxlZCBvbmx5IHdoZW4gdXNpbmcgR0VOMSBQQ0ll
+IGJyaWRnZSBvciB3aGVuIFBDSWUgYnJpZGdlCj4gPiBsaW5rIHNwZWVkIGlzIGZvcmNlZCB0byAy
+LjUgR1Qvcy4gQXBwbHlpbmcgdGhpcyB3b3JrYXJvdW5kIGZpeGVzIGFsbAo+ID4gbWVudGlvbmVk
+IGNhcmRzLgo+IAo+IEkgKmFzc3VtZSogdGhpcyBtZWFucyB0aGUgZGV2aWNlIHdhcyBydW5uaW5n
+IGF0ID4gMi41IEdUL3MgaW4gdGhlCj4gZmlyc3QgcGxhY2UsCgpOby4gQWxsIHRoZXNlIEF0aGVy
+b3MgY2hpcHMgYXJlIDIuNSBHVC9zIG9ubHkuIEl0IGxvb2tzIGxpa2UgdGhhdCBpZgpQQ0llIEJy
+aWRnZSBoYXMgaW5pdGlhbCB2YWx1ZSA1IEdUL3MgKG9yIGhpZ2hlcikgaW4gUENJX0VYUF9MTktD
+QVAyCnJlZ2lzdGVyIGFuZCBsaW5rIHJldHJhaW5pbmcgaXMgYWN0aXZhdGVkLCBzb21ldGhpbmcg
+aGFwcGVuIHdoaWNoIGNhdXNlCnRoZXNlIEF0aGVyb3MgY2hpcHMgdG8gImNyYXNoIi4gTG9va3Mg
+bGlrZSB0aGF0IFJvb3QgQnJpZGdlIHRyaWVzIHRvCmNoYW5nZSBsaW5rIHNwZWVkIGZyb20gMi41
+IEdUL3MgdG8gNSBHVC9zICh3aGljaCBpcyBub3Qgc3VwcG9ydGVkIGJ5IGFsbAp0aGVzZSBBdGhl
+cm9zIGNoaXBzKS4KCj4gYW5kIHdoZW4gYXNwbS5jIHJldHJhaW5zIHRoZSBsaW5rIHRvIGNvbmZp
+Z3VyZSB0aGUgY29tbW9uCj4gY2xvY2ssIHdlIGRvd25ncmFkZSB0byAyLjUgR1Qvcywgc28gdGhl
+IGRldmljZSBpcyBub3cgc2xvd2VyIHRoYW4gaXQKPiB1c2VkIHRvIGJlPwo+IAo+IElzIHRoYXQg
+c2xvd2VyIHNwZWVkIGFjY2VwdGFibGU/ICBJcyBpdCBiZXR0ZXIgdG8gYmUgc2xvd2VyIHdpdGgg
+QVNQTSwKPiBvciBmYXN0ZXIgd2l0aG91dCBBU1BNPyAgT3IgbWF5YmUgaXQgY291bGQgYmUgZmFz
+dGVyICp3aXRoKiBBU1BNIGlmIHdlCj4gYXZvaWRlZCB0aGUgY29tbW9uIGNsb2NrIGNvbmZpZyBh
+bmQgdGhlIHJldHJhaW4/ICBJIHRoaW5rIHRoYXQgd291bGQKPiBnaXZlIHVwIHNvbWUgb2YgdGhl
+IGJlbmVmaXQgb2YgQVNQTSwgYnV0IG1heWJlIGl0IHdvdWxkIHN0aWxsIGJlCj4gd29ydGh3aGls
+ZT8KClRoZXJlIGlzIG5vIHNsb3cgZG93biB3aXRoIHRoZXNlIGNoaXBzIGFzIGFsbCB0aGVzZSB3
+aGljaCBJIHRlc3RlZCBhbmQKd3JpdHRlbiBpbnRvIGRlc2NyaXB0aW9uIGFyZSAyLjUgR1QvcyAt
+b25seS4KCj4gSWYgdGhlIGRldmljZSB3YXMgcnVubmluZyBhdCA+IDIuNSBHVC9zIHRvIGJlZ2lu
+IHdpdGgsIG9idmlvdXNseSB0aGVyZQo+IGlzICpzb21lKiB3YXkgdG8gZ2V0IHRoZXJlLgoKUm9v
+dCBCcmlkZ2UgaW4gUENJX0VYUF9MTktTVEEgcmVwb3J0cyB0aGF0IHRoZXkgYXJlIHJ1bm5pbmcg
+YXQgMi41IEdUL3MKZXZlbiBvbiBiZWdpbi4KCj4gVGhpcyBwYXRjaCBpbXBsaWVzIHRoYXQgdGhl
+IGhhcmR3YXJlCj4gYXV0b21hdGljYWxseSB0cmFpbmVkIHRvIGEgaGlnaGVyIHJhdGUgYWZ0ZXIg
+cG93ZXItb24gKHdoaWNoIEkgdGhpbmsKPiBpcyB3aGF0IFBDSWUgaGFyZHdhcmUgaXMgKnN1cHBv
+c2VkKiB0byBkbykgYW5kIHNvbWV0aGluZyBwcmV2ZW50cyB0aGF0Cj4gZnJvbSBzdWNjZWVkaW5n
+IHdoZW4gd2UgcmV0cmFpbiwgb3IgbWF5YmUgQklPUyBkaWQgc29tZXRoaW5nIGRpZmZlcmVudAo+
+IHRoYW4gd2hhdCBMaW51eCBpcyBkb2luZywgb3IgLi4uIHNvbWV0aGluZyBlbHNlPwoKVGVzdGVk
+IHBsYXRmb3JtcyB3YXMgYWxzbyB3aXRob3V0IEJJT1MgYW5kIHdpdGhvdXQgYW55IG90aGVyIGZp
+cm13YXJlCndoaWNoIHRvdWNoZWQgUENJZS4KCj4gTWF5YmUgdGhlIGRldmljZSBjYW4gb25seSBy
+ZXRyYWluIHRvIDIuNSBHVC9zIG9yIGZyb20gdGhlIGN1cnJlbnQKPiBzcGVlZCB0byBhIGhpZ2hl
+ciBzcGVlZC4gIFRoaXMgc29ydCBvZiBleHBlcmltZW50YXRpb24gY291bGQgcHJvYmFibHkKPiBi
+ZSBkb25lIHdpdGggc2V0cGNpLgo+IAo+ID4gVGhpcyBpc3N1ZSB3YXMgcmVwcm9kdWNlZCB3aXRo
+IG1vcmUgY2FyZHM6Cj4gPiAtIENvbXBleCBXTEU5MDBWWCAoUUNBOTg4MCBiYXNlZCAvIGRldmlj
+ZSBJRCAweDAwM2MpCj4gPiAtIFFDTkZBNDM1IChRQ0E5Mzc3IGJhc2VkIC8gZGV2aWNlIElEIDB4
+MDA0MikKPiA+IC0gQ29tcGV4IFdMRTIwME5YIChBUjkyODcgYmFzZWQgLyBkZXZpY2UgSUQgMHgw
+MDJlKQo+ID4gLSAibm9uYW1lIiBjYXJkIChRQ0E5ODkwIGJhc2VkIC8gZGV2aWNlIElEIDB4MDAz
+YykKPiA+IC0gV2lzdHJvbiBOS1ItRE5YQUgxIChBUjkzOTAgYmFzZWQgLyBkZXZpY2UgSUQgMHgw
+MDMwKQo+ID4gb24gQXJtYWRhIDM4NSB3aXRoIHBjaS1tdmVidS5jIGRyaXZlciBhbmQgYWxzbyBv
+biBBcm1hZGEgMzcyMCB3aXRoCj4gPiBwY2ktYWFyZHZhcmsuYyBkcml2ZXIuCj4gPiAKPiA+IFRv
+IHdvcmthcm91bmQgdGhpcyBpc3N1ZSwgdGhpcyBjaGFuZ2UgaW50cm9kdWNlcyBhIG5ldyBQQ0kg
+cXVpcmsgY2FsbGVkCj4gPiBQQ0lfREVWX0ZMQUdTX05PX1JFVFJBSU5fTElOS19XSEVOX05PVF9H
+RU4xLCB3aGljaCBpcyBlbmFibGVkIGZvciBhbGwKPiA+IEF0aGVyb3MgY2hpcHMgd2l0aCBQQ0lf
+REVWX0ZMQUdTX05PX0JVU19SRVNFVCBxdWlyaywgYW5kIGFsc28gZm9yIEF0aGVyb3MKPiA+IGNo
+aXAgQVI5Mjg3Lgo+ID4gCj4gPiBXaGVuIHRoaXMgcXVpcmsgaXMgc2V0LCBrZXJuZWwgZGlzYWxs
+b3dzIHRyaWdnZXJpbmcgUENJX0VYUF9MTktDVExfUkwKPiA+IGJpdCBpbiBjb25maWcgc3BhY2Ug
+b2YgUENJZSBCcmlkZ2UgaW4gdGhlIGNhc2Ugd2hlbiBQQ0llIEJyaWRnZSBpcwo+ID4gY2FwYWJs
+ZSBvZiBoaWdoZXIgc3BlZWQgdGhhbiAyLjUgR1QvcyBhbmQgdGhpcyBoaWdoZXIgc3BlZWQgaXMg
+YWxyZWFkeQo+ID4gYWxsb3dlZC4gV2hlbiBQQ0llIEJyaWRnZSBoYXMgYWNjZXNzaWJsZSBMTktD
+VEwyIHJlZ2lzdGVyLCB3ZSB0cnkgdG8KPiA+IGZvcmNlIHRhcmdldCBsaW5rIHNwZWVkIHRvIDIu
+NSBHVC9zLiBBZnRlciB0aGlzIGNoYW5nZSBpdCBpcyBwb3NzaWJsZQo+ID4gdG8gdHJpZ2dlciBQ
+Q0lfRVhQX0xOS0NUTF9STCBiaXQgd2l0aG91dCBpc3N1ZXMuCj4gCj4gVGhpcyBiYXNpY2FsbHkg
+ZmVlbHMgbGlrZSBhICJpdCBodXJ0cyB3aGVuIEkgZG8gWCwgc28gc3RvcCBkb2luZyBYIgo+IHBh
+dGNoLiAgV2UgZG9uJ3QgcmVhbGx5IGtub3cgd2hhdCdzIHdyb25nOyB3ZSd2ZSBqdXN0IGRldGVy
+bWluZWQKPiBleHBlcmltZW50YWxseSBob3cgdG8gYXZvaWQgaXQuCgpZZXMuCgo+ID4gQ3VycmVu
+dGx5IG9ubHkgUENJZSBBU1BNIGtlcm5lbCBjb2RlIHRyaWdnZXJzIHRoaXMgUENJX0VYUF9MTktD
+VExfUkwgYml0LAo+ID4gc28gcXVpcmsgY2hlY2sgaXMgYWRkZWQgb25seSBpbnRvIHBjaWUvYXNw
+bS5jIGZpbGUuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IFBhbGkgUm9ow6FyIDxwYWxpQGtlcm5l
+bC5vcmc+Cj4gPiBSZXBvcnRlZC1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJl
+ZGhhdC5jb20+Cj4gPiBUZXN0ZWQtYnk6IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUBy
+ZWRoYXQuY29tPgo+ID4gVGVzdGVkLWJ5OiBNYXJlayBCZWjDum4gPGthYmVsQGtlcm5lbC5vcmc+
+Cj4gPiBCdWdMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1wY2kvODdoN2w4YXhx
+cC5mc2ZAdG9rZS5kay8KPiA+IEJ1Z0xpbms6IGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9z
+aG93X2J1Zy5jZ2k/aWQ9ODQ4MjEKPiA+IEJ1Z0xpbms6IGh0dHBzOi8vYnVnemlsbGEua2VybmVs
+Lm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTkyNDQxCj4gPiBCdWdMaW5rOiBodHRwczovL2J1Z3ppbGxh
+Lmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIwOTgzMwo+ID4gQ2M6IHN0YWJsZUB2Z2VyLmtl
+cm5lbC5vcmcgIyBjODA4NTFmNmNlNjNhICgiUENJOiBBZGQgUENJX0VYUF9MTktDVEwyX1RMUyog
+bWFjcm9zIikKPiA+IAo+ID4gLS0tCj4gPiBDaGFuZ2VzIHNpbmNlIHYxOgo+ID4gKiBNb3ZlIHdo
+b2xlIHF1aXJrIGNvZGUgaW50byBwY2llX2Rvd25ncmFkZV9saW5rX3RvX2dlbjEoKSBmdW5jdGlv
+bgo+ID4gKiBSZWZvcm1hdCB0byA4MCBjaGFycyBwZXIgbGluZSB3aGVyZSBwb3NzaWJsZQo+ID4g
+KiBBZGQgcXVpcmsgYWxzbyBmb3IgY2FyZHMgd2l0aCBBUjkyODcgY2hpcCAoUENJIElEIDB4MDAy
+ZSkKPiA+ICogRXh0ZW5kIGNvbW1pdCBtZXNzYWdlIGRlc2NyaXB0aW9uIGFuZCBhZGQgaW5mb3Jt
+YXRpb24gYWJvdXQgMHhBQkNECj4gPiAKPiA+IENoYW5nZXMgc2luY2UgdjI6Cj4gPiAqIEFkZCBx
+dWlyayBhbHNvIGZvciBBdGhlcm9zIFFDQTkzNzcgY2hpcAo+ID4gLS0tCj4gPiAgZHJpdmVycy9w
+Y2kvcGNpZS9hc3BtLmMgfCA0NCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKwo+ID4gIGRyaXZlcnMvcGNpL3F1aXJrcy5jICAgIHwgMzkgKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKy0tLS0tLS0tCj4gPiAgaW5jbHVkZS9saW51eC9wY2kuaCAgICAgfCAgMiArKwo+
+ID4gIDMgZmlsZXMgY2hhbmdlZCwgNzcgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKPiA+
+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaWUvYXNwbS5jIGIvZHJpdmVycy9wY2kv
+cGNpZS9hc3BtLmMKPiA+IGluZGV4IGFjMDU1N2EzMDVhZi4uNzI5YjAzODk1NjJiIDEwMDY0NAo+
+ID4gLS0tIGEvZHJpdmVycy9wY2kvcGNpZS9hc3BtLmMKPiA+ICsrKyBiL2RyaXZlcnMvcGNpL3Bj
+aWUvYXNwbS5jCj4gPiBAQCAtMTkyLDEyICsxOTIsNTYgQEAgc3RhdGljIHZvaWQgcGNpZV9jbGtw
+bV9jYXBfaW5pdChzdHJ1Y3QgcGNpZV9saW5rX3N0YXRlICpsaW5rLCBpbnQgYmxhY2tsaXN0KQo+
+ID4gIAlsaW5rLT5jbGtwbV9kaXNhYmxlID0gYmxhY2tsaXN0ID8gMSA6IDA7Cj4gPiAgfQo+ID4g
+IAo+ID4gK3N0YXRpYyBpbnQgcGNpZV9kb3duZ3JhZGVfbGlua190b19nZW4xKHN0cnVjdCBwY2lf
+ZGV2ICpwYXJlbnQpCj4gPiArewo+ID4gKwl1MTYgcmVnMTY7Cj4gPiArCXUzMiByZWczMjsKPiA+
+ICsJaW50IHJldDsKPiA+ICsKPiA+ICsJLyogQ2hlY2sgaWYgbGluayBpcyBjYXBhYmxlIG9mIGhp
+Z2hlciBzcGVlZCB0aGFuIDIuNSBHVC9zICovCj4gPiArCXBjaWVfY2FwYWJpbGl0eV9yZWFkX2R3
+b3JkKHBhcmVudCwgUENJX0VYUF9MTktDQVAsICZyZWczMik7Cj4gPiArCWlmICgocmVnMzIgJiBQ
+Q0lfRVhQX0xOS0NBUF9TTFMpIDw9IFBDSV9FWFBfTE5LQ0FQX1NMU18yXzVHQikKPiA+ICsJCXJl
+dHVybiAwOwo+IAo+IEkgZ3Vlc3MgdGhpcyBtZWFucyAiaWYgdGhlIGxpbmsgaXMgYWxyZWFkeSBh
+dCAyLjUgR1Qvcywgbm8gbmVlZCB0byBkbwo+IGFueXRoaW5nLiIgIFJpZ2h0PwoKUENJX0VYUF9M
+TktDQVBfU0xTIGlzIG1heGltYWwgc3VwcG9ydGVkIHNwZWVkIGJ5IEJyaWRnZS4gU28gaWYgYnJp
+ZGdlCmRvZXMgbm90IHN1cHBvcnQgaGlnaGVyIHNwZWVkLCB3ZSBkbyBub3QgaGF2ZSB0byBkbyBh
+bnl0aGluZy4KCj4gPiArCS8qIENoZWNrIGlmIGxpbmsgc3BlZWQgY2FuIGJlIGRvd25ncmFkZWQg
+dG8gMi41IEdUL3MgKi8KPiA+ICsJcGNpZV9jYXBhYmlsaXR5X3JlYWRfZHdvcmQocGFyZW50LCBQ
+Q0lfRVhQX0xOS0NBUDIsICZyZWczMik7Cj4gPiArCWlmICghKHJlZzMyICYgUENJX0VYUF9MTktD
+QVAyX1NMU18yXzVHQikpIHsKPiA+ICsJCXBjaV9lcnIocGFyZW50LCAiQVNQTTogQnJpZGdlIGRv
+ZXMgbm90IHN1cHBvcnQgY2hhbmdpbmcgTGluayBTcGVlZCB0byAyLjUgR1Qvc1xuIik7Cj4gPiAr
+CQlyZXR1cm4gLUVPUE5PVFNVUFA7Cj4gPiArCX0KPiAKPiBXaHkgaXMgdGhpcyBjaGVjayBuZWVk
+ZWQ/ICBQZXIgUENJZSByNS4wLCBzZWMgOC4yLjEsIGFsbCBkZXZpY2VzIG11c3QKPiBzdXBwb3J0
+IDIuNSBHVC9zLgoKQmVjYXVzZSBvbGRlciBQQ0llIGRldmljZXMgZG9lcyBub3QgaGF2ZSB0byBz
+dXBwb3J0IFBDSV9FWFBfTE5LQ0FQMgpyZWdpc3RlciAoaW4gd2hpY2ggY2F1c2UgdGhleSByZXR1
+cm5zIHplcm8pLiBBbmQgdGhpcyBhcHBsaWVzIGFsc28gZm9yCnBjaS1icmlkZ2UtZW11bC5jIGRy
+aXZlci4gU28gdGhpcyBjaGVjayBpcyBuZWVkZWQgYXQgbGVhc3QgZm9yIGRldmljZXMKd2hpY2gg
+dXNlIHBjaS1icmlkZ2UtZW11bC5jIGRyaXZlci4KCj4gPiArCS8qIEZvcmNlIGxpbmsgc3BlZWQg
+dG8gMi41IEdUL3MgKi8KPiA+ICsJcmV0ID0gcGNpZV9jYXBhYmlsaXR5X2NsZWFyX2FuZF9zZXRf
+d29yZChwYXJlbnQsIFBDSV9FWFBfTE5LQ1RMMiwKPiA+ICsJCQkJCQkgUENJX0VYUF9MTktDVEwy
+X1RMUywKPiA+ICsJCQkJCQkgUENJX0VYUF9MTktDVEwyX1RMU18yXzVHVCk7Cj4gPiArCWlmICgh
+cmV0KSB7Cj4gPiArCQkvKiBWZXJpZnkgdGhhdCBuZXcgdmFsdWUgd2FzIHJlYWxseSBzZXQgKi8K
+PiA+ICsJCXBjaWVfY2FwYWJpbGl0eV9yZWFkX3dvcmQocGFyZW50LCBQQ0lfRVhQX0xOS0NUTDIs
+ICZyZWcxNik7Cj4gPiArCQlpZiAoKHJlZzE2ICYgUENJX0VYUF9MTktDVEwyX1RMUykgIT0gUENJ
+X0VYUF9MTktDVEwyX1RMU18yXzVHVCkKPiA+ICsJCQlyZXQgPSAtRUlOVkFMOwo+ID4gKwl9Cj4g
+PiArCj4gPiArCWlmIChyZXQpIHsKPiA+ICsJCXBjaV9lcnIocGFyZW50LCAiQVNQTTogQ2hhbmdp
+bmcgVGFyZ2V0IExpbmsgU3BlZWQgdG8gMi41IEdUL3MgZmFpbGVkOiAlZFxuIiwgcmV0KTsKPiA+
+ICsJCXJldHVybiByZXQ7Cj4gPiArCX0KPiA+ICsKPiA+ICsJcGNpX2luZm8ocGFyZW50LCAiQVNQ
+TTogVGFyZ2V0IExpbmsgU3BlZWQgY2hhbmdlZCB0byAyLjUgR1QvcyBkdWUgdG8gcXVpcmtcbiIp
+Owo+ID4gKwlyZXR1cm4gMDsKPiA+ICt9Cj4gPiArCj4gPiAgc3RhdGljIGJvb2wgcGNpZV9yZXRy
+YWluX2xpbmsoc3RydWN0IHBjaWVfbGlua19zdGF0ZSAqbGluaykKPiA+ICB7Cj4gPiAgCXN0cnVj
+dCBwY2lfZGV2ICpwYXJlbnQgPSBsaW5rLT5wZGV2Owo+ID4gIAl1bnNpZ25lZCBsb25nIGVuZF9q
+aWZmaWVzOwo+ID4gIAl1MTYgcmVnMTY7Cj4gPiAgCj4gPiArCWlmICgobGluay0+ZG93bnN0cmVh
+bS0+ZGV2X2ZsYWdzICYgUENJX0RFVl9GTEFHU19OT19SRVRSQUlOX0xJTktfV0hFTl9OT1RfR0VO
+MSkgJiYKPiA+ICsJICAgIHBjaWVfZG93bmdyYWRlX2xpbmtfdG9fZ2VuMShwYXJlbnQpKSB7Cj4g
+Cj4gSSBhc3N1bWUgKGNvcnJlY3QgbWUgaWYgSSdtIHdyb25nKSB0aGF0IHRoaXMgd291bGQgd29y
+ayBlcXVhbGx5IHdlbGwKPiBpZiB3ZSBzZXQgdGhlICplbmRwb2ludCdzKiB0YXJnZXQgbGluayBz
+cGVlZCB0byAyLjUgR1QvcyBpbnN0ZWFkIG9mCj4gdGhlIHVwc3RyZWFtIGJyaWRnZSdzPwoKSSB0
+aGluayBub3QuIElzc3VlIGlzIHJlYWxseSB3aGVuIEJyaWRnZS1lbmQgb2YgdGhlIGxpbmsgc3Vw
+cG9ydHMgaGlnaGVyCnRoYW4gMi41IEdUL3Mgc3BlZWQgdGhpcyBlbmQgdHJpZXMgdG8gaW5jcmVh
+c2Ugc3BlZWQuIEFzIGRldmljZS1lbmQgb2YKdGhlIGxpbmsgc3VwcG9ydHMgb25seSAyLjUgR1Qv
+cyB0aGVyZSBpcyBub3RoaW5nIHRvIGNoYW5nZSB0byBoaWdoZXIKc3BlZWQgZnJvbSBkZXZpY2Ut
+ZW5kIHBvaW50IG9mIHZpZXcuCgo+IEkgdGhpbmsgdGhlIGxvZyBtZXNzYWdlcyB3b3VsZCBtYWtl
+IG1vcmUgc2Vuc2UKPiB0aGVuLCBzaW5jZSB0aGUgcHJvYmxlbSBpcyByZWFsbHkgd2l0aCB0aGUg
+ZW5kcG9pbnQsIG5vdCB0aGUgcGFyZW50LgoKU28uLi4gYnVnZ3kgaXMgZGV2aWNlIChjaGlsZCkg
+ZW5kIG9mIHRoZSBsaW5rIGFuZCBvbmx5IGJyaWRnZSAocGFyZW50KQplbmQgb2YgdGhlIGxpbmsg
+Y2FuIHdvcmthcm91bmQgaXQuIEFuZCBpZiBicmlkZ2UgZW5kIGlzIG5vdCBjYXBhYmxlCihlLmcu
+IGJlY2F1c2Ugb2YgcGNpLWJyaWRnZS1lbXVsLmMpIHRoZW4gaXQgaXMgcHJvYmxlbSBvZiBicmlk
+Z2UKKHBhcmVudCkgZW5kLgoKPiA+ICsJCXBjaV9lcnIocGFyZW50LCAiQVNQTTogUmV0cmFpbiBM
+aW5rIGF0IGhpZ2hlciBzcGVlZCBpcyBkaXNhbGxvd2VkIGJ5IHF1aXJrXG4iKTsKPiA+ICsJCXJl
+dHVybiBmYWxzZTsKPiA+ICsJfQo+ID4gKwo+ID4gIAlwY2llX2NhcGFiaWxpdHlfcmVhZF93b3Jk
+KHBhcmVudCwgUENJX0VYUF9MTktDVEwsICZyZWcxNik7Cj4gPiAgCXJlZzE2IHw9IFBDSV9FWFBf
+TE5LQ1RMX1JMOwo+ID4gIAlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChwYXJlbnQsIFBDSV9F
+WFBfTE5LQ1RMLCByZWcxNik7Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcXVpcmtzLmMg
+Yi9kcml2ZXJzL3BjaS9xdWlya3MuYwo+ID4gaW5kZXggNjUzNjYwZTNiYTllLi40OTk5YWQ5ZDA4
+YjggMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9xdWlya3MuYwo+ID4gKysrIGIvZHJpdmVy
+cy9wY2kvcXVpcmtzLmMKPiA+IEBAIC0zNTUzLDIzICszNTUzLDQ2IEBAIHN0YXRpYyB2b2lkIG1l
+bGxhbm94X2NoZWNrX2Jyb2tlbl9pbnR4X21hc2tpbmcoc3RydWN0IHBjaV9kZXYgKnBkZXYpCj4g
+PiAgREVDTEFSRV9QQ0lfRklYVVBfRklOQUwoUENJX1ZFTkRPUl9JRF9NRUxMQU5PWCwgUENJX0FO
+WV9JRCwKPiA+ICAJCQltZWxsYW5veF9jaGVja19icm9rZW5faW50eF9tYXNraW5nKTsKPiA+ICAK
+PiA+IC1zdGF0aWMgdm9pZCBxdWlya19ub19idXNfcmVzZXQoc3RydWN0IHBjaV9kZXYgKmRldikK
+PiA+ICtzdGF0aWMgdm9pZCBxdWlya19ub19idXNfcmVzZXRfYW5kX25vX3JldHJhaW5fbGluayhz
+dHJ1Y3QgcGNpX2RldiAqZGV2KQo+ID4gIHsKPiA+IC0JZGV2LT5kZXZfZmxhZ3MgfD0gUENJX0RF
+Vl9GTEFHU19OT19CVVNfUkVTRVQ7Cj4gPiArCWRldi0+ZGV2X2ZsYWdzIHw9IFBDSV9ERVZfRkxB
+R1NfTk9fQlVTX1JFU0VUIHwKPiA+ICsJCQkgIFBDSV9ERVZfRkxBR1NfTk9fUkVUUkFJTl9MSU5L
+X1dIRU5fTk9UX0dFTjE7Cj4gPiAgfQo+ID4gIAo+ID4gIC8qCj4gPiAtICogU29tZSBBdGhlcm9z
+IEFSOXh4eCBhbmQgUUNBOTg4eCBjaGlwcyBkbyBub3QgYmVoYXZlIGFmdGVyIGEgYnVzIHJlc2V0
+Lgo+ID4gKyAqIEF0aGVyb3MgQVI5eHh4IGFuZCBRQ0E5eHh4IGNoaXBzIGRvIG5vdCBiZWhhdmUg
+YWZ0ZXIgYSBidXMgcmVzZXQgYW5kIGFsc28KPiA+ICsgKiBhZnRlciByZXRyYWluIGxpbmsgd2hl
+biBQQ0llIGJyaWRnZSBpcyBub3QgaW4gR0VOMSBtb2RlIGF0IDIuNSBHVC9zIHNwZWVkLgo+ID4g
+ICAqIFRoZSBkZXZpY2Ugd2lsbCB0aHJvdyBhIExpbmsgRG93biBlcnJvciBvbiBBRVItY2FwYWJs
+ZSBzeXN0ZW1zIGFuZAo+ID4gICAqIHJlZ2FyZGxlc3Mgb2YgQUVSLCBjb25maWcgc3BhY2Ugb2Yg
+dGhlIGRldmljZSBpcyBuZXZlciBhY2Nlc3NpYmxlIGFnYWluCj4gPiAgICogYW5kIHR5cGljYWxs
+eSBjYXVzZXMgdGhlIHN5c3RlbSB0byBoYW5nIG9yIHJlc2V0IHdoZW4gYWNjZXNzIGlzIGF0dGVt
+cHRlZC4KPiA+ICsgKiBPciBpZiBjb25maWcgc3BhY2UgaXMgYWNjZXNzaWJsZSBhZ2FpbiB0aGVu
+IGl0IGNvbnRhaW5zIG9ubHkgZHVtbXkgdmFsdWVzCj4gPiArICogbGlrZSBmaXhlZCBQQ0kgZGV2
+aWNlIElEIDB4QUJDRCBvciB2YWx1ZXMgbm90IGluaXRpYWxpemVkIGF0IGFsbC4KPiA+ICsgKiBS
+ZXRyYWluIGxpbmsgY2FuIGJlIGNhbGxlZCBvbmx5IHdoZW4gdXNpbmcgR0VOMSBQQ0llIGJyaWRn
+ZSBvciB3aGVuCj4gPiArICogUENJZSBicmlkZ2UgaGFzIGZvcmNlZCBsaW5rIHNwZWVkIHRvIDIu
+NSBHVC9zIHZpYSBQQ0lfRVhQX0xOS0NUTDIgcmVnaXN0ZXIuCj4gPiArICogVG8gcmVzZXQgdGhl
+c2UgY2FyZHMgaXQgaXMgcmVxdWlyZWQgdG8gZG8gUENJZSBXYXJtIFJlc2V0IHZpYSBQRVJTVCMg
+cGluLgo+ID4gICAqIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAxNDA5MjMyMTAzMTguNDk4
+ZGFjYmRAZHVhbGMubWF5YS5vcmcvCj4gPiArICogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci84
+N2g3bDhheHFwLmZzZkB0b2tlLmRrLwo+ID4gKyAqIGh0dHBzOi8vd3d3Lm1haWwtYXJjaGl2ZS5j
+b20vYXRoOWstZGV2ZWxAbGlzdHMuYXRoOWsub3JnL21zZzA3NTI5Lmh0bWwKPiA+ICAgKi8KPiA+
+IC1ERUNMQVJFX1BDSV9GSVhVUF9IRUFERVIoUENJX1ZFTkRPUl9JRF9BVEhFUk9TLCAweDAwMzAs
+IHF1aXJrX25vX2J1c19yZXNldCk7Cj4gPiAtREVDTEFSRV9QQ0lfRklYVVBfSEVBREVSKFBDSV9W
+RU5ET1JfSURfQVRIRVJPUywgMHgwMDMyLCBxdWlya19ub19idXNfcmVzZXQpOwo+ID4gLURFQ0xB
+UkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAzYywgcXVpcmtf
+bm9fYnVzX3Jlc2V0KTsKPiA+IC1ERUNMQVJFX1BDSV9GSVhVUF9IRUFERVIoUENJX1ZFTkRPUl9J
+RF9BVEhFUk9TLCAweDAwMzMsIHF1aXJrX25vX2J1c19yZXNldCk7Cj4gPiAtREVDTEFSRV9QQ0lf
+RklYVVBfSEVBREVSKFBDSV9WRU5ET1JfSURfQVRIRVJPUywgMHgwMDM0LCBxdWlya19ub19idXNf
+cmVzZXQpOwo+ID4gK0RFQ0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVS
+T1MsIDB4MDAyZSwKPiA+ICsJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xp
+bmspOwo+ID4gK0RFQ0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1Ms
+IDB4MDAzMCwKPiA+ICsJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmsp
+Owo+ID4gK0RFQ0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4
+MDAzMiwKPiA+ICsJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOwo+
+ID4gK0RFQ0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAz
+MywKPiA+ICsJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOwo+ID4g
+K0RFQ0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAzNCwK
+PiA+ICsJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOwo+ID4gK0RF
+Q0xBUkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAzYywKPiA+
+ICsJCQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOwo+ID4gK0RFQ0xB
+UkVfUENJX0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDA0MiwKPiA+ICsJ
+CQkgcXVpcmtfbm9fYnVzX3Jlc2V0X2FuZF9ub19yZXRyYWluX2xpbmspOwo+ID4gKwo+ID4gK3N0
+YXRpYyB2b2lkIHF1aXJrX25vX2J1c19yZXNldChzdHJ1Y3QgcGNpX2RldiAqZGV2KQo+ID4gK3sK
+PiA+ICsJZGV2LT5kZXZfZmxhZ3MgfD0gUENJX0RFVl9GTEFHU19OT19CVVNfUkVTRVQ7Cj4gPiAr
+fQo+ID4gIAo+ID4gIC8qCj4gPiAgICogUm9vdCBwb3J0IG9uIHNvbWUgQ2F2aXVtIENOOHh4eCBj
+aGlwcyBkbyBub3Qgc3VjY2Vzc2Z1bGx5IGNvbXBsZXRlIGEgYnVzCj4gPiBkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS9saW51eC9wY2kuaCBiL2luY2x1ZGUvbGludXgvcGNpLmgKPiA+IGluZGV4IDg2Yzc5
+OWM5N2I3Ny4uZmRiZjcyNTRlNGFiIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9wY2ku
+aAo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9wY2kuaAo+ID4gQEAgLTIyNyw2ICsyMjcsOCBAQCBl
+bnVtIHBjaV9kZXZfZmxhZ3Mgewo+ID4gIAlQQ0lfREVWX0ZMQUdTX05PX0ZMUl9SRVNFVCA9IChf
+X2ZvcmNlIHBjaV9kZXZfZmxhZ3NfdCkgKDEgPDwgMTApLAo+ID4gIAkvKiBEb24ndCB1c2UgUmVs
+YXhlZCBPcmRlcmluZyBmb3IgVExQcyBkaXJlY3RlZCBhdCB0aGlzIGRldmljZSAqLwo+ID4gIAlQ
+Q0lfREVWX0ZMQUdTX05PX1JFTEFYRURfT1JERVJJTkcgPSAoX19mb3JjZSBwY2lfZGV2X2ZsYWdz
+X3QpICgxIDw8IDExKSwKPiA+ICsJLyogRG9uJ3QgUmV0cmFpbiBMaW5rIGZvciBkZXZpY2Ugd2hl
+biBicmlkZ2UgaXMgbm90IGluIEdFTjEgbW9kZSAqLwo+ID4gKwlQQ0lfREVWX0ZMQUdTX05PX1JF
+VFJBSU5fTElOS19XSEVOX05PVF9HRU4xID0gKF9fZm9yY2UgcGNpX2Rldl9mbGFnc190KSAoMSA8
+PCAxMiksCj4gCj4gSSBrbm93IHRoaXMgaXMgZW50YW5nbGVkIHdpdGggdGhlIGV4aXN0aW5nIFBD
+SV9ERVZfRkxBR1NfTk9fQlVTX1JFU0VULAo+IGJ1dCB1bmxlc3MgdGhlcmUncyBhIGJldHRlciBy
+ZWFzb24gdG8gdXNlIHBjaV9kZXZfZmxhZ3MsIEknZCBwcmVmZXIgYQo+IG5ldyAidW5zaWduZWQg
+cmV0cmFpbl9nZW4xOjEiIG9yIHNpbWlsYXIgYml0LiAgCgpPayEgSSBjYW4gY2hhbmdlIHBhdGNo
+Li4uCgo+IFdoYXRldmVyIHlvdSBkbywgSSdkIGxpa2UgdG8gYXZvaWQgdGhlIGRvdWJsZSBuZWdh
+dGl2ZSBvZiAiKm5vKgo+IHJldHJhaW4gd2hlbiAqbm90KiBnZW4xLiIKCkRvIHlvdSBoYXZlIGEg
+c3VnZ2VzdGlvbiBmb3IgdGhpcyBuYW1lPyBCZWNhdXNlIEkgZG8gbm90IGtub3cgaG93IHRvCmNh
+bGwgdGhpcyAicXVpcmsiIGluIEVuZ2xpc2gsIHNvIGl0IGRlc2NyaWJlcyAiZGlzYWxsb3cgbGlu
+ayByZXRyYWluCndoZW4gbGluayBpcyBub3QgYXQgZ2VuMSA9IDIuNUdUL3MiLiBTb21laG93IEkg
+Y2Fubm90IGltYWdpbmUgbmFtZQp3aXRob3V0IGRvdWJsZSBuZWdhdGl2ZSB3b3Jkcy4KCj4gSXQg
+ZG9lcyBtYWtlIG1lIHdvbmRlciB3aGV0aGVyIHRoZSBidXMgcmVzZXQgd291bGQgd29yayBvbiB0
+aGVzZQo+IGRldmljZXMgaWYgd2Ugc2V0IHRoZSB0YXJnZXQgbGluayBzcGVlZCBiYWNrIGRvd24g
+dG8gMi41IEdUL3MuCgpUZXN0ZWQgYW5kIGRvZXMgbm90IHdvcmsuIFNlY29uZGFyeSBidXMgcmVz
+ZXQgKD1Ib3QgUmVzZXQpIGlzIGJyb2tlbgphbHNvIHdoZW4gbGluayBpcyBmb3JjZWQgdG8gMi41
+IEdUL3MuIEl0IGxvb2tzIGxpa2UgdGhhdCB3aGVuClBDSV9FWFBfTE5LQ1RMMl9UTFMgaXMgbm90
+IHNldCB0byAyLjUgR1QvcyB3aGVuIHNldHRpbmcKUENJX0VYUF9MTktDVExfUkwgaXQgcmVzdWx0
+cyBpbiB0aGUgc2FtZSBlZmZlY3QgLyBpc3N1ZSBsaWtlIGNhbGxpbmcKc2Vjb25kYXJ5IGJ1cyBy
+ZXNldC4KCj4gPiAgfTsKPiA+ICAKPiA+ICBlbnVtIHBjaV9pcnFfcmVyb3V0ZV92YXJpYW50IHsK
+PiA+IC0tIAo+ID4gMi4yMC4xCj4gPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
