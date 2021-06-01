@@ -2,85 +2,72 @@ Return-Path: <SRS0=Nlrh=K3=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF23C47080
-	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 11:29:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E1EC4708F
+	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 20:06:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBB8361057
-	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 11:29:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBB8361057
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux.com
+	by mail.kernel.org (Postfix) with ESMTPS id 16E0C613CE
+	for <ath10k@archiver.kernel.org>; Tue,  1 Jun 2021 20:06:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16E0C613CE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=shDVdxkr806ZVT2zbBhz8E63JPAHgf7hyUrfANbnz7k=; b=Lgzr/5He4S060r
-	Y93FI1nzwjJG7MIbQkL6DPup8LUGM/5IbuCqzevvdOZ1SkKfXnrowvitOt1J03mHKqytJsxCy38v9
-	oGtK28iVul5muRbuGY3737+4rb2XiuVTuSMzoTkbyYtDp30LS46TfzYne9piARLiVyjpKDx5xB9Ip
-	WvctQF8wrtGqoeCLvnHtRKckeprANmiDKdjFNg61PW+Fvd3GrK4tuo61y0nOyDKUpYa5XzpYHlpzi
-	pXs7L3NWyGxOyseEkRUwYAsxOUfx6xq8m8+ANtbfiOICcjUcoFQMd0klPiiQqFs/Rp3RubyQs+3rf
-	GJV6X90X4Pq6GKSdKIFw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=D7aE4NELsQbMOpLsdxGLe56QR66TF+nrV9c4BJLMLJo=; b=CG2x9Vm8PdiAhY
+	06usFgfZjCbiV0yzO6uXf505dSar71Nf9KgYQLQmoIp+FUbHGQ73JHyEaYAnIX/x3Nwv2GXnED/Cg
+	ut9/ieh1zaJjVdb5WzNpg4BgiUQLnIvkiw6zwqPTvyvm1o9Z6pzUJIp0O22C+N+f1/JkXiQqeALG0
+	NqKf2PeFRV9hJU9ezfK3mUCyEaYnHTsoQ9IzVQi9o1YDQM9bDmjV0az4SrkHbTNXLWyS6xK9WIkd5
+	PmjHYfI3r6q/KqJx62MvgNF4FbjPi07y5/p/R/iNh/qKsfim06FoP9T1b0lXBiL1lo2KKX87jYXPf
+	7Pl3AuHEAvPj8Pfefikg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lo2ZS-00GBqd-74; Tue, 01 Jun 2021 11:28:30 +0000
-Received: from mail-wr1-f48.google.com ([209.85.221.48])
+	id 1loAeB-000gNy-E0; Tue, 01 Jun 2021 20:05:55 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lo2ZP-00GBoo-5s
- for ath10k@lists.infradead.org; Tue, 01 Jun 2021 11:28:28 +0000
-Received: by mail-wr1-f48.google.com with SMTP id m18so13910477wrv.2
- for <ath10k@lists.infradead.org>; Tue, 01 Jun 2021 04:28:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=HAFqZJJNfiC2AGdxA4gbkC1Qg+KvNCEqsSjmBVkFjH0=;
- b=ejXP1qy9ckYuAFedvhNgo44ZK9E7udiZDeVxerKje13G2w+DXixRvsNIJbvOHvJSQC
- 8x5OeIXPVe7afq+N5zBTZcR2KK91ULUMvigQqzhNtnBxbwUjqMVYhry5t3rEKJYjW1Ug
- hHFpix8K9qQ+vLaQX3BWzQ5IrL2uxFMZIc1Xizu0gxo1QknWN4NmZ4+W9M09EX+Vka37
- ciCAp9KV6O5Nw/BhGxvy8MiisW/PXjg7f9EklXB9RgWun60/xE3GwqU+nuNHdaIziHLW
- 7C0Td5N3d5YvOse4wEs/dFQJKpUeUYiOtuaiSc6HcLwljgwX6+w9Vem5pu90pa+0qJzW
- 2KXw==
-X-Gm-Message-State: AOAM5326O9iJp1v3c0FpCb/6vXMJTYDqj1p/bW1Qq04oIh1agi+4Y2wz
- /dridG8nSbj9kC6itnZzzpg=
-X-Google-Smtp-Source: ABdhPJzSJFaWOyQO59mkgqVzre/9t0p9NiapOKwk/5uV6uk+H29hMEjZJWzfGWuZPiUwRs81xnoi4Q==
-X-Received: by 2002:a5d:6382:: with SMTP id p2mr10176931wru.338.1622546903114; 
- Tue, 01 Jun 2021 04:28:23 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
- by smtp.gmail.com with ESMTPSA id o3sm2917179wrm.78.2021.06.01.04.28.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Jun 2021 04:28:22 -0700 (PDT)
-Date: Tue, 1 Jun 2021 13:28:20 +0200
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+ id 1loAe8-000gMe-8T
+ for ath10k@lists.infradead.org; Tue, 01 Jun 2021 20:05:54 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 370C1613C3;
+ Tue,  1 Jun 2021 20:05:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622577951;
+ bh=KR8R8Zdxc5/u4M59leRzahXKLRI8a+3iGb05vJUZQP0=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:From;
+ b=HHc9m0JJClL8SS+lv9Clyz0639Zb5EWDNg7+X0TVvsL3Q2NjemD6Wj0e8jkHYTJhe
+ fF84VGyijMMCqZ/iUTYJ+N3dSiDHYozfrRIF5NXK97oDNG3w1J6G7OWJAg+0OialyW
+ aQWc74JEFjqqIsbQZzk6i2sFAKv12fr3PyivT+T7WD+haYdv6eqjpNvOLeECgqhqD0
+ ymhTD2jEncppql0EXK7yFaf3nuoMlbbUQ3wzA98Ft1kLb3npFxBMgbFmUHLdaF1PyZ
+ 9vdgTen1Gxe5vEZfIbRHOJJMhnFBWBOHrBR8bWE3OguBTQPTp7weWtBvmManCXk262
+ klY67kGZJEDeA==
+Date: Tue, 1 Jun 2021 15:05:49 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
 Cc: Bjorn Helgaas <bhelgaas@google.com>, Kalle Valo <kvalo@codeaurora.org>,
- Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>, vtolkm@gmail.com,
- Rob Herring <robh@kernel.org>,
+ Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+ Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+ Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+ vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
  Ilias Apalodimas <ilias.apalodimas@linaro.org>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  linux-pci@vger.kernel.org, ath10k@lists.infradead.org,
  linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v3] PCI: Disallow retraining link for Atheros chips on
  non-Gen1 PCIe bridges
-Message-ID: <20210601112820.GA189305@rocinante.localdomain>
-References: <20210326124326.21163-1-pali@kernel.org>
- <20210505163357.16012-1-pali@kernel.org>
+Message-ID: <20210601200549.GA1965100@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20210505163357.16012-1-pali@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210601_042827_241799_8B639509 
-X-CRM114-Status: GOOD (  10.19  )
+X-CRM114-CacheID: sfid-20210601_130552_374482_80BFBD92 
+X-CRM114-Status: GOOD (  56.29  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,27 +79,329 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-SGkgUGFsaSwKClRoYW5rIHlvdSBmb3Igd29ya2luZyBvbiB0aGlzIGFuZCBmaXhpbmcgdGhlIHBy
-b2JsZW0sIGFuZCBhbHNvIHRoYW5rIHlvdQpnb2VzIHRvIE1hcmVrIGFuZCBUb2tlIGZvciB0ZXN0
-aW5nISAgTXVjaCBhcHByZWNpYXRlZCEKClsuLi5dCj4gLSBBUjkyODcgY2hpcCB0aHJvd3MgYWxz
-byBMaW5rIERvd24gYW5kIExpbmsgVXAgZXZlbnRzLCBhbHNvIGhhcwo+ICAgYWNjZXNzaWJsZSBj
-b25maWcgc3BhY2UgY29udGFpbmluZyBjb3JyZWN0IHZhbHVlcy4gQnV0IGF0aDlrIGRyaXZlcgo+
-ICAgZmFpbHMgdG8gaW5pdGlhbGl6ZSBjYXJkIGZyb20gdGhpcyBzdGF0ZSBhcyBpdCBpcyB1bmFi
-bGUgdG8gYWNjZXNzIEhXCj4gICByZWdpc3RlcnMuIFRoaXMgYWxzbyBpbmRpY2F0ZXMgdGhhdCB0
-aGUgY2hpcCBpc2VsZiBpcyBub3QgYWJsZSB0byByZWFkCgpBIHR5cG8gaGVyZSAtIGl0IHdvdWxk
-IGJlICJpdHNlbGYiIGluIHRoZSBhYm92ZS4gIEJ1dCB0aGlzIGlzIG5vdCB3b3J0aApzZW5kaW5n
-IHY0LCBhbmQgSSBhbSBzdXJlIHRoYXQgQmpvcm4gb3IgTG9yZW56byBjb3VsZCBmaXggdGhpcyBp
-bi1wbGFjZQp3aGVuIG1lcmdpbmcuCgpbLi4uXQo+IFNpZ25lZC1vZmYtYnk6IFBhbGkgUm9ow6Fy
-IDxwYWxpQGtlcm5lbC5vcmc+Cj4gUmVwb3J0ZWQtYnk6IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNl
-biA8dG9rZUByZWRoYXQuY29tPgo+IFRlc3RlZC1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu
-IDx0b2tlQHJlZGhhdC5jb20+Cj4gVGVzdGVkLWJ5OiBNYXJlayBCZWjDum4gPGthYmVsQGtlcm5l
-bC5vcmc+ClsuLi5dCgpUaGFuayB5b3UgZXZlcnlvbmUhCgpSZXZpZXdlZC1ieTogS3J6eXN6dG9m
-IFdpbGN6ecWEc2tpIDxrd0BsaW51eC5jb20+CgoJS3J6eXN6dG9mCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+On Wed, May 05, 2021 at 06:33:57PM +0200, Pali Roh=E1r wrote:
+> Atheros AR9xxx and QCA9xxx chips have behaviour issues not only after a
+> bus reset, but also after doing retrain link, if PCIe bridge is not in
+> GEN1 mode (at 2.5 GT/s speed):
+> =
+
+> - QCA9880 and QCA9890 chips throw a Link Down event and completely
+>   disappear from the bus and their config space is not accessible
+>   afterwards.
+> =
+
+> - QCA9377 chip throws a Link Down event followed by Link Up event, the
+>   config space is accessible and PCI device ID is correct. But trying to
+>   access chip's I/O space causes Uncorrected (Non-Fatal) AER error,
+>   followed by Synchronous external abort 96000210 and Segmentation fault
+>   of insmod while loading ath10k_pci.ko module.
+> =
+
+> - AR9390 chip throws a Link Down event followed by Link Up event, config
+>   space is accessible, but contains nonsense values. PCI device ID is
+>   0xABCD which indicates HW bug that chip itself was not able to read
+>   values from internal EEPROM/OTP.
+> =
+
+> - AR9287 chip throws also Link Down and Link Up events, also has
+>   accessible config space containing correct values. But ath9k driver
+>   fails to initialize card from this state as it is unable to access HW
+>   registers. This also indicates that the chip iself is not able to read
+>   values from internal EEPROM/OTP.
+> =
+
+> These issues related to PCI device ID 0xABCD and to reading internal
+> EEPROM/OTP were previously discussed at ath9k-devel mailing list in
+> following thread:
+> =
+
+>   https://www.mail-archive.com/ath9k-devel@lists.ath9k.org/msg07529.html
+> =
+
+> After experiments we've come up with a solution: it seems that Retrain
+> link can be called only when using GEN1 PCIe bridge or when PCIe bridge
+> link speed is forced to 2.5 GT/s. Applying this workaround fixes all
+> mentioned cards.
+
+I *assume* this means the device was running at > 2.5 GT/s in the
+first place, and when aspm.c retrains the link to configure the common
+clock, we downgrade to 2.5 GT/s, so the device is now slower than it
+used to be?
+
+Is that slower speed acceptable?  Is it better to be slower with ASPM,
+or faster without ASPM?  Or maybe it could be faster *with* ASPM if we
+avoided the common clock config and the retrain?  I think that would
+give up some of the benefit of ASPM, but maybe it would still be
+worthwhile?
+
+If the device was running at > 2.5 GT/s to begin with, obviously there
+is *some* way to get there.  This patch implies that the hardware
+automatically trained to a higher rate after power-on (which I think
+is what PCIe hardware is *supposed* to do) and something prevents that
+from succeeding when we retrain, or maybe BIOS did something different
+than what Linux is doing, or ... something else?
+
+Maybe the device can only retrain to 2.5 GT/s or from the current
+speed to a higher speed.  This sort of experimentation could probably
+be done with setpci.
+
+> This issue was reproduced with more cards:
+> - Compex WLE900VX (QCA9880 based / device ID 0x003c)
+> - QCNFA435 (QCA9377 based / device ID 0x0042)
+> - Compex WLE200NX (AR9287 based / device ID 0x002e)
+> - "noname" card (QCA9890 based / device ID 0x003c)
+> - Wistron NKR-DNXAH1 (AR9390 based / device ID 0x0030)
+> on Armada 385 with pci-mvebu.c driver and also on Armada 3720 with
+> pci-aardvark.c driver.
+> =
+
+> To workaround this issue, this change introduces a new PCI quirk called
+> PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1, which is enabled for all
+> Atheros chips with PCI_DEV_FLAGS_NO_BUS_RESET quirk, and also for Atheros
+> chip AR9287.
+> =
+
+> When this quirk is set, kernel disallows triggering PCI_EXP_LNKCTL_RL
+> bit in config space of PCIe Bridge in the case when PCIe Bridge is
+> capable of higher speed than 2.5 GT/s and this higher speed is already
+> allowed. When PCIe Bridge has accessible LNKCTL2 register, we try to
+> force target link speed to 2.5 GT/s. After this change it is possible
+> to trigger PCI_EXP_LNKCTL_RL bit without issues.
+
+This basically feels like a "it hurts when I do X, so stop doing X"
+patch.  We don't really know what's wrong; we've just determined
+experimentally how to avoid it.
+
+> Currently only PCIe ASPM kernel code triggers this PCI_EXP_LNKCTL_RL bit,
+> so quirk check is added only into pcie/aspm.c file.
+> =
+
+> Signed-off-by: Pali Roh=E1r <pali@kernel.org>
+> Reported-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> Tested-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> Tested-by: Marek Beh=FAn <kabel@kernel.org>
+> BugLink: https://lore.kernel.org/linux-pci/87h7l8axqp.fsf@toke.dk/
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D84821
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D192441
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D209833
+> Cc: stable@vger.kernel.org # c80851f6ce63a ("PCI: Add PCI_EXP_LNKCTL2_TLS=
+* macros")
+> =
+
+> ---
+> Changes since v1:
+> * Move whole quirk code into pcie_downgrade_link_to_gen1() function
+> * Reformat to 80 chars per line where possible
+> * Add quirk also for cards with AR9287 chip (PCI ID 0x002e)
+> * Extend commit message description and add information about 0xABCD
+> =
+
+> Changes since v2:
+> * Add quirk also for Atheros QCA9377 chip
+> ---
+>  drivers/pci/pcie/aspm.c | 44 +++++++++++++++++++++++++++++++++++++++++
+>  drivers/pci/quirks.c    | 39 ++++++++++++++++++++++++++++--------
+>  include/linux/pci.h     |  2 ++
+>  3 files changed, 77 insertions(+), 8 deletions(-)
+> =
+
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index ac0557a305af..729b0389562b 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -192,12 +192,56 @@ static void pcie_clkpm_cap_init(struct pcie_link_st=
+ate *link, int blacklist)
+>  	link->clkpm_disable =3D blacklist ? 1 : 0;
+>  }
+>  =
+
+> +static int pcie_downgrade_link_to_gen1(struct pci_dev *parent)
+> +{
+> +	u16 reg16;
+> +	u32 reg32;
+> +	int ret;
+> +
+> +	/* Check if link is capable of higher speed than 2.5 GT/s */
+> +	pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &reg32);
+> +	if ((reg32 & PCI_EXP_LNKCAP_SLS) <=3D PCI_EXP_LNKCAP_SLS_2_5GB)
+> +		return 0;
+
+I guess this means "if the link is already at 2.5 GT/s, no need to do
+anything."  Right?
+
+> +	/* Check if link speed can be downgraded to 2.5 GT/s */
+> +	pcie_capability_read_dword(parent, PCI_EXP_LNKCAP2, &reg32);
+> +	if (!(reg32 & PCI_EXP_LNKCAP2_SLS_2_5GB)) {
+> +		pci_err(parent, "ASPM: Bridge does not support changing Link Speed to =
+2.5 GT/s\n");
+> +		return -EOPNOTSUPP;
+> +	}
+
+Why is this check needed?  Per PCIe r5.0, sec 8.2.1, all devices must
+support 2.5 GT/s.
+
+> +	/* Force link speed to 2.5 GT/s */
+> +	ret =3D pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL2,
+> +						 PCI_EXP_LNKCTL2_TLS,
+> +						 PCI_EXP_LNKCTL2_TLS_2_5GT);
+> +	if (!ret) {
+> +		/* Verify that new value was really set */
+> +		pcie_capability_read_word(parent, PCI_EXP_LNKCTL2, &reg16);
+> +		if ((reg16 & PCI_EXP_LNKCTL2_TLS) !=3D PCI_EXP_LNKCTL2_TLS_2_5GT)
+> +			ret =3D -EINVAL;
+> +	}
+> +
+> +	if (ret) {
+> +		pci_err(parent, "ASPM: Changing Target Link Speed to 2.5 GT/s failed: =
+%d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	pci_info(parent, "ASPM: Target Link Speed changed to 2.5 GT/s due to qu=
+irk\n");
+> +	return 0;
+> +}
+> +
+>  static bool pcie_retrain_link(struct pcie_link_state *link)
+>  {
+>  	struct pci_dev *parent =3D link->pdev;
+>  	unsigned long end_jiffies;
+>  	u16 reg16;
+>  =
+
+> +	if ((link->downstream->dev_flags & PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_N=
+OT_GEN1) &&
+> +	    pcie_downgrade_link_to_gen1(parent)) {
+
+I assume (correct me if I'm wrong) that this would work equally well
+if we set the *endpoint's* target link speed to 2.5 GT/s instead of
+the upstream bridge's?  I think the log messages would make more sense
+then, since the problem is really with the endpoint, not the parent.
+
+> +		pci_err(parent, "ASPM: Retrain Link at higher speed is disallowed by q=
+uirk\n");
+> +		return false;
+> +	}
+> +
+>  	pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &reg16);
+>  	reg16 |=3D PCI_EXP_LNKCTL_RL;
+>  	pcie_capability_write_word(parent, PCI_EXP_LNKCTL, reg16);
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 653660e3ba9e..4999ad9d08b8 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3553,23 +3553,46 @@ static void mellanox_check_broken_intx_masking(st=
+ruct pci_dev *pdev)
+>  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_MELLANOX, PCI_ANY_ID,
+>  			mellanox_check_broken_intx_masking);
+>  =
+
+> -static void quirk_no_bus_reset(struct pci_dev *dev)
+> +static void quirk_no_bus_reset_and_no_retrain_link(struct pci_dev *dev)
+>  {
+> -	dev->dev_flags |=3D PCI_DEV_FLAGS_NO_BUS_RESET;
+> +	dev->dev_flags |=3D PCI_DEV_FLAGS_NO_BUS_RESET |
+> +			  PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1;
+>  }
+>  =
+
+>  /*
+> - * Some Atheros AR9xxx and QCA988x chips do not behave after a bus reset.
+> + * Atheros AR9xxx and QCA9xxx chips do not behave after a bus reset and =
+also
+> + * after retrain link when PCIe bridge is not in GEN1 mode at 2.5 GT/s s=
+peed.
+>   * The device will throw a Link Down error on AER-capable systems and
+>   * regardless of AER, config space of the device is never accessible aga=
+in
+>   * and typically causes the system to hang or reset when access is attem=
+pted.
+> + * Or if config space is accessible again then it contains only dummy va=
+lues
+> + * like fixed PCI device ID 0xABCD or values not initialized at all.
+> + * Retrain link can be called only when using GEN1 PCIe bridge or when
+> + * PCIe bridge has forced link speed to 2.5 GT/s via PCI_EXP_LNKCTL2 reg=
+ister.
+> + * To reset these cards it is required to do PCIe Warm Reset via PERST# =
+pin.
+>   * https://lore.kernel.org/r/20140923210318.498dacbd@dualc.maya.org/
+> + * https://lore.kernel.org/r/87h7l8axqp.fsf@toke.dk/
+> + * https://www.mail-archive.com/ath9k-devel@lists.ath9k.org/msg07529.html
+>   */
+> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0030, quirk_no_bus_res=
+et);
+> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032, quirk_no_bus_res=
+et);
+> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_res=
+et);
+> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_res=
+et);
+> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_res=
+et);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x002e,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0030,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0042,
+> +			 quirk_no_bus_reset_and_no_retrain_link);
+> +
+> +static void quirk_no_bus_reset(struct pci_dev *dev)
+> +{
+> +	dev->dev_flags |=3D PCI_DEV_FLAGS_NO_BUS_RESET;
+> +}
+>  =
+
+>  /*
+>   * Root port on some Cavium CN8xxx chips do not successfully complete a =
+bus
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 86c799c97b77..fdbf7254e4ab 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -227,6 +227,8 @@ enum pci_dev_flags {
+>  	PCI_DEV_FLAGS_NO_FLR_RESET =3D (__force pci_dev_flags_t) (1 << 10),
+>  	/* Don't use Relaxed Ordering for TLPs directed at this device */
+>  	PCI_DEV_FLAGS_NO_RELAXED_ORDERING =3D (__force pci_dev_flags_t) (1 << 1=
+1),
+> +	/* Don't Retrain Link for device when bridge is not in GEN1 mode */
+> +	PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1 =3D (__force pci_dev_flags_=
+t) (1 << 12),
+
+I know this is entangled with the existing PCI_DEV_FLAGS_NO_BUS_RESET,
+but unless there's a better reason to use pci_dev_flags, I'd prefer a
+new "unsigned retrain_gen1:1" or similar bit.  =
+
+
+Whatever you do, I'd like to avoid the double negative of "*no*
+retrain when *not* gen1."
+
+It does make me wonder whether the bus reset would work on these
+devices if we set the target link speed back down to 2.5 GT/s.
+
+>  };
+>  =
+
+>  enum pci_irq_reroute_variant {
+> -- =
+
+> 2.20.1
+> =
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
