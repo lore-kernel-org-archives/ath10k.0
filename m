@@ -2,76 +2,66 @@ Return-Path: <SRS0=hKpm=LM=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9141FC48BDF
-	for <ath10k@archiver.kernel.org>; Fri, 18 Jun 2021 07:29:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E38B4C48BDF
+	for <ath10k@archiver.kernel.org>; Fri, 18 Jun 2021 18:35:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B6AB61351
-	for <ath10k@archiver.kernel.org>; Fri, 18 Jun 2021 07:29:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B6AB61351
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id A6E5B613ED
+	for <ath10k@archiver.kernel.org>; Fri, 18 Jun 2021 18:35:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6E5B613ED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=connolly.tech
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=607tLX2eYTIbKbdB3EF7rZ/1SKTKcX7jHMzRsVB91LE=; b=B+X
-	GZfSAsCZzC3uyxETMoDYnDij19Agtw+FlUkUmbh7AIj3r9qxmfF0pAmBpTJMa3gGd9PhnkYs20EUI
-	gKdKm+zQSpN6Ar5xvSCxbMo9jqXwFVVpGEztRkNvwjq926f0juprKfH6wlZwLr/9PYVUncHxhd4pc
-	H84sd5gRlkWxtQ7LhajIJAe+FQpkJrzYyWoGzgt2NDat+W25oSPp52S0nncbIfFYb1uyRTzzmFEeF
-	IAeFZitRBHCKrSJUlbAK9Qar3gFV9L4Xm0eRSZcnQVD96/1jPD3RflTOmr3iO9+H/fsHZBDjXRZRi
-	oW3kA01aLFrqP1e7DcInPGIPZiINqFQ==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:
+	In-Reply-To:Message-ID:Subject:Cc:From:To:Date:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=HY+3KILPuwOzNyhPHDYn1SZpPhSThZCceCuAJg4ebzY=; b=z3bzR3u6WXcLqa
+	SMtLBMb9VGvYmLVDTV/qqmrgFVoqvP1l2LYmTqEw1H4IAMJKCALhC7Je2ydlUU/25J9kH9UVR6oQ1
+	Ser/tmhQAZhXVUh4D/bURJ1gGxpBb5sNtKe/HeCTxk52no+gthUQ7GAcMJzF7mJfwOqx0htK4p+ri
+	tgO0s/LO3bBsykArGTUA/HeWoCnkigR7+n7vRDtHBkvU8c0Y6bPoJd1pYQ2+78mnj1HaRotPOg7km
+	ZiSDGIX2KEcR5N8TwhnPDMUzRCX69HJXnKSiB6wwN119Jo+6UyFBQbnJowW8XTEqK8LuigdCYsNbS
+	ZkW3+wPatrG+v0xZld6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lu8w9-00D3YZ-Dn; Fri, 18 Jun 2021 07:29:09 +0000
-Received: from mail-oi1-x233.google.com ([2607:f8b0:4864:20::233])
+	id 1luJKm-00FBOz-Sx; Fri, 18 Jun 2021 18:35:16 +0000
+Received: from mail-4322.protonmail.ch ([185.70.43.22])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lu8w6-00D3XG-DI
- for ath10k@lists.infradead.org; Fri, 18 Jun 2021 07:29:07 +0000
-Received: by mail-oi1-x233.google.com with SMTP id t40so9559729oiw.8
- for <ath10k@lists.infradead.org>; Fri, 18 Jun 2021 00:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=ff/qtfcJkkl+V2A56gehnMhfZjduufy4qkxjFtuAGZA=;
- b=p5EeckYJt9g5H2AECGR7cWo1DNHLrxk4Pzrr60LDi6KxwWzYAmxZx5DsNVZaJv1wjY
- maSm39/niLR8Phe1SPXuDfAetPJ8lDYBq9m05IHfKgkv3QL1usZ/MP+qbjEXET0K8S4S
- hA6Aj9JsbEOGxu3vxkETpMavW9YIMEuTI7RDi/v5jBfWLKd3/WYTkGXh2KIW2+ZnetRi
- ewJyG6A1Tdt8yyuNxvzg2j6P52WHaA2K9O0Iqz8lsi1rysEHvuSWYTEuG/5SFsSyXB1l
- 407+LaRWGf9KewLl1r4cIBrbp+g6CIE2qunvDPO5NgBzqD91oapGgNxjFCwbGiWFdNd7
- vu5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=ff/qtfcJkkl+V2A56gehnMhfZjduufy4qkxjFtuAGZA=;
- b=lQ1cUbS12oGra972sqGbrmWYZKDhA/lu/h8G+avPVjKZi0BDMwAnAFWQ8VLzcwCMxr
- 2OmwXl0whCptlblMiQGRVVPGj3xw294G3dvO7kJpckBY+jX5yHwV7YK8MPO3T9XSEAvL
- jXH2UDkiH6x2tpobVnUDzhgM97/MAzx/ihwmb26LTQuePrHLkTLp0MDVn//TKFzRiJcn
- aNjGbgCq8juVI7WxcBEze9kvhI56+MnR8eY/GGmh/RaBltn3ouQldih37ZPbiFiWj041
- sAKwUgGBSXMQAiEcF4Gg/nkPVDXHzdAWmFSv9RzbGeZq7+vMoS9zxbSMONMbVfdagCXl
- xP4g==
-X-Gm-Message-State: AOAM532wEQsbVkQYqFlJkN9S3vBTBZPPR2LLRuQPO308p12lg8TB8xap
- cUKej4273zHxwyhoJJrdvXj9ofayzmeiGY1F2oPmYyZKp1u/jQ==
-X-Google-Smtp-Source: ABdhPJxyZvo/h2+nyV3xFfX/1QBQNkh7N+ExIMjh6l+27ZxDGRxLY8ANzyFNO5PNtnGVnP95G2Y6XxEUJG+BtzDHPVk=
-X-Received: by 2002:a05:6808:f04:: with SMTP id
- m4mr6254750oiw.122.1624001342805; 
- Fri, 18 Jun 2021 00:29:02 -0700 (PDT)
+ id 1luJKj-00FBNm-Fg
+ for ath10k@lists.infradead.org; Fri, 18 Jun 2021 18:35:15 +0000
+Date: Fri, 18 Jun 2021 18:34:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+ s=protonmail; t=1624041301;
+ bh=gPJStNIBkyU+EiKyKIcmWvO+oVN/hGtsoDaeZGrgtAM=;
+ h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+ b=Ccq/7+LgItQsJkh0Xxxpd8NbhZbrDXI7N1Xv3NWVjpArRTWpOqEKSmPKYNXjz1ZuJ
+ jn4T306aVgOByi+oKKxx8GE/hLOIEHqzl0C1EsmpEPJV3v7Eosw2QIfqlBDTNzjHjc
+ VJhJswathmzV+6z5Uz5oUuoKcnZePuKdaboC+rx8=
+To: Kalle Valo <kvalo@codeaurora.org>
+From: Caleb Connolly <caleb@connolly.tech>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath10k: demote chan info without scan request warning
+Message-ID: <f983af18-6a17-4cf1-a577-a86e4498b212@connolly.tech>
+In-Reply-To: <871r96yw6z.fsf@codeaurora.org>
+References: <20210522171609.299611-1-caleb@connolly.tech>
+ <20210612103640.2FD93C433F1@smtp.codeaurora.org>
+ <f39034ea-f4da-1564-e22f-398e4a1ae077@connolly.tech>
+ <871r96yw6z.fsf@codeaurora.org>
 MIME-Version: 1.0
-From: Francesco Magliocca <franciman12@gmail.com>
-Date: Fri, 18 Jun 2021 09:28:51 +0200
-Message-ID: <CAH4F6usFu8-A6k5Z7rU9__iENcSC6Zr-NtRhh_aypR74UvN1uQ@mail.gmail.com>
-Subject: Bug in Memory Layout of rx_desc for QCA6174
-To: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210618_002906_507846_CFCC09A7 
-X-CRM114-Status: GOOD (  18.57  )
+X-CRM114-CacheID: sfid-20210618_113513_760129_70C655A6 
+X-CRM114-Status: GOOD (  14.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,65 +73,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: Caleb Connolly <caleb@connolly.tech>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello everyone,
-I have a QCA6174 PCIe board, I am using linux kernel 5.12.10.
-The firmware loaded is:
-> [    4.483131] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:143a
-> [    4.483136] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
-> [    4.483567] ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp crc32 90eebefb
-> [    4.572730] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 318825bf
-> [    4.665592] ath10k_pci 0000:02:00.0: htt-ver 3.60 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
 
-around six months ago I reported a bug which is still haunting me:
-When I am connected to my home's Wi-Fi network and my father's Huawei
-smartphone is connected too
-my Wi-Fi card hangs and gets stuck, I have to force restart of the device.
 
-Note that this problem does not happen if my pc and the smartphone are
-connected to different networks (for example
-I tried connecting my pc to the 2.4GHz network and the smartphone to
-the 5GHz network, and the bug does not appear).
+On 13/06/2021 10:01 am, Kalle Valo wrote:
+> Caleb Connolly <caleb@connolly.tech> writes:
+>
+>> Hi Kalle,
+>>
+>> On 12/06/2021 11:36 am, Kalle Valo wrote:
+>>> Caleb Connolly <caleb@connolly.tech> wrote:
+>>>
+>>>> Some devices/firmwares cause this to be printed every 5-15 seconds,
+>>>> though it has no impact on functionality. Demote this to a debug
+>>>> message.
+>>>>
+>>>> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+>>>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>>
+>> Is this meant to be an Ack?
+>
+> No, my patchwork script has few quirks and it actually takes the quoted
+> text from my pending branch, not from your actual email. That's why you
+> see my s-o-b there. I haven't bothered to fix that yet, but hopefully
+> one day.
+>
+>>> On what hardware and firmware version do you see this?
+>>
+>> I see this on SDM845 and MSM8998 platforms, specifically the OnePlus 6
+>> devices, PocoPhone F1 and OnePlus 5.
+>> On the OnePlus 6 (SDM845) we are stuck with the following signed vendor fw:
+>>
+>> [    9.339873] ath10k_snoc 18800000.wifi: qmi chip_id 0x30214
+>> chip_family 0x4001 board_id 0xff soc_id 0x40030001
+>> [    9.339897] ath10k_snoc 18800000.wifi: qmi fw_version 0x20060029
+>> fw_build_timestamp 2019-07-12 02:14 fw_build_id
+>> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c8-00041-QCAHLSWMTPLZ-1
+>>
+>> The OnePlus 5 (MSM8998) is using firmware:
+>>
+>> [ 6096.956799] ath10k_snoc 18800000.wifi: qmi chip_id 0x30214
+>> chip_family 0x4001 board_id 0xff soc_id 0x40010002
+>> [ 6096.956824] ath10k_snoc 18800000.wifi: qmi fw_version 0x1007007e
+>> fw_build_timestamp 2020-04-14 22:45 fw_build_id
+>> QC_IMAGE_VERSION_STRING=WLAN.HL.1.0.c6-00126-QCAHLSWMTPLZ-1.211883.1.278648.
+>
+> Thanks, I'll include this information to the commit log and then apply
+> the patch. And I'll assume you have also tested this patch on those
+> platforms so that I can add a Tested-on tag?
+Yeah, go ahead. Sorry for the late reply!
+>
+> BTW, ath10k should strip that ugly "QC_IMAGE_VERSION_STRING=" string in
+> the firmware version. Patches very welcome :)
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
 
-Now, I tried bisecting driver changes, and I found the faulty one,
-it is the commit: e3def6f7ddf88636febb12e1e3e86387a4ce5452
+--
+Kind Regards,
+Caleb
 
-It adds some fields to structures like rx_msdu_start, rx_frag_info, etc..
-The changes modify the size of these structures!
-
-If I revert this commit changes, the bug does not happen
-(I tested it for two weeks, while the bug happens at least once in 2-3 hours
-from when the smartphone is connected to the wifi network).
-
-Also, if I selectively remove some of the changes introduced by the
-faulty commit,
-the bug does not go away, so it looks like the problem is in the
-change of size of the
-data structures.
-
-Now, I'd like to ask you what we can do to fix this problem...
-Is there something I am doing wrong?
-Or is there a bug in the firmware?
-
-If the firmware can't be easily fixed, I was thinking that we can
-abstract the htt_rx_desc
-(in the same way we do with ops in other parts of the driver) to have
-two versions:
-one for 32-bit descriptors (like my QCA6174)
-and one for 64-bit descriptors (i.e. WCN3990, which was the cause of
-this change).
-
-I'd be really happy to help, but I am not sure I fully understand what
-is going on,
-so what do you think is happening and what should we do?
-
-Thanks in advance.
-Greetings,
-Francesco Magliocca
 
 _______________________________________________
 ath10k mailing list
