@@ -2,77 +2,63 @@ Return-Path: <SRS0=rggh=LU=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36EB5C49EA6
-	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 14:40:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08BDAC49EA6
+	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 15:34:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E69CF61C30
-	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 14:40:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E69CF61C30
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id A787A61C41
+	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 15:34:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A787A61C41
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dsLJL7zgE+naAHqFUhPIFjrbaljhG7aNDzX65lwsAuA=; b=a3sSMiMze1wZMA
-	xYoEGzWyPcUs4HRzSTtL7qknp1JEFHq2mbtokcV1qbfgYT8M6QE6XpI4d4MqsZTj2WtOb5TCtxrN3
-	+Oc7Q6Y8odes3fc5k3JorCOoZWYteA9f5Gdau183txVzeqRQIv1kC0O2Kyq7Vg24tfCwYWQYwCeTr
-	d8SWl14rZbfForNChWFybWBS6QvejQzEF0FZGEEioV/i5ysCTYPeM7aIXY/Y0nkgOMvsncuQT+A7U
-	UxnAXBh0F2KDQJQBDIJZqcckG7LYvT85mpsS6PqNrsOmxN924QFirjvejYcu6mvZ6QIN5Xq/wH8wB
-	HUO6mHKoZNAH9sfyHibQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OlfV1Br1c9lLzGTbBK+P5O9ZZLtC9suO4FCOJxUrHpc=; b=2UFGmAfsAmwMuo
+	jhp0jzQcd6wBnI72HREJc+r2TTB9yJuODSfBLxhTgrlyEwuRJ81HnsQiLuo3BHAEq6LerLAxOWIX9
+	L3g8sdNV+5B+VsVPyaMXVJeu7PRneraaf/q7SNpsOwNSwJ5ljhY2R7/4ZIOzdT80gjSBTYXPMMx+T
+	5wZMiYQZK+TUVW2C1R5Mgxl8x19Thw/CdipUQ857BvsYdog7ELCMDXUaT2lw+i4v2/oUgdWUVQwaQ
+	6TDoAiVJc7WQDYB3kkwBF+urfCvb4vi7MNwmUiL40atSwSyim750Wkezk/gIFCeonhKLXRccv7U9p
+	BAuX2zenAd32xwGnBbsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lx9Rw-004H70-1i; Sat, 26 Jun 2021 14:38:24 +0000
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lx9Rs-004H6K-CL
- for ath10k@lists.infradead.org; Sat, 26 Jun 2021 14:38:22 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB3961C2F;
- Sat, 26 Jun 2021 14:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624718299;
- bh=XBNV7PAmGF76msYV03s+Dw/NGShCLS8n02pNLLWn3XM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EvLdY2C70M3b5+9u5iHBLAlibexRey1MUWAeDjKJO2e3jyjMknlAnb0HyFUZpwRsK
- ovKXhbt813xNwUlVmpYPxDk+/cArWglM5CRT/jIakMiOpklKs7CV+EqCI80mWb2w1T
- +bmZSFRy8Nuj/9FfSuPXrB4QBi4TJSp5A7PZCzj7vffGBUTr8w7l67IDBFVVsatwMX
- 3gSt8bB+YIiTPNZ7alRt8HShkhiiwH1OqKA6jT0o2lRd3BOhFMC5r4fvSUGOQbofca
- 0y0BWOcUt3hL97Og5C2fs737Jl8Sie6kKGsb770tj7gvu7zJAW/rNOhk+0uw3v+zja
- CVbcI1zcR/wzQ==
-Received: by pali.im (Postfix)
- id 2D06A264; Sat, 26 Jun 2021 16:38:16 +0200 (CEST)
-Date: Sat, 26 Jun 2021 16:38:16 +0200
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Kalle Valo <kvalo@codeaurora.org>,
- Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
- Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
- vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-pci@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: Disallow retraining link for Atheros chips on
- non-Gen1 PCIe bridges
-Message-ID: <20210626143816.2p4qwwzuxfeys2y2@pali>
-References: <20210621142855.gnqtj3ofovx7xryr@pali>
- <20210625201936.GA3293099@bjorn-Precision-5520>
+	id 1lxAIg-004MWS-Pk; Sat, 26 Jun 2021 15:32:54 +0000
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lxAIc-004MT8-Vl
+ for ath10k@lists.infradead.org; Sat, 26 Jun 2021 15:32:53 +0000
+Received: from localhost.localdomain ([86.243.172.93]) by mwinf5d78 with ME
+ id MrR62500921Fzsu03rR6lY; Sat, 26 Jun 2021 17:25:11 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 26 Jun 2021 17:25:11 +0200
+X-ME-IP: 86.243.172.93
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+ jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org
+Cc: ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ath: switch from 'pci_' to 'dma_' API
+Date: Sat, 26 Jun 2021 17:25:04 +0200
+Message-Id: <9150bd6cde9ad592aff8ee3ad94dffa90b004e89.1624720959.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210625201936.GA3293099@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210626_073820_503105_10820BB9 
-X-CRM114-Status: GOOD (  48.50  )
+X-CRM114-CacheID: sfid-20210626_083251_337877_C31FA9A2 
+X-CRM114-Status: GOOD (  11.09  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,108 +70,232 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpZGF5IDI1IEp1bmUgMjAyMSAxNToxOTozNiBCam9ybiBIZWxnYWFzIHdyb3RlOgo+IE9u
-IE1vbiwgSnVuIDIxLCAyMDIxIGF0IDA0OjI4OjU1UE0gKzAyMDAsIFBhbGkgUm9ow6FyIHdyb3Rl
-Ogo+ID4gT24gV2VkbmVzZGF5IDE2IEp1bmUgMjAyMSAxNjozODoxOSBCam9ybiBIZWxnYWFzIHdy
-b3RlOgo+ID4gPiBPbiBXZWQsIEp1biAwMiwgMjAyMSBhdCAwOTowMzowMlBNICswMjAwLCBQYWxp
-IFJvaMOhciB3cm90ZToKPiA+ID4gPiBPbiBXZWRuZXNkYXkgMDIgSnVuZSAyMDIxIDEwOjU1OjU5
-IEJqb3JuIEhlbGdhYXMgd3JvdGU6Cj4gPiA+ID4gPiBPbiBXZWQsIEp1biAwMiwgMjAyMSBhdCAw
-MjowODoxNlBNICswMjAwLCBQYWxpIFJvaMOhciB3cm90ZToKPiA+ID4gPiA+ID4gT24gVHVlc2Rh
-eSAwMSBKdW5lIDIwMjEgMTk6MDA6MzYgQmpvcm4gSGVsZ2FhcyB3cm90ZToKPiA+ID4gPiA+IAo+
-ID4gPiA+ID4gPiA+IEkgd29uZGVyIGlmIHRoaXMgY291bGQgYmUgcmVzdHJ1Y3R1cmVkIGFzIGEg
-Z2VuZXJpYyBxdWlyawo+ID4gPiA+ID4gPiA+IGluIHF1aXJrcy5jIHRoYXQgc2ltcGx5IHNldCB0
-aGUgYnJpZGdlJ3MgVExTIHRvIDIuNSBHVC9zCj4gPiA+ID4gPiA+ID4gZHVyaW5nIGVudW1lcmF0
-aW9uLiAgT3Igd291bGQgdGhlIHJldHJhaW4gZmFpbCBldmVuIGluCj4gPiA+ID4gPiA+ID4gdGhh
-dCBjYXNlPwo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gSWYgSSB1bmRlcnN0YW5kIGl0IGNvcnJl
-Y3RseSB0aGVuIFBDSWUgbGluayBpcyBhbHJlYWR5IHVwCj4gPiA+ID4gPiA+IHdoZW4ga2VybmVs
-IHN0YXJ0cyBlbnVtZXJhdGlvbi4gU28gc2V0dGluZyBCcmlkZ2UgVExTIHRvIDIuNQo+ID4gPiA+
-ID4gPiBHVC9zIGRvZXMgbm90IGNoYW5nZSBhbnl0aGluZyBoZXJlLgo+ID4gPiA+ID4gPiAKPiA+
-ID4gPiA+ID4gTW9yZW92ZXIgaXQgd291bGQgaGF2ZSBzaWRlIGVmZmVjdCB0aGF0IGNhcmRzIHdo
-aWNoIGFyZQo+ID4gPiA+ID4gPiBhbHJlYWR5IHNldCB0byA1KyBHVC9zIHdvdWxkIGJlIGRvd25n
-cmFkZWQgdG8gMi41IEdUL3MKPiA+ID4gPiA+ID4gZHVyaW5nIGVudW1lcmF0aW9uIGFuZCBmb3Ig
-aW5jcmVhc2luZyBzcGVlZCB3b3VsZCBiZSBuZWVkZWQKPiA+ID4gPiA+ID4gYW5vdGhlciByb3Vu
-ZCBvZiAiZW51bWVyYXRpb24iIHRvIHNldCBhIG5ldyBUTFMgYW5kIHJldHJhaW4KPiA+ID4gPiA+
-ID4gbGluayBhZ2Fpbi4gQXMgVExTIGFmZmVjdHMgbGluayBvbmx5IGFmdGVyIGxpbmsgZ29lcyBp
-bnRvCj4gPiA+ID4gPiA+IFJlY292ZXJ5IHN0YXRlLgo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4g
-U28gdGhpcyB3b3VsZCBqdXN0IGNvbXBsaWNhdGUgY2FyZCBlbnVtZXJhdGlvbiBhbmQgc2V0dGlu
-Z3MuCj4gPiA+ID4gPiAKPiA+ID4gPiA+IFRoZSBjdXJyZW50IHF1aXJrIGNvbXBsaWNhdGVzIHRo
-ZSBBU1BNIGNvZGUuICBJJ20gaG9waW5nIHRoYXQKPiA+ID4gPiA+IGlmIHdlIHNldCB0aGUgYnJp
-ZGdlJ3MgVGFyZ2V0IExpbmsgU3BlZWQgZHVyaW5nIGVudW1lcmF0aW9uLAo+ID4gPiA+ID4gdGhl
-IGxpbmsgcmV0cmFpbiB3aWxsICJqdXN0IHdvcmsiIHdpdGhvdXQgY29tcGxpY2F0aW5nIHRoZQo+
-ID4gPiA+ID4gQVNQTSBjb2RlLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBBbiBlbnVtZXJhdGlvbiBx
-dWlyayB3b3VsZG4ndCBoYXZlIHRvIHNldCB0aGUgYnJpZGdlJ3MgVExTIHRvCj4gPiA+ID4gPiAy
-LjUgR1QvczsgdGhlIHF1aXJrIHdvdWxkIGJlIGF0dGFjaGVkIHRvIHNwZWNpZmljIGVuZHBvaW50
-Cj4gPiA+ID4gPiBkZXZpY2VzIGFuZCBjb3VsZCBzZXQgdGhlIGJyaWRnZSdzIFRMUyB0byB3aGF0
-ZXZlciB0aGUKPiA+ID4gPiA+IGVuZHBvaW50IHN1cHBvcnRzLgo+ID4gPiA+IAo+ID4gPiA+IE5v
-dyBJIHNlZSB3aGF0IHlvdSBtZWFuLiBZZXMsIEkgYWdyZWUgdGhpcyBpcyBhIGdvb2QgaWRlYSBh
-bmQKPiA+ID4gPiBjYW4gc2ltcGxpZnkgY29kZS4gUXVpcmsgaXMgbm90IHJlbGF0ZWQgdG8gQVNQ
-TSBjb2RlIGFuZAo+ID4gPiA+IGJhc2ljYWxseSBoYXMgbm90aGluZyB3aXRoIGl0LCBqdXN0IEkg
-cHV0IGl0IGludG8gYXNwbS5jIGJlY2F1c2UKPiA+ID4gPiB0aGlzIGlzIHRoZSBvbmx5IHBsYWNl
-IHdoZXJlIGxpbmsgcmV0cmFpbmluZyB3YXMgYWN0aXZhdGVkLgo+ID4gPiA+IAo+ID4gPiA+IEJ1
-dCB3aXRoIHRoaXMgcHJvcG9zYWwgdGhlcmUgaXMgb25lIGlzc3VlLiBTb21lIGtlcm5lbCBkcml2
-ZXJzCj4gPiA+ID4gYWxyZWFkeSBvdmVyd3JpdGUgUENJX0VYUF9MTktDVEwyX1RMUyB2YWx1ZS4g
-U28gaWYgUENJCj4gPiA+ID4gZW51bWVyYXRpb24gY29kZSBzZXQgc29tZSB2YWx1ZSBpbnRvIFBD
-SV9FWFBfTE5LQ1RMMl9UTFMgYml0cwo+ID4gPiA+IHRoZW4gZHJpdmVycyBjYW4gY2hhbmdlIGl0
-IGFuZCBvbmNlIEFTUE0gd2lsbCB0cnkgdG8gcmV0cmFpbgo+ID4gPiA+IGxpbmsgdGhpcyBtYXkg
-Y2F1c2UgdGhpcyBpc3N1ZS4KPiA+ID4gCj4gPiA+IEkgZ3Vlc3MgeW91IG1lYW4gdGhlIGFtZGdw
-dSwgcmFkZW9uLCBhbmQgaGZpMSBkcml2ZXJzLiAgVGhleQo+ID4gPiByZWFsbHkgc2hvdWxkbid0
-IGJlIG11Y2tpbmcgd2l0aCB0aGF0IHN0dWZmIGFueXdheS4gIEJ1dCB0aGV5IGRvCj4gPiA+IGFu
-ZCBhcmUgdW5saWtlbHkgdG8gY2hhbmdlIGJlY2F1c2Ugd2UgZG9uJ3QgaGF2ZSBhbnkgZ29vZAo+
-ID4gPiBhbHRlcm5hdGl2ZS4KPiA+IAo+ID4gWWVhLCB0aGVzZSBhcmUgZXhhbXBsZXMgb2Ygc3Vj
-aCBkcml2ZXJzLi4uIE1heWJlIGl0IGlzIGEgZ29vZCBpZGVhCj4gPiB0byBhc2sgdGhvc2UgcGVv
-cGxlIHdoeSBjaGFuZ2luZyBQQ0lfRVhQX0xOS0NUTDJfVExTIGlzIG5lZWRlZC4gQXMKPiA+IHRo
-ZXNlIGRyaXZlcnMgYXJlIG9mdGVuIGRlcml2ZWQgZnJvbSBjb2RlYmFzZSBvZiBzaGFyZWQgbXVs
-dGlzeXN0ZW0KPiA+IGRyaXZlcnMgb3IgZnJvbSBjb21tb24gZG9jdW1lbnRhdGlvbiwgaXQgaXMg
-cG9zc2libGUgdGhhdCBvcmlnaW5hbAo+ID4gc291cmNlIGhhcyB0aGlzIGNvZGUgYXMgYSB3b3Jr
-YXJvdW5kIG9yIGNvbW1vbiBwYXR0ZXJuIHVzZWQgaW4gb3RoZXIKPiA+IG9wZXJhdGluZyBzeXN0
-ZW1zLCBub3QgcmVsYXRlZCB0byBsaW51eC4uLgo+ID4gCj4gPiA+IE9uZSB3YXkgYXJvdW5kIHRo
-YXQgd291bGQgYmUgdG8gYWRkIHNvbWUgcXVpcmsgY29kZSB0bwo+ID4gPiBwY2llX2NhcGFiaWxp
-dHlfd3JpdGVfd29yZCgpLiAgVWdseSwgYnV0IHdlIGRvIGhhdmUgc29tZXRoaW5nIHNvcnQKPiA+
-ID4gb2Ygc2ltaWxhciBpbiBwY2llX2NhcGFiaWxpdHlfcmVhZF93b3JkKCkgYWxyZWFkeS4KPiA+
-IAo+ID4gQmpvcm4sIGRvIHlvdSByZWFsbHkgd2FudCBzdWNoIHVnbHkgaGFjayBpbgo+ID4gcGNp
-ZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQ/ICBJdCBpcyBjb21tb24gY29kZSB1c2VkIGFuZCBjYWxs
-ZWQgZnJvbQo+ID4gbG90IG9mIHBsYWNlcyBzbyBpdCBtYXkgYWZmZWN0IHdob2xlIHN5c3RlbSBp
-ZiBpbiBmdXR1cmUgc29tZWJvZHkKPiA+IGNoYW5nZXMgaXQgYWdhaW4uLi4KPiAKPiBJIGRvbid0
-IGtub3cgd2hpY2ggaXMgdWdsaWVyLCBhIHF1aXJrIGluIHBjaWVfY2FwYWJpbGl0eV93cml0ZV93
-b3JkKCkKPiBvciBhIHF1aXJrIGluIGFzcG0uYyB0aGF0IGhhcyBub3RoaW5nIHRvIGRvIHdpdGgg
-QVNQTS4gIFRoZXkncmUgYm90aAo+IHVnbHkgOikKCk9rIDotKQoKPiBGV0lXLCBpbiBwY2llX2Nh
-cGFiaWxpdHlfd3JpdGVfd29yZCgpIEkgd291bGQgZW52aXNpb24gbm90IGEgY2hlY2sgZm9yCj4g
-QXRoZXJvcywgYnV0IHJhdGhlciBzb21ldGhpbmcgbGlrZSBhICJkZXYtPm1heF90YXJnZXRfbGlu
-a19zcGVlZCIgdGhhdAo+IGNvdWxkIGJlIHNldCBieSBhbiBBdGhlcm9zIHF1aXJrLiAgSXQgZG9l
-cyBnZXQgdWdsaWVyIGlmIHdlIHdhbnQgdG8KPiByZXN0cmljdCB0aGUgYnJpZGdlJ3MgbGluayBz
-cGVlZCB2aWEgYSBxdWlyaywgdGhlbiB1bnJlc3RyaWN0IGl0IHdoZW4KPiB0aGUgZW5kcG9pbnQg
-aXMgdW5wbHVnZ2VkLgo+IAo+IEkga25vdyBwY2llX2Rvd25ncmFkZV9saW5rX3RvX2dlbjEoKSBv
-bmx5IHJldHVybnMgZmFpbHVyZSBmb3IgY29ybmVyCj4gY2FzZXMgdGhhdCAic2hvdWxkIG5vdCBv
-Y2N1ciwiCgpJdCBpcyBub3Qgb25seSBjb3JuZXIgY2FzZS4gSXQgaGFwcGVucyBfYWx3YXlzXyB3
-aXRoIGF0IGxlYXN0IHR3bwpwY2kgZHJpdmVycy4KCkFzIEkgd3JvdGUgaW4gb3RoZXIgZW1haWwg
-ZHVlIHRvIHRoaXMgaXNzdWUsIHNvbWUgcXVpcmsgY29kZSB3aGljaAphbGxvd3MgLyBkaXNhbGxv
-d3MgbGluayByZXRyYWluaW5nIGlzIHJlcXVpcmVkIGluIGFzcG0uYyBmaWxlLgoKPiBidXQgSSBk
-b24ndCBsaWtlIHRoZSBmYWN0IHRoYXQgaXQncwo+IHBvc3NpYmxlIHRvIGNoYW5nZSBDb21tb24g
-Q2xvY2sgQ29uZmlndXJhdGlvbiB3aXRob3V0IGRvaW5nIHRoZQo+IHJldHJhaW4uICBUaGF0IHdv
-dWxkIGxlYXZlIHVzIHdpdGggaW5jb3JyZWN0IEFTUE0gZXhpdCBsYXRlbmNpZXMsCj4gd2hpY2gg
-aXMgcmVhbGx5IGhhcmQgdG8gZGVidWcuCgpJIHNlZS4uLiBBbnkgaWRlYSBob3cgdG8gc29sdmUg
-dGhpcyBpc3N1ZT8KCj4gSGVyZSdzIHRoZSByZWxldmFudCB0ZXh0IGluIHRoZSBzcGVjIChQQ0ll
-IHI1LjApOgo+IAo+ICAgNy41LjMuNiBMaW5rIENhcGFiaWxpdGllcwo+IAo+ICAgICBMMHMgRXhp
-dCBMYXRlbmN5IC0gVGhpcyBmaWVsZCBpbmRpY2F0ZXMgdGhlIEwwcyBleGl0IGxhdGVuY3kgZm9y
-Cj4gICAgIHRoZSBnaXZlbiBQQ0kgRXhwcmVzcyBMaW5rLiBUaGUgdmFsdWUgcmVwb3J0ZWQgaW5k
-aWNhdGVzIHRoZQo+ICAgICBsZW5ndGggb2YgdGltZSB0aGlzIFBvcnQgcmVxdWlyZXMgdG8gY29t
-cGxldGUgdHJhbnNpdGlvbiBmcm9tIEwwcwo+ICAgICB0byBMMC4gLi4uCj4gCj4gICAgIE5vdGUg
-dGhhdCBleGl0IGxhdGVuY2llcyBtYXkgYmUgaW5mbHVlbmNlZCBieSBQQ0kgRXhwcmVzcwo+ICAg
-ICByZWZlcmVuY2UgY2xvY2sgY29uZmlndXJhdGlvbiBkZXBlbmRpbmcgdXBvbiB3aGV0aGVyIGEg
-Y29tcG9uZW50Cj4gICAgIHVzZXMgYSBjb21tb24gb3Igc2VwYXJhdGUgcmVmZXJlbmNlIGNsb2Nr
-Lgo+IAo+ICAgNy41LjMuNiBMaW5rIENvbnRyb2wKPiAgICAgQ29tbW9uIENsb2NrIENvbmZpZ3Vy
-YXRpb24gLSBXaGVuIFNldCwgdGhpcyBiaXQgaW5kaWNhdGVzIHRoYXQKPiAgICAgdGhpcyBjb21w
-b25lbnQgYW5kIHRoZSBjb21wb25lbnQgYXQgdGhlIG9wcG9zaXRlIGVuZCBvZiB0aGlzIExpbmsK
-PiAgICAgYXJlIG9wZXJhdGluZyB3aXRoIGEgZGlzdHJpYnV0ZWQgY29tbW9uIHJlZmVyZW5jZSBj
-bG9jay4gLi4uCj4gCj4gICAgIEFmdGVyIGNoYW5naW5nIHRoZSB2YWx1ZSBpbiB0aGlzIGJpdCBp
-biBib3RoIGNvbXBvbmVudHMgb24gYSBMaW5rLAo+ICAgICBzb2Z0d2FyZSBtdXN0IHRyaWdnZXIg
-dGhlIExpbmsgdG8gcmV0cmFpbiBieSB3cml0aW5nIGEgMWIgdG8gdGhlCj4gICAgIFJldHJhaW4g
-TGluayBiaXQgb2YgdGhlIERvd25zdHJlYW0gUG9ydC4KCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+The wrappers in include/linux/pci-dma-compat.h should go away.
+
+The patch has been generated with the coccinelle script below.
+
+While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+updated to a much less verbose 'dma_set_mask_and_coherent()'.
+
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/net/wireless/ath/ath10k/pci.c |  9 +--------
+ drivers/net/wireless/ath/ath11k/pci.c | 10 ++--------
+ drivers/net/wireless/ath/ath5k/pci.c  |  2 +-
+ drivers/net/wireless/ath/ath9k/pci.c  |  8 +-------
+ 4 files changed, 5 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 71878ab35b93..4d4e2f91e15c 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3393,19 +3393,12 @@ static int ath10k_pci_claim(struct ath10k *ar)
+ 	}
+ 
+ 	/* Target expects 32 bit DMA. Enforce it. */
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to set dma mask to 32-bit: %d\n", ret);
+ 		goto err_region;
+ 	}
+ 
+-	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+-	if (ret) {
+-		ath10k_err(ar, "failed to set consistent dma mask to 32-bit: %d\n",
+-			   ret);
+-		goto err_region;
+-	}
+-
+ 	pci_set_master(pdev);
+ 
+ 	/* Arrange for access to Target SoC registers. */
+diff --git a/drivers/net/wireless/ath/ath11k/pci.c b/drivers/net/wireless/ath/ath11k/pci.c
+index 646ad79f309c..5abb38cc3b55 100644
+--- a/drivers/net/wireless/ath/ath11k/pci.c
++++ b/drivers/net/wireless/ath/ath11k/pci.c
+@@ -933,20 +933,14 @@ static int ath11k_pci_claim(struct ath11k_pci *ab_pci, struct pci_dev *pdev)
+ 		goto disable_device;
+ 	}
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
++	ret = dma_set_mask_and_coherent(&pdev->dev,
++					DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
+ 	if (ret) {
+ 		ath11k_err(ab, "failed to set pci dma mask to %d: %d\n",
+ 			   ATH11K_PCI_DMA_MASK, ret);
+ 		goto release_region;
+ 	}
+ 
+-	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
+-	if (ret) {
+-		ath11k_err(ab, "failed to set pci consistent dma mask to %d: %d\n",
+-			   ATH11K_PCI_DMA_MASK, ret);
+-		goto release_region;
+-	}
+-
+ 	pci_set_master(pdev);
+ 
+ 	ab->mem_len = pci_resource_len(pdev, ATH11K_PCI_BAR_NUM);
+diff --git a/drivers/net/wireless/ath/ath5k/pci.c b/drivers/net/wireless/ath/ath5k/pci.c
+index 43b4ae86e5fb..86b8cb975b1a 100644
+--- a/drivers/net/wireless/ath/ath5k/pci.c
++++ b/drivers/net/wireless/ath/ath5k/pci.c
+@@ -191,7 +191,7 @@ ath5k_pci_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	/* XXX 32-bit addressing only */
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "32-bit DMA not available\n");
+ 		goto err_dis;
+diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
+index cff9af3af38d..a074e23013c5 100644
+--- a/drivers/net/wireless/ath/ath9k/pci.c
++++ b/drivers/net/wireless/ath/ath9k/pci.c
+@@ -896,18 +896,12 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (pcim_enable_device(pdev))
+ 		return -EIO;
+ 
+-	ret =  pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret) {
+ 		pr_err("32-bit DMA not available\n");
+ 		return ret;
+ 	}
+ 
+-	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+-	if (ret) {
+-		pr_err("32-bit DMA consistent DMA enable failed\n");
+-		return ret;
+-	}
+-
+ 	/*
+ 	 * Cache line size is used to size and align various
+ 	 * structures used to communicate with the hardware.
+-- 
+2.30.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
