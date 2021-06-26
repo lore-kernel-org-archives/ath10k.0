@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93E5FC49EA6
-	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 10:11:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C1C7C49EA5
+	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 10:25:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BE7061926
-	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 10:11:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BE7061926
+	by mail.kernel.org (Postfix) with ESMTPS id C068761926
+	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 10:25:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C068761926
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,45 +23,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SWm76ap4D0hJR9e04+Sv2xtE8B9kwpEnAdCl96I4LUQ=; b=DXRAbz/rERrPJ4
-	15QG99IWU8oAEp/yhacJTkDFJd7oXs4uuL5HTBixqrVJtW+IpNyK/0xLTN6ZCvIxetTLKrPIGlbQd
-	EldvP0uRJUfoGyV1kBt9ZXLRmp6GZQ6PHHMmi85bCUZAD8zyh7JX+WFOhWG0JLX42N4i3JFmGhHfs
-	zmxM3y6dC6x9S9QdMZIMLkzQWL7dO0pMVX+SA89FG5nIzkUhbzjzna3uK2Yy4caH0TvYC7jZrHuKC
-	cbMa2bm93gSCR8lHYyTD30x5hlnI5kAXn4b+sEmFmHmEp4DvvsKM0D+pVjf2nuy0qHfBsAZNlD/vV
-	RhAjzMO+L3LzVZt97XKQ==;
+	List-Owner; bh=97KWVGZlwiPJG5Th6FzTsk9HsbwQumi8cfd0E050aLQ=; b=1Ka8FXHJNLNB05
+	OfdUdHiNar5Nr77te4maTajyI9+Yg898fs4deXvXUqWJ/5Mf3GDA0xiOc3rPu0Dk1UdrlWa2FrfA9
+	h3Fbt95JUBvZ9ozyGbg+fTZ8ghrOlqFCG3oec+yPrqoW/Q9903+opFXPNTzeLVxPfQKdqlq3NH/qB
+	RJjY/dJcfuid1cORtvxqnfieRYCGI1IIXcHp1dHkFgQt8X2AjPX2NgVTPVIn70WqmztxafOL3WeaI
+	J5osOqLrV0URPGGADFtbRVsphSKujJeFf8Wud3syfkRlmfQQL+V+kbb9h4ntp8P7KpbmILeMdKRiO
+	t9b3xB3KIjLk9yOgR9sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lx5H7-003pj9-Ey; Sat, 26 Jun 2021 10:10:57 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1lx5Ug-003rtF-OU; Sat, 26 Jun 2021 10:24:58 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lx5H3-003pgc-PU
- for ath10k@lists.infradead.org; Sat, 26 Jun 2021 10:10:55 +0000
-IronPort-SDR: LYkYp3knufyldPDFnFVtGVDqAJg/dg2XMKwsG+8D+br8tDmEeXgDO0gZT3anU0noTOwjyGK8nF
- Af844IeTSs5A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="271639300"
-X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; d="scan'208";a="271639300"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jun 2021 03:10:51 -0700
+ id 1lx5Ue-003rsx-58
+ for ath10k@lists.infradead.org; Sat, 26 Jun 2021 10:24:57 +0000
+IronPort-SDR: kTjDM3sgUdfs9YRfvSOc8wVsik6nS/fGmo5YVRz2kaCXWNM2dm0jzK9HXw1fbFN2CBXiKUE65h
+ KUw/dYJRasDw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="229385733"
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; d="scan'208";a="229385733"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jun 2021 03:24:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; d="scan'208";a="640344802"
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; d="scan'208";a="455694036"
 Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
- by fmsmga006.fm.intel.com with ESMTP; 26 Jun 2021 03:10:49 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 26 Jun 2021 03:24:50 -0700
 Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1lx5Gz-0007h1-7Q; Sat, 26 Jun 2021 10:10:49 +0000
-Date: Sat, 26 Jun 2021 18:10:11 +0800
+ id 1lx5UX-0007hb-IO; Sat, 26 Jun 2021 10:24:49 +0000
+Date: Sat, 26 Jun 2021 18:24:32 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [ath6kl:pending] BUILD SUCCESS
- 7c4717893384e831a7d8d19375e8d10a7a454611
-Message-ID: <60d6fd03.8nXeIbzkHQud+qPL%lkp@intel.com>
+Subject: [ath6kl:master-pending] BUILD SUCCESS
+ ca09c83912de35f1cd83b08ac57d4f9d0d7f7c1a
+Message-ID: <60d70060.ellgxyj29Xn30q0W%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210626_031053_939064_B03F260C 
-X-CRM114-Status: UNSURE (   4.09  )
+X-CRM114-CacheID: sfid-20210626_032456_273581_1659832E 
+X-CRM114-Status: UNSURE (   5.55  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,12 +79,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 7c4717893384e831a7d8d19375e8d10a7a454611  ath11k: Remove some duplicate code
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: ca09c83912de35f1cd83b08ac57d4f9d0d7f7c1a  Merge branch 'pending' into master-pending
 
-elapsed time: 795m
+elapsed time: 810m
 
-configs tested: 127
+configs tested: 135
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -101,6 +101,11 @@ mips                         db1xxx_defconfig
 sh                        apsh4ad0a_defconfig
 mips                         tb0226_defconfig
 powerpc                           allnoconfig
+mips                        bcm47xx_defconfig
+powerpc                     skiroot_defconfig
+microblaze                          defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                          rsk7201_defconfig
 powerpc                         ps3_defconfig
 powerpc                      mgcoge_defconfig
 sh                        sh7785lcr_defconfig
@@ -111,27 +116,24 @@ sh                               j2_defconfig
 sh                          r7785rp_defconfig
 h8300                            alldefconfig
 mips                 decstation_r4k_defconfig
-mips                           gcw0_defconfig
-sh                           se7724_defconfig
-arm                            lart_defconfig
-mips                     cu1000-neo_defconfig
-mips                      maltaaprp_defconfig
-powerpc                 mpc834x_itx_defconfig
-mips                      fuloong2e_defconfig
-sh                  sh7785lcr_32bit_defconfig
+i386                             alldefconfig
+arm                             ezx_defconfig
+arm                           sunxi_defconfig
 mips                        workpad_defconfig
 powerpc                    ge_imp3a_defconfig
 mips                         tb0219_defconfig
 powerpc                      pasemi_defconfig
 sh                             shx3_defconfig
-arm                        mini2440_defconfig
-arm                       versatile_defconfig
-powerpc                 canyonlands_defconfig
-arc                          axs103_defconfig
+arm                         hackkit_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                 xes_mpc85xx_defconfig
+m68k                       m5275evb_defconfig
 arm                             pxa_defconfig
 m68k                         amcore_defconfig
 sh                           sh2007_defconfig
 arm                           viper_defconfig
+mips                           ip27_defconfig
+powerpc                     mpc83xx_defconfig
 x86_64                            allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
@@ -164,6 +166,12 @@ mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
+x86_64               randconfig-a002-20210625
+x86_64               randconfig-a001-20210625
+x86_64               randconfig-a005-20210625
+x86_64               randconfig-a003-20210625
+x86_64               randconfig-a004-20210625
+x86_64               randconfig-a006-20210625
 i386                 randconfig-a002-20210625
 i386                 randconfig-a001-20210625
 i386                 randconfig-a003-20210625
@@ -188,12 +196,6 @@ i386                 randconfig-a013-20210625
 i386                 randconfig-a015-20210625
 i386                 randconfig-a012-20210625
 i386                 randconfig-a016-20210625
-x86_64               randconfig-a002-20210625
-x86_64               randconfig-a001-20210625
-x86_64               randconfig-a005-20210625
-x86_64               randconfig-a003-20210625
-x86_64               randconfig-a004-20210625
-x86_64               randconfig-a006-20210625
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
@@ -214,6 +216,12 @@ x86_64                                  kexec
 clang tested configs:
 x86_64               randconfig-b001-20210622
 x86_64               randconfig-b001-20210625
+x86_64               randconfig-a012-20210625
+x86_64               randconfig-a016-20210625
+x86_64               randconfig-a015-20210625
+x86_64               randconfig-a014-20210625
+x86_64               randconfig-a013-20210625
+x86_64               randconfig-a011-20210625
 x86_64               randconfig-a002-20210622
 x86_64               randconfig-a001-20210622
 x86_64               randconfig-a005-20210622
