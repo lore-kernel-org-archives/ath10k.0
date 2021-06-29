@@ -1,64 +1,66 @@
-Return-Path: <SRS0=rggh=LU=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=4IAx=LX=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08BDAC49EA6
-	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 15:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FBF0C11F66
+	for <ath10k@archiver.kernel.org>; Tue, 29 Jun 2021 06:04:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A787A61C41
-	for <ath10k@archiver.kernel.org>; Sat, 26 Jun 2021 15:34:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A787A61C41
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id 1DA2761D72
+	for <ath10k@archiver.kernel.org>; Tue, 29 Jun 2021 06:04:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DA2761D72
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OlfV1Br1c9lLzGTbBK+P5O9ZZLtC9suO4FCOJxUrHpc=; b=2UFGmAfsAmwMuo
-	jhp0jzQcd6wBnI72HREJc+r2TTB9yJuODSfBLxhTgrlyEwuRJ81HnsQiLuo3BHAEq6LerLAxOWIX9
-	L3g8sdNV+5B+VsVPyaMXVJeu7PRneraaf/q7SNpsOwNSwJ5ljhY2R7/4ZIOzdT80gjSBTYXPMMx+T
-	5wZMiYQZK+TUVW2C1R5Mgxl8x19Thw/CdipUQ857BvsYdog7ELCMDXUaT2lw+i4v2/oUgdWUVQwaQ
-	6TDoAiVJc7WQDYB3kkwBF+urfCvb4vi7MNwmUiL40atSwSyim750Wkezk/gIFCeonhKLXRccv7U9p
-	BAuX2zenAd32xwGnBbsQ==;
+	List-Owner; bh=utHoIkaqM4GPEhQmi4FExdPdPp+9505d+F5pfd4zjC4=; b=u9BXTTTE9oNJvC
+	b7S7GxWaM61Uwa5DzKXiYq9LRWD2xTX9GGysot2HO6okjipXbnvqWt19+60ylQChIlM7vAO7GLB7f
+	Jx4WsRssvO0d3SJ/HN5RidudIarG7InxoFldhmz31PYN7SbUxUWXZDdi+Ro5o58EP6oxVzG/6+zSf
+	rT4epmVVNobRBW5NqgaPsVJnfwc5BpLegI613J2Mb/Qfcz8guKabNwN5M32m21cHJp85tk6yIwTrV
+	FJGMOuvx2/8FukNvm9bYCnYxWPKtfC2vlVuqnUO7+q6J05moEP0OPiRnnjM/LRcE2ztNc4HAM/frv
+	g4zWHcxdBxnb+1BD8eYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lxAIg-004MWS-Pk; Sat, 26 Jun 2021 15:32:54 +0000
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lxAIc-004MT8-Vl
- for ath10k@lists.infradead.org; Sat, 26 Jun 2021 15:32:53 +0000
-Received: from localhost.localdomain ([86.243.172.93]) by mwinf5d78 with ME
- id MrR62500921Fzsu03rR6lY; Sat, 26 Jun 2021 17:25:11 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Jun 2021 17:25:11 +0200
-X-ME-IP: 86.243.172.93
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
- jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org
-Cc: ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org,
- ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ath: switch from 'pci_' to 'dma_' API
-Date: Sat, 26 Jun 2021 17:25:04 +0200
-Message-Id: <9150bd6cde9ad592aff8ee3ad94dffa90b004e89.1624720959.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+	id 1ly6qm-009rTJ-BI; Tue, 29 Jun 2021 06:04:00 +0000
+Received: from mga07.intel.com ([134.134.136.100])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ly6qg-009rRs-19
+ for ath10k@lists.infradead.org; Tue, 29 Jun 2021 06:03:56 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="271945561"
+X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; d="scan'208";a="271945561"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Jun 2021 23:03:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; d="scan'208";a="643598476"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+ by fmsmga005.fm.intel.com with ESMTP; 28 Jun 2021 23:03:44 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1ly6qW-0008wQ-0w; Tue, 29 Jun 2021 06:03:44 +0000
+Date: Tue, 29 Jun 2021 14:03:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
+Subject: [ath6kl:pending] BUILD SUCCESS
+ f2a4cbb7168bedd973eaae0bf72c15309da2b849
+Message-ID: <60dab798.exO8ldEti/8h7C2R%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210626_083251_337877_C31FA9A2 
-X-CRM114-Status: GOOD (  11.09  )
+X-CRM114-CacheID: sfid-20210628_230354_170944_22C03B90 
+X-CRM114-Status: UNSURE (   4.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,225 +77,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: f2a4cbb7168bedd973eaae0bf72c15309da2b849  ath11k: avoid unnecessary lock contention in tx_completion path
 
-The patch has been generated with the coccinelle script below.
+elapsed time: 725m
 
-While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
-updated to a much less verbose 'dma_set_mask_and_coherent()'.
+configs tested: 119
+configs skipped: 2
 
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-@@ @@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                     mpc5200_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                      ep88xc_defconfig
+mips                            ar7_defconfig
+powerpc                       ppc64_defconfig
+arc                          axs101_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                    gamecube_defconfig
+arm                           sunxi_defconfig
+arm                     davinci_all_defconfig
+sh                      rts7751r2d1_defconfig
+openrisc                  or1klitex_defconfig
+alpha                            alldefconfig
+arm                         cm_x300_defconfig
+powerpc                      obs600_defconfig
+powerpc                        fsp2_defconfig
+arm                         vf610m4_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc64                           defconfig
+mips                         db1xxx_defconfig
+powerpc                      bamboo_defconfig
+sh                           se7619_defconfig
+sh                         ecovec24_defconfig
+mips                           ip28_defconfig
+nios2                         3c120_defconfig
+arm                          moxart_defconfig
+arm                        keystone_defconfig
+x86_64                            allnoconfig
+h8300                    h8300h-sim_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                      mgcoge_defconfig
+sh                            hp6xx_defconfig
+mips                       lemote2f_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                       holly_defconfig
+arm                          ep93xx_defconfig
+arm                         palmz72_defconfig
+arm                         assabet_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210628
+i386                 randconfig-a002-20210628
+i386                 randconfig-a003-20210628
+i386                 randconfig-a006-20210628
+i386                 randconfig-a005-20210628
+i386                 randconfig-a004-20210628
+x86_64               randconfig-a012-20210628
+x86_64               randconfig-a016-20210628
+x86_64               randconfig-a015-20210628
+x86_64               randconfig-a013-20210628
+x86_64               randconfig-a014-20210628
+x86_64               randconfig-a011-20210628
+i386                 randconfig-a011-20210628
+i386                 randconfig-a014-20210628
+i386                 randconfig-a013-20210628
+i386                 randconfig-a015-20210628
+i386                 randconfig-a016-20210628
+i386                 randconfig-a012-20210628
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-@@ @@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+clang tested configs:
+x86_64               randconfig-b001-20210628
+x86_64               randconfig-a002-20210628
+x86_64               randconfig-a005-20210628
+x86_64               randconfig-a001-20210628
+x86_64               randconfig-a003-20210628
+x86_64               randconfig-a004-20210628
+x86_64               randconfig-a006-20210628
 
-@@ @@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/net/wireless/ath/ath10k/pci.c |  9 +--------
- drivers/net/wireless/ath/ath11k/pci.c | 10 ++--------
- drivers/net/wireless/ath/ath5k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath9k/pci.c  |  8 +-------
- 4 files changed, 5 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 71878ab35b93..4d4e2f91e15c 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3393,19 +3393,12 @@ static int ath10k_pci_claim(struct ath10k *ar)
- 	}
- 
- 	/* Target expects 32 bit DMA. Enforce it. */
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		ath10k_err(ar, "failed to set dma mask to 32-bit: %d\n", ret);
- 		goto err_region;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret) {
--		ath10k_err(ar, "failed to set consistent dma mask to 32-bit: %d\n",
--			   ret);
--		goto err_region;
--	}
--
- 	pci_set_master(pdev);
- 
- 	/* Arrange for access to Target SoC registers. */
-diff --git a/drivers/net/wireless/ath/ath11k/pci.c b/drivers/net/wireless/ath/ath11k/pci.c
-index 646ad79f309c..5abb38cc3b55 100644
---- a/drivers/net/wireless/ath/ath11k/pci.c
-+++ b/drivers/net/wireless/ath/ath11k/pci.c
-@@ -933,20 +933,14 @@ static int ath11k_pci_claim(struct ath11k_pci *ab_pci, struct pci_dev *pdev)
- 		goto disable_device;
- 	}
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
-+	ret = dma_set_mask_and_coherent(&pdev->dev,
-+					DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
- 	if (ret) {
- 		ath11k_err(ab, "failed to set pci dma mask to %d: %d\n",
- 			   ATH11K_PCI_DMA_MASK, ret);
- 		goto release_region;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
--	if (ret) {
--		ath11k_err(ab, "failed to set pci consistent dma mask to %d: %d\n",
--			   ATH11K_PCI_DMA_MASK, ret);
--		goto release_region;
--	}
--
- 	pci_set_master(pdev);
- 
- 	ab->mem_len = pci_resource_len(pdev, ATH11K_PCI_BAR_NUM);
-diff --git a/drivers/net/wireless/ath/ath5k/pci.c b/drivers/net/wireless/ath/ath5k/pci.c
-index 43b4ae86e5fb..86b8cb975b1a 100644
---- a/drivers/net/wireless/ath/ath5k/pci.c
-+++ b/drivers/net/wireless/ath/ath5k/pci.c
-@@ -191,7 +191,7 @@ ath5k_pci_probe(struct pci_dev *pdev,
- 	}
- 
- 	/* XXX 32-bit addressing only */
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		dev_err(&pdev->dev, "32-bit DMA not available\n");
- 		goto err_dis;
-diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
-index cff9af3af38d..a074e23013c5 100644
---- a/drivers/net/wireless/ath/ath9k/pci.c
-+++ b/drivers/net/wireless/ath/ath9k/pci.c
-@@ -896,18 +896,12 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (pcim_enable_device(pdev))
- 		return -EIO;
- 
--	ret =  pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		pr_err("32-bit DMA not available\n");
- 		return ret;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret) {
--		pr_err("32-bit DMA consistent DMA enable failed\n");
--		return ret;
--	}
--
- 	/*
- 	 * Cache line size is used to size and align various
- 	 * structures used to communicate with the hardware.
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
