@@ -1,95 +1,65 @@
-Return-Path: <SRS0=rlG5=MU=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Xhrp=MV=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DBA2C4338F
-	for <ath10k@archiver.kernel.org>; Wed, 28 Jul 2021 15:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0857EC4338F
+	for <ath10k@archiver.kernel.org>; Thu, 29 Jul 2021 10:33:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39C396101B
-	for <ath10k@archiver.kernel.org>; Wed, 28 Jul 2021 15:54:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 39C396101B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sonarpk.com
+	by mail.kernel.org (Postfix) with ESMTPS id B6F50601FF
+	for <ath10k@archiver.kernel.org>; Thu, 29 Jul 2021 10:33:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B6F50601FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:From:
-	Date:Subject:To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+qUpek5TIZcG5+b8ZfpUeAcXsWZA+dde6CtXgBZWFEc=; b=JQCRNcmS8OLcZ/
-	BDQ/Gw7ErMYl6U/jHCljHkwVm/hJjaHBBgeipnI5DMNJRvNIeZD90AYagcFPnCPSH3US2drWu/iLI
-	09eFVkx/JnJyxREZpxGQxri6fDtrWRQtSt7fvarXsnCD3xrCjR0edzN6SmEgBehd0513j117JM1+6
-	i6cjVBulgLzKznVXLonZfvoV/lmIE8VtYdXLhXaaLWRzbCDfJTeqvUQWl2MBZ9MfNqOAI30ftoLOB
-	42t6SBuSSVIdMWorozYAm9Kirvsf5qhayGJ0Bzt7tdodbgqtWy1HgCJ7tV3QIkECb6hLedCWyOjnH
-	Q6dO0hBI/7/SHpMIz2Kw==;
+	List-Owner; bh=dBbt2fnxwyWXPdccHU1+LvdnNE1be48q/t7ahoquyqY=; b=hwQP4HiJGNEhq8
+	nZOb1Pn8vCDLRIRM561+o7XOZFhaJpKD06xK8vawHMaxt36kjU68UHLmEyttvehH6rfRz1Tqb25hB
+	2u+4y9+/J8L1dtPMS+r3ARWv5d/tHZIdhI5EPfhBDLf0LMvAKCvA+IO9zizvNKzLYEiOsyTM7LE96
+	usflBtTcZEAGZJIxEwAv8Rb7FmnENsFrkpVmqEDj8PGWjPoD3Mc2jVfb+R9K2wHNKt8RKOBlCEEjQ
+	W04pwo1K88AeKVTsCKRB8leY+pwviWk5MRzXCzvu48rxV/i8/3otMyl65Zk//87lKHtkyGergo5bD
+	nJeIlhnUDW5NMoD1kM7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8lra-001O2p-Tf; Wed, 28 Jul 2021 15:52:54 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1m93Ld-003pGo-4T; Thu, 29 Jul 2021 10:33:05 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8lrZ-001O2T-Ty
- for ath10k@bombadil.infradead.org; Wed, 28 Jul 2021 15:52:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
- Reply-To:From:Date:Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=/MKrkSUp5Uu0Z5pHbCvppWQsq4K++l+gLPAhvItj1ow=; b=eaSfT7nezPYxbixaAJhbd1iWw5
- BZKsSe3ukXsZvSm/WWwhodKcmI4V4Mcx7TPuSbL9wJImM2I4VjbHAoDU5JqEOGiPNbYGRMqamhpWv
- vih2R03GqF7jU9FsdOGVaKtPICJdSpd0K/fEVPQzJOrm27MMJIZBCcjAb69llQDm5/2jQKceSYW/F
- XLlZ5Yx5kxxn7e3CWbnBbAT3obJabtGIUurfqa2GPrdnpJilXvy9/VnvwQhFgb1mdv4J8s93oFZUF
- Xr3WxkD2Z6DG5VEIOzaT1CUgADyCg2xFxGm9yBWG6swxV+Cz63BOG30czjN6UjI8dxFcrZJpx9yVl
- FvbS0gKA==;
-Received: from speed.webhoster.pk ([62.171.164.209])
- by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8lrW-003khD-FG
- for ath10k@lists.infradead.org; Wed, 28 Jul 2021 15:52:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sonarpk.com
- ; s=default;
- h=Content-Type:MIME-Version:Message-ID:Reply-To:From:Date:
- Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:Content-Description
- :Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
- In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=/MKrkSUp5Uu0Z5pHbCvppWQsq4K++l+gLPAhvItj1ow=; b=JZAnWzoja/tRmzyMYfI7nTAT+2
- ecTLe0Sj4jgQ/1VVuFCnBKq6yEhvZ1jYQFe+3zhICnifZRbP5Sb8HKpapVXwnpm+CzZhm6C4v1p1S
- NeARwmqon6oNu9qdoLv8PPTTQos+paR+AS5UoV6g+H+qT2JhL8uNBHD6X8AQN9bfTJQ+8p/nB5vya
- tIsvS2DVHqGkUdNeIM2KvZc3HhoaY2e1xMs3BVQe/86Q2Qle3oguriA1jfkaA6SCmuRi5HrYRGu0n
- UvupaBRuITEpQg5SYbIyeH09vAwkS0ZbD5QGVQWClssEXiS/fMo9QDpOcNCa1PXWbVSkSjvg8e7/x
- MHjcY4Mw==;
-Received: from sonarpkc by speed.webhoster.pk with local (Exim 4.94.2)
- (envelope-from <support@sonarpk.com>) id 1m8NSM-006lAM-RV
- for ath10k@lists.infradead.org; Tue, 27 Jul 2021 15:49:15 +0200
-To: ath10k@lists.infradead.org
-Subject: re: Its important..
-X-PHP-Script: sonarpk.com/wp-content/o2TkPsGwORM.php for 193.56.29.187
-X-PHP-Filename: /home/sonarpkc/public_html/wp-content/o2TkPsGwORM.php
- REMOTE_ADDR: 193.56.29.187
-Date: Tue, 27 Jul 2021 13:49:13 +0000
-From: Frank Miller <support@sonarpk.com>
-Message-ID: <c6a266fee50b1df8c536665ccaf4eccf@sonarpk.com>
+ id 1m93LZ-003pG5-HM
+ for ath10k@lists.infradead.org; Thu, 29 Jul 2021 10:33:03 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="192447890"
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; d="scan'208";a="192447890"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jul 2021 03:33:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; d="scan'208";a="499721150"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+ by fmsmga004.fm.intel.com with ESMTP; 29 Jul 2021 03:32:59 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1m93LW-00094k-IO; Thu, 29 Jul 2021 10:32:58 +0000
+Date: Thu, 29 Jul 2021 18:32:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
+Subject: [ath6kl:ath-qca] BUILD SUCCESS
+ 7217ebf308d0597a636c6b19581d7b8f26974d73
+Message-ID: <610283a1.PotiHwlR1v6IQ4FS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - speed.webhoster.pk
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [1255 991] / [47 12]
-X-AntiAbuse: Sender Address Domain - sonarpk.com
-X-Get-Message-Sender-Via: speed.webhoster.pk: authenticated_id: sonarpkc/from_h
-X-Authenticated-Sender: speed.webhoster.pk: support@sonarpk.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Bad-Reply: 'Re:' in Subject but no References or In-Reply-To headers
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210728_165250_657058_977FD214 
-X-CRM114-Status: UNSURE (  -3.40  )
+X-CRM114-CacheID: sfid-20210729_033301_648966_4F2C4816 
+X-CRM114-Status: UNSURE (   5.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -102,16 +72,116 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: fmsnsb@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Good day. Hope you're doing great today? Please write me back. I have a great business deal to discuss with you.
-Thank you,
-Frank
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 7217ebf308d0597a636c6b19581d7b8f26974d73  Merge branch 'ath-next' into ath-qca
 
+elapsed time: 1119m
+
+configs tested: 87
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210728
+powerpc                       ppc64_defconfig
+xtensa                              defconfig
+sh                            hp6xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210728
+x86_64               randconfig-a003-20210728
+x86_64               randconfig-a001-20210728
+x86_64               randconfig-a004-20210728
+x86_64               randconfig-a005-20210728
+x86_64               randconfig-a002-20210728
+i386                 randconfig-a005-20210728
+i386                 randconfig-a003-20210728
+i386                 randconfig-a004-20210728
+i386                 randconfig-a002-20210728
+i386                 randconfig-a001-20210728
+i386                 randconfig-a006-20210728
+x86_64               randconfig-a016-20210729
+x86_64               randconfig-a011-20210729
+x86_64               randconfig-a014-20210729
+x86_64               randconfig-a013-20210729
+x86_64               randconfig-a012-20210729
+x86_64               randconfig-a015-20210729
+i386                 randconfig-a016-20210728
+i386                 randconfig-a012-20210728
+i386                 randconfig-a013-20210728
+i386                 randconfig-a014-20210728
+i386                 randconfig-a011-20210728
+i386                 randconfig-a015-20210728
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210728
+x86_64               randconfig-a016-20210728
+x86_64               randconfig-a011-20210728
+x86_64               randconfig-a014-20210728
+x86_64               randconfig-a013-20210728
+x86_64               randconfig-a012-20210728
+x86_64               randconfig-a015-20210728
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
