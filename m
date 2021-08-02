@@ -2,85 +2,76 @@ Return-Path: <SRS0=8Cel=MZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6963AC4338F
-	for <ath10k@archiver.kernel.org>; Mon,  2 Aug 2021 02:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4DEFC4338F
+	for <ath10k@archiver.kernel.org>; Mon,  2 Aug 2021 11:01:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BA3E61042
-	for <ath10k@archiver.kernel.org>; Mon,  2 Aug 2021 02:24:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2BA3E61042
+	by mail.kernel.org (Postfix) with ESMTPS id 9168E60E76
+	for <ath10k@archiver.kernel.org>; Mon,  2 Aug 2021 11:01:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9168E60E76
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7U7CGtnoS+jl25cHdxoy6VcbYmDwoI7XF+YMTOkvng8=; b=Y+euxrNcpuYQl7
-	TNLShYqbgVhS6Ubzftziv0RYO+a8q/QpoteIox7p2deh9pdoEOYy2JTjSkkdWHml8QNg1fbP96aw+
-	yyERIF/Nxkdeye3RTQc/3J3sUWNEcsHDwLpwJYwUfNpOHpx7h72tuV7CU6+KkZCFPsedbvtwM8Qk/
-	iNSLSpo8x2EaeYVt5ViSk881yV38QpJFg/GFP1XXJb7NZoxFXMtIv1Iq415jxKzKXadzzlsmd7eIn
-	ujKrItUbY7kK3MlAWNnnTJFDIK8UVTf9eNZIRUz70e6gVPS1ryvkXlXZ6CmBT90pnYE9tZatfcNU8
-	0fXtsdsb0Kzb8HjXhUOw==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=z0XQozhdPhhiqU0Ol3GKVwBi/8UJoF5XazrsnjYWjPg=; b=NNe
+	C/z2JoBudqrxU6Ikz5cgArbF5ggZqrGjd2zqauMKMb1T7R0L/dykFAty/eQmefjg1ZgUCR7ryUPRq
+	oqqZUVOMBS65GbtpxaFpCMyWU46p4FPnsRRwEBL92WegY8DwaHsM8YyU5YK4Te7TwxA6a102Nm6zl
+	RCOdQfMjUUFvSgyT8/KXrNAsgeZ1DrMmcWrI0ELXXFIqWSt9Az8w1hRgA7tAOEwjK+IuuohJEy6rf
+	U7iKw0I65khQvp441yzEstNa0U+TvklO1pEbzxYALIGV535St7zkr1aFiSOS5ovRThD0hDKbyGbqT
+	ajWy7MF1BjUHttZMl4t9b27i36KqI3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mANcU-00EhHd-8K; Mon, 02 Aug 2021 02:23:58 +0000
-Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
+	id 1mAVg3-00FqnW-PR; Mon, 02 Aug 2021 11:00:11 +0000
+Received: from mail-oi1-x22f.google.com ([2607:f8b0:4864:20::22f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mANcR-00EhGf-AJ
- for ath10k@lists.infradead.org; Mon, 02 Aug 2021 02:23:57 +0000
-Received: by mail-ej1-x62f.google.com with SMTP id oz16so28345050ejc.7
- for <ath10k@lists.infradead.org>; Sun, 01 Aug 2021 19:23:49 -0700 (PDT)
+ id 1mAVg1-00FqnA-IU
+ for ath10k@lists.infradead.org; Mon, 02 Aug 2021 11:00:10 +0000
+Received: by mail-oi1-x22f.google.com with SMTP id x15so23604641oic.9
+ for <ath10k@lists.infradead.org>; Mon, 02 Aug 2021 04:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=kcU9zh0OTfEVkVwBtfOEs7GMplFE2emjbqTkOWvTJmY=;
- b=MH4e5RPIr6Gd5OKpKwYKjBLLrC1KcSfy3ETOyVLpDkTMrd1BirTdjNvMLKblpkeCOy
- RXNWkBcZqxsIZWBC5WYhTz1EnDPGVInOJVRBpoMn0V+9mQsoL56ll0eHjb0nReKOOB4i
- 2JH1KRuhIVtUptWWd3PwdksBdx/muzswJCPECQPhhscy14K9Yb8qtJ4ZaKaf+ehBo0/8
- BJPCCR6QeKJTFgH/Y6SHFNHhn4h2fj9NUBgo7NunQIF3vVthZz9vXMvbu4HWKkvbWgVT
- 5r3gUiSvlpxehbCbsd30ac2XgMQoEeUneSDLdPdUxJsn5e0AM3UU57JPcQ2+RdjhIWby
- pQzg==
+ h=mime-version:from:date:message-id:subject:to;
+ bh=MsWZKV/HFVHSTN8iSYfXxHC97T0y1ZC10NqgR1CiAy8=;
+ b=ijV+nppZTH7oADBahsfNM7vd4nGGEUROFZfQ1VdNGRqxsYD3KHPOjSXRxpD7zmNOrl
+ 6hAYicARs8MO2hnKlBkQL/jeUkVoDRz/03zQlqDMkShrmtFoCTsq1rcPzcvqigve3EDk
+ elUoXE+YS/y29Los0PaWg2VtZXlVXQ5DwQ2v/zetirY3UA8FE/sXaqyQo0+M7D1icOly
+ 4+7oCv7l8UC+z71CQThaVY+Ftop8ioVlPh2IHLl0KEFY0D83TMk4DuTWP6XrGZcAe1q8
+ 182T1Ihay0uDqKMIe5uI4/jgnyXwssl8GbIBkcl0XNT2ajM47PMjq7v4677XrLdPvLWo
+ Jyzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=kcU9zh0OTfEVkVwBtfOEs7GMplFE2emjbqTkOWvTJmY=;
- b=HuSeo43YM6wCnVly5ab0zTPr8etnNPBfo6bjhXcmzhw3QIo6dqcTCkbpj0M2MdehDK
- FQrOIz4/8566NVmImmWyYc9h5nYN5RXNVNuveE4Dq7B6sW+kofPiiLQ6VWTXGj2w231R
- hNLBWYEe3+6tPwuqJZUR6BHESCyWFgbIhvHy6MX0gQoAEdKSAbHeXYpXysrDfKc+cFC/
- n8KetEaQSCSSPlhbIcKkGvIJzVtEPTVP3kC7AI5AK6uvGt1sJxYeagzVv3ycJ90LEba2
- 2g3ghfAbgExP+W25bD+uOogxkSjW+5QGKa0f2V3bDdOMcvAJJZZ/khS9WqLwoL1c2lfz
- mJTw==
-X-Gm-Message-State: AOAM530xgw/vakLVhMWpmyS+Xxqa6prQ7r9u2gNunbMnEWEhXBGBIEjl
- DWGVHwsF7GtMTmoHRgdqqJUvIxCOCAvWLFvchbs=
-X-Google-Smtp-Source: ABdhPJyWpcBYilhB5rRxMRSa3CCrCFIFRFqvnlP2Suej+HlvvmvJHn6xR3qCJEWmVySTguagDCpasNmcewlLedTS7Ag=
-X-Received: by 2002:a17:907:987c:: with SMTP id
- ko28mr13480958ejc.200.1627871028530; 
- Sun, 01 Aug 2021 19:23:48 -0700 (PDT)
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=MsWZKV/HFVHSTN8iSYfXxHC97T0y1ZC10NqgR1CiAy8=;
+ b=aMHleW4f5yGfbcN8NN5k9B5OCZGzJlxsWtHqVUpg9mIY98akSDSOZ2e1Iry8V/n1+n
+ WRt0duRIRPXfT+KQiHI5ZdFrt9Ajcazob5QOU0xMci9maqNHKtjWL8gRLQErVajvXmUg
+ 3NKQtcQLWeKyhDH3MT1amddoql9/ZJOy4nS2atk0idnqvpemBsKfIaDFpFto9LYyuXjr
+ NtNkLpjLnVkh11Y+lh3w7xDJf7hRVi4w0B3OeeJ7l6OAd2a8VN4JwvsyzaKC8dSr6ITc
+ waOanRM/iSGkzmmYn6hhCR7AYhzyKGR77jWSoHV7lXfT8vU6lqjaBocI8JiA2BMJrPUl
+ nDAg==
+X-Gm-Message-State: AOAM531Y/KQh6KD+o4mD/WAnErf5GZFnnFRDk0jRNLEQ27olEMqANy32
+ zd7hd8gfRDpatUPIV2F9sXqUP0ZpaGCCEWeMl1qkB0iCUdU5QByx
+X-Google-Smtp-Source: ABdhPJwRExvvJHCHH7ToUQte55reSzcMOWrMI2uCCyBZtU+3ITTWjd7tokvWkH5GZWFb/paKHRhI7y286Nwpmk1UZ6g=
+X-Received: by 2002:aca:4007:: with SMTP id n7mr10132478oia.58.1627902007499; 
+ Mon, 02 Aug 2021 04:00:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722193459.7474-1-ojab@ojab.ru>
- <CAKzrAgRvOLX6rcKKz=8ghD+QLyMu-1KEPm5HkkLEAzuE1MQpDA@mail.gmail.com>
-In-Reply-To: <CAKzrAgRvOLX6rcKKz=8ghD+QLyMu-1KEPm5HkkLEAzuE1MQpDA@mail.gmail.com>
-From: Axel Rasmussen <axel.rasmussen1@gmail.com>
-Date: Sun, 1 Aug 2021 19:23:37 -0700
-Message-ID: <CACC2YF1j45r0chib-HC463FVO_a1Um1f+7PvuRBYVLC7WbgGnQ@mail.gmail.com>
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-To: "ojab //" <ojab@ojab.ru>
-Cc: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org, 
- Linux Wireless <linux-wireless@vger.kernel.org>, netdev@vger.kernel.org, 
- LKML <linux-kernel@vger.kernel.org>
+From: Govind Singh <govind.sk85@gmail.com>
+Date: Mon, 2 Aug 2021 16:29:56 +0530
+Message-ID: <CAO_MH4Y9zS=1cjH=1yofGqcj+cSsp6aMWHkb3U6RPW_phMiWkw@mail.gmail.com>
+Subject: ath10k:IBSS-RSN not working with QCA6174.
+To: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210801_192355_423935_ACE6B3AE 
-X-CRM114-Status: GOOD (  26.93  )
+X-CRM114-CacheID: sfid-20210802_040009_679389_BB519EE0 
+X-CRM114-Status: UNSURE (   4.90  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,79 +88,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 22, 2021 at 12:42 PM ojab // <ojab@ojab.ru> wrote:
->
-> See also: https://lists.infradead.org/pipermail/ath10k/2021-May/012626.html
->
-> On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
-> >
-> > After reboot with kernel & firmware updates I found `failed to copy
-> > target iram contents:` in dmesg and missing wlan interfaces for both
-> > of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-> > it, so while I have no idea what's actually happening, I don't see why
-> > we should fail in this case, looks like some optional firmware ability
-> > that could be skipped.
-> >
-> > Also with additional logging there is
-> > ```
-> > [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-> > [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> > [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-> > [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-> > ```
-> > so exact branch could be seen.
-> >
-> > Signed-off-by: Slava Kardakov <ojab@ojab.ru>
-> > ---
-> >  Of course I forgot to sing off, since I don't use it by default because I
-> >  hate my real name and kernel requires it
+Hi,
 
-Thanks for working on this! And sorry for the slow response. I've been
-unexpectedly very busy lately, but I plan to test out this patch next
-week.
+IBSS-RSN not working with QCA6174(ath10k <--> ath10k).
+Test Env: openwrt/ubuntu
+FW: WLAN.RM.4.4.1.c3
 
-> >
-> >  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> > index 2f9be182fbfb..d9fd5294e142 100644
-> > --- a/drivers/net/wireless/ath/ath10k/core.c
-> > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> > @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
-> >         u32 len, remaining_len;
-> >
-> >         hw_mem = ath10k_coredump_get_mem_layout(ar);
-> > -       if (!hw_mem)
-> > +       if (!hw_mem) {
-> > +               ath10k_warn(ar, "No hardware memory");
-> >                 return -ENOMEM;
-> > +       }
-> >
-> >         for (i = 0; i < hw_mem->region_table.size; i++) {
-> >                 tmp = &hw_mem->region_table.regions[i];
-> > @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
-> >                 }
-> >         }
-> >
-> > -       if (!mem_region)
-> > +       if (!mem_region) {
-> > +               ath10k_warn(ar, "No memory region");
-> >                 return -ENOMEM;
-> > +       }
-> >
-> >         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-> >                 if (ar->wmi.mem_chunks[i].req_id ==
-> > @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
-> >                 if (status) {
-> >                         ath10k_warn(ar, "failed to copy target iram contents: %d",
-> >                                     status);
-> > -                       goto err_hif_stop;
-> >                 }
-> >         }
-> >
-> > --
-> > 2.32.0
+Is there any specific OLD FW version that works with IBSS-RSN or any
+WAR available?
+
+Observation:
+
+WPA Supplicant:
+AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
+AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
+AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
+AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
+WPA: Use EAPOL-Key timeout of 1000 ms (retry counter 4)
+AUTH: 04:f0:21:48:bb:bb - EAPOL-Key timeout
+
+ath10k driver:
+From the driver side WIPHY_FLAG_IBSS_RSN is set but EAPOL is getting
+dropped by FW.
+As per tx completion its DISCARD status from FW and FW is dropping EAPOL frame.
+
+[ 9353.374056] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 0 status 3
+[ 9353.374062] ath10k_pci 0000:01:00.0: htt tx free msdu_id 0
+[ 9353.374112] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 1 status 3
+[ 9353.374118] ath10k_pci 0000:01:00.0: htt tx free msdu_id 1
+[ 9353.374133] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 2 status 3
+[ 9353.374138] ath10k_pci 0000:01:00.0: htt tx free msdu_id 2
+[ 9353.374152] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 3 status 3
+
+BR,
+Govind Singh
 
 _______________________________________________
 ath10k mailing list
