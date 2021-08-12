@@ -1,77 +1,86 @@
-Return-Path: <SRS0=8Cel=MZ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=UyaD=ND=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4DEFC4338F
-	for <ath10k@archiver.kernel.org>; Mon,  2 Aug 2021 11:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5600C4338F
+	for <ath10k@archiver.kernel.org>; Thu, 12 Aug 2021 20:21:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9168E60E76
-	for <ath10k@archiver.kernel.org>; Mon,  2 Aug 2021 11:01:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9168E60E76
+	by mail.kernel.org (Postfix) with ESMTPS id 8500E60C3F
+	for <ath10k@archiver.kernel.org>; Thu, 12 Aug 2021 20:21:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8500E60C3F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=z0XQozhdPhhiqU0Ol3GKVwBi/8UJoF5XazrsnjYWjPg=; b=NNe
-	C/z2JoBudqrxU6Ikz5cgArbF5ggZqrGjd2zqauMKMb1T7R0L/dykFAty/eQmefjg1ZgUCR7ryUPRq
-	oqqZUVOMBS65GbtpxaFpCMyWU46p4FPnsRRwEBL92WegY8DwaHsM8YyU5YK4Te7TwxA6a102Nm6zl
-	RCOdQfMjUUFvSgyT8/KXrNAsgeZ1DrMmcWrI0ELXXFIqWSt9Az8w1hRgA7tAOEwjK+IuuohJEy6rf
-	U7iKw0I65khQvp441yzEstNa0U+TvklO1pEbzxYALIGV535St7zkr1aFiSOS5ovRThD0hDKbyGbqT
-	ajWy7MF1BjUHttZMl4t9b27i36KqI3A==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=enodh8evpMi/Lk7kXiNwTzQLrMQzZPVngiJZcmJcvUE=; b=WnDPITSuP+V6DX
+	BZ4D2F438hDxxKnMjZPfmiZXiiT7dLfBQobq0/q+yXoUjTlSy+qYtqoo2/iVgoUkT8lrdK9dm5akB
+	fH/HyH7TA1X4YbVSnCJGxklfDZ9SFPQ6heHNB3IMuvmWTMrUc6qtb5FgkB8Evh+FoIzVgY3tQ3dWI
+	FVvQwPreio9rkNuOwHLC8RMT3dCvYCOAvorcbgubtWfZNUMDrRjfnkIV6miEYcsb/8qQv2QEQXwvH
+	8ztOKDE59wJD03GmM24Z1Fn5cZI/P0qKx69BgUXSwPFutcbnvBPm4eZytsE+D6cfgkcJtcyI8+4Z3
+	NZ/5WWrt3Eo8p+HexXcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mAVg3-00FqnW-PR; Mon, 02 Aug 2021 11:00:11 +0000
-Received: from mail-oi1-x22f.google.com ([2607:f8b0:4864:20::22f])
+	id 1mEHCZ-00BA0N-Sc; Thu, 12 Aug 2021 20:21:19 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mAVg1-00FqnA-IU
- for ath10k@lists.infradead.org; Mon, 02 Aug 2021 11:00:10 +0000
-Received: by mail-oi1-x22f.google.com with SMTP id x15so23604641oic.9
- for <ath10k@lists.infradead.org>; Mon, 02 Aug 2021 04:00:08 -0700 (PDT)
+ id 1mEHCU-00B9zV-4b
+ for ath10k@lists.infradead.org; Thu, 12 Aug 2021 20:21:18 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id t1so11666993edd.6
+ for <ath10k@lists.infradead.org>; Thu, 12 Aug 2021 13:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=MsWZKV/HFVHSTN8iSYfXxHC97T0y1ZC10NqgR1CiAy8=;
- b=ijV+nppZTH7oADBahsfNM7vd4nGGEUROFZfQ1VdNGRqxsYD3KHPOjSXRxpD7zmNOrl
- 6hAYicARs8MO2hnKlBkQL/jeUkVoDRz/03zQlqDMkShrmtFoCTsq1rcPzcvqigve3EDk
- elUoXE+YS/y29Los0PaWg2VtZXlVXQ5DwQ2v/zetirY3UA8FE/sXaqyQo0+M7D1icOly
- 4+7oCv7l8UC+z71CQThaVY+Ftop8ioVlPh2IHLl0KEFY0D83TMk4DuTWP6XrGZcAe1q8
- 182T1Ihay0uDqKMIe5uI4/jgnyXwssl8GbIBkcl0XNT2ajM47PMjq7v4677XrLdPvLWo
- Jyzg==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=zxDq/g55N5DEIwhH9XICScXN1w2LO9Qk4UYDqTLhh/A=;
+ b=n/tkJnXPPwW7dKTrYhLSNmMKuAs4GHsquvwta/yYLlNe/EIt8h1eQjB5DaXk6awxnl
+ 785O1/zvphm103vRd03laIhXfnArC/6smO/fQDrGMt9vDHcVHb2URq+pq/n82PsCjA2P
+ Ci6BfKU5C14HfTLeu4ZKtRKj3jnI7pseWOMYOz4B/68cUmhMFEQkM9CG6cmNEnoytk2z
+ JHeUfc2MxRfi8EQkKyVQdafyFwYuHmdMhicxAujGnrMe5FWeVFrOIFrB8fsUYIcQKbs8
+ 5p7J+p/yJuxs2zjIumnGQ/rpW6I2MNEeayjatJbS0t/Pnx47j0RoD3NXGv1AygivUHk7
+ k2Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=MsWZKV/HFVHSTN8iSYfXxHC97T0y1ZC10NqgR1CiAy8=;
- b=aMHleW4f5yGfbcN8NN5k9B5OCZGzJlxsWtHqVUpg9mIY98akSDSOZ2e1Iry8V/n1+n
- WRt0duRIRPXfT+KQiHI5ZdFrt9Ajcazob5QOU0xMci9maqNHKtjWL8gRLQErVajvXmUg
- 3NKQtcQLWeKyhDH3MT1amddoql9/ZJOy4nS2atk0idnqvpemBsKfIaDFpFto9LYyuXjr
- NtNkLpjLnVkh11Y+lh3w7xDJf7hRVi4w0B3OeeJ7l6OAd2a8VN4JwvsyzaKC8dSr6ITc
- waOanRM/iSGkzmmYn6hhCR7AYhzyKGR77jWSoHV7lXfT8vU6lqjaBocI8JiA2BMJrPUl
- nDAg==
-X-Gm-Message-State: AOAM531Y/KQh6KD+o4mD/WAnErf5GZFnnFRDk0jRNLEQ27olEMqANy32
- zd7hd8gfRDpatUPIV2F9sXqUP0ZpaGCCEWeMl1qkB0iCUdU5QByx
-X-Google-Smtp-Source: ABdhPJwRExvvJHCHH7ToUQte55reSzcMOWrMI2uCCyBZtU+3ITTWjd7tokvWkH5GZWFb/paKHRhI7y286Nwpmk1UZ6g=
-X-Received: by 2002:aca:4007:: with SMTP id n7mr10132478oia.58.1627902007499; 
- Mon, 02 Aug 2021 04:00:07 -0700 (PDT)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=zxDq/g55N5DEIwhH9XICScXN1w2LO9Qk4UYDqTLhh/A=;
+ b=IvA+kHbyJyfgr4bTNTLo1ijePa1mHh8Ry0UbrkLVYDUUP9EZvfr/nfI3yCOrvRrTrN
+ l+ithkyfYclKXYfBBDZeU+vcB/qMPGIXRlN8RZ7bprFQfCtV1iR1C9G/F0m/tX9uvRpT
+ oglIfE0nBIomKF6sptsOtrUrLIdFdffrE1cfJM+aC3gEX7KOSTZxN+rESIfSVtvp8F+g
+ nnQAjSalvUsGMjaoLs7Lj79V5XPylfI1hB2Gv/R108VhAsWM5R2TiOFM7ySN61sIpYK4
+ BwBVBWwHvQCOYOt3zvmtonEqiWfGaWK2gLblQX0YXOpja6Mn+fARoYjd6yImGeU8th3k
+ XaBw==
+X-Gm-Message-State: AOAM5301Z+F8CqsUeUrBwKM2PUOg9DRKByzuCT/6A+pOs7CuUyoLwXoh
+ fqb7bC8sYImE5+kyl8NOf6uSRSi4sY2tmqfrWd4=
+X-Google-Smtp-Source: ABdhPJzIA90SX1dcZVwlK0blAjYG/13v3H2FbFsdiHFKDL7L2S7GOZLTHRfW/M/AEnefrqHLRp2ZiCuiP5TV3vaISLs=
+X-Received: by 2002:aa7:c4d4:: with SMTP id p20mr7713351edr.382.1628799671438; 
+ Thu, 12 Aug 2021 13:21:11 -0700 (PDT)
 MIME-Version: 1.0
-From: Govind Singh <govind.sk85@gmail.com>
-Date: Mon, 2 Aug 2021 16:29:56 +0530
-Message-ID: <CAO_MH4Y9zS=1cjH=1yofGqcj+cSsp6aMWHkb3U6RPW_phMiWkw@mail.gmail.com>
-Subject: ath10k:IBSS-RSN not working with QCA6174.
-To: ath10k@lists.infradead.org
+References: <20210722193459.7474-1-ojab@ojab.ru>
+ <CAKzrAgRvOLX6rcKKz=8ghD+QLyMu-1KEPm5HkkLEAzuE1MQpDA@mail.gmail.com>
+ <CACC2YF1j45r0chib-HC463FVO_a1Um1f+7PvuRBYVLC7WbgGnQ@mail.gmail.com>
+In-Reply-To: <CACC2YF1j45r0chib-HC463FVO_a1Um1f+7PvuRBYVLC7WbgGnQ@mail.gmail.com>
+From: Axel Rasmussen <axel.rasmussen1@gmail.com>
+Date: Thu, 12 Aug 2021 13:21:00 -0700
+Message-ID: <CACC2YF1WCSZqLrCig-O-_wJ9s4x47iTc2Xa0-LnyqLm8EWfUHg@mail.gmail.com>
+Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
+To: "ojab //" <ojab@ojab.ru>
+Cc: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org, 
+ Linux Wireless <linux-wireless@vger.kernel.org>, netdev@vger.kernel.org, 
+ LKML <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210802_040009_679389_BB519EE0 
-X-CRM114-Status: UNSURE (   4.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210812_132114_230780_783E2D2D 
+X-CRM114-Status: GOOD (  33.02  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,40 +97,156 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Sorry again for the slow response time.
 
-IBSS-RSN not working with QCA6174(ath10k <--> ath10k).
-Test Env: openwrt/ubuntu
-FW: WLAN.RM.4.4.1.c3
+I got around to testing this today on my hardware. I tested with a
+vanilla 5.13.8 kernel, and then the same kernel with this patch
+applied. Long story short, the patch does indeed seem to at least work
+around the issue I was seeing in [1]. With this patch applied, I still
+get the same "failed to copy target iram contents" error, but the
+interface comes up and seems to be functional regardless.
 
-Is there any specific OLD FW version that works with IBSS-RSN or any
-WAR available?
+So, for what it's worth (granted I am no wireless expert!), you can take:
 
-Observation:
+Tested-by: Axel Rasmussen <axelrasmussen@google.com>
 
-WPA Supplicant:
-AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
-AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
-AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
-AUTH: 04:f0:21:48:bb:bb - sending 1/4 msg of 4-Way Handshake
-WPA: Use EAPOL-Key timeout of 1000 ms (retry counter 4)
-AUTH: 04:f0:21:48:bb:bb - EAPOL-Key timeout
+(This issue has nothing to do with my full time job, but I'm meant to
+use my @google.com address for any open source contributions, which I
+believe applies to commit messages too.)
 
-ath10k driver:
-From the driver side WIPHY_FLAG_IBSS_RSN is set but EAPOL is getting
-dropped by FW.
-As per tx completion its DISCARD status from FW and FW is dropping EAPOL frame.
+[1]: https://lists.infradead.org/pipermail/ath10k/2021-May/012626.html
 
-[ 9353.374056] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 0 status 3
-[ 9353.374062] ath10k_pci 0000:01:00.0: htt tx free msdu_id 0
-[ 9353.374112] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 1 status 3
-[ 9353.374118] ath10k_pci 0000:01:00.0: htt tx free msdu_id 1
-[ 9353.374133] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 2 status 3
-[ 9353.374138] ath10k_pci 0000:01:00.0: htt tx free msdu_id 2
-[ 9353.374152] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 3 status 3
 
-BR,
-Govind Singh
+
+Here are the two dmesg outputs, for comparison:
+
+# uname -a
+Linux router 5.13.8 #1 SMP Wed Aug 11 20:18:51 PDT 2021 x86_64 AMD
+GX-412TC SOC AuthenticAMD GNU/Linux
+# dmesg | grep ath
+[   12.491747] ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[   12.613341] ath10k_pci 0000:04:00.0: qca9984/qca9994 hw1.0 target
+0x01000000 chip_id 0x00000000 sub 168c:cafe
+[   12.613367] ath10k_pci 0000:04:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 1 testmode 0
+[   12.615071] ath10k_pci 0000:04:00.0: firmware ver
+10.4-3.9.0.2-00131 api 5 features
+no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-rate,iram-recovery
+crc32 23bd9e43
+[   13.846538] ath10k_pci 0000:04:00.0: board_file api 2 bmi_id 0:31
+crc32 85498734
+[   16.428502] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+[   16.518692] ath10k_pci 0000:04:00.0: could not init core (-12)
+[   16.518950] ath10k_pci 0000:04:00.0: could not probe fw (-12)
+
+
+
+# uname -a
+Linux router 5.13.8+ #2 SMP Wed Aug 11 20:28:56 PDT 2021 x86_64 AMD
+GX-412TC SOC AuthenticAMD GNU/Linux
+# dmesg | grep ath
+[   12.201239] ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[   12.323354] ath10k_pci 0000:04:00.0: qca9984/qca9994 hw1.0 target
+0x01000000 chip_id 0x00000000 sub 168c:cafe
+[   12.323407] ath10k_pci 0000:04:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 1 testmode 0
+[   12.325162] ath10k_pci 0000:04:00.0: firmware ver
+10.4-3.9.0.2-00131 api 5 features
+no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-rate,iram-reco
+very crc32 23bd9e43
+[   13.556748] ath10k_pci 0000:04:00.0: board_file api 2 bmi_id 0:31
+crc32 85498734
+[   16.155848] ath10k_pci 0000:04:00.0: No hardware memory
+[   16.155873] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+[   16.267376] ath10k_pci 0000:04:00.0: htt-ver 2.2 wmi-op 6 htt-op 4
+cal otp max-sta 512 raw 0 hwcrypto 1
+[   16.382257] ath: EEPROM regdomain sanitized
+[   16.382289] ath: EEPROM regdomain: 0x64
+[   16.382306] ath: EEPROM indicates we should expect a direct regpair map
+[   16.382312] ath: Country alpha2 being used: 00
+[   16.382316] ath: Regpair used: 0x64
+[   16.393599] ath10k_pci 0000:04:00.0 wlp4s0: renamed from wlan0
+[   41.264025] ath10k_pci 0000:04:00.0: No hardware memory
+[   41.264045] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+[   41.480677] ath10k_pci 0000:04:00.0: Unknown eventid: 36933
+
+On Sun, Aug 1, 2021 at 7:23 PM Axel Rasmussen <axel.rasmussen1@gmail.com> wrote:
+>
+> On Thu, Jul 22, 2021 at 12:42 PM ojab // <ojab@ojab.ru> wrote:
+> >
+> > See also: https://lists.infradead.org/pipermail/ath10k/2021-May/012626.html
+> >
+> > On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
+> > >
+> > > After reboot with kernel & firmware updates I found `failed to copy
+> > > target iram contents:` in dmesg and missing wlan interfaces for both
+> > > of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
+> > > it, so while I have no idea what's actually happening, I don't see why
+> > > we should fail in this case, looks like some optional firmware ability
+> > > that could be skipped.
+> > >
+> > > Also with additional logging there is
+> > > ```
+> > > [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
+> > > [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+> > > [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
+> > > [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
+> > > ```
+> > > so exact branch could be seen.
+> > >
+> > > Signed-off-by: Slava Kardakov <ojab@ojab.ru>
+> > > ---
+> > >  Of course I forgot to sing off, since I don't use it by default because I
+> > >  hate my real name and kernel requires it
+>
+> Thanks for working on this! And sorry for the slow response. I've been
+> unexpectedly very busy lately, but I plan to test out this patch next
+> week.
+>
+> > >
+> > >  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
+> > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> > > index 2f9be182fbfb..d9fd5294e142 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/core.c
+> > > +++ b/drivers/net/wireless/ath/ath10k/core.c
+> > > @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+> > >         u32 len, remaining_len;
+> > >
+> > >         hw_mem = ath10k_coredump_get_mem_layout(ar);
+> > > -       if (!hw_mem)
+> > > +       if (!hw_mem) {
+> > > +               ath10k_warn(ar, "No hardware memory");
+> > >                 return -ENOMEM;
+> > > +       }
+> > >
+> > >         for (i = 0; i < hw_mem->region_table.size; i++) {
+> > >                 tmp = &hw_mem->region_table.regions[i];
+> > > @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+> > >                 }
+> > >         }
+> > >
+> > > -       if (!mem_region)
+> > > +       if (!mem_region) {
+> > > +               ath10k_warn(ar, "No memory region");
+> > >                 return -ENOMEM;
+> > > +       }
+> > >
+> > >         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+> > >                 if (ar->wmi.mem_chunks[i].req_id ==
+> > > @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+> > >                 if (status) {
+> > >                         ath10k_warn(ar, "failed to copy target iram contents: %d",
+> > >                                     status);
+> > > -                       goto err_hif_stop;
+> > >                 }
+> > >         }
+> > >
+> > > --
+> > > 2.32.0
 
 _______________________________________________
 ath10k mailing list
