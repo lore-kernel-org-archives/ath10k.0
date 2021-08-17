@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E07DC4320A
-	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78457C19F39
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D98D960295
-	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D98D960295
+	by mail.kernel.org (Postfix) with ESMTPS id 411CD60295
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 411CD60295
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,52 +23,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bNSmrjjnUK0VS82upz7U0Ko4m/njvIKhJDVnDavzQOY=; b=xvmJPppFfDhAeZ
-	v8CjlpEAby0g91V/3ovAuzyF5GmCFzIREM1ndj2U61OHTz/cKazLGhye1qiRdPd3YGSOJrMTdt3ck
-	FGrGBfQGXt3xEpCXD5mt0TEgUaW6F8XpFHFxHgNgf7cL0mdsg62QDLlgmeFAjI77e9n8KW846PTm5
-	eqou7GlaYAJYnkpAOW1aevLLgQpT2BJq7Sw5DI+9LHPOVIAV4x8kjs3GSXdLgcVl54wi/4qnq9vcs
-	PQASLwttUGv2pmTs9NvZ5h06Cwls44zZw6dl0ZCc2jAihzaDNayfQcqVVAr1/Qe1vcKyrmtQKQoWr
-	CzQUj3jYZKRCOkgRhQQQ==;
+	List-Owner; bh=QhxbLAzkASPQZoGi0BizgDJSGIukN/wckIZZX3uljUk=; b=hcUEt6ATS1KeLe
+	CMjhlCElDc6cL+0Vzw/URUMZoE5HeaAnhh53zA4NM882gU6olOl0RZkt/+TpTvh4RhOpkLx+HhAk5
+	IEUgUMh014483pi53cwMpDTrqTPAIQjUK9u6nAPgkrKRWgj0PUq64X7H7KBULiTqmVwyiJlEFUjoe
+	xL7nk5WoSNgGlR/0m0b17d7nj4v8imq91jU2WfUk7cdFcXpzVNTznLJcgF++mlR/G3R7pYUrq3iRC
+	DA8DrNvSw1cGlIH/gtEJtT8yuhpn/6sXqJKcYpMyBO+e7U1nUwX9tTuHAspuzlTvIjo/cVGj0mjRs
+	Hd+aFJ6Dy69DEE/PttMQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFnOM-000cPJ-78; Tue, 17 Aug 2021 00:55:46 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1mFnO9-000cHD-12; Tue, 17 Aug 2021 00:55:33 +0000
+Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnNw-000cAx-Up
- for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:26 +0000
-Received: by mail-lf1-x133.google.com with SMTP id z2so38112534lft.1
- for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:20 -0700 (PDT)
+ id 1mFnNu-000cAM-Py
+ for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:23 +0000
+Received: by mail-lj1-x22a.google.com with SMTP id q21so8573174ljj.6
+ for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=/8xXh4uAYLmC7B9Fj6XTx3aEzPEiY8DHDrOWM6RLdAY=;
- b=XT63hjpTOqal34rG4WIVTZFSl+hNwylMZJ6S2NC8YTo9uxqLGQKO6SvPZQBQbcNhjB
- u8LEZMD4oFHnetVUjrHH0NqAeNbv1CgPOo4zlrPobiGRBJX0qAQ11Oy2FqrT720M9934
- C+Vy4UecnQKRS6gyDDrnXlxbicjJxVLKtQyNqEGfxxcgcg9cr+UWCDGUrWFZq2bWUkuW
- x9bYMO+fSsZhwvzSDGTtzGG979snI6EXtQHYLXsiyQZgelrJQUvmGxST9h5uszdIilKj
- uKaaFsBEe/djtWOHnWt5p17myYUs0gmn6eOMOKlJaVb1XV0Ko6nxYbe3qpxrY/T3FgC5
- tYYQ==
+ bh=qJ5eiPWaLvWUNxF9WbotbzWszu9llFOajdlXgdOU7d0=;
+ b=qMAiUgEGNh+9rlauuO1jEMSV8lgH5wtHqDnO1B0ckyR/jLV2muMdSXsRMwgzqmcn05
+ m59J6xNAKDhl6kmrHHmie1HaxTIuUhvFdFHqfw+GUhBoEbR5Yp7bnTYpu1kkOetHKFCw
+ 2ikcgMCkNDkIzXKQBmN/Pu15kh6MULoZ4GM20FeWdFh++3Hs8Q1ZaA/t//MD6e4BoE4W
+ 9oo6yiYO3a74WGzwgz9Rm2jMI1OSavobPI+ziU33bcl5xuzoZmd8UQvxDuPZZIaiO0Q6
+ CyBN0bIZ6vrzOlnRYOG/YApJ6LFUTNeyLDxLILpZhMcI5+xFPOKJlSoaIzbQ+PXUnQ1t
+ 1sqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=/8xXh4uAYLmC7B9Fj6XTx3aEzPEiY8DHDrOWM6RLdAY=;
- b=Dyi8gP15qXq3sxK+d8X2p9BFa+yRo5mKym7JmVKnaUR67lWQfcqP8EQhwtztoVc8VJ
- xYaxadhWWK2i8FmUKnXq9MjpX7ucAOc5SY/oa9JofiHc8FtfHpuh4gdpg09wPFB7Oh2+
- l14cb0nJzjVtjeGFFVi/dgRDqNm8kh04Nft1XJ+c8o/4abHPzaA76exlQmJqShvWiwMe
- ikTtbAuGKQdiR+4G9MJHALxvPWf5AGFUZaia6R2Bk2PuQ0qWkn2MHyGP05fhLy6dn++j
- jzs3RkVJUIecrG+3i33ew+8BKbd1KNHoprFTRbfp3C8ZekM9AIRdFTvBDbFS8bthchb+
- 8J+g==
-X-Gm-Message-State: AOAM53044N74xvBpbB7Tw7iSHH6+AUsf+omcbAor8s0rS6vYAcg6IoDi
- 2cH7iYtBNtME9jh8SWiUBqE3eg==
-X-Google-Smtp-Source: ABdhPJyZ0zGdRSpfLJNcqsKT1e5xL6W6PntlPXhz2BykpLrQMBmSIjUKGP66GrGiWhrsFuR+5YQ2RA==
-X-Received: by 2002:a05:6512:3041:: with SMTP id
- b1mr414095lfb.122.1629161719017; 
- Mon, 16 Aug 2021 17:55:19 -0700 (PDT)
+ bh=qJ5eiPWaLvWUNxF9WbotbzWszu9llFOajdlXgdOU7d0=;
+ b=ooyG9bRar1KZeO7Bhjit6/XHDwm/kI19voyByzu0XajbeabKUixKdStbusf+GEuoJX
+ 0rlji3EjZejZxiZfnDFOyPFyxYmED1Vr1OTr/38Uv3fGqBk0iMyOQ0QOs9yh3wjqD5Zf
+ /Uiybql4h1Yr6pqCOpn/bsBYXVDy6qo2QaY3uMI2jBaQwAkgmq/MgGUGWzmx3Ao/IZK8
+ CwjGtO4Lb/8wODp9V0GDm5P1gW1HOFvFwGT/1A017fS8S8FtuHwz0hyNuKYZF65LKh10
+ 1NQnHIHMHrPaBZWJenbdzviVPmVuDMTubl2490PvE0uZZQE/qTCe5wI7R0qemIdExX8z
+ 4VhA==
+X-Gm-Message-State: AOAM532OORjgggJoxWQp0TIxGkncYcHs3/Ud7oQqY3HUNjmUVmRnIDBc
+ MIk+GXf6p4o42BAo1PVev+kt9Q==
+X-Google-Smtp-Source: ABdhPJzGmIlWBq0I5j5m1JI2zbtOW50H9nlDmsNz7c6bsSxYOPOHpku/kkRIXTEliyjxJIRth96PwA==
+X-Received: by 2002:a2e:bd11:: with SMTP id n17mr785200ljq.480.1629161717429; 
+ Mon, 16 Aug 2021 17:55:17 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.18
+ by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 17:55:18 -0700 (PDT)
+ Mon, 16 Aug 2021 17:55:17 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -82,17 +81,16 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [RFC PATCH 07/15] Bluetooth: hci_qca: merge qca_power_on with
- qca_regulators_init
-Date: Tue, 17 Aug 2021 03:54:59 +0300
-Message-Id: <20210817005507.1507580-8-dmitry.baryshkov@linaro.org>
+Subject: [RFC PATCH 05/15] Bluetooth: hci_qca: merge qca_power into qca_serdev
+Date: Tue, 17 Aug 2021 03:54:57 +0300
+Message-Id: <20210817005507.1507580-6-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_175521_066436_FABFC305 
-X-CRM114-Status: GOOD (  16.62  )
+X-CRM114-CacheID: sfid-20210816_175518_885708_1B364574 
+X-CRM114-Status: GOOD (  17.39  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,124 +107,174 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-With wcn6750 support added, regulator-based code was extended with the
-bt_en gpio support. Now there is no need to keep regulator and
-non-regulator code paths separate. Merge both code paths.
+There is no need to separate struct qca_power from the rest of struct
+qca_serdev. Squash qca_power into the main struct, to simplify the
+driver.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/bluetooth/hci_qca.c | 64 ++++++++++++++-----------------------
- 1 file changed, 24 insertions(+), 40 deletions(-)
+ drivers/bluetooth/hci_qca.c | 60 +++++++++++++------------------------
+ 1 file changed, 20 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 279b802f0952..ad7e8cdc94f3 100644
+index 53deea2eb7b4..a21cec44720a 100644
 --- a/drivers/bluetooth/hci_qca.c
 +++ b/drivers/bluetooth/hci_qca.c
-@@ -1583,13 +1583,21 @@ static bool qca_prevent_wake(struct hci_dev *hdev)
- 	return !wakeup;
- }
+@@ -205,23 +205,15 @@ struct qca_device_data {
+ 	uint32_t capabilities;
+ };
  
--static int qca_regulator_init(struct hci_uart *hu)
-+static int qca_power_on(struct hci_dev *hdev)
- {
-+	struct hci_uart *hu = hci_get_drvdata(hdev);
- 	enum qca_btsoc_type soc_type = qca_soc_type(hu);
- 	struct qca_serdev *qcadev;
-+	struct qca_data *qca = hu->priv;
- 	int ret;
- 	bool sw_ctrl_state;
- 
-+	/* Non-serdev device usually is powered by external power
-+	 * and don't need additional action in driver for power on
-+	 */
-+	if (!hu->serdev)
-+		return 0;
-+
- 	/* Check for vregs status, may be hci down has turned
+-/*
+- * Platform data for the QCA Bluetooth power driver.
+- */
+-struct qca_power {
+-	struct device *dev;
+-	struct regulator_bulk_data *vreg_bulk;
+-	int num_vregs;
+-	bool vregs_on;
+-};
+-
+ struct qca_serdev {
+ 	struct hci_uart	 serdev_hu;
+ 	struct gpio_desc *bt_en;
+ 	struct gpio_desc *sw_ctrl;
+ 	struct clk	 *susclk;
+ 	enum qca_btsoc_type btsoc_type;
+-	struct qca_power *bt_power;
++	struct regulator_bulk_data *vreg_bulk;
++	int num_vregs;
++	bool vregs_on;
+ 	u32 init_speed;
+ 	u32 oper_speed;
+ 	const char *firmware_name;
+@@ -1602,7 +1594,7 @@ static int qca_regulator_init(struct hci_uart *hu)
  	 * off the voltage regulator.
  	 */
-@@ -1607,27 +1615,29 @@ static int qca_regulator_init(struct hci_uart *hu)
- 		}
- 	}
+ 	qcadev = serdev_device_get_drvdata(hu->serdev);
+-	if (!qcadev->bt_power->vregs_on) {
++	if (!qcadev->vregs_on) {
+ 		serdev_device_close(hu->serdev);
+ 		ret = qca_regulator_enable(qcadev);
+ 		if (ret)
+@@ -1940,20 +1932,19 @@ static int qca_power_off(struct hci_dev *hdev)
  
--	if (qca_is_wcn399x(soc_type)) {
--		/* Forcefully enable wcn399x to enter in to boot mode. */
--		host_set_baudrate(hu, 2400);
--		ret = qca_send_power_pulse(hu, false);
--		if (ret)
--			return ret;
--	}
--
- 	/* For wcn6750 need to enable gpio bt_en */
- 	if (qcadev->bt_en) {
- 		gpiod_set_value_cansleep(qcadev->bt_en, 0);
- 		msleep(50);
- 		gpiod_set_value_cansleep(qcadev->bt_en, 1);
--		msleep(50);
-+		msleep(150);
- 		if (qcadev->sw_ctrl) {
- 			sw_ctrl_state = gpiod_get_value_cansleep(qcadev->sw_ctrl);
- 			bt_dev_dbg(hu->hdev, "SW_CTRL is %d", sw_ctrl_state);
- 		}
- 	}
+ static int qca_regulator_enable(struct qca_serdev *qcadev)
+ {
+-	struct qca_power *power = qcadev->bt_power;
+ 	int ret;
  
--	qca_set_speed(hu, QCA_INIT_SPEED);
-+	if (qca_is_wcn399x(soc_type)) {
-+		/* Forcefully enable wcn399x to enter in to boot mode. */
-+		host_set_baudrate(hu, 2400);
-+		ret = qca_send_power_pulse(hu, false);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (qca_is_wcn399x(soc_type) ||
-+	    qca_is_wcn6750(soc_type))
-+		qca_set_speed(hu, QCA_INIT_SPEED);
+ 	/* Already enabled */
+-	if (power->vregs_on)
++	if (qcadev->vregs_on)
+ 		return 0;
  
- 	if (qca_is_wcn399x(soc_type)) {
- 		ret = qca_send_power_pulse(hu, true);
-@@ -1647,38 +1657,12 @@ static int qca_regulator_init(struct hci_uart *hu)
+-	BT_DBG("enabling %d regulators)", power->num_vregs);
++	BT_DBG("enabling %d regulators)", qcadev->num_vregs);
+ 
+-	ret = regulator_bulk_enable(power->num_vregs, power->vreg_bulk);
++	ret = regulator_bulk_enable(qcadev->num_vregs, qcadev->vreg_bulk);
+ 	if (ret)
  		return ret;
- 	}
  
--	hci_uart_set_flow_control(hu, false);
--
--	return 0;
--}
--
--static int qca_power_on(struct hci_dev *hdev)
--{
--	struct hci_uart *hu = hci_get_drvdata(hdev);
--	enum qca_btsoc_type soc_type = qca_soc_type(hu);
--	struct qca_serdev *qcadev;
--	struct qca_data *qca = hu->priv;
--	int ret = 0;
--
--	/* Non-serdev device usually is powered by external power
--	 * and don't need additional action in driver for power on
--	 */
--	if (!hu->serdev)
--		return 0;
--
- 	if (qca_is_wcn399x(soc_type) ||
--	    qca_is_wcn6750(soc_type)) {
--		ret = qca_regulator_init(hu);
--	} else {
--		qcadev = serdev_device_get_drvdata(hu->serdev);
--		if (qcadev->bt_en) {
--			gpiod_set_value_cansleep(qcadev->bt_en, 1);
--			/* Controller needs time to bootup. */
--			msleep(150);
--		}
--	}
-+	    qca_is_wcn6750(soc_type))
-+		hci_uart_set_flow_control(hu, false);
+-	power->vregs_on = true;
++	qcadev->vregs_on = true;
  
- 	clear_bit(QCA_BT_OFF, &qca->flags);
-+
- 	return ret;
+ 	ret = clk_prepare_enable(qcadev->susclk);
+ 	if (ret)
+@@ -1964,38 +1955,34 @@ static int qca_regulator_enable(struct qca_serdev *qcadev)
+ 
+ static void qca_regulator_disable(struct qca_serdev *qcadev)
+ {
+-	struct qca_power *power;
+-
+ 	if (!qcadev)
+ 		return;
+ 
+-	power = qcadev->bt_power;
+-
+ 	/* Already disabled? */
+-	if (!power->vregs_on)
++	if (!qcadev->vregs_on)
+ 		return;
+ 
+-	regulator_bulk_disable(power->num_vregs, power->vreg_bulk);
+-	power->vregs_on = false;
++	regulator_bulk_disable(qcadev->num_vregs, qcadev->vreg_bulk);
++	qcadev->vregs_on = false;
+ 
+ 	clk_disable_unprepare(qcadev->susclk);
  }
  
+-static int qca_init_regulators(struct qca_power *qca,
++static int qca_init_regulators(struct qca_serdev *qcadev, struct device *dev,
+ 				const struct qca_vreg *vregs, size_t num_vregs)
+ {
+ 	struct regulator_bulk_data *bulk;
+ 	int ret;
+ 	int i;
+ 
+-	bulk = devm_kcalloc(qca->dev, num_vregs, sizeof(*bulk), GFP_KERNEL);
++	bulk = devm_kcalloc(dev, num_vregs, sizeof(*bulk), GFP_KERNEL);
+ 	if (!bulk)
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < num_vregs; i++)
+ 		bulk[i].supply = vregs[i].name;
+ 
+-	ret = devm_regulator_bulk_get(qca->dev, num_vregs, bulk);
++	ret = devm_regulator_bulk_get(dev, num_vregs, bulk);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -2005,8 +1992,8 @@ static int qca_init_regulators(struct qca_power *qca,
+ 			return ret;
+ 	}
+ 
+-	qca->vreg_bulk = bulk;
+-	qca->num_vregs = num_vregs;
++	qcadev->vreg_bulk = bulk;
++	qcadev->num_vregs = num_vregs;
+ 
+ 	return 0;
+ }
+@@ -2037,21 +2024,15 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+ 	    (qca_is_wcn399x(data->soc_type) ||
+ 	    qca_is_wcn6750(data->soc_type))) {
+ 		qcadev->btsoc_type = data->soc_type;
+-		qcadev->bt_power = devm_kzalloc(&serdev->dev,
+-						sizeof(struct qca_power),
+-						GFP_KERNEL);
+-		if (!qcadev->bt_power)
+-			return -ENOMEM;
+-
+-		qcadev->bt_power->dev = &serdev->dev;
+-		err = qca_init_regulators(qcadev->bt_power, data->vregs,
++
++		err = qca_init_regulators(qcadev, &serdev->dev, data->vregs,
+ 					  data->num_vregs);
+ 		if (err) {
+ 			BT_ERR("Failed to init regulators:%d", err);
+ 			return err;
+ 		}
+ 
+-		qcadev->bt_power->vregs_on = false;
++		qcadev->vregs_on = false;
+ 
+ 		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
+ 					       GPIOD_OUT_LOW);
+@@ -2135,11 +2116,10 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+ static void qca_serdev_remove(struct serdev_device *serdev)
+ {
+ 	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
+-	struct qca_power *power = qcadev->bt_power;
+ 
+ 	if ((qca_is_wcn399x(qcadev->btsoc_type) ||
+ 	     qca_is_wcn6750(qcadev->btsoc_type)) &&
+-	     power->vregs_on)
++	     qcadev->vregs_on)
+ 		qca_power_shutdown(&qcadev->serdev_hu);
+ 	else if (qcadev->susclk)
+ 		clk_disable_unprepare(qcadev->susclk);
 -- 
 2.30.2
 
