@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78457C19F39
-	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49DE8C432BE
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 411CD60295
-	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 411CD60295
+	by mail.kernel.org (Postfix) with ESMTPS id 1EFFD60C40
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1EFFD60C40
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,51 +23,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QhxbLAzkASPQZoGi0BizgDJSGIukN/wckIZZX3uljUk=; b=hcUEt6ATS1KeLe
-	CMjhlCElDc6cL+0Vzw/URUMZoE5HeaAnhh53zA4NM882gU6olOl0RZkt/+TpTvh4RhOpkLx+HhAk5
-	IEUgUMh014483pi53cwMpDTrqTPAIQjUK9u6nAPgkrKRWgj0PUq64X7H7KBULiTqmVwyiJlEFUjoe
-	xL7nk5WoSNgGlR/0m0b17d7nj4v8imq91jU2WfUk7cdFcXpzVNTznLJcgF++mlR/G3R7pYUrq3iRC
-	DA8DrNvSw1cGlIH/gtEJtT8yuhpn/6sXqJKcYpMyBO+e7U1nUwX9tTuHAspuzlTvIjo/cVGj0mjRs
-	Hd+aFJ6Dy69DEE/PttMQ==;
+	List-Owner; bh=WjuSTZ1UMDVi1zwhuvxZoTnw7DZCyL0VLUhG+yyLbh4=; b=rXNg9ZFbanPYbo
+	bwkNYvNqqQe+1zDCeNJMV9gmcHXx0Askt8OQHVVmHAYOSbj+RJEwKShCsbhvTEJAizXuhjLabpYhP
+	oZ10E1MPbAEySlyifrzz+rOTY3A5WjwOhoTHOuKZs6TNC2vC2V+SgmOyNSTfHPYy+cV4Um8UlDgII
+	CqgQlvQZKLW5Z9q84MknxlUH6wdWMK71a6fLBQ8rxzW8S1lmiaIVtkIojXprOvUqu1ocMa8aFmydH
+	cu2qqZOkSqqt+A74hYyUjoe5uo3z7Rdc9g1tFECjiN6+y/aFl0X49pPJzfGf54kLtqBMqEFHf+RsJ
+	ndUyDE3ixWS1PhUzQdtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFnO9-000cHD-12; Tue, 17 Aug 2021 00:55:33 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1mFnPA-000d0v-S9; Tue, 17 Aug 2021 00:56:37 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnNu-000cAM-Py
- for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:23 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id q21so8573174ljj.6
- for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:18 -0700 (PDT)
+ id 1mFnNz-000cBu-Am
+ for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:28 +0000
+Received: by mail-lf1-x130.google.com with SMTP id t9so38067888lfc.6
+ for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=qJ5eiPWaLvWUNxF9WbotbzWszu9llFOajdlXgdOU7d0=;
- b=qMAiUgEGNh+9rlauuO1jEMSV8lgH5wtHqDnO1B0ckyR/jLV2muMdSXsRMwgzqmcn05
- m59J6xNAKDhl6kmrHHmie1HaxTIuUhvFdFHqfw+GUhBoEbR5Yp7bnTYpu1kkOetHKFCw
- 2ikcgMCkNDkIzXKQBmN/Pu15kh6MULoZ4GM20FeWdFh++3Hs8Q1ZaA/t//MD6e4BoE4W
- 9oo6yiYO3a74WGzwgz9Rm2jMI1OSavobPI+ziU33bcl5xuzoZmd8UQvxDuPZZIaiO0Q6
- CyBN0bIZ6vrzOlnRYOG/YApJ6LFUTNeyLDxLILpZhMcI5+xFPOKJlSoaIzbQ+PXUnQ1t
- 1sqA==
+ bh=OyMcME5CPxd5fEDXOPivzdNGVP2TOxFQZsKew1Sf58Y=;
+ b=Czi0W4Nhq43NtkSUG+X51s0lmTQg+bbrUi1EttZ1loEmsFgomXBNVuPFl0Q1mjvkTA
+ KGBVpKs4/A8VK1L37AQqiD0bc20FrR03junR3sQHmXqoA1Nt1Jpmfw11JC9NvOtp3Y1/
+ mOFcmbn8lfJ+NCdLUu3dVhA4C5gsVhPkkQw6Kyfv+fFhblpU/ZwqwJ+UZ8pkAzHH9+63
+ SO/x5NmnKniSGedqUC03UzH0e8TrsJEk9Cjkhu/57I5wUkHk+SHWL91LJaXjlinhWGT3
+ NqWEeXCvuSiwUYiDmjUhux67G34rqEd8OubHTffuxitjc88jxy+yPM/ERVT19tii2idL
+ KpGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=qJ5eiPWaLvWUNxF9WbotbzWszu9llFOajdlXgdOU7d0=;
- b=ooyG9bRar1KZeO7Bhjit6/XHDwm/kI19voyByzu0XajbeabKUixKdStbusf+GEuoJX
- 0rlji3EjZejZxiZfnDFOyPFyxYmED1Vr1OTr/38Uv3fGqBk0iMyOQ0QOs9yh3wjqD5Zf
- /Uiybql4h1Yr6pqCOpn/bsBYXVDy6qo2QaY3uMI2jBaQwAkgmq/MgGUGWzmx3Ao/IZK8
- CwjGtO4Lb/8wODp9V0GDm5P1gW1HOFvFwGT/1A017fS8S8FtuHwz0hyNuKYZF65LKh10
- 1NQnHIHMHrPaBZWJenbdzviVPmVuDMTubl2490PvE0uZZQE/qTCe5wI7R0qemIdExX8z
- 4VhA==
-X-Gm-Message-State: AOAM532OORjgggJoxWQp0TIxGkncYcHs3/Ud7oQqY3HUNjmUVmRnIDBc
- MIk+GXf6p4o42BAo1PVev+kt9Q==
-X-Google-Smtp-Source: ABdhPJzGmIlWBq0I5j5m1JI2zbtOW50H9nlDmsNz7c6bsSxYOPOHpku/kkRIXTEliyjxJIRth96PwA==
-X-Received: by 2002:a2e:bd11:: with SMTP id n17mr785200ljq.480.1629161717429; 
- Mon, 16 Aug 2021 17:55:17 -0700 (PDT)
+ bh=OyMcME5CPxd5fEDXOPivzdNGVP2TOxFQZsKew1Sf58Y=;
+ b=r4utuOQxFJuGSkKQs8egEamBlg8BLSAED9gAvRCY2a4HQbp7Z5uJ5aGckyFUySVw05
+ 4CYLvmvCyLpSR0sHDIJAVaUcwneGRGdNijdCVwVhQendIrJiZfrbEM0ewfDyJGawlb7C
+ y8e8qcdvgX82GUeh5VzxBn1leK8bIO5gljLaNn5TXtU7V2zfK1AbwphEjPOhkIeeEXP8
+ TQh5nNKiGvdgEUm3fnAv1u6SYuxK3Fix1bwO7Xwy0VqwT3cvOSQRcEnwAE+3Q94Re6UB
+ UdI+LxG8En0vNiVWwCxDkprDsLwyUAgmOkh4UdHqQ5aAyRg23VibgVuGt1c7XQlozA5c
+ bgOg==
+X-Gm-Message-State: AOAM532RYXpx4IRGh0NlEtCc5rYJgMvFja9QMn6QCBlJFnZW6znsoOH7
+ lcU37uzthgsm8FVJcBldiE3k/Q==
+X-Google-Smtp-Source: ABdhPJzlD7npfSA11fru0oQjFEQU2xdEJ1zr2fVBLDpj54foXqcHc0pnM+9JI8M/ZAGlr6Km3w2I+Q==
+X-Received: by 2002:a05:6512:98c:: with SMTP id
+ w12mr406590lft.638.1629161721349; 
+ Mon, 16 Aug 2021 17:55:21 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.16
+ by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 17:55:17 -0700 (PDT)
+ Mon, 16 Aug 2021 17:55:21 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -81,16 +82,16 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [RFC PATCH 05/15] Bluetooth: hci_qca: merge qca_power into qca_serdev
-Date: Tue, 17 Aug 2021 03:54:57 +0300
-Message-Id: <20210817005507.1507580-6-dmitry.baryshkov@linaro.org>
+Subject: [RFC PATCH 10/15] pwrseq: add support for QCA BT+WiFi power sequencer
+Date: Tue, 17 Aug 2021 03:55:02 +0300
+Message-Id: <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_175518_885708_1B364574 
-X-CRM114-Status: GOOD (  17.39  )
+X-CRM114-CacheID: sfid-20210816_175523_442113_7751A336 
+X-CRM114-Status: GOOD (  28.24  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,174 +108,355 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-There is no need to separate struct qca_power from the rest of struct
-qca_serdev. Squash qca_power into the main struct, to simplify the
-driver.
+Add support for power sequencer used in the Qualcomm BT+WiFi SoCs. They
+require several external volate regulators and some of them use separate
+BT and WiFi enable GPIO pins. This code is mostly extracted from the
+hci_qca.c bluetooth driver and ath10k WiFi driver. Instead of having
+each of them manage pins, different requirements, regulator types, move
+this knowledge to the common power sequencer driver. Currently original
+drivers are not stripped from the regulator code, this will be done
+later (to keep compatibility with the old device trees).
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/bluetooth/hci_qca.c | 60 +++++++++++++------------------------
- 1 file changed, 20 insertions(+), 40 deletions(-)
+ drivers/power/pwrseq/Kconfig      |  14 ++
+ drivers/power/pwrseq/Makefile     |   1 +
+ drivers/power/pwrseq/pwrseq_qca.c | 290 ++++++++++++++++++++++++++++++
+ 3 files changed, 305 insertions(+)
+ create mode 100644 drivers/power/pwrseq/pwrseq_qca.c
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 53deea2eb7b4..a21cec44720a 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -205,23 +205,15 @@ struct qca_device_data {
- 	uint32_t capabilities;
- };
+diff --git a/drivers/power/pwrseq/Kconfig b/drivers/power/pwrseq/Kconfig
+index 36339a456b03..990c3164144e 100644
+--- a/drivers/power/pwrseq/Kconfig
++++ b/drivers/power/pwrseq/Kconfig
+@@ -19,6 +19,20 @@ config PWRSEQ_EMMC
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called pwrseq_emmc.
  
--/*
-- * Platform data for the QCA Bluetooth power driver.
-- */
--struct qca_power {
--	struct device *dev;
--	struct regulator_bulk_data *vreg_bulk;
--	int num_vregs;
--	bool vregs_on;
--};
--
- struct qca_serdev {
- 	struct hci_uart	 serdev_hu;
- 	struct gpio_desc *bt_en;
- 	struct gpio_desc *sw_ctrl;
- 	struct clk	 *susclk;
- 	enum qca_btsoc_type btsoc_type;
--	struct qca_power *bt_power;
-+	struct regulator_bulk_data *vreg_bulk;
-+	int num_vregs;
-+	bool vregs_on;
- 	u32 init_speed;
- 	u32 oper_speed;
- 	const char *firmware_name;
-@@ -1602,7 +1594,7 @@ static int qca_regulator_init(struct hci_uart *hu)
- 	 * off the voltage regulator.
- 	 */
- 	qcadev = serdev_device_get_drvdata(hu->serdev);
--	if (!qcadev->bt_power->vregs_on) {
-+	if (!qcadev->vregs_on) {
- 		serdev_device_close(hu->serdev);
- 		ret = qca_regulator_enable(qcadev);
- 		if (ret)
-@@ -1940,20 +1932,19 @@ static int qca_power_off(struct hci_dev *hdev)
- 
- static int qca_regulator_enable(struct qca_serdev *qcadev)
- {
--	struct qca_power *power = qcadev->bt_power;
- 	int ret;
- 
- 	/* Already enabled */
--	if (power->vregs_on)
-+	if (qcadev->vregs_on)
- 		return 0;
- 
--	BT_DBG("enabling %d regulators)", power->num_vregs);
-+	BT_DBG("enabling %d regulators)", qcadev->num_vregs);
- 
--	ret = regulator_bulk_enable(power->num_vregs, power->vreg_bulk);
-+	ret = regulator_bulk_enable(qcadev->num_vregs, qcadev->vreg_bulk);
- 	if (ret)
- 		return ret;
- 
--	power->vregs_on = true;
-+	qcadev->vregs_on = true;
- 
- 	ret = clk_prepare_enable(qcadev->susclk);
- 	if (ret)
-@@ -1964,38 +1955,34 @@ static int qca_regulator_enable(struct qca_serdev *qcadev)
- 
- static void qca_regulator_disable(struct qca_serdev *qcadev)
- {
--	struct qca_power *power;
--
- 	if (!qcadev)
- 		return;
- 
--	power = qcadev->bt_power;
--
- 	/* Already disabled? */
--	if (!power->vregs_on)
-+	if (!qcadev->vregs_on)
- 		return;
- 
--	regulator_bulk_disable(power->num_vregs, power->vreg_bulk);
--	power->vregs_on = false;
-+	regulator_bulk_disable(qcadev->num_vregs, qcadev->vreg_bulk);
-+	qcadev->vregs_on = false;
- 
- 	clk_disable_unprepare(qcadev->susclk);
- }
- 
--static int qca_init_regulators(struct qca_power *qca,
-+static int qca_init_regulators(struct qca_serdev *qcadev, struct device *dev,
- 				const struct qca_vreg *vregs, size_t num_vregs)
- {
- 	struct regulator_bulk_data *bulk;
- 	int ret;
- 	int i;
- 
--	bulk = devm_kcalloc(qca->dev, num_vregs, sizeof(*bulk), GFP_KERNEL);
-+	bulk = devm_kcalloc(dev, num_vregs, sizeof(*bulk), GFP_KERNEL);
- 	if (!bulk)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < num_vregs; i++)
- 		bulk[i].supply = vregs[i].name;
- 
--	ret = devm_regulator_bulk_get(qca->dev, num_vregs, bulk);
-+	ret = devm_regulator_bulk_get(dev, num_vregs, bulk);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -2005,8 +1992,8 @@ static int qca_init_regulators(struct qca_power *qca,
- 			return ret;
- 	}
- 
--	qca->vreg_bulk = bulk;
--	qca->num_vregs = num_vregs;
-+	qcadev->vreg_bulk = bulk;
-+	qcadev->num_vregs = num_vregs;
- 
- 	return 0;
- }
-@@ -2037,21 +2024,15 @@ static int qca_serdev_probe(struct serdev_device *serdev)
- 	    (qca_is_wcn399x(data->soc_type) ||
- 	    qca_is_wcn6750(data->soc_type))) {
- 		qcadev->btsoc_type = data->soc_type;
--		qcadev->bt_power = devm_kzalloc(&serdev->dev,
--						sizeof(struct qca_power),
--						GFP_KERNEL);
--		if (!qcadev->bt_power)
--			return -ENOMEM;
--
--		qcadev->bt_power->dev = &serdev->dev;
--		err = qca_init_regulators(qcadev->bt_power, data->vregs,
++config PWRSEQ_QCA
++	tristate "Power Sequencer for Qualcomm WiFi + BT SoCs"
++	depends on OF
++	help
++	  If you say yes to this option, support will be included for Qualcomm
++	  WCN399x,QCA639x,QCA67xx families of hybrid WiFi and Bluetooth SoCs.
++	  Note, this driver supports only power control for these SoC, you
++	  still have to enable individual Bluetooth and WiFi drivers. This
++	  driver is only necessary on ARM platforms with these chips. PCIe
++	  cards handle power sequencing on their own.
 +
-+		err = qca_init_regulators(qcadev, &serdev->dev, data->vregs,
- 					  data->num_vregs);
- 		if (err) {
- 			BT_ERR("Failed to init regulators:%d", err);
- 			return err;
- 		}
++	  Say M here if you want to include support for Qualcomm WiFi+BT SoCs
++	  as a module. This will build a module called "pwrseq_qca".
++
+ config PWRSEQ_SD8787
+ 	tristate "HW reset support for SD8787 BT + Wifi module"
+ 	depends on OF
+diff --git a/drivers/power/pwrseq/Makefile b/drivers/power/pwrseq/Makefile
+index 6f359d228843..556bf5582d47 100644
+--- a/drivers/power/pwrseq/Makefile
++++ b/drivers/power/pwrseq/Makefile
+@@ -6,5 +6,6 @@
+ obj-$(CONFIG_PWRSEQ) += core.o
  
--		qcadev->bt_power->vregs_on = false;
-+		qcadev->vregs_on = false;
- 
- 		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
- 					       GPIOD_OUT_LOW);
-@@ -2135,11 +2116,10 @@ static int qca_serdev_probe(struct serdev_device *serdev)
- static void qca_serdev_remove(struct serdev_device *serdev)
- {
- 	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
--	struct qca_power *power = qcadev->bt_power;
- 
- 	if ((qca_is_wcn399x(qcadev->btsoc_type) ||
- 	     qca_is_wcn6750(qcadev->btsoc_type)) &&
--	     power->vregs_on)
-+	     qcadev->vregs_on)
- 		qca_power_shutdown(&qcadev->serdev_hu);
- 	else if (qcadev->susclk)
- 		clk_disable_unprepare(qcadev->susclk);
+ obj-$(CONFIG_PWRSEQ_EMMC)	+= pwrseq_emmc.o
++obj-$(CONFIG_PWRSEQ_QCA)	+= pwrseq_qca.o
+ obj-$(CONFIG_PWRSEQ_SD8787)	+= pwrseq_sd8787.o
+ obj-$(CONFIG_PWRSEQ_SIMPLE)	+= pwrseq_simple.o
+diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
+new file mode 100644
+index 000000000000..3421a4821126
+--- /dev/null
++++ b/drivers/power/pwrseq/pwrseq_qca.c
+@@ -0,0 +1,290 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021, Linaro Ltd.
++ *
++ * Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
++ *
++ * Power Sequencer for Qualcomm WiFi + BT SoCs
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/platform_device.h>
++#include <linux/pwrseq/driver.h>
++#include <linux/regulator/consumer.h>
++
++/*
++ * Voltage regulator information required for configuring the
++ * QCA WiFi+Bluetooth chipset
++ */
++struct qca_vreg {
++	const char *name;
++	unsigned int load_uA;
++};
++
++struct qca_device_data {
++	struct qca_vreg vddio;
++	struct qca_vreg *vregs;
++	size_t num_vregs;
++	bool has_bt_en;
++	bool has_wifi_en;
++};
++
++struct pwrseq_qca;
++struct pwrseq_qca_one {
++	struct pwrseq_qca *common;
++	struct gpio_desc *enable;
++};
++
++#define PWRSEQ_QCA_WIFI 0
++#define PWRSEQ_QCA_BT 1
++
++#define PWRSEQ_QCA_MAX 2
++
++struct pwrseq_qca {
++	struct regulator *vddio;
++	struct gpio_desc *sw_ctrl;
++	struct pwrseq_qca_one pwrseq_qcas[PWRSEQ_QCA_MAX];
++	int num_vregs;
++	struct regulator_bulk_data vregs[];
++};
++
++static int pwrseq_qca_power_on(struct pwrseq *pwrseq)
++{
++	struct pwrseq_qca_one *qca_one = pwrseq_get_data(pwrseq);
++	int ret;
++
++	if (qca_one->common->vddio) {
++		ret = regulator_enable(qca_one->common->vddio);
++		if (ret)
++			return ret;
++	}
++
++	ret = regulator_bulk_enable(qca_one->common->num_vregs, qca_one->common->vregs);
++	if (ret)
++		goto vddio_off;
++
++	if (qca_one->enable) {
++		gpiod_set_value_cansleep(qca_one->enable, 0);
++		msleep(50);
++		gpiod_set_value_cansleep(qca_one->enable, 1);
++		msleep(150);
++	}
++
++	if (qca_one->common->sw_ctrl) {
++		bool sw_ctrl_state = gpiod_get_value_cansleep(qca_one->common->sw_ctrl);
++		dev_dbg(&pwrseq->dev, "SW_CTRL is %d", sw_ctrl_state);
++	}
++
++	return 0;
++
++vddio_off:
++	regulator_disable(qca_one->common->vddio);
++
++	return ret;
++}
++
++static void pwrseq_qca_power_off(struct pwrseq *pwrseq)
++{
++	struct pwrseq_qca_one *qca_one = pwrseq_get_data(pwrseq);
++
++	if (qca_one->enable) {
++		gpiod_set_value_cansleep(qca_one->enable, 0);
++		msleep(50);
++	}
++
++	regulator_bulk_disable(qca_one->common->num_vregs, qca_one->common->vregs);
++	regulator_disable(qca_one->common->vddio);
++
++	if (qca_one->common->sw_ctrl) {
++		bool sw_ctrl_state = gpiod_get_value_cansleep(qca_one->common->sw_ctrl);
++		dev_dbg(&pwrseq->dev, "SW_CTRL is %d", sw_ctrl_state);
++	}
++}
++
++static const struct pwrseq_ops pwrseq_qca_ops = {
++	.power_on = pwrseq_qca_power_on,
++	.power_off = pwrseq_qca_power_off,
++};
++
++static int pwrseq_qca_regulators_init(struct device *dev, struct pwrseq_qca *pwrseq_qca,
++		const struct qca_device_data *data)
++{
++	int ret, i;
++
++	pwrseq_qca->vddio = devm_regulator_get(dev, data->vddio.name);
++	if (IS_ERR(pwrseq_qca->vddio))
++		return PTR_ERR(pwrseq_qca->vddio);
++
++	ret = regulator_set_load(pwrseq_qca->vddio, data->vddio.load_uA);
++	if (ret)
++		return ret;
++
++	pwrseq_qca->num_vregs = data->num_vregs;
++
++	for (i = 0; i < pwrseq_qca->num_vregs; i++)
++		pwrseq_qca->vregs[i].supply = data->vregs[i].name;
++
++	ret = devm_regulator_bulk_get(dev, pwrseq_qca->num_vregs, pwrseq_qca->vregs);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < pwrseq_qca->num_vregs; i++) {
++		if (!data->vregs[i].load_uA)
++			continue;
++
++		ret = regulator_set_load(pwrseq_qca->vregs[i].consumer, data->vregs[i].load_uA);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int pwrseq_qca_probe(struct platform_device *pdev)
++{
++	struct pwrseq_qca *pwrseq_qca;
++	struct pwrseq *pwrseq;
++	struct pwrseq_provider *provider;
++	struct device *dev = &pdev->dev;
++	struct pwrseq_onecell_data *onecell;
++	const struct qca_device_data *data;
++	int ret, i;
++
++	data = device_get_match_data(dev);
++	if (!data)
++		return -EINVAL;
++
++	pwrseq_qca = devm_kzalloc(dev, struct_size(pwrseq_qca, vregs, data->num_vregs), GFP_KERNEL);
++	if (!pwrseq_qca)
++		return -ENOMEM;
++
++	onecell = devm_kzalloc(dev, struct_size(onecell, pwrseqs, PWRSEQ_QCA_MAX), GFP_KERNEL);
++	if (!onecell)
++		return -ENOMEM;
++
++	ret = pwrseq_qca_regulators_init(dev, pwrseq_qca, data);
++	if (ret)
++		return ret;
++
++	if (data->has_wifi_en) {
++		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable = devm_gpiod_get(dev, "wifi-enable", GPIOD_OUT_LOW);
++		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable)) {
++			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable),
++					"failed to acquire WIFI enable GPIO\n");
++		}
++	}
++
++	if (data->has_bt_en) {
++		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable = devm_gpiod_get(dev, "bt-enable", GPIOD_OUT_LOW);
++		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable)) {
++			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable),
++					"failed to acquire BT enable GPIO\n");
++		}
++	}
++
++	pwrseq_qca->sw_ctrl = devm_gpiod_get_optional(dev, "swctrl", GPIOD_IN);
++	if (IS_ERR(pwrseq_qca->sw_ctrl)) {
++		return dev_err_probe(dev, PTR_ERR(pwrseq_qca->sw_ctrl),
++				"failed to acquire SW_CTRL gpio\n");
++	} else if (!pwrseq_qca->sw_ctrl)
++		dev_info(dev, "No SW_CTRL gpio\n");
++
++	for (i = 0; i < PWRSEQ_QCA_MAX; i++) {
++		pwrseq_qca->pwrseq_qcas[i].common = pwrseq_qca;
++
++		pwrseq = devm_pwrseq_create(dev, &pwrseq_qca_ops, &pwrseq_qca->pwrseq_qcas[i]);
++		if (IS_ERR(pwrseq))
++			return PTR_ERR(pwrseq);
++
++		onecell->pwrseqs[i] = pwrseq;
++	}
++
++	onecell->num = PWRSEQ_QCA_MAX;
++
++	provider = devm_of_pwrseq_provider_register(dev, of_pwrseq_xlate_onecell, onecell);
++
++	return PTR_ERR_OR_ZERO(provider);
++}
++
++static const struct qca_device_data qca_soc_data_qca6390 = {
++	.vddio = { "vddio", 20000 },
++	.vregs = (struct qca_vreg []) {
++		/* 2.0 V */
++		{ "vddpcie2", 15000 },
++		{ "vddrfa3", 400000 },
++
++		/* 0.95 V */
++		{ "vddaon", 100000 },
++		{ "vddpmu", 1250000 },
++		{ "vddrfa1", 200000 },
++
++		/* 1.35 V */
++		{ "vddrfa2", 400000 },
++		{ "vddpcie1", 35000 },
++	},
++	.num_vregs = 7,
++	.has_bt_en = true,
++	.has_wifi_en = true,
++};
++
++/* Shared between wcn3990 and wcn3991 */
++static const struct qca_device_data qca_soc_data_wcn3990 = {
++	.vddio = { "vddio", 15000 },
++	.vregs = (struct qca_vreg []) {
++		{ "vddxo", 80000  },
++		{ "vddrfa", 300000 },
++		{ "vddch0", 450000 },
++		{ "vddch1", 450000 },
++	},
++	.num_vregs = 4,
++};
++
++static const struct qca_device_data qca_soc_data_wcn3998 = {
++	.vddio = { "vddio", 10000 },
++	.vregs = (struct qca_vreg []) {
++		{ "vddxo", 80000  },
++		{ "vddrfa", 300000 },
++		{ "vddch0", 450000 },
++		{ "vddch1", 450000 },
++	},
++	.num_vregs = 4,
++};
++
++static const struct qca_device_data qca_soc_data_wcn6750 = {
++	.vddio = { "vddio", 5000 },
++	.vregs = (struct qca_vreg []) {
++		{ "vddaon", 26000 },
++		{ "vddbtcxmx", 126000 },
++		{ "vddrfacmn", 12500 },
++		{ "vddrfa0p8", 102000 },
++		{ "vddrfa1p7", 302000 },
++		{ "vddrfa1p2", 257000 },
++		{ "vddrfa2p2", 1700000 },
++		{ "vddasd", 200 },
++	},
++	.num_vregs = 8,
++	.has_bt_en = true,
++	.has_wifi_en = true,
++};
++
++static const struct of_device_id pwrseq_qca_of_match[] = {
++	{ .compatible = "qcom,qca6390-pwrseq", .data = &qca_soc_data_qca6390 },
++	{ .compatible = "qcom,wcn3990-pwrseq", .data = &qca_soc_data_wcn3990 },
++	{ .compatible = "qcom,wcn3991-pwrseq", .data = &qca_soc_data_wcn3990 },
++	{ .compatible = "qcom,wcn3998-pwrseq", .data = &qca_soc_data_wcn3998 },
++	{ .compatible = "qcom,wcn6750-pwrseq", .data = &qca_soc_data_wcn6750 },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, pwrseq_qca_of_match);
++
++static struct platform_driver pwrseq_qca_driver = {
++	.probe = pwrseq_qca_probe,
++	.driver = {
++		.name = "pwrseq_qca",
++		.of_match_table = pwrseq_qca_of_match,
++	},
++};
++
++module_platform_driver(pwrseq_qca_driver);
++MODULE_LICENSE("GPL v2");
 -- 
 2.30.2
 
