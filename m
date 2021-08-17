@@ -2,73 +2,73 @@ Return-Path: <SRS0=aPVg=NI=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF323C4338F
-	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF01FC4320E
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9FA260295
-	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B9FA260295
+	by mail.kernel.org (Postfix) with ESMTPS id C0DC56054E
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:56:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C0DC56054E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=szvseKmYjhM/KqGJdHnA/Rl158NE5ad8CeOz86u90UA=; b=p991P0CkdjHgQf
-	qKUbE9QO8ivB6rsxmTEyPTDiymWyQV7Jn1Y969ZFITe8TKemVSU1RQzOQo5WfLqdxovXNaDsAw8u2
-	Vxl7eK0XePri91hGYF0ZOE5/PaFFqGSeLzpkfGfQyTjBXlK/LmV+rq7Vqm9CfgrBsa+nNN0dUQvPQ
-	tzirsLaCe1POeTTlfKwUSfCAhRnRP7LdZzsd3rs6pCChOzXTTlQQnQDfforvNSoVCM/Mr2ElFQ8RW
-	0hTy0ED/9QF90r/tni2U4nKOZw0D5m0n8scIgw15LxdDET3/rhkOiGLgdigFVC45ULHZsAowymRvT
-	D9XQI4+d38qoBIK5rpGA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=X2aH70kS+g8QoGxzR1zKIeuxrSWLadopCmuewdDhlhI=; b=Pc5YWTR2KDBsCF
+	CPBjpyg9h4LpY9klZnFWeEvmhRswMnLjCdnro+2Tktwl2oY8Nmy4MrbZFJBZ4z+4p7lDn38MuYjKe
+	+5lyjCYdK3Pt3vz9zQ/DV9+cZPV1TFhw3xS9AC1d+fpn08EipwCEBetSow6VAElPPDOy4ZHQHGZVx
+	PM2ZzVm9sleCHRy3uFOtVBn7a9VN6jWxOtR7tVk6+5yClJVVxOA/FsVtoUWGMdLCl38yhy/feC3eM
+	AtKLyu9Q+JzyHOp5L75MizxSvtOK1LBdre5Qw+frtMsrAzfmjfpHI6j+kNW4PexAYVUd1PJlFsgya
+	bGwjcKwJjtOMN/mtk57g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFnO3-000cF5-OB; Tue, 17 Aug 2021 00:55:27 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1mFnNw-000cBK-P1; Tue, 17 Aug 2021 00:55:20 +0000
+Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnNt-000c9b-4F
- for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:23 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id y6so13342876lje.2
- for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:17 -0700 (PDT)
+ id 1mFnNr-000c9A-TZ
+ for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:19 +0000
+Received: by mail-lj1-x22f.google.com with SMTP id i28so8804941ljm.7
+ for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=zHW7j8uJ1T5WAhTwDkkfCp9h9wlSajIJoR2TS5WeI4s=;
- b=M+8JmFaKoyF4Y6sGJg8MksjCPy8KWaLrMoFoU5H/2SMFu13wI0tZayH+k0nGh0OWbx
- wTjtWcx1quOS5cRy2xvqqRmYvddYA8HJupQ9OTKGLoouVYSG27ky3BLt2PwxHowLqHqm
- 36/rnjAw3GBl9O5C3YC2voq/YPTNQYZSsBWDz+93sPFAwdRc3Ub6BWI/lAQgigJmjz5O
- lZA0GH8wqBHUmeBfgeAQklXJt62i1xchURucNna7ys6Ol6jpBNdTISUCqeJTXpGRtchh
- UIfEKvMaMukniWjwHDeeht0jC1S4nB//S1BBEpJHvLeUGnRbdwrhV5/D1PYI75b9IfA7
- xoEw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=C/jXyVM8A6IIIf73CUW3opic/WD75vfkmRvuKQWW4Jo=;
+ b=Ilqv4TYrhWro5ne/pyK8Z8uNieTgQV6uYOzuf7BRghGmB8vnlhfGvOr/0/e/S1IwQs
+ 7hQf66rKkZbN2FzNg/lAkY8kGf8968Opho/WF3Oda7z3Bq5zGkHWUDeKdTIMK9vnpdcr
+ Q21Q+ebQypHAX5SMsmdNk0shvXZpPmldQV8JkAnN+rTBj1EPUQqbI161vTAsodd2SjvZ
+ MCqb1O1Ze+1fb4BtL/U3gENTSpiIzkKkc+t3xLBPezJesXnuxw+T6kn1KhGum0t21LcO
+ jMIXT/hfLcwRdk65I9OuXZg0sgiZ+Ph1sisDURKJYN/RBaSvnazEEt1aLfLUFDVTen6Z
+ an+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=zHW7j8uJ1T5WAhTwDkkfCp9h9wlSajIJoR2TS5WeI4s=;
- b=SyxO6U5wbdIugVltKwozvoijqVGQWuXLl0XwhojvSQ9/AnyPROrxJGR/hRv0TE/H65
- r31Ol4uUPt83ZgQKwN66zsJQAsTHOsLagio9A0y3KmcH1y0w1qyfgUJiXKoopcK5qu5Y
- p0BtSJmJ4Z74DGksYvgVXp4iuSwT/2QfiDgZZ3nDuo7fXiKEP4W2KFJMvopmpoIAjJDf
- M8o1ieagBGMZREsEUbz/1IeLN3fZ8ntnnmAtMkVqAojI26gMLkFQm7/crJLN6jEnU0iV
- HTR/orBJX0rro5F5a6Z2y69KJEbuBV0paYy85+ZVbR0bno9Lu8JUooc6dG54nmGLFEXH
- cgpg==
-X-Gm-Message-State: AOAM533ssUYKpiutkpX55adUJS4u+lok3/6FosnOaHou42XLs1S1D6GO
- xZvphB88FO0Q5zVrNfeaeAKnpQ==
-X-Google-Smtp-Source: ABdhPJwzl+6gfIV47ZCHmVz5/wqhiY0aSpqI/1a5FDmoJTan/NZyyOCfBI9EfZad5k9e0Yjfqz8dWg==
-X-Received: by 2002:a05:651c:902:: with SMTP id
- e2mr790319ljq.198.1629161715773; 
- Mon, 16 Aug 2021 17:55:15 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=C/jXyVM8A6IIIf73CUW3opic/WD75vfkmRvuKQWW4Jo=;
+ b=cHkD4wbB02toC0YJhNiHZXeg5Hmq+yDquI9la9Nl3R/flyqF6fujpSgXjga2u9EfZ2
+ 6eITnvBIO3Qaej+m15wPsH1TBi52Xvcmi8cLeg9EiQwCR/HAburAZZvPBzHM/Z5b/UL+
+ EWr6XhLIyVE7OqAHrOPkgj29akHX8tr1I6sTLwxtNZPvpEkg5nPjuWZlu5z8iE0udVSI
+ lQFsHavuM1H6QtKT1UW2pFCPThx7MuajUPBrBWUs0bQ29pXIkH2Wu3Unx2+27n6x3N74
+ 2RLKuZCOEM2Y3eXMUhB7dShuYSkuRcb+9MnpuMyseibchJfzzIb/iCm+vB2EVb1h9zgP
+ DBcw==
+X-Gm-Message-State: AOAM532+51EZrOMq1a7CCslAci6tPGnJ/L/WVvCCF0x8ZC6+DKkhlvW9
+ Bm/Ctk/LnS9/Xmj5FCQ3ns8Ifw==
+X-Google-Smtp-Source: ABdhPJxgPqsyxqeCXBI3IsVJLkcFyXipmzYz3hTJEmurF1pvQfTvThKjXBvusty3YDmk6qnRjBkDxQ==
+X-Received: by 2002:a05:651c:118f:: with SMTP id
+ w15mr779302ljo.47.1629161713357; 
+ Mon, 16 Aug 2021 17:55:13 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.15
+ by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 17:55:15 -0700 (PDT)
+ Mon, 16 Aug 2021 17:55:12 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -82,16 +82,14 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [RFC PATCH 03/15] mmc: core: switch to new pwrseq subsystem
-Date: Tue, 17 Aug 2021 03:54:55 +0300
-Message-Id: <20210817005507.1507580-4-dmitry.baryshkov@linaro.org>
+Subject: [RFC PATCH 00/15] create power sequencing subsystem
+Date: Tue, 17 Aug 2021 03:54:52 +0300
+Message-Id: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_175517_229013_E4A9065E 
-X-CRM114-Status: GOOD (  21.19  )
+X-CRM114-CacheID: sfid-20210816_175516_008427_FA48FF9F 
+X-CRM114-Status: GOOD (  16.27  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,354 +106,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Drop old MMC pwrseq code and use new pwrseq subsystem instead.
-Individual drivers are already ported to new subsystem.
+This is an RFC of the proposed power sequencer subsystem. This is a
+generification of the MMC pwrseq code. The subsystem tries to abstract
+the idea of complex power-up/power-down/reset of the devices.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/mmc/core/Makefile |   1 -
- drivers/mmc/core/core.c   |   9 ++-
- drivers/mmc/core/host.c   |   8 ++-
- drivers/mmc/core/mmc.c    |   3 +-
- drivers/mmc/core/pwrseq.c | 117 --------------------------------------
- drivers/mmc/core/pwrseq.h |  58 -------------------
- include/linux/mmc/host.h  |   4 +-
- 7 files changed, 12 insertions(+), 188 deletions(-)
+The primary set of devices that promted me to create this patchset is
+the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+interfaces (older generations) or on serial+PCIe (newer generations).
+They require a set of external voltage regulators to be powered on and
+(some of them) have separate WiFi and Bluetooth enable GPIOs.
+
+This patchset being an RFC tries to demonstrate the approach, design and
+usage of the pwrseq subsystem. Following issues are present in the RFC
+at this moment but will be fixed later if the overall approach would be
+viewed as acceptable:
+
+ - No documentation
+   While the code tries to be self-documenting proper documentation
+   would be required.
+
+ - Minimal device tree bindings changes
+   There are no proper updates for the DT bindings (thus neither Rob
+   Herring nor devicetree are included in the To/Cc lists). The dt
+   schema changes would be a part of v1.
+
+ - Lack of proper PCIe integration
+   At this moment support for PCIe is hacked up to be able to test the
+   PCIe part of qca6390. Proper PCIe support would require automatically
+   powering up the devices before the scan basing on the proper device
+   structure in the device tree.
+
+----------------------------------------------------------------
+Dmitry Baryshkov (15):
+      power: add power sequencer subsystem
+      pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
+      mmc: core: switch to new pwrseq subsystem
+      ath10k: add support for pwrseq sequencing
+      Bluetooth: hci_qca: merge qca_power into qca_serdev
+      Bluetooth: hci_qca: merge init paths
+      Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
+      Bluetooth: hci_qca: futher rework of power on/off handling
+      Bluetooth: hci_qca: add support for pwrseq
+      pwrseq: add support for QCA BT+WiFi power sequencer
+      arm64: dts: qcom: sdm845-db845c: switch bt+wifi to qca power sequencer
+      arm64: dts: qcom: qrb5165-rb5: add bluetooth support
+      arm64: dts: qcom: sdm845-db845c: add second channel support to qca power sequencer
+      WIP: PCI: qcom: use pwrseq to power up bus devices
+      WIP: arm64: dts: qcom: qrb5165-rb5: add bus-pwrseq property to pcie0
+
+ .../{mmc => power/pwrseq}/mmc-pwrseq-emmc.yaml     |   0
+ .../{mmc => power/pwrseq}/mmc-pwrseq-sd8787.yaml   |   0
+ .../{mmc => power/pwrseq}/mmc-pwrseq-simple.yaml   |   0
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts           |  51 +++
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts         |  28 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |   6 +
+ drivers/bluetooth/hci_qca.c                        | 286 +++++++-------
+ drivers/mmc/core/Kconfig                           |  32 --
+ drivers/mmc/core/Makefile                          |   4 -
+ drivers/mmc/core/core.c                            |   9 +-
+ drivers/mmc/core/host.c                            |   8 +-
+ drivers/mmc/core/mmc.c                             |   3 +-
+ drivers/mmc/core/pwrseq.c                          | 117 ------
+ drivers/mmc/core/pwrseq.h                          |  58 ---
+ drivers/mmc/core/pwrseq_emmc.c                     | 120 ------
+ drivers/mmc/core/pwrseq_sd8787.c                   | 107 ------
+ drivers/mmc/core/pwrseq_simple.c                   | 164 --------
+ drivers/net/wireless/ath/ath10k/snoc.c             |  63 +++-
+ drivers/net/wireless/ath/ath10k/snoc.h             |   2 +
+ drivers/pci/controller/dwc/pcie-qcom.c             |  13 +
+ drivers/power/Kconfig                              |   1 +
+ drivers/power/Makefile                             |   1 +
+ drivers/power/pwrseq/Kconfig                       |  57 +++
+ drivers/power/pwrseq/Makefile                      |  11 +
+ drivers/power/pwrseq/core.c                        | 411 +++++++++++++++++++++
+ drivers/power/pwrseq/pwrseq_emmc.c                 | 118 ++++++
+ drivers/power/pwrseq/pwrseq_qca.c                  | 291 +++++++++++++++
+ drivers/power/pwrseq/pwrseq_sd8787.c               |  97 +++++
+ drivers/power/pwrseq/pwrseq_simple.c               | 160 ++++++++
+ include/linux/mmc/host.h                           |   4 +-
+ include/linux/pwrseq/consumer.h                    |  88 +++++
+ include/linux/pwrseq/driver.h                      |  71 ++++
+ 32 files changed, 1592 insertions(+), 789 deletions(-)
+ rename Documentation/devicetree/bindings/{mmc => power/pwrseq}/mmc-pwrseq-emmc.yaml (100%)
+ rename Documentation/devicetree/bindings/{mmc => power/pwrseq}/mmc-pwrseq-sd8787.yaml (100%)
+ rename Documentation/devicetree/bindings/{mmc => power/pwrseq}/mmc-pwrseq-simple.yaml (100%)
  delete mode 100644 drivers/mmc/core/pwrseq.c
  delete mode 100644 drivers/mmc/core/pwrseq.h
+ delete mode 100644 drivers/mmc/core/pwrseq_emmc.c
+ delete mode 100644 drivers/mmc/core/pwrseq_sd8787.c
+ delete mode 100644 drivers/mmc/core/pwrseq_simple.c
+ create mode 100644 drivers/power/pwrseq/Kconfig
+ create mode 100644 drivers/power/pwrseq/Makefile
+ create mode 100644 drivers/power/pwrseq/core.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_emmc.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_qca.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_sd8787.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_simple.c
+ create mode 100644 include/linux/pwrseq/consumer.h
+ create mode 100644 include/linux/pwrseq/driver.h
 
-diff --git a/drivers/mmc/core/Makefile b/drivers/mmc/core/Makefile
-index 322eb69bd00e..a504d873cf8e 100644
---- a/drivers/mmc/core/Makefile
-+++ b/drivers/mmc/core/Makefile
-@@ -9,7 +9,6 @@ mmc_core-y			:= core.o bus.o host.o \
- 				   sdio.o sdio_ops.o sdio_bus.o \
- 				   sdio_cis.o sdio_io.o sdio_irq.o \
- 				   slot-gpio.o regulator.o
--mmc_core-$(CONFIG_OF)		+= pwrseq.o
- mmc_core-$(CONFIG_DEBUG_FS)	+= debugfs.o
- obj-$(CONFIG_MMC_BLOCK)		+= mmc_block.o
- mmc_block-objs			:= block.o queue.o
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 95fedcf56e4a..c468af900a45 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -41,7 +41,6 @@
- #include "bus.h"
- #include "host.h"
- #include "sdio_bus.h"
--#include "pwrseq.h"
- 
- #include "mmc_ops.h"
- #include "sd_ops.h"
-@@ -1321,7 +1320,7 @@ void mmc_power_up(struct mmc_host *host, u32 ocr)
- 	if (host->ios.power_mode == MMC_POWER_ON)
- 		return;
- 
--	mmc_pwrseq_pre_power_on(host);
-+	pwrseq_pre_power_on(host->pwrseq);
- 
- 	host->ios.vdd = fls(ocr) - 1;
- 	host->ios.power_mode = MMC_POWER_UP;
-@@ -1336,7 +1335,7 @@ void mmc_power_up(struct mmc_host *host, u32 ocr)
- 	 */
- 	mmc_delay(host->ios.power_delay_ms);
- 
--	mmc_pwrseq_post_power_on(host);
-+	pwrseq_power_on(host->pwrseq);
- 
- 	host->ios.clock = host->f_init;
- 
-@@ -1355,7 +1354,7 @@ void mmc_power_off(struct mmc_host *host)
- 	if (host->ios.power_mode == MMC_POWER_OFF)
- 		return;
- 
--	mmc_pwrseq_power_off(host);
-+	pwrseq_power_off(host->pwrseq);
- 
- 	host->ios.clock = 0;
- 	host->ios.vdd = 0;
-@@ -1985,7 +1984,7 @@ EXPORT_SYMBOL(mmc_set_blocklen);
- 
- static void mmc_hw_reset_for_init(struct mmc_host *host)
- {
--	mmc_pwrseq_reset(host);
-+	pwrseq_reset(host->pwrseq);
- 
- 	if (!(host->caps & MMC_CAP_HW_RESET) || !host->ops->hw_reset)
- 		return;
-diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-index 0475d96047c4..214b9cfda723 100644
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -28,7 +28,6 @@
- #include "crypto.h"
- #include "host.h"
- #include "slot-gpio.h"
--#include "pwrseq.h"
- #include "sdio_ops.h"
- 
- #define cls_dev_to_mmc_host(d)	container_of(d, struct mmc_host, class_dev)
-@@ -413,7 +412,11 @@ int mmc_of_parse(struct mmc_host *host)
- 	device_property_read_u32(dev, "post-power-on-delay-ms",
- 				 &host->ios.power_delay_ms);
- 
--	return mmc_pwrseq_alloc(host);
-+	host->pwrseq = devm_pwrseq_get_optional(dev, "mmc");
-+	if (IS_ERR(host->pwrseq))
-+		return PTR_ERR(host->pwrseq);
-+
-+	return 0;
- }
- 
- EXPORT_SYMBOL(mmc_of_parse);
-@@ -632,7 +635,6 @@ EXPORT_SYMBOL(mmc_remove_host);
-  */
- void mmc_free_host(struct mmc_host *host)
- {
--	mmc_pwrseq_free(host);
- 	put_device(&host->class_dev);
- }
- 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 838726b68ff3..59d0d26bb5c0 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -24,7 +24,6 @@
- #include "mmc_ops.h"
- #include "quirks.h"
- #include "sd_ops.h"
--#include "pwrseq.h"
- 
- #define DEFAULT_CMD6_TIMEOUT_MS	500
- #define MIN_CACHE_EN_TIMEOUT_MS 1600
-@@ -2220,7 +2219,7 @@ static int _mmc_hw_reset(struct mmc_host *host)
- 	} else {
- 		/* Do a brute force power cycle */
- 		mmc_power_cycle(host, card->ocr);
--		mmc_pwrseq_reset(host);
-+		pwrseq_reset(host->pwrseq);
- 	}
- 	return mmc_init_card(host, card->ocr, card);
- }
-diff --git a/drivers/mmc/core/pwrseq.c b/drivers/mmc/core/pwrseq.c
-deleted file mode 100644
-index ef675f364bf0..000000000000
---- a/drivers/mmc/core/pwrseq.c
-+++ /dev/null
-@@ -1,117 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- *  Copyright (C) 2014 Linaro Ltd
-- *
-- * Author: Ulf Hansson <ulf.hansson@linaro.org>
-- *
-- *  MMC power sequence management
-- */
--#include <linux/kernel.h>
--#include <linux/err.h>
--#include <linux/module.h>
--#include <linux/of.h>
--
--#include <linux/mmc/host.h>
--
--#include "pwrseq.h"
--
--static DEFINE_MUTEX(pwrseq_list_mutex);
--static LIST_HEAD(pwrseq_list);
--
--int mmc_pwrseq_alloc(struct mmc_host *host)
--{
--	struct device_node *np;
--	struct mmc_pwrseq *p;
--
--	np = of_parse_phandle(host->parent->of_node, "mmc-pwrseq", 0);
--	if (!np)
--		return 0;
--
--	mutex_lock(&pwrseq_list_mutex);
--	list_for_each_entry(p, &pwrseq_list, pwrseq_node) {
--		if (p->dev->of_node == np) {
--			if (!try_module_get(p->owner))
--				dev_err(host->parent,
--					"increasing module refcount failed\n");
--			else
--				host->pwrseq = p;
--
--			break;
--		}
--	}
--
--	of_node_put(np);
--	mutex_unlock(&pwrseq_list_mutex);
--
--	if (!host->pwrseq)
--		return -EPROBE_DEFER;
--
--	dev_info(host->parent, "allocated mmc-pwrseq\n");
--
--	return 0;
--}
--
--void mmc_pwrseq_pre_power_on(struct mmc_host *host)
--{
--	struct mmc_pwrseq *pwrseq = host->pwrseq;
--
--	if (pwrseq && pwrseq->ops->pre_power_on)
--		pwrseq->ops->pre_power_on(host);
--}
--
--void mmc_pwrseq_post_power_on(struct mmc_host *host)
--{
--	struct mmc_pwrseq *pwrseq = host->pwrseq;
--
--	if (pwrseq && pwrseq->ops->post_power_on)
--		pwrseq->ops->post_power_on(host);
--}
--
--void mmc_pwrseq_power_off(struct mmc_host *host)
--{
--	struct mmc_pwrseq *pwrseq = host->pwrseq;
--
--	if (pwrseq && pwrseq->ops->power_off)
--		pwrseq->ops->power_off(host);
--}
--
--void mmc_pwrseq_reset(struct mmc_host *host)
--{
--	struct mmc_pwrseq *pwrseq = host->pwrseq;
--
--	if (pwrseq && pwrseq->ops->reset)
--		pwrseq->ops->reset(host);
--}
--
--void mmc_pwrseq_free(struct mmc_host *host)
--{
--	struct mmc_pwrseq *pwrseq = host->pwrseq;
--
--	if (pwrseq) {
--		module_put(pwrseq->owner);
--		host->pwrseq = NULL;
--	}
--}
--
--int mmc_pwrseq_register(struct mmc_pwrseq *pwrseq)
--{
--	if (!pwrseq || !pwrseq->ops || !pwrseq->dev)
--		return -EINVAL;
--
--	mutex_lock(&pwrseq_list_mutex);
--	list_add(&pwrseq->pwrseq_node, &pwrseq_list);
--	mutex_unlock(&pwrseq_list_mutex);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(mmc_pwrseq_register);
--
--void mmc_pwrseq_unregister(struct mmc_pwrseq *pwrseq)
--{
--	if (pwrseq) {
--		mutex_lock(&pwrseq_list_mutex);
--		list_del(&pwrseq->pwrseq_node);
--		mutex_unlock(&pwrseq_list_mutex);
--	}
--}
--EXPORT_SYMBOL_GPL(mmc_pwrseq_unregister);
-diff --git a/drivers/mmc/core/pwrseq.h b/drivers/mmc/core/pwrseq.h
-deleted file mode 100644
-index f3bb103db9ad..000000000000
---- a/drivers/mmc/core/pwrseq.h
-+++ /dev/null
-@@ -1,58 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2014 Linaro Ltd
-- *
-- * Author: Ulf Hansson <ulf.hansson@linaro.org>
-- */
--#ifndef _MMC_CORE_PWRSEQ_H
--#define _MMC_CORE_PWRSEQ_H
--
--#include <linux/types.h>
--
--struct mmc_host;
--struct device;
--struct module;
--
--struct mmc_pwrseq_ops {
--	void (*pre_power_on)(struct mmc_host *host);
--	void (*post_power_on)(struct mmc_host *host);
--	void (*power_off)(struct mmc_host *host);
--	void (*reset)(struct mmc_host *host);
--};
--
--struct mmc_pwrseq {
--	const struct mmc_pwrseq_ops *ops;
--	struct device *dev;
--	struct list_head pwrseq_node;
--	struct module *owner;
--};
--
--#ifdef CONFIG_OF
--
--int mmc_pwrseq_register(struct mmc_pwrseq *pwrseq);
--void mmc_pwrseq_unregister(struct mmc_pwrseq *pwrseq);
--
--int mmc_pwrseq_alloc(struct mmc_host *host);
--void mmc_pwrseq_pre_power_on(struct mmc_host *host);
--void mmc_pwrseq_post_power_on(struct mmc_host *host);
--void mmc_pwrseq_power_off(struct mmc_host *host);
--void mmc_pwrseq_reset(struct mmc_host *host);
--void mmc_pwrseq_free(struct mmc_host *host);
--
--#else
--
--static inline int mmc_pwrseq_register(struct mmc_pwrseq *pwrseq)
--{
--	return -ENOSYS;
--}
--static inline void mmc_pwrseq_unregister(struct mmc_pwrseq *pwrseq) {}
--static inline int mmc_pwrseq_alloc(struct mmc_host *host) { return 0; }
--static inline void mmc_pwrseq_pre_power_on(struct mmc_host *host) {}
--static inline void mmc_pwrseq_post_power_on(struct mmc_host *host) {}
--static inline void mmc_pwrseq_power_off(struct mmc_host *host) {}
--static inline void mmc_pwrseq_reset(struct mmc_host *host) {}
--static inline void mmc_pwrseq_free(struct mmc_host *host) {}
--
--#endif
--
--#endif
-diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index 0abd47e9ef9b..1673e37f6028 100644
---- a/include/linux/mmc/host.h
-+++ b/include/linux/mmc/host.h
-@@ -16,6 +16,7 @@
- #include <linux/mmc/pm.h>
- #include <linux/dma-direction.h>
- #include <linux/keyslot-manager.h>
-+#include <linux/pwrseq/consumer.h>
- 
- struct mmc_ios {
- 	unsigned int	clock;			/* clock rate */
-@@ -278,7 +279,6 @@ struct mmc_context_info {
- };
- 
- struct regulator;
--struct mmc_pwrseq;
- 
- struct mmc_supply {
- 	struct regulator *vmmc;		/* Card power supply */
-@@ -294,7 +294,7 @@ struct mmc_host {
- 	struct device		class_dev;
- 	int			index;
- 	const struct mmc_host_ops *ops;
--	struct mmc_pwrseq	*pwrseq;
-+	struct pwrseq		*pwrseq;
- 	unsigned int		f_min;
- 	unsigned int		f_max;
- 	unsigned int		f_init;
--- 
-2.30.2
 
 
 _______________________________________________
