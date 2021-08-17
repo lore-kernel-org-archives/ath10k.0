@@ -1,95 +1,97 @@
-Return-Path: <SRS0=fAD5=NF=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=aPVg=NI=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C73FC4320E
-	for <ath10k@archiver.kernel.org>; Sat, 14 Aug 2021 11:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B802C43214
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:55:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20AE160F36
-	for <ath10k@archiver.kernel.org>; Sat, 14 Aug 2021 11:35:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20AE160F36
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmx.de
+	by mail.kernel.org (Postfix) with ESMTPS id 0ADCB60295
+	for <ath10k@archiver.kernel.org>; Tue, 17 Aug 2021 00:55:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0ADCB60295
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tOCdFKbGthdLkPuGZ9L89KZ3bk1XJnhjO2j0FKvJ2j4=; b=D79jFDkNyG1AZHCGMe0BV5CsUY
-	2SZrTIKg+gZn4NIaXhC6Qg5U0tQRRKEuOWZW6Vx/aCw3u83+j2ZGI0837gq2891dnFKI89D1SWajq
-	R4Mz2LCEg0qz3iEbTxhiPEVfdS94dQmBN1G+Loh47Q/aSmfki75rF3r7nCQdF2EwOKVow/6ol+D5A
-	j4Lu7WYTktkw4fKPo4HX0ulUFQ9OUOP4NgOW0oCIJNkKbIJpT/8NPsgUAXrk5yBMcDVqW4sw8TYNi
-	P5f7aMkB54Rqy7luZTyq/Z/vjvTrxPXl7F6ylqu/OZ4qJCSKNSc16v61xsFqJZhPOVwwQ6VmiEBkq
-	ABUdGifg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fRy+RYVNg6xod2rum3gjbdGG7pFLqgYj752md08zsts=; b=xkiQrgzwF0e7eC
+	h3/BJQAG2u+t+LZV07yiIhjlVaUHMj7oadeI7u/DX71fqFzNpqKkuQThucnT1bHG6NYWHETy3OJ4A
+	xOPYhrjev8rx4u9R6SUi5bRq7dE5ln4v36zM3q8ZiMLqGmr81ddawPYwykJZ5dujIiveNKkzbwZfN
+	9fHOStwUYMOkns6KT/8reJYmAI+bHM4xl2W+kV8xWQ2ahxTB9c/2UT0fkwZj6MhSZno5kaWoWC5Dn
+	r+DqnVP4W6QUcFKCZLYLzd/1xQyW9pnzlZ0GPl4qgf1LKHtEf24lW0ZzwLfs0dgy+OvOHYl4ldBhK
+	OvV1Gtr/bWyl5PkgeKzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mErwM-00E7D3-U9; Sat, 14 Aug 2021 11:35:02 +0000
-Received: from mout.gmx.net ([212.227.17.22])
+	id 1mFnO6-000cGH-Lz; Tue, 17 Aug 2021 00:55:30 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mErwH-00E7CR-Mb
- for ath10k@lists.infradead.org; Sat, 14 Aug 2021 11:35:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=badeba3b8450; t=1628940799;
- bh=cCjVf4j91gw+QhSCL99zmK+t+X4+yzpKlIk+1eVjv3o=;
- h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
- b=A6zCt4cBc65HnDIH/tcj67tdSZ/r/B6srCcQ+dM01mJkzkX1MqEpgtb+cbxhllyVK
- 3y1kR+v77Kr/YsFiNXXM49g/zqgJLGyatVXyBj24AT22IML44K/BkNHmkK8ecPDsKO
- GP0GuD7s2+Mm9F4aRyJUkMKI2QDDEzuh8pqIwLwA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.100] ([79.206.240.54]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M6Daq-1mCg350RVg-006bDh; Sat, 14
- Aug 2021 13:33:19 +0200
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-To: Axel Rasmussen <axel.rasmussen1@gmail.com>, ojab // <ojab@ojab.ru>
-Cc: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- ath10k@lists.infradead.org, Linux Wireless <linux-wireless@vger.kernel.org>,
- netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-References: <20210722193459.7474-1-ojab@ojab.ru>
- <CAKzrAgRvOLX6rcKKz=8ghD+QLyMu-1KEPm5HkkLEAzuE1MQpDA@mail.gmail.com>
- <CACC2YF1j45r0chib-HC463FVO_a1Um1f+7PvuRBYVLC7WbgGnQ@mail.gmail.com>
- <CACC2YF1WCSZqLrCig-O-_wJ9s4x47iTc2Xa0-LnyqLm8EWfUHg@mail.gmail.com>
-From: "sparks71@gmx.de" <sparks71@gmx.de>
-Message-ID: <b3aa258f-9002-f53b-5fd7-98e773dbeff5@gmx.de>
-Date: Sat, 14 Aug 2021 13:33:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ id 1mFnNt-000cA1-V3
+ for ath10k@lists.infradead.org; Tue, 17 Aug 2021 00:55:23 +0000
+Received: by mail-lj1-x231.google.com with SMTP id y6so13342904lje.2
+ for <ath10k@lists.infradead.org>; Mon, 16 Aug 2021 17:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=wdu5a/cMDbATqqiF4Vpee9GEfvuO3Zi0W+N+1NhGvAs=;
+ b=KadqBNUFvId8+sROkIoWW2FnIiISPA/xpZWhqmtLgHDQHk5ltVM9Jgu60gY6RHkhhU
+ LxZfK3sQvb2jKcgpbunWaDbUXqzuuNAoBiRd/+aZ6ZlKUbctO+qgDzwoU8spR3DMw9/R
+ 2ErU12GwvauMTdGSM+eBF1gUNlVHdg+JTKJ6WJ6UIq9jrevyeoLYCbT8n83RcBz5AgPA
+ 7ITGMU2aIZBqx+9cPVoj5uPuPEyFDbj3EsmIoCMwaCeme7ugesPolg0LvwnnyEYGVBd0
+ HQkA6lOYvqUppAIJVQdlmtl51ODC6UeKWmNnXFk6X9c90iuFUn3oHF9d1QqEl3AV1jCG
+ 13Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=wdu5a/cMDbATqqiF4Vpee9GEfvuO3Zi0W+N+1NhGvAs=;
+ b=Bfo37Zocj2CwNvkREfRqbSCHe9jP5OPWgq9jRvXD0BOH6LnU/wu/tKQNTXbc0Fc43R
+ f1Ww2mRiYFZi8whpJqb6G5hVVp8SYUnaXfPxY8VUihSOcooWoU60g8E3qRqF0g2sSFwL
+ BN7gNGVp+1j3/F3uzYhNhs52bMuLEUythwFN1iCmc+nVSicq6qQNjOOZ07yLM9+lO/Rt
+ RD/yUpuBPPvBMzTYwqtO7Ey2/ZjeqFvfhMR4pd24N2XNzYfJDbeP81K3NQEBr1E64cJG
+ vIebkCB9Iq3nZJcJkKSVo8IuMAqnb8XnEc8n7690idQ64GG58INJYePfG2X3Eb+22+MA
+ q5RQ==
+X-Gm-Message-State: AOAM531e6DlE1MVNnkU5MSsF8jwaRLRvDGNj4ADNoKG4Tco59Cc40tCA
+ Ti3WP1XkRh/MezuSmhSuq2G/Sg==
+X-Google-Smtp-Source: ABdhPJyykVmUp2+uL524zpEVpdzv1pv0gVNB4w0uBgg1/3eS2V8TRDR8U1hnV+vjiLEctppv61IqLQ==
+X-Received: by 2002:a05:651c:1257:: with SMTP id
+ h23mr769675ljh.49.1629161716645; 
+ Mon, 16 Aug 2021 17:55:16 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+ by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Aug 2021 17:55:16 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: [RFC PATCH 04/15] ath10k: add support for pwrseq sequencing
+Date: Tue, 17 Aug 2021 03:54:56 +0300
+Message-Id: <20210817005507.1507580-5-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CACC2YF1WCSZqLrCig-O-_wJ9s4x47iTc2Xa0-LnyqLm8EWfUHg@mail.gmail.com>
-Content-Language: en-US
-X-Provags-ID: V03:K1:bYrMIP8NbdP3LCTRBQl+RWFYK5X46lZ2WTJPdYciARVlZsyw1xQ
- eFi9A9CJzCW9xhZ5tLTVA2tsZdnrp9+c4hYIKE9yD4/IUzFhL6D1pLsBkMglZ9vGhmcJngQ
- VdwtZggMGHW8WhEMvsttkLIUrnZvzqG96ery2uTb/GB7/I9jHkaAN1RtrqY95ix8ucm54hr
- mezZ5FiYPJYXqjW3X65nQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8PW8q2EGZX8=:tYuHZnvNoRIVi1YMncMBWd
- FD3+G1775Tiv5DLg32ZTKZNSDlyXEO+KPFqgISodGPjm1ovSBwP8ArK7cokU5q8RnQ/hqhn7/
- LseNfxi0+B7IzF97DEubU8wM/ru1nRNo6gDx2EYJnCtYaD0kULv9XS2LFlajqx6ohxUObwl8T
- Sr9j8LdMEkFPb7yRJYhtF/f2B1xv2A4t1NxwnOR2Yr6T27Qm7rWeQHVwPmbBvTenkpdMIRl6V
- rtt4E8yexxUVE3BQKPf2pMnVwODAH84vZwmBXFQNsuJdl2cpiXw9JayFjcilFXHK9/OLe5ony
- Y5O7MQy+1iGVhNibpBL6UnK8owFfqlRZAowjMWBEFluJ9kmRZkIX4fP/N5x1b6irVx2wivnLu
- DOhVpFAzgIwSFrUZyMNT92jt5ZVi3BTFGtLz0d2XkFO6zwV9KwRiaVyCYMkE4ttjibjQ3iXRt
- mJ+Bl9yuA3wLUDwMgKAeC+zzdvsASI7DLju9KiTUw9XU6Suv/3fI6yrbf96rwbJNkaWiLgYmR
- iVTyyf8K8AYy0YzfciY5DBcgca9/Q0in/gYcqzdRjDk9TVcUQe1csAK0JliVDg5hn6xkhwSd/
- VbdkFIDHSSyVgtUex2f4P5gMxk4xeCytmfoXRrU5RMMfWOquqSRy/Qb5tYDokmy/aUkFCcktj
- kIJj/+wKNPqtSzUDD1+WVV7xZZ03WmuxLTfTsm1HOgVJpusSI2AlgwGsgGmeKWBH6CyqfnHMz
- zn6xkcP2IFlopWXDCdvvqpzoDrDg/xr+Nu3EzGWQVIH4QKnfTlubtP259SUHxoHuOkc1E9ypX
- qFg4v9aJEu10MBEyKdrLreekozjGPlgCvHFK3j/Zhfrs5kJ2Z8H0GioUc3kfPzWHO7pwhpfhG
- ue46fYcwi678K4v7bFG50vzl18EJvko9NrjFXQbojjOrl4G91edbjs1/zTjb+XdWFETyDBXM3
- CxOuskRWw4JTDTbAyXVcVFx0efKM4z7WNoqUiV6bL9+2MT+zm8W1M8AfL5F2aRLOSQmR0BOpu
- K3FRM1HFuQCdgaZUBiPl9S6A+erWMrA1y3yb8G03yRbxZyurdgmgbfMR7/fah/aoohVwD4Gfl
- 8+ACRJgfQQTBD2lcHokXx02wenPyiAKbPMrh3BxoUHhFVn/JCYSikSDNg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210814_043458_089637_B752AF8B 
-X-CRM114-Status: GOOD (  32.76  )
+X-CRM114-CacheID: sfid-20210816_175518_043072_D4AC762C 
+X-CRM114-Status: GOOD (  19.04  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,172 +103,154 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello, I have the same problem with my QCA9984 cards and also tested the
-patch successfully.
+Power sequencing for Qualcomm WiFi+BT chipsets are being reworked to use
+pwrseq rather than individually handling all the regulators. Add support
+for pwrseq to ath10k SNOC driver.
 
-See > https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1939937
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 63 ++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/snoc.h |  2 +
+ 2 files changed, 52 insertions(+), 13 deletions(-)
 
-best regards
-
-
-
-Am 12.08.21 um 22:21 schrieb Axel Rasmussen:
-> Sorry again for the slow response time.
->
-> I got around to testing this today on my hardware. I tested with a
-> vanilla 5.13.8 kernel, and then the same kernel with this patch
-> applied. Long story short, the patch does indeed seem to at least work
-> around the issue I was seeing in [1]. With this patch applied, I still
-> get the same "failed to copy target iram contents" error, but the
-> interface comes up and seems to be functional regardless.
->
-> So, for what it's worth (granted I am no wireless expert!), you can take:
->
-> Tested-by: Axel Rasmussen <axelrasmussen@google.com>
->
-> (This issue has nothing to do with my full time job, but I'm meant to
-> use my @google.com address for any open source contributions, which I
-> believe applies to commit messages too.)
->
-> [1]: https://lists.infradead.org/pipermail/ath10k/2021-May/012626.html
->
->
->
-> Here are the two dmesg outputs, for comparison:
->
-> # uname -a
-> Linux router 5.13.8 #1 SMP Wed Aug 11 20:18:51 PDT 2021 x86_64 AMD
-> GX-412TC SOC AuthenticAMD GNU/Linux
-> # dmesg | grep ath
-> [   12.491747] ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2
-> irq_mode 0 reset_mode 0
-> [   12.613341] ath10k_pci 0000:04:00.0: qca9984/qca9994 hw1.0 target
-> 0x01000000 chip_id 0x00000000 sub 168c:cafe
-> [   12.613367] ath10k_pci 0000:04:00.0: kconfig debug 1 debugfs 1
-> tracing 1 dfs 1 testmode 0
-> [   12.615071] ath10k_pci 0000:04:00.0: firmware ver
-> 10.4-3.9.0.2-00131 api 5 features
-> no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-rate,iram-recovery
-> crc32 23bd9e43
-> [   13.846538] ath10k_pci 0000:04:00.0: board_file api 2 bmi_id 0:31
-> crc32 85498734
-> [   16.428502] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> [   16.518692] ath10k_pci 0000:04:00.0: could not init core (-12)
-> [   16.518950] ath10k_pci 0000:04:00.0: could not probe fw (-12)
->
->
->
-> # uname -a
-> Linux router 5.13.8+ #2 SMP Wed Aug 11 20:28:56 PDT 2021 x86_64 AMD
-> GX-412TC SOC AuthenticAMD GNU/Linux
-> # dmesg | grep ath
-> [   12.201239] ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2
-> irq_mode 0 reset_mode 0
-> [   12.323354] ath10k_pci 0000:04:00.0: qca9984/qca9994 hw1.0 target
-> 0x01000000 chip_id 0x00000000 sub 168c:cafe
-> [   12.323407] ath10k_pci 0000:04:00.0: kconfig debug 1 debugfs 1
-> tracing 1 dfs 1 testmode 0
-> [   12.325162] ath10k_pci 0000:04:00.0: firmware ver
-> 10.4-3.9.0.2-00131 api 5 features
-> no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-rate,iram-reco
-> very crc32 23bd9e43
-> [   13.556748] ath10k_pci 0000:04:00.0: board_file api 2 bmi_id 0:31
-> crc32 85498734
-> [   16.155848] ath10k_pci 0000:04:00.0: No hardware memory
-> [   16.155873] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> [   16.267376] ath10k_pci 0000:04:00.0: htt-ver 2.2 wmi-op 6 htt-op 4
-> cal otp max-sta 512 raw 0 hwcrypto 1
-> [   16.382257] ath: EEPROM regdomain sanitized
-> [   16.382289] ath: EEPROM regdomain: 0x64
-> [   16.382306] ath: EEPROM indicates we should expect a direct regpair map
-> [   16.382312] ath: Country alpha2 being used: 00
-> [   16.382316] ath: Regpair used: 0x64
-> [   16.393599] ath10k_pci 0000:04:00.0 wlp4s0: renamed from wlan0
-> [   41.264025] ath10k_pci 0000:04:00.0: No hardware memory
-> [   41.264045] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> [   41.480677] ath10k_pci 0000:04:00.0: Unknown eventid: 36933
->
-> On Sun, Aug 1, 2021 at 7:23 PM Axel Rasmussen <axel.rasmussen1@gmail.com> wrote:
->> On Thu, Jul 22, 2021 at 12:42 PM ojab // <ojab@ojab.ru> wrote:
->>> See also: https://lists.infradead.org/pipermail/ath10k/2021-May/012626.html
->>>
->>> On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
->>>> After reboot with kernel & firmware updates I found `failed to copy
->>>> target iram contents:` in dmesg and missing wlan interfaces for both
->>>> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
->>>> it, so while I have no idea what's actually happening, I don't see why
->>>> we should fail in this case, looks like some optional firmware ability
->>>> that could be skipped.
->>>>
->>>> Also with additional logging there is
->>>> ```
->>>> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
->>>> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
->>>> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
->>>> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
->>>> ```
->>>> so exact branch could be seen.
->>>>
->>>> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
->>>> ---
->>>>   Of course I forgot to sing off, since I don't use it by default because I
->>>>   hate my real name and kernel requires it
->> Thanks for working on this! And sorry for the slow response. I've been
->> unexpectedly very busy lately, but I plan to test out this patch next
->> week.
->>
->>>>   drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
->>>>   1 file changed, 6 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
->>>> index 2f9be182fbfb..d9fd5294e142 100644
->>>> --- a/drivers/net/wireless/ath/ath10k/core.c
->>>> +++ b/drivers/net/wireless/ath/ath10k/core.c
->>>> @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
->>>>          u32 len, remaining_len;
->>>>
->>>>          hw_mem = ath10k_coredump_get_mem_layout(ar);
->>>> -       if (!hw_mem)
->>>> +       if (!hw_mem) {
->>>> +               ath10k_warn(ar, "No hardware memory");
->>>>                  return -ENOMEM;
->>>> +       }
->>>>
->>>>          for (i = 0; i < hw_mem->region_table.size; i++) {
->>>>                  tmp = &hw_mem->region_table.regions[i];
->>>> @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
->>>>                  }
->>>>          }
->>>>
->>>> -       if (!mem_region)
->>>> +       if (!mem_region) {
->>>> +               ath10k_warn(ar, "No memory region");
->>>>                  return -ENOMEM;
->>>> +       }
->>>>
->>>>          for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
->>>>                  if (ar->wmi.mem_chunks[i].req_id ==
->>>> @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
->>>>                  if (status) {
->>>>                          ath10k_warn(ar, "failed to copy target iram contents: %d",
->>>>                                      status);
->>>> -                       goto err_hif_stop;
->>>>                  }
->>>>          }
->>>>
->>>> --
->>>> 2.32.0
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
->
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index ea00fbb15601..870ed28d01a6 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -14,6 +14,7 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/of_address.h>
+ #include <linux/iommu.h>
++#include <linux/pwrseq/consumer.h>
+ 
+ #include "ce.h"
+ #include "coredump.h"
+@@ -42,7 +43,6 @@ static char *const ce_name[] = {
+ };
+ 
+ static const char * const ath10k_regulators[] = {
+-	"vdd-0.8-cx-mx",
+ 	"vdd-1.8-xo",
+ 	"vdd-1.3-rfa",
+ 	"vdd-3.3-ch0",
+@@ -1010,10 +1010,17 @@ static int ath10k_hw_power_on(struct ath10k *ar)
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
+ 
+-	ret = regulator_bulk_enable(ar_snoc->num_vregs, ar_snoc->vregs);
++	if (ar_snoc->pwrseq)
++		ret = pwrseq_full_power_on(ar_snoc->pwrseq);
++	else
++		ret = regulator_bulk_enable(ar_snoc->num_vregs, ar_snoc->vregs);
+ 	if (ret)
+ 		return ret;
+ 
++	ret = regulator_enable(ar_snoc->vreg_cx_mx);
++	if (ret)
++		goto vreg_bulk_off;
++
+ 	ret = clk_bulk_prepare_enable(ar_snoc->num_clks, ar_snoc->clks);
+ 	if (ret)
+ 		goto vreg_off;
+@@ -1021,7 +1028,13 @@ static int ath10k_hw_power_on(struct ath10k *ar)
+ 	return ret;
+ 
+ vreg_off:
+-	regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
++	regulator_disable(ar_snoc->vreg_cx_mx);
++vreg_bulk_off:
++	if (ar_snoc->pwrseq)
++		pwrseq_power_off(ar_snoc->pwrseq);
++	else
++		regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
++
+ 	return ret;
+ }
+ 
+@@ -1033,6 +1046,14 @@ static int ath10k_hw_power_off(struct ath10k *ar)
+ 
+ 	clk_bulk_disable_unprepare(ar_snoc->num_clks, ar_snoc->clks);
+ 
++	regulator_disable(ar_snoc->vreg_cx_mx);
++
++	if (ar_snoc->pwrseq) {
++		pwrseq_power_off(ar_snoc->pwrseq);
++
++		return 0;
++	}
++
+ 	return regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
+ }
+ 
+@@ -1691,20 +1712,36 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 		goto err_release_resource;
+ 	}
+ 
+-	ar_snoc->num_vregs = ARRAY_SIZE(ath10k_regulators);
+-	ar_snoc->vregs = devm_kcalloc(&pdev->dev, ar_snoc->num_vregs,
+-				      sizeof(*ar_snoc->vregs), GFP_KERNEL);
+-	if (!ar_snoc->vregs) {
+-		ret = -ENOMEM;
++	ar_snoc->pwrseq = devm_pwrseq_get_optional(&pdev->dev, "wifi");
++	if (IS_ERR(ar_snoc->pwrseq)) {
++		ret = PTR_ERR(ar_snoc->pwrseq);
++		if (ret != -EPROBE_DEFER)
++			ath10k_warn(ar, "failed to acquire pwrseq: %d\n", ret);
+ 		goto err_free_irq;
+ 	}
+-	for (i = 0; i < ar_snoc->num_vregs; i++)
+-		ar_snoc->vregs[i].supply = ath10k_regulators[i];
+ 
+-	ret = devm_regulator_bulk_get(&pdev->dev, ar_snoc->num_vregs,
+-				      ar_snoc->vregs);
+-	if (ret < 0)
++	if (!ar_snoc->pwrseq) {
++		ar_snoc->num_vregs = ARRAY_SIZE(ath10k_regulators);
++		ar_snoc->vregs = devm_kcalloc(&pdev->dev, ar_snoc->num_vregs,
++				sizeof(*ar_snoc->vregs), GFP_KERNEL);
++		if (!ar_snoc->vregs) {
++			ret = -ENOMEM;
++			goto err_free_irq;
++		}
++		for (i = 0; i < ar_snoc->num_vregs; i++)
++			ar_snoc->vregs[i].supply = ath10k_regulators[i];
++
++		ret = devm_regulator_bulk_get(&pdev->dev, ar_snoc->num_vregs,
++				ar_snoc->vregs);
++		if (ret < 0)
++			goto err_free_irq;
++	}
++
++	ar_snoc->vreg_cx_mx = devm_regulator_get(&pdev->dev, "vdd-0.8-cx-mx");
++	if (IS_ERR(ar_snoc->vreg_cx_mx)) {
++		ret = PTR_ERR(ar_snoc->vreg_cx_mx);
+ 		goto err_free_irq;
++	}
+ 
+ 	ar_snoc->num_clks = ARRAY_SIZE(ath10k_clocks);
+ 	ar_snoc->clks = devm_kcalloc(&pdev->dev, ar_snoc->num_clks,
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index 5095d1893681..16cfd72180cd 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -72,8 +72,10 @@ struct ath10k_snoc {
+ 	struct timer_list rx_post_retry;
+ 	struct regulator_bulk_data *vregs;
+ 	size_t num_vregs;
++	struct regulator *vreg_cx_mx;
+ 	struct clk_bulk_data *clks;
+ 	size_t num_clks;
++	struct pwrseq *pwrseq;
+ 	struct ath10k_qmi *qmi;
+ 	unsigned long flags;
+ 	bool xo_cal_supported;
+-- 
+2.30.2
 
 
 _______________________________________________
