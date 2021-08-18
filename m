@@ -2,112 +2,73 @@ Return-Path: <SRS0=bIdE=NJ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 829DEC4320E
-	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 21:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64BD9C4338F
+	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 23:27:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49FCE610FE
-	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 21:51:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 49FCE610FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 14641610CF
+	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 23:27:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 14641610CF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4xbEUHW3INWygpcWMU5havWv/pytAAZwOChjiWySe/M=; b=fD327SVfjrKMbo
-	5DjbsShn/pNkKe7aDtDaWmHGvqD1CYHyYNo0R4t2U4uEF6TqiyGS35EiJ8r9A0s86UKNuLN6H/ifG
-	dTRXj/ZvGCRjDuewrlZeM8qgFQLQXsrIwMUsFf2IH1XOZ4GFlGSQODudxSym/BN+oTSRUZ6g48YO8
-	4s0W7LTfGgdmmw8TgTULHVG9tmqGucYfKMejU5tYj3/kMpO7hCMMy0Qswg9FYHJgIeUu/pxI3dqR0
-	nUdGMJuFZ2xFa+KP8GmxSN4B7GguNwKjYT68nId426qlDpnc4VsRnal8+wxbjZRiJoSDMyUImmqqi
-	VbWozM5ehEHnhL9bJcWw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZYZY+pTC+RvhEqhQRysM2yQkqGwbFOyw+/GuKckTGGI=; b=Sa9sSd+3jR/KjQ
+	G0uYw0jxq4O4coVMBOxw6tdPaV0DkJZfRuUj0sgjh+zgP8Q5OJOoI7uYRxMAsAntq8YjSIvB/SbQw
+	AWtqnb2a99tA1XsWnYyEF0nmrmiGyHrq/wYx5a2TJTMeE3/fcIw0c11qqw4sJeQbPT8ZTfUBD16sL
+	8dr8zqiEf/NF6yBTHQUXvx1QYHp70VF9FueJgByYWbBTY9SW+2AlB+AopRiu5ywdUA5PDg9rGBUzS
+	3D6c5Kd+l7/sCBEUq2EJGkoaFLjpd2EQPqUM7dQ6bAFwTS5AEFDlReQxQsksU941ncEvsiyik/sWk
+	n4gYFgow+s8CiLoSpL5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGTSs-006jKi-Fs; Wed, 18 Aug 2021 21:51:14 +0000
-Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
+	id 1mGUxi-006omJ-Rk; Wed, 18 Aug 2021 23:27:10 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGTSn-006jKF-Hi
- for ath10k@lists.infradead.org; Wed, 18 Aug 2021 21:51:13 +0000
-Received: by mail-pj1-x1035.google.com with SMTP id
- cp15-20020a17090afb8fb029017891959dcbso9918217pjb.2
- for <ath10k@lists.infradead.org>; Wed, 18 Aug 2021 14:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=7vHz7lx5HT3o9dUfiJevKg/RCUhyC9oP+KAo7KKSobE=;
- b=a0gIT1PbsUrzpiMxHFJQf3jDySrUQ8Ww2Lki+TjewXrAJP5UxO7103vV2RR/V3ANRN
- 1nLuL/Iv5GOFWegVwgew6XfBqxD/P2xI/kCXdGtAH6LbMiGNGZJvf9jRwo8l9cGtJXp/
- NJhI01VKo66AWmiNMy8NublWXQfmYUotQ1JOg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=7vHz7lx5HT3o9dUfiJevKg/RCUhyC9oP+KAo7KKSobE=;
- b=IiEhNulZAAQXceZPknh4198x4zuEq5Qp8P4Jhg9XoIa8G/JbLOE4WRztebfpeH2JJD
- 5eICiXfg9JfeyN/rgKhVkalsRVfQykB+q4953ZoIdvJpLlYvTYKPCUfKJ3l5/eAJ98Qu
- 0DYNBQw4jlPRWwpCCuGM8JVOcShl/mxN2vq5I/nsFNoHm0gdNAGKOj9URwbrHzDHYJrd
- olRxZzxUrmb0upCUx93cQKmF04GUwJrGjRVqTrJbiEUCMNX8/kCpRQnzI/rS15BDe6Ts
- J+H8D4Z7+1CytuYOI8T0DyEctYY94gXGXwfqgufKA9yYxT/ymPImS607riFwFRS5Zlxp
- lnZQ==
-X-Gm-Message-State: AOAM531UP5znKclFD114eGEIm04hrvfJGRIyOzXPOoH1tINDPcfLbTJ1
- Kb+lx78GNZKpyX8mXOv7GAWvyg==
-X-Google-Smtp-Source: ABdhPJyzlA1BSNScs1NpCi0WnbTUY9sHZCG50/IaKrR4dcNnW411OdaQOYqLBK5zGkg4QWgJ9r2Cng==
-X-Received: by 2002:a17:902:b601:b029:12b:d9a:894f with SMTP id
- b1-20020a170902b601b029012b0d9a894fmr9050350pls.63.1629323468448; 
- Wed, 18 Aug 2021 14:51:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id b190sm808833pgc.91.2021.08.18.14.51.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Aug 2021 14:51:07 -0700 (PDT)
-Date: Wed, 18 Aug 2021 14:51:06 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-kernel@vger.kernel.org,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Ayush Sawal <ayush.sawal@chelsio.com>,
- Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
- Rohit Maheshwari <rohitm@chelsio.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- Kalle Valo <kvalo@codeaurora.org>, Jakub Kicinski <kuba@kernel.org>,
- Stanislaw Gruszka <stf_xl@wp.pl>, Luca Coelho <luciano.coelho@intel.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Johannes Berg <johannes.berg@intel.com>,
- Mordechay Goodstein <mordechay.goodstein@intel.com>,
- Lee Jones <lee.jones@linaro.org>, Wolfgang Grandegger <wg@grandegger.com>,
- Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
- Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
- Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
- linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-can@vger.kernel.org,
- bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
- linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/5] treewide: Replace open-coded flex arrays in unions
-Message-ID: <202108181448.9C13CE9@keescook>
-References: <20210818081118.1667663-1-keescook@chromium.org>
- <20210818081118.1667663-3-keescook@chromium.org>
- <20210818095635.tm42ctkm6aydjr6g@pengutronix.de>
+ id 1mGUxZ-006oll-92
+ for ath10k@lists.infradead.org; Wed, 18 Aug 2021 23:27:05 +0000
+Received: from localhost.localdomain (unknown
+ [IPv6:2804:14c:485:504a:609d:5443:34fc:77bc])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: festevam@denx.de)
+ by phobos.denx.de (Postfix) with ESMTPSA id 0CFCF80F30;
+ Thu, 19 Aug 2021 01:26:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+ s=phobos-20191101; t=1629329218;
+ bh=s6e4Ese2VIMrxJ7iyVt3pQ+bRy1WssQdFGiizMnyVWk=;
+ h=From:To:Cc:Subject:Date:From;
+ b=mwvQKN49+SlILw9eldAn08MYYfTq53nQl3gjlkAAMYN9FUKZjnC9argrZkh8PWVTx
+ YNPO5HXYi/UW1CbDRRe8SgiRRxjacfypwvR4RthdJ97IBIP3KQNF/906udRu46nD2q
+ //fzsgtjaC1LGvBWilFGCDfASX7rDVYXb2ix0uV/VcidOWnIYlxhKt/rlaKjmOljNU
+ N/FXU0qPT5hS56SzL63iVdwffzd2seq155kdm+cTK1OKgW67lpPh950+iHtZwJ8Nij
+ s9cJkxNfwqblyEPEuPTRDxgiOAYJvNR2q8YjMcn3inUj7J+E0w1+nRy0FLXpRtHI38
+ LkcRHYLoLqFbQ==
+From: Fabio Estevam <festevam@denx.de>
+To: kvalo@codeaurora.org
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, hch@lst.de,
+ erik.stromdahl@gmail.com, peter.oh@eero.com, aspriel@gmail.com,
+ marex@denx.de, alagusankar@silex-india.com,
+ Fabio Estevam <festevam@denx.de>
+Subject: [PATCH v3] ath10k: high latency fixes for beacon buffer
+Date: Wed, 18 Aug 2021 20:26:27 -0300
+Message-Id: <20210818232627.2040121-1-festevam@denx.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210818095635.tm42ctkm6aydjr6g@pengutronix.de>
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_145109_654417_8F2129EB 
-X-CRM114-Status: GOOD (  14.07  )
+X-CRM114-CacheID: sfid-20210818_162701_709605_39A5784A 
+X-CRM114-Status: GOOD (  10.61  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,49 +85,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 18, 2021 at 11:56:35AM +0200, Marc Kleine-Budde wrote:
-> On 18.08.2021 01:11:15, Kees Cook wrote:
-> > diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> > index 4bc60a6df697..8657145dc2a9 100644
-> > --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> > +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> > @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
-> >  		struct es581_4_rx_cmd_ret rx_cmd_ret;
-> >  		__le64 timestamp;
-> >  		u8 rx_cmd_ret_u8;
-> > -		u8 raw_msg[0];
-> > +		flex_array(u8 raw_msg);
-> >  	} __packed;
-> >  
-> >  	__le16 reserved_for_crc16_do_not_use;
-> > diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > index ee18a87e40c0..3053e0958132 100644
-> > --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
-> >  		struct es58x_fd_tx_ack_msg tx_ack_msg;
-> >  		__le64 timestamp;
-> >  		__le32 rx_cmd_ret_le32;
-> > -		u8 raw_msg[0];
-> > +		flex_array(u8 raw_msg[]);
-> >  	} __packed;
-> 
-> This doesn't look consistent, what's preferred?
-> 
-> u8 raw_msg[0];  -> flex_array(u8 raw_msg);
->  - or-
->                 -> flex_array(u8 raw_msg[]);
+From: Alagu Sankar <alagusankar@silex-india.com>
 
-Eek, thanks for catching that. And this helps me realize that having
-"flex_array" and "[]" is redundant, and the above typo would have been
-caught. I will fix this for v2.
+Beacon buffer for high latency devices does not use DMA. other similar
+buffer allocation methods in the driver have already been modified for
+high latency path. Fix the beacon buffer allocation left out in the
+earlier high latency changes.
 
-Thanks!
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+[fabio: adapt it to use ar->bus_param.dev_type ]
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+---
+Changes since v2:
+- Pick Alagu's patch:
+https://patchwork.kernel.org/project/ath10k/patch/20190417191503.18814-3-erik.stromdahl@gmail.com/
 
--Kees
+ drivers/net/wireless/ath/ath10k/mac.c | 31 ++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c272b290fa73..7ca68c81d9b6 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -993,8 +993,12 @@ static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
+ 	ath10k_mac_vif_beacon_free(arvif);
+ 
+ 	if (arvif->beacon_buf) {
+-		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
+-				  arvif->beacon_buf, arvif->beacon_paddr);
++		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL)
++			kfree(arvif->beacon_buf);
++		else
++			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
++					  arvif->beacon_buf,
++					  arvif->beacon_paddr);
+ 		arvif->beacon_buf = NULL;
+ 	}
+ }
+@@ -5576,10 +5580,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	if (vif->type == NL80211_IFTYPE_ADHOC ||
+ 	    vif->type == NL80211_IFTYPE_MESH_POINT ||
+ 	    vif->type == NL80211_IFTYPE_AP) {
+-		arvif->beacon_buf = dma_alloc_coherent(ar->dev,
+-						       IEEE80211_MAX_FRAME_LEN,
+-						       &arvif->beacon_paddr,
+-						       GFP_ATOMIC);
++		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
++			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
++						    GFP_KERNEL);
++			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
++		} else {
++			arvif->beacon_buf =
++				dma_alloc_coherent(ar->dev,
++						   IEEE80211_MAX_FRAME_LEN,
++						   &arvif->beacon_paddr,
++						   GFP_ATOMIC);
++		}
+ 		if (!arvif->beacon_buf) {
+ 			ret = -ENOMEM;
+ 			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
+@@ -5794,8 +5805,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 
+ err:
+ 	if (arvif->beacon_buf) {
+-		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
+-				  arvif->beacon_buf, arvif->beacon_paddr);
++		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL)
++			kfree(arvif->beacon_buf);
++		else
++			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
++					  arvif->beacon_buf,
++					  arvif->beacon_paddr);
+ 		arvif->beacon_buf = NULL;
+ 	}
+ 
 -- 
-Kees Cook
+2.25.1
+
 
 _______________________________________________
 ath10k mailing list
