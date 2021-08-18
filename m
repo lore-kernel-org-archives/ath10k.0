@@ -2,84 +2,72 @@ Return-Path: <SRS0=bIdE=NJ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C68FBC4338F
-	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 21:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FE19C4338F
+	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 21:45:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80FFF610A3
-	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 21:09:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 80FFF610A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id CD9CB610FF
+	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 21:45:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CD9CB610FF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JYH2AETEIddO/xMM+8n0ZcYgDLpG2ysJiq75qJr4zU8=; b=uVjkqK8NSGWLJu
-	+gu0H7SZ+zEbV0Wjo15S4cJJKfGNYs58fpLMuUonMKVixcSnvs+s7uFIrkiuCgyOiINuCBgd3ry5u
-	IAUuhEiJgiYPjxzAPfO7ZMjX1h0NnEyYzSqo8eXROdOE7i5SXKXz9EBATbOLAyno4S0xEbubrCAgy
-	5wP+oveUW+TROLlNeVFtCB9jpXM3jIO4twjukj1dwX5AxVcBiRjjNMmdnAFi4D2TCwIucJQryfXTj
-	S9WdgEk51KT1wClpnV8WPXvbf8K1P4VACY0fjIKFXjs8WX6xIe9uDJ29FHiUIsQm5Slv2Td48MWen
-	kAM/YIl+yxZ74qoy2dbw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sbzUZBnA4UHRP8OoK/N3T+B+EL4rQU74mPBozTIB254=; b=NypQBdJEAKviyT
+	esyPWcP7L04uZoarmWzgtgS/Q8LaGiMowhjCVpkl/mfzz2YaZA1+Ljv+RObjleH71gvVdjDbRp1NX
+	n+bUoZAmCZxqwCWQ/9AKkl39ml6+km4x1b/bwjaPQIPdp9nP/zs69gb10bWNbRTPWyzfPyCdh1/EV
+	4XDZvE4EvBWrCSj1H8ofPnpwsal8owFhPmtDKC/AdWbbVosLn5ixq19uXt/0RiXXwctHvJBxffqDW
+	JiGHQ5RsvPr6U1kAd4id4l+shlVAozFuS2gc0qTuVVpGjRzRYdNQXwqy0c4aVzMd5LbZOh6dUToJn
+	JF9gD/VQVAi6BY4x0Fbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGSoG-006g6j-Uc; Wed, 18 Aug 2021 21:09:16 +0000
-Received: from mail-lf1-x135.google.com ([2a00:1450:4864:20::135])
+	id 1mGTN2-006ini-Ti; Wed, 18 Aug 2021 21:45:12 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGSoD-006g61-Lh
- for ath10k@lists.infradead.org; Wed, 18 Aug 2021 21:09:15 +0000
-Received: by mail-lf1-x135.google.com with SMTP id d4so7519323lfk.9
- for <ath10k@lists.infradead.org>; Wed, 18 Aug 2021 14:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=qjXrcIOgVKk1mPzvCDdPM89T7IRAJPhj3erq4tB0vv8=;
- b=IAGuXZNBtJmAbMdUhqC7E8KnSq78nSFb7TeRpra2h/nIwoCi4li37yOLsIAfpFhzAG
- ElR1A1zxGPsnh/weuzxoVwIypaI7o9SkS4eLUn+znPLeUpI4k8lbZLzKsuWg6XaaTnNE
- nKVr0yMeh/s+mxNcJL5VifZx0Z388DvO8d8aEgUVVRXGJzl/XGm13d4/cRLKe5KP7Ynz
- 7hjo0dTJg4VdEEOyITpL5jeFeUVLpbz0UaJM8aYEoGfizl2uWC9+/A4x3TQOKdOrpy2c
- DU7JBmblBuEaxYxvrZdpmFB/EuyrFDuASnYqGIhhHvhNJVy2dVPthUGp7peZi4L9J3bn
- TqoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=qjXrcIOgVKk1mPzvCDdPM89T7IRAJPhj3erq4tB0vv8=;
- b=XVWG0aj1XzkKK4kaANsPmM7ZfLssqdzY7hJf4ugIJwcn6WqdgdS+VPMMzycielo9fc
- 0jclPDDeTl4wxhC6HWVxLdy72JEgZlTF6uyFuTJWzzuFSMm5wgWFVpUaRKSyXQWjNEW2
- T6TC84ZtkH16XaUijch7SEDlrqkgg8TmUd+pRrFHNeVbTEa2TWXqHU7ubaQUJLslFFOX
- u5JF2paW4LIogOaMzxnctRuJK9KZonvGPJyiFU59L6d/lShxxakO7HMW3lFDGO6EkKOy
- PTeeVYA20DBx+dUdpkX86fEXhM8Cly9AzbxbZ3wCcT/pCfdOYtGoM8EXt76MT0k5AnG+
- K1kg==
-X-Gm-Message-State: AOAM530sttdfYvtgKKjexEG4W3mf7QhYxYx59kEhTr/3mK/ZBZjXVLJj
- ajIyczPk5Y9U4tVKc2mR/bGz0e4vhAP8eRtEmH8=
-X-Google-Smtp-Source: ABdhPJyMnPkX2OEHQPBg6pvpnH5zUk/Eiteuhlum86nkFXZ4lKjx6flrkhBXLBbliC9RkX3DvkG9kJD2G4wA30j6eqU=
-X-Received: by 2002:ac2:5b46:: with SMTP id i6mr7436547lfp.500.1629320952285; 
- Wed, 18 Aug 2021 14:09:12 -0700 (PDT)
+ id 1mGTMx-006imb-Ab
+ for ath10k@lists.infradead.org; Wed, 18 Aug 2021 21:45:11 +0000
+Received: from localhost.localdomain (unknown
+ [IPv6:2804:14c:485:504a:609d:5443:34fc:77bc])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: festevam@denx.de)
+ by phobos.denx.de (Postfix) with ESMTPSA id 101F6804E7;
+ Wed, 18 Aug 2021 23:45:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+ s=phobos-20191101; t=1629323104;
+ bh=NWf6JmEEvSLlYTGA0z2y6P2/u/8zsC+hN4OppuKmJws=;
+ h=From:To:Cc:Subject:Date:From;
+ b=g9DrdKzLPX2kUCBeXLVWp1Awj6Ryu9tl4IGW4B8whjo0syjPVskhO9IVRlcaWPvFm
+ M2F5Cin+EYacL8PV2RNC4C1CQKK1VOKpkBeYQ+IKekju9SNatoEzJcrwJPElu6lZv1
+ iQtOzbmlpt8sCfAylHt0lnXRayXyNLwYtcZfUt/JL7FAmJulWGq03ThJht7h260lCn
+ TCfaH6VQ+eFksvGyrnSlzRLDuN7GHHYy4z0g0UQlVNzTph9MmvW8TkRDp3uqNUcX9J
+ egTvS06H8LNi6UgMcJyWO2hN+UsEsmlocce/boTQjOMp3GSCXkv5Ug11YypNwx8PD6
+ Z5f5n+4Iw/yPw==
+From: Fabio Estevam <festevam@denx.de>
+To: kvalo@codeaurora.org
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, hch@lst.de,
+ erik.stromdahl@gmail.com, peter.oh@eero.com, aspriel@gmail.com,
+ marex@denx.de, Fabio Estevam <festevam@denx.de>
+Subject: [PATCH v2] ath10k: Do not call dma_alloc_coherent() for SDIO and USB
+Date: Wed, 18 Aug 2021 18:44:51 -0300
+Message-Id: <20210818214451.1969739-1-festevam@denx.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210818150943.1630199-1-festevam@denx.de>
- <17b5a29d098.279b.9696ff82abe5fb6502268bdc3b0467d4@gmail.com>
- <369c1f89-df33-455b-773e-a2e0dbf582ff@eero.com>
-In-Reply-To: <369c1f89-df33-455b-773e-a2e0dbf582ff@eero.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 18 Aug 2021 18:09:01 -0300
-Message-ID: <CAOMZO5DQTArbXjAdxh4cmtwPfRS9UCiAiQeRQHhjqLpEOUxsyA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Do not call dma_alloc_coherent() for SDIO and USB
-To: Peter Oh <peter.oh@eero.com>
-Cc: Arend van Spriel <aspriel@gmail.com>, Fabio Estevam <festevam@denx.de>, 
- Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org, 
- linux-wireless <linux-wireless@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
- erik.stromdahl@gmail.com
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_140913_808057_9CF032F5 
-X-CRM114-Status: GOOD (  11.48  )
+X-CRM114-CacheID: sfid-20210818_144507_795293_3B9E4D5C 
+X-CRM114-Status: GOOD (  14.82  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,36 +84,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Peter,
+When running the "hostapd" application on a i.MX7-based board with
+an ath10k device connected via SDIO, the following warning is seen:
 
-On Wed, Aug 18, 2021 at 2:35 PM Peter Oh <peter.oh@eero.com> wrote:
->
->
-> >> Fix the problem by not calling dma_alloc_coherent() when the device
-> >> is not DMA capable, such as SDIO and USB.
-> >>
-> ath10k calls dma_alloc_coherent multiple places including
-> ath10k_htt_rx_alloc.
->
-> Do SDIO and USB not use such data path function at all?
+------------[ cut here ]------------
+ WARNING: CPU: 0 PID: 489 at kernel/dma/mapping.c:427 dma_alloc_attrs+0xd0/0x114
+ Modules linked in: ath10k_sdio ath10k_core ath
+ CPU: 0 PID: 489 Comm: hostapd Not tainted 5.10.48-stable-standard #1
+ Hardware name: Freescale i.MX7 Dual (Device Tree)
+ [<c0111378>] (unwind_backtrace) from [<c010bc04>] (show_stack+0x10/0x14)
+ [<c010bc04>] (show_stack) from [<c0e26094>] (dump_stack+0xdc/0x104)
+ [<c0e26094>] (dump_stack) from [<c0125574>] (__warn+0xd8/0x114)
+ [<c0125574>] (__warn) from [<c0e20ecc>] (warn_slowpath_fmt+0x60/0xbc)
+ [<c0e20ecc>] (warn_slowpath_fmt) from [<c01b9eac>] (dma_alloc_attrs+0xd0/0x114)
+ [<c01b9eac>] (dma_alloc_attrs) from [<bf01373c>] (ath10k_add_interface+0x2f0/0x1094 [ath10k_core])
+ [<bf01373c>] (ath10k_add_interface [ath10k_core]) from [<c0d94470>] (drv_add_interface+0x88/0x2fc)
+ 
+As explained by Christoph Hellwig:
 
-Now that I look closer:  no, SDIO and USB do not reach the
-dma_alloc_coherent() inside
-ath10k_htt_rx_alloc.
+"Looking at the ath10k code ar->dev is set by ath10k_core_create, which
+has multiple callers.
 
-drivers/net/wireless/ath/ath10k/usb.c and
-drivers/net/wireless/ath/ath10k/sdio.c both set:
-bus_params.dev_type = ATH10K_DEV_TYPE_HL;
+For ath10k_pci_probe it is a pci_dev, which should always have a
+dma_mask.
 
-ath10k_htt_rx_alloc() has:
+For ath10k_ahb_probe is a device tree probed platform_device,
+which should have a dma mask.
 
-if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL)
-     return 0;
+For ath10k_sdio_probe it is a sdio_func, which from my understanding is
+a virtual device can't do DMA itself.
 
-So it returns early in the USB and SDIO cases and does not call
-dma_alloc_coherent().
+For ath10k_snoc_probe it is a platform device with an explicit
+dma_set_mask_and_coherent and above so the dma_mask is set.
 
-Thanks
+For ath10k_usb_probe it is an usb device which can't do USB."
+
+Fix the problem by not calling dma_alloc_coherent() when the device
+is not DMA capable, such as SDIO and USB.
+
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+---
+Changes since v1:
+- Simplify the check by comparing against ATH10K_DEV_TYPE_HL
+
+ drivers/net/wireless/ath/ath10k/mac.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c272b290fa73..e85c3f107d2e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5576,15 +5576,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	if (vif->type == NL80211_IFTYPE_ADHOC ||
+ 	    vif->type == NL80211_IFTYPE_MESH_POINT ||
+ 	    vif->type == NL80211_IFTYPE_AP) {
+-		arvif->beacon_buf = dma_alloc_coherent(ar->dev,
+-						       IEEE80211_MAX_FRAME_LEN,
+-						       &arvif->beacon_paddr,
+-						       GFP_ATOMIC);
+-		if (!arvif->beacon_buf) {
+-			ret = -ENOMEM;
+-			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
+-				    ret);
+-			goto err;
++		if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL) {
++			arvif->beacon_buf = dma_alloc_coherent(ar->dev,
++							       IEEE80211_MAX_FRAME_LEN,
++							       &arvif->beacon_paddr,
++							       GFP_ATOMIC);
++			if (!arvif->beacon_buf) {
++				ret = -ENOMEM;
++				ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
++					    ret);
++				goto err;
++			}
+ 		}
+ 	}
+ 	if (test_bit(ATH10K_FLAG_HW_CRYPTO_DISABLED, &ar->dev_flags))
+-- 
+2.25.1
+
 
 _______________________________________________
 ath10k mailing list
