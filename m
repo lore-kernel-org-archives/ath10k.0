@@ -2,83 +2,88 @@ Return-Path: <SRS0=bIdE=NJ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3FBCC4338F
-	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 16:30:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94CF1C4338F
+	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 16:49:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBE5D610CB
-	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 16:30:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBE5D610CB
+	by mail.kernel.org (Postfix) with ESMTPS id 5109E610E5
+	for <ath10k@archiver.kernel.org>; Wed, 18 Aug 2021 16:49:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5109E610E5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:Date:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1wSF9MB0wwlitJNcuB6lQJ7S0QAzxv/HT42vBng1bbU=; b=DKfxU5vz3EW2aQ
-	p+leW2Q22Z3tL09TCfYrjBL/zSnmzStGHiY8Hqew6EQJxObLUPPE50FoZUsTpSye2cTt7c5+a7BPG
-	1N9aG9Etdb34UeJ+cKLmm9PCYHcAR/czvWMRbgwzs+uh6zr4a24Tl3kXKM23b+W97/SVpWYIt/XU8
-	hDVbcsCFAXxJTtD4OM5rXRrnSg6gAC3qwKTOhN1cKW7EyvpSgaP/w8k+wIB9I0wNhdf4NLrJbQHNM
-	+MeB3qJ8UYcTvQ18rJAQXL4srOXSE5m8h/lZhDHloawgUqGyn2f/3hI6+ST4ay5PNk1GZ7mJXmX3l
-	Jrcni9oyJHkBeC6vm5Aw==;
+	List-Owner; bh=kIOnzg9UEYhhrPXPwpKh8AURwbepNwqzH2IRL+kUtuE=; b=SF1IUSmjMbbj5L
+	8UvDWrp9In8eu6qVsH/3BmEHPB8Jyy61I3sOJXwbKHfluPGy7lA+HYQGAASX/CViyH8f5YT6m85zw
+	tFyunp8n7v1eNzEe9H0l7groYZ+c709ltvhKCnlhqDRCwnLhl/0gY80VEfvKkc4Xv7RY3HZUU6X54
+	P11OtqjwiT6RlykizRBvjwAWDrcaMaFeCkFgcVOLa8EDqztI4ZVrh95fHIP53p4A4h6DlbzJX7mbn
+	DnBi81rzjTflJlnL2L+8yqoLRbicV9orqy1N+mSF3DRDqYceuIwc3cz3gEVNnHCilTHe2puAFwwCt
+	TrUqumlCOK3h2jTqYSPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGORq-006BTk-64; Wed, 18 Aug 2021 16:29:50 +0000
-Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
+	id 1mGOjo-006Dgk-DY; Wed, 18 Aug 2021 16:48:24 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGORn-006BSz-Jw
- for ath10k@lists.infradead.org; Wed, 18 Aug 2021 16:29:48 +0000
-Received: by mail-lj1-x232.google.com with SMTP id y7so6192249ljp.3
- for <ath10k@lists.infradead.org>; Wed, 18 Aug 2021 09:29:46 -0700 (PDT)
+ id 1mGOjl-006DfJ-Gv
+ for ath10k@lists.infradead.org; Wed, 18 Aug 2021 16:48:23 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id dj8so4144029edb.2
+ for <ath10k@lists.infradead.org>; Wed, 18 Aug 2021 09:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=qgqSa92OM+F5OADrmwBCMMd9VmhpaXpJwL3HpzM4S6E=;
- b=MOed0Y72enm2pahFEHaeZQdzaAwi9bPKNlbd08GQmNE/Jcl2NRGCQAJJCpfnUE9WZF
- 82j2Vlb/q6cPSh64eZeQQG+/y+TDwA65trtwadRcs+cl2ezo6gKP+DcyV+77M4pyEACm
- 66r+7YNnoNqia3CWnfS0tHFhbZYlYq+k3S+6QBMnbxo/5QctqyK3Ha+ka3hufIC2ZWc2
- Y/EnpAqcRZh7Hve5DRU58dS+uQmEwnoU/nI99XD85w8pZ98mOf3E66+/l3HbRDpH3ig1
- zbgN6T6tJ/FIQCLawvZ2aVU2HNT8BCoIKcBMVK28V4xNspqdqX5dhx8e61O1oWMjZ80S
- kcdw==
+ h=from:to:cc:date:message-id:in-reply-to:references:user-agent
+ :subject:mime-version:content-transfer-encoding;
+ bh=PMmul5AuLaq0ahSS50MkhxtuWSpwgbvmyQEcQtwJKMk=;
+ b=K2+oKL6I3fi3XD7tqlWiPFza5KgDzTWjf+Aw5RyxHKg6MOltRiZWuH4XCA5Oj+GO5r
+ 4nw4CoDLbNFu33b4LfNMcKQudKFkFt/yRg9rVhjdtWM/tu9oyGFPlZ2l4791qt22vdPy
+ kGnlSTi/qwFLrLKZyvZAfiXgywgmZslTovrR4LJb2b02Wqq6zUo8+0ohIEPPNFBB1c5J
+ W01Hq3xXxfjt5qkpZ+V7P6Et0OQbMP/FTjKhyM8fEEMNqtxKQGF6ekB5AFxmrl+80LEf
+ ajW+5MNrtFna+LF9np4bx0/m5XMNFpwIpwjIhT1MWc/FzZ7y5ZzxBgumCjwLLbQujNr+
+ 3TAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=qgqSa92OM+F5OADrmwBCMMd9VmhpaXpJwL3HpzM4S6E=;
- b=W7YhgbKg2FiXcCjaVukqH7w/V1GCMB9IKq9nqKJUoSt0WLW9vPa6k5QycxYJsTOVO9
- r+eb8CAQ+aXp8waDUg6WIkFoWvJSZJe0/oRNNJIuqOGu8fE17iP8i3qODNUnmkpwwcpL
- ZQ3NhRqbj6O7pvSh6nsDAEXEyojI/kSrWZKs2DejDeZnshGgWcBRS2FnUiniIGHYMKBM
- 6v2/aaJUksX5+3YDxHI5fNFgqZwYQOz1E9NQsCDR8qXDVsHwG2snjmIcD5pBMDgMLfWP
- QwTgXH0YnRz9MmAlIpG7/yf3ZOjeW9W6qa9BLuC2zCMWCVHi7JlPYgR9SLDK9xsFI0NK
- ywxQ==
-X-Gm-Message-State: AOAM5319GGGmCpnF/sUuzYQB+maF/gKFXuEcTkLeSA6UOVWQT/oleF2/
- U5zPSA27dq97GG+n5mhFSJfmfGbc8vXUWHwUi1I=
-X-Google-Smtp-Source: ABdhPJx1g+saCOWCOfM5NYU4DJ7Dt4ExVh7bSSUiW4HstWXEbNYWkZEW0t+h6D338zqAa32vUsyF9EmlRmqauZ478pQ=
-X-Received: by 2002:a2e:a370:: with SMTP id i16mr8765849ljn.444.1629304185737; 
- Wed, 18 Aug 2021 09:29:45 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:date:message-id:in-reply-to
+ :references:user-agent:subject:mime-version
+ :content-transfer-encoding;
+ bh=PMmul5AuLaq0ahSS50MkhxtuWSpwgbvmyQEcQtwJKMk=;
+ b=o46bi5rHka3WiseutZfa+9uJwOCJ3yYHYq4gDekkbLwlZNzI7ahHs4Iwz9fJ5G0fZS
+ TD1h15HwlOBENGv/e6+gC4UcqRTXjv1s0chU1sTqXJQcTf65k7jO+mfnQtRquUSUUYOQ
+ 8ak/vZERQob5WRUJWjTYY9S3VNKhdicOyvxQu7GmVneqC04ednniTpADLebc+fd+oSnU
+ yR5Q7LyJUfLS2HLSlkWeMw2maxpZvToVTYIPNIYOG02eE0pGeaJtYkPg48DPtRNcoekB
+ 3MSVzy0hpJBAr+LFfhjja409kewnvQtpOPA/UHBjtXpXh+0UJ9ZbtAqQ5Pur6cgDabo4
+ LOUQ==
+X-Gm-Message-State: AOAM533VbuAAU5ybcSXxYgFeVvV2z156ALPFpncXkxguHQw26GJprBgv
+ Zzo4c+qRlG1CYgWLFRdfx0c=
+X-Google-Smtp-Source: ABdhPJx5EvocEVtIHmFZY0f87MFyGTVp6LOz6J4uNhbKGV70JP4eKAcKZROhbqdLClnqOF/BHMnbQw==
+X-Received: by 2002:aa7:c815:: with SMTP id a21mr11234196edt.274.1629305299271; 
+ Wed, 18 Aug 2021 09:48:19 -0700 (PDT)
+Received: from [192.168.178.38] (f140230.upc-f.chello.nl. [80.56.140.230])
+ by smtp.gmail.com with ESMTPSA id 8sm120683ejz.88.2021.08.18.09.48.17
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 18 Aug 2021 09:48:18 -0700 (PDT)
+From: Arend van Spriel <aspriel@gmail.com>
+To: Fabio Estevam <festevam@denx.de>, <kvalo@codeaurora.org>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+ <hch@lst.de>, <erik.stromdahl@gmail.com>
+Date: Wed, 18 Aug 2021 18:48:15 +0200
+Message-ID: <17b5a29d098.279b.9696ff82abe5fb6502268bdc3b0467d4@gmail.com>
+In-Reply-To: <20210818150943.1630199-1-festevam@denx.de>
+References: <20210818150943.1630199-1-festevam@denx.de>
+User-Agent: AquaMail/1.30.1-1828 (build: 103001000)
+Subject: Re: [PATCH] ath10k: Do not call dma_alloc_coherent() for SDIO and USB
 MIME-Version: 1.0
-References: <CAOMZO5AAvZic-NFbYYSVfOxY-27QukXMX68f9eDmhbqAkBRKRw@mail.gmail.com>
- <20210818154358.GS4126399@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210818154358.GS4126399@paulmck-ThinkPad-P17-Gen-1>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 18 Aug 2021 13:29:34 -0300
-Message-ID: <CAOMZO5A7drx9yXWXKTh4VfV4QHNGCPbH_vxeb=NGDghAm98CXA@mail.gmail.com>
-Subject: Re: NOHZ tick-stop error with ath10k SDIO
-To: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org, 
- linux-mmc <linux-mmc@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
- Marek Vasut <marex@denx.de>, qais.yousef@arm.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_092947_695105_507C9828 
-X-CRM114-Status: UNSURE (   8.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210818_094821_628835_2BC8943D 
+X-CRM114-Status: GOOD (  27.54  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,27 +95,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Paul,
+On August 18, 2021 5:11:10 PM Fabio Estevam <festevam@denx.de> wrote:
 
-On Wed, Aug 18, 2021 at 12:43 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-
-> I believe that you need this commit (and possibly some prerequsites):
+> When running the "hostapd" application on a i.MX7-based board with
+> an ath10k device connected via SDIO, the following warning is seen:
 >
-> 47c218dcae65 ("tick/sched: Prevent false positive softirq pending warnings on RT")
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 489 at kernel/dma/mapping.c:427 dma_alloc_attrs+0xd0/0x114
+> Modules linked in: ath10k_sdio ath10k_core ath
+> CPU: 0 PID: 489 Comm: hostapd Not tainted 5.10.48-stable-standard #1
+> Hardware name: Freescale i.MX7 Dual (Device Tree)
+> [<c0111378>] (unwind_backtrace) from [<c010bc04>] (show_stack+0x10/0x14)
+> [<c010bc04>] (show_stack) from [<c0e26094>] (dump_stack+0xdc/0x104)
+> [<c0e26094>] (dump_stack) from [<c0125574>] (__warn+0xd8/0x114)
+> [<c0125574>] (__warn) from [<c0e20ecc>] (warn_slowpath_fmt+0x60/0xbc)
+> [<c0e20ecc>] (warn_slowpath_fmt) from [<c01b9eac>] (dma_alloc_attrs+0xd0/0x114)
+> [<c01b9eac>] (dma_alloc_attrs) from [<bf01373c>] 
+> (ath10k_add_interface+0x2f0/0x1094 [ath10k_core])
+> [<bf01373c>] (ath10k_add_interface [ath10k_core]) from [<c0d94470>] 
+> (drv_add_interface+0x88/0x2fc)
 >
-> Adding Qais on CC for his thoughts.
+> As explained by Christoph Hellwig:
+>
+> "Looking at the ath10k code ar->dev is set by ath10k_core_create, which
+> has multiple callers.
+>
+> For ath10k_pci_probe it is a pci_dev, which should always have a
+> dma_mask.
+>
+> For ath10k_ahb_probe is a device tree probed platform_device,
+> which should have a dma mask.
+>
+> For ath10k_sdio_probe it is a sdio_func, which from my understanding is
+> a virtual device can't do DMA itself.
+>
+> For ath10k_snoc_probe it is a platform device with an explicit
+> dma_set_mask_and_coherent and above so the dma_mask is set.
+>
+> For ath10k_usb_probe it is an usb device which can't do USB."
+>
+> Fix the problem by not calling dma_alloc_coherent() when the device
+> is not DMA capable, such as SDIO and USB.
+>
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
+> ---
+> Hi,
+>
+> I am not certain about the proper commit to include in the Fixes tag.
+>
+> Any suggestions?
+>
+> Thanks
+>
+> drivers/net/wireless/ath/ath10k/mac.c | 20 +++++++++++---------
+> 1 file changed, 11 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c 
+> b/drivers/net/wireless/ath/ath10k/mac.c
+> index c272b290fa73..e85c3f107d2e 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5576,15 +5576,17 @@ static int ath10k_add_interface(struct ieee80211_hw 
+> *hw,
+>  if (vif->type == NL80211_IFTYPE_ADHOC ||
+>     vif->type == NL80211_IFTYPE_MESH_POINT ||
+>     vif->type == NL80211_IFTYPE_AP) {
+> - arvif->beacon_buf = dma_alloc_coherent(ar->dev,
+> -       IEEE80211_MAX_FRAME_LEN,
+> -       &arvif->beacon_paddr,
+> -       GFP_ATOMIC);
+> - if (!arvif->beacon_buf) {
+> - ret = -ENOMEM;
+> - ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
+> -    ret);
+> - goto err;
+> + if (!(ar->hif.bus == ATH10K_BUS_SDIO) && !(ar->hif.bus == ATH10K_BUS_USB)) {
 
-Thanks for the suggestion, but I am running 5.13.11, which already
-contains this commit.
+Does this mean you can not really setup a beaconing interface type for SDIO 
+and USB?
 
-Any extra logs I should capture to help us understand the problem?
+Regards,
+Arend
 
-Thanks
+
 
 _______________________________________________
 ath10k mailing list
