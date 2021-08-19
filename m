@@ -2,79 +2,98 @@ Return-Path: <SRS0=eXlr=NK=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D8BBC4338F
-	for <ath10k@archiver.kernel.org>; Thu, 19 Aug 2021 17:30:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0398DC4338F
+	for <ath10k@archiver.kernel.org>; Thu, 19 Aug 2021 23:18:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A80F6023D
-	for <ath10k@archiver.kernel.org>; Thu, 19 Aug 2021 17:30:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0A80F6023D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id BEBDA61056
+	for <ath10k@archiver.kernel.org>; Thu, 19 Aug 2021 23:18:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BEBDA61056
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GlAEx8oeP5G4ZbOFSYkSjLQMQilOEhHlX3Od8d+QYUk=; b=WmJAsTaIbXfzeI
-	rxEMeRFcK4TmJlO69YUQQtAqsc6ARJxuvsFKE4pa5J/NaamLdV/tG3p+DYGaLcgJ+E8yYqbc3dH5t
-	jyPlmNhE2RY94CEPnniIiJK7XLHYn27VwuqMjJ5IKicsJDMG8qtw9z90Ll57yUrQVsW35AxDRj5xI
-	5XGp3nvf8JltUdq3U4A8suKMl2qLA0iLNOaIL03ByS8jEvmjaU9rTzaeXfgd6nZyyVNW54cW/emu2
-	q74P42MucyxSNAhQ1g+bKoXQU6KyBystYf0prrX/722zB7k9hZXv4xIk5orEeCh4E4I/Tlo+QSVYs
-	TgQ2tWmh2BFCgmLwn+Pw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mY1HjVMqEDsEkmDtdw4nCDLZRKFd2zV6WiUYMsrAJ7g=; b=WPFA9ZY9QxJ9Hu
+	omM5rSby9urln1lSeo0sG1VNFpHn5GKGKboUnadh0bkfynRqON4KFleanVq+7nwuQacNIkcg9D7lw
+	XjJ6zpyoDV3iu3ip0b0t5qohImZv9tj0Ta5bdcNEVlhvDAV+B4kWxejDSKheANw/mnzmq6I8pkNJa
+	SxQMGEUUxCSRvjs9uYHuFkvgxSBGZg2l2XjV9VfwkPPB2Z7/NpDtRGbROhX1nZ0v7EM30owyjlU2R
+	t/CMLnwAhOjHxNNFpT2V9adMQsSQ38v8bxi/d+CuDMsRO+10rXTntnKPhw3rGNabrRF5AJZ4xGXap
+	95ZX53Gfl9XOK3GgK7Gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGlrV-0098iP-MZ; Thu, 19 Aug 2021 17:29:53 +0000
-Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
+	id 1mGrIA-009imP-Bk; Thu, 19 Aug 2021 23:17:46 +0000
+Received: from mail-ot1-x333.google.com ([2607:f8b0:4864:20::333])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGlrI-0098d0-1Q
- for ath10k@lists.infradead.org; Thu, 19 Aug 2021 17:29:41 +0000
-Received: by mail-lf1-x136.google.com with SMTP id w20so14543970lfu.7
- for <ath10k@lists.infradead.org>; Thu, 19 Aug 2021 10:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=QgtLVsr+5oO9IxoWKSZoPjh8Ntw6W8OxwbmFL5GDnpk=;
- b=KCqhexsIFEgPY77b2ty8qN77px4qfGZukAnIdzjCR3KIJP3PBC/z5nNZbqZ8cWS0bv
- ibSX43Z9KIgmyTv5B+DbMqHdoBGMLh51nVfRWVLlPkDr+KJjUngNRITthjNwz8ObYGiD
- 7aMSAHxZ6NBj5ouoep9TPjghrBxDwR15+pvIaTH7+1ITlWLIZJ09ZVyHf2h9E+XuZh1+
- Vc+49nAoi8TtWomufCLmkAECS9PWc6Vrk/wOGLg4t7YQqNBSBisxp1NUtBtzBlMKCbQ9
- pdOw5S7/llhJmMXNg/j/nBHayDMtb083U22CQ4nNoP9y1j2X7zyKubBhU8F+VbuRY5Qp
- 1esQ==
+ id 1mGrI2-009ij8-DS
+ for ath10k@lists.infradead.org; Thu, 19 Aug 2021 23:17:45 +0000
+Received: by mail-ot1-x333.google.com with SMTP id
+ r38-20020a05683044a600b0051a2c6dd421so10789973otv.3
+ for <ath10k@lists.infradead.org>; Thu, 19 Aug 2021 16:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=dqgoJAQz3Mv7B0ZEGRvtaCqkcK4kqu5N3VSB9Do7xY4=;
+ b=BMf23iSlOWarU9fDcULweKVfxlosd41Wfztfxi8DOr0ErrJ2WhFuCCJdroa4O3U6Y4
+ Ornh+yHcbZUTjYugKoCBoMvCuzIam6M+JCV2WGHWTCt5Q87DYpGvI7XiogoqjDWvdBJq
+ ndpRW8alwfoz9eRtKWAiyOOYuHxpm070gdIkFjgkcZQRsAYJhwuC10wddFnkpuuDXvId
+ SdgUNgerTBW5jnZEmujJEh18/L85559JS7Mgk3us3PqXvJEoQFq08GdIqS/f1/cl8knE
+ ZpLOcgtVLfQjQa1B0gpCqgHYebtUQqbo4TIy1POmSREhzGqokLYnjGXFMZKWIgQ4FXh5
+ C37Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=QgtLVsr+5oO9IxoWKSZoPjh8Ntw6W8OxwbmFL5GDnpk=;
- b=K+XM0YhFcwbSMhaqcnbix3xYWa/Te2x5fk1JVyp0kXtjwWknKa2JprMQzTNJ8Y//J0
- QjKUyxH9x8WqAMS68MICOJddUVhq1lUy2dKWDuZiRR83EDJJ8VJQO6fkU+eOfOXSWaIM
- VuW9mePE7SWTCD86Pmo2nSTWqbTYPn7y1U1cEju5QymJNFCd3TZiap8ayg0YbQ2ls1Y0
- B1bUqjpMZglPFnD2akpg7Tqdo6QXXCAk0u86veTQ8h1HSXpGN/dpoRKxj4iEgut9JMU4
- UdjLTAPmAcxG/yzIb8oEYDrHbTJoDMl1Am1LIh/0sRQ7ur6SONhNLjpZvK/fH/jGC2WS
- y0WA==
-X-Gm-Message-State: AOAM532chuTIxU0iStlKIXbndJy6UmU4jGmL/RP76GF86Xnp+C//hUzy
- 03QHEZj2nxLv3Z3znx31+9Ij2VzJhwiI3eraU/pmp/R61z97KA==
-X-Google-Smtp-Source: ABdhPJxT1q+pOP83PFCaUwAMGV5W/MyEdJz40L9jSbGFVrMwPsJO/3LmF4/056o1pBV8TMUAoT8Z6lqXPWNjQyhVoXg=
-X-Received: by 2002:ac2:4143:: with SMTP id c3mr9098853lfi.295.1629394178212; 
- Thu, 19 Aug 2021 10:29:38 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=dqgoJAQz3Mv7B0ZEGRvtaCqkcK4kqu5N3VSB9Do7xY4=;
+ b=cXOn9EfaIxIteo/wUxmJ9/UreKcaKUl2NostOGFEL2p1qZ8Afql6G81m75iiNP9CAz
+ q9vJgFd6i2yawhreEHd9t1ZFWwITWTZSPCioijs05RNkoYC0G95i4l+FnM01bniHGT3i
+ 0FQh7tBvtSE5sj/GKtBN6VCYKe9DN3EYeU5VZQh64IvWpofznK+oeUDME9p9hqMSRDyT
+ CdEn+Uxa8+xw5YavtnxgmMYJcFwZ8McsDWWs5JF6/unZIw+gqQsghyTUZCkMtDzXIIrL
+ LW+L97uHHJGiTvlbmAP/I1Jz3JlAG71i2+vyEJFLfu5xn05dOrK1KJga+vP7W8O+sdvu
+ iTIw==
+X-Gm-Message-State: AOAM532X7DTQzCkv/0vXQdFdE2sGEc/JaDUNwqJbZUqDeJzKuU7DaO/G
+ FOfezBATsYZ96VEHc0mw8iRktw==
+X-Google-Smtp-Source: ABdhPJyW/PO0aRB2JhV3QSCv+CbV97dGiXbm6pwAyuaGcZ90eIfRAKlNSig9OcjkDtMHhlGDTPhK9g==
+X-Received: by 2002:a9d:bec:: with SMTP id 99mr13825165oth.187.1629415056421; 
+ Thu, 19 Aug 2021 16:17:36 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net.
+ [104.57.184.186])
+ by smtp.gmail.com with ESMTPSA id z26sm971827oih.3.2021.08.19.16.17.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 19 Aug 2021 16:17:36 -0700 (PDT)
+Date: Thu, 19 Aug 2021 16:18:59 -0700
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>,
+ linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 10/15] pwrseq: add support for QCA BT+WiFi power
+ sequencer
+Message-ID: <YR7m43mURVJ8YufC@ripper>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 19 Aug 2021 14:29:26 -0300
-Message-ID: <CAOMZO5CHuYX6heA-3+jJ+wHUOBFcLsiy43E9qOoOx3WuJ_kP_g@mail.gmail.com>
-Subject: ath10k: Incorrect MTU size for SDIO
-To: alagusankar@silex-india.com, erik.stromdahl@gmail.com
-Cc: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, 
- linux-wireless <linux-wireless@vger.kernel.org>, wgong@codeaurora.org, 
- Peter Oh <peter.oh@eero.com>
+Content-Disposition: inline
+In-Reply-To: <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210819_102940_149601_9CC2688E 
-X-CRM114-Status: UNSURE (   9.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210819_161738_540940_64161AF7 
+X-CRM114-Status: GOOD (  19.68  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,37 +110,160 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
+[..]
+> diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
+> new file mode 100644
+> index 000000000000..3421a4821126
+> --- /dev/null
+> +++ b/drivers/power/pwrseq/pwrseq_qca.c
+> @@ -0,0 +1,290 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021, Linaro Ltd.
+> + *
+> + * Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> + *
+> + * Power Sequencer for Qualcomm WiFi + BT SoCs
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwrseq/driver.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +/*
+> + * Voltage regulator information required for configuring the
+> + * QCA WiFi+Bluetooth chipset
+> + */
+> +struct qca_vreg {
+> +	const char *name;
+> +	unsigned int load_uA;
+> +};
+> +
+> +struct qca_device_data {
+> +	struct qca_vreg vddio;
 
-On a i.MX7-based board with QCA9377 chip, I received the following
-report from a user running kernel 5.10.48:
+Any particular reason why this isn't just the first entry in vregs and
+operated as part of the bulk API?
 
-"Doing scp or just pipe through files with >10 lines I get stalls and
-error logs. The ath10k_sdio errors look like this:
-[  196.822363] ath10k_sdio mmc2:0001:1: failed to transmit packet, dropping: -12
-[  196.830109] ath10k_sdio mmc2:0001:1: failed to submit frame: -12
-[  196.836279] ath10k_sdio mmc2:0001:1: failed to push frame: -12
-[  196.925452] ath10k_sdio mmc2:0001:1: failed to transmit packet, dropping: -12
-[  196.933090] ath10k_sdio mmc2:0001:1: failed to submit frame: -12
-[  196.939334] ath10k_sdio mmc2:0001:1: failed to push frame: -12
+> +	struct qca_vreg *vregs;
+> +	size_t num_vregs;
+> +	bool has_bt_en;
+> +	bool has_wifi_en;
+> +};
+> +
+> +struct pwrseq_qca;
+> +struct pwrseq_qca_one {
+> +	struct pwrseq_qca *common;
+> +	struct gpio_desc *enable;
+> +};
+> +
+> +#define PWRSEQ_QCA_WIFI 0
+> +#define PWRSEQ_QCA_BT 1
+> +
+> +#define PWRSEQ_QCA_MAX 2
+> +
+> +struct pwrseq_qca {
+> +	struct regulator *vddio;
+> +	struct gpio_desc *sw_ctrl;
+> +	struct pwrseq_qca_one pwrseq_qcas[PWRSEQ_QCA_MAX];
+> +	int num_vregs;
+> +	struct regulator_bulk_data vregs[];
+> +};
+> +
+> +static int pwrseq_qca_power_on(struct pwrseq *pwrseq)
+> +{
+> +	struct pwrseq_qca_one *qca_one = pwrseq_get_data(pwrseq);
+> +	int ret;
+> +
+> +	if (qca_one->common->vddio) {
 
-I am able to reliably reproduce the issue by sending a lot of data
-from the i.MX7 board to a host connected via the AP:
-printf '=%.0s' {1..24000} | nc 192.168.0.2 1234
+devm_regulator_get() doesn't return NULL, so this is always true.
 
-I was able to narrow the issue down to the mtu. If I set the mtu for
-the wlan0 device to 1486 instead of 1500, the issue does not happen.
+> +		ret = regulator_enable(qca_one->common->vddio);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = regulator_bulk_enable(qca_one->common->num_vregs, qca_one->common->vregs);
+> +	if (ret)
+> +		goto vddio_off;
+> +
+> +	if (qca_one->enable) {
+> +		gpiod_set_value_cansleep(qca_one->enable, 0);
+> +		msleep(50);
+> +		gpiod_set_value_cansleep(qca_one->enable, 1);
+> +		msleep(150);
+> +	}
+> +
+> +	if (qca_one->common->sw_ctrl) {
+> +		bool sw_ctrl_state = gpiod_get_value_cansleep(qca_one->common->sw_ctrl);
+> +		dev_dbg(&pwrseq->dev, "SW_CTRL is %d", sw_ctrl_state);
+> +	}
+> +
+> +	return 0;
+> +
+> +vddio_off:
+> +	regulator_disable(qca_one->common->vddio);
+> +
+> +	return ret;
+> +}
+[..]
+> +static int pwrseq_qca_probe(struct platform_device *pdev)
+> +{
+> +	struct pwrseq_qca *pwrseq_qca;
+> +	struct pwrseq *pwrseq;
+> +	struct pwrseq_provider *provider;
+> +	struct device *dev = &pdev->dev;
+> +	struct pwrseq_onecell_data *onecell;
+> +	const struct qca_device_data *data;
+> +	int ret, i;
+> +
+> +	data = device_get_match_data(dev);
+> +	if (!data)
+> +		return -EINVAL;
+> +
+> +	pwrseq_qca = devm_kzalloc(dev, struct_size(pwrseq_qca, vregs, data->num_vregs), GFP_KERNEL);
+> +	if (!pwrseq_qca)
+> +		return -ENOMEM;
+> +
+> +	onecell = devm_kzalloc(dev, struct_size(onecell, pwrseqs, PWRSEQ_QCA_MAX), GFP_KERNEL);
+> +	if (!onecell)
+> +		return -ENOMEM;
+> +
+> +	ret = pwrseq_qca_regulators_init(dev, pwrseq_qca, data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (data->has_wifi_en) {
+> +		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable = devm_gpiod_get(dev, "wifi-enable", GPIOD_OUT_LOW);
+> +		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable)) {
+> +			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable),
+> +					"failed to acquire WIFI enable GPIO\n");
+> +		}
+> +	}
+> +
+> +	if (data->has_bt_en) {
+> +		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable = devm_gpiod_get(dev, "bt-enable", GPIOD_OUT_LOW);
+> +		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable)) {
+> +			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable),
+> +					"failed to acquire BT enable GPIO\n");
+> +		}
+> +	}
+> +
+> +	pwrseq_qca->sw_ctrl = devm_gpiod_get_optional(dev, "swctrl", GPIOD_IN);
+> +	if (IS_ERR(pwrseq_qca->sw_ctrl)) {
+> +		return dev_err_probe(dev, PTR_ERR(pwrseq_qca->sw_ctrl),
+> +				"failed to acquire SW_CTRL gpio\n");
+> +	} else if (!pwrseq_qca->sw_ctrl)
+> +		dev_info(dev, "No SW_CTRL gpio\n");
 
-The size of frames that I see on Wireshark is exactly 1500 after
-setting it to 1486."
+Some {} around the else as well please.
 
-Is this a known issue?
-
-Alagu/Erik,
-
-Have you ever observed such an issue?
-
-Thanks
+Regards,
+Bjorn
 
 _______________________________________________
 ath10k mailing list
