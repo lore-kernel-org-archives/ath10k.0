@@ -2,20 +2,21 @@ Return-Path: <SRS0=L2np=NR=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CA8FC432BE
-	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 07:37:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08681C432BE
+	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 12:02:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFEF6610A4
-	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 07:37:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DFEF6610A4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id C42DC61058
+	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 12:02:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C42DC61058
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,76 +24,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WG12Jo4lQZmfjWfOE2/3BJFBqZArP+aM+HSWhCdz1pM=; b=De4DkXkXqpfNSc
-	kmuj997h19h56DKBiFFHB9arkKO3DDvrS8Y32pcE8tkSM1HEJ+xpJbygZXdfDr7OPUyyvmW2Th46z
-	pFuI6I2nUQK/kKGuhUA4kc5EzgbaVh6VRe+Ro4/u9WNc3MXaHEXtys/d2UozUYsxxIvXNaGl4/Tfj
-	zjTh2tM4PmbLo3b2csG65wWHiX6uFjnkEoTYS6PKkWa0wEPmPsebmmgn9KE0JU0JCnRdAFvgQM39N
-	oGbrVUEGk6kz5GQxUpS+FY4DlFGP/IZm6wiRlD8c4apoqbO9ej3HutTot9U9cZIOyDNjeBHIhNLuN
-	PBZT1ANTvBy78o4KE61g==;
+	List-Owner; bh=pouLYmklrdf68fy3G8YZ6mAJbgt724mSgQxRuNMDCRw=; b=LgeffxRal9qPbw
+	gIhTCo0nN1MmE++8BbRprP17RuV+2RN2C43aTd8eg0Dpni5atw3xIulxwF80v5WvMcipSkeC0bf0R
+	jTU/QuWkglpjGGzgjkboITM9X5vZOsRGy152XgvbY6MD+6vtjEQL8Nf2z7t7QTyFRA/IsPkeq2MP5
+	YNMyV0iBpcAH1U/F2ZraZAs+JZhom/U1FK4vu1S8z1oqpGmS0D0KmfFhTiEMtHP8Z3NzTr1lU4rA8
+	uB7UeBg41Nk/U5CJ498HuQy9kOgAvvL4d1O+k3oWLEVnPA/vXQOeQw44D+lqdp3i5EnVf3j+1DGqz
+	FJo9nucUinLHQ9W57JAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mJ9wL-009RRz-TI; Thu, 26 Aug 2021 07:36:45 +0000
-Received: from mail-lj1-f178.google.com ([209.85.208.178])
+	id 1mJE4n-00A0h9-HR; Thu, 26 Aug 2021 12:01:45 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mJ9wI-009RRc-8k
- for ath10k@lists.infradead.org; Thu, 26 Aug 2021 07:36:44 +0000
-Received: by mail-lj1-f178.google.com with SMTP id c12so3436781ljr.5
- for <ath10k@lists.infradead.org>; Thu, 26 Aug 2021 00:36:40 -0700 (PDT)
+ id 1mJE4l-00A0gJ-2Q
+ for ath10k@lists.infradead.org; Thu, 26 Aug 2021 12:01:44 +0000
+Received: by mail-lf1-x133.google.com with SMTP id i9so6253853lfg.10
+ for <ath10k@lists.infradead.org>; Thu, 26 Aug 2021 05:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=RxiV7ERqDs1q2vy53IAICS71yjit7QHURfhHYR5Qkmc=;
+ b=kYcF+L37cZeqiUKaYvw7RXwE+AkjBgz4yVfL180iQEVlrVP/d4WUwsD9R1MPeknA5w
+ haQVebhjKt+6J7NiL//7M4BnN0mAlheDZAYQ88qjZ0Gj8QhNLdA0pzqQs8yRp/8FTE6x
+ h7WulZhGu4bJjHi5y2GgmCMEu4c3TlqvwydMpqAI4qpTE6V+cTybcclb8TcfQSR30g3I
+ ggrKAon83LPO+UA3xAF5b0KKb2vE5c2S5/rM/WHP8SRX+jOBdNtJabJWPO6z0l4hauKl
+ mCW4JXuVzYVyCkeEufBXA95OymbYuZjSZgwgD3+q+JEc9fh0nBtHP4HenXS5w/I0TTXB
+ Bz0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=HnjLxhUNIWZvkLUKzMIl5VOMjiHDtN+g+OZIODPZSWw=;
- b=Y92qdA6PkqXwaol5lfXIDinSHBPcVsgjsshK5fTiCHDXS4hrwYdkDSVQ4Od2HH6OhS
- pX/LgVRNutW5a6giJmw8XZ9AebxbzJrqn5uvr2j/dGd4abIVpoMn/EGgYYnthbUsLNnu
- 4D7Ceiq1PtJi3wpHDRP6ehwHLWmiX22g4Qlp4Qos3z/ib65LpK7QoWBlcHOqVbqvO6nT
- FX826Wtb0FCIqt4JCOf3hxspA0kiUnNVu3TXOYoz3Yl9hrulMCOUjuQZnJNPxQrdBVRs
- RoIJCmZVPFMQF8gPJUvU6gfm8q0+6oc4u/IjKgEP7slNW/svdYpUse/qipO7S55Y9oA6
- BE4g==
-X-Gm-Message-State: AOAM532QZUUsxh0/8152IiW1udZSeLyolyK9XSCk8bEVnpN6fDjLfPVQ
- OgORHL1268C04V1s8/3g1crdOA6sq+zR63StPYc=
-X-Google-Smtp-Source: ABdhPJzSDUJSDxLdEFb1eMAVGgt+i41FW2lx9CpKD5VEZPSfI0UC1YRtyvuOyMDveI9a5QWPpe5/j5im2YRYY1btgVw=
-X-Received: by 2002:a2e:9999:: with SMTP id w25mr1845833lji.359.1629963399624; 
- Thu, 26 Aug 2021 00:36:39 -0700 (PDT)
+ bh=RxiV7ERqDs1q2vy53IAICS71yjit7QHURfhHYR5Qkmc=;
+ b=AcxldIww4EaPPuLA9i37yxsu1fuc9MUF88QRoRyyqTSvuBlp0Oah/rhcgl3qzaG5PR
+ JPii5zde6QMWkcjel91/u6I1TvgRM4PCXGOCFxud9G7G/FCwQRqpDm/U2hMmmCqbyL0e
+ ed+DqM2VJcbvARTGQeMCA/ga3hLUiWge6knYPprasVWck92jino9h/uUgY5U1jmvYnA4
+ MaOLdp28ge2wCpszI0A/YnuV0bPxCfjmupWyKYDL1RgRbCFkKOEHtRW08q8798e1ZLrr
+ DLqKgGZOGV7CwcuAygm0nuW2uWyhtEMR3AB06QLHhmcASB7i46nNUQjdnWbn74sk/gUn
+ KKEA==
+X-Gm-Message-State: AOAM530gqz4XMIPajf8Q+QcZb25dTgrd8h/bp86vqN+5E0pH5zOjvG/x
+ OEUNB2cmID8k/wHT8fpjoHMpvgeaQyJ25VzVDRwoe3RY
+X-Google-Smtp-Source: ABdhPJydRTHpuS5wvu11saeoFPugthubxBfE787bIrwBOiaTLZekqZIj1aXPsHJRo+6/Ud0+fBGxZeV3iJ1dW44MG3g=
+X-Received: by 2002:a19:701a:: with SMTP id h26mr2379051lfc.443.1629979298649; 
+ Thu, 26 Aug 2021 05:01:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826050458.1540622-1-keescook@chromium.org>
- <20210826050458.1540622-3-keescook@chromium.org>
-In-Reply-To: <20210826050458.1540622-3-keescook@chromium.org>
-From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date: Thu, 26 Aug 2021 16:36:27 +0900
-Message-ID: <CAMZ6RqJMWaRCB3sZa-it804Sv6aFyZ9J3aQyAStMY-1GAwR1Jg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
-To: Kees Cook <keescook@chromium.org>
-Cc: open list <linux-kernel@vger.kernel.org>, 
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
- Ayush Sawal <ayush.sawal@chelsio.com>,
- Vinay Kumar Yadav <vinay.yadav@chelsio.com>, 
- Rohit Maheshwari <rohitm@chelsio.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, 
- Jakub Kicinski <kuba@kernel.org>, Stanislaw Gruszka <stf_xl@wp.pl>,
- Luca Coelho <luciano.coelho@intel.com>, 
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Johannes Berg <johannes.berg@intel.com>, 
- Mordechay Goodstein <mordechay.goodstein@intel.com>,
- Lee Jones <lee.jones@linaro.org>, 
- Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>, 
- Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
- linux-crypto@vger.kernel.org, 
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
- netdev <netdev@vger.kernel.org>, linux-scsi@vger.kernel.org, 
- linux-can <linux-can@vger.kernel.org>, bpf@vger.kernel.org, 
- Rasmus Villemoes <linux@rasmusvillemoes.dk>, Keith Packard <keithp@keithp.com>,
- Dan Williams <dan.j.williams@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>,
- clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+References: <20210818232627.2040121-1-festevam@denx.de>
+In-Reply-To: <20210818232627.2040121-1-festevam@denx.de>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 26 Aug 2021 09:01:27 -0300
+Message-ID: <CAOMZO5CJC0=iH4zzJGj0e82GexBN7suOehz8ajKK8bK3ZcMOSg@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: high latency fixes for beacon buffer
+To: Fabio Estevam <festevam@denx.de>
+Cc: Kalle Valo <kvalo@codeaurora.org>, ath10k@lists.infradead.org, 
+ linux-wireless <linux-wireless@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+ erik.stromdahl@gmail.com, 
+ Peter Oh <peter.oh@eero.com>, Arend van Spriel <aspriel@gmail.com>,
+ Marek Vasut <marex@denx.de>, alagusankar@silex-india.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210826_003642_361960_BDF15A62 
-X-CRM114-Status: GOOD (  24.61  )
+X-CRM114-CacheID: sfid-20210826_050143_153374_4CED77A6 
+X-CRM114-Status: UNSURE (   9.58  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,333 +97,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu. 26 Aug 2021 at 14:04, Kees Cook <keescook@chromium.org> wrote:
-> In support of enabling -Warray-bounds and -Wzero-length-bounds and
-> correctly handling run-time memcpy() bounds checking, replace all
-> open-coded flexible arrays (i.e. 0-element arrays) in unions with the
-> flex_array() helper macro.
+Hello Kalle,
 
-Nitpick: the commit description says flex_array() but the code is
-actually DECLARE_FLEX_ARRAY() or __DECLARE_FLEX_ARRAY().
-
-> This fixes warnings such as:
+On Wed, Aug 18, 2021 at 8:27 PM Fabio Estevam <festevam@denx.de> wrote:
 >
-> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
-> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
->   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
->       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
-> In file included from fs/hpfs/hpfs_fn.h:26,
->                  from fs/hpfs/anode.c:10:
-> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
->   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
->       |                                ^~~~~~~~
+> From: Alagu Sankar <alagusankar@silex-india.com>
 >
-> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
->   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
->                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
->   231 |   u8 raw_msg[0];
->       |      ^~~~~~~
+> Beacon buffer for high latency devices does not use DMA. other similar
+> buffer allocation methods in the driver have already been modified for
+> high latency path. Fix the beacon buffer allocation left out in the
+> earlier high latency changes.
 >
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Ayush Sawal <ayush.sawal@chelsio.com>
-> Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-> Cc: Rohit Maheshwari <rohitm@chelsio.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Stanislaw Gruszka <stf_xl@wp.pl>
-> Cc: Luca Coelho <luciano.coelho@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-scsi@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> [fabio: adapt it to use ar->bus_param.dev_type ]
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 > ---
->  drivers/crypto/chelsio/chcr_crypto.h              | 14 +++++++++-----
->  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
->  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
->  drivers/net/wireless/ath/ath10k/htt.h             |  7 +++++--
->  drivers/net/wireless/intel/iwlegacy/commands.h    |  6 ++++--
->  drivers/net/wireless/intel/iwlwifi/dvm/commands.h |  6 ++++--
->  drivers/net/wireless/intel/iwlwifi/fw/api/tx.h    |  6 ++++--
->  drivers/scsi/aic94xx/aic94xx_sds.c                |  6 ++++--
->  fs/hpfs/hpfs.h                                    |  8 ++++----
->  include/linux/filter.h                            |  6 ++++--
->  include/scsi/sas.h                                | 12 ++++++++----
->  include/uapi/rdma/rdma_user_rxe.h                 |  4 ++--
->  include/uapi/sound/asoc.h                         |  4 ++--
->  13 files changed, 52 insertions(+), 31 deletions(-)
->
-> diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
-> index e89f9e0094b4..c7816c83e324 100644
-> --- a/drivers/crypto/chelsio/chcr_crypto.h
-> +++ b/drivers/crypto/chelsio/chcr_crypto.h
-> @@ -222,8 +222,10 @@ struct chcr_authenc_ctx {
->  };
->
->  struct __aead_ctx {
-> -       struct chcr_gcm_ctx gcm[0];
-> -       struct chcr_authenc_ctx authenc[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct chcr_gcm_ctx, gcm);
-> +               DECLARE_FLEX_ARRAY(struct chcr_authenc_ctx, authenc);
-> +       };
->  };
->
->  struct chcr_aead_ctx {
-> @@ -245,9 +247,11 @@ struct hmac_ctx {
->  };
->
->  struct __crypto_ctx {
-> -       struct hmac_ctx hmacctx[0];
-> -       struct ablk_ctx ablkctx[0];
-> -       struct chcr_aead_ctx aeadctx[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct hmac_ctx, hmacctx);
-> +               DECLARE_FLEX_ARRAY(struct ablk_ctx, ablkctx);
-> +               DECLARE_FLEX_ARRAY(struct chcr_aead_ctx, aeadctx);
-> +       };
->  };
->
->  struct chcr_context {
-> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> index 4bc60a6df697..667ecb77168c 100644
-> --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
->                 struct es581_4_rx_cmd_ret rx_cmd_ret;
->                 __le64 timestamp;
->                 u8 rx_cmd_ret_u8;
-> -               u8 raw_msg[0];
-> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> index ee18a87e40c0..e33003f96e5e 100644
-> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
->                 struct es58x_fd_tx_ack_msg tx_ack_msg;
->                 __le64 timestamp;
->                 __le32 rx_cmd_ret_le32;
-> -               u8 raw_msg[0];
-> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index ec689e3ce48a..a6de08d3bf4a 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -1674,8 +1674,11 @@ struct htt_tx_fetch_ind {
->         __le32 token;
->         __le16 num_resp_ids;
->         __le16 num_records;
-> -       __le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> -       struct htt_tx_fetch_record records[];
-> +       union {
-> +               /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> +               DECLARE_FLEX_ARRAY(__le32, resp_ids);
-> +               DECLARE_FLEX_ARRAY(struct htt_tx_fetch_record, records);
-> +       };
->  } __packed;
->
->  static inline void *
-> diff --git a/drivers/net/wireless/intel/iwlegacy/commands.h b/drivers/net/wireless/intel/iwlegacy/commands.h
-> index 89c6671b32bc..4a97310f8fee 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/commands.h
-> +++ b/drivers/net/wireless/intel/iwlegacy/commands.h
-> @@ -1408,8 +1408,10 @@ struct il3945_tx_cmd {
->          * MAC header goes here, followed by 2 bytes padding if MAC header
->          * length is 26 or 30 bytes, followed by payload data
->          */
-> -       u8 payload[0];
-> -       struct ieee80211_hdr hdr[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, payload);
-> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
-> +       };
->  } __packed;
->
->  /*
-> diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> index 235c7a2e3483..75a4b8e26232 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> +++ b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> @@ -1251,8 +1251,10 @@ struct iwl_tx_cmd {
->          * MAC header goes here, followed by 2 bytes padding if MAC header
->          * length is 26 or 30 bytes, followed by payload data
->          */
-> -       u8 payload[0];
-> -       struct ieee80211_hdr hdr[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, payload);
-> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
-> +       };
->  } __packed;
->
->  /*
-> diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> index 24e4a82a55da..66c5487e857e 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> +++ b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> @@ -713,8 +713,10 @@ struct iwl_mvm_compressed_ba_notif {
->         __le32 tx_rate;
->         __le16 tfd_cnt;
->         __le16 ra_tid_cnt;
-> -       struct iwl_mvm_compressed_ba_ratid ra_tid[0];
-> -       struct iwl_mvm_compressed_ba_tfd tfd[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_ratid, ra_tid);
-> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_tfd, tfd);
-> +       };
->  } __packed; /* COMPRESSED_BA_RES_API_S_VER_4 */
->
->  /**
-> diff --git a/drivers/scsi/aic94xx/aic94xx_sds.c b/drivers/scsi/aic94xx/aic94xx_sds.c
-> index 46815e65f7a4..5def83c88f13 100644
-> --- a/drivers/scsi/aic94xx/aic94xx_sds.c
-> +++ b/drivers/scsi/aic94xx/aic94xx_sds.c
-> @@ -517,8 +517,10 @@ struct asd_ms_conn_map {
->         u8    num_nodes;
->         u8    usage_model_id;
->         u32   _resvd;
-> -       struct asd_ms_conn_desc conn_desc[0];
-> -       struct asd_ms_node_desc node_desc[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct asd_ms_conn_desc, conn_desc);
-> +               DECLARE_FLEX_ARRAY(struct asd_ms_node_desc, node_desc);
-> +       };
->  } __attribute__ ((packed));
->
->  struct asd_ctrla_phy_entry {
-> diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
-> index d92c4af3e1b4..281dec8f636b 100644
-> --- a/fs/hpfs/hpfs.h
-> +++ b/fs/hpfs/hpfs.h
-> @@ -409,10 +409,10 @@ struct bplus_header
->    __le16 first_free;                   /* offset from start of header to
->                                            first free node in array */
->    union {
-> -    struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
-> -                                              subtree pointers */
-> -    struct bplus_leaf_node external[0];            /* (external) 3-word entries giving
-> -                                              sector runs */
-> +       /* (internal) 2-word entries giving subtree pointers */
-> +       DECLARE_FLEX_ARRAY(struct bplus_internal_node, internal);
-> +       /* (external) 3-word entries giving sector runs */
-> +       DECLARE_FLEX_ARRAY(struct bplus_leaf_node, external);
->    } u;
->  };
->
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 472f97074da0..5ca52bfa5868 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -572,8 +572,10 @@ struct bpf_prog {
->         struct bpf_prog_aux     *aux;           /* Auxiliary fields */
->         struct sock_fprog_kern  *orig_prog;     /* Original BPF program */
->         /* Instructions for interpreter */
-> -       struct sock_filter      insns[0];
-> -       struct bpf_insn         insnsi[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct sock_filter, insns);
-> +               DECLARE_FLEX_ARRAY(struct bpf_insn, insnsi);
-> +       };
->  };
->
->  struct sk_filter {
-> diff --git a/include/scsi/sas.h b/include/scsi/sas.h
-> index 4726c1bbec65..64154c1fed02 100644
-> --- a/include/scsi/sas.h
-> +++ b/include/scsi/sas.h
-> @@ -323,8 +323,10 @@ struct ssp_response_iu {
->         __be32 sense_data_len;
->         __be32 response_data_len;
->
-> -       u8     resp_data[0];
-> -       u8     sense_data[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, resp_data);
-> +               DECLARE_FLEX_ARRAY(u8, sense_data);
-> +       };
->  } __attribute__ ((packed));
->
->  struct ssp_command_iu {
-> @@ -554,8 +556,10 @@ struct ssp_response_iu {
->         __be32 sense_data_len;
->         __be32 response_data_len;
->
-> -       u8     resp_data[0];
-> -       u8     sense_data[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, resp_data);
-> +               DECLARE_FLEX_ARRAY(u8, sense_data);
-> +       };
->  } __attribute__ ((packed));
->
->  struct ssp_command_iu {
-> diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-> index e283c2220aba..040752c99ec9 100644
-> --- a/include/uapi/rdma/rdma_user_rxe.h
-> +++ b/include/uapi/rdma/rdma_user_rxe.h
-> @@ -141,8 +141,8 @@ struct rxe_dma_info {
->         __u32                   sge_offset;
->         __u32                   reserved;
->         union {
-> -               __u8            inline_data[0];
-> -               struct rxe_sge  sge[0];
-> +               __DECLARE_FLEX_ARRAY(u8, inline_data);
-> +               __DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
->         };
->  };
->
-> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-> index da61398b1f8f..053949287ce8 100644
-> --- a/include/uapi/sound/asoc.h
-> +++ b/include/uapi/sound/asoc.h
-> @@ -240,8 +240,8 @@ struct snd_soc_tplg_vendor_array {
->  struct snd_soc_tplg_private {
->         __le32 size;    /* in bytes of private data */
->         union {
-> -               char data[0];
-> -               struct snd_soc_tplg_vendor_array array[0];
-> +               __DECLARE_FLEX_ARRAY(char, data);
-> +               __DECLARE_FLEX_ARRAY(struct snd_soc_tplg_vendor_array, array);
->         };
->  } __attribute__((packed));
->
-> --
-> 2.30.2
->
+> Changes since v2:
+> - Pick Alagu's patch:
+> https://patchwork.kernel.org/project/ath10k/patch/20190417191503.18814-3-erik.stromdahl@gmail.com/
+
+A gentle ping on this one.
 
 _______________________________________________
 ath10k mailing list
