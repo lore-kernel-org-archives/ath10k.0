@@ -1,83 +1,123 @@
-Return-Path: <SRS0=iTPL=NQ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=L2np=NR=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F1B6C4338F
-	for <ath10k@archiver.kernel.org>; Wed, 25 Aug 2021 16:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6DE3C432BE
+	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 05:06:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F0456113A
-	for <ath10k@archiver.kernel.org>; Wed, 25 Aug 2021 16:15:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0F0456113A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ojab.ru
+	by mail.kernel.org (Postfix) with ESMTPS id 8843661052
+	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 05:06:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8843661052
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HCKRjIamwOVyOmff9+UVppK/A3Kmytt3VvUB1BeWIxU=; b=L7mqTX7GNyBLSI
-	Aifce9NvhPqcZpNgZcLNeIHHCXYIpJP5ndZSwrvt2PNc050AAXsuzRW2+3MLzfqgCWxAEB35/d3XC
-	/3iFodRbwsrjZgYZ/ekMNux800qWnN4SB5VpiLkgWi12/ZnQa8UOkLl/ECL7elpyWJ9ArdfcksNGa
-	gWni/5d6VweCdHXzIqn87OgQGdNZ0sk8tmpa0AnA8FhiaUL1yuh/NpQTxNhThWYKPrXsOtiCNxGKj
-	tiCj3q1H5DL//Lp3BcsOzcBnLX0bqRGyTHFtlzWxSk0t4/ZpbSXOGdTt9MR8OsbVyHifMcg6l0Qca
-	RcBgoWIbsDkUS/ihnP7A==;
+	List-Owner; bh=9JesVEW1dMYoVCfNWXpXKreu2V3AHocVzIi7i035KvU=; b=NHyCNrAcciciFt
+	LAV7PCvCqpkkYwXwDYdCEJLIVYJjVVpqCc6tnQbYrek1KAKR7ryrC1e6H0srB1SzERhUQY7a0yLno
+	0YvipFEPnDnrWY0+GrsWj/HAdV/NC3dZzisylsmDbEq8CIBbTT1kjtppgMoiUdXJQyOjFYytGtOZj
+	gLvStJ7sJGL+3xvkYUYG0AIphi6gp1ehgJBpE12vN/nLysZwWZLMNle/NKdwMGZAyHZpD39eOv/uX
+	sr8VuGWy9xrvFqdT03f7wZUGrfLQISRjNbja57M/dpTbAYsXMLnhyYSrh6EDWSTyGyqcZm4MNLaYW
+	yMMAy4eVOM1CjDoWzWAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mIvYs-007g0w-OZ; Wed, 25 Aug 2021 16:15:34 +0000
-Received: from mail-il1-x12d.google.com ([2607:f8b0:4864:20::12d])
+	id 1mJ7Zd-009AZE-PE; Thu, 26 Aug 2021 05:05:09 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mIvYn-007fz4-N5
- for ath10k@lists.infradead.org; Wed, 25 Aug 2021 16:15:34 +0000
-Received: by mail-il1-x12d.google.com with SMTP id r6so43877ilt.13
- for <ath10k@lists.infradead.org>; Wed, 25 Aug 2021 09:15:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ojab.ru; s=ojab;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=HBQ7/GEOmYXjqJRDQP512nK1xmzb2LUIy5CzP7HmLLc=;
- b=Le+0CERPASqTwIsSfzVaah29zkhbQegc50elIeB//BGmKeq/nqrS+dWxbohxzVbCsT
- h8M54sG98n2ayYPHa7thQjLg244JEA9OQVIK+USUQvYoNrBXzGcB0QAIuTt5UZalOgWI
- 7WYNIMxhzOj2PVBzbH04wbIAYcwDPMwFLOQrs7VwyRB7sznMSKDrRXtkSReIu0C5x58S
- wj6+fI5ROlCLW+2Kz0GN4/lzi0U9sH+C2mTI38hRN+z7NqqVdhlWBT6FnMXwahRf8wyh
- 7C7L95dflKKXVg/Q1fbUL/cZsyfdhMxmYSyiJA6YfoKwwCJ+RCjnvdSomgDJ5Uy8OPHY
- 7v2g==
+ id 1mJ7ZY-009AXi-Dr
+ for ath10k@lists.infradead.org; Thu, 26 Aug 2021 05:05:08 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d17so1039370plr.12
+ for <ath10k@lists.infradead.org>; Wed, 25 Aug 2021 22:05:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=fQOw84Q+0nXTS439fkG942FAnjDvqnWfwdQqvALTohQ=;
+ b=mBIJf6cF++on2w7AujWCveBhy0CESIqRracrI4E+ReA9rzTkRtqNOIlcy6OoyMY9rA
+ fVp6vRqdfABOysoWaBwtNlxCGcEfJc+LWjjt7Ug4t+rHu1C9f9TTZFqRONpkHBJ9c3gp
+ TKzREeVw5QxC8MUXXm70TDsfZJAYCuA2pO3mA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=HBQ7/GEOmYXjqJRDQP512nK1xmzb2LUIy5CzP7HmLLc=;
- b=MRGV7bGrXEXjb8u9VILjZ0T1uIE+VqMs4UWVHM8P9H2M017CFIiAyfid4pAeFcNShX
- MI9T2gYqLnTwdj0xwKgpiEH9RMZQILW7DmjBSptWlVMUbdG08aonsj+RcQv8lmWzQndl
- 84DcaQfxuyteyygG1sSDX4fF54VHh+KGrSqqcHxB7QRDQra4lZgtXA4HM+96B+LHYmZS
- e2uqLCuGst7y668zVrSBy/WZ3Kp3Ok8HEsmxQ30P+Mo5lEXpFqJXW9b23kQZSIiJYxqv
- k7/HLSYtqFxxTZLmg6xkE1nIqKlKInJqL/a3HcHmwSoovFvsjgKddOdD2T8bDIEzdPUm
- Q+1g==
-X-Gm-Message-State: AOAM532PhAEGUaz31B/8EppCPc9+cffZuqFugNj1XuuJ5/6IX9zyfsXX
- B0GVzZvSV1BIAjzVlBlyguymBnG4jmahkghiLUo1XQ==
-X-Google-Smtp-Source: ABdhPJyadvErapiS94DOEhvjeAXjHPr6wwH/FOcNWNYsGlyYK8iYlTrYsnOCICA7ZuQRZDvHJbiSP+9lePQkbVIw4vY=
-X-Received: by 2002:a92:a008:: with SMTP id e8mr30590006ili.187.1629908127732; 
- Wed, 25 Aug 2021 09:15:27 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=fQOw84Q+0nXTS439fkG942FAnjDvqnWfwdQqvALTohQ=;
+ b=hB/mqitp8wa88gkDiE+iqfQv7+FoO8bWW46vqY3LVWNCts4Uq3nghcwfiPsc4SN6yx
+ h7cPvdR79FhKFrJ7EaZysOmg5C/LGsvqL8H6762kYtyTydIfyL65VTjGDI/qZC8Ho0Vg
+ /5MXxXkUtrsc1Lt6+wqSSl4FqtWtxipX4X2vQSvCqs8re7Whu8p4t/hXkwL0+pmika5V
+ GZ1hn+/pNLZWw3CF0ofwKldHbbUmNqB4UKainMVo/IugtWUo7t4u/e43rqgwdCBRUrzQ
+ 0KUSo8ATgQNVAD4D6E5m5GOl90NLt6Bdmr4dEI6l0TFceCoLlW0cDTDNqF5kVeM/WJgS
+ 2zFg==
+X-Gm-Message-State: AOAM5338VNsCHRe1eonDVyCIyQgMwgkYwwbPPrt9SO2v/Xkq92pDxBxQ
+ r1O4i1EnHh0XYkWvwPuM9CoTYQ==
+X-Google-Smtp-Source: ABdhPJwo6VGS8sgKUC/lXBcJ3A2OczgUkjeK4pZ7P3TBrDAjZPBQPQLeVWGiqnBaLDF+/uFr4CyJyQ==
+X-Received: by 2002:a17:90b:4d91:: with SMTP id
+ oj17mr14662366pjb.209.1629954303060; 
+ Wed, 25 Aug 2021 22:05:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+ by smtp.gmail.com with ESMTPSA id t13sm1119130pjg.25.2021.08.25.22.05.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Aug 2021 22:05:00 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: linux-kernel@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@codeaurora.org>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Nilesh Javali <njavali@marvell.com>,
+ Manish Rangankar <mrangankar@marvell.com>,
+ GR-QLogic-Storage-Upstream@marvell.com,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Larry Finger <Larry.Finger@lwfinger.net>,
+ Phillip Potter <phil@philpotter.co.uk>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Fabio Aiuto <fabioaiuto83@gmail.com>,
+ Ross Schmidt <ross.schm.dev@gmail.com>,
+ Marco Cesati <marcocesati@gmail.com>, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Keith Packard <keithp@keithp.com>, Dan Williams <dan.j.williams@intel.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, clang-built-linux@googlegroups.com,
+ linux-hardening@vger.kernel.org
+Subject: [PATCH v2 3/5] treewide: Replace 0-element memcpy() destinations with
+ flexible arrays
+Date: Wed, 25 Aug 2021 22:04:56 -0700
+Message-Id: <20210826050458.1540622-4-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210826050458.1540622-1-keescook@chromium.org>
+References: <20210826050458.1540622-1-keescook@chromium.org>
 MIME-Version: 1.0
-References: <20210722193459.7474-1-ojab@ojab.ru>
-In-Reply-To: <20210722193459.7474-1-ojab@ojab.ru>
-From: "ojab //" <ojab@ojab.ru>
-Date: Wed, 25 Aug 2021 19:15:16 +0300
-Message-ID: <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: ath10k@lists.infradead.org, 
- Linux Wireless <linux-wireless@vger.kernel.org>, netdev@vger.kernel.org, 
- LKML <linux-kernel@vger.kernel.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9605; h=from:subject;
+ bh=tuToPGIO1fwcT/OaQE7CJFyWXS25t8uKJXExyhn0DhY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhJyD5WMohc3p5GetuWgfUYA3hlc3eWWWJdl37Tmzk
+ tsRDR+6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYScg+QAKCRCJcvTf3G3AJjLxD/
+ 0WbSS7m0+jhuZ0yEDDmx1f3f3Fd4ylc4n8eEvJqyWQTOEBeC52HalM7Wv0GoqDZsr409+b70Kj9En7
+ 2n3jS2Nmosga/L9RN7YC9u8qi0OdqGXVUmPmOeeAy6vMY3nf32TfdIzBf0OFgzOF693Uri3lQdQkGt
+ X1n7jN2/ma2qJETdJEoWZeFuLUJzQFnFmLtffWGvJelOhGoZJVCtEqyChndE2RRsiGw9sxkJrtip/M
+ wVQhx9fXljN7jgmfAnkuyY8cPPfzM8tFAZk5QNk1DwKxkTY6kSjPMt3wQIP2PWVeJxve8cxG6tBEBy
+ 9QcRSQin4AKCk5e1K9dRUpr2rBZ2pxTpu9+h1fQLeq9crY4tlIWA1N9IE+CYenSB5QS/ElgexfKNWg
+ QRC7FAybRvx09RpC7bmtInRliESEbFkmAyXw51g8m6wzhInC4+FQEU3btvs3iAdymFag/3LI+VDOqN
+ 5i89pzAUXDMY+BMrDEHQd5bsBN4FxGIZeLO0x4J0nF3WZCfnqplq/MCuM8U9cVBQWVBkao42uT4M03
+ Yy3Q3ELveBean30nqem7NAzic3v+h/HJEV+FbLPiM77rxRQPDLqVPu8NjkMJdVAcDTZpjIfLbI/bt/
+ ZPL1usCDRxrpqI9YR6ZS/0XI6opvoGU0RxLd5AQLk0ekgfIvkKpQ5pCyGAaQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp;
+ fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210825_091530_252044_2599204C 
-X-CRM114-Status: GOOD (  22.88  )
+X-CRM114-CacheID: sfid-20210825_220504_523168_04DB8AF7 
+X-CRM114-Status: GOOD (  15.93  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,74 +134,339 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Can I haz it merged?
+The 0-element arrays that are used as memcpy() destinations are actually
+flexible arrays. Adjust their structures accordingly so that memcpy()
+can better reason able their destination size (i.e. they need to be seen
+as "unknown" length rather than "zero").
 
-//wbr ojab
+In some cases, use of the flex_array() helper is needed when a flexible
+array is part of a union.
 
-On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
->
-> After reboot with kernel & firmware updates I found `failed to copy
-> target iram contents:` in dmesg and missing wlan interfaces for both
-> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-> it, so while I have no idea what's actually happening, I don't see why
-> we should fail in this case, looks like some optional firmware ability
-> that could be skipped.
->
-> Also with additional logging there is
-> ```
-> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-> ```
-> so exact branch could be seen.
->
-> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
-> ---
->  Of course I forgot to sing off, since I don't use it by default because I
->  hate my real name and kernel requires it
->
->  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 2f9be182fbfb..d9fd5294e142 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
->         u32 len, remaining_len;
->
->         hw_mem = ath10k_coredump_get_mem_layout(ar);
-> -       if (!hw_mem)
-> +       if (!hw_mem) {
-> +               ath10k_warn(ar, "No hardware memory");
->                 return -ENOMEM;
-> +       }
->
->         for (i = 0; i < hw_mem->region_table.size; i++) {
->                 tmp = &hw_mem->region_table.regions[i];
-> @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
->                 }
->         }
->
-> -       if (!mem_region)
-> +       if (!mem_region) {
-> +               ath10k_warn(ar, "No memory region");
->                 return -ENOMEM;
-> +       }
->
->         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
->                 if (ar->wmi.mem_chunks[i].req_id ==
-> @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
->                 if (status) {
->                         ath10k_warn(ar, "failed to copy target iram contents: %d",
->                                     status);
-> -                       goto err_hif_stop;
->                 }
->         }
->
-> --
-> 2.32.0
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Nilesh Javali <njavali@marvell.com>
+Cc: Manish Rangankar <mrangankar@marvell.com>
+Cc: GR-QLogic-Storage-Upstream@marvell.com
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Larry Finger <Larry.Finger@lwfinger.net>
+Cc: Phillip Potter <phil@philpotter.co.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Florian Schilhabel <florian.c.schilhabel@googlemail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc: Ross Schmidt <ross.schm.dev@gmail.com>
+Cc: Marco Cesati <marcocesati@gmail.com>
+Cc: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/wireless/ath/ath10k/bmi.h         | 10 +++----
+ drivers/scsi/qla4xxx/ql4_def.h                |  4 +--
+ drivers/staging/rtl8188eu/include/ieee80211.h |  6 ++--
+ drivers/staging/rtl8712/ieee80211.h           |  4 +--
+ drivers/staging/rtl8723bs/include/ieee80211.h |  6 ++--
+ include/linux/ieee80211.h                     | 30 +++++++++----------
+ include/uapi/linux/dlm_device.h               |  4 +--
+ 7 files changed, 32 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index f6fadcbdd86e..0685c0d2d4ea 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -109,7 +109,7 @@ struct bmi_cmd {
+ 		struct {
+ 			__le32 addr;
+ 			__le32 len;
+-			u8 payload[0];
++			u8 payload[];
+ 		} write_mem;
+ 		struct {
+ 			__le32 addr;
+@@ -138,18 +138,18 @@ struct bmi_cmd {
+ 		} rompatch_uninstall;
+ 		struct {
+ 			__le32 count;
+-			__le32 patch_ids[0]; /* length of @count */
++			__le32 patch_ids[]; /* length of @count */
+ 		} rompatch_activate;
+ 		struct {
+ 			__le32 count;
+-			__le32 patch_ids[0]; /* length of @count */
++			__le32 patch_ids[]; /* length of @count */
+ 		} rompatch_deactivate;
+ 		struct {
+ 			__le32 addr;
+ 		} lz_start;
+ 		struct {
+ 			__le32 len; /* max BMI_MAX_DATA_SIZE */
+-			u8 payload[0]; /* length of @len */
++			u8 payload[]; /* length of @len */
+ 		} lz_data;
+ 		struct {
+ 			u8 name[BMI_NVRAM_SEG_NAME_SZ];
+@@ -160,7 +160,7 @@ struct bmi_cmd {
+ 
+ union bmi_resp {
+ 	struct {
+-		u8 payload[0];
++		DECLARE_FLEX_ARRAY(u8, payload);
+ 	} read_mem;
+ 	struct {
+ 		__le32 result;
+diff --git a/drivers/scsi/qla4xxx/ql4_def.h b/drivers/scsi/qla4xxx/ql4_def.h
+index 031569c496e5..69a590546bf9 100644
+--- a/drivers/scsi/qla4xxx/ql4_def.h
++++ b/drivers/scsi/qla4xxx/ql4_def.h
+@@ -366,13 +366,13 @@ struct qla4_work_evt {
+ 		struct {
+ 			enum iscsi_host_event_code code;
+ 			uint32_t data_size;
+-			uint8_t data[0];
++			uint8_t data[];
+ 		} aen;
+ 		struct {
+ 			uint32_t status;
+ 			uint32_t pid;
+ 			uint32_t data_size;
+-			uint8_t data[0];
++			uint8_t data[];
+ 		} ping;
+ 	} u;
+ };
+diff --git a/drivers/staging/rtl8188eu/include/ieee80211.h b/drivers/staging/rtl8188eu/include/ieee80211.h
+index da6245a77d5d..aa5c1a513495 100644
+--- a/drivers/staging/rtl8188eu/include/ieee80211.h
++++ b/drivers/staging/rtl8188eu/include/ieee80211.h
+@@ -199,7 +199,7 @@ struct ieee_param {
+ 		struct {
+ 			u32 len;
+ 			u8 reserved[32];
+-			u8 data[0];
++			u8 data[];
+ 		} wpa_ie;
+ 		struct {
+ 			int command;
+@@ -212,7 +212,7 @@ struct ieee_param {
+ 			u8 idx;
+ 			u8 seq[8]; /* sequence counter (set: RX, get: TX) */
+ 			u16 key_len;
+-			u8 key[0];
++			u8 key[];
+ 		} crypt;
+ #ifdef CONFIG_88EU_AP_MODE
+ 		struct {
+@@ -224,7 +224,7 @@ struct ieee_param {
+ 		} add_sta;
+ 		struct {
+ 			u8	reserved[2];/* for set max_num_sta */
+-			u8	buf[0];
++			u8	buf[];
+ 		} bcn_ie;
+ #endif
+ 
+diff --git a/drivers/staging/rtl8712/ieee80211.h b/drivers/staging/rtl8712/ieee80211.h
+index 61eff7c5746b..65ceaca9b51e 100644
+--- a/drivers/staging/rtl8712/ieee80211.h
++++ b/drivers/staging/rtl8712/ieee80211.h
+@@ -78,7 +78,7 @@ struct ieee_param {
+ 		struct {
+ 			u32 len;
+ 			u8 reserved[32];
+-			u8 data[0];
++			u8 data[];
+ 		} wpa_ie;
+ 		struct {
+ 			int command;
+@@ -91,7 +91,7 @@ struct ieee_param {
+ 			u8 idx;
+ 			u8 seq[8]; /* sequence counter (set: RX, get: TX) */
+ 			u16 key_len;
+-			u8 key[0];
++			u8 key[];
+ 		} crypt;
+ 	} u;
+ };
+diff --git a/drivers/staging/rtl8723bs/include/ieee80211.h b/drivers/staging/rtl8723bs/include/ieee80211.h
+index 378c21595e05..89c311cd20a6 100644
+--- a/drivers/staging/rtl8723bs/include/ieee80211.h
++++ b/drivers/staging/rtl8723bs/include/ieee80211.h
+@@ -180,7 +180,7 @@ struct ieee_param {
+ 		struct {
+ 			u32 len;
+ 			u8 reserved[32];
+-			u8 data[0];
++			u8 data[];
+ 		} wpa_ie;
+ 	        struct{
+ 			int command;
+@@ -193,7 +193,7 @@ struct ieee_param {
+ 			u8 idx;
+ 			u8 seq[8]; /* sequence counter (set: RX, get: TX) */
+ 			u16 key_len;
+-			u8 key[0];
++			u8 key[];
+ 		} crypt;
+ 		struct {
+ 			u16 aid;
+@@ -204,7 +204,7 @@ struct ieee_param {
+ 		} add_sta;
+ 		struct {
+ 			u8 reserved[2];/* for set max_num_sta */
+-			u8 buf[0];
++			u8 buf[];
+ 		} bcn_ie;
+ 	} u;
+ };
+diff --git a/include/linux/ieee80211.h b/include/linux/ieee80211.h
+index a6730072d13a..445597c03cd1 100644
+--- a/include/linux/ieee80211.h
++++ b/include/linux/ieee80211.h
+@@ -1101,7 +1101,7 @@ struct ieee80211_mgmt {
+ 			__le16 auth_transaction;
+ 			__le16 status_code;
+ 			/* possibly followed by Challenge text */
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed auth;
+ 		struct {
+ 			__le16 reason_code;
+@@ -1110,26 +1110,26 @@ struct ieee80211_mgmt {
+ 			__le16 capab_info;
+ 			__le16 listen_interval;
+ 			/* followed by SSID and Supported rates */
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed assoc_req;
+ 		struct {
+ 			__le16 capab_info;
+ 			__le16 status_code;
+ 			__le16 aid;
+ 			/* followed by Supported rates */
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed assoc_resp, reassoc_resp;
+ 		struct {
+ 			__le16 capab_info;
+ 			__le16 status_code;
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed s1g_assoc_resp, s1g_reassoc_resp;
+ 		struct {
+ 			__le16 capab_info;
+ 			__le16 listen_interval;
+ 			u8 current_ap[ETH_ALEN];
+ 			/* followed by SSID and Supported rates */
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed reassoc_req;
+ 		struct {
+ 			__le16 reason_code;
+@@ -1140,11 +1140,11 @@ struct ieee80211_mgmt {
+ 			__le16 capab_info;
+ 			/* followed by some of SSID, Supported rates,
+ 			 * FH Params, DS Params, CF Params, IBSS Params, TIM */
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed beacon;
+ 		struct {
+ 			/* only variable items: SSID, Supported rates */
+-			u8 variable[0];
++			DECLARE_FLEX_ARRAY(u8, variable);
+ 		} __packed probe_req;
+ 		struct {
+ 			__le64 timestamp;
+@@ -1152,7 +1152,7 @@ struct ieee80211_mgmt {
+ 			__le16 capab_info;
+ 			/* followed by some of SSID, Supported rates,
+ 			 * FH Params, DS Params, CF Params, IBSS Params */
+-			u8 variable[0];
++			u8 variable[];
+ 		} __packed probe_resp;
+ 		struct {
+ 			u8 category;
+@@ -1161,16 +1161,16 @@ struct ieee80211_mgmt {
+ 					u8 action_code;
+ 					u8 dialog_token;
+ 					u8 status_code;
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed wme_action;
+ 				struct{
+ 					u8 action_code;
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed chan_switch;
+ 				struct{
+ 					u8 action_code;
+ 					struct ieee80211_ext_chansw_ie data;
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed ext_chan_switch;
+ 				struct{
+ 					u8 action_code;
+@@ -1186,7 +1186,7 @@ struct ieee80211_mgmt {
+ 					__le16 timeout;
+ 					__le16 start_seq_num;
+ 					/* followed by BA Extension */
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed addba_req;
+ 				struct{
+ 					u8 action_code;
+@@ -1202,11 +1202,11 @@ struct ieee80211_mgmt {
+ 				} __packed delba;
+ 				struct {
+ 					u8 action_code;
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed self_prot;
+ 				struct{
+ 					u8 action_code;
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed mesh_action;
+ 				struct {
+ 					u8 action;
+@@ -1250,7 +1250,7 @@ struct ieee80211_mgmt {
+ 					u8 toa[6];
+ 					__le16 tod_error;
+ 					__le16 toa_error;
+-					u8 variable[0];
++					u8 variable[];
+ 				} __packed ftm;
+ 			} u;
+ 		} __packed action;
+diff --git a/include/uapi/linux/dlm_device.h b/include/uapi/linux/dlm_device.h
+index f880d2831160..e83954c69fff 100644
+--- a/include/uapi/linux/dlm_device.h
++++ b/include/uapi/linux/dlm_device.h
+@@ -45,13 +45,13 @@ struct dlm_lock_params {
+ 	void __user *bastaddr;
+ 	struct dlm_lksb __user *lksb;
+ 	char lvb[DLM_USER_LVB_LEN];
+-	char name[0];
++	char name[];
+ };
+ 
+ struct dlm_lspace_params {
+ 	__u32 flags;
+ 	__u32 minor;
+-	char name[0];
++	char name[];
+ };
+ 
+ struct dlm_purge_params {
+-- 
+2.30.2
+
 
 _______________________________________________
 ath10k mailing list
