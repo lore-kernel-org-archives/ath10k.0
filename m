@@ -7,97 +7,104 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 715F0C432BE
-	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 05:24:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B535CC432BE
+	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 05:52:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 210316108D
-	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 05:24:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 210316108D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=keithp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6CA27610A1
+	for <ath10k@archiver.kernel.org>; Thu, 26 Aug 2021 05:52:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6CA27610A1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VqHuIHMm5S7Lny2XE7r3JgTgbF/8q2AEtXRiFOryvOs=; b=QC4fb11Xk11hSMSPXluH0wIpUF
-	s0E/5BdiLfBwcB1/Pwhxa8mS4TR02zIyV6bZGjqoFM4yDJKmPtutRupKdXLJy5Ra64p7PHqR4rC+1
-	IadGn4s6umIQTC3xM8iWyzWAC3UN9Opj6YPGMco9HVjuaJ7ckpIOJItG6nYqhXi2GgIXQkmZ05O3s
-	FMF/xVALmPv2mxHmG+GW4e4jq5nW/rM46SkK2wA7cLlIh92J1yAI2IdtJZHjrnkzH4LpZj9pt7pAR
-	X9Z9WIP7EbdL/B0tGwaNoIe3kqE+RRBbnOP7r9+nGurZgOPr+8NKG8cOCAUbpCls/CnXWOtR50wEH
-	eCzI6P5w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BvAZaXeUfUeXilfTBTDPnqM5NhAd8Sd2aPo5nIoXIbw=; b=ZrfngDytLH58qU
+	GBAtDfluokV23GJSjjLyJvySsJU67r5cLLdAtTBi2TlnAlOsDzFZQkHDfkWP6eRz4dusNgeqwXqho
+	IHiIaQig6lQDVB7gyAC2F4jNL0jrx2my1ywfHv9iU8zGSSChbyxJDgYGMnHfnKrSJyW73ImzJMCco
+	5tDL27VpTrXYxzQMk5ZU/H5rWiEwfase/j1nYwWsAw+tEq/WpgEX96H0Ot8JnQSD47Tv1uo0ha5aQ
+	WkSfI/tn+CSoDdK9O/nSpPHLXm2Kgg/EfRHoh69iwr0omgAS/f/G64bTFY/fbSasvzrNAAC4lPzgV
+	4y7CBzkm7c8G3s5gPHSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mJ7sQ-009CUM-Ex; Thu, 26 Aug 2021 05:24:34 +0000
-Received: from home.keithp.com ([63.227.221.253] helo=elaine.keithp.com)
+	id 1mJ8IT-009EcI-A3; Thu, 26 Aug 2021 05:51:29 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mJ7sK-009CSP-Co
- for ath10k@lists.infradead.org; Thu, 26 Aug 2021 05:24:32 +0000
-Received: from localhost (localhost [127.0.0.1])
- by elaine.keithp.com (Postfix) with ESMTP id 5899F3F3072E;
- Wed, 25 Aug 2021 22:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
- t=1629955441; bh=9PZ6q0rR03ga0cJLlX7wkSjnkm2X7nPpg5xxJCy9RtY=;
- h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
- b=V8ZHAWsNxg4cKzN6mnE+JjdKstvoz5QndsaHqm/0JKqtYHx7qf+sik19WnSbpeZ6Q
- AjEX1Klqm4x12oAgQH8lJrLC6u/4pXIci4EaQ4RxiiP5jw2kJ+Wr1BlcxY8C2Wy4Fb
- jWWcjACtFjQ8oJwH37HJ6c1VpqU7hCwsS5ybTnP5lAV/3zY5d1sdDagmQ9vi3jIuy+
- +aNC6ttZBX0IIhNSuXRK8/CLxra6k3qQh4vmIkuBLdI1dM2E+Madd2GgJ1+vrteow/
- mf12Ssnv9TySnCx3Kuw4vVdulBma/XNZ1AJsO0j9bHMsWffgJiNgYOkatDiua0iEHW
- KwBc5Fi629JHw==
-X-Virus-Scanned: Debian amavisd-new at keithp.com
-Received: from elaine.keithp.com ([127.0.0.1])
- by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id d8LHxscT6hWs; Wed, 25 Aug 2021 22:23:56 -0700 (PDT)
-Received: from keithp.com (koto.keithp.com [192.168.11.2])
- by elaine.keithp.com (Postfix) with ESMTPSA id C066C3F3072D;
- Wed, 25 Aug 2021 22:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
- t=1629955436; bh=9PZ6q0rR03ga0cJLlX7wkSjnkm2X7nPpg5xxJCy9RtY=;
- h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
- b=oucPIc+p1TEr9jHm30BEh6nsSTrl/DjfKsV2qOrmVf1DMQG6349VUmW+3mP9GkPUL
- I83NAfeJdVNAQulPEjD7Ix9GtzkxVOtuCnS0CPRIYVo9SJp4x3PsZAV1p6NNDeHXq/
- Pvkro7bsTJKioLnocCmT9z4E0ITr88YmjIXCsx4OjlbFg31K5rB1VNwJFPKdtbo5B+
- wgAwhV3gKYrPc9G+VvgOJO5hAdM4ZTbw91d0PzSsU+T1k5fE3VrZWyO/aC9xvXNFSi
- KVrT1uAFAENSHmXt2n1lMtYd2RbyVO6pV2gORcBCJ0iIFawEM3Cwmy0/lQqQH6aom9
- 27qjOJbYQhByQ==
-Received: by keithp.com (Postfix, from userid 1000)
- id E3F3E1E6011A; Wed, 25 Aug 2021 22:24:18 -0700 (PDT)
-From: Keith Packard <keithp@keithp.com>
-To: Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Kalle Valo
- <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Nilesh Javali <njavali@marvell.com>, Manish
- Rangankar <mrangankar@marvell.com>,
- GR-QLogic-Storage-Upstream@marvell.com, "James E.J. Bottomley"
- <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
- Larry Finger <Larry.Finger@lwfinger.net>, Phillip Potter
- <phil@philpotter.co.uk>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Florian Schilhabel <florian.c.schilhabel@googlemail.com>, Johannes Berg
- <johannes@sipsolutions.net>, Christophe JAILLET
- <christophe.jaillet@wanadoo.fr>, Fabio Aiuto <fabioaiuto83@gmail.com>,
- Ross Schmidt <ross.schm.dev@gmail.com>, Marco Cesati
- <marcocesati@gmail.com>, ath10k@lists.infradead.org,
+ id 1mJ8IN-009Eav-1Q
+ for ath10k@lists.infradead.org; Thu, 26 Aug 2021 05:51:26 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id fz10so1491244pjb.0
+ for <ath10k@lists.infradead.org>; Wed, 25 Aug 2021 22:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=ccQ0MGCdd2sOJEH6txbJHSp3br3UWRPN7Oxkykdkfrk=;
+ b=h98ncCnoSgRO/F8RcTGwgl4lQgtwO7Z069Jg7gZwqH61LgYfFHRkVKlkk5SYejX3Qo
+ wp+dBQvMBboIKtqJi98pwPqrfc0z40lBaUNd0lecBa90rVYJ+4XjuIYSPHipBNUKEW6J
+ /Ns8wV2HFg8eY7ZT5jRFEk0xCu3jQqxN02ClQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=ccQ0MGCdd2sOJEH6txbJHSp3br3UWRPN7Oxkykdkfrk=;
+ b=se1xUtttCdLkQsC8v/5IYQ+yuCadqstJULKNTUJ2V2y0XUgis+Y3f//2xYPLgnGxek
+ eDHA+4fFgLYmOWeP6dPTnk9bffXRKgRG7pIPkAn4Km/9+19JHBE8Rrk7SgNAYPnH5EAt
+ 7lX4ASVZtDoAMX09yw6izAjn/PpyB/L3G9zyO423Q94orOFjwvYocOIHdF7hAPYkVvF6
+ /tJ5MSM97Fz4baSu/3jlwanRqzCci3Q4sK93wPtdGBHPTpNknkxOCQOmb0otgbDP7CwG
+ +Lcav0ASYTu/8eaCTHd4J1YuIqdI24QVPLURMN7MGYgVXjP/mYWayOHLr70aiKE24ENm
+ Q8yg==
+X-Gm-Message-State: AOAM531stZcxItajJuYAzniz/nd1wKqOarJQLCZ8Oe8NtI/r6t9UgSd8
+ 36SvwdRGf7BIEe3dSmMGO9IqLg==
+X-Google-Smtp-Source: ABdhPJxNdpjMBaxv04Np/J/tJKVtP0qIehTtqoqEULck0k4pYP27+H3m2/MaKclQTAZAaqJQhLiqIw==
+X-Received: by 2002:a17:90a:dac2:: with SMTP id
+ g2mr14392631pjx.45.1629957082083; 
+ Wed, 25 Aug 2021 22:51:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+ by smtp.gmail.com with ESMTPSA id c24sm2088939pgj.11.2021.08.25.22.51.21
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Aug 2021 22:51:21 -0700 (PDT)
+Date: Wed, 25 Aug 2021 22:51:20 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Keith Packard <keithp@keithp.com>
+Cc: linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@codeaurora.org>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Nilesh Javali <njavali@marvell.com>,
+ Manish Rangankar <mrangankar@marvell.com>,
+ GR-QLogic-Storage-Upstream@marvell.com,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Larry Finger <Larry.Finger@lwfinger.net>,
+ Phillip Potter <phil@philpotter.co.uk>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Fabio Aiuto <fabioaiuto83@gmail.com>,
+ Ross Schmidt <ross.schm.dev@gmail.com>,
+ Marco Cesati <marcocesati@gmail.com>, ath10k@lists.infradead.org,
  linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev, Rasmus
- Villemoes <linux@rasmusvillemoes.dk>, Dan Williams
- <dan.j.williams@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>,
+ linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>,
  clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] treewide: Replace 0-element memcpy()
- destinations with flexible arrays
-In-Reply-To: <20210826050458.1540622-4-keescook@chromium.org>
+Subject: Re: [PATCH v2 3/5] treewide: Replace 0-element memcpy() destinations
+ with flexible arrays
+Message-ID: <202108252250.C1DAEE5@keescook>
 References: <20210826050458.1540622-1-keescook@chromium.org>
  <20210826050458.1540622-4-keescook@chromium.org>
-Date: Wed, 25 Aug 2021 22:24:18 -0700
-Message-ID: <87r1egpym5.fsf@keithp.com>
+ <87r1egpym5.fsf@keithp.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87r1egpym5.fsf@keithp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210825_222428_531853_95F692A2 
-X-CRM114-Status: GOOD (  12.29  )
+X-CRM114-CacheID: sfid-20210825_225123_143958_40BA058E 
+X-CRM114-Status: GOOD (  15.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,72 +116,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4962911391100465214=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
---===============4962911391100465214==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha256; protocol="application/pgp-signature"
+On Wed, Aug 25, 2021 at 10:24:18PM -0700, Keith Packard wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> 
+> > In some cases, use of the flex_array() helper is needed when a flexible
+> > array is part of a union.
+> 
+> The code below seems to show that the helper is also needed when the
+> flexible array is the only member of a struct? Or is this just an
+> extension of the 'part of a union' clause?
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+That's correct. I have that documented in the DECLARE_FLEX_ARRAY macro
+itself, but I mis-spoke in this changelog here (the uses were for "alone
+in a struct"). I've adjusted the changelog now. :)
 
-Kees Cook <keescook@chromium.org> writes:
+Thanks!
 
-> In some cases, use of the flex_array() helper is needed when a flexible
-> array is part of a union.
+-Kees
 
-The code below seems to show that the helper is also needed when the
-flexible array is the only member of a struct? Or is this just an
-extension of the 'part of a union' clause?
-
-> @@ -160,7 +160,7 @@ struct bmi_cmd {
->=20=20
->  union bmi_resp {
->  	struct {
-> -		u8 payload[0];
-> +		DECLARE_FLEX_ARRAY(u8, payload);
->  	} read_mem;
->  	struct {
->  		__le32 result;
-
-=2D-=20
-=2Dkeith
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEw4O3eCVWE9/bQJ2R2yIaaQAAABEFAmEnJYIACgkQ2yIaaQAA
-ABFJwg/9HnuEf5sIRlyVndEk8XKVsPy1mM63I9dwsOPTB031099GdKund7uEfybJ
-1kjf3GQv9nMAM0Cq3Uoiqfqv2liuTW2dGKBY2wHAVOtWjQXyTiN3NP3iNx1kVd7X
-txLF08RakTjjbca72QM9P47VuaJMHchiiYQfGrUxaQY9/lUuyR1DawpZLomXT9kV
-fUuBUpYUO/Xta1zs/e6IudCJRL0h6Hlk2nLqV+zrjTNsbEhI+Ztd0Lv40VrIVfUJ
-ZXMCNHomviUCwybnTodcUdtWYU5JqokjGWqYZawyErshiEew6AiM1e5CHkl0fDQU
-OUSteni1sY0nJ32L74MN0A2vjPcOeY3lzE8FTxeY7BzbAorxELYD4jBXhopA0+MW
-CPXS0xfn6crMm2vyFH+6YB2udPlLr1+n0qfxaYr36Tr+dZ81D0lJ5g5UjX4J6q3G
-nqx/vxHjWYvTQpHVZCstuABCHad/J/0X9SRS4xwu4983bMwDOCfKCkF+RNitHfpO
-/m+mzWJYEQokqKtj/V8i1PDUYhpWO9Kx7G2zQZ31le75zrcfKmBccid3m65Z0OAD
-e0w8NfJ1NDwSFTl4duKB8gE5gNKuppuzLlDBQWhrqIK+5mKCapZ0sCjSqJjVxNjK
-Q41Bm6/blVaF0IaP2fnjEbyQYhy9tbuVEwYZ630P5ctqCHxsZ40=
-=cojg
------END PGP SIGNATURE-----
---=-=-=--
+> 
+> > @@ -160,7 +160,7 @@ struct bmi_cmd {
+> >  
+> >  union bmi_resp {
+> >  	struct {
+> > -		u8 payload[0];
+> > +		DECLARE_FLEX_ARRAY(u8, payload);
+> >  	} read_mem;
+> >  	struct {
+> >  		__le32 result;
+> 
+> -- 
+> -keith
 
 
---===============4962911391100465214==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+-- 
+Kees Cook
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============4962911391100465214==--
-
