@@ -2,19 +2,19 @@ Return-Path: <SRS0=M+pE=NT=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BDD2C432BE
-	for <ath10k@archiver.kernel.org>; Sat, 28 Aug 2021 07:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 215A5C4320A
+	for <ath10k@archiver.kernel.org>; Sat, 28 Aug 2021 07:51:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC49A610A8
-	for <ath10k@archiver.kernel.org>; Sat, 28 Aug 2021 07:32:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC49A610A8
+	by mail.kernel.org (Postfix) with ESMTPS id B6DC0610D0
+	for <ath10k@archiver.kernel.org>; Sat, 28 Aug 2021 07:51:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B6DC0610D0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,51 +23,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OFF564G9kYJRAw2i2Uwp3B/jJzD573B+Pn2uB1b0YeQ=; b=cpWLaIfOzVZfp8
-	SWTJ9fO72Vk44TR0j3pRLSkyx01RO+3FNJAQC+kTLOR/m9/MZsIHcmR5uZZpOfVzyQW5jAL27zml3
-	qRdygiZ5dmN2xsiiUOzSHvu1zCjg+mSYGSumU0Ev9POBIPY2AC1N2V9P8mkp/6ZGJR+iGfjlOYb4U
-	rn5iI5aVxLmRGAygU2Nd2CRgbCWxCT3XkNhPZczsiYHU8UZ7eMLh56KJLH1IiO4mOTXjkQj1I+N67
-	QR3XVrl+OBOC1/AntZ1ssvyr5AC0Wj8BaVXDcmRAXqq+35DPUERe44sSKdk/v1tZcNfzvWXoEEoNx
-	0I0FYQb1I0JXpY4bnPPA==;
+	List-Owner; bh=OFQJ8/Dw2AdU9NG+BYVmLynD82HuV/r3u4Id4C3zGGw=; b=Fm+h5YHNWof38q
+	FEMQkuqHF6CrAppMAMV1THngH6bgnwHCeJRWCjznE3EkA/OpjYerhiRk2RLO89eimizJN2K6UtI5h
+	SxJc2/St5l/0mqVvRN3FC7Kk2tE/r1cXofuYGxH1MQMEhE4QXNvqT7BnuiNdS6vMuK4SuH68rBBcm
+	/3NvvqZVIh5YU05zd7BrlMerUe/68qU8kChAJ8d8dXNXu01YmgTA0OUqvrAJnq4ehhqzztEjAS3tF
+	WYFbI0yjDGxErXtzXQX4o8A5SJmpz+/Jp6vwE4f6WMDk65/RuBP65YngLLc7/DTOqEgstXXCok5I7
+	cl+b77ROy0K9cEyYp2gA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mJsoM-00DqbZ-HQ; Sat, 28 Aug 2021 07:31:30 +0000
-Received: from mail-pl1-f174.google.com ([209.85.214.174])
+	id 1mJt80-00DsFL-6Z; Sat, 28 Aug 2021 07:51:48 +0000
+Received: from mail-pf1-f170.google.com ([209.85.210.170])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mJsoJ-00Dqb6-6q
- for ath10k@lists.infradead.org; Sat, 28 Aug 2021 07:31:29 +0000
-Received: by mail-pl1-f174.google.com with SMTP id x16so3890751pll.2
- for <ath10k@lists.infradead.org>; Sat, 28 Aug 2021 00:31:26 -0700 (PDT)
+ id 1mJt7w-00DsET-He
+ for ath10k@lists.infradead.org; Sat, 28 Aug 2021 07:51:46 +0000
+Received: by mail-pf1-f170.google.com with SMTP id 2so7761114pfo.8
+ for <ath10k@lists.infradead.org>; Sat, 28 Aug 2021 00:51:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=72FGwkr2cgYiG2mCqnRFPrgyEIFWlTQT13Q2rpcWR6c=;
- b=D2aepReE/4TLWnsorp3IqQ8u9+sxIfxM1cP4NTYKD+F/cV4rNv7PHTzfTcUY3XbTP+
- xMDJTFbDltcgBZnR+tE+hzyXPfKf6OyJ42cyWO0/tDO6RKfkZnLXb4pUOPUmBQwWYfz6
- 8JqCtHZhubUEy6BEtATlfTAbErkOt7Ai9MLSm+X08ANaI3yyKHeV844umPtnUO29ZZel
- 9o33OjJMjqWeZTwsOxZW7ODIwnRO/yUcJlq08f5Q0JnQdflVn6ezaoBwfMF6T+MPJXLo
- 2cF4PWAyEy2+UF3NFL6DMeCZg1ubrNFcwiqoIqtbmnrPnpRLU+BXO+YQvvRsq7fn8a5a
- f5lg==
-X-Gm-Message-State: AOAM5310I2EgtqjxSJ90DnGC9+sZMGtLwMXAabgKM25WtjtQyMzXf5ci
- oItN06r4cPVjkCqSWvNI9k0W5l8IIFXrLQFGpo4=
-X-Google-Smtp-Source: ABdhPJzVwiRr/iufrwRsD3iA1dLD0/75TS+nkg+Sq3eKriL7lOlxSYaVCBACpKhZsKqGUkHhvzxRECVhEBWX+9qFs7M=
-X-Received: by 2002:a17:902:9b89:b0:12d:7f02:f6a5 with SMTP id
- y9-20020a1709029b8900b0012d7f02f6a5mr12373883plp.39.1630135885761; Sat, 28
- Aug 2021 00:31:25 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=1wqL87jp9NAcmtPmdcijAMjQVRVrPdPqiMuKQlptPl0=;
+ b=p+cIOSPaoxknRbm1kCOaIjY2k6CnHOX1lM+9N1ue8UUfp2KUHp0Ed9tr8cGSH3rBhD
+ zbsIQ5VNl8BZroHvLUgOzquplP3ylFUKAUnuSdmTosr2diTRAOFKkEOge+L0dKtGJ1wf
+ Dvx3Qmx9fiy8Ewxxueck6oZGndlP+Li4PEAG5Lv7nyK+b0LJ7A7eU5ZjDkpOnREZWJ9/
+ yEfmDGvGybI3CmIRRMttJUMW3o7ZzfNXEKyS/oMgMfbZVvG9BoYteJv1E9gwQMMTj/ia
+ lBGutdUQc6fyiXKeANEiJ81GkBs0bDUg7EgfzMmhpbw0btxPw7kVKhOCfQk5dap0xtLB
+ GTUQ==
+X-Gm-Message-State: AOAM533hQ1T40Fjb76qtoRjmc+2g76o2NsaBnMN9JdLJZH/x8oFu3qJ7
+ rVZ1IvGEBV6oTMwCD3qQBgJSFy8mmvOI0aNEmrk=
+X-Google-Smtp-Source: ABdhPJzlWxQATFXoMY9VVsoEDSkf3mluUAWqH2Gb3/0mV7ZXmjgNJPsIbgwTwOCchGFF36dFdnXFPeS1zWZD/wBHykA=
+X-Received: by 2002:a62:7c55:0:b0:3f2:7ea0:93bc with SMTP id
+ x82-20020a627c55000000b003f27ea093bcmr7902699pfc.36.1630137100882; Sat, 28
+ Aug 2021 00:51:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826050458.1540622-1-keescook@chromium.org>
- <20210826050458.1540622-3-keescook@chromium.org>
- <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
- <202108270915.B4DD070AF@keescook>
-In-Reply-To: <202108270915.B4DD070AF@keescook>
+References: <20210827163015.3141722-1-keescook@chromium.org>
+ <20210827163015.3141722-3-keescook@chromium.org>
+In-Reply-To: <20210827163015.3141722-3-keescook@chromium.org>
 From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date: Sat, 28 Aug 2021 16:31:14 +0900
-Message-ID: <CAMZ6Rq+b1wy3miNvXyeM5Cbp16CH78RKRf2WxUSL4s4w5=+aYg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
+Date: Sat, 28 Aug 2021 16:51:29 +0900
+Message-ID: <CAMZ6RqJjD1_eZRnKEb8AvKOTua-WCRbATXEBbKWcD4mY9TD_hQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] treewide: Replace open-coded flex arrays in unions
 To: Kees Cook <keescook@chromium.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- open list <linux-kernel@vger.kernel.org>, 
+Cc: open list <linux-kernel@vger.kernel.org>, 
  "Gustavo A. R. Silva" <gustavoars@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
  Ayush Sawal <ayush.sawal@chelsio.com>,
  Vinay Kumar Yadav <vinay.yadav@chelsio.com>, 
@@ -84,7 +81,7 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
  KP Singh <kpsingh@kernel.org>, Johannes Berg <johannes.berg@intel.com>, 
  Mordechay Goodstein <mordechay.goodstein@intel.com>,
  Lee Jones <lee.jones@linaro.org>, 
- Wolfgang Grandegger <wg@grandegger.com>, 
+ Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
  Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>, 
  Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
  linux-crypto@vger.kernel.org, 
@@ -95,8 +92,8 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
  Dan Williams <dan.j.williams@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>,
  clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210828_003127_300110_D80B7615 
-X-CRM114-Status: GOOD (  24.16  )
+X-CRM114-CacheID: sfid-20210828_005144_681312_A6619387 
+X-CRM114-Status: GOOD (  22.54  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,92 +105,341 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-TGUgc2FtLiAyOCBhb8O7dCAyMDIxIMOgIDAxOjE3LCBLZWVzIENvb2sgPGtlZXNjb29rQGNocm9t
-aXVtLm9yZz4gYSDDqWNyaXQgOgo+Cj4gT24gVGh1LCBBdWcgMjYsIDIwMjEgYXQgMDg6MjQ6NTJB
-TSArMDIwMCwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6Cj4gPiBbLi4uXQo+ID4gQlRXOiBJcyB0
-aGVyZSBvcHBvcnR1bml0eSBmb3IgY29udmVyc2lvbiwgdG9vPwo+ID4KPiA+IHwgZHJpdmVycy9u
-ZXQvY2FuL3BlYWtfY2FuZmQvcGVha19wY2llZmRfbWFpbi5jOjE0NjozMjogd2FybmluZzogYXJy
-YXkgb2YgZmxleGlibGUgc3RydWN0dXJlcwo+Cj4gVW50ZXN0ZWQgcG90ZW50aWFsIHNvbHV0aW9u
-Ogo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9wZWFrX2NhbmZkL3BlYWtfcGNpZWZk
-X21haW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9wZWFrX2NhbmZkL3BlYWtfcGNpZWZkX21haW4uYwo+
-IGluZGV4IDFkZjNjNGI1NGYwMy4uZWZhMmI1YTUyYmQ3IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
-bmV0L2Nhbi9wZWFrX2NhbmZkL3BlYWtfcGNpZWZkX21haW4uYwo+ICsrKyBiL2RyaXZlcnMvbmV0
-L2Nhbi9wZWFrX2NhbmZkL3BlYWtfcGNpZWZkX21haW4uYwo+IEBAIC0xNDMsNyArMTQzLDExIEBA
-IHN0cnVjdCBwY2llZmRfcnhfZG1hIHsKPiAgICAgICAgIF9fbGUzMiBpcnFfc3RhdHVzOwo+ICAg
-ICAgICAgX19sZTMyIHN5c190aW1lX2xvdzsKPiAgICAgICAgIF9fbGUzMiBzeXNfdGltZV9oaWdo
-Owo+IC0gICAgICAgc3RydWN0IHB1Y2FuX3J4X21zZyBtc2dbXTsKPiArICAgICAgIC8qCj4gKyAg
-ICAgICAgKiB3aXRoICJtc2ciIGJlaW5nIHBjaWVmZF9pcnFfcnhfY250KHByaXYtPmlycV9zdGF0
-dXMpLW1hbnkKPiArICAgICAgICAqIHZhcmlhYmxlLXNpemVkIHN0cnVjdCBwdWNhbl9yeF9tc2cg
-Zm9sbG93aW5nLgo+ICsgICAgICAgICovCj4gKyAgICAgICBfX2xlMzIgbXNnW107CgpJc24ndCB1
-OCBtc2dbXSBwcmVmZXJhYmxlIGhlcmU/Cgo+ICB9IF9fcGFja2VkIF9fYWxpZ25lZCg0KTsKPgo+
-ICAvKiBUeCBMaW5rIHJlY29yZCAqLwo+IEBAIC0zMjcsNyArMzMxLDcgQEAgc3RhdGljIGlycXJl
-dHVybl90IHBjaWVmZF9pcnFfaGFuZGxlcihpbnQgaXJxLCB2b2lkICphcmcpCj4KPiAgICAgICAg
-IC8qIGhhbmRsZSByeCBtZXNzYWdlcyAoaWYgYW55KSAqLwo+ICAgICAgICAgcGVha19jYW5mZF9o
-YW5kbGVfbXNnc19saXN0KCZwcml2LT51Y2FuLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHJ4X2RtYS0+bXNnLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIChzdHJ1Y3QgcHVjYW5fcnhfbXNnICopcnhfZG1hLT5tc2csCj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgcGNpZWZkX2lycV9yeF9jbnQocHJpdi0+aXJxX3N0YXR1cykp
-Owo+Cj4gICAgICAgICAvKiBoYW5kbGUgdHggbGluayBpbnRlcnJ1cHQgKGlmIGFueSkgKi8KPgo+
-Cj4gSXQncyBub3QgZ3JlYXQsIGJ1dCBpdCdzIGFsc28gbm90IHN0cmljdGx5IGEgZmxleCBhcnJh
-eSwgaW4gdGhlIHNlbnNlCj4gdGhhdCBzaW5jZSBzdHJ1Y3QgcHVjYW5fcnhfbXNnIGlzIGEgdmFy
-aWFibGUgc2l6ZSwgdGhlIGNvbXBpbGVyIGNhbm5vdAo+IHJlYXNvbiBhYm91dCB0aGUgc2l6ZSBv
-ZiBzdHJ1Y3QgcGNpZWZkX3J4X2RtYSBiYXNlZCBvbmx5IG9uIHRoZQo+IGlycV9zdGF0dXMgZW5j
-b2RpbmcuLi4KCkluIHRoZSBzYW1lIHNwaXJpdCwgaXQgaXMgYSBiaXQgY2xlYW5lciB0byBjaGFu
-Z2UgdGhlIHByb3RvdHlwZSBvZgpoYW5kbGVfbXNnc19saXN0KCkuCgpMaWtlIHRoYXQ6CgoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9wZWFrX2NhbmZkL3BlYWtfY2FuZmQuYyBiL2RyaXZl
-cnMvbmV0L2Nhbi9wZWFrX2NhbmYKZC9wZWFrX2NhbmZkLmMKaW5kZXggZDA4NzE4ZTk4ZTExLi44
-MWE5ZmFhNjE5M2YgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9wZWFrX2NhbmZkL3BlYWtf
-Y2FuZmQuYworKysgYi9kcml2ZXJzL25ldC9jYW4vcGVha19jYW5mZC9wZWFrX2NhbmZkLmMKQEAg
-LTQ4NCw5ICs0ODQsOCBAQCBpbnQgcGVha19jYW5mZF9oYW5kbGVfbXNnKHN0cnVjdCBwZWFrX2Nh
-bmZkX3ByaXYgKnByaXYsCgogLyogaGFuZGxlIGEgbGlzdCBvZiByeF9jb3VudCBtZXNzYWdlcyBm
-cm9tIHJ4X21zZyBtZW1vcnkgYWRkcmVzcyAqLwogaW50IHBlYWtfY2FuZmRfaGFuZGxlX21zZ3Nf
-bGlzdChzdHJ1Y3QgcGVha19jYW5mZF9wcml2ICpwcml2LAotICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHN0cnVjdCBwdWNhbl9yeF9tc2cgKm1zZ19saXN0LCBpbnQgbXNnX2NvdW50KQor
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZvaWQgKm1zZ19wdHIsIGludCBtc2dfY291
-bnQpCiB7Ci0gICAgICAgdm9pZCAqbXNnX3B0ciA9IG1zZ19saXN0OwogICAgICAgIGludCBpLCBt
-c2dfc2l6ZSA9IDA7CgogICAgICAgIGZvciAoaSA9IDA7IGkgPCBtc2dfY291bnQ7IGkrKykgewpk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3BlYWtfY2FuZmQvcGVha19jYW5mZF91c2VyLmgg
-Yi9kcml2ZXJzL25ldC9jYW4vcGVhawpfY2FuZmQvcGVha19jYW5mZF91c2VyLmgKaW5kZXggYTcy
-NzE5ZGMzYjc0Li5lZjkxZjkyZTcwYzMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9wZWFr
-X2NhbmZkL3BlYWtfY2FuZmRfdXNlci5oCisrKyBiL2RyaXZlcnMvbmV0L2Nhbi9wZWFrX2NhbmZk
-L3BlYWtfY2FuZmRfdXNlci5oCkBAIC00Miw1ICs0Miw1IEBAIHN0cnVjdCBuZXRfZGV2aWNlICph
-bGxvY19wZWFrX2NhbmZkX2RldihpbnQKc2l6ZW9mX3ByaXYsIGludCBpbmRleCwKIGludCBwZWFr
-X2NhbmZkX2hhbmRsZV9tc2coc3RydWN0IHBlYWtfY2FuZmRfcHJpdiAqcHJpdiwKICAgICAgICAg
-ICAgICAgICAgICAgICAgICBzdHJ1Y3QgcHVjYW5fcnhfbXNnICptc2cpOwogaW50IHBlYWtfY2Fu
-ZmRfaGFuZGxlX21zZ3NfbGlzdChzdHJ1Y3QgcGVha19jYW5mZF9wcml2ICpwcml2LAotICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBwdWNhbl9yeF9tc2cgKnJ4X21zZywgaW50
-IHJ4X2NvdW50KTsKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2b2lkICptc2dfcHRy
-LCBpbnQgcnhfY291bnQpOwogI2VuZGlmCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vcGVh
-a19jYW5mZC9wZWFrX3BjaWVmZF9tYWluLmMKYi9kcml2ZXJzL25ldC9jYW4vcGVha19jYW5mZC9w
-ZWFrX3BjaWVmZF9tYWluLmMKaW5kZXggMWRmM2M0YjU0ZjAzLi5jMWRlMWUzZGM0YmMgMTAwNjQ0
-Ci0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9wZWFrX2NhbmZkL3BlYWtfcGNpZWZkX21haW4uYworKysg
-Yi9kcml2ZXJzL25ldC9jYW4vcGVha19jYW5mZC9wZWFrX3BjaWVmZF9tYWluLmMKQEAgLTE0Myw3
-ICsxNDMsMTEgQEAgc3RydWN0IHBjaWVmZF9yeF9kbWEgewogICAgICAgIF9fbGUzMiBpcnFfc3Rh
-dHVzOwogICAgICAgIF9fbGUzMiBzeXNfdGltZV9sb3c7CiAgICAgICAgX19sZTMyIHN5c190aW1l
-X2hpZ2g7Ci0gICAgICAgc3RydWN0IHB1Y2FuX3J4X21zZyBtc2dbXTsKKyAgICAgICAvKgorICAg
-ICAgICAqIHdpdGggIm1zZyIgYmVpbmcgcGNpZWZkX2lycV9yeF9jbnQocHJpdi0+aXJxX3N0YXR1
-cyktbWFueQorICAgICAgICAqIHZhcmlhYmxlLXNpemVkIHN0cnVjdCBwdWNhbl9yeF9tc2cgZm9s
-bG93aW5nLgorICAgICAgICAqLworICAgICAgIHU4IG1zZ1tdOwogfSBfX3BhY2tlZCBfX2FsaWdu
-ZWQoNCk7CgogLyogVHggTGluayByZWNvcmQgKi8KCgpBbm90aGVyIHNvbHV0aW9uIHdvdWxkIGJl
-IHRvIGRlY2xhcmUgYSBtYXhpbXVtIGxlbmd0aCBmb3Igc3RydWN0CnB1Y2FuX3J4X21zZzo6ZC4g
-QmVjYXVzZSB0aGVzZSBhcmUgQ0FOIEZEIG1lc3NhZ2VzLCBJIHN1cHBvc2UKdGhhdCBtYXhpbXVt
-IGxlbmd0aCB3b3VsZCBiZSBDQU5GRF9NQVhfRExFTi4gc3RydWN0IGNhbmZkX2ZyYW1lCmZyb20g
-dGhlIFVBUEkgdXNlcyB0aGUgc2FtZSBwYXR0ZXJuLgoKTi5CLiBUaGlzIHNvbHV0aW9uIGlzIG5v
-dCBleGNsdXNpdmUgZnJvbSB0aGUgYWJvdmUgb25lIChhY3R1YWxseSwKSSB0aGluayB0aGF0IHVz
-aW5nIGJvdGggd291bGQgYmUgdGhlIGJlc3Qgc29sdXRpb24pLgoKZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvbGludXgvY2FuL2Rldi9wZWFrX2NhbmZkLmgKYi9pbmNsdWRlL2xpbnV4L2Nhbi9kZXYvcGVh
-a19jYW5mZC5oCmluZGV4IGYzODc3MmZkMGMwNy4uYTA0ODM1OWRiNDMwIDEwMDY0NAotLS0gYS9p
-bmNsdWRlL2xpbnV4L2Nhbi9kZXYvcGVha19jYW5mZC5oCisrKyBiL2luY2x1ZGUvbGludXgvY2Fu
-L2Rldi9wZWFrX2NhbmZkLmgKQEAgLTE4OSw3ICsxODksNyBAQCBzdHJ1Y3QgX19wYWNrZWQgcHVj
-YW5fcnhfbXNnIHsKICAgICAgICB1OCAgICAgIGNsaWVudDsKICAgICAgICBfX2xlMTYgIGZsYWdz
-OwogICAgICAgIF9fbGUzMiAgY2FuX2lkOwotICAgICAgIHU4ICAgICAgZFtdOworICAgICAgIHU4
-ICAgICAgZFtDQU5GRF9NQVhfRExFTl07CiB9OwoKIC8qIHVDQU4gZXJyb3IgdHlwZXMgKi8KCgoK
-SSBvbmx5IHRlc3RlZCBmb3IgY29tcGlsYXRpb24uCgpZb3VycyBzaW5jZXJlbHksClZpbmNlbnQK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Tue. 28 Aug 2021 at 01:30, Kees Cook <keescook@chromium.org> wrote:
+> In support of enabling -Warray-bounds and -Wzero-length-bounds and
+> correctly handling run-time memcpy() bounds checking, replace all
+> open-coded flexible arrays (i.e. 0-element arrays) in unions with the
+> DECLARE_FLEX_ARRAY() helper macro.
+>
+> This fixes warnings such as:
+>
+> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
+> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
+>   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
+>       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
+> In file included from fs/hpfs/hpfs_fn.h:26,
+>                  from fs/hpfs/anode.c:10:
+> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
+>   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
+>       |                                ^~~~~~~~
+>
+> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
+> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
+>   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
+>       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
+>                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
+> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
+>   231 |   u8 raw_msg[0];
+>       |      ^~~~~~~
+>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+> Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+> Cc: Rohit Maheshwari <rohitm@chelsio.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Stanislaw Gruszka <stf_xl@wp.pl>
+> Cc: Luca Coelho <luciano.coelho@intel.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Johannes Berg <johannes.berg@intel.com>
+> Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-scsi@vger.kernel.org
+> Cc: linux-can@vger.kernel.org
+> Cc: bpf@vger.kernel.org
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # drivers/net/can/usb/etas_es58x/*
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/crypto/chelsio/chcr_crypto.h              | 14 +++++++++-----
+>  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
+>  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
+>  drivers/net/wireless/ath/ath10k/htt.h             |  7 +++++--
+>  drivers/net/wireless/intel/iwlegacy/commands.h    |  6 ++++--
+>  drivers/net/wireless/intel/iwlwifi/dvm/commands.h |  6 ++++--
+>  drivers/net/wireless/intel/iwlwifi/fw/api/tx.h    |  6 ++++--
+>  drivers/scsi/aic94xx/aic94xx_sds.c                |  6 ++++--
+>  fs/hpfs/hpfs.h                                    |  8 ++++----
+>  include/linux/filter.h                            |  6 ++++--
+>  include/scsi/sas.h                                | 12 ++++++++----
+>  include/uapi/rdma/rdma_user_rxe.h                 |  4 ++--
+>  include/uapi/sound/asoc.h                         |  4 ++--
+>  13 files changed, 52 insertions(+), 31 deletions(-)
+>
+> diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
+> index e89f9e0094b4..c7816c83e324 100644
+> --- a/drivers/crypto/chelsio/chcr_crypto.h
+> +++ b/drivers/crypto/chelsio/chcr_crypto.h
+> @@ -222,8 +222,10 @@ struct chcr_authenc_ctx {
+>  };
+>
+>  struct __aead_ctx {
+> -       struct chcr_gcm_ctx gcm[0];
+> -       struct chcr_authenc_ctx authenc[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(struct chcr_gcm_ctx, gcm);
+> +               DECLARE_FLEX_ARRAY(struct chcr_authenc_ctx, authenc);
+> +       };
+>  };
+>
+>  struct chcr_aead_ctx {
+> @@ -245,9 +247,11 @@ struct hmac_ctx {
+>  };
+>
+>  struct __crypto_ctx {
+> -       struct hmac_ctx hmacctx[0];
+> -       struct ablk_ctx ablkctx[0];
+> -       struct chcr_aead_ctx aeadctx[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(struct hmac_ctx, hmacctx);
+> +               DECLARE_FLEX_ARRAY(struct ablk_ctx, ablkctx);
+> +               DECLARE_FLEX_ARRAY(struct chcr_aead_ctx, aeadctx);
+> +       };
+>  };
+>
+>  struct chcr_context {
+> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
+> index 4bc60a6df697..667ecb77168c 100644
+> --- a/drivers/net/can/usb/etas_es58x/es581_4.h
+> +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
+> @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
+>                 struct es581_4_rx_cmd_ret rx_cmd_ret;
+>                 __le64 timestamp;
+>                 u8 rx_cmd_ret_u8;
+> -               u8 raw_msg[0];
+> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
+>         } __packed;
+>
+>         __le16 reserved_for_crc16_do_not_use;
+> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
+> index ee18a87e40c0..e33003f96e5e 100644
+> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
+> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
+> @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
+>                 struct es58x_fd_tx_ack_msg tx_ack_msg;
+>                 __le64 timestamp;
+>                 __le32 rx_cmd_ret_le32;
+> -               u8 raw_msg[0];
+> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
+>         } __packed;
+>
+>         __le16 reserved_for_crc16_do_not_use;
+> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+> index ec689e3ce48a..a6de08d3bf4a 100644
+> --- a/drivers/net/wireless/ath/ath10k/htt.h
+> +++ b/drivers/net/wireless/ath/ath10k/htt.h
+> @@ -1674,8 +1674,11 @@ struct htt_tx_fetch_ind {
+>         __le32 token;
+>         __le16 num_resp_ids;
+>         __le16 num_records;
+> -       __le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+> -       struct htt_tx_fetch_record records[];
+> +       union {
+> +               /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+> +               DECLARE_FLEX_ARRAY(__le32, resp_ids);
+> +               DECLARE_FLEX_ARRAY(struct htt_tx_fetch_record, records);
+> +       };
+>  } __packed;
+>
+>  static inline void *
+> diff --git a/drivers/net/wireless/intel/iwlegacy/commands.h b/drivers/net/wireless/intel/iwlegacy/commands.h
+> index 89c6671b32bc..4a97310f8fee 100644
+> --- a/drivers/net/wireless/intel/iwlegacy/commands.h
+> +++ b/drivers/net/wireless/intel/iwlegacy/commands.h
+> @@ -1408,8 +1408,10 @@ struct il3945_tx_cmd {
+>          * MAC header goes here, followed by 2 bytes padding if MAC header
+>          * length is 26 or 30 bytes, followed by payload data
+>          */
+> -       u8 payload[0];
+> -       struct ieee80211_hdr hdr[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(u8, payload);
+> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
+> +       };
+>  } __packed;
+>
+>  /*
+> diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
+> index 235c7a2e3483..75a4b8e26232 100644
+> --- a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
+> +++ b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
+> @@ -1251,8 +1251,10 @@ struct iwl_tx_cmd {
+>          * MAC header goes here, followed by 2 bytes padding if MAC header
+>          * length is 26 or 30 bytes, followed by payload data
+>          */
+> -       u8 payload[0];
+> -       struct ieee80211_hdr hdr[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(u8, payload);
+> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
+> +       };
+>  } __packed;
+>
+>  /*
+> diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
+> index 24e4a82a55da..66c5487e857e 100644
+> --- a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
+> +++ b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
+> @@ -713,8 +713,10 @@ struct iwl_mvm_compressed_ba_notif {
+>         __le32 tx_rate;
+>         __le16 tfd_cnt;
+>         __le16 ra_tid_cnt;
+> -       struct iwl_mvm_compressed_ba_ratid ra_tid[0];
+> -       struct iwl_mvm_compressed_ba_tfd tfd[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_ratid, ra_tid);
+> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_tfd, tfd);
+> +       };
+>  } __packed; /* COMPRESSED_BA_RES_API_S_VER_4 */
+>
+>  /**
+> diff --git a/drivers/scsi/aic94xx/aic94xx_sds.c b/drivers/scsi/aic94xx/aic94xx_sds.c
+> index 46815e65f7a4..5def83c88f13 100644
+> --- a/drivers/scsi/aic94xx/aic94xx_sds.c
+> +++ b/drivers/scsi/aic94xx/aic94xx_sds.c
+> @@ -517,8 +517,10 @@ struct asd_ms_conn_map {
+>         u8    num_nodes;
+>         u8    usage_model_id;
+>         u32   _resvd;
+> -       struct asd_ms_conn_desc conn_desc[0];
+> -       struct asd_ms_node_desc node_desc[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(struct asd_ms_conn_desc, conn_desc);
+> +               DECLARE_FLEX_ARRAY(struct asd_ms_node_desc, node_desc);
+> +       };
+>  } __attribute__ ((packed));
+>
+>  struct asd_ctrla_phy_entry {
+> diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
+> index d92c4af3e1b4..281dec8f636b 100644
+> --- a/fs/hpfs/hpfs.h
+> +++ b/fs/hpfs/hpfs.h
+> @@ -409,10 +409,10 @@ struct bplus_header
+>    __le16 first_free;                   /* offset from start of header to
+>                                            first free node in array */
+>    union {
+> -    struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
+> -                                              subtree pointers */
+> -    struct bplus_leaf_node external[0];            /* (external) 3-word entries giving
+> -                                              sector runs */
+> +       /* (internal) 2-word entries giving subtree pointers */
+> +       DECLARE_FLEX_ARRAY(struct bplus_internal_node, internal);
+> +       /* (external) 3-word entries giving sector runs */
+> +       DECLARE_FLEX_ARRAY(struct bplus_leaf_node, external);
+>    } u;
+>  };
+>
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 472f97074da0..5ca52bfa5868 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -572,8 +572,10 @@ struct bpf_prog {
+>         struct bpf_prog_aux     *aux;           /* Auxiliary fields */
+>         struct sock_fprog_kern  *orig_prog;     /* Original BPF program */
+>         /* Instructions for interpreter */
+> -       struct sock_filter      insns[0];
+> -       struct bpf_insn         insnsi[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(struct sock_filter, insns);
+> +               DECLARE_FLEX_ARRAY(struct bpf_insn, insnsi);
+> +       };
+>  };
+>
+>  struct sk_filter {
+> diff --git a/include/scsi/sas.h b/include/scsi/sas.h
+> index 4726c1bbec65..64154c1fed02 100644
+> --- a/include/scsi/sas.h
+> +++ b/include/scsi/sas.h
+> @@ -323,8 +323,10 @@ struct ssp_response_iu {
+>         __be32 sense_data_len;
+>         __be32 response_data_len;
+>
+> -       u8     resp_data[0];
+> -       u8     sense_data[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(u8, resp_data);
+> +               DECLARE_FLEX_ARRAY(u8, sense_data);
+> +       };
+>  } __attribute__ ((packed));
+>
+>  struct ssp_command_iu {
+> @@ -554,8 +556,10 @@ struct ssp_response_iu {
+>         __be32 sense_data_len;
+>         __be32 response_data_len;
+>
+> -       u8     resp_data[0];
+> -       u8     sense_data[];
+> +       union {
+> +               DECLARE_FLEX_ARRAY(u8, resp_data);
+> +               DECLARE_FLEX_ARRAY(u8, sense_data);
+> +       };
+>  } __attribute__ ((packed));
+>
+>  struct ssp_command_iu {
+> diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+> index e283c2220aba..7f44d54bb0ab 100644
+> --- a/include/uapi/rdma/rdma_user_rxe.h
+> +++ b/include/uapi/rdma/rdma_user_rxe.h
+> @@ -141,8 +141,8 @@ struct rxe_dma_info {
+>         __u32                   sge_offset;
+>         __u32                   reserved;
+>         union {
+> -               __u8            inline_data[0];
+> -               struct rxe_sge  sge[0];
+> +               __DECLARE_FLEX_ARRAY(__u8, inline_data);
+> +               __DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
+>         };
+>  };
+>
+> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+> index da61398b1f8f..053949287ce8 100644
+> --- a/include/uapi/sound/asoc.h
+> +++ b/include/uapi/sound/asoc.h
+> @@ -240,8 +240,8 @@ struct snd_soc_tplg_vendor_array {
+>  struct snd_soc_tplg_private {
+>         __le32 size;    /* in bytes of private data */
+>         union {
+> -               char data[0];
+> -               struct snd_soc_tplg_vendor_array array[0];
+> +               __DECLARE_FLEX_ARRAY(char, data);
+> +               __DECLARE_FLEX_ARRAY(struct snd_soc_tplg_vendor_array, array);
+>         };
+>  } __attribute__((packed));
+
+Thanks for addressing all my remarks on the commit message.
+
+FYI, I compared the assembly code before and after the patch:
+both give the same output (as expected).
+
+Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
