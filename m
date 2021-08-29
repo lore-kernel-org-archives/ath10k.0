@@ -2,73 +2,72 @@ Return-Path: <SRS0=gUy0=NU=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04A1DC432BE
-	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F35EC4320E
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D22F36023E
-	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D22F36023E
+	by mail.kernel.org (Postfix) with ESMTPS id 57B916023E
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 57B916023E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=o28qkl9hFVU3ChV8QAg20CeTyUU5ToH37pWY7ZQbN40=; b=VMVQDZgZ6J2536
-	2Jd3ErLVHksuXSED/Tpf2veImiuvff8I1Xnsnb/8FA9+Vwdn/x75VZYY9Qlrt08TzIWdvSXVdCXkR
-	mbg5e30LMS/rhZDDIRTRNHEchO+sRu3aBXHwW+8IyBkfsqqqi1yJBSgvUWt+tp48c5eoJNREyXucm
-	i1XmQ12ZH8LRapn9ju11irsvHZbfbqqhS0qKykwbWgaYbDe96z2ufzd8VQw7LjknJd+Jmn3O2JP20
-	MPefqWawo4Qjbrwlqwn5pUxkJ43hySkYUSUFHK7RSuYWX/t0HTuvAdvdTH2hD9rx7GMsUjXEdkgfa
-	GyH46UuqFHsuC7Fw/Qug==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WV5sy41gg06RluN9oEaqUUmqaaAlD3JL291k5zdJ8Qc=; b=4s4I4ENxqpKvda
+	PpJQbP/U0pxRexkyMeZMER83q3VQmhlu2GLEJLLbFRFmaOC2/u3xVtDAlvTSNelclumrYPWR4B7kw
+	5Xwo7Q+M746SXEMyW6jdwMpXCc6gZWf7RWIik08kaRku5kGS97ou6h1kFeIhoBsGT948Qs08woX5/
+	OYw7OUvxEDY91N+ZJnjf6e/FLZfTaYGLTCaNOkaXQJUabsBrquM+ObdvepQ1gduqTjKcZFUEISn1K
+	wUZG7YdlfaAxTp4IWuXCdGELJO/XRv034RiwsZsbcYOi7OOC/KiyFaYeS0MXzRFlboudpjFvEV/Km
+	151XPldkC5YHsi3Mg24g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mKKci-00FWvQ-Rp; Sun, 29 Aug 2021 13:13:20 +0000
-Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
+	id 1mKKdp-00FXjg-IS; Sun, 29 Aug 2021 13:14:30 +0000
+Received: from mail-lj1-x235.google.com ([2a00:1450:4864:20::235])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKKcb-00FWrr-B0
- for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:18 +0000
-Received: by mail-lf1-x12c.google.com with SMTP id k5so25303480lfu.4
- for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:11 -0700 (PDT)
+ id 1mKKcj-00FWvL-Pe
+ for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:29 +0000
+Received: by mail-lj1-x235.google.com with SMTP id w4so20667386ljh.13
+ for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=VaIELk3aejG928b4attVmLHeHooVAXSsVOw7u++6ic8=;
- b=NBuVmcUEZj+2izFzWo7km7GIur/VKIWIdCygLu4Gtd5j+RVmNsWMrgh04N2TZuSMfU
- qOCfcwDEjE8ZtdKrslnPtXszndze+62w2XWwb6xGVsH1q3jBWtuTLCb9KuSLNbPPRhlK
- IbpDOICgqNbLc24No+PMG8DhLUM2mN/elJS0GRGV4rFr6iSEdeGZxaI/ykar8IBYY9uy
- Mctoi0prxcBGI+UT9DvbqIAUUP2Iz4yWSGuhWEeXcrakwQ1fy45teTG3uj0aqnye2YP6
- lXtLTZX24wvaqQuWHyNbc/msMLpxxBuORKzKEUoSATLWOgQ2fAAvsiPWesmAzPXBNpqI
- WsVQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=DZOpdA3eYjpudg4OpQFFkH8jLHw3BxsNdxzTMff7kgw=;
+ b=JYgvhRh/XMbWSmh2hHQ6low2HT/EK5Db15j4xEn196MVYAmhicQUPTkqK33Ygf5yJV
+ rIzHsKI+Z3ckWJRnIUe8dzDewGj8MNiCcN3JIyjVk8xGm0jTD/fexByf4nfLDCRojILy
+ /oSMgUZwtgSQTDfCyHKl3j2WvWHGMsledNkCtgxqqMzm9IvPQvg4CFrG2Jlfglgj36iX
+ PooxcxfGHTuPO6c6gyEHfNmzBVsimJZLJTGHu6co+MuRlWDTVLxi4vVmD0a2oxg5N+8h
+ 2NOSABtA1NVG0Xv+u7omjq/8kK4obaak3LZh0U+Pdzi6pCOqwezV15LMpV08KYXIqDFE
+ T49A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=VaIELk3aejG928b4attVmLHeHooVAXSsVOw7u++6ic8=;
- b=shyn24IvXxrc8PT03Nd/yMt13ny3N0f3cUezGIsyU4IopI6ee+sYUKs9LpSUCtd7yk
- qf8zmtGQyYOeLgY8s19ChmoX+VJvckE5zM7IbJzD0sqokXYCv2zlRx9RtAm6MHBwNHHv
- PWNB9qpjxR37wGdJayClZElUpD+0SgUxZWVwYDROgpIgEqifwqXR56tY+blNSSLWeOxv
- jawuWV8FgpXADXeVSWysT7h/3LH7xJ8+HlcREBH5oJAPHlhhKKbHAK2867lW+C1OkBy3
- gCe6BOB99ifWFuadLjdO7tKqVA5YZ41Hx/vVK2L9NW5ZDdSAPfUyXw1IEyJGmdN914II
- II2Q==
-X-Gm-Message-State: AOAM53157J69jcWklF2wFjldPKY/5gZDSpLXYscnEF6Dig5hPz9TGA9W
- wNs69/PaiJns6MScG57eTYk3cw==
-X-Google-Smtp-Source: ABdhPJxoTTCTULxN0AI0ux6Ox/vGsWyAWulCZNHRsyc3AM9WfbWCnshA9YjeDZK67Cxvk0WaVZLaHA==
-X-Received: by 2002:a05:6512:6cd:: with SMTP id
- u13mr13935373lff.184.1630242789821; 
- Sun, 29 Aug 2021 06:13:09 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=DZOpdA3eYjpudg4OpQFFkH8jLHw3BxsNdxzTMff7kgw=;
+ b=gv9CQV9S5jO99/5ftiKSMZQBuZ3BDLV7bKTHr3qRvMzZFJtOKWMFkm916kLhB9hPRS
+ u5myf2okNAziA2byBuCDeILuJ5eQZl5FInFkegHBp1iqgN30ORBnCJFfSipRUOL/z+IC
+ ICvlmRgrs3vxm5gjmqE+wEtnuw0vC3K1j8z+FD0n+zGjK0aC6cItwxr7U0HKK3c4Fbik
+ dgEu3lqTiDfDxhiJrJ5QMMzVfMmcCh/thunlWvImnzSBAXRTQVBlez6MI3TOqXeXJTmG
+ QONBbfQqYOyXNRCzt+QkOObyRBmC3vNr/Dc3weLYG7L1+f/CipaNlpDeBMpDs4iL1p5w
+ 2OzQ==
+X-Gm-Message-State: AOAM530tfsznrcc4ARbL988UX6pFzvpKBwiEY1GdjZ8czxX/n+DnjPqs
+ HRMxJM6Pi6i4Dab9Bc7cXOdvWTHqAqFNiA==
+X-Google-Smtp-Source: ABdhPJwN0RnHneAiBvwIuepF2POuNFYC+7soqzPBkiEXgB5t1sLpCiFezga+nEjbYoWJ71ExIPe4Iw==
+X-Received: by 2002:a2e:b605:: with SMTP id r5mr16548450ljn.283.1630242800140; 
+ Sun, 29 Aug 2021 06:13:20 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.09
+ by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 29 Aug 2021 06:13:09 -0700 (PDT)
+ Sun, 29 Aug 2021 06:13:19 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -82,14 +81,18 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [RFC v2 00/13] create power sequencing subsystem
-Date: Sun, 29 Aug 2021 16:12:52 +0300
-Message-Id: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+Subject: [RFC v2 13/13] WIP: arm64: dts: qcom: qrb5165-rb5: add bus-pwrseq
+ property to pcie0
+Date: Sun, 29 Aug 2021 16:13:05 +0300
+Message-Id: <20210829131305.534417-14-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210829_061313_487064_88795EF5 
-X-CRM114-Status: GOOD (  14.46  )
+X-CRM114-CacheID: sfid-20210829_061321_897138_38276490 
+X-CRM114-Status: UNSURE (   8.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,55 +109,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This is the second RFC on the proposed power sequencer subsystem. This
-is a generification of the MMC pwrseq code. The subsystem tries to
-abstract the idea of complex power-up/power-down/reset of the devices.
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-To ease migration to pwrseq and to provide compatibility with older
-device trees, while keeping drivers simple, this iteration of RFC
-introduces pwrseq fallback support: pwrseq driver can register fallback
-providers. If another device driver requests pwrseq instance and none
-was declared, the pwrseq fallback code would go through the list of
-fallback providers and if the match is found, driver would return a
-crafted pwrseq instance. For now this mechanism is limited to the OF
-device matching, but it can be extended further to use any combination
-of device IDs.
-
-The primary set of devices that promted me to create this patchset is
-the Qualcomm BT+WiFi family of chips. They reside on serial+platform or
-serial + SDIO interfaces (older generations) or on serial+PCIe (newer
-generations).  They require a set of external voltage regulators to be
-powered on and (some of them) have separate WiFi and Bluetooth enable
-GPIOs.
-
-This patchset being an RFC tries to demonstrate the approach, design and
-usage of the pwrseq subsystem. Following issues are present in the RFC
-at this moment but will be fixed later if the overall approach would be
-viewed as acceptable:
-
- - No documentation
-   While the code tries to be self-documenting proper documentation
-   would be required.
-
- - Minimal device tree bindings changes
-   There are no proper updates for the DT bindings (thus neither Rob
-   Herring nor devicetree are included in the To/Cc lists). The dt
-   schema changes would be a part of v1.
-
- - Lack of proper PCIe integration
-   At this moment support for PCIe is hacked up to be able to test the
-   PCIe part of qca6390. Proper PCIe support would require automatically
-   powering up the devices before the bus scan depending on the proper
-   device structure in the device tree.
-
-Changes since RFC v1:
- - Provider pwrseq fallback support
- - Implement fallback support in pwrseq_qca.
- - Mmove susclk handling to pwrseq_qca.
- - Significantly simplify hci_qca.c changes, by dropping all legacy
-   code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
-   parts of the chip.
-
+diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+index 326330f528fc..0c347cb6f8e0 100644
+--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
++++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+@@ -689,6 +689,7 @@ wifi-therm@1 {
+ 
+ &pcie0 {
+ 	status = "okay";
++	bus-pwrseq = <&qca_pwrseq 0>;
+ };
+ 
+ &pcie0_phy {
+-- 
+2.33.0
 
 
 _______________________________________________
