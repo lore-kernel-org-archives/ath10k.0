@@ -1,99 +1,97 @@
-Return-Path: <SRS0=M+pE=NT=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=gUy0=NU=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 215A5C4320A
-	for <ath10k@archiver.kernel.org>; Sat, 28 Aug 2021 07:51:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1386C41537
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:13:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6DC0610D0
-	for <ath10k@archiver.kernel.org>; Sat, 28 Aug 2021 07:51:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B6DC0610D0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id 723DF60F39
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:13:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 723DF60F39
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OFQJ8/Dw2AdU9NG+BYVmLynD82HuV/r3u4Id4C3zGGw=; b=Fm+h5YHNWof38q
-	FEMQkuqHF6CrAppMAMV1THngH6bgnwHCeJRWCjznE3EkA/OpjYerhiRk2RLO89eimizJN2K6UtI5h
-	SxJc2/St5l/0mqVvRN3FC7Kk2tE/r1cXofuYGxH1MQMEhE4QXNvqT7BnuiNdS6vMuK4SuH68rBBcm
-	/3NvvqZVIh5YU05zd7BrlMerUe/68qU8kChAJ8d8dXNXu01YmgTA0OUqvrAJnq4ehhqzztEjAS3tF
-	WYFbI0yjDGxErXtzXQX4o8A5SJmpz+/Jp6vwE4f6WMDk65/RuBP65YngLLc7/DTOqEgstXXCok5I7
-	cl+b77ROy0K9cEyYp2gA==;
+	List-Owner; bh=I/bJbLUOp59LZcK+CWMwQjYisg8UOPMok3W2tBrfWgk=; b=LrphLxzql5P38l
+	yTs7rFgXuW9SCinQ5WgfLlNmqAc1ackqhAo1ZxESVOH27K+89G+au2KDiLlDLMYVLW529ZYGU7kTh
+	eZZWTHw7UK3G0VQgT8L9pdYjN9lX7kr60/82MgrK9LTGOAP1CTmrWi+Y7TqwFgyUzSshm7VoJFGOi
+	92MDlrFqW4em44gAEk2yhZSB9rVcRgKW2aPWDG8PytH7like99VKtZLHbJeNxzu3bCQFEp3kS85TW
+	Ndxo5hX4RSGBKD7xsgcn5Bk3s2y3LMY7ZDHJC0fTNQmU3BRUNcjvfKyY2okYNRmpsTryeWMqWkwNK
+	28SYchnFmmKfDtvecomA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mJt80-00DsFL-6Z; Sat, 28 Aug 2021 07:51:48 +0000
-Received: from mail-pf1-f170.google.com ([209.85.210.170])
+	id 1mKKcr-00FWxj-6l; Sun, 29 Aug 2021 13:13:29 +0000
+Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mJt7w-00DsET-He
- for ath10k@lists.infradead.org; Sat, 28 Aug 2021 07:51:46 +0000
-Received: by mail-pf1-f170.google.com with SMTP id 2so7761114pfo.8
- for <ath10k@lists.infradead.org>; Sat, 28 Aug 2021 00:51:41 -0700 (PDT)
+ id 1mKKce-00FWt2-6o
+ for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:22 +0000
+Received: by mail-lf1-x134.google.com with SMTP id p38so25417167lfa.0
+ for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=W90zCRw/gyIjKh5bN6AdA5a45jbpL+6W+rmSnj/xdRc=;
+ b=MGtT4oebKOHyJUzHFk/GStnDRBlucvXQUdsvl3KqvG83GLCtg/sscD7aUZINgsWWxR
+ mry9SHUjRz6j/EVknFswB9UJeqJc+HnyQYofSptX+47CH9Ql58haBaYJs90uxm4l2ATF
+ HZVJLqaBdi40E8oRdmm2DKIQwzwImyoA5skuvtj15Bv9dhyyYqaJ9LbM8Eh6md+hckVJ
+ ktYNRzdmui0t6n855ydf+ooRalLokWct1cGpCbqeYE3xHBu6sbMZC+6WmTmouvLOH/DQ
+ VsHIFmJZWcKV4tYEZ1LMdwxFFSQaDPf3/4zqG4nB9OBSNwV1dkGh3RLs9xXTAFUsHS79
+ Styg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=1wqL87jp9NAcmtPmdcijAMjQVRVrPdPqiMuKQlptPl0=;
- b=p+cIOSPaoxknRbm1kCOaIjY2k6CnHOX1lM+9N1ue8UUfp2KUHp0Ed9tr8cGSH3rBhD
- zbsIQ5VNl8BZroHvLUgOzquplP3ylFUKAUnuSdmTosr2diTRAOFKkEOge+L0dKtGJ1wf
- Dvx3Qmx9fiy8Ewxxueck6oZGndlP+Li4PEAG5Lv7nyK+b0LJ7A7eU5ZjDkpOnREZWJ9/
- yEfmDGvGybI3CmIRRMttJUMW3o7ZzfNXEKyS/oMgMfbZVvG9BoYteJv1E9gwQMMTj/ia
- lBGutdUQc6fyiXKeANEiJ81GkBs0bDUg7EgfzMmhpbw0btxPw7kVKhOCfQk5dap0xtLB
- GTUQ==
-X-Gm-Message-State: AOAM533hQ1T40Fjb76qtoRjmc+2g76o2NsaBnMN9JdLJZH/x8oFu3qJ7
- rVZ1IvGEBV6oTMwCD3qQBgJSFy8mmvOI0aNEmrk=
-X-Google-Smtp-Source: ABdhPJzlWxQATFXoMY9VVsoEDSkf3mluUAWqH2Gb3/0mV7ZXmjgNJPsIbgwTwOCchGFF36dFdnXFPeS1zWZD/wBHykA=
-X-Received: by 2002:a62:7c55:0:b0:3f2:7ea0:93bc with SMTP id
- x82-20020a627c55000000b003f27ea093bcmr7902699pfc.36.1630137100882; Sat, 28
- Aug 2021 00:51:40 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=W90zCRw/gyIjKh5bN6AdA5a45jbpL+6W+rmSnj/xdRc=;
+ b=VAosyYSlun5xT4WaeiewYHrm0fFo5Xh2ROdTB9vuX/9dPoQxGHqP2Z1prKoJXh3U1J
+ s8SUVxHGByzpK3MBNeXxsmYCS8XVHW9fa8A7jiiMyw8Ln6X2bpTlD2bMzBXrvclgJeZF
+ jpK/+6nB3WFjG67atEAWIcp2ATZcVcMK7sYaqCDf2i3MydedCDbS70lpJTyYAFxxNvwM
+ Sl6A4Wh99D0QdUrn6sQIwi6k/uNngmBStylLLpBITr0V1UhRCyYKb1QjUHkgN5zZmRCd
+ IiwfJH8xnEmkWWp6zFTNj0oVHQ3yisdHGRTGbbrdw2lgxqcPfj0leRlax9WT4J2JDjs6
+ dLnA==
+X-Gm-Message-State: AOAM533OrJKUf2MT4nANGpvUFg0OQFMjvYf93IyA1leMOQnUbPHmdHG2
+ tKYTb9483HPMVvpMbucA/JE2iw==
+X-Google-Smtp-Source: ABdhPJz8ss1hZf/h7XEdWNe+VXrVLZ8dFiYzYa9JHOoN8i2WkbHCSfq9a7aQ5moet2JaOib5Pq53hA==
+X-Received: by 2002:a05:6512:21d1:: with SMTP id
+ d17mr14594374lft.588.1630242794541; 
+ Sun, 29 Aug 2021 06:13:14 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+ by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 29 Aug 2021 06:13:14 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: [RFC v2 06/13] pwrseq: pwrseq_qca: implement fallback support
+Date: Sun, 29 Aug 2021 16:12:58 +0300
+Message-Id: <20210829131305.534417-7-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-References: <20210827163015.3141722-1-keescook@chromium.org>
- <20210827163015.3141722-3-keescook@chromium.org>
-In-Reply-To: <20210827163015.3141722-3-keescook@chromium.org>
-From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date: Sat, 28 Aug 2021 16:51:29 +0900
-Message-ID: <CAMZ6RqJjD1_eZRnKEb8AvKOTua-WCRbATXEBbKWcD4mY9TD_hQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] treewide: Replace open-coded flex arrays in unions
-To: Kees Cook <keescook@chromium.org>
-Cc: open list <linux-kernel@vger.kernel.org>, 
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
- Ayush Sawal <ayush.sawal@chelsio.com>,
- Vinay Kumar Yadav <vinay.yadav@chelsio.com>, 
- Rohit Maheshwari <rohitm@chelsio.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>, 
- Jakub Kicinski <kuba@kernel.org>, Stanislaw Gruszka <stf_xl@wp.pl>,
- Luca Coelho <luciano.coelho@intel.com>, 
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Johannes Berg <johannes.berg@intel.com>, 
- Mordechay Goodstein <mordechay.goodstein@intel.com>,
- Lee Jones <lee.jones@linaro.org>, 
- Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>, 
- Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
- linux-crypto@vger.kernel.org, 
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
- netdev <netdev@vger.kernel.org>, linux-scsi@vger.kernel.org, 
- linux-can <linux-can@vger.kernel.org>, bpf@vger.kernel.org, 
- Rasmus Villemoes <linux@rasmusvillemoes.dk>, Keith Packard <keithp@keithp.com>,
- Dan Williams <dan.j.williams@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>,
- clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210828_005144_681312_A6619387 
-X-CRM114-Status: GOOD (  22.54  )
+X-CRM114-CacheID: sfid-20210829_061316_291516_A694AC17 
+X-CRM114-Status: GOOD (  18.34  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,334 +108,187 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue. 28 Aug 2021 at 01:30, Kees Cook <keescook@chromium.org> wrote:
-> In support of enabling -Warray-bounds and -Wzero-length-bounds and
-> correctly handling run-time memcpy() bounds checking, replace all
-> open-coded flexible arrays (i.e. 0-element arrays) in unions with the
-> DECLARE_FLEX_ARRAY() helper macro.
->
-> This fixes warnings such as:
->
-> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
-> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
->   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
->       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
-> In file included from fs/hpfs/hpfs_fn.h:26,
->                  from fs/hpfs/anode.c:10:
-> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
->   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
->       |                                ^~~~~~~~
->
-> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
->   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
->                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
->   231 |   u8 raw_msg[0];
->       |      ^~~~~~~
->
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Ayush Sawal <ayush.sawal@chelsio.com>
-> Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-> Cc: Rohit Maheshwari <rohitm@chelsio.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Stanislaw Gruszka <stf_xl@wp.pl>
-> Cc: Luca Coelho <luciano.coelho@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-scsi@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # drivers/net/can/usb/etas_es58x/*
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/crypto/chelsio/chcr_crypto.h              | 14 +++++++++-----
->  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
->  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
->  drivers/net/wireless/ath/ath10k/htt.h             |  7 +++++--
->  drivers/net/wireless/intel/iwlegacy/commands.h    |  6 ++++--
->  drivers/net/wireless/intel/iwlwifi/dvm/commands.h |  6 ++++--
->  drivers/net/wireless/intel/iwlwifi/fw/api/tx.h    |  6 ++++--
->  drivers/scsi/aic94xx/aic94xx_sds.c                |  6 ++++--
->  fs/hpfs/hpfs.h                                    |  8 ++++----
->  include/linux/filter.h                            |  6 ++++--
->  include/scsi/sas.h                                | 12 ++++++++----
->  include/uapi/rdma/rdma_user_rxe.h                 |  4 ++--
->  include/uapi/sound/asoc.h                         |  4 ++--
->  13 files changed, 52 insertions(+), 31 deletions(-)
->
-> diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
-> index e89f9e0094b4..c7816c83e324 100644
-> --- a/drivers/crypto/chelsio/chcr_crypto.h
-> +++ b/drivers/crypto/chelsio/chcr_crypto.h
-> @@ -222,8 +222,10 @@ struct chcr_authenc_ctx {
->  };
->
->  struct __aead_ctx {
-> -       struct chcr_gcm_ctx gcm[0];
-> -       struct chcr_authenc_ctx authenc[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct chcr_gcm_ctx, gcm);
-> +               DECLARE_FLEX_ARRAY(struct chcr_authenc_ctx, authenc);
-> +       };
->  };
->
->  struct chcr_aead_ctx {
-> @@ -245,9 +247,11 @@ struct hmac_ctx {
->  };
->
->  struct __crypto_ctx {
-> -       struct hmac_ctx hmacctx[0];
-> -       struct ablk_ctx ablkctx[0];
-> -       struct chcr_aead_ctx aeadctx[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct hmac_ctx, hmacctx);
-> +               DECLARE_FLEX_ARRAY(struct ablk_ctx, ablkctx);
-> +               DECLARE_FLEX_ARRAY(struct chcr_aead_ctx, aeadctx);
-> +       };
->  };
->
->  struct chcr_context {
-> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> index 4bc60a6df697..667ecb77168c 100644
-> --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
->                 struct es581_4_rx_cmd_ret rx_cmd_ret;
->                 __le64 timestamp;
->                 u8 rx_cmd_ret_u8;
-> -               u8 raw_msg[0];
-> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> index ee18a87e40c0..e33003f96e5e 100644
-> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
->                 struct es58x_fd_tx_ack_msg tx_ack_msg;
->                 __le64 timestamp;
->                 __le32 rx_cmd_ret_le32;
-> -               u8 raw_msg[0];
-> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index ec689e3ce48a..a6de08d3bf4a 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -1674,8 +1674,11 @@ struct htt_tx_fetch_ind {
->         __le32 token;
->         __le16 num_resp_ids;
->         __le16 num_records;
-> -       __le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> -       struct htt_tx_fetch_record records[];
-> +       union {
-> +               /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> +               DECLARE_FLEX_ARRAY(__le32, resp_ids);
-> +               DECLARE_FLEX_ARRAY(struct htt_tx_fetch_record, records);
-> +       };
->  } __packed;
->
->  static inline void *
-> diff --git a/drivers/net/wireless/intel/iwlegacy/commands.h b/drivers/net/wireless/intel/iwlegacy/commands.h
-> index 89c6671b32bc..4a97310f8fee 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/commands.h
-> +++ b/drivers/net/wireless/intel/iwlegacy/commands.h
-> @@ -1408,8 +1408,10 @@ struct il3945_tx_cmd {
->          * MAC header goes here, followed by 2 bytes padding if MAC header
->          * length is 26 or 30 bytes, followed by payload data
->          */
-> -       u8 payload[0];
-> -       struct ieee80211_hdr hdr[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, payload);
-> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
-> +       };
->  } __packed;
->
->  /*
-> diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> index 235c7a2e3483..75a4b8e26232 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> +++ b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> @@ -1251,8 +1251,10 @@ struct iwl_tx_cmd {
->          * MAC header goes here, followed by 2 bytes padding if MAC header
->          * length is 26 or 30 bytes, followed by payload data
->          */
-> -       u8 payload[0];
-> -       struct ieee80211_hdr hdr[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, payload);
-> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
-> +       };
->  } __packed;
->
->  /*
-> diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> index 24e4a82a55da..66c5487e857e 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> +++ b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> @@ -713,8 +713,10 @@ struct iwl_mvm_compressed_ba_notif {
->         __le32 tx_rate;
->         __le16 tfd_cnt;
->         __le16 ra_tid_cnt;
-> -       struct iwl_mvm_compressed_ba_ratid ra_tid[0];
-> -       struct iwl_mvm_compressed_ba_tfd tfd[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_ratid, ra_tid);
-> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_tfd, tfd);
-> +       };
->  } __packed; /* COMPRESSED_BA_RES_API_S_VER_4 */
->
->  /**
-> diff --git a/drivers/scsi/aic94xx/aic94xx_sds.c b/drivers/scsi/aic94xx/aic94xx_sds.c
-> index 46815e65f7a4..5def83c88f13 100644
-> --- a/drivers/scsi/aic94xx/aic94xx_sds.c
-> +++ b/drivers/scsi/aic94xx/aic94xx_sds.c
-> @@ -517,8 +517,10 @@ struct asd_ms_conn_map {
->         u8    num_nodes;
->         u8    usage_model_id;
->         u32   _resvd;
-> -       struct asd_ms_conn_desc conn_desc[0];
-> -       struct asd_ms_node_desc node_desc[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct asd_ms_conn_desc, conn_desc);
-> +               DECLARE_FLEX_ARRAY(struct asd_ms_node_desc, node_desc);
-> +       };
->  } __attribute__ ((packed));
->
->  struct asd_ctrla_phy_entry {
-> diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
-> index d92c4af3e1b4..281dec8f636b 100644
-> --- a/fs/hpfs/hpfs.h
-> +++ b/fs/hpfs/hpfs.h
-> @@ -409,10 +409,10 @@ struct bplus_header
->    __le16 first_free;                   /* offset from start of header to
->                                            first free node in array */
->    union {
-> -    struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
-> -                                              subtree pointers */
-> -    struct bplus_leaf_node external[0];            /* (external) 3-word entries giving
-> -                                              sector runs */
-> +       /* (internal) 2-word entries giving subtree pointers */
-> +       DECLARE_FLEX_ARRAY(struct bplus_internal_node, internal);
-> +       /* (external) 3-word entries giving sector runs */
-> +       DECLARE_FLEX_ARRAY(struct bplus_leaf_node, external);
->    } u;
->  };
->
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 472f97074da0..5ca52bfa5868 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -572,8 +572,10 @@ struct bpf_prog {
->         struct bpf_prog_aux     *aux;           /* Auxiliary fields */
->         struct sock_fprog_kern  *orig_prog;     /* Original BPF program */
->         /* Instructions for interpreter */
-> -       struct sock_filter      insns[0];
-> -       struct bpf_insn         insnsi[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct sock_filter, insns);
-> +               DECLARE_FLEX_ARRAY(struct bpf_insn, insnsi);
-> +       };
->  };
->
->  struct sk_filter {
-> diff --git a/include/scsi/sas.h b/include/scsi/sas.h
-> index 4726c1bbec65..64154c1fed02 100644
-> --- a/include/scsi/sas.h
-> +++ b/include/scsi/sas.h
-> @@ -323,8 +323,10 @@ struct ssp_response_iu {
->         __be32 sense_data_len;
->         __be32 response_data_len;
->
-> -       u8     resp_data[0];
-> -       u8     sense_data[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, resp_data);
-> +               DECLARE_FLEX_ARRAY(u8, sense_data);
-> +       };
->  } __attribute__ ((packed));
->
->  struct ssp_command_iu {
-> @@ -554,8 +556,10 @@ struct ssp_response_iu {
->         __be32 sense_data_len;
->         __be32 response_data_len;
->
-> -       u8     resp_data[0];
-> -       u8     sense_data[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, resp_data);
-> +               DECLARE_FLEX_ARRAY(u8, sense_data);
-> +       };
->  } __attribute__ ((packed));
->
->  struct ssp_command_iu {
-> diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-> index e283c2220aba..7f44d54bb0ab 100644
-> --- a/include/uapi/rdma/rdma_user_rxe.h
-> +++ b/include/uapi/rdma/rdma_user_rxe.h
-> @@ -141,8 +141,8 @@ struct rxe_dma_info {
->         __u32                   sge_offset;
->         __u32                   reserved;
->         union {
-> -               __u8            inline_data[0];
-> -               struct rxe_sge  sge[0];
-> +               __DECLARE_FLEX_ARRAY(__u8, inline_data);
-> +               __DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
->         };
->  };
->
-> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-> index da61398b1f8f..053949287ce8 100644
-> --- a/include/uapi/sound/asoc.h
-> +++ b/include/uapi/sound/asoc.h
-> @@ -240,8 +240,8 @@ struct snd_soc_tplg_vendor_array {
->  struct snd_soc_tplg_private {
->         __le32 size;    /* in bytes of private data */
->         union {
-> -               char data[0];
-> -               struct snd_soc_tplg_vendor_array array[0];
-> +               __DECLARE_FLEX_ARRAY(char, data);
-> +               __DECLARE_FLEX_ARRAY(struct snd_soc_tplg_vendor_array, array);
->         };
->  } __attribute__((packed));
+While we are waiting for all users of wcn399x-bt to be converted to the
+pwrseq declaration in the device tree, provide support for the pwrseq
+fallback: if the regulators are declared in the device itself, create
+pwrseq instance. This way the hci_qca driver doesn't have to cope with
+old and new dts bindings.
 
-Thanks for addressing all my remarks on the commit message.
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ drivers/power/pwrseq/pwrseq_qca.c | 148 +++++++++++++++++++++++++++++-
+ 1 file changed, 147 insertions(+), 1 deletion(-)
 
-FYI, I compared the assembly code before and after the patch:
-both give the same output (as expected).
+diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
+index 7aa5f2d94039..d01f1ef4626b 100644
+--- a/drivers/power/pwrseq/pwrseq_qca.c
++++ b/drivers/power/pwrseq/pwrseq_qca.c
+@@ -11,9 +11,11 @@
+ #include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+ #include <linux/pwrseq/driver.h>
++#include <linux/pwrseq/fallback.h>
+ #include <linux/regulator/consumer.h>
+ 
+ /* susclk rate */
+@@ -367,5 +369,149 @@ static struct platform_driver pwrseq_qca_driver = {
+ 	},
+ };
+ 
+-module_platform_driver(pwrseq_qca_driver);
++struct pwrseq_qca_fallback {
++	struct pwrseq_qca_one qca_one;
++	struct pwrseq_qca_common common;
++};
++
++static const struct of_device_id pwrseq_qca_bt_of_match[] = {
++	{ .compatible = "qcom,qca6174-bt" },
++	{ .compatible = "qcom,qca6390-bt", .data = &qca_soc_data_qca6390},
++	{ .compatible = "qcom,qca9377-bt" },
++	{ .compatible = "qcom,wcn3990-bt", .data = &qca_soc_data_wcn3990 },
++	{ .compatible = "qcom,wcn3991-bt", .data = &qca_soc_data_wcn3990 },
++	{ .compatible = "qcom,wcn3998-bt", .data = &qca_soc_data_wcn3998 },
++	{ .compatible = "qcom,wcn6750-bt", .data = &qca_soc_data_wcn6750 },
++	{ /* sentinel */ },
++};
++
++static const struct qca_device_data qca_soc_data_wifi = {
++	.vregs = {
++		{ "vdd-1.8-xo", 80000  },
++		{ "vdd-1.3-rfa", 300000 },
++		{ "vdd-3.3-ch0", 450000 },
++		{ "vdd-3.3-ch1", 450000 },
++	},
++	.num_vregs = 4,
++};
++
++static const struct of_device_id pwrseq_qca_wifi_of_match[] = {
++	{ .compatible = "qcom,wcn3990-wifi", .data = &qca_soc_data_wifi },
++	{ /* sentinel */ }
++};
++
++static struct pwrseq * pwrseq_qca_fallback_get(struct device *dev)
++{
++	struct pwrseq_qca_fallback *fallback;
++	const struct of_device_id *match;
++	const struct qca_device_data *data;
++	struct gpio_desc *gpiod;
++	int ret;
++
++	match = of_match_device(pwrseq_qca_bt_of_match, dev);
++	if (!match)
++		return ERR_PTR(-ENODEV);
++
++	data = match->data;
++	if (!data)
++		data = &qca_soc_data_default;
++
++	fallback = devm_kzalloc(dev, struct_size(fallback, common.vregs, data->num_vregs), GFP_KERNEL);
++	if (!data)
++		return ERR_PTR(-ENOMEM);
++
++	fallback->qca_one.common = &fallback->common;
++
++	ret = pwrseq_qca_common_init(dev, &fallback->common, data);
++	if (ret)
++		return ERR_PTR(ret);
++
++	if (data->has_enable_gpios) {
++		gpiod = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
++		if (IS_ERR(gpiod))
++			return ERR_PTR(dev_err_probe(dev, PTR_ERR(gpiod), "failed to acquire enable GPIO\n"));
++		fallback->qca_one.enable = gpiod;
++	}
++
++	/* If we have no control over device's enablement, make sure that sleep clock is always running */
++	if (!fallback->common.vddio ||
++	    !fallback->common.num_vregs ||
++	    !fallback->qca_one.enable) {
++		ret = clk_set_rate(fallback->common.susclk, SUSCLK_RATE_32KHZ);
++		if (ret)
++			return ERR_PTR(ret);
++
++		ret = clk_prepare_enable(fallback->common.susclk);
++		if (ret)
++			return ERR_PTR(ret);
++
++		ret = devm_add_action_or_reset(dev, pwrseq_qca_unprepare_susclk, &fallback->common);
++		if (ret)
++			return ERR_PTR(ret);
++	}
++
++	return devm_pwrseq_create(dev, &pwrseq_qca_ops, &fallback->qca_one);
++}
++
++static struct pwrseq * pwrseq_qca_fallback_get_bt(struct device *dev, const char *id)
++{
++	if (strcmp(id, "bt"))
++		return ERR_PTR(-ENODEV);
++
++	return pwrseq_qca_fallback_get(dev);
++}
++
++static struct pwrseq * pwrseq_qca_fallback_get_wifi(struct device *dev, const char *id)
++{
++	if (strcmp(id, "wifi"))
++		return ERR_PTR(-ENODEV);
++
++	return pwrseq_qca_fallback_get(dev);
++}
++
++static struct pwrseq_fallback pwrseq_qca_fallback_bt = {
++	.get = pwrseq_qca_fallback_get_bt,
++	.of_match_table = pwrseq_qca_bt_of_match,
++};
++
++static struct pwrseq_fallback pwrseq_qca_fallback_wifi = {
++	.get = pwrseq_qca_fallback_get_wifi,
++	.of_match_table = pwrseq_qca_wifi_of_match,
++};
++
++static int __init pwrseq_qca_init(void)
++{
++	int ret;
++
++	ret = platform_driver_register(&pwrseq_qca_driver);
++	if (ret)
++		return ret;
++
++	ret = pwrseq_fallback_register(&pwrseq_qca_fallback_bt);
++	if (ret)
++		goto err_bt;
++
++	ret = pwrseq_fallback_register(&pwrseq_qca_fallback_wifi);
++	if (ret)
++		goto err_wifi;
++
++	return 0;
++
++err_wifi:
++	pwrseq_fallback_unregister(&pwrseq_qca_fallback_bt);
++err_bt:
++	platform_driver_unregister(&pwrseq_qca_driver);
++
++	return ret;
++}
++module_init(pwrseq_qca_init);
++
++static void __exit pwrseq_qca_exit(void)
++{
++	pwrseq_fallback_unregister(&pwrseq_qca_fallback_wifi);
++	pwrseq_fallback_unregister(&pwrseq_qca_fallback_bt);
++	platform_driver_unregister(&pwrseq_qca_driver);
++}
++module_exit(pwrseq_qca_exit);
++
+ MODULE_LICENSE("GPL v2");
+-- 
+2.33.0
 
-Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
 _______________________________________________
 ath10k mailing list
