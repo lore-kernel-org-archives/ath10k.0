@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 197B0C4320E
-	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52CFBC4320A
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCF376023E
-	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DCF376023E
+	by mail.kernel.org (Postfix) with ESMTPS id 195B260F39
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 195B260F39
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,51 +23,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2jEetu5dMyKFqzH9tIVhp3Il41PvpKAKChrofdh+SLw=; b=QLAEClFgVXUmWl
-	Qv65DwtUm0ruW4FzuPmcwE/8STZMDqjUHbgWBhUEHsdrMdCXo5MePTaxaqmtONpI+Xa4lZpZfeFd0
-	HpP/vVmuoOrqpsvBK4QnguXVgQYKrd6bNNYax9FKAntTa0zZTkoB97mUyPqwZl82EnJWIPgXkVCe1
-	9BgC0q5gv8nr09ImzyolBq11xrk2lCgPHeA8+TKDxIDff1KgVnuQFrH6ja786lcvfOpyA7yTC0zWL
-	amlSNHDBKNISKWzA7HSv8Py7O8aiSYRidb9H+5mOAIiPHpoOmneaak81KmMBD5O41rY4qN8ZXK6yg
-	yO1LVq2tftJcCHIBDWWg==;
+	List-Owner; bh=BhAE2t++vipxeYbJwxZTVzrGKwc+Cpk5R1uBaSL77Go=; b=HWkspm17uJ//3p
+	L2v+C9PSc/Hh8cMXqYKHYC+s267viv/d9o9lfiUZCWIONYFdsd9HONKYQo647rfQt9a4B3W21qBYz
+	QanEQ3FAYFNGSsq88uzLb+VXPpm9EvvdtkJnonDq/YlQLBmsRJGdz/S5f6WeUSI+WDf4cTyTP0P8N
+	YQ8GpvgeqqQOO8Id/IXKCRGdOSvqHU7K8Ka/nraUyDjZ1Osq9b+YX4XJ0ISRO44buKE+UQ+o7IZvy
+	y3yyCl08p5GUUIoCjeBkOMW0exg/BE6CWctRKQcN5k269EJTrAId3DQPzbQAtpTcrm7k0oTRR6C0e
+	6TfHAKPnAXaq2gX6GHlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mKKcg-00FWuZ-V7; Sun, 29 Aug 2021 13:13:19 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1mKKdX-00FXU8-TT; Sun, 29 Aug 2021 13:14:13 +0000
+Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKKcb-00FWrs-Ex
- for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:17 +0000
-Received: by mail-lj1-x231.google.com with SMTP id c12so20745445ljr.5
- for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:12 -0700 (PDT)
+ id 1mKKch-00FWui-PI
+ for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:27 +0000
+Received: by mail-lj1-x233.google.com with SMTP id i28so20722793ljm.7
+ for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wEAgiQjKN1oujWJNfJlIM/SSqUWD37MKWtJ1zPQdBoA=;
- b=oZTVrhVIV/y3Qg3rGY9p0fABVAIztKTPKWp3vMAPR7ZmhYdpwI5+ixEqhnh+4bWn4/
- ufZrcWI5OTKKvQOtB/s9PuYkw1HCYgPM/tOP+Aifcry1fhGhVHNXPLSGpfY7K13110Se
- slKPipFG6u5J5mx2efYKqfwwEQc7+oy57+4bjpNJKKVRPrC/BcC3cQE1TUyb8usFtyGL
- 3WFzzO1NdbzVrNl7qEw9mnMs9cpV9B+Jwor93tGxVJ6aI8kc6YfQ72KxYqryt4TJW9Jw
- 4/e90Hmx3jTyicLlGFRiWtr1kfbK53A8N0NGSiR6KOgx3Ogb571kkCvZWnGZaXNxEKWv
- ouDA==
+ bh=lOnAyrBq8epXVQrN/WDXQeiKNCDBNkNLvVnOhj3ua+A=;
+ b=ZaYf18QxWsVMzWG6CBkVw0XXu3t/zMW2pUixPk0LjE+/IImlkDEj+POpEj7Ng2IXM8
+ V/WLT4pI1wuBXyxaq4fDgRA1q1Bb8oej7fbyHQc4UNqw9wldkBcALlLPedB0TMuFNCla
+ PQ+41+z4pNq/TjQbXGdKGeIaXHVsMBRydZXyncyioXfW2os6kVbRcMqXaWCQDBQZNTTW
+ yxmrIvNlWnX4aYvLJFVLdr/GqoK0rxsDRPi43f0JSH5oqTsuiIYO8btd4DmGwXfCY8od
+ FyUqbFQaPOd/euLOnbc81Yb9s9ttn9pVDjnOryP4XjSMVQZnB2Xspaca5gM+gBQ9N2sB
+ 9/Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wEAgiQjKN1oujWJNfJlIM/SSqUWD37MKWtJ1zPQdBoA=;
- b=sYAE6BXbpOd/ncjbq2cCVmxBYDzQjd1eGmaKm8ZSRVgMZ7fjKz6bog/0f54iDrHBSV
- gO1kitT9ebakXG6gSA8lHXwVtbRNXRx1kRVS6zk6K3pnamlJSLSYaKnZq8Z2VbiyEy6w
- eJqMx2GUvOSVmlJMAZuavKNfJd1j9wAMLJvxCj7cDk7ivmqKPEj1SK7v0KZVodOyrZr2
- 4uRtiCKw/Zu+lDF0ATbruLA5277YgXZnjsE0nmgHXeFJWAGzOpEF/uAz4RPQpe5fPJJW
- E2CC/zzkXUMqaGasFx6kTXd7lZ7RsHVcpBQoKGGfKBshJBbg9WmqVDM2MhqWmKCpPR8/
- rGmg==
-X-Gm-Message-State: AOAM531uunGmVtx1BdcQm2YtcqOb33PvqQLRCiXzfRjD9822mKdrCzfs
- xmlGHYZOPsX3d1Tidm2zjtl79Q==
-X-Google-Smtp-Source: ABdhPJzBfMw+MtTZiShdmzPQW6ENWAQ133qcMHX739cBqRYxy3JGPKxgipieveerUILnrFzqrmE8dw==
-X-Received: by 2002:a2e:7103:: with SMTP id m3mr16627978ljc.122.1630242790627; 
- Sun, 29 Aug 2021 06:13:10 -0700 (PDT)
+ bh=lOnAyrBq8epXVQrN/WDXQeiKNCDBNkNLvVnOhj3ua+A=;
+ b=VricvGlDQmhdgxCNdx0lqLsK4QbuMGRAW8yd9OBiloD8FPSYqpZGRvAvV0PJ3r+95O
+ jrDZcquzgfp36kjYILyo0rQ8ukPEPC0d3R8qBIeKYjEoXugVxQ0G4/n1q2c8DauvskOt
+ JR4IvmhAlaomTke8ksqfn1nW9WK+pkOS6RccB/UQ1nuxUluJ271DRSp6fDbvUVrdrSE+
+ J/o15IadVaRPoVRkywG6OeOWzaGVoejGt/9UEkV7fw4/P7++tFpK1X/Y0POKUiJKPDKw
+ O1RAxzWhXcE+yA2C3ROQ3HkLjA7eD+DqMvWbFfa5q+Bqb1ZbWJzzjYRIBTJ01CpRRPcR
+ QGuQ==
+X-Gm-Message-State: AOAM530HQN9+ElVMt8+8j7Vvj5WdK4c6BAVerkWyLTtxbqGEXVkGk4Ak
+ bGQd5x65jkV+JWGd1luih8v1vA==
+X-Google-Smtp-Source: ABdhPJwas5GqFJEx+SlL+QSRjML4RgZLzDgGX5TZOlcGfqMo26MQAh+FrRI4va8PzqE1egGh7L2xMw==
+X-Received: by 2002:a2e:7616:: with SMTP id r22mr16054186ljc.387.1630242798487; 
+ Sun, 29 Aug 2021 06:13:18 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.09
+ by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 29 Aug 2021 06:13:10 -0700 (PDT)
+ Sun, 29 Aug 2021 06:13:18 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -81,16 +81,18 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [RFC v2 01/13] power: add power sequencer subsystem
-Date: Sun, 29 Aug 2021 16:12:53 +0300
-Message-Id: <20210829131305.534417-2-dmitry.baryshkov@linaro.org>
+Subject: [RFC v2 11/13] arm64: dts: qcom: sdm845-db845c: add second channel to
+ qca power sequencer
+Date: Sun, 29 Aug 2021 16:13:03 +0300
+Message-Id: <20210829131305.534417-12-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
 References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210829_061313_562749_613F3C40 
-X-CRM114-Status: GOOD (  24.30  )
+X-CRM114-CacheID: sfid-20210829_061319_861488_AFC3B85E 
+X-CRM114-Status: UNSURE (   9.01  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,666 +109,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Basing on MMC's pwrseq support code, add separate power sequencer
-subsystem. It will be used by other drivers to handle device power up
-requirements.
+On DB845c board WiFi/BT chip can use both RF channels/antennas, so add
+vddch1-supply property.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/power/Kconfig           |   1 +
- drivers/power/Makefile          |   1 +
- drivers/power/pwrseq/Kconfig    |  11 +
- drivers/power/pwrseq/Makefile   |   6 +
- drivers/power/pwrseq/core.c     | 412 ++++++++++++++++++++++++++++++++
- include/linux/pwrseq/consumer.h |  88 +++++++
- include/linux/pwrseq/driver.h   |  75 ++++++
- 7 files changed, 594 insertions(+)
- create mode 100644 drivers/power/pwrseq/Kconfig
- create mode 100644 drivers/power/pwrseq/Makefile
- create mode 100644 drivers/power/pwrseq/core.c
- create mode 100644 include/linux/pwrseq/consumer.h
- create mode 100644 include/linux/pwrseq/driver.h
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/power/Kconfig b/drivers/power/Kconfig
-index 696bf77a7042..c87cd2240a74 100644
---- a/drivers/power/Kconfig
-+++ b/drivers/power/Kconfig
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+source "drivers/power/pwrseq/Kconfig"
- source "drivers/power/reset/Kconfig"
- source "drivers/power/supply/Kconfig"
-diff --git a/drivers/power/Makefile b/drivers/power/Makefile
-index effbf0377f32..1dbce454a8c4 100644
---- a/drivers/power/Makefile
-+++ b/drivers/power/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_POWER_RESET)	+= reset/
- obj-$(CONFIG_POWER_SUPPLY)	+= supply/
-+obj-$(CONFIG_PWRSEQ)		+= pwrseq/
-diff --git a/drivers/power/pwrseq/Kconfig b/drivers/power/pwrseq/Kconfig
-new file mode 100644
-index 000000000000..8904ec9ed541
---- /dev/null
-+++ b/drivers/power/pwrseq/Kconfig
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menuconfig PWRSEQ
-+	bool "Power Sequencer drivers"
-+	help
-+	  Provides support for special power sequencing drivers.
-+
-+	  Say Y here to enable support for such devices
-+
-+if PWRSEQ
-+
-+endif
-diff --git a/drivers/power/pwrseq/Makefile b/drivers/power/pwrseq/Makefile
-new file mode 100644
-index 000000000000..108429ff6445
---- /dev/null
-+++ b/drivers/power/pwrseq/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for power sequencer drivers.
-+#
-+
-+obj-$(CONFIG_PWRSEQ) += core.o
-diff --git a/drivers/power/pwrseq/core.c b/drivers/power/pwrseq/core.c
-new file mode 100644
-index 000000000000..2e4e9d123e60
---- /dev/null
-+++ b/drivers/power/pwrseq/core.c
-@@ -0,0 +1,412 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2021 (c) Linaro Ltd.
-+ * Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-+ *
-+ * Based on phy-core.c:
-+ * Copyright (C) 2013 Texas Instruments Incorporated - http://www.ti.com
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/idr.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/pwrseq/consumer.h>
-+#include <linux/pwrseq/driver.h>
-+#include <linux/slab.h>
-+
-+#define	to_pwrseq(a)	(container_of((a), struct pwrseq, dev))
-+
-+static DEFINE_IDA(pwrseq_ida);
-+static DEFINE_MUTEX(pwrseq_provider_mutex);
-+static LIST_HEAD(pwrseq_provider_list);
-+
-+struct pwrseq_provider {
-+	struct device		*dev;
-+	struct module		*owner;
-+	struct list_head	list;
-+	void			*data;
-+	struct pwrseq * (*of_xlate)(void *data, struct of_phandle_args *args);
-+};
-+
-+void pwrseq_put(struct device *dev, struct pwrseq *pwrseq)
-+{
-+	device_link_remove(dev, &pwrseq->dev);
-+
-+	module_put(pwrseq->owner);
-+	put_device(&pwrseq->dev);
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_put);
-+
-+static struct pwrseq_provider *of_pwrseq_provider_lookup(struct device_node *node)
-+{
-+	struct pwrseq_provider *pwrseq_provider;
-+
-+	list_for_each_entry(pwrseq_provider, &pwrseq_provider_list, list) {
-+		if (pwrseq_provider->dev->of_node == node)
-+			return pwrseq_provider;
-+	}
-+
-+	return ERR_PTR(-EPROBE_DEFER);
-+}
-+
-+static struct pwrseq *_of_pwrseq_get(struct device *dev, const char *id)
-+{
-+	struct pwrseq_provider *pwrseq_provider;
-+	struct pwrseq *pwrseq;
-+	struct of_phandle_args args;
-+	char prop_name[64]; /* 64 is max size of property name */
-+	int ret;
-+
-+	snprintf(prop_name, 64, "%s-pwrseq", id);
-+	ret = of_parse_phandle_with_args(dev->of_node, prop_name, "#pwrseq-cells", 0, &args);
-+	if (ret) {
-+		/*
-+		 * Parsing failed. Try locating old bindings for mmc-pwrseq,
-+		 * which did not use #pwrseq-cells.
-+		 */
-+		if (strcmp(id, "mmc"))
-+			return NULL;
-+
-+		ret = of_parse_phandle_with_args(dev->of_node, prop_name, NULL, 0, &args);
-+		if (ret)
-+			return NULL;
-+
-+		dev_warn(dev, "old mmc-pwrseq binding used, add #pwrseq-cells to the provider\n");
-+	}
-+
-+	mutex_lock(&pwrseq_provider_mutex);
-+	pwrseq_provider = of_pwrseq_provider_lookup(args.np);
-+	if (IS_ERR(pwrseq_provider) || !try_module_get(pwrseq_provider->owner)) {
-+		pwrseq = ERR_PTR(-EPROBE_DEFER);
-+		goto out_unlock;
-+	}
-+
-+	if (!of_device_is_available(args.np)) {
-+		dev_warn(pwrseq_provider->dev, "Requested pwrseq is disabled\n");
-+		pwrseq = ERR_PTR(-ENODEV);
-+		goto out_put_module;
-+	}
-+
-+	pwrseq = pwrseq_provider->of_xlate(pwrseq_provider->data, &args);
-+
-+out_put_module:
-+	module_put(pwrseq_provider->owner);
-+
-+out_unlock:
-+	mutex_unlock(&pwrseq_provider_mutex);
-+	of_node_put(args.np);
-+
-+	return pwrseq;
-+}
-+
-+struct pwrseq * __pwrseq_get(struct device *dev, const char *id, bool optional)
-+{
-+	struct pwrseq *pwrseq;
-+	struct device_link *link;
-+
-+	pwrseq = _of_pwrseq_get(dev, id);
-+	if (pwrseq == NULL)
-+		return optional ? NULL : ERR_PTR(-ENODEV);
-+	else if (IS_ERR(pwrseq))
-+		return pwrseq;
-+
-+	if (!try_module_get(pwrseq->owner))
-+		return ERR_PTR(-EPROBE_DEFER);
-+
-+	get_device(&pwrseq->dev);
-+	link = device_link_add(dev, &pwrseq->dev, DL_FLAG_STATELESS);
-+	if (!link)
-+		dev_dbg(dev, "failed to create device link to %s\n",
-+			dev_name(pwrseq->dev.parent));
-+
-+	return pwrseq;
-+}
-+
-+struct pwrseq * pwrseq_get(struct device *dev, const char *id)
-+{
-+	return __pwrseq_get(dev, id, false);
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_get);
-+
-+static void devm_pwrseq_release(struct device *dev, void *res)
-+{
-+	struct pwrseq *pwrseq = *(struct pwrseq **)res;
-+
-+	pwrseq_put(dev, pwrseq);
-+}
-+
-+struct pwrseq * devm_pwrseq_get(struct device *dev, const char *id)
-+{
-+	struct pwrseq **ptr, *pwrseq;
-+
-+	ptr = devres_alloc(devm_pwrseq_release, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pwrseq = pwrseq_get(dev, id);
-+	if (!IS_ERR(pwrseq)) {
-+		*ptr = pwrseq;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return pwrseq;
-+}
-+EXPORT_SYMBOL_GPL(devm_pwrseq_get);
-+
-+struct pwrseq * pwrseq_get_optional(struct device *dev, const char *id)
-+{
-+	return __pwrseq_get(dev, id, true);
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_get_optional);
-+
-+struct pwrseq * devm_pwrseq_get_optional(struct device *dev, const char *id)
-+{
-+	struct pwrseq **ptr, *pwrseq;
-+
-+	ptr = devres_alloc(devm_pwrseq_release, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pwrseq = pwrseq_get_optional(dev, id);
-+	if (!IS_ERR_OR_NULL(pwrseq)) {
-+		*ptr = pwrseq;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return pwrseq;
-+}
-+EXPORT_SYMBOL_GPL(devm_pwrseq_get_optional);
-+
-+int pwrseq_pre_power_on(struct pwrseq *pwrseq)
-+{
-+	if (pwrseq && pwrseq->ops->pre_power_on)
-+		return pwrseq->ops->pre_power_on(pwrseq);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_pre_power_on);
-+
-+int pwrseq_power_on(struct pwrseq *pwrseq)
-+{
-+	if (pwrseq && pwrseq->ops->power_on)
-+		return pwrseq->ops->power_on(pwrseq);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_power_on);
-+
-+void pwrseq_power_off(struct pwrseq *pwrseq)
-+{
-+	if (pwrseq && pwrseq->ops->power_off)
-+		pwrseq->ops->power_off(pwrseq);
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_power_off);
-+
-+void pwrseq_reset(struct pwrseq *pwrseq)
-+{
-+	if (pwrseq && pwrseq->ops->reset)
-+		pwrseq->ops->reset(pwrseq);
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_reset);
-+
-+static void pwrseq_dev_release(struct device *dev)
-+{
-+	struct pwrseq *pwrseq = to_pwrseq(dev);
-+
-+	ida_free(&pwrseq_ida, pwrseq->id);
-+	of_node_put(dev->of_node);
-+	kfree(pwrseq);
-+}
-+
-+static struct class pwrseq_class = {
-+	.name = "pwrseq",
-+	.dev_release = pwrseq_dev_release,
-+};
-+
-+struct pwrseq *__pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data)
-+{
-+	struct pwrseq *pwrseq;
-+	int ret;
-+
-+	if (WARN_ON(!dev))
-+		return ERR_PTR(-EINVAL);
-+
-+	pwrseq = kzalloc(sizeof(*pwrseq), GFP_KERNEL);
-+	if (!pwrseq)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = ida_alloc(&pwrseq_ida, GFP_KERNEL);
-+	if (ret < 0)
-+		goto free_pwrseq;
-+
-+	pwrseq->id = ret;
-+
-+	device_initialize(&pwrseq->dev);
-+
-+	pwrseq->dev.class = &pwrseq_class;
-+	pwrseq->dev.parent = dev;
-+	pwrseq->dev.of_node = of_node_get(dev->of_node);
-+	pwrseq->ops = ops;
-+	pwrseq->owner = owner;
-+
-+	dev_set_drvdata(&pwrseq->dev, data);
-+
-+	ret = dev_set_name(&pwrseq->dev, "pwrseq-%s.%u", dev_name(dev), pwrseq->id);
-+	if (ret)
-+		goto put_dev;
-+
-+	ret = device_add(&pwrseq->dev);
-+	if (ret)
-+		goto put_dev;
-+
-+	if (pm_runtime_enabled(dev)) {
-+		pm_runtime_enable(&pwrseq->dev);
-+		pm_runtime_no_callbacks(&pwrseq->dev);
-+	}
-+
-+	return pwrseq;
-+
-+put_dev:
-+	/* will call pwrseq_dev_release() to free resources */
-+	put_device(&pwrseq->dev);
-+
-+	return ERR_PTR(ret);
-+
-+free_pwrseq:
-+	kfree(pwrseq);
-+
-+	return ERR_PTR(ret);
-+}
-+EXPORT_SYMBOL_GPL(__pwrseq_create);
-+
-+void pwrseq_destroy(struct pwrseq *pwrseq)
-+{
-+	pm_runtime_disable(&pwrseq->dev);
-+	device_unregister(&pwrseq->dev);
-+}
-+EXPORT_SYMBOL_GPL(pwrseq_destroy);
-+
-+static void devm_pwrseq_destroy(struct device *dev, void *res)
-+{
-+	struct pwrseq *pwrseq = *(struct pwrseq **)res;
-+
-+	pwrseq_destroy(pwrseq);
-+}
-+
-+struct pwrseq *__devm_pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data)
-+{
-+	struct pwrseq **ptr, *pwrseq;
-+
-+	ptr = devres_alloc(devm_pwrseq_destroy, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pwrseq = __pwrseq_create(dev, owner, ops, data);
-+	if (!IS_ERR(pwrseq)) {
-+		*ptr = pwrseq;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return pwrseq;
-+}
-+EXPORT_SYMBOL_GPL(__devm_pwrseq_create);
-+
-+struct pwrseq_provider *__of_pwrseq_provider_register(struct device *dev,
-+	struct module *owner,
-+	struct pwrseq * (*of_xlate)(void *data,
-+				    struct of_phandle_args *args),
-+	void *data)
-+{
-+	struct pwrseq_provider *pwrseq_provider;
-+
-+	pwrseq_provider = kzalloc(sizeof(*pwrseq_provider), GFP_KERNEL);
-+	if (!pwrseq_provider)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pwrseq_provider->dev = dev;
-+	pwrseq_provider->owner = owner;
-+	pwrseq_provider->of_xlate = of_xlate;
-+	pwrseq_provider->data = data;
-+
-+	mutex_lock(&pwrseq_provider_mutex);
-+	list_add_tail(&pwrseq_provider->list, &pwrseq_provider_list);
-+	mutex_unlock(&pwrseq_provider_mutex);
-+
-+	return pwrseq_provider;
-+}
-+EXPORT_SYMBOL_GPL(__of_pwrseq_provider_register);
-+
-+void of_pwrseq_provider_unregister(struct pwrseq_provider *pwrseq_provider)
-+{
-+	if (IS_ERR(pwrseq_provider))
-+		return;
-+
-+	mutex_lock(&pwrseq_provider_mutex);
-+	list_del(&pwrseq_provider->list);
-+	kfree(pwrseq_provider);
-+	mutex_unlock(&pwrseq_provider_mutex);
-+}
-+EXPORT_SYMBOL_GPL(of_pwrseq_provider_unregister);
-+
-+static void devm_pwrseq_provider_unregister(struct device *dev, void *res)
-+{
-+	struct pwrseq_provider *pwrseq_provider = *(struct pwrseq_provider **)res;
-+
-+	of_pwrseq_provider_unregister(pwrseq_provider);
-+}
-+
-+struct pwrseq_provider *__devm_of_pwrseq_provider_register(struct device *dev,
-+	struct module *owner,
-+	struct pwrseq * (*of_xlate)(void *data,
-+				    struct of_phandle_args *args),
-+	void *data)
-+{
-+	struct pwrseq_provider **ptr, *pwrseq_provider;
-+
-+	ptr = devres_alloc(devm_pwrseq_provider_unregister, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pwrseq_provider = __of_pwrseq_provider_register(dev, owner, of_xlate, data);
-+	if (!IS_ERR(pwrseq_provider)) {
-+		*ptr = pwrseq_provider;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return pwrseq_provider;
-+}
-+EXPORT_SYMBOL_GPL(__devm_of_pwrseq_provider_register);
-+
-+struct pwrseq *of_pwrseq_xlate_onecell(void *data, struct of_phandle_args *args)
-+{
-+	struct pwrseq_onecell_data *pwrseq_data = data;
-+	unsigned int idx;
-+
-+	if (args->args_count != 1)
-+		return ERR_PTR(-EINVAL);
-+
-+	idx = args->args[0];
-+	if (idx >= pwrseq_data->num) {
-+		pr_err("%s: invalid index %u\n", __func__, idx);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	return pwrseq_data->pwrseqs[idx];
-+}
-+
-+static int __init pwrseq_core_init(void)
-+{
-+	return class_register(&pwrseq_class);
-+}
-+device_initcall(pwrseq_core_init);
-diff --git a/include/linux/pwrseq/consumer.h b/include/linux/pwrseq/consumer.h
-new file mode 100644
-index 000000000000..fbcdc1fc0751
---- /dev/null
-+++ b/include/linux/pwrseq/consumer.h
-@@ -0,0 +1,88 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) 2021 Linaro Ltd.
-+ */
-+
-+#ifndef __LINUX_PWRSEQ_CONSUMER_H__
-+#define __LINUX_PWRSEQ_CONSUMER_H__
-+
-+struct pwrseq;
-+struct device;
-+
-+#if defined(CONFIG_PWRSEQ)
-+
-+struct pwrseq *__must_check pwrseq_get(struct device *dev, const char *id);
-+struct pwrseq *__must_check devm_pwrseq_get(struct device *dev, const char *id);
-+
-+struct pwrseq *__must_check pwrseq_get_optional(struct device *dev, const char *id);
-+struct pwrseq *__must_check devm_pwrseq_get_optional(struct device *dev, const char *id);
-+
-+void pwrseq_put(struct device *dev, struct pwrseq *pwrseq);
-+
-+int pwrseq_pre_power_on(struct pwrseq *pwrseq);
-+int pwrseq_power_on(struct pwrseq *pwrseq);
-+void pwrseq_power_off(struct pwrseq *pwrseq);
-+void pwrseq_reset(struct pwrseq *pwrseq);
-+
-+#else
-+
-+static inline struct pwrseq *__must_check
-+pwrseq_get(struct device *dev, const char *id)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+static inline struct pwrseq *__must_check
-+devm_pwrseq_get(struct device *dev, const char *id)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+static inline struct pwrseq *__must_check
-+pwrseq_get_optional(struct device *dev, const char *id)
-+{
-+	return NULL;
-+}
-+
-+static inline struct pwrseq *__must_check
-+devm_pwrseq_get_optional(struct device *dev, const char *id)
-+{
-+	return NULL;
-+}
-+
-+static inline void pwrseq_put(struct device *dev, struct pwrseq *pwrseq)
-+{
-+}
-+
-+static inline int pwrseq_pre_power_on(struct pwrseq *pwrseq)
-+{
-+	return -ENOSYS;
-+}
-+
-+static inline int pwrseq_power_on(struct pwrseq *pwrseq)
-+{
-+	return -ENOSYS;
-+}
-+
-+static inline void pwrseq_power_off(struct pwrseq *pwrseq)
-+{
-+}
-+
-+static inline void pwrseq_reset(struct pwrseq *pwrseq)
-+{
-+}
-+
-+#endif
-+
-+static inline int pwrseq_full_power_on(struct pwrseq *pwrseq)
-+{
-+	int ret;
-+
-+	ret = pwrseq_pre_power_on(pwrseq);
-+	if (ret)
-+		return ret;
-+
-+	return pwrseq_power_on(pwrseq);
-+}
-+
-+#endif /* __LINUX_PWRSEQ_CONSUMER_H__ */
-diff --git a/include/linux/pwrseq/driver.h b/include/linux/pwrseq/driver.h
-new file mode 100644
-index 000000000000..b2bc46624d7e
---- /dev/null
-+++ b/include/linux/pwrseq/driver.h
-@@ -0,0 +1,75 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) 2021 Linaro Ltd.
-+ */
-+
-+#ifndef __LINUX_PWRSEQ_DRIVER_H__
-+#define __LINUX_PWRSEQ_DRIVER_H__
-+
-+#include <linux/device.h>
-+
-+struct pwrseq;
-+
-+struct pwrseq_ops {
-+	int (*pre_power_on)(struct pwrseq *pwrseq);
-+	int (*power_on)(struct pwrseq *pwrseq);
-+	void (*power_off)(struct pwrseq *pwrseq);
-+	void (*reset)(struct pwrseq *pwrseq);
-+};
-+
-+struct module;
-+
-+struct pwrseq {
-+	struct device dev;
-+	const struct pwrseq_ops *ops;
-+	unsigned int id;
-+	struct module *owner;
-+};
-+
-+struct pwrseq *__pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data);
-+struct pwrseq *__devm_pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data);
-+
-+#define pwrseq_create(dev, ops, data) __pwrseq_create((dev), THIS_MODULE, (ops), (data))
-+#define devm_pwrseq_create(dev, ops, data) __devm_pwrseq_create((dev), THIS_MODULE, (ops), (data))
-+
-+void pwrseq_destroy(struct pwrseq *pwrseq);
-+
-+static inline void *pwrseq_get_data(struct pwrseq *pwrseq)
-+{
-+	return dev_get_drvdata(&pwrseq->dev);
-+}
-+
-+#define	of_pwrseq_provider_register(dev, xlate, data)	\
-+	__of_pwrseq_provider_register((dev), THIS_MODULE, (xlate), (data))
-+
-+#define	devm_of_pwrseq_provider_register(dev, xlate, data)	\
-+	__devm_of_pwrseq_provider_register((dev), THIS_MODULE, (xlate), (data))
-+
-+struct of_phandle_args;
-+
-+struct pwrseq_provider *__of_pwrseq_provider_register(struct device *dev,
-+	struct module *owner,
-+	struct pwrseq * (*of_xlate)(void *data,
-+				    struct of_phandle_args *args),
-+	void *data);
-+struct pwrseq_provider *__devm_of_pwrseq_provider_register(struct device *dev,
-+	struct module *owner,
-+	struct pwrseq * (*of_xlate)(void *data,
-+				    struct of_phandle_args *args),
-+	void *data);
-+void of_pwrseq_provider_unregister(struct pwrseq_provider *pwrseq_provider);
-+
-+static inline struct pwrseq *of_pwrseq_xlate_single(void *data,
-+						    struct of_phandle_args *args)
-+{
-+	return data;
-+}
-+
-+struct pwrseq_onecell_data {
-+	unsigned int num;
-+	struct pwrseq *pwrseqs[];
-+};
-+
-+struct pwrseq *of_pwrseq_xlate_onecell(void *data, struct of_phandle_args *args);
-+
-+#endif /* __LINUX_PWRSEQ_DRIVER_H__ */
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index a6a34a959a91..0f3214c60980 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -342,6 +342,12 @@ vreg_l21a_2p95: ldo21 {
+ 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 		};
+ 
++		vreg_l23a_3p3: ldo23 {
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3312000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
+ 		vreg_l24a_3p075: ldo24 {
+ 			regulator-min-microvolt = <3088000>;
+ 			regulator-max-microvolt = <3088000>;
+@@ -637,6 +643,7 @@ &qca_pwrseq {
+ 	vddxo-supply = <&vreg_l7a_1p8>;
+ 	vddrf-supply = <&vreg_l17a_1p3>;
+ 	vddch0-supply = <&vreg_l25a_3p3>;
++	vddch1-supply = <&vreg_l23a_3p3>;
+ };
+ 
+ &sdhc_2 {
 -- 
 2.33.0
 
