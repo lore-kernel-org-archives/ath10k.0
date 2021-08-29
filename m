@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37182C19F37
-	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 197B0C4320E
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A65A60F38
-	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:13:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0A65A60F38
+	by mail.kernel.org (Postfix) with ESMTPS id DCF376023E
+	for <ath10k@archiver.kernel.org>; Sun, 29 Aug 2021 13:14:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DCF376023E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,51 +23,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CyQhMmGBZU09bfz87lNG7F5s/lWYKWyqB2dYrwnLdRw=; b=0i8YmcT2nuDpEk
-	4mrMIZtfXOe7KV3OkTm7f+AV7FAGRpRtrETFBENYtAw6q+KQNx8ec8HirTZkRsduWOtPirrOuwonQ
-	Oeyd2emzv6XEHmVwpPNM01rNOVmseZvQIKeHELaWSIEebA1fMJ07xoGAHhhgRvwtJfJt9ij5feHVg
-	jCEZ/UEsyQ98nhPUDHfHUxKgzoz6cstMWRepsQBxfNZ6bVc30dfLWs87sN7zQtkii+JxNKvvLuGVj
-	I+Qu3J/UT9b8uweLLxcqvL7XRZHYWHz9Ck1xXYGk2Q4ZKm6LDWk/+F87ZOaLAiKI4QM+O8XZgnrMr
-	gv/CsZzK2KSPB4/mIX0Q==;
+	List-Owner; bh=2jEetu5dMyKFqzH9tIVhp3Il41PvpKAKChrofdh+SLw=; b=QLAEClFgVXUmWl
+	Qv65DwtUm0ruW4FzuPmcwE/8STZMDqjUHbgWBhUEHsdrMdCXo5MePTaxaqmtONpI+Xa4lZpZfeFd0
+	HpP/vVmuoOrqpsvBK4QnguXVgQYKrd6bNNYax9FKAntTa0zZTkoB97mUyPqwZl82EnJWIPgXkVCe1
+	9BgC0q5gv8nr09ImzyolBq11xrk2lCgPHeA8+TKDxIDff1KgVnuQFrH6ja786lcvfOpyA7yTC0zWL
+	amlSNHDBKNISKWzA7HSv8Py7O8aiSYRidb9H+5mOAIiPHpoOmneaak81KmMBD5O41rY4qN8ZXK6yg
+	yO1LVq2tftJcCHIBDWWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mKKd6-00FX85-5m; Sun, 29 Aug 2021 13:13:44 +0000
-Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
+	id 1mKKcg-00FWuZ-V7; Sun, 29 Aug 2021 13:13:19 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKKcf-00FWtX-MJ
- for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:26 +0000
-Received: by mail-lj1-x22c.google.com with SMTP id q21so20692263ljj.6
- for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:17 -0700 (PDT)
+ id 1mKKcb-00FWrs-Ex
+ for ath10k@lists.infradead.org; Sun, 29 Aug 2021 13:13:17 +0000
+Received: by mail-lj1-x231.google.com with SMTP id c12so20745445ljr.5
+ for <ath10k@lists.infradead.org>; Sun, 29 Aug 2021 06:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=gLxBTtcfVl4dtJ5J9RXz2IWihrIE1icg8208P8LI768=;
- b=eLd/CdzikufAJoC+IWYRwvNs/Ql43QYVNlpuhiAPvhXzK3//Di9TCZafUPMM5EBULL
- Mo7y7RQS5b6C83VsilbdzSAvFTfgRwq9R6PJqo+k6+JPE6UTqoKCXW5SxiMrryD/RYk1
- MQtk5NojhV6O5mVIyn4SLnYNe8drwgcqVngKycpPETjynfImIykdyRPNbJnWCR2gmidg
- zqSJ8xjaa55tkihcjiHk6+WjAFbO/PUtvtMessLfsw6NBVGRhhRtV7mZrqceZU91XyXp
- WVS598gLcNzThW5YhN+k5gzLYDy22dy7DJAXHZVF0i22qsRLVdcWSKv6nT1GmZzaEgeN
- LpCg==
+ bh=wEAgiQjKN1oujWJNfJlIM/SSqUWD37MKWtJ1zPQdBoA=;
+ b=oZTVrhVIV/y3Qg3rGY9p0fABVAIztKTPKWp3vMAPR7ZmhYdpwI5+ixEqhnh+4bWn4/
+ ufZrcWI5OTKKvQOtB/s9PuYkw1HCYgPM/tOP+Aifcry1fhGhVHNXPLSGpfY7K13110Se
+ slKPipFG6u5J5mx2efYKqfwwEQc7+oy57+4bjpNJKKVRPrC/BcC3cQE1TUyb8usFtyGL
+ 3WFzzO1NdbzVrNl7qEw9mnMs9cpV9B+Jwor93tGxVJ6aI8kc6YfQ72KxYqryt4TJW9Jw
+ 4/e90Hmx3jTyicLlGFRiWtr1kfbK53A8N0NGSiR6KOgx3Ogb571kkCvZWnGZaXNxEKWv
+ ouDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=gLxBTtcfVl4dtJ5J9RXz2IWihrIE1icg8208P8LI768=;
- b=jaZsP6vfgTk5s4B4AynWRMPnp+9u7oXfUdZQCQ15KPyi3qmcTXVBvrqSSEeiHt0AY2
- EooSrQFlmUpwfGbjFROkr9K0eDMUSfPVKMw8EUEIGaco0T9N+NA1HisWUa400pUNEwik
- Z25BSv6OKijfFIxyq1D8R5fn4LS35aDzMwqXLHruLQbA/r7LcXMcqAWlCT9E01RaSW4T
- z8iWPu2xdOLl/aBXjzTt2mLtTdY9Ns2CPFsxQLUrgEhO26cKOdzAgLuTtYb4bM3nqs2j
- c8x9SJ55sD76JhI/Df1drD9rmDvqLatyQRGbkYdEvwcidvpCHFigDJwYJ2I+iJdgnS2i
- qOYA==
-X-Gm-Message-State: AOAM530vIZ5ABNxuWRU89Tx4iQUoIVE6pphNDJE9Fxt09RVdzYVW59LO
- 6w3ByAxD3mw6tTnITWH558PF5g==
-X-Google-Smtp-Source: ABdhPJwtyTp/w9lWaYotVNpODsQf+S4wJ2V3YCPsSXqB7W2BUqqv7USVpkUFF3pFpTY6r+3biVWKuw==
-X-Received: by 2002:a2e:97cf:: with SMTP id m15mr16094354ljj.125.1630242796087; 
- Sun, 29 Aug 2021 06:13:16 -0700 (PDT)
+ bh=wEAgiQjKN1oujWJNfJlIM/SSqUWD37MKWtJ1zPQdBoA=;
+ b=sYAE6BXbpOd/ncjbq2cCVmxBYDzQjd1eGmaKm8ZSRVgMZ7fjKz6bog/0f54iDrHBSV
+ gO1kitT9ebakXG6gSA8lHXwVtbRNXRx1kRVS6zk6K3pnamlJSLSYaKnZq8Z2VbiyEy6w
+ eJqMx2GUvOSVmlJMAZuavKNfJd1j9wAMLJvxCj7cDk7ivmqKPEj1SK7v0KZVodOyrZr2
+ 4uRtiCKw/Zu+lDF0ATbruLA5277YgXZnjsE0nmgHXeFJWAGzOpEF/uAz4RPQpe5fPJJW
+ E2CC/zzkXUMqaGasFx6kTXd7lZ7RsHVcpBQoKGGfKBshJBbg9WmqVDM2MhqWmKCpPR8/
+ rGmg==
+X-Gm-Message-State: AOAM531uunGmVtx1BdcQm2YtcqOb33PvqQLRCiXzfRjD9822mKdrCzfs
+ xmlGHYZOPsX3d1Tidm2zjtl79Q==
+X-Google-Smtp-Source: ABdhPJzBfMw+MtTZiShdmzPQW6ENWAQ133qcMHX739cBqRYxy3JGPKxgipieveerUILnrFzqrmE8dw==
+X-Received: by 2002:a2e:7103:: with SMTP id m3mr16627978ljc.122.1630242790627; 
+ Sun, 29 Aug 2021 06:13:10 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.15
+ by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 29 Aug 2021 06:13:15 -0700 (PDT)
+ Sun, 29 Aug 2021 06:13:10 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -81,16 +81,16 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [RFC v2 08/13] ath10k: add support for pwrseq sequencing
-Date: Sun, 29 Aug 2021 16:13:00 +0300
-Message-Id: <20210829131305.534417-9-dmitry.baryshkov@linaro.org>
+Subject: [RFC v2 01/13] power: add power sequencer subsystem
+Date: Sun, 29 Aug 2021 16:12:53 +0300
+Message-Id: <20210829131305.534417-2-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
 References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210829_061317_770233_FE118A9D 
-X-CRM114-Status: GOOD (  17.58  )
+X-CRM114-CacheID: sfid-20210829_061313_562749_613F3C40 
+X-CRM114-Status: GOOD (  24.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,134 +107,666 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Power sequencing for Qualcomm WiFi+BT chipsets are being reworked to use
-pwrseq rather than individually handling all the regulators. Add support
-for pwrseq to ath10k SNOC driver.
+Basing on MMC's pwrseq support code, add separate power sequencer
+subsystem. It will be used by other drivers to handle device power up
+requirements.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 45 +++++++++++++-------------
- drivers/net/wireless/ath/ath10k/snoc.h |  4 +--
- 2 files changed, 25 insertions(+), 24 deletions(-)
+ drivers/power/Kconfig           |   1 +
+ drivers/power/Makefile          |   1 +
+ drivers/power/pwrseq/Kconfig    |  11 +
+ drivers/power/pwrseq/Makefile   |   6 +
+ drivers/power/pwrseq/core.c     | 412 ++++++++++++++++++++++++++++++++
+ include/linux/pwrseq/consumer.h |  88 +++++++
+ include/linux/pwrseq/driver.h   |  75 ++++++
+ 7 files changed, 594 insertions(+)
+ create mode 100644 drivers/power/pwrseq/Kconfig
+ create mode 100644 drivers/power/pwrseq/Makefile
+ create mode 100644 drivers/power/pwrseq/core.c
+ create mode 100644 include/linux/pwrseq/consumer.h
+ create mode 100644 include/linux/pwrseq/driver.h
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index ea00fbb15601..8578c56982df 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -14,6 +14,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/of_address.h>
- #include <linux/iommu.h>
+diff --git a/drivers/power/Kconfig b/drivers/power/Kconfig
+index 696bf77a7042..c87cd2240a74 100644
+--- a/drivers/power/Kconfig
++++ b/drivers/power/Kconfig
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++source "drivers/power/pwrseq/Kconfig"
+ source "drivers/power/reset/Kconfig"
+ source "drivers/power/supply/Kconfig"
+diff --git a/drivers/power/Makefile b/drivers/power/Makefile
+index effbf0377f32..1dbce454a8c4 100644
+--- a/drivers/power/Makefile
++++ b/drivers/power/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_POWER_RESET)	+= reset/
+ obj-$(CONFIG_POWER_SUPPLY)	+= supply/
++obj-$(CONFIG_PWRSEQ)		+= pwrseq/
+diff --git a/drivers/power/pwrseq/Kconfig b/drivers/power/pwrseq/Kconfig
+new file mode 100644
+index 000000000000..8904ec9ed541
+--- /dev/null
++++ b/drivers/power/pwrseq/Kconfig
+@@ -0,0 +1,11 @@
++# SPDX-License-Identifier: GPL-2.0-only
++menuconfig PWRSEQ
++	bool "Power Sequencer drivers"
++	help
++	  Provides support for special power sequencing drivers.
++
++	  Say Y here to enable support for such devices
++
++if PWRSEQ
++
++endif
+diff --git a/drivers/power/pwrseq/Makefile b/drivers/power/pwrseq/Makefile
+new file mode 100644
+index 000000000000..108429ff6445
+--- /dev/null
++++ b/drivers/power/pwrseq/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for power sequencer drivers.
++#
++
++obj-$(CONFIG_PWRSEQ) += core.o
+diff --git a/drivers/power/pwrseq/core.c b/drivers/power/pwrseq/core.c
+new file mode 100644
+index 000000000000..2e4e9d123e60
+--- /dev/null
++++ b/drivers/power/pwrseq/core.c
+@@ -0,0 +1,412 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2021 (c) Linaro Ltd.
++ * Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
++ *
++ * Based on phy-core.c:
++ * Copyright (C) 2013 Texas Instruments Incorporated - http://www.ti.com
++ */
++
++#include <linux/device.h>
++#include <linux/idr.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
++#include <linux/pm_runtime.h>
 +#include <linux/pwrseq/consumer.h>
- 
- #include "ce.h"
- #include "coredump.h"
-@@ -41,14 +42,6 @@ static char *const ce_name[] = {
- 	"WLAN_CE_11",
- };
- 
--static const char * const ath10k_regulators[] = {
--	"vdd-0.8-cx-mx",
--	"vdd-1.8-xo",
--	"vdd-1.3-rfa",
--	"vdd-3.3-ch0",
--	"vdd-3.3-ch1",
--};
--
- static const char * const ath10k_clocks[] = {
- 	"cxo_ref_clk_pin", "qdss",
- };
-@@ -1010,10 +1003,14 @@ static int ath10k_hw_power_on(struct ath10k *ar)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
- 
--	ret = regulator_bulk_enable(ar_snoc->num_vregs, ar_snoc->vregs);
-+	ret = pwrseq_full_power_on(ar_snoc->pwrseq);
- 	if (ret)
- 		return ret;
- 
-+	ret = regulator_enable(ar_snoc->vreg_cx_mx);
-+	if (ret)
-+		goto vreg_pwrseq_off;
++#include <linux/pwrseq/driver.h>
++#include <linux/slab.h>
 +
- 	ret = clk_bulk_prepare_enable(ar_snoc->num_clks, ar_snoc->clks);
- 	if (ret)
- 		goto vreg_off;
-@@ -1021,11 +1018,14 @@ static int ath10k_hw_power_on(struct ath10k *ar)
- 	return ret;
- 
- vreg_off:
--	regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
-+	regulator_disable(ar_snoc->vreg_cx_mx);
-+vreg_pwrseq_off:
-+	pwrseq_power_off(ar_snoc->pwrseq);
++#define	to_pwrseq(a)	(container_of((a), struct pwrseq, dev))
 +
- 	return ret;
- }
- 
--static int ath10k_hw_power_off(struct ath10k *ar)
-+static void ath10k_hw_power_off(struct ath10k *ar)
- {
- 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 
-@@ -1033,7 +1033,9 @@ static int ath10k_hw_power_off(struct ath10k *ar)
- 
- 	clk_bulk_disable_unprepare(ar_snoc->num_clks, ar_snoc->clks);
- 
--	return regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
-+	regulator_disable(ar_snoc->vreg_cx_mx);
++static DEFINE_IDA(pwrseq_ida);
++static DEFINE_MUTEX(pwrseq_provider_mutex);
++static LIST_HEAD(pwrseq_provider_list);
 +
-+	pwrseq_power_off(ar_snoc->pwrseq);
- }
- 
- static void ath10k_snoc_wlan_disable(struct ath10k *ar)
-@@ -1691,20 +1693,19 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 		goto err_release_resource;
- 	}
- 
--	ar_snoc->num_vregs = ARRAY_SIZE(ath10k_regulators);
--	ar_snoc->vregs = devm_kcalloc(&pdev->dev, ar_snoc->num_vregs,
--				      sizeof(*ar_snoc->vregs), GFP_KERNEL);
--	if (!ar_snoc->vregs) {
--		ret = -ENOMEM;
-+	ar_snoc->pwrseq = devm_pwrseq_get(&pdev->dev, "wifi");
-+	if (IS_ERR(ar_snoc->pwrseq)) {
-+		ret = PTR_ERR(ar_snoc->pwrseq);
-+		if (ret != -EPROBE_DEFER)
-+			ath10k_warn(ar, "failed to acquire pwrseq: %d\n", ret);
- 		goto err_free_irq;
- 	}
--	for (i = 0; i < ar_snoc->num_vregs; i++)
--		ar_snoc->vregs[i].supply = ath10k_regulators[i];
- 
--	ret = devm_regulator_bulk_get(&pdev->dev, ar_snoc->num_vregs,
--				      ar_snoc->vregs);
--	if (ret < 0)
-+	ar_snoc->vreg_cx_mx = devm_regulator_get(&pdev->dev, "vdd-0.8-cx-mx");
-+	if (IS_ERR(ar_snoc->vreg_cx_mx)) {
-+		ret = PTR_ERR(ar_snoc->vreg_cx_mx);
- 		goto err_free_irq;
++struct pwrseq_provider {
++	struct device		*dev;
++	struct module		*owner;
++	struct list_head	list;
++	void			*data;
++	struct pwrseq * (*of_xlate)(void *data, struct of_phandle_args *args);
++};
++
++void pwrseq_put(struct device *dev, struct pwrseq *pwrseq)
++{
++	device_link_remove(dev, &pwrseq->dev);
++
++	module_put(pwrseq->owner);
++	put_device(&pwrseq->dev);
++}
++EXPORT_SYMBOL_GPL(pwrseq_put);
++
++static struct pwrseq_provider *of_pwrseq_provider_lookup(struct device_node *node)
++{
++	struct pwrseq_provider *pwrseq_provider;
++
++	list_for_each_entry(pwrseq_provider, &pwrseq_provider_list, list) {
++		if (pwrseq_provider->dev->of_node == node)
++			return pwrseq_provider;
 +	}
- 
- 	ar_snoc->num_clks = ARRAY_SIZE(ath10k_clocks);
- 	ar_snoc->clks = devm_kcalloc(&pdev->dev, ar_snoc->num_clks,
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 5095d1893681..5188d6f6f850 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -70,10 +70,10 @@ struct ath10k_snoc {
- 	struct ath10k_snoc_ce_irq ce_irqs[CE_COUNT_MAX];
- 	struct ath10k_ce ce;
- 	struct timer_list rx_post_retry;
--	struct regulator_bulk_data *vregs;
--	size_t num_vregs;
-+	struct regulator *vreg_cx_mx;
- 	struct clk_bulk_data *clks;
- 	size_t num_clks;
++
++	return ERR_PTR(-EPROBE_DEFER);
++}
++
++static struct pwrseq *_of_pwrseq_get(struct device *dev, const char *id)
++{
++	struct pwrseq_provider *pwrseq_provider;
 +	struct pwrseq *pwrseq;
- 	struct ath10k_qmi *qmi;
- 	unsigned long flags;
- 	bool xo_cal_supported;
++	struct of_phandle_args args;
++	char prop_name[64]; /* 64 is max size of property name */
++	int ret;
++
++	snprintf(prop_name, 64, "%s-pwrseq", id);
++	ret = of_parse_phandle_with_args(dev->of_node, prop_name, "#pwrseq-cells", 0, &args);
++	if (ret) {
++		/*
++		 * Parsing failed. Try locating old bindings for mmc-pwrseq,
++		 * which did not use #pwrseq-cells.
++		 */
++		if (strcmp(id, "mmc"))
++			return NULL;
++
++		ret = of_parse_phandle_with_args(dev->of_node, prop_name, NULL, 0, &args);
++		if (ret)
++			return NULL;
++
++		dev_warn(dev, "old mmc-pwrseq binding used, add #pwrseq-cells to the provider\n");
++	}
++
++	mutex_lock(&pwrseq_provider_mutex);
++	pwrseq_provider = of_pwrseq_provider_lookup(args.np);
++	if (IS_ERR(pwrseq_provider) || !try_module_get(pwrseq_provider->owner)) {
++		pwrseq = ERR_PTR(-EPROBE_DEFER);
++		goto out_unlock;
++	}
++
++	if (!of_device_is_available(args.np)) {
++		dev_warn(pwrseq_provider->dev, "Requested pwrseq is disabled\n");
++		pwrseq = ERR_PTR(-ENODEV);
++		goto out_put_module;
++	}
++
++	pwrseq = pwrseq_provider->of_xlate(pwrseq_provider->data, &args);
++
++out_put_module:
++	module_put(pwrseq_provider->owner);
++
++out_unlock:
++	mutex_unlock(&pwrseq_provider_mutex);
++	of_node_put(args.np);
++
++	return pwrseq;
++}
++
++struct pwrseq * __pwrseq_get(struct device *dev, const char *id, bool optional)
++{
++	struct pwrseq *pwrseq;
++	struct device_link *link;
++
++	pwrseq = _of_pwrseq_get(dev, id);
++	if (pwrseq == NULL)
++		return optional ? NULL : ERR_PTR(-ENODEV);
++	else if (IS_ERR(pwrseq))
++		return pwrseq;
++
++	if (!try_module_get(pwrseq->owner))
++		return ERR_PTR(-EPROBE_DEFER);
++
++	get_device(&pwrseq->dev);
++	link = device_link_add(dev, &pwrseq->dev, DL_FLAG_STATELESS);
++	if (!link)
++		dev_dbg(dev, "failed to create device link to %s\n",
++			dev_name(pwrseq->dev.parent));
++
++	return pwrseq;
++}
++
++struct pwrseq * pwrseq_get(struct device *dev, const char *id)
++{
++	return __pwrseq_get(dev, id, false);
++}
++EXPORT_SYMBOL_GPL(pwrseq_get);
++
++static void devm_pwrseq_release(struct device *dev, void *res)
++{
++	struct pwrseq *pwrseq = *(struct pwrseq **)res;
++
++	pwrseq_put(dev, pwrseq);
++}
++
++struct pwrseq * devm_pwrseq_get(struct device *dev, const char *id)
++{
++	struct pwrseq **ptr, *pwrseq;
++
++	ptr = devres_alloc(devm_pwrseq_release, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return ERR_PTR(-ENOMEM);
++
++	pwrseq = pwrseq_get(dev, id);
++	if (!IS_ERR(pwrseq)) {
++		*ptr = pwrseq;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return pwrseq;
++}
++EXPORT_SYMBOL_GPL(devm_pwrseq_get);
++
++struct pwrseq * pwrseq_get_optional(struct device *dev, const char *id)
++{
++	return __pwrseq_get(dev, id, true);
++}
++EXPORT_SYMBOL_GPL(pwrseq_get_optional);
++
++struct pwrseq * devm_pwrseq_get_optional(struct device *dev, const char *id)
++{
++	struct pwrseq **ptr, *pwrseq;
++
++	ptr = devres_alloc(devm_pwrseq_release, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return ERR_PTR(-ENOMEM);
++
++	pwrseq = pwrseq_get_optional(dev, id);
++	if (!IS_ERR_OR_NULL(pwrseq)) {
++		*ptr = pwrseq;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return pwrseq;
++}
++EXPORT_SYMBOL_GPL(devm_pwrseq_get_optional);
++
++int pwrseq_pre_power_on(struct pwrseq *pwrseq)
++{
++	if (pwrseq && pwrseq->ops->pre_power_on)
++		return pwrseq->ops->pre_power_on(pwrseq);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pwrseq_pre_power_on);
++
++int pwrseq_power_on(struct pwrseq *pwrseq)
++{
++	if (pwrseq && pwrseq->ops->power_on)
++		return pwrseq->ops->power_on(pwrseq);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pwrseq_power_on);
++
++void pwrseq_power_off(struct pwrseq *pwrseq)
++{
++	if (pwrseq && pwrseq->ops->power_off)
++		pwrseq->ops->power_off(pwrseq);
++}
++EXPORT_SYMBOL_GPL(pwrseq_power_off);
++
++void pwrseq_reset(struct pwrseq *pwrseq)
++{
++	if (pwrseq && pwrseq->ops->reset)
++		pwrseq->ops->reset(pwrseq);
++}
++EXPORT_SYMBOL_GPL(pwrseq_reset);
++
++static void pwrseq_dev_release(struct device *dev)
++{
++	struct pwrseq *pwrseq = to_pwrseq(dev);
++
++	ida_free(&pwrseq_ida, pwrseq->id);
++	of_node_put(dev->of_node);
++	kfree(pwrseq);
++}
++
++static struct class pwrseq_class = {
++	.name = "pwrseq",
++	.dev_release = pwrseq_dev_release,
++};
++
++struct pwrseq *__pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data)
++{
++	struct pwrseq *pwrseq;
++	int ret;
++
++	if (WARN_ON(!dev))
++		return ERR_PTR(-EINVAL);
++
++	pwrseq = kzalloc(sizeof(*pwrseq), GFP_KERNEL);
++	if (!pwrseq)
++		return ERR_PTR(-ENOMEM);
++
++	ret = ida_alloc(&pwrseq_ida, GFP_KERNEL);
++	if (ret < 0)
++		goto free_pwrseq;
++
++	pwrseq->id = ret;
++
++	device_initialize(&pwrseq->dev);
++
++	pwrseq->dev.class = &pwrseq_class;
++	pwrseq->dev.parent = dev;
++	pwrseq->dev.of_node = of_node_get(dev->of_node);
++	pwrseq->ops = ops;
++	pwrseq->owner = owner;
++
++	dev_set_drvdata(&pwrseq->dev, data);
++
++	ret = dev_set_name(&pwrseq->dev, "pwrseq-%s.%u", dev_name(dev), pwrseq->id);
++	if (ret)
++		goto put_dev;
++
++	ret = device_add(&pwrseq->dev);
++	if (ret)
++		goto put_dev;
++
++	if (pm_runtime_enabled(dev)) {
++		pm_runtime_enable(&pwrseq->dev);
++		pm_runtime_no_callbacks(&pwrseq->dev);
++	}
++
++	return pwrseq;
++
++put_dev:
++	/* will call pwrseq_dev_release() to free resources */
++	put_device(&pwrseq->dev);
++
++	return ERR_PTR(ret);
++
++free_pwrseq:
++	kfree(pwrseq);
++
++	return ERR_PTR(ret);
++}
++EXPORT_SYMBOL_GPL(__pwrseq_create);
++
++void pwrseq_destroy(struct pwrseq *pwrseq)
++{
++	pm_runtime_disable(&pwrseq->dev);
++	device_unregister(&pwrseq->dev);
++}
++EXPORT_SYMBOL_GPL(pwrseq_destroy);
++
++static void devm_pwrseq_destroy(struct device *dev, void *res)
++{
++	struct pwrseq *pwrseq = *(struct pwrseq **)res;
++
++	pwrseq_destroy(pwrseq);
++}
++
++struct pwrseq *__devm_pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data)
++{
++	struct pwrseq **ptr, *pwrseq;
++
++	ptr = devres_alloc(devm_pwrseq_destroy, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return ERR_PTR(-ENOMEM);
++
++	pwrseq = __pwrseq_create(dev, owner, ops, data);
++	if (!IS_ERR(pwrseq)) {
++		*ptr = pwrseq;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return pwrseq;
++}
++EXPORT_SYMBOL_GPL(__devm_pwrseq_create);
++
++struct pwrseq_provider *__of_pwrseq_provider_register(struct device *dev,
++	struct module *owner,
++	struct pwrseq * (*of_xlate)(void *data,
++				    struct of_phandle_args *args),
++	void *data)
++{
++	struct pwrseq_provider *pwrseq_provider;
++
++	pwrseq_provider = kzalloc(sizeof(*pwrseq_provider), GFP_KERNEL);
++	if (!pwrseq_provider)
++		return ERR_PTR(-ENOMEM);
++
++	pwrseq_provider->dev = dev;
++	pwrseq_provider->owner = owner;
++	pwrseq_provider->of_xlate = of_xlate;
++	pwrseq_provider->data = data;
++
++	mutex_lock(&pwrseq_provider_mutex);
++	list_add_tail(&pwrseq_provider->list, &pwrseq_provider_list);
++	mutex_unlock(&pwrseq_provider_mutex);
++
++	return pwrseq_provider;
++}
++EXPORT_SYMBOL_GPL(__of_pwrseq_provider_register);
++
++void of_pwrseq_provider_unregister(struct pwrseq_provider *pwrseq_provider)
++{
++	if (IS_ERR(pwrseq_provider))
++		return;
++
++	mutex_lock(&pwrseq_provider_mutex);
++	list_del(&pwrseq_provider->list);
++	kfree(pwrseq_provider);
++	mutex_unlock(&pwrseq_provider_mutex);
++}
++EXPORT_SYMBOL_GPL(of_pwrseq_provider_unregister);
++
++static void devm_pwrseq_provider_unregister(struct device *dev, void *res)
++{
++	struct pwrseq_provider *pwrseq_provider = *(struct pwrseq_provider **)res;
++
++	of_pwrseq_provider_unregister(pwrseq_provider);
++}
++
++struct pwrseq_provider *__devm_of_pwrseq_provider_register(struct device *dev,
++	struct module *owner,
++	struct pwrseq * (*of_xlate)(void *data,
++				    struct of_phandle_args *args),
++	void *data)
++{
++	struct pwrseq_provider **ptr, *pwrseq_provider;
++
++	ptr = devres_alloc(devm_pwrseq_provider_unregister, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return ERR_PTR(-ENOMEM);
++
++	pwrseq_provider = __of_pwrseq_provider_register(dev, owner, of_xlate, data);
++	if (!IS_ERR(pwrseq_provider)) {
++		*ptr = pwrseq_provider;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return pwrseq_provider;
++}
++EXPORT_SYMBOL_GPL(__devm_of_pwrseq_provider_register);
++
++struct pwrseq *of_pwrseq_xlate_onecell(void *data, struct of_phandle_args *args)
++{
++	struct pwrseq_onecell_data *pwrseq_data = data;
++	unsigned int idx;
++
++	if (args->args_count != 1)
++		return ERR_PTR(-EINVAL);
++
++	idx = args->args[0];
++	if (idx >= pwrseq_data->num) {
++		pr_err("%s: invalid index %u\n", __func__, idx);
++		return ERR_PTR(-EINVAL);
++	}
++
++	return pwrseq_data->pwrseqs[idx];
++}
++
++static int __init pwrseq_core_init(void)
++{
++	return class_register(&pwrseq_class);
++}
++device_initcall(pwrseq_core_init);
+diff --git a/include/linux/pwrseq/consumer.h b/include/linux/pwrseq/consumer.h
+new file mode 100644
+index 000000000000..fbcdc1fc0751
+--- /dev/null
++++ b/include/linux/pwrseq/consumer.h
+@@ -0,0 +1,88 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (c) 2021 Linaro Ltd.
++ */
++
++#ifndef __LINUX_PWRSEQ_CONSUMER_H__
++#define __LINUX_PWRSEQ_CONSUMER_H__
++
++struct pwrseq;
++struct device;
++
++#if defined(CONFIG_PWRSEQ)
++
++struct pwrseq *__must_check pwrseq_get(struct device *dev, const char *id);
++struct pwrseq *__must_check devm_pwrseq_get(struct device *dev, const char *id);
++
++struct pwrseq *__must_check pwrseq_get_optional(struct device *dev, const char *id);
++struct pwrseq *__must_check devm_pwrseq_get_optional(struct device *dev, const char *id);
++
++void pwrseq_put(struct device *dev, struct pwrseq *pwrseq);
++
++int pwrseq_pre_power_on(struct pwrseq *pwrseq);
++int pwrseq_power_on(struct pwrseq *pwrseq);
++void pwrseq_power_off(struct pwrseq *pwrseq);
++void pwrseq_reset(struct pwrseq *pwrseq);
++
++#else
++
++static inline struct pwrseq *__must_check
++pwrseq_get(struct device *dev, const char *id)
++{
++	return ERR_PTR(-ENOSYS);
++}
++
++static inline struct pwrseq *__must_check
++devm_pwrseq_get(struct device *dev, const char *id)
++{
++	return ERR_PTR(-ENOSYS);
++}
++
++static inline struct pwrseq *__must_check
++pwrseq_get_optional(struct device *dev, const char *id)
++{
++	return NULL;
++}
++
++static inline struct pwrseq *__must_check
++devm_pwrseq_get_optional(struct device *dev, const char *id)
++{
++	return NULL;
++}
++
++static inline void pwrseq_put(struct device *dev, struct pwrseq *pwrseq)
++{
++}
++
++static inline int pwrseq_pre_power_on(struct pwrseq *pwrseq)
++{
++	return -ENOSYS;
++}
++
++static inline int pwrseq_power_on(struct pwrseq *pwrseq)
++{
++	return -ENOSYS;
++}
++
++static inline void pwrseq_power_off(struct pwrseq *pwrseq)
++{
++}
++
++static inline void pwrseq_reset(struct pwrseq *pwrseq)
++{
++}
++
++#endif
++
++static inline int pwrseq_full_power_on(struct pwrseq *pwrseq)
++{
++	int ret;
++
++	ret = pwrseq_pre_power_on(pwrseq);
++	if (ret)
++		return ret;
++
++	return pwrseq_power_on(pwrseq);
++}
++
++#endif /* __LINUX_PWRSEQ_CONSUMER_H__ */
+diff --git a/include/linux/pwrseq/driver.h b/include/linux/pwrseq/driver.h
+new file mode 100644
+index 000000000000..b2bc46624d7e
+--- /dev/null
++++ b/include/linux/pwrseq/driver.h
+@@ -0,0 +1,75 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (c) 2021 Linaro Ltd.
++ */
++
++#ifndef __LINUX_PWRSEQ_DRIVER_H__
++#define __LINUX_PWRSEQ_DRIVER_H__
++
++#include <linux/device.h>
++
++struct pwrseq;
++
++struct pwrseq_ops {
++	int (*pre_power_on)(struct pwrseq *pwrseq);
++	int (*power_on)(struct pwrseq *pwrseq);
++	void (*power_off)(struct pwrseq *pwrseq);
++	void (*reset)(struct pwrseq *pwrseq);
++};
++
++struct module;
++
++struct pwrseq {
++	struct device dev;
++	const struct pwrseq_ops *ops;
++	unsigned int id;
++	struct module *owner;
++};
++
++struct pwrseq *__pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data);
++struct pwrseq *__devm_pwrseq_create(struct device *dev, struct module *owner, const struct pwrseq_ops *ops, void *data);
++
++#define pwrseq_create(dev, ops, data) __pwrseq_create((dev), THIS_MODULE, (ops), (data))
++#define devm_pwrseq_create(dev, ops, data) __devm_pwrseq_create((dev), THIS_MODULE, (ops), (data))
++
++void pwrseq_destroy(struct pwrseq *pwrseq);
++
++static inline void *pwrseq_get_data(struct pwrseq *pwrseq)
++{
++	return dev_get_drvdata(&pwrseq->dev);
++}
++
++#define	of_pwrseq_provider_register(dev, xlate, data)	\
++	__of_pwrseq_provider_register((dev), THIS_MODULE, (xlate), (data))
++
++#define	devm_of_pwrseq_provider_register(dev, xlate, data)	\
++	__devm_of_pwrseq_provider_register((dev), THIS_MODULE, (xlate), (data))
++
++struct of_phandle_args;
++
++struct pwrseq_provider *__of_pwrseq_provider_register(struct device *dev,
++	struct module *owner,
++	struct pwrseq * (*of_xlate)(void *data,
++				    struct of_phandle_args *args),
++	void *data);
++struct pwrseq_provider *__devm_of_pwrseq_provider_register(struct device *dev,
++	struct module *owner,
++	struct pwrseq * (*of_xlate)(void *data,
++				    struct of_phandle_args *args),
++	void *data);
++void of_pwrseq_provider_unregister(struct pwrseq_provider *pwrseq_provider);
++
++static inline struct pwrseq *of_pwrseq_xlate_single(void *data,
++						    struct of_phandle_args *args)
++{
++	return data;
++}
++
++struct pwrseq_onecell_data {
++	unsigned int num;
++	struct pwrseq *pwrseqs[];
++};
++
++struct pwrseq *of_pwrseq_xlate_onecell(void *data, struct of_phandle_args *args);
++
++#endif /* __LINUX_PWRSEQ_DRIVER_H__ */
 -- 
 2.33.0
 
