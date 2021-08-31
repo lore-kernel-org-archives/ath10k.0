@@ -2,77 +2,83 @@ Return-Path: <SRS0=prmI=NW=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18ECCC432BE
-	for <ath10k@archiver.kernel.org>; Tue, 31 Aug 2021 14:02:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EE12C4320A
+	for <ath10k@archiver.kernel.org>; Tue, 31 Aug 2021 18:24:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDB1E6056B
-	for <ath10k@archiver.kernel.org>; Tue, 31 Aug 2021 14:02:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DDB1E6056B
+	by mail.kernel.org (Postfix) with ESMTPS id 6860B6103D
+	for <ath10k@archiver.kernel.org>; Tue, 31 Aug 2021 18:24:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6860B6103D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=GEv6PDt8xLOGaBmb50QvSRJONavT0rcPP9DpT3YJxr0=; b=mSq
-	SYhFPcOnQBa6C07mYq6CbKrXAz77msh83xjiOmDPvoYF3no3TwNlWf0K8VVNV41XSLtZSCaIn97ea
-	3zmtZcYtV898nxFj7M3G84rDyF3JaR6EDjTCtG7t9cgQ4lQUuFlE5Kfo8eN/Fdo0ZEmgaQhRfAN2Q
-	clODb2W0ML+BNtsqu/b1Ad2sbsmnFxlNDwRNEmi3uIF8QpV23f4ecQjCjPIl8+mnUqBt/yCZxswFQ
-	dUy7hOwHpduvIvT718kxTGt0WzKkXufBcHzfB8la5anfFpyfoXvyhveTTjS7C+b56LOqvj5SECPm0
-	9gKfDrfvakzVUfz56iinsuxVB1sRRkg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=0uBDSZ494h8as0r5R6raX6yMYGNijxU1OFOD0pRMdFY=; b=pcngYoAncxhlUT
+	NQETzn00jtALk2KQ3U/IsX0IXkxmZ73IeAIg6/nN3dFA3kFzq3hkPMQHPAsU19fMBRTAyQCfZPNLo
+	Agee1ypZK21ardvWO/fwWnVpNjMxKmt6GKdSz399eMPUoyLAHDdRNNTEh3n3nATMl1D+N1EgJ4Ckk
+	v2sc1I3DIxKIFKfuDDb+BJiOxqiia8G6oSrnxQLd/jWE6RWomIg+80AmQu4rDux/BBT+FlSUfltE2
+	FF+5zYuCv9nr4NWEKrmpucomwZhVx/fmdcFDg1Uhu7MmZFT6OFtWEieaUbY9LoFi/ldIDvELO0eD7
+	JxZtNPeoaLxJHtfeJumg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mL4Kr-002U4y-41; Tue, 31 Aug 2021 14:01:57 +0000
-Received: from mail-oo1-xc29.google.com ([2607:f8b0:4864:20::c29])
+	id 1mL8OX-002uRN-0T; Tue, 31 Aug 2021 18:22:01 +0000
+Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mL4Km-002U1z-4v
- for ath10k@lists.infradead.org; Tue, 31 Aug 2021 14:01:54 +0000
-Received: by mail-oo1-xc29.google.com with SMTP id
- b5-20020a4ac285000000b0029038344c3dso5679244ooq.8
- for <ath10k@lists.infradead.org>; Tue, 31 Aug 2021 07:01:50 -0700 (PDT)
+ id 1mL8OU-002uQy-Dz
+ for ath10k@lists.infradead.org; Tue, 31 Aug 2021 18:21:59 +0000
+Received: by mail-lj1-x229.google.com with SMTP id h1so244505ljl.9
+ for <ath10k@lists.infradead.org>; Tue, 31 Aug 2021 11:21:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=DY+KFc0slNrncy7AXv0Jz+zNeniPOiUdFGiyEKNpXwM=;
- b=CViJ53YrK+pQpA4JvvgytohwlvDQWL6jQVxfbZF442fzTFBFV1OydaJAaPJvwdY3OT
- Z8rrtdWnilC70ih+cacANfEJfAIUK/+qkbUvFCH4KY9Ky59Sx1uiUckLXiMVFKuP5KMd
- lUwuO4ftp2VNs7MLaz89AsEOum2VmUB0nbFqy+JCjdkvCLG3Jxye3LtFgMhO5g8Ys+UK
- Dp5J2FSY8rPapTprN+lWxYN+qU673DQF6x7Nd3x4DDKDFaEv9i5Gemr7WOp50/SaiJyu
- DWTfxOkQT1zUEPEvj6GaO7aWLgotD2Wt5ZDzpuofQHSY+XY31yGWrnzCLGY63+3jSBU2
- RxYg==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=KsNRskN10uGdBS+FAhPOIQh/5DxFwy8MHfzSDSxX5Uw=;
+ b=HIZJbD1ZWTB3ivppNQo6KKvLKNJBkZB+gB6ECFKBKCdp2BQMTOL8XIFSnwtuvbiwmG
+ O8glyNjDNLhlM2Q4kXKPB8mPT+qVL8C7+vEo81+qGz1cY7E9A0QC3zhE0Hiv9dZjiNf0
+ mQdFN0OQF2VZwuoAvvKDHbsSPx5Zuhaedt7cFTjAWncmVpvESSv2DD7QzMrkBf2L5d/F
+ 0na7mJ1dpycu27ttIkjZRsECQ14Lb8CKr6sPjYha9+LYhDARhI7fGzYjl7iBq8C1AEPz
+ sCnFxhUni7bHJn2yj0TF/ksTTfLvx1d5OUmoJD47NNKnzq9rFpXYe1j9zm6K/fQEyuAJ
+ lLVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=DY+KFc0slNrncy7AXv0Jz+zNeniPOiUdFGiyEKNpXwM=;
- b=Mq0fM31uhnN+XibIsjwfxuylmYXHncEUZU7uODK1YwP0jzbFRDewVCY9YMQkXOwf2M
- W6N733aO+hHgmxyN4JmYqVAcIQ0nbP/WptRfTM73WJrA+sWpFOWX6J/mZYiXeZNGB6b9
- iZJaxkSFTAKhJsa6COrZiC3SWz0jd1LGhkz0FseNcOQ4qeCipKuSlzEsGIqHxYTps8ei
- D8rGMXvkFJR8GokKJRbzJxRxGBEZlyn9pejlr0WTKtt4Tj9qND+5HAi9KzoxP7akW+f6
- KS+/U3tIS9MkJhwNrOfkT3s61m2fcMM/IidKJ6wQtpNVnpik1g/mfZTGUVSz0qm4bb38
- +Jqw==
-X-Gm-Message-State: AOAM533XafkUgn3afXrqZ3sKcktORadaWWkD/VoQXe8CKhCO9b3mwrHP
- uo5ExAeMBfRafmLSjC2xBPcukBgO3ViBjFzr422zI138LfM=
-X-Google-Smtp-Source: ABdhPJyOhicxEeZIfWmD9CyN3rolu+arItYKccL//q/rrTjXwxvBzZTI49/+GcLBHr6Ltw3ZOcwB7gpw4m/QCjb0UDs=
-X-Received: by 2002:a4a:e923:: with SMTP id a3mr14371617ooe.45.1630418510058; 
- Tue, 31 Aug 2021 07:01:50 -0700 (PDT)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=KsNRskN10uGdBS+FAhPOIQh/5DxFwy8MHfzSDSxX5Uw=;
+ b=QOJsC83wNb3O+gF2V+7+O/E/o0JD/9PK0VpF/lCgv4xuF3dn4PDnrd6QtBcTO5A7/f
+ 1sZvJzsGi3bYHLCM3PicJ3leBL4VBGTNg69JlbdfLU+Dd3FIwXH1HwKitzxfKndN0lCe
+ dV0s8uE2RQ/rIWfi9p2i3zAofglchGJCLH2FgLeCu3Xm6p6zVggnViKiHsYV7MPQbF/B
+ TmTuEw6iiZXM4neg+OdLA3TrO2S76AZJVOvBjfY6/dchOSobHS74tDntanlZR3CR7cQz
+ 1XNtfZIO0nXXv+Wc6HsJc8Y3rLBAPV/LPTOW2ZllVu64sOWXMzHyZ2Vk1ucSrNSE5jDt
+ ToQA==
+X-Gm-Message-State: AOAM533Uxd6mXyutWEoZcZ7KK0JGTSpqs4BA6nE7j5/jB6JgMMqWZYex
+ 85vhupvi9wxpEfgprKATwYjym/milolznn+svzQ=
+X-Google-Smtp-Source: ABdhPJxL1IAF36zhJIY0JnAWPwhELmGCoNSgButeIYRUVeDMKk0MaHJtpBax9vrnDkmDUw4+cJmIsh9Udy1ud2Fk7zk=
+X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr25480012ljk.121.1630434115728; 
+ Tue, 31 Aug 2021 11:21:55 -0700 (PDT)
 MIME-Version: 1.0
-From: Sugandh Huthanahally Mohan <sugandhgowda@gmail.com>
-Date: Tue, 31 Aug 2021 16:01:39 +0200
-Message-ID: <CAD_iCC_MD00B8hBk7uhFnwH3q3qSm_XE7acY2FstXb+HsbUnxA@mail.gmail.com>
-Subject: Fine Time Measurement (FTM) support in ath10k
-To: ath10k@lists.infradead.org
+References: <20210824144339.2796122-1-festevam@denx.de>
+In-Reply-To: <20210824144339.2796122-1-festevam@denx.de>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 31 Aug 2021 15:21:44 -0300
+Message-ID: <CAOMZO5De71QvbvAsddCzAmGRULTie3hPqBJgo6ytVV6pEkisXw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: sdio: Add missing BH locking around napi_schdule()
+To: Fabio Estevam <festevam@denx.de>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ "Paul E . McKenney" <paulmck@kernel.org>, 
+ Marek Vasut <marex@denx.de>, wgong@codeaurora.org, alagusankar@silex-india.com,
+ erik.stromdahl@gmail.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210831_070152_245278_A24748C6 
-X-CRM114-Status: UNSURE (   5.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210831_112158_527412_4A522A82 
+X-CRM114-Status: GOOD (  13.54  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,19 +95,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello All,
+Hi Kalle,
 
-We are required to evaluate the Fine Time Measurement protocol (FTM)
-in ath drivers for a project. We want to make use of both components
-of FTM i.e., Initiator and Responder.
+On Tue, Aug 24, 2021 at 11:46 AM Fabio Estevam <festevam@denx.de> wrote:
+>
+> On a i.MX-based board with a QCA9377 Wifi chip, the following errors
+> are seen after launching the 'hostapd' application:
+>
+> hostapd /etc/wifi.conf
+> Configuration file: /etc/wifi.conf
+> wlan0: interface state UNINITIALIZED->COUNTRY_UPDATE
+> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
+> Using interface wlan0 with hwaddr 00:1f:7b:31:04:a0 and ssid "thessid"
+> IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+> wlan0: interface state COUNTRY_UPDATE->ENABLED
+> wlan0: AP-ENABLED
+> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
+> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
+> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
+> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
+> ...
+>
+> Fix this problem by adding the BH locking around napi-schedule(),
+> in the same way it was done in commit e63052a5dd3c ("mlx5e: add
+> add missing BH locking around napi_schdule()").
+>
+> Its commit log provides the following explanation:
+>
+> "It's not correct to call napi_schedule() in pure process
+> context. Because we use __raise_softirq_irqoff() we require
+> callers to be in a context which will eventually lead to
+> softirq handling (hardirq, bh disabled, etc.).
+>
+> With code as is users will see:
+>
+> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
+> "
+>
+> Fixes: cfee8793a74d ("ath10k: enable napi on RX path for sdio")
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 
-Going by the ath10k drivers, we found implementation for FTM
-Responder while we could not find implementation for FTM Initiator.
-Could you please let us know if the FTM Initiator implementation was
-done and tested as part of ath10k drivers?
-
-Thanks and Regards,
-Sugandh Huthanahally Mohan
+Gentle ping on this one.
 
 _______________________________________________
 ath10k mailing list
