@@ -1,84 +1,91 @@
-Return-Path: <SRS0=6ef7=N6=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=kr8a=N7=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17E94C433EF
-	for <ath10k@archiver.kernel.org>; Wed,  8 Sep 2021 23:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCFE1C433F5
+	for <ath10k@archiver.kernel.org>; Thu,  9 Sep 2021 00:22:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFF9361158
-	for <ath10k@archiver.kernel.org>; Wed,  8 Sep 2021 23:43:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CFF9361158
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ojab.ru
+	by mail.kernel.org (Postfix) with ESMTPS id A198C610E9
+	for <ath10k@archiver.kernel.org>; Thu,  9 Sep 2021 00:22:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A198C610E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bUe22I1RnqLhLnqBTSZE8G1/reEfv0jXrTyhuLJjX8A=; b=pGPZ6VTB7jKISG
-	0sgpQLt4NrMp9neM+fIxXSAgn5ZfcWbAyVAscnd3NFKrjchUpnn5rn+BZWq+4EmSlTNvxeDxGVsgP
-	1E/ZUJzjHfbirp8XgnOnAAd3cCxlvBOXw8qfkXCxCY2fzhbNo+gS2Djs1r50AyO3tm0emsTRf+UqX
-	xz+BRR8dqK6oAB2rLTp1WKO7K5eJ5Q6B6OmDYQVBywwf9EA3UMxghjeYyUK+R1fUTLd7oKfgkpZVN
-	c62iTqqsmc75UeGaFLyTE34CJ2Avmz+3uH1d+KKa33V5lV5bMcgiMK+2t49xyA2Lur84gcdo3NMCn
-	abBFPTiZuazN8BEzkJZQ==;
+	List-Owner; bh=hwIRhOk4oBE28V+gE7yim/zWvpdYovklQgynyYleo/8=; b=BwM+L2MA3iytK/
+	+ybw1CYwqlpd4AWEcbRXNVFrOZ+YOfrIyMFBAeE8hvT2bG7q5uFJCYPvPjLr1FH8Oxg4TnpCBB1fh
+	QUnABGSmtylPhKWcff1bk73pgEVKDZJ1vYzg+BAV3jXSKMb06VSmxg5wYtMYkzgeYYc9DifD+sD29
+	Swxp4n9LPirwBhP7+mXx3zLcZbs+iDiIEhQwmzG3sb5WVeMaAvnfvYn0nZB4KnEkcTmMLo0cwe7DQ
+	XJ4FxoWxc9gBVbXbqdzOtijMGtSFYx5TJky8a9/L3nHGHB7q/vDzy5DSoC2Ig6/c4ElXb81+oN8i5
+	daq0boYDRekzOV1A7cVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mO7DZ-007nmZ-Qs; Wed, 08 Sep 2021 23:43:01 +0000
-Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
+	id 1mO7pJ-007qkm-MU; Thu, 09 Sep 2021 00:22:01 +0000
+Received: from mail-oo1-xc36.google.com ([2607:f8b0:4864:20::c36])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mO7DV-007nlt-Rt
- for ath10k@lists.infradead.org; Wed, 08 Sep 2021 23:42:59 +0000
-Received: by mail-io1-xd2b.google.com with SMTP id z1so5542990ioh.7
- for <ath10k@lists.infradead.org>; Wed, 08 Sep 2021 16:42:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ojab.ru; s=ojab;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=up2XsrnvlIFzj8+jd7lbSzWI6A4vHwt4fG2fDS+P6QI=;
- b=HpWJLAYbhN3lnywIcBJmKBR2fyhxhEkc/yleJGUo6GUunFhNL8Oie2lyK3RWHm2fsB
- jbaApLygjDbQkzs3WZgYWLHj8JbHwvLhbY31V7B8uMm0hO6I4MVvkTZMiFr0y72iWCEQ
- bX1fSIDqrl2OBrWEiZ5qTknR1tf7YjWdvLPu2Y8AzE/5gwVdUUy8YwL+jI02oVf+HZJZ
- zl1zBBWecpp0lWZD/R8aiowpzqyEMk1mfdkmrEhtCTMLyu6SlosFobt5OYNrdZmhVrTQ
- xpccguLy6X+j8EP6nKO8d3xZ1pt0XxbdA2klEMhABQvtSw26+POjoiKUdGECeA2MRO8e
- yP8g==
+ id 1mO7pH-007qkL-9v
+ for ath10k@lists.infradead.org; Thu, 09 Sep 2021 00:22:00 +0000
+Received: by mail-oo1-xc36.google.com with SMTP id
+ b5-20020a4ac285000000b0029038344c3dso1374603ooq.8
+ for <ath10k@lists.infradead.org>; Wed, 08 Sep 2021 17:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+ :subject:to:cc;
+ bh=KrKQVNDq3/5gBSCRZh6fTEr0lGsTWylg4ncaoymesVE=;
+ b=l2zLirahIdKfjSNP4/FhmOaIxi6RGKTtg2W5yfzqga9z8DM7mF8KKLqdVBbe3EVQU8
+ B2mAb8Kiyg3jGUGCmKchEE2FUCQe8mgtNYWYqjHacr6zdJiQlA/FSaPoBXi+Hveldzji
+ yG8fvl3sD+03w4y0+gHlZYwwEFTawa1SZd9SM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=up2XsrnvlIFzj8+jd7lbSzWI6A4vHwt4fG2fDS+P6QI=;
- b=Xwaulh96P/rV93D3wfR97jWD5id5gmMTiaWtDYXVTmE6pnvSv+ehuDHqEkApXW+e4D
- 1NEZQDm2fFlT27+7w7PGz71x7C969XMM3rTSA5/oKfwxl04gWkmI7vb+XJh7YRB2kS5L
- gm8DjDT0EO0Xp3Rb1sUIeO1tQf1GTY44UrtFwDhG97bGz16H0LlBT2wmSxWJ3J5DQ5CN
- 61mLpsm1c3wbnTeBJ4YdSoUQy8GTstQmBjzlOEkjSouGExcCoVx5u4SJVTrPc13Sm6Rq
- 5o5DdqgCqbe4Bbraak/YOddsRxJ9ORGb1pqOYVTeiOav3Wa91L85Y5wD4vDqPy1xh7MR
- p3Eg==
-X-Gm-Message-State: AOAM532lIzFRekJg44LBgqGKp9Ykn455VDLYlXGe/7ujHKiR/UY6Qap3
- /LAM7qkEGFdf3zPPHunEgB3ypEA/zz7ghgP+Tkz/LQ==
-X-Google-Smtp-Source: ABdhPJyGEuoLSQC3YF3kxRyp4VjkbJsVtFOCMq06PZzRQb1nx4K/uFtuO/48yF5x8mjoPX1l1CEy+zh9Q/Dz0Y3oMmw=
-X-Received: by 2002:a6b:f007:: with SMTP id w7mr106755ioc.112.1631144572943;
- Wed, 08 Sep 2021 16:42:52 -0700 (PDT)
+ h=x-gm-message-state:mime-version:in-reply-to:references:from
+ :user-agent:date:message-id:subject:to:cc;
+ bh=KrKQVNDq3/5gBSCRZh6fTEr0lGsTWylg4ncaoymesVE=;
+ b=LmiFzmTBVynoht1ROa09L8Cm8mAwy2hNgjq257IuL8RQvAqLjxQKCJbsJ3tHp3Y5GY
+ ENkvmtKUmMAXvSDnBVwANljBlmX7h+wWHxnscbRmMJ9P3qm7NIxw7gp84BMK7N+DCZiI
+ sTLqhCNvLzFnUcmwYMWN8RJMy+8rX39NeDPTgWv9LaWxNjqJhxVyKVqXge7O4MD/1oD1
+ /bOGBtz0hwgj9iZ8gPJAPag0uzPDQAKDmic7+S4/USTawMB6mnBrR+nW+QUnNMRP+qFz
+ B0f3NY5DDRlGeKypyBMSaB4b6HvopplQXrJ0e3l2miJ3KCy7tzJuCDUPlCevvu+sk+XM
+ zx3Q==
+X-Gm-Message-State: AOAM530Q0RPWzD68C+s1FnjKJVLeTrkEIx3Cd5i3DCTfbL+Hbv7UgAFU
+ TbleUxyfJc51d7uVHdGcbFCQaoroSSXMKYmvz3KC+Q==
+X-Google-Smtp-Source: ABdhPJxgF39MsLPy0LWbZeXGBUy3CFp7gIIfxNlCUhObTVORlW5XPn7pdgoxLbPwwQ0fUMnQfRUlseqsLjVZ7A4RYec=
+X-Received: by 2002:a4a:9211:: with SMTP id f17mr259723ooh.25.1631146917250;
+ Wed, 08 Sep 2021 17:21:57 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 8 Sep 2021 17:21:56 -0700
 MIME-Version: 1.0
-References: <20210722193459.7474-1-ojab@ojab.ru>
- <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
-In-Reply-To: <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
-From: "ojab //" <ojab@ojab.ru>
-Date: Thu, 9 Sep 2021 02:42:42 +0300
-Message-ID: <CAKzrAgQgsN6=Cu4SvjSSFoJOqAkU2t8cjt7sgEsJdNhvM8f7jg@mail.gmail.com>
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-To: Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: ath10k@lists.infradead.org, 
- Linux Wireless <linux-wireless@vger.kernel.org>, netdev@vger.kernel.org, 
- LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
+References: <20210905210400.1157870-1-swboyd@chromium.org>
+ <YTe+a0Gu7O6MEy2d@google.com>
+ <CAE-0n52d_GBh70pSDXTrVkD5S6akP4O9YcE4tVRKZcvLtLZSmg@mail.gmail.com>
+ <CACTWRwsRLrKHRWVoHHyrU2DEc_VkhqSi66tdD2OBWs_y8J2LPw@mail.gmail.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date: Wed, 8 Sep 2021 17:21:56 -0700
+Message-ID: <CAE-0n50RUGTA8sfK52YWXRkoi31XYnJkahy_MydRZ0zM1QXRQg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: Matthias Kaehlcke <mka@chromium.org>, Kalle Valo <kvalo@codeaurora.org>, 
+ LKML <linux-kernel@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ linux-arm-msm@vger.kernel.org, 
+ netdev <netdev@vger.kernel.org>, Youghandhar Chintala <youghand@codeaurora.org>,
+ Rakesh Pillai <pillair@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210908_164258_167226_4AC657E3 
-X-CRM114-Status: GOOD (  25.67  )
+X-CRM114-CacheID: sfid-20210908_172159_402264_201D9860 
+X-CRM114-Status: UNSURE (   8.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,80 +102,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Gentle ping.
+Quoting Abhishek Kumar (2021-09-08 15:37:07)
+>
+> Overall this change should fix the issue, additionally I have one
+> comment below and would like other reviewers views.
+>
+> >  #include <linux/regulator/consumer.h>
+> > +#include <linux/remoteproc/qcom_rproc.h>
+> >  #include <linux/of_address.h>
+> We are adding an external dependency here but since this is added in
+> snoc.c (which is for integrated solution only), I can expect if SNOC
+> is enabled, remote proc will be enabled as well, so it should be fine.
 
-//wbr ojab
-
-On Wed, 25 Aug 2021 at 19:15, ojab // <ojab@ojab.ru> wrote:
->
-> Can I haz it merged?
->
-> //wbr ojab
->
-> On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
-> >
-> > After reboot with kernel & firmware updates I found `failed to copy
-> > target iram contents:` in dmesg and missing wlan interfaces for both
-> > of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-> > it, so while I have no idea what's actually happening, I don't see why
-> > we should fail in this case, looks like some optional firmware ability
-> > that could be skipped.
-> >
-> > Also with additional logging there is
-> > ```
-> > [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-> > [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> > [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-> > [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-> > ```
-> > so exact branch could be seen.
-> >
-> > Signed-off-by: Slava Kardakov <ojab@ojab.ru>
-> > ---
-> >  Of course I forgot to sing off, since I don't use it by default because I
-> >  hate my real name and kernel requires it
-> >
-> >  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> > index 2f9be182fbfb..d9fd5294e142 100644
-> > --- a/drivers/net/wireless/ath/ath10k/core.c
-> > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> > @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
-> >         u32 len, remaining_len;
-> >
-> >         hw_mem = ath10k_coredump_get_mem_layout(ar);
-> > -       if (!hw_mem)
-> > +       if (!hw_mem) {
-> > +               ath10k_warn(ar, "No hardware memory");
-> >                 return -ENOMEM;
-> > +       }
-> >
-> >         for (i = 0; i < hw_mem->region_table.size; i++) {
-> >                 tmp = &hw_mem->region_table.regions[i];
-> > @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
-> >                 }
-> >         }
-> >
-> > -       if (!mem_region)
-> > +       if (!mem_region) {
-> > +               ath10k_warn(ar, "No memory region");
-> >                 return -ENOMEM;
-> > +       }
-> >
-> >         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-> >                 if (ar->wmi.mem_chunks[i].req_id ==
-> > @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
-> >                 if (status) {
-> >                         ath10k_warn(ar, "failed to copy target iram contents: %d",
-> >                                     status);
-> > -                       goto err_hif_stop;
-> >                 }
-> >         }
-> >
-> > --
-> > 2.32.0
+There are stubs so that if it isn't enabled it won't do anything. But as
+you say SNOC relies on the modem to boot, so maybe CONFIG_ATH10K_SNOC
+should depend on some remoteproc config anyway? I'm not clear how probe
+ordering works but I think we'll want to make sure that we only register
+the notifier once the remoteproc driver for the modem adds itself to the
+list of available strings to look for.
 
 _______________________________________________
 ath10k mailing list
