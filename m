@@ -2,85 +2,100 @@ Return-Path: <SRS0=Js5E=OD=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8979CC433EF
-	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 20:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AF25C433EF
+	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 23:40:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5CDA06103B
-	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 20:59:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5CDA06103B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 203E360FC0
+	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 23:40:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 203E360FC0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kali.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=DqQo0A2iNzjSHBcrcEpkT8tuB+SJfnWQo2fMgesSyXE=; b=AI+p9rJ2jneTIG
-	AUGymDxleqwhHRdcVJRV3QzgSTn9Xwz5rdVe62mLihfFpOyzcfTQOAvat1Kg7h986cOW6AayI2ee6
-	NC5jOa0YCkjPQflrhyVNmvMjePzXwzezEuI8s3qiP1iGBCzHjJzKNN/CUvqqNNhkeeUqt4ckD7E0/
-	S2jauYdgDNlGaw4XTiMkvuNg3LughNpsmP00LMd/mWYAukyzpdM+PujRmaVnO0XlZKauFm57nm7iX
-	3cjGD2L1kJ5l1d+wPv2TIVm2ZoyDaX1xmGvqDLMHsh/1oKUkoLuumcgaYXqv/UTPpNfe6Y154eGCG
-	nXPfLnjTYoo6l3MOwIcQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=TqL6AMVNbXQQBLXL9kzAqKFKhO6pzrW6tz7cl/sFHHE=; b=TEtNcXH8CGuxKZ+iqMsSLjdJmd
+	OX61agB1Z/n436r+0MjaVhcWAZ1jSa8+7viDD8zqPVGSe0OvDlalk9sPI2iIeFfykyDvT/j1wpu0W
+	vdnXipXvfD4KD0hH/Q9+WQjAQUEHsV4CsIvXWsWJ2odBpeGm9Smrv3M2AubP2zwBG2xcHrHOeSVQ7
+	kVjWsgk/3NRe09+ShN5dKQSDs7ecyoVNw5FHISq915PQhHMDj4fon2Tg2Kao7ISHF2HuTezO5f1X2
+	FXfD0tBvxdZjuczFIBG4GDhf0/sKPLx0BvMbsuN0Crhnr3mbNphOJAYpJ4IXJRRLst6YYPkgQoxdv
+	9+QqlYCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPt2J-003FT3-Ei; Mon, 13 Sep 2021 20:58:44 +0000
-Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
+	id 1mPvYS-003fIT-9j; Mon, 13 Sep 2021 23:40:04 +0000
+Received: from mail-oi1-x22d.google.com ([2607:f8b0:4864:20::22d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPsx3-003DE4-Rd
- for ath10k@lists.infradead.org; Mon, 13 Sep 2021 20:53:19 +0000
-Received: by mail-pg1-x52b.google.com with SMTP id r2so10569878pgl.10
- for <ath10k@lists.infradead.org>; Mon, 13 Sep 2021 13:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=f90knbbhtSScT8ar0jqF08SQUZmsRray7TeEETy/L9c=;
- b=TLgwdSKTYs4IaAyBBMpkY+P28NYma3r1phTKbQrF7ns68EYCnG/diFKdtFOwdJ2R8D
- xT9nmLrmtnmDk54bafY9N3Zxttn4/3BZoudzEIvLFqtXIRDtgTzSPdOu0VCzfb3Skjyo
- 8K1CUuIokwBsacA+2mLbS6MBqCyLa4zgJLpQk=
+ id 1mPvYO-003fHe-Hc
+ for ath10k@lists.infradead.org; Mon, 13 Sep 2021 23:40:02 +0000
+Received: by mail-oi1-x22d.google.com with SMTP id v2so16379622oie.6
+ for <ath10k@lists.infradead.org>; Mon, 13 Sep 2021 16:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kali.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-transfer-encoding:content-language;
+ bh=ihysQIdGR8w+AiS+ReWp8DK2aVapwmF1UvOCNcDhHKc=;
+ b=IRIIEViIbrzd5kpmoPo6R+Oy3FbupEZKJ6mcTM8r782MvEpzOb2C7MJtR4EBx3lXie
+ CHl/9FYY3aeP6vQqOWBveC/ddBGSnwPWxnSDNX+l8j/LyDSs0YyJA0V5kzPVq7OqGLUj
+ AEtm0/7Jp51ctNjxsGlrTzmlPOU5/8x2CSs0IpWDN90SvGP5TfTkt/g/hzR+tufLr6UW
+ yuDGmsKRIR8E1QzgPqi5oDRRANvSTE9+mxDwDs94C0lx6P9LsTFRwoTL9CrjQGlmDaN4
+ HDVImDXi1v0SNfnC3VTDuj2dkOAwgst8eQllcU1qKkyr+yCz3r7Jo2YSvd1sJU/nVriu
+ D+9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=f90knbbhtSScT8ar0jqF08SQUZmsRray7TeEETy/L9c=;
- b=TsM3I4YvNd4gVlezgOyyt5XSClsyeqIdRWlPWnJ8XhhRMe5zXcQSgQNkhM27McEr/y
- hoxtC0ugh6Zon9ZCvq4eQAfAz31tWSn6Gi+3fs1Yayv2ASkB65BUb6pQ6Q+Q2OwI1Frc
- M672oj+hKgV9YUYqUdHZE2nROFlcRvnoiZJVeUedOf6lDZXTbFpd+49LefV9hb5B0FSX
- X5ZhvRxd46g+Oz2WJ2fLGX97sv30ANXbfCuXZHlHeTtwYfkarI2XkPfoD7tQs56eeKu/
- BoCJQMObWCuA0QoayHQTKDhGf4WoCYnaGhIxwY9q1ly+zfTwyD2MqRJC3mB+sA4uNxhC
- Ln1Q==
-X-Gm-Message-State: AOAM530TJHAImARTX0K3kvB3ta43/3gxQfWMvDDKD6s918vxquP5bQh2
- qCEUuQSnVxDwP2c8mt1cdADqeQ==
-X-Google-Smtp-Source: ABdhPJxAl/mPXt91YwawfAofyXkkfN2pdLltwPNS+6qxwL3ENdYmXvUidco0XR00ILeLkAlx8X+QJg==
-X-Received: by 2002:a63:f817:: with SMTP id n23mr12417256pgh.250.1631566395792; 
- Mon, 13 Sep 2021 13:53:15 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:cd18:482a:6391:201b])
- by smtp.gmail.com with ESMTPSA id n11sm7702188pjh.23.2021.09.13.13.53.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Sep 2021 13:53:15 -0700 (PDT)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- linux-arm-msm@vger.kernel.org,
- Youghandhar Chintala <youghand@codeaurora.org>,
- Abhishek Kumar <kuabhs@chromium.org>, Steev Klimaszewski <steev@kali.org>,
- Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH v2] ath10k: Don't always treat modem stop events as crashes
-Date: Mon, 13 Sep 2021 13:53:13 -0700
-Message-Id: <20210913205313.3420049-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding
+ :content-language;
+ bh=ihysQIdGR8w+AiS+ReWp8DK2aVapwmF1UvOCNcDhHKc=;
+ b=f+xrhOOfD88eFzq8IghsUbpav6iaKVIjqHlVz6MNAu1Nt5C+/LcnLt5CUQREqaNAQV
+ 1Qxyp3Yekg1eTwGe6aVHYA4RocdpTQif1eWyrZTB2UqakMIsqprrbrAW/gp/FXkErqlp
+ 3OKDLPaIwbYIzY/e3ZpPyi8avxR12XRxTRRQTW5bImpCb+6VnaLKSgiOmQDV4mwrMJAe
+ j4GzokYdbyR1uPHj3u+7hDlnGaY0wEhKGYTUrhB1RwdlxtvnyReiVNLa70mj8juLGiDY
+ u6BftYe3EgKsM9AEMrlwXQFemBaFS/RQdNbbTdRfta16VuzAonwcNrabt9YXkO/yxE55
+ ufyw==
+X-Gm-Message-State: AOAM533Xu7cykzIgKmYwZm7eMmqyHRqVEMip9EdSlCtGAdPUKUINJc9L
+ /HTOytLYtpwPjPxWBs1f3ldClg==
+X-Google-Smtp-Source: ABdhPJwV6GzMZQ+mNOpdRRBX3HLArICooddBup3dlenG8aQ6qcgGviIlOFg9Jtdit/VWiu2IZB/GZw==
+X-Received: by 2002:aca:914:: with SMTP id 20mr9750235oij.9.1631576397694;
+ Mon, 13 Sep 2021 16:39:57 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net
+ (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+ by smtp.gmail.com with ESMTPSA id u15sm2208500oor.34.2021.09.13.16.39.56
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 13 Sep 2021 16:39:57 -0700 (PDT)
+Subject: Re: [RFC v2 00/13] create power sequencing subsystem
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson
+ <bjorn.andersson@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+From: Steev Klimaszewski <steev@kali.org>
+Message-ID: <4a508fc1-6253-9c11-67fb-f84f17fd2719@kali.org>
+Date: Mon, 13 Sep 2021 18:39:55 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210913_135317_994910_721A6494 
-X-CRM114-Status: GOOD (  16.45  )
+X-CRM114-CacheID: sfid-20210913_164000_640425_472AAF37 
+X-CRM114-Status: GOOD (  32.16  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,182 +107,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-When rebooting on sc7180 Trogdor devices I see the following crash from
-the wifi driver.
-
- ath10k_snoc 18800000.wifi: firmware crashed! (guid 83493570-29a2-4e98-a83e-70048c47669c)
-
-This is because a modem stop event looks just like a firmware crash to
-the driver, the qmi connection is closed in both cases. Use the qcom ssr
-notifier block to stop treating the qmi connection close event as a
-firmware crash signal when the modem hasn't actually crashed. See
-ath10k_qmi_event_server_exit() for more details.
-
-This silences the crash message seen during every reboot.
-
-Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
-Cc: Youghandhar Chintala <youghand@codeaurora.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>
-Tested-By: Steev Klimaszewski <steev@kali.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
-
-Changes since v1 (https://lore.kernel.org/r/20210905210400.1157870-1-swboyd@chromium.org):
- * Push error message into function instead of checking at callsite
-
- drivers/net/wireless/ath/ath10k/snoc.c | 77 ++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.h |  4 ++
- 2 files changed, 81 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index ea00fbb15601..965136261aef 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -12,6 +12,7 @@
- #include <linux/platform_device.h>
- #include <linux/property.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/remoteproc/qcom_rproc.h>
- #include <linux/of_address.h>
- #include <linux/iommu.h>
- 
-@@ -1477,6 +1478,74 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
- 	mutex_unlock(&ar->dump_mutex);
- }
- 
-+static int ath10k_snoc_modem_notify(struct notifier_block *nb, unsigned long action,
-+				    void *data)
-+{
-+	struct ath10k_snoc *ar_snoc = container_of(nb, struct ath10k_snoc, nb);
-+	struct ath10k *ar = ar_snoc->ar;
-+	struct qcom_ssr_notify_data *notify_data = data;
-+
-+	switch (action) {
-+	case QCOM_SSR_BEFORE_POWERUP:
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem starting event\n");
-+		clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
-+		break;
-+
-+	case QCOM_SSR_AFTER_POWERUP:
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem running event\n");
-+		break;
-+
-+	case QCOM_SSR_BEFORE_SHUTDOWN:
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem %s event\n",
-+			   notify_data->crashed ? "crashed" : "stopping");
-+		if (!notify_data->crashed)
-+			set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
-+		else
-+			clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
-+		break;
-+
-+	case QCOM_SSR_AFTER_SHUTDOWN:
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem offline event\n");
-+		break;
-+
-+	default:
-+		ath10k_err(ar, "received unrecognized event %lu\n", action);
-+		break;
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+static int ath10k_modem_init(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	void *notifier;
-+	int ret;
-+
-+	ar_snoc->nb.notifier_call = ath10k_snoc_modem_notify;
-+
-+	notifier = qcom_register_ssr_notifier("mpss", &ar_snoc->nb);
-+	if (IS_ERR(notifier)) {
-+		ret = PTR_ERR(notifier);
-+		ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ar_snoc->notifier = notifier;
-+
-+	return 0;
-+}
-+
-+static void ath10k_modem_deinit(struct ath10k *ar)
-+{
-+	int ret;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+
-+	ret = qcom_unregister_ssr_notifier(ar_snoc->notifier, &ar_snoc->nb);
-+	if (ret)
-+		ath10k_err(ar, "error %d unregistering notifier\n", ret);
-+}
-+
- static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
- {
- 	struct device *dev = ar->dev;
-@@ -1740,10 +1809,17 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 		goto err_fw_deinit;
- 	}
- 
-+	ret = ath10k_modem_init(ar);
-+	if (ret)
-+		goto err_qmi_deinit;
-+
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
- 
- 	return 0;
- 
-+err_qmi_deinit:
-+	ath10k_qmi_deinit(ar);
-+
- err_fw_deinit:
- 	ath10k_fw_deinit(ar);
- 
-@@ -1771,6 +1847,7 @@ static int ath10k_snoc_free_resources(struct ath10k *ar)
- 	ath10k_fw_deinit(ar);
- 	ath10k_snoc_free_irq(ar);
- 	ath10k_snoc_release_resource(ar);
-+	ath10k_modem_deinit(ar);
- 	ath10k_qmi_deinit(ar);
- 	ath10k_core_destroy(ar);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 5095d1893681..d986edc772f8 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -6,6 +6,8 @@
- #ifndef _SNOC_H_
- #define _SNOC_H_
- 
-+#include <linux/notifier.h>
-+
- #include "hw.h"
- #include "ce.h"
- #include "qmi.h"
-@@ -75,6 +77,8 @@ struct ath10k_snoc {
- 	struct clk_bulk_data *clks;
- 	size_t num_clks;
- 	struct ath10k_qmi *qmi;
-+	struct notifier_block nb;
-+	void *notifier;
- 	unsigned long flags;
- 	bool xo_cal_supported;
- 	u32 xo_cal_data;
-
-base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
--- 
-https://chromeos.dev
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Ck9uIDgvMjkvMjEgODoxMiBBTSwgRG1pdHJ5IEJhcnlzaGtvdiB3cm90ZToKPiBUaGlzIGlzIHRo
+ZSBzZWNvbmQgUkZDIG9uIHRoZSBwcm9wb3NlZCBwb3dlciBzZXF1ZW5jZXIgc3Vic3lzdGVtLiBU
+aGlzCj4gaXMgYSBnZW5lcmlmaWNhdGlvbiBvZiB0aGUgTU1DIHB3cnNlcSBjb2RlLiBUaGUgc3Vi
+c3lzdGVtIHRyaWVzIHRvCj4gYWJzdHJhY3QgdGhlIGlkZWEgb2YgY29tcGxleCBwb3dlci11cC9w
+b3dlci1kb3duL3Jlc2V0IG9mIHRoZSBkZXZpY2VzLgo+Cj4gVG8gZWFzZSBtaWdyYXRpb24gdG8g
+cHdyc2VxIGFuZCB0byBwcm92aWRlIGNvbXBhdGliaWxpdHkgd2l0aCBvbGRlcgo+IGRldmljZSB0
+cmVlcywgd2hpbGUga2VlcGluZyBkcml2ZXJzIHNpbXBsZSwgdGhpcyBpdGVyYXRpb24gb2YgUkZD
+Cj4gaW50cm9kdWNlcyBwd3JzZXEgZmFsbGJhY2sgc3VwcG9ydDogcHdyc2VxIGRyaXZlciBjYW4g
+cmVnaXN0ZXIgZmFsbGJhY2sKPiBwcm92aWRlcnMuIElmIGFub3RoZXIgZGV2aWNlIGRyaXZlciBy
+ZXF1ZXN0cyBwd3JzZXEgaW5zdGFuY2UgYW5kIG5vbmUKPiB3YXMgZGVjbGFyZWQsIHRoZSBwd3Jz
+ZXEgZmFsbGJhY2sgY29kZSB3b3VsZCBnbyB0aHJvdWdoIHRoZSBsaXN0IG9mCj4gZmFsbGJhY2sg
+cHJvdmlkZXJzIGFuZCBpZiB0aGUgbWF0Y2ggaXMgZm91bmQsIGRyaXZlciB3b3VsZCByZXR1cm4g
+YQo+IGNyYWZ0ZWQgcHdyc2VxIGluc3RhbmNlLiBGb3Igbm93IHRoaXMgbWVjaGFuaXNtIGlzIGxp
+bWl0ZWQgdG8gdGhlIE9GCj4gZGV2aWNlIG1hdGNoaW5nLCBidXQgaXQgY2FuIGJlIGV4dGVuZGVk
+IGZ1cnRoZXIgdG8gdXNlIGFueSBjb21iaW5hdGlvbgo+IG9mIGRldmljZSBJRHMuCj4KPiBUaGUg
+cHJpbWFyeSBzZXQgb2YgZGV2aWNlcyB0aGF0IHByb210ZWQgbWUgdG8gY3JlYXRlIHRoaXMgcGF0
+Y2hzZXQgaXMKPiB0aGUgUXVhbGNvbW0gQlQrV2lGaSBmYW1pbHkgb2YgY2hpcHMuIFRoZXkgcmVz
+aWRlIG9uIHNlcmlhbCtwbGF0Zm9ybSBvcgo+IHNlcmlhbCArIFNESU8gaW50ZXJmYWNlcyAob2xk
+ZXIgZ2VuZXJhdGlvbnMpIG9yIG9uIHNlcmlhbCtQQ0llIChuZXdlcgo+IGdlbmVyYXRpb25zKS4g
+IFRoZXkgcmVxdWlyZSBhIHNldCBvZiBleHRlcm5hbCB2b2x0YWdlIHJlZ3VsYXRvcnMgdG8gYmUK
+PiBwb3dlcmVkIG9uIGFuZCAoc29tZSBvZiB0aGVtKSBoYXZlIHNlcGFyYXRlIFdpRmkgYW5kIEJs
+dWV0b290aCBlbmFibGUKPiBHUElPcy4KPgo+IFRoaXMgcGF0Y2hzZXQgYmVpbmcgYW4gUkZDIHRy
+aWVzIHRvIGRlbW9uc3RyYXRlIHRoZSBhcHByb2FjaCwgZGVzaWduIGFuZAo+IHVzYWdlIG9mIHRo
+ZSBwd3JzZXEgc3Vic3lzdGVtLiBGb2xsb3dpbmcgaXNzdWVzIGFyZSBwcmVzZW50IGluIHRoZSBS
+RkMKPiBhdCB0aGlzIG1vbWVudCBidXQgd2lsbCBiZSBmaXhlZCBsYXRlciBpZiB0aGUgb3ZlcmFs
+bCBhcHByb2FjaCB3b3VsZCBiZQo+IHZpZXdlZCBhcyBhY2NlcHRhYmxlOgo+Cj4gIC0gTm8gZG9j
+dW1lbnRhdGlvbgo+ICAgIFdoaWxlIHRoZSBjb2RlIHRyaWVzIHRvIGJlIHNlbGYtZG9jdW1lbnRp
+bmcgcHJvcGVyIGRvY3VtZW50YXRpb24KPiAgICB3b3VsZCBiZSByZXF1aXJlZC4KPgo+ICAtIE1p
+bmltYWwgZGV2aWNlIHRyZWUgYmluZGluZ3MgY2hhbmdlcwo+ICAgIFRoZXJlIGFyZSBubyBwcm9w
+ZXIgdXBkYXRlcyBmb3IgdGhlIERUIGJpbmRpbmdzICh0aHVzIG5laXRoZXIgUm9iCj4gICAgSGVy
+cmluZyBub3IgZGV2aWNldHJlZSBhcmUgaW5jbHVkZWQgaW4gdGhlIFRvL0NjIGxpc3RzKS4gVGhl
+IGR0Cj4gICAgc2NoZW1hIGNoYW5nZXMgd291bGQgYmUgYSBwYXJ0IG9mIHYxLgo+Cj4gIC0gTGFj
+ayBvZiBwcm9wZXIgUENJZSBpbnRlZ3JhdGlvbgo+ICAgIEF0IHRoaXMgbW9tZW50IHN1cHBvcnQg
+Zm9yIFBDSWUgaXMgaGFja2VkIHVwIHRvIGJlIGFibGUgdG8gdGVzdCB0aGUKPiAgICBQQ0llIHBh
+cnQgb2YgcWNhNjM5MC4gUHJvcGVyIFBDSWUgc3VwcG9ydCB3b3VsZCByZXF1aXJlIGF1dG9tYXRp
+Y2FsbHkKPiAgICBwb3dlcmluZyB1cCB0aGUgZGV2aWNlcyBiZWZvcmUgdGhlIGJ1cyBzY2FuIGRl
+cGVuZGluZyBvbiB0aGUgcHJvcGVyCj4gICAgZGV2aWNlIHN0cnVjdHVyZSBpbiB0aGUgZGV2aWNl
+IHRyZWUuCj4KPiBDaGFuZ2VzIHNpbmNlIFJGQyB2MToKPiAgLSBQcm92aWRlciBwd3JzZXEgZmFs
+bGJhY2sgc3VwcG9ydAo+ICAtIEltcGxlbWVudCBmYWxsYmFjayBzdXBwb3J0IGluIHB3cnNlcV9x
+Y2EuCj4gIC0gTW1vdmUgc3VzY2xrIGhhbmRsaW5nIHRvIHB3cnNlcV9xY2EuCj4gIC0gU2lnbmlm
+aWNhbnRseSBzaW1wbGlmeSBoY2lfcWNhLmMgY2hhbmdlcywgYnkgZHJvcHBpbmcgYWxsIGxlZ2Fj
+eQo+ICAgIGNvZGUuIE5vdyBoY2lfcWNhIHVzZXMgb25seSBwd3JzZXEgY2FsbHMgdG8gcG93ZXIg
+dXAvZG93biBibHVldG9vdGgKPiAgICBwYXJ0cyBvZiB0aGUgY2hpcC4KPgpJIHRlc3RlZCB0aGlz
+IGhlcmUsIG9uIHRoZSBMZW5vdm8gWW9nYSBDNjMwLCBhZnRlciBjcmVhdGluZyBhIHBhdGNoIHRv
+CmRvIGJhc2ljYWxseSB0aGUgc2FtZSB0aGluZyBhcyB0aGUgZGI4NDVjIGRvZXMuwqAgT25lIHRo
+aW5nIEkgbm90aWNlZCwgaWYKUFdSU0VRPXkgYW5kIHRoZSByZXN0IGFyZSA9bSwgdGhlcmUgaXMg
+YSBidWlsZCBlcnJvci7CoCBJIHN1cHBvc2Ugb25jZQp0aGUgZnVsbCBzZXQgaXMgcG9zdGVkIGFu
+ZCBub3QgUkZDLCBJIGNhbiBzZW5kIHRoZSBwYXRjaCBmb3IgdGhhdC7CoAoKT25lIHF1ZXN0aW9u
+IEkgaGF2ZSwgaWYgeW91IGRvbid0IG1pbmQsIGluIHBhdGNoIDExLCB5b3UgYWRkIGEgc2Vjb25k
+CmNoYW5uZWwgdG8gcWNhIHBvd2VyIHNlcXVlbmNlci7CoCBJJ3ZlIGFkZGVkIHRoYXQgaGVyZSwg
+YnV0IGluIHRoZSBjNjMwJ3MKZHRzLCAidnJlZ19sMjNhXzNwMzogbGRvMjMiIGlzIGVtcHR5LCBz
+byBJIGFkZGVkIHRoZSBzYW1lIG51bWJlcnMgaW4gZm9yCnRoZSByZWd1bGF0b3IsIGFuZCBJJ20g
+d29uZGVyaW5nIGhvdyB0byB0ZXN0IHRoYXQgaXQncyBhY3R1YWxseSB3b3JraW5nCmNvcnJlY3Rs
+eT8KCi0tIHN0ZWV2CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
