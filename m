@@ -7,15 +7,15 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B936C433F5
-	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 17:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8979CC433EF
+	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 20:59:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA6E260E97
-	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 17:51:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA6E260E97
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5CDA06103B
+	for <ath10k@archiver.kernel.org>; Mon, 13 Sep 2021 20:59:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5CDA06103B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,61 +23,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AFtJJEy24E+M8TFopuLSkTaZ1LEEFzY9449TvsPlywI=; b=tX6cUUPnI9meYp
-	j11y2AJUj+vUqGVH5Dz7md6Ak88kVSJTYt5WaiLsSDRs0GXXK1ECJCW3suqRTdBPs2OJgM+rKwU3K
-	7XwCkFOeCdIJY27oGI5MiPfCEy9Fhy8cf6oPCkVrpF1FvmdEAqiaWJK+DMi6xlUWMqoC/urWMpnWM
-	V2SZb1JlB2hJtbEy473MfVkrxOxgbBPGt4YBB8YjJpSn34fPQ/VgnWpRHhbwHfD41a0DY1ULKr77B
-	62l6oHfVIT2mAj7N67WTGyezPGxyQjh+KSy4Nom0Ea7fo9GhYs0koCVIlpuNm9ZxdIVBWq9lG5on1
-	K8U+c1OfHLk8FHGiKP0Q==;
+	List-Owner; bh=DqQo0A2iNzjSHBcrcEpkT8tuB+SJfnWQo2fMgesSyXE=; b=AI+p9rJ2jneTIG
+	AUGymDxleqwhHRdcVJRV3QzgSTn9Xwz5rdVe62mLihfFpOyzcfTQOAvat1Kg7h986cOW6AayI2ee6
+	NC5jOa0YCkjPQflrhyVNmvMjePzXwzezEuI8s3qiP1iGBCzHjJzKNN/CUvqqNNhkeeUqt4ckD7E0/
+	S2jauYdgDNlGaw4XTiMkvuNg3LughNpsmP00LMd/mWYAukyzpdM+PujRmaVnO0XlZKauFm57nm7iX
+	3cjGD2L1kJ5l1d+wPv2TIVm2ZoyDaX1xmGvqDLMHsh/1oKUkoLuumcgaYXqv/UTPpNfe6Y154eGCG
+	nXPfLnjTYoo6l3MOwIcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPq7A-002pgX-M6; Mon, 13 Sep 2021 17:51:32 +0000
-Received: from m43-7.mailgun.net ([69.72.43.7])
+	id 1mPt2J-003FT3-Ei; Mon, 13 Sep 2021 20:58:44 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPq6m-002pVk-0d
- for ath10k@lists.infradead.org; Mon, 13 Sep 2021 17:51:11 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1631555469; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=olKk6Vk9H6023FzC/tK7LvtFJsnhR6WnXnQz/7wxwxQ=;
- b=rlYulMDMuM3JIjVRr2ZANcfCP7TOyFX3seTnhufW9A5c/2ABjGD8qNtAa/+UEdRohrwRMbXL
- rRZeB53a60en5l+58WC/MB2g9NqAnxJgZ0dneh7N03Glf1ej1rBp19umnKrEWsp+8p+CYZJP
- C/1G9EDakktTC1L0osMRcokOnOY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 613f8f81e0f78151d6babc4d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 17:50:57
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 4477DC43616; Mon, 13 Sep 2021 17:50:57 +0000 (UTC)
-Received: from jouni.codeaurora.org (85-76-72-211-nat.elisa-mobile.fi
- [85.76.72.211])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: jouni)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 66B67C4338F;
- Mon, 13 Sep 2021 17:50:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 66B67C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Jouni Malinen <jouni@codeaurora.org>
+ id 1mPsx3-003DE4-Rd
+ for ath10k@lists.infradead.org; Mon, 13 Sep 2021 20:53:19 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id r2so10569878pgl.10
+ for <ath10k@lists.infradead.org>; Mon, 13 Sep 2021 13:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=f90knbbhtSScT8ar0jqF08SQUZmsRray7TeEETy/L9c=;
+ b=TLgwdSKTYs4IaAyBBMpkY+P28NYma3r1phTKbQrF7ns68EYCnG/diFKdtFOwdJ2R8D
+ xT9nmLrmtnmDk54bafY9N3Zxttn4/3BZoudzEIvLFqtXIRDtgTzSPdOu0VCzfb3Skjyo
+ 8K1CUuIokwBsacA+2mLbS6MBqCyLa4zgJLpQk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=f90knbbhtSScT8ar0jqF08SQUZmsRray7TeEETy/L9c=;
+ b=TsM3I4YvNd4gVlezgOyyt5XSClsyeqIdRWlPWnJ8XhhRMe5zXcQSgQNkhM27McEr/y
+ hoxtC0ugh6Zon9ZCvq4eQAfAz31tWSn6Gi+3fs1Yayv2ASkB65BUb6pQ6Q+Q2OwI1Frc
+ M672oj+hKgV9YUYqUdHZE2nROFlcRvnoiZJVeUedOf6lDZXTbFpd+49LefV9hb5B0FSX
+ X5ZhvRxd46g+Oz2WJ2fLGX97sv30ANXbfCuXZHlHeTtwYfkarI2XkPfoD7tQs56eeKu/
+ BoCJQMObWCuA0QoayHQTKDhGf4WoCYnaGhIxwY9q1ly+zfTwyD2MqRJC3mB+sA4uNxhC
+ Ln1Q==
+X-Gm-Message-State: AOAM530TJHAImARTX0K3kvB3ta43/3gxQfWMvDDKD6s918vxquP5bQh2
+ qCEUuQSnVxDwP2c8mt1cdADqeQ==
+X-Google-Smtp-Source: ABdhPJxAl/mPXt91YwawfAofyXkkfN2pdLltwPNS+6qxwL3ENdYmXvUidco0XR00ILeLkAlx8X+QJg==
+X-Received: by 2002:a63:f817:: with SMTP id n23mr12417256pgh.250.1631566395792; 
+ Mon, 13 Sep 2021 13:53:15 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:cd18:482a:6391:201b])
+ by smtp.gmail.com with ESMTPSA id n11sm7702188pjh.23.2021.09.13.13.53.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Sep 2021 13:53:15 -0700 (PDT)
+From: Stephen Boyd <swboyd@chromium.org>
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- Abinaya Kalaiselvan <akalaise@codeaurora.org>,
- Jouni Malinen <jouni@codeaurora.org>
-Subject: [PATCH] ath10k: Fix device boot error
-Date: Mon, 13 Sep 2021 20:50:48 +0300
-Message-Id: <20210913175048.192812-1-jouni@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
+Cc: linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org,
+ Youghandhar Chintala <youghand@codeaurora.org>,
+ Abhishek Kumar <kuabhs@chromium.org>, Steev Klimaszewski <steev@kali.org>,
+ Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH v2] ath10k: Don't always treat modem stop events as crashes
+Date: Mon, 13 Sep 2021 13:53:13 -0700
+Message-Id: <20210913205313.3420049-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210913_105109_875171_4D9552D7 
-X-CRM114-Status: GOOD (  14.55  )
+X-CRM114-CacheID: sfid-20210913_135317_994910_721A6494 
+X-CRM114-Status: GOOD (  16.45  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,87 +97,174 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Abinaya Kalaiselvan <akalaise@codeaurora.org>
+When rebooting on sc7180 Trogdor devices I see the following crash from
+the wifi driver.
 
-mask value ATH10K_FW_CRASH_DUMP_RAM_DATA is not mandatory to get iram
-mem layout. So introduced ath10k_coredump_get_hw_mem_layout to copy
-hardware memory layout.
+ ath10k_snoc 18800000.wifi: firmware crashed! (guid 83493570-29a2-4e98-a83e-70048c47669c)
 
-This fixes the below boot error:
-[   17.468882] ath10k_pci 0000:06:00.0: failed to copy target iram contents: -12
-[   17.513925] ath10k_pci 0000:06:00.0: could not init core (-12)
-[   17.517635] ath10k_pci 0000:06:00.0: could not probe fw (-12)
+This is because a modem stop event looks just like a firmware crash to
+the driver, the qmi connection is closed in both cases. Use the qcom ssr
+notifier block to stop treating the qmi connection close event as a
+firmware crash signal when the modem hasn't actually crashed. See
+ath10k_qmi_event_server_exit() for more details.
 
-Tested-on: QCA9984 X86 10.4-3.9.0.2-00139
+This silences the crash message seen during every reboot.
 
-Fixes: 9af7c32ceca8 ("ath10k: add target IRAM recovery feature support")
-Signed-off-by: Abinaya Kalaiselvan <akalaise@codeaurora.org>
-Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
+Cc: Youghandhar Chintala <youghand@codeaurora.org>
+Cc: Abhishek Kumar <kuabhs@chromium.org>
+Tested-By: Steev Klimaszewski <steev@kali.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c     |  2 +-
- drivers/net/wireless/ath/ath10k/coredump.c | 11 ++++++++---
- drivers/net/wireless/ath/ath10k/coredump.h |  1 +
- 3 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2f9be182fbfb..cbcf3aa3e92c 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2690,7 +2690,7 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
- 	int i, ret;
- 	u32 len, remaining_len;
+Changes since v1 (https://lore.kernel.org/r/20210905210400.1157870-1-swboyd@chromium.org):
+ * Push error message into function instead of checking at callsite
+
+ drivers/net/wireless/ath/ath10k/snoc.c | 77 ++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.h |  4 ++
+ 2 files changed, 81 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index ea00fbb15601..965136261aef 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -12,6 +12,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/remoteproc/qcom_rproc.h>
+ #include <linux/of_address.h>
+ #include <linux/iommu.h>
  
--	hw_mem = ath10k_coredump_get_mem_layout(ar);
-+	hw_mem = ath10k_coredump_get_hw_mem_layout(ar);
- 	if (!hw_mem)
- 		return -ENOMEM;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index 7eb72290a925..f8419a707b89 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -1447,11 +1447,17 @@ static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
- 
- const struct ath10k_hw_mem_layout *ath10k_coredump_get_mem_layout(struct ath10k *ar)
- {
--	int i;
--
- 	if (!test_bit(ATH10K_FW_CRASH_DUMP_RAM_DATA, &ath10k_coredump_mask))
- 		return NULL;
- 
-+	return ath10k_coredump_get_hw_mem_layout(ar);
-+}
-+EXPORT_SYMBOL(ath10k_coredump_get_mem_layout);
-+
-+const struct ath10k_hw_mem_layout *ath10k_coredump_get_hw_mem_layout(struct ath10k *ar)
-+{
-+	int i;
-+
- 	if (WARN_ON(ar->target_version == 0))
- 		return NULL;
- 
-@@ -1464,7 +1470,6 @@ const struct ath10k_hw_mem_layout *ath10k_coredump_get_mem_layout(struct ath10k
- 
- 	return NULL;
+@@ -1477,6 +1478,74 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
+ 	mutex_unlock(&ar->dump_mutex);
  }
--EXPORT_SYMBOL(ath10k_coredump_get_mem_layout);
  
- struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar)
++static int ath10k_snoc_modem_notify(struct notifier_block *nb, unsigned long action,
++				    void *data)
++{
++	struct ath10k_snoc *ar_snoc = container_of(nb, struct ath10k_snoc, nb);
++	struct ath10k *ar = ar_snoc->ar;
++	struct qcom_ssr_notify_data *notify_data = data;
++
++	switch (action) {
++	case QCOM_SSR_BEFORE_POWERUP:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem starting event\n");
++		clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++		break;
++
++	case QCOM_SSR_AFTER_POWERUP:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem running event\n");
++		break;
++
++	case QCOM_SSR_BEFORE_SHUTDOWN:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem %s event\n",
++			   notify_data->crashed ? "crashed" : "stopping");
++		if (!notify_data->crashed)
++			set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++		else
++			clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++		break;
++
++	case QCOM_SSR_AFTER_SHUTDOWN:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem offline event\n");
++		break;
++
++	default:
++		ath10k_err(ar, "received unrecognized event %lu\n", action);
++		break;
++	}
++
++	return NOTIFY_OK;
++}
++
++static int ath10k_modem_init(struct ath10k *ar)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	void *notifier;
++	int ret;
++
++	ar_snoc->nb.notifier_call = ath10k_snoc_modem_notify;
++
++	notifier = qcom_register_ssr_notifier("mpss", &ar_snoc->nb);
++	if (IS_ERR(notifier)) {
++		ret = PTR_ERR(notifier);
++		ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
++		return ret;
++	}
++
++	ar_snoc->notifier = notifier;
++
++	return 0;
++}
++
++static void ath10k_modem_deinit(struct ath10k *ar)
++{
++	int ret;
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++
++	ret = qcom_unregister_ssr_notifier(ar_snoc->notifier, &ar_snoc->nb);
++	if (ret)
++		ath10k_err(ar, "error %d unregistering notifier\n", ret);
++}
++
+ static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
  {
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-index 42404e246e0e..7f4849c69ce8 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.h
-+++ b/drivers/net/wireless/ath/ath10k/coredump.h
-@@ -177,6 +177,7 @@ void ath10k_coredump_unregister(struct ath10k *ar);
- void ath10k_coredump_destroy(struct ath10k *ar);
+ 	struct device *dev = ar->dev;
+@@ -1740,10 +1809,17 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 		goto err_fw_deinit;
+ 	}
  
- const struct ath10k_hw_mem_layout *ath10k_coredump_get_mem_layout(struct ath10k *ar);
-+const struct ath10k_hw_mem_layout *ath10k_coredump_get_hw_mem_layout(struct ath10k *ar);
++	ret = ath10k_modem_init(ar);
++	if (ret)
++		goto err_qmi_deinit;
++
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
  
- #else /* CONFIG_DEV_COREDUMP */
+ 	return 0;
  
++err_qmi_deinit:
++	ath10k_qmi_deinit(ar);
++
+ err_fw_deinit:
+ 	ath10k_fw_deinit(ar);
+ 
+@@ -1771,6 +1847,7 @@ static int ath10k_snoc_free_resources(struct ath10k *ar)
+ 	ath10k_fw_deinit(ar);
+ 	ath10k_snoc_free_irq(ar);
+ 	ath10k_snoc_release_resource(ar);
++	ath10k_modem_deinit(ar);
+ 	ath10k_qmi_deinit(ar);
+ 	ath10k_core_destroy(ar);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index 5095d1893681..d986edc772f8 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -6,6 +6,8 @@
+ #ifndef _SNOC_H_
+ #define _SNOC_H_
+ 
++#include <linux/notifier.h>
++
+ #include "hw.h"
+ #include "ce.h"
+ #include "qmi.h"
+@@ -75,6 +77,8 @@ struct ath10k_snoc {
+ 	struct clk_bulk_data *clks;
+ 	size_t num_clks;
+ 	struct ath10k_qmi *qmi;
++	struct notifier_block nb;
++	void *notifier;
+ 	unsigned long flags;
+ 	bool xo_cal_supported;
+ 	u32 xo_cal_data;
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
 -- 
-2.25.1
+https://chromeos.dev
 
 
 _______________________________________________
