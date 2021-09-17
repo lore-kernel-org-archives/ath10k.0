@@ -2,64 +2,60 @@ Return-Path: <SRS0=iK1b=OH=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	LOCALPART_IN_SUBJECT,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C08DC433F5
-	for <ath10k@archiver.kernel.org>; Fri, 17 Sep 2021 13:26:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2AB5C433F5
+	for <ath10k@archiver.kernel.org>; Fri, 17 Sep 2021 16:27:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31E4160FED
-	for <ath10k@archiver.kernel.org>; Fri, 17 Sep 2021 13:26:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 31E4160FED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id A2B2160F6D
+	for <ath10k@archiver.kernel.org>; Fri, 17 Sep 2021 16:27:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2B2160F6D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=narfation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=F8tcildyq3+hXM1q+gdbC2/ab/wuzIPorqJg/EvfqtY=; b=fu6JFBJztjZMm+
-	IjY4ZmBKC2UaUde5+IDCHOAtUDcP09yhpzVZVIA77jfzeVEqZalotkVxSWxOMU40dCphj+SPY27Bd
-	C6AcfXbBAIHq7co1mdonYNvww/qd4h0sqhExxSAliz2hu5UCyya1VMS4xQw/6DlUO+UpfZ9cYsgBK
-	yHnAYQrHrNpJQNbbIdK8AquzL1fDdPwIJMEaJwX4X+k0K//powuizbU1y2dpEM0Uu6ipIJYLw+SGY
-	AN59Gu5CxnRMI/FjHP1Bv7yi5xCmFOCdrreJQ5k37+G0xvXHlJ0wHmJ9fxI3HCmwQg6cRXhgZYL0S
-	xzumxRPQk6zsTKsCCvFA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=Xo0wMaUW1ATWf4UJfyGkVLwI9qvaVpj3GbYpzj3Uj9o=; b=tVU
+	hJvnhOovDe9P3D+68nylzXOIQJ1qtNuzFyWWjBpDqseI0i35x0HJoZvCCQlm9prXyOUrQG8uKJhDZ
+	jC1/kawJY/lxyTrKMDioguFGJNtLea3zgHcUGb64QFfjU7CsjpfTDfmZ+QgbVjRwzjD6YjSPaPHd7
+	242JUx4I540k5oSQNJGxlYfhGRx5dbu6YEbdw5KFk9hk0tyBLRKmZg1TdIEY2Tf3XqaaHitDrhdNn
+	0is+LkJsoyluEn67co267auW5KXZkszW30rW2X2IOUmdGQEv4XU2Imm/E3VA1INlM+9cTWWNMp47y
+	p8UnthU/3dBWoRs6v1l6MDcdh4aXsZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mRDsa-00EIWN-Rg; Fri, 17 Sep 2021 13:26:12 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1mRGgh-00EdIF-Ct; Fri, 17 Sep 2021 16:26:07 +0000
+Received: from dvalin.narfation.org ([213.160.73.56])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mRDsX-00EIUy-Of
- for ath10k@lists.infradead.org; Fri, 17 Sep 2021 13:26:11 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="286481243"
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; d="scan'208";a="286481243"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2021 06:26:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; d="scan'208";a="530724561"
-Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
- by fmsmga004.fm.intel.com with ESMTP; 17 Sep 2021 06:26:04 -0700
-Received: from kbuild by 285e7b116627 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1mRDsS-00049z-8c; Fri, 17 Sep 2021 13:26:04 +0000
-Date: Fri, 17 Sep 2021 21:25:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- feab5bb8f1d4621025dceae7eef62d5f92de34ac
-Message-ID: <61449748.JVNtbi9wKkONJ71b%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1mRGgQ-00EdGp-Qm
+ for ath10k@lists.infradead.org; Fri, 17 Sep 2021 16:25:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+ s=20121; t=1631895938;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=/Id80XptSUdOViluefzPV6pC/U9m5OV2CSKv0lbsO50=;
+ b=cBbWWfDvYkFh5HvTOxUu1ExRcuND/S9XQC0BppeRfAAkGqxcwD6FmWlTHYiz7Y4uf9YsZW
+ ZTCW13sGDgYcsYj7eZfRQI9TULX3zNRLKZ4F5AKnL1kLl7GVmwDZsRy642Khr6SFsAcBCt
+ +KnuVADBVdGkGtwRsvYRXVDpSj34WaU=
+From: Sven Eckelmann <sven@narfation.org>
+To: ath10k@lists.infradead.org
+Cc: openwrt-devel <openwrt-devel@lists.openwrt.org>,
+ Marek Lindner <marek.lindner@kaiwoo.ai>
+Subject: ath10k: qca4019: FW crash on 5GHz when baseEepHeader.nonLinearTxFir
+ == 1
+Date: Fri, 17 Sep 2021 18:25:35 +0200
+Message-ID: <3423718.UToCqzeSYe@ripper>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210917_062609_917912_101E80D4 
-X-CRM114-Status: UNSURE (   5.50  )
+X-CRM114-CacheID: sfid-20210917_092551_382714_383D7E14 
+X-CRM114-Status: UNSURE (   4.38  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,181 +68,350 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0214735080921354913=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: feab5bb8f1d4621025dceae7eef62d5f92de34ac  ath11k: Align bss_chan_info structure with firmware
+--===============0214735080921354913==
+Content-Type: multipart/signed; boundary="nextPart5895183.d6jRSjAkdu"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-elapsed time: 1544m
+--nextPart5895183.d6jRSjAkdu
+Content-Type: multipart/mixed; boundary="nextPart8823327.QV3xLCZ37Q"; protected-headers="v1"
+Content-Transfer-Encoding: 7Bit
+From: Sven Eckelmann <sven@narfation.org>
+To: ath10k@lists.infradead.org
+Cc: openwrt-devel <openwrt-devel@lists.openwrt.org>, Marek Lindner <marek.lindner@kaiwoo.ai>
+Subject: ath10k: qca4019: FW crash on 5GHz when baseEepHeader.nonLinearTxFir == 1
+Date: Fri, 17 Sep 2021 18:25:35 +0200
+Message-ID: <3423718.UToCqzeSYe@ripper>
 
-configs tested: 148
-configs skipped: 3
+This is a multi-part message in MIME format.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+--nextPart8823327.QV3xLCZ37Q
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210916
-sh                          rsk7269_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                     ep8248e_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                    mvme5100_defconfig
-arm                             rpc_defconfig
-riscv                               defconfig
-um                               alldefconfig
-sh                          landisk_defconfig
-um                           x86_64_defconfig
-arm                        mvebu_v7_defconfig
-arc                        nsimosci_defconfig
-mips                     loongson1b_defconfig
-sh                           se7712_defconfig
-powerpc                        warp_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                         cm_x300_defconfig
-sh                               alldefconfig
-m68k                         amcore_defconfig
-arm                        oxnas_v6_defconfig
-mips                         rt305x_defconfig
-arm                       mainstone_defconfig
-arm                       cns3420vb_defconfig
-s390                       zfcpdump_defconfig
-powerpc                      arches_defconfig
-m68k                       m5275evb_defconfig
-arm                         lpc18xx_defconfig
-nds32                             allnoconfig
-mips                           jazz_defconfig
-powerpc                   currituck_defconfig
-arm                          imote2_defconfig
-ia64                          tiger_defconfig
-powerpc                      katmai_defconfig
-arm                        mini2440_defconfig
-arm                        trizeps4_defconfig
-xtensa                  cadence_csp_defconfig
-arm                              alldefconfig
-powerpc                     powernv_defconfig
-mips                          rm200_defconfig
-mips                     cu1000-neo_defconfig
-arm                          ep93xx_defconfig
-xtensa                  audio_kc705_defconfig
-xtensa                          iss_defconfig
-sh                                  defconfig
-x86_64                           allyesconfig
-powerpc                  storcenter_defconfig
-arm                        keystone_defconfig
-arm                             ezx_defconfig
-powerpc                      chrp32_defconfig
-openrisc                         alldefconfig
-m68k                       m5475evb_defconfig
-powerpc                     pseries_defconfig
-mips                           ip27_defconfig
-arm                       imx_v6_v7_defconfig
-arm                     am200epdkit_defconfig
-m68k                            mac_defconfig
-mips                        nlm_xlr_defconfig
-h8300                       h8s-sim_defconfig
-xtensa                generic_kc705_defconfig
-arm                        realview_defconfig
-mips                         tb0226_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                     kilauea_defconfig
-x86_64               randconfig-c001-20210916
-arm                  randconfig-c002-20210916
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a016-20210916
-x86_64               randconfig-a013-20210916
-x86_64               randconfig-a012-20210916
-x86_64               randconfig-a011-20210916
-x86_64               randconfig-a014-20210916
-x86_64               randconfig-a015-20210916
-i386                 randconfig-a016-20210916
-i386                 randconfig-a015-20210916
-i386                 randconfig-a011-20210916
-i386                 randconfig-a012-20210916
-i386                 randconfig-a013-20210916
-i386                 randconfig-a014-20210916
-riscv                randconfig-r042-20210916
-s390                 randconfig-r044-20210916
-arc                  randconfig-r043-20210916
-riscv                            allyesconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Hi,
 
-clang tested configs:
-riscv                randconfig-c006-20210916
-x86_64               randconfig-c007-20210916
-mips                 randconfig-c004-20210916
-powerpc              randconfig-c003-20210916
-arm                  randconfig-c002-20210916
-i386                 randconfig-c001-20210916
-s390                 randconfig-c005-20210916
-x86_64               randconfig-a002-20210916
-x86_64               randconfig-a003-20210916
-x86_64               randconfig-a006-20210916
-x86_64               randconfig-a004-20210916
-x86_64               randconfig-a005-20210916
-x86_64               randconfig-a001-20210916
-i386                 randconfig-a004-20210916
-i386                 randconfig-a005-20210916
-i386                 randconfig-a006-20210916
-i386                 randconfig-a002-20210916
-i386                 randconfig-a003-20210916
-i386                 randconfig-a001-20210916
-hexagon              randconfig-r045-20210916
-hexagon              randconfig-r041-20210916
+I've just wanted to test openwrt-21.02 (with ath10k-firmware-qca4019 + kmod-
+ath10k) on an Plasma Cloud PA1200 router. While this device worked fine in the 
+past, with this upgrade (to the newest firmware from linux-firmware), the 5GHz 
+radio firmware seems to crash whenever I set it up via `ifconfig wlan1 up`:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+    ath10k_ahb a800000.wifi: firmware crashed! (guid 9e36ee82-4d2c-4c63-b20b-609a1eaca30c)
+    ath10k_ahb a800000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003b00ff sub 0000:0000
+    ath10k_ahb a800000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 0
+    ath10k_ahb a800000.wifi: firmware ver 10.4-3.6-00140 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps crc32 ba79b746
+    ath10k_ahb a800000.wifi: board_file api 2 bmi_id 0:17 crc32 5f400efc
+    ath10k_ahb a800000.wifi: htt-ver 2.2 wmi-op 6 htt-op 4 cal pre-cal-file max-sta 512 raw 0 hwcrypto 1
+    ath10k_ahb a800000.wifi: firmware register dump:
+    ath10k_ahb a800000.wifi: [00]: 0x0000000B 0x000015B3 0x009C3C27 0x00975B31
+    ath10k_ahb a800000.wifi: [04]: 0x009C3C27 0x00060530 0x00000018 0x004176B8
+    ath10k_ahb a800000.wifi: [08]: 0x00405A50 0x00412A30 0x00000000 0x00000000
+    ath10k_ahb a800000.wifi: [12]: 0x00000009 0x00000000 0x009B9742 0x009B974F
+    ath10k_ahb a800000.wifi: [16]: 0x00971238 0x009B9742 0x00000000 0x00000000
+    ath10k_ahb a800000.wifi: [20]: 0x409C3C27 0x004053DC 0x00000D2C 0x00405A60
+    ath10k_ahb a800000.wifi: [24]: 0x809C3E13 0x0040543C 0x00000000 0xC09C3C27
+    ath10k_ahb a800000.wifi: [28]: 0x809B9AC5 0x0040547C 0x00412A30 0x0040549C
+    ath10k_ahb a800000.wifi: [32]: 0x809B8ECD 0x0040549C 0x00000001 0x00412A30
+    ath10k_ahb a800000.wifi: [36]: 0x809B8FF3 0x004054CC 0x00412838 0x00000014
+    ath10k_ahb a800000.wifi: [40]: 0x809BEF98 0x0040551C 0x0041627C 0x00000002
+    ath10k_ahb a800000.wifi: [44]: 0x80986D47 0x0040553C 0x0041627C 0x00416A88
+    ath10k_ahb a800000.wifi: [48]: 0x809CBB0A 0x0040559C 0x0041ACC0 0x00000000
+    ath10k_ahb a800000.wifi: [52]: 0x809864EE 0x0040560C 0x0041ACC0 0x00000001
+    ath10k_ahb a800000.wifi: [56]: 0x809CA8A4 0x0040564C 0x0041ACC0 0x00000001
+    ath10k_ahb a800000.wifi: Copy Engine register dump:
+    ath10k_ahb a800000.wifi: [00]: 0x0004a000  14  14   3   3
+    ath10k_ahb a800000.wifi: [01]: 0x0004a400  16  16  22  23
+    ath10k_ahb a800000.wifi: [02]: 0x0004a800   3   3   2   3
+    ath10k_ahb a800000.wifi: [03]: 0x0004ac00  15  15  15  15
+    ath10k_ahb a800000.wifi: [04]: 0x0004b000   4   4  44   4
+    ath10k_ahb a800000.wifi: [05]: 0x0004b400   3   3   2   3
+    ath10k_ahb a800000.wifi: [06]: 0x0004b800   1   1   1   1
+    ath10k_ahb a800000.wifi: [07]: 0x0004bc00   1   1   1   1
+    ath10k_ahb a800000.wifi: [08]: 0x0004c000   0   0 127   0
+    ath10k_ahb a800000.wifi: [09]: 0x0004c400   0   0   0   0
+    ath10k_ahb a800000.wifi: [10]: 0x0004c800   0   0   0   0
+    ath10k_ahb a800000.wifi: [11]: 0x0004cc00   0   0   0   0
+    ath10k_ahb a800000.wifi: failed to update channel list: -108
+    ath10k_ahb a800000.wifi: failed to set pdev regdomain: -108
+    ath10k_ahb a800000.wifi: failed to create WMI vdev 0: -108
+    ieee80211 phy1: Hardware restart was requested
+
+Interestingly, the crash disappeared when I've changed 
+baseEepHeader.nonLinearTxFir (offset 0xc2 in the BDF) from 1 to 0.
+
+The device itself was using firmware 10.4-3.6-00140 (the version currently in 
+linux-firmware) - a working firmware is 10.4-3.5.3-00078. I also wanted to 
+"bisected" when this problem was introduced but there are only these two 
+recent firmware version available in Kalle's ath10k-firmware repository.
+
+Does anybody know more about it?
+
+Kind regards,
+	Sven
+--nextPart8823327.QV3xLCZ37Q
+Content-Disposition: attachment; filename="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=PlasmaCloud-PA1200.bin"
+Content-Transfer-Encoding: base64
+Content-Type: application/octet-stream; name="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=PlasmaCloud-PA1200.bin"
+
+IC9IpwEBEjRWeJASAAAAABWgAAMAYAAAFQeAAAAAAAARAAAPMwAAAAACAgIAAAAAAAAAAAAAAAAA
+AAAAAAAAAClZIgEAAAAAADMzM/Ty8gE8FAYA+OOPP/jjjz/4448/AxQAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACzAAAAAAAAAAAAAAAAAAAA
+AJABAAAAAAAA/////wAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A
+AAAAAMPMDAAQABAAEAAQAAAAAAAAAAAA+OOPPwAAAAAeEQAAAAAAAAAAAAAAAD8UBwcHBQcGAwUE
+AwMDAwMDAwMDAAC0/xQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtP8AAAAA
+AAAAAAoAgSBBAEFEBAAgACAAIAAgAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAD8UAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAUFBQAFBQUAAAAAAAAAAAAFhYWABYWFgAAAAAAAAAAABYWFgAWFhYAAAAAAAAAAAAWFhYA
+FhYWAAAAAAAAAAAAFhYWABYWFgAAAAAAAAAADQ0NDQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiAAYAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAEAUoBTQFMAVIBZQFoAWsBYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAADs7Ozs7OzsxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJyczs6c
+oAwM//////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAEYgAAFOQAQB1GAIAp9QBAKfUAQCG1AEAhuABAHgkAgCqrAIAq/ACAM24AwDu
+PAQAD70EAD89BQARFQMFBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAWFhSTiIiHwAAAPf38u/+/hUAAAA4KSUjIiIfAAAA++rk4N/f2AAA
+AD07OTciIiIfAAAIBgQC6+vlAAAADwABAFhYUk4iIh8AAADz8+7r/v4VAAAAVlRSUCIiHwAAAPTy
+8O7+/hUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAAsLCwsLCwsLCwq
+KioqKCgoIiIsKioqKigoKCIiLCoqKiooKCgiIiwqKioqKCgoIiIsKioqKigoKCIiLCoqKiooKCgi
+IiwqKioqKCgoIiIsKioqKigoKCIiKiomJiYkJCQiIioqJiYmJCQkIiIqKiYmJiQkJCIiKiomJiYk
+JCQiIioqJiYmJCQkIiIqKiYmJiQkJCIiKiomJiYkJCQiIioqJiYmJCQkIiIAAAAAAAAAAAAAAAAA
+AAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TonB1en+EiY6TonB1en+EiY6TogCsrKysrK6srKys
+rKysrK6srKw8PDw8PDw8PLw8PDw8PDw8PLyWlpaWlpaWlpaWlpaWlpaWlpYSHhIuEswSERoeGi4a
+TBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAROB5wdXp/hImOk5id
+onB1en+EiY6TmJ2icHV6f4SJjpOYnaIAo6ysrKysrKysrKOjrKysrKysrKyso6OsrKysrKysrKyj
+o6ysrKysrKysrKM8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLyirKysrKysrKyspKKs
+rKysrKysrKykPDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8
+PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8
+PDw8PLw8PDw8PDw8PDw8vJeXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eX
+l5eXPDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8l5eXl5eXl5eXl5eXl5eXl5eXl5eX
+lzw8PDw8PDw8PDy8Ex4T7hMRGx4bLhtMQx5D7kMRSx5LLktMMx4z7jMROx47LjtMcHV6f4SJcHV6
+f4SJcHV6f4SJnqampqadnqampqadnqampqadPDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8
+PDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8lpaWlpaWlpaWlpaWlpaWlpaWPDw8PDy8PDw8PDy8PDw8
+PDy8AAAAAHCJnaxwiZ2scImdrHCJnawlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUl
+JSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlTFhojKC0vc3/////////////////////////
+//////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN6yv5SddntWWS/eub+bnXx7Xlk4
+v7adlntxWUY4Jb+yrqSMe2pZOBz4+Pj4vMAnKADesr+TnXV7VVkuzrCukYxvalJZOK60naBqallO
+OCy/t52Se21ZQjgg+Pj4+L3CJycAzrCukYxqe1Z7Vs66rpyMdWpTWTeuuoyWanJIRDgyv7edk3ts
+WUI4IPj4+Pi+wicpAM68rp6MdmpSWTW/sK6jjHxqWVk8rr+Mm2p0SEUoGL+3nZJ7a2pbOBz4+Pj4
+v8InKADOua6bnYGMbWpFv7Guop2KjHZqTq67jJlqdkhIKBu/uJ2Ve21ZQjgf+Pj4+MDDKCkA3rm/
+n66PnXWMYM66rp2dhYxxe1musZ2fam1IQTgvzruuoox5alc4Gvj4+PjAwykmAM6wrpKdeoxme07O
+u66ejHhqUFkvv7edmXt1WUs4Kc62rpqMcmpPSCT4+Pj4wcIpKADes7+ZnXOMXntEzriumoxze1xq
+Ss65rqF7allAOB7es7+cnXdqQ0gZ+Pj4+MHFJygAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAJiybqc/lC2IG3ahrl2bRI8nfBludJZGhClxGmIMRsCkZY09eyNnF1mhsnSn
+QpMviBt1srBmnUqRK34bb4+gVo4xeiBqD07GqWySQIAlbRlejLBVnziRH3wSaoipXpwyhh51EmK4
+qHGWQIIpchJVw6ppkz+AI2wYXnyrVZ4tiBp2DmGqsHejQI4ofBdojJtOhTF0FVcNRbmpYpI6fyBr
+FVvEuXuqT5sngRZtrrF1ojuKInYSX4qZT4Y0dhhZDEizq1+VOIIfbRVepq5pn0SPIHURYKmrc508
+hSJxEFm0n3KOQ3wsbRZSyK9Kiyx5GWYQV6mwZ6BGkiR6FGaYqm6eP4omeBRhp5lpiD51KmcTS6ao
+b5o7hCNyFF6aqWGZQYshcxJelKZpmjyGI3MTXI2OV300aiJbEkCyqnOcTo0odxhlAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQcJCw0PERMVFxkbHf//////
+///////////////////4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+AcHBwcHBwcHBwcH
+BwcAAAAAAAAAAAAAAAAAAAAAAAAAsIhgOBDIfVAyHiUlJCUlJCMiISAjISEiIVYACAABAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAXMhcRHxJHMkcRTxI3MjcRPxIICAgICAgICAgAUmKSorLDUmKSorLDUmKS
+orLDPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
+FzIXER8SRzJHEU8SNzI3ET8SCQkJCQkJCQkJAFJikqKyw1JikqKyw1JikqKywzw8PDw8PDw8PDw8
+PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADz8/Pz8/Pz8/Pz8/Pz8/Pz8/MAAAAAAAAAAAAA
+AAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMXGiMtM0AAExcaHiMoLTNTFxo
+eIygtM1MXGh4jKC0zSoqKigoJiYkJCIqKiooKCYmJCQiKioqKCgmJiQkIioqKigoJiYkJCIqKioo
+KCYmJCQiKioqKCgmJiQkIioqKigoJiYkJCIqKiooKCYmJCQiKioqKCgmJiQkIioqKigoJiYkJCIq
+KiooKCYmJCQiKioqKCgmJiQkIioqKigoJiYkJCIqKiooKCYmJCQiKioqKCgmJiQkIioqKigoJiYk
+JCIoKCYmJiQkJCIiKCgmJiYkJCQiIigoJiYmJCQkIiIoKCYmJiQkJCIiKCgmJiYkJCQiIigoJiYm
+JCQkIiIoKCYmJiQkJCIiKCgmJiYkJCQiIigoJiYmJCQkIiIoKCYmJiQkJCIiKCgmJiYkJCQiIigo
+JiYmJCQkIiIoKCYmJiQkJCIiKCgmJiYkJCQiIigoJiYmJCQkIiIoKCYmJiQkJCIiKCgoJCQkIiIi
+IigoKCQkJCIiIiIoKCgkJCQiIiIiKCgoJCQkIiIiIigoKCQkJCIiIiIoKCgkJCQiIiIiKCgoJCQk
+IiIiIigoKCQkJCIiIiIoKCgkJCQiIiIiKCgoJCQkIiIiIigoKCQkJCIiIiIoKCgkJCQiIiIiKCgo
+JCQkIiIiIigoKCQkJCIiIiIoKCgkJCQiIiIiKCgoJCQkIiIiIgAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEAJhIAACYUAACkDwAAJAwAACQNAABAADEACqQp
+gAqkKYBKwimACqQpgErCKYBgBhEAAgIEClwGEQAQEAABRAARACo5JHEAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAA/7AMFAQCZABYmKjFAQIECJeXl5ehoaGhAAAAAAAAAAC4uLi4
+l5eXl6GhoaEAAAAAAAAAALi4uLiXl5eXoaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4
+uLi4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATFhcaIygtMlMWFxojKC0
+yUxYXGiMoLTJTFhcaIygtMknJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUk
+JyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQn
+JiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJBAeEBEYHkAeQBFIHjAeMBE4HkxQVFhcYGRo
+jJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxgZGiMkJSYnKCk
+qKywtLi9wcXJzQCoqqqqPDw8PDw8PDw8PDw8PDw8PKqqqqqqqKqqqjw8PDw8PDw8PDw8PDw8PDyq
+qqqqqjw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDyOjo6OPDw8PDw8PDw8PDw8PDw8PKqqqqqqjo6O
+jjw8PDw8PDw8PDw8PDw8PDyqqqqqqjw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDyYmJiYPDw8PDw8
+PDw8PDw8PDw8PDw8PDw8mJiYmDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
+PDw8PDw8PDwAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKIQhFKHkouSkwyHjIuMkwyiDIROh46LjpM
+TFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBk
+aIyQlJicoKSorLC0uL3BxcnNAKiqqqk8PDw8PDw8PDw8PDw8PDw8qqqqqqqoqqqpPDw8PDw8PDw8
+PDw8PDw8PKqqqqqqqKqqqTw8PDw8PDw8PDw8PDw8PDyqqqqqqqiqqqk8PDw8PDw8PDw8PDw8PDw8
+qqqqqqqoqqqpPDw8PDw8PDw8PDw8PDw8PKqqqqqqoaSkozw8PDw8PDw8PDw8PDw8PDympqampqGk
+pKM8PDw8PDw8PDw8PDw8PDw8pqampqahpKSjPDw8PDw8PDw8PDw8PDw8PCYmJiYmjo6Ojjw8PDw8
+PDw8PDw8PDw8PDyqqqqqqo6Ojo48PDw8PDw8PDw8PDw8PDw8qqqqqqqOjo6OPDw8PDw8PDw8PDw8
+PDw8PKqqqqqqjo6Ojjw8PDw8PDw8PDw8PDw8PDyqqqqqqo6Ojo48PDw8PDw8PDw8PDw8PDw8qqqq
+qqqIiIiIPDw8PDw8PDw8PDw8PDw8PKampqamiIiIiDw8PDw8PDw8PDw8PDw8PDympqampoiIiIg8
+PDw8PDw8PDw8PDw8PDw8pqampqaZmZmZPDw8PDw8PDw8PDw8PDw8PDw8PDw8mZmZmTw8PDw8PDw8
+PDw8PDw8PDw8PDw8PJmZmZk8PDw8PDw8PDw8PDw8PDw8PDw8PDyZmZmZPDw8PDw8PDw8PDw8PDw8
+PDw8PDw8mZmZmTw8PDw8PDw8PDw8PDw8PDw8PDw8PJGRkZE8PDw8PDw8PDw8PDw8PDw8PDw8PDyR
+kZGRPDw8PDw8PDw8PDw8PDw8PDw8PDw8kZGRkTw8PDw8PDw8PDw8PDw8PDw8PDw8PBMeE+4TERse
+Gy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6mrra/x05WXmaO
+lp6mrra/xyIoPDw8PDw8PDyoqKKoPDw8PDw8PDyoqKKoPDw8PDw8PDyoqJyiPDw8PDw8PDyiopyi
+PDw8PDw8PDyiopyiPDw8PDw8PDyiopSUPDw8PDw8PDyoqJSUPDw8PDw8PDyoqJSUPDw8PDw8PDyo
+qI6OPDw8PDw8PDyioo6OPDw8PDw8PDyioo6OPDw8PDw8PDyiopycPDw8PDw8PDw8PJycPDw8PDw8
+PDw8PJycPDw8PDw8PDw8PJWVPDw8PDw8PDw8PJWVPDw8PDw8PDw8PJWVPDw8PDw8PDw8PBT+FBEc
+HhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJikqKyw1JikqKyw1JikqKyw6I8PDw8qKI8
+PDw8qJw8PDw8opw8PDw8opw8PDw8oqI8PDw8qJo8PDw8qJo8PDw8qJQ8PDw8opQ8PDw8opQ8PDw8
+opo8PDw8qJ08PDw8PJ08PDw8PJY8PDw8PJY8PDw8PJY8PDw8PJ08PDw8PBYyFhEeEkYyRhFOEjYy
+NhE+ElqaWppamjw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+
+
+--nextPart8823327.QV3xLCZ37Q--
+
+--nextPart5895183.d6jRSjAkdu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmFEwX8ACgkQXYcKB8Em
+e0aWLw/9EOZdXUaNdcxNb1eQz+ofVdC7yHK5SMkPmykJ53HLyyzbgnaEqhwXCCQN
+sG4j/FT2auQS7AkoBv6tLw68NJ/ILyCbXmG4gdn27BWq5cBMp1DNzCheWY3Ue0uV
+9mJuzW0140KRjmq7BBrSsdfyG3c4RYgOwZMP7y7jWadl6RIzpeyw4lIVBf9l/ZIX
+F2gaZ6MeTi9kSDkpe3JWua0Rn0Czn6Psq+w8N2if972/0AAjB2xX5CfMdWWXszKH
+psjEzl254++VtJ4XWI2y99uE/kKKH01leAC1qFl1N2BvuAhmjMKzc1yJ9ISIHnd0
+GLBUiVzeKyIKlYLfFQnN0/9LdkaigWPyXpj1kUul+0z2cIPhRf1DSD7U59F7xwkI
+WU+QSwFMGq/YRru6dHVOXZSYMGlLXgLKmsvCgX7O76kAqaBUBahvzlkr0FjxgFjE
+NSFrT6Zh8mJjgvakKTyYWtFvFz0OZLKVms1wfU8kx+eE8yu8sEJCbazsbP4I6bu9
+vtwD71JXyFL8W0UmBpi1KJ6XdecKPZ+bjg8VG69+Lbv3oOBr7x17vdjhY5esp+BH
+iYQ8aW2hlrib7vnXHHMlvWmieu+i+c/b6PDudnf4/ej7IUR4lX+jdoosEg3uCX8W
++SzmXkK1+OrGtYQ74bRRdb8htK9/Hgtu0SuViGrK7db014qrIhU=
+=3dTo
+-----END PGP SIGNATURE-----
+
+--nextPart5895183.d6jRSjAkdu--
+
+
+
+
+
+--===============0214735080921354913==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============0214735080921354913==--
+
+
+
+
